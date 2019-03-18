@@ -385,7 +385,7 @@ public:
 
   /** Returns the index of maximum value of the buffer (">"-operator must be defined). */
   template <class T>
-  static int maxIndex(T *buffer, int length);
+  static int maxIndex(const T *buffer, int length);
 
   /** Returns the maximum value of the buffer (">"-operator must be defined). */
   template <class T>

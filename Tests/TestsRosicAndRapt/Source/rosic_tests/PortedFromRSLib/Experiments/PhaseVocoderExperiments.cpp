@@ -1175,13 +1175,18 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // todo: fix findCosistentPhase (move it into rsSinousoidalPartial and write unit test)
   // or better: to AudioFunctions, the re-activate freq-refinement, then add the new algo
 
-  testHarmonicResynthesis("Sine_Freq=500_Amp=0.5",      44100, 5000);
+  //testHarmonicResynthesis("Sine_Freq=500_Amp=0.5",      44100, 5000);
   //testHarmonicResynthesis("Cosine_Freq=500_Amp=0.5",    44100, 5000);
 
   //testHarmonicResynthesis("TwoSines",   44100, 5000);
   //testHarmonicResynthesis("ModalPluck", 44100, 5000);
   // convert all calls to include the frequency in the string (done), then get rid of the frequency 
   // parameter of the function
+
+
+  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6000_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
+
+  //testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6100_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
 
 
   //testHarmonicResynthesis("TwoSines_Freq1=100_Freq2=10020_Amp1=0.5_Amp2=0.1", 44100, 5000, 100);
@@ -1200,8 +1205,6 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   //  ->it's not actually the inharmonic partial itself, whose phase decoheres, but the influence
   //  of all the other partials -> try multiple cycles per window (2 or 4) with windows that show
   //  rolloff
-
-
 
 
   //testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=2050_Amp1=0.3_Amp2=0.2", 44100, 5000);

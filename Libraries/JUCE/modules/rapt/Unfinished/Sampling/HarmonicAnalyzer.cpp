@@ -261,6 +261,7 @@ void rsHarmonicAnalyzer<T>::setBlockSize(int newSize)
   int K = newSize;
   blockSize = K;
   sig.resize(K); 
+  wnd.resize(K);
 
   // they should be K*zeroPad long later - we may need an additional buffer for the zero-padded signal
   K *= zeroPad;
@@ -318,20 +319,70 @@ template<class T>
 void rsHarmonicAnalyzer<T>::fillHarmonicData(
   RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T time)
 {
+  //rsPlotVector(sig);
   prepareBuffer(sig, sigPadded);
   trafo.getRealSignalMagnitudesAndPhases(&sigPadded[0], &mag[0], &phs[0]);  // perform FFT
   rsPlotVector(mag);
 
   // extract model data from FFT result:
-  int dataIndex = frameIndex + 1; // +1 because of the fade-in datapoint
-  int K = trafo.getBlockSize();
-  int numPartials = K/2;
-  for(int k = 0; k < numPartials; k++) {
-    T freq = trafo.binIndexToFrequency(k, K, sampleRate);
-    mdl.setData(k, dataIndex, time, freq, T(2)*mag[k], phs[k]);
+  int dataIndex   = frameIndex + 1;        // +1 because of the fade-in datapoint
+  int numBins     = trafo.getBlockSize();  // number of FFT bins
+  int numPartials = numBins / (2*zeroPad); // number of (pseudo) harmonics
+  int k;                                   // bin index
+
+  // this code is only valid when zeroPad == 1, for other factors, it needs to be modified:
+  if(zeroPad == 1) {
+    for(k = 0; k < numPartials; k++) {
+      T freq = trafo.binIndexToFrequency(k, numBins, sampleRate);
+      mdl.setData(k, dataIndex, time, freq, T(2)*mag[k], phs[k]);
+    }
   }
+  else
+  {
+    // we will need parabolic interpolation to find better frequency (and amplitude) measurements 
+    // and for interpolating phase-data, we need to be careful about wrapping issues
+    mdl.setData(0, dataIndex, time, T(0), T(2)*mag[0], phs[0]); // handle DC separately
+    for(int h = 1; h < numPartials; h++) {
+      k = zeroPad * h; // bin-index where we expect the peak for the (pseudo) harmonic
+
+      T peakBin = findPeakBinNear(mag, k, zeroPad);
+
+      // preliminary (copied and edited from above - does not yet include any refinements):
+      T freq = trafo.binIndexToFrequency(k, numBins, sampleRate);
+      mdl.setData(h, dataIndex, time, freq, T(2)*mag[k], phs[k]);
+
+      // i think, we need to search for a peak in the range k += zeroPad/2 instead of just using k
+    }
+  }
+
+
   int dummy = 0;
 }
+
+template<class T>
+T rsHarmonicAnalyzer<T>::findPeakBinNear(const std::vector<T>& v, int k, int w)
+{
+  if(w == 1)
+    return T(k);
+  rsAssert(rsIsEven(w));
+  int w2 = w/2;
+  rsAssert(k-w2 >= 0 && k+w2 < (int) v.size());
+  int kMax = rsArray::maxIndex(&v[k-w2], w) + k - w2;  // integer index
+
+  if(kMax == k-w2 || kMax == k+w2)
+  {
+    // there is no actual peak - the max-value is at the boundary - maybe we should do something
+    // special in this case? ...maybe just return the center k?
+    return T(k);
+    // note thatn in this case, there may be actually a minimum at k, so the amplitude computation
+    // may end up with a negative value...maybe clip amplitudes at zero from below
+  }
+  else
+  {
+    return T(kMax); // preliminary - todo: parabolic interpolation (of log-values)
+  }
+}
+
 
 template<class T>
 void rsHarmonicAnalyzer<T>::prepareBuffer(const std::vector<T>& sig, std::vector<T>& buf)
@@ -346,6 +397,12 @@ void rsHarmonicAnalyzer<T>::prepareBuffer(const std::vector<T>& sig, std::vector
   // measurements that are off by half a sample because the center of an even-length buffer falls
   // on a half-integer - but: our datapoints are actually also placed at the half-integers, so in 
   // the end, it works out correctly.
+}
+
+template<class T>
+void rsHarmonicAnalyzer<T>::fillWindow()
+{
+
 }
 
 

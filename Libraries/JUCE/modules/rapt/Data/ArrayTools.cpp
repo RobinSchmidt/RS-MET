@@ -859,7 +859,7 @@ int rsArray::maxDeviationIndex(T *x, T *y, int N)
 }
 
 template <class T>
-int rsArray::maxIndex(T *buffer, int length)
+int rsArray::maxIndex(const T *buffer, int length)
 {
   T   value = buffer[0];
   int index = 0;

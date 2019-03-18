@@ -233,6 +233,11 @@ protected:
   void fillHarmonicData(RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T timeStamp);
 
 
+  T findPeakBinNear(const std::vector<T>& v, int centerBin, int searchWidth);
+
+  void fillWindow(); // just a stub atm
+
+
 
 
   //RAPT::rsPitchFlattener<T, T> flattener;
@@ -266,6 +271,6 @@ protected:
   std::vector<T> tIn, tOut;      // time-warping map (sampled at cycle marks)
   // maybe rename to "to", "tw" for original and warped
 
-  std::vector<T> sig, sigPadded, mag, phs;  // blocks of signal, magnitude and phase
+  std::vector<T> sig, wnd, sigPadded, mag, phs;  // block of signal, window, magnitude and phase
 
 };
