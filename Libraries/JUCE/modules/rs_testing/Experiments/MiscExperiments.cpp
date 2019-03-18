@@ -35,7 +35,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   RAPT::rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
   analyzer.setSincInterpolationLength(64);
-  analyzer.setSpectralOversampling(8);       // implementation not yet complete
+  //analyzer.setSpectralOversampling(8);       // implementation not yet complete
   //analyzer.setFreqsByPhaseDerivative(true);
   //analyzer.setFreqPhaseConsistency(true);
   // todo: maybe provide different freq-refinement methods (not necessarily mutually exclusive)

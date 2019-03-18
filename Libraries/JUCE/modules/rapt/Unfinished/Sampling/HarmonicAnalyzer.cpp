@@ -322,7 +322,7 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   //rsPlotVector(sig);
   prepareBuffer(sig, sigPadded);
   trafo.getRealSignalMagnitudesAndPhases(&sigPadded[0], &mag[0], &phs[0]);  // perform FFT
-  rsPlotVector(mag);
+  //rsPlotVector(mag);
 
   // extract model data from FFT result:
   int dataIndex   = frameIndex + 1;        // +1 because of the fade-in datapoint
@@ -374,8 +374,8 @@ T rsHarmonicAnalyzer<T>::findPeakBinNear(const std::vector<T>& v, int k, int w)
     // there is no actual peak - the max-value is at the boundary - maybe we should do something
     // special in this case? ...maybe just return the center k?
     return T(k);
-    // note thatn in this case, there may be actually a minimum at k, so the amplitude computation
-    // may end up with a negative value...maybe clip amplitudes at zero from below
+    // note that in this case, there may be actually a minimum at k, so the parabolic amplitude 
+    // computation may end up with a negative value...maybe clip amplitudes at zero from below
   }
   else
   {
