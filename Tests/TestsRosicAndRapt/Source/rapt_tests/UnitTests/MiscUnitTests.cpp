@@ -165,13 +165,27 @@ bool sineModelingUnitTest()
 
   typedef std::vector<double> Vec;
   Vec sig = { 1,2,3,4,5,6,7,8 };  // 8 elements
-  Vec buf(32);                    // zero-padding factor is 4
+
+  // test with zero-padding factor = 4:
+  Vec buf(32);
   RAPT::rsArray::fillWithNaN(&buf[0], (int) buf.size());
   rsHarmonicAnalyzer<double>::prepareBuffer(sig, buf);
   Vec target = { 5,6,7,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,3,4 };
   r &= buf == target;
 
-  // todo: test with padding factor = 2 and = 1...
+  // test with zero-padding factor = 2:
+  buf.resize(16);
+  RAPT::rsArray::fillWithNaN(&buf[0], (int) buf.size());
+  rsHarmonicAnalyzer<double>::prepareBuffer(sig, buf);
+  target = { 5,6,7,8,0,0,0,0,0,0,0,0,1,2,3,4 };
+  r &= buf == target;
+
+  // test with zero-padding factor = 1:
+  buf.resize(8);
+  RAPT::rsArray::fillWithNaN(&buf[0], (int) buf.size());
+  rsHarmonicAnalyzer<double>::prepareBuffer(sig, buf);
+  target = { 5,6,7,8,1,2,3,4 };
+  r &= buf == target;
 
 
   return r;

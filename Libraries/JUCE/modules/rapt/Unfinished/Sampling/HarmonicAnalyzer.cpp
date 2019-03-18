@@ -380,9 +380,9 @@ void rsHarmonicAnalyzer<T>::prepareBuffer(const std::vector<T>& sig, std::vector
   size_t K2 = sig.size() / 2;
   size_t M  = buf.size();
   size_t i;
-  for(i = 0; i < K2; i++)    buf[i] = sig[i+K2];    // first section is 2nd half of sig
+  for(i = 0;  i < K2;   i++) buf[i] = sig[i+K2];    // first section is 2nd half of sig
   for(i = K2; i < M-K2; i++) buf[i] = 0;            // middle section is zero padding
-  for(i = 0; i < K2; i++)    buf[M-K2+i] = sig[i];  // last section is 1st half of sig
+  for(i = 0;  i < K2;   i++) buf[M-K2+i] = sig[i];  // last section is 1st half of sig
 }
 
 
