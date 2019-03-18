@@ -229,6 +229,12 @@ public:
   template <class T>
   static void fillWithIndex(T *buffer, int length);
 
+  /** Fills the buffer with NaN values. This may be useful as initialization for testing code that
+  is supposed to initialize the buffer correctly - failing to do so will leave NaNs which are 
+  easily discovered druing debugging. */
+  template <class T>
+  static inline void fillWithNaN(T *buffer, int length);
+
   /** Fills the buffer with random values between min and max. */
   template <class T>
   static void fillWithRandomValues(T *buffer, int length, double min, double max, int seed);
@@ -611,6 +617,13 @@ inline void rsArray::fillWithImpulse(T *buffer, int length)
 {
   fillWithZeros(buffer, length);
   buffer[0] = T(1);
+}
+
+template <class T>
+inline void rsArray::fillWithNaN(T* x, int N)
+{
+  for(int i = 0; i < N; i++) 
+    x[i] = RS_SIGNALING_NAN(T); // or maybe it should be the quiet nan?
 }
 
 template <class T>

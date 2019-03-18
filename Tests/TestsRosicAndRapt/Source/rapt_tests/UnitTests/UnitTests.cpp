@@ -66,6 +66,8 @@ bool runAllUnitTests()
 
   // Misc:
   passed &= runUnitTest(&spectrogramUnitTest,   "rsSpectrogram");
+  passed &= runUnitTest(&sineModelingUnitTest,  "SineModeling");
+
 
 
 

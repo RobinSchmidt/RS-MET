@@ -17,7 +17,7 @@
 #define PI_F ((float)PI)
 
 // music/audio related constants:
-#define SEMITONE_FACTOR 1.0594630943592952645618252949463
+#define SEMITONE_FACTOR 1.0594630943592952645618252949463  // 12th root of 2
 
 // constants related to numeric format:
 #undef min  // some silly include header on windows (minwindef.h) defines min/max as macros
@@ -25,8 +25,11 @@
 #define RS_INF(T) (std::numeric_limits<T>::infinity())
 #define RS_MIN(T) (std::numeric_limits<T>::min())
 #define RS_MAX(T) (std::numeric_limits<T>::max())
-#define RS_NAN(T) (std::numeric_limits<T>::quiet_NaN())
 #define RS_EPS(T) (std::numeric_limits<T>::epsilon())
+#define RS_NAN(T) (std::numeric_limits<T>::quiet_NaN())  // rename to RS_QUIET_NAN
+#define RS_SIGNALING_NAN(T) (std::numeric_limits<T>::signaling_NaN())
+
+
 
 // powers of two:
 #define RS_POW2_0 1          // 2^0 = 1

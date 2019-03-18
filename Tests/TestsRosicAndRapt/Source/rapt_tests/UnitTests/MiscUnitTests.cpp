@@ -156,3 +156,23 @@ bool spectrogramUnitTest()
 
   return r;
 }
+
+bool sineModelingUnitTest()
+{
+  bool r = true;      // test result
+
+  // test filling the FFT buffer (with zero-apdding and shifting for zero-phase at center):
+
+  typedef std::vector<double> Vec;
+  Vec sig = { 1,2,3,4,5,6,7,8 };  // 8 elements
+  Vec buf(32);                    // zero-padding factor is 4
+  RAPT::rsArray::fillWithNaN(&buf[0], (int) buf.size());
+  rsHarmonicAnalyzer<double>::prepareBuffer(sig, buf);
+  Vec target = { 5,6,7,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,3,4 };
+  r &= buf == target;
+
+  // todo: test with padding factor = 2 and = 1...
+
+
+  return r;
+}

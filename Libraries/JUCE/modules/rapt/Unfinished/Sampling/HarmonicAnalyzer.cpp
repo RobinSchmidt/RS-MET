@@ -263,6 +263,8 @@ void rsHarmonicAnalyzer<T>::setBlockSize(int newSize)
   sig.resize(K); 
 
   // they should be K*zeroPad long later - we may need an additional buffer for the zero-padded signal
+  K *= zeroPad;
+  sigPadded.resize(K);
   mag.resize(K); 
   phs.resize(K);
   trafo.setBlockSize(K);
@@ -320,6 +322,8 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   int K = trafo.getBlockSize();
   int numPartials = K/2;
 
+  prepareBuffer(sig, sigPadded);
+
   // we should shift the signal buffer by one half to move the time origin to the center
   // ...yes - at least, if we use the center of the frame for the time-stamp we need to do this
   // because only then it is all consistent...maybe we should have a function 
@@ -369,5 +373,17 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   }
   int dummy = 0;
 }
+
+template<class T>
+void rsHarmonicAnalyzer<T>::prepareBuffer(const std::vector<T>& sig, std::vector<T>& buf)
+{
+  size_t K2 = sig.size() / 2;
+  size_t M  = buf.size();
+  size_t i;
+  for(i = 0; i < K2; i++)    buf[i] = sig[i+K2];    // first section is 2nd half of sig
+  for(i = K2; i < M-K2; i++) buf[i] = 0;            // middle section is zero padding
+  for(i = 0; i < K2; i++)    buf[M-K2+i] = sig[i];  // last section is 1st half of sig
+}
+
 
 //template class rsHarmonicAnalyzer<double>;

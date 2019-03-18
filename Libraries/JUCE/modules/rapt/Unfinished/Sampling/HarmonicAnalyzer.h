@@ -142,6 +142,13 @@ public:
   sound. */
   RAPT::rsSinusoidalModel<T> analyze(T* sampleData, int numSamples);
 
+
+  /** \name Misc */
+
+  /** Copies the content of the given signal block into the given transform buffer, appropriately
+  padding with zeros, if necessary. Made static to enable it to be conveniently tested. */
+  static void prepareBuffer(const std::vector<T>& signalBlock, std::vector<T>& trafoBuffer);
+
 protected:
 
 
@@ -259,6 +266,6 @@ protected:
   std::vector<T> tIn, tOut;      // time-warping map (sampled at cycle marks)
   // maybe rename to "to", "tw" for original and warped
 
-  std::vector<T> sig, mag, phs;  // blocks of signal, magnitude and phase
+  std::vector<T> sig, sigPadded, mag, phs;  // blocks of signal, magnitude and phase
 
 };
