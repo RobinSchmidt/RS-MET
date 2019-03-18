@@ -318,57 +318,16 @@ template<class T>
 void rsHarmonicAnalyzer<T>::fillHarmonicData(
   RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T time)
 {
-  int dataIndex = frameIndex + 1;
-  int K = trafo.getBlockSize();
-  int numPartials = K/2;
-
   prepareBuffer(sig, sigPadded);
-
-  // we should shift the signal buffer by one half to move the time origin to the center
-  // ...yes - at least, if we use the center of the frame for the time-stamp we need to do this
-  // because only then it is all consistent...maybe we should have a function 
-  // prepareSignalBlockBuffer(int frameIndex)
-
-  // this is realy bad to do this here (it has an undocumented side-effect on the sig buffer - it 
-  // doesn't matter, because the buffer is not used anymore after calling this function but still).
-  // -> refactor and also optimize by passing a temp-buffer to the function:
-  RAPT::rsArray::circularShift(&sig[0], K, -K/2);
-  // optimize: pass tmpBuffer as workspace to avoid temporary memory allocation
-
-  // for the first and last (partial) cycle that may not be correct...or is it? hmm...yes,
-  // it could be
-  // verify, if we should really shift by -K/2 (or if this ends up off-by-one)
-
-  // ...i actually think, it is off by *half* a sample in the case of an even FFT length. consider
-  // K=8: we left-shift the buffer content by 4 samples, but the actual buffer center is at 
-  // 3.5 samples - maybe we should add a compensation phase-shift to the measured phase - try it:
-  //T p1 = trafo.binIndexToOmega(1, K); // omega
-  //p1 *= 0.5;  // shift measured phases by half a sample
-  // hmm...that seems to actually increase the error signal
-
-  // wait - no - without compensating the half-sample delay, the phase may actually be correct, 
-  // given that we set the time-stamp appropriately to the centter of the block at a half-sample 
-  // position - which is what we do
-
-
-
-  trafo.getRealSignalMagnitudesAndPhases(&sig[0], &mag[0], &phs[0]);       // perform FFT
+  trafo.getRealSignalMagnitudesAndPhases(&sigPadded[0], &mag[0], &phs[0]);  // perform FFT
   rsPlotVector(mag);
 
-
   // extract model data from FFT result:
+  int dataIndex = frameIndex + 1; // +1 because of the fade-in datapoint
+  int K = trafo.getBlockSize();
+  int numPartials = K/2;
   for(int k = 0; k < numPartials; k++) {
     T freq = trafo.binIndexToFrequency(k, K, sampleRate);
-
-    //// test - try phase-shift by half a sample:
-    //T p = phs[k];
-    //p += k*p1;
-    //p = rsWrapToInterval(p, -PI, PI);
-    //mdl.setData(k, dataIndex, time, freq, T(2)*mag[k], p);
-    //// hmm...this seems to do more harm than good - test with two sines (f0 and 10*f0, for 
-    //// example)
-
-    // without phase-shift:
     mdl.setData(k, dataIndex, time, freq, T(2)*mag[k], phs[k]);
   }
   int dummy = 0;
@@ -383,6 +342,10 @@ void rsHarmonicAnalyzer<T>::prepareBuffer(const std::vector<T>& sig, std::vector
   for(i = 0;  i < K2;   i++) buf[i] = sig[i+K2];    // first section is 2nd half of sig
   for(i = K2; i < M-K2; i++) buf[i] = 0;            // middle section is zero padding
   for(i = 0;  i < K2;   i++) buf[M-K2+i] = sig[i];  // last section is 1st half of sig
+  // It may seem, that just swapping left and right half of the buffer would lead to phase 
+  // measurements that are off by half a sample because the center of an even-length buffer falls
+  // on a half-integer - but: our datapoints are actually also placed at the half-integers, so in 
+  // the end, it works out correctly.
 }
 
 
