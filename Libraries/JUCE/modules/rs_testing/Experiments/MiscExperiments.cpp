@@ -65,8 +65,6 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
 
   // Resynthesis:
 
-  //std::vector<double> output = synthesizeSinusoidal(mdl, fs); 
-
   typedef RAPT::rsSinusoidalSynthesizer<double> SS;
   typedef SS::PhaseInterpolationMethod PIM;
   SS synth;

@@ -1,24 +1,4 @@
 
-/*
-// move elsewhere...
-template<class T>
-void plotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers)
-{
-  std::vector<T> zeros(numMarkers);    // y values for plotting (all zero)
-  RAPT::rsArray::fillWithZeros(&zeros[0], numMarkers);
-  GNUPlotter plt;
-  plt.addDataArrays(signalLength, signal);
-  plt.addDataArrays(numMarkers,   markers, &zeros[0]);
-  plt.setGraphStyles("lines", "points");
-  plt.setPixelSize(1000, 300);
-  plt.plot();
-}
-*/
-
-
-
-//-------------------------------------------------------------------------------------------------
-
 template<class T>
 rsHarmonicAnalyzer<T>::rsHarmonicAnalyzer() : cycleFinder(sampleRate)
 {
@@ -31,7 +11,7 @@ template<class T>
 RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
 {
   RAPT::rsSinusoidalModel<T> mdl;   // init empty model
-  if(flattenPitch(x, N) == false)   // pre-process audio (flatten pitch)
+  if(flattenPitch(x, N) == false)   // pre-process audio (flatten pitch), sets the blockSize
     return mdl;                     // return empty model if pre-processing has failed
   analyzeHarmonics(mdl);            // create model from pitch-flattened signal (now in member y)
   deFlattenPitch(mdl);              // post process model data to account for flattening
@@ -71,10 +51,8 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   //maxLength   = rsMax(maxLength, cycleMarks[0]);             // delta between 0 and 1st mark
   //maxLength   = rsMax(maxLength, (Nx-1)-rsLast(cycleMarks)); // delta between end and last mark
   blockSize = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
+  setBlockSize(blockSize);  // does also some buffer-re-allocation
   //rsPlotVector(sampleRate/cycleLengths);
-
-
-
 
 
   // Create the mapping function for the time instants of the cycle marks:
@@ -124,10 +102,12 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
 
   // Set up the fourier transformer object and block buffers:
   int K = blockSize;       // block-size (equals FFT size)
-  trafo.setBlockSize(K);
-  sig.resize(K); 
-  mag.resize(K); 
-  phs.resize(K);
+
+  //// factor out to setBlockSize
+  //trafo.setBlockSize(K);
+  //sig.resize(K); 
+  //mag.resize(K); 
+  //phs.resize(K);
 
   // The initial partial cycle is pre-padded with zeros:
   int n0 = 0;                          // first sample (from y-array) in current frame
@@ -276,6 +256,19 @@ void rsHarmonicAnalyzer<T>::refineFrequencies(RAPT::rsSinusoidalModel<T>& mdl)
 }
 
 template<class T>
+void rsHarmonicAnalyzer<T>::setBlockSize(int newSize)
+{
+  int K = newSize;
+  blockSize = K;
+  sig.resize(K); 
+
+  // they should be K*zeroPad long later - we may need an additional buffer for the zero-padded signal
+  mag.resize(K); 
+  phs.resize(K);
+  trafo.setBlockSize(K);
+}
+
+template<class T>
 std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N)
 {
   // To ensure that initial and final section are really partial cycles (as opposed to a full
@@ -323,16 +316,9 @@ template<class T>
 void rsHarmonicAnalyzer<T>::fillHarmonicData(
   RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T time)
 {
-  //int dataIndex = frameIndex;
   int dataIndex = frameIndex + 1;
-  // maybe we should use numDataPoints = numFrames+2 for prepending and appending a datapoint with
-  // zero amplitude for fade-in/out (for each partial) - then we should init the model with
-  // numDataPoints instead of numFrames and use dataIndex = frameIndex+1 here - the dataPoints
-  // at indices 0 and numDataPoints-1 have to be treated separately..
-
   int K = trafo.getBlockSize();
   int numPartials = K/2;
-
 
   // we should shift the signal buffer by one half to move the time origin to the center
   // ...yes - at least, if we use the center of the frame for the time-stamp we need to do this
@@ -349,7 +335,6 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   // it could be
   // verify, if we should really shift by -K/2 (or if this ends up off-by-one)
 
-
   // ...i actually think, it is off by *half* a sample in the case of an even FFT length. consider
   // K=8: we left-shift the buffer content by 4 samples, but the actual buffer center is at 
   // 3.5 samples - maybe we should add a compensation phase-shift to the measured phase - try it:
@@ -363,9 +348,8 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
 
 
 
-
- 
   trafo.getRealSignalMagnitudesAndPhases(&sig[0], &mag[0], &phs[0]);       // perform FFT
+  rsPlotVector(mag);
 
 
   // extract model data from FFT result:

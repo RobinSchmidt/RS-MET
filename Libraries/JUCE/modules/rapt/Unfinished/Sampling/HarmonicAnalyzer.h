@@ -82,6 +82,25 @@ public:
   huge difference (factor ~3) between 16 and 17 ...more research needed */
   void setSincInterpolationLength(T newLength) { sincLength = newLength; }
 
+  /** Sets the amount of oversampling the FFT spectrum, i.e. factor by which the FFT buffer is
+  lengthened by zero-padding. Must be a power of two. Zero padding (i.e. spectral oversampling) may 
+  be useful when the partials are (slightly) inharmonic to help detect the actual frequency of the 
+  partial and/or suppress artifacts from spectral leakage of the inharmonic into other bins (due
+  to non-rectangular windowing in case of zero-padding...to be implemented...unpadded FFTs are 
+  always be computed using the rectangular window...hmm..but maybe we don't have to?)
+  (for totally inharmonic partials, an entirely
+  different analysis algorithm may be more appropriate). */
+  void setSpectralOversampling(int newFactor) 
+  { 
+    rsAssert(rsIsPowerOfTwo(newFactor));
+    zeroPad = newFactor; 
+  }
+
+  // void setNumCyclesPerBlock(int newNumCycles)...
+
+  // void setTemporalOversampling(int newFactor)
+  // ...produce intermediate datapoints between the already existing ones...
+
   /** This option can be used to remove any harmonics that exceed the Nyquist limit, even if just 
   temporarily. The analysis may prodcue such frequencies due to the fact that the original audio is 
   stretched before analysis and the post-processing then shifts all frequencies up. However, if a 
@@ -166,6 +185,8 @@ protected:
   /** Refines the frequency estimates in the model, if the respective options are set to true. */
   void refineFrequencies(RAPT::rsSinusoidalModel<T>& mdl);
 
+  /** Sets the length in samples for one analysis block - re-allocates buffers, if necessarry. */
+  void setBlockSize(int newSize);
 
   /** Returns length of time-warping map (sampled at cycle marks). */
   int getMapLength() const { return (int) tIn.size(); }
@@ -181,9 +202,7 @@ protected:
   // ones) - in this case, return the actual number of harmonics here
 
   /** Returns the number of datapoints (per partial) in the sinusoidal model. */
-  //int getNumDataPoints() const { return getNumFrames(); }
-  int getNumDataPoints() const { return getNumFrames() + 2; }
-  // later: getNumFrames() + 2 for fade in/out
+  int getNumDataPoints() const { return getNumFrames() + 2; } // + 2 for fade in/out frames
 
   /** Computes and returns an array of cycle-marks. */
   std::vector<T> findCycleMarks(T* x, int N);
@@ -191,7 +210,7 @@ protected:
   /** Returns the time instant that should be associated with the frame of given index 
   (before post-processing). The time stamp will be based on the content of tOut member array. */
   T getTimeStampForFrame(int frameIndex);
-  // maybe rename to getWarpedTimeForFrame and have a corresponding getUnWarpedTimeforFrame
+  // maybe rename to getWarpedTimeForFrame and have a corresponding getUnWarpedTimeForFrame
   // function (that uses tIn instead of tOut)...this will actually be used to *replace* the 
   // original time-stamp data later in the post-processing - so we may not actually need to 
   // compute the values before post-processing - but for conceptual clarity of the algorithm, 
@@ -199,9 +218,6 @@ protected:
 
   T getUnWarpedTimeStampForFrame(int frameIndex);
   // maybe rename to getUnWarpedSampleIndexForFrame
-
-
-
 
   /** Used internally to fill in the data in the model at the given frame-index based on the 
   current content of our "sig" buffer member variable. The time-stamp of the frame should be passed
@@ -222,7 +238,7 @@ protected:
   // multi-cycle blocks and also between block-size and fft-size when we allow for zero-padding
 
   // todo:
-  //int zeroPad   = 1;    // zero padding factor for FFT, power of 2
+  int zeroPad   = 1;    // zero padding factor for FFT, power of 2
   //int numCycles = 1;    // number of cycles per block/window, power of 2
   //int window = rectangular;  //
 
