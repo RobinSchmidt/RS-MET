@@ -278,41 +278,20 @@ void rsHarmonicAnalyzer<T>::refineFrequencies(RAPT::rsSinusoidalModel<T>& mdl)
 template<class T>
 std::vector<T> rsHarmonicAnalyzer<T>::findCycleMarks(T* x, int N)
 {
-  /*
-  T fl = 20;       // lower limit for fundamental (maybe let user set this up)
-  T fu = 5000;     // upper limit for fundamental
-  rsCycleMarkFinder<double> cmf(sampleRate, fl, fu);  // make member, let user access its settings
-
-  ////                                      // defaults
-  cmf.setRelativeBandpassWidth(0.5);    // 1.0
-  cmf.setBandpassSteepness(10);          // 3
-  //cmf.setFundamentalRange(50., 100.);   // 20-5000 
-
-  cmf.setSubSampleApproximationPrecision(2);  // 0: linear, 1: cubic, 2: quintic, ...
-  cmf.setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
-  //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION);
-  std::vector<T> cm = cmf.findCycleMarks(x, N);
-  //plotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
-  */
-
-
-  std::vector<T> cm = cycleFinder.findCycleMarks(x, N);
-  rsPlotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
-
-
   // To ensure that initial and final section are really partial cycles (as opposed to a full
   // cycle plus something extra), we prepend and/or append artificial cycle marks in these cases.
   // The positions of the artificial marks are set from the length of the first or last cycle
   // respectively:
+  std::vector<T> cm = cycleFinder.findCycleMarks(x, N);
   if(cm.size() >= 2) {
     T L = cm[1] - cm[0];
     while(cm[0] > L)
       rsPrepend(cm, cm[0]-L);
     L = cm[cm.size()-1] - cm[cm.size()-2];
-    while((N-1) - cm[cm.size()-1] > L)   // really N-1 or just N? well, the last sample index
-      rsAppend(cm, cm[cm.size()-1]+L);   // is actually N-1, so it seems correct
+    while((N-1) - cm[cm.size()-1] > L)
+      rsAppend(cm, cm[cm.size()-1]+L);
   }
-
+  //rsPlotSignalWithMarkers(x, N, &cm[0], (int) cm.size());
   return cm;
 }
 

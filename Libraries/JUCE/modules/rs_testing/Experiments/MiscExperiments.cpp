@@ -19,10 +19,15 @@ std::vector<double> synthesizeSinusoidal(
   return x;
 }
 
+// maybe it will soon make sense to wrap this into a class
 void testHarmonicResynthesis(const std::string& name, std::vector<double>& input, 
-  double fs, bool writeWaveFiles, bool plotResults)
+  double fs, double f0, bool writeWaveFiles, bool plotResults)
 {
   // analyze, resynthesize and create error signal:
+
+
+  // Analysis:
+
   double* x = &input[0];   // pointer to first sample (for convenience)
   int Nx = (int) input.size();
 
@@ -36,10 +41,12 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
 
   // set up settings of the embedded cycle-mark finder:
   rsCycleMarkFinder<double>& cmf = analyzer.getCycleFinder();
-                                        // defaults:
-  cmf.setRelativeBandpassWidth(0.5);    // 1.0
-  cmf.setBandpassSteepness(5);          // 3
-  cmf.setFundamentalRange(50., 1000.);  // 20, 5000 
+                                              // defaults:
+  cmf.setRelativeBandpassWidth(0.5);          // 1.0
+  cmf.setBandpassSteepness(5);                // 3
+  cmf.setSubSampleApproximationPrecision(2);  // 1, 0: linear, 1: cubic, 2: quintic, ...
+  cmf.setFundamentalRange(50., 1000.);        // 20, 5000 
+  cmf.setFundamental(f0);                     // 0 -> auto-detect
   cmf.setAlgorithm(cmf.F0_ZERO_CROSSINGS);
   //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION);
 
@@ -47,13 +54,38 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, Nx);
   mdl.removePartial(0);        // remove DC component
 
+
+  // Manipulations:
+
   //mdl.keepOnly({0, 9});  // for test with TwoSines_Freq1=200_Freq2=2025
   //mdl.removePartial(0);    // test: resynthesize without fundamental
 
-  std::vector<double> output = synthesizeSinusoidal(mdl, fs); 
+  //mdl.keepOnly({0, 99});  // fom TwoSines_Freq1=100_Freq2=10020
+
+
+  // Resynthesis:
+
+  //std::vector<double> output = synthesizeSinusoidal(mdl, fs); 
+
+  typedef RAPT::rsSinusoidalSynthesizer<double> SS;
+  typedef SS::PhaseInterpolationMethod PIM;
+  SS synth;
+  synth.setSampleRate(fs);
+  synth.setCubicAmplitudeInterpolation(true);
+  synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
+  //synth.setPhaseInterpolation(PIM::cubicHermite);
+  //synth.setPhaseInterpolation(PIM::quinticHermite);
+  //synth.setPhaseInterpolation(PIM::linear);  // does not yet exist
+  std::vector<double> output = synth.synthesize(mdl);
+
   std::vector<double> error = output-input;
   double* y = &output[0]; int Ny = (int) output.size(); // again, for convenience
   double* e = &error[0];  int Ne = (int) error.size();  // dito
+
+
+
+
+  // Plotting and file output:
 
   // write original, resynthesized and error signals to files, if desired:
   if(writeWaveFiles == true) {
@@ -62,14 +94,13 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     rosic::writeToMonoWaveFile((name + "Residual.wav").c_str(),      e, Ne, (int)fs);
   }
 
+
   // plot model data, if desired....
   bool plotModel = true;
   //if(plotModel == true)
     //plotSineModel(mdl, fs);
   // 
 
-
- 
   // plot original, resynthesized and error signals, if desired:
   if(plotResults == true) {
     GNUPlotter plt;

@@ -201,6 +201,17 @@ T rsSinusoidalPartial<T>::getMaxFreqPhaseInconsistency() const
 }
 
 template<class T>
+bool rsSinusoidalPartial<T>::isSampledInSyncWith(const rsSinusoidalPartial<T>& p) const
+{
+  if(getNumDataPoints() != p.getNumDataPoints())
+    return false;
+  for(size_t i = 0; i < getNumDataPoints(); i++)
+    if(instParams[i].time != p.getConstDataRef((int)i).time)
+      return false;
+  return true;
+}
+
+template<class T>
 bool rsSinusoidalPartial<T>::willAlias(T sampleRate, bool allTheTime) const
 {
   if(allTheTime == false)
@@ -314,6 +325,15 @@ T rsSinusoidalModel<T>::getEndTime() const
   for(size_t i = 0; i < partials.size(); i++)
     end = rsMax(end, partials[i].getEndTime());
   return end;
+}
+
+template<class T>
+bool rsSinusoidalModel<T>::isSampledSynchronously()
+{
+  for(size_t i = 1; i < partials.size(); i++)
+    if(!partials[i].isSampledInSyncWith(partials[0]))
+      return false;
+  return true;
 }
 
 

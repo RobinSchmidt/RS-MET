@@ -1157,7 +1157,7 @@ void phaseFreqConsistency()
 }
 
 
-void testHarmonicResynthesis(const std::string& name, double fs, int N)
+void testHarmonicResynthesis(const std::string& name, double fs, int N, double f0 = 0)
 {
   // setup (comment out "doStuff = true", if you don't want stuff to be done):
   bool writeWaveFiles = false, plotResults = false;
@@ -1166,7 +1166,7 @@ void testHarmonicResynthesis(const std::string& name, double fs, int N)
 
   std::vector<double> input = createNamedSound(name, fs, N); 
   //std::string name2 = name + std::to_string(f) + "Hz";
-  testHarmonicResynthesis(name, input, fs, writeWaveFiles, plotResults);
+  testHarmonicResynthesis(name, input, fs, f0, writeWaveFiles, plotResults);
 }
 
 void harmonicAnalysis1()  // rename to harmonicResynthesis
@@ -1175,7 +1175,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // todo: fix findCosistentPhase (move it into rsSinousoidalPartial and write unit test)
   // or better: to AudioFunctions, the re-activate freq-refinement, then add the new algo
 
-  //testHarmonicResynthesis("Sine_Freq=500_Amp=0.5",      44100, 5000);
+  testHarmonicResynthesis("Sine_Freq=500_Amp=0.5",      44100, 5000);
   //testHarmonicResynthesis("Cosine_Freq=500_Amp=0.5",    44100, 5000);
 
   //testHarmonicResynthesis("TwoSines",   44100, 5000);
@@ -1184,21 +1184,27 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // parameter of the function
 
 
-  testHarmonicResynthesis("TwoSines_Freq1=100_Freq2=10020_Amp1=0.5_Amp2=0.1", 44100, 5000);
+  //testHarmonicResynthesis("TwoSines_Freq1=100_Freq2=10020_Amp1=0.5_Amp2=0.1", 44100, 5000, 100);
   // -let's figure out, if the resynthesized signal gets out-of-phase with respect to the orginal 
-  //  at higher partials, wehn they are not exactly located at a harmonic
+  //  at higher partials, when they are not exactly located at a harmonic
+  // -try different phase interpolation methods and see how this influences the phase decoherence 
+  //  between the datapoints
+  //  -it changes the shape of how the decoherence raises but not the qualitative behavior
+  //   ...but the quinitc has some additional weirdness
+  // -plot instantaneous phase trajectories - there seems to be a discontinuity in the middle 
+  //  between the datapoints ...could it choose a different path in the wrappedInterpolation in
+  //  both half-waves?
   //  ->resynthesize only the high-freq component and compare to original high-freq component
-  // -doesn't find correct cycle-marks - resynthesized signal is garbage
-  //  -> plot the intermediate (bandpassed) signal in the cycleFinder
-
-  // estimateFundamentalAt in rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros fails - it
-  // thinks, the fundamental is at 1 kHz ...the autocorrelation sequence has this strong wiggle
-  // so, it finds a local maximum at the first position where we allow a local maximum to be (as
-  // determined by the max-fundamental setting) - this is a really pathological case - maybe we
-  // need to set the fundamental manually in this case
+  // -doesn't find correct cycle-marks if fundamental is not given
+  // -removing all other partials (except at 100 and 10020) removes the "phase decoherence" issue
+  //  ->it's not actually the inharmonic partial itself, whose phase decoheres, but the influence
+  //  of all the other partials -> try multiple cycles per window (2 or 4) with windows that show
+  //  rolloff
 
 
-  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=2050_Amp1=0.3_Amp2=0.2", 44100, 5000);
+
+
+  //testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=2050_Amp1=0.3_Amp2=0.2", 44100, 5000);
   // hits assert because the zero freq partial has some nonzero phase values - how they do arise
   // during analysis? does the FFT produce them? yes - assert was commented
 

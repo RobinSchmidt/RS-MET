@@ -186,7 +186,9 @@ public:
   /** Returns the minimum frequency of this partial. */
   T getMaxFreq() const;
 
-
+  /** Returns the maximum absolute difference between phases that would be computed by numerically
+  integrating frequencies and actually stored phase values (always taking appropriate wrapping into
+  account). */
   T getMaxFreqPhaseInconsistency() const;
 
   /** Returns true, when this partial will alias at a given sample-rate. If "allTheTime" is true, 
@@ -195,6 +197,11 @@ public:
   partial will alias only temporarily, i.e. if its maximum frequency is higher than 
   sampleRate/2. */
   bool willAlias(T sampleRate, bool allTheTime = false) const;
+
+  /** Returns true, if the sample-instants (i.e. time-stamps of datapoints) of this partial are all
+  the same as the sample-instants of the given other partial. Currently, this checks for exact 
+  equality of all time-stamps - maybe allow for a tolerance later (optional, zero by default).  */
+  bool isSampledInSyncWith(const rsSinusoidalPartial<T>& otherPartial) const;
 
   /** Returns the number of data points in this partial */
   inline size_t getNumDataPoints() const { return instParams.size(); }
@@ -233,12 +240,22 @@ public:
   std::vector<T> getPhaseArray() const;
 
 
+
+
+
   /** Returns reference to given datapoint for manipulation (use with care) */
   rsInstantaneousSineParams<T>& getDataRef(int dataIndex)
   { 
     return instParams[dataIndex];
     // todo: range-check index value
   }
+
+  /** Returns a constant reference to given datapoint for inquiry. */
+  const rsInstantaneousSineParams<T>& getConstDataRef(int dataIndex) const
+  { 
+    return instParams[dataIndex];
+  }
+
 
 
   //rsInstantaneousSineParams<T> getInstantaneousParameters() const;
@@ -379,6 +396,8 @@ public:
     // todo: range-check index values
   }
 
+  /** Returns true, if all partials are sampled at the same time-instants. */
+  bool isSampledSynchronously();
 
 
 protected:

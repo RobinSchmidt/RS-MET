@@ -217,11 +217,18 @@ protected:
   rsCycleMarkFinder<T> cycleFinder;
 
 
-  int blockSize = 0;    // FFT block size
+  int blockSize = 0;    // FFT block size 
+  // todo: we will need to distinguish between (target) cycleLength and blockSize when we allow 
+  // multi-cycle blocks and also between block-size and fft-size when we allow for zero-padding
+
+  // todo:
+  //int zeroPad   = 1;    // zero padding factor for FFT, power of 2
+  //int numCycles = 1;    // number of cycles per block/window, power of 2
+  //int window = rectangular;  //
 
   bool antiAlias   = false;
 
-  //bool freqReAssignment = false;
+  //bool freqReAssignment = false;   // doesn't seem to make sense, uses up phase information
   bool freqsByPhaseDerivative = false;
   bool freqsPhaseConsistent = false;
 

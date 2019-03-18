@@ -181,13 +181,14 @@ std::vector<T> rsSinusoidalSynthesizer<T>::phasesViaTweakedIntegral(
   //std::vector<T> upd = unwrapPhase(td, fd, wpd);
   std::vector<T> upd = rsSinusoidalProcessor<T>::unwrapPhase(td, fd, wpd);
 
-  
-
   bool cubicPhase = true; // was user parameter - but linear phase interpolation makes no sense
+  //cubicPhase = false;     // test
   if(cubicPhase) 
     rsNaturalCubicSpline(&td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
   else           
     rsInterpolateLinear( &td[0], &upd[0], (int)M, &t[0], &p[0], (int)N);
+
+  //rsPlotVector(rsDifference(p));
 
   return p;
 }

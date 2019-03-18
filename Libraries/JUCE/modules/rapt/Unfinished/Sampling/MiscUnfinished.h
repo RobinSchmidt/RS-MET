@@ -230,8 +230,15 @@ public:
   /** Sets the sample-rate of the signal to be analyzed. */
   inline void setSampleRate(T newSampleRate) { fs = newSampleRate; }
 
+  /** Sets the fundamental frequency of the signal to be analyzed. If this is set to zero, the 
+  object will try to detect it. This frequency is used to tune the bandpass in the 
+  f0-zero-crossings algorithm and to set correlation lengths in the autocorrelation based 
+  algorithms. */
+  inline void setFundamental(T newFundamental) { fundamental = newFundamental; }
+
   /** Sets the expected range for the fundamental frequency. This sets some thresholds in the
-  algorithm. */
+  algorithm. Only relevant, if the fundamental is to be auto-detected, i.e. not set explicitly via
+  setFundamental. ..verify, if this is true, or if the values are also used elsewhere.... */
   inline void setFundamentalRange(T newMin, T newMax)
   {
     fMin = newMin;

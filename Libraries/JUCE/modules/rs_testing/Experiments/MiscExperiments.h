@@ -13,7 +13,7 @@ cycle-marks
 todo: maybe also optionally plot the model..maybe use thickness and/or color of the lines to 
 indicate the amplitude of the partials */
 void testHarmonicResynthesis(const std::string& name, std::vector<double>& input, 
-  double fs, bool writeWaveFiles = true, bool plotResults = false);
+  double fs, double f0 = 0, bool writeWaveFiles = true, bool plotResults = false);
 
 /** Convenience function to produce a vector x from the array xIn of length N and a vector y from 
 the model in such a way that they are time aligned even in cases when the lengths dont match by 
