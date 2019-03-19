@@ -59,8 +59,12 @@ public:
   // anyway? -> more experiments needed
 
   /** Modifies the instantaneous phase values such that they are all equal to what the numrical 
-  integration (via trapezoidal rule) of the instantaneous frequency values would give. */
-  static void makePhasesConsistentWithFreqs(rsSinusoidalPartial<T>& partial);
+  integration (via trapezoidal rule) of the instantaneous frequency values would give. You must
+  also pass an index at which the phase value should remain unchanged - all other phases will be 
+  adjusted with respect to the anchor point. It's typically a good idea to choose and index from
+  the middle of the sample, where there's no transient stuff going on or the sample has faded out
+  already. */
+  static void makePhasesConsistentWithFreqs(rsSinusoidalPartial<T>& partial, int referenceIndex);
 
 
 

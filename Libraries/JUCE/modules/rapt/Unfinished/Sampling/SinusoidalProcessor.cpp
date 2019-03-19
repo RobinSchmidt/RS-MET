@@ -142,14 +142,13 @@ void rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(rsSinusoidalPartial
 }
 
 template<class T>
-void rsSinusoidalProcessor<T>::makePhasesConsistentWithFreqs(rsSinusoidalPartial<T>& partial)
+void rsSinusoidalProcessor<T>::makePhasesConsistentWithFreqs(
+  rsSinusoidalPartial<T>& partial, int iRef)
 {
   typedef rsInstantaneousSineParams<T> Params;
-  int iRef = 0; // reference index - datapoint index from which we obtain the reference phase values
-  int i;
 
   // adjust datapoints after reference index:
-  for(i = iRef; i < (int) partial.getNumDataPoints()-1; i++) {
+  for(int i = iRef; i < (int) partial.getNumDataPoints()-1; i++) {
     Params& dl = partial.getDataPointRef(i);        // left datapoint
     Params& dr = partial.getDataPointRef(i+1);      // right datapoint
     T fa = T(0.5) * (dl.freq + dr.freq);            // average frequency of segment
@@ -159,7 +158,7 @@ void rsSinusoidalProcessor<T>::makePhasesConsistentWithFreqs(rsSinusoidalPartial
   }
 
   // adjust datapoints before reference index:
-  for(i = iRef; i > 0; i--) {
+  for(int i = iRef; i > 0; i--) {
     Params& dr = partial.getDataPointRef(i);        // right datapoint
     Params& dl = partial.getDataPointRef(i-1);      // left datapoint
     T fa = T(0.5) * (dl.freq + dr.freq);            // average frequency of segment
@@ -203,7 +202,7 @@ void rsSinusoidalProcessor<T>::fixPartialFrequency(rsSinusoidalPartial<T>& p, T 
 {
   for(int i = 0; i < p.getNumDataPoints(); i++)
     p.setFrequency(i, f);
-  makePhasesConsistentWithFreqs(p);
+  makePhasesConsistentWithFreqs(p, (int) p.getNumDataPoints()/2); // use middle index for reference
 }
 
 template<class T>
@@ -216,5 +215,5 @@ void rsSinusoidalProcessor<T>::makeStrictlyHarmonic(rsSinusoidalModel<T>& mdl, T
     // maybe we should somehow take care to make it work, even if there's a DC component
   }
   // todo: maybe allow for an inharmonicity factor - use the formula for piano-string  
-  // inharmoncity/string-stiffness) - if zero (the default), the spectrum is strictly harmnoic
+  // inharmoncity/string-stiffness) - if zero (the default), the spectrum is strictly harmonic
 }
