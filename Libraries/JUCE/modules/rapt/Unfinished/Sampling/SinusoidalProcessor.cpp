@@ -150,9 +150,8 @@ void rsSinusoidalProcessor<T>::makePhasesConsistentWithFreqs(rsSinusoidalPartial
     Params& d1 = partial.getDataPointRef(i);        // right datapoint
     T fa = T(0.5) * (d0.freq + d1.freq);            // average frequency of segment
     T dt = d1.time - d0.time;                       // time length of segment
-    T p1 = d1.phase + T(2*PI)*fa*dt;                // computed new phase
+    T p1 = d0.phase + T(2*PI)*fa*dt;                // computed new phase
     d1.phase = rsWrapToInterval(p1, -T(PI), T(PI)); // wrap and store new phase
-    int dummy = 0;
   }
 }
 

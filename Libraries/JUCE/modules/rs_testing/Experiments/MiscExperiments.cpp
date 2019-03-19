@@ -134,8 +134,10 @@ void testMakeHarmonic(const std::string& name, std::vector<double>& input,
   // plotSineModel(mdl, fs); // move to rapt
 
   // process model data:
-  mdl.removePartial(0);
+  mdl.removePartial(0); 
+  //mdl.keepOnly({ 0 });  // for test
   rsSinusoidalProcessor<double>::makeStrictlyHarmonic(mdl, f0Out);
+
 
   // (re)synthesize:
   typedef RAPT::rsSinusoidalSynthesizer<double> SS;
@@ -143,7 +145,8 @@ void testMakeHarmonic(const std::string& name, std::vector<double>& input,
   SS synth;
   synth.setSampleRate(fs);
   synth.setCubicAmplitudeInterpolation(true);
-  synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
+  //synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
+  synth.setPhaseInterpolation(PIM::cubicHermite);
   std::vector<double> output = synth.synthesize(mdl);
 
   std::string name2 = name + "Harmonic" + std::to_string(f0Out) + "Hz.wav";
