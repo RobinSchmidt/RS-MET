@@ -147,8 +147,12 @@ inline T rsSecondsToBeats(T timeInSeconds, T bpm)
 piano string, for the given harmonic number. The parameter stiffness parameter controls the amount
 of inharmonicity. At zero, the ratio is strictly harmonic, i.e. an integer.  
 References:
+The Physics of Musical Instruments, 2nd Edition, Eq. 2.67a (p.64)
+ see also 2.67b (p.65), Eq. 12.5 (p.363) ...maybe that last one is better - it normalizes the 
+ fundamental back to 1 (i think)
 http://www.simonhendry.co.uk/wp/wp-content/uploads/2012/08/inharmonicity.pdf  Eq.10
-http://www.jbsand.dk/div/StivStreng.pdf  */
+http://www.jbsand.dk/div/StivStreng.pdf  
+*/
 template<class T>
 inline T rsStiffStringFreqRatio(T harmonicNumber, T stiffness)
 {
@@ -156,6 +160,9 @@ inline T rsStiffStringFreqRatio(T harmonicNumber, T stiffness)
   T B = stiffness;
   return n*sqrt(1+B*n*n);
 }
+// todo: maybe implement formula 24 from http://www.jbsand.dk/div/StivStreng.pdf - fix the 1st
+// partial at 1 and let the user set the frequency of the 2nd partial - all other partial 
+// frequencies follow from these choices
 
 /** Converts a time-constant (typically denoted as "tau") of an exponential decay function to
 the time-instant at which the decay reaches the given level in decibels. For example
