@@ -149,6 +149,12 @@ void testMakeHarmonic(const std::string& name, std::vector<double>& input,
   synth.setPhaseInterpolation(PIM::cubicHermite);
   std::vector<double> output = synth.synthesize(mdl);
 
+  // due to new phase-relationships, the maximum output amplitude may be different from the 
+  // original sound - renormalize:
+  rsArray::normalize(&output[0], (int) output.size(), 1.0);
+  // todo: avoid messing up the phase-relationships by taking the reference phase from the middle
+  // of the signal rather thatn from the beginning
+
   std::string name2 = name + "Harmonic" + std::to_string(f0Out) + "Hz.wav";
   rosic::writeToMonoWaveFile(name2.c_str(), &output[0], (int) output.size(), (int)fs);
 }

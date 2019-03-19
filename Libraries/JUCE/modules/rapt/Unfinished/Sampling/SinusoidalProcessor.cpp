@@ -145,13 +145,27 @@ template<class T>
 void rsSinusoidalProcessor<T>::makePhasesConsistentWithFreqs(rsSinusoidalPartial<T>& partial)
 {
   typedef rsInstantaneousSineParams<T> Params;
-  for(size_t i = 1; i < partial.getNumDataPoints(); i++) {
-    Params& d0 = partial.getDataPointRef(i-1);      // left datapoint
-    Params& d1 = partial.getDataPointRef(i);        // right datapoint
-    T fa = T(0.5) * (d0.freq + d1.freq);            // average frequency of segment
-    T dt = d1.time - d0.time;                       // time length of segment
-    T p1 = d0.phase + T(2*PI)*fa*dt;                // computed new phase
-    d1.phase = rsWrapToInterval(p1, -T(PI), T(PI)); // wrap and store new phase
+  int iRef = 0; // reference index - datapoint index from which we obtain the reference phase values
+  int i;
+
+  // adjust datapoints after reference index:
+  for(i = iRef; i < (int) partial.getNumDataPoints()-1; i++) {
+    Params& dl = partial.getDataPointRef(i);        // left datapoint
+    Params& dr = partial.getDataPointRef(i+1);      // right datapoint
+    T fa = T(0.5) * (dl.freq + dr.freq);            // average frequency of segment
+    T dt = dr.time - dl.time;                       // time length of segment
+    T pn = dl.phase + T(2*PI)*fa*dt;                // computed new phase
+    dr.phase = rsWrapToInterval(pn, -T(PI), T(PI)); // wrap and store new phase at right datapoint
+  }
+
+  // adjust datapoints before reference index:
+  for(i = iRef; i > 0; i--) {
+    Params& dr = partial.getDataPointRef(i);        // right datapoint
+    Params& dl = partial.getDataPointRef(i-1);      // left datapoint
+    T fa = T(0.5) * (dl.freq + dr.freq);            // average frequency of segment
+    T dt = dr.time - dl.time;                       // time length of segment
+    T pn = dr.phase - T(2*PI)*fa*dt;                // computed new phase
+    dl.phase = rsWrapToInterval(pn, -T(PI), T(PI)); // wrap and store new phase at left datapoint
   }
 }
 
