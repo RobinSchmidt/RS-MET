@@ -13,7 +13,20 @@ cycle-marks
 todo: maybe also optionally plot the model..maybe use thickness and/or color of the lines to 
 indicate the amplitude of the partials */
 void testHarmonicResynthesis(const std::string& name, std::vector<double>& input, 
-  double fs, double f0 = 0, bool writeWaveFiles = true, bool plotResults = false);
+  double sampleRate, double fundamental = 0, bool writeWaveFiles = true, bool plotResults = false);
+
+
+void testMakeHarmonic(const std::string& name, std::vector<double>& input, 
+  double sampleRate, double targetFundamental, double originalFundamental = 0);
+
+// maybe make a class rsWaveFileBuffer that has fields "name", "sampleData" "sampleRate" and maybe 
+// some metadata - to avoid having to pass so many saparate function parameters.
+
+// maybe make a class rsSinusoidalModelEffect that wraps the analyzer, a chain of processors and 
+// synthesizer into a single, convenient object - this class could then accept rsWaveFileBuffer
+// objects as input for processing
+// maybe we should have separate (base)classes for processing the model data and for processing
+// the interpolated instantaneous phase- and amplitude trajectories
 
 /** Convenience function to produce a vector x from the array xIn of length N and a vector y from 
 the model in such a way that they are time aligned even in cases when the lengths dont match by 

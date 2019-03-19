@@ -63,6 +63,14 @@ public:
 
   static void refineFreqsViaPhaseDerivative(rsSinusoidalModel<T>& model);
 
+  /** Sets the frequencies of all partials in the given model to exact integer multiples of the
+  given fundamental frequency (at all time-instants) and adjusts the phase values to be consistent
+  with the integrated frequency values. */
+  static void makeStrictlyHarmonic(rsSinusoidalModel<T>& model, T fundamentalFreq);
+
+
+
+
 
 
   // virtual void processModelData

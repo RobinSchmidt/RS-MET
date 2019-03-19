@@ -23,7 +23,7 @@ std::vector<double> synthesizeSinusoidal(
 void testHarmonicResynthesis(const std::string& name, std::vector<double>& input, 
   double fs, double f0, bool writeWaveFiles, bool plotResults)
 {
-  // analyze, resynthesize and create error signal:
+  // analyze, resynthesize and create resiudal signal:
 
 
   // Analysis:
@@ -116,6 +116,38 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     plt.setPixelSize(1000, 300);
     plt.plot();
   }
+}
+
+void testMakeHarmonic(const std::string& name, std::vector<double>& input,
+  double fs, double f0Out, double f0In)
+{
+  //double* x = &input[0];   // pointer to first sample (for convenience)
+  //int Nx = (int) input.size();
+
+  // analyze:
+  RAPT::rsHarmonicAnalyzer<double> analyzer;
+  analyzer.setSampleRate(fs);
+  analyzer.setSincInterpolationLength(64);
+  analyzer.getCycleFinder().setFundamental(f0In);
+  RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&input[0], (int) input.size());
+
+  // plotSineModel(mdl, fs); // move to rapt
+
+  // process model data:
+  mdl.removePartial(0);
+  rsSinusoidalProcessor<double>::makeStrictlyHarmonic(mdl, f0Out);
+
+  // (re)synthesize:
+  typedef RAPT::rsSinusoidalSynthesizer<double> SS;
+  typedef SS::PhaseInterpolationMethod PIM;
+  SS synth;
+  synth.setSampleRate(fs);
+  synth.setCubicAmplitudeInterpolation(true);
+  synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
+  std::vector<double> output = synth.synthesize(mdl);
+
+  std::string name2 = name + "Harmonic" + std::to_string(f0Out) + "Hz.wav";
+  rosic::writeToMonoWaveFile(name2.c_str(), &output[0], (int) output.size(), (int)fs);
 }
 
 void getPaddedSignals(double* xIn, int Nx, 

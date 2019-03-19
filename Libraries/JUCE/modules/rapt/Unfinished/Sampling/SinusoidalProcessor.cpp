@@ -169,3 +169,11 @@ void rsSinusoidalProcessor<T>::refineFreqsViaPhaseDerivative(rsSinusoidalModel<T
   for(size_t i = 0; i < mdl.getNumPartials(); i++)
     refineFreqsViaPhaseDerivative(mdl.getModifiablePartialRef(i));
 }
+
+template<class T>
+void rsSinusoidalProcessor<T>::makeStrictlyHarmonic(rsSinusoidalModel<T>& mdl, T f0)
+{
+
+
+  int dummy = 0;
+}

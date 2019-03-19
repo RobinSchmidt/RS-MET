@@ -222,3 +222,4 @@ template class RAPT::rsSinusoidalModel<double>;
 template class RAPT::rsSinusoidalSynthesizer<double>;
 //template class RAPT::rsSinusoidalAnalyzer<double>;
 template class RAPT::rsHarmonicAnalyzer<double>;
+template class RAPT::rsSinusoidalProcessor<double>;
