@@ -58,10 +58,25 @@ public:
   // end-condition / additional equation is a bad choice? or maybe the whole thing is a bad idea
   // anyway? -> more experiments needed
 
+  /** Modifies the instantaneous phase values such that they are all equal to what the numrical 
+  integration (via trapezoidal rule) of the instantaneous frequency values would give. */
+  static void makePhasesConsistentWithFreqs(rsSinusoidalPartial<T>& partial);
+
+
 
   static void refineFreqsViaPhaseDerivative(rsSinusoidalPartial<T>& partial);
 
   static void refineFreqsViaPhaseDerivative(rsSinusoidalModel<T>& model);
+
+
+
+
+
+  /** Sets all instantaneous frequency values of the given partial to a fixed value and also 
+  updates the instantaneous phase values to be consistent with the new frequencies. 
+  todo: maybe make the phase re-adjustment optional...or maybe not - maybe it makes no sense to
+  leave the phases as is anyway... */
+  static void fixPartialFrequency(rsSinusoidalPartial<T>& partial, T freq);
 
   /** Sets the frequencies of all partials in the given model to exact integer multiples of the
   given fundamental frequency (at all time-instants) and adjusts the phase values to be consistent

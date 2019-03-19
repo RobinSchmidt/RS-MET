@@ -142,6 +142,12 @@ void rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(rsSinusoidalPartial
 }
 
 template<class T>
+void rsSinusoidalProcessor<T>::makePhasesConsistentWithFreqs(rsSinusoidalPartial<T>& partial)
+{
+
+}
+
+template<class T>
 void rsSinusoidalProcessor<T>::refineFreqsViaPhaseDerivative(rsSinusoidalPartial<T>& partial)
 {
   // retrieve original data:
@@ -170,10 +176,23 @@ void rsSinusoidalProcessor<T>::refineFreqsViaPhaseDerivative(rsSinusoidalModel<T
     refineFreqsViaPhaseDerivative(mdl.getModifiablePartialRef(i));
 }
 
+
+
+template<class T>
+void rsSinusoidalProcessor<T>::fixPartialFrequency(rsSinusoidalPartial<T>& p, T f)
+{
+  for(int i = 0; i < p.getNumDataPoints(); i++)
+    p.setFrequency(i, f);
+  makePhasesConsistentWithFreqs(p);
+}
+
 template<class T>
 void rsSinusoidalProcessor<T>::makeStrictlyHarmonic(rsSinusoidalModel<T>& mdl, T f0)
 {
-
-
-  int dummy = 0;
+  for(size_t i = 0; i < mdl.getNumPartials(); i++) 
+  {
+    rsSinusoidalPartial<T>& p = mdl.getModifiablePartialRef(i);
+    fixPartialFrequency(p, (i+1)*f0);
+    // maybe we should somehow take care to make it work, even if there's a DC component
+  }
 }
