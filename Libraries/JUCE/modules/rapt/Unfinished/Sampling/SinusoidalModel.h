@@ -338,6 +338,9 @@ public:
     rsRemoveRange(partials, maxIndexToRetain+1, partials.size()-1); 
   }
 
+  /** Removes all partials that have a mean frequency greater than the given threshold. */
+  void removePartialsWithMeanFreqAbove(T freq);
+
 
   /** Sets the data for the given partial- and data-point index. */
   void setData(int partialIndex, int dataIndex, T time, T freq, T gain, T phase)

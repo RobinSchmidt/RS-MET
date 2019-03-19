@@ -8,6 +8,10 @@ model data itself and second, you can modify the (interpolated) trajectories for
 amplitude and phase. The first process operates at whatever (in general non-uniform) rate the
 data of the model happens to be defined and the second process operates at the target sample-rate. 
 
+todo: maybe it's better to make two different baseclasses for these two types of processes - maybe
+we should have a sort of facade class that encapsulates the analyzer(s), the synthesizer(s), a 
+chain of data processors and a chain of trajectory processors
+
 The baseclass also defines a couple of static functions that fullfill basic processing tasks that 
 are required already in the analysis stage but don't really fit there very well because they may
 be useful in other contexts as well. */
@@ -85,7 +89,8 @@ public:
   /** Sets the frequencies of all partials in the given model to exact integer multiples of the
   given fundamental frequency (at all time-instants) and adjusts the phase values to be consistent
   with the integrated frequency values. */
-  static void makeStrictlyHarmonic(rsSinusoidalModel<T>& model, T fundamentalFreq);
+  static void makeStrictlyHarmonic(rsSinusoidalModel<T>& model, T fundamentalFreq, 
+    T inharmonicity);
 
 
 

@@ -17,7 +17,8 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
 
 
 void testMakeHarmonic(const std::string& name, std::vector<double>& input, 
-  double sampleRate, double targetFundamental, double originalFundamental = 0);
+  double sampleRate, double targetFundamental, double inharmonicity = 0, 
+  double originalFundamental = 0);
 
 // maybe make a class rsWaveFileBuffer that has fields "name", "sampleData" "sampleRate" and maybe 
 // some metadata - to avoid having to pass so many saparate function parameters.

@@ -119,7 +119,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
 }
 
 void testMakeHarmonic(const std::string& name, std::vector<double>& input,
-  double fs, double f0Out, double f0In)
+  double fs, double f0Out, double inharmonicity,  double f0In)
 {
   //double* x = &input[0];   // pointer to first sample (for convenience)
   //int Nx = (int) input.size();
@@ -136,8 +136,8 @@ void testMakeHarmonic(const std::string& name, std::vector<double>& input,
   // process model data:
   mdl.removePartial(0); 
   //mdl.keepOnly({ 0 });  // for test
-  rsSinusoidalProcessor<double>::makeStrictlyHarmonic(mdl, f0Out);
-
+  rsSinusoidalProcessor<double>::makeStrictlyHarmonic(mdl, f0Out, inharmonicity);
+  mdl.removePartialsWithMeanFreqAbove(fs/2); // anti-alias - maybe use min- insetad of mean-freq to be safe...
 
   // (re)synthesize:
   typedef RAPT::rsSinusoidalSynthesizer<double> SS;
@@ -151,11 +151,16 @@ void testMakeHarmonic(const std::string& name, std::vector<double>& input,
 
   // due to new phase-relationships, the maximum output amplitude may be different from the 
   // original sound - renormalize:
-  //rsArray::normalize(&output[0], (int) output.size(), 1.0);
+  rsArray::normalize(&output[0], (int) output.size(), 1.0);
   // todo: avoid messing up the phase-relationships by taking the reference phase from the middle
   // of the signal rather thatn from the beginning
 
-  std::string name2 = name + "Harmonic" + std::to_string(f0Out) + "Hz.wav";
+  std::string name2 = name + "_F=" + std::to_string((int)f0Out) + "Hz";
+  if(inharmonicity != 0)
+    name2 += "_B=" + std::to_string(inharmonicity);
+  name2 += ".wav";
+  // the formatting of floating point numbers std::to_string sucks -> write a better rsToString 
+  // function
   rosic::writeToMonoWaveFile(name2.c_str(), &output[0], (int) output.size(), (int)fs);
 }
 

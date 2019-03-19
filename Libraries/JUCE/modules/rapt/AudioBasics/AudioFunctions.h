@@ -143,6 +143,20 @@ inline T rsSecondsToBeats(T timeInSeconds, T bpm)
   return timeInSeconds * (bpm/60.0);
 }
 
+/** Returns the frequency ratio (with respect to the fundamental) of a stiff string, such as a 
+piano string, for the given harmonic number. The parameter stiffness parameter controls the amount
+of inharmonicity. At zero, the ratio is strictly harmonic, i.e. an integer.  
+References:
+http://www.simonhendry.co.uk/wp/wp-content/uploads/2012/08/inharmonicity.pdf  Eq.10
+http://www.jbsand.dk/div/StivStreng.pdf  */
+template<class T>
+inline T rsStiffStringFreqRatio(T harmonicNumber, T stiffness)
+{
+  T n = harmonicNumber;
+  T B = stiffness;
+  return n*sqrt(1+B*n*n);
+}
+
 /** Converts a time-constant (typically denoted as "tau") of an exponential decay function to
 the time-instant at which the decay reaches the given level in decibels. For example
 tauToDecayTime(tau, -60.0) returns the time required to fall to -60 dB for the given value of

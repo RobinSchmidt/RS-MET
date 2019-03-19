@@ -97,6 +97,7 @@ void rsModalFrequencyGenerator::idealBar(double* r, int N)
 
 void rsModalFrequencyGenerator::stiffString(double* r, int N, double B)
 {
+  // todo: use RAPT::rsStiffStringFreqRatio
   for(int i = 0; i < N; i++) {
     double n = double(i+1);
     r[i] = n*sqrt(1+B*n*n);

@@ -283,6 +283,14 @@ std::vector<T> rsSinusoidalPartial<T>::getPhaseArray() const
 //=================================================================================================
 
 template<class T>
+void rsSinusoidalModel<T>::removePartialsWithMeanFreqAbove(T freq)
+{
+  for(int i = (int)partials.size()-1; i >= 0; i--)
+    if(partials[i].getMeanFreq() > freq)
+      removePartial(i);
+}
+
+template<class T>
 void rsSinusoidalModel<T>::init(int numPartials, int numFrames)
 {
   partials.clear();
@@ -292,7 +300,6 @@ void rsSinusoidalModel<T>::init(int numPartials, int numFrames)
       partials[i].init(numFrames);
   }
 }
-
 
 template<class T>
 void rsSinusoidalModel<T>::makeFreqsConsistentWithPhases()

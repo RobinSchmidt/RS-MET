@@ -206,12 +206,13 @@ void rsSinusoidalProcessor<T>::fixPartialFrequency(rsSinusoidalPartial<T>& p, T 
 }
 
 template<class T>
-void rsSinusoidalProcessor<T>::makeStrictlyHarmonic(rsSinusoidalModel<T>& mdl, T f0)
+void rsSinusoidalProcessor<T>::makeStrictlyHarmonic(rsSinusoidalModel<T>& mdl, T f0, T B)
 {
-  for(size_t i = 0; i < mdl.getNumPartials(); i++) 
-  {
+  for(size_t i = 0; i < mdl.getNumPartials(); i++) {
     rsSinusoidalPartial<T>& p = mdl.getModifiablePartialRef(i);
-    fixPartialFrequency(p, (i+1)*f0);
+    T f = f0 * rsStiffStringFreqRatio(T(i+1), B);
+    fixPartialFrequency(p, f);
+    //fixPartialFrequency(p, (i+1)*f0);  // old
     // maybe we should somehow take care to make it work, even if there's a DC component
   }
   // todo: maybe allow for an inharmonicity factor - use the formula for piano-string  
