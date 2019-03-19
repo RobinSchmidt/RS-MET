@@ -207,8 +207,14 @@ public:
   inline size_t getNumDataPoints() const { return instParams.size(); }
 
 
-  /** Returns the data point at given index. */
+  /** Returns a copy of the data point at given index. */
   inline rsInstantaneousSineParams<T> getDataPoint(size_t index) const 
+  { 
+    return instParams[index]; 
+  }
+
+  /** Returns a reference to the data point at given index. */
+  inline rsInstantaneousSineParams<T>& getDataPointRef(size_t index)
   { 
     return instParams[index]; 
   }

@@ -144,7 +144,16 @@ void rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(rsSinusoidalPartial
 template<class T>
 void rsSinusoidalProcessor<T>::makePhasesConsistentWithFreqs(rsSinusoidalPartial<T>& partial)
 {
-
+  typedef rsInstantaneousSineParams<T> Params;
+  for(size_t i = 1; i < partial.getNumDataPoints(); i++) {
+    Params& d0 = partial.getDataPointRef(i-1);      // left datapoint
+    Params& d1 = partial.getDataPointRef(i);        // right datapoint
+    T fa = T(0.5) * (d0.freq + d1.freq);            // average frequency of segment
+    T dt = d1.time - d0.time;                       // time length of segment
+    T p1 = d1.phase + T(2*PI)*fa*dt;                // computed new phase
+    d1.phase = rsWrapToInterval(p1, -T(PI), T(PI)); // wrap and store new phase
+    int dummy = 0;
+  }
 }
 
 template<class T>
@@ -176,8 +185,6 @@ void rsSinusoidalProcessor<T>::refineFreqsViaPhaseDerivative(rsSinusoidalModel<T
     refineFreqsViaPhaseDerivative(mdl.getModifiablePartialRef(i));
 }
 
-
-
 template<class T>
 void rsSinusoidalProcessor<T>::fixPartialFrequency(rsSinusoidalPartial<T>& p, T f)
 {
@@ -195,4 +202,6 @@ void rsSinusoidalProcessor<T>::makeStrictlyHarmonic(rsSinusoidalModel<T>& mdl, T
     fixPartialFrequency(p, (i+1)*f0);
     // maybe we should somehow take care to make it work, even if there's a DC component
   }
+  // todo: maybe allow for an inharmonicity factor - use the formula for piano-string  
+  // inharmoncity/string-stiffness) - if zero (the default), the spectrum is strictly harmnoic
 }
