@@ -68,20 +68,10 @@ S = sum_{i=1}^P s_i + sum_{i=0}^{Q-P} c_i exp(-j*w*i)
 where the s_i are the gains of the individual stages. If H(z) contains a pole or order m, the 
 gain...
   
-  
-  
 maybe for a realtime implementation, it's more convenient to pass x[n] and dt[n] instead of t[n]
 because t[n] may get arbitrarily large. 
  
  
- 
- 
- 
-
-
-
-
-
 other links:
 http://ljk.imag.fr/membres/Brigitte.Bidegaray/Sources/FB10.pdf
 http://www.wseas.us/e-library/conferences/2007istanbul/papers/557-248.pdf

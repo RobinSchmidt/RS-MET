@@ -10,6 +10,7 @@
 #include "FilterDesign/PoleZeroDesignerAnalog.h"
 #include "FilterDesign/PoleZeroDesignerDigital.h"
 #include "FilterDesign/ComplementaryFilters.h"
+#include "FilterDesign/NonUniformFilter.h"
 
 #include "Probability.h"
 #include "Projection3Dto2D.h"

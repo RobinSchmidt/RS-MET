@@ -269,6 +269,9 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\ComplementaryFilters.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\NonUniformFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerAnalog.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2372,6 +2375,7 @@
     <ClInclude Include="..\..\Source\Shared\Plotting\Plotting.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\ComplementaryFilters.h"/>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\NonUniformFilter.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerAnalog.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerDigital.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroMapper.h"/>

@@ -490,6 +490,9 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\ComplementaryFilters.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\NonUniformFilter.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerAnalog.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
     </ClCompile>
@@ -2698,6 +2701,9 @@
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\ComplementaryFilters.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\NonUniformFilter.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerAnalog.h">

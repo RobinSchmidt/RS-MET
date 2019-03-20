@@ -522,6 +522,30 @@ void nonUniformMovingAverage()
   // gets averaged out better?
 }
 
+void nonUniformOnePole()
+{
+  int N = 100;
+
+  std::vector<double> t(N), x(N), y(N); // time-stamps, input- and output signal
+
+  typedef RAPT::rsArray AR;
+  t[0] = 0;  // time starts at zero, even in non-uniform setting
+  AR::fillWithRandomValues(&t[1], N-1, 0.5, 2.0, 0);
+  AR::cumulativeSum(&t[0], &t[0], N);
+  AR::fillWithImpulse(&x[0], N);
+  AR::fillWithZeros(&y[0], N);
+
+  // later try random vaues:
+  //AR::fillWithRandomValues(&x[0], N, -1.0, 1.0, 1);
+
+  rsNonUniformOnePole<double> flt;
+
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &t[0], &x[0], &y[0]);
+  plt.plot();
+}
+
 void smoothingFilterOrders()
 {
   // We plot the step responses of the rsSmoothingFilter for various orders.

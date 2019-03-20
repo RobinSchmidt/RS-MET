@@ -5,6 +5,7 @@
 #include "FilterDesign/PoleZeroDesignerAnalog.cpp"
 #include "FilterDesign/PoleZeroDesignerDigital.cpp"
 #include "FilterDesign/ComplementaryFilters.cpp"
+#include "FilterDesign/NonUniformFilter.cpp"
 
 #include "Probability.cpp"
 #include "Projection3Dto2D.cpp"

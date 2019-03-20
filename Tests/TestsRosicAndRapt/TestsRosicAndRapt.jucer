@@ -188,6 +188,10 @@
                   file="Source/Shared/Prototypes/FilterDesign/ComplementaryFilters.cpp"/>
             <FILE id="QdGFtd" name="ComplementaryFilters.h" compile="0" resource="0"
                   file="Source/Shared/Prototypes/FilterDesign/ComplementaryFilters.h"/>
+            <FILE id="NkGR34" name="NonUniformFilter.cpp" compile="0" resource="0"
+                  file="Source/Shared/Prototypes/FilterDesign/NonUniformFilter.cpp"/>
+            <FILE id="XKm8e1" name="NonUniformFilter.h" compile="0" resource="0"
+                  file="Source/Shared/Prototypes/FilterDesign/NonUniformFilter.h"/>
             <FILE id="JmP55w" name="PoleZeroDesignerAnalog.cpp" compile="0" resource="0"
                   file="Source/Shared/Prototypes/FilterDesign/PoleZeroDesignerAnalog.cpp"/>
             <FILE id="cYHXM9" name="PoleZeroDesignerAnalog.h" compile="0" resource="0"
