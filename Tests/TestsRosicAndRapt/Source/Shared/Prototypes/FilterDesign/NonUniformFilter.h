@@ -15,32 +15,26 @@ class rsNonUniformOnePole
 
 public:
 
+  rsNonUniformOnePole() { reset(); }
 
-  T getSample(T x, T dt)
-  {
-    T bdt = pow(b, dt);
+  void setOmega(T newOmega);
 
-    // update scaler:
-    s = a + bdt*s         //  Eq. 16, with w = 0
+  T getSample(T x, T dt);
 
-    // update state:
-    y = (a*x + bdt*y) / abs(s);   //  Eq. 13
-    // verify, if the scaler really has to be applied when updating the state or if it should be 
-    // applied only to the returned output
+  void reset();
 
-    // 
-    return y;
-  }
 
 protected:
 
 
-  T y;     // state/output
-  T a, b;  // coefficients
+  T y = 0;         // state/output
+  T a = 1, b = 0;  // coefficients
 
   T s = 1; // scaler
   //T p = 1; 
   //T q = 1; 
+
+  T w = 0;   // (normalized radian) cutoff frequency
 
   // we 
 };

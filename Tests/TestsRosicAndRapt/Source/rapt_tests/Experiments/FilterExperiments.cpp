@@ -539,11 +539,19 @@ void nonUniformOnePole()
   //AR::fillWithRandomValues(&x[0], N, -1.0, 1.0, 1);
 
   rsNonUniformOnePole<double> flt;
+  flt.setOmega(0.5);
+  int n;
+  //y[0] = filter.init(x[0]); // needs to somehow set the initial state where we do not yet have a dt
+  for(n = 1; n < N; n++)
+  {
+    y[n] = flt.getSample(x[n], t[n]-t[n-1]);
+  }
+  // this is not yet suppsoed to work - figure out how to set initial state
 
 
   GNUPlotter plt;
-  plt.addDataArrays(N, &t[0], &x[0], &y[0]);
-  plt.plot();
+  //plt.addDataArrays(N, &t[0], &x[0], &y[0]);
+  //plt.plot();
 }
 
 void smoothingFilterOrders()
