@@ -478,9 +478,6 @@
     <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\RaptLibraryCode</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Plotting\Plotting.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClCompile>
@@ -2548,6 +2545,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\DSPPlotters.cpp">
       <Filter>Juce Modules\rs_testing\TestTools</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\Plotting.cpp">
+      <Filter>Juce Modules\rs_testing\TestTools</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\rs_testing.cpp">
       <Filter>Juce Modules\rs_testing</Filter>
     </ClCompile>
@@ -2687,9 +2687,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.h">
       <Filter>TestsRosicAndRapt\Source\Shared\RaptLibraryCode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Plotting\Plotting.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
@@ -4948,6 +4945,9 @@
       <Filter>Juce Modules\rs_testing\Experiments</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\DSPPlotters.h">
+      <Filter>Juce Modules\rs_testing\TestTools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\Plotting.h">
       <Filter>Juce Modules\rs_testing\TestTools</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\rs_testing.h">

@@ -3,6 +3,22 @@
 
 #include "Plotting.h"
 
+//#include "rapt/rapt.h"
+
+using namespace RAPT;
+
+void createTimeAxis(int numSamples, float *timeAxis, float sampleRate)
+{
+  for(int n = 0; n < numSamples; n++)
+    timeAxis[n] = n / sampleRate;
+}
+
+void createTimeAxis(int numSamples, double *timeAxis, double sampleRate)
+{
+  for(int n = 0; n < numSamples; n++)
+    timeAxis[n] = n / sampleRate;
+}
+
 //void plotData(int N, float *x, float *y1, float *y2, float *y3, float *y4, float *y5)
 //{
 //  GNUPlotter plt;

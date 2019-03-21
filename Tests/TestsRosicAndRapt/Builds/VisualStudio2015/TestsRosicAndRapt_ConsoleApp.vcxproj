@@ -254,9 +254,6 @@
     <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Plotting\Plotting.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2317,6 +2314,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\DSPPlotters.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\Plotting.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\rs_testing.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2367,7 +2367,6 @@
     <ClInclude Include="..\..\Source\Shared\Utilities\TestInputCreation.h"/>
     <ClInclude Include="..\..\Source\Shared\Utilities\TestUtilities.h"/>
     <ClInclude Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.h"/>
-    <ClInclude Include="..\..\Source\Shared\Plotting\Plotting.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\ComplementaryFilters.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\NonUniformFilter.h"/>
@@ -3121,6 +3120,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Experiments\MiscExperiments.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\DSPPlotters.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\Plotting.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\rs_testing.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>

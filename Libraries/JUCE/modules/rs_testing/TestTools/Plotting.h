@@ -5,14 +5,25 @@
 //#include "DSPPlotters.h"
 using namespace std;  // try to get rid
 
+// why do we need these includes here?
+#include "rapt/rapt.h"
 #include "rosic/rosic.h"
 #include "rs_testing/rs_testing.h"
 
-#include "../Prototypes/SinusoidalModeling.h"
+//#include "../Prototypes/SinusoidalModeling.h"
+#include "../../../../Tests/TestsRosicAndRapt/Source/Shared/Prototypes/SinusoidalModeling.h" 
+// get rid - class should be moved to rapt
 
 ///** Plots at most five y-functions against a common x-axis. */
 //void plotData(int N, float *x, float *y1, float *y2 = nullptr, float *y3 = nullptr,
 //  float *y4 = nullptr, float *y5 = nullptr);
+
+
+
+/** Creates a time-axis (in seconds) given the sample-rate. */
+void createTimeAxis(int numSamples, float *timeAxis, float sampleRate);
+void createTimeAxis(int numSamples, double *timeAxis, double sampleRate);
+
 
 /** Returns N samples of the impulse response of the passed filter as std::vector. It is necessary
 for you to pass a scale factor of the type of the filter's output signal (for example: 1.0 for

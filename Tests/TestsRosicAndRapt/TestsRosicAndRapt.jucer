@@ -172,8 +172,6 @@
                 file="Source/Shared/RaptLibraryCode/RaptInstantiations.h"/>
         </GROUP>
         <GROUP id="{2FD6D867-5BCE-6EA7-AA7A-0B678FC2D479}" name="Plotting">
-          <FILE id="oLiZ6u" name="Plotting.cpp" compile="0" resource="0" file="Source/Shared/Plotting/Plotting.cpp"/>
-          <FILE id="MiC0Zk" name="Plotting.h" compile="0" resource="0" file="Source/Shared/Plotting/Plotting.h"/>
           <FILE id="HQfys9" name="rosic_Plotter.cpp" compile="0" resource="0"
                 file="Source/Shared/Plotting/rosic_Plotter.cpp"/>
           <FILE id="pVGgqG" name="rosic_Plotter.h" compile="0" resource="0" file="Source/Shared/Plotting/rosic_Plotter.h"/>

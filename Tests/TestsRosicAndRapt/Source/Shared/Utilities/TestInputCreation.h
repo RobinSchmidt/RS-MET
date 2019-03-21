@@ -3,10 +3,9 @@
 
 #include "../RaptLibraryCode/RaptInstantiations.h"
 
-/** Creates a time-axis (in seconds) given the sample-rate. */
-void createTimeAxis(int numSamples, float *timeAxis, float sampleRate);
-
-void createTimeAxis(int numSamples, double *timeAxis, double sampleRate);
+///** Creates a time-axis (in seconds) given the sample-rate. */
+//void createTimeAxis(int numSamples, float *timeAxis, float sampleRate);
+//void createTimeAxis(int numSamples, double *timeAxis, double sampleRate);
 
 //template<class T>
 inline std::vector<double> createSilence(int numSamples)

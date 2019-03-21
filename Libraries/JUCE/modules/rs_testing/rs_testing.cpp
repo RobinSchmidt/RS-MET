@@ -9,6 +9,7 @@ header files that the compiler may be using. */
 #include "rs_testing.h"
 
 #include "TestTools/DSPPlotters.cpp"
+#include "TestTools/Plotting.cpp"
 
 #include "Experiments/MiscExperiments.cpp"
 

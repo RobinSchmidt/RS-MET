@@ -42,7 +42,8 @@ inline T rsTriWave(T x)
 }
 
 //-------------------------------------------------------------------------------------------------
-
+/*
+moved to Plotting.cpp in rs_testting
 void createTimeAxis(int numSamples, float *timeAxis, float sampleRate)
 {
   for(int n = 0; n < numSamples; n++)
@@ -54,6 +55,7 @@ void createTimeAxis(int numSamples, double *timeAxis, double sampleRate)
   for(int n = 0; n < numSamples; n++)
     timeAxis[n] = n / sampleRate;
 }
+*/
 
 template<class T>
 void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, bool antiAlias)

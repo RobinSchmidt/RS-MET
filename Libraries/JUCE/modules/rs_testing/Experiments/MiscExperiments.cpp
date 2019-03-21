@@ -95,10 +95,10 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
 
 
   // move the required functions to rs_testing module
-  //// plot model data, if desired....
-  //bool plotModel = true;      // make user parameter
-  //if(plotModel == true)
-  //  plotSineModel(mdl, fs);
+  // plot model data, if desired....
+  bool plotModel = true;      // make user parameter
+  if(plotModel == true)
+    plotSineModel(mdl, fs);
 
 
   // plot original, resynthesized and error signals, if desired:

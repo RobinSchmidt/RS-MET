@@ -31,6 +31,7 @@
 
 
 #include "TestTools/DSPPlotters.h"
+#include "TestTools/Plotting.h"
 
 #include "Experiments/MiscExperiments.h"
 

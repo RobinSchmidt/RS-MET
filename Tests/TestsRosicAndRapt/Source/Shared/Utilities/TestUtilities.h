@@ -9,6 +9,7 @@
 // new:
 #include "../RaptLibraryCode/RaptInstantiations.h"
 #include "rosic/rosic.h"
+#include "rs_testing/rs_testing.h"
 
 //bool detectMemoryLeaks();  // currently works only in MSVC
 
