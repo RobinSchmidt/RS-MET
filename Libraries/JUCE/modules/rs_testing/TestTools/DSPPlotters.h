@@ -236,7 +236,7 @@ public:
   //GNUPlotter plt;
 
   void addModelToPlot(const RAPT::rsSinusoidalModel<T>& model, GNUPlotter& plt, 
-    const std::string& graphColor, T sampleRate);
+     T sampleRate, const std::string& graphColor);
 
   /** Plots the frequency tracks of a single sine model. */
   void plotModel(const RAPT::rsSinusoidalModel<T>& model, T sampleRate);
@@ -259,6 +259,10 @@ public:
   // rename to plotSineTracks - factor out addSineTrackData function
 
 protected:
+
+  /** Returns an RGB color string that should be used for the partial with given index in the given 
+  model. Partials are colored according to their strength. */
+  std::string getPartialColor(const RAPT::rsSinusoidalModel<T>& model, size_t partialIndex);
 
   int graphIndex = 1; 
   // counter for the graphs that have been added to a plot, needed to correctly set up the colors

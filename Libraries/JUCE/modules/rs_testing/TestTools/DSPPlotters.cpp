@@ -452,8 +452,8 @@ void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int
 
 template <class T>
 void SinusoidalModelPlotter<T>::addModelToPlot(
-  const RAPT::rsSinusoidalModel<T>& model, GNUPlotter& plt, const std::string& graphColor, 
-  T sampleRate)
+  const RAPT::rsSinusoidalModel<T>& model, GNUPlotter& plt,T sampleRate, 
+  const std::string& graphColor)
 {
   std::vector<float> t, f; // we plot frequency vs time
   for(size_t i = 0; i < model.getNumPartials(); i++) {
@@ -466,7 +466,14 @@ void SinusoidalModelPlotter<T>::addModelToPlot(
       f[j] = (float)p.getDataPoint(j).freq;
     }
     plt.addDataArrays((int)L, &t[0], &f[0]);
-    plt.setGraphColor(graphIndex, graphColor);
+
+    if(graphColor != "")
+      plt.setGraphColor(graphIndex, graphColor);
+    else
+      plt.setGraphColor(graphIndex, getPartialColor(model, i));
+
+    plt.setGraphStyles("lines lw 1.5");
+
     graphIndex++;
   }
   // maybe factor out an addPartialToPlot function - may become useful when we want to plot 
@@ -477,7 +484,7 @@ template <class T>
 void SinusoidalModelPlotter<T>::plotModel(const RAPT::rsSinusoidalModel<T>& model, T fs)
 {
   GNUPlotter plt;
-  addModelToPlot(model, plt, "000000", fs);
+  addModelToPlot(model, plt, fs, "000000");
   plt.plot();
 }
 
@@ -486,9 +493,16 @@ void SinusoidalModelPlotter<T>::plotTwoModels(
   const RAPT::rsSinusoidalModel<T>& model1, const RAPT::rsSinusoidalModel<T>& model2, T fs)
 {
   GNUPlotter plt;
-  addModelToPlot(model1, plt, "000000", fs);  // black
-  addModelToPlot(model2, plt, "0000FF", fs);  // blue
+  addModelToPlot(model1, plt, fs, "000000");  // black
+  addModelToPlot(model2, plt, fs, "0000FF");  // blue
   plt.plot();
+}
+
+template <class T>
+std::string SinusoidalModelPlotter<T>::getPartialColor(
+  const RAPT::rsSinusoidalModel<T>& mdl, size_t i)
+{
+  return "000000"; // preliminary
 }
 
 /*
