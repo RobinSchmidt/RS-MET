@@ -222,7 +222,7 @@ void stemPlot(int N, double *x, double *y)
 void plotSinusoidalAnalysisResult(SinusoidalAnalyzer<double>& sa, double* x, int N, double fs)
 {
   SinusoidalModelPlotter<double> plt;
-  plt.plotAnalysisResult(sa, x, N, fs);
+  //plt.plotAnalysisResult(sa, x, N, fs); // re-activate when SinusoidalAnalyzer is in rapt
 }
 
 void plotSineModel(const RAPT::rsSinusoidalModel<double>& model, double fs)

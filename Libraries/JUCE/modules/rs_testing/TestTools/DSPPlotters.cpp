@@ -491,6 +491,7 @@ void SinusoidalModelPlotter<T>::plotTwoModels(
   plt.plot();
 }
 
+/*
 template <class T>
 void SinusoidalModelPlotter<T>::plotAnalysisResult(SinusoidalAnalyzer<T>& sa, T* x, int N, T fs)
 {
@@ -524,6 +525,7 @@ void SinusoidalModelPlotter<T>::plotAnalysisResult(SinusoidalAnalyzer<T>& sa, T*
 
   plt.plot();
 }
+*/
 
 
 

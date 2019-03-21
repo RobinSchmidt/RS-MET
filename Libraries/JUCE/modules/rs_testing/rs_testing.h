@@ -29,6 +29,9 @@
 #include <rapt/rapt.h>
 #include <rosic/rosic.h>
 
+
+#include "TestTools/DSPPlotters.h"
+
 #include "Experiments/MiscExperiments.h"
 
 

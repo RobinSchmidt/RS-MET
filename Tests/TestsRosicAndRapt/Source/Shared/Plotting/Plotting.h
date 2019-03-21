@@ -2,11 +2,13 @@
 #define RAPT_PLOTTING_H
 
 //#include "GNUPlotter.h"
-#include "DSPPlotters.h"
+//#include "DSPPlotters.h"
 using namespace std;  // try to get rid
 
 #include "rosic/rosic.h"
 #include "rs_testing/rs_testing.h"
+
+#include "../Prototypes/SinusoidalModeling.h"
 
 ///** Plots at most five y-functions against a common x-axis. */
 //void plotData(int N, float *x, float *y1, float *y2 = nullptr, float *y3 = nullptr,

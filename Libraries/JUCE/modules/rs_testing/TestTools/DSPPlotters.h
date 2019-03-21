@@ -221,7 +221,7 @@ protected:
 
 /** A class for plotting the analysis results of the sinusoidal model */
 
-#include "../Prototypes/SinusoidalModeling.h" // should not be necessary - figure out why this is needed
+//#include "../Prototypes/SinusoidalModeling.h" // should not be necessary - figure out why this is needed
 
 template<class T>
 class SinusoidalModelPlotter : public SpectrogramPlotter<T>
@@ -251,7 +251,8 @@ public:
   // results with different parameter settings
 
 
-  void plotAnalysisResult(SinusoidalAnalyzer<T>& sa, T* sampleData, int N, T sampleRate);
+  //void plotAnalysisResult(SinusoidalAnalyzer<T>& sa, T* sampleData, int N, T sampleRate);
+  // re-activate when SinusoidalAnalyzer is moved into rapt
 
   // maybe have a setSampleRate function
 

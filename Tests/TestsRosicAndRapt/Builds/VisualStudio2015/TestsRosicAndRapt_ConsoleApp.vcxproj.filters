@@ -347,6 +347,9 @@
     <Filter Include="Juce Modules\rs_testing\Experiments">
       <UniqueIdentifier>{8E0EFAA0-7595-EE57-A440-AE3ED92B18CB}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rs_testing\TestTools">
+      <UniqueIdentifier>{A0227C60-C75E-D3DB-B342-7F6214C859D9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rs_testing">
       <UniqueIdentifier>{81E50E39-AB6B-E717-18AE-A9EFF2D08BBA}</UniqueIdentifier>
     </Filter>
@@ -474,12 +477,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\RaptLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Plotting\DSPPlotters.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Plotting\Plotting.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
@@ -2548,6 +2545,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Experiments\MiscExperiments.cpp">
       <Filter>Juce Modules\rs_testing\Experiments</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\DSPPlotters.cpp">
+      <Filter>Juce Modules\rs_testing\TestTools</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\rs_testing.cpp">
       <Filter>Juce Modules\rs_testing</Filter>
     </ClCompile>
@@ -2687,12 +2687,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.h">
       <Filter>TestsRosicAndRapt\Source\Shared\RaptLibraryCode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Plotting\DSPPlotters.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Plotting\GNUPlotter.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Plotting\Plotting.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
@@ -4952,6 +4946,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Experiments\MiscExperiments.h">
       <Filter>Juce Modules\rs_testing\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\DSPPlotters.h">
+      <Filter>Juce Modules\rs_testing\TestTools</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\rs_testing.h">
       <Filter>Juce Modules\rs_testing</Filter>

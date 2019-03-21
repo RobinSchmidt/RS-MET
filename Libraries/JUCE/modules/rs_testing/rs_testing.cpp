@@ -8,5 +8,13 @@ header files that the compiler may be using. */
 
 #include "rs_testing.h"
 
+#include "TestTools/DSPPlotters.cpp"
 
 #include "Experiments/MiscExperiments.cpp"
+
+// template instantaitions (mayb move somwhere else):
+
+#include "../rapt/rapt_templates.cpp"
+
+template struct RAPT::rsFilterSpecificationZPK<float>;
+template struct RAPT::rsFilterSpecificationBA<float>;
