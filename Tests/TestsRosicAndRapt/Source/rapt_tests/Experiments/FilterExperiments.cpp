@@ -529,13 +529,21 @@ void nonUniformOnePole()
   std::vector<double> t(N), x(N), y(N); // time-stamps, input- and output signal
 
   typedef RAPT::rsArray AR;
-  t[0] = 0;  // time starts at zero, even in non-uniform setting
-  AR::fillWithRandomValues(&t[1], N-1, 0.5, 2.0, 0);
-  AR::cumulativeSum(&t[0], &t[0], N);
+
+  // Tests:
+  // 1: compare to the output of a regular uniform one-pole - choose the time-stamps for the 
+  //    non-uniform to be equal to the sample-numbers - the non-uniform filter should match the 
+  //    output of the uniform one
+  // 2: look at the non-uniform impulse response - compare to analytic result
+
+
   AR::fillWithImpulse(&x[0], N);
   AR::fillWithZeros(&y[0], N);
 
   // later try random vaues:
+  t[0] = 0;  // time starts at zero, even in non-uniform setting
+  //AR::fillWithRandomValues(&t[1], N-1, 0.5, 2.0, 0);
+  //AR::cumulativeSum(&t[0], &t[0], N);
   //AR::fillWithRandomValues(&x[0], N, -1.0, 1.0, 1);
 
   rsNonUniformOnePole<double> flt;

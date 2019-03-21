@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
   //firstOrderFilters();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
-  nonUniformOnePole();
+  //nonUniformOnePole();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters

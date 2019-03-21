@@ -94,11 +94,12 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   }
 
 
-  // plot model data, if desired....
-  bool plotModel = true;
+  // move the required functions to rs_testing module
+  //// plot model data, if desired....
+  //bool plotModel = true;      // make user parameter
   //if(plotModel == true)
-    //plotSineModel(mdl, fs);
-  // 
+  //  plotSineModel(mdl, fs);
+
 
   // plot original, resynthesized and error signals, if desired:
   if(plotResults == true) {
@@ -139,6 +140,9 @@ void testMakeHarmonic(const std::string& name, std::vector<double>& input,
   rsSinusoidalProcessor<double>::makeStrictlyHarmonic(mdl, f0Out, inharmonicity);
   mdl.removePartialsWithMeanFreqAbove(fs/2); // anti-alias - maybe use min- insetad of mean-freq to be safe...
 
+
+  //plotSineModel(mdl, fs);
+
   // (re)synthesize:
   typedef RAPT::rsSinusoidalSynthesizer<double> SS;
   typedef SS::PhaseInterpolationMethod PIM;
@@ -152,8 +156,7 @@ void testMakeHarmonic(const std::string& name, std::vector<double>& input,
   // due to new phase-relationships, the maximum output amplitude may be different from the 
   // original sound - renormalize:
   rsArray::normalize(&output[0], (int) output.size(), 1.0);
-  // todo: avoid messing up the phase-relationships by taking the reference phase from the middle
-  // of the signal rather thatn from the beginning
+
 
   std::string name2 = name + "_F=" + std::to_string((int)f0Out) + "Hz";
   if(inharmonicity != 0)
