@@ -73,7 +73,18 @@ protected:
 -deadlock in the waveform display when destructor is called while resized has not yet returned
 -to reproduce it, create an instance inside some GUI, call SamplePlayerEditorDisplay::resized in 
 the GUIs resized method (and nothing thereafter), open the GUI in JUCEPluginHost
--perhaps we should implement drawComponent instead of overriding paint */
+-perhaps we should implement drawComponent instead of overriding paint 
+
+todo: 
+-let user select background and foreground individually:
+ -background: clear/spectrogram/phasogram
+ -foreground: clear/waveform/sine-model/f0-trajectory/amp-env
+-let user apply a chain of offline-processes to the sample
+-one of these offline processes is a sinusoidal analysis-transoformation-resynthesis process
+
+
+
+*/
 
 class SamplePlayerEditorDisplay	: virtual public WaveformDisplay, public ChangeBroadcaster
   //, virtual public InteractiveCoordinateSystem

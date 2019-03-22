@@ -45,6 +45,8 @@ void createSineWave(double *x, int N, double f, double a, double fs, double p = 
 
 std::vector<double> createSineWave(int N, double f, double fs, double a = 1, double p = 0); // convenience function
 
+void createSawWave(double *x, int N, double f, double fs, double a = 1, int numHarmonics = -1);
+
 
 
 /** Creates a sine-wave of length N (in samples) with an instantaneous frequency given by f at each 

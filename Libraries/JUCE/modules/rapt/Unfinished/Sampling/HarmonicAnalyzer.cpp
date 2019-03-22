@@ -314,7 +314,6 @@ T rsHarmonicAnalyzer<T>::getUnWarpedTimeStampForFrame(int m)
   return tIn[m] + T(0.5)*(tIn[m+1]-tIn[m]);
 }
 
-
 template<class T>
 void rsHarmonicAnalyzer<T>::fillHarmonicData(
   RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T time)
@@ -323,6 +322,11 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   prepareBuffer(sig, sigPadded);
   trafo.getRealSignalMagnitudesAndPhases(&sigPadded[0], &mag[0], &phs[0]);  // perform FFT
   //rsPlotVector(mag);
+  //if(frameIndex >= 10) {
+  //  rsPlotSpectrum(mag, sampleRate, T(-200));
+  //  //rsPlotVector(rsAmpToDb(mag, T(-200))); 
+  //}
+
 
   // extract model data from FFT result:
   int dataIndex   = frameIndex + 1;        // +1 because of the fade-in datapoint

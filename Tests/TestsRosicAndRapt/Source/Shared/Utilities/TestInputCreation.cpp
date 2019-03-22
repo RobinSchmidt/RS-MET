@@ -255,6 +255,19 @@ std::vector<double> createSineWave(int N, double f, double fs, double a, double 
   return x;
 }
 
+void createSawWave(double *x, int N, double f, double fs, double a, int numHarmonics)
+{
+  if(numHarmonics == -1)
+    numHarmonics = (int) ((fs/2)/f); 
+  double w = 2*PI*f/fs;
+  for(int k = 1; k <= numHarmonics; k++) {
+    double b = -2.f * a / (k*PI);
+    for(int n = 0; n < N; n++)
+      x[n] += b * sin(k*(w*n+PI));
+  }
+}
+
+
 std::vector<double> sineAndDeacyingInharmonic(int N, double f, double fs, double decay)
 {
   // two partial frequencies:
@@ -434,10 +447,27 @@ std::vector<double> createNamedSound(const std::string& s, double fs, int N)
     RAPT::rsArray::add(x, freq, x, N);                     // add the center freq
     createSineWave(x, N, x, 0.5, fs);                      // overwrite x by vibratoed sinewave
   }
+  else if(startsWith(s, "TremoloSine")) { 
+    double freq  = getValue(s, "Freq", 200);
+    double rate  = getValue(s, "Rate",  10);
+    double depth = getValue(s, "Depth", 10) * 0.01;        // 0.01 because input is in percent
+    std::vector<double> a(N);                              // vector for instantaneous amplitude
+    createSineWave(&a[0], N, rate, depth, fs, 0.0);        // write sine LFO output into a
+    createSineWave(x, N, freq, 0.5, fs);                   // write non-modulated sine into x
+    RAPT::rsArray::add(&a[0], 1.0, &a[0], N);              // add one to mod-signal
+    RAPT::rsArray::multiply(x, &a[0], x, N);               // apply amp-modulation to x
+  }
   else if(startsWith(s, "ModalPluck")) {
     double key = rsFreqToPitch(getValue(s, "Freq", 200));
     createModalPluck(x, N, key, fs);
   }
+  else if(startsWith(s, "LowpassSaw")) {
+    double freq  = getValue(s, "Freq", 200);
+    double kMax  = getValue(s, "kMax", -1);
+    createSawWave(x, N, freq, fs, 0.5, (int) kMax);
+  }
+
+
   else rsError("Unknown sound name");
 
   return v;

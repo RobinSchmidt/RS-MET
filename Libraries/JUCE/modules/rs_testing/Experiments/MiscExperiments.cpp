@@ -34,7 +34,11 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   // create and set up harmonic analyzer object:
   RAPT::rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
-  analyzer.setSincInterpolationLength(64);
+  //analyzer.setSincInterpolationLength(2);
+  //analyzer.setSincInterpolationLength(4);
+  //analyzer.setSincInterpolationLength(16);
+  //analyzer.setSincInterpolationLength(64);
+  analyzer.setSincInterpolationLength(512);
   //analyzer.setSpectralOversampling(8);       // implementation not yet complete
   //analyzer.setFreqsByPhaseDerivative(true);
   //analyzer.setFreqPhaseConsistency(true);
@@ -53,8 +57,8 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
 
   // let the analyzer analyze the sound - obtains a sinusoidal model:
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, Nx);
-  mdl.removePartial(0);        // remove DC component
-
+  mdl.removePartial(0);                      // remove DC
+  mdl.removePartialsWithMeanFreqAbove(fs/2); // anti-alias
 
   // Manipulations:
 
@@ -62,6 +66,11 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   //mdl.removePartial(0);    // test: resynthesize without fundamental
 
   //mdl.keepOnly({0, 99});  // fom TwoSines_Freq1=100_Freq2=10020
+
+  //mdl.removePartialsAbove(9); 
+  // for testing artifacts (spurious high partials) in flute-c1 - are they analysis or synthesis 
+  // artifacts? if they occur evene though we remove the partials above 9, they occur in synthesis
+  // ->they seem to be analysis artifacts
 
 
   // Resynthesis:

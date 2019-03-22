@@ -771,6 +771,8 @@ T rsCycleMarkFinder<T>::refineByZeroCrossing(T* x, int N, T anchor, T mark)
 template<class T>
 RS_INLINE T cosineToWindow(T c)
 {
+  //return T(1);  // for test: rectangular window
+
   // exact Blackman coefficients, modified such that we don't need to precompute c2=2*c*c-1:
   const T a0 = 6508.0/18608.0;
   const T a1 = 9240.0/18608.0;
@@ -789,6 +791,11 @@ RS_INLINE T cosineToWindow(T c)
 // c[n] = cos(n*w) = a*c[n-1]-c[n-2] with a = 2*cos(w) = 2*c
 // from linear combinations of these successive cosine values, various windows can be created,
 // see https://en.wikipedia.org/wiki/Window_function#Higher-order_generalized_cosine_windows
+
+
+
+
+
 
 template<class TSig, class TPos>
 RS_INLINE void sincInterpolatorLoop(int mMin, int mMax, TPos &tf, rsSineIterator<TPos> &sinIt,

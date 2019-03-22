@@ -1178,6 +1178,18 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   //testHarmonicResynthesis("Sine_Freq=500_Amp=0.5",      44100, 5000);
   //testHarmonicResynthesis("Cosine_Freq=500_Amp=0.5",    44100, 5000);
 
+  //testHarmonicResynthesis("LowpassSaw_Freq=523.25_kMax=10",  44100, 15000);
+
+
+
+  testHarmonicResynthesis("TremoloSine_Freq=200_Rate=10_Depth=5", 44100, 15000);
+  // try a little bit of amplitude modulation - could the spurious high-freq components be due to 
+  // that? the varying amplitude of low-freq components somehow gets translated to spurious 
+  // high-freqs? maybe a tremolo sine - yes! that seems to be it! when the sine is amp-mdoulated,
+  // it appears not as single spike but as spike-with-a-tail in the short-time spectrum
+
+
+
   //testHarmonicResynthesis("TwoSines",   44100, 5000);
   //testHarmonicResynthesis("ModalPluck", 44100, 5000);
   // convert all calls to include the frequency in the string (done), then get rid of the frequency 
@@ -1186,7 +1198,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
   //testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6000_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
 
-  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6100_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
+  //testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6100_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
 
 
   //testHarmonicResynthesis("TwoSines_Freq1=100_Freq2=10020_Amp1=0.5_Amp2=0.1", 44100, 5000, 100);

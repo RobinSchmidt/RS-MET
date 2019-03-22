@@ -208,6 +208,18 @@ std::vector<T> rsDifference(const std::vector<T> x)
   return d;
 }
 
+/** Converts a vector of amplitudes to decibel values with a given floor decibel value to avoid 
+negative infinity for zero amplitudes. */
+template<class T>
+std::vector<T> rsAmpToDb(const std::vector<T>& a, T floorDb = -std::numeric_limits<T>::infinity())
+{
+  std::vector<T> db(a.size());
+  for(size_t i = 0; i < a.size(); i++)
+    db[i] = std::max(floorDb, 20*log10(a[i]));
+  return db;
+}
+
+
 //template<class T>
 //T rsMinValue(T 
 

@@ -55,6 +55,9 @@ inline void rsPlotVectors(
 }
 
 
+
+
+
 /** Plots a whole bunch of vectors which are themselves put together into a vector of vectors. */
 //template<class T>
 //inline void rsPlotVectors(std::vector<std::vector<T>> v)
@@ -75,5 +78,20 @@ inline void rsPlotSignalWithMarkers(T* signal, int signalLength, T* markers, int
   plt.addDataArrays(numMarkers,   markers, &zeros[0]);
   plt.setGraphStyles("lines", "points");
   plt.setPixelSize(1000, 300);
+  plt.plot();
+}
+
+template<class T>
+inline void rsPlotSpectrum(std::vector<T> fftMagnitudes, T sampleRate, 
+  T floorDb = -std::numeric_limits<T>::infinity())
+{
+  int N = (int)fftMagnitudes.size();
+  std::vector<T> f(N), db(N);
+  for(int k = 0; k < N; k++) {
+    f[k] = k * sampleRate / (2*N); // 2 bcs we assume that we get an array of only positive freq bins
+    db[k] = std::max(floorDb, 20*log10(fftMagnitudes[k]));
+  }
+  GNUPlotter plt;
+  plt.addDataArrays(N, &f[0], &db[0]);
   plt.plot();
 }

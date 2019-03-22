@@ -4,10 +4,24 @@
 //=================================================================================================
 
 /** Data structure to hold and edit the instantaneous parameters of a sinusoidal partial at one 
-instant of time. */
+instant of time. A datapoint is defined by its time-stamp, an instantaneous frequency, 
+instantaneous amplitude and instantaneous phase value (wrapped into -pi..pi). It may seem a bit 
+redundant to store instantaneous frequency and phase because both values are related (phase is the
+integral of frequency) but it turns out that the frequency is useful for two purposes: first, to 
+unwrap the phase values (which is eventually needed for synthesis - at least, when an oscillator 
+bank is used) and second, to provide target values for the phase-derivative in an Hermite 
+interpolation scheme for the instantaneous phase. 
+
+It's conceivable to alternatively store unwrapped phase directly but that would suffer from 
+degrading precision at later time-instants because more and more of the floating point precision 
+will be used up by the 2*k*pi part of the unwrapped phase. That could be solved by storing the 
+wrapped phase and the integer k for the 2*k*pi part. However, storing the instantaneous frequency 
+along with the phase is pretty much standard in the sinusoidal modeling literature. We must then
+reconstruct the k heuristically - but that ususally works and as a plus, as said, we also get 
+proper target values for phase derivatives for interpolation. */
 
 template<class T>
-class rsInstantaneousSineParams
+class rsInstantaneousSineParams // maybe make it a struct
 {
 
 public:
