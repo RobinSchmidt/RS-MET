@@ -96,7 +96,11 @@ public:
     zeroPad = newFactor; 
   }
 
-  // void setNumCyclesPerBlock(int newNumCycles)...
+  /** Sets the number of cycles in each analyzed block. Must be a power of two. */
+  void setNumCyclesPerBlock(int newNumCycles)
+  {
+    cyclesPerBlock = newNumCycles;
+  }
 
   // void setTemporalOversampling(int newFactor)
   // ...produce intermediate datapoints between the already existing ones...
@@ -194,6 +198,7 @@ protected:
 
   /** Sets the length in samples for one analysis block - re-allocates buffers, if necessarry. */
   void setBlockSize(int newSize);
+  // rename to setCycleLength
 
   /** Returns length of time-warping map (sampled at cycle marks). */
   int getMapLength() const { return (int) tIn.size(); }
@@ -245,13 +250,19 @@ protected:
   rsCycleMarkFinder<T> cycleFinder;
 
 
-  int blockSize = 0;    // FFT block size 
+  int blockSize = 0;    // FFT block size - rename to trafoSize - blockSize should be cycleLength*numCyclesPerBlock
   // todo: we will need to distinguish between (target) cycleLength and blockSize when we allow 
   // multi-cycle blocks and also between block-size and fft-size when we allow for zero-padding
 
   // todo:
-  int zeroPad   = 1;    // zero padding factor for FFT, power of 2
-  //int numCycles = 1;    // number of cycles per block/window, power of 2
+  int cycleLength    = 0;
+  int cyclesPerBlock = 1;    // number of cycles per block/window, power of 2 ..not yet used
+
+  int zeroPad        = 1;    // zero padding factor for FFT, power of 2
+
+
+
+
   //int window = rectangular;  //
 
   bool antiAlias   = false;
