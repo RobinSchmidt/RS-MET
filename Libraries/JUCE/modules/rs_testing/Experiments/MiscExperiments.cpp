@@ -44,6 +44,9 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   //analyzer.setFreqPhaseConsistency(true);
   // todo: maybe provide different freq-refinement methods (not necessarily mutually exclusive)
 
+  analyzer.useOldCode = true;
+  //analyzer.setNumCyclesPerBlock(2);
+
   // set up settings of the embedded cycle-mark finder:
   rsCycleMarkFinder<double>& cmf = analyzer.getCycleFinder();
                                               // defaults:
@@ -79,7 +82,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   typedef SS::PhaseInterpolationMethod PIM;
   SS synth;
   synth.setSampleRate(fs);
-  synth.setCubicAmplitudeInterpolation(true);
+  //synth.setCubicAmplitudeInterpolation(true);
   synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
   //synth.setPhaseInterpolation(PIM::cubicHermite);
   //synth.setPhaseInterpolation(PIM::quinticHermite);

@@ -153,6 +153,11 @@ public:
   padding with zeros, if necessary. Made static to enable it to be conveniently tested. */
   static void prepareBuffer(const std::vector<T>& signalBlock, std::vector<T>& trafoBuffer);
 
+
+  bool useOldCode = false; 
+  // temporary, for development - switch between new and old implementation of filling the blocks
+  // i.e. between single-cycle and multi-cycle implementation
+
 protected:
 
 

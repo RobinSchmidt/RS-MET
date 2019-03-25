@@ -14,8 +14,11 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   if(flattenPitch(x, N) == false)   // pre-process audio (flatten pitch), sets the blockSize
     return mdl;                     // return empty model if pre-processing has failed
 
-  //analyzeHarmonics(mdl);            // create model from pitch-flattened signal (now in member y)
-  analyzeHarmonics2(mdl);
+  // todo: remove this switch eventually:
+  if(useOldCode)
+    analyzeHarmonics(mdl);            // create model from pitch-flattened signal (now in member y)
+  else
+    analyzeHarmonics2(mdl);
 
   deFlattenPitch(mdl);              // post process model data to account for flattening
   if(antiAlias)
@@ -150,9 +153,6 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics2(RAPT::rsSinusoidalModel<T>& mdl)
   // Initialize the model (create all datapoints, to filled with actual data later):
   mdl.init(getNumHarmonics(), getNumDataPoints());
 
-  // use rsArray::copySection
-
-
   typedef RAPT::rsArray AR;
 
   //int numFrames = getNumFrames();  //
@@ -170,7 +170,6 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics2(RAPT::rsSinusoidalModel<T>& mdl)
     if(length != blockSize)
     {
       // ...we must do something extra in these special cases...
-
       rsAssert(m == 0 || m == getNumFrames()-1); // should only happen in first or last frame
       int delta = blockSize - length;
 
@@ -181,18 +180,19 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics2(RAPT::rsSinusoidalModel<T>& mdl)
         blockEnd += delta;
 
       length = blockEnd-blockStart;  // update - only relevant for debug
-      int dummy = 0;
     }
     rsAssert(blockEnd-blockStart == blockSize);
 
     AR::copySection(&y[0], (int) y.size(), &sig[0], blockStart, blockSize);
+
     //rsPlotVector(sig);
 
     fillHarmonicData(mdl, m, getTimeStampForFrame(m));
+      // maybe we should pass the "delta" from above and use it to adjust the phase values like
+      // phase += delta*omega or something
 
     int dummy = 0;
   }
-
 
 }
 
