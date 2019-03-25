@@ -183,10 +183,11 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics2(RAPT::rsSinusoidalModel<T>& mdl)
     }
     rsAssert(blockEnd-blockStart == blockSize);
 
+    // copy section from y into sig, apply window and extract spectral data:
     AR::copySection(&y[0], (int) y.size(), &sig[0], blockStart, blockSize);
-
+    for(size_t n = 0; n < sig.size(); n++)
+      sig[n] *= wnd[n];
     //rsPlotVector(sig);
-
     fillHarmonicData(mdl, m, getTimeStampForFrame(m));
       // maybe we should pass the "delta" from above and use it to adjust the phase values like
       // phase += delta*omega or something
@@ -309,7 +310,7 @@ void rsHarmonicAnalyzer<T>::setCycleLength(int newLength)
   blockSize   = cyclesPerBlock * cycleLength;
   sig.resize(blockSize); 
   wnd.resize(blockSize);
-  // fillWindow();
+  fillWindow();
   trafoSize = zeroPad * blockSize;
   sigPadded.resize(trafoSize);
   mag.resize(trafoSize); 
@@ -367,7 +368,11 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   //rsPlotVector(sig);
   prepareBuffer(sig, sigPadded);
   trafo.getRealSignalMagnitudesAndPhases(&sigPadded[0], &mag[0], &phs[0]);  // perform FFT
-  //rsPlotVector(mag);
+
+
+  if(frameIndex == getNumFrames()/2)
+    rsPlotVector(mag);
+
   //if(frameIndex >= 10) {
   //  rsPlotSpectrum(mag, sampleRate, T(-200));
   //  //rsPlotVector(rsAmpToDb(mag, T(-200))); 
@@ -399,7 +404,10 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
 
       // preliminary (copied and edited from above - does not yet include any refinements):
       T freq = trafo.binIndexToFrequency(k, numBins, sampleRate);
-      mdl.setData(h, dataIndex, time, freq, T(2)*mag[k], phs[k]);
+      T gain = T(2*zeroPad)*mag[k]; // preliminary - compute parabola maximum
+
+
+      mdl.setData(h, dataIndex, time, freq, gain, phs[k]);
 
       // i think, we need to search for a peak in the range k += zeroPad/2 instead of just using k
     }
@@ -440,9 +448,9 @@ void rsHarmonicAnalyzer<T>::prepareBuffer(const std::vector<T>& sig, std::vector
   size_t K2 = sig.size() / 2;
   size_t M  = buf.size();
   size_t i;
-  for(i = 0;  i < K2;   i++) buf[i] = sig[i+K2];    // first section is 2nd half of sig
-  for(i = K2; i < M-K2; i++) buf[i] = 0;            // middle section is zero padding
-  for(i = 0;  i < K2;   i++) buf[M-K2+i] = sig[i];  // last section is 1st half of sig
+  for(i = 0;  i < K2;   i++) buf[i] = sig[i+K2];     // first section is 2nd half of sig
+  for(i = K2; i < M-K2; i++) buf[i] = 0;             // middle section is zero padding
+  for(i = 0;  i < K2;   i++) buf[M-K2+i] = sig[i];   // last section is 1st half of sig
   // It may seem, that just swapping left and right half of the buffer would lead to phase 
   // measurements that are off by half a sample because the center of an even-length buffer falls
   // on a half-integer - but: our datapoints are actually also placed at the half-integers, so in 
@@ -455,7 +463,8 @@ void rsHarmonicAnalyzer<T>::prepareBuffer(const std::vector<T>& sig, std::vector
 template<class T>
 void rsHarmonicAnalyzer<T>::fillWindow()
 {
-
+  //rsWindowFunction::createWindow(&wnd[0], (int) wnd.size(), windowType, true);
+  rsWindowFunction::createWindow(&wnd[0], (int) wnd.size(), windowType, false);
 }
 
 

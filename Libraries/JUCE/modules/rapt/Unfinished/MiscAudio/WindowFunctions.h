@@ -30,6 +30,7 @@ public:
     TRUNCATED_GAUSSIAN
   };
   // maybe remove the "WINDOW"
+  // ...turn into an enum class
 
 
   /** Writes window function values into the array w of length N. The type should be one of the 

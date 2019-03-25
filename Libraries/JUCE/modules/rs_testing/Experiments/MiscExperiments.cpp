@@ -44,8 +44,22 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   //analyzer.setFreqPhaseConsistency(true);
   // todo: maybe provide different freq-refinement methods (not necessarily mutually exclusive)
 
-  analyzer.useOldCode = true;
-  //analyzer.setNumCyclesPerBlock(2);
+  typedef rsWindowFunction::windowTypes WT;
+
+  //analyzer.useOldCode = true;  // only compatible with setNumCyclesPerBlock(1);
+  analyzer.setNumCyclesPerBlock(4);
+  analyzer.setSpectralOversampling(8);
+  //analyzer.setWindowType(WT::HAMMING_WINDOW);
+  analyzer.setWindowType(WT::HANNING_WINDOW);
+  // HAMMING_WINDOW
+  // for rectangular window, we may use 1 cycle, for others we may have to use at least 2 
+  // (hamm/hann), for blackman maybe 4...we'll see
+  // non-rectangular windows do not yet work
+  
+  // ..or..well. cycles=4, zero-pad=8, hanning almost works
+  // ...the signal is just too loud by factor 2 ...using a not normalized window helps
+
+  // 2 cycles with hamm or hann doesn't work
 
   // set up settings of the embedded cycle-mark finder:
   rsCycleMarkFinder<double>& cmf = analyzer.getCycleFinder();

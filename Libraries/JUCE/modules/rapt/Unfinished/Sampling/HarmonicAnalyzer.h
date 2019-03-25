@@ -102,6 +102,13 @@ public:
     cyclesPerBlock = newNumCycles;
   }
 
+  /** Sets the type of window to be used. */
+  void setWindowType(rsWindowFunction::windowTypes newType)
+  {
+    windowType = newType;
+  }
+  // under construction
+
   // void setTemporalOversampling(int newFactor)
   // ...produce intermediate datapoints between the already existing ones...
 
@@ -265,6 +272,10 @@ protected:
   int blockSize      = 0;  // analysis block size == cycleLength * cyclesPerBlock
   int zeroPad        = 1;  // zero padding factor for FFT, power of 2
   int trafoSize      = 0;  // FFT size == blockSize * zeroPad
+
+  
+  typedef rsWindowFunction::windowTypes WindowType;
+  WindowType windowType = WindowType::RECTANGULAR_WINDOW;
 
   //int window = rectangular;  // type of window function
 
