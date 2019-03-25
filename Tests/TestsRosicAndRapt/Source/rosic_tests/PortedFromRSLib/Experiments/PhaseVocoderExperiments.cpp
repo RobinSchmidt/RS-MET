@@ -1175,14 +1175,14 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // todo: fix findCosistentPhase (move it into rsSinousoidalPartial and write unit test)
   // or better: to AudioFunctions, the re-activate freq-refinement, then add the new algo
 
-  //testHarmonicResynthesis("Sine_Freq=500_Amp=0.5",      44100, 5000);
+  testHarmonicResynthesis("Sine_Freq=500_Amp=0.5",      44100, 5000);
   //testHarmonicResynthesis("Cosine_Freq=500_Amp=0.5",    44100, 5000);
 
   //testHarmonicResynthesis("LowpassSaw_Freq=523.25_kMax=10",  44100, 15000);
 
 
 
-  testHarmonicResynthesis("TremoloSine_Freq=200_Rate=10_Depth=5", 44100, 15000);
+  //testHarmonicResynthesis("TremoloSine_Freq=200_Rate=10_Depth=5", 44100, 15000);
   // try a little bit of amplitude modulation - could the spurious high-freq components be due to 
   // that? the varying amplitude of low-freq components somehow gets translated to spurious 
   // high-freqs? maybe a tremolo sine - yes! that seems to be it! when the sine is amp-mdoulated,

@@ -196,8 +196,8 @@ protected:
   /** Refines the frequency estimates in the model, if the respective options are set to true. */
   void refineFrequencies(RAPT::rsSinusoidalModel<T>& mdl);
 
-  /** Sets the length in samples for one analysis block - re-allocates buffers, if necessarry. */
-  void setBlockSize(int newSize);
+  /** Sets the length of one cycle in samples and re-allocates buffers, if necessarry. */
+  void setCycleLength(int newLength);
   // rename to setCycleLength
 
   /** Returns length of time-warping map (sampled at cycle marks). */
@@ -207,7 +207,7 @@ protected:
   /** Returns the number of FFT analysis frames. */
   int getNumFrames() const { return getMapLength()-1; }
 
-  /** Returns the number of FFT bins (including DC - maybe rename to getNumBins) */
+  /** Returns the number of analyzed harmonics bins (including DC). */
   int getNumHarmonics() const { return blockSize / 2; }
   // todo: maybe decide in advance, which harmonics will or will not alias and analyze only those
   // which won't as an optimization (instead of analyzing them all and then discarding the aliasing 
@@ -250,20 +250,14 @@ protected:
   rsCycleMarkFinder<T> cycleFinder;
 
 
-  int blockSize = 0;    // FFT block size - rename to trafoSize - blockSize should be cycleLength*numCyclesPerBlock
-  // todo: we will need to distinguish between (target) cycleLength and blockSize when we allow 
-  // multi-cycle blocks and also between block-size and fft-size when we allow for zero-padding
+  // block/transform buffer sizes:
+  int cycleLength    = 0;  // length of one cycle in samples
+  int cyclesPerBlock = 1;  // number of cycles per block/window, power of 2 ..not yet used
+  int blockSize      = 0;  // analysis block size == cycleLength * cyclesPerBlock
+  int zeroPad        = 1;  // zero padding factor for FFT, power of 2
+  int trafoSize      = 0;  // FFT size == blockSize * zeroPad
 
-  // todo:
-  int cycleLength    = 0;
-  int cyclesPerBlock = 1;    // number of cycles per block/window, power of 2 ..not yet used
-
-  int zeroPad        = 1;    // zero padding factor for FFT, power of 2
-
-
-
-
-  //int window = rectangular;  //
+  //int window = rectangular;  // type of window function
 
   bool antiAlias   = false;
 

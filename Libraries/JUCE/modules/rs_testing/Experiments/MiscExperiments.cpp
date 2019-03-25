@@ -37,8 +37,8 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   //analyzer.setSincInterpolationLength(2);
   //analyzer.setSincInterpolationLength(4);
   //analyzer.setSincInterpolationLength(16);
-  //analyzer.setSincInterpolationLength(64);
-  analyzer.setSincInterpolationLength(512);
+  analyzer.setSincInterpolationLength(64);
+  //analyzer.setSincInterpolationLength(512);
   //analyzer.setSpectralOversampling(8);       // implementation not yet complete
   //analyzer.setFreqsByPhaseDerivative(true);
   //analyzer.setFreqPhaseConsistency(true);

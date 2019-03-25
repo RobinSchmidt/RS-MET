@@ -50,8 +50,8 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   T maxLength = rsMax(cycleLengths);
   //maxLength   = rsMax(maxLength, cycleMarks[0]);             // delta between 0 and 1st mark
   //maxLength   = rsMax(maxLength, (Nx-1)-rsLast(cycleMarks)); // delta between end and last mark
-  blockSize = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
-  setBlockSize(blockSize);  // does also some buffer-re-allocation
+  cycleLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
+  setCycleLength(cycleLength);  // does also some buffer-re-allocation
   //rsPlotVector(sampleRate/cycleLengths);
 
 
@@ -64,21 +64,21 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   // The first marker is mapped to an instant, such that the initial partial cycle is stretched by
   // the same amount as the first full cycle (the cycle between 1st and 2nd marker):
   tIn[1]  = cycleMarks[0];
-  tOut[1] = cycleMarks[0] * blockSize / cycleLengths[0];
+  tOut[1] = cycleMarks[0] * cycleLength / cycleLengths[0];
   tOut[1] = round(tOut[1]);
 
   // All cycles between the initial partial cycle and final partial cycle are stretched to the same 
   // fixed length:
   for(int i = 2; i < mapLength-1; i++) {
     tIn[i]  = cycleMarks[i-1];
-    tOut[i] = tOut[i-1] + blockSize;
+    tOut[i] = tOut[i-1] + cycleLength;
   }
 
   // The end time instant is mapped such that the final partial cycle is stretched by the same 
   // amount as the last full cycle:
   T tailLength = (Nx-1) - rsLast(cycleMarks);
   tIn [mapLength-1] = Nx-1;
-  tOut[mapLength-1] = tOut[mapLength-2] + tailLength * blockSize / rsLast(cycleLengths);
+  tOut[mapLength-1] = tOut[mapLength-2] + tailLength * cycleLength / rsLast(cycleLengths);
   tOut[mapLength-1] = round(tOut[mapLength-1]);
 
   // We have created the time warping map, sampled at the cycle-marks. For applying the 
@@ -100,18 +100,17 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   // Initialize the model (create all datapoints, to filled with actual data later):
   mdl.init(getNumHarmonics(), getNumDataPoints());
 
-  // Set up the fourier transformer object and block buffers:
-  int K = blockSize;       // block-size (equals FFT size)
 
-  //// factor out to setBlockSize
-  //trafo.setBlockSize(K);
-  //sig.resize(K); 
-  //mag.resize(K); 
-  //phs.resize(K);
+
+  // use rsArray::copySection
+
 
   // The initial partial cycle is pre-padded with zeros:
   int n0 = 0;                          // first sample (from y-array) in current frame
   int m  = 0;                          // frame index
+
+  int K = blockSize;      // this is now potentially different from cycle-length...we need to upadate code below
+
   int L  = (int) tOut[1];              // length of initial partial cycle
   rsAssert(L >= 0 && L <= K);
   typedef RAPT::rsArray AR;
@@ -200,7 +199,6 @@ void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
   //T endTime = rsLast(tOut);
   T endTime = rsLast(tIn);
   rsInstantaneousSineParams<T> params;
-  //for(k = 0; k < getNumHarmonics(); k++) 
   for(k = 0; k < mdl.getNumPartials(); k++) 
   {
     // fill first datapoint:
@@ -239,7 +237,6 @@ void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
 template<class T>
 void rsHarmonicAnalyzer<T>::convertTimeUnit(RAPT::rsSinusoidalModel<T>& mdl)
 {
-  //for(int hi = 0; hi < getNumHarmonics(); hi++)
   for(int hi = 0; hi < mdl.getNumPartials(); hi++)
     for(int di = 0; di < getNumDataPoints(); di++)
       mdl.getDataRef(hi, di).time /= sampleRate;
@@ -256,19 +253,18 @@ void rsHarmonicAnalyzer<T>::refineFrequencies(RAPT::rsSinusoidalModel<T>& mdl)
 }
 
 template<class T>
-void rsHarmonicAnalyzer<T>::setBlockSize(int newSize)
+void rsHarmonicAnalyzer<T>::setCycleLength(int newLength)
 {
-  int K = newSize;
-  blockSize = K;
-  sig.resize(K); 
-  wnd.resize(K);
-
-  // they should be K*zeroPad long later - we may need an additional buffer for the zero-padded signal
-  K *= zeroPad;
-  sigPadded.resize(K);
-  mag.resize(K); 
-  phs.resize(K);
-  trafo.setBlockSize(K);
+  cycleLength = newLength;
+  blockSize   = cyclesPerBlock * cycleLength;
+  sig.resize(blockSize); 
+  wnd.resize(blockSize);
+  // fillWindow();
+  trafoSize = zeroPad * blockSize;
+  sigPadded.resize(trafoSize);
+  mag.resize(trafoSize); 
+  phs.resize(trafoSize);
+  trafo.setBlockSize(trafoSize);
 }
 
 template<class T>
