@@ -13,7 +13,10 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   RAPT::rsSinusoidalModel<T> mdl;   // init empty model
   if(flattenPitch(x, N) == false)   // pre-process audio (flatten pitch), sets the blockSize
     return mdl;                     // return empty model if pre-processing has failed
-  analyzeHarmonics(mdl);            // create model from pitch-flattened signal (now in member y)
+
+  //analyzeHarmonics(mdl);            // create model from pitch-flattened signal (now in member y)
+  analyzeHarmonics2(mdl);
+
   deFlattenPitch(mdl);              // post process model data to account for flattening
   if(antiAlias)
     removeAliasing(mdl);            // remove freqs above orignal nyquist freq
@@ -148,6 +151,48 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics2(RAPT::rsSinusoidalModel<T>& mdl)
   mdl.init(getNumHarmonics(), getNumDataPoints());
 
   // use rsArray::copySection
+
+
+  typedef RAPT::rsArray AR;
+
+  //int numFrames = getNumFrames();  //
+  int over = (blockSize - cycleLength) / 2; // amount of overhanging of block with respect to cycle
+
+  for(int m = 0; m < getNumFrames(); m++)
+  {
+    int cycleStart = (int) tOut[m];
+    int cycleEnd   = (int) tOut[m+1];  // safe: tOut.size() == getnumFrames()+1
+    int blockStart = cycleStart - over;
+    int blockEnd   = cycleEnd   + over;
+
+    // but for the first and last improper cycle, this is wrong...
+    int length = blockEnd-blockStart; 
+    if(length != blockSize)
+    {
+      // ...we must do something extra in these special cases...
+
+      rsAssert(m == 0 || m == getNumFrames()-1); // should only happen in first or last frame
+      int delta = blockSize - length;
+
+      // check if this is correct:
+      if(m == 0)
+        blockStart -= delta;
+      else
+        blockEnd += delta;
+
+      length = blockEnd-blockStart;  // update - only relevant for debug
+      int dummy = 0;
+    }
+    rsAssert(blockEnd-blockStart == blockSize);
+
+    AR::copySection(&y[0], (int) y.size(), &sig[0], blockStart, blockSize);
+    //rsPlotVector(sig);
+
+    fillHarmonicData(mdl, m, getTimeStampForFrame(m));
+
+    int dummy = 0;
+  }
+
 
 }
 
