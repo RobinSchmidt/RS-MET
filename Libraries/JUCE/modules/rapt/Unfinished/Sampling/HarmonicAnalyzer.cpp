@@ -100,24 +100,17 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   // Initialize the model (create all datapoints, to filled with actual data later):
   mdl.init(getNumHarmonics(), getNumDataPoints());
 
-
-
-  // use rsArray::copySection
-
-
   // The initial partial cycle is pre-padded with zeros:
   int n0 = 0;                          // first sample (from y-array) in current frame
   int m  = 0;                          // frame index
-
-  int K = blockSize;      // this is now potentially different from cycle-length...we need to upadate code below
-
+  int K  = blockSize;      // this is now potentially different from cycle-length...we need to upadate code below
   int L  = (int) tOut[1];              // length of initial partial cycle
   rsAssert(L >= 0 && L <= K);
   typedef RAPT::rsArray AR;
   AR::fillWithZeros(&sig[0], K-L);
   if(L > 0)
     AR::copyBuffer(&y[n0], &sig[K-L], L);
-  //plotVector(sig);
+  //rsPlotVector(sig);
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
   // The inner cycles/frames are taken as is:
@@ -126,6 +119,7 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
     n0 = (int) tOut[m];                   // ...why not round?
     AR::copyBuffer(&y[n0], &sig[0], L);
 
+    //rsPlotVector(sig);
     //// plot 2nd-to-last (debug):
     //if(m == getNumFrames()-2)
     //  plotVector(sig);
@@ -135,18 +129,29 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
 
   // The final partial cycle is post-padded with zeros:
   n0 = (int) tOut[m]; 
-  //L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]);  // maybe +1? check against off-by-1
   L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]) + 1;
   rsAssert(L >= 0 && L <= K);
   AR::copyBuffer(&y[n0], &sig[0], L);
   if(L < K)  // is this correct?
     AR::fillWithZeros(&sig[L], K-L);
-  //plotVector(sig);  // debug
+  //rsPlotVector(sig);  // debug
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
 
   // todo: double-check all index computations against off-by-one errors, verify time-indices
 }
+
+template<class T>
+void rsHarmonicAnalyzer<T>::analyzeHarmonics2(RAPT::rsSinusoidalModel<T>& mdl)
+{
+  // Initialize the model (create all datapoints, to filled with actual data later):
+  mdl.init(getNumHarmonics(), getNumDataPoints());
+
+  // use rsArray::copySection
+
+}
+
+
 
 template<class T>
 void rsHarmonicAnalyzer<T>::deFlattenPitch(RAPT::rsSinusoidalModel<T>& mdl)
@@ -397,6 +402,9 @@ void rsHarmonicAnalyzer<T>::prepareBuffer(const std::vector<T>& sig, std::vector
   // measurements that are off by half a sample because the center of an even-length buffer falls
   // on a half-integer - but: our datapoints are actually also placed at the half-integers, so in 
   // the end, it works out correctly.
+
+  // todo: in the first and last loop, multiply by window during copying, i.e.
+  // sig[i+K2] becomes sig[i+K2] * wnd[i+K2] and sig[i] becomes sig[i] * wnd[i]
 }
 
 template<class T>

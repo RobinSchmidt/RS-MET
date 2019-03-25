@@ -171,6 +171,10 @@ protected:
   fills in the model data with (preliminary) values. */
   void analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl);
 
+  void analyzeHarmonics2(RAPT::rsSinusoidalModel<T>& mdl);
+  // new version that supports multi-cycle blocks - under construction - when finished, the old
+  // version may be deleted
+
   /** The third step in the analysis algo is to modify the time and frequency data to account for 
   the pitch flattening that was done in the first step. */
   void deFlattenPitch(RAPT::rsSinusoidalModel<T>& mdl);
