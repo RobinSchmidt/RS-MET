@@ -3,7 +3,7 @@
 //=================================================================================================
 
 template<class T>
-int SinusoidalAnalyzer<T>::getRequiredBlockSize(int type, T df, T fs, bool oddSize) const
+int rsSinusoidalAnalyzer<T>::getRequiredBlockSize(int type, T df, T fs, bool oddSize) const
 {
   T B = rsWindowFunction::getMainLobeWidth(type, 0.0); // later maybe pass a window parameter
   int size = (int) ceil(B*fs/df);
@@ -18,7 +18,7 @@ int SinusoidalAnalyzer<T>::getRequiredBlockSize(int type, T df, T fs, bool oddSi
 }
 
 template<class T>
-T SinusoidalAnalyzer<T>::getRequiredThreshold(int type, T margin) const
+T rsSinusoidalAnalyzer<T>::getRequiredThreshold(int type, T margin) const
 {
   return rsWindowFunction::getSideLobeLevel(type, 0.0) + margin;
   // todo: maybe if we constrain the peak-conditions further, such that a peak must be higher than
@@ -28,7 +28,7 @@ T SinusoidalAnalyzer<T>::getRequiredThreshold(int type, T margin) const
 }
 
 template<class T>
-size_t SinusoidalAnalyzer<T>::findBestMatchingTrack(T freq, 
+size_t rsSinusoidalAnalyzer<T>::findBestMatchingTrack(T freq, 
   std::vector<RAPT::rsSinusoidalPartial<double>>& tracks, 
   const std::vector<bool>& trackContinued) const
 {
@@ -49,7 +49,7 @@ size_t SinusoidalAnalyzer<T>::findBestMatchingTrack(T freq,
 }
 
 template<class T>
-void SinusoidalAnalyzer<T>::continuePartialTracks1(
+void rsSinusoidalAnalyzer<T>::continuePartialTracks1(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks) const
@@ -113,7 +113,7 @@ void SinusoidalAnalyzer<T>::continuePartialTracks1(
 }
 
 template<class T>
-size_t SinusoidalAnalyzer<T>::findBestMatchingPeak(T freq, 
+size_t rsSinusoidalAnalyzer<T>::findBestMatchingPeak(T freq, 
   std::vector<RAPT::rsInstantaneousSineParams<T>>& peaks,
   const std::vector<bool>& peakUsed) const
 {
@@ -134,7 +134,7 @@ size_t SinusoidalAnalyzer<T>::findBestMatchingPeak(T freq,
 }
 
 template<class T>
-void SinusoidalAnalyzer<T>::continuePartialTracks0(
+void rsSinusoidalAnalyzer<T>::continuePartialTracks0(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks) const
@@ -172,7 +172,7 @@ void SinusoidalAnalyzer<T>::continuePartialTracks0(
 }
 
 template<class T>
-void SinusoidalAnalyzer<T>::applyContinuations(
+void rsSinusoidalAnalyzer<T>::applyContinuations(
   std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeaks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& aliveTracks,
   std::vector<RAPT::rsSinusoidalPartial<T>>& deadTracks,
@@ -226,26 +226,14 @@ void SinusoidalAnalyzer<T>::applyContinuations(
 }
 
 template<class T>
-rsMatrix<std::complex<T>> SinusoidalAnalyzer<T>::getComplexSpectrogram(
+rsMatrix<std::complex<T>> rsSinusoidalAnalyzer<T>::getComplexSpectrogram(
   T* sampleData, int numSamples)
 {
   return sp.complexSpectrogram(sampleData, numSamples);
 }
 
-/*
-// move to Plotting.h:
-void plotDecibels(int N, double* x, double *mag) // for debug-plotting
-{
-  double* dB = new double[N];
-  for(int i = 0; i < N; i++)
-    dB[i] = rsAmpToDbWithCheck(mag[i], 0.00000001);
-  rsPlotData(N, x, dB);
-  delete[] dB;
-}
-*/
-
 template<class T>
-RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
+RAPT::rsSinusoidalModel<T> rsSinusoidalAnalyzer<T>::analyzeSpectrogram(
   const RAPT::rsMatrix<std::complex<T>>& stft, T sampleRate)
 {
   // Initializations:
@@ -372,7 +360,7 @@ RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(
 }
 
 template<class T>
-std::vector<int> SinusoidalAnalyzer<T>::peakIndices(T* x, int N, T threshToMax)
+std::vector<int> rsSinusoidalAnalyzer<T>::peakIndices(T* x, int N, T threshToMax)
 {
   T max = RAPT::rsArray::maxValue(x, N);
   std::vector<int> peaks;
@@ -386,7 +374,7 @@ std::vector<int> SinusoidalAnalyzer<T>::peakIndices(T* x, int N, T threshToMax)
 } 
 
 template<class T> 
-void SinusoidalAnalyzer<T>::spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val)
+void rsSinusoidalAnalyzer<T>::spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val)
 {
   // find coeffs of parabolic interpolant (maybe factor out, so we can plot the parabola):
   T lowAmp = 0.0000001; // -140 dB - to prevent log-of-zero
@@ -406,7 +394,7 @@ void SinusoidalAnalyzer<T>::spectralMaximumPositionAndValue(T *x, int k, T* pos,
 }
 
 template<class T>
-rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
+rsSinusoidalModel<T> rsSinusoidalAnalyzer<T>::analyze(
   T* sampleData, int numSamples, T sampleRate)
 {
   // -maybe pre-process the input signal by flattening the pitch and make the period coincide with
@@ -423,7 +411,7 @@ rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyze(
 }
 
 template<class T>
-void SinusoidalAnalyzer<T>::cleanUpModel(rsSinusoidalModel<T>& model) const
+void rsSinusoidalAnalyzer<T>::cleanUpModel(rsSinusoidalModel<T>& model) const
 {
   // todo: merge partials (before removing spurious ones)
 
@@ -454,7 +442,7 @@ void SinusoidalAnalyzer<T>::cleanUpModel(rsSinusoidalModel<T>& model) const
   // or simplifyModel, simplifyPartial
 }
 
-template class SinusoidalAnalyzer<double>;
+//template class rsSinusoidalAnalyzer<double>;
 
 
 /*

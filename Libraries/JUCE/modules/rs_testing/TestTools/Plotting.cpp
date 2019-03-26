@@ -231,7 +231,7 @@ void stemPlot(int N, double *x, double *y)
   plt.plot();
 }
 
-void plotSinusoidalAnalysisResult(RAPT::SinusoidalAnalyzer<double>& sa, double* x, int N, double fs)
+void plotSinusoidalAnalysisResult(RAPT::rsSinusoidalAnalyzer<double>& sa, double* x, int N, double fs)
 {
   SinusoidalModelPlotter<double> plt;
   plt.plotAnalysisResult(sa, x, N, fs);

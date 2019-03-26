@@ -507,7 +507,7 @@ std::string SinusoidalModelPlotter<T>::getPartialColor(
 
 template <class T>
 void SinusoidalModelPlotter<T>::plotAnalysisResult(
-  RAPT::SinusoidalAnalyzer<T>& sa, T* x, int N, T fs)
+  RAPT::rsSinusoidalAnalyzer<T>& sa, T* x, int N, T fs)
 {
   GNUPlotter plt;
 

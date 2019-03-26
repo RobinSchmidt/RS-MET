@@ -1,19 +1,10 @@
 #pragma once
 
-// todo: move file to library - maybe split into two files analyzer and synthesizer - or maybe 
-// merge with the SinusoidalModel file
-
-
-
-
-
-//=================================================================================================
-
 /** Creates a sinusoidal model of an input sound by means of identifying and tracking stable 
 sinusoidal partials in its spectrogram. */
 
 template<class T>
-class SinusoidalAnalyzer
+class rsSinusoidalAnalyzer
 {
 
 public:

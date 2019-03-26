@@ -315,7 +315,7 @@ void sineParameterEstimation()
   // analysis and visualize the results.
 
   typedef RAPT::rsWindowFunction WF;
-  typedef SinusoidalAnalyzer<double> SA;
+  typedef rsSinusoidalAnalyzer<double> SA;
 
   // signal parameters:
   double sampleRate = 10000;    // sample rate
@@ -611,7 +611,7 @@ void sinusoidalSynthesis1()
   // i think, the Blackman-Nutall window is superior to the Blackman-Harris window - it has a
   // slightly narrower mainlobe and better sidelobe rejection
   RAPT::rsSinusoidalModel<double> model2;
-  SinusoidalAnalyzer<double> sa;
+  RAPT::rsSinusoidalAnalyzer<double> sa;
   sa.setWindowType(RAPT::rsWindowFunction::HAMMING_WINDOW);
   sa.setMaxFreqDeltaBase(100);
   sa.setTrafoSize(4096);
@@ -720,7 +720,7 @@ void sinusoidalAnalysis1()
   applyFadeInAndOut(&x[0], (int)N, int(sampleRate*fadeTime));
 
   // create and set up analyzer:
-  SinusoidalAnalyzer<double> sa;
+  RAPT::rsSinusoidalAnalyzer<double> sa;
   int blockSize = sa.getRequiredBlockSize(window, freqRes, sampleRate);
   int hopSize = blockSize/2;
   double maxLevelThresh = sa.getRequiredThreshold(window, 0.0);
@@ -822,7 +822,7 @@ void sinusoidalAnalysis2()
   // analyze the produced sound again and compare the original model and analysis result
 
   // create and set up analyzer and try to recover the model from the sound:
-  SinusoidalAnalyzer<double> sa;
+  RAPT::rsSinusoidalAnalyzer<double> sa;
   int blockSize = int(blockSizeFactor * sa.getRequiredBlockSize(window, freqRes, fs, false));
   int hopSize   = blockSize/2;
   int trafoSize = zeroPaddingFactor*blockSize;
@@ -967,7 +967,7 @@ void sinusoidalAnalysis3()
   //plotVector(x);
 
   // create and set up analyzer and try to recover the model from the sound:
-  SinusoidalAnalyzer<double> sa;
+  RAPT::rsSinusoidalAnalyzer<double> sa;
   int blockSize = int(blockSizeFactor * sa.getRequiredBlockSize(window, freqRes, fs, false));
   int hopSize   = blockSize/2;
   int trafoSize = zeroPaddingFactor*blockSize;

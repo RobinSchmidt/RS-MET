@@ -251,8 +251,7 @@ public:
   // results with different parameter settings
 
 
-  void plotAnalysisResult(RAPT::SinusoidalAnalyzer<T>& sa, T* sampleData, int N, T sampleRate);
-  // re-activate when SinusoidalAnalyzer is moved into rapt
+  void plotAnalysisResult(RAPT::rsSinusoidalAnalyzer<T>& sa, T* sampleData, int N, T sampleRate);
 
   // maybe have a setSampleRate function
 

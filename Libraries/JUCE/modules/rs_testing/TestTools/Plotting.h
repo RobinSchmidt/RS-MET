@@ -156,7 +156,7 @@ void stemPlot(int N, double *x, double *y);
 // functions for plotting sinusoidal model data:
 
 /** Convenience function. Uses class SinusoidalModelPlotter. */
-void plotSinusoidalAnalysisResult(RAPT::SinusoidalAnalyzer<double>& sa, double* sampleData, int N, 
+void plotSinusoidalAnalysisResult(RAPT::rsSinusoidalAnalyzer<double>& sa, double* sampleData, int N, 
   double sampleRate);
 
 void plotSineModel(const RAPT::rsSinusoidalModel<double>& model, double sampleRate);
