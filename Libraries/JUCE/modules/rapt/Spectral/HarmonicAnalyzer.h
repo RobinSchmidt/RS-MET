@@ -224,8 +224,8 @@ protected:
   int getNumFrames() const { return getMapLength()-1; }
 
   /** Returns the number of analyzed harmonics (including DC). */
-  int getNumHarmonics() const { return blockSize / 2; }
-  //int getNumHarmonics() const { return cycleLength / 2; }
+  //int getNumHarmonics() const { return blockSize / 2; }  // old
+  int getNumHarmonics() const { return cycleLength / 2; }  // new
   //int getNumHarmonics() const { return blockSize / (2*cyclesPerBlock); } // is the same
   // todo: maybe decide in advance, which harmonics will or will not alias and analyze only those
   // which won't as an optimization (instead of analyzing them all and then discarding the aliasing 
@@ -256,7 +256,7 @@ protected:
   void fillHarmonicData(RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T timeStamp);
 
 
-  T findPeakBinNear(const std::vector<T>& v, int centerBin, int searchWidth);
+  int findPeakBinNear(const std::vector<T>& v, int centerBin, int searchWidth);
 
   void fillWindow(); // just a stub atm
 

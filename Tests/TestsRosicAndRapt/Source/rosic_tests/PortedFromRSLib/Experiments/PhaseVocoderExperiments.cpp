@@ -1203,6 +1203,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   //testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6000_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
 
   testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6100_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
+  // 2nd harmonic gets missed somehow
 
 
   //testHarmonicResynthesis("TwoSines_Freq1=100_Freq2=10020_Amp1=0.5_Amp2=0.1", 44100, 5000, 100);

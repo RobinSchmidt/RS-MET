@@ -53,8 +53,8 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
     typedef rsWindowFunction::windowTypes WT;
     analyzer.setNumCyclesPerBlock(4);
     analyzer.setSpectralOversampling(8);
-    //analyzer.setWindowType(WT::HAMMING_WINDOW);
-    analyzer.setWindowType(WT::HANNING_WINDOW);
+    analyzer.setWindowType(WT::HAMMING_WINDOW);
+    //analyzer.setWindowType(WT::HANNING_WINDOW);
   }
   // for rectangular window, we may use 1 cycle, for others we may have to use at least 2 
   // (hamm/hann), for blackman maybe 4...we'll see
@@ -63,6 +63,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   // ...the signal is just too loud by factor 2 ...using a not normalized window helps
   // 2 cycles with hamm or hann doesn't work
   // with 4 cycles per sample, the freqs in the model are multiples of f0/4 - 
+  // ...seems to be fixed, but now we have to use normalized windows - why?
 
 
 

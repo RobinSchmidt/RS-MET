@@ -370,8 +370,8 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   trafo.getRealSignalMagnitudesAndPhases(&sigPadded[0], &mag[0], &phs[0]);  // perform FFT
 
 
-  //if(frameIndex == getNumFrames()/2)
-  //  rsPlotVector(mag);
+  if(frameIndex == getNumFrames()/2)
+    rsPlotVector(mag);
 
   //if(frameIndex >= 10) {
   //  rsPlotSpectrum(mag, sampleRate, T(-200));
@@ -383,8 +383,8 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   int dataIndex   = frameIndex + 1;        // +1 because of the fade-in datapoint
   int numBins     = trafo.getBlockSize();  // number of FFT bins
 
-  int numPartials = numBins / (2*zeroPad); // number of (pseudo) harmonics - old
-  //int numPartials = getNumHarmonics(); // number of (pseudo) harmonics - new
+  //int numPartials = numBins / (2*zeroPad); // number of (pseudo) harmonics - old
+  int numPartials = getNumHarmonics(); // number of (pseudo) harmonics - new
 
   int k;                                   // bin index
 
@@ -401,21 +401,23 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
     mdl.setData(0, dataIndex, time, T(0), T(2*zeroPad)*mag[0], phs[0]); // handle DC separately
     for(int h = 1; h < numPartials; h++) {
 
-      k = zeroPad*h;  // old
-      //k = cyclesPerBlock*zeroPad*h; // bin-index where we expect the peak for the (pseudo) harmonic - new
+      //k = zeroPad*h;  // old
+      k = cyclesPerBlock*zeroPad*h; // bin-index where we expect the peak for the (pseudo) harmonic - new
 
 
-      T peakBin = findPeakBinNear(mag, k, zeroPad);
+      //T peakBin = findPeakBinNear(mag, k, zeroPad); // old
+      //T peakBin = findPeakBinNear(mag, k, zeroPad*cyclesPerBlock); // new
+      int kPeak = findPeakBinNear(mag, k, zeroPad*cyclesPerBlock); // new
 
       // preliminary (copied and edited from above - does not yet include any refinements):
-      T freq = trafo.binIndexToFrequency(k, numBins, sampleRate);
-      T gain = T(2*zeroPad)*mag[k]; // preliminary - compute parabola maximum
+      T freq = trafo.binIndexToFrequency(kPeak, numBins, sampleRate);
+      T gain = T(2*zeroPad)*mag[kPeak]; // preliminary - compute parabola maximum
 
       // todo: find exact frequency and amplitude by parabolic interpolation:
 
 
 
-      mdl.setData(h, dataIndex, time, freq, gain, phs[k]);
+      mdl.setData(h, dataIndex, time, freq, gain, phs[kPeak]);
 
       // i think, we need to search for a peak in the range k += zeroPad/2 instead of just using k
     }
@@ -426,26 +428,25 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
 }
 
 template<class T>
-T rsHarmonicAnalyzer<T>::findPeakBinNear(const std::vector<T>& v, int k, int w)
+int rsHarmonicAnalyzer<T>::findPeakBinNear(const std::vector<T>& v, int k, int w)
 {
   if(w == 1)
-    return T(k);
+    return k;
   rsAssert(rsIsEven(w));
   int w2 = w/2;
   rsAssert(k-w2 >= 0 && k+w2 < (int) v.size());
   int kMax = rsArray::maxIndex(&v[k-w2], w) + k - w2;  // integer index
-
   if(kMax == k-w2 || kMax == k+w2)
   {
     // there is no actual peak - the max-value is at the boundary - maybe we should do something
     // special in this case? ...maybe just return the center k?
-    return T(k);
+    return k;
     // note that in this case, there may be actually a minimum at k, so the parabolic amplitude 
     // computation may end up with a negative value...maybe clip amplitudes at zero from below
   }
   else
   {
-    return T(kMax); // preliminary - todo: parabolic interpolation (of log-values)
+    return kMax; // preliminary - todo: parabolic interpolation (of log-values)
   }
 }
 
@@ -471,8 +472,8 @@ void rsHarmonicAnalyzer<T>::prepareBuffer(const std::vector<T>& sig, std::vector
 template<class T>
 void rsHarmonicAnalyzer<T>::fillWindow()
 {
-  //rsWindowFunction::createWindow(&wnd[0], (int) wnd.size(), windowType, true);
-  rsWindowFunction::createWindow(&wnd[0], (int) wnd.size(), windowType, false);
+  rsWindowFunction::createWindow(&wnd[0], (int) wnd.size(), windowType, true);
+  //rsWindowFunction::createWindow(&wnd[0], (int) wnd.size(), windowType, false);
 }
 
 
