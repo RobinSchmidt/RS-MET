@@ -370,8 +370,8 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   trafo.getRealSignalMagnitudesAndPhases(&sigPadded[0], &mag[0], &phs[0]);  // perform FFT
 
 
-  if(frameIndex == getNumFrames()/2)
-    rsPlotVector(mag);
+  //if(frameIndex == getNumFrames()/2)
+  //  rsPlotVector(mag);
 
   //if(frameIndex >= 10) {
   //  rsPlotSpectrum(mag, sampleRate, T(-200));
@@ -382,15 +382,13 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   // extract model data from FFT result:
   int dataIndex   = frameIndex + 1;        // +1 because of the fade-in datapoint
   int numBins     = trafo.getBlockSize();  // number of FFT bins
-
-  //int numPartials = numBins / (2*zeroPad); // number of (pseudo) harmonics - old
-  int numPartials = getNumHarmonics(); // number of (pseudo) harmonics - new
-
+  int numPartials = getNumHarmonics();     // number of (pseudo) harmonics - new
   int k;                                   // bin index
+  T freq, gain;
 
   if(zeroPad == 1 && cyclesPerBlock == 1) { // old version before multi-cycle and zero-padding
     for(k = 0; k < numPartials; k++) {
-      T freq = trafo.binIndexToFrequency(k, numBins, sampleRate);
+      freq = trafo.binIndexToFrequency(k, numBins, sampleRate);
       mdl.setData(k, dataIndex, time, freq, T(2)*mag[k], phs[k]);
     }
   }
@@ -401,25 +399,42 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
     mdl.setData(0, dataIndex, time, T(0), T(2*zeroPad)*mag[0], phs[0]); // handle DC separately
     for(int h = 1; h < numPartials; h++) {
 
-      //k = zeroPad*h;  // old
-      k = cyclesPerBlock*zeroPad*h; // bin-index where we expect the peak for the (pseudo) harmonic - new
+      k = cyclesPerBlock*zeroPad*h; // bin-index where we expect the peak for the (pseudo) harmonic
 
+      bool parabolicInterpolation = true;  // make user option
+      // with the tremolo-sine, not doing this is actually better, - why? maybe the search range 
+      // for a maximum is too large and we pick up sidelobes of the window? ...maybe we should look
+      // for a maximum *or* a minimum?
 
-      //T peakBin = findPeakBinNear(mag, k, zeroPad); // old
-      //T peakBin = findPeakBinNear(mag, k, zeroPad*cyclesPerBlock); // new
-      int kPeak = findPeakBinNear(mag, k, zeroPad*cyclesPerBlock); // new
+      if(parabolicInterpolation)
+      {
+        // not yet finished
 
-      // preliminary (copied and edited from above - does not yet include any refinements):
-      T freq = trafo.binIndexToFrequency(kPeak, numBins, sampleRate);
-      T gain = T(2*zeroPad)*mag[kPeak]; // preliminary - compute parabola maximum
+        //int kPeak = findPeakBinNear(mag, k, zeroPad);   // old
 
-      // todo: find exact frequency and amplitude by parabolic interpolation:
+        //int kPeak = findPeakBinNear(mag, k, zeroPad/cyclesPerBlock); 
+        // best for tremolo-sine, but then it misses the inharmonic for the 200Hz/6100Hz example
+        // ...we may need some more sophisticated way to find the relevant bin-index
 
+        int kPeak = findPeakBinNear(mag, k, zeroPad*cyclesPerBlock); 
+        // worst for tremolo-sine, best for two sines 200Hz/6100Hz
+        // why should the cyclesPerBlock make the search range wider - if anything, it should make 
+        // it narrower - but with the two versions above, we miss the 6100 partial
+        // -> try to figure out most meaningful search range and/or let the user select it
 
+        // preliminary
+        freq = trafo.binIndexToFrequency(kPeak, numBins, sampleRate);
+        gain = T(2*zeroPad)*mag[kPeak]; // preliminary - compute parabola maximum
 
-      mdl.setData(h, dataIndex, time, freq, gain, phs[kPeak]);
+        // todo: find exact frequency and amplitude by parabolic interpolation:
 
-      // i think, we need to search for a peak in the range k += zeroPad/2 instead of just using k
+        mdl.setData(h, dataIndex, time, freq, gain, phs[kPeak]);
+      }
+      else {
+        freq = trafo.binIndexToFrequency(k, numBins, sampleRate);
+        gain = T(2*zeroPad)*mag[k]; 
+        mdl.setData(h, dataIndex, time, freq, gain, phs[k]);
+      }
     }
   }
 
