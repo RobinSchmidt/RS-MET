@@ -382,11 +382,13 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   // extract model data from FFT result:
   int dataIndex   = frameIndex + 1;        // +1 because of the fade-in datapoint
   int numBins     = trafo.getBlockSize();  // number of FFT bins
-  int numPartials = numBins / (2*zeroPad); // number of (pseudo) harmonics
+
+  int numPartials = numBins / (2*zeroPad); // number of (pseudo) harmonics - old
+  //int numPartials = getNumHarmonics(); // number of (pseudo) harmonics - new
+
   int k;                                   // bin index
 
-  // this code is only valid when zeroPad == 1, for other factors, it needs to be modified:
-  if(zeroPad == 1) {
+  if(zeroPad == 1 && cyclesPerBlock == 1) { // old version before multi-cycle and zero-padding
     for(k = 0; k < numPartials; k++) {
       T freq = trafo.binIndexToFrequency(k, numBins, sampleRate);
       mdl.setData(k, dataIndex, time, freq, T(2)*mag[k], phs[k]);
@@ -396,9 +398,12 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   {
     // we will need parabolic interpolation to find better frequency (and amplitude) measurements 
     // and for interpolating phase-data, we need to be careful about wrapping issues
-    mdl.setData(0, dataIndex, time, T(0), T(2)*mag[0], phs[0]); // handle DC separately
+    mdl.setData(0, dataIndex, time, T(0), T(2*zeroPad)*mag[0], phs[0]); // handle DC separately
     for(int h = 1; h < numPartials; h++) {
-      k = zeroPad * h; // bin-index where we expect the peak for the (pseudo) harmonic
+
+      k = zeroPad*h;  // old
+      //k = cyclesPerBlock*zeroPad*h; // bin-index where we expect the peak for the (pseudo) harmonic - new
+
 
       T peakBin = findPeakBinNear(mag, k, zeroPad);
 
