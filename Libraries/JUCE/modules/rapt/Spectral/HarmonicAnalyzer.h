@@ -228,6 +228,7 @@ protected:
   // todo: maybe decide in advance, which harmonics will or will not alias and analyze only those
   // which won't as an optimization (instead of analyzing them all and then discarding the aliasing 
   // ones) - in this case, return the actual number of harmonics here
+  // ...should also be divided by cyclesPerBlock
 
   /** Returns the number of datapoints (per partial) in the sinusoidal model. */
   int getNumDataPoints() const { return getNumFrames() + 2; } // + 2 for fade in/out frames
