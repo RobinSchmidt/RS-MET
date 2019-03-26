@@ -256,7 +256,8 @@ protected:
   void fillHarmonicData(RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T timeStamp);
 
 
-  int findPeakBinNear(const std::vector<T>& v, int centerBin, int searchWidth);
+  int findPeakBinNear(std::vector<T>& v, int centerBin, int searchWidth);
+  // make vector const again (but that clashes with plotting -> make GNUPlotter take const arrays)
 
   void fillWindow(); // just a stub atm
 

@@ -384,7 +384,7 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   int numBins     = trafo.getBlockSize();  // number of FFT bins
   int numPartials = getNumHarmonics();     // number of (pseudo) harmonics - new
   int k;                                   // bin index
-  T freq, gain;
+  T freq, gain, phase;
 
   if(zeroPad == 1 && cyclesPerBlock == 1) { // old version before multi-cycle and zero-padding
     for(k = 0; k < numPartials; k++) {
@@ -422,13 +422,19 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
         // it narrower - but with the two versions above, we miss the 6100 partial
         // -> try to figure out most meaningful search range and/or let the user select it
 
-        // preliminary
-        freq = trafo.binIndexToFrequency(kPeak, numBins, sampleRate);
-        gain = T(2*zeroPad)*mag[kPeak]; // preliminary - compute parabola maximum
-
-        // todo: find exact frequency and amplitude by parabolic interpolation:
-
-        mdl.setData(h, dataIndex, time, freq, gain, phs[kPeak]);
+        if(kPeak == -1) {
+          // no peak found: use k for the frequency, zero for the amplitude
+          freq = trafo.binIndexToFrequency(k, numBins, sampleRate);
+          gain = T(0);
+          phase = phs[k];
+        } else {
+          // preliminary:
+          freq  = trafo.binIndexToFrequency(kPeak, numBins, sampleRate);
+          gain  = T(2*zeroPad)*mag[kPeak]; // preliminary - compute parabola maximum
+          phase = phs[kPeak];
+          // todo: find exact frequency and amplitude by parabolic interpolation:
+        }
+        mdl.setData(h, dataIndex, time, freq, gain, phase);
       }
       else {
         freq = trafo.binIndexToFrequency(k, numBins, sampleRate);
@@ -442,27 +448,67 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   int dummy = 0;
 }
 
+// move to rsArray:
 template<class T>
-int rsHarmonicAnalyzer<T>::findPeakBinNear(const std::vector<T>& v, int k, int w)
+int numPeaks(T* x, int N)
+{
+  int np = 0;
+  for(int i = 1; i < N-1; i++)
+    if(x[i] >= x[i-1] && x[i] >= x[i+1])
+      np++;
+  return np;
+}
+
+template<class T>
+int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int k, int w)
 {
   if(w == 1)
     return k;
   rsAssert(rsIsEven(w));
   int w2 = w/2;
-  rsAssert(k-w2 >= 0 && k+w2 < (int) v.size());
-  int kMax = rsArray::maxIndex(&v[k-w2], w) + k - w2;  // integer index
-  if(kMax == k-w2 || kMax == k+w2)
-  {
+  rsAssert(k-w2 >= 0 && k+w2+1 < (int) v.size());
+
+  int nPeaks = numPeaks(&v[k-w2], w+1);
+  //if(nPeaks != 1)
+  //  return -1;  
+  // there's no single peak - but a single peak is the condition that we have a partial in this
+  // segment of the spectrum
+  // this sometimes misses the peak at 6100 - why ...but only in the later frames...
+  // maybe using a blackman window could help because its mainlobe is wider
+
+  //int kMax = rsArray::maxIndex(&v[k-w2], w) + k - w2;  // integer index, old
+  int kMax = rsArray::maxIndex(&v[k-w2], w+1) + k - w2;  // integer index, new
+  //if(kMax == k-w2 || kMax == k+w2) {  // old
+  if(kMax == k-w2 || kMax == k+w2+1) {  // new
     // there is no actual peak - the max-value is at the boundary - maybe we should do something
     // special in this case? ...maybe just return the center k?
-    return k;
+    return -1;
     // note that in this case, there may be actually a minimum at k, so the parabolic amplitude 
     // computation may end up with a negative value...maybe clip amplitudes at zero from below
-  }
-  else
-  {
+  } else {
+    //rsPlotArray(&v[k-w2], w+1); // plot segement where we search for a peak
     return kMax; // preliminary - todo: parabolic interpolation (of log-values)
   }
+
+  // -smaller search ranges are better for the tremolo-sine, because with a larger range, it may
+  //  pick up the sidelobes of the window
+  // -larger ranges better for the inharmonic pair (200/6100) because a too small range will miss
+  //  the inharmonic partial
+  // -can we find an algorithm that works well in both cases? -> make some plots
+
+
+  // maybe, we should also check, if the found peak is higher than its two neighbours and maybe 
+  // if we don't find an actual peak, we should return -1 to indicate that - maybe the outlying 
+  // code can the decide to set the amplitude to zero
+
+  // maybe we should also check, if the maximum is some threshold above the min or mean value
+  // and/or whether the curve is unimodal, i.e. has exactly one local peak
+
+  // this unimodality condition seems to make a lot of sense when we use zeroPad*cyclesPerBlock as 
+  // search length because the mainlobe is wider than the sidelobes - sidelobes can be detected by
+  // having a multiple local peaks
+
+
 }
 
 
