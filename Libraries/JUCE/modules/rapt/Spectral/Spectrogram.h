@@ -1,5 +1,5 @@
-#ifndef RAPT_PHASEVOCODER_H
-#define RAPT_PHASEVOCODER_H
+#ifndef RAPT_SPECTROGRAM_H
+#define RAPT_SPECTROGRAM_H
 
 /** This is .... under construction ...
 

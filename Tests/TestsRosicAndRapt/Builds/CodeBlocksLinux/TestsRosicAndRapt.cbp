@@ -2567,6 +2567,90 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Spectral/HarmonicAnalyzer.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Spectral/HarmonicAnalyzer.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Spectral/SinusoidalAnalyzer.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Spectral/SinusoidalAnalyzer.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Spectral/SinusoidalModel.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Spectral/SinusoidalModel.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Spectral/SinusoidalProcessor.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Spectral/SinusoidalProcessor.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Spectral/SinusoidalSynthesizer.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Spectral/SinusoidalSynthesizer.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Spectral/Spectral.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Spectral/Spectral.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Spectral/Spectrogram.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Spectral/Spectrogram.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rapt/Temp/Analysis.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
@@ -3143,18 +3227,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Sampling/HarmonicAnalyzer.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Sampling/HarmonicAnalyzer.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Sampling/MiscUnfinished.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
@@ -3174,54 +3246,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Sampling/SampleManipulation.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Sampling/SinusoidalModel.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Sampling/SinusoidalModel.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Sampling/SinusoidalProcessor.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Sampling/SinusoidalProcessor.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Sampling/SinusoidalSynthesizer.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Sampling/SinusoidalSynthesizer.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Sampling/Spectrogram.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Sampling/Spectrogram.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>

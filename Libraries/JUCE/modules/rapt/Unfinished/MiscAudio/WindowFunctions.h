@@ -14,12 +14,18 @@ class rsWindowFunction
 
 public:
 
+  /** The available window types. Some have a ZN, NN, ZZ qualifiers. ZN means, that the first 
+  sample of the window is (Z)ero and the last sample ins (N)onzero. Mostly, zero values at the ends
+  are undesirable because they artificially make the window shorter than it has to be. In some 
+  cases, however, a zero sample at the start or end may be needed to make then window satisfy other
+  conditions such as adding up to a constant when being overlapped with shifted versions of 
+  itself. */
   enum windowTypes
   {
     RECTANGULAR_WINDOW = 0,
     TRIANGULAR_WINDOW,
     HANNING_WINDOW,    // add qualifier (either ZZ or NN, i think)
-    HANNING_WINDOW_ZN, // start at zero ends nonzero - sums to constant with overlap 1
+    HANNING_WINDOW_ZN, // start at (Z)ero and end ends (N)onzero - sums to constant with overlap 1
     HAMMING_WINDOW,
 
     BLACKMAN_WINDOW,

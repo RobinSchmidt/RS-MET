@@ -232,16 +232,17 @@ rsMatrix<std::complex<T>> SinusoidalAnalyzer<T>::getComplexSpectrogram(
   return sp.complexSpectrogram(sampleData, numSamples);
 }
 
-
-
+/*
+// move to Plotting.h:
 void plotDecibels(int N, double* x, double *mag) // for debug-plotting
 {
   double* dB = new double[N];
   for(int i = 0; i < N; i++)
     dB[i] = rsAmpToDbWithCheck(mag[i], 0.00000001);
-  plotData(N, x, dB);
+  rsPlotData(N, x, dB);
   delete[] dB;
 }
+*/
 
 template<class T>
 RAPT::rsSinusoidalModel<T> SinusoidalAnalyzer<T>::analyzeSpectrogram(

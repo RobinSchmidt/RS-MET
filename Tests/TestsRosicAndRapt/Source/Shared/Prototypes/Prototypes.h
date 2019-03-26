@@ -17,7 +17,7 @@
 #include "Polygon.h"
 #include "Drawing.h"
 
-#include "SinusoidalModeling.h"
+//#include "SinusoidalModeling.h"  // is now in rapt
 
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant 

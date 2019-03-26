@@ -12,7 +12,7 @@
 #include "Polygon.cpp"
 #include "Drawing.cpp"
 
-#include "SinusoidalModeling.cpp"
+//#include "SinusoidalModeling.cpp" // moved to rapt
 
 using namespace RAPT;
 

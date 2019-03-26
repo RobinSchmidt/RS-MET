@@ -505,9 +505,9 @@ std::string SinusoidalModelPlotter<T>::getPartialColor(
   return "000000"; // preliminary
 }
 
-/*
 template <class T>
-void SinusoidalModelPlotter<T>::plotAnalysisResult(SinusoidalAnalyzer<T>& sa, T* x, int N, T fs)
+void SinusoidalModelPlotter<T>::plotAnalysisResult(
+  RAPT::SinusoidalAnalyzer<T>& sa, T* x, int N, T fs)
 {
   GNUPlotter plt;
 
@@ -535,11 +535,11 @@ void SinusoidalModelPlotter<T>::plotAnalysisResult(SinusoidalAnalyzer<T>& sa, T*
 
   // create model and add it to the plot:
   RAPT::rsSinusoidalModel<double> model = sa.analyze(x, N, fs);
-  addModelToPlot(model, plt, "000000", fs);
+  addModelToPlot(model, plt, fs, "000000");
 
   plt.plot();
 }
-*/
+
 
 
 

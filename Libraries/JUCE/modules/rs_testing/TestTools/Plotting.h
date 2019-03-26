@@ -11,8 +11,8 @@ using namespace std;  // try to get rid
 #include "rs_testing/rs_testing.h"
 
 //#include "../Prototypes/SinusoidalModeling.h"
-#include "../../../../Tests/TestsRosicAndRapt/Source/Shared/Prototypes/SinusoidalModeling.h" 
-// get rid - class should be moved to rapt
+//#include "../../../../Tests/TestsRosicAndRapt/Source/Shared/Prototypes/SinusoidalModeling.h" 
+// get rid - class should be moved to rapt - done
 
 ///** Plots at most five y-functions against a common x-axis. */
 //void plotData(int N, float *x, float *y1, float *y2 = nullptr, float *y3 = nullptr,
@@ -156,7 +156,7 @@ void stemPlot(int N, double *x, double *y);
 // functions for plotting sinusoidal model data:
 
 /** Convenience function. Uses class SinusoidalModelPlotter. */
-void plotSinusoidalAnalysisResult(SinusoidalAnalyzer<double>& sa, double* sampleData, int N, 
+void plotSinusoidalAnalysisResult(RAPT::SinusoidalAnalyzer<double>& sa, double* sampleData, int N, 
   double sampleRate);
 
 void plotSineModel(const RAPT::rsSinusoidalModel<double>& model, double sampleRate);

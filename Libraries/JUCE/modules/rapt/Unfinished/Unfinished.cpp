@@ -47,11 +47,6 @@ namespace RAPT
 //#include "Analysis/ResponseGetters.cpp"
 
 // under construction:
-#include "Sampling/Spectrogram.cpp"
-#include "Sampling/SinusoidalModel.cpp"
-#include "Sampling/SinusoidalProcessor.cpp"
-#include "Sampling/SinusoidalSynthesizer.cpp"
-#include "Sampling/HarmonicAnalyzer.cpp"
 #include "Sampling/MiscUnfinished.cpp"
 #include "Sampling/SampleManipulation.cpp"
 

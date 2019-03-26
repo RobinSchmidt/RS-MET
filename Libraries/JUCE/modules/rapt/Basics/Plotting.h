@@ -95,3 +95,16 @@ inline void rsPlotSpectrum(std::vector<T> fftMagnitudes, T sampleRate,
   plt.addDataArrays(N, &f[0], &db[0]);
   plt.plot();
 }
+
+// somewhat redundant with rsPlotSpectrum...
+template<class T>
+inline void rsPlotDecibels(int N, T* x, T *mag)
+{
+  T* dB = new T[N];
+  for(int i = 0; i < N; i++)
+    dB[i] = rsAmpToDbWithCheck(mag[i], 0.00000001);
+  GNUPlotter plt;
+  plt.addDataArrays(N, x, dB);
+  plt.plot();
+  delete[] dB;
+}

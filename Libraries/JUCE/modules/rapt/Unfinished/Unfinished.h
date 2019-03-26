@@ -63,11 +63,6 @@ namespace RAPT
 
 // under construction:
 #include "Sampling/MiscUnfinished.h"
-#include "Sampling/Spectrogram.h"
-#include "Sampling/SinusoidalModel.h"
-#include "Sampling/SinusoidalProcessor.h"
-#include "Sampling/SinusoidalSynthesizer.h"
-#include "Sampling/HarmonicAnalyzer.h"
 #include "Sampling/SampleManipulation.h"
 
 }

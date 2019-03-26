@@ -27,6 +27,7 @@ defined" linker errors. */
 //#include "Music/Music.cpp"
 //#include "Instruments/Instruments.cpp"
 #include "Unfinished/Unfinished.cpp" 
+#include "Spectral/Spectral.cpp"
 
 
 //void fixLinkerWarningDummyFunction() {} // dummy function to fix linker warning (duh!)
