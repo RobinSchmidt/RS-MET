@@ -370,8 +370,8 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   trafo.getRealSignalMagnitudesAndPhases(&sigPadded[0], &mag[0], &phs[0]);  // perform FFT
 
 
-  if(frameIndex == getNumFrames()/2)
-    rsPlotVector(mag);
+  //if(frameIndex == getNumFrames()/2)
+  //  rsPlotVector(mag);
 
   //if(frameIndex >= 10) {
   //  rsPlotSpectrum(mag, sampleRate, T(-200));
@@ -405,6 +405,9 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
       // preliminary (copied and edited from above - does not yet include any refinements):
       T freq = trafo.binIndexToFrequency(k, numBins, sampleRate);
       T gain = T(2*zeroPad)*mag[k]; // preliminary - compute parabola maximum
+
+      // todo: find exact frequency and amplitude by parabolic interpolation:
+
 
 
       mdl.setData(h, dataIndex, time, freq, gain, phs[k]);
