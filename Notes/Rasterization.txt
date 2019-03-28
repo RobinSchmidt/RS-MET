@@ -16,7 +16,7 @@ https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical
 -ray tracing loops in an outer loop over all pixels
  -it shoots a ray from the camera through each pixel
   -it computes intersections of this ray with all the triangles (in an inner loop) to find the one
-   which is closes to the camera along the ray
+   which is closest to the camera along the ray
 -rasterization projects all triangles to the screen (in an outer loop)
  -for each projected triangle, it loops over (some subset of) all the pixels
  -for each pixel, it must figure out, if this pixel is part of the triangle, and if so, it may 

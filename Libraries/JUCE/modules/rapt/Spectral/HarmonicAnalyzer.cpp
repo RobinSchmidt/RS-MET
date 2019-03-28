@@ -370,8 +370,9 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   trafo.getRealSignalMagnitudesAndPhases(&sigPadded[0], &mag[0], &phs[0]);  // perform FFT
 
 
-  //if(frameIndex == getNumFrames()/2)
-  //  rsPlotVector(mag);
+  if(frameIndex == getNumFrames()/2)
+    rsPlotSpectrum(mag, T(0), T(-100), true); // freq axis wrong, if we pass the sampleRate
+    //rsPlotVector(mag);
 
   //if(frameIndex >= 10) {
   //  rsPlotSpectrum(mag, sampleRate, T(-200));
@@ -467,6 +468,10 @@ int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int k, int w)
   rsAssert(rsIsEven(w));
   int w2 = w/2;
   rsAssert(k-w2 >= 0 && k+w2+1 < (int) v.size());
+
+
+  //rsPlotArray(&v[k-w2], w+1); // plot segement where we search for a peak
+
 
   int nPeaks = numPeaks(&v[k-w2], w+1);
   //if(nPeaks != 1)

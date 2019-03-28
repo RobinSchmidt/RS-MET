@@ -22,7 +22,7 @@ void sinusoidalAnalysis2();   // two single, static sinusoids
 void sinusoidalAnalysis3();   // a linear frequency sweep
 
 void phaseFreqConsistency();
-
+void harmonicPartialDetection();
 void harmonicAnalysis1();
 
 

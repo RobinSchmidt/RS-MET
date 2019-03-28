@@ -1169,6 +1169,136 @@ void testHarmonicResynthesis(const std::string& name, double fs, int N, double f
   testHarmonicResynthesis(name, input, fs, f0, writeWaveFiles, plotResults);
 }
 
+// convenience function - move to rs_testing
+RAPT::rsWindowFunction::windowTypes stringToWindowType(const std::string& wt)
+{
+  typedef RAPT::rsWindowFunction::windowTypes WT;
+  if(wt == "rc") return WT::RECTANGULAR_WINDOW;
+  if(wt == "hn") return WT::HANNING_WINDOW;
+  if(wt == "hm") return WT::HAMMING_WINDOW;
+  if(wt == "bm") return WT::BLACKMAN_WINDOW;
+  if(wt == "bh") return WT::BLACKMAN_HARRIS;
+  RAPT::rsError("Unknown window type");
+  return WT::RECTANGULAR_WINDOW;
+}
+
+void harmonicPartialDetection()
+{
+  // Goal: 
+  // Figure out, how rsHarmonicAnalyzer::findPeakBinNear can decide whether or not there is a 
+  // partial present in the vicinity of a given FFT bin k when we use multiple cycles per block 
+  // and/or zero padding. The decision algorithm may depend on the choice the window function.
+
+  // Idea:
+  // If there is a partial present near bin k, there should be a spectral magnitude peak in some
+  // neighbourhood of k, so we need to scan the neighbourhood of k for a local maximum. However, 
+  // due to sidelobes of the window, we may also see local maxima when there is no actual partial.
+  // To distinguish mainlobe peaks from sidelobe peaks, we use the fact that the mainlobe has a 
+  // greater width than the sidelobes. In the spectrum, this translates to having only a single 
+  // local maximum - we want to use this fact for making a decision: if we see only a single local
+  // maximum in the given neighbourhood, we decide that this peak corresponds to a partial, 
+  // otherwise we conclude that there is no partial present around bin k...
+
+  //typedef std::string Str;
+
+  // Notation: 
+  int    nc = 4;     // number of cycles per block (integer, power of two)
+  int    zp = 4;     // zero-padding factor (integer, power of two)
+  int    N  = 1000;  // number of samples
+  double f1 = 100;   // input frequency 1 in Hz
+  double f2 = 200;   // input frequency 2 in Hz
+  double fs = 5000;  // sample rate
+  string wt = "bm";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
+                     // bh: Blackman/Harris
+  // k:              // a generic FFT bin index
+
+  // The main objective is to figure out, how great we should choose the neighbourhood of k to scan 
+  // as function of nc,zp,wt
+  // We use zp = 8, but that matters only for the plotting resolution not for the actual 
+  // resolvability of frequencies. However, it will matter for the precision of the frequency 
+  // estimation when parabolic interpolation is implemented (well, it matters also without 
+  // parabolic interpolation - in a more direct way, actually). I guess, zp=4 will be good enough
+  // in practice
+
+
+  // create input signal:
+  std::string name = "TwoSines_Freq1=" + std::to_string(f1) + "_Freq2=" + std::to_string(f2);
+  name += "_Amp1=1.0_Amp2=1.0";
+  std::vector<double> x = createNamedSound(name, fs, N); 
+  //rsPlotVector(x);
+
+
+  // create and set up analyzer:
+  RAPT::rsHarmonicAnalyzer<double> analyzer;
+  analyzer.setSampleRate(fs);
+  analyzer.setSpectralOversampling(zp);
+  analyzer.setNumCyclesPerBlock(nc);
+  analyzer.setWindowType(stringToWindowType(wt));
+  analyzer.getCycleFinder().setFundamental(f1);
+
+  // analyze (todo: maybe make it possible, to split up the analysis process - maybe let client 
+  // code trigger partial steps separately...or maybe not...dunno)
+  RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int) x.size());
+  //plotSineModel(mdl, fs);
+
+  int dummy = 0;
+
+
+  // Observations:
+
+  // -f1=100, f2=200:
+  //  -wt = hm, nc = 4
+  //   -mainlobes at 32 and 64 (correct)
+  //   -deep notch between mainlobes
+  //  -wt = bm, nc = 4
+  //   -mainlobes at 32 and 64 (correct)
+  //   -notch between mainlobes at -46dB
+  //  -wt = bh, nc = 8
+  //   -mainlobes at 64 and 128 (correct)
+  //   -deep notch between mainlobes
+
+  // -f1=100, f2=250:
+  //  -wt = hn, nc = 2
+  //   -mainlobes at 16 and 40 (correct)
+  //   -notch between mainlobes at -12dB, (Hamming: -15 -> better)
+  //  -wt = rc, nc = 2
+  //   -1st mainlobe at k=15 (should be at 16)
+  //   -2nd mainlobe at k=40 (correct)
+  //   -1 sidelobe between the mainlobes
+  //  -wt = rc, nc = 4
+  //   -1st mainlobe at k=32 (correct)
+  //   -2nd mainlobe at k=80 (correct);
+  //   -4 sidelobes between the mainlobes
+  //  -wt = hn,hm, nc = 4 
+  //   -mainlobes at 32 and 80
+  //   -2 sidelobes between the mainlobes
+  //   -hm has mainlobes at -41dB, hn at -31dB -> Hamming better than Hanning
+  //  -wt = bm, nc = 4
+  //   -mainlobes at 32 and 80 (correct)
+  //   -deep notch (below sidelobe level) and no sidelobes between mailobes
+  //  -wt = bh, nc = 4
+  //   -correct mainlobes
+  //   -notch between mainlobes at around -32dB
+  //  -wt = bh, nc = 8
+  //   -mainlobes at 64 and 160 (correct)
+  //   -4 sidelobes between mainlobes
+
+
+  // Conclusions:
+
+
+  // I think, the sweet spot is nc = 4 and wt = bm -> try in practice....For zp, we should first
+  // implement parabolic interpolation and then test, how well the frequency is estimated with
+  // various settings for zp
+
+  // Maybe we should try a Dolph-Chebychev window and give the user the option to set its sidelobe
+  // suppression and give recommendations for good settings as function of the number of cycles per 
+  // block.
+
+  // Maybe we should allow for arbitrary values for nc and zp - then we may also use arbitrary  
+  // cycleLength -> Bluestein FFT. But maybe the use should be able to select a power-of-two mode
+}
+
 void harmonicAnalysis1()  // rename to harmonicResynthesis
 {
 

@@ -81,16 +81,34 @@ inline void rsPlotSignalWithMarkers(T* signal, int signalLength, T* markers, int
   plt.plot();
 }
 
+/** Plots the given spectral magnitude values as decibels. You may pass a sampleRate and 
+floor/threshold for the dB values. If you pass no sample-rate (or zero), the frequency axis will 
+show the bin-index, otherwise the physical frequency in Hz. The spectrum may also optionally be 
+normalized such that the maximum value is at 0 dB. */
 template<class T>
-inline void rsPlotSpectrum(std::vector<T> fftMagnitudes, T sampleRate, 
-  T floorDb = -std::numeric_limits<T>::infinity())
+inline void rsPlotSpectrum(std::vector<T> fftMagnitudes, T sampleRate = T(0), 
+  T floorDb = T(-200), bool normalize = false)
 {
   int N = (int)fftMagnitudes.size();
+
+  T scl = T(1);
+  if(normalize == true) {
+    T maxVal = T(0);
+    for(int k = 0; k < N; k++)
+      if(fftMagnitudes[k] > maxVal)
+        maxVal = fftMagnitudes[k];
+    scl = T(1) / maxVal;
+  }
+
   std::vector<T> f(N), db(N);
   for(int k = 0; k < N; k++) {
-    f[k] = k * sampleRate / (2*N); // 2 bcs we assume that we get an array of only positive freq bins
-    db[k] = std::max(floorDb, 20*log10(fftMagnitudes[k]));
+    if(sampleRate > T(0))
+      f[k] = k * sampleRate / (2*N); // 2 bcs we assume that we get an array of only positive freq bins
+    else
+      f[k] = T(k);
+    db[k] = std::max(floorDb, 20*log10(scl*fftMagnitudes[k]));
   }
+
   GNUPlotter plt;
   plt.addDataArrays(N, &f[0], &db[0]);
   plt.plot();
