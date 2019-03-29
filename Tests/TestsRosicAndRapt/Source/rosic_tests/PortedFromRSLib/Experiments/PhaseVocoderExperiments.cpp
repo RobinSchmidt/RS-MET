@@ -1206,9 +1206,9 @@ void harmonicPartialDetection()
   int    zp = 4;     // zero-padding factor (integer, power of two)
   int    N  = 1000;  // number of samples
   double f1 = 100;   // input frequency 1 in Hz
-  double f2 = 200;   // input frequency 2 in Hz
+  double f2 = 1000;  // input frequency 2 in Hz
   double fs = 5000;  // sample rate
-  string wt = "bm";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
+  string wt = "bh";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
                      // bh: Blackman/Harris
   // k:              // a generic FFT bin index
 
@@ -1283,6 +1283,26 @@ void harmonicPartialDetection()
   //   -mainlobes at 64 and 160 (correct)
   //   -4 sidelobes between mainlobes
 
+  // Measure the extent of the mainlobe as function of nc,zp - we set f1=100, f2=1000 and read off 
+  // first zeros of the mainlobe for the second partial
+  // -Blackman-window, various nc and zp:
+  //  -wt=bm, nc=4, zp=4: 148...172 (peak at 160) -> width = 172-148 = 24
+  //  -wt=bm, nc=4, zp=8: 296...344 (peak at 320) -> width = 344-296 = 48
+  //  -wt=bm, nc=8, zp=4: 308...332 (peak at 320) -> width = 332-308 = 24
+  //  -wt=bm, nc=8, zp=8: 616...664 (peak at 640) -> width = 664-616 = 48
+  // -nc=zp=4, various windows:
+  //  -wt=rc, nc=4, zp=4: 156...164 (peak at 160) -> width = 164-156 =  8
+  //  -wt=hm, nc=4, zp=4: 152...168 (peak at 160) -> width = 168-152 = 16
+  //  -wt=bm, nc=4, zp=4: 148...172 (peak at 160) -> width = 172-148 = 24  (copied from above)
+  //  -wt=bh, nc=4, zp=4: 144...176 (peak at 160) -> width = 176-144 = 32
+  // -The extent of the mainlobe in bins is proportional to the zero-padding factor zp and the 
+  //  window's mainlobe witdh "mlw" (rc: 2, hm,hn: 4, bm: 6, bh: 8)...well, it's actually equal to
+  //  width = zp*mlw - we have to look (at most) width/2 to the left and width/2 to the right
+  //  -> use round(sw*0.5*zp*mlw) where sw is a user parameter (default: 1)
+
+
+  // -wt=rs, nc=4, zp=4:
+
 
   // Conclusions:
 
@@ -1296,7 +1316,14 @@ void harmonicPartialDetection()
   // block.
 
   // Maybe we should allow for arbitrary values for nc and zp - then we may also use arbitrary  
-  // cycleLength -> Bluestein FFT. But maybe the use should be able to select a power-of-two mode
+  // cycleLength -> Bluestein FFT. But maybe the use should be able to select a power-of-two mode.
+
+  // The width (in bins) for searching for a peak should be proportional to the mainlobe-width 
+  // ("mlw"), zero-pad-factor
+  // What about the number of cycles?
+  // Let the user set peak-search-width "psw" (real number) - the search width in bins is computed 
+  // as binWidth = round(psw*zp*mlw)
+  // 
 }
 
 void harmonicAnalysis1()  // rename to harmonicResynthesis
