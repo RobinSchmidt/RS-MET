@@ -1330,6 +1330,15 @@ void harmonicPartialDetection()
   // Let the user set peak-search-width "psw" (real number) - the search width in bins is computed 
   // as binWidth = round(psw*zp*mlw)
   // 
+
+  // todo: check different peak-search-widths for tremolo-sine and two-sines 200Hz/6100Hz
+  // -> make sure, it doesn't miss the 2nd partial in the 2nd case and doesn't produce artificial
+  // harmonics in the 1st case
+  // -smaller search ranges are better for the tremolo-sine, because with a larger range, it may
+  //  pick up the sidelobes of the window
+  // -larger ranges better for the inharmonic pair (200/6100) because a too small range will miss
+  //  the inharmonic partial
+  // -can we find an algorithm that works well in both cases? -> make some plots
 }
 
 void harmonicAnalysis1()  // rename to harmonicResynthesis

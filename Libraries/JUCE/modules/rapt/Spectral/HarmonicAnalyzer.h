@@ -274,12 +274,19 @@ protected:
   correspond to partials. */
   //std::vector<int> findPartialBins(const std::vector<T> magnitudes);
 
-
+  /** Given a vector of spectral magnitude values, this function returns the index of a local 
+  maximum in the neighbourhood of a given centerBin. The centerBin is typically the bin, where we
+  expect a harmonic/partial to be, if it were perfectly harmonic. We search through all bins from 
+  centerBin - halfSearchWidth to centerBin + halfSearchWidth. If no local maximum is found (or some
+  other constraints that indicate a proper partial are not met), -1 is returned which indicates 
+  that there is no partial in the neighbourhood of the expected harmonic. */
   int findPeakBinNear(std::vector<T>& v, int centerBin, int halfSearchWidth);
-
-  int findPeakBinNearOld(std::vector<T>& v, int centerBin, int searchWidth); // remove
   // make vector const again (but that clashes with plotting -> make GNUPlotter take const arrays)
 
+
+
+
+  /** Fills our window function array. */
   void fillWindow(); // just a stub atm
 
 
