@@ -362,6 +362,14 @@ T rsHarmonicAnalyzer<T>::getUnWarpedTimeStampForFrame(int m)
 }
 
 template<class T>
+int rsHarmonicAnalyzer<T>::getSpectralPeakSearchWidth()
+{
+  T peakSearchWidth = T(1); // maybe make user parameter later
+  T mainlobeWidth   = rsWindowFunction::getMainLobeWidth(windowType, T(0));
+  return (int) round(T(0.5)*peakSearchWidth*zeroPad*mainlobeWidth);
+}
+
+template<class T>
 void rsHarmonicAnalyzer<T>::fillHarmonicData(
   RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T time)
 {
@@ -386,6 +394,8 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   int numPartials = getNumHarmonics();     // number of (pseudo) harmonics - new
   int k;                                   // bin index
   T freq, gain, phase;
+
+  int w2 = getSpectralPeakSearchWidth(); // to be used later
 
   if(zeroPad == 1 && cyclesPerBlock == 1) { // old version before multi-cycle and zero-padding
     for(k = 0; k < numPartials; k++) {
@@ -417,7 +427,7 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
         // best for tremolo-sine, but then it misses the inharmonic for the 200Hz/6100Hz example
         // ...we may need some more sophisticated way to find the relevant bin-index
 
-        int kPeak = findPeakBinNear(mag, k, zeroPad*cyclesPerBlock); 
+        int kPeak = findPeakBinNearOld(mag, k, zeroPad*cyclesPerBlock); 
         // worst for tremolo-sine, best for two sines 200Hz/6100Hz
         // why should the cyclesPerBlock make the search range wider - if anything, it should make 
         // it narrower - but with the two versions above, we miss the 6100 partial
@@ -461,7 +471,44 @@ int numPeaks(T* x, int N)
 }
 
 template<class T>
-int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int k, int w)
+int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int kCenter, int w2)
+{
+  if(w2 == 0)
+    return kCenter;
+  int kLeft  = rsMax(kCenter - w2, 0);
+  int kRight = rsMin(kCenter + w2, (int) v.size()-1);
+  int length = kRight - kLeft + 1;
+  //rsPlotArray(&v[kLeft], length); // plot segement where we search for a peak
+  if(w2 == 1) {
+    if(v[kCenter] >= v[kLeft] && v[kCenter] >= v[kRight])
+      return kCenter;
+    else
+      return -1;
+  }
+
+  // If there's a partial near kCenter, we expect to see an unimodal distribution of values inside 
+  // the search window because our search window equals the mainlobe width. This way, we may 
+  // distinguish mainlobes from sidelobes - sidelobes are narrower which leads to multiple local 
+  // maxima in the search window.
+  // ..hmm...but what if the maximum
+  // is shifted to the side - shouldn't we use *half* of the mainlobe-width? make plots and check
+  int nPeaks = numPeaks(&v[kLeft], length);
+  if(nPeaks != 1)
+    return -1;
+  // maybe make enforcing this unimodality condition optional
+
+  // find index of maximum:
+  int kMax = rsArray::maxIndex(&v[kLeft], length) + kLeft; // check this
+
+  if(kMax == kLeft || kMax == kRight) // isn't this ensured already by nPeaks == 1?
+    return -1;
+  else
+    return kMax;
+}
+
+// old version - to be reomoved:
+template<class T>
+int rsHarmonicAnalyzer<T>::findPeakBinNearOld(std::vector<T>& v, int k, int w)
 {
   if(w == 1)
     return k;
@@ -512,8 +559,6 @@ int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int k, int w)
   // this unimodality condition seems to make a lot of sense when we use zeroPad*cyclesPerBlock as 
   // search length because the mainlobe is wider than the sidelobes - sidelobes can be detected by
   // having a multiple local peaks
-
-
 }
 
 

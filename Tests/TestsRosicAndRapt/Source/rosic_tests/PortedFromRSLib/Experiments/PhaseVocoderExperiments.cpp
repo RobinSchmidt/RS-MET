@@ -1296,12 +1296,10 @@ void harmonicPartialDetection()
   //  -wt=bm, nc=4, zp=4: 148...172 (peak at 160) -> width = 172-148 = 24  (copied from above)
   //  -wt=bh, nc=4, zp=4: 144...176 (peak at 160) -> width = 176-144 = 32
   // -The extent of the mainlobe in bins is proportional to the zero-padding factor zp and the 
-  //  window's mainlobe witdh "mlw" (rc: 2, hm,hn: 4, bm: 6, bh: 8)...well, it's actually equal to
-  //  width = zp*mlw - we have to look (at most) width/2 to the left and width/2 to the right
+  //  window's mainlobe witdh "mlw" (rc: 2, hm,hn: 4, bm: 6, bh: 8). There is no dependency on nc.
+  //  The width is actually exactly equal to width = zp*mlw - we have to look (at most) width/2 to 
+  //  the left and width/2 to the right
   //  -> use round(sw*0.5*zp*mlw) where sw is a user parameter (default: 1)
-
-
-  // -wt=rs, nc=4, zp=4:
 
 
   // Conclusions:

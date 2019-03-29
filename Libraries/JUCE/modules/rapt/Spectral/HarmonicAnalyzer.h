@@ -249,6 +249,14 @@ protected:
   T getUnWarpedTimeStampForFrame(int frameIndex);
   // maybe rename to getUnWarpedSampleIndexForFrame
 
+  /** Returns the extent by which we look to the left and and right for searching for a peak in the 
+  magnitude spectrum from a given expected peak bin index k. If the returned value is w, we look at
+  bins k-w...k+w. This width is proportional to the zero-padding factor and the window's mainlobe 
+  width.
+  ..should we include or exclude the boundaries?
+  */
+  int getSpectralPeakSearchWidth();
+
   /** Used internally to fill in the data in the model at the given frame-index based on the 
   current content of our "sig" buffer member variable. The time-stamp of the frame should be passed
   by the caller - frequency, magnitude and phase data are computed from the FFT of the sig 
@@ -256,7 +264,9 @@ protected:
   void fillHarmonicData(RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T timeStamp);
 
 
-  int findPeakBinNear(std::vector<T>& v, int centerBin, int searchWidth);
+  int findPeakBinNear(std::vector<T>& v, int centerBin, int halfSearchWidth);
+
+  int findPeakBinNearOld(std::vector<T>& v, int centerBin, int searchWidth); // remove
   // make vector const again (but that clashes with plotting -> make GNUPlotter take const arrays)
 
   void fillWindow(); // just a stub atm
