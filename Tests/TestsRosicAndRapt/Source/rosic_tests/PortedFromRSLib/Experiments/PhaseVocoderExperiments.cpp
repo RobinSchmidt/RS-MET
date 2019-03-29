@@ -1354,7 +1354,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
 
 
-  //testHarmonicResynthesis("TremoloSine_Freq=200_Rate=10_Depth=5", 44100, 15000);
+  testHarmonicResynthesis("TremoloSine_Freq=200_Rate=10_Depth=5", 44100, 15000);
   // try a little bit of amplitude modulation - could the spurious high-freq components be due to 
   // that? the varying amplitude of low-freq components somehow gets translated to spurious 
   // high-freqs? maybe a tremolo sine - yes! that seems to be it! when the sine is amp-mdoulated,

@@ -544,7 +544,8 @@ template<class T>
 bool rsHarmonicAnalyzer<T>::isPeakPartial(std::vector<T>& v, int peakBin)
 {
   //T minPeakWidth = T(1); 
-  T minPeakWidth = T(0.75);  // 0.5 should probably also work, at least for blackman
+  //T minPeakWidth = T(0.75);  // 0.5 should probably also work, at least for blackman
+  T minPeakWidth = T(0.5);
   // make user parameter - proportionality factor by which the minimum allowed width is scaled
   T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, T(0));
   int minAbsWidth = (int) round(minPeakWidth*zeroPad*mainlobeWidth);
