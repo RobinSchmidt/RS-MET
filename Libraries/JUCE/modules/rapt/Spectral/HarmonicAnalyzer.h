@@ -283,6 +283,8 @@ protected:
 
 
 
+  bool isPeakPartial(std::vector<T>& v, int peakBin);
+
 
   /** Fills our window function array. */
   void fillWindow(); // just a stub atm

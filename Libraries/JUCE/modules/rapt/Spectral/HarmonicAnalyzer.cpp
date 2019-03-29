@@ -490,8 +490,8 @@ int numPeaks(T* x, int N)
 template<class T>
 int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int kCenter, int w2)
 {
-  bool dbgIsHarmonic = kCenter == 32 || kCenter == 960 || kCenter == 992;
-  // for the two sines at 200Hz/6100Hz
+  //bool dbgIsHarmonic = kCenter == 32 || kCenter == 960 || kCenter == 992;
+  //// for the two sines at 200Hz/6100Hz
 
   if(w2 == 0)
     return kCenter;
@@ -499,11 +499,11 @@ int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int kCenter, int w
   int kRight = rsMin(kCenter + w2, (int) v.size()-1);
   int length = kRight - kLeft + 1;
 
-  if(dbgIsHarmonic)
-  {
-    rsPlotSpectrum(toVector(&v[kLeft], length), 0.0, -120.0, true); // for decibels
-    //rsPlotArray(&v[kLeft], length); // plot segment where we search for a peak
-  }
+  //if(dbgIsHarmonic)
+  //{
+  //  rsPlotSpectrum(toVector(&v[kLeft], length), 0.0, -120.0, true); // for decibels
+  //  //rsPlotArray(&v[kLeft], length); // plot segment where we search for a peak
+  //}
 
   if(w2 == 1) {
     if(v[kCenter] >= v[kLeft] && v[kCenter] >= v[kRight])
@@ -518,23 +518,66 @@ int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int kCenter, int w
   // maxima in the search window.
   // ..hmm...but what if the maximum
   // is shifted to the side - shouldn't we use *half* of the mainlobe-width? make plots and check
-  int nPeaks = numPeaks(&v[kLeft], length);
-  if(nPeaks != 1)
-    return -1;
+  //int nPeaks = numPeaks(&v[kLeft], length);
+  //if(nPeaks != 1)
+  //  return -1;
   // maybe make enforcing this unimodality condition optional
 
 
   int kMax = rsArray::maxIndex(&v[kLeft], length) + kLeft;  // index of maximum
   if(kMax == kLeft || kMax == kRight) // *not* ensured already by nPeaks == 1: there could be a
     return -1;                        // bump in the middle but the side could still be higher
-  else
-    return kMax;
+  else {
+    if(isPeakPartial(v, kMax))
+      return kMax;
+    else
+      return -1;
+  }
 
   // todo: maybe impose an additional threshold constraint - maybe relative to the absolute maximum
   // of the whole spectrum
   // maybe, if a local maximum is found, find the two local minima that surround it and check if 
   // their distance is >= peak-search width
 }
+
+template<class T>
+bool rsHarmonicAnalyzer<T>::isPeakPartial(std::vector<T>& v, int peakBin)
+{
+  //T minPeakWidth = T(1); 
+  T minPeakWidth = T(0.75);  // 0.5 should probably also work, at least for blackman
+  // make user parameter - proportionality factor by which the minimum allowed width is scaled
+  T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, T(0));
+  int minAbsWidth = (int) round(minPeakWidth*zeroPad*mainlobeWidth);
+
+
+  // find indices of local minima that surround the local maximum at peakBin and the width between
+  // these two local minima:
+  int kR = peakBin + 1;             // index of right local minimum
+  while(kR <= (int)v.size()-2) {
+    if(v[kR] <= v[kR-1] && v[kR] <= v[kR+1])
+      break;
+    if(kR - peakBin - 1 > minAbsWidth)   // return early if the left minimum is very faar away
+      return true;
+    kR++;
+  }
+  int kL = peakBin - 1;
+  while(kL >= 1) {
+    if(v[kL] <= v[kL-1] && v[kL] <= v[kL+1])
+      break;
+    if(peakBin - kL - 1 > minAbsWidth)
+      return true;
+    kL--;
+  }
+  int width = kR - kL + 1;
+
+  // compare the computed width against a minimum allowed width - the width must be larger than 
+  // that in order to consider the peak a partial/mainlobe:
+  if(width >= minAbsWidth)
+    return true;
+  else
+    return false;
+}
+
 
 template<class T>
 void rsHarmonicAnalyzer<T>::prepareBuffer(const std::vector<T>& sig, std::vector<T>& buf)
