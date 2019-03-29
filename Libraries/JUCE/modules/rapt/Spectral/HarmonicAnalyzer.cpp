@@ -391,15 +391,16 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   int dataIndex   = frameIndex + 1;        // +1 because of the fade-in datapoint
   int numBins     = trafo.getBlockSize();  // number of FFT bins
   int numPartials = getNumHarmonics();     // number of (pseudo) harmonics
-  int k;                                   // bin index
+  int kHarm;                               // bin index where harmonic is expected
+  int kPeak;
   T freq, gain, phase;
 
   int w2 = getSpectralPeakSearchWidth(); 
 
   if(zeroPad == 1 && cyclesPerBlock == 1) { // old version before multi-cycle and zero-padding
-    for(k = 0; k < numPartials; k++) {
-      freq = trafo.binIndexToFrequency(k, numBins, sampleRate);
-      mdl.setData(k, dataIndex, time, freq, T(2)*mag[k], phs[k]);
+    for(kHarm = 0; kHarm < numPartials; kHarm++) {
+      freq = trafo.binIndexToFrequency(kHarm, numBins, sampleRate);
+      mdl.setData(kHarm, dataIndex, time, freq, T(2)*mag[kHarm], phs[kHarm]);
     }
   }
   else
@@ -407,24 +408,30 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
     // new:
     //std::vector<int> bins = findPartialBins(mag); // maybe not sucha good idea
 
+    int kPeakOld = -1;
 
     // we will need parabolic interpolation to find better frequency (and amplitude) measurements 
     // and for interpolating phase-data, we need to be careful about wrapping issues
     mdl.setData(0, dataIndex, time, T(0), T(2*zeroPad)*mag[0], phs[0]); // handle DC separately
     for(int h = 1; h < numPartials; h++) {
 
-      k = cyclesPerBlock*zeroPad*h; // bin-index where we expect the peak for the (pseudo) harmonic
+      kHarm = cyclesPerBlock*zeroPad*h;
+      kPeak = kHarm;  // may be refined later
 
-      bool parabolicInterpolation = true;  // make user option
+
+      // bin-index where we expect the peak for the (pseudo) harmonic
+
+      bool expectExactHarmonics = false;  // make user option
+      //bool parabolicInterpolation = true;  // make user option
       // with the tremolo-sine, not doing this is actually better, - why? maybe the search range 
       // for a maximum is too large and we pick up sidelobes of the window? ...maybe we should look
       // for a maximum *or* a minimum?
 
-      if(parabolicInterpolation)
+      if(!expectExactHarmonics)  // search for peaks near expected harmonics
       {
         // not yet finished
 
-        int kPeak = findPeakBinNear(mag, k, w2);  // new
+        kPeak = findPeakBinNear(mag, kHarm, w2);  // new
 
         //int kPeak = findPeakBinNearOld(mag, k, zeroPad);   // old
 
@@ -438,11 +445,14 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
         // it narrower - but with the two versions above, we miss the 6100 partial
         // -> try to figure out most meaningful search range and/or let the user select it
 
-        if(kPeak == -1) {
-          // no peak found: use k for the frequency, zero for the amplitude
-          freq = trafo.binIndexToFrequency(k, numBins, sampleRate);
+        if(kPeak == -1 || kPeak == kPeakOld) {
+          // no peak found or the same peak was found a second time (the latter case may occur, if 
+          // there's a partial halfway between expected harmonic frequencies - then we take only
+          // the first one seriously and discard the second) - use kHarm for the frequency, zero 
+          // for the amplitude:
+          freq = trafo.binIndexToFrequency(kHarm, numBins, sampleRate);
           gain = T(0);
-          phase = phs[k];
+          phase = phs[kHarm];
         } else {
           // preliminary:
           freq  = trafo.binIndexToFrequency(kPeak, numBins, sampleRate);
@@ -453,10 +463,13 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
         mdl.setData(h, dataIndex, time, freq, gain, phase);
       }
       else {
-        freq = trafo.binIndexToFrequency(k, numBins, sampleRate);
-        gain = T(2*zeroPad)*mag[k]; 
-        mdl.setData(h, dataIndex, time, freq, gain, phs[k]);
+        freq = trafo.binIndexToFrequency(kHarm, numBins, sampleRate);
+        gain = T(2*zeroPad)*mag[kHarm]; 
+        mdl.setData(h, dataIndex, time, freq, gain, phs[kHarm]);
       }
+
+      kPeakOld = kPeak; // remember it to make sure to not record the same peak twice
+
     }
   }
 
