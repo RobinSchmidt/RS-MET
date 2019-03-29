@@ -364,8 +364,8 @@ T rsHarmonicAnalyzer<T>::getUnWarpedTimeStampForFrame(int m)
 template<class T>
 int rsHarmonicAnalyzer<T>::getSpectralPeakSearchWidth()
 {
-  T peakSearchWidth = T(1); // maybe make user parameter later
-  T mainlobeWidth   = rsWindowFunction::getMainLobeWidth(windowType, T(0));
+  //T peakSearchWidth = T(1); // maybe make user parameter later
+  T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, T(0));
   return (int) round(T(0.5)*peakSearchWidth*zeroPad*mainlobeWidth);
 }
 
@@ -378,9 +378,8 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   trafo.getRealSignalMagnitudesAndPhases(&sigPadded[0], &mag[0], &phs[0]);  // perform FFT
 
 
-  if(frameIndex == getNumFrames()/2)
+  //if(frameIndex == getNumFrames()/2)
     rsPlotSpectrum(mag, T(0), T(-100), true); // freq axis wrong, if we pass the sampleRate
-    //rsPlotVector(mag);
 
   //if(frameIndex >= 10) {
   //  rsPlotSpectrum(mag, sampleRate, T(-200));
@@ -391,11 +390,11 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   // extract model data from FFT result:
   int dataIndex   = frameIndex + 1;        // +1 because of the fade-in datapoint
   int numBins     = trafo.getBlockSize();  // number of FFT bins
-  int numPartials = getNumHarmonics();     // number of (pseudo) harmonics - new
+  int numPartials = getNumHarmonics();     // number of (pseudo) harmonics
   int k;                                   // bin index
   T freq, gain, phase;
 
-  int w2 = getSpectralPeakSearchWidth(); // to be used later
+  int w2 = getSpectralPeakSearchWidth(); 
 
   if(zeroPad == 1 && cyclesPerBlock == 1) { // old version before multi-cycle and zero-padding
     for(k = 0; k < numPartials; k++) {
@@ -405,6 +404,10 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   }
   else
   {
+    // new:
+    //std::vector<int> bins = findPartialBins(mag); // maybe not sucha good idea
+
+
     // we will need parabolic interpolation to find better frequency (and amplitude) measurements 
     // and for interpolating phase-data, we need to be careful about wrapping issues
     mdl.setData(0, dataIndex, time, T(0), T(2*zeroPad)*mag[0], phs[0]); // handle DC separately
@@ -421,13 +424,15 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
       {
         // not yet finished
 
-        //int kPeak = findPeakBinNear(mag, k, zeroPad);   // old
+        int kPeak = findPeakBinNear(mag, k, w2);  // new
 
-        //int kPeak = findPeakBinNear(mag, k, zeroPad/cyclesPerBlock); 
+        //int kPeak = findPeakBinNearOld(mag, k, zeroPad);   // old
+
+        //int kPeak = findPeakBinNearOld(mag, k, zeroPad/cyclesPerBlock); 
         // best for tremolo-sine, but then it misses the inharmonic for the 200Hz/6100Hz example
         // ...we may need some more sophisticated way to find the relevant bin-index
 
-        int kPeak = findPeakBinNearOld(mag, k, zeroPad*cyclesPerBlock); 
+        //int kPeak = findPeakBinNearOld(mag, k, zeroPad*cyclesPerBlock); 
         // worst for tremolo-sine, best for two sines 200Hz/6100Hz
         // why should the cyclesPerBlock make the search range wider - if anything, it should make 
         // it narrower - but with the two versions above, we miss the 6100 partial
@@ -459,6 +464,18 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   int dummy = 0;
 }
 
+/*
+template<class T>
+std::vector<int> rsHarmonicAnalyzer<T>::findPartialBins(const std::vector<T> mag)
+{
+  std::vector<int> peakBins;
+  int w2 = getSpectralPeakSearchWidth();  // search width to the left and right
+  int numPartials = getNumHarmonics();    // number of (pseudo) harmonics
+
+  return peakBins;
+}
+*/
+
 // move to rsArray:
 template<class T>
 int numPeaks(T* x, int N)
@@ -478,7 +495,7 @@ int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int kCenter, int w
   int kLeft  = rsMax(kCenter - w2, 0);
   int kRight = rsMin(kCenter + w2, (int) v.size()-1);
   int length = kRight - kLeft + 1;
-  //rsPlotArray(&v[kLeft], length); // plot segement where we search for a peak
+  rsPlotArray(&v[kLeft], length); // plot segment where we search for a peak
   if(w2 == 1) {
     if(v[kCenter] >= v[kLeft] && v[kCenter] >= v[kRight])
       return kCenter;
@@ -500,10 +517,15 @@ int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int kCenter, int w
   // find index of maximum:
   int kMax = rsArray::maxIndex(&v[kLeft], length) + kLeft; // check this
 
-  if(kMax == kLeft || kMax == kRight) // isn't this ensured already by nPeaks == 1?
-    return -1;
+  if(kMax == kLeft || kMax == kRight) // *not* ensured already by nPeaks == 1: there could be a
+    return -1;                        // bump in the middle but the side could still be higher
   else
     return kMax;
+
+  // todo: maybe impose an additional threshold constraint - maybe relative to the absolute maximum
+  // of the whole spectrum
+  // maybe, if a local maximum is found, find the two local minima that surround it and check if 
+  // their distance is >= peak-search width
 }
 
 // old version - to be reomoved:

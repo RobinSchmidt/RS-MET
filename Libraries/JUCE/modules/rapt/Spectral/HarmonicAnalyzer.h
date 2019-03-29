@@ -109,6 +109,13 @@ public:
   }
   // under construction
 
+
+  /** Sets the relative width inside which we search for a spectral peak in the vicinity of an
+  expceted harmonic. The absolute width in bins should be proportional to the window's mainlobe 
+  width and the zero-padding factor. This function sets the proportionality constant 
+  (default: 1). */
+  void setSpectralPeakSearchWidth(T newWidth) { peakSearchWidth = newWidth; }
+
   // void setTemporalOversampling(int newFactor)
   // ...produce intermediate datapoints between the already existing ones...
 
@@ -263,6 +270,10 @@ protected:
   buffer. */
   void fillHarmonicData(RAPT::rsSinusoidalModel<T>& mdl, int frameIndex, T timeStamp);
 
+  /** Given a vector of FFT magnitude values, this function returns a vector of bin indices that
+  correspond to partials. */
+  //std::vector<int> findPartialBins(const std::vector<T> magnitudes);
+
 
   int findPeakBinNear(std::vector<T>& v, int centerBin, int halfSearchWidth);
 
@@ -300,6 +311,10 @@ protected:
 
   T sampleRate = 1;
   T sincLength = 512.0;  // length of sinc-interpolator for time-warping
+
+  T peakSearchWidth = T(1); 
+    // relative width in which we search for spectral peaks around an expected harmonic, adjusted 
+    // according to windowType and zeroPad
 
   std::vector<T> y;     // pre-processed (time-warped) signal
 

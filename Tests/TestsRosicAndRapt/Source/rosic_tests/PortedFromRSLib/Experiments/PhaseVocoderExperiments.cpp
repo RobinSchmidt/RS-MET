@@ -1205,10 +1205,10 @@ void harmonicPartialDetection()
   int    nc = 4;     // number of cycles per block (integer, power of two)
   int    zp = 4;     // zero-padding factor (integer, power of two)
   int    N  = 1000;  // number of samples
-  double f1 = 100;   // input frequency 1 in Hz
-  double f2 = 1000;  // input frequency 2 in Hz
+  double f1 = 500;   // input frequency 1 in Hz
+  double f2 = 1150;  // input frequency 2 in Hz
   double fs = 5000;  // sample rate
-  string wt = "bh";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
+  string wt = "bm";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
                      // bh: Blackman/Harris
   // k:              // a generic FFT bin index
 
@@ -1301,6 +1301,14 @@ void harmonicPartialDetection()
   //  the left and width/2 to the right
   //  -> use round(sw*0.5*zp*mlw) where sw is a user parameter (default: 1)
 
+  // -wt=bm, nc=4, zp=4, f1=500, f2=1250, fs=5000:
+  //  -the peak at k=40 corresponding to 1250Hz is found twice, i.e. in two iterations (for 
+  //   kCenter = 32 and 48
+  //  -maybe we should first collect all peaks that correspond to partials into a vector and then
+  //   throw out multiple entries
+  //  -or: remember the kPeak from the previous iteration and if the new one happens to be equal to
+  //   the previous one, skip it - i.e. assign amplitude zero
+ 
 
   // Conclusions:
 
