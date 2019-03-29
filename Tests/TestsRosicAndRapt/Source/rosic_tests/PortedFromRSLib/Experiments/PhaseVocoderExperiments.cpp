@@ -1354,7 +1354,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
 
 
-  testHarmonicResynthesis("TremoloSine_Freq=200_Rate=10_Depth=5", 44100, 15000);
+  //testHarmonicResynthesis("TremoloSine_Freq=200_Rate=10_Depth=5", 44100, 15000);
   // try a little bit of amplitude modulation - could the spurious high-freq components be due to 
   // that? the varying amplitude of low-freq components somehow gets translated to spurious 
   // high-freqs? maybe a tremolo sine - yes! that seems to be it! when the sine is amp-mdoulated,
@@ -1374,7 +1374,13 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
   //testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6000_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
 
-  //testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6100_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
+  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6100_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
+  // wt=bm, zp=8, nc=4, sw=1: misses 2nd partial, with sw >= 1.2, it even misses the first
+  // the 2nd is missed, because the peak in the window is in fact not unimodal - we see two minor
+  // side maxima to the left at kCenter = 960 and two to the right at kCenter = 992 - unimodality
+  // seems not to be the appropriate condition - instead require that the distance between two 
+  // local minima around the local maximum must be greater than some factor < 1 times the 
+  // (absolute) mainlobe  width ...maybe call the setting minPeakWidth
 
 
   //testHarmonicResynthesis("TwoSines_Freq1=100_Freq2=10020_Amp1=0.5_Amp2=0.1", 44100, 5000, 100);

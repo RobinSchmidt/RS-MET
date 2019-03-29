@@ -81,6 +81,7 @@ public:
   inverserly proportional to that length. But that's only a rough tendency - for example, there's a 
   huge difference (factor ~3) between 16 and 17 ...more research needed */
   void setSincInterpolationLength(T newLength) { sincLength = newLength; }
+  // rename to setSincLength
 
   /** Sets the amount of oversampling the FFT spectrum, i.e. factor by which the FFT buffer is
   lengthened by zero-padding. Must be a power of two. Zero padding (i.e. spectral oversampling) may 
@@ -95,6 +96,7 @@ public:
     rsAssert(rsIsPowerOfTwo(newFactor));
     zeroPad = newFactor; 
   }
+  // rename to setZeroPadFactor
 
   /** Sets the number of cycles in each analyzed block. Must be a power of two. */
   void setNumCyclesPerBlock(int newNumCycles)
@@ -103,11 +105,7 @@ public:
   }
 
   /** Sets the type of window to be used. */
-  void setWindowType(rsWindowFunction::windowTypes newType)
-  {
-    windowType = newType;
-  }
-  // under construction
+  void setWindowType(rsWindowFunction::windowTypes newType) { windowType = newType; }
 
 
   /** Sets the relative width inside which we search for a spectral peak in the vicinity of an

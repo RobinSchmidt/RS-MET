@@ -378,7 +378,7 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   trafo.getRealSignalMagnitudesAndPhases(&sigPadded[0], &mag[0], &phs[0]);  // perform FFT
 
 
-  //if(frameIndex == getNumFrames()/2)
+  if(frameIndex == getNumFrames()/2)
     rsPlotSpectrum(mag, T(0), T(-100), true); // freq axis wrong, if we pass the sampleRate
 
   //if(frameIndex >= 10) {
@@ -490,12 +490,21 @@ int numPeaks(T* x, int N)
 template<class T>
 int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int kCenter, int w2)
 {
+  bool dbgIsHarmonic = kCenter == 32 || kCenter == 960 || kCenter == 992;
+  // for the two sines at 200Hz/6100Hz
+
   if(w2 == 0)
     return kCenter;
   int kLeft  = rsMax(kCenter - w2, 0);
   int kRight = rsMin(kCenter + w2, (int) v.size()-1);
   int length = kRight - kLeft + 1;
-  rsPlotArray(&v[kLeft], length); // plot segment where we search for a peak
+
+  if(dbgIsHarmonic)
+  {
+    rsPlotSpectrum(toVector(&v[kLeft], length), 0.0, -120.0, true); // for decibels
+    //rsPlotArray(&v[kLeft], length); // plot segment where we search for a peak
+  }
+
   if(w2 == 1) {
     if(v[kCenter] >= v[kLeft] && v[kCenter] >= v[kRight])
       return kCenter;
@@ -540,9 +549,6 @@ void rsHarmonicAnalyzer<T>::prepareBuffer(const std::vector<T>& sig, std::vector
   // measurements that are off by half a sample because the center of an even-length buffer falls
   // on a half-integer - but: our datapoints are actually also placed at the half-integers, so in 
   // the end, it works out correctly.
-
-  // todo: in the first and last loop, multiply by window during copying, i.e.
-  // sig[i+K2] becomes sig[i+K2] * wnd[i+K2] and sig[i] becomes sig[i] * wnd[i]
 }
 
 template<class T>
@@ -551,6 +557,3 @@ void rsHarmonicAnalyzer<T>::fillWindow()
   rsWindowFunction::createWindow(&wnd[0], (int) wnd.size(), windowType, true);
   //rsWindowFunction::createWindow(&wnd[0], (int) wnd.size(), windowType, false);
 }
-
-
-//template class rsHarmonicAnalyzer<double>;

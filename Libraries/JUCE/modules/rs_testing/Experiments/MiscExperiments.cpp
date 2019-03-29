@@ -31,7 +31,8 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   double* x = &input[0];   // pointer to first sample (for convenience)
   int Nx = (int) input.size();
 
-  // create and set up harmonic analyzer object:
+  // create and set up harmonic analyzer object:  
+  typedef rsWindowFunction::windowTypes WT;
   RAPT::rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
   //analyzer.setSincInterpolationLength(2);
@@ -39,23 +40,28 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   //analyzer.setSincInterpolationLength(16);
   analyzer.setSincInterpolationLength(64);
   //analyzer.setSincInterpolationLength(512);
-  //analyzer.setSpectralOversampling(8);       // implementation not yet complete
+  analyzer.setNumCyclesPerBlock(4);
+  analyzer.setWindowType(WT::BLACKMAN_WINDOW);
+  analyzer.setSpectralOversampling(8);  // zero padding
+  analyzer.setSpectralPeakSearchWidth(1.0);  // default: 1
   //analyzer.setFreqsByPhaseDerivative(true);
   //analyzer.setFreqPhaseConsistency(true);
   // todo: maybe provide different freq-refinement methods (not necessarily mutually exclusive)
 
+
+
+  /*
   // test to swicth between old and new version
   bool useOldCode = false;
   //useOldCode = true; // comment to use new code
   if(useOldCode)
     analyzer.useOldCode = true;  // only compatible with setNumCyclesPerBlock(1);
   else {
-    typedef rsWindowFunction::windowTypes WT;
-    analyzer.setNumCyclesPerBlock(4);
     analyzer.setSpectralOversampling(8);
     analyzer.setWindowType(WT::HAMMING_WINDOW);
     //analyzer.setWindowType(WT::HANNING_WINDOW);
   }
+  */
   // for rectangular window, we may use 1 cycle, for others we may have to use at least 2 
   // (hamm/hann), for blackman maybe 4...we'll see
   // non-rectangular windows do not yet work
