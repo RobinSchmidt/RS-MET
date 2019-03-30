@@ -379,7 +379,7 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
 
 
   if(frameIndex == getNumFrames()/2)
-    rsPlotSpectrum(mag, T(0), T(-100), true); // freq axis wrong, if we pass the sampleRate
+    rsPlotSpectrum(mag, T(0), T(-150), true); // freq axis wrong, if we pass the sampleRate
 
   //if(frameIndex >= 10) {
   //  rsPlotSpectrum(mag, sampleRate, T(-200));
@@ -420,18 +420,16 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
       kPeak = kHarm;  // may be refined later
 
       bool expectExactHarmonics = false;  // make user option
-      //bool parabolicInterpolation = true;  // make user option
-      // with the tremolo-sine, not doing this is actually better, - why? maybe the search range 
-      // for a maximum is too large and we pick up sidelobes of the window? ...maybe we should look
-      // for a maximum *or* a minimum?
+      // with the tremolo-sine, expecting harmonics is actually better, - why? maybe the search 
+      // range for a maximum is too large and we pick up sidelobes of the window? ...maybe we 
+      // should look for a maximum *or* a minimum?
+
+      bool parabolicInterpolation = false;  // make user option
+
 
       if(!expectExactHarmonics)  // search for peaks near expected harmonics
       {
-        // not yet finished
-
-        kPeak = findPeakBinNear(mag, kHarm, w2);  // new
-
-
+        kPeak = findPeakBinNear(mag, kHarm, w2);
         if(kPeak == -1 || kPeak == kPeakOld) {
           // no peak found or the same peak was found a second time (the latter case may occur, if 
           // there's a partial halfway between expected harmonic frequencies - then we take only
@@ -441,11 +439,16 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
           gain = T(0);
           phase = phs[kHarm];
         } else {
-          // preliminary:
-          freq  = trafo.binIndexToFrequency(kPeak, numBins, sampleRate);
-          gain  = T(2*zeroPad)*mag[kPeak]; // preliminary - todo: compute parabola maximum
-          phase = phs[kPeak];
-          // todo: find exact frequency and amplitude by parabolic interpolation:
+          if(parabolicInterpolation) {
+            rsSinusoidalAnalyzer<T>::spectralMaximumPositionAndValue(&mag[0], kPeak, &freq, &gain);
+            freq *= sampleRate / numBins;
+            gain *= T(2*zeroPad);
+            phase = phs[kPeak];  // preliminary - interpolate phase, too
+          } else {
+            freq  = trafo.binIndexToFrequency(kPeak, numBins, sampleRate);
+            gain  = T(2*zeroPad)*mag[kPeak];
+            phase = phs[kPeak];
+          }
         }
         mdl.setData(h, dataIndex, time, freq, gain, phase);
       }
@@ -459,9 +462,6 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
 
     }
   }
-
-
-  int dummy = 0;
 }
 
 /*
@@ -490,6 +490,8 @@ int numPeaks(T* x, int N)
 template<class T>
 int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int kCenter, int w2)
 {
+  //return kCenter; // test
+
   //bool dbgIsHarmonic = kCenter == 32 || kCenter == 960 || kCenter == 992;
   //// for the two sines at 200Hz/6100Hz
 
@@ -543,9 +545,13 @@ int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int kCenter, int w
 template<class T>
 bool rsHarmonicAnalyzer<T>::isPeakPartial(std::vector<T>& v, int peakBin)
 {
+  //return true;   // test
+
   //T minPeakWidth = T(1); 
   //T minPeakWidth = T(0.75);  // 0.5 should probably also work, at least for blackman
   T minPeakWidth = T(0.5);
+  //T minPeakWidth = T(0.25);
+  //T minPeakWidth = T(0.0);
   // make user parameter - proportionality factor by which the minimum allowed width is scaled
   T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, T(0));
   int minAbsWidth = (int) round(minPeakWidth*zeroPad*mainlobeWidth);
