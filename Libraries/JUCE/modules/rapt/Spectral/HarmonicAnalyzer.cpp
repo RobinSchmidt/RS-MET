@@ -393,7 +393,7 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   int numPartials = getNumHarmonics();     // number of (pseudo) harmonics
   int kHarm;                               // bin index where harmonic is expected
   int kPeak;
-  T freq, gain, phase;
+  T freq, gain, phase, peakBin;
 
   int w2 = getSpectralPeakSearchWidth(); 
 
@@ -440,10 +440,16 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
         } 
         else {
           if(parabolicInterpolation) {
-            rsSinusoidalAnalyzer<T>::spectralMaximumPositionAndValue(&mag[0], kPeak, &freq, &gain);
-            freq *= sampleRate / numBins;
+            rsSinusoidalAnalyzer<T>::spectralMaximumPositionAndValue(
+              &mag[0], kPeak, &peakBin, &gain);
+            freq  = peakBin * sampleRate / numBins;
             gain *= T(2*zeroPad);
             phase = phs[kPeak];  // preliminary - interpolate phase, too
+
+            //phase = rsSinusoidalAnalyzer<T>::interpolatePhase(&phs[0], peakBin);
+
+            //phase = rsInterpolateWrapped(phs[k], pPhs[k+1], peakBin-floor(peakBin), -PI, PI);
+
           } 
           else {
             freq  = trafo.binIndexToFrequency(kPeak, numBins, sampleRate);

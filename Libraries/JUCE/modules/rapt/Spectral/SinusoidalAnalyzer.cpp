@@ -306,6 +306,9 @@ RAPT::rsSinusoidalModel<T> rsSinusoidalAnalyzer<T>::analyzeSpectrogram(
       //peakPhase = rsInterpolateWrapped(pPhs[k], pPhs[k+1], peakBin-floor(peakBin), -PI, PI);
       // strangely, with this interpolation, we may get louder residuals (w Hamming, zp=2) - maybe 
       // make it optional and do more tests
+      // i think, it's because we need to dsitinguish two cases: 
+      // peakBin >= peaks[i], peakBin < peaks[i]
+      // ...make a function interpolatePhase(T* phs, T position)
       // maybe also try to interpolate the real and imaginary parts and the extratc the phase and
       // do tests, which one is best
 
