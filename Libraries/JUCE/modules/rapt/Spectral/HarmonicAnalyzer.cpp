@@ -377,56 +377,38 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   prepareBuffer(sig, sigPadded);
   trafo.getRealSignalMagnitudesAndPhases(&sigPadded[0], &mag[0], &phs[0]);  // perform FFT
 
-
-  if(frameIndex == getNumFrames()/2)
-    rsPlotSpectrum(mag, T(0), T(-150), true); // freq axis wrong, if we pass the sampleRate
+  //if(frameIndex == getNumFrames()/2)
+  //  rsPlotSpectrum(mag, T(0), T(-150), true); // freq axis wrong, if we pass the sampleRate
 
   //if(frameIndex >= 10) {
   //  rsPlotSpectrum(mag, sampleRate, T(-200));
   //  //rsPlotVector(rsAmpToDb(mag, T(-200))); 
   //}
 
-
   // extract model data from FFT result:
   int dataIndex   = frameIndex + 1;        // +1 because of the fade-in datapoint
   int numBins     = trafo.getBlockSize();  // number of FFT bins
   int numPartials = getNumHarmonics();     // number of (pseudo) harmonics
-  int kHarm;                               // bin index where harmonic is expected
-  int kPeak;
-  T freq, gain, phase, peakBin;
+  int kHarm;                               // bin index where partial/harmonic is expected
 
-  int w2 = getSpectralPeakSearchWidth(); 
-
-  if(zeroPad == 1 && cyclesPerBlock == 1) { // old version before multi-cycle and zero-padding
+  if(zeroPad == 1 && cyclesPerBlock == 1) { 
+    // old version (before multi-cycle and zero-padding support):
     for(kHarm = 0; kHarm < numPartials; kHarm++) {
-      freq = trafo.binIndexToFrequency(kHarm, numBins, sampleRate);
+      T freq = trafo.binIndexToFrequency(kHarm, numBins, sampleRate);
       mdl.setData(kHarm, dataIndex, time, freq, T(2)*mag[kHarm], phs[kHarm]);
     }
   }
-  else
-  {
-    // new:
-    //std::vector<int> bins = findPartialBins(mag); // maybe not sucha good idea
-
-    int kPeakOld = -1;
-
-    // we will need parabolic interpolation to find better frequency (and amplitude) measurements 
-    // and for interpolating phase-data, we need to be careful about wrapping issues
+  else {
+    // new, general version - supporting multiple cycles per block and/or zero-padding:
+    int kPeak;                             // bin index where partial is actually found
+    int kPeakOld = -1;                     // kPeak from previous iteration
+    int w2 = getSpectralPeakSearchWidth(); // we look for a peak in the range: kHarm +- w2
+    T freq, gain, phase, peakBin;
     mdl.setData(0, dataIndex, time, T(0), T(2*zeroPad)*mag[0], phs[0]); // handle DC separately
-
     for(int h = 1; h < numPartials; h++) {
-
-      kHarm = cyclesPerBlock*zeroPad*h;
-      kPeak = kHarm;  // may be refined later
-
-      bool expectExactHarmonics = false;  // make user option
-      // with the tremolo-sine, expecting harmonics is actually better, - why? maybe the search 
-      // range for a maximum is too large and we pick up sidelobes of the window? ...maybe we 
-      // should look for a maximum *or* a minimum?
-
-      bool parabolicInterpolation = true;  // make user option
-
-      if(!expectExactHarmonics)  // search for peaks near expected harmonics
+      kHarm = cyclesPerBlock*zeroPad*h;    // bin index where partial/harmonic is expected
+      kPeak = kHarm;                       // preliminary - refined below
+      if(!expectExactHarmonics)            // search for peaks near expected harmonics
       {
         kPeak = findPeakBinNear(mag, kHarm, w2);
         if(kPeak == -1 || kPeak == kPeakOld) {
@@ -444,10 +426,10 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
               &mag[0], kPeak, &peakBin, &gain);
             freq  = peakBin * sampleRate / numBins;
             gain *= T(2*zeroPad);
-            phase = phs[kPeak];  // preliminary - interpolate phase, too
-            phase = rsSinusoidalAnalyzer<T>::interpolatePhase(&phs[0], peakBin);
-            // todo: make this optional and compare result with and without phase interpolation
-            //int dummy = 0;
+            if(phaseInterpolation)
+              phase = rsSinusoidalAnalyzer<T>::interpolatePhase(&phs[0], peakBin);
+            else
+              phase = phs[kPeak];
           } 
           else {
             freq  = trafo.binIndexToFrequency(kPeak, numBins, sampleRate);
@@ -462,9 +444,7 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
         gain = T(2*zeroPad)*mag[kHarm]; 
         mdl.setData(h, dataIndex, time, freq, gain, phs[kHarm]);
       }
-
       kPeakOld = kPeak; // remember it to make sure to not record the same peak twice
-
     }
   }
 }

@@ -316,6 +316,12 @@ protected:
   bool freqsByPhaseDerivative = false;
   bool freqsPhaseConsistent = false;
 
+
+  bool expectExactHarmonics = false;
+  bool parabolicInterpolation = true;
+  bool phaseInterpolation = true;
+
+
   T sampleRate = 1;
   T sincLength = 512.0;  // length of sinc-interpolator for time-warping
 
