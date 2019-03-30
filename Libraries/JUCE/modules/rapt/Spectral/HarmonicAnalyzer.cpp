@@ -424,8 +424,7 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
       // range for a maximum is too large and we pick up sidelobes of the window? ...maybe we 
       // should look for a maximum *or* a minimum?
 
-      bool parabolicInterpolation = false;  // make user option
-
+      bool parabolicInterpolation = true;  // make user option
 
       if(!expectExactHarmonics)  // search for peaks near expected harmonics
       {
@@ -438,13 +437,15 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
           freq = trafo.binIndexToFrequency(kHarm, numBins, sampleRate);
           gain = T(0);
           phase = phs[kHarm];
-        } else {
+        } 
+        else {
           if(parabolicInterpolation) {
             rsSinusoidalAnalyzer<T>::spectralMaximumPositionAndValue(&mag[0], kPeak, &freq, &gain);
             freq *= sampleRate / numBins;
             gain *= T(2*zeroPad);
             phase = phs[kPeak];  // preliminary - interpolate phase, too
-          } else {
+          } 
+          else {
             freq  = trafo.binIndexToFrequency(kPeak, numBins, sampleRate);
             gain  = T(2*zeroPad)*mag[kPeak];
             phase = phs[kPeak];

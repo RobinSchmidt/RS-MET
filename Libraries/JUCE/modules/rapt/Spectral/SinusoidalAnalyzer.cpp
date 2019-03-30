@@ -377,20 +377,23 @@ template<class T>
 void rsSinusoidalAnalyzer<T>::spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val)
 {
   // find coeffs of parabolic interpolant (maybe factor out, so we can plot the parabola):
-  T lowAmp = 0.0000001; // -140 dB - to prevent log-of-zero
+  T lowAmp = 0.0000000001; // -200 dB - to prevent log-of-zero
   T a[3], y[3];
   y[0] = rsAmpToDbWithCheck(x[k-1], lowAmp);   // left
   y[1] = rsAmpToDbWithCheck(x[k],   lowAmp);   // mid
   y[2] = rsAmpToDbWithCheck(x[k+1], lowAmp);   // right
   rsPolynomial<T>::fitQuadratic_m1_0_1(a, y);
 
-  // find maximum position and evaluate parabola there:
-  T d  = rsPolynomial<T>::quadraticExtremumPosition(a);
-  *pos = k + d;
-  *val = rsDbToAmp(a[0] + (a[1] + a[2]*d)*d);
-
-  // todo: we should safeguard against a[2] == 0 (a degenerate parabola that has no extremum) which
-  // will lead to div-by-zero in quadraticExtremumPosition
+  // find maximum position and evaluate parabola there (unless parabola is degenerate):
+  if(a[2] != T(0)) { 
+    T d  = rsPolynomial<T>::quadraticExtremumPosition(a);
+    *pos = k + d;
+    *val = rsDbToAmp(a[0] + (a[1] + a[2]*d)*d);
+  } 
+  else {
+    *pos = T(k);
+    *val = x[k];
+  }
 }
 
 template<class T>
