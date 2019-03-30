@@ -445,11 +445,9 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
             freq  = peakBin * sampleRate / numBins;
             gain *= T(2*zeroPad);
             phase = phs[kPeak];  // preliminary - interpolate phase, too
-
-            //phase = rsSinusoidalAnalyzer<T>::interpolatePhase(&phs[0], peakBin);
-
-            //phase = rsInterpolateWrapped(phs[k], pPhs[k+1], peakBin-floor(peakBin), -PI, PI);
-
+            phase = rsSinusoidalAnalyzer<T>::interpolatePhase(&phs[0], peakBin);
+            // todo: make this optional and compare result with and without phase interpolation
+            //int dummy = 0;
           } 
           else {
             freq  = trafo.binIndexToFrequency(kPeak, numBins, sampleRate);

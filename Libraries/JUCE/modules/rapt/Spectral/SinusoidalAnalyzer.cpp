@@ -308,8 +308,10 @@ RAPT::rsSinusoidalModel<T> rsSinusoidalAnalyzer<T>::analyzeSpectrogram(
       // make it optional and do more tests
       // i think, it's because we need to dsitinguish two cases: 
       // peakBin >= peaks[i], peakBin < peaks[i]
-      // ...make a function interpolatePhase(T* phs, T position)
-      // maybe also try to interpolate the real and imaginary parts and the extratc the phase and
+      // todo: use this:
+      // peakPhase = interpolatePhase(pPhs, peakBin);
+
+      // maybe also try to interpolate the real and imaginary parts and the extract the phase and
       // do tests, which one is best
 
 
@@ -397,6 +399,14 @@ void rsSinusoidalAnalyzer<T>::spectralMaximumPositionAndValue(T *x, int k, T* po
     *pos = T(k);
     *val = x[k];
   }
+}
+
+template<class T> 
+T rsSinusoidalAnalyzer<T>::interpolatePhase(T* phs, T pos)
+{
+  int k = (int) floor(pos);
+  T frac = pos - T(k);
+  return rsInterpolateWrapped(phs[k], phs[k+1], frac, -PI, PI);
 }
 
 template<class T>

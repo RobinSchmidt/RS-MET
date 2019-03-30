@@ -168,6 +168,11 @@ public:
   exact location by fitting a quadratic parabola to the dB-values around x[k]. */
   static void spectralMaximumPositionAndValue(T *x, int k, T* pos, T* val);
 
+  /** Given an array of phase-values (in -pi..pi), this function computes an interpolated phase 
+  value at given continuous array position. It uses linear interpolation and also takes care about 
+  the wrap-arounds at -pi and pi. */
+  static T interpolatePhase(T* phases, T position);
+
 
 protected:
 
