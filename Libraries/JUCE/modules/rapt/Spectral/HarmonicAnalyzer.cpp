@@ -366,7 +366,16 @@ int rsHarmonicAnalyzer<T>::getSpectralPeakSearchWidth()
 {
   //T peakSearchWidth = T(1); // maybe make user parameter later
   T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, T(0));
-  return (int) round(T(0.5)*peakSearchWidth*zeroPad*mainlobeWidth);
+
+
+
+  return (int) ceil(T(0.5)*peakSearchWidth*zeroPad*mainlobeWidth) + 1;
+  //return (int) ceil(T(0.5)*peakSearchWidth*zeroPad*mainlobeWidth) - 1;
+
+  // maybe this peakserachWidth should also be related to the minPeakWidth - if it's too wide (!), 
+  // we may miss peaks because the max-values happen at the end of the search interval
+
+  //return (int) round(T(0.5)*peakSearchWidth*zeroPad*mainlobeWidth);
 }
 
 template<class T>
@@ -377,8 +386,11 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   prepareBuffer(sig, sigPadded);
   trafo.getRealSignalMagnitudesAndPhases(&sigPadded[0], &mag[0], &phs[0]);  // perform FFT
 
-  if(frameIndex == getNumFrames()/2)
-    rsPlotSpectrum(mag, T(0), T(-150), true); // freq axis wrong, if we pass the sampleRate
+  //if(frameIndex == 231 || frameIndex == 232 )  // 2nd harmonic in flute switches from off to on (bm-window)
+  //  rsPlotSpectrum(mag, T(0), T(-150), true);
+
+  //if(frameIndex == getNumFrames()/2)
+  //  rsPlotSpectrum(mag, T(0), T(-150), true); // freq axis wrong, if we pass the sampleRate
 
   //if(frameIndex >= 10)
   //  rsPlotSpectrum(mag, sampleRate, T(-200));
@@ -406,6 +418,7 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
     for(int h = 1; h < numPartials; h++) {
       kHarm = cyclesPerBlock*zeroPad*h;    // bin index where partial/harmonic is expected
       kPeak = kHarm;                       // preliminary - refined below
+      //kPeak = -1;                          // preliminary - assigned below
       if(allowInharmonics)                 // search for peaks near expected harmonics
       {
         kPeak = findPeakBinNear(mag, kHarm, w2);
@@ -510,6 +523,7 @@ int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int kCenter, int w
 
 
   int kMax = rsArray::maxIndex(&v[kLeft], length) + kLeft;  // index of maximum
+  //return kMax; // test - crashes bcs parabolic peak interpolation returns out-of range value
   if(kMax == kLeft || kMax == kRight) // *not* ensured already by nPeaks == 1: there could be a
     return -1;                        // bump in the middle but the side could still be higher
   else {
