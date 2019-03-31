@@ -1235,7 +1235,9 @@ void harmonicPartialDetection()
   analyzer.setNumCyclesPerBlock(nc);
   analyzer.setWindowType(stringToWindowType(wt));
   analyzer.getCycleFinder().setFundamental(f1);
-  analyzer.setMinPeakWidth(1.0);
+  //analyzer.setMinPeakToMainlobeWidthRatio(1.0);
+  //analyzer.setMinPeakToHarmonicWidthRatio(1.0);
+  //analyzer.setSpectralPeakSearchWidth(1.0);
 
   // analyze:
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int) x.size());
@@ -1370,7 +1372,7 @@ void harmonicPartialDetection2()
   analyzer.setNumCyclesPerBlock(nc);
   analyzer.setWindowType(stringToWindowType(wt));
   analyzer.getCycleFinder().setFundamental(f1);
-  analyzer.setMinPeakWidth(0.75);  // mpw
+  analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // mpw
 
   // analyze:
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int) x.size());

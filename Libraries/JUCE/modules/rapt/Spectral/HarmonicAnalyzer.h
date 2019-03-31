@@ -61,6 +61,15 @@ class rsHarmonicAnalyzer
 
 public:
 
+  /*
+  enum class Preset
+  {
+    hamming_4_4,
+    blackman_4_4
+  };
+  */
+
+
   rsHarmonicAnalyzer();
 
 
@@ -128,9 +137,11 @@ public:
   found lobe must be at least as wide as this factor times the mainlobe width of the window in 
   order to be considered a partial - if its narrower, we assume a sidelobe peak and discard the 
   peak. Default value is 0.75 (maybe 0.5 would be better? ...tests needed...) */
-  void setMinPeakWidth(T newWidth) { minPeakToMainlobeWidthRatio = newWidth; }
-  // rename to: setMinPeakToMainlobeWidthRatio
-  // ..and add: setMinPeakToHarmonicWidthRatio
+  void setMinPeakToMainlobeWidthRatio(T newWidth) { minPeakToMainlobeWidthRatio = newWidth; }
+
+  void setMinPeakToHarmonicWidthRatio(T newWidth) { minPeakToHarmonicWidthRatio = newWidth; }
+
+
 
   // void setTemporalOversampling(int newFactor)
   // ...produce intermediate datapoints between the already existing ones...
@@ -340,17 +351,16 @@ protected:
   bool phaseInterpolation = true;       // relevant only when parabolicInterpolation = true
 
 
-  //T minPeakWidth = 0.5;
-
-  T minPeakToMainlobeWidthRatio = 0.75;
-  T minPeakToHarmonicWidthRatio = 0.75;
+  T minPeakToMainlobeWidthRatio = T(0.75);
+  T minPeakToHarmonicWidthRatio = T(0.75);
+  T peakSearchWidth = T(1); 
+    // relative width in which we search for spectral peaks around an expected harmonic, adjusted 
+    // according to windowType and zeroPad
 
   T sampleRate = 1;
   T sincLength = 512.0;  // length of sinc-interpolator for time-warping
 
-  T peakSearchWidth = T(1); 
-    // relative width in which we search for spectral peaks around an expected harmonic, adjusted 
-    // according to windowType and zeroPad
+
 
   std::vector<T> y;     // pre-processed (time-warped) signal
 

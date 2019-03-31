@@ -44,9 +44,11 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   //analyzer.setWindowType(WT::HAMMING_WINDOW);
   analyzer.setWindowType(WT::BLACKMAN_WINDOW);
   analyzer.setSpectralOversampling(8);  // zero padding
-  analyzer.setSpectralPeakSearchWidth(1.0);  // default: 1
   analyzer.setAllowInharmonics(true);
-  analyzer.setMinPeakWidth(0.75);            // default: 0.75
+  analyzer.setSpectralPeakSearchWidth(0.5);       // default: 1 - blackman needs a value less than 1
+  analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
+
+
   //analyzer.setFreqsByPhaseDerivative(true);
   //analyzer.setFreqPhaseConsistency(true);
   // todo: maybe provide different freq-refinement methods (not necessarily mutually exclusive)
