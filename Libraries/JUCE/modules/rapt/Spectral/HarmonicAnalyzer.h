@@ -127,8 +127,10 @@ public:
   with respect to the window's mainlobe-width - this function sets a proportionality factor. The 
   found lobe must be at least as wide as this factor times the mainlobe width of the window in 
   order to be considered a partial - if its narrower, we assume a sidelobe peak and discard the 
-  peak. Default value is 0.5 (maybe 0.75 would be better? ...tests needed...) */
-  void setMinPeakWidth(T newWidth) { minPeakWidth = newWidth; }
+  peak. Default value is 0.75 (maybe 0.5 would be better? ...tests needed...) */
+  void setMinPeakWidth(T newWidth) { minPeakToMainlobeWidthRatio = newWidth; }
+  // rename to: setMinPeakToMainlobeWidthRatio
+  // ..and add: setMinPeakToHarmonicWidthRatio
 
   // void setTemporalOversampling(int newFactor)
   // ...produce intermediate datapoints between the already existing ones...
@@ -338,7 +340,10 @@ protected:
   bool phaseInterpolation = true;       // relevant only when parabolicInterpolation = true
 
 
-  T minPeakWidth = 0.5;
+  //T minPeakWidth = 0.5;
+
+  T minPeakToMainlobeWidthRatio = 0.75;
+  T minPeakToHarmonicWidthRatio = 0.75;
 
   T sampleRate = 1;
   T sincLength = 512.0;  // length of sinc-interpolator for time-warping

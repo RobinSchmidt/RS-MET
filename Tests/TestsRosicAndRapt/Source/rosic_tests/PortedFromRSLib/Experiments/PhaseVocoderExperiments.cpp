@@ -1377,10 +1377,11 @@ void harmonicPartialDetection2()
   plotSineModel(mdl, fs);
 
   // Observations:
-  // f = 500,1000,1500, wt: bm:
+  // f = 500,1000,1500, wt = bm: (before implementing minPeakToHarmonicWidthRatio) 
   //  -mpw=1.0:  all partials are missed/discarded (amplitude is set to 0)
   //  -mpw=0.75: outer partials are correctly identified, middle partial is missed
   //  -mpw=0.5:  all partials are correctly identified
+  //
 
   //  -maybe setMinPeakWidth() has to take into account the possibilty that the mainlobe may be 
   //   wider than the harmonic distance - in that case, we should use a narrower minimum, i.e.

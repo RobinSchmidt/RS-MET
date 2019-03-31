@@ -530,9 +530,18 @@ bool rsHarmonicAnalyzer<T>::isPeakPartial(std::vector<T>& v, int peakBin)
 {
   //return true;   // test
 
+  // minWidth can be precomputed:
+  T mainlobeWidth = zeroPad * rsWindowFunction::getMainLobeWidth(windowType, T(0));
+  T minWidth1     = minPeakToMainlobeWidthRatio*mainlobeWidth;
 
-  T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, T(0));
-  int minAbsWidth = (int) round(minPeakWidth*zeroPad*mainlobeWidth);
+  T harmonicWidth = zeroPad * cyclesPerBlock;
+  T minWidth2     = minPeakToHarmonicWidthRatio*harmonicWidth;
+
+  int minWidth    = (int) round( rsMin(minWidth1, minWidth2) );
+
+
+
+
 
   // find indices of local minima that surround the local maximum at peakBin and the width between
   // these two local minima:
@@ -540,7 +549,7 @@ bool rsHarmonicAnalyzer<T>::isPeakPartial(std::vector<T>& v, int peakBin)
   while(kR <= (int)v.size()-2) {
     if(v[kR] <= v[kR-1] && v[kR] <= v[kR+1])
       break;
-    if(kR - peakBin - 1 > minAbsWidth)   // return early if the left minimum is very faar away
+    if(kR - peakBin - 1 > minWidth)   // return early if the left minimum is very faar away
       return true;
     kR++;
   }
@@ -548,7 +557,7 @@ bool rsHarmonicAnalyzer<T>::isPeakPartial(std::vector<T>& v, int peakBin)
   while(kL >= 1) {
     if(v[kL] <= v[kL-1] && v[kL] <= v[kL+1])
       break;
-    if(peakBin - kL - 1 > minAbsWidth)
+    if(peakBin - kL - 1 > minWidth)
       return true;
     kL--;
   }
@@ -556,7 +565,7 @@ bool rsHarmonicAnalyzer<T>::isPeakPartial(std::vector<T>& v, int peakBin)
 
   // compare the computed/measured lobe width against a minimum allowed width - the width must be 
   // larger than that in order to consider the peak a partial/mainlobe:
-  if(width >= minAbsWidth)
+  if(width >= minWidth)
     return true;
   else
     return false;
