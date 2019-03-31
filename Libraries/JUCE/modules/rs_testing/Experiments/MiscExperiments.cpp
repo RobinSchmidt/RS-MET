@@ -41,10 +41,12 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   analyzer.setSincInterpolationLength(64);
   //analyzer.setSincInterpolationLength(512);
   analyzer.setNumCyclesPerBlock(4);
-  //analyzer.setWindowType(WT::HAMMING_WINDOW);
-  analyzer.setWindowType(WT::BLACKMAN_WINDOW);
+  analyzer.setWindowType(WT::HAMMING_WINDOW);
+  //analyzer.setWindowType(WT::BLACKMAN_WINDOW);
   analyzer.setSpectralOversampling(8);  // zero padding
   analyzer.setSpectralPeakSearchWidth(1.0);  // default: 1
+  analyzer.setAllowInharmonics(true);
+  analyzer.setMinPeakWidth(0.5);             // deafult: 0.5
   //analyzer.setFreqsByPhaseDerivative(true);
   //analyzer.setFreqPhaseConsistency(true);
   // todo: maybe provide different freq-refinement methods (not necessarily mutually exclusive)
@@ -82,8 +84,8 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   cmf.setSubSampleApproximationPrecision(2);  // 1, 0: linear, 1: cubic, 2: quintic, ...
   cmf.setFundamentalRange(50., 1000.);        // 20, 5000 
   cmf.setFundamental(f0);                     // 0 -> auto-detect
-  cmf.setAlgorithm(cmf.F0_ZERO_CROSSINGS);
-  //cmf.setAlgorithm(rsCycleMarkFinder<double>::CYCLE_CORRELATION);
+  //cmf.setAlgorithm(cmf.F0_ZERO_CROSSINGS);
+  cmf.setAlgorithm(cmf.CYCLE_CORRELATION);
 
   // let the analyzer analyze the sound - obtains a sinusoidal model:
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, Nx);
@@ -135,7 +137,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
 
   // move the required functions to rs_testing module
   // plot model data, if desired....
-  bool plotModel = true;      // make user parameter
+  bool plotModel = false;      // make user parameter
   if(plotModel == true)
     plotSineModel(mdl, fs);
 

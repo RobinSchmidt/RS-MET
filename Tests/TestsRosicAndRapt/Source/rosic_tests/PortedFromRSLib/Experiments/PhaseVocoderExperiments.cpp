@@ -1201,12 +1201,12 @@ void harmonicPartialDetection()
 
   //typedef std::string Str;
 
-  // Notation: 
+  // Settings: 
   int    nc = 4;     // number of cycles per block (integer, power of two)
   int    zp = 4;     // zero-padding factor (integer, power of two)
   int    N  = 1000;  // number of samples
   double f1 = 500;   // input frequency 1 in Hz
-  double f2 = 1150;  // input frequency 2 in Hz
+  double f2 = 1000;  // input frequency 2 in Hz
   double fs = 5000;  // sample rate
   string wt = "bm";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
                      // bh: Blackman/Harris
@@ -1235,11 +1235,11 @@ void harmonicPartialDetection()
   analyzer.setNumCyclesPerBlock(nc);
   analyzer.setWindowType(stringToWindowType(wt));
   analyzer.getCycleFinder().setFundamental(f1);
+  analyzer.setMinPeakWidth(1.0);
 
-  // analyze (todo: maybe make it possible, to split up the analysis process - maybe let client 
-  // code trigger partial steps separately...or maybe not...dunno)
+  // analyze:
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int) x.size());
-  //plotSineModel(mdl, fs);
+  plotSineModel(mdl, fs);
 
   int dummy = 0;
 
@@ -1339,6 +1339,58 @@ void harmonicPartialDetection()
   // -larger ranges better for the inharmonic pair (200/6100) because a too small range will miss
   //  the inharmonic partial
   // -can we find an algorithm that works well in both cases? -> make some plots
+
+}
+
+void harmonicPartialDetection2()
+{
+  // A test with 3 sines, such that one is sandwiched between two others
+
+  // Settings: 
+  int    nc = 4;     // number of cycles per block (integer, power of two)
+  int    zp = 4;     // zero-padding factor (integer, power of two)
+  int    N  = 1000;  // number of samples
+  double f1 = 500;   // input frequency 1 in Hz
+  double f2 = 1000;  // input frequency 2 in Hz
+  double f3 = 1500;  // input frequency 3 in Hz
+  double fs = 5000;  // sample rate
+  string wt = "bm";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
+                     // bh: Blackman/Harris
+
+  // create input signal:
+  std::string name = "ThreeSines_Freq1=" + std::to_string(f1) 
+    + "_Freq2=" + std::to_string(f2) + "_Freq3=" + std::to_string(f3) ;
+  name += "_Amp1=1.0_Amp2=1.0_Amp3=1.0";
+  std::vector<double> x = createNamedSound(name, fs, N); 
+
+  // create and set up analyzer:
+  RAPT::rsHarmonicAnalyzer<double> analyzer;
+  analyzer.setSampleRate(fs);
+  analyzer.setSpectralOversampling(zp);
+  analyzer.setNumCyclesPerBlock(nc);
+  analyzer.setWindowType(stringToWindowType(wt));
+  analyzer.getCycleFinder().setFundamental(f1);
+  analyzer.setMinPeakWidth(0.75);  // mpw
+
+  // analyze:
+  RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int) x.size());
+  plotSineModel(mdl, fs);
+
+  // Observations:
+  // f = 500,1000,1500, wt: bm:
+  //  -mpw=1.0:  all partials are missed/discarded (amplitude is set to 0)
+  //  -mpw=0.75: outer partials are correctly identified, middle partial is missed
+  //  -mpw=0.5:  all partials are correctly identified
+
+  //  -maybe setMinPeakWidth() has to take into account the possibilty that the mainlobe may be 
+  //   wider than the harmonic distance - in that case, we should use a narrower minimum, i.e.
+  //   min(mainlobeWidth, harmonicDistance) ...or something
+
+
+  // -test with balckman window..
+
+
+  int dummy = 0;
 }
 
 void harmonicAnalysis1()  // rename to harmonicResynthesis

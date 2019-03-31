@@ -107,12 +107,28 @@ public:
   /** Sets the type of window to be used. */
   void setWindowType(rsWindowFunction::windowTypes newType) { windowType = newType; }
 
+  /** Sets up, whether or not inharmonic partials should be expected. If this is set to true (and 
+  the number cycles per block is > 1), the algorithms tries to find the actual partial frequency by
+  searching in some neighbourhood of the expected harmonic "slot". If false, it will just read out
+  the spectrum at the expected exact harmonic frequency. */
+  void setAllowInharmonics(bool allow) { allowInharmonics = allow; }
+
 
   /** Sets the relative width inside which we search for a spectral peak in the vicinity of an
   expceted harmonic. The absolute width in bins should be proportional to the window's mainlobe 
   width and the zero-padding factor. This function sets the proportionality constant 
   (default: 1). */
   void setSpectralPeakSearchWidth(T newWidth) { peakSearchWidth = newWidth; }
+
+  /** When multiple cycles are used and inharmonic partials are allowed, we must search for the 
+  mainlobe peak in the neighbourhood of the expected harmonic frequency. This search also involves 
+  a decision whether or not a found peak/lobe is to be considered a mainlobe (we want avoid picking
+  up sidelobes as partials). The decision is made based on the relative width of the measured lobe
+  with respect to the window's mainlobe-width - this function sets a proportionality factor. The 
+  found lobe must be at least as wide as this factor times the mainlobe width of the window in 
+  order to be considered a partial - if its narrower, we assume a sidelobe peak and discard the 
+  peak. Default value is 0.5 (maybe 0.75 would be better? ...tests needed...) */
+  void setMinPeakWidth(T newWidth) { minPeakWidth = newWidth; }
 
   // void setTemporalOversampling(int newFactor)
   // ...produce intermediate datapoints between the already existing ones...
@@ -317,10 +333,12 @@ protected:
   bool freqsPhaseConsistent = false;
 
 
-  bool expectExactHarmonics = false;
-  bool parabolicInterpolation = true;
-  bool phaseInterpolation = true;
+  bool allowInharmonics = true;
+  bool parabolicInterpolation = true;   // relevant only allowInharmonics = true
+  bool phaseInterpolation = true;       // relevant only when parabolicInterpolation = true
 
+
+  T minPeakWidth = 0.5;
 
   T sampleRate = 1;
   T sincLength = 512.0;  // length of sinc-interpolator for time-warping

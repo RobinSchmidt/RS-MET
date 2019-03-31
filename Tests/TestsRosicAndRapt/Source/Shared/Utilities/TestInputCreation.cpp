@@ -435,9 +435,14 @@ std::vector<double> createNamedSound(const std::string& s, double fs, int N)
   else if( startsWith(s, "Cosine") ) 
     createSineWave(x, N, getValue(s, "Freq", 200), getValue(s, "Amp", 1), fs, PI/2);
   else if(startsWith(s, "TwoSines")) {
-    double f2[2] = { getValue(s, "Freq1", 200), getValue(s, "Freq2", 2000) };
-    double a2[2] = { getValue(s, "Amp1",  1),   getValue(s, "Amp2",  1)    };
-    createSumOfSines(x, N, 2, fs, f2, a2);
+    double f[2] = { getValue(s, "Freq1", 200), getValue(s, "Freq2", 2000) };
+    double a[2] = { getValue(s, "Amp1",  1),   getValue(s, "Amp2",  1)    };
+    createSumOfSines(x, N, 2, fs, f, a);
+  }
+  else if(startsWith(s, "ThreeSines")) {
+    double f[3] = { getValue(s, "Freq1", 100), getValue(s, "Freq2", 200), getValue(s, "Freq3", 300) };
+    double a[3] = { getValue(s, "Amp1",  1),   getValue(s, "Amp2",  1),   getValue(s, "Amp3",  1)   };
+    createSumOfSines(x, N, 3, fs, f, a);
   }
   else if(startsWith(s, "VibratoSine")) { 
     double freq  = getValue(s, "Freq", 200);

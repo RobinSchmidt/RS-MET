@@ -27,7 +27,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   convertTimeUnit(mdl);             // convert from samples to seconds
   refineFrequencies(mdl);           // refines freq estimates, if desired
 
-  rosic::writeToMonoWaveFile("PitchFlattened.wav", &y[0], (int)y.size(), (int)sampleRate);
+  //rosic::writeToMonoWaveFile("PitchFlattened.wav", &y[0], (int)y.size(), (int)sampleRate);
   // move to rapt - rapt is a lower layer than rosic an we are not supposed to call rosic functions
   // inside rapt functions...maybe rename to rsWavWrite
 
@@ -377,13 +377,11 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   prepareBuffer(sig, sigPadded);
   trafo.getRealSignalMagnitudesAndPhases(&sigPadded[0], &mag[0], &phs[0]);  // perform FFT
 
-  //if(frameIndex == getNumFrames()/2)
-  //  rsPlotSpectrum(mag, T(0), T(-150), true); // freq axis wrong, if we pass the sampleRate
+  if(frameIndex == getNumFrames()/2)
+    rsPlotSpectrum(mag, T(0), T(-150), true); // freq axis wrong, if we pass the sampleRate
 
-  //if(frameIndex >= 10) {
+  //if(frameIndex >= 10)
   //  rsPlotSpectrum(mag, sampleRate, T(-200));
-  //  //rsPlotVector(rsAmpToDb(mag, T(-200))); 
-  //}
 
   // extract model data from FFT result:
   int dataIndex   = frameIndex + 1;        // +1 because of the fade-in datapoint
@@ -408,7 +406,7 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
     for(int h = 1; h < numPartials; h++) {
       kHarm = cyclesPerBlock*zeroPad*h;    // bin index where partial/harmonic is expected
       kPeak = kHarm;                       // preliminary - refined below
-      if(!expectExactHarmonics)            // search for peaks near expected harmonics
+      if(allowInharmonics)                 // search for peaks near expected harmonics
       {
         kPeak = findPeakBinNear(mag, kHarm, w2);
         if(kPeak == -1 || kPeak == kPeakOld) {
@@ -532,15 +530,9 @@ bool rsHarmonicAnalyzer<T>::isPeakPartial(std::vector<T>& v, int peakBin)
 {
   //return true;   // test
 
-  //T minPeakWidth = T(1); 
-  //T minPeakWidth = T(0.75);  // 0.5 should probably also work, at least for blackman
-  T minPeakWidth = T(0.5);
-  //T minPeakWidth = T(0.25);
-  //T minPeakWidth = T(0.0);
-  // make user parameter - proportionality factor by which the minimum allowed width is scaled
+
   T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, T(0));
   int minAbsWidth = (int) round(minPeakWidth*zeroPad*mainlobeWidth);
-
 
   // find indices of local minima that surround the local maximum at peakBin and the width between
   // these two local minima:
@@ -562,8 +554,8 @@ bool rsHarmonicAnalyzer<T>::isPeakPartial(std::vector<T>& v, int peakBin)
   }
   int width = kR - kL + 1;
 
-  // compare the computed width against a minimum allowed width - the width must be larger than 
-  // that in order to consider the peak a partial/mainlobe:
+  // compare the computed/measured lobe width against a minimum allowed width - the width must be 
+  // larger than that in order to consider the peak a partial/mainlobe:
   if(width >= minAbsWidth)
     return true;
   else
