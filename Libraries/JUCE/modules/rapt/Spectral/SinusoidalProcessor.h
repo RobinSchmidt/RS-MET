@@ -84,13 +84,13 @@ public:
   updates the instantaneous phase values to be consistent with the new frequencies. 
   todo: maybe make the phase re-adjustment optional...or maybe not - maybe it makes no sense to
   leave the phases as is anyway... */
-  static void fixPartialFrequency(rsSinusoidalPartial<T>& partial, T freq);
+  static void fixPartialFrequency(rsSinusoidalPartial<T>& partial, T freq, T pickPhaseAt = T(0.5));
 
   /** Sets the frequencies of all partials in the given model to exact integer multiples of the
   given fundamental frequency (at all time-instants) and adjusts the phase values to be consistent
   with the integrated frequency values. */
   static void makeStrictlyHarmonic(rsSinusoidalModel<T>& model, T fundamentalFreq, 
-    T inharmonicity);
+    T inharmonicity, T pickPhaseAt = T(0.5));
 
 
 

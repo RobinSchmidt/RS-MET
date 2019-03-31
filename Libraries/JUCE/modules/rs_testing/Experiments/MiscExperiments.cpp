@@ -180,7 +180,7 @@ void testMakeHarmonic(const std::string& name, std::vector<double>& input,
   // process model data:
   mdl.removePartial(0); 
   //mdl.keepOnly({ 0 });  // for test
-  rsSinusoidalProcessor<double>::makeStrictlyHarmonic(mdl, f0Out, inharmonicity);
+  rsSinusoidalProcessor<double>::makeStrictlyHarmonic(mdl, f0Out, inharmonicity, 0.5);
   mdl.removePartialsWithMeanFreqAbove(fs/2); // anti-alias - maybe use min- insetad of mean-freq to be safe...
 
 
