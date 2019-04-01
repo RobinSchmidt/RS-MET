@@ -260,6 +260,7 @@ std::vector<T> rsSinusoidalSynthesizer<T>::phasesHermite(
 
     //p1 = rsFindCosistentPhase(p1, p0 + 2*PI*fa*dt); // old
     p1 = rsConsistentUnwrappedValue(p0 + 2*PI*fa*dt, p1, 0.0, 2*PI); // new - needs test
+    // todo: use rsConsistentUnwrappedValue0
 
 
 

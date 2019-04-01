@@ -38,7 +38,7 @@ T rsFindCosistentPhase(T target, T value)
 template<class T>
 T rsConsistentUnwrappedValue(T value, T target, T rangeMin, T rangeMax)
 {
-  rsError("Not yet usable - see comments below");
+  //rsError("Not yet usable - see comments below");
 
   T rangeSize = rangeMax - rangeMin;
   T maxDelta  = T(0.5) * rangeSize;  // maybe we should have a safety margin based on eps?

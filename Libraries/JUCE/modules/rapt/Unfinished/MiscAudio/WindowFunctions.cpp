@@ -223,25 +223,29 @@ void rsWindowFunction::salFlatTopMin5(T* w, int N)
 template<class T>
 void rsWindowFunction::hrsFlatTop70(T* w, int N)
 {
-
+  T c[4] = { 1, -1.90796, 1.07349, -0.18199 };
+  cosineSum(w, N, c, 4);
 }
 
 template<class T>
 void rsWindowFunction::hrsFlatTop95(T* w, int N)
 {
-
+  T c[5] = { 1, -1.9383379, 1.3045202, -0.4028270, 0.0350665 };
+  cosineSum(w, N, c, 5);
 }
 
 template<class T>
 void rsWindowFunction::hrsFlatTop90D(T* w, int N)
 {
-
+  T c[5] = { 1, -1.942604, 1.340318, -0.440811, 0.043097 };
+  cosineSum(w, N, c, 5);
 }
 
 template<class T>
 void rsWindowFunction::hrsFlatTop116D(T* w, int N)
 {
-
+  T c[6] = { 1, -1.9575375, 1.4780705, -0.6367431, 0.1228389, -0.0066288 };
+  cosineSum(w, N, c, 6);
 }
 
 template<class T>
