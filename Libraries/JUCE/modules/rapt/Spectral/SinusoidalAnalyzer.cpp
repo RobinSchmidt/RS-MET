@@ -3,7 +3,7 @@
 //=================================================================================================
 
 template<class T>
-int rsSinusoidalAnalyzer<T>::getRequiredBlockSize(int type, T df, T fs, bool oddSize) const
+int rsSinusoidalAnalyzer<T>::getRequiredBlockSize(int type, T df, T fs, bool oddSize)
 {
   T B = rsWindowFunction::getMainLobeWidth(type, 0.0); // later maybe pass a window parameter
   int size = (int) ceil(B*fs/df);
@@ -18,7 +18,7 @@ int rsSinusoidalAnalyzer<T>::getRequiredBlockSize(int type, T df, T fs, bool odd
 }
 
 template<class T>
-T rsSinusoidalAnalyzer<T>::getRequiredThreshold(int type, T margin) const
+T rsSinusoidalAnalyzer<T>::getRequiredThreshold(int type, T margin)
 {
   return rsWindowFunction::getSideLobeLevel(type, 0.0) + margin;
   // todo: maybe if we constrain the peak-conditions further, such that a peak must be higher than
