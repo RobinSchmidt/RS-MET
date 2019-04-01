@@ -96,7 +96,6 @@ public:
   phase. */
   void applyFadeIn(T fadeTime);
 
-
   /** Appends a zero amplitude datapoint at the front with frequency equal to the end
   frequency, a time-stamp given by the end time plus the fadeTime and appropriately chosen 
   phase. */

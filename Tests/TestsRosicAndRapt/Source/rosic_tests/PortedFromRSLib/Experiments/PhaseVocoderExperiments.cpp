@@ -1182,7 +1182,7 @@ RAPT::rsWindowFunction::windowTypes stringToWindowType(const std::string& wt)
   return WT::RECTANGULAR_WINDOW;
 }
 
-void harmonicPartialDetection()
+void harmonicDetection2Sines()
 {
   // Goal: 
   // Figure out, how rsHarmonicAnalyzer::findPeakBinNear can decide whether or not there is a 
@@ -1344,7 +1344,7 @@ void harmonicPartialDetection()
 
 }
 
-void harmonicPartialDetection2()
+void harmonicDetection3Sines()
 {
   // A test with 3 sines, such that one is sandwiched between two others
 
@@ -1352,9 +1352,9 @@ void harmonicPartialDetection2()
   int    nc = 4;     // number of cycles per block (integer, power of two)
   int    zp = 4;     // zero-padding factor (integer, power of two)
   int    N  = 1000;  // number of samples
-  double f1 = 500;   // input frequency 1 in Hz
-  double f2 = 1000;  // input frequency 2 in Hz
-  double f3 = 1500;  // input frequency 3 in Hz
+  double f1 = 100;   // input frequency 1 in Hz
+  double f2 = 975;   // input frequency 2 in Hz
+  double f3 = 1025;  // input frequency 3 in Hz
   double fs = 5000;  // sample rate
   string wt = "bm";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
                      // bh: Blackman/Harris
@@ -1379,21 +1379,50 @@ void harmonicPartialDetection2()
   plotSineModel(mdl, fs);
 
   // Observations:
+
   // f = 500,1000,1500, wt = bm: (before implementing minPeakToHarmonicWidthRatio) 
   //  -mpw=1.0:  all partials are missed/discarded (amplitude is set to 0)
   //  -mpw=0.75: outer partials are correctly identified, middle partial is missed
   //  -mpw=0.5:  all partials are correctly identified
   //
 
-  //  -maybe setMinPeakWidth() has to take into account the possibilty that the mainlobe may be 
-  //   wider than the harmonic distance - in that case, we should use a narrower minimum, i.e.
-  //   min(mainlobeWidth, harmonicDistance) ...or something
-
-
-  // -test with balckman window..
-
+  // f = 100,975,1025:
+  //  -we want to figure out why harmonics are sometimes discarded (like in the piano_E2 sample) 
+  //   when there are beating frequencies
+  //  -ideally, if a harmonic slot is at 1000Hz, we want to see the two partials 975 and 1025 Hz as
+  //   one 50Hz-amplitude-modulated partial at 1000Hz
+  //  -the analyzed partial zig-zags between the two frequencies, amplitude is constant
+  //  -they actually do get detected because there's nothing left or right to them
+  //  -try with 5 sines: f = 100,900,975,1025,1100
 
   int dummy = 0;
+}
+
+void harmonicDetection5Sines()
+{
+  // A test with 5 sines
+
+  // Settings: 
+  int    nc = 4;     // number of cycles per block (integer, power of two)
+  int    zp = 4;     // zero-padding factor (integer, power of two)
+  int    N  = 1000;  // number of samples
+  double f1 = 100;   // input frequency 1 in Hz
+  double f2 = 900;   // input frequency 2 in Hz
+  double f3 = 975;   // input frequency 3 in Hz
+  double f4 = 1025;  // input frequency 4 in Hz
+  double f5 = 1100;  // input frequency 5 in Hz
+  double fs = 5000;  // sample rate
+  string wt = "bm";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
+                     // bh: Blackman/Harris
+
+  // create input signal:
+  std::string name = "FiveSines_Freq1=" + std::to_string(f1) 
+    + "_Freq2=" + std::to_string(f2) + "_Freq3=" + std::to_string(f3)
+    + "_Freq4=" + std::to_string(f4) + "_Freq5=" + std::to_string(f5);
+  std::vector<double> x = createNamedSound(name, fs, N); 
+
+
+
 }
 
 void harmonicAnalysis1()  // rename to harmonicResynthesis

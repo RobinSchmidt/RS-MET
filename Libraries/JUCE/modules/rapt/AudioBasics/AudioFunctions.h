@@ -110,6 +110,9 @@ inline T rsFreqToPitch(T freq, T masterTuneA4 = T(440))
 0..2pi. The returned value will be in 0..2pi. */
 template<class T>
 T rsPhaseError(T p1, T p2);
+// hmm - shouldn't it be in 0...pi? when the error above pi, we could use 2*PI - error. this would 
+// mean, we look into the otherdirection and it would make the function symmetrical in its 
+// arguments
 
 /** Converts a pitch-offset in semitones value into a frequency multiplication factor. */
 template<class T>
@@ -144,8 +147,8 @@ inline T rsSecondsToBeats(T timeInSeconds, T bpm)
 }
 
 /** Returns the frequency ratio (with respect to the fundamental) of a stiff string, such as a 
-piano string, for the given harmonic number. The parameter stiffness parameter controls the amount
-of inharmonicity. At zero, the ratio is strictly harmonic, i.e. an integer.  
+piano string, for the given harmonic number. The stiffness parameter controls the amount of 
+inharmonicity. At zero, the ratio is strictly harmonic, i.e. an integer.  
 References:
 The Physics of Musical Instruments, 2nd Edition, Eq. 2.67a (p.64)
  see also 2.67b (p.65), Eq. 12.5 (p.363) ...maybe that last one is better - it normalizes the 

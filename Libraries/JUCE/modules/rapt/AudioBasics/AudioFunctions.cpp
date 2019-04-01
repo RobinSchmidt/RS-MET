@@ -38,6 +38,8 @@ T rsFindCosistentPhase(T target, T value)
 template<class T>
 T rsConsistentUnwrappedValue(T value, T target, T rangeMin, T rangeMax)
 {
+  rsError("Not yet usable - see comments below");
+
   T rangeSize = rangeMax - rangeMin;
   T maxDelta  = T(0.5) * rangeSize;  // maybe we should have a safety margin based on eps?
 
@@ -61,13 +63,14 @@ T rsConsistentUnwrappedValue(T value, T target, T rangeMin, T rangeMax)
 // can we do something based on fmod? this function has linear complexitity in the size of the 
 // passed value - the larger the value, the longer it takes - bad! ...but is fmod actually of O(1)
 // complexity anyway?
+// maybe we should subtract rangeMin, call rsConsistentUnwrappedValue0 and then add back rangeMin
 
 template<class T>
 T rsConsistentUnwrappedValue0(T value, T target, T rangeSize)
 {
-  T over     = fmod(value, rangeSize);             // overshoot over an integer number of cycles
-  T cycles   = round((value - over) / rangeSize);  // number of full cycles through the range
-  T result   = cycles * rangeSize + target;
+  T over   = fmod(value, rangeSize);             // overshoot over an integer number of cycles
+  T cycles = round((value - over) / rangeSize);  // number of full cycles through the range
+  T result = cycles * rangeSize + target;
 
   // re-adjustement:
   T delta    = value - result;

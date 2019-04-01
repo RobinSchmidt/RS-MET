@@ -400,8 +400,8 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   //if(frameIndex == 231 || frameIndex == 232 )  // 2nd harmonic in flute switches from off to on (bm-window)
   //  rsPlotSpectrum(mag, T(0), T(-150), true);
 
-  //if(frameIndex == getNumFrames()/2)
-  //  rsPlotSpectrum(mag, T(0), T(-150), true); // freq axis wrong, if we pass the sampleRate
+  if(frameIndex == getNumFrames()/2)
+    rsPlotSpectrum(mag, T(0), T(-150), true); // freq axis wrong, if we pass the sampleRate
 
   //if(frameIndex >= 10)
   //  rsPlotSpectrum(mag, sampleRate, T(-200));

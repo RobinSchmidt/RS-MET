@@ -41,10 +41,6 @@ finished. the padding should be at least one cycle long, maybe use two to be on 
 -maybe have an "oversampling" option: let the hop-size be a half or quarter of the block-size
  -samples amplitudes and phases more densely in time
 
--let the user choose to set up the fundamental or to estimate it (the value that is used to tune 
- the bandpass in the cycle-mark finder - maybe when a "fundamental" member is zero, it means, it 
- should be detected
-
 -make a sample editor module for ToolChain:
  -let the user choose background: blank (some color according to colorscheme), spectrogram, 
   phasogram, etc.. and forground: blank, waveform, partial freqs, etc...

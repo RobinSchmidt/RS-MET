@@ -22,8 +22,8 @@ void sinusoidalAnalysis2();   // two single, static sinusoids
 void sinusoidalAnalysis3();   // a linear frequency sweep
 
 void phaseFreqConsistency();
-void harmonicPartialDetection();   // uses 2 sines as input
-void harmonicPartialDetection2();  // uses 3 sines as input
+void harmonicDetection2Sines();
+void harmonicDetection3Sines();
 void harmonicAnalysis1();
 
 

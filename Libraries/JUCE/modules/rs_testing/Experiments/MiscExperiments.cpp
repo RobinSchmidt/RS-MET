@@ -19,6 +19,55 @@ std::vector<double> synthesizeSinusoidal(
   return x;
 }
 
+void setupHarmonicAnalyzerFor(RAPT::rsHarmonicAnalyzer<double>& analyzer, 
+  const std::string& sampleName, double fs, double f0)
+{
+  // First, set up some standard settings:
+
+  typedef rsWindowFunction::windowTypes WT;
+  analyzer.setSampleRate(fs);
+  analyzer.setSincInterpolationLength(64);
+  analyzer.setNumCyclesPerBlock(4);
+  //analyzer.setWindowType(WT::HAMMING_WINDOW);
+  analyzer.setWindowType(WT::BLACKMAN_WINDOW);
+  analyzer.setSpectralOversampling(8);  // zero padding
+  analyzer.setAllowInharmonics(true);
+  analyzer.setSpectralPeakSearchWidth(0.5);       // default: 1 - blackman needs a value less than 1
+  analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
+
+  //analyzer.setFreqsByPhaseDerivative(true);
+  //analyzer.setFreqPhaseConsistency(true);
+  // todo: maybe provide different freq-refinement methods (not necessarily mutually exclusive)
+
+  // set up settings of the embedded cycle-mark finder:
+  rsCycleMarkFinder<double>& cmf = analyzer.getCycleFinder();
+                                              // defaults:
+  cmf.setRelativeBandpassWidth(0.5);          // 1.0
+  cmf.setBandpassSteepness(5);                // 3
+  cmf.setSubSampleApproximationPrecision(2);  // 1, 0: linear, 1: cubic, 2: quintic, ...
+  cmf.setFundamentalRange(50., 1000.);        // 20, 5000 
+  cmf.setFundamental(f0);                     // 0 -> auto-detect
+  //cmf.setAlgorithm(cmf.F0_ZERO_CROSSINGS);
+  cmf.setAlgorithm(cmf.CYCLE_CORRELATION);
+
+
+  // Second: override some settings for specific samples:
+
+  if(sampleName == "flute-C-octave2")
+  {
+
+  }
+  else if(sampleName == "piano_E2")
+  {
+    analyzer.setNumCyclesPerBlock(8);
+    analyzer.setSpectralOversampling(4);
+    analyzer.setSpectralPeakSearchWidth(1.0);
+    analyzer.setMinPeakToMainlobeWidthRatio(0.5);
+  }
+  // etc...
+
+}
+
 // maybe it will soon make sense to wrap this into a class
 void testHarmonicResynthesis(const std::string& name, std::vector<double>& input, 
   double fs, double f0, bool writeWaveFiles, bool plotResults)
@@ -32,8 +81,11 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   int Nx = (int) input.size();
 
   // create and set up harmonic analyzer object:  
-  typedef rsWindowFunction::windowTypes WT;
   RAPT::rsHarmonicAnalyzer<double> analyzer;
+  setupHarmonicAnalyzerFor(analyzer, name, fs, f0);
+
+  /*
+  typedef rsWindowFunction::windowTypes WT;
   analyzer.setSampleRate(fs);
   //analyzer.setSincInterpolationLength(2);
   //analyzer.setSincInterpolationLength(4);
@@ -47,6 +99,9 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   analyzer.setAllowInharmonics(true);
   analyzer.setSpectralPeakSearchWidth(0.5);       // default: 1 - blackman needs a value less than 1
   analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
+  */
+  
+
 
 
   //analyzer.setFreqsByPhaseDerivative(true);
@@ -77,7 +132,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   // ...seems to be fixed, but now we have to use normalized windows - why?
 
 
-
+  /*
   // set up settings of the embedded cycle-mark finder:
   rsCycleMarkFinder<double>& cmf = analyzer.getCycleFinder();
                                               // defaults:
@@ -88,6 +143,12 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   cmf.setFundamental(f0);                     // 0 -> auto-detect
   //cmf.setAlgorithm(cmf.F0_ZERO_CROSSINGS);
   cmf.setAlgorithm(cmf.CYCLE_CORRELATION);
+  */
+
+
+
+
+
 
   // let the analyzer analyze the sound - obtains a sinusoidal model:
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, Nx);
