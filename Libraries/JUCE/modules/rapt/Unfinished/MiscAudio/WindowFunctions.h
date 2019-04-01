@@ -133,24 +133,29 @@ public:
   template<class T>
   static void flatTop(T *window, int length);
 
-
+  /** Salvatore 3-term flat-top window with fast sidelobe decay. see (2). */
   template<class T>
-  static void flatTopFast3(T *window, int length);
+  static void salFlatTopFast3(T *window, int length);
 
+  /** Salvatore 4-term flat-top window with fast sidelobe decay. see (2). */
   template<class T>
-  static void flatTopFast4(T *window, int length);
+  static void salFlatTopFast4(T *window, int length);
 
+  /** Salvatore 4-term flat-top window with fast sidelobe decay. see (2). */
   template<class T>
-  static void flatTopFast5(T *window, int length);
+  static void salFlatTopFast5(T *window, int length);
 
+  /** Salvatore 3-term flat-top window with minimum sidelobe level. see (2). */
   template<class T>
-  static void flatTopMin3(T *window, int length);
+  static void salFlatTopMin3(T *window, int length);
 
+  /** Salvatore 4-term flat-top window with minimum sidelobe level. see (2). */
   template<class T>
-  static void flatTopMin4(T *window, int length);
+  static void salFlatTopMin4(T *window, int length);
 
+  /** Salvatore 5-term flat-top window with minimum sidelobe level. see (2). */
   template<class T>
-  static void flatTopMin5(T *window, int length);
+  static void salFlatTopMin5(T *window, int length);
 
 
 

@@ -445,7 +445,8 @@ void windowFunctionSpectra()
   std::vector<double> rectangular(N), triangular(N), hanning(N), hamming(N), 
     blackman(N), blackmanHarris(N),  blackmanNutall(N), nutall(N),
     truncGauss2(N), truncGauss3(N), truncGauss4(N), truncGauss5(N), // 2,3,4,5 = 1/sigma
-    flatTopFast3(N), flatTopFast4(N), flatTopFast5(N);
+    salFlatTopFast3(N), salFlatTopFast4(N), salFlatTopFast5(N),
+    salFlatTopMin3(N),  salFlatTopMin4(N),  salFlatTopMin5(N);
 
   WF::createWindow(&rectangular[0],    N, WF::RECTANGULAR_WINDOW, true);
   WF::createWindow(&triangular[0],     N, WF::TRIANGULAR_WINDOW,  true);
@@ -462,9 +463,13 @@ void windowFunctionSpectra()
   WF::createWindow(&truncGauss4[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/4.);
   WF::createWindow(&truncGauss5[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/5.);
 
-  WF::flatTopFast3(&flatTopFast3[0], N);
-  WF::flatTopFast4(&flatTopFast4[0], N);
-  WF::flatTopFast5(&flatTopFast5[0], N);
+  WF::salFlatTopFast3(&salFlatTopFast3[0], N);
+  WF::salFlatTopFast4(&salFlatTopFast4[0], N);
+  WF::salFlatTopFast5(&salFlatTopFast5[0], N);
+
+  WF::salFlatTopMin3(&salFlatTopMin3[0], N);
+  WF::salFlatTopMin4(&salFlatTopMin4[0], N);
+  WF::salFlatTopMin5(&salFlatTopMin5[0], N);
 
 
 
@@ -551,8 +556,11 @@ void windowFunctionSpectra()
   //rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
   //plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
 
-  //rsPlotVectors(flatTopFast3, flatTopFast4, flatTopFast5); 
-  plt.plotDecibelSpectra(N, &flatTopFast3[0], &flatTopFast4[0], &flatTopFast5[0]);
+  //rsPlotVectors(salFlatTopFast3, salFlatTopFast4, salFlatTopFast5); 
+  //plt.plotDecibelSpectra(N, &salFlatTopFast3[0], &salFlatTopFast4[0], &salFlatTopFast5[0]);
+
+  //rsPlotVectors(salFlatTopMin3, salFlatTopMin4, salFlatTopMin5); 
+  plt.plotDecibelSpectra(N, &salFlatTopMin3[0], &salFlatTopMin4[0], &salFlatTopMin5[0]);
 
   //plt.plotDecibelSpectra(N, &rectangular[0], &chebyTweak[0]);
   //plt.plotDecibelSpectra(N, &cosSumWnd2[0], &chebyTweak[0]);
