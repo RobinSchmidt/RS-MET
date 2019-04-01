@@ -84,6 +84,10 @@ template void RAPT::rsNaturalCubicSpline(const double *x, const double *y, int N
 
 
 
+template void RAPT::rsWindowFunction::flatTopFast3(double* w, int N); 
+template void RAPT::rsWindowFunction::flatTopFast4(double* w, int N); 
+template void RAPT::rsWindowFunction::flatTopFast5(double* w, int N); 
+
 
 
 template class RAPT::rsStateVariableFilter<double, double>;

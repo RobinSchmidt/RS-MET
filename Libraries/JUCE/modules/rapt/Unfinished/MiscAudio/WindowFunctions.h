@@ -4,7 +4,13 @@
 /** A class to create various window functions that are useful for spectral analysis and FIR filter
 design. Some functions fill an array with values of the window function, other functions allow to 
 evaluate the continuous time window function to be evaluated at arbitrary inputs. The functions are 
-all static and the class only serves for putting them all under the same umbrella. */
+all static and the class only serves for putting them all under the same umbrella. 
+
+References:
+ (1) https://en.wikipedia.org/wiki/Window_function
+ (2) http://edoc.mpg.de/395068 
+     "Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including 
+      a comprehensive list of window functions and some new flat-top windows"  */
 
 // i think, i need to double all values of the mainlobe width - because the lobe is two-sided and 
 // here, i only considered the right half
@@ -62,6 +68,12 @@ public:
   static T getSideLobeLevel(int type, T param);
 
   // maybe have also a getSideLobeRollOff function
+
+  /** Creates a window as a sum of cosine functions:
+  w[n] = sum_k c[k] cos(k * 2*pi*n/N),     n = 0,...,N-1; k = 0,...,K-1
+  where: w: window, N: length, c: coeffs, K: numTerms, n: sample index, k: term index. */
+  template<class T>
+  static void cosineSum(T* window, int length, T* coeffs, int numTerms);
 
 
   /** Returns the value of a zero-centered cosine-squared shaped window of given length, having
@@ -121,6 +133,27 @@ public:
   template<class T>
   static void flatTop(T *window, int length);
 
+
+  template<class T>
+  static void flatTopFast3(T *window, int length);
+
+  template<class T>
+  static void flatTopFast4(T *window, int length);
+
+  template<class T>
+  static void flatTopFast5(T *window, int length);
+
+  template<class T>
+  static void flatTopMin3(T *window, int length);
+
+  template<class T>
+  static void flatTopMin4(T *window, int length);
+
+  template<class T>
+  static void flatTopMin5(T *window, int length);
+
+
+
   /** Truncated Gaussian window. The magnitude response of this has also an (approximate) gaussian 
   shape which translates to a parabola for the respective dB values. This makes it suitable for 
   frequency estimation by parabolic interpolation. */
@@ -131,6 +164,9 @@ public:
   /** Fills the window-array with a cosine power window. */
   template<class T>
   static void cosinePower(T *window, int length, T power = 2.0);
+
+
+
 
   /** Fills the window-array with a Hamming-window. 
   mainlobe width: 4 

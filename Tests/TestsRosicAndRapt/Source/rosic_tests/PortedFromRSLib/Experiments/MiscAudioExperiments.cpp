@@ -432,8 +432,9 @@ void cosSumWindow5(double* w, int N) // 5 term
 
 void windowFunctionSpectra()
 {
-  int windowLength = 11;
+  //int windowLength = 11;
   //int windowLength = 128;
+  int windowLength = 32;
 
   int fftSize = 8192;
   //int fftSize = 16384;
@@ -443,7 +444,8 @@ void windowFunctionSpectra()
   int N = windowLength;
   std::vector<double> rectangular(N), triangular(N), hanning(N), hamming(N), 
     blackman(N), blackmanHarris(N),  blackmanNutall(N), nutall(N),
-    truncGauss2(N), truncGauss3(N), truncGauss4(N), truncGauss5(N); // 2,3,4,5 = 1/sigma
+    truncGauss2(N), truncGauss3(N), truncGauss4(N), truncGauss5(N), // 2,3,4,5 = 1/sigma
+    flatTopFast3(N), flatTopFast4(N), flatTopFast5(N);
 
   WF::createWindow(&rectangular[0],    N, WF::RECTANGULAR_WINDOW, true);
   WF::createWindow(&triangular[0],     N, WF::TRIANGULAR_WINDOW,  true);
@@ -459,6 +461,13 @@ void windowFunctionSpectra()
   WF::createWindow(&truncGauss3[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/3.);
   WF::createWindow(&truncGauss4[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/4.);
   WF::createWindow(&truncGauss5[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/5.);
+
+  WF::flatTopFast3(&flatTopFast3[0], N);
+  WF::flatTopFast4(&flatTopFast4[0], N);
+  WF::flatTopFast5(&flatTopFast5[0], N);
+
+
+
 
   // under construction:
   std::vector<double> cosSumWnd2(N), cosSumWnd3(N), cosSumWnd4(N), cosSumWnd5(N);
@@ -526,6 +535,7 @@ void windowFunctionSpectra()
 
   SpectrumPlotter<double> plt;
   plt.setFftSize(fftSize);
+  plt.setFloorLevel(-180);
   //plt.setFreqAxisUnit(FU::binIndex);
   //plt.setFreqAxisUnit(FU::normalized);
   plt.setFreqAxisUnit(FU::omega);
@@ -534,11 +544,17 @@ void windowFunctionSpectra()
   //plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
   //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
   //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
+
+  //rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
   //plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
+
+  //rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
   //plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
 
+  //rsPlotVectors(flatTopFast3, flatTopFast4, flatTopFast5); 
+  plt.plotDecibelSpectra(N, &flatTopFast3[0], &flatTopFast4[0], &flatTopFast5[0]);
 
-  plt.plotDecibelSpectra(N, &rectangular[0], &chebyTweak[0]);
+  //plt.plotDecibelSpectra(N, &rectangular[0], &chebyTweak[0]);
   //plt.plotDecibelSpectra(N, &cosSumWnd2[0], &chebyTweak[0]);
 };
 

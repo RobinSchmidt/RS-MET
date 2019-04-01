@@ -1412,7 +1412,7 @@ void harmonicDetection5Sines()
   double f4 = 1025;  // input frequency 4 in Hz
   double f5 = 1100;  // input frequency 5 in Hz
   double fs = 5000;  // sample rate
-  string wt = "bm";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
+  string wt = "bh";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
                      // bh: Blackman/Harris
 
   // create input signal:
@@ -1442,6 +1442,8 @@ void harmonicDetection5Sines()
   // f = 100,900,975,1025,1100:
   //  -partials that are supposed to be at 900, 1000, 1100 erratically drop in and out of existence
   //   -this is the phenomenon, we also see in the piano_E2 sample
+  //  -maybe try to read out the frequencies at the exact harmonic slots (use 
+  //   setAlloInharmonics(false)) and use a flat-top window
 }
 
 void harmonicAnalysis1()  // rename to harmonicResynthesis

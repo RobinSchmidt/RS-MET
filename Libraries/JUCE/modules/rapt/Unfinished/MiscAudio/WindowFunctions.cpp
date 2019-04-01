@@ -81,7 +81,16 @@ T rsWindowFunction::getSideLobeLevel(int type, T param)
   // todo: verify these values in plots
 }
 
-
+template<class T>
+void rsWindowFunction::cosineSum(T* w, int N, T* c, int K)
+{
+  for(int n = 0; n < N; n++) {
+    T z  = T(2*PI*n)/T(N);
+    w[n] = c[0];
+    for(int k = 1; k < K; k++)
+      w[n] += c[k] * cos(k*z);  // (2), Eq. 123
+  }
+}
 
 template<class T>
 T rsWindowFunction::cosineSquared(T x, T length)
@@ -170,6 +179,29 @@ void rsWindowFunction::flatTop(T* w, int N)
 }
 
 template<class T>
+void rsWindowFunction::flatTopFast3(T* w, int N)
+{
+  T c[3] = { 0.26526, -0.5, 0.23474 };
+  cosineSum(w, N, c, 3);
+}
+
+template<class T>
+void rsWindowFunction::flatTopFast4(T* w, int N)
+{
+  T c[4] = { 0.21706, -0.42103, 0.28294, -0.07897 };
+  cosineSum(w, N, c, 4);
+}
+
+template<class T>
+void rsWindowFunction::flatTopFast5(T* w, int N)
+{
+  T c[5] = { 0.1881, -0.36923, 0.28702, -0.13077, 0.02488 };
+  cosineSum(w, N, c, 5);
+}
+
+
+
+template<class T>
 void rsWindowFunction::truncatedGaussian(T* w, int N, T sigma)
 {
   T m = T(0.5)*(N-1);  // mu, midpoint, center
@@ -190,15 +222,13 @@ void rsWindowFunction::truncatedGaussian(T* w, int N, T sigma)
 // 4-term window...could be used for windowed sinc filters and spectrum analysis
 // but maybe for filters, equiripple is less desirable than a falloff for the tails
 
-
-
-
 template<class T>
 void rsWindowFunction::cosinePower(T *window, int length, T power)
 {
   for(int n = 0; n < length; n++)
     window[n] = pow( sin(PI * (T) n / (T) length), power );
 }
+
 
 template<class T>
 void rsWindowFunction::hamming(T *window, int length)
@@ -292,4 +322,11 @@ T rsWindowFunction::windowedSinc(T x, T length, T stretch)
 
 // add closed form formulas for the window spectra, where such formulas are available - for example
 // for a sum-of-cosines window type, we get a corresponing sum-of-sincs in the frequency domain
+
+
+// see also the paper:
+// "Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a 
+// comprehensive list of window functions and some new flat-top windows"
+// http://edoc.mpg.de/395068
+// it has *many* windows - especially the flat-top ones may be interesting
 

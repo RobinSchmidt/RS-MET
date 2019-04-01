@@ -173,6 +173,9 @@ public:
 
   void setFreqAxisUnit(FreqAxisUnits newUnit) { freqAxisUnit = newUnit; }
 
+  /** Sets the floor level for the plot in decibels. */
+  void setFloorLevel(T newFloor) { dBFloor = newFloor; }
+
   /** Sets the sample rate - this affects the scaling of the frequency axis, if it's scaled in 
   Hz. */
   void setSampleRate(T newRate) { sampleRate = newRate; }
@@ -183,9 +186,11 @@ protected:
 
   FreqAxisUnits freqAxisUnit = FreqAxisUnits::binIndex;
 
-  T sampleRate = 1;
+  T sampleRate = T(1);
 
   int fftSize = 2048;
+
+  T dBFloor = T(-120);
 
   RAPT::rsFourierTransformerBluestein<T> transformer;
 

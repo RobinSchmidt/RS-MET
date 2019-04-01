@@ -306,7 +306,7 @@ int main(int argc, char* argv[])
   //taperedFourierSeries();
   //transientModeling();
   //windowFunctionsContinuous();
-  //windowFunctionSpectra();
+  windowFunctionSpectra();
   //windowedSinc();
 
   // Modulator:
@@ -346,7 +346,7 @@ int main(int argc, char* argv[])
   //phaseFreqConsistency();
   //harmonicDetection2Sines();
   //harmonicDetection3Sines();
-  harmonicDetection5Sines();
+  //harmonicDetection5Sines();
   //harmonicAnalysis1();
 
 

@@ -342,7 +342,6 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, T *x0, T *x1, T *x
   transformer.setBlockSize(fftSize);
 
   // use this for y-axis minimum - let the user set it up:
-  T dBFloor = -120;
   T ampFloor = RAPT::rsDbToAmp(dBFloor);
 
   std::vector<T*> inputArrays = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
@@ -369,6 +368,8 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, T *x0, T *x1, T *x
     //addDataArrays(fftSize/2, &dB[0]); // maybe fftSize/2 or (fftSize+1)/2
     int dummy = 0;
   }
+
+  //setLogScale("x"); // make this a user option
 
   plot();
 }
