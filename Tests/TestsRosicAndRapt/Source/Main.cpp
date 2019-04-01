@@ -345,7 +345,8 @@ int main(int argc, char* argv[])
   //sinusoidalAnalysis3();
   //phaseFreqConsistency();
   //harmonicDetection2Sines();
-  harmonicDetection3Sines();
+  //harmonicDetection3Sines();
+  harmonicDetection5Sines();
   //harmonicAnalysis1();
 
 

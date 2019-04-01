@@ -24,6 +24,7 @@ void sinusoidalAnalysis3();   // a linear frequency sweep
 void phaseFreqConsistency();
 void harmonicDetection2Sines();
 void harmonicDetection3Sines();
+void harmonicDetection5Sines();
 void harmonicAnalysis1();
 
 

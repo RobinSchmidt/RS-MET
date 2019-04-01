@@ -431,11 +431,11 @@ std::vector<double> createNamedSound(const std::string& s, double fs, int N)
   // maybe always retrieve Freq and Amp and store in local variables for later use..
 
   if( startsWith(s, "Sine") )       
-    createSineWave(x, N, getValue(s, "Freq", 200), getValue(s, "Amp", 1), fs, 0.0);
+    createSineWave(x, N, getValue(s, "Freq", 100), getValue(s, "Amp", 1), fs, 0.0);
   else if( startsWith(s, "Cosine") ) 
-    createSineWave(x, N, getValue(s, "Freq", 200), getValue(s, "Amp", 1), fs, PI/2);
+    createSineWave(x, N, getValue(s, "Freq", 100), getValue(s, "Amp", 1), fs, PI/2);
   else if(startsWith(s, "TwoSines")) {
-    double f[2] = { getValue(s, "Freq1", 200), getValue(s, "Freq2", 2000) };
+    double f[2] = { getValue(s, "Freq1", 100), getValue(s, "Freq2", 200) };
     double a[2] = { getValue(s, "Amp1",  1),   getValue(s, "Amp2",  1)    };
     createSumOfSines(x, N, 2, fs, f, a);
   }
@@ -444,6 +444,18 @@ std::vector<double> createNamedSound(const std::string& s, double fs, int N)
     double a[3] = { getValue(s, "Amp1",  1),   getValue(s, "Amp2",  1),   getValue(s, "Amp3",  1)   };
     createSumOfSines(x, N, 3, fs, f, a);
   }
+  else if(startsWith(s, "FiveSines")) {
+    double f[5] = { getValue(s, "Freq1", 100), getValue(s, "Freq2", 200), 
+      getValue(s, "Freq3", 300), getValue(s, "Freq4", 400), getValue(s, "Freq5", 500) };
+    double a[5] = { getValue(s, "Amp1", 1), getValue(s, "Amp2", 1), getValue(s, "Amp3", 1), 
+      getValue(s, "Amp4", 1), getValue(s, "Amp5", 1) };
+    createSumOfSines(x, N, 5, fs, f, a);
+  }
+  // maybe, it would make sense to have a general "Sines..." option that can take an arbitrary number 
+  // of freqs and amps
+
+
+
   else if(startsWith(s, "VibratoSine")) { 
     double freq  = getValue(s, "Freq", 200);
     double rate  = getValue(s, "Rate",  10);

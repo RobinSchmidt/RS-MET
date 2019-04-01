@@ -1421,8 +1421,27 @@ void harmonicDetection5Sines()
     + "_Freq4=" + std::to_string(f4) + "_Freq5=" + std::to_string(f5);
   std::vector<double> x = createNamedSound(name, fs, N); 
 
+  // create and set up analyzer:
+  RAPT::rsHarmonicAnalyzer<double> analyzer;
+  analyzer.setSampleRate(fs);
+  analyzer.setSpectralOversampling(zp);
+  analyzer.setNumCyclesPerBlock(nc);
+  analyzer.setWindowType(stringToWindowType(wt));
+  analyzer.getCycleFinder().setFundamental(f1);
+  analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // mpw
+
+  // analyze:
+  RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int) x.size());
+  plotSineModel(mdl, fs);
 
 
+  int dummy = 0;
+
+  // Observations:
+
+  // f = 100,900,975,1025,1100:
+  //  -partials that are supposed to be at 900, 1000, 1100 erratically drop in and out of existence
+  //   -this is the phenomenon, we also see in the piano_E2 sample
 }
 
 void harmonicAnalysis1()  // rename to harmonicResynthesis
