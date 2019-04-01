@@ -157,6 +157,34 @@ public:
   template<class T>
   static void salFlatTopMin5(T *window, int length);
 
+  /** Heinzel/Rüdiger/Schilling flat-top window, 3 cosine terms, ~70dB sidelobes. see (2) */
+  template<class T>
+  static void hrsFlatTop70(T *window, int length);
+
+  template<class T>
+  static void hrsFlatTop95(T *window, int length);
+
+  template<class T>
+  static void hrsFlatTop90D(T *window, int length);
+
+  template<class T>
+  static void hrsFlatTop116D(T *window, int length);
+
+  template<class T>
+  static void hrsFlatTop144D(T *window, int length);
+
+  template<class T>
+  static void hrsFlatTop169D(T *window, int length);
+
+  template<class T>
+  static void hrsFlatTop196D(T *window, int length);
+
+  template<class T>
+  static void hrsFlatTop223D(T *window, int length);
+
+  template<class T>
+  static void hrsFlatTop248D(T *window, int length);
+
 
 
   /** Truncated Gaussian window. The magnitude response of this has also an (approximate) gaussian 

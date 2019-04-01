@@ -220,6 +220,60 @@ void rsWindowFunction::salFlatTopMin5(T* w, int N)
   cosineSum(w, N, c, 5);
 }
 
+template<class T>
+void rsWindowFunction::hrsFlatTop70(T* w, int N)
+{
+
+}
+
+template<class T>
+void rsWindowFunction::hrsFlatTop95(T* w, int N)
+{
+
+}
+
+template<class T>
+void rsWindowFunction::hrsFlatTop90D(T* w, int N)
+{
+
+}
+
+template<class T>
+void rsWindowFunction::hrsFlatTop116D(T* w, int N)
+{
+
+}
+
+template<class T>
+void rsWindowFunction::hrsFlatTop144D(T* w, int N)
+{
+
+}
+
+template<class T>
+void rsWindowFunction::hrsFlatTop169D(T* w, int N)
+{
+
+}
+
+template<class T>
+void rsWindowFunction::hrsFlatTop196D(T* w, int N)
+{
+
+}
+
+template<class T>
+void rsWindowFunction::hrsFlatTop223D(T* w, int N)
+{
+
+}
+
+template<class T>
+void rsWindowFunction::hrsFlatTop248D(T* w, int N)
+{
+
+}
+
 
 template<class T>
 void rsWindowFunction::truncatedGaussian(T* w, int N, T sigma)
