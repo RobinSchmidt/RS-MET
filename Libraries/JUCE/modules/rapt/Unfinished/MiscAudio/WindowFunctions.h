@@ -26,7 +26,7 @@ public:
   cases, however, a zero sample at the start or end may be needed to make then window satisfy other
   conditions such as adding up to a constant when being overlapped with shifted versions of 
   itself. */
-  enum windowTypes
+  enum class WindowType
   {
     RECTANGULAR_WINDOW = 0,
     TRIANGULAR_WINDOW,
@@ -51,7 +51,7 @@ public:
   often desirable. Some windows have an adjustable parameter - for these, the value of this 
   parameter is passed in param. */
   template<class T>
-  static void createWindow(T* w, int N, int type, bool normalizeMean, T param = 0);
+  static void createWindow(T* w, int N, WindowType type, bool normalizeMean, T param = 0);
 
   /** Returns the width of the main lobe of given window in frequency bins. Those values are not
   exact but just rule-of-thumb values obtained from reading off the spectrum of the respective 
@@ -59,13 +59,13 @@ public:
   value, so the compiler can figure out the template type. ...later it may be used to compute 
   mainlobe widths for parametrized windows but this is not yet implemented */
   template<class T>
-  static T getMainLobeWidth(int type, T param);
+  static T getMainLobeWidth(WindowType type, T param);
 
   /** Returns the level (in decibels) of the highest sidelobe of the given window (just as the 
   mainlobe width, these values are also just rule-of-thumb values). The mainlobe is supposed to be
   normalized to 0dB and the returned value is a negative number. */
   template<class T>
-  static T getSideLobeLevel(int type, T param);
+  static T getSideLobeLevel(WindowType type, T param);
 
   // maybe have also a getSideLobeRollOff function
 

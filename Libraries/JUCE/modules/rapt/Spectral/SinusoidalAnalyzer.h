@@ -66,7 +66,8 @@ public:
   /** Sets the analysis window type for the underlying spectrogram analysis. Should be one of the 
   type in RAPT::rsWindowFunction::windowTypes. The window type affects the time-frequency tradeoff
   and the precision of the partial frequency estimation.... */
-  inline void setWindowType(int newType)     { sp.setAnalysisWindowType(newType); }
+  inline void setWindowType(rsWindowFunction::WindowType newType) 
+  { sp.setAnalysisWindowType(newType); }
 
   // void setContinuationAlgorithm
 
@@ -124,14 +125,14 @@ public:
   closer together than that, they may appear as a single partial to the analyzer. Because this
   resolvability depends on the mainlobe width of the chosen analysis window, you must also tell 
   the function, which type of window you want to use. */
-  static int getRequiredBlockSize(int windowType, T frequencyResolution, T sampleRate, 
-    bool oddSize = false);
+  static int getRequiredBlockSize(rsWindowFunction::WindowType windowType, T frequencyResolution, 
+    T sampleRate, bool oddSize = false);
 
   /** Returns minimum possible amplitude threshold that can reasonably be used for a given window 
   type without mistakenly picking up the sidelobes of the window as partials. With margin = 0, this 
   is actually just the sidelobe level of the window function itself. A margin of ...dB proved to
   be reasonable in practice */
-  static T getRequiredThreshold(int windowType, T dBmargin);
+  static T getRequiredThreshold(rsWindowFunction::WindowType windowType, T dBmargin);
   // should return the sidelobe level of given window in dB 
   // todo: maybe provide a deafult margin -> figure out reasonable value empirically
 

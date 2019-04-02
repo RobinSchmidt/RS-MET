@@ -1,5 +1,6 @@
 bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, int fftSize, 
-  int windowType = RAPT::rsWindowFunction::HANNING_WINDOW_ZN)
+  RAPT::rsWindowFunction::WindowType windowType 
+  = RAPT::rsWindowFunction::WindowType::HANNING_WINDOW_ZN)
 {
   bool r = true;
 

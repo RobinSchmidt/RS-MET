@@ -24,7 +24,7 @@ void setupHarmonicAnalyzerFor(RAPT::rsHarmonicAnalyzer<double>& analyzer,
 {
   // First, set up some standard settings:
 
-  typedef rsWindowFunction::windowTypes WT;
+  typedef rsWindowFunction::WindowType WT;
   analyzer.setSampleRate(fs);
   analyzer.setSincInterpolationLength(64);
   analyzer.setNumCyclesPerBlock(4);
@@ -230,7 +230,7 @@ void testMakeHarmonic(const std::string& name, std::vector<double>& input,
   //int Nx = (int) input.size();
 
   // analyze:
-  typedef rsWindowFunction::windowTypes WT;
+  typedef rsWindowFunction::WindowType WT;
   RAPT::rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
   analyzer.setSincInterpolationLength(64);

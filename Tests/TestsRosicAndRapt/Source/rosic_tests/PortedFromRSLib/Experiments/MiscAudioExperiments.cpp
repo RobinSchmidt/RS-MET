@@ -441,6 +441,7 @@ void windowFunctionSpectra()
 
   // create various window functions:
   typedef RAPT::rsWindowFunction WF;
+  typedef WF::WindowType WT; 
   int N = windowLength;
   std::vector<double> rectangular(N), triangular(N), hanning(N), hamming(N), 
     blackman(N), blackmanHarris(N),  blackmanNutall(N), nutall(N),
@@ -450,20 +451,20 @@ void windowFunctionSpectra()
     hrsFlatTop70(N), hrsFlatTop95(N), hrsFlatTop90D(N), hrsFlatTop116D(N), hrsFlatTop144D(N),
     hrsFlatTop169D(N), hrsFlatTop196D(N), hrsFlatTop223D(N),  hrsFlatTop248D(N);
 
-  WF::createWindow(&rectangular[0],    N, WF::RECTANGULAR_WINDOW, true);
-  WF::createWindow(&triangular[0],     N, WF::TRIANGULAR_WINDOW,  true);
-  WF::createWindow(&hanning[0],        N, WF::HANNING_WINDOW,     true);
-  WF::createWindow(&hamming[0],        N, WF::HAMMING_WINDOW,     true);
+  WF::createWindow(&rectangular[0],    N, WT::RECTANGULAR_WINDOW, true);
+  WF::createWindow(&triangular[0],     N, WT::TRIANGULAR_WINDOW,  true);
+  WF::createWindow(&hanning[0],        N, WT::HANNING_WINDOW,     true);
+  WF::createWindow(&hamming[0],        N, WT::HAMMING_WINDOW,     true);
 
-  WF::createWindow(&blackman[0],       N, WF::BLACKMAN_WINDOW,    true);
-  WF::createWindow(&blackmanHarris[0], N, WF::BLACKMAN_HARRIS,    true);
-  WF::createWindow(&blackmanNutall[0], N, WF::BLACKMAN_NUTALL,    true);
-  WF::createWindow(&nutall[0],         N, WF::NUTALL,             true);
+  WF::createWindow(&blackman[0],       N, WT::BLACKMAN_WINDOW,    true);
+  WF::createWindow(&blackmanHarris[0], N, WT::BLACKMAN_HARRIS,    true);
+  WF::createWindow(&blackmanNutall[0], N, WT::BLACKMAN_NUTALL,    true);
+  WF::createWindow(&nutall[0],         N, WT::NUTALL,             true);
 
-  WF::createWindow(&truncGauss2[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/2.);
-  WF::createWindow(&truncGauss3[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/3.);
-  WF::createWindow(&truncGauss4[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/4.);
-  WF::createWindow(&truncGauss5[0],     N, WF::TRUNCATED_GAUSSIAN, true, 1/5.);
+  WF::createWindow(&truncGauss2[0],     N, WT::TRUNCATED_GAUSSIAN, true, 1/2.);
+  WF::createWindow(&truncGauss3[0],     N, WT::TRUNCATED_GAUSSIAN, true, 1/3.);
+  WF::createWindow(&truncGauss4[0],     N, WT::TRUNCATED_GAUSSIAN, true, 1/4.);
+  WF::createWindow(&truncGauss5[0],     N, WT::TRUNCATED_GAUSSIAN, true, 1/5.);
 
   WF::salFlatTopFast3(&salFlatTopFast3[0], N);
   WF::salFlatTopFast4(&salFlatTopFast4[0], N);

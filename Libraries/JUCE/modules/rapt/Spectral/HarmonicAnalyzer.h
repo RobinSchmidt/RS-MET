@@ -110,7 +110,7 @@ public:
   }
 
   /** Sets the type of window to be used. */
-  void setWindowType(rsWindowFunction::windowTypes newType) { windowType = newType; }
+  void setWindowType(rsWindowFunction::WindowType newType) { windowType = newType; }
 
   /** Sets up, whether or not inharmonic partials should be expected. If this is set to true (and 
   the number cycles per block is > 1), the algorithm tries to find the actual partial frequency by
@@ -330,7 +330,7 @@ protected:
   int trafoSize      = 0;  // FFT size == blockSize * zeroPad
 
   
-  typedef rsWindowFunction::windowTypes WindowType;
+  typedef rsWindowFunction::WindowType WindowType;
   WindowType windowType = WindowType::RECTANGULAR_WINDOW;
 
   //int window = rectangular;  // type of window function

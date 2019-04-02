@@ -98,7 +98,7 @@ void grainRoundTrip()
   rsComplexDbl X[M];
   pv.setBlockSize(B);
   pv.setTrafoSize(B);
-  pv.setAnalysisWindowType(RAPT::rsWindowFunction::HANNING_WINDOW_ZN);
+  pv.setAnalysisWindowType(RAPT::rsWindowFunction::WindowType::HANNING_WINDOW_ZN);
   //pv.setZeroPaddingFactor(1);
   pv.shortTimeSpectrum(x, N, n0, X);
 
@@ -221,6 +221,7 @@ void plotWindows()
 
 void spectrogramSine()
 {
+  typedef RAPT::rsWindowFunction::WindowType WT;
   static const int B  = 512;            // blocksize
   static const int H  = B/4;            // hopsize
   static const int N  = 10000;          // number of samples in the test signal
@@ -229,7 +230,7 @@ void spectrogramSine()
   static const int K  = M/2 + 1;        // number of non-redundant bins
   double           fs = 44100;          // samplerate
   double           f  = 5000;           // sinusoid frequency
-  int W = RAPT::rsWindowFunction::HANNING_WINDOW_ZN;
+  WT W = WT::HANNING_WINDOW_ZN;
 
 
   // A hopsize of B/4 will result in a constant when overlapping successive frames, assuming that
@@ -315,6 +316,7 @@ void sineParameterEstimation()
   // analysis and visualize the results.
 
   typedef RAPT::rsWindowFunction WF;
+  typedef WF::WindowType WT;
   typedef rsSinusoidalAnalyzer<double> SA;
 
   // signal parameters:
@@ -328,12 +330,12 @@ void sineParameterEstimation()
   double anaTime = length/2; // time instant of analysis (exact only up to sample-rate)
   int blockSize  = 500;
   int trafoSize  = 500;
-  //int window     = WF::RECTANGULAR_WINDOW;
-  //int window     = WF::TRIANGULAR_WINDOW;
-  int window     = WF::HAMMING_WINDOW;
-  //int window     = WF::HANNING_WINDOW_ZN;
-  //int window     = WF::BLACKMAN_WINDOW;
-  //int window     = WF::BLACKMAN_HARRIS;
+  //WT window     = WT::RECTANGULAR_WINDOW;
+  //WT window     = WT::TRIANGULAR_WINDOW;
+  WT window     = WT::HAMMING_WINDOW;
+  //WT window     = WT::HANNING_WINDOW_ZN;
+  //WT window     = WT::BLACKMAN_WINDOW;
+  //WT window     = WT::BLACKMAN_HARRIS;
 
   // tests:                             // errors (with Hamming window, 1 kHz @ 10 kHz):
   //blockSize = 49; trafoSize =  97;    // f: -1.08, a: 0.013,  p: 1.5e-14   good
@@ -612,7 +614,7 @@ void sinusoidalSynthesis1()
   // slightly narrower mainlobe and better sidelobe rejection
   RAPT::rsSinusoidalModel<double> model2;
   RAPT::rsSinusoidalAnalyzer<double> sa;
-  sa.setWindowType(RAPT::rsWindowFunction::HAMMING_WINDOW);
+  sa.setWindowType(RAPT::rsWindowFunction::WindowType::HAMMING_WINDOW);
   sa.setMaxFreqDeltaBase(100);
   sa.setTrafoSize(4096);
   //sa.setBlockSize(256);    // gives total nonsense results
@@ -708,8 +710,9 @@ void sinusoidalAnalysis1()
 
 
   // analsis parameters:
-  int window = RAPT::rsWindowFunction::HAMMING_WINDOW;
-  //int window = RAPT::rsWindowFunction::BLACKMAN_WINDOW;
+  typedef RAPT::rsWindowFunction::WindowType WT;
+  WT window = WT::HAMMING_WINDOW;
+  //WT window = WT::BLACKMAN_WINDOW;
   double freqRes = frequency; // frequency resolution
   int zeroPadFactor = 2;
 
@@ -789,14 +792,15 @@ void sinusoidalAnalysis2()
 
   // analysis parameters:
   typedef RAPT::rsWindowFunction WF;
+  typedef WF::WindowType WT;
   double freqRes  = f2-f1;   // frequency resolution
   double dBmargin = 20;      // dB margin over sidelobe level
   double blockSizeFactor = 1.0;  // factor by which to to make blockSize longer than necessary
   int zeroPaddingFactor = 4;         // zero padding factor
-  //int window = WF::HANNING_WINDOW_ZN;
-  //int window = WF::HAMMING_WINDOW;
-  int window = WF::BLACKMAN_WINDOW;
-  //int window = WF::BLACKMAN_HARRIS;
+  //WT window = WT::HANNING_WINDOW_ZN;
+  //WT window = WT::HAMMING_WINDOW;
+  WT window = WT::BLACKMAN_WINDOW;
+  //WT window = WT::BLACKMAN_HARRIS;
 
 
   // create a model and synthesize the sound:
@@ -941,15 +945,16 @@ void sinusoidalAnalysis3()
 
   // analysis parameters:
   typedef RAPT::rsWindowFunction WF;
+  typedef WF::WindowType WT;
   //double freqRes  = std::min(f2, f1); // frequency resolution
   double freqRes  = 1000.0;
   double dBmargin = 20;               // dB margin over sidelobe level
   double blockSizeFactor = 1.0;       // factor by which to to make blockSize longer than necessary
   int zeroPaddingFactor = 4;          // zero padding factor
-  //int window = WF::HANNING_WINDOW_ZN;
-  int window = WF::HAMMING_WINDOW;
-  //int window = WF::BLACKMAN_WINDOW;
-  //int window = WF::BLACKMAN_HARRIS;
+  //WT window = WT::HANNING_WINDOW_ZN;
+  WT window = WT::HAMMING_WINDOW;
+  //WT window = WT::BLACKMAN_WINDOW;
+  //WT window = WT::BLACKMAN_HARRIS;
 
 
   // create a model and synthesize the sound:
@@ -1170,9 +1175,9 @@ void testHarmonicResynthesis(const std::string& name, double fs, int N, double f
 }
 
 // convenience function - move to rs_testing
-RAPT::rsWindowFunction::windowTypes stringToWindowType(const std::string& wt)
+RAPT::rsWindowFunction::WindowType stringToWindowType(const std::string& wt)
 {
-  typedef RAPT::rsWindowFunction::windowTypes WT;
+  typedef RAPT::rsWindowFunction::WindowType WT;
   if(wt == "rc") return WT::RECTANGULAR_WINDOW;
   if(wt == "hn") return WT::HANNING_WINDOW;
   if(wt == "hm") return WT::HAMMING_WINDOW;

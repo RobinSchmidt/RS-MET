@@ -42,13 +42,13 @@ public:
   void setHopSize(int newHopSize) { hopSize = newHopSize; }
 
   /** Should be one of the type in RAPT::rsWindowFunction::windowTypes */
-  void setAnalysisWindowType(int newType) 
+  void setAnalysisWindowType(rsWindowFunction::WindowType newType) 
   { 
     analysisWindowType = newType; 
     updateAnalysisWindow();
   }
 
-  void setSynthesisWindowType(int newType) 
+  void setSynthesisWindowType(rsWindowFunction::WindowType newType) 
   { 
     synthesisWindowType = newType; 
     updateSynthesisWindow();
@@ -233,7 +233,7 @@ protected:
 
   void updateSynthesisWindow();
 
-  static void fillWindowArray(T* w, int length, int type);
+  static void fillWindowArray(T* w, int length, rsWindowFunction::WindowType type);
 
   /** Given a buffer of complex values, this functions swaps the first and second half which is the 
   same as a circular shift by half of the buffer size. This shifts the time-origin of buffer from 
@@ -264,8 +264,8 @@ protected:
   int hopSize   = 128;
   // maybe we should also distiguish between analysis and synthesis hop-and block-size
 
-  int analysisWindowType  = rsWindowFunction::HANNING_WINDOW_ZN;
-  int synthesisWindowType = rsWindowFunction::HANNING_WINDOW_ZN;
+  rsWindowFunction::WindowType analysisWindowType  = rsWindowFunction::WindowType::HANNING_WINDOW_ZN;
+  rsWindowFunction::WindowType synthesisWindowType = rsWindowFunction::WindowType::HANNING_WINDOW_ZN;
 
   std::vector<T> analysisWindow, synthesisWindow;
 

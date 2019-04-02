@@ -293,7 +293,7 @@ void rsSpectrogram<T>::updateSynthesisWindow()
 }
 
 template<class T>
-void rsSpectrogram<T>::fillWindowArray(T* w, int length, int type)
+void rsSpectrogram<T>::fillWindowArray(T* w, int length, rsWindowFunction::WindowType type)
 {
   rsWindowFunction::createWindow(w, length, type, false); 
   // ...actually, this function is obsolete now...but maybe not when we later create derivative and

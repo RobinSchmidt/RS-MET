@@ -110,8 +110,9 @@ namespace rosic
     int    blockSize;
     int    fftSize;
     int    sampleCounter;
-    int    windowType;
     bool   midSideMode;
+    RAPT::rsWindowFunction::WindowType windowType;
+
 
     double*  magnitudePointer[maxNumChannels];
     double** magnitudePointer2;
