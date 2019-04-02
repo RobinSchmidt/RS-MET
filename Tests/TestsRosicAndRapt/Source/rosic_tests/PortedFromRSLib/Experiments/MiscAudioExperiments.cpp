@@ -446,7 +446,9 @@ void windowFunctionSpectra()
     blackman(N), blackmanHarris(N),  blackmanNutall(N), nutall(N),
     truncGauss2(N), truncGauss3(N), truncGauss4(N), truncGauss5(N), // 2,3,4,5 = 1/sigma
     salFlatTopFast3(N), salFlatTopFast4(N), salFlatTopFast5(N),
-    salFlatTopMin3(N),  salFlatTopMin4(N),  salFlatTopMin5(N);
+    salFlatTopMin3(N),  salFlatTopMin4(N),  salFlatTopMin5(N),
+    hrsFlatTop70(N), hrsFlatTop95(N), hrsFlatTop90D(N), hrsFlatTop116D(N), hrsFlatTop144D(N),
+    hrsFlatTop169D(N), hrsFlatTop196D(N), hrsFlatTop223D(N),  hrsFlatTop248D(N);
 
   WF::createWindow(&rectangular[0],    N, WF::RECTANGULAR_WINDOW, true);
   WF::createWindow(&triangular[0],     N, WF::TRIANGULAR_WINDOW,  true);
@@ -470,8 +472,12 @@ void windowFunctionSpectra()
   WF::salFlatTopMin3(&salFlatTopMin3[0], N);
   WF::salFlatTopMin4(&salFlatTopMin4[0], N);
   WF::salFlatTopMin5(&salFlatTopMin5[0], N);
-
-
+   
+  WF::hrsFlatTop70(  &hrsFlatTop70[0],   N);
+  WF::hrsFlatTop95(  &hrsFlatTop95[0],   N);
+  WF::hrsFlatTop90D( &hrsFlatTop90D[0],  N);
+  WF::hrsFlatTop116D(&hrsFlatTop116D[0], N);
+  WF::hrsFlatTop144D(&hrsFlatTop144D[0], N);
 
 
   // under construction:
@@ -561,6 +567,8 @@ void windowFunctionSpectra()
 
   //rsPlotVectors(salFlatTopMin3, salFlatTopMin4, salFlatTopMin5); 
   plt.plotDecibelSpectra(N, &salFlatTopMin3[0], &salFlatTopMin4[0], &salFlatTopMin5[0]);
+
+  rsPlotVectors(hrsFlatTop70, hrsFlatTop95, hrsFlatTop90D, hrsFlatTop116D, hrsFlatTop144D); 
 
   //plt.plotDecibelSpectra(N, &rectangular[0], &chebyTweak[0]);
   //plt.plotDecibelSpectra(N, &cosSumWnd2[0], &chebyTweak[0]);

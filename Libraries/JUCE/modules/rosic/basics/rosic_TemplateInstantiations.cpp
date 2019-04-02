@@ -84,13 +84,22 @@ template void RAPT::rsNaturalCubicSpline(const double *x, const double *y, int N
 
 
 
-template void RAPT::rsWindowFunction::salFlatTopFast3(double* w, int N); 
-template void RAPT::rsWindowFunction::salFlatTopFast4(double* w, int N); 
-template void RAPT::rsWindowFunction::salFlatTopFast5(double* w, int N); 
-template void RAPT::rsWindowFunction::salFlatTopMin3( double* w, int N); 
-template void RAPT::rsWindowFunction::salFlatTopMin4( double* w, int N); 
-template void RAPT::rsWindowFunction::salFlatTopMin5( double* w, int N); 
+template void RAPT::rsWindowFunction::salFlatTopFast3(double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::salFlatTopFast4(double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::salFlatTopFast5(double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::salFlatTopMin3( double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::salFlatTopMin4( double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::salFlatTopMin5( double* w, int N, bool normalize);
 
+template void RAPT::rsWindowFunction::hrsFlatTop70(  double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop95(  double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop90D( double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop116D(double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop144D(double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop169D(double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop196D(double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop223D(double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop248D(double* w, int N, bool normalize);
 
 
 template class RAPT::rsStateVariableFilter<double, double>;

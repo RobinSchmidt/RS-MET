@@ -82,13 +82,17 @@ T rsWindowFunction::getSideLobeLevel(int type, T param)
 }
 
 template<class T>
-void rsWindowFunction::cosineSum(T* w, int N, T* c, int K)
+void rsWindowFunction::cosineSum(T* w, int N, T* c, int K, bool normalizeMean)
 {
   for(int n = 0; n < N; n++) {
     T z  = T(2*PI*n)/T(N);
     w[n] = c[0];
     for(int k = 1; k < K; k++)
       w[n] += c[k] * cos(k*z);  // (2), Eq. 123
+  }
+  if(normalizeMean) {
+    T m = rsArray::mean(w, N);
+    rsArray::scale(w, N, T(1)/m);
   }
 }
 
@@ -179,114 +183,114 @@ void rsWindowFunction::flatTop(T* w, int N)
 }
 
 template<class T>
-void rsWindowFunction::salFlatTopFast3(T* w, int N)
+void rsWindowFunction::salFlatTopFast3(T* w, int N, bool norm)
 {
   T c[3] = { 0.26526, -0.5, 0.23474 };
-  cosineSum(w, N, c, 3);
+  cosineSum(w, N, c, 3, norm);
 }
 
 template<class T>
-void rsWindowFunction::salFlatTopFast4(T* w, int N)
+void rsWindowFunction::salFlatTopFast4(T* w, int N, bool norm)
 {
   T c[4] = { 0.21706, -0.42103, 0.28294, -0.07897 };
-  cosineSum(w, N, c, 4);
+  cosineSum(w, N, c, 4, norm);
 }
 
 template<class T>
-void rsWindowFunction::salFlatTopFast5(T* w, int N)
+void rsWindowFunction::salFlatTopFast5(T* w, int N, bool norm)
 {
   T c[5] = { 0.1881, -0.36923, 0.28702, -0.13077, 0.02488 };
-  cosineSum(w, N, c, 5);
+  cosineSum(w, N, c, 5, norm);
 }
 
 template<class T>
-void rsWindowFunction::salFlatTopMin3(T* w, int N)
+void rsWindowFunction::salFlatTopMin3(T* w, int N, bool norm)
 {
   T c[3] = { 0.28235, -0.52105, 0.19659 };
-  cosineSum(w, N, c, 3);
+  cosineSum(w, N, c, 3, norm);
 }
 
 template<class T>
-void rsWindowFunction::salFlatTopMin4(T* w, int N)
+void rsWindowFunction::salFlatTopMin4(T* w, int N, bool norm)
 {
   T c[4] = { 0.241906, -0.460841, 0.255381, -0.041872 };
-  cosineSum(w, N, c, 4);
+  cosineSum(w, N, c, 4, norm);
 }
 
 template<class T>
-void rsWindowFunction::salFlatTopMin5(T* w, int N)
+void rsWindowFunction::salFlatTopMin5(T* w, int N, bool norm)
 {
   T c[5] = { 0.209671, -0.407331, 0.281225, -0.092669, 0.0091036 };
-  cosineSum(w, N, c, 5);
+  cosineSum(w, N, c, 5, norm);
 }
 
 template<class T>
-void rsWindowFunction::hrsFlatTop70(T* w, int N)
+void rsWindowFunction::hrsFlatTop70(T* w, int N, bool norm)
 {
   T c[4] = { 1, -1.90796, 1.07349, -0.18199 };
-  cosineSum(w, N, c, 4);
+  cosineSum(w, N, c, 4, norm);
 }
 
 template<class T>
-void rsWindowFunction::hrsFlatTop95(T* w, int N)
+void rsWindowFunction::hrsFlatTop95(T* w, int N, bool norm)
 {
   T c[5] = { 1, -1.9383379, 1.3045202, -0.4028270, 0.0350665 };
-  cosineSum(w, N, c, 5);
+  cosineSum(w, N, c, 5, norm);
 }
 
 template<class T>
-void rsWindowFunction::hrsFlatTop90D(T* w, int N)
+void rsWindowFunction::hrsFlatTop90D(T* w, int N, bool norm)
 {
   T c[5] = { 1, -1.942604, 1.340318, -0.440811, 0.043097 };
-  cosineSum(w, N, c, 5);
+  cosineSum(w, N, c, 5, norm);
 }
 
 template<class T>
-void rsWindowFunction::hrsFlatTop116D(T* w, int N)
+void rsWindowFunction::hrsFlatTop116D(T* w, int N, bool norm)
 {
   T c[6] = { 1, -1.9575375, 1.4780705, -0.6367431, 0.1228389, -0.0066288 };
-  cosineSum(w, N, c, 6);
+  cosineSum(w, N, c, 6, norm);
 }
 
 template<class T>
-void rsWindowFunction::hrsFlatTop144D(T* w, int N)
+void rsWindowFunction::hrsFlatTop144D(T* w, int N, bool norm)
 {
   T c[7] = { 1, -1.96760033, 1.57983607, -0.81123644, 0.22583558, -0.02773848, 0.00090360 };
-  cosineSum(w, N, c, 7);
+  cosineSum(w, N, c, 7, norm);
 
 }
 
 template<class T>
-void rsWindowFunction::hrsFlatTop169D(T* w, int N)
+void rsWindowFunction::hrsFlatTop169D(T* w, int N, bool norm)
 {
   T c[8] = { 1, -1.97441842, 1.65409888, -0.95788186, 0.33673420, -0.06364621, 0.00521942, 
     -0.00010599 };
-  cosineSum(w, N, c, 8);
+  cosineSum(w, N, c, 8, norm);
 }
 
 template<class T>
-void rsWindowFunction::hrsFlatTop196D(T* w, int N)
+void rsWindowFunction::hrsFlatTop196D(T* w, int N, bool norm)
 {
   T c[9] = { 1, -1.979280420, 1.710288951, -1.081629853, 0.448734314, -0.112376628, 0.015122992,
     -0.000871252, 0.000011896 };
-  cosineSum(w, N, c, 9);
+  cosineSum(w, N, c, 9, norm);
 
 }
 
 template<class T>
-void rsWindowFunction::hrsFlatTop223D(T* w, int N)
+void rsWindowFunction::hrsFlatTop223D(T* w, int N, bool norm)
 {
   T c[10] = { 1, -1.98298997309, 1.75556083063, -1.19037717712, 0.56155440797, -0.17296769663, 
     0.03233247087, -0.00324954578, 0.00013801040, -0.00000132725 };
-  cosineSum(w, N, c, 10);
+  cosineSum(w, N, c, 10, norm);
 }
 
 template<class T>
-void rsWindowFunction::hrsFlatTop248D(T* w, int N)
+void rsWindowFunction::hrsFlatTop248D(T* w, int N, bool norm)
 {
   T c[11] = { 1, -1.985844164102, 1.791176438506, -1.282075284005, 0.667777530266, -0.240160796576,
     0.056656381764, -0.008134974479, 0.000624544650, -0.000019808998, 0.000000132974 };
-  cosineSum(w, N, c, 11);
+  cosineSum(w, N, c, 11, norm);
 }
 
 template<class T>

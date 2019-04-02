@@ -73,7 +73,7 @@ public:
   w[n] = sum_k c[k] cos(k * 2*pi*n/N),     n = 0,...,N-1; k = 0,...,K-1
   where: w: window, N: length, c: coeffs, K: numTerms, n: sample index, k: term index. */
   template<class T>
-  static void cosineSum(T* window, int length, T* coeffs, int numTerms);
+  static void cosineSum(T* window, int length, T* coeffs, int numTerms, bool normalizeMean);
 
 
   /** Returns the value of a zero-centered cosine-squared shaped window of given length, having
@@ -135,55 +135,55 @@ public:
 
   /** Salvatore 3-term flat-top window with fast sidelobe decay. see (2). */
   template<class T>
-  static void salFlatTopFast3(T *window, int length);
+  static void salFlatTopFast3(T *window, int length, bool normalizeMean = true);
 
   /** Salvatore 4-term flat-top window with fast sidelobe decay. see (2). */
   template<class T>
-  static void salFlatTopFast4(T *window, int length);
+  static void salFlatTopFast4(T *window, int length, bool normalizeMean = true);
 
   /** Salvatore 4-term flat-top window with fast sidelobe decay. see (2). */
   template<class T>
-  static void salFlatTopFast5(T *window, int length);
+  static void salFlatTopFast5(T *window, int length, bool normalizeMean = true);
 
   /** Salvatore 3-term flat-top window with minimum sidelobe level. see (2). */
   template<class T>
-  static void salFlatTopMin3(T *window, int length);
+  static void salFlatTopMin3(T *window, int length, bool normalizeMean = true);
 
   /** Salvatore 4-term flat-top window with minimum sidelobe level. see (2). */
   template<class T>
-  static void salFlatTopMin4(T *window, int length);
+  static void salFlatTopMin4(T *window, int length, bool normalizeMean = true);
 
   /** Salvatore 5-term flat-top window with minimum sidelobe level. see (2). */
   template<class T>
-  static void salFlatTopMin5(T *window, int length);
+  static void salFlatTopMin5(T *window, int length, bool normalizeMean = true);
 
   /** Heinzel/Rüdiger/Schilling flat-top window, 3 cosine terms, ~70dB sidelobes. see (2) */
   template<class T>
-  static void hrsFlatTop70(T *window, int length);
+  static void hrsFlatTop70(T *window, int length, bool normalizeMean = true);
 
   template<class T>
-  static void hrsFlatTop95(T *window, int length);
+  static void hrsFlatTop95(T *window, int length, bool normalizeMean = true);
 
   template<class T>
-  static void hrsFlatTop90D(T *window, int length);
+  static void hrsFlatTop90D(T *window, int length, bool normalizeMean = true);
 
   template<class T>
-  static void hrsFlatTop116D(T *window, int length);
+  static void hrsFlatTop116D(T *window, int length, bool normalizeMean = true);
 
   template<class T>
-  static void hrsFlatTop144D(T *window, int length);
+  static void hrsFlatTop144D(T *window, int length, bool normalizeMean = true);
 
   template<class T>
-  static void hrsFlatTop169D(T *window, int length);
+  static void hrsFlatTop169D(T *window, int length, bool normalizeMean = true);
 
   template<class T>
-  static void hrsFlatTop196D(T *window, int length);
+  static void hrsFlatTop196D(T *window, int length, bool normalizeMean = true);
 
   template<class T>
-  static void hrsFlatTop223D(T *window, int length);
+  static void hrsFlatTop223D(T *window, int length, bool normalizeMean = true);
 
   template<class T>
-  static void hrsFlatTop248D(T *window, int length);
+  static void hrsFlatTop248D(T *window, int length, bool normalizeMean = true);
 
 
 
