@@ -75,87 +75,21 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   // analyze, resynthesize and create resiudal signal:
 
 
-  // Analysis:
-
   double* x = &input[0];   // pointer to first sample (for convenience)
   int Nx = (int) input.size();
 
-  // create and set up harmonic analyzer object:  
+
+  // Analysis:
+
   RAPT::rsHarmonicAnalyzer<double> analyzer;
   setupHarmonicAnalyzerFor(analyzer, name, fs, f0);
-
-  /*
-  typedef rsWindowFunction::windowTypes WT;
-  analyzer.setSampleRate(fs);
-  //analyzer.setSincInterpolationLength(2);
-  //analyzer.setSincInterpolationLength(4);
-  //analyzer.setSincInterpolationLength(16);
-  analyzer.setSincInterpolationLength(64);
-  //analyzer.setSincInterpolationLength(512);
-  analyzer.setNumCyclesPerBlock(4);
-  //analyzer.setWindowType(WT::HAMMING_WINDOW);
-  analyzer.setWindowType(WT::BLACKMAN_WINDOW);
-  analyzer.setSpectralOversampling(8);  // zero padding
-  analyzer.setAllowInharmonics(true);
-  analyzer.setSpectralPeakSearchWidth(0.5);       // default: 1 - blackman needs a value less than 1
-  analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
-  */
-  
-
-
-
-  //analyzer.setFreqsByPhaseDerivative(true);
-  //analyzer.setFreqPhaseConsistency(true);
-  // todo: maybe provide different freq-refinement methods (not necessarily mutually exclusive)
-
-
-
-  /*
-  // test to swicth between old and new version
-  bool useOldCode = false;
-  //useOldCode = true; // comment to use new code
-  if(useOldCode)
-    analyzer.useOldCode = true;  // only compatible with setNumCyclesPerBlock(1);
-  else {
-    analyzer.setSpectralOversampling(8);
-    analyzer.setWindowType(WT::HAMMING_WINDOW);
-    //analyzer.setWindowType(WT::HANNING_WINDOW);
-  }
-  */
-  // for rectangular window, we may use 1 cycle, for others we may have to use at least 2 
-  // (hamm/hann), for blackman maybe 4...we'll see
-  // non-rectangular windows do not yet work
-  // ..or..well. cycles=4, zero-pad=8, hanning almost works
-  // ...the signal is just too loud by factor 2 ...using a not normalized window helps
-  // 2 cycles with hamm or hann doesn't work
-  // with 4 cycles per sample, the freqs in the model are multiples of f0/4 - 
-  // ...seems to be fixed, but now we have to use normalized windows - why?
-
-
-  /*
-  // set up settings of the embedded cycle-mark finder:
-  rsCycleMarkFinder<double>& cmf = analyzer.getCycleFinder();
-                                              // defaults:
-  cmf.setRelativeBandpassWidth(0.5);          // 1.0
-  cmf.setBandpassSteepness(5);                // 3
-  cmf.setSubSampleApproximationPrecision(2);  // 1, 0: linear, 1: cubic, 2: quintic, ...
-  cmf.setFundamentalRange(50., 1000.);        // 20, 5000 
-  cmf.setFundamental(f0);                     // 0 -> auto-detect
-  //cmf.setAlgorithm(cmf.F0_ZERO_CROSSINGS);
-  cmf.setAlgorithm(cmf.CYCLE_CORRELATION);
-  */
-
-
-
-
-
-
-  // let the analyzer analyze the sound - obtains a sinusoidal model:
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, Nx);
-  mdl.removePartial(0);                      // remove DC
-  mdl.removePartialsWithMeanFreqAbove(fs/2); // anti-alias
+
 
   // Manipulations:
+
+  mdl.removePartial(0);                      // remove DC
+  mdl.removePartialsWithMeanFreqAbove(fs/2); // anti-alias
 
   //mdl.keepOnly({0, 9});  // for test with TwoSines_Freq1=200_Freq2=2025
   //mdl.removePartial(0);    // test: resynthesize without fundamental
@@ -230,26 +164,15 @@ void testMakeHarmonic(const std::string& name, std::vector<double>& input,
   //int Nx = (int) input.size();
 
   // analyze:
-  typedef rsWindowFunction::WindowType WT;
+
   RAPT::rsHarmonicAnalyzer<double> analyzer;
-  analyzer.setSampleRate(fs);
-  analyzer.setSincInterpolationLength(64);
-  analyzer.setNumCyclesPerBlock(4);
-  //analyzer.setWindowType(WT::HAMMING_WINDOW);
-  analyzer.setWindowType(WT::BLACKMAN_WINDOW);
-  analyzer.setSpectralOversampling(4);  // zero padding
-  analyzer.setAllowInharmonics(true);
-  analyzer.setSpectralPeakSearchWidth(0.5);       // default: 1 - blackman needs a value less than 1
-  analyzer.setMinPeakToMainlobeWidthRatio(0.75); 
-
-
-
-  analyzer.getCycleFinder().setFundamental(f0In);
+  setupHarmonicAnalyzerFor(analyzer, name, fs, f0In);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&input[0], (int) input.size());
 
   // plotSineModel(mdl, fs); // move to rapt
 
   // process model data:
+
   mdl.removePartial(0); 
   //mdl.keepOnly({ 0 });  // for test
   rsSinusoidalProcessor<double>::makeStrictlyHarmonic(mdl, f0Out, inharmonicity, 0.5);
