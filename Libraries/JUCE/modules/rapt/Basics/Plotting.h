@@ -38,19 +38,30 @@ inline void rsPlotVector(std::vector<T> v)
 /** Plots a bunch of vectors. */
 template<class T>
 inline void rsPlotVectors(
-  std::vector<T> v1, 
+  std::vector<T> v0, 
+  std::vector<T> v1 = std::vector<T>(),
   std::vector<T> v2 = std::vector<T>(),
   std::vector<T> v3 = std::vector<T>(),
-  std::vector<T> v4 = std::vector<T>(),
-  std::vector<T> v5 = std::vector<T>()  )
+  std::vector<T> v4 = std::vector<T>(),  
+  std::vector<T> v5 = std::vector<T>(),
+  std::vector<T> v6 = std::vector<T>(),
+  std::vector<T> v7 = std::vector<T>(),
+  std::vector<T> v8 = std::vector<T>(), 
+  std::vector<T> v9 = std::vector<T>()
+  )
 {
   // make a function that can take more vectors...maybe a vector of vectors?
   GNUPlotter plt;
+  if(v0.size() > 0) plt.addDataArrays((int) v0.size(), &v0[0]);
   if(v1.size() > 0) plt.addDataArrays((int) v1.size(), &v1[0]);
   if(v2.size() > 0) plt.addDataArrays((int) v2.size(), &v2[0]);
   if(v3.size() > 0) plt.addDataArrays((int) v3.size(), &v3[0]);
   if(v4.size() > 0) plt.addDataArrays((int) v4.size(), &v4[0]);
   if(v5.size() > 0) plt.addDataArrays((int) v5.size(), &v5[0]);
+  if(v6.size() > 0) plt.addDataArrays((int) v6.size(), &v6[0]);
+  if(v7.size() > 0) plt.addDataArrays((int) v7.size(), &v7[0]);
+  if(v8.size() > 0) plt.addDataArrays((int) v8.size(), &v8[0]);
+  if(v9.size() > 0) plt.addDataArrays((int) v9.size(), &v9[0]);
   plt.plot();
 }
 

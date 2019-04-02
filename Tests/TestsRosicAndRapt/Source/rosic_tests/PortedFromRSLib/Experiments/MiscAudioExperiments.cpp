@@ -478,6 +478,10 @@ void windowFunctionSpectra()
   WF::hrsFlatTop90D( &hrsFlatTop90D[0],  N);
   WF::hrsFlatTop116D(&hrsFlatTop116D[0], N);
   WF::hrsFlatTop144D(&hrsFlatTop144D[0], N);
+  WF::hrsFlatTop169D(&hrsFlatTop169D[0], N);
+  WF::hrsFlatTop196D(&hrsFlatTop196D[0], N);
+  WF::hrsFlatTop223D(&hrsFlatTop223D[0], N);
+  WF::hrsFlatTop248D(&hrsFlatTop248D[0], N);
 
 
   // under construction:
@@ -566,9 +570,17 @@ void windowFunctionSpectra()
   //plt.plotDecibelSpectra(N, &salFlatTopFast3[0], &salFlatTopFast4[0], &salFlatTopFast5[0]);
 
   //rsPlotVectors(salFlatTopMin3, salFlatTopMin4, salFlatTopMin5); 
-  plt.plotDecibelSpectra(N, &salFlatTopMin3[0], &salFlatTopMin4[0], &salFlatTopMin5[0]);
+  //plt.plotDecibelSpectra(N, &salFlatTopMin3[0], &salFlatTopMin4[0], &salFlatTopMin5[0]);
 
-  rsPlotVectors(hrsFlatTop70, hrsFlatTop95, hrsFlatTop90D, hrsFlatTop116D, hrsFlatTop144D); 
+  //rsPlotVectors(hrsFlatTop70, hrsFlatTop95, hrsFlatTop90D, hrsFlatTop116D, hrsFlatTop144D, 
+  //  hrsFlatTop169D, hrsFlatTop196D, hrsFlatTop223D, hrsFlatTop248D); 
+  plt.plotDecibelSpectra(N, &hrsFlatTop70[0], &hrsFlatTop95[0], &hrsFlatTop90D[0], 
+    &hrsFlatTop116D[0], &hrsFlatTop144D[0], &hrsFlatTop169D[0], &hrsFlatTop196D[0], 
+    &hrsFlatTop223D[0], &hrsFlatTop248D[0]);
+  // hmm, it seems like the sidelobes are always around 5-6 dB higher than the specifications says
+  // not normalizing the windows doesn't change anything (seems, they already are normalized even 
+  // without explicitly doing so)
+  // try flatTop90D for sinusoidal analysis
 
   //plt.plotDecibelSpectra(N, &rectangular[0], &chebyTweak[0]);
   //plt.plotDecibelSpectra(N, &cosSumWnd2[0], &chebyTweak[0]);
