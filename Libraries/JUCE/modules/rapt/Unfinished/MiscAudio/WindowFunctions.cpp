@@ -251,33 +251,43 @@ void rsWindowFunction::hrsFlatTop116D(T* w, int N)
 template<class T>
 void rsWindowFunction::hrsFlatTop144D(T* w, int N)
 {
+  T c[7] = { 1, -1.96760033, 1.57983607, -0.81123644, 0.22583558, -0.02773848, 0.00090360 };
+  cosineSum(w, N, c, 7);
 
 }
 
 template<class T>
 void rsWindowFunction::hrsFlatTop169D(T* w, int N)
 {
-
+  T c[8] = { 1, -1.97441842, 1.65409888, -0.95788186, 0.33673420, -0.06364621, 0.00521942, 
+    -0.00010599 };
+  cosineSum(w, N, c, 8);
 }
 
 template<class T>
 void rsWindowFunction::hrsFlatTop196D(T* w, int N)
 {
+  T c[9] = { 1, -1.979280420, 1.710288951, -1.081629853, 0.448734314, -0.112376628, 0.015122992,
+    -0.000871252, 0.000011896 };
+  cosineSum(w, N, c, 9);
 
 }
 
 template<class T>
 void rsWindowFunction::hrsFlatTop223D(T* w, int N)
 {
-
+  T c[10] = { 1, -1.98298997309, 1.75556083063, -1.19037717712, 0.56155440797, -0.17296769663, 
+    0.03233247087, -0.00324954578, 0.00013801040, -0.00000132725 };
+  cosineSum(w, N, c, 10);
 }
 
 template<class T>
 void rsWindowFunction::hrsFlatTop248D(T* w, int N)
 {
-
+  T c[11] = { 1, -1.985844164102, 1.791176438506, -1.282075284005, 0.667777530266, -0.240160796576,
+    0.056656381764, -0.008134974479, 0.000624544650, -0.000019808998, 0.000000132974 };
+  cosineSum(w, N, c, 11);
 }
-
 
 template<class T>
 void rsWindowFunction::truncatedGaussian(T* w, int N, T sigma)

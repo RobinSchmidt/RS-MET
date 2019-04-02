@@ -113,7 +113,7 @@ public:
   void setWindowType(rsWindowFunction::windowTypes newType) { windowType = newType; }
 
   /** Sets up, whether or not inharmonic partials should be expected. If this is set to true (and 
-  the number cycles per block is > 1), the algorithms tries to find the actual partial frequency by
+  the number cycles per block is > 1), the algorithm tries to find the actual partial frequency by
   searching in some neighbourhood of the expected harmonic "slot". If false, it will just read out
   the spectrum at the expected exact harmonic frequency. */
   void setAllowInharmonics(bool allow) { allowInharmonics = allow; }
