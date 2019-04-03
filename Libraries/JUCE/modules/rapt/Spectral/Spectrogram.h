@@ -264,8 +264,8 @@ protected:
   int hopSize   = 128;
   // maybe we should also distiguish between analysis and synthesis hop-and block-size
 
-  rsWindowFunction::WindowType analysisWindowType  = rsWindowFunction::WindowType::HANNING_WINDOW_ZN;
-  rsWindowFunction::WindowType synthesisWindowType = rsWindowFunction::WindowType::HANNING_WINDOW_ZN;
+  rsWindowFunction::WindowType analysisWindowType  = rsWindowFunction::WindowType::hanningZN;
+  rsWindowFunction::WindowType synthesisWindowType = rsWindowFunction::WindowType::hanningZN;
 
   std::vector<T> analysisWindow, synthesisWindow;
 

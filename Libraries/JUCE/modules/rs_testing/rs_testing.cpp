@@ -11,6 +11,8 @@ header files that the compiler may be using. */
 #include "TestTools/DSPPlotters.cpp"
 #include "TestTools/Plotting.cpp"
 
+#include "Prototypes/StepBandLimiter.cpp"
+
 #include "Experiments/MiscExperiments.cpp"
 
 // template instantaitions (mayb move somwhere else):

@@ -28,8 +28,8 @@ void setupHarmonicAnalyzerFor(RAPT::rsHarmonicAnalyzer<double>& analyzer,
   analyzer.setSampleRate(fs);
   analyzer.setSincInterpolationLength(64);
   analyzer.setNumCyclesPerBlock(4);
-  //analyzer.setWindowType(WT::HAMMING_WINDOW);
-  analyzer.setWindowType(WT::BLACKMAN_WINDOW);
+  //analyzer.setWindowType(WT::hamming);
+  analyzer.setWindowType(WT::blackman);
   analyzer.setSpectralOversampling(8);  // zero padding
   analyzer.setAllowInharmonics(true);
   analyzer.setSpectralPeakSearchWidth(0.5);       // default: 1 - blackman needs a value less than 1

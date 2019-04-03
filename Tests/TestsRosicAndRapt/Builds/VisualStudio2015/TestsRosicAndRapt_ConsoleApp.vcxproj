@@ -2317,6 +2317,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Experiments\MiscExperiments.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\StepBandLimiter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\DSPPlotters.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3127,6 +3130,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rosicOld.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Experiments\MiscExperiments.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\StepBandLimiter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\DSPPlotters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\Plotting.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\rs_testing.h"/>

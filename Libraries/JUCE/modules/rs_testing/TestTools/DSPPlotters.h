@@ -190,6 +190,8 @@ protected:
 
   int fftSize = 2048;
 
+  //bool plotPhases = true;
+
   T dBFloor = T(-120);
 
   RAPT::rsFourierTransformerBluestein<T> transformer;

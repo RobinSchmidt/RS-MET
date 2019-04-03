@@ -1,6 +1,8 @@
 #ifndef RAPT_WINDOWFUNCTIONS_H
 #define RAPT_WINDOWFUNCTIONS_H
 
+// maybe move to AudioBasics ..maybe rename to SignalBasics
+
 /** A class to create various window functions that are useful for spectral analysis and FIR filter
 design. Some functions fill an array with values of the window function, other functions allow to 
 evaluate the continuous time window function to be evaluated at arbitrary inputs. The functions are 
@@ -13,7 +15,7 @@ References:
       a comprehensive list of window functions and some new flat-top windows"  */
 
 // i think, i need to double all values of the mainlobe width - because the lobe is two-sided and 
-// here, i only considered the right half
+// here, i only considered the right half...done?
 
 class rsWindowFunction
 {
@@ -23,26 +25,59 @@ public:
   /** The available window types. Some have a ZN, NN, ZZ qualifiers. ZN means, that the first 
   sample of the window is (Z)ero and the last sample ins (N)onzero. Mostly, zero values at the ends
   are undesirable because they artificially make the window shorter than it has to be. In some 
-  cases, however, a zero sample at the start or end may be needed to make then window satisfy other
+  cases, however, a zero sample at the start or end may be needed to make the window satisfy other
   conditions such as adding up to a constant when being overlapped with shifted versions of 
-  itself. */
+  itself. For example, a hanningZN window of length N, when overlapped with itself by N/2 (i.e. the
+  hop-size is N/2) sums to unity at all times. With a NN version, one could perhaps use a hop size 
+  of N/2+1 and with a ZZ version N/2-1 - but that may be an inconvenient hop size */
   enum class WindowType
   {
-    RECTANGULAR_WINDOW = 0,
-    TRIANGULAR_WINDOW,
-    HANNING_WINDOW,    // add qualifier (either ZZ or NN, i think)
-    HANNING_WINDOW_ZN, // start at (Z)ero and end ends (N)onzero - sums to constant with overlap 1
-    HAMMING_WINDOW,
+    // polynomial:
+    rectangular,
+    triangularNN, // add triangularZN,ZZ
+    // add parabolic/welch
 
-    BLACKMAN_WINDOW,
-    BLACKMAN_HARRIS,
-    BLACKMAN_NUTALL,
-    NUTALL,
+    // cosine sum, 2 terms:
+    hanningZZ, // ...actually "ZZ" versions are pretty useless, i think
+    hanningZN, // start at (Z)ero and end ends (N)onzero - sums to constant with overlap 1
+    // hanningNN
+    hamming,
 
-    TRUNCATED_GAUSSIAN
+    // cosine sum, 3 terms:
+    blackman,  // ZZ
+
+    // cosine sum, 4 terms:
+    blackmanHarris, // NN
+    blackmanNutall, // NN
+    nutall,         // ZZ
+
+    /*
+    //wkpdFlatTop
+
+    // Salvatore flat-top windows, see (2):
+    salFlatTopFast3,   // 3 terms, fast sidelobe decay, ZN
+    salFlatTopFast4,   // 4 terms, fast sidelobe decay, ZN
+    salFlatTopFast5,   // 5 terms, fast sidelobe decay, ZN
+    salFlatTopMin3,    // 3 terms, minimum sidelobe level, NN, asymmetrical
+    salFlatTopMin4,    // 4 terms, minimum sidelobe level, NN, asymmetrical
+    salFlatTopMin5,    // 5 terms, minimum sidelobe level, NN, asymmetrical
+
+    // Heinzel/Rüdiger/Schilling flat-top windows, see (2):
+    hrsFlatTop70, 
+    hrsFlatTop95, 
+    hrsFlatTop90D, 
+    hrsFlatTop116D, 
+    hrsFlatTop144D,
+    hrsFlatTop169D, 
+    hrsFlatTop196D, 
+    hrsFlatTop223D, 
+    hrsFlatTop248D,
+    */
+
+
+    truncatedGaussian
   };
-  // maybe remove the "WINDOW"
-  // ...turn into an enum class
+
 
 
   /** Writes window function values into the array w of length N. The type should be one of the 

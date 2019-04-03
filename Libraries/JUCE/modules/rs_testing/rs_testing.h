@@ -33,6 +33,8 @@
 #include "TestTools/DSPPlotters.h"
 #include "TestTools/Plotting.h"
 
+#include "Prototypes/StepBandLimiter.h"
+
 #include "Experiments/MiscExperiments.h"
 
 

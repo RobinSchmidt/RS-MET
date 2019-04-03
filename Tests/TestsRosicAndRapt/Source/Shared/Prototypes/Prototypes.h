@@ -1,6 +1,8 @@
 #ifndef RS_PROTOTYPES_H
 #define RS_PROTOTYPES_H
 
+// todo: move all prototyes into rs_testing juce module - and maybe much of the other code, too
+
 //#include "rapt/rapt.h"
 #include "rosic/rosic.h"
 
@@ -17,7 +19,6 @@
 #include "Polygon.h"
 #include "Drawing.h"
 
-//#include "SinusoidalModeling.h"  // is now in rapt
 
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant 

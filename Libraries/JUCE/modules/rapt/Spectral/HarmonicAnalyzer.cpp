@@ -498,6 +498,7 @@ template<class T>
 int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int kCenter, int w2)
 {
   //return kCenter; // test
+  // maybe always return a valid index and an success/error-code in a second output
 
   //bool dbgIsHarmonic = kCenter == 32 || kCenter == 960 || kCenter == 992;
   //// for the two sines at 200Hz/6100Hz
@@ -548,8 +549,19 @@ int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int kCenter, int w
   // of the whole spectrum
   // maybe, if a local maximum is found, find the two local minima that surround it and check if 
   // their distance is >= peak-search width
+
+  // maybe, we should not just return -1 in the case when we don't find a peak that meets all 
+  // constraints but instead return some negative number that indicates what exactly happened (i.e.
+  // which test failed) - and then instead of recording a zero amplitude at kCenter, preliminarily
+  // record that negative number and later clean these values up in a post-processing step
+  // ...and in cases of short gaps, fill them by interpolation from the surrounding data
+  // ...maybe also don't allow peaks to instantly switch on/off from one datapoint to the next
+
+  // maybe let the user swicth between various decision strategies - also include plain old
+  // amplitude thresholds
 }
 
+// maybe rename to: isPeakWideEnough
 template<class T>
 bool rsHarmonicAnalyzer<T>::isPeakPartial(std::vector<T>& v, int peakBin)
 {

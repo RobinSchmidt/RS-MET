@@ -2,6 +2,13 @@
 using namespace RAPT;
 //using namespace rosic;
 
+void blep()
+{
+
+
+  GNUPlotter plt;
+}
+
 void particleForceDistanceLaw()
 {
   // Plots the force vs the distance of the rsPartcielSystem class for various choices of the

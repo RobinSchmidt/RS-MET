@@ -98,7 +98,7 @@ void grainRoundTrip()
   rsComplexDbl X[M];
   pv.setBlockSize(B);
   pv.setTrafoSize(B);
-  pv.setAnalysisWindowType(RAPT::rsWindowFunction::WindowType::HANNING_WINDOW_ZN);
+  pv.setAnalysisWindowType(RAPT::rsWindowFunction::WindowType::hanningZN);
   //pv.setZeroPaddingFactor(1);
   pv.shortTimeSpectrum(x, N, n0, X);
 
@@ -230,7 +230,7 @@ void spectrogramSine()
   static const int K  = M/2 + 1;        // number of non-redundant bins
   double           fs = 44100;          // samplerate
   double           f  = 5000;           // sinusoid frequency
-  WT W = WT::HANNING_WINDOW_ZN;
+  WT W = WT::hanningZN;
 
 
   // A hopsize of B/4 will result in a constant when overlapping successive frames, assuming that
@@ -330,12 +330,12 @@ void sineParameterEstimation()
   double anaTime = length/2; // time instant of analysis (exact only up to sample-rate)
   int blockSize  = 500;
   int trafoSize  = 500;
-  //WT window     = WT::RECTANGULAR_WINDOW;
-  //WT window     = WT::TRIANGULAR_WINDOW;
-  WT window     = WT::HAMMING_WINDOW;
-  //WT window     = WT::HANNING_WINDOW_ZN;
-  //WT window     = WT::BLACKMAN_WINDOW;
-  //WT window     = WT::BLACKMAN_HARRIS;
+  //WT window     = WT::rectangular;
+  //WT window     = WT::triangularNN;
+  WT window     = WT::hamming;
+  //WT window     = WT::hanningZN;
+  //WT window     = WT::blackman;
+  //WT window     = WT::blackmanHarris;
 
   // tests:                             // errors (with Hamming window, 1 kHz @ 10 kHz):
   //blockSize = 49; trafoSize =  97;    // f: -1.08, a: 0.013,  p: 1.5e-14   good
@@ -614,7 +614,7 @@ void sinusoidalSynthesis1()
   // slightly narrower mainlobe and better sidelobe rejection
   RAPT::rsSinusoidalModel<double> model2;
   RAPT::rsSinusoidalAnalyzer<double> sa;
-  sa.setWindowType(RAPT::rsWindowFunction::WindowType::HAMMING_WINDOW);
+  sa.setWindowType(RAPT::rsWindowFunction::WindowType::hamming);
   sa.setMaxFreqDeltaBase(100);
   sa.setTrafoSize(4096);
   //sa.setBlockSize(256);    // gives total nonsense results
@@ -711,8 +711,8 @@ void sinusoidalAnalysis1()
 
   // analsis parameters:
   typedef RAPT::rsWindowFunction::WindowType WT;
-  WT window = WT::HAMMING_WINDOW;
-  //WT window = WT::BLACKMAN_WINDOW;
+  WT window = WT::hamming;
+  //WT window = WT::blackman;
   double freqRes = frequency; // frequency resolution
   int zeroPadFactor = 2;
 
@@ -797,10 +797,10 @@ void sinusoidalAnalysis2()
   double dBmargin = 20;      // dB margin over sidelobe level
   double blockSizeFactor = 1.0;  // factor by which to to make blockSize longer than necessary
   int zeroPaddingFactor = 4;         // zero padding factor
-  //WT window = WT::HANNING_WINDOW_ZN;
-  //WT window = WT::HAMMING_WINDOW;
-  WT window = WT::BLACKMAN_WINDOW;
-  //WT window = WT::BLACKMAN_HARRIS;
+  //WT window = WT::hanningZN;
+  //WT window = WT::hamming;
+  WT window = WT::blackman;
+  //WT window = WT::blackmanHarris;
 
 
   // create a model and synthesize the sound:
@@ -951,10 +951,10 @@ void sinusoidalAnalysis3()
   double dBmargin = 20;               // dB margin over sidelobe level
   double blockSizeFactor = 1.0;       // factor by which to to make blockSize longer than necessary
   int zeroPaddingFactor = 4;          // zero padding factor
-  //WT window = WT::HANNING_WINDOW_ZN;
-  WT window = WT::HAMMING_WINDOW;
-  //WT window = WT::BLACKMAN_WINDOW;
-  //WT window = WT::BLACKMAN_HARRIS;
+  //WT window = WT::hanningZN;
+  WT window = WT::hamming;
+  //WT window = WT::blackman;
+  //WT window = WT::blackmanHarris;
 
 
   // create a model and synthesize the sound:
@@ -1178,13 +1178,13 @@ void testHarmonicResynthesis(const std::string& name, double fs, int N, double f
 RAPT::rsWindowFunction::WindowType stringToWindowType(const std::string& wt)
 {
   typedef RAPT::rsWindowFunction::WindowType WT;
-  if(wt == "rc") return WT::RECTANGULAR_WINDOW;
-  if(wt == "hn") return WT::HANNING_WINDOW;
-  if(wt == "hm") return WT::HAMMING_WINDOW;
-  if(wt == "bm") return WT::BLACKMAN_WINDOW;
-  if(wt == "bh") return WT::BLACKMAN_HARRIS;
+  if(wt == "rc") return WT::rectangular;
+  if(wt == "hn") return WT::hanningZZ;
+  if(wt == "hm") return WT::hamming;
+  if(wt == "bm") return WT::blackman;
+  if(wt == "bh") return WT::blackmanHarris;
   RAPT::rsError("Unknown window type");
-  return WT::RECTANGULAR_WINDOW;
+  return WT::rectangular;
 }
 
 void harmonicDetection2Sines()
@@ -1448,7 +1448,12 @@ void harmonicDetection5Sines()
   //  -partials that are supposed to be at 900, 1000, 1100 erratically drop in and out of existence
   //   -this is the phenomenon, we also see in the piano_E2 sample
   //  -maybe try to read out the frequencies at the exact harmonic slots (use 
-  //   setAlloInharmonics(false)) and use a flat-top window
+  //   setAllowInharmonics(false)) and use a flat-top window
+  //  -apply some sort of post-processing to the amplitude trajectory - if no harmonic is found, 
+  //   maybe write a preliminary negative value into the amplitude, indicating "no data" and fill 
+  //   in the data in a post-processing step (maybe by interpolation)
+
+  // todo: try to detect a weak partial between two strong partials
 }
 
 void harmonicAnalysis1()  // rename to harmonicResynthesis

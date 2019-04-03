@@ -150,6 +150,9 @@ Neural Network Synthesizer ("Cortex")
 
 
 
+
+
+
 Scripting Synthesizer ("Synthax")
 
 
@@ -182,6 +185,15 @@ zNew = a*zOld;   // a,z are rational complex numbers both on the unit circle
  numerators/denominators of both with a formula to produce a final output 
  ...like y = (den(x1) + den(x2)) mod num(x1) ...or whatever
 -maybe experiment a bit with that in python/sage
+
+Polygonal Oscillator:
+http://1ucasvb.tumblr.com/post/42881722643/the-familiar-trigonometric-functions-can-be
+http://1ucasvb.tumblr.com/post/42906053623/in-a-previous-post-i-showed-how-to-geometrically
+
+A general “Polar Polygon” function is: PPn(x) = sec((2/n)·arcsin(sin((n/2)·x)))
+Where n is the number of sides of the polygon.
+
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=522701
 
 */
 

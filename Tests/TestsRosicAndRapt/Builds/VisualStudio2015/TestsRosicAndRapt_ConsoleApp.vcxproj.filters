@@ -350,6 +350,9 @@
     <Filter Include="Juce Modules\rs_testing\Experiments">
       <UniqueIdentifier>{8E0EFAA0-7595-EE57-A440-AE3ED92B18CB}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rs_testing\Prototypes">
+      <UniqueIdentifier>{83F84690-B1E8-8E4F-D039-8871AA3244E5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rs_testing\TestTools">
       <UniqueIdentifier>{A0227C60-C75E-D3DB-B342-7F6214C859D9}</UniqueIdentifier>
     </Filter>
@@ -2550,6 +2553,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Experiments\MiscExperiments.cpp">
       <Filter>Juce Modules\rs_testing\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\StepBandLimiter.cpp">
+      <Filter>Juce Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\DSPPlotters.cpp">
       <Filter>Juce Modules\rs_testing\TestTools</Filter>
@@ -4958,6 +4964,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Experiments\MiscExperiments.h">
       <Filter>Juce Modules\rs_testing\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\StepBandLimiter.h">
+      <Filter>Juce Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\DSPPlotters.h">
       <Filter>Juce Modules\rs_testing\TestTools</Filter>

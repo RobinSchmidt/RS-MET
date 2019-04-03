@@ -10,7 +10,7 @@ SpectrumAnalyzer::SpectrumAnalyzer()
   numChannels   = 2;
   blockSize     = 8192;
   fftSize       = 1*blockSize;
-  windowType    = RAPT::rsWindowFunction::WindowType::HANNING_WINDOW; // maybe use a flat-top window
+  windowType    = RAPT::rsWindowFunction::WindowType::hanningZZ; // maybe use a flat-top window
   sampleCounter = 0;
   midSideMode   = false;
 

@@ -7,6 +7,7 @@ void particleForceDistanceLaw();
 void particleSystem();            // move to PhysicsExperiments
 
 
+void blep();
 void bouncillator();
 void bouncillatorFormula();
 void freqVsPhaseMod();

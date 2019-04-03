@@ -4,20 +4,20 @@ void rsWindowFunction::createWindow(T* w, int N, WindowType type, bool normalize
   typedef WindowType WT;
   switch( type )
   {
-  case WT::RECTANGULAR_WINDOW:  rectangular(w, N); break;
-  case WT::TRIANGULAR_WINDOW:   triangular( w, N); break;
+  case WT::rectangular:  rectangular(w, N); break;
+  case WT::triangularNN:   triangular( w, N); break;
     // insert other polynomial windows here...
 
-  case WT::HANNING_WINDOW:      hanning(    w, N); break;
-  case WT::HANNING_WINDOW_ZN:   hanningZN(  w, N); break;
-  case WT::HAMMING_WINDOW:      hamming(    w, N); break;
+  case WT::hanningZZ:      hanning(    w, N); break;
+  case WT::hanningZN:   hanningZN(  w, N); break;
+  case WT::hamming:      hamming(    w, N); break;
 
-  case WT::BLACKMAN_WINDOW:     blackman(      w, N); break;
-  case WT::BLACKMAN_HARRIS:     blackmanHarris(w, N); break;
-  case WT::BLACKMAN_NUTALL:     blackmanNutall(w, N); break;
-  case WT::NUTALL:              nutall(        w, N); break;
+  case WT::blackman:     blackman(      w, N); break;
+  case WT::blackmanHarris:     blackmanHarris(w, N); break;
+  case WT::blackmanNutall:     blackmanNutall(w, N); break;
+  case WT::nutall:              nutall(        w, N); break;
 
-  case WT::TRUNCATED_GAUSSIAN:  truncatedGaussian(w, N, p); break; // p is the sigma
+  case WT::truncatedGaussian:  truncatedGaussian(w, N, p); break; // p is the sigma
 
     // more types to come...
   default: rectangular(w, N);
@@ -36,17 +36,17 @@ T rsWindowFunction::getMainLobeWidth(WindowType type, T param)
   typedef WindowType WT;
   switch( type )
   {
-  case WT::RECTANGULAR_WINDOW:  return T(2);
+  case WT::rectangular:  return T(2);
 
-  //case TRIANGULAR_WINDOW:   return T(4);  // not sure yet -> plot and verify
-  case WT::HANNING_WINDOW:      return T(4);
-  case WT::HANNING_WINDOW_ZN:   return T(4);
-  case WT::HAMMING_WINDOW:      return T(4);
+  //case triangularNN:   return T(4);  // not sure yet -> plot and verify
+  case WT::hanningZZ:      return T(4);
+  case WT::hanningZN:   return T(4);
+  case WT::hamming:      return T(4);
 
-  case WT::BLACKMAN_WINDOW:     return T(6);
+  case WT::blackman:     return T(6);
 
-  case WT::BLACKMAN_HARRIS:     return T(8);
-  case WT::BLACKMAN_NUTALL:     return T(8);
+  case WT::blackmanHarris:     return T(8);
+  case WT::blackmanNutall:     return T(8);
 
   default: 
   {
@@ -62,18 +62,18 @@ T rsWindowFunction::getSideLobeLevel(WindowType type, T param)
   typedef WindowType WT;
   switch( type )
   {
-  case WT::RECTANGULAR_WINDOW:  return T(-13.2);
+  case WT::rectangular:  return T(-13.2);
 
-  case WT::TRIANGULAR_WINDOW:   return T(-26.5);
+  case WT::triangularNN:   return T(-26.5);
 
-  case WT::HANNING_WINDOW:      return T(-31.5);
-  case WT::HANNING_WINDOW_ZN:   return T(-31.5);
-  case WT::HAMMING_WINDOW:      return T(-42.7);
+  case WT::hanningZZ:      return T(-31.5);
+  case WT::hanningZN:   return T(-31.5);
+  case WT::hamming:      return T(-42.7);
 
-  case WT::BLACKMAN_WINDOW:     return T(-58);
+  case WT::blackman:     return T(-58);
 
-  case WT::BLACKMAN_HARRIS:     return T(-92);
-  case WT::BLACKMAN_NUTALL:     return T(-96.8);
+  case WT::blackmanHarris:     return T(-92);
+  case WT::blackmanNutall:     return T(-96.8);
 
   default: 
   {

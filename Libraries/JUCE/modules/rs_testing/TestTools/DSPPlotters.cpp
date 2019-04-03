@@ -353,6 +353,7 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, T *x0, T *x1, T *x
 
   std::vector<std::complex<T>> tmp(N);
   std::vector<T> dB(N);
+  //std::vector<T> phs(N);
   for(size_t i = 0; i < inputArrays.size(); i++) {
     RAPT::rsArray::convertBuffer(inputArrays[i], &tmp[0], signalLength);
     RAPT::rsArray::fillWithZeros(&tmp[signalLength], N-signalLength);
@@ -401,6 +402,7 @@ std::vector<T> SpectrumPlotter<T>::getFreqAxis(int maxBin)
 // template instantiations:
 template class SpectrumPlotter<float>;
 template class SpectrumPlotter<double>;
+// move to somewhere else - a template instantiations file
 
 //=================================================================================================
 

@@ -451,20 +451,20 @@ void windowFunctionSpectra()
     hrsFlatTop70(N), hrsFlatTop95(N), hrsFlatTop90D(N), hrsFlatTop116D(N), hrsFlatTop144D(N),
     hrsFlatTop169D(N), hrsFlatTop196D(N), hrsFlatTop223D(N),  hrsFlatTop248D(N);
 
-  WF::createWindow(&rectangular[0],    N, WT::RECTANGULAR_WINDOW, true);
-  WF::createWindow(&triangular[0],     N, WT::TRIANGULAR_WINDOW,  true);
-  WF::createWindow(&hanning[0],        N, WT::HANNING_WINDOW,     true);
-  WF::createWindow(&hamming[0],        N, WT::HAMMING_WINDOW,     true);
+  WF::createWindow(&rectangular[0],    N, WT::rectangular, true);
+  WF::createWindow(&triangular[0],     N, WT::triangularNN,  true);
+  WF::createWindow(&hanning[0],        N, WT::hanningZZ,     true);
+  WF::createWindow(&hamming[0],        N, WT::hamming,     true);
 
-  WF::createWindow(&blackman[0],       N, WT::BLACKMAN_WINDOW,    true);
-  WF::createWindow(&blackmanHarris[0], N, WT::BLACKMAN_HARRIS,    true);
-  WF::createWindow(&blackmanNutall[0], N, WT::BLACKMAN_NUTALL,    true);
-  WF::createWindow(&nutall[0],         N, WT::NUTALL,             true);
+  WF::createWindow(&blackman[0],       N, WT::blackman,    true);
+  WF::createWindow(&blackmanHarris[0], N, WT::blackmanHarris,    true);
+  WF::createWindow(&blackmanNutall[0], N, WT::blackmanNutall,    true);
+  WF::createWindow(&nutall[0],         N, WT::nutall,             true);
 
-  WF::createWindow(&truncGauss2[0],     N, WT::TRUNCATED_GAUSSIAN, true, 1/2.);
-  WF::createWindow(&truncGauss3[0],     N, WT::TRUNCATED_GAUSSIAN, true, 1/3.);
-  WF::createWindow(&truncGauss4[0],     N, WT::TRUNCATED_GAUSSIAN, true, 1/4.);
-  WF::createWindow(&truncGauss5[0],     N, WT::TRUNCATED_GAUSSIAN, true, 1/5.);
+  WF::createWindow(&truncGauss2[0],     N, WT::truncatedGaussian, true, 1/2.);
+  WF::createWindow(&truncGauss3[0],     N, WT::truncatedGaussian, true, 1/3.);
+  WF::createWindow(&truncGauss4[0],     N, WT::truncatedGaussian, true, 1/4.);
+  WF::createWindow(&truncGauss5[0],     N, WT::truncatedGaussian, true, 1/5.);
 
   WF::salFlatTopFast3(&salFlatTopFast3[0], N);
   WF::salFlatTopFast4(&salFlatTopFast4[0], N);
@@ -555,13 +555,18 @@ void windowFunctionSpectra()
   //plt.setFreqAxisUnit(FU::binIndex);
   //plt.setFreqAxisUnit(FU::normalized);
   plt.setFreqAxisUnit(FU::omega);
+  //plt.setShowPhase(true);
   //plt.setZoom(); // show only low portion up to 1/zoom of the spectrum
 
+  //rsPlotVectors(rectangular, triangular, hanning, hamming);
   //plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
+
+  //rsPlotVectors(rectangular, blackman, blackmanHarris, blackmanNutall, nutall);
   //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
+
   //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
 
-  //rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
+  rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
   //plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
 
   //rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
@@ -575,9 +580,9 @@ void windowFunctionSpectra()
 
   //rsPlotVectors(hrsFlatTop70, hrsFlatTop95, hrsFlatTop90D, hrsFlatTop116D, hrsFlatTop144D, 
   //  hrsFlatTop169D, hrsFlatTop196D, hrsFlatTop223D, hrsFlatTop248D); 
-  plt.plotDecibelSpectra(N, &hrsFlatTop70[0], &hrsFlatTop95[0], &hrsFlatTop90D[0], 
-    &hrsFlatTop116D[0], &hrsFlatTop144D[0], &hrsFlatTop169D[0], &hrsFlatTop196D[0], 
-    &hrsFlatTop223D[0], &hrsFlatTop248D[0]);
+  //plt.plotDecibelSpectra(N, &hrsFlatTop70[0], &hrsFlatTop95[0], &hrsFlatTop90D[0], 
+  //  &hrsFlatTop116D[0], &hrsFlatTop144D[0], &hrsFlatTop169D[0], &hrsFlatTop196D[0], 
+  //  &hrsFlatTop223D[0], &hrsFlatTop248D[0]);
   // hmm, it seems like the sidelobes are always around 5-6 dB higher than the specifications says
   // not normalizing the windows doesn't change anything (seems, they already are normalized even 
   // without explicitly doing so)

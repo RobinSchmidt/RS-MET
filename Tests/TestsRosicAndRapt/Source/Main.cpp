@@ -94,6 +94,7 @@ int main(int argc, char* argv[])
   //particleSystem();
 
   // Generators:
+  blep();
   //bouncillator();
   //bouncillatorFormula();
   //freqVsPhaseMod();
@@ -306,7 +307,7 @@ int main(int argc, char* argv[])
   //taperedFourierSeries();
   //transientModeling();
   //windowFunctionsContinuous();
-  windowFunctionSpectra();
+//  windowFunctionSpectra();
   //windowedSinc();
 
   // Modulator:

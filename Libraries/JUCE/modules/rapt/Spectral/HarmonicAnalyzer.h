@@ -331,7 +331,7 @@ protected:
 
   
   typedef rsWindowFunction::WindowType WindowType;
-  WindowType windowType = WindowType::RECTANGULAR_WINDOW;
+  WindowType windowType = WindowType::rectangular;
 
   //int window = rectangular;  // type of window function
 
