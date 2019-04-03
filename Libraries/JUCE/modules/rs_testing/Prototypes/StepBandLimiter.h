@@ -12,6 +12,9 @@ naive step (this difference is called the residual) and add that residual to the
 
 ....
 
+References:
+
+
 */
 
 template<class TSig, class TTim> // types for signal values and continuous time
@@ -20,21 +23,96 @@ class rsStepBandLimiter
 
 public:
 
+  rsStepBandLimiter()
+  {
+    updateTables();
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** 
+  
+  */
+  void setLength(int newLength)
+  {
+    delayLength = rsNextPowerOfTwo(newLength);
+    mask = delayLength - 1;
+
+    //updateTables();
+  }
+
+  void setSincOversamplng(int newValue)
+  {
+    stepSize = newValue;
+    updateTables();
+  }
 
 
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+
+  void addStep(TTim time, TSig amplitude)
+  {
+    for(int i = 0; i < delayLength; i++)
+      blep[wrap(bufIndex + i)] += amplitude * blepResidual(i, time);
+  }
 
   inline TSig getSampleBlep(TSig in)
   {
     TSig y = delayBuf[bufIndex] + blep[bufIndex];
     blep[bufIndex] = 0;      // clear blep at this position - it has been consumed
-    delayBuf[wrap(bufIndex+delayLength)] = in;       // write input into delayline
-    bufIndex = wrap(bufIndex + 1);
+    updateDelayLine(in);
     return y;
   }
   // blep only - suitable if you have discontinuities only in the signal itself
 
-  //inline T getSampleBlamp(T in)     // 
-  //inline T getSampleBlepBlamp(T in)
+  /*
+  inline TSig getSampleBlamp(TSig in)
+  {
+    TSig y = delayBuf[bufIndex] + blamp[bufIndex];
+    blamp[bufIndex] = 0;
+    updateDelayLine(in);
+    return y;
+  }
+
+  inline TSig getSampleBlepBlamp(TSig in)
+  {
+    TSig y = delayBuf[bufIndex] + blep[bufIndex] + blamp[bufIndex];
+    blep[bufIndex]  = 0;
+    blamp[bufIndex] = 0;
+    updateDelayLine(in);
+    return y;
+  }
+  */
+
+  /** Fills the delayline and blep/blamp/etc. buffers with all zeros. */
+  void reset();
+
+
+
+protected:
+
+  inline TSig blepResidual(int i, TTim frac)
+  {
+    //return TSig(0); // preliminary
+
+    return (1-frac) * blep[i] + frac*blep[i+1]; 
+    // preliminary - linear interpolation - later use hermite interpolation using the blit-values
+    // for the derivative - but maybe precompute the polynomial coefficients
+    // ...maybe, it should be the other way around (1-frac vs frac)...will dpend on which 
+    // conventions we adopt for "frac" ....
+  }
+
+  inline void updateDelayLine(TSig in)
+  {
+    delayBuf[wrap(bufIndex+delayLength)] = in;       // write input into delayline
+    bufIndex = wrap(bufIndex + 1);
+  }
 
 
   inline int wrap(int i)
@@ -42,8 +120,10 @@ public:
     return i & mask;
   }
 
+  /** Fills our tables with blit, blep, blamp, etc. values. */
+  void updateTables();
 
-protected:
+
 
 
   int delayLength = 8;    // sincLength 
@@ -60,10 +140,11 @@ protected:
   //int sincLength = 8;    // redundant with delayLength ...get rid of one of them
   //
 
-  std::vector<TTim> blit, blitDrv, blep, blamp;
-  // Buffers/tables for bandlimited impulse (windowed sinc), its derivative, first integral 
-  // (bandlimited step) and second integral (banlimited ramp)
+  std::vector<TTim> blitTbl, blitDrvTbl, blepTbl, blampTbl;
+  // Tables for bandlimited impulse (windowed sinc), its derivative, first integral (bandlimited 
+  // step) and second integral (bandlimited ramp)
 
-  std::vector<TSig> delayBuf; // buffer for delayed input signal values
+  std::vector<TTim> blepBuf, blampBuf; // buffer scaled blep/blamp values to be added to output
+  std::vector<TSig> delayBuf;          // buffer for delayed input signal values
 
 };

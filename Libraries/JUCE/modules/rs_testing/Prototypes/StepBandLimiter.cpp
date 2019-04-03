@@ -1,6 +1,18 @@
 
+template<class TSig, class TTim>
+void rsStepBandLimiter<TSig, TTim>::updateTables()
+{
 
+}
 
+template<class TSig, class TTim>
+void reset()
+{
+  int L = (int) delayBuf.size();
+  rsArray::fillWithZeros(&delayBuf[0], L);
+  rsArray::fillWithZeros(&blepBuf[0],  L);
+  rsArray::fillWithZeros(&blampBuf[0], L);
+}
 
 /*
 
