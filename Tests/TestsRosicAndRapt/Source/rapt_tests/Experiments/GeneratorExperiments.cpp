@@ -10,6 +10,8 @@ void blep()  // rename to blit
 
   typedef rsStepBandLimiter<double, double> SBL;
   SBL sbl;
+  //sbl.setLength(10);
+
   int N = (int) (fs*length);
   int n;
   std::vector<double> x(N), y(N); // naive and anti-aliased signal

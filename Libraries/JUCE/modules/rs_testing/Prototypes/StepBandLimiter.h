@@ -25,7 +25,7 @@ public:
 
   rsStepBandLimiter()
   {
-    updateTables();
+    setLength(5);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -36,15 +36,16 @@ public:
   */
   void setLength(int newLength)
   {
-    delayLength = rsNextPowerOfTwo(newLength);
-    mask = delayLength - 1;
-
-    //updateTables();
+    sincLength  = newLength;
+    delayLength = 2*sincLength+1;
+    delaySize   = rsNextPowerOfTwo(delayLength);
+    mask        = delaySize - 1;
+    updateTables();
   }
 
-  void setSincOversamplng(int newValue)
+  void setTablePrecision(int newValue)
   {
-    stepSize = newValue;
+    samplesPerLobe = newValue;
     updateTables();
   }
 
@@ -151,21 +152,24 @@ protected:
 
 
 
-  int delayLength = 32;    // == sincLength in number of zero-crossings
-  int mask        = 7;    // == delayLength - 1
-  int bufIndex    = 0;
 
-  int stepSize = 20;
+
+  int bufIndex = 0;
+
+  int samplesPerLobe = 20;
   // Step-size to move from one sample to the next in the blit, blep, etc. buffers, i.e. the 
   // sample-rate at which the bandlimited functions are sampled/tabulated with respect to their 
   // zero corssings. A step-size of 1 means, they are sampled at the zero-crossings of the sinc, 
   // 2 means at zero-crossings and halfway in between (i.e. at the maxima of the underlying sine), 
   // etc.
 
-  //int sincLength = 8;    // redundant with delayLength ...get rid of one of them
-  //
+  int sincLength;    // number of zero-crossings to the right of y-axis
+  int delayLength;   // 2*sincLength+1
+  int delaySize;     // nextPowerOf2(delayLength)
+  int mask;          // delaySize - 1
 
-  std::vector<TTim> blitTbl, blitDrvTbl, blepTbl, blampTbl;
+
+  std::vector<TTim> timeTbl, blitTbl, blitDrvTbl, blepTbl, blampTbl;
   // Tables for bandlimited impulse (windowed sinc), its derivative, first integral (bandlimited 
   // step) and second integral (bandlimited ramp)
 

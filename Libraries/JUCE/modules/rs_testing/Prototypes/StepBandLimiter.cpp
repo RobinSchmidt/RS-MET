@@ -2,31 +2,59 @@
 template<class TSig, class TTim>
 void rsStepBandLimiter<TSig, TTim>::updateTables()
 {
-  int L = delayLength * stepSize; // table length
+  //int L = delayLength * samplesPerLobe; // table length
+
+  int L = 2 * sincLength * samplesPerLobe + 1; // table length
+
+  timeTbl.resize(L);
   blitTbl.resize(L);
   blitDrvTbl.resize(L);
   blepTbl.resize(L);
   blampTbl.resize(L);
 
-  blitTbl[0] = TTim(1);
-  for(int i = 1; i < L; i++) {
-    TTim x = TTim(i * PI/stepSize);
-    blitTbl[i] = sin(x) / x;
+
+  int ic      = (L-1)/2;  // center index
+  timeTbl[ic] = TTim(0);  // time axis in samples
+  blitTbl[ic] = TTim(1);
+  for(int i = 1; i <= ic; i++) {
+    TTim t = TTim(i) / TTim(samplesPerLobe);  // time in samples
+    TTim s = sin(PI*t) / (PI*t); // todo: apply window later
     // todo: apply a window function - use a windowed sinc - try to find analytic expressions for 
     // the integral of the windowed sinc - if none can be found, use numeric integration
+    // wolfram can evaluate the indefinite integral of a cosine-term times the sinc:
+    // https://www.wolframalpha.com/input/?i=integral+cos(n*pi*x)+*+sin(pi*x)%2F(pi*x)
+    // input: Integrate[Cos[n Pi x] (Sin[Pi x]/(Pi x)), x]
+    // output: (SinIntegral[(1 + n) Pi x] + SinIntegral[Pi x - n Pi x])/(2 Pi)
+    // so if we use a window that is a sum of cosine terms, we will be able to derive an expression
+    // for the desired integral (it will be a sum of such terms, each weighted by the coefficient 
+    // of the cosine term)
+
+    timeTbl[ic + i] =  t;
+    timeTbl[ic - i] = -t;
+    blitTbl[ic + i] =  s;
+    blitTbl[ic - i] =  s;
   }
 
-  // preliminary - very crude numeric integration - do better later!
-  rsArray::cumulativeSum(&blitTbl[0], &blepTbl[0],  L);
-  rsArray::cumulativeSum(&blepTbl[0], &blampTbl[0], L);
-  // 
   // ..and we also need to fill the blitDrv table with the derivative of the blit - can be 
   // computed analytically...the integrals also (in terms of the Si function)
 
-  //rsPlotVector(blitTbl);
-  rsPlotVectors(blitTbl, blepTbl, blampTbl);
-  // the blep and blamp are still wrong - i think, i need to subtract 0.5 and scale by stepSize/2
+  // numerically integrate the blit to obtain the blep, choose the integration constant such that
+  // the center sample is exactly 0.5:
+  rsNumericIntegral(&timeTbl[0], &blitTbl[0], &blepTbl[0],  L, TTim(0));
+  TTim c = blepTbl[ic] - 0.5;  
+  rsArray::add(&blepTbl[0], -c, &blepTbl[0], L);
 
+  // integrate blep to get blamp:
+  rsNumericIntegral(&timeTbl[0], &blepTbl[0], &blampTbl[0], L, TTim(0));
+  // maybe use better numeric integration later or find analytic expressions
+
+
+  /*
+  GNUPlotter plt;
+  //plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0]);
+  //plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0], &blampTbl[0]);
+  plt.plot();
+  */
 }
 
 template<class TSig, class TTim>
