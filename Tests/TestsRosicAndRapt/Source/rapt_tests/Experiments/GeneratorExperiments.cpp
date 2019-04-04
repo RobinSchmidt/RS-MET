@@ -4,23 +4,26 @@ using namespace RAPT;
 
 void blep()  // rename to blit
 {
-  double f  = 1000;    // signal frequency
-  double fs = 44100;   // sample rate
-  double length = 1.0; // length in seconds
+  //double f  = 1000;    // signal frequency
+  //double fs = 44100;   // sample rate
+  //double length = 0.02; // length in seconds
+  //double period = fs/f;
+  //int N = (int) (fs*length);
+
+  int N = 70;
+  double period = 4.25;
 
   typedef rsStepBandLimiter<double, double> SBL;
   SBL sbl;
-  //sbl.setLength(10);
+  sbl.setLength(3);
 
-  int N = (int) (fs*length);
-  int n;
+
   std::vector<double> x(N), y(N); // naive and anti-aliased signal
-  double period = fs/f;
   int numSpikes = 0;
   int nextSpike = 0;
   double ts = 0.0;  // exact time of spike
   double tf = 0.0;  // fractional part of ts
-  for(n = 0; n < N; n++) {
+  for(int n = 0; n < N; n++) {
     if(n == nextSpike) {
       x[n] = 1;
 
@@ -39,6 +42,10 @@ void blep()  // rename to blit
   }
 
 
+  // compensate delay for easier comparison:
+  rsArray::shift(&y[0], N, -sbl.getDelay());
+
+  //rsPlotVector(x);
   rsPlotVectors(x, y);
 
   //GNUPlotter plt;

@@ -58,6 +58,21 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
 }
 
 template<class TSig, class TTim>
+void rsStepBandLimiter<TSig, TTim>::allocateBuffers()
+{
+  delayline.resize(delaySize);
+  corrector.resize(delaySize);
+
+  // wait - i think, the delay-line must only be half of the corrector length - the corrector is 
+  // applied to sincLength past samples and to sincLength future samples
+
+  // maybe apply the corrector directly to stored past samples in addImpulse and use the 
+  // future-corrector when writing into the delayline
+
+  reset();
+}
+
+template<class TSig, class TTim>
 void rsStepBandLimiter<TSig, TTim>::reset()
 {
   rsSetZero(delayline);
