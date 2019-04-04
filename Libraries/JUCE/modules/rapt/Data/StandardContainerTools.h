@@ -145,6 +145,19 @@ inline void rsReverse(std::vector<T>& v)
 }
 
 template<class T>
+inline void rsSetAllValues(std::vector<T>& v, T value)
+{
+  for(size_t i = 0; i < v.size(); i++)
+    v[i] = value;
+}
+
+template<class T>
+inline void rsSetZero(std::vector<T>& v)
+{
+  rsSetAllValues(v, T(0));
+}
+
+template<class T>
 inline bool rsContains(std::vector<T>& v, T elementToCheckFor)
 {
   for(size_t i = 0; i < v.size(); i++)

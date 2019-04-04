@@ -2,16 +2,38 @@
 template<class TSig, class TTim>
 void rsStepBandLimiter<TSig, TTim>::updateTables()
 {
+  int L = delayLength * stepSize; // table length
+  blitTbl.resize(L);
+  blitDrvTbl.resize(L);
+  blepTbl.resize(L);
+  blampTbl.resize(L);
+
+  blitTbl[0] = TTim(1);
+  for(int i = 1; i < L; i++) {
+    TTim x = TTim(i * PI/stepSize);
+    blitTbl[i] = sin(x) / x;
+    // todo: apply a window function - use a windowed sinc - try to find analytic expressions for 
+    // the integral of the windowed sinc - if none can be found, use numeric integration
+  }
+
+  // preliminary - very crude numeric integration - do better later!
+  rsArray::cumulativeSum(&blitTbl[0], &blepTbl[0],  L);
+  rsArray::cumulativeSum(&blepTbl[0], &blampTbl[0], L);
+  // 
+  // ..and we also need to fill the blitDrv table with the derivative of the blit - can be 
+  // computed analytically...the integrals also (in terms of the Si function)
+
+  //rsPlotVector(blitTbl);
+  rsPlotVectors(blitTbl, blepTbl, blampTbl);
+  // the blep and blamp are still wrong - i think, i need to subtract 0.5 and scale by stepSize/2
 
 }
 
 template<class TSig, class TTim>
-void reset()
+void rsStepBandLimiter<TSig, TTim>::reset()
 {
-  int L = (int) delayBuf.size();
-  rsArray::fillWithZeros(&delayBuf[0], L);
-  rsArray::fillWithZeros(&blepBuf[0],  L);
-  rsArray::fillWithZeros(&blampBuf[0], L);
+  rsSetZero(delayline);
+  rsSetZero(corrector);
 }
 
 /*

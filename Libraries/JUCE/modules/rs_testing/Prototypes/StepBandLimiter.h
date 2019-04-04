@@ -55,62 +55,87 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
+  /** Adds the residual for a bandlimited impulse into our correction buffer. Call this right 
+  before calling getSample, if your naive generator will generate an impulse at the next sample. */
+  void addImpulse(TTim time, TSig amplitude)
+  {
+    for(int i = 0; i < delayLength; i++)
+      corrector[wrap(bufIndex + i)] += amplitude * blitResidual(i, time);
+  }
 
+  /** Adds the residual for a bandlimited step into our correction buffer. Call this right 
+  before calling getSample, if your naive generator will generate a step at the next sample. */
   void addStep(TTim time, TSig amplitude)
   {
     for(int i = 0; i < delayLength; i++)
-      blep[wrap(bufIndex + i)] += amplitude * blepResidual(i, time);
+      corrector[wrap(bufIndex + i)] += amplitude * blepResidual(i, time);
   }
 
-  inline TSig getSampleBlep(TSig in)
+  /** Adds the residual for a bandlimited ramp into our correction buffer. Call this right 
+  before calling getSample, if your naive generator will generate a corner at the next sample. */
+  void addRamp(TTim time, TSig amplitude)
   {
-    TSig y = delayBuf[bufIndex] + blep[bufIndex];
-    blep[bufIndex] = 0;      // clear blep at this position - it has been consumed
-    updateDelayLine(in);
-    return y;
+    for(int i = 0; i < delayLength; i++)
+      corrector[wrap(bufIndex + i)] += amplitude * blampResidual(i, time);
   }
-  // blep only - suitable if you have discontinuities only in the signal itself
+  // maybe rename to addCorner
 
+  // maybe have higher order bandlimited integrated impulses (qudaratic, cubic, quartic, etc.)
+  // maybe store the intergrated impulses in a 2D array and unify these 3 functions (maybe keep the
+  // separate functions as convenience functions anyway), like:
   /*
-  inline TSig getSampleBlamp(TSig in)
+  void addDiscontinuity(Tim time, TSig amplitude, int order)
   {
-    TSig y = delayBuf[bufIndex] + blamp[bufIndex];
-    blamp[bufIndex] = 0;
-    updateDelayLine(in);
-    return y;
+    for(int i = 0; i < delayLength; i++)
+      corrector[wrap(bufIndex + i)] += amplitude * residual(order, i, time);
   }
-
-  inline TSig getSampleBlepBlamp(TSig in)
-  {
-    TSig y = delayBuf[bufIndex] + blep[bufIndex] + blamp[bufIndex];
-    blep[bufIndex]  = 0;
-    blamp[bufIndex] = 0;
-    updateDelayLine(in);
-    return y;
-  }
+  void addImpulse(TTim time, TSig amplitude) { addDiscontinuity(time, amplitude, 0); }
+  void addStep(   TTim time, TSig amplitude) { addDiscontinuity(time, amplitude, 1); }
+  void addRamp(   TTim time, TSig amplitude) { addDiscontinuity(time, amplitude, 2); }
   */
 
-  /** Fills the delayline and blep/blamp/etc. buffers with all zeros. */
+  /** Produces one sample at a time. */
+  inline TSig getSample(TSig in)
+  {
+    TSig y = delayline[bufIndex] + corrector[bufIndex];
+    corrector[bufIndex] = 0;  // clear corrector at this position - it has been consumed
+    updateDelayLine(in);      // maybe inline the code here (doesn't need to be function anymore)
+    return y;
+  }
+
+  /** Fills the delayline and blit/blep/blamp/etc. buffers with all zeros. */
   void reset();
 
 
 
 protected:
 
+
+  inline TSig blitResidual(int i, TTim frac)
+  {
+    return (1-frac) * blitTbl[i] + frac*blitTbl[i+1]; 
+  }
+
   inline TSig blepResidual(int i, TTim frac)
   {
     //return TSig(0); // preliminary
 
-    return (1-frac) * blep[i] + frac*blep[i+1]; 
+    return (1-frac) * blepTbl[i] + frac*blepTbl[i+1]; 
     // preliminary - linear interpolation - later use hermite interpolation using the blit-values
     // for the derivative - but maybe precompute the polynomial coefficients
     // ...maybe, it should be the other way around (1-frac vs frac)...will dpend on which 
     // conventions we adopt for "frac" ....
   }
 
+  inline TSig blampResidual(int i, TTim frac)
+  {
+    return (1-frac) * blampTbl[i] + frac*blampTbl[i+1]; 
+  }
+
+
   inline void updateDelayLine(TSig in)
   {
-    delayBuf[wrap(bufIndex+delayLength)] = in;       // write input into delayline
+    delayline[wrap(bufIndex+delayLength)] = in;  // write input into delayline
     bufIndex = wrap(bufIndex + 1);
   }
 
@@ -126,11 +151,11 @@ protected:
 
 
 
-  int delayLength = 8;    // sincLength 
+  int delayLength = 32;    // == sincLength in number of zero-crossings
   int mask        = 7;    // == delayLength - 1
   int bufIndex    = 0;
 
-  int stepSize = 1;  
+  int stepSize = 20;
   // Step-size to move from one sample to the next in the blit, blep, etc. buffers, i.e. the 
   // sample-rate at which the bandlimited functions are sampled/tabulated with respect to their 
   // zero corssings. A step-size of 1 means, they are sampled at the zero-crossings of the sinc, 
@@ -144,7 +169,11 @@ protected:
   // Tables for bandlimited impulse (windowed sinc), its derivative, first integral (bandlimited 
   // step) and second integral (bandlimited ramp)
 
-  std::vector<TTim> blepBuf, blampBuf; // buffer scaled blep/blamp values to be added to output
-  std::vector<TSig> delayBuf;          // buffer for delayed input signal values
+  //std::vector<TTim> blepBuf, blampBuf; // buffer scaled blep/blamp values to be added to output
+  // maybe we can use a single buffer for blep and blamp - just accumulate them both - call it
+  // residualBuffer or correctionBuffer or something
+
+  std::vector<TTim> corrector;  // buffer of correction samples to be added to delayed input
+  std::vector<TSig> delayline;  // buffer for delayed input signal values
 
 };

@@ -34,6 +34,7 @@
 #include "TestTools/Plotting.h"
 
 #include "Prototypes/StepBandLimiter.h"
+#include "Prototypes/NaiveOsc.h"
 
 #include "Experiments/MiscExperiments.h"
 

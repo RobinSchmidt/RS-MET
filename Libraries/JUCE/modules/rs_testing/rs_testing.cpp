@@ -12,6 +12,7 @@ header files that the compiler may be using. */
 #include "TestTools/Plotting.cpp"
 
 #include "Prototypes/StepBandLimiter.cpp"
+#include "Prototypes/NaiveOsc.cpp"
 
 #include "Experiments/MiscExperiments.cpp"
 
@@ -21,3 +22,6 @@ header files that the compiler may be using. */
 
 template struct RAPT::rsFilterSpecificationZPK<float>;
 template struct RAPT::rsFilterSpecificationBA<float>;
+
+template class rsStepBandLimiter<double, double>;
+template class rsNaiveOsc<double>;

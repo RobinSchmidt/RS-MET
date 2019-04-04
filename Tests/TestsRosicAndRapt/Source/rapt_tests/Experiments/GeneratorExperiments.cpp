@@ -2,11 +2,44 @@
 using namespace RAPT;
 //using namespace rosic;
 
-void blep()
+void blep()  // rename to blit
 {
+  double f  = 1000;    // signal frequency
+  double fs = 44100;   // sample rate
+  double length = 1.0; // length in seconds
+
+  typedef rsStepBandLimiter<double, double> SBL;
+  SBL sbl;
+  int N = (int) (fs*length);
+  int n;
+  std::vector<double> x(N), y(N); // naive and anti-aliased signal
+  double period = fs/f;
+  int numSpikes = 0;
+  int nextSpike = 0;
+  double ts = 0.0;  // exact time of spike
+  double tf = 0.0;  // fractional part of ts
+  for(n = 0; n < N; n++) {
+    if(n == nextSpike) {
+      x[n] = 1;
+
+      sbl.addImpulse(tf, 1);
+      y[n] = sbl.getSample(1);
+      numSpikes++;
+
+      ts += period;
+      nextSpike = (int) ceil(numSpikes*period);
+      tf = ts - (nextSpike-1);
+    }
+    else {
+      x[n] = 0;
+      y[n] = sbl.getSample(0);
+    }
+  }
 
 
-  GNUPlotter plt;
+  rsPlotVectors(x, y);
+
+  //GNUPlotter plt;
 }
 
 void particleForceDistanceLaw()
