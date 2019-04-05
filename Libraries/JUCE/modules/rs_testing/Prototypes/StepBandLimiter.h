@@ -78,7 +78,7 @@ public:
     for(i = 0; i <  sincLength; i++) tempBuffer[ic+i] = blit(frac + i);
     for(i = 1; i <= sincLength; i++) tempBuffer[ic-i] = blit(frac - i);
     // ...maybe scale contents of tempBuffer to normalize the mean
-    rsStemPlot(tempBuffer); // ok - that looks good
+    //rsStemPlot(tempBuffer); // ok - that looks good
 
     // apply correction to stored past samples:
     //rsStemPlot(delayline);
@@ -87,7 +87,7 @@ public:
       //delayline[wrap(bufIndex-i+1)] += amplitude * tempBuffer[ic-i-1];    // dl looks one sample shifted
       //delayline[wrap(bufIndex-i-1)] += amplitude * tempBuffer[ic-i-1];
       delayline[wrap(bufIndex+i)] += amplitude * tempBuffer[i];
-    rsStemPlot(delayline);
+    //rsStemPlot(delayline);
 
 
 
@@ -96,7 +96,7 @@ public:
       corrector[wrap(bufIndex + i)] += amplitude * tempBuffer[ic+i];
     //rsStemPlot(corrector);
     corrector[bufIndex] -= amplitude;
-    rsStemPlot(corrector);  // looks good
+    //rsStemPlot(corrector);  // looks good
 
     int dummy = 0;
 
@@ -148,6 +148,7 @@ public:
   /** Produces one sample at a time. */
   inline TSig getSample(TSig in)
   {
+    /*
     // nope - this is wrong - it works for length 1 but not 3:
     TSig yOld = delayline[bufIndex];
     delayline[bufIndex] = in + corrector[bufIndex];
@@ -156,19 +157,22 @@ public:
     delayline[bufIndex] = 0;
     bufIndex = wrap(bufIndex + 1); 
     return y;
-
-
-
+    */
+   
     /*
     delayline[bufIndex] = in + corrector[bufIndex];
     corrector[bufIndex] = 0;  // clear corrector at this position - it has been consumed
-
     bufIndex = wrap(bufIndex + 1);  // maybe rename bufIndex to writeIndex
     int readIndex = wrap(bufIndex-sincLength);
-
     TSig y = delayline[readIndex];
     return y;
     */
+
+    delayline[wrap(bufIndex+sincLength)] = in + corrector[bufIndex];
+    corrector[bufIndex] = 0;  // clear corrector at this position - it has been consumed
+    TSig y = delayline[bufIndex];
+    bufIndex = wrap(bufIndex + 1);  // maybe rename bufIndex to writeIndex
+    return y;
   }
 
   /** Fills the delayline and blit/blep/blamp/etc. buffers with all zeros. */
