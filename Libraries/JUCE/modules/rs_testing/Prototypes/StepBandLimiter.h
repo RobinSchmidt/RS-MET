@@ -67,9 +67,14 @@ public:
   void addImpulse(TTim delayFraction, TSig amplitude)
   {
     TTim eps = RS_EPS(TTim);
-    if(delayFraction < eps)
+    if(delayFraction < eps || delayFraction >= TTim(1))
       return;
     // maybe we can get rid of this by having one extra sample in blitTbl, etc.
+    // maybe when frac == 0.0 or frac == 1.0, one of the loops below should range from 0 to 
+    // sincLength-1 and the other from 0 to sincLength+1 instead of both ranging from 0 to 
+    // sincLength ...but that's a special case where the last samplemin the loop (at sincLength+1)
+    // would evaluate to zero anyway, i think ...tests needed
+
 
     int i;
     //TTim frac = TTim(1) - delayFraction;
@@ -77,23 +82,19 @@ public:
     int ic = sincLength;
     for(i = 0; i <  sincLength; i++) tempBuffer[ic+i] = blit(frac + i);
     for(i = 1; i <= sincLength; i++) tempBuffer[ic-i] = blit(frac - i);
-    // ...maybe scale contents of tempBuffer to normalize the mean
+    //rsStemPlot(tempBuffer);
+    rsScale(tempBuffer, amplitude / rsSum(tempBuffer)); // sum of values should be "amplitude"
     //rsStemPlot(tempBuffer); // ok - that looks good
 
     // apply correction to stored past samples:
     //rsStemPlot(delayline);
     for(int i = 0; i < sincLength; i++)
-      //delayline[wrap(bufIndex+i+1)] += amplitude * tempBuffer[ic-i-1];  // delayline looks time-reversed
-      //delayline[wrap(bufIndex-i+1)] += amplitude * tempBuffer[ic-i-1];    // dl looks one sample shifted
-      //delayline[wrap(bufIndex-i-1)] += amplitude * tempBuffer[ic-i-1];
-      delayline[wrap(bufIndex+i)] += amplitude * tempBuffer[i];
+      delayline[wrap(bufIndex+i)] += tempBuffer[i];
     //rsStemPlot(delayline);
-
-
 
     // update corrector to be applied to future samples:
     for(int i = 0; i < sincLength; i++)
-      corrector[wrap(bufIndex + i)] += amplitude * tempBuffer[ic+i];
+      corrector[wrap(bufIndex + i)] += tempBuffer[ic+i];
     //rsStemPlot(corrector);
     corrector[bufIndex] -= amplitude;
     //rsStemPlot(corrector);  // looks good
@@ -101,12 +102,10 @@ public:
     int dummy = 0;
 
 
-    // this is still wrong! we must add the left side of the correcttion signal to the delayed 
-    // inputs and store the right side of the correction signal into the buffer to be applied to
-    // future samples...maybe make a version that only applies the correction to future samples 
-    // (minblep) - maybe use a (windowed) impulse-, step- and ramp- response of an elliptic filter
-    // to window step- and ramp-response, subtract the naive versions, apply the window and add the
-    // naive versions back
+    // maybe make a version that only applies the correction to future samples (minblep) - maybe 
+    // use a (windowed) impulse-, step- and ramp- response of an elliptic filter to window step- 
+    // and ramp-response, subtract the naive versions, apply the window and add the naive versions
+    // back
 
   }
 
@@ -148,30 +147,10 @@ public:
   /** Produces one sample at a time. */
   inline TSig getSample(TSig in)
   {
-    /*
-    // nope - this is wrong - it works for length 1 but not 3:
-    TSig yOld = delayline[bufIndex];
-    delayline[bufIndex] = in + corrector[bufIndex];
-    TSig y = delayline[bufIndex] + yOld;
-    corrector[bufIndex] = 0;  // clear corrector at this position - it has been consumed
-    delayline[bufIndex] = 0;
-    bufIndex = wrap(bufIndex + 1); 
-    return y;
-    */
-   
-    /*
-    delayline[bufIndex] = in + corrector[bufIndex];
-    corrector[bufIndex] = 0;  // clear corrector at this position - it has been consumed
-    bufIndex = wrap(bufIndex + 1);  // maybe rename bufIndex to writeIndex
-    int readIndex = wrap(bufIndex-sincLength);
-    TSig y = delayline[readIndex];
-    return y;
-    */
-
     delayline[wrap(bufIndex+sincLength)] = in + corrector[bufIndex];
-    corrector[bufIndex] = 0;  // clear corrector at this position - it has been consumed
+    corrector[bufIndex] = 0;        // corrector at this position has been consumed
     TSig y = delayline[bufIndex];
-    bufIndex = wrap(bufIndex + 1);  // maybe rename bufIndex to writeIndex
+    bufIndex = wrap(bufIndex + 1);
     return y;
   }
 

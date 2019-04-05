@@ -237,7 +237,7 @@ std::vector<T> rsAmpToDb(const std::vector<T>& a, T floorDb = -std::numeric_limi
 //T rsMinValue(T 
 
 template<class T>
-T rsMax(const std::vector<T> x)
+T rsMax(const std::vector<T>& x)
 {
   T max = std::numeric_limits<T>::min(); 
   // we should instead use -inf for double/float? -> make explicit specilizations
@@ -248,6 +248,29 @@ T rsMax(const std::vector<T> x)
   }
   return max;
 }
+
+template<class T>
+T rsSum(const std::vector<T>& x)
+{
+  T sum = T(0); 
+  for(size_t i = 0; i < x.size(); i++)
+    sum += x[i];
+  return sum;
+}
+
+template<class T>
+T rsMean(const std::vector<T>& x)
+{
+  return rsSum(x) / T(x.size());
+}
+
+template<class T>
+void rsScale(std::vector<T>& x, T scaler)
+{
+  for(size_t i = 0; i < x.size(); i++)
+    x[i] *= scaler;
+}
+
 
 
 

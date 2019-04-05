@@ -10,16 +10,17 @@ void blep()  // rename to blit
   //double period = fs/f;
   //int N = (int) (fs*length);
 
-  int N = 10;
+  int N = 120;
   double period = 10.25;
 
   typedef rsStepBandLimiter<double, double> SBL;
   SBL sbl;
-  sbl.setLength(3);
+  sbl.setLength(1);
 
   std::vector<double> x(N), y(N); // naive and anti-aliased signal
 
 
+  /*
   // preliminary test:
   sbl.setLength(3);
   rsSetZero(y);
@@ -27,21 +28,8 @@ void blep()  // rename to blit
   y[0] = sbl.getSample(1);
   for(int n = 1; n < N; n++)
     y[n] = sbl.getSample(0);
-  rsPlotVector(y);
-  // y looks wrong - one of the two positive samples from the mainlobe is missing - which one?
-  // the one from the delayline or the one from the corrector? the height of the existing spike is 
-  // 0.9 - this is the value from the delayline
-
-  // with sincLength = 3:
-  // we want to see an impulse at 2.25 represented by a large positive value at sample 2, a smaller
-  // positive sample at sample 3, 1 and 4 should be negative and 0 and 5 positive again
-
-  // maybe try with sincLength = 1 - we should see only two nonzero samples
-  // i think, the delayline is overwritten before its sample is consumed
-
-
-
-
+  rsStemPlot(y);
+  */
 
 
   int numSpikes = 0;
