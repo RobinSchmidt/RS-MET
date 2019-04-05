@@ -6,6 +6,7 @@ dummy no-op functions that will get optimized away. With this mechanism, we can 
 to functions like rsPlotVector() anywhere in RAPT code for debugging purposes which will get 
 optimized out in cases when they are not needed. In TestsRosicAndRapt.jucer it is defined, so 
 plotting functions wil actually invoke the plotter in this project. */
+// ...hmm...this is not actually true - but i think, i should make it true....
 
 
 #include "GNUPlotter.h"
@@ -34,6 +35,25 @@ inline void rsPlotVector(std::vector<T> v)
   //GNUPlotter plt;
   //plt.plotArrays((int) v.size(), &v[0]);
 }
+
+template<class T>
+inline void rsStemPlot(int N, T *x, T *y)
+{
+  GNUPlotter plt;
+  plt.addDataArrays(N, x, y);
+  plt.addDataArrays(N, x, y); // can probably be done without adding the data twice
+  plt.setGraphStyles("impulses", "points pt 7 ps 1.2");
+  plt.plot();
+}
+
+template<class T>
+inline void rsStemPlot(std::vector<T> v)
+{
+  std::vector<T> x(v.size());
+  RAPT::rsArray::fillWithIndex(&x[0], (int) x.size());
+  rsStemPlot((int) x.size(), &x[0], &v[0]);
+}
+
 
 /** Plots a bunch of vectors. */
 template<class T>
@@ -64,6 +84,7 @@ inline void rsPlotVectors(
   if(v9.size() > 0) plt.addDataArrays((int) v9.size(), &v9[0]);
   plt.plot();
 }
+
 
 
 

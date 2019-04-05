@@ -5,7 +5,6 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
   //int L = delayLength * samplesPerLobe; // table length
 
   int L = 2 * sincLength * samplesPerLobe + 1; // table length
-
   timeTbl.resize(L);
   blitTbl.resize(L);
   blitDrvTbl.resize(L);
@@ -16,7 +15,8 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
   int ic      = (L-1)/2;  // center index
   timeTbl[ic] = TTim(0);  // time axis in samples
   blitTbl[ic] = TTim(1);
-  for(int i = 1; i <= ic; i++) {
+  int i;
+  for(i = 1; i <= ic; i++) {
     TTim t = TTim(i) / TTim(samplesPerLobe);  // time in samples
     TTim s = sin(PI*t) / (PI*t); // todo: apply window later
     // todo: apply a window function - use a windowed sinc - try to find analytic expressions for 
@@ -48,23 +48,36 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
   rsNumericIntegral(&timeTbl[0], &blepTbl[0], &blampTbl[0], L, TTim(0));
   // maybe use better numeric integration later or find analytic expressions
 
+  //// we actually don't want the blit/blep/blamp itself but rather the residual, i.e. the difference
+  //// between them and a naive impulse/step/ramp:
+  //blitTbl[ic] -= 1;
+  //for(int i = ic; i < L; i++) {
+  //  blepTbl[i]  -= 1;
+  //  blampTbl[i] -= timeTbl[i];
+  //}
 
-  /*
-  GNUPlotter plt;
-  //plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0]);
+
+
+  //GNUPlotter plt;
+  ////plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0]);
   //plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0], &blampTbl[0]);
-  plt.plot();
-  */
+  //plt.plot();
+  // they are a bit inexact - compare with the plots in the blamp-paper - that's probably due to 
+  // imperfect numeric integration
+  
 }
 
 template<class TSig, class TTim>
 void rsStepBandLimiter<TSig, TTim>::allocateBuffers()
 {
-  delayline.resize(delaySize);
-  corrector.resize(delaySize);
+  // corrector buffer needs sincLength+1 samples, delay buffer needs sicnLength samples
 
-  // wait - i think, the delay-line must only be half of the corrector length - the corrector is 
-  // applied to sincLength past samples and to sincLength future samples
+  tempBuffer.resize(2*sincLength); 
+  // for sampled correction signal - to be spread between delayline and corrector
+
+  delayline.resize(bufferSize);
+  corrector.resize(bufferSize);
+
 
   // maybe apply the corrector directly to stored past samples in addImpulse and use the 
   // future-corrector when writing into the delayline
@@ -77,6 +90,7 @@ void rsStepBandLimiter<TSig, TTim>::reset()
 {
   rsSetZero(delayline);
   rsSetZero(corrector);
+  bufIndex = 0;
 }
 
 /*

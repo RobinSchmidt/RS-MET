@@ -36,10 +36,12 @@ public:
   */
   void setLength(int newLength)
   {
-    sincLength  = newLength;
-    delayLength = 2*sincLength+1;
-    delaySize   = rsNextPowerOfTwo(delayLength);
-    mask        = delaySize - 1;
+    sincLength = newLength;
+    bufferSize = rsNextPowerOfTwo(sincLength+1); 
+
+    bufferSize *= 2; // just for development purposes - remove later
+
+    mask       = bufferSize - 1;
     updateTables();
     allocateBuffers();
   }
@@ -54,7 +56,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  int getDelay() { return delayLength; }
+  int getDelay() { return sincLength; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -62,11 +64,45 @@ public:
 
   /** Adds the residual for a bandlimited impulse into our correction buffer. Call this right 
   before calling getSample, if your naive generator will generate an impulse at the next sample. */
-  void addImpulse(TTim time, TSig amplitude)
+  void addImpulse(TTim delayFraction, TSig amplitude)
   {
-    //for(int i = 0; i < delayLength; i++)
-    //  corrector[wrap(bufIndex + i)] += amplitude * blitResidual(i, time);
-    // this is still wrong!
+    TTim eps = RS_EPS(TTim);
+    if(delayFraction < eps)
+      return;
+    // maybe we can get rid of this by having one extra sample in blitTbl, etc.
+
+    int i;
+    TTim frac = TTim(1) - delayFraction;
+    int ic = sincLength;
+    for(i = 0; i <  sincLength; i++) tempBuffer[ic+i] = blit(frac + i);
+    for(i = 1; i <= sincLength; i++) tempBuffer[ic-i] = blit(frac - i);
+    // ...maybe scale contents of tempBuffer to normalize the mean
+    //rsStemPlot(tempBuffer); // ok - that looks good
+
+    // apply correction to stored past samples:
+    //rsStemPlot(delayline);
+    for(int i = 0; i < sincLength; i++)
+      delayline[wrap(bufIndex - i)] += amplitude * tempBuffer[ic-i-1];
+    //rsStemPlot(delayline);
+
+
+    // update corrector to be applied to future samples:
+    for(int i = 0; i < sincLength; i++)
+      corrector[wrap(bufIndex + i)] += amplitude * tempBuffer[ic+i];
+    //rsStemPlot(corrector);
+    corrector[bufIndex] -= amplitude;
+    //rsStemPlot(corrector);
+
+    int dummy = 0;
+
+
+    // this is still wrong! we must add the left side of the correcttion signal to the delayed 
+    // inputs and store the right side of the correction signal into the buffer to be applied to
+    // future samples...maybe make a version that only applies the correction to future samples 
+    // (minblep) - maybe use a (windowed) impulse-, step- and ramp- response of an elliptic filter
+    // to window step- and ramp-response, subtract the naive versions, apply the window and add the
+    // naive versions back
+
   }
 
   /** Adds the residual for a bandlimited step into our correction buffer. Call this right 
@@ -107,9 +143,9 @@ public:
   /** Produces one sample at a time. */
   inline TSig getSample(TSig in)
   {
-    TSig y = delayline[bufIndex] + corrector[bufIndex];
+    delayline[bufIndex] = in + corrector[bufIndex];
     corrector[bufIndex] = 0;  // clear corrector at this position - it has been consumed
-    delayline[wrap(bufIndex+delayLength)] = in;  // write input into delayline
+    TSig y = delayline[wrap(bufIndex-sincLength)];
     bufIndex = wrap(bufIndex + 1);
     return y;
   }
@@ -121,17 +157,28 @@ public:
 
 protected:
 
+  inline TSig blit(TTim time)
+  {
+    TTim p = (time + sincLength) * samplesPerLobe; // read position
+    // + sincLength because our buffer index is shifted by that amount with respect to the time
+    // origin - i.e. the center-index of blitTbl corresponds to time = 0
 
+    int  i = (int) p;
+    TTim f = p - i;
+    return (1-f) * blitTbl[i] + f*blitTbl[i+1]; 
+  }
+
+  /*
   inline TSig blitResidual(int i, TTim frac)
   {
     //int k = samplesPerLobe * i;
     return (1-frac) * blitTbl[i] + frac*blitTbl[i+1]; 
   }
+  */
 
+  /*
   inline TSig blepResidual(int i, TTim frac)
   {
-    //return TSig(0); // preliminary
-
     return (1-frac) * blepTbl[i] + frac*blepTbl[i+1]; 
     // preliminary - linear interpolation - later use hermite interpolation using the blit-values
     // for the derivative - but maybe precompute the polynomial coefficients
@@ -143,15 +190,7 @@ protected:
   {
     return (1-frac) * blampTbl[i] + frac*blampTbl[i+1]; 
   }
-
-  /* obsolete
-  inline void updateDelayLine(TSig in)
-  {
-    delayline[wrap(bufIndex+delayLength)] = in;  // write input into delayline
-    bufIndex = wrap(bufIndex + 1);
-  }
   */
-
 
   inline int wrap(int i)
   {
@@ -179,9 +218,12 @@ protected:
   // etc.
 
   int sincLength;    // number of zero-crossings to the right of y-axis
-  int delayLength;   // 2*sincLength+1 - wrong!
-  int delaySize;     // nextPowerOf2(delayLength)
-  int mask;          // delaySize - 1
+  //int delayLength;   // 2*sincLength+1 - wrong! it's the same 
+  //int delaySize;     // nextPowerOf2(delayLength)
+
+  int bufferSize;
+  int mask;          // bufferSize - 1
+  //int centerIndex;
 
 
   std::vector<TTim> timeTbl, blitTbl, blitDrvTbl, blepTbl, blampTbl;
@@ -192,7 +234,8 @@ protected:
   // maybe we can use a single buffer for blep and blamp - just accumulate them both - call it
   // residualBuffer or correctionBuffer or something
 
-  std::vector<TTim> corrector;  // buffer of correction samples to be added to delayed input
+  std::vector<TSig> corrector;  // buffer of correction samples to be added to delayed input
   std::vector<TSig> delayline;  // buffer for delayed input signal values
+  std::vector<TSig> tempBuffer;
 
 };

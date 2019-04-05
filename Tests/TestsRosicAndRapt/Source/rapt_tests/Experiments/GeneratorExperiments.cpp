@@ -10,8 +10,8 @@ void blep()  // rename to blit
   //double period = fs/f;
   //int N = (int) (fs*length);
 
-  int N = 70;
-  double period = 4.25;
+  int N = 100;
+  double period = 10.25;
 
   typedef rsStepBandLimiter<double, double> SBL;
   SBL sbl;
