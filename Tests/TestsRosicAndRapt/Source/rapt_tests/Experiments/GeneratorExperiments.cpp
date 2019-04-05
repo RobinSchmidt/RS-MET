@@ -17,17 +17,44 @@ void blep()  // rename to blit
   SBL sbl;
   sbl.setLength(3);
 
-
   std::vector<double> x(N), y(N); // naive and anti-aliased signal
+
+
+  // preliminary test:
+  sbl.setLength(3);
+  rsSetZero(y);
+  sbl.addImpulse(0.75, 1);       // delay is 0.75, fractional position of spike is 0.25
+  y[0] = sbl.getSample(1);
+  for(int n = 1; n < N; n++)
+    y[n] = sbl.getSample(0);
+  rsPlotVector(y);
+  // y looks wrong - one of the two positive samples from the mainlobe is missing - which one?
+  // the one from the delayline or the one from the corrector? the height of the existing spike is 
+  // 0.9 - this is the value from the delayline
+
+  // with sincLength = 3:
+  // we want to see an impulse at 2.25 represented by a large positive value at sample 2, a smaller
+  // positive sample at sample 3, 1 and 4 should be negative and 0 and 5 positive again
+
+  // maybe try with sincLength = 1 - we should see only two nonzero samples
+  // i think, the delayline is overwritten before its sample is consumed
+
+
+
+
+
+
   int numSpikes = 0;
   int nextSpike = 0;
   double ts = 0.0;  // exact time of spike
   double tf = 0.0;  // fractional part of ts
+  rsSetZero(y);
+  sbl.reset();
   for(int n = 0; n < N; n++) {
     if(n == nextSpike) {
       x[n] = 1;
 
-      sbl.addImpulse(tf, 1);
+      sbl.addImpulse(1-tf, 1);
       y[n] = sbl.getSample(1);
       numSpikes++;
 
@@ -47,6 +74,7 @@ void blep()  // rename to blit
 
   //rsPlotVector(x);
   rsPlotVectors(x, y);
+
 
   //GNUPlotter plt;
 }
