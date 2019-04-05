@@ -47,6 +47,8 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
   // integrate blep to get blamp:
   rsNumericIntegral(&timeTbl[0], &blepTbl[0], &blampTbl[0], L, TTim(0));
   // maybe use better numeric integration later or find analytic expressions
+  // maybe we could estimate the integral symmetrically - i.e. one forward pass, one reverse pass
+  // and take the average? does that make any sense at all? dunno - try it!
 
   //// we actually don't want the blit/blep/blamp itself but rather the residual, i.e. the difference
   //// between them and a naive impulse/step/ramp:
@@ -56,6 +58,8 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
   //  blampTbl[i] -= timeTbl[i];
   //}
 
+  // todo: maybe store only the right half and obtain the left half by symmetry when computing 
+  // values
 
 
   //GNUPlotter plt;

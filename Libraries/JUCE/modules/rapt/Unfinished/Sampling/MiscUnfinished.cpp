@@ -689,8 +689,19 @@ T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, int nFix, int nVar, int M)
   T a[3];
   rsPolynomial<T>::fitQuadratic(a, xp, yp);
   T offset = 0;
+
+
   if( abs(2*a[2]) >= abs(a[1]) ) // abs(offset) shall be <= 1
     offset = -a[1] / (2*a[2]);   // maximum of the parabola (zero-crossing of its slope)
+
+  rsAssert(rsIsFiniteNumber(offset));
+  // we hit this with the (long) rhodes sample - look int rsSinusoidalAnalyzer how to deal with it
+  // it has to do with the parabolic interpolant becoming degenerate, i.e. a[2] == 0 ..actually,
+  // in the case of the rhodes case, a1 is also zero - figure out, why the parabola becomes
+  // degenerate in the first place ...it's because left, right, mid are all the same - but why are 
+  // they all the same?....
+
+
   return T(nVar) + offset;
   //return T(nVar) - offset;  // test
 }
@@ -714,6 +725,8 @@ T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, T nFix, T nVar)
 
   //result -= (nFix-iFix); // correct?
   result += (nFix-iFix); // correct?
+
+  //rsAssert(rsIsFiniteNumber(result));
 
   return result;
 }

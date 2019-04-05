@@ -1,7 +1,9 @@
 #pragma once
 
 
-/** UNDER CONSTRUCTION - currently, only the blit-generation works - blep/blamp not yet implemented
+/** UNDER CONSTRUCTION:
+-currently, only the blit-generation works - blep/blamp not yet implemented
+-there's no window function applied yet (which boils down to ahving a recatngular window)
 
 A generic implementation of the "BLEP" (= (B)and (L)imited st(EP)) technique for anti-aliasing
 step discontinuities in a signal and/or its derivatives. Discontinuities in the signal itself show 
@@ -10,6 +12,16 @@ derivative show up as corners and produce spectra with a 12 dB/oct roll-off and 
 idea is to take the difference between a bandlimited step (i.e. an integrated sinc function) and a 
 naive step (this difference is called the residual) and add that residual to the output signal.
 
+If a discontinuity happens between the previous sample n-1 and the current sample n, you should 
+announce that event to the object by calling addImpulse/addStep/addRamp/etc. immediately before the
+call to getSample at index n. The object will then prepare the appropriate correction signals and 
+apply them in subsequent calls to getSample. In order to be able to correct past samples as well, a
+delay is introduced. When announcing a discontinuity, you need to tell the object the fractional 
+delay (how long ago is the instant of the discontinuity with respect to sample index n - if the 
+discontinuity occured at n-frac, you should pass frac) and the size of the discontinuity. 
+
+
+maybe rename to rsDiscontinuityBandLimiter - it also bandlimits impulses (i.e. implmennts BLITs)
 ....
 
 References:
@@ -31,9 +43,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  /** 
-  
-  */
+  /** Sets the length of the underlying sinc function in terms of its numbers of zero crossings
+  on the positive x-axis. With a value of 1, only the mainlobe is used, a value of 2 uses 
+  additionally the first pair of sidelobes left and right of the mainlobe and so on. */
   void setLength(int newLength)
   {
     sincLength = newLength;
@@ -43,10 +55,23 @@ public:
     allocateBuffers();
   }
 
+  /** Sets the number of samples that we take for each lobe of the sinc function in the lookup 
+  tables. */
   void setTablePrecision(int newValue)
   {
     samplesPerLobe = newValue;
     updateTables();
+  }
+
+  /** Not yet used. Later these coefficients will be used to generate a window function defined by
+  a sum over cosine terms.  */
+  void setWindowCosineWeights(TTim* newWeights, int numWeights)
+  {
+    rsAssert(numWeights <= maxNumWindowCoeffs);
+    for(int i = 0; i < numWeights; i++)
+      windowCoeffs[i] = newWeights[i];
+    for(int i = numWeights; i < maxNumWindowCoeffs; i++)
+      windowCoeffs[i] = TTim(0);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -79,6 +104,8 @@ public:
     for(i = 1; i <= sincLength; i++) tempBuffer[ic-i] = blit(frac - i);
     rsScale(tempBuffer, amplitude / rsSum(tempBuffer)); // sum of values should be "amplitude"
     //rsStemPlot(tempBuffer);
+    // todo: optimize this - in each iteration of the loops, the "f" value in the called 
+    // blit-function is the same - we don't need to recompute it in each iteration
 
     // apply correction to stored past samples:
     for(i = 0; i < sincLength; i++)
@@ -137,7 +164,7 @@ public:
     return y;
   }
 
-  /** Fills the delayline and blit/blep/blamp/etc. buffers with all zeros. */
+  /** Fills the delayline and correction buffer with all zeros and resets the buffer index. */
   void reset();
 
 
@@ -207,11 +234,17 @@ protected:
   // etc.
 
 
+  static const int maxNumWindowCoeffs = 5;
+  TTim windowCoeffs[maxNumWindowCoeffs];  // not yet used
+
+
   std::vector<TTim> timeTbl, blitTbl, blitDrvTbl, blepTbl, blampTbl;
   // Tables for bandlimited impulse (windowed sinc), its derivative, first integral (bandlimited 
   // step) and second integral (bandlimited ramp)
   // blitDrvTbl not yet used - may not be needed (i was thinking to use it for Hermite 
   // interpolation of the blit table)
+  // timeTbl may also not be used - and maybe we should use only the positive half of the table and
+  // produce values for negative time instants by symmetry
 
   std::vector<TSig> corrector;  // buffer of correction samples to be added to future inputs
   std::vector<TSig> delayline;  // buffer of corrected, delayed input signal values

@@ -66,7 +66,7 @@ void setupHarmonicAnalyzerFor(RAPT::rsHarmonicAnalyzer<double>& analyzer,
   }
   else if(sampleName == "Rhodes_F3")
   {
-    cmf.setAlgorithm(cmf.F0_ZERO_CROSSINGS);
+    //cmf.setAlgorithm(cmf.F0_ZERO_CROSSINGS);
     // because CYCLE_CORRELATION hangs - but why?
   }
   // etc...
