@@ -72,19 +72,23 @@ public:
     // maybe we can get rid of this by having one extra sample in blitTbl, etc.
 
     int i;
-    TTim frac = TTim(1) - delayFraction;
+    //TTim frac = TTim(1) - delayFraction;
+    TTim frac = delayFraction;
     int ic = sincLength;
     for(i = 0; i <  sincLength; i++) tempBuffer[ic+i] = blit(frac + i);
     for(i = 1; i <= sincLength; i++) tempBuffer[ic-i] = blit(frac - i);
     // ...maybe scale contents of tempBuffer to normalize the mean
-    //rsStemPlot(tempBuffer); // ok - that looks good
+    rsStemPlot(tempBuffer); // ok - that looks good
 
     // apply correction to stored past samples:
     //rsStemPlot(delayline);
     for(int i = 0; i < sincLength; i++)
-      delayline[wrap(bufIndex+i+1)] += amplitude * tempBuffer[ic-i-1];
-      /*delayline[wrap(bufIndex-i+1)] += amplitude * tempBuffer[ic-i-1];*/
-    //rsStemPlot(delayline);
+      //delayline[wrap(bufIndex+i+1)] += amplitude * tempBuffer[ic-i-1];  // delayline looks time-reversed
+      //delayline[wrap(bufIndex-i+1)] += amplitude * tempBuffer[ic-i-1];    // dl looks one sample shifted
+      //delayline[wrap(bufIndex-i-1)] += amplitude * tempBuffer[ic-i-1];
+      delayline[wrap(bufIndex+i)] += amplitude * tempBuffer[i];
+    rsStemPlot(delayline);
+
 
 
     // update corrector to be applied to future samples:
@@ -92,7 +96,7 @@ public:
       corrector[wrap(bufIndex + i)] += amplitude * tempBuffer[ic+i];
     //rsStemPlot(corrector);
     corrector[bufIndex] -= amplitude;
-    //rsStemPlot(corrector);
+    rsStemPlot(corrector);  // looks good
 
     int dummy = 0;
 
