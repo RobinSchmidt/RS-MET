@@ -1,7 +1,7 @@
 #pragma once
 
 
-/** UNDER CONSTRUCTION
+/** UNDER CONSTRUCTION - currently, only the blit-generation works - blep/blamp not yet implemented
 
 A generic implementation of the "BLEP" (= (B)and (L)imited st(EP)) technique for anti-aliasing
 step discontinuities in a signal and/or its derivatives. Discontinuities in the signal itself show 
@@ -38,9 +38,6 @@ public:
   {
     sincLength = newLength;
     bufferSize = rsNextPowerOfTwo(sincLength+1); 
-
-    bufferSize *= 2; // just for development purposes - remove later
-
     mask       = bufferSize - 1;
     updateTables();
     allocateBuffers();
@@ -52,12 +49,12 @@ public:
     updateTables();
   }
 
-
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+  /** Returns the delay (in samples) that is introduced by the algorithm. May be used for delay 
+  compensation. */
   int getDelay() { return sincLength; }
-
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -67,7 +64,7 @@ public:
   void addImpulse(TTim delayFraction, TSig amplitude)
   {
     TTim eps = RS_EPS(TTim);
-    if(delayFraction < eps || delayFraction >= TTim(1))
+    if(delayFraction < eps || delayFraction >= TTim(1) || sincLength == 0 )
       return;
     // maybe we can get rid of this by having one extra sample in blitTbl, etc.
     // maybe when frac == 0.0 or frac == 1.0, one of the loops below should range from 0 to 
@@ -75,38 +72,24 @@ public:
     // sincLength ...but that's a special case where the last samplemin the loop (at sincLength+1)
     // would evaluate to zero anyway, i think ...tests needed
 
-
     int i;
-    //TTim frac = TTim(1) - delayFraction;
     TTim frac = delayFraction;
     int ic = sincLength;
     for(i = 0; i <  sincLength; i++) tempBuffer[ic+i] = blit(frac + i);
     for(i = 1; i <= sincLength; i++) tempBuffer[ic-i] = blit(frac - i);
-    //rsStemPlot(tempBuffer);
     rsScale(tempBuffer, amplitude / rsSum(tempBuffer)); // sum of values should be "amplitude"
-    //rsStemPlot(tempBuffer); // ok - that looks good
+    //rsStemPlot(tempBuffer);
 
     // apply correction to stored past samples:
-    //rsStemPlot(delayline);
-    for(int i = 0; i < sincLength; i++)
+    for(i = 0; i < sincLength; i++)
       delayline[wrap(bufIndex+i)] += tempBuffer[i];
     //rsStemPlot(delayline);
 
-    // update corrector to be applied to future samples:
-    for(int i = 0; i < sincLength; i++)
+    // update correction to be applied to future samples:
+    for(i = 0; i < sincLength; i++)
       corrector[wrap(bufIndex + i)] += tempBuffer[ic+i];
-    //rsStemPlot(corrector);
     corrector[bufIndex] -= amplitude;
-    //rsStemPlot(corrector);  // looks good
-
-    int dummy = 0;
-
-
-    // maybe make a version that only applies the correction to future samples (minblep) - maybe 
-    // use a (windowed) impulse-, step- and ramp- response of an elliptic filter to window step- 
-    // and ramp-response, subtract the naive versions, apply the window and add the naive versions
-    // back
-
+    //rsStemPlot(corrector);
   }
 
   /** Adds the residual for a bandlimited step into our correction buffer. Call this right 
@@ -148,7 +131,7 @@ public:
   inline TSig getSample(TSig in)
   {
     delayline[wrap(bufIndex+sincLength)] = in + corrector[bufIndex];
-    corrector[bufIndex] = 0;        // corrector at this position has been consumed
+    corrector[bufIndex] = TSig(0);  // corrector at this position has been consumed
     TSig y = delayline[bufIndex];
     bufIndex = wrap(bufIndex + 1);
     return y;
@@ -208,11 +191,13 @@ protected:
   void allocateBuffers();
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data */
 
-
-
-
-  int bufIndex = 0;
+  int bufIndex = 0;  // index in circular buffers for delayline and correction
+  int sincLength;    // number of zero-crossings to the right of y-axis
+  int bufferSize;    // nextPowerOfTwo(sincLength+1); 
+  int mask;          // bufferSize - 1
 
   int samplesPerLobe = 20;
   // Step-size to move from one sample to the next in the blit, blep, etc. buffers, i.e. the 
@@ -221,25 +206,15 @@ protected:
   // 2 means at zero-crossings and halfway in between (i.e. at the maxima of the underlying sine), 
   // etc.
 
-  int sincLength;    // number of zero-crossings to the right of y-axis
-  //int delayLength;   // 2*sincLength+1 - wrong! it's the same 
-  //int delaySize;     // nextPowerOf2(delayLength)
-
-  int bufferSize;
-  int mask;          // bufferSize - 1
-  //int centerIndex;
-
 
   std::vector<TTim> timeTbl, blitTbl, blitDrvTbl, blepTbl, blampTbl;
   // Tables for bandlimited impulse (windowed sinc), its derivative, first integral (bandlimited 
   // step) and second integral (bandlimited ramp)
+  // blitDrvTbl not yet used - may not be needed (i was thinking to use it for Hermite 
+  // interpolation of the blit table)
 
-  //std::vector<TTim> blepBuf, blampBuf; // buffer scaled blep/blamp values to be added to output
-  // maybe we can use a single buffer for blep and blamp - just accumulate them both - call it
-  // residualBuffer or correctionBuffer or something
-
-  std::vector<TSig> corrector;  // buffer of correction samples to be added to delayed input
-  std::vector<TSig> delayline;  // buffer for delayed input signal values
-  std::vector<TSig> tempBuffer;
+  std::vector<TSig> corrector;  // buffer of correction samples to be added to future inputs
+  std::vector<TSig> delayline;  // buffer of corrected, delayed input signal values
+  std::vector<TSig> tempBuffer; // temporary storage of sampled blit/blep/blamp values
 
 };

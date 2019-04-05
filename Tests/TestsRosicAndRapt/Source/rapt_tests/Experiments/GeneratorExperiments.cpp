@@ -2,20 +2,21 @@
 using namespace RAPT;
 //using namespace rosic;
 
-void blep()  // rename to blit
+void blit()
 {
-  //double f  = 1000;    // signal frequency
-  //double fs = 44100;   // sample rate
-  //double length = 0.02; // length in seconds
-  //double period = fs/f;
-  //int N = (int) (fs*length);
+  double f  = 1000;    // signal frequency
+  double fs = 44100;   // sample rate
+  double length = 1.0; // length in seconds
+  double period = fs/f;
+  int N = (int) (fs*length);
 
-  int N = 120;
-  double period = 10.25;
+  double amplitude = 0.5;
+  //int N = 120;
+  //double period = 10.25;
 
   typedef rsStepBandLimiter<double, double> SBL;
   SBL sbl;
-  sbl.setLength(1);
+  sbl.setLength(16);
 
   std::vector<double> x(N), y(N); // naive and anti-aliased signal
 
@@ -40,12 +41,15 @@ void blep()  // rename to blit
   sbl.reset();
   for(int n = 0; n < N; n++) {
     if(n == nextSpike) {
-      x[n] = 1;
+      // generate naive impulse train:
+      x[n] = amplitude;
 
-      sbl.addImpulse(1-tf, 1);
-      y[n] = sbl.getSample(1);
+      // generate bandlimited impulse train:
+      sbl.addImpulse(1-tf, amplitude);
+      y[n] = sbl.getSample(amplitude);
+
+      // housekeeping for next spike:
       numSpikes++;
-
       ts += period;
       nextSpike = (int) ceil(numSpikes*period);
       tf = ts - (nextSpike-1);
@@ -61,8 +65,19 @@ void blep()  // rename to blit
   rsArray::shift(&y[0], N, -sbl.getDelay());
 
   //rsPlotVector(x);
-  rsPlotVectors(x, y);
+  //rsPlotVectors(x, y);
 
+  rosic::writeToMonoWaveFile("BlitTestNoAA.wav", &x[0], N, int(fs));
+  rosic::writeToMonoWaveFile("BlitTestAA.wav",   &y[0], N, int(fs));
+
+  // Observations:
+  // -the quality does not really seem to increase with increasing order - look at the spectra with
+  //  linear freq axis - the higher the order, the more side-maxima occur in the noise-floor
+  //  -maybe that's because of the simple rectabgular window? ...try better windows
+  // -on the plus side, even with length=1, we see a significant improvement over naive synthesis
+  // -although - even it doesn't look like an improvement in the spectra when ramping up the order,
+  //  it sounds cleaner - compare lengths 1 and 4 - 4 sounds like the sweet spot
+  //  ...however, 2 actually also does sound worse than 1...something weird is going on...
 
   //GNUPlotter plt;
 }

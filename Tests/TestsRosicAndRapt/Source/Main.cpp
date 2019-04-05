@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
   //particleSystem();
 
   // Generators:
-  blep();
+  blit();
   //bouncillator();
   //bouncillatorFormula();
   //freqVsPhaseMod();

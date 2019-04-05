@@ -150,4 +150,9 @@ double getSample(double in)
   derivative simultaneously)
 
 
+
+maybe make a version that only applies the correction to future samples (minblep) - maybe 
+use a (windowed) impulse-, step- and ramp- response of an elliptic filter to window step- 
+and ramp-response, subtract the naive versions, apply the window and add the naive versions
+back
 */
