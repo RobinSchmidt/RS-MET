@@ -694,12 +694,28 @@ T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, int nFix, int nVar, int M)
   if( abs(2*a[2]) >= abs(a[1]) ) // abs(offset) shall be <= 1
     offset = -a[1] / (2*a[2]);   // maximum of the parabola (zero-crossing of its slope)
 
+  // catch cases where parabola becomes degenerate:
+  if(rsAbs(a[2]) < RS_EPS(T))
+    return T(nVar);
+  // maybe i should investigate the issue some more - why does it become degenerate - should that
+  // be possible to happen - for these investigations, just comment out this early return and 
+  // uncomment the debug-plotting code below:
+
+  /*
+  // debug:
+  if(!rsIsFiniteNumber(offset)) {
+    if(nVar > nFix)
+      rsPlotArray(&x[nFix], nVar-nFix);
+    else
+      rsPlotArray(&x[nVar], nFix-nVar);
+  }
   rsAssert(rsIsFiniteNumber(offset));
-  // we hit this with the (long) rhodes sample - look int rsSinusoidalAnalyzer how to deal with it
+  // we hit this with the (long) rhodes sample - look into rsSinusoidalAnalyzer how to deal with it
   // it has to do with the parabolic interpolant becoming degenerate, i.e. a[2] == 0 ..actually,
-  // in the case of the rhodes case, a1 is also zero - figure out, why the parabola becomes
+  // in the case of the rhodes sample, a[1] is also zero - figure out, why the parabola becomes
   // degenerate in the first place ...it's because left, right, mid are all the same - but why are 
   // they all the same?....
+  */
 
 
   return T(nVar) + offset;
