@@ -80,10 +80,10 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
   // values
 
 
-  GNUPlotter plt;
-  plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0]);
+  //GNUPlotter plt;
+  ////plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0]);
   //plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0], &blampTbl[0]);
-  plt.plot();
+  //plt.plot();
   // they are a bit inexact - compare with the plots in the blamp-paper - that's probably due to 
   // imperfect numeric integration
   

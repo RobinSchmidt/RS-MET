@@ -8,6 +8,8 @@ void particleSystem();            // move to PhysicsExperiments
 
 
 void blit();
+void blep();
+
 void bouncillator();
 void bouncillatorFormula();
 void freqVsPhaseMod();

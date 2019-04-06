@@ -8,7 +8,7 @@ void blit()
 {
   double f  = 1000;    // signal frequency
   double fs = 44100;   // sample rate
-  double length = 1.0; // length in seconds
+  double length = 0.03; // length in seconds
   double period = fs/f;
   int N = (int) (fs*length);
 
@@ -18,7 +18,7 @@ void blit()
 
   typedef rsStepBandLimiter<double, double> SBL;
   SBL sbl;
-  sbl.setLength(16);
+  sbl.setLength(1);
 
   std::vector<double> x(N), y(N); // naive and anti-aliased signal
 
@@ -47,7 +47,7 @@ void blit()
       x[n] = amplitude;
 
       // generate bandlimited impulse train:
-      sbl.addImpulse(1-tf, amplitude);
+      sbl.prepareForImpulse(1-tf, amplitude);
       y[n] = sbl.getSample(amplitude);
 
       // housekeeping for next spike:
@@ -67,10 +67,10 @@ void blit()
   rsArray::shift(&y[0], N, -sbl.getDelay());
 
   //rsPlotVector(x);
-  //rsPlotVectors(x, y);
+  rsPlotVectors(x, y);
 
   //rosic::writeToMonoWaveFile("BlitTestNoAA.wav", &x[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlitTestAA.wav",   &y[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlitTestAA.wav",   &y[0], N, int(fs));
 
   // Observations:
   // -the quality does not really seem to increase with increasing order - look at the spectra with
@@ -86,8 +86,26 @@ void blit()
   //  ...but maybe we could try to normalize ths sum-of-squares (energy)? but that would scale 
   //  everything down a lot, when the kernel length increases...hmmm..
 
+  // -when plotting the blep with the hanning window, it starts below 0 and ends above 1 - we may
+  //  have to rescale it (i think, it may be due to inaccuracy of numeric intergration - try if it 
+  //  gets worse with less table precision)
+
+  // -i think, for sincLength = 1, the rectangular window is actually better than Hanning - so the 
+  //  choice of the window should depend on the sincLength?
+  // -L=2 with Hanning looks pretty good but 4 looks worse - there doesn't seem to be a simple 
+  //  relationship between length/window/quality ...may that depend also on signal frequency?
+  //  -i guess, the amplitude of an aliased frequency depends on whether it falls on the maximum or
+  //   minimum of the window's sidelobe pattern
+  // -i think, we should use windows with high sidelobe rolloff rate for this application - it will
+  //  confine the aliasig components into the upper frequency range where it is less annoying
+
 
   //GNUPlotter plt;
+}
+
+void blep()
+{
+
 }
 
 void particleForceDistanceLaw()

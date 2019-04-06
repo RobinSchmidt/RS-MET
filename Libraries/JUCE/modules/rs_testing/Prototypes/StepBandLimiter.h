@@ -60,8 +60,12 @@ public:
     updateTables();
   }
 
-  /** Not yet used. Later these coefficients will be used to generate a window function defined by
-  a sum over cosine terms.  */
+  /** Sets the coefficients of the different cosine terms in the window function that is applied to
+  the sinc function. We use a cosine-sum window of that kind:
+  https://en.wikipedia.org/wiki/Window_function#Cosine-sum_windows
+  but note that here, we don't use the convention of alternating signs as wikipedia does, i.e. the 
+  a_k that you pass should include the minus sign, if the k-th cosine term is subtracted. The 
+  maximum number of allowed weights is some constant defined her in the class (currently 5) */
   void setWindowCosineWeights(TTim* newWeights, int numWeights)
   {
     rsAssert(numWeights <= maxNumWindowCoeffs);
@@ -69,6 +73,7 @@ public:
       windowCoeffs[i] = newWeights[i];
     for(int i = numWeights; i < maxNumWindowCoeffs; i++)
       windowCoeffs[i] = TTim(0);
+    updateTables();
   }
 
   //void setRelativeCutoff
@@ -86,7 +91,7 @@ public:
 
   /** Adds the residual for a bandlimited impulse into our correction buffer. Call this right 
   before calling getSample, if your naive generator will generate an impulse at the next sample. */
-  void addImpulse(TTim delayFraction, TSig amplitude)
+  void prepareForImpulse(TTim delayFraction, TSig amplitude)
   {
     if(shouldReturnEarly(delayFraction))
       return;
@@ -101,16 +106,17 @@ public:
     //rsStemPlot(delayline);
     //rsStemPlot(corrector);
   }
+  // rename to prepareForImpulse or prepareForSpike
 
 
 
   /** Adds the residual for a bandlimited step into our correction buffer. Call this right 
   before calling getSample, if your naive generator will generate a step at the next sample. */
-  void addStep(TTim delayFraction, TSig amplitude)
+  void prepareForStep(TTim delayFraction, TSig amplitude)
   {
     if(shouldReturnEarly(delayFraction))
       return;
-    fillTmpBuffer(delayFraction, amplitude, blitTbl);
+    fillTmpBuffer(delayFraction, amplitude, blepTbl);
 
     rsScale(tempBuffer, TSig(0.5)*amplitude / rsMean(tempBuffer)); // is this correct?
     // for the step, we may want to scale the tempBuffer such that the mean is 0.5*amplitude?
@@ -121,17 +127,9 @@ public:
   }
 
 
+  //void prepareForRamp(TTim delayFraction, TSig amplitude)
+  // or prepareForCorner
 
-  /** Adds the residual for a bandlimited ramp into our correction buffer. Call this right 
-  before calling getSample, if your naive generator will generate a corner at the next sample. */
-  /*
-  void addRamp(TTim time, TSig amplitude)
-  {
-    for(int i = 0; i < delayLength; i++)
-      corrector[wrap(bufIndex + i)] += amplitude * blampResidual(i, time);
-  }
-  */
-  // maybe rename to addCorner
 
   // maybe have higher order bandlimited integrated impulses (qudaratic, cubic, quartic, etc.)
   // maybe store the intergrated impulses in a 2D array and unify these 3 functions (maybe keep the
@@ -146,6 +144,9 @@ public:
   void addStep(   TTim time, TSig amplitude) { addDiscontinuity(time, amplitude, 1); }
   void addRamp(   TTim time, TSig amplitude) { addDiscontinuity(time, amplitude, 2); }
   */
+  // but that may not work, because the impulse/step/ramp preparation functions ar all slightly
+  // different with respect to the normalization and what is subtracted from the corrector (i.e. 
+  // the naive version of the signal feature)
 
   /** Produces one sample at a time. */
   inline TSig getSample(TSig in)
@@ -161,12 +162,14 @@ public:
   void reset();
 
 
-
 protected:
 
-  /** Figures out, if one of our addImpulse etc. functions hsould return early (i.e. when some
-  special limiting cases occur such that nothing needs to be done and just doing it anyway may 
-  cause access violations)*/
+  //-----------------------------------------------------------------------------------------------
+  /** \name Misc */
+
+  /** Figures out, if one of our prepareForImpulse/Step/Ramp etc. functions should return early 
+  (i.e. when some special limiting cases occur such that nothing needs to be done and just doing 
+  it anyway may cause access violations)*/
   inline bool shouldReturnEarly(TTim delayFraction)
   {
     TTim eps = RS_EPS(TTim);
@@ -201,7 +204,8 @@ protected:
     for(i = 0; i <  sincLength; i++) tempBuffer[ic+i] = readTable(frac + i, tbl);
     for(i = 1; i <= sincLength; i++) tempBuffer[ic-i] = readTable(frac - i, tbl);
     // todo: optimize this - in each iteration of the loops, the "f" value in the called 
-    // blit-function is the same - we don't need to recompute it in each iteration
+    // readTable function is the same - we don't need to recompute it in each iteration
+    // also, use a single loop instead of two
   }
 
   /** Applies the content of the temporary buffer to the delayline and corrector. */
@@ -219,6 +223,8 @@ protected:
     // ...may be done in a single loop
   }
 
+  /** Computes the value of the window function at a given time instant (in samples). Used to 
+  generate the windowed sinc table. */
   inline TTim window(TTim t)
   {
     TTim w = windowCoeffs[0];
@@ -226,36 +232,11 @@ protected:
       w += windowCoeffs[i] * cos(i * PI * t / sincLength);
     return w;
   }
+  // todo: maybe have functions that directly evaluate the windowed-sinc, the integrated windowed 
+  // sinc the twice integrated windowed sinc etc. - i think, with this cosine-sum window, analytic 
+  // integrals should be possible
 
-
-
-  
-
-
-  /*
-  inline TSig blitResidual(int i, TTim frac)
-  {
-    //int k = samplesPerLobe * i;
-    return (1-frac) * blitTbl[i] + frac*blitTbl[i+1]; 
-  }
-  */
-
-  /*
-  inline TSig blepResidual(int i, TTim frac)
-  {
-    return (1-frac) * blepTbl[i] + frac*blepTbl[i+1]; 
-    // preliminary - linear interpolation - later use hermite interpolation using the blit-values
-    // for the derivative - but maybe precompute the polynomial coefficients
-    // ...maybe, it should be the other way around (1-frac vs frac)...will dpend on which 
-    // conventions we adopt for "frac" ....
-  }
-
-  inline TSig blampResidual(int i, TTim frac)
-  {
-    return (1-frac) * blampTbl[i] + frac*blampTbl[i+1]; 
-  }
-  */
-
+  /** Wrap-around function for the index into our delayline and corrector. */
   inline int wrap(int i)
   {
     return i & mask;
@@ -266,7 +247,6 @@ protected:
 
   /** Allocates the buffers for correction signal and delayed input signal. */
   void allocateBuffers();
-
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
@@ -283,10 +263,9 @@ protected:
   // 2 means at zero-crossings and halfway in between (i.e. at the maxima of the underlying sine), 
   // etc.
 
-
   static const int maxNumWindowCoeffs = 5;
-  TTim windowCoeffs[maxNumWindowCoeffs];  // not yet used
-
+  TTim windowCoeffs[maxNumWindowCoeffs]; 
+  // Coefficients for the cosine terms in the cosine-sum window that is used to window the sinc.
 
   std::vector<TTim> timeTbl, blitTbl, blitDrvTbl, blepTbl, blampTbl;
   // Tables for bandlimited impulse (windowed sinc), its derivative, first integral (bandlimited 
@@ -299,5 +278,4 @@ protected:
   std::vector<TSig> corrector;  // buffer of correction samples to be added to future inputs
   std::vector<TSig> delayline;  // buffer of corrected, delayed input signal values
   std::vector<TSig> tempBuffer; // temporary storage of sampled blit/blep/blamp values
-
 };
