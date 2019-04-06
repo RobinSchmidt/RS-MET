@@ -100,34 +100,33 @@ public:
     // sincLength ...but that's a special case where the last samplemin the loop (at sincLength+1)
     // would evaluate to zero anyway, i think ...tests needed
 
-    /*
-    int i;
-    TTim frac = delayFraction;
-    int ic = sincLength;
-    for(i = 0; i <  sincLength; i++) tempBuffer[ic+i] = blit(frac + i);
-    for(i = 1; i <= sincLength; i++) tempBuffer[ic-i] = blit(frac - i);
-    // todo: optimize this - in each iteration of the loops, the "f" value in the called 
-    // blit-function is the same - we don't need to recompute it in each iteration
-    */
 
     fillTmpBuffer(delayFraction, amplitude, blitTbl);
     rsScale(tempBuffer, amplitude / rsSum(tempBuffer)); // sum of values should be "amplitude"
-    //rsStemPlot(tempBuffer);
 
 
-
+    /*
     // apply correction to stored past samples:
     int i;
     int ic = sincLength;
     for(i = 0; i < sincLength; i++)
       delayline[wrap(bufIndex+i)] += tempBuffer[i];
-    //rsStemPlot(delayline);
+
 
     // update correction to be applied to future samples:
     for(i = 0; i < sincLength; i++)
       corrector[wrap(bufIndex + i)] += tempBuffer[ic+i];
     corrector[bufIndex] -= amplitude;
+    */
+
+    applyTmpBuffer();
+    corrector[bufIndex] -= amplitude;
+
+    //rsStemPlot(tempBuffer);
+    //rsStemPlot(delayline);
     //rsStemPlot(corrector);
+
+
   }
 
   /** Adds the residual for a bandlimited step into our correction buffer. Call this right 
@@ -189,16 +188,6 @@ protected:
   }
   */
 
-  inline void fillTmpBuffer(TTim delayFraction, TSig amplitude, const std::vector<TTim>& tbl)
-  {
-    int i;
-    TTim frac = delayFraction;
-    int ic = sincLength;
-    for(i = 0; i <  sincLength; i++) tempBuffer[ic+i] = readTable(frac + i, tbl);
-    for(i = 1; i <= sincLength; i++) tempBuffer[ic-i] = readTable(frac - i, tbl);
-    // todo: optimize this - in each iteration of the loops, the "f" value in the called 
-    // blit-function is the same - we don't need to recompute it in each iteration
-  }
 
   inline TSig readTable(TTim time, const std::vector<TTim>& tbl)
   {
@@ -210,6 +199,32 @@ protected:
     TTim f = p - i;
     return (1-f) * tbl[i] + f*tbl[i+1]; 
   }
+
+  inline void fillTmpBuffer(TTim delayFraction, TSig amplitude, const std::vector<TTim>& tbl)
+  {
+    int i;
+    TTim frac = delayFraction;
+    int ic = sincLength;
+    for(i = 0; i <  sincLength; i++) tempBuffer[ic+i] = readTable(frac + i, tbl);
+    for(i = 1; i <= sincLength; i++) tempBuffer[ic-i] = readTable(frac - i, tbl);
+    // todo: optimize this - in each iteration of the loops, the "f" value in the called 
+    // blit-function is the same - we don't need to recompute it in each iteration
+  }
+
+  inline void applyTmpBuffer()
+  {
+    // apply correction to stored past samples:
+    int i;
+    int ic = sincLength;
+    for(i = 0; i < sincLength; i++)
+      delayline[wrap(bufIndex+i)] += tempBuffer[i];
+
+    // update correction to be applied to future samples:
+    for(i = 0; i < sincLength; i++)
+      corrector[wrap(bufIndex + i)] += tempBuffer[ic+i];
+  }
+
+
 
   
 
