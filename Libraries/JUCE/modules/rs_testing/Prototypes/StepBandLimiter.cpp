@@ -1,5 +1,20 @@
 
 template<class TSig, class TTim>
+rsStepBandLimiter<TSig, TTim>::rsStepBandLimiter()
+{
+  // rectangular window by default (...use something better later):
+  windowCoeffs[0] = TTim(1);
+  for(int i = 1; i < maxNumWindowCoeffs; i++)
+    windowCoeffs[i] = TTim(0);
+
+  // test:
+  windowCoeffs[0] = TTim(0.5);
+  windowCoeffs[1] = TTim(0.5);
+
+  setLength(5);
+}
+
+template<class TSig, class TTim>
 void rsStepBandLimiter<TSig, TTim>::updateTables()
 {
   //int L = delayLength * samplesPerLobe; // table length
@@ -14,7 +29,8 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
 
   int ic      = (L-1)/2;  // center index
   timeTbl[ic] = TTim(0);  // time axis in samples
-  blitTbl[ic] = TTim(1);
+  //blitTbl[ic] = TTim(1);
+  blitTbl[ic] = window(TTim(0));
   int i;
   for(i = 1; i <= ic; i++) {
     TTim t = TTim(i) / TTim(samplesPerLobe);  // time in samples
@@ -28,6 +44,8 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
     // so if we use a window that is a sum of cosine terms, we will be able to derive an expression
     // for the desired integral (it will be a sum of such terms, each weighted by the coefficient 
     // of the cosine term)
+
+    s *= window(t);
 
     timeTbl[ic + i] =  t;
     timeTbl[ic - i] = -t;
@@ -62,10 +80,10 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
   // values
 
 
-  //GNUPlotter plt;
-  ////plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0]);
+  GNUPlotter plt;
+  plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0]);
   //plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0], &blampTbl[0]);
-  //plt.plot();
+  plt.plot();
   // they are a bit inexact - compare with the plots in the blamp-paper - that's probably due to 
   // imperfect numeric integration
   

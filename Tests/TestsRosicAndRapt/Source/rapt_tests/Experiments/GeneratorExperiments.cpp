@@ -8,7 +8,7 @@ void blit()
 {
   double f  = 1000;    // signal frequency
   double fs = 44100;   // sample rate
-  double length = 0.03; // length in seconds
+  double length = 1.0; // length in seconds
   double period = fs/f;
   int N = (int) (fs*length);
 
@@ -67,10 +67,10 @@ void blit()
   rsArray::shift(&y[0], N, -sbl.getDelay());
 
   //rsPlotVector(x);
-  rsPlotVectors(x, y);
+  //rsPlotVectors(x, y);
 
   //rosic::writeToMonoWaveFile("BlitTestNoAA.wav", &x[0], N, int(fs));
-  //rosic::writeToMonoWaveFile("BlitTestAA.wav",   &y[0], N, int(fs));
+  rosic::writeToMonoWaveFile("BlitTestAA.wav",   &y[0], N, int(fs));
 
   // Observations:
   // -the quality does not really seem to increase with increasing order - look at the spectra with
@@ -82,6 +82,9 @@ void blit()
   //  ...however, 2 actually also does sound worse than 1...something weird is going on...
   // -maybe try higher values for setTablePrecision - maybe the table is just too imprecise
   // -try also to remove the normalization of the corrector signal to (scaled) unit sum
+  //  -> done: without normalization, results are much worse -> normalization is good!
+  //  ...but maybe we could try to normalize ths sum-of-squares (energy)? but that would scale 
+  //  everything down a lot, when the kernel length increases...hmmm..
 
 
   //GNUPlotter plt;

@@ -35,10 +35,7 @@ class rsStepBandLimiter
 
 public:
 
-  rsStepBandLimiter()
-  {
-    setLength(5);
-  }
+  rsStepBandLimiter();
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -91,53 +88,39 @@ public:
   before calling getSample, if your naive generator will generate an impulse at the next sample. */
   void addImpulse(TTim delayFraction, TSig amplitude)
   {
-    TTim eps = RS_EPS(TTim);
-    if(delayFraction < eps || delayFraction >= TTim(1) || sincLength == 0 )
+    if(shouldReturnEarly(delayFraction))
       return;
-    // maybe we can get rid of this by having one extra sample in blitTbl, etc.
-    // maybe when frac == 0.0 or frac == 1.0, one of the loops below should range from 0 to 
-    // sincLength-1 and the other from 0 to sincLength+1 instead of both ranging from 0 to 
-    // sincLength ...but that's a special case where the last samplemin the loop (at sincLength+1)
-    // would evaluate to zero anyway, i think ...tests needed
-
-
     fillTmpBuffer(delayFraction, amplitude, blitTbl);
+
     rsScale(tempBuffer, amplitude / rsSum(tempBuffer)); // sum of values should be "amplitude"
-
-
-    /*
-    // apply correction to stored past samples:
-    int i;
-    int ic = sincLength;
-    for(i = 0; i < sincLength; i++)
-      delayline[wrap(bufIndex+i)] += tempBuffer[i];
-
-
-    // update correction to be applied to future samples:
-    for(i = 0; i < sincLength; i++)
-      corrector[wrap(bufIndex + i)] += tempBuffer[ic+i];
-    corrector[bufIndex] -= amplitude;
-    */
+    //rsScale(tempBuffer, amplitude);  // test - without normalization of the sum of values
 
     applyTmpBuffer();
     corrector[bufIndex] -= amplitude;
-
     //rsStemPlot(tempBuffer);
     //rsStemPlot(delayline);
     //rsStemPlot(corrector);
-
-
   }
+
+
 
   /** Adds the residual for a bandlimited step into our correction buffer. Call this right 
   before calling getSample, if your naive generator will generate a step at the next sample. */
-  /*
-  void addStep(TTim time, TSig amplitude)
+  void addStep(TTim delayFraction, TSig amplitude)
   {
-    for(int i = 0; i < delayLength; i++)
-      corrector[wrap(bufIndex + i)] += amplitude * blepResidual(i, time);
+    if(shouldReturnEarly(delayFraction))
+      return;
+    fillTmpBuffer(delayFraction, amplitude, blitTbl);
+
+    rsScale(tempBuffer, TSig(0.5)*amplitude / rsMean(tempBuffer)); // is this correct?
+    // for the step, we may want to scale the tempBuffer such that the mean is 0.5*amplitude?
+
+    applyTmpBuffer();
+    for(int i = 0; i < sincLength; i++) 
+      corrector[wrap(bufIndex + i)] -= amplitude; // is this correct?
   }
-  */
+
+
 
   /** Adds the residual for a bandlimited ramp into our correction buffer. Call this right 
   before calling getSample, if your naive generator will generate a corner at the next sample. */
@@ -181,14 +164,22 @@ public:
 
 protected:
 
-  /*
-  inline TSig blit(TTim time)
+  /** Figures out, if one of our addImpulse etc. functions hsould return early (i.e. when some
+  special limiting cases occur such that nothing needs to be done and just doing it anyway may 
+  cause access violations)*/
+  inline bool shouldReturnEarly(TTim delayFraction)
   {
-    return readTable(time, blitTbl);
+    TTim eps = RS_EPS(TTim);
+    return delayFraction < eps || delayFraction >= TTim(1) || sincLength == 0;
+    // maybe we can get rid of this by having one extra sample in blitTbl, etc.
+    // maybe when frac == 0.0 or frac == 1.0, one of the loops below should range from 0 to 
+    // sincLength-1 and the other from 0 to sincLength+1 instead of both ranging from 0 to 
+    // sincLength ...but that's a special case where the last samplemin the loop (at sincLength+1)
+    // would evaluate to zero anyway, i think ...tests needed
   }
-  */
 
-
+  /** Reads out the given table (one of blitTbl, blepTbal, blampTbl, etc.) at the given time 
+  instant (in samples). */
   inline TSig readTable(TTim time, const std::vector<TTim>& tbl)
   {
     TTim p = (time + sincLength) * samplesPerLobe; // read position
@@ -200,6 +191,8 @@ protected:
     return (1-f) * tbl[i] + f*tbl[i+1]; 
   }
 
+  /** Fills our temporary buffer with sampled values from the given table  (one of blitTbl, 
+  blepTbl, blampTbl, etc.). */
   inline void fillTmpBuffer(TTim delayFraction, TSig amplitude, const std::vector<TTim>& tbl)
   {
     int i;
@@ -211,17 +204,27 @@ protected:
     // blit-function is the same - we don't need to recompute it in each iteration
   }
 
+  /** Applies the content of the temporary buffer to the delayline and corrector. */
   inline void applyTmpBuffer()
   {
-    // apply correction to stored past samples:
     int i;
     int ic = sincLength;
-    for(i = 0; i < sincLength; i++)
-      delayline[wrap(bufIndex+i)] += tempBuffer[i];
 
-    // update correction to be applied to future samples:
-    for(i = 0; i < sincLength; i++)
-      corrector[wrap(bufIndex + i)] += tempBuffer[ic+i];
+    // apply correction to stored past samples:
+    for(i = 0; i < sincLength; i++) delayline[wrap(bufIndex + i)] += tempBuffer[i];
+
+    // update corrector to be applied to future samples:
+    for(i = 0; i < sincLength; i++) corrector[wrap(bufIndex + i)] += tempBuffer[ic+i];
+
+    // ...may be done in a single loop
+  }
+
+  inline TTim window(TTim t)
+  {
+    TTim w = windowCoeffs[0];
+    for(int i = 1; i < maxNumWindowCoeffs; i++)
+      w += windowCoeffs[i] * cos(i * PI * t / sincLength);
+    return w;
   }
 
 
