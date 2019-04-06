@@ -100,17 +100,25 @@ public:
     // sincLength ...but that's a special case where the last samplemin the loop (at sincLength+1)
     // would evaluate to zero anyway, i think ...tests needed
 
+    /*
     int i;
     TTim frac = delayFraction;
     int ic = sincLength;
     for(i = 0; i <  sincLength; i++) tempBuffer[ic+i] = blit(frac + i);
     for(i = 1; i <= sincLength; i++) tempBuffer[ic-i] = blit(frac - i);
-    rsScale(tempBuffer, amplitude / rsSum(tempBuffer)); // sum of values should be "amplitude"
-    //rsStemPlot(tempBuffer);
     // todo: optimize this - in each iteration of the loops, the "f" value in the called 
     // blit-function is the same - we don't need to recompute it in each iteration
+    */
+
+    fillTmpBuffer(delayFraction, amplitude, blitTbl);
+    rsScale(tempBuffer, amplitude / rsSum(tempBuffer)); // sum of values should be "amplitude"
+    //rsStemPlot(tempBuffer);
+
+
 
     // apply correction to stored past samples:
+    int i;
+    int ic = sincLength;
     for(i = 0; i < sincLength; i++)
       delayline[wrap(bufIndex+i)] += tempBuffer[i];
     //rsStemPlot(delayline);
@@ -174,18 +182,22 @@ public:
 
 protected:
 
+  /*
   inline TSig blit(TTim time)
   {
     return readTable(time, blitTbl);
-    /*
-    TTim p = (time + sincLength) * samplesPerLobe; // read position
-    // + sincLength because our buffer index is shifted by that amount with respect to the time
-    // origin - i.e. the center-index of blitTbl corresponds to time = 0
+  }
+  */
 
-    int  i = (int) p;
-    TTim f = p - i;
-    return (1-f) * blitTbl[i] + f*blitTbl[i+1]; 
-    */
+  inline void fillTmpBuffer(TTim delayFraction, TSig amplitude, const std::vector<TTim>& tbl)
+  {
+    int i;
+    TTim frac = delayFraction;
+    int ic = sincLength;
+    for(i = 0; i <  sincLength; i++) tempBuffer[ic+i] = readTable(frac + i, tbl);
+    for(i = 1; i <= sincLength; i++) tempBuffer[ic-i] = readTable(frac - i, tbl);
+    // todo: optimize this - in each iteration of the loops, the "f" value in the called 
+    // blit-function is the same - we don't need to recompute it in each iteration
   }
 
   inline TSig readTable(TTim time, const std::vector<TTim>& tbl)
