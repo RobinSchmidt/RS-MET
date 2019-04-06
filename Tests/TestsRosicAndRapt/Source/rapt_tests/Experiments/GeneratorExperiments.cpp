@@ -8,7 +8,7 @@ void blit()
 {
   double f  = 1000;    // signal frequency
   double fs = 44100;   // sample rate
-  double length = 0.03; // length in seconds
+  double length = 1.0; // length in seconds
   double period = fs/f;
   int N = (int) (fs*length);
 
@@ -18,7 +18,7 @@ void blit()
 
   typedef rsStepBandLimiter<double, double> SBL;
   SBL sbl;
-  sbl.setLength(1);
+  sbl.setLength(16);  // 16 seems to be a reasonable default value
 
   std::vector<double> x(N), y(N); // naive and anti-aliased signal
 
@@ -67,10 +67,10 @@ void blit()
   rsArray::shift(&y[0], N, -sbl.getDelay());
 
   //rsPlotVector(x);
-  rsPlotVectors(x, y);
+  //rsPlotVectors(x, y);
 
   //rosic::writeToMonoWaveFile("BlitTestNoAA.wav", &x[0], N, int(fs));
-  //rosic::writeToMonoWaveFile("BlitTestAA.wav",   &y[0], N, int(fs));
+  rosic::writeToMonoWaveFile("BlitTestAA.wav",   &y[0], N, int(fs));
 
   // Observations:
   // -the quality does not really seem to increase with increasing order - look at the spectra with
@@ -105,8 +105,36 @@ void blit()
 
 void blep()
 {
+  int    N   = 200;    // number of samples to produce
+  double inc = 1.0/16;  // phase increment per sample
 
+
+  rsNaiveOsc<double> osc;
+  osc.setPhaseIncrement(inc);
+
+  rsStepBandLimiter<double, double> sbl;
+  sbl.setLength(20);
+
+  std::vector<double> x(N), y(N); // naive and anti-aliased signal
+
+  for(int n = 0; n < N; n++)
+  {
+    x[n] = osc.getSampleSaw();
+
+    // todo: insert the sbl.prepareForStep here, when the osc has produced a step (or will produce a 
+    // step?)
+
+    y[n] = sbl.getSample(x[n]);
+
+  }
+
+
+  rsArray::shift(&y[0], N, -sbl.getDelay());
+  rsPlotVectors(x, y);
 }
+
+// maybe to really challenge the blep/blamp class, try to hardsync a sinewave and try to anti-alias
+// more higher order derivatives with bladratics, blubics, blartics, etc.
 
 void particleForceDistanceLaw()
 {
