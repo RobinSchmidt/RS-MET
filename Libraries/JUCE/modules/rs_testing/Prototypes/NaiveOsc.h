@@ -65,6 +65,9 @@ public:
     // remember the previous sample ...but the blepper already does this - maybe the blepper should
     // figure out the height itself by taking the difference between current and previous sample?
     // ...try both! ..maybe try a squarewave first - in this case, both sizes would be the same
+    // but no - the blepper doesn't know the uncorrected previous input sample anymore - the 
+    // delayline has stored a corrected sample - i think that would be wrong to use - maybe we
+    // should additionally store uncorrected samples for such stepsize estimation tasks
 
     // Figure out, if (and when) a wrap-around occured. In such case, we produce a step 
     // discontinuity of size -2

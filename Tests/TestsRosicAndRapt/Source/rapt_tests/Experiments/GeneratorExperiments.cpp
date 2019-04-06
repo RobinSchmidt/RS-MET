@@ -107,17 +107,17 @@ void blit()
 
 void blep()
 {
-  int    N   = 200;    // number of samples to produce
-  //double inc = 1.0/16;  // phase increment per sample
+  int    N   = 500;    // number of samples to produce
+  double inc = 3.0/128;  // phase increment per sample
 
-  double inc = 3./100;  // phase increment per sample
+  //double inc = 3./100;  // phase increment per sample
 
 
   rsNaiveOsc<double> osc;
   osc.setPhaseIncrement(inc);
 
   rsStepBandLimiter<double, double> sbl;
-  sbl.setLength(20);
+  sbl.setLength(10);
 
   std::vector<double> x(N), y(N); // naive and anti-aliased signal
 
@@ -126,11 +126,13 @@ void blep()
     //x[n] = osc.getSampleSaw();
     x[n] = osc.getSampleSquare();
 
-    if(osc.getStepAmplitude() != 0.0)
-    {
-      // a step did occur
-      //sbl.prepareForStep(osc.getStepDelay(), osc.getStepAmplitude());
-    }
+    if(osc.getStepAmplitude() != 0.0) // a step did occur
+      sbl.prepareForStep(osc.getStepDelay(), osc.getStepAmplitude());
+      // maybe the sbl could figure out the size of the step itself - maybe do something like
+      // sbl.prepareForStep(osc.getStepDelay(), x[n] - sbl.previousInputSample() );
+      // ...hmm bute the previousInputSample in the delayline already may have a correction applied
+      // ...i think that would be wrong - we need the difference of the new sample and the 
+      // uncorrected previous input sample
 
     // todo: insert the sbl.prepareForStep here, when the osc has produced a step (or will produce a 
     // step?)
