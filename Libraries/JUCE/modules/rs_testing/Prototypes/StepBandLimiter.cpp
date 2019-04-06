@@ -159,4 +159,33 @@ maybe make a version that only applies the correction to future samples (minblep
 use a (windowed) impulse-, step- and ramp- response of an elliptic filter to window step- 
 and ramp-response, subtract the naive versions, apply the window and add the naive versions
 back
+
+KVR threads:
+
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=523056
+mystran says:
+If you go with the LUT approach, make sure you reorder the BLEP data in the LUT in such a way that 
+for any given transition you only need to fetch the minimum number of cache lines
+
+...we should probably keep the unoptimized prototype implementation as is for a unit tests with an 
+optimized production version...because the details are a bit tricky
+
+Tutorial: BLEPs (using PolyBLEPs but extensible)
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=398553
+
+Windowing BLEPs
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=511023
+
+Triangle hard sync with BLEP's opinions
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=492537
+
+Hard-Sync with MinBlep / How to manage edge cases
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=489691
+
+minBLEPS once and for all
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=364256
+
+Did any one get Minblep hardsync right?
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=461630
+
 */

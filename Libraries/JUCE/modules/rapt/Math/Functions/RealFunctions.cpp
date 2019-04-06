@@ -176,6 +176,8 @@ T rsSineIntegral(T x)
     //return rsSineIntegralViaAuxFunctions(x);       // approximation
   }
 }
+// compare with this implementation:
+// http://www.mymathlib.com/functions/sin_cos_integrals.html
 
 template<class T>
 T rsSinc(T x)

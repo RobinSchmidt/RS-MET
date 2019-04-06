@@ -74,6 +74,9 @@ public:
       windowCoeffs[i] = TTim(0);
   }
 
+  //void setRelativeCutoff
+  // 1: fs/2, <1: below fs/2
+
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
@@ -173,6 +176,8 @@ protected:
 
   inline TSig blit(TTim time)
   {
+    return readTable(time, blitTbl);
+    /*
     TTim p = (time + sincLength) * samplesPerLobe; // read position
     // + sincLength because our buffer index is shifted by that amount with respect to the time
     // origin - i.e. the center-index of blitTbl corresponds to time = 0
@@ -180,7 +185,22 @@ protected:
     int  i = (int) p;
     TTim f = p - i;
     return (1-f) * blitTbl[i] + f*blitTbl[i+1]; 
+    */
   }
+
+  inline TSig readTable(TTim time, const std::vector<TTim>& tbl)
+  {
+    TTim p = (time + sincLength) * samplesPerLobe; // read position
+    // + sincLength because our buffer index is shifted by that amount with respect to the time
+    // origin - i.e. the center-index of blitTbl corresponds to time = 0
+
+    int  i = (int) p;
+    TTim f = p - i;
+    return (1-f) * tbl[i] + f*tbl[i+1]; 
+  }
+
+  
+
 
   /*
   inline TSig blitResidual(int i, TTim frac)
