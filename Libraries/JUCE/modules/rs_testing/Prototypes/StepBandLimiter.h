@@ -96,10 +96,7 @@ public:
     if(shouldReturnEarly(delayFraction))
       return;
     fillTmpBuffer(delayFraction, amplitude, blitTbl);
-
     rsScale(tempBuffer, amplitude / rsSum(tempBuffer)); // sum of values should be "amplitude"
-    //rsScale(tempBuffer, amplitude);  // test - without normalization of the sum of values
-
     applyTmpBuffer();
     corrector[bufIndex] -= amplitude;
     //rsStemPlot(tempBuffer);

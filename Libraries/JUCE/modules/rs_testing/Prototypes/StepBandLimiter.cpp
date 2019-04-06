@@ -171,6 +171,13 @@ double getSample(double in)
  -maybe, may compute the blep and blamp residual simultaneously (by evaluating a polynomial and its
   derivative simultaneously)
 
+here it says that the *residual* signal should be tabulated (not the blep/blamp itself)...but 
+somehow that seems strange in the case of the blit - should we just zero out the center value of 
+the table? my gut feeling is that this wouldn't make much sense...
+http://metafunction.co.uk/all-about-digital-oscillators-part-2-blits-bleps/
+..for the blep, on the other hand, that approach seems sensible ...maybe the blit is a special 
+oddball here because its continuous time version is not an actual function but rather a 
+distribution?
 
 
 maybe make a version that only applies the correction to future samples (minblep) - maybe 

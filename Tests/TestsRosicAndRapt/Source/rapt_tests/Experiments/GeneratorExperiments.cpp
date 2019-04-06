@@ -82,6 +82,8 @@ void blit()
   //  ...however, 2 actually also does sound worse than 1...something weird is going on...
   // -maybe try higher values for setTablePrecision - maybe the table is just too imprecise
   // -try also to remove the normalization of the corrector signal to (scaled) unit sum
+  //  replace: rsScale(tempBuffer, amplitude / rsSum(tempBuffer));
+  //  by:      rsScale(tempBuffer, amplitude);
   //  -> done: without normalization, results are much worse -> normalization is good!
   //  ...but maybe we could try to normalize ths sum-of-squares (energy)? but that would scale 
   //  everything down a lot, when the kernel length increases...hmmm..
@@ -106,7 +108,9 @@ void blit()
 void blep()
 {
   int    N   = 200;    // number of samples to produce
-  double inc = 1.0/16;  // phase increment per sample
+  //double inc = 1.0/16;  // phase increment per sample
+
+  double inc = 3./100;  // phase increment per sample
 
 
   rsNaiveOsc<double> osc;
@@ -119,7 +123,14 @@ void blep()
 
   for(int n = 0; n < N; n++)
   {
-    x[n] = osc.getSampleSaw();
+    //x[n] = osc.getSampleSaw();
+    x[n] = osc.getSampleSquare();
+
+    if(osc.getStepAmplitude() != 0.0)
+    {
+      // a step did occur
+      //sbl.prepareForStep(osc.getStepDelay(), osc.getStepAmplitude());
+    }
 
     // todo: insert the sbl.prepareForStep here, when the osc has produced a step (or will produce a 
     // step?)

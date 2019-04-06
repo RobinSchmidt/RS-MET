@@ -2,7 +2,14 @@
 
 /** A naive implementation of an oscillator that can generate sawtooth-, square- and triangle 
 waves. It's meant to be used in conjunction with rsStepBandLimiter to turn the initially naive
-wavefrom generation into an anti-aliased one via the blep/blamp technique.
+waveform generation into an anti-aliased one via the blep/blamp technique. The idea is that the 
+oscillator produces the naive waveform and along with it the information that is required for 
+constructing appropriate correction signals - this information consists of the exact sub-sample 
+position and the size of the (step- or corner-) discontinuities. With this information, a driver 
+object can correct them via bleps/blamps as a post-processing step. Separating the application of 
+the blep-correction out as post-processing step allows for great flexibility. The driver may choose
+to use table-based or polynomial bleps, linear- or minimum-phase ones and may also correct 
+hard-sync between two oscillators.
 
 maybe rename to rsBlepReadyOsc
 
@@ -28,15 +35,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  inline T getStepAmplitude()
-  {
-    return stepAmp;
-  }
+  inline T getStepAmplitude() { return stepAmp; }
 
-  inline T getStepDelay()
-  {
-    return stepDelay;
-  }
+  inline T getStepDelay()     { return stepDelay; }
 
 
 
@@ -45,23 +46,32 @@ public:
 
   inline T getSampleSaw()
   {
-    stepAmp = 0;
+    stepAmp = T(0);
 
     //cornerAmp = 0;
 
     //T y = T(2) * pos - T(1);
 
     updatePhase();
-    if(pos < inc) {      // or should it be <= ?
-      stepAmp = T(-2);   // downward step by -2
-      //stepDelay = ???;
-    }
     // actually, it's not really nice to do the phase update before computing the sample - i think
     // i can do it the other way around, if we make so that the osc will set stepAmp nonzero 
     // *before* getSample produces the step - the driver would have to take this into account and
     // may change the order of calls to the osc and the blepper (call blepper's getSample first)
     // alternative, we could se the pos to 1-inc in reset - but that's unelegant
+    // or maybe we should use 0.5 as start-phase - start at the zero crossing - that may also 
+    // counteract tarnsient artifacts (the very first step goes from 0 to -1, so it has size -1
+    // and not -2) ..but maybe we should base the step height on the actual difference between the
+    // two samples around the step and not the ideal theoretical step height? then we should 
+    // remember the previous sample ...but the blepper already does this - maybe the blepper should
+    // figure out the height itself by taking the difference between current and previous sample?
+    // ...try both! ..maybe try a squarewave first - in this case, both sizes would be the same
 
+    // Figure out, if (and when) a wrap-around occured. In such case, we produce a step 
+    // discontinuity of size -2
+    if(pos < inc) {                // or should it be <= ?
+      stepAmp   = T(-2);           // downward step by -2
+      stepDelay = T(1) - pos/inc;  // is this correct?
+    }
 
     // what if the increment is negative - then we should check if pos > (1-inc) and if so, we have
     // an upward step
@@ -71,6 +81,27 @@ public:
 
   inline T getSampleSquare()
   {
+    stepAmp = T(0);
+    updatePhase();
+
+
+    if(pos < inc) {                // or should it be <= ?
+      stepAmp   = T(-2);           // downward step by -2
+      stepDelay = T(1) - pos/inc;  // is this correct?
+    }
+    else if(pos > T(0.5) && pos - T(0.5) < inc) 
+    {
+      stepAmp   = T(-2);                    // upward step by -2
+      stepDelay = T(1) - (T(pos)-0.5)/inc;  // is this correct?
+    }
+
+
+    if(pos <= T(0.5))  // or <?
+      return T(-1);
+    else
+      return T(1);
+
+
     return T(0);
   }
 
