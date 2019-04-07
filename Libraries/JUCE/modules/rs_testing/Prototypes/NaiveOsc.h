@@ -31,6 +31,11 @@ public:
     inc = newIncrement;
   }
 
+  inline void setAmplitude(T newAmplitude)
+  {
+    amp = newAmplitude;
+  }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -72,14 +77,14 @@ public:
     // Figure out, if (and when) a wrap-around occured. In such case, we produce a step 
     // discontinuity of size -2
     if(pos < inc) {                // or should it be <= ?
-      stepAmp   = T(-2);           // downward step by -2
+      stepAmp   = T(-2)*amp;       // downward step by -2a
       stepDelay = T(1) - pos/inc;  // is this correct?
     }
 
     // what if the increment is negative - then we should check if pos > (1-inc) and if so, we have
     // an upward step
 
-    return T(2) * pos - T(1);
+    return amp * (T(2) * pos - T(1));
   }
 
   inline T getSampleSquare()
@@ -89,20 +94,22 @@ public:
 
 
     if(pos < inc) {                // or should it be <= ?
-      stepAmp   = T(-2);           // downward step by -2
+      stepAmp   = T(-2)*amp;       // downward step by -2a
+      //stepAmp   = T(-2);       // test
       stepDelay = T(1) - pos/inc;  // is this correct?
     }
     else if(pos > T(0.5) && pos - T(0.5) < inc) 
     {
-      stepAmp   = T(-2);                    // upward step by -2
+      stepAmp   = T(2)*amp;                 // upward step by -2a
+      //stepAmp   = T(2); 
       stepDelay = T(1) - (T(pos)-0.5)/inc;  // is this correct?
     }
 
 
     if(pos <= T(0.5))  // or <?
-      return T(-1);
+      return T(-amp);
     else
-      return T(1);
+      return T(amp);
 
 
     return T(0);
@@ -129,6 +136,7 @@ protected:
 
   T pos = 0;     // position/phase in the range [0,1)
   T inc = 0;     // phase increment per sample
+  T amp = 1;     // amplitude
 
   // Values for discontinuities - when the amplitudes are nonzero, it means that a discontinuity of 
   // the respective kind has occured. These should be read out by an outlying driver object after a 

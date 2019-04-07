@@ -107,6 +107,8 @@ void blit()
 
 void blep()
 {
+
+  double fs  = 44100;    // sample rate
   int    N   = 800;    // number of samples to produce
   double inc = 3.0/256;  // phase increment per sample
   // try to figure out the periodicity of the rippled cycles - it has to do with how many times we
@@ -123,6 +125,7 @@ void blep()
 
   rsNaiveOsc<double> osc;
   osc.setPhaseIncrement(inc);
+  osc.setAmplitude(1.0);
 
   rsStepBandLimiter<double, double> sbl;
   sbl.setLength(20);
@@ -135,7 +138,7 @@ void blep()
     x[n] = osc.getSampleSquare();
 
     if(osc.getStepAmplitude() != 0.0) // a step did occur
-      sbl.prepareForStep(osc.getStepDelay(), osc.getStepAmplitude());
+      sbl.prepareForStep(1-osc.getStepDelay(), osc.getStepAmplitude());
       // maybe the sbl could figure out the size of the step itself - maybe do something like
       // sbl.prepareForStep(osc.getStepDelay(), x[n] - sbl.previousInputSample() );
       // ...hmm bute the previousInputSample in the delayline already may have a correction applied
@@ -150,7 +153,11 @@ void blep()
   }
 
 
+
+
   rsArray::shift(&y[0], N, -sbl.getDelay());
+  //rosic::writeToMonoWaveFile("BlepTestNoAA.wav", &x[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestAA.wav",   &y[0], N, int(fs));
   rsPlotVectors(x, y);
 
   // Observations:
@@ -159,6 +166,11 @@ void blep()
   // seems to work better - so with the blep, normalizing seems not a good idea - this is 
   // surprising because with the blit, normalization gave better results
   // todo: try to pre-normalize the blep table (it doesn't range from 0 to 1) - done
+
+  // -hmm...well, at least the time-domain signals show the typical expected ripple patter - but 
+  //  when plotting the spectra, the blep doesn't seem to help at all against aliasing
+  //  verify the computation of stepDelay
+  // ...but also the ripple amplitude has gone down compared to older versions...
 
   // maybe implement a hard-syncable blep oscillator for liberty
 
