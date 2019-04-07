@@ -56,11 +56,16 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
   // ..and we also need to fill the blitDrv table with the derivative of the blit - can be 
   // computed analytically...the integrals also (in terms of the Si function)
 
-  // numerically integrate the blit to obtain the blep, choose the integration constant such that
-  // the center sample is exactly 0.5:
+  // numerically integrate the blit to obtain the blep:
   rsNumericIntegral(&timeTbl[0], &blitTbl[0], &blepTbl[0],  L, TTim(0));
-  TTim c = blepTbl[ic] - 0.5;  
-  rsArray::add(&blepTbl[0], -c, &blepTbl[0], L);
+
+  // choose the integration constant such that the center sample is exactly 0.5:
+  //TTim c = blepTbl[ic] - 0.5;  
+  //rsArray::add(&blepTbl[0], -c, &blepTbl[0], L);
+  // ...hmmm - that shifting doesn't seem to work very well - instead, scale it such taht teh last 
+  // sample is exactly 1 (the first sample is already exactly zero by construction):
+  rsArray::scale(&blepTbl[0], &blepTbl[0], L, TTim(1)/rsLast(blepTbl));
+
 
   // integrate blep to get blamp:
   rsNumericIntegral(&timeTbl[0], &blepTbl[0], &blampTbl[0], L, TTim(0));
@@ -75,6 +80,8 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
   //  blepTbl[i]  -= 1;
   //  blampTbl[i] -= timeTbl[i];
   //}
+  // hmm...but i think, that works only for blep and higher order integrals - because the 
+  // continuous delta distribution is not actually a function ...or something like that
 
   // todo: maybe store only the right half and obtain the left half by symmetry when computing 
   // values
@@ -84,8 +91,8 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
   ////plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0]);
   //plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0], &blampTbl[0]);
   //plt.plot();
-  // they are a bit inexact - compare with the plots in the blamp-paper - that's probably due to 
-  // imperfect numeric integration
+  //// they are a bit inexact - compare with the plots in the blamp-paper - that's probably due to 
+  //// imperfect numeric integration
   
 }
 

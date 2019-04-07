@@ -107,8 +107,16 @@ void blit()
 
 void blep()
 {
-  int    N   = 500;    // number of samples to produce
-  double inc = 3.0/128;  // phase increment per sample
+  int    N   = 800;    // number of samples to produce
+  double inc = 3.0/256;  // phase increment per sample
+  // try to figure out the periodicity of the rippled cycles - it has to do with how many times we
+  // have to loop through through the cycle unitl we are back at the sample branch of the blep
+  // could it be something like gcd(num % den, den)
+
+  //double inc = 5.0/100;  // phase increment per sample
+  // 5./100 gives an access violation - i think, we should give the tables one extra guard 
+  // sample that repeats the last actual sample - i think we may then also get rid of the 
+  // unelegant shouldReturnEarly function
 
   //double inc = 3./100;  // phase increment per sample
 
@@ -117,7 +125,7 @@ void blep()
   osc.setPhaseIncrement(inc);
 
   rsStepBandLimiter<double, double> sbl;
-  sbl.setLength(10);
+  sbl.setLength(20);
 
   std::vector<double> x(N), y(N); // naive and anti-aliased signal
 
@@ -144,6 +152,16 @@ void blep()
 
   rsArray::shift(&y[0], N, -sbl.getDelay());
   rsPlotVectors(x, y);
+
+  // Observations:
+  // replacing: rsScale(tempBuffer, TSig(0.5)*amplitude / rsMean(tempBuffer));
+  // by:        rsScale(tempBuffer, amplitude );
+  // seems to work better - so with the blep, normalizing seems not a good idea - this is 
+  // surprising because with the blit, normalization gave better results
+  // todo: try to pre-normalize the blep table (it doesn't range from 0 to 1) - done
+
+  // maybe implement a hard-syncable blep oscillator for liberty
+
 }
 
 // maybe to really challenge the blep/blamp class, try to hardsync a sinewave and try to anti-alias

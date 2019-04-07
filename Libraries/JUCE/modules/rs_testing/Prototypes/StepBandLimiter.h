@@ -115,8 +115,13 @@ public:
       return;
     fillTmpBuffer(delayFraction, amplitude, blepTbl);
 
-    rsScale(tempBuffer, TSig(0.5)*amplitude / rsMean(tempBuffer)); // is this correct?
+    TTim mean = rsMean(tempBuffer); // should be around 0.5
+
+    // rsScale(tempBuffer, TSig(0.5)*amplitude / rsMean(tempBuffer)); // is this correct?
+    rsScale(tempBuffer, amplitude );
     // for the step, we may want to scale the tempBuffer such that the mean is 0.5*amplitude?
+
+    mean = rsMean(tempBuffer); // should be exactly 0.5*amplitude now
 
     applyTmpBuffer();
     for(int i = 0; i < sincLength; i++) 
