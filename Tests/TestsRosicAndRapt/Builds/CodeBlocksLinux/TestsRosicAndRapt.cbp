@@ -9389,25 +9389,25 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rs_testing/Prototypes/NaiveOsc.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rs_testing/Prototypes/BlepBlampOscs.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rs_testing/Prototypes/NaiveOsc.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rs_testing/Prototypes/BlepBlampOscs.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rs_testing/Prototypes/StepBandLimiter.cpp">
+    <Unit filename="../../../../Libraries/JUCE/modules/rs_testing/Prototypes/BlitBlepBlamp.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rs_testing/Prototypes/StepBandLimiter.h">
+    <Unit filename="../../../../Libraries/JUCE/modules/rs_testing/Prototypes/BlitBlepBlamp.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>

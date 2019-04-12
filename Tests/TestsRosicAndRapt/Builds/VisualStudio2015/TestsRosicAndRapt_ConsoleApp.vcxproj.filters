@@ -2554,10 +2554,10 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Experiments\MiscExperiments.cpp">
       <Filter>Juce Modules\rs_testing\Experiments</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\NaiveOsc.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\BlepBlampOscs.cpp">
       <Filter>Juce Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\StepBandLimiter.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\BlitBlepBlamp.cpp">
       <Filter>Juce Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\DSPPlotters.cpp">
@@ -4968,10 +4968,10 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Experiments\MiscExperiments.h">
       <Filter>Juce Modules\rs_testing\Experiments</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\NaiveOsc.h">
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\BlepBlampOscs.h">
       <Filter>Juce Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\StepBandLimiter.h">
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\BlitBlepBlamp.h">
       <Filter>Juce Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\DSPPlotters.h">
