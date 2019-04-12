@@ -128,11 +128,11 @@ void blit()
 
 void blep()
 {
-  double inc = 19.0/256;  // phase increment per sample
-  //double inc = 7.0/512;  // phase increment per sample
+  //double inc = 19.0/256;  // phase increment per sample
+  double inc = 7.0/512;  // phase increment per sample
   double fs  = 44100;    // sample rate
-  int N      = 80000;      // number of samples to produce
-  int shape  = 3;        // 1: saw, 2: square, 3: triangle
+  int N      = 800;      // number of samples to produce
+  int shape  = 2;        // 1: saw, 2: square, 3: triangle
   int prec   = 20;       // table precision
   int length = 30;       // blep length
 
@@ -225,18 +225,17 @@ void blep()
   rsArray::shift(&yp1[0], N, -polyBlep1.getDelay());
   rsArray::shift(&yp2[0], N, -polyBlep2.getDelay());
 
-  rosic::writeToMonoWaveFile("BlepTestNoAA.wav",   &x[0],   N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestLinTbl.wav", &ylt[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestMinTbl.wav", &ymt[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestPoly1.wav",  &yp1[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestPoly2.wav",  &yp2[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestBL.wav",     &r[0],   N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestNoAA.wav",   &x[0],   N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestLinTbl.wav", &ylt[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestMinTbl.wav", &ymt[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestPoly1.wav",  &yp1[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestPoly2.wav",  &yp2[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestBL.wav",     &r[0],   N, int(fs));
   //rsPlotVector(x);
   //rsPlotVector(r-y);  // error-signal: reference minus blepped
   //rsPlotVectors(x, y);
-  //rsPlotVectors(x, ylt, ymt);
-  ////rsPlotVectors(x, yp1); 
-  //rsPlotVectors(x, yp1, yp2); 
+  rsPlotVectors(x, ylt, ymt);
+  rsPlotVectors(x, yp1, yp2); 
   //rsPlotVectors(x, ylt, r, r-ylt);
   //rsPlotSpectrum(y); // oh - no this doesn't work - it takes a spectrum as input..
 

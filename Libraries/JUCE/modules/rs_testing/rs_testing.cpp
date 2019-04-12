@@ -24,4 +24,6 @@ template struct RAPT::rsFilterSpecificationZPK<float>;
 template struct RAPT::rsFilterSpecificationBA<float>;
 
 template class rsStepBandLimiter<double, double>;
-template class rsNaiveOsc<double>;
+template class rsTableMinBlep<double, double>;
+template class rsBlepReadyOsc<double>;
+template class rsBlampReadyOsc<double>;
