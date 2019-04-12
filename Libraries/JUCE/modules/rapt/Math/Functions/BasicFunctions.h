@@ -114,6 +114,12 @@ inline T rsMin(T in1, T in2, T in3);
 template <class T>
 inline T rsMin(T in1, T in2, T in3, T in4);
 
+/** Returns x if x is even, else x+1. */
+template <class T>
+inline T rsNextEvenNumber(T x);
+
+// rsNextOddNumber
+
 /** Returns a power of two which is greater than or equal to the input argument. */
 template <class T>
 inline T rsNextPowerOfTwo(T x);

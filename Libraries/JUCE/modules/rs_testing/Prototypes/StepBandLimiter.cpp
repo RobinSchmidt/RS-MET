@@ -1,39 +1,42 @@
 
 template<class TSig, class TTim>
-rsStepBandLimiter<TSig, TTim>::rsStepBandLimiter()
+rsTableBlep<TSig, TTim>::rsTableBlep()
 {
-  // rectangular window by default (...use something better later):
+  // rectangular window by default (...use something better by default later):
   windowCoeffs[0] = TTim(1);
   for(int i = 1; i < maxNumWindowCoeffs; i++)
     windowCoeffs[i] = TTim(0);
 
-  // test:
+  // test - Hanning window:
   windowCoeffs[0] = TTim(0.5);
   windowCoeffs[1] = TTim(0.5);
+}
 
+//=================================================================================================
+
+template<class TSig, class TTim>
+rsStepBandLimiter<TSig, TTim>::rsStepBandLimiter()
+{
   setLength(5);
 }
 
 template<class TSig, class TTim>
 void rsStepBandLimiter<TSig, TTim>::updateTables()
 {
-  //int L = delayLength * samplesPerLobe; // table length
+  std::vector<TTim> timeTbl;  // needed temporarily
 
-  int L = 2 * sincLength * samplesPerLobe + 1; // table length
+  int L = 2 * halfLength * tablePrecision + 1; // table length
   timeTbl.resize(L);
   blitTbl.resize(L);
-  blitDrvTbl.resize(L);
   blepTbl.resize(L);
   blampTbl.resize(L);
 
-
   int ic      = (L-1)/2;  // center index
   timeTbl[ic] = TTim(0);  // time axis in samples
-  //blitTbl[ic] = TTim(1);
   blitTbl[ic] = window(TTim(0));
   int i;
   for(i = 1; i <= ic; i++) {
-    TTim t = TTim(i) / TTim(samplesPerLobe);  // time in samples
+    TTim t = TTim(i) / TTim(tablePrecision);  // time in samples
     TTim s = sin(PI*t) / (PI*t); // todo: apply window later
     // todo: apply a window function - use a windowed sinc - try to find analytic expressions for 
     // the integral of the windowed sinc - if none can be found, use numeric integration
@@ -57,43 +60,55 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
   // computed analytically...the integrals also (in terms of the Si function)
 
   // numerically integrate the blit to obtain the blep:
-  rsNumericIntegral(&timeTbl[0], &blitTbl[0], &blepTbl[0],  L, TTim(0));
+  rsNumericIntegral(&timeTbl[0], &blitTbl[0], &blepTbl[0], L, TTim(0));
+  // do the numerical integration only up to L/2+1 and obtain the rest via symmetry (-> less 
+  // accumulation of numerical integration error)
+  // or maybe even store only the right half and obtain the left half by symmetry when computing 
+  // values
 
-  // choose the integration constant such that the center sample is exactly 0.5:
-  //TTim c = blepTbl[ic] - 0.5;  
-  //rsArray::add(&blepTbl[0], -c, &blepTbl[0], L);
-  // ...hmmm - that shifting doesn't seem to work very well - instead, scale it such taht teh last 
-  // sample is exactly 1 (the first sample is already exactly zero by construction):
+  // scale it such that the last sample is exactly 1 (the first sample is already exactly zero by
+  // construction):
   rsArray::scale(&blepTbl[0], &blepTbl[0], L, TTim(1)/rsLast(blepTbl));
-
 
   // integrate blep to get blamp:
   rsNumericIntegral(&timeTbl[0], &blepTbl[0], &blampTbl[0], L, TTim(0));
   // maybe use better numeric integration later or find analytic expressions
-  // maybe we could estimate the integral symmetrically - i.e. one forward pass, one reverse pass
-  // and take the average? does that make any sense at all? dunno - try it!
 
-  //// we actually don't want the blit/blep/blamp itself but rather the residual, i.e. the difference
-  //// between them and a naive impulse/step/ramp:
-  //blitTbl[ic] -= 1;
-  //for(int i = ic; i < L; i++) {
-  //  blepTbl[i]  -= 1;
-  //  blampTbl[i] -= timeTbl[i];
-  //}
-  // hmm...but i think, that works only for blep and higher order integrals - because the 
-  // continuous delta distribution is not actually a function ...or something like that
+  //rsPlotVectors(blitTbl, blepTbl, blampTbl);
 
-  // todo: maybe store only the right half and obtain the left half by symmetry when computing 
-  // values
+  // We actually don't want the blep/blamp itself but rather the residual, i.e. the difference
+  // between them and a naive step/ramp ..but i think, that works only for blep and higher order 
+  // integrals - because the continuous delta distribution is not actually a function ...or 
+  // something like that:
+  for(int i = ic; i < L; i++) {
+    blepTbl[i]  -= 1;
+    blampTbl[i] -= timeTbl[i];
+  }
 
+  //rsPlotVectors(blitTbl, blepTbl, blampTbl);
 
   //GNUPlotter plt;
-  ////plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0]);
-  //plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0], &blampTbl[0]);
+  //plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0]);
+  ////plt.addDataArrays(L, &timeTbl[0], &blitTbl[0], &blepTbl[0], &blampTbl[0]);
   //plt.plot();
-  //// they are a bit inexact - compare with the plots in the blamp-paper - that's probably due to 
-  //// imperfect numeric integration
-  
+  ////// they are a bit inexact - compare with the plots in the blamp-paper - that's probably due to 
+  ////// imperfect numeric integration
+
+  // the timeTbl is actually not needed anymore now - it can be cleared - or maybe it should be a 
+  // local variable here - we actually only need it, because the numerical integration routine 
+  // needs an x-axis to be passed - maybe write another (simpler) integration routine that doesn't 
+  // need an x axis (and instead assumes equal spacing of the y-values by some distance h)
+  // ...ah - and we need it also when creating the blamp residual - but maybe the time-values 
+  // should be computed on the fly (again - they are already computed in the loop creating the 
+  // sinc)...hmm - maybe a local array is better indeed to avoid the recomputation...
+
+
+  // actually, it seems from the plots, that for the blamp, a much shorter kernel length would
+  // be sufficient than for the blep - which makes sense - so maybe the blamp should actually be
+  // a separate class - maybe make 3 classes rsTableBlit/Blep/Blamp and also rsPolyBlit/Blep/Blamp
+  // on the other hand, if a blep and blamp should be applied at the same time (for example, when 
+  // hard-syncing triangle waves), it *does* make sense to have one object that does both 
+  // simultaneously - especially because of the consolidation of the delay
 }
 
 template<class TSig, class TTim>
@@ -101,12 +116,11 @@ void rsStepBandLimiter<TSig, TTim>::allocateBuffers()
 {
   // corrector buffer needs sincLength+1 samples, delay buffer needs sicnLength samples
 
-  tempBuffer.resize(2*sincLength); 
+  tempBuffer.resize(2*halfLength); 
   // for sampled correction signal - to be spread between delayline and corrector
 
   delayline.resize(bufferSize);
   corrector.resize(bufferSize);
-
 
   // maybe apply the corrector directly to stored past samples in addImpulse and use the 
   // future-corrector when writing into the delayline
@@ -121,6 +135,93 @@ void rsStepBandLimiter<TSig, TTim>::reset()
   rsSetZero(corrector);
   bufIndex = 0;
 }
+
+//=================================================================================================
+
+template<class TSig, class TTim>
+rsTableMinBlep<TSig, TTim>::rsTableMinBlep()
+{
+  setLength(20);
+}
+
+template<class TSig, class TTim>
+void rsTableMinBlep<TSig, TTim>::updateTables()
+{
+  int L = blepLength * tablePrecision + 1; // why +1? guard for interpolator?
+  blitTbl.resize(L);
+  blepTbl.resize(L);
+  blampTbl.resize(L);
+
+  // create temporary elliptic subband filter object - we use its impulse/step/ramp response for
+  // the tables (maybe later allow the user to set up the EngineersFilter settings):
+  rsEllipticSubBandFilter<TTim, TTim> flt; 
+  flt.setSubDivision(tablePrecision); 
+  // later: tablePrecision * cutoffScaler ..or maybe use flt.setCutoffScaler (that function doesn't
+  // exist yet - rsEllipticSubBandFilter uses a fixed scaler of 0.9)
+
+  // create time axis and (unilateral) window:
+  std::vector<TTim> timeAxis(L), wnd(L);
+  TTim ts = TTim(1) / TTim(tablePrecision);  // time axis scaler
+  for(int n = 0; n < L; n++) {
+    timeAxis[n] = ts * TTim(n);
+    wnd[n] = window(0.5 * timeAxis[n]);      // 0.5 because of unilaterality
+  }
+
+  // create blit:
+  blitTbl[0] = wnd[0] * (flt.getSample(TTim(tablePrecision))); // correct to scale by tablePrecision?
+  for(int n = 1; n < L; n++)
+    blitTbl[n] = wnd[n] * flt.getSample(TTim(0));
+
+  // create blep-resiudal:
+  flt.reset();
+  for(int n = 0; n < L; n++)
+    blepTbl[n] = wnd[n] * ( flt.getSample(TTim(1)) - TTim(1) );
+
+  // create blamp-residual:
+  flt.reset();
+  for(int n = 0; n < L; n++)
+    blampTbl[n] = wnd[n] * (flt.getSample(timeAxis[n]) - timeAxis[n]);
+
+  // higher order residuals could be computed as:
+  // blarabola: flt.getSample( t^2/2 ) - t^2/2;
+  // blubic:    flt.getSample( t^3/6 ) - t^3/6;
+  // etc.: t^k / k!
+
+  //rsPlotVectors(blitTbl, blepTbl);
+  //rsPlotVectors(blitTbl, blepTbl, blampTbl, wnd);
+  // blamp looks weird but i think, it's ok - the lowpassed version is sort of shifted 
+  // (to the right/bottom) with respect to the perfect ramp
+}
+
+template<class TSig, class TTim>
+void rsTableMinBlep<TSig, TTim>::allocateBuffers()
+{
+  corrector.resize(bufferSize);
+  reset();
+}
+
+template<class TSig, class TTim>
+void rsTableMinBlep<TSig, TTim>::reset()
+{
+  rsSetZero(corrector);
+  bufIndex = 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//=================================================================================================
 
 /*
 

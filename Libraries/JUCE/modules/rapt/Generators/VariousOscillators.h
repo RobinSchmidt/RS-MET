@@ -2,7 +2,13 @@
 #define RAPT_VARIOUSOSCILLATORS_H_INCLUDED
 
 
-/** An oscillator based on morphing between saw-up/triangle/saw-down waveforms. */
+/** An oscillator based on morphing between saw-up/triangle/saw-down waveforms. 
+
+todo: produce info for blep/blamp anti-aliasing, make a DualTriSawOsc - drive that controls two
+TriSaws and allows them to interact - in particular hardsync...or maybe even a TripleTriSawOsc - it
+may be cool to have two independent sync-masters ...or maybe that sync-stuff could even be 
+implemented in liberty
+*/
 
 template<class T>
 class rsTriSawOscillator
@@ -20,7 +26,7 @@ public:
 
   /** Sets the asymmetry parameter of the waveform which should be a number in -1..+1. For -1, you
   will get a downward sawtooth, for 0 a triangle and for +1 an upward sawtooth wave (assuming the
-  bending and sigmoidity parameters are at thei neutral settings of 0). */
+  bending and sigmoidity parameters are at their neutral settings of 0). */
   inline void setAsymmetry(T newAsymmetry) 
   { 
     h = T(0.5)*(newAsymmetry+1);

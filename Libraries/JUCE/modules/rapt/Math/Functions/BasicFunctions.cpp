@@ -241,6 +241,14 @@ inline T rsMin(T in1, T in2, T in3, T in4)
 */
 
 template <class T>
+inline T rsNextEvenNumber(T x)
+{
+  if(rsIsEven(x))
+    return x;
+  return x+1;
+}
+
+template <class T>
 inline T rsNextPowerOfTwo(T x)
 {
   T accu = 1;

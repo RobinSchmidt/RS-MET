@@ -9,6 +9,8 @@ void particleSystem();            // move to PhysicsExperiments
 
 void blit();
 void blep();
+//void blamp();
+void polyBlep();
 
 void bouncillator();
 void bouncillatorFormula();

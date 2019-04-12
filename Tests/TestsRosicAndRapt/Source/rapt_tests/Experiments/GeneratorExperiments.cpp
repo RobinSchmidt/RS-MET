@@ -8,20 +8,25 @@ void blit()
 {
   double f  = 1000;    // signal frequency
   double fs = 44100;   // sample rate
-  double length = 1.0; // length in seconds
+  double length = 1.03; // length in seconds
   double period = fs/f;
   int N = (int) (fs*length);
+
+  int blitLength = 30;     // blit length in samples...16 seems to be a reasonable default value
 
   double amplitude = 0.5;
   //int N = 120;
   //double period = 10.25;
 
-  typedef rsStepBandLimiter<double, double> SBL;
-  SBL sbl;
-  sbl.setLength(16);  // 16 seems to be a reasonable default value
+  rsStepBandLimiter<double, double> linTableBlit;
+  linTableBlit.setLength(blitLength);
 
-  std::vector<double> x(N), y(N); // naive and anti-aliased signal
+  rsTableMinBlep<double, double> minTableBlit;
+  minTableBlit.setLength(blitLength);
 
+
+  // naive and anti-aliased signals:
+  std::vector<double> x(N), ylt(N), ymt(N); 
 
   /*
   // preliminary test:
@@ -39,16 +44,19 @@ void blit()
   int nextSpike = 0;
   double ts = 0.0;  // exact time of spike
   double tf = 0.0;  // fractional part of ts
-  rsSetZero(y);
-  sbl.reset();
+  rsSetZero(ylt);
+  linTableBlit.reset();
   for(int n = 0; n < N; n++) {
     if(n == nextSpike) {
       // generate naive impulse train:
       x[n] = amplitude;
 
       // generate bandlimited impulse train:
-      sbl.prepareForImpulse(1-tf, amplitude);
-      y[n] = sbl.getSample(amplitude);
+      linTableBlit.prepareForImpulse(1-tf, amplitude);
+      ylt[n] = linTableBlit.getSample(amplitude);
+
+      minTableBlit.prepareForImpulse(1-tf, amplitude);
+      ymt[n] = minTableBlit.getSample(amplitude);
 
       // housekeeping for next spike:
       numSpikes++;
@@ -58,19 +66,23 @@ void blit()
     }
     else {
       x[n] = 0;
-      y[n] = sbl.getSample(0);
+      ylt[n] = linTableBlit.getSample(0);
+      ymt[n] = minTableBlit.getSample(0);
     }
   }
 
 
   // compensate delay for easier comparison:
-  rsArray::shift(&y[0], N, -sbl.getDelay());
+  rsArray::shift(&ylt[0], N, -linTableBlit.getDelay());
+  rsArray::shift(&ymt[0], N, -minTableBlit.getDelay());
 
   //rsPlotVector(x);
-  //rsPlotVectors(x, y);
+  //rsPlotVectors(x, ylt, ymt);
 
-  //rosic::writeToMonoWaveFile("BlitTestNoAA.wav", &x[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlitTestAA.wav",   &y[0], N, int(fs));
+  rosic::writeToMonoWaveFile("BlitTestNon.wav", &x[0],   N, int(fs));
+  rosic::writeToMonoWaveFile("BlitTestLin.wav", &ylt[0], N, int(fs));
+  rosic::writeToMonoWaveFile("BlitTestMin.wav", &ymt[0], N, int(fs));
+
 
   // Observations:
   // -the quality does not really seem to increase with increasing order - look at the spectra with
@@ -101,16 +113,29 @@ void blit()
   // -i think, we should use windows with high sidelobe rolloff rate for this application - it will
   //  confine the aliasig components into the upper frequency range where it is less annoying
 
+  // -for the MinBlit, the overall amplitude seems a bit low - maybe that's due to not normalizing
+  //  the sum of the corrector values? ...but i really don't want to introduce a temp-buffer for
+  //  that purpose ...maybe for prodcution code, scrap the blit capability from the 
+  //  LinBlitBlepBlamp object, too - i don't currently have practical use for blits anyway - but we 
+  //  should keep the prototype implementation around, just in case it will be needed someday
+  //  ...blit is an oddball anyway due to the not-a-function property in the continuous domain
+  // ..or maybe leave the blit in the production version but without the normalization ...but above
+  // we found that the results are much worse without normalization...hmm...we'll see...
+
 
   //GNUPlotter plt;
 }
 
 void blep()
 {
-
+  double inc = 19.0/256;  // phase increment per sample
+  //double inc = 7.0/512;  // phase increment per sample
   double fs  = 44100;    // sample rate
-  int    N   = 800;    // number of samples to produce
-  double inc = 3.0/256;  // phase increment per sample
+  int N      = 80000;      // number of samples to produce
+  int shape  = 3;        // 1: saw, 2: square, 3: triangle
+  int prec   = 20;       // table precision
+  int length = 30;       // blep length
+
   // try to figure out the periodicity of the rippled cycles - it has to do with how many times we
   // have to loop through through the cycle unitl we are back at the sample branch of the blep
   // could it be something like gcd(num % den, den)
@@ -123,42 +148,98 @@ void blep()
   //double inc = 3./100;  // phase increment per sample
 
 
-  rsNaiveOsc<double> osc;
+  rsBlampReadyOsc<double> osc;
   osc.setPhaseIncrement(inc);
-  osc.setAmplitude(1.0);
+  osc.setAmplitude(0.5);
 
-  rsStepBandLimiter<double, double> sbl;
-  sbl.setLength(20);
+  // make the osc output phase consistent with the output of our additive renderer:
+  if(shape == 3)
+    osc.setStartPosition(0.25);
+  else
+    osc.setStartPosition(0.5);
+  osc.reset();
 
-  std::vector<double> x(N), y(N); // naive and anti-aliased signal
+  rsStepBandLimiter<double, double> linTableBlep;
+  linTableBlep.setTablePrecision(prec);
+  linTableBlep.setLength(length);  
+
+  rsTableMinBlep<double, double> minTableBlep;
+  minTableBlep.setTablePrecision(prec);
+  minTableBlep.setLength(length);
+
+  rsPolyBlep1<double, double> polyBlep1;
+  rsPolyBlep2<double, double> polyBlep2;
+
+
+  // naive and anti-aliased signal
+  std::vector<double> x(N), ylt(N), ymt(N), yp1(N), yp2(N); 
+  // lt: linear-phase/table, mt: minimum-phase/table, p1/2: poly-blep1/2
 
   for(int n = 0; n < N; n++)
   {
-    //x[n] = osc.getSampleSaw();
-    x[n] = osc.getSampleSquare();
+    switch(shape)
+    {
+    case 1: x[n] = osc.getSampleSaw();      break;
+    case 2: x[n] = osc.getSampleSquare();   break;
+    case 3: x[n] = osc.getSampleTriangle(); break;
+    }
 
     if(osc.getStepAmplitude() != 0.0) // a step did occur
-      sbl.prepareForStep(1-osc.getStepDelay(), osc.getStepAmplitude());
-      // maybe the sbl could figure out the size of the step itself - maybe do something like
+    {
+      linTableBlep.prepareForStep(osc.getStepDelay(), osc.getStepAmplitude());
+      minTableBlep.prepareForStep(osc.getStepDelay(), osc.getStepAmplitude());
+      polyBlep1.prepareForStep(   osc.getStepDelay(), osc.getStepAmplitude());
+      polyBlep2.prepareForStep(   osc.getStepDelay(), osc.getStepAmplitude());
+    }
+      // maybe the blep objects could figure out the size of the step itself - maybe do something like
       // sbl.prepareForStep(osc.getStepDelay(), x[n] - sbl.previousInputSample() );
       // ...hmm bute the previousInputSample in the delayline already may have a correction applied
       // ...i think that would be wrong - we need the difference of the new sample and the 
       // uncorrected previous input sample
 
-    // todo: insert the sbl.prepareForStep here, when the osc has produced a step (or will produce a 
-    // step?)
+    if(osc.getCornerAmplitude() != 0.0) // a corner did occur
+    {
+      linTableBlep.prepareForCorner(osc.getCornerDelay(), osc.getCornerAmplitude());
+      minTableBlep.prepareForCorner(osc.getCornerDelay(), osc.getCornerAmplitude());
+      polyBlep1.prepareForCorner(   osc.getCornerDelay(), osc.getCornerAmplitude()); // not yet implemented
+      polyBlep2.prepareForCorner(   osc.getCornerDelay(), osc.getCornerAmplitude());
+    }
 
-    y[n] = sbl.getSample(x[n]);
 
+    ylt[n] = linTableBlep.getSample(x[n]);
+    ymt[n] = minTableBlep.getSample(x[n]);
+
+    yp1[n] = polyBlep1.getSample(x[n]);
+    yp2[n] = polyBlep2.getSample(x[n]);
   }
 
+  // Create a perfect bandlimited saw/square/triangle for reference:
+  double f = fs*inc;
+  std::vector<double> r(N);
+  createWaveform(&r[0], N, shape, f, fs, 0.0, true);
+  r = 0.5 * r;
 
 
+  rsArray::shift(&ylt[0], N, -linTableBlep.getDelay()); // linBlep has about 5-times the delay of 
+  rsArray::shift(&ymt[0], N, -minTableBlep.getDelay()); // minBlep
+  rsArray::shift(&yp1[0], N, -polyBlep1.getDelay());
+  rsArray::shift(&yp2[0], N, -polyBlep2.getDelay());
 
-  rsArray::shift(&y[0], N, -sbl.getDelay());
-  //rosic::writeToMonoWaveFile("BlepTestNoAA.wav", &x[0], N, int(fs));
-  //rosic::writeToMonoWaveFile("BlepTestAA.wav",   &y[0], N, int(fs));
-  rsPlotVectors(x, y);
+  rosic::writeToMonoWaveFile("BlepTestNoAA.wav",   &x[0],   N, int(fs));
+  rosic::writeToMonoWaveFile("BlepTestLinTbl.wav", &ylt[0], N, int(fs));
+  rosic::writeToMonoWaveFile("BlepTestMinTbl.wav", &ymt[0], N, int(fs));
+  rosic::writeToMonoWaveFile("BlepTestPoly1.wav",  &yp1[0], N, int(fs));
+  rosic::writeToMonoWaveFile("BlepTestPoly2.wav",  &yp2[0], N, int(fs));
+  rosic::writeToMonoWaveFile("BlepTestBL.wav",     &r[0],   N, int(fs));
+  //rsPlotVector(x);
+  //rsPlotVector(r-y);  // error-signal: reference minus blepped
+  //rsPlotVectors(x, y);
+  //rsPlotVectors(x, ylt, ymt);
+  ////rsPlotVectors(x, yp1); 
+  //rsPlotVectors(x, yp1, yp2); 
+  //rsPlotVectors(x, ylt, r, r-ylt);
+  //rsPlotSpectrum(y); // oh - no this doesn't work - it takes a spectrum as input..
+
 
   // Observations:
   // replacing: rsScale(tempBuffer, TSig(0.5)*amplitude / rsMean(tempBuffer));
@@ -167,14 +248,186 @@ void blep()
   // surprising because with the blit, normalization gave better results
   // todo: try to pre-normalize the blep table (it doesn't range from 0 to 1) - done
 
-  // -hmm...well, at least the time-domain signals show the typical expected ripple patter - but 
+  // -hmm...well, at least the time-domain signals show the typical expected ripple pattern - but 
   //  when plotting the spectra, the blep doesn't seem to help at all against aliasing
   //  verify the computation of stepDelay
-  // ...but also the ripple amplitude has gone down compared to older versions...
+  // -the saw has actually increased aliasing with the blep
 
+  // -with inc = 7.0/256, the 4th, 11th, 18th etc. cycles are bad - generally 4 + 7*k where k is
+  //  the cycle number when we use 1-osc.getStepDelay() - when we use osc.getStepDelay(), all 
+  //  cycles are wrong
+  // -with inc = 8.0/256, all cycles are wrong (with 1-..) - the applied corrector is always zero
+  //  but should always produce the same ripples
+  //  -it seems to be the case that at these samples shouldReturnEarly triggers - maybe we should 
+  //   not return early? - delayFraction == 0 in these cases
+  // -removing the first check in:
+  //   return delayFraction < eps || delayFraction >= TTim(1) || sincLength == 0;
+  //  fixes it
+  // -ok, i changed stepDelay = T(1) - pos/inc; to stepDelay = pos/inc;  so we don't have to do the
+  //  1-... here anymore - actually, that *should* be wrong but seems in fact to be right - why?
+
+  // ...ok - it seems to work now - for the square at 7/256 (f ~= 1200 Hz @44.1), a length of 2 
+  // seems to be already good enough -> try higher frequencies..
+
+  // -varying TablePrecision 
+  //  -at sincLength=16:
+  //   - 5: large spikes in the error signal for rectangle
+  //   -10: error below 0.01 everywhere - same at 20 ...maybe 16 is a good choice
+  //  -at sincLength=32:
+  //   -10: error at 0.002
+  //   -20: error at 0.015
+  //   -40: error at 0.015
+  //    -> seems like 32 would be a good choice - should the tablesize be roughly in the same 
+  //    ballpark as the sinc-length? ...it seems that only longer sincs can actually benefit from 
+  //    more precise tables
+  //  -maybe make a plot of the maximum error as function of sincLength and tablePrecision
+
+  // -MinBlep has high overshoot - much more than LinBlep - but maybe that's to be expected due to 
+  //  the steepness of the elliptic filter
+  // -MinBlamp look weird for triangle waves - the delay does not fit, the corners look too rounded 
+  //  and and the peak amplitude seems too high
+  //  -spectrum also shows a lot aliasing - MinBlamp is apparently still very wrong!
+  //  -using the numeric integral of the MinBlep instead of the filter's ramp-response doesn't help
+  //   (results are very similar)
+  //  ...ok - this seems to be fixed - the time-axis values were wrong (multiplied by 0.5) - time 
+  //  signal still look strange (too high peak amplitude) but spectrum looks ok now
+  // -todo: compare the MinBlep result with an appropriately oversampled version using the same
+  //  elliptic filter - should give similar (or even same?) results
+  // -todo: try a MinBlit
+  
   // maybe implement a hard-syncable blep oscillator for liberty
 
+  // ..okay...that looks all pretty good already - next stop: polybleps(done)/blamps(todo) - then 
+  // we have the full palette of what could ever be needed ...and then maybe indeed turn to 
+  // liberty...or continue with the modal synth
+
 }
+
+//void blamp() {  }  // not yet implemented - some blamp tests are done int the blep function
+
+void polyBlep()
+{
+  // Plots the polynomial blit, blep, blamp functions based on B-Spline polynomials as derived in 
+  // my sage notebook. My derived coeffs are different from the ones shown in the papers
+  // "Perceptually informed synthesis of bandlimited classical waveforms using integrated 
+  //  polynomial interpolation" and "Rounding Corners with BLAMP" 
+  // ...but the sage plots look exactly like the ones shown in the paper. Their "D" variable must
+  // mean something else than the "x" in the sage notebook...or something.
+  // I'm trying to re-derive their polynomials in the fractional delay "d" (which i got working 
+  // well already) in order to generalize to even higher order B-Spline poly-blits/bleps/blamps and
+  // maybe other polynomial blits.. too - also, they don't give formulas for the 1st order B-Spline 
+  // blamp, which may be useful, too and will fall out of these derivations as by-product
+
+  // B-Spline polynomials are defined by starting with a unit-height rectangular pulse from -1/2 to
+  // +1/2 (and zero outside this interval) and repeatedly convolving that function by itself:
+  // sage input:
+  // B0 = piecewise([((-1/2,1/2),1)]) # 0th order B-Spline
+  // B1 = B0.convolution(B0)          # 1st order B-Spline
+  // B2 = B1.convolution(B0)          # 2nd order B-Spline
+  // B3 = B2.convolution(B0)          # 3rd order B-Spline
+  // B3  # output 3rd order B-Spline - this is our BLIT
+  // sage output:
+  // piecewise(
+  // x|-->  1/6*x^3 + x^2 + 2*x + 4/3 on (-2, -1], 
+  // x|--> -1/2*x^3 - x^2       + 2/3 on (-1,  0], 
+  // x|-->  1/2*x^3 - x^2       + 2/3 on ( 0,  1], 
+  // x|--> -1/6*x^3 + x^2 - 2*x + 4/3 on ( 1,  2]; x)
+
+  // B-Spline BLIT coefficients:                // ..in section...
+  double blitA[4] = { 4./3,  2.,  1.,  1./6 };  // A: -2..-1
+  double blitB[4] = { 2./3,  0., -1., -1./2 };  // B: -1...0
+  double blitC[4] = { 2./3,  0., -1.,  1./2 };  // C:  0...1
+  double blitD[4] = { 4./3, -2.,  1., -1./6 };  // D:  1...2
+
+  // The BLEP is then obtained by integrating the BLIT:
+  // sage input:
+  // blep = B3.integral()
+  // blep
+  // sage output:
+  // piecewise(
+  // x|-->  1/24*x^4 + 1/3*x^3 + x^2 + 4/3*x + 2/3 on (-2, -1], 
+  // x|--> -1/8 *x^4 - 1/3*x^3       + 2/3*x + 1/2 on (-1,  0], 
+  // x|-->  1/8 *x^4 - 1/3*x^3       + 2/3*x + 1/2 on ( 0,  1], 
+  // x|--> -1/24*x^4 + 1/3*x^3 - x^2 + 4/3*x + 1/3 on ( 1,  2]; x)
+
+  // B-Spline BLEP coefficients:
+  double blepA[5] = { 2./3, 4./3,  1.,  1./3,  1./24 };  // A: -2..-1
+  double blepB[5] = { 1./2, 2./3,  0., -1./3, -1./8  };  // B: -1...0
+  double blepC[5] = { 1./2, 2./3,  0., -1./3,  1./8  };  // C:  0...1
+  double blepD[5] = { 1./3, 4./3, -1.,  1./3, -1./24 };  // D:  1...2
+
+  // The BLAMP is obtained by integrating the BLEP:
+  // sage input:
+  // blamp = blep.integral()
+  // blamp
+  // sage output:
+  // piecewise(
+  // x|-->  1/120*x^5 + 1/12*x^4 + 1/3*x^3 + 2/3*x^2 + 2/3*x + 4/15 on (-2, -1], 
+  // x|--> -1/40 *x^5 - 1/12*x^4           + 1/3*x^2 + 1/2*x + 7/30 on (-1,  0], 
+  // x|-->  1/40 *x^5 - 1/12*x^4           + 1/3*x^2 + 1/2*x + 7/30 on ( 0,  1], 
+  // x|--> -1/120*x^5 + 1/12*x^4 - 1/3*x^3 + 2/3*x^2 + 1/3*x + 4/15 on ( 1,  2]; x)
+
+  // B-Spline BLAMP coefficients:
+  double blampA[6] = { 4./15, 2./3,  2./3,  1./3,  1./12,  1./120 };  // A: -2..-1
+  double blampB[6] = { 7./30, 1./2,  1./3,  0.,   -1./12, -1./40  };  // B: -1...0
+  double blampC[6] = { 7./30, 1./2,  1./3,  0.,   -1./12, +1./40  };  // C:  0...1
+  double blampD[6] = { 4./15, 1./3,  2./3, -1./3,  1./12, -1./120 };  // D:  1...2
+
+  // For the BLAMP residual, we could define the ideal ramp and subtract it from the blamp:
+  // ramp = piecewise([((-oo,0),0), ((0,oo),x)])
+  // res  = blamp - ramp
+  // ..however, sage does not produce a nice single piecewise function but instead a difference of
+  // two piecewise functions. But transforming BLEP and BLAMP into the corresponding residuals 
+  // manually is easy: for the blep residual, we would just subtract 1 from the constant (i.e. x^0) 
+  // coefficients in sections C,D from the blep coeffs (turning 1/2, 1/3 into -1/2, -2/3) and for 
+  // the blamp residual, we would do the same with the x^1 coeffs. For the BLIT, it doesn't seem 
+  // sensible to define a residual because that would have to contain the Dirac delta-distribution 
+  // which is not really a function and awkward to deal with in the continuous time domain.
+
+  // Evaluate the blit/blep/blamp piecewise polynomials between -2 and +2 for plotting:
+  int N = 400;
+  std::vector<double> x(N), yBlit(N), yBlep(N), yBlamp(N);
+  RAPT::rsArray::fillWithRangeLinear(&x[0], N, -2.0, 2.0);
+  typedef RAPT::rsPolynomial<double> PL;
+  int i = 0;
+  while(x[i] <= -1.0) {
+    yBlit[i]  = PL::evaluate(x[i], blitA,  3);
+    yBlep[i]  = PL::evaluate(x[i], blepA,  4);
+    yBlamp[i] = PL::evaluate(x[i], blampA, 5);
+    i++;
+  }
+  while(x[i] <= 0.0) {
+    yBlit[i]  = PL::evaluate(x[i], blitB,  3);
+    yBlep[i]  = PL::evaluate(x[i], blepB,  4);
+    yBlamp[i] = PL::evaluate(x[i], blampB, 5);
+    i++;
+  }
+  while(x[i] <= 1.0) {
+    yBlit[i]  = PL::evaluate(x[i], blitC,  3);
+    yBlep[i]  = PL::evaluate(x[i], blepC,  4);
+    yBlamp[i] = PL::evaluate(x[i], blampC, 5);
+    i++;
+  }
+  while(i < N && x[i] <= 2.0) {
+    yBlit[i]  = PL::evaluate(x[i], blitD,  3);
+    yBlep[i]  = PL::evaluate(x[i], blepD,  4);
+    yBlamp[i] = PL::evaluate(x[i], blampD, 5);
+    i++;
+  }
+
+  // plot the functions:
+  GNUPlotter plt;
+  plt.addDataArrays(N, &x[0], &yBlit[0], &yBlep[0], &yBlamp[0]);
+  plt.plot();
+  // the plots look good - they resemble the ones in Fig.3 in the "Rounding corners..." paper
+  // ..still, my polynomial coeffs are different from theirs - wtf is going on? is their "D" 
+  // variable equal to -x? the "Perceptually informed..." paper says under Eq 14: "D is a real 
+  // number that corresponds to the delay from the beginning (n=0) of the impulse response" 
+  // ...but i think, that doesn't  work out, too...more research needed....
+}
+
+
+
 
 // maybe to really challenge the blep/blamp class, try to hardsync a sinewave and try to anti-alias
 // more higher order derivatives with bladratics, blubics, blartics, etc.

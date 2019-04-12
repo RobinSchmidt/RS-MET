@@ -1,9 +1,114 @@
 #pragma once
 
+/** Baseclass for table-based blit/blep/blamp applicators. When a naive sound-synthesis algorithm
+generates the information about when exactly (i.e. the subsample position) the discontinuity 
+occurred and the size of the discontinuity (or these two numbers can somehow be estimated from the
+signal), objects of subclasses of this can anti-alias the naive signal as a post-processing step. 
+There are different variants (linear- and minimum phase) that share some common code, that's why we
+have this baseclass. */
 
-/** UNDER CONSTRUCTION:
--currently, only the blit-generation works - blep/blamp not yet implemented
--there's no window function applied yet (which boils down to ahving a recatngular window)
+template<class TSig, class TTim> 
+class rsTableBlep // maybe rename to rsTableBlitBlepBlamp
+{
+
+public:
+
+  rsTableBlep();
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets the coefficients of the different cosine terms in the window function that is applied to
+  the sinc function. We use a cosine-sum window of that kind:
+  https://en.wikipedia.org/wiki/Window_function#Cosine-sum_windows
+  but note that here, we don't use the convention of alternating signs as wikipedia does, i.e. the 
+  a_k that you pass should include the minus sign, if the k-th cosine term is subtracted. The 
+  maximum number of allowed weights is some constant defined here in the class (currently 5) */
+  void setWindowCosineWeights(TTim* newWeights, int numWeights)
+  {
+    rsAssert(numWeights <= maxNumWindowCoeffs);
+    for(int i = 0; i < numWeights; i++)
+      windowCoeffs[i] = newWeights[i];
+    for(int i = numWeights; i < maxNumWindowCoeffs; i++)
+      windowCoeffs[i] = TTim(0);
+    updateTables();
+  }
+
+  /** Sets the number of samples that we take for each lobe of the sinc function in the lookup 
+  tables. */
+  void setTablePrecision(int newValue)
+  {
+    tablePrecision = newValue;
+    updateTables();
+  }
+
+  //void setRelativeCutoff
+  // 1: fs/2, <1: below fs/2
+
+protected:
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Misc */
+
+  /** Computes the value of the window function at a given time instant (in samples). Used to 
+  generate the windowed sinc table. */
+  inline TTim window(TTim t)
+  {
+    TTim w = windowCoeffs[0];
+    for(int i = 1; i < maxNumWindowCoeffs; i++)
+      w += windowCoeffs[i] * cos(2 * i * PI * t / blepLength);
+    return w;
+  }
+  // todo: maybe have functions that directly evaluate the windowed-sinc, the integrated windowed 
+  // sinc the twice integrated windowed sinc etc. - i think, with this cosine-sum window, analytic 
+  // integrals should be possible
+
+  /** Wrap-around function for the index into our delayline and corrector. */
+  inline int wrap(int i)
+  {
+    return i & mask;
+  }
+
+  /** Should fill our tables with blit, blep, blamp, etc. values. */
+  virtual void updateTables() = 0;
+
+  /** Should allocates the buffers for correction signal and delayed input signal. */
+  virtual void allocateBuffers() = 0;
+
+
+  static const int maxNumWindowCoeffs = 5;
+  TTim windowCoeffs[maxNumWindowCoeffs]; 
+  // Coefficients for the cosine terms in the cosine-sum window that is used to window the sinc or
+  // residual
+
+  int tablePrecision = 20;
+  // Step-size to move from one sample to the next in the blit, blep, etc. buffers, i.e. the 
+  // sample-rate at which the bandlimited functions are sampled/tabulated with respect to their 
+  // zero crossings. A step-size of 1 means, they are sampled at the zero-crossings of the sinc, 
+  // 2 means at zero-crossings and halfway in between (i.e. at the maxima of the underlying sine), 
+  // etc. - roughly the number of samples per lobe (applies exactly only to the linear phase blep)
+
+  std::vector<TTim> blitTbl, blepTbl, blampTbl;    // tables of blit/blep/blamp
+  // Tables for bandlimited impulse (windowed-sinc/impulse-response), first integral (bandlimited 
+  // step) and second integral (bandlimited ramp). For blep and blamp, the residuals are tabulated,
+  // i.e. the respective response minus the ideal input step/ramp. But tabulating a residual would 
+  // not make sense for the blit, because its continuous time version is the infinitely narrow delta
+  // distribution, so the blit is stored directly and the residual must be computed in 
+  // preparForImpulse
+
+  int bufIndex = 0;             // index in circular buffer(s) for delayline and correction
+  int bufferSize;    
+  int mask;                     // bufferSize - 1
+  int blepLength = 30;          // number of samples for the blep
+
+  std::vector<TSig> corrector;  // buffer of correction samples to be added to future inputs
+
+};
+
+//=================================================================================================
+
+/** UNDER CONSTRUCTION
+
 
 A generic implementation of the "BLEP" (= (B)and (L)imited st(EP)) technique for anti-aliasing
 step discontinuities in a signal and/or its derivatives. Discontinuities in the signal itself show 
@@ -21,8 +126,19 @@ delay (how long ago is the instant of the discontinuity with respect to sample i
 discontinuity occured at n-frac, you should pass frac) and the size of the discontinuity. 
 
 
-maybe rename to rsDiscontinuityBandLimiter - it also bandlimits impulses (i.e. implmennts BLITs)
+maybe rename to rsDiscontinuityBandLimiter - it also bandlimits impulses (i.e. implments BLITs)
 ....
+
+or maybe make three classes named rsTableLinBlit/rsTableLinBlep/rsTableLinBlamp
+
+make also rsTableMinBlit/rsTableMinBlep/rsTableMinBlamp
+rsPolyLinBlep/rsPolyLinBlamp
+
+...all thes variations should have the same interface (as far as possible) such that client code
+can conveniently interchange them - maybe factor out a common baseclass
+
+maybe name the file DiscontinuityBandLimiters and have various classes with the various variants
+in a single file
 
 References:
 
@@ -30,7 +146,7 @@ References:
 */
 
 template<class TSig, class TTim> // types for signal values and continuous time
-class rsStepBandLimiter
+class rsStepBandLimiter : public rsTableBlep<TSig, TTim> // rename to rsTableLinBlep
 {
 
 public:
@@ -40,51 +156,25 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  /** Sets the length of the underlying sinc function in terms of its numbers of zero crossings
-  on the positive x-axis. With a value of 1, only the mainlobe is used, a value of 2 uses 
-  additionally the first pair of sidelobes left and right of the mainlobe and so on. */
+  /** Sets the length of the blit/blep/blamp in samples. Should be an even number - if you pass an
+  odd number, the next even number will be used for the actual length. */
   void setLength(int newLength)
   {
-    sincLength = newLength;
-    bufferSize = rsNextPowerOfTwo(sincLength+1); 
+    blepLength = rsNextEvenNumber(newLength);
+    halfLength = blepLength/2;
+    bufferSize = rsNextPowerOfTwo(halfLength+1); // why +1?
     mask       = bufferSize - 1;
     updateTables();
     allocateBuffers();
   }
-
-  /** Sets the number of samples that we take for each lobe of the sinc function in the lookup 
-  tables. */
-  void setTablePrecision(int newValue)
-  {
-    samplesPerLobe = newValue;
-    updateTables();
-  }
-
-  /** Sets the coefficients of the different cosine terms in the window function that is applied to
-  the sinc function. We use a cosine-sum window of that kind:
-  https://en.wikipedia.org/wiki/Window_function#Cosine-sum_windows
-  but note that here, we don't use the convention of alternating signs as wikipedia does, i.e. the 
-  a_k that you pass should include the minus sign, if the k-th cosine term is subtracted. The 
-  maximum number of allowed weights is some constant defined her in the class (currently 5) */
-  void setWindowCosineWeights(TTim* newWeights, int numWeights)
-  {
-    rsAssert(numWeights <= maxNumWindowCoeffs);
-    for(int i = 0; i < numWeights; i++)
-      windowCoeffs[i] = newWeights[i];
-    for(int i = numWeights; i < maxNumWindowCoeffs; i++)
-      windowCoeffs[i] = TTim(0);
-    updateTables();
-  }
-
-  //void setRelativeCutoff
-  // 1: fs/2, <1: below fs/2
+  // maybe make virtual and override
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the delay (in samples) that is introduced by the algorithm. May be used for delay 
   compensation. */
-  int getDelay() { return sincLength; }
+  int getDelay() { return halfLength; }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -103,9 +193,7 @@ public:
     //rsStemPlot(delayline);
     //rsStemPlot(corrector);
   }
-  // rename to prepareForImpulse or prepareForSpike
-
-
+  // maybe rename to prepareForSpike
 
   /** Adds the residual for a bandlimited step into our correction buffer. Call this right 
   before calling getSample, if your naive generator will generate a step at the next sample. */
@@ -114,46 +202,30 @@ public:
     if(shouldReturnEarly(delayFraction))
       return;
     fillTmpBuffer(delayFraction, amplitude, blepTbl);
-
-    TTim mean = rsMean(tempBuffer); // should be around 0.5
-
-    // rsScale(tempBuffer, TSig(0.5)*amplitude / rsMean(tempBuffer)); // is this correct?
-    rsScale(tempBuffer, amplitude );
+    rsScale(tempBuffer, amplitude); // get rid
     // for the step, we may want to scale the tempBuffer such that the mean is 0.5*amplitude?
 
-    mean = rsMean(tempBuffer); // should be exactly 0.5*amplitude now
-
     applyTmpBuffer();
-    for(int i = 0; i < sincLength; i++) 
-      corrector[wrap(bufIndex + i)] -= amplitude; // is this correct?
   }
 
-
-  //void prepareForRamp(TTim delayFraction, TSig amplitude)
-  // or prepareForCorner
-
-
-  // maybe have higher order bandlimited integrated impulses (qudaratic, cubic, quartic, etc.)
-  // maybe store the intergrated impulses in a 2D array and unify these 3 functions (maybe keep the
-  // separate functions as convenience functions anyway), like:
-  /*
-  void addDiscontinuity(Tim time, TSig amplitude, int order)
+  void prepareForCorner(TTim delayFraction, TSig amplitude)
   {
-    for(int i = 0; i < delayLength; i++)
-      corrector[wrap(bufIndex + i)] += amplitude * residual(order, i, time);
+    if(shouldReturnEarly(delayFraction))
+      return;
+    fillTmpBuffer(delayFraction, amplitude, blampTbl);
+    rsScale(tempBuffer, amplitude); // get rid
+    applyTmpBuffer();
+
+    //rsStemPlot(delayline);
+    //rsStemPlot(corrector);
   }
-  void addImpulse(TTim time, TSig amplitude) { addDiscontinuity(time, amplitude, 0); }
-  void addStep(   TTim time, TSig amplitude) { addDiscontinuity(time, amplitude, 1); }
-  void addRamp(   TTim time, TSig amplitude) { addDiscontinuity(time, amplitude, 2); }
-  */
-  // but that may not work, because the impulse/step/ramp preparation functions ar all slightly
-  // different with respect to the normalization and what is subtracted from the corrector (i.e. 
-  // the naive version of the signal feature)
+  // or maybe rename to prepareForRamp
+
 
   /** Produces one sample at a time. */
   inline TSig getSample(TSig in)
   {
-    delayline[wrap(bufIndex+sincLength)] = in + corrector[bufIndex];
+    delayline[wrap(bufIndex+halfLength)] = in + corrector[bufIndex];
     corrector[bufIndex] = TSig(0);  // corrector at this position has been consumed
     TSig y = delayline[bufIndex];
     bufIndex = wrap(bufIndex + 1);
@@ -175,7 +247,8 @@ protected:
   inline bool shouldReturnEarly(TTim delayFraction)
   {
     TTim eps = RS_EPS(TTim);
-    return delayFraction < eps || delayFraction >= TTim(1) || sincLength == 0;
+    return delayFraction >= TTim(1) || halfLength == 0;
+    //return delayFraction < eps || delayFraction >= TTim(1) || sincLength == 0;
     // maybe we can get rid of this by having one extra sample in blitTbl, etc.
     // maybe when frac == 0.0 or frac == 1.0, one of the loops below should range from 0 to 
     // sincLength-1 and the other from 0 to sincLength+1 instead of both ranging from 0 to 
@@ -187,7 +260,7 @@ protected:
   instant (in samples). */
   inline TSig readTable(TTim time, const std::vector<TTim>& tbl)
   {
-    TTim p = (time + sincLength) * samplesPerLobe; // read position
+    TTim p = (time + halfLength) * tablePrecision; // read position
     // + sincLength because our buffer index is shifted by that amount with respect to the time
     // origin - i.e. the center-index of blitTbl corresponds to time = 0
 
@@ -202,82 +275,344 @@ protected:
   {
     int i;
     TTim frac = delayFraction;
-    int ic = sincLength;
-    for(i = 0; i <  sincLength; i++) tempBuffer[ic+i] = readTable(frac + i, tbl);
-    for(i = 1; i <= sincLength; i++) tempBuffer[ic-i] = readTable(frac - i, tbl);
+    int ic = halfLength;
+    for(i = 0; i <  halfLength; i++) tempBuffer[ic+i] = readTable(frac + i, tbl);
+    for(i = 1; i <= halfLength; i++) tempBuffer[ic-i] = readTable(frac - i, tbl);
     // todo: optimize this - in each iteration of the loops, the "f" value in the called 
     // readTable function is the same - we don't need to recompute it in each iteration
     // also, use a single loop instead of two
+
+    // todo: use the "amplitude" to scale values returned from readTable - avoid doing that in
+    // prepareFor...
   }
 
   /** Applies the content of the temporary buffer to the delayline and corrector. */
   inline void applyTmpBuffer()
   {
     int i;
-    int ic = sincLength;
+    int ic = halfLength;
 
     // apply correction to stored past samples:
-    for(i = 0; i < sincLength; i++) delayline[wrap(bufIndex + i)] += tempBuffer[i];
+    for(i = 0; i < halfLength; i++) delayline[wrap(bufIndex + i)] += tempBuffer[i];
 
     // update corrector to be applied to future samples:
-    for(i = 0; i < sincLength; i++) corrector[wrap(bufIndex + i)] += tempBuffer[ic+i];
+    for(i = 0; i < halfLength; i++) corrector[wrap(bufIndex + i)] += tempBuffer[ic+i];
 
     // ...may be done in a single loop
   }
 
-  /** Computes the value of the window function at a given time instant (in samples). Used to 
-  generate the windowed sinc table. */
-  inline TTim window(TTim t)
-  {
-    TTim w = windowCoeffs[0];
-    for(int i = 1; i < maxNumWindowCoeffs; i++)
-      w += windowCoeffs[i] * cos(i * PI * t / sincLength);
-    return w;
-  }
-  // todo: maybe have functions that directly evaluate the windowed-sinc, the integrated windowed 
-  // sinc the twice integrated windowed sinc etc. - i think, with this cosine-sum window, analytic 
-  // integrals should be possible
 
-  /** Wrap-around function for the index into our delayline and corrector. */
-  inline int wrap(int i)
-  {
-    return i & mask;
-  }
-
-  /** Fills our tables with blit, blep, blamp, etc. values. */
-  void updateTables();
-
-  /** Allocates the buffers for correction signal and delayed input signal. */
-  void allocateBuffers();
+  virtual void updateTables() override;
+  virtual void allocateBuffers() override;
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  int bufIndex = 0;  // index in circular buffers for delayline and correction
-  int sincLength;    // number of zero-crossings to the right of y-axis
-  int bufferSize;    // nextPowerOfTwo(sincLength+1); 
-  int mask;          // bufferSize - 1
+  int halfLength;    // number of zero-crossings to the right of y-axis
 
-  int samplesPerLobe = 20;
-  // Step-size to move from one sample to the next in the blit, blep, etc. buffers, i.e. the 
-  // sample-rate at which the bandlimited functions are sampled/tabulated with respect to their 
-  // zero corssings. A step-size of 1 means, they are sampled at the zero-crossings of the sinc, 
-  // 2 means at zero-crossings and halfway in between (i.e. at the maxima of the underlying sine), 
-  // etc.
-
-  static const int maxNumWindowCoeffs = 5;
-  TTim windowCoeffs[maxNumWindowCoeffs]; 
-  // Coefficients for the cosine terms in the cosine-sum window that is used to window the sinc.
-
-  std::vector<TTim> timeTbl, blitTbl, blitDrvTbl, blepTbl, blampTbl;
-  // Tables for bandlimited impulse (windowed sinc), its derivative, first integral (bandlimited 
-  // step) and second integral (bandlimited ramp)
-  // blitDrvTbl not yet used - may not be needed (i was thinking to use it for Hermite 
-  // interpolation of the blit table)
-  // timeTbl may also not be used - and maybe we should use only the positive half of the table and
-  // produce values for negative time instants by symmetry
-
-  std::vector<TSig> corrector;  // buffer of correction samples to be added to future inputs
   std::vector<TSig> delayline;  // buffer of corrected, delayed input signal values
   std::vector<TSig> tempBuffer; // temporary storage of sampled blit/blep/blamp values
+  // actually, the separate tempBuffer is only needed for the blit and in this case actually only
+  // for the normalization of the sum to unity - otherwise, we could render directly into the 
+  // corrector and the delayline - do it like that in production code (which probably doesn't even
+  // need the blit option)
+
 };
+
+//=================================================================================================
+
+/** Implementation of a minimum phase bandlimited step "MinBLEP" correction based on the 
+step-response of an elliptic lowpass filter. We tabulate the oversampled step response of the 
+elltiptic filter and use that as correction table. It may also generate MinBLITs and MinBLAMPs 
+(bandlimited impulses and ramps).
+
+Maybe let the user also select the filter type (elliptic, Butterworth, Bessel, etc. ...Butterworth
+can actually be obtained as special case of an elliptic filter by setting both ripple parameters 
+zero)..."butterblep"....sounds moderately funny :-)
+*/
+
+template<class TSig, class TTim> // types for signal values and continuous time
+class rsTableMinBlep : public rsTableBlep<TSig, TTim>   
+// maybe rename to rsTableFilterBlep and make a version based on an actual minimum-phase 
+// transform (i think, i already have code for that somewhere)...this is perhaps mainly of academic
+// interest
+{
+
+
+public:
+
+
+  rsTableMinBlep();
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setLength(int newLength)
+  {
+    blepLength = newLength;
+    bufferSize = rsNextPowerOfTwo(blepLength+1); // why +1?
+    mask       = bufferSize - 1;
+    allocateBuffers();
+    updateTables();
+  }
+  // hmmm...in the linear phase-version, the setLength function actually sets the half-length - 
+  // make them consistent - in the linear phase version, add 1 if the user passes an odd number
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Unlike the linear phase variants, MinBLEPs don't introduce a fixed delay. We provide this 
+  function anyway for interface compatibility and return always zero. 
+  
+  ...There actually is some frequency dependent delay introduced though...maybe we should have a 
+  frequency-parameter and return the actual delay? ...and if so, should it be the phase-delay or 
+  the group-delay? with the current elliptic filter, it has a delay of around 3.4 samples, if you 
+  consider the time when it actually reaches 1 in the step response (look at the plot of the 
+  blepTbl and divide the time (68) by the tablePrecision). */
+  //int getDelay() { return 0; }
+  int getDelay() { return 3; }  
+  // value 3 obtained by eyeballing - maybe we should use the peak of the blit (impulse response)
+  // ...which happens to be located at 3*tablePrecision - so 3 seems indeed the most reasonable
+  // value
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  void prepareForImpulse(TTim delayFraction, TSig amplitude)
+  {
+    fillCorrector(delayFraction, amplitude, blitTbl);
+    corrector[bufIndex] -= amplitude;
+  }
+  // not yet tested
+
+  void prepareForStep(TTim delayFraction, TSig amplitude)
+  {
+    fillCorrector(delayFraction, amplitude, blepTbl);
+  }
+  // this seems to work
+
+  void prepareForCorner(TTim delayFraction, TSig amplitude)
+  {
+    fillCorrector(delayFraction, amplitude, blampTbl);
+  }
+  // peak amplitude of triangle wave looks too large but spectrum looks good
+
+
+  /** Produces one sample at a time. */
+  inline TSig getSample(TSig in)
+  {
+    TSig out = in + corrector[bufIndex];
+    corrector[bufIndex] = TSig(0);       // corrector at this position has been consumed
+    bufIndex = wrap(bufIndex + 1);
+    return out;
+  }
+
+  /** Fills the delayline and correction buffer with all zeros and resets the buffer index. */
+  void reset();
+
+
+protected:
+
+  /** Accumulates correction samples into our "corrector" buffer from the given table 
+  (blitTbl, blepTbl or blampTbl) with phase according to the fractional delay and scaled by the 
+  amplitude. */
+  inline void fillCorrector(TTim delayFraction, TSig amplitude, const std::vector<TTim>& tbl)
+  {
+    if(delayFraction == 1.0)
+      return;
+    // we get an access violation in this case -> fix that
+
+
+    TTim ps = delayFraction * tablePrecision; // start read-position in table
+    int  i  = (int) ps;                       // integer part of table read start position
+    TTim f  = ps - i;                         // fractional part of table read start position
+    TTim w0 = amplitude * (1-f);              // weight for left table entry (at i)
+    TTim w1 = amplitude * f;                  // weight for right table entry (at i+1)
+    for(int k = 0; k < blepLength; k++) {
+      corrector[wrap(bufIndex+k)] += w0 * tbl[i] + w1 * tbl[i+1];
+      i += tablePrecision;
+    }
+    // todo: re-order the table such that instead of i += tablePrecision we can also do i++ 
+    // -> optimize memory access
+
+
+    //rsPlotVector(corrector);
+  }
+
+
+  virtual void updateTables() override;
+  virtual void allocateBuffers() override;
+
+};
+
+//=================================================================================================
+
+/** Implementation of polynomial bandlimited steps and ramps (polyBLEPs and polyBLAMPS) with one
+sample delay, i.e. it corrects one sample before and one sample after the occurence of the 
+step/corner (which itself occurs in between these two samples). */
+
+template<class TSig, class TTim> // types for signal values and continuous time
+class rsPolyBlep1
+{
+
+public:
+
+
+  int getDelay() { return 1; }  
+
+  void prepareForStep(TTim delayFraction, TSig amplitude)
+  {
+    TTim d  = delayFraction;
+    TSig a  = amplitude;
+    TTim d2 = d*d;
+    delayed   += a *   d2/2;
+    corrector += a * (-d2/2 + d - 1./2);
+  }
+
+  void prepareForCorner(TTim delayFraction, TSig amplitude)
+  {
+
+  }
+
+
+  /** Produces one sample at a time. */
+  inline TSig getSample(TSig in)
+  {
+    TSig out  = delayed;
+    delayed   = in + corrector;
+    corrector = TSig(0);
+    return out;
+  }
+
+protected:
+
+  TSig delayed;    // delayed input sample
+  TSig corrector;  // corrector to be applied to next incoming sample
+
+};
+
+//=================================================================================================
+
+/** Two sample delay version - uses higher order polynomial approximation... 
+
+
+References:
+(1) Perceptually informed synthesis of bandlimited classical waveforms using integrated 
+    polynomial interpolation
+(2) Rounding corners with BLAMP
+
+*/
+
+template<class TSig, class TTim> // types for signal values and continuous time
+class rsPolyBlep2
+{
+
+public:
+
+
+
+  int getDelay() { return 2; }
+
+
+
+
+  void prepareForStep1(TTim delayFraction, TSig amplitude)
+  {
+    // just for testing, if i got the polynomials right in the sage notebook - production code 
+    // should use polynomials in d, not x..
+    TSig a  = amplitude;
+    TTim d  = delayFraction;
+
+                                                                // coeffs for section:
+    static const int A[5] = { 2./3, 4./3, 1.,  1./3,  1./24 };  // A: -2..-1
+    static const int B[5] = { 1./2, 2./3, 0., -1./3, -1./8  };  // B: -1...0
+    static const int C[5] = { 1./2, 2./3, 0., -1./3,  1./8  };  // C:  0...1
+    static const int D[5] = { 1./2, 2./3, 0., -1./3,  1./8  };
+
+
+
+
+  }
+
+  void prepareForStep(TTim delayFraction, TSig amplitude)
+  {
+    TSig a  = amplitude;
+    TTim d  = delayFraction;
+    TTim d2 = d*d;
+    TTim d3 = d2*d;
+    TTim d4 = d2*d2;
+    delayed[1]   += a * ( d4/24);
+    delayed[0]   += a * (-d4/8  + d3/6 + d2/4 +   d/6 + 1./24);
+    corrector[0] += a * ( d4/8  - d3/3        + 2*d/3 - 1./2);
+    corrector[1] += a * (-d4/24 + d3/6 - d2/4 +   d/6 - 1./24);
+    // formulas from (1), table VII
+    // this is the B-Spline ...add Lagrange, too
+
+    // maybe use Horners rule to evaluate the quartic...or maybe even call 
+    // rsPolynomial::evaluateQuartic and have static const coeff arrays defined here
+  }
+
+  void prepareForCorner(TTim delayFraction, TSig amplitude)
+  {
+    TSig a  = amplitude;
+    TTim d  = delayFraction;
+    TTim d2 = d*d;
+    TTim d3 = d2*d;
+    TTim d4 = d2*d2;
+    TTim d5 = d4*d;
+    delayed[1]   += a * ( d5/120);
+    delayed[0]   += a * (-d5/40  + d4/24 + d3/12 + d2/12 + d/24 + 1./120);
+    corrector[0] += a * ( d5/40  - d4/12         + d2/3  - d/2  + 7./30 );
+    corrector[1] += a * (-d5/120 + d4/24 - d3/12 + d2/12 - d/24 + 1./120);
+    // formulas from (2), table 1
+  }
+
+  // have different versions: prepareForStepLagrange, prepareForStepBSpline - maybe dispatch in
+  // the unspecified ones according to a user option - client code may then choose to bypass
+  // the dispatcher by directly calling the desired version but we still conform to the general
+  // blep/blamp interface that the table-based versions also use
+
+  /** Produces one sample at a time. */
+  inline TSig getSample(TSig in)
+  {
+    TSig out     = delayed[1];
+    delayed[1]   = delayed[0];
+    delayed[0]   = in + corrector[0];
+    corrector[0] = corrector[1];
+    corrector[1] = TSig(0);
+    return out;
+  }
+
+protected:
+
+
+  TSig delayed[2];    // two delayed input samples
+  TSig corrector[2];  // corrector to be applied to next two incoming samples
+  // maybe use variables y1,y2,c1,c2
+
+
+};
+
+// -maybe try some other polynomial approximations - maybe based on directly matching function 
+//  values and derivative values to the ideal analytic bandlimited discontinuities (based on the
+//  Si function)
+// -try to make a 3-sample delay version with the next higher order B-spline and Lagrange 
+//  interpolators (it may require to re-derive the formulas for the 1- and 2-sample version to see
+//  the general pattern)...maybe try even higher orders...4 samples delay is still a quite small
+//  number...but maybe the cost of the polynomial evaluation may become too expensive...the whole
+//  thing will scale with d^2 where d is the delay in samples (we need to compute 2*d correction
+//  samples and the degree of the polynomial also increases linearly with d) ...that's an advantage
+//  of the table-based versions - they scales linearly with d - so maybe teh general reccomendation 
+//  should be: for (very) small bleps, use polynomials, otherwise tables
+// -as for (table-based) MinBlep vs LinBlep:
+//  -i think, the LinBlep can be overall shorter because the window is only unilateral
+//  -the MinBlep has a fixed (3 sample) delay, independent from kernel length
+//  -the LinBlep has less overshoot (but maybe with other filter-designs (Bessel), we can get rid
+//   of the overshoot in the MinBlep, too)
+// -maybe write a wrapper class that lets client code select the type of the blep (min/lin/poly) at
+//  runtime and also conforms to the general blep interface - can be used during development to
+//  experiment with various variants and later be swapped for a fixed choice (so it doesn't have to 
+//  be efficient - it's just for experimentation to help select the best blep for the particular
+//  application)
+
