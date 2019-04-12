@@ -18,7 +18,7 @@ void blit()
   //int N = 120;
   //double period = 10.25;
 
-  rsStepBandLimiter<double, double> linTableBlit;
+  rsTableLinBlep<double, double> linTableBlit;
   linTableBlit.setLength(blitLength);
 
   rsTableMinBlep<double, double> minTableBlit;
@@ -148,6 +148,7 @@ void blep()
   //double inc = 3./100;  // phase increment per sample
 
 
+  // Create osc and blit/blep/blamp objects:
   rsBlampReadyOsc<double> osc;
   osc.setPhaseIncrement(inc);
   osc.setAmplitude(0.5);
@@ -159,7 +160,7 @@ void blep()
     osc.setStartPosition(0.5);
   osc.reset();
 
-  rsStepBandLimiter<double, double> linTableBlep;
+  rsTableLinBlep<double, double> linTableBlep;
   linTableBlep.setTablePrecision(prec);
   linTableBlep.setLength(length);  
 

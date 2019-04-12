@@ -15,13 +15,13 @@ rsTableBlep<TSig, TTim>::rsTableBlep()
 //=================================================================================================
 
 template<class TSig, class TTim>
-rsStepBandLimiter<TSig, TTim>::rsStepBandLimiter()
+rsTableLinBlep<TSig, TTim>::rsTableLinBlep()
 {
   setLength(5);
 }
 
 template<class TSig, class TTim>
-void rsStepBandLimiter<TSig, TTim>::updateTables()
+void rsTableLinBlep<TSig, TTim>::updateTables()
 {
   std::vector<TTim> timeTbl;  // needed temporarily
 
@@ -112,7 +112,7 @@ void rsStepBandLimiter<TSig, TTim>::updateTables()
 }
 
 template<class TSig, class TTim>
-void rsStepBandLimiter<TSig, TTim>::allocateBuffers()
+void rsTableLinBlep<TSig, TTim>::allocateBuffers()
 {
   // corrector buffer needs sincLength+1 samples, delay buffer needs sicnLength samples
 
@@ -129,7 +129,7 @@ void rsStepBandLimiter<TSig, TTim>::allocateBuffers()
 }
 
 template<class TSig, class TTim>
-void rsStepBandLimiter<TSig, TTim>::reset()
+void rsTableLinBlep<TSig, TTim>::reset()
 {
   rsSetZero(delayline);
   rsSetZero(corrector);

@@ -146,12 +146,12 @@ References:
 */
 
 template<class TSig, class TTim> // types for signal values and continuous time
-class rsStepBandLimiter : public rsTableBlep<TSig, TTim> // rename to rsTableLinBlep
+class rsTableLinBlep : public rsTableBlep<TSig, TTim>
 {
 
 public:
 
-  rsStepBandLimiter();
+  rsTableLinBlep();
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
