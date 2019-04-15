@@ -129,10 +129,10 @@ void blit()
 void blep()
 {
   //double inc = 19.0/256;  // phase increment per sample
-  double inc = 7.0/512;  // phase increment per sample
+  //double inc = 7.0/512;  // phase increment per sample
   double fs  = 44100;    // sample rate
   int N      = 800;      // number of samples to produce
-  int shape  = 2;        // 1: saw, 2: square, 3: triangle
+  int shape  = 3;        // 1: saw, 2: square, 3: triangle
   int prec   = 20;       // table precision
   int length = 30;       // blep length
 
@@ -140,10 +140,11 @@ void blep()
   // have to loop through through the cycle unitl we are back at the sample branch of the blep
   // could it be something like gcd(num % den, den)
 
-  //double inc = 5.0/100;  // phase increment per sample
-  // 5./100 gives an access violation - i think, we should give the tables one extra guard 
-  // sample that repeats the last actual sample - i think we may then also get rid of the 
-  // unelegant shouldReturnEarly function
+  double inc = 5.0/100;  // phase increment per sample
+  // 5./100 gives an access violation with the triangle wave in rsTableLinBlep::readTable - i 
+  // think, we should give the tables one extra guard sample that repeats the last actual sample 
+  // - i think we may then also get rid of the unelegant shouldReturnEarly function
+  // ..for rsTableMinBlep, we don't get such an access violation
 
   //double inc = 3./100;  // phase increment per sample
 
@@ -187,7 +188,7 @@ void blep()
 
     if(osc.getStepAmplitude() != 0.0) // a step did occur
     {
-      linTableBlep.prepareForStep(osc.getStepDelay(), osc.getStepAmplitude());
+      //linTableBlep.prepareForStep(osc.getStepDelay(), osc.getStepAmplitude());
       minTableBlep.prepareForStep(osc.getStepDelay(), osc.getStepAmplitude());
       polyBlep1.prepareForStep(   osc.getStepDelay(), osc.getStepAmplitude());
       polyBlep2.prepareForStep(   osc.getStepDelay(), osc.getStepAmplitude());
@@ -202,7 +203,7 @@ void blep()
     {
       linTableBlep.prepareForCorner(osc.getCornerDelay(), osc.getCornerAmplitude());
       minTableBlep.prepareForCorner(osc.getCornerDelay(), osc.getCornerAmplitude());
-      polyBlep1.prepareForCorner(   osc.getCornerDelay(), osc.getCornerAmplitude()); // not yet implemented
+      //polyBlep1.prepareForCorner(   osc.getCornerDelay(), osc.getCornerAmplitude()); // not yet implemented
       polyBlep2.prepareForCorner(   osc.getCornerDelay(), osc.getCornerAmplitude());
     }
 
@@ -220,7 +221,7 @@ void blep()
   createWaveform(&r[0], N, shape, f, fs, 0.0, true);
   r = 0.5 * r;
 
-
+  // delay compensation:
   rsArray::shift(&ylt[0], N, -linTableBlep.getDelay()); // linBlep has about 5-times the delay of 
   rsArray::shift(&ymt[0], N, -minTableBlep.getDelay()); // minBlep
   rsArray::shift(&yp1[0], N, -polyBlep1.getDelay());

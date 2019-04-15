@@ -1,11 +1,11 @@
 #pragma once
 
-/** Baseclass for table-based blit/blep/blamp applicators. When a naive sound-synthesis algorithm
-generates the information about when exactly (i.e. the subsample position) the discontinuity 
-occurred and the size of the discontinuity (or these two numbers can somehow be estimated from the
-signal), objects of subclasses of this can anti-alias the naive signal as a post-processing step. 
-There are different variants (linear- and minimum phase) that share some common code, that's why we
-have this baseclass. */
+/** Baseclass for table-based blit/blep/blamp applicators. When a naive sound-synthesis algorithm, 
+such as a sawtooth or triangle-oscillator, can supply the information about when exactly (i.e. the 
+subsample position) the discontinuity occurred and the size of the discontinuity (or these two 
+numbers can somehow be estimated from the signal), objects of subclasses of this can anti-alias the
+naive signal as a post-processing step. There are different variants (linear- and minimum phase) 
+that share some common code, that's why we have this baseclass. */
 
 template<class TSig, class TTim> 
 class rsTableBlep // maybe rename to rsTableBlitBlepBlamp
@@ -82,7 +82,7 @@ protected:
   // residual
 
   int tablePrecision = 20;
-  // Step-size to move from one sample to the next in the blit, blep, etc. buffers, i.e. the 
+  // Step-size to move from one sample to the next in the blit, blep, etc. tables, i.e. the 
   // sample-rate at which the bandlimited functions are sampled/tabulated with respect to their 
   // zero crossings. A step-size of 1 means, they are sampled at the zero-crossings of the sinc, 
   // 2 means at zero-crossings and halfway in between (i.e. at the maxima of the underlying sine), 
@@ -93,12 +93,12 @@ protected:
   // step) and second integral (bandlimited ramp). For blep and blamp, the residuals are tabulated,
   // i.e. the respective response minus the ideal input step/ramp. But tabulating a residual would 
   // not make sense for the blit, because its continuous time version is the infinitely narrow delta
-  // distribution, so the blit is stored directly and the residual must be computed in 
-  // preparForImpulse
+  // distribution, so the blit is stored directly and the residual must be computed on the fly in 
+  // preparForImpulse (which is just a single multiplication-and-subtraction in this case)
 
   int bufIndex = 0;             // index in circular buffer(s) for delayline and correction
-  int bufferSize;    
-  int mask;                     // bufferSize - 1
+  int bufferSize;               // a power of 2
+  int mask;                     // = bufferSize - 1, used for efficient wrap-around
   int blepLength = 30;          // number of samples for the blep
 
   std::vector<TSig> corrector;  // buffer of correction samples to be added to future inputs
@@ -118,18 +118,16 @@ idea is to take the difference between a bandlimited step (i.e. an integrated si
 naive step (this difference is called the residual) and add that residual to the output signal.
 
 If a discontinuity happens between the previous sample n-1 and the current sample n, you should 
-announce that event to the object by calling addImpulse/addStep/addRamp/etc. immediately before the
-call to getSample at index n. The object will then prepare the appropriate correction signals and 
-apply them in subsequent calls to getSample. In order to be able to correct past samples as well, a
-delay is introduced. When announcing a discontinuity, you need to tell the object the fractional 
-delay (how long ago is the instant of the discontinuity with respect to sample index n - if the 
-discontinuity occured at n-frac, you should pass frac) and the size of the discontinuity. 
+announce that event to the object by calling prepareForImpulse/prepareForStep/prepareForCorner 
+immediately before the call to getSample at index n. The object will then prepare the appropriate
+correction signals and apply them in subsequent calls to getSample. In order to be able to correct 
+past samples as well, a delay is introduced. When announcing a discontinuity, you need to tell the 
+object the fractional delay (how long ago is the instant of the discontinuity with respect to 
+sample index n in upcoming call to getSample - if the discontinuity occured at continuous time 
+n-frac, you should pass frac) and the size of the discontinuity. 
 
 
-maybe rename to rsDiscontinuityBandLimiter - it also bandlimits impulses (i.e. implments BLITs)
-....
 
-or maybe make three classes named rsTableLinBlit/rsTableLinBlep/rsTableLinBlamp
 
 make also rsTableMinBlit/rsTableMinBlep/rsTableMinBlamp
 rsPolyLinBlep/rsPolyLinBlamp
@@ -180,9 +178,11 @@ public:
   /** \name Processing */
 
   /** Adds the residual for a bandlimited impulse into our correction buffer. Call this right 
-  before calling getSample, if your naive generator will generate an impulse at the next sample. */
+  before calling getSample, if you are going pass the impulse itself in your upcoming call to 
+  getSample. */
   void prepareForImpulse(TTim delayFraction, TSig amplitude)
   {
+    rsAssert(delayFraction >= TTim(0) && delayFraction <= TTim(1), "Delay out of range");
     if(shouldReturnEarly(delayFraction))
       return;
     fillTmpBuffer(delayFraction, amplitude, blitTbl);
@@ -199,6 +199,7 @@ public:
   before calling getSample, if your naive generator will generate a step at the next sample. */
   void prepareForStep(TTim delayFraction, TSig amplitude)
   {
+    rsAssert(delayFraction >= TTim(0) && delayFraction <= TTim(1), "Delay out of range");
     if(shouldReturnEarly(delayFraction))
       return;
     fillTmpBuffer(delayFraction, amplitude, blepTbl);
@@ -210,6 +211,7 @@ public:
 
   void prepareForCorner(TTim delayFraction, TSig amplitude)
   {
+    rsAssert(delayFraction >= TTim(0) && delayFraction <= TTim(1), "Delay out of range");
     if(shouldReturnEarly(delayFraction))
       return;
     fillTmpBuffer(delayFraction, amplitude, blampTbl);
@@ -402,13 +404,13 @@ public:
   /** Produces one sample at a time. */
   inline TSig getSample(TSig in)
   {
-    TSig out = in + corrector[bufIndex];
-    corrector[bufIndex] = TSig(0);       // corrector at this position has been consumed
-    bufIndex = wrap(bufIndex + 1);
+    TSig out = in + corrector[bufIndex]; // our "read-and-delete head" consumes and...
+    corrector[bufIndex] = TSig(0);       // ...then clears the correction signal at this position
+    bufIndex = wrap(bufIndex + 1);       // ...and then moves on in our circular correction buffer
     return out;
   }
 
-  /** Fills the delayline and correction buffer with all zeros and resets the buffer index. */
+  /** Fills the correction buffer with all zeros and resets the buffer index. */
   void reset();
 
 
@@ -419,6 +421,8 @@ protected:
   amplitude. */
   inline void fillCorrector(TTim delayFraction, TSig amplitude, const std::vector<TTim>& tbl)
   {
+    rsAssert(delayFraction >= TTim(0) && delayFraction <= TTim(1), "Delay out of range");
+
     if(delayFraction == 1.0)
       return;
     // we get an access violation in this case -> fix that
@@ -450,7 +454,7 @@ protected:
 
 /** Implementation of polynomial bandlimited steps and ramps (polyBLEPs and polyBLAMPS) with one
 sample delay, i.e. it corrects one sample before and one sample after the occurence of the 
-step/corner (which itself occurs in between these two samples). */
+step/corner (which itself occurs somewhere in between these two samples). */
 
 template<class TSig, class TTim> // types for signal values and continuous time
 class rsPolyBlep1
@@ -459,10 +463,14 @@ class rsPolyBlep1
 public:
 
 
-  int getDelay() { return 1; }  
+  int getDelay() { return 1; }
+
+
+  //void prepareForImpulse(TTim delayFraction, TSig amplitude);
 
   void prepareForStep(TTim delayFraction, TSig amplitude)
   {
+    rsAssert(delayFraction >= TTim(0) && delayFraction <= TTim(1), "Delay out of range");
     TTim d  = delayFraction;
     TSig a  = amplitude;
     TTim d2 = d*d;
@@ -472,7 +480,10 @@ public:
 
   void prepareForCorner(TTim delayFraction, TSig amplitude)
   {
-
+    rsError("Not yet implemented");
+    rsAssert(delayFraction >= TTim(0) && delayFraction <= TTim(1), "Delay out of range");
+    // unfortunately, the papers don't give the formulas for this case -> re-derive their formulas 
+    // and along with them also the formula for this case
   }
 
 
@@ -494,7 +505,7 @@ protected:
 
 //=================================================================================================
 
-/** Two sample delay version - uses higher order polynomial approximation... 
+/** Two sample delay version - uses 3rd order polynomial approximation... 
 
 
 References:
@@ -511,32 +522,14 @@ class rsPolyBlep2
 public:
 
 
-
   int getDelay() { return 2; }
 
 
-
-
-  void prepareForStep1(TTim delayFraction, TSig amplitude)
-  {
-    // just for testing, if i got the polynomials right in the sage notebook - production code 
-    // should use polynomials in d, not x..
-    TSig a  = amplitude;
-    TTim d  = delayFraction;
-
-                                                                // coeffs for section:
-    static const int A[5] = { 2./3, 4./3, 1.,  1./3,  1./24 };  // A: -2..-1
-    static const int B[5] = { 1./2, 2./3, 0., -1./3, -1./8  };  // B: -1...0
-    static const int C[5] = { 1./2, 2./3, 0., -1./3,  1./8  };  // C:  0...1
-    static const int D[5] = { 1./2, 2./3, 0., -1./3,  1./8  };
-
-
-
-
-  }
+  //void prepareForImpulse(TTim delayFraction, TSig amplitude);
 
   void prepareForStep(TTim delayFraction, TSig amplitude)
   {
+    rsAssert(delayFraction >= TTim(0) && delayFraction <= TTim(1), "Delay out of range");
     TSig a  = amplitude;
     TTim d  = delayFraction;
     TTim d2 = d*d;
@@ -555,6 +548,7 @@ public:
 
   void prepareForCorner(TTim delayFraction, TSig amplitude)
   {
+    rsAssert(delayFraction >= TTim(0) && delayFraction <= TTim(1), "Delay out of range");
     TSig a  = amplitude;
     TTim d  = delayFraction;
     TTim d2 = d*d;
@@ -567,6 +561,8 @@ public:
     corrector[1] += a * (-d5/120 + d4/24 - d3/12 + d2/12 - d/24 + 1./120);
     // formulas from (2), table 1
   }
+  // todo: optimize: precompute values that are used multiple times like:
+  // d4_24 = (1./24) * d4; d3_12 = ...
 
   // have different versions: prepareForStepLagrange, prepareForStepBSpline - maybe dispatch in
   // the unspecified ones according to a user option - client code may then choose to bypass

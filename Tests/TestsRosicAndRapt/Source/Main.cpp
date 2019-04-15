@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
   // Generators:
   //blit();
   blep();
-  polyBlep();
+  //polyBlep();
   //bouncillator();
   //bouncillatorFormula();
   //freqVsPhaseMod();
