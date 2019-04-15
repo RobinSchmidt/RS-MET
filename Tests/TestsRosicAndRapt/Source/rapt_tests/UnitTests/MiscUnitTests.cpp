@@ -3,6 +3,41 @@ bool blepUnitTest()
   bool r = true;
 
 
+  rsTableLinBlep<double, double> linBlep;
+  rsTableMinBlep<double, double> minBlep;
+
+
+  // we test various settings for the kernel-length and table precision - this test is only to rule
+  // out access violations (if it doesn't trigger assertions, everything should be fine) but 
+  // doesn't look at the produced signals:
+  int maxLength = 5;   // maximum kernel length
+  int maxPrec   = 5;   // maximum table precision
+  for(int length = 0; length <= maxLength; length++) {
+    for(int prec = 1; prec <= maxPrec; prec++) {
+
+      linBlep.setTablePrecision(prec);
+      minBlep.setTablePrecision(prec);
+
+      linBlep.setLength(length);
+      minBlep.setLength(length);
+
+      // delay = 0:
+      linBlep.prepareForStep(0.0, 1.0);
+      minBlep.prepareForStep(0.0, 1.0);
+
+      // delay = 0.5:
+      linBlep.prepareForStep(0.5, 1.0);
+      minBlep.prepareForStep(0.5, 1.0);
+
+      // delay = 1:
+      linBlep.prepareForStep(1.0, 1.0);
+      minBlep.prepareForStep(1.0, 1.0);
+    }
+  }
+
+  //rsPolyBlep1<double, double> polyBlep1;
+  //rsPolyBlep2<double, double> polyBlep2;
+
   return r;
 }
 
