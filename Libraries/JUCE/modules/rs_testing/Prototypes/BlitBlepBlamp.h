@@ -161,6 +161,7 @@ public:
     blepLength = rsNextEvenNumber(newLength);
     halfLength = blepLength/2;
     bufferSize = rsNextPowerOfTwo(halfLength+1); // why +1?
+    //bufferSize = 2*rsNextPowerOfTwo(halfLength+1); // why +1?
     mask       = bufferSize - 1;
     updateTables();
     allocateBuffers();
@@ -206,7 +207,13 @@ public:
     rsScale(tempBuffer, amplitude); // get rid
     // for the step, we may want to scale the tempBuffer such that the mean is 0.5*amplitude?
 
+    //rsAssert(rsMax(tempBuffer) <= 0.7); // for debug
+
     applyTmpBuffer();
+
+    //rsAssert(rsMax(delayline) <= 0.7); // for debug
+    //rsAssert(rsMax(corrector) <= 0.7); // for debug
+
   }
 
   void prepareForCorner(TTim delayFraction, TSig amplitude)
@@ -248,8 +255,12 @@ protected:
   it anyway may cause access violations)*/
   inline bool shouldReturnEarly(TTim delayFraction)
   {
-    TTim eps = RS_EPS(TTim);
-    return delayFraction >= TTim(1) || halfLength == 0;
+    //return delayFraction == 1;
+
+    return false;  // i guess, we can get rid of that function completely now
+
+    //TTim eps = RS_EPS(TTim);
+    //return delayFraction >= TTim(1) || halfLength == 0;
     //return delayFraction < eps || delayFraction >= TTim(1) || sincLength == 0;
     // maybe we can get rid of this by having one extra sample in blitTbl, etc.
     // maybe when frac == 0.0 or frac == 1.0, one of the loops below should range from 0 to 

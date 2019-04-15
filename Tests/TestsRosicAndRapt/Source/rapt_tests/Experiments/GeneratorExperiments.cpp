@@ -132,11 +132,13 @@ void blep()
   double fs  = 44100;    // sample rate
   //double inc = 19.0/256;  // phase increment per sample
   //double inc = 7.0/512;  // phase increment per sample
-  double inc = GOLDEN_RATIO / 100;
-  int N      = 80000;      // number of samples to produce
-  int shape  = 2;        // 1: saw, 2: square, 3: triangle
+  //double inc = 30. / (93*2);
+  double inc = 1. / 28;
+  //double inc = GOLDEN_RATIO / 10;
+  int N      = 800;      // number of samples to produce
+  int shape  = 1;        // 1: saw, 2: square, 3: triangle
   int prec   = 20;       // table precision
-  int length = 30;       // blep length
+  int length = 1;       // blep length
 
   // try to figure out the periodicity of the rippled cycles - it has to do with how many times we
   // have to loop through through the cycle unitl we are back at the sample branch of the blep
@@ -215,6 +217,8 @@ void blep()
     ylt[n] = linTableBlep.getSample(x[n]);
     ymt[n] = minTableBlep.getSample(x[n]);
 
+    //rsAssert(fabs(ylt[n]) <= 0.7); // for debug
+
     yp1[n] = polyBlep1.getSample(x[n]);
     yp2[n] = polyBlep2.getSample(x[n]);
   }
@@ -225,21 +229,22 @@ void blep()
   createWaveform(&r[0], N, shape, f, fs, 0.0, true);
   r = 0.5 * r;
 
-  // delay compensation:
-  rsArray::shift(&ylt[0], N, -linTableBlep.getDelay()); // linBlep has about 5-times the delay of 
-  rsArray::shift(&ymt[0], N, -minTableBlep.getDelay()); // minBlep
-  rsArray::shift(&yp1[0], N, -polyBlep1.getDelay());
-  rsArray::shift(&yp2[0], N, -polyBlep2.getDelay());
+  //// delay compensation:
+  //rsArray::shift(&ylt[0], N, -linTableBlep.getDelay()); // linBlep has about 5-times the delay of 
+  //rsArray::shift(&ymt[0], N, -minTableBlep.getDelay()); // minBlep
+  //rsArray::shift(&yp1[0], N, -polyBlep1.getDelay());
+  //rsArray::shift(&yp2[0], N, -polyBlep2.getDelay());
 
-  rosic::writeToMonoWaveFile("BlepTestNoAA.wav",   &x[0],   N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestLinTbl.wav", &ylt[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestMinTbl.wav", &ymt[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestPoly1.wav",  &yp1[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestPoly2.wav",  &yp2[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestBL.wav",     &r[0],   N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestNoAA.wav",   &x[0],   N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestLinTbl.wav", &ylt[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestMinTbl.wav", &ymt[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestPoly1.wav",  &yp1[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestPoly2.wav",  &yp2[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestBL.wav",     &r[0],   N, int(fs));
   //rsPlotVector(x);
   //rsPlotVector(r-y);  // error-signal: reference minus blepped
   //rsPlotVectors(x, y);
+  rsPlotVectors(x, ylt);
   //rsPlotVectors(x, ylt, ymt);
   //rsPlotVectors(x, yp1, yp2); 
   //rsPlotVectors(x, ylt, r, r-ylt);
@@ -248,6 +253,11 @@ void blep()
 
   // Observations:
   // Bug: with inc = GOLDEN_RATIO / 100; we see weird spurious spikes with rsTableLinBlep
+  //  inc = 29. / (93*2) - the spurious spikes occur at a distance of 93 samples (the 1st one at 
+  //  94), 30./(93*2) and 28./(93*2) are also interesting - btw - this works also with blepLength=1
+  //  other increments: 1./19, 1./22, 1./23, 1./24, 1./26, 1./27, 1./28
+  // -increasing bufferSize by factor 2 doesn't help
+  //  ...maybe try with a blit
 
   // replacing: rsScale(tempBuffer, TSig(0.5)*amplitude / rsMean(tempBuffer));
   // by:        rsScale(tempBuffer, amplitude );
@@ -301,6 +311,8 @@ void blep()
   // -todo: compare the MinBlep result with an appropriately oversampled version using the same
   //  elliptic filter - should give similar (or even same?) results
   // -todo: try a MinBlit
+
+  // -what if we have multiple steps/corners within one sample?
   
   // maybe implement a hard-syncable blep oscillator for liberty
 
