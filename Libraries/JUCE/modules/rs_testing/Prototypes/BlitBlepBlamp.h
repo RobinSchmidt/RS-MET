@@ -257,6 +257,7 @@ protected:
     // sincLength ...but that's a special case where the last samplemin the loop (at sincLength+1)
     // would evaluate to zero anyway, i think ...tests needed
   }
+  // get rid of that!
 
   /** Reads out the given table (one of blitTbl, blepTbal, blampTbl, etc.) at the given time 
   instant (in samples). */

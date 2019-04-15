@@ -1,3 +1,12 @@
+bool blepUnitTest()
+{
+  bool r = true;
+
+
+  return r;
+}
+
+
 bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, int fftSize, 
   RAPT::rsWindowFunction::WindowType windowType 
   = RAPT::rsWindowFunction::WindowType::hanningZN)

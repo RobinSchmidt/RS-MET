@@ -146,7 +146,7 @@ void blep()
   // - i think we may then also get rid of the unelegant shouldReturnEarly function
   // ..for rsTableMinBlep, we don't get such an access violation
   // ok - i added a guard-sample to the table in rsTableLinBlep - shouldn't the MinBlep also need 
-  // one?
+  // one? -> add unit test - be sure to test limiting cases (delayFraction == 0 and 1)
 
   //double inc = 3./100;  // phase increment per sample
 
