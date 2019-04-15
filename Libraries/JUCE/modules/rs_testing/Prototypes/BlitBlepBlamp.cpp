@@ -157,9 +157,10 @@ template<class TSig, class TTim>
 void rsTableMinBlep<TSig, TTim>::updateTables()
 {
   int L = blepLength * tablePrecision + 1; // why +1? guard for interpolator?
-  blitTbl.resize(L);
-  blepTbl.resize(L);
-  blampTbl.resize(L);
+  int Lg = L+1;                            // ..hmm...no - actually, this +1 here is for the guard
+  blitTbl.resize(Lg);
+  blepTbl.resize(Lg);
+  blampTbl.resize(Lg);
 
   // create temporary elliptic subband filter object - we use its impulse/step/ramp response for
   // the tables (maybe later allow the user to set up the EngineersFilter settings):
@@ -195,6 +196,11 @@ void rsTableMinBlep<TSig, TTim>::updateTables()
   // blarabola: flt.getSample( t^2/2 ) - t^2/2;
   // blubic:    flt.getSample( t^3/6 ) - t^3/6;
   // etc.: t^k / k!
+
+  // the guard samples in the tables just repeat the last actual samples:
+  blitTbl[L]  = blitTbl[L-1];
+  blepTbl[L]  = blepTbl[L-1];
+  blampTbl[L] = blampTbl[L-1];
 
   //rsPlotVectors(blitTbl, blepTbl);
   //rsPlotVectors(blitTbl, blepTbl, blampTbl, wnd);
