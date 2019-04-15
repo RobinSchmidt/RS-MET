@@ -156,8 +156,9 @@ rsTableMinBlep<TSig, TTim>::rsTableMinBlep()
 template<class TSig, class TTim>
 void rsTableMinBlep<TSig, TTim>::updateTables()
 {
-  int L = blepLength * tablePrecision + 1; // why +1? guard for interpolator?
-  int Lg = L+1;                            // ..hmm...no - actually, this +1 here is for the guard
+  int L = blepLength * tablePrecision + 1; // why +1? guard for interpolator? ...nope...but...
+  //int L = blepLength * tablePrecision;   // ...without, it crashes for blepLength == 0
+  int Lg = L+1;                            // this +1 here is for the guard sample
   blitTbl.resize(Lg);
   blepTbl.resize(Lg);
   blampTbl.resize(Lg);
