@@ -268,6 +268,7 @@ protected:
 
     int  i = (int) p;
     TTim f = p - i;
+    rsAssert(i+1 < (int) tbl.size());
     return (1-f) * tbl[i] + f*tbl[i+1]; 
   }
 
@@ -423,8 +424,7 @@ protected:
   {
     rsAssert(delayFraction >= TTim(0) && delayFraction <= TTim(1), "Delay out of range");
 
-    if(delayFraction == 1.0)
-      return;
+    //if(delayFraction == 1.0)  return;
     // we get an access violation in this case -> fix that
 
 
@@ -434,6 +434,7 @@ protected:
     TTim w0 = amplitude * (1-f);              // weight for left table entry (at i)
     TTim w1 = amplitude * f;                  // weight for right table entry (at i+1)
     for(int k = 0; k < blepLength; k++) {
+      rsAssert(i+1 < (int) tbl.size());
       corrector[wrap(bufIndex+k)] += w0 * tbl[i] + w1 * tbl[i+1];
       i += tablePrecision;
     }

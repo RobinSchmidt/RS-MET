@@ -145,6 +145,8 @@ void blep()
   // think, we should give the tables one extra guard sample that repeats the last actual sample 
   // - i think we may then also get rid of the unelegant shouldReturnEarly function
   // ..for rsTableMinBlep, we don't get such an access violation
+  // ok - i added a guard-sample to the table in rsTableLinBlep - shouldn't the MinBlep also need 
+  // one?
 
   //double inc = 3./100;  // phase increment per sample
 
@@ -188,7 +190,7 @@ void blep()
 
     if(osc.getStepAmplitude() != 0.0) // a step did occur
     {
-      //linTableBlep.prepareForStep(osc.getStepDelay(), osc.getStepAmplitude());
+      linTableBlep.prepareForStep(osc.getStepDelay(), osc.getStepAmplitude());
       minTableBlep.prepareForStep(osc.getStepDelay(), osc.getStepAmplitude());
       polyBlep1.prepareForStep(   osc.getStepDelay(), osc.getStepAmplitude());
       polyBlep2.prepareForStep(   osc.getStepDelay(), osc.getStepAmplitude());

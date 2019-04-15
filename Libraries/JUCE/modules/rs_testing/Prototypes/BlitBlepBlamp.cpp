@@ -25,11 +25,12 @@ void rsTableLinBlep<TSig, TTim>::updateTables()
 {
   std::vector<TTim> timeTbl;  // needed temporarily
 
-  int L = 2 * halfLength * tablePrecision + 1; // table length
-  timeTbl.resize(L);
-  blitTbl.resize(L);
-  blepTbl.resize(L);
-  blampTbl.resize(L);
+  int L  = 2 * halfLength * tablePrecision + 1; // nominal table length
+  int Lg = L+1;                                 // table length with guard
+  timeTbl.resize(Lg);
+  blitTbl.resize(Lg);
+  blepTbl.resize(Lg);
+  blampTbl.resize(Lg);
 
   int ic      = (L-1)/2;  // center index
   timeTbl[ic] = TTim(0);  // time axis in samples
@@ -68,7 +69,8 @@ void rsTableLinBlep<TSig, TTim>::updateTables()
 
   // scale it such that the last sample is exactly 1 (the first sample is already exactly zero by
   // construction):
-  rsArray::scale(&blepTbl[0], &blepTbl[0], L, TTim(1)/rsLast(blepTbl));
+  //rsArray::scale(&blepTbl[0], &blepTbl[0], L, TTim(1)/rsLast(blepTbl));*
+  rsArray::scale(&blepTbl[0], &blepTbl[0], L, TTim(1)/blepTbl[L-1]);
 
   // integrate blep to get blamp:
   rsNumericIntegral(&timeTbl[0], &blepTbl[0], &blampTbl[0], L, TTim(0));
@@ -84,6 +86,13 @@ void rsTableLinBlep<TSig, TTim>::updateTables()
     blepTbl[i]  -= 1;
     blampTbl[i] -= timeTbl[i];
   }
+
+  //rsPlotVectors(blitTbl, blepTbl, blampTbl);
+
+  // the guard samples in the tables just repeat the last actual samples:
+  blitTbl[L]  = blitTbl[L-1];
+  blepTbl[L]  = blepTbl[L-1];
+  blampTbl[L] = blampTbl[L-1];
 
   //rsPlotVectors(blitTbl, blepTbl, blampTbl);
 
