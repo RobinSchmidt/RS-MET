@@ -6,10 +6,18 @@ using namespace RAPT;
 // lengths to see, how the quality depends on the length:
 void blit()  
 {
-  double f  = 1000;    // signal frequency
+  double f  = 1001;    // signal frequency
   double fs = 44100;   // sample rate
-  double length = 1.03; // length in seconds
+  double length = 0.1; // length in seconds
   double period = fs/f;
+
+  //// settings that lead to artifacts with the linBlep:
+  //double inc = 1. / 27;  // inc = f/fs
+  //inc = 29. / (93*2);
+  //period = 1/inc;
+  //f  = inc*fs;
+
+
   int N = (int) (fs*length);
 
   int blitLength = 30;     // blit length in samples...16 seems to be a reasonable default value
@@ -42,7 +50,7 @@ void blit()
 
   int numSpikes = 0;
   int nextSpike = 0;
-  double ts = 0.0;  // exact time of spike
+  double ts = 0.0;  // exact time of (next) spike
   double tf = 0.0;  // fractional part of ts
   rsSetZero(ylt);
   linTableBlit.reset();
@@ -60,9 +68,12 @@ void blit()
 
       // housekeeping for next spike:
       numSpikes++;
-      ts += period;
+
+      //ts += period;           // accumulate, but...
+      ts  = numSpikes * period; // ...this is numerically better than accumulation
+
       nextSpike = (int) ceil(numSpikes*period);
-      tf = ts - (nextSpike-1);
+      tf = ts - (nextSpike-1);  // maybe clip to interval [0,1]
     }
     else {
       x[n] = 0;
@@ -77,14 +88,19 @@ void blit()
   rsArray::shift(&ymt[0], N, -minTableBlit.getDelay());
 
   //rsPlotVector(x);
-  //rsPlotVectors(x, ylt, ymt);
+  rsPlotVectors(x, ylt, ymt);
+  //rsPlotVectors(x, ylt);
 
-  rosic::writeToMonoWaveFile("BlitTestNon.wav", &x[0],   N, int(fs));
-  rosic::writeToMonoWaveFile("BlitTestLin.wav", &ylt[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlitTestMin.wav", &ymt[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlitTestNon.wav", &x[0],   N, int(fs));
+  //rosic::writeToMonoWaveFile("BlitTestLin.wav", &ylt[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlitTestMin.wav", &ymt[0], N, int(fs));
 
 
   // Observations:
+  // -when trying settings that lead to spurious spikes with the linBlep, nothing special happens 
+  //  here...aside from the correction signal coming out as all-zeros everytime a spike occurs
+  //  ...could this be a hint? ..well..no - that hanppens only when inc = 1./n for some integer n
+
   // -the quality does not really seem to increase with increasing order - look at the spectra with
   //  linear freq axis - the higher the order, the more side-maxima occur in the noise-floor
   //  -maybe that's because of the simple rectabgular window? ...try better windows
