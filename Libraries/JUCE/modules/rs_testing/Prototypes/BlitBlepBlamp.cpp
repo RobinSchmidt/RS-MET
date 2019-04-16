@@ -83,11 +83,17 @@ void rsTableLinBlep<TSig, TTim>::updateTables()
   // integrals - because the continuous delta distribution is not actually a function ...or 
   // something like that:
   for(int i = ic; i < L; i++) {
-    blepTbl[i]  -= 1;
+    //blepTbl[i]  -= 1;
     blampTbl[i] -= timeTbl[i];
   }
-  blepTbl[ic] = 0;  // is this correct? supposed to fix spurious peaks when linearly interpolating
-                    // the table at the discontinuity (of the table)
+  //blepTbl[ic] = 0;  
+  // is this correct? supposed to fix spurious peaks when linearly interpolating
+  // the table at the discontinuity (of the table)
+
+  // OK - it seems that also for the blep, we cannot just tabulate the residual because the 
+  // residual contains a discontinuity which causes artifacts when trying to linearly interpolate
+  // the residual-table near this discontinuity - so for the moment, we also store the blep 
+  // directly and obtain the residual in the discrete time domain
 
 
   //rsPlotVectors(blitTbl, blepTbl, blampTbl);

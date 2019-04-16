@@ -212,6 +212,12 @@ public:
 
     applyTmpBuffer();
 
+
+    // this is needed when not the blep-residual but the blep itself is tabulated:
+    for(int i = 0; i < halfLength; i++) 
+      corrector[wrap(bufIndex + i)] -= amplitude; 
+
+
     //rsAssert(rsMax(delayline) <= 0.7); // for debug
     //rsAssert(rsMax(corrector) <= 0.7); // for debug
 
