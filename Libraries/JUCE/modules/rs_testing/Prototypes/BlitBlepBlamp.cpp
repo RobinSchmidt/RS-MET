@@ -86,6 +86,9 @@ void rsTableLinBlep<TSig, TTim>::updateTables()
     blepTbl[i]  -= 1;
     blampTbl[i] -= timeTbl[i];
   }
+  blepTbl[ic] = 0;  // is this correct? supposed to fix spurious peaks when linearly interpolating
+                    // the table at the discontinuity (of the table)
+
 
   //rsPlotVectors(blitTbl, blepTbl, blampTbl);
 

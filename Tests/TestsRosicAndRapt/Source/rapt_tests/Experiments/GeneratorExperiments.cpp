@@ -149,8 +149,8 @@ void blep()
   //double inc = 19.0/256;  // phase increment per sample
   //double inc = 7.0/512;  // phase increment per sample
   //double inc = 30. / (93*3);
-  //double inc = 1. / 19;
-  double inc = GOLDEN_RATIO / 10;
+  double inc = 1. / 19;
+  //double inc = GOLDEN_RATIO / 10;
   int N      = 800;      // number of samples to produce
   int shape  = 2;        // 1: saw, 2: square, 3: triangle
   int prec   = 20;       // table precision
@@ -288,6 +288,8 @@ void blep()
   //  to the blep and even then it's questionable - maybe it would be better to not store the 
   //  residual but the blep itself - the problem is the linear interpolation around the 
   //  discontinuity in the table
+  // -it jumps from +0.445 to -0.5 (with prec=20) ...would it help to use an odd number of samples
+  //  and insert 0 at the discontinuity (creating a symmetric table)?
 
   // replacing: rsScale(tempBuffer, TSig(0.5)*amplitude / rsMean(tempBuffer));
   // by:        rsScale(tempBuffer, amplitude );
