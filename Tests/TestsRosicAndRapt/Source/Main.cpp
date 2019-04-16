@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
   //particleSystem();
 
   // Generators:
-  blit();
+  //blit();
   blep();
   //polyBlep();
   //bouncillator();

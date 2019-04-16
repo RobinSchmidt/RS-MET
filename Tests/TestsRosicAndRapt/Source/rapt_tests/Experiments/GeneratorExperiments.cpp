@@ -148,13 +148,13 @@ void blep()
   double fs  = 44100;    // sample rate
   //double inc = 19.0/256;  // phase increment per sample
   //double inc = 7.0/512;  // phase increment per sample
-  //double inc = 30. / (93*2);
-  double inc = 1. / 28;
-  //double inc = GOLDEN_RATIO / 10;
+  //double inc = 30. / (93*3);
+  //double inc = 1. / 19;
+  double inc = GOLDEN_RATIO / 10;
   int N      = 800;      // number of samples to produce
-  int shape  = 1;        // 1: saw, 2: square, 3: triangle
+  int shape  = 2;        // 1: saw, 2: square, 3: triangle
   int prec   = 20;       // table precision
-  int length = 1;       // blep length
+  int length = 6;       // blep length
 
   // try to figure out the periodicity of the rippled cycles - it has to do with how many times we
   // have to loop through through the cycle unitl we are back at the sample branch of the blep
@@ -245,11 +245,11 @@ void blep()
   createWaveform(&r[0], N, shape, f, fs, 0.0, true);
   r = 0.5 * r;
 
-  //// delay compensation:
-  //rsArray::shift(&ylt[0], N, -linTableBlep.getDelay()); // linBlep has about 5-times the delay of 
-  //rsArray::shift(&ymt[0], N, -minTableBlep.getDelay()); // minBlep
-  //rsArray::shift(&yp1[0], N, -polyBlep1.getDelay());
-  //rsArray::shift(&yp2[0], N, -polyBlep2.getDelay());
+  // delay compensation:
+  rsArray::shift(&ylt[0], N, -linTableBlep.getDelay()); // linBlep has about 5-times the delay of 
+  rsArray::shift(&ymt[0], N, -minTableBlep.getDelay()); // minBlep
+  rsArray::shift(&yp1[0], N, -polyBlep1.getDelay());
+  rsArray::shift(&yp2[0], N, -polyBlep2.getDelay());
 
   //rosic::writeToMonoWaveFile("BlepTestNoAA.wav",   &x[0],   N, int(fs));
   //rosic::writeToMonoWaveFile("BlepTestLinTbl.wav", &ylt[0], N, int(fs));
@@ -273,7 +273,21 @@ void blep()
   //  94), 30./(93*2) and 28./(93*2) are also interesting - btw - this works also with blepLength=1
   //  other increments: 1./19, 1./22, 1./23, 1./24, 1./26, 1./27, 1./28
   // -increasing bufferSize by factor 2 doesn't help
-  //  ...maybe try with a blit
+  //  ...maybe try with a blit - with the blit, there don't seem to be problems
+  // -with inc = 1./19, the downward steps are correct, the upward steps (except the initial one) 
+  //  have an additional downward spike -> look at w´how upward and downward correctors differ
+  // -with inc = 1./38, all steps (exept the initial) are wrong
+  // -interestingly, we call prepareForStep at sample 0 and sample 1...that seems to be wrong, too
+  //  but is probably unrelated
+  // -the tempBuffer is clearly showing these additional spikes
+  // -could it be related to reading out the table near the center (time = 0) where the *table* 
+  //  itself has a jump?
+  // -ok - yes - this seems indeed to be the culprit - adding
+  //    if( i == halfLength*tablePrecision - 1 ) return 0;
+  //  to readTable seems to fix it - but this not yet a proper solution - it's only applicable
+  //  to the blep and even then it's questionable - maybe it would be better to not store the 
+  //  residual but the blep itself - the problem is the linear interpolation around the 
+  //  discontinuity in the table
 
   // replacing: rsScale(tempBuffer, TSig(0.5)*amplitude / rsMean(tempBuffer));
   // by:        rsScale(tempBuffer, amplitude );

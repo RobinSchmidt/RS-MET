@@ -203,6 +203,7 @@ public:
     rsAssert(delayFraction >= TTim(0) && delayFraction <= TTim(1), "Delay out of range");
     if(shouldReturnEarly(delayFraction))
       return;
+
     fillTmpBuffer(delayFraction, amplitude, blepTbl);
     rsScale(tempBuffer, amplitude); // get rid
     // for the step, we may want to scale the tempBuffer such that the mean is 0.5*amplitude?
@@ -213,6 +214,10 @@ public:
 
     //rsAssert(rsMax(delayline) <= 0.7); // for debug
     //rsAssert(rsMax(corrector) <= 0.7); // for debug
+
+    //rsStemPlot(tempBuffer);
+    //rsStemPlot(delayline);
+    //rsStemPlot(corrector);
 
   }
 
@@ -279,6 +284,19 @@ protected:
     // origin - i.e. the center-index of blitTbl corresponds to time = 0
 
     int  i = (int) p;
+
+
+    // test - should be done only for the blep-table because at this position, the table itself 
+    // makes a jump in value, leading to spurious peaks in the output signal:
+    //if( i == halfLength*tablePrecision - 1 )
+    //  return 0;
+    // ok - this seems to help - but is it really the right thing to do? actually correct would be
+    // to linearly interpolate the blep itself (not the blep-residual) and the subtract the ideal
+    // step in the discrete time domain - but this is a lot of additional computation - how can we
+    // have the best of the two approaches?
+
+
+
     TTim f = p - i;
     rsAssert(i+1 < (int) tbl.size());
     return (1-f) * tbl[i] + f*tbl[i+1]; 
@@ -296,6 +314,8 @@ protected:
     // todo: optimize this - in each iteration of the loops, the "f" value in the called 
     // readTable function is the same - we don't need to recompute it in each iteration
     // also, use a single loop instead of two
+
+    //rsStemPlot(tempBuffer);
 
     // todo: use the "amplitude" to scale values returned from readTable - avoid doing that in
     // prepareFor...
