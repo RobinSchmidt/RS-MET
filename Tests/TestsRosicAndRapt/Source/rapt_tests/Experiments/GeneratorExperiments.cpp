@@ -149,12 +149,12 @@ void blep()
   //double inc = 19.0/256;  // phase increment per sample
   //double inc = 7.0/512;  // phase increment per sample
   //double inc = 30. / (93*3);
-  double inc = 1. / 19;
-  //double inc = GOLDEN_RATIO / 10;
-  int N      = 800;      // number of samples to produce
+  //double inc = 1. / 19;
+  double inc = GOLDEN_RATIO / 100;
+  int N      = 80000;      // number of samples to produce
   int shape  = 2;        // 1: saw, 2: square, 3: triangle
   int prec   = 20;       // table precision
-  int length = 6;       // blep length
+  int length = 30;       // blep length
 
   // try to figure out the periodicity of the rippled cycles - it has to do with how many times we
   // have to loop through through the cycle unitl we are back at the sample branch of the blep
@@ -251,16 +251,16 @@ void blep()
   rsArray::shift(&yp1[0], N, -polyBlep1.getDelay());
   rsArray::shift(&yp2[0], N, -polyBlep2.getDelay());
 
-  //rosic::writeToMonoWaveFile("BlepTestNoAA.wav",   &x[0],   N, int(fs));
-  //rosic::writeToMonoWaveFile("BlepTestLinTbl.wav", &ylt[0], N, int(fs));
-  //rosic::writeToMonoWaveFile("BlepTestMinTbl.wav", &ymt[0], N, int(fs));
-  //rosic::writeToMonoWaveFile("BlepTestPoly1.wav",  &yp1[0], N, int(fs));
-  //rosic::writeToMonoWaveFile("BlepTestPoly2.wav",  &yp2[0], N, int(fs));
-  //rosic::writeToMonoWaveFile("BlepTestBL.wav",     &r[0],   N, int(fs));
+  rosic::writeToMonoWaveFile("BlepTestNoAA.wav",   &x[0],   N, int(fs));
+  rosic::writeToMonoWaveFile("BlepTestLinTbl.wav", &ylt[0], N, int(fs));
+  rosic::writeToMonoWaveFile("BlepTestMinTbl.wav", &ymt[0], N, int(fs));
+  rosic::writeToMonoWaveFile("BlepTestPoly1.wav",  &yp1[0], N, int(fs));
+  rosic::writeToMonoWaveFile("BlepTestPoly2.wav",  &yp2[0], N, int(fs));
+  rosic::writeToMonoWaveFile("BlepTestBL.wav",     &r[0],   N, int(fs));
   //rsPlotVector(x);
   //rsPlotVector(r-y);  // error-signal: reference minus blepped
   //rsPlotVectors(x, y);
-  rsPlotVectors(x, ylt);
+  //rsPlotVectors(x, ylt);
   //rsPlotVectors(x, ylt, ymt);
   //rsPlotVectors(x, yp1, yp2); 
   //rsPlotVectors(x, ylt, r, r-ylt);
@@ -290,6 +290,10 @@ void blep()
   //  discontinuity in the table
   // -it jumps from +0.445 to -0.5 (with prec=20) ...would it help to use an odd number of samples
   //  and insert 0 at the discontinuity (creating a symmetric table)?
+  // -adding blepTbl[ic] = 0; to updateTables gets rid of the spikes but derivative-discontinuities
+  //  remain
+  // -todo: try to store the blep itself instead of the residual and create residual in discrete
+  //  time domain
 
   // replacing: rsScale(tempBuffer, TSig(0.5)*amplitude / rsMean(tempBuffer));
   // by:        rsScale(tempBuffer, amplitude );
