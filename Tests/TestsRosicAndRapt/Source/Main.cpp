@@ -90,6 +90,8 @@ int main(int argc, char* argv[])
   //poleZeroPrototype();  // new implementation - but we don't need that
 
   // Physics:
+
+  heatEquation1D();
   //particleForceDistanceLaw();
   //particleSystem();
 

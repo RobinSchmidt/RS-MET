@@ -3,6 +3,8 @@
 
 #include "../../Shared/Shared.h"
 
+
+void heatEquation1D();
 void particleForceDistanceLaw();
 void particleSystem();            // move to PhysicsExperiments
 

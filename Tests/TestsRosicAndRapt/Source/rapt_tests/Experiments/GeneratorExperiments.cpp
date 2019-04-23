@@ -482,6 +482,13 @@ void polyBlep()
 }
 
 
+void heatEquation1D()
+{
+  rsHeatEquation1D<double> hteq;
+
+
+  GNUPlotter plt;
+}
 
 
 // maybe to really challenge the blep/blamp class, try to hardsync a sinewave and try to anti-alias
