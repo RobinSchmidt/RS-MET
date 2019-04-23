@@ -2504,6 +2504,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\Optimization.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\RootFinder.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2529,6 +2532,27 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Physics\Physics.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Spectral\HarmonicAnalyzer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Spectral\SinusoidalAnalyzer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Spectral\SinusoidalModel.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Spectral\SinusoidalProcessor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Spectral\SinusoidalSynthesizer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Spectral\Spectral.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Spectral\Spectrogram.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Analysis.cpp">
@@ -2666,22 +2690,10 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\WindowFunctions.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\HarmonicAnalyzer.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\MiscUnfinished.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SampleManipulation.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalModel.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalSynthesizer.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Spectrogram.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.cpp">
@@ -4995,6 +5007,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\Interpolation.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\NumericCalculus.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\Optimization.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\RootFinder.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Matrix.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Polynomial.h"/>
@@ -5004,6 +5017,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Modulators.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Physics\ParticleSystem.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Physics\Physics.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Spectral\HarmonicAnalyzer.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Spectral\SinusoidalAnalyzer.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Spectral\SinusoidalModel.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Spectral\SinusoidalProcessor.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Spectral\SinusoidalSynthesizer.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Spectral\Spectral.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Spectral\Spectrogram.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Analysis.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\ArrayFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Math.h"/>
@@ -5055,12 +5075,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\SlewRateLimiter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\SlewRateLimiterLinear.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\MiscAudio\WindowFunctions.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\HarmonicAnalyzer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\MiscUnfinished.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SampleManipulation.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalModel.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\SinusoidalSynthesizer.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Sampling\Spectrogram.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\AlphaMask.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\Image.h"/>

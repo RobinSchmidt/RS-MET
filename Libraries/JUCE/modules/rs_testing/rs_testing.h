@@ -35,6 +35,7 @@
 
 #include "Prototypes/BlitBlepBlamp.h"
 #include "Prototypes/BlepBlampOscs.h"
+#include "Prototypes/PartialDifferentialEquations.h"
 
 #include "Experiments/MiscExperiments.h"
 

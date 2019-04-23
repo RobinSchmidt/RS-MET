@@ -13,6 +13,7 @@ header files that the compiler may be using. */
 
 #include "Prototypes/BlitBlepBlamp.cpp"
 #include "Prototypes/BlepBlampOscs.cpp"
+#include "Prototypes/PartialDifferentialEquations.cpp"
 
 #include "Experiments/MiscExperiments.cpp"
 
