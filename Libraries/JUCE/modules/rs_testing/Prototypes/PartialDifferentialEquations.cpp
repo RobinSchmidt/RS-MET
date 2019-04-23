@@ -18,6 +18,19 @@ void rsHeatEquation1D<T>::setHeatDistribution(T* d, int N)
 }
 
 template<class T>
+void rsHeatEquation1D<T>::setRandomHeatDistribution(int seed, int N)
+{
+  // todo: allow different probability densities for the prng
+
+  rsAssert( N <= (int) rodArray1.size() );
+  rodLength = N;
+  rsNoiseGenerator<T> prng;
+  prng.setSeed(seed);
+  for(int i = 0; i < N; i++)
+    rodIn[i] = prng.getSample();
+}
+
+template<class T>
 void rsHeatEquation1D<T>::normalizeHeatDistribution(T targetMean, T targetVariance)
 {
   // set mean to desired target value (maybe factor out):

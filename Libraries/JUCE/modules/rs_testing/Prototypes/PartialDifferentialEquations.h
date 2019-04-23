@@ -26,6 +26,8 @@ public:
   /** Sets up an (initial) heat distribution for the rod. */
   void setHeatDistribution(T* newDistribution, int rodLength);
 
+  void setRandomHeatDistribution(int seed, int rodLength);
+
   /** Normalizes the current heat distribution in the rod to have the given mean and variance. 
   Note that the default mean-value of zero implies that we may have unphysical negative heat 
   values - but that's okay because we want to generate audio signals and don't care about the 
@@ -61,7 +63,7 @@ public:
     else
       neighborhood = T(0.5) * ( rodIn[sampleCount-1] + rodIn[sampleCount+1] );
     T delta = neighborhood - out;
-    rodOut[sampleCount] += diffusionCoeff * delta; // or -= ?
+    rodOut[sampleCount] = rodIn[sampleCount] + diffusionCoeff * delta;
     // Maybe factor out and/or have other ways of handling the ends (for example cyclically, 
     // clamped, etc.). Currently, we handle the ends by just leaving out the mean-computation and 
     // just adjusting the end-element in the direction to its single neighbor element
@@ -69,7 +71,7 @@ public:
 
     // update counter and return output:
     sampleCount++;
-    if(sampleCount == rodLength-1) {
+    if(sampleCount == rodLength) {
       sampleCount = 0;
       rsSwap(rodIn, rodOut);
     }
@@ -92,7 +94,7 @@ protected:
 
   int sampleCount = 0;
 
-  T diffusionCoeff;
+  T diffusionCoeff = 0;
 
 
   T *rodIn, *rodOut;

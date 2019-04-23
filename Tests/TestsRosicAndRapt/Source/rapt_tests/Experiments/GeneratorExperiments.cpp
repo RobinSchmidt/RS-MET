@@ -484,10 +484,23 @@ void polyBlep()
 
 void heatEquation1D()
 {
+  int fs = 44100;
+  int N  = 2000;    // number of samples
+
   rsHeatEquation1D<double> hteq;
+  hteq.setMaxCycleLength(2048);
+  hteq.setDiffusionCoefficient(0.25);
+  hteq.setRandomHeatDistribution(0, 100);
+
+  std::vector<double> y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = hteq.getSample();
 
 
-  GNUPlotter plt;
+
+  rsPlotVector(y);
+  
+  //GNUPlotter plt;
 }
 
 
