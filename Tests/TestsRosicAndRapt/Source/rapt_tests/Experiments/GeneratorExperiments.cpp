@@ -485,12 +485,12 @@ void polyBlep()
 void heatEquation1D()
 {
   int fs = 44100;
-  int N  = 2000;    // number of samples
+  int N  = 100000;    // number of samples
 
   rsHeatEquation1D<double> hteq;
   hteq.setMaxCycleLength(2048);
-  hteq.setDiffusionCoefficient(0.25);
-  hteq.setRandomHeatDistribution(0, 100);
+  hteq.setDiffusionCoefficient(1.0);
+  hteq.setRandomHeatDistribution(0, 441);
 
   std::vector<double> y(N);
   for(int n = 0; n < N; n++)
@@ -498,7 +498,11 @@ void heatEquation1D()
 
 
 
-  rsPlotVector(y);
+  //rsPlotVector(y);
+  rosic::writeToMonoWaveFile("HeatEquation1D.wav", &y[0], N, fs);
+
+  // it's buzzy and there's a parasitic oscillation at the Nyquist freq.
+  // -buzz is probably because of end-handling (try cyclic end-handling to get rid of the buzz)
   
   //GNUPlotter plt;
 }
