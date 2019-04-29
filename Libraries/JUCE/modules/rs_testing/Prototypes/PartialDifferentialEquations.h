@@ -28,6 +28,11 @@ public:
 
   void setRandomHeatDistribution(int seed, int rodLength);
 
+  void setTwoValueDistribution(T highFraction, int rodLength);
+
+
+
+
   /** Normalizes the current heat distribution in the rod to have the given mean and variance. 
   Note that the default mean-value of zero implies that we may have unphysical negative heat 
   values - but that's okay because we want to generate audio signals and don't care about the 
@@ -56,12 +61,29 @@ public:
 
     // update of a single rod-element:
     T neighborhood;
+
+    
+    // cyclic end-handling:
     if(sampleCount == 0)
-      neighborhood = rodIn[sampleCount+1];
+      neighborhood = T(0.5) * (rodIn[rodLength-1] + rodIn[1]);
+    else if(sampleCount == rodLength-1) 
+      neighborhood = T(0.5) * (rodIn[rodLength-2] + rodIn[0]);
+    else
+      neighborhood = T(0.5) * (rodIn[sampleCount-1] + rodIn[sampleCount+1]);
+
+
+    /*
+    if(sampleCount == 0)
+      neighborhood = rodIn[1];
     else if(sampleCount == rodLength-1)      // maybe have rodLength-1 as member
-      neighborhood = rodIn[sampleCount-1];
+      neighborhood = rodIn[rodLength-2];
     else
       neighborhood = T(0.5) * ( rodIn[sampleCount-1] + rodIn[sampleCount+1] );
+    */
+    
+
+
+
     T delta = neighborhood - out;
     rodOut[sampleCount] = rodIn[sampleCount] + diffusionCoeff * delta;
     // Maybe factor out and/or have other ways of handling the ends (for example cyclically, 

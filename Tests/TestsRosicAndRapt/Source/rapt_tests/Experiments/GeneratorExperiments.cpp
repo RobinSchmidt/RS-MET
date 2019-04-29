@@ -485,12 +485,14 @@ void polyBlep()
 void heatEquation1D()
 {
   int fs = 44100;
-  int N  = 100000;    // number of samples
+  int N  = 2000;    // number of samples
 
   rsHeatEquation1D<double> hteq;
   hteq.setMaxCycleLength(2048);
   hteq.setDiffusionCoefficient(1.0);
-  hteq.setRandomHeatDistribution(0, 441);
+  //hteq.setRandomHeatDistribution(2, 50);
+  hteq.setTwoValueDistribution(0.45, 50); 
+  hteq.normalizeHeatDistribution();
 
   std::vector<double> y(N);
   for(int n = 0; n < N; n++)
@@ -498,11 +500,18 @@ void heatEquation1D()
 
 
 
-  //rsPlotVector(y);
-  rosic::writeToMonoWaveFile("HeatEquation1D.wav", &y[0], N, fs);
+  rsPlotVector(y);
+  //rosic::writeToMonoWaveFile("HeatEquation1D.wav", &y[0], N, fs);
 
   // it's buzzy and there's a parasitic oscillation at the Nyquist freq.
   // -buzz is probably because of end-handling (try cyclic end-handling to get rid of the buzz)
+  // -i think, the parasitic oscillation was due to choosing 1.0 as diffusion coeff - maybe it must
+  //  be strictly less than 1
+  //  hmmm...with 0.95, there's still s little bit of tha oscillation in the transient
+  // -different seeds give wildly different sounds - maybe try a random phase-spectrum with defined
+  //  magnitude sprectrum
+  // -with cyclic end-handling, it converges to some non-zero DC
+
   
   //GNUPlotter plt;
 }

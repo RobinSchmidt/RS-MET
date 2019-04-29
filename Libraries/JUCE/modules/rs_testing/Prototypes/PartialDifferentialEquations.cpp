@@ -13,6 +13,7 @@ void rsHeatEquation1D<T>::setHeatDistribution(T* d, int N)
 {
   rsAssert( N <= (int) rodArray1.size() );
   rodLength = N;
+
   for(int i = 0; i < N; i++)
     rodIn[i] = d[i];
 }
@@ -20,15 +21,31 @@ void rsHeatEquation1D<T>::setHeatDistribution(T* d, int N)
 template<class T>
 void rsHeatEquation1D<T>::setRandomHeatDistribution(int seed, int N)
 {
-  // todo: allow different probability densities for the prng
-
   rsAssert( N <= (int) rodArray1.size() );
   rodLength = N;
+
+  // todo: allow different probability densities for the prng
+
+
+
   rsNoiseGenerator<T> prng;
   prng.setSeed(seed);
   for(int i = 0; i < N; i++)
     rodIn[i] = prng.getSample();
 }
+
+
+template<class T>
+void rsHeatEquation1D<T>::setTwoValueDistribution(T highFraction, int N)
+{
+  rsAssert( N <= (int) rodArray1.size() );
+  rodLength = N;
+
+  int nh = (int) round(highFraction*N);
+  for(int i = 0; i < nh; i++) rodIn[i] = +1.0;
+  for(int i = nh; i < N; i++) rodIn[i] = -1.0;
+}
+
 
 template<class T>
 void rsHeatEquation1D<T>::normalizeHeatDistribution(T targetMean, T targetVariance)
