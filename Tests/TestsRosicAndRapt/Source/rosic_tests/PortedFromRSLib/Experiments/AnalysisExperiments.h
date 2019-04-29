@@ -22,6 +22,7 @@ void instantaneousFrequency();
 void instantaneousPhase();
 
 void maxShortTimeRMS();
+void arrayRMS();
 
 void zeroCrossingFinder();
 void zeroCrossingFinder2();
@@ -30,6 +31,7 @@ void cycleMarkFinder();
 void cycleMarkErrors();
 void zeroCrossingPitchDetector();
 void zeroCrossingPitchDetectorTwoTones();
+
 
 
 

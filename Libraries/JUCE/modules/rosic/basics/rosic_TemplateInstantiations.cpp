@@ -46,6 +46,7 @@ template void RAPT::dfst(int, double *, double *, int *, double *);
 
 
 template void RAPT::rsArray::fillWithRandomValues(rsFloat32x4* x, int N, double min, double max, int seed);
+template double RAPT::rsArray::meanSquare(const double *x, int N);
 
 template class RAPT::rsMatrixView<double>;
 template class RAPT::rsMatrixNew<double>;

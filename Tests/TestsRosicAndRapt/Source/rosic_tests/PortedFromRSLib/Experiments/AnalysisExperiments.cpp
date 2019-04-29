@@ -664,6 +664,16 @@ void maxShortTimeRMS()
   int dummy = 0;
 }
 
+void arrayRMS()
+{
+  int N = 100000;
+  std::vector<double> x = createSineWave(N, 1000.0, 48000.0);
+  double rms = RAPT::rsArray::rootMeanSquare(&x[0], N); // 48 samples = 1 cycle, rms = 1/sqrt(2)
+  int dummy = 0;
+}
+
+
+
 // convenience function to make the zero-crossing finding work for plain arrays (as required for
 // plotting)
 void upwardZeroCrossings(double *x, int N, double *z, int Nz, int p)

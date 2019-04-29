@@ -225,6 +225,7 @@ int main(int argc, char* argv[])
   //instantaneousFrequency();
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
   //maxShortTimeRMS();
+  arrayRMS();
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
   //zeroCrossingFinder3();
@@ -232,6 +233,7 @@ int main(int argc, char* argv[])
   //cycleMarkErrors();
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
+
 
   // Delay:
   //basicIntegerDelayLine();
