@@ -91,14 +91,15 @@ int main(int argc, char* argv[])
 
   // Physics:
 
-  heatEquation1D();
+  //heatEquation1D();
   //particleForceDistanceLaw();
   //particleSystem();
 
   // Generators:
   //blit();
-  blep();
+  //blep();
   //polyBlep();
+  dualBlepOsc();
   //bouncillator();
   //bouncillatorFormula();
   //freqVsPhaseMod();

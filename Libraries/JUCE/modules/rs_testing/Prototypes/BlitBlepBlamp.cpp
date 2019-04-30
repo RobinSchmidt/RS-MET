@@ -159,7 +159,7 @@ void rsTableLinBlep<TSig, TTim>::reset()
 template<class TSig, class TTim>
 rsTableMinBlep<TSig, TTim>::rsTableMinBlep()
 {
-  setLength(20);
+  setLength(32);
 }
 
 template<class TSig, class TTim>

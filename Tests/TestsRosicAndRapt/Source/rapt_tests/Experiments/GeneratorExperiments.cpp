@@ -481,6 +481,41 @@ void polyBlep()
   // ...but i think, that doesn't  work out, too...more research needed....
 }
 
+void dualBlepOsc()
+{
+  int N = 50000;
+  double fs = 44100;
+  double f1 = 200;
+  double f2 = f1 * GOLDEN_RATIO;
+  double a  = 0.5;                 // amplitude
+
+
+  // create and set up dual osc:
+  //typedef rsDualBlepOsc<double, rsPolyBlep2<double, double>> DBO;
+  typedef rsDualBlepOsc<double, rsTableMinBlep<double, double>> DBO;
+  DBO dualOsc;
+  dualOsc.setPhaseIncrement1(f1/fs);
+  dualOsc.setPhaseIncrement2(f2/fs);
+  dualOsc.setSync12(true);
+
+
+  // generate both output channels and their sum:
+  std::vector<double> x1(N), x2(N), x(N);;
+  for(int n = 0; n < N; n++) {
+    dualOsc.getSamplePair(&x1[n], &x2[n]);
+    x1[n] *= a;
+    x2[n] *= a;
+    x[n] = x1[n] + x2[n];
+  }
+
+  // plot and/or write wavefile:
+  //rsPlotVectors(x1, x2, x);
+  rosic::writeToStereoWaveFile("DualBlepOsc.wav",  &x1[0], &x2[0], N, (int) fs);
+  rosic::writeToMonoWaveFile(  "DualBlepOsc2.wav", &x2[0],         N, (int) fs);
+
+
+  int dummy = 0;
+}
 
 void heatEquation1D()
 {

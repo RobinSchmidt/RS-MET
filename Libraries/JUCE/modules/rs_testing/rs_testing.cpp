@@ -29,6 +29,9 @@ template class rsTableLinBlep<double, double>;
 template class rsTableMinBlep<double, double>;
 template class rsBlepReadyOsc<double>;
 template class rsBlampReadyOsc<double>;
+
 template class rsDualBlepOsc<double, rsPolyBlep2<double, double>>;
+template class rsDualBlepOsc<double, rsTableMinBlep<double, double>>;
+
 
 template class rsHeatEquation1D<double>;

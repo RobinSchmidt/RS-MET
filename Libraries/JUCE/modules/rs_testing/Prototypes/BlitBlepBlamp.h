@@ -502,6 +502,8 @@ class rsPolyBlep1
 public:
 
 
+  rsPolyBlep1() { reset(); }
+
   int getDelay() { return 1; }
 
 
@@ -571,6 +573,7 @@ class rsPolyBlep2
 
 public:
 
+  rsPolyBlep2() { reset(); }
 
   int getDelay() { return 2; }
 
