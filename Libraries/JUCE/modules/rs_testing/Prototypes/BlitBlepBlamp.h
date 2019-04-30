@@ -505,6 +505,10 @@ public:
   int getDelay() { return 1; }
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+
   //void prepareForImpulse(TTim delayFraction, TSig amplitude);
 
   void prepareForStep(TTim delayFraction, TSig amplitude)
@@ -525,7 +529,6 @@ public:
     // and along with them also the formula for this case
   }
 
-
   /** Produces one sample at a time. */
   inline TSig getSample(TSig in)
   {
@@ -534,6 +537,14 @@ public:
     corrector = TSig(0);
     return out;
   }
+
+  /** Resets the state of the object. */
+  inline void reset()
+  {
+    delayed   = TSig(0);
+    corrector = TSig(0);
+  }
+
 
 protected:
 
@@ -563,6 +574,9 @@ public:
 
   int getDelay() { return 2; }
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
   //void prepareForImpulse(TTim delayFraction, TSig amplitude);
 
@@ -617,6 +631,15 @@ public:
     corrector[0] = corrector[1];
     corrector[1] = TSig(0);
     return out;
+  }
+
+  /** Resets the state of the object. */
+  inline void reset()
+  {
+    delayed[0]   = TSig(0);
+    delayed[1]   = TSig(0);
+    corrector[0] = TSig(0);
+    corrector[1] = TSig(0);
   }
 
 protected:

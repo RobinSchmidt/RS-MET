@@ -2323,6 +2323,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\BlitBlepBlamp.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\OscDrivers.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\PartialDifferentialEquations.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3138,6 +3141,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Experiments\MiscExperiments.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\BlepBlampOscs.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\BlitBlepBlamp.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\OscDrivers.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\PartialDifferentialEquations.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\DSPPlotters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\TestTools\Plotting.h"/>

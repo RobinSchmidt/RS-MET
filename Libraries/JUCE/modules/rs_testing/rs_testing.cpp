@@ -13,6 +13,7 @@ header files that the compiler may be using. */
 
 #include "Prototypes/BlitBlepBlamp.cpp"
 #include "Prototypes/BlepBlampOscs.cpp"
+#include "Prototypes/OscDrivers.cpp"
 #include "Prototypes/PartialDifferentialEquations.cpp"
 
 #include "Experiments/MiscExperiments.cpp"
@@ -28,5 +29,6 @@ template class rsTableLinBlep<double, double>;
 template class rsTableMinBlep<double, double>;
 template class rsBlepReadyOsc<double>;
 template class rsBlampReadyOsc<double>;
+template class rsDualBlepOsc<double, rsPolyBlep2<double, double>>;
 
 template class rsHeatEquation1D<double>;

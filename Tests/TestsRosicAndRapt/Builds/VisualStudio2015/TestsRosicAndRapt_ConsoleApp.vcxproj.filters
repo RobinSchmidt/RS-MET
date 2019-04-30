@@ -2560,6 +2560,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\BlitBlepBlamp.cpp">
       <Filter>Juce Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\OscDrivers.cpp">
+      <Filter>Juce Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\PartialDifferentialEquations.cpp">
       <Filter>Juce Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
@@ -4975,6 +4978,9 @@
       <Filter>Juce Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\BlitBlepBlamp.h">
+      <Filter>Juce Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\OscDrivers.h">
       <Filter>Juce Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rs_testing\Prototypes\PartialDifferentialEquations.h">

@@ -132,11 +132,18 @@ public:
 
 protected:
 
-
-  T start = 0.5;   // start positon
   T pos   = 0.5;   // position/phase in the range [0,1)
   T inc   = 0;     // phase increment per sample
+
+
+
+  T start = 0.5;   // start positon
   T amp   = 1;     // amplitude
+  // maybe get rid of these two variables, handle start by passing it as parameter to reset - makes
+  // the classe's memory footprint smaller - relevant when we use arrays of oscs later
+
+
+
 
   // Values for discontinuities - when the stepAmp is nonzero, it means that a step discontinuity 
   // has occured and stepDelay will contain the corresponding fractional delay. An outlying driver 
