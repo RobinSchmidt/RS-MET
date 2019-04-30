@@ -33,18 +33,21 @@ public:
 
   //inline void setAmplitude(T newAmplitude) { amp = newAmplitude; }
 
-  inline void setStartPosition(T newPosition)
-  {
-    start = newPosition;
-  }
+  //inline void setStartPosition(T newPosition) { start = newPosition; }
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  inline T getStepAmplitude() { return stepAmp; }
+  inline T getStepAmplitude()  const { return stepAmp; }
 
-  inline T getStepDelay()     { return stepDelay; }
+  inline T getStepDelay()      const { return stepDelay; }
+
+  inline T getPhaseIncrement() const { return inc; }
+
+  inline T getPhase()          const { return pos; }
+
+
 
 
 
@@ -121,7 +124,7 @@ public:
       pos -= T(1);
   }
 
-  inline void reset()
+  inline void reset(T start = T(0))
   {
     pos = start - inc; // -inc, because we increment pos before producing a sample
     wrapPhase();
@@ -134,7 +137,7 @@ protected:
 
 
 
-  T start = 0.5;   // start positon
+  //T start = 0.5;   // start positon
   //T amp   = 1;     // amplitude
   // maybe get rid of these two variables, handle start by passing it as parameter to reset - makes
   // the classe's memory footprint smaller - relevant when we use arrays of oscs later

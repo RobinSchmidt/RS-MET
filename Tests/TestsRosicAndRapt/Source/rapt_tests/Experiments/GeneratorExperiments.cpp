@@ -177,11 +177,17 @@ void blep()
   //osc.setAmplitude(0.5);
 
   // make the osc output phase consistent with the output of our additive renderer:
-  if(shape == 3)
-    osc.setStartPosition(0.25);
-  else
-    osc.setStartPosition(0.5);
-  osc.reset();
+  //if(shape == 3)
+  //  osc.setStartPosition(0.25);
+  //else
+  //  osc.setStartPosition(0.5);
+  //osc.reset();
+
+  // new:
+  if(shape == 3)  osc.reset(0.25);
+  else            osc.reset(0.5);
+
+
 
   rsTableLinBlep<double, double> linTableBlep;
   linTableBlep.setTablePrecision(prec);
@@ -492,11 +498,16 @@ void polyBlep()
 
 void dualBlepOsc()
 {
-  int N = 50000;
+  int N = 1500;
   double fs = 44100;
   double f1 = 200;
   double f2 = f1 * GOLDEN_RATIO;
   double a  = 0.5;                 // amplitude
+
+  //f1 = 100;
+  //f2 = 320;
+
+
 
 
   // create and set up dual osc:
@@ -505,10 +516,14 @@ void dualBlepOsc()
   DBO dualOsc;
   dualOsc.setPhaseIncrement1(f1/fs);
   dualOsc.setPhaseIncrement2(f2/fs);
+
+  // try sync with a slave increment of 0.1 and master increment of 0.019..0.021:
+  dualOsc.setPhaseIncrement1(0.015);  // osc1 is master
+  dualOsc.setPhaseIncrement2(0.1);   // osc2 is slave
   dualOsc.setSync12(true);
 
-
   // generate both output channels and their sum:
+  dualOsc.reset();
   std::vector<double> x1(N), x2(N), x(N);;
   for(int n = 0; n < N; n++) {
     dualOsc.getSamplePair(&x1[n], &x2[n]);
@@ -519,8 +534,10 @@ void dualBlepOsc()
 
   // plot and/or write wavefile:
   //rsPlotVectors(x1, x2, x);
-  rosic::writeToStereoWaveFile("DualBlepOsc.wav",  &x1[0], &x2[0], N, (int) fs);
-  rosic::writeToMonoWaveFile(  "DualBlepOsc2.wav", &x2[0],         N, (int) fs);
+  rsPlotVectors(x1, x2);
+  //rsPlotVector(x2);
+  //rosic::writeToStereoWaveFile("DualBlepOsc.wav",  &x1[0], &x2[0], N, (int) fs);
+  //rosic::writeToMonoWaveFile(  "DualBlepOsc2.wav", &x2[0],         N, (int) fs);
 
 
   int dummy = 0;

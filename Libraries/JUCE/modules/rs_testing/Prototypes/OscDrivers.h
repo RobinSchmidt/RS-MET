@@ -45,10 +45,14 @@ public:
       blep1.prepareForStep(osc1.getStepDelay(), osc1.getStepAmplitude());
       if(sync12)
       {
-        osc2.reset(); 
+        //osc2.reset(); 
         // preliminary - it should actually reset to its start-phase plus something where that 
         // something is determined by the current phasor of osc1 (the reset has occured some time 
         // before the "now" time instant)
+
+        // i think, the correct phase for osc2 is osc1.pos * osc2.inc / osc1.inc
+        T phs = osc1.getPhase() * osc2.getPhaseIncrement() / osc1.getPhaseIncrement();
+        osc2.reset(phs);
 
         // todo: determine the precise time instant of the reset and the associated amplitude jump
         // and prepare blep2 accordingly ...or maybe the call to reset() should set up the step
@@ -59,8 +63,10 @@ public:
     }
     if(osc2.getStepAmplitude() != 0.0)
       blep2.prepareForStep(osc2.getStepDelay(), osc2.getStepAmplitude());
-    *x1 = blep1.getSample(*x1);
-    *x2 = blep2.getSample(*x2);
+
+    // commented out for test:
+    //*x1 = blep1.getSample(*x1);
+    //*x2 = blep2.getSample(*x2);
 
     // todo: apply sync:
     // ...
