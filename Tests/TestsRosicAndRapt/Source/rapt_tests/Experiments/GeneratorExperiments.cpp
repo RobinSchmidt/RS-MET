@@ -174,7 +174,7 @@ void blep()
   // Create osc and blit/blep/blamp objects:
   rsBlampReadyOsc<double> osc;
   osc.setPhaseIncrement(inc);
-  osc.setAmplitude(0.5);
+  //osc.setAmplitude(0.5);
 
   // make the osc output phase consistent with the output of our additive renderer:
   if(shape == 3)
@@ -238,6 +238,15 @@ void blep()
     yp1[n] = polyBlep1.getSample(x[n]);
     yp2[n] = polyBlep2.getSample(x[n]);
   }
+
+  // apply amplitude scaler of 0.5 to all signals:
+  x   = 0.5 * x;
+  ylt = 0.5 * ylt;
+  ymt = 0.5 * ymt;
+  yp1 = 0.5 * yp1;
+  yp2 = 0.5 * yp2;
+  // todo: implement *= operator for vector/scalar
+
 
   // Create a perfect bandlimited saw/square/triangle for reference:
   double f = fs*inc;

@@ -31,10 +31,7 @@ public:
     inc = newIncrement;
   }
 
-  inline void setAmplitude(T newAmplitude)
-  {
-    amp = newAmplitude;
-  }
+  //inline void setAmplitude(T newAmplitude) { amp = newAmplitude; }
 
   inline void setStartPosition(T newPosition)
   {
@@ -80,13 +77,13 @@ public:
     // Figure out, if (and when) a wrap-around occured. In such case, we produce a step 
     // discontinuity of size -2
     if(pos < inc) {                    // or should it be <= ?
-      stepAmp   = T(-2)*amp;           // downward step by -2
+      stepAmp   = T(-2);               // downward step by -2
       stepDelay = pos/inc;
     }
     // what if the increment is negative - then we should check if pos > (1-inc) and if so, we have
     // an upward step
 
-    return amp * (T(2) * pos - T(1));
+    return (T(2) * pos - T(1));
   }
 
   inline T getSampleSquare()
@@ -95,19 +92,19 @@ public:
     updatePhase();
 
     if(pos < inc) {                    // or should it be <= ?
-      stepAmp   = T(-2)*amp;           // downward step by -2a
+      stepAmp   = T(-2);               // downward step by -2
       stepDelay = pos/inc;
     }
     else if(pos >= T(0.5) && pos - T(0.5) < inc) 
     {
-      stepAmp   = T(2)*amp;            // upward step by 2a
+      stepAmp   = T(2);                // upward step by 2
       stepDelay = (T(pos)-0.5)/inc;
     }
 
     if(pos < T(0.5))  // or <?
-      return -amp;
+      return T(-1);
     else
-      return amp;
+      return T(1);
   }
 
   inline void updatePhase()
@@ -138,7 +135,7 @@ protected:
 
 
   T start = 0.5;   // start positon
-  T amp   = 1;     // amplitude
+  //T amp   = 1;     // amplitude
   // maybe get rid of these two variables, handle start by passing it as parameter to reset - makes
   // the classe's memory footprint smaller - relevant when we use arrays of oscs later
 
@@ -196,19 +193,19 @@ public:
 
     // produce info for blamp, if corner has occurred:
     if(pos < inc) {
-      cornerAmp = T(8)*inc*amp;
+      cornerAmp = T(8)*inc;
       stepDelay = pos/inc;
     }
     else if(pos >= T(0.5) && pos - T(0.5) < inc) {
-      cornerAmp = -T(8)*inc*amp;
+      cornerAmp = -T(8)*inc;
       stepDelay = (T(pos)-0.5)/inc;
     }
 
     // produce output signal:
     if(pos < T(0.5)) 
-      return amp * (T(4) * pos - T(1));
+      return (T(4) * pos - T(1));
     else
-      return amp * (T(1) - T(4) * (pos-T(0.5)));
+      return (T(1) - T(4) * (pos-T(0.5)));
   }
 
 protected:
