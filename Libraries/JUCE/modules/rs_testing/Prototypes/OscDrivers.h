@@ -37,48 +37,41 @@ public:
   {
     // preliminary (later switch waveforms)
     *x1 = osc1.getSampleSaw();
-
-    *x2 = osc2.getSampleSaw(); // wait - we should call this *after* a potential reset
+    *x2 = osc2.getSampleSaw(); // wait - we should call this *after* a potential reset - or not?
 
     // apply blep corrections to waveform discontinuities:
-    if(osc1.getStepAmplitude() != 0.0)
-    {
+    if(osc1.getStepAmplitude() != 0.0) {
       blep1.prepareForStep(osc1.getStepDelay(), osc1.getStepAmplitude());
-      if(sync12)
-      {
-        //osc2.reset(); 
-        // preliminary - it should actually reset to its start-phase plus something where that 
-        // something is determined by the current phasor of osc1 (the reset has occured some time 
-        // before the "now" time instant)
-
+      if(sync12) {
         T oldPhase = osc2.getPhase();
-
-        // i think, the correct phase for osc2 is osc1.pos * osc2.inc / osc1.inc
         T newPhase = osc1.getPhase() * osc2.getPhaseIncrement() / osc1.getPhaseIncrement();
+
+        // todo: maybe have a continuous sync12 parameter between 0 and 1 and compute 
+        // newPhase = (1-sync12)*oldPhase + sync12*newPhase
+
         osc2.reset(newPhase);
-        // maybe, we should have a special function osc2.syncReset(phs)
 
-        T stepAmp = osc2.sawValue(oldPhase) - osc2.sawValue(newPhase); // or the other way around?
+        T stepAmp = osc2.sawValue(oldPhase) - osc2.sawValue(newPhase);
+        //T stepAmp = osc2.sawValue(newPhase) - osc2.sawValue(oldPhase);
+        // or the other way around? also - later we need to switch between sawValue/squareValue
 
-        blep2.prepareForStep(newPhase, stepAmp);
+        T stepDly = newPhase / osc2.getPhaseIncrement();
 
-
-        // todo: determine the precise time instant of the reset and the associated amplitude jump
-        // and prepare blep2 accordingly ...or maybe the call to reset() should set up the step
-        // variables in osc2? ...maybe that's better because otherwise we may sometimes prepare the
-        // blep2 twice?
-
+        blep2.prepareForStep(stepDly, stepAmp);
       }
     }
     if(osc2.getStepAmplitude() != 0.0)
+    {
       blep2.prepareForStep(osc2.getStepDelay(), osc2.getStepAmplitude());
+      if(sync21)
+      {
+        // ...
+      }
+    }
 
-    // commented out for test:
+    //// commented out for test:
     //*x1 = blep1.getSample(*x1);
     //*x2 = blep2.getSample(*x2);
-
-    // todo: apply sync:
-    // ...
   }
 
 
@@ -99,7 +92,9 @@ protected:
 
   rsBlepReadyOsc<T> osc1, osc2;
   TBlep blep1, blep2;  
-  // maybe make embedded objects public
+  // maybe make embedded objects public - if we would not need to be able produce both osc-signals
+  // separately, one single blep object would actually be sufficient - maybe make a variant of the
+  // osc that does it like this - but then, getSamplePair would not be possible anymore...we'll see
 
   bool sync12 = false;
   bool sync21 = false;

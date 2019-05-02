@@ -498,15 +498,21 @@ void polyBlep()
 
 void dualBlepOsc()
 {
-  int N = 1500;
+  int N = 3000;
   double fs = 44100;
   double f1 = 200;
   double f2 = f1 * GOLDEN_RATIO;
   double a  = 0.5;                 // amplitude
 
-  //f1 = 100;
-  //f2 = 320;
 
+
+  //f1 = 100;
+  //f2 = 420;
+
+  f1 = 100 * GOLDEN_RATIO;
+  f2 = 4.25 * f1;
+
+  // maybe make a sweep from 5 kHz to 500 Hz for osc2
 
 
 
@@ -518,8 +524,8 @@ void dualBlepOsc()
   dualOsc.setPhaseIncrement2(f2/fs);
 
   // try sync with a slave increment of 0.1 and master increment of 0.019..0.021:
-  dualOsc.setPhaseIncrement1(0.015);  // osc1 is master
-  dualOsc.setPhaseIncrement2(0.1);   // osc2 is slave
+  //dualOsc.setPhaseIncrement1(0.015);  // osc1 is master
+  //dualOsc.setPhaseIncrement2(0.1);   // osc2 is slave
   dualOsc.setSync12(true);
 
   // generate both output channels and their sum:
@@ -538,6 +544,8 @@ void dualBlepOsc()
   //rsPlotVector(x2);
   //rosic::writeToStereoWaveFile("DualBlepOsc.wav",  &x1[0], &x2[0], N, (int) fs);
   //rosic::writeToMonoWaveFile(  "DualBlepOsc2.wav", &x2[0],         N, (int) fs);
+
+  // seems liek the osc2 responds to the sync triggers with 1 sample delay - something is wrong
 
 
   int dummy = 0;

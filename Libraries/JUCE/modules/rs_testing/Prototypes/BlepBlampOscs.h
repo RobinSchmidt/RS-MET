@@ -260,4 +260,12 @@ triangle/saw (like in TrisawOsc) and maybe more, like this:
 the user parameters adjust the relative lengths of the segments in some meaningful way.
 ...or maybe 1,6 and 3,4 should be both be combined into 1 segment usch thatwe have 4 segments 
 overall
+
+and/or: make a PulseSaw oscillator that uses two sawtooth waves (1 up, 1 down) to produce 
+pulse-waves - user may continuously adjust phase-shift (determines duty-cycle) and mix (morphs 
+between saw-up and saw-down with pulse-wave in between) - maybe with an adjustable integrator 
+filter to allow for triangle, too as integrated square-wave...this filter could actually perhaps
+also include a highpass and/or allpass for further shaping options
+maybe the two saws could be also detuned a bit for further flexibility
+
 */
