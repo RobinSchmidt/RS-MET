@@ -498,12 +498,12 @@ void polyBlep()
 
 void syncPhasor()
 {
-  int N = 5000;
+  int N = 500000;
   double fs       = 44100;
   double f1       = 100 * GOLDEN_RATIO;  // master osc freq
   double f2_start = 20 * f1;             // start freq of slave osc 
   double f2_end   = 2  * f1;             // end   freq of slave osc 2
-  double a        = 1.0;                 // amplitude
+  double a        = 0.5;                 // amplitude
 
   //typedef rsSyncPhasor<double, rsPolyBlep2<double, double>> SP;
   typedef rsSyncPhasor<double, rsTableMinBlep<double, double>> SP;
@@ -525,14 +525,20 @@ void syncPhasor()
     // produce naive and anti-aliased signals:
     xNaive[n] = sp.getSampleNaive();
     xBlep[n]  = sp.applyBlep(xNaive[n]);
+
+    // convert range and apply amplitude scaler:
+    xNaive[n] = 2 * xNaive[n] - 1;
+    xBlep[n]  = 2 * xBlep[n]  - 1;
     xNaive[n] *= a;
     xBlep[n]  *= a;
   }
 
   rsArray::shift(&xBlep[0], N, -sp.blep.getDelay());
 
-  rsPlotVectors(xNaive, xBlep);
-
+  //rsPlotVectors(xNaive, xBlep);
+  rosic::writeToMonoWaveFile(  "SyncPhasorNaive.wav", &xNaive[0],            N, (int) fs);
+  rosic::writeToMonoWaveFile(  "SyncPhasorBlep.wav",  &xBlep[0],             N, (int) fs);
+  rosic::writeToStereoWaveFile("SyncPhasorBoth.wav",  &xNaive[0], &xBlep[0], N, (int) fs);
 }
 
 void syncOsc()
