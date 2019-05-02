@@ -34,14 +34,22 @@ public:
     return applyBlep(getSampleNaive());
   }
 
-
   inline T getSampleNaive()
   {
     // increment phase variables (we use increment-before-output):
     masterPos += masterInc;
     slavePos  += slaveInc;
+    handleWrapArounds();
+    return slavePos;
+  }
 
+  inline T applyBlep(T x)
+  {
+    return blep.getSample(x);
+  }
 
+  inline void handleWrapArounds()
+  {
     // figure out, if one of the postions or both needs a wrap-around:
     T wrappedMasterPos = T(-1);
     T wrappedSlavePos  = T(-1);
@@ -80,17 +88,7 @@ public:
         slavePos  = wrappedSlavePos;
       }
     }
-    // maybe factor out the whole thing into a "handleSync" or "handleWrapArounds" function
-
-    return slavePos;
   }
-
-  inline T applyBlep(T x)
-  {
-    return blep.getSample(x);
-  }
-
-
 
 
   inline void resetPhase()
