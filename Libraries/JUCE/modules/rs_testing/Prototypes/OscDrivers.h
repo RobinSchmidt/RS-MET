@@ -56,7 +56,8 @@ public:
     T oldPos  = slavePos;
     T newPos  = masterStepDelay * slaveInc;
     slavePos  = newPos;
-    T stepAmp = slavePos - oldPos;   // or -1 - oldPhase ?
+    //T stepAmp = slavePos - oldPos;   // or 0 - oldPhase ?
+    T stepAmp = T(0) - oldPos;   // ..like this?
     T stepDly = newPos / slaveInc;
     blep.prepareForStep(stepDly, stepAmp);
     masterPos = wrappedMasterPos;
@@ -92,6 +93,7 @@ public:
         if(masterStepDelay > slaveStepDelay) {
           handleMasterWrapAround(wrappedMasterPos);        // master-wraparound first...
           handleSlaveWrapAround(wrappedSlavePos);          // ...slave-wraparound second
+          // this case seems to produce errors in the form of spikes
         }
         else {
           handleSlaveWrapAround(wrappedSlavePos);          // slave-wraparound first...

@@ -503,7 +503,7 @@ void syncPhasor()
   double f1       = 100 * GOLDEN_RATIO;  // master osc freq
   double f2_start = 20 * f1;             // start freq of slave osc 
   double f2_end   = 2  * f1;             // end   freq of slave osc 2
-  double a        = 0.5;                 // amplitude
+  double a        = 0.25;                 // amplitude
 
   //typedef rsSyncPhasor<double, rsPolyBlep2<double, double>> SP;
   typedef rsSyncPhasor<double, rsTableMinBlep<double, double>> SP;
@@ -539,6 +539,8 @@ void syncPhasor()
   rosic::writeToMonoWaveFile(  "SyncPhasorNaive.wav", &xNaive[0],            N, (int) fs);
   rosic::writeToMonoWaveFile(  "SyncPhasorBlep.wav",  &xBlep[0],             N, (int) fs);
   rosic::writeToStereoWaveFile("SyncPhasorBoth.wav",  &xNaive[0], &xBlep[0], N, (int) fs);
+
+  // master-then-slave wraparound produces artifacts
 }
 
 void syncOsc()
