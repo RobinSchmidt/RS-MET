@@ -49,13 +49,20 @@ public:
         // todo: maybe have a continuous sync12 parameter between 0 and 1 and compute 
         // newPhase = (1-sync12)*oldPhase + sync12*newPhase
 
-        osc2.reset(newPhase);
+        //osc2.reset(newPhase);   // maybe we should add the increment?
+        osc2.reset(newPhase + osc2.getPhaseIncrement()); // like this?
+        // because in reset, the increment is subtracted
 
-        T stepAmp = osc2.sawValue(oldPhase) - osc2.sawValue(newPhase);
-        //T stepAmp = osc2.sawValue(newPhase) - osc2.sawValue(oldPhase);
+          
+
+        //T stepAmp = osc2.sawValue(oldPhase) - osc2.sawValue(newPhase);
+        T stepAmp = osc2.sawValue(newPhase) - osc2.sawValue(oldPhase);
         // or the other way around? also - later we need to switch between sawValue/squareValue
 
-        T stepDly = newPhase / osc2.getPhaseIncrement();
+        T stepDly = newPhase / osc2.getPhaseIncrement(); 
+        // is this correct? shouldn't this be osc1.phase / osc1.increment ...but that's probably
+        // the same value
+        //T stepDly2 = osc1.getPhase() / osc1.getPhaseIncrement(); // yep - same value
 
         blep2.prepareForStep(stepDly, stepAmp);
       }
@@ -69,9 +76,9 @@ public:
       }
     }
 
-    //// commented out for test:
-    //*x1 = blep1.getSample(*x1);
-    //*x2 = blep2.getSample(*x2);
+    // commented out for test:
+    *x1 = blep1.getSample(*x1);
+    *x2 = blep2.getSample(*x2);
   }
 
 

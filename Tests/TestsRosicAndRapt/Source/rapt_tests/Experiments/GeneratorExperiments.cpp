@@ -498,21 +498,23 @@ void polyBlep()
 
 void dualBlepOsc()
 {
-  int N = 3000;
+  int N = 100000;
   double fs = 44100;
-  double f1 = 200;
-  double f2 = f1 * GOLDEN_RATIO;
-  double a  = 0.5;                 // amplitude
-
+  //double f1 = 200;
+  double f1 = 100 * GOLDEN_RATIO;    // freq of osc 1
+  //double f2 = f1 * GOLDEN_RATIO;
+  double f2_start = 20 * f1;         // start freq of osc 2
+  double f2_end   = 2  * f1;         // end   freq of osc 2
+  double a        = 0.25;             // amplitude
 
 
   //f1 = 100;
   //f2 = 420;
-
-  f1 = 100 * GOLDEN_RATIO;
-  f2 = 4.25 * f1;
+  //f2 = 4.25 * f1;
 
   // maybe make a sweep from 5 kHz to 500 Hz for osc2
+
+
 
 
 
@@ -521,7 +523,7 @@ void dualBlepOsc()
   typedef rsDualBlepOsc<double, rsTableMinBlep<double, double>> DBO;
   DBO dualOsc;
   dualOsc.setPhaseIncrement1(f1/fs);
-  dualOsc.setPhaseIncrement2(f2/fs);
+  //dualOsc.setPhaseIncrement2(f2/fs);
 
   // try sync with a slave increment of 0.1 and master increment of 0.019..0.021:
   //dualOsc.setPhaseIncrement1(0.015);  // osc1 is master
@@ -531,7 +533,14 @@ void dualBlepOsc()
   // generate both output channels and their sum:
   dualOsc.reset();
   std::vector<double> x1(N), x2(N), x(N);;
-  for(int n = 0; n < N; n++) {
+  for(int n = 0; n < N; n++) 
+  {
+
+    // sweep freq of osc2:
+    double f2_mix = n/(N-1.0);
+    double f2     = (1-f2_mix) * f2_start + f2_mix * f2_end;
+    dualOsc.setPhaseIncrement2(f2/fs);
+
     dualOsc.getSamplePair(&x1[n], &x2[n]);
     x1[n] *= a;
     x2[n] *= a;
@@ -540,10 +549,12 @@ void dualBlepOsc()
 
   // plot and/or write wavefile:
   //rsPlotVectors(x1, x2, x);
-  rsPlotVectors(x1, x2);
+  //rsPlotVectors(x1, x2);
   //rsPlotVector(x2);
   //rosic::writeToStereoWaveFile("DualBlepOsc.wav",  &x1[0], &x2[0], N, (int) fs);
-  //rosic::writeToMonoWaveFile(  "DualBlepOsc2.wav", &x2[0],         N, (int) fs);
+
+
+  rosic::writeToMonoWaveFile(  "SyncSweep.wav", &x2[0],         N, (int) fs);
 
   // seems liek the osc2 responds to the sync triggers with 1 sample delay - something is wrong
 
