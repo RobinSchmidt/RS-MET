@@ -498,7 +498,7 @@ void polyBlep()
 
 void dualBlepOsc()
 {
-  int N = 500;
+  int N = 800;
   double fs = 44100;
   //double f1 = 200;
   double f1 = 100 * GOLDEN_RATIO;    // freq of osc 1
@@ -512,7 +512,7 @@ void dualBlepOsc()
   //f2_start = f2_end = 5000;
 
   f1 = fs/100;
-  f2_start = f2_end = 3.99 * f1;
+  f2_start = f2_end = 4.99 * f1;
 
 
 
@@ -587,12 +587,15 @@ void dualBlepOsc()
   //  of every 5th
   // -the amplitude of the additional spikes is 2*a, where a is the waveform amplitude - so they 
   //  spike up to a + 2*a = 3*a and it seems it is really only a single sample that is wrong
+  //  -interestingly, with the polyblep, the spike is only at 2a, not at 3a
   // -maybe try using a separate blep object for the sync...but i really see nor reason why we 
   //  couldn't use the same blep for both sorts of steps
   // -moving *x2 = osc2.getSampleSaw(); below the sync-handling for osc2 removes the spike but 
   //  introduces and additional delay of 1 sample
   // -so, it seems first, osc2 detects a step and then due to sync another step is detected
   //  ...maybe we should reset the stepAmplitude member in osc2 when we do a step due to to sync?
+  // -adding  oldPhase += osc2.getPhaseIncrement();  osc2.wrapPhase(oldPhase); seeems to fix the
+  //  really bad spike - but then the regular delay is missing for the sync-steps
 
 
   int dummy = 0;

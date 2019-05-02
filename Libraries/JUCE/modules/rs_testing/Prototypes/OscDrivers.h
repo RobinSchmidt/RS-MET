@@ -44,13 +44,19 @@ public:
       //blep1.prepareForStep(osc1.getStepDelay(), osc1.getStepAmplitude());//commented for debug
       if(sync12) {
         T oldPhase = osc2.getPhase();
+
+        // test:
+        oldPhase += osc2.getPhaseIncrement();
+        osc2.wrapPhase(oldPhase);
+
         T newPhase = osc1.getPhase() * osc2.getPhaseIncrement() / osc1.getPhaseIncrement();
 
         // todo: maybe have a continuous sync12 parameter between 0 and 1 and compute 
         // newPhase = (1-sync12)*oldPhase + sync12*newPhase
 
         //osc2.reset(newPhase);   // maybe we should add the increment?
-        osc2.reset(newPhase + osc2.getPhaseIncrement()); // like this?
+        //osc2.reset(newPhase + osc2.getPhaseIncrement()); // like this?
+        osc2.resetPhase(newPhase + osc2.getPhaseIncrement()); // like this?
         //osc2.reset(newPhase - osc2.getPhaseIncrement()); // like this?
         // because in reset, the increment is subtracted
 

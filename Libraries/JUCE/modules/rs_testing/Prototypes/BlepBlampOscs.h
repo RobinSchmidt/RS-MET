@@ -88,7 +88,6 @@ public:
     // an upward step - maybe avoid division by keeping incInv = 1./inc as member
 
     return sawValue(pos);
-    //return (T(2) * pos - T(1));
   }
 
   inline T getSampleSquare()
@@ -107,22 +106,27 @@ public:
     }
 
     return squareValue(pos);
+  }
 
-    /*
-    if(pos < T(0.5))  // or <?
-      return T(-1);
-    else
-      return T(1);
-    */
+
+
+  inline void resetPhase(T start = T(0))
+  {
+    pos = start - inc; // -inc, because we increment pos before producing a sample
+    wrapPhase(pos);
+  }
+
+  inline void resetStepInfo()
+  {
+    stepDelay = T(0);
+    stepAmp   = T(0);
   }
 
   inline void reset(T start = T(0))
   {
-    pos = start - inc; // -inc, because we increment pos before producing a sample
-    wrapPhase();
+    resetPhase(start);
+    resetStepInfo();
   }
-
-  // have resetPhase, resetStepVariables and reset which does both
 
   /** Returns the value of a sawtooth wave at given position in [0,1). */
   static inline T sawValue(T pos)
@@ -144,15 +148,15 @@ public:
   inline void updatePhase()
   {
     pos += inc;
-    wrapPhase();
+    wrapPhase(pos);
   }
 
-  inline void wrapPhase()
+  static inline void wrapPhase(T& phase)
   {
-    while( pos < T(0) )
-      pos += T(1);
-    while( pos >= T(1) )
-      pos -= T(1);
+    while( phase < T(0) )
+      phase += T(1);
+    while( phase >= T(1) )
+      phase -= T(1);
   }
 
 
