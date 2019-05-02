@@ -498,7 +498,7 @@ void polyBlep()
 
 void dualBlepOsc()
 {
-  int N = 100000;
+  int N = 3000;
   double fs = 44100;
   //double f1 = 200;
   double f1 = 100 * GOLDEN_RATIO;    // freq of osc 1
@@ -506,6 +506,13 @@ void dualBlepOsc()
   double f2_start = 20 * f1;         // start freq of osc 2
   double f2_end   = 2  * f1;         // end   freq of osc 2
   double a        = 0.25;             // amplitude
+
+
+  // test:
+  //f2_start = f2_end = 5000;
+
+  f2_start = f2_end = 4.2 * f1;
+
 
 
   //f1 = 100;
@@ -532,7 +539,7 @@ void dualBlepOsc()
 
   // generate both output channels and their sum:
   dualOsc.reset();
-  std::vector<double> x1(N), x2(N), x(N);;
+  std::vector<double> x1n(N), x2n(N), x1(N), x2(N), x(N);
   for(int n = 0; n < N; n++) 
   {
 
@@ -541,9 +548,14 @@ void dualBlepOsc()
     double f2     = (1-f2_mix) * f2_start + f2_mix * f2_end;
     dualOsc.setPhaseIncrement2(f2/fs);
 
-    dualOsc.getSamplePair(&x1[n], &x2[n]);
-    x1[n] *= a;
-    x2[n] *= a;
+
+    dualOsc.getSamplePairNaive(&x1n[n], &x2n[n]);
+    dualOsc.applyBleps(&x1n[n], &x2n[n], &x1[n], &x2[n]);
+
+    x1n[n] *= a;
+    x2n[n] *= a;
+    x1[n]  *= a;
+    x2[n]  *= a;
     x[n] = x1[n] + x2[n];
   }
 
@@ -551,12 +563,19 @@ void dualBlepOsc()
   //rsPlotVectors(x1, x2, x);
   //rsPlotVectors(x1, x2);
   //rsPlotVector(x2);
+  rsPlotVectors(x2n, x2);
   //rosic::writeToStereoWaveFile("DualBlepOsc.wav",  &x1[0], &x2[0], N, (int) fs);
 
 
-  rosic::writeToMonoWaveFile(  "SyncSweep.wav", &x2[0],         N, (int) fs);
+  //rosic::writeToMonoWaveFile(  "SyncSweep.wav", &x2[0],         N, (int) fs);
 
-  // seems liek the osc2 responds to the sync triggers with 1 sample delay - something is wrong
+  // seems like the osc2 responds to the sync triggers with 1 sample delay - something is wrong
+
+  // somehow it seems, the step-amplitude is wrong for the sync-steps
+
+  // maybe plot naive and anti-aliased versions side by side
+  // -ok - done - this is strange: the sync-steps somehwo do not hsow the same blep-delay latency 
+  //  as the regular swatooth steps - also they overshoot more than they should
 
 
   int dummy = 0;

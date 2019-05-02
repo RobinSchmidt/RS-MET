@@ -33,7 +33,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  inline void getSamplePair(T* x1, T* x2)
+  inline void getSamplePairNaive(T* x1, T* x2)
   {
     // preliminary (later switch waveforms)
     *x1 = osc1.getSampleSaw();
@@ -55,9 +55,10 @@ public:
 
           
 
-        //T stepAmp = osc2.sawValue(oldPhase) - osc2.sawValue(newPhase);
-        T stepAmp = osc2.sawValue(newPhase) - osc2.sawValue(oldPhase);
+        T stepAmp = osc2.sawValue(oldPhase) - osc2.sawValue(newPhase);
+        //T stepAmp = osc2.sawValue(newPhase) - osc2.sawValue(oldPhase);
         // or the other way around? also - later we need to switch between sawValue/squareValue
+        // i think, new-old: when new = -1, old = +1, stepAmp = -2 - a downward step by 2
 
         T stepDly = newPhase / osc2.getPhaseIncrement(); 
         // is this correct? shouldn't this be osc1.phase / osc1.increment ...but that's probably
@@ -75,11 +76,21 @@ public:
         // ...
       }
     }
-
-    // commented out for test:
-    *x1 = blep1.getSample(*x1);
-    *x2 = blep2.getSample(*x2);
   }
+
+
+  inline void applyBleps(T* x1, T* x2, T* y1, T* y2)
+  {
+    *y1 = blep1.getSample(*x1);
+    *y2 = blep2.getSample(*x2);
+  }
+
+  inline void getSamplePair(T* x1, T* x2)
+  {
+    getSamplePairNaive(x1, x2);
+    applyBleps(x1, x2, x1, x2);
+  }
+
 
 
   inline T getSample()
