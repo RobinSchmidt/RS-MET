@@ -505,8 +505,8 @@ void syncPhasor()
   double f2_end   = 2  * f1;             // end   freq of slave osc 2
   double a        = 1.0;                 // amplitude
 
-  typedef rsSyncPhasor<double, rsPolyBlep2<double, double>> SP;
-  //typedef rsSyncPhasor<double, rsTableMinBlep<double, double>> SP;
+  //typedef rsSyncPhasor<double, rsPolyBlep2<double, double>> SP;
+  typedef rsSyncPhasor<double, rsTableMinBlep<double, double>> SP;
   SP sp;
   sp.setMasterIncrement(f1      /fs);
   sp.setSlaveIncrement( f2_start/fs);

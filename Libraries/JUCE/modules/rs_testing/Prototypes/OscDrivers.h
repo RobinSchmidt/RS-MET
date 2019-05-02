@@ -48,6 +48,28 @@ public:
     return blep.getSample(x);
   }
 
+
+
+  inline void handleMasterWrapAround(T wrappedMasterPos)
+  {
+    T masterStepDelay = wrappedMasterPos / masterInc;
+    T oldPos  = slavePos;
+    T newPos  = masterStepDelay * slaveInc;
+    slavePos  = newPos;
+    T stepAmp = slavePos - oldPos;   // or -1 - oldPhase ?
+    T stepDly = newPos / slaveInc;
+    blep.prepareForStep(stepDly, stepAmp);
+    masterPos = wrappedMasterPos;
+  }
+
+  inline void handleSlaveWrapAround(T wrappedSlavePos)
+  {
+    T slaveStepDelay = wrappedSlavePos  / slaveInc;
+    T slaveStepAmp   = T(-1);
+    blep.prepareForStep(slaveStepDelay, slaveStepAmp);
+    slavePos  = wrappedSlavePos;
+  }
+
   inline void handleWrapArounds()
   {
     // figure out, if one of the postions or both needs a wrap-around:
@@ -59,30 +81,21 @@ public:
       // we have at least one wraparound to handle - figure out which of the 4 cases we have: 
       // master-wrap-only, slave-wrap-only, master-then-slave-wrap, slave-then-master-wrap
       // and handle each of them by appropriately preparing the blep object:
-      if(wrappedSlavePos == T(-1))  {        
-        // master-wraparound only:
-        T masterStepDelay = wrappedMasterPos / masterInc;
-        // ...
-        masterPos = wrappedMasterPos;
-      }
-      else if(wrappedMasterPos == T(-1)) {   
-        // slave-wraparound only:
-        T slaveStepDelay  = wrappedSlavePos  / slaveInc;
-        // ...
-        slavePos  = wrappedSlavePos;
-      }
-      else {                                 
-        // master and slave wraparound:
+      if(wrappedSlavePos == T(-1)) 
+        handleMasterWrapAround(wrappedMasterPos);          // master-wraparound only
+      else if(wrappedMasterPos == T(-1))
+        handleSlaveWrapAround(wrappedSlavePos);            // slave-wraparound only
+      else 
+      {                                                    // master and slave wraparound...
         T masterStepDelay = wrappedMasterPos / masterInc;
         T slaveStepDelay  = wrappedSlavePos  / slaveInc;
         if(masterStepDelay > slaveStepDelay) {
-          // master-wraparound first, then slave-wraparound:
-          // ...
-
+          handleMasterWrapAround(wrappedMasterPos);        // master-wraparound first...
+          handleSlaveWrapAround(wrappedSlavePos);          // ...slave-wraparound second
         }
         else {
-          // slave-wraparound first, then master-wraparound:
-          // ...
+          handleSlaveWrapAround(wrappedSlavePos);          // slave-wraparound first...
+          handleMasterWrapAround(wrappedMasterPos);        // ...master-wraparound second
         }
         masterPos = wrappedMasterPos;
         slavePos  = wrappedSlavePos;
