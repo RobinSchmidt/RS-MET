@@ -54,10 +54,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
+
+
   inline T getSampleSaw()
   {
     stepAmp = T(0);
-
     updatePhase();
     // actually, it's not really nice to do the phase update before computing the sample - i think
     // i can do it the other way around, if we make so that the osc will set stepAmp nonzero 
@@ -84,9 +85,10 @@ public:
       stepDelay = pos/inc;
     }
     // what if the increment is negative - then we should check if pos > (1-inc) and if so, we have
-    // an upward step
+    // an upward step - maybe avoid division by keeping incInv = 1./inc as member
 
-    return (T(2) * pos - T(1));
+    return sawValue(pos);
+    //return (T(2) * pos - T(1));
   }
 
   inline T getSampleSquare()
@@ -104,11 +106,38 @@ public:
       stepDelay = (T(pos)-0.5)/inc;
     }
 
+    return squareValue(pos);
+
+    /*
     if(pos < T(0.5))  // or <?
       return T(-1);
     else
       return T(1);
+    */
   }
+
+  inline void reset(T start = T(0))
+  {
+    pos = start - inc; // -inc, because we increment pos before producing a sample
+    wrapPhase();
+  }
+
+  /** Returns the value of a sawtooth wave at given position in [0,1). */
+  static inline T sawValue(T pos)
+  {
+    return T(2) * pos - T(1);
+  }
+
+  /** Returns the value of a square wave at given position in [0,1). */
+  static inline T squareValue(T pos)
+  {
+    if(pos < T(0.5))  // or <=? but i think, < is fine
+      return T(-1);
+    else
+      return T(1);
+  }
+  // todo: introduce duty-cycle parameter and use if pos < dutyCycle
+
 
   inline void updatePhase()
   {
@@ -124,11 +153,7 @@ public:
       pos -= T(1);
   }
 
-  inline void reset(T start = T(0))
-  {
-    pos = start - inc; // -inc, because we increment pos before producing a sample
-    wrapPhase();
-  }
+
 
 protected:
 

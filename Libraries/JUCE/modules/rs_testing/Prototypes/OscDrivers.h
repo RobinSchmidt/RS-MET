@@ -37,7 +37,8 @@ public:
   {
     // preliminary (later switch waveforms)
     *x1 = osc1.getSampleSaw();
-    *x2 = osc2.getSampleSaw();
+
+    *x2 = osc2.getSampleSaw(); // wait - we should call this *after* a potential reset
 
     // apply blep corrections to waveform discontinuities:
     if(osc1.getStepAmplitude() != 0.0)
@@ -50,9 +51,17 @@ public:
         // something is determined by the current phasor of osc1 (the reset has occured some time 
         // before the "now" time instant)
 
+        T oldPhase = osc2.getPhase();
+
         // i think, the correct phase for osc2 is osc1.pos * osc2.inc / osc1.inc
-        T phs = osc1.getPhase() * osc2.getPhaseIncrement() / osc1.getPhaseIncrement();
-        osc2.reset(phs);
+        T newPhase = osc1.getPhase() * osc2.getPhaseIncrement() / osc1.getPhaseIncrement();
+        osc2.reset(newPhase);
+        // maybe, we should have a special function osc2.syncReset(phs)
+
+        T stepAmp = osc2.sawValue(oldPhase) - osc2.sawValue(newPhase); // or the other way around?
+
+        blep2.prepareForStep(newPhase, stepAmp);
+
 
         // todo: determine the precise time instant of the reset and the associated amplitude jump
         // and prepare blep2 accordingly ...or maybe the call to reset() should set up the step
