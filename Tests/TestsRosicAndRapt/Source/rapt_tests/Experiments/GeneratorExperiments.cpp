@@ -496,6 +496,45 @@ void polyBlep()
   // ...but i think, that doesn't  work out, too...more research needed....
 }
 
+void syncPhasor()
+{
+  int N = 5000;
+  double fs       = 44100;
+  double f1       = 100 * GOLDEN_RATIO;  // master osc freq
+  double f2_start = 20 * f1;             // start freq of slave osc 
+  double f2_end   = 2  * f1;             // end   freq of slave osc 2
+  double a        = 1.0;                 // amplitude
+
+  typedef rsSyncPhasor<double, rsPolyBlep2<double, double>> SP;
+  //typedef rsSyncPhasor<double, rsTableMinBlep<double, double>> SP;
+  SP sp;
+  sp.setMasterIncrement(f1      /fs);
+  sp.setSlaveIncrement( f2_start/fs);
+  sp.reset();
+
+
+  // produce naive and anti-aliased signal:
+  std::vector<double> xNaive(N), xBlep(N);
+  for(int n = 0; n < N; n++) 
+  {
+    // sweep freq of slave osc:
+    double f2_mix = n/(N-1.0);
+    double f2     = (1-f2_mix) * f2_start + f2_mix * f2_end;
+    sp.setSlaveIncrement(f2/fs);
+
+    // produce naive and anti-aliased signals:
+    xNaive[n] = sp.getSampleNaive();
+    xBlep[n]  = sp.applyBlep(xNaive[n]);
+    xNaive[n] *= a;
+    xBlep[n]  *= a;
+  }
+
+  rsArray::shift(&xBlep[0], N, -sp.blep.getDelay());
+
+  rsPlotVectors(xNaive, xBlep);
+
+}
+
 void syncOsc()
 {
   int N = 500000;

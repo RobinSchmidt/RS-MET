@@ -41,33 +41,46 @@ public:
     masterPos += masterInc;
     slavePos  += slaveInc;
 
+
     // figure out, if one of the postions or both needs a wrap-around:
     T wrappedMasterPos = T(-1);
     T wrappedSlavePos  = T(-1);
     if(masterPos >= T(1)) wrappedMasterPos = masterPos - T(1);
     if(slavePos  >= T(1)) wrappedSlavePos  = slavePos  - T(1);
-    if(wrappedMasterPos >= T(0) || wrappedSlavePos >= T(0))
-    {
-
-      // figure out which of the 4 cases we have: 
+    if(wrappedMasterPos >= T(0) || wrappedSlavePos >= T(0)) {
+      // we have at least one wraparound to handle - figure out which of the 4 cases we have: 
       // master-wrap-only, slave-wrap-only, master-then-slave-wrap, slave-then-master-wrap
-      // and handle each of them by appropriately preparing the blep object
+      // and handle each of them by appropriately preparing the blep object:
+      if(wrappedSlavePos == T(-1))  {        
+        // master-wraparound only:
+        T masterStepDelay = wrappedMasterPos / masterInc;
+        // ...
+        masterPos = wrappedMasterPos;
+      }
+      else if(wrappedMasterPos == T(-1)) {   
+        // slave-wraparound only:
+        T slaveStepDelay  = wrappedSlavePos  / slaveInc;
+        // ...
+        slavePos  = wrappedSlavePos;
+      }
+      else {                                 
+        // master and slave wraparound:
+        T masterStepDelay = wrappedMasterPos / masterInc;
+        T slaveStepDelay  = wrappedSlavePos  / slaveInc;
+        if(masterStepDelay > slaveStepDelay) {
+          // master-wraparound first, then slave-wraparound:
+          // ...
 
-
-      if(wrappedMasterPos >= 0) masterPos = wrappedMasterPos;
-      if(wrappedSlavePos  >= 0) slavePos  = wrappedSlavePos;
+        }
+        else {
+          // slave-wraparound first, then master-wraparound:
+          // ...
+        }
+        masterPos = wrappedMasterPos;
+        slavePos  = wrappedSlavePos;
+      }
     }
-
-
-    //wrapPhase(masterPos);
-    //wrapPhase(slavePos);
-
-
-
-
-
-
-
+    // maybe factor out the whole thing into a "handleSync" or "handleWrapArounds" function
 
     return slavePos;
   }
@@ -87,6 +100,12 @@ public:
     // subtract increments because in getSample, we increment before producing output
   }
 
+  inline void reset()
+  {
+    resetPhase();
+    blep.reset();
+  }
+
   static inline void wrapPhase(T& phase)
   {
     while( phase < T(0) )
@@ -96,6 +115,9 @@ public:
   }
 
 
+
+  TBlep blep;
+
 protected:
 
   T masterInc = T(0);
@@ -103,8 +125,6 @@ protected:
 
   T slaveInc = T(0);
   T slavePos = T(0);
-
-  TBlep blep;
 
 };
 
@@ -167,6 +187,11 @@ public:
 
       T stepAmp = slave.sawValue(newPhase) - slave.sawValue(oldPhase);
       T stepDly = newPhase / slave.getPhaseIncrement(); 
+
+      // i think, maybe the step-amp should alway be -1 - sawValue(oldPhase) because it always 
+      // jumps down to -1 *at* the continuous step instant - we don't want to read out the osc at
+      // the position where it advances to within the sample
+      //T stepAmp = T(-1) - slave.sawValue(oldPhase);
 
       blep.prepareForStep(stepDly, stepAmp);
     }
