@@ -13,6 +13,7 @@ void blit();
 void blep();
 //void blamp();
 void polyBlep();
+void syncOsc();
 void dualBlepOsc();
 
 void bouncillator();

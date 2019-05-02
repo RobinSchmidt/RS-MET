@@ -496,6 +496,35 @@ void polyBlep()
   // ...but i think, that doesn't  work out, too...more research needed....
 }
 
+void syncOsc()
+{
+  int N = 800;
+  double fs       = 44100;
+  double f1       = 100 * GOLDEN_RATIO;  // master osc freq
+  double f2_start = 20 * f1;             // start freq of slave osc 
+  double f2_end   = 2  * f1;             // end   freq of slave osc 2
+  double a        = 1.0;                 // amplitude
+
+  f1 = fs/100;
+  f2_start = f2_end = 4.99 * f1;
+
+  //typedef rsSyncOsc<double, rsPolyBlep2<double, double>> SO;
+  typedef rsSyncOsc<double, rsTableMinBlep<double, double>> SO;
+  SO osc;
+  osc.setMasterIncrement(f1/fs);
+  osc.reset();
+
+
+  std::vector<double> xNaive(N), xBlep(N);
+
+
+
+  rsPlotVectors(xNaive, xBlep);
+
+
+  int dummy = 0;
+}
+
 void dualBlepOsc()
 {
   int N = 800;
@@ -513,6 +542,8 @@ void dualBlepOsc()
 
   f1 = fs/100;
   f2_start = f2_end = 4.99 * f1;
+
+
 
 
 
@@ -566,9 +597,7 @@ void dualBlepOsc()
   //rsPlotVector(x2);
   rsPlotVectors(x2n, x2);
   //rosic::writeToStereoWaveFile("DualBlepOsc.wav",  &x1[0], &x2[0], N, (int) fs);
-
-
-  //rosic::writeToMonoWaveFile(  "SyncSweep.wav", &x2[0],         N, (int) fs);
+  //rosic::writeToMonoWaveFile(  "DualBlepOsc2.wav", &x2[0],         N, (int) fs);
 
   // seems like the osc2 responds to the sync triggers with 1 sample delay - something is wrong
 
@@ -596,6 +625,9 @@ void dualBlepOsc()
   //  ...maybe we should reset the stepAmplitude member in osc2 when we do a step due to to sync?
   // -adding  oldPhase += osc2.getPhaseIncrement();  osc2.wrapPhase(oldPhase); seeems to fix the
   //  really bad spike - but then the regular delay is missing for the sync-steps
+
+  // -maybe it's better to not treat the 2 oscs on the same footing - use a simple phasor as
+  //  master and let only the slave be a full osc - then we only need a single blep object
 
 
   int dummy = 0;

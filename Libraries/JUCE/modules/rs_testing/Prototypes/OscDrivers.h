@@ -1,6 +1,61 @@
 #pragma once
 
 
+
+
+/** Implements sawtooth/pulse oscillator which can be additionally "synced" to another 
+"master" frequency. The step discontinuities of the waveform itself and also those due to sync are
+anti-aliased via a BLEP. */
+
+template<class T, class TBlep> // T: type for signal and parameter, TBlep: class for BLEP object
+class rsSyncOsc
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+
+  void setMasterIncrement(T newIncrement) { master.setPhaseIncrement(newIncrement); }
+
+  void setSlaveIncrement2(T newIncrement) { slave.setPhaseIncrement(newIncrement); }
+
+  // void setSyncAmount
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  inline T getSample()
+  {
+    T dummy = master.getSampleSaw(); // later use just a phasor - output not actually used
+
+
+    T out = slave.getSampleSaw(); // preliminary
+
+
+
+    return out;
+  }
+
+
+  void reset();
+
+
+protected:
+
+  rsBlepReadyOsc<T> master, slave; // use simple phasor for slave later
+  TBlep blep;  
+
+};
+
+
+
+
+//=================================================================================================
+
+
 /** Implements a pair of two sawtooth/pulse oscillators whose waveforms get anti-aliased via a
 blep object. It also implements hardsync via bleps... */
 

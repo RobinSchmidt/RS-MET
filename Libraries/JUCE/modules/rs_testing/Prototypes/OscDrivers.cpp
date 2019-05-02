@@ -1,5 +1,14 @@
 
 
+template<class T, class TBlep>
+void rsSyncOsc<T, TBlep>::reset()
+{
+  master.reset();
+  slave.reset();
+  blep.reset();
+}
+
+
 
 template<class T, class TBlep>
 void rsDualBlepOsc<T, TBlep>::reset()

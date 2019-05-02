@@ -30,6 +30,10 @@ template class rsTableMinBlep<double, double>;
 template class rsBlepReadyOsc<double>;
 template class rsBlampReadyOsc<double>;
 
+
+template class rsSyncOsc<double, rsPolyBlep2<double, double>>;
+template class rsSyncOsc<double, rsTableMinBlep<double, double>>;
+
 template class rsDualBlepOsc<double, rsPolyBlep2<double, double>>;
 template class rsDualBlepOsc<double, rsTableMinBlep<double, double>>;
 

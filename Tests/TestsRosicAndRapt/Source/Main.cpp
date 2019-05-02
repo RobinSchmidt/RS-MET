@@ -99,7 +99,8 @@ int main(int argc, char* argv[])
   //blit();
   //blep();
   //polyBlep();
-  dualBlepOsc();
+  syncOsc();
+  //dualBlepOsc();
   //bouncillator();
   //bouncillatorFormula();
   //freqVsPhaseMod();
