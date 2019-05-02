@@ -498,20 +498,21 @@ void polyBlep()
 
 void dualBlepOsc()
 {
-  int N = 3000;
+  int N = 500;
   double fs = 44100;
   //double f1 = 200;
   double f1 = 100 * GOLDEN_RATIO;    // freq of osc 1
   //double f2 = f1 * GOLDEN_RATIO;
   double f2_start = 20 * f1;         // start freq of osc 2
   double f2_end   = 2  * f1;         // end   freq of osc 2
-  double a        = 0.25;             // amplitude
+  double a        = 1.0;             // amplitude
 
 
   // test:
   //f2_start = f2_end = 5000;
 
-  f2_start = f2_end = 4.2 * f1;
+  f1 = fs/100;
+  f2_start = f2_end = 3.99 * f1;
 
 
 
@@ -576,6 +577,22 @@ void dualBlepOsc()
   // maybe plot naive and anti-aliased versions side by side
   // -ok - done - this is strange: the sync-steps somehwo do not hsow the same blep-delay latency 
   //  as the regular swatooth steps - also they overshoot more than they should
+  // -with f2 = 4.9 * f1, it's very visible...or even 4.99 * f1
+  //  f1 = fs/100 works well for the plots
+  // -ok - using new-old instead of old-new for the step-amp fixes the delay - this seems to be the
+  //  correct thing to do also theoretically - but now there are additional spikes - is this
+  //  because the blep is added/prepared twice?
+  // -with f2 = 5.1 * f1, it looks fine
+  // -with f2 = 3.99 * f1, the same thing occurs, but now we have spikes at every 4th cycle instead
+  //  of every 5th
+  // -the amplitude of the additional spikes is 2*a, where a is the waveform amplitude - so they 
+  //  spike up to a + 2*a = 3*a and it seems it is really only a single sample that is wrong
+  // -maybe try using a separate blep object for the sync...but i really see nor reason why we 
+  //  couldn't use the same blep for both sorts of steps
+  // -moving *x2 = osc2.getSampleSaw(); below the sync-handling for osc2 removes the spike but 
+  //  introduces and additional delay of 1 sample
+  // -so, it seems first, osc2 detects a step and then due to sync another step is detected
+  //  ...maybe we should reset the stepAmplitude member in osc2 when we do a step due to to sync?
 
 
   int dummy = 0;

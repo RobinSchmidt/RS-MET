@@ -41,7 +41,7 @@ public:
 
     // apply blep corrections to waveform discontinuities:
     if(osc1.getStepAmplitude() != 0.0) {
-      blep1.prepareForStep(osc1.getStepDelay(), osc1.getStepAmplitude());
+      //blep1.prepareForStep(osc1.getStepDelay(), osc1.getStepAmplitude());//commented for debug
       if(sync12) {
         T oldPhase = osc2.getPhase();
         T newPhase = osc1.getPhase() * osc2.getPhaseIncrement() / osc1.getPhaseIncrement();
@@ -51,12 +51,14 @@ public:
 
         //osc2.reset(newPhase);   // maybe we should add the increment?
         osc2.reset(newPhase + osc2.getPhaseIncrement()); // like this?
+        //osc2.reset(newPhase - osc2.getPhaseIncrement()); // like this?
         // because in reset, the increment is subtracted
 
           
 
-        T stepAmp = osc2.sawValue(oldPhase) - osc2.sawValue(newPhase);
-        //T stepAmp = osc2.sawValue(newPhase) - osc2.sawValue(oldPhase);
+        //T stepAmp = osc2.sawValue(oldPhase) - osc2.sawValue(newPhase);
+        T stepAmp = osc2.sawValue(newPhase) - osc2.sawValue(oldPhase);
+        //T stepAmp = osc2.sawValue(newPhase + osc2.getPhaseIncrement()) - osc2.sawValue(oldPhase);
         // or the other way around? also - later we need to switch between sawValue/squareValue
         // i think, new-old: when new = -1, old = +1, stepAmp = -2 - a downward step by 2
 
@@ -68,6 +70,10 @@ public:
         blep2.prepareForStep(stepDly, stepAmp);
       }
     }
+
+
+
+
     if(osc2.getStepAmplitude() != 0.0)
     {
       blep2.prepareForStep(osc2.getStepDelay(), osc2.getStepAmplitude());

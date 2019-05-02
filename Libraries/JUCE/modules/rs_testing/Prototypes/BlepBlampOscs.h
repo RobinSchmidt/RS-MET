@@ -122,6 +122,8 @@ public:
     wrapPhase();
   }
 
+  // have resetPhase, resetStepVariables and reset which does both
+
   /** Returns the value of a sawtooth wave at given position in [0,1). */
   static inline T sawValue(T pos)
   {
