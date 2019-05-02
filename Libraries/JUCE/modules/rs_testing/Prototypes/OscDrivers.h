@@ -47,8 +47,8 @@ public:
       T newPhase = master.getPhase() * slave.getPhaseIncrement() / master.getPhaseIncrement();
 
 
-      //slave.resetPhase(newPhase + slave.getPhaseIncrement()); // verify the +inc
-      slave.resetPhase(newPhase);
+      slave.resetPhase(newPhase + slave.getPhaseIncrement()); // verify the +inc
+      //slave.resetPhase(newPhase);
       // ..i think, we may need to get rid of the +inc but also take it into when computing the
       // step amplitude ..ther we may need the +inc or something...it's tricky because of
       // pre-increment in slave.getSampleSaw
@@ -58,8 +58,6 @@ public:
 
       blep.prepareForStep(stepDly, stepAmp);
     }
-
-
 
     T out = slave.getSampleSaw();
     if(slave.getStepAmplitude() != 0.0)
@@ -76,10 +74,14 @@ public:
   void reset();
 
 
-protected:
 
   rsBlepReadyOsc<T> master, slave; // use simple phasor for slave later
-  TBlep blep;  
+  TBlep blep;
+
+
+protected:
+
+
 
 };
 

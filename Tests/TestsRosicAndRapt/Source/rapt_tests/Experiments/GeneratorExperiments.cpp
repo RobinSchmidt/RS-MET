@@ -498,15 +498,22 @@ void polyBlep()
 
 void syncOsc()
 {
-  int N = 100000;
+  int N = 500000;
   double fs       = 44100;
   double f1       = 100 * GOLDEN_RATIO;  // master osc freq
   double f2_start = 20 * f1;             // start freq of slave osc 
   double f2_end   = 2  * f1;             // end   freq of slave osc 2
   double a        = 0.5;                 // amplitude
 
+
   //f1 = fs/100;
-  //f2_start = f2_end = 3.9 * f1;
+  //f2_start = f2_end = 4.1 * f1;
+
+  //double pm = 100.25; // master period
+  //double ps = 30.;     // slave period
+  //f1 = fs/pm;
+  //f2_start = f2_end = fs/ps;
+
 
   typedef rsSyncOsc<double, rsPolyBlep2<double, double>> SO;
   //typedef rsSyncOsc<double, rsTableMinBlep<double, double>> SO;
@@ -531,6 +538,8 @@ void syncOsc()
   }
 
 
+  rsArray::shift(&xBlep[0], N, -osc.blep.getDelay());
+
   //rsPlotVectors(xNaive, xBlep);
   rosic::writeToMonoWaveFile(  "SyncNaive.wav", &xNaive[0],            N, (int) fs);
   rosic::writeToMonoWaveFile(  "SyncBlep.wav",  &xBlep[0],             N, (int) fs);
@@ -538,6 +547,17 @@ void syncOsc()
 
   // when using slave.resetPhase(newPhase + slave.getPhaseIncrement()); the phase seems to be in
   // advance after a sync trigger, without the +inc, we get wrong step-amplitudes
+
+  // hmm. i think, +inc is actually correct
+
+  // i need to devise a test scenario with clearly defined master and slave peridicities and
+  // walk through it manually, to figure out what is actually desired
+  // maybe use pMaster = 100 samples ( = 2^2 * 5^2), pSlave = 21 samples ( = 3*7)
+  // ...waveform seems to be strictly periodic with master period - shouldn't each cycle look
+  // slightly different with respect ot blep phase? ah - no - only if, the master-cycle length is
+  // non-integer (try 100.25), 100.25/30.0 looks actually really good
+
+  // with a slow sweep, it looks like 
 
 }
 
