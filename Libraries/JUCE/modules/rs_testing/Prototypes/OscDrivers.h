@@ -3,6 +3,118 @@
 
 
 
+
+
+/** A class that produces a phasor (i.e. a sawtooth wave from 0 to 1) running at some "slave" 
+frequency but also syncing to some (typically lower) "master" frequency. For preliminary 
+investigations for oscillator sync (it's simpler to consider the phasor's first). */
+
+
+template<class T, class TBlep> // T: type for signal and parameter, TBlep: class for BLEP object
+class rsSyncPhasor
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+
+  void setMasterIncrement(T newIncrement) { masterInc = newIncrement; }
+
+  void setSlaveIncrement(T newIncrement) { slaveInc  = newIncrement; }
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  inline T getSample()
+  {
+    return applyBlep(getSampleNaive());
+  }
+
+
+  inline T getSampleNaive()
+  {
+    // increment phase variables (we use increment-before-output):
+    masterPos += masterInc;
+    slavePos  += slaveInc;
+
+    // figure out, if one of the postions or both needs a wrap-around:
+    T wrappedMasterPos = T(-1);
+    T wrappedSlavePos  = T(-1);
+    if(masterPos >= T(1)) wrappedMasterPos = masterPos - T(1);
+    if(slavePos  >= T(1)) wrappedSlavePos  = slavePos  - T(1);
+    if(wrappedMasterPos >= T(0) || wrappedSlavePos >= T(0))
+    {
+
+      // figure out which of the 4 cases we have: 
+      // master-wrap-only, slave-wrap-only, master-then-slave-wrap, slave-then-master-wrap
+      // and handle each of them by appropriately preparing the blep object
+
+
+      if(wrappedMasterPos >= 0) masterPos = wrappedMasterPos;
+      if(wrappedSlavePos  >= 0) slavePos  = wrappedSlavePos;
+    }
+
+
+    //wrapPhase(masterPos);
+    //wrapPhase(slavePos);
+
+
+
+
+
+
+
+
+    return slavePos;
+  }
+
+  inline T applyBlep(T x)
+  {
+    return blep.getSample(x);
+  }
+
+
+
+
+  inline void resetPhase()
+  {
+    masterPos = T(0) - masterInc; wrapPhase(masterPos);
+    slavePos  = T(0) - slaveInc;; wrapPhase(slavePos);
+    // subtract increments because in getSample, we increment before producing output
+  }
+
+  static inline void wrapPhase(T& phase)
+  {
+    while( phase < T(0) )
+      phase += T(1);
+    while( phase >= T(1) )
+      phase -= T(1);
+  }
+
+
+protected:
+
+  T masterInc = T(0);
+  T masterPos = T(0);
+
+  T slaveInc = T(0);
+  T slavePos = T(0);
+
+  TBlep blep;
+
+};
+
+
+
+
+
+
+//=================================================================================================
+
 /** Implements sawtooth/pulse oscillator which can be additionally "synced" to another 
 "master" frequency. The step discontinuities of the waveform itself and also those due to sync are
 anti-aliased via a BLEP. */
@@ -19,7 +131,7 @@ public:
 
   void setMasterIncrement(T newIncrement) { master.setPhaseIncrement(newIncrement); }
 
-  void setSlaveIncrement2(T newIncrement) { slave.setPhaseIncrement(newIncrement); }
+  void setSlaveIncrement(T newIncrement) { slave.setPhaseIncrement(newIncrement); }
 
   // void setSyncAmount
 

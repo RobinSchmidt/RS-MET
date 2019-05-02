@@ -528,7 +528,7 @@ void syncOsc()
     // sweep freq of slave osc:
     double f2_mix = n/(N-1.0);
     double f2     = (1-f2_mix) * f2_start + f2_mix * f2_end;
-    osc.setSlaveIncrement2(f2/fs);
+    osc.setSlaveIncrement(f2/fs);
 
     // produce naive and anti-aliased signals:
     xNaive[n] = osc.getSampleNaive();
