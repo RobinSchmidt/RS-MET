@@ -498,25 +498,24 @@ void polyBlep()
 
 void syncOsc()
 {
-  int N = 3000;
+  int N = 100000;
   double fs       = 44100;
   double f1       = 100 * GOLDEN_RATIO;  // master osc freq
   double f2_start = 20 * f1;             // start freq of slave osc 
   double f2_end   = 2  * f1;             // end   freq of slave osc 2
-  double a        = 1.0;                 // amplitude
+  double a        = 0.5;                 // amplitude
 
-  f1 = fs/100;
-  f2_start = f2_end = 3.9 * f1;
+  //f1 = fs/100;
+  //f2_start = f2_end = 3.9 * f1;
 
-  //typedef rsSyncOsc<double, rsPolyBlep2<double, double>> SO;
-  typedef rsSyncOsc<double, rsTableMinBlep<double, double>> SO;
+  typedef rsSyncOsc<double, rsPolyBlep2<double, double>> SO;
+  //typedef rsSyncOsc<double, rsTableMinBlep<double, double>> SO;
   SO osc;
   osc.setMasterIncrement(f1/fs);
   osc.reset();
 
-
+  // produce naive and anti-aliased signal:
   std::vector<double> xNaive(N), xBlep(N);
-
   for(int n = 0; n < N; n++) 
   {
     // sweep freq of slave osc:
@@ -532,13 +531,14 @@ void syncOsc()
   }
 
 
+  //rsPlotVectors(xNaive, xBlep);
+  rosic::writeToMonoWaveFile(  "SyncNaive.wav", &xNaive[0],            N, (int) fs);
+  rosic::writeToMonoWaveFile(  "SyncBlep.wav",  &xBlep[0],             N, (int) fs);
+  rosic::writeToStereoWaveFile("SyncBoth.wav",  &xNaive[0], &xBlep[0], N, (int) fs);
 
+  // when using slave.resetPhase(newPhase + slave.getPhaseIncrement()); the phase seems to be in
+  // advance after a sync trigger, without the +inc, we get wrong step-amplitudes
 
-
-  rsPlotVectors(xNaive, xBlep);
-
-
-  int dummy = 0;
 }
 
 void dualBlepOsc()
