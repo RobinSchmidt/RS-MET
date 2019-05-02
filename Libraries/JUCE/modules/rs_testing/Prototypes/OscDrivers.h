@@ -74,7 +74,9 @@ public:
 
     if(slavePos < T(1))
     {
-      slaveStepAmp = T(0);  // preliminary
+      //slaveStepAmp = T(0);  // preliminary
+      //slaveStepAmp = T(0) - slavePos;
+      slaveStepAmp = newSlavePos - slavePos;
     }
 
     blep.prepareForStep(slaveStepDelay, slaveStepAmp);

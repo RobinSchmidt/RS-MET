@@ -541,6 +541,7 @@ void syncPhasor()
   rosic::writeToStereoWaveFile("SyncPhasorBoth.wav",  &xNaive[0], &xBlep[0], N, (int) fs);
 
   // master-then-slave wraparound produces artifacts
+  // todo: create a unit test that covers all 4 cases
 }
 
 void syncOsc()
