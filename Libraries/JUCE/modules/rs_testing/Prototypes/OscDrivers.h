@@ -50,9 +50,9 @@ public:
 
 
 
-  inline void handleMasterWrapAround(T wrappedMasterPos)
+  inline void handleMasterWrapAround(T newMasterPos)
   {
-    T masterStepDelay = wrappedMasterPos / masterInc;
+    T masterStepDelay = newMasterPos / masterInc;
     T oldPos  = slavePos;
     T newPos  = masterStepDelay * slaveInc;
     slavePos  = newPos;
@@ -60,15 +60,25 @@ public:
     T stepAmp = T(0) - oldPos;   // ..like this?
     T stepDly = newPos / slaveInc;
     blep.prepareForStep(stepDly, stepAmp);
-    masterPos = wrappedMasterPos;
+    masterPos = newMasterPos;
   }
 
-  inline void handleSlaveWrapAround(T wrappedSlavePos)
+  inline void handleSlaveWrapAround(T newSlavePos)
   {
-    T slaveStepDelay = wrappedSlavePos  / slaveInc;
+    T slaveStepDelay = newSlavePos  / slaveInc;
+
     T slaveStepAmp   = T(-1);
+    // i think, this is wrong in general - if a master wraparound occurs before the slave 
+    // wraparound, the amplitude is much less - i think, the case can be identified by
+    // if(slavePos < 1) or if(slavePos <= 1)
+
+    if(slavePos < T(1))
+    {
+      slaveStepAmp = T(0);  // preliminary
+    }
+
     blep.prepareForStep(slaveStepDelay, slaveStepAmp);
-    slavePos  = wrappedSlavePos;
+    slavePos = newSlavePos;
   }
 
   inline void handleWrapArounds()
