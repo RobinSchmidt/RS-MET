@@ -498,7 +498,7 @@ void polyBlep()
 
 void syncOsc()
 {
-  int N = 800;
+  int N = 3000;
   double fs       = 44100;
   double f1       = 100 * GOLDEN_RATIO;  // master osc freq
   double f2_start = 20 * f1;             // start freq of slave osc 
@@ -506,7 +506,7 @@ void syncOsc()
   double a        = 1.0;                 // amplitude
 
   f1 = fs/100;
-  f2_start = f2_end = 4.99 * f1;
+  f2_start = f2_end = 3.9 * f1;
 
   //typedef rsSyncOsc<double, rsPolyBlep2<double, double>> SO;
   typedef rsSyncOsc<double, rsTableMinBlep<double, double>> SO;
@@ -516,6 +516,22 @@ void syncOsc()
 
 
   std::vector<double> xNaive(N), xBlep(N);
+
+  for(int n = 0; n < N; n++) 
+  {
+    // sweep freq of slave osc:
+    double f2_mix = n/(N-1.0);
+    double f2     = (1-f2_mix) * f2_start + f2_mix * f2_end;
+    osc.setSlaveIncrement2(f2/fs);
+
+    // produce naive and anti-aliased signals:
+    xNaive[n] = osc.getSampleNaive();
+    xBlep[n]  = osc.applyBlep(xNaive[n]);
+    xNaive[n] *= a;
+    xBlep[n]  *= a;
+  }
+
+
 
 
 

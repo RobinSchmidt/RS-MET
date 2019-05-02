@@ -27,16 +27,46 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
+
+
+
   inline T getSample()
+  {
+    return applyBlep(getSampleNaive());
+  }
+
+
+  inline T getSampleNaive()
   {
     T dummy = master.getSampleSaw(); // later use just a phasor - output not actually used
 
 
-    T out = slave.getSampleSaw(); // preliminary
+    if(master.getStepAmplitude() != 0.0)
+    {
+      T oldPhase = slave.getPhase();
+      T newPhase = master.getPhase() * slave.getPhaseIncrement() / master.getPhaseIncrement();
+
+
+      slave.resetPhase(newPhase + slave.getPhaseIncrement()); // verify the +inc
+      //slave.resetPhase(newPhase);
+
+      T stepAmp = slave.sawValue(newPhase) - slave.sawValue(oldPhase);
+      T stepDly = newPhase / slave.getPhaseIncrement(); 
+
+      blep.prepareForStep(stepDly, stepAmp);
+    }
 
 
 
+    T out = slave.getSampleSaw();
+    if(slave.getStepAmplitude() != 0.0)
+      blep.prepareForStep(slave.getStepDelay(), slave.getStepAmplitude());
     return out;
+  }
+
+  inline T applyBlep(T x)
+  {
+    return blep.getSample(x);
   }
 
 
