@@ -110,22 +110,6 @@ bool syncUnitTest()
   x1 = sp.getSampleNaive();   //  0.014    correct
   y1 = sp.applyBlep(x1);      //  0.12968
 
-  /*
-  // old:
-  // slave reset first (d=0.6), then master reset (d=0.5):
-  sp.setState(0.95, 0.1, 0.996, 0.01);
-  x0 = sp.getSampleNaive();   //  0.006    wrong? behaves as if master-reset did not occur?
-  y0 = sp.applyBlep(x0);      // -0.18075
-  x1 = sp.getSampleNaive();   //  0.016
-  y1 = sp.applyBlep(x1);      //  0.08675
-  // i think, in this case, it goes wrong: the 0.006 is what we would expect if there were only a 
-  // slave reset - the additional master reset seems to be ignored
-  // if the time-unit is seconds (s), then we have the slave reset at 1s, setting the 
-  // state/time/position preliminarily to 0.006s - but then the master reset happens 0.1 samples 
-  // later...this should set the slave-position (== output-sample) to 0.005 - the master-reset 
-  // should overwrite the state produced by the slave-reset
-  */
-
   // slave reset first (d=0.6), then master reset (d=0.5):
   sp.setState(0.95, 0.1, 0.996, 0.01);
   x0 = sp.getSampleNaive();   //  0.005    correct: master-rest overrides slave reset

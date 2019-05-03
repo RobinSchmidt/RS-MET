@@ -496,6 +496,27 @@ void polyBlep()
   // ...but i think, that doesn't  work out, too...more research needed....
 }
 
+
+// maybe move to test-signal generation
+template<class TOsc>
+std::vector<double> syncSweep(TOsc& osc, double masterFreq, double slaveStartFreq, 
+  double slaveEndFreq, double lengthInSeconds, double sampleRate, bool withBlep)
+{
+  osc.setMasterIncrement(masterFreq     / sampleRate);
+  osc.setSlaveIncrement( slaveStartFreq / sampleRate);
+  osc.reset();
+  int numSamples = (int) round(lengthInSeconds * sampleRate);
+  std::vector<double> y(numSamples);
+  for(int n = 0; n < numSamples; n++) {
+    double freqMix = n/(numSamples-1.0);  // sweep freq of slave osc...
+    double slaveFreq = (1-freqMix) * slaveStartFreq + freqMix * slaveEndFreq;
+    sp.setSlaveIncrement(slaveFreq / sampleRate);
+    if(withBlep)  y[n] = osc.getSample();
+    else          y[n] = osc.getSampleNaive();
+  }
+  return y;
+}
+
 void syncPhasor()
 {
   int N = 500000;
@@ -541,11 +562,11 @@ void syncPhasor()
   rosic::writeToStereoWaveFile("SyncPhasorBoth.wav",  &xNaive[0], &xBlep[0], N, (int) fs);
 
   // master-then-slave wraparound produces artifacts
-  // todo: create a unit test that covers all 4 cases
+
+  // todo: produce the same sweep naively at a much higher sample-rate and then downsample and 
+  // compare with blep version - make a function 
+  // createSyncOutput(masterFreq, slaveStartFreq, slaveEndFreq, length, sampleRate, bool withBlep)
 }
-
-
-
 
 template<class TOsc>
 std::vector<double> createSyncOutputNaive(TOsc& osc, int numSamples)
