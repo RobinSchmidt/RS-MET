@@ -64,6 +64,17 @@ bool blepUnitTest()
   return r;
 }
 
+template<class TOsc>
+void plotSyncOutput(TOsc& osc, int numSamples)
+{
+  std::vector<double> yNaive(numSamples), yBlep(numSamples);
+  for(int n = 0; n < numSamples; n++) {
+    yNaive[n] = osc.getSampleNaive();
+    yBlep[n]  = osc.applyBlep(yNaive[n]);
+  }
+  RAPT::rsArray::shift(&yBlep[0], numSamples, -osc.getBlep().getDelay());
+  rsPlotVectors(yNaive, yBlep);
+}
 bool syncUnitTest()
 {
   bool r = true;
@@ -90,16 +101,11 @@ bool syncUnitTest()
   // states of the osc and its embedded blep directly - just look at the output signal)
 
   // just for development - produce an output array and plot it:
-  int N = 100;
-  int n;
-  std::vector<double> yNaive(N), yBlep(N);
-  for(n = 0; n < N; n++) {
-    yNaive[n] = sp.getSampleNaive();
-    yBlep[n]  = sp.applyBlep(yNaive[n]);
-  }
-  rsPlotVectors(yNaive, yBlep);
+  plotSyncOutput(sp, 100);
 
   // hmm...that doesn't look like a pure delay
+  // ahh - not we should expect a delay and some sort of lowpass character - that seems to fit with
+  // what we see
   // the slave-wraparounds write 0.5 nonzero numbers into corrector of the blep (i think, the delayed
   // sample remains untouched). the master wraparounds are indeed inconsequential
 
@@ -113,12 +119,16 @@ bool syncUnitTest()
 
 
 
+  sp.setSlaveIncrement( 129./1024);  // > 1/8
+  sp.reset();
+  plotSyncOutput(sp, 500);
 
 
 
-  // sp.setSlaveIncrement( 129./1024);  // > 1/8
-
-  // sp.setSlaveIncrement( 127./1024);  // < 1/8
+  sp.setSlaveIncrement( 127./1024);  // < 1/8
+  sp.reset();
+  plotSyncOutput(sp, 500);
+  // that looks wrong! i think, it exposes the artifact that i'm battling with
 
 
   return r;
