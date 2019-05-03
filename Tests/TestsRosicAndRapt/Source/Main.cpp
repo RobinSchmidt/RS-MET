@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  runAllUnitTests();  // todo: merge with unit tests for RSLib
+  //runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -99,7 +99,8 @@ int main(int argc, char* argv[])
   //blit();
   //blep();
   //polyBlep();
-  syncPhasor();
+  syncSweep();
+  //syncPhasor();
   //syncPhasor2();
   //syncOsc();
   //dualBlepOsc();

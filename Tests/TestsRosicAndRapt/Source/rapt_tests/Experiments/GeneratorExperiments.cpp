@@ -510,16 +510,66 @@ std::vector<double> syncSweep(TOsc& osc, double masterFreq, double slaveStartFre
   for(int n = 0; n < numSamples; n++) {
     double freqMix = n/(numSamples-1.0);  // sweep freq of slave osc...
     double slaveFreq = (1-freqMix) * slaveStartFreq + freqMix * slaveEndFreq;
-    sp.setSlaveIncrement(slaveFreq / sampleRate);
+    osc.setSlaveIncrement(slaveFreq / sampleRate);
     if(withBlep)  y[n] = osc.getSample();
     else          y[n] = osc.getSampleNaive();
   }
   return y;
 }
+std::vector<double> downSample(const std::vector<double>& x, int decimationFactor,
+  bool antiAlias = false)
+{
+  int Nx = (int) x.size();
+  int d  = decimationFactor;
+  int Ny = Nx / d;
+  std::vector<double> y(Ny);
+  if(antiAlias)
+  {
+
+  }
+  else
+    for(int n = 0; n < Ny; n++)
+      y[n] = x[n*d];
+
+  return y;
+}
+
+void syncSweep()
+{
+  // We create a hardsync sweep once naively, once via blep and once via oversampling to compare 
+  // them
+
+  //int N = 5000;
+  double sampleRate     = 44100;
+  double masterFreq     = 100 * GOLDEN_RATIO;  // master osc freq
+  double slaveStartFreq = 20 * masterFreq;     // start freq of slave osc 
+  double slaveEndFreq   = 1  * masterFreq;     // end   freq of slave osc 2
+  double amplitude      = 0.25;                // amplitude
+  double length         = 5.0;                 // length in seconds
+  int    overSampling   = 16;                  // oversampling factor
+
+  //typedef rsSyncPhasor<double, rsPolyBlep2<double, double>> SyncOsc;
+  typedef rsSyncPhasor<double, rsTableMinBlep<double, double>> SyncOsc;
+  SyncOsc osc;
+
+  typedef std::vector<double> Vec; 
+  Vec xNaive = syncSweep(osc, masterFreq, slaveStartFreq, slaveEndFreq, length, sampleRate, false);
+  Vec xBlep  = syncSweep(osc, masterFreq, slaveStartFreq, slaveEndFreq, length, sampleRate, true);
+  Vec xOver  = downSample(syncSweep(osc, masterFreq, slaveStartFreq, slaveEndFreq, length, 
+    overSampling*sampleRate, false), overSampling, true);
+
+  xNaive = xNaive - 0.5;
+  xBlep  = xBlep  - 0.5;
+  xOver  = xOver  - 0.5;
+
+  rosic::writeToMonoWaveFile("SyncSweepNaive.wav", &xNaive[0], (int)xNaive.size(), (int)sampleRate);
+  rosic::writeToMonoWaveFile("SyncSweepBlep.wav",  &xBlep[0],  (int)xBlep.size(),  (int)sampleRate);
+  rosic::writeToMonoWaveFile("SyncSweepOver.wav",  &xOver[0],  (int)xOver.size(),  (int)sampleRate);
+}
 
 void syncPhasor()
 {
-  int N = 500000;
+  int N = 5000;
   double fs       = 44100;
   double f1       = 100 * GOLDEN_RATIO;  // master osc freq
   double f2_start = 20 * f1;             // start freq of slave osc 
@@ -556,7 +606,7 @@ void syncPhasor()
 
   rsArray::shift(&xBlep[0], N, -sp.getBlep().getDelay());
 
-  //rsPlotVectors(xNaive, xBlep);
+  rsPlotVectors(xNaive, xBlep);
   rosic::writeToMonoWaveFile(  "SyncPhasorNaive.wav", &xNaive[0],            N, (int) fs);
   rosic::writeToMonoWaveFile(  "SyncPhasorBlep.wav",  &xBlep[0],             N, (int) fs);
   rosic::writeToStereoWaveFile("SyncPhasorBoth.wav",  &xNaive[0], &xBlep[0], N, (int) fs);

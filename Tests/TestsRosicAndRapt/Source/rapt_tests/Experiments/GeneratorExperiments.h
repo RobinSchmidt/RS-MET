@@ -13,6 +13,7 @@ void blit();
 void blep();
 //void blamp();
 void polyBlep();
+void syncSweep();
 void syncPhasor();
 void syncPhasor2();
 void syncOsc();
