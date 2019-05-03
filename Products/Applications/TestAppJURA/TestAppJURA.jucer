@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="G5rTLi" name="TestAppJURA" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.TestAppJURA" includeBinaryInAppConfig="1"
-              jucerVersion="5.2.0" companyName="RS-MET" companyWebsite="www.rs-met.com"
+              jucerVersion="5.4.3" companyName="RS-MET" companyWebsite="www.rs-met.com"
               companyEmail="robin@rs-met.com" displaySplashScreen="1" reportAppUsage="1"
               splashScreenColour="Dark" cppLanguageStandard="11" companyCopyright="RS-MET">
   <MAINGROUP id="K1ItHv" name="TestAppJURA">
@@ -60,11 +60,11 @@
         <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="jura_framework" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="jura_processors" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="rapt" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="romos" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="jura_framework" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="jura_processors" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="rosic" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="romos" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/RobsJuceModules"/>
       </MODULEPATHS>
     </VS2015>
   </EXPORTFORMATS>
@@ -90,4 +90,7 @@
     <MODULE id="rosic" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
   </MODULES>
   <JUCEOPTIONS/>
+  <LIVE_SETTINGS>
+    <WINDOWS/>
+  </LIVE_SETTINGS>
 </JUCERPROJECT>
