@@ -24,6 +24,8 @@
   ==============================================================================
 */
 
+// file maintained from juce version 5.2.0 - the file is actually gone in 5.4.3
+
 #define JUCE_VSTINTERFACE_H_INCLUDED
 
 using namespace juce;

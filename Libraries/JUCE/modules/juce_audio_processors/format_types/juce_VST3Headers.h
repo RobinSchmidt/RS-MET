@@ -46,8 +46,21 @@
  #pragma clang diagnostic ignored "-Wdelete-non-virtual-dtor"
  #pragma clang diagnostic ignored "-Wdeprecated-declarations"
  #pragma clang diagnostic ignored "-Wextra-semi"
+ #pragma clang diagnostic ignored "-Wmissing-braces"
+ #if __has_warning("-Wpragma-pack")
+  #pragma clang diagnostic ignored "-Wpragma-pack"
+ #endif
  #if __has_warning("-Wcomma")
   #pragma clang diagnostic ignored "-Wcomma"
+ #endif
+ #if __has_warning("-Wzero-as-null-pointer-constant")
+  #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+ #endif
+ #if __has_warning("-Winconsistent-missing-destructor-override")
+  #pragma clang diagnostic ignored "-Winconsistent-missing-destructor-override"
+ #endif
+ #if __has_warning("-Wcast-align")
+  #pragma clang diagnostic ignored "-Wcast-align"
  #endif
 #endif
 
@@ -88,14 +101,23 @@
  #include <pluginterfaces/vst/ivstchannelcontextinfo.h>
  #include <public.sdk/source/common/memorystream.h>
  #include <public.sdk/source/vst/vsteditcontroller.h>
+ #include <public.sdk/source/vst/vstpresetfile.h>
 #else
+ // needed for VST_VERSION
+ #include <pluginterfaces/vst/vsttypes.h>
+
  #include <base/source/baseiids.cpp>
  #include <base/source/fbuffer.cpp>
  #include <base/source/fdebug.cpp>
  #include <base/source/fobject.cpp>
  #include <base/source/fstreamer.cpp>
  #include <base/source/fstring.cpp>
+#if VST_VERSION >= 0x030608
+ #include <base/thread/source/flock.cpp>
+ #include <pluginterfaces/base/coreiids.cpp>
+#else
  #include <base/source/flock.cpp>
+#endif
  #include <base/source/updatehandler.cpp>
  #include <pluginterfaces/base/conststringtable.cpp>
  #include <pluginterfaces/base/funknown.cpp>
@@ -113,7 +135,11 @@
  #include <public.sdk/source/vst/vstcomponent.cpp>
  #include <public.sdk/source/vst/vstcomponentbase.cpp>
  #include <public.sdk/source/vst/vstparameters.cpp>
+ #include <public.sdk/source/vst/vstpresetfile.cpp>
  #include <public.sdk/source/vst/hosting/hostclasses.cpp>
+#if VST_VERSION >= 0x03060c   // 3.6.12
+ #include <public.sdk/source/vst/hosting/pluginterfacesupport.cpp>
+#endif
 
 //==============================================================================
 namespace Steinberg
@@ -122,7 +148,9 @@ namespace Steinberg
     DEF_CLASS_IID (IPluginBase)
     DEF_CLASS_IID (IPlugView)
     DEF_CLASS_IID (IPlugFrame)
+   #if VST_VERSION < 0x030608
     DEF_CLASS_IID (IBStream)
+   #endif
     DEF_CLASS_IID (IPluginFactory)
     DEF_CLASS_IID (IPluginFactory2)
     DEF_CLASS_IID (IPluginFactory3)
