@@ -100,42 +100,43 @@ public:
     slavePos = newSlavePos;
   }
 
+  inline bool isMasterResetFirst(T wrappedMasterPos, T wrappedSlavePos)
+  {
+    return wrappedMasterPos * slaveInc > wrappedSlavePos * masterInc;
+    // Conceptually, we do this:
+    // T masterStepDelay = wrappedMasterPos / masterInc;
+    // T slaveStepDelay  = wrappedSlavePos  / slaveInc;
+    // return masterStepDelay > slaveStepDelay;
+    // ...but without divisions
+  }
+
+  /** Figures out if the master and/or slave phasor needs a reset/wraparound and if so, handles it
+  and prepares the blep object accordingly. There are 4 cases: master-wrap-only, slave-wrap-only, 
+  master-then-slave-wrap, slave-then-master-wrap. */
   inline void handleWrapArounds()
   {
-    // figure out, if one of the postions or both needs a wrap-around:
     T wrappedMasterPos = T(-1);
     T wrappedSlavePos  = T(-1);
     if(masterPos >= T(1)) wrappedMasterPos = masterPos - T(1);
     if(slavePos  >= T(1)) wrappedSlavePos  = slavePos  - T(1);
     if(wrappedMasterPos >= T(0) || wrappedSlavePos >= T(0)) {
-      // we have at least one wraparound to handle - figure out which of the 4 cases we have: 
-      // master-wrap-only, slave-wrap-only, master-then-slave-wrap, slave-then-master-wrap
-      // and handle each of them by appropriately preparing the blep object:
-      if(wrappedSlavePos == T(-1)) 
-        handleMasterWrapAround(wrappedMasterPos);          // master-wraparound only
-      else if(wrappedMasterPos == T(-1))
-        handleSlaveWrapAround(wrappedSlavePos);            // slave-wraparound only
-      else 
-      {                                                    // master and slave wraparound...
-        T masterStepDelay = wrappedMasterPos / masterInc;
-        T slaveStepDelay  = wrappedSlavePos  / slaveInc;
-        if(masterStepDelay > slaveStepDelay) {
-          handleMasterWrapAround(wrappedMasterPos);        // master-wraparound first...
-          handleSlaveWrapAround(wrappedSlavePos);          // ...slave-wraparound second
-          // this case seems to produce errors ..is this still true?
+      if(wrappedSlavePos == T(-1))                         // master reset only
+        handleMasterWrapAround(wrappedMasterPos);          
+      else if(wrappedMasterPos == T(-1))                   // slave reset only
+        handleSlaveWrapAround(wrappedSlavePos);            
+      else {                                               // master and slave reset
+        if( isMasterResetFirst(wrappedMasterPos, wrappedSlavePos) ) {
+          handleMasterWrapAround(wrappedMasterPos);        // master reset first...
+          handleSlaveWrapAround(wrappedSlavePos);          // ...slave reset second
+        } else {
+          handleSlaveWrapAround(wrappedSlavePos);          // slave reset first...
+          handleMasterWrapAround(wrappedMasterPos);        // ...master reset second
         }
-        else {
-          handleSlaveWrapAround(wrappedSlavePos);          // slave-wraparound first...
-          handleMasterWrapAround(wrappedMasterPos);        // ...master-wraparound second
-        }
-
-        // are these wrong? i think so.
-        //masterPos = wrappedMasterPos;
-        //slavePos  = wrappedSlavePos;
-
       }
     }
   }
+  // can the logic be simplified? what happens if we do the wraps in the wrong order? does that
+  // actually matter? if not, the logic can indeed be simplified a lot
 
 
   inline void resetPhase()

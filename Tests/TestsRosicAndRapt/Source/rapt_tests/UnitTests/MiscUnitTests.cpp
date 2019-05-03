@@ -130,6 +130,11 @@ bool syncUnitTest()
   y0 = sp.applyBlep(x0);      // -0.12558
   x1 = sp.getSampleNaive();   //  0.014    correct
   y1 = sp.applyBlep(x1);      //  0.12968
+  // what happens in x0 = sp.getSampleNaive() to the state/position of the slave phasor
+  // t in samples: -1: previous, 0: current, the (0) in the middle means where it would end up at 
+  // time 0 if there would not be a second reset, p is position
+  // t: -1       -0.5    (0)      -0.4     0        
+  // p:  0.994    0       0.005    0       0.004
 
   // slave reset first (d=0.6), then master reset (d=0.5):
   sp.setState(0.95, 0.1, 0.996, 0.01);
