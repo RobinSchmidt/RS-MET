@@ -97,31 +97,38 @@ bool syncUnitTest()
 
   // master and slave resets occur simulataneously with sample-delay of d=0.5:
   sp.setState(0.95, 0.1, 0.995, 0.01);
-  x0 = sp.getSampleNaive();   //  0.005
+  x0 = sp.getSampleNaive();   //  0.005     correct: master-reset has no effect
   y0 = sp.applyBlep(x0);      // -0.125625
-  x1 = sp.getSampleNaive();   //  0.015
+  x1 = sp.getSampleNaive();   //  0.015     correct
   y1 = sp.applyBlep(x1);      //  0.130625
 
   // master reset first (d=0.5), then slave reset (d=0.4):
   sp.setState(0.95, 0.1, 0.994, 0.01);
-  x0 = sp.getSampleNaive();   //  0.004
+  x0 = sp.getSampleNaive();   //  0.004    correct: master-reset has no effect, bcs slave reset overwrites state
   y0 = sp.applyBlep(x0);      // -0.12558
-  x1 = sp.getSampleNaive();   //  0.014
+  x1 = sp.getSampleNaive();   //  0.014    correct
   y1 = sp.applyBlep(x1);      //  0.12968
 
   // slave reset first (d=0.6), then master reset (d=0.5):
   sp.setState(0.95, 0.1, 0.996, 0.01);
-  x0 = sp.getSampleNaive();   //  0.006
+  x0 = sp.getSampleNaive();   //  0.006    wrong? behaves as if master-reset did not occur?
   y0 = sp.applyBlep(x0);      // -0.18075
   x1 = sp.getSampleNaive();   //  0.016
   y1 = sp.applyBlep(x1);      //  0.08675
+  // i think, in this case, it goes wrong: the 0.006 is what we would expect if there were only a 
+  // slave reset - the additional master reset seems to be ignored
+  // if the time-unit is seconds (s), then we have the slave reset at 1s, setting the 
+  // state/time/position preliminarily to 0.006s - but then the master reset happens 0.1 samples 
+  // later...this should set the slave-position (== output-sample) to 0.005 - the master-reset 
+  // should overwrite the state produced by the slave-reset
 
-  // todo: i have written the produced numbers into the comments - figure out, if these match the 
+  // i have written the produced numbers into the comments - figure out, if these match the 
   // expectations (with pencil and paper), if so, turn comments into r &= ... checks
   // check also, master-only and slave-only cases ...and maybe the trivial no-reset case, too
 
 
-  return r;
+  return false;  // this test is not yet complete and the phasor still doesn't work correctly
+  //return r;
 }
 
 bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, int fftSize, 
