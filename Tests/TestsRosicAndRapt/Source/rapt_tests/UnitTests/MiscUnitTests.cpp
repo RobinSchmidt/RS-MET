@@ -95,6 +95,7 @@ bool syncUnitTest()
   double x0, x1;  // naive outputs
   double y0, y1;  // corrected outputs
 
+
   // master and slave resets occur simulataneously with sample-delay of d=0.5:
   sp.setState(0.95, 0.1, 0.995, 0.01);
   x0 = sp.getSampleNaive();   //  0.005     correct: master-reset has no effect
@@ -109,6 +110,8 @@ bool syncUnitTest()
   x1 = sp.getSampleNaive();   //  0.014    correct
   y1 = sp.applyBlep(x1);      //  0.12968
 
+  /*
+  // old:
   // slave reset first (d=0.6), then master reset (d=0.5):
   sp.setState(0.95, 0.1, 0.996, 0.01);
   x0 = sp.getSampleNaive();   //  0.006    wrong? behaves as if master-reset did not occur?
@@ -121,6 +124,14 @@ bool syncUnitTest()
   // state/time/position preliminarily to 0.006s - but then the master reset happens 0.1 samples 
   // later...this should set the slave-position (== output-sample) to 0.005 - the master-reset 
   // should overwrite the state produced by the slave-reset
+  */
+
+  // slave reset first (d=0.6), then master reset (d=0.5):
+  sp.setState(0.95, 0.1, 0.996, 0.01);
+  x0 = sp.getSampleNaive();   //  0.005    correct: master-rest overrides slave reset
+  y0 = sp.applyBlep(x0);      // -0.18075
+  x1 = sp.getSampleNaive();   //  0.015    correct
+  y1 = sp.applyBlep(x1);      //  0.08575
 
   // i have written the produced numbers into the comments - figure out, if these match the 
   // expectations (with pencil and paper), if so, turn comments into r &= ... checks

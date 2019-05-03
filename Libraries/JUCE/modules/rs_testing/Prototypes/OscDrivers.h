@@ -122,14 +122,17 @@ public:
         if(masterStepDelay > slaveStepDelay) {
           handleMasterWrapAround(wrappedMasterPos);        // master-wraparound first...
           handleSlaveWrapAround(wrappedSlavePos);          // ...slave-wraparound second
-          // this case seems to produce errors
+          // this case seems to produce errors ..is this still true?
         }
         else {
           handleSlaveWrapAround(wrappedSlavePos);          // slave-wraparound first...
           handleMasterWrapAround(wrappedMasterPos);        // ...master-wraparound second
         }
-        masterPos = wrappedMasterPos;
-        slavePos  = wrappedSlavePos;
+
+        // are these wrong? i think so.
+        //masterPos = wrappedMasterPos;
+        //slavePos  = wrappedSlavePos;
+
       }
     }
   }
