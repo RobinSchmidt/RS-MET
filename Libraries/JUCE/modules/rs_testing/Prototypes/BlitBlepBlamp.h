@@ -493,7 +493,13 @@ protected:
 
 /** Implementation of polynomial bandlimited steps and ramps (polyBLEPs and polyBLAMPS) with one
 sample delay, i.e. it corrects one sample before and one sample after the occurence of the 
-step/corner (which itself occurs somewhere in between these two samples). */
+step/corner (which itself occurs somewhere in between these two samples). 
+
+References:
+(1) Perceptually informed synthesis of bandlimited classical waveforms using integrated 
+polynomial interpolation
+
+*/
 
 template<class TSig, class TTim> // types for signal values and continuous time
 class rsPolyBlep1
@@ -506,6 +512,17 @@ public:
 
   int getDelay() const { return 1; }
 
+  /** Returns the current value of the "delayed" sample. This is the value to be returned in the 
+  next call to  getSample(). It's the past input sample with future and past correction already 
+  applied. The future-correction was applied in getSample, the past-correction was applied in 
+  prepareForStep, etc. */
+  inline TSig getDelayed() const { return delayed; }
+
+  /** Returns the current content of the "corrector" sample. This is the value that will be added 
+  to the incoming sample passed to getSample before writing it into the delayed sample buffer 
+  variable. It represents the future correction. The past correction is not separately available 
+  but directly accumulated into the "delayed" sample. */
+  inline TSig getCorrector() const { return corrector; }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -521,6 +538,7 @@ public:
     TTim d2 = d*d;
     delayed   += a *   d2/2;
     corrector += a * (-d2/2 + d - 1./2);
+    // formulas from (1), table I
   }
 
   void prepareForCorner(TTim delayFraction, TSig amplitude)

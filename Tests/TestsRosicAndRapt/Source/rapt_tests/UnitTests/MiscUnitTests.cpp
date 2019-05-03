@@ -2,7 +2,7 @@ bool blepUnitTest()
 {
   bool r = true;
 
-  rsTableLinBlep<double, double> linBlep;
+  rsTableLinBlep<double, double> linBlep;  // rename to lb, mb
   rsTableMinBlep<double, double> minBlep;
 
   // we test various settings for the kernel-length and table precision - this test is only to rule
@@ -33,8 +33,33 @@ bool blepUnitTest()
     }
   }
 
-  //rsPolyBlep1<double, double> polyBlep1;
-  //rsPolyBlep2<double, double> polyBlep2;
+  // check linear polyblep:
+  rsPolyBlep1<double, double> pb1;
+  pb1.reset();
+  pb1.prepareForStep(0.0, 1.0);
+  r &= pb1.getDelayed()   ==  0.0;
+  r &= pb1.getCorrector() == -0.5;
+  pb1.reset();
+  pb1.prepareForStep(0.25, 1.0);
+  r &= pb1.getDelayed()   ==  0.03125;
+  r &= pb1.getCorrector() == -0.28125;
+  pb1.reset();  
+  pb1.prepareForStep(0.5, 1.0);
+  r &= pb1.getDelayed()   ==  0.125;
+  r &= pb1.getCorrector() == -0.125;
+  pb1.reset();  
+  pb1.prepareForStep(0.75, 1.0);
+  r &= pb1.getDelayed()   ==  0.28125;
+  r &= pb1.getCorrector() == -0.03125;
+  pb1.reset();  
+  pb1.prepareForStep(1.0, 1.0);
+  r &= pb1.getDelayed()   ==  0.5;
+  r &= pb1.getCorrector() == -0.0;
+  // sanity-check, if these are really the values that should be expected - these are the ones that
+  // currently come out and look good in an informal anti-aliasing test
+
+  // check cubic polyblep:
+  //rsPolyBlep2<double, double> pb2;
 
   return r;
 }
@@ -75,6 +100,16 @@ bool syncUnitTest()
   rsPlotVectors(yNaive, yBlep);
 
   // hmm...that doesn't look like a pure delay
+  // the slave-wraparounds write 0.5 nonzero numbers into corrector of the blep (i think, the delayed
+  // sample remains untouched). the master wraparounds are indeed inconsequential
+
+  // maybe we should first unit-test ts rsPolyBlep1 object - why would it write 0.5 into the corrector 
+  // when the wraparound occurs exactly at the sample-instant?
+  // rsPolyBlep1::prepareForStep does this:
+  //   corrector += a * (-d2/2 + d - 1./2);
+  // this creates the .5 in the corrector - is this really correct? ..but the informal anti-aliasing 
+  // tests with it look good - they are probably correct and what we see is the lowpass character
+  // that affects the passband
 
 
 
