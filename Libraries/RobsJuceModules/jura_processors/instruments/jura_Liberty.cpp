@@ -2307,8 +2307,8 @@ void ModularBlockDiagramPanel::drawIncomingConnectionsForModule(Graphics &g, rom
 
     if( c.hasImplicitDelay() )
     {
-      int xMid = roundDoubleToInt( 0.5*(xs+xt) );
-      int yMid = roundDoubleToInt( 0.5*(ys+yt) );
+      int xMid = roundToInt( 0.5*(xs+xt) );
+      int yMid = roundToInt( 0.5*(ys+yt) );
       int w = bigFont->getTextPixelWidth(juce::String(("D")), bigFont->getDefaultKerning())+2*m+2*t;
       int h = bigFont->getFontHeight()+2*m+2*t;
       int xd = xMid - w/2;

@@ -258,6 +258,8 @@ public:
   // these functions are mostly for reference and doing plots to verify the expected behavior - for
   // realtime purposes, optimized computations can be used
 
+  // todo: let the key/vel parameters also be double
+
   /** Frequency ratio of given mode at given key and velocity */
   double getModeFreqRatio(int modeIndex, int key, int vel) const;
 

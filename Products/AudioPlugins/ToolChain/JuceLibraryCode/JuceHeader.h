@@ -43,6 +43,7 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "ToolChain";
+    const char* const  companyName    = "RS-MET";
     const char* const  versionString  = "2017.12.26";
     const int          versionNumber  = 0x7e10c1a;
 }
