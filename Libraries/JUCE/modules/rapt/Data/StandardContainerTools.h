@@ -315,6 +315,15 @@ inline std::vector<T> operator+(const std::vector<T>& v, const T& x)
   return result;
 }
 
+/** Subtracts a scalar from a vector. */
+template<class T>
+inline std::vector<T> operator-(const std::vector<T>& v, const T& x)
+{
+  std::vector<T> result(v.size());
+  for(int i = 0; i < v.size(); i++)
+    result[i] = v[i] - x;
+  return result;
+}
 
 /** Adds two vectors element wise. */
 template<class T>

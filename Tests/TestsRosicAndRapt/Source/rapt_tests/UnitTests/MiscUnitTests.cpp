@@ -65,9 +65,61 @@ bool blepUnitTest()
 }
 
 
+class rsTestSyncPhasor : public rsSyncPhasor<double, rsPolyBlep1<double, double>>
+{
+public:
+  void setState(double newMasterPos, double newMasterInc, double newSlavePos, double newSlaveInc, 
+    bool resetBlep = true) 
+  { 
+    masterPos = newMasterPos;
+    masterInc = newMasterInc;
+    slavePos  = newSlavePos;
+    slaveInc  = newSlaveInc;
+    if(resetBlep)
+      blep.reset();
+  }
+};
 bool syncUnitTest()
 {
   bool r = true;
+
+  // We put an rsSyncPhasor into a well known state (consisting of the positions ind increments of 
+  // the master and slave and the state of embedded blep object) and let it produce two samples and 
+  // compare the results with the prediction/expectation. Two samples are enough, because we use 
+  // only a linear polyblep which corrects only two samples. We do this for different sorts of 
+  // states that execute different code paths (for wrap-arounds for master-only, slave-only, 
+  // master-then-slave, slave-then-master). We also compare the naive (uncorrected) synced output
+  // samples to our expectations
+
+  rsTestSyncPhasor sp;
+  double x0, x1;  // naive outputs
+  double y0, y1;  // corrected outputs
+
+  // master and slave resets occur simulataneously with sample-delay of d=0.5:
+  sp.setState(0.95, 0.1, 0.995, 0.01);
+  x0 = sp.getSampleNaive();   //  0.005
+  y0 = sp.applyBlep(x0);      // -0.125625
+  x1 = sp.getSampleNaive();   //  0.015
+  y1 = sp.applyBlep(x1);      //  0.130625
+
+  // master reset first (d=0.5), then slave reset (d=0.4):
+  sp.setState(0.95, 0.1, 0.994, 0.01);
+  x0 = sp.getSampleNaive();   //  0.004
+  y0 = sp.applyBlep(x0);      // -0.12558
+  x1 = sp.getSampleNaive();   //  0.014
+  y1 = sp.applyBlep(x1);      //  0.12968
+
+  // slave reset first (d=0.6), then master reset (d=0.5):
+  sp.setState(0.95, 0.1, 0.996, 0.01);
+  x0 = sp.getSampleNaive();   //  0.006
+  y0 = sp.applyBlep(x0);      // -0.18075
+  x1 = sp.getSampleNaive();   //  0.016
+  y1 = sp.applyBlep(x1);      //  0.08675
+
+  // todo: i have written the produced numbers into the comments - figure out, if these match the 
+  // expectations (with pencil and paper), if so, turn comments into r &= ... checks
+  // check also, master-only and slave-only cases ...and maybe the trivial no-reset case, too
+
 
   return r;
 }
