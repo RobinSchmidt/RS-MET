@@ -8,11 +8,12 @@
               pluginChannelConfigs="" pluginIsSynth="0" pluginWantsMidiIn="1"
               pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="TestPluginJUCEAU" pluginRTASCategory=""
-              aaxIdentifier="com.RS-MET.TestPluginJUCE" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
-              jucerVersion="5.2.0" companyName="RS-MET" companyWebsite="www.rs-met.com"
+              aaxIdentifier="com.RS-MET.TestPluginJUCE" pluginAAXCategory="2"
+              jucerVersion="5.4.3" companyName="RS-MET" companyWebsite="www.rs-met.com"
               companyEmail="robin@rs-met.com" displaySplashScreen="1" reportAppUsage="1"
               splashScreenColour="Dark" buildStandalone="1" enableIAA="0" cppLanguageStandard="11"
-              companyCopyright="RS-MET">
+              companyCopyright="RS-MET" pluginFormats="buildVST,buildAU,buildStandalone"
+              pluginCharacteristicsValue="pluginWantsMidiIn">
   <MAINGROUP id="J7WzKP" name="TestPluginJUCE">
     <GROUP id="{5348A3D7-BFCF-B722-2C65-2A345253A7EB}" name="Source">
       <FILE id="NOmWFA" name="PluginProcessor.cpp" compile="1" tion="0" file="Source/PluginProcessor.cpp"/>
@@ -45,9 +46,9 @@
         <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_plugin_client" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="rapt" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="rosic" path="../../../Libraries/RobsJuceModules"/>
       </MODULEPATHS>
     </VS2015>
     <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraCompilerFlags="-fpermissive">
@@ -69,9 +70,9 @@
         <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="rapt" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="rosic" path="../../../Libraries/RobsJuceModules"/>
       </MODULEPATHS>
     </CODEBLOCKS_WINDOWS>
     <CODEBLOCKS_LINUX targetFolder="Builds/CodeBlocksLinux" extraCompilerFlags="-fPIC"
@@ -94,9 +95,9 @@
         <MODULEPATH id="juce_audio_formats" path="../../juce"/>
         <MODULEPATH id="juce_audio_devices" path="../../juce"/>
         <MODULEPATH id="juce_audio_basics" path="../../juce"/>
-        <MODULEPATH id="rapt" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="rosic" path="../../../Libraries/RobsJuceModules"/>
       </MODULEPATHS>
     </CODEBLOCKS_LINUX>
   </EXPORTFORMATS>
@@ -116,5 +117,8 @@
     <MODULE id="rapt" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="rosic" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_WEB_BROWSER="disabled" JUCE_ENABLE_LIVE_CONSTANT_EDITOR="disabled"/>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_WEB_BROWSER="0" JUCE_ENABLE_LIVE_CONSTANT_EDITOR="0"/>
+  <LIVE_SETTINGS>
+    <WINDOWS/>
+  </LIVE_SETTINGS>
 </JUCERPROJECT>

@@ -3,4 +3,6 @@ https://forum.juce.com/t/projucer-5-4-1-doesnt-allow-user-modules-to-be-inside-j
 
 i actually had to remove and re-add the modules by using
 "Add module from a specified folder"
-in the Projucer
+in the Projucer - fortunately, after adding the first one, the other ones can 
+be added more easily by Add a module -> Exporter paths 
+...even if that doesn't seem to make sense...
