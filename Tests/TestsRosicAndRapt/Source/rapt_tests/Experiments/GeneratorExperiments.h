@@ -14,6 +14,7 @@ void blep();
 //void blamp();
 void polyBlep();
 void syncPhasor();
+void syncPhasor2();
 void syncOsc();
 void dualBlepOsc();
 
