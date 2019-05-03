@@ -96,7 +96,28 @@ bool syncUnitTest()
   double y0, y1;  // corrected outputs
 
 
-  // master and slave resets occur simulataneously with sample-delay of d=0.5:
+  // no reset:
+  sp.setState(0.3, 0.1, 0.3, 0.01);
+  x0 = sp.getSampleNaive();   //  0.31    correct
+  y0 = sp.applyBlep(x0);      //  0.0     correct because of delay
+  x1 = sp.getSampleNaive();   //  0.32    correct
+  y1 = sp.applyBlep(x1);      //  0.31    correct
+
+  // master reset only at d=0.5:
+  sp.setState(0.95, 0.1, 0.3, 0.01);
+  x0 = sp.getSampleNaive();   //  0.005    correct
+  y0 = sp.applyBlep(x0);      // -0.03875
+  x1 = sp.getSampleNaive();   //  0.015    correct
+  y1 = sp.applyBlep(x1);      //  0.04375
+
+  // slave reset only at d=0.5:
+  sp.setState(0.3, 0.1, 0.995, 0.01);
+  x0 = sp.getSampleNaive();   //  0.005    correct
+  y0 = sp.applyBlep(x0);      // -0.125
+  x1 = sp.getSampleNaive();   //  0.015    correct
+  y1 = sp.applyBlep(x1);      //  0.13
+
+  // master and slave resets occur simultaneously with sample-delay of d=0.5:
   sp.setState(0.95, 0.1, 0.995, 0.01);
   x0 = sp.getSampleNaive();   //  0.005     correct: master-reset has no effect
   y0 = sp.applyBlep(x0);      // -0.125625
@@ -117,13 +138,16 @@ bool syncUnitTest()
   x1 = sp.getSampleNaive();   //  0.015    correct
   y1 = sp.applyBlep(x1);      //  0.08575
 
+
+
+
   // i have written the produced numbers into the comments - figure out, if these match the 
   // expectations (with pencil and paper), if so, turn comments into r &= ... checks
   // check also, master-only and slave-only cases ...and maybe the trivial no-reset case, too
 
 
-  return false;  // this test is not yet complete and the phasor still doesn't work correctly
-  //return r;
+  //return false;  // this test is not yet complete and the phasor still doesn't work correctly
+  return r;
 }
 
 bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, int fftSize, 
