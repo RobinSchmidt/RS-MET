@@ -84,24 +84,29 @@ bool syncUnitTest()
   typedef rsSyncPhasor<double, rsPolyBlep1<double, double>> SP;
   SP sp;
 
+  sp.setMasterIncrement( 32./1024);  // == 1/32
+  sp.setSlaveIncrement( 129./1024);  //  > 1/8
+  sp.reset();
+  plotSyncOutput(sp, 500);
+  // alternately enters the "slave-then-master" branch 1x then "slave-only" branch 3x
+  // that looks pretty good
+
   // slaveFreq = 4*masterFreq: master and slave resets always occur exactly simultaneously - we 
   // expect the master reset to be inconsequential, i.e. the code for master-reset is called and 
   // the blep is prepared, but always with zero step-amplitude:
   sp.setMasterIncrement( 32./1024);  // == 1/32
   sp.setSlaveIncrement( 128./1024);  // == 1/8
   sp.reset();
+  plotSyncOutput(sp, 100);  // just for development - produce an output array and plot it
+  // alternately enters the "slave-then-master" branch 1x then "slave-only" branch 3x
 
   // we expect the blep-signal to be equal to the naive signal (but one sample delayed) because the
   // slave resets occur exactly at integer sample instants and master resets are supposed to be 
   // inconsequential anyway
 
-
   // maybe we should manually walk through the samples that are supposed to be generated and define
   // the desired output signals and then check, if they are actually produced (don't check internal
   // states of the osc and its embedded blep directly - just look at the output signal)
-
-  // just for development - produce an output array and plot it:
-  plotSyncOutput(sp, 100);
 
   // hmm...that doesn't look like a pure delay
   // ahh - not we should expect a delay and some sort of lowpass character - that seems to fit with
@@ -118,17 +123,25 @@ bool syncUnitTest()
   // that affects the passband
 
 
-
-  sp.setSlaveIncrement( 129./1024);  // > 1/8
+  sp.setMasterIncrement( 32./1024);  // == 1/32
+  sp.setSlaveIncrement( 127./1024);  //  < 1/8
   sp.reset();
   plotSyncOutput(sp, 500);
-
-
-
-  sp.setSlaveIncrement( 127./1024);  // < 1/8
-  sp.reset();
-  plotSyncOutput(sp, 500);
+  // alternately enters the "master-only" branch 1x and "slave-only" branch 3x
   // that looks wrong! i think, it exposes the artifact that i'm battling with
+  // ..or..well - the black (naive) looks wrong but the blue (blepped) looks actually nice
+
+
+
+  // we need a case that sometimes enters the "master-then-slave" branch - i think, we need a 
+  // master increment that causes master-wrap-arounds at non-integers
+  // ...maybe 31./1024, 33./1024, 31./1023 or so
+
+
+
+
+
+
 
 
   return r;
