@@ -274,4 +274,35 @@ filter to allow for triangle, too as integrated square-wave...this filter could 
 also include a highpass and/or allpass for further shaping options
 maybe the two saws could be also detuned a bit for further flexibility
 
+
+
+other idea: splice together the waveform from just two linear segments:
+
+x1(t) = a1 * t + b1    for t in 0.0...0.5
+x2(t) = a2 * t + b2    for t in 0.5...1.0
+
+this allows for sawtooth (up and down), triangle and square waves:
+saw-up:    x1(t) = x2(t) =  2*t - 1
+saw-down:  x1(t) = x2(t) = -2*t + 1
+square:    x1(t) = -1, x2(t) = +1
+triangle:  x1(t) = 4*t - 1, x2(t) = -4*t + 3
+see: https://www.desmos.com/calculator/weda63qpdr for saws and triangle
+
+-this can be generalized to move the midpoint point from 0.5 to an arbitrary position
+-the coefficents (a1,b1,a2,b2) can be interpolated to give intermediate waveforms
+ -maybe they can be suitably normalized (with respect to peak value or energy)
+-maybe one user parameter should be saw-vs-square (maybe sawup->square->sawdown) and another
+ square-or-saw vs triangle (some sort of "softness" parameter)
+-between square and triangle, we should see trapezoidal waves
+-non-square pulse-waves are obtained by moving the midpoint
+-can be perfectly anti-aliased via blep + blamp
+-or: do it like in the trisaw (sawup->triangle->sawdown) but then use amplify+clip to obtain the 
+ squareish-stuff via a 2nd parameter...but that would effectively create 2 more segments (the 2 
+ flat sections) which would make anti-aliasing about two times more expensive (it doubles the 
+ number required of bleps/blamps)
+-but from a perceptual perspective, having saw-vs-square in one user parameter and another softness
+ parameter would be more desirable
+
+
+
 */

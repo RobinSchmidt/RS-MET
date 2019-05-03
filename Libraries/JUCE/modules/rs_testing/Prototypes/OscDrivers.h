@@ -105,7 +105,7 @@ public:
         if(masterStepDelay > slaveStepDelay) {
           handleMasterWrapAround(wrappedMasterPos);        // master-wraparound first...
           handleSlaveWrapAround(wrappedSlavePos);          // ...slave-wraparound second
-          // this case seems to produce errors in the form of spikes
+          // this case seems to produce errors
         }
         else {
           handleSlaveWrapAround(wrappedSlavePos);          // slave-wraparound first...

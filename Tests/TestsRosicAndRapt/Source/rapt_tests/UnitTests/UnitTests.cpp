@@ -65,7 +65,9 @@ bool runAllUnitTests()
   //passed &= runUnitTest(&triangleRasterization2, "Triangle Rasterization 2"); // merge
 
   // Misc:
-  passed &= runUnitTest(&blepUnitTest,          "Blit/Blep/Blamp");
+  passed &= runUnitTest(&blepUnitTest,  "Blit/Blep/Blamp");  // move to generator unit tests
+  passed &= runUnitTest(&syncUnitTest,  "Osc Sync");         // dito
+
   passed &= runUnitTest(&spectrogramUnitTest,   "rsSpectrogram");
   passed &= runUnitTest(&sineModelingUnitTest,  "SineModeling");
 

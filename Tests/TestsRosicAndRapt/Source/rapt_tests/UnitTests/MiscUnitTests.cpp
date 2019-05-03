@@ -2,10 +2,8 @@ bool blepUnitTest()
 {
   bool r = true;
 
-
   rsTableLinBlep<double, double> linBlep;
   rsTableMinBlep<double, double> minBlep;
-
 
   // we test various settings for the kernel-length and table precision - this test is only to rule
   // out access violations (if it doesn't trigger assertions, everything should be fine) but 
@@ -41,6 +39,25 @@ bool blepUnitTest()
   return r;
 }
 
+bool syncUnitTest()
+{
+  bool r = true;
+
+  // we use PolyBlep1 because it has a blep corrector whose desired state can be most easily 
+  // predicted
+  typedef rsSyncPhasor<double, rsPolyBlep1<double, double>> SP;
+  SP sp;
+
+  // slaveFreq = 4*masterFreq: master and slave resets always occur exactly simultaneously - we 
+  // expect the master reset to be inconsequential, i.e. the code for master-reset is called and 
+  // the blep is prepared, but always with zero step-amplitude:
+  sp.setMasterIncrement( 32./1024);
+  sp.setSlaveIncrement( 128./1024);
+  sp.reset();
+
+
+  return r;
+}
 
 bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, int fftSize, 
   RAPT::rsWindowFunction::WindowType windowType 
