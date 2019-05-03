@@ -523,9 +523,17 @@ std::vector<double> downSample(const std::vector<double>& x, int decimationFacto
   int d  = decimationFactor;
   int Ny = Nx / d;
   std::vector<double> y(Ny);
-  if(antiAlias)
-  {
 
+
+  if(antiAlias) {
+    RAPT::rsEllipticSubBandFilter<double, double> flt;
+    flt.setSubDivision(d);
+    for(int n = 0; n < Ny; n++) {
+      y[n] = flt.getSample(x[n*d]);
+      for(int k = 1; k < d; k++)
+        flt.getSample(x[n*d+k]); // dummy outputs which are discarded
+      // maybe have other anti-aliasing options (for example, zero-phase, no-overshoot, etc)
+    }
   }
   else
     for(int n = 0; n < Ny; n++)
@@ -548,8 +556,9 @@ void syncSweep()
   double length         = 5.0;                 // length in seconds
   int    overSampling   = 16;                  // oversampling factor
 
+  typedef rsSyncPhasor<double, rsPolyBlep1<double, double>> SyncOsc;
   //typedef rsSyncPhasor<double, rsPolyBlep2<double, double>> SyncOsc;
-  typedef rsSyncPhasor<double, rsTableMinBlep<double, double>> SyncOsc;
+  //typedef rsSyncPhasor<double, rsTableMinBlep<double, double>> SyncOsc;
   SyncOsc osc;
 
   typedef std::vector<double> Vec; 
@@ -576,8 +585,9 @@ void syncPhasor()
   double f2_end   = 2  * f1;             // end   freq of slave osc 2
   double a        = 0.25;                 // amplitude
 
+  typedef rsSyncPhasor<double, rsPolyBlep1<double, double>> SP;
   //typedef rsSyncPhasor<double, rsPolyBlep2<double, double>> SP;
-  typedef rsSyncPhasor<double, rsTableMinBlep<double, double>> SP;
+  //typedef rsSyncPhasor<double, rsTableMinBlep<double, double>> SP;
   SP sp;
   sp.setMasterIncrement(f1      /fs);
   sp.setSlaveIncrement( f2_start/fs);
