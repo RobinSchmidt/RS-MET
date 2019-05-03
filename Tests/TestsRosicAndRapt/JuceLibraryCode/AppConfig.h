@@ -29,6 +29,7 @@
    under the GPL v3 license.
 
    End User License Agreement: www.juce.com/juce-5-licence
+
   ==============================================================================
 */
 
@@ -42,7 +43,6 @@
  #define JUCE_REPORT_APP_USAGE 1
 #endif
 
-
 // END SECTION A
 
 #define JUCE_USE_DARK_SPLASH_SCREEN 1
@@ -54,6 +54,7 @@
 #define JUCE_MODULE_AVAILABLE_rs_testing      1
 
 #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
+
 //==============================================================================
 #ifndef    JUCE_STANDALONE_APPLICATION
  #if defined(JucePlugin_Name) && defined(JucePlugin_Build_Standalone)

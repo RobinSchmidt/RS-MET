@@ -1,7 +1,7 @@
 #ifndef rosic_Plotter_h
 #define rosic_Plotter_h
 
-#include "../../../../../Libraries/JUCE/modules/rosic/rosic.h"
+#include "../../../../../Libraries/RobsJuceModules/rosic/rosic.h"
 
 namespace rosic
 {

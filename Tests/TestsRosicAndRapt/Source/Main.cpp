@@ -11,7 +11,7 @@
 #include "PerformanceTests/PerformanceTests.h"
 #include "Misc/Misc.h"  // demos, examples, rendering, ... // todo: make unity build cpp file
 
-#include "../../../Libraries/JUCE/modules/romos/TestSuite/TestsMain.h"
+#include "../../../Libraries/RobsJuceModules/romos/TestSuite/TestsMain.h"
 
 // crash (access violation) if runAllUnitTests and envelopeDeBeating are run one after another
 // it goes away when commenting out the code from

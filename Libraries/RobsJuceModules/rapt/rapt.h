@@ -15,10 +15,6 @@
   website:          http://www.rs-met.com
   license:          Custom
 
-  dependencies:
-  OSXFrameworks:
-  iOSFrameworks:
-
  END_JUCE_MODULE_DECLARATION
 
 *******************************************************************************/

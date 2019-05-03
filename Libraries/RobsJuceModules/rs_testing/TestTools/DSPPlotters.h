@@ -3,7 +3,7 @@
 
 //#include "GNUPlotter.h"
 //#include "../../../../Libraries/JUCE/modules/rosic/rosic.h"
-#include "../../../Libraries/JUCE/modules/rosic/rosic.h"
+#include "../../../Libraries/RobsJuceModules/rosic/rosic.h"
 
 
 /* Subclasses of GNUPlotter that specialize in making plots related to digital signal processing 
