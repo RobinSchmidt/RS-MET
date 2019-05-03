@@ -173,7 +173,7 @@ public:
 
   /** Returns the delay (in samples) that is introduced by the algorithm. May be used for delay 
   compensation. */
-  int getDelay() { return halfLength; }
+  int getDelay() const { return halfLength; }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -411,7 +411,7 @@ public:
   consider the time when it actually reaches 1 in the step response (look at the plot of the 
   blepTbl and divide the time (68) by the tablePrecision). */
   //int getDelay() { return 0; }
-  int getDelay() { return 3; }  
+  int getDelay() const { return 3; }  
   // value 3 obtained by eyeballing - maybe we should use the peak of the blit (impulse response)
   // ...which happens to be located at 3*tablePrecision - so 3 seems indeed the most reasonable
   // value
@@ -504,7 +504,7 @@ public:
 
   rsPolyBlep1() { reset(); }
 
-  int getDelay() { return 1; }
+  int getDelay() const { return 1; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -575,7 +575,7 @@ public:
 
   rsPolyBlep2() { reset(); }
 
-  int getDelay() { return 2; }
+  int getDelay() const { return 2; }
 
 
   //-----------------------------------------------------------------------------------------------

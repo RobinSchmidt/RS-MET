@@ -19,11 +19,28 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  inline void setMasterIncrement(T newIncrement) { masterInc = newIncrement; }
 
-  void setMasterIncrement(T newIncrement) { masterInc = newIncrement; }
+  inline void setSlaveIncrement(T newIncrement) { slaveInc  = newIncrement; }
 
-  void setSlaveIncrement(T newIncrement) { slaveInc  = newIncrement; }
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  inline T getMasterIncrement() const { return masterInc; }
+
+  inline T getSlaveIncrement()  const { return slaveInc;  }
+
+  inline T getMasterPosition()  const { return masterPos; }
+
+  inline T getSlavePosition()   const { return slavePos;  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Embedded object access */
+
+  /** Returns a reference to the embedded blep object */
+  inline const TBlep& getBlep() const { return blep; };
 
 
   //-----------------------------------------------------------------------------------------------
@@ -121,7 +138,7 @@ public:
   inline void resetPhase()
   {
     masterPos = T(0) - masterInc; wrapPhase(masterPos);
-    slavePos  = T(0) - slaveInc;; wrapPhase(slavePos);
+    slavePos  = T(0) - slaveInc;  wrapPhase(slavePos);
     // subtract increments because in getSample, we increment before producing output
   }
 
@@ -141,9 +158,16 @@ public:
 
 
 
-  TBlep blep;
-
 protected:
+
+  TBlep blep;
+  // maybe a pointer can be used - allows to share the blep object among several oscs - they can 
+  // then all create naive signals and after each naive signal generation the blep is prepared
+  // but not yet applied - it is only applied to the mix of all oscs - optimizes memory and cpu use
+  // maybe make protected and use an access function that returns a reference ...like 
+  // getBlepReference/getBlepRef or just getBlep - maybe this idiom of function returning 
+  // references to embedded objects should be used consistently throughout the library
+
 
   T masterInc = T(0);
   T masterPos = T(0);

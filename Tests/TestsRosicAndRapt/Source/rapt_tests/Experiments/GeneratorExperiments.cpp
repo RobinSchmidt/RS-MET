@@ -533,7 +533,7 @@ void syncPhasor()
     xBlep[n]  *= a;
   }
 
-  rsArray::shift(&xBlep[0], N, -sp.blep.getDelay());
+  rsArray::shift(&xBlep[0], N, -sp.getBlep().getDelay());
 
   //rsPlotVectors(xNaive, xBlep);
   rosic::writeToMonoWaveFile(  "SyncPhasorNaive.wav", &xNaive[0],            N, (int) fs);

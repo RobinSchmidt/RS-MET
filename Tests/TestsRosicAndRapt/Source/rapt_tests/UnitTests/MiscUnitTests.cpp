@@ -51,9 +51,39 @@ bool syncUnitTest()
   // slaveFreq = 4*masterFreq: master and slave resets always occur exactly simultaneously - we 
   // expect the master reset to be inconsequential, i.e. the code for master-reset is called and 
   // the blep is prepared, but always with zero step-amplitude:
-  sp.setMasterIncrement( 32./1024);
-  sp.setSlaveIncrement( 128./1024);
+  sp.setMasterIncrement( 32./1024);  // == 1/32
+  sp.setSlaveIncrement( 128./1024);  // == 1/8
   sp.reset();
+
+  // we expect the blep-signal to be equal to the naive signal (but one sample delayed) because the
+  // slave resets occur exactly at integer sample instants and master resets are supposed to be 
+  // inconsequential anyway
+
+
+  // maybe we should manually walk through the samples that are supposed to be generated and define
+  // the desired output signals and then check, if they are actually produced (don't check internal
+  // states of the osc and its embedded blep directly - just look at the output signal)
+
+  // just for development - produce an output array and plot it:
+  int N = 100;
+  int n;
+  std::vector<double> yNaive(N), yBlep(N);
+  for(n = 0; n < N; n++) {
+    yNaive[n] = sp.getSampleNaive();
+    yBlep[n]  = sp.applyBlep(yNaive[n]);
+  }
+  rsPlotVectors(yNaive, yBlep);
+
+  // hmm...that doesn't look like a pure delay
+
+
+
+
+
+
+  // sp.setSlaveIncrement( 129./1024);  // > 1/8
+
+  // sp.setSlaveIncrement( 127./1024);  // < 1/8
 
 
   return r;
