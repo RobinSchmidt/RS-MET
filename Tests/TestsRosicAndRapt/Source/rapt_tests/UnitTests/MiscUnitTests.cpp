@@ -84,6 +84,18 @@ bool syncUnitTest()
   typedef rsSyncPhasor<double, rsPolyBlep1<double, double>> SP;
   SP sp;
 
+  // maybe this code should go into an experiment...like
+  // testSyncPhasorPlot(masterInc, slaveInc, numSamples)
+  // testSnycPhasorWrite ...does the same, but writes result to wavefile
+
+  sp.setMasterIncrement( 31./1024);  //  < 1/32  ..try 30/1024 too
+  sp.setSlaveIncrement( 128./1024);  // == 1/8
+  sp.reset();
+  plotSyncOutput(sp, 3200);
+  // alternately enters the "slave-then-master" branch 1x then "slave-only" branch 4x
+  // hmm - actually here even the naive signal looks strange
+
+
   sp.setMasterIncrement( 32./1024);  // == 1/32
   sp.setSlaveIncrement( 129./1024);  //  > 1/8
   sp.reset();
