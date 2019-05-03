@@ -28,7 +28,7 @@ This program can visualize mathematical functions based on an expression or impo
 class RSPlotContentComponent : public Component, public StateFileManager, 
   public ImageFileManager, 
   public RButtonListener, public RTextEntryFieldObserver,
-  public ComboBoxListener, public LabelListener, public SliderListener // get rid
+  public ComboBox::Listener, public Label::Listener, public Slider::Listener // get rid
 {  
 
 public:

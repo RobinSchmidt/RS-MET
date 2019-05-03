@@ -354,9 +354,9 @@ void RTreeView::inputAttemptWhenModal()
 void RTreeView::scrollBarMoved(RScrollBar* scrollBarThatHasMoved, const double newRangeStart)
 {
   if( scrollBarThatHasMoved == upDownScrollBar )
-    yOffset = -roundDoubleToInt(newRangeStart);
+    yOffset = -roundToInt(newRangeStart);
   else if( scrollBarThatHasMoved == leftRightScrollBar )
-    xOffset = -roundDoubleToInt(newRangeStart);
+    xOffset = -roundToInt(newRangeStart);
   repaint();
 }
 
