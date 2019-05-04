@@ -8,7 +8,7 @@ StateLoadSaveWidgetSet::StateLoadSaveWidgetSet(const String& newStateLoadSaveWid
   stateLabel->setDescription(String("Name of current file (if any)"));
   stateLabel->setNoBackgroundAndOutline(true);
 
-  addWidget(stateFileNameLabel = new RTextField(String::empty) );
+  addWidget(stateFileNameLabel = new RTextField(String()) );
   stateFileNameLabel->setDescription(String("Name of current file (if any)"));
   stateFileNameLabel->setNoBackgroundAndOutline(false);
 

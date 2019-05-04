@@ -17,7 +17,7 @@ juce::String ColourScheme::getAppearanceString() const
   {
   case DARK_ON_BRIGHT: return String("DarkOnBright");
   case BRIGHT_ON_DARK: return String("BrightOnDark");
-  default: return String::empty;
+  default: return String();
   }
 }
 

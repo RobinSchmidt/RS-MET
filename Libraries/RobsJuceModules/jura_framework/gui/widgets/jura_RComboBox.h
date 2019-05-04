@@ -41,7 +41,7 @@ public:
 
   /** Creates a combo-box. On construction, the text field will be empty, so you should call the 
   setSelectedId() or setText() method to choose the initial value before displaying it. */
-  RComboBox (const juce::String& componentName = String::empty);
+  RComboBox (const juce::String& componentName = String());
 
   /** Destructor. */
   virtual ~RComboBox();

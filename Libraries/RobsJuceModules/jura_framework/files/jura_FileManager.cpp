@@ -41,12 +41,12 @@ File getAudioFileFromPath(const String& path)
 {
   File file = File(path);
   if( !file.existsAsFile() )
-    return File::nonexistent;
+    return File();
 
   // the file exists - now check whether it is a valid audio file:
   AudioFileInfo info(file);
   if( !info.isValidAudioFile )
-    return File::nonexistent;
+    return File();
 
   return file;
 }
@@ -81,7 +81,7 @@ FileManager::FileManager()
   recurseSubDirectories = false;
   rootDirectory         = getApplicationDirectory();
   activeDirectory       = rootDirectory;
-  defaultExtension      = String::empty;
+  defaultExtension      = String();
   wildcardPatterns      = String("*");
   activeFileIndex       = -1;
 }
@@ -237,7 +237,7 @@ bool FileManager::openSavingDialog(const String &dialogTitle)
   if(chooser.browseForFileToSave(true))
   {
     File fileToSaveTo = chooser.getResult();
-    if ( !fileToSaveTo.hasFileExtension(defaultExtension) && defaultExtension != String::empty )
+    if ( !fileToSaveTo.hasFileExtension(defaultExtension) && defaultExtension != String() )
       fileToSaveTo = fileToSaveTo.withFileExtension( defaultExtension ) ;
     bool result = saveToFile(fileToSaveTo);
     if( result == true )
@@ -282,7 +282,7 @@ void FileManager::removeFileManagerListener(FileManagerListener *listenerToRemov
 File FileManager::getActiveFile()
 {
   if( activeFileIndex == -1 )
-    return File::nonexistent;
+    return File();
   else
     return fileList[activeFileIndex];
 }
@@ -334,7 +334,7 @@ int FileManager::getNumFilesInList()
 File FileManager::getFileByIndex(int index)
 {
   fileList.getLock().enter();
-  File result = File::nonexistent;
+  File result = File();
   if( index >= 0 && index < fileList.size() )
     result = fileList[index];
   fileList.getLock().exit();
@@ -368,7 +368,7 @@ void FileManager::updateFileList()
     fileList.clear();
     juce::Array<File> tmpFileList;
     File(getActiveDirectory()).findChildFiles(tmpFileList, File::findFiles, recurseSubDirectories);
-    WildcardFileFilter fileFilter(wildcardPatterns, String::empty, String("Wildcard filter") );
+    WildcardFileFilter fileFilter(wildcardPatterns, String(), String("Wildcard filter") );
     int i;
     for(i=0; i<tmpFileList.size(); i++)
     {

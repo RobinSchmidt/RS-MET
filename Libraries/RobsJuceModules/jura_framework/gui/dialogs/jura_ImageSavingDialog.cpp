@@ -27,7 +27,7 @@ ImageSavingDialog::ImageSavingDialog(rsPlot *owner, int defaultWidth, int defaul
 
   x = targetFileLabel->getRight();
   w = browseButton->getX() - targetFileLabel->getRight();
-  //targetFileEditLabel = new Label(String(("Target File")), String::empty );
+  //targetFileEditLabel = new Label(String(("Target File")), String() );
   targetFileEditLabel = new Label(String(("Target File")), defaultTargetFile.getFullPathName() );
   targetFileEditLabel->setColour(Label::backgroundColourId, Colours::white);
   targetFileEditLabel->setColour(Label::outlineColourId, Colours::black);
@@ -96,7 +96,7 @@ ImageSavingDialog::ImageSavingDialog(rsPlot *owner, int defaultWidth, int defaul
   File   thisDirectoryAsFile   = thisExeAsFile.getParentDirectory();
   String thisDirectoryAsString = thisDirectoryAsFile.getFullPathName();
   File   targetFile            = File(thisDirectoryAsString + String(("/ExportedImage")) );
-  if( defaultTargetFile != File::nonexistent )
+  if( defaultTargetFile != File() )
     targetFile = defaultTargetFile;
   targetFileEditLabel->setText(targetFile.getFullPathName(), juce::NotificationType::dontSendNotification);
 }
@@ -135,7 +135,7 @@ void ImageSavingDialog::buttonClicked(juce::Button *buttonThatWasClicked)
   if( buttonThatWasClicked == browseButton )
   {
     FileChooser chooser(String(("Select target file")), 
-      File(targetFileEditLabel->getText()), String::empty, false);
+      File(targetFileEditLabel->getText()), String(), false);
     if(chooser.browseForFileToSave(false))
     {
       File newTargetFile = chooser.getResult();
@@ -233,7 +233,7 @@ void ImageSavingDialog::saveNow()
 
     XmlElement* theSVG = ownerSystem->getPlotAsSVG(w, h);
 
-    String myXmlDoc = theSVG->createDocument(String::empty);
+    String myXmlDoc = theSVG->createDocument(String());
     fileToSaveTo.create();
     fileToSaveTo.appendText(myXmlDoc);
 

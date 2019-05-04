@@ -1132,7 +1132,7 @@ void addTextToSvgDrawing(XmlElement* svg, juce::String theText, float x, float y
   XmlElement* textContainer = new XmlElement(String("text"));
   XmlElement* text = XmlElement::createTextElement(theText);
 
-  String jString = String::empty;
+  String jString = String();
   if( justification.getFlags() == Justification::centredLeft )
     jString = String("start");
   else if( justification.getFlags() == Justification::centred )

@@ -21,7 +21,7 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  AudioFileInfo(juce::File fileToExtractInfoFrom = juce::File::nonexistent);
+  AudioFileInfo(juce::File fileToExtractInfoFrom = juce::File());
 
   /** Destructor. */
   virtual ~AudioFileInfo();

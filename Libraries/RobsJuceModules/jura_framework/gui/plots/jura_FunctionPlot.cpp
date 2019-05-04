@@ -25,10 +25,10 @@ void rsFunctionPlot::setupForDecibelsAgainstLogFrequency(double minFreq, double 
   useLogarithmicScaleX(true);
   useLogarithmicScaleY(false);
   setAxisPositionX(rsPlotSettings::BOTTOM);
-  setAxisLabelX(String::empty);
+  setAxisLabelX(String());
   setAxisPositionY(rsPlotSettings::LEFT);
   setAxisValuesPositionY(rsPlotSettings::LEFT);
-  setAxisLabelY(String::empty);
+  setAxisLabelY(String());
   //setStringConversionForInfoLineX(hertzToStringWithUnitTotal5);  
   //setStringConversionForInfoLineX(rojue::frequencyToNoteString);  
   setStringConversionForInfoLineX(frequencyInHzAndAsNote); 

@@ -242,7 +242,7 @@ void rsPlotEditor::openRightClickPopupMenu()
 
   // do some action according to the chosen item:
   if(result == 1)
-    openExportDialog(getWidth(), getHeight(), String(T("png")), File::nonexistent);
+    openExportDialog(getWidth(), getHeight(), String(T("png")), File());
   else if( result <= xSnapIntervalIndicesMax )
   {
     int xSnapIntervalIndex = result - xSnapIntervalIndicesMin;

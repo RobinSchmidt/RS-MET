@@ -70,8 +70,8 @@ void ColorMap::setFromXml(const XmlElement& xml)
   if(xml.getTagName() != "ColorMap")
     return;
 
-  String s = xml.getStringAttribute("Predefined", String::empty);
-  if(s != String::empty)
+  String s = xml.getStringAttribute("Predefined", String());
+  if(s != String())
     setDefaultMap(defaultMapNames.indexOf(s));
   else
   {

@@ -142,7 +142,7 @@ XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module,
 
       // \todo add event connections to the string..
 
-      if( connectionString != juce::String::empty )
+      if( connectionString != juce::String() )
       {
         connectionString = connectionString.trimCharactersAtEnd(juce::String(", "));
         xmlState->setAttribute(juce::String(("IncomingConnections")), connectionString);
@@ -201,16 +201,16 @@ void LibertyAudioModule::createConnectionsFromXml(const XmlElement& xmlState, ro
     return;
   }
 
-  juce::String connectionString = xmlState.getStringAttribute("IncomingConnections", juce::String::empty);
+  juce::String connectionString = xmlState.getStringAttribute("IncomingConnections", juce::String());
 
-  if( connectionString != juce::String::empty )
+  if( connectionString != juce::String() )
   {
     connectionString = connectionString.removeCharacters(" ");
     juce::String remainingString = connectionString + juce::String(",");
     juce::String currentString;
     juce::String tmpString1, tmpString2;
     int smi, spi, tpi; // source module- and pin-index, target pin index
-    while( remainingString != juce::String::empty )
+    while( remainingString != juce::String() )
     {
       currentString   = remainingString.upToFirstOccurrenceOf(",", false, false);
       remainingString = remainingString.fromFirstOccurrenceOf(",", false, false);

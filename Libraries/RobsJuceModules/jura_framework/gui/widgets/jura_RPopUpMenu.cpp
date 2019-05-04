@@ -30,11 +30,11 @@ void RPopUpMenu::addItem(int itemResultId, const juce::String& itemText, bool is
   bool isTicked)
 {
   addTreeNodeItem( new RTreeViewNode(itemText, itemResultId,
-    String::empty, // preliminary - add item description here later
+    String(), // preliminary - add item description here later
     isEnabled, isTicked) );
   /*
   rootNode->addChildNode( new RTreeViewNode(itemText, itemResultId,
-    String::empty, // preliminary - add item description here later
+    String(), // preliminary - add item description here later
     isEnabled, isTicked) );
     */
 }
@@ -122,7 +122,9 @@ const juce::String& RPopUpMenu::getSelectedText() const
   if(selectedNode != nullptr)
     return getSelectedItem()->getText();
   else
-    return String::empty;
+    return dummyString;
+    //return String(); // was formerly String::empty, but that's deprecated...but we return a 
+                       // reference, so we can't use the constructor
 }
 
 int RPopUpMenu::getSelectedIdentifier() const

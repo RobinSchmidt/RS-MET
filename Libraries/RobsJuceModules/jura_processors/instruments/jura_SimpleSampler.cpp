@@ -62,7 +62,7 @@ SimpleSamplerModuleEditor::SimpleSamplerModuleEditor(CriticalSection *newPlugInL
 
   // create WildcardFileFilter component that will be used by the browser:
   fileFilter = new WildcardFileFilter(juce::String("*.xml"), 
-    juce::String::empty, juce::String("XML Files"));
+    juce::String(), juce::String("XML Files"));
 
   /*
   // create FilePreviewComponent component that will be used by the browser:

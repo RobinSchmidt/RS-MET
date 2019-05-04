@@ -160,7 +160,7 @@ const String RComboBox::getItemText(const int index) const
   if( index >= 0 && index < popUpMenu->getNumTopLevelItems() )
     return popUpMenu->getItemByIndex(index)->getNodeText();
   else
-    return String::empty;
+    return String();
 }
 
 int RComboBox::getSelectedItemIdentifier() const

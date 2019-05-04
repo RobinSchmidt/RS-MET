@@ -133,7 +133,7 @@ public:
   /** Subclasses can override this in order to return a location of a default preset which
   should be loaded when the module is first plugged in. It will be called inside our 
   loadDefaultPreset function, which will try to load the preset from the returned location. */
-  //virtual juce::String getDefaultPresetLocation() { return juce::String::empty; }
+  //virtual juce::String getDefaultPresetLocation() { return juce::String(); }
 
   /** Checks, if this is a cracked version and if so, it sets up the appendix for the headline 
   accordingly. Return value informs also whether or not a cracked version was detected. */

@@ -89,12 +89,12 @@ RoutingMatrixModuleEditor::RoutingMatrixModuleEditor(CriticalSection *newPlugInL
   {
     for(int o=0; o<numOutputs; o++)
     {
-      RDraggableNumber *entryField = new RDraggableNumber(juce::String::empty);
+      RDraggableNumber *entryField = new RDraggableNumber(juce::String());
       matrixFields.add(entryField);
       addWidget(entryField);
       entryField->assignParameter( newRoutingMatrixAudioModule->getParameterByName(
         juce::String("M_") + juce::String(i+1) + juce::String("_") + juce::String(o+1) ) );
-      entryField->setSliderName(juce::String::empty);
+      entryField->setSliderName(juce::String());
       entryField->setDescription(  juce::String("Amount by which input ") + juce::String(i+1) 
         + juce::String(" goes to output ") + juce::String(o+1) );
       entryField->setDescriptionField(infoField);

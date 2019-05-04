@@ -71,7 +71,7 @@ public:
   string, it must match whatever getModuleTypeName returns (this is for optimization, to avoid
   instantiating all modules just for the purpose of registering). */
   void registerModuleType(std::function<AudioModule*(CriticalSection*)> creatorFunction, 
-    const juce::String& category = String::empty, const juce::String& typeName = String::empty); 
+    const juce::String& category = String(), const juce::String& typeName = String()); 
 
   /** Tries to find a module of given type in our registry of AudioModuleInfos and if it finds it,
   it will return an instance of a module of that type. If the type is not found, it returns an 

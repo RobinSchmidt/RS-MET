@@ -647,7 +647,7 @@ juce::String ModulatableParameter::getModulationTargetName()
   {
     jassertfalse; // You need to set the owner via setOwnerAudioModule, so we can use that to 
                   // generate a unique name.
-    return String::empty;
+    return String();
   }
   else
     return ownerModule->getAudioModulePath() + getName();

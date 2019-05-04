@@ -66,7 +66,7 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
   osc->calculateIncrementForAllSlaves();
 
   // load the audio-file into the wavetable for the oscillator:
-  juce::String relativePath = xmlState.getStringAttribute("AudioFileRelativePath", juce::String::empty);
+  juce::String relativePath = xmlState.getStringAttribute("AudioFileRelativePath", juce::String());
   juce::String absolutePath = getSupportDirectory() + File::getSeparatorString() + relativePath;
 
   // old presets were stored with backslashes - these don't work on mac unless we replace 

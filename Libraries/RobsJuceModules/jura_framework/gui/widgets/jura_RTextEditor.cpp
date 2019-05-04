@@ -92,7 +92,7 @@ public:
 
   UniformTextSection* split(const int indexToBreakAt) throw()
   {
-    UniformTextSection* const section2 = new UniformTextSection(String::empty, font, colour);
+    UniformTextSection* const section2 = new UniformTextSection(String(), font, colour);
     int index = 0;
     for(int i=0; i<atoms.size(); ++i)
     {
@@ -1360,7 +1360,7 @@ void RTextEditor::cut()
   if(!isReadOnly())
   {
     moveCaret(selectionEnd);
-    insertTextAtCursor(String::empty);  // is this the right behavior for cut?
+    insertTextAtCursor(String());  // is this the right behavior for cut?
   }
 }
 

@@ -154,7 +154,7 @@ bool samplePlaybackParametersFromXml(SamplePlaybackParameters* parameters,
   //bool success = true;
 
   // set up the audio-file name:
-  //juce::String samplePath = xmlState.getStringAttribute(T("AudioFileRelativePath"), juce::String::empty);
+  //juce::String samplePath = xmlState.getStringAttribute(T("AudioFileRelativePath"), juce::String());
   //parameters->setSampleName(toZeroTerminatedString(samplePath));
 
   // play start/end parameters:
@@ -208,7 +208,7 @@ bool samplePlayerStateFromXml(SamplePlayer* player, const XmlElement &xmlState)
 
   // retrieve the audio-file name:
   juce::String samplePath = playbackParametersState->getStringAttribute(
-    "AudioFileRelativePath", juce::String::empty);
+    "AudioFileRelativePath", juce::String());
 
   // try to load the audio data
   AudioSampleBuffer* buffer = AudioFileManager::createAudioSampleBufferFromFile(samplePath, true);
@@ -415,8 +415,8 @@ SamplePlayerEditorDisplay::SamplePlayerEditorDisplay(AudioFileBuffer *newBufferT
   samplePlayerToEdit = NULL;
   locatorBeingDragged      = -1;
 
-  setAxisLabelX(juce::String::empty);
-  setAxisLabelY(juce::String::empty);
+  setAxisLabelX(juce::String());
+  setAxisLabelY(juce::String());
   setAxisPositionX(CoordinateSystem::INVISIBLE);
   setAxisPositionY(CoordinateSystem::INVISIBLE);
 
@@ -1188,7 +1188,7 @@ SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLoc
   addWidget( formatLabel = new RTextField( "Format:") );
   formatLabel->setDescription("Data format of currently loaded sample file.");
 
-  addWidget( formatInfoLabel = new RTextField( juce::String::empty) );
+  addWidget( formatInfoLabel = new RTextField( juce::String()) );
   formatInfoLabel->setDescription(formatLabel->getDescription());
 
   addWidget( levelSlider = new RSlider("Level") );

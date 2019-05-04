@@ -5,8 +5,8 @@
 ImageFileManager::ImageFileManager()
 {
   imageIsUnsaved               = false;
-  currentImageFileName         = String::empty;
-  currentImageFileNameWithStar = String::empty;
+  currentImageFileName         = String();
+  currentImageFileNameWithStar = String();
 }
 
 ImageFileManager::~ImageFileManager()

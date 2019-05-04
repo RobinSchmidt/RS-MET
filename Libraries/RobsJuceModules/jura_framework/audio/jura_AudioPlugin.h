@@ -23,7 +23,7 @@ public:
   virtual void setValue(float newValue) override;
   virtual float getDefaultValue() const override { return 0.5f; }
   virtual String getName(int maximumStringLength) const override { return name; }
-  virtual String getLabel() const override { return String::empty; }
+  virtual String getLabel() const override { return String(); }
   virtual float getValueForText(const String &text) const override { return text.getFloatValue(); }
 
   // optional AudioProcessorParameter overrides:
@@ -107,7 +107,7 @@ public:
   virtual int getNumPrograms() override { return 1; }                // 1, because 0 is not allowed
   virtual int getCurrentProgram() override { return 0; }
   virtual void setCurrentProgram(int index) override {}
-  virtual const String getProgramName (int index) override { return String::empty; }
+  virtual const String getProgramName (int index) override { return String(); }
   virtual void changeProgramName(int index, const String& newName) override {}
   virtual void getStateInformation(juce::MemoryBlock& destData) override;
   virtual void setStateInformation(const void* data, int sizeInBytes) override;

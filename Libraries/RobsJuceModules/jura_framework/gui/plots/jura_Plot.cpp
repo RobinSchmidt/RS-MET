@@ -566,7 +566,7 @@ void rsPlot::openRightClickPopupMenu()
   else if (result == 1)
   {
     // user picked the Export item - open the export dialog window:
-    openExportDialog(getWidth(), getHeight(), String(T("png")), File::nonexistent);
+    openExportDialog(getWidth(), getHeight(), String(T("png")), File());
   }
   */
 }

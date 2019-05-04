@@ -23,7 +23,7 @@ void DescribedItem::setDescription(const String &newDescription)
 void DescribedItem::setDescriptionField(RTextField *newDescriptionField)
 {
   if( descriptionField != NULL )
-    descriptionField->setText(String::empty); // clear the old field
+    descriptionField->setText(String()); // clear the old field
   descriptionField = newDescriptionField;
 }
 
@@ -50,7 +50,7 @@ void DescribedComponent::mouseEnter(const juce::MouseEvent &e)
 void DescribedComponent::mouseExit(const MouseEvent &e)
 {
   if( descriptionField != NULL )
-    descriptionField->setText(String::empty);
+    descriptionField->setText(String());
 }
 
 void DescribedComponent::repaintOnMessageThread()

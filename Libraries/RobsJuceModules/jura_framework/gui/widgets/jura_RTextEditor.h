@@ -60,7 +60,7 @@ public:
   // construction/destruction:
 
   /** Creates a new, empty text editor. */
-  RTextEditor(const juce::String& componentName = juce::String::empty);
+  RTextEditor(const juce::String& componentName = juce::String());
 
   /** Destructor. */
   virtual ~RTextEditor();
@@ -153,7 +153,7 @@ public:
 
   /** Sets limits on the characters that can be entered. */
   void setInputRestrictions(const int maxTextLength, 
-    const juce::String& allowedCharacters = juce::String::empty) throw();
+    const juce::String& allowedCharacters = juce::String()) throw();
 
   /** When the text editor is empty, it can be set to display a message. This is handy for things 
   like telling the user what to type in the box - the string is only displayed, it's not taken to 
@@ -189,7 +189,7 @@ public:
 
   /** Inserts some text at the current cursor position. If a section of the text is highlighted, it 
   will be replaced by this string, otherwise it will be inserted. To delete a section of text, you 
-  can use setHighlightedRegion() to highlight it, and call insertTextAtCursor (String::empty). */
+  can use setHighlightedRegion() to highlight it, and call insertTextAtCursor (String()). */
   void insertTextAtCursor (juce::String textToInsert);
 
   /** Deletes all the text from the editor. */

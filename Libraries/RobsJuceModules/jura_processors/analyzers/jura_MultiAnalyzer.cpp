@@ -223,7 +223,7 @@ void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetIm
 
   for(k=0; k<numCurves; k++)
   {
-    juce::String curvePathDataString = juce::String::empty;
+    juce::String curvePathDataString = juce::String();
 
     graphColour = plotColourScheme.getCurveColour(k);
     g.setColour(graphColour);
@@ -414,8 +414,8 @@ OscilloscopeDisplay::OscilloscopeDisplay(const juce::String& name)
   setVerticalFineGrid(0.1, true);
   setHorizontalCoarseGrid(1.0, true);
   setHorizontalFineGrid(0.1, true);
-  setAxisLabelX(juce::String::empty);
-  setAxisLabelY(juce::String::empty);
+  setAxisLabelX(juce::String());
+  setAxisLabelY(juce::String());
   setAxisValuesPositionY(rsPlotSettings::RIGHT_TO_AXIS);
   //setAxisLabelX(juce::String(T("Time [seconds]")));
   //setAxisLabelY(juce::String(T("Amplitude")));

@@ -90,7 +90,7 @@ double AudioFileBufferUser::getBufferLengthInSeconds() const
 
 const File AudioFileBufferUser::getUnderlyingFile() const
 {
-  File result = File::nonexistent;
+  File result = File();
   ScopedLock pointerLock(audioFileBufferPointerLock);
   if( bufferToUse != NULL )
     result = bufferToUse->getUnderlyingFile();
@@ -99,7 +99,7 @@ const File AudioFileBufferUser::getUnderlyingFile() const
 
 const String AudioFileBufferUser::getFileName() const
 {
-  String result = String::empty;
+  String result = String();
   ScopedLock pointerLock(audioFileBufferPointerLock);
   if( bufferToUse != NULL )
     result = bufferToUse->getFileName();
@@ -108,7 +108,7 @@ const String AudioFileBufferUser::getFileName() const
 
 const String AudioFileBufferUser::getFileNameWithoutExtension() const
 {
-  String result = String::empty;
+  String result = String();
   ScopedLock pointerLock(audioFileBufferPointerLock);
   if( bufferToUse != NULL )
     result = bufferToUse->getFileNameWithoutExtension();

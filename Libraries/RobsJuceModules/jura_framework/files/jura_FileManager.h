@@ -21,7 +21,7 @@ JUCE_API juce::File convertBackslashToSlash(const juce::File& path);
 // not yet tested
 
 /** Returns a file object if the file with the path given by 'path' exists and is a valid
-audio file, otherwise it returns File::nonexistent. */
+audio file, otherwise it returns File(). */
 JUCE_API juce::File getAudioFileFromPath(const juce::String& path);
 
 /** Checks whether a directory or any of its subdirectories (if any) has files in it and returns
@@ -189,7 +189,7 @@ public:
   virtual int getNumFilesInList();
 
   /** Returns a file form the list at the given index - if the index is out of range, it will
-  return File::nonexistent. */
+  return File(). */
   virtual juce::File getFileByIndex(int index);
 
   /** Returns the index of the given file inside our list - when the file is not in the list,

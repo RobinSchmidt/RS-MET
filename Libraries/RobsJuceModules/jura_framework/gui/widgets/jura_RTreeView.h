@@ -20,8 +20,8 @@ class JUCE_API RTreeViewNode
 public:
 
   /** Constructor. */
-  RTreeViewNode(const juce::String& nodeText = juce::String::empty, int identifier = -1,
-    const juce::String& description = juce::String::empty, bool isEnabled = true, 
+  RTreeViewNode(const juce::String& nodeText = juce::String(), int identifier = -1,
+    const juce::String& description = juce::String(), bool isEnabled = true, 
     bool isTicked = false, bool isOpen = true, RTreeViewNode *parentNode = NULL);
 
   /** Destructor. */

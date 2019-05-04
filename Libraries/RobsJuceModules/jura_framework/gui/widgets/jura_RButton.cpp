@@ -9,7 +9,7 @@
 RButton::RButton(int newSymbolIndex) : RWidget(String("SymbolButton"))
 {
   symbolIndex       = newSymbolIndex;
-  text              = String::empty;
+  text              = String();
   isOn              = false;
   clickTogglesState = true;
 }

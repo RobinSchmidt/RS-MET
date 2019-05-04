@@ -31,7 +31,7 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  AudioFileBuffer(const File &fileToLoadFrom = File::nonexistent);
+  AudioFileBuffer(const File &fileToLoadFrom = File());
 
   /** Destructor. */
   virtual ~AudioFileBuffer() throw();

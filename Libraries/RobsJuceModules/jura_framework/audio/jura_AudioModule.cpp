@@ -400,7 +400,7 @@ void AudioModule::recallChildModulesFromXml(const XmlElement &xml, bool markAsCl
     if( childState != NULL )
     {
       //childModules[c]->setStateFromXml(*childState, stateName, markAsClean);
-      childModules[c]->setStateFromXml(*childState, juce::String::empty, markAsClean);
+      childModules[c]->setStateFromXml(*childState, juce::String(), markAsClean);
     }
   }
 }

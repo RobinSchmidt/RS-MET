@@ -361,10 +361,10 @@ public:
   virtual double proportionToValue(double proportion) const;
 
   /** Returns the currently chosen string-value for string based parameters. When this parameter is
-  not actually a string based parameter, it will return String::empty. */
+  not actually a string based parameter, it will return String(). */
   virtual juce::String getStringValue() const;
 
-  /** Returns one of the option strings with the given index (or String::empty when the index is
+  /** Returns one of the option strings with the given index (or String() when the index is
   out of range or this is not a string based parameter). */
   virtual juce::String getOptionStringAtIndex(int index) const;
 

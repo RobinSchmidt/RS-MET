@@ -62,7 +62,7 @@ JUCE_API juce::String secondsToStringWithUnitTotal4(double value);
 JUCE_API juce::String semitonesToStringWithUnit2(double value);
 JUCE_API juce::String semitonesToStringWithUnit1(double value);
 JUCE_API juce::String valueToStringWithTotalNumDigits(double value, int totalNumDigits = 3,
-  const juce::String& suffix = juce::String::empty);
+  const juce::String& suffix = juce::String());
 JUCE_API juce::String valueToString(double value);
 JUCE_API juce::String valueToString0(double value);
 JUCE_API juce::String valueToString1(double value);
@@ -73,5 +73,7 @@ JUCE_API juce::String valueToString5(double value);
 JUCE_API juce::String valueToStringTotal5(double value);
 JUCE_API juce::String valueToStringWithSign0(double value);
 JUCE_API juce::String valueToStringWithSign1(double value);
+
+JUCE_API juce::String dummyString;
 
 #endif   

@@ -255,7 +255,7 @@ DspWorkbenchModuleEditor::DspWorkbenchModuleEditor(CriticalSection *newPlugInLoc
     parameterSliders[p]->addListener(this);
     parameterSliders[p]->setRange(0.0, 1.0, 0.0, 0.5);
     parameterSliders[p]->assignParameter(dspWorkbenchAudioModule->getParameterByIndex(p));
-    parameterSliders[p]->setSliderName(juce::String::empty);
+    parameterSliders[p]->setSliderName(juce::String());
     parameterSliders[p]->setDescription(juce::String("Adjusts the value of the parameter"));
     parameterSliders[p]->setStringConversionFunction(&valueToString3);
 

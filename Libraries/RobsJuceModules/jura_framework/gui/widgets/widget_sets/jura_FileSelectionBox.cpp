@@ -11,7 +11,7 @@ FileSelectionBox::FileSelectionBox(const String& componentName, FileManager *fil
   fileLabel->setDescription("Currently active file");
   fileLabel->setNoBackgroundAndOutline(true);
 
-  addWidget( fileNameBox = new RTextField(String::empty) );
+  addWidget( fileNameBox = new RTextField(String()) );
   fileNameBox->setDescription( fileLabel->getDescription() );
   fileNameBox->setNoBackgroundAndOutline(false);
 

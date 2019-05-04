@@ -182,7 +182,7 @@ void ColourSchemeSetupDialog::setVisible(bool shouldBeVisible)
     if( xmlColorsOnOpening != NULL )
       delete xmlColorsOnOpening;
     xmlColorsOnOpening = getColourSchemeAsXml();
-    EditorWithStateFile::setStateName(String::empty);
+    EditorWithStateFile::setStateName(String());
     updateWidgetsAccordingToState();
   }
   RDialogBox::setVisible(shouldBeVisible);

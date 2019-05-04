@@ -8,7 +8,7 @@ void AudioModuleFactory::registerModuleType(
   delete m;                                    // must match the module's type name (for recall)
 #endif
 
-  if(typeName == String::empty)
+  if(typeName == String())
   {
     AudioModule* m = creatorFunction(lock);
     moduleInfos.push_back(AudioModuleInfo(m->getModuleTypeName(), creatorFunction, category));

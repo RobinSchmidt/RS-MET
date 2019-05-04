@@ -327,11 +327,11 @@ String Parameter::getStringValue() const
     else
     {
       jassertfalse; // value does represent a valid index in the array of string values
-      return String::empty;
+      return String();
     }
   }
   else
-    return String::empty;
+    return String();
 }
 
 String Parameter::getOptionStringAtIndex(int index) const
@@ -340,7 +340,7 @@ String Parameter::getOptionStringAtIndex(int index) const
   if( !isStringParameter() )
   {
     jassertfalse; // tyring to retrieve an option-string from a non-string parameter
-    return String::empty;
+    return String();
   }
 
   if( index >= 0 && index < stringValues.size() )
@@ -348,7 +348,7 @@ String Parameter::getOptionStringAtIndex(int index) const
   else
   {
     jassertfalse; // tyring to retrieve an option-string with invalid index
-    return String::empty;
+    return String();
   }
 }
 
@@ -356,14 +356,14 @@ String Parameter::getDefaultStringValue() const
 {
   ScopedPointerLock spl(mutex);
   if( !isStringParameter() )
-    return String::empty;
+    return String();
   else
   {
     int index = (int) getDefaultValue();
     if( index >= 0 && index < stringValues.size() )
       return stringValues[index];
     else
-      return String::empty;
+      return String();
   }
 }
 

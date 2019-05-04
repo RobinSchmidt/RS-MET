@@ -16,7 +16,7 @@ public:
   /** Constructor. */
   ImageSavingDialog(rsPlot *owner = NULL, int defaultWidth = 320,
     int defaultHeight = 320, const String &defaultFormat = String("png"),
-    const File& defaultTargetFile = File::nonexistent);
+    const File& defaultTargetFile = File());
 
   /** Destructor. */
   virtual ~ImageSavingDialog();

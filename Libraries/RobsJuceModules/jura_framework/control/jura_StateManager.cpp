@@ -20,7 +20,7 @@ StateManager::StateManager()
 {
   parent              = NULL;
   //stateName           = NULL;
-  stateName           = String::empty;
+  stateName           = String();
   stateIsDirty        = false;
   ignoreDirtification = false;
   //setStateName("Init", true);
@@ -138,7 +138,7 @@ const String& StateManager::getStateName() const
 
 const String StateManager::getStateNameWithStarIfDirty() const
 {
-  if( stateIsDirty == true && stateName != String::empty )
+  if( stateIsDirty == true && stateName != String() )
     return stateName + String("*");
   else
     return stateName;

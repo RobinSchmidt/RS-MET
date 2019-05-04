@@ -378,7 +378,7 @@ class JUCE_API rsAutomatableButton : public RButton, public rsAutomatableWidget
 
 public:
 
-  rsAutomatableButton(const juce::String& buttonText = juce::String::empty);
+  rsAutomatableButton(const juce::String& buttonText = juce::String());
   virtual void mouseDown(const MouseEvent& e) override;
   virtual void parameterChanged(Parameter* p) override;
 

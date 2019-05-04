@@ -12,11 +12,11 @@ rsSpectrumPlot::rsSpectrumPlot(const String& name)
   setMaximumRange(15.625, 32000.0, -96.0, 6.0);
   setCurrentRange(15.625, 32000.0, -96.0, 6.0);
   setAxisPositionX(rsPlotSettings::BOTTOM);
-  setAxisLabelX(String::empty);
+  setAxisLabelX(String());
   useLogarithmicScaleX(true, 2.0);
   setAxisPositionY(rsPlotSettings::LEFT);
   setAxisValuesPositionY(rsPlotSettings::LEFT);
-  setAxisLabelY(String::empty);
+  setAxisLabelY(String());
 
   //setStringConversionForInfoLineX(hertzToStringWithUnitTotal5);  
   //setStringConversionForInfoLineX(rojue::frequencyToNoteString);  

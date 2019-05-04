@@ -79,7 +79,7 @@ void QuadrigenAudioModule::setGeneratorAlgorithm(int slotIndex, int newAlgorithm
       jura::WaveOscModule *audioModule =
         static_cast<jura::WaveOscModule*> (generatorModules[slotIndex]);
       delete oscillatorStereoStates[slotIndex];
-      oscillatorStereoStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
+      oscillatorStereoStates[slotIndex] = audioModule->getStateAsXml(juce::String(), false);
     } break;
 
     //....................tbc...............
@@ -102,7 +102,7 @@ void QuadrigenAudioModule::setGeneratorAlgorithm(int slotIndex, int newAlgorithm
         static_cast<rosic::OscillatorStereoModule*> (wrappedQuadrigen->getGeneratorModule(slotIndex));
       jura::WaveOscModule *audioModule = new jura::WaveOscModule(lock, core);
       audioModule->setModuleName(juce::String("OscillatorStereo") + juce::String(slotIndex+1));
-      audioModule->setStateFromXml(*oscillatorStereoStates[slotIndex], juce::String::empty, true);
+      audioModule->setStateFromXml(*oscillatorStereoStates[slotIndex], juce::String(), true);
       generatorModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;

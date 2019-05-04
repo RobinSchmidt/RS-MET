@@ -337,11 +337,11 @@ void MidiMonitorModuleEditor::resized()
 
 void MidiMonitorModuleEditor::clearScreen(bool clearAlsoMessageString)
 {
-  outputDisplay->setText(juce::String::empty, false);
+  outputDisplay->setText(juce::String(), false);
   if( clearAlsoMessageString == true && midiMonitorModuleToEdit != NULL)
   {
     midiMonitorModuleToEdit->messageStringLock.enter();
-    midiMonitorModuleToEdit->midiMessageString = juce::String::empty;
+    midiMonitorModuleToEdit->midiMessageString = juce::String();
     midiMonitorModuleToEdit->messageStringLock.exit();
   }
 }

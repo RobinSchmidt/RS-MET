@@ -316,7 +316,7 @@ BreakpointParameterEditor::BreakpointParameterEditor(CriticalSection *newPlugInL
 
   addWidget( shapeSlider = new RSlider("ShapeSlider") );
   shapeSlider->addListener(this);
-  shapeSlider->setSliderName(juce::String::empty);
+  shapeSlider->setSliderName(juce::String());
   shapeSlider->setDescription("Amount of the shape (shapiness)");
   shapeSlider->setStringConversionFunction(&valueToString2);
   shapeSlider->setRange(0.1, 10.0, 0.01, 1.0);

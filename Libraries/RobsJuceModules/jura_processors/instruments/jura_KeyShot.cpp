@@ -48,7 +48,7 @@ KeyShotModuleEditor::KeyShotModuleEditor(CriticalSection *newPlugInLock,
   // create and setup the browser:
 
   // create WildcardFileFilter component that will be used by the browser:
-  fileFilter = new WildcardFileFilter(juce::String("*.xml"), juce::String::empty, 
+  fileFilter = new WildcardFileFilter(juce::String("*.xml"), juce::String(), 
     juce::String("XML Files"));
 
   /*

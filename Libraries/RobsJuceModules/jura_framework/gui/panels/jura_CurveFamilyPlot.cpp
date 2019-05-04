@@ -339,7 +339,7 @@ void CurveFamilyPlot::plotCurve(Graphics &g, Image* targetImage, XmlElement *tar
   if( isFunctionFamily )
     mask = 0;
 
-  String curvePathDataString = String::empty;
+  String curvePathDataString = String();
 
   // start values for a line segment:
   x = familyValuesX[index*mask][0]; 

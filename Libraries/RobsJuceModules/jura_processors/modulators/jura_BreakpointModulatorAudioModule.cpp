@@ -78,7 +78,7 @@ const juce::String modBreakpointShapeIndexToString(int shapeIndex)
   else if( shapeIndex == BP::SPIKEY )    return "Spikey";
   else if( shapeIndex == BP::SINE_1 )    return "Sine 1";
   else if( shapeIndex == BP::SINE_2 )    return "Sine 2";
-  else                                   return juce::String::empty;
+  else                                   return juce::String();
 }
 
 XmlElement* BreakpointModulatorAudioModule::getStateAsXml(const juce::String& stateName,
@@ -173,7 +173,7 @@ void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,
   {
     level       = breakpointState->getDoubleAttribute("Level", 0.0);
     shapeAmount = breakpointState->getDoubleAttribute("ShapeAmount", 1.0);
-    stringValue = breakpointState->getStringAttribute("Shape", juce::String::empty);
+    stringValue = breakpointState->getStringAttribute("Shape", juce::String());
     shape       = stringToModBreakpointShapeIndex(stringValue);
     modulator->modifyBreakpoint(0, 0.0, level, shape, shapeAmount);
   }
@@ -190,7 +190,7 @@ void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,
     time        = breakpointState->getDoubleAttribute("Time",        1.0);
     level       = breakpointState->getDoubleAttribute("Level",       0.0);
     shapeAmount = breakpointState->getDoubleAttribute("ShapeAmount", 1.0);
-    stringValue = breakpointState->getStringAttribute("Shape", juce::String::empty);
+    stringValue = breakpointState->getStringAttribute("Shape", juce::String());
     shape       = stringToModBreakpointShapeIndex(stringValue);
     modulator->modifyBreakpoint(1, time, level, shape, shapeAmount);
   }
@@ -210,7 +210,7 @@ void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,
       time        = breakpointState->getDoubleAttribute("Time", 1.0);
       level       = breakpointState->getDoubleAttribute("Level", 0.0);
       shapeAmount = breakpointState->getDoubleAttribute("ShapeAmount", 1.0);
-      stringValue = breakpointState->getStringAttribute("Shape", juce::String::empty);
+      stringValue = breakpointState->getStringAttribute("Shape", juce::String());
       shape       = stringToModBreakpointShapeIndex(stringValue);
       modulator->insertBreakpoint(time, level, shape, shapeAmount);
     }

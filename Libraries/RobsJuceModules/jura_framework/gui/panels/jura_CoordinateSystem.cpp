@@ -5,7 +5,7 @@
 CoordinateSystem::CoordinateSystem(const String &newDescription) : RWidget(newDescription)
 {
   //autoReRenderImage  = false;
-  caption.setText(String::empty);
+  caption.setText(String());
   caption.setFont(Font(16), true);
 
 
@@ -847,7 +847,7 @@ void CoordinateSystem::openRightClickPopupMenu()
   else if (result == 1)
   {
     // user picked the Export item - open the export dialog window:
-    openExportDialog(getWidth(), getHeight(), String("png"), File::nonexistent);
+    openExportDialog(getWidth(), getHeight(), String("png"), File());
   }
 }
 
@@ -912,7 +912,7 @@ void CoordinateSystem::addTextToSvgDrawing(XmlElement* theSVG, String theText, f
   XmlElement* textContainer = new XmlElement(String("text"));
   XmlElement* text          = XmlElement::createTextElement(theText);
 
-  String jString = String::empty;
+  String jString = String();
   if( justification.getFlags() == Justification::centredLeft )
     jString = String("start");
   else if( justification.getFlags() == Justification::centred )

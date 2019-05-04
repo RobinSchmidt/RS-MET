@@ -63,21 +63,21 @@ void StraightlinerAudioModule::setStateFromXml(const XmlElement &xmlState,
     // versions we have the whole oscillatro-section as one child module ....
     XmlElement* oscState = xmlState.getChildByName("Osc1");
     if( oscState != NULL )
-      oscSectionModule->osc1Module->setStateFromXml(*oscState, juce::String::empty, markAsClean);
+      oscSectionModule->osc1Module->setStateFromXml(*oscState, juce::String(), markAsClean);
 
     oscState = xmlState.getChildByName("Osc2");
     if( oscState != NULL )
-      oscSectionModule->osc2Module->setStateFromXml(*oscState, juce::String::empty, markAsClean);
+      oscSectionModule->osc2Module->setStateFromXml(*oscState, juce::String(), markAsClean);
 
     oscState = xmlState.getChildByName("Osc3");
     if( oscState != NULL )
-      oscSectionModule->osc3Module->setStateFromXml(*oscState, juce::String::empty, markAsClean);
+      oscSectionModule->osc3Module->setStateFromXml(*oscState, juce::String(), markAsClean);
 
     oscState = xmlState.getChildByName("Osc4");
     if( oscState != NULL )
-      oscSectionModule->osc4Module->setStateFromXml(*oscState, juce::String::empty, markAsClean);
+      oscSectionModule->osc4Module->setStateFromXml(*oscState, juce::String(), markAsClean);
 
-    oscSectionModule->setStateName(juce::String::empty, true);
+    oscSectionModule->setStateName(juce::String(), true);
 
     // for restoring the other modules, we may invoke the baseclass' method:
     PolyphonicInstrumentAudioModule::setStateFromXml(xmlState, stateName, markAsClean);

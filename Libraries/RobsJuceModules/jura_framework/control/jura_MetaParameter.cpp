@@ -342,7 +342,7 @@ MetaParameter* MetaControlledParameter::getAttachedMeta()
 String MetaControlledParameter::getMetaParameterName()
 {
   if(metaParaManager == nullptr || metaIndex == -1)
-    return String::empty;
+    return String();
   return metaParaManager->getMetaParameterName(metaIndex);
 }
 
@@ -463,7 +463,7 @@ MetaParameter* MetaParameterManager::getMetaParameter(int index)
 String MetaParameterManager::getMetaParameterName(int index)
 {
   if(index < 0 || index >= size(metaParams))
-    return String::empty;
+    return String();
   return metaParams[index]->getName();
 }
 

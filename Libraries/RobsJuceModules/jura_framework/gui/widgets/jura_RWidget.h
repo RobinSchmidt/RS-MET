@@ -81,7 +81,7 @@ public:
   a string from their internal variables. They should then also override setValueFromString to 
   restore their internal variables from a string by parsing it. */
   //virtual juce::String getStateAsString() const = 0;
-  virtual juce::String getStateAsString() const { return juce::String::empty; }
+  virtual juce::String getStateAsString() const { return juce::String(); }
 
   /** Returns a string representing the value for gui/display purposes using our string conversion 
   function on the value of the assigned parameter (if any, otherwise the empty string will be 

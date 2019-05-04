@@ -305,7 +305,7 @@ bool RTextEntryField::keyPressed(const KeyPress &key)
   else
   {
     juce_wchar ch = key.getTextCharacter();
-    if( permittedCharacters != String::empty && !permittedCharacters.containsChar(ch) )
+    if( permittedCharacters != String() && !permittedCharacters.containsChar(ch) )
       return true; // character is not among the permitted ones 
     getHeadAndTailString(head, tail);
     if( isSelectionEmpty() && replaceMode == true )

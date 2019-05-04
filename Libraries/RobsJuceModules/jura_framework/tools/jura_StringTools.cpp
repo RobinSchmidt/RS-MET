@@ -204,7 +204,7 @@ String getSignAsString(double value)
   else if( value < 0.0 )
     return String("-");
   else
-    return String::empty;
+    return String();
 }
 
 String hertzToStringWithUnit1(double value)
@@ -252,7 +252,7 @@ String kiloToString0(double value)
 
 String midiMessageToString(MidiMessage message, bool addNewLine)
 {
-  String messageString = String::empty;
+  String messageString = String();
 
   int hours, minutes, seconds, frames;  // needed for the MMC goto message and time-code messages
 
@@ -407,7 +407,7 @@ String midiMessageToString(MidiMessage message, bool addNewLine)
     messageString = String("unknown message");
   }
 
-  if( addNewLine == true && messageString != String::empty )
+  if( addNewLine == true && messageString != String() )
     return messageString + String("\n");
   else
     return messageString;

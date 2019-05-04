@@ -15,7 +15,7 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  RTextField(const juce::String& initialText = juce::String::empty);
+  RTextField(const juce::String& initialText = juce::String());
 
   //-----------------------------------------------------------------------------------------------
   // setup:
@@ -120,7 +120,7 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  RTextEntryField(const juce::String& initialText = juce::String::empty);
+  RTextEntryField(const juce::String& initialText = juce::String());
 
   //-----------------------------------------------------------------------------------------------
   // setup:
@@ -251,8 +251,8 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  RLabeledTextEntryField(const juce::String& labelText = juce::String::empty,
-    const juce::String& entryFieldText = juce::String::empty);
+  RLabeledTextEntryField(const juce::String& labelText = juce::String(),
+    const juce::String& entryFieldText = juce::String());
 
   /** Destructor. */
   virtual ~RLabeledTextEntryField();

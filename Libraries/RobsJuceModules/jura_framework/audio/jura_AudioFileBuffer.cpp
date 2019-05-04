@@ -6,7 +6,7 @@ AudioFileBuffer::AudioFileBuffer(const File &fileToLoadFrom) : AudioSampleBuffer
 {
   ScopedWriteLock scopedLock(audioDataReadWriteLock);
   audioFileRootDirectory   = getApplicationDirectory();
-  if( fileToLoadFrom != File::nonexistent )
+  if( fileToLoadFrom != File() )
     loadAudioDataFromFile(fileToLoadFrom);
 }
 
@@ -128,7 +128,7 @@ bool AudioFileBuffer::loadAudioDataFromFile(const File &fileToLoadFrom, bool sho
   {
     if( showAlertBoxOnFail )
       showAudioFileInvalidErrorBox(fileToLoadFrom.getFileName());
-    theAudioFile = File::nonexistent;
+    theAudioFile = File();
     return false;
   }
 
