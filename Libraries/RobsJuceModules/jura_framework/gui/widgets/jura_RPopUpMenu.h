@@ -177,6 +177,10 @@ protected:
   RTreeViewNode         *rootNode;
   RTreeLeafNodeSelector *treeView;  // we use this as our contentComponent (as inherited from RPopUpComponent)
 
+
+  static const juce::String dummyString;
+
+
   juce_UseDebuggingNewOperator;
 };
 

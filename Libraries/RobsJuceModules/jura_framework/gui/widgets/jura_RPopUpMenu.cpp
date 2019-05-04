@@ -1,6 +1,8 @@
 //#include "rojue_RPopUpMenu.h"
 //using namespace rojue;
 
+const juce::String RPopUpMenu::dummyString;
+
 RPopUpMenu::RPopUpMenu(Component *componentToAttachTo) : ROwnedPopUpComponent(componentToAttachTo)
 {
   rootNode = new RTreeViewNode();

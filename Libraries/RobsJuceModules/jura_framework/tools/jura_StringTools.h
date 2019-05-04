@@ -74,6 +74,4 @@ JUCE_API juce::String valueToStringTotal5(double value);
 JUCE_API juce::String valueToStringWithSign0(double value);
 JUCE_API juce::String valueToStringWithSign1(double value);
 
-JUCE_API juce::String dummyString;
-
 #endif   
