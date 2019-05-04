@@ -99,8 +99,12 @@ todo:
 */
 
 class SamplePlayerEditorDisplay	: 
-  virtual public WaveformDisplay  // old
-  //public rsWaveformPlot           // new
+  //virtual public WaveformDisplay  // old
+
+  public rsWaveformPlot, public AudioFileBufferUser /*, virtual public InteractiveCoordinateSystem */
+  // new - mixes old with new plotting class - not good - make a new version of rsPlotInteractor
+  // or something
+
   , public ChangeBroadcaster
   //, virtual public InteractiveCoordinateSystem
 {
@@ -199,6 +203,10 @@ protected:
   //rosic::SamplePlaybackParameters *playbackParametersToEdit;
   /**< Pointer to the rosic::SamplePlaybackParameters which hold the playback info (loop 
   settings etc.). */
+
+  // these were previously inherited from  WaveformDisplay (via WaveformDisplay) - we preliminarily
+  // define them here unti we have a better new baseclass solution:
+  int mouseX, mouseY;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplePlayerEditorDisplay)
@@ -340,8 +348,9 @@ public:
   //---------------------------------------------------------------------------------------------
   // public data members:
 
-  SamplePlayerEditorDisplay     *sampleDisplay;
-  CoordinateSystemZoomer        *sampleDisplayZoomer; // use rsPlotZoomer
+  SamplePlayerEditorDisplay *sampleDisplay;
+  //CoordinateSystemZoomer        *sampleDisplayZoomer; // use rsPlotZoomer
+  rsPlotZoomer              *sampleDisplayZoomer; // new
 
 
 

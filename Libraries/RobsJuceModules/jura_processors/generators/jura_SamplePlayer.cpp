@@ -1,7 +1,13 @@
 // Bugs: 
 // -memory leak of an object of type juce::TimeSliceThread
-// -zooming in cuases crash
+// -zooming in causes crash
 // -SamplePlayerEditorDisplay::paint is called regularly (!) WTF?!
+//  ...maybe because i wanted to draw animated position locators - however - do it with 
+//  paintOverChildren like in the MultiComp
+// ...ok - after switching to the new wvaeform display, this seems fixed - but the display now
+// doesn't show anything (which is not surprising - we must somhow pass the sample-data to the
+// display)
+
 
 // ToDo:
 // -check why the background of the sample-file label and of the wvaeform display is wrong
@@ -19,6 +25,7 @@
 //  right
 // -let the user switch between waveform and spectrogram view and/or use the spectrogram for the 
 //  background and the waveform for the foreground
+//  -have an rsHeatMapDisplay or rsColorMapDisplay baseclass and rsSpectrogramPlot subclass
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -398,10 +405,10 @@ void SamplePlayerAudioModule::initializeAutomatableParameters()
 //=================================================================================================
 
 SamplePlayerEditorDisplay::SamplePlayerEditorDisplay(AudioFileBuffer *newBufferToUse)
-  : WaveformDisplay(newBufferToUse) //, InteractiveCoordinateSystem(juce::String(T("SampleDisplay")))
+  : AudioFileBufferUser(newBufferToUse)
+  //: WaveformDisplay(newBufferToUse) //, InteractiveCoordinateSystem(juce::String(T("SampleDisplay")))
 {
-
-  setValueFieldPopup(false);
+  //setValueFieldPopup(false); // old
 
   //bufferToEdit             = NULL;
   //playbackParametersToEdit = NULL;
@@ -489,7 +496,8 @@ bool SamplePlayerEditorDisplay::setAudioFileToUse(const juce::File &newFileToUse
   if( bufferToUse != NULL )
   {
     bufferToUse->loadAudioDataFromFile(newFileToUse, false);
-    setRangeToBufferLength();
+
+    //setRangeToBufferLength(); // from old WaveformDisplay
 
     // pass the data to the audio core-object:
     if( samplePlayerToEdit != NULL )
@@ -509,7 +517,7 @@ bool SamplePlayerEditorDisplay::setAudioFileToUse(const juce::File &newFileToUse
 
     //setMaximumRangeX(0.0, bufferToUse->getNumSamples()+1);
     //setCurrentRangeX(0.0, bufferToUse->getNumSamples()+1);
-    setDirty();
+    //setDirty();   // from old WaveformDisplay
     //updatePlot();
     //repaint(); // should not be necesarry?
   }
@@ -633,7 +641,8 @@ void SamplePlayerEditorDisplay::updatePlot(bool resetZoomFactor)
 
 void SamplePlayerEditorDisplay::paint(juce::Graphics &g)
 {
-  WaveformDisplay::paint(g); // does not take scale and dc into account
+  //WaveformDisplay::paint(g); // does not take scale and dc into account
+  rsWaveformPlot::paint(g); // does not take scale and dc into account
 
   if( samplePlayerToEdit == NULL )
     return;
@@ -647,12 +656,12 @@ void SamplePlayerEditorDisplay::paint(juce::Graphics &g)
   double xGrayL    = start;
   double xGrayR    = end;
   double y         = 0.0;
-  drawCurrentPositionLocator(g,  (float) start);
-  drawCurrentPositionLocator(g,  (float) end);
+  //drawCurrentPositionLocator(g,  (float) start); // from InteractiveCoordinateSystem
+  //drawCurrentPositionLocator(g,  (float) end);   // from InteractiveCoordinateSystem
   if( samplePlayerToEdit->parameters->getLoopMode() != rosic::SamplePlaybackParameters::NO_LOOP )
   {
-    drawLeftLocator( g,  (float) loopStart);
-    drawRightLocator(g,  (float) loopEnd);
+    //drawLeftLocator( g,  (float) loopStart);   // from InteractiveCoordinateSystem
+    //drawRightLocator(g,  (float) loopEnd);     // from InteractiveCoordinateSystem
     xGrayL = jmin(start, loopStart);
   }
 
@@ -823,12 +832,14 @@ void SamplePlayerEditorDisplay::mouseUp(const MouseEvent &e)
 XmlElement* SamplePlayerEditorDisplay::getStateAsXml(
   const juce::String &stateName) const
 {
-  return InteractiveCoordinateSystem::getStateAsXml(stateName);
+  return nullptr;
+  //return InteractiveCoordinateSystem::getStateAsXml(stateName);
 }
 
 bool SamplePlayerEditorDisplay::setStateFromXml(const XmlElement &xmlState)
 {
-  return InteractiveCoordinateSystem::setStateFromXml(xmlState);
+  return false;
+  //return InteractiveCoordinateSystem::setStateFromXml(xmlState);
 }
 
 //=================================================================================================
@@ -1147,11 +1158,21 @@ SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLoc
   //sampleDisplay->setSampleRate(1.0);
 
   // create the zoomer for the sampleDisplay and associate it with the sampleDisplay:
+  /*
   addChildColourSchemeComponent( sampleDisplayZoomer = new CoordinateSystemZoomer() );
   sampleDisplayZoomer->setRelativeMargins(5.0, 5.0, 10.0, 10.0);
   sampleDisplayZoomer->setCoordinateSystem(sampleDisplay);
   sampleDisplayZoomer->setVerticalMouseWheelMode(
     CoordinateSystemZoomer::horizontalZoomViaVerticalMouseWheel);
+  */
+
+  addChildColourSchemeComponent( sampleDisplayZoomer = new rsPlotZoomer() );
+  sampleDisplayZoomer->setRelativeMargins(5.0, 5.0, 10.0, 10.0);
+  sampleDisplayZoomer->setCoordinateSystem(sampleDisplay);
+  sampleDisplayZoomer->setVerticalMouseWheelMode(
+    CoordinateSystemZoomer::horizontalZoomViaVerticalMouseWheel);
+
+
 
   contextMenu = new SamplePlayerEditorContextMenu(samplePlayerModuleToEdit, this);
   contextMenu->addChangeListener(this);
@@ -1334,7 +1355,7 @@ SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLoc
   //setSamplePlayerToEdit(newSamplePlayerToEdit->wrappedSamplePlayer);
   updateWidgetsAccordingToState(true);
 
-  setSize(600, 300);
+  setSize(640, 300);
 }
 
 SamplePlayerModuleEditor::~SamplePlayerModuleEditor()
