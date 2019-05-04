@@ -1,4 +1,15 @@
+// Bugs: 
+// -memory leak of an object of type juce::TimeSliceThread
 
+// ToDo:
+// -make state widget set visible
+// -fix sample load directory 
+// -check, how the recall of the sample works for the WaveOsc and do it here the same way 
+// -maybe factor out a common baseclass to consolidate the code for saving and recalling the 
+//  sample-path (SampleBasedAudioModule or something)
+// -fix colors of editor sections
+// -maybe re-arrange the gui to have some elements above the display, some below and some to the 
+//  right
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -950,6 +961,9 @@ SamplePlayerEditorContextMenu::SamplePlayerEditorContextMenu(
   closeButton->setClickingTogglesState(false);
   // we don't listen to this button ourselves - this is the job of the outlying editor object
 
+  // factor out widget creation int function  createWidgets();
+
+
   updateWidgetsAccordingToState();
   setSize(180, 404);
 }
@@ -1321,6 +1335,8 @@ SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLoc
 
   //setSamplePlayerToEdit(newSamplePlayerToEdit->wrappedSamplePlayer);
   updateWidgetsAccordingToState(true);
+
+  setSize(600, 300);
 }
 
 SamplePlayerModuleEditor::~SamplePlayerModuleEditor()

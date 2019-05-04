@@ -29,9 +29,7 @@ public:
  
 
 
-  // i think, these 3 are obsolete - todo: check, how the recall of the sample works for the
-  // WaveOsc and do it here the same way - maybe factor out a common baseclass to consolidate the
-  // code for saving and recalling the sample-path (SampleBasedAudioModule or something)
+  // i think, these 3 are obsolete
 
   //virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
