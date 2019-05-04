@@ -98,7 +98,10 @@ todo:
 
 */
 
-class SamplePlayerEditorDisplay	: virtual public WaveformDisplay, public ChangeBroadcaster
+class SamplePlayerEditorDisplay	: 
+  virtual public WaveformDisplay  // old
+  //public rsWaveformPlot           // new
+  , public ChangeBroadcaster
   //, virtual public InteractiveCoordinateSystem
 {
 
@@ -338,7 +341,10 @@ public:
   // public data members:
 
   SamplePlayerEditorDisplay     *sampleDisplay;
-  CoordinateSystemZoomer        *sampleDisplayZoomer;
+  CoordinateSystemZoomer        *sampleDisplayZoomer; // use rsPlotZoomer
+
+
+
   SamplePlayerEditorContextMenu *contextMenu;
 
   RTextField *fileLabel, *formatLabel, *formatInfoLabel; 

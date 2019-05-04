@@ -37,6 +37,7 @@ public:
   /** This function should be used to pass the rsPlot-object (or an object of some 
   subclass thereof) which should be shown, zoomed and scrolled. */
   virtual void setCoordinateSystem(rsPlot* newSystemToBeShown);
+    // rename to setPlot
 
   /** This function should be called when the rsPlot, to which we hold a pointer here, 
   was deleted for some reason. */

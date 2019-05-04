@@ -1,15 +1,11 @@
 // Bugs: 
 // -memory leak of an object of type juce::TimeSliceThread
+// -zooming in cuases crash
+// -SamplePlayerEditorDisplay::paint is called regularly (!) WTF?!
 
 // ToDo:
-// -fix sample load directory 
-// factor out 
-
-// class SampleModuleEditor : public AudioModuleEditor, public AudioFileManager
-// and derive SamplePlayerModuleEditor and WaveOscEditor from it
-// it should contain the sampleLoad/Plus/Minus buttons
-
-
+// -check why the background of the sample-file label and of the wvaeform display is wrong
+// -derive the wvae display from the new rsWaveformPlot
 // -check, how the recall of the sample works for the WaveOsc and do it here the same way 
 // -maybe factor out a common baseclass to consolidate the code for saving and recalling the 
 //  sample-path (SampleBasedAudioModule or something) 
@@ -1135,6 +1131,9 @@ SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLoc
 
   setHeadlineText("SamplePlayer");
 
+
+
+
   //addPlot( sampleDisplay = new SamplePlayerEditorDisplay() );
   addAndMakeVisible( sampleDisplay = new SamplePlayerEditorDisplay() );
   sampleDisplay->setSamplePlayerToEdit(samplePlayerModuleToEdit->wrappedSamplePlayer);
@@ -1326,6 +1325,11 @@ SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLoc
   stateWidgetSet->stateSaveButton->setDescription("Save sample playback settings to file");
   stateWidgetSet->statePlusButton->setDescription("Skip to next playback settings file in current directory");
   stateWidgetSet->stateMinusButton->setDescription("Skip to previous playback settings file in current directory");
+
+
+  // preliminary, for development
+  AudioFileManager::setActiveDirectory(getSupportDirectory() + "/Samples/SingleCycle/DampedSinusoids");
+
 
   //setSamplePlayerToEdit(newSamplePlayerToEdit->wrappedSamplePlayer);
   updateWidgetsAccordingToState(true);
