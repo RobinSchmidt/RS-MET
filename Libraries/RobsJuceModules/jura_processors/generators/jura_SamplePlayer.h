@@ -18,7 +18,10 @@ public:
 
   /** Constructor. */
   SamplePlayerAudioModule(CriticalSection *newPlugInLock, 
-    rosic::SamplePlayer *newSamplePlayerToWrap);
+    rosic::SamplePlayer *newSamplePlayerToWrap = nullptr);
+
+  /** Destructor. */
+  virtual ~SamplePlayerAudioModule();
 
   //---------------------------------------------------------------------------------------------
   // automation:
@@ -61,7 +64,8 @@ protected:
   virtual void initializeAutomatableParameters();
 
   /** Pointer to the underlying rosic object which is wrapped. */
-  rosic::SamplePlayer *wrappedSamplePlayer;
+  rosic::SamplePlayer *wrappedSamplePlayer = nullptr;
+  bool wrappedSamplePlayerOwned = false;
 
   juce_UseDebuggingNewOperator;
 };

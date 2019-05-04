@@ -3,13 +3,25 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-SamplePlayerAudioModule::SamplePlayerAudioModule(CriticalSection *newPlugInLock, rosic::SamplePlayer *newSamplePlayerToWrap)
+SamplePlayerAudioModule::SamplePlayerAudioModule(
+  CriticalSection *newPlugInLock, rosic::SamplePlayer *newSamplePlayerToWrap)
 : AudioModule(newPlugInLock)
 {
-  jassert( newSamplePlayerToWrap != NULL ); // you must pass a valid rosic-object to the constructor
-  wrappedSamplePlayer = newSamplePlayerToWrap;
+  //jassert( newSamplePlayerToWrap != NULL ); // you must pass a valid rosic-object to the constructor
+  if(newSamplePlayerToWrap == nullptr) {
+    wrappedSamplePlayer = new rosic::SamplePlayer;
+    wrappedSamplePlayerOwned = true;
+  }
+  else
+    wrappedSamplePlayer = newSamplePlayerToWrap;
   setModuleTypeName("SamplePlayer");
   initializeAutomatableParameters();
+}
+
+SamplePlayerAudioModule::~SamplePlayerAudioModule()
+{
+  if(wrappedSamplePlayerOwned)
+    delete wrappedSamplePlayer;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -348,8 +360,10 @@ void SamplePlayerAudioModule::initializeAutomatableParameters()
   addObservedParameter(p);
 
   // make a call to setValue for each parameter in order to set up all the slave voices:
-  for(int i=0; i < (int) parameters.size(); i++ )
-    parameterChanged(parameters[i]);
+  //for(int i=0; i < (int) parameters.size(); i++ )
+  //  parameterChanged(parameters[i]);
+  // i think, it's obsolete, but it also causes an access violation - that should actually not 
+  // happen
 }
 
 //=================================================================================================
