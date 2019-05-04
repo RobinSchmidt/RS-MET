@@ -1,7 +1,7 @@
 #include "rosic_BasicsTests.h"
 using namespace rotes;
 
-#include "../Shared/Plotting/rosic_Plotter.h"
+//#include "../Shared/Plotting/rosic_Plotter.h"
 //#include "rosic/rosic.h"
 using namespace rosic;
 
@@ -144,7 +144,7 @@ void testCompensatedLinearInterpolator()
   for(int n = 0; n < N; n++)
     mag[n] = RAPT::rsAmpToDb(mag[n]);
   RAPT::rsArray::clipBuffer(mag, N, -60.0, 20.0);
-  Plotter::plotData(N, w, mag);
+  plotData(N, w, mag);
 }
 
 void rotes::testInterpolation()
@@ -190,9 +190,9 @@ void rotes::testHermiteTwoPoint1()
     RAPT::rsPolynomial<double>::evaluateWithDerivatives(x[n], a, 3, &y[2*n], 1);
   RAPT::rsArray::deInterleave(y, N, 2);
 
-  Plotter::plotData(N, x, y);
-  //Plotter::plotData(N, x, y, &y[N]);
-  //Plotter::plotData(N, x, y, &y[N], &y[2*N]);
+  plotData(N, x, y);
+  //plotData(N, x, y, &y[N]);
+  //plotData(N, x, y, &y[N], &y[2*N]);
 }
 
 
@@ -217,9 +217,9 @@ void rotes::testHermiteTwoPoint2()
     RAPT::rsPolynomial<double>::evaluateWithDerivatives(x[n], a, 5, &y[3*n], 2);
   RAPT::rsArray::deInterleave(y, N, 3);
 
-  Plotter::plotData(N, x, y);
-  //Plotter::plotData(N, x, y, &y[N]);
-  //Plotter::plotData(N, x, y, &y[N], &y[2*N]);
+  plotData(N, x, y);
+  //plotData(N, x, y, &y[N]);
+  //plotData(N, x, y, &y[N], &y[2*N]);
 }
 
 void rotes::testHermiteTwoPoint3()
@@ -243,9 +243,9 @@ void rotes::testHermiteTwoPoint3()
     RAPT::rsPolynomial<double>::evaluateWithDerivatives(x[n], a, 7, &y[4*n], 3);
   RAPT::rsArray::deInterleave(y, N, 4);
 
-  Plotter::plotData(N, x, y);
-  //Plotter::plotData(N, x, y, &y[N]);
-  //Plotter::plotData(N, x, y, &y[N], &y[2*N], &y[3*N]);
+  plotData(N, x, y);
+  //plotData(N, x, y, &y[N]);
+  //plotData(N, x, y, &y[N], &y[2*N], &y[3*N]);
 }
 
 void rotes::testHermiteTwoPointM()
@@ -273,8 +273,8 @@ void rotes::testHermiteTwoPointM()
     RAPT::rsPolynomial<double>::evaluateWithDerivatives(x[n], a, 7, &y[(M+1)*n], M);
   RAPT::rsArray::deInterleave(y, N, M+1);
 
-  Plotter::plotData(N, x, y);
-  //Plotter::plotData(N, x, y, &y[N], &y[2*N], &y[3*N]);
+  plotData(N, x, y);
+  //plotData(N, x, y, &y[N], &y[2*N], &y[3*N]);
 }
 
 double* createDeltaImpulse(int length, int impulseIndex)
@@ -330,8 +330,8 @@ void plotMagnitudeResponsesOf(rosic::Matrix &x, int fftSize, double plotFloor, i
 
   int plotMaxIndex = numBins / plotZoom;
 
-  Plotter::plotData(plotMaxIndex, frequencies, magH.m[0], magH.m[1], magH.m[2], magH.m[3], magH.m[4]);
-  //Plotter::plotData(plotMaxIndex, frequencies, phsH.m[0], phsH.m[1], phsH.m[2], phsH.m[3], phsH.m[4]);
+  plotData(plotMaxIndex, frequencies, magH.m[0], magH.m[1], magH.m[2], magH.m[3], magH.m[4]);
+  //plotData(plotMaxIndex, frequencies, phsH.m[0], phsH.m[1], phsH.m[2], phsH.m[3], phsH.m[4]);
 
   delete[] frequencies;
   delete[] xPadded;
@@ -353,7 +353,7 @@ void rotes::plotOneSidedInterpolatorContinuousResponses(int M[5], double shape)
   RAPT::rsArray::scale(t, t, h.numColumns, 1.0/oversampling);
   RAPT::rsArray::add(t, -1.0, t, h.numColumns);
 
-  Plotter::plotData(h.numColumns, t, h.m[0], h.m[1], h.m[2], h.m[3], h.m[4]);
+  plotData(h.numColumns, t, h.m[0], h.m[1], h.m[2], h.m[3], h.m[4]);
   //plotMagnitudeResponsesOf(h, 8192, -120.0, 10, oversampling, 1.0/oversampling);
 
   delete[] x;
@@ -373,7 +373,7 @@ void rotes::plotOneSidedInterpolatorPolyphaseResponses(int M, double shape, doub
     for(int n = M+1; n < inLength2; n++)
       hd.m[m][n] = RAPT::getDelayedSampleAsymmetricHermiteM(d[m], &x[n], M, shape);
   }
-  Plotter::plotData(hd.numColumns, t, hd.m[0], hd.m[1], hd.m[2], hd.m[3], hd.m[4]);
+  plotData(hd.numColumns, t, hd.m[0], hd.m[1], hd.m[2], hd.m[3], hd.m[4]);
   plotMagnitudeResponsesOf(hd, 8192, -60.0, 1);
 
   delete[] x;
@@ -528,7 +528,7 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
     magQ[n] = RAPT::rsMax(RAPT::rsAmpToDb(4 * magQ[n] * fftSize/length), plotFloor);
 
 
-  Plotter::plotData(600, frequencies, magL, magC, magQ);
+  plotData(600, frequencies, magL, magC, magQ);
 
 
     /*

@@ -150,92 +150,11 @@
         <FILE id="LuKnYL" name="jura_Callbacks.h" compile="0" resource="0"
               file="../../Libraries/JUCE/modules/jura_framework/control/jura_Callbacks.h"/>
         <FILE id="jygXVA" name="Shared.h" compile="0" resource="0" file="Source/Shared/Shared.h"/>
-        <GROUP id="{201E673D-AA9B-D76E-9C89-E7FCF6FE4A20}" name="Utilities">
-          <FILE id="P5YT2S" name="FileWriting.cpp" compile="0" resource="0" file="Source/Shared/Utilities/FileWriting.cpp"/>
-          <FILE id="S3nBXy" name="FileWriting.h" compile="0" resource="0" file="Source/Shared/Utilities/FileWriting.h"/>
-          <FILE id="AC22l8" name="PerformanceTestTools.cpp" compile="0" resource="0"
-                file="Source/Shared/Utilities/PerformanceTestTools.cpp"/>
-          <FILE id="flk1eu" name="PerformanceTestTools.h" compile="0" resource="0"
-                file="Source/Shared/Utilities/PerformanceTestTools.h"/>
-          <FILE id="dTQlI6" name="TestInputCreation.cpp" compile="0" resource="0"
-                file="Source/Shared/Utilities/TestInputCreation.cpp"/>
-          <FILE id="M3MA2g" name="TestInputCreation.h" compile="0" resource="0"
-                file="Source/Shared/Utilities/TestInputCreation.h"/>
-          <FILE id="UrfiMo" name="TestUtilities.cpp" compile="0" resource="0"
-                file="Source/Shared/Utilities/TestUtilities.cpp"/>
-          <FILE id="V9vOxM" name="TestUtilities.h" compile="0" resource="0" file="Source/Shared/Utilities/TestUtilities.h"/>
-        </GROUP>
         <GROUP id="{26F3386D-C17C-0FE0-E219-28AD9C050586}" name="RaptLibraryCode">
           <FILE id="oxwZnF" name="RaptInstantiations.cpp" compile="0" resource="0"
                 file="Source/Shared/RaptLibraryCode/RaptInstantiations.cpp"/>
           <FILE id="G9J9kL" name="RaptInstantiations.h" compile="0" resource="0"
                 file="Source/Shared/RaptLibraryCode/RaptInstantiations.h"/>
-        </GROUP>
-        <GROUP id="{2FD6D867-5BCE-6EA7-AA7A-0B678FC2D479}" name="Plotting">
-          <FILE id="HQfys9" name="rosic_Plotter.cpp" compile="0" resource="0"
-                file="Source/Shared/Plotting/rosic_Plotter.cpp"/>
-          <FILE id="pVGgqG" name="rosic_Plotter.h" compile="0" resource="0" file="Source/Shared/Plotting/rosic_Plotter.h"/>
-        </GROUP>
-        <GROUP id="{809E6B65-DC9E-FA2F-B4F0-C29F9B4AED03}" name="Prototypes">
-          <GROUP id="{DC7D8DE9-3939-AE39-ECFF-0EB6C702A79E}" name="FilterDesign">
-            <FILE id="WfcLdF" name="ComplementaryFilters.cpp" compile="0" resource="0"
-                  file="Source/Shared/Prototypes/FilterDesign/ComplementaryFilters.cpp"/>
-            <FILE id="QdGFtd" name="ComplementaryFilters.h" compile="0" resource="0"
-                  file="Source/Shared/Prototypes/FilterDesign/ComplementaryFilters.h"/>
-            <FILE id="NkGR34" name="NonUniformFilter.cpp" compile="0" resource="0"
-                  file="Source/Shared/Prototypes/FilterDesign/NonUniformFilter.cpp"/>
-            <FILE id="XKm8e1" name="NonUniformFilter.h" compile="0" resource="0"
-                  file="Source/Shared/Prototypes/FilterDesign/NonUniformFilter.h"/>
-            <FILE id="JmP55w" name="PoleZeroDesignerAnalog.cpp" compile="0" resource="0"
-                  file="Source/Shared/Prototypes/FilterDesign/PoleZeroDesignerAnalog.cpp"/>
-            <FILE id="cYHXM9" name="PoleZeroDesignerAnalog.h" compile="0" resource="0"
-                  file="Source/Shared/Prototypes/FilterDesign/PoleZeroDesignerAnalog.h"/>
-            <FILE id="e65VR8" name="PoleZeroDesignerDigital.cpp" compile="0" resource="0"
-                  file="Source/Shared/Prototypes/FilterDesign/PoleZeroDesignerDigital.cpp"/>
-            <FILE id="FMydt4" name="PoleZeroDesignerDigital.h" compile="0" resource="0"
-                  file="Source/Shared/Prototypes/FilterDesign/PoleZeroDesignerDigital.h"/>
-            <FILE id="uiuXCB" name="PoleZeroMapper.cpp" compile="0" resource="0"
-                  file="Source/Shared/Prototypes/FilterDesign/PoleZeroMapper.cpp"/>
-            <FILE id="dto2e6" name="PoleZeroMapper.h" compile="0" resource="0"
-                  file="Source/Shared/Prototypes/FilterDesign/PoleZeroMapper.h"/>
-            <FILE id="AnbxrF" name="PoleZeroPrototype.cpp" compile="0" resource="0"
-                  file="Source/Shared/Prototypes/FilterDesign/PoleZeroPrototype.cpp"/>
-            <FILE id="VuxUbX" name="PoleZeroPrototype.h" compile="0" resource="0"
-                  file="Source/Shared/Prototypes/FilterDesign/PoleZeroPrototype.h"/>
-          </GROUP>
-          <FILE id="rbHd45" name="Drawing.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Drawing.cpp"/>
-          <FILE id="MGiDaH" name="Drawing.h" compile="0" resource="0" file="Source/Shared/Prototypes/Drawing.h"/>
-          <FILE id="BiN3xa" name="FiniteAutomaton.cpp" compile="0" resource="0"
-                file="Source/Shared/Prototypes/FiniteAutomaton.cpp"/>
-          <FILE id="siWyu0" name="FiniteAutomaton.h" compile="0" resource="0"
-                file="Source/Shared/Prototypes/FiniteAutomaton.h"/>
-          <FILE id="nOJxxx" name="Ideas.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Ideas.cpp"/>
-          <FILE id="vFcTlP" name="Ideas.h" compile="0" resource="0" file="Source/Shared/Prototypes/Ideas.h"/>
-          <FILE id="kZGzyT" name="ParticleBouncer.cpp" compile="0" resource="0"
-                file="Source/Shared/Prototypes/ParticleBouncer.cpp"/>
-          <FILE id="TSNqal" name="ParticleBouncer.h" compile="0" resource="0"
-                file="Source/Shared/Prototypes/ParticleBouncer.h"/>
-          <FILE id="ouIafZ" name="ParticleSystem.cpp" compile="0" resource="0"
-                file="Source/Shared/Prototypes/ParticleSystem.cpp"/>
-          <FILE id="wa7Bex" name="ParticleSystem.h" compile="0" resource="0"
-                file="Source/Shared/Prototypes/ParticleSystem.h"/>
-          <FILE id="hphf4A" name="Polygon.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Polygon.cpp"/>
-          <FILE id="tyyxCw" name="Polygon.h" compile="0" resource="0" file="Source/Shared/Prototypes/Polygon.h"/>
-          <FILE id="aRqizX" name="Probability.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Probability.cpp"/>
-          <FILE id="a2O8pi" name="Probability.h" compile="0" resource="0" file="Source/Shared/Prototypes/Probability.h"/>
-          <FILE id="edu0Jv" name="Projection3Dto2D.cpp" compile="0" resource="0"
-                file="Source/Shared/Prototypes/Projection3Dto2D.cpp"/>
-          <FILE id="brWXSO" name="Projection3Dto2D.h" compile="0" resource="0"
-                file="Source/Shared/Prototypes/Projection3Dto2D.h"/>
-          <FILE id="BgSGtz" name="Prototypes.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Prototypes.cpp"/>
-          <FILE id="Pe1gBO" name="Prototypes.h" compile="0" resource="0" file="Source/Shared/Prototypes/Prototypes.h"/>
-          <FILE id="cwWYDw" name="ReadMe.txt" compile="0" resource="0" file="Source/Shared/Prototypes/ReadMe.txt"/>
-          <FILE id="bBS3vJ" name="SinusoidalModeling.cpp" compile="0" resource="0"
-                file="Source/Shared/Prototypes/SinusoidalModeling.cpp"/>
-          <FILE id="nSHhWW" name="SinusoidalModeling.h" compile="0" resource="0"
-                file="Source/Shared/Prototypes/SinusoidalModeling.h"/>
-          <FILE id="u50Oe6" name="Tensor.cpp" compile="0" resource="0" file="Source/Shared/Prototypes/Tensor.cpp"/>
-          <FILE id="FEh1t3" name="Tensor.h" compile="0" resource="0" file="Source/Shared/Prototypes/Tensor.h"/>
         </GROUP>
       </GROUP>
       <GROUP id="{F7076C47-6EF8-D26D-C723-89FE096AF36F}" name="rosic_tests">

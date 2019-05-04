@@ -230,73 +230,7 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Shared.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Utilities\FileWriting.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Utilities\PerformanceTestTools.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Utilities\TestInputCreation.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Utilities\TestUtilities.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\ComplementaryFilters.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\NonUniformFilter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerAnalog.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerDigital.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroMapper.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroPrototype.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Drawing.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Ideas.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Polygon.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Probability.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Projection3Dto2D.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Prototypes.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\SinusoidalModeling.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Tensor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.cpp">
@@ -2035,6 +1969,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\RandomNumberGenerator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\rosic_Plotter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\SampleLauncher.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2431,29 +2368,7 @@
     <ClInclude Include="..\..\Source\Experiments\Experiments.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Callbacks.h"/>
     <ClInclude Include="..\..\Source\Shared\Shared.h"/>
-    <ClInclude Include="..\..\Source\Shared\Utilities\FileWriting.h"/>
-    <ClInclude Include="..\..\Source\Shared\Utilities\PerformanceTestTools.h"/>
-    <ClInclude Include="..\..\Source\Shared\Utilities\TestInputCreation.h"/>
-    <ClInclude Include="..\..\Source\Shared\Utilities\TestUtilities.h"/>
     <ClInclude Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.h"/>
-    <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\ComplementaryFilters.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\NonUniformFilter.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerAnalog.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerDigital.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroMapper.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroPrototype.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\Drawing.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\Ideas.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\Polygon.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\Probability.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\Projection3Dto2D.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\Prototypes.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\SinusoidalModeling.h"/>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\Tensor.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Array.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Flags.h"/>
@@ -3090,6 +3005,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\PrimeNumbers.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\ProductIndices.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\RandomNumberGenerator.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\rosic_Plotter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\SampleLauncher.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\SampleLauncherDefinitions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\SampleLauncherVoice.h"/>
@@ -3221,7 +3137,6 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Source\Shared\Prototypes\ReadMe.txt"/>
     <None Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ConicsURLs.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\License.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\ReadMe.txt"/>

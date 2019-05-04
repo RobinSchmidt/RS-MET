@@ -2,7 +2,7 @@
 using namespace rotes;
 
 //#include "rosic/rosic.h"
-#include "../Shared/Plotting/rosic_Plotter.h"
+//#include "../Shared/Plotting/rosic_Plotter.h"
 using namespace rosic;
 
 void rotes::testOscilloscopeBuffer()
@@ -72,6 +72,7 @@ void rotes::testOscilloscopeBuffer()
     }
   }
 
-  Plotter::plotData(2*W, oscBuf.getTimeAxis(), xb);
-  //Plotter::plotData(2*W, tb, xb);
+
+  plotData(2*W, oscBuf.getTimeAxis(), xb);
+  //plotData(2*W, tb, xb);
 }

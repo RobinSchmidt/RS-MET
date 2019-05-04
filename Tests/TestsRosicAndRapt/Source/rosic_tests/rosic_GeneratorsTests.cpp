@@ -2,7 +2,7 @@
 using namespace rotes;
 
 //#include "rosic/rosic.h"
-#include "../Shared/Plotting/rosic_Plotter.h"
+//#include "../Shared/Plotting/rosic_Plotter.h"
 //#include "../Shared/Plotting/GNUPlotter.h"
 
 
@@ -48,7 +48,7 @@ void rotes::testOscillatorStereo()
   osc.getWaveformForDisplay(plotData2, plotLength);
 
 
-  Plotter::plotData(plotLength, plotIndices, plotData1[0], plotData2[0]);
+  plotData(plotLength, plotIndices, plotData1[0], plotData2[0]);
 }
 
 void rotes::testLorentzSystem()
@@ -69,7 +69,7 @@ void rotes::testLorentzSystem()
   }
 
   RAPT::rsArray::fillWithIndex(t, N);
-  Plotter::plotData(N, t, x, y, z);
+  plotData(N, t, x, y, z);
 }
 
 bool rotes::testSnowflake()

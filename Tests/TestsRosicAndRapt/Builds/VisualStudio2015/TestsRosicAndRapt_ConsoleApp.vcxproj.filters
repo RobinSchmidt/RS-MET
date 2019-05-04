@@ -29,20 +29,8 @@
     <Filter Include="TestsRosicAndRapt\Source\Experiments">
       <UniqueIdentifier>{3633CBBB-4131-891C-C1F4-3ED8BC96C23B}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TestsRosicAndRapt\Source\Shared\Utilities">
-      <UniqueIdentifier>{3F365C0A-AC3F-F4D3-7955-61F9C6B6F87F}</UniqueIdentifier>
-    </Filter>
     <Filter Include="TestsRosicAndRapt\Source\Shared\RaptLibraryCode">
       <UniqueIdentifier>{95070EE3-27AC-09B9-6822-08483E9693C9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TestsRosicAndRapt\Source\Shared\Plotting">
-      <UniqueIdentifier>{2CDC542A-DB2E-9525-1B3C-3EF43EFE347F}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign">
-      <UniqueIdentifier>{BAAFBC05-9F2F-ACF4-AC49-EDF477279AB6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TestsRosicAndRapt\Source\Shared\Prototypes">
-      <UniqueIdentifier>{1F11B7F2-6C77-FAF9-7328-DDEE1DD2B957}</UniqueIdentifier>
     </Filter>
     <Filter Include="TestsRosicAndRapt\Source\Shared">
       <UniqueIdentifier>{0F45AEA0-E94D-18ED-0EF6-EDFEF2882D6B}</UniqueIdentifier>
@@ -475,74 +463,8 @@
     <ClCompile Include="..\..\Source\Shared\Shared.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Utilities\FileWriting.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Utilities\PerformanceTestTools.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Utilities\TestInputCreation.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Utilities\TestUtilities.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\RaptLibraryCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\ComplementaryFilters.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\NonUniformFilter.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerAnalog.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerDigital.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroMapper.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroPrototype.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Drawing.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Ideas.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Polygon.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Probability.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Projection3Dto2D.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Prototypes.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\SinusoidalModeling.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Prototypes\Tensor.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
@@ -2287,6 +2209,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\RandomNumberGenerator.cpp">
       <Filter>JUCE Modules\rosic\legacy</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\rosic_Plotter.cpp">
+      <Filter>JUCE Modules\rosic\legacy</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\SampleLauncher.cpp">
       <Filter>JUCE Modules\rosic\legacy</Filter>
     </ClCompile>
@@ -2763,74 +2688,8 @@
     <ClInclude Include="..\..\Source\Shared\Shared.h">
       <Filter>TestsRosicAndRapt\Source\Shared</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Utilities\FileWriting.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Utilities\PerformanceTestTools.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Utilities\TestInputCreation.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Utilities\TestUtilities.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.h">
       <Filter>TestsRosicAndRapt\Source\Shared\RaptLibraryCode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\ComplementaryFilters.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\NonUniformFilter.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerAnalog.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroDesignerDigital.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroMapper.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\FilterDesign\PoleZeroPrototype.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes\FilterDesign</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\Drawing.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\FiniteAutomaton.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\Ideas.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\Polygon.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\Probability.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\Projection3Dto2D.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\Prototypes.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\SinusoidalModeling.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Prototypes\Tensor.h">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
@@ -4740,6 +4599,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\RandomNumberGenerator.h">
       <Filter>JUCE Modules\rosic\legacy</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\rosic_Plotter.h">
+      <Filter>JUCE Modules\rosic\legacy</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\SampleLauncher.h">
       <Filter>JUCE Modules\rosic\legacy</Filter>
     </ClInclude>
@@ -5129,9 +4991,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Source\Shared\Prototypes\ReadMe.txt">
-      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
-    </None>
     <None Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ConicsURLs.txt">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
     </None>

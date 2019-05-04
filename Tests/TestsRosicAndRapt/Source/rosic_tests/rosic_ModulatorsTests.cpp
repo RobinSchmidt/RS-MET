@@ -2,7 +2,7 @@
 using namespace rotes;
 
 //#include "rosic/rosic.h"
-#include "../Shared/Plotting/rosic_Plotter.h"
+//#include "../Shared/Plotting/rosic_Plotter.h"
 using namespace rosic;
 
 void rotes::testConsecutiveExponentialDecay()
@@ -38,7 +38,7 @@ void rotes::testConsecutiveExponentialDecay()
   //ste
 
 
-  Plotter::plotData(numSamples, indices, impulseResponse, stepResponse);
+  plotData(numSamples, indices, impulseResponse, stepResponse);
 
 
 
@@ -89,6 +89,6 @@ void rotes::testConsecutiveExponentialDecay()
   osc.getWaveformForDisplay(plotData2, plotLength);
 
 
-  Plotter::plotData(plotLength, plotIndices, plotData1[0], plotData2[0]);
+  plotData(plotLength, plotIndices, plotData1[0], plotData2[0]);
   */
 }

@@ -2,7 +2,7 @@
 using namespace rotes;
 
 //#include "rosic/rosic.h"
-#include "../Shared/Plotting/rosic_Plotter.h"
+//#include "../Shared/Plotting/rosic_Plotter.h"
 using namespace rosic;
 
 void rotes::testSlewRateLimiterLinear()
@@ -39,5 +39,5 @@ void rotes::testSlewRateLimiterLinear()
     y[n] = slewRateLimiter.getSample(x[n]);
 
 
-  Plotter::plotData(N, t, x, y);
+  plotData(N, t, x, y);
 }

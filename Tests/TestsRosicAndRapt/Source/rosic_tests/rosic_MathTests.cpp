@@ -1,7 +1,7 @@
 #include "rosic_MathTests.h"
 using namespace rotes;
 
-#include "../Shared/Plotting/rosic_Plotter.h"
+//#include "../Shared/Plotting/rosic_Plotter.h"
 using namespace rosic;
 
 bool rotes::testComplexSqrt()
@@ -297,7 +297,7 @@ void rotes::testLinLogEquationSolver()
   {
     x[n] = rosic::solveLinLogEquation(a, b, -y[n]);
   }
-  Plotter::plotData(N, y, x);
+  plotData(N, y, x);
 }
 
 void rotes::testLinLogEquationSolverOld()
@@ -337,7 +337,7 @@ void rotes::testLinLogEquationSolverOld()
     yLog[n] = log(x[n]);       // logarithmic part
     y[n]    = yLin[n] + yLog[n];  // the sum of both parts
   }
-  Plotter::plotData(N, x, y, yLin, yLog);
+  plotData(N, x, y, yLin, yLog);
 
   /*
   // x as function of y:

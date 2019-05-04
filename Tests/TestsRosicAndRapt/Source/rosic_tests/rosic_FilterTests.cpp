@@ -2,7 +2,7 @@
 using namespace rotes;
 
 //#include "rosic/rosic.h"
-#include "../Shared/Plotting/rosic_Plotter.h"
+//#include "../Shared/Plotting/rosic_Plotter.h"
 using namespace rosic;
 
 template<class T>
@@ -22,7 +22,7 @@ void plotImpulseResponse(T &module, int N, double fs)
 
   RAPT::rsArray::fillWithRangeLinear(t, N, 0.0, (N-1)/fs);
   getImpulseResponse(module, h, N);
-  Plotter::plotData(N, t, h);
+  plotData(N, t, h);
 
   delete[] t;
   delete[] h;
@@ -104,7 +104,7 @@ void rotes::testLadderFilter()
   for(n = 2*N/3; n < N; n++)
     y[n] = ladder.getSampleTest(x[n]);
 
-  Plotter::plotData(N, t, x, y);
+  plotData(N, t, x, y);
 
 
 
@@ -151,8 +151,8 @@ void rotes::testModalFilter()
     h2[n] = mf2.getSample(0.0);
   }
 
-  Plotter::plotData(N, t, h, h2);
-  //Plotter::plotData(N, t, h2);
+  plotData(N, t, h, h2);
+  //plotData(N, t, h2);
 
 
   writeImpulseResponseToFile("d:\\TmpData\\ModalImpulseResponse.wav", mf2, (int)fs, (int)fs, 16);
@@ -218,8 +218,8 @@ void rotes::testBiquadPhasePlot()
   rosic::rsFilterAnalyzerD::getBiquadCascadePhaseResponse(b0, b1, b2, a1, a2, numBiquads, w, p, numBins, false);
 
   // plot the (magnitude- and) phase response:
-  Plotter::plotData(numBins, w, p);
-  //Plotter::plotData(numBins, w, m, p);
+  plotData(numBins, w, p);
+  //plotData(numBins, w, m, p);
 }
 
 void rotes::testFiniteImpulseResponseDesigner()
@@ -283,10 +283,10 @@ void rotes::testFiniteImpulseResponseDesigner()
   RAPT::rsArray::clipBuffer(magnitudes2, fftLength, -200.0, 10.0);
 
 
-  //Plotter::plotData(fftLength/2, frequencies, magnitudes1, magnitudes2, magnitudes3, magnitudes4, magnitudes5);
-  //Plotter::plotData(fftLength/2, frequencies, magnitudes4, magnitudes5); // Hann vs cos^2
-  //Plotter::plotData(fftLength/2, frequencies, magnitudes4, magnitudes2);   // Hann vs Blackman
-  Plotter::plotData(fftLength/2, frequencies, magnitudes2);   // Blackman
+  //plotData(fftLength/2, frequencies, magnitudes1, magnitudes2, magnitudes3, magnitudes4, magnitudes5);
+  //plotData(fftLength/2, frequencies, magnitudes4, magnitudes5); // Hann vs cos^2
+  //plotData(fftLength/2, frequencies, magnitudes4, magnitudes2);   // Hann vs Blackman
+  plotData(fftLength/2, frequencies, magnitudes2);   // Blackman
 
 
 
@@ -431,7 +431,7 @@ void rotes::testFilterAnalyzer()
   RAPT::rsArray::clipBuffer(magnitudes, numBins, -60.0, 20.0);
 
 
-  Plotter::plotData(numBins, frequencies, magnitudes);
+  plotData(numBins, frequencies, magnitudes);
 
   int dummy = 0;
 }
@@ -477,7 +477,7 @@ void rotes::testBiquadCascade()
   biquadCascade.getMagnitudeResponse(omegas, magnitudes, numBins, true, true);
 
 
-  Plotter::plotData(numBins, frequencies, magnitudes, phases);
+  plotData(numBins, frequencies, magnitudes, phases);
 
   int dummy = 0;
 }
@@ -860,7 +860,7 @@ void rotes::testSlopeFilter()
   for(n=0; n<length; n++)
     decibels[n] = RAPT::rsAmpToDb(length*magnitudes[n]);
 
-  Plotter::plotData(length/4, frequencies, decibels); 
+  plotData(length/4, frequencies, decibels); 
 
 
   int dummy = 0;
@@ -1051,7 +1051,7 @@ void rotes::testEngineersFilter()
   filter.reset();
   for(n = 0; n < numSamples; n++)
     stepResp[n] = filter.getSample(1.0);
-  Plotter::plotData(numSamples, timeAxis, impResp, stepResp);
+  plotData(numSamples, timeAxis, impResp, stepResp);
 
   // todo: maybe plot magnitude, phase, phase-delay, group-delay, poles/zeros, etc. also
 }
