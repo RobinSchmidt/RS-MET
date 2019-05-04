@@ -670,4 +670,35 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericAudioModuleEditor)
 };
 
+//=================================================================================================
+
+/** A subclass of AudioModuleEditor for sample-based audio modules, like sample-players, 
+wavetable-oscillators, etc. It has additional widgets for loading a sample-file and skipping 
+forward/backward through sample files in the current directory. */
+
+class SampleBasedAudioModuleEditor : public AudioModuleEditor, public AudioFileManager
+{
+
+public:
+
+  SampleBasedAudioModuleEditor(AudioModule* newModuleToEdit);
+
+  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+
+  // do we need to override 
+  //virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
+  // to update the sampleFileLabel?
+
+protected:
+
+  virtual void createWidgets();
+
+  RTextField *sampleFileLabel;
+  RButton    *sampleLoadButton, *samplePlusButton, *sampleMinusButton;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SampleBasedAudioModuleEditor)
+};
+
+
+
 #endif 

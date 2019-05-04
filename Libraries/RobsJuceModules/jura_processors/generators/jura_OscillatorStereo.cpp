@@ -754,13 +754,19 @@ int dummy = 0;
 // construction/destruction:
 
 WaveOscEditor::WaveOscEditor(CriticalSection *newPlugInLock,
-  WaveOscModule* newWaveOscModule)
-  : AudioModuleEditor(newWaveOscModule)
+  WaveOscModule* newWaveOscModule) : SampleBasedAudioModuleEditor(newWaveOscModule)
 {
   // init the pointer to the modulator to be edited to NULL:
   oscillatorToEdit = NULL;
   jassert( newWaveOscModule != NULL );
   createWidgets();
+
+  // overwrite the descriptions of the inherited sample-load widgets:
+  //sampleFileLabel->setDescription("Name of the currently loaded single cycle audio file");  // too long for gui
+  sampleFileLabel->setDescription("Name of the currently loaded waveform");
+  sampleLoadButton->setDescription("Load a waveform");
+  samplePlusButton->setDescription("Next waveform in current directory");
+  sampleMinusButton->setDescription("Previous waveform in current directory");
 
   // maybe create this only when needed and init to nullptr:
   contextMenu = new WaveOscEditorContextMenu(newWaveOscModule, this);
@@ -806,18 +812,12 @@ WaveOscEditor::~WaveOscEditor()
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // callbacks:
 
-void WaveOscEditor::rButtonClicked(RButton *buttonThatWasClicked)
+void WaveOscEditor::rButtonClicked(RButton *b)
 {
   if( oscillatorToEdit == NULL )
     return;
 
-  if( buttonThatWasClicked == wavePlusButton )
-    AudioFileManager::loadNextFile();
-  else if( buttonThatWasClicked == waveMinusButton )
-    AudioFileManager::loadPreviousFile();
-  else if( buttonThatWasClicked == waveLoadButton )
-    AudioFileManager::openLoadingDialog();
-  else if( buttonThatWasClicked == moreButton )
+  if( b == moreButton )
   {
     if( moreButton->getToggleState() == true )
     {
@@ -838,11 +838,13 @@ void WaveOscEditor::rButtonClicked(RButton *buttonThatWasClicked)
     }
     return;
   }
-  else if( buttonThatWasClicked == contextMenu->closeButton )
+  else if( b == contextMenu->closeButton )
   {
     moreButton->setToggleState(false, true);
     return;
   }
+  else
+    SampleBasedAudioModuleEditor::rButtonClicked(b); // it was one of the inherited buttons
 
 
   moduleToEdit->markStateAsDirty();
@@ -926,18 +928,18 @@ void WaveOscEditor::resized()
   w = getWidth()-x;
   y += 16;
   x = getWidth()-20;
-  wavePlusButton->setBounds( x, y, 16, 16); x -= 14;
-  waveMinusButton->setBounds(x, y, 16, 16); x = waveMinusButton->getX()-40+2;
-  waveLoadButton->setBounds( x, y, 40, 16);
+  samplePlusButton->setBounds( x, y, 16, 16); x -= 14;
+  sampleMinusButton->setBounds(x, y, 16, 16); x = sampleMinusButton->getX()-40+2;
+  sampleLoadButton->setBounds( x, y, 40, 16);
 
   x = 0;
-  y = waveLoadButton->getY();
-  w = waveLoadButton->getX();
+  y = sampleLoadButton->getY();
+  w = sampleLoadButton->getX();
   h = getHeight() - y;
   waveformDisplay->setBounds(x, y, w-4, h);
   //waveformDisplay->setBounds(x, y, 160, h);  // for debug test
   emptyDisplay->setBounds(waveformDisplay->getBounds());
-  waveFileLabel->setBounds(0, waveformDisplay->getY()-16+2, w-4, 16);
+  sampleFileLabel->setBounds(0, waveformDisplay->getY()-16+2, w-4, 16);
 
   /*
   contextMenuViewport->setBounds(waveformDisplay->getBounds());
@@ -948,7 +950,7 @@ void WaveOscEditor::resized()
 
   x = waveformDisplay->getRight();
   w = getWidth()-x;
-  y = waveLoadButton->getBottom()-4;
+  y = sampleLoadButton->getBottom()-4;
   levelSlider->setBounds(x+4, y+4, w-8, 32); y += 32;
   tuneSlider->setBounds(x+4, y+4, w-8, 32);  y += 34;
   pitchModulationSlider->setBounds(x+4, y+4, w-8, 16);
@@ -1014,26 +1016,6 @@ void WaveOscEditor::createWidgets()
   addAndMakeVisible(contextMenuViewport);
   */
 
-  addWidget( waveFileLabel = new RTextField() );
-  waveFileLabel->setNoBackgroundAndOutline(true);
-  waveFileLabel->setJustification(Justification::centredBottom);
-  waveFileLabel->setDescription(juce::String("Name of the currently loaded single cycle audiofile"));
-
-  addWidget( waveLoadButton = new RButton(juce::String("Load")) );
-  waveLoadButton->addRButtonListener(this);
-  waveLoadButton->setDescription(juce::String("Load a waveform"));
-  waveLoadButton->setClickingTogglesState(false);
-
-  addWidget( wavePlusButton = new RButton(RButton::ARROW_RIGHT) );
-  wavePlusButton->addRButtonListener(this);
-  wavePlusButton->setDescription(juce::String("Next waveform in current directory"));
-  wavePlusButton->setClickingTogglesState(false);
-
-  addWidget( waveMinusButton = new RButton(RButton::ARROW_LEFT) );
-  waveMinusButton->addRButtonListener(this);
-  waveMinusButton->setDescription(juce::String("Previous waveform in current directory"));
-  waveMinusButton->setClickingTogglesState(false);
-
   addWidget( moreButton = new RButton(juce::String("More")) );
   moreButton->addRButtonListener(this);
   moreButton->setDescription(juce::String("Open/close context menu with more options"));
@@ -1077,7 +1059,7 @@ void WaveOscEditor::updatePlot()
       fileName = fileName.fromLastOccurrenceOf("\\", false, false);
     if( fileName.contains("/") )
       fileName = fileName.fromLastOccurrenceOf("/", false, false);
-    waveFileLabel->setText(fileName);
+    sampleFileLabel->setText(fileName);
 
 
     // ToDo: include a setActiveDirectory method in the FileManager class....
@@ -1103,14 +1085,14 @@ void WaveOscEditor::updateWidgetVisibility()
   if( oscillatorToEdit == NULL )
     return;
 
-  waveLoadButton->setVisible(        !oscillatorToEdit->isMuted() );
-  wavePlusButton->setVisible(        !oscillatorToEdit->isMuted() );
-  waveMinusButton->setVisible(       !oscillatorToEdit->isMuted() );
+  sampleLoadButton->setVisible(      !oscillatorToEdit->isMuted() );
+  samplePlusButton->setVisible(      !oscillatorToEdit->isMuted() );
+  sampleMinusButton->setVisible(     !oscillatorToEdit->isMuted() );
+  sampleFileLabel->setVisible(       !oscillatorToEdit->isMuted() );
   moreButton->setVisible(            !oscillatorToEdit->isMuted() );
   levelSlider->setVisible(           !oscillatorToEdit->isMuted() );
   tuneSlider->setVisible(            !oscillatorToEdit->isMuted() );
   pitchModulationSlider->setVisible( !oscillatorToEdit->isMuted() );
-  waveFileLabel->setVisible(         !oscillatorToEdit->isMuted() );
   waveformDisplay->setVisible(       !oscillatorToEdit->isMuted() );
   emptyDisplay->setVisible(           oscillatorToEdit->isMuted() );
 }
@@ -1139,7 +1121,7 @@ bool WaveOscEditor::setAudioData(AudioSampleBuffer* newBuffer,
     char* fileNameC = toZeroTerminatedString(relativePath);
     oscillatorToEdit->waveTable->setSampleName(fileNameC);
     delete[] fileNameC;
-    waveFileLabel->setText(underlyingFile.getFileName());
+    sampleFileLabel->setText(underlyingFile.getFileName());
     updatePlot();
     return true;
   }

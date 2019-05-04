@@ -1138,3 +1138,41 @@ void GenericAudioModuleEditor::createWidgets()
     }
   }
 }
+
+//=================================================================================================
+
+SampleBasedAudioModuleEditor::SampleBasedAudioModuleEditor(AudioModule* newModuleToEdit) 
+  : AudioModuleEditor(newModuleToEdit)
+{
+  createWidgets();
+}
+
+void SampleBasedAudioModuleEditor::rButtonClicked(RButton *b)
+{
+  if(     b == samplePlusButton)  AudioFileManager::loadNextFile();
+  else if(b == sampleMinusButton) AudioFileManager::loadPreviousFile();
+  else if(b == sampleLoadButton)  AudioFileManager::openLoadingDialog();
+}
+
+void SampleBasedAudioModuleEditor::createWidgets()
+{
+  addWidget( sampleFileLabel = new RTextField() );
+  sampleFileLabel->setNoBackgroundAndOutline(true);
+  sampleFileLabel->setJustification(Justification::centredBottom);
+  sampleFileLabel->setDescription("Name of the currently loaded audio file");
+
+  addWidget( sampleLoadButton = new RButton("Load") );
+  sampleLoadButton->addRButtonListener(this);
+  sampleLoadButton->setDescription("Load audio file");
+  sampleLoadButton->setClickingTogglesState(false);
+
+  addWidget( samplePlusButton = new RButton(RButton::ARROW_RIGHT) );
+  samplePlusButton->addRButtonListener(this);
+  samplePlusButton->setDescription("Load next audio file in current directory");
+  samplePlusButton->setClickingTogglesState(false);
+
+  addWidget( sampleMinusButton = new RButton(RButton::ARROW_LEFT) );
+  sampleMinusButton->addRButtonListener(this);
+  sampleMinusButton->setDescription("Load previous audio file in current directory");
+  sampleMinusButton->setClickingTogglesState(false);
+}

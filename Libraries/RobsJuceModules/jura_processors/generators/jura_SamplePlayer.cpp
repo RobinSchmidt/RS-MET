@@ -3,6 +3,13 @@
 
 // ToDo:
 // -fix sample load directory 
+// factor out 
+
+// class SampleModuleEditor : public AudioModuleEditor, public AudioFileManager
+// and derive SamplePlayerModuleEditor and WaveOscEditor from it
+// it should contain the sampleLoad/Plus/Minus buttons
+
+
 // -check, how the recall of the sample works for the WaveOsc and do it here the same way 
 // -maybe factor out a common baseclass to consolidate the code for saving and recalling the 
 //  sample-path (SampleBasedAudioModule or something) 

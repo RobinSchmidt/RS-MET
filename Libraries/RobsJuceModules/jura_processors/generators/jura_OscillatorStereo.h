@@ -198,8 +198,7 @@ protected:
 
 /** Editor for the WaveOsc */
 
-class WaveOscEditor : virtual public AudioModuleEditor, public AudioFileManager,
-  public RSliderListener
+class WaveOscEditor : public SampleBasedAudioModuleEditor, public RSliderListener
 {
 
 public:
@@ -253,8 +252,7 @@ public:
   WaveOscEditorContextMenu *contextMenu;
   //Viewport *contextMenuViewport;
 
-  RTextField   *waveFileLabel;
-  RButton      *waveLoadButton, *wavePlusButton, *waveMinusButton, *moreButton;
+  RButton      *moreButton;
   RSlider      *levelSlider, *pitchModulationSlider;
   TuningSlider *tuneSlider;
     // remove the pitch-modulation slider - let it remain visible only for straightliner
