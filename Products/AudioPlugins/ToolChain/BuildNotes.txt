@@ -1,0 +1,23 @@
+It should be possible to build the standalone version of ToolChain out-of-the box, but to support 
+builds for the various plugin formats, it may be necessarry to tweak the .jucer file via the 
+Projucer app to set up the appropriate plugin sdk paths and then re-export the build systems. On
+my own machine, i have set it up to support building a vst2 plugin. To make that work, i had to add
+
+../../../../../../RS-Private/Libaries/vstsdk2.4
+
+to the "Header Search Paths" field in the main configuration of the jucer file. Obviously, the 
+build relies on having that folder available. The RS-Private folder must sit right next to the main 
+RS-MET folder and the long chain of "directory-ups" is due to the fact that the sdk files are 
+included like this:
+
+#include <pluginterfaces/vst2.x/aeffect.h>
+#include <pluginterfaces/vst2.x/aeffectx.h>
+
+from juce_VSTPluginFormat.cpp and the header search path is a relative path with respect to the 
+directory where *that* file resides. However, as the name suggests, "RS-Private" is my private repo 
+which contains stuff, i'm not allowed to redistribute and the vst2 sdk unfortunately belongs to 
+these non-redistributable things. So to actually build it, you need to set your own vst2 sdk path 
+there or create a dummy version of the RS-Private folder on your machine and put (a copy of) the 
+vst2 sdk (which you have to obtain from somewhere) into the appropriate place. And/or your may 
+disable vst2 support and enable vst3 instead - in which case you will need to install the vst3 sdk
+(which you may obtain from steinberg) and add the appropriate vst3 search path.

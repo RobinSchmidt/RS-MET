@@ -1,4 +1,23 @@
 To make it work, i had to tweak/hack the juce library a bit:
 
--juce_PushNotifications.h, line 284: added an "#undef small"
 -juce_Image.h: removed "final" declaration from class
+
+
+
+to update to a new version of juce, the follwoing steps are necessarry:
+-download latest version of juce
+-create a new git branch and switch to it
+-replace content of the JUCE/modules folder (maybe keep the juce_VSTInterface.h)
+-replace Projucer code and make it build (don't copy the JUCECompileEngine.dll)
+ -making it build requires to set the juce module path and re-generate the IDE 
+  project with the projucer itself (a binary version is usally included in the 
+  juce distribution) 
+ -changing the path involves setting it for one module, clicking on the 
+  gear-symbol and then taking over that path for all other modules
+-re-create projects for TestPluginJuce with the new projucer and make it build
+ -juce::Image final declaration has to be removed (i have subclasses of it)
+ -this will compile jura_framework
+-make ToolChain build
+-replace the PluginHost code and make it build
+-merge the update branch with the master branch
+
