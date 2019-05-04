@@ -28,13 +28,18 @@ public:
   AudioModuleEditor *createEditor(int type) override;
  
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
-    // obsolete?
+
+  // i think, these 3 are obsolete - todo: check, how the recall of the sample works for the
+  // WaveOsc and do it here the same way - maybe factor out a common baseclass to consolidate the
+  // code for saving and recalling the sample-path (SampleBasedAudioModule or something)
+
+  //virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean) override;
 
   virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
+ 
 
   //---------------------------------------------------------------------------------------------
   // audio processing:
@@ -72,7 +77,7 @@ protected:
   rosic::SamplePlayer *wrappedSamplePlayer = nullptr;
   bool wrappedSamplePlayerOwned = false;
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplePlayerAudioModule)
 };
 
 //=================================================================================================
@@ -194,7 +199,8 @@ protected:
   /**< Pointer to the rosic::SamplePlaybackParameters which hold the playback info (loop 
   settings etc.). */
 
-  juce_UseDebuggingNewOperator;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplePlayerEditorDisplay)
 };
 
 //=================================================================================================
@@ -242,13 +248,14 @@ public:
   RTextField *ampHeadline, *tuningHeadline, *timeHeadline, *filterHeadline, *miscHeadline;
 
   //=============================================================================================
-  juce_UseDebuggingNewOperator;
 
 protected:
 
   /** Pointer to the actual SamplePlayerAudioModule object which is being edited. */
   SamplePlayerAudioModule* samplePlayerModuleToEdit;
 
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplePlayerEditorContextMenu)
 };
 
 
@@ -361,7 +368,8 @@ protected:
   // some rectangles to define functional groups:
   juce::Rectangle<int> fileRectangle, loopRectangle;
 
-  juce_UseDebuggingNewOperator;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplePlayerModuleEditor)
 };
 
 
