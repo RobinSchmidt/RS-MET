@@ -5,7 +5,6 @@
 WaveOscModule::WaveOscModule(CriticalSection *newPlugInLock,
   rosic::OscillatorStereo *oscToWrap) : AudioModuleWithMidiIn(newPlugInLock)
 {
-  //jassert( newOscillatorStereoToWrap != NULL ); // you must pass a valid rosic-object to the constructor
   if(oscToWrap == nullptr) {
     wrappedOsc = new rosic::OscillatorStereo;
     waveTable  = new rosic::MipMappedWaveTableStereo;
@@ -14,10 +13,8 @@ WaveOscModule::WaveOscModule(CriticalSection *newPlugInLock,
   }
   else
     wrappedOsc = oscToWrap;
-
   //setModuleTypeName("OscillatorStereo"); // old name
   setModuleTypeName("WaveOscillator");
-
   createParameters();
 }
 
@@ -28,7 +25,6 @@ WaveOscModule::~WaveOscModule()
     delete waveTable;
   }
 }
-
 
 AudioModuleEditor* WaveOscModule::createEditor(int type)
 {
@@ -42,18 +38,14 @@ XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc, XmlElement* xmlEle
 {
   // the XmlElement which stores all the releveant state-information:
   XmlElement* xmlState;
-  if(xmlElementToStartFrom == NULL)
-  {
+  if(xmlElementToStartFrom == nullptr)
     xmlState = new XmlElement("WaveOscillator");
     //xmlState = new XmlElement(juce::String("OscillatorStereo"));  //wrong? should be OscillatorStereoState
-  }
   else
     xmlState = xmlElementToStartFrom;
 
-  // store the settings in the XmlElement:
   juce::String samplePath = juce::String(osc->waveTable->getSampleName());
   xmlState->setAttribute("AudioFileRelativePath", samplePath);
-
   return xmlState;
 }
 
@@ -117,24 +109,17 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
 
 XmlElement* WaveOscModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
-  // store the inherited controller mappings:
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
-
-  // store the parameters of the underlying core object:
-  if( wrappedOsc != NULL )
+  if( wrappedOsc != nullptr ) // that should actually never be the case
     xmlState = oscillatorStereoStateToXml(wrappedOsc, xmlState);
-
   return xmlState;
 }
 
-void WaveOscModule::setStateFromXml(const XmlElement& xmlState,
-                                                 const juce::String& stateName, bool markAsClean)
+void WaveOscModule::setStateFromXml(
+  const XmlElement& xmlState, const juce::String& stateName, bool markAsClean)
 {
-  // restore the inherited controller mappings:
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
-
-  // restore the parameters of the underlying core object:
-  if( wrappedOsc != NULL )
+  if( wrappedOsc != nullptr )
     oscillatorStereoStateFromXml(wrappedOsc, xmlState);
 }
 

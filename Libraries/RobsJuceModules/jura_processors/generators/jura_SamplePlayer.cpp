@@ -2,14 +2,20 @@
 // -memory leak of an object of type juce::TimeSliceThread
 
 // ToDo:
-// -make state widget set visible
 // -fix sample load directory 
 // -check, how the recall of the sample works for the WaveOsc and do it here the same way 
 // -maybe factor out a common baseclass to consolidate the code for saving and recalling the 
-//  sample-path (SampleBasedAudioModule or something)
-// -fix colors of editor sections
+//  sample-path (SampleBasedAudioModule or something) 
+//  ...but there's a proble - the WaveOsc also causes the MipMap to be re-rendered
+//  ...maybe we need in rosic a baseclass for the oscillator and SamplePlayer, too that has 
+//  functions for setting the sample
+// -maybe also have an editor baseclass that contains the sample-load widget set that can be used
+//  by SamplePlayer and WaveOsc
+// -update parameter creation to new style
 // -maybe re-arrange the gui to have some elements above the display, some below and some to the 
 //  right
+// -let the user switch between waveform and spectrogram view and/or use the spectrogram for the 
+//  background and the waveform for the foreground
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -1120,8 +1126,7 @@ SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLoc
   jassert( newSamplePlayerModuleToEdit != NULL );
   samplePlayerModuleToEdit = newSamplePlayerModuleToEdit;
 
-  // change the headline from the default "Sub-Editor" to "Osc":
-  setHeadlineText("Sample Player");
+  setHeadlineText("SamplePlayer");
 
   //addPlot( sampleDisplay = new SamplePlayerEditorDisplay() );
   addAndMakeVisible( sampleDisplay = new SamplePlayerEditorDisplay() );
@@ -1567,33 +1572,34 @@ void SamplePlayerModuleEditor::paint(Graphics &g)
   AudioModuleEditor::paint(g);
 
   // draw rectangles for the parameter-groups:
-  int x = fileRectangle.getX();
-  int y = fileRectangle.getY();
-  int w = fileRectangle.getWidth();
-  int h = fileRectangle.getHeight();
-  fillRectWithDefaultBackground(g, x, y, jmax(1,w), jmax(1,h));
-  g.drawRect(x, y, w, h);
 
-  x = loopRectangle.getX();
-  y = loopRectangle.getY();
-  w = loopRectangle.getWidth();
-  h = loopRectangle.getHeight();
-  fillRectWithDefaultBackground(g, x, y, jmax(1,w), jmax(1,h));
-  g.drawRect(x, y, w, h);
+  fillRectWithBilinearGradient(g, fileRectangle, editorColourScheme.topLeft, 
+    editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
+  g.drawRect(fileRectangle);
+
+  fillRectWithBilinearGradient(g, loopRectangle, editorColourScheme.topLeft, 
+    editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
+  g.drawRect(loopRectangle);
 }
 
 void SamplePlayerModuleEditor::resized()
 {
-  Editor::resized();
+
+  ScopedLock scopedLock(*lock);
+
+  AudioModuleEditor::resized();
+  int m = 4; // margin
   int x = 0;
   int y = 0;
   int w = getWidth();
   int h = getHeight();
 
   //y = getPresetSectionBottom();
-  y =  getHeadlineBottom();
+  //y =  getHeadlineBottom();
 
-  sampleDisplay->setBounds(x, y+4, w-16, h-y-68-16);
+  y  = getPresetSectionBottom() + m;
+
+  sampleDisplay->setBounds(x, y, w-16, h-y-68-16);
   sampleDisplayZoomer->alignWidgetsToCoordinateSystem();
 
   y = sampleDisplayZoomer->getBottom();

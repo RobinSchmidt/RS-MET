@@ -113,7 +113,8 @@ protected:
   rosic::MipMappedWaveTableStereo *waveTable = nullptr; 
   // only needed when the wrapped osc is owned - in this case, we also need an owned wavetable
 
-  juce_UseDebuggingNewOperator;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveOscModule)
 };
 
 //=================================================================================================
@@ -189,7 +190,8 @@ protected:
   /** Pointer to the actual WaveOscModule object which is being edited. */
   WaveOscModule* oscillatorModuleToEdit;
 
-  juce_UseDebuggingNewOperator;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveOscEditorContextMenu)
 };
 
 //===============================================================================================
@@ -270,11 +272,12 @@ protected:
   /** Pointer to the actual StereoOscillator object which is being edited. */
   rosic::OscillatorStereo* oscillatorToEdit;
 
+  // get rid of this - it doesn't belog here:
   int      numSamplesInPlot;
   double*  waveformBuffer;
   double** waveformPointers;
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveOscEditor)
 };
 
 
