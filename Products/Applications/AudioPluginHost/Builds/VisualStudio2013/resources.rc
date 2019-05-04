@@ -15,9 +15,9 @@ BEGIN
     BEGIN
       VALUE "CompanyName",  "ROLI Ltd.\0"
       VALUE "LegalCopyright",  "ROLI Ltd.\0"
-      VALUE "FileDescription",  "Plugin Host\0"
+      VALUE "FileDescription",  "AudioPluginHost\0"
       VALUE "FileVersion",  "1.0.0\0"
-      VALUE "ProductName",  "Plugin Host\0"
+      VALUE "ProductName",  "AudioPluginHost\0"
       VALUE "ProductVersion",  "1.0.0\0"
     END
   END
@@ -29,3 +29,6 @@ BEGIN
 END
 
 #endif
+
+IDI_ICON1 ICON DISCARDABLE "icon.ico"
+IDI_ICON2 ICON DISCARDABLE "icon.ico"
