@@ -25,8 +25,14 @@ SamplePlayerAudioModule::~SamplePlayerAudioModule()
 }
 
 //-------------------------------------------------------------------------------------------------
-// automation:
 
+AudioModuleEditor* SamplePlayerAudioModule::createEditor(int type)
+{
+  return new SamplePlayerModuleEditor(lock, this);
+}
+
+
+// get rid of this function - thsi was the odl way of doing it:
 void SamplePlayerAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
   if( wrappedSamplePlayer == NULL )

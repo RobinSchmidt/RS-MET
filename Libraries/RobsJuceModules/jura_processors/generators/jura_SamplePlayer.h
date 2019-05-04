@@ -24,9 +24,12 @@ public:
   virtual ~SamplePlayerAudioModule();
 
   //---------------------------------------------------------------------------------------------
-  // automation:
+
+  AudioModuleEditor *createEditor(int type) override;
+ 
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
+    // obsolete?
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean) override;
@@ -44,7 +47,9 @@ public:
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
-    jassertfalse; // not yet implemented
+    jassert(numChannels == 2);
+    for(int n = 0; n < numSamples; n++)
+      wrappedSamplePlayer->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
   }
 
   //---------------------------------------------------------------------------------------------
