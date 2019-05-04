@@ -230,9 +230,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Shared.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2323,6 +2320,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Plotting.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\RaptInstantiations.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\rs_testing.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2368,7 +2368,6 @@
     <ClInclude Include="..\..\Source\Experiments\Experiments.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Callbacks.h"/>
     <ClInclude Include="..\..\Source\Shared\Shared.h"/>
-    <ClInclude Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Array.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Flags.h"/>

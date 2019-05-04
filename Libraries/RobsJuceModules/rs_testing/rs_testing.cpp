@@ -36,7 +36,11 @@ header files that the compiler may be using. */
 
 // template instantaitions (mayb move somwhere else):
 
-#include "../rapt/rapt_templates.cpp"
+//#include "../rapt/rapt_templates.cpp"
+
+#include "RaptInstantiations.cpp"
+
+// move these instantioans into RaptInstantiations.cpp:
 
 template struct RAPT::rsFilterSpecificationZPK<float>;
 template struct RAPT::rsFilterSpecificationBA<float>;

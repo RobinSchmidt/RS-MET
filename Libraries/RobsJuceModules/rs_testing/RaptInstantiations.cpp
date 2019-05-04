@@ -22,8 +22,10 @@ not show all the trunction-warnings that we get for "float").
 instantiates all templates for double. That file can be used by client code by default but client
 code may also define its own instantiation file. */
 
-#include "../../../../../Libraries/RobsJuceModules/rapt/rapt_templates.cpp"
+//#include "../../../../../Libraries/RobsJuceModules/rapt/rapt_templates.cpp"
 //#include "../../../../../Libraries/JUCE/modules/rosic/rosic.cpp"
+
+#include "../rapt/rapt_templates.cpp"
 using namespace RAPT;
 
 //#include "../../../../../Libraries/JUCE/modules/rapt/Data/Simd/Float64x2.h"

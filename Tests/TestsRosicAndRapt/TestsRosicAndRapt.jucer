@@ -150,12 +150,6 @@
         <FILE id="LuKnYL" name="jura_Callbacks.h" compile="0" resource="0"
               file="../../Libraries/JUCE/modules/jura_framework/control/jura_Callbacks.h"/>
         <FILE id="jygXVA" name="Shared.h" compile="0" resource="0" file="Source/Shared/Shared.h"/>
-        <GROUP id="{26F3386D-C17C-0FE0-E219-28AD9C050586}" name="RaptLibraryCode">
-          <FILE id="oxwZnF" name="RaptInstantiations.cpp" compile="0" resource="0"
-                file="Source/Shared/RaptLibraryCode/RaptInstantiations.cpp"/>
-          <FILE id="G9J9kL" name="RaptInstantiations.h" compile="0" resource="0"
-                file="Source/Shared/RaptLibraryCode/RaptInstantiations.h"/>
-        </GROUP>
       </GROUP>
       <GROUP id="{F7076C47-6EF8-D26D-C723-89FE096AF36F}" name="rosic_tests">
         <GROUP id="{AB24ABE0-F0E0-71E1-6E93-83A6FD72A019}" name="PortedFromRSLib">
