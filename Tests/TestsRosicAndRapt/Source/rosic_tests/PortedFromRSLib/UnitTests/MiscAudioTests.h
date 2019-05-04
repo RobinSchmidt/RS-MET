@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "../../../Shared/Shared.h"
-
 bool testBandwidthConversions(std::string &reportString);
 bool testSincInterpolation(   std::string &reportString);
 bool testSineParameters(      std::string &reportString);

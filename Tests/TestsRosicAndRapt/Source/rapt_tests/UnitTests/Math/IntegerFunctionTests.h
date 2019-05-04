@@ -1,8 +1,6 @@
 #ifndef RS_INTEGERFUNCTIONTESTS_H
 #define RS_INTEGERFUNCTIONTESTS_H
 
-#include "../../../Shared/Shared.h"
-
 bool testIntegerFunctions();
 
 bool testIntAbs(std::string &reportString);

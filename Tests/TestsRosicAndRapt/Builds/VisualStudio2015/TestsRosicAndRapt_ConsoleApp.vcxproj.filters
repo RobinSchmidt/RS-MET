@@ -29,9 +29,6 @@
     <Filter Include="TestsRosicAndRapt\Source\Experiments">
       <UniqueIdentifier>{3633CBBB-4131-891C-C1F4-3ED8BC96C23B}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TestsRosicAndRapt\Source\Shared">
-      <UniqueIdentifier>{0F45AEA0-E94D-18ED-0EF6-EDFEF2882D6B}</UniqueIdentifier>
-    </Filter>
     <Filter Include="TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers">
       <UniqueIdentifier>{54D9FD88-3AF2-4EFA-EDC5-C7EDF1C39B54}</UniqueIdentifier>
     </Filter>
@@ -456,9 +453,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp">
       <Filter>TestsRosicAndRapt\Source\Experiments</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Shared.cpp">
-      <Filter>TestsRosicAndRapt\Source\Shared</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
@@ -2678,12 +2672,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Experiments\Experiments.h">
       <Filter>TestsRosicAndRapt\Source\Experiments</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Callbacks.h">
-      <Filter>TestsRosicAndRapt\Source\Shared</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Shared.h">
-      <Filter>TestsRosicAndRapt\Source\Shared</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>

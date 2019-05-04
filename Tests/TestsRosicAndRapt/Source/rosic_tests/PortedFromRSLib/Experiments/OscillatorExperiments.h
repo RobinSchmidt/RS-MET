@@ -1,7 +1,6 @@
 #ifndef RS_OSCILLATOREXPERIMENTS_H
 #define RS_OSCILLATOREXPERIMENTS_H
 
-#include "../../../Shared/Shared.h"
 
 void triSaw();
 

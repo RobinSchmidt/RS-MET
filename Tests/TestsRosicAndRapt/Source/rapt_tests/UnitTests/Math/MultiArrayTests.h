@@ -1,7 +1,6 @@
 #ifndef RS_MULTIARRAYTESTS_H
 #define RS_MULTIARRAYTESTS_H
 
-#include "../../../Shared/Shared.h"
 
 bool testMultiArray();
 

@@ -1,7 +1,6 @@
 #ifndef RS_MISCAUDIOEXPERIMENTS_H
 #define RS_MISCAUDIOEXPERIMENTS_H
 
-#include "../../../Shared/Shared.h"
 
 void centroid();
 void cubicCrossfade();

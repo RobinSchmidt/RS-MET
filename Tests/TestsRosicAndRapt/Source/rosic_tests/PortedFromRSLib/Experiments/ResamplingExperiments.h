@@ -1,8 +1,6 @@
 #ifndef RS_SAMPLINGEXPERIMENTS_H
 #define RS_SAMPLINGEXPERIMENTS_H
 
-//#include "../ExperimentsUtilities.h" // old
-#include "../../../Shared/Shared.h"  // new
 
 void fadeOut();  // move to a new file SampleEditingExperiments
 

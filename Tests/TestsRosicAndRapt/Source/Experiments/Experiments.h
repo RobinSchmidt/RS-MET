@@ -1,7 +1,7 @@
 #ifndef Experiments_h
 #define Experiments_h
 
-//#include "../Shared/Plotting/Plotting.h"
+#include <rs_testing/rs_testing.h>
 
 #include "../rapt_tests/Experiments/MathExperiments.h"
 #include "../rapt_tests/Experiments/FilterExperiments.h"

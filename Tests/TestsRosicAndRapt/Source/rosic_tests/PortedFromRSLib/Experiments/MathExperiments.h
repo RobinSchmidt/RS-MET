@@ -1,8 +1,6 @@
 #ifndef RS_MATHEXPERIMENTS_H
 #define RS_MATHEXPERIMENTS_H
 
-#include "../../../Shared/Shared.h"
-
 
 void bandMatrix();
 void pentaDiagnonalMatrix();

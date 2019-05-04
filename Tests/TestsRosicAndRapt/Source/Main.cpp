@@ -5,7 +5,10 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 // includes for unity build:
-#include "Shared/Shared.h"
+//#include "Shared/Shared.h"
+
+//#include <string>
+
 #include "Experiments/Experiments.h"
 #include "UnitTests/UnitTests.h"
 #include "PerformanceTests/PerformanceTests.h"

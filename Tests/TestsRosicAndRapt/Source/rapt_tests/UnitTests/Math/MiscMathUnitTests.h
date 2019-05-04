@@ -1,8 +1,6 @@
 #ifndef RS_MISCMATHTESTS_H
 #define RS_MISCMATHTESTS_H
 
-#include "../../../Shared/Shared.h"
-
 bool testMiscMath();
 
 bool testExponentialCurveFitting(  std::string &reportString);

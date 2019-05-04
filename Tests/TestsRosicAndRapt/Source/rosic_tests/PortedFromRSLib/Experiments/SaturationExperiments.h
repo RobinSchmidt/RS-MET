@@ -1,8 +1,6 @@
 #ifndef RS_SATURATIONEXPERIMENTS_H
 #define RS_SATURATIONEXPERIMENTS_H
 
-#include "../../../Shared/Shared.h"
-
 void powRatioParametricSigmoid();
 void parametricSigmoid();
 void parametricSigmoid2();

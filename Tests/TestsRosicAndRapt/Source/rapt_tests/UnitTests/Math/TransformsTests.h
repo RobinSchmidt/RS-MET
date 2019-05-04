@@ -1,7 +1,6 @@
 #ifndef RS_TRANSFORMSTESTS_H
 #define RS_TRANSFORMSTESTS_H
 
-#include "../../../Shared/Shared.h"
 
 bool testTransforms();
 

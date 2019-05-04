@@ -1,8 +1,6 @@
 #ifndef RAPT_LINEARALGEBRATESTS_H
 #define RAPT_LINEARALGEBRATESTS_H
 
-#include "../../../Shared/Shared.h"
-
 //bool testLinearAlgebra(std::string &reportString);
 bool testLinearAlgebra();
 

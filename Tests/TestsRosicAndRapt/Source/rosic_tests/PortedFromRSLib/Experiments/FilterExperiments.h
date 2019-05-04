@@ -1,8 +1,6 @@
 #ifndef RS_FILTEREXPERIMENTS_H
 #define RS_FILTEREXPERIMENTS_H
 
-#include "../../../Shared/Shared.h"
-
 void bandwidthScaling();
 void butterworthEnergy();
 void biquadModulation();

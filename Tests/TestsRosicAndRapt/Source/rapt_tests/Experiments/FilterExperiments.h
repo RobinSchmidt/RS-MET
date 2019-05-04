@@ -1,8 +1,6 @@
 #ifndef RAPT_FILTEREXPERIMENTS_H
 #define RAPT_FILTEREXPERIMENTS_H
 
-#include "../../Shared/Shared.h"
-
 void bandSplittingTwoWay();
 void bandSplittingMultiWay();
 void bandSplittingTreeAlgo();

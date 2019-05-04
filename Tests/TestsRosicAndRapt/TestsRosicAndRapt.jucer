@@ -145,12 +145,6 @@
         <FILE id="XlUMHK" name="Experiments.cpp" compile="1" resource="0" file="Source/Experiments/Experiments.cpp"/>
         <FILE id="VKq4cA" name="Experiments.h" compile="0" resource="0" file="Source/Experiments/Experiments.h"/>
       </GROUP>
-      <GROUP id="{169783E3-BC83-EFEE-1179-9541750571ED}" name="Shared">
-        <FILE id="QAl8Ao" name="Shared.cpp" compile="1" resource="0" file="Source/Shared/Shared.cpp"/>
-        <FILE id="LuKnYL" name="jura_Callbacks.h" compile="0" resource="0"
-              file="../../Libraries/JUCE/modules/jura_framework/control/jura_Callbacks.h"/>
-        <FILE id="jygXVA" name="Shared.h" compile="0" resource="0" file="Source/Shared/Shared.h"/>
-      </GROUP>
       <GROUP id="{F7076C47-6EF8-D26D-C723-89FE096AF36F}" name="rosic_tests">
         <GROUP id="{AB24ABE0-F0E0-71E1-6E93-83A6FD72A019}" name="PortedFromRSLib">
           <FILE id="DHL0kA" name="UnUsedTestsRSLib.cpp" compile="0" resource="0"

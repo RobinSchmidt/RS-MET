@@ -1,7 +1,6 @@
 #ifndef RS_REALFUNCTIONTESTS_H
 #define RS_REALFUNCTIONTESTS_H
 
-#include "../../../Shared/Shared.h"
 
 bool testRealFunctions();
 

@@ -1,8 +1,6 @@
 #ifndef RAPT_POLYNOMIALUNITTESTS_H
 #define RAPT_POLYNOMIALUNITTESTS_H
 
-//#include "../../UnitTestUtilities.h"
-#include "../../../Shared/Shared.h"
 
 //bool testPolynomial(std::string &reportString);
 bool testPolynomial();
