@@ -19,6 +19,9 @@
 
 //#include "rosic/rosic.h"
 
+
+/*
+
 // for testing the callback performance (this is actually in jura, but anyway):
 #define JUCE_API
 #include "jura_framework/control/jura_Callbacks.h"
@@ -42,9 +45,11 @@ inline void appendTestResultToReport(std::string &reportString, const std::strin
     reportString += nameOfTest + ": !!! FAILED !!!\n";
 }
 
-/** Comparison function that compares with a given error tolerance and also returns true when the 
-involved numbers are NaNs or infinities. */
+// Comparison function that compares with a given error tolerance and also returns true when the 
+// involved numbers are NaNs or infinities. 
 bool areNumbersEqual(double x, double y, double relativeTolerance);
+
+*/
 
 
 #endif

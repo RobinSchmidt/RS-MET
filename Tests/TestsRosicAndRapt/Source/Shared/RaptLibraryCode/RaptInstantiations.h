@@ -11,6 +11,7 @@ PhaseScopeBufferFFD typedef wouldn't exist. */
 #ifndef RAPT_INSTANTIATIONS_H
 #define RAPT_INSTANTIATIONS_H
 
+/*
 #include "../../../../../Libraries/RobsJuceModules/rapt/rapt.h"
 //#include "../../../../../Libraries/JUCE/modules/rapt/rapt.h"
 //#include "../../../../../Libraries/JUCE/modules/rosic/rosic.h"
@@ -101,5 +102,6 @@ typedef RAPT::rsPhaseScopeBuffer<float, float, double> rsPhaseScopeBufferFFD;
 // Unfinished:
 typedef RAPT::rsTwoBandSplitter<float, float> rsTwoBandSplitterFF;
 typedef RAPT::rsMultiBandSplitter<float, float> rsMultiBandSplitterFF;
+*/
 
 #endif

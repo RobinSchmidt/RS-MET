@@ -22,6 +22,8 @@
 #include "Utilities/TestUtilities.cpp"
 */
 
+/*
+
 using namespace std;
 
 #undef min
@@ -54,3 +56,6 @@ bool areNumbersEqual(double x, double y, double relativeTolerance)
   // x == y, if the absolute difference is below a relative tolerance:
   return fabs(x-y) <= relativeTolerance * max(fabs(x), fabs(y));
 }
+
+
+*/
