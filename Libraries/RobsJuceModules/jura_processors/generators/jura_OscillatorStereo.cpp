@@ -786,7 +786,7 @@ WaveOscEditor::WaveOscEditor(CriticalSection *newPlugInLock,
   isTopLevelEditor = false;
   setHeadlineStyle(NO_HEADLINE);
 
-  // initialize the current directory for waveform loading and saving:
+  // initialize the current directory for waveform loading:
   AudioFileManager::setActiveDirectory(getSupportDirectory() + "/Samples/SingleCycle/Classic");
 
   //setOscillatorToEdit(newWaveOscModule->wrappedOscillatorStereo);

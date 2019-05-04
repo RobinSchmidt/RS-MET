@@ -43,8 +43,7 @@ VectorSamplePlayerAudioModule::VectorSamplePlayerAudioModule(CriticalSection *ne
 
 VectorSamplePlayerSampleEditor::VectorSamplePlayerSampleEditor(CriticalSection *newPlugInLock,
   SamplePlayerAudioModule* newSamplePlayerAudioModule)
-  : AudioModuleEditor( newSamplePlayerAudioModule)
-  , SamplePlayerModuleEditor(newPlugInLock, newSamplePlayerAudioModule)
+  : SamplePlayerModuleEditor(newPlugInLock, newSamplePlayerAudioModule)
 {
   setLinkPosition(INVISIBLE);
   setPresetSectionPosition(INVISIBLE);
@@ -87,8 +86,8 @@ void VectorSamplePlayerSampleEditor::resized()
     y = sampleDisplay->getBottom();
     int labelWidth = w-72;
     x = w-labelWidth;
-    sampleFileNameLabel->setBounds(x, y, labelWidth, 16);
-    x = sampleFileNameLabel->getX()-40-26;
+    sampleFileLabel->setBounds(x, y, labelWidth, 16);
+    x = sampleFileLabel->getX()-40-26;
     sampleLoadButton->setBounds(x, y, 40, 16);
     sampleMinusButton->setBounds(sampleLoadButton->getRight()-2,  y, 16, 16);
     samplePlusButton->setBounds( sampleMinusButton->getRight()-2, y, 16, 16);
@@ -118,8 +117,8 @@ void VectorSamplePlayerSampleEditor::resized()
     sampleDisplay->setBounds(x, y, w, h);
 
     y = sampleDisplay->getBottom();
-    sampleFileNameLabel->setBounds(x, y, w-72, 16);
-    x = sampleFileNameLabel->getRight();
+    sampleFileLabel->setBounds(x, y, w-72, 16);
+    x = sampleFileLabel->getRight();
     sampleLoadButton->setBounds(x-2, y, 40, 16);
     sampleMinusButton->setBounds(sampleLoadButton->getRight()-2,  y, 16, 16);
     samplePlusButton->setBounds( sampleMinusButton->getRight()-2, y, 16, 16);
@@ -151,8 +150,8 @@ void VectorSamplePlayerSampleEditor::resized()
     int labelWidth = w-72;
     x  = w-labelWidth;
     y -= 16;
-    sampleFileNameLabel->setBounds(x, y, labelWidth, 16);
-    x = sampleFileNameLabel->getX()-40-26;
+    sampleFileLabel->setBounds(x, y, labelWidth, 16);
+    x = sampleFileLabel->getX()-40-26;
     sampleLoadButton->setBounds(x, y, 40, 16);
     sampleMinusButton->setBounds(sampleLoadButton->getRight()-2,  y, 16, 16);
     samplePlusButton->setBounds( sampleMinusButton->getRight()-2, y, 16, 16);
@@ -181,8 +180,8 @@ void VectorSamplePlayerSampleEditor::resized()
     h = getHeight()-y;
     sampleDisplay->setBounds(x, y, w, h);
     y -= 16;
-    sampleFileNameLabel->setBounds(x, y, w-72, 16);
-    x = sampleFileNameLabel->getRight();
+    sampleFileLabel->setBounds(x, y, w-72, 16);
+    x = sampleFileLabel->getRight();
     sampleLoadButton->setBounds(x-2, y, 40, 16);
     sampleMinusButton->setBounds(sampleLoadButton->getRight()-2,  y, 16, 16);
     samplePlusButton->setBounds( sampleMinusButton->getRight()-2, y, 16, 16);

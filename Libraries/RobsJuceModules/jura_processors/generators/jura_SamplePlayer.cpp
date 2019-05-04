@@ -1124,7 +1124,7 @@ void SamplePlayerEditorContextMenu::resized()
 
 SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLock,
   SamplePlayerAudioModule* newSamplePlayerModuleToEdit)
-  : AudioModuleEditor(newSamplePlayerModuleToEdit)
+  : SampleBasedAudioModuleEditor(newSamplePlayerModuleToEdit)
 {
   //samplePlayerToEdit = NULL;
   //jassert( newSamplePlayerToEdit != NULL );
@@ -1165,29 +1165,11 @@ SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLoc
   fileLabel->setDescription("The currently loaded sample file.");
   fileLabel->setJustification(Justification::centredLeft);
 
-  addWidget( sampleFileNameLabel = new RTextField( juce::String::empty) );
-  sampleFileNameLabel->setDescription(fileLabel->getDescription());
-
   addWidget( formatLabel = new RTextField( "Format:") );
   formatLabel->setDescription("Data format of currently loaded sample file.");
 
   addWidget( formatInfoLabel = new RTextField( juce::String::empty) );
   formatInfoLabel->setDescription(formatLabel->getDescription());
-
-  addWidget( sampleLoadButton = new RButton("Load") );
-  sampleLoadButton->addRButtonListener(this);
-  sampleLoadButton->setDescription("Load a waveform for the oscillator.");
-  sampleLoadButton->setClickingTogglesState(false);
-
-  addWidget( samplePlusButton = new RButton(RButton::PLUS) );
-  samplePlusButton->addRButtonListener(this);
-  samplePlusButton->setDescription("Next waveform in current directory.");
-  samplePlusButton->setClickingTogglesState(false);
-
-  addWidget( sampleMinusButton = new RButton(RButton::MINUS) );
-  sampleMinusButton->addRButtonListener(this);
-  sampleMinusButton->setDescription("Previous waveform in current directory.");
-  sampleMinusButton->setClickingTogglesState(false);
 
   addWidget( levelSlider = new RSlider("Level") );
   levelSlider->assignParameter( moduleToEdit->getParameterByName("Level") );
@@ -1398,19 +1380,12 @@ return false;
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
-void SamplePlayerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
+void SamplePlayerModuleEditor::rButtonClicked(RButton *b)
 {
   if( samplePlayerModuleToEdit == NULL )
     return;
 
-  if( buttonThatWasClicked == samplePlusButton )
-    loadNextFile();
-  else if( buttonThatWasClicked == sampleMinusButton )
-    loadPreviousFile();
-  else if( buttonThatWasClicked == sampleLoadButton )
-    openLoadingDialog();
-  //openSampleLoadingDialog();
-  else if( buttonThatWasClicked == loopButton )
+  else if( b == loopButton )
   {
     /*
     if( loopButton->getToggleState() == true )
@@ -1425,17 +1400,17 @@ void SamplePlayerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
     loopEndSlider->setEnabled(        loopButton->getToggleState() );
     */
   }
-  else if( buttonThatWasClicked == fromLoopButton )
+  else if( b == fromLoopButton )
   {
     if( fromLoopButton->getToggleState() == true )
       samplePlayerModuleToEdit->setRootKeyFromLoop();
     //setRootKeyAndRootDetuneFromLoop();
   }
-  else if( buttonThatWasClicked == loopSnapButton )
+  else if( b == loopSnapButton )
   {
     //samplePlayerToEdit->setSnapLoopToZeros( loopSnapButton->getToggleState() );
   }
-  else if( buttonThatWasClicked == moreButton )
+  else if( b == moreButton )
   {
     if( moreButton->getToggleState() == true )
     {
@@ -1452,13 +1427,13 @@ void SamplePlayerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
       contextMenu->setVisible(false);
     return;
   }
-  else if( buttonThatWasClicked == contextMenu->closeButton )
+  else if( b == contextMenu->closeButton )
   {
     moreButton->setToggleState(false, true);
     return;
   }
-
-
+  else
+    SampleBasedAudioModuleEditor::rButtonClicked(b);
 
   //else
   //{
@@ -1633,10 +1608,10 @@ void SamplePlayerModuleEditor::resized()
   samplePlusButton->setBounds( sampleMinusButton->getRight()-2, y+4, 16, 16);
   x = fileLabel->getRight();
   w = sampleLoadButton->getX()-8-x;
-  sampleFileNameLabel->setBounds(x+4, y+4, w, 16);
+  sampleFileLabel->setBounds(x+4, y+4, w, 16);
 
   x = fileRectangle.getX();
-  y = sampleFileNameLabel->getBottom();
+  y = sampleFileLabel->getBottom();
   w = fileRectangle.getWidth();
 
   formatLabel->setBounds(x+4, y+4, 56, 16);
@@ -1720,7 +1695,7 @@ bool SamplePlayerModuleEditor::setAudioData(AudioSampleBuffer* newBuffer,
   bool success = samplePlayerModuleToEdit->setSampleFromFile(underlyingFile);
   if( success == true )
   {
-    sampleFileNameLabel->setText(underlyingFile.getFileName());
+    sampleFileLabel->setText(underlyingFile.getFileName());
     formatInfoLabel->setText(createAudioFileInfoString(underlyingFile));
     sampleDisplay->setAudioFileToUse(underlyingFile);
     return true;

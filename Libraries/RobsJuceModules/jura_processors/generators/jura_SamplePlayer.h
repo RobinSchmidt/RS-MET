@@ -266,8 +266,8 @@ protected:
 -move the File-management stuff into the audio module - see LFO
 -we must also maintain a state -> don't derive from AudioFileManager, embedd one instead  */
 
-class SamplePlayerModuleEditor : virtual public AudioModuleEditor,  public ChangeBroadcaster, 
-  public AudioFileManager, public RSliderListener
+class SamplePlayerModuleEditor : public SampleBasedAudioModuleEditor, public ChangeBroadcaster, 
+  public RSliderListener
 {
 
 public:
@@ -341,11 +341,10 @@ public:
   CoordinateSystemZoomer        *sampleDisplayZoomer;
   SamplePlayerEditorContextMenu *contextMenu;
 
-  RTextField *fileLabel, *sampleFileNameLabel, *formatLabel, *formatInfoLabel; 
+  RTextField *fileLabel, *formatLabel, *formatInfoLabel; 
 
-  RButton *sampleLoadButton, *samplePlusButton, *sampleMinusButton, *loopButton, *muteButton, 
-    *soloButton, *phaseRandomizeButton, *moreButton, *fromLoopButton, *loopSnapButton, 
-    *loopLengthLockButton, *autoNumCyclesButton;
+  RButton *loopButton, *muteButton, *soloButton, *phaseRandomizeButton, *moreButton, 
+    *fromLoopButton, *loopSnapButton, *loopLengthLockButton, *autoNumCyclesButton;
 
   RSlider *levelSlider, *tuneSlider, *lowpassSlider, *highpassSlider, *rootKeySlider, 
     *rootDetuneSlider, *startSlider, *startByVelSlider, *endSlider, *loopStartSlider, 

@@ -1145,6 +1145,9 @@ SampleBasedAudioModuleEditor::SampleBasedAudioModuleEditor(AudioModule* newModul
   : AudioModuleEditor(newModuleToEdit)
 {
   createWidgets();
+
+  // initialize the current directory for sample loading:
+  AudioFileManager::setActiveDirectory(getSupportDirectory() + "/Samples");
 }
 
 void SampleBasedAudioModuleEditor::rButtonClicked(RButton *b)
