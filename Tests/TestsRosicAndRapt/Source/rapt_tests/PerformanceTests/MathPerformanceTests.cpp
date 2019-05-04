@@ -318,8 +318,8 @@ void sinCosPerformance()
   PerformanceCounterQPC counter;
   int n;
 
-  rsSinCosTableF table(1024);
-  rsSinCosTableD tableD(1024);
+  rsSinCosTable<float>  table(1024);
+  rsSinCosTable<double> tableD(1024);
 
   // measure cost of sin/cos standard library functions:
   counter.init();

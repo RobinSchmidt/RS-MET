@@ -1,17 +1,17 @@
 #ifndef RAPT_EXECUTABLES_SHARED_H
 #define RAPT_EXECUTABLES_SHARED_H
 
-
+#include <rs_testing/rs_testing.h>
 
 
 //#include "RaptLibraryCode/RaptTypedefInstantiations.h"
-#include "Utilities/TestInputCreation.h"
-#include "Utilities/FileWriting.h"
-#include "Utilities/PerformanceTestTools.h"
-#include "Utilities/TestUtilities.h"
+//#include "Utilities/TestInputCreation.h"
+//#include "Utilities/FileWriting.h"
+//#include "Utilities/PerformanceTestTools.h"
+//#include "Utilities/TestUtilities.h"
 
 //#include "Prototypes/LindenmayerSystem.h"
-#include "Prototypes/Prototypes.h"
+//#include "Prototypes/Prototypes.h"
 
 //#include "Plotting/Plotting.h"
 

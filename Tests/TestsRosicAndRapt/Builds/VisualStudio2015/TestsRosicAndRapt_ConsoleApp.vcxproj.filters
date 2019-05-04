@@ -350,8 +350,14 @@
     <Filter Include="JUCE Modules\rs_testing\Experiments">
       <UniqueIdentifier>{A8B75D83-6D63-ADD2-60F4-790472F06420}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\rs_testing\Prototypes\FilterDesign">
+      <UniqueIdentifier>{F3FF13FC-5BC0-1CA3-7A6D-BD0DB579A1BB}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\rs_testing\Prototypes">
       <UniqueIdentifier>{E533E0B5-981B-A73A-1C62-D38DE5FB96CA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\rs_testing\TestTools\Utilities">
+      <UniqueIdentifier>{F92DC678-5C16-0A4E-DAA6-B3E2FCB4489B}</UniqueIdentifier>
     </Filter>
     <Filter Include="JUCE Modules\rs_testing\TestTools">
       <UniqueIdentifier>{D0A16E24-1D46-D8AA-F9ED-F8DCFDC31D88}</UniqueIdentifier>
@@ -2554,10 +2560,37 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Experiments\MiscExperiments.cpp">
       <Filter>JUCE Modules\rs_testing\Experiments</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\ComplementaryFilters.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\NonUniformFilter.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroDesignerAnalog.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroDesignerDigital.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroMapper.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroPrototype.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\BlepBlampOscs.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\BlitBlepBlamp.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Drawing.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FiniteAutomaton.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Ideas.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\OscDrivers.cpp">
@@ -2565,6 +2598,39 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\PartialDifferentialEquations.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ParticleBouncer.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ParticleSystem.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Polygon.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Probability.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Projection3Dto2D.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Prototypes.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Tensor.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\FileWriting.cpp">
+      <Filter>JUCE Modules\rs_testing\TestTools\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\PerformanceTestTools.cpp">
+      <Filter>JUCE Modules\rs_testing\TestTools\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\TestInputCreation.cpp">
+      <Filter>JUCE Modules\rs_testing\TestTools\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\TestUtilities.cpp">
+      <Filter>JUCE Modules\rs_testing\TestTools\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\DSPPlotters.cpp">
       <Filter>JUCE Modules\rs_testing\TestTools</Filter>
@@ -4974,10 +5040,37 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Experiments\MiscExperiments.h">
       <Filter>JUCE Modules\rs_testing\Experiments</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\ComplementaryFilters.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\NonUniformFilter.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroDesignerAnalog.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroDesignerDigital.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroMapper.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroPrototype.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\BlepBlampOscs.h">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\BlitBlepBlamp.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Drawing.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FiniteAutomaton.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Ideas.h">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\OscDrivers.h">
@@ -4985,6 +5078,39 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\PartialDifferentialEquations.h">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ParticleBouncer.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ParticleSystem.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Polygon.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Probability.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Projection3Dto2D.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Prototypes.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Tensor.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\FileWriting.h">
+      <Filter>JUCE Modules\rs_testing\TestTools\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\PerformanceTestTools.h">
+      <Filter>JUCE Modules\rs_testing\TestTools\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\TestInputCreation.h">
+      <Filter>JUCE Modules\rs_testing\TestTools\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\TestUtilities.h">
+      <Filter>JUCE Modules\rs_testing\TestTools\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\DSPPlotters.h">
       <Filter>JUCE Modules\rs_testing\TestTools</Filter>
@@ -5089,6 +5215,9 @@
     </None>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\ToDo.txt">
       <Filter>JUCE Modules\rosic</Filter>
+    </None>
+    <None Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ReadMe.txt">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

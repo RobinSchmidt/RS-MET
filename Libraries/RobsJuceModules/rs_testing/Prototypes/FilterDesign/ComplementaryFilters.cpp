@@ -1,12 +1,14 @@
 //typedef std::complex<double> Complex;
 
+
 rsFilterSpecificationBA<double> complementaryFilter(const rsFilterSpecificationBA<double>& baSpec)
 {
   rsFilterSpecificationBA<double> ba = baSpec, r;
   r.sampleRate = ba.sampleRate;
   int Na = (int)ba.a.size()-1;
   int Nb = (int)ba.b.size()-1;
-  r.b.resize(std::max(Na,Nb)+1);
+  //r.b.resize(std::max(Na,Nb)+1);
+  r.b.resize(rsMax(Na,Nb)+1);
   r.a = ba.a;                // denominator is the same
   rsPolynomial<std::complex<double>>::subtract(&ba.a[0], Na, &ba.b[0], Nb, &r.b[0]);
   return r;

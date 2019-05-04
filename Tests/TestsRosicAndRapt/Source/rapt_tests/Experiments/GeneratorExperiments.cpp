@@ -969,7 +969,7 @@ void particleForceDistanceLaw()
   // Plots the force vs the distance of the rsPartcielSystem class for various choices of the
   // parameters.
 
-  rsParticleSystemF ps(1);
+  rsParticleSystem<float> ps(1);
   ps.setForceLawExponent(2);
   //ps.setForceLawOffset(0.1);
 
@@ -1024,7 +1024,7 @@ void particleForceDistanceLaw()
 
 }
 
-void getTwoParticleTrajectories(rsParticleSystemF& ps, int N, float* x1, float* y1, float* z1,
+void getTwoParticleTrajectories(rsParticleSystem<float>& ps, int N, float* x1, float* y1, float* z1,
   float* x2, float* y2, float* z2, float* Ek, float* Ep, float* Et, float* Eg, float* Ee, 
   float* Em)
 {
@@ -1059,7 +1059,7 @@ void particleSystem()
   float stepSize = 0.0002f;
 
   // create and set up the particle system:
-  rsParticleSystemF ps(2);
+  rsParticleSystem<float> ps(2);
 
   // both particles have unit mass, charge and size:
   ps.particles[0].mass   = 1.f;
@@ -1071,10 +1071,10 @@ void particleSystem()
 
 
   // place them at (-1,0,0) and (+1,0,0) with zero velocity initially:
-  ps.initialPositions[0]  = rsVector3DF(-0.5f, +0.0f,  +0.0f);
-  ps.initialPositions[1]  = rsVector3DF(+0.5f, -0.0f,  +0.0f);
-  ps.initialVelocities[0] = rsVector3DF( 0.0f, -0.01f, -0.0f);
-  ps.initialVelocities[1] = rsVector3DF( 0.0f, +0.01f, +0.0f);
+  ps.initialPositions[0]  = rsVector3D<float>(-0.5f, +0.0f,  +0.0f);
+  ps.initialPositions[1]  = rsVector3D<float>(+0.5f, -0.0f,  +0.0f);
+  ps.initialVelocities[0] = rsVector3D<float>( 0.0f, -0.01f, -0.0f);
+  ps.initialVelocities[1] = rsVector3D<float>( 0.0f, +0.01f, +0.0f);
 
   // in a first run, we only let them interact via gravitation - they should attract each other:
   ps.setGravitationalConstant(1.0f);
@@ -1098,8 +1098,8 @@ void particleSystem()
 
 
   // test cross-product formula - move to unit-tests:
-  rsVector3DF test = cross(rsVector3DF(2,3,5), rsVector3DF(7,11,13)); 
-  // bool result = test == rsVector3DF(-16,9,1); // ok - cross-product is correct
+  rsVector3D<float> test = cross(rsVector3D<float>(2,3,5), rsVector3D<float>(7,11,13)); 
+  // bool result = test == rsVector3D<float>(-16,9,1); // ok - cross-product is correct
 
 
   GNUPlotter plt;
@@ -1127,7 +1127,7 @@ void particleSystem()
 
 void bouncillator()
 {
-  rsBouncillatorF rb;
+  rsBouncillator<float> rb;
   rb.setFloor(    -0.0f);
   rb.setCeil(     +1.0f);
   rb.setIncrement( 0.05f);
@@ -1157,7 +1157,7 @@ void bouncillatorFormula()
   float shape =  0.01f;
   //float start = -0.2f;
 
-  rsBouncillatorF bnc;
+  rsBouncillator<float> bnc;
   bnc.setFloor(    min);
   bnc.setCeil(     max);
   bnc.setIncrement(inc);
@@ -1311,7 +1311,7 @@ void freqVsPhaseMod()
 
 void rayBouncer()
 {
-  rsRayBouncerF rb;
+  rsRayBouncer<float> rb;
   rb.setEllipseParameters(1, 2, float(PI/4), 0.1f, 0.2f);
   rb.setInitialPosition(0.2f, -0.4f);
   rb.setSpeed(0.02f);

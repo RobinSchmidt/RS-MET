@@ -2,6 +2,14 @@
 
 // rename to Rasterization
 
+// maybe get rid:
+typedef RAPT::rsImage<float> rsImageF;
+typedef RAPT::rsAlphaMask<float> rsAlphaMaskF;
+typedef RAPT::rsImagePainter<float, float, float> rsImagePainterFFF;
+typedef RAPT::rsImageDrawer<float, float, float> rsImageDrawerFFF;
+typedef RAPT::rsLineDrawer<float, float, float> rsLineDrawerFFF;
+typedef RAPT::rsPhaseScopeBuffer<float, float, double> rsPhaseScopeBufferFFD;
+
 //-------------------------------------------------------------------------------------------------
 // Utilities
 

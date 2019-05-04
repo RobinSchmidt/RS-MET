@@ -11,10 +11,26 @@ header files that the compiler may be using. */
 #include "TestTools/DSPPlotters.cpp"
 #include "TestTools/Plotting.cpp"
 
+// moved from "Shared":
+#include "TestTools/Utilities/FileWriting.cpp"
+#include "TestTools/Utilities/PerformanceTestTools.cpp"
+#include "TestTools/Utilities/TestInputCreation.cpp"
+#include "TestTools/Utilities/TestUtilities.cpp"
+
+
+
 #include "Prototypes/BlitBlepBlamp.cpp"
 #include "Prototypes/BlepBlampOscs.cpp"
 #include "Prototypes/OscDrivers.cpp"
 #include "Prototypes/PartialDifferentialEquations.cpp"
+
+// moved from "Shared":
+#include "Prototypes/Prototypes.cpp"
+#include "Prototypes/FiniteAutomaton.cpp"
+#include "Prototypes/ParticleBouncer.cpp"
+#include "Prototypes/ParticleSystem.cpp"
+#include "Prototypes/Tensor.cpp"
+
 
 #include "Experiments/MiscExperiments.cpp"
 

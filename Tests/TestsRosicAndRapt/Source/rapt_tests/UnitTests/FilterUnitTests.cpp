@@ -14,7 +14,7 @@ bool isCloseTo(complex<float> x, complex<float> y, float tol)
 bool prototypeDesignUnitTest()
 {
   // shorthands:
-  typedef rsPrototypeDesignerF PD;
+  typedef rsPrototypeDesigner<float> PD;
   typedef complex<float> CF;
   float inf = std::numeric_limits<float>::infinity();
 

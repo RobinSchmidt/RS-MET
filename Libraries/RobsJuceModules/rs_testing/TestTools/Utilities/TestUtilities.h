@@ -7,7 +7,7 @@
 //#include "../Common/Prototypes.h"
 
 // new:
-#include "../RaptLibraryCode/RaptInstantiations.h"
+//#include "../RaptLibraryCode/RaptInstantiations.h"
 #include "rosic/rosic.h"
 #include "rs_testing/rs_testing.h"
 

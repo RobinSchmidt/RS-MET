@@ -1,5 +1,13 @@
 #include "ModalExamples.h"
 
+// try to get rid of these prototype declarattions:
+std::vector<double> rsLinearRangeVector(     int N, double min, double max);
+//std::vector<double> rsExponentialRangeVector(int N, double min, double max);
+std::vector<double> rsRandomVector(          int N, double min, double max, int seed = 0);
+std::vector<double> rsApplyFunction(const std::vector<double>& v, double p, 
+  double (*f) (double, double));
+
+
 // convenience functions (should go to and included from TestUtilities or something):
 /*
 std::vector<double> rsApplyFunction(const std::vector<double>& x, double p, 

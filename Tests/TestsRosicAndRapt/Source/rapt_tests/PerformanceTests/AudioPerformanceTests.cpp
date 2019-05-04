@@ -223,7 +223,7 @@ void engineersFilterPerformance()
   // scalar version (mono):
   rosic::rsEngineersFilterMono filterScalar;
   filterScalar.setPrototypeOrder(order);
-  filterScalar.setMode(rsInfiniteImpulseResponseDesignerF::BANDPASS);
+  filterScalar.setMode(rsInfiniteImpulseResponseDesigner<float>::BANDPASS);
   counter.init(); 
   for(n = 0; n < numSamples; n++) 
     xs[n] = filterScalar.getSample(xs[n]);
@@ -235,7 +235,7 @@ void engineersFilterPerformance()
   // vector version (stereo):
   rosic::rsEngineersFilterStereo filterVector;
   filterVector.setPrototypeOrder(order);
-  filterVector.setMode(rsInfiniteImpulseResponseDesignerF::BANDPASS);
+  filterVector.setMode(rsInfiniteImpulseResponseDesigner<float>::BANDPASS);
   counter.init(); 
   for(n = 0; n < numSamples; n++) 
     filterVector.getSampleFrameStereo(&xs[n], &xs[n]);

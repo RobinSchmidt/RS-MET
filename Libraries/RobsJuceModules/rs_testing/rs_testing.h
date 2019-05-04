@@ -33,10 +33,17 @@
 #include "TestTools/DSPPlotters.h"
 #include "TestTools/Plotting.h"
 
+#include "TestTools/Utilities/TestInputCreation.h"
+#include "TestTools/Utilities/FileWriting.h"
+#include "TestTools/Utilities/PerformanceTestTools.h"
+#include "TestTools/Utilities/TestUtilities.h"
+
+
 #include "Prototypes/BlitBlepBlamp.h"
 #include "Prototypes/BlepBlampOscs.h"
 #include "Prototypes/OscDrivers.h"
 #include "Prototypes/PartialDifferentialEquations.h"
+#include "Prototypes/Prototypes.h"
 
 #include "Experiments/MiscExperiments.h"
 

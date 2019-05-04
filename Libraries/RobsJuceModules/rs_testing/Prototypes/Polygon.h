@@ -2,6 +2,13 @@
 
 // Algorithms for polygons (clipping, convex hull, triangulation, etc.)
 
+// maybe get rid:
+typedef RAPT::rsVector2D<float> rsVector2DF;  
+//typedef RAPT::rsConicSection<float> rsConicSectionF;
+//typedef RAPT::rsEllipse<float> rsEllipseF;
+typedef RAPT::rsLine2D<float> rsLine2DF;
+
+
 //-------------------------------------------------------------------------------------------------
 // Utilities:
 

@@ -9,7 +9,7 @@ void bandSplittingTwoWay()
 
   // set up the splitter:
   float omega = 2*float(PI)*splitFreq/sampleRate;
-  rsTwoBandSplitterFF splitter;
+  rsTwoBandSplitter<float, float> splitter;
   splitter.setOmega(omega);
 
   // plot poles/zeros and magnitude responses:
@@ -29,11 +29,11 @@ void bandSplittingMultiWay()
 
   // set up dsp objects and signal arrays:
   int n, k;
-  rsMultiBandSplitterFF splitter;
+  rsMultiBandSplitter<float, float> splitter;
   splitter.setSplitFrequencies(splitFreqs);
-  splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
-  //splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_HIGHPASS);
-  //splitter.setSplitMode(rsMultiBandSplitterFF::BINARY_TREE);
+  splitter.setSplitMode(rsMultiBandSplitter<float, float>::ACCUMULATE_INTO_LOWPASS);
+  //splitter.setSplitMode(rsMultiBandSplitter<float, float>::ACCUMULATE_INTO_HIGHPASS);
+  //splitter.setSplitMode(rsMultiBandSplitter<float, float>::BINARY_TREE);
   int numBands = splitter.getNumActiveBands();
   std::vector<float> x(numSamples);
   std::vector<std::vector<float>> y(numBands);
@@ -148,12 +148,12 @@ void bandSplitFreqResponses()
   //Vec splitFreqs = { 3000, 6000, 9000, 12000, 15000, 18000 };
 
   // create and set up the splitter:
-  rsMultiBandSplitterFF splitter;
+  rsMultiBandSplitter<float, float> splitter;
   splitter.setSampleRate(sampleRate);
   splitter.setSplitFrequencies(splitFreqs);
-  splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
-  //splitter.setSplitMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_HIGHPASS);
-  //splitter.setSplitMode(rsMultiBandSplitterFF::BINARY_TREE);
+  splitter.setSplitMode(rsMultiBandSplitter<float, float>::ACCUMULATE_INTO_LOWPASS);
+  //splitter.setSplitMode(rsMultiBandSplitter<float, float>::ACCUMULATE_INTO_HIGHPASS);
+  //splitter.setSplitMode(rsMultiBandSplitter<float, float>::BINARY_TREE);
 
   // create and set up the fourier transformer:
   typedef rsFourierTransformerRadix2<float> FT;
@@ -574,7 +574,7 @@ void smoothingFilterOrders()
   float tau = 101.0f;                  // time constant
 
   // create and set up the smoother:
-  rsSmoothingFilterFF smoother;
+  rsSmoothingFilter<float, float> smoother;
   //rsSmoothingFilterDD smoother;
   smoother.setTimeConstantAndSampleRate(tau, fs);
   //smoother.setNumSamplesToReachHalf(tau*fs);
@@ -647,7 +647,7 @@ void smoothingFilterTransitionTimes()
 
 
   // create and set up the smoother:                                                             
-  rsSmoothingFilterFF smoother;
+  rsSmoothingFilter<float, float> smoother;
   smoother.setShapeParameter(asymmetry);
   smoother.setOrder(order);
 

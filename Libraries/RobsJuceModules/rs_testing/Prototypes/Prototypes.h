@@ -14,6 +14,8 @@
 #include "FilterDesign/ComplementaryFilters.h"
 #include "FilterDesign/NonUniformFilter.h"
 
+
+#include "ParticleBouncer.h"
 #include "Probability.h"
 #include "Projection3Dto2D.h"
 #include "Polygon.h"

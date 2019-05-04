@@ -5,7 +5,8 @@ using namespace std;
 void ellipseLineIntersections()
 {
   // create and set up ellipse:
-  rsEllipseF ellipse;
+  //rsEllipseF ellipse;
+  rsEllipse<float> ellipse;
   ellipse.setParameters(1.5f, 3.f, float(PI/4), 0.5f, 1.f); 
 
   // create line parameters:
@@ -478,7 +479,7 @@ void sinCosTable()
 {
   // A test for the rsSinCosTable class.
 
-  rsSinCosTableF table(8); // parameter is the table size 
+  rsSinCosTable<float> table(8); // parameter is the table size 
 
   // create data:
   int N = 2000;  // number of values to plot

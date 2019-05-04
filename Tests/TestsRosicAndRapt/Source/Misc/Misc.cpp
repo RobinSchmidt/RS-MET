@@ -1,5 +1,6 @@
 #include "Misc.h"
 
+#include <rosic/rosic.h> // get rid
 using namespace RAPT;
 using namespace rosic;
 

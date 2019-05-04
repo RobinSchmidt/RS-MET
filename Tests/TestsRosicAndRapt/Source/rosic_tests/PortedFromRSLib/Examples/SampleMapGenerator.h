@@ -1,15 +1,19 @@
 #ifndef RS_SAMPLEMAPGENERATOR_H
 #define RS_SAMPLEMAPGENERATOR_H
 
+#include <rapt/rapt.h> // get rid
+
 //#include "../../../Common/TestUtilities.h" // old
 
 // new:
-#include "../../../Shared/Utilities/TestUtilities.h"
-#include "../../../Shared/Utilities/FileWriting.h" // includes rapt
+//#include "../../../Shared/Utilities/TestUtilities.h"
+//#include "../../../Shared/Utilities/FileWriting.h" // includes rapt
 #include "../RSLib/Core/RSCore.h"
 using namespace RSLib;
 
 //typedef std::vector<double> rsVectorDbl; // get rid
+
+
 
 struct rsAudioBuffer  // move to RSLib, maybe templatize on the sample-type (double/float)
 {

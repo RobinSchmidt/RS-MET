@@ -26,7 +26,7 @@ bool coordinateMapperUnitTest()
 {
   bool r = true;      // test result
 
-  rsCoordinateMapper2DF mapper;
+  rsCoordinateMapper2D<float> mapper;
 
   mapper.setInputRange( 0.125f, 8.f, -50.f, +50.f);
   mapper.setOutputRange(0.f,  400.f, 200.f,   0.f);
@@ -162,7 +162,7 @@ bool interpolatingFunctionUnitTest()
 {
   bool r = true;      // test result
 
-  rsNodeBasedFunctionF ipf; // rename to nbf
+  rsNodeBasedFunction<float> ipf; // rename to nbf
 
   std::vector<float> xa, ya; // x,y value arrays
   float /*x,*/ y;                // x,y values
@@ -292,10 +292,10 @@ bool testRootFinding(std::function<float(float)>& func, float xL, float xR, floa
   float root;
   float tol = std::numeric_limits<float>::epsilon();
 
-  root = rsRootFinderF::bisection(func, xL, xR);
+  root = rsRootFinder<float>::bisection(func, xL, xR);
   result &= abs(root-targetRoot) <= tol*targetRoot;   // should it be < or <=?
 
-  root = rsRootFinderF::falsePosition(func, xL, xR);
+  root = rsRootFinder<float>::falsePosition(func, xL, xR);
   result &= abs(root-targetRoot) <= tol*targetRoot;
 
   return result;
@@ -341,27 +341,27 @@ bool rootFinderUnitTest()
   y = f( 2.f); r &= y == 0.f;
 
   // find the roots via bisection:
-  x = rsRootFinderF::bisection(f, -1.3f, -0.8f); r &= x == -1.f;
-  x = rsRootFinderF::bisection(f,  0.8f,  1.3f); r &= x ==  1.f;
-  x = rsRootFinderF::bisection(f,  1.7f,  2.2f); r &= x ==  2.f;
+  x = rsRootFinder<float>::bisection(f, -1.3f, -0.8f); r &= x == -1.f;
+  x = rsRootFinder<float>::bisection(f,  0.8f,  1.3f); r &= x ==  1.f;
+  x = rsRootFinder<float>::bisection(f,  1.7f,  2.2f); r &= x ==  2.f;
 
   // find the roots via false position:
-  x = rsRootFinderF::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
-  x = rsRootFinderF::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
-  x = rsRootFinderF::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
+  x = rsRootFinder<float>::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
+  x = rsRootFinder<float>::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
+  x = rsRootFinder<float>::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
 
   // use a function pointer:
   f = &testFunction;
-  x = rsRootFinderF::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
-  x = rsRootFinderF::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
-  x = rsRootFinderF::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
+  x = rsRootFinder<float>::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
+  x = rsRootFinder<float>::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
+  x = rsRootFinder<float>::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
 
   // use a function object (functor):
   //TestFunctor functor; f = functor;
   f = TestFunctor();  // shorter syntax
-  x = rsRootFinderF::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
-  x = rsRootFinderF::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
-  x = rsRootFinderF::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
+  x = rsRootFinder<float>::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
+  x = rsRootFinder<float>::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
+  x = rsRootFinder<float>::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
 
   // OK - this was to test that it works calling it with different types of paremeters for the
   // function (funtion-pointer, lambda function, functor). Now we want to test the robustness if

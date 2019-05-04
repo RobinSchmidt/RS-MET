@@ -73,14 +73,14 @@ bool triangleRasterization2()
   drw3.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
 
   // random number generators for the triangle vertices and color:
-  rsNoiseGeneratorF coordinateGenerator;
+  rsNoiseGenerator<float> coordinateGenerator;
   coordinateGenerator.setRange(-10, 30);
-  rsNoiseGeneratorF colorGenerator;
+  rsNoiseGenerator<float> colorGenerator;
   colorGenerator.setRange(0, 1);
 
   // draw triangles using the different functions and compare results:
   float color;
-  rsVector2DF a, b, c;
+  rsVector2D<float> a, b, c;
   for(int i = 1; i <= numTriangles; i++)
   {
     // we clear because otherwise, it's likely that all pixel soon saturate to white:
