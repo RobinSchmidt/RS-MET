@@ -44,6 +44,7 @@
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
           <Add directory="..\..\..\..\..\Libraries\JUCE\modules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/vstsdk2.4"/>
         </Compiler>
         <Linker>
           <Add option="-m32"/>
@@ -98,6 +99,7 @@
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
           <Add directory="..\..\..\..\..\Libraries\JUCE\modules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/vstsdk2.4"/>
         </Compiler>
         <Linker>
           <Add option="&quot;bin/Debug/ToolChain.lib&quot;"/>
@@ -154,6 +156,7 @@
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
           <Add directory="..\..\..\..\..\Libraries\JUCE\modules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/vstsdk2.4"/>
         </Compiler>
         <Linker>
           <Add option="&quot;bin/Debug/ToolChain.lib&quot;"/>
@@ -208,6 +211,7 @@
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
           <Add directory="..\..\..\..\..\Libraries\JUCE\modules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/vstsdk2.4"/>
         </Compiler>
         <Linker>
           <Add option="-m64"/>
@@ -261,6 +265,7 @@
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
           <Add directory="..\..\..\..\..\Libraries\JUCE\modules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/vstsdk2.4"/>
         </Compiler>
         <Linker>
           <Add option="&quot;bin/Release/ToolChain.lib&quot;"/>
@@ -316,6 +321,7 @@
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
           <Add directory="..\..\..\..\..\Libraries\JUCE\modules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/vstsdk2.4"/>
         </Compiler>
         <Linker>
           <Add option="&quot;bin/Release/ToolChain.lib&quot;"/>

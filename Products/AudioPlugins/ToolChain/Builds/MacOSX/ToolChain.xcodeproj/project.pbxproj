@@ -822,6 +822,7 @@
 					"../../JuceLibraryCode",
 					"../../../../../Libraries/JUCE/modules",
 					"../../../../../Libraries/RobsJuceModules",
+					"../../../../../../RS-Private/Libaries/vstsdk2.4",
 					"../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -875,6 +876,7 @@
 					"../../JuceLibraryCode",
 					"../../../../../Libraries/JUCE/modules",
 					"../../../../../Libraries/RobsJuceModules",
+					"../../../../../../RS-Private/Libaries/vstsdk2.4",
 					"../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -928,6 +930,7 @@
 					"../../JuceLibraryCode",
 					"../../../../../Libraries/JUCE/modules",
 					"../../../../../Libraries/RobsJuceModules",
+					"../../../../../../RS-Private/Libaries/vstsdk2.4",
 					"../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -982,6 +985,7 @@
 					"../../JuceLibraryCode",
 					"../../../../../Libraries/JUCE/modules",
 					"../../../../../Libraries/RobsJuceModules",
+					"../../../../../../RS-Private/Libaries/vstsdk2.4",
 					"../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1033,6 +1037,7 @@
 					"../../JuceLibraryCode",
 					"../../../../../Libraries/JUCE/modules",
 					"../../../../../Libraries/RobsJuceModules",
+					"../../../../../../RS-Private/Libaries/vstsdk2.4",
 					"../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1080,6 +1085,7 @@
 					"../../JuceLibraryCode",
 					"../../../../../Libraries/JUCE/modules",
 					"../../../../../Libraries/RobsJuceModules",
+					"../../../../../../RS-Private/Libaries/vstsdk2.4",
 					"../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1128,6 +1134,7 @@
 					"../../JuceLibraryCode",
 					"../../../../../Libraries/JUCE/modules",
 					"../../../../../Libraries/RobsJuceModules",
+					"../../../../../../RS-Private/Libaries/vstsdk2.4",
 					"../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
@@ -1175,6 +1182,7 @@
 					"../../JuceLibraryCode",
 					"../../../../../Libraries/JUCE/modules",
 					"../../../../../Libraries/RobsJuceModules",
+					"../../../../../../RS-Private/Libaries/vstsdk2.4",
 					"../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
