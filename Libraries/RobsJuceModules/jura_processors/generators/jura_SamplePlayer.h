@@ -205,7 +205,7 @@ protected:
   settings etc.). */
 
   // these were previously inherited from  WaveformDisplay (via WaveformDisplay) - we preliminarily
-  // define them here unti we have a better new baseclass solution:
+  // define them here until we have a better new baseclass solution:
   int mouseX, mouseY;
 
 

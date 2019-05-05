@@ -1,5 +1,4 @@
 // Bugs: 
-// -memory leak of an object of type juce::TimeSliceThread
 // -zooming in causes crash
 // -SamplePlayerEditorDisplay::paint is called regularly (!) WTF?!
 //  ...maybe because i wanted to draw animated position locators - however - do it with 
@@ -8,10 +7,11 @@
 // doesn't show anything (which is not surprising - we must somhow pass the sample-data to the
 // display)
 
-
 // ToDo:
 // -check why the background of the sample-file label and of the wvaeform display is wrong
-// -derive the wvae display from the new rsWaveformPlot
+// -the waveform display should show the full waveform after loading a new file
+// -SamplePlayerEditorDisplay::setAudioFileToUse has beed updated - we now also need to update the
+//  sample data in the AudioModule and rosic dsp-core object...
 // -check, how the recall of the sample works for the WaveOsc and do it here the same way 
 // -maybe factor out a common baseclass to consolidate the code for saving and recalling the 
 //  sample-path (SampleBasedAudioModule or something) 
@@ -493,37 +493,55 @@ void SamplePlayerEditorDisplay::setSamplePlayerToEdit(rosic::SamplePlayer *newPl
 bool SamplePlayerEditorDisplay::setAudioFileToUse(const juce::File &newFileToUse)
 {
   lockUsedBufferPointer();
-  if( bufferToUse != NULL )
-  {
-    bufferToUse->loadAudioDataFromFile(newFileToUse, false);
+  AudioFileBuffer* buf = bufferToUse; // shorthand
+  if( buf != nullptr ) {
+
+    buf->acquireReadLock();  
+    // was formerly below load...but it ssems to make more sense to acquire it *before* loading
+    // the data
+
+    buf->loadAudioDataFromFile(newFileToUse, false);
 
     //setRangeToBufferLength(); // from old WaveformDisplay
+    //setDirty();   // from old WaveformDisplay
 
-    // pass the data to the audio core-object:
-    if( samplePlayerToEdit != NULL )
-    {
-      bufferToUse->acquireReadLock();
+    setWaveform(buf->getSampleData(), buf->getNumSamples(), buf->getNumChannels());
+    //setMaximumRangeX(0.0, buf->getNumSamples()+1);
+    //setCurrentRangeX(0.0, buf->getNumSamples()+1);
+
+    //updatePlot();
+    //repaint(); // should not be necesarry?
+
+
+    // pass the data to the underlying rosic-object (todo: just keep a pointer to 
+    // SamplePlayerAudioModule and pass the data to *that* which in turn passes it further on to
+    // the rosic object):
+    if( samplePlayerToEdit != nullptr )  {
 
       // todo: retrieve the pointers to the channels and pass it to the rosic-object, this might
       // also be the place to render samples from modal models etc.
 
       //bufferToUse->getSampleData(0, 0);
-      //samplePlayerToEdit->setSampleData(channelPointers, numSamples numChannles);
 
-      samplePlayerToEdit->parameters->setRecordingSampleRate(bufferToUse->getFileSampleRate());
+      // todo:
+      //samplePlayerToEdit->setSampleData(
+      //  buf->getSampleData(), buf->getNumSamples(), buf->getNumChannels());
 
-      bufferToUse->releaseReadLock();
+      samplePlayerToEdit->parameters->setRecordingSampleRate(buf->getFileSampleRate());
+      // RecordingSampleRate means the sample-rate at which the data was recorded
     }
+    // hmm...well...actually, it should not be the display's responsibility to update the 
+    // sample-data in the AudioModule (and hence, the rosic object) - instead, the editor should be
+    // reposnible for this...
 
-    //setMaximumRangeX(0.0, bufferToUse->getNumSamples()+1);
-    //setCurrentRangeX(0.0, bufferToUse->getNumSamples()+1);
-    //setDirty();   // from old WaveformDisplay
-    //updatePlot();
-    //repaint(); // should not be necesarry?
+
+    buf->releaseReadLock();
   }
   unlockUsedBufferPointer();
 
-  return true; // preliminary
+
+  return buf->isAudioFileValid();
+  //return true; // preliminary
 }
 
 /*
@@ -1722,7 +1740,13 @@ bool SamplePlayerModuleEditor::setAudioData(AudioSampleBuffer* newBuffer,
   {
     sampleFileLabel->setText(underlyingFile.getFileName());
     formatInfoLabel->setText(createAudioFileInfoString(underlyingFile));
+
     sampleDisplay->setAudioFileToUse(underlyingFile);
+    // hmm - i think, this causes the sampleDisplay to load the same file again - maybe it would be 
+    // better if we just pass it the "newBuffer" which already contains the audio data - but then
+    // we my need to be more careful about locking - so maybe after all, it's not such a bad idea
+    // to let the display load the data independently...hmmm
+
     return true;
   }
   else

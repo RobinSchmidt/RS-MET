@@ -15,6 +15,8 @@ some infastructure to facilitate the use of this buffer for clips that share aud
 
 */
 
+// todo: maybe templatize it on the sample type (to allow float, double, etc.) - currently it's 
+// fixed to float
 class AudioFileBuffer : protected AudioSampleBuffer
 {
 
@@ -57,7 +59,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // inquiry:
 
-  /** returns true when the buffer contains data from a valid audio file. */
+  /** Returns true when the buffer contains data from a valid audio file. */
   virtual bool isAudioFileValid() const;
 
   /** Returns the number of samples in the buffer. */
@@ -91,9 +93,22 @@ public:
 
   /** Returns a pointer to a sample in one of the buffers channels - IMPORTANT: if you retrieve
   the pointer via this function, it might be invalidated by other threads during you use it - to
-  avoid this, you must call aquireLockForBufferRead() before retrieving the pointer and when
-  you're done, call releaseLockForBufferRead(). */
-  virtual float* getSampleData(const int channelNumber, const int sampleOffset = 0);
+  avoid this, you must call aquireReadLock() before retrieving the pointer and when
+  you're done, call releaseReadLock(). */
+  virtual float* getSampleData(const int channelNumber, const int sampleOffset = 0)
+  {
+    return AudioSampleBuffer::getWritePointer(channelNumber, sampleOffset);
+  }
+
+  /** Returns the pointer to all of our channels - IMPORTANT: if you retrieve the pointer via 
+  this function, it might be invalidated by other threads during you use it - to avoid this, you 
+  must call aquireReadLock() before retrieving the pointer and when you're done, call 
+  releaseReadLock(). */
+  virtual float** getSampleData() 
+  { 
+    return AudioSampleBuffer::getArrayOfWritePointers(); 
+  }
+
 
   /** Returns a sample in a given channel at a given sample-number in a thread-safe manner (i.e.
   no other thread will change the size of this buffer during this call, give that all functions

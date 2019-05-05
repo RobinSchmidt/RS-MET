@@ -16,12 +16,13 @@ AudioFileBuffer::~AudioFileBuffer() throw()
   users.getLock().enter();
 
   // make sure, that no user still refers to this buffer after it's deleted - actually, ideally
-  // you should already be the case when you delete an AudioFileBuffer object:
+  // this should already be the case when you delete an AudioFileBuffer object:
   jassert( users.size() == 0 );
   while( users.size() > 0 )
   {
     //AudioFileBufferUser* user = users[0];
-    users[0]->assignAudioFileBuffer(NULL);
+    users[0]->assignAudioFileBuffer(nullptr);
+    // ... or maybe we should call some sort of deletion notification callback?
   }
 
   users.getLock().exit();
@@ -87,10 +88,10 @@ void AudioFileBuffer::copyTo(const int destChannel, const int destStartSample,
     numSamples);
 }
 
-float* AudioFileBuffer::getSampleData(const int channelNumber, const int sampleOffset)
-{
-  return AudioSampleBuffer::getWritePointer(channelNumber, sampleOffset);
-}
+//float* AudioFileBuffer::getSampleData(const int channelNumber, const int sampleOffset)
+//{
+//  return AudioSampleBuffer::getWritePointer(channelNumber, sampleOffset);
+//}
 
 //-------------------------------------------------------------------------------------------------
 // thread synchronization:
