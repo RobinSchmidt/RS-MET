@@ -7,7 +7,11 @@
 
 /** A class that produces a phasor (i.e. a sawtooth wave from 0 to 1) running at some "slave" 
 frequency but also syncing to some (typically lower) "master" frequency. For preliminary 
-investigations for oscillator sync (it's simpler to consider the phasor's first). */
+investigations for oscillator sync (it's simpler to consider the phasor's first). 
+
+
+
+*/
 
 
 template<class T, class TBlep> // T: type for signal and parameter, TBlep: class for BLEP object
@@ -79,6 +83,7 @@ public:
     blep.prepareForStep(stepDly, stepAmp);
     masterPos = newMasterPos;
   }
+  // rename to handleMasterReset
 
   inline void handleSlaveWrapAround(T newSlavePos)
   {
@@ -113,7 +118,7 @@ public:
   /** Figures out if the master and/or slave phasor needs a reset/wraparound and if so, handles it
   and prepares the blep object accordingly. There are 4 cases: master-wrap-only, slave-wrap-only, 
   master-then-slave-wrap, slave-then-master-wrap. */
-  inline void handleWrapArounds()
+  inline void handleWrapArounds()  // rename to handleResets
   {
     T wrappedMasterPos = T(-1);
     T wrappedSlavePos  = T(-1);
@@ -137,6 +142,10 @@ public:
   }
   // can the logic be simplified? what happens if we do the wraps in the wrong order? does that
   // actually matter? if not, the logic can indeed be simplified a lot
+  
+  // Here is a great discussion of how to process the reset logic:
+  // https://www.kvraudio.com/forum/viewtopic.php?p=5944009
+  // mystran suggests partial sample steps - which seems to a good alternative to the logic above
 
 
   inline void resetPhase()

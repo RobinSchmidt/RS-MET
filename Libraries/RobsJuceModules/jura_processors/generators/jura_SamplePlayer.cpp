@@ -3,12 +3,11 @@
 // -SamplePlayerEditorDisplay::paint is called regularly (!) WTF?!
 //  ...maybe because i wanted to draw animated position locators - however - do it with 
 //  paintOverChildren like in the MultiComp
-// ...ok - after switching to the new wvaeform display, this seems fixed - but the display now
-// doesn't show anything (which is not surprising - we must somhow pass the sample-data to the
-// display)
+
 
 // ToDo:
 // -check why the background of the sample-file label and of the wvaeform display is wrong
+// -check the initial zoom settings
 // -the waveform display should show the full waveform after loading a new file
 // -SamplePlayerEditorDisplay::setAudioFileToUse has beed updated - we now also need to update the
 //  sample data in the AudioModule and rosic dsp-core object...
@@ -499,18 +498,22 @@ bool SamplePlayerEditorDisplay::setAudioFileToUse(const juce::File &newFileToUse
     buf->acquireReadLock();  
     // was formerly below load...but it ssems to make more sense to acquire it *before* loading
     // the data
-
     buf->loadAudioDataFromFile(newFileToUse, false);
 
-    //setRangeToBufferLength(); // from old WaveformDisplay
-    //setDirty();   // from old WaveformDisplay
 
-    setWaveform(buf->getSampleData(), buf->getNumSamples(), buf->getNumChannels());
+
+    rsWaveformPlot::setWaveform(buf->getSampleData(), buf->getNumSamples(), 
+      buf->getNumChannels());
+    rsWaveformPlot::setSampleRate(buf->getFileSampleRate());
+    // we should probably pass the sampleRate to setWaveform and setWaveform should itself update
+    // the current and maximum range
+
     //setMaximumRangeX(0.0, buf->getNumSamples()+1);
     //setCurrentRangeX(0.0, buf->getNumSamples()+1);
+    //setMaximumRangeX(0.0, 5000); // test - probably doesn't work bcs time format is wrong
+    //setCurrentRangeX(0.0, 5000); // ..we probably should set the time format to samples
 
-    //updatePlot();
-    //repaint(); // should not be necesarry?
+
 
 
     // pass the data to the underlying rosic-object (todo: just keep a pointer to 
@@ -659,7 +662,6 @@ void SamplePlayerEditorDisplay::updatePlot(bool resetZoomFactor)
 
 void SamplePlayerEditorDisplay::paint(juce::Graphics &g)
 {
-  //WaveformDisplay::paint(g); // does not take scale and dc into account
   rsWaveformPlot::paint(g); // does not take scale and dc into account
 
   if( samplePlayerToEdit == NULL )
@@ -684,6 +686,7 @@ void SamplePlayerEditorDisplay::paint(juce::Graphics &g)
   }
 
 
+  /*
   // gray out the area before the start sample and after the end sample:
   g.setColour( Colours::lightgrey.withAlpha(0.5f) );
   toPixelCoordinates(xGrayL, y);
@@ -691,6 +694,7 @@ void SamplePlayerEditorDisplay::paint(juce::Graphics &g)
   y = 0.0;
   toPixelCoordinates(xGrayR, y);
   g.fillRect((float) xGrayR, 0.f, (float) getWidth(), (float) getHeight() );
+  */
 
   //g.fillAll(Colours::grey.withAlpha(0.5f));
 }
@@ -1151,39 +1155,26 @@ SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLoc
   SamplePlayerAudioModule* newSamplePlayerModuleToEdit)
   : SampleBasedAudioModuleEditor(newSamplePlayerModuleToEdit)
 {
-  //samplePlayerToEdit = NULL;
-  //jassert( newSamplePlayerToEdit != NULL );
-  //samplePlayerToEdit = newSamplePlayerToEdit->wrappedSamplePlayer;
-
-  jassert( newSamplePlayerModuleToEdit != NULL );
+  jassert( newSamplePlayerModuleToEdit != nullptr );
   samplePlayerModuleToEdit = newSamplePlayerModuleToEdit;
+  //samplePlayerToEdit = newSamplePlayerToEdit->wrappedSamplePlayer; // obsolete?
 
   setHeadlineText("SamplePlayer");
 
 
-
-
-  //addPlot( sampleDisplay = new SamplePlayerEditorDisplay() );
-  addAndMakeVisible( sampleDisplay = new SamplePlayerEditorDisplay() );
+  addPlot( sampleDisplay = new SamplePlayerEditorDisplay() );
+  //addAndMakeVisible( sampleDisplay = new SamplePlayerEditorDisplay() );
   sampleDisplay->setSamplePlayerToEdit(samplePlayerModuleToEdit->wrappedSamplePlayer);
   sampleDisplay->setDescription("Shows the sample waveform data");
-  sampleDisplay->addChangeListener(this);
+  sampleDisplay->addChangeListener(this); // to receive modifications of loop-settings, etc.
   sampleDisplay->setVerticalCoarseGrid(1.0,   false);
   sampleDisplay->setVerticalFineGrid(0.1,     false);
   sampleDisplay->setAxisValuesPositionX(rsPlotSettings::INVISIBLE);
-  sampleDisplay->setHorizontalCoarseGrid(1.0, true);
+  sampleDisplay->setHorizontalCoarseGrid(1.0, true);  // zero-line and lines at +-1
   sampleDisplay->setHorizontalFineGrid(0.1,   false);
   //sampleDisplay->setSampleRate(1.0);
 
   // create the zoomer for the sampleDisplay and associate it with the sampleDisplay:
-  /*
-  addChildColourSchemeComponent( sampleDisplayZoomer = new CoordinateSystemZoomer() );
-  sampleDisplayZoomer->setRelativeMargins(5.0, 5.0, 10.0, 10.0);
-  sampleDisplayZoomer->setCoordinateSystem(sampleDisplay);
-  sampleDisplayZoomer->setVerticalMouseWheelMode(
-    CoordinateSystemZoomer::horizontalZoomViaVerticalMouseWheel);
-  */
-
   addChildColourSchemeComponent( sampleDisplayZoomer = new rsPlotZoomer() );
   sampleDisplayZoomer->setRelativeMargins(5.0, 5.0, 10.0, 10.0);
   sampleDisplayZoomer->setCoordinateSystem(sampleDisplay);

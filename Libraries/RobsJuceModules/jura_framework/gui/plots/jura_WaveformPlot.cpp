@@ -1,11 +1,12 @@
 rsWaveformPlot::rsWaveformPlot(const String& name)
 : rsDataPlot(name)
 {
-  sampleRate               = 44100.0;
-  timeFormat               = HOUR_MINUTE_SECOND;
-  numChannels              = 0;
-  numSampleFrames          = 0;
-  peakData                 = NULL;
+  sampleRate      = 44100.0;
+  //timeFormat      = HOUR_MINUTE_SECOND;
+  timeFormat      = SAMPLES;
+  numChannels     = 0;
+  numSampleFrames = 0;
+  peakData        = NULL;
 
   // initialize the range - time-window: 1 ms, amplitude: -1.1...+1.1
   setMaximumRange(0.0, 0.001, -1.2, +1.2);
@@ -20,6 +21,7 @@ rsWaveformPlot::rsWaveformPlot(const String& name)
   double*  p   = &dummyWave[0];
   double** pp  = &p;
   setWaveform(pp, 4, 1);
+  // ...this is ugly - try to get rid of that
 
   //setValueFieldPopup(false);
   currentMouseCursor = MouseCursor(MouseCursor::NormalCursor);
@@ -50,6 +52,7 @@ rsPlotRange rsWaveformPlot::getMaximumMeaningfulRange(
     relativeMarginTop    = 0.0;
   if( relativeMarginBottom < 0.0 )
     relativeMarginBottom = 0.0;
+  // use jmax
 
   rsPlotRange r = getMaximumRange();
 
@@ -250,6 +253,15 @@ void rsWaveformPlot::createDecimatedData()
       nextSubArraySize /= 2;
     }
   }
+
+  // it's not very elegant to have this here - but we want to start at fully zoomed out view, 
+  // whenever we get new waveform data via one of the setWaveform functions and this function gets
+  // called by all of them:
+  double timeScaler = 1.0;
+  if(timeFormat != SAMPLES) 
+    timeScaler = sampleRate;     // time axis is in seconds seconds
+  setMaximumRangeX(0.0, timeScaler * (numSampleFrames+1) ); // why +1?
+  setCurrentRangeX(0.0, timeScaler * (numSampleFrames+1) );
 }
 
 /*
@@ -267,9 +279,15 @@ void rsWaveformPlot::plotCurveFamily(Graphics &g, Image *targetImage, XmlElement
 
 void rsWaveformPlot::plotWaveform(Graphics &g, Image *targetImage, XmlElement *targetSVG)
 {
+  //return; // test
+  // test:
+  //g.fillAll(Colours::black); // has no effect in the SamplePlayer ..the background is gray
+  //return;                    // even, if we just fill black and return - still gray - wtf?
+
   // make sure that the arrays are valid:
-  if( peakData == NULL || numSampleFrames <= 0 || numChannels <= 0 )
+  if( peakData == nullptr || numSampleFrames <= 0 || numChannels <= 0 )
     return;
+
 
   int firstVisibleFrame = (int) floor(plotSettings.getCurrentRangeMinX() * sampleRate);
   int lastVisibleFrame  = (int) ceil(plotSettings.getCurrentRangeMaxX() * sampleRate);
@@ -282,7 +300,9 @@ void rsWaveformPlot::plotWaveform(Graphics &g, Image *targetImage, XmlElement *t
   decimationFactor      = (int) pow(2.0, (double) subArrayIndex);
   int peakArraySize     = 2*nextPowerOfTwo(numSampleFrames);
   //int subArraySize      = peakArraySize/(2*decimationFactor);
-
+  double timeScaler = 1.0;
+  if(timeFormat != SAMPLES) 
+    timeScaler = 1.0/sampleRate;     // time axis is in seconds seconds
 
   //Colour graphColour    = Colours::blue;
   bool  drawDots        = numVisibleFrames <= 0.1 * getWidth();
@@ -317,9 +337,9 @@ void rsWaveformPlot::plotWaveform(Graphics &g, Image *targetImage, XmlElement *t
       double x1, y1, x2, y2;
 
       // read out the tables:
-      x1 = (float) ( (1.0/sampleRate) * (double) n*decimationFactor);
+      x1 = (float) ( timeScaler * (double) n*decimationFactor);
       y1 = peakData[c*peakArraySize + readOffset+n];
-      x2 = (float) ( (1.0/sampleRate) * (double) ((n+1)*decimationFactor));
+      x2 = (float) ( timeScaler * (double) ((n+1)*decimationFactor));
       y2 = peakData[c*peakArraySize + readOffset+n+1];
 
       // transform:

@@ -312,6 +312,13 @@ http://metafunction.co.uk/all-about-digital-oscillators-part-2-blits-bleps/
 oddball here because its continuous time version is not an actual function but rather a 
 distribution?
 
+also interesting: polynomial transtition regions (PTR):
+https://www.yofiel.com/software/cycling-74-patches/antialiased-oscillators
+http://research.spa.aalto.fi/publications/papers/spl-ptr/
+http://home.mit.bme.hu/~bank/publist/smc13.pdf
+
+"New Perspectives on Distortion Synthesis for Virtual Analog Oscillators" Computer Music Journal, 2010.http://eprints.maynoothuniversity.ie/4104/1/VL_New_perspectives.pdf
+
 
 maybe make a version that only applies the correction to future samples (minblep) - maybe 
 use a (windowed) impulse-, step- and ramp- response of an elliptic filter to window step- 
@@ -345,5 +352,8 @@ https://www.kvraudio.com/forum/viewtopic.php?f=33&t=364256
 
 Did any one get Minblep hardsync right?
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=461630
+
+
+
 
 */

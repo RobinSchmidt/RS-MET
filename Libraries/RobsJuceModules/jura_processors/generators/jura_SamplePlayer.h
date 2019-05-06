@@ -98,7 +98,7 @@ todo:
 
 */
 
-class SamplePlayerEditorDisplay	: 
+class SamplePlayerEditorDisplay	:  // rename to rsSamplePlayerWaveDisplay
   //virtual public WaveformDisplay  // old
 
   public rsWaveformPlot, public AudioFileBufferUser /*, virtual public InteractiveCoordinateSystem */

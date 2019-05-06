@@ -12,6 +12,8 @@ public:
   {
     HOUR_MINUTE_SECOND = 1,
     SAMPLES
+    // SECONDS
+    // BEATS
   };
 
   rsWaveformPlot(const juce::String& name = juce::String("rsWaveformPlot"));
