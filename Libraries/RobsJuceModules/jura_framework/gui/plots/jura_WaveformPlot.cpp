@@ -2,8 +2,8 @@ rsWaveformPlot::rsWaveformPlot(const String& name)
 : rsDataPlot(name)
 {
   sampleRate      = 44100.0;
-  //timeFormat      = HOUR_MINUTE_SECOND;
-  timeFormat      = SAMPLES;
+  timeFormat      = HOUR_MINUTE_SECOND;
+  //timeFormat      = SAMPLES;
   numChannels     = 0;
   numSampleFrames = 0;
   peakData        = NULL;
@@ -259,7 +259,7 @@ void rsWaveformPlot::createDecimatedData()
   // called by all of them:
   double timeScaler = 1.0;
   if(timeFormat != SAMPLES) 
-    timeScaler = sampleRate;     // time axis is in seconds seconds
+    timeScaler = 1.0/sampleRate;     // time axis is in seconds seconds
   setMaximumRangeX(0.0, timeScaler * (numSampleFrames+1) ); // why +1?
   setCurrentRangeX(0.0, timeScaler * (numSampleFrames+1) );
 }

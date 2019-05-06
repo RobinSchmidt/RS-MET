@@ -1,14 +1,10 @@
 // Bugs: 
-// -zooming in causes crash
 // -SamplePlayerEditorDisplay::paint is called regularly (!) WTF?!
 //  ...maybe because i wanted to draw animated position locators - however - do it with 
 //  paintOverChildren like in the MultiComp
 
 
 // ToDo:
-// -check why the background of the sample-file label and of the wvaeform display is wrong
-// -check the initial zoom settings
-// -the waveform display should show the full waveform after loading a new file
 // -SamplePlayerEditorDisplay::setAudioFileToUse has beed updated - we now also need to update the
 //  sample data in the AudioModule and rosic dsp-core object...
 // -check, how the recall of the sample works for the WaveOsc and do it here the same way 
@@ -25,6 +21,7 @@
 // -let the user switch between waveform and spectrogram view and/or use the spectrogram for the 
 //  background and the waveform for the foreground
 //  -have an rsHeatMapDisplay or rsColorMapDisplay baseclass and rsSpectrogramPlot subclass
+// -maybe change the background of the sample-file text field
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
