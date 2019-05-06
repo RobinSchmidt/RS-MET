@@ -496,6 +496,28 @@ void polyBlep()
   // ...but i think, that doesn't  work out, too...more research needed....
 }
 
+void superBlep()
+{
+  // Experimenting with the blep-based supersaw implementation...
+
+  int N = 500;
+  double sampleRate = 44100;
+  double freq = 100;
+
+  // create and set up the osc object:
+  typedef rsSuperBlepOsc<double, rsBlepReadyOscBase<double>, rsPolyBlep2<double, double>> SBO;
+  SBO osc;
+  osc.setMaxNumOscillators(32);
+  osc.setReferenceIncrement(freq / sampleRate);
+
+  // produce output signal:
+
+
+  // plot:
+
+}
+
+
 
 // maybe move to test-signal generation
 template<class TOsc>

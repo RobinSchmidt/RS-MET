@@ -14,20 +14,50 @@ class rsSuperBlepOsc
 public:
 
 
+  //rsSuperBlepOsc();
+
+  /** Sets the reference phase increment which determines the center frequency of the osc stack 
+  around which all other frequencies are arranged. */
+  inline void setReferenceIncrement(T newIncrement) 
+  { 
+    inc = newIncrement; 
+    updateIncrements();
+  }
+
+  /** Sets the number of oscillators to use. */
+  inline void setNumOscillators(int newNumber)
+  {
+    numOscs = rsMin(newNumber, getMaxNumOscillators());
+  }
+
+  /** Sets the maximum number of oscillators that can be used. May cause memory (re)allocation and
+  should probably be called once at startup time. */
+  inline void setMaxNumOscillators(int newMaximum)
+  {
+    incs.resize(newMaximum);
+    oscs.resize(newMaximum);
+    numOscs = rsMin(numOscs, newMaximum);
+    updateIncrements();
+  }
+
+  /** Returns the maximum number of oscillators that can be used. */
+  inline int getMaxNumOscillators() const { return (int) oscs.size(); } 
+
 
 protected:
 
-  std::vector<T> incs; // phase increments
-  // todo: have a corresponding array of pan positions - if we do stereo later, we will need two
-  // blep objects - one for each channel
+  /** Updates our array of phase increments according to the desired reference increment and 
+  settings of detune, etc.. */
+  void updateIncrements();
 
+  int numOscs = 1;        // current number of oscillators
+  T inc = 0;              // reference increment
+  std::vector<TOsc> oscs; // oscillator array
+  std::vector<T> incs;    // array of phase increments
+  TBlep blep; // a single blep is shared among all oscs
 
-  TOsc osc;
-  TBlep blep; // blep is shared among all oscs
-
-
-
-
+  // todo: have an array of pan positions - if we do stereo later, we will need two blep objects 
+  // - one for each channel
 };
 
 

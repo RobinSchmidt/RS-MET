@@ -10,6 +10,7 @@ void blit();
 void blep();
 //void blamp();
 void polyBlep();
+void superBlep();
 void syncSweep();
 void syncPhasor();
 void syncPhasor2();
