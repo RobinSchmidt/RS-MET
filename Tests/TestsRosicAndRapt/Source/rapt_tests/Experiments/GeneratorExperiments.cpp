@@ -500,15 +500,18 @@ void superBlep()
 {
   // Experimenting with the blep-based supersaw implementation...
 
-  int N = 1000;
+  int N = 5000;
   double sampleRate = 44100;
   double freq = 1000;
 
   // create and set up the osc object:
   typedef rsSuperBlepOsc<double, rsBlepReadyOscBase<double>, rsPolyBlep2<double, double>> SBO;
   SBO osc;
-  osc.setMaxNumOscillators(32);
   osc.setReferenceIncrement(freq / sampleRate);
+  osc.setMaxNumOscillators(32);
+  osc.setDetune(0.1);
+  osc.setNumOscillators(7);
+
 
   // produce output signal:
   std::vector<double> x(N);

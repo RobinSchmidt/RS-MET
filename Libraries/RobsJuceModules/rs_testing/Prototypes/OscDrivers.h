@@ -14,15 +14,27 @@ class rsSuperBlepOsc
 public:
 
 
-  //rsSuperBlepOsc();
+  rsSuperBlepOsc();
 
   /** Sets the reference phase increment which determines the center frequency of the osc stack 
   around which all other frequencies are arranged. */
   inline void setReferenceIncrement(T newIncrement) 
   { 
-    inc = newIncrement; 
+    refInc = newIncrement; 
     updateIncrements();
   }
+
+  inline void setDetune(T newDetune) 
+  { 
+    detune = newDetune; 
+    updateIncrements();
+  }
+  // todo: use an update strategy similar to TurtleSource - have an atomic bool that stores, if the
+  // incs array is up to date, check in getSample if it is up to date and if not, update it - 
+  // allows for efficient simultaneous modulation of frequency and detune from the mod-system
+  // or maybe just have a function setIncrementAndDetune - to make it efficient in the mod-system,
+  // a subclass (in rosic) shall be used that uses the bool - rapt is not the right place for such
+  // infrastructe dependent decisions
 
   /** Sets the number of oscillators to use. */
   inline void setNumOscillators(int newNumber)
@@ -84,8 +96,8 @@ protected:
   void updateIncrements();
 
   int numOscs = 1;        // current number of oscillators
-  T inc = 0;              // reference increment
-  T detune = 0;
+  T refInc = T(0);        // reference increment
+  T detune = T(0);        
   std::vector<TOsc> oscs; // oscillator array
   std::vector<T> incs;    // array of phase increments
 
