@@ -115,6 +115,19 @@ applies a transformation like S = S+S+S+. maybe with this, the pseudo-koch curve
 183ff can be turned into closed triangular shaped loops (maybe this would belong into the 
 TurtleSource?)
 
+Extension to 3D:
+-user defines 3 rotation angles ax, ay, az where az corresponds to our current 2D angle
+-the rotate left/right commands now additionaly rotate around the other axes as well
+-this way of implementing 3D does not require any extension of the turtle syntax and we don't need
+ specific 3D L-systems (a different way would be to have extra commands for the other rotations 
+ which would require such things)
+-it may be musically desirable to have harmonic relationships between the angles, in particular
+ ay = az/2, ax = az/4 or ax = az/3
+-maybe try matrices that are not pure rotations but also include scaling and shearing
+-maybe even allow 4D matrices - the 4th w-coordinate can be interpreted for perspective
+-maybe we could have an array of different triplets of angles and have further turtle commands to 
+ skip to the next/previous angle triple (mayb N, P)
+
 
 -call the whole synthesis method Fractal Geometric Synthesis (FG-synthesis), the extended 
 Lindenmayer/Turtle grammar Fractal Definition Language (FDL) or maybe fractal geometric synthesis

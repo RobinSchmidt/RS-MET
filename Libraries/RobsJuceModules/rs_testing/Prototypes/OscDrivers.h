@@ -1,17 +1,34 @@
 #pragma once
 
 
+// template parameters: 
+// T: type for signals and parameters, TOsc: class for the (blep-ready) osc, TBlep: class for blep
+template<class T, class TOsc, class TBlep> 
+
+/** A class for producing waveforms like supersaw, supersquare, etc. using a blep-ready oscillator 
+class as basis and applies a blep for anti-aliasing. */ 
+
+class rsSuperBlepOsc
+{
+
+public:
 
 
 
+protected:
+
+  TOsc osc;
+  TBlep blep; // blep is shared among all oscs
+
+};
+
+
+
+//=================================================================================================
 
 /** A class that produces a phasor (i.e. a sawtooth wave from 0 to 1) running at some "slave" 
 frequency but also syncing to some (typically lower) "master" frequency. For preliminary 
-investigations for oscillator sync (it's simpler to consider the phasor's first). 
-
-
-
-*/
+investigations for oscillator sync (it's simpler to consider the phasor's first). */
 
 
 template<class T, class TBlep> // T: type for signal and parameter, TBlep: class for BLEP object

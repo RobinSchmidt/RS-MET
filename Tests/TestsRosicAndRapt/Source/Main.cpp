@@ -72,6 +72,7 @@ int main(int argc, char* argv[])
   //expGaussBell();
   //interpolatingFunction();
   //linearRegression();
+  //metallicRatios();
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();

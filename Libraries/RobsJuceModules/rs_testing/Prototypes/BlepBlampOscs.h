@@ -178,11 +178,16 @@ protected:
 
   // Values for discontinuities - when the stepAmp is nonzero, it means that a step discontinuity 
   // has occured and stepDelay will contain the corresponding fractional delay. An outlying driver 
-  // object should check if getStepAmplitude is nonzeor after a call to getSample and if a 
+  // object should check if getStepAmplitude is nonzero after a call to getSample and if a 
   // discontinuity did occur, the driver should prepareForStep in a rsStepBandLimiter object. The 
   // required fractionla delay can be inquired via getStepDelay
   T stepDelay = 0;
   T stepAmp   = 0;
+  // maybe don't keep them as members - instead, let the getSample function take pointer or 
+  // reference parameters that are assigned inside the function - this keeps the memory footprint
+  // low which is especially desirable for oscillator arrays such as needed for supersaw
+  // ...maybe even the increment could be passed into getSample - then we would not have to keep
+  // it here either - or maybe factor out a class without the inc rsBlepReadyOscCore or something
 
 
   // maybe the driver should be an oscillator pair that also allows hardsync

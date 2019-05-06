@@ -4,6 +4,7 @@
 void ellipseLineIntersections();
 void interpolatingFunction();
 void linearRegression();
+void metallicRatios();
 void polynomialPrediction();
 void probabilityLogic();
 void productLogPlot();

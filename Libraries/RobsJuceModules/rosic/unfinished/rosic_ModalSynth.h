@@ -261,25 +261,25 @@ public:
   // todo: let the key/vel parameters also be double
 
   /** Frequency ratio of given mode at given key and velocity */
-  double getModeFreqRatio(int modeIndex, int key, int vel) const;
+  double getModeFreqRatio(int modeIndex, double key, double vel) const;
 
   /** Absolute frequency in Hz of a given mode at given key and velocity. */
-  double getModeFrequency(int modeIndex, int key, int vel) const;
+  double getModeFrequency(int modeIndex, double key, double vel) const;
 
   /** Pitch offset of given mode with respect to the fundamental in semitones. */
-  double getModeRelativePitch(int modeIndex, int key, int vel) const;
+  double getModeRelativePitch(int modeIndex, double key, double vel) const;
 
   /** Amplitude of given mode as raw factor. */
-  double getModeAmplitude(int modeIndex, int key, int vel) const;
+  double getModeAmplitude(int modeIndex, double key, double vel) const;
 
   /** Level of given mode in decibels. */
-  double getModeLevel(int modeIndex, int key, int vel) const;
+  double getModeLevel(int modeIndex, double key, double vel) const;
 
   /** Attack time of given mode in milliseconds. */
-  double getModeAttack(int modeIndex, int key, int vel) const;
+  double getModeAttack(int modeIndex, double key, double vel) const;
 
   /** Decay time of given mode in milliseconds. */
-  double getModeDecay(int modeIndex, int key, int vel) const;
+  double getModeDecay(int modeIndex, double key, double vel) const;
 
   // to compute the total decay time, we use the formula
   // decay = baseDecay * exp(cr*decayByRatio  + ck*decayByKey  + cv*decayByVel);

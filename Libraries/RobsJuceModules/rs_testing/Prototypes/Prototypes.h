@@ -304,7 +304,7 @@ public:
   rsRingBuffer(size_t capacity) : rsBuffer(capacity) {}
 
 
-  /** Sets up a new buffer length and adjusts the left index accodingly, leaving the right index
+  /** Sets up a new buffer length and adjusts the left index accordingly, leaving the right index
   where it is. The reason to do it that way and not the other way around is that in a delayline,
   the right index represents the write-head and the left index represents the read-head and on a
   change of the delay time, we want to move the read-head. */
@@ -320,7 +320,7 @@ public:
 
   inline T getSample(T in)
   {
-    rightIndex = wrap(rightIndex+1); // incremenet before write/read to allow further operations
+    rightIndex = wrap(rightIndex+1); // increment before write/read to allow further operations
     leftIndex  = wrap(leftIndex+1);  // after getSample (indices must be still valid)
     data[rightIndex] = in;           // right index is write index
     T out = data[leftIndex];         // left index is read index

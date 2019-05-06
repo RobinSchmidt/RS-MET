@@ -211,17 +211,17 @@ void rsModalSynth::setFreqRatioMixY(double newMix)
 
 //-------------------------------------------------------------------------------------------------
 
-double rsModalSynth::getModeFreqRatio(int i, int k, int v) const
+double rsModalSynth::getModeFreqRatio(int i, double k, double v) const
 {
   return freqRatios[i];
 }
 
-double rsModalSynth::getModeFrequency(int i, int k, int v) const
+double rsModalSynth::getModeFrequency(int i, double k, double v) const
 {
   return RAPT::rsPitchToFreq(k) * getModeFreqRatio(i, k, v);
 }
 
-double rsModalSynth::getModeRelativePitch(int i, int k, int v) const
+double rsModalSynth::getModeRelativePitch(int i, double k, double v) const
 {
   double r = getModeFreqRatio(i, k, v);
   return FREQFACTOR2PITCHOFFSET(r); // move as function to rapt
@@ -231,13 +231,13 @@ double rsModalSynth::getModeRelativePitch(int i, int k, int v) const
   // something * freqRatiosLog[i]
 }
 
-double rsModalSynth::getModeAmplitude(int i, int k, int v) const
+double rsModalSynth::getModeAmplitude(int i, double k, double v) const
 {
   double dB = getModeLevel(i, k, v);
   return RAPT::rsDbToAmp(dB);
 }
 
-double rsModalSynth::getModeLevel(int i, int k, int v) const
+double rsModalSynth::getModeLevel(int i, double k, double v) const
 {
   double dB   = level + levelByKey*(k-64)/63. + levelByVel*(v-64)/63.;
   double octs = getModeRelativePitch(i, k, v) / 12.0; // how many octaves is the mode above f0
@@ -247,7 +247,7 @@ double rsModalSynth::getModeLevel(int i, int k, int v) const
   return dB;
 }
 
-double rsModalSynth::getModeAttack(int i, int k, int v) const
+double rsModalSynth::getModeAttack(int i, double k, double v) const
 {
   double cr  = getTimeCoeffByIndex(i);
   double ck  = getTimeCoeffByKey(k);
@@ -256,7 +256,7 @@ double rsModalSynth::getModeAttack(int i, int k, int v) const
   return att;
 }
 
-double rsModalSynth::getModeDecay(int i, int k, int v) const
+double rsModalSynth::getModeDecay(int i, double k, double v) const
 {
   double cr  = getTimeCoeffByIndex(i);
   double ck  = getTimeCoeffByKey(k);

@@ -155,6 +155,20 @@ void linearRegression()
 }
 
 
+
+void metallicRatios()
+{
+  // The metallic ratio rn for integer n is given by (n + sqrt(n^2+4))/2 - so the ratio of two
+  // metallic ratios for integers m, n is: rn/rm = (n + sqrt(n^2+4)) / (m + sqrt(m^2+4))
+  // ...maybe obtain the continued fraction expansion of these numerically and see, if we get small
+  //  coefficients
+
+
+  int dummy = 0;
+}
+
+
+
 /*
 Idea: we model the signal x(t) by a polynomial such that:
 x(t) = a0 + a1*t + a2*t^2 + a3*t^3 + ... + aN*t^N
