@@ -17,10 +17,20 @@ public:
 
 protected:
 
+  std::vector<T> incs; // phase increments
+  // todo: have a corresponding array of pan positions - if we do stereo later, we will need two
+  // blep objects - one for each channel
+
+
   TOsc osc;
   TBlep blep; // blep is shared among all oscs
 
+
+
+
 };
+
+
 
 
 

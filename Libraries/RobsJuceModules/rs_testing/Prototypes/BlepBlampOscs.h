@@ -17,7 +17,7 @@ step position/height?
 */
 
 template<class T>
-class rsBlepReadyOsc
+class rsBlepReadyOscBase
 {
 
 public:
@@ -26,11 +26,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  /** Sets the phase-increment per sample. Should be set to frequency/sampleRate. */
-  inline void setPhaseIncrement(T newIncrement)
-  {
-    inc = newIncrement;
-  }
+
 
   //inline void setAmplitude(T newAmplitude) { amp = newAmplitude; }
 
@@ -41,7 +37,7 @@ public:
   /** \name Inquiry */
 
 
-  inline T getPhaseIncrement() const { return inc; }
+
 
   inline T getPhase()          const { return pos; }
 
@@ -53,18 +49,18 @@ public:
   /** \name Processing */
 
 
-  /* Produces one sawtooth wave output sample at a time and assigns the values stepDelay, stepAmp
-  according to any step discontinuity that may have occured between the previous and the current 
-  sample. When the stepAmp is nonzero, it means that a step discontinuity has occured and stepDelay
-  will contain the corresponding fractional delay. If no step has occurred, stepAmp will be zero 
-  and stepDelay will we left untouched. An outlying driver object should check if stepAmp is 
-  nonzero after a call to getSample and if a discontinuity did occur, the driver should 
-  prepareForStep in a rsStepBandLimiter object. */
+  /* Produces one sawtooth wave output sample at a time using a phase-increment given by inc and 
+  assigns the values stepDelay, stepAmp according to any step discontinuity that may have occured 
+  between the previous and the current sample. When the stepAmp is nonzero, it means that a step 
+  discontinuity has occured and stepDelay will contain the corresponding fractional delay. If no 
+  step has occurred, stepAmp will be zero and stepDelay will we left untouched. An outlying driver
+  object should check if stepAmp is nonzero after a call to getSample and if a discontinuity did 
+  occur, the driver should prepareForStep in a rsStepBandLimiter object. */
 
-  inline T getSampleSaw(T* stepDelay, T* stepAmp)
+  inline T getSampleSaw(T inc, T* stepDelay, T* stepAmp)
   {
     *stepAmp = T(0);
-    updatePhase();
+    updatePhase(inc);
     // actually, it's not really nice to do the phase update before computing the sample - i think
     // i can do it the other way around, if we make so that the osc will set stepAmp nonzero 
     // *before* getSample produces the step - the driver would have to take this into account and
@@ -96,10 +92,10 @@ public:
   }
 
 
-  inline T getSampleSquare(T* stepDelay, T* stepAmp)
+  inline T getSampleSquare(T inc, T* stepDelay, T* stepAmp)
   {
     *stepAmp = T(0);
-    updatePhase();
+    updatePhase(inc);
 
     if(pos < inc) {                    // or should it be <= ?
       *stepAmp   = T(-2);               // downward step by -2
@@ -115,10 +111,10 @@ public:
   }
 
 
-  inline T getSampleTriangle(T* cornerDelay, T* cornerAmp)  
+  inline T getSampleTriangle(T inc, T* cornerDelay, T* cornerAmp)  
   {
     *cornerAmp = T(0);
-    updatePhase();
+    updatePhase(inc);
 
     // produce info for blamp, if corner has occurred:
     if(pos < inc) {
@@ -131,29 +127,16 @@ public:
     }
 
     return triangleValue(pos);
-
-    /*
-    // produce output signal (factor out into static function):
-    if(pos < T(0.5)) 
-      return (T(4) * pos - T(1));
-    else
-      return (T(1) - T(4) * (pos-T(0.5)));
-      */
   }
 
-
-
-
-
-  inline void resetPhase(T start = T(0))
+  /** Resets the phase. You should pass a start-phase and a phase-increment. The increment is 
+  needed because we increment the phase before producing a sample in getSample which implies that 
+  we need to reset the phase to the desired start-phase minus the increment in an reset in order to
+  have the very first output sample that getSample... produces at the desired start phase. */
+  inline void resetPhase(T start, T inc)
   {
     pos = start - inc; // -inc, because we increment pos before producing a sample
     wrapPhase(pos);
-  }
-
-  inline void reset(T start = T(0))
-  {
-    resetPhase(start);
   }
 
   /** Returns the value of a sawtooth wave at given position in [0,1). */
@@ -180,9 +163,7 @@ public:
       return (T(1) - T(4) * (pos-T(0.5)));
   }
 
-
-
-  inline void updatePhase()
+  inline void updatePhase(T inc)
   {
     pos += inc;
     wrapPhase(pos);
@@ -199,6 +180,56 @@ public:
 protected:
 
   T pos   = 0.5;   // position/phase in the range [0,1)
+
+};
+
+
+//=================================================================================================
+
+/** Extends rsBlepReadyOscBase by having a member variable for the phase increment. */
+
+template<class T>
+class rsBlepReadyOsc : public rsBlepReadyOscBase<T>
+{
+
+public:
+
+  /** Sets the phase-increment per sample. Should be set to frequency/sampleRate. */
+  inline void setPhaseIncrement(T newIncrement)
+  {
+    inc = newIncrement;
+  }
+
+  inline T getPhaseIncrement() const { return inc; }
+
+  inline T getSampleSaw(T* stepDelay, T* stepAmp) 
+  { 
+    return rsBlepReadyOscBase<T>::getSampleSaw(inc, stepDelay, stepAmp);
+  }
+
+  inline T getSampleSquare(T* stepDelay, T* stepAmp) 
+  { 
+    return rsBlepReadyOscBase<T>::getSampleSquare(inc, stepDelay, stepAmp);
+  }
+
+  inline T getSampleTriangle(T* cornerDelay, T* cornerAmp) 
+  { 
+    return rsBlepReadyOscBase<T>::getSampleTriangle(inc, cornerDelay, cornerAmp);
+  }
+
+  inline void resetPhase(T start = T(0))
+  {
+    rsBlepReadyOscBase<T>::resetPhase(start, inc);
+  }
+
+  inline void reset(T start = T(0))
+  {
+    resetPhase(start);
+  }
+
+
+protected:
+
   T inc   = 0;     // phase increment per sample
 
   // maybe the driver should be an oscillator pair that also allows hardsync
@@ -208,7 +239,10 @@ protected:
   // derivatives to both sides of the discontinuity - it will include a step, derivative-change,
   // curvature-change and so on)....but maybe that's so expensive that oversampling would be
   // more efficient? we'll see...
+
 };
+
+
 
 //=================================================================================================
 
