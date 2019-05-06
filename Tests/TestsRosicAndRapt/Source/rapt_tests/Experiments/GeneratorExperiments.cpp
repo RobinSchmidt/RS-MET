@@ -151,7 +151,7 @@ void blep()
   //double inc = 30. / (93*3);
   //double inc = 1. / 19;
   double inc = GOLDEN_RATIO / 100;
-  int N      = 80000;      // number of samples to produce
+  int N      = 800;      // number of samples to produce
   int shape  = 2;        // 1: saw, 2: square, 3: triangle
   int prec   = 20;       // table precision
   int length = 30;       // blep length
@@ -205,35 +205,35 @@ void blep()
   std::vector<double> x(N), ylt(N), ymt(N), yp1(N), yp2(N); 
   // lt: linear-phase/table, mt: minimum-phase/table, p1/2: poly-blep1/2
 
+  double stepDelay, stepAmp;
+
   for(int n = 0; n < N; n++)
   {
     switch(shape)
     {
-    case 1: x[n] = osc.getSampleSaw();      break;
-    case 2: x[n] = osc.getSampleSquare();   break;
-    case 3: x[n] = osc.getSampleTriangle(); break;
+    case 1: x[n] = osc.getSampleSaw(&stepDelay, &stepAmp);      break;
+    case 2: x[n] = osc.getSampleSquare(&stepDelay, &stepAmp);   break;
+    case 3: x[n] = osc.getSampleTriangle(&stepDelay, &stepAmp); break;
     }
 
-    if(osc.getStepAmplitude() != 0.0) // a step did occur
-    {
-      linTableBlep.prepareForStep(osc.getStepDelay(), osc.getStepAmplitude());
-      minTableBlep.prepareForStep(osc.getStepDelay(), osc.getStepAmplitude());
-      polyBlep1.prepareForStep(   osc.getStepDelay(), osc.getStepAmplitude());
-      polyBlep2.prepareForStep(   osc.getStepDelay(), osc.getStepAmplitude());
+    if(stepAmp != 0.0) { // a step (or corner) did occur
+      if(shape != 3) {   // saw or square - prepare for steps
+        linTableBlep.prepareForStep(stepDelay, stepAmp);
+        minTableBlep.prepareForStep(stepDelay, stepAmp);
+        polyBlep1.prepareForStep(stepDelay, stepAmp);
+        polyBlep2.prepareForStep(stepDelay, stepAmp);
+      } else {           // triangle - prepare for corners
+        linTableBlep.prepareForCorner(stepDelay, stepAmp);
+        minTableBlep.prepareForCorner(stepDelay, stepAmp);
+        //polyBlep1.prepareForCorner(   stepDelay, stepAmp); // not yet implemented
+        polyBlep2.prepareForCorner(stepDelay, stepAmp);
+      }
     }
-      // maybe the blep objects could figure out the size of the step itself - maybe do something like
-      // sbl.prepareForStep(osc.getStepDelay(), x[n] - sbl.previousInputSample() );
-      // ...hmm bute the previousInputSample in the delayline already may have a correction applied
-      // ...i think that would be wrong - we need the difference of the new sample and the 
-      // uncorrected previous input sample
-
-    if(osc.getCornerAmplitude() != 0.0) // a corner did occur
-    {
-      linTableBlep.prepareForCorner(osc.getCornerDelay(), osc.getCornerAmplitude());
-      minTableBlep.prepareForCorner(osc.getCornerDelay(), osc.getCornerAmplitude());
-      //polyBlep1.prepareForCorner(   osc.getCornerDelay(), osc.getCornerAmplitude()); // not yet implemented
-      polyBlep2.prepareForCorner(   osc.getCornerDelay(), osc.getCornerAmplitude());
-    }
+    // maybe the blep objects could figure out the size of the step itself - maybe do something like
+    // blep.prepareForStep(stepDelay, x[n] - sbl.previousInputSample() );
+    // ...hmm bute the previousInputSample in the delayline already may have a correction applied
+    // ...i think that would be wrong - we need the difference of the new sample and the 
+    // uncorrected previous input sample
 
 
     ylt[n] = linTableBlep.getSample(x[n]);
@@ -266,18 +266,18 @@ void blep()
   rsArray::shift(&yp1[0], N, -polyBlep1.getDelay());
   rsArray::shift(&yp2[0], N, -polyBlep2.getDelay());
 
-  rosic::writeToMonoWaveFile("BlepTestNoAA.wav",   &x[0],   N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestLinTbl.wav", &ylt[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestMinTbl.wav", &ymt[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestPoly1.wav",  &yp1[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestPoly2.wav",  &yp2[0], N, int(fs));
-  rosic::writeToMonoWaveFile("BlepTestBL.wav",     &r[0],   N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestNoAA.wav",   &x[0],   N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestLinTbl.wav", &ylt[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestMinTbl.wav", &ymt[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestPoly1.wav",  &yp1[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestPoly2.wav",  &yp2[0], N, int(fs));
+  //rosic::writeToMonoWaveFile("BlepTestBL.wav",     &r[0],   N, int(fs));
   //rsPlotVector(x);
   //rsPlotVector(r-y);  // error-signal: reference minus blepped
   //rsPlotVectors(x, y);
   //rsPlotVectors(x, ylt);
-  //rsPlotVectors(x, ylt, ymt);
-  //rsPlotVectors(x, yp1, yp2); 
+  rsPlotVectors(x, ylt, ymt);
+  rsPlotVectors(x, yp1, yp2); 
   //rsPlotVectors(x, ylt, r, r-ylt);
   //rsPlotSpectrum(y); // oh - no this doesn't work - it takes a spectrum as input..
 
@@ -585,8 +585,8 @@ void syncPhasor()
   double f2_end   = 2  * f1;             // end   freq of slave osc 2
   double a        = 0.25;                 // amplitude
 
-  typedef rsSyncPhasor<double, rsPolyBlep1<double, double>> SP;
-  //typedef rsSyncPhasor<double, rsPolyBlep2<double, double>> SP;
+  //typedef rsSyncPhasor<double, rsPolyBlep1<double, double>> SP;
+  typedef rsSyncPhasor<double, rsPolyBlep2<double, double>> SP;
   //typedef rsSyncPhasor<double, rsTableMinBlep<double, double>> SP;
   SP sp;
   sp.setMasterIncrement(f1      /fs);
@@ -626,6 +626,9 @@ void syncPhasor()
   // todo: produce the same sweep naively at a much higher sample-rate and then downsample and 
   // compare with blep version - make a function 
   // createSyncOutput(masterFreq, slaveStartFreq, slaveEndFreq, length, sampleRate, bool withBlep)
+  // -produce difference signals between naive and polyblep versions - Elan says, the PolyBlep1 
+  //  works better for that - but why should that be the case? ...it shouldn't - i think. 
+  //  -> figure out
 }
 
 template<class TOsc>

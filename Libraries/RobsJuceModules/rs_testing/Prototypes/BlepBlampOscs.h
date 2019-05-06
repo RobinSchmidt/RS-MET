@@ -39,9 +39,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  inline T getStepAmplitude()  const { return stepAmp; }
+  //inline T getStepAmplitude()  const { return stepAmp; }
 
-  inline T getStepDelay()      const { return stepDelay; }
+  //inline T getStepDelay()      const { return stepDelay; }
 
   inline T getPhaseIncrement() const { return inc; }
 
@@ -56,9 +56,9 @@ public:
 
 
 
-  inline T getSampleSaw()
+  inline T getSampleSaw(T* stepDelay, T* stepAmp)
   {
-    stepAmp = T(0);
+    *stepAmp = T(0);
     updatePhase();
     // actually, it's not really nice to do the phase update before computing the sample - i think
     // i can do it the other way around, if we make so that the osc will set stepAmp nonzero 
@@ -81,8 +81,8 @@ public:
     // Figure out, if (and when) a wrap-around occured. In such case, we produce a step 
     // discontinuity of size -2
     if(pos < inc) {                    // or should it be <= ?
-      stepAmp   = T(-2);               // downward step by -2
-      stepDelay = pos/inc;
+      *stepAmp   = T(-2);               // downward step by -2
+      *stepDelay = pos/inc;
     }
     // what if the increment is negative - then we should check if pos > (1-inc) and if so, we have
     // an upward step - maybe avoid division by keeping incInv = 1./inc as member
@@ -90,19 +90,19 @@ public:
     return sawValue(pos);
   }
 
-  inline T getSampleSquare()
+  inline T getSampleSquare(T* stepDelay, T* stepAmp)
   {
-    stepAmp = T(0);
+    *stepAmp = T(0);
     updatePhase();
 
     if(pos < inc) {                    // or should it be <= ?
-      stepAmp   = T(-2);               // downward step by -2
-      stepDelay = pos/inc;
+      *stepAmp   = T(-2);               // downward step by -2
+      *stepDelay = pos/inc;
     }
     else if(pos >= T(0.5) && pos - T(0.5) < inc) 
     {
-      stepAmp   = T(2);                // upward step by 2
-      stepDelay = (T(pos)-0.5)/inc;
+      *stepAmp   = T(2);                // upward step by 2
+      *stepDelay = (T(pos)-0.5)/inc;
     }
 
     return squareValue(pos);
@@ -118,8 +118,8 @@ public:
 
   inline void resetStepInfo()
   {
-    stepDelay = T(0);
-    stepAmp   = T(0);
+    //stepDelay = T(0);
+    //stepAmp   = T(0);
   }
 
   inline void reset(T start = T(0))
@@ -181,8 +181,8 @@ protected:
   // object should check if getStepAmplitude is nonzero after a call to getSample and if a 
   // discontinuity did occur, the driver should prepareForStep in a rsStepBandLimiter object. The 
   // required fractionla delay can be inquired via getStepDelay
-  T stepDelay = 0;
-  T stepAmp   = 0;
+  //T stepDelay = 0;
+  //T stepAmp   = 0;
   // maybe don't keep them as members - instead, let the getSample function take pointer or 
   // reference parameters that are assigned inside the function - this keeps the memory footprint
   // low which is especially desirable for oscillator arrays such as needed for supersaw
@@ -214,10 +214,10 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  inline T getCornerAmplitude() { return cornerAmp; }
+  //inline T getCornerAmplitude() { return cornerAmp; }
 
 
-  inline T getCornerDelay() { return stepDelay; }
+  //inline T getCornerDelay() { return stepDelay; }
   // we don't need a new variable for the corner delay - we can re-use the inherited stepDelay 
   // member for this new purpose - but for client code consistency, we define a separate function 
   // to inquire the corner delay
@@ -225,19 +225,19 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  inline T getSampleTriangle()
+  inline T getSampleTriangle(T* cornerDelay, T* cornerAmp)  
   {
-    stepAmp = cornerAmp = T(0);  // reset info for blamp (also for blep, but that's only relevant,
-    updatePhase();               // if the driver looks for the blep info, which it may not for triangle)
+    *cornerAmp = T(0);
+    updatePhase();
 
     // produce info for blamp, if corner has occurred:
     if(pos < inc) {
-      cornerAmp = T(8)*inc;
-      stepDelay = pos/inc;
+      *cornerAmp   = T(8)*inc;
+      *cornerDelay = pos/inc;
     }
     else if(pos >= T(0.5) && pos - T(0.5) < inc) {
-      cornerAmp = -T(8)*inc;
-      stepDelay = (T(pos)-0.5)/inc;
+      *cornerAmp   = -T(8)*inc;
+      *cornerDelay = (T(pos)-0.5)/inc;
     }
 
     // produce output signal:
@@ -247,10 +247,14 @@ public:
       return (T(1) - T(4) * (pos-T(0.5)));
   }
 
+  // do getSampleTriangle(T* cornerDelay, T* cornerAmp) - the we can get rid of the cornerAmp
+  // variable and move that function into the rsBlepReadyOsc
+
+
 protected:
 
 
-  T cornerAmp = 0;
+  //T cornerAmp = 0; // get rid
 
 };
 

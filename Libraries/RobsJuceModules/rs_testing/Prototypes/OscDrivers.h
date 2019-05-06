@@ -249,10 +249,12 @@ public:
 
   inline T getSampleNaive()
   {
-    T dummy = master.getSampleSaw(); // later use just a phasor - output not actually used
+    T stepDelay, stepAmp;
+
+    T dummy = master.getSampleSaw(&stepDelay, &stepAmp); // later use just a phasor - output not actually used
 
 
-    if(master.getStepAmplitude() != 0.0)
+    if(stepAmp != 0.0)
     {
       T oldPhase = slave.getPhase();
       T newPhase = master.getPhase() * slave.getPhaseIncrement() / master.getPhaseIncrement();
@@ -275,9 +277,9 @@ public:
       blep.prepareForStep(stepDly, stepAmp);
     }
 
-    T out = slave.getSampleSaw();
-    if(slave.getStepAmplitude() != 0.0)
-      blep.prepareForStep(slave.getStepDelay(), slave.getStepAmplitude());
+    T out = slave.getSampleSaw(&stepDelay, &stepAmp);
+    if(stepAmp != 0.0)
+      blep.prepareForStep(stepDelay, stepAmp);
     return out;
   }
 
@@ -341,12 +343,15 @@ public:
 
   inline void getSamplePairNaive(T* x1, T* x2)
   {
+
+    T stepDelay1, stepAmp1, stepDelay2, stepAmp2;
+
     // preliminary (later switch waveforms)
-    *x1 = osc1.getSampleSaw();
-    *x2 = osc2.getSampleSaw(); // wait - we should call this *after* a potential reset - or not?
+    *x1 = osc1.getSampleSaw(&stepDelay1, &stepAmp1);
+    *x2 = osc2.getSampleSaw(&stepDelay2, &stepAmp2); // wait - we should call this *after* a potential reset - or not?
 
     // apply blep corrections to waveform discontinuities:
-    if(osc1.getStepAmplitude() != 0.0) {
+    if(stepAmp1 != 0.0) {
       //blep1.prepareForStep(osc1.getStepDelay(), osc1.getStepAmplitude());//commented for debug
       if(sync12) {
         T oldPhase = osc2.getPhase();
@@ -386,9 +391,9 @@ public:
 
 
 
-    if(osc2.getStepAmplitude() != 0.0)
+    if(stepAmp2 != 0.0)
     {
-      blep2.prepareForStep(osc2.getStepDelay(), osc2.getStepAmplitude());
+      blep2.prepareForStep(stepDelay2, stepAmp2);
       if(sync21)
       {
         // ...

@@ -102,10 +102,10 @@ int main(int argc, char* argv[])
 
   // Generators:
   //blit();
-  //blep();
+  blep();
   //polyBlep();
-  syncSweep();
-  //syncPhasor();
+  //syncSweep();
+  syncPhasor();
   //syncPhasor2();
   //syncOsc();
   //dualBlepOsc();
