@@ -48,7 +48,6 @@ template struct RAPT::rsFilterSpecificationBA<float>;
 template class rsTableLinBlep<double, double>;
 template class rsTableMinBlep<double, double>;
 template class rsBlepReadyOsc<double>;
-template class rsBlampReadyOsc<double>;
 
 template class rsSyncPhasor<double, rsPolyBlep1<double, double>>;
 template class rsSyncPhasor<double, rsPolyBlep2<double, double>>;

@@ -8,7 +8,8 @@ post-processing step. Separating the application of the blep-correction from the
 generation as post-processing step allows for greater flexibility. The driver may choose to use 
 table-based or polynomial bleps, linear- or minimum-phase ones and may also correct hard-sync 
 between two oscillators. For example, the driver could use it in conjunction with 
-rsStepBandLimiter. 
+rsStepBandLimiter. The oscillator can also generate naive triangle waves along with the information
+required to anti-alias them via bandlimited ramps ("BLAMPS").
 
 hmm...maybe for hard-sync, it needs more information from the osc object(s) to figure out the
 step position/height?
@@ -39,9 +40,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  //inline T getStepAmplitude()  const { return stepAmp; }
-
-  //inline T getStepDelay()      const { return stepDelay; }
 
   inline T getPhaseIncrement() const { return inc; }
 
@@ -55,6 +53,13 @@ public:
   /** \name Processing */
 
 
+  /* Produces one sawtooth wave output sample at a time and assigns the values stepDelay, stepAmp
+  according to any step discontinuity that may have occured between the previous and the current 
+  sample. When the stepAmp is nonzero, it means that a step discontinuity has occured and stepDelay
+  will contain the corresponding fractional delay. If no step has occurred, stepAmp will be zero 
+  and stepDelay will we left untouched. An outlying driver object should check if stepAmp is 
+  nonzero after a call to getSample and if a discontinuity did occur, the driver should 
+  prepareForStep in a rsStepBandLimiter object. */
 
   inline T getSampleSaw(T* stepDelay, T* stepAmp)
   {
@@ -90,6 +95,7 @@ public:
     return sawValue(pos);
   }
 
+
   inline T getSampleSquare(T* stepDelay, T* stepAmp)
   {
     *stepAmp = T(0);
@@ -109,6 +115,35 @@ public:
   }
 
 
+  inline T getSampleTriangle(T* cornerDelay, T* cornerAmp)  
+  {
+    *cornerAmp = T(0);
+    updatePhase();
+
+    // produce info for blamp, if corner has occurred:
+    if(pos < inc) {
+      *cornerAmp   = T(8)*inc;
+      *cornerDelay = pos/inc;
+    }
+    else if(pos >= T(0.5) && pos - T(0.5) < inc) {
+      *cornerAmp   = -T(8)*inc;
+      *cornerDelay = (T(pos)-0.5)/inc;
+    }
+
+    return triangleValue(pos);
+
+    /*
+    // produce output signal (factor out into static function):
+    if(pos < T(0.5)) 
+      return (T(4) * pos - T(1));
+    else
+      return (T(1) - T(4) * (pos-T(0.5)));
+      */
+  }
+
+
+
+
 
   inline void resetPhase(T start = T(0))
   {
@@ -116,16 +151,9 @@ public:
     wrapPhase(pos);
   }
 
-  inline void resetStepInfo()
-  {
-    //stepDelay = T(0);
-    //stepAmp   = T(0);
-  }
-
   inline void reset(T start = T(0))
   {
     resetPhase(start);
-    resetStepInfo();
   }
 
   /** Returns the value of a sawtooth wave at given position in [0,1). */
@@ -144,6 +172,15 @@ public:
   }
   // todo: introduce duty-cycle parameter and use if pos < dutyCycle
 
+  static inline T triangleValue(T pos)
+  {
+    if(pos < T(0.5)) 
+      return (T(4) * pos - T(1));
+    else
+      return (T(1) - T(4) * (pos-T(0.5)));
+  }
+
+
 
   inline void updatePhase()
   {
@@ -159,36 +196,10 @@ public:
       phase -= T(1);
   }
 
-
-
 protected:
 
   T pos   = 0.5;   // position/phase in the range [0,1)
   T inc   = 0;     // phase increment per sample
-
-
-
-  //T start = 0.5;   // start positon
-  //T amp   = 1;     // amplitude
-  // maybe get rid of these two variables, handle start by passing it as parameter to reset - makes
-  // the classe's memory footprint smaller - relevant when we use arrays of oscs later
-
-
-
-
-  // Values for discontinuities - when the stepAmp is nonzero, it means that a step discontinuity 
-  // has occured and stepDelay will contain the corresponding fractional delay. An outlying driver 
-  // object should check if getStepAmplitude is nonzero after a call to getSample and if a 
-  // discontinuity did occur, the driver should prepareForStep in a rsStepBandLimiter object. The 
-  // required fractionla delay can be inquired via getStepDelay
-  //T stepDelay = 0;
-  //T stepAmp   = 0;
-  // maybe don't keep them as members - instead, let the getSample function take pointer or 
-  // reference parameters that are assigned inside the function - this keeps the memory footprint
-  // low which is especially desirable for oscillator arrays such as needed for supersaw
-  // ...maybe even the increment could be passed into getSample - then we would not have to keep
-  // it here either - or maybe factor out a class without the inc rsBlepReadyOscCore or something
-
 
   // maybe the driver should be an oscillator pair that also allows hardsync
   // maybe the TriSawOsc would be ideally suited for the belp/blamp technique...at leatst, until
@@ -200,64 +211,6 @@ protected:
 };
 
 //=================================================================================================
-
-/** Oscillator that can generate naive triangle waves along with the information required to 
-anti-alias them via bandlimited ramps ("BLAMPS"). Works analogously to the rsBlepReadyOsc. */
-
-template<class T>
-class rsBlampReadyOsc : public rsBlepReadyOsc<T>
-{
-
-public:
-
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Inquiry */
-
-  //inline T getCornerAmplitude() { return cornerAmp; }
-
-
-  //inline T getCornerDelay() { return stepDelay; }
-  // we don't need a new variable for the corner delay - we can re-use the inherited stepDelay 
-  // member for this new purpose - but for client code consistency, we define a separate function 
-  // to inquire the corner delay
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Processing */
-
-  inline T getSampleTriangle(T* cornerDelay, T* cornerAmp)  
-  {
-    *cornerAmp = T(0);
-    updatePhase();
-
-    // produce info for blamp, if corner has occurred:
-    if(pos < inc) {
-      *cornerAmp   = T(8)*inc;
-      *cornerDelay = pos/inc;
-    }
-    else if(pos >= T(0.5) && pos - T(0.5) < inc) {
-      *cornerAmp   = -T(8)*inc;
-      *cornerDelay = (T(pos)-0.5)/inc;
-    }
-
-    // produce output signal:
-    if(pos < T(0.5)) 
-      return (T(4) * pos - T(1));
-    else
-      return (T(1) - T(4) * (pos-T(0.5)));
-  }
-
-  // do getSampleTriangle(T* cornerDelay, T* cornerAmp) - the we can get rid of the cornerAmp
-  // variable and move that function into the rsBlepReadyOsc
-
-
-protected:
-
-
-  //T cornerAmp = 0; // get rid
-
-};
-
 
 /*
 todo: allow for waveforms that have discontinuities of both types (steps and corners/ramps) - maybe

@@ -152,7 +152,7 @@ void blep()
   //double inc = 1. / 19;
   double inc = GOLDEN_RATIO / 100;
   int N      = 800;      // number of samples to produce
-  int shape  = 2;        // 1: saw, 2: square, 3: triangle
+  int shape  = 3;        // 1: saw, 2: square, 3: triangle
   int prec   = 20;       // table precision
   int length = 30;       // blep length
 
@@ -172,7 +172,7 @@ void blep()
 
 
   // Create osc and blit/blep/blamp objects:
-  rsBlampReadyOsc<double> osc;
+  rsBlepReadyOsc<double> osc;
   osc.setPhaseIncrement(inc);
   //osc.setAmplitude(0.5);
 
