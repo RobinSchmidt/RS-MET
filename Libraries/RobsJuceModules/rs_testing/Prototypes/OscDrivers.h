@@ -27,7 +27,13 @@ public:
   /** Sets the number of oscillators to use. */
   inline void setNumOscillators(int newNumber)
   {
+    rsAssert(newNumber <= getMaxNumOscillators());
     numOscs = rsMin(newNumber, getMaxNumOscillators());
+    updateIncrements();
+    // we need to update the increments here because the new number may be higher than the old and
+    // the upper values may not yet contain valid data becuase on setReferenceIncrement, setDetune, 
+    // etc. we only update the oscs up to numOscs in order to avoid computing increments that are 
+    // not used
   }
 
   /** Sets the maximum number of oscillators that can be used. May cause memory (re)allocation and
@@ -44,6 +50,33 @@ public:
   inline int getMaxNumOscillators() const { return (int) oscs.size(); } 
 
 
+  inline T getSampleNaive()
+  {
+    T stepDelay = T(0);   // delay of step discontinuity
+    T stepAmp   = T(0);   // amplitude of step discontinuity
+    T out       = T(0);   // accumulator for (naive) output sample
+    for(int i = 0; i < numOscs; i++) {
+
+      out += oscs[i].getSampleSaw(incs[i], &stepDelay, &stepAmp);
+      // hmm..to make it work flexibly with other types of oscs, we need to call a generic 
+      // getSample function - but then the osc would have to dispatch...based on what? maybe the
+      // getSample function should take an int parameter?
+
+      if(stepAmp != T(0))  
+        blep.prepareForStep(stepDelay, stepAmp);
+      // maybe try to do it without the branch and make performance test with both versions - it 
+      // doesn't hurt to accumulate zero-valued signals into the corrector, so the code is valid
+      // with or without the "if"
+    }
+    return out;
+  }
+
+  inline T getSample()
+  {
+    return blep.getSample(getSampleNaive());
+  }
+
+
 protected:
 
   /** Updates our array of phase increments according to the desired reference increment and 
@@ -52,9 +85,14 @@ protected:
 
   int numOscs = 1;        // current number of oscillators
   T inc = 0;              // reference increment
+  T detune = 0;
   std::vector<TOsc> oscs; // oscillator array
   std::vector<T> incs;    // array of phase increments
-  TBlep blep; // a single blep is shared among all oscs
+
+  TBlep blep; 
+  // a single blep is shared among all oscs...actually, it could even be shared among all voices
+  // in a polyphonic situation - try to think of a way, how to do this - maybe by maintaining a 
+  // pointer to the blep object instead of a direct object? ...we'll see...
 
   // todo: have an array of pan positions - if we do stereo later, we will need two blep objects 
   // - one for each channel
