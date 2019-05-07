@@ -44,6 +44,10 @@ public:
   template<class T>
   static void addInto(T *x, int N, T *y, int L, int n = 0);
 
+  /** Applies the affine transformation y = a*x + b to all array elements. */
+  template<class T>
+  static void affineTrafo(const T* x, T* y, int N, T a, T b);
+
   /** Allocates memory for a 2-dimensional array (i.e. a matrix) with equal dimensions in both
   directions. 
   \todo: remove - redundant with rsAllocateMatrix  */
@@ -550,6 +554,13 @@ public:
   /** Swaps the contents of of buffer1 and buffer2 using an auxiliary buffer bufferTmp. All buffers
   are assumed to have a size of sizeInBytes. */
   static void swapDataBuffers(void *buffer1, void *buffer2, void *bufferTmp, int sizeInBytes);
+
+  /** Applies an affine tranform y = a*x + b to the array x, where a and b are chosen such that the
+  transformed values span a range from targetMin to targetMax. Note that this works only, if the
+  array is non-constant - if the current maximum equals the minimum, the formula will produce 
+  NaNs. */
+  template<class T>
+  static void transformRange(const T* x, T* y, int N, T targetMin, T targetMax);
 
   /** Transposes a 2-dimensional square-array, such that the rows become columns and vice versa.
   The input-array is passed via "in" and the output array will be stored in "out". The function

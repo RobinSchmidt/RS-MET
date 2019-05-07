@@ -49,9 +49,9 @@ template class rsTableLinBlep<double, double>;
 template class rsTableMinBlep<double, double>;
 template class rsBlepReadyOsc<double>;
 
-template class rsSuperBlepOsc<double, rsBlepReadyOscBase<double>, rsPolyBlep1<double, double>>;
-template class rsSuperBlepOsc<double, rsBlepReadyOscBase<double>, rsPolyBlep2<double, double>>;
-template class rsSuperBlepOsc<double, rsBlepReadyOscBase<double>, rsTableMinBlep<double, double>>;
+template class rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsPolyBlep1<double, double>>;
+template class rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsPolyBlep2<double, double>>;
+template class rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsTableMinBlep<double, double>>;
 
 template class rsSyncPhasor<double, rsPolyBlep1<double, double>>;
 template class rsSyncPhasor<double, rsPolyBlep2<double, double>>;

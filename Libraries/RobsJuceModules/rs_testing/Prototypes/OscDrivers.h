@@ -66,13 +66,13 @@ template<class T, class TOsc, class TBlep>
 /** A class for producing waveforms like supersaw, supersquare, etc. using a blep-ready oscillator 
 class as basis and applies a blep for anti-aliasing. */ 
 
-class rsSuperBlepOsc // maybe rename to rsBlepOscArray
+class rsBlepOscArray // maybe rename to rsBlepOscArray
 {
 
 public:
 
 
-  rsSuperBlepOsc(rsRatioGenerator<T>* ratioGenerator);
+  rsBlepOscArray(rsRatioGenerator<T>* ratioGenerator);
 
   /** Sets the reference phase increment which determines the center frequency of the osc stack 
   around which all other frequencies are arranged. */

@@ -1,17 +1,15 @@
-template<class T, class TOsc, class TBlep>
-rsSuperBlepOsc<T, TOsc, TBlep>::rsSuperBlepOsc(rsRatioGenerator<T>* _ratioGenerator)
-{
-  ratioGenerator = _ratioGenerator;
-  setMaxNumOscillators(8);
-}
 
 // move to rsArray:
+
+/*
 template<class T>
 void affineTrafo(const T* x, T* y, int N, T a, T b)
 {
   for(int i = 0; i < N; i++)
     y[i] = a * x[i] + b;
 }
+
+
 template<class T>
 void transformRange(const T* x, T* y, int N, T targetMin, T targetMax)
 {
@@ -21,9 +19,19 @@ void transformRange(const T* x, T* y, int N, T targetMin, T targetMax)
   T b = (currentMax*targetMin - currentMin*targetMax) / (currentMax - currentMin);
   affineTrafo(x, y, N, a, b);
 }
+*/
+
 
 template<class T, class TOsc, class TBlep>
-void rsSuperBlepOsc<T, TOsc, TBlep>::updateIncrements()
+rsBlepOscArray<T, TOsc, TBlep>::rsBlepOscArray(rsRatioGenerator<T>* _ratioGenerator)
+{
+  ratioGenerator = _ratioGenerator;
+  setMaxNumOscillators(8);
+}
+
+
+template<class T, class TOsc, class TBlep>
+void rsBlepOscArray<T, TOsc, TBlep>::updateIncrements()
 {
   // this is the place, where we should experiment with different strategies to compute the 
   // ratios ...maybe have functions like getMetallicRatios, getIntegerSquareRoots, etc., call them
@@ -63,7 +71,7 @@ void rsSuperBlepOsc<T, TOsc, TBlep>::updateIncrements()
 
 
   
-    transformRange(&incs[0], &incs[0], numOscs, minRatio, maxRatio);
+    rsArray::transformRange(&incs[0], &incs[0], numOscs, minRatio, maxRatio);
     // actually, if we know that the min is in incs[0] and the max is in incs[numOscs-1], we don't
     // need to search for min/max -> optimize
     // -> factor out a rangeConverversionCoeffs function from transformRange that computes a, b

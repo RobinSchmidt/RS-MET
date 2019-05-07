@@ -67,6 +67,14 @@ void rsArray::addInto(T *x, int N, T *y, int L, int n)
 // the index manipulation code can be factored out
 
 template<class T>
+void rsArray::affineTrafo(const T* x, T* y, int N, T a, T b)
+{
+  for(int i = 0; i < N; i++)
+    y[i] = a * x[i] + b;
+}
+// maybe inline this
+
+template<class T>
 void rsArray::allocateSquareArray2D(T**& theArray, int size)
 {
   theArray = new T*[size];
@@ -1123,6 +1131,16 @@ inline void rsArray::swapDataBuffers(void *buffer1, void *buffer2, void *bufferT
   memcpy(bufferTmp, buffer1, sizeInBytes);
   memcpy(buffer1, buffer2, sizeInBytes);
   memcpy(buffer2, bufferTmp, sizeInBytes);
+}
+
+template<class T>
+void rsArray::transformRange(const T* x, T* y, int N, T targetMin, T targetMax)
+{
+  T currentMin = rsArray::minValue(x, N);
+  T currentMax = rsArray::maxValue(x, N);
+  T a = (targetMin - targetMax) / (currentMin - currentMax);
+  T b = (currentMax*targetMin - currentMin*targetMax) / (currentMax - currentMin);
+  affineTrafo(x, y, N, a, b);
 }
 
 template<class T>

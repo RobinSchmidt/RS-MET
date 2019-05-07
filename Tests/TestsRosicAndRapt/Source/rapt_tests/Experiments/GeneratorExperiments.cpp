@@ -506,9 +506,9 @@ void superBlep()
 
   // create and set up the osc object:
   rsRatioGenerator<double> ratGen;
-  //typedef rsSuperBlepOsc<double, rsBlepReadyOscBase<double>, rsPolyBlep1<double, double>> SBO;
-  //typedef rsSuperBlepOsc<double, rsBlepReadyOscBase<double>, rsPolyBlep2<double, double>> SBO;
-  typedef rsSuperBlepOsc<double, rsBlepReadyOscBase<double>, rsTableMinBlep<double, double>> SBO;
+  typedef rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsPolyBlep1<double, double>> SBO;
+  //typedef rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsPolyBlep2<double, double>> SBO;
+  //typedef rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsTableMinBlep<double, double>> SBO;
   SBO osc(&ratGen);
   osc.setReferenceIncrement(freq / sampleRate);
   osc.setMaxNumOscillators(32);
