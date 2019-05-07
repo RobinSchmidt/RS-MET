@@ -389,15 +389,15 @@ public:
 
   /** Returns the maximum value of the buffer (">"-operator must be defined). */
   template <class T>
-  static T maxValue(T *buffer, int length);
+  static T maxValue(const T *buffer, int length);
 
   /** Returns the index of minimum value of the buffer ("<"-operator must be defined). */
   template <class T>
-  static int minIndex(T *buffer, int length);
+  static int minIndex(const T *buffer, int length);
 
   /** Returns the minimum value of the buffer ("<"-operator must be defined). */
   template <class T>
-  static T minValue(T *buffer, int length);
+  static T minValue(const T *buffer, int length);
 
   /** Computes the mean (i.e. the DC-component) from the passed buffer. The type must define
   operators: +=, / and a constructor which takes an int and initializes to zero when 0 is passed

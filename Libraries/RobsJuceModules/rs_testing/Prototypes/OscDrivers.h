@@ -1,6 +1,54 @@
 #pragma once
 
 
+//=================================================================================================
+
+/** A class for generating ratios of numbers that can be used - for example - as frequency ratios
+for the various oscillators in an oscillator array (for "supersaw"/"superwave" stuff). */
+
+template<class T>
+class rsRatioGenerator
+{
+
+public:
+
+  /** Used to select the formula/algorithm by which a ratio is computed. Determines what kind of 
+  ratios will be produced in our dispatching methods. */
+  enum class RatioFormula // maybe rename to RatioFormula
+  {
+    metallic,
+    // plastic,
+    // intSqrt,
+    // primeSqrt,
+    // ...
+  };
+  
+
+  // todo: add a function that dispatches between various ratio types, like
+  //static fillRatios(T* ratios, int numRatios, RatioType type, T param1, T param2); // ..
+
+  /** Returns the so called metallic ratio of given index n. For n = 0, it's just 1, for n = 1 it
+  is called the golden ratio, n = 2: silver, n = 3: bronze and beyond that, they don't have names.
+    https://en.wikipedia.org/wiki/Metallic_mean
+  The index is actually supposed to be a nonegative integer, but for extended flexibility, the 
+  function allows you to pass a real number as well. The golden ratio has many interesting 
+  mathematical properties, like being the "most irrational" number possible in the sense that it's
+  hardest to approximate by a continued fraction expansion, see here:
+    https://www.youtube.com/watch?v=CaasbfdJdJg  */
+  static inline T metallic(T n) { return T(0.5) * (n + sqrt(n*n+T(4))); }
+  // todo: what about ratios whose continued fraction expansion (CFE) starts with a single n and 
+  // then has only 1s thereafter - they should be also "very irrational" in the sense of needing a
+  // long CFE - i think, more so than the other metallic ratios since what matters for the 
+  // convergence of the CFE are those coeffs that come late in the sequence
+
+
+  // what about plastic ratios?
+
+};
+
+
+//=================================================================================================
+
 // template parameters: 
 // T: type for signals and parameters, TOsc: class for the (blep-ready) osc, TBlep: class for blep
 template<class T, class TOsc, class TBlep> 
@@ -8,7 +56,7 @@ template<class T, class TOsc, class TBlep>
 /** A class for producing waveforms like supersaw, supersquare, etc. using a blep-ready oscillator 
 class as basis and applies a blep for anti-aliasing. */ 
 
-class rsSuperBlepOsc
+class rsSuperBlepOsc // maybe rename to rsBlepOscArray
 {
 
 public:
@@ -80,8 +128,10 @@ public:
       // doesn't hurt to accumulate zero-valued signals into the corrector, so the code is valid
       // with or without the "if"
     }
-    return out;
-  }
+    return out;  
+    // todo: scale the amplitude by 1/sqrt(numOscs) ..oh - but that factor should then also be 
+    // applied to the stepAmp
+  } 
 
   inline T getSample()
   {
@@ -104,7 +154,10 @@ protected:
   TBlep blep; 
   // a single blep is shared among all oscs...actually, it could even be shared among all voices
   // in a polyphonic situation - try to think of a way, how to do this - maybe by maintaining a 
-  // pointer to the blep object instead of a direct object? ...we'll see...
+  // pointer to the blep object instead of a direct object? ...we'll see...hmm...maybe that doesn't
+  // make much sense, because in a synth, the osc-voices are not mixed before the filter - and 
+  // applying the blep after the filter is invalid because the blep needs go through the filter, 
+  // too - so it's probably best to keep things as is
 
   // todo: have an array of pan positions - if we do stereo later, we will need two blep objects 
   // - one for each channel

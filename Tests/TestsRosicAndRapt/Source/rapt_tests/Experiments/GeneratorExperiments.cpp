@@ -500,7 +500,7 @@ void superBlep()
 {
   // Experimenting with the blep-based supersaw implementation...
 
-  int N = 5000;
+  int N = 20000;
   double sampleRate = 44100;
   double freq = 1000;
 

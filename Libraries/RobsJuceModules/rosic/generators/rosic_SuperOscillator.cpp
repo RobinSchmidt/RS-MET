@@ -129,6 +129,10 @@ Ideas:
    continued_fraction(sqrt(2)/sqrt(18)) is finite ...why? shouldn't it be finite only when the
    terms in the squra-roots are perfect squares (like 4, 9, 16, ..)? ..no! they seem to be finite,
    when it's twice a perfect square - why?
+  -or: start with the two outer frequencies and compute at which time instant they happen to be 
+   phase-aligned again and what their phase is and select the third frequency is such a way that it
+   happens to be maximally out of phase with the other two at this instant - then compute, when the
+   3 oscs are in phase sync again and select the 4th freq to be out of phase with them...and so on
 
 
  -maybe let client code set the ratios by passing a ratio-array
