@@ -156,16 +156,6 @@ void linearRegression()
 
 
 
-void metallicRatios()
-{
-  // The metallic ratio rn for integer n is given by (n + sqrt(n^2+4))/2 - so the ratio of two
-  // metallic ratios for integers m, n is: rn/rm = (n + sqrt(n^2+4)) / (m + sqrt(m^2+4))
-  // ...maybe obtain the continued fraction expansion of these numerically and see, if we get small
-  //  coefficients
-
-
-  int dummy = 0;
-}
 
 
 
@@ -488,6 +478,63 @@ void productLogPlot()
   plt.addDataArrays(N, &x[0], &y[0]);
   plt.plot();
 }
+
+void ratiosLargeLcm()
+{
+  // We want to produce rational numbers r between 1 and 2 that have the property that when their
+  // decimal expansion (or any other expansion) is truncated, the truncated numbers have a large
+  // lowest common multiple
+
+  // We want to see all LCMs of a all pairs in a range of numbers in order to pick out those, for
+  // which we have a resonably large LCM for any pair of numbers between some nMin and nMax. When 
+  // nMin is fixed, we actually only need to consider numbers up to nMax = 2*nMin-1 - but we plot 
+  // more...
+  //  ...maybe it makes sense to choose prime numbers from the upper half
+  // ..to make them irrational, square them, add 1 and take the square root
+
+  unsigned int nMin = 100;
+  unsigned int nMax = 2*nMin-1;
+  unsigned int N = nMax - nMin;
+
+  // fill LCM matrix:
+  std::vector<double> axes(N);
+  RAPT::rsArray::fillWithRangeLinear(&axes[0], N, double(nMin), double(nMax));
+  double** lcmMatrix;
+  RAPT::MatrixTools::rsAllocateMatrix(lcmMatrix, N, N);
+  for(unsigned int i = 0; i < N; i++)
+    for(unsigned int j = 0; j < N; j++)
+      lcmMatrix[i][j] = (double) RAPT::rsLcm(nMin+i, nMin+j);
+
+
+  GNUPlotter plt;
+  plt.addDataMatrix(N, N, &axes[0], &axes[0], lcmMatrix);
+  plt.setPixelSize(800, 800);
+  plt.addCommand("set size square");
+
+  // factor out into fucntion plotHeatMap
+  plt.addGraph("i 0 nonuniform matrix w image notitle");
+  //p.addCommand("set palette color");                  // this is used by default
+  //p.addCommand("set palette color negative");         // reversed colors
+  //p.addCommand("set palette gray negative");          // maximum is black
+  //p.addCommand("set palette gray");                   // maximum is white
+  plt.addCommand("set palette rgbformulae 30,31,32");     // colors printable as grayscale
+  plt.plot();
+  //plt.plot3D();
+
+  RAPT::MatrixTools::rsDeAllocateMatrix(lcmMatrix, N, N);
+}
+
+void ratiosMetallic()
+{
+  // The metallic ratio rn for integer n is given by (n + sqrt(n^2+4))/2 - so the ratio of two
+  // metallic ratios for integers m, n is: rn/rm = (n + sqrt(n^2+4)) / (m + sqrt(m^2+4))
+  // ...maybe obtain the continued fraction expansion of these numerically and see, if we get small
+  //  coefficients
+
+
+  int dummy = 0;
+}
+
 
 void sinCosTable()
 {

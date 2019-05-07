@@ -502,7 +502,7 @@ void superBlep()
 
   int N = 500000;
   double sampleRate = 48000;
-  double freq = 2000;
+  double freq = 200;
 
   // create and set up the osc object:
   rsRatioGenerator<double> ratGen;
@@ -572,6 +572,13 @@ void superBlep()
   // -use optional 3rd order butterworth highpass tuned to fundamental (or maybe other order - look
   //  at the original
   // -don't bother trying to tune the sample-rate to the saw-freq
+
+  // hmm - the golden ratio is only hardest to approximate by continued fractions in the sense that 
+  // you need a lot of CF coefficients - but, of course, you don't need higher denominators - but 
+  // i think, the size of the denominator is what is really relevant for us here with respect to
+  // assessing the irrationality
+  // ...what we really want is to maximize the time unitl which the phases (approxiamtely) line
+  // up again ...maybe between any pair of frequencies...
 }
 
 

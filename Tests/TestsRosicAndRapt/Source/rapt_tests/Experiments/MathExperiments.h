@@ -4,10 +4,13 @@
 void ellipseLineIntersections();
 void interpolatingFunction();
 void linearRegression();
-void metallicRatios();
 void polynomialPrediction();
 void probabilityLogic();
 void productLogPlot();
+
+void ratiosLargeLcm();
+void ratiosMetallic();
+
 void sinCosTable();
 void expBipolar();
 void expGaussBell();

@@ -14,7 +14,7 @@ public:
   static void rsAllocateMatrix(T**& A, int N, int M);
 
   template<class T>
-  static void rsDeAllocateMatrix(T**& A, int N, int M);
+  static void rsDeAllocateMatrix(T**& A, int N, int M); // rename to rsFreeMatrix
 
   template<class T>
   static void rsInitMatrix(T** A, int N, int M, T value = T(0));
