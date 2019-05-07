@@ -151,6 +151,9 @@ Ideas:
   output with a signal at the same frequency should produce some content around 0 Hz
 -maybe bandpass the supersaw output at the center-freq and use the bandpassed version for ringmod:
  supersaw -> bandpass -> ringmod -> lowpass (should give erratic DC) -> frequency modulation
+ -maybe we should modulate the increments in such a way that tends to spread the phases apart, when
+  the envelope is high and drag them together when the envelope is low
+ -or instead of the envelope, we use some other measure of total phase alignment
  
 
 */

@@ -65,6 +65,18 @@ void rsBlepOscArray<T, TOsc, TBlep>::updateIncrements()
     // todo: keep track of whether or not the incs-array is sorted (some algorithms produce sorted
     // arrays, others don't) and if they are not sorted, sort them afterwards
 
+    // experiment random incs:
+    rsNoiseGenerator<T> prng;
+    prng.setSeed(1);
+    T randomness = 2.0;
+    T minInc = T(1) - T(0.5) * randomness;
+    T maxInc = T(1) + T(0.5) * randomness;
+    prng.setRange(minInc, maxInc);
+    for(int i = 0; i < numOscs; i++)
+      incs[i] = prng.getSample();
+    rsArray::cumulativeSum(&incs[0], &incs[0], numOscs);
+    // can give okayish results
+
 
   
     rsArray::transformRange(&incs[0], &incs[0], numOscs, minRatio, maxRatio);

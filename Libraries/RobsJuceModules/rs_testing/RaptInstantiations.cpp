@@ -39,6 +39,12 @@ typedef std::complex<double> cmplxD;
 // Basics:
 
 
+template bool RAPT::rsGreater(const int&, const int&);
+template bool RAPT::rsGreater(const double&, const double&);
+
+template bool RAPT::rsLess(const double&, const double&);
+
+
 template bool RAPT::defaultLess(const int& left, const int& right);
 template void RAPT::rsHeapSort(int *buffer, int length,
   bool (*lessThen)(const int& left, const int& right));

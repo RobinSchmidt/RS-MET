@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
   //pentaDiagnonalMatrix();
   //pentaDiagnonalMatrix2();
   //minSqrdDifsForFixSums();
-//  minSqrdCurvForFixSums();
+  //minSqrdCurvForFixSums();
   //binomialDistribution();
   //sineParameters();
   //bandLimitedStep();
@@ -233,12 +233,12 @@ int main(int argc, char* argv[])
   //autoCorrelationPitchDetectorOffline();
   //crossCorrelationBestMatch();
   //combineFFTs(); // move to math experiments
-//  envelopeFollower();
+  envelopeFollower();
   ////zeroCrossingPitchDetector(); // commented in header - why?
   //instantaneousFrequency();
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
   //maxShortTimeRMS();
-  arrayRMS();
+  //arrayRMS();
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
   //zeroCrossingFinder3();
@@ -326,7 +326,7 @@ int main(int argc, char* argv[])
   //taperedFourierSeries();
   //transientModeling();
   //windowFunctionsContinuous();
-//  windowFunctionSpectra();
+  //windowFunctionSpectra();
   //windowedSinc();
 
   // Modulator:

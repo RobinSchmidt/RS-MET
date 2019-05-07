@@ -642,6 +642,7 @@ void rsModalFilterFloatSSE2::setParameters(double w, double A, double p,
 // summed output - so the nonlinear effects may depend on the total output value
 
 
+/*
 //=================================================================================================
 
 template<class T>
@@ -673,6 +674,7 @@ void rsBuffer<T>::initBufferValues(T value)
 {
   RAPT::rsArray::fillWithValue(&data[0], (int)data.size(), value);
 }
+*/
 
 //-------------------------------------------------------------------------------------------------
 

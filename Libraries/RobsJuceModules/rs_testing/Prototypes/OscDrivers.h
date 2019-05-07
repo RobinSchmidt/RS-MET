@@ -191,6 +191,9 @@ public:
     return blep.getSample(getSampleNaive());
   }
 
+  // todo: have a reset function that allows to select an initial phase distribution...or maybe
+  // just call it setPhases - it may take a parameter where 0 means all start at 0 and 1 means 
+  // maximally sperad out (i.e. oscs[i].pos = i / numOscs
 
 protected:
 

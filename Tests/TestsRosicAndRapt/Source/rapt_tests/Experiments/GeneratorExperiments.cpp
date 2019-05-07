@@ -607,6 +607,14 @@ void superBlep()
   // or: recursively split the interval between fl, fu at a "midpoint" that is not exactly in the 
   // middle but at a user defined ratio - maybe apply the ratio and 1-ratio alternatingly to avoid
   // skeing the whole distribution ...iirc, that was what my odl algos were also doing
+
+  // todo: tune the freq-ratios by ear: implement a superosc in ToolChain, set it to 3 oscs - the 
+  // outer two have fixed freqs, tune the inner one until it sounds best, then introduce a 4th saw,
+  // and tune that until it sounds best and so on - bring in one saw at a time and leave the 
+  // already tuned ones alone when tuning the new one - this will us later allow continuous density
+  // by just ramping up the additional saw gradually
+  // ..but: what sort of start-phase configuration whould we use for tuning - all at zero or
+  // maximally spread out?
 }
 
 

@@ -196,6 +196,7 @@ public:
   /** Computes a cumulative sum of arbirtry order of x and stores it in y. Can be used in place. */
   template <class T>
   static void cumulativeSum(T *x, T *y, int N, int order);
+  // why two functions? use default argument instead
 
   /** Frees memory allocated previously via rsAllocateSquareArray2D. */
   template<class T>
