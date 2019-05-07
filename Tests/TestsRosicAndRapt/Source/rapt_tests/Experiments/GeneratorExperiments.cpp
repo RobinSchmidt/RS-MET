@@ -501,17 +501,18 @@ void superBlep()
   // Experimenting with the blep-based supersaw implementation...
 
   int N = 500000;
-  double sampleRate = 44100;
-  double freq = 100;
+  double sampleRate = 48000;
+  double freq = 2000;
 
   // create and set up the osc object:
   rsRatioGenerator<double> ratGen;
+  //typedef rsSuperBlepOsc<double, rsBlepReadyOscBase<double>, rsPolyBlep1<double, double>> SBO;
   //typedef rsSuperBlepOsc<double, rsBlepReadyOscBase<double>, rsPolyBlep2<double, double>> SBO;
   typedef rsSuperBlepOsc<double, rsBlepReadyOscBase<double>, rsTableMinBlep<double, double>> SBO;
   SBO osc(&ratGen);
   osc.setReferenceIncrement(freq / sampleRate);
   osc.setMaxNumOscillators(32);
-  osc.setDetune(0.1);
+  osc.setDetune(0.07);
   osc.setNumOscillators(7);
 
 
@@ -544,9 +545,33 @@ void superBlep()
   //   in the passband? -> try LinBlep/MinBlep -> ok - yes - that seems to be part of the reason
   //  -the highpassed naive one sounds still brighter/different
   //  -a high-shelving filter helps somwhat
-  //  -to controld the aliasing freqs, try to use a fixed internal sample rate adjusted to be some 
-  //   multiple of the desired saw-freq
+  //  -maybe PolyBlep1 is better than PolyBlep2 
+
+
+  // todo: distribute the start-phases - maybe make the start-phase spread a user parameter
+  // -call the number of oscs "density" - maybe the density can be made continuous by somehow 
+  //  fading in/out the new frequencies? (we would also have to somehow change the 
+  //  freq-distribution continuously - maybe fade in the new freq in the center while shifting
+  //  the other freqs toward the sides)
+  // -apply amplitude bell curve according to frequency (make inner freqs louder)
+
   //
+  // -i tried the naive supersaw at 2kHz at 44.1 and 48 kHz sample-rate - it seems to make the 
+  //  aliasing artifacts even worse when the samplerate is a multiple of the fundamental - if it's
+  //  unrelated, the aliasing tends to become more noisy which is better (but still very bad)
+
+  // -whatever anti-aliasing is used (with 2kHz saw), when playing it via headphones, there seems 
+  //  to be some sort of "hum" - but i don't see anything in the spectrum - what's going on?
+  //  ...oh- it becomes visible when using a smaller FFT size (like 512) - apparently, it averages
+  //  out over long enough time or something
+  // -could i be somehow hearing the envelope? ...if that's the case, how about applying a 
+  //  leveller that somehow cancels the envelope? ...that might be a good idea anyway
+
+  // Conclusion:
+  // -use PolyBlep1
+  // -use optional 3rd order butterworth highpass tuned to fundamental (or maybe other order - look
+  //  at the original
+  // -don't bother trying to tune the sample-rate to the saw-freq
 }
 
 
