@@ -44,6 +44,9 @@ template bool RAPT::rsGreater(const double&, const double&);
 
 template bool RAPT::rsLess(const double&, const double&);
 
+template class rsMovingMaximumFilter<int>;
+template class rsMovingMaximumFilter<double>;
+
 
 template bool RAPT::defaultLess(const int& left, const int& right);
 template void RAPT::rsHeapSort(int *buffer, int length,

@@ -679,6 +679,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\StandardContainerTools.cpp">
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\MovingWindowFilters.cpp">
+      <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\OnePoleFilter.cpp">
       <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
     </ClCompile>
@@ -2966,6 +2969,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\StandardContainerTools.h">
       <Filter>JUCE Modules\rapt\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\MovingWindowFilters.h">
+      <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\OnePoleFilter.h">
       <Filter>JUCE Modules\rapt\Filters\Basic</Filter>

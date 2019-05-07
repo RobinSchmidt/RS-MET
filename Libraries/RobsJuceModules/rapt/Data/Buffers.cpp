@@ -15,3 +15,36 @@ void rsBuffer<T>::initBufferValues(T value)
 {
   RAPT::rsArray::fillWithValue(&data[0], (int)data.size(), value);
 }
+
+
+
+template<class T>
+void rsRingBuffer<T>::reset()
+{
+  initBufferValues(0);
+  rightIndex = 0;
+  updateLeftIndex();
+}
+
+
+
+
+/*
+template<class T>
+void rsDoubleEndedQueue<T>::clear()
+{
+  initBufferValues(0);
+  head = 1;
+  tail = 0;
+}
+*/
+
+/*
+template<class T>
+rsDoubleEndedQueue<T>::rsDoubleEndedQueue(size_t capacity)
+{
+  //size_t c = RAPT::rsNextPowerOfTwo(capacity);
+  data.resize(capacity);
+  //mask = c-1;
+}
+*/

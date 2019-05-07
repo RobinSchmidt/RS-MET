@@ -3,6 +3,7 @@
 namespace RAPT
 {
 
+#include "Basic/MovingWindowFilters.cpp"
 #include "Basic/OnePoleFilter.cpp"
 #include "Basic/SmoothingFilter.cpp"
 
