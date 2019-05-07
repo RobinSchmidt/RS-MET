@@ -75,7 +75,8 @@ int main(int argc, char* argv[])
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();
-  ratiosLargeLcm();
+  ratioGenerator();
+  //ratiosLargeLcm();
   //ratiosMetallic();
   //sinCosTable();
   //twoParamRemap();

@@ -1,25 +1,17 @@
 
-// move to rsArray:
-
-/*
-template<class T>
-void affineTrafo(const T* x, T* y, int N, T a, T b)
-{
-  for(int i = 0; i < N; i++)
-    y[i] = a * x[i] + b;
-}
-
 
 template<class T>
-void transformRange(const T* x, T* y, int N, T targetMin, T targetMax)
+void rsRatioGenerator<T>::fillRatioTable(T* r, int N)
 {
-  T currentMin = rsArray::minValue(x, N);
-  T currentMax = rsArray::maxValue(x, N);
-  T a = (targetMin - targetMax) / (currentMin - currentMax);
-  T b = (currentMax*targetMin - currentMin*targetMax) / (currentMax - currentMin);
-  affineTrafo(x, y, N, a, b);
+  typedef RatioKind RK;
+  switch(kind)
+  {
+  case RK::metallic:      for(int i = 0; i < N; i++) r[i] = metallic(T(i));   break;
+  case RK::primeSqrt:     for(int i = 0; i < N; i++) r[i] = primeSqrt(i);     break;
+  case RK::primeSqrtDiff: for(int i = 0; i < N; i++) r[i] = primeSqrtDiff(i); break;
+  }
 }
-*/
+
 
 
 template<class T, class TOsc, class TBlep>
@@ -58,7 +50,11 @@ void rsBlepOscArray<T, TOsc, TBlep>::updateIncrements()
 
       // test:
       //incs[i] = rsMetallicRatio(T(i+1));
-      incs[i] = RG::metallic(T(i));
+
+      //incs[i] = RG::metallic(T(i));
+      //incs[i] = ratioGenerator->primeSqrt(i);
+      incs[i] = ratioGenerator->primeSqrtDiff(i);
+
       //incs[i] = sqrt( T(i+1) );
 
       // use 1.x where x is the fractional part:

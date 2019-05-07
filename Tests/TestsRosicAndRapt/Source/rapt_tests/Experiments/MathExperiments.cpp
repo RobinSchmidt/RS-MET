@@ -479,6 +479,38 @@ void productLogPlot()
   plt.plot();
 }
 
+
+void ratioGenerator()
+{
+  int numRatios = 7;
+  int numPrimes = numRatios+1;
+
+
+  std::vector<rsUint32> primes(numPrimes);
+  rsFillPrimeTable(&primes[0], numPrimes);
+
+  rsRatioGenerator<double> ratGen;
+  ratGen.setPrimeTable(&primes);
+
+  std::vector<double> ratios(numRatios);
+  ratGen.fillRatioTable(&ratios[0], numRatios);
+
+  // try something based on recursive subdivision of an iterval at a ratio r: Take the interval
+  // 0..1, split it into to sections of length r and 1-r, apply the same subdivision to both
+  // sub-intervals (starting with the larger one), maybe alternate which side get r and 1-r
+  // ...but what if the number of desired splits is not a power of 2?...always subdivide the
+  // currently largets subinterval...and the decision which side gets r and which gets 1-r is based
+  // on which of the neighbouring sections is larger
+  // example: r=0.8
+  // 0...1 -> 0....0.8..1 ...that's good for the supersaw because when changing the number of
+  // saws (intervals/splits), the old splits stay where they are and it is just a new split/saw
+  // introduced - that means we can just fade it in when implementing a continuous density
+  // parameter
+
+
+
+}
+
 void ratiosLargeLcm()
 {
   // We want to produce rational numbers r between 1 and 2 that have the property that when their

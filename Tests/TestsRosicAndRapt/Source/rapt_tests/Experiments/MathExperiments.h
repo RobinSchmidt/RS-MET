@@ -8,6 +8,7 @@ void polynomialPrediction();
 void probabilityLogic();
 void productLogPlot();
 
+void ratioGenerator();
 void ratiosLargeLcm();
 void ratiosMetallic();
 

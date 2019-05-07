@@ -17,12 +17,34 @@ public:
   enum class RatioKind // maybe rename to RatioFormula
   {
     metallic,
+    primeSqrt,
+    primeSqrtDiff,
     // plastic,
     // intSqrt,
-    // primeSqrt,
+
     // ...
   };
+
+  /** If you want to use the formulas based on prime numbers, you must pass a pointer to vector of
+  prime numbers and ensure that the vector pointed is still alive when you call a function that 
+  generates a frcation from prime numbers. The size of the table must be ...large enough...tbc.. */
+  void setPrimeTable(std::vector<RAPT::rsUint32>* newTable)
+  {
+    primeTable = newTable;
+  }
   
+  /** Sets the kind of ratios that should be produced. */
+  void setRatioKind(RatioKind newKind) { kind = newKind; }
+
+  /** Sets the first parameter for the formula - the meaning of the parameter varies depending on
+  which formula is selected. */
+  void setParameter1(T newParam) { p1 = newParam; }
+  //...
+
+  /** Fills the given array with the ratios of the selected kind with selected parameters. */
+  void fillRatioTable(T* ratios, int numRatios);
+
+
 
   // todo: add a function that dispatches between various ratio types, like
   //static fillRatios(T* ratios, int numRatios, RatioType type, T param1, T param2); // ..
@@ -41,6 +63,26 @@ public:
   // then has only 1s thereafter - they should be also "very irrational" in the sense of needing a
   // long CFE - i think, more so than the other metallic ratios since what matters for the 
   // convergence of the CFE are those coeffs that come late in the sequence
+  // http://www.peacefromharmony.org/docs/7-27_Stakhov_Math_of_Harmony_EN.pdf
+  // here's a generalization witha 2nd parameter
+  // "Further Generalization of Golden Mean in Relation to Euler's 'Divine' Equation":
+  // https://arxiv.org/ftp/math/papers/0611/0611095.pdf
+  //
+
+  /** Square root of n-th prime number. */
+  inline T primeSqrt(int n) 
+  { 
+    rsAssert(primeTable != nullptr);
+    rsAssert(n < primeTable->size());
+    return sqrt(T(primeTable->at(n)));
+  }
+
+  /** Difference of the square roots of n+1-th and n-th prime number. */
+  inline T primeSqrtDiff(int n)
+  {
+    return primeSqrt(n+1) - primeSqrt(n);
+  }
+
 
 
   // what about plastic ratios? -oh - there's only one such ratio - but maybe powers of that can 
@@ -50,6 +92,7 @@ public:
 protected:
 
   RatioKind kind = RatioKind::metallic;
+  T p1; // p2, p3, ...
 
   std::vector<RAPT::rsUint32>* primeTable = nullptr;
   // table of prime numbers - we use pointer to share it among all existing instances

@@ -502,16 +502,25 @@ void superBlep()
 
   int N = 500000;
   double sampleRate = 48000;
-  double freq = 200;
+  double freq = 2000;
+
+  int maxDensity = 32;
 
   // create and set up the osc object:
+
+
+  std::vector<rsUint32> primes(maxDensity);
+  rsFillPrimeTable(&primes[0], maxDensity);
+
   rsRatioGenerator<double> ratGen;
+  ratGen.setPrimeTable(&primes);
+
   typedef rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsPolyBlep1<double, double>> SBO;
   //typedef rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsPolyBlep2<double, double>> SBO;
   //typedef rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsTableMinBlep<double, double>> SBO;
   SBO osc(&ratGen);
   osc.setReferenceIncrement(freq / sampleRate);
-  osc.setMaxNumOscillators(32);
+  osc.setMaxNumOscillators(maxDensity);
   osc.setDetune(0.07);
   osc.setNumOscillators(7);
 
@@ -566,6 +575,8 @@ void superBlep()
   //  out over long enough time or something
   // -could i be somehow hearing the envelope? ...if that's the case, how about applying a 
   //  leveller that somehow cancels the envelope? ...that might be a good idea anyway
+  // -there definitely is some sort of audible "flutter" or something - the character can be 
+  //  modified by dynamics compression
 
   // Conclusion:
   // -use PolyBlep1
@@ -579,6 +590,23 @@ void superBlep()
   // assessing the irrationality
   // ...what we really want is to maximize the time unitl which the phases (approxiamtely) line
   // up again ...maybe between any pair of frequencies...
+
+  // some suggestions from aciddose:
+  // https://www.kvraudio.com/forum/viewtopic.php?p=5444677#p5444677
+  // detune = detune + depth * (sqrt(prime) - sqrt(prime))
+  // detune = depth * (sqrt(prime) - sqrt(prime))
+  // detune = depth * (sqrt(i) - sqrt(i - 1))
+  // ...differences of square-roots of primes or integers. square roots of integers are either
+  // themselves integers or irrational. there are no non-integer rational square-roots of integers
+
+  // the fractional parts of metallic ratios sound a bit smoother than the primeSqrts
+
+  // essentially, with all thes algorithms
+  // maybe in order to have the freq distributed roughly evenly, we should start with an arithmetic
+  // progression and then add some irrational offsets?
+  // or: recursively split the interval between fl, fu at a "midpoint" that is not exactly in the 
+  // middle but at a user defined ratio - maybe apply the ratio and 1-ratio alternatingly to avoid
+  // skeing the whole distribution ...iirc, that was what my odl algos were also doing
 }
 
 
