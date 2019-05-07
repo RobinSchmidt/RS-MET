@@ -1,6 +1,7 @@
 template<class T, class TOsc, class TBlep>
-rsSuperBlepOsc<T, TOsc, TBlep>::rsSuperBlepOsc()
+rsSuperBlepOsc<T, TOsc, TBlep>::rsSuperBlepOsc(rsRatioGenerator<T>* _ratioGenerator)
 {
+  ratioGenerator = _ratioGenerator;
   setMaxNumOscillators(8);
 }
 
@@ -52,7 +53,13 @@ void rsSuperBlepOsc<T, TOsc, TBlep>::updateIncrements()
       incs[i] = RG::metallic(T(i));
       //incs[i] = sqrt( T(i+1) );
 
+      // use 1.x where x is the fractional part:
+      incs[i] = 1 + (incs[i] - floor(incs[i])); // sorted = false;
+
     }
+
+    // todo: keep track of whether or not the incs-array is sorted (some algorithms produce sorted
+    // arrays, others don't) and if they are not sorted, sort them afterwards
 
 
   
@@ -65,7 +72,8 @@ void rsSuperBlepOsc<T, TOsc, TBlep>::updateIncrements()
     int dummy = 0;
   }
 
-
+  // the stuff like taking 1.f and/or taking reciprocal and/or sorting should all be done in
+  // rsRatioGenerator
 
 
   // maybe generate "prototype" ratios and then apply a linear transformations that transforms the 

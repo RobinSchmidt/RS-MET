@@ -433,7 +433,7 @@ public:
   int and initializes to 0 when 0 is passed. Additionaly, it must be suitable for rsAbs - that 
   additionaly requires definition of unary '-' and '<'. */
   template <class T>
-  static void normalize(T *buffer, int length, T maximum, bool subtractMean = false);
+  static void normalize(T *buffer, int length, T maximum = T(1), bool subtractMean = false);
 
   /** Normalizes the mean of the array to the given value (default 1) - useful for window functions
   and lowpass filters that should have unit gain at DC. */

@@ -14,7 +14,7 @@ public:
 
   /** Used to select the formula/algorithm by which a ratio is computed. Determines what kind of 
   ratios will be produced in our dispatching methods. */
-  enum class RatioFormula // maybe rename to RatioFormula
+  enum class RatioKind // maybe rename to RatioFormula
   {
     metallic,
     // plastic,
@@ -26,6 +26,7 @@ public:
 
   // todo: add a function that dispatches between various ratio types, like
   //static fillRatios(T* ratios, int numRatios, RatioType type, T param1, T param2); // ..
+  // maybe make it non-static
 
   /** Returns the so called metallic ratio of given index n. For n = 0, it's just 1, for n = 1 it
   is called the golden ratio, n = 2: silver, n = 3: bronze and beyond that, they don't have names.
@@ -42,7 +43,16 @@ public:
   // convergence of the CFE are those coeffs that come late in the sequence
 
 
-  // what about plastic ratios?
+  // what about plastic ratios? -oh - there's only one such ratio - but maybe powers of that can 
+  // be used? what about powers of some general base?
+  // https://en.wikipedia.org/wiki/Plastic_number
+
+protected:
+
+  RatioKind kind = RatioKind::metallic;
+
+  std::vector<RAPT::rsUint32>* primeTable = nullptr;
+  // table of prime numbers - we use pointer to share it among all existing instances
 
 };
 
@@ -62,7 +72,7 @@ class rsSuperBlepOsc // maybe rename to rsBlepOscArray
 public:
 
 
-  rsSuperBlepOsc();
+  rsSuperBlepOsc(rsRatioGenerator<T>* ratioGenerator);
 
   /** Sets the reference phase increment which determines the center frequency of the osc stack 
   around which all other frequencies are arranged. */
@@ -158,6 +168,8 @@ protected:
   // make much sense, because in a synth, the osc-voices are not mixed before the filter - and 
   // applying the blep after the filter is invalid because the blep needs go through the filter, 
   // too - so it's probably best to keep things as is
+
+  rsRatioGenerator<T>* ratioGenerator = nullptr; // used to generate freq-ratios, shared among voices
 
   // todo: have an array of pan positions - if we do stereo later, we will need two blep objects 
   // - one for each channel

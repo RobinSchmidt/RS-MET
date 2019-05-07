@@ -500,13 +500,15 @@ void superBlep()
 {
   // Experimenting with the blep-based supersaw implementation...
 
-  int N = 20000;
+  int N = 500000;
   double sampleRate = 44100;
-  double freq = 1000;
+  double freq = 100;
 
   // create and set up the osc object:
-  typedef rsSuperBlepOsc<double, rsBlepReadyOscBase<double>, rsPolyBlep2<double, double>> SBO;
-  SBO osc;
+  rsRatioGenerator<double> ratGen;
+  //typedef rsSuperBlepOsc<double, rsBlepReadyOscBase<double>, rsPolyBlep2<double, double>> SBO;
+  typedef rsSuperBlepOsc<double, rsBlepReadyOscBase<double>, rsTableMinBlep<double, double>> SBO;
+  SBO osc(&ratGen);
   osc.setReferenceIncrement(freq / sampleRate);
   osc.setMaxNumOscillators(32);
   osc.setDetune(0.1);
@@ -518,9 +520,33 @@ void superBlep()
   for(int n = 0; n < N; n++)
     x[n] = osc.getSample();
 
+  rsArray::normalize(&x[0], N);
+
 
   // plot:
-  rsPlotVector(x);
+  //rsPlotVector(x);
+  rosic::writeToMonoWaveFile("SuperSaw.wav", &x[0], (int)x.size(), (int)sampleRate);
+
+
+
+  // Observations:
+  // -we should try to choose the ratios in such a way that the minimum and maximum of the envelope
+  //  are not too far apart (of the sustained section - there will be transient envelope peak at 
+  //  the start, if the oscs start in phase)
+  // -using 1.f where f is the fractional part of the metallic ratios works better than using the
+  //  metallic ratios themselves
+
+  // -using the naive version (that aliases as hell) and slapping a highpass on it may actually be
+  //  useful - the aliasing creates a somewhat pleasant hiss that makes the whole sound brighter
+  //  (3rd order butterworth sounds good at f=1kHz, d=0.1) - but maybe we can create the hiss
+  //  differently?
+  //  -maybe it sounds brighter because the blep is introducing some lowpass charachter
+  //   in the passband? -> try LinBlep/MinBlep -> ok - yes - that seems to be part of the reason
+  //  -the highpassed naive one sounds still brighter/different
+  //  -a high-shelving filter helps somwhat
+  //  -to controld the aliasing freqs, try to use a fixed internal sample rate adjusted to be some 
+  //   multiple of the desired saw-freq
+  //
 }
 
 
