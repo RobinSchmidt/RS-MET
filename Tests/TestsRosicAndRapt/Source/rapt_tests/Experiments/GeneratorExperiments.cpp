@@ -512,8 +512,12 @@ void superBlep()
   std::vector<rsUint32> primes(maxDensity);
   rsFillPrimeTable(&primes[0], maxDensity);
 
+  typedef rsRatioGenerator<double>::RatioKind RK;
   rsRatioGenerator<double> ratGen;
   ratGen.setPrimeTable(&primes);
+  ratGen.setRatioKind(RK::rangeSplitOdd);
+  //ratGen.setParameter1(1.0/GOLDEN_RATIO);
+  ratGen.setParameter1(0.7);
 
   typedef rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsPolyBlep1<double, double>> SBO;
   //typedef rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsPolyBlep2<double, double>> SBO;
@@ -615,6 +619,14 @@ void superBlep()
   // by just ramping up the additional saw gradually
   // ..but: what sort of start-phase configuration whould we use for tuning - all at zero or
   // maximally spread out?
+
+  // -the range-splitting results seem to be somewhat worse that the metallic ratio fractional 
+  //  parts (mrf) - looking at the spectrum, it seems that mrf has more partials concentrated 
+  //  around the center 
+  //  -> we should have an option to somehow contract the ratios toward the center - maybe start
+  //  with the distribution from range splitting but then apply a monotonic mapping function - 
+  //  maybe something like the bipolar rational map ...maybe the unipolar version can be used
+  //  to introduce skew - maybe have pre-skew -> contract/spread -> post-skew
 }
 
 

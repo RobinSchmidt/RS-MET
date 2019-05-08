@@ -48,11 +48,18 @@ void rsBlepOscArray<T, TOsc, TBlep>::updateIncrements()
       // use 1.x where x is the fractional part:
       incs[i] = 1 + (incs[i] - floor(incs[i])); // sorted = false;
 
+
+
+
+    
+      ratioGenerator->fillRatioTable(&incs[0], numOscs);
     }
 
     // todo: keep track of whether or not the incs-array is sorted (some algorithms produce sorted
     // arrays, others don't) and if they are not sorted, sort them afterwards
 
+
+    /*
     // experiment random incs:
     rsNoiseGenerator<T> prng;
     prng.setSeed(1);
@@ -64,6 +71,11 @@ void rsBlepOscArray<T, TOsc, TBlep>::updateIncrements()
       incs[i] = prng.getSample();
     rsArray::cumulativeSum(&incs[0], &incs[0], numOscs);
     // can give okayish results
+    */
+
+
+
+
 
 
   
@@ -145,3 +157,10 @@ void rsDualBlepOsc<T, TBlep>::reset()
   blep1.reset();
   blep2.reset();
 }
+
+
+/*
+
+
+
+*/

@@ -586,14 +586,18 @@ std::vector<double> intervalSplittingProto(int numSegments, double midpoint, int
 
 void ratioGenerator()
 {
-  int numRatios = 7;
+  int numRatios = 17;
   int numPrimes = numRatios+1;
 
   std::vector<rsUint32> primes(numPrimes);
   rsFillPrimeTable(&primes[0], numPrimes);
 
+  typedef rsRatioGenerator<double>::RatioKind RK;
   rsRatioGenerator<double> ratGen;
   ratGen.setPrimeTable(&primes);
+  ratGen.setRatioKind(RK::rangeSplitOdd);
+  ratGen.setParameter1(0.75);
+
 
   std::vector<double> ratios(numRatios);
   ratGen.fillRatioTable(&ratios[0], numRatios);
@@ -601,8 +605,8 @@ void ratioGenerator()
 
   // try the self-similar interval splitting algorithm:
   //std::vector<double> a = intervalSplittingProto(100, 1.0/GOLDEN_RATIO, 1);
-  std::vector<double> a = intervalSplittingProto(100, 0.9, 2);
-  //std::vector<double> a = intervalSplittingProto(16, 0.75, 1);
+  //std::vector<double> a = intervalSplittingProto(100, 0.9, 2);
+  std::vector<double> a = intervalSplittingProto(16, 0.75, 1);
   double mean = rsMean(a);;
   rsPlotMarkers(&a[0], (int) a.size());
   // on the gui for the supersaw audio module, we should visualize the spread in a similar way

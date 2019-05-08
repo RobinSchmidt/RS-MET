@@ -13,7 +13,7 @@ public:
 
   /** Used to select the formula/algorithm by which a ratio is computed. Determines what kind of 
   ratios will be produced in our dispatching methods. */
-  enum class RatioKind // maybe rename to RatioFormula
+  enum class RatioKind // maybe rename to RatioFormula or Algorithm
   {
     metallic,
     primeSqrt,
@@ -38,6 +38,7 @@ public:
 
   /** Sets the kind of ratios that should be produced. */
   void setRatioKind(RatioKind newKind) { kind = newKind; }
+  // maybe rename to setAlgorithm
 
   /** Sets the first parameter for the formula - the meaning of the parameter varies depending on
   which formula is selected. */
@@ -77,6 +78,7 @@ public:
 
 
   void rangeSplits(T* splitPoints, int numSplitPoints, T ratio, int splitStrategy = 1);
+  // under construction
 
   // what about plastic ratios? oh - there's only one such ratio - but maybe powers of that can 
   // be used? what about powers of some general base?
