@@ -480,11 +480,84 @@ void productLogPlot()
 }
 
 
+
+
+
+
+// try something based on recursive subdivision of an interval at a ratio r: Take the interval
+// 0..1, split it into to sections of length r and 1-r, apply the same subdivision to both
+// sub-intervals (starting with the larger one), maybe alternate which side get r and 1-r
+// ...but what if the number of desired splits is not a power of 2?...always subdivide the
+// currently largest subinterval...and the decision which side gets r and which gets 1-r is based
+// on which of the neighbouring sections is larger
+// example: r=0.8
+// 0...1 -> 0....0.8..1 ...that's good for the supersaw because when changing the number of
+// saws (intervals/splits), the old splits stay where they are and it is just a new split/saw
+// introduced - that means we can just fade it in when implementing a continuous density
+// parameter (we may have to do something special for the transition between 1 and 2, though - like
+// moving the first saw in frequency while fading in the second - but as soon as the 2 outer freqs
+// are established at their places at the interval limits, more saws are just faded in when 
+// increasing density continuously)
+std::vector<double> intervalSplitting(int numSegments, double midpoint)
+{
+  int N = numSegments;
+  double r = midpoint;
+  std::vector<double> a(N+1);
+  a[0] = 0.0;
+  a[N] = 1.0;
+  int n = 2;    // number of points
+  int kl = 0;   // lower index
+  int ku = N;   // upper index
+  while(n < N)
+  {
+    int km = (int)round(r*(ku-kl));
+    a[km] = a[kl] + r * (a[ku] - a[kl]);
+
+    // update kl, ku
+    // ...
+
+    n++;
+  }
+  return a;
+}
+
+
+
+std::vector<double> intervalSplittingProto(int numSegments, double midpoint)
+{
+  // prototype implementation - may not be optimal in terms of efficiency, but is algorithmically
+  // easier to understand
+
+  int N = numSegments;
+  double r = midpoint;
+
+  typedef rsRange<double> Range;
+  std::vector<Range> s(N);  // array/set of segments/intervals/ranges (initially empty)
+  s[0] = Range(0.0, 1.0);   // seed set-of-ranges is { [0,1) }
+  int n = 1;                // current number of intervals
+  while(n < N) 
+  {
+    int k = rsArray::maxIndex(&s[0], n);    // index of largest range in the current set
+
+    // split s[k] into two ranges, add these two to the set (one of them replaces s[k], the other
+    // one gets appended at the end) ....
+
+
+    n++;
+  }
+
+
+
+
+  std::vector<double> a(N+1); // split-points
+  // ...
+  return a;
+}
+
 void ratioGenerator()
 {
   int numRatios = 7;
   int numPrimes = numRatios+1;
-
 
   std::vector<rsUint32> primes(numPrimes);
   rsFillPrimeTable(&primes[0], numPrimes);
@@ -495,20 +568,10 @@ void ratioGenerator()
   std::vector<double> ratios(numRatios);
   ratGen.fillRatioTable(&ratios[0], numRatios);
 
-  // try something based on recursive subdivision of an iterval at a ratio r: Take the interval
-  // 0..1, split it into to sections of length r and 1-r, apply the same subdivision to both
-  // sub-intervals (starting with the larger one), maybe alternate which side get r and 1-r
-  // ...but what if the number of desired splits is not a power of 2?...always subdivide the
-  // currently largets subinterval...and the decision which side gets r and which gets 1-r is based
-  // on which of the neighbouring sections is larger
-  // example: r=0.8
-  // 0...1 -> 0....0.8..1 ...that's good for the supersaw because when changing the number of
-  // saws (intervals/splits), the old splits stay where they are and it is just a new split/saw
-  // introduced - that means we can just fade it in when implementing a continuous density
-  // parameter
 
 
-
+  std::vector<double> a = intervalSplittingProto(10, 0.8);
+  int dummy = 0;
 }
 
 void ratiosLargeLcm()

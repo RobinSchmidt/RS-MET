@@ -8,6 +8,7 @@ namespace RAPT
 #include "MatrixTools.h"
 #include "StandardContainerTools.h"
 #include "Buffers.h"
+#include "Range.h"
 
 }
 

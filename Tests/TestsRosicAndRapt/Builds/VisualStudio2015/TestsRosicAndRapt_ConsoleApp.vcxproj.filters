@@ -2967,6 +2967,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\MatrixTools.h">
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Range.h">
+      <Filter>JUCE Modules\rapt\Data</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\StandardContainerTools.h">
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClInclude>
