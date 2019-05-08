@@ -1,17 +1,5 @@
 
 
-template<class T>
-void rsRatioGenerator<T>::fillRatioTable(T* r, int N)
-{
-  typedef RatioKind RK;
-  switch(kind)
-  {
-  case RK::metallic:      for(int i = 0; i < N; i++) r[i] = metallic(T(i));   break;
-  case RK::primeSqrt:     for(int i = 0; i < N; i++) r[i] = primeSqrt(i);     break;
-  case RK::primeSqrtDiff: for(int i = 0; i < N; i++) r[i] = primeSqrtDiff(i); break;
-  }
-}
-
 
 
 template<class T, class TOsc, class TBlep>

@@ -829,6 +829,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\CurveFitting.cpp">
       <Filter>JUCE Modules\rapt\Math\Misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\RatioGenerator.cpp">
+      <Filter>JUCE Modules\rapt\Math\Misc</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\Statistics.cpp">
       <Filter>JUCE Modules\rapt\Math\Misc</Filter>
     </ClCompile>
@@ -3124,6 +3127,9 @@
       <Filter>JUCE Modules\rapt\Math\LinearAlgebra</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\CurveFitting.h">
+      <Filter>JUCE Modules\rapt\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\RatioGenerator.h">
       <Filter>JUCE Modules\rapt\Math\Misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\Statistics.h">

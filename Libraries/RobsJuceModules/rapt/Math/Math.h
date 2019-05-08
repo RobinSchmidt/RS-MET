@@ -12,6 +12,7 @@ namespace RAPT
 
 #include "Misc/Statistics.h"
 #include "Misc/CurveFitting.h"
+#include "Misc/RatioGenerator.h"
 
 #include "Functions/BasicFunctions.h"
 #include "Functions/IntegerFunctions.h"

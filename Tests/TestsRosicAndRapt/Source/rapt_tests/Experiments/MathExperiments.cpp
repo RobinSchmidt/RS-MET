@@ -604,6 +604,12 @@ void ratioGenerator()
   //std::vector<double> a = intervalSplittingProto(16, 0.75, 1);
   double mean = rsMean(a);;
   rsPlotMarkers(&a[0], (int) a.size());
+  // on the gui for the supersaw audio module, we should visualize the spread in a similar way
+  // maybe with vertical lines instead of + markers - the visualization may or may not use a 
+  // normalized interval - if it doesn't, it will also visualize the amount of spread ..maybe
+  // also show the sawtooth amplitudes by the height of the lines - especially useful when we later
+  // introduce amp envelopes (bell-shaped curves, but mayby also inverse bell curves emphasizing 
+  // the outer freqs - how about: 0: flat, 1: bell, -1: inverted bell)
 }
 
 void ratiosLargeLcm()

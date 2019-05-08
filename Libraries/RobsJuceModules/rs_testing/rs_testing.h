@@ -29,6 +29,8 @@
 #include <rapt/rapt.h>
 #include <rosic/rosic.h>
 
+//using namespace RAPT;
+
 
 #include "TestTools/DSPPlotters.h"
 #include "TestTools/Plotting.h"

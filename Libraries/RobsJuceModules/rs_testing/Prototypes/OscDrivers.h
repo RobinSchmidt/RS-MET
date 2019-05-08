@@ -1,105 +1,5 @@
 #pragma once
 
-
-//=================================================================================================
-
-/** A class for generating ratios of numbers that can be used - for example - as frequency ratios
-for the various oscillators in an oscillator array (for "supersaw"/"superwave" stuff). */
-
-template<class T>
-class rsRatioGenerator
-{
-
-public:
-
-  /** Used to select the formula/algorithm by which a ratio is computed. Determines what kind of 
-  ratios will be produced in our dispatching methods. */
-  enum class RatioKind // maybe rename to RatioFormula
-  {
-    metallic,
-    primeSqrt,
-    primeSqrtDiff,
-    // plastic,
-    // intSqrt,
-
-    // ...
-  };
-
-  /** If you want to use the formulas based on prime numbers, you must pass a pointer to vector of
-  prime numbers and ensure that the vector pointed is still alive when you call a function that 
-  generates a frcation from prime numbers. The size of the table must be ...large enough...tbc.. */
-  void setPrimeTable(std::vector<RAPT::rsUint32>* newTable)
-  {
-    primeTable = newTable;
-  }
-  
-  /** Sets the kind of ratios that should be produced. */
-  void setRatioKind(RatioKind newKind) { kind = newKind; }
-
-  /** Sets the first parameter for the formula - the meaning of the parameter varies depending on
-  which formula is selected. */
-  void setParameter1(T newParam) { p1 = newParam; }
-  //...
-
-  /** Fills the given array with the ratios of the selected kind with selected parameters. */
-  void fillRatioTable(T* ratios, int numRatios);
-
-
-
-  // todo: add a function that dispatches between various ratio types, like
-  //static fillRatios(T* ratios, int numRatios, RatioType type, T param1, T param2); // ..
-  // maybe make it non-static
-
-  /** Returns the so called metallic ratio of given index n. For n = 0, it's just 1, for n = 1 it
-  is called the golden ratio, n = 2: silver, n = 3: bronze and beyond that, they don't have names.
-    https://en.wikipedia.org/wiki/Metallic_mean
-  The index is actually supposed to be a nonegative integer, but for extended flexibility, the 
-  function allows you to pass a real number as well. The golden ratio has many interesting 
-  mathematical properties, like being the "most irrational" number possible in the sense that it's
-  hardest to approximate by a continued fraction expansion, see here:
-    https://www.youtube.com/watch?v=CaasbfdJdJg  */
-  static inline T metallic(T n) { return T(0.5) * (n + sqrt(n*n+T(4))); }
-  // todo: what about ratios whose continued fraction expansion (CFE) starts with a single n and 
-  // then has only 1s thereafter - they should be also "very irrational" in the sense of needing a
-  // long CFE - i think, more so than the other metallic ratios since what matters for the 
-  // convergence of the CFE are those coeffs that come late in the sequence
-  // http://www.peacefromharmony.org/docs/7-27_Stakhov_Math_of_Harmony_EN.pdf
-  // here's a generalization witha 2nd parameter
-  // "Further Generalization of Golden Mean in Relation to Euler's 'Divine' Equation":
-  // https://arxiv.org/ftp/math/papers/0611/0611095.pdf
-  //
-
-  /** Square root of n-th prime number. */
-  inline T primeSqrt(int n) 
-  { 
-    rsAssert(primeTable != nullptr);
-    rsAssert(n < primeTable->size());
-    return sqrt(T(primeTable->at(n)));
-  }
-
-  /** Difference of the square roots of n+1-th and n-th prime number. */
-  inline T primeSqrtDiff(int n)
-  {
-    return primeSqrt(n+1) - primeSqrt(n);
-  }
-
-
-
-  // what about plastic ratios? -oh - there's only one such ratio - but maybe powers of that can 
-  // be used? what about powers of some general base?
-  // https://en.wikipedia.org/wiki/Plastic_number
-
-protected:
-
-  RatioKind kind = RatioKind::metallic;
-  T p1; // p2, p3, ...
-
-  std::vector<RAPT::rsUint32>* primeTable = nullptr;
-  // table of prime numbers - we use pointer to share it among all existing instances
-
-};
-
-
 //=================================================================================================
 
 // template parameters: 
@@ -115,7 +15,7 @@ class rsBlepOscArray // maybe rename to rsBlepOscArray
 public:
 
 
-  rsBlepOscArray(rsRatioGenerator<T>* ratioGenerator);
+  rsBlepOscArray(RAPT::rsRatioGenerator<T>* ratioGenerator);
 
   /** Sets the reference phase increment which determines the center frequency of the osc stack 
   around which all other frequencies are arranged. */
@@ -215,7 +115,7 @@ protected:
   // applying the blep after the filter is invalid because the blep needs go through the filter, 
   // too - so it's probably best to keep things as is
 
-  rsRatioGenerator<T>* ratioGenerator = nullptr; // used to generate freq-ratios, shared among voices
+  RAPT::rsRatioGenerator<T>* ratioGenerator = nullptr; // used to generate freq-ratios, shared among voices
 
   // todo: have an array of pan positions - if we do stereo later, we will need two blep objects 
   // - one for each channel
