@@ -539,16 +539,26 @@ std::vector<double> intervalSplittingProto(int numSegments, double midpoint)
   {
     int k = rsArray::maxIndex(&s[0], n);    // index of largest range in the current set
 
-    // split s[k] into two ranges, add these two to the set (one of them replaces s[k], the other
-    // one gets appended at the end) ....
+    // split s[k] into two ranges, 
+    Range rk = s[k];                                             // range at index k
+    Range rl = Range(rk.getMin(), rk.getMin() + r*rk.getSize()); // lower part of range rk
+    Range ru = Range(rl.getMax(), rk.getMax());                  // upper part of range rk
 
-
+    // the lower part of s[k] replaces sk, the upper part gets appended to the array:
+    s[k] = rl;
+    s[n] = ru;
     n++;
   }
+  // the cost of this algorithm is O(N^2) because in each iteration, we search for the maximum 
+  // which is itself an O(N) operation - can we avoid this search by somehow keeping the array of
+  // ranges sorted (by size), thereby turning it into an O(N) algorithm?
+
+  // sort the array ranges by their start-point:
+  // ...
 
 
 
-
+  // turn the ranges into a vector of split-points:
   std::vector<double> a(N+1); // split-points
   // ...
   return a;
