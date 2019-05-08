@@ -549,7 +549,17 @@ std::vector<double> intervalSplittingProto(int numSegments, double midpoint, int
       rl = Range(rk.getMin(), rk.getMin() + r*rk.getSize()); // lower part of range rk
       ru = Range(rl.getMax(), rk.getMax());                  // upper part of range rk
     }
-    // ...
+    else if(splitStrategy == 1) {
+      if(rsIsOdd(n)) {
+        rl = Range(rk.getMin(), rk.getMin() + r*rk.getSize());
+        ru = Range(rl.getMax(), rk.getMax());
+      } else {
+        rl = Range(rk.getMin(), rk.getMin() + (1-r)*rk.getSize());
+        ru = Range(rl.getMax(), rk.getMax());
+      }
+    }
+    // refactor this - get rid of the duplication - may let the alternating be the default - 
+    // because it doesn't produce this pesky skew, it's probably more desirable
     // todo: have different variants how to split rk with respect to whether the first or second
     // portion is r or 1-r long - maybe alternate in the iterations or (more sophisticated), let
     // it depend on how they neighbours were split - the current strategy leads to a distribution
@@ -597,8 +607,9 @@ void ratioGenerator()
 
   // try the self-similar interval splitting algorithm:
   //std::vector<double> a = intervalSplittingProto(100, 1.0/GOLDEN_RATIO);
-  std::vector<double> a = intervalSplittingProto(100, 0.9);
-  //std::vector<double> a = intervalSplittingProto(16, 0.75);
+  std::vector<double> a = intervalSplittingProto(100, 0.9, 1);
+  //std::vector<double> a = intervalSplittingProto(16, 0.75, 1);
+  double mean = rsMean(a);;
   rsPlotMarkers(&a[0], (int) a.size());
 }
 
