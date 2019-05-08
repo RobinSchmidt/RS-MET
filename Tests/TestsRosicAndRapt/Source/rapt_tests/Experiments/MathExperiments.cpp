@@ -537,7 +537,6 @@ std::vector<double> intervalSplittingProto(int numSegments, double midpoint, int
 
   int N = numSegments;
   double r = midpoint;
-
   typedef rsRange<double> Range;
   std::vector<Range> s(N);  // array/set of segments/intervals/ranges (initially empty)
   s[0] = Range(0.0, 1.0);   // seed set-of-ranges is { [0,1) }
@@ -547,31 +546,18 @@ std::vector<double> intervalSplittingProto(int numSegments, double midpoint, int
     int k = rsArray::maxIndex(&s[0], n);    // index of largest range in the current set
 
     // split s[k] into two ranges:
-    Range rk = s[k];                                         // range at index k
     Range rl, ru;
-    if(splitStrategy == 0) {       // always use r
-      splitRange(rk, rl, ru, r);
-    }
-    else if(splitStrategy == 1) {  // alternating - odd n uses r, even n uses 1-r
-      if(rsIsOdd(n)) {
-        splitRange(rk, rl, ru, r);
-      } else {
-        splitRange(rk, rl, ru, 1-r);
-      }
-    }
-    else if(splitStrategy == 2) {  // alternating - even n uses r, odd n uses 1-r
-      if(rsIsEven(n)) {
-        splitRange(rk, rl, ru, r);
-      } else {
-        splitRange(rk, rl, ru, 1-r);
-      }
-      // is it somehow possible to continuously morph between the odd and even version of this
-      // strategy? ...maybe just "crossfade" the result split-point arrays? that would add another
-      // potentially interesting dimension for tweaking ...maybe even vector-crossfade between
-      // skew-right/skew-left/alternate-odd/alternate-even?
-    }
-    // refactor this - get rid of the duplication - have a function 
-    // splitRange(rk, rl, ru, r)
+    if(splitStrategy == 0) splitRange(s[k], rl, ru, r);  // always use r
+    else if(splitStrategy == 1)                          // alternating, ...
+      if(rsIsOdd(n))  splitRange(s[k], rl, ru, r);       // ...odd n uses r
+      else            splitRange(s[k], rl, ru, 1-r);     // ...even n uses 1-r
+    else if(splitStrategy == 2)                          // alternating, ...
+      if(rsIsEven(n)) splitRange(s[k], rl, ru, r);       // ...even n uses r
+      else            splitRange(s[k], rl, ru, 1-r);     // ...odd n uses 1-r
+    // is it somehow possible to continuously morph between the odd and even version of this
+    // strategy? ...maybe just "crossfade" the result split-point arrays? that would add another
+    // potentially interesting dimension for tweaking ...maybe even vector-crossfade between
+    // skew-right/skew-left/alternate-odd/alternate-even?
 
     // the lower part of s[k] replaces sk, the upper part gets appended to the array:
     s[k] = rl;
