@@ -521,6 +521,7 @@ std::vector<double> intervalSplitting(int numSegments, double midpoint)
   return a;
 }
 
+
 bool rangeStartLess(const rsRange<double>& r1, const rsRange<double>& r2)
 {
   return r1.getMin() < r2.getMin();

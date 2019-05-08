@@ -75,6 +75,9 @@ public:
     return primeSqrt(n+1) - primeSqrt(n);
   }
 
+
+  void rangeSplits(T* splitPoints, int numSplitPoints, T ratio, int splitStrategy = 1);
+
   // what about plastic ratios? oh - there's only one such ratio - but maybe powers of that can 
   // be used? what about powers of some general base?
   // https://en.wikipedia.org/wiki/Plastic_number
