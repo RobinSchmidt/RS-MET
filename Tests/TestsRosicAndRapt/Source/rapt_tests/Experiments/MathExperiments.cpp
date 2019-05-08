@@ -525,7 +525,8 @@ bool rangeStartLess(const rsRange<double>& r1, const rsRange<double>& r2)
 {
   return r1.getMin() < r2.getMin();
 }
-std::vector<double> intervalSplittingProto(int numSegments, double midpoint)
+
+std::vector<double> intervalSplittingProto(int numSegments, double midpoint, int splitStrategy = 0)
 {
   // prototype implementation - may not be optimal in terms of efficiency, but is algorithmically
   // easier to understand
@@ -541,10 +542,19 @@ std::vector<double> intervalSplittingProto(int numSegments, double midpoint)
   {
     int k = rsArray::maxIndex(&s[0], n);    // index of largest range in the current set
 
-    // split s[k] into two ranges, 
-    Range rk = s[k];                                             // range at index k
-    Range rl = Range(rk.getMin(), rk.getMin() + r*rk.getSize()); // lower part of range rk
-    Range ru = Range(rl.getMax(), rk.getMax());                  // upper part of range rk
+    // split s[k] into two ranges:
+    Range rk = s[k];                                         // range at index k
+    Range rl, ru;
+    if(splitStrategy == 0) {
+      rl = Range(rk.getMin(), rk.getMin() + r*rk.getSize()); // lower part of range rk
+      ru = Range(rl.getMax(), rk.getMax());                  // upper part of range rk
+    }
+    // ...
+    // todo: have different variants how to split rk with respect to whether the first or second
+    // portion is r or 1-r long - maybe alternate in the iterations or (more sophisticated), let
+    // it depend on how they neighbours were split - the current strategy leads to a distribution
+    // that is skewed to the right (if r > 0.5), like with r=0.75 and N=16, we get 10 points in
+    // the right half and 7 in the left
 
     // the lower part of s[k] replaces sk, the upper part gets appended to the array:
     s[k] = rl;
@@ -585,9 +595,11 @@ void ratioGenerator()
   ratGen.fillRatioTable(&ratios[0], numRatios);
 
 
-
-  std::vector<double> a = intervalSplittingProto(10, 0.8);
-  int dummy = 0;
+  // try the self-similar interval splitting algorithm:
+  //std::vector<double> a = intervalSplittingProto(100, 1.0/GOLDEN_RATIO);
+  std::vector<double> a = intervalSplittingProto(100, 0.9);
+  //std::vector<double> a = intervalSplittingProto(16, 0.75);
+  rsPlotMarkers(&a[0], (int) a.size());
 }
 
 void ratiosLargeLcm()

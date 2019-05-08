@@ -100,6 +100,20 @@ inline void rsPlotVectors(
 //  plt.plot;
 //}
 
+/** Plots markers on the x-axis at the values given in the array. */
+template<class T>
+inline void rsPlotMarkers(T* markers, int numMarkers)
+{
+  std::vector<T> zeros(numMarkers);    // y values for plotting (all zero)
+  RAPT::rsArray::fillWithZeros(&zeros[0], numMarkers);
+  GNUPlotter plt;
+  plt.addDataArrays(numMarkers,   markers, &zeros[0]);
+  plt.setGraphStyles("points");
+  plt.plot();
+}
+
+/** Plots a signal together with a set of markers (useful, for example, to mark time-instants of 
+signal features such as zero-crossings) */
 template<class T>
 inline void rsPlotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers)
 {
