@@ -521,8 +521,10 @@ std::vector<double> intervalSplitting(int numSegments, double midpoint)
   return a;
 }
 
-
-
+bool rangeStartLess(const rsRange<double>& r1, const rsRange<double>& r2)
+{
+  return r1.getMin() < r2.getMin();
+}
 std::vector<double> intervalSplittingProto(int numSegments, double midpoint)
 {
   // prototype implementation - may not be optimal in terms of efficiency, but is algorithmically
@@ -554,13 +556,17 @@ std::vector<double> intervalSplittingProto(int numSegments, double midpoint)
   // ranges sorted (by size), thereby turning it into an O(N) algorithm?
 
   // sort the array ranges by their start-point:
-  // ...
-
-
+  rsHeapSort(&s[0], N, &rangeStartLess);
+  // this is an O(N*log(N)) operation - so if we can turn the above into an O(N) operation, the 
+  // overall comlexity of range splitting would still be O(N*log(N)) - certainly much better than
+  // O(N^2) - but to achieve O(N), we would have to avoid the final sorting too - maybe by always
+  // keeping a version sorted by size and another version sorted by start around?
 
   // turn the ranges into a vector of split-points:
   std::vector<double> a(N+1); // split-points
-  // ...
+  for(n = 0; n < N; n++)
+    a[n] = s[n].getMin();
+  a[n] = 1.0;
   return a;
 }
 

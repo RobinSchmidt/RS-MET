@@ -49,8 +49,14 @@ template class rsMovingMaximumFilter<double>;
 
 
 template bool RAPT::defaultLess(const int& left, const int& right);
+
+
 template void RAPT::rsHeapSort(int *buffer, int length,
   bool (*lessThen)(const int& left, const int& right));
+
+template void RAPT::rsHeapSort(rsRange<double>* buffer, int length,
+  bool (*lessThen)(const rsRange<double>& left, const rsRange<double>& right));
+
 template bool RAPT::rsIsSortedAscending(int *buffer, int length);
 template std::vector<int> RAPT::rsFindAllOccurencesOf(char* buffer, int bufferLength,
   char* pattern, int patternLength);

@@ -157,7 +157,7 @@ T rsFindNearestUpwardZeroCrossing(T* buffer, int length, T searchStart)
   if(lo2 < 0 || hi2 >= length)
     return searchStart;
 
-  // check whether the serch start itself is in between two values which surround a zero
+  // check whether the search start itself is in between two values which surround a zero
   // crossing:
   if(buffer[lo1] <= 0.0 && buffer[hi1] > 0.0)
   {
