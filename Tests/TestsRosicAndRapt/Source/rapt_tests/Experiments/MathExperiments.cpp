@@ -525,7 +525,11 @@ bool rangeStartLess(const rsRange<double>& r1, const rsRange<double>& r2)
 {
   return r1.getMin() < r2.getMin();
 }
-
+void splitRange(const rsRange<double>& r, rsRange<double>& rl, rsRange<double>& ru, double ratio)
+{
+  rl = rsRange<double>(r.getMin(),  r.getMin() + ratio*r.getSize()); // lower part of range r
+  ru = rsRange<double>(rl.getMax(), r.getMax());                     // upper part of range r
+}
 std::vector<double> intervalSplittingProto(int numSegments, double midpoint, int splitStrategy = 1)
 {
   // prototype implementation - may not be optimal in terms of efficiency, but is algorithmically
@@ -546,29 +550,25 @@ std::vector<double> intervalSplittingProto(int numSegments, double midpoint, int
     Range rk = s[k];                                         // range at index k
     Range rl, ru;
     if(splitStrategy == 0) {       // always use r
-      rl = Range(rk.getMin(), rk.getMin() + r*rk.getSize()); // lower part of range rk
-      ru = Range(rl.getMax(), rk.getMax());                  // upper part of range rk
+      splitRange(rk, rl, ru, r);
     }
     else if(splitStrategy == 1) {  // alternating - odd n uses r, even n uses 1-r
       if(rsIsOdd(n)) {
-        rl = Range(rk.getMin(), rk.getMin() + r*rk.getSize());
-        ru = Range(rl.getMax(), rk.getMax());
+        splitRange(rk, rl, ru, r);
       } else {
-        rl = Range(rk.getMin(), rk.getMin() + (1-r)*rk.getSize());
-        ru = Range(rl.getMax(), rk.getMax());
+        splitRange(rk, rl, ru, 1-r);
       }
     }
     else if(splitStrategy == 2) {  // alternating - even n uses r, odd n uses 1-r
       if(rsIsEven(n)) {
-        rl = Range(rk.getMin(), rk.getMin() + r*rk.getSize());
-        ru = Range(rl.getMax(), rk.getMax());
+        splitRange(rk, rl, ru, r);
       } else {
-        rl = Range(rk.getMin(), rk.getMin() + (1-r)*rk.getSize());
-        ru = Range(rl.getMax(), rk.getMax());
+        splitRange(rk, rl, ru, 1-r);
       }
       // is it somehow possible to continuously morph between the odd and even version of this
       // strategy? ...maybe just "crossfade" the result split-point arrays? that would add another
-      // potentially interesting dimension for tweaking
+      // potentially interesting dimension for tweaking ...maybe even vector-crossfade between
+      // skew-right/skew-left/alternate-odd/alternate-even?
     }
     // refactor this - get rid of the duplication - have a function 
     // splitRange(rk, rl, ru, r)
@@ -613,8 +613,8 @@ void ratioGenerator()
 
 
   // try the self-similar interval splitting algorithm:
-  //std::vector<double> a = intervalSplittingProto(100, 1.0/GOLDEN_RATIO);
-  std::vector<double> a = intervalSplittingProto(100, 0.9, 1);
+  //std::vector<double> a = intervalSplittingProto(100, 1.0/GOLDEN_RATIO, 1);
+  std::vector<double> a = intervalSplittingProto(100, 0.9, 2);
   //std::vector<double> a = intervalSplittingProto(16, 0.75, 1);
   double mean = rsMean(a);;
   rsPlotMarkers(&a[0], (int) a.size());
