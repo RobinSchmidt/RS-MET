@@ -526,7 +526,7 @@ bool rangeStartLess(const rsRange<double>& r1, const rsRange<double>& r2)
   return r1.getMin() < r2.getMin();
 }
 
-std::vector<double> intervalSplittingProto(int numSegments, double midpoint, int splitStrategy = 0)
+std::vector<double> intervalSplittingProto(int numSegments, double midpoint, int splitStrategy = 1)
 {
   // prototype implementation - may not be optimal in terms of efficiency, but is algorithmically
   // easier to understand
@@ -545,11 +545,11 @@ std::vector<double> intervalSplittingProto(int numSegments, double midpoint, int
     // split s[k] into two ranges:
     Range rk = s[k];                                         // range at index k
     Range rl, ru;
-    if(splitStrategy == 0) {
+    if(splitStrategy == 0) {       // always use r
       rl = Range(rk.getMin(), rk.getMin() + r*rk.getSize()); // lower part of range rk
       ru = Range(rl.getMax(), rk.getMax());                  // upper part of range rk
     }
-    else if(splitStrategy == 1) {
+    else if(splitStrategy == 1) {  // alternating - odd n uses r, even n uses 1-r
       if(rsIsOdd(n)) {
         rl = Range(rk.getMin(), rk.getMin() + r*rk.getSize());
         ru = Range(rl.getMax(), rk.getMax());
@@ -558,13 +558,20 @@ std::vector<double> intervalSplittingProto(int numSegments, double midpoint, int
         ru = Range(rl.getMax(), rk.getMax());
       }
     }
-    // refactor this - get rid of the duplication - may let the alternating be the default - 
-    // because it doesn't produce this pesky skew, it's probably more desirable
-    // todo: have different variants how to split rk with respect to whether the first or second
-    // portion is r or 1-r long - maybe alternate in the iterations or (more sophisticated), let
-    // it depend on how they neighbours were split - the current strategy leads to a distribution
-    // that is skewed to the right (if r > 0.5), like with r=0.75 and N=16, we get 10 points in
-    // the right half and 7 in the left
+    else if(splitStrategy == 2) {  // alternating - even n uses r, odd n uses 1-r
+      if(rsIsEven(n)) {
+        rl = Range(rk.getMin(), rk.getMin() + r*rk.getSize());
+        ru = Range(rl.getMax(), rk.getMax());
+      } else {
+        rl = Range(rk.getMin(), rk.getMin() + (1-r)*rk.getSize());
+        ru = Range(rl.getMax(), rk.getMax());
+      }
+      // is it somehow possible to continuously morph between the odd and even version of this
+      // strategy? ...maybe just "crossfade" the result split-point arrays? that would add another
+      // potentially interesting dimension for tweaking
+    }
+    // refactor this - get rid of the duplication - have a function 
+    // splitRange(rk, rl, ru, r)
 
     // the lower part of s[k] replaces sk, the upper part gets appended to the array:
     s[k] = rl;
