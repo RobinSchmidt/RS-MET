@@ -97,6 +97,65 @@ here's a generalization witha 2nd parameter
 "Further Generalization of Golden Mean in Relation to Euler's 'Divine' Equation":
 https://arxiv.org/ftp/math/papers/0611/0611095.pdf
 
+apply nonlinear function to contract toward the middle or spread toward the outsides, also apply 
+skew - maybe like this: pre-skew -> contract -> post-skew (maybe figure out a formula that does it 
+all at once - maybe some things simplify)
+
+//rsArray::transformRange(&incs[0], &incs[0], numOscs, T(0), T(1));  // ratios in 0...1
 
 
+
+// this has been used in an early version of rsBlepOscArray:
+
+    // linear progression of increments - this produces really bad beating:
+    T minRatio = T(1) - T(0.5) * detune;
+    T maxRatio = T(1) + T(0.5) * detune;
+    T ratioInc = (maxRatio-minRatio) / T(numOscs-1);
+    for(int i = 0; i < numOscs; i++)
+    {
+      incs[i] = minRatio + i * ratioInc;
+
+      // test:
+      //incs[i] = rsMetallicRatio(T(i+1));
+
+      //incs[i] = RG::metallic(T(i));
+      //incs[i] = ratioGenerator->primeSqrt(i);
+      incs[i] = ratioGenerator->primeSqrtDiff(i);
+
+      //incs[i] = sqrt( T(i+1) );
+
+      // use 1.x where x is the fractional part:
+      incs[i] = 1 + (incs[i] - floor(incs[i])); // sorted = false;
+    }
+    // todo: keep track of whether or not the incs-array is sorted (some algorithms produce sorted
+    // arrays, others don't) and if they are not sorted, sort them afterwards
+
+// or this:
+
+    // experiment random incs:
+    rsNoiseGenerator<T> prng;
+    prng.setSeed(1);
+    T randomness = 2.0;
+    T minInc = T(1) - T(0.5) * randomness;
+    T maxInc = T(1) + T(0.5) * randomness;
+    prng.setRange(minInc, maxInc);
+    for(int i = 0; i < numOscs; i++)
+      incs[i] = prng.getSample();
+    rsArray::cumulativeSum(&incs[0], &incs[0], numOscs);
+    // can give okayish results
+
+todo: other options: linear progression of frequencies (increment reciprocals), geometric
+spacing...hmm - can we somehow "invert" the generalized mean formula to obtain a generalized
+spreading function - we can do it for arithmetic mean, harmonic mean and geometric mean - but
+what should be in between?
+
+see rosic::SuperOscillator::setFreq for other spacing strategies - factor out the code from 
+there to make it usable here too
+
+todo: maybe compute the mean ratio and use it to center the mean frequency/increment - but 
+what mean should we use? probably the arithmetic, but the geometric or harmonic seems 
+plausible as well - maybe make it a user option (use a generalized mean and let the user set 
+the exponent). actually i think, the harmonic mean of the increments (corresponding to the
+arithmetic mean of the frequencies) makes more sense - experimentation needed....
+    
 */

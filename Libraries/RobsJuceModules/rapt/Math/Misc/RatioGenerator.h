@@ -12,7 +12,12 @@ class rsRatioGenerator
 public:
 
   /** Used to select the formula/algorithm by which a ratio is computed. Determines what kind of 
-  ratios will be produced in our dispatching methods. */
+  ratios will be produced in our dispatching methods. 
+  
+  Warning: all the rangeSplit... algorithms are O(N^2) and dynamically allocate temporary memory, 
+  so you may want to avoid them in a realtime context - i want to at least get rid of dynamic 
+  memory allocation later and hopefully find a faster algorithm - but i'm not sure, if the latter 
+  is possible (or if it is possible, if can figure it out) */
   enum class RatioKind // maybe rename to RatioFormula or Algorithm
   {
     metallic,
@@ -24,6 +29,7 @@ public:
     rangeSplitOdd,
     rangeSplitEven
   };
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
