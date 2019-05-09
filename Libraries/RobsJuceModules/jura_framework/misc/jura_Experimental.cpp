@@ -1,5 +1,12 @@
 
+void ChoiceParameter::addStringValue(const juce::String& valueToAdd, int enumValue)
+{
+  Parameter::addStringValue(valueToAdd);
+  //int intVal = static_cast<int>(enumValue);
+  choices.push_back(enumValue);
+}
 
+/*
 template<class EnumClass>
 void ChoiceParameter::addStringValue(const juce::String& valueToAdd, EnumClass enumValue)
 {
@@ -7,6 +14,7 @@ void ChoiceParameter::addStringValue(const juce::String& valueToAdd, EnumClass e
   int intVal = static_cast<int>(enumValue);
   choices.push_back(intVal);
 }
+*/
 
 /*
 -i think, we should deprecate the way, Strings are handled by implicitly mapping them to integers 

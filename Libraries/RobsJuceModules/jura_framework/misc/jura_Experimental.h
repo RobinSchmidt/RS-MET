@@ -10,9 +10,9 @@ having the dsp objects take integer values for the choices that are defined in s
 the values of the enums must correspond to the index of the string in the array - like if you want
 to use an option that is called "BUTTERWORTH" in some enum, the string-array in the parameter must 
 have the corresponding value "Butterworth" at the index that maps to BUTTERWORTH when converted to
-int. That's actually quite bad, because it implies that can't change the order the enums without 
-breaking the connection (we would have to edit all places where the strings are added and bring 
-them into the same order as the new enum - a maintenance nightmare)
+int. That's actually quite bad, because it implies that we can't change the order in the enums 
+without breaking the connection (we would have to edit all places where the strings are added to 
+the Parameter objects and bring them into the same order as the new enum - a maintenance nightmare)
 
 Instead, the new way should make use of the "enum class" construct of C++11 - we don't want to rely
 on implicit conversion to int anymore but instead force client code to define the connection
@@ -23,8 +23,13 @@ class JUCE_API ChoiceParameter : public Parameter
 
 public:
 
-  template<class EnumClass>
-  void addStringValue(const juce::String& valueToAdd, EnumClass enumValue);
+  ChoiceParameter(const juce::String& name) : Parameter(name, 0.0, 1.0, 0.0, Parameter::STRING) {}
+
+
+  void addStringValue(const juce::String& valueToAdd, int enumValue);
+
+  //template<class EnumClass>
+  //void addStringValue(const juce::String& valueToAdd, EnumClass enumValue);
   // does it lead to code-bloat to templatize this function or will the compiler generate just
   // one function because under the hood, the enum class maps to int in every instantiation? it 
   // will have to generate another function, when enum-classes with different underlying integer
@@ -37,11 +42,13 @@ public:
 
 protected:
 
-  /** Is now protected because it should not be called from client code anymore. Instead use
-  addStringValue(const juce::String& valueToAdd, EnumClass enumValue); */
-  virtual void addStringValue(const juce::String& valueToAdd);
-
 
   std::vector<int> choices;
+
+private:
+
+  /** Is now private because it should not be called from client code anymore. Instead use
+  addStringValue(const juce::String& valueToAdd, EnumClass enumValue); */
+  virtual void addStringValue(const juce::String& valueToAdd) {}
 
 };
