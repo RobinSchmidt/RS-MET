@@ -93,7 +93,7 @@ public:
 protected:
 
   RatioKind kind = RatioKind::metallic;
-  T p1; // p2, p3, ...
+  T p1 = T(0); // p2, p3, ...
 
   std::vector<RAPT::rsUint32>* primeTable = nullptr;
   // table of prime numbers - we use pointer to share it among all existing instances

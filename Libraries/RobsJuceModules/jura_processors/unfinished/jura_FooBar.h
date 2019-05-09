@@ -9,11 +9,19 @@ public:
 
   FooBarModule(CriticalSection *lockToUse);
 
-  AudioModuleEditor* createEditor(int type) override;
+
+
+  // overriden from AudioModule baseclass:
+  virtual AudioModuleEditor* createEditor(int type) override;
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
+  virtual void processStereoFrame(double *left, double *right) override;
+  virtual void setSampleRate(double newSampleRate) override; 
+  virtual void reset() override;
+
 
 protected:
 
-  rosic::rsFooBar core;
+  rosic::rsFooBar* fooBarCore;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FooBarModule)
 };

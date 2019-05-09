@@ -118,4 +118,6 @@ namespace jura
 #include "audio/jura_PolyModulators.cpp"
 #include "audio/jura_AudioPlugin.cpp"
 
+#include "misc/jura_Experimental.cpp"
+
 }

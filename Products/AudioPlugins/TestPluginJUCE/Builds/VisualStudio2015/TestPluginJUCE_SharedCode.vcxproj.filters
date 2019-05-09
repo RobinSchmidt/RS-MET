@@ -2551,6 +2551,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Data\ArrayTools.cpp">
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Buffers.cpp">
+      <Filter>JUCE Modules\rapt\Data</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Data.cpp">
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClCompile>
@@ -2559,6 +2562,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Data\StandardContainerTools.cpp">
       <Filter>JUCE Modules\rapt\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\MovingWindowFilters.cpp">
+      <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\OnePoleFilter.cpp">
       <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
@@ -2705,6 +2711,9 @@
       <Filter>JUCE Modules\rapt\Math\LinearAlgebra</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\CurveFitting.cpp">
+      <Filter>JUCE Modules\rapt\Math\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\RatioGenerator.cpp">
       <Filter>JUCE Modules\rapt\Math\Misc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\Statistics.cpp">
@@ -2875,6 +2884,12 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\BandwidthConverter.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\BlepBlampOscs.cpp">
+      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\BlitBlepBlamp.cpp">
+      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\DelayLine.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
@@ -2885,6 +2900,9 @@
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\MiscAudio.cpp">
+      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\OscArrays.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\ResponseGetters.cpp">
@@ -3941,6 +3959,9 @@
       <Filter>JUCE Modules\rosic\legacy</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\RandomNumberGenerator.cpp">
+      <Filter>JUCE Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\rosic_Plotter.cpp">
       <Filter>JUCE Modules\rosic\legacy</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\SampleLauncher.cpp">
@@ -6405,14 +6426,23 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Data\ArrayTools.h">
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Buffers.h">
+      <Filter>JUCE Modules\rapt\Data</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Data.h">
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Data\MatrixTools.h">
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Range.h">
+      <Filter>JUCE Modules\rapt\Data</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Data\StandardContainerTools.h">
       <Filter>JUCE Modules\rapt\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\MovingWindowFilters.h">
+      <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\OnePoleFilter.h">
       <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
@@ -6562,6 +6592,9 @@
       <Filter>JUCE Modules\rapt\Math\LinearAlgebra</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\CurveFitting.h">
+      <Filter>JUCE Modules\rapt\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\RatioGenerator.h">
       <Filter>JUCE Modules\rapt\Math\Misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\Statistics.h">
@@ -6750,6 +6783,12 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\BandwidthConverter.h">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\BlepBlampOscs.h">
+      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\BlitBlepBlamp.h">
+      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\DelayLine.h">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
@@ -6760,6 +6799,9 @@
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\MiscAudio.h">
+      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\OscArrays.h">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\ResponseGetters.h">
@@ -7894,6 +7936,9 @@
       <Filter>JUCE Modules\rosic\legacy</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\RandomNumberGenerator.h">
+      <Filter>JUCE Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\rosic_Plotter.h">
       <Filter>JUCE Modules\rosic\legacy</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\SampleLauncher.h">

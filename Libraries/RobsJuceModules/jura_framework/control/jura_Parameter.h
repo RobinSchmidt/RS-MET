@@ -152,35 +152,7 @@ value when the gui repaints itself in the observer notification.
 NOTE: currently there's no mechanism to de-register a member-function based callback -> the object
 which member function is connected to a parameter is assumed to to be valid for the whole lifetime
 of the Parameter object that calls it back (\todo provide a mechanism for de-registering member
-functions)
-
-\todo: getStorageString, setFromStorageString, getDisplayString
--allows for storing string/enum parameters with different stings than what is displayed in the
- ComboBox - example:
- displayString == 24 dB/oct (if we are already in a submenu 'Lowpass')
- storageString == Lowpass24 or Lowpass>24
--include a description-string ...will be copied into the corresponding widget's description on
- assignment
-
-\todo
--for performance, provide two versions of setValue - the regular one and a version
- setValueWithoutLocking - where the latter should be called only under the premise that the
- mutex-lock is already held by the caller
-
-the set/getValue stuff is messed up when smoothing/meta-control/modulation comes into play
-ensure the following:
--set/get(Normalized)Value: sets/returns unmodulated (normalized) target value in all of Parameter's
- subclasses
- -setNormalizedValue is called from sliders in mouseDrag, etc., getNormalizedValue is called in 
-  paint, so all subclasses must make sure to return a value that is suitable for that purpose
- -getValue is also called in paint and used for the numeric readout - so subclasses must make
-  sure that get getValue returns the mapped value without smoothing and modulation
-
-
-
-
-
-*/
+functions)  */
 
 class JUCE_API Parameter
 {
@@ -684,6 +656,8 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterSetHolder)
 };
+
+
 
 
 #endif

@@ -29,17 +29,7 @@ public:
     updateIncrements();
   }
 
-  inline void setDetune(T newDetune) 
-  { 
-    detune = newDetune; 
-    updateIncrements();
-  }
-  // todo: use an update strategy similar to TurtleSource - have an atomic bool that stores, if the
-  // incs array is up to date, check in getSample if it is up to date and if not, update it - 
-  // allows for efficient simultaneous modulation of frequency and detune from the mod-system
-  // or maybe just have a function setIncrementAndDetune - to make it efficient in the mod-system,
-  // a subclass (in rosic) shall be used that uses the bool - rapt is not the right place for such
-  // infrastructe dependent decisions
+
 
   /** Sets the number of oscillators to use. */
   inline void setNumOscillators(int newNumber)
@@ -52,6 +42,21 @@ public:
     // etc. we only update the oscs up to numOscs in order to avoid computing increments that are 
     // not used
   }
+  // rename to setDensity
+
+  void setDetune(T newDetune) 
+  { 
+    detune = newDetune; 
+    updateIncrements();
+  }
+  // todo: use an update strategy similar to TurtleSource - have an atomic bool that stores, if the
+  // incs array is up to date, check in getSample if it is up to date and if not, update it - 
+  // allows for efficient simultaneous modulation of frequency and detune from the mod-system
+  // or maybe just have a function setIncrementAndDetune - to make it efficient in the mod-system,
+  // a subclass (in rosic) shall be used that uses the bool - rapt is not the right place for such
+  // infrastructe dependent decisions
+
+
 
   /** Sets the maximum number of oscillators that can be used. May cause memory (re)allocation and
   should probably be called once at startup time. */

@@ -8,12 +8,15 @@ public:
 
   BlepOscArrayModule(CriticalSection *lockToUse);
 
-  AudioModuleEditor* createEditor(int type) override;
+  //AudioModuleEditor* createEditor(int type) override;
+  // override this later to create a custom editor - for the moment, we use the generic editor
 
 protected:
 
+  void createParameters();
 
-  rosic::rsOscArrayPolyBlep1 core;
+  RAPT::rsRatioGenerator<double> ratioGenerator;
+  rosic::rsOscArrayPolyBlep1 oscArrayCore;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BlepOscArrayModule)
 };

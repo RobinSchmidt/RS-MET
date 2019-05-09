@@ -2890,6 +2890,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\misc\jura_DeletionRequester.cpp">
       <Filter>JUCE Modules\jura_framework\misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\misc\jura_Experimental.cpp">
+      <Filter>JUCE Modules\jura_framework\misc</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\tools\jura_MiscTools.cpp">
       <Filter>JUCE Modules\jura_framework\tools</Filter>
     </ClCompile>
@@ -3098,6 +3101,9 @@
       <Filter>JUCE Modules\jura_processors\tools</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_DualFilter.cpp">
+      <Filter>JUCE Modules\jura_processors\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_FooBar.cpp">
       <Filter>JUCE Modules\jura_processors\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_ModalSynth.cpp">
@@ -7395,6 +7401,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\misc\jura_DeletionRequester.h">
       <Filter>JUCE Modules\jura_framework\misc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\misc\jura_Experimental.h">
+      <Filter>JUCE Modules\jura_framework\misc</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\tools\jura_MiscTools.h">
       <Filter>JUCE Modules\jura_framework\tools</Filter>
     </ClInclude>
@@ -7603,6 +7612,9 @@
       <Filter>JUCE Modules\jura_processors\tools</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_DualFilter.h">
+      <Filter>JUCE Modules\jura_processors\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_FooBar.h">
       <Filter>JUCE Modules\jura_processors\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_ModalSynth.h">

@@ -171,6 +171,8 @@ namespace jura
 #include "audio/jura_PolyModulators.h"
 #include "audio/jura_AudioPlugin.h"
 
+#include "misc/jura_Experimental.h"
+
 
 }
 

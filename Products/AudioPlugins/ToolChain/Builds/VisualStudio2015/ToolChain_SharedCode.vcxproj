@@ -2226,6 +2226,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\misc\jura_DeletionRequester.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\misc\jura_Experimental.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\tools\jura_MiscTools.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2434,6 +2437,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_DualFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_FooBar.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_ModalSynth.cpp">
@@ -5106,6 +5112,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\gui\widgets\jura_RWidget.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\gui\widgets\jura_VectorPad.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\misc\jura_DeletionRequester.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\misc\jura_Experimental.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\tools\jura_MiscTools.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\tools\jura_StringTools.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\tools\jura_XmlTools.h"/>
@@ -5176,6 +5183,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\tools\jura_ClassConversions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\tools\jura_TuningFileManager.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_DualFilter.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_FooBar.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_ModalSynth.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_NewSynth.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_OscArrays.h"/>
