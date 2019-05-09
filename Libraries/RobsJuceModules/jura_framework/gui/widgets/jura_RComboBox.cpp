@@ -85,9 +85,19 @@ void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNo
   setText(popUpMenu->getSelectedText());
 
   if(assignedParameter != nullptr)
-    for(int i = 0; i < popUpMenu->getNumTopLevelItems(); i++)
-      if(getItemText(i) == textToSelect)
-        assignedParameter->setValue((double) i, true, true);
+  {
+    ChoiceParameter* cp = dynamic_cast<ChoiceParameter*>(assignedParameter);
+    if(cp)
+      cp->setStringValue(textToSelect, true, true); 
+    // can we just call setStringValue for the Parameter baseclass as well else and get rid of the
+    // dynamic cast and the if? try it!
+    else
+    {
+      for(int i = 0; i < popUpMenu->getNumTopLevelItems(); i++)
+        if(getItemText(i) == textToSelect)
+          assignedParameter->setValue((double)i, true, true);
+    }
+  }
 
   if( sendNotification == true )
     sendComboBoxChangeNotifications();
@@ -139,8 +149,15 @@ void RComboBox::assignParameter(Parameter* parameterToAssign)
     assignedParameter->registerParameterObserver(this);
     jassert( assignedParameter->isStringParameter() ); // use Parameter::STRING for the scaling
                                                        // when you attach a combobox to a parameter
-    for(int i=0; i<assignedParameter->getNumStringValues(); i++)
-      addItem(i, assignedParameter->getOptionStringAtIndex(i));
+    ChoiceParameter* cp = dynamic_cast<ChoiceParameter*>(assignedParameter);
+    if(cp)
+      for(int i = 0; i < assignedParameter->getNumStringValues(); i++)
+        addItem(cp->getChoiceEnumValue(i), assignedParameter->getOptionStringAtIndex(i));
+    else
+      for(int i = 0; i < assignedParameter->getNumStringValues(); i++)
+        addItem(i, assignedParameter->getOptionStringAtIndex(i));
+
+
     updateWidgetFromAssignedParameter(false);
   }
 }
@@ -207,8 +224,14 @@ void RComboBox::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 
 void RComboBox::updateWidgetFromAssignedParameter(bool sendNotification)
 {
-  if( assignedParameter != NULL )
-    selectItemByIndex((int) assignedParameter->getRawValue(), sendNotification, false);
+  if(assignedParameter != nullptr)
+  {
+    ChoiceParameter* cp = dynamic_cast<ChoiceParameter*>(assignedParameter);
+    if(cp)
+      selectItemFromText(assignedParameter->getStringValue(), sendNotification);
+    else
+      selectItemByIndex((int)assignedParameter->getRawValue(), sendNotification, false);
+  }
 }
 
 void RComboBox::mouseDown(const MouseEvent& e)

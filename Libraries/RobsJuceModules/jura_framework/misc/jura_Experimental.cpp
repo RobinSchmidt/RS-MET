@@ -1,10 +1,11 @@
 
 void ChoiceParameter::addStringValue(const juce::String& valueToAdd, int enumValue)
 {
-  Parameter::addStringValue(valueToAdd);
+  ScopedPointerLock spl(mutex);
+  stringValues.addIfNotAlreadyThere(valueToAdd);
   if( enumValue > getMaxValue() )          // if necessarry, extend the value range...
     setMaxValue(enumValue);                // ...otherwise, setValue will receive wrong values
-  jassert(!RAPT::rsContains(choices,enumValue)); // the enum values must be unique
+  jassert(!RAPT::rsContains(choices, enumValue)); // the enum values must be unique
   choices.push_back(enumValue);
 }
 
@@ -18,11 +19,39 @@ void ChoiceParameter::addStringValue(const juce::String& valueToAdd, EnumClass e
 }
 */
 
+
 void ChoiceParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
 {
   ScopedPointerLock spl(mutex);
 
+  // the valueChangeCallbackFunction is not nullptr - why?
+
+  //jassert(false);
+  // not yet implemented - we have something to do here - make sure that the combo-box update
+  // also works correctly
+
+  // perliminary - delegate to baseclass:
+  Parameter::setValue(newValue, sendNotification, callCallbacks);
+
   int dummy = 0;
+}
+// this gets called twice when changing the setting in the dropdown - figure out why and get rid
+// of one of the calls. ...and then get rid of the override - it seems, we can keep the 
+// baseclass implementation - it seems it works right when just delegating
+
+juce::String ChoiceParameter::getStringValue() const
+{
+  int enumValue = (int) value;
+  int index = (int) RAPT::rsFind(choices, enumValue);
+  jassert(index < choices.size()); // enum value not found in our array - something is inconsistent
+  return stringValues[index];
+}
+
+void ChoiceParameter::setStringValue(const juce::String& newString, bool sendNotification,
+  bool callCallbacks)
+{
+  int index = stringValues.indexOf(newString);
+  setValue(choices[index], sendNotification, callCallbacks);
 }
 
 /*

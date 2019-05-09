@@ -114,7 +114,7 @@ inline std::vector<T> rsSelect(std::vector<T>& v, std::vector<size_t> indices)
 }
 
 template<class T>
-inline size_t rsFind(std::vector<T>& v, T elementToFind)
+inline size_t rsFind(const std::vector<T>& v, T elementToFind)
 {
   for(size_t i = 0; i < v.size(); i++)
     if(v[i] == elementToFind)

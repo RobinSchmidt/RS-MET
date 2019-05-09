@@ -66,9 +66,10 @@ public:
 
   void setFrequencyDistribution(int newDistribution)
   {
-    (rsRatioGenerator<double>::RatioKind) newDistribution;
+    setFrequencyDistribution((rsRatioGenerator<double>::RatioKind) newDistribution);
   }
-  // needed for the valueChangeCallback - move to jura (make a subclass there)
+  // needed for the as callback target for the valueChangeCallback in jura::Parameter -
+  // -> move to jura (make a subclass there)
 
 
   /** Sets the maximum number of oscillators that can be used. May cause memory (re)allocation and

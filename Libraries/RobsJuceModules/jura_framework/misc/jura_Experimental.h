@@ -36,7 +36,18 @@ public:
   // types are used, like enum class Color: char { red, green, blue };  ...but without the "char",
   // EnumClass will always map to "int" by default under the hood, ..hmm...
 
-  void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
+  /** Returns the enum value that is associated with the choice of given index (the index is the 
+  position where the choice appears in the list of strings, for example in a ComboBox). */
+  int getChoiceEnumValue(int choiceIndex) { return choices[choiceIndex]; }
+
+  virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
+
+  virtual juce::String getStringValue() const override;
+
+
+  virtual void setStringValue(const juce::String& newString, bool sendNotification,
+    bool callCallbacks) override;
+
 
   // we also need to override setValue/getValue - it now needs to be handled in a totally
   // different way - the enumerated values don't even need to be contiguous anymore - the whole

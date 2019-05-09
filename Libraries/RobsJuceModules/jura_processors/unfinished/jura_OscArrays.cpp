@@ -37,9 +37,9 @@ void BlepOscArrayModule::createParameters()
   cp = new ChoiceParameter("Distribution");
   cp->setValueChangeCallback<OA>(oa, &OA::setFrequencyDistribution);
   typedef RAPT::rsRatioGenerator<double>::RatioKind RK;
-  cp->addStringValue("Range Split Odd",    (int)RK::rangeSplitOdd);
-  cp->addStringValue("Range Split Even",   (int)RK::rangeSplitEven);
-  cp->addStringValue("Range Split Skewed", (int)RK::rangeSplitSkewed);
+  cp->addStringValue("Range Split Odd",    (int)RK::rangeSplitOdd);     // 4
+  cp->addStringValue("Range Split Even",   (int)RK::rangeSplitEven);    // 5
+  cp->addStringValue("Range Split Skewed", (int)RK::rangeSplitSkewed);  // 3
   // try to get rid of the explicit conversions to int here by introducing a template function
   // in ChoiceParameter that does this - but only if this doesn't lead to code bloat - figure this
   // out first - if it does bloat the binary, keep it as is
