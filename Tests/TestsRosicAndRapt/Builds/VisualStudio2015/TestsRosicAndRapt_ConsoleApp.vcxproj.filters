@@ -1012,6 +1012,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\MiscAudio.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\OscArrays.cpp">
+      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\ResponseGetters.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
@@ -3328,6 +3331,9 @@
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\MiscAudio.h">
+      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\OscArrays.h">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\ResponseGetters.h">

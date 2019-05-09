@@ -136,7 +136,7 @@ public:
 
   /** Sets the exponent, by which the force law (asymptotically) depends inversely on the 
   distance. For example, with a value of 2, the force between two particles depends on the distance 
-  d between them (asympticically) proportionally to 1/d^2 - this is the physically correct 
+  d between them (asymptocically) proportionally to 1/d^2 - this is the physically correct 
   inverse-square law. The dependence is only asymptotic, because we also have the offsset set by
   setForceLawOffset - if this offset is zero, the dependence is not asymptotic but exact. */
   void setForceLawExponent(T newExponent) { p = newExponent+1; }
@@ -178,7 +178,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  /** Returns a scaler for the force based on the distance d. The complete ditance-to-force law 
+  /** Returns a scaler for the force based on the distance d. The complete distance-to-force law 
   will be the value returned by that function times the distance itself (this is, so we can use 
   formulas with unnormalized difference vectors - which have the distance in the numerator, 
   too). */
