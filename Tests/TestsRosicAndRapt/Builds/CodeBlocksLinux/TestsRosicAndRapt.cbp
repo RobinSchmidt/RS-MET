@@ -2866,6 +2866,30 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Unfinished/MiscAudio/BlepBlampOscs.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Unfinished/MiscAudio/BlepBlampOscs.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Unfinished/MiscAudio/BlitBlepBlamp.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Unfinished/MiscAudio/BlitBlepBlamp.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Unfinished/MiscAudio/DelayLine.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
@@ -9227,30 +9251,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/RobsJuceModules/rs_testing/Prototypes/FilterDesign/PoleZeroPrototype.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rs_testing/Prototypes/BlepBlampOscs.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rs_testing/Prototypes/BlepBlampOscs.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rs_testing/Prototypes/BlitBlepBlamp.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rs_testing/Prototypes/BlitBlepBlamp.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>

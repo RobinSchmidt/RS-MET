@@ -41,6 +41,8 @@ namespace RAPT
 #include "MiscAudio/BandwidthConverter.h"
 #include "MiscAudio/DoublePendulum.h" // will go to Physics
 #include "MiscAudio/ResponseGetters.h"
+#include "MiscAudio/BlitBlepBlamp.h"
+#include "MiscAudio/BlepBlampOscs.h"
 #include "MiscAudio/OscArrays.h"
 
 #include "Filters/BandSplitter.h"

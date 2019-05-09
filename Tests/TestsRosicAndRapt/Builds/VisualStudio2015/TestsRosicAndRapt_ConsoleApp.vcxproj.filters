@@ -1000,6 +1000,12 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\BandwidthConverter.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\BlepBlampOscs.cpp">
+      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\BlitBlepBlamp.cpp">
+      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\DelayLine.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
@@ -2503,12 +2509,6 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroPrototype.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\BlepBlampOscs.cpp">
-      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\BlitBlepBlamp.cpp">
-      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Drawing.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
@@ -3319,6 +3319,12 @@
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\BandwidthConverter.h">
+      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\BlepBlampOscs.h">
+      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\BlitBlepBlamp.h">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\DelayLine.h">
@@ -4928,12 +4934,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroPrototype.h">
       <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\BlepBlampOscs.h">
-      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\BlitBlepBlamp.h">
-      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Drawing.h">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>

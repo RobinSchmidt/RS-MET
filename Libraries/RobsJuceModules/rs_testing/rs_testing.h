@@ -29,7 +29,7 @@
 #include <rapt/rapt.h>
 #include <rosic/rosic.h>
 
-//using namespace RAPT;
+using namespace RAPT;
 
 
 #include "TestTools/DSPPlotters.h"
@@ -40,9 +40,6 @@
 #include "TestTools/Utilities/PerformanceTestTools.h"
 #include "TestTools/Utilities/TestUtilities.h"
 
-
-#include "Prototypes/BlitBlepBlamp.h"
-#include "Prototypes/BlepBlampOscs.h"
 #include "Prototypes/OscDrivers.h"
 #include "Prototypes/PartialDifferentialEquations.h"
 #include "Prototypes/Prototypes.h"
