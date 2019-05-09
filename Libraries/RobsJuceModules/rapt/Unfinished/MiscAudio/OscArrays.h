@@ -32,7 +32,7 @@ public:
 
 
   /** Sets the number of oscillators to use. */
-  inline void setNumOscillators(int newNumber)
+  void setNumOscillators(int newNumber)
   {
     rsAssert(newNumber <= getMaxNumOscillators());
     numOscs = rsMin(newNumber, getMaxNumOscillators());
@@ -56,11 +56,24 @@ public:
   // a subclass (in rosic) shall be used that uses the bool - rapt is not the right place for such
   // infrastructe dependent decisions
 
+  /** Sets the type of the frequency distribution that is used to arrange the individual saws 
+  around the center frequency. */
+  void setFrequencyDistribution(rsRatioGenerator<double>::RatioKind newDistribution)
+  {
+    rsAssert(ratioGenerator != nullptr); 
+    ratioGenerator->setRatioKind(newDistribution);
+  }
+
+  void setFrequencyDistribution(int newDistribution)
+  {
+    (rsRatioGenerator<double>::RatioKind) newDistribution;
+  }
+  // needed for the valueChangeCallback - move to jura (make a subclass there)
 
 
   /** Sets the maximum number of oscillators that can be used. May cause memory (re)allocation and
   should probably be called once at startup time. */
-  inline void setMaxNumOscillators(int newMaximum)
+  void setMaxNumOscillators(int newMaximum)
   {
     incs.resize(newMaximum);
     oscs.resize(newMaximum);
@@ -69,7 +82,7 @@ public:
   }
 
   /** Returns the maximum number of oscillators that can be used. */
-  inline int getMaxNumOscillators() const { return (int) oscs.size(); } 
+  int getMaxNumOscillators() const { return (int) oscs.size(); } 
 
 
   inline T getSampleNaive()

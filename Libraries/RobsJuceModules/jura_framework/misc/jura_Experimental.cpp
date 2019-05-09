@@ -2,7 +2,9 @@
 void ChoiceParameter::addStringValue(const juce::String& valueToAdd, int enumValue)
 {
   Parameter::addStringValue(valueToAdd);
-  //int intVal = static_cast<int>(enumValue);
+  if( enumValue > getMaxValue() )          // if necessarry, extend the value range...
+    setMaxValue(enumValue);                // ...otherwise, setValue will receive wrong values
+  jassert(!RAPT::rsContains(choices,enumValue)); // the enum values must be unique
   choices.push_back(enumValue);
 }
 
@@ -15,6 +17,13 @@ void ChoiceParameter::addStringValue(const juce::String& valueToAdd, EnumClass e
   choices.push_back(intVal);
 }
 */
+
+void ChoiceParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
+{
+  ScopedPointerLock spl(mutex);
+
+  int dummy = 0;
+}
 
 /*
 -i think, we should deprecate the way, Strings are handled by implicitly mapping them to integers 

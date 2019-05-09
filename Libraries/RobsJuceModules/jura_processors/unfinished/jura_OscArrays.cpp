@@ -32,23 +32,21 @@ void BlepOscArrayModule::createParameters()
 
 
 
-  //p = new ChoiceParameter("Distribution", 1.0, 7.0, 1.0, Parameter::STRING);
+  // uses the new ChoiceParameter class - needs testing:
   ChoiceParameter* cp;
   cp = new ChoiceParameter("Distribution");
-  //p->setValueChangeCallback<OA>(oa, &OA::setFrequencyDistribution);
-
-  // we would like to write things like
+  cp->setValueChangeCallback<OA>(oa, &OA::setFrequencyDistribution);
   typedef RAPT::rsRatioGenerator<double>::RatioKind RK;
   cp->addStringValue("Range Split Odd",    (int)RK::rangeSplitOdd);
   cp->addStringValue("Range Split Even",   (int)RK::rangeSplitEven);
-  cp->addStringValue("Range Split Skewed", (int)RK::rangeSplitOdd);
-  // is this possible? the enum-class does not support implicit conversion to strings - on which
-  // the string parameter handling (unfortunately) relies - in Parameter we would somehow have to 
-  // make an association between a string and a value from an enum class that is not yet known in
-  // Parameter and should be generic - i think, we should deprecate the way, Strings are handled
-  // ...maybe we should have baseclass Parameter with subclasses NumericParameter and 
-  // ChoiceParameter
+  cp->addStringValue("Range Split Skewed", (int)RK::rangeSplitSkewed);
+  // try to get rid of the explicit conversions to int here by introducing a template function
+  // in ChoiceParameter that does this - but only if this doesn't lead to code bloat - figure this
+  // out first - if it does bloat the binary, keep it as is
   addObservedParameter(cp);
+  // this doesn't work yet - the ComboBox passes 0,1,2 to ChoiceParameter::setValue instead of
+  // the enumerated values
+
 
   // ...
 }

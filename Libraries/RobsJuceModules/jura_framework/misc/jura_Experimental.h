@@ -28,13 +28,15 @@ public:
 
   void addStringValue(const juce::String& valueToAdd, int enumValue);
 
-  //template<class EnumClass>
-  //void addStringValue(const juce::String& valueToAdd, EnumClass enumValue);
+  template<class EnumClass>
+  void addStringValue(const juce::String& valueToAdd, EnumClass enumValue);
   // does it lead to code-bloat to templatize this function or will the compiler generate just
   // one function because under the hood, the enum class maps to int in every instantiation? it 
   // will have to generate another function, when enum-classes with different underlying integer
   // types are used, like enum class Color: char { red, green, blue };  ...but without the "char",
   // EnumClass will always map to "int" by default under the hood, ..hmm...
+
+  void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
 
   // we also need to override setValue/getValue - it now needs to be handled in a totally
   // different way - the enumerated values don't even need to be contiguous anymore - the whole
