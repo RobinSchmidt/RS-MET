@@ -18,7 +18,8 @@ class rsBlepOscArray // maybe rename to rsBlepOscArray
 public:
 
 
-  rsBlepOscArray(RAPT::rsRatioGenerator<T>* ratioGenerator);
+  rsBlepOscArray(RAPT::rsRatioGenerator<T>* ratioGenerator = nullptr);
+  // get rid of passing the pointer to the ratio-generator
 
   /** Sets the reference phase increment which determines the center frequency of the osc stack 
   around which all other frequencies are arranged. */
@@ -109,8 +110,10 @@ protected:
   T refInc = T(0);        // reference increment
   T detune = T(0);
   std::vector<T> incs;    // array of phase increments
+
   rsRatioGenerator<T>* ratioGenerator = nullptr; 
-  // used to generate freq-ratios, shared among voices
+  // used to generate freq-ratios, shared among voices ..hmm - but maybe we should use a direct 
+  // object and for the voices use the strategy outlined in Notes/Ideas.txt
 
 
 

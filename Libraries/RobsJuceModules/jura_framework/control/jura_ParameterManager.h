@@ -84,6 +84,10 @@ public:
   virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted);
 
 
+  /** A mutex-lock for accesses to the vector of observed parameters. Must be public to be able to
+  pass the pointer through the constructor chain of AudioModule subclasses. */
+  CriticalSection* lock = nullptr;
+
 protected:
 
   /** An array of our observed parameters. */
@@ -92,8 +96,7 @@ protected:
   /** Returns the index of the parameter in the array or -1 if the parameter was not found .*/
   int getParameterIndex(Parameter *parameterToLookFor);
 
-  /** A mutex-lock for accesses to the vector of observed parameters. */
-  CriticalSection* lock = nullptr;
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterManager)
 };

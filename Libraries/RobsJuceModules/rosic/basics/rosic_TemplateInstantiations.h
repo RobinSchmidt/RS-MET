@@ -101,8 +101,8 @@ typedef RAPT::rsPhaseLockedCrossfader<double, double>  rsPhaseLockedCrossfaderDD
 typedef RAPT::rsEnvelopeExtractor<double> rsEnvelopeExtractorD;
 
 
-//typedef RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, RAPT::rsPolyBlep1<double, double>> 
-//  rsOscArrayPolyBlep1;
+typedef RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, RAPT::rsPolyBlep1<double, double>> 
+  rsOscArrayPolyBlep1;
 
 
 

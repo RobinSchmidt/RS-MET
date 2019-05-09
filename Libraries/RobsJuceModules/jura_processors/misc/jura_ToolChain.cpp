@@ -569,6 +569,7 @@ void ToolChain::populateModuleFactory()
   f.registerModuleType([](CS cs)->AM { return new NewSynthAudioModule(cs);     }, s, "NewSynth");
   //f.registerModuleType([](CS cs)->AM { return new MagicCarpetAudioModule(cs);   }, s, "MagicCarpet");
   f.registerModuleType([](CS cs)->AM { return new SamplePlayerAudioModule(cs);    }, s, "SamplePlayer");
+  f.registerModuleType([](CS cs)->AM { return new BlepOscArrayModule(cs);    }, s, "BlepOscArray");
   //f.registerModuleType([](CS cs)->AM { return new SimpleSamplerAudioModule(cs); }, s, "SimpleSampler");
   //f.registerModuleType([](CS cs)->AM { return new KeyShotAudioModule(cs);       }, s, "KeyShot");
   //f.registerModuleType([](CS cs)->AM { return new QuadrigaAudioModule(cs);      }, s, "Quadriga");
