@@ -172,6 +172,8 @@ template class RAPT::rsRayBouncerDriver<double>;
 template class RAPT::rsLissajousOscillator3D<double>;
 template class RAPT::rsEllipseOscillator<double>;
 template class RAPT::rsTriSawOscillator<double>;
+//template class RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, RAPT::rsPolyBlep1<double, double>>;
+
 
 template class RAPT::rsMultiBandSplitter<double, double>;
 template class RAPT::rsMultiBandSplitter<rsFloat64x2, double>;

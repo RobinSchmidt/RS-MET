@@ -100,6 +100,12 @@ typedef RAPT::rsVariableSpeedPlayer<double, double> rsVariableSpeedPlayerDD;
 typedef RAPT::rsPhaseLockedCrossfader<double, double>  rsPhaseLockedCrossfaderDD;
 typedef RAPT::rsEnvelopeExtractor<double> rsEnvelopeExtractorD;
 
+
+//typedef RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, RAPT::rsPolyBlep1<double, double>> 
+//  rsOscArrayPolyBlep1;
+
+
+
 class rsOnePoleFilterStereo : public RAPT::rsOnePoleFilter<rsFloat64x2, double>
 {
 public:
