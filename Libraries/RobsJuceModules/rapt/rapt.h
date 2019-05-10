@@ -46,7 +46,7 @@
 #include "AudioBasics/AudioBasics.h"
 //#include "Music/Music.h"               // scales (pitchToFreq, ..), time signatures, sequences, patterns, notes, MIDI, etc.
 #include "Filters/Filters.h"             // butterworth, ladder, biquad, elliptic, SVF, etc.
-//#include "Analysis/Analysis.h"         // envelope follower, smoother, pitch-detector, etc.
+#include "Analysis/Analysis.h"           // envelope follower, smoother, pitch-detector, etc.
 #include "Physics/Physics.h"             // waveguides, finite difference approximations of PDEs, etc.
 //#include "Circuits/Circuits.h"         // circuit modeling
 //#include "Spectral/Spectral.h"         // phase vocoder, source/filter modeling

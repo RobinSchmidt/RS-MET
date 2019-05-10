@@ -15,7 +15,7 @@ defined" linker errors. */
 #include "Math/Math.cpp"
 #include "AudioBasics/AudioBasics.cpp" 
 #include "Filters/Filters.cpp"
-//#include "Analysis/Analysis.cpp"
+#include "Analysis/Analysis.cpp"
 #include "Physics/Physics.cpp"
 //#include "Circuits/Circuits.cpp"
 //#include "Spectral/Spectral.cpp"

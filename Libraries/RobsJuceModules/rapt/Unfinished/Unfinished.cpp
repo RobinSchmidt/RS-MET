@@ -20,8 +20,6 @@ namespace RAPT
 #include "MiscAudio/DelayLine.cpp"
 #include "MiscAudio/MiscAudio.cpp"  // may have to be included later (needs higher level stuff)
 #include "MiscAudio/Saturator.cpp"
-#include "MiscAudio/SlewRateLimiter.cpp"
-#include "MiscAudio/SlewRateLimiterLinear.cpp"
 #include "MiscAudio/WindowFunctions.cpp"
 #include "MiscAudio/AudioFunctions.cpp"
 #include "MiscAudio/BandwidthConverter.cpp"
