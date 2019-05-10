@@ -21,7 +21,7 @@ void BlepOscArrayModule::createParameters()
   OA* oa = &oscArrayCore;
 
 
-  p = new Param("Density", 1.0, 7.0, 1.0, Parameter::INTEGER);
+  p = new Param("Density", 1.0, 32.0, 1.0, Parameter::INTEGER);
   p->setValueChangeCallback<OA>(oa, &OA::setDensity);
   addObservedParameter(p);
 
@@ -46,6 +46,12 @@ void BlepOscArrayModule::createParameters()
   // in ChoiceParameter that does this - but only if this doesn't lead to code bloat - figure this
   // out first - if it does bloat the binary, keep it as is - tried it - got a linker error
   addObservedParameter(cp);
+
+
+  p = new Param("DistParam", 0.0, 1.0, 0.5, Parameter::LINEAR);
+  p->setValueChangeCallback<OA>(oa, &OA::setDistributionParameter);
+  addObservedParameter(p);
+
 
 
 

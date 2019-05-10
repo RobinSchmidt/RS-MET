@@ -22,7 +22,7 @@ public:
   virtual void noteOn(int noteNumber, int velocity) override
   {
     oscArrayCore.setFrequency(RAPT::rsPitchToFreq(double(noteNumber)));
-    // maybe call oscArrayCore.reset();
+    oscArrayCore.reset();
   }
 
   virtual void processBlock(double **buf, int numChannels, int numSamples) override

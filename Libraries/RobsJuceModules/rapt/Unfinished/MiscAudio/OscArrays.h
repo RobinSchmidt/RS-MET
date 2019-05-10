@@ -58,10 +58,19 @@ public:
 
   /** Sets the type of the frequency distribution that is used to arrange the individual saws 
   around the center frequency. */
+  // why double? should be T!
   void setFrequencyDistribution(rsRatioGenerator<double>::RatioKind newDistribution)
   {
     rsAssert(ratioGenerator != nullptr); 
     ratioGenerator->setRatioKind(newDistribution);
+    updateIncrements();
+  }
+
+  void setDistributionParameter(T newParam)
+  {
+    rsAssert(ratioGenerator != nullptr);
+    ratioGenerator->setParameter1(newParam);
+    updateIncrements();
   }
 
   /** Sets the maximum number of oscillators that can be used. May cause memory (re)allocation and
@@ -83,6 +92,7 @@ public:
     T stepDelay = T(0);   // delay of step discontinuity
     T stepAmp   = T(0);   // amplitude of step discontinuity
     T out       = T(0);   // accumulator for (naive) output sample
+    T amp = T(1) / sqrt(numOscs);  // todo: precompute
     for(int i = 0; i < numOscs; i++) {
 
       out += oscs[i].getSampleSaw(incs[i], &stepDelay, &stepAmp);
@@ -90,13 +100,14 @@ public:
       // getSample function - but then the osc would have to dispatch...based on what? maybe the
       // getSample function should take an int parameter?
 
+      stepAmp *= amp;
       if(stepAmp != T(0))  
         blep.prepareForStep(stepDelay, stepAmp);
       // maybe try to do it without the branch and make performance test with both versions - it 
       // doesn't hurt to accumulate zero-valued signals into the corrector, so the code is valid
       // with or without the "if"
     }
-    return out;  
+    return amp * out;  
     // todo: scale the amplitude by 1/sqrt(numOscs) ..oh - but that factor should then also be 
     // applied to the stepAmp
   } 

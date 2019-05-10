@@ -14,8 +14,11 @@ void rsBlepOscArray<T, TOsc, TBlep>::updateIncrements()
   typedef rsRatioGenerator<T> RG;
 
   if(numOscs == 1)
+  {
     incs[0] = 1;
+  }
   else
+  {
     ratioGenerator->fillRatioTable(&incs[0], numOscs);
     // actually, if we know that the min is in incs[0] and the max is in incs[numOscs-1], we don't
     // need to search for min/max -> optimize
@@ -26,19 +29,20 @@ void rsBlepOscArray<T, TOsc, TBlep>::updateIncrements()
   // rsRatioGenerator ...or maybe we should do it here - first: transform to interval 1..2
   // the take the reciprocal, giving numbers in the interval 0.5...1 but in descending order, if 
   // the original array is sorted ascending
-  bool invertRatios = false; // make user parameter
-  if(invertRatios)
-  {
-    rsArray::transformRange(&incs[0], &incs[0], numOscs, T(1), T(2));  // ratios in 1...2
-    for(int i = 0; i < numOscs; i++) 
-      incs[i] = T(1) / incs[i];                                        // ratios in 0.5...1
-    rsArray::reverse(&incs[0], numOscs); 
-  }
+    bool invertRatios = false; // make user parameter
+    if(invertRatios)
+    {
+      rsArray::transformRange(&incs[0], &incs[0], numOscs, T(1), T(2));  // ratios in 1...2
+      for(int i = 0; i < numOscs; i++)
+        incs[i] = T(1) / incs[i];                                        // ratios in 0.5...1
+      rsArray::reverse(&incs[0], numOscs);
+    }
 
-  // transform the   increments to their actual target range:
-  T minRatio = T(1) - T(0.5) * detune;
-  T maxRatio = T(1) + T(0.5) * detune;
-  rsArray::transformRange(&incs[0], &incs[0], numOscs, minRatio, maxRatio);
+    // transform the   increments to their actual target range:
+    T minRatio = T(1) - T(0.5) * detune;
+    T maxRatio = T(1) + T(0.5) * detune;
+    rsArray::transformRange(&incs[0], &incs[0], numOscs, minRatio, maxRatio);
+  }
 
   // whith numOscs==1, we get -inf in incs[0] - we may have to treat that as special case
 
