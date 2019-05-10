@@ -12,7 +12,7 @@ todo: factor out a baseclass rsOscArray that is responsible for handling the arr
 i.e. contains all the members under "increment handling stuff - then we may later also have other 
 subclasses, like a wavetable-based osc-array, etc. */ 
 
-class rsBlepOscArray // maybe rename to rsBlepOscArray
+class rsBlepOscArray
 {
 
 public:
@@ -63,14 +63,6 @@ public:
     rsAssert(ratioGenerator != nullptr); 
     ratioGenerator->setRatioKind(newDistribution);
   }
-
-  void setFrequencyDistribution(int newDistribution)
-  {
-    setFrequencyDistribution((rsRatioGenerator<double>::RatioKind) newDistribution);
-  }
-  // needed for the as callback target for the valueChangeCallback in jura::Parameter -
-  // -> move to jura (make a subclass there)
-
 
   /** Sets the maximum number of oscillators that can be used. May cause memory (re)allocation and
   should probably be called once at startup time. */

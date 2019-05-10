@@ -31,21 +31,22 @@ void BlepOscArrayModule::createParameters()
   // maybe rename to spread
 
 
-
   // uses the new ChoiceParameter class - needs testing:
   ChoiceParameter* cp;
   cp = new ChoiceParameter("Distribution");
   cp->setValueChangeCallback<OA>(oa, &OA::setFrequencyDistribution);
   typedef RAPT::rsRatioGenerator<double>::RatioKind RK;
-  cp->addStringValue("Range Split Odd",    (int)RK::rangeSplitOdd);     // 4
-  cp->addStringValue("Range Split Even",   (int)RK::rangeSplitEven);    // 5
-  cp->addStringValue("Range Split Skewed", (int)RK::rangeSplitSkewed);  // 3
+  cp->addStringValue("Range Split Odd",        (int)RK::rangeSplitOdd);     // 4
+  cp->addStringValue("Range Split Even",       (int)RK::rangeSplitEven);    // 5
+  cp->addStringValue("Range Split Skewed",     (int)RK::rangeSplitSkewed);  // 3
+  cp->addStringValue("Prime Square Root",      (int)RK::primeSqrt);         // 1
+  cp->addStringValue("Prime Square Root Diff", (int)RK::primeSqrtDiff );    // 2
+  cp->addStringValue("Metallic",               (int)RK::metallic);          // 0
   // try to get rid of the explicit conversions to int here by introducing a template function
   // in ChoiceParameter that does this - but only if this doesn't lead to code bloat - figure this
-  // out first - if it does bloat the binary, keep it as is
+  // out first - if it does bloat the binary, keep it as is - tried it - got a linker error
   addObservedParameter(cp);
-  // this doesn't work yet - the ComboBox passes 0,1,2 to ChoiceParameter::setValue instead of
-  // the enumerated values
+
 
 
   // ...

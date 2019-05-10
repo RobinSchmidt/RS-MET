@@ -28,13 +28,15 @@ public:
 
   void addStringValue(const juce::String& valueToAdd, int enumValue);
 
-  template<class EnumClass>
-  void addStringValue(const juce::String& valueToAdd, EnumClass enumValue);
+  //template<class EnumClass>
+  //void addStringValue(const juce::String& valueToAdd, EnumClass enumValue);
   // does it lead to code-bloat to templatize this function or will the compiler generate just
   // one function because under the hood, the enum class maps to int in every instantiation? it 
   // will have to generate another function, when enum-classes with different underlying integer
   // types are used, like enum class Color: char { red, green, blue };  ...but without the "char",
-  // EnumClass will always map to "int" by default under the hood, ..hmm...
+  // EnumClass will always map to "int" by default under the hood, ..hmm...it seems to not work 
+  // anyway - we get a linker error - so we must do the explicit conversion to float in the client
+  // code
 
   /** Returns the enum value that is associated with the choice of given index (the index is the 
   position where the choice appears in the list of strings, for example in a ComboBox). */

@@ -1,10 +1,13 @@
 #ifndef rosic_TemplateInstantiations_h
 #define rosic_TemplateInstantiations_h
 
-// This file contains typedefs for explicit template instantiations for templates from the RAPT 
-// library. Sometimes we also create a subclass of a template class from RAPT in order to provide
-// additional functionality such as converting between two doubles and rsFloat64x2 etc. to make it
-// more convenient to use the classes
+/** This file contains typedefs for explicit template instantiations for templates from the RAPT 
+library. Sometimes we also create a subclass of a template class from RAPT in order to provide
+additional functionality to make it more convenient to use the classes such as converting between
+two doubles and rsFloat64x2 in case of SIMD-type instantiations and/or providing suitable callback
+target functions in the case where the underlying RAPT class doesn't conform to the interface 
+required by our callback system in jura etc. This code is all really ugly clutter - don't look at 
+it, if you want to avoid eye cancer! */
 
 namespace rosic
 {
@@ -101,10 +104,29 @@ typedef RAPT::rsPhaseLockedCrossfader<double, double>  rsPhaseLockedCrossfaderDD
 typedef RAPT::rsEnvelopeExtractor<double> rsEnvelopeExtractorD;
 
 
-typedef RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, RAPT::rsPolyBlep1<double, double>> 
-  rsOscArrayPolyBlep1;
+//typedef RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, RAPT::rsPolyBlep1<double, double>> 
+//  rsOscArrayPolyBlep1;
 
 
+class rsOscArrayPolyBlep1 : public RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, 
+                                                        RAPT::rsPolyBlep1<double, double>>
+{
+public:
+
+  typedef public RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, 
+    RAPT::rsPolyBlep1<double, double>> Base;
+
+  using Base::Base; // to inherit baseclass constructor(s)
+
+  void setFrequencyDistribution(int newDistribution)
+  {
+    Base::setFrequencyDistribution((RAPT::rsRatioGenerator<double>::RatioKind) newDistribution);
+  }
+  // needed as callback target for the valueChangeCallback in jura::Parameter - converts the 
+  // incoming integer (passed from the callback system) to the strongly typed enumeration type 
+  // required by RAPT::rsBlepOscArray
+
+};
 
 class rsOnePoleFilterStereo : public RAPT::rsOnePoleFilter<rsFloat64x2, double>
 {

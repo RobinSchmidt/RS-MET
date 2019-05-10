@@ -13,12 +13,11 @@ void ChoiceParameter::addStringValue(const juce::String& valueToAdd, int enumVal
 template<class EnumClass>
 void ChoiceParameter::addStringValue(const juce::String& valueToAdd, EnumClass enumValue)
 {
-  Parameter::addStringValue(valueToAdd);
-  int intVal = static_cast<int>(enumValue);
-  choices.push_back(intVal);
+  int intValue = static_cast<int>(enumValue);
+  addStringValue(valueToAdd, intValue);
 }
+// we get a linker error when trying to use this
 */
-
 
 void ChoiceParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
 {

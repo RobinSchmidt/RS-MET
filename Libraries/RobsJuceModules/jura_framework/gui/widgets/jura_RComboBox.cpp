@@ -89,8 +89,8 @@ void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNo
     ChoiceParameter* cp = dynamic_cast<ChoiceParameter*>(assignedParameter);
     if(cp)
       cp->setStringValue(textToSelect, true, true); 
-    // can we just call setStringValue for the Parameter baseclass as well else and get rid of the
-    // dynamic cast and the if? try it!
+      // can we just call setStringValue for the Parameter baseclass (else-case below) as well and
+      // get rid of the dynamic cast and the if? try it! ..that would clean up the code
     else
     {
       for(int i = 0; i < popUpMenu->getNumTopLevelItems(); i++)
