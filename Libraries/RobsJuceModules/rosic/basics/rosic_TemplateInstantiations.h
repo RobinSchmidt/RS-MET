@@ -123,7 +123,7 @@ public:
   rsOscArrayPolyBlep1()
   {
     ratioGenerator = new RAPT::rsRatioGenerator<double>;
-    // setMaxNumOscillators(32);
+    setMaxDensity(32);
     ratioGenerator->setPrimeTable(&primeTable);
   }
 
@@ -148,6 +148,13 @@ public:
   void setDetunePercent(double newDetune)
   {
     Base::setDetune(0.01*newDetune);
+  }
+
+  void setMaxDensity(int newMaximum)
+  {
+    primeTable.resize(newMaximum+1); // +1 because of the primeSqrtDiff algo
+    RAPT::rsFillPrimeTable(&primeTable[0], (RAPT::rsUint32) primeTable.size());
+    Base::setMaxDensity(newMaximum);
   }
 
   void setFrequencyDistribution(int newDistribution)

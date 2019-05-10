@@ -1,6 +1,9 @@
 #ifndef RAPT_TYPEDEFINITIONS_H_INCLUDED
 #define RAPT_TYPEDEFINITIONS_H_INCLUDED
 
+// todo: move them to rosic - rapt is not supposed to use typed code anyway - everything should be
+// generic/templated
+
 /** 8-bit signed integer */
 typedef signed char rsInt8;
 

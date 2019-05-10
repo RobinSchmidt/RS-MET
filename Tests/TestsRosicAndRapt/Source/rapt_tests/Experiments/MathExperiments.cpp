@@ -985,6 +985,7 @@ void primeAlternatingSums()
   typedef RAPT::rsArray AR;
 
   // create array of primes:
+  //std::vector<int> primes(N);
   std::vector<int> primes(N);
   RAPT::rsFillPrimeTable(&primes[0], N);  // make convenience function getPrimes
 

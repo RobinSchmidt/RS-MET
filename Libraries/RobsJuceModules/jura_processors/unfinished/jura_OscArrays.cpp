@@ -22,7 +22,7 @@ void BlepOscArrayModule::createParameters()
 
 
   p = new Param("Density", 1.0, 7.0, 1.0, Parameter::INTEGER);
-  p->setValueChangeCallback<OA>(oa, &OA::setNumOscillators);
+  p->setValueChangeCallback<OA>(oa, &OA::setDensity);
   addObservedParameter(p);
 
   p = new Param("Detune", 0.0, 100.0, 0.0, Parameter::LINEAR);

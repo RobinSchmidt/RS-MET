@@ -4,7 +4,7 @@ template<class T, class TOsc, class TBlep>
 rsBlepOscArray<T, TOsc, TBlep>::rsBlepOscArray(rsRatioGenerator<T>* _ratioGenerator)
 {
   ratioGenerator = _ratioGenerator;
-  setMaxNumOscillators(8);
+  setMaxDensity(8);
 }
 
 

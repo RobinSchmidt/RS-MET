@@ -48,6 +48,8 @@ template void RAPT::dfst(int, double *, double *, int *, double *);
 template void RAPT::rsArray::fillWithRandomValues(rsFloat32x4* x, int N, double min, double max, int seed);
 template double RAPT::rsArray::meanSquare(const double *x, int N);
 
+
+// Math:
 template class RAPT::rsMatrixView<double>;
 template class RAPT::rsMatrixNew<double>;
 
@@ -65,6 +67,13 @@ template class RAPT::rsRotationXYZ<double>;
 template class RAPT::rsCoordinateMapper<double>;
 template class RAPT::rsCoordinateMapper2D<double>;
 template class RAPT::rsFourierTransformerRadix2<double>;
+
+template void RAPT::rsFillPrimeTable(RAPT::rsUint32*, RAPT::rsUint32, RAPT::rsUint32);
+template void RAPT::rsFindPrimesUpTo(std::vector<RAPT::rsUint32>& primes, RAPT::rsUint32 upperLimit);
+template void RAPT::rsFindPrimesUpTo(std::vector<RAPT::rsUint64>& primes, RAPT::rsUint64 upperLimit);
+template void RAPT::rsPrimeFactors(RAPT::rsUint32 x, std::vector<RAPT::rsUint32>& factors,
+  std::vector<RAPT::rsUint32>& exponents, std::vector<RAPT::rsUint32>* primeTable);
+
 
 // Interpolation:
 template void RAPT::fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1,

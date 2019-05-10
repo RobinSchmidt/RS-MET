@@ -524,9 +524,9 @@ void superBlep()
   //typedef rsBlepOscArray<double, rsBlepReadyOscBase<double>, rsTableMinBlep<double, double>> SBO;
   SBO osc(&ratGen);
   osc.setReferenceIncrement(freq / sampleRate);
-  osc.setMaxNumOscillators(maxDensity);
+  osc.setMaxDensity(maxDensity);
   osc.setDetune(0.07);
-  osc.setNumOscillators(7);
+  osc.setDensity(7);
 
 
   // produce output signal:

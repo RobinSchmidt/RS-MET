@@ -32,10 +32,10 @@ public:
 
 
   /** Sets the number of oscillators to use. */
-  void setNumOscillators(int newNumber)
+  void setDensity(int newDensity)
   {
-    rsAssert(newNumber <= getMaxNumOscillators());
-    numOscs = rsMin(newNumber, getMaxNumOscillators());
+    rsAssert(newDensity <= getMaxDensity());
+    numOscs = rsMin(newDensity, getMaxDensity());
     updateIncrements();
     // we need to update the increments here because the new number may be higher than the old and
     // the upper values may not yet contain valid data becuase on setReferenceIncrement, setDetune, 
@@ -66,7 +66,7 @@ public:
 
   /** Sets the maximum number of oscillators that can be used. May cause memory (re)allocation and
   should probably be called once at startup time. */
-  void setMaxNumOscillators(int newMaximum)
+  void setMaxDensity(int newMaximum)
   {
     incs.resize(newMaximum);
     oscs.resize(newMaximum);
@@ -75,7 +75,7 @@ public:
   }
 
   /** Returns the maximum number of oscillators that can be used. */
-  int getMaxNumOscillators() const { return (int) oscs.size(); } 
+  int getMaxDensity() const { return (int) oscs.size(); } 
 
 
   inline T getSampleNaive()
