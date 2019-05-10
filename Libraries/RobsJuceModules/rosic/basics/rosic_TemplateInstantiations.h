@@ -107,7 +107,8 @@ typedef RAPT::rsEnvelopeExtractor<double> rsEnvelopeExtractorD;
 //typedef RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, RAPT::rsPolyBlep1<double, double>> 
 //  rsOscArrayPolyBlep1;
 
-
+// maybe move this into its own file in the generators folder - it's grown a bit big for keeping it
+// here...
 class rsOscArrayPolyBlep1 : public RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, 
                                                         RAPT::rsPolyBlep1<double, double>>
 {
@@ -117,6 +118,20 @@ public:
     RAPT::rsPolyBlep1<double, double>> Base;
 
   using Base::Base; // to inherit baseclass constructors with arguments
+
+  
+  rsOscArrayPolyBlep1()
+  {
+    ratioGenerator = new RAPT::rsRatioGenerator<double>;
+    // setMaxNumOscillators(32);
+    ratioGenerator->setPrimeTable(&primeTable);
+  }
+
+  ~rsOscArrayPolyBlep1()
+  {
+    delete ratioGenerator;
+  }
+  
 
   void setSampleRate(double newRate)
   {
@@ -143,7 +158,14 @@ public:
   // incoming integer (passed from the callback system) to the strongly typed enumeration type 
   // required by RAPT::rsBlepOscArray
 
+  // todo: override setMaxNumOscillators - we need to update the size of the prime-table
+
 protected:
+
+  //RAPT::rsRatioGenerator<double>* ratioGenerator = nullptr; 
+
+
+  std::vector<RAPT::rsUint32> primeTable;
 
   double sampleRate = 1, frequency = 0;
 

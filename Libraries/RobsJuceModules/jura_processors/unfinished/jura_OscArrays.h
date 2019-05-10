@@ -46,12 +46,8 @@ protected:
 
   void createParameters();
 
-  RAPT::rsRatioGenerator<double> ratioGenerator;
-
   rosic::rsOscArrayPolyBlep1 oscArrayCore; 
   // maybe use a pointer to allow wrapping the AudioModule aorund existing cores (like in a synth)
-
-
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BlepOscArrayModule)
 };

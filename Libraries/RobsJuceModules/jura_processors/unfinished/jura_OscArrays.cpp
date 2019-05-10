@@ -1,5 +1,5 @@
 BlepOscArrayModule::BlepOscArrayModule(CriticalSection *lockToUse)
-  : AudioModuleWithMidiIn(lockToUse), oscArrayCore(&ratioGenerator)
+  : AudioModuleWithMidiIn(lockToUse) /*, oscArrayCore(&ratioGenerator)*/
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("BlepOscArray");
