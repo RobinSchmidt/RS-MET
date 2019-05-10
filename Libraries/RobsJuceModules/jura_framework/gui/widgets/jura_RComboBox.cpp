@@ -86,7 +86,7 @@ void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNo
 
   if(assignedParameter != nullptr)
   {
-    ChoiceParameter* cp = dynamic_cast<ChoiceParameter*>(assignedParameter);
+    rsChoiceParameter* cp = dynamic_cast<rsChoiceParameter*>(assignedParameter);
     if(cp)
       cp->setStringValue(textToSelect, true, true); 
       // can we just call setStringValue for the Parameter baseclass (else-case below) as well and
@@ -149,7 +149,7 @@ void RComboBox::assignParameter(Parameter* parameterToAssign)
     assignedParameter->registerParameterObserver(this);
     jassert( assignedParameter->isStringParameter() ); // use Parameter::STRING for the scaling
                                                        // when you attach a combobox to a parameter
-    ChoiceParameter* cp = dynamic_cast<ChoiceParameter*>(assignedParameter);
+    rsChoiceParameter* cp = dynamic_cast<rsChoiceParameter*>(assignedParameter);
     if(cp)
       for(int i = 0; i < assignedParameter->getNumStringValues(); i++)
         addItem(cp->getChoiceEnumValue(i), assignedParameter->getOptionStringAtIndex(i));
@@ -226,7 +226,7 @@ void RComboBox::updateWidgetFromAssignedParameter(bool sendNotification)
 {
   if(assignedParameter != nullptr)
   {
-    ChoiceParameter* cp = dynamic_cast<ChoiceParameter*>(assignedParameter);
+    rsChoiceParameter* cp = dynamic_cast<rsChoiceParameter*>(assignedParameter);
     if(cp)
       selectItemFromText(assignedParameter->getStringValue(), sendNotification);
     else

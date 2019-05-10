@@ -2,12 +2,12 @@
 #define rosic_TemplateInstantiations_h
 
 /** This file contains typedefs for explicit template instantiations for templates from the RAPT 
-library. Sometimes we also create a subclass of a template class from RAPT in order to provide
-additional functionality to make it more convenient to use the classes such as converting between
-two doubles and rsFloat64x2 in case of SIMD-type instantiations and/or providing suitable callback
-target functions in the case where the underlying RAPT class doesn't conform to the interface 
-required by our callback system in jura etc. This code is all really ugly clutter - don't look at 
-it, if you want to avoid eye cancer! */
+library. Sometimes we also create a subclass of a class template from RAPT in order to provide
+additional functionality to make it more convenient to use the classes. These convenience functions
+are for tasks like converting between two doubles and rsFloat64x2 in case of SIMD-type 
+instantiations and/or providing suitable callback target functions in the case where the underlying
+RAPT class doesn't conform to the interface required by our callback system in jura etc. This code 
+is all really ugly administrative clutter - don't look at it, if you want to avoid eye cancer! */
 
 namespace rosic
 {
@@ -116,7 +116,24 @@ public:
   typedef public RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, 
     RAPT::rsPolyBlep1<double, double>> Base;
 
-  using Base::Base; // to inherit baseclass constructor(s)
+  using Base::Base; // to inherit baseclass constructors with arguments
+
+  void setSampleRate(double newRate)
+  {
+    sampleRate = newRate;
+    Base::setReferenceIncrement(frequency/sampleRate);
+  }
+
+  void setFrequency(double newFreq)
+  {
+    frequency = newFreq;
+    Base::setReferenceIncrement(frequency/sampleRate);
+  }
+
+  void setDetunePercent(double newDetune)
+  {
+    Base::setDetune(0.01*newDetune);
+  }
 
   void setFrequencyDistribution(int newDistribution)
   {
@@ -125,6 +142,10 @@ public:
   // needed as callback target for the valueChangeCallback in jura::Parameter - converts the 
   // incoming integer (passed from the callback system) to the strongly typed enumeration type 
   // required by RAPT::rsBlepOscArray
+
+protected:
+
+  double sampleRate = 1, frequency = 0;
 
 };
 

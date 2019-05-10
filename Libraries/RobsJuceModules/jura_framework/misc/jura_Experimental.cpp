@@ -1,5 +1,5 @@
 
-void ChoiceParameter::addStringValue(const juce::String& valueToAdd, int enumValue)
+void rsChoiceParameter::addStringValue(const juce::String& valueToAdd, int enumValue)
 {
   ScopedPointerLock spl(mutex);
   stringValues.addIfNotAlreadyThere(valueToAdd);
@@ -11,7 +11,7 @@ void ChoiceParameter::addStringValue(const juce::String& valueToAdd, int enumVal
 
 /*
 template<class EnumClass>
-void ChoiceParameter::addStringValue(const juce::String& valueToAdd, EnumClass enumValue)
+void rsChoiceParameter::addStringValue(const juce::String& valueToAdd, EnumClass enumValue)
 {
   int intValue = static_cast<int>(enumValue);
   addStringValue(valueToAdd, intValue);
@@ -19,7 +19,7 @@ void ChoiceParameter::addStringValue(const juce::String& valueToAdd, EnumClass e
 // we get a linker error when trying to use this
 */
 
-void ChoiceParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
+void rsChoiceParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
 {
   ScopedPointerLock spl(mutex);
 
@@ -38,7 +38,7 @@ void ChoiceParameter::setValue(double newValue, bool sendNotification, bool call
 // of one of the calls. ...and then get rid of the override - it seems, we can keep the 
 // baseclass implementation - it seems it works right when just delegating
 
-juce::String ChoiceParameter::getStringValue() const
+juce::String rsChoiceParameter::getStringValue() const
 {
   int enumValue = (int) value;
   int index = (int) RAPT::rsFind(choices, enumValue);
@@ -46,7 +46,7 @@ juce::String ChoiceParameter::getStringValue() const
   return stringValues[index];
 }
 
-void ChoiceParameter::setStringValue(const juce::String& newString, bool sendNotification,
+void rsChoiceParameter::setStringValue(const juce::String& newString, bool sendNotification,
   bool callCallbacks)
 {
   int index = stringValues.indexOf(newString);

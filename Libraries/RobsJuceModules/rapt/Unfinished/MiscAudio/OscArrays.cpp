@@ -40,6 +40,8 @@ void rsBlepOscArray<T, TOsc, TBlep>::updateIncrements()
   T maxRatio = T(1) + T(0.5) * detune;
   rsArray::transformRange(&incs[0], &incs[0], numOscs, minRatio, maxRatio);
 
+  // whith numOscs==1, we get -inf in incs[0] - we may have to treat that as special case
+
   // multiply in the reference increment:
   for(int i = 0; i < numOscs; i++)
     incs[i] *= refInc;

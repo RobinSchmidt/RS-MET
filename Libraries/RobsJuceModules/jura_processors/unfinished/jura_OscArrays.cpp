@@ -1,5 +1,5 @@
 BlepOscArrayModule::BlepOscArrayModule(CriticalSection *lockToUse)
-  : AudioModule(lockToUse), oscArrayCore(&ratioGenerator)
+  : AudioModuleWithMidiIn(lockToUse), oscArrayCore(&ratioGenerator)
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("BlepOscArray");
@@ -26,14 +26,14 @@ void BlepOscArrayModule::createParameters()
   addObservedParameter(p);
 
   p = new Param("Detune", 0.0, 100.0, 0.0, Parameter::LINEAR);
-  p->setValueChangeCallback<OA>(oa, &OA::setDetune);
+  p->setValueChangeCallback<OA>(oa, &OA::setDetunePercent);
   addObservedParameter(p);
   // maybe rename to spread
 
 
   // uses the new ChoiceParameter class - needs testing:
-  ChoiceParameter* cp;
-  cp = new ChoiceParameter("Distribution");
+  rsChoiceParameter* cp;
+  cp = new rsChoiceParameter("Distribution");
   cp->setValueChangeCallback<OA>(oa, &OA::setFrequencyDistribution);
   typedef RAPT::rsRatioGenerator<double>::RatioKind RK;
   cp->addStringValue("Range Split Odd",        (int)RK::rangeSplitOdd);     // 4
@@ -51,6 +51,8 @@ void BlepOscArrayModule::createParameters()
 
   // ...
 }
+
+
 
 
 //=================================================================================================

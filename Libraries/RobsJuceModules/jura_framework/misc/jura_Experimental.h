@@ -12,18 +12,20 @@ to use an option that is called "BUTTERWORTH" in some enum, the string-array in 
 have the corresponding value "Butterworth" at the index that maps to BUTTERWORTH when converted to
 int. That's actually quite bad, because it implies that we can't change the order in the enums 
 without breaking the connection (we would have to edit all places where the strings are added to 
-the Parameter objects and bring them into the same order as the new enum - a maintenance nightmare)
+the Parameter objects and bring them into the same order as the new enum agin - a maintenance 
+nightmare)
 
-Instead, the new way should make use of the "enum class" construct of C++11 - we don't want to rely
-on implicit conversion to int anymore but instead force client code to define the connection
-explicitly.....tbc... */
+Instead, the new way should make use of the "enum class" construct of C++11 (strongly typed 
+enumerations) - we don't want to rely on implicit conversion to int anymore but instead force 
+client code to define the connection explicitly.....tbc... */
 
-class JUCE_API ChoiceParameter : public Parameter
+class JUCE_API rsChoiceParameter : public Parameter
 {
 
 public:
 
-  ChoiceParameter(const juce::String& name) : Parameter(name, 0.0, 1.0, 0.0, Parameter::STRING) {}
+  rsChoiceParameter(const juce::String& name) 
+    : Parameter(name, 0.0, 1.0, 0.0, Parameter::STRING) {}
 
 
   void addStringValue(const juce::String& valueToAdd, int enumValue);
@@ -59,6 +61,10 @@ protected:
 
 
   std::vector<int> choices;
+  /**< This is the array of the choices defined in the enum-class. The index in the array is the 
+  position, at which the choice appears in the Parameter's string array, and therefore on the UI 
+  (for example, in a dropdown menu), the value is the integer to which this choice maps - as 
+  defined by the enum class. */
 
 private:
 
