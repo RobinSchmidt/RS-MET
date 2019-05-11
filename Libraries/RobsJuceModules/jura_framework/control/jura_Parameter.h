@@ -560,14 +560,16 @@ protected:
   double value;                  // actual value of the parameter
   double interval;               // interval for adjustments ...rename to stepSize
   double defaultValue;           // default value of this parameter ...maybe rename to resetValue
-  int    scaling;                // index to the scaling/mapping to be used
-  bool   saveAndRecall = true;   // flag, to switch automatic saving on/off
+  int    scaling;                // index to the scaling/mapping to be used - maybe get rid - superseded by the mapper now
+  bool   saveAndRecall = true;   // used for locking params on preset switch?
   juce::String name;             // string for the parameter name
   juce::String displayName = ""; // a possibly different name for gui/display purposes (if empty
                                  // the regular name will be used)
 
 
-  static bool storeDefaultValues; // a global switch for values to xml even if they are at default value
+  static bool storeDefaultValues; 
+  // a global switch for values to xml even if they are at default value - maybe it would be better
+  // to have this switch per parameter
 
   // array of some more default values, meant to be used for easy access via popup menu:
   std::vector<double> defaultValues;

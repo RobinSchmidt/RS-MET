@@ -10,7 +10,15 @@ class as basis and applies a blep for anti-aliasing.
 
 todo: factor out a baseclass rsOscArray that is responsible for handling the array of increments,
 i.e. contains all the members under "increment handling stuff - then we may later also have other 
-subclasses, like a wavetable-based osc-array, etc. */ 
+subclasses, like a wavetable-based osc-array, etc. 
+
+maybe avoid calling updateIncrements in the setters (or make it optional using a 2nd boolean 
+parameter) - instead keep a std::atomic_bool incsUpToDate flag, set it false in the setters (and 
+true in updateIncrements) check it in getSampleNaive and if it's false, call updateIncrements there
+->good for simultaneous modulation of several parameters and thread-safe parameter changes (inc 
+recalc will always be done in the audio thread and multiple parameter modulations per sample will 
+not lead to multiple calls to updateIncrements (see rosic::TurtleSource/Sbowflake - there, i do it 
+that way)  */ 
 
 class rsBlepOscArray
 {
@@ -28,8 +36,6 @@ public:
     refInc = newIncrement; 
     updateIncrements();
   }
-
-
 
   /** Sets the number of oscillators to use. */
   void setDensity(int newDensity)
@@ -55,6 +61,16 @@ public:
   // or maybe just have a function setIncrementAndDetune - to make it efficient in the mod-system,
   // a subclass (in rosic) shall be used that uses the bool - rapt is not the right place for such
   // infrastructe dependent decisions
+
+  /** Sets up, how coherent the phases/positions of the phasors shall be after calling reset. A 
+  value of 0 spreads the phases evenly in the phasor-interval 0..1, a value of 1 lets all saws 
+  start coherently at the same phase zero, which will lead to the effect that there's a noticable
+  attack transient at the start of the sound. */
+  void setIntialPhaseCoherence(T newCoherence)
+  {
+    startPhaseDist = T(1) - newCoherence;
+  }
+
 
   /** Sets the type of the frequency distribution that is used to arrange the individual saws 
   around the center frequency. */
@@ -119,9 +135,10 @@ public:
 
   void reset()
   {
-    for(int i = 0; i < numOscs; i++)
-      oscs[i].resetPhase(T(0), incs[i]); 
-    // this should be more sophisticated - introduce an initial phase distribution parameter
+    for(int i = 0; i < numOscs; i++) {
+      T pos = startPhaseDist * T(i) / T(numOscs); 
+      oscs[i].resetPhase(pos, incs[i]);
+    }
     blep.reset();
   }
 
@@ -139,7 +156,9 @@ protected:
   int numOscs = 1;        // current number of oscillators
   T refInc = T(0);        // reference increment
   T detune = T(0);
-  std::vector<T> incs;    // array of phase increments
+  T startPhaseDist = T(1); // distribution of start phases - 0: coherent, 1: maximally incoherent
+  std::vector<T> incs;     // array of phase increments
+
 
   rsRatioGenerator<T>* ratioGenerator = nullptr; 
   // used to generate freq-ratios, shared among voices ..hmm - but maybe we should use a direct 

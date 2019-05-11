@@ -165,7 +165,7 @@ public:
   // incoming integer (passed from the callback system) to the strongly typed enumeration type 
   // required by RAPT::rsBlepOscArray
 
-  // todo: override setMaxNumOscillators - we need to update the size of the prime-table
+
 
 protected:
 

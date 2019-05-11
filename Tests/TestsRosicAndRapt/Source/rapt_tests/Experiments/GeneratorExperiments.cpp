@@ -509,8 +509,8 @@ void superBlep()
   // create and set up the osc object:
 
 
-  std::vector<rsUint32> primes(maxDensity);
-  rsFillPrimeTable(&primes[0], maxDensity);
+  std::vector<rsUint32> primes(maxDensity+1);  // +1 because of the difference-of-primes based algos
+  rsFillPrimeTable(&primes[0], maxDensity+);
 
   typedef rsRatioGenerator<double>::RatioKind RK;
   rsRatioGenerator<double> ratGen;
