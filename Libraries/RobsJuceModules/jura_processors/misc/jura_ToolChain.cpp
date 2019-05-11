@@ -373,15 +373,15 @@ void ToolChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)
     //  i++;
     //}
     //// it may be better to first create the module, then recall its state and then add it (instead
-    //// of recalling the state after adding) because when loading a preset, the editor my show
+    //// of recalling the state after adding) because when loading a preset, the editor may show
     //// a module in the initial state instead of the actual state - check with EchoLab - load
-    //// ToolChain presets - the EchoLab editro state is wrong after recall
+    //// ToolChain presets - the EchoLab editor state is wrong after recall
 
     // new:
     //AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager);
     AudioModule *m = moduleFactory.createModule(type);
-    if(m != nullptr)
-    {
+    if(m != nullptr) {
+      m->setSampleRate(sampleRate);
       //m->setMetaParameterManager(metaParamManager);      // so, the meta-mapping gets recalled
       setupManagers(m);
       XmlElement *moduleState = slotState->getChildElement(0);

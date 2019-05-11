@@ -75,9 +75,9 @@ void rsRatioGenerator<T>::fillRatioTable(T* r, int N)
   typedef RatioKind RK;
   switch(kind)
   {
-  case RK::metallic:      for(int i = 0; i < N; i++) r[i] = metallic(T(i));   break;
-  case RK::primeSqrt:     for(int i = 0; i < N; i++) r[i] = primeSqrt(i);     break;
-  case RK::primeSqrtDiff: for(int i = 0; i < N; i++) r[i] = primeSqrtDiff(i); break;
+  case RK::metallic:       for(int i = 0; i < N; i++) r[i] = metallic(T(i));    break;
+  case RK::primePower:     for(int i = 0; i < N; i++) r[i] = primePower(i);     break;
+  case RK::primePowerDiff: for(int i = 0; i < N; i++) r[i] = primePowerDiff(i); break;
 
   case RK::rangeSplitSkewed: rangeSplits(r, N, p1, 0); break;
   case RK::rangeSplitOdd:    rangeSplits(r, N, p1, 1); break;

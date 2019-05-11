@@ -21,8 +21,8 @@ public:
   enum class RatioKind // maybe rename to RatioFormula or Algorithm
   {
     metallic,
-    primeSqrt,
-    primeSqrtDiff,
+    primePower,
+    primePowerDiff,
     // plastic,
     // intSqrt,
     rangeSplitSkewed,
@@ -68,23 +68,25 @@ public:
   https://www.youtube.com/watch?v=CaasbfdJdJg  */
   static inline T metallic(T n) { return T(0.5) * (n + sqrt(n*n+T(4))); }
 
-  /** Square root of n-th prime number. */
-  inline T primeSqrt(int n) 
+  /** p1-th power of n-th prime number where p1 is our first continuous parameter set by 
+  setParameter1 */
+  inline T primePower(int n) 
   { 
     rsAssert(primeTable != nullptr);
     rsAssert(n < primeTable->size());
-    return sqrt(T(primeTable->at(n)));
+    return pow(T(primeTable->at(n)), p1);
   }
 
-  /** Difference of the square roots of n+1-th and n-th prime number. */
-  inline T primeSqrtDiff(int n)
+  /** Difference of the p1-th powers of n+1-th and n-th prime number. */
+  inline T primePowerDiff(int n)
   {
-    return primeSqrt(n+1) - primeSqrt(n);
+    return primePower(n+1) - primePower(n);
   }
 
 
   void rangeSplits(T* splitPoints, int numSplitPoints, T ratio, int splitStrategy = 1);
-  // under construction
+  // under construction - actually, the ratio need not to be passed - use p1 in the function
+  // and the split-strategy should use an enum-class
 
   // what about plastic ratios? oh - there's only one such ratio - but maybe powers of that can 
   // be used? what about powers of some general base?
@@ -93,9 +95,9 @@ public:
 protected:
 
   RatioKind kind = RatioKind::metallic;
-  T p1 = T(0); // p2, p3, ...
+  T p1 = T(0.5); // p2, p3, ...
 
   std::vector<RAPT::rsUint32>* primeTable = nullptr;
-  // table of prime numbers - we use pointer to share it among all existing instances
+  // table of prime numbers - we use a pointer to share it among instances
 
 };

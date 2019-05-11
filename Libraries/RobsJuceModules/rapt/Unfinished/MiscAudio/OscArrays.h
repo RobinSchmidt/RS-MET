@@ -66,7 +66,7 @@ public:
   value of 0 spreads the phases evenly in the phasor-interval 0..1, a value of 1 lets all saws 
   start coherently at the same phase zero, which will lead to the effect that there's a noticable
   attack transient at the start of the sound. */
-  void setIntialPhaseCoherence(T newCoherence)
+  void setInitialPhaseCoherence(T newCoherence)
   {
     startPhaseDist = T(1) - newCoherence;
   }

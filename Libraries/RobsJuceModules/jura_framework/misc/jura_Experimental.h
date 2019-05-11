@@ -48,6 +48,8 @@ public:
 
   virtual juce::String getStringValue() const override;
 
+  virtual juce::String getDefaultStringValue() const override;
+
 
   virtual void setStringValue(const juce::String& newString, bool sendNotification,
     bool callCallbacks) override;
@@ -59,6 +61,8 @@ public:
 
 protected:
 
+  /** Returns the string that corresponds to the given enum value. */
+  juce::String getStringForEnumValue(int enumValue) const;
 
   std::vector<int> choices;
   /**< This is the array of the choices defined in the enum-class. The index in the array is the 
