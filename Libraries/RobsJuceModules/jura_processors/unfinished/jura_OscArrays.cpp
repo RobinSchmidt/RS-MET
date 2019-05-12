@@ -66,7 +66,6 @@ void BlepOscArrayModule::createParameters()
   // maybe we should override get/setValue
 
 
-
   mp = new ModParam("DistParam", 0.0, 1.0, 0.5, Parameter::LINEAR);
   mp->setValueChangeCallback<OA>(oa, &OA::setDistributionParameter);
   addObservedParameter(mp);
@@ -78,7 +77,14 @@ void BlepOscArrayModule::createParameters()
   // maybe call the display-parameter "Transient"...hmm - but that will be confusing for users who
   // want to look at and/or edit the xml files
 
+  p = new Param("InitialPhaseRandomness", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  //p->setDisplayName("InitialPhaseRandom");
+  p->setValueChangeCallback<OA>(oa, &OA::setInitialPhaseRandomness);
+  addObservedParameter(p);
 
+  p = new Param("InitialPhaseSeed", 0.0, 1000.0, 0.0, Parameter::INTEGER);
+  p->setValueChangeCallback<OA>(oa, &OA::setInitialPhaseSeed);
+  addObservedParameter(p);
 
 
   // ...

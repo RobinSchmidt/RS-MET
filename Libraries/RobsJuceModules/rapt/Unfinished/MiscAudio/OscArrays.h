@@ -71,6 +71,16 @@ public:
     startPhaseDist = T(1) - newCoherence;
   }
 
+  void setInitialPhaseRandomness(T newRandomness)
+  {
+    startPhaseRand = newRandomness;
+  }
+
+  void setInitialPhaseSeed(int newSeed)
+  {
+    startPhaseSeed = newSeed;
+  }
+
 
   /** Sets the type of the frequency distribution that is used to arrange the individual saws 
   around the center frequency. */
@@ -135,8 +145,12 @@ public:
 
   void reset()
   {
+    rsNoiseGenerator<T> ng;
+    ng.setSeed(startPhaseSeed);
+    ng.setRange(T(0), T(1));
     for(int i = 0; i < numOscs; i++) {
       T pos = startPhaseDist * T(i) / T(numOscs); 
+      pos += startPhaseRand * ng.getSample();
       oscs[i].resetPhase(pos, incs[i]);
     }
     blep.reset();
@@ -157,6 +171,8 @@ protected:
   T refInc = T(0);        // reference increment
   T detune = T(0);
   T startPhaseDist = T(1); // distribution of start phases - 0: coherent, 1: maximally incoherent
+  T startPhaseRand = T(0); // randomness of start phases
+  int startPhaseSeed = 0;
   std::vector<T> incs;     // array of phase increments
 
 
