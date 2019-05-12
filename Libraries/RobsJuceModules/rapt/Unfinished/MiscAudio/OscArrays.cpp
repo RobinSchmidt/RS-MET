@@ -1,4 +1,3 @@
-
 template<class T> 
 rsOscArray<T>::rsOscArray(RAPT::rsRatioGenerator<T>* _ratioGenerator)
 {
@@ -58,6 +57,36 @@ void rsOscArray<T>::updateIncrements()
   // so expensive ...actually, we should probably just keep an array of prototype ratios (or just 
   // offsets between 0..1) and apply the mapping to the desired inc-range on the fly as well - 
   // makes detune modulation more efficient (i.e. less inefficient)
+}
+
+template<class T> 
+void rsOscArray<T>::updateAmplitudes()
+{
+  T p = T(0.5) * (stereoSpread + T(1));
+  T s = T(1.0) / sqrt(density);              // scaler
+  evenAmp = s * rsCubicFadeIn(p); 
+  oddAmp  = s * rsCubicFadeOut(p);
+  if(stereoSpread < T(0))
+    rsSwap(evenAmp, oddAmp);
+  for(int i = 0; i < density; i += 2) {
+    ampsL[i]   = evenAmp;
+    ampsR[i+1] = oddAmp;
+  }
+  // todo: apply bell curve
+}
+
+template<class T> 
+void rsOscArray<T>::reset()
+{
+  rsNoiseGenerator<T> ng;
+  ng.setSeed(startPhaseSeed);
+  ng.setRange(T(0), T(1));
+  for(int i = 0; i < numOscs; i++) {
+    T pos = startPhaseDist * T(i) / T(numOscs); 
+    pos += startPhaseRand * ng.getSample();
+    resetOsc(i, pos);
+  }
+
 }
 
 //=================================================================================================

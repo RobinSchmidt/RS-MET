@@ -20,6 +20,8 @@ public:
   void setMaxDensity(int newMaximum)
   {
     incs.resize(newMaximum);
+    ampsL.resize(newMaximum);
+    ampsR.resize(newMaximum);
     numOscs = rsMin(numOscs, newMaximum);
     updateIncrements();
   }
@@ -94,6 +96,18 @@ public:
     updateIncrements();
   }
 
+  void setStereoSpread(T newSpread)
+  {
+    stereoSpread = newSpread;
+    updateAmplitudes();
+  }
+
+
+  void reset();
+
+
+  virtual void resetOsc(int oscIndex, T phase) = 0;
+
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
@@ -108,14 +122,18 @@ protected:
   settings of detune, etc.. */
   void updateIncrements();
 
+  void updateAmplitudes();
+
   // increment handling stuff:
   int numOscs = 1;        // current number of oscillators
   T refInc = T(0);        // reference increment
   T detune = T(0);
   T startPhaseDist = T(1); // distribution of start phases - 0: coherent, 1: maximally incoherent
   T startPhaseRand = T(0); // randomness of start phases
+  T stereoSpread   = T(0);
   int startPhaseSeed = 0;
-  std::vector<T> incs;     // array of phase increments
+  std::vector<T> incs;          // array of phase increments
+  std::vector<T> ampsL, ampsR;  // array of amplitude factors for left and right channel
 
   // todo: have an array of pan positions - if we do stereo later, we will need two blep objects 
   // - one for each channel - or maybe two arrays of left/right channel amplitudes - they can 
@@ -204,18 +222,17 @@ public:
     return blep.getSample(getSampleNaive());
   }
 
+  virtual void resetOsc(int oscIndex, T phase) override
+  {
+    oscs[oscIndex].resetPhase(phase, incs[oscIndex]);
+  }
+
   void reset()
   {
-    rsNoiseGenerator<T> ng;
-    ng.setSeed(startPhaseSeed);
-    ng.setRange(T(0), T(1));
-    for(int i = 0; i < numOscs; i++) {
-      T pos = startPhaseDist * T(i) / T(numOscs); 
-      pos += startPhaseRand * ng.getSample();
-      oscs[i].resetPhase(pos, incs[i]);
-    }
+    rsOscArray<T>::reset();
     blep.reset();
   }
+
   // maybe make this virtual and override it here ...or make a virtual method 
   // resetOsc(int index) and call it in the baseclass - the subclass must implement it
 
