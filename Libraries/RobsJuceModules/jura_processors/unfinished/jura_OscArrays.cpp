@@ -36,6 +36,10 @@ void BlepOscArrayModule::createParameters()
   // Parameter only allows to switch save/recall on/off globally for all parameters - maybe allow
   // to switch this locally
 
+  mp = new ModParam("StereoSpread", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  mp->setValueChangeCallback<OA>(oa, &OA::setStereoSpread);
+  addObservedParameter(mp);
+
 
   // uses the new ChoiceParameter class - needs testing:
   rsChoiceParameter* cp;

@@ -40,6 +40,7 @@ public:
     rsAssert(newDensity <= getMaxDensity());
     numOscs = rsMin(newDensity, getMaxDensity());
     updateIncrements();
+    updateAmplitudes();
     // we need to update the increments here because the new number may be higher than the old and
     // the upper values may not yet contain valid data becuase on setReferenceIncrement, setDetune, 
     // etc. we only update the oscs up to numOscs in order to avoid computing increments that are 
@@ -173,6 +174,17 @@ class rsBlepOscArray : public rsOscArray<T>
 
 public:
 
+  /*
+  // no - this should go into class rsPolyBlep2 and we should have a dispatcher method there
+  enum class antiAliasAlgo
+  {
+    none,
+    linear,
+    cubicBSpline
+    // cubicLagrange
+  };
+  */
+
 
   rsBlepOscArray(RAPT::rsRatioGenerator<T>* ratioGenerator = nullptr);
   // get rid of passing the pointer to the ratio-generator
@@ -207,7 +219,7 @@ public:
 
       stepAmp *= amp;
       if(stepAmp != T(0))  
-        blep.prepareForStep(stepDelay, stepAmp);
+        blepL.prepareForStep(stepDelay, stepAmp);
       // maybe try to do it without the branch and make performance test with both versions - it 
       // doesn't hurt to accumulate zero-valued signals into the corrector, so the code is valid
       // with or without the "if"
@@ -219,7 +231,28 @@ public:
 
   inline T getSample()
   {
-    return blep.getSample(getSampleNaive());
+    return blepL.getSample(getSampleNaive());
+  }
+
+
+  inline void getSampleFrameStereo(T* left, T* right)
+  {
+    T stepDelay = T(0);   // delay of step discontinuity
+    T stepAmp   = T(0);   // amplitude of step discontinuity
+    T out       = T(0);   // accumulator for (naive) output sample
+    for(int i = 0; i < numOscs; i++) {
+      out += oscs[i].getSampleSaw(incs[i], &stepDelay, &stepAmp);
+      if(stepAmp != T(0)) {
+        blepL.prepareForStep(stepDelay, stepAmp * ampsL[i]);
+        blepR.prepareForStep(stepDelay, stepAmp * ampsR[i]);
+        // optimize - use only one blep object and simd (TTim is double, TSig is rsFloat64x2 for the 
+        // blep
+      }
+      *left  += out * ampsL[i];
+      *right += out * ampsR[i];
+    }
+    *left  = blepL.getSample(*left);
+    *right = blepR.getSample(*right);
   }
 
   virtual void resetOsc(int oscIndex, T phase) override
@@ -230,7 +263,8 @@ public:
   void reset()
   {
     rsOscArray<T>::reset();
-    blep.reset();
+    blepL.reset();
+    blepR.reset();
   }
 
   // maybe make this virtual and override it here ...or make a virtual method 
@@ -244,13 +278,16 @@ protected:
 
 
   std::vector<TOsc> oscs; // oscillator array
-  TBlep blep; 
+  TBlep blepL, blepR; 
+  //TBlep blep; 
   // a single blep is shared among all oscs...actually, it could even be shared among all voices
   // in a polyphonic situation - try to think of a way, how to do this - maybe by maintaining a 
   // pointer to the blep object instead of a direct object? ...we'll see...hmm...maybe that doesn't
   // make much sense, because in a synth, the osc-voices are not mixed before the filter - and 
   // applying the blep after the filter is invalid because the blep needs go through the filter, 
   // too - so it's probably best to keep things as is
+
+
 };
 
 

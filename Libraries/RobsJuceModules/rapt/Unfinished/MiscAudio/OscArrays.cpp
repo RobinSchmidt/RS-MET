@@ -63,16 +63,20 @@ template<class T>
 void rsOscArray<T>::updateAmplitudes()
 {
   T p = T(0.5) * (stereoSpread + T(1));
-  T s = T(1.0) / sqrt(density);              // scaler
-  evenAmp = s * rsCubicFadeIn(p); 
-  oddAmp  = s * rsCubicFadeOut(p);
-  if(stereoSpread < T(0))
-    rsSwap(evenAmp, oddAmp);
-  for(int i = 0; i < density; i += 2) {
+  T s = T(1.0) / sqrt(numOscs);              // scaler
+  T evenAmp = s * rsCubicFadeIn(p); 
+  T oddAmp  = s * rsCubicFadeOut(p);
+  //if(stereoSpread < T(0))
+  //  rsSwap(evenAmp, oddAmp);
+  for(int i = 0; i < getMaxDensity(); i += 2) {
     ampsL[i]   = evenAmp;
-    ampsR[i+1] = oddAmp;
+    ampsR[i]   = oddAmp;
+    ampsL[i+1] = oddAmp;
+    ampsR[i+1] = evenAmp;
   }
-  // todo: apply bell curve
+  // todo: apply bell curve, maybe we should treat even densities different from odd densities by
+  // having one saw in the middle in the odd case? -but hwo would we handle continuous density 
+  // then?
 }
 
 template<class T> 
