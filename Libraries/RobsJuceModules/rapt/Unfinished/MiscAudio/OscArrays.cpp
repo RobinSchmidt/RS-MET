@@ -1,15 +1,13 @@
 
-
-template<class T, class TOsc, class TBlep>
-rsBlepOscArray<T, TOsc, TBlep>::rsBlepOscArray(rsRatioGenerator<T>* _ratioGenerator)
+template<class T> 
+rsOscArray<T>::rsOscArray(RAPT::rsRatioGenerator<T>* _ratioGenerator)
 {
   ratioGenerator = _ratioGenerator;
   setMaxDensity(8);
 }
 
-
-template<class T, class TOsc, class TBlep>
-void rsBlepOscArray<T, TOsc, TBlep>::updateIncrements()
+template<class T>
+void rsOscArray<T>::updateIncrements()
 {
   typedef rsRatioGenerator<T> RG;
 
@@ -61,6 +59,19 @@ void rsBlepOscArray<T, TOsc, TBlep>::updateIncrements()
   // offsets between 0..1) and apply the mapping to the desired inc-range on the fly as well - 
   // makes detune modulation more efficient (i.e. less inefficient)
 }
+
+//=================================================================================================
+
+template<class T, class TOsc, class TBlep>
+rsBlepOscArray<T, TOsc, TBlep>::rsBlepOscArray(rsRatioGenerator<T>* _ratioGenerator) 
+  : rsOscArray(_ratioGenerator)
+{
+  //ratioGenerator = _ratioGenerator;
+  //setMaxDensity(8);
+  oscs.resize(getMaxDensity());
+}
+
+
 
 
 /*

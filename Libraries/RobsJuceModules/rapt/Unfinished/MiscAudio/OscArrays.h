@@ -1,33 +1,28 @@
 #pragma once
 
-// template parameters: 
-// T: type for signals and parameters, TOsc: class for the (blep-ready) osc, TBlep: class for blep
-template<class T, class TOsc, class TBlep> 
-// todo: have separate TSig, TPar template parameters
+/** Baseclass for oscillator array classes. Handles the distribution of phase increments, 
+amplitudes, panning, etc. - all the stuff that is common to all types or array oscillators. */
 
-/** A class for producing waveforms like supersaw, supersquare, etc. using a blep-ready oscillator 
-class as basis and applies a blep for anti-aliasing. 
-
-todo: factor out a baseclass rsOscArray that is responsible for handling the array of increments,
-i.e. contains all the members under "increment handling stuff - then we may later also have other 
-subclasses, like a wavetable-based osc-array, etc. 
-
-maybe avoid calling updateIncrements in the setters (or make it optional using a 2nd boolean 
-parameter) - instead keep a std::atomic_bool incsUpToDate flag, set it false in the setters (and 
-true in updateIncrements) check it in getSampleNaive and if it's false, call updateIncrements there
-->good for simultaneous modulation of several parameters and thread-safe parameter changes (inc 
-recalc will always be done in the audio thread and multiple parameter modulations per sample will 
-not lead to multiple calls to updateIncrements (see rosic::TurtleSource/Sbowflake - there, i do it 
-that way)  */ 
-
-class rsBlepOscArray
+template<class T> 
+class rsOscArray
 {
 
 public:
 
+  rsOscArray(RAPT::rsRatioGenerator<T>* ratioGenerator = nullptr);
+  // maybe get rid of passing the pointer to the ratio-generator
 
-  rsBlepOscArray(RAPT::rsRatioGenerator<T>* ratioGenerator = nullptr);
-  // get rid of passing the pointer to the ratio-generator
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets the maximum number of oscillators that can be used. May cause memory (re)allocation and
+  should probably be called once at startup time. */
+  void setMaxDensity(int newMaximum)
+  {
+    incs.resize(newMaximum);
+    numOscs = rsMin(numOscs, newMaximum);
+    updateIncrements();
+  }
 
   /** Sets the reference phase increment which determines the center frequency of the osc stack 
   around which all other frequencies are arranged. */
@@ -62,6 +57,7 @@ public:
   // a subclass (in rosic) shall be used that uses the bool - rapt is not the right place for such
   // infrastructe dependent decisions
 
+
   /** Sets up, how coherent the phases/positions of the phasors shall be after calling reset. A 
   value of 0 spreads the phases evenly in the phasor-interval 0..1, a value of 1 lets all saws 
   start coherently at the same phase zero, which will lead to the effect that there's a noticable
@@ -81,7 +77,6 @@ public:
     startPhaseSeed = newSeed;
   }
 
-
   /** Sets the type of the frequency distribution that is used to arrange the individual saws 
   around the center frequency. */
   // why double? should be T!
@@ -99,19 +94,85 @@ public:
     updateIncrements();
   }
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Returns the maximum number of oscillators that can be used. */
+  int getMaxDensity() const { return (int) incs.size(); } 
+
+
+
+protected:
+
+  /** Updates our array of phase increments according to the desired reference increment and 
+  settings of detune, etc.. */
+  void updateIncrements();
+
+  // increment handling stuff:
+  int numOscs = 1;        // current number of oscillators
+  T refInc = T(0);        // reference increment
+  T detune = T(0);
+  T startPhaseDist = T(1); // distribution of start phases - 0: coherent, 1: maximally incoherent
+  T startPhaseRand = T(0); // randomness of start phases
+  int startPhaseSeed = 0;
+  std::vector<T> incs;     // array of phase increments
+
+  // todo: have an array of pan positions - if we do stereo later, we will need two blep objects 
+  // - one for each channel - or maybe two arrays of left/right channel amplitudes - they can 
+  // include our bell curves later
+
+  rsRatioGenerator<T>* ratioGenerator = nullptr; 
+  // used to generate freq-ratios, shared among voices ..hmm - but maybe we should use a direct 
+  // object and for the voices use the strategy outlined in Notes/Ideas.txt
+
+
+};
+
+//=================================================================================================
+
+// template parameters: 
+// T: type for signals and parameters, TOsc: class for the (blep-ready) osc, TBlep: class for blep
+template<class T, class TOsc, class TBlep> 
+// todo: have separate TSig, TPar template parameters
+
+/** A class for producing waveforms like supersaw, supersquare, etc. using a blep-ready oscillator 
+class as basis and applies a blep for anti-aliasing. 
+
+todo: factor out a baseclass rsOscArray that is responsible for handling the array of increments,
+i.e. contains all the members under "increment handling stuff - then we may later also have other 
+subclasses, like a wavetable-based osc-array, etc. 
+
+maybe avoid calling updateIncrements in the setters (or make it optional using a 2nd boolean 
+parameter) - instead keep a std::atomic_bool incsUpToDate flag, set it false in the setters (and 
+true in updateIncrements) check it in getSampleNaive and if it's false, call updateIncrements there
+->good for simultaneous modulation of several parameters and thread-safe parameter changes (inc 
+recalc will always be done in the audio thread and multiple parameter modulations per sample will 
+not lead to multiple calls to updateIncrements (see rosic::TurtleSource/Sbowflake - there, i do it 
+that way)  */ 
+
+class rsBlepOscArray : public rsOscArray<T>
+{
+
+public:
+
+
+  rsBlepOscArray(RAPT::rsRatioGenerator<T>* ratioGenerator = nullptr);
+  // get rid of passing the pointer to the ratio-generator
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+
   /** Sets the maximum number of oscillators that can be used. May cause memory (re)allocation and
   should probably be called once at startup time. */
   void setMaxDensity(int newMaximum)
   {
-    incs.resize(newMaximum);
+    rsOscArray<T>::setMaxDensity(newMaximum);
     oscs.resize(newMaximum);
-    numOscs = rsMin(numOscs, newMaximum);
-    updateIncrements();
   }
 
-  /** Returns the maximum number of oscillators that can be used. */
-  int getMaxDensity() const { return (int) oscs.size(); } 
-
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
   inline T getSampleNaive()
   {
@@ -155,31 +216,14 @@ public:
     }
     blep.reset();
   }
+  // maybe make this virtual and override it here ...or make a virtual method 
+  // resetOsc(int index) and call it in the baseclass - the subclass must implement it
 
   // todo: have a reset function that allows to select an initial phase distribution...or maybe
   // just call it setPhases - it may take a parameter where 0 means all start at 0 and 1 means 
   // maximally sperad out (i.e. oscs[i].pos = i / numOscs
 
 protected:
-
-  /** Updates our array of phase increments according to the desired reference increment and 
-  settings of detune, etc.. */
-  void updateIncrements();
-
-  // increment handling stuff:
-  int numOscs = 1;        // current number of oscillators
-  T refInc = T(0);        // reference increment
-  T detune = T(0);
-  T startPhaseDist = T(1); // distribution of start phases - 0: coherent, 1: maximally incoherent
-  T startPhaseRand = T(0); // randomness of start phases
-  int startPhaseSeed = 0;
-  std::vector<T> incs;     // array of phase increments
-
-
-  rsRatioGenerator<T>* ratioGenerator = nullptr; 
-  // used to generate freq-ratios, shared among voices ..hmm - but maybe we should use a direct 
-  // object and for the voices use the strategy outlined in Notes/Ideas.txt
-
 
 
   std::vector<TOsc> oscs; // oscillator array
@@ -190,11 +234,6 @@ protected:
   // make much sense, because in a synth, the osc-voices are not mixed before the filter - and 
   // applying the blep after the filter is invalid because the blep needs go through the filter, 
   // too - so it's probably best to keep things as is
-
-
-
-  // todo: have an array of pan positions - if we do stereo later, we will need two blep objects 
-  // - one for each channel
 };
 
 
