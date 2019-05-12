@@ -41,12 +41,6 @@ void rsChoiceParameter::setValue(double newValue, bool sendNotification, bool ca
 juce::String rsChoiceParameter::getStringValue() const
 {
   return getStringForEnumValue((int) value);
-  /*
-  int enumValue = (int) value;
-  int index = (int) RAPT::rsFind(choices, enumValue);
-  jassert(index < choices.size()); // enum value not found in our array - something is inconsistent
-  return stringValues[index];
-  */
 }
 
 juce::String rsChoiceParameter::getDefaultStringValue() const

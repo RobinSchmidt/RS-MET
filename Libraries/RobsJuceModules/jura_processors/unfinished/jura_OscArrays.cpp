@@ -15,7 +15,10 @@ AudioModuleEditor* BlepOscArrayModule::createEditor(int type)
 void BlepOscArrayModule::createParameters()
 {
   typedef Parameter Param;
+  typedef ModulatableParameter ModParam;
   Param* p;
+  ModParam* mp;
+
 
   typedef rosic::rsOscArrayPolyBlep1 OA;
   OA* oa = &oscArrayCore;
@@ -25,9 +28,9 @@ void BlepOscArrayModule::createParameters()
   p->setValueChangeCallback<OA>(oa, &OA::setDensity);
   addObservedParameter(p);
 
-  p = new Param("Detune", 0.0, 100.0, 5.0, Parameter::LINEAR);
-  p->setValueChangeCallback<OA>(oa, &OA::setDetunePercent);
-  addObservedParameter(p);
+  mp = new ModParam("Detune", 0.0, 100.0, 5.0, Parameter::LINEAR);
+  mp->setValueChangeCallback<OA>(oa, &OA::setDetunePercent);
+  addObservedParameter(mp);
   // maybe rename to spread - the default value of 5 seems ok - but we may want to change that
   // later - in order to not break presets, it should be saved, even when in default setting - but
   // Parameter only allows to switch save/recall on/off globally for all parameters - maybe allow
@@ -63,9 +66,9 @@ void BlepOscArrayModule::createParameters()
 
 
 
-  p = new Param("DistParam", 0.0, 1.0, 0.5, Parameter::LINEAR);
-  p->setValueChangeCallback<OA>(oa, &OA::setDistributionParameter);
-  addObservedParameter(p);
+  mp = new ModParam("DistParam", 0.0, 1.0, 0.5, Parameter::LINEAR);
+  mp->setValueChangeCallback<OA>(oa, &OA::setDistributionParameter);
+  addObservedParameter(mp);
 
   p = new Param("InitialPhaseCoherence", 0.0, 1.0, 0.0, Parameter::LINEAR);
   p->setDisplayName("Coherence");

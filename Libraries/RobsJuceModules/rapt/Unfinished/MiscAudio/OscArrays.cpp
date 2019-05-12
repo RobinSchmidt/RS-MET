@@ -25,10 +25,16 @@ void rsBlepOscArray<T, TOsc, TBlep>::updateIncrements()
     // -> factor out a rangeConverversionCoeffs function from transformRange that computes a, b
     // from given x1,x2,y1,y2
 
-  // the stuff like taking 1.f and/or taking reciprocal and/or sorting should all be done in
-  // rsRatioGenerator ...or maybe we should do it here - first: transform to interval 1..2
-  // the take the reciprocal, giving numbers in the interval 0.5...1 but in descending order, if 
-  // the original array is sorted ascending
+    // we get all 1s in case of prime-power and all 0s in case of prime-power-diff - how should be 
+    // handle this situation? maybe by letting all increments be the same? i think, that would be
+    // the natural limit - or wait! no! it's not! what is the limit? figure out! make plots (7 
+    // graphs for the resulting normalized ratios as functions of the power p)
+
+
+    // the stuff like taking 1.f and/or taking reciprocal and/or sorting should all be done in
+    // rsRatioGenerator ...or maybe we should do it here - first: transform to interval 1..2
+    // the take the reciprocal, giving numbers in the interval 0.5...1 but in descending order, if 
+    // the original array is sorted ascending
     bool invertRatios = false; // make user parameter
     if(invertRatios)
     {

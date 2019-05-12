@@ -12,6 +12,8 @@ namespace RAPT
 #include "SortAndSearch.h"
 
 // move to some other file (BasicFunctions or something):
+
+/** Swaps x and y. */
 template<class T>
 inline void rsSwap(T& x, T& y)
 {
@@ -23,18 +25,33 @@ inline void rsSwap(T& x, T& y)
 template<class T> inline T rsUnityValue(T value) { return T(1);  }
 template<class T> inline T rsZeroValue( T value) { return T(0);  }
 template<class T> inline T rsIdentity(  T value) { return value; }
+
+/** Returns true, if x is not-a-number, false otherwise. */
 template<class T> inline bool rsIsNaN(T x)
 {
-  return x != x; // NaN is the only value that returns false for this, also, you can't
+  return x != x; // NaN is the only value that returns false for this comparison
 }
+
+/** Returns true, if x is plus or minus infinity, false otherwise. */ 
 template<class T> inline bool rsIsInfinite(T x)
 {
   return x == std::numeric_limits<T>::infinity() || x == -std::numeric_limits<T>::infinity();
 }
+
+/** Returns true, if x is a finite number, i.e. not NaN and not +-infinity, false otherwise. */
 template<class T> inline bool rsIsFiniteNumber(T x)
 {
   if(rsIsNaN(x) || rsIsInfinite(x))
     return false;
+  return true;
+}
+
+/** Returns true, if the passed array of length N contains only finite numbers, false otherwise, */
+template<class T> inline bool rsIsFiniteNumbers(T* x, int N)
+{
+  for(int i = 0; i < N; i++)
+    if(!rsIsFiniteNumber(x[i]))
+      return false;
   return true;
 }
 

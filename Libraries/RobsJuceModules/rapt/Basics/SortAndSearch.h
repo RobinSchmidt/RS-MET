@@ -60,6 +60,11 @@ all i. */
 template <class T>
 bool rsIsSortedAscending(T *buffer, int length);
 
+/** Checks whether the buffer is sorted in ascending order, that is buffer[i] < buffer[i+1] for
+all i. */
+template <class T>
+bool rsIsSortedStrictlyAscending(T *buffer, int length);
+
 /** Finds all occurrences of the given pattern in the buffer and returns the start-indices for
 the pattern inside the buffer as a std::vector which is in ascending order. The function uses the
 Knuth-Morris-Pratt algorithm (see: Introduction to Algorithms, 2nd Ed, p. 923) */

@@ -615,6 +615,8 @@ void ratioGenerator()
   // also show the sawtooth amplitudes by the height of the lines - especially useful when we later
   // introduce amp envelopes (bell-shaped curves, but mayby also inverse bell curves emphasizing 
   // the outer freqs - how about: 0: flat, 1: bell, -1: inverted bell)
+
+  // todo: plot the ratios as function of the parameter, let the parameter go from 0 to 1
 }
 
 void ratiosLargeLcm()

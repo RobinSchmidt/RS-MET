@@ -54,7 +54,7 @@ void rsRatioGenerator<T>::rangeSplits(T* splitPoints, int numSplitPoints, T rati
   // ranges sorted (by size), thereby turning it into an O(N) algorithm?
 
   // sort the array ranges by their start-point:
-  rsHeapSort(&s[0], N, &rangeStartLess);
+  rsHeapSort(&s[0], N, &rangeStartLess); // maybe make sorting optional
   // this is an O(N*log(N)) operation - so if we can turn the above into an O(N) operation, the 
   // overall comlexity of range splitting would still be O(N*log(N)) - certainly much better than
   // O(N^2) - but to achieve O(N), we would have to avoid the final sorting too - maybe by always
@@ -72,17 +72,24 @@ void rsRatioGenerator<T>::rangeSplits(T* splitPoints, int numSplitPoints, T rati
 template<class T>
 void rsRatioGenerator<T>::fillRatioTable(T* r, int N)
 {
+  bool sorted = false;
   typedef RatioKind RK;
   switch(kind)
   {
-  case RK::metallic:       for(int i = 0; i < N; i++) r[i] = metallic(T(i));    break;
-  case RK::primePower:     for(int i = 0; i < N; i++) r[i] = primePower(i);     break;
-  case RK::primePowerDiff: for(int i = 0; i < N; i++) r[i] = primePowerDiff(i); break;
-
-  case RK::rangeSplitSkewed: rangeSplits(r, N, p1, 0); break;
-  case RK::rangeSplitOdd:    rangeSplits(r, N, p1, 1); break;
-  case RK::rangeSplitEven:   rangeSplits(r, N, p1, 2); break;
+  case RK::metallic:       { for(int i=0; i<N; i++) r[i] = metallic(T(i)); sorted = true; } break;
+  case RK::primePower:     { for(int i=0; i<N; i++) r[i] = primePower(i);  sorted = true; } break;
+  case RK::primePowerDiff: { for(int i=0; i<N; i++) r[i] = primePowerDiff(i);             } break;
+  case RK::rangeSplitSkewed: { rangeSplits(r, N, p1, 0); sorted = true; } break;
+  case RK::rangeSplitOdd:    { rangeSplits(r, N, p1, 1); sorted = true; } break;
+  case RK::rangeSplitEven:   { rangeSplits(r, N, p1, 2); sorted = true; } break;
   }
+  if(!sorted)
+    rsHeapSort(r, N); 
+  rsAssert(rsIsFiniteNumbers(r, N));           // catch numeric singularities in the algos
+  //rsAssert(rsIsSortedStrictlyAscending(r, N)); // catch algorithmic flaws
+
+  // have boolean options like invert (map to 1..2 and take reciprocal), reverse 
+  // (map to 0...1 and take 1-..)
 }
 
 
