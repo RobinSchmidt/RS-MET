@@ -586,7 +586,8 @@ std::vector<double> intervalSplittingProto(int numSegments, double midpoint, int
 
 void ratioGenerator()
 {
-  int numRatios = 17;
+  int numRatios = 6;     // number of ratios (i.e. "density")
+  int numParams = 200;   // number of sampe values for the parameter of the ratio algo
   int numPrimes = numRatios+1;
 
   std::vector<rsUint32> primes(numPrimes);
@@ -595,12 +596,48 @@ void ratioGenerator()
   typedef rsRatioGenerator<double>::RatioKind RK;
   rsRatioGenerator<double> ratGen;
   ratGen.setPrimeTable(&primes);
-  ratGen.setRatioKind(RK::rangeSplitOdd);
-  ratGen.setParameter1(0.75);
-
+  ratGen.setRatioKind(RK::linToExp);
+  ratGen.setParameter1(0.5);
 
   std::vector<double> ratios(numRatios);
   ratGen.fillRatioTable(&ratios[0], numRatios);
+
+  std::vector<double> p(numParams);  // rename to params
+  std::vector<double> r(numRatios);  // rename to tmp
+  rsArray::fillWithRangeLinear(&p[0], numParams, 0.0, 1.0);
+  double** y; // rename to r(atios)
+  MatrixTools::rsAllocateMatrix(y, numRatios, numParams);
+
+  for(int i = 0; i < numParams; i++) {
+    ratGen.setParameter1(p[i]);
+    ratGen.fillRatioTable(&r[0], numRatios);
+    rsArray::transformRange(&r[0], &r[0], numRatios, 1., 2.);  // ratios in 1...2
+    for(int j = 0; j < numRatios; j++)
+      y[j][i] = r[j];
+  }
+
+
+
+  GNUPlotter plt;
+  plt.addDataArrays(numParams, &p[0], numRatios, y);
+  plt.setRange(-0.1, 1.1, 0.9, 2.1);
+  plt.plot();
+
+
+  MatrixTools::rsDeAllocateMatrix(y, numRatios, numParams);
+
+  // primePowerDiff has graphs that cross each other - that means that there are values for the
+  // parameter for which not all ratios are distinct - but we want them to be distict
+
+  // make an LinToExp mapping where p=0 means linear spacing, p=1 means exponential spacing 
+  // (lin-spacing of the logs) and in between, there's some intermediate setting (crossfade)
+
+  // f = i / (numRatios-1); // fraction 
+  // linVal = 1 + i / (numRatios-1);
+  // expVal = exp(linVal) / exp(2);
+  // mixVal = (1-p)*linVal + p*expVal;
+
+
 
 
   // try the self-similar interval splitting algorithm:
@@ -608,7 +645,7 @@ void ratioGenerator()
   //std::vector<double> a = intervalSplittingProto(100, 0.9, 2);
   std::vector<double> a = intervalSplittingProto(16, 0.75, 1);
   double mean = rsMean(a);;
-  rsPlotMarkers(&a[0], (int) a.size());
+  //rsPlotMarkers(&a[0], (int) a.size());
   // on the gui for the supersaw audio module, we should visualize the spread in a similar way
   // maybe with vertical lines instead of + markers - the visualization may or may not use a 
   // normalized interval - if it doesn't, it will also visualize the amount of spread ..maybe

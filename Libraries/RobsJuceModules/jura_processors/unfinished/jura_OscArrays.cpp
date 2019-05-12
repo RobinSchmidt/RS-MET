@@ -48,6 +48,7 @@ void BlepOscArrayModule::createParameters()
   cp->addStringValue("Prime Power",        (int)RK::primePower);        // 1
   cp->addStringValue("Prime Power Diff",   (int)RK::primePowerDiff );   // 2
   cp->addStringValue("Metallic",           (int)RK::metallic);          // 0
+  cp->addStringValue("LinToExp",           (int)RK::linToExp);
   cp->setDefaultValue((int)RK::primePowerDiff, true);
   // try to get rid of the explicit conversions to int here by introducing a template function
   // in ChoiceParameter that does this - but only if this doesn't lead to code bloat - figure this

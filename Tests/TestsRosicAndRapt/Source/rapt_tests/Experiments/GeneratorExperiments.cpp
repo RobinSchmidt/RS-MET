@@ -510,7 +510,7 @@ void superBlep()
 
 
   std::vector<rsUint32> primes(maxDensity+1);  // +1 because of the difference-of-primes based algos
-  rsFillPrimeTable(&primes[0], maxDensity+);
+  rsFillPrimeTable(&primes[0], maxDensity+1);
 
   typedef rsRatioGenerator<double>::RatioKind RK;
   rsRatioGenerator<double> ratGen;

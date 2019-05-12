@@ -3,7 +3,7 @@
 
 /** A collection of functions for basic handling 2-dimensional arrays (i.e. matrices). Fancy linear 
 algebra stuff is not included here - this is part of the math module. */
-// rename to rsMatrixTools
+// rename to rsMatrixTools ..and get rid of the rs prefixes in the function names
 
 class MatrixTools
 {
@@ -14,7 +14,8 @@ public:
   static void rsAllocateMatrix(T**& A, int N, int M);
 
   template<class T>
-  static void rsDeAllocateMatrix(T**& A, int N, int M); // rename to rsFreeMatrix
+  static void rsDeAllocateMatrix(T**& A, int N, int M); 
+  // rename to freeMatrix - ..and why is the M needed?
 
   template<class T>
   static void rsInitMatrix(T** A, int N, int M, T value = T(0));

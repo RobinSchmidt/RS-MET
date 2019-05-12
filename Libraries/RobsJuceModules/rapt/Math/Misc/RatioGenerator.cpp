@@ -76,12 +76,26 @@ void rsRatioGenerator<T>::fillRatioTable(T* r, int N)
   typedef RatioKind RK;
   switch(kind)
   {
-  case RK::metallic:       { for(int i=0; i<N; i++) r[i] = metallic(T(i)); sorted = true; } break;
+  case RK::metallic:       { for(int i=0; i<N; i++) r[i] = metallic(T(i), p1); sorted = true; } break;
   case RK::primePower:     { for(int i=0; i<N; i++) r[i] = primePower(i);  sorted = true; } break;
   case RK::primePowerDiff: { for(int i=0; i<N; i++) r[i] = primePowerDiff(i);             } break;
   case RK::rangeSplitSkewed: { rangeSplits(r, N, p1, 0); sorted = true; } break;
   case RK::rangeSplitOdd:    { rangeSplits(r, N, p1, 1); sorted = true; } break;
   case RK::rangeSplitEven:   { rangeSplits(r, N, p1, 2); sorted = true; } break;
+
+  case RK::linToExp:   
+  { 
+    for(int i = 0; i < N; i++)
+    {
+      T linVal = T(1) + T(i) / T(N-1);
+      T expVal = exp(linVal) / exp(2);      // optimize!
+      r[i]     = (T(1)-p1)*linVal + p1*expVal;
+      sorted = true;
+    }
+    //rangeSplits(r, N, p1, 2); sorted = true; 
+  } break;
+
+
   }
   if(!sorted)
     rsHeapSort(r, N); 
@@ -89,7 +103,7 @@ void rsRatioGenerator<T>::fillRatioTable(T* r, int N)
   //rsAssert(rsIsSortedStrictlyAscending(r, N)); // catch algorithmic flaws
 
   // have boolean options like invert (map to 1..2 and take reciprocal), reverse 
-  // (map to 0...1 and take 1-..)
+  // (map to 0...1 and take 1-..), extract frac part
 }
 
 

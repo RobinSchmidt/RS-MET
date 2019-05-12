@@ -27,7 +27,8 @@ public:
     // intSqrt,
     rangeSplitSkewed,
     rangeSplitOdd,
-    rangeSplitEven
+    rangeSplitEven,
+    linToExp            // morph between linear and exponential
   };
 
 
@@ -66,7 +67,11 @@ public:
   mathematical properties, like being the "most irrational" number possible in the sense that it's
   hardest to approximate by a continued fraction expansion, see here:
   https://www.youtube.com/watch?v=CaasbfdJdJg  */
-  static inline T metallic(T n) { return T(0.5) * (n + sqrt(n*n+T(4))); }
+  static inline T metallic(T n, T p = 0.5) 
+  { 
+    //return T(0.5) * (n + sqrt(n*n+T(4))); 
+    return T(0.5) * (n + pow(n*n+T(4), p) ); 
+  }
 
   /** p1-th power of n-th prime number where p1 is our first continuous parameter set by 
   setParameter1 */
