@@ -66,12 +66,8 @@ void rsOscArray<T>::updateAmplitudes()
 
   //T s = T(1.0) / sqrt(numOscs);              // scaler
   //T s = T(1.0) / numOscs;
-  T s = 1.0;
-  // for some strange reason, this doesn't work - sacling the amplitude by 1/sqrt(numOscs) is 
-  // theoretically correct and works well for the mono getSample function - but for the stereo 
-  // function, it doesn't work anymore (even with stereoSpread = 0) - the signal gets louder when 
-  // ramping up the density - even when scaling by 1/numOscs (without the sqrt), it still gets 
-  // louder - why?
+  T s = 2.0;
+
 
   //T evenAmp = s * rsCubicFadeIn(p); 
   //T oddAmp  = s * rsCubicFadeOut(p);
@@ -99,6 +95,8 @@ void rsOscArray<T>::updateAmplitudes()
     //ampsL[i] = ampsR[i] = s * rsCubicFadeIn(0.5);
     ampsL[i] = ampsR[i] = s * 0.5;  // test
   }
+  // there seems to be something wrong with that - when density = 0.5 and stereo-spread is +-1
+  // we have one saw at one side and two on the other
 
 
   // todo: apply bell curve, maybe we should treat even densities different from odd densities by

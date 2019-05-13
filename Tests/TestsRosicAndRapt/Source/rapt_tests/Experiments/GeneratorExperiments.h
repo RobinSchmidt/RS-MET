@@ -11,6 +11,7 @@ void blep();
 //void blamp();
 void polyBlep();
 void superBlep();
+void superSawStereo();
 void syncSweep();
 void syncPhasor();
 void syncPhasor2();

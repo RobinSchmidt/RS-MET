@@ -30,15 +30,15 @@ public:
     jassert(numChannels == 2);
     for(int n = 0; n < numSamples; n++)
     {
-      buf[0][n] = buf[1][n] = oscArrayCore.getSample();
-      //oscArrayCore.getSampleFrameStereo(&buf[0][n], &buf[1][n]);
+      //buf[0][n] = buf[1][n] = oscArrayCore.getSample();
+      oscArrayCore.getSampleFrameStereo(&buf[0][n], &buf[1][n]);
     }
   }
 
   virtual void processStereoFrame(double *left, double *right) override
   {
-    oscArrayCore.getSampleFrameStereo(left, right);
-    //*left = *right = oscArrayCore.getSample();
+    //oscArrayCore.getSampleFrameStereo(left, right);
+    *left = *right = oscArrayCore.getSample();
   }
 
   virtual void reset() override

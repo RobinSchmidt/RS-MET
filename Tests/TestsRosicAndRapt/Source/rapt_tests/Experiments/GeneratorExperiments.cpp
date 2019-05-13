@@ -500,9 +500,9 @@ void superBlep()
 {
   // Experimenting with the blep-based supersaw implementation...
 
-  int N = 500000;
+  int N = 2000;
   double sampleRate = 48000;
-  double freq = 2000;
+  double freq = 200;
 
   int maxDensity = 8;
 
@@ -526,21 +526,35 @@ void superBlep()
   osc.setReferenceIncrement(freq / sampleRate);
   osc.setMaxDensity(maxDensity);
   osc.setDetune(0.07);
-  osc.setDensity(8);
-  osc.setStereoSpread(0.5);
+  osc.setDensity(3);
+  osc.setStereoSpread(0.0);
 
 
   // produce output signal:
   std::vector<double> x(N);
-  for(int n = 0; n < N; n++)
+  //for(int n = 0; n < N; n++)
+  //  x[n] = osc.getSample();
+
+  // trying to figure out stereo spread loudness bug - alternatingly call getSample and 
+  // getSampleFrameStereo - with stereoSpread=0, the result should be the same - the even numbered
+  // samples use the mono function, the odd numbered samples use the stereo function - if something
+  // is wrong, we'll see the amplitude alternating between even and odd samples
+  rsArray::fillWithZeros(&x[0], N);
+  for(int n = 0; n < N; n += 2) {
+    double dummy = 0;
     x[n] = osc.getSample();
+    osc.getSampleFrameStereo(&x[n+1], &dummy);
+  }
+
+
+
 
   rsArray::normalize(&x[0], N);
 
 
   // plot:
-  //rsPlotVector(x);
-  rosic::writeToMonoWaveFile("SuperSaw.wav", &x[0], (int)x.size(), (int)sampleRate);
+  rsPlotVector(x);
+  //rosic::writeToMonoWaveFile("SuperSaw.wav", &x[0], (int)x.size(), (int)sampleRate);
 
 
 
@@ -628,6 +642,46 @@ void superBlep()
   //  with the distribution from range splitting but then apply a monotonic mapping function - 
   //  maybe something like the bipolar rational map ...maybe the unipolar version can be used
   //  to introduce skew - maybe have pre-skew -> contract/spread -> post-skew
+}
+
+void superSawStereo()
+{
+  // Testing the stereo spread algorithm by creating a stereo signal using getSampleFrameStereo 
+  // mixing it to mono and comparing it to what would be generated using getSample (the results 
+  // should be the same)
+
+  int N = 2000;
+
+  rosic::rsOscArrayPolyBlep1 osc;
+  osc.setSampleRate(44100);
+  osc.setFrequency(100*GOLDEN_RATIO);
+  osc.setDensity(5);
+  osc.setStereoSpread(0);
+  osc.setDetune(5.0);
+  osc.setInitialPhaseCoherence(1);
+
+
+  // produce output signals:
+  std::vector<double> xMono(N), xLeft(N), xRight(N), xMid(N), xSide(N);
+
+  // produce mono signal:
+  osc.reset();
+  for(int n = 0; n < N; n++)
+    xMono[n] = osc.getSample();
+
+  // produce stereo signals and ontain mid/side signals from them:
+  osc.reset();
+  rsArray::fillWithZeros(&xLeft[0],  N);
+  rsArray::fillWithZeros(&xRight[0], N);
+  for(int n = 0; n < N; n++)
+    osc.getSampleFrameStereo(&xLeft[n], &xRight[n]);
+  xMid  = 0.5 * (xLeft + xRight); // should we include a scale factor 1/2 or 1/sqrt(2)?
+  xSide = 0.5 * (xLeft - xRight);
+
+  rsPlotVectors(xMono, xMid);  // xMid should be equal to xMono
+  //rsPlotVectors(xMono, xLeft, xRight);
+
+  // xMid should be equal to xMono - but it works only for density=1
 }
 
 

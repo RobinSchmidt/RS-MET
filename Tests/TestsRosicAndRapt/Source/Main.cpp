@@ -106,7 +106,8 @@ int main(int argc, char* argv[])
   //blit();
   //blep();
   //polyBlep();
-  superBlep();
+  //superBlep();
+  superSawStereo();
   //syncSweep();
   //syncPhasor();
   //syncPhasor2();

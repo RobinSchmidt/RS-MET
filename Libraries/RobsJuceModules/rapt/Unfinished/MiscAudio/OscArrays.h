@@ -224,7 +224,8 @@ public:
       // doesn't hurt to accumulate zero-valued signals into the corrector, so the code is valid
       // with or without the "if"
     }
-    return amp * out;  
+    out *= amp;
+    return out;  
     // todo: scale the amplitude by 1/sqrt(numOscs) ..oh - but that factor should then also be 
     // applied to the stepAmp
   } 
@@ -239,18 +240,17 @@ public:
   {
     T stepDelay = T(0);   // delay of step discontinuity
     T stepAmp   = T(0);   // amplitude of step discontinuity
-    T out       = T(0);   // accumulator for (naive) output sample
     T amp = T(1) / sqrt(numOscs);
     for(int i = 0; i < numOscs; i++) {
-      out += oscs[i].getSampleSaw(incs[i], &stepDelay, &stepAmp);
+      T tmp = oscs[i].getSampleSaw(incs[i], &stepDelay, &stepAmp);
       if(stepAmp != T(0)) {
         blepL.prepareForStep(stepDelay, amp * stepAmp * ampsL[i]);
         blepR.prepareForStep(stepDelay, amp * stepAmp * ampsR[i]);
         // optimize - use only one blep object and simd (TTim is double, TSig is rsFloat64x2 for the 
         // blep
       }
-      *left  += amp * out * ampsL[i];
-      *right += amp * out * ampsR[i];
+      *left  += amp * tmp * ampsL[i];
+      *right += amp * tmp * ampsR[i];
     }
     *left  = blepL.getSample(*left);
     *right = blepR.getSample(*right);
