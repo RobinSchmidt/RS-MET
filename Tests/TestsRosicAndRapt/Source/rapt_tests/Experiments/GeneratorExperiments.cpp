@@ -700,13 +700,16 @@ void superSawStereo()
 
   osc.initAmpArrays(); osc.setDensity(1);  // ok
   osc.initAmpArrays(); osc.setDensity(2);  // ok
-  osc.initAmpArrays(); osc.setDensity(3);  // fail - equals 2
+  osc.initAmpArrays(); osc.setDensity(3);  // ok
   osc.initAmpArrays(); osc.setDensity(4);  // ok
   osc.initAmpArrays(); osc.setDensity(5);  // ok
   osc.initAmpArrays(); osc.setDensity(6);  // ok
-  osc.initAmpArrays(); osc.setDensity(7);  // fail - equals 6
+  osc.initAmpArrays(); osc.setDensity(7);  // ok
   osc.initAmpArrays(); osc.setDensity(8);  // ok
   int dummy = 0;
+  // it's a bit weird that 5 works - i'd expect the evens to work and odds to fail
+  // maybe we need another branch based on whether the midpoints is even or odd? for 5, the mid 
+  // (index) is even (2)
 }
 
 

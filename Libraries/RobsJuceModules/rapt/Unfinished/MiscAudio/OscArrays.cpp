@@ -69,30 +69,42 @@ void rsOscArray<T>::updateAmplitudes()
   T s = 2.0;
 
 
-  //T evenAmp = s * rsCubicFadeIn(p); 
-  //T oddAmp  = s * rsCubicFadeOut(p);
+  T evenAmp = s * rsCubicFadeIn(p); 
+  T oddAmp  = s * rsCubicFadeOut(p);
   // no - i think the cubic fade (approximating the const-power rule) is wrong - we need a linear 
   // fade because the left/right signals of a *single* osc is coherent - the const-power rule is 
   // only for uncorrelated signals - try it with a single saw - for which rule there's no gap in 
-  // the middle
+  // the middle - hmm - but sonically, the const power rule seems better - at least with 
+  // headphones -> try with loudspeakers
 
-  T evenAmp = s * p; 
-  T oddAmp  = s * (1-p);
+  //T evenAmp = s * p; 
+  //T oddAmp  = s * (1-p);
+
+
   if(rsIsOdd(numOscs)) {                         // odd density - pan middle osc to center
     int mid = numOscs/2;
-    ampsL[mid] = ampsR[mid] = s * 0.5;
     for(int i = 0; i < mid; i += 2) {
       ampsL[i]   = evenAmp;
       ampsR[i]   = oddAmp;
       ampsL[i+1] = oddAmp;
       ampsR[i+1] = evenAmp;
     }
-    for(int i = 1; i < mid; i += 2) {
-      ampsL[mid+i]   = evenAmp;
-      ampsR[mid+i]   = oddAmp;
-      ampsL[mid+i+1] = oddAmp;
-      ampsR[mid+i+1] = evenAmp;
+    if(rsIsOdd(mid)) {
+      for(int i = 0; i < mid; i += 2) {
+        ampsL[mid+i]   = evenAmp;
+        ampsR[mid+i]   = oddAmp;
+        ampsL[mid+i+1] = oddAmp;
+        ampsR[mid+i+1] = evenAmp;
+      }
+    } else {
+      for(int i = 0; i <= mid; i += 2) {
+        ampsL[mid+i+1] = evenAmp;
+        ampsR[mid+i+1] = oddAmp;
+        ampsL[mid+i]   = oddAmp;
+        ampsR[mid+i]   = evenAmp;
+      }
     }
+    ampsL[mid] = ampsR[mid] = s * 0.5;
   } else {                                       // even density - pan all oscs alternatingly
     for(int i = 0; i < numOscs; i += 2) {
       ampsL[i]   = evenAmp;

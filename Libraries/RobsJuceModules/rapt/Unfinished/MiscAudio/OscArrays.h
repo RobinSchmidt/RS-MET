@@ -19,7 +19,8 @@ public:
   should probably be called once at startup time. */
   void setMaxDensity(int newMaximum)
   {
-    incs.resize(newMaximum);
+    rsAssert(rsIsEven(newMaximum)); // must be even to avoid access violations in amp array 
+    incs.resize(newMaximum);        // computations for stereo spread
     ampsL.resize(newMaximum);
     ampsR.resize(newMaximum);
     numOscs = rsMin(numOscs, newMaximum);
