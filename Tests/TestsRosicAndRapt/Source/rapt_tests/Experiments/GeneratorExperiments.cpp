@@ -504,7 +504,7 @@ void superBlep()
   double sampleRate = 48000;
   double freq = 2000;
 
-  int maxDensity = 32;
+  int maxDensity = 8;
 
   // create and set up the osc object:
 
@@ -526,7 +526,8 @@ void superBlep()
   osc.setReferenceIncrement(freq / sampleRate);
   osc.setMaxDensity(maxDensity);
   osc.setDetune(0.07);
-  osc.setDensity(7);
+  osc.setDensity(8);
+  osc.setStereoSpread(0.5);
 
 
   // produce output signal:

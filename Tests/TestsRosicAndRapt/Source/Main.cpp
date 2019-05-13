@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();
-  ratioGenerator();
+  //ratioGenerator();
   //ratiosLargeLcm();
   //ratiosMetallic();
   //sinCosTable();
@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
   //blit();
   //blep();
   //polyBlep();
-  //superBlep();
+  superBlep();
   //syncSweep();
   //syncPhasor();
   //syncPhasor2();

@@ -63,17 +63,44 @@ template<class T>
 void rsOscArray<T>::updateAmplitudes()
 {
   T p = T(0.5) * (stereoSpread + T(1));
-  T s = T(1.0) / sqrt(numOscs);              // scaler
-  T evenAmp = s * rsCubicFadeIn(p); 
-  T oddAmp  = s * rsCubicFadeOut(p);
+
+  //T s = T(1.0) / sqrt(numOscs);              // scaler
+  //T s = T(1.0) / numOscs;
+  T s = 1.0;
+  // for some strange reason, this doesn't work - sacling the amplitude by 1/sqrt(numOscs) is 
+  // theoretically correct and works well for the mono getSample function - but for the stereo 
+  // function, it doesn't work anymore (even with stereoSpread = 0) - the signal gets louder when 
+  // ramping up the density - even when scaling by 1/numOscs (without the sqrt), it still gets 
+  // louder - why?
+
+  //T evenAmp = s * rsCubicFadeIn(p); 
+  //T oddAmp  = s * rsCubicFadeOut(p);
+  // no - i think the cubic fade (approximating the const-power rule) is wrong - we need a linear 
+  // fade because the left/right signals of a *single* osc is coherent - the const-power rule is 
+  // only for uncorrelated signals - try it with a single saw - for which rule there's no gap in 
+  // the middle
+
+  // for test:
+  T evenAmp = s * p; 
+  T oddAmp  = s * (1-p);
+
   //if(stereoSpread < T(0))
   //  rsSwap(evenAmp, oddAmp);
-  for(int i = 0; i < getMaxDensity(); i += 2) {
+  for(int i = 0; i < numOscs; i += 2) {
     ampsL[i]   = evenAmp;
     ampsR[i]   = oddAmp;
     ampsL[i+1] = oddAmp;
     ampsR[i+1] = evenAmp;
   }
+
+  // for odd densities, pan middle osc to the center:
+  if(rsIsOdd(numOscs)) {
+    int i = numOscs/2;
+    //ampsL[i] = ampsR[i] = s * rsCubicFadeIn(0.5);
+    ampsL[i] = ampsR[i] = s * 0.5;  // test
+  }
+
+
   // todo: apply bell curve, maybe we should treat even densities different from odd densities by
   // having one saw in the middle in the odd case? -but hwo would we handle continuous density 
   // then?

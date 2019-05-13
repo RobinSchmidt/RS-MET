@@ -240,16 +240,17 @@ public:
     T stepDelay = T(0);   // delay of step discontinuity
     T stepAmp   = T(0);   // amplitude of step discontinuity
     T out       = T(0);   // accumulator for (naive) output sample
+    T amp = T(1) / sqrt(numOscs);
     for(int i = 0; i < numOscs; i++) {
       out += oscs[i].getSampleSaw(incs[i], &stepDelay, &stepAmp);
       if(stepAmp != T(0)) {
-        blepL.prepareForStep(stepDelay, stepAmp * ampsL[i]);
-        blepR.prepareForStep(stepDelay, stepAmp * ampsR[i]);
+        blepL.prepareForStep(stepDelay, amp * stepAmp * ampsL[i]);
+        blepR.prepareForStep(stepDelay, amp * stepAmp * ampsR[i]);
         // optimize - use only one blep object and simd (TTim is double, TSig is rsFloat64x2 for the 
         // blep
       }
-      *left  += out * ampsL[i];
-      *right += out * ampsR[i];
+      *left  += amp * out * ampsL[i];
+      *right += amp * out * ampsR[i];
     }
     *left  = blepL.getSample(*left);
     *right = blepR.getSample(*right);
