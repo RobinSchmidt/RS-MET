@@ -25,6 +25,8 @@ header files that the compiler may be using. */
 
 #include "Experiments/MiscExperiments.cpp"
 
+#include "Misc/TestClasses.cpp"
+
 
 
 #include "RaptInstantiations.cpp"

@@ -76,27 +76,39 @@ void rsOscArray<T>::updateAmplitudes()
   // only for uncorrelated signals - try it with a single saw - for which rule there's no gap in 
   // the middle
 
-  // for test:
   T evenAmp = s * p; 
   T oddAmp  = s * (1-p);
-
-  //if(stereoSpread < T(0))
-  //  rsSwap(evenAmp, oddAmp);
-  for(int i = 0; i < numOscs; i += 2) {
-    ampsL[i]   = evenAmp;
-    ampsR[i]   = oddAmp;
-    ampsL[i+1] = oddAmp;
-    ampsR[i+1] = evenAmp;
+  if(rsIsOdd(numOscs)) {                         // odd density - pan middle osc to center
+    int mid = numOscs/2;
+    ampsL[mid] = ampsR[mid] = s * 0.5;
+    for(int i = 0; i < mid; i += 2) {
+      ampsL[i]   = evenAmp;
+      ampsR[i]   = oddAmp;
+      ampsL[i+1] = oddAmp;
+      ampsR[i+1] = evenAmp;
+    }
+    for(int i = 1; i < mid; i += 2) {
+      ampsL[mid+i]   = evenAmp;
+      ampsR[mid+i]   = oddAmp;
+      ampsL[mid+i+1] = oddAmp;
+      ampsR[mid+i+1] = evenAmp;
+    }
+  } else {                                       // even density - pan all oscs alternatingly
+    for(int i = 0; i < numOscs; i += 2) {
+      ampsL[i]   = evenAmp;
+      ampsR[i]   = oddAmp;
+      ampsL[i+1] = oddAmp;
+      ampsR[i+1] = evenAmp;
+    }
   }
 
-  // for odd densities, pan middle osc to the center:
-  if(rsIsOdd(numOscs)) {
-    int i = numOscs/2;
-    //ampsL[i] = ampsR[i] = s * rsCubicFadeIn(0.5);
-    ampsL[i] = ampsR[i] = s * 0.5;  // test
-  }
-  // there seems to be something wrong with that - when density = 0.5 and stereo-spread is +-1
-  // we have one saw at one side and two on the other
+
+
+  // there seems to be something wrong with that - when density = 3 and stereo-spread is +-1
+  // we have one saw at one side and two on the other - ok - the middle osc is indeed panned center
+  // but the outer ones are wrong - the amp arrays are: L: 2,1,2, R: 0,1,0 but we want 
+  // L: 0,1,2, R: 2,1,0 - we need to start at the middle and alternate the amplitudes outward 
+  // instead of starting at 0 and alternate upward
 
 
   // todo: apply bell curve, maybe we should treat even densities different from odd densities by

@@ -335,6 +335,9 @@
     <Filter Include="JUCE Modules\rs_testing\Experiments">
       <UniqueIdentifier>{A8B75D83-6D63-ADD2-60F4-790472F06420}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\rs_testing\Misc">
+      <UniqueIdentifier>{4B3A8A56-2AEE-B886-0E20-9D10151EF2CC}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\rs_testing\Prototypes\FilterDesign">
       <UniqueIdentifier>{F3FF13FC-5BC0-1CA3-7A6D-BD0DB579A1BB}</UniqueIdentifier>
     </Filter>
@@ -2499,6 +2502,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Experiments\MiscExperiments.cpp">
       <Filter>JUCE Modules\rs_testing\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Misc\TestClasses.cpp">
+      <Filter>JUCE Modules\rs_testing\Misc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\ComplementaryFilters.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
@@ -4931,6 +4937,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Experiments\MiscExperiments.h">
       <Filter>JUCE Modules\rs_testing\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Misc\TestClasses.h">
+      <Filter>JUCE Modules\rs_testing\Misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\ComplementaryFilters.h">
       <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>

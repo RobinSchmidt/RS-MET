@@ -652,12 +652,14 @@ void superSawStereo()
 
   int N = 2000;
 
-  rosic::rsOscArrayPolyBlep1 osc;
+  //rosic::rsOscArrayPolyBlep1 osc;
+  TestOscArrayPolyBlep osc;
+  osc.setMaxDensity(8);    // so the arrays don't get too long in the debugger
   osc.setSampleRate(44100);
-  osc.setFrequency(100*GOLDEN_RATIO);
-  osc.setDensity(5);
-  osc.setStereoSpread(0);
-  osc.setDetune(5.0);
+  osc.setFrequency(300*GOLDEN_RATIO);
+  osc.setDensity(4);
+  osc.setStereoSpread(1);
+  osc.setDetunePercent(5.0);
   osc.setInitialPhaseCoherence(1);
 
 
@@ -675,13 +677,36 @@ void superSawStereo()
   rsArray::fillWithZeros(&xRight[0], N);
   for(int n = 0; n < N; n++)
     osc.getSampleFrameStereo(&xLeft[n], &xRight[n]);
-  xMid  = 0.5 * (xLeft + xRight); // should we include a scale factor 1/2 or 1/sqrt(2)?
+  xMid  = 0.5 * (xLeft + xRight);
   xSide = 0.5 * (xLeft - xRight);
+  // times 0.5, because it works as follows: when stereoSpread is set to zero, the left and right 
+  // outputs are equal to output that the mono version produces - so when we add the two, we get a 
+  // factor of two which we should compensate for here
 
-  rsPlotVectors(xMono, xMid);  // xMid should be equal to xMono
-  //rsPlotVectors(xMono, xLeft, xRight);
+  //rsPlotVectors(xMono, xMid, xMono-xMid);  // xMid should be equal to xMono
+  //rsPlotVectors(xLeft, xRight);
 
-  // xMid should be equal to xMono - but it works only for density=1
+  // we want the stereo spread work as follows - let stereoSpread = 1, for increasing densities, the 
+  // left and right amplitude arrays should look like (underscore _ stands for: doesn't matter):
+  // D = 1: L = 1,_,_,_,_,_,_,_   R = 1,_,_,_,_,_,_,_
+  // D = 2: L = 2,0,_,_,_,_,_,_   R = 0,2,_,_,_,_,_,_
+  // D = 3: L = 2,1,0,_,_,_,_,_   R = 0,1,2,_,_,_,_,_
+  // D = 4: L = 2,0,2,0,_,_,_,_   R = 0,2,0,2,_,_,_,_
+  // D = 5: L = 2,0,1,2,0,_,_,_   R = 0,2,1,0,2,_,_,_
+  // D = 6: L = 2,0,2,0,2,0,_,_   R = 0,2,0,2,0,2,_,_
+  // D = 7: L = 2,0,2,1,0,2,0,_   R = 0,2,0,1,2,0,2,_
+  // D = 8: L = 2,0,2,0,2,0,2,0   R = 0,2,0,2,0,2,0,2
+  // and for stereoSpread = -1, the roles of L and R should be reversed
+
+  osc.initAmpArrays(); osc.setDensity(1);  // ok
+  osc.initAmpArrays(); osc.setDensity(2);  // ok
+  osc.initAmpArrays(); osc.setDensity(3);  // fail - equals 2
+  osc.initAmpArrays(); osc.setDensity(4);  // ok
+  osc.initAmpArrays(); osc.setDensity(5);  // ok
+  osc.initAmpArrays(); osc.setDensity(6);  // ok
+  osc.initAmpArrays(); osc.setDensity(7);  // fail - equals 6
+  osc.initAmpArrays(); osc.setDensity(8);  // ok
+  int dummy = 0;
 }
 
 

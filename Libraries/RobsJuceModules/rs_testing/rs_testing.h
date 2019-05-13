@@ -46,5 +46,7 @@ using namespace RAPT;
 
 #include "Experiments/MiscExperiments.h"
 
+#include "Misc/TestClasses.h"
+
 
 #endif // #ifndef RS_TESTING_H_INCLUDED
