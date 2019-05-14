@@ -12,6 +12,7 @@ void blep();
 void polyBlep();
 void superBlep();
 void superSawStereo();
+void twoPieceOsc();
 void syncSweep();
 void syncPhasor();
 void syncPhasor2();

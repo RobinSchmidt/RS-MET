@@ -696,7 +696,8 @@ void superSawStereo()
   // D = 6: L = 2,0,2,0,2,0,_,_   R = 0,2,0,2,0,2,_,_
   // D = 7: L = 2,0,2,1,0,2,0,_   R = 0,2,0,1,2,0,2,_
   // D = 8: L = 2,0,2,0,2,0,2,0   R = 0,2,0,2,0,2,0,2
-  // and for stereoSpread = -1, the roles of L and R should be reversed
+  // and for stereoSpread = -1, the roles of L and R should be reversed - these numbers are only 
+  // valid fo a linear pan - but currently an (approximate) contant power law is used
 
   osc.initAmpArrays(); osc.setDensity(1);  // ok
   osc.initAmpArrays(); osc.setDensity(2);  // ok
@@ -707,11 +708,98 @@ void superSawStereo()
   osc.initAmpArrays(); osc.setDensity(7);  // ok
   osc.initAmpArrays(); osc.setDensity(8);  // ok
   int dummy = 0;
-  // it's a bit weird that 5 works - i'd expect the evens to work and odds to fail
-  // maybe we need another branch based on whether the midpoints is even or odd? for 5, the mid 
-  // (index) is even (2)
 }
 
+// computes algorithm parameters for the two-pice oscillator from user parameters
+// pulse-width: -1..+1, sawVsSquare: -1..+1
+void getTwoPieceAlgoParams(double pulseWidth, double sawVsSquare,
+  double& h, double& a1, double& b1, double& a2, double& b2)
+{
+  typedef RAPT::rsBlepReadyOscBase<double> Osc;
+
+  double d = 0.5; // preliminary - todo: compute from pulseWidth
+  h = 0.5; // preliminary - todo: compute from pulse-width
+
+
+  double a1u, b1u, a2u, b2u, a1d, b1d, a2d, b2d;
+  a1u = a2u = +2.0;      // 1st and 2nd segment slopes for saw-up
+  a1d = a2d = -2.0;      // 1st and 2nd segment slopes for saw-down
+  b1u = b2u = -1.0 - d;  // 1st and 2nd segment offsets for saw-up
+  b1d = b2d = +1.0 - d;  // 1st and 2nd segment offsets for saw-down
+  // shifted saw-up:    x(t) =  2*(t-d/2) - 1 =  2*t - d - 1
+  // shifted saw-down:  x(t) = -2*(t+d/2) + 1 = -2*t - d + 1
+
+
+  double s = 0.5 * (sawVsSquare + 1); // convert shape parameter from -1..+1 to 0..1
+  //s = 0; // test
+  double wu = 1-s, wd = s;            // weights for up/down coeffs
+  a1 = wu*a1u + wd*a1d;
+  a2 = wu*a2u + wd*a2d;
+  b1 = wu*b1u + wd*b1d;
+  b2 = wu*b2u + wd*b2d;
+}
+
+void twoPieceOsc()
+{
+  // Experiments with an oscillator waveform consisting of two linear segments
+
+  // x1(t) = a1 * t + b1    for t in 0.0...0.5
+  // x2(t) = a2 * t + b2    for t in 0.5...1.0
+  //
+  // this allows for sawtooth (up and down), triangle and square waves:
+  // saw-up:    x1(t) = x2(t) =  2*t - 1
+  // saw-down:  x1(t) = x2(t) = -2*t + 1
+  // square:    x1(t) = -1, x2(t) = +1
+  // triangle:  x1(t) = 4*t - 1, x2(t) = -4*t + 3
+  //
+  // a pulse-wave can be obtained by using a saw-up and saw-down and adding them up. one of them 
+  // has to be shifted by half a cycle to obtain a square - other shifts will give other 
+  // pulse-widths. problem: if they are exactly in phase, they will sum to zero, good: they will 
+  // naturally produce a DC-free pulse-wave (because none of them has any DC). we could provide two 
+  // user paremeters: one for the shift (determining the pulse-width) and one for the mix of the 
+  // two saws (-1: saw-down, 0: square/pulse, +1: saw up) - problem: at -1 and +1 the "pulse-width"
+  // paremeter would do nothing
+  // potential problem when modulating the midpoint h: we may miss a blep - solution: keep the old 
+  // h and update to the new value in getSample - with the new and the old value, we can check 
+  // against both and if there's a transition for any of the two, we can determine the exact 
+  // instant of the step (maybe by some line equation or something)
+
+
+  int N = 1000;
+  double inc = 0.01;
+
+  RAPT::rsBlepReadyOsc<double> osc;
+  osc.setPhaseIncrement(inc);
+
+  double a1, b1, a2, b2, h;
+  h = 0.5;
+  //a1 = a2 = +2; b1 = b2 = -1;      // saw up
+  a1 = a2 = -2; b1 = b2 = +1;      // saw down
+  //a1 = 0; b1 = -1; a2 = 0; b2 = 1; // square (low first) - but here it starts high (start-phase wrong?)
+
+  // user parameters at start and end:
+  double pw1 = -1, pw2 = +1;    // pulse-width
+  double sh1 =  0, sh2 =  0;    // shape: -1: saw-down, 0: square/pulse, +1: saw-up
+
+
+  double dummy;
+  std::vector<double> x(N);
+  for(int n = 0; n < N; n++)
+  {
+    double p = n / (N-1.0);
+    double pw = rsLinToLin(p, 0.0, 1.0, pw1, pw2);
+    double sh = rsLinToLin(p, 0.0, 1.0, sh1, sh2);
+    getTwoPieceAlgoParams(pw, sh, h, a1, b1, a2, b2);
+
+
+    x[n] = osc.getSampleTwoPiece(&dummy, &dummy, &dummy, h, a1, b1, a2, b2);
+  }
+
+  // todo: create a square/pulse wave by using a mix of saw-up/saw-down (for square, they must have
+  // a phase-shift of 90°)
+
+  rsPlotVector(x);
+}
 
 
 // maybe move to test-signal generation

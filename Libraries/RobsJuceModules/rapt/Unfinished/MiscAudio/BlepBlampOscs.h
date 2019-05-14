@@ -36,18 +36,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-
-
-
   inline T getPhase()          const { return pos; }
-
-
-
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
-
 
   /* Produces one sawtooth wave output sample at a time using a phase-increment given by inc and 
   assigns the values stepDelay, stepAmp according to any step discontinuity that may have occured 
@@ -78,7 +71,6 @@ public:
     // should additionally store uncorrected samples for such stepsize estimation tasks
 
 
-
     // Figure out, if (and when) a wrap-around occured. In such case, we produce a step 
     // discontinuity of size -2
     if(pos < inc) {                    // or should it be <= ?
@@ -90,7 +82,6 @@ public:
 
     return sawValue(pos);
   }
-
 
   inline T getSampleSquare(T inc, T* stepDelay, T* stepAmp)
   {
@@ -110,7 +101,6 @@ public:
     return squareValue(pos);
   }
 
-
   inline T getSampleTriangle(T inc, T* cornerDelay, T* cornerAmp)  
   {
     *cornerAmp = T(0);
@@ -129,6 +119,28 @@ public:
     return triangleValue(pos);
   }
 
+  /** Not yet finished!
+  A waveform consisting of two linear pieces:
+  x1(t) = a1*t + b1   for t <  h
+  x2(t) = a2*t + b2   for t >= h
+  this allows for sawtooth (up and down), triangle and square waves:
+  saw-up:    x1(t) = x2(t) =  2*t - 1
+  saw-down:  x1(t) = x2(t) = -2*t + 1
+  square:    x1(t) = -1, x2(t) = +1
+  triangle:  x1(t) = 4*t - 1, x2(t) = -4*t + 3  */
+  inline T getSampleTwoPiece(T inc, T* stepCornerDelay, T* stepAmp, T* cornerAmp, 
+    T h, T a1, T b1, T a2, T b2)
+  {
+    *stepAmp   = T(0);
+    *cornerAmp = T(0);
+    updatePhase(inc);
+
+    // prepare blep and blamp info:
+    //...
+
+    return twoPieceValue(pos, h, a1, b1, a2, b2);
+  }
+
   /** Resets the phase. You should pass a start-phase and a phase-increment. The increment is 
   needed because we increment the phase before producing a sample in getSample which implies that 
   we need to reset the phase to the desired start-phase minus the increment in an reset in order to
@@ -144,6 +156,7 @@ public:
   {
     return T(2) * pos - T(1);
   }
+  // rename to sawUpValue
 
   /** Returns the value of a square wave at given position in [0,1). */
   static inline T squareValue(T pos)
@@ -162,6 +175,16 @@ public:
     else
       return (T(1) - T(4) * (pos-T(0.5)));
   }
+  // maybe invoke the twoPieceValue function from sawValue/squareValue/triangleValue
+  // add a sawDown function
+
+  static inline T twoPieceValue(T pos, T h, T a1, T b1, T a2, T b2)
+  {
+    if(pos < h)
+      return a1 * pos + b1;
+    else
+      return a2 * pos + b2;
+  }
 
   inline void updatePhase(T inc)
   {
@@ -176,6 +199,7 @@ public:
     while( phase >= T(1) )
       phase -= T(1);
   }
+
 
 protected:
 
@@ -202,6 +226,8 @@ public:
 
   inline T getPhaseIncrement() const { return inc; }
 
+
+
   inline T getSampleSaw(T* stepDelay, T* stepAmp) 
   { 
     return rsBlepReadyOscBase<T>::getSampleSaw(inc, stepDelay, stepAmp);
@@ -215,6 +241,13 @@ public:
   inline T getSampleTriangle(T* cornerDelay, T* cornerAmp) 
   { 
     return rsBlepReadyOscBase<T>::getSampleTriangle(inc, cornerDelay, cornerAmp);
+  }
+
+  inline T getSampleTwoPiece(T* stepCornerDelay, T* stepAmp, T* cornerAmp,
+    T h, T a1, T b1, T a2, T b2)
+  {
+    return rsBlepReadyOscBase<T>::getSampleTwoPiece(
+      inc, stepCornerDelay, stepAmp, cornerAmp, h, a1, b1, a2, b2);
   }
 
   inline void resetPhase(T start = T(0))
@@ -297,7 +330,9 @@ see: https://www.desmos.com/calculator/weda63qpdr for saws and triangle
  flat sections) which would make anti-aliasing about two times more expensive (it doubles the 
  number required of bleps/blamps)
 -but from a perceptual perspective, having saw-vs-square in one user parameter and another softness
- parameter would be more desirable
+ parameter would be more desirable - the softness is less important because similar effects can be 
+ obtained by a 1st order lowpass - but with sync, it's a different story - we want to sync triangle 
+ waves
 
 
 
