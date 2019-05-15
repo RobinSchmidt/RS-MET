@@ -116,6 +116,7 @@ Ideas:
    https://hack.org/mc/writings/hackerdom/hakmem/cf.html
    https://crypto.stanford.edu/pbc/notes/contfrac/compute.html
    https://github.com/mjdominus/cf
+   https://github.com/mjdominus/cf/blob/master/cf_arith.c
   -metallic ratio rn for integer n is given by (n + sqrt(n^2+4))/2 - so the ratio of two
    metallic ratios for integers m, n is: rn/rm = (n + sqrt(n^2+4)) / (m + sqrt(m^2+4))
    ...maybe obtain the continued fraction expansion of these numerically and see, if we get small

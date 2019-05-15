@@ -23,8 +23,8 @@ public:
 
 /** Baseclass for custom painting of buttons. In a concrete subclass, you override the
 paintButton method to actually paint the button. To assign a custom painter to a button, you would
-call myButton->setPainter(myButtonPainter) where myButtonPainter is asumed to be an object of your
-RButtonPainter subclass. */
+call myButton->setPainter(myButtonPainter) where myButtonPainter is asumed to be a pointer to an 
+object of your RButtonPainter subclass. */
 
 class JUCE_API RButtonPainter
 {

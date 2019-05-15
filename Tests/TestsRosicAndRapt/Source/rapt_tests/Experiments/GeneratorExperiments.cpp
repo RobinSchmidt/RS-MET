@@ -739,14 +739,63 @@ void getTwoPieceAlgoParams(double pulseWidth, double sawVsSquare,
   b2 = wu*b2u + wd*b2d;
 }
 
+
+void getTwoPieceAlgoParams2(double slope, double slopeDiff, double h,
+  double& a1, double& b1, double& a2, double& b2)
+{
+  double s = slope;
+  double d = slopeDiff;
+
+  a1 = (s+d) / h;
+  a2 = (s-d) / h;
+
+  double a12 = a1*a1, a22 = a2*a2;
+  double h2 = h*h, h3 = h2*h, h4 = h2*h2, h5 = h3*h2;
+
+  double r = sqrt(3*(a12-a22)*h5 - 18*a22*h3 - 3*(a12-4*a22)*h4 +  6*(2*a22-3)*h2 - 3*(a22-6)*h);
+  // isnide the sqrt is a 5th order polynomial in h - maybe evaluate via Horner scheme
+
+  b1 = -1./6 * (3*a1*h2        + r) / h;
+  b2 = -1./6 * (3*a2*h2 - 3*a2 + r) / (h-1);
+}
+/*
+given a1,a2 and applying the constraints of no DC and energy = 1/2 gives two solutions for b1,b2 via
+sage:
+
+b1 == -1/6*(3*a1*h^2        + sqrt(3*(a1^2 - a2^2)*h^5 - 18*a2^2*h^3 - 3*(a1^2 - 4*a2^2)*h^4 + 6*(2*a2^2 - 3)*h^2 - 3*(a2^2 - 6)*h))/h, 
+b2 == -1/6*(3*a2*h^2 - 3*a2 + sqrt(3*(a1^2 - a2^2)*h^5 - 18*a2^2*h^3 - 3*(a1^2 - 4*a2^2)*h^4 + 6*(2*a2^2 - 3)*h^2 - 3*(a2^2 - 6)*h))/(h-1) 
+
+b1 == -1/6*(3*a1*h^2        - sqrt(3*(a1^2 - a2^2)*h^5 - 18*a2^2*h^3 - 3*(a1^2 - 4*a2^2)*h^4 + 6*(2*a2^2 - 3)*h^2 - 3*(a2^2 - 6)*h))/h, 
+b2 == -1/6*(3*a2*h^2 - 3*a2 - sqrt(3*(a1^2 - a2^2)*h^5 - 18*a2^2*h^3 - 3*(a1^2 - 4*a2^2)*h^4 + 6*(2*a2^2 - 3)*h^2 - 3*(a2^2 - 6)*h))/(h-1)
+
+the input was:
+
+var("x a1 b1 a2 b2 h E")
+y1(x) = a1*x + b1  # 1st segment
+y2(x) = a2*x + b2  # 2nd segment
+A = integral( y1(x),    x, 0, h) + integral( y2(x),    x, h, 1) # signed area
+E = integral((y1(x))^2, x, 0, h) + integral((y2(x))^2, x, h, 1) # energy
+# gives:
+# A = 1/2*a1*h^2 - 1/2*a2*h^2 + b1*h - b2*h + 1/2*a2 + b2
+# E = 1/3*a1^2*h^3 - 1/3*a2^2*h^3 + a1*b1*h^2 - a2*b2*h^2 
+#     + b1^2*h - b2^2*h + 1/3*a2^2 + a2*b2 + b2^2
+# A should be zero (no DC) and E should be 1/2 (energy of square-wave with
+# amplitude 1/2), so we get two equations and solve them for b1,b2:
+eq1 = 0   == 1/2*a1*h^2 - 1/2*a2*h^2 + b1*h - b2*h + 1/2*a2 + b2
+eq2 = 1/2 == 1/3*a1^2*h^3 - 1/3*a2^2*h^3 + a1*b1*h^2 - a2*b2*h^2 + b1^2*h - b2^2*h + 1/3*a2^2 + a2*b2 + b2^2
+solve([eq1,eq2],[b1,b2])
+
+*/
+
+
 void twoPieceOsc()
 {
   // Experiments with an oscillator waveform consisting of two linear segments
 
-  // x1(t) = a1 * t + b1    for t in 0.0...0.5
-  // x2(t) = a2 * t + b2    for t in 0.5...1.0
+  // x1(t) = a1 * t + b1    for t in 0...h
+  // x2(t) = a2 * t + b2    for t in h...1
   //
-  // this allows for sawtooth (up and down), triangle and square waves:
+  // this allows for sawtooth (up and down), triangle and square waves (h=0.5):
   // saw-up:    x1(t) = x2(t) =  2*t - 1
   // saw-down:  x1(t) = x2(t) = -2*t + 1
   // square:    x1(t) = -1, x2(t) = +1
@@ -763,6 +812,20 @@ void twoPieceOsc()
   // h and update to the new value in getSample - with the new and the old value, we can check 
   // against both and if there's a transition for any of the two, we can determine the exact 
   // instant of the step (maybe by some line equation or something)
+
+  // We may use a mix of phase-shifted saw-up and saw-down waves to obtain all sorts of pulse
+  // waves. The equation is
+  // y1(t) =  2 * wrap(t - d/2) - 1    saw-up
+  // y2(t) = -2 * wrap(t + d/2) + 1    saw-down
+  // y(t)  = (1-b)*y1 + b*y2           mix-of-saws
+  // where "wrap" means wrap-into-interval 0..1, see also here:
+  // https://www.desmos.com/calculator/wbot9ibar5
+  // Where we have two user parameters d and b. d determines the phase-offset between the two saws 
+  // and is applied symettrically, halfway to each of the saws. b is the mixing cofficient. At b=0.5
+  // There are two transition points (step discontinuities) at d/2 and 1-d/2.
+
+  // But maybe it's better to let the user set h and the (appropriately scaled) slope at time zero.
+
 
 
   int N = 1000;
@@ -789,7 +852,7 @@ void twoPieceOsc()
     double p = n / (N-1.0);
     double pw = rsLinToLin(p, 0.0, 1.0, pw1, pw2);
     double sh = rsLinToLin(p, 0.0, 1.0, sh1, sh2);
-    getTwoPieceAlgoParams(pw, sh, h, a1, b1, a2, b2);
+    //getTwoPieceAlgoParams(pw, sh, h, a1, b1, a2, b2);
 
 
     x[n] = osc.getSampleTwoPiece(&dummy, &dummy, &dummy, h, a1, b1, a2, b2);
