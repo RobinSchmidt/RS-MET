@@ -740,27 +740,33 @@ void getTwoPieceAlgoParams(double pulseWidth, double sawVsSquare,
 }
 
 
-void getTwoPieceAlgoParams2(double slope, double slopeDiff, double h,
+void getTwoPieceAlgoParams2(double h, double slope, double slopeDiff, 
   double& a1, double& b1, double& a2, double& b2)
 {
   double s = slope;
   double d = slopeDiff;
 
   a1 = (s+d) / h;
-  a2 = (s-d) / h;
+  a2 = (s-d) / h; 
+  // how about using 1-h as denominator in the 2nd equation as alternative? ..and maybe an overall 
+  // factor of 2? ...that wouldn't change any ofe the computations below, btw. - or a normalization
+  // by peak amplitude rather than energy? maybe the formulas would come out simpler? maybe provide
+  // different versions of the user-to-algo parameter mapping (also including the mix-of-two-saws 
+  // approach) and make them static member functions of rsBlepReadyOsc(Base), so client code can 
+  // select, which control scheme it wants to use
 
   double a12 = a1*a1, a22 = a2*a2;
   double h2 = h*h, h3 = h2*h, h4 = h2*h2, h5 = h3*h2;
 
-  double r = sqrt(3*(a12-a22)*h5 - 18*a22*h3 - 3*(a12-4*a22)*h4 +  6*(2*a22-3)*h2 - 3*(a22-6)*h);
-  // isnide the sqrt is a 5th order polynomial in h - maybe evaluate via Horner scheme
+  double r = sqrt(3*(a12-a22)*h5 - 18*a22*h3 - 3*(a12-4*a22)*h4 + 6*(2*a22-3)*h2 - 3*(a22-6)*h);
+  // inside the sqrt is a 5th order polynomial in h - maybe evaluate via Horner scheme
 
   b1 = -1./6 * (3*a1*h2        + r) / h;
   b2 = -1./6 * (3*a2*h2 - 3*a2 + r) / (h-1);
 }
 /*
-given a1,a2 and applying the constraints of no DC and energy = 1/2 gives two solutions for b1,b2 via
-sage:
+given a1,a2 and applying the constraints of no DC and energy = 1/2 (maybe we should use 1/4?) gives
+two solutions for b1,b2 via sage:
 
 b1 == -1/6*(3*a1*h^2        + sqrt(3*(a1^2 - a2^2)*h^5 - 18*a2^2*h^3 - 3*(a1^2 - 4*a2^2)*h^4 + 6*(2*a2^2 - 3)*h^2 - 3*(a2^2 - 6)*h))/h, 
 b2 == -1/6*(3*a2*h^2 - 3*a2 + sqrt(3*(a1^2 - a2^2)*h^5 - 18*a2^2*h^3 - 3*(a1^2 - 4*a2^2)*h^4 + 6*(2*a2^2 - 3)*h^2 - 3*(a2^2 - 6)*h))/(h-1) 
@@ -784,6 +790,9 @@ E = integral((y1(x))^2, x, 0, h) + integral((y2(x))^2, x, h, 1) # energy
 eq1 = 0   == 1/2*a1*h^2 - 1/2*a2*h^2 + b1*h - b2*h + 1/2*a2 + b2
 eq2 = 1/2 == 1/3*a1^2*h^3 - 1/3*a2^2*h^3 + a1*b1*h^2 - a2*b2*h^2 + b1^2*h - b2^2*h + 1/3*a2^2 + a2*b2 + b2^2
 solve([eq1,eq2],[b1,b2])
+
+can we get rid of the sqrt (and maybe get a generally simpler formula) by normalizing the amplitude 
+differently - for example with respect to peak amplitude? or area of absolute values?
 
 */
 
@@ -826,10 +835,12 @@ void twoPieceOsc()
 
   // But maybe it's better to let the user set h and the (appropriately scaled) slope at time zero.
 
-
-
-  int N = 1000;
-  double inc = 0.01;
+  int numCycles       = 21;
+  int samplesPerCycle = 100;
+  int numSamples      = numCycles * samplesPerCycle;
+  //int N = 1000;
+  //double inc = 0.01;
+  double inc = 1.0 /  samplesPerCycle;
 
   RAPT::rsBlepReadyOsc<double> osc;
   osc.setPhaseIncrement(inc);
@@ -840,28 +851,63 @@ void twoPieceOsc()
   a1 = a2 = -2; b1 = b2 = +1;      // saw down
   //a1 = 0; b1 = -1; a2 = 0; b2 = 1; // square (low first) - but here it starts high (start-phase wrong?)
 
-  // user parameters at start and end:
-  double pw1 = -1, pw2 = +1;    // pulse-width
-  double sh1 =  0, sh2 =  0;    // shape: -1: saw-down, 0: square/pulse, +1: saw-up
+  std::vector<double> xc(numSamples);  // (c)ontinuous parameter change
+  double dummy;             // for blep/blamp info - not yet used
 
+  double h1 =  0.5, h2 =  0.5;  // transition time at start and end
+  double s1 =  1,   s2 = -1;    // slope sum at start and end
+  double d1 =  0,   d2 =  0;    // slope difference at start and end
 
-  double dummy;
-  std::vector<double> x(N);
-  for(int n = 0; n < N; n++)
-  {
-    double p = n / (N-1.0);
-    double pw = rsLinToLin(p, 0.0, 1.0, pw1, pw2);
-    double sh = rsLinToLin(p, 0.0, 1.0, sh1, sh2);
-    //getTwoPieceAlgoParams(pw, sh, h, a1, b1, a2, b2);
-
-
-    x[n] = osc.getSampleTwoPiece(&dummy, &dummy, &dummy, h, a1, b1, a2, b2);
+  // continuous parameter sweep:
+  for(int n = 0; n < numSamples; n++) {
+    double p = n / (numSamples-1.0);
+    double h = rsLinToLin(p, 0.0, 1.0, h1, h2);
+    double s = rsLinToLin(p, 0.0, 1.0, s1, s2);
+    double d = rsLinToLin(p, 0.0, 1.0, d1, d2);
+    getTwoPieceAlgoParams2(h, s, d, a1, b1, a2, b2);
+    xc[n] = osc.getSampleTwoPiece(&dummy, &dummy, &dummy, h, a1, b1, a2, b2);
   }
+  // todo: don't change the parameters continuously but per cycle - have a total of 21 cycles for 
+  // steps of 0.1 - or maybe have two plots - one with continuous change, one with per-cycle change
+  // algo may produce NaN when d has large absolute value (for h= 0.5 and s = 0)
+
+  // parameters jump at the cycle boundaries:
+  std::vector<double> xd(numSamples);  // (d)iscrete parameter change
+  for(int cycle = 0; cycle < numCycles; cycle++)
+  {
+    double p = cycle / (numCycles-1.0);
+    double h = rsLinToLin(p, 0.0, 1.0, h1, h2);
+    double s = rsLinToLin(p, 0.0, 1.0, s1, s2);
+    double d = rsLinToLin(p, 0.0, 1.0, d1, d2);
+    getTwoPieceAlgoParams2(h, s, d, a1, b1, a2, b2);
+    int n0 = cycle * samplesPerCycle;
+    for(int n = 0; n < samplesPerCycle; n++)
+      xd[n0 + n] = osc.getSampleTwoPiece(&dummy, &dummy, &dummy, h, a1, b1, a2, b2);
+  }
+
+  // saw ist still wrong (shows additional steps) - presumably because the energy should be 
+  // normalized to 1/4, not 1/2 - overall amplitude of square should be 1/2
+
+  //// user parameters at start and end:
+  //double pw1 = -1, pw2 = +1;    // pulse-width
+  //double sh1 =  0, sh2 =  0;    // shape: -1: saw-down, 0: square/pulse, +1: saw-up
+
+  //for(int n = 0; n < N; n++)
+  //{
+  //  double p = n / (N-1.0);
+  //  double pw = rsLinToLin(p, 0.0, 1.0, pw1, pw2);
+  //  double sh = rsLinToLin(p, 0.0, 1.0, sh1, sh2);
+  //  getTwoPieceAlgoParams(pw, sh, h, a1, b1, a2, b2);
+  //  x[n] = osc.getSampleTwoPiece(&dummy, &dummy, &dummy, h, a1, b1, a2, b2);
+  //}
+
 
   // todo: create a square/pulse wave by using a mix of saw-up/saw-down (for square, they must have
   // a phase-shift of 90°)
 
-  rsPlotVector(x);
+  //rsPlotVector(xc);
+  rsPlotVector(xd);
+  //rsPlotVectors(xd, xc);
 }
 
 
