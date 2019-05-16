@@ -755,14 +755,42 @@ void getTwoPieceAlgoParams2(double h, double slope, double slopeDiff,
   // approach) and make them static member functions of rsBlepReadyOsc(Base), so client code can 
   // select, which control scheme it wants to use
 
+
+  // for a1 = +-2, we want b1 to be zero - maybe that can be used as additional constraint instead 
+  // of the energy?
+
+
   double a12 = a1*a1, a22 = a2*a2;
   double h2 = h*h, h3 = h2*h, h4 = h2*h2, h5 = h3*h2;
 
+  // energy normalized to 1/2:
   double r = sqrt(3*(a12-a22)*h5 - 18*a22*h3 - 3*(a12-4*a22)*h4 + 6*(2*a22-3)*h2 - 3*(a22-6)*h);
   // inside the sqrt is a 5th order polynomial in h - maybe evaluate via Horner scheme
 
+  // 1st solution:
   b1 = -1./6 * (3*a1*h2        + r) / h;
   b2 = -1./6 * (3*a2*h2 - 3*a2 + r) / (h-1);
+
+  //// 2nd solution:
+  //b1 = -1./6 * (3*a1*h2        - r) / h;
+  //b2 = -1./6 * (3*a2*h2 - 3*a2 - r) / (h-1);
+
+  //// new: energy normalized to 1/4:
+  //double r = sqrt(3*(a12-a22)*h5 - 18*a22*h3 - 3*(a12-4*a22)*h4 + 3*(4*a22-3)*h2 - 3*(a22-3)*h);
+  //// inside the sqrt is a 5th order polynomial in h - maybe evaluate via Horner scheme
+  //b1 = (-1./6) * (3*a1*h2        + r) / h;
+  //b2 = (-1./6) * (3*a2*h2 - 3*a2 + r) / (h-1);
+
+  //// energy normalized to 1/12:
+  //r = sqrt(3*(a12-a22)*h5 - 18*a22*h3 - 3*(a12-4*a22)*h4 + 3*(4*a22-1)*h2 - 3*(a22-1)*h);
+  //b1 = (-1./6) * (3*a1*h2        + r) / h ;
+  //b2 = (-1./6) * (3*a2*h2 - 3*a2 + r) / (h-1);
+  // nnnaaahhh!! it's all wrong! why?
+
+
+  // the sawtooth is still wrong - maybe 1/4 is not the correct target value? integrate 
+  // f(x) = 2*x from 0 to 1/2, take times two:
+  // 2 * integral(x^2, x, 0, 1/2)  ->  1/12 
 }
 /*
 given a1,a2 and applying the constraints of no DC and energy = 1/2 (maybe we should use 1/4?) gives
@@ -773,6 +801,15 @@ b2 == -1/6*(3*a2*h^2 - 3*a2 + sqrt(3*(a1^2 - a2^2)*h^5 - 18*a2^2*h^3 - 3*(a1^2 -
 
 b1 == -1/6*(3*a1*h^2        - sqrt(3*(a1^2 - a2^2)*h^5 - 18*a2^2*h^3 - 3*(a1^2 - 4*a2^2)*h^4 + 6*(2*a2^2 - 3)*h^2 - 3*(a2^2 - 6)*h))/h, 
 b2 == -1/6*(3*a2*h^2 - 3*a2 - sqrt(3*(a1^2 - a2^2)*h^5 - 18*a2^2*h^3 - 3*(a1^2 - 4*a2^2)*h^4 + 6*(2*a2^2 - 3)*h^2 - 3*(a2^2 - 6)*h))/(h-1)
+
+// 
+
+b1 == -1/6*(3*a1*h^2        + sqrt(3*(a1^2 - a2^2)*h^5 - 18*a2^2*h^3 - 3*(a1^2 - 4*a2^2)*h^4 + 3*(4*a2^2 - 1)*h^2 - 3*(a2^2 - 1)*h))/h 
+b2 == -1/6*(3*a2*h^2 - 3*a2 + sqrt(3*(a1^2 - a2^2)*h^5 - 18*a2^2*h^3 - 3*(a1^2 - 4*a2^2)*h^4 + 3*(4*a2^2 - 1)*h^2 - 3*(a2^2 - 1)*h))/(h-1)
+
+b1 == -1/6*(3*a1*h^2        - sqrt(3*(a1^2 - a2^2)*h^5 - 18*a2^2*h^3 - 3*(a1^2 - 4*a2^2)*h^4 + 3*(4*a2^2 - 1)*h^2 - 3*(a2^2 - 1)*h))/h
+b2 == -1/6*(3*a2*h^2 - 3*a2 - sqrt(3*(a1^2 - a2^2)*h^5 - 18*a2^2*h^3 - 3*(a1^2 - 4*a2^2)*h^4 + 3*(4*a2^2 - 1)*h^2 - 3*(a2^2 - 1)*h))/(h-1)
+
 
 the input was:
 
@@ -854,8 +891,11 @@ void twoPieceOsc()
   std::vector<double> xc(numSamples);  // (c)ontinuous parameter change
   double dummy;             // for blep/blamp info - not yet used
 
+  //double k = sqrt(2.);
+  double k = 2.0;
+
   double h1 =  0.5, h2 =  0.5;  // transition time at start and end
-  double s1 =  1,   s2 = -1;    // slope sum at start and end
+  double s1 =  k,   s2 = -k;    // slope sum at start and end
   double d1 =  0,   d2 =  0;    // slope difference at start and end
 
   // continuous parameter sweep:
@@ -887,6 +927,7 @@ void twoPieceOsc()
 
   // saw ist still wrong (shows additional steps) - presumably because the energy should be 
   // normalized to 1/4, not 1/2 - overall amplitude of square should be 1/2
+  // -> nope - that doesn't work either
 
   //// user parameters at start and end:
   //double pw1 = -1, pw2 = +1;    // pulse-width
