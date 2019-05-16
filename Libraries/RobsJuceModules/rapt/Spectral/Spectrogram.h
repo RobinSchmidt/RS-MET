@@ -12,6 +12,7 @@ class rsSpectrogram
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Construction/Destruction */
 
   /** Constructor. */
@@ -21,6 +22,7 @@ public:
   ~rsSpectrogram();
 
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets the size (in samples) of the blocks/frames for analysis and synthesis (todo: allow 
@@ -53,7 +55,6 @@ public:
     synthesisWindowType = newType; 
     updateSynthesisWindow();
   }
-
 
   // todo: maybe have distinct setAnalysisBlockSize, setSynthesisBlockSize, setAnalysisHopSize, ..
 
@@ -89,9 +90,8 @@ public:
   }
 
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
-
-
 
   //size_t getFftSize() const { return blockSize * zeroPaddingFactor; }
 
@@ -110,9 +110,6 @@ public:
   T getAnalysisScaler() const { return 2. / rsArray::sum(&analysisWindow[0], blockSize); }
     // the factor two comes from the fact that two complex sinusoids sum up to one real sinusoid 
     // and we count only one of the two symmetric magnitude values
-
-
-
 
   /** Computes the required number of frames, given the length of the signal and the hopsize.
   We assume that the peak value of the first window w[B/2] coincides with the 1st sample x[0] and
@@ -133,7 +130,8 @@ public:
   static void getLeftRightPaddingAmount(int blockSize, int trafoSize, int* left, int* right);
 
 
-  /** \name Audio Processing */
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
   //rsMatrix<std::complex<T>> complexSpectrogram(const T *signal, int numSamples);
 
@@ -156,7 +154,7 @@ public:
 
 
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Static Processing Functions */
 
   /** Creates a Hanning window that starts with a zero value in w[0] and ends with a nonzero
@@ -218,7 +216,7 @@ public:
 
     // is this formula also correct for odd fft sizes? verify?
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Misc */
 
   /** Sets up the analysis/synthesis parameters to default values. */
@@ -227,6 +225,7 @@ public:
 
 protected:
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Internal */
 
   void updateAnalysisWindow();

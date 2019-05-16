@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
   //polyBlep();
   //superBlep();
   //superSawStereo();
-  twoPieceOsc();
+  //twoPieceOsc();
   //syncSweep();
   //syncPhasor();
   //syncPhasor2();
@@ -235,7 +235,7 @@ int main(int argc, char* argv[])
   //autoCorrelationPitchDetectorOffline();
   //crossCorrelationBestMatch();
   //combineFFTs(); // move to math experiments
-  //envelopeFollower();
+  envelopeFollower();
   ////zeroCrossingPitchDetector(); // commented in header - why?
   //instantaneousFrequency();
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)

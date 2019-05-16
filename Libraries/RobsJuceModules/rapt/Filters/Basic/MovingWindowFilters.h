@@ -45,7 +45,7 @@ public:
   //{ greater = greaterThan; }
 
 
-  /** Returns up the length of the filter, i.e. the number of samples within which a maximum is 
+  /** Returns the length of the filter, i.e. the number of samples within which a maximum is 
   searched. */
   size_t getLength() const { return delayLine.getLength(); }
 

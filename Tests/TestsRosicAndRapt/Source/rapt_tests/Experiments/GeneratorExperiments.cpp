@@ -831,6 +831,14 @@ solve([eq1,eq2],[b1,b2])
 can we get rid of the sqrt (and maybe get a generally simpler formula) by normalizing the amplitude 
 differently - for example with respect to peak amplitude? or area of absolute values?
 
+maybe we could say that the b1,b2 coeffs should be computed from a1,a2 via a linear (or affine) 
+transforn and determine the coeffs of the transform form some constraints, like: if a1 = 2, then b1 
+should come out as 0, etc. - with enough such constraints, we could fix the coeffs of the trafo
+
+...or maybe we should use a1,b1 as inputs and compute a2,b2? ...soo many possibilities to devise a 
+control scheme - maybe we should implement them all and let client code pick one - or even allow 
+the user to select one in a combobox
+
 */
 
 
