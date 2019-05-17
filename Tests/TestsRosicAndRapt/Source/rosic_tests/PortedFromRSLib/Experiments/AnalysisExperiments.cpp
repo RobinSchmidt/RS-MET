@@ -481,6 +481,11 @@ void envelopeFollower()
   RAPT::rsArray::leftShift(&eSmth2[0], N, shiftAmount+5); 
 
 
+  rsEnvelopeFollower2<double> ef2;
+  std::vector<double> e1(N);
+  for(n = 0; n < N; n++)
+    e1[n] = ef2.getSample(x[n]);
+
   //rosic::InstantaneousEnvelopeDetector ied;
   //std::vector<double> e4(N);
   //for(n = 0; n < N; n++)
@@ -494,6 +499,9 @@ void envelopeFollower()
   //plt.addDataArrays(N, &e2[0]);
   plt.addDataArrays(N, &eSmth[0]);
   plt.addDataArrays(N, &eSmth2[0]);
+
+  plt.addDataArrays(N, &e1[0]);  // the new one, obtained by the convenience class
+
   plt.setPixelSize(1200, 400);
   plt.plot();
 

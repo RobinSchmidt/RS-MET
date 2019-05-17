@@ -33,6 +33,8 @@ public:
     // will never be removed - so we should remove them in the moment, when the length changes
   }
 
+  // todo: add function setMaxLength
+
 
   /** Sets the "greater-than" comparison function. Note that you can actually also pass a function
   that implements a less-than comparison in which case the whole filter turns into a moving-minimum
@@ -178,7 +180,7 @@ class rsSlewRateLimiterLinear2 // we already have another class of that name - c
 
 public:
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets the maximum upward change from one sample to the next. */
@@ -200,7 +202,7 @@ public:
     setDownwardLimit(newLimit);
   }
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
   T getSample(T in)
@@ -241,6 +243,7 @@ public:
   rsMinMaxSmoother(size_t maxLength) : minMaxFilter(maxLength) {}
 
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets the smoothing length in samples. */
@@ -270,6 +273,13 @@ public:
   }
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  size_t getLength() const { return minMaxFilter.getLength(); }
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
   /** Processes one sample at a time. */

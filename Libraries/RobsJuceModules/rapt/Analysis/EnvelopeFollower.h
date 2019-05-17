@@ -168,7 +168,10 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  // int getDelay()
+  //int getDelay() const 
+  //{
+  //  return T(3./2.) * minMaxSmoother.getLength();   // factor 3/2 ad hoc from inspection
+  //}
 
 
   //-----------------------------------------------------------------------------------------------
@@ -181,11 +184,17 @@ public:
     tmp   = slewLimiter.getSample(tmp);
     tmp   = minMaxSmoother.getSample(tmp);
     tmp   = postFilter.getSample(tmp);
-    return tmp;
+    //return tmp;
+    return T(1.23) * tmp; // factor 1.23 compensates gain loss due to lowpass (from inspection)
   }
   // todo: split the function into 
   // getSamplePreFiltered/getSampleSlewLimited/getSampleMinMaxSmoothed/getSamplePostFiltered
   // so we can inspect the signal at all points in the processing chain for making plots
+
+  // todo: the arbitrary factors 3/2 for the delay and 1.23 for the gain should probably be related
+  // to the attack/release times of the slewrate limiter - or maybe these times should also be set 
+  // up according to the input frequency - some experimentation may be needed - try also very fast
+  // envelopes
 
   /** Resets the internal state variables to their initial values. */
   void reset();
