@@ -53,8 +53,6 @@ namespace RAPT
 #include "Filters/Biquad.h"
 
 
-
-#include "Analysis/EnvelopeFollower.h"
 #include "Analysis/LinearPredictor.h"
 #include "Analysis/FormantRemover.h"
 #include "Analysis/CyclicAutoCorrelator.h"
