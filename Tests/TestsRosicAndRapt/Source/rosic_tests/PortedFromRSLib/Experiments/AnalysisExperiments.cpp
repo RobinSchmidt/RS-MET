@@ -480,11 +480,16 @@ void envelopeFollower()
   RAPT::rsArray::leftShift(&eSmth[0],  N, shiftAmount); 
   RAPT::rsArray::leftShift(&eSmth2[0], N, shiftAmount+5); 
 
-
+  // do the same thing but now with the new convenience class:
   rsEnvelopeFollower2<double> ef2;
+  ef2.setSampleRate(fs);
+  ef2.setInputFrequency(f);
   std::vector<double> e1(N);
   for(n = 0; n < N; n++)
     e1[n] = ef2.getSample(x[n]);
+  // todo: get the intermediate signals from the class, try different settings for attack/release
+  // see if the affects the delay, etc - and eventually get rid of all the code here that 
+  // implements the same signal chain that is now realized in the class
 
   //rosic::InstantaneousEnvelopeDetector ied;
   //std::vector<double> e4(N);
