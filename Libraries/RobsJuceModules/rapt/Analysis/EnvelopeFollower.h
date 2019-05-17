@@ -125,4 +125,89 @@ RS_INLINE TSig rsEnvelopeFollower<TSig, TPar>::getSampleRootMeanSquare(TSig in)
   return rsSqrt(getSampleMeanSquare(in));
 }
 
+//=================================================================================================
+
+
+/** An advanced envelope follower implementing the following proceesing chain:
+
+-Butterworth lowpass - gets rid of Gibbs ripples, if any (maybe try Bessel - avoid overshoot)
+-full wave rectifier - takes absolute value
+-slew rate limiter   - preliminary/raw/simple envelope extraction
+-min/max smoother    - extracts average of min and max value in some time window
+-Bessel lowpass      - gets rid of jaggies
+
+todo:
+-maybe try to apply the anti-Gibbs-ripple lowpass after taking the absolute value
+-maybe have separate signal and parameter types - or maybe not - min/max smoothing may need them to 
+ be the same... */
+
+template<class T> 
+class rsEnvelopeFollower2
+{
+
+public:
+
+
+  rsEnvelopeFollower2();
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets the sample rate at which this module operates. */
+  void setSampleRate(T newSampleRate);
+
+  /** Sets the (expected) frequency of the input signal. This will set up some internal smoothing
+  parameters that are most suitable for that particular input frequency. If your signal is not 
+  monophonic, you should probably pass the lowest frequency that you expect in the signal. 
+
+  Warning: this parameter does not yet support realtime modulation because the minMaxSmoother has
+  to be resetted when this value changes  */
+  void setInputFrequency(T newFreq);
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  // int getDelay()
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  /** Produces one envelope sample for one input sample at a time. */
+  T getSample(T in)
+  {
+    T tmp = rsAbs(preFilter.getSample(in)); // try taking abs first
+    tmp   = slewLimiter.getSample(tmp);
+    tmp   = minMaxSmoother.getSample(tmp);
+    tmp   = postFilter.getSample(tmp);
+    return tmp;
+  }
+  // todo: split the function into 
+  // getSamplePreFiltered/getSampleSlewLimited/getSampleMinMaxSmoothed/getSamplePostFiltered
+  // so we can inspect the signal at all points in the processing chain for making plots
+
+  /** Resets the internal state variables to their initial values. */
+  void reset();
+
+protected:
+
+  /** Updates the min/max smoother and the post-filter according to input frequency and 
+  sample-rate. */
+  void updateSmoothingFilters();
+
+
+  rsEngineersFilter<T, T> preFilter;
+  rsSlewRateLimiterWithHold<T, T> slewLimiter; // maybe hold is not needed bcs of min/max smoothing
+  rsMinMaxSmoother<T> minMaxSmoother;
+  rsEngineersFilter<T, T> postFilter;
+
+  // some arbitrary but reasonable initial values:
+  T inputFreq  = T(100); 
+  T sampleRate = T(44100);
+
+};
+
+
+
 #endif

@@ -655,9 +655,6 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.cpp">
       <Filter>JUCE Modules\rapt\Analysis</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower2.cpp">
-      <Filter>JUCE Modules\rapt\Analysis</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiter.cpp">
       <Filter>JUCE Modules\rapt\Analysis</Filter>
     </ClCompile>
@@ -2950,9 +2947,6 @@
       <Filter>JUCE Modules\rapt\Analysis</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.h">
-      <Filter>JUCE Modules\rapt\Analysis</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower2.h">
       <Filter>JUCE Modules\rapt\Analysis</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiter.h">
