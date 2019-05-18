@@ -28,6 +28,9 @@ void rsEnvelopeFollower2<T>::setSampleRate(T newSampleRate)
 
   preFilter.setSampleRate(sampleRate);
   preFilter.setFrequency(sampleRate/T(6));
+  // maybe instead of usinga fixed fraction of the sample-rate, we should use a fixed absolute
+  // frequency? ...but maybe not - the test uses a sample-rate of 2kHz, so a fixed freq would end 
+  // up above fs/2
 
   slewLimiter.setSampleRate(sampleRate);
 
@@ -57,4 +60,12 @@ void rsEnvelopeFollower2<T>::updateSmoothingFilters()
 {
   minMaxSmoother.setLength((int) ceil(sampleRate/inputFreq)); // one cycle
   postFilter.setFrequency(inputFreq/T(2));
+
+  // experimental - maybe attack and release of the slewrate limiter should be set proportionally
+  // to the input period...
+  T inputPeriod = T(1) / inputFreq;
+  T att = T(1000 *  0.1) * inputPeriod;   // attack in milliseconds  (1/10 of a cycle)
+  T rel = T(1000 * 10.0) * inputPeriod;   // release in milliseconds (10 cycles)
+  slewLimiter.setAttackTime(att);
+  slewLimiter.setReleaseTime(rel);
 }

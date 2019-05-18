@@ -529,9 +529,9 @@ void envelopeFollower()
   //plt.addDataArrays(N, &eSmth2[0]);
 
   // new - obtained by the convenience class:
-  plt.addDataArrays(N, &y1[0]);
-  plt.addDataArrays(N, &y2[0]);
-  plt.addDataArrays(N, &y3[0]);
+  //plt.addDataArrays(N, &y1[0]);
+  //plt.addDataArrays(N, &y2[0]);
+  //plt.addDataArrays(N, &y3[0]);
   plt.addDataArrays(N, &y4[0]);  
 
   plt.setPixelSize(1200, 400);
@@ -552,6 +552,8 @@ void envelopeFollower()
   //  moving-maximum filter to the output of the slewrate limiter (which then doesn't need hold)
   //  -how would we implement that efficiently. i.e. without searching for a maximum in a circular
   //   buffer each sample? maybe on-the-fly decimation?
+
+  // -OK, the factor 1.23 works also for signals that don't show Gibbs ripples - good!
 }
 
 void instantaneousFrequency()
