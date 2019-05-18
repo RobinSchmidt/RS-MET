@@ -484,9 +484,16 @@ void envelopeFollower()
   rsEnvelopeFollower2<double> ef2;
   ef2.setSampleRate(fs);
   ef2.setInputFrequency(f);
-  std::vector<double> e1(N);
-  for(n = 0; n < N; n++)
-    e1[n] = ef2.getSample(x[n]);
+  //std::vector<double> e1(N);
+  std::vector<double> y1(N), y2(N), y3(N), y4(N);
+  for(n = 0; n < N; n++) {
+    y1[n] = ef2.getSamplePreFilteredAbs(x[n]);
+    y2[n] = ef2.getSampleSlewLimited(y1[n]);
+    y3[n] = ef2.getSampleMinMaxSmoothed(y2[n]);
+    y4[n] = ef2.getSamplePostFiltered(y3[n]);
+    // y4 is the same as if we would just have called y4[n] = ef2.getSample(x[n]) instead of the
+    // four calls above
+  }
   // todo: get the intermediate signals from the class, try different settings for attack/release
   // see if the affects the delay, etc - and eventually get rid of all the code here that 
   // implements the same signal chain that is now realized in the class
@@ -499,13 +506,19 @@ void envelopeFollower()
 
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);
-  //plt.addDataArrays(N, &y[0]);   // lowpassed for reducing gibbs gurgle
-  plt.addDataArrays(N, &e[0]);
-  //plt.addDataArrays(N, &e2[0]);
-  plt.addDataArrays(N, &eSmth[0]);
-  plt.addDataArrays(N, &eSmth2[0]);
+  plt.addDataArrays(N, &e[0]);   // true envelope for reference
 
-  plt.addDataArrays(N, &e1[0]);  // the new one, obtained by the convenience class
+  // old - obtained manually here in this function (get rid):
+  ////plt.addDataArrays(N, &y[0]);   // lowpassed for reducing gibbs gurgle
+  ////plt.addDataArrays(N, &e2[0]);
+  //plt.addDataArrays(N, &eSmth[0]);
+  //plt.addDataArrays(N, &eSmth2[0]);
+
+  // new - obtained by the convenience class:
+  plt.addDataArrays(N, &y1[0]);
+  plt.addDataArrays(N, &y2[0]);
+  plt.addDataArrays(N, &y3[0]);
+  plt.addDataArrays(N, &y4[0]);  
 
   plt.setPixelSize(1200, 400);
   plt.plot();

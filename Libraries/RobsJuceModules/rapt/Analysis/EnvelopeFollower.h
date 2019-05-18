@@ -178,14 +178,14 @@ public:
   /** \name Processing */
 
   /** Produces one envelope sample for one input sample at a time. */
-  T getSample(T in)
+  inline T getSample(T in)
   {
-    T tmp = rsAbs(preFilter.getSample(in)); // try taking abs first
-    tmp   = slewLimiter.getSample(tmp);
-    tmp   = minMaxSmoother.getSample(tmp);
-    tmp   = postFilter.getSample(tmp);
-    //return tmp;
-    return T(1.23) * tmp; // factor 1.23 compensates gain loss due to lowpass (from inspection)
+    T tmp = getSamplePreFilteredAbs(in); 
+    tmp   = getSampleSlewLimited(tmp);
+    tmp   = getSampleMinMaxSmoothed(tmp);
+    tmp   = getSamplePostFiltered(tmp);
+    return tmp;
+    //return T(1.23) * tmp; // factor 1.23 compensates gain loss due to lowpass (from inspection)
   }
   // todo: split the function into 
   // getSamplePreFiltered/getSampleSlewLimited/getSampleMinMaxSmoothed/getSamplePostFiltered
@@ -198,6 +198,23 @@ public:
 
   /** Resets the internal state variables to their initial values. */
   void reset();
+
+
+  // These functions are just for making it possible to pick up the signal at various points within
+  // the internal processing chain - for experiments, plots, tests, etc. Client code normally just 
+  // needs to call the high-level getSample() function:
+  inline T getSamplePreFilteredAbs(T in) { return rsAbs( T(1.23) * preFilter.getSample(in)); } // try taking abs before the pre-filter
+  //inline T getSamplePreFilteredAbs(T in) { return T(1.23)*preFilter.getSample(rsAbs(in)); } // ...nope! much worse!
+  inline T getSampleSlewLimited(T in)    { return slewLimiter.getSample(in);      }
+  inline T getSampleMinMaxSmoothed(T in) { return minMaxSmoother.getSample(in);   }
+  inline T getSamplePostFiltered(T in)   { return postFilter.getSample(in);       }
+  // somehere in this chain, we need to apply the gain of 1.23...
+  // ...figure out, if this factor (obtained by eyeballing) just applies to the particular 
+  // test-signal and/or settings or if it's generally suitable - in the first case, remove it 
+  // ...try different waveforms, frequencies (with and without gibbs ripple), envelope 
+  // characteristics, etc.
+
+
 
 protected:
 
@@ -214,6 +231,7 @@ protected:
   // some arbitrary but reasonable initial values:
   T inputFreq  = T(100); 
   T sampleRate = T(44100);
+
 
 };
 

@@ -2,8 +2,10 @@ template<class T>
 rsEnvelopeFollower2<T>::rsEnvelopeFollower2()
   : minMaxSmoother(10000) // constructor needs a max-length - todo: provide setMaxLength function
 {
-  preFilter.setApproximationMethod(rosic::rsPrototypeDesignerD::BUTTERWORTH);
-  //preFilter.setApproximationMethod(rosic::rsPrototypeDesignerD::BESSEL);
+  typedef rsPrototypeDesigner<T> PD;
+
+  preFilter.setApproximationMethod(PD::BUTTERWORTH);
+  //preFilter.setApproximationMethod(PD::BESSEL);
   preFilter.setOrder(6);
 
   slewLimiter.setAttackTime(1.0);
@@ -13,7 +15,7 @@ rsEnvelopeFollower2<T>::rsEnvelopeFollower2()
   minMaxSmoother.setSlewRateLimiting(1.0);
   minMaxSmoother.setMinMaxMix(0.5);
 
-  postFilter.setApproximationMethod(rosic::rsPrototypeDesignerD::BESSEL);
+  postFilter.setApproximationMethod(PD::BESSEL);
   postFilter.setOrder(6);
 
   setSampleRate(44100);
