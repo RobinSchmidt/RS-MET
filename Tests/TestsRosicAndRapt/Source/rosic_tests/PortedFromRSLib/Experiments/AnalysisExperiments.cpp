@@ -424,6 +424,11 @@ void envelopeFollower()
     x[n] *= e[n];;
   }
 
+
+
+  /*
+  // old - we manually create the processing chain here - code now obsolete and may eventually
+  // be deleted:
   // roll off the Gibbs-ripples by applying a Butterworth lowpass filter
   rosic::rsEngineersFilterMono lpf;
   lpf.setSampleRate(fs);
@@ -479,8 +484,11 @@ void envelopeFollower()
   int shiftAmount = 3*smoothingLength/2; // factor 3/2 ad hoc
   RAPT::rsArray::leftShift(&eSmth[0],  N, shiftAmount); 
   RAPT::rsArray::leftShift(&eSmth2[0], N, shiftAmount+5); 
+  */
 
-  // do the same thing but now with the new convenience class:
+
+
+  // new - do the same thing but now with the new convenience class:
   rsEnvelopeFollower2<double> ef2;
   ef2.setSampleRate(fs);
   ef2.setInputFrequency(f);
@@ -494,9 +502,15 @@ void envelopeFollower()
     // y4 is the same as if we would just have called y4[n] = ef2.getSample(x[n]) instead of the
     // four calls above
   }
-  // todo: get the intermediate signals from the class, try different settings for attack/release
-  // see if the affects the delay, etc - and eventually get rid of all the code here that 
-  // implements the same signal chain that is now realized in the class
+  // todo: try different settings for attack/release, see if the affects the delay, etc. 
+
+  int smoothingLength = (int) ceil(fs/f);  // one cycle - todo: inquire from ef2 object
+  int shiftAmount = 3*smoothingLength/2;   // factor 3/2 ad hoc
+  RAPT::rsArray::leftShift(&y3[0], N, shiftAmount);
+  RAPT::rsArray::leftShift(&y4[0], N, shiftAmount+5);
+  // todo: figure out, if these shifts are generally applicable or specific to the settings and/or
+  // input signal
+
 
   //rosic::InstantaneousEnvelopeDetector ied;
   //std::vector<double> e4(N);
