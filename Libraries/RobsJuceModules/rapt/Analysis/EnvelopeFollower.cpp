@@ -4,8 +4,8 @@ rsEnvelopeFollower2<T>::rsEnvelopeFollower2()
 {
   typedef rsPrototypeDesigner<T> PD;
 
-  preFilter.setApproximationMethod(PD::BUTTERWORTH);
-  //preFilter.setApproximationMethod(PD::BESSEL);
+  //preFilter.setApproximationMethod(PD::BUTTERWORTH);
+  preFilter.setApproximationMethod(PD::BESSEL);
   preFilter.setOrder(6);
 
   slewLimiter.setAttackTime(1.0);

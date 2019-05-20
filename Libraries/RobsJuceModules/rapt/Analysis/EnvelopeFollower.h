@@ -203,7 +203,9 @@ public:
   // These functions are just for making it possible to pick up the signal at various points within
   // the internal processing chain - for experiments, plots, tests, etc. Client code normally just 
   // needs to call the high-level getSample() function:
-  inline T getSamplePreFilteredAbs(T in) { return rsAbs( T(1.23) * preFilter.getSample(in)); } // try taking abs before the pre-filter
+  //inline T getSamplePreFilteredAbs(T in) { return rsAbs(in); }  // test - no pre-filter
+  inline T getSamplePreFilteredAbs(T in) { return rsAbs(preFilter.getSample(in)); } 
+  //inline T getSamplePreFilteredAbs(T in) { return rsAbs( T(1.23) * preFilter.getSample(in)); } // try taking abs before the pre-filter
   //inline T getSamplePreFilteredAbs(T in) { return T(1.23)*preFilter.getSample(rsAbs(in)); } // ...nope! much worse!
   inline T getSampleSlewLimited(T in)    { return slewLimiter.getSample(in);      }
   inline T getSampleMinMaxSmoothed(T in) { return minMaxSmoother.getSample(in);   }

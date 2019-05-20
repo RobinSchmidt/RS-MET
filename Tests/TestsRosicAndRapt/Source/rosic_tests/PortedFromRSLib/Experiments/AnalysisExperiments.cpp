@@ -411,7 +411,8 @@ void envelopeFollower()
   rsBreakpointModulatorD bm;
   bm.setSampleRate(fs);
   std::vector<double> x(N), e(N);
-  createWaveform(&x[0], N, 1, f, fs, 0.0, true); // use anti-aliasing
+  createWaveform(&x[0], N, 1, f, fs, 0.0, true); // use anti-aliasing to see Gibbs ripple effects
+  //createWaveform(&x[0], N, 2, f, fs, 0.0, true); // use anti-aliasing
   int n;
   bm.noteOn(false, 64, 64);
   for(n = 0; n < nRelease; n++) {
@@ -426,65 +427,7 @@ void envelopeFollower()
 
 
 
-  /*
-  // old - we manually create the processing chain here - code now obsolete and may eventually
-  // be deleted:
-  // roll off the Gibbs-ripples by applying a Butterworth lowpass filter
-  rosic::rsEngineersFilterMono lpf;
-  lpf.setSampleRate(fs);
-  lpf.setFrequency(fs/6);
-  //lpf.setFrequency(fs/16);
-  lpf.setApproximationMethod(rosic::rsPrototypeDesignerD::BUTTERWORTH);
-  //lpf.setApproximationMethod(rosic::rsPrototypeDesignerD::BESSEL);
-  lpf.setOrder(6);
-  std::vector<double> y(N);
-  for(n = 0; n < N; n++)
-    y[n] = lpf.getSample(x[n]);
 
-  // try to recover the envelope via envelope following:
-  double k = 0.0;  // multiplier for hold in terms of cycle length
-  double p = 1.0;  // power to be applied before env-detector
-  double gain = 1.23; // to compensate gain loss due to lowpass
-  RAPT::rsSlewRateLimiterWithHold<double, double> ef;
-  ef.setAttackTime(1.0);
-  ef.setReleaseTime(100.0);
-  ef.setHoldTime(k * 1000.0/f); // length of one cycle in milliseconds
-  ef.setSampleRate(fs);
-  std::vector<double> e2(N);
-  for(n = 0; n < N; n++) {
-    double tmp = pow(fabs(y[n]), p);
-    tmp = gain * ef.getSample(tmp);
-    e2[n] = pow(tmp, 1/p);
-  }
-
-  // apply the min/max smoother:
-  size_t maxLength = (size_t) (4.0 * fs/f);
-  int smoothingLength = (int) ceil(fs/f);          // one cycle
-  rsMinMaxSmoother<double> minMaxSmoother(maxLength);
-  minMaxSmoother.setLength(smoothingLength);
-  minMaxSmoother.setSlewRateLimiting(1.0);
-  minMaxSmoother.setMinMaxMix(0.5);
-  std::vector<double> eSmth(N);
-  for(n = 0; n < N; n++) 
-    eSmth[n] = minMaxSmoother.getSample(e2[n]);
-
-  // maybe apply another Bessel filter to the minmax-smoothed output to get rid of the jaggies
-  // give the dynamics processors a smoothing parameter (in ms)
-  std::vector<double> eSmth2(N);
-  lpf.setFrequency(f/2);
-  lpf.setApproximationMethod(rosic::rsPrototypeDesignerD::BESSEL);
-  lpf.setOrder(6);
-  lpf.reset();
-  for(n = 0; n < N; n++)
-    eSmth2[n] = lpf.getSample(eSmth[n]);
-
-
-  // the detected envelope looks delayed compared to the original one - we fix this by 
-  // time-shifting - of course, this is possible only in non realtime scenarios:
-  int shiftAmount = 3*smoothingLength/2; // factor 3/2 ad hoc
-  RAPT::rsArray::leftShift(&eSmth[0],  N, shiftAmount); 
-  RAPT::rsArray::leftShift(&eSmth2[0], N, shiftAmount+5); 
-  */
 
 
 
@@ -512,21 +455,10 @@ void envelopeFollower()
   // input signal
 
 
-  //rosic::InstantaneousEnvelopeDetector ied;
-  //std::vector<double> e4(N);
-  //for(n = 0; n < N; n++)
-  //  e4[n] = ied.getInstantaneousEnvelope(y[n]);
-
-
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);
   plt.addDataArrays(N, &e[0]);   // true envelope for reference
 
-  // old - obtained manually here in this function (get rid):
-  ////plt.addDataArrays(N, &y[0]);   // lowpassed for reducing gibbs gurgle
-  ////plt.addDataArrays(N, &e2[0]);
-  //plt.addDataArrays(N, &eSmth[0]);
-  //plt.addDataArrays(N, &eSmth2[0]);
 
   // new - obtained by the convenience class:
   //plt.addDataArrays(N, &y1[0]);
@@ -554,6 +486,8 @@ void envelopeFollower()
   //   buffer each sample? maybe on-the-fly decimation?
 
   // -OK, the factor 1.23 works also for signals that don't show Gibbs ripples - good!
+  // -but: it doesn't work for other waveforms - for the sine, we get too large envelope values
+  //  -presumable, because the sine-wave is not really affected by the pre-filter
 }
 
 void instantaneousFrequency()
