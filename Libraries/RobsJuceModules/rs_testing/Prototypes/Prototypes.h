@@ -107,6 +107,24 @@ void cheby_win(double *out, int N, double atten);
 
 //=================================================================================================
 
+/** A second order (2 poles, 2 zeros) filter implementation, whose internal state is represented as
+a 2D vector, i.e. a point in the xy-plane. The state is updated by multiplying the current state
+vector by a matrix (and adding the input value to both components). The output is computed as a 
+linear combination of the state-vector's coordinates and the input. The state update matrix will 
+have one of these two general forms:
+
+  |p1 0 |     or:     r * |cos(w)  -sin(w)| 
+  |0  p2|                 |sin(w)   cos(w)|
+
+where in the first case, p1 and p2 are the two real poles and the x and y states decay 
+exponentially and independently from each other when the input is switched off. In the second case,
+the numbers r*cos(w), r*sin(w) are the real and imaginary parts of a pair of complex conjugate 
+poles and we will see a spiraling/decaying rotation of the states when there's no input (anymore).
+The filter structure can realize almost any biquad transfer function - the singular problematic 
+case is when there are two equal real poles - in this case, they will be made artificially distinct 
+by fudging them a bit. The effect of that fudging on the transfer function will be miniscule. The
+advanatge of that filter structure is that it (presumably) responds well to modulation. */
+
 template<class TSig, class TPar>
 class rsStateVectorFilter
 {

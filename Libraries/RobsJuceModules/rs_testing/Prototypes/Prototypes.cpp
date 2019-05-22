@@ -425,15 +425,6 @@ void rsStateVectorFilter<TSig, TPar>::setPoles(CRPar p1re, CRPar p1im, CRPar p2r
   yy = p2re;
   xy = p2im;
   makePolesDistinct();  // avoid singular case of equal poles by fudging
-
-  // The state update matrix will have one of these two general forms:
-  // |p1 0 |     or:     r * |cos(w)  -sin(w)| 
-  // |0  p2|                 |sin(w)   cos(w)|
-  // where in the first case, p1 and p2 are the two real poles and the x and y states decay 
-  // exponentially and independently from each other when the input is switched off. In the second 
-  // case, the numbers r*cos(w), r*sin(w) are the real and imaginary parts of a pair of complex 
-  // conjugate poles and we will see a spiraling/decaying rotation of the states when there's no 
-  // input (anymore).
 }
 
 template<class TSig, class TPar>
