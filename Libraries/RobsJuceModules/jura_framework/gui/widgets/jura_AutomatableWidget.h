@@ -274,6 +274,16 @@ public:
   void rPopUpMenuDismissed(RPopUpMenu* menuThatwasDismissed) override;
 
 
+  /** Shows the setup for the automation (attachment to meta parameters, mapping functions, 
+  midi controllers and smoothing). */
+  virtual void showAutomationSetup();
+
+  /** Shows the setup for the modulation connections. */
+  virtual void showModulationSetup();
+
+
+
+
 protected:
 
   /** Enumeration of the identifiers to used as return-values for the right-click popup menu. */
@@ -318,12 +328,7 @@ protected:
   /** Closes the popup menu. */
   virtual void closePopUp();
 
-  /** Shows the setup for the automation (attachment to meta parameters, mapping functions, 
-  midi controllers and smoothing). */
-  virtual void showAutomationSetup();
 
-  /** Shows the setup for the modulation connections. */
-  virtual void showModulationSetup();
 
   /** This is called from the modulation setup popup window when the user clicks on its 
   close-button. We don't actually delete the object here, we just make it invisible, so we can 

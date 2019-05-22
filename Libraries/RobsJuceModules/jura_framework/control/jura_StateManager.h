@@ -27,9 +27,13 @@ public:
     watchedStateManager = stateManagerToWatch;
   }
 
+  /** Returns a pointer to the watched StateManager. */
+  virtual StateManager* getWatchedStateManager() const { return watchedStateManager; }
+
 protected:
 
-  StateManager* watchedStateManager;
+
+  StateManager* watchedStateManager; // make protected, provide accessor
 
   juce_UseDebuggingNewOperator;
 };

@@ -61,7 +61,8 @@ public:
 
   /** \name Processing */
 
-  inline rsFloat32x4 getSample(rsFloat32x4 in)
+  //inline rsFloat32x4 getSample(rsFloat32x4 in)
+  inline rsFloat32x4 getSample(const rsFloat32x4& in)
   {
     rsFloat32x4 y(0);
     for(int i = lowModeIndex; i <= highModeIndex; i++)

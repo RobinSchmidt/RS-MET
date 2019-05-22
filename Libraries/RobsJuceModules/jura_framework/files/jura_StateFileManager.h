@@ -28,8 +28,6 @@ public:
   successful.  */
   virtual bool saveToFile(const juce::File& fileToSaveTo);
 
-protected:
-
   /** Tries to load the xml-file passed in the argument and if this was successful, it calls
   setStateFromXml with the XmlElement obtained from the file. */
   virtual bool loadStateFromXmlFile(const juce::File& fileToLoadFrom);
@@ -37,6 +35,10 @@ protected:
   /** Retrieves the current state by calling getStateAsXml() and saves this state into an
   xml-file as specified by the argument. */
   virtual bool saveStateToXmlFile(const juce::File& fileToSaveTo);
+
+
+protected:
+
 
   juce_UseDebuggingNewOperator;
 };
