@@ -47,7 +47,8 @@ std::vector<double> rsApplyFunction(const std::vector<double>& v, double p,
 // with the MSVC compiler anyway:
 std::string toString(int n)
 {
-  return std::to_string((_Longlong)n);
+  //return std::to_string((_Longlong)n);
+  return std::to_string((long long)n);
 }
 #endif
 

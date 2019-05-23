@@ -470,6 +470,18 @@
         <MODULEPATH id="rs_testing" path="../../Libraries/RobsJuceModules"/>
       </MODULEPATHS>
     </CODEBLOCKS_LINUX>
+    <VS2019 targetFolder="Builds/VisualStudio2019">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" winWarningLevel="3"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="rs_testing" path="../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="rosic" path="../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="romos" path="../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="rapt" path="../../Libraries/RobsJuceModules"/>
+      </MODULEPATHS>
+    </VS2019>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="rapt" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
