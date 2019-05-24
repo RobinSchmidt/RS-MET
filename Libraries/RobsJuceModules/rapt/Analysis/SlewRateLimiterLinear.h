@@ -67,6 +67,12 @@ protected:
   TPar sampleRate;                  // the samplerate
   TPar attackTime, releaseTime;     // in milliseconds
 
+private:
+
+  // make assignment operator and copy constructor unavailable
+  rsSlewRateLimiterLinear& operator=(const rsSlewRateLimiterLinear& /*other*/) { return *this; }
+  rsSlewRateLimiterLinear(const rsSlewRateLimiterLinear& /*other*/) { }
+
 };
 
 //-----------------------------------------------------------------------------------------------

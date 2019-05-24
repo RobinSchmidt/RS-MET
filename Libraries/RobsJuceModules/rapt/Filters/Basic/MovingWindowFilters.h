@@ -216,7 +216,7 @@ public:
 protected:
 
   T upwardLimit = RS_INF(T), downwardLimit = RS_INF(T);  
-  T y1;  // previous output sample
+  T y1 = T(0);  // previous output sample
 
 };
 

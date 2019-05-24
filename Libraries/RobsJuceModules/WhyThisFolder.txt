@@ -1,9 +1,11 @@
-custom juce modules don't work anymore with new projucer:
+custom juce modules in the main juce modules folder don't work anymore with new 
+projucer:
 https://forum.juce.com/t/projucer-5-4-1-doesnt-allow-user-modules-to-be-inside-juce-modules-folder/30363
 
 it does not help to just change the path in Projucer - i actually had to remove and 
 re-add the modules by using "Add module from a specified folder" - fortunately, after 
 adding the first one, the other ones can be added more easily by 
-Add a module -> Exporter paths  ...even if that doesn't seem to make sense...
+Add a module -> Exporter paths  (...even if that doesn't seem to make sense...)
+
 oh - going to Modules "gear-symbol" page (the gear symbol at the bottom of the Modules column) 
 and using the path copy/paste functions also worked
