@@ -83,9 +83,12 @@ namespace rosic
     a call to mlp->forwardPropagate with the corresponding input pattern should take place
     before calling this function. */
     void computePatternGradient(const Vector& yTarget);
+    // todo: make a unit test like this:
+    // https://www.youtube.com/watch?v=pHMzNW8Agq4&list=PLiaHhY2iBX9hdHaRr6b7XevZtgZRa1PoU&index=5
+
 
     /** Naive gradient computation by perturbing each synaptic weight in turn - for check and
-    debug pruposes only. */
+    debug purposes only. */
     void computePatternGradientByWeightPerturbation(const Vector& yTarget);
 
     /** Returns all relevant per-pattern partial derivatives of the weights (excluding the dummy

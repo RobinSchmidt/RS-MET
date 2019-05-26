@@ -112,7 +112,7 @@ protected:
 
 };
 
-// maybe call it rsMovingSelector, movingExtremum ...and even more general concept would be a 
+// maybe call it rsMovingSelector, movingExtremum ...an even more general concept would be a 
 // moving aggregator which could also be something like a moving median (or r-th quantile)
 //
 // https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm
