@@ -166,6 +166,13 @@ void plotTwoSineModels(
   const RAPT::rsSinusoidalModel<double>& model2, 
   double sampleRate);
 
+/** Plots a subset of the amplitude envelopes of the given sinusoidal model. The vector 
+partialIndices selects, which partial's envelopes should be drawn. */
+void plotSineModelAmplitudes(
+  const RAPT::rsSinusoidalModel<double>& model,
+  const std::vector<int>& partialIndices);
+
+
 /** Plots the results of a sinusoidal synthesis of given model using given synthesizer object and
 plots also the original signal x (of length N) and the synthesis error. */
 void plotSineResynthesisResult(

@@ -252,6 +252,21 @@ void plotTwoSineModels(
   plt.plotTwoModels(model1, model2, fs);
 }
 
+void plotSineModelAmplitudes(
+  const RAPT::rsSinusoidalModel<double>& model,
+  const std::vector<int>& partialIndices)
+{
+  GNUPlotter plt; 
+  std::vector<double> t, a;  // time and amplitude arrays (x- and y-values for the plot)
+  for(int i = 0; i < (int) partialIndices.size(); i++) {
+    int index = partialIndices[i];  
+    t = model.getPartial(index).getTimeArray();
+    a = model.getPartial(index).getAmplitudeArray();
+    plt.addDataArrays((int)t.size(), &t[0], &a[0]);
+  }
+  plt.plot();
+}
+
 void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model, 
   const RAPT::rsSinusoidalSynthesizer<double>& synth, double* x, int Nx)
 {

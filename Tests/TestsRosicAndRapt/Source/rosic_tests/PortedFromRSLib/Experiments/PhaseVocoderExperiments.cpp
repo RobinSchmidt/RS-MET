@@ -1715,6 +1715,7 @@ void harmonicDeBeating()
   analyzer.getCycleFinder().setFundamental(f1);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int)x.size());
   plotSineModel(mdl, fs);
+  plotSineModelAmplitudes(mdl, { 1, 2, 3 }); // 0 is DC
 
 
   int dummy = 0;
