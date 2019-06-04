@@ -482,6 +482,9 @@
     <Filter Include="JUCE Modules\jura_processors">
       <UniqueIdentifier>{52210C27-FA09-FCE8-91B4-D7D5FB39D2A3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\rapt\Analysis">
+      <UniqueIdentifier>{34544FA4-CEEB-3549-61FB-C970DF721282}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\rapt\AudioBasics">
       <UniqueIdentifier>{BDD763CF-8271-9E45-2A0F-B9FCF686F7BD}</UniqueIdentifier>
     </Filter>
@@ -3121,6 +3124,18 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\jura_processors.cpp">
       <Filter>JUCE Modules\jura_processors</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.cpp">
+      <Filter>JUCE Modules\rapt\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.cpp">
+      <Filter>JUCE Modules\rapt\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiter.cpp">
+      <Filter>JUCE Modules\rapt\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiterLinear.cpp">
+      <Filter>JUCE Modules\rapt\Analysis</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\AudioBasics\AudioBasics.cpp">
       <Filter>JUCE Modules\rapt\AudioBasics</Filter>
     </ClCompile>
@@ -3394,9 +3409,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\CyclicAutoCorrelator.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Analysis</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\EnvelopeFollower.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Analysis</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\FormantRemover.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Analysis</Filter>
     </ClCompile>
@@ -3503,12 +3515,6 @@
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\Saturator.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\SlewRateLimiter.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\SlewRateLimiterLinear.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\WindowFunctions.cpp">
@@ -7632,6 +7638,18 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\jura_processors.h">
       <Filter>JUCE Modules\jura_processors</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h">
+      <Filter>JUCE Modules\rapt\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.h">
+      <Filter>JUCE Modules\rapt\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiter.h">
+      <Filter>JUCE Modules\rapt\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiterLinear.h">
+      <Filter>JUCE Modules\rapt\Analysis</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\AudioBasics\AudioBasics.h">
       <Filter>JUCE Modules\rapt\AudioBasics</Filter>
     </ClInclude>
@@ -7920,9 +7938,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\CyclicAutoCorrelator.h">
       <Filter>JUCE Modules\rapt\Unfinished\Analysis</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\EnvelopeFollower.h">
-      <Filter>JUCE Modules\rapt\Unfinished\Analysis</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\FormantRemover.h">
       <Filter>JUCE Modules\rapt\Unfinished\Analysis</Filter>
     </ClInclude>
@@ -8047,12 +8062,6 @@
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\Saturator.h">
-      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\SlewRateLimiter.h">
-      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\SlewRateLimiterLinear.h">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\WindowFunctions.h">

@@ -1667,9 +1667,6 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // -6, it looks very good - i think, at -3, it gets the cycle-marks wrong - maybe tweak the
   // cycle-mark-finder parameters and/or make them available to client code
 
-  // todo: create a new project/repo where we test the analysis/resynthesis framework on real world
-  // sample data (which should not go into the RS-MET repo)
-
   // maybe the framework can be used to compress samples - in areas where the partials are well
   // approximated by interpolated tarjectories, we could reduce the density of datapoints
   // ...the compression would be lossy, though
@@ -1678,6 +1675,40 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // into a convenience class
 
 // look at files decompositionSteelGuitar002.m, testHarmonicAnalysis.M
+}
+
+void harmonicDeBeating()
+{
+  // We use the harmonic analysis/resynthesis framework to remove beating from a partial. Our test 
+  // signal has 4 partials where the middle one consists actually of two slightly detuned partials
+  // which has the effect that the middle partial shows a beating effect which we try to remove.
+
+  // Settings: 
+  int    nc = 4;      // number of cycles per block (integer, power of two)
+  int    zp = 4;      // zero-padding factor (integer, power of two)
+  int    N = 4000;    // number of samples
+  double f1 = 1000;   // input frequency 1 in Hz
+  double f2 = 1980;   // input frequency 2 in Hz
+  double f3 = 2020;   // input frequency 3 in Hz
+  double f4 = 3000;   // input frequency 4 in Hz
+  double fs = 44100;  // sample rate
+  string wt = "bh";   // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
+                      // bh: Blackman/Harris
+
+  // create input signal:
+  std::string name = "FourSines_Freq1=" + std::to_string(f1)
+    + "_Freq2=" + std::to_string(f2)
+    + "_Freq3=" + std::to_string(f3)
+    + "_Freq4=" + std::to_string(f4)
+    + "_Amp1=" + std::to_string(1.0)
+    + "_Amp2=" + std::to_string(0.25)
+    + "_Amp3=" + std::to_string(0.25)
+    + "_Amp4=" + std::to_string(0.33);
+  std::vector<double> x = createNamedSound(name, fs, N);
+
+  rsPlotVector(x);
+
+
 }
 
 

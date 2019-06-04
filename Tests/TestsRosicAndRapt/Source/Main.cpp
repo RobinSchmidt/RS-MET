@@ -235,7 +235,7 @@ int main(int argc, char* argv[])
   //autoCorrelationPitchDetectorOffline();
   //crossCorrelationBestMatch();
   //combineFFTs(); // move to math experiments
-  envelopeFollower();
+  //envelopeFollower();
   ////zeroCrossingPitchDetector(); // commented in header - why?
   //instantaneousFrequency();
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
@@ -345,7 +345,7 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
-  //envelopeDeBeating();
+//  envelopeDeBeating();
   //sineRecreation();         // maybe move elsewhere
   //sineWithPhaseCatchUp();   // dito
   //partialExtractionTriple();
@@ -363,13 +363,14 @@ int main(int argc, char* argv[])
   //sinusoidalSynthesis1();
   //sinusoidalSynthesis2();
   //sinusoidalAnalysis1();
-  //sinusoidalAnalysis2();
+  //sinusoidalAnalysis2();  // something fails terribly here
   //sinusoidalAnalysis3();
   //phaseFreqConsistency();
   //harmonicDetection2Sines();
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
+  harmonicDeBeating();
 
 
   // Physics:

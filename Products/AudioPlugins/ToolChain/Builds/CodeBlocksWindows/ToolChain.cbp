@@ -31,7 +31,7 @@
           <Add option="-DJucePlugin_Build_Standalone=1"/>
           <Add option="-DJucePlugin_Build_Unity=0"/>
           <Add option="-DJUCE_SHARED_CODE=1"/>
-          <Add option="-m32"/>
+          <Add option="-m64"/>
           <Add option="-O0"/>
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
@@ -47,7 +47,7 @@
           <Add directory="../../../../../../RS-Private/Libaries/vstsdk2.4"/>
         </Compiler>
         <Linker>
-          <Add option="-m32"/>
+          <Add option="-m64"/>
           <Add library="comdlg32"/>
           <Add library="imm32"/>
           <Add library="ole32"/>
@@ -86,7 +86,7 @@
           <Add option="-DJucePlugin_Build_AAX=0"/>
           <Add option="-DJucePlugin_Build_Standalone=0"/>
           <Add option="-DJucePlugin_Build_Unity=0"/>
-          <Add option="-m32"/>
+          <Add option="-m64"/>
           <Add option="-O0"/>
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
@@ -103,7 +103,7 @@
         </Compiler>
         <Linker>
           <Add option="&quot;bin/Debug/ToolChain.lib&quot;"/>
-          <Add option="-m32"/>
+          <Add option="-m64"/>
           <Add library="comdlg32"/>
           <Add library="imm32"/>
           <Add library="ole32"/>
@@ -143,7 +143,7 @@
           <Add option="-DJucePlugin_Build_AAX=0"/>
           <Add option="-DJucePlugin_Build_Standalone=1"/>
           <Add option="-DJucePlugin_Build_Unity=0"/>
-          <Add option="-m32"/>
+          <Add option="-m64"/>
           <Add option="-O0"/>
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
@@ -160,7 +160,7 @@
         </Compiler>
         <Linker>
           <Add option="&quot;bin/Debug/ToolChain.lib&quot;"/>
-          <Add option="-m32"/>
+          <Add option="-m64"/>
           <Add library="comdlg32"/>
           <Add library="imm32"/>
           <Add library="ole32"/>
@@ -10600,6 +10600,54 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Analysis/Analysis.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Analysis/Analysis.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Analysis/EnvelopeFollower.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Analysis/EnvelopeFollower.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Analysis/SlewRateLimiter.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Analysis/SlewRateLimiter.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Analysis/SlewRateLimiterLinear.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Analysis/SlewRateLimiterLinear.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/AudioBasics/AudioBasics.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -11740,18 +11788,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/Analysis/EnvelopeFollower.cpp">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/Analysis/EnvelopeFollower.h">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/Analysis/FormantRemover.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -12215,30 +12251,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/MiscAudio/Saturator.h">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/MiscAudio/SlewRateLimiter.cpp">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/MiscAudio/SlewRateLimiter.h">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/MiscAudio/SlewRateLimiterLinear.cpp">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/MiscAudio/SlewRateLimiterLinear.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>

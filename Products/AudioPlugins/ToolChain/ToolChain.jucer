@@ -57,7 +57,7 @@
     <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraCompilerFlags="-fpermissive&#10;-msse2">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="ToolChain"
-                       headerPath="..\..\..\..\..\Libraries\JUCE\modules" windowsCodeBlocksArchitecture="-m32"/>
+                       headerPath="..\..\..\..\..\Libraries\JUCE\modules" windowsCodeBlocksArchitecture="-m64"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="ToolChain"
                        headerPath="..\..\..\..\..\Libraries\JUCE\modules" windowsCodeBlocksArchitecture="-m64"/>
       </CONFIGURATIONS>

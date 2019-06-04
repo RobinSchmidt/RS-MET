@@ -444,6 +444,13 @@ std::vector<double> createNamedSound(const std::string& s, double fs, int N)
     double a[3] = { getValue(s, "Amp1",  1),   getValue(s, "Amp2",  1),   getValue(s, "Amp3",  1)   };
     createSumOfSines(x, N, 3, fs, f, a);
   }
+  else if(startsWith(s, "FourSines")) {
+    double f[4] = { getValue(s, "Freq1", 100), getValue(s, "Freq2", 200),
+      getValue(s, "Freq3", 300), getValue(s, "Freq4", 400) };
+    double a[4] = { getValue(s, "Amp1", 1), getValue(s, "Amp2", 1), getValue(s, "Amp3", 1),
+      getValue(s, "Amp4", 1) };
+    createSumOfSines(x, N, 4, fs, f, a);
+  }
   else if(startsWith(s, "FiveSines")) {
     double f[5] = { getValue(s, "Freq1", 100), getValue(s, "Freq2", 200), 
       getValue(s, "Freq3", 300), getValue(s, "Freq4", 400), getValue(s, "Freq5", 500) };
