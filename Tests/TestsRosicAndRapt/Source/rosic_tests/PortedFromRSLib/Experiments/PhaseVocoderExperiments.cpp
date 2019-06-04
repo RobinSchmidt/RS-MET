@@ -1699,29 +1699,31 @@ void harmonicDeBeating()
     + "_Amp1=" + std::to_string(1.0)
     + "_Amp2=" + std::to_string(0.25)
     + "_Amp3=" + std::to_string(0.25)
-    + "_Amp4=" + std::to_string(0.33);
+    + "_Amp4=" + std::to_string(0.4);
   std::vector<double> x = 0.5 * createNamedSound(name, fs, N);
-  rsPlotVector(x);
-  rosic::writeToMonoWaveFile("DeBeatInput.wav", &x[0], N, (int)fs);
-
-
+  //rsPlotVector(x);
+  //rosic::writeToMonoWaveFile("DeBeatInput.wav", &x[0], N, (int)fs);
 
   // create and set up analyzer and obtain sinusoidal model:
   RAPT::rsHarmonicAnalyzer<double> analyzer;
   analyzer.setSampleRate(fs);
   analyzer.setSpectralOversampling(4);
   analyzer.setNumCyclesPerBlock(4);
-  analyzer.setWindowType(stringToWindowType("bh")); // options: rc,hn,hm,bm,bh
+  analyzer.setWindowType(stringToWindowType("hm")); // options: rc,hn,hm,bm,bh
   analyzer.getCycleFinder().setFundamental(f1);
+  //analyzer.setMinPeakToMainlobeWidthRatio(0.75);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int)x.size());
-  plotSineModel(mdl, fs);
+  //plotSineModel(mdl, fs);
   plotSineModelAmplitudes(mdl, { 1, 2, 3 }); // 0 is DC
-
 
   int dummy = 0;
 
+  // seems like i'm running into the harmonic drop-in/out issue with this test signal with 2nd and 
+  // 3rd harmonic when using bm or bh window - and most of the time, they are off. hm window seems
+  // to work well
 
-
+  // First simple idea for de-beating: connect the peaks - maybe there should be some sort 
+  // thresholding / additional conditions for which peaks count and which ones are ignored
 }
 
 

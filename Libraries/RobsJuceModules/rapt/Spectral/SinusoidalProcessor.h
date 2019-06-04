@@ -23,6 +23,9 @@ class rsSinusoidalProcessor
 public:
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Static utility functions
+
   /** Given an array of time-stamps and corresponding frequency and wrapped phase values, this 
   function computes the corresponding array of unwrapped phase values by numerically integrating
   the frequency array and then re-adjusting the resulting (unwrapped) phases to have a value that 
@@ -93,13 +96,29 @@ public:
     T inharmonicity, T pickPhaseAt = T(0.5));
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing functions to override
 
 
+  /** This is the function that subclasses must override to implement their actual processing 
+  algorithm. The function gets a reference to the sinusoidal model object and is supposed to 
+  manipulate its data directly. */ 
+  virtual void processModel(rsSinusoidalModel<T>& model) = 0;
 
 
-  // virtual void processModelData
-  // virtual void processPartialEnvelopes
+  // virtual void processPartialEnvelopes 
+  // ..hmm...this should really be in another baseclass - maybe rsInstantaneousEnvelopeProcessor
 
+};
 
+//=================================================================================================
+
+template<class T>
+class rsPartialBeatingRemover : public rsSinusoidalProcessor<T>
+{
+
+public:
+
+  virtual void processModel(rsSinusoidalModel<T>& model) override;
 
 };
