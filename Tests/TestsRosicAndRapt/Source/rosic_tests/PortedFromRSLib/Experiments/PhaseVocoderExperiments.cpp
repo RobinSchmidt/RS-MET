@@ -1684,16 +1684,12 @@ void harmonicDeBeating()
   // which has the effect that the middle partial shows a beating effect which we try to remove.
 
   // Settings: 
-  int    nc = 4;      // number of cycles per block (integer, power of two)
-  int    zp = 4;      // zero-padding factor (integer, power of two)
-  int    N = 4000;    // number of samples
+  int    N  = 4410;   // number of samples
   double f1 = 1000;   // input frequency 1 in Hz
   double f2 = 1980;   // input frequency 2 in Hz
   double f3 = 2020;   // input frequency 3 in Hz
   double f4 = 3000;   // input frequency 4 in Hz
   double fs = 44100;  // sample rate
-  string wt = "bh";   // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
-                      // bh: Blackman/Harris
 
   // create input signal:
   std::string name = "FourSines_Freq1=" + std::to_string(f1)
@@ -1704,9 +1700,25 @@ void harmonicDeBeating()
     + "_Amp2=" + std::to_string(0.25)
     + "_Amp3=" + std::to_string(0.25)
     + "_Amp4=" + std::to_string(0.33);
-  std::vector<double> x = createNamedSound(name, fs, N);
-
+  std::vector<double> x = 0.5 * createNamedSound(name, fs, N);
   rsPlotVector(x);
+  rosic::writeToMonoWaveFile("DeBeatInput.wav", &x[0], N, (int)fs);
+
+
+
+  // create and set up analyzer and obtain sinusoidal model:
+  RAPT::rsHarmonicAnalyzer<double> analyzer;
+  analyzer.setSampleRate(fs);
+  analyzer.setSpectralOversampling(4);
+  analyzer.setNumCyclesPerBlock(4);
+  analyzer.setWindowType(stringToWindowType("bh")); // options: rc,hn,hm,bm,bh
+  analyzer.getCycleFinder().setFundamental(f1);
+  RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int)x.size());
+  plotSineModel(mdl, fs);
+
+
+  int dummy = 0;
+
 
 
 }
