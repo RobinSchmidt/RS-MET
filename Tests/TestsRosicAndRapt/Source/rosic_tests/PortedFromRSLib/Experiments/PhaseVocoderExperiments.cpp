@@ -1684,7 +1684,7 @@ void harmonicDeBeating()
   // which has the effect that the middle partial shows a beating effect which we try to remove.
 
   // Settings: 
-  int    N  = 4410;   // number of samples
+  int    N  = 44100;   // number of samples
   double f1 = 1000;   // input frequency 1 in Hz
   double f2 = 1980;   // input frequency 2 in Hz
   double f3 = 2020;   // input frequency 3 in Hz
@@ -1702,7 +1702,7 @@ void harmonicDeBeating()
     + "_Amp4=" + std::to_string(0.4);
   std::vector<double> x = 0.5 * createNamedSound(name, fs, N);
   //rsPlotVector(x);
-  //rosic::writeToMonoWaveFile("DeBeatInput.wav", &x[0], N, (int)fs);
+  rosic::writeToMonoWaveFile("DeBeatInput.wav", &x[0], N, (int)fs);
 
   // create and set up analyzer and obtain sinusoidal model:
   RAPT::rsHarmonicAnalyzer<double> analyzer;
@@ -1716,10 +1716,27 @@ void harmonicDeBeating()
   //plotSineModel(mdl, fs);
   plotSineModelAmplitudes(mdl, { 1, 2, 3 }); // 0 is DC
 
+  // re-synthesize signal from model:
+  RAPT::rsSinusoidalSynthesizer<double> synth;
+  synth.setSampleRate(fs);
+  std::vector<double> y = synth.synthesize(mdl);
+  rosic::writeToMonoWaveFile("DeBeatOutputUnmodified.wav", &y[0], (int) y.size(), (int)fs);
 
+  // appaly de-beating to model data:
   rsPartialBeatingRemover<double> deBeater;
   deBeater.processModel(mdl);
   plotSineModelAmplitudes(mdl, { 1, 2, 3 }); 
+
+  // re-synthesize signal from modified model:
+  y = synth.synthesize(mdl);
+  rosic::writeToMonoWaveFile("DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
+
+  // Observations:
+  // -the flattening of the amplitude works well - but: beating is not only amplitude modulation
+  //  but also phase-modulation - we may somehow have to flatten the phase, too
+  //  -have a closer look at the phase-trajectory of partial that has beating
+
+
 
 
   int dummy = 0;

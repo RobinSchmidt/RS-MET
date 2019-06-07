@@ -277,6 +277,5 @@ void rsPartialBeatingRemover<T>::removeBeating(rsSinusoidalPartial<T>& partial)
   //plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
   //plt.plot();
 
-  // write new amp data bak into partial:
-  // ...
+  partial.setAmplitudes(a); // write new amp data bak into partial
 }

@@ -73,7 +73,7 @@ class rsSinusoidalPartial  // maybe rename to rsSinusoidalTrack
 
 public:
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Appends the given datapoint at the end. */
@@ -101,10 +101,21 @@ public:
   phase. */
   void applyFadeOut(T fadeTime);
 
+  /** Replaces the amplitudes stored here with the ones given in the array. It is assumed that the 
+  length of the given array matches the numer of data points in this partial - otherwise you are 
+  doing something wrong and an assertion is raised. */
+  void setAmplitudes(const std::vector<T>& newAmplitudes);
+
+
+
   // maybe have insertDataPoint function
 
   /** Sets the frequency for the datapoint at index i. */
   void setFrequency(int i, T newFreq) { instParams[i].freq = newFreq; }
+
+  /** Sets the amplitude for the datapoint at index i. */
+  void setAmplitude(int i, T newAmp) { instParams[i].gain = newAmp; }
+
 
   /** Sets the data for the instantaneous parameters for the datapoint with given index. */
   void setData(int i, T time, T freq, T gain, T phase)
@@ -115,6 +126,9 @@ public:
     instParams[i].gain  = gain;
     instParams[i].phase = phase;
   }
+
+
+
 
   /** Initializes our array of data-points. If you pass a nonzero number, then memory will be 
   allocated for that number of datapoints. You can then fill in the actual data via setData. */
@@ -153,7 +167,7 @@ public:
   // end-condition / additional equation is a bad choice? or maybe the whole thing is a bad idea
   // anyway? -> more experiments needed
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   inline T getStartTime() const 
