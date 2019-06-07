@@ -145,7 +145,7 @@ void fitQuinticWithDerivativesFixedX(T y0, T y1, T yd0, T yd1, T ydd0,
 }
 
 template<class T>
-void getHermiteCoeffsM(T *y0, T *y1, T *a, int M)
+void getHermiteCoeffsM(const T *y0, const T *y1, T *a, int M)
 {
   int n, i, j;
 
@@ -180,7 +180,7 @@ void getHermiteCoeffsM(T *y0, T *y1, T *a, int M)
 }
 
 template<class T>
-void getHermiteCoeffs1(T *y0, T *y1, T *a)
+void getHermiteCoeffs1(const T *y0, const T *y1, T *a)
 {
   a[0] = y0[0];     // a0 = y(0)
   a[1] = y0[1];     // a1 = y'(0)
@@ -193,7 +193,7 @@ void getHermiteCoeffs1(T *y0, T *y1, T *a)
 }
 
 template<class T>
-void getHermiteCoeffs2(T *y0, T *y1, T *a)
+void getHermiteCoeffs2(const T *y0, const T *y1, T *a)
 {
   a[0] = y0[0];     // a0 = y(0)
   a[1] = y0[1];     // a1 = y'(0)
@@ -209,7 +209,7 @@ void getHermiteCoeffs2(T *y0, T *y1, T *a)
 }
 
 template<class T>
-void getHermiteCoeffs3(T *y0, T *y1, T *a)
+void getHermiteCoeffs3(const T *y0, const T *y1, T *a)
 {
   a[0] = y0[0];     // a0 = y(0)
   a[1] = y0[1];     // a1 = y'(0)

@@ -83,10 +83,10 @@ template void RAPT::fitCubicWithDerivativeFixedX(double y0, double y1, double yd
 template void RAPT::fitQuinticWithDerivativesFixedX(double y0, double y1, double yd0, double yd1,
   double ydd0, double ydd1, double *a5, double *a4, double *a3, double *a2, double *a1,
   double *a0);
-template void RAPT::getHermiteCoeffsM(double *y0, double *y1, double *a, int M);
-template void RAPT::getHermiteCoeffs1(double *y0, double *y1, double *a);
-template void RAPT::getHermiteCoeffs2(double *y0, double *y1, double *a);
-template void RAPT::getHermiteCoeffs3(double *y0, double *y1, double *a);
+template void RAPT::getHermiteCoeffsM(const double *y0, const double *y1, double *a, int M);
+template void RAPT::getHermiteCoeffs1(const double *y0, const double *y1, double *a);
+template void RAPT::getHermiteCoeffs2(const double *y0, const double *y1, double *a);
+template void RAPT::getHermiteCoeffs3(const double *y0, const double *y1, double *a);
 template double RAPT::getDelayedSampleAsymmetricHermiteM(double d, double *y, int M, double shape);
 template double RAPT::getDelayedSampleAsymmetricHermite1(double d, double *y, double shape);
 template double RAPT::getDelayedSampleLinear(double d, double *y);

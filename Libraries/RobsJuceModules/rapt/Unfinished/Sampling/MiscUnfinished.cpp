@@ -1548,6 +1548,9 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
   setupEndValues(metaEnvTime, metaEnvValue, endTime);
 }
 
+
+
+
 template<class T>
 void rsEnvelopeExtractor<T>::setupEndValues(std::vector<T>& envTime, std::vector<T>& envValue, int N)
 {
