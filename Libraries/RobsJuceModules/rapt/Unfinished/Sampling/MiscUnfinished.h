@@ -907,6 +907,15 @@ public:
   two (or maybbe more) sinusoids of nearby frequencies and the output is the envelope. */
   void sineEnvelopeWithDeBeating(const T* input, int length, T* envelope);
 
+
+
+
+  void getMetaEnvelope(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
+    std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, int endTime);
+    // or should endTime be of type T?
+
+
+
   /** Given two arrays of abscissa values x and corresponding ordinate value y, both of length N, 
   this function will fill the peaksX and peaksY arrays with only those values from x,y where there 
   is a peak or plateau, i.e. where y[i-1] <= y[i] <= y[i+1]. */

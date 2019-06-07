@@ -1507,14 +1507,13 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
   // maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
   // skip the de-beating process
   setupEndValues(envTime2, envValue2, N);
-
-
-
+  // maybe call the function getMetaEnvelope(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, 
+  // metaEnvValue, endTime)
 
   // get envelope signal by interpolating the peaks (factor out):
   Vec t(N);
   rsArray::fillWithRangeLinear(&t[0], N, 0.0, N-1.0);
-  typedef rsInterpolatingFunction<double, double> IF;
+  typedef rsInterpolatingFunction<T, T> IF;
   IF intFunc;
   intFunc.setMode(interpolationMode);
   intFunc.interpolate(&envTime2[0], &envValue2[0], (int)envTime2.size(), &t[0], env, 
@@ -1531,6 +1530,15 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
   //rsBiDirectionalFilter::applyLowpass(env, env, N, 20.0, 44100.0, 4);
   // maybe instead of a filter, use an attack/release slew-rate limiter with zero attack in order
   // to pass through the actual peaks
+}
+
+template<class T>
+void rsEnvelopeExtractor<T>::getMetaEnvelope(
+  const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
+  std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, int endTime)
+{
+
+
 }
 
 template<class T>
@@ -1579,31 +1587,26 @@ std::vector<size_t> rsEnvelopeExtractor<T>::findPeakIndices(T* x, int N,
   if(N == 0)
     return peaks;
 
-  if(includeFirst){
+  if(includeFirst) {
     if(N > 1) {
       if(x[0] >= x[1])      // todo: switch between >= and > depending on includePlateaus
-        peaks.push_back(0);
-    }
+        peaks.push_back(0); }
     else
-      peaks.push_back(0); // the one and only element is a "peak"
-  }
+      peaks.push_back(0);  } // the one and only element is a "peak"
 
-
-  if(includePlateaus)
-    for(int n = 1; n < N-1; n++)
-      if(RAPT::rsArray::isPeakOrPlateau(x, n)) 
-        peaks.push_back(n);
-  else
-    for(int n = 1; n < N-1; n++)
-      if(RAPT::rsArray::isPeak(x, n)) 
-        peaks.push_back(n);
+  if(includePlateaus) {
+    for(int n = 1; n < N-1; n++) {
+      if(RAPT::rsArray::isPeakOrPlateau(x, n))
+        peaks.push_back(n); }} 
+  else {
+    for(int n = 1; n < N-1; n++) {
+      if(RAPT::rsArray::isPeak(x, n))
+        peaks.push_back(n); }}
 
   if(includeLast){
     if(N > 1) {
       if(x[N-1] >= x[N-2])   // todo: switch between >= and > depending on includePlateaus
-        peaks.push_back(N-1);
-    }
-  }
+        peaks.push_back(N-1); }}
 
   return peaks;
 
