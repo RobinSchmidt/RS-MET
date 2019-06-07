@@ -16,6 +16,8 @@ T biquadMagnitudeAt(T b0, T b1, T b2, T a1, T a2, T w)
   T p   = num/den;
   return sqrt(p);
 }
+// here is a formula that is supposed to be numerically better behaved at low frequencies:
+// https://dsp.stackexchange.com/questions/16885/how-do-i-manually-plot-the-frequency-response-of-a-bandpass-butterworth-filter-i/16911#16911
 
 template<class T>
 std::complex<T> biquadTransferFunctionAt(T b0, T b1, T b2, T a1, T a2, std::complex<T> z)

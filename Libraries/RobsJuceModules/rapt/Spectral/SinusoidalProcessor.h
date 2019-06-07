@@ -119,6 +119,20 @@ class rsPartialBeatingRemover : public rsSinusoidalProcessor<T>
 
 public:
 
+  /** Constuctor. Sets up the embedded envExtractor object to its default settings. */
+  rsPartialBeatingRemover();
+
+  /** Applies beating-removal to all partials. */
   virtual void processModel(rsSinusoidalModel<T>& model) override;
+
+  /** applies the beating removal to a selection of partials */
+  virtual void processModel(rsSinusoidalModel<T>& model, const std::vector<int>& partialIndices);
+
+  /** Applies beating-removal to the given partial. */
+  virtual void removeBeating(rsSinusoidalPartial<T>& partial);
+
+  /** Embedded envelope extrator object - made public, so client code can set up its options 
+  directly by accessing it via dot-syntax. */
+  rsEnvelopeExtractor<T> envExtractor;
 
 };

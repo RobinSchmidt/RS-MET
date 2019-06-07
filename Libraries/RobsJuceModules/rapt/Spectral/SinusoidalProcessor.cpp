@@ -219,3 +219,59 @@ void rsSinusoidalProcessor<T>::makeStrictlyHarmonic(rsSinusoidalModel<T>& mdl, T
   // todo: maybe allow for an inharmonicity factor - use the formula for piano-string  
   // inharmoncity/string-stiffness) - if zero (the default), the spectrum is strictly harmonic
 }
+
+//-------------------------------------------------------------------------------------------------
+
+template<class T>
+rsPartialBeatingRemover<T>::rsPartialBeatingRemover()
+{
+  // maybe factor out into setToDefaultSettings or resetSettings or something
+
+  /*
+  typedef RAPT::rsInterpolatingFunction<T, T> IF;
+  envExtractor.setInterpolationMode(IF::CUBIC_NATURAL);
+  //envExtractor.setInterpolationMode(IF::LINEAR);
+  envExtractor.setSampleRate(fs);
+  //envExtractor.setSmoothing(20.0, 4);
+  envExtractor.setStartMode(EE::FREE_END);
+  envExtractor.setEndMode(EE::FREE_END);
+  //envExtractor.setStartMode(EE::ZERO_END);
+  //envExtractor.setEndMode(  EE::ZERO_END);
+  //envExtractor.setStartMode(EE::EXTRAPOLATE_END);
+  //envExtractor.setEndMode(  EE::EXTRAPOLATE_END);
+  */
+  // oh no - this doesn't work - the envExtractor expects an audio signal as input - we need to 
+  // refactor it to extract the de-beating (i.e. extracting the "meta-envelope" (env-of-env) algo
+
+}
+
+
+template<class T>
+void rsPartialBeatingRemover<T>::processModel(rsSinusoidalModel<T>& model)
+{
+  for(size_t i = 0; i < model.getNumPartials(); i++)
+    removeBeating(model.getModifiablePartialRef(i));
+}
+
+template<class T>
+void rsPartialBeatingRemover<T>::processModel(rsSinusoidalModel<T>& model, 
+  const std::vector<int>& partialIndices)
+{
+  for(size_t i = 0; i < partialIndices.size(); i++)
+    removeBeating(model.getModifiablePartialRef(partialIndices[i]));
+}
+
+template<class T>
+void rsPartialBeatingRemover<T>::removeBeating(rsSinusoidalPartial<T>& partial)
+{
+  // extract time-axis and amp-envelope of partial as arrays:
+  t = partial.getTimeArray();
+  a = partial.getAmplitudeArray();
+
+
+  // connect peaks:
+  // envExtractor.connectPeaks(t, a, a); // a-array used as input and output
+
+  // write new amp data bak into partial:
+  // ...
+}

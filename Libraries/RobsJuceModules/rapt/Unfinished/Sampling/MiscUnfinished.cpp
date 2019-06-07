@@ -1497,16 +1497,19 @@ template<class T>
 void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env)
 {
   typedef std::vector<double> Vec;
-
   Vec envTime, envValue;
   getAmpEnvelope(x, N, envTime, envValue);
 
-  Vec envTime2, envValue2;
+
+  // factor out the code below:
+  Vec envTime2, envValue2;  // rename to peakTimes, peakValues
   getPeaks(&envTime[0], &envValue[0], (int)envTime.size(), envTime2, envValue2);
   // maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
   // skip the de-beating process
-
   setupEndValues(envTime2, envValue2, N);
+
+
+
 
   // get envelope signal by interpolating the peaks (factor out):
   Vec t(N);
