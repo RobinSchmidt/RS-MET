@@ -82,7 +82,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Evaluation:
 
-  void interpolate(Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni);
+  void interpolate(const Tx *x, Ty *y, int N, Tx *xi, Ty *yi, int Ni);
+  // make y const, too
 
   /*
   Ty getValue(Tx x) const

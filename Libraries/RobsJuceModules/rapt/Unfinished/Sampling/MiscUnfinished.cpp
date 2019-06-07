@@ -1506,22 +1506,12 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
   Vec metaEnvTime, metaEnvValue;
   getMetaEnvelope(&envTime[0], &envValue[0], (int)envTime.size(), metaEnvTime, metaEnvValue, N);
 
-  //getPeaks(&envTime[0], &envValue[0], (int)envTime.size(), metaEnvTime, metaEnvValue);
-  //// maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
-  //// skip the de-beating process
-  //setupEndValues(metaEnvTime, metaEnvValue, N);
-
-
-  // get envelope signal by interpolating the peaks:
+  // get envelope-of-envelope as audio signal by interpolation:
   Vec t(N);
   rsArray::fillWithRangeLinear(&t[0], N, 0.0, N-1.0);
-
-  // factor out from here:
-  typedef rsInterpolatingFunction<T, T> IF;
-  IF intFunc;
-  intFunc.setMode(interpolationMode);
-  intFunc.interpolate(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(), 
+  interpolateEnvelope(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(),
     &t[0], env, (int)t.size());
+
 
   // -maybe the bump can be avoided using a quartic interpolant
   // -and/or: let the env start at 0 and use a segement of lower order by not prescribing values
@@ -1547,6 +1537,17 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
 
   setupEndValues(metaEnvTime, metaEnvValue, endTime);
 }
+
+template<class T>
+void rsEnvelopeExtractor<T>::interpolateEnvelope(const T* envTimes, T* envValues, int envLength,
+  T* interpolatedTimes, T* interpolatedValues, int interpolatedLength)
+{
+  rsInterpolatingFunction<T, T> intFunc;
+  intFunc.setMode(interpolationMode);
+  intFunc.interpolate(envTimes, envValues, envLength,
+    interpolatedTimes, interpolatedValues, interpolatedLength);
+}
+
 
 
 
