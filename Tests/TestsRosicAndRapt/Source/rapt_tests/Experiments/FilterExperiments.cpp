@@ -524,43 +524,63 @@ void nonUniformMovingAverage()
 
 void nonUniformOnePole()
 {
-  int N = 100;
+  int N = 20;
 
-  std::vector<double> t(N), x(N), y(N); // time-stamps, input- and output signal
+  std::vector<double> t(N), x(N), yu(N), yn(N); 
+  // time-stamps, input- and output signals
 
   typedef RAPT::rsArray AR;
+
+  double dtMin = 1.0;   // minimum time-difference between non-uniform samples
+  double dtMax = 1.0;   // maximum ...
+  double fs    = 1.0;   // sample rate
+  double fc    = 0.1;   // cutoff freq
 
   // Tests:
   // 1: compare to the output of a regular uniform one-pole - choose the time-stamps for the 
   //    non-uniform to be equal to the sample-numbers - the non-uniform filter should match the 
   //    output of the uniform one
   // 2: look at the non-uniform impulse response - compare to analytic result
+  // 3: maybe compute what the paper calls "ground" truth by oversampling - don't use random
+  //    intervals for the nonuniform case but put the sample instants at times where we have
+  //    actual oversampled data
 
+  AR::fillWithImpulse(&x[0],  N);
+  AR::fillWithZeros(  &yu[0], N);
+  AR::fillWithZeros(  &yn[0], N);
 
-
-
-  AR::fillWithImpulse(&x[0], N);
-  AR::fillWithZeros(&y[0], N);
-
-  // later try random vaues:
+  // fill timestamp and input signal arrays:
   t[0] = 0;  // time starts at zero, even in non-uniform setting
-  AR::fillWithRandomValues(&t[1], N-1, 0.5, 2.0, 0);
+  AR::fillWithRandomValues(&t[1], N-1, dtMin, dtMax, 0);
   AR::cumulativeSum(&t[0], &t[0], N);
   AR::fillWithRandomValues(&x[0], N, -1.0, 1.0, 1);
 
-  rsNonUniformOnePole<double> flt;
-  flt.setOmega(0.5);
+  // apply uniform filter:
+  rsOnePoleFilter<double, double> fltUni;
+  fltUni.setSampleRate(fs);
+  fltUni.setCutoff(fc);
+  fltUni.setMode(fltUni.LOWPASS_IIT);
   int n;
+  for(n = 0; n < N; n++)
+    yu[n] = fltUni.getSample(x[n]);
+
+
+  // apply non-uniform filter
+  rsNonUniformOnePole<double> fltNonUni;
+  fltNonUni.setOmega(2*PI*fc/fs);
   //y[0] = flt.init(x[0]); // needs to somehow set the initial state where we do not yet have a dt
   //flt.reset();
   for(n = 1; n < N; n++)
-    y[n] = flt.getSample(x[n], t[n]-t[n-1]);
+    yn[n] = fltNonUni.getSample(x[n], t[n]-t[n-1]);
   // this is not yet suppsoed to work - figure out how to set initial state
 
 
   GNUPlotter plt;
-  plt.addDataArrays(N, &t[0], &x[0], &y[0]);
+  plt.addDataArrays(N, &t[0], &x[0], &yu[0], &yn[0]);
   plt.plot();
+
+  // when the samples are uniform, the results almost match - but the non-uniform filter has a 
+  // different initial section - it's probably not properly initialized
 }
 
 void smoothingFilterOrders()
