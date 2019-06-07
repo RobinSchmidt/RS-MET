@@ -923,8 +923,17 @@ public:
   // maybe move to rsArray, maybe return a vector of int, rename to findPeaksAndPlateauIndices or
   // maybe have another boolean option includePlateaus
 
-  static void getAmpEnvelope(const T* x, int N, std::vector<T>& sampleTime, 
-    std::vector<T>& envValue);
+  /** Given a signal x of length N, this function fills the sampleTime array with the 
+  sample-instants where the absolute value of x has a peak and also fills the envValue array with 
+  the corresponding absolute signal values themselves. So what you get is a bunch of time-instants 
+  and absolute signal values for those time-instants where there's a peak in the amplitude 
+  envelope. You may interpolate this data up to sample-rate later to obtain an estimated amplitude 
+  envelope - but this will work well only for simple waveforms which don't have multiple local 
+  maxima within a cycle. It's meant mostly for use with sinewaves - in this case you'll get two 
+  envelope samples for each cycle (one for the positive and one for the negative half-wave). */
+  static void getAmpEnvelope(const T* x, int N, 
+    std::vector<T>& sampleTime, std::vector<T>& envValue);
+  // maybe rename to envelopeTimesAndValues
 
 
 protected:
