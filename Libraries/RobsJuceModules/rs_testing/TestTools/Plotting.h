@@ -172,6 +172,12 @@ void plotSineModelAmplitudes(
   const RAPT::rsSinusoidalModel<double>& model,
   const std::vector<int>& partialIndices);
 
+/** Plots a subset of the (unwrapped) phases or their (numerical) derivatives. 
+todo: allow also to show de-trended phases instead of the derivative */
+void plotSineModelPhases(
+  const RAPT::rsSinusoidalModel<double>& model,
+  const std::vector<int>& partialIndices, bool derivative = false);
+
 
 /** Plots the results of a sinusoidal synthesis of given model using given synthesizer object and
 plots also the original signal x (of length N) and the synthesis error. */

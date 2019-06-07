@@ -267,6 +267,32 @@ void plotSineModelAmplitudes(
   plt.plot();
 }
 
+void plotSineModelPhases(
+  const RAPT::rsSinusoidalModel<double>& model,
+  const std::vector<int>& partialIndices, bool derivative)
+{
+  GNUPlotter plt;
+  std::vector<double> t, p, f, pd;
+
+  for(int i = 0; i < (int)partialIndices.size(); i++) {
+    int index = partialIndices[i];
+    t = model.getPartial(index).getTimeArray();
+    p = model.getPartial(index).getPhaseArray();
+    f = model.getPartial(index).getFrequencyArray();
+    p = rsSinusoidalProcessor<double>::unwrapPhase(t, f, p);        // unwrap
+
+    if(derivative) {
+      pd.resize(p.size());
+      rsNumericDerivative(&t[0], &p[0], &pd[0], (int)p.size(), true); // take derivative
+      plt.addDataArrays((int)t.size(), &t[0], &pd[0]); }
+    else {
+      plt.addDataArrays((int)t.size(), &t[0], &p[0]); }
+
+
+  }
+  plt.plot();
+}
+
 void plotSineResynthesisResult(const RAPT::rsSinusoidalModel<double>& model, 
   const RAPT::rsSinusoidalSynthesizer<double>& synth, double* x, int Nx)
 {

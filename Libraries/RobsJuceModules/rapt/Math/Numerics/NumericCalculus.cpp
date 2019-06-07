@@ -1,6 +1,8 @@
 template<class Tx, class Ty>
 void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds)
 {
+  rsAssert(y != yd, "cannot be used in place yet, y and yd have to be distinct");
+
   Tx dxl, dxr, dx;
   Ty a, b; 
 

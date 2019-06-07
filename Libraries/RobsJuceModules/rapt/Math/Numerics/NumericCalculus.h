@@ -5,7 +5,8 @@
 // -maybe rsNumCalc or rsNumericalCalculus - get rid of the then redundant "Numeric" in the 
 //  function names
 
-/** Given an array of strictly monotonically increasing but not necessarily equidistant abscissa
+/** Cannot be used in-place yet: y and yd have to be distinct!
+Given an array of strictly monotonically increasing but not necessarily equidistant abscissa
 values in x and corresponding function values in y, this function fills the array yd with a
 numeric approximation of the derivative for each x value. All arrays are of length N. To
 compute the numeric derivative, we use a weighted average of the difference quotients left and
@@ -40,7 +41,7 @@ void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
 
 // Maybe rename to NumericAnalysis and include the interpolation stuff into this file as well 
 // because some interpolation stuff depends on numeric derivatives but some numeric derivatives/
-// integration stuff may depend on intrepolation and if we templatize the functions, we need to 
+// integration stuff may depend on interpolation and if we templatize the functions, we need to 
 // take care that everything is defined before it gets used.
 
 /** just a stub, at the moment */

@@ -1714,7 +1714,8 @@ void harmonicDeBeating()
   //analyzer.setMinPeakToMainlobeWidthRatio(0.75);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int)x.size());
   //plotSineModel(mdl, fs);
-  plotSineModelAmplitudes(mdl, { 1, 2, 3 }); // 0 is DC
+  //plotSineModelAmplitudes(mdl, { 1, 2, 3 }); // 0 is DC
+  plotSineModelPhases(mdl, { 1, 2, 3 }, true);
 
   // re-synthesize signal from model:
   RAPT::rsSinusoidalSynthesizer<double> synth;
@@ -1725,7 +1726,7 @@ void harmonicDeBeating()
   // appaly de-beating to model data:
   rsPartialBeatingRemover<double> deBeater;
   deBeater.processModel(mdl);
-  plotSineModelAmplitudes(mdl, { 1, 2, 3 }); 
+  //plotSineModelAmplitudes(mdl, { 1, 2, 3 }); 
 
   // re-synthesize signal from modified model:
   y = synth.synthesize(mdl);
@@ -1735,6 +1736,9 @@ void harmonicDeBeating()
   // -the flattening of the amplitude works well - but: beating is not only amplitude modulation
   //  but also phase-modulation - we may somehow have to flatten the phase, too
   //  -have a closer look at the phase-trajectory of partial that has beating
+  //  -i think, it should probably switch phases whenever the beating-envelope goes through a zero
+  //  -yep - the smooth change form upward- to downward saw(ish) is replaced by sudden switches
+  //  -maybe resynthesize only the beating partial
 
 
 
