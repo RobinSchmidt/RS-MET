@@ -345,22 +345,22 @@ public:
   /** Returns true if the value in array x at position n is larger than its left and right 
   neighbour (the caller must be sure, that n-1, n, n+1 are valid array indices). */
   template<class T>
-  static bool isPeak(T *x, int n);
+  static bool isPeak(const T *x, int n);
   // inline this
 
   /** Similar to isPeak, but uses "greater-or-equal" comparison instead of "greater". */
   template<class T>
-  static inline bool isPeakOrPlateau(T *x, int n);
+  static inline bool isPeakOrPlateau(const T *x, int n);
 
   /** Returns true if the value in array x at position n is smaller than its left and right 
   neighbour (the caller must be sure, that n-1, n, n+1 are valid array indices). */
   template<class T>
-  static bool isValley(T *x, int n);
+  static bool isValley(const T *x, int n);
 
   /** Returns true if the value in array x at position n is larger or smaller than its left and 
   right neighbour (the caller must be sure, that n-1, n, n+1 are valid array indices). */
   template<class T>
-  static bool isPeakOrValley(T *x, int n);
+  static bool isPeakOrValley(const T *x, int n);
 
   /** Shifts the content of the buffer numPlaces to the left, filling it up with zeros from the
   right. */
@@ -683,7 +683,7 @@ inline bool rsArray::isFilledWithValue(T *buffer, int length, T value)
 }
 
 template<class T>
-bool rsArray::isPeakOrPlateau(T *x, int n)
+bool rsArray::isPeakOrPlateau(const T *x, int n)
 {
   if(x[n] >= x[n-1] && x[n] >= x[n+1])
     return true;

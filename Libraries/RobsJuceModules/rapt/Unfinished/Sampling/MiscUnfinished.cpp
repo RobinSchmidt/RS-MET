@@ -1497,27 +1497,31 @@ template<class T>
 void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env)
 {
   typedef std::vector<double> Vec;
+
+  // get raw envelope:
   Vec envTime, envValue;
   getAmpEnvelope(x, N, envTime, envValue);
 
+  // get envelope-of-envelope:
+  Vec metaEnvTime, metaEnvValue;
+  getMetaEnvelope(&envTime[0], &envValue[0], (int)envTime.size(), metaEnvTime, metaEnvValue, N);
 
-  // factor out the code below:
-  Vec envTime2, envValue2;  // rename to peakTimes, peakValues
-  getPeaks(&envTime[0], &envValue[0], (int)envTime.size(), envTime2, envValue2);
-  // maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
-  // skip the de-beating process
-  setupEndValues(envTime2, envValue2, N);
-  // maybe call the function getMetaEnvelope(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, 
-  // metaEnvValue, endTime)
+  //getPeaks(&envTime[0], &envValue[0], (int)envTime.size(), metaEnvTime, metaEnvValue);
+  //// maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
+  //// skip the de-beating process
+  //setupEndValues(metaEnvTime, metaEnvValue, N);
 
-  // get envelope signal by interpolating the peaks (factor out):
+
+  // get envelope signal by interpolating the peaks:
   Vec t(N);
   rsArray::fillWithRangeLinear(&t[0], N, 0.0, N-1.0);
+
+  // factor out from here:
   typedef rsInterpolatingFunction<T, T> IF;
   IF intFunc;
   intFunc.setMode(interpolationMode);
-  intFunc.interpolate(&envTime2[0], &envValue2[0], (int)envTime2.size(), &t[0], env, 
-    (int)t.size());
+  intFunc.interpolate(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(), 
+    &t[0], env, (int)t.size());
 
   // -maybe the bump can be avoided using a quartic interpolant
   // -and/or: let the env start at 0 and use a segement of lower order by not prescribing values
@@ -1537,8 +1541,11 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
   const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, int endTime)
 {
+  getPeaks(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
+  // maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
+  // skip the de-beating process
 
-
+  setupEndValues(metaEnvTime, metaEnvValue, endTime);
 }
 
 template<class T>
@@ -1577,7 +1584,7 @@ void rsEnvelopeExtractor<T>::setupEndValues(std::vector<T>& envTime, std::vector
 }
 
 template<class T>
-std::vector<size_t> rsEnvelopeExtractor<T>::findPeakIndices(T* x, int N, 
+std::vector<size_t> rsEnvelopeExtractor<T>::findPeakIndices(const T* x, int N, 
   bool includeFirst, bool includeLast)
 {
   std::vector<size_t> peaks;
@@ -1644,7 +1651,7 @@ void rsEnvelopeExtractor<T>::getAmpEnvelope(const T* x, int N,
 }
 
 template<class T>
-void rsEnvelopeExtractor<T>::getPeaks(T *x, T *y, int N, 
+void rsEnvelopeExtractor<T>::getPeaks(const T *x, const T *y, int N, 
   std::vector<T>& peaksX, std::vector<T>& peaksY)
 {
   std::vector<size_t> peakIndices = findPeakIndices(y, N, true, true);

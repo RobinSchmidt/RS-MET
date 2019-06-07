@@ -737,7 +737,7 @@ T rsArray::interpolateClamped(T *y, int N, double n)
 }
 
 template<class T>
-bool rsArray::isPeak(T *x, int n)
+bool rsArray::isPeak(const T *x, int n)
 {
   if(x[n] > x[n-1] && x[n] > x[n+1])
     return true;
@@ -745,7 +745,7 @@ bool rsArray::isPeak(T *x, int n)
 }
 
 template<class T>
-bool rsArray::isValley(T *x, int n)
+bool rsArray::isValley(const T *x, int n)
 {
   if(x[n] < x[n-1] && x[n] < x[n+1])
     return true;
@@ -753,7 +753,7 @@ bool rsArray::isValley(T *x, int n)
 }
 
 template<class T>
-bool rsArray::isPeakOrValley(T *x, int n)
+bool rsArray::isPeakOrValley(const T *x, int n)
 {
   return isPeak(x, n) || isValley(x, n);
 }

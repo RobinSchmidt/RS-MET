@@ -919,7 +919,8 @@ public:
   /** Given two arrays of abscissa values x and corresponding ordinate value y, both of length N, 
   this function will fill the peaksX and peaksY arrays with only those values from x,y where there 
   is a peak or plateau, i.e. where y[i-1] <= y[i] <= y[i+1]. */
-  static void getPeaks(T *x, T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
+  static void getPeaks(const T *x, const T *y, int N, 
+    std::vector<T>& peaksX, std::vector<T>& peaksY);
   // rename to getPeaksAndPlateausXY
 
   /** Returns an array of indices where the x-array (of length N) has a peak or plateau, i.e. all 
@@ -927,7 +928,7 @@ public:
   plateaus, where the x-value is constant over a range of indices). The includeFirst/Last options 
   select, whether the index of x[0] and/or x[N-1] will be included in cases where x[0] >= x[1] 
   and/or x[N-1] >= x[N-2] respectively.  */
-  static std::vector<size_t> findPeakIndices(T* x, int N, bool includeFirst = false,
+  static std::vector<size_t> findPeakIndices(const T* x, int N, bool includeFirst = false,
     bool includeLast = false);
   // maybe move to rsArray, maybe return a vector of int, rename to findPeaksAndPlateauIndices or
   // maybe have another boolean option includePlateaus
