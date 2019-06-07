@@ -28,7 +28,8 @@ protected:
 
 
   T y = 0;         // state/output
-  T a = 1, b = 0;  // coefficients
+  T a = 1, b = 0;  // coefficients, a: feedforward, b: feedback (notation as in the paper)
+                   // in more common dsp conventions a = b0, b = a1, b1 does not exist
 
   T s = 1; // scaler
   //T p = 1; 

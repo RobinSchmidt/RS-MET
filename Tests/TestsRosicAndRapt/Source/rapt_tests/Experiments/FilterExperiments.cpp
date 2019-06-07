@@ -537,29 +537,30 @@ void nonUniformOnePole()
   // 2: look at the non-uniform impulse response - compare to analytic result
 
 
+
+
   AR::fillWithImpulse(&x[0], N);
   AR::fillWithZeros(&y[0], N);
 
   // later try random vaues:
   t[0] = 0;  // time starts at zero, even in non-uniform setting
-  //AR::fillWithRandomValues(&t[1], N-1, 0.5, 2.0, 0);
-  //AR::cumulativeSum(&t[0], &t[0], N);
-  //AR::fillWithRandomValues(&x[0], N, -1.0, 1.0, 1);
+  AR::fillWithRandomValues(&t[1], N-1, 0.5, 2.0, 0);
+  AR::cumulativeSum(&t[0], &t[0], N);
+  AR::fillWithRandomValues(&x[0], N, -1.0, 1.0, 1);
 
   rsNonUniformOnePole<double> flt;
   flt.setOmega(0.5);
   int n;
-  //y[0] = filter.init(x[0]); // needs to somehow set the initial state where we do not yet have a dt
+  //y[0] = flt.init(x[0]); // needs to somehow set the initial state where we do not yet have a dt
+  //flt.reset();
   for(n = 1; n < N; n++)
-  {
     y[n] = flt.getSample(x[n], t[n]-t[n-1]);
-  }
   // this is not yet suppsoed to work - figure out how to set initial state
 
 
   GNUPlotter plt;
-  //plt.addDataArrays(N, &t[0], &x[0], &y[0]);
-  //plt.plot();
+  plt.addDataArrays(N, &t[0], &x[0], &y[0]);
+  plt.plot();
 }
 
 void smoothingFilterOrders()

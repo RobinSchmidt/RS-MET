@@ -2,6 +2,7 @@ todo: turn the the file into a cpp file and keep the explanations below as comme
 
 This paper:
 
+http://inf.ufrgs.br/~eslgastal/NonUniformFiltering/
 http://inf.ufrgs.br/~eslgastal/NonUniformFiltering/Gastal_Oliveira_EG2015_Non-Uniform_Filtering.pdf
 
 describes an approach to apply filters to non-uniformly sampled data. Its is based on decomposing
@@ -22,8 +23,8 @@ fraction expansion, the filter difference equation becomes:
 where the first sum runs over the parallel first order sections and the second sum is an 
 additional FIR part that will occur only when the numerator of the transfer function has higher
 order than the denominator. In the case of repeated poles, the partial fraction expansion will 
-also contain products of first order terms. The output of each first order filter can 
-be computed as:
+also contain products of first order terms (see paper how to deal with this complication). In the 
+uniform case, the output of each first order filter can be computed as:
  
   y[n] = a * x[n] + b * y[n-1]
  
