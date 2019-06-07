@@ -1,6 +1,6 @@
 template<class Tx, class Ty>
 void rsInterpolatingFunction<Tx, Ty>::interpolate(
-  const Tx *x, Ty *y, int N,   Tx *xi, Ty *yi, int Ni)
+  const Tx *x, Ty *y, int N,   const Tx *xi, Ty *yi, int Ni)
 {
   // apply pre-mapping to y (use a temporary buffer t):
   Ty* t = y;

@@ -915,9 +915,12 @@ public:
     // or should endTime be of type T?
 
   void interpolateEnvelope(const T* envTimes, T* envValues, int envLength, 
-    T* interpolatedTimes, T* interpolatedValues, int interpolatedLength);
+    const T* interpolatedTimes, T* interpolatedValues, int interpolatedLength);
   // make envValues and interpolatedValues const, too
 
+
+  void connectPeaks(const T* envTimes, T* envValues, T* peakValues, int length);
+    // make envValues const, too
 
 
   /** Given two arrays of abscissa values x and corresponding ordinate value y, both of length N, 

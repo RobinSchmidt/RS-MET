@@ -1540,7 +1540,7 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
 
 template<class T>
 void rsEnvelopeExtractor<T>::interpolateEnvelope(const T* envTimes, T* envValues, int envLength,
-  T* interpolatedTimes, T* interpolatedValues, int interpolatedLength)
+  const T* interpolatedTimes, T* interpolatedValues, int interpolatedLength)
 {
   rsInterpolatingFunction<T, T> intFunc;
   intFunc.setMode(interpolationMode);
@@ -1548,9 +1548,17 @@ void rsEnvelopeExtractor<T>::interpolateEnvelope(const T* envTimes, T* envValues
     interpolatedTimes, interpolatedValues, interpolatedLength);
 }
 
+template<class T>
+void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* peakValues, 
+  int length)
+{
+  std::vector<T> metaEnvTime, metaEnvValue;
+  getMetaEnvelope(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
+   // gives warning last argument of getMetaEnvelope should be T not int
 
-
-
+  interpolateEnvelope(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(),
+    envTimes, peakValues, length);
+}
 
 template<class T>
 void rsEnvelopeExtractor<T>::setupEndValues(std::vector<T>& envTime, std::vector<T>& envValue, int N)

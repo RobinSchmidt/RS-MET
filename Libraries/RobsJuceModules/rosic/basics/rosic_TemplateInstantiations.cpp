@@ -252,3 +252,4 @@ template class RAPT::rsSinusoidalSynthesizer<double>;
 template class RAPT::rsSinusoidalAnalyzer<double>;
 template class RAPT::rsHarmonicAnalyzer<double>;
 template class RAPT::rsSinusoidalProcessor<double>;
+template class RAPT::rsPartialBeatingRemover<double>;

@@ -1716,6 +1716,12 @@ void harmonicDeBeating()
   //plotSineModel(mdl, fs);
   plotSineModelAmplitudes(mdl, { 1, 2, 3 }); // 0 is DC
 
+
+  rsPartialBeatingRemover<double> deBeater;
+  deBeater.processModel(mdl);
+  plotSineModelAmplitudes(mdl, { 1, 2, 3 }); 
+
+
   int dummy = 0;
 
   // seems like i'm running into the harmonic drop-in/out issue with this test signal with 2nd and 

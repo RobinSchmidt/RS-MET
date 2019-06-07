@@ -265,12 +265,17 @@ template<class T>
 void rsPartialBeatingRemover<T>::removeBeating(rsSinusoidalPartial<T>& partial)
 {
   // extract time-axis and amp-envelope of partial as arrays:
-  t = partial.getTimeArray();
-  a = partial.getAmplitudeArray();
+  std::vector<T> t = partial.getTimeArray();
+  std::vector<T> a = partial.getAmplitudeArray();
 
+  //GNUPlotter plt;
+  //plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
 
   // connect peaks:
-  // envExtractor.connectPeaks(t, a, a); // a-array used as input and output
+  envExtractor.connectPeaks(&t[0], &a[0], &a[0], (int)t.size()); // a-array used as input and output
+
+  //plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
+  //plt.plot();
 
   // write new amp data bak into partial:
   // ...
