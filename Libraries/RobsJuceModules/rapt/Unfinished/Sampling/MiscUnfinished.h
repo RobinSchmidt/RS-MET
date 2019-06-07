@@ -902,11 +902,29 @@ public:
 
   //void extractEnvelope(const T* input, int length, T* envelope);
 
-
   /** Function suitable for extracting the envelope of an extracted partial that shows beating 
   between two nearby modes. The input signal is an array of given length that presumably contains 
   two (or maybbe more) sinusoids of nearby frequencies and the output is the envelope. */
   void sineEnvelopeWithDeBeating(const T* input, int length, T* envelope);
+
+  /** Given two arrays of abscissa values x and corresponding ordinate value y, both of length N, 
+  this function will fill the peaksX and peaksY arrays with only those values from x,y where there 
+  is a peak or plateau, i.e. where y[i-1] <= y[i] <= y[i+1]. */
+  static void getPeaks(T *x, T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
+  // rename to getPeaksAndPlateausXY
+
+  /** Returns an array of indices where the x-array (of length N) has a peak or plateau, i.e. all 
+  indices i where x[i-1] <= x[i] <= x[i+1] (note, that using <= instead of < will also catch 
+  plateaus, where the x-value is constant over a range of indices). The includeFirst/Last options 
+  select, whether the index of x[0] and/or x[N-1] will be included in cases where x[0] >= x[1] 
+  and/or x[N-1] >= x[N-2] respectively.  */
+  static std::vector<size_t> findPeakIndices(T* x, int N, bool includeFirst = false,
+    bool includeLast = false);
+  // maybe move to rsArray, maybe return a vector of int, rename to findPeaksAndPlateauIndices or
+  // maybe have another boolean option includePlateaus
+
+  static void getAmpEnvelope(const T* x, int N, std::vector<T>& sampleTime, 
+    std::vector<T>& envValue);
 
 
 protected:
@@ -914,18 +932,10 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Internal Functions */
 
-  // maybe move to rsArray:
-  static std::vector<size_t> findPeakIndices(T* x, int N, bool includeFirst = false,
-    bool includeLast = false);
 
-
-  static void getAmpEnvelope(const T* x, int N, std::vector<T>& sampleTime, 
-    std::vector<T>& envValue);
-
-  static void getPeaks(T *x, T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
+  void setupEndValues(std::vector<T>& envTime, std::vector<T>& envValue, int N);
 
   // void applySmoothing
-  void setupEndValues(std::vector<T>& envTime, std::vector<T>& envValue, int N);
 
   int interpolationMode = rsInterpolatingFunction<T, T>::LINEAR;
   //T interpolationTension = T(0);

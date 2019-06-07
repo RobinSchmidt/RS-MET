@@ -1574,31 +1574,40 @@ std::vector<size_t> rsEnvelopeExtractor<T>::findPeakIndices(T* x, int N,
 {
   std::vector<size_t> peaks;
 
+  bool includePlateaus = true; // todo: make user option
+
   if(N == 0)
     return peaks;
 
   if(includeFirst){
     if(N > 1) {
-      if(x[0] >= x[1])
+      if(x[0] >= x[1])      // todo: switch between >= and > depending on includePlateaus
         peaks.push_back(0);
     }
     else
       peaks.push_back(0); // the one and only element is a "peak"
   }
 
-  for(size_t n = 1; n < N-1; n++) {
-    if( RAPT::rsArray::isPeakOrPlateau(x, (int)n) )
-      peaks.push_back(n);
-  }
+
+  if(includePlateaus)
+    for(int n = 1; n < N-1; n++)
+      if(RAPT::rsArray::isPeakOrPlateau(x, n)) 
+        peaks.push_back(n);
+  else
+    for(int n = 1; n < N-1; n++)
+      if(RAPT::rsArray::isPeak(x, n)) 
+        peaks.push_back(n);
 
   if(includeLast){
     if(N > 1) {
-      if(x[N-1] >= x[N-2])
+      if(x[N-1] >= x[N-2])   // todo: switch between >= and > depending on includePlateaus
         peaks.push_back(N-1);
     }
   }
 
   return peaks;
+
+  // make a unit test for this covering all special cases
 }
 // what about situations where there are several values of the same height, like
 // 0 1 2 2 2 1 0 1 3 3 2 1 2 1
@@ -1627,7 +1636,7 @@ void rsEnvelopeExtractor<T>::getAmpEnvelope(const T* x, int N,
     size_t n = peakIndices[m];
     sampleTime[m] = (T) n;
     envValue[m]   = xAbs[n];
-    // todo: refine to subsample-precision
+    // todo: optionally refine to subsample-precision
   }
 }
 
