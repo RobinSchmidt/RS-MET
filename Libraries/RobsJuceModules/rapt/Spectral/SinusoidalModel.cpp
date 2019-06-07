@@ -34,7 +34,7 @@ template<class T>
 void rsSinusoidalPartial<T>::setAmplitudes(const std::vector<T>& a)
 {
   rsAssert(a.size() == getNumDataPoints(), "wrong array size");
-  for(size_t i = 0; i < a.size(); i++)
+  for(int i = 0; i < (int) a.size(); i++)
     setAmplitude(i, a[i]);
 }
 

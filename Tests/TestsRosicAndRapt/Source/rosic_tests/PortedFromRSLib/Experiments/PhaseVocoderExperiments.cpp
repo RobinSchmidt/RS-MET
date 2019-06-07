@@ -1715,7 +1715,7 @@ void harmonicDeBeating()
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int)x.size());
   //plotSineModel(mdl, fs);
   //plotSineModelAmplitudes(mdl, { 1, 2, 3 }); // 0 is DC
-  plotSineModelPhases(mdl, { 1, 2, 3 }, true);
+  plotSineModelPhases(mdl, { 2 }, false); // false: de-trended phase, true: phase-derivative
 
   // re-synthesize signal from model:
   RAPT::rsSinusoidalSynthesizer<double> synth;
@@ -1739,6 +1739,16 @@ void harmonicDeBeating()
   //  -i think, it should probably switch phases whenever the beating-envelope goes through a zero
   //  -yep - the smooth change form upward- to downward saw(ish) is replaced by sudden switches
   //  -maybe resynthesize only the beating partial
+
+  // it seems like we need to do something with the phase-array as well
+  // -for the example signal, it seems like applying a moving minimum filter of length 5 to the
+  //  phase derivative would be suitable ...but then, the resynthesized signal would get 
+  //  out-of-phase with respect to the original ...but maybe that's not an issue in this case
+  // -the phase-derivative looks like an (upward) impulse train, the de-trended phase looks like
+  //  a downward sawtooth wave
+  // -we should probably apply a lowpass filter to the de-trended phase and re-apply the trend
+  //  or alternatively apply a lowpass to the phase-derivative and re-integrate
+  //  -> that calls for non-uniform filters
 
 
 

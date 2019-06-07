@@ -279,10 +279,5 @@ void rsPartialBeatingRemover<T>::removeBeating(rsSinusoidalPartial<T>& partial)
 
   partial.setAmplitudes(a); // write new amp data back into partial
 
-  // it seems like we need to do something with the phase-array as well
-  // -for the example signal, it seems like applying a moving minimum filter of length 5 to the
-  //  phase derivative would be suitable ...but then, the resynthesized signal would get 
-  //  out-of-phase with respect to the original ...but maybe that's not an issue in this case
-  // -alternatively, maybe a smoothing filter could be applied to the phase-derivative
-  //  ->that calls for non-uniform filters
+
 }

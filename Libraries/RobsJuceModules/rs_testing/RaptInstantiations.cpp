@@ -269,8 +269,8 @@ template class RAPT::rsVector3D<float>;
 
 template class RAPT::rsFourierTransformerRadix2<double>;
 
-template void RAPT::rsStatistics::linearRegression(int N, float* x, float* y, float& a, float& b);
-template float RAPT::rsStatistics::proportionalRegression(int N, float* x, float* y);
+template void RAPT::rsStatistics::linearRegression(int N, const float* x, const float* y, float& a, float& b);
+template float RAPT::rsStatistics::proportionalRegression(int N, const float* x, const float* y);
 template void RAPT::rsRemoveCorrelationBias(double x[], int N, double r[]);
 
 

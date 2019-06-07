@@ -1,5 +1,5 @@
 template<class T>
-void rsStatistics::linearRegression(int N, T* x, T* y, T& a, T& b)
+void rsStatistics::linearRegression(int N, const T* x, const T* y, T& a, T& b)
 {
   T xm = rsArray::mean(x, N);
   T ym = rsArray::mean(y, N);
@@ -10,7 +10,7 @@ void rsStatistics::linearRegression(int N, T* x, T* y, T& a, T& b)
 }
 
 template<class T>
-T rsStatistics::proportionalRegression(int N, T* x, T* y)
+T rsStatistics::proportionalRegression(int N, const T* x, const T* y)
 {
   T xx = rsArray::sumOfSquares(x, N);
   T xy = rsArray::sumOfProducts(x, y, N);

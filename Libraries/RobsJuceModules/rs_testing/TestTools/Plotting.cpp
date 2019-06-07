@@ -279,16 +279,16 @@ void plotSineModelPhases(
     t = model.getPartial(index).getTimeArray();
     p = model.getPartial(index).getPhaseArray();
     f = model.getPartial(index).getFrequencyArray();
-    p = rsSinusoidalProcessor<double>::unwrapPhase(t, f, p);        // unwrap
-
+    p = rsSinusoidalProcessor<double>::unwrapPhase(t, f, p);          // unwrap
     if(derivative) {
       pd.resize(p.size());
       rsNumericDerivative(&t[0], &p[0], &pd[0], (int)p.size(), true); // take derivative
       plt.addDataArrays((int)t.size(), &t[0], &pd[0]); }
     else {
-      plt.addDataArrays((int)t.size(), &t[0], &p[0]); }
-
-
+      rsDeTrender<double> dtr;
+      dtr.removeTrendAndOffset((int)p.size(), &t[0], &p[0], &p[0]);
+      plt.addDataArrays((int)t.size(), &t[0], &p[0]); 
+    }
   }
   plt.plot();
 }

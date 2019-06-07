@@ -172,8 +172,10 @@ void plotSineModelAmplitudes(
   const RAPT::rsSinusoidalModel<double>& model,
   const std::vector<int>& partialIndices);
 
-/** Plots a subset of the (unwrapped) phases or their (numerical) derivatives. 
-todo: allow also to show de-trended phases instead of the derivative */
+/** Plots a subset of the unwrapped phases of the model - but because the phases themselves are not
+that useful to look at (you would basically just see an upward sloping line), the function plots 
+either a de-trended version of the phases or the phase-derivative, depending on the boolean 
+parameter - if false, de-trended phases are plotted, if true, phase-derivatives are plotted. */
 void plotSineModelPhases(
   const RAPT::rsSinusoidalModel<double>& model,
   const std::vector<int>& partialIndices, bool derivative = false);
