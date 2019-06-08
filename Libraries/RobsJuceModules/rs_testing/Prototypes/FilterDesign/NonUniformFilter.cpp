@@ -19,7 +19,7 @@ void rsNonUniformOnePole<T>::setOmega(T newOmega)
 template<class T>
 T rsNonUniformOnePole<T>::getSample(T x, T dt)
 {
-  T bdt = pow(b, dt);
+  T bdt = pow(b, dt);  // b^dt
   // can later be optimized as bdt = exp(log(b) * dt) where log(b) can be precomputed
 
   
@@ -42,14 +42,32 @@ T rsNonUniformOnePole<T>::getSample(T x, T dt)
   // *not* be done in the individual complex one-poles but once for the whole filter - which makes 
   // sense only if it's applied to the output
 }
-// this function implements the "spatial invariant scaling" normalization method (section 3.2.4)
-// todo: implement the "piecewise resampling method" from section 3.2.3, too - maybe we need to do
-// something else in reset() then?
+
+template<class T>
+T rsNonUniformOnePole<T>::getSample2(T x, T dt)
+{
+  T bdt = pow(b, dt); // b^dt - express exp(log(b) * dt), precompute log(b)
+
+  // some coeffs r0,r1 that can be precomputed:
+  T bm1 = b-1;
+  T r0  = bm1*bm1 / (a*b);
+  T r1  = a / bm1;
+
+  // compute additional compensation term:
+  T R   = (bdt-1)/(r0*dt);
+  T Phi = (R-r1*b)*x - (R-r1*bdt)*x1;
+
+  y = a*x + bdt*y + Phi;
+  return y;
+}
+// needs testing and debugging
+
 
 template<class T>
 void rsNonUniformOnePole<T>::reset()
 {
-  y = T(0);
+  x1 = T(0);
+  y  = T(0);
   //s = a;
   s = a / (T(1) - b);
   // the general formula is s = a / (1 - b * exp(j*wr)) where wr is the reference frequency where 
