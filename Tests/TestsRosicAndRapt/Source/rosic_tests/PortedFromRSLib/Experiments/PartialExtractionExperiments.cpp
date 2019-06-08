@@ -370,13 +370,13 @@ void beatingSines()
   // experiment parameters:
   int N = 1000;           // number of samples
   double tMin   =  0.0;   // start time
-  double tMax   = 30.0;   // end time
+  double tMax   = 40.0;   // end time
   double freq1  =  0.95;  // frequencies of first...
   double freq2  =  1.05;  // ...and second sine (in cycles per time unit)
-  double amp1   =  1.0;   // amplitudes of first...
-  double amp2   =  1.0;   // ...and second sine (as raw multiplication factor)
-  double phase1 =  0.0;   // phases of first...
-  double phase2 =  0.0;   // ...and second sine (in degrees)
+  //double amp1   =  1.0;   // amplitudes of first...
+  //double amp2   =  1.0;   // ...and second sine (as raw multiplication factor)
+  double phase1 =  30.0;   // phases of first...
+  double phase2 =  80.0;   // ...and second sine (in degrees)
 
   // algorithm parameters:
   double w1 = 2*PI*freq1;
@@ -384,23 +384,50 @@ void beatingSines()
   double p1 = rsDegreeToRadiant(phase1);
   double p2 = rsDegreeToRadiant(phase2);
 
+  // compute carrier and modulator parameters:
+  double wc = (w1+w2)/2;
+  double wm = (w1-w2)/2;
+  double pc = (p1+p2)/2;
+  double pm = (p1-p2)/2;
+
+
   // synthesize signals:
-  std::vector<double> t(N), s1(N), s2(N), sc(N), sm(N), sum(N); // sc,sm: carrier,modulator
+  std::vector<double> t(N), s1(N), s2(N), sc(N), sm(N), sum(N), prod(N); // sc,sm: carrier,modulator
   RAPT::rsArray::fillWithRangeLinear(&t[0], N, tMin, tMax);     // time axis
   for(int n = 0; n < N; n++)
   {
-    s1[n]  = amp1 * sin(w1*t[n] + p1);
-    s2[n]  = amp2 * sin(w2*t[n] + p2);
+    //s1[n]  = amp1 * sin(w1*t[n] + p1);  // i couldn't find formulas for re-expressing the sum of 
+    //s2[n]  = amp2 * sin(w2*t[n] + p2);  // sines as product for arbitrary amplitudes - so use 1
+    s1[n]  = sin(w1*t[n] + p1);
+    s2[n]  = sin(w2*t[n] + p2);
     sum[n] = s1[n] + s2[n];
-    // todo: compute carrier and modulator signals - figure out general formula with arbitrary
-    // amplitudes and phases...
+
+    // compute carrier and modulator and their product::
+    sc[n]   =   sin(wc*t[n] + pc);
+    sm[n]   = 2*cos(wm*t[n] + pm);  // re-express as sin by adjusting pm
+    prod[n] = sc[n] * sm[n];
   }
 
 
   GNUPlotter plt;
-  plt.addDataArrays(N, &t[0], &s1[0], &s2[0], &sum[0]);
+  //plt.addDataArrays(N, &t[0], &s1[0], &s2[0], &sum[0]);
+  //plt.addDataArrays(N, &t[0], &sc[0], &sm[0], &prod[0]);
+  plt.addDataArrays(N, &t[0], &sum[0], &prod[0]); // should be equal
   plt.setPixelSize(1600, 400);
   plt.plot();
+
+  // sage:
+  //  var("t w1 w2 a1 a2 p1 p2")
+  //  f(t) = a1 * sin(w1*t + p1) + a2 * sin(w2*t + p2)
+  //  f.simplify_trig() # expands it in terms of sines and cosines (angles go into amplitudes)
+
+  // a1*cos(p1)*sin(t*w1) + a2*cos(p2)*sin(t*w2) + a1*cos(t*w1)*sin(p1) + a2*cos(t*w2)*sin(p2)
+
+  // a1 * (cos(p1)*sin(t*w1) + cos(t*w1)*sin(p1)) + a2 * (cos(t*w2)*sin(p2) + cos(p2)*sin(t*w2))
+
+  // f.expand_trig(), f.reduce_trig()
+
+  // https://brilliant.org/wiki/sum-to-product-trigonometric-identities/
 }
 
 void envelopeDeBeating()
