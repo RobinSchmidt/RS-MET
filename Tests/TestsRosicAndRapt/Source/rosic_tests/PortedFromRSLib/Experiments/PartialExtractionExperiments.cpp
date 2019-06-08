@@ -388,7 +388,7 @@ void beatingSines()
   double wc = (w1+w2)/2;
   double wm = (w1-w2)/2;
   double pc = (p1+p2)/2;
-  double pm = (p1-p2)/2;
+  double pm = (p1-p2)/2 + PI/2;
 
 
   // synthesize signals:
@@ -404,30 +404,56 @@ void beatingSines()
 
     // compute carrier and modulator and their product::
     sc[n]   =   sin(wc*t[n] + pc);
-    sm[n]   = 2*cos(wm*t[n] + pm);  // re-express as sin by adjusting pm
+    sm[n]   = 2*sin(wm*t[n] + pm);
     prod[n] = sc[n] * sm[n];
   }
 
 
   GNUPlotter plt;
-  //plt.addDataArrays(N, &t[0], &s1[0], &s2[0], &sum[0]);
-  //plt.addDataArrays(N, &t[0], &sc[0], &sm[0], &prod[0]);
-  plt.addDataArrays(N, &t[0], &sum[0], &prod[0]); // should be equal
+  //plt.addDataArrays(N, &t[0], &s1[0], &s2[0], &sum[0]);   // component sines and sum
+  plt.addDataArrays(N, &t[0], &sc[0], &sm[0], &prod[0]);  // carrier, modulator and product
+  //plt.addDataArrays(N, &t[0], &sum[0], &prod[0]);         // sum and product - should be equal
+
+  // this is the plot, we actually want:
+  //plt.addDataArrays(N, &t[0], &s1[0], &s2[0], &sum[0], &sc[0], &sm[0]);
+  // the green signal can be thought of in two ways: 
+  // 1: sum of black and blue (how it's actually done)
+  // 2: product of red (carrier) and purple (modulator)
+
   plt.setPixelSize(1600, 400);
   plt.plot();
 
+  // When thinking of the signal as the product of a carrier and a modulator signal, we may further
+  // decompose the modulator into an absolute value (the amplitude) and a sign. We want to enforce 
+  // a positive amplitude, so we interpret the sign as belonging to the carrier - it switches 
+  // between positive and negative at the zero crossings of the modulator. A negative sign, in 
+  // turn, can be interpreted as a 180° phase discontinuity. So, we may interpret beating as a 
+  // combination of ring-modulation with a rectified sine-wave combined with phase-modulation with
+  // a square wave. Both effects are tuned with respect to each other so as to yield a smooth 
+  // overall signal - but if we remove one, the amplitude ring-modulation, say - the other one that
+  // remains will make the signal non-smooth. to re-smooth it, we may lowpass filter the 
+  // phase-modulation or remove it altogether.
+  // It looks like the carrier actually always goes through an amplitude peak whenever the 
+  // modulator crosses zero - so the phase jumps would be very audible, wouldn't they be attenuated
+  // by the zero of the modulator. If we just lowpass it, a sort of sinusoidal freq/phase 
+  // modulation would remain. ...but wait - is the phase modulator really a rectangle wave - in the
+  // harmonic analysis framework, it looks more like sawtooth shape. In any case, it has harsh
+  // discontinuities that we need to get rid of.
+
+  // I was trying to find a carrier/modulator-like decomposition for the general case, when the two
+  // sines each have their own amplitude - not successfully yet:
   // sage:
   //  var("t w1 w2 a1 a2 p1 p2")
   //  f(t) = a1 * sin(w1*t + p1) + a2 * sin(w2*t + p2)
   //  f.simplify_trig() # expands it in terms of sines and cosines (angles go into amplitudes)
-
   // a1*cos(p1)*sin(t*w1) + a2*cos(p2)*sin(t*w2) + a1*cos(t*w1)*sin(p1) + a2*cos(t*w2)*sin(p2)
-
   // a1 * (cos(p1)*sin(t*w1) + cos(t*w1)*sin(p1)) + a2 * (cos(t*w2)*sin(p2) + cos(p2)*sin(t*w2))
-
   // f.expand_trig(), f.reduce_trig()
-
   // https://brilliant.org/wiki/sum-to-product-trigonometric-identities/
+
+  // How about trying it via a complex exponential:
+  // e^(ia) + e^(ib) = e^(-i(a+b)) * ( e^(ia + i(a+b)) + e^(ib + i(a+b)) )
+  // ...hmm...but that seems a dead end
 }
 
 void envelopeDeBeating()

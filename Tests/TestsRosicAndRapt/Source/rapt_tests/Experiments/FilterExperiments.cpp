@@ -568,20 +568,19 @@ void nonUniformOnePole()
   // apply non-uniform filter
   rsNonUniformOnePole<double> fltNonUni;
   fltNonUni.setOmega(2*PI*fc/fs);
-  //y[0] = flt.init(x[0]); // needs to somehow set the initial state where we do not yet have a dt
-  //flt.reset();
+  fltNonUni.reset();   // todo: figure out, if it makes a difference, which formula is used there
+  //yn[0] = fltNonUni.init(x[0]); // needs to somehow set the initial state where we do not yet have a dt
+  yn[0] = fltNonUni.getSample(x[0], 1.0);  // is it ok, to just pass 1.0 for the initial dt?
   for(n = 1; n < N; n++)
     yn[n] = fltNonUni.getSample(x[n], t[n]-t[n-1]);
-  // this is not yet suppsoed to work - figure out how to set initial state
-
 
   GNUPlotter plt;
-  //plt.addDataArrays(N, &t[0], &x[0], &yu[0], &yn[0]);
-  //plt.plot();
+  plt.addDataArrays(N, &t[0], &x[0], &yu[0], &yn[0]);
+  plt.plot();
 
   // when the samples are uniform, the results almost match - but the non-uniform filter has a 
   // different initial section - it's probably not properly initialized
-  // whatever formula we usse in reset() for s, the error stays the same (or at least, looks 
+  // whatever formula we use in reset() for s, the error stays the same (or at least, looks 
   // similar in the plot)
 }
 
