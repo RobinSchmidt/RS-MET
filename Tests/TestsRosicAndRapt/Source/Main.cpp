@@ -345,6 +345,7 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
+  beatingSines();
   //envelopeDeBeating();
   //sineRecreation();         // maybe move elsewhere
   //sineWithPhaseCatchUp();   // dito

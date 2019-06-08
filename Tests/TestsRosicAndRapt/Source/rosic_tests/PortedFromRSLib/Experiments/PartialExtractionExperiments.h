@@ -6,6 +6,8 @@
 filter for different numbers of passes. */
 void biDirectionalFilter();
 
+
+void beatingSines();
 void envelopeDeBeating(); // try to remove beating from an extracted envelope
 
 

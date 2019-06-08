@@ -362,6 +362,47 @@ void biDirectionalFilter()
   int dummy = 0;
 }
 
+void beatingSines()
+{
+  // We investigate the beating effects that occur when two sinusoids with similar frequencies
+  // are played simultaneously.
+
+  // experiment parameters:
+  int N = 1000;           // number of samples
+  double tMin   =  0.0;   // start time
+  double tMax   = 30.0;   // end time
+  double freq1  =  0.95;  // frequencies of first...
+  double freq2  =  1.05;  // ...and second sine (in cycles per time unit)
+  double amp1   =  1.0;   // amplitudes of first...
+  double amp2   =  1.0;   // ...and second sine (as raw multiplication factor)
+  double phase1 =  0.0;   // phases of first...
+  double phase2 =  0.0;   // ...and second sine (in degrees)
+
+  // algorithm parameters:
+  double w1 = 2*PI*freq1;
+  double w2 = 2*PI*freq2;
+  double p1 = rsDegreeToRadiant(phase1);
+  double p2 = rsDegreeToRadiant(phase2);
+
+  // synthesize signals:
+  std::vector<double> t(N), s1(N), s2(N), sc(N), sm(N), sum(N); // sc,sm: carrier,modulator
+  RAPT::rsArray::fillWithRangeLinear(&t[0], N, tMin, tMax);     // time axis
+  for(int n = 0; n < N; n++)
+  {
+    s1[n]  = amp1 * sin(w1*t[n] + p1);
+    s2[n]  = amp2 * sin(w2*t[n] + p2);
+    sum[n] = s1[n] + s2[n];
+    // todo: compute carrier and modulator signals - figure out general formula with arbitrary
+    // amplitudes and phases...
+  }
+
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &t[0], &s1[0], &s2[0], &sum[0]);
+  plt.setPixelSize(1600, 400);
+  plt.plot();
+}
+
 void envelopeDeBeating()
 {
   // We create two attack/decay sinusoids with frequencies close to each other such that the 

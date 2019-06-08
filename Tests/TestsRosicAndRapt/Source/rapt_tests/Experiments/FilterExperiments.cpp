@@ -576,11 +576,13 @@ void nonUniformOnePole()
 
 
   GNUPlotter plt;
-  plt.addDataArrays(N, &t[0], &x[0], &yu[0], &yn[0]);
-  plt.plot();
+  //plt.addDataArrays(N, &t[0], &x[0], &yu[0], &yn[0]);
+  //plt.plot();
 
   // when the samples are uniform, the results almost match - but the non-uniform filter has a 
   // different initial section - it's probably not properly initialized
+  // whatever formula we usse in reset() for s, the error stays the same (or at least, looks 
+  // similar in the plot)
 }
 
 void smoothingFilterOrders()
