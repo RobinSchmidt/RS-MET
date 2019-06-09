@@ -37,4 +37,7 @@ Terms:
 -metric tensor
 
 
+todo: check this:
+https://github.com/QuantStack/xtensor/blob/master/notebooks/xtensor.ipynb
+
 */

@@ -11,7 +11,7 @@ std::vector<double> synthesizeSinusoidal(
   typedef SS::PhaseInterpolationMethod PIM;
   SS synth;
   synth.setSampleRate(sampleRate);
-  synth.setCubicAmplitudeInterpolation(true);
+  //synth.setCubicAmplitudeInterpolation(true);
   synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
   std::vector<double> x = synth.synthesize(model);
   if(fadeTime > 0.0)

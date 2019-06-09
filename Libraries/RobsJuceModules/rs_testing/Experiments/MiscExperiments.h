@@ -4,7 +4,7 @@
 std::vector<double> synthesizeSinusoidal(
   const RAPT::rsSinusoidalModel<double>& model, double sampleRate, double fadeTime = 0.0);
 
-
+// maybe make a getSineModel convenience function
 
 /** ...
 If plotResults is true, the function will plot the original, resyntheiszed and residual signals 

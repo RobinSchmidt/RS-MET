@@ -83,6 +83,7 @@ void rsSinusoidalSynthesizer<T>::synthesizePartial(
   std::vector<T> a = getInterpolatedAmplitudes(partial, td, t);
   std::vector<T> p = getInterpolatedPhases(    partial, td, t);
 
+  //rsPlotVector(a);
   //rsPlotVector(p);
   //rsPlotVector(rsDifference(p));
 

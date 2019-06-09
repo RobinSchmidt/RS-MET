@@ -90,7 +90,8 @@ int main(int argc, char* argv[])
   //firstOrderFilters();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
-  nonUniformOnePole();
+//  nonUniformOnePole1();
+//  nonUniformOnePole2();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
@@ -371,7 +372,8 @@ int main(int argc, char* argv[])
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
-//  harmonicDeBeating();
+//  harmonicDeBeating1();
+  //harmonicDeBeating2();
 
 
   // Physics:

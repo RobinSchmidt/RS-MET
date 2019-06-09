@@ -522,8 +522,15 @@ void nonUniformMovingAverage()
   // gets averaged out better?
 }
 
-void nonUniformOnePole()
+void nonUniformOnePole1()
 {
+  // This tests compares the output of the non-uniform one-pole filter to that of a regular uniform
+  // one-pole. The sample spacing for the non-uniform filter *is* actually chosen uniformly for 
+  // this comparison to make sense. Both filters get a chunk of noise as input signal and they 
+  // should produce the same output.
+  // todo: we have some variables here that are not needed anymore (time-axis array and related 
+  // stuff -> clean up, get rid of them)
+
   int N = 20;
 
   std::vector<double> t(N), x(N), yu(N), yn(N); 
@@ -539,7 +546,7 @@ void nonUniformOnePole()
   // Tests:
   // 1: compare to the output of a regular uniform one-pole - choose the time-stamps for the 
   //    non-uniform to be equal to the sample-numbers - the non-uniform filter should match the 
-  //    output of the uniform one
+  //    output of the uniform one ...done: works
   // 2: look at the non-uniform impulse response - compare to analytic result
   // 3: maybe compute what the paper calls "ground" truth by oversampling - don't use random
   //    intervals for the nonuniform case but put the sample instants at times where we have
@@ -564,25 +571,48 @@ void nonUniformOnePole()
   for(n = 0; n < N; n++)
     yu[n] = fltUni.getSample(x[n]);
 
-
   // apply non-uniform filter
   rsNonUniformOnePole<double> fltNonUni;
   fltNonUni.setOmega(2*PI*fc/fs);
   fltNonUni.reset();   // todo: figure out, if it makes a difference, which formula is used there
   //yn[0] = fltNonUni.init(x[0]); // needs to somehow set the initial state where we do not yet have a dt
-  yn[0] = fltNonUni.getSample(x[0], 1.0);  // is it ok, to just pass 1.0 for the initial dt?
+  yn[0] = fltNonUni.getSample2(x[0], 1.0);  // is it ok, to just pass 1.0 for the initial dt?
   for(n = 1; n < N; n++)
-    yn[n] = fltNonUni.getSample(x[n], t[n]-t[n-1]);
+    yn[n] = fltNonUni.getSample2(x[n], t[n]-t[n-1]);
+  // replace calls to getSample by getSample2 for piecewise resampling normalization
 
   GNUPlotter plt;
   plt.addDataArrays(N, &t[0], &x[0], &yu[0], &yn[0]);
   plt.plot();
 
-  // when the samples are uniform, the results almost match - but the non-uniform filter has a 
-  // different initial section - it's probably not properly initialized
-  // whatever formula we use in reset() for s, the error stays the same (or at least, looks 
-  // similar in the plot)
+  // Observations:
+  // -Comparison with uniform filter, noise input:
+  //  -when calling getSample2, it seems to make no difference, whether or not we add Phi for the
+  //   comparison with the uniform filter
+  // -Comparison of non-uniform impulse response with analytic one:
+  //  ...make a separate function for this test - then we may get rid of the time-axis here
 }
+
+void nonUniformOnePole2()
+{
+  // This test compares the impulse response of a non-uniform one pole to the ground truth which
+  // is computed analytically. The samples of the filter's impulse reponse should fall on the 
+  // continuous function defined by the analytic, continuous impulse-response
+
+  int N = 500;   // number of samples taken from the filter
+
+
+
+
+
+
+
+  GNUPlotter plt;
+}
+
+
+
+
 
 void smoothingFilterOrders()
 {

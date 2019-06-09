@@ -375,8 +375,8 @@ void beatingSines()
   double freq2  =  1.05;  // ...and second sine (in cycles per time unit)
   //double amp1   =  1.0;   // amplitudes of first...
   //double amp2   =  1.0;   // ...and second sine (as raw multiplication factor)
-  double phase1 =  30.0;   // phases of first...
-  double phase2 =  80.0;   // ...and second sine (in degrees)
+  double phase1 =   0.0;   // phases of first...
+  double phase2 =   0.0;   // ...and second sine (in degrees)
 
   // algorithm parameters:
   double w1 = 2*PI*freq1;
@@ -408,11 +408,34 @@ void beatingSines()
     prod[n] = sc[n] * sm[n];
   }
 
+  // now we try to re-create the signal by means of the strictly positive rectified-sine amplitude
+  // function and a time-varying phase function - as the sinusoidal modeling would do...
+  std::vector<double> a(N), p(N), rs(N); // amplitude- and phase functions, recreated signal
+  for(int n = 0; n < N; n++)
+  {
+    a[n] = fabs(sm[n]);          // amplitude is rectified modulator
+    if(sm[n] >= 0)  p[n] = 0;    // phase function is...
+    else            p[n] = PI;   // ...a square wave
+
+    //p[n] -= PI/2; // why do we need this? we need it when phase1=0, phase2=-180
+    p[n] += 0; // correct, when phase1=phase2=0
+    //p[n] = (p2-p1)/2; // what's the general rule? this is not it!
+
+    rs[n] = a[n] * sin(wc*t[n] + p[n]); // is this correct?
+  }
+  // it's phase shifted - why?
+
+
 
   GNUPlotter plt;
-  //plt.addDataArrays(N, &t[0], &s1[0], &s2[0], &sum[0]);   // component sines and sum
-  plt.addDataArrays(N, &t[0], &sc[0], &sm[0], &prod[0]);  // carrier, modulator and product
+
+  // verification - plot pairs of signals that should be equal to one another:
   //plt.addDataArrays(N, &t[0], &sum[0], &prod[0]);         // sum and product - should be equal
+  plt.addDataArrays(N, &t[0], &sum[0], &rs[0]); // sum and recreated sum - should be equal
+
+  // results of adding two components or ring-modulating carrier and modulator:
+  //plt.addDataArrays(N, &t[0], &s1[0], &s2[0], &sum[0]);   // component sines and sum
+  //plt.addDataArrays(N, &t[0], &sc[0], &sm[0], &prod[0]);  // carrier, modulator and product
 
   // this is the plot, we actually want:
   //plt.addDataArrays(N, &t[0], &s1[0], &s2[0], &sum[0], &sc[0], &sm[0]);
@@ -422,6 +445,12 @@ void beatingSines()
 
   plt.setPixelSize(1600, 400);
   plt.plot();
+
+  // todo: figure out the phase-function for the carrier that results from interpreting the sign as
+  // part of the carrier - the analysis gives a sawtooth function...which may make sense - we have 
+  // the general linear upward trend that any phase-function has together with these jumps
+  // ..so maybe it's pc(t) = wc*t - sum_of_delta_functions ...but i think, in the analysis, there
+  // was a downward saw...hmmm
 
   // When thinking of the signal as the product of a carrier and a modulator signal, we may further
   // decompose the modulator into an absolute value (the amplitude) and a sign. We want to enforce 
@@ -433,12 +462,22 @@ void beatingSines()
   // overall signal - but if we remove one, the amplitude ring-modulation, say - the other one that
   // remains will make the signal non-smooth. to re-smooth it, we may lowpass filter the 
   // phase-modulation or remove it altogether.
-  // It looks like the carrier actually always goes through an amplitude peak whenever the 
-  // modulator crosses zero - so the phase jumps would be very audible, wouldn't they be attenuated
-  // by the zero of the modulator. If we just lowpass it, a sort of sinusoidal freq/phase 
+
+  // If we just lowpass it, a sort of sinusoidal freq/phase 
   // modulation would remain. ...but wait - is the phase modulator really a rectangle wave - in the
   // harmonic analysis framework, it looks more like sawtooth shape. In any case, it has harsh
   // discontinuities that we need to get rid of.
+
+  // When both start-phases are zero, then whenever the modulator crosses zero, the carrier goes 
+  // through a zero as well - the carrier always has an upward zero crossing whereas the modulator 
+  // has alternatingly and upward and downward zero crossing. Bute when the 2nd sine has a phase of 
+  // 180°, the modulator zeros coincide with carrier peaks (all maxima at +1 - but these become 
+  // minima at -1, when the phase is -180)
+
+
+
+  
+
 
   // I was trying to find a carrier/modulator-like decomposition for the general case, when the two
   // sines each have their own amplitude - not successfully yet:

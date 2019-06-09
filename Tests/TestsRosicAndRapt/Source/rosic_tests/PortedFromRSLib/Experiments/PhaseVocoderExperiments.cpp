@@ -1677,8 +1677,71 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 // look at files decompositionSteelGuitar002.m, testHarmonicAnalysis.M
 }
 
-void harmonicDeBeating()
+
+
+
+void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
 {
+  // Settings: 
+  int    N  = 44100;   // number of samples
+  double f1 =  995;   // input frequency 1 in Hz
+  double f2 = 1005;   // input frequency 2 in Hz
+  double fs = 44100;  // sample rate
+
+    // create input signal:
+  std::string name = "TwoSines_Freq1=" + std::to_string(f1)
+    + "_Freq2=" + std::to_string(f2)
+    + "_Amp1=" + std::to_string(0.4)
+    + "_Amp2=" + std::to_string(0.4);
+  std::vector<double> x = 0.5 * createNamedSound(name, fs, N);
+  rosic::writeToMonoWaveFile("DeBeat2SinesInput.wav", &x[0], N, (int)fs);
+
+  // create and set up analyzer and obtain sinusoidal model:
+  RAPT::rsHarmonicAnalyzer<double> analyzer;
+  analyzer.setSampleRate(fs);
+  analyzer.setSpectralOversampling(4);
+  analyzer.setNumCyclesPerBlock(4);
+  analyzer.setWindowType(stringToWindowType("hm")); // options: rc,hn,hm,bm,bh
+  analyzer.getCycleFinder().setFundamental((f1+f2)/2);
+  RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int)x.size());
+  //plotSineModel(mdl, fs);
+  plotSineModelAmplitudes(mdl, { 1 });
+  plotSineModelPhases(mdl, { 1 }, true);  // phase-derivative
+  plotSineModelPhases(mdl, { 1 }, false); // de-trended phase
+
+  // resynthesize without modifications:
+  std::vector<double> y = synthesizeSinusoidal(mdl, fs);
+  rosic::writeToMonoWaveFile("DeBeat2SinesOutputUnmodified.wav", &y[0], (int)y.size(), (int)fs);
+  // maybe make a convenicne function renderToFile(mdl, fs, filename)
+  // has a VERY bad transient artifact! why?!
+  // i think, in rsSinusoidalSynthesizer<T>::synthesizePartial, the interpolated amplitude array
+  // has a big excursion at the start - maybe it's the cubic interpolation that creates excessive
+  // oscillation? - yep - using linear amplitude interpolation fixes it - maybe we should generally
+  // use linear amp interpolation, maybe with smoothing - the splines seem to be not so useful for
+  // this
+
+    // apply de-beating to model data:
+  rsPartialBeatingRemover<double> deBeater;
+  deBeater.processModel(mdl);
+  //plotSineModelAmplitudes(mdl, { 1 }); 
+
+  // resynthesize with modifications:
+  mdl.keepOnly({1});                     // get rid of DC artifacts at the start
+  y = synthesizeSinusoidal(mdl, fs);
+  rosic::writeToMonoWaveFile("DeBeat2SinesOutput.wav", &y[0], (int)y.size(), (int)fs);
+  // here, the transient artifact is much less severe - but we see some linearly decaying DC
+
+  // also, actually, after de-beating the carrier is at full amplitude - probably it should be
+  // at half - there's this factor of two in the modulator, when converting from sum to product
+
+  // strangely, the amplitude plot shows a peak-amplitude of 0.4 - equal to amplitude of each of 
+  // the summands - shouldn't it be twice as high? ..or is that because the measured "magnitude" is
+  // not the same as the "peak-amplitude"? but if so - why not?
+}
+
+void harmonicDeBeating2()  // rename to harmonicDeBeating4Sines
+{
+  // a slightly more complex case
   // We use the harmonic analysis/resynthesis framework to remove beating from a partial. Our test 
   // signal has 4 partials where the middle one consists actually of two slightly detuned partials
   // which has the effect that the middle partial shows a beating effect which we try to remove.
@@ -1702,7 +1765,7 @@ void harmonicDeBeating()
     + "_Amp4=" + std::to_string(0.4);
   std::vector<double> x = 0.5 * createNamedSound(name, fs, N);
   //rsPlotVector(x);
-  rosic::writeToMonoWaveFile("DeBeatInput.wav", &x[0], N, (int)fs);
+  rosic::writeToMonoWaveFile("DeBeat4SinesInput.wav", &x[0], N, (int)fs);
 
   // create and set up analyzer and obtain sinusoidal model:
   RAPT::rsHarmonicAnalyzer<double> analyzer;
@@ -1721,16 +1784,17 @@ void harmonicDeBeating()
   RAPT::rsSinusoidalSynthesizer<double> synth;
   synth.setSampleRate(fs);
   std::vector<double> y = synth.synthesize(mdl);
-  rosic::writeToMonoWaveFile("DeBeatOutputUnmodified.wav", &y[0], (int) y.size(), (int)fs);
+  rosic::writeToMonoWaveFile("DeBeat4SinesOutputUnmodified.wav", &y[0], (int) y.size(), (int)fs);
+  // use synthesizeSinusoidal convenience function
 
-  // appaly de-beating to model data:
+  // apply de-beating to model data:
   rsPartialBeatingRemover<double> deBeater;
   deBeater.processModel(mdl);
   //plotSineModelAmplitudes(mdl, { 1, 2, 3 }); 
 
   // re-synthesize signal from modified model:
   y = synth.synthesize(mdl);
-  rosic::writeToMonoWaveFile("DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
+  rosic::writeToMonoWaveFile("DeBeat4SinesOutput.wav", &y[0], (int)y.size(), (int)fs);
 
   // Observations:
   // -the flattening of the amplitude works well - but: beating is not only amplitude modulation
@@ -1749,9 +1813,8 @@ void harmonicDeBeating()
   // -we should probably apply a lowpass filter to the de-trended phase and re-apply the trend
   //  or alternatively apply a lowpass to the phase-derivative and re-integrate
   //  -> that calls for non-uniform filters
-
-
-
+  //  -> but maybe a box-shaped moving average with length of one sawtooth period would be best?
+  //     it would completely zero out the sawtooth (except for the boudaries)
 
   int dummy = 0;
 

@@ -38,7 +38,7 @@ T rsNonUniformOnePole<T>::getSample(T x, T dt)
   y = a*x + bdt*y;
   return y / rsAbs(s);
   // with dt == 1, there's no difference - s is always 1 - but probably it's correct to apply it
-  // to the output because the paper says, with several parallel filtersm the normalization should
+  // to the output because the paper says, with several parallel filters the normalization should
   // *not* be done in the individual complex one-poles but once for the whole filter - which makes 
   // sense only if it's applied to the output
 }
@@ -57,7 +57,10 @@ T rsNonUniformOnePole<T>::getSample2(T x, T dt)
   T R   = (bdt-1)/(r0*dt);
   T Phi = (R-r1*b)*x - (R-r1*bdt)*x1;
 
-  y = a*x + bdt*y + Phi;
+  // update state and return output:
+  x1 = x;
+  y  = a*x + bdt*y + Phi;
+  //y = a*x + bdt*y;  // for test
   return y;
 }
 // needs testing and debugging

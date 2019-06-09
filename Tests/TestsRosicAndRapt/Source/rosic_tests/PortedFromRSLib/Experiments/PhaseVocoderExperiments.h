@@ -26,7 +26,9 @@ void harmonicDetection3Sines();
 void harmonicDetection5Sines();
 void harmonicAnalysis1();
 
-void harmonicDeBeating();     // remove beating from a partial via harmonic analysis/resynthesis framework
+//void harmonicBeatingDemo();   // 
+void harmonicDeBeating1();
+void harmonicDeBeating2();     // remove beating from a partial via harmonic analysis/resynthesis framework
 
 
 

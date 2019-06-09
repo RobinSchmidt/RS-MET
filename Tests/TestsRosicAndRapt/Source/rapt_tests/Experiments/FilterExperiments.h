@@ -10,7 +10,8 @@ void firstOrderFilters();
 void ladderResonanceManipulation();
 // insert movingAverage here
 void nonUniformMovingAverage();
-void nonUniformOnePole();
+void nonUniformOnePole1();
+void nonUniformOnePole2();
 void smoothingFilterOrders();
 void smoothingFilterTransitionTimes();
 
