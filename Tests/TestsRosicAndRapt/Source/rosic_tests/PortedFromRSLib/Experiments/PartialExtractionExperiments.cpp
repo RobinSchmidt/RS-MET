@@ -375,8 +375,8 @@ void beatingSines()
   double freq2  =  1.05;  // ...and second sine (in cycles per time unit)
   //double amp1   =  1.0;   // amplitudes of first...
   //double amp2   =  1.0;   // ...and second sine (as raw multiplication factor)
-  double phase1 =   0.0;   // phases of first...
-  double phase2 =   0.0;   // ...and second sine (in degrees)
+  double phase1 =  0.0;   // phases of first...
+  double phase2 =  0.0;   // ...and second sine (in degrees)
 
   // algorithm parameters:
   double w1 = 2*PI*freq1;
@@ -394,8 +394,7 @@ void beatingSines()
   // synthesize signals:
   std::vector<double> t(N), s1(N), s2(N), sc(N), sm(N), sum(N), prod(N); // sc,sm: carrier,modulator
   RAPT::rsArray::fillWithRangeLinear(&t[0], N, tMin, tMax);     // time axis
-  for(int n = 0; n < N; n++)
-  {
+  for(int n = 0; n < N; n++) {
     //s1[n]  = amp1 * sin(w1*t[n] + p1);  // i couldn't find formulas for re-expressing the sum of 
     //s2[n]  = amp2 * sin(w2*t[n] + p2);  // sines as product for arbitrary amplitudes - so use 1
     s1[n]  = sin(w1*t[n] + p1);
@@ -408,22 +407,16 @@ void beatingSines()
     prod[n] = sc[n] * sm[n];
   }
 
-  // now we try to re-create the signal by means of the strictly positive rectified-sine amplitude
-  // function and a time-varying phase function - as the sinusoidal modeling would do...
+  // now we re-create the signal by means of the strictly positive rectified-sine amplitude
+  // function and a time-varying phase function - as the sinusoidal modeling would do:
   std::vector<double> a(N), p(N), rs(N); // amplitude- and phase functions, recreated signal
-  for(int n = 0; n < N; n++)
-  {
-    a[n] = fabs(sm[n]);          // amplitude is rectified modulator
-    if(sm[n] >= 0)  p[n] = 0;    // phase function is...
-    else            p[n] = PI;   // ...a square wave
-
-    //p[n] -= PI/2; // why do we need this? we need it when phase1=0, phase2=-180
-    p[n] += 0; // correct, when phase1=phase2=0
-    //p[n] = (p2-p1)/2; // what's the general rule? this is not it!
-
-    rs[n] = a[n] * sin(wc*t[n] + p[n]); // is this correct?
+  for(int n = 0; n < N; n++) {
+    a[n] = fabs(sm[n]);                  // amplitude function is rectified modulator
+    p[n] = pc;                           // phase function is...
+    if(sm[n] < 0) p[n] += PI;            // ...a square wave
+    rs[n] = a[n] * sin(wc*t[n] + p[n]); 
   }
-  // it's phase shifted - why?
+  // todo: plot the instantaneous phase wc*t[n] + p[n]
 
 
 
@@ -431,7 +424,7 @@ void beatingSines()
 
   // verification - plot pairs of signals that should be equal to one another:
   //plt.addDataArrays(N, &t[0], &sum[0], &prod[0]);         // sum and product - should be equal
-  plt.addDataArrays(N, &t[0], &sum[0], &rs[0]); // sum and recreated sum - should be equal
+  //plt.addDataArrays(N, &t[0], &sum[0], &rs[0]); // sum and recreated sum - should be equal
 
   // results of adding two components or ring-modulating carrier and modulator:
   //plt.addDataArrays(N, &t[0], &s1[0], &s2[0], &sum[0]);   // component sines and sum
@@ -442,6 +435,11 @@ void beatingSines()
   // the green signal can be thought of in two ways: 
   // 1: sum of black and blue (how it's actually done)
   // 2: product of red (carrier) and purple (modulator)
+
+  // amplitude- and phase-function used to re-create the final output as-is together with the
+  // re-created output:
+  plt.addDataArrays(N, &t[0], &a[0], &p[0], &rs[0]);
+
 
   plt.setPixelSize(1600, 400);
   plt.plot();
