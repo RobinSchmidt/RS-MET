@@ -1,4 +1,5 @@
-This is the codebase on which RS-MET products are based. If you want to use the
+This is the codebase on which RS-MET products are based. My main and most 
+important codebase - my lifework, so to speak. If you want to use the
 code in an open source project, feel free to do so (but please notify me and 
 give proper credits and if you use any of the JUCE based code, be sure to 
 adhere to its licensing scheme, too). For closed source projects, you may 

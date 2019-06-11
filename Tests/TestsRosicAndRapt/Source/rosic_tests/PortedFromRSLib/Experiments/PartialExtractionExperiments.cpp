@@ -409,15 +409,23 @@ void beatingSines()
 
   // now we re-create the signal by means of the strictly positive rectified-sine amplitude
   // function and a time-varying phase function - as the sinusoidal modeling would do:
-  std::vector<double> a(N), p(N), rs(N); // amplitude- and phase functions, recreated signal
+  std::vector<double> a(N), p(N), ip(N), rs(N), db(N);
+  // amplitude- and phase functions, instantaneous phase and recreated signal
   for(int n = 0; n < N; n++) {
     a[n] = fabs(sm[n]);                  // amplitude function is rectified modulator
     p[n] = pc;                           // phase function is...
     if(sm[n] < 0) p[n] += PI;            // ...a square wave
-    rs[n] = a[n] * sin(wc*t[n] + p[n]); 
+    ip[n] = wc*t[n] + p[n];              // instantaneous phase
+    rs[n] = a[n] * sin(ip[n]);           // re-synthesized signal
+    db[n] =        sin(ip[n]);           // "de-beated" version
   }
-  // todo: plot the instantaneous phase wc*t[n] + p[n]
+  // todo: plot a function with the same phase and unit amplitude - this is the theoretical result
+  // of resynthesis when we just flatten out the amplitude envelope for de-beating and ignore the
+  // phase effects
 
+
+  //std::vector<double> db(N);    // "de-beated" signal
+  //for(int n = 0
 
 
   GNUPlotter plt;
@@ -437,8 +445,12 @@ void beatingSines()
   // 2: product of red (carrier) and purple (modulator)
 
   // amplitude- and phase-function used to re-create the final output as-is together with the
-  // re-created output:
-  plt.addDataArrays(N, &t[0], &a[0], &p[0], &rs[0]);
+  // de-trende intsantaneous phase and re-created output:
+  rsDeTrender<double> dtr;
+  dtr.removeTrendAndOffset((int)ip.size(), &t[0], &ip[0], &ip[0]);
+  //plt.addDataArrays(N, &t[0], &a[0], &ip[0], &rs[0]); // only detrended inst phase
+  //plt.addDataArrays(N, &t[0], &a[0], &p[0], &ip[0], &rs[0]);
+  plt.addDataArrays(N, &t[0], &a[0], &db[0], &rs[0]);  // de-beated
 
 
   plt.setPixelSize(1600, 400);

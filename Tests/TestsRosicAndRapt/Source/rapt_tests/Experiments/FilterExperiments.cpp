@@ -599,15 +599,42 @@ void nonUniformOnePole2()
   // is computed analytically. The samples of the filter's impulse reponse should fall on the 
   // continuous function defined by the analytic, continuous impulse-response
 
-  int N = 500;   // number of samples taken from the filter
+  int Nf = 50;   // number of samples taken from the filter
+  int Nc = 500;  // number of dense (pseudo-continuous) samples for analytic target solution
+
+
+  double dtMin = 0.5;   // minimum time-difference between non-uniform samples
+  double dtMax = 2.0;   // maximum ...
+  //double tMax  = 50.0;  // end-time
+  double wc    = 0.1;   // normalized radia cutoff frequency
 
 
 
+  std::vector<double> tf(Nf), yf(Nf);  // time-axis and output of filter
+  std::vector<double> tc(Nc), yc(Nc);  // times axis and values for pseudo-continuous response
 
+  // create time-stamp array for non-uniform sampling:
+  typedef RAPT::rsArray AR;
+  tf[0] = 0;
+  AR::fillWithRandomValues(&tf[1], Nf-1, dtMin, dtMax, 0);
+  AR::cumulativeSum(&tf[0], &tf[0], Nf);
+
+    // compute non-uniform filter output
+  rsNonUniformOnePole<double> flt;
+  flt.setOmega(wc);
+  flt.reset();
+  yf[0] = flt.getSample(1.0, 1.0);  
+  for(int n = 1; n < Nf; n++)
+    yf[n] = flt.getSample(0, tf[n]-tf[n-1]);
 
 
 
   GNUPlotter plt;
+  plt.addDataArrays(Nf, &tf[0], &yf[0]); // use dots
+  plt.plot();
+  // non-uniform impulse response samples look wrong!
+
+
 }
 
 

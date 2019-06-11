@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
 //  nonUniformOnePole1();
-//  nonUniformOnePole2();
+  nonUniformOnePole2();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
@@ -346,7 +346,7 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
-  beatingSines();
+//  beatingSines();
   //envelopeDeBeating();
   //sineRecreation();         // maybe move elsewhere
   //sineWithPhaseCatchUp();   // dito
