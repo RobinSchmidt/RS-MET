@@ -603,10 +603,16 @@ void nonUniformOnePole2()
   int Nc = 500;  // number of dense (pseudo-continuous) samples for analytic target solution
 
 
-  double dtMin = 0.5;   // minimum time-difference between non-uniform samples
-  double dtMax = 2.0;   // maximum ...
-  //double tMax  = 50.0;  // end-time
-  double wc    = 0.1;   // normalized radia cutoff frequency
+  double dtMin = 1.0;   // minimum time-difference between non-uniform samples
+  double dtMax = 1.0;   // maximum ..
+  double fc    = 0.015; // cutoff freq
+  double fs    = 1.0;   // sample rate
+
+
+  //dtMin = 0.2, dtMax = 1.8;
+
+
+  double wc    = 2*PI*fc/fs;   // normalized radia cutoff frequency
 
 
 
@@ -623,17 +629,48 @@ void nonUniformOnePole2()
   rsNonUniformOnePole<double> flt;
   flt.setOmega(wc);
   flt.reset();
-  yf[0] = flt.getSample(1.0, 1.0);  
+  yf[0] = flt.getSample(1.0, 1.0);
   for(int n = 1; n < Nf; n++)
     yf[n] = flt.getSample(0, tf[n]-tf[n-1]);
 
+  // compute uniform filter output:
+  std::vector<double> yu(Nf);
+  rsOnePoleFilter<double, double> fltUni;
+  fltUni.setSampleRate(fs);
+  fltUni.setCutoff(fc);
+  fltUni.setMode(fltUni.LOWPASS_IIT);
+  yu[0] = fltUni.getSample(1.0);
+  for(int n = 1; n < Nf; n++)
+    yu[n] = fltUni.getSample(0.0);
+
+  // create densely sampled (pseudo-continuous) impulse response:
+  double tMax = rsLast(tf);
+  AR::fillWithRangeLinear(&tc[0], Nc, 0.0, tMax);
+  for(int n = 0; n < Nc; n++)
+    yc[n] = wc * exp(-tc[n]*wc);  // tau = 1/wc 
+  // ..close (when using dt=1 for filter) - but not exactly the same
+  // https://en.wikipedia.org/wiki/RC_time_constant
+  // http://www.dspguide.com/ch19/2.htm
+
+  // maybe plot a uniform filter impulse response as well for comparison to see, if the continuous 
+  // solution is correct
 
 
   GNUPlotter plt;
-  plt.addDataArrays(Nf, &tf[0], &yf[0]); // use dots
-  plt.plot();
-  // non-uniform impulse response samples look wrong!
+  plt.addDataArrays(Nc, &tc[0], &yc[0]);
+  //plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
 
+  plt.addDataArrays(Nf, &tf[0], &yf[0]);
+  //plt.addGraph("index 1 using 1:2 with points pt 7 ps 1.2 lc rgb \"#000080\" notitle");
+
+  plt.addDataArrays(Nf, &yu[0]);
+  //plt.addGraph("index 1 using 1:2 with points pt 7 ps 1.2 lc rgb \"#008000\" notitle");
+
+  plt.plot();
+
+  // continuous plot still has wrong normalization constant
+
+  // non-uniform impulse response samples look wrong!
 
 }
 
