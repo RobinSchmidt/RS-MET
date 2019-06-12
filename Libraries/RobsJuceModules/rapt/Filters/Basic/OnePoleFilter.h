@@ -171,6 +171,16 @@ public:
   // todo:
   // void setup(int mode, TPar omega, TPar gain = TPar(1));
 
+
+    //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  TPar getB0() const { return b0; }
+
+  TPar getB1() const { return b1; }
+
+  TPar getA1() const { return a1; }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 

@@ -646,8 +646,10 @@ void nonUniformOnePole2()
   // create densely sampled (pseudo-continuous) impulse response:
   double tMax = rsLast(tf);
   AR::fillWithRangeLinear(&tc[0], Nc, 0.0, tMax);
+  //double scaler = wc;  // wrong - i think, this normalizes the integral, not the sum?
+  double scaler = fltUni.getB0();
   for(int n = 0; n < Nc; n++)
-    yc[n] = wc * exp(-tc[n]*wc);  // tau = 1/wc 
+    yc[n] = scaler * exp(-tc[n]*wc);  // tau = 1/wc 
   // ..close (when using dt=1 for filter) - but not exactly the same
   // https://en.wikipedia.org/wiki/RC_time_constant
   // http://www.dspguide.com/ch19/2.htm
