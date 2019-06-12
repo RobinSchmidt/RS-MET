@@ -7,6 +7,11 @@
 References:
 (1) High-Order Recursive Filtering of Non-Uniformly Sampled Signals for Image and Video Processing
 http://inf.ufrgs.br/~eslgastal/NonUniformFiltering/Gastal_Oliveira_EG2015_Non-Uniform_Filtering.pdf
+
+todo: 
+-add highpass mode ...and maybe others, too?
+-maybe we can implement this as subclass of the uniform filter?
+
 */
 
 template<class T>
@@ -15,18 +20,68 @@ class rsNonUniformOnePole
 
 public:
 
+
+
+
+
   rsNonUniformOnePole() { reset(); }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
 
   void setOmega(T newOmega);
 
-  /** Computes one output sample at a time. Takes the input sample x and a time-difference between
-  the sample instant for x and the previous sample instant for x[n-1]. Implements the 
-  "spatially-invariant scaling" normalization method from (1), section 3.2.4. */
+
+
+
+  enum class NormalizeMode
+  {
+    noNormalization,
+    spatiallyVariantScaling,
+    piecewiseResampling
+  };
+
+  /** Sets the normalization mode for the getSample dispatcher method, which calls one the three
+  versions  */
+  void setNormalizationMode(NormalizeMode newMode)
+  {
+    normMode = newMode;
+  }
+  // todo: figure out, which normalization approach is most suitable in various use cases and add
+  // that info to the comments
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  /** Computes one output sample y[n] at a time from an incoming input sample x[n] and a 
+  time-difference dt = t[n] - t[n-1] between the sample instant for x and the previous sample 
+  instant for x[n-1]. It dispatches between various variations of the algorithm that use different
+  approaches to normalize the output. The variations are getSampleNonNormalized, 
+  getSampleSpatiallyInvariantScaled, getSamplePiecewiseResampled. Client code my also call any of 
+  these directly, thereby bypassing the disaptcher (for optimization purposes). */
   T getSample(T x, T dt);
 
-  /** Like getSample, but implements the "piecewise resampling" normalization method from 
-  (1), section 3.2.3. */
-  T getSample2(T x, T dt);
+  /**  Implements none of the two normalization methods suggested in (1) - it's just
+  the raw filter. But this raw filter is the one that actually agrees with the continuous impulse 
+  response at the sample instants - so perhaps it's not such a bad choice after all. */
+  T getSampleNonNormalized(T x, T dt);
+
+  /** Computes a sample using the "spatially-variant scaling" normalization method from (1), 
+  section 3.2.4. In our context, we may interpret the term "spatially-variant" actually as 
+  "time-variant". The idea is to treat the input signal as if it were uniformly sampled, but 
+  treating the filter as a time-variant system. What varies in this case is the output gain of the
+  filter. */
+  T getSampleSpatiallyVariantScaled(T x, T dt);
+  // rename to TimeVariantScaled
+
+  /** Computes a sample using the "piecewise resampling" normalization method from (1), 
+  section 3.2.3. The idea is to compute the output from an uniformly resampled signal that is 
+  obtained by linearly interpolating the incoming non-uniformly sampled signal. This is probably 
+  more suitable for image processing than for audio processing - although, linear interpolation 
+  may be a reasonably choice for control signals. */
+  T getSamplePiecewiseResampled(T x, T dt);
 
   /** Resets the filter state. */
   void reset();
@@ -47,4 +102,6 @@ protected:
   //T q = 1; 
 
   T w = 0;   // (normalized radian) cutoff frequency
+
+  NormalizeMode normMode = NormalizeMode::noNormalization;
 };

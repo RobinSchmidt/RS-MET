@@ -16,17 +16,40 @@ void rsNonUniformOnePole<T>::setOmega(T newOmega)
   dummy = 0;
 }
 
+
+
+
 template<class T>
 T rsNonUniformOnePole<T>::getSample(T x, T dt)
 {
+  typedef NormalizeMode NM;
+  switch(normMode)
+  {
+  case NM::noNormalization:         return getSampleNonNormalized(x, dt);
+  case NM::spatiallyVariantScaling: return getSampleSpatiallyVariantScaled(x, dt);
+  case NM::piecewiseResampling:     return getSamplePiecewiseResampled(x, dt);
+  default: { rsError("unknown normalization mode"); return T(0); }
+  }
+}
+
+template<class T>
+T rsNonUniformOnePole<T>::getSampleNonNormalized(T x, T dt)
+{
+  T bdt = pow(b, dt);  // b^dt
+  y = a*x + bdt*y;
+  return y;
+}
+// maybe inline this function
+
+template<class T>
+T rsNonUniformOnePole<T>::getSampleSpatiallyVariantScaled(T x, T dt)
+{
   T bdt = pow(b, dt);  // b^dt
   // can later be optimized as bdt = exp(log(b) * dt) where log(b) can be precomputed
-
   
   // update scaler:
   s = a + bdt*s;       //  Eq. 16, with w = 0
 
-  
   // update state:
   //y = (a*x + bdt*y) / rsAbs(s);   //  Eq. 13
   //return y;
@@ -36,6 +59,10 @@ T rsNonUniformOnePole<T>::getSample(T x, T dt)
 
   //// alternative version:
   y = a*x + bdt*y;
+
+  //return y; // only without normalization, the impulse response looks good - provide 3rd version of
+            // getSample without any normalization ...or would we have to use the version above?
+
   return y / rsAbs(s);
   // with dt == 1, there's no difference - s is always 1 - but probably it's correct to apply it
   // to the output because the paper says, with several parallel filters the normalization should
@@ -44,7 +71,7 @@ T rsNonUniformOnePole<T>::getSample(T x, T dt)
 }
 
 template<class T>
-T rsNonUniformOnePole<T>::getSample2(T x, T dt)
+T rsNonUniformOnePole<T>::getSamplePiecewiseResampled(T x, T dt)
 {
   T bdt = pow(b, dt); // b^dt - express exp(log(b) * dt), precompute log(b)
 

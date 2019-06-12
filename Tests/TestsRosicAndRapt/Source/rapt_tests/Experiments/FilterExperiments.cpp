@@ -576,9 +576,9 @@ void nonUniformOnePole1()
   fltNonUni.setOmega(2*PI*fc/fs);
   fltNonUni.reset();   // todo: figure out, if it makes a difference, which formula is used there
   //yn[0] = fltNonUni.init(x[0]); // needs to somehow set the initial state where we do not yet have a dt
-  yn[0] = fltNonUni.getSample2(x[0], 1.0);  // is it ok, to just pass 1.0 for the initial dt?
+  yn[0] = fltNonUni.getSample(x[0], 1.0);  // is it ok, to just pass 1.0 for the initial dt?
   for(n = 1; n < N; n++)
-    yn[n] = fltNonUni.getSample2(x[n], t[n]-t[n-1]);
+    yn[n] = fltNonUni.getSample(x[n], t[n]-t[n-1]);
   // replace calls to getSample by getSample2 for piecewise resampling normalization
 
   GNUPlotter plt;
@@ -609,7 +609,7 @@ void nonUniformOnePole2()
   double fs    = 1.0;   // sample rate
 
 
-  //dtMin = 0.2, dtMax = 1.8;
+  dtMin = 0.2, dtMax = 1.8;
 
 
   double wc    = 2*PI*fc/fs;   // normalized radia cutoff frequency
@@ -660,19 +660,20 @@ void nonUniformOnePole2()
 
   GNUPlotter plt;
   plt.addDataArrays(Nc, &tc[0], &yc[0]);
-  //plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
+  plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
 
   plt.addDataArrays(Nf, &tf[0], &yf[0]);
-  //plt.addGraph("index 1 using 1:2 with points pt 7 ps 1.2 lc rgb \"#000080\" notitle");
+  plt.addGraph("index 1 using 1:2 with points pt 7 ps 1.2 lc rgb \"#000080\" notitle");
 
-  plt.addDataArrays(Nf, &yu[0]);
-  //plt.addGraph("index 1 using 1:2 with points pt 7 ps 1.2 lc rgb \"#008000\" notitle");
+  //plt.addDataArrays(Nf, &yu[0]);
+  //plt.addGraph("index 2 using 1:2 with points pt 7 ps 1.2 lc rgb \"#008000\" notitle");
 
   plt.plot();
 
-  // continuous plot still has wrong normalization constant
+  // non-uniform impulse response samples look wrong! 
+  //  -could it be that the x[n], dt[n] values are out of sync?
+  //  -it seems that without normalization, the impulse response looks good
 
-  // non-uniform impulse response samples look wrong!
 
 }
 
