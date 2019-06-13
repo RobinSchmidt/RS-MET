@@ -16,9 +16,6 @@ void rsNonUniformOnePole<T>::setOmega(T newOmega)
   dummy = 0;
 }
 
-
-
-
 template<class T>
 T rsNonUniformOnePole<T>::getSample(T x, T dt)
 {
@@ -50,6 +47,10 @@ T rsNonUniformOnePole<T>::getSampleSpatiallyVariantScaled(T x, T dt)
   // update scaler:
   s = a + bdt*s;       //  Eq. 16, with w = 0
 
+
+
+
+
   // update state:
   //y = (a*x + bdt*y) / rsAbs(s);   //  Eq. 13
   //return y;
@@ -57,13 +58,11 @@ T rsNonUniformOnePole<T>::getSampleSpatiallyVariantScaled(T x, T dt)
   // verify, if the scaler really has to be applied when updating the state or if it should be 
   // applied only to the returned output
 
-  //// alternative version:
+  // alternative version:
   y = a*x + bdt*y;
+  return y / rsAbs(s);  // seems better
 
-  //return y; // only without normalization, the impulse response looks good - provide 3rd version of
-            // getSample without any normalization ...or would we have to use the version above?
 
-  return y / rsAbs(s);
   // with dt == 1, there's no difference - s is always 1 - but probably it's correct to apply it
   // to the output because the paper says, with several parallel filters the normalization should
   // *not* be done in the individual complex one-poles but once for the whole filter - which makes 
@@ -107,6 +106,21 @@ void rsNonUniformOnePole<T>::reset()
   // one - in this case, s comes out as 1 - but probably only in the special case of a lowpass
 }
 
+//=================================================================================================
+
+template<class T>
+void rsNonUniformComplexOnePole<T>::reset()
+{
+  x1 = T(0);
+  y  = T(0);
+  //s = a;
+  std::complex<T> j(T(0), T(1));   // imaginary unit
+  s = a / (T(1) - b * exp(j*wr));  // ...verify...
+}
+
+
+
+template class rsNonUniformComplexOnePole<double>;
 template class rsNonUniformOnePole<double>;
 
 

@@ -1,8 +1,10 @@
 #pragma once
 
-/** Implements a one pole filter for non-uniformly sampled data  
+/** Implements a one pole filter for non-uniformly sampled data. This filter class is real-valued, 
+so it supports only lowpass mode (todo: add highpass). One-pole bandpasses are necessarrily complex 
+valued...
 
-...very incomplete...implements the lowpass case w=0 in which case all coeffs are real valued
+
 
 References:
 (1) High-Order Recursive Filtering of Non-Uniformly Sampled Signals for Image and Video Processing
@@ -93,6 +95,7 @@ protected:
   T y = 0;         // output (g in the paper)
   T a = 1, b = 0;  // coefficients, a: feedforward, b: feedback (notation as in the paper)
                    // in more common dsp conventions a = b0, b = a1, b1 does not exist
+                   // maybe rename later
 
 
   T x1 = 0; // previous input (f in the paper) - only needed for "piecewise resampling" method
@@ -101,7 +104,49 @@ protected:
   //T p = 1; 
   //T q = 1; 
 
-  T w = 0;   // (normalized radian) cutoff frequency
+  T w = 0;   // (normalized radian) cutoff frequency ..maybe get rid...
 
   NormalizeMode normMode = NormalizeMode::noNormalization;
+};
+
+//=================================================================================================
+
+/** Implements a complex-valued one-pole filter for non-uniformly sampled data. Higher order 
+non-uniform filters (Butterworth, elliptic, etc.) are created as a parallel connection of these
+complex one-pole units via a partial fraction expansion of the transfer function. */
+
+template<class T>
+class rsNonUniformComplexOnePole
+{
+
+public:
+
+  rsNonUniformComplexOnePole() { reset(); }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setCoeffs(const std::complex<T>& newGain, const std::complex<T>& newFeedback)
+  {
+    a = newGain;
+    b = newFeedback;
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+/** \name Processing */
+
+  /** Resets the filter state. */
+  void reset();
+
+protected:
+
+  std::complex<T> y = T(0);
+  std::complex<T> a = T(1), b = T(0);  // maybe rename to b0, a1 for consistency with other filters
+
+  // maybe factor out into subclasses:
+  std::complex<T> x1 = 0;
+  std::complex<T> s  = 1;
+  T wr = 0;  // reference frequency for unit gain in time-variant scaling normalization
+
 };

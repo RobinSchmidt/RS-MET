@@ -572,7 +572,12 @@ void nonUniformOnePole1()
     yu[n] = fltUni.getSample(x[n]);
 
   // apply non-uniform filter
+
   rsNonUniformOnePole<double> fltNonUni;
+  typedef rsNonUniformOnePole<double>::NormalizeMode NM;
+  //fltNonUni.setNormalizationMode(NM::noNormalization);
+  //fltNonUni.setNormalizationMode(NM::spatiallyVariantScaling);
+  fltNonUni.setNormalizationMode(NM::piecewiseResampling);
   fltNonUni.setOmega(2*PI*fc/fs);
   fltNonUni.reset();   // todo: figure out, if it makes a difference, which formula is used there
   //yn[0] = fltNonUni.init(x[0]); // needs to somehow set the initial state where we do not yet have a dt
@@ -627,6 +632,10 @@ void nonUniformOnePole2()
 
     // compute non-uniform filter output
   rsNonUniformOnePole<double> flt;
+  typedef rsNonUniformOnePole<double>::NormalizeMode NM;
+  flt.setNormalizationMode(NM::noNormalization);         // matches analytic response exactly
+  //flt.setNormalizationMode(NM::spatiallyVariantScaling); // erratic around desired values
+  //flt.setNormalizationMode(NM::piecewiseResampling);       // too low except 1st sample
   flt.setOmega(wc);
   flt.reset();
   yf[0] = flt.getSample(1.0, 1.0);
@@ -677,6 +686,13 @@ void nonUniformOnePole2()
 
 }
 
+// implement highpass..but how would the continuous highpass look like? a delta function minus the
+// lowpass response....but how would we represent that?
+
+// todo: for testing the complex bandpass filters later, maybe try to separate two sinusoids of
+// different frequencies and/or an sinusoid buried in white noise
+
+// figure out, in which circumstances the different normalization modes make sense
 
 
 
