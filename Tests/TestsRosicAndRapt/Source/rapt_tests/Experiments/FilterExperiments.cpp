@@ -532,19 +532,8 @@ void nonUniformOnePole1()
   // stuff -> clean up, get rid of them)
 
   int N = 20;
-
-  std::vector<double> t(N), x(N), yu(N), yn(N); 
-  // time-stamps, input- and output signals
-
-  typedef RAPT::rsArray AR;
-
-  // obsolete?
-  double dtMin = 1.0;   // minimum time-difference between non-uniform samples
-  double dtMax = 1.0;   // maximum ...
-
-
-  double fs    = 1.0;   // sample rate
-  double fc    = 0.1;   // cutoff freq
+  double fs = 1.0;   // sample rate
+  double fc = 0.1;   // cutoff freq
 
   // Tests:
   // 1: compare to the output of a regular uniform one-pole - choose the time-stamps for the 
@@ -555,14 +544,8 @@ void nonUniformOnePole1()
   //    intervals for the nonuniform case but put the sample instants at times where we have
   //    actual oversampled data
 
-  // not needed anymore?
-  AR::fillWithImpulse(&x[0],  N);
-  AR::fillWithZeros(  &yu[0], N);
-  AR::fillWithZeros(  &yn[0], N);
-
-  // fill timestamp and input signal arrays:
-  t = randomSampleInstants(N, dtMin, dtMax, 0);
-  AR::fillWithRandomValues(&x[0], N, -1.0, 1.0, 1);
+  std::vector<double> x(N), yu(N), yn(N);                       // input- and output signals
+  RAPT::rsArray::fillWithRandomValues(&x[0], N, -1.0, 1.0, 1);  // fill input signal array
 
   // apply uniform filter:
   rsOnePoleFilter<double, double> fltUni;
@@ -573,8 +556,7 @@ void nonUniformOnePole1()
   for(n = 0; n < N; n++)
     yu[n] = fltUni.getSample(x[n]);
 
-  // apply non-uniform filter
-
+  // apply non-uniform filter:
   rsNonUniformOnePole<double> fltNonUni;
   typedef rsNonUniformOnePole<double>::NormalizeMode NM;
   //fltNonUni.setNormalizationMode(NM::noNormalization);
@@ -582,14 +564,13 @@ void nonUniformOnePole1()
   fltNonUni.setNormalizationMode(NM::piecewiseResampling);
   fltNonUni.setOmega(2*PI*fc/fs);
   fltNonUni.reset();   // todo: figure out, if it makes a difference, which formula is used there
-  //yn[0] = fltNonUni.init(x[0]); // needs to somehow set the initial state where we do not yet have a dt
-  yn[0] = fltNonUni.getSample(x[0], 1.0);  // is it ok, to just pass 1.0 for the initial dt?
-  for(n = 1; n < N; n++)
-    yn[n] = fltNonUni.getSample(x[n], t[n]-t[n-1]);
-  // replace calls to getSample by getSample2 for piecewise resampling normalization
+  for(n = 0; n < N; n++)
+    yn[n] = fltNonUni.getSample(x[n], 1.0);
 
   GNUPlotter plt;
-  plt.addDataArrays(N, &t[0], &x[0], &yu[0], &yn[0]);
+  plt.addDataArrays(N, &x[0]);
+  plt.addDataArrays(N, &yu[0]);
+  plt.addDataArrays(N, &yn[0]);
   plt.plot();
 
   // Observations:
