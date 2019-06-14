@@ -538,8 +538,11 @@ void nonUniformOnePole1()
 
   typedef RAPT::rsArray AR;
 
+  // obsolete?
   double dtMin = 1.0;   // minimum time-difference between non-uniform samples
   double dtMax = 1.0;   // maximum ...
+
+
   double fs    = 1.0;   // sample rate
   double fc    = 0.1;   // cutoff freq
 
@@ -552,14 +555,13 @@ void nonUniformOnePole1()
   //    intervals for the nonuniform case but put the sample instants at times where we have
   //    actual oversampled data
 
+  // not needed anymore?
   AR::fillWithImpulse(&x[0],  N);
   AR::fillWithZeros(  &yu[0], N);
   AR::fillWithZeros(  &yn[0], N);
 
   // fill timestamp and input signal arrays:
-  t[0] = 0;  // time starts at zero, even in non-uniform setting
-  AR::fillWithRandomValues(&t[1], N-1, dtMin, dtMax, 0);
-  AR::cumulativeSum(&t[0], &t[0], N);
+  t = randomSampleInstants(N, dtMin, dtMax, 0);
   AR::fillWithRandomValues(&x[0], N, -1.0, 1.0, 1);
 
   // apply uniform filter:
@@ -606,19 +608,14 @@ void nonUniformOnePole2()
 
   int Nf = 50;   // number of samples taken from the filter
   int Nc = 500;  // number of dense (pseudo-continuous) samples for analytic target solution
-
-
-  double dtMin = 1.0;   // minimum time-difference between non-uniform samples
-  double dtMax = 1.0;   // maximum ..
+  double dtMin = 0.2;   // minimum time-difference between non-uniform samples
+  double dtMax = 1.8;   // maximum ..
   double fc    = 0.015; // cutoff freq
   double fs    = 1.0;   // sample rate
 
 
-  dtMin = 0.2, dtMax = 1.8;
 
-
-  double wc    = 2*PI*fc/fs;   // normalized radia cutoff frequency
-
+  double wc    = 2*PI*fc/fs;   // normalized radian cutoff frequency
 
 
   std::vector<double> tf(Nf), yf(Nf);  // time-axis and output of filter
@@ -626,9 +623,7 @@ void nonUniformOnePole2()
 
   // create time-stamp array for non-uniform sampling:
   typedef RAPT::rsArray AR;
-  tf[0] = 0;
-  AR::fillWithRandomValues(&tf[1], Nf-1, dtMin, dtMax, 0);
-  AR::cumulativeSum(&tf[0], &tf[0], Nf);
+  tf = randomSampleInstants(Nf, dtMin, dtMax, 0);
 
     // compute non-uniform filter output
   rsNonUniformOnePole<double> flt;
@@ -684,16 +679,40 @@ void nonUniformOnePole2()
   //  -it seems that without normalization, the impulse response looks good
 
 
+  // implement highpass..but how would the continuous highpass look like? a delta function minus the
+  // lowpass response....but how would we represent that?
+
+  // figure out, in which circumstances the different normalization modes make sense
 }
 
-// implement highpass..but how would the continuous highpass look like? a delta function minus the
-// lowpass response....but how would we represent that?
+void nonUniformBiquad()
+{
+  // We design a biquad filter (via RBJ cookbook formulas), separate it into a parallel connection 
+  // of two complex one-pole filters (via partial fraction expansion) and apply it to non-uniformly
+  // sampled data. We compare the resulting samples to a pseudo-continuous version of the same data
+  // which we obtain via an oversampled, uniform filter.
+
+
+  int Nf = 50;             // number of samples taken from the filter
+  int oversampling = 10;   // oversampling factor for pseudo-continuous signal
+
+
+  int Nc = Nf * oversampling; // number of samples for oversampled signal
+
+
+}
+
 
 // todo: for testing the complex bandpass filters later, maybe try to separate two sinusoids of
 // different frequencies and/or an sinusoid buried in white noise
 
-// figure out, in which circumstances the different normalization modes make sense
-
+// next step: use a pair of complex one-poles to implement a biquad. can we get a formula for the 
+// analytic biquad implese response? if not, obtain the pseudo-continuous impulse-response by means
+// of taking an oversampled discrete time response 
+// ...the partial fraction expansion of the biquad can be computed analytically ...somewhere, i have 
+// already done this...
+// ...maybe then try an N-th order butterworth 
+// filter
 
 
 

@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
   //firstOrderFilters();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
-//  nonUniformOnePole1();
+  nonUniformOnePole1();
   nonUniformOnePole2();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();

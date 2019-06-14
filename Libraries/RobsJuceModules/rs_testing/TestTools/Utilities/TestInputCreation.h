@@ -66,8 +66,16 @@ double sineSum(double p, double *A, double N);
 template<class T>
 std::vector<T> createNoise(int numSamples, T min, T max, int seed = 0);
 
+/** Returns an array of sampling instants with random time-differences dt between them. */
+template<class T>
+std::vector<T> randomSampleInstants(int numSamples, T dtMin, T dtMax, int seed = 0);
+
+
 void createRandomDataXY(double* x, double* y, int N, double dxMin, double dxMax, 
   double yMin, double yMax, int seedX = 0, int seedY = 1);
+
+
+
 
 /** Combination of a steady and a decaying sine wave, the 2nd having a frequency-ratio of 
 1+sqrt(5) = 2*goldenRatio to the first. This makes the second partial's ratio close to 3 but very 

@@ -229,6 +229,17 @@ std::vector<T> createNoise(int numSamples, T min, T max, int seed)
 template std::vector<float> createNoise(int numSamples, float min, float max, int seed);
 template std::vector<double> createNoise(int numSamples, double min, double max, int seed);
 
+template<class T>
+std::vector<T> randomSampleInstants(int N, T dtMin, T dtMax, int seed)
+{
+  std::vector<T> t(N);
+  t[0] = 0;
+  RAPT::rsArray::fillWithRandomValues(&t[1], N-1, dtMin, dtMax, seed);
+  RAPT::rsArray::cumulativeSum(&t[0], &t[0], N);
+  return t;
+}
+template std::vector<double> randomSampleInstants(int, double, double, int);
+
 
 void createRandomDataXY(double* x, double* y, int N, double dxMin, double dxMax,
   double yMin, double yMax, int seedX, int seedY)

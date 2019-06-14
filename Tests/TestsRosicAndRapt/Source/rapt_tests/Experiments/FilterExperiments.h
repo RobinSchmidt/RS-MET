@@ -9,9 +9,12 @@ void complementaryFiltersIIR();
 void firstOrderFilters();
 void ladderResonanceManipulation();
 // insert movingAverage here
+
 void nonUniformMovingAverage();
 void nonUniformOnePole1();
 void nonUniformOnePole2();
+void nonUniformBiquad();
+
 void smoothingFilterOrders();
 void smoothingFilterTransitionTimes();
 
