@@ -1,4 +1,79 @@
 //=================================================================================================
+// helper functions for damped-sine filter design:
+
+template<class TPar, class TCof>
+void rsDampedSineFilter(TPar w, TPar A, TPar d, TPar p, TCof* b0, TCof* b1, TCof* a1, TCof* a2)
+{
+  TPar cw, sw, cp, sp, P;
+  rsSinCos(w, &sw, &cw);
+  rsSinCos(p, &sp, &cp);
+  P   = exp(-1.0/d);              // = exp(-alpha), pole radius
+  *a1 = TCof(-2*P*cw);            // = -2*P*cos(w)
+  *a2 = TCof(P*P);                // = P^2
+  *b0 = TCof(A*sp);               // = A*sin(p)
+  *b1 = TCof(A*P*(sw*cp-cw*sp));  // = A*P*sin(w-p) via addition theorem
+}
+// i tried to bake the minus sign into the a-coeffs such that the difference equation can be 
+// implemented with all plusses - but that didn't give any performance advantage, so i changed
+// it back for consistency with DSP literature
+
+template<class T>
+T findDecayScalerLess1(T c)
+{
+  if(c <= 0.0 || c >= 1.0)
+  {
+    rsError("Function assumes 0 < c < 1");
+    return 1.0;
+  }
+
+  // precomputations:
+  T kp  = 1/c;                               // location of the the peak of g(k)
+  T k   = 1 + 2*(kp-1);                      // initial guess for the zero of g(k)
+  T eps = std::numeric_limits<T>::epsilon(); // relative tolerance
+  int    i   = 0;                            // iteration counter
+
+  // Newton iteration:
+  T g, gp;      // g(k), g'(k)
+  T kOld = 2*k; // ensure to enter the loop
+  while(fabs(k-kOld) > k*eps && i < 1000)
+  {
+    kOld = k;
+    g    = log(k) + c*(1-k); // g(k)
+    gp   = 1/k - c;          // g'(k)
+    k    = k - g/gp;         // Newton step
+    i++;                     // count iteration
+  }
+
+  return k;
+
+  // \todo: check this function in the range 0 <= c < 1, if all works well and the iteration count 
+  // is always low, get rid of the iteration counter - it serves a purpose only during development
+
+  // \todo find a refined formula for the initial guess by plotting the output against the input in
+  // the range 0...1 and fit a polynomial (or other suitable function) to the data
+}
+
+template<class T>
+void expDiffScalerAndTau2(T tau1, T tp, T* tau2, T* scaler)
+{
+  if(tp >= tau1)
+  {
+    rsError("assumes tp < tau1");
+    *tau2   = tau1;
+    *scaler = 1.0;
+    return;
+  }
+  T a1 = 1/tau1;
+  T c  = a1 * tp;
+  T k  = findDecayScalerLess1(c);
+  T a2 = k*a1;
+  T hp = exp(-a1*tp) - exp(-a2*tp); // peak height
+
+  *tau2   = 1/a2;
+  *scaler = 1/hp;
+}
+
+//=================================================================================================
 // class rsTwoPoleFilter:
 
 template<class TSig, class TPar>
@@ -34,113 +109,6 @@ template<class TSig, class TPar>
 void rsTwoPoleFilter<TSig, TPar>::reset()
 {
   y1 = y2 = 0;
-}
-
-//=================================================================================================
-// helper functions for damped-sine filter design:
-
-//void RSLib::modalParamsToFilterCoeffs(double w, double A, double d, double p, 
-//                                      double *g, double *b1, double *a1, double *a2)
-//{
-//  // implementation is obsolete - replace by new one in rsDampedSineFilter - still in the
-//  // Experiments project. ah, and we should implement the filter in terms of b0, b1, a1, a2 
-//  // instead g, b1, a1, a2. the new design is more flexible and the coefficient computations are
-//  // simpler
-//
-//  // calculate intermediate variables:
-//  double P, pp, ri, R;
-//  P  = exp(-1.0/d);
-//  p  = rsWrapToInterval(rsDegreeToRadiant(p), 0, 2*PI);
-//  pp = p-PI/2;
-//  ri = 0.5*tan(pp);
-//  R  = rsSqrt(0.25+ri*ri);
-//
-//  // todo: use rsSinCos, double-angle formula:
-//  double c1, c2, s1, s2;
-//  c1 = cos(w);
-//  c2 = cos(2*w);
-//  s1 = sin(w);
-//  s2 = sin(2*w);
-//
-//  // calculate coefficients:
-//  *a2 = P*P;
-//  *a1 = -2*P*c1;
-//  *b1 = -(P/2)*(2*(1-c2)*ri+s2)/s1; 
-//  *g  = A/(2*R);
-//  if( p > PI )
-//    *g = -*g;
-//}
-
-template<class TPar, class TCof>
-void rsDampedSineFilter(TPar w, TPar A, TPar d, TPar p, TCof *b0, TCof *b1, TCof *a1, TCof *a2)
-{
-  TPar cw, sw, cp, sp, P;
-  rsSinCos(w, &sw, &cw);
-  rsSinCos(p, &sp, &cp);
-  P   = exp(-1.0/d);              // = exp(-alpha), pole radius
-  *a1 = TCof(-2*P*cw);            // = -2*P*cos(w)
-  *a2 = TCof(P*P);                // = P^2
-  *b0 = TCof(A*sp);               // = A*sin(p)
-  *b1 = TCof(A*P*(sw*cp-cw*sp));  // = A*P*sin(w-p) via addition theorem
-}
-// i tried to bake the minus sign into the a-coeffs such that the difference equation can be 
-// implemented with all plusses - but that didn't give any performance advantage, so i changed
-// it back for consistency with DSP literature
-
-template<class T>
-T findDecayScalerLess1(T c)
-{
-  if( c <= 0.0 || c >= 1.0 )
-  {
-    rsError("Function assumes 0 < c < 1");
-    return 1.0;
-  }
-
-  // precomputations:
-  T kp  = 1/c;                               // location of the the peak of g(k)
-  T k   = 1 + 2*(kp-1);                      // initial guess for the zero of g(k)
-  T eps = std::numeric_limits<T>::epsilon(); // relative tolerance
-  int    i   = 0;                            // iteration counter
-
-  // Newton iteration:
-  T g, gp;      // g(k), g'(k)
-  T kOld = 2*k; // ensure to enter the loop
-  while( fabs(k-kOld) > k*eps && i < 1000 )
-  {
-    kOld = k;
-    g    = log(k) + c*(1-k); // g(k)
-    gp   = 1/k - c;          // g'(k)
-    k    = k - g/gp;         // Newton step
-    i++;                     // count iteration
-  }
- 
-  return k;
-
-  // \todo: check this function in the range 0 <= c < 1, if all works well and the iteration count 
-  // is always low, get rid of the iteration counter - it serves a purpose only during development
-
-  // \todo find a refined formula for the initial guess by plotting the output against the input in
-  // the range 0...1 and fit a polynomial (or other suitable function) to the data
-}
-
-template<class T>
-void expDiffScalerAndTau2(T tau1, T tp, T *tau2, T *scaler)
-{
-  if( tp >= tau1 )
-  {
-    rsError("assumes tp < tau1");
-    *tau2   = tau1;
-    *scaler = 1.0;
-    return;
-  }
-  T a1 = 1/tau1;
-  T c  = a1 * tp;
-  T k  = findDecayScalerLess1(c);
-  T a2 = k*a1;
-  T hp = exp(-a1*tp) - exp(-a2*tp); // peak height
-
-  *tau2   = 1/a2;
-  *scaler = 1/hp; 
 }
 
 //=================================================================================================

@@ -1,6 +1,54 @@
 #ifndef RAPT_MODALFILTERBANK_H
 #define RAPT_MODALFILTERBANK_H
 
+//=================================================================================================
+// utility functions for damped-sine filter design:
+
+/** Designs a two-pole one-zero filter in terms of its impulse response which is given as the
+damped sinusoid:
+
+h[n] = A * exp(-n/d) * sin(w*n + p) * u[n]
+
+where u[n] is the unit step function. The filter can be implemented as:
+
+y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] - a2*y[n-2]
+
+The parameters are:
+w: normalized radian frequency (= 2*pi*f/fs, f: frequency, fs: samplerate)
+A: amplitude
+d: normalized decay time constant (= tau*fs, tau: time (in s) to decay to A/e = A*0.3678...)
+p: start phase in radians.
+
+You can use different datatypes for the parameters and coefficients (for example, double and float)
+
+move to FilterDesignFormulas, change sign convention for a-coeffs */
+template<class TPar, class TCof>
+void rsDampedSineFilter(TPar w, TPar A, TPar d, TPar p, TCof* b0, TCof* b1, TCof* a1, TCof* a2);
+
+/** Finds the value k such that k*exp(-c*k) - exp(-c) = 0  for the given parameter c in the range
+0 < c < 1. k = 1 is always a solution to this root finding problem - the function will try to
+find the other solution, if any - otherwise it will return 1. */
+template<class T>
+T findDecayScalerLess1(T c);
+// \todo make a function findDecayScalerGreater1 which assumes c > 1 (or c >= 1) and a function
+// findDecayScaler which dispatches between the two versions - check the old matlab files - iirc,
+// we need a different initial guess in this case and/or a different iteration algorithm 
+// (fixed-point- instead of newton-raphson or something...) - but maybe move as static function
+// into the class that needs this function
+
+/** Given a desired asymptotic decay time constant tau1 and the desired time instant of the peak
+tPeak, this function computes the required other time constant tau2 and a scale factor to be used
+for an attack-decay envelope that can be obtained by the scaled difference of two exponential
+decays, like so:
+x(t) = scaler * ( exp(-t/tau1) - exp(t/tau2) )  \todo use latex-markup
+For this to work, we must have tPeak < tau1 because otherwise the decay will also be governed by
+the second term (and the computational methods, we use here may not converge because they also
+rely on this assumption). */
+template<class T>
+void expDiffScalerAndTau2(T tau1, T tPeak, T* tau2, T* scaler);
+
+//=================================================================================================
+
 /** Implements a two-pole filter (without any zeros) decribed by the difference equation:
 y[n] = x[n] - a1*y[n-1] - a2*y[n-2]
 
@@ -54,62 +102,7 @@ RS_INLINE TSig rsTwoPoleFilter<TSig, TPar>::getSample(TSig in)
 
 //=================================================================================================
 
-
-/** Designs a two-pole one-zero filter in terms of its impulse response which is given as the
-damped sinusoid:
-
-h[n] = A * exp(-n/d) * sin(w*n + p) * u[n]
-
-where u[n] is the unit step function. The filter can be implemented as:
-
-y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] - a2*y[n-2]
-
-The parameters are:
-w: normalized radian frequency (= 2*pi*f/fs, f: frequency, fs: samplerate)
-A: amplitude
-d: normalized decay time constant (= tau*fs, tau: time (in s) to decay to A/e = A*0.3678...)
-p: start phase in radians. 
-
-You can use different datatypes for the parameters and coefficients (for example, double and float)
-
-move to FilterDesignFormulas, change sign convention for a-coeffs */
-template<class TPar, class TCof>
-void rsDampedSineFilter(TPar w, TPar A, TPar d, TPar p, TCof *b0, TCof *b1, TCof *a1, TCof *a2);
-
-
-/** This is actually almost the same as rsDampedSineFilter, just that here the phase is given in
-degrees.
-\todo get rid of that function
-*/
-//void RSLib_API modalParamsToFilterCoeffs(double omega, double amplitude, double tau,
-//  double startPhase, double *g, double *b1, double *a1, double *a2);
-
-/** Finds the value k such that k*exp(-c*k) - exp(-c) = 0  for the given parameter c in the range
-0 < c < 1. k = 1 is always a solution to this root finding problem - the function will try to
-find the other solution, if any - otherwise it will return 1. */
-template<class T>
-T findDecayScalerLess1(T c);
-
-// \todo make a function findDecayScalerGreater1 which assumes c > 1 (or c >= 1) and a function
-// findDecayScaler which switches between the two versions
-
-/** Given a desired asymptotic decay time constant tau1 and the desired time instant of the peak
-tPeak, this function computes the required other time constant tau2 and a scale factor to be used
-for an attack-decay envelope that can be obtained by the scaled difference of two exponential
-decays, like so:
-x(t) = scaler * ( exp(-t/tau1) - exp(t/tau2) )  \todo use latex-markup
-For this to work, we must have tPeak < tau1 because otherwise the decay will also be governed by
-the second term (and the computational methods, we use here may not converge because they also
-rely on this assumption). */
-template<class T>
-void expDiffScalerAndTau2(T tau1, T tPeak, T *tau2, T *scaler);
-
-
-//===============================================================================================
-
-/**
-
-This class implements a filter that realizes an exponentially decaying sinusoid that may
+/** This class implements a filter that realizes an exponentially decaying sinusoid that may
 represent a single mode of vibration in some sound.
 
 \todo templatize this class for different types of input signals (for mono, stereo, multichannel)

@@ -670,7 +670,7 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
 {
   // We create a non-uniform decaying sine filter...
 
-  int Nf = 200;             // number of samples taken from the filter
+  int Nf = 100;             // number of samples taken from the filter
   int oversampling = 10;   // oversampling factor for pseudo-continuous signal
 
   // decaying sine parameters:
@@ -717,14 +717,29 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
   // is an experiment somewhere, where the dampedSineFilter output is compared to the analytic
   // result - check that
 
-
-
+  // create it again via the analytic expression:
+  std::vector<double> ya(Nc);
+  for(int n = 0; n < Nc; n++)
+    ya[n] = amplitude * exp(-tc[n]/decay) * sin(2*PI*freq*tc[n] + rsDegreeToRadiant(phase));
+  // the analytically computed impulse response does aggree with the samples - but the oversampled
+  // doesn't agree with the analytic - it looks like the frequency of the oversampled version is a
+  // tad too high - over time, the analytic version lags more and more behind - this probably 
+  // deserves a dedicated experiment... for here, let's use the analytic version
 
 
 
   GNUPlotter plt;
+
+  plt.addDataArrays(Nc, &tc[0], &ya[0]);  // pseudo-continuous data (from analytic expression)
+  plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
+
   plt.addDataArrays(Nf, &yu[0]);          // uniformly sampled data
-  plt.addDataArrays(Nc, &tc[0], &yc[0]);  // pseudo-continuous data
+  plt.addGraph("index 1 with points pt 7 ps 1.2 lc rgb \"#000080\" notitle");
+
+
+  //plt.addDataArrays(Nc, &tc[0], &yc[0]);  // pseudo-continuous data (from oversampling)
+  //plt.addGraph("index 2 using 1:2 with lines lw 2 lc rgb \"#80808f\" notitle");
+
 
   plt.plot();
 }

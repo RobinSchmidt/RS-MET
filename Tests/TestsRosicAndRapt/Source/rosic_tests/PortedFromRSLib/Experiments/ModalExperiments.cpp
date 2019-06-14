@@ -32,7 +32,7 @@ void modalFilterFreqResp()
   rsModalFilterWithAttackDD mf;
   mf.setModalParameters(frq, amp, att, dec, phs, fs, 1.0);
 
-  //plotImpulseResponse(mf, 5000, 1.0);
+  //plotImpulseResponse(  mf, 5000, 1.0);
   plotFrequencyResponse(mf, 5000, 20.0, fs/2, fs, true);
 }
 
@@ -142,7 +142,7 @@ void rsDampedSineFilterNormalizedB0(double w, double A, double d, double p, doub
   if( p > PI )
     *g = -*g;
 }
-// this implementation is obsolete
+// this implementation is obsolete - the new one has simpler formulas
 
 
 /** Retrieves damped sine filter design parameters from its coefficients. See 
