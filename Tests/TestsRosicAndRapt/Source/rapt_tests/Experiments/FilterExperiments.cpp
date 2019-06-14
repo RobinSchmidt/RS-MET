@@ -674,14 +674,13 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
   int oversampling = 10;   // oversampling factor for pseudo-continuous signal
 
   // decaying sine parameters:
-  double amplitude = 1.0;  
+  double amplitude = 1.0;   // overall amplitude
   double phase     = 45;    // start-phase in degrees
-  double decay     = 50;    //
-  double freq      = 0.05;  // normalized frequency
+  double decay     = 50;    // number of samples to decay to A/e
+  double freq      = 0.05;  // normalized frequency (freq/sampleRate)
 
 
   // compute coeffs for two-pole-one-zero filter:
-  //double a1, a2, b0, b1;  
   double a[3], b[2];
   a[0] = 1.0;
   rsDampedSineFilter(2*PI*freq, amplitude, decay, rsDegreeToRadiant(phase), 
@@ -689,8 +688,6 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
 
 
   typedef RAPT::rsArray AR;
-
-
 
   // create uniformly sampled impulse-response:
   std::vector<double> x(Nf), yu(Nf);
@@ -700,6 +697,13 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
 
   // create non-uniformly sampled impulse-response:
   std::vector<double> t(Nf), yn(Nf);
+  // todo:
+  // -make a partial fraction expansion of b/a to obtain the complex gains ("residues") and 
+  //  complex recursion coeffs (both should occur as pairs of complex conjugates)
+  // -set up a rsNonUniformComplexOnePole with one of those pairs
+  // -obtain its output - it's complex valued - the real output is given by two times the real 
+  //  part (when adding outputs of the two conjugate filters, real parts will be equal and 
+  //  imaginary parts will be equal with opposite signs)
 
 
 
@@ -734,11 +738,13 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
   plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
 
   plt.addDataArrays(Nf, &yu[0]);          // uniformly sampled data
-  plt.addGraph("index 1 with points pt 7 ps 1.2 lc rgb \"#000080\" notitle");
+  plt.addGraph("index 1 with points pt 7 ps 0.8 lc rgb \"#000080\" notitle");
 
 
   //plt.addDataArrays(Nc, &tc[0], &yc[0]);  // pseudo-continuous data (from oversampling)
-  //plt.addGraph("index 2 using 1:2 with lines lw 2 lc rgb \"#80808f\" notitle");
+  //plt.addGraph("index 2 using 1:2 with lines lw 2 lc rgb \"#80008f\" notitle");
+  // this should aggree with the analytically computed response but doesn't - the oscillation is
+  // a bit too fast
 
 
   plt.plot();
