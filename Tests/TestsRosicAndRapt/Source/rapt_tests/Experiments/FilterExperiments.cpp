@@ -666,6 +666,69 @@ void nonUniformOnePole2()
   // figure out, in which circumstances the different normalization modes make sense
 }
 
+void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
+{
+  // We create a non-uniform decaying sine filter...
+
+  int Nf = 200;             // number of samples taken from the filter
+  int oversampling = 10;   // oversampling factor for pseudo-continuous signal
+
+  // decaying sine parameters:
+  double amplitude = 1.0;  
+  double phase     = 45;    // start-phase in degrees
+  double decay     = 50;    //
+  double freq      = 0.05;  // normalized frequency
+
+
+  // compute coeffs for two-pole-one-zero filter:
+  //double a1, a2, b0, b1;  
+  double a[3], b[2];
+  a[0] = 1.0;
+  rsDampedSineFilter(2*PI*freq, amplitude, decay, rsDegreeToRadiant(phase), 
+    &b[0], &b[1], &a[1], &a[2]);
+
+
+  typedef RAPT::rsArray AR;
+
+
+
+  // create uniformly sampled impulse-response:
+  std::vector<double> x(Nf), yu(Nf);
+  AR::fillWithZeros(&x[0], Nf); x[0] = 1;  // create impulse as input signal
+  AR::filter(&x[0], Nf, &yu[0], Nf, b, 1, a, 2);
+
+
+  // create non-uniformly sampled impulse-response:
+  std::vector<double> t(Nf), yn(Nf);
+
+
+
+  // create pseudo-continuous impulse response (via oversampling):
+  int Nc = Nf * oversampling;
+  rsDampedSineFilter(2*PI*freq/oversampling, amplitude, decay*oversampling, 
+    rsDegreeToRadiant(phase),  &b[0], &b[1], &a[1], &a[2]);
+  std::vector<double> tc(Nc), yc(Nc);
+  AR::fillWithZeros(&yc[0], Nc); yc[0] = 1;  // create impulse as input signal
+  AR::fillWithRangeLinear(&tc[0], Nc, 0.0, Nf-1.0);
+  AR::filter(&yc[0], Nc, &yc[0], Nc, b, 1, a, 2);
+  // the oversampled and non-oversampled outputs should aggree at the sample-points of the 
+  // non-oversampled signal - but this seems true only for the first few samples and later
+  // they deviate more - why? ...maybe compare with analytic prediction - i think, there already
+  // is an experiment somewhere, where the dampedSineFilter output is compared to the analytic
+  // result - check that
+
+
+
+
+
+
+  GNUPlotter plt;
+  plt.addDataArrays(Nf, &yu[0]);          // uniformly sampled data
+  plt.addDataArrays(Nc, &tc[0], &yc[0]);  // pseudo-continuous data
+
+  plt.plot();
+}
+
 void nonUniformBiquad()
 {
   // We design a biquad filter (via RBJ cookbook formulas), separate it into a parallel connection 

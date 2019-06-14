@@ -90,8 +90,10 @@ int main(int argc, char* argv[])
   //firstOrderFilters();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
-  nonUniformOnePole1();
-  nonUniformOnePole2();
+  //nonUniformOnePole1();
+  //nonUniformOnePole2();
+  nonUniformComplexOnePole();
+  //nonUniformBiquad();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters

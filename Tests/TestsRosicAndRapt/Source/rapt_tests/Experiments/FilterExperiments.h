@@ -13,6 +13,7 @@ void ladderResonanceManipulation();
 void nonUniformMovingAverage();
 void nonUniformOnePole1();
 void nonUniformOnePole2();
+void nonUniformComplexOnePole();
 void nonUniformBiquad();
 
 void smoothingFilterOrders();
