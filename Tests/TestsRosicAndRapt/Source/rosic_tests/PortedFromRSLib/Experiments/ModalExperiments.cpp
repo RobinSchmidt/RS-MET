@@ -148,6 +148,8 @@ void rsDampedSineFilterNormalizedB0(double w, double A, double d, double p, doub
 /** Retrieves damped sine filter design parameters from its coefficients. See 
 @see rsDampedSineFilter for meaning of parameters. The phase p is returned in the interval 
 0...2pi. */
+/*
+// moved to Prototypes:
 void rsDampedSineFilterAnalysis(double b0, double b1, double a1, double a2, double *w, double *A, 
   double *d, double *p)
 {
@@ -189,6 +191,7 @@ void rsDampedSineFilterAnalysis2(double b0, double b1, double a1, double a2, dou
   // first missed a division by j (corresponding to a rotation by -pi/2) in the computation of the
   // residue r and that's why we later don't need to add pi/2 to the startphase value ;-)
 }
+*/
 
 void rsDampedSineFilterOld(double w, double A, double d, double p, double *b0, double *b1, 
   double *a1, double *a2)

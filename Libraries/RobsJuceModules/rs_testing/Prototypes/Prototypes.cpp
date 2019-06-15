@@ -385,6 +385,50 @@ void papoulisL2(double *v, int N)
   }
 }
 
+void rsDampedSineFilterAnalysis(double b0, double b1, double a1, double a2, double* w, double* A,
+  double* d, double* p)
+{
+  rsAssert(0.25*a1*a1-a2 < 0.0, "no damped sine filter, poles not complex conjugate");
+  double P, cw;
+  P  = sqrt(a2);
+  cw = -0.5*a1/P;
+  *d = -1.0/log(P);
+  *w = acos(cw);
+  *p = atan2(sin(*w), b1/(P*b0)+cw);
+  if(rsAbs(b0) > rsAbs(b1))
+    * A = b0/sin(*p);
+  else
+    *A = b1/(P*sin(*w-*p));
+  if(*A < 0.0)
+  {
+    *A  = -*A;
+    *p += PI;
+  }
+}
+
+void rsDampedSineFilterAnalysis2(double b0, double b1, double a1, double a2, double* w, double* A,
+  double* d, double* p)
+{
+  rsAssert(0.25*a1*a1-a2 < 0.0, "no damped sine filter, poles not complex conjugate");
+  typedef std::complex<double> Complex;
+  Complex j(0.0, 1.0);                 // imaginary unit
+  double P = sqrt(a2);                 // pole radius
+  *w = acos(-0.5*a1/P);                // pole angle
+  Complex q = P * exp(j * *w);         // pole location
+  Complex r = (b1+b0*q)/(2*q.imag());  // residue location
+  *d = -1.0/log(P);                    // normalized decay time constant
+  *A = 2*abs(r);                       // amplitude
+  *p = arg(r);                         // start phase...
+  if(*p < 0.0)                         // ...in interval 0...2pi instead of -pi...pi
+    * p += 2*PI;
+  // Remark: There are actually two mathematical errors in this sequence of assignments which 
+  // conveniently cancel each other and streamline the implementation, that's why I left them in.
+  // Actually, it should be r = (b1+b0*q)/(2.0*j*q.im) and *p = arg(r) + 0.5*PI, so we have 
+  // first missed a division by j (corresponding to a rotation by -pi/2) in the computation of the
+  // residue r and that's why we later don't need to add pi/2 to the startphase value ;-)
+}
+
+
 double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x)
 {
   double res;
@@ -414,6 +458,10 @@ void cheby_win(double *out, int N, double atten)
   RAPT::rsArray::normalizeMean(out, N);
   return;
 }
+
+
+
+
 
 //=================================================================================================
 

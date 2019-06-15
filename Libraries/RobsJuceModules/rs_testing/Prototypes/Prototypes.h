@@ -91,6 +91,16 @@ void halpernT2(double *c, int N);
 polynomial in Eq. 8.14 in Paarmann: Design and Analysis of Analog Filters */
 void papoulisL2(double *c, int N);
 
+/** Retrieves damped sine filter design parameters from its coefficients. See
+@see rsDampedSineFilter for meaning of parameters. The phase p is returned in the interval
+0...2pi. */
+void rsDampedSineFilterAnalysis(double b0, double b1, double a1, double a2, double* w, double* A,
+  double* d, double* p);
+
+void rsDampedSineFilterAnalysis2(double b0, double b1, double a1, double a2, double* w, double* A,
+  double* d, double* p); // other algorithm for the same thing
+
+
 /** Calculates a chebyshev window of size N, store coeffs in out as in Antoniou
   -out should be array of size N 
   -atten is the required sidelobe attenuation (e.g. if you want -60dB atten, use '60') 
