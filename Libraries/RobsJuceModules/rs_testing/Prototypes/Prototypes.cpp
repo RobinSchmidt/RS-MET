@@ -428,6 +428,17 @@ void rsDampedSineFilterAnalysis2(double b0, double b1, double a1, double a2, dou
   // residue r and that's why we later don't need to add pi/2 to the startphase value ;-)
 }
 
+void rsDampedSineFilterResidueAndPole(double b0, double b1, double a1, double a2,
+  std::complex<double>* r, std::complex<double>* p)
+{
+  rsAssert(0.25*a1*a1-a2 < 0.0, "no damped sine filter, poles not complex conjugate");
+  double P = sqrt(a2);                        // pole radius
+  double w = acos(-0.5*a1/P);                 // pole angle
+  std::complex<double> j(0.0, 1.0);           // imaginary unit
+  *p = P * exp(j * w);                        // pole location
+  *r = (b1 + b0 * *p) / (2. * j * p->imag()); // residue location
+}
+
 
 double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x)
 {

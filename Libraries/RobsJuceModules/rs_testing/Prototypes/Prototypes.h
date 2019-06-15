@@ -100,6 +100,10 @@ void rsDampedSineFilterAnalysis(double b0, double b1, double a1, double a2, doub
 void rsDampedSineFilterAnalysis2(double b0, double b1, double a1, double a2, double* w, double* A,
   double* d, double* p); // other algorithm for the same thing
 
+void rsDampedSineFilterResidueAndPole(double b0, double b1, double a1, double a2, 
+  std::complex<double>* residue, std::complex<double>* pole);
+
+
 
 /** Calculates a chebyshev window of size N, store coeffs in out as in Antoniou
   -out should be array of size N 
