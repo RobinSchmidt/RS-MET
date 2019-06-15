@@ -6,8 +6,7 @@ void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapola
   Tx dxl, dxr, dx;
   Ty a, b; 
 
-  for(int n = 1; n < N-1; n++)
-  {
+  for(int n = 1; n < N-1; n++) {
     dxl   = x[n] - x[n-1];
     dxr   = x[n+1] - x[n];
     dx    = dxl + dxr;
@@ -16,9 +15,7 @@ void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapola
   // todo: save the left weight and use it as right weight in the next iteration (save one division
   // per iteration)
 
-
-  if( extrapolateEnds == true )
-  {
+  if( extrapolateEnds == true ) {
     a = (yd[2] - yd[1]) / (x[2] - x[1]);
     b = yd[1] - a * x[1];
     yd[0] = a*x[0] + b;
@@ -26,9 +23,7 @@ void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapola
     b = yd[N-3] - a * x[N-3];
     yd[N-1] = a*x[N-1] + b;
       // maybe this can be simplified by using rsInterpolateLinear
-  }
-  else
-  {
+  } else {
     yd[0]   = (y[1]   - y[0])   / (x[1]   - x[0]);
     yd[N-1] = (y[N-1] - y[N-2]) / (x[N-1] - x[N-2]);
   }
@@ -49,6 +44,11 @@ void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapola
 // -try another approach: fit a polynomial of arbitrary order to a number of datapoints around
 //  the n and return the derivative of the poynomial at that point (may this be equivalent to the
 //  approach above when using 3 points for a quadratic polynomial?)
+
+// -yet another approach: "invert" the trapezoidal integration algorithm, i.e. run it backwards in
+//  order to get a numerical integration routing that is the inverse operation to trapezoidal 
+//  integration
+//  -it may return a value - the integration constant to be used
 
 
 
@@ -97,7 +97,7 @@ Ty rsNumericIntegrator<Tx, Ty>::integrate(const std::function<Ty(Tx)>& f, Tx a, 
 // -let the user set the sample evaluation points by passing a pointer to an array of Tx
 // -alternatively, the user may set just a number and then the object auotmatically generates
 //  the sample points
-// -for this automatic sample poitn generation, the user may select between different algorithms,
+// -for this automatic sample point generation, the user may select between different algorithms,
 //  by default, we just choose them equidistantly
 // -use a (cubic) natural spline based on the datapoints and compute the integral as sum over the
 //  integrals of the spline segments (for this, we need to split the spline generator such that it

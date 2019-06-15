@@ -1260,6 +1260,31 @@ void numericDiffAndInt()
   plotData(N, x, y, yd, ydn, yi, yin);
 }
 
+// ToDo: implement a numerical differentiation algorithm that is the inverse operation of 
+// trapezoidal integration. Let x,y be the arrays of abcissa and ordinate value to be integrated
+// and z the array of the integral values. Then, trapezoidal integration does the following:
+//   z[0] = c; z[i] = z[i-1] + (x[i] - x[i-1]) * (y[i] + y[i-1]) / 2
+// where c is the integration constant. The formula can be solved for y[i]:
+//   y[i] = 2 * (z[i] - z[i-1]) / (x[i] - x[i-1]) - y[i-1]
+// or for y[i-1]:
+//   y[i-1] = 2 * (z[i] - z[i-1]) / (x[i] - x[i-1]) - y[i]
+// so we have a nice recursion formula that we may either start at y[0] or y[N-1] - but how do we 
+// get the boundary values? Let's unroll the recursion, starting at the end, at y[N-1]:
+//   y[N-1] = 2*(z[N-1]-z[N-2])/(x[N-1]-x[N-2]) - y[N-2]   
+// replace y[N-2] by its expression:
+//   y[N-1] = 2*(z[N-1]-z[N-2])/(x[N-1]-x[N-2]) - 2*(z[N-2]-z[N-3])/(x[N-2]-x[N-3]) + y[N-3]
+// replace y[N-3] by its expression:
+//   y[N-1] = 2*(z[N-1]-z[N-2])/(x[N-1]-x[N-2]) - 2*(z[N-2]-z[N-3])/(x[N-2]-x[N-3]) + 2*(z[N-3]-z[N-4])/(x[N-3]-x[N-4]) - y[N-4]
+// and so on (note the alternating signs) - so after unrolling everything, this leads to:
+//   y[N-1] =   sum_{i odd}     2 * (z[N-i] - z[N-i-1]) / (x[N-i] - x[N-i-1])
+//            - sum_{i>0, even} 2 * (z[N-i] - z[N-i-1]) / (x[N-i] - x[N-i-1])
+// so - if i didn't make any mistakes (which is unlikely), this is the formula, we may use to 
+// compute the boundary value y[N-1] to start the recursion from the end of the array. Once we have
+// that, we can apply the recursion formula to compute all other values. ...maybe define arrays to
+// hold the differences of the x and z arrays, like a[i] = x[i] - x[i-1], b[i] = z[i] - z[i-1]
+// ...but what about a[0], b[0]?
+
+
 void shiftPolynomial()
 {
   static const int order = 6;

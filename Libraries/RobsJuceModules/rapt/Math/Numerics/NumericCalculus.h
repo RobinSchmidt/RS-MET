@@ -27,6 +27,10 @@ endpoints compared to simple differences, so it's probably better to use extrapo
 template<class Tx, class Ty>
 void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds = true);
 
+// todo: make a numeric derivative routine that is the inverse of the trapezoidal integrator
+// rsDifferentiateTrapezoidal, rename this one to rsWeightedCentralDifference
+
+
 /** Computes the numerical integral of a function defined by data points, i.e. the function:
 \f[ F(x) = \int_c^x f(t) dt \f] where the lower integration limit c can be passed as a parameter 
 into the function. Usage is similar to rsNumericDerivative. The parameter c can also be seen as an 
@@ -35,14 +39,19 @@ along the y-axis. The algorithm uses a trapezoidal rule, i.e. it sums up the are
 trapezoids defined by a piecewise linear interpolant that passes through the datapoints. */
 template<class Tx, class Ty>
 void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
-// maybe rename to rsNumericIntegralTrapezoidal, use Tx, Ty for datatypes
-// maybe rename parameters to x, f, F
+// maybe rename to rsNumericIntegralTrapezoidal, or rsIntegrateTrapezoidal, use Tx, Ty for 
+// datatypes maybe rename parameters to x, f, F
 
 
 // Maybe rename to NumericAnalysis and include the interpolation stuff into this file as well 
 // because some interpolation stuff depends on numeric derivatives but some numeric derivatives/
 // integration stuff may depend on interpolation and if we templatize the functions, we need to 
 // take care that everything is defined before it gets used.
+
+
+
+
+//=================================================================================================
 
 /** just a stub, at the moment */
 

@@ -54,6 +54,8 @@ public:
     T gainFactor = 1.0);
 
 
+  // todo: biquadToPartialFractions - converts a biquad to it partial fraction expansion
+
   //static void biquadToStateVariable(T* b0, T* b1, T* b2, T* a1, T* a2, ...);
 
   //static void biquadToPhasor(T* b0, T* b1, T* b2, T* a1, T* a2, T* rc, T* rs, T* wx, T* wy, T* wi);
