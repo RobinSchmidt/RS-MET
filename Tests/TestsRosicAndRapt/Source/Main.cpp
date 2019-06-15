@@ -315,7 +315,7 @@ int main(int argc, char* argv[])
   //modalTwoModes();
   //attackDecayFilter();  // ...hmm..almost redundant
   //dampedSineFilterDesign();
-  //biquadImpulseResponseDesign();
+  biquadImpulseResponseDesign();
   //modalBankTransient();
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
   //modalWithFancyEnv();

@@ -219,8 +219,8 @@ void dampedSineFilterDesign()
   // compute coefficients:
   double b0, b1, a1, a2;
   double B0, B1, A1, A2;
-  rsDampedSineFilterOld(w, A, d, p, &B0, &B1, &A1, &A2);
-  rsDampedSineFilter(   w, A, d, p, &b0, &b1, &a1, &a2);
+  rsDampedSineFilterOld(   w, A, d, p, &B0, &B1, &A1, &A2);
+  rsDampedSineFilterCoeffs(w, A, d, p, &b0, &b1, &a1, &a2);
 
 
   // recover design parameters:

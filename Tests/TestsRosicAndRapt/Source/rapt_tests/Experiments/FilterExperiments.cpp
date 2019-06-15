@@ -683,7 +683,7 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
   // compute coeffs for two-pole-one-zero filter:
   double a[3], b[2];
   a[0] = 1.0;
-  rsDampedSineFilter(2*PI*freq, amplitude, decay, rsDegreeToRadiant(phase), 
+  rsDampedSineFilterCoeffs(2*PI*freq, amplitude, decay, rsDegreeToRadiant(phase),
     &b[0], &b[1], &a[1], &a[2]);
 
 
@@ -709,7 +709,7 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
 
   // create pseudo-continuous impulse response (via oversampling):
   int Nc = Nf * oversampling;
-  rsDampedSineFilter(2*PI*freq/oversampling, amplitude, decay*oversampling, 
+  rsDampedSineFilterCoeffs(2*PI*freq/oversampling, amplitude, decay*oversampling,
     rsDegreeToRadiant(phase),  &b[0], &b[1], &a[1], &a[2]);
   std::vector<double> tc(Nc), yc(Nc);
   AR::fillWithZeros(&yc[0], Nc); yc[0] = 1;  // create impulse as input signal

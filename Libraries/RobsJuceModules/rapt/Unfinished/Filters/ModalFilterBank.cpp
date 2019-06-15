@@ -2,7 +2,8 @@
 // helper functions for damped-sine filter design:
 
 template<class TPar, class TCof>
-void rsDampedSineFilter(TPar w, TPar A, TPar d, TPar p, TCof* b0, TCof* b1, TCof* a1, TCof* a2)
+void rsDampedSineFilterCoeffs(
+  TPar w, TPar A, TPar d, TPar p, TCof* b0, TCof* b1, TCof* a1, TCof* a2)
 {
   TPar cw, sw, cp, sp, P;
   rsSinCos(w, &sw, &cw);
@@ -126,7 +127,7 @@ template<class TSig, class TPar>
 void rsModalFilter<TSig, TPar>::setModalParameters(TPar frequency, TPar amplitude, TPar decayTime, 
   TPar startPhase, TPar sampleRate)
 {
-  rsDampedSineFilter(2*PI*frequency/sampleRate, amplitude, decayTime*sampleRate, 
+  rsDampedSineFilterCoeffs(2*PI*frequency/sampleRate, amplitude, decayTime*sampleRate,
     RAPT::rsDegreeToRadiant(startPhase), &b0, &b1, &a1, &a2);  
 }
 
@@ -362,8 +363,8 @@ void rsModalFilterWithAttack2<TSig, TPar>::setModalParameters(TPar frequency, TP
   TPar a = amplitude * scaler;
   TPar b10, b11, a11, a12;
   TPar b20, b21, a21, a22;
-  rsDampedSineFilter(w, a, tau1*sampleRate, p, &b10, &b11, &a11, &a12);
-  rsDampedSineFilter(w, a, tau2*sampleRate, p, &b20, &b21, &a21, &a22);
+  rsDampedSineFilterCoeffs(w, a, tau1*sampleRate, p, &b10, &b11, &a11, &a12);
+  rsDampedSineFilterCoeffs(w, a, tau2*sampleRate, p, &b20, &b21, &a21, &a22);
 
   // convert parallel connection into a single 4th order filter (maybe factor out):
   //b0 = b10-b20; // b0 comes out as zero

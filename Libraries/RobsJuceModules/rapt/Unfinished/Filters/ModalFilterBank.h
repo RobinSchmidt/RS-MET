@@ -4,8 +4,8 @@
 //=================================================================================================
 // utility functions for damped-sine filter design:
 
-/** Designs a two-pole one-zero filter in terms of its impulse response which is given as the
-damped sinusoid:
+/** Designs (i.e. computes coefficients from user parameters for) a two-pole-one-zero filter in 
+terms of its impulse response which is given as the damped sinusoid:
 
 h[n] = A * exp(-n/d) * sin(w*n + p) * u[n]
 
@@ -23,7 +23,12 @@ You can use different datatypes for the parameters and coefficients (for example
 
 move to FilterDesignFormulas, change sign convention for a-coeffs */
 template<class TPar, class TCof>
-void rsDampedSineFilter(TPar w, TPar A, TPar d, TPar p, TCof* b0, TCof* b1, TCof* a1, TCof* a2);
+void rsDampedSineFilterCoeffs(
+  TPar w, TPar A, TPar d, TPar p, TCof* b0, TCof* b1, TCof* a1, TCof* a2);
+// have inverse function rsDampedSineFilterParams
+
+
+
 
 /** Finds the value k such that k*exp(-c*k) - exp(-c) = 0  for the given parameter c in the range
 0 < c < 1. k = 1 is always a solution to this root finding problem - the function will try to
