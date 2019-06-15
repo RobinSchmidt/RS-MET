@@ -138,8 +138,17 @@ public:
 
 
   std::complex<T> getSample(std::complex<T> x, T dt);
-  // preliminary
+  // preliminary - todo: implement it as dispatcher
 
+  /** Accepts a real input sample and returns the real part of our complex output. The idea here is
+  that in a setting with real inputs and outputs, each complex stage has a partner that produces 
+  the complex conjugate of its output. In the final output, when all the outputs of the individual 
+  one-poles are added together, the imaginary parts will cancel each other out and the real parts 
+  will add up to twice the value of the output of the single stage. That means, we do not actually 
+  have to compute the output of the partner stage by implementing it as an actual complex one-pole. 
+  Instead, we can obtain the output of the two stages as twice the real part of one of those 
+  stages. The multiplication by two is not done here - it's left to outside code for optimization 
+  purposes (it needs to be done only once for the whole sum over all stages). */
   T getSampleReal(T x, T dt)
   {
     std::complex<T> z = getSample(std::complex<T>(x, T(0)), dt);

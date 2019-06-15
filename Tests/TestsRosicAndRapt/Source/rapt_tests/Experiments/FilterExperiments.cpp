@@ -679,6 +679,10 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
   double decay     = 50;    // number of samples to decay to A/e
   double freq      = 0.05;  // normalized frequency (freq/sampleRate)
 
+  // non-uniform sampling parameters
+  double dtMin = 0.2;   // minimum time-difference between non-uniform samples
+  double dtMax = 1.8;   // maximum ..
+
 
   // compute coeffs for two-pole-one-zero filter:
   double a[3], b[2];
@@ -697,6 +701,7 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
 
   // create non-uniformly sampled impulse-response:
   std::vector<double> t(Nf), yn(Nf);
+  t = randomSampleInstants(Nf, dtMin, dtMax, 0);
 
   // obtain residue and pole:
   std::complex<double> r, p;
@@ -704,18 +709,12 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
 
   // create a non-uniform complex one-pole filter and set it up:
   rsNonUniformComplexOnePole<double> flt;
-  flt.setCoeffs(r, p); // or maybe it has to be -p? 
+  flt.setCoeffs(r, p);
 
-  // obtain filter output - it's complex valued - the real output is given by two times the real 
-  // part (when adding outputs of the two conjugate filters, real parts will be equal and 
-  // imaginary parts will be equal with opposite signs)
-  yn[0] = flt.getSampleReal(1.0, 1.0);     // pass random dt values later as 2nd argument
+  // obtain non-uniform filter output:
+  yn[0] = 2*flt.getSampleReal(1.0, 1.0);
   for(int n = 1; n < Nf; n++)
-    yn[n] = flt.getSampleReal(0.0, 1.0);   // dito
-
-
-
-
+    yn[n] = 2*flt.getSampleReal(0.0, t[n]-t[n-1]);
 
 
 
@@ -753,7 +752,7 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
   plt.addGraph("index 1 with points pt 7 ps 0.8 lc rgb \"#000080\" notitle");
 
 
-  plt.addDataArrays(Nf, &yn[0]);          // non-uniformly sampled data (preliminary)
+  plt.addDataArrays(Nf, &t[0], &yn[0]);   // non-uniformly sampled data
   plt.addGraph("index 2 with points pt 7 ps 0.8 lc rgb \"#008000\" notitle");
 
 
