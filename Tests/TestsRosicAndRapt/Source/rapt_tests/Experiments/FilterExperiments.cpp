@@ -697,13 +697,25 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
 
   // create non-uniformly sampled impulse-response:
   std::vector<double> t(Nf), yn(Nf);
-  // todo:
-  // -make a partial fraction expansion of b/a to obtain the complex gains ("residues") and 
-  //  complex recursion coeffs (both should occur as pairs of complex conjugates)
-  // -set up a rsNonUniformComplexOnePole with one of those pairs
-  // -obtain its output - it's complex valued - the real output is given by two times the real 
-  //  part (when adding outputs of the two conjugate filters, real parts will be equal and 
-  //  imaginary parts will be equal with opposite signs)
+
+  // obtain residue and pole:
+  std::complex<double> r, p;
+  rsDampedSineFilterResidueAndPole(b[0], b[1], a[1], a[2], &r, &p);
+
+  // create a non-uniform complex one-pole filter and set it up:
+  rsNonUniformComplexOnePole<double> flt;
+  flt.setCoeffs(r, p); // or maybe it has to be -p? 
+
+  // obtain filter output - it's complex valued - the real output is given by two times the real 
+  // part (when adding outputs of the two conjugate filters, real parts will be equal and 
+  // imaginary parts will be equal with opposite signs)
+  yn[0] = flt.getSampleReal(1.0, 1.0);     // pass random dt values later as 2nd argument
+  for(int n = 1; n < Nf; n++)
+    yn[n] = flt.getSampleReal(0.0, 1.0);   // dito
+
+
+
+
 
 
 
@@ -739,6 +751,10 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
 
   plt.addDataArrays(Nf, &yu[0]);          // uniformly sampled data
   plt.addGraph("index 1 with points pt 7 ps 0.8 lc rgb \"#000080\" notitle");
+
+
+  plt.addDataArrays(Nf, &yn[0]);          // non-uniformly sampled data (preliminary)
+  plt.addGraph("index 2 with points pt 7 ps 0.8 lc rgb \"#008000\" notitle");
 
 
   //plt.addDataArrays(Nc, &tc[0], &yc[0]);  // pseudo-continuous data (from oversampling)

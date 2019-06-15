@@ -136,6 +136,16 @@ public:
   //-----------------------------------------------------------------------------------------------
 /** \name Processing */
 
+
+  std::complex<T> getSample(std::complex<T> x, T dt);
+  // preliminary
+
+  T getSampleReal(T x, T dt)
+  {
+    std::complex<T> z = getSample(std::complex<T>(x, T(0)), dt);
+    return z.real();
+  }
+
   /** Resets the filter state. */
   void reset();
 

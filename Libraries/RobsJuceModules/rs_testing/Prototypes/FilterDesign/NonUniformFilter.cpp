@@ -109,6 +109,15 @@ void rsNonUniformOnePole<T>::reset()
 //=================================================================================================
 
 template<class T>
+std::complex<T> rsNonUniformComplexOnePole<T>::getSample(std::complex<T> x, T dt)
+{
+  std::complex<T> bdt = pow(b, dt);  // b^dt
+  y = a*x + bdt*y;
+  return y;
+}
+// todo: make this a dispatcher method the same way as for the real one-pole
+
+template<class T>
 void rsNonUniformComplexOnePole<T>::reset()
 {
   x1 = T(0);
