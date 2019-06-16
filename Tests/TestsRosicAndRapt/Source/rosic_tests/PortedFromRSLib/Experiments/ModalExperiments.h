@@ -9,6 +9,7 @@ void modalFilterFreqResp(); // rename to modalWithAttack
 void modalTwoModes();
 void attackDecayFilter();   // remove (redundant now)
 void dampedSineFilterDesign();
+void dampedSineFilterImpResp();
 void biquadImpulseResponseDesign();
 void modalBankTransient(); // tests the use of nonlinear feedback to produce transients
 

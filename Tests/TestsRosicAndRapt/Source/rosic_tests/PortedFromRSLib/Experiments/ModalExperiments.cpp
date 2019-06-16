@@ -235,6 +235,48 @@ void dampedSineFilterDesign()
   int dummy = 0;
 }
 
+void dampedSineFilterImpResp()
+{
+  // We plot the desired analytic impulse response of a damped sine filter as a pseudo-continuous
+  // graph and on top of it the samples of the actual damped sine filter.
+
+  // decaying sine parameters:
+  double amplitude = 1.0;   // overall amplitude
+  double phase     = 45;    // start-phase in degrees
+  double decay     = 50;    // number of samples to decay to A/e
+  double freq      = 0.05;  // normalized frequency (freq/sampleRate)
+
+  int N = 100;
+
+
+
+  // compute coeffs for two-pole-one-zero filter:
+  double a[3], b[2];
+  a[0] = 1.0;
+  rsDampedSineFilterCoeffs(2*PI*freq, amplitude, decay, rsDegreeToRadiant(phase),
+    &b[0], &b[1], &a[1], &a[2]);
+
+
+  typedef RAPT::rsArray AR;
+
+  // create sparsely sampled impulse-response:
+  std::vector<double> y(N);
+  AR::fillWithZeros(&y[0], N); y[0] = 1;
+  AR::filter(&y[0], N, &y[0], N, b, 1, a, 2);
+
+
+
+
+  GNUPlotter plt;
+
+  plt.addDataArrays(N, &y[0]);          // uniformly sampled data
+  plt.addGraph("index 0 with points pt 7 ps 0.8 lc rgb \"#000080\" notitle");
+
+  plt.plot();
+
+}
+
+
 
 /** A genaral time-domain design of biquad filters can be thought of as a damped-sine filter 
 (two-pole/one-zero) plus a scaled delta-impulse at the beginning of the impulse-response

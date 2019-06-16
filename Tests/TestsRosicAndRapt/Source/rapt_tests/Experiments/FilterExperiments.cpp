@@ -755,15 +755,23 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
   plt.addDataArrays(Nf, &t[0], &yn[0]);   // non-uniformly sampled data
   plt.addGraph("index 2 with points pt 7 ps 0.8 lc rgb \"#008000\" notitle");
 
-
   //plt.addDataArrays(Nc, &tc[0], &yc[0]);  // pseudo-continuous data (from oversampling)
   //plt.addGraph("index 2 using 1:2 with lines lw 2 lc rgb \"#80008f\" notitle");
   // this should aggree with the analytically computed response but doesn't - the oscillation is
   // a bit too fast
 
-
   plt.plot();
 }
+
+// next: 
+// -figure out, why oversampling and analytic solution disagree
+
+// -figure out, how to implement a general non-uniform biquad 
+//  -a uniform biquad can be represented as a unit-delayed two-pole-one-zero plus a (weighted)
+//   input
+//  -the gastal papar does not really address, how to implement the FIR part - but maybe the julia
+//   code does? ...figure out, how the plots in figure 5 were created (impulse responses of
+//   butterworth, cauer, etc.) - that should be applicable to our case
 
 void nonUniformBiquad()
 {
