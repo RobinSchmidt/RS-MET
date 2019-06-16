@@ -238,7 +238,10 @@ void dampedSineFilterDesign()
 void dampedSineFilterImpResp()
 {
   // We plot the desired analytic impulse response of a damped sine filter as a pseudo-continuous
-  // graph and on top of it the samples of the actual damped sine filter.
+  // graph and on top of it the samples of the actual damped sine filter. ...and then also an
+  // oversampled version - this was to figure out, why the oversampled signal seemed time-squished
+  // with respect to the analytic and non-oversampled signal - it turned out, that the time axis
+  // was wrong - stupid mistake!
 
   // decaying sine parameters:
   double amplitude = 1.0;   // overall amplitude
@@ -271,7 +274,8 @@ void dampedSineFilterImpResp()
   rsDampedSineFilterCoeffs(2*PI*freq/oversampling, amplitude, decay*oversampling,
     rsDegreeToRadiant(phase), &b[0], &b[1], &a[1], &a[2]);
   std::vector<double> to(No), yo(No);
-  AR::fillWithRangeLinear(&to[0], No, 0.0, N-1.0);
+  //AR::fillWithRangeLinear(&to[0], No, 0.0, N-1.0);               // wrong!
+  AR::fillWithRangeLinear(&to[0], No, 0.0, (No-1.0)/oversampling); // correct!
   AR::fillWithZeros(&yo[0], No); yo[0] = 1;
   AR::filter(&yo[0], No, &yo[0], No, b, 1, a, 2);
 
@@ -291,14 +295,6 @@ void dampedSineFilterImpResp()
   plt.addGraph("index 2 with points pt 7 ps 0.8 lc rgb \"#008000\" notitle");
 
   plt.plot();
-
-  // Observations:
-  // -the higher the oversampling factor, the more the oversampled signal deviates from the 
-  //  analytically correct signal
-
-  // ...why is this the case? what i expect is that the oversampled signal exactly aggrees with the
-  // analytic signal and with the samples of the normally sampled signal
-  // ...or is this because the end-time of our oversampled time-axis is wrong?
 }
 
 
