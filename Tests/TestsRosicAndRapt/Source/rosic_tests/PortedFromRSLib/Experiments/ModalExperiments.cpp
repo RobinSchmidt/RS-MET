@@ -244,35 +244,36 @@ void dampedSineFilterImpResp()
   double amplitude = 1.0;   // overall amplitude
   double phase     = 45;    // start-phase in degrees
   double decay     = 50;    // number of samples to decay to A/e
-  double freq      = 0.05;  // normalized frequency (freq/sampleRate)
+  double freq      = 0.1;   // normalized frequency (freq/sampleRate)
 
   int N = 100;
 
-
-
-  // compute coeffs for two-pole-one-zero filter:
-  double a[3], b[2];
-  a[0] = 1.0;
-  rsDampedSineFilterCoeffs(2*PI*freq, amplitude, decay, rsDegreeToRadiant(phase),
-    &b[0], &b[1], &a[1], &a[2]);
-
-
-  typedef RAPT::rsArray AR;
-
-  // create sampled impulse-response:
-  std::vector<double> y(N);
-  AR::fillWithZeros(&y[0], N); y[0] = 1;
-  AR::filter(&y[0], N, &y[0], N, b, 1, a, 2);
-
   // create pseudo-continuous impulse response:
+  typedef RAPT::rsArray AR;
   int Nc = N * 20;  // 20 times the sample-rate
   std::vector<double> tc(Nc), yc(Nc);
   AR::fillWithRangeLinear(&tc[0], Nc, 0.0, N-1.0);
   for(int n = 0; n < Nc; n++)
     yc[n] = amplitude * exp(-tc[n]/decay) * sin(2*PI*freq*tc[n] + rsDegreeToRadiant(phase));
 
+  // create sampled impulse-response:
+  double a[3], b[2];
+  a[0] = 1.0;
+  rsDampedSineFilterCoeffs(2*PI*freq, amplitude, decay, rsDegreeToRadiant(phase),
+    &b[0], &b[1], &a[1], &a[2]);
+  std::vector<double> y(N);
+  AR::fillWithZeros(&y[0], N); y[0] = 1;
+  AR::filter(&y[0], N, &y[0], N, b, 1, a, 2);
 
-
+  // create oversampled impulse-response:
+  int oversampling = 4;
+  int No = N * oversampling;
+  rsDampedSineFilterCoeffs(2*PI*freq/oversampling, amplitude, decay*oversampling,
+    rsDegreeToRadiant(phase), &b[0], &b[1], &a[1], &a[2]);
+  std::vector<double> to(No), yo(No);
+  AR::fillWithRangeLinear(&to[0], No, 0.0, N-1.0);
+  AR::fillWithZeros(&yo[0], No); yo[0] = 1;
+  AR::filter(&yo[0], No, &yo[0], No, b, 1, a, 2);
 
 
   GNUPlotter plt;
@@ -285,9 +286,19 @@ void dampedSineFilterImpResp()
   plt.addDataArrays(N, &y[0]);          
   plt.addGraph("index 1 with points pt 7 ps 0.8 lc rgb \"#000080\" notitle");
 
-
+  // add oversampled data:
+  plt.addDataArrays(No, &to[0], &yo[0]);
+  plt.addGraph("index 2 with points pt 7 ps 0.8 lc rgb \"#008000\" notitle");
 
   plt.plot();
+
+  // Observations:
+  // -the higher the oversampling factor, the more the oversampled signal deviates from the 
+  //  analytically correct signal
+
+  // ...why is this the case? what i expect is that the oversampled signal exactly aggrees with the
+  // analytic signal and with the samples of the normally sampled signal
+  // ...or is this because the end-time of our oversampled time-axis is wrong?
 }
 
 
