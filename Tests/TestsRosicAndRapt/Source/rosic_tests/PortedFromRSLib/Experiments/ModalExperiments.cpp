@@ -259,21 +259,35 @@ void dampedSineFilterImpResp()
 
   typedef RAPT::rsArray AR;
 
-  // create sparsely sampled impulse-response:
+  // create sampled impulse-response:
   std::vector<double> y(N);
   AR::fillWithZeros(&y[0], N); y[0] = 1;
   AR::filter(&y[0], N, &y[0], N, b, 1, a, 2);
+
+  // create pseudo-continuous impulse response:
+  int Nc = N * 20;  // 20 times the sample-rate
+  std::vector<double> tc(Nc), yc(Nc);
+  AR::fillWithRangeLinear(&tc[0], Nc, 0.0, N-1.0);
+  for(int n = 0; n < Nc; n++)
+    yc[n] = amplitude * exp(-tc[n]/decay) * sin(2*PI*freq*tc[n] + rsDegreeToRadiant(phase));
+
 
 
 
 
   GNUPlotter plt;
 
-  plt.addDataArrays(N, &y[0]);          // uniformly sampled data
-  plt.addGraph("index 0 with points pt 7 ps 0.8 lc rgb \"#000080\" notitle");
+  // add pseudo-continuous data (from analytic expression)
+  plt.addDataArrays(Nc, &tc[0], &yc[0]);  
+  plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
+
+  // add sampled data:
+  plt.addDataArrays(N, &y[0]);          
+  plt.addGraph("index 1 with points pt 7 ps 0.8 lc rgb \"#000080\" notitle");
+
+
 
   plt.plot();
-
 }
 
 
