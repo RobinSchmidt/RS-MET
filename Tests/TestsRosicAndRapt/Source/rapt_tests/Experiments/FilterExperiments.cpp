@@ -666,12 +666,12 @@ void nonUniformOnePole2()
   // figure out, in which circumstances the different normalization modes make sense
 }
 
-void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
+void nonUniformComplexOnePole()
 {
-  // We create a non-uniform decaying sine filter...
+  // We create a non-uniform decaying sine filter and compare its output to a uniform version
+  // and a pseudo-continuous version (which is computed as an oversampled uniform filter). The
+  // output samples of the non-unifrom filter should match the underlying pseudo-continuous output.
 
-  int Nf = 100;             // number of samples taken from the filter
-  int oversampling = 10;   // oversampling factor for pseudo-continuous signal
 
   // decaying sine parameters:
   double amplitude = 1.0;   // overall amplitude
@@ -679,44 +679,33 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
   double decay     = 50;    // number of samples to decay to A/e
   double freq      = 0.05;  // normalized frequency (freq/sampleRate)
 
-  // non-uniform sampling parameters
-  double dtMin = 0.2;   // minimum time-difference between non-uniform samples
-  double dtMax = 1.8;   // maximum ..
+  // sampling parameters:
+  int Nf = 100;           // number of samples taken from the filter
+  int oversampling = 10;  // oversampling factor for pseudo-continuous signal
+  double dtMin = 0.2;     // minimum time-difference between non-uniform samples
+  double dtMax = 1.8;     // maximum ..
 
 
-  // compute coeffs for two-pole-one-zero filter:
+  // create uniformly sampled impulse-response:
+  typedef RAPT::rsArray AR;
   double a[3], b[2];
   a[0] = 1.0;
   rsDampedSineFilterCoeffs(2*PI*freq, amplitude, decay, rsDegreeToRadiant(phase),
     &b[0], &b[1], &a[1], &a[2]);
-
-
-  typedef RAPT::rsArray AR;
-
-  // create uniformly sampled impulse-response:
   std::vector<double> x(Nf), yu(Nf);
   AR::fillWithZeros(&x[0], Nf); x[0] = 1;  // create impulse as input signal
   AR::filter(&x[0], Nf, &yu[0], Nf, b, 1, a, 2);
 
-
   // create non-uniformly sampled impulse-response:
   std::vector<double> t(Nf), yn(Nf);
   t = randomSampleInstants(Nf, dtMin, dtMax, 0);
-
-  // obtain residue and pole:
-  std::complex<double> r, p;
+  std::complex<double> r, p;  // residue and pole
   rsDampedSineFilterResidueAndPole(b[0], b[1], a[1], a[2], &r, &p);
-
-  // create a non-uniform complex one-pole filter and set it up:
   rsNonUniformComplexOnePole<double> flt;
   flt.setCoeffs(r, p);
-
-  // obtain non-uniform filter output:
   yn[0] = 2*flt.getSampleReal(1.0, 1.0);
   for(int n = 1; n < Nf; n++)
     yn[n] = 2*flt.getSampleReal(0.0, t[n]-t[n-1]);
-
-
 
   // create pseudo-continuous impulse response (via oversampling):
   int Nc = Nf * oversampling;
@@ -724,42 +713,18 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
     rsDegreeToRadiant(phase),  &b[0], &b[1], &a[1], &a[2]);
   std::vector<double> tc(Nc), yc(Nc);
   AR::fillWithZeros(&yc[0], Nc); yc[0] = 1;  // create impulse as input signal
-  AR::fillWithRangeLinear(&tc[0], Nc, 0.0, Nf-1.0);
+  AR::fillWithRangeLinear(&tc[0], Nc, 0.0, (Nc-1.0)/oversampling);
   AR::filter(&yc[0], Nc, &yc[0], Nc, b, 1, a, 2);
-  // the oversampled and non-oversampled outputs should aggree at the sample-points of the 
-  // non-oversampled signal - but this seems true only for the first few samples and later
-  // they deviate more - why? ...maybe compare with analytic prediction - i think, there already
-  // is an experiment somewhere, where the dampedSineFilter output is compared to the analytic
-  // result - check that
-
-  // create it again via the analytic expression:
-  std::vector<double> ya(Nc);
-  for(int n = 0; n < Nc; n++)
-    ya[n] = amplitude * exp(-tc[n]/decay) * sin(2*PI*freq*tc[n] + rsDegreeToRadiant(phase));
-  // the analytically computed impulse response does aggree with the samples - but the oversampled
-  // doesn't agree with the analytic - it looks like the frequency of the oversampled version is a
-  // tad too high - over time, the analytic version lags more and more behind - this probably 
-  // deserves a dedicated experiment... for here, let's use the analytic version
 
 
-
+  // plot:
   GNUPlotter plt;
-
-  plt.addDataArrays(Nc, &tc[0], &ya[0]);  // pseudo-continuous data (from analytic expression)
+  plt.addDataArrays(Nc, &tc[0], &yc[0]);  // pseudo-continuous data
   plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
-
   plt.addDataArrays(Nf, &yu[0]);          // uniformly sampled data
   plt.addGraph("index 1 with points pt 7 ps 0.8 lc rgb \"#000080\" notitle");
-
-
   plt.addDataArrays(Nf, &t[0], &yn[0]);   // non-uniformly sampled data
   plt.addGraph("index 2 with points pt 7 ps 0.8 lc rgb \"#008000\" notitle");
-
-  //plt.addDataArrays(Nc, &tc[0], &yc[0]);  // pseudo-continuous data (from oversampling)
-  //plt.addGraph("index 2 using 1:2 with lines lw 2 lc rgb \"#80008f\" notitle");
-  // this should aggree with the analytically computed response but doesn't - the oscillation is
-  // a bit too fast
-
   plt.plot();
 }
 
@@ -772,6 +737,11 @@ void nonUniformComplexOnePole()  // maybe rename to nonUniformDecayingSine
 //  -the gastal papar does not really address, how to implement the FIR part - but maybe the julia
 //   code does? ...figure out, how the plots in figure 5 were created (impulse responses of
 //   butterworth, cauer, etc.) - that should be applicable to our case
+//  -maybe we should look at the continuous time transfer biquad function and obtain an expression
+//   for the continuous time impulse response?
+//  -maybe, for the time being, restrict ourselves to all-pole filters (this will include 
+//   butterworth, bessel, gaussian, papoulis, halpern, cheby-1) to avoid this problem
+//   ->we may also do a proper impulse-invariant transform with such filters
 
 void nonUniformBiquad()
 {

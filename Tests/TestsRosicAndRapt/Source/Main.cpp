@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
   //nonUniformMovingAverage();
   //nonUniformOnePole1();
   //nonUniformOnePole2();
-//  nonUniformComplexOnePole();
+  nonUniformComplexOnePole();
   //nonUniformBiquad();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
@@ -315,7 +315,7 @@ int main(int argc, char* argv[])
   //modalTwoModes();
   //attackDecayFilter();  // ...hmm..almost redundant
   //dampedSineFilterDesign();
-  dampedSineFilterImpResp();
+  //dampedSineFilterImpResp();
   //biquadImpulseResponseDesign();
   //modalBankTransient();
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
