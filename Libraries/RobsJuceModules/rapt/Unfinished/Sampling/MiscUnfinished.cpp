@@ -1561,37 +1561,34 @@ void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* pe
 }
 
 template<class T>
-void rsEnvelopeExtractor<T>::setupEndValues(std::vector<T>& envTime, std::vector<T>& envValue, int N)
+void rsEnvelopeExtractor<T>::setupEndValues(std::vector<T>& envTimes, std::vector<T>& envValues, int N)
 {
-  if(envTime.size() < 2) {
-    rsPrepend(envValue, T(0));
-    rsPrepend(envTime,  T(0));
-    rsAppend( envValue, T(0));
-    rsAppend( envTime,  T(N));
+  if(envTimes.size() < 2) {
+    rsPrepend(envValues, T(0));
+    rsPrepend(envTimes,  T(0));
+    rsAppend( envValues, T(0));
+    rsAppend( envTimes,  T(N));
     return;
   }
 
-
   T v;
   if(startMode == ZERO_END) {
-    rsPrepend(envValue, T(0));
-    rsPrepend(envTime,  T(0));
-  }
-  else if(startMode == EXTRAPOLATE_END) {
-    v = rsInterpolateLinear(envTime[0], envTime[1], envValue[0], envValue[1], 0.0);
-    rsPrepend(envValue, rsMax(v, T(0)));
-    rsPrepend(envTime,  T(0));
+    rsPrepend(envValues, T(0));
+    rsPrepend(envTimes,  T(0));
+  } else if(startMode == EXTRAPOLATE_END) {
+    v = rsInterpolateLinear(envTimes[0], envTimes[1], envValues[0], envValues[1], 0.0);
+    rsPrepend(envValues, rsMax(v, T(0)));
+    rsPrepend(envTimes,  T(0));
   }
 
   if(endMode == ZERO_END) {
-    rsAppend(envValue, T(0));
-    rsAppend(envTime,  T(N));
-  }
-  else if(endMode == EXTRAPOLATE_END) {
-    int M = (int)envTime.size()-1;
-    v = rsInterpolateLinear(envTime[M-1], envTime[M], envValue[M-1], envValue[M], T(N));
-    rsAppend(envValue, rsMax(v, T(0)));
-    rsAppend(envTime,  T(N));
+    rsAppend(envValues, T(0));
+    rsAppend(envTimes,  T(N));
+  } else if(endMode == EXTRAPOLATE_END) {
+    int M = (int)envTimes.size()-1;
+    v = rsInterpolateLinear(envTimes[M-1], envTimes[M], envValues[M-1], envValues[M], T(N));
+    rsAppend(envValues, rsMax(v, T(0)));
+    rsAppend(envTimes,  T(N));
   }
 }
 

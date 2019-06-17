@@ -959,7 +959,7 @@ protected:
   /** \name Internal Functions */
 
 
-  void setupEndValues(std::vector<T>& envTime, std::vector<T>& envValue, int N);
+  void setupEndValues(std::vector<T>& envTimes, std::vector<T>& envValues, int N);
 
   // void applySmoothing
 

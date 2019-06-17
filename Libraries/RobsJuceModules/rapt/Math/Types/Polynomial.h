@@ -29,11 +29,11 @@ public:
     //return a[0] + a[1]*x + a[2]*x2 + a[3]*x*x2;
   }
 
+  /** Evaluates the cubic polynomial a + b*x + c*x^2 + d*x^3 at the given x. */
   static inline T evaluateCubic(T x, const T& a, const T& b, const T& c, const T& d)
   {
     return a + (b + (c + d*x)*x)*x;
   }
-
 
   /** Evaluates the polynomial defined by the array of coefficients 'a' and its first derivative at
   argument 'x'. The value of the polynomial will be stored in y and the value of the derivative
@@ -408,7 +408,8 @@ public:
   /** Returns the maximum order that this poloynomial may have which is the length of the
   coefficient array minus one. When there are trailing zero coefficients, the actual degree of
   the polynomial is lower. */
-  int getMaxOrder() const { return (int)coeffs.size()-1; } // maybe deprecate this
+  int getMaxOrder() const { return (int)coeffs.size()-1; } 
+  // rename to getMaxDegree - or maybe deprecate this 
 
   int getDegree() const { return (int)coeffs.size()-1; }
   // int getOrder()

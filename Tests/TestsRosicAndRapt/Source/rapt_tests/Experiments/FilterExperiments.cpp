@@ -734,14 +734,14 @@ void nonUniformComplexOnePole()
 // -figure out, how to implement a general non-uniform biquad 
 //  -a uniform biquad can be represented as a unit-delayed two-pole-one-zero plus a (weighted)
 //   input
-//  -the gastal papar does not really address, how to implement the FIR part - but maybe the julia
+//  -the gastal paper does not really address, how to implement the FIR part - but maybe the julia
 //   code does? ...figure out, how the plots in figure 5 were created (impulse responses of
 //   butterworth, cauer, etc.) - that should be applicable to our case
 //  -maybe we should look at the continuous time transfer biquad function and obtain an expression
 //   for the continuous time impulse response?
 //  -maybe, for the time being, restrict ourselves to all-pole filters (this will include 
 //   butterworth, bessel, gaussian, papoulis, halpern, cheby-1) to avoid this problem
-//   ->we may also do a proper impulse-invariant transform with such filters
+//   -> we may also do a proper impulse-invariant transform with such filters
 
 void nonUniformBiquad()
 {
