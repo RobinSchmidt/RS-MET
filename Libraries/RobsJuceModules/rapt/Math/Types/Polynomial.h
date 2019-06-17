@@ -3,9 +3,15 @@
 
 /** A class for representing polynomials and doing computations with them. */
 
-// todo: rename "order" parameters to "degree" - also edit the comments accordingly - consistently
-// use the term "degree" (...done up to "besselPolynomial" in the .h file)
-// be const correct in the static functions (declare array parameters const)
+// todo: 
+// -rename "order" parameters to "degree" - also edit the comments accordingly - consistently
+//  use the term "degree" (...done in the .h file - do it in the cpp file, too)
+// -be const correct in the static functions (declare array parameters const)
+// -maybe use const references instead of direct by-value arguments
+// -move the static functions below the object methods and operators
+// -create unit test to test operators
+// -implement missing operators (/,%,=,==) ...maybe we could meaningfully define <,<=, ...?
+//  ...maybe look at how python or other scientific libraries handle that
 
 template<class T>
 class rsPolynomial
@@ -360,58 +366,61 @@ public:
     // todo: maybe use rsPolynomialRecursion inside
 
   /** Fills the array with coefficients for a Legendre-polynomial (of the 1st kind) of given
-  order. */
-  static void legendrePolynomial(T *a, int order);
+  degree. */
+  static void legendrePolynomial(T *a, int degree);
     // todo: maybe use rsPolynomialRecursion - or maybe get rid of the function
     // (move to prototypes)
 
   /** Computes the recursion coefficients (as used in rsPolynomialRecursion) for the Jacobi
-  polynomial of order n (n >= 2) with parameters a and b. */
+  polynomial of degree n (n >= 2) with parameters a and b. */
   static void jacobiRecursionCoeffs(int n, T a, T b, T *w0, T *w1, T *w1x, T *w2);
 
-  /** Given the coefficients of the Jacobi polynomials of orders n-1 and n-2 in c1 and c2, this
-  function computes the coefficients of the next Jacobi polynomial of order n by using the 3 term
+  /** Given the coefficients of the Jacobi polynomials of degrees n-1 and n-2 in c1 and c2, this
+  function computes the coefficients of the next Jacobi polynomial of degree n by using the 3 term
   recurrence relation with parameters a and b. */
   static void jacobiRecursion(T *c, int n, T *c1, T *c2, T a, T b);
 
-  /** Computes the coefficients of the Jacobi polynomials of orders up to maxOrder with parameters
-  a and b (usually alpha and beta in formulas). The 2D array "c" will contain the coefficients on
-  return. The first index in the c-array runs over indices 0...maxOrder inclusive, so the outer
-  dimension should be maxOrder+1. The "c" array may actually be triangular, with the 1st inner
-  array of length 1 , the 2nd of length 2, etc. where the last one should have length
-  maxOrder+1 (same as the outer). You may also use a square matrix for convenience - then unused
+  /** Computes the coefficients of the Jacobi polynomials of degrees up to maxDegree with 
+  parameters a and b (usually alpha and beta in formulas). The 2D array "c" will contain the 
+  coefficients on return. The first index in the c-array runs over indices 0...maxDegree inclusive,
+  so the outer dimension should be maxDegree+1. The "c" array may actually be triangular, with the 
+  1st inner array of length 1 , the 2nd of length 2, etc. where the last one should have length
+  maxDegree+1 (same as the outer). You may also use a square matrix for convenience - then unused
   elements will not be touched in this case. */
-  static void jacobiPolynomials(T **c, T a, T b, int maxOrder);
+  static void jacobiPolynomials(T **c, T a, T b, int maxDegree);
 
   /** Analog to jacobiRecursion */
   static void legendreRecursion(T *a, int n, T *a1, T *a2);
 
-  // todo: void chebychevPolynomial(T *a, int order);
+  // todo: void chebychevPolynomial(T *a, int degree);
 
-  /** Constructs a polynomial p(x) of order 2*N+1 with the following properties:
+  /** Constructs a polynomial p(x) of degree 2*N+1 with the following properties:
   p(0) = 0, p(1) = 1, p'(x) >= 0 for all x (monotonically increasing), p'(1) = maximum possible
   when monotonicity is assumed. \todo: check if these properties are actually true. Such
   polynomials are used in Papoulis filters. */
   static void maxSlopeMonotonic(T *a, int N);
 
   // \todo for Halpern filters:
-  //void jacobiPolynomial(T *a, int order); // the U-polynomials
-  //void maximallyDivergingMonotonicPolynomial(T *a, int order); // the T-polynomial
+  //void jacobiPolynomial(T *a, int degree); // the U-polynomials
+  //void maximallyDivergingMonotonicPolynomial(T *a, int degree); // the T-polynomial
 
   // comment this function, maybe use a more efficent algorithm if all
   // poles are simple, (see also Experiments - there's something said about that)
   // move to class rsRationalFunction
   static void rsPartialFractionExpansion(
-    std::complex<T> *numerator, int numeratorOrder,
-    std::complex<T> *denominator, int denominatorOrder,
+    std::complex<T> *numerator, int numeratorDegree,
+    std::complex<T> *denominator, int denominatorDegree,
     std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
     std::complex<T> *pfeCoeffs);
 
   //===============================================================================================
   /** \name Non-static member functions and operators */
 
-  rsPolynomial(int order = 0, bool initWithZeros = true);
+  /** Creates a polynomial of given degree. Allocates memory for the coefficients and optionally 
+  intializes them with zeros. */
+  rsPolynomial(int degree = 0, bool initWithZeros = true);
 
+  /** Creates a polynomial from a std::vector of coefficients. */
   rsPolynomial(const std::vector<T>& coefficients) : coeffs(coefficients) {}
 
   /** Returns the maximum order that this poloynomial may have which is the length of the

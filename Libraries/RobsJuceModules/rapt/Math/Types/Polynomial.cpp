@@ -1201,11 +1201,11 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
 // member functions
 
 template<class T>
-rsPolynomial<T>::rsPolynomial(int order, bool initWithZeros)
+rsPolynomial<T>::rsPolynomial(int degree, bool initWithZeros)
 {
-  coeffs.resize(order+1);
+  coeffs.resize(degree+1);
   if(initWithZeros)
-    rsArray::fillWithZeros(&coeffs[0], order+1);
+    rsArray::fillWithZeros(&coeffs[0], degree+1);
 }
 
 
