@@ -419,15 +419,9 @@ void beatingSines()
     rs[n] = a[n] * sin(ip[n]);           // re-synthesized signal
     db[n] =        sin(ip[n]);           // "de-beated" version
   }
-  // todo: plot a function with the same phase and unit amplitude - this is the theoretical result
-  // of resynthesis when we just flatten out the amplitude envelope for de-beating and ignore the
-  // phase effects
 
 
-  //std::vector<double> db(N);    // "de-beated" signal
-  //for(int n = 0
-
-
+  // plotting:
   GNUPlotter plt;
 
   // verification - plot pairs of signals that should be equal to one another:
@@ -483,11 +477,6 @@ void beatingSines()
   // has alternatingly and upward and downward zero crossing. Bute when the 2nd sine has a phase of 
   // 180°, the modulator zeros coincide with carrier peaks (all maxima at +1 - but these become 
   // minima at -1, when the phase is -180)
-
-
-
-  
-
 
   // I was trying to find a carrier/modulator-like decomposition for the general case, when the two
   // sines each have their own amplitude - not successfully yet:

@@ -91,8 +91,8 @@ int main(int argc, char* argv[])
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
   //nonUniformOnePole1();
-  //nonUniformOnePole2();
-//  nonUniformComplexOnePole();
+  nonUniformOnePole2();
+  nonUniformComplexOnePole();
   //nonUniformBiquad();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
@@ -349,7 +349,7 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
-  beatingSines();
+//  beatingSines();
   //envelopeDeBeating();
   //sineRecreation();         // maybe move elsewhere
   //sineWithPhaseCatchUp();   // dito
@@ -375,7 +375,7 @@ int main(int argc, char* argv[])
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
-  harmonicDeBeating1();
+//  harmonicDeBeating1();
   //harmonicDeBeating2();
 
 

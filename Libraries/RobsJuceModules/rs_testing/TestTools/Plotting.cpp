@@ -290,6 +290,7 @@ void plotSineModelPhases(
       plt.addDataArrays((int)t.size(), &t[0], &p[0]); 
     }
   }
+  plt.setPixelSize(1600, 400);
   plt.plot();
 }
 

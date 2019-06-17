@@ -524,12 +524,11 @@ void nonUniformMovingAverage()
 
 void nonUniformOnePole1()
 {
-  // This tests compares the output of the non-uniform one-pole filter to that of a regular uniform
+  // This test compares the output of the non-uniform one-pole filter to that of a regular uniform
   // one-pole. The sample spacing for the non-uniform filter *is* actually chosen uniformly for 
-  // this comparison to make sense. Both filters get a chunk of noise as input signal and they 
-  // should produce the same output.
-  // todo: we have some variables here that are not needed anymore (time-axis array and related 
-  // stuff -> clean up, get rid of them)
+  // this comparison to make sense, but of course the algorithm in the non-unform filter is a 
+  // different one - one that generalizes to the actual non-uniform case. Both filters get a chunk 
+  // of noise as input signal and they should produce the same output.
 
   int N = 20;
   double fs = 1.0;   // sample rate
@@ -646,13 +645,12 @@ void nonUniformOnePole2()
   GNUPlotter plt;
   plt.addDataArrays(Nc, &tc[0], &yc[0]);
   plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
-
   plt.addDataArrays(Nf, &tf[0], &yf[0]);
-  plt.addGraph("index 1 using 1:2 with points pt 7 ps 1.2 lc rgb \"#000080\" notitle");
-
+  plt.addGraph("index 1 using 1:2 with points pt 7 ps 0.8 lc rgb \"#000000\" notitle");
   //plt.addDataArrays(Nf, &yu[0]);
-  //plt.addGraph("index 2 using 1:2 with points pt 7 ps 1.2 lc rgb \"#008000\" notitle");
-
+  //plt.addGraph("index 2 using 1:2 with points pt 7 ps 0.8 lc rgb \"#008000\" notitle");
+  plt.setPixelSize(1000, 250);
+  plt.setGrid(false, false);
   plt.plot();
 
   // non-uniform impulse response samples look wrong! 
@@ -721,10 +719,12 @@ void nonUniformComplexOnePole()
   GNUPlotter plt;
   plt.addDataArrays(Nc, &tc[0], &yc[0]);  // pseudo-continuous data
   plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
-  plt.addDataArrays(Nf, &yu[0]);          // uniformly sampled data
-  plt.addGraph("index 1 with points pt 7 ps 0.8 lc rgb \"#000080\" notitle");
   plt.addDataArrays(Nf, &t[0], &yn[0]);   // non-uniformly sampled data
-  plt.addGraph("index 2 with points pt 7 ps 0.8 lc rgb \"#008000\" notitle");
+  plt.addGraph("index 1 with points pt 7 ps 0.8 lc rgb \"#000000\" notitle");
+  //plt.addDataArrays(Nf, &yu[0]);          // uniformly sampled data
+  //plt.addGraph("index 2 with points pt 7 ps 0.8 lc rgb \"#000080\" notitle");
+  plt.setGrid(false, false);
+  plt.setPixelSize(1000, 250);
   plt.plot();
 }
 
