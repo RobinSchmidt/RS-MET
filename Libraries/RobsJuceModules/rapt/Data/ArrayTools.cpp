@@ -231,7 +231,7 @@ void rsArray::copyBuffer(const T1 *source, T2 *destination, int length)
 //}
 
 template <class T>
-void rsArray::convolveInPlace(T *x, int xLength, T *h, int hLength)
+void rsArray::convolveInPlace(T *x, int xLength, const T *h, int hLength)
 {
   convolve(x, xLength, h, hLength, x);
 }

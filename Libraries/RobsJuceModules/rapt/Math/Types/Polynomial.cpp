@@ -1,5 +1,9 @@
+
+//-------------------------------------------------------------------------------------------------
+// evaluation:
+
 template <class T>
-T rsPolynomial<T>::evaluate(T x, const T *a, int degree)
+T rsPolynomial<T>::evaluate(const T& x, const T *a, int degree)
 {
   if(degree < 0)
     return T(0);
@@ -9,8 +13,21 @@ T rsPolynomial<T>::evaluate(T x, const T *a, int degree)
   return y;
 }
 
+template<class T>
+std::complex<T> rsPolynomial<T>::evaluateFromRoots(const std::complex<T>& s,
+  const std::complex<T>* r, int N)
+{
+  std::complex<T> result = 1.0;
+  for(int i = 0; i < N; i++)
+  {
+    if(!isInfinite(r[i]))
+      result *= (s - r[i]);
+  }
+  return result;
+}
+
 template <class T>
-void rsPolynomial<T>::evaluateWithDerivative(T x, T *a, int degree, T *y, T *yd)
+void rsPolynomial<T>::evaluateWithDerivative(const T& x, const T *a, int degree, T *y, T *yd)
 {
   *y  = a[degree];
   *yd = 0.0;
@@ -21,9 +38,10 @@ void rsPolynomial<T>::evaluateWithDerivative(T x, T *a, int degree, T *y, T *yd)
 }
 
 template <class T>
-void rsPolynomial<T>::evaluateWithDerivatives(T x, T *a, int degree, T *results,
+void rsPolynomial<T>::evaluateWithDerivatives(const T& x, const T *a, int degree, T *results,
   int numDerivatives)
 {
+  rsAssert(numDerivatives < 32, "numDerivatives must be < 32"); // rsFactorials has 32 entries
   results[0] = a[degree];
   rsArray::fillWithZeros(&results[1], numDerivatives);
   for(int i = degree-1; i >= 0; i--) {
@@ -35,8 +53,30 @@ void rsPolynomial<T>::evaluateWithDerivatives(T x, T *a, int degree, T *results,
   rsArray::multiply(&results[2], &rsFactorials[2], &results[2], numDerivatives-1);
 }
 
+//-------------------------------------------------------------------------------------------------
+// arithmetic:
+
+template<class T>
+void rsPolynomial<T>::weightedSum(
+  const T* p, int pN, const T& wp, const T* q, int qN, const T& wq, T* r)
+{
+  int i;
+  if(pN >= qN) {
+    for(i = 0; i <= qN; i++)
+      r[i] = wp*p[i] + wq*q[i];
+    for(i = qN+1; i <= pN; i++)
+      r[i] = wp*p[i];
+  }
+  else {
+    for(i = 0; i <= pN; i++)
+      r[i] = wp*p[i] + wq*q[i];
+    for(i = pN+1; i <= qN; i++)
+      r[i] = wq*q[i];
+  }
+}
+
 template <class T>
-void rsPolynomial<T>::divide(T *p, int pDegree, T *d, int dDegree, T *q, T *r)
+void rsPolynomial<T>::divide(const T *p, int pDegree, const T *d, int dDegree, T *q, T *r)
 {
   rsArray::copyBuffer(p, r, pDegree+1); // init remainder with p
   rsArray::fillWithZeros(q, pDegree+1); // init quotient with zeros
@@ -77,8 +117,42 @@ void rsPolynomial<T>::dividePolynomialByMonomialInPlace(T *dividendAndResult, in
   }
 }
 */
+
 template <class T>
-void rsPolynomial<T>::coeffsForNegativeArgument(T *a, T *am, int N)
+void rsPolynomial<T>::powers(const T* a, int N, T** aPowers, int highestPower)
+{
+  aPowers[0][0] = 1;
+  if(highestPower < 1)
+    return;
+  rsArray::copyBuffer(a, aPowers[1], N+1);
+  for(int k = 2; k <= highestPower; k++)
+    rsArray::convolve(aPowers[k-1], (k-1)*N+1, a, N+1, aPowers[k]);
+}
+
+template <class T>
+void rsPolynomial<T>::compose(const T* a, int aN, const T* b, int bN, T* c)
+{
+  int cN = aN*bN;
+  T* an  = new T[cN+1];  // array for the successive powers of a[]
+  an[0]  = T(1);         // initialize to a[]^0
+
+                         // accumulation:
+  rsArray::fillWithZeros(c, cN+1);
+  c[0] = b[0];
+  int K = 1;
+  for(int n = 1; n <= bN; n++)
+  {
+    rsArray::convolveInPlace(an, K, a, aN+1);
+    K += aN;
+    for(int k = 0; k < K; k++)
+      c[k] += b[n] * an[k];
+  }
+
+  delete[] an;
+}
+
+template <class T>
+void rsPolynomial<T>::coeffsForNegativeArgument(const T *a, T *am, int N)
 {
   T s = 1.0;
   for(int n = 0; n <= N; n++)
@@ -92,7 +166,7 @@ void rsPolynomial<T>::coeffsForNegativeArgument(T *a, T *am, int N)
 // it reduces to polyCoeffsForNegativeArgument - this function is superfluous then
 
 template <class T>
-void rsPolynomial<T>::coeffsForShiftedArgument(T *a, T *as, int N, T x0)
+void rsPolynomial<T>::coeffsForShiftedArgument(const T *a, T *as, int N, T x0)
 {
   rsUint32 Nu = rsUint32(N); // used to fix warnings
   rsUint32 numLines = N+1;
@@ -112,6 +186,15 @@ void rsPolynomial<T>::coeffsForShiftedArgument(T *a, T *as, int N, T x0)
   delete[] pt;
   delete[] x0n;
 }
+
+
+
+
+
+
+
+
+
 
 template <class T>
 void rsPolynomial<T>::derivative(T *a, T *ad, int N)
@@ -158,38 +241,7 @@ void rsPolynomial<T>::integral(T *a, T *ai, int N, T c)
   ai[0] = c;
 }
 
-template <class T>
-void rsPolynomial<T>::powers(T *a, int N, T **aPowers, int highestPower)
-{
-  aPowers[0][0] = 1;
-  if(highestPower < 1)
-    return;
-  rsArray::copyBuffer(a, aPowers[1], N+1);
-  for(int k = 2; k <= highestPower; k++)
-    rsArray::convolve(aPowers[k-1], (k-1)*N+1, a, N+1, aPowers[k]);
-}
 
-template <class T>
-void rsPolynomial<T>::compose(T *a, int aN, T *b, int bN, T *c)
-{
-  int cN = aN*bN;
-  T *an  = new T[cN+1];  // array for the successive powers of a[]
-  an[0]  = T(1);         // initialize to a[]^0
-
-                         // accumulation:
-  rsArray::fillWithZeros(c, cN+1);
-  c[0] = b[0];
-  int K = 1;
-  for(int n = 1; n <= bN; n++)
-  {
-    rsArray::convolveInPlace(an, K, a, aN+1);
-    K += aN;
-    for(int k = 0; k < K; k++)
-      c[k] += b[n] * an[k];
-  }
-
-  delete[] an;
-}
 
 template <class T>
 void rsPolynomial<T>::threeTermRecursion(T *a, T w0, int degree, T *a1, T w1, T w1x, T *a2, T w2)
@@ -205,23 +257,7 @@ void rsPolynomial<T>::threeTermRecursion(T *a, T w0, int degree, T *a1, T w1, T 
   // optimize: replace divisions by w0 by multiplications
 }
 
-template<class T>
-void rsPolynomial<T>::weightedSum(const T *p, int pN, T wp, const T *q, int qN, T wq, T *r)
-{
-  int i;
-  if(pN >= qN) {
-    for(i = 0; i <= qN; i++)
-      r[i] = wp*p[i] + wq*q[i];
-    for(i = qN+1; i <= pN; i++)
-      r[i] = wp*p[i];
-  }
-  else {
-    for(i = 0; i <= pN; i++)
-      r[i] = wp*p[i] + wq*q[i];
-    for(i = pN+1; i <= qN; i++)
-      r[i] = wq*q[i];
-  }
-}
+
 
 template<class T>
 void rsPolynomial<T>::integrateWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b,
@@ -251,21 +287,9 @@ bool rsPolynomial<T>::baseChange(T **Q, T *a, T **R, T *b, int degree)
   return rsLinearAlgebra::rsChangeOfBasisRowWise(Q, R, a, b, degree+1);
 }
 
-// end of being moved from .h file
-//-----------------------------------------------------------------------------------------------
 
-template<class T>
-std::complex<T> rsPolynomial<T>::evaluateFromRoots(std::complex<T> s,
-  std::complex<T> *r, int N)
-{
-  std::complex<T> result = 1.0;
-  for(int i = 0; i < N; i++)
-  {
-    if( !isInfinite(r[i]) )
-      result *= (s - r[i]);
-  }
-  return result;
-}
+
+
 
 // used in convergeToRootViaLaguerre - maybe turn into member function:
 template<class T>

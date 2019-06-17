@@ -50,6 +50,9 @@ static long double rsFactorials[rsNumFactorials] =
   265252859812191058636308480000000.0,
   8222838654177922817725562880000000.0
 };
+// hmm..."long double"? ...i guess that's just the same as double in a 64-bit build but 80 bit in a
+// 32-bit build - maybe we should make it consistent and just use double? maybe check the numerical
+// errors in both cases
 
 /** A table of reciprocal values of the factorial of some integer number n, that is: 1/n!, where
 n should be between 0...31 (inclusive) - the values are tabulated and any value outside the range

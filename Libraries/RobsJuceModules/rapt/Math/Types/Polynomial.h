@@ -5,6 +5,7 @@
 
 // todo: 
 // -be const correct in the static functions (declare array parameters const)
+//  done upt to evaluation
 // -maybe use const references instead of direct by-value arguments
 // -move the static functions below the object methods and operators
 // -create unit test to test operators
@@ -18,41 +19,69 @@ class rsPolynomial
 public:
 
   //===============================================================================================
-  /** \name Static functions for computing with coefficient arrays */
+  /** \name Computations on raw coefficient arrays */
 
-  /** Evaluates the polynomial defined by the array of roots "r" at argument "x". */
-  static std::complex<T> evaluateFromRoots(std::complex<T> x,
-    std::complex<T> *roots, int numRoots);
+  //-----------------------------------------------------------------------------------------------
+  /** \name Evaluation */
 
   /** Evaluates the polynomial defined by the array of coefficients "a" at argument "x".  The array
   of coefficients must be of length degree+1 and is interpreted as follows: a[0] is taken to be the
   constant term, a[1] is the multiplier for x^1, a[2] the multiplier for x^2 and so on until
   a[degree] which is the multiplier for a^degree. */
-  static T evaluate(T x, const T *a, int degree);
+  static T evaluate(const T& x, const T *a, int degree);
+
+  /** Evaluates the polynomial defined by the array of roots "r" at argument "x". */
+  static std::complex<T> evaluateFromRoots(const std::complex<T>& x,
+    const std::complex<T>* roots, int numRoots);
+
+  /** Evaluates the polynomial defined by the array of coefficients 'a' and its first derivative at
+  argument 'x'. The value of the polynomial will be stored in y and the value of the derivative
+  will be stored in yd. @see: evaluate() */
+  static void evaluateWithDerivative(const T& x, const T *a, int degree, T *y, T *yd);
+
+  /** Evaluates the polynomial defined by the array of coefficients 'a' and a given number of
+  derivatives at argument 'x'. The value of the polynomial will be stored in results[0], the 1st
+  derivative in results[1] and so on. numDerivatives should be <= 31.
+  @see: evaluatePolynomialAt() */
+  static void evaluateWithDerivatives(const T& x, const T *a, int degree, T *results, 
+    int numDerivatives);
 
   /** Evaluates the cubic polynomial a[0] + a[1]*x + a[2]*x^2 + a[3]*x^3 at the given x. */
-  static inline T evaluateCubic(T x, const T* a)
+  static inline T evaluateCubic(const T& x, const T* a)
   {
     return a[0] + (a[1] + (a[2] + a[3]*x)*x)*x;
     //T x2 = x*x; return a[0] + a[1]*x + a[2]*x2 + a[3]*x*x2;  // alternative implementation
   }
 
   /** Evaluates the cubic polynomial a + b*x + c*x^2 + d*x^3 at the given x. */
-  static inline T evaluateCubic(T x, const T& a, const T& b, const T& c, const T& d)
+  static inline T evaluateCubic(const T x, const T& a, const T& b, const T& c, const T& d)
   {
     return a + (b + (c + d*x)*x)*x;
   }
+  // make consistent with rootCubic
 
-  /** Evaluates the polynomial defined by the array of coefficients 'a' and its first derivative at
-  argument 'x'. The value of the polynomial will be stored in y and the value of the derivative
-  will be stored in yd. @see: evaluate() */
-  static void evaluateWithDerivative(T x, T *a, int degree, T *y, T *yd);
+  //-----------------------------------------------------------------------------------------------
+  /** \name Arithmetic */
 
-  /** Evaluates the polynomial defined by the array of coefficients 'a' and a given number of
-  derivatives at argument 'x'. The value of the polynomial will be stored in results[0], the 1st
-  derivative in results[1] and so on. numDerivatives should be <= 31.
-  @see: evaluatePolynomialAt() */
-  static void evaluateWithDerivatives(T x, T *a, int degree, T *results, int numDerivatives);
+  /** Forms a weighted sum of two polynomials p(x) and q(x) with weights wp and wq respectively and
+  stores the coeffficients of the resulting polynomial r(x) in the r-array. The polynomials p(x)
+  and q(x) do not need to be of the same degree and the resulting polynomial will have an degree of
+  max(pN, qN). However, in this weighted sum, it may happen that the higher order terms sum to zero
+  in which case the *actual* degree of the resulting polynomial may be less than that. In an
+  extreme case, you could even end up with the polynomial that is identically zero. If it's
+  important to know the *actual* degree rather than the length of the coeff-array, the caller needs
+  to check for (non)-zero-ness of the coeff values in the result. */
+  static void weightedSum(const T* p, int pN, const T& wp, const T* q, int qN, const T& wq, T* r);
+
+  /** Adds polynomial q(x) from polynomial p(x) and stores the coeffficients of the resulting
+  polynomial in r(x) which is of degree max(pN, qN). */
+  static void add(const T* p, int pN, const T* q, int qN, T* r)
+  { weightedSum(p, pN, T(1), q, qN, T(1), r); }
+
+  /** Subtracts polynomial q(x) from polynomial p(x) and stores the coeffficients of the resulting
+  polynomial in r(x) which is of degree max(pN, qN). */
+  static void subtract(const T* p, int pN, const T* q, int qN, T* r) 
+  { weightedSum(p, pN, T(1), q, qN, T(-1), r); }
 
   /** Multiplies the polynomials represented by the coefficient vectors 'a' and 'b' and stores the
   resulting coefficients in 'result'. The resulting polynomial will be or order aDegree+bDegree and
@@ -72,7 +101,7 @@ public:
   remainder[divisorDegree...dividendDegree] and
   quotient[dividendDegree-divisorDegree+1...dividendDegree] will be filled with zeros.
   ...\todo check this comment */
-  static void divide(T* dividend, int dividendDegree, T* divisor, int divisorDegree,
+  static void divide(const T* dividend, int dividendDegree, const T* divisor, int divisorDegree,
     T* quotient, T* remainder);
 
   /** Divides the dividend by the monomial factor (x-x0) and stores the result in the same array
@@ -83,22 +112,55 @@ public:
   static void divideByMonomialInPlace(S* dividendAndResult, int dividendDegree, S x0, S* remainder);
   // maybe make a version that can store the result in a different array - make it so that the
   // result array may or may not point to the same array as the dividend
-  //
+  // shouldn't x0 be const S& ? ...comment, what S is and why we don't use T ..it has to do with
+  // real vs complex
 
   //static void dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendDegree, T x0,
   //  T *remainder);
 
+  /** Creates an array of arrays with polynomial cofficients that represent the polynomial with
+  coefficients a[] raised to successive powers up to and including "highestPower". aPowers[0]
+  will have a single entry equal to unity (representing a[]^0), aPowers[1] will contain a copy
+  of a[] itself (representing a[]^1), aPowers[2] will contain a[] convolved with itself
+  (representing a[]^2), aPowers[3] will contain a[]^2 convolved with a[] and so on. Thus, we
+  repeatedly convolve the result of the previous iteration with the a[] array. The function fills
+  up the arrays only up to the point where the array of polynomial coefficients actually ends, it
+  doesn't fill additional zeros. That means, you may pass an array of arrays in aPowers, where
+  each sub-array has exactly the length that is strictly required. If you allocate more memory (for
+  convenience or whatever), make sure to initialize the sub-arrays with zeros. */
+  static void powers(const T* a, int N, T** aPowers, int highestPower);
+
+  /** Let A(x) and B(x) be polynomials represented by their coefficient arrays a[] and b[]
+  respectively. This function creates the coefficients of a polynomial C(x), represented by the
+  coefficient array c[], that results from composing the polynomials A(x) and B(x), that is: first
+  the polynomial A(x) is applied to the value x, and then the polynomial B(x) is applied to the
+  result of the first polynomial, such that C(x) = B(A(x)). This nesting or composition of two
+  polynomials can itself be seen as a polynomial in its own right. This resulting polynomial has
+  a degree of cN = aN*bN, where aN and bN are the degrees of the a[] and b[] polynomials,
+  respectively, so the caller has to make sure that the c[] array has at least a length of
+  aN*bN+1. */
+  static void compose(const T* a, int aN, const T* b, int bN, T* c);
+    // allocates heap memory
 
   /** Given an array of polynomial coefficients "a" such that
   p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "am") the coefficients for
   a polynomial q(x) such that q(x) = p(-x). This amounts to sign-inverting all coefficients which
   multiply odd powers of x. */
-  static void coeffsForNegativeArgument(T *a, T *am, int N);
+  static void coeffsForNegativeArgument(const T *a, T *am, int N);
 
   /** Given an array of polynomial coefficients "a" such that
   p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "aShifted") the coefficients
   for a polynomial q(x) such that q(x) = p(x-x0). */
-  static void coeffsForShiftedArgument(T *a, T *aShifted, int N, T x0);
+  static void coeffsForShiftedArgument(const T *a, T *aShifted, int N, T x0);
+    // allocates heap memory
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Calculus */
+
+
+
+
 
   /** Finds the coefficients of the derivative of the N-th degree polynomial with coeffs in "a" and
   stores them in "ad". The degree of the polynomial represented by the coeffs in "ad" will be
@@ -122,46 +184,9 @@ public:
   which may be passed in as parameter "c" - this parameter is optional, it defaults to zero.  */
   static void integral(T *a, T *ai, int N, T c = T(0));
 
-  /** Creates an array of arrays with polynomial cofficients that represent the polynomial with
-  coefficients a[] raised to successive powers up to and including "highestPower". aPowers[0]
-  will have a single entry equal to unity (representing a[]^0), aPowers[1] will contain a copy
-  of a[] itself (representing a[]^1), aPowers[2] will contain a[] convolved with itself
-  (representing a[]^2), aPowers[3] will contain a[]^2 convolved with a[] and so on. Thus, we
-  repeatedly convolve the result of the previous iteration with the a[] array. The function fills
-  up the arrays only up to the point where the array of polynomial coefficients actually ends, it
-  doesn't fill additional zeros. That means, you may pass an array of arrays in aPowers, where
-  each sub-array has exactly the length that is strictly required. If you allocate more memory (for
-  convenience or whatever), make sure to initialize the sub-arrays with zeros. */
-  static void powers(T *a, int N, T **aPowers, int highestPower);
 
-  /** Let A(x) and B(x) be polynomials represented by their coefficient arrays a[] and b[]
-  respectively. This function creates the coefficients of a polynomial C(x), represented by the
-  coefficient array c[], that results from composing the polynomials A(x) and B(x), that is: first
-  the polynomial A(x) is applied to the value x, and then the polynomial B(x) is applied to the
-  result of the first polynomial, such that C(x) = B(A(x)). This nesting or composition of two
-  polynomials can itself be seen as a polynomial in its own right. This resulting polynomial has
-  a degree of cN = aN*bN, where aN and bN are the degrees of the a[] and b[] polynomials,
-  respectively, so the caller has to make sure that the c[] array has at least a length of
-  aN*bN+1. */
-  static void compose(T *a, int aN, T *b, int bN, T *c);
 
-  /** Forms a weighted sum of two polynomials p(x) and q(x) with weights wp and wq respectively and
-  stores the coeffficients of the resulting polynomial r(x) in the r-array. The polynomials p(x)
-  and q(x) do not need to be of the same degree and the resulting polynomial will have an degree of
-  max(pN, qN). However, in this weighted sum, it may happen that the higher order terms sum to zero 
-  in which case the *actual* degree of the resulting polynomial may be less than that. In an 
-  extreme case, you could even end up with the polynomial that is identically zero. If it's 
-  important to know the *actual* degree rather than the length of the coeff-array, the caller needs
-  to check for (non)-zero-ness of the coeff values in the result. */
-  static void weightedSum(const T *p, int pN, T wp, const T *q, int qN, T wq, T *r);
 
-  /** Subtracts polynomial q(x) from polynomial p(x) and stores the coeffficients of the resulting
-  polynomial in r(x) which is of degree max(pN, qN). */
-  static void subtract(const T *p, int pN, const T *q, int qN, T *r)
-  {
-    weightedSum(p, pN, T(1), q, qN, T(-1), r);
-  }
-  // todo: write add
 
   /** Computes the definite integral of the polynomial "p" where the lower integration limit is
   given by the polynomial "a" and the upper limit is given by the polynomial "b". "p", "a", "b"
@@ -477,6 +502,8 @@ public:
   {
     return evaluate(x, &coeffs[0], getDegree());
   }
+  // todo: have an overloaded operator() that takes a polynomial as input and returns another 
+  // polynomial -> implement nesting/composition
 
     // maybe we whould take into account the possibility of trailing zero coeffs?
     // maybe have two functions: degreeMax,

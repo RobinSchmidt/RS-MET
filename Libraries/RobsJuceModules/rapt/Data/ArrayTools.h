@@ -127,9 +127,7 @@ public:
   values in the x-array that will be considered as input signal. The actual array must be longer
   than that (namely xLength+hLength-1) to store the appended values. */
   template <class T>
-  static void convolveInPlace(T *x, int xLength, T *h, int hLength);
-    // this function operates not truly "in place" - it uses a temporary buffer internally - maybe
-    // it's possible to run convolution truly in place by running the outer loop backwards?
+  static void convolveInPlace(T *x, int xLength, const T *h, int hLength);
     // DEPRECATED - we can now do in-place covolution with the regular convolve function
 
   /** Copies the data of one array into another one, converting the datatype, if necessarry. */
