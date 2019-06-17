@@ -738,7 +738,9 @@ void nonUniformComplexOnePole()
 //   code does? ...figure out, how the plots in figure 5 were created (impulse responses of
 //   butterworth, cauer, etc.) - that should be applicable to our case
 //  -maybe we should look at the continuous time transfer biquad function and obtain an expression
-//   for the continuous time impulse response?
+//   for the continuous time impulse response? ..and maybe work out the impulse-invariant transform
+//   for a general analog biquad and then take a z-transform of a sampled version thereof
+//   -> use sage for this
 //  -maybe, for the time being, restrict ourselves to all-pole filters (this will include 
 //   butterworth, bessel, gaussian, papoulis, halpern, cheby-1) to avoid this problem
 //   -> we may also do a proper impulse-invariant transform with such filters

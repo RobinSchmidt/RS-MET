@@ -160,12 +160,55 @@ public:
 
 protected:
 
-  std::complex<T> y = T(0);
-  std::complex<T> a = T(1), b = T(0);  // maybe rename to b0, a1 for consistency with other filters
+  std::complex<T> y = T(0);            // maybe use g (as in the paper)
+  std::complex<T> a = T(1), b = T(0);  
+  // maybe rename to b0, a1 for consistency with other filters - or to r,p for residue,pole
 
   // maybe factor out into subclasses:
   std::complex<T> x1 = 0;
   std::complex<T> s  = 1;
   T wr = 0;  // reference frequency for unit gain in time-variant scaling normalization
+
+};
+
+//=================================================================================================
+
+/** Implements a high order infinite impulse response filter for non-uniformly sampled signals. */
+
+template<class T>
+class rsNonUniformFilterIIR
+{
+
+public:
+
+
+  enum class ApproximationMethod
+  {
+    gaussian,
+    bessel,
+    butterworth,
+    //chebychev,
+    papoulis, 
+    halpern
+  };
+
+  void setApproximationMethod(ApproximationMethod newMethod)
+  {
+    approxMethod = newMethod;
+    dirty = true;
+  }
+
+
+protected:
+
+  /** Updates all filter coefficients according to the settings. */
+  void updateCoeffs();
+
+  std::vector<std::complex<T>> r, p, y;
+  // r, p: residues and poles of the complex one-poles, y: output signals
+
+  ApproximationMethod approxMethod = gaussian;
+
+  bool dirty = true;  // maybe use atomic::bool
 
 };

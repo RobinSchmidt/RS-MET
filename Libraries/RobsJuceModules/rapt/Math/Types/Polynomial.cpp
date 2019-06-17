@@ -1,5 +1,5 @@
 template <class T>
-T rsPolynomial<T>::evaluate(T x, T *a, int order)
+T rsPolynomial<T>::evaluate(T x, const T *a, int order)
 {
   if(order < 0)
     return T(0);

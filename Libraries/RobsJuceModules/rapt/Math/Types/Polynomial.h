@@ -3,6 +3,10 @@
 
 /** A class for representing polynomials and doing computations with them. */
 
+// todo: rename "order" parameters to "degree" - also edit the comments accordingly - consistently
+// use the term "degree" (...done up to "besselPolynomial" in the .h file)
+// be const correct in the static functions (declare array parameters const)
+
 template<class T>
 class rsPolynomial
 {
@@ -17,16 +21,16 @@ public:
     std::complex<T> *roots, int numRoots);
 
   /** Evaluates the polynomial defined by the array of coefficients "a" at argument "x".  The array
-  of coefficients must be of length order+1 and is interpreted as follows: a[0] is taken to be the
+  of coefficients must be of length degree+1 and is interpreted as follows: a[0] is taken to be the
   constant term, a[1] is the multiplier for x^1, a[2] the multiplier for x^2 and so on until
-  a[order] which is the multiplier for a^order. */
-  static T evaluate(T x, T *a, int order);
+  a[degree] which is the multiplier for a^degree. */
+  static T evaluate(T x, const T *a, int degree);
 
+  /** Evaluates the cubic polynomial a[0] + a[1]*x + a[2]*x^2 + a[3]*x^3 at the given x. */
   static inline T evaluateCubic(T x, const T* a)
   {
     return a[0] + (a[1] + (a[2] + a[3]*x)*x)*x;
-    //T x2 = x*x;
-    //return a[0] + a[1]*x + a[2]*x2 + a[3]*x*x2;
+    //T x2 = x*x; return a[0] + a[1]*x + a[2]*x2 + a[3]*x*x2;  // alternative implementation
   }
 
   /** Evaluates the cubic polynomial a + b*x + c*x^2 + d*x^3 at the given x. */
@@ -38,34 +42,33 @@ public:
   /** Evaluates the polynomial defined by the array of coefficients 'a' and its first derivative at
   argument 'x'. The value of the polynomial will be stored in y and the value of the derivative
   will be stored in yd. @see: evaluate() */
-  static void evaluateWithDerivative(T x, T *a, int order, T *y, T *yd);
+  static void evaluateWithDerivative(T x, T *a, int degree, T *y, T *yd);
 
   /** Evaluates the polynomial defined by the array of coefficients 'a' and a given number of
   derivatives at argument 'x'. The value of the polynomial will be stored in results[0], the 1st
   derivative in results[1] and so on. numDerivatives should be <= 31.
   @see: evaluatePolynomialAt() */
-  static void evaluateWithDerivatives(T x, T *a, int order, T *results,
-    int numDerivatives);
+  static void evaluateWithDerivatives(T x, T *a, int degree, T *results, int numDerivatives);
 
   /** Multiplies the polynomials represented by the coefficient vectors 'a' and 'b' and stores the
-  resulting coefficients in 'result'. The resulting polynomial will be or order aOrder+bOrder and
+  resulting coefficients in 'result'. The resulting polynomial will be or order aDegree+bDegree and
   the coefficient vector should have allocated space for
-  (aOrder+1)+(bOrder+1)-1 = aOrder+bOrder+1 = aLength+bLength-1 elements.
+  (aDegree+1)+(bDegree+1)-1 = aDegree+bDegree+1 = aLength+bLength-1 elements.
   Can work in place, i.e. result may point to the same array as a and/or b.   */
-  static void multiply(const T *a, int aOrder, const T *b, int bOrder, T *result)
+  static void multiply(const T *a, int aDegree, const T *b, int bDegree, T *result)
   {
-    rsArray::convolve(a, aOrder+1, b, bOrder+1, result);
+    rsArray::convolve(a, aDegree+1, b, bDegree+1, result);
   }
 
   /** Divides the polynomials represented by the coefficient arrays 'dividend' and 'divisor' and
   stores the resulting coefficients for the quotient and remainder in the respective output arrays.
-  ?? The resulting quotient polynomial will be of order dividendOrder-divisorOrder and the
-  remainder polynom will be at most of order ??
+  ?? The resulting quotient polynomial will be of degree dividendDegree-divisorDegree and the
+  remainder polynom will be at most of degree... ??
   However, the output arrays must have the same length as the dividend, where
-  remainder[divisorOrder...dividendOrder] and
-  quotient[dividendOrder-divisorOrder+1...dividendOrder] will be filled with zeros.
+  remainder[divisorDegree...dividendDegree] and
+  quotient[dividendDegree-divisorDegree+1...dividendDegree] will be filled with zeros.
   ...\todo check this comment */
-  static void divide(T* dividend, int dividendOrder, T* divisor, int divisorOrder,
+  static void divide(T* dividend, int dividendDegree, T* divisor, int divisorDegree,
     T* quotient, T* remainder);
 
   /** Divides the dividend by the monomial factor (x-x0) and stores the result in the same array
@@ -73,12 +76,12 @@ public:
   function is useful for splitting off a linear factor, if x0 is a root of the dividend, in which
   case the remainder will come out as zero (check this). */
   template<class S>
-  static void divideByMonomialInPlace(S* dividendAndResult, int dividendOrder, S x0, S* remainder);
+  static void divideByMonomialInPlace(S* dividendAndResult, int dividendDegree, S x0, S* remainder);
   // maybe make a version that can store the result in a different array - make it so that the
   // result array may or may not point to the same array as the dividend
   //
 
-  //static void dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendOrder, T x0,
+  //static void dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendDegree, T x0,
   //  T *remainder);
 
 
@@ -93,8 +96,8 @@ public:
   for a polynomial q(x) such that q(x) = p(x-x0). */
   static void coeffsForShiftedArgument(T *a, T *aShifted, int N, T x0);
 
-  /** Finds the coefficients of the derivative of the N-th order polynomial with coeffs in "a" and
-  stores them in "ad". The order of the polynomial represented by the coeffs in "ad" will be
+  /** Finds the coefficients of the derivative of the N-th degree polynomial with coeffs in "a" and
+  stores them in "ad". The degree of the polynomial represented by the coeffs in "ad" will be
   N-1. The "ad" array may point to the same array as the "a" array, so you can use the same array
   for input and output. */
   static void derivative(T *a, T *ad, int N);
@@ -103,14 +106,14 @@ public:
   of a polynomial q(x) = p(x+h) - p(x) if direction = 1, or q(x) = p(x) - p(x-h) if direction = -1.
   This represents the first forward or backward difference polynomial in finite difference
   calculus and is analog to the derivative in infinitesimal calculus. As in infinitesimal calculus,
-  the resulting polynomial is one order less than p(x) itself. Scaled by 1/h, this can be seen as an
-  approximation to the derivative using stepsize h.
+  the resulting polynomial is one degree less than p(x) itself. Scaled by 1/h, this can be seen as 
+  an approximation to the derivative using stepsize h.
   \todo provide a finite central difference q(x) = p(x+h/2) - p(x-h/2) when direction = 0
    ...could this be just the average between forward and backward difference? ...research! */
   static void finiteDifference(T *a, T *ad, int N, int direction = 1, T h = 1);
 
-  /** Finds the coefficients of the indefinite integral of the N-th order polynomial with coeffs
-  in "a" and stores them in "ai". The order of the polynomial represented by the coeffs in "ai"
+  /** Finds the coefficients of the indefinite integral of the N-th degree polynomial with coeffs
+  in "a" and stores them in "ai". The degree of the polynomial represented by the coeffs in "ai"
   will be N+1. The constant term in the ai[] polynomial is the arbitrary integration constant
   which may be passed in as parameter "c" - this parameter is optional, it defaults to zero.  */
   static void integral(T *a, T *ai, int N, T c = T(0));
@@ -133,19 +136,23 @@ public:
   the polynomial A(x) is applied to the value x, and then the polynomial B(x) is applied to the
   result of the first polynomial, such that C(x) = B(A(x)). This nesting or composition of two
   polynomials can itself be seen as a polynomial in its own right. This resulting polynomial has
-  an order of cN = aN*bN, where aN and bN are the orders of the a[] and b[] polynomials,
+  a degree of cN = aN*bN, where aN and bN are the degrees of the a[] and b[] polynomials,
   respectively, so the caller has to make sure that the c[] array has at least a length of
   aN*bN+1. */
   static void compose(T *a, int aN, T *b, int bN, T *c);
 
   /** Forms a weighted sum of two polynomials p(x) and q(x) with weights wp and wq respectively and
   stores the coeffficients of the resulting polynomial r(x) in the r-array. The polynomials p(x)
-  and q(x) do not need to be of the same order and the resulting polynomial will have an order of
-  max(pN, qN). */
+  and q(x) do not need to be of the same degree and the resulting polynomial will have an degree of
+  max(pN, qN). However, in this weighted sum, it may happen that the higher order terms sum to zero 
+  in which case the *actual* degree of the resulting polynomial may be less than that. In an 
+  extreme case, you could even end up with the polynomial that is identically zero. If it's 
+  important to know the *actual* degree rather than the length of the coeff-array, the caller needs
+  to check for (non)-zero-ness of the coeff values in the result. */
   static void weightedSum(const T *p, int pN, T wp, const T *q, int qN, T wq, T *r);
 
   /** Subtracts polynomial q(x) from polynomial p(x) and stores the coeffficients of the resulting
-  polynomial in r(x) which is of order max(pN, qN). */
+  polynomial in r(x) which is of degree max(pN, qN). */
   static void subtract(const T *p, int pN, const T *q, int qN, T *r)
   {
     weightedSum(p, pN, T(1), q, qN, T(-1), r);
@@ -154,12 +161,12 @@ public:
 
   /** Computes the definite integral of the polynomial "p" where the lower integration limit is
   given by the polynomial "a" and the upper limit is given by the polynomial "b". "p", "a", "b"
-  are assumed to be of orders "pN", "aN" and "bN" respectively and the result will be stored in
-  as polynomial "q" which will be of order pN*max(aN, bN). */
+  are assumed to be of degrees "pN", "aN" and "bN" respectively and the result will be stored in
+  as polynomial "q" which will be of degree pN*max(aN, bN). */
   static void integrateWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b,
     int bN, T *q);
 
-  /** Given expansion coefficients a[k] of an arbitrary polynomial P(x) with given order in terms
+  /** Given expansion coefficients a[k] of an arbitrary polynomial P(x) with given degree in terms
   of a set of N+1 basis polynomials Q0(x), Q1(x), ..., QN(x) such that:
   P(x) = a[0]*Q0[x] + a[1]*Q1[x] + ... + a[N]*QN[x], this function returns the expansion
   coefficients b[k] with respect to another set of basis polynomials R, such that:
@@ -167,15 +174,15 @@ public:
   The basis polynomials Q and R are passed as 2-dimensional arrays where the k-th row represents
   the coefficients of the k-th basis polynomial. If R is not a basis, the function will not succeed
   and return false, otherwise true. */
-  static bool baseChange(T **Q, T *a, T **R, T *b, int order);
+  static bool baseChange(T **Q, T *a, T **R, T *b, int degree);
 
   /** Converges to a complex root of a polynomial by means of Laguerre's method using the
   "initialGuess" as first estimate. */
-  static std::complex<T> convergeToRootViaLaguerre(const std::complex<T> *a, int order,
+  static std::complex<T> convergeToRootViaLaguerre(const std::complex<T> *a, int degree,
     std::complex<T> initialGuess = std::complex<T>(0.0, 0.0));
 
   /** Finds all complex roots of a polynomial by Laguerre's method and returns them in "roots". */
-  static void roots(const std::complex<T>* a, int order, std::complex<T>* roots);
+  static void roots(const std::complex<T>* a, int degree, std::complex<T>* roots);
 
   static void roots(T *a, int order, std::complex<T> *roots);
 
@@ -215,6 +222,8 @@ public:
   (i.e, a == 0), it will fall back to the getRootsOfQuadraticEquation() function, and return a
   two-element array (or a one-element array, when b is also zero). */
   static std::vector<std::complex<T>> rootsCubic(T a, T b, T c, T d);
+  // todo: make the order of the arguments consistent with evaluateCubic - but careful - this will
+  // break client code! ...rename parameters to a0,a1,a2,a3 to make it clear, how it's meant
 
 
   /** Computes the two roots of the quadratic equation: \f[ a_0 + a_1 x + a_2 x^2 = 0 \f] and
@@ -289,7 +298,7 @@ public:
   static T** vandermondeMatrix(T *x, int N);
     // move to rsMatrix
 
-  /** Computes coefficients a[0],..., a[N-1] for a polynomial of order N-1 that goes through the N
+  /** Computes coefficients a[0],..., a[N-1] for a polynomial of degree N-1 that goes through the N
   data points (x[0], y[0]),...,(x[N-1], y[N-1]). */
   static void interpolant(T *a, T *x, T *y, int N);
     // maybe move to Interplation
@@ -339,15 +348,15 @@ public:
 
   /** Computes polynomial coefficients of a polynomial that is defined recursively by
   w0 * P_n(x) = (w1 + w1x * x) * P_{n-1}(x) + w2 * P_{n-2}(x)
-  where n is the order of the polynomial represented by the "a" array, the order of a1 is n-1, the
-  order of a2 is n-2. The lengths of the corresponding arrays equals their respective order plus 1.
-  w0, w1, w2 are the weighting coeffients of the linear 3-term recurrence relation. The pointer for
-  result "a" may point to the same memory location as either of the input argument arrays "a1",
-  "a2", so the function may be used in place. */
-  static void threeTermRecursion(T *a, T w0, int order, T *a1, T w1, T w1x, T *a2, T w2);
+  where n is the degree of the polynomial represented by the "a" array, the degree of a1 is n-1, 
+  the degree of a2 is n-2. The lengths of the corresponding arrays equals their respective degree 
+  plus 1. w0, w1, w2 are the weighting coeffients of the linear 3-term recurrence relation. The 
+  pointer for result "a" may point to the same memory location as either of the input argument 
+  arrays "a1", "a2", so the function may be used in place. */
+  static void threeTermRecursion(T *a, T w0, int degree, T *a1, T w1, T w1x, T *a2, T w2);
 
-  /** Fills the array with coefficients for a Bessel-polynomial of given order. */
-  static void besselPolynomial(T *a, int order);
+  /** Fills the array with coefficients for a Bessel-polynomial of given degree. */
+  static void besselPolynomial(T *a, int degree);
     // todo: maybe use rsPolynomialRecursion inside
 
   /** Fills the array with coefficients for a Legendre-polynomial (of the 1st kind) of given
@@ -415,9 +424,11 @@ public:
   // int getOrder()
   // should take into account traling zeros ..or maybe have a boolean flag
   // "takeZeroCoeffsIntoAccount" which defaults to false...or maybe it shouldn't have any default
-  // value - client code must be explicit
+  // value - client code must be explicit...or maybe have functions getAllocatedDegree, 
+  // getActualDegree(tolerance)...or getDegree has an optional parameter for the tolerance 
+  // defaulting to 0
 
-  /** Adds two polynomials */
+  /** Adds two polynomials. */
   rsPolynomial<T> operator+(const rsPolynomial<T>& q) {
     rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
     weightedSum(  coeffs.data(),   getDegree(), T(1), 
@@ -426,7 +437,7 @@ public:
     return r;
   }
 
-  /** Subtracts two polynomials */
+  /** Subtracts two polynomials. */
   rsPolynomial<T> operator-(const rsPolynomial<T>& q) {
     rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
     weightedSum(  coeffs.data(),   getDegree(), T(+1), 
@@ -435,20 +446,30 @@ public:
     return r;
   }
 
-  /** Multiplies two polynomials */
+  /** Multiplies two polynomials. */
   rsPolynomial<T> operator*(const rsPolynomial<T>& q) {
     rsPolynomial<T> r(getDegree() + q.getDegree() + 1, false);
     multiply(coeffs.data(), getDegree(), q.coeffs.data(), q.getDegree(), r.coeffs.data());
     return r;
   }
 
-  // divide - how to deal with the trailing zeros in quotient and/or remainder? should we cut them
-  // off...if so, what should be the numerical threshold?
+  // todo: divide, modulo
+  
+  // how to deal with the trailing zeros in quotient and/or remainder? should we cut them
+  // off...if so, what should be the numerical threshold? maybe there should be a member function
+  // removeTrailingZeros that client code must explicitly call
   // maybe we should also cutoff in add/subtract, if the trailing coeffs happen to add/subtract to
   // zero? what about multiplication (i.e. convolution) - can trailing zeros happen there, too - or
   // is that impossible? ...maybe try to get a zero with two very low (1st) order polynomials
   // no - it can't happen - the highest power coeff is always the product of the two highest power
   // coeffs of the input polynomials - and if they are assumed to be nonzero, so is their product
+
+
+  /** Evaluates the polynomial at the given input x. */
+  T operator()(T x) const
+  {
+    return evaluate(x, &coeffs[0], getDegree());
+  }
 
     // maybe we whould take into account the possibility of trailing zero coeffs?
     // maybe have two functions: degreeMax,
@@ -458,6 +479,9 @@ public:
 protected:
 
   std::vector<T> coeffs;
+
+
+  friend class rsRationalFunction;
 
 };
 
