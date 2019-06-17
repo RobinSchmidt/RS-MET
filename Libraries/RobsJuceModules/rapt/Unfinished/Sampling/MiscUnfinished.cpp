@@ -1529,7 +1529,7 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
 template<class T>
 void rsEnvelopeExtractor<T>::getMetaEnvelope(
   const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
-  std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, int endTime)
+  std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime)
 {
   getPeaks(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
   // maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
@@ -1561,13 +1561,14 @@ void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* pe
 }
 
 template<class T>
-void rsEnvelopeExtractor<T>::setupEndValues(std::vector<T>& envTimes, std::vector<T>& envValues, int N)
+void rsEnvelopeExtractor<T>::setupEndValues(
+  std::vector<T>& envTimes, std::vector<T>& envValues, T endTime)
 {
   if(envTimes.size() < 2) {
     rsPrepend(envValues, T(0));
     rsPrepend(envTimes,  T(0));
     rsAppend( envValues, T(0));
-    rsAppend( envTimes,  T(N));
+    rsAppend( envTimes,  endTime);
     return;
   }
 
@@ -1583,12 +1584,12 @@ void rsEnvelopeExtractor<T>::setupEndValues(std::vector<T>& envTimes, std::vecto
 
   if(endMode == ZERO_END) {
     rsAppend(envValues, T(0));
-    rsAppend(envTimes,  T(N));
+    rsAppend(envTimes,  endTime);
   } else if(endMode == EXTRAPOLATE_END) {
     int M = (int)envTimes.size()-1;
-    v = rsInterpolateLinear(envTimes[M-1], envTimes[M], envValues[M-1], envValues[M], T(N));
+    v = rsInterpolateLinear(envTimes[M-1], envTimes[M], envValues[M-1], envValues[M], endTime);
     rsAppend(envValues, rsMax(v, T(0)));
-    rsAppend(envTimes,  T(N));
+    rsAppend(envTimes, endTime);
   }
 }
 

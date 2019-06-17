@@ -911,7 +911,7 @@ public:
 
 
   void getMetaEnvelope(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
-    std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, int endTime);
+    std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime);
     // or should endTime be of type T?
 
   void interpolateEnvelope(const T* envTimes, T* envValues, int envLength, 
@@ -959,7 +959,7 @@ protected:
   /** \name Internal Functions */
 
 
-  void setupEndValues(std::vector<T>& envTimes, std::vector<T>& envValues, int N);
+  void setupEndValues(std::vector<T>& envTimes, std::vector<T>& envValues, T endTime);
 
   // void applySmoothing
 
