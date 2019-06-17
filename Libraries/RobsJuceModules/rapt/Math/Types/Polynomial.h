@@ -4,8 +4,6 @@
 /** A class for representing polynomials and doing computations with them. */
 
 // todo: 
-// -rename "order" parameters to "degree" - also edit the comments accordingly - consistently
-//  use the term "degree" (...done in the .h file - do it in the cpp file, too)
 // -be const correct in the static functions (declare array parameters const)
 // -maybe use const references instead of direct by-value arguments
 // -move the static functions below the object methods and operators

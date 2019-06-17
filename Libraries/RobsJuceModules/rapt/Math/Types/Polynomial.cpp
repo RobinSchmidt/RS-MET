@@ -1,33 +1,33 @@
 template <class T>
-T rsPolynomial<T>::evaluate(T x, const T *a, int order)
+T rsPolynomial<T>::evaluate(T x, const T *a, int degree)
 {
-  if(order < 0)
+  if(degree < 0)
     return T(0);
-  T y = a[order];
-  for(int i = order-1; i >= 0; i--)
+  T y = a[degree];
+  for(int i = degree-1; i >= 0; i--)
     y = y*x + a[i];
   return y;
 }
 
 template <class T>
-void rsPolynomial<T>::evaluateWithDerivative(T x, T *a, int order, T *y, T *yd)
+void rsPolynomial<T>::evaluateWithDerivative(T x, T *a, int degree, T *y, T *yd)
 {
-  *y  = a[order];
+  *y  = a[degree];
   *yd = 0.0;
-  for(int i = order-1; i >= 0; i--) {
+  for(int i = degree-1; i >= 0; i--) {
     *yd = *yd * x + *y;
     *y  = *y  * x + a[i];
   }
 }
 
 template <class T>
-void rsPolynomial<T>::evaluateWithDerivatives(T x, T *a, int order, T *results,
+void rsPolynomial<T>::evaluateWithDerivatives(T x, T *a, int degree, T *results,
   int numDerivatives)
 {
-  results[0] = a[order];
+  results[0] = a[degree];
   rsArray::fillWithZeros(&results[1], numDerivatives);
-  for(int i = order-1; i >= 0; i--) {
-    int n = rsMin(numDerivatives, order-1);
+  for(int i = degree-1; i >= 0; i--) {
+    int n = rsMin(numDerivatives, degree-1);
     for(int j = n; j >= 1; j--)
       results[j] = results[j]*x + results[j-1];
     results[0] = results[0]*x + a[i];
@@ -36,26 +36,26 @@ void rsPolynomial<T>::evaluateWithDerivatives(T x, T *a, int order, T *results,
 }
 
 template <class T>
-void rsPolynomial<T>::divide(T *p, int pOrder, T *d, int dOrder, T *q, T *r)
+void rsPolynomial<T>::divide(T *p, int pDegree, T *d, int dDegree, T *q, T *r)
 {
-  rsArray::copyBuffer(p, r, pOrder+1); // init remainder with p
-  rsArray::fillWithZeros(q, pOrder+1); // init quotient with zeros
-  for(int k = pOrder-dOrder; k >= 0; k--) {
-    q[k] = r[dOrder+k] / d[dOrder];
-    for(int j = dOrder+k-1; j >= k; j--)
+  rsArray::copyBuffer(p, r, pDegree+1); // init remainder with p
+  rsArray::fillWithZeros(q, pDegree+1); // init quotient with zeros
+  for(int k = pDegree-dDegree; k >= 0; k--) {
+    q[k] = r[dDegree+k] / d[dDegree];
+    for(int j = dDegree+k-1; j >= k; j--)
       r[j] -= q[k] * d[j-k];
   }
-  rsArray::fillWithZeros(&r[dOrder], pOrder-dOrder+1);
+  rsArray::fillWithZeros(&r[dDegree], pDegree-dDegree+1);
 }
 
 template<class T>
 template<class S>
-void rsPolynomial<T>::divideByMonomialInPlace(S *dividendAndResult, int dividendOrder,
+void rsPolynomial<T>::divideByMonomialInPlace(S *dividendAndResult, int dividendDegree,
   S x0, S *remainder)
 {
-  *remainder = dividendAndResult[dividendOrder];
-  dividendAndResult[dividendOrder] = T(0);
-  for(int i=dividendOrder-1; i>=0; i--) {
+  *remainder = dividendAndResult[dividendDegree];
+  dividendAndResult[dividendDegree] = T(0);
+  for(int i=dividendDegree-1; i>=0; i--) {
     S swap               = dividendAndResult[i];
     dividendAndResult[i] = *remainder;
     *remainder           = swap + *remainder*x0;
@@ -64,12 +64,12 @@ void rsPolynomial<T>::divideByMonomialInPlace(S *dividendAndResult, int dividend
 
 /*
 template <class T>
-void rsPolynomial<T>::dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendOrder,
+void rsPolynomial<T>::dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendDegree,
   T x0, T *remainder)
 {
-  *remainder = dividendAndResult[dividendOrder];
-  dividendAndResult[dividendOrder] = T(0);
-  for(int i=dividendOrder-1; i>=0; i--)
+  *remainder = dividendAndResult[dividendDegree];
+  dividendAndResult[dividendDegree] = T(0);
+  for(int i=dividendDegree-1; i>=0; i--)
   {
     T swap               = dividendAndResult[i];
     dividendAndResult[i] = *remainder;
@@ -192,10 +192,10 @@ void rsPolynomial<T>::compose(T *a, int aN, T *b, int bN, T *c)
 }
 
 template <class T>
-void rsPolynomial<T>::threeTermRecursion(T *a, T w0, int order, T *a1, T w1, T w1x, T *a2, T w2)
+void rsPolynomial<T>::threeTermRecursion(T *a, T w0, int degree, T *a1, T w1, T w1x, T *a2, T w2)
 {
-  rsAssert(order >= 2);
-  int n = order;
+  rsAssert(degree >= 2);
+  int n = degree;
   a[n] = (w1x*a1[n-1]) / w0;
   n--;
   a[n] = (w1*a1[n] + w1x*a1[n-1]) / w0;
@@ -246,9 +246,9 @@ void rsPolynomial<T>::integrateWithPolynomialLimits(T *p, int pN, T *a, int aN, 
 }
 
 template<class T>
-bool rsPolynomial<T>::baseChange(T **Q, T *a, T **R, T *b, int order)
+bool rsPolynomial<T>::baseChange(T **Q, T *a, T **R, T *b, int degree)
 {
-  return rsLinearAlgebra::rsChangeOfBasisRowWise(Q, R, a, b, order+1);
+  return rsLinearAlgebra::rsChangeOfBasisRowWise(Q, R, a, b, degree+1);
 }
 
 // end of being moved from .h file
@@ -269,15 +269,15 @@ std::complex<T> rsPolynomial<T>::evaluateFromRoots(std::complex<T> s,
 
 // used in convergeToRootViaLaguerre - maybe turn into member function:
 template<class T>
-T evaluatePolynomialWithTwoDerivativesAndError(const std::complex<T>* a, int order,
+T evaluatePolynomialWithTwoDerivativesAndError(const std::complex<T>* a, int degree,
   std::complex<T> z, std::complex<T> *P)
 {
-  P[0] = a[order];                   // P(z)
+  P[0] = a[degree];                   // P(z)
   P[1] = std::complex<T>(0.0, 0.0);  // P'(z)
   P[2] = std::complex<T>(0.0, 0.0);  // P''(z)
   T err = abs(P[0]);          // estimated roundoff error in evaluation of the polynomial
   T zA  = abs(z);             // absolute value of z
-  for(int j = order-1; j >= 0; j--)
+  for(int j = degree-1; j >= 0; j--)
   {
     P[2] = z * P[2] + P[1];
     P[1] = z * P[1] + P[0];
@@ -289,7 +289,7 @@ T evaluatePolynomialWithTwoDerivativesAndError(const std::complex<T>* a, int ord
 }
 
 template<class T>
-std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T> *a, int order,
+std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T> *a, int degree,
                                                std::complex<T> initialGuess)
 {
   const T eps = std::numeric_limits<T>::epsilon();
@@ -307,7 +307,7 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T>
   for(int i = 1; i <= maxNumIterations; i++)
   {
     std::complex<T> P[3];    // holds P, P', P''
-    T  err = eps * evaluatePolynomialWithTwoDerivativesAndError(a, order, r, P);
+    T  err = eps * evaluatePolynomialWithTwoDerivativesAndError(a, degree, r, P);
 
     if( abs(P[0]) <= err )
       return r;
@@ -318,7 +318,7 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T>
     // Laguerre's formulas:
     std::complex<T> G  = P[1]/P[0];       // Eq. 9.5.6
     std::complex<T> H  = G*G - P[2]/P[0]; // Eq. 9.5.7
-    std::complex<T> sq = sqrt(T(order-1)*(T(order)*H-G*G)); // square-root Eq. 9.5.11
+    std::complex<T> sq = sqrt(T(degree-1)*(T(degree)*H-G*G)); // square-root Eq. 9.5.11
     std::complex<T> Gp = G + sq;  // denominator in 9.5.11 with positive sign for square-root
     std::complex<T> Gm = G - sq;  // denominator in 9.5.11 with negative sign for square-root
 
@@ -336,7 +336,7 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T>
     // Eq. 9.5.8)
     std::complex<T> dr;
     if( GpA > 0.0 )
-      dr = std::complex<T>(T(order), 0.0) / Gp;  // Eq. 9.5.11
+      dr = std::complex<T>(T(degree), 0.0) / Gp;  // Eq. 9.5.11
     else
       dr = exp(log(T(1)+abs(r))) * std::complex<T>(cos((T)i), sin((T)i));
         // \todo use sinCos()
@@ -360,24 +360,24 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T>
 }
 
 template<class T>
-void rsPolynomial<T>::roots(const std::complex<T> *a, int order, std::complex<T> *roots)
+void rsPolynomial<T>::roots(const std::complex<T> *a, int degree, std::complex<T> *roots)
 {
   const T eps = T(2.0e-14); // for float, it was 2.0e-6 - use template numeric_limit<T>
 
   // allocate memory for the coefficients of the deflated polynomial and initialize it as
   // non-deflated polynomial:
-  std::complex<T> *ad = new std::complex<T>[order+1];
-  rsArray::copyBuffer(a, ad, order+1);
+  std::complex<T> *ad = new std::complex<T>[degree+1];
+  rsArray::copyBuffer(a, ad, degree+1);
 
   // loop over the roots:
-  for(int j = order; j >= 1; j--)
+  for(int j = degree; j >= 1; j--)
   {
     // find a root of the deflated polynomial using the Laguerre-algorithm with 0 as initial guess:
     std::complex<T> r = convergeToRootViaLaguerre(ad, j, std::complex<T>(0.0, 0.0));
 
     // polish the root by using the Laguerre method with the undeflated polynomial and the
     // non-polished root as initial guess:
-    r = convergeToRootViaLaguerre(a, order, r);
+    r = convergeToRootViaLaguerre(a, degree, r);
 
     // maybe move into a member function Complex::zeroNegligibleImaginaryPart(T ratio);
     // -> ratio = 2*eps (maybe leave this to client code):
@@ -393,16 +393,16 @@ void rsPolynomial<T>::roots(const std::complex<T> *a, int order, std::complex<T>
     rsPolynomial<std::complex<T>>::divideByMonomialInPlace(ad, j, r, &rem);
   }
 
-  rsSortComplexArrayByReIm(roots, order);  // maybe leave this to client code
+  rsSortComplexArrayByReIm(roots, degree);  // maybe leave this to client code
   delete[] ad;
 }
 
 template<class T>
-void rsPolynomial<T>::roots(T *a, int order, std::complex<T> *r)
+void rsPolynomial<T>::roots(T *a, int degree, std::complex<T> *r)
 {
-  std::complex<T> *ac = new std::complex<T>[order+1];
-  rsArray::convertBuffer(a, ac, order+1);
-  roots(ac, order, r);
+  std::complex<T> *ac = new std::complex<T>[degree+1];
+  rsArray::convertBuffer(a, ac, degree+1);
+  roots(ac, degree, r);
   delete[] ac;
 }
 
@@ -699,16 +699,16 @@ T rsPolynomial<T>::cubicRootNear(T x, T a, T b, T c, T d, T min, T max, int maxI
 }
 
 template<class T>
-T rsPolynomial<T>::rootNear(T x, T *a, int order, T min, T max, int maxIterations)
+T rsPolynomial<T>::rootNear(T x, T *a, int degree, T min, T max, int maxIterations)
 {
   // Newton/Raphson iteration:
   T f, df, xNew;
-  evaluateWithDerivative(x, a, order, &f, &df);
+  evaluateWithDerivative(x, a, degree, &f, &df);
   xNew  = x - f/df;
   int i = 1;
   while( xNew != x && i < maxIterations ) {
     x    = xNew;
-    evaluateWithDerivative(x, a, order, &f, &df);
+    evaluateWithDerivative(x, a, degree, &f, &df);
     xNew = x - f/df;
     i++;
   }
@@ -779,11 +779,11 @@ void rsPolynomial<T>::interpolant(T *a, T *x, T *y, int N)
   rsLinearAlgebra::rsSolveLinearSystem(A, a, y, N);
   rsArray::deAllocateSquareArray2D(A, N);
 
-  // For higher order polynomials, this simple and direct approach may become numerically ill
+  // For higher degree polynomials, this simple and direct approach may become numerically ill
   // conditioned. In this case, we could first normalize the data, such than xMin = yMin = -1 and
   // xMax = yMax = +1, find coefficients for Chebychev polynomials, such that our normalized
   // interpolant is given by P(x) = b0*T0(x) + b1*T1(x) + ... + (bN-1)*(TN-1)(x) where Tn is the
-  // n-th order Chebychev polynomial. Then, the b-coefficients could be converted back to
+  // n-th degree Chebychev polynomial. Then, the b-coefficients could be converted back to
   // a-coefficients for powers of x and finally, we could denormalize using rsShiftPolynomial,
   // rsStretchPolynomial (for x-denormalization) and scaling the coeffs and adding an offset to
   // a[0] for y-denormalization
@@ -875,18 +875,18 @@ bool rsPolynomial<T>::areRootsOnOrInsideUnitCircle(T a0, T a1, T a2)
 }
 
 template<class T>
-void rsPolynomial<T>::besselPolynomial(T *a, int order)
+void rsPolynomial<T>::besselPolynomial(T *a, int degree)
 {
   int m, n;
-  for(n=0; n<=order; n++)
+  for(n=0; n<=degree; n++)
     a[n] = 0.0;
 
-  if( order == 0 )
+  if( degree == 0 )
   {
     a[0] = 1.0;
     return;
   }
-  else if( order == 1 )
+  else if( degree == 1 )
   {
     a[0] = 1.0;
     a[1] = 1.0;
@@ -895,13 +895,13 @@ void rsPolynomial<T>::besselPolynomial(T *a, int order)
 
   // the general case is treated by recursion:
   a[0]       = 1.0;
-  T *b1 = new T[order+1];
-  T *b2 = new T[order+1];
+  T *b1 = new T[degree+1];
+  T *b2 = new T[degree+1];
   b2[0]      = 1.0;
   b2[1]      = 0.0;
   b1[0]      = 1.0;
   b1[1]      = 1.0;
-  for(n=2; n<=order; n++)
+  for(n=2; n<=degree; n++)
   {
     T c = (T) (2*n-1);
     for(m=n; m>0; m--)
@@ -919,13 +919,13 @@ void rsPolynomial<T>::besselPolynomial(T *a, int order)
 }
 
 template<class T>
-void rsPolynomial<T>::legendrePolynomial(T *a, int order)
+void rsPolynomial<T>::legendrePolynomial(T *a, int degree)
 {
-  if(order == 0) {
+  if(degree == 0) {
     a[0] = 1.0;
     return;
   }
-  if(order == 1) {
+  if(degree == 1) {
     a[0] = 0.0;
     a[1] = 1.0;
     return;
@@ -934,19 +934,19 @@ void rsPolynomial<T>::legendrePolynomial(T *a, int order)
   a[0] = -0.5;
   a[1] =  0.0;
   a[2] =  1.5;
-  if(order == 2)
+  if(degree == 2)
     return;
 
   int i, j;
-  T *b1 = new T [order+1];
-  T *b2 = new T [order+1];
+  T *b1 = new T [degree+1];
+  T *b2 = new T [degree+1];
 
-  for(i = 0; i <= order; i++) {
+  for(i = 0; i <= degree; i++) {
     b1[i] = b2[i] = 0.0;
   }
   b2[1] = 1.0;
 
-  for(i = 3; i <= order; i++) {
+  for(i = 3; i <= degree; i++) {
     for(j = 0; j <= i; j++) {
       b1[j] = b2[j];
       b2[j] = a[j];
@@ -998,9 +998,9 @@ void rsPolynomial<T>::jacobiRecursion(T *c, int n, T *c1, T *c2, T a, T b)
 }
 
 template<class T>
-void rsPolynomial<T>::jacobiPolynomials(T **c, T a, T b, int maxOrder)
+void rsPolynomial<T>::jacobiPolynomials(T **c, T a, T b, int maxDegree)
 {
-  for(int n = 0; n <= maxOrder; n++)
+  for(int n = 0; n <= maxDegree; n++)
     jacobiRecursion(c[n], n, c[n-1], c[n-2], a, b);
 }
 
@@ -1158,42 +1158,42 @@ void rsPolynomial<T>::maxSlopeMonotonic(T *w, int n)
 
 template<class T>
 void rsPolynomial<T>::rsPartialFractionExpansion(
-  std::complex<T> *numerator,   int numeratorOrder,
-  std::complex<T> *denominator, int denominatorOrder,
+  std::complex<T> *numerator,   int numeratorDegree,
+  std::complex<T> *denominator, int denominatorDegree,
   std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
   std::complex<T> *pfeCoeffs)
 {
   // sanity check for inputs:
-  rsAssert(numeratorOrder < denominatorOrder);
-  rsAssert(rsArray::sum(multiplicities, numDistinctPoles) == denominatorOrder);
+  rsAssert(numeratorDegree < denominatorDegree);
+  rsAssert(rsArray::sum(multiplicities, numDistinctPoles) == denominatorDegree);
 
   // make denominator monic:
-  rsArray::scale(numerator,   numeratorOrder+1,   T(1)/denominator[denominatorOrder]);
-  rsArray::scale(denominator, denominatorOrder+1, T(1)/denominator[denominatorOrder]);
+  rsArray::scale(numerator,   numeratorDegree+1,   T(1)/denominator[denominatorDegree]);
+  rsArray::scale(denominator, denominatorDegree+1, T(1)/denominator[denominatorDegree]);
 
   // establish coefficient matrix:
-  std::complex<T> **A; rsArray::allocateSquareArray2D(A, denominatorOrder);
-  std::complex<T> *tmp = new std::complex<T>[denominatorOrder+1]; // deflated denominator
+  std::complex<T> **A; rsArray::allocateSquareArray2D(A, denominatorDegree);
+  std::complex<T> *tmp = new std::complex<T>[denominatorDegree+1]; // deflated denominator
   std::complex<T> remainder;                                   // always zero
   for(int i = 0, k = 0; i < numDistinctPoles; i++)
   {
-    rsArray::copyBuffer(denominator, tmp, denominatorOrder+1);
+    rsArray::copyBuffer(denominator, tmp, denominatorDegree+1);
     for(int m = 0; m < multiplicities[i]; m++)
     {
-      divideByMonomialInPlace(tmp, denominatorOrder-m, poles[i], &remainder);
-      for(int j = 0; j < denominatorOrder; j++)
+      divideByMonomialInPlace(tmp, denominatorDegree-m, poles[i], &remainder);
+      for(int j = 0; j < denominatorDegree; j++)
         A[j][k] = tmp[j];
       k++;
     }
   }
 
   // solve the linear system using an appropriately zero-padded numerator as RHS:
-  rsArray::copyBuffer(numerator, tmp, numeratorOrder+1);
-  rsArray::fillWithZeros(&tmp[numeratorOrder+1], denominatorOrder-(numeratorOrder+1));
-  rsLinearAlgebra::rsSolveLinearSystem(A, pfeCoeffs, tmp, denominatorOrder);
+  rsArray::copyBuffer(numerator, tmp, numeratorDegree+1);
+  rsArray::fillWithZeros(&tmp[numeratorDegree+1], denominatorDegree-(numeratorDegree+1));
+  rsLinearAlgebra::rsSolveLinearSystem(A, pfeCoeffs, tmp, denominatorDegree);
 
   // clean up:
-  rsArray::deAllocateSquareArray2D(A, denominatorOrder);
+  rsArray::deAllocateSquareArray2D(A, denominatorDegree);
   delete[] tmp;
 }
 
@@ -1232,8 +1232,8 @@ S(x) = 2((x^2+2x)/(2x^3-x^2))^2 - ((x^2+2x)/(2x^3-x^2))^1 + 3((x^2+2x)/(2x^3-x^2
 S = 2*(P/Q)^2 - 1*(P/Q)^1 + 3*(P/Q)^0
   = (2*P^2*Q^0 - 1*P^1*Q^1 + 3*P^0*Q^2) / Q^2
 -> denominator and numerator polynomial can be computed
-   order of new denominator = order(S)*order(Q)
-   order of new numerator = ?
+   degree of new denominator = degree(S)*degree(Q)
+   degree of new numerator = ?
 -> make a class for representing polynomials, so we can implement the algorithms conveniently, like
    S.num = 2*P^2*Q^0 - 1*P^1*Q^1 + 3*P^0*Q^2
    S.den = Q^2
