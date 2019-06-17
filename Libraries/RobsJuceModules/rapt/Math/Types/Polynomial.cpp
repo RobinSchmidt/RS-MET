@@ -187,24 +187,48 @@ void rsPolynomial<T>::coeffsForShiftedArgument(const T *a, T *as, int N, T x0)
   delete[] x0n;
 }
 
-
-
-
-
-
-
-
-
+//-------------------------------------------------------------------------------------------------
+// calculus:
 
 template <class T>
-void rsPolynomial<T>::derivative(T *a, T *ad, int N)
+void rsPolynomial<T>::derivative(const T *a, T *ad, int N)
 {
   for(int n = 1; n <= N; n++)
     ad[n-1] = n * a[n];
 }
 
 template <class T>
-void rsPolynomial<T>::finiteDifference(T *a, T *ad, int N, int direction, T h)
+void rsPolynomial<T>::integral(const T *a, T *ai, int N, T c)
+{
+  for(int n = N+1; n >= 1; n--)
+    ai[n] = a[n-1] / n;
+  ai[0] = c;
+}
+
+template<class T>
+void rsPolynomial<T>::integrateWithPolynomialLimits(
+  const T* p, int pN, const T* a, int aN, const T* b, int bN, T* q)
+{
+  int PN = pN+1;
+  int AN = aN*PN;
+  int BN = bN*PN;
+
+  T* P = new T[PN+1];
+  T* A = new T[AN+1];
+  T* B = new T[BN+1];
+
+  integral(p, P, pN);        // P(x) is the antiderivative of p(x)
+  compose(a, aN, P, PN, A);  // A(x) = P(a(x))
+  compose(b, bN, P, PN, B);  // B(x) = P(b(x))
+  subtract(B, BN, A, AN, q); // q(x) = B(x) - A(x)
+
+  delete[] P;
+  delete[] A;
+  delete[] B;
+}
+
+template <class T>
+void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, T h)
 {
   // (possibly alternating) powers of the stepsize h:
   T *hk = new T[N+1];
@@ -214,7 +238,7 @@ void rsPolynomial<T>::finiteDifference(T *a, T *ad, int N, int direction, T h)
     hk[k] = hk[k-1] * hs;
 
   // binomial coefficients:
-  rsUint32 numCoeffs    = N+1;
+  rsUint32 numCoeffs    = N+1;   // maybe use int
   rsUint32 triangleSize = (numCoeffs*(numCoeffs+1))/2;
   rsUint32 *binomCoeffs = new rsUint32[triangleSize];
   rsCreatePascalTriangle(binomCoeffs, numCoeffs);
@@ -233,13 +257,16 @@ void rsPolynomial<T>::finiteDifference(T *a, T *ad, int N, int direction, T h)
   delete[] binomCoeffs;
 }
 
-template <class T>
-void rsPolynomial<T>::integral(T *a, T *ai, int N, T c)
-{
-  for(int n = N+1; n >= 1; n--)
-    ai[n] = a[n-1] / n;
-  ai[0] = c;
-}
+//-------------------------------------------------------------------------------------------------
+// misc:
+
+
+
+
+
+
+
+
 
 
 
@@ -259,27 +286,7 @@ void rsPolynomial<T>::threeTermRecursion(T *a, T w0, int degree, T *a1, T w1, T 
 
 
 
-template<class T>
-void rsPolynomial<T>::integrateWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b,
-  int bN, T *q)
-{
-  int PN = pN+1;
-  int AN = aN*PN;
-  int BN = bN*PN;
 
-  T *P = new T[PN+1];
-  T *A = new T[AN+1];
-  T *B = new T[BN+1];
-
-  integral(p, P, pN);        // P(x) is the antiderivative of p(x)
-  compose(a, aN, P, PN, A);  // A(x) = P(a(x))
-  compose(b, bN, P, PN, B);  // B(x) = P(b(x))
-  subtract(B, BN, A, AN, q); // q(x) = B(x) - A(x)
-
-  delete[] P;
-  delete[] A;
-  delete[] B;
-}
 
 template<class T>
 bool rsPolynomial<T>::baseChange(T **Q, T *a, T **R, T *b, int degree)

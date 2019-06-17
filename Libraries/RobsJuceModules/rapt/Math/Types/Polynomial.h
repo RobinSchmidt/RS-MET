@@ -5,7 +5,7 @@
 
 // todo: 
 // -be const correct in the static functions (declare array parameters const)
-//  done upt to evaluation
+//  done upt to "Arithmetic"
 // -maybe use const references instead of direct by-value arguments
 // -move the static functions below the object methods and operators
 // -create unit test to test operators
@@ -140,7 +140,7 @@ public:
   respectively, so the caller has to make sure that the c[] array has at least a length of
   aN*bN+1. */
   static void compose(const T* a, int aN, const T* b, int bN, T* c);
-    // allocates heap memory
+  // allocates heap memory
 
   /** Given an array of polynomial coefficients "a" such that
   p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "am") the coefficients for
@@ -152,21 +152,32 @@ public:
   p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "aShifted") the coefficients
   for a polynomial q(x) such that q(x) = p(x-x0). */
   static void coeffsForShiftedArgument(const T *a, T *aShifted, int N, T x0);
-    // allocates heap memory
+  // allocates heap memory
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Calculus */
 
-
-
-
-
   /** Finds the coefficients of the derivative of the N-th degree polynomial with coeffs in "a" and
   stores them in "ad". The degree of the polynomial represented by the coeffs in "ad" will be
   N-1. The "ad" array may point to the same array as the "a" array, so you can use the same array
   for input and output. */
-  static void derivative(T *a, T *ad, int N);
+  static void derivative(const T *a, T *ad, int N);
+
+  /** Finds the coefficients of the indefinite integral of the N-th degree polynomial with coeffs
+  in "a" and stores them in "ai". The degree of the polynomial represented by the coeffs in "ai"
+  will be N+1. The constant term in the ai[] polynomial is the arbitrary integration constant
+  which may be passed in as parameter "c" - this parameter is optional, it defaults to zero.  */
+  static void integral(const T *a, T *ai, int N, T c = T(0));
+  // maybe rename to antiderivative?
+
+  /** Computes the definite integral of the polynomial "p" where the lower integration limit is
+  given by the polynomial "a" and the upper limit is given by the polynomial "b". "p", "a", "b"
+  are assumed to be of degrees "pN", "aN" and "bN" respectively and the result will be stored in
+  as polynomial "q" which will be of degree pN*max(aN, bN). */
+  static void integrateWithPolynomialLimits(const T *p, int pN, const T *a, int aN, const T *b, 
+    int bN, T *q);
+  // allocates heap memory
 
   /** Given a polynomial p(x) via its coefficient array a, this function computes the coefficients
   of a polynomial q(x) = p(x+h) - p(x) if direction = 1, or q(x) = p(x) - p(x-h) if direction = -1.
@@ -176,24 +187,17 @@ public:
   an approximation to the derivative using stepsize h.
   \todo provide a finite central difference q(x) = p(x+h/2) - p(x-h/2) when direction = 0
    ...could this be just the average between forward and backward difference? ...research! */
-  static void finiteDifference(T *a, T *ad, int N, int direction = 1, T h = 1);
+  static void finiteDifference(const T *a, T *ad, int N, int direction = 1, T h = 1);
+  // allocates heap memory
 
-  /** Finds the coefficients of the indefinite integral of the N-th degree polynomial with coeffs
-  in "a" and stores them in "ai". The degree of the polynomial represented by the coeffs in "ai"
-  will be N+1. The constant term in the ai[] polynomial is the arbitrary integration constant
-  which may be passed in as parameter "c" - this parameter is optional, it defaults to zero.  */
-  static void integral(T *a, T *ai, int N, T c = T(0));
+  //-----------------------------------------------------------------------------------------------
 
 
 
 
 
-  /** Computes the definite integral of the polynomial "p" where the lower integration limit is
-  given by the polynomial "a" and the upper limit is given by the polynomial "b". "p", "a", "b"
-  are assumed to be of degrees "pN", "aN" and "bN" respectively and the result will be stored in
-  as polynomial "q" which will be of degree pN*max(aN, bN). */
-  static void integrateWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b,
-    int bN, T *q);
+
+
 
   /** Given expansion coefficients a[k] of an arbitrary polynomial P(x) with given degree in terms
   of a set of N+1 basis polynomials Q0(x), Q1(x), ..., QN(x) such that:
