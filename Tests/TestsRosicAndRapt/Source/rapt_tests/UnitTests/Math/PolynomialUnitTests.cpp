@@ -1129,9 +1129,9 @@ bool testPolynomialOperators(std::string &reportString)
 
   PL p({ 7,  5,  3,  2});
   PL q({23, 19, 17, 13, 11});
-  PL r = p + q;
-  //testResult &= r == {30, 24, 15, 11};
-  r = p - q;
+  PL r;
+  r = p + q; testResult &= r == PL({ 30, 24, 20, 15, 11 });
+  r = q - p; testResult &= r == PL({ 16, 14, 14, 11, 11 });
 
   return testResult;
 }

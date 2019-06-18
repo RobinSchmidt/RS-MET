@@ -10,7 +10,18 @@ rsPolynomial<T>::rsPolynomial(int degree, bool initWithZeros)
 }
 
 
-
+// operators:
+/*
+template<class T>
+rsPolynomial<T> operator+(const rsPolynomial<T>& p, const rsPolynomial<T>& q)
+{
+  rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
+  weightedSum(coeffs.data(), getDegree(), T(1),
+    q.coeffs.data(), q.getDegree(), T(1),
+    r.coeffs.data());
+  return r;
+}
+*/
 
 
 
@@ -896,7 +907,7 @@ bool rsPolynomial<T>::areRootsOnOrInsideUnitCircle(const T& a0, const T& a1, con
     if( rsAbs(rr) > 1.0 )
       return false;
     rr = -p/2 - d;
-    if( rsAabs(rr) > 1.0 )
+    if( rsAbs(rr) > 1.0 )
       return false;
     return true;
   }

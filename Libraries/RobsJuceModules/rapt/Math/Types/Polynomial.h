@@ -37,11 +37,10 @@ public:
   /** Returns the maximum order that this poloynomial may have which is the length of the
   coefficient array minus one. When there are trailing zero coefficients, the actual degree of
   the polynomial is lower. */
-  int getMaxOrder() const { return (int)coeffs.size()-1; }
-  // rename to getMaxDegree - or maybe deprecate this 
+  //int getMaxOrder() const { return (int)coeffs.size()-1; }
+  // deprecate this 
 
   int getDegree() const { return (int)coeffs.size()-1; }
-  // int getOrder()
   // should take into account traling zeros ..or maybe have a boolean flag
   // "takeZeroCoeffsIntoAccount" which defaults to false...or maybe it shouldn't have any default
   // value - client code must be explicit...or maybe have functions getAllocatedDegree, 
@@ -97,7 +96,13 @@ public:
   // maybe move implementations into cpp file, make operatos const
 
 
-  // todo: =, ==, !=
+  bool operator==(const rsPolynomial<T>& p) const { return coeffs == p.coeffs; }
+
+  bool operator!=(const rsPolynomial<T>& p) const { return coeffs != p.coeffs; }
+
+
+
+  // todo: assignment operator =
   // +,-,*,/ for scalar second arguments (left and right), unary -
 
   // how to deal with the trailing zeros in quotient and/or remainder? should we cut them

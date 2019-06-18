@@ -368,6 +368,20 @@ inline std::vector<T> operator*(const std::vector<T>& x, const std::vector<T>& y
   return result;
 }
 
+/*
+template<class T>
+inline bool operator==(const std::vector<T>& x, const std::vector<T>& y)
+{
+  if(x.size() != y.size())
+    return false;
+  for(size_t i = 0; i < x.size(); i++)
+    if(x[i] != y[i])
+      return false;
+  return true;
+}
+*/
+
+
 //=================================================================================================
 // functions for std::map
 
