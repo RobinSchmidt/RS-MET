@@ -467,9 +467,178 @@ void rsPolynomial<T>::rootsQuadraticComplex(
   *x2 = (-b+d) * s;
 }
 
+template<class T>
+std::vector<std::complex<T>> rsPolynomial<T>::rootsCubic(
+  const T& a, const T& b, const T& c, const T& d)
+{
+  // catch degenerate cases where the leading coefficient is zero:
+  if(a == 0.0)
+    return rootsQuadratic(b, c, d);
+
+  std::vector<std::complex<T>> y(3);
+  std::vector<std::complex<T>> roots(3);
+
+  // compute p,q as in the Bronstein page 40, Eq. 1.154c and the offset for the substitution
+  // y = x + b/(3*a):
+  T p = (T(3)*a*c-b*b)/(T(9)*a*a);
+  T q = (b*b*b)/(T(27)*a*a*a) - (b*c)/(T(6)*a*a) + d/(T(2)*a);
+
+  T u, r, D, phi, ch, sh, re, im, tmp;
+
+  if(p == 0.0 && q == 0.0)
+  {
+    y[0] = y[1] = y[2] = 0.0;         // a triple real root at y=0
+    // checked with y = (x-1)^3 = x^3-3*x^2+3*x-1
+  }
+  else if(p != 0.0 && q == 0.0)
+  {
+    y[2] = 0.0;                       // a real root at y=0 and ...
+    u    = -T(3)*p;
+    if(u > 0.0)
+    {
+      tmp  =  rsSqrt(u);
+      y[0] =  tmp;
+      y[1] = -tmp;                    // ... two additional real roots or ...
+      // checked with y = (x-1)*(x-2)*(x-3) = x^3-6*x^2+11*x-6
+    }
+    else // u < 0.0
+    {
+      tmp  =  rsSqrt(-u);
+      y[0] =  std::complex<T>(0.0, tmp);
+      y[1] =  std::complex<T>(0.0, -tmp);     // ... two imaginary roots
+      // checked with y = (x-4i)*(x+4i)*(x-0) = x^3+16*x
+    }
+  }
+  else if(p == 0.0 && q != 0.0)
+  {
+    u = -T(2)*q;
+    if(u > 0.0)
+    {
+      tmp  = pow(u, T(1.0/3.0));
+      y[2] = tmp;                     // a real root at a positive y or ...
+      phi  = T((2.0/3.0)*PI);
+      // checked with x^3+3*x^2+3*x
+    }
+    else // u < 0.0
+    {
+      tmp  = pow(-u, T(1.0/3.0));
+      y[2] = -tmp;                    // ... a real root at a negative y and ...
+      phi  = T(PI/3.0);
+      // checked with x^3+3*x^2+3*x+10
+    }
+    rsSinCos(phi, &im, &re);
+    re  *= tmp;
+    im  *= tmp;
+    y[0] = std::complex<T>(re, im);
+    y[1] = std::complex<T>(re, -im);           // ... two complex conjugate roots
+  }
+  else // both p and q are nonzero
+  {
+    r = rsSign(q) * rsSqrt(fabs(p));
+    if(p > 0.0)
+    {
+      phi = (T)rsAsinh(q/(r*r*r));
+      rsSinhCosh(phi/T(3), &sh, &ch);
+      y[0] = std::complex<T>(r*sh, rsSqrt(T(3))*r*ch);
+      y[1] = std::complex<T>(r*sh, -rsSqrt(T(3))*r*ch);
+      y[2] = -T(2)*r*sh;
+      // checked with y = (x-i)*(x+i)*(x-1) = x^3-x^2+x-1
+    }
+    else // p < 0.0
+    {
+      D = q*q + p*p*p;
+      if(D > 0.0)
+      {
+        phi  = (T)rsAcosh(q/(r*r*r));
+        rsSinhCosh(phi/T(3), &sh, &ch);
+        y[0] = std::complex<T>(r*ch, rsSqrt(T(3))*r*sh);
+        y[1] = std::complex<T>(r*ch, -rsSqrt(T(3))*r*sh);
+        y[2] = -T(2)*r*ch;
+        // checked with y = (x-i)*(x+i)*(x-3) = x^3-3*x^2+x-3
+      }
+      else // D <= 0.0
+      {
+        phi  = acos(q/(r*r*r));
+        y[0] =  T(2)*r*cos(T(PI/3.0 + phi/3.0));
+        y[1] =  T(2)*r*cos(T(PI/3.0 - phi/3.0));
+        y[2] = -T(2)*r*cos(T(phi/3.0));       // three distinct real roots
+        // checked
+      }
+    }
+  }
+
+  // obtain the results for the original equation (back-substitution):
+  T s = b/(T(3)*a);
+  roots[0] = y[0]-s;
+  roots[1] = y[1]-s;
+  roots[2] = y[2]-s;
+
+  return roots;
+}
+// this is a mess - use formulas from
+// http://mathworld.wolfram.com/CubicFormula.html
+// eq. 54..56
 
 
+template<class T>
+T rsPolynomial<T>::cubicDiscriminant(const T& d, const T& c, const T& b, const T& a)
+{
+  return b*b*c*c - T(4)*(a*c*c*c + b*b*b*d) - T(27)*a*a*d*d + T(18)*a*b*c*d;
+}
 
+template<class T>
+T rsCubeRoot(T x)
+{
+  //return cbrt(x);
+  return pow(x, T(1)/T(3));
+}
+
+template<class T>
+void rsPolynomial<T>::rootsCubicComplex(
+  std::complex<T> a0, std::complex<T> a1, 
+  std::complex<T> a2, std::complex<T> a3, 
+  std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3)
+{
+  //rsAssert(false); // does not yet work - produces wrong results when roots are not real
+  // formulas from http://mathworld.wolfram.com/CubicFormula.html
+
+  // intermediate variables:
+  std::complex<T> q, r, d, s, t, u, v, w; // maybe can use less intermediate variables by re-using
+  q = T(1) / a3; a0 *= q; a1 *= q; a2 *= q;  // make monic (such that a3 == 1)
+  q = (T(3)*a1 - a2*a2) * T(1.0/9.0);
+  r = (T(9)*a2*a1 - T(27)*a0 - T(2)*a2*a2*a2) * T(1.0/54.0);
+  d = q*q*q + r*r;     // discriminant
+  d = sqrt(d);         // we actually need the square root of it
+  s = rsCubeRoot(r+d);
+  t = rsCubeRoot(r-d);
+  u = -a2*T(1.0/3.0);
+  v = (s+t) * T(0.5);
+  w = (s-t) * (T(0.5*sqrt(3.0)) * std::complex<T>(0, 1)); // factor is constant - optimize
+
+  // roots:
+  *r1 = u - v + w;
+  *r2 = u - v - w;
+  *r3 = u + v + v;
+}
+
+template<class T>
+T rsPolynomial<T>::cubicRootNear(T x, const T& a, const T& b, const T& c, const T& d, 
+  const T& min, const T& max, int maxIterations)
+{
+  T f    = ((a*x+b)*x+c)*x+d;
+  T df   = (T(3)*a*x+T(2)*b)*x+c;
+  T xNew = x - f/df;
+  int i = 1;
+  while(xNew != x && i < maxIterations) {
+    x    = xNew;
+    f    = ((a*x+b)*x+c)*x+d;
+    df   = (T(3)*a*x+T(2)*b)*x+c;
+    xNew = x - f/df;
+    i++;
+  }
+  return rsClip(xNew, min, max);
+}
+// todo: re-write the algorithm such that the formulas only appear once (reduce code size)
 
 
 
@@ -486,16 +655,6 @@ void rsPolynomial<T>::rootsQuadraticComplex(
 //-------------------------------------------------------------------------------------------------
 // misc:
 
-
-
-
-
-
-
-
-
-
-
 template <class T>
 void rsPolynomial<T>::threeTermRecursion(T *a, T w0, int degree, T *a1, T w1, T w1x, T *a2, T w2)
 {
@@ -509,15 +668,6 @@ void rsPolynomial<T>::threeTermRecursion(T *a, T w0, int degree, T *a1, T w1, T 
   a[0] = (w1*a1[0] + w2*a2[0]) / w0;
   // optimize: replace divisions by w0 by multiplications
 }
-
-
-
-
-
-
-
-
-
 
 template<class T>
 std::vector<std::complex<T>> rsPolynomial<T>::rootsToCoeffs(std::vector<std::complex<T>> roots)
@@ -579,173 +729,9 @@ void rsPolynomial<T>::rootsToCoeffs(std::complex<T> *r, T *a, int N)
 
 
 
-template<class T>
-std::vector<std::complex<T>> rsPolynomial<T>::rootsCubic(T a, T b, T c, T d)
-{
-  // catch degenerate cases where the leading coefficient is zero:
-  if( a == 0.0 )
-    return rootsQuadratic(b, c, d);
-
-  std::vector<std::complex<T>> y(3);
-  std::vector<std::complex<T>> roots(3);
-
-  // compute p,q as in the Bronstein page 40, Eq. 1.154c and the offset for the substitution
-  // y = x + b/(3*a):
-  T p = (T(3)*a*c-b*b)/(T(9)*a*a);
-  T q = (b*b*b)/(T(27)*a*a*a) - (b*c)/(T(6)*a*a) + d/(T(2)*a);
-
-  T u, r, D, phi, ch, sh, re, im, tmp;
-
-  if( p == 0.0 && q == 0.0 )
-  {
-    y[0] = y[1] = y[2] = 0.0;         // a triple real root at y=0
-    // checked with y = (x-1)^3 = x^3-3*x^2+3*x-1
-  }
-  else if( p != 0.0 && q == 0.0 )
-  {
-    y[2] = 0.0;                       // a real root at y=0 and ...
-    u    = -T(3)*p;
-    if( u > 0.0 )
-    {
-      tmp  =  rsSqrt(u);
-      y[0] =  tmp;
-      y[1] = -tmp;                    // ... two additional real roots or ...
-      // checked with y = (x-1)*(x-2)*(x-3) = x^3-6*x^2+11*x-6
-    }
-    else // u < 0.0
-    {
-      tmp  =  rsSqrt(-u);
-      y[0] =  std::complex<T>(0.0,  tmp);
-      y[1] =  std::complex<T>(0.0, -tmp);     // ... two imaginary roots
-      // checked with y = (x-4i)*(x+4i)*(x-0) = x^3+16*x
-    }
-  }
-  else if( p == 0.0 && q != 0.0 )
-  {
-    u = -T(2)*q;
-    if( u > 0.0 )
-    {
-      tmp  = pow(u, T(1.0/3.0));
-      y[2] = tmp;                     // a real root at a positive y or ...
-      phi  = T((2.0/3.0)*PI);
-      // checked with x^3+3*x^2+3*x
-    }
-    else // u < 0.0
-    {
-      tmp  = pow(-u, T(1.0/3.0));
-      y[2] = -tmp;                    // ... a real root at a negative y and ...
-      phi  = T(PI/3.0);
-      // checked with x^3+3*x^2+3*x+10
-    }
-    rsSinCos(phi, &im, &re);
-    re  *= tmp;
-    im  *= tmp;
-    y[0] = std::complex<T>(re,  im);
-    y[1] = std::complex<T>(re, -im);           // ... two complex conjugate roots
-  }
-  else // both p and q are nonzero
-  {
-    r = rsSign(q) * rsSqrt(fabs(p));
-    if( p > 0.0 )
-    {
-      phi = (T)rsAsinh( q/(r*r*r) );
-      rsSinhCosh(phi/T(3), &sh, &ch);
-      y[0] = std::complex<T>(r*sh,  rsSqrt(T(3))*r*ch);
-      y[1] = std::complex<T>(r*sh, -rsSqrt(T(3))*r*ch);
-      y[2] = -T(2)*r*sh;
-      // checked with y = (x-i)*(x+i)*(x-1) = x^3-x^2+x-1
-    }
-    else // p < 0.0
-    {
-      D = q*q + p*p*p;
-      if( D > 0.0 )
-      {
-        phi  = (T)rsAcosh( q/(r*r*r) );
-        rsSinhCosh(phi/T(3), &sh, &ch);
-        y[0] = std::complex<T>(r*ch,  rsSqrt(T(3))*r*sh);
-        y[1] = std::complex<T>(r*ch, -rsSqrt(T(3))*r*sh);
-        y[2] = -T(2)*r*ch;
-        // checked with y = (x-i)*(x+i)*(x-3) = x^3-3*x^2+x-3
-      }
-      else // D <= 0.0
-      {
-        phi  = acos( q/(r*r*r) );
-        y[0] =  T(2)*r*cos(T(PI/3.0 + phi/3.0));
-        y[1] =  T(2)*r*cos(T(PI/3.0 - phi/3.0));
-        y[2] = -T(2)*r*cos(T(         phi/3.0));       // three distinct real roots
-        // checked
-      }
-    }
-  }
-
-  // obtain the results for the original equation (back-substitution):
-  T s = b/(T(3)*a);
-  roots[0] = y[0]-s;
-  roots[1] = y[1]-s;
-  roots[2] = y[2]-s;
-
-  return roots;
-}
-// this is a mess - use formulas from
-// http://mathworld.wolfram.com/CubicFormula.html
-// eq. 54..56
 
 
-template<class T>
-T rsPolynomial<T>::cubicDiscriminant(T d, T c, T b, T a)
-{
-  return b*b*c*c - T(4)*(a*c*c*c + b*b*b*d) - T(27)*a*a*d*d + T(18)*a*b*c*d;
-}
 
-template<class T>
-T rsCubeRoot(T x)
-{
-  //return cbrt(x);
-  return pow(x, T(1)/T(3));
-}
-
-template<class T>
-void rsPolynomial<T>::rootsCubicComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2,
-  std::complex<T> a3, std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3)
-{
-  //rsAssert(false); // does not yet work - produces wrong results when roots are not real
-  // formulas from http://mathworld.wolfram.com/CubicFormula.html
-
-  // intermediate variables:
-  std::complex<T> q, r, d, s, t, u, v, w; // maybe can use less intermediate variables by re-using
-  q = T(1) / a3; a0 *= q; a1 *= q; a2 *= q;  // make monic (such that a3 == 1)
-  q = (T(3)*a1 - a2*a2) * T(1.0/9.0);
-  r = (T(9)*a2*a1 - T(27)*a0 - T(2)*a2*a2*a2) * T(1.0/54.0);
-  d = q*q*q + r*r;     // discriminant
-  d = sqrt(d);         // we actually need the square root of it
-  s = rsCubeRoot(r+d);
-  t = rsCubeRoot(r-d);
-  u = -a2*T(1.0/3.0);
-  v = (s+t) * T(0.5);
-  w = (s-t) * (T(0.5*sqrt(3.0)) * std::complex<T>(0, 1)); // factor is constant - optimize
-
-  // roots:
-  *r1 = u - v + w;
-  *r2 = u - v - w;
-  *r3 = u + v + v;
-}
-
-template<class T>
-T rsPolynomial<T>::cubicRootNear(T x, T a, T b, T c, T d, T min, T max, int maxIterations)
-{
-  T f    = ((a*x+b)*x+c)*x+d;
-  T df   = (T(3)*a*x+T(2)*b)*x+c;
-  T xNew = x - f/df;
-  int i = 1;
-  while( xNew != x && i < maxIterations ) {
-    x    = xNew;
-    f    = ((a*x+b)*x+c)*x+d;
-    df   = (T(3)*a*x+T(2)*b)*x+c;
-    xNew = x - f/df;
-    i++;
-  }
-  return rsClip(xNew, min, max);
-}
 
 template<class T>
 T rsPolynomial<T>::rootNear(T x, T *a, int degree, T min, T max, int maxIterations)

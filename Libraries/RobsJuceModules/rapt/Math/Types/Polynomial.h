@@ -238,10 +238,49 @@ public:
   static void rootsQuadraticComplex(
     const std::complex<T>& a0, const std::complex<T>& a1, const std::complex<T>& a2,
     std::complex<T>* x1, std::complex<T>* x2);
-  // todo: make optimized version for real coefficients (but complex outputs)
+    // todo: make optimized version for real coefficients (but complex outputs)
+
+  /** Computes the three roots of the cubic equation: \f[ a x^3 + b x^2 + c x + d = 0 \f] and
+  stores the result in the three-element array which is returned. When the cubic is degenerate
+  (i.e, a == 0), it will fall back to the getRootsOfQuadraticEquation() function, and return a
+  two-element array (or a one-element array, when b is also zero). */
+  static std::vector<std::complex<T>> rootsCubic(const T& a, const T& b, const T& c, const T& d);
+  // todo: make the order of the arguments consistent with evaluateCubic - but careful - this will
+  // break client code! ...rename parameters to a0,a1,a2,a3 to make it clear, how it's meant
+
+  /** Discriminant of cubic polynomial \f[ a_0 + a_1 x + a_2 x^2 + a_3 x^3 = 0 \f].
+  D > 0: 3 distinct real roots, D == 0: 3 real roots, 2 or 3 of which may coincide,
+  D < 0: 1 real root and 2 complex conjugate roots */
+  static T cubicDiscriminant(const T& a0, const T& a1, const T& a2, const T& a3);
+  // rename to discriminantCubic
+
+  // todo: write function quadraticDiscriminant
+
+  /** under construction - does not yet work */
+  static void rootsCubicComplex(
+    std::complex<T> a0, std::complex<T> a1, 
+    std::complex<T> a2, std::complex<T> a3, 
+    std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3);
 
 
+  // implement rootsQuadraticReal, rootsQuadraticComplex, rootsCubicReal, rootsCubicComplex
+  // rootsQuarticReal, rootsQuarticComplex
+  //
 
+  /** Iteratively improves an initial estimate for the root of the cubic equation:
+  \f[ a x^3 + b x^2 + c x + d = 0               \f]
+  by means of the Newton-Raphson iteration:
+  \f[ x_{i+1} = x_i - \frac{f(x_i)}{f'(x_i)}    \f]
+  where f and f' are calcutated as:
+  \f[ f(x) = ax^3+bx^2+cx+d =  ((ax+b)x+c)x+d   \f]
+  \f[ f(x) = 3ax^2+2bx+c    =  (3ax+2b)x+c      \f]
+  the arguments min and max give upper and lower bounds for the root (which will be returned in
+  cases where the iteration diverges, which the caller should avoid in the first place) and
+  maxIterations gives the maximum number of iteration steps. */
+  static T cubicRootNear(T x, const T& a, const T& b, const T& c, const T& d, const T& min, 
+    const T& max, int maxIterations = 10);
+  // todo: rename to rootCubicNear, change order of variables, maybe use bisection, if 
+  // newton-iteration diverges
 
 
 
@@ -288,46 +327,14 @@ public:
   this function only if you know in advance that the coefficients will indeed come out as purely
   real */
   static void rootsToCoeffs(std::complex<T> *r, T *a, int N);
-
-
-
-  /** Computes the three roots of the cubic equation: \f[ a x^3 + b x^2 + c x + d = 0 \f] and
-  stores the result in the three-element array which is returned. When the cubic is degenerate
-  (i.e, a == 0), it will fall back to the getRootsOfQuadraticEquation() function, and return a
-  two-element array (or a one-element array, when b is also zero). */
-  static std::vector<std::complex<T>> rootsCubic(T a, T b, T c, T d);
-  // todo: make the order of the arguments consistent with evaluateCubic - but careful - this will
-  // break client code! ...rename parameters to a0,a1,a2,a3 to make it clear, how it's meant
+  // maybe group these function to a group coeff-conversions - put also the ..shiftArgument 
+  // function in this group - this group changes the representation of the polynomial
 
 
 
 
-  /** Discriminant of cubic polynomial \f[ a_0 + a_1 x + a_2 x^2 + a_3 x^3 = 0 \f].
-  D > 0: 3 distinct real roots, D == 0: 3 real roots, 2 or 3 of which may coincide,
-  D < 0: 1 real root and 2 complex conjugate roots */
-  static T cubicDiscriminant(T a0, T a1, T a2, T a3);
 
-  // todo: wite function quadraticDiscriminant
 
-  static void rootsCubicComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2,
-    std::complex<T> a3, std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3);
-  // under construction - does not yet work
-
-  // implement rootsQuadraticReal, rootsQuadraticComplex, rootsCubicReal, rootsCubicComplex
-  // rootsQuarticReal, rootsQuarticComplex
-  //
-
-  /** Iteratively improves an initial estimate for the root of the cubic equation:
-  \f[ a x^3 + b x^2 + c x + d = 0               \f]
-  by means of the Newton-Raphson iteration:
-  \f[ x_{i+1} = x_i - \frac{f(x_i)}{f'(x_i)}    \f]
-  where f and f' are calcutated as:
-  \f[ f(x) = ax^3+bx^2+cx+d =  ((ax+b)x+c)x+d   \f]
-  \f[ f(x) = 3ax^2+2bx+c    =  (3ax+2b)x+c      \f]
-  the arguments min and max give upper and lower bounds for the root (which will be returned in
-  cases where the iteration diverges, which the caller should avoid in the first place) and
-  maxIterations gives the maximum number of iteration steps. */
-  static T cubicRootNear(T x, T a, T b, T c, T d, T min, T max, int maxIterations = 10);
 
   /** Iteratively improves an initial estimate for the root of the polynomial equation:
   \f[ a[order] x^order + ... + a[1] x + a[0] = 0   \f]
