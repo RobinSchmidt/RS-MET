@@ -640,8 +640,77 @@ T rsPolynomial<T>::cubicRootNear(T x, const T& a, const T& b, const T& c, const 
 }
 // todo: re-write the algorithm such that the formulas only appear once (reduce code size)
 
+template<class T>
+T rsPolynomial<T>::rootNear(T x, const T* a, int degree, const T& min, const T& max, 
+  int maxIterations)
+{
+  // Newton/Raphson iteration:
+  T f, df, xNew;
+  evaluateWithDerivative(x, a, degree, &f, &df);
+  xNew  = x - f/df;
+  int i = 1;
+  while(xNew != x && i < maxIterations) {
+    x    = xNew;
+    evaluateWithDerivative(x, a, degree, &f, &df);
+    xNew = x - f/df;
+    i++;
+  }
+  return rsClip(xNew, min, max);
+}
 
+//-------------------------------------------------------------------------------------------------
+// conversions:
 
+template<class T>
+std::vector<std::complex<T>> rsPolynomial<T>::rootsToCoeffs(std::vector<std::complex<T>> roots)
+{
+  std::vector<std::complex<T>> coeffs;
+  coeffs.reserve(roots.size()+1);
+  coeffs.push_back(1.0); // init with one for convolutional accumulation - but in the special case
+                         // roots.size() < 1, this would be wrong, right? ..hmm
+  if(roots.size() < 1)
+    return coeffs;
+  for(int i = 0; i < roots.size(); i++) {
+    std::complex<T> z = roots[i];
+    coeffs.push_back(coeffs[i]);
+    for(int j=i; j>=1; j--)
+      coeffs[j] = coeffs[j-1] - z * coeffs[j];
+    coeffs[0] = -z * coeffs[0];
+  }
+  return coeffs;
+}
+
+template<class T>
+void rsPolynomial<T>::rootsToCoeffs(std::complex<T>* r, std::complex<T>* a, int N)
+{
+  std::complex<T>* rF = new std::complex<T>[N]; // only the finite roots
+  int nF = rsCopyFiniteValues(r, rF, N);
+  rsArray::fillWithZeros(a, N+1);
+  if(nF == 0)
+    a[0] = 1.0;
+  else {
+    a[0] = -rF[0];
+    a[1] = 1.0;
+    for(int M = 2; M <= nF; M++) {
+      a[M] = a[M-1];
+      std::complex<T> rM = rF[M-1];
+      for(int n = M-1; n >= 1; n--)
+        a[n] = a[n-1] - rM*a[n];
+      a[0] = -rM*a[0];
+    }
+  }
+  delete[] rF;
+}
+
+template<class T>
+void rsPolynomial<T>::rootsToCoeffs(std::complex<T>* r, T* a, int N)
+{
+  std::complex<T>* ac = new std::complex<T>[N+1];
+  rootsToCoeffs(r, ac, N);
+  for(int n = 0; n <= N; n++)
+    a[n] = ac[n].real();
+  delete[] ac;
+}
 
 
 
@@ -669,63 +738,6 @@ void rsPolynomial<T>::threeTermRecursion(T *a, T w0, int degree, T *a1, T w1, T 
   // optimize: replace divisions by w0 by multiplications
 }
 
-template<class T>
-std::vector<std::complex<T>> rsPolynomial<T>::rootsToCoeffs(std::vector<std::complex<T>> roots)
-{
-  std::vector<std::complex<T>> coeffs;
-
-  coeffs.reserve(roots.size()+1);
-  coeffs.push_back(1.0); // init with one for convolutional accumulation - but in the special case
-                         // roots.size() < 1, this would be wrong, right? ..hmm
-
-  if( roots.size() < 1 )
-    return coeffs;
-
-  for(int i = 0; i < roots.size(); i++)
-  {
-    std::complex<T> z = roots[i];
-    coeffs.push_back(coeffs[i]);
-    for(int j=i; j>=1; j--)
-      coeffs[j] = coeffs[j-1] - z * coeffs[j];
-    coeffs[0] = -z * coeffs[0];
-  }
-
-  return coeffs;
-}
-
-template<class T>
-void rsPolynomial<T>::rootsToCoeffs(std::complex<T> *r, std::complex<T> *a, int N)
-{
-  std::complex<T> *rF = new std::complex<T>[N]; // only the finite roots
-  int nF = rsCopyFiniteValues(r, rF, N);
-  rsArray::fillWithZeros(a, N+1);
-  if( nF == 0 )
-    a[0] = 1.0;
-  else
-  {
-    a[0] = -rF[0];
-    a[1] = 1.0;
-    for(int M = 2; M <= nF; M++)
-    {
-      a[M] = a[M-1];
-      std::complex<T> rM = rF[M-1];
-      for(int n = M-1; n >= 1; n--)
-        a[n] = a[n-1] - rM*a[n];
-      a[0] = -rM*a[0];
-    }
-  }
-  delete[] rF;
-}
-
-template<class T>
-void rsPolynomial<T>::rootsToCoeffs(std::complex<T> *r, T *a, int N)
-{
-  std::complex<T> *ac = new std::complex<T>[N+1];
-  rootsToCoeffs(r, ac, N);
-  for(int n = 0; n <= N; n++)
-    a[n] = ac[n].real();
-  delete[] ac;
-}
 
 
 
@@ -733,22 +745,8 @@ void rsPolynomial<T>::rootsToCoeffs(std::complex<T> *r, T *a, int N)
 
 
 
-template<class T>
-T rsPolynomial<T>::rootNear(T x, T *a, int degree, T min, T max, int maxIterations)
-{
-  // Newton/Raphson iteration:
-  T f, df, xNew;
-  evaluateWithDerivative(x, a, degree, &f, &df);
-  xNew  = x - f/df;
-  int i = 1;
-  while( xNew != x && i < maxIterations ) {
-    x    = xNew;
-    evaluateWithDerivative(x, a, degree, &f, &df);
-    xNew = x - f/df;
-    i++;
-  }
-  return rsClip(xNew, min, max);
-}
+
+
 
 template<class T>
 void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy)

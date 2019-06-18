@@ -161,7 +161,7 @@ public:
   for a polynomial q(x) such that q(x) = p(x-x0). */
   static void coeffsForShiftedArgument(const T *a, T *aShifted, int N, T x0);
   // allocates heap memory
-  // rename to shiftArgument
+  // rename to shiftArgument, maybe move into "Conversions" section
 
 
   //-----------------------------------------------------------------------------------------------
@@ -282,16 +282,25 @@ public:
   // todo: rename to rootCubicNear, change order of variables, maybe use bisection, if 
   // newton-iteration diverges
 
+  /** Iteratively improves an initial estimate for the root of the polynomial equation:
+  \f[ a[order] x^order + ... + a[1] x + a[0] = 0   \f]
+  by means of the Newton-Raphson iteration:
+  \f[ x_{i+1} = x_i - \frac{f(x_i)}{f'(x_i)}       \f]
+  the arguments min and max give upper and lower bounds for the root (which will be returned in
+  cases where the iteration diverges, which you should avoid in the first place) and maxIterations
+  gives the maximum number of iteration steps. */
+  static T rootNear(T x, const T* a, int order, const T& min, const T& max, 
+    int maxIterations = 32);
+
+  /** Same as above but accepts real coefficients. */
+  //void findPolynomialRootsInternal(T *a, int order, Complex *roots, bool polish = true);
+
+  //void findPolynomialRootsNew(Complex *a, int order, Complex *roots);
 
 
-
-
-
-
-
-
-
-
+  //-----------------------------------------------------------------------------------------------
+  /** \name Conversions */
+  // changes for the representation of the polynomial
 
   /** Given expansion coefficients a[k] of an arbitrary polynomial P(x) with given degree in terms
   of a set of N+1 basis polynomials Q0(x), Q1(x), ..., QN(x) such that:
@@ -305,21 +314,18 @@ public:
   {
     return rsLinearAlgebra::rsChangeOfBasisRowWise(Q, R, a, b, degree+1);
   }
-
-
-  /** Same as above but accepts real coefficients. */
-  //void findPolynomialRootsInternal(T *a, int order, Complex *roots, bool polish = true);
-
-  //void findPolynomialRootsNew(Complex *a, int order, Complex *roots);
+  // make const-correct - first make functions in rsLinearAlgebra const-correct
 
   /** Computes polynomial coefficients from the roots. \todo: get rid of that - replace by function
   below */
   static std::vector<std::complex<T>> rootsToCoeffs(std::vector<std::complex<T>> roots);
+  // allocates heap memory
 
   /** Computes polynomial coefficients from the roots. The roots should be passed in the array "r"
   of length "N", the coefficients will be returned in the array "a" of length "N" + 1. The
   coefficient for the highest power a[N] will be normalized to unity. */
   static void rootsToCoeffs(std::complex<T> *r, std::complex<T> *a, int N);
+  // allocates heap memory
 
   /** Similar to rootsToCoeffs(Complex *r, Complex *a, int N), but assumes that the roots are
   either real or occur in complex conjugate pairs. This means that the polynomial has purely real
@@ -327,8 +333,10 @@ public:
   this function only if you know in advance that the coefficients will indeed come out as purely
   real */
   static void rootsToCoeffs(std::complex<T> *r, T *a, int N);
-  // maybe group these function to a group coeff-conversions - put also the ..shiftArgument 
-  // function in this group - this group changes the representation of the polynomial
+  // allocates heap memory
+
+
+  // drag the ..shiftArgument function in this group
 
 
 
@@ -336,14 +344,9 @@ public:
 
 
 
-  /** Iteratively improves an initial estimate for the root of the polynomial equation:
-  \f[ a[order] x^order + ... + a[1] x + a[0] = 0   \f]
-  by means of the Newton-Raphson iteration:
-  \f[ x_{i+1} = x_i - \frac{f(x_i)}{f'(x_i)}       \f]
-  the arguments min and max give upper and lower bounds for the root (which will be returned in
-  cases where the iteration diverges, which you should avoid in the first place) and maxIterations
-  gives the maximum number of iteration steps. */
-  static T rootNear(T x, T *a, int order, T min, T max, int maxIterations = 32);
+
+
+
 
 
 
