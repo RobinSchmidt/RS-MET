@@ -27,6 +27,11 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  // void truncateTrailingZeros(const T& threshold);
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the maximum order that this poloynomial may have which is the length of the
@@ -72,7 +77,28 @@ public:
     return r;
   }
 
-  // todo: divide, modulo, =, ==, !=
+  /** Divides this polynomial by the given divisor polynomial d and returns the quotient. */
+  rsPolynomial<T> operator/(const rsPolynomial<T>& d) {
+    rsPolynomial<T> q(getDegree(), false);  // quotient
+    rsPolynomial<T> r(getDegree(), false);  // remainder
+    divide(coeffs.data(), getDegree(), 
+      d.coeffs.data(), d.getDegree(), q.coeffs.data(), r.coeffs.data());
+    return q;
+  }
+
+  /** Divides this polynomial by the given divisor polynomial d and returns the remainder. */
+  rsPolynomial<T> operator%(const rsPolynomial<T>& d) {
+    rsPolynomial<T> q(getDegree(), false);  // quotient
+    rsPolynomial<T> r(getDegree(), false);  // remainder
+    divide(coeffs.data(), getDegree(),
+      d.coeffs.data(), d.getDegree(), q.coeffs.data(), r.coeffs.data());
+    return r;
+  }
+  // maybe move implementations into cpp file, make operatos const
+
+
+  // todo: =, ==, !=
+  // +,-,*,/ for scalar second arguments (left and right), unary -
 
   // how to deal with the trailing zeros in quotient and/or remainder? should we cut them
   // off...if so, what should be the numerical threshold? maybe there should be a member function
@@ -85,10 +111,7 @@ public:
 
 
   /** Evaluates the polynomial at the given input x. */
-  T operator()(T x) const
-  {
-    return evaluate(x, &coeffs[0], getDegree());
-  }
+  T operator()(T x) const { return evaluate(x, &coeffs[0], getDegree()); }
   // todo: have an overloaded operator() that takes a polynomial as input and returns another 
   // polynomial -> implement nesting/composition
 
