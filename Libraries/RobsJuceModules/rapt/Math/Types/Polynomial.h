@@ -344,82 +344,88 @@ public:
   /** Computes coefficients a[0], a[1], a[2], a[3] for the cubic polynomial that goes through the
   points (x[0], y[0]) and (x[1], y[1]) and has first derivatives of dy[0] and dy[1] at these points
   respectively. */
-  static void cubicCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy);
+  static void cubicCoeffsTwoPointsAndDerivatives(T *a, const T *x, const T *y, const T *dy);
+  // rename to fitCubic or cubicHermiteCoeffs
 
-  /** Simplified version of
-  cubicCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy)
-  which assumes that x[0] = 0, x[1] = 1 - so we don't need to actually pass the x-array. */
-  static void cubicCoeffsTwoPointsAndDerivatives(T *a, T *y, T *dy);
+  /** Simplified version of cubicCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy)
+  which assumes that x[0] = 0, x[1] = 1 - so we don't need to actually pass any x-array. The 
+  formulas are far simpler. */
+  static void cubicCoeffsTwoPointsAndDerivatives(T *a, const T *y, const T *dy);
+  // rename to fitCubic_0_1 or cubicHermiteCoeffs_0_1
+
+  // make a function fitQuartic with the same constraints as the cubic Hermite with integral 
+  // normalized to that of the linear interpolant
 
   // \todo void cubicCoeffsFourPoints(T *a, T *x, T *y);
 
   /** Computes coefficients a[0], a[1], a[2], a[3] for the cubic polynomial that goes through the
   points (-1, y[-1]), (0, y[0]), (1, y[1]), (2, y[2]). NOTE, that the y-array is accessed at values
   y[-1]...y[2] - the caller should make sure, these values exist. */
-  static void cubicCoeffsFourPoints(T *a, T *y);
+  static void cubicCoeffsFourPoints(T *a, const T *y);
+  // rename to fitCubic_m1_0_1_2 or cubicLagrange_m1_0_1_2 or cubicThrough
 
   /** Allocates and fills an NxN matrix A wher A[i][j] are given by x[i]^j. The caller is
   responsible for deallocation. So it's used like:
   T **A = rsVandermondeMatrix(x, N);
   // ...do stuff with matrix A
   rsDeAllocateSquareArray2D(A, N);  */
-  static T** vandermondeMatrix(T *x, int N);
+  static T** vandermondeMatrix(const T *x, int N);
     // move to rsMatrix
 
   /** Computes coefficients a[0],..., a[N-1] for a polynomial of degree N-1 that goes through the N
   data points (x[0], y[0]),...,(x[N-1], y[N-1]). */
-  static void interpolant(T *a, T *x, T *y, int N);
+  static void interpolant(T *a, const T *x, const T *y, int N);
     // maybe move to Interplation
 
   /** Like rsInterpolatingPolynomial(T *a, T *x, T *y, int N), but instead of
   passing an x-array, you should pass a start value x0 and an increment dx and it will use x-values
   given by x0, x0+dx, x0+2*dx,...,x0+(N-1)*dx, so this function assumes equidisant abscissa
   values. */
-  static void interpolant(T *a, T x0, T dx, T *y, int N);
+  static void interpolant(T *a, const T& x0, const T& dx, const T *y, int N);
+  // allocates heap memory
 
   // \todo void quinticCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy,
   //                                                 T *d2y);
 
   /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
   3 points (x[0],y[0]), (x[1],y[1]), (x[2],y[2]). */
-  static void fitQuadratic(T *a, T *x, T *y);
+  static void fitQuadratic(T *a, const T *x, const T *y);
 
   /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
   3 points (0,y[0]), (1,y[1]), (2,y[2]). */
-  static void fitQuadratic_0_1_2(T *a, T *y);
+  static void fitQuadratic_0_1_2(T *a, const T *y);
 
   /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
   3 points (-1,y[0]), (0,y[1]), (1,y[2]). */
-  static void fitQuadratic_m1_0_1(T *a, T *y);
+  static void fitQuadratic_m1_0_1(T *a, const T *y);
 
   /** Returns the position (i.e. the x-coordinate) of the extremum (minimum or maximum) of the 
   quadratic parabola y(x) = a[2]*x^2 + a[1]*x + a[0]. Note that a[2] must be nonzero, otherwise the
   parabola degenerates to a line and there will be no extremum - which will lead to a division by
   zero in the formula. */
-  static T quadraticExtremumPosition(T *a); // maybe inline this
+  static T quadraticExtremumPosition(const T *a);
+  // maybe inline this, move to Evaluation group
 
   /** Fits the quartic defined by y(x) = a[4]*x^4 + a3*x^3 + a[2]*x^2 + a[1]*x + a[0] to the
   3 points (0,y[0]), (1,y[1]), (2,y[2]) and also matches the derivatives (slopes)
   y'(0) = s0, y'(2) = s2 */
-  static void fitQuarticWithDerivatives(T *a, T *y, T s0, T s2);
+  static void fitQuarticWithDerivatives(T *a, const T *y, const T& s0, const T& s2);
 
   /** Given coefficients of a polynomial a2*x^2 + a1*x + a0, this function determines whether its
   roots are on or inside the unit circle.
-   \todo: write and run a unit-test for this function.
-  */
-  static bool areRootsOnOrInsideUnitCircle(T a0, T a1, T a2);
+   \todo: write and run a unit-test for this function. */
+  static bool areRootsOnOrInsideUnitCircle(const T& a0, const T& a1, const T& a2);
+  // move to Evaluation
 
   // \todo fitPolynomial(T *a, int order, T *x, T *y, int numValues);
-  // order+1 == numValues: exact fit
-  // order+1 >  numValues: exact fit, some higher coeffs unused -> maybe via recursive call
-  // order+1 <  numValues: least-squares fit
+  // degree+1 == numValues: exact fit
+  // degree+1 >  numValues: exact fit, some higher coeffs unused -> maybe via recursive call
+  // degree+1 <  numValues: least-squares fit
 
 
-
-
-
-  // special polynomials:
-
+  //-----------------------------------------------------------------------------------------------
+  /** \name Coefficient generation */
+  // functions to generate coefficient arrays for certain special polynomials
 
   /** Computes polynomial coefficients of a polynomial that is defined recursively by
   w0 * P_n(x) = (w1 + w1x * x) * P_{n-1}(x) + w2 * P_{n-2}(x)
@@ -567,7 +573,8 @@ protected:
 
 // todo: implement a function that determines the number of real roots of a polynomial in an
 // interval by means of Sturmian sequences (see Einführung in die computerorientierte Mathematik
-// mit Sage, p.163ff)
+// mit Sage, p.163ff) - may be useful for rational interpolants to figure out, if there's a pole
+// inside the interpolation interval
 
 // make all the functions const correct
 

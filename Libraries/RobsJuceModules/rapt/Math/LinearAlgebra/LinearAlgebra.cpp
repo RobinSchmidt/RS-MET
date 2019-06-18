@@ -115,7 +115,8 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
 
 template<class T>
 //bool rsSolveLinearSystem(const T **A, T *x, const T *b, int N)
-bool rsLinearAlgebra::rsSolveLinearSystem(T **A, T *x, T *b, int N)
+bool rsLinearAlgebra::rsSolveLinearSystem(T** A, T* x, const T* b, int N)
+//bool rsLinearAlgebra::rsSolveLinearSystem(T **A, T *x, T *b, int N)
 {
   int i, j;
 

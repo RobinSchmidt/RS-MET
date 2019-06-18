@@ -713,44 +713,11 @@ void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, T* a, int N)
   delete[] ac;
 }
 
-
-
-
-
-
-
-
-
-
 //-------------------------------------------------------------------------------------------------
-// misc:
-
-template <class T>
-void rsPolynomial<T>::threeTermRecursion(T *a, T w0, int degree, T *a1, T w1, T w1x, T *a2, T w2)
-{
-  rsAssert(degree >= 2);
-  int n = degree;
-  a[n] = (w1x*a1[n-1]) / w0;
-  n--;
-  a[n] = (w1*a1[n] + w1x*a1[n-1]) / w0;
-  for(n = n-1; n > 0; n--)
-    a[n] = (w1*a1[n] + w1x*a1[n-1] + w2*a2[n]) / w0;
-  a[0] = (w1*a1[0] + w2*a2[0]) / w0;
-  // optimize: replace divisions by w0 by multiplications
-}
-
-
-
-
-
-
-
-
-
-
+// fitting:
 
 template<class T>
-void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy)
+void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *x, const T *y, const T *dy)
 {
   // compute intermediate variables:
   T x0_2 = x[0]*x[0]; // x[0]^2
@@ -771,7 +738,7 @@ void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy
 }
 
 template<class T>
-void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, T *y, T *dy)
+void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *y, const T *dy)
 {
   a[0] = y[0];
   a[1] = dy[0];
@@ -780,7 +747,7 @@ void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, T *y, T *dy)
 }
 
 template<class T>
-void rsPolynomial<T>::cubicCoeffsFourPoints(T *a, T *y)
+void rsPolynomial<T>::cubicCoeffsFourPoints(T *a, const T *y)
 {
   a[0] = y[0];
   a[2] = T(0.5)*(y[-1]+y[1]-2*a[0]);
@@ -789,28 +756,23 @@ void rsPolynomial<T>::cubicCoeffsFourPoints(T *a, T *y)
 }
 
 template<class T>
-T** rsPolynomial<T>::vandermondeMatrix(T *x, int N)
+T** rsPolynomial<T>::vandermondeMatrix(const T *x, int N)
 {
-  T **A;
-  rsArray::allocateSquareArray2D(A, N);
-  for(int i = 0; i < N; i++)
-  {
+  T **A; rsArray::allocateSquareArray2D(A, N);
+  for(int i = 0; i < N; i++) {
     T xi  = x[i];
     T xij = 1.0;  // xi^j
-    for(int j = 0; j < N; j++)
-    {
+    for(int j = 0; j < N; j++) {
       A[i][j] = xij;
-      xij *= xi;
-    }
-  }
+      xij *= xi; }}
   return A;
 }
 
 template<class T>
-void rsPolynomial<T>::interpolant(T *a, T *x, T *y, int N)
+void rsPolynomial<T>::interpolant(T *a, const T *x, const T *y, int N)
 {
   T **A = vandermondeMatrix(x, N);
-  rsLinearAlgebra::rsSolveLinearSystem(A, a, y, N);
+  rsLinearAlgebra::rsSolveLinearSystem(A, a, y, N); // use rsSolveLinearSystemInPlace
   rsArray::deAllocateSquareArray2D(A, N);
 
   // For higher degree polynomials, this simple and direct approach may become numerically ill
@@ -821,10 +783,12 @@ void rsPolynomial<T>::interpolant(T *a, T *x, T *y, int N)
   // a-coefficients for powers of x and finally, we could denormalize using rsShiftPolynomial,
   // rsStretchPolynomial (for x-denormalization) and scaling the coeffs and adding an offset to
   // a[0] for y-denormalization
+
+  // and/or there's actually a O(N) algo available - what we do here is O(N^3) -> very bad!
 }
 
 template<class T>
-void rsPolynomial<T>::interpolant(T *a, T x0, T dx, T *y, int N)
+void rsPolynomial<T>::interpolant(T *a, const T& x0, const T& dx, const T *y, int N)
 {
   T *x = new T[N];
   for(int n = 0; n < N; n++)
@@ -834,7 +798,7 @@ void rsPolynomial<T>::interpolant(T *a, T x0, T dx, T *y, int N)
 }
 
 template<class T>
-void rsPolynomial<T>::fitQuadratic(T *a, T *x, T *y)
+void rsPolynomial<T>::fitQuadratic(T *a, const T *x, const T *y)
 {
   T k1 = y[1] - y[0];
   T k2 = x[0]*x[0] - x[1]*x[1];
@@ -848,7 +812,7 @@ void rsPolynomial<T>::fitQuadratic(T *a, T *x, T *y)
 }
 
 template<class T>
-void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, T *y)
+void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, const T *y)
 {
   a[2] = T(0.5)*(y[0]+y[2])-y[1];
   a[1] = y[1]-y[0]-a[2];
@@ -856,7 +820,7 @@ void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, T *y)
 }
 
 template<class T>
-void rsPolynomial<T>::fitQuadratic_m1_0_1(T *a, T *y) 
+void rsPolynomial<T>::fitQuadratic_m1_0_1(T *a, const T *y)
 {
   a[0] = y[1];
   a[1] = T(0.5)*(y[2]-y[0]);
@@ -864,13 +828,13 @@ void rsPolynomial<T>::fitQuadratic_m1_0_1(T *a, T *y)
 }
 
 template<class T>
-T rsPolynomial<T>::quadraticExtremumPosition(T *a)
+T rsPolynomial<T>::quadraticExtremumPosition(const T *a)
 {
   return T(-0.5) * a[1]/a[2];
 }
 
 template<class T>
-void rsPolynomial<T>::fitQuarticWithDerivatives(T *a, T *y, T s0, T s2)
+void rsPolynomial<T>::fitQuarticWithDerivatives(T *a, const T *y, const T& s0, const T& s2)
 {
   a[0] = y[0];
   a[1] = s0;
@@ -880,7 +844,7 @@ void rsPolynomial<T>::fitQuarticWithDerivatives(T *a, T *y, T s0, T s2)
 }
 
 template<class T>
-bool rsPolynomial<T>::areRootsOnOrInsideUnitCircle(T a0, T a1, T a2)
+bool rsPolynomial<T>::areRootsOnOrInsideUnitCircle(const T& a0, const T& a1, const T& a2)
 {
   // p and q values for p-q formula
   T p = a1/a2;
@@ -899,14 +863,35 @@ bool rsPolynomial<T>::areRootsOnOrInsideUnitCircle(T a0, T a1, T a2)
     // 2 real roots
     d = rsSqrt(d);
     rr = -p/2 + d;
-    if( fabs(rr) > 1.0 )
+    if( rsAbs(rr) > 1.0 )
       return false;
     rr = -p/2 - d;
-    if( fabs(rr) > 1.0 )
+    if( rsAabs(rr) > 1.0 )
       return false;
     return true;
   }
 }
+
+
+
+
+
+
+
+template <class T>
+void rsPolynomial<T>::threeTermRecursion(T* a, T w0, int degree, T* a1, T w1, T w1x, T* a2, T w2)
+{
+  rsAssert(degree >= 2);
+  int n = degree;
+  a[n] = (w1x*a1[n-1]) / w0;
+  n--;
+  a[n] = (w1*a1[n] + w1x*a1[n-1]) / w0;
+  for(n = n-1; n > 0; n--)
+    a[n] = (w1*a1[n] + w1x*a1[n-1] + w2*a2[n]) / w0;
+  a[0] = (w1*a1[0] + w2*a2[0]) / w0;
+  // optimize: replace divisions by w0 by multiplications
+}
+
 
 template<class T>
 void rsPolynomial<T>::besselPolynomial(T *a, int degree)

@@ -45,8 +45,9 @@ public:
   matrix is singular) - when it returns false, it means that either there is no solution at all 
   or that there is not a unique solution.  */
   template<class T>
-  //bool rsSolveLinearSystem(const T **A, T *x, const T *b, int N);
-  static bool rsSolveLinearSystem(T **A, T *x, T *b, int N);
+  //static bool rsSolveLinearSystem(const T **A, T *x, const T *b, int N); // compiler error
+  static bool rsSolveLinearSystem(T** A, T* x, const T* b, int N);
+  //static bool rsSolveLinearSystem(T **A, T *x, T *b, int N);
     // maybe have possibly different types for the matrix elements and vector elements - some 
     // equations (for curves in Salomon's Computer Graphics... for example) are formulated in terms 
     // of matrices-of-numbers and vectors-of-points
