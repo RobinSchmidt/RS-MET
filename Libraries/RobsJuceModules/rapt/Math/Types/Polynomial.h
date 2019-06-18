@@ -15,6 +15,88 @@ class rsPolynomial
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Construction */
+
+  /** Creates a polynomial of given degree. Allocates memory for the coefficients and optionally
+  intializes them with zeros. */
+  rsPolynomial(int degree = 0, bool initWithZeros = true);
+
+  /** Creates a polynomial from a std::vector of coefficients. */
+  rsPolynomial(const std::vector<T>& coefficients) : coeffs(coefficients) {}
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Returns the maximum order that this poloynomial may have which is the length of the
+  coefficient array minus one. When there are trailing zero coefficients, the actual degree of
+  the polynomial is lower. */
+  int getMaxOrder() const { return (int)coeffs.size()-1; }
+  // rename to getMaxDegree - or maybe deprecate this 
+
+  int getDegree() const { return (int)coeffs.size()-1; }
+  // int getOrder()
+  // should take into account traling zeros ..or maybe have a boolean flag
+  // "takeZeroCoeffsIntoAccount" which defaults to false...or maybe it shouldn't have any default
+  // value - client code must be explicit...or maybe have functions getAllocatedDegree, 
+  // getActualDegree(tolerance)...or getDegree has an optional parameter for the tolerance 
+  // defaulting to 0
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Operators */
+
+  /** Adds two polynomials. */
+  rsPolynomial<T> operator+(const rsPolynomial<T>& q) {
+    rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
+    weightedSum(coeffs.data(), getDegree(), T(1),
+      q.coeffs.data(), q.getDegree(), T(1),
+      r.coeffs.data());
+    return r;
+  }
+
+  /** Subtracts two polynomials. */
+  rsPolynomial<T> operator-(const rsPolynomial<T>& q) {
+    rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
+    weightedSum(coeffs.data(), getDegree(), T(+1),
+      q.coeffs.data(), q.getDegree(), T(-1),
+      r.coeffs.data());
+    return r;
+  }
+
+  /** Multiplies two polynomials. */
+  rsPolynomial<T> operator*(const rsPolynomial<T>& q) {
+    rsPolynomial<T> r(getDegree() + q.getDegree() + 1, false);
+    multiply(coeffs.data(), getDegree(), q.coeffs.data(), q.getDegree(), r.coeffs.data());
+    return r;
+  }
+
+  // todo: divide, modulo, =, ==, !=
+
+  // how to deal with the trailing zeros in quotient and/or remainder? should we cut them
+  // off...if so, what should be the numerical threshold? maybe there should be a member function
+  // removeTrailingZeros that client code must explicitly call
+  // maybe we should also cutoff in add/subtract, if the trailing coeffs happen to add/subtract to
+  // zero? what about multiplication (i.e. convolution) - can trailing zeros happen there, too - or
+  // is that impossible? ...maybe try to get a zero with two very low (1st) order polynomials
+  // no - it can't happen - the highest power coeff is always the product of the two highest power
+  // coeffs of the input polynomials - and if they are assumed to be nonzero, so is their product
+
+
+  /** Evaluates the polynomial at the given input x. */
+  T operator()(T x) const
+  {
+    return evaluate(x, &coeffs[0], getDegree());
+  }
+  // todo: have an overloaded operator() that takes a polynomial as input and returns another 
+  // polynomial -> implement nesting/composition
+
+    // maybe we whould take into account the possibility of trailing zero coeffs?
+    // maybe have two functions: degreeMax,
+
+
+
   //===============================================================================================
   /** \name Computations on raw coefficient arrays */
 
@@ -489,86 +571,12 @@ public:
     std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
     std::complex<T> *pfeCoeffs);
 
-  //===============================================================================================
-  /** \name Non-static member functions and operators */
-
-  /** Creates a polynomial of given degree. Allocates memory for the coefficients and optionally 
-  intializes them with zeros. */
-  rsPolynomial(int degree = 0, bool initWithZeros = true);
-
-  /** Creates a polynomial from a std::vector of coefficients. */
-  rsPolynomial(const std::vector<T>& coefficients) : coeffs(coefficients) {}
-
-  /** Returns the maximum order that this poloynomial may have which is the length of the
-  coefficient array minus one. When there are trailing zero coefficients, the actual degree of
-  the polynomial is lower. */
-  int getMaxOrder() const { return (int)coeffs.size()-1; } 
-  // rename to getMaxDegree - or maybe deprecate this 
-
-  int getDegree() const { return (int)coeffs.size()-1; }
-  // int getOrder()
-  // should take into account traling zeros ..or maybe have a boolean flag
-  // "takeZeroCoeffsIntoAccount" which defaults to false...or maybe it shouldn't have any default
-  // value - client code must be explicit...or maybe have functions getAllocatedDegree, 
-  // getActualDegree(tolerance)...or getDegree has an optional parameter for the tolerance 
-  // defaulting to 0
-
-  /** Adds two polynomials. */
-  rsPolynomial<T> operator+(const rsPolynomial<T>& q) {
-    rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
-    weightedSum(  coeffs.data(),   getDegree(), T(1), 
-                q.coeffs.data(), q.getDegree(), T(1), 
-                r.coeffs.data());
-    return r;
-  }
-
-  /** Subtracts two polynomials. */
-  rsPolynomial<T> operator-(const rsPolynomial<T>& q) {
-    rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
-    weightedSum(  coeffs.data(),   getDegree(), T(+1), 
-                q.coeffs.data(), q.getDegree(), T(-1), 
-                r.coeffs.data());
-    return r;
-  }
-
-  /** Multiplies two polynomials. */
-  rsPolynomial<T> operator*(const rsPolynomial<T>& q) {
-    rsPolynomial<T> r(getDegree() + q.getDegree() + 1, false);
-    multiply(coeffs.data(), getDegree(), q.coeffs.data(), q.getDegree(), r.coeffs.data());
-    return r;
-  }
-
-  // todo: divide, modulo
-  
-  // how to deal with the trailing zeros in quotient and/or remainder? should we cut them
-  // off...if so, what should be the numerical threshold? maybe there should be a member function
-  // removeTrailingZeros that client code must explicitly call
-  // maybe we should also cutoff in add/subtract, if the trailing coeffs happen to add/subtract to
-  // zero? what about multiplication (i.e. convolution) - can trailing zeros happen there, too - or
-  // is that impossible? ...maybe try to get a zero with two very low (1st) order polynomials
-  // no - it can't happen - the highest power coeff is always the product of the two highest power
-  // coeffs of the input polynomials - and if they are assumed to be nonzero, so is their product
-
-
-  /** Evaluates the polynomial at the given input x. */
-  T operator()(T x) const
-  {
-    return evaluate(x, &coeffs[0], getDegree());
-  }
-  // todo: have an overloaded operator() that takes a polynomial as input and returns another 
-  // polynomial -> implement nesting/composition
-
-    // maybe we whould take into account the possibility of trailing zero coeffs?
-    // maybe have two functions: degreeMax,
-
-
 
 protected:
 
-  std::vector<T> coeffs;
+  std::vector<T> coeffs;   // array of coefficients - index correpsonds to power of x
 
-
-  friend class rsRationalFunction;
+  //friend class rsRationalFunction;
 
 };
 

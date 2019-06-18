@@ -1,4 +1,34 @@
 
+// construction:
+
+template<class T>
+rsPolynomial<T>::rsPolynomial(int degree, bool initWithZeros)
+{
+  coeffs.resize(degree+1);
+  if(initWithZeros)
+    rsArray::fillWithZeros(&coeffs[0], degree+1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//=================================================================================================
+// raw number crunching routines operating on coefficient arrays:
+
 //-------------------------------------------------------------------------------------------------
 // evaluation:
 
@@ -1191,16 +1221,6 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   delete[] tmp;
 }
 
-//=================================================================================================
-// member functions
-
-template<class T>
-rsPolynomial<T>::rsPolynomial(int degree, bool initWithZeros)
-{
-  coeffs.resize(degree+1);
-  if(initWithZeros)
-    rsArray::fillWithZeros(&coeffs[0], degree+1);
-}
 
 
 /*
