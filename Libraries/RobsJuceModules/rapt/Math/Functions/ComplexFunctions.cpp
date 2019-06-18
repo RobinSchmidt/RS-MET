@@ -233,17 +233,13 @@ int rsGetNumFiniteValues(std::complex<T> *a, int N)
 }
 
 template<class T>
-int rsCopyFiniteValues(std::complex<T> *z, std::complex<T> *zF, int N)
+int rsCopyFiniteValues(const std::complex<T> *z, std::complex<T> *zF, int N)
 {
   int m = 0;
-  for(int n = 0; n < N; n++)
-  {
-    if(!isInfinite(z[n]))
-    {
+  for(int n = 0; n < N; n++) {
+    if(!isInfinite(z[n])) {
       zF[m] = z[n];
-      m++;
-    }
-  }
+      m++; }}
   return m;
 }
 

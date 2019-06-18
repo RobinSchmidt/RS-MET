@@ -112,7 +112,7 @@ int rsGetNumFiniteValues(std::complex<T> *a, int N);
 that are finite. The return value returns the number of copied values, i.e. the effective (used)
 length of the returned array "zF". The remaining values in "zF" are left as is. */
 template<class T>
-int rsCopyFiniteValues(std::complex<T> *z, std::complex<T> *zF, int N);
+int rsCopyFiniteValues(const std::complex<T> *z, std::complex<T> *zF, int N);
 
 /** Returns the product of finite values in the complex array "a" of length "N". */
 template<class T>

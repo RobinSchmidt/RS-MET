@@ -318,13 +318,13 @@ public:
 
   /** Computes polynomial coefficients from the roots. \todo: get rid of that - replace by function
   below */
-  static std::vector<std::complex<T>> rootsToCoeffs(std::vector<std::complex<T>> roots);
+  static std::vector<std::complex<T>> rootsToCoeffs(const std::vector<std::complex<T>>& roots);
   // allocates heap memory
 
   /** Computes polynomial coefficients from the roots. The roots should be passed in the array "r"
   of length "N", the coefficients will be returned in the array "a" of length "N" + 1. The
   coefficient for the highest power a[N] will be normalized to unity. */
-  static void rootsToCoeffs(std::complex<T> *r, std::complex<T> *a, int N);
+  static void rootsToCoeffs(const std::complex<T> *r, std::complex<T> *a, int N);
   // allocates heap memory
 
   /** Similar to rootsToCoeffs(Complex *r, Complex *a, int N), but assumes that the roots are
@@ -332,27 +332,14 @@ public:
   coefficients, so the type of the coefficient-array is T instead of Complex. You should use
   this function only if you know in advance that the coefficients will indeed come out as purely
   real */
-  static void rootsToCoeffs(std::complex<T> *r, T *a, int N);
+  static void rootsToCoeffs(const std::complex<T> *r, T *a, int N);
   // allocates heap memory
-
 
   // drag the ..shiftArgument function in this group
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-  // fitting/interpolation:
-
+  //-----------------------------------------------------------------------------------------------
+  /** \name Fitting/Interpolation */
 
   /** Computes coefficients a[0], a[1], a[2], a[3] for the cubic polynomial that goes through the
   points (x[0], y[0]) and (x[1], y[1]) and has first derivatives of dy[0] and dy[1] at these points

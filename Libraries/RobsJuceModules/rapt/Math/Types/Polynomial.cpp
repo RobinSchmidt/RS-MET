@@ -662,7 +662,8 @@ T rsPolynomial<T>::rootNear(T x, const T* a, int degree, const T& min, const T& 
 // conversions:
 
 template<class T>
-std::vector<std::complex<T>> rsPolynomial<T>::rootsToCoeffs(std::vector<std::complex<T>> roots)
+std::vector<std::complex<T>> rsPolynomial<T>::rootsToCoeffs(
+  const std::vector<std::complex<T>>& roots)
 {
   std::vector<std::complex<T>> coeffs;
   coeffs.reserve(roots.size()+1);
@@ -681,7 +682,7 @@ std::vector<std::complex<T>> rsPolynomial<T>::rootsToCoeffs(std::vector<std::com
 }
 
 template<class T>
-void rsPolynomial<T>::rootsToCoeffs(std::complex<T>* r, std::complex<T>* a, int N)
+void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, std::complex<T>* a, int N)
 {
   std::complex<T>* rF = new std::complex<T>[N]; // only the finite roots
   int nF = rsCopyFiniteValues(r, rF, N);
@@ -696,14 +697,14 @@ void rsPolynomial<T>::rootsToCoeffs(std::complex<T>* r, std::complex<T>* a, int 
       std::complex<T> rM = rF[M-1];
       for(int n = M-1; n >= 1; n--)
         a[n] = a[n-1] - rM*a[n];
-      a[0] = -rM*a[0];
+      a[0] = -rM*a[0]; 
     }
   }
   delete[] rF;
 }
 
 template<class T>
-void rsPolynomial<T>::rootsToCoeffs(std::complex<T>* r, T* a, int N)
+void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, T* a, int N)
 {
   std::complex<T>* ac = new std::complex<T>[N+1];
   rootsToCoeffs(r, ac, N);
