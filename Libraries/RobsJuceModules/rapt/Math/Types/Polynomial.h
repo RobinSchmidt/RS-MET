@@ -5,7 +5,7 @@
 
 // todo: 
 // -be const correct in the static functions (declare array parameters const)
-//  done upt to "Arithmetic"
+//  done up to "baseChange"
 // -maybe use const references instead of direct by-value arguments
 // -move the static functions below the object methods and operators
 // -create unit test to test operators
@@ -45,6 +45,13 @@ public:
   @see: evaluatePolynomialAt() */
   static void evaluateWithDerivatives(const T& x, const T *a, int degree, T *results, 
     int numDerivatives);
+
+  /** Evaluates a complex polynomial with coeffs "a" and its first and second derivative at the 
+  input "z", stores the results in P[0],P[1],P[2] and returns an error estimate for the evaluated
+  P[0] (verify this). This is used in the Laguerre root-finding algorithm. */
+  static T evaluateWithTwoDerivativesAndError(const std::complex<T>* a, int degree,
+    std::complex<T> z, std::complex<T>* P);
+  // rename "P" to "y" ...or "w2 as is common in complex functions
 
   /** Evaluates the cubic polynomial a[0] + a[1]*x + a[2]*x^2 + a[3]*x^3 at the given x. */
   static inline T evaluateCubic(const T& x, const T* a)
@@ -147,12 +154,14 @@ public:
   a polynomial q(x) such that q(x) = p(-x). This amounts to sign-inverting all coefficients which
   multiply odd powers of x. */
   static void coeffsForNegativeArgument(const T *a, T *am, int N);
+  // rename to negateArgument
 
   /** Given an array of polynomial coefficients "a" such that
   p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "aShifted") the coefficients
   for a polynomial q(x) such that q(x) = p(x-x0). */
   static void coeffsForShiftedArgument(const T *a, T *aShifted, int N, T x0);
   // allocates heap memory
+  // rename to shiftArgument
 
 
   //-----------------------------------------------------------------------------------------------
@@ -190,7 +199,53 @@ public:
   static void finiteDifference(const T *a, T *ad, int N, int direction = 1, T h = 1);
   // allocates heap memory
 
+
   //-----------------------------------------------------------------------------------------------
+  /** \name Roots */
+
+  /** Finds all complex roots of a polynomial by Laguerre's method and returns them in "roots". */
+  static void roots(const std::complex<T>* a, int degree, std::complex<T>* roots);
+  // allocates heap memory
+
+  static void roots(const T *a, int order, std::complex<T> *roots);
+  // allocates heap memory
+
+  /** Converges to a complex root of a polynomial by means of Laguerre's method using the
+  "initialGuess" as first estimate. */
+  static std::complex<T> convergeToRootViaLaguerre(const std::complex<T> *a, int degree,
+    std::complex<T> initialGuess = std::complex<T>(0.0, 0.0));
+  // allocates heap memory
+
+    /** Computes the root of the linear equation: \f[ a x + b = 0 \f] which is simply given by
+  \f[ x_0 = -\frac{b}{a} \f] */
+  static T rootLinear(const T& a, const T& b);
+  // rename inputs to a0,a1 (change their order)
+
+  /** Computes the two roots of the quadratic equation: \f[ a x^2 + b x + c = 0 \f] which are
+  given by: \f[ x_{1,2} = \frac{-b \pm \sqrt{b^2-4ac}}{2a} \f] and stores the result in two-element
+  array which is returned. When the qudratic is degenerate (i.e, a == 0), it will fall back to the
+  rootsLinear() function, and return a one-element array.  */
+  static std::vector<std::complex<T>> rootsQuadratic(const T& a, const T& b, const T& c);
+  // rename inputs to a0,a1,a2 (change their order) ..or maybe deprecate this function
+
+    /** Computes the two roots of the quadratic equation: \f[ a_0 + a_1 x + a_2 x^2 = 0 \f] and
+  stores them in r1, r2. When the equation has two distinct real roots, they will be returned in
+  ascending order, i.e. r1 < r2. In case of a (real) double root, we'll have r1 == r2 and when the
+  roots of the equation are actually complex, the outputs will also be equal and contain the real
+  part of the complex conjugate pair. */
+  static void rootsQuadraticReal(const T& a0, const T& a1, const T& a2, T* r1, T* r2);
+
+  static void rootsQuadraticComplex(
+    const std::complex<T>& a0, const std::complex<T>& a1, const std::complex<T>& a2,
+    std::complex<T>* x1, std::complex<T>* x2);
+  // todo: make optimized version for real coefficients (but complex outputs)
+
+
+
+
+
+
+
 
 
 
@@ -207,17 +262,11 @@ public:
   The basis polynomials Q and R are passed as 2-dimensional arrays where the k-th row represents
   the coefficients of the k-th basis polynomial. If R is not a basis, the function will not succeed
   and return false, otherwise true. */
-  static bool baseChange(T **Q, T *a, T **R, T *b, int degree);
+  static bool baseChange(T **Q, T *a, T **R, T *b, int degree)
+  {
+    return rsLinearAlgebra::rsChangeOfBasisRowWise(Q, R, a, b, degree+1);
+  }
 
-  /** Converges to a complex root of a polynomial by means of Laguerre's method using the
-  "initialGuess" as first estimate. */
-  static std::complex<T> convergeToRootViaLaguerre(const std::complex<T> *a, int degree,
-    std::complex<T> initialGuess = std::complex<T>(0.0, 0.0));
-
-  /** Finds all complex roots of a polynomial by Laguerre's method and returns them in "roots". */
-  static void roots(const std::complex<T>* a, int degree, std::complex<T>* roots);
-
-  static void roots(T *a, int order, std::complex<T> *roots);
 
   /** Same as above but accepts real coefficients. */
   //void findPolynomialRootsInternal(T *a, int order, Complex *roots, bool polish = true);
@@ -240,15 +289,7 @@ public:
   real */
   static void rootsToCoeffs(std::complex<T> *r, T *a, int N);
 
-  /** Computes the root of the linear equation: \f[ a x + b = 0 \f] which is simply given by
-  \f[ x_0 = -\frac{b}{a} \f] */
-  static T rootLinear(T a, T b);
 
-  /** Computes the two roots of the quadratic equation: \f[ a x^2 + b x + c = 0 \f] which are
-  given by: \f[ x_{1,2} = \frac{-b \pm \sqrt{b^2-4ac}}{2a} \f] and stores the result in two-element
-  array which is returned. When the qudratic is degenerate (i.e, a == 0), it will fall back to the
-  rootsLinear() function, and return a one-element array.  */
-  static std::vector<std::complex<T>> rootsQuadratic(T a, T b, T c);
 
   /** Computes the three roots of the cubic equation: \f[ a x^3 + b x^2 + c x + d = 0 \f] and
   stores the result in the three-element array which is returned. When the cubic is degenerate
@@ -259,16 +300,7 @@ public:
   // break client code! ...rename parameters to a0,a1,a2,a3 to make it clear, how it's meant
 
 
-  /** Computes the two roots of the quadratic equation: \f[ a_0 + a_1 x + a_2 x^2 = 0 \f] and
-  stores them in r1, r2. When the equation has two distinct real roots, they will be returned in
-  ascending order, i.e. r1 < r2. In case of a (real) double root, we'll have r1 == r2 and when the
-  roots of the equation are actually complex, the outputs will also be equal and contain the real
-  part of the complex conjugate pair. */
-  static void rootsQuadraticReal(T a0, T a1, T a2, T* r1, T* r2);
 
-  static void rootsQuadraticComplex(std::complex<T> a0, std::complex<T> a1, std::complex<T> a2,
-    std::complex<T>* x1, std::complex<T>* x2);
-  // todo: make optimized version for real coefficients
 
   /** Discriminant of cubic polynomial \f[ a_0 + a_1 x + a_2 x^2 + a_3 x^3 = 0 \f].
   D > 0: 3 distinct real roots, D == 0: 3 real roots, 2 or 3 of which may coincide,
@@ -305,6 +337,12 @@ public:
   cases where the iteration diverges, which you should avoid in the first place) and maxIterations
   gives the maximum number of iteration steps. */
   static T rootNear(T x, T *a, int order, T min, T max, int maxIterations = 32);
+
+
+
+
+  // fitting/interpolation:
+
 
   /** Computes coefficients a[0], a[1], a[2], a[3] for the cubic polynomial that goes through the
   points (x[0], y[0]) and (x[1], y[1]) and has first derivatives of dy[0] and dy[1] at these points
@@ -378,6 +416,13 @@ public:
   // order+1 == numValues: exact fit
   // order+1 >  numValues: exact fit, some higher coeffs unused -> maybe via recursive call
   // order+1 <  numValues: least-squares fit
+
+
+
+
+
+  // special polynomials:
+
 
   /** Computes polynomial coefficients of a polynomial that is defined recursively by
   w0 * P_n(x) = (w1 + w1x * x) * P_{n-1}(x) + w2 * P_{n-2}(x)
