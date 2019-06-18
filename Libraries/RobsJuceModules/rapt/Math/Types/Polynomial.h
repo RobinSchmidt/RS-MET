@@ -4,9 +4,6 @@
 /** A class for representing polynomials and doing computations with them. */
 
 // todo: 
-// -be const correct in the static functions (declare array parameters const)
-//  done up to "baseChange"
-// -maybe use const references instead of direct by-value arguments
 // -move the static functions below the object methods and operators
 // -create unit test to test operators
 // -implement missing operators (/,%,=,==) ...maybe we could meaningfully define <,<=, ...?
@@ -434,15 +431,18 @@ public:
   plus 1. w0, w1, w2 are the weighting coeffients of the linear 3-term recurrence relation. The 
   pointer for result "a" may point to the same memory location as either of the input argument 
   arrays "a1", "a2", so the function may be used in place. */
-  static void threeTermRecursion(T *a, T w0, int degree, T *a1, T w1, T w1x, T *a2, T w2);
+  static void threeTermRecursion(T *a, const T& w0, int degree, const T *a1, const T& w1, 
+    const T& w1x, const T*a2, const T& w2);
 
   /** Fills the array with coefficients for a Bessel-polynomial of given degree. */
   static void besselPolynomial(T *a, int degree);
-    // todo: maybe use rsPolynomialRecursion inside
+  // allocates heap memory
+  // todo: maybe use rsPolynomialRecursion inside
 
   /** Fills the array with coefficients for a Legendre-polynomial (of the 1st kind) of given
   degree. */
   static void legendrePolynomial(T *a, int degree);
+  // allocates heap memory
     // todo: maybe use rsPolynomialRecursion - or maybe get rid of the function
     // (move to prototypes)
 
@@ -474,6 +474,7 @@ public:
   when monotonicity is assumed. \todo: check if these properties are actually true. Such
   polynomials are used in Papoulis filters. */
   static void maxSlopeMonotonic(T *a, int N);
+  // allocates heap memory
 
   // \todo for Halpern filters:
   //void jacobiPolynomial(T *a, int degree); // the U-polynomials

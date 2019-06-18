@@ -872,14 +872,12 @@ bool rsPolynomial<T>::areRootsOnOrInsideUnitCircle(const T& a0, const T& a1, con
   }
 }
 
-
-
-
-
-
+//-------------------------------------------------------------------------------------------------
+// coefficient generation for special polynomials:
 
 template <class T>
-void rsPolynomial<T>::threeTermRecursion(T* a, T w0, int degree, T* a1, T w1, T w1x, T* a2, T w2)
+void rsPolynomial<T>::threeTermRecursion(T* a, const T& w0, int degree, const T* a1, const T& w1, 
+  const T& w1x, const T* a2, const T& w2)
 {
   rsAssert(degree >= 2);
   int n = degree;
@@ -891,7 +889,6 @@ void rsPolynomial<T>::threeTermRecursion(T* a, T w0, int degree, T* a1, T w1, T 
   a[0] = (w1*a1[0] + w2*a2[0]) / w0;
   // optimize: replace divisions by w0 by multiplications
 }
-
 
 template<class T>
 void rsPolynomial<T>::besselPolynomial(T *a, int degree)
@@ -940,15 +937,8 @@ void rsPolynomial<T>::besselPolynomial(T *a, int degree)
 template<class T>
 void rsPolynomial<T>::legendrePolynomial(T *a, int degree)
 {
-  if(degree == 0) {
-    a[0] = 1.0;
-    return;
-  }
-  if(degree == 1) {
-    a[0] = 0.0;
-    a[1] = 1.0;
-    return;
-  }
+  if(degree == 0) { a[0] = 1.0;             return; }
+  if(degree == 1) { a[0] = 0.0; a[1] = 1.0; return; }
 
   a[0] = -0.5;
   a[1] =  0.0;
@@ -983,8 +973,7 @@ void rsPolynomial<T>::legendrePolynomial(T *a, int degree)
 }
 
 template<class T>
-void rsPolynomial<T>::jacobiRecursionCoeffs(int n, T a, T b, T *w0, T *w1,
-  T *w1x, T *w2)
+void rsPolynomial<T>::jacobiRecursionCoeffs(int n, T a, T b, T *w0, T *w1, T *w1x, T *w2)
 {
   T k = 2*n+a+b;
   *w0  = 2*n*(n+a+b)*(k-2);
@@ -998,17 +987,13 @@ template<class T>
 void rsPolynomial<T>::jacobiRecursion(T *c, int n, T *c1, T *c2, T a, T b)
 {
   // initialization:
-  if( n == 0 )
-  {
+  if( n == 0 ) {
     c[0] = 1.0;
-    return;
-  }
-  if( n == 1 )
-  {
+    return; }
+  if( n == 1 ) {
     c[0] = T(0.5)*(a-b);
     c[1] = T(0.5)*(a+b+2);
-    return;
-  }
+    return; }
 
   // recursion:
   T w0, w1, w1x, w2;
@@ -1026,19 +1011,9 @@ void rsPolynomial<T>::jacobiPolynomials(T **c, T a, T b, int maxDegree)
 template<class T>
 void rsPolynomial<T>::legendreRecursion(T *a, int n, T *a1, T *a2)
 {
-  if( n == 0 )
-  {
-    a[0] = 1.0;
-    return;
-  }
-  if( n == 1 )
-  {
-    a[0] = 0.0;
-    a[1] = 1.0;
-    return;
-  }
+  if( n == 0 ) { a[0] = 1.0;             return; }
+  if( n == 1 ) { a[0] = 0.0; a[1] = 1.0; return; }
   threeTermRecursion(a, T(n), n, a1, 0.0, T(2)*n-T(1), a2, -(n-T(1)));
-
   // Legendre polynomials are a special case of Jacobi polynomials, so this would also work:
   // jacobiRecursion(a, n, a1, a2, 0.0, 0.0);
 }
