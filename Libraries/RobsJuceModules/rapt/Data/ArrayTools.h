@@ -2,10 +2,12 @@
 #define RAPT_ARRAYTOOLS_H_INCLUDED
 
 /** A collection of functions that operate on 1-dimensional arrays. 
-\todo get rid of the rs-prefixes, rename to rsArrayTools or let the template-parameter apply
-ot the whole class...but this may result in excessive code to be generated
 
-todo: declare all input arrays as const
+todo: 
+-declare all input arrays as const
+-inline, where it makes sense (trivial functions like copy/convert)
+-turn into an actual class (with members) implementing a dynamically sized array
+
 */
 
 class rsArray
@@ -62,10 +64,12 @@ public:
   /** Checks, if the two buffers are elementwise approximately equal within the given tolerance. */
   template <class T>
   static inline bool areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance);
+  // rename to allAlmostEqual
 
   /** Checks, if the two buffers are elementwise equal. */
   template <class T>
   static inline bool areBuffersEqual(T *buffer1, T *buffer2, int length);
+  // rename to allEqual
 
 
 
@@ -119,9 +123,21 @@ public:
   template <class T>
   static void convolve(const T *x, int xLength, const T *h, int hLength, T *y);
 
+  /** Convolves the array x with the two-element array h and stores the result in y. The y array 
+  is allowed to alias to the x array. */
+  template <class T>
+  static inline void convolveWithTwoElems(const T* x, int xLength, const T* h, T* y);
+
+  /** Convolves the array x with the two elements [h0 h1] and stores the result in y. The y array 
+  is allowed to alias to the x array. */
+  template <class T>
+  static inline void convolveWithTwoElems(const T* x, int xLength, T h0, T h1, T* y);
+
+
   /** Copies the data of one array into another one and converts the type if necessary. */
   template <class T1, class T2>
   static inline void convertBuffer(T1 *source, T2 *destination, int length);
+  // rename to convert
 
   /** Convolves x with h and stored the result in x. The xLength parameter denotes the number of
   values in the x-array that will be considered as input signal. The actual array must be longer
@@ -620,6 +636,24 @@ inline void rsArray::convertBuffer(T1 *source, T2 *destination, int length)
 {
   for(int i = 0; i < length; i++)
     destination[i] = (T2)source[i];
+}
+
+template <class T>
+inline void rsArray::convolveWithTwoElems(const T* x, int xLength, const T* h, T* y)
+{
+  y[xLength] = x[xLength-1]*h[1];
+  for(int n = xLength-1; n > 0; n--)
+    y[n] = x[n]*h[0] + x[n-1]*h[1];
+  y[0] = x[0]*h[0];
+}
+
+template <class T>
+inline void rsArray::convolveWithTwoElems(const T* x, int xLength, T h0, T h1, T* y) 
+{
+  y[xLength] = x[xLength-1]*h1;
+  for(int n = xLength-1; n > 0; n--)
+    y[n] = x[n]*h0 + x[n-1]*h1;
+  y[0] = x[0]*h0;
 }
 
 template <class T>
