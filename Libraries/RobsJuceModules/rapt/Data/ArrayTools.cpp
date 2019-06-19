@@ -214,26 +214,6 @@ void rsArray::convolve(const T *x, int xLength, const T *h, int hLength, T *y)
   }
 }
 
-/*
-template <class T>
-inline void rsArray::convolveWithTwoElems(const T* x, int xLength, const T* h, T* y)
-{
-  y[xLength] = x[xLength-1]*h[1];
-  for(int n = xLength-1; n > 0; n--)
-    y[n] = x[n]*h[0] + x[n-1]*h[1];
-  y[0] = x[0]*h[0];
-}
-
-template <class T>
-inline void rsArray::convolveWithTwoElems(const T* x, int xLength, T h0, T h1, T* y) 
-{
-  y[xLength] = x[xLength-1]*h1;
-  for(int n = xLength-1; n > 0; n--)
-    y[n] = x[n]*h0 + x[n-1]*h1;
-  y[0] = x[0]*h0;
-}
-*/
-
 template <class T1, class T2>
 void rsArray::copyBuffer(const T1 *source, T2 *destination, int length)
 {

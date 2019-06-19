@@ -1112,70 +1112,29 @@ bool testJacobiPolynomials(std::string &reportString)
   return testResult;
 }
 
-// convolveWithTwoElems
-/*
-template <class T>
-void convolve2(const T* x, int xLength, const T* h, T* y)
-{
-  y[xLength] = x[xLength-1]*h[1];
-  for(int n = xLength-1; n > 0; n--)
-    y[n] = x[n]*h[0] + x[n-1]*h[1];
-  y[0] = x[0]*h[0];
-}
-
-template <class T>
-void convolve2(const T* x, int xLength, T h0, T h1, T* y) 
-{
-  y[xLength] = x[xLength-1]*h1;
-  for(int n = xLength-1; n > 0; n--)
-    y[n] = x[n]*h0 + x[n-1]*h1;
-  y[0] = x[0]*h0;
-}
-// move to rsArray
-*/
-
+// rename to testPolynomialClass
 bool testPolynomialOperators(std::string &reportString)
 {
   std::string testName = "PolynomialOperators";
   bool testResult = true;
-
-  //static const int N1 = 3;
-  //static const int N2 = 4;
-
-  //double a1[N1+1] = {7, 5, 3, 2};
-  //double a2[N2+1] = {23, 19, 17, 13, 11};
-  //rsPolynomialD P1(a1, N1);
-  //rsPolynomialD P2(a2, N2);
-
   typedef rsPolynomial<double> PL;
 
   PL p({ 7,  5,  3,  2});
   PL q({23, 19, 17, 13, 11});
-  PL r;
+  PL r, s;
   r = p + q; testResult &= r == PL({ 30, 24, 20, 15, 11 });
   r = q - p; testResult &= r == PL({ 16, 14, 14, 11, 11 });
+  p.setRoots({  1., 2., 3., 4. }); testResult &= p == PL({ 24, -50, 35, -10, 1 });
+  q.setRoots({ -1.,-2.,-3.,-4. }); testResult &= q == PL({ 24,  50, 35,  10, 1 });
+
+  // multiply both polynomials together:
+  r = p * q;
+  s = q * p;
+  testResult &= r == s && r == PL({ 576, 0, -820, 0, 273, 0, -30, 0, 1, 0 });
+
+  // test truncation of the trailing zero
 
 
-  p.setRoots({ 1., 2., 3., 4. });
-
-  // test - convert roots to coeffs:
-  int N = 4;
-  double z[4] = { 1.,2.,3.,4. };
-  double c[5];
-  c[0] = 1;
-  double t[2]; t[1] = 1;  // temp array of poly coeffs
-  for(int n = 1; n <= N; n++) {
-    t[0] = -z[n-1]; // current zero
-    //rsArray::convolve(c, n, t, 2, c); // optimize
-    //rsArray::convolveWithTwoElems(c, n, t, c);
-    rsArray::convolveWithTwoElems(c, n, -z[n-1], 1., c);
-  }
-
-
-
-
-
-  testResult &= p == PL({ 24, -50, 35, -10, 1 }); // the 1 is missing
 
   return testResult;
 }
