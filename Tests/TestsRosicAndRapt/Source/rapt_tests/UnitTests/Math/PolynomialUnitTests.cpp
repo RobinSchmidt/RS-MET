@@ -1124,8 +1124,9 @@ bool testPolynomialOperators(std::string &reportString)
   PL r, s;
   r = p + q; testResult &= r == PL({ 30, 24, 20, 15, 11 });
   r = q - p; testResult &= r == PL({ 16, 14, 14, 11, 11 });
-  p.setRoots({  1., 2., 3., 4. }); testResult &= p == PL({ 24, -50, 35, -10, 1 });
-  q.setRoots({ -1.,-2.,-3.,-4. }); testResult &= q == PL({ 24,  50, 35,  10, 1 });
+  p.setRoots({  1., 2., 3., 4. });    testResult &= p == PL({ 24,  -50, 35, -10, 1 });
+  q.setRoots({ -1.,-2.,-3.,-4. }, 2); testResult &= q == PL({ 48,  100, 70,  20, 2 });
+  q.setRoots({ -1.,-2.,-3.,-4. });    testResult &= q == PL({ 24,   50, 35,  10, 1 });
 
   // multiply both polynomials together:
   r = p * q;

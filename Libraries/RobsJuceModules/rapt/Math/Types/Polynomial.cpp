@@ -27,10 +27,17 @@ rsPolynomial<T> operator+(const rsPolynomial<T>& p, const rsPolynomial<T>& q)
 // setup:
 
 template<class T>
-void rsPolynomial<T>::setRoots(const T* newRoots, int numRoots)
+void rsPolynomial<T>::setCoeffs(const T* newCoeffs, int newDegree)
+{
+  coeffs.resize(newDegree+1);
+  rsArray::copyBuffer(newCoeffs, &coeffs[0], newDegree+1);
+}
+
+template<class T>
+void rsPolynomial<T>::setRoots(const T* newRoots, int numRoots, T scaler)
 {
   coeffs.resize(numRoots+1);
-  rootsToCoeffs(newRoots, &coeffs[0], numRoots);
+  rootsToCoeffs(newRoots, &coeffs[0], numRoots, scaler);
 }
 
 
@@ -766,10 +773,10 @@ void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, T* a, int N)
 }
 
 template<class T>
-void rsPolynomial<T>::rootsToCoeffs(const T* r, T* a, int N)
+void rsPolynomial<T>::rootsToCoeffs(const T* r, T* a, int N, T scaler)
 {
   rsArray::fillWithZeros(a, N+1);
-  a[0] = 1;
+  a[0] = scaler;
   for(int n = 1; n <= N; n++)
     rsArray::convolveWithTwoElems(a, n, -r[n-1], T(1), a);
 }
