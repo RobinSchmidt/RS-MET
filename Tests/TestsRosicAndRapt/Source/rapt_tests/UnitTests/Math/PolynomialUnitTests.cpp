@@ -33,6 +33,10 @@ bool testPolynomial()
   testResult &= testPolynomialOperators(                      reportString);
 
 
+
+  testResult &= testRationalFunction(reportString);
+
+
   return testResult;
 }
 
@@ -718,7 +722,8 @@ bool testPartialFractionExpansion(std::string &reportString)
   d[0] = -75;  d[1] = 125;  d[2] = -22; d[3] = -30; d[4] =  1; d[5] = 1;
   p[0] = -5; p[1] = -3; p[2] = +1; p[3] =  5;
   m[0] =  1; m[1] =  1; m[2] =  2; m[3] =  1;
-  rsPolynomial<double>::rsPartialFractionExpansion(n, numeratorOrder, d, denominatorOrder, p, m, numPoles, a);
+  rsRationalFunction<double>::partialFractionExpansion(
+    n, numeratorOrder, d, denominatorOrder, p, m, numPoles, a);
   testResult &= abs(a[0]-3.0) < tol;
   testResult &= abs(a[1]+4.0) < tol;
   testResult &= abs(a[2]-2.0) < tol;
@@ -736,7 +741,8 @@ bool testPartialFractionExpansion(std::string &reportString)
   d[0] =  2; d[1] =  5; d[2] = 4; d[3] = 1;
   p[0] = -2; p[1] = -1;
   m[0] =  1; m[1] =  2;
-  rsPolynomial<double>::rsPartialFractionExpansion(n, numeratorOrder, d, denominatorOrder, p, m, numPoles, a);
+  rsRationalFunction<double>::partialFractionExpansion(
+    n, numeratorOrder, d, denominatorOrder, p, m, numPoles, a);
   testResult &= abs(a[0]-2.0) < tol;
   testResult &= abs(a[1]+2.0) < tol;
   testResult &= abs(a[2]-1.0) < tol;
@@ -1163,6 +1169,21 @@ bool testPolynomialOperators(std::string &reportString)
   testResult &= p == q;
   //testResult &= p == PL({ 0., });
 
+  // to tes:
+  // -copy constructor and assignment operator
+  // -evaluation operator (for numeric result and polynomial object result)
+
+
+  return testResult;
+}
+
+bool testRationalFunction(std::string& reportString)
+{
+  std::string testName = "RationalFunction";
+  bool testResult = true;
+
+  typedef rsPolynomial<double> PL;
+  typedef rsRationalFunction<double> RF;
 
   return testResult;
 }
