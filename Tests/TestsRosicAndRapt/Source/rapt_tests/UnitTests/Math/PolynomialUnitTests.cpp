@@ -1119,8 +1119,12 @@ bool testPolynomialOperators(std::string &reportString)
   bool testResult = true;
   typedef rsPolynomial<double> PL;
 
+
+
   PL p({ 7,  5,  3,  2});
   PL q({23, 19, 17, 13, 11});
+
+
   PL r, s;
   r = p + q; testResult &= r == PL({ 30, 24, 20, 15, 11 });
   r = q - p; testResult &= r == PL({ 16, 14, 14, 11, 11 });
@@ -1133,8 +1137,24 @@ bool testPolynomialOperators(std::string &reportString)
   s = q * p;
   testResult &= r == s && r == PL({ 576, 0, -820, 0, 273, 0, -30, 0, 1, 0 });
 
-  // test truncation of the trailing zero
 
+  // test truncation of the trailing zero
+  p.setCoeffs({ 1., 0., 3., 0. });
+  p.truncateTrailingZeros(); testResult &= p == PL({ 1., 0., 3. });
+
+  p.setCoeffs({ 1., 0., 3., 0., 0. });
+  p.truncateTrailingZeros(); testResult &= p == PL({ 1., 0., 3. });
+
+  p.setCoeffs({ 1., 0., 0. });
+  p.truncateTrailingZeros();
+
+  r = PL({ 1 });  // coeff array is wrong!
+
+  testResult &= p == PL({ 1 });  // PL({ 1.0 }): compiler error, PL({ 1 }): test fails - wtf?
+
+  p.setCoeffs({ 0., 0., 0. });
+  p.truncateTrailingZeros(); 
+  //testResult &= p == PL({ 0., });
 
 
   return testResult;

@@ -40,12 +40,17 @@ void rsPolynomial<T>::setRoots(const T* newRoots, int numRoots, T scaler)
   rootsToCoeffs(newRoots, &coeffs[0], numRoots, scaler);
 }
 
-
-
-
-
-
-
+template<class T>
+void rsPolynomial<T>::truncateTrailingZeros(const T& thresh)
+{
+  int i = (int) coeffs.size()-1;
+  while(i > 0) {
+    if( rsAbs(coeffs[i]) > thresh ) // must be strictly greater to work correctly with thresh == 0
+      break;
+    i--;
+  }
+  coeffs.resize(i+1);
+}
 
 
 

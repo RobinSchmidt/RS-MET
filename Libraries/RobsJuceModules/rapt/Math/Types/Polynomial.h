@@ -33,15 +33,14 @@ public:
   void setCoeffs(const T* newCoeffs, int newDegree);
 
   void setCoeffs(const std::vector<T>& newCoeffs)
-  { setCoeffs(newCoeffs.data(), (int)newCoeffs.size()); }
+  { setCoeffs(newCoeffs.data(), (int)newCoeffs.size()-1); }
 
   void setRoots(const T* newRoots, int numRoots, T scaler = T(1));
-  // tod: let the function take an overall multiplier - defaulting to 1
 
   void setRoots(const std::vector<T>& newRoots, T scaler = T(1))
   { setRoots(newRoots.data(), (int)newRoots.size(), scaler); }
 
-  // void truncateTrailingZeros(const T& threshold);
+  void truncateTrailingZeros(const T& threshold = T(0));
 
 
 
@@ -458,7 +457,6 @@ public:
   // allocates heap memory
 
   static void rootsToCoeffs(const T* r, T* a, int N, T scaler = T(1));
-  // needs test
 
   // drag the ..shiftArgument function in this group
 
