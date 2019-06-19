@@ -1112,6 +1112,16 @@ bool testJacobiPolynomials(std::string &reportString)
   return testResult;
 }
 
+template <class Tx, class Th, class Ty>
+void convolve2(Tx* x, int xLength, Th* h, Ty* y) // hLength == 2
+{
+  y[xLength] = x[xLength-1]*h[1];
+  for(int n = xLength-1; n > 0; n--)
+    y[n] = x[n]*h[0] + x[n-1]*h[1];
+  y[0] = x[0]*h[0];
+}
+// move to rsArray
+
 bool testPolynomialOperators(std::string &reportString)
 {
   std::string testName = "PolynomialOperators";
@@ -1144,7 +1154,8 @@ bool testPolynomialOperators(std::string &reportString)
   double t[2]; t[1] = 1;  // temp array of poly coeffs
   for(int n = 1; n <= N; n++) {
     t[0] = -z[n-1]; // current zero
-    rsArray::convolve(c, n, t, 2, c); // optimize
+    //rsArray::convolve(c, n, t, 2, c); // optimize
+    convolve2(c, n, t, c);
   }
 
 
