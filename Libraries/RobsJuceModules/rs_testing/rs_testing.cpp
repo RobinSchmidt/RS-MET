@@ -16,6 +16,7 @@ header files that the compiler may be using. */
 #include "TestTools/Utilities/TestInputCreation.cpp"
 #include "TestTools/Utilities/TestUtilities.cpp"
 #include "Prototypes/OscDrivers.cpp"
+#include "Prototypes/RationalFunction.cpp"
 #include "Prototypes/PartialDifferentialEquations.cpp"
 #include "Prototypes/Prototypes.cpp"
 #include "Prototypes/FiniteAutomaton.cpp"

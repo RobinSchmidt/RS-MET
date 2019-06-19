@@ -33,5 +33,6 @@ bool testPowersChebychevExpansionConversion(std::string &reportString);
 
 bool testPolynomialOperators(std::string &reportString);
 
+bool testRationalFunction(std::string &reportString);
 
 #endif

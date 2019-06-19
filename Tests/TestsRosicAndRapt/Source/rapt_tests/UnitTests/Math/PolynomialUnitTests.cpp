@@ -33,6 +33,10 @@ bool testPolynomial()
   testResult &= testPolynomialOperators(                      reportString);
 
 
+
+  testResult &= testRationalFunction(reportString);
+
+
   return testResult;
 }
 
@@ -1163,6 +1167,21 @@ bool testPolynomialOperators(std::string &reportString)
   testResult &= p == q;
   //testResult &= p == PL({ 0., });
 
+  // to tes:
+  // -copy constructor and assignment operator
+  // -evaluation operator (for numeric result and polynomial object result)
+
+
+  return testResult;
+}
+
+bool testRationalFunction(std::string& reportString)
+{
+  std::string testName = "RationalFunction";
+  bool testResult = true;
+
+  typedef rsPolynomial<double> PL;
+  typedef rsRationalFunction<double> RF;
 
   return testResult;
 }

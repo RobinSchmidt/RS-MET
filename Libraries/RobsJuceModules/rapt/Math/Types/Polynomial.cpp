@@ -339,6 +339,12 @@ void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, 
   delete[] binomCoeffs;
 }
 
+// maybe implement tha "antidifference" operator:
+// http://faculty.cs.tamu.edu/klappi/csce411-s15/csce411-setFDCalculus.pdf
+
+// see also here for more info about finite difference calculus:
+//https://web.archive.org/web/20090419132601/http://www.stanford.edu/~dgleich/publications/finite-calculus.pdf
+
 //-------------------------------------------------------------------------------------------------
 // roots:
 
@@ -1224,6 +1230,8 @@ void rsPolynomial<T>::maxSlopeMonotonic(T *w, int n)
   delete [] a;
 }
 
+/*
+// moved to rsRationalFunction:
 template<class T>
 void rsPolynomial<T>::rsPartialFractionExpansion(
   std::complex<T> *numerator,   int numeratorDegree,
@@ -1264,6 +1272,8 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   rsArray::deAllocateSquareArray2D(A, denominatorDegree);
   delete[] tmp;
 }
+
+*/
 
 
 

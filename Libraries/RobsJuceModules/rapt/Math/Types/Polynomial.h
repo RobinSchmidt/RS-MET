@@ -64,12 +64,14 @@ public:
   // getActualDegree(tolerance)...or getDegree has an optional parameter for the tolerance 
   // defaulting to 0
 
+  //T definiteIntegral(const T& lowerLimit, const T& upperLimit);
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
   /** Adds two polynomials. */
-  rsPolynomial<T> operator+(const rsPolynomial<T>& q) {
+  rsPolynomial<T> operator+(const rsPolynomial<T>& q) const {
     rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
     weightedSum(coeffs.data(), getDegree(), T(1),
       q.coeffs.data(), q.getDegree(), T(1),
@@ -78,7 +80,7 @@ public:
   }
 
   /** Subtracts two polynomials. */
-  rsPolynomial<T> operator-(const rsPolynomial<T>& q) {
+  rsPolynomial<T> operator-(const rsPolynomial<T>& q) const {
     rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
     weightedSum(coeffs.data(), getDegree(), T(+1),
       q.coeffs.data(), q.getDegree(), T(-1),
@@ -87,14 +89,14 @@ public:
   }
 
   /** Multiplies two polynomials. */
-  rsPolynomial<T> operator*(const rsPolynomial<T>& q) {
+  rsPolynomial<T> operator*(const rsPolynomial<T>& q) const {
     rsPolynomial<T> r(getDegree() + q.getDegree() + 1, false);
     multiply(coeffs.data(), getDegree(), q.coeffs.data(), q.getDegree(), r.coeffs.data());
     return r;
   }
 
   /** Divides this polynomial by the given divisor polynomial d and returns the quotient. */
-  rsPolynomial<T> operator/(const rsPolynomial<T>& d) {
+  rsPolynomial<T> operator/(const rsPolynomial<T>& d) const {
     rsPolynomial<T> q(getDegree(), false);  // quotient
     rsPolynomial<T> r(getDegree(), false);  // remainder
     divide(coeffs.data(), getDegree(), 
@@ -103,20 +105,20 @@ public:
   }
 
   /** Divides this polynomial by the given divisor polynomial d and returns the remainder. */
-  rsPolynomial<T> operator%(const rsPolynomial<T>& d) {
+  rsPolynomial<T> operator%(const rsPolynomial<T>& d) const {
     rsPolynomial<T> q(getDegree(), false);  // quotient
     rsPolynomial<T> r(getDegree(), false);  // remainder
     divide(coeffs.data(), getDegree(),
       d.coeffs.data(), d.getDegree(), q.coeffs.data(), r.coeffs.data());
     return r;
   }
-  // maybe move implementations into cpp file, make operatos const
 
+  // maybe move implementations into cpp file, implement +=, *=, etc.
+  // +,-,*,/ for scalar second arguments (left and right), unary -
 
   bool operator==(const rsPolynomial<T>& p) const { return coeffs == p.coeffs; }
 
   bool operator!=(const rsPolynomial<T>& p) const { return coeffs != p.coeffs; }
-
 
   rsPolynomial<T>& operator=(const rsPolynomial<T>& p)
   {
@@ -124,9 +126,6 @@ public:
     return *this;
   }
 
-
-  // todo: assignment operator =
-  // +,-,*,/ for scalar second arguments (left and right), unary -
 
   // how to deal with the trailing zeros in quotient and/or remainder? should we cut them
   // off...if so, what should be the numerical threshold? maybe there should be a member function
@@ -142,10 +141,6 @@ public:
   T operator()(T x) const { return evaluate(x, &coeffs[0], getDegree()); }
   // todo: have an overloaded operator() that takes a polynomial as input and returns another 
   // polynomial -> implement nesting/composition
-
-    // maybe we whould take into account the possibility of trailing zero coeffs?
-    // maybe have two functions: degreeMax,
-
 
 
   //===============================================================================================
@@ -196,6 +191,8 @@ public:
     return a + (b + (c + d*x)*x)*x;
   }
   // make consistent with rootCubic
+
+  // todo: evaluateDerivative, evaluateIntegral (or AntiDerivative)
 
   //-----------------------------------------------------------------------------------------------
   /** \name Arithmetic */
@@ -616,6 +613,7 @@ public:
   //void jacobiPolynomial(T *a, int degree); // the U-polynomials
   //void maximallyDivergingMonotonicPolynomial(T *a, int degree); // the T-polynomial
 
+  /*
   // comment this function, maybe use a more efficent algorithm if all
   // poles are simple, (see also Experiments - there's something said about that)
   // move to class rsRationalFunction
@@ -624,6 +622,7 @@ public:
     std::complex<T> *denominator, int denominatorDegree,
     std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
     std::complex<T> *pfeCoeffs);
+    */
 
 
 protected:
