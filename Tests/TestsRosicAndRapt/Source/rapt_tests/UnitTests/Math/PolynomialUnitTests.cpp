@@ -1137,6 +1137,12 @@ bool testPolynomialOperators(std::string &reportString)
   s = q * p;
   testResult &= r == s && r == PL({ 576, 0, -820, 0, 273, 0, -30, 0, 1, 0 });
 
+  // not yet finished - these assigmenz do not work as expected:
+  p = PL({ 1 });   // coeff array is wrong! [0, 0] instead of [1]
+  //p = PL({ 1.0 }); // this doesn't even compile
+  p.setCoeffs({ 1   }); // works
+  p.setCoeffs({ 1.0 }); // works
+
 
   // test truncation of the trailing zero
   p.setCoeffs({ 1., 0., 3., 0. });
@@ -1146,14 +1152,15 @@ bool testPolynomialOperators(std::string &reportString)
   p.truncateTrailingZeros(); testResult &= p == PL({ 1., 0., 3. });
 
   p.setCoeffs({ 1., 0., 0. });
+  q.setCoeffs({ 1.         });
   p.truncateTrailingZeros();
-
-  r = PL({ 1 });  // coeff array is wrong!
-
-  testResult &= p == PL({ 1 });  // PL({ 1.0 }): compiler error, PL({ 1 }): test fails - wtf?
+  testResult &= p == q;
+  //testResult &= p == PL({ 1 });  // PL({ 1.0 }): compiler error, PL({ 1 }): test fails - wtf?
 
   p.setCoeffs({ 0., 0., 0. });
-  p.truncateTrailingZeros(); 
+  q.setCoeffs({ 0.         });
+  p.truncateTrailingZeros();
+  testResult &= p == q;
   //testResult &= p == PL({ 0., });
 
 

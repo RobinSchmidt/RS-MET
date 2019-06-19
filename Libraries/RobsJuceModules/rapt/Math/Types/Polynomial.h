@@ -24,7 +24,11 @@ public:
   rsPolynomial(int degree = 0, bool initWithZeros = true);
 
   /** Creates a polynomial from a std::vector of coefficients. */
-  rsPolynomial(const std::vector<T>& coefficients) : coeffs(coefficients) {}
+  //rsPolynomial(const std::vector<T>& coefficients) : coeffs(coefficients) {}
+  rsPolynomial(const std::vector<T>& coefficients) 
+  {
+    setCoeffs(coefficients);
+  }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -113,6 +117,12 @@ public:
 
   bool operator!=(const rsPolynomial<T>& p) const { return coeffs != p.coeffs; }
 
+
+  rsPolynomial<T>& operator=(const rsPolynomial<T>& p)
+  {
+    setCoeffs(p.coeffs);
+    return *this;
+  }
 
 
   // todo: assignment operator =
