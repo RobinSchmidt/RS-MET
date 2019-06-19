@@ -139,6 +139,8 @@ void rsFilterCoefficientConverter<T>::polesAndZerosToBiquadCascade(Complex *pole
     numBiquads = order/2;
   else
     numBiquads = (order+1)/2;
+  // use (order+1)/2 regardless - if order is even, truncation will take place and the result is 
+  // the same
 
   int b;
   //for(b=0; b<numBiquads; b++)
@@ -180,6 +182,11 @@ void rsFilterCoefficientConverter<T>::biquadCascadeToDirectForm(int numBiquads, 
   long double *bAccu = new long double[N];
   long double *aQuad = new long double[3];
   long double *bQuad = new long double[3];
+  // i used long double to avoid roundoff error accumulation - but on 64 bit systems, "long double"
+  // is the same as "double", so this doesn't help anything anymore - so get rid of these temporary
+  // accumulation buffers and avoid memory allocation
+
+
   int i;
   for(i = 0; i < N; i++)
   {

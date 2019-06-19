@@ -1133,5 +1133,25 @@ bool testPolynomialOperators(std::string &reportString)
   r = p + q; testResult &= r == PL({ 30, 24, 20, 15, 11 });
   r = q - p; testResult &= r == PL({ 16, 14, 14, 11, 11 });
 
+
+  p.setRoots({ 1., 2., 3., 4. });
+
+  // test - convert roots to coeffs:
+  int N = 4;
+  double z[4] = { 1.,2.,3.,4. };
+  double c[5];
+  c[0] = 1;
+  double t[2]; t[1] = 1;  // temp array of poly coeffs
+  for(int n = 1; n <= N; n++) {
+    t[0] = -z[n-1]; // current zero
+    rsArray::convolve(c, n, t, 2, c); // optimize
+  }
+
+
+
+
+
+  testResult &= p == PL({ 24, -50, 35, -10, 1 }); // the 1 is missing
+
   return testResult;
 }

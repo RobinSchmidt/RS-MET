@@ -14,9 +14,11 @@ public:
 
   /** Converts direct form FIR coefficients to FIR lattice filter reflection coefficients. */
   static void directFormToLatticeFir(T* directFormCoeffs, int order, T* reflectionCoeffs);
+  // allocates heap memory
 
   /** Converts FIR lattice filter reflection coefficients to direct form FIR coefficients. */
   static void latticeToDirectFormFir(T* reflectionCoeffs, int order, T* directFormCoeffs);
+  // allocates heap memory
 
   /** Converts complex poles and zeros into coefficients for a biquad cascade in which each stage 
   implements the difference equation:
@@ -41,11 +43,12 @@ public:
   K=2*B+1 (b_0,..., b_K) and the a array will have to be of size M=2*B (a_1,...,a_M) */
   static void biquadCascadeToDirectForm(int numBiquads, T* b0, T* b1, T* b2,
     T* a1, T* a2, T* b, T* a);
+  // allocates heap memory
 
   /** Calculates the magnitude-response of a digital biquad filter with coefficients b0, b1, b2, 
-  a0, a1, a1 at the normalized radian frequency 'omega'.   \todo remove - function is redundant 
-  with the function in FilterAnalyzer  */
+  a0, a1, a1 at the normalized radian frequency 'omega'.  */
   static T getBiquadMagnitudeAt(T b0, T b1, T b2, T a1, T a2, T omega);
+  // \todo remove - function is redundant  with the function in FilterAnalyzer
 
   /** Normalizes the biquad stages described by the given coefficients in such a way that each 
   stage has unit magnitude at the normalized radian frequency 'omega'. If a gainFactor is passed, 

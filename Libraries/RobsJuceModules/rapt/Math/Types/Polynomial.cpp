@@ -24,6 +24,15 @@ rsPolynomial<T> operator+(const rsPolynomial<T>& p, const rsPolynomial<T>& q)
 */
 
 
+// setup:
+
+template<class T>
+void rsPolynomial<T>::setRoots(const T* newRoots, int numRoots)
+{
+  coeffs.resize(numRoots+1);
+  rootsToCoeffs(newRoots, &coeffs[0], numRoots);
+}
+
 
 
 
@@ -742,6 +751,8 @@ void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, std::complex<T>* a
     }
   }
   delete[] rF;
+  // todo: avoid memory allocation - check against infinity on the fly and skip the root, if it is
+  // infinite
 }
 
 template<class T>
@@ -753,6 +764,25 @@ void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, T* a, int N)
     a[n] = ac[n].real();
   delete[] ac;
 }
+
+template<class T>
+void rsPolynomial<T>::rootsToCoeffs(const T* r, T* a, int N)
+{
+  rsArray::fillWithZeros(a, N+1);
+
+
+  /*
+  a[0] = 1; T b[2]; b[1] = 1; 
+  for(int n = 0; n <= N; n++) {
+  //for(int n = 0; n < N; n++) {
+    b[0] = -r[n];
+    //rsArray::convolve(a, n, b, 2, a); 
+    rsArray::convolve(a, n+1, b, 2, a); 
+    // todo: use optimized function to convolve with 2-element array - or don't even use an array
+  }
+  */
+}
+
 
 //-------------------------------------------------------------------------------------------------
 // fitting:

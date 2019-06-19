@@ -4,10 +4,11 @@
 /** A class for representing polynomials and doing computations with them. */
 
 // todo: 
-// -move the static functions below the object methods and operators
 // -create unit test to test operators
 // -implement missing operators (/,%,=,==) ...maybe we could meaningfully define <,<=, ...?
 //  ...maybe look at how python or other scientific libraries handle that
+// -implement greatest common divisor algorithm (maybe the one for the integers can be
+//  used as is?)
 
 template<class T>
 class rsPolynomial
@@ -29,7 +30,16 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  // void setCoeffs(const T* newCoeffs, int newDegree);
+
+  void setRoots(const T* newRoots, int numRoots);
+
+  void setRoots(const std::vector<T>& newRoots)
+  { setRoots(newRoots.data(), (int)newRoots.size()); }
+
   // void truncateTrailingZeros(const T& threshold);
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -433,6 +443,7 @@ public:
   coefficient for the highest power a[N] will be normalized to unity. */
   static void rootsToCoeffs(const std::complex<T> *r, std::complex<T> *a, int N);
   // allocates heap memory
+  // rename to finiteRootsToCoeffs
 
   /** Similar to rootsToCoeffs(Complex *r, Complex *a, int N), but assumes that the roots are
   either real or occur in complex conjugate pairs. This means that the polynomial has purely real
@@ -441,6 +452,9 @@ public:
   real */
   static void rootsToCoeffs(const std::complex<T> *r, T *a, int N);
   // allocates heap memory
+
+  static void rootsToCoeffs(const T* r, T* a, int N);
+  // needs test
 
   // drag the ..shiftArgument function in this group
 
