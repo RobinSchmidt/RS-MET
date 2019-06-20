@@ -1120,8 +1120,20 @@ bool testJacobiPolynomials(std::string &reportString)
 
 
 // translated from my python class - still missing:
-// polyEval, polyAdd, polySub, polyMul, polyLess, polyNest
+// polyMul, polyLess, polyNest
 // ...move to Prototypes
+
+double polyEval(std::vector<double>& p, double x)
+{
+  int k = (int)p.size()-1;  // last valid index
+  if(k < 0)
+    return 0;
+  double y = p[k];
+  while(k > 0) {
+    k -= 1;
+    y = y*x + p[k]; }
+  return y;
+}
 void polyTrunc(std::vector<double>& p, double tol = 0.0)
 {
   int i = (int)p.size()-1;
@@ -1136,6 +1148,32 @@ void makeMonic(std::vector<double>& p)
   for(size_t i = 0; i < p.size(); i++)
     p[i] /= rsLast(p);
 }
+std::vector<double> polyAdd(
+  const std::vector<double>& p, const std::vector<double>& q, 
+  double tol = 0.0, double wp = 1, double wq = 1)
+{
+  int np = (int) p.size();
+  int nq = (int) q.size();
+  if(np >= nq) {
+    std::vector<double> r = wp*p;
+    for(int i = 0; i < nq; i++) {
+      r[i] += wq*q[i];
+      polyTrunc(r, tol);
+      return r; }}
+  else {
+    std::vector<double> r = wq*q;
+    for(int i = 0; i < np; i++) {
+      r[i] += wp*p[i];
+      polyTrunc(r, tol);
+      return r; }}
+}
+std::vector<double> polySub(const std::vector<double>& p, const std::vector<double>& q,
+  double tol = 0.0)
+{
+  return polyAdd(p, q, 1, -1, tol);
+}
+
+
 void polyDivMod(std::vector<double> p, std::vector<double> d, 
   std::vector<double>& q, std::vector<double>& r, double tol = 0.0)
 { 
