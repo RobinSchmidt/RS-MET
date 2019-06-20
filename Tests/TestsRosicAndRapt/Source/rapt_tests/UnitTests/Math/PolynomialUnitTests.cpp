@@ -1120,7 +1120,7 @@ bool testJacobiPolynomials(std::string &reportString)
 
 
 // translated from my python class - still missing:
-// polyMul, polyLess, polyNest
+// polyLess, polyNest
 // ...move to Prototypes
 
 double polyEval(std::vector<double>& p, double x)
@@ -1134,6 +1134,7 @@ double polyEval(std::vector<double>& p, double x)
     y = y*x + p[k]; }
   return y;
 }
+
 void polyTrunc(std::vector<double>& p, double tol = 0.0)
 {
   int i = (int)p.size()-1;
@@ -1143,11 +1144,13 @@ void polyTrunc(std::vector<double>& p, double tol = 0.0)
     i -= 1; }
   p.resize(i);
 }
+
 void makeMonic(std::vector<double>& p)
 {
   for(size_t i = 0; i < p.size(); i++)
     p[i] /= rsLast(p);
 }
+
 std::vector<double> polyAdd(
   const std::vector<double>& p, const std::vector<double>& q, 
   double tol = 0.0, double wp = 1, double wq = 1)
@@ -1167,15 +1170,17 @@ std::vector<double> polyAdd(
       polyTrunc(r, tol); }}
   return r;
 }
+
 std::vector<double> polySub(const std::vector<double>& p, const std::vector<double>& q,
   double tol = 0.0)
 {
   return polyAdd(p, q, 1, -1, tol);
 }
+
 std::vector<double> polyMul(const std::vector<double>& x, const std::vector<double>& h, // rename x,h
   double tol = 0.0)
 {
-  int L = x.size() + h.size() - 1;  // length of result
+  int L = (int)x.size() + (int)h.size() - 1;  // length of result
   std::vector<double> y(L);
   for(int n = 0; n < L; n++) {
     y[n] = 0;  
@@ -1184,7 +1189,6 @@ std::vector<double> polyMul(const std::vector<double>& x, const std::vector<doub
   polyTrunc(y, tol);
   return y;
 }
-
 
 void polyDivMod(std::vector<double> p, std::vector<double> d, 
   std::vector<double>& q, std::vector<double>& r, double tol = 0.0)
@@ -1205,18 +1209,21 @@ void polyDivMod(std::vector<double> p, std::vector<double> d,
   polyTrunc(q, tol);
   polyTrunc(r, tol);
 }
-std::vector<double> polyDiv(std::vector<double> p, std::vector<double> d, double tol = 0.0)
+
+std::vector<double> polyDiv(std::vector<double> p, std::vector<double> d, double tol)
 {
   std::vector<double> q, r;
   polyDivMod(p, d, q, r, tol);
   return q;
 }
-std::vector<double> polyMod(std::vector<double> p, std::vector<double> d, double tol = 0.0)
+
+std::vector<double> polyMod(std::vector<double> p, std::vector<double> d, double tol)
 {
   std::vector<double> q, r;
   polyDivMod(p, d, q, r, tol);
   return r;
 }
+
 bool isAllZeros(const std::vector<double>& v, double tol)
 {
   for(size_t i = 0; i < v.size(); i++)
@@ -1224,18 +1231,32 @@ bool isAllZeros(const std::vector<double>& v, double tol)
       return false;
   return true;
 }
+
 std::vector<double> polyGCD(
-  const std::vector<double>& p, const std::vector<double>& q, double tol = 0.0)
+  const std::vector<double>& p, const std::vector<double>& q, double tol)
 {
   std::vector<double> a = p, b = q, t;
   while(!isAllZeros(b, tol)) {
     t = b;
-    b = polyMod(a, b);
+    b = polyMod(a, b, tol);
     a = t; }
   makeMonic(a);
   return a;
 }
 
+// polyNest
+
+
+
+
+void ratReduce(
+  const std::vector<double>& pIn, const std::vector<double>& qIn,
+  std::vector<double>& pOut, std::vector<double>& qOut, double tol)
+{
+  std::vector<double> gcd = polyGCD(pIn, qIn, tol);
+  pOut = polyDiv(pIn, gcd, tol);
+  qOut = polyDiv(qIn, gcd, tol);
+}
 
 
 // rename to testPolynomialClass
@@ -1306,7 +1327,7 @@ bool testRationalFunction(std::string& reportString)
   typedef rsRationalFunction<double> RF;
 
   std::vector<double> p({ 6,7,1 }), q({-6,-5,1}), g;
-  g = polyGCD(p, q);  // result is 1 + x
+  g = polyGCD(p, q, 0.0);  // result is 1 + x
 
   return testResult;
 }
