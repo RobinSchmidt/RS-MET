@@ -1154,23 +1154,35 @@ std::vector<double> polyAdd(
 {
   int np = (int) p.size();
   int nq = (int) q.size();
+  std::vector<double> r;
   if(np >= nq) {
-    std::vector<double> r = wp*p;
+    r = wp*p;
     for(int i = 0; i < nq; i++) {
       r[i] += wq*q[i];
-      polyTrunc(r, tol);
-      return r; }}
+      polyTrunc(r, tol); }}
   else {
-    std::vector<double> r = wq*q;
+    r = wq*q;
     for(int i = 0; i < np; i++) {
       r[i] += wp*p[i];
-      polyTrunc(r, tol);
-      return r; }}
+      polyTrunc(r, tol); }}
+  return r;
 }
 std::vector<double> polySub(const std::vector<double>& p, const std::vector<double>& q,
   double tol = 0.0)
 {
   return polyAdd(p, q, 1, -1, tol);
+}
+std::vector<double> polyMul(const std::vector<double>& x, const std::vector<double>& h, // rename x,h
+  double tol = 0.0)
+{
+  int L = x.size() + h.size() - 1;  // length of result
+  std::vector<double> y(L);
+  for(int n = 0; n < L; n++) {
+    y[n] = 0;  
+    for(int k = max(0, n-(int)x.size()+1); k < min(n+1, (int)h.size()); k++)
+      y[n] += h[k] * x[n-k]; }
+  polyTrunc(y, tol);
+  return y;
 }
 
 
