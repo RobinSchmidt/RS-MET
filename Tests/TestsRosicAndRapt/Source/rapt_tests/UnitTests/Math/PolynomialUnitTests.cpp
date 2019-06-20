@@ -1244,6 +1244,23 @@ std::vector<double> polyGCD(
   return a;
 }
 
+std::vector<double> polyNest(const std::vector<double>& a, const std::vector<double>& b)
+{
+  int aN = (int)a.size()-1;               // degree of a
+  int bN = (int)b.size()-1;               // degree of b
+  int cN = aN*bN;                         // degree of result c
+  std::vector<double> an(cN+1), c(cN+1); 
+  rsFill(an, 0.0); an[0] = 1;             // powers of a, i.e. a^n - initially a^0 = [1 0 0...]
+  rsFill(c,  0.0);                        // accumulator for result
+  int K = 1;
+  for(int n = 1; n <= bN; n++) {
+    an = polyMul(an, a, 0.0);
+    K += aN;
+    for(int k = 0; k < K; k++)  
+      c[k] += b[n] * an[k]; }
+  return c;
+}
+
 // polyNest
 
 
