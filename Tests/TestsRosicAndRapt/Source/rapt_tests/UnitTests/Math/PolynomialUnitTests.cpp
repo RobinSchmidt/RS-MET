@@ -1119,7 +1119,9 @@ bool testJacobiPolynomials(std::string &reportString)
 }
 
 
-// translated from my python class - move to Prototypes
+// translated from my python class - still missing:
+// polyEval, polyAdd, polySub, polyMul, polyLess, polyNest
+// ...move to Prototypes
 void polyTrunc(std::vector<double>& p, double tol = 0.0)
 {
   int i = (int)p.size()-1;
@@ -1128,6 +1130,11 @@ void polyTrunc(std::vector<double>& p, double tol = 0.0)
       break;
     i -= 1; }
   p.resize(i);
+}
+void makeMonic(std::vector<double>& p)
+{
+  for(size_t i = 0; i < p.size(); i++)
+    p[i] /= rsLast(p);
 }
 void polyDivMod(std::vector<double> p, std::vector<double> d, 
   std::vector<double>& q, std::vector<double>& r, double tol = 0.0)
@@ -1145,6 +1152,8 @@ void polyDivMod(std::vector<double> p, std::vector<double> d,
     k -= 1; }
   for(int i = (int) d.size()-1; i < (int) p.size(); i++)
     r[i] = 0;
+  polyTrunc(q, tol);
+  polyTrunc(r, tol);
 }
 std::vector<double> polyDiv(std::vector<double> p, std::vector<double> d, double tol = 0.0)
 {
@@ -1158,16 +1167,24 @@ std::vector<double> polyMod(std::vector<double> p, std::vector<double> d, double
   polyDivMod(p, d, q, r, tol);
   return r;
 }
-
-
-
-
-/*
-std::vector<double> polyGCD(std::vector<double> p, std::vector<double> q, double tol = 0.0)
+bool isAllZeros(const std::vector<double>& v, double tol)
 {
-
+  for(size_t i = 0; i < v.size(); i++)
+    if(fabs(v[i]) > tol)
+      return false;
+  return true;
 }
-*/
+std::vector<double> polyGCD(
+  const std::vector<double>& p, const std::vector<double>& q, double tol = 0.0)
+{
+  std::vector<double> a = p, b = q, t;
+  while(!isAllZeros(b, tol)) {
+    t = b;
+    b = polyMod(a, b);
+    a = t; }
+  makeMonic(a);
+  return a;
+}
 
 
 
@@ -1238,6 +1255,8 @@ bool testRationalFunction(std::string& reportString)
   typedef rsPolynomial<double> PL;
   typedef rsRationalFunction<double> RF;
 
+  std::vector<double> p({ 6,7,1 }), q({-6,-5,1}), g;
+  g = polyGCD(p, q);  // result is 1 + x
 
   return testResult;
 }
