@@ -1118,6 +1118,59 @@ bool testJacobiPolynomials(std::string &reportString)
   return testResult;
 }
 
+
+// translated from my python class - move to Prototypes
+void polyTrunc(std::vector<double>& p, double tol = 0.0)
+{
+  int i = (int)p.size()-1;
+  while(i > 0) {
+    if(fabs(p[i]) <= tol)
+      break;
+    i -= 1; }
+  p.resize(i);
+}
+void polyDivMod(std::vector<double> p, std::vector<double> d, 
+  std::vector<double>& q, std::vector<double>& r, double tol = 0.0)
+{ 
+  q.resize(p.size());
+  r = p;                // init remainder with copy of product
+  rsFill(q, 0.0);       // init quotient to all zeros
+  int k = (int)p.size() - (int)d.size();
+  while(k >= 0) {
+    q[k] = r[(int)d.size()-1+k] / d[(int)d.size()-1];
+    int j = (int)d.size()+k-2; 
+    while(j >= k) {
+      r[j] -= q[k] * d[j-k];
+      j -= 1; }
+    k -= 1; }
+  for(int i = (int) d.size()-1; i < (int) p.size(); i++)
+    r[i] = 0;
+}
+std::vector<double> polyDiv(std::vector<double> p, std::vector<double> d, double tol = 0.0)
+{
+  std::vector<double> q, r;
+  polyDivMod(p, d, q, r, tol);
+  return q;
+}
+std::vector<double> polyMod(std::vector<double> p, std::vector<double> d, double tol = 0.0)
+{
+  std::vector<double> q, r;
+  polyDivMod(p, d, q, r, tol);
+  return r;
+}
+
+
+
+
+/*
+std::vector<double> polyGCD(std::vector<double> p, std::vector<double> q, double tol = 0.0)
+{
+
+}
+*/
+
+
+
 // rename to testPolynomialClass
 bool testPolynomialOperators(std::string &reportString)
 {
@@ -1184,6 +1237,7 @@ bool testRationalFunction(std::string& reportString)
 
   typedef rsPolynomial<double> PL;
   typedef rsRationalFunction<double> RF;
+
 
   return testResult;
 }

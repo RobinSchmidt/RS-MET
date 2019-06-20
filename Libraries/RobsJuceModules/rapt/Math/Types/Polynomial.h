@@ -4,11 +4,16 @@
 /** A class for representing polynomials and doing computations with them. */
 
 // todo: 
-// -create unit test to test operators
-// -implement missing operators (/,%,=,==) ...maybe we could meaningfully define <,<=, ...?
-//  ...maybe look at how python or other scientific libraries handle that
+
 // -implement greatest common divisor algorithm (maybe the one for the integers can be
 //  used as is?)
+// -implement missing operators:
+//  -operator() that takes a polynomial and returns another polynomial as result (implements 
+//   nesting)
+//  -arithmetic operators that take a number as second (left or right) argument
+//  -maybe we could meaningfully define <,<=, ...? look at how python or other scientific libraries
+//   handle that - in my own python polynoamial class, i'm taking the asymptotic behavior
+
 
 template<class T>
 class rsPolynomial
@@ -237,6 +242,9 @@ public:
   ...\todo check this comment */
   static void divide(const T* dividend, int dividendDegree, const T* divisor, int divisorDegree,
     T* quotient, T* remainder);
+  // todo: complete this comment ...figure out, what the degrees of the quotient and remainder are
+  // ...supposedly, they can be inferred by client code by checking from which index in the array
+  // there are only zeros?
 
   /** Divides the dividend by the monomial factor (x-x0) and stores the result in the same array
   again. The remainder (which is just a numerical value) will be stored in 'remainder'. This
@@ -249,8 +257,12 @@ public:
   // shouldn't x0 be const S& ? ...comment, what S is and why we don't use T ..it has to do with
   // real vs complex
 
-  //static void dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendDegree, T x0,
-  //  T *remainder);
+
+  static void greatestCommonDivisor(const T* p, int pDegree, const T* q, int qDegree, 
+    T* gcd, int* gcdDegree, T tolerance = T(0));
+  // under construction
+  // maybe implement extended GCD
+
 
   /** Creates an array of arrays with polynomial cofficients that represent the polynomial with
   coefficients a[] raised to successive powers up to and including "highestPower". aPowers[0]

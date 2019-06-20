@@ -40,4 +40,7 @@ Terms:
 todo: check this:
 https://github.com/QuantStack/xtensor/blob/master/notebooks/xtensor.ipynb
 
+
+https://en.wikipedia.org/wiki/Tensor
+
 */

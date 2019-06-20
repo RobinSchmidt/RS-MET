@@ -168,6 +168,10 @@ void rsPolynomial<T>::divide(const T *p, int pDegree, const T *d, int dDegree, T
       r[j] -= q[k] * d[j-k];
   }
   rsArray::fillWithZeros(&r[dDegree], pDegree-dDegree+1);
+  // maybe return the degree of the quotient, the degree of the remainder is then 
+  // pDegree-qDegree - ...what if dDegree > pDegree? the most sensibe thing in this case would be,
+  // if the remainder is equal to p ...and the quotient should be 0 ...i think, the model is:
+  // p(x) = q(x)*d(x) + r(x)
 }
 
 template<class T>
@@ -199,6 +203,14 @@ void rsPolynomial<T>::dividePolynomialByMonomialInPlace(T *dividendAndResult, in
   }
 }
 */
+
+template <class T>
+void rsPolynomial<T>::greatestCommonDivisor(
+  const T* p, int pDeg, const T* q, int qDeg, T* gcd, int* gcdDeg, T tol)
+{
+
+}
+
 
 template <class T>
 void rsPolynomial<T>::powers(const T* a, int N, T** aPowers, int highestPower)

@@ -13,6 +13,10 @@ Such a matrix could represent a tensor of rank 2 when the underlying vector spac
 Tensors are always (hyper) cubical in shape - which in the case of rank 2 boils down to a square 
 matrix - a 2x3 matrix, for example, can not be interpreted as tensor.
 
+...is that actually ture - see here, at around 5:30:
+https://www.youtube.com/watch?v=dtvM-CzNe50&list=PLJHszsWbB6hrkmmq57lX8BV-o-YIOFsiG&index=10
+maybe, we need a more general definition that is not necessarily hypercubic?
+
 Mathematically, tensors are defined to obey certain transformation rules when you change the basis
 of the vector space. Not just any hypercubical array of values qualifies as a tensor. It must obey
 these transformation rules - otherwise, it's not a tensor. In a regular vector, for example - seen 
