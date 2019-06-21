@@ -1297,6 +1297,31 @@ void ratReduce(
   qOut = polyDiv(qIn, gcd, tol);
 }
 
+/* Multiplies two rational functions represented as lists of coefficients for	numerator and 
+denominator. Computes u/v = (p/q) * (r/s). By default, it will reduce the result to the lowest 
+possible denominator but you can turn that off via the reduced parameter. */
+void ratMul(
+  const std::vector<double>& p, const std::vector<double>& q,
+  const std::vector<double>& r, const std::vector<double>& s,
+  std::vector<double>& u, std::vector<double>& v, double tol, bool reduced)
+{
+  u = polyMul(p, r, tol);
+  v = polyMul(q, s, tol);
+  if(reduced)
+    ratReduce(u, v, u, v, tol);
+}
+
+/* Divides two rational functions */
+void ratDiv(
+  const std::vector<double>& p, const std::vector<double>& q,
+  const std::vector<double>& r, const std::vector<double>& s,
+  std::vector<double>& u, std::vector<double>& v, double tol, bool reduced)
+{
+  ratMul(p, q, s, r, u, v, tol, reduced); // r and s are swapped
+}
+
+
+
 //-------------------------------------------------------------------------------------------------
 
 
