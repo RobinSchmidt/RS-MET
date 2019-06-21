@@ -1320,6 +1320,23 @@ void ratDiv(
   ratMul(p, q, s, r, u, v, tol, reduced); // r and s are swapped
 }
 
+/* Adds two rational functions represented as lists of coefficients for numerator and denominator 
+with optional weighting. It computes numerator and denominator of nr/dr = w1*n1/d1 + w2*n2/d2. */
+void ratAdd(
+  const std::vector<double>& n1, const std::vector<double>& d1,
+  const std::vector<double>& n2, const std::vector<double>& d2,
+  std::vector<double>& nr, std::vector<double>& dr, 
+  double tol, double w1 = 1, double w2 = 1)
+{
+  std::vector<double> gcd, f1, f2, s1, s2;
+  gcd = polyGCD(d1, d2, tol);
+  f1 = polyDiv(d2, gcd, tol);
+  f2 = polyDiv(d1, gcd, tol);
+  dr = polyMul(f1, d1, tol);
+  s1 = polyMul(f1, n1, tol);         // 1st summand in numerator of result
+  s2 = polyMul(f2, n2, tol);         // 2nd summand
+  nr = polyAdd(s1, s2, w1, w2, tol); // numerator of result
+}
 
 
 //-------------------------------------------------------------------------------------------------
