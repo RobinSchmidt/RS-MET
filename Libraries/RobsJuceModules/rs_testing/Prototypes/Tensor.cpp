@@ -43,4 +43,10 @@ https://github.com/QuantStack/xtensor/blob/master/notebooks/xtensor.ipynb
 
 https://en.wikipedia.org/wiki/Tensor
 
+
+Tensors for Beginneres by eigenchris:
+https://www.youtube.com/watch?v=uDRzJIaN2qw&list=PLJHszsWbB6hrkmmq57lX8BV-o-YIOFsiG
+-very good explanations, easy to follow
+
+
 */

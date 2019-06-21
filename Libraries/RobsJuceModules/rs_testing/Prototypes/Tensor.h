@@ -91,11 +91,52 @@ public:
   bool isVector() const  { return rank == 1 && subscript[0] == false; }
   
   /** Returns true, if this tensor is a covector, i.e. a rank-1 tensor with one subscript. 
-  Covectors are also called 1-forms. */
+  Covectors are also called 1-forms or linear forms. */
   bool isCovector() const { return rank == 1 && subscript[0] == true;  }
 
+  /** Returns true, if this tensor is a linear form which is the same thing as a covector. Linear 
+  forms take a vector as input and produce a scalar output. */
+  bool isLinearForm() const { return isCovector(); } 
+
+  /** Returns true, if this tensor is a linear map. Linear maps may take a vector as input and 
+  produce another vector as output (V -> V) or take a covector input and produce a covector output 
+  (V* -> V*). It may also take a vector and covector as input and produce a scalar (V x V* -> R
+  or V* x V -> R).
+  
+  I think in matrix notation, the first case would be y = A * x and the second case y = x^T * A 
+  where x is a column vector in both cases and y is a column in the 1st and a row in the 2nd
+  */
+  bool isLinearMap() const { return rank == 2 && subscript[0] == false && subscript[1] == true; }
+  // is it true the the 2nd index must be a subscript - or should it be the 1st? ...but i think
+  // 2nd is correct - in an expression y^i = A^i_j x^j with implied summation, we sum over the 
+  // 2nd index in the matrix A - and ina scalar product, the 2nd index is the column
+  // linear maps can be created by taking appropriate linear combinations of outer products of all 
+  // pairs of basis-vectors and basis-covectors (these outer products form basis linear maps - the
+  // space of linear maps is itself a vector space)
+
+  /** Returns true, if this tensor is a bilinear form. Bilinear forms may take two vectors as input
+  and return a scalar (V x V -> R). That implies that they have two subscripts which are summed 
+  over when they act on two vectors (each having a superscript). The metric tensor is an example of
+  such a bilinear map. They may also take a single vector as input in which case they produce a 
+  covector (= linear form) as output (V -> V*) - that's a bit like a partial evaluation. In this 
+  V -> V* case, two different covectors / linear maps are possible as outputs, depending on which 
+  index is summed over
+  
+  */
+  bool isBilinearForm() const 
+  { return rank == 2 && subscript[0] == true && subscript[1] == true; }
+  // bilinear forms can be created by taking appropriate linear combinations of outer products of 
+  // all basis covector-covector pairs
+
+  // is bilinear form the same as quadratic form? i think so..or well, only when both input vectors
+  // are the same vector
+
+  // what if subscript[0] is true for rank-2 tensors? 
+
+
+
   /** Returns true, of the tensor is symmetric with respect to the given pair of indices. When you
-  retrieve the the component with exchanged indices, you'll get the same value as without 
+  retrieve the component with exchanged indices, you'll get the same value as without 
   exchange. Also, when you exchange two vectors/covectors in an input list at these indices, the 
   result of applying the tensor to the input list will be the same. */
   bool isSymmetric(int index1, int index2) const;
@@ -134,9 +175,31 @@ public:
   // should produce a scalar for a given input list of vectors and or covectors...maybe have a 
   // generalized version that returns a tensor of any rank (the tensor is applied only partially)
   // we may need to have a way to pass in a special placeholder tensor for empty slots in the input
-  // list
-  // raiseIndex(int index, const Tensor& metric); lowerIndex(...)
+  // list ...maybe just the scalar 1 can serve this role? 
+
+
+
+  // Tensor raiseIndex(int index, const Tensor& metric); 
   
+  /** Given a (contravariant) vector v^i (1 superscript i) and a metric g_ij tensor (two subscripts
+  i,j), this function computes the (covariant) covector v_i (1 subscript i) that corresponds to v^i. 
+  It is given by: v_i = g_ij v^j
+  ....what if v is not a vector but a general tensor?  */
+  Tensor lowerIndex(const Tensor& v, int index, const Tensor& metric);
+  
+  /** Inverse operation of lowerIndex: v^k = g^ki v_i where g^ki is the inverse metric tensor with
+  two superscripts k,i. the inverse metric tensor is sometimes called contravariant metric tensor
+  */
+  Tensor raiseIndex(const Tensor& v, int index, const Tensor& inverseMetric);
+  
+  // raising the 2nd index of Q = Q^i_jk in V x V* x V*
+  // would be achieved like this: Q^i_jk g^jx = Q^ix_k
+  // pick the index to raise (j), multiply it by the inverse metric tensor where the 1st index
+  // corresponds to our target index (j) and the 2nd index is a dummy (x). in the result, the dummy
+  // index (x) can then be renamed back to j. the result is now in V x V x V* - the 2nd V has no 
+  // star anymore
+  //
+
   // operators: +,-,==,unary-, element access (i,j,k,...)
 
   

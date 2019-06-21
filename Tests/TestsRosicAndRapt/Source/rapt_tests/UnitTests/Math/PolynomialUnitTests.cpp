@@ -1118,11 +1118,11 @@ bool testJacobiPolynomials(std::string &reportString)
   return testResult;
 }
 
+//-------------------------------------------------------------------------------------------------
+// Functions that operate on std::vectors to perform polynomial coefficient array manipulations:
+// translated from my python implementation  ...move to Prototypes
 
-// translated from my python class - still missing:
-// polyLess, polyNest
-// ...move to Prototypes
-
+/* Evaluates the polynomial p a the given x using Horner's algorithm */
 double polyEval(std::vector<double>& p, double x)
 {
   int k = (int)p.size()-1;  // last valid index
@@ -1135,6 +1135,7 @@ double polyEval(std::vector<double>& p, double x)
   return y;
 }
 
+/* Truncates trailing zeros of the list p */
 void polyTrunc(std::vector<double>& p, double tol = 0.0)
 {
   int i = (int)p.size()-1;
@@ -1145,12 +1146,20 @@ void polyTrunc(std::vector<double>& p, double tol = 0.0)
   p.resize(i);
 }
 
-void makeMonic(std::vector<double>& p)
+/* Makes the polynomial a monic, i.e. divides all coefficients by the  leading coefficient to make
+the leading coefficient 1. Will result in division by zero error, if p is the zero polynomial. It 
+works in place and will return the leading coefficient (which may or may not be of interest to the 
+caller) */
+double makeMonic(std::vector<double>& p)
 {
+  double lc = rsLast(p);
   for(size_t i = 0; i < p.size(); i++)
-    p[i] /= rsLast(p);
+    p[i] /= lc;
+  return lc;
 }
 
+/* Forms a weighted sum of the two coefficient lists p and q with weights wp and wq 
+respectively. If the resulting list will have trailing zeros, these will be truncated. */
 std::vector<double> polyAdd(
   const std::vector<double>& p, const std::vector<double>& q, 
   double tol = 0.0, double wp = 1, double wq = 1)
@@ -1171,12 +1180,15 @@ std::vector<double> polyAdd(
   return r;
 }
 
+/* Subtracts the coefficient list q from the coefficient list p. If the result has trailing zeros, 
+these will be truncated. */
 std::vector<double> polySub(const std::vector<double>& p, const std::vector<double>& q,
   double tol = 0.0)
 {
   return polyAdd(p, q, 1, -1, tol);
 }
 
+/* Multiplies two lists of polynomial coefficients by convolution. */
 std::vector<double> polyMul(const std::vector<double>& x, const std::vector<double>& h, // rename x,h
   double tol = 0.0)
 {
@@ -1190,6 +1202,8 @@ std::vector<double> polyMul(const std::vector<double>& x, const std::vector<doub
   return y;
 }
 
+/* Divides polynomial p (product) by polynomial d (divisor) and returns 
+the quotient in q and remainder in r */
 void polyDivMod(std::vector<double> p, std::vector<double> d, 
   std::vector<double>& q, std::vector<double>& r, double tol = 0.0)
 { 
@@ -1210,6 +1224,8 @@ void polyDivMod(std::vector<double> p, std::vector<double> d,
   polyTrunc(r, tol);
 }
 
+/* Quotient of polynomial division - this corresponds to the integer part of the division of 
+natural numbers. */
 std::vector<double> polyDiv(std::vector<double> p, std::vector<double> d, double tol)
 {
   std::vector<double> q, r;
@@ -1217,6 +1233,7 @@ std::vector<double> polyDiv(std::vector<double> p, std::vector<double> d, double
   return q;
 }
 
+/* Remainder of polynomial division */
 std::vector<double> polyMod(std::vector<double> p, std::vector<double> d, double tol)
 {
   std::vector<double> q, r;
@@ -1224,6 +1241,7 @@ std::vector<double> polyMod(std::vector<double> p, std::vector<double> d, double
   return r;
 }
 
+/* Checks, if vector v contains only zeros. */
 bool isAllZeros(const std::vector<double>& v, double tol)
 {
   for(size_t i = 0; i < v.size(); i++)
@@ -1232,18 +1250,26 @@ bool isAllZeros(const std::vector<double>& v, double tol)
   return true;
 }
 
+/* Computes the greatest common divisor of polynomials p and q which is defined as the polynomial 
+of highest degree that divides both p and q. Such a polynomial is unique only up to multiplication
+by a constant, so it is often additionally required to be a monic polynomial to make it unique. 
+This normalization can be controlled by by the monic parameter. */
 std::vector<double> polyGCD(
-  const std::vector<double>& p, const std::vector<double>& q, double tol)
+  const std::vector<double>& p, const std::vector<double>& q, double tol, bool monic = true)
 {
   std::vector<double> a = p, b = q, t;
   while(!isAllZeros(b, tol)) {
     t = b;
     b = polyMod(a, b, tol);
     a = t; }
-  makeMonic(a);
+  if(monic)
+    makeMonic(a);
   return a;
 }
 
+/* Given the coefficient lists of two polynomials a(x) and b(x), this function computes the 
+coefficient list of the polynomial c(x) that results from nesting a(x) and b(x) where a(x) is the
+inner and b(x) the outer polynomial such that: c(x) = b(a(x)) */
 std::vector<double> polyNest(const std::vector<double>& a, const std::vector<double>& b)
 {
   int aN = (int)a.size()-1;               // degree of a
@@ -1261,11 +1287,7 @@ std::vector<double> polyNest(const std::vector<double>& a, const std::vector<dou
   return c;
 }
 
-// polyNest
-
-
-
-
+/* Reduces rational function p/q to the lowest possible denominator. */
 void ratReduce(
   const std::vector<double>& pIn, const std::vector<double>& qIn,
   std::vector<double>& pOut, std::vector<double>& qOut, double tol)
@@ -1274,6 +1296,8 @@ void ratReduce(
   pOut = polyDiv(pIn, gcd, tol);
   qOut = polyDiv(qIn, gcd, tol);
 }
+
+//-------------------------------------------------------------------------------------------------
 
 
 // rename to testPolynomialClass
