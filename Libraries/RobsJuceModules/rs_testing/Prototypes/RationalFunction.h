@@ -70,7 +70,7 @@ public:
   }
 
   /** Returns the rational function that results from nesting/composing the given inner rational 
-  function this function as outer function. You can use it like h = f(g) where h,f,g are all 
+  function with this function as outer function. You can use it like h = f(g) where h,f,g are all 
   rsRationalFunction objects. */
   rsRationalFunction<T> operator()(rsRationalFunction<T> inner) const
   {
@@ -102,7 +102,6 @@ public:
 
 protected:
 
-  //T tol = 0.0;
   rsPolynomial<T> num, den;  // numerator and denominator polynomials
 
 };

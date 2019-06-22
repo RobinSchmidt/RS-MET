@@ -1201,6 +1201,11 @@ bool testRationalFunction(std::string& reportString)
   t = r - s; testResult &= t == RF({ -15,-32,-20,-28,-9 }, { 20,53,109,132,115,77 });
 
   // test nesting:
+  double x= 4, y1, y2;  // input and outputs
+  t = r(s);             // compose/nest functions r and s (r is outer, s is inner)
+  y1 = r(s(x));         // evaluate s at x, pass result to r and evaluate r at s(x)
+  y2 = t(x);            // evaluate the compsed function t = r(s)
+  testResult &= y1 == y2;
 
 
   return testResult;
