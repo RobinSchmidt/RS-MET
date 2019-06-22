@@ -68,8 +68,11 @@ public:
     return num(x) / den(x);
   }
 
-
-
+  /** Compares this rational function to another one for equality. */
+  bool operator==(const rsRationalFunction<T>& q) const 
+  { 
+    return num == q.num && den == q.den;
+  }
 
 
 
