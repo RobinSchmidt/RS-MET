@@ -88,11 +88,11 @@ void ratAdd(
 void ratPolyNest(
   const std::vector<double>& ni, const std::vector<double>& di,
   const std::vector<double>& po,
-  std::vector<double>& nr, std::vector<double>& dr, double tol);
+  std::vector<double>& nr, std::vector<double>& dr, double tol = 0.0);
 
 /** Nesting of two rational functions. The inner functions numerator and denominator are given by
 nI, dI, likewise for the outer and nO, dO. The result is returned in nR, dR. */
 void ratNest(
   const std::vector<double>& nI, const std::vector<double>& dI,
   const std::vector<double>& nO, const std::vector<double>& dO,
-  std::vector<double>& nR, std::vector<double>& dR, double tol);
+  std::vector<double>& nR, std::vector<double>& dR, double tol = 0.0);

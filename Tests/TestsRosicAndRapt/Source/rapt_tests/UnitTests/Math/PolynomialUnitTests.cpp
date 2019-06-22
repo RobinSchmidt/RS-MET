@@ -1200,6 +1200,8 @@ bool testRationalFunction(std::string& reportString)
   t = r + s; testResult &= t == RF({ 25,66,100,114,75 }, { 20,53,109,132,115,77 }); 
   t = r - s; testResult &= t == RF({ -15,-32,-20,-28,-9 }, { 20,53,109,132,115,77 });
 
+  // test nesting:
+
 
   return testResult;
 }

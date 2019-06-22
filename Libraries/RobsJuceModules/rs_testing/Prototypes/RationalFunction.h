@@ -41,7 +41,7 @@ public:
   rsRationalFunction<T> operator-(const rsRationalFunction<T>& q) const
   {
     rsRationalFunction<T> r;
-    ratAdd(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, r.num.coeffs, r.den.coeffs, 
+    ratAdd(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, r.num.coeffs, r.den.coeffs,
       0, 1, -1);
     return r;
   }
@@ -60,12 +60,24 @@ public:
     rsRationalFunction<T> r;
     ratDiv(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, r.num.coeffs, r.den.coeffs);
     return r;
+    // implement conversion operator in rsPolynomial to get rid of accessing coeffs
   }
 
   /** Evaluates the function at the given input x. */
   T operator()(T x) const
   {
     return num(x) / den(x);
+  }
+
+  /** Returns the rational function that results from nesting/composing the given inner rational 
+  function this function as outer function. You can use it like h = f(g) where h,f,g are all 
+  rsRationalFunction objects. */
+  rsRationalFunction<T> operator()(rsRationalFunction<T> inner) const
+  {
+    rsRationalFunction<T> r;
+    ratNest(inner.num.coeffs, inner.den.coeffs, num.coeffs, den.coeffs, 
+      r.num.coeffs, r.den.coeffs);
+    return r;
   }
 
   /** Compares this rational function to another one for equality. */

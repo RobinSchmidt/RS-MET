@@ -132,6 +132,9 @@ public:
   }
 
 
+  //operator std::vector<T>&() const { return coeffs; }
+
+
   // how to deal with the trailing zeros in quotient and/or remainder? should we cut them
   // off...if so, what should be the numerical threshold? maybe there should be a member function
   // removeTrailingZeros that client code must explicitly call
