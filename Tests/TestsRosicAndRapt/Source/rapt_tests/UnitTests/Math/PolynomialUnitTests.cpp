@@ -1355,6 +1355,8 @@ void ratPolyNest(
     nt = polyMul(nt, ni, tol); }
 }
 
+/** Nesting of two rational functions. The inner functions numerator and denominator are given by
+nI, dI, likewise for the outer and nO, dO. The result is returned in nR, dR. */
 void ratNest(
   const std::vector<double>& nI, const std::vector<double>& dI,
   const std::vector<double>& nO, const std::vector<double>& dO,
@@ -1365,6 +1367,10 @@ void ratNest(
   ratPolyNest(nI, dI, dO, nL,	dL, tol);  // compute lower num and den
   ratDiv(nU, dU, nL, dL, nR, dR, tol);
 }
+// It's not optimal to call ratPolyNest two times - inside this function, there are values that are
+// calculated just the same in both calls, namely the successive powers of ni - but this is not 
+// meant to be optimized, high performance code. Maybe in production code, this optimization should
+// be done.
 
 
 
