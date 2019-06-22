@@ -43,6 +43,7 @@ using namespace RAPT;
 #include "Prototypes/OscDrivers.h"
 #include "Prototypes/PartialDifferentialEquations.h"
 #include "Prototypes/RationalFunction.h"
+#include "Prototypes/RationalFunctionTools.h"
 #include "Prototypes/Prototypes.h"
 
 #include "Experiments/MiscExperiments.h"

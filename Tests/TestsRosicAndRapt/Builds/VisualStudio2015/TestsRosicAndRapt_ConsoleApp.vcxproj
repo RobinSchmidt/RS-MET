@@ -2319,6 +2319,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\RationalFunction.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\RationalFunctionTools.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Tensor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3150,6 +3153,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Projection3Dto2D.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Prototypes.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\RationalFunction.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\RationalFunctionTools.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Tensor.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\FileWriting.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\PerformanceTestTools.h"/>
