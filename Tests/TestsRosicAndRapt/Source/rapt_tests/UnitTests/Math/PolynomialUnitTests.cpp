@@ -1303,7 +1303,7 @@ possible denominator but you can turn that off via the reduced parameter. */
 void ratMul(
   const std::vector<double>& p, const std::vector<double>& q,
   const std::vector<double>& r, const std::vector<double>& s,
-  std::vector<double>& u, std::vector<double>& v, double tol, bool reduced)
+  std::vector<double>& u, std::vector<double>& v, double tol, bool reduced = true)
 {
   u = polyMul(p, r, tol);
   v = polyMul(q, s, tol);
@@ -1315,7 +1315,7 @@ void ratMul(
 void ratDiv(
   const std::vector<double>& p, const std::vector<double>& q,
   const std::vector<double>& r, const std::vector<double>& s,
-  std::vector<double>& u, std::vector<double>& v, double tol, bool reduced)
+  std::vector<double>& u, std::vector<double>& v, double tol, bool reduced = true)
 {
   ratMul(p, q, s, r, u, v, tol, reduced); // r and s are swapped
 }
@@ -1337,6 +1337,35 @@ void ratAdd(
   s2 = polyMul(f2, n2, tol);         // 2nd summand
   nr = polyAdd(s1, s2, w1, w2, tol); // numerator of result
 }
+
+/* Nesting of an inner rational function ni/di with an outer polynomial po. */
+void ratPolyNest(
+  const std::vector<double>& ni, const std::vector<double>& di,
+  const std::vector<double>& po,
+  std::vector<double>& nr, std::vector<double>& dr, double tol)
+{
+  std::vector<double> nt;
+  nr = { po[0] };   // numerator of result
+  dr = { 1.0 };     // denominator of result
+  nt = ni;          // temporary numerator (for convolutive accumulation)
+  for(int k = 1; k < po.size(); k++) {
+    dr = polyMul(dr, di, tol);  
+    nr = polyMul(nr, di, tol);
+    nr = polyAdd(nr, nt, tol, 1.0, po[k]);
+    nt = polyMul(nt, ni, tol); }
+}
+
+void ratNest(
+  const std::vector<double>& nI, const std::vector<double>& dI,
+  const std::vector<double>& nO, const std::vector<double>& dO,
+  std::vector<double>& nR, std::vector<double>& dR, double tol)
+{
+  std::vector<double> nU, dU, nL, dL;
+  ratPolyNest(nI, dI, nO, nU,	dU, tol);  // compute upper num and den
+  ratPolyNest(nI, dI, dO, nL,	dL, tol);  // compute lower num and den
+  ratDiv(nU, dU, nL, dL, nR, dR, tol);
+}
+
 
 
 //-------------------------------------------------------------------------------------------------
