@@ -628,23 +628,13 @@ public:
   //void jacobiPolynomial(T *a, int degree); // the U-polynomials
   //void maximallyDivergingMonotonicPolynomial(T *a, int degree); // the T-polynomial
 
-  /*
-  // comment this function, maybe use a more efficent algorithm if all
-  // poles are simple, (see also Experiments - there's something said about that)
-  // move to class rsRationalFunction
-  static void rsPartialFractionExpansion(
-    std::complex<T> *numerator, int numeratorDegree,
-    std::complex<T> *denominator, int denominatorDegree,
-    std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
-    std::complex<T> *pfeCoeffs);
-    */
 
 
 protected:
 
   std::vector<T> coeffs;   // array of coefficients - index correpsonds to power of x
 
-  template<class U> friend class rsRationalFunction;
+  template<class U> friend class rsRationalFunction; // needs access to coeffs array
 
 };
 

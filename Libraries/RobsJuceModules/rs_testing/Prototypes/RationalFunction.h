@@ -3,6 +3,18 @@
 namespace RAPT
 {
 
+/** A class for representing rational functions R(x) = P(x) / Q(x) where P and Q are both 
+polynomials in x. Rational functions are important in signal processing because the transfer 
+functions of linear time invariant systems (a.k.a. filters) are of that type. The class provides 
+facilities for performing arithmetic with rational functions (including composition), evaluation,
+partial fraction expansion, etc. 
+
+to verify:
+I think, the rational functions over a field (like the real or complex numbers) form themselves a 
+field - as opposed to the polynomials, which form only a ring. That's why we can always do a 
+division of two rational functions without need to worry about a remainder (which may occur in 
+polynomial division). */
+
 template<class T>
 class rsRationalFunction
 {
@@ -63,12 +75,6 @@ public:
     // implement conversion operator in rsPolynomial to get rid of accessing coeffs
   }
 
-  /** Evaluates the function at the given input x. */
-  T operator()(T x) const
-  {
-    return num(x) / den(x);
-  }
-
   /** Returns the rational function that results from nesting/composing the given inner rational 
   function with this function as outer function. You can use it like h = f(g) where h,f,g are all 
   rsRationalFunction objects. */
@@ -78,6 +84,12 @@ public:
     ratNest(inner.num.coeffs, inner.den.coeffs, num.coeffs, den.coeffs, 
       r.num.coeffs, r.den.coeffs);
     return r;
+  }
+
+  /** Evaluates the function at the given input x. */
+  T operator()(T x) const
+  {
+    return num(x) / den(x);
   }
 
   /** Compares this rational function to another one for equality. */
