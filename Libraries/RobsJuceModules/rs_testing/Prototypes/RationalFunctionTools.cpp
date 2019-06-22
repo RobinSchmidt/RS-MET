@@ -180,7 +180,7 @@ void ratAdd(
   dr = polyMul(f1, d1, tol);
   s1 = polyMul(f1, n1, tol);         // 1st summand in numerator of result
   s2 = polyMul(f2, n2, tol);         // 2nd summand
-  nr = polyAdd(s1, s2, w1, w2, tol); // numerator of result
+  nr = polyAdd(s1, s2, tol, w1, w2); // numerator of result
 }
 
 void ratPolyNest(

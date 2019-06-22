@@ -1198,8 +1198,6 @@ bool testRationalFunction(std::string& reportString)
   t = r * s; testResult &= t == RF({ 5,16,27,18 }, { 20,53,109,132,115,77 });
   t = r / s; testResult &= t == RF({ 5,17,40,43,33 }, { 20,49,60,71,42 });
   t = r + s; testResult &= t == RF({ 25,66,100,114,75 }, { 20,53,109,132,115,77 }); 
-  // fails - num seems to be still the one from the previous computation
-
   t = r - s; testResult &= t == RF({ -15,-32,-20,-28,-9 }, { 20,53,109,132,115,77 });
 
 
