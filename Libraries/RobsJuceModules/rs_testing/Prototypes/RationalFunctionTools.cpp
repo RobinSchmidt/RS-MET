@@ -12,14 +12,13 @@ double polyEval(std::vector<double>& p, double x)
 
 void polyTrunc(std::vector<double>& p, double tol)
 {
-  int i = (int)p.size()-1;
+  int i = (int)p.size();
   while(i > 0) {
-    if(fabs(p[i]) >= tol)
+    if(fabs(p[i-1]) > tol)
       break;
     i -= 1; }
   p.resize(i);
 }
-// seems to be still wrong
 
 double makeMonic(std::vector<double>& p)
 {

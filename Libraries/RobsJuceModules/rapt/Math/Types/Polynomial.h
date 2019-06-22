@@ -641,10 +641,7 @@ protected:
 
   std::vector<T> coeffs;   // array of coefficients - index correpsonds to power of x
 
-  template<class U>
-  friend class rsRationalFunction; // preliminary
-  //friend class rsRationalFunction; // preliminary
-  //friend class ::rsRationalFunction; // preliminary
+  template<class U> friend class rsRationalFunction;
 
 };
 
