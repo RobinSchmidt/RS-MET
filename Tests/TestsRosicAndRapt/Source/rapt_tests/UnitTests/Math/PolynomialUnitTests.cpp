@@ -1190,5 +1190,12 @@ bool testRationalFunction(std::string& reportString)
   std::vector<double> p({ 6,7,1 }), q({-6,-5,1}), g;
   g = polyGCD(p, q, 0.0);  // result is 1 + x
 
+  RF r({ 1,2,3 }, { 4, 5, 6, 7 });
+  RF s({ 5,6 }, { 5, 7, 11 });
+
+  // test arithmetic operators:
+  RF t;
+  t = r * s;
+
   return testResult;
 }

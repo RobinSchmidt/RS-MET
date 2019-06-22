@@ -68,13 +68,13 @@ possible denominator but you can turn that off via the reduced parameter. */
 void ratMul(
   const std::vector<double>& p, const std::vector<double>& q,
   const std::vector<double>& r, const std::vector<double>& s,
-  std::vector<double>& u, std::vector<double>& v, double tol, bool reduced = true);
+  std::vector<double>& u, std::vector<double>& v, double tol = 0.0, bool reduced = true);
 
 /* Divides two rational functions */
 void ratDiv(
   const std::vector<double>& p, const std::vector<double>& q,
   const std::vector<double>& r, const std::vector<double>& s,
-  std::vector<double>& u, std::vector<double>& v, double tol, bool reduced = true);
+  std::vector<double>& u, std::vector<double>& v, double tol = 0.0, bool reduced = true);
 
 /* Adds two rational functions represented as lists of coefficients for numerator and denominator 
 with optional weighting. It computes numerator and denominator of nr/dr = w1*n1/d1 + w2*n2/d2. */
@@ -82,7 +82,7 @@ void ratAdd(
   const std::vector<double>& n1, const std::vector<double>& d1,
   const std::vector<double>& n2, const std::vector<double>& d2,
   std::vector<double>& nr, std::vector<double>& dr, 
-  double tol, double w1 = 1, double w2 = 1);
+  double tol = 0.0, double w1 = 1, double w2 = 1);
 
 /* Nesting of an inner rational function ni/di with an outer polynomial po. */
 void ratPolyNest(
