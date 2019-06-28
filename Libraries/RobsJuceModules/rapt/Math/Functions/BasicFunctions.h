@@ -195,6 +195,7 @@ angle x may be wrapped into the interval 0...2*PI via xWrapped = wrapToInterval(
 into the interval -PI...PI via xWrapped = wrapToInterval(x, -PI, PI). The left limit is included 
 and the right limit is excluded. */
 inline double rsWrapToInterval(double x, double min, double max);
+// rename to rsWrap
 
 /** Just outputs the constant value 0.0 for all inputs - used as default function pointer when
 client code selects an invalid function-index, for example in the waveform-renderers. */

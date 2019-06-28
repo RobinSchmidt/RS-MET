@@ -276,7 +276,8 @@ void rsPartialBeatingRemover<T>::removeBeating(rsSinusoidalPartial<T>& partial)
   // get rid of them - we do this by smoothing out the discontinuities:
   T cutoff = 20; // make user parameter
   std::vector<T> p = smoothPhases(t, partial.getFrequencyArray(), partial.getPhaseArray(), cutoff);
-  //partial.setPhases(p);
+  partial.setPhases(p);
+  //rsPlotVector(p);
   // maybe try other ways to get rid of the phase discontinuities
 
 
@@ -290,15 +291,14 @@ std::vector<T> rsPartialBeatingRemover<T>::smoothPhases(
   std::vector<T>& t, std::vector<T>& f, std::vector<T>& pIn, 
   T cutoff)
 {
-  GNUPlotter plt;
-
+  //GNUPlotter plt;
 
   // unwrap and de-trend phase:
   std::vector<T> p = rsSinusoidalProcessor<double>::unwrapPhase(t, f, pIn);
   rsDeTrender<double> dtr;
   dtr.removeTrendAndOffset((int)p.size(), &t[0], &p[0], &p[0]);
 
-  plt.addDataArrays((int)rsSize(t), &t[0], &p[0]);
+  //plt.addDataArrays((int)rsSize(t), &t[0], &p[0]);
 
 
   // apply lowpass to de-trended phase - this is preliminary - we treat the data as if it were
@@ -306,15 +306,17 @@ std::vector<T> rsPartialBeatingRemover<T>::smoothPhases(
   T sampleRate = t.size() / (rsLast(t) - t[0]); // average sample-rate
   rsBiDirectionalFilter::applyButterworthLowpass(&p[0], &p[0], (int)p.size(), cutoff, 
     sampleRate, 2, 2);  // order = 2, numPasses = 2
-  plt.addDataArrays((int)rsSize(t), &t[0], &p[0]);
+  //plt.addDataArrays((int)rsSize(t), &t[0], &p[0]);
 
   // re-apply trend:
+  dtr.applyTrendAndOffset((int)p.size(), &t[0], &p[0], &p[0]);
+
+  // wrap (factor out):
+  for(size_t i = 0; i < p.size(); i++)
+    p[i] = rsWrapToInterval(p[i], -PI, PI);
 
 
-  // wrap:
-
-
-  plt.plot();
+  //plt.plot();
 
   return p;
 }

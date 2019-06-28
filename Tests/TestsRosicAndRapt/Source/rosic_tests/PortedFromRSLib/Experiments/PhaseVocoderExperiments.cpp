@@ -1705,9 +1705,9 @@ void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
   analyzer.getCycleFinder().setFundamental((f1+f2)/2);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int)x.size());
   //plotSineModel(mdl, fs);
-  //plotSineModelAmplitudes(mdl, { 1 });
+  plotSineModelAmplitudes(mdl, { 1 });
   //plotSineModelPhases(mdl, { 1 }, true);  // phase-derivative
-  //plotSineModelPhases(mdl, { 1 }, false); // de-trended phase
+  plotSineModelPhases(mdl, { 1 }, false); // de-trended phase
 
   // resynthesize without modifications:
   std::vector<double> y = synthesizeSinusoidal(mdl, fs);
@@ -1723,7 +1723,9 @@ void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
     // apply de-beating to model data:
   rsPartialBeatingRemover<double> deBeater;
   deBeater.processModel(mdl);
-  //plotSineModelAmplitudes(mdl, { 1 }); 
+  plotSineModelAmplitudes(mdl, { 1 }); 
+  //plotSineModelPhases(mdl, { 1 }, true);  // phase-derivative
+  plotSineModelPhases(mdl, { 1 }, false); // de-trended phase
 
   // resynthesize with modifications:
   mdl.keepOnly({1});                     // get rid of DC artifacts at the start
