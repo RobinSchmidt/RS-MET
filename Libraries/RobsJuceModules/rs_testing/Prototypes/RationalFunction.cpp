@@ -1,4 +1,13 @@
-
+template<class T>
+bool rsRationalFunction<T>::reduce(T tol)
+{
+  std::vector<T> gcd = polyGCD(num, den, tol);
+  if(gcd.size() == 1)
+    return false;  // was already in reduced form
+  num = polyDiv(num, gcd, tol);
+  den = polyDiv(den, gcd, tol);
+  return true;
+}
 
 template<class T>
 void rsRationalFunction<T>::partialFractionExpansion(

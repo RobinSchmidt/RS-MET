@@ -40,6 +40,8 @@ public:
 
   // setNumerator, setDenominator // for polynomial and std::vector and maybe plain arrays
 
+  bool reduce(T tol);
+
 
 
   //-----------------------------------------------------------------------------------------------

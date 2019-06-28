@@ -131,8 +131,9 @@ public:
     return *this;
   }
 
-
-  //operator std::vector<T>&() const { return coeffs; }
+  /** Allow the rsPolynomial object to be converted to a (const) std::vector of coefficients. */
+  operator const std::vector<T>&() const { return coeffs; }
+  // todo: maybe have a non-const version?
 
 
   // how to deal with the trailing zeros in quotient and/or remainder? should we cut them

@@ -1207,6 +1207,40 @@ bool testRationalFunction(std::string& reportString)
   y2 = t(x);            // evaluate the compsed function t = r(s)
   testResult &= y1 == y2;
 
+  // giving this to sage:
+  //
+  // def canonicalRational(r):
+  //     return expand(r.numerator())/expand(r.denominator())
+  //
+  // g(x) = (2+3*x) / (5-2*x)             # inner
+  // f(x) = (2-3*x+4*x^2-5*x^3)/(2+3*x)   # outer
+  // h = canonicalRational(f(g(x)))
+  // h, n(h(5))
+  //
+  // produces:
+  //
+  //  -(259*x^3 - 90*x^2 + 377*x - 140)/(20*x^3 - 36*x^2 - 195*x + 400)),
+  //  -31.0926829268293
+
+  double tol = 1.e-10;
+  s = RF({ 2,3 }, { 5,-2 });        // inner
+  r = RF({ 2,-3,4,-5 }, { 2, 3 });  // outer
+  t = r(s); // 700,-2165, 1204,-1475,518;  2000,-1775,210,172,-40
+  y1 = t(5);  // -31.09268...
+  testResult &= rsIsCloseTo(y1, -31.0926829268293, tol);
+  // our numeric result from the evaluation -32.09.. is the same as the result from sage but
+  // our coefficient arrays are different. numerator and denominator still have a common
+  // factor -> divide both by their gcd:
+
+  t.reduce(tol);
+  // after reducing, the coefficients are consistent with sage's - but ours are still all 
+  // multiplied by a factor of two compared to sage's result - we may have divide all coefficients
+  // by *their* gcd - but for that, we would need floating point gcd with tolerance...maybe that 
+  // doesn't make much sense as we do not really assume to coeffs to be integers anyway - and the 
+  // gcd of a set of real (or complex) numbers is meaningless
+
+
+
 
   return testResult;
 }
