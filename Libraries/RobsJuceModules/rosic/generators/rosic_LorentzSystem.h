@@ -11,8 +11,10 @@ namespace rosic
   differential equations: dx/dt = sigma*(y-x), dy/dt = x*(rho-z) - y, dz/dt = x*y - beta*z where
   sigma, rho, beta are the parameters of the system
 
-
+  https://en.wikipedia.org/wiki/Lorenz_system
   
+  ...oh - lorenz is actually spelled without t -> correct the filenames!
+
   \todo use LaTeX markup in the comment
   \todo write more sophisticated state iteration functions based on runge/kutta or something
 

@@ -264,20 +264,40 @@ void rsPartialBeatingRemover<T>::processModel(rsSinusoidalModel<T>& model,
 template<class T>
 void rsPartialBeatingRemover<T>::removeBeating(rsSinusoidalPartial<T>& partial)
 {
-  // extract time-axis and amp-envelope of partial as arrays:
+  // process amplitudes: we take the envelope-of-the-envelope by connecting the peaks of the 
+  // "first-order" envelope - this removes the amplitude modulation due to beating:
   std::vector<T> t = partial.getTimeArray();
   std::vector<T> a = partial.getAmplitudeArray();
+  envExtractor.connectPeaks(&t[0], &a[0], &a[0], (int)t.size());
+  partial.setAmplitudes(a);
+
+  // process phases: in a signal that shows beating, we see phase inversions when we go from
+  // one bump/grain to the next - these are hard switches which are audible, so we somehow need to
+  // get rid of them - we do this by smoothing out the discontinuities:
+  T cutoff = 20; // make user parameter
+  std::vector<T> p = smoothPhases(t, partial.getFrequencyArray(), partial.getPhaseArray(), cutoff);
+  partial.setPhases(p);
+  // maybe try other ways to get rid of the phase discontinuities
+
 
   //GNUPlotter plt;
   //plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
-
-  // connect peaks:
-  envExtractor.connectPeaks(&t[0], &a[0], &a[0], (int)t.size()); // a-array used as input and output
-
-  //plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
   //plt.plot();
+}
 
-  partial.setAmplitudes(a); // write new amp data back into partial
+template<class T>
+std::vector<T> rsPartialBeatingRemover<T>::smoothPhases(
+  std::vector<T>& t, std::vector<T>& f, std::vector<T>& pIn, 
+  T cutoff)
+{
+  // unwrap and de-trend phase:
+  std::vector<T> p = rsSinusoidalProcessor<double>::unwrapPhase(t, f, pIn);
+  rsDeTrender<double> dtr;
+  dtr.removeTrendAndOffset((int)p.size(), &t[0], &p[0], &p[0]);
 
+  GNUPlotter plt;
+  plt.addDataArrays((int)rsSize(t), &t[0], &p[0]);
+  plt.plot();
 
+  return p;
 }

@@ -38,6 +38,13 @@ void rsSinusoidalPartial<T>::setAmplitudes(const std::vector<T>& a)
     setAmplitude(i, a[i]);
 }
 
+template<class T>
+void rsSinusoidalPartial<T>::setPhases(const std::vector<T>& p)
+{
+  rsAssert(p.size() == getNumDataPoints(), "wrong array size");
+  for(int i = 0; i < (int) p.size(); i++)
+    setPhase(i, p[i]);
+}
 
 
 

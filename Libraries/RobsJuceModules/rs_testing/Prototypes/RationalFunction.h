@@ -9,10 +9,14 @@ functions of linear time invariant systems (a.k.a. filters) are of that type. Th
 facilities for performing arithmetic with rational functions (including composition), evaluation,
 partial fraction expansion, etc. 
 
+Note that instances of this class are not suitable for realtime code - there's a lot of memory 
+allocation going on in the operators (std::vectors are created, resized, assigned, etc.) and the
+algorithms are not optimized either.
+
 to verify:
 I think, the rational functions over a field (like the real or complex numbers) form themselves a 
 field - as opposed to the polynomials, which form only a ring. That's why we can always do a 
-division of two rational functions without need to worry about a remainder (which may occur in 
+division of two rational functions without having to worry about a remainder (which may occur in 
 polynomial division). */
 
 template<class T>
@@ -109,7 +113,7 @@ public:
     std::complex<T>* denominator, int denominatorDegree,
     std::complex<T>* poles, int* multiplicities, int numDistinctPoles,
     std::complex<T>* pfeCoeffs);
-  // allocate heap memory
+  // allocates heap memory
 
 
 protected:

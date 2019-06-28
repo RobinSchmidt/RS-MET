@@ -34,6 +34,10 @@ implementation of \f$\mathbf{f}(x, mathbf{y})\f$.
 The implementation of this class stays close to the notation used in (1), so in order to
 understand how it works internally, it is recommended to consult that book.
 
+...actually, this implementation should be used only as prototype - it does a lot of unnecessary
+memory allocations - this makes the code neat and convenient but is really inefficient
+-> move to prototypes and use the implementation from the GNUPlotCPP codebase for production code
+
 \todo implement more iteration formulas, maybe even implicit methods (those require solution of
 a linear system per step), adpative stepsize control, predictor/corrector methods, whatever.....
 but maybe defer this to subclasses */
@@ -225,6 +229,29 @@ protected:
 
 // explicit instantiation for doubles:
 typedef rsDifferentialEquationSystem<double, double> rsDifferentialEquationSystemDbl;
+
+/*
+
+maybe implement variations of the steppers based on non-newtonian derivatives:
+https://hal.archives-ouvertes.fr/file/index/docid/945788/filename/nncam.pdf
+https://books.google.de/books?id=RLuJmE5y8pYC&printsec=frontcover&dq=%22Non-Newtonian+Calculus%22&hl=en&sa=X&ved=0ahUKEwjD7b3x6P3iAhUDZ1AKHXmHBFMQ6AEIKjAA#v=onepage&q=%22Non-Newtonian%20Calculus%22&f=false
+i think, the Euler step should be modified as follows:
+original: y[n+1] = y[n] + h * f(y[n])
+new:      y[n+1] = y[n] * exp(h * f(y[n]) / y[n])
+...and for the higher order steps (Runge-Kutta, etc.), similar formulas can be derived, see here:
+https://www.hindawi.com/journals/aaa/2015/594685/
+https://arxiv.org/pdf/1402.2877.pdf
+
+maybe, we should have a fully general Euler step, based on Eq.21 here:
+"Generalized Runge-Kutta Method with respect to the Non-Newtonian Calculus":
+https://www.hindawi.com/journals/aaa/2015/594685/
+...and similarly for other steps such as Runge Kutta
+it needs 4 functions: alpha, alphaInverse, beta, betaInverse - in case of the bigeometric calculus
+they woud be exp,log,exp,log, in case of geometric calculus: id,id,exp,log (or exp,log,id,id?)
+
+
+
+*/
 
 
 #endif

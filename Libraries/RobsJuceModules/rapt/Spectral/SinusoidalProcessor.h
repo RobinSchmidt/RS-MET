@@ -131,6 +131,16 @@ public:
   /** Applies beating-removal to the given partial. */
   virtual void removeBeating(rsSinusoidalPartial<T>& partial);
 
+  /** Smoothes the given phase-array... */
+  static std::vector<T> smoothPhases(
+    std::vector<T>& time, std::vector<T>& freqs, std::vector<T>& phases, 
+    T cutoff);
+  // maybe factor this out - it could be useful for other processors, too ...maybe have a class
+  // rsPhaseSmoother that lets the user select cutoff-freq, filter-type, etc.
+  // todo: make input vectors const (-> make GNUPlotter const-correct)
+
+
+
   /** Embedded envelope extrator object - made public, so client code can set up its options 
   directly by accessing it via dot-syntax. */
   rsEnvelopeExtractor<T> envExtractor;

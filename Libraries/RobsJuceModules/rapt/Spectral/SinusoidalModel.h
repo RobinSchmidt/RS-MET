@@ -106,6 +106,8 @@ public:
   doing something wrong and an assertion is raised. */
   void setAmplitudes(const std::vector<T>& newAmplitudes);
 
+  /** Like setAmplitudes, but for phases. */
+  void setPhases(const std::vector<T>& newPhases);
 
 
   // maybe have insertDataPoint function
@@ -115,6 +117,9 @@ public:
 
   /** Sets the amplitude for the datapoint at index i. */
   void setAmplitude(int i, T newAmp) { instParams[i].gain = newAmp; }
+
+  /** Sets the phase for the datapoint at index i. */
+  void setPhase(int i, T newPhase) { instParams[i].phase = newPhase; }
 
 
   /** Sets the data for the instantaneous parameters for the datapoint with given index. */
