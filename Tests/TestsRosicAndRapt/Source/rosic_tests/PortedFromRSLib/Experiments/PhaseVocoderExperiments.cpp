@@ -1705,9 +1705,9 @@ void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
   analyzer.getCycleFinder().setFundamental((f1+f2)/2);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int)x.size());
   //plotSineModel(mdl, fs);
-  plotSineModelAmplitudes(mdl, { 1 });
+  //plotSineModelAmplitudes(mdl, { 1 });
   //plotSineModelPhases(mdl, { 1 }, true);  // phase-derivative
-  plotSineModelPhases(mdl, { 1 }, false); // de-trended phase
+  //plotSineModelPhases(mdl, { 1 }, false); // de-trended phase
 
   // resynthesize without modifications:
   std::vector<double> y = synthesizeSinusoidal(mdl, fs);
@@ -1723,9 +1723,13 @@ void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
     // apply de-beating to model data:
   rsPartialBeatingRemover<double> deBeater;
   deBeater.processModel(mdl);
-  plotSineModelAmplitudes(mdl, { 1 }); 
-  //plotSineModelPhases(mdl, { 1 }, true);  // phase-derivative
+  //plotSineModelAmplitudes(mdl, { 1 }); 
+  plotSineModelPhases(mdl, { 1 }, true);  // phase-derivative
   plotSineModelPhases(mdl, { 1 }, false); // de-trended phase
+  // the 1st value of the derivative is an outlier - it has a huge negative value...maybe that's 
+  // because the time instant of the 1st (not the 0th) datapoint has a spacing wildly different 
+  // from from the average spacing (it's at 1.e-9, whereas the next is at 5.e-4 - probably a 
+  // non-uniform filter may fix this
 
   // resynthesize with modifications:
   mdl.keepOnly({1});                     // get rid of DC artifacts at the start

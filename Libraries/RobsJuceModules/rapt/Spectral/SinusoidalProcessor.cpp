@@ -274,7 +274,7 @@ void rsPartialBeatingRemover<T>::removeBeating(rsSinusoidalPartial<T>& partial)
   // process phases: in a signal that shows beating, we see phase inversions when we go from
   // one bump/grain to the next - these are hard switches which are audible, so we somehow need to
   // get rid of them - we do this by smoothing out the discontinuities:
-  T cutoff = 20; // make user parameter
+  T cutoff = 5; // make user parameter
   std::vector<T> p = smoothPhases(t, partial.getFrequencyArray(), partial.getPhaseArray(), cutoff);
   partial.setPhases(p);
   //rsPlotVector(p);
