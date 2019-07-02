@@ -1,10 +1,6 @@
 #ifndef RAPT_PLOTTING_H
 #define RAPT_PLOTTING_H
 
-//#include "GNUPlotter.h"
-//#include "DSPPlotters.h"
-using namespace std;  // try to get rid
-
 // why do we need these includes here?
 #include "rapt/rapt.h"
 #include "rosic/rosic.h"
@@ -31,9 +27,9 @@ double), such that the compiler can deduce the template parameter. We also use i
 input impulse to the filter, so it actually gets some purpose besides satisfying the compiler. The
 filter class must support the functions reset() and getSample() */
 template<class TSig, class TFlt>
-inline vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
+inline std::vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
 {
-  vector<TSig> y(length);
+  std::vector<TSig> y(length);
   filter.reset();
   y[0] = filter.getSample(scale);
   for(int n = 1; n < length; n++)
@@ -47,7 +43,7 @@ inline vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
 template<class TSig, class TFlt>
 inline void plotImpulseResponse(TFlt &filter, int length, TSig scale)
 {
-  vector<TSig> y = impulseResponse(filter, length, scale);
+  std::vector<TSig> y = impulseResponse(filter, length, scale);
   GNUPlotter plt;
   plt.addDataArrays(length, &y[0]);
   plt.plot();
