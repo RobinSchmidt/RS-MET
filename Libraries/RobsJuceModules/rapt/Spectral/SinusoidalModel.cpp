@@ -406,4 +406,10 @@ Ideas:
 
 -create different variations of analysis/synthesis algorithms
 
+Resources:
+Xavier Serra's thesis: 
+A SYSTEM FOR SOUND ANALYSIS/TRANSFORMATION/SYNTHESIS BASED ON A
+DETERMINISTIC PLUS STOCHASTIC DECOMPOSITION:
+https://repositori.upf.edu/bitstream/handle/10230/34072/Serra_PhDthesis.pdf?sequence=1&isAllowed=y
+
 */

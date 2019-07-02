@@ -1228,16 +1228,18 @@ bool testRationalFunction(std::string& reportString)
   t = r(s); // 700,-2165, 1204,-1475,518;  2000,-1775,210,172,-40
   y1 = t(5);  // -31.09268...
   testResult &= rsIsCloseTo(y1, -31.0926829268293, tol);
-  // our numeric result from the evaluation -32.09.. is the same as the result from sage but
+  // our numeric result from the evaluation -31.09.. is the same as the result from sage but
   // our coefficient arrays are different. numerator and denominator still have a common
   // factor -> divide both by their gcd:
 
   t.reduce(tol);
   // after reducing, the coefficients are consistent with sage's - but ours are still all 
-  // multiplied by a factor of two compared to sage's result - we may have divide all coefficients
-  // by *their* gcd - but for that, we would need floating point gcd with tolerance...maybe that 
-  // doesn't make much sense as we do not really assume to coeffs to be integers anyway - and the 
-  // gcd of a set of real (or complex) numbers is meaningless
+  // multiplied by a factor of two compared to sage's result - we may have to divide all 
+  // coefficients by *their* gcd - but for that, we would need floating point gcd with 
+  // tolerance...maybe that doesn't make much sense as we do not really assume to coeffs to be 
+  // integers anyway - and the gcd of a set of real (or complex) numbers is meaningless
+  // https://stackoverflow.com/questions/16628088/euclidean-algorithm-gcd-with-multiple-numbers
+  // https://www.geeksforgeeks.org/gcd-two-array-numbers/
 
 
 
