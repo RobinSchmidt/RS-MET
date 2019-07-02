@@ -1,6 +1,6 @@
 #include "AudioPerformanceTests.h"
 using namespace RAPT;
-//using namespace std;
+using namespace std;
 
 void filterSignConventionPerformance()
 {
