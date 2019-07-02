@@ -30,7 +30,7 @@ integer i_len(char *s, ftnlen n)
 
 integer s_cmp(char *a0, char *b0, ftnlen la, ftnlen lb)
 {
-  register unsigned char *a, *aend, *b, *bend;
+  unsigned char *a, *aend, *b, *bend;
   a = (unsigned char *)a0;
   b = (unsigned char *)b0;
   aend = a + la;
@@ -65,9 +65,9 @@ integer s_cmp(char *a0, char *b0, ftnlen la, ftnlen lb)
   return(0);
 }
 
-void s_copy(register char *a, register char *b, ftnlen la, ftnlen lb)
+void s_copy(char *a, char *b, ftnlen la, ftnlen lb)
 {
-  register char *aend, *bend;
+  char *aend, *bend;
 
   aend = a + la;
 
