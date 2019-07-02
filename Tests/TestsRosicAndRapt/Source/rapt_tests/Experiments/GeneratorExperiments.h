@@ -26,6 +26,7 @@ void rayBouncer();
 void circleFractals();
 void hilbertCurve();
 void lindenmayer();
+void snowFlake();
 void triSawOsc();
 void triSawOscAntiAlias();
 void xoxosOsc();

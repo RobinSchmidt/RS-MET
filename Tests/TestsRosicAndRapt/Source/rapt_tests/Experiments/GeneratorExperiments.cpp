@@ -2024,6 +2024,31 @@ void lindenmayer()
   plt1.plot();
 }
 
+void snowFlake()
+{
+  // We test the rendering and anti-aliasing of snowflake - the anti aliasing shall be done by 
+  // means of bleps (for resets) and blamps (for turns)
+
+  int N    = 44100;  // number of samples
+  int fs   = 44100;  // sample rate
+  double f = 1000;   // signal frequency
+
+  rosic::Snowflake sf;
+  sf.setSampleRate(fs);
+  sf.setFrequency(f);
+  sf.setAmplitude(0.5);
+  sf.setAxiom("F+F+F+F+");
+  sf.setTurnAngle(90);    // try something else (60?) to see effect of resets)
+  sf.setUseTable(false);
+  sf.setNumIterations(0);
+
+  // produce signal and write to file:
+  std::vector<double> xL(N), xR(N);
+  for(int n = 0; n < N; n++)
+    sf.getSampleFrameStereo(&xL[n], &xR[n]);
+  rosic::writeToStereoWaveFile("SnowflakeTest.wav", &xL[0], &xR[0], N, fs);
+}
+
 void triSawOsc()
 {
   static const int N = 1000;   // number of output samples
