@@ -194,6 +194,19 @@ T rsSinusoidalPartial<T>::getMaxFreq() const
 }
 
 template<class T>
+int rsSinusoidalPartial<T>::getMaxAmpIndex() const
+{
+  T maxAmp = instParams[0].gain;
+  int maxIdx = 0;
+  for(int i = 1; i < (int) instParams.size(); i++) {
+    if(instParams[i].gain > maxAmp) {
+      maxAmp = instParams[i].gain;
+      maxIdx = i; }}
+  return maxIdx;
+}
+
+
+template<class T>
 T rsSinusoidalPartial<T>::getMaxFreqPhaseInconsistency() const
 {
   T maxError = T(0);

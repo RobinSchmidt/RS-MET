@@ -798,6 +798,47 @@ void modalSynthSpectra()
   // todo: figure out why there are comb filtering artifacts on retrigger
 }
 
+void modalAnalysis()
+{
+  double key = 64;
+  double sampleRate = 44100;
+  int length = 44100;
+
+  typedef std::vector<double> Vec;
+
+  Vec x = createModalPluck(key, sampleRate, length);
+
+  // create a sinusoidal model and resynthesize sinusoidally:
+  typedef rsWindowFunction::WindowType WT;
+  RAPT::rsHarmonicAnalyzer<double> analyzer;
+  analyzer.setSampleRate(sampleRate);
+  analyzer.setSincInterpolationLength(64);
+  analyzer.setNumCyclesPerBlock(4);
+  //analyzer.setWindowType(WT::hamming);
+  analyzer.setWindowType(WT::blackman);
+  analyzer.setSpectralOversampling(8);  // zero padding
+  analyzer.setAllowInharmonics(true);
+  analyzer.setSpectralPeakSearchWidth(0.5);       // default: 1 - blackman needs a value less than 1
+  analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
+  RAPT::rsSinusoidalModel<double> sineModel = analyzer.analyze(&x[0], length);
+  sineModel.removePartialsAbove(66);  // model shows partials up to 40 kHz - why?
+  //plotSineModel(sineModel, sampleRate);
+  Vec ys = synthesizeSinusoidal(sineModel, sampleRate);
+
+
+  // create a modal model and resynthesize modally:
+  std::vector<rsModalFilterParameters<double>> modeModel
+    = getModalModel(sineModel);
+  //Vec ym = synthesizeModal(modeModel, sampleRate);
+
+
+  // resynthesize via model:
+  // ...
+
+  rosic::writeToMonoWaveFile("ModalPluckOriginal.wav", &x[0],  length, (int)sampleRate);
+  rosic::writeToMonoWaveFile("ModalPluckSinusoidal.wav", &ys[0], (int)ys.size(), (int)sampleRate);
+}
+
 /*
 Ideas:
 -user defines modal parameters for various keys and velocities (at least two keys at two 

@@ -215,8 +215,11 @@ public:
   /** Returns the minimum frequency of this partial. */
   T getMinFreq() const;
 
-  /** Returns the minimum frequency of this partial. */
+  /** Returns the maximum frequency of this partial. */
   T getMaxFreq() const;
+
+  /** Returns the index of the datapoint with maximum amplitude. */
+  int getMaxAmpIndex() const;
 
   /** Returns the maximum absolute difference between phases that would be computed by numerically
   integrating frequencies and actually stored phase values (always taking appropriate wrapping into

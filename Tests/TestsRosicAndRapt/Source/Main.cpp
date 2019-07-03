@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
   //nonUniformOnePole1();
 //  nonUniformOnePole2();
   //nonUniformComplexOnePole();
-  nonUniformAllpole();
+  //nonUniformAllpole();
   //nonUniformBiquad();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
@@ -320,6 +320,7 @@ int main(int argc, char* argv[])
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
   //modalWithFancyEnv();
   //modalSynthSpectra();
+  modalAnalysis();
 
   // Misc Audio:
   //centroid();

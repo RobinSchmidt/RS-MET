@@ -253,7 +253,18 @@ rsModalFilterParameters<T> getModalModel(const RAPT::rsSinusoidalPartial<T>& par
   // decay:     compare average amplitudes of 1st and 2nd half after the peak
   // phase:     start phase in model
 
-  return rsModalFilterParameters(); // preliminary
+  rsModalFilterParameters<T> params;
+  params.freq  = partial.getMeanFreq();  
+  params.phase = partial.getFirstDataPoint().getWrappedPhase();
+
+  int i = partial.getMaxAmpIndex();
+  params.amp = partial.getDataPoint(i).getAmplitude();
+  params.att = partial.getDataPoint(i).getTime();
+
+  params.dec = 0.5;  // preliminary - todo: estimate decay...
+
+  return params;
+  //return rsModalFilterParameters<T>(); // preliminary
 }
 
 template<class T>
@@ -261,6 +272,9 @@ std::vector<rsModalFilterParameters<T>> getModalModel(const RAPT::rsSinusoidalMo
 {
   std::vector<rsModalFilterParameters<T>> p(model.getNumPartials());
   for(int i = 0; i < model.getNumPartials(); i++)
-    p[i] = getModalModel(model.getPartial());
+    p[i] = getModalModel(model.getPartial(i));
   return p;
 }
+
+template std::vector<rsModalFilterParameters<double>> 
+  getModalModel(const RAPT::rsSinusoidalModel<double>& model);
