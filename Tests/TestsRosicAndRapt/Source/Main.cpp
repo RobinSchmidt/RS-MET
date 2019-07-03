@@ -89,7 +89,8 @@ int main(int argc, char* argv[])
   //nonUniformMovingAverage();
   //nonUniformOnePole1();
 //  nonUniformOnePole2();
-//  nonUniformComplexOnePole();
+  //nonUniformComplexOnePole();
+  nonUniformAllpole();
   //nonUniformBiquad();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
@@ -121,7 +122,7 @@ int main(int argc, char* argv[])
   //hilbertCurve();
   //circleFractals(); // rename to spirograph
   //lindenmayer();
-  snowFlake();
+  //snowFlake();
   //triSawOsc();
   //triSawOscAntiAlias();
   //xoxosOsc();

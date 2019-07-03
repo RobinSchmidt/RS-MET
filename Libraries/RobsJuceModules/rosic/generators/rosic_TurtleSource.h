@@ -195,7 +195,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
-  /** Computes the position inside array of lines gieven a normalized postion in 0..1. */
+  /** Computes the position inside array of lines given a normalized position in 0..1. */
   double getLinePosition(double normalizedPosition)
   {
     double tmp = normalizedPosition + phaseOffset;
@@ -220,7 +220,7 @@ public:
     if(iPos != lineIndex)
       goToLineSegment(iPos);
 
-    // read out buffered line segment (x[], y[] members) with interpolation:
+    // read out buffered line segment (x[2], y[2] members) with interpolation:
     interpolate(outL, outR, fPos);
     *outL = normalizer * amplitude * (*outL - centerX);
     *outR = normalizer * amplitude * (*outR - centerY);
@@ -242,6 +242,20 @@ public:
     if(shouldReverse)
       reverseDirection();
   }
+  // to make that compatible with the blep, we should do the updates before computation
+
+
+  INLINE void getSampleFrameStereoNoAA(double* outL, double* outR)
+  {
+
+  }
+
+  INLINE void getSampleFrameStereoAA(double* outL, double* outR)
+  {
+
+  }
+
+
 
   /** Resets the state of the object, such that we start at 0,0 and head towards 1,0 (in
   unnormalized coordinates). */

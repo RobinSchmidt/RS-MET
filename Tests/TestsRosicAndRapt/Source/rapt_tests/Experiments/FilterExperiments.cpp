@@ -745,6 +745,19 @@ void nonUniformComplexOnePole()
 //   butterworth, bessel, gaussian, papoulis, halpern, cheby-1) to avoid this problem
 //   -> we may also do a proper impulse-invariant transform with such filters
 
+void nonUniformAllpole()
+{
+  // Test for a high-order non-uniform allpole filter (Butterworth, Bessel, etc.)
+
+  //double cutoff = 20;
+
+  rsNonUniformFilterIIR<double> flt;
+  flt.setFrequency(20);
+  flt.setOrder(1);
+
+  //...
+}
+
 void nonUniformBiquad()
 {
   // We design a biquad filter (via RBJ cookbook formulas), separate it into a parallel connection 
@@ -758,9 +771,9 @@ void nonUniformBiquad()
 
 
   int Nc = Nf * oversampling; // number of samples for oversampled signal
-
-
 }
+
+
 
 
 // todo: for testing the complex bandpass filters later, maybe try to separate two sinusoids of

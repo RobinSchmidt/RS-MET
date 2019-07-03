@@ -134,7 +134,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-/** \name Processing */
+  /** \name Processing */
 
 
   std::complex<T> getSample(std::complex<T> x, T dt);
@@ -164,7 +164,7 @@ protected:
   std::complex<T> a = T(1), b = T(0);  
   // maybe rename to b0, a1 for consistency with other filters - or to r,p for residue,pole
 
-  // maybe factor out into subclasses:
+  // maybe factor out into subclass(es):
   std::complex<T> x1 = 0;
   std::complex<T> s  = 1;
   T wr = 0;  // reference frequency for unit gain in time-variant scaling normalization
@@ -182,6 +182,19 @@ class rsNonUniformFilterIIR
 public:
 
 
+  rsNonUniformFilterIIR();
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  ///** Sets the normalized radian frequency omega = 2*PI*frequency/sampleRate. */
+  //void setOmega(T newOmega);
+
+  /** Sets the cutoff frequency of the filter in Hz. */
+  void setFrequency(T newFreq);
+
+
   enum class ApproximationMethod
   {
     gaussian,
@@ -192,11 +205,22 @@ public:
     halpern
   };
 
-  void setApproximationMethod(ApproximationMethod newMethod)
-  {
-    approxMethod = newMethod;
-    dirty = true;
-  }
+
+  void setOrder(int newOrder);
+
+  void setApproximationMethod(ApproximationMethod newMethod);
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  // ...dt is in seconds, i.e. 1/sampleRate for uniformly sampled signals
+  //T getSample(T x, T dt);
+
+  // void reset();
+
 
 
 protected:
@@ -204,11 +228,28 @@ protected:
   /** Updates all filter coefficients according to the settings. */
   void updateCoeffs();
 
-  std::vector<std::complex<T>> r, p, y;
+
+
+  //ApproximationMethod approxMethod = gaussian;
+  ApproximationMethod approxMethod = ApproximationMethod::butterworth;
+
+  //T omega = PI/2;  // halfband by default
+  T freq = 1.0;
+
+  RAPT::rsPrototypeDesigner<T> protoDesigner;
+
+  //bool dirty = true;  // maybe use atomic::bool
+
+  int order = 1;
+
+
+  static const int maxOrder = 20;
+  rsNonUniformComplexOnePole<T> onePoles[maxOrder];
+  //std::vector<std::complex<T>> r, p, y;
   // r, p: residues and poles of the complex one-poles, y: output signals
 
-  ApproximationMethod approxMethod = gaussian;
 
-  bool dirty = true;  // maybe use atomic::bool
+  //std::vector<rsNonUniformComplexOnePole> onePoles;
+
 
 };

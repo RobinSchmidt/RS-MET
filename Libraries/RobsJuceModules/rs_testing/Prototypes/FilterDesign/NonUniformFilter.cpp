@@ -127,10 +127,45 @@ void rsNonUniformComplexOnePole<T>::reset()
   s = a / (T(1) - b * exp(j*wr));  // ...verify...
 }
 
+//=================================================================================================
 
+template<class T>
+rsNonUniformFilterIIR<T>::rsNonUniformFilterIIR()
+{
+  updateCoeffs();
+}
+
+template<class T>
+void rsNonUniformFilterIIR<T>::setFrequency(T newFreq)
+{
+  freq = newFreq;
+  updateCoeffs();
+}
+
+template<class T>
+void rsNonUniformFilterIIR<T>::setOrder(int newOrder)
+{
+  rsAssert(order >= 1 && order <= maxOrder, "order out of range");
+  order = newOrder;
+  updateCoeffs();
+}
+
+template<class T>
+void rsNonUniformFilterIIR<T>::setApproximationMethod(ApproximationMethod newMethod)
+{
+  approxMethod = newMethod;
+  updateCoeffs();
+}
+
+template<class T>
+void rsNonUniformFilterIIR<T>::updateCoeffs()
+{
+
+}
 
 template class rsNonUniformComplexOnePole<double>;
 template class rsNonUniformOnePole<double>;
+template class rsNonUniformFilterIIR<double>;
 
 
 

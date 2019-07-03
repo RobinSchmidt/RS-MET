@@ -14,6 +14,7 @@ void nonUniformMovingAverage();
 void nonUniformOnePole1();
 void nonUniformOnePole2();
 void nonUniformComplexOnePole();
+void nonUniformAllpole();
 void nonUniformBiquad();
 
 void smoothingFilterOrders();
