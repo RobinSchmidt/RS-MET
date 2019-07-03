@@ -292,8 +292,8 @@ private:
 
   // make assignment operator and copy constructor unavailable because this class contains 
   // pointer members:
-  rsFractionalDelayLine& operator=(const rsFractionalDelayLine &other) { return *this; }
-  rsFractionalDelayLine(const rsFractionalDelayLine& other) { }
+  rsFractionalDelayLine& operator=(const rsFractionalDelayLine& /*other*/) { return *this; }
+  rsFractionalDelayLine(const rsFractionalDelayLine& /*other*/) { }
 
 };
 

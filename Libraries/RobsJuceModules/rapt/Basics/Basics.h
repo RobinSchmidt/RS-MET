@@ -22,8 +22,8 @@ inline void rsSwap(T& x, T& y)
   y = t;
 }
 
-template<class T> inline T rsUnityValue(T value) { return T(1);  }
-template<class T> inline T rsZeroValue( T value) { return T(0);  }
+template<class T> inline T rsUnityValue(T /*value*/) { return T(1);  }
+template<class T> inline T rsZeroValue( T /*value*/) { return T(0);  }
 template<class T> inline T rsIdentity(  T value) { return value; }
 
 /** Returns true, if x is not-a-number, false otherwise. */
@@ -79,8 +79,8 @@ T rsAbs(T x)
 }
 inline double  rsAbs(double  x) { return fabs(x); }
 inline float   rsAbs(float   x) { return fabs(x); }
-inline rsInt8  rsAbs(rsInt8  x) { return  abs(x); }
-inline rsInt16 rsAbs(rsInt16 x) { return  abs(x); }
+//inline rsInt8  rsAbs(rsInt8  x) { return  abs(x); }
+//inline rsInt16 rsAbs(rsInt16 x) { return  abs(x); }
 inline rsInt32 rsAbs(rsInt32 x) { return  abs(x); }
 //inline rsInt64 rsAbs(rsInt64 x) { return  abs(x); } // doesn't work with MinGW gcc 4.7
 template<class T> inline T rsAbs(std::complex<T> z) { return abs(z); }

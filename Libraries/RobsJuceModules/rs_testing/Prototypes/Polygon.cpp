@@ -107,7 +107,7 @@ std::vector<rsVector2DF> clipConvexPolygons2(const std::vector<rsVector2DF>& p,
   for(size_t i = 0; i < c.size()-1; i++)
   {
     clipAgainstEdge(p, r, c[i], c[i+1]);
-    int dummy = 0;
+    //int dummy = 0;
   }
   return r;
 }
@@ -355,14 +355,14 @@ float unitSquareCoverage(Vec2 a, Vec2 b, Vec2 c)
   }
 
 
-  int dummy = 0;
+  //int dummy = 0;
 
 
 
   // can - instead of computing the bite areas directly - compute the clip polygon from this info?
   // that would be better than just the coverage because we can use it to compute the center
   // of gravity and use that for linear deinterpolation
-  int nv = 0;   // number of vertices in clipped polygon (so far)
+  //int nv = 0;   // number of vertices in clipped polygon (so far)
   Vec2 v[7];    // array for clipped polygon vertices
 
   return area; // preliminary

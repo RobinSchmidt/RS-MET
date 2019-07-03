@@ -72,9 +72,9 @@ std::string PerformanceAnalyzer::getReport()
   std::string report;
 
   // formatting variables:
-  int lineWidth     = 80; // make user parameter
-  int columnWidth   = 6;
-  int maxNameLength = 6; // preliminary
+  //int lineWidth     = 80; // make user parameter
+  //int columnWidth   = 6;
+  //int maxNameLength = 6; // preliminary
 
 
   //size_t i, j;
@@ -84,9 +84,9 @@ std::string PerformanceAnalyzer::getReport()
   computeMeansAndVariances();
 
   report += "Mean Values\n";
-  std::vector<std::vector<double>> means = getMeans();
 
-  
+  //std::vector<std::vector<double>> means = getMeans();
+
   //std::vector<std::vector<double>> getMeans();
   //...
 

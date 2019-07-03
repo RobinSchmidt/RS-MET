@@ -622,9 +622,9 @@ RS_INLINE TSig rsLadderFilterFeedbackSaturated<TSig, TPar>::getSampleNoGain(TSig
   //break;
   case TEST1:
   {
-    TSig c = -0.3;
-    //y[0] = in - saturate(k*drive*y[4] + c*in) - saturate(c*in);
-    this->y[0] = in - saturate(this->k * drive * this->y[4] + c * in);
+    TSig C = -0.3;
+    //y[0] = in - saturate(k*drive*y[4] + C*in) - saturate(C*in);
+    this->y[0] = in - saturate(this->k * drive * this->y[4] + C * in);
     this->y[1] = this->b * this->y[0] - this->a * this->y[1];
     this->y[2] = this->b * this->y[1] - this->a * this->y[2];
     this->y[3] = this->b * this->y[2] - this->a * this->y[3];
@@ -1233,8 +1233,9 @@ RS_INLINE TSig rsLadderMystran<TSig, TPar>::getSample(TSig in)
 template<class TSig, class TPar>
 RS_INLINE TSig rsLadderMystran<TSig, TPar>::tanhXdX(TSig x)
 {
-  TSig a = x*x;
-  return ((a + 105)*a + 945) / ((15*a + 420)*a + 945);
+  TSig A = x*x;
+  return ((A + 105)*A + 945) / ((15*A + 420)*A + 945);
 }
+// maybe make function static
 
 #endif

@@ -1,10 +1,19 @@
 #pragma once
 
-
+// move to somewhere else:
+template<class T>
+bool doNothing(T x)
+{
+  return x == x;
+}
 
 /** This function should be used to indicate a runtime error. */
 inline void rsError(const char *errorMessage = nullptr)
 {
+  doNothing(errorMessage);
+  // fixes "unreferenced formal parameter" warning - we don't do anything with the message, but 
+  // we may want to see it in the debugger
+
   //printf("%s", errorMessage);
   RS_DEBUG_BREAK;
   // \todo have some conditional compilation code based on the DEBUG macro (trigger a break),

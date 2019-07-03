@@ -264,7 +264,7 @@ protected:
   /** Figures out, if one of our prepareForImpulse/Step/Ramp etc. functions should return early 
   (i.e. when some special limiting cases occur such that nothing needs to be done and just doing 
   it anyway may cause access violations)*/
-  inline bool shouldReturnEarly(TTim delayFraction)
+  inline bool shouldReturnEarly(TTim /*delayFraction*/)
   {
     //return delayFraction == 1;
 

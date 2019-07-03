@@ -1,6 +1,6 @@
 #include "FiniteAutomaton.h"
 
-std::string FiniteAutomaton::readSymbol(char c)
+std::string FiniteAutomaton::readSymbol(char /*c*/)
 {
   // -find index i belonging to c (maybe have a size 255 array of ints with entries that
   //  are all -1 by default)

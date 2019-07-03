@@ -73,7 +73,7 @@ void rsNaturalCubicSpline(const Tx *xIn, const Ty *yIn, int N, const Tx *xOut, T
 
   // OK, we have our polynomial coeffs for the segments - now do the actual interpolation:
   int i = 0;  // index into input data arrays (and polynomial coeffs)
-  int j = 0;  // index into output data arrays
+  //int j = 0;  // index into output data arrays
   for(int j = 0; j < Ni; j++) {
     Tx x = xOut[j];
     while(xIn[i+1] < x && i < N-2)

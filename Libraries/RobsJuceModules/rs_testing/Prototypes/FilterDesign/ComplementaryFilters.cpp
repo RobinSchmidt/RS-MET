@@ -60,7 +60,7 @@ bool isComplementary(const rsFilterSpecificationBA<double>& lpfBA)
 
 
     //rsAssert(result);
-    int dummy = 0;
+    //int dummy = 0;
   }
 
   return result;
@@ -415,14 +415,14 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
 // comments:
 
 // analog 1-pole/0-zero
-void splitterPrototypeA_1_0(double* k, std::complex<double>* p, std::complex<double>* z)
+void splitterPrototypeA_1_0(double* k, std::complex<double>* p, std::complex<double>* /*z*/)
 {
   *k   =  1.0;
   p[0] = -1.0;
 }
 
 // analog 2-pole/0-zero
-void splitterPrototypeA_2_0(double* k, std::complex<double>* p, std::complex<double>* z)
+void splitterPrototypeA_2_0(double* k, std::complex<double>* p, std::complex<double>* /*z*/)
 {
   double s = SQRT2_INV;
   *k   =  1.0;

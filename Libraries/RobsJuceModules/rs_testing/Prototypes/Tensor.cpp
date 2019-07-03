@@ -8,7 +8,7 @@ Tensor::Tensor(int numDimensions, int numSuperscripts, int numSubscripts)
   values.resize((int)pow(dim, rank)); // maybe use some powInt function
 }
 
-bool Tensor::isSymmetric(int index1, int index2) const
+bool Tensor::isSymmetric(int /*index1*/, int /*index2*/) const
 {
   // we must run over i,j in 0...dim-1 of this(...,i,...,j,...) where i and j are at positions 
   // index1, index2 and compare all the elements - they must all be equal...how to express this?

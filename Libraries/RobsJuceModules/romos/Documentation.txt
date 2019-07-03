@@ -10,13 +10,14 @@ Module:
  way, it only needs to set the function-pointer when it makes the decision - no checks inside
  the processing function are necesarry
 -that leads to a somewhat weird interface where one must write either a free (non-member) or static
- member function for the audio processing and assgin that function to the processing func-pointer
+ member function for the audio processing and assign that function to the processing func-pointer
  instead of just overriding a member function....
 -because this function is not a (non static) member-function, it gets the module for which it is
- called passed as first parameter (as replacement for the missing "this" point)
+ called passed as first parameter (as replacement for the missing "this" pointer)
 -to access member variables, the module pointer must be downcasted to the module subclass type
 -the module programmer only needs to write a function that handles one sample of monophonic I/O,
- all other processing functions can then be generated automatically via preprocessor macros
+ all other processing functions (polyphonic and/or block-oriented ones) can then be generated
+ automatically via preprocessor macros
 
 
 

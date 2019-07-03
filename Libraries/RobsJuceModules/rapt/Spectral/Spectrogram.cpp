@@ -129,7 +129,7 @@ rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N
   // x: signal, N: number of samples
 
   T*  w = &analysisWindow[0];
-  int B = blockSize;
+  //int B = blockSize;
   int H = hopSize;
   int F = getNumFrames(N, H);                  // number of STFT frames
   int M = trafoSize;

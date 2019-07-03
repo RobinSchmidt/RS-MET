@@ -45,7 +45,7 @@ std::vector<double> solvePentaDiagonalSystem(
     L[i+1] -= k*U[i];
     D[i+2] -= k*V[i];
     B[i+2] -= k*B[i];
-    int dummy = 0;
+    //int dummy = 0;
   }
   piv[i]  = D[i];
   k       = L[i]/D[i];     // a final partial step outside the loop
@@ -159,7 +159,7 @@ std::vector<double> rsMinSqrDifFixSum(const std::vector<double>& s,
   return v;
 }
 
-std::vector<double> rsMinSqrCrvFixSum(const std::vector<double>& s, const std::vector<double>& w)
+std::vector<double> rsMinSqrCrvFixSum(const std::vector<double>& s, const std::vector<double>& /*w*/)
 {
   int Ns = (int) s.size();  // number of sums
   int Nv = Ns + 1;          // number of values
@@ -741,7 +741,7 @@ std::string rsGroupString2::toString() const
   size_t len = s.size();
   outStr.resize(len);
   for(size_t i = 0; i < len; i++)
-    outStr[i] = s[i] + 97;
+    outStr[i] = (char)(s[i] + 97);
   rsAssert(checkCharacters());
   return outStr;
 }

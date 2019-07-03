@@ -283,7 +283,7 @@ inline void plot(rsImageF& img, int x, int y, float color, bool swapXY)
     plot(img, x, y, color);
 }
 void drawThickLine2(rsImageF& img, float x0, float y0, float x1, float y1, float color,
-  float thickness, int endCaps)
+  float thickness, int /*endCaps*/)
 {
   // ...Under construction...
   // Draws a thick line using a Bresenham stepper along the major axis in an outer loop and for 
@@ -843,7 +843,7 @@ int RectangleF::getRegion(const rsVector2DF& p)
   return INSIDE;
 }
 
-int clipTriangleToUnitSquare(const rsVector2DF& a, const rsVector2DF& b, const rsVector2DF& c,
+int clipTriangleToUnitSquare(const rsVector2DF& a, const rsVector2DF& /*b*/, const rsVector2DF& /*c*/,
   rsVector2DF* p)
 {
   // assume a is top vertex and left in a flat-top triangle (with a downward y-axis)

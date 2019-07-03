@@ -257,7 +257,7 @@ void GNUPlotter::setGrid(bool x, bool y, bool x2, bool y2, bool z)
   addCommand(s);
 }
 
-void GNUPlotter::setLogScale(string axes, double base, bool shouldBeLogarithmic)
+void GNUPlotter::setLogScale(string axes, double /*base*/, bool shouldBeLogarithmic)
 {
   string s;
   if( !shouldBeLogarithmic )
@@ -584,7 +584,7 @@ void GNUPlotter::invokeGNUPlot()
   systemCall(callString);
   // is it possible to call GNUPlot in a separate process? - this is actually already the case
   // ...but we have to close it to call it again - i.e. we can't do multiple plots at once
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 // internal functions:
