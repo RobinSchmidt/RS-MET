@@ -292,6 +292,7 @@ rsModalFilterParameters<T> getModalModel(const RAPT::rsSinusoidalPartial<T>& par
   // that doesn't work because some amplitudes may be zero
   */
 
+  /*
   int searchStart = peakIndex + (partial.getNumDataPoints()-peakIndex)/2;
   int peakIndex2 = partial.getMaxAmpIndex(searchStart);
   T t1 = partial.getDataPoint(peakIndex).getTime();
@@ -300,12 +301,30 @@ rsModalFilterParameters<T> getModalModel(const RAPT::rsSinusoidalPartial<T>& par
   T a2 = partial.getDataPoint(peakIndex2).getAmplitude();
   T dt = t2 - t1; // time difference
   T ra = a1 / a2; // amplitude ratio todo: catch a2 == 0 as special case
-
   // from dt and ra, we can compute the decay time tau...-> look up formula....
+  */
 
   // ...hmm - maybe this is not so good - maybe it would be better to search through the 
   // amplitude array for the index/time, where the amplitude is peakAmp/e - but for this, we need 
-  // to assume a monotonically decreasing amplitude envelope after the peak
+  // to assume a monotonically decreasing amplitude envelope after the peak - maybe if it's not
+  // obtain "meta-envelopes" repeatedly until it is monotonically decreasing
+  T targetAmp = params.amp / EULER;  // peakAmp / e
+  //T tau = 0;  // or should we init with inf?
+  for(int i = peakIndex+1; i < (int) partial.getNumDataPoints(); i++)
+  {
+    if(partial.getDataPoint(i).gain < targetAmp)
+    {
+      params.dec = partial.getDataPoint(i).time - params.att;
+      // this is very coarse - todo: interpolate (linearly on the dB-scale)
+
+      break;
+    }
+  }
+  // maybe sometimes, the sample isn't long enough to contain the data, where it has decayed to
+  // peak/e (because of an early fade-out or palm-muting, whatever) - then we should use 
+  // c*peak/e for some c < 1 and multiply the decay-time by that same c - maybe have a loop
+  // with exponentially decreasing c, i.e. c = 1,0.5,0.25,0.125,...
+  // what about samples with no decay at all, i.e. sustained sounds?
 
 
 

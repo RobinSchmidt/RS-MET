@@ -830,7 +830,9 @@ void modalAnalysis()
   std::vector<rsModalFilterParameters<double>> modeModel
     = getModalModel(sineModel);
   Vec ym = synthesizeModal(modeModel, sampleRate, length);
-  // still wrong due to decay time not yet being estimated
+  // -decay is still only coarsly estimated
+  // -phases seem to be wrong - use phase from peak-amp (or somewhere else after the transient)
+  //  and obtain start-phase from that (phase data at the start may be inaccurate)
 
   rosic::writeToMonoWaveFile("ModalPluckOriginal.wav", &x[0],  length, (int)sampleRate);
   rosic::writeToMonoWaveFile("ModalPluckSinusoidal.wav", &ys[0], (int)ys.size(), (int)sampleRate);
