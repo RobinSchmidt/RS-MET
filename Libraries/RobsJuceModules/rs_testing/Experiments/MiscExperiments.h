@@ -7,8 +7,8 @@ std::vector<double> synthesizeSinusoidal(
 // maybe make a getSineModel convenience function
 
 /** ...
-If plotResults is true, the function will plot the original, resyntheiszed and residual signals 
-along with markres at the cycle-marks. The analysis datapoints are always in the middle between two
+If plotResults is true, the function will plot the original, resynthesized and residual signals 
+along with markers at the cycle-marks. The analysis datapoints are always in the middle between two
 cycle-marks
 todo: maybe also optionally plot the model..maybe use thickness and/or color of the lines to 
 indicate the amplitude of the partials */
@@ -39,6 +39,28 @@ void getPaddedSignals(double* xIn, int Nx,  const RAPT::rsSinusoidalModel<double
   const RAPT::rsSinusoidalSynthesizer<double>& synth, 
   std::vector<double>& x, std::vector<double>& y);
 // actually, we may need this later also to obtain a residual...function should be renamed
+
+/** Data structure to hold parameters of a single modal filter (with attack/decay envelope). 
+todo: maybe later allow for more general modal models with, for example, with two-stage decay, 
+etc. */
+template<class T>
+struct rsModalFilterParameters
+{
+  T freq = 1000, amp = 1, att = 0.01, dec = 0.1, phase = 0;
+};
+// move to rapt or rosic
+
+/** Takes a sinusoidal partial as input and creates the modal filter parameters that can be used to
+approximate the given partial. */
+template<class T>
+rsModalFilterParameters<T> getModalModel(const RAPT::rsSinusoidalPartial<T>& partial);
+
+/** Takes a sinusoidal model as input and creates the set/array of modal filter parameters that can
+be used to approximate the given model. */
+template<class T>
+std::vector<rsModalFilterParameters<T>> getModalModel(const RAPT::rsSinusoidalModel<T>& model);
+
+
 
 
 // move to RAPT::rsArray

@@ -242,3 +242,25 @@ void getPaddedSignals(double* xIn, int Nx,
   else if(ny > nx)
     RAPT::rsResizeWithInit(x, ny, 0.0);
 }
+
+template<class T>
+rsModalFilterParameters<T> getModalModel(const RAPT::rsSinusoidalPartial<T>& partial)
+{
+  // todo: estimate the actual parameters:
+  // frequency: take average freq of partial
+  // amplitude: take peak/max amplitude fo partial
+  // attack:    time-instant of peak
+  // decay:     compare average amplitudes of 1st and 2nd half after the peak
+  // phase:     start phase in model
+
+  return rsModalFilterParameters(); // preliminary
+}
+
+template<class T>
+std::vector<rsModalFilterParameters<T>> getModalModel(const RAPT::rsSinusoidalModel<T>& model)
+{
+  std::vector<rsModalFilterParameters<T>> p(model.getNumPartials());
+  for(int i = 0; i < model.getNumPartials(); i++)
+    p[i] = getModalModel(model.getPartial());
+  return p;
+}
