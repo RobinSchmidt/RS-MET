@@ -255,13 +255,67 @@ rsModalFilterParameters<T> getModalModel(const RAPT::rsSinusoidalPartial<T>& par
 
   rsModalFilterParameters<T> params;
   params.freq  = partial.getMeanFreq();  
+  // maybe we should cut off the transient before taking the mean?
+
   params.phase = partial.getFirstDataPoint().getWrappedPhase();
+  // maybe this is not the best strategy either - maybe take the phase at the amplitude peak and
+  // compute the start-phase from that and the mean frequency ...it seems, it would be a good idea
+  // to implement a class where the
 
-  int i = partial.getMaxAmpIndex();
-  params.amp = partial.getDataPoint(i).getAmplitude();
-  params.att = partial.getDataPoint(i).getTime();
+  int peakIndex = partial.getMaxAmpIndex();
+  params.amp = partial.getDataPoint(peakIndex).getAmplitude();
+  params.att = partial.getDataPoint(peakIndex).getTime();
 
-  params.dec = 0.5;  // preliminary - todo: estimate decay...
+  // estimate decay (we take the average of the log-amplitudes of the two halfs of the remaining
+  // signal after the peak)
+  params.dec = 0.5;  // preliminary
+
+  /*
+  int numDataPoints = (int) partial.getNumDataPoints();
+  int start1 = peakIndex;
+  int length = numDataPoints - peakIndex;
+  int start2 = start1 + length/2;
+  T mean1 = 0, mean2 = 0;
+  size_t i;
+
+  int count = 0;   // get rid
+  for(i = start1; i < start2; i++) {
+    mean1 += log(partial.getDataPoint(i).getAmplitude());
+    count++; }
+  mean1 /= count;
+
+  count = 0;
+  for(i = start2; i < numDataPoints; i++) {
+    mean2 += log(partial.getDataPoint(i).getAmplitude());
+    count++; }
+  mean2 /= count;
+  // that doesn't work because some amplitudes may be zero
+  */
+
+  int searchStart = peakIndex + (partial.getNumDataPoints()-peakIndex)/2;
+  int peakIndex2 = partial.getMaxAmpIndex(searchStart);
+  T t1 = partial.getDataPoint(peakIndex).getTime();
+  T a1 = partial.getDataPoint(peakIndex).getAmplitude();
+  T t2 = partial.getDataPoint(peakIndex2).getTime();
+  T a2 = partial.getDataPoint(peakIndex2).getAmplitude();
+  T dt = t2 - t1; // time difference
+  T ra = a1 / a2; // amplitude ratio todo: catch a2 == 0 as special case
+
+  // from dt and ra, we can compute the decay time tau...-> look up formula....
+
+  // ...hmm - maybe this is not so good - maybe it would be better to search through the 
+  // amplitude array for the index/time, where the amplitude is peakAmp/e - but for this, we need 
+  // to assume a monotonically decreasing amplitude envelope after the peak
+
+
+
+
+
+  // maybe instead of averaging, take the maximum value of the section that starts halfway
+  // after the peak - maybe the function getMaxAmpIndex can take a start-search index as parameter
+
+
+
 
   return params;
   //return rsModalFilterParameters<T>(); // preliminary
@@ -275,6 +329,20 @@ std::vector<rsModalFilterParameters<T>> getModalModel(const RAPT::rsSinusoidalMo
     p[i] = getModalModel(model.getPartial(i));
   return p;
 }
-
 template std::vector<rsModalFilterParameters<double>> 
   getModalModel(const RAPT::rsSinusoidalModel<double>& model);
+
+std::vector<double> synthesizeModal(
+  const std::vector<rsModalFilterParameters<double>>& p, double fs, int N)
+{
+  std::vector<double> x(N);
+  rsArray::fillWithZeros(&x[0], N);
+  rosic::rsModalFilterWithAttackDD flt;
+  for(size_t i = 0; i < p.size(); i++) {
+    flt.setModalParameters(p[i].freq, p[i].amp, p[i].att, p[i].dec, p[i].phase, fs);
+    flt.reset();
+    x[0] += flt.getSample(1);
+    for(int n = 1; n < N; n++)
+      x[n] += flt.getSample(0); }
+  return x;
+}

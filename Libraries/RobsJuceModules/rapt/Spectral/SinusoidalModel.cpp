@@ -194,11 +194,12 @@ T rsSinusoidalPartial<T>::getMaxFreq() const
 }
 
 template<class T>
-int rsSinusoidalPartial<T>::getMaxAmpIndex() const
+int rsSinusoidalPartial<T>::getMaxAmpIndex(int searchStart) const
 {
-  T maxAmp = instParams[0].gain;
-  int maxIdx = 0;
-  for(int i = 1; i < (int) instParams.size(); i++) {
+  rsAssert(searchStart < (int) instParams.size());
+  int maxIdx = searchStart;
+  T maxAmp = instParams[searchStart].gain;
+  for(int i = searchStart + 1; i < (int) instParams.size(); i++) {
     if(instParams[i].gain > maxAmp) {
       maxAmp = instParams[i].gain;
       maxIdx = i; }}

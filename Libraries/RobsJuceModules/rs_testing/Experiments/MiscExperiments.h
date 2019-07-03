@@ -61,6 +61,8 @@ template<class T>
 std::vector<rsModalFilterParameters<T>> getModalModel(const RAPT::rsSinusoidalModel<T>& model);
 
 
+std::vector<double> synthesizeModal(
+  const std::vector<rsModalFilterParameters<double>>& params, double sampleRate, int length);
 
 
 // move to RAPT::rsArray

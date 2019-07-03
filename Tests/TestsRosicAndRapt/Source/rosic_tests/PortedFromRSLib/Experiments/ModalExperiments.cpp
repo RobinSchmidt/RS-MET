@@ -822,21 +822,19 @@ void modalAnalysis()
   analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
   RAPT::rsSinusoidalModel<double> sineModel = analyzer.analyze(&x[0], length);
   sineModel.removePartialsAbove(66);  // model shows partials up to 40 kHz - why?
+  sineModel.removePartial(0);         // DC confuses modal model
   //plotSineModel(sineModel, sampleRate);
   Vec ys = synthesizeSinusoidal(sineModel, sampleRate);
-
 
   // create a modal model and resynthesize modally:
   std::vector<rsModalFilterParameters<double>> modeModel
     = getModalModel(sineModel);
-  //Vec ym = synthesizeModal(modeModel, sampleRate);
-
-
-  // resynthesize via model:
-  // ...
+  Vec ym = synthesizeModal(modeModel, sampleRate, length);
+  // still wrong due to decay time not yet being estimated
 
   rosic::writeToMonoWaveFile("ModalPluckOriginal.wav", &x[0],  length, (int)sampleRate);
   rosic::writeToMonoWaveFile("ModalPluckSinusoidal.wav", &ys[0], (int)ys.size(), (int)sampleRate);
+  rosic::writeToMonoWaveFile("ModalPluckModal.wav", &ym[0], (int)ym.size(), (int)sampleRate);
 }
 
 /*

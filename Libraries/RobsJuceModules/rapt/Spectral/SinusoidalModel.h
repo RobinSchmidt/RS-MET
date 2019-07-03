@@ -218,8 +218,9 @@ public:
   /** Returns the maximum frequency of this partial. */
   T getMaxFreq() const;
 
-  /** Returns the index of the datapoint with maximum amplitude. */
-  int getMaxAmpIndex() const;
+  /** Returns the index of the datapoint with maximum amplitude, starting the search at the given
+  searchStaer index . */
+  int getMaxAmpIndex(int searchStart = 0) const;
 
   /** Returns the maximum absolute difference between phases that would be computed by numerically
   integrating frequencies and actually stored phase values (always taking appropriate wrapping into
