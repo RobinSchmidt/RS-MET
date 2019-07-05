@@ -165,7 +165,8 @@ T rsModalAnalyzer<T>::estimatePhaseAt(
   T dt = t - ti;               // time difference
   T pt = pi + 2*PI*f*dt;       // extrapolated phase at time t (assuming const freq in t..ti)
   return rsWrapToInterval(pt, -PI, PI);
-  //return T(0); // preliminary
+  // don't we have to addor subtract pi bcs the sine-model ha a cosine phase but the modal model
+  // uses a sine phase?
 }
 
 template<class T>

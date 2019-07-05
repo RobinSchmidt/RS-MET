@@ -321,7 +321,7 @@ int main(int argc, char* argv[])
   //modalWithFancyEnv();
   //modalSynthSpectra();
   modalAnalysis1();
-  //modalAnalysisPluck();
+  modalAnalysisPluck();
 
   // Misc Audio:
   //centroid();
