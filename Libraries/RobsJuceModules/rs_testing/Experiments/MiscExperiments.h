@@ -40,30 +40,6 @@ void getPaddedSignals(double* xIn, int Nx,  const RAPT::rsSinusoidalModel<double
   std::vector<double>& x, std::vector<double>& y);
 // actually, we may need this later also to obtain a residual...function should be renamed
 
-/** Data structure to hold parameters of a single modal filter (with attack/decay envelope). 
-todo: maybe later allow for more general modal models with, for example, with two-stage decay, 
-etc. */
-template<class T>
-struct rsModalFilterParameters
-{
-  T freq = 1000, amp = 1, att = 0.01, dec = 0.1, phase = 0;
-};
-// move to rapt or rosic
-
-/** Takes a sinusoidal partial as input and creates the modal filter parameters that can be used to
-approximate the given partial. */
-template<class T>
-rsModalFilterParameters<T> getModalModel(const RAPT::rsSinusoidalPartial<T>& partial);
-
-/** Takes a sinusoidal model as input and creates the set/array of modal filter parameters that can
-be used to approximate the given model. */
-template<class T>
-std::vector<rsModalFilterParameters<T>> getModalModel(const RAPT::rsSinusoidalModel<T>& model);
-
-
-std::vector<double> synthesizeModal(
-  const std::vector<rsModalFilterParameters<double>>& params, double sampleRate, int length);
-
 
 // move to RAPT::rsArray
 template<class T>

@@ -810,25 +810,26 @@ void modalAnalysis()
 
   // create a sinusoidal model and resynthesize sinusoidally:
   typedef rsWindowFunction::WindowType WT;
-  RAPT::rsHarmonicAnalyzer<double> analyzer;
-  analyzer.setSampleRate(sampleRate);
-  analyzer.setSincInterpolationLength(64);
-  analyzer.setNumCyclesPerBlock(4);
-  //analyzer.setWindowType(WT::hamming);
-  analyzer.setWindowType(WT::blackman);
-  analyzer.setSpectralOversampling(8);  // zero padding
-  analyzer.setAllowInharmonics(true);
-  analyzer.setSpectralPeakSearchWidth(0.5);       // default: 1 - blackman needs a value less than 1
-  analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
-  RAPT::rsSinusoidalModel<double> sineModel = analyzer.analyze(&x[0], length);
+  RAPT::rsHarmonicAnalyzer<double> sineAnalyzer;
+  sineAnalyzer.setSampleRate(sampleRate);
+  sineAnalyzer.setSincInterpolationLength(64);
+  sineAnalyzer.setNumCyclesPerBlock(4);
+  //sineAnalyzer.setWindowType(WT::hamming);
+  sineAnalyzer.setWindowType(WT::blackman);
+  sineAnalyzer.setSpectralOversampling(8);  // zero padding
+  sineAnalyzer.setAllowInharmonics(true);
+  sineAnalyzer.setSpectralPeakSearchWidth(0.5);       // default: 1 - blackman needs a value less than 1
+  sineAnalyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
+  RAPT::rsSinusoidalModel<double> sineModel = sineAnalyzer.analyze(&x[0], length);
   sineModel.removePartialsAbove(66);  // model shows partials up to 40 kHz - why?
   sineModel.removePartial(0);         // DC confuses modal model
   //plotSineModel(sineModel, sampleRate);
   Vec ys = synthesizeSinusoidal(sineModel, sampleRate);
 
   // create a modal model and resynthesize modally:
+  rsModalAnalyzer<double> modeAnalyzer;
   std::vector<rsModalFilterParameters<double>> modeModel
-    = getModalModel(sineModel);
+    = modeAnalyzer.getModalModel(sineModel);
   Vec ym = synthesizeModal(modeModel, sampleRate, length);
   // -decay is still only coarsly estimated
   // -phases seem to be wrong - use phase from peak-amp (or somewhere else after the transient)

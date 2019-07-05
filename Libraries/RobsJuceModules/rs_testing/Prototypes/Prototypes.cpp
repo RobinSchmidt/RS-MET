@@ -7,6 +7,7 @@
 #include "FilterDesign/ComplementaryFilters.cpp"
 #include "FilterDesign/NonUniformFilter.cpp"
 
+#include "ModalAnalyzer.cpp"
 #include "Probability.cpp"
 #include "Projection3Dto2D.cpp"
 #include "Polygon.cpp"
