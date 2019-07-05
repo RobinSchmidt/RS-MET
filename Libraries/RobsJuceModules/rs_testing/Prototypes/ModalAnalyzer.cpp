@@ -36,18 +36,35 @@ rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
   // decay:     compare average amplitudes of 1st and 2nd half after the peak
   // phase:     start phase in model
 
-  rsModalFilterParameters<T> params;
-  params.freq  = partial.getMeanFreq();  
-  // maybe we should cut off the transient before taking the mean?
 
-  params.phase = partial.getFirstDataPoint().getWrappedPhase();
-  // maybe this is not the best strategy either - maybe take the phase at the amplitude peak and
-  // compute the start-phase from that and the mean frequency ...it seems, it would be a good idea
-  // to implement a class where the
+  rsModalFilterParameters<T> params;
 
   int peakIndex = partial.getMaxAmpIndex();
   params.amp = partial.getDataPoint(peakIndex).getAmplitude();
   params.att = partial.getDataPoint(peakIndex).getTime();
+
+
+  int M = partial.getNumDataPoints();
+  int refIndex = peakIndex;
+  refIndex = M / 2;  // test 
+
+  //params.freq  = partial.getMeanFreq();
+  //params.freq  = partial.getMeanFreq(0, refIndex); // maybe have member function estimateFreq
+  params.freq  = partial.getMeanFreq(refIndex, M-1);
+  // maybe we should cut off the transient before taking the mean?
+
+  //params.phase = partial.getFirstDataPoint().getWrappedPhase();
+  params.phase = estimatePhaseAt(partial, refIndex, params.freq, T(0));
+  // phase seems to be still wrong - but wait - isn't the measured phase supposed to occur halfway
+  // between a pair of datapoints?
+
+
+
+  // maybe this is not the best strategy either - maybe take the phase at the amplitude peak and
+  // compute the start-phase from that and the mean frequency ...it seems, it would be a good idea
+  // to implement a class where the
+
+
 
   // estimate decay (we take the average of the log-amplitudes of the two halfs of the remaining
   // signal after the peak)
@@ -120,12 +137,17 @@ template<class T>
 T rsModalAnalyzer<T>::estimatePhaseAt(
   const RAPT::rsSinusoidalPartial<T>& partial, int i, T f, T t)
 {
-  rsAssert(i >= 0 && i < partial.getNumDataPoints());
+  rsAssert(i >= 0 && i < partial.getNumDataPoints()-1);
   T ti = partial.getTime(i);   // time stamp at datapoint i
+
+  // test - phase data is estimated halfway between two datapoints (i think):
+  ti += (partial.getTime(i+1) - ti)/2;
+  // that doesn't seem to help - try it with a simpler sound containing only one single mode
+
   T pi = partial.getPhase(i);  // phase at time ti
   T dt = t - ti;               // time difference
-  T pt = pi * 2*PI*f*dt;       // extrapolated phase at time t (assuming const freq in t..ti)
-  return pt;
+  T pt = pi + 2*PI*f*dt;       // extrapolated phase at time t (assuming const freq in t..ti)
+  return rsWrapToInterval(pt, -PI, PI);
   //return T(0); // preliminary
 }
 

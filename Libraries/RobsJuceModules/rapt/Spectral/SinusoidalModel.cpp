@@ -156,14 +156,18 @@ void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
 // inquiry
 
 template<class T>
-T rsSinusoidalPartial<T>::getMeanFreq() const
+T rsSinusoidalPartial<T>::getMeanFreq(int startIndex, int endIndex) const
 {
-  size_t M = getNumDataPoints();
+  int M = (int) getNumDataPoints();
   if(M == 0) return T(0);
   if(M == 1) return getStartFreq();
+  if( endIndex == -1 ) endIndex = M-1;
+  rsAssert(startIndex >= 0);
+  rsAssert(endIndex   <  M); 
+
   T freqSum   = T(0);
   T weightSum = T(0);
-  for(size_t m = 0; m < M-1; m++)
+  for(int m = startIndex; m < endIndex; m++)
   {
     T fm = 0.5 * (instParams[m].freq + instParams[m+1].freq); // mean freq between point m and m+1
     T dt = instParams[m+1].time - instParams[m].time;         // duration of segment

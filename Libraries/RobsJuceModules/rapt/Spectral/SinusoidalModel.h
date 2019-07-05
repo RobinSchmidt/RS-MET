@@ -235,8 +235,11 @@ public:
     return instParams[instParams.size()-1].getFrequency(); 
   }
 
-  /** Computes and returns the mean frequency of this partial. */
-  T getMeanFreq() const;
+  /** Computes and returns the mean frequency of this partial between the two given datapoint 
+  indices (if 0 and -1 are passed, as in the default arguments, the mean freq will be calculated 
+  over all existing datapoints). */
+  //T getMeanFreq() const;
+  T getMeanFreq(int startIndex = 0, int endIndex = -1) const;
 
   /** Returns the minimum frequency of this partial. */
   T getMinFreq() const;
