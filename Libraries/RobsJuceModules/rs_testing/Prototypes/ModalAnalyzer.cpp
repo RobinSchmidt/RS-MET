@@ -56,6 +56,8 @@ rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
   params.amp = partial.getDataPoint(peakIndex).getAmplitude();
   params.att = partial.getDataPoint(peakIndex).getTime();
 
+  // maybe use parabolic interpolation for more accurate estimation
+
 
   int M = partial.getNumDataPoints();
   int refIndex = peakIndex;
@@ -68,6 +70,7 @@ rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
   //params.freq = estimateFrequency(partial, 0, M-1);
   params.freq = estimateFrequency(partial, 4, M-5); // 4, M-5 ad-hoc
   // maybe we should cut off the transient before taking the mean?
+  // i think, the freq-estimation is still inaccurate for the faster decaying partials
 
   //params.phase = partial.getFirstDataPoint().getWrappedPhase();
   params.phase = estimatePhaseAt(partial, refIndex, params.freq, T(0));
@@ -164,9 +167,9 @@ T rsModalAnalyzer<T>::estimatePhaseAt(
   T pi = partial.getPhase(i);  // phase at time ti
   T dt = t - ti;               // time difference
   T pt = pi + 2*PI*f*dt;       // extrapolated phase at time t (assuming const freq in t..ti)
-  return rsWrapToInterval(pt, -PI, PI);
-  // don't we have to addor subtract pi bcs the sine-model ha a cosine phase but the modal model
-  // uses a sine phase?
+  pt += PI/2;                  // because analysis computes cosine phase
+  pt  = rsWrapToInterval(pt, -PI, PI);
+  return rsRadiantToDegree(pt);
 }
 
 template<class T>
