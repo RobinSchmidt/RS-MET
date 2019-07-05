@@ -821,7 +821,7 @@ void modalAnalysis1()
   rsModalFilterParameters<double> p;
   p.freq  = 300;
   p.amp   = 0.5;
-  p.phase = 0.0;
+  p.phase = 45.0;
   p.att   = 0.02;
   p.dec   = 0.2;
 
