@@ -1,4 +1,17 @@
 std::vector<double> synthesizeModal(
+  const rsModalFilterParameters<double>& p, double fs, int N)
+{
+  std::vector<double> x(N);
+  rosic::rsModalFilterWithAttackDD flt;
+  flt.setModalParameters(p.freq, p.amp, p.att, p.dec, p.phase, fs);
+  flt.reset();
+  x[0] = flt.getSample(1);
+  for(int n = 1; n < N; n++)
+    x[n] = flt.getSample(0);
+  return x;
+}
+
+std::vector<double> synthesizeModal(
   const std::vector<rsModalFilterParameters<double>>& p, double fs, int N)
 {
   std::vector<double> x(N);
@@ -46,11 +59,14 @@ rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
 
   int M = partial.getNumDataPoints();
   int refIndex = peakIndex;
-  refIndex = M / 2;  // test 
+  //refIndex = M / 2;  // test 
 
   //params.freq  = partial.getMeanFreq();
   //params.freq  = partial.getMeanFreq(0, refIndex); // maybe have member function estimateFreq
-  params.freq  = partial.getMeanFreq(refIndex, M-1);
+  //params.freq  = partial.getMeanFreq(refIndex, M-1);
+
+  //params.freq = estimateFrequency(partial, 0, M-1);
+  params.freq = estimateFrequency(partial, 4, M-5); // 4, M-5 ad-hoc
   // maybe we should cut off the transient before taking the mean?
 
   //params.phase = partial.getFirstDataPoint().getWrappedPhase();
@@ -141,14 +157,42 @@ T rsModalAnalyzer<T>::estimatePhaseAt(
   T ti = partial.getTime(i);   // time stamp at datapoint i
 
   // test - phase data is estimated halfway between two datapoints (i think):
-  ti += (partial.getTime(i+1) - ti)/2;
+  //ti += (partial.getTime(i+1) - ti)/2;
   // that doesn't seem to help - try it with a simpler sound containing only one single mode
+  // ...hmm...it seems more accurate without -> figure out why
 
   T pi = partial.getPhase(i);  // phase at time ti
   T dt = t - ti;               // time difference
   T pt = pi + 2*PI*f*dt;       // extrapolated phase at time t (assuming const freq in t..ti)
   return rsWrapToInterval(pt, -PI, PI);
   //return T(0); // preliminary
+}
+
+template<class T>
+T rsModalAnalyzer<T>::estimateFrequency(
+  const RAPT::rsSinusoidalPartial<T>& partial, int start, int end)
+{
+  // move this code to rsSinusoidalPartial (getUnwrappedPhase or something)
+  std::vector<T> t = partial.getTimeArray();
+  std::vector<T> f = partial.getFrequencyArray();
+  std::vector<T> p = partial.getPhaseArray();
+  std::vector<T> u = rsSinusoidalProcessor<T>::unwrapPhase(t, f, p); // unwrapped phase
+
+  T freq = (u[end]-u[start]) / (2*PI*(t[end]-t[start])); // more accurate
+
+  // and/or have a function getMeanFreqAccurate ...or let the getMeanFreq function have a boolean
+  // flag accountForPhase or something
+
+  //freq = partial.getMeanFreq(start, end); // simple, coarse
+
+  return freq;
+
+  //return partial.getMeanFreq(start, end);
+
+  // i think, for more accurate freq estimates, we need to take also the instantaneous phases into 
+  // account - maybe dismiss the first and last K cycles in the frequency estimation (their data
+  // may contain transient artifacts), obtain an unwrapped phase array for that middle section and
+  // take the average freq as (endPhase-startPhase)/(2*PI*(endTime-startTime))
 }
 
 

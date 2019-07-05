@@ -179,7 +179,6 @@ std::vector<T> rsSinusoidalSynthesizer<T>::phasesViaTweakedIntegral(
   std::vector<T> p(N);     // p: interpolated phase values
   std::vector<T> fd  = partial.getFrequencyArray();
   std::vector<T> wpd = partial.getPhaseArray();       // rename to pd
-  //std::vector<T> upd = unwrapPhase(td, fd, wpd);
   std::vector<T> upd = rsSinusoidalProcessor<T>::unwrapPhase(td, fd, wpd);
 
   bool cubicPhase = true; // was user parameter - but linear phase interpolation makes no sense

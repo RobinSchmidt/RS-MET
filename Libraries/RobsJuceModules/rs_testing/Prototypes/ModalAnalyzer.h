@@ -10,6 +10,9 @@ struct rsModalFilterParameters
 };
 
 std::vector<double> synthesizeModal(
+  const rsModalFilterParameters<double>& params, double sampleRate, int length);
+
+std::vector<double> synthesizeModal(
   const std::vector<rsModalFilterParameters<double>>& params, double sampleRate, int length);
 // move to rapt or rosic
 
@@ -46,6 +49,8 @@ public:
 
   T estimatePhaseAt(const RAPT::rsSinusoidalPartial<T>& partial,
     int dataPointIndex, T frequency, T timeInstant = T(0));
+
+  T estimateFrequency(const RAPT::rsSinusoidalPartial<T>& partial, int startIndex, int endIndex);
 
 protected:
 

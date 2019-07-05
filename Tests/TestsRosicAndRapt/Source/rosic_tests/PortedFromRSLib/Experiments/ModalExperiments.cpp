@@ -812,6 +812,51 @@ void setupHarmonicAnalyzerForModal(RAPT::rsHarmonicAnalyzer<double>& analyzer, d
   analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
 }
 
+void modalAnalysis1()
+{
+  //double f   = 1000;
+  int N  = 5000;
+  int fs = 22050;
+ 
+  rsModalFilterParameters<double> p;
+  p.freq  = 300;
+  p.amp   = 0.5;
+  p.phase = 0.0;
+  p.att   = 0.02;
+  p.dec   = 0.2;
+
+  double peak = p.att * fs; // time-instant of the peak
+
+  typedef std::vector<double> Vec;
+
+  Vec x = synthesizeModal(p, fs, N);
+
+  // create a sinusoidal model and resynthesize sinusoidally:
+  RAPT::rsHarmonicAnalyzer<double> sineAnalyzer;
+  setupHarmonicAnalyzerForModal(sineAnalyzer, fs);
+  RAPT::rsSinusoidalModel<double> sineModel = sineAnalyzer.analyze(&x[0], N);
+  sineModel.keepOnly({1});
+  //plotSineModel(sineModel, fs);
+  Vec ys = synthesizeSinusoidal(sineModel, fs);
+
+
+  rsModalAnalyzer<double> modeAnalyzer;
+  //std::vector<rsModalFilterParameters<double>> modeModel
+  //  = modeAnalyzer.getModalModel(sineModel);
+  rsModalFilterParameters<double> p2 = modeAnalyzer.getModalModel(sineModel.getPartial(0));
+
+  Vec ym = synthesizeModal(p2, fs, N);
+
+
+
+
+
+
+  //rsPlotVector(x);
+  rsPlotVectors(x, ys, ym);
+  //rosic::writeToMonoWaveFile("ModalOriginal.wav", &x[0], N, fs);
+}
+
 void modalAnalysisPluck()
 {
   double key = 64;
@@ -823,7 +868,6 @@ void modalAnalysisPluck()
   Vec x = createModalPluck(key, sampleRate, length);
 
   // create a sinusoidal model and resynthesize sinusoidally:
-
   RAPT::rsHarmonicAnalyzer<double> sineAnalyzer;
   setupHarmonicAnalyzerForModal(sineAnalyzer, sampleRate);
   RAPT::rsSinusoidalModel<double> sineModel = sineAnalyzer.analyze(&x[0], length);
