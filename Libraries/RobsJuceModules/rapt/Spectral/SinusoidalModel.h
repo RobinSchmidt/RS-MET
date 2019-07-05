@@ -175,6 +175,32 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+
+  inline T getTime(int i) const 
+  {
+    rsAssert(i >= 0 && i < (int) instParams.size());
+    return instParams[i].time;
+  }
+
+  inline T getFreq(int i) const
+  {
+    rsAssert(i >= 0 && i < (int) instParams.size());
+    return instParams[i].freq;
+  }
+
+  inline T getAmplitude(int i) const
+  {
+    rsAssert(i >= 0 && i < (int) instParams.size());
+    return instParams[i].gain;
+  }
+
+  inline T getPhase(int i) const
+  {
+    rsAssert(i >= 0 && i < (int) instParams.size());
+    return instParams[i].phase;
+  }
+
+
   inline T getStartTime() const 
   { 
     if(instParams.size() == 0) 

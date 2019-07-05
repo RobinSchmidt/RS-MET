@@ -35,13 +35,17 @@ public:
   /** \name Processing */
 
 
-  /** Takes a sinusoidal partial as input and creates the modal filter parameters that can be used 
-  to approximate the given partial. */
-  rsModalFilterParameters<T> getModalModel(const RAPT::rsSinusoidalPartial<T>& partial);
 
   /** Takes a sinusoidal model as input and creates the set/array of modal filter parameters that 
   can be used to approximate the given model. */
   std::vector<rsModalFilterParameters<T>> getModalModel(const RAPT::rsSinusoidalModel<T>& model);
+
+  /** Takes a sinusoidal partial as input and creates the modal filter parameters that can be used 
+  to approximate the given partial. */
+  rsModalFilterParameters<T> getModalModel(const RAPT::rsSinusoidalPartial<T>& partial);
+
+  T estimatePhaseAt(const RAPT::rsSinusoidalPartial<T>& partial,
+    int dataPointIndex, T frequency, T timeInstant = T(0));
 
 protected:
 

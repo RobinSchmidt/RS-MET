@@ -15,6 +15,15 @@ std::vector<double> synthesizeModal(
 
 
 
+template<class T>
+std::vector<rsModalFilterParameters<T>> rsModalAnalyzer<T>::getModalModel(
+  const RAPT::rsSinusoidalModel<T>& model)
+{
+  std::vector<rsModalFilterParameters<T>> p(model.getNumPartials());
+  for(int i = 0; i < model.getNumPartials(); i++)
+    p[i] = getModalModel(model.getPartial(i));
+  return p;
+}
 
 template<class T>
 rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
@@ -108,14 +117,18 @@ rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
 }
 
 template<class T>
-std::vector<rsModalFilterParameters<T>> rsModalAnalyzer<T>::getModalModel(
-  const RAPT::rsSinusoidalModel<T>& model)
+T rsModalAnalyzer<T>::estimatePhaseAt(
+  const RAPT::rsSinusoidalPartial<T>& partial, int i, T f, T t)
 {
-  std::vector<rsModalFilterParameters<T>> p(model.getNumPartials());
-  for(int i = 0; i < model.getNumPartials(); i++)
-    p[i] = getModalModel(model.getPartial(i));
-  return p;
+  rsAssert(i >= 0 && i < partial.getNumDataPoints());
+  T ti = partial.getTime(i);   // time stamp at datapoint i
+  T pi = partial.getPhase(i);  // phase at time ti
+  T dt = t - ti;               // time difference
+  T pt = pi * 2*PI*f*dt;       // extrapolated phase at time t (assuming const freq in t..ti)
+  return pt;
+  //return T(0); // preliminary
 }
+
 
 template class rsModalAnalyzer<double>;
 
