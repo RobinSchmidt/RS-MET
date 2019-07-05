@@ -18,7 +18,7 @@ void modalWithFancyEnv();
 
 void modalSynthSpectra();
 
-void modalAnalysis();
+void modalAnalysisPluck();
 
 
 

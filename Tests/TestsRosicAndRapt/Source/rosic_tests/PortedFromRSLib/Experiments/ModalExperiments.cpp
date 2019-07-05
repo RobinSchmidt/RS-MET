@@ -798,7 +798,21 @@ void modalSynthSpectra()
   // todo: figure out why there are comb filtering artifacts on retrigger
 }
 
-void modalAnalysis()
+void setupHarmonicAnalyzerForModal(RAPT::rsHarmonicAnalyzer<double>& analyzer, double fs)
+{
+  typedef rsWindowFunction::WindowType WT;
+  analyzer.setSampleRate(fs);
+  analyzer.setSincInterpolationLength(64);
+  analyzer.setNumCyclesPerBlock(4);
+  //analyzer.setWindowType(WT::hamming);
+  analyzer.setWindowType(WT::blackman);
+  analyzer.setSpectralOversampling(8);  // zero padding
+  analyzer.setAllowInharmonics(true);
+  analyzer.setSpectralPeakSearchWidth(0.5);       // default: 1 - blackman needs a value less than 1
+  analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
+}
+
+void modalAnalysisPluck()
 {
   double key = 64;
   double sampleRate = 44100;
@@ -809,17 +823,9 @@ void modalAnalysis()
   Vec x = createModalPluck(key, sampleRate, length);
 
   // create a sinusoidal model and resynthesize sinusoidally:
-  typedef rsWindowFunction::WindowType WT;
+
   RAPT::rsHarmonicAnalyzer<double> sineAnalyzer;
-  sineAnalyzer.setSampleRate(sampleRate);
-  sineAnalyzer.setSincInterpolationLength(64);
-  sineAnalyzer.setNumCyclesPerBlock(4);
-  //sineAnalyzer.setWindowType(WT::hamming);
-  sineAnalyzer.setWindowType(WT::blackman);
-  sineAnalyzer.setSpectralOversampling(8);  // zero padding
-  sineAnalyzer.setAllowInharmonics(true);
-  sineAnalyzer.setSpectralPeakSearchWidth(0.5);       // default: 1 - blackman needs a value less than 1
-  sineAnalyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
+  setupHarmonicAnalyzerForModal(sineAnalyzer, sampleRate);
   RAPT::rsSinusoidalModel<double> sineModel = sineAnalyzer.analyze(&x[0], length);
   sineModel.removePartialsAbove(66);  // model shows partials up to 40 kHz - why?
   sineModel.removePartial(0);         // DC confuses modal model
@@ -834,6 +840,8 @@ void modalAnalysis()
   // -decay is still only coarsly estimated
   // -phases seem to be wrong - use phase from peak-amp (or somewhere else after the transient)
   //  and obtain start-phase from that (phase data at the start may be inaccurate)
+  // -todo: try it first with a simpler sound with only one mode - tweak the phase estimation
+  //  algo until it works with a single-mode sound, then try again with the pluck
 
   rosic::writeToMonoWaveFile("ModalPluckOriginal.wav", &x[0],  length, (int)sampleRate);
   rosic::writeToMonoWaveFile("ModalPluckSinusoidal.wav", &ys[0], (int)ys.size(), (int)sampleRate);
