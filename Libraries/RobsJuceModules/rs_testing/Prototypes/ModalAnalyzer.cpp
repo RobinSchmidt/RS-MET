@@ -34,7 +34,16 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer<T>::getModalModel(
 {
   std::vector<rsModalFilterParameters<T>> p(model.getNumPartials());
   for(int i = 0; i < model.getNumPartials(); i++)
+  {
     p[i] = getModalModel(model.getPartial(i));
+
+
+    //// test - just for the rhodes:
+    //if(i == 8) {  
+    //  p[i].dec *= 30;
+    //  //p[i].amp *= 10;    
+    //}
+  }
   return p;
 }
 
@@ -59,7 +68,7 @@ rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
   // maybe use parabolic interpolation for more accurate estimation
 
 
-  int M = partial.getNumDataPoints();
+  int M = (int) partial.getNumDataPoints();
   int refIndex = peakIndex;
   //refIndex = M / 2;  // test 
 
@@ -129,7 +138,8 @@ rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
   // obtain "meta-envelopes" repeatedly until it is monotonically decreasing
   T targetAmp = params.amp / EULER;  // peakAmp / e
   //T tau = 0;  // or should we init with inf?
-  for(int i = peakIndex+1; i < (int) partial.getNumDataPoints(); i++)
+  int i;
+  for(i = peakIndex+1; i < M; i++)
   {
     if(partial.getDataPoint(i).gain < targetAmp)
     {
@@ -139,6 +149,13 @@ rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
       break;
     }
   }
+  if(i == M)
+  {
+    rsError(); 
+    // preliminary - todo repeat search with c = 0.5 * c, see comment below
+    // ..doesn't happen with the rhodes sample
+  }
+
   // maybe sometimes, the sample isn't long enough to contain the data, where it has decayed to
   // peak/e (because of an early fade-out or palm-muting, whatever) - then we should use 
   // c*peak/e for some c < 1 and multiply the decay-time by that same c - maybe have a loop
@@ -147,6 +164,18 @@ rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
 
   // maybe instead of averaging, take the maximum value of the section that starts halfway
   // after the peak - maybe the function getMaxAmpIndex can take a start-search index as parameter
+
+  // this is just for development - later, we have to do something more appropriate
+  if(params.att >= 0.99*params.dec)
+  {
+    params.att = 0.99*params.dec;
+    //params.dec = params.att/0.99;
+  }
+  // maybe instead of shortening the attack, we should lengthen the decay? ..doesn't seem to make
+  // a big difference in the rhodes sample - it seems, the underestimated amplitude is to blame 
+  // there
+  // oh - but lengthening artificially increases the amplitudes of high harmonics - shorten seems
+  // better overall
 
   // maybe use gradient descent for more accurate estimates
 

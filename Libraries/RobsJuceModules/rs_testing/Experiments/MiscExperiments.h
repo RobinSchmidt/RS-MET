@@ -15,7 +15,6 @@ indicate the amplitude of the partials */
 void testHarmonicResynthesis(const std::string& name, std::vector<double>& input, 
   double sampleRate, double fundamental = 0, bool writeWaveFiles = true, bool plotResults = false);
 
-
 void testMakeHarmonic(const std::string& name, std::vector<double>& input, 
   double sampleRate, double targetFundamental, double inharmonicity = 0, 
   double originalFundamental = 0);
@@ -39,6 +38,12 @@ void getPaddedSignals(double* xIn, int Nx,  const RAPT::rsSinusoidalModel<double
   const RAPT::rsSinusoidalSynthesizer<double>& synth, 
   std::vector<double>& x, std::vector<double>& y);
 // actually, we may need this later also to obtain a residual...function should be renamed
+
+
+void testModalResynthesis(const std::string& name, std::vector<double>& input, 
+  double sampleRate, double fundamental = 0);
+
+
 
 
 // move to RAPT::rsArray

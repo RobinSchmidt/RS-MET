@@ -243,3 +243,29 @@ void getPaddedSignals(double* xIn, int Nx,
     RAPT::rsResizeWithInit(x, ny, 0.0);
 }
 
+
+void testModalResynthesis(const std::string& name, std::vector<double>& x,
+  double fs, double f0)
+{
+  int N = (int) x.size();
+
+  RAPT::rsHarmonicAnalyzer<double> sineAnalyzer;
+  setupHarmonicAnalyzerFor(sineAnalyzer, name, fs, f0);
+  RAPT::rsSinusoidalModel<double> sineModel = sineAnalyzer.analyze(&x[0], N);
+  sineModel.removePartial(0);  // we don't want DC
+  //plotSineModel(sineModel, fs);
+  //std::vector<double> ys = synthesizeSinusoidal(sineModel, fs);
+  //rosic::writeToMonoWaveFile("ModalSineOutput.wav", &ys[0], (int) ys.size(), (int)fs);
+  // ...maybe also remove all partials whose (mean) frequency is above the nyquist freq
+
+  rsModalAnalyzer<double> modeAnalyzer;
+  std::vector<rsModalFilterParameters<double>> modeModel
+    = modeAnalyzer.getModalModel(sineModel);
+  plotModalAmplitudes(modeModel);
+  std::vector<double> y = synthesizeModal(modeModel, fs, N);
+
+  rosic::writeToMonoWaveFile("ModalInput.wav",  &x[0],  N, (int)fs);
+  rosic::writeToMonoWaveFile("ModalOutput.wav", &y[0],  N, (int)fs);
+
+}
+

@@ -261,7 +261,7 @@ void createRandomDataXY(double* x, double* y, int N, double dxMin, double dxMax,
 
 std::vector<double> createSineWave(int N, double f, double fs, double a, double p)
 {
-  vector<double> x(N);
+  std::vector<double> x(N);
   createSineWave(&x[0], N, f, a, fs, p);
   return x;
 }
@@ -290,7 +290,7 @@ std::vector<double> sineAndDeacyingInharmonic(int N, double f, double fs, double
   double a2 = 1.0/3.0;
   double tau = 1/decay;  // decay time of 2nd partial (1st is steady)
 
-  vector<double> x(N);
+  std::vector<double> x(N);
   for(int n = 0; n < N; n++)
     x[n] = a1 * sin(w1*n) + a2 * exp(-(n/fs)/tau) * sin(w2*n);
   return x;
@@ -300,7 +300,7 @@ std::vector<double> twoSinesAndDecayingDc(int N, double f, double fs, double ove
   double overtoneAmplitude, double dcAmount, double dcDecay)
 {
   double w = 2*PI*f/fs;
-  vector<double> x(N);
+  std::vector<double> x(N);
   for(int n = 0; n < N; n++)
     x[n] = sin(w*n) + overtoneAmplitude * sin(overtoneRatio*w*n) + dcAmount * exp(-(n/fs)/dcDecay);
   return x;
@@ -309,7 +309,7 @@ std::vector<double> twoSinesAndDecayingDc(int N, double f, double fs, double ove
 std::vector<double> sawAndSquare(int N, double fs, double fSaw, double aSaw,
   double fSqr, double aSqr, bool antiAlias)
 {
-  vector<double> xSaw(N), xSqr(N), x(N);
+  std::vector<double> xSaw(N), xSqr(N), x(N);
   createWaveform(&xSaw[0], N, 1, fSaw, fs, 0., antiAlias);
   createWaveform(&xSqr[0], N, 2, fSqr, fs, 0., antiAlias);
   for(int n = 0; n < N; n++)

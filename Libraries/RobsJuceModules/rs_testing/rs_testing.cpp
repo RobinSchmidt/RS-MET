@@ -8,9 +8,6 @@ header files that the compiler may be using. */
 
 #include "rs_testing.h"
 
-#include "TestTools/DSPPlotters.cpp"
-#include "TestTools/Plotting.cpp"
-
 #include "TestTools/Utilities/FileWriting.cpp"
 #include "TestTools/Utilities/PerformanceTestTools.cpp"
 #include "TestTools/Utilities/TestInputCreation.cpp"
@@ -24,6 +21,9 @@ header files that the compiler may be using. */
 #include "Prototypes/ParticleBouncer.cpp"
 #include "Prototypes/ParticleSystem.cpp"
 #include "Prototypes/Tensor.cpp"
+
+#include "TestTools/DSPPlotters.cpp"
+#include "TestTools/Plotting.cpp"
 
 #include "Experiments/MiscExperiments.cpp"
 

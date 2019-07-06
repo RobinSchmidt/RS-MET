@@ -333,5 +333,19 @@ void plotModelOutputComparison(
   plotSineResynthesisResult(model2, synth, &x[0], (int)x.size());
 }
 
+void plotModalAmplitudes(const std::vector<rsModalFilterParameters<double>>& modeModel)
+{
+  int N = (int)modeModel.size();
+  std::vector<double> f(N), a(N), d(N);
+  for(int n = 0; n < N; n++) {
+    f[n] = modeModel[n].freq;
+    a[n] = modeModel[n].amp;
+    d[n] = modeModel[n].dec;
+  }
+  GNUPlotter plt;
+  plt.addDataArrays(N, &f[0], &a[0], &d[0]);
+  plt.plot();
+  // todo: plot with impulses, maybe plot attack and decay times
+}
 
 #endif

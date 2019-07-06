@@ -190,4 +190,7 @@ void plotModelOutputComparison(
   const RAPT::rsSinusoidalModel<double>& model2,
   const RAPT::rsSinusoidalSynthesizer<double>& synth);
 
+void plotModalAmplitudes(const std::vector<rsModalFilterParameters<double>>& modelModel);
+
+
 #endif
