@@ -5,6 +5,7 @@
 void centroid();
 void cubicCrossfade();
 void recursiveSineSweep();
+void recursiveSineWithCubicPhase();
 void ringModNoise();
 void slewRateLimiterLinear();
 void stretchedCorrelation();

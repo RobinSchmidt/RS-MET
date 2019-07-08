@@ -326,7 +326,8 @@ int main(int argc, char* argv[])
   // Misc Audio:
   //centroid();
   //cubicCrossfade();
-  recursiveSineSweep();
+  //recursiveSineSweep();
+  recursiveSineWithCubicPhase();
   //ringModNoise();
   //slewRateLimiterLinear();
   //stretchedCorrelation();

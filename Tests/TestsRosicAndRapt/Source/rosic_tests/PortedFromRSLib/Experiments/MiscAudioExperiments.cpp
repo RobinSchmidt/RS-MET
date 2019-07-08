@@ -89,13 +89,59 @@ void recursiveSineWithCubicPhase()
   //   e1 = e^(j*a1*t)
   //   e2 = e^(j*a2*t^2)
   //   e3 = e^(j*a3*t^3)
-  // and see, how we may create each of the recursively, assume time steps in unit increments.
+  // and see, how we may create each of them recursively, assume time steps in unit increments.
   //   e0[n] = e0[n-1] * p0[n] where p0[n] = 1
-  //   e1[n] = e1[n-1] * p1[n] where p1[n] = p1[n-1] * e^(j*a1)
+  //   e1[n] = e1[n-1] * p1[n] where p1[n] = e^(j*a1)
   //   e2[n] = e2[n-1] * p2[n] where p2[n] = p2[n-1] * q2[n], q2[n] ?= q2[n-1] * e^(j*a2)
   //   e3[n] = e3[n-1] * p3[n] where ...
 
 
+  int N = 500; // number of samples
+
+  double a0, a1, a2, a3;
+  a0 = 0.5;
+  a1 = 0.1;
+  a2 = 0.0;
+  a3 = 0.0;
+
+  typedef std::complex<double> Complex;
+  Complex e0, e1, e2, e3;
+  Complex j(0, 1);         // imaginary unit
+
+  Complex p0 = 1;
+  Complex p1 = exp(j*a1);
+
+  //e0 = 1;
+  e0 =  exp(j*a0);
+  e1 = 1;
+  e2 = 1;
+  e3 = 1;
+
+  Complex ep = e0*e1*e2*e3;  // product of the e-values
+
+
+  typedef std::vector<double> Vec;
+  Vec xt(N), x(N);  // target signal and actual signal
+  for(int n = 0; n < N; n++)
+  {
+    double t = double(n);
+    xt[n] = cos(a0 + a1*t + a2*t*t + a3*t*t*t);  // generate target signal
+
+
+    ep  = e0*e1*e2*e3;  // product of the e-values
+    x[n] = ep.real();
+
+
+    e0 *= p0;  // trivial (p0 = 1), but fits the pattern
+    e1 *= p1;
+
+
+  }
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &xt[0]);
+  plt.addDataArrays(N, &x[0]);
+  plt.plot();
 }
 
 
