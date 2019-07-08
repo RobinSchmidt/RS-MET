@@ -99,25 +99,26 @@ void recursiveSineWithCubicPhase()
   int N = 500; // number of samples
 
   double a0, a1, a2, a3;
-  a0 = 0.5;
-  a1 = 0.1;
-  a2 = 0.0;
-  a3 = 0.0;
+  a0 =  0.5;
+  a1 =  0.1;
+  a2 =  0.0;
+  //a2 =  -0.000002;
+  a3 =  0.0;
 
   typedef std::complex<double> Complex;
   Complex e0, e1, e2, e3;
   Complex j(0, 1);         // imaginary unit
 
-  Complex p0 = 1;
+  //Complex p0 = 1;
   Complex p1 = exp(j*a1);
 
   //e0 = 1;
-  e0 =  exp(j*a0);
+  e0 = exp(j*a0);
   e1 = 1;
   e2 = 1;
   e3 = 1;
 
-  Complex ep = e0*e1*e2*e3;  // product of the e-values
+  Complex ep; // = e0*e1*e2*e3;  // product of the e-values
 
 
   typedef std::vector<double> Vec;
@@ -132,15 +133,14 @@ void recursiveSineWithCubicPhase()
     x[n] = ep.real();
 
 
-    e0 *= p0;  // trivial (p0 = 1), but fits the pattern
+    //e0 *= p0;  // trivial (p0 = 1), but fits the pattern
     e1 *= p1;
-
-
   }
 
   GNUPlotter plt;
   plt.addDataArrays(N, &xt[0]);
   plt.addDataArrays(N, &x[0]);
+  plt.addDataArrays(N, &(xt-x)[0]);
   plt.plot();
 }
 
