@@ -192,5 +192,12 @@ void plotModelOutputComparison(
 
 void plotModalAmplitudes(const std::vector<rsModalFilterParameters<double>>& modelModel);
 
+/** Plots the amplitude envelope of a sinusoidal partial and the amplitude envelope of a modal 
+model of a partial for comparison. */
+void plotModeVsSineAmpEnv(
+  rsModalFilterParameters<double>& modal, RAPT::rsSinusoidalPartial<double>& sinusoidal);
+
+
+
 
 #endif

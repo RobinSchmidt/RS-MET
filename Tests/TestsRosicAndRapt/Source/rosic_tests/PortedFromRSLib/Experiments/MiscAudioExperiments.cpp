@@ -51,8 +51,8 @@ void recursiveSineSweep()
   double dw = 2*PI*df/(fs*fs);    // increment for rotation frequency
   rsComplexDbl z(1, 0);           // initial value vor z
   rsComplexDbl j(0, 1);           // imaginary unit
-  rsComplexDbl a = exp(j*w0);  // initial rotation factor
-  rsComplexDbl b = exp(j*dw);  // multiplier for rotation factor
+  rsComplexDbl a = exp(j*w0);     // initial rotation factor
+  rsComplexDbl b = exp(j*dw);     // multiplier for rotation factor
 
   for(int n = 0; n < N; n++)
   {
@@ -62,7 +62,6 @@ void recursiveSineSweep()
   }
 
   plotData(N, 0.0, 1/fs, y);
-  int dummy = 0;
 
   // Observations:
   // We see a linearly sweeping sinusoid that starts at 10 Hz and ends (after 1 second) at 
@@ -72,6 +71,33 @@ void recursiveSineSweep()
   // such that b.re = cos(u), b.im = sin(u) for some u that is determined by the modulation index.
   // that way, b would always have unit magnitude and its angle would oscillate with zero mean.
 }
+
+void recursiveSineWithCubicPhase()
+{
+  // We try to obtain a recursive sine generator whose phase is given by a cubic polynomial. That
+  // means, we want to create a signal:
+  //   x(t) = cos(a0 + a1*t + a2*t^2 + a3*t^3)
+  // This is useful for an efficient realtime oscillator bank to render sinusoidal models. We can
+  // write this as:
+  //   x(t) = Re { e^(j*(a0 + a1*t + a2*t^2 + a3*t^3)) }
+  //        = Re { e^(j*a0) * e^(j*a1*t) * e^(j*a2*t^2) * e^(j*a3*t^3) }
+  // where e^(j*a0) is just a constant, e^(j*a1*t) is a phasor with constant rotation frequency,
+  // e^(j*a2*t^2) is a phasor with linearly increasing rotation frequency (something that is 
+  // generated in recursiveSineSweep) and e^(j*a3*t^3) has quadratically increasing rotation
+  // frequency. Let's call the 4 factors e0,e1,e2,e3, so we have:
+  //   e0 = e^(j*a0) 
+  //   e1 = e^(j*a1*t)
+  //   e2 = e^(j*a2*t^2)
+  //   e3 = e^(j*a3*t^3)
+  // and see, how we may create each of the recursively, assume time steps in unit increments.
+  //   e0[n] = e0[n-1] * p0[n] where p0[n] = 1
+  //   e1[n] = e1[n-1] * p1[n] where p1[n] = p1[n-1] * e^(j*a1)
+  //   e2[n] = e2[n-1] * p2[n] where p2[n] = p2[n-1] * q2[n], q2[n] ?= q2[n-1] * e^(j*a2)
+  //   e3[n] = e3[n-1] * p3[n] where ...
+
+
+}
+
 
 void ringModNoise()
 {

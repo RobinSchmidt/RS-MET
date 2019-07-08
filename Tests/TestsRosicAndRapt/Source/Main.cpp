@@ -320,13 +320,13 @@ int main(int argc, char* argv[])
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
   //modalWithFancyEnv();
   //modalSynthSpectra();
-  modalAnalysis1();
-  modalAnalysisPluck();
+//  modalAnalysis1();
+//  modalAnalysisPluck();
 
   // Misc Audio:
   //centroid();
   //cubicCrossfade();
-  //recursiveSineSweep();
+  recursiveSineSweep();
   //ringModNoise();
   //slewRateLimiterLinear();
   //stretchedCorrelation();

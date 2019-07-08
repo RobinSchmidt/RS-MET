@@ -49,7 +49,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer<T>::getModalModel(
 
 template<class T>
 rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
-  const RAPT::rsSinusoidalPartial<T>& partial)
+  const RAPT::rsSinusoidalPartial<T>& inputPartial)
 {
   // todo: estimate the actual parameters:
   // frequency: take average freq of partial
@@ -59,11 +59,33 @@ rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
   // phase:     start phase in model
 
 
+  rsPartialBeatingRemover<T> beatRemover;
+  RAPT::rsSinusoidalPartial<T> partial = inputPartial;
+
+  //beatRemover.removeAmplitudeBeating(partial);
+  // this doesn't seem to work well with the rhodes sample
+
+
+
   rsModalFilterParameters<T> params;
 
   int peakIndex = partial.getMaxAmpIndex();
   params.amp = partial.getDataPoint(peakIndex).getAmplitude();
   params.att = partial.getDataPoint(peakIndex).getTime();
+
+  T thresh = 1.e-05;
+  if(params.amp < thresh)
+  {
+    // below the noise threshold, we may get confusing data...
+    params.amp   = 0.0;
+    params.freq  = 1000.0;
+    params.dec   = 0.1;
+    params.att   = 0.01;
+    params.phase = 0.0;
+    return params;
+    //return rsModalFilterParameters<T>(); 
+  }
+
 
   // maybe use parabolic interpolation for more accurate estimation
 
@@ -151,7 +173,8 @@ rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
   }
   if(i == M)
   {
-    rsError(); 
+    //rsError(); 
+    params.dec = 1.1*params.att;
     // preliminary - todo repeat search with c = 0.5 * c, see comment below
     // ..doesn't happen with the rhodes sample
   }
@@ -176,8 +199,17 @@ rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
   // there
   // oh - but lengthening artificially increases the amplitudes of high harmonics - shorten seems
   // better overall
+  params.att = rsMax(params.att, 0.0001); // attack of 0 is not allowed
 
   // maybe use gradient descent for more accurate estimates
+
+
+  plotModeVsSineAmpEnv(params, partial);  // for development
+  // ok - the rhodes sample really has a problem with the 9th partial which causes the estimated
+  // decay to be way too short - i think, that's the main reason for the "wiggle" in the 
+  // resynthesized signal: an (amost) missing partial (due to short decay) which is supposed to be
+  // there - the amp envelopes of some of the partial just do not fit the attack/decay model
+  // very well
 
   return params;
   //return rsModalFilterParameters<T>(); // preliminary

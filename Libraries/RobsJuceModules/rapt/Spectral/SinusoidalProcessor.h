@@ -131,6 +131,12 @@ public:
   /** Applies beating-removal to the given partial. */
   virtual void removeBeating(rsSinusoidalPartial<T>& partial);
 
+
+  virtual void removeAmplitudeBeating(rsSinusoidalPartial<T>& partial);
+
+  virtual void removePhaseBeating(rsSinusoidalPartial<T>& partial);
+
+
   /** Smoothes the given phase-array... */
   static std::vector<T> smoothPhases(
     std::vector<T>& time, std::vector<T>& freqs, std::vector<T>& phases, 

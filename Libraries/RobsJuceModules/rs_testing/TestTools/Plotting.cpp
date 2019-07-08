@@ -343,9 +343,38 @@ void plotModalAmplitudes(const std::vector<rsModalFilterParameters<double>>& mod
     d[n] = modeModel[n].dec;
   }
   GNUPlotter plt;
-  plt.addDataArrays(N, &f[0], &a[0], &d[0]);
+  plt.addDataArrays(N, &f[0], &a[0]);
+  //plt.addDataArrays(N, &f[0], &a[0], &d[0]);
   plt.plot();
   // todo: plot with impulses, maybe plot attack and decay times
 }
+
+
+void plotModeVsSineAmpEnv(
+  rsModalFilterParameters<double>& m, RAPT::rsSinusoidalPartial<double>& s)
+{
+  std::vector<double> ts, as;
+  ts = s.getTimeArray();
+  as = s.getAmplitudeArray();
+  int N = (int) ts.size();
+
+
+  double fs = N / (ts[N-1] - ts[0]); // average sample rate
+  std::vector<double> tm(N), am(N);
+  rsArray::fillWithRangeLinear(&tm[0], N, 0.0, ts[N-1]);
+
+  // factor out (synthesizeModalPartial or something)
+  RAPT::rsModalFilterWithAttack<double, double> flt;
+  flt.setModalParameters(0.0, m.amp, m.att, m.dec, 90, fs);
+  am[0] = flt.getSample(1.0);
+  for(int n = 1; n < N; n++)
+    am[n] = flt.getSample(0.0);
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &ts[0], &as[0]);
+  plt.addDataArrays(N, &tm[0], &am[0]);
+  plt.plot();
+}
+
 
 #endif
