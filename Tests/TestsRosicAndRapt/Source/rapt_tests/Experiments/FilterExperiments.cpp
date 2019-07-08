@@ -762,8 +762,13 @@ void nonUniformAllpole()
   flt.setApproximationMethod(AM::butterworth);
   flt.setFrequency(fc);
   flt.setOrder(1);
+  flt.setOrder(2);
+  flt.setOrder(3);
+  flt.setOrder(4);
+  flt.setOrder(5);
+  flt.setOrder(6);
   // flt.setType(FT::lowpass);
-  //...
+  //... 
 
   typedef std::vector<double> Vec;
   Vec h(N);  // impulse response

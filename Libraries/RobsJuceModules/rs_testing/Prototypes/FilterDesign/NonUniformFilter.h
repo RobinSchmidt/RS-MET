@@ -227,11 +227,14 @@ public:
   instant for x[n-1]. dt is in seconds, i.e. 1/sampleRate for uniformly sampled signals. */
   T getSample(T x, T dt)
   {
-    T y = T(0);
+    std::complex<T> y(T(0), T(0));      // accumulator for parallel (complex) filter outputs
+
     for(int i = 0; i < order; i++)
       y += onePoles[i].getSample(x, dt);
-    return y;
+
+    return y.real();
   }
+  // could we also use getSampleReal and use a real accumulator? i think so - try it!
 
   /** Resets the internal state of the filter. */
   void reset()
@@ -253,9 +256,19 @@ protected:
   int order = 1;  
 
   // embedded objects:
-  static const int maxOrder = 20;
+  static const int maxOrder = 8; // later use 20
   rsNonUniformComplexOnePole<T> onePoles[maxOrder];
   RAPT::rsPrototypeDesigner<T> protoDesigner;
+
+  // temporary buffers needed for the partial fraction expansion routine:
+  std::complex<T> p[maxOrder], z[maxOrder]; // prototype poles and zeros
+  int muls[maxOrder];                       // pole multiplicities
+  std::complex<T> num[1] = { 1 };           // numerator (of prototype transfer function)
+  std::complex<T> den[maxOrder];            // denominator
+
+
+
+
 
 
   //bool dirty = true;  // maybe use atomic::bool

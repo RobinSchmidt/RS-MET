@@ -147,6 +147,7 @@ void rsNonUniformFilterIIR<T>::setOrder(int newOrder)
 {
   rsAssert(order >= 1 && order <= maxOrder, "order out of range");
   order = newOrder;
+  protoDesigner.setOrder(order);
   updateCoeffs();
 }
 
@@ -174,11 +175,56 @@ void rsNonUniformFilterIIR<T>::setApproximationMethod(ApproximationMethod newMet
   updateCoeffs();
 }
 
+
+
+
 template<class T>
 void rsNonUniformFilterIIR<T>::updateCoeffs()
 {
+  protoDesigner.getPolesAndZeros(p, z);
+  // this gets us only the non-redundant poles and zeros - complex poles always have a conjugate 
+  // partner which is not in the array. if a real pole exists, it's in the last position of the
+  // array
+  // the array of zeros should be all inf - all zeros are at infinity because we have an allpole
+  // filter - it's not actually used here (yet?)
+
+  // todo: make the pole-array digestible for the partial fraction expansion routine - the zeros
+  // array is not needed in this case - the numerator of our rational function is just unity
+  int i;
+  //int k = order / 2; // offset
+  for(i = order/2; i >= 0; i-)
+    p[2*i] = p[i];
+
+  // make a function rsArray::interleave or spread or upsample
+  // upsample([1,2,3], 2, 0): 1 2 3 -> 1 0 2 0 3 0
+  // upsample([1,2,3], 3, 7): 1 2 3 -> 1 7 7 2 7 7 3 7 7
+  // use it here with the p array (and factor 2 and filler 0)
+
+
+
+
+  /*
+  for(i = order; i >= 0; i--)
+  {
+    p[2*i]   = p[i];
+    p[2*i+1] = conj(p[i]);
+
+  }
+  */
+
 
   int dummy = 0;
+
+  /*
+  // that's, how i want to call it:
+  rsRationalFunction<T>::partialFractionExpansion(num, 0, den, order, p, muls, order, r);
+
+  static void partialFractionExpansion(
+    std::complex<T>* numerator, int numeratorDegree,
+    std::complex<T>* denominator, int denominatorDegree,
+    std::complex<T>* poles, int* multiplicities, int numDistinctPoles,
+    std::complex<T>* pfeCoeffs);
+  */
 }
 
 template class rsNonUniformComplexOnePole<double>;
