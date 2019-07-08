@@ -751,9 +751,30 @@ void nonUniformAllpole()
 
   //double cutoff = 20;
 
+  int N = 100;           // number of samples
+  double dtMin = 0.2;     // minimum time-difference between non-uniform samples
+  double dtMax = 1.8;     // maximum ..
+  double fc    = 0.01;    // cutoff freq
+
+
+  typedef rsNonUniformFilterIIR<double>::ApproximationMethod AM;
   rsNonUniformFilterIIR<double> flt;
-  flt.setFrequency(20);
+  flt.setApproximationMethod(AM::butterworth);
+  flt.setFrequency(fc);
   flt.setOrder(1);
+  // flt.setType(FT::lowpass);
+  //...
+
+  typedef std::vector<double> Vec;
+  Vec h(N);  // impulse response
+  Vec t = randomSampleInstants(N, dtMin, dtMax, 0);
+  h[0] = flt.getSample(1.0, 1.0);
+  for(int n = 1; n < N; n++)
+    h[n] = flt.getSample(0, t[n]-t[n-1]);
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &t[0], &h[0]);
+  plt.plot();
 
   //...
 }

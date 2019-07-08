@@ -154,6 +154,23 @@ template<class T>
 void rsNonUniformFilterIIR<T>::setApproximationMethod(ApproximationMethod newMethod)
 {
   approxMethod = newMethod;
+
+  // todo: let the prototype designer also use an enum class - maybe even the same - maybe list the
+  // allpole types first, so we can simply do a < check to see, if the selected type is allpole
+  // ...oh - but enum classes can't be converted to int - or can they explictly? we really want to 
+  // avoid the "translation" - it's inelegant
+  typedef RAPT::rsPrototypeDesigner<T>::approximationMethods PAM;
+  typedef ApproximationMethod AM;
+  switch(approxMethod)
+  {
+  case AM::gaussian:    protoDesigner.setApproximationMethod(PAM::GAUSSIAN);    break;
+  case AM::bessel:      protoDesigner.setApproximationMethod(PAM::BESSEL);      break;
+  case AM::butterworth: protoDesigner.setApproximationMethod(PAM::BUTTERWORTH); break;
+  case AM::papoulis:    protoDesigner.setApproximationMethod(PAM::PAPOULIS);    break;
+  case AM::halpern:     protoDesigner.setApproximationMethod(PAM::HALPERN);     break;
+  default: rsError("unknown approximation method");  
+  }
+
   updateCoeffs();
 }
 
@@ -161,6 +178,7 @@ template<class T>
 void rsNonUniformFilterIIR<T>::updateCoeffs()
 {
 
+  int dummy = 0;
 }
 
 template class rsNonUniformComplexOnePole<double>;

@@ -88,9 +88,9 @@ int main(int argc, char* argv[])
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
   //nonUniformOnePole1();
-//  nonUniformOnePole2();
+  //nonUniformOnePole2();
   //nonUniformComplexOnePole();
-  //nonUniformAllpole();
+  nonUniformAllpole();
   //nonUniformBiquad();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
@@ -320,14 +320,14 @@ int main(int argc, char* argv[])
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
   //modalWithFancyEnv();
   //modalSynthSpectra();
-//  modalAnalysis1();
-//  modalAnalysisPluck();
+  //modalAnalysis1();
+  //modalAnalysisPluck();
 
   // Misc Audio:
   //centroid();
   //cubicCrossfade();
   //recursiveSineSweep();
-  recursiveSineWithCubicPhase();
+  //recursiveSineWithCubicPhase();
   //ringModNoise();
   //slewRateLimiterLinear();
   //stretchedCorrelation();

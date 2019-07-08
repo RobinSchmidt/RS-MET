@@ -94,6 +94,14 @@ void recursiveSineWithCubicPhase()
   //   e1[n] = e1[n-1] * p1[n] where p1[n] = e^(j*a1)
   //   e2[n] = e2[n-1] * p2[n] where p2[n] = p2[n-1] * q2[n], q2[n] ?= q2[n-1] * e^(j*a2)
   //   e3[n] = e3[n-1] * p3[n] where ...
+  // e0 is constant, 
+  // p1 is constant -> e1 is linear, 
+  // q2 is constant -> p2 is linear -> e2 is quadratic
+
+  //// not yet used:
+  //double fs = 44100;
+  //double p  = 0.25*PI;
+  //double f  = 100;
 
 
   int N = 500; // number of samples
@@ -102,24 +110,33 @@ void recursiveSineWithCubicPhase()
   a0 =  0.5;
   a1 =  0.1;
   a2 =  0.0;
-  //a2 =  -0.000002;
+  a2 =  -0.00001;
   a3 =  0.0;
 
   typedef std::complex<double> Complex;
+  Complex j(0, 1);           // imaginary unit
   Complex e0, e1, e2, e3;
-  Complex j(0, 1);         // imaginary unit
+  Complex     p1, p2, p3;
+  Complex         q2, q3;
+  Complex             r3;
 
-  //Complex p0 = 1;
-  Complex p1 = exp(j*a1);
 
-  //e0 = 1;
+  // initializations:
   e0 = exp(j*a0);
+
+  p1 = exp(j*a1);
   e1 = 1;
+
+  q2 = exp(j*a2);
+  p2 = 1;
   e2 = 1;
+
+  r3 = exp(j*a3);
+  q3 = 1;
+  p3 = 1;
   e3 = 1;
 
   Complex ep; // = e0*e1*e2*e3;  // product of the e-values
-
 
   typedef std::vector<double> Vec;
   Vec xt(N), x(N);  // target signal and actual signal
@@ -128,13 +145,14 @@ void recursiveSineWithCubicPhase()
     double t = double(n);
     xt[n] = cos(a0 + a1*t + a2*t*t + a3*t*t*t);  // generate target signal
 
-
     ep  = e0*e1*e2*e3;  // product of the e-values
     x[n] = ep.real();
 
+    // updates/recursion:
+    e1 *= p1;    // update rotating phasor 1
 
-    //e0 *= p0;  // trivial (p0 = 1), but fits the pattern
-    e1 *= p1;
+    p2 *= q2;    // update rotation factor 2
+    e2 *= p2;    // update rotating phasor 2
   }
 
   GNUPlotter plt;
@@ -142,6 +160,23 @@ void recursiveSineWithCubicPhase()
   plt.addDataArrays(N, &x[0]);
   plt.addDataArrays(N, &(xt-x)[0]);
   plt.plot();
+
+  // ...doesn't work yet, when a2 != 0 - the e2 update is still wrong (and e3 is not even 
+  // implemented yet)
+  // it might be a numerical problem - q2 is so close to 1+0j that p2=1 all the time (for 
+  // a2 = -0.000002;) - we may have to normalize the time somehow - don't assume a unit time-step 
+  // but 1/fs, use user parameters: phase, freq, dFreq, ddFreq....maybe 
+  // hmmm...but that probably won't help - in recursiveSineSweep, the b-coeff is also already close
+  // to 1+0j - it's actually a wonder that even the linear recursive sweep works so well (hmm - how
+  // well does it actually work? there's no comparison to a target signal in the test)
+  // maybe try the concept itself with extended precision arithmetic, to see, if the concept would 
+  // makes sense at all, when numeric issues are ignored - of course, that doesn't help in 
+  // practice, but just to see, if the idea makes sense theoretically
+
+  // hmmm...i think, for realtime additive synthesis, we may have to resort to cosine 
+  // approximations (tables or polynomial) or use SIMD-iFFT, generating the output of K voices
+  // simultaneously (try with rsFloat32x4 to generate 4 voices at once - can be scaled up using
+  // other simd types
 }
 
 

@@ -194,33 +194,51 @@ public:
   /** Sets the cutoff frequency of the filter in Hz. */
   void setFrequency(T newFreq);
 
-
+  /** Enumeration of the available filter modes. This is currently only a subset of the types
+  available in rsPrototypeDesigner because we are currently restricted to allpole filters. For
+  filters with zeros, i need to figure out, how to transform the analog prototype to digital
+  because the impulse invariant transform (which is used here) is applicable only to allpole
+  filters.
+  ...actually, we'll get issues already when creating highpass and bandpass filters
+  ..hmm..we'll see  */
   enum class ApproximationMethod
   {
     gaussian,
     bessel,
     butterworth,
-    //chebychev,
-    papoulis, 
+    //chebychev,   // needs a ripple parameter
+    papoulis,
     halpern
   };
 
-
-  void setOrder(int newOrder);
-
+  /** Sets the approximation method for the prototype filter (Butterworth, Bessel, etc.). */
   void setApproximationMethod(ApproximationMethod newMethod);
 
-
+  /** Sets the order of the (prototype) filter - when we do bandpasses later, the order of the
+  actual filter will be twice the prototype order, but that's not yet implemented. */
+  void setOrder(int newOrder);
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  // ...dt is in seconds, i.e. 1/sampleRate for uniformly sampled signals
-  //T getSample(T x, T dt);
+  /** Computes one output sample y[n] at a time from an incoming input sample x[n] and a 
+  time-difference dt = t[n] - t[n-1] between the sample instant for x and the previous sample 
+  instant for x[n-1]. dt is in seconds, i.e. 1/sampleRate for uniformly sampled signals. */
+  T getSample(T x, T dt)
+  {
+    T y = T(0);
+    for(int i = 0; i < order; i++)
+      y += onePoles[i].getSample(x, dt);
+    return y;
+  }
 
-  // void reset();
-
+  /** Resets the internal state of the filter. */
+  void reset()
+  {
+    for(int i = 0; i < order; i++)
+      onePoles[i].reset();
+  }
 
 
 protected:
@@ -229,27 +247,23 @@ protected:
   void updateCoeffs();
 
 
-
-  //ApproximationMethod approxMethod = gaussian;
+  // data:
   ApproximationMethod approxMethod = ApproximationMethod::butterworth;
+  T freq = 0.25;  // 0.25 for halfband -> w = 2*PI*f/fs = PI/2 for fs = 1
+  int order = 1;  
 
-  //T omega = PI/2;  // halfband by default
-  T freq = 1.0;
-
+  // embedded objects:
+  static const int maxOrder = 20;
+  rsNonUniformComplexOnePole<T> onePoles[maxOrder];
   RAPT::rsPrototypeDesigner<T> protoDesigner;
+
 
   //bool dirty = true;  // maybe use atomic::bool
 
-  int order = 1;
 
-
-  static const int maxOrder = 20;
-  rsNonUniformComplexOnePole<T> onePoles[maxOrder];
   //std::vector<std::complex<T>> r, p, y;
   // r, p: residues and poles of the complex one-poles, y: output signals
-
-
-  //std::vector<rsNonUniformComplexOnePole> onePoles;
+  //std::vector<rsNonUniformComplexOnePole<T>> onePoles;
 
 
 };
