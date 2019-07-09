@@ -208,6 +208,11 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
 
   // z is only half-full with inf - fill it up completely:
   rsArray::fillWithValue(z, order, std::complex<T>(RS_INF(T), T(0)));
+  // we should probably handle the zeros in exactly the same way as the poles - then we may later
+  // be able to use all filter-types - also those with zeros - but when the number of finite zeros
+  // is the same as the number of poles, the partial fraction expansion will produce a polynomial
+  // part ...i think, a 0th order polynomial, i.e. just an added constant? may this be implemented
+  // by just feeding through some of the filter's input? that would seem plausible...
 
   // do s-domain lowpass-to-lowpass transform to set up cutoff frequency:
   T k  = T(1);       // maybe make this a member...
