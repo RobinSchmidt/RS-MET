@@ -126,19 +126,42 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  void setCoeffs(const std::complex<T>& newGain, const std::complex<T>& newFeedback)
+  /** Sets the feedforward (i.e. feed-in or input-gain) and feedback coefficients which correspond 
+  to the resiude and the pole of this complex one-pole section. */
+  void setCoeffs(const std::complex<T>& newFeedin, const std::complex<T>& newFeedback)
   {
-    a = newGain;
+    a = newFeedin;
     b = newFeedback;
   }
+
+
+  void setReferenceOmega(T newOmega)
+  {
+    wr = newOmega;
+  }
+  // hmm....this is not yet really used properly - look up in the paper, how to deal with that
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
 
-  std::complex<T> getSample(std::complex<T> x, T dt);
-  // preliminary - todo: implement it as dispatcher
+  std::complex<T> getSampleNonNormalized(std::complex<T> x, T dt);
+
+
+  std::complex<T> getSampleSpatiallyVariantScaled(std::complex<T> x, T dt);
+
+  std::complex<T> getSamplePiecewiseResampled(std::complex<T> x, T dt);
+
+
+
+  /*
+  std::complex<T> getSample(std::complex<T> x, T dt)
+  {
+    return getSampleNonNormalized(x, dt);
+  }
+  */
+  // preliminary - todo: implement it as dispatcher - have a normalizationMode variable
 
   /** Accepts a real input sample and returns the real part of our complex output. The idea here is
   that in a setting with real inputs and outputs, each complex stage has a partner that produces 
@@ -151,7 +174,7 @@ public:
   purposes (it needs to be done only once for the whole sum over all stages). */
   T getSampleReal(T x, T dt)
   {
-    std::complex<T> z = getSample(std::complex<T>(x, T(0)), dt);
+    std::complex<T> z = getSampleNonNormalized(std::complex<T>(x, T(0)), dt);
     return z.real();
   }
 
@@ -230,7 +253,7 @@ public:
     std::complex<T> y(T(0), T(0));      // accumulator for parallel (complex) filter outputs
 
     for(int i = 0; i < order; i++)
-      y += onePoles[i].getSample(x, dt);
+      y += onePoles[i].getSampleNonNormalized(x, dt);
 
     return y.real();
   }
@@ -256,11 +279,10 @@ protected:
   int order = 1;
 
   // embedded objects:
-  static const int maxOrder = 8; // later use 20
-
-
+  static const int maxOrder = 20;
   rsNonUniformComplexOnePole<T> onePoles[maxOrder]; 
-  // maybe get rid - has redundancy with r,p - but we then need a y-array
+  // maybe get rid - has redundancy with r,p - but we then need a y-array - but maybe not - we
+  // to use the piecewise resampling method per stage and implement it within the stage
 
   RAPT::rsPrototypeDesigner<T> protoDesigner;
 
@@ -268,14 +290,7 @@ protected:
   std::complex<T> p[maxOrder];     // prototype poles
   std::complex<T> z[maxOrder];     // prototype zeros (not yet used - maybe get rid)
   std::complex<T> r[maxOrder];     // residues
-  std::complex<T> num[1] = { 1 };  // numerator (of prototype transfer function)
+  std::complex<T> num[1] = { 1 };  // numerator of transfer function
   std::complex<T> den[maxOrder+1]; // denominator
   int muls[maxOrder];              // pole multiplicities (all 1 at the moment)
-
-
-  //std::vector<std::complex<T>> r, p, y;
-  // r, p: residues and poles of the complex one-poles, y: output signals
-  //std::vector<rsNonUniformComplexOnePole<T>> onePoles;
-
-
 };

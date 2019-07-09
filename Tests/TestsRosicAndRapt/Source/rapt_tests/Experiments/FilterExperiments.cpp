@@ -592,9 +592,7 @@ void nonUniformOnePole2()
   double dtMax = 1.8;   // maximum ..
   double fc    = 0.015; // cutoff freq
   double fs    = 1.0;   // sample rate
-
-  //bool stepResp = false;
-  double x = 1;   // 0: impulse response, 1: step response
+  double x = 1;         // 0: impulse response, 1: step response
 
 
 
@@ -611,9 +609,9 @@ void nonUniformOnePole2()
     // compute non-uniform filter output
   rsNonUniformOnePole<double> flt;
   typedef rsNonUniformOnePole<double>::NormalizeMode NM;
-  //flt.setNormalizationMode(NM::noNormalization);         // matches analytic response exactly
+  //flt.setNormalizationMode(NM::noNormalization);         // matches impulse response exactly
   //flt.setNormalizationMode(NM::spatiallyVariantScaling); // erratic around desired values
-  flt.setNormalizationMode(NM::piecewiseResampling);       // too low except 1st sample
+  flt.setNormalizationMode(NM::piecewiseResampling);       // matches step response exactly
   flt.setOmega(wc);
   flt.reset();
   yf[0] = flt.getSample(1.0, 1.0);
@@ -658,23 +656,31 @@ void nonUniformOnePole2()
   plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
   plt.addDataArrays(Nf, &tf[0], &yf[0]);
   plt.addGraph("index 1 using 1:2 with points pt 7 ps 0.8 lc rgb \"#000000\" notitle");
-  plt.addDataArrays(Nf, &yu[0]);
-  plt.addGraph("index 2 using 1 with points pt 7 ps 0.8 lc rgb \"#008000\" notitle");
+  //plt.addDataArrays(Nf, &yu[0]);
+  //plt.addGraph("index 2 using 1 with points pt 7 ps 0.8 lc rgb \"#008000\" notitle");
   plt.setPixelSize(1000, 250);
   plt.setGrid(false, false);
   plt.plot();
 
-  // non-uniform impulse response samples look wrong! 
-  //  -could it be that the x[n], dt[n] values are out of sync?
-  //  -it seems that without normalization, the impulse response looks good
-  //   but: the step response looks totally wrong! maybe try with normalization
-  //   -> yes! with normalization, the step responses look better!
+  // Observations:
+  // -without normalization, the impulse response looks perfect but the step response looks 
+  //  disturbed
+  // -with piecewise resampling normalization, the step response looks perfect but the impulse
+  //  response looks disturbed
+  // -with spatially variant scaling, both look somewhat disturbed - it seems to be a compromise
+  //  between good impulse-response and good step response (todo: verify, if it's actually
+  //  correctly implemented)
 
-
-  // implement highpass..but how would the continuous highpass look like? a delta function minus the
-  // lowpass response....but how would we represent that?
-
-  // figure out, in which circumstances the different normalization modes make sense
+  // ToDo:
+  // -implement highpass..but how would the continuous highpass look like? a delta function minus 
+  //  the lowpass response....but how would we represent that?
+  // -maybe we can do a highpass by applying a bi-directional lowpass and then subtract the result
+  //  from the original
+  // -figure out, how the deviation of the step-response in the non-normalized case depends on the
+  //  dt values - i think, for small dt (when samples are dense) it shoots above the target and when 
+  //  samples are sparse, it is below the target ...maybe a scaling by 1/dt helps?
+  // -try, if the complex implementation gives the same results, when the resonance(?) frequency is
+  //  set to 0Hz
 }
 
 void nonUniformComplexOnePole()
@@ -688,7 +694,7 @@ void nonUniformComplexOnePole()
   double amplitude = 1.0;   // overall amplitude
   double phase     = 45;    // start-phase in degrees
   double decay     = 50;    // number of samples to decay to A/e
-  double freq      = 0.05;  // normalized frequency (freq/sampleRate)
+  double freq      = 0.05;  // normalized resonance frequency (freq/sampleRate)
 
   // sampling parameters:
   int Nf = 100;           // number of samples taken from the filter

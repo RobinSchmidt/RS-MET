@@ -86,10 +86,11 @@ T rsNonUniformOnePole<T>::getSamplePiecewiseResampled(T x, T dt)
   // update state and return output:
   x1 = x;
   y  = a*x + bdt*y + Phi;
-  //y = a*x + bdt*y;  // for test
   return y;
 }
 // needs testing and debugging
+// maybe allow the user to set a scaler (between 0...1) for Phi - so we can fade between 
+// no-normalization and full normalization
 
 
 template<class T>
@@ -109,13 +110,52 @@ void rsNonUniformOnePole<T>::reset()
 //=================================================================================================
 
 template<class T>
-std::complex<T> rsNonUniformComplexOnePole<T>::getSample(std::complex<T> x, T dt)
+std::complex<T> rsNonUniformComplexOnePole<T>::getSampleNonNormalized(std::complex<T> x, T dt)
 {
   std::complex<T> bdt = pow(b, dt);  // b^dt
   y = a*x + bdt*y;
   return y;
 }
-// todo: make this a dispatcher method the same way as for the real one-pole
+
+template<class T>
+std::complex<T> rsNonUniformComplexOnePole<T>::getSampleSpatiallyVariantScaled(
+  std::complex<T> x, T dt)
+{
+  // code copied from rsNonUniformOnePole<T>::getSampleSpatiallyVariantScaled
+  // still needs adaptions:
+
+  std::complex<T> bdt = pow(b, dt);  // b^dt - optimize: bdt = exp(log(b) * dt) where log(b) can be precomputed
+  s = a + bdt*s;                     // update scaler, Eq. 16, with w = 0 -> todo: generalize for w != 0
+  y = a*x + bdt*y;
+  return y / rsAbs(s);
+
+  // we may need a function that computes/updates s but doesn't apply it (i.e. doesn't divide by it
+  // at the output) - we may want to apply one single scaler for a whole bank of filters....
+}
+
+template<class T>
+std::complex<T> rsNonUniformComplexOnePole<T>::getSamplePiecewiseResampled(std::complex<T> x, T dt)
+{
+  // code copied from rsNonUniformOnePole<T>::getSamplePiecewiseResampled but here, all variables
+  // are complex - todo: verify in paper, if this is correct
+
+
+  std::complex<T> bdt = pow(b, dt); // b^dt - express exp(log(b) * dt), precompute log(b)
+
+  // some coeffs r0,r1 that can be precomputed:
+  std::complex<T> bm1 = b - T(1);
+  std::complex<T> r0  = bm1*bm1 / (a*b);
+  std::complex<T> r1  = a / bm1;
+
+  // compute additional compensation term:
+  std::complex<T> R   = (bdt-T(1))/(r0*dt);
+  std::complex<T> Phi = (R-r1*b)*x - (R-r1*bdt)*x1;
+
+  // update state and return output:
+  x1 = x;
+  y  = a*x + bdt*y + Phi; // maybe scale Phi by value in 0..1 for "partial renormalization"
+  return y;
+}
 
 template<class T>
 void rsNonUniformComplexOnePole<T>::reset()
@@ -224,17 +264,19 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // set up the one-pole filters (to do: get rid of that - implement one-poles directly here to
   // avoid data redundancies)
   for(i = 0; i < order; i++)
-  {
     onePoles[i].setCoeffs(k*r[i], p[i]);
-    //onePoles[i].setCoeffs(r[i], p[i]);
-  }
-  // the gain factor seems to be still wrong
-  // it seems, in sLowpassToLowpass, the z-array is not all inf as it should be - we get some nans and 
-  // some zeros as well
-
-  //int dummy = 0;
 }
 
 template class rsNonUniformComplexOnePole<double>;
 template class rsNonUniformOnePole<double>;
 template class rsNonUniformFilterIIR<double>;
+
+/*
+
+Resources:
+
+http://inf.ufrgs.br/~eslgastal/NonUniformFiltering/
+http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.533.3670&rep=rep1&type=pdf
+http://ljk.imag.fr/membres/Brigitte.Bidegaray/Sources/FB10.pdf
+
+*/
