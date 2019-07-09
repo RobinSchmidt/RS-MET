@@ -88,9 +88,9 @@ int main(int argc, char* argv[])
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
   //nonUniformOnePole1();
-  //nonUniformOnePole2();
+  nonUniformOnePole2();
   //nonUniformComplexOnePole();
-  nonUniformAllpole();
+  //nonUniformAllpole();
   //nonUniformBiquad();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();

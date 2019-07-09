@@ -593,6 +593,9 @@ void nonUniformOnePole2()
   double fc    = 0.015; // cutoff freq
   double fs    = 1.0;   // sample rate
 
+  //bool stepResp = false;
+  double x = 1;   // 0: impulse response, 1: step response
+
 
 
   double wc    = 2*PI*fc/fs;   // normalized radian cutoff frequency
@@ -608,14 +611,14 @@ void nonUniformOnePole2()
     // compute non-uniform filter output
   rsNonUniformOnePole<double> flt;
   typedef rsNonUniformOnePole<double>::NormalizeMode NM;
-  flt.setNormalizationMode(NM::noNormalization);         // matches analytic response exactly
+  //flt.setNormalizationMode(NM::noNormalization);         // matches analytic response exactly
   //flt.setNormalizationMode(NM::spatiallyVariantScaling); // erratic around desired values
-  //flt.setNormalizationMode(NM::piecewiseResampling);       // too low except 1st sample
+  flt.setNormalizationMode(NM::piecewiseResampling);       // too low except 1st sample
   flt.setOmega(wc);
   flt.reset();
   yf[0] = flt.getSample(1.0, 1.0);
   for(int n = 1; n < Nf; n++)
-    yf[n] = flt.getSample(0, tf[n]-tf[n-1]);
+    yf[n] = flt.getSample(x, tf[n]-tf[n-1]);
 
   // compute uniform filter output:
   std::vector<double> yu(Nf);
@@ -625,16 +628,24 @@ void nonUniformOnePole2()
   fltUni.setMode(fltUni.LOWPASS_IIT);
   yu[0] = fltUni.getSample(1.0);
   for(int n = 1; n < Nf; n++)
-    yu[n] = fltUni.getSample(0.0);
+    yu[n] = fltUni.getSample(x);
 
-  // create densely sampled (pseudo-continuous) impulse response:
+  // create densely sampled (pseudo-continuous) impulse- or step response:
   double tMax = rsLast(tf);
   AR::fillWithRangeLinear(&tc[0], Nc, 0.0, tMax);
-  //double scaler = wc;  // wrong - i think, this normalizes the integral, not the sum?
-  double scaler = fltUni.getB0();
-  for(int n = 0; n < Nc; n++)
-    yc[n] = scaler * exp(-tc[n]*wc);  // tau = 1/wc 
-  // ..close (when using dt=1 for filter) - but not exactly the same
+  if(x == 0) {  // plot continuosu impulse response
+    //double scaler = wc;  // wrong - i think, this normalizes the integral, not the sum?
+    double scaler = fltUni.getB0();
+    for(int n = 0; n < Nc; n++)
+      yc[n] = scaler * exp(-tc[n]*wc);  // tau = 1/wc 
+    // ..close (when using dt=1 for filter) - but not exactly the same
+  }
+  else { // if x == 1, plot the step-response:
+    for(int n = 0; n < Nc; n++)
+      yc[n] = 1 - exp((-tc[n]-1)*wc);   // verify formula
+  }
+
+
   // https://en.wikipedia.org/wiki/RC_time_constant
   // http://www.dspguide.com/ch19/2.htm
 
@@ -647,8 +658,8 @@ void nonUniformOnePole2()
   plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
   plt.addDataArrays(Nf, &tf[0], &yf[0]);
   plt.addGraph("index 1 using 1:2 with points pt 7 ps 0.8 lc rgb \"#000000\" notitle");
-  //plt.addDataArrays(Nf, &yu[0]);
-  //plt.addGraph("index 2 using 1:2 with points pt 7 ps 0.8 lc rgb \"#008000\" notitle");
+  plt.addDataArrays(Nf, &yu[0]);
+  plt.addGraph("index 2 using 1 with points pt 7 ps 0.8 lc rgb \"#008000\" notitle");
   plt.setPixelSize(1000, 250);
   plt.setGrid(false, false);
   plt.plot();
@@ -656,6 +667,8 @@ void nonUniformOnePole2()
   // non-uniform impulse response samples look wrong! 
   //  -could it be that the x[n], dt[n] values are out of sync?
   //  -it seems that without normalization, the impulse response looks good
+  //   but: the step response looks totally wrong! maybe try with normalization
+  //   -> yes! with normalization, the step responses look better!
 
 
   // implement highpass..but how would the continuous highpass look like? a delta function minus the
@@ -749,12 +762,15 @@ void nonUniformAllpole()
 {
   // Test for a high-order non-uniform allpole filter (Butterworth, Bessel, etc.)
 
-  int N = 2000;           // number of samples
-  double dtMin = 0.9;     // minimum time-difference between non-uniform samples
-  double dtMax = 1.1;     // maximum ..
+  int N = 500;           // number of samples
+  double dtMin = 0.2;     // minimum time-difference between non-uniform samples
+  double dtMax = 1.8;     // maximum ..
   double fc    = 0.01;    // cutoff freq
-  int order    = 8;
-  double x     = 0;       // 0: impulse response, 1: step response
+  //int order    = 8;
+  double x     = 1;       // 0: impulse response, 1: step response
+
+  std::vector<int> orders = { 1,2,3,4,5,6,7,8 };
+
 
   typedef rsNonUniformFilterIIR<double>::ApproximationMethod AM;
   rsNonUniformFilterIIR<double> flt;
@@ -762,19 +778,28 @@ void nonUniformAllpole()
   //flt.setApproximationMethod(AM::bessel);
   //flt.setApproximationMethod(AM::papoulis);
   flt.setFrequency(fc);
-  flt.setOrder(order);
+  //flt.setOrder(order);
   // flt.setType(FT::lowpass);
 
+  GNUPlotter plt;
 
   typedef std::vector<double> Vec;
   Vec h(N);  // impulse response
   Vec t = randomSampleInstants(N, dtMin, dtMax, 0);
-  h[0] = flt.getSample(1.0, 1.0);
-  for(int n = 1; n < N; n++)
-    h[n] = flt.getSample(x, t[n]-t[n-1]);
 
-  GNUPlotter plt;
-  plt.addDataArrays(N, &t[0], &h[0]);
+  for(size_t i = 0; i < orders.size(); i++)
+  {
+    flt.setOrder(orders[i]);
+    flt.reset();
+
+    h[0] = flt.getSample(1.0, 1.0);
+    for(int n = 1; n < N; n++)
+      h[n] = flt.getSample(x, t[n]-t[n-1]);
+
+    plt.addDataArrays(N, &t[0], &h[0]);
+  }
+  
+  plt.setPixelSize(1000, 300);
   plt.plot();
 
   // -check, if the gain is correct (it seems very small) - but how? maybe compare to regular, uniform
@@ -784,7 +809,8 @@ void nonUniformAllpole()
   //  it seems like the noise in the dt values creates the noise in the step response - might this
   //  be due to time-varying DC gain? should we use one of the normalization modes?
   // -papoulis filter has wrong gain (check step response)
-  // -todo: make a plot with a whole bunch of impulse responses
+
+  // -todo: check step responses of non-uniform one-pole filters
 }
 
 void nonUniformBiquad()
