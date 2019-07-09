@@ -210,50 +210,20 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // do the partial fraction expansion:
   rsRationalFunction<T>::partialFractionExpansion(num, 0, den, order, p, muls, order, r);
 
-
-
-
-
-  // todo: 
-
-  // -transform prototype filters to digital domain by means of impulse-invariant transform
-
-
-
-
-
-    //sLowpassToLowpass(Complex* z, Complex* p, T* k, Complex* zNew, Complex* pNew, 
-    //  T* kNew, int N, T wc);
+  // transform analog poles to digital domain by means of impulse-invariant transform
+  // see: https://ccrma.stanford.edu/~jos/pasp/Impulse_Invariant_Method.html
+  for(i = 0; i < order; i++)
+    p[i] = exp(p[i]);  // Eq. 9.2 with T=1 (T: sampling interval)
+  // todo: factor out into function impulseInvariantAnalogToDigital in class rsPoleZeroMapper
 
   // set up the one-pole filters (to do: get rid of that - implement one-poles directly here to
   // avoid data redundancies)
   for(i = 0; i < order; i++)
     onePoles[i].setCoeffs(r[i], p[i]);
 
-
-  int dummy = 0;
-
-  /*
-  // that's, how i want to call it:
-  rsRationalFunction<T>::partialFractionExpansion(num, 0, den, order, p, muls, order, r);
-
-  static void partialFractionExpansion(
-    std::complex<T>* numerator, int numeratorDegree,
-    std::complex<T>* denominator, int denominatorDegree,
-    std::complex<T>* poles, int* multiplicities, int numDistinctPoles,
-    std::complex<T>* pfeCoeffs);
-  */
+  //int dummy = 0;
 }
 
 template class rsNonUniformComplexOnePole<double>;
 template class rsNonUniformOnePole<double>;
 template class rsNonUniformFilterIIR<double>;
-
-
-
-
-/*
-
-
-
-*/
