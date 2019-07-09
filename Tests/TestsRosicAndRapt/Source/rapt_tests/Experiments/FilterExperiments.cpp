@@ -751,23 +751,18 @@ void nonUniformAllpole()
 
   //double cutoff = 20;
 
-  int N = 100;           // number of samples
+  int N = 500;           // number of samples
   double dtMin = 0.2;     // minimum time-difference between non-uniform samples
   double dtMax = 1.8;     // maximum ..
   double fc    = 0.01;    // cutoff freq
+  int order    = 7;
 
 
   typedef rsNonUniformFilterIIR<double>::ApproximationMethod AM;
   rsNonUniformFilterIIR<double> flt;
-  flt.setOrder(1);
-  flt.setOrder(2);
-  flt.setOrder(3);
-  flt.setOrder(4);
-  flt.setOrder(5);
-  flt.setOrder(6);
   flt.setApproximationMethod(AM::butterworth);
   flt.setFrequency(fc);
-
+  flt.setOrder(order);
   // flt.setType(FT::lowpass);
   //... 
 
@@ -782,7 +777,10 @@ void nonUniformAllpole()
   plt.addDataArrays(N, &t[0], &h[0]);
   plt.plot();
 
-  //...
+  // -the gain is far too high and gets higher with increasing order - otherwise, the impulse
+  //  responses look good
+  // -crash, wehn order == maxOrder
+  // -todo: make a plot with a whole bunch of impulse responses
 }
 
 void nonUniformBiquad()

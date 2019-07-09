@@ -269,7 +269,7 @@ protected:
   std::complex<T> z[maxOrder];     // prototype zeros (not yet used);
   std::complex<T> r[maxOrder];     // residues
   std::complex<T> num[1] = { 1 };  // numerator (of prototype transfer function)
-  std::complex<T> den[maxOrder];   // denominator
+  std::complex<T> den[maxOrder];   // denominator ..or maybe +1?
   int muls[maxOrder];              // pole multiplicities (all 1 at the moment)
 
 
