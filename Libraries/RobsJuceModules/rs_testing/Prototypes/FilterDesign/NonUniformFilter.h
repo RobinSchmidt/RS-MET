@@ -257,14 +257,21 @@ protected:
 
   // embedded objects:
   static const int maxOrder = 8; // later use 20
-  rsNonUniformComplexOnePole<T> onePoles[maxOrder];
+
+
+  rsNonUniformComplexOnePole<T> onePoles[maxOrder]; 
+  // maybe get rid - has redundancy with r,p - but we then need a y-array
+
   RAPT::rsPrototypeDesigner<T> protoDesigner;
 
   // temporary buffers needed for the partial fraction expansion routine:
-  std::complex<T> p[maxOrder], z[maxOrder]; // prototype poles and zeros
-  int muls[maxOrder];                       // pole multiplicities
-  std::complex<T> num[1] = { 1 };           // numerator (of prototype transfer function)
-  std::complex<T> den[maxOrder];            // denominator
+  std::complex<T> p[maxOrder];     // prototype poles
+  std::complex<T> z[maxOrder];     // prototype zeros (not yet used);
+  std::complex<T> r[maxOrder];     // residues
+  std::complex<T> num[1] = { 1 };  // numerator (of prototype transfer function)
+  std::complex<T> den[maxOrder];   // denominator
+  int muls[maxOrder];              // pole multiplicities (all 1 at the moment)
+
 
 
 

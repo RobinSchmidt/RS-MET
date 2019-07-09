@@ -132,6 +132,8 @@ void rsNonUniformComplexOnePole<T>::reset()
 template<class T>
 rsNonUniformFilterIIR<T>::rsNonUniformFilterIIR()
 {
+  for(int i = 0; i < maxOrder; i++)
+    muls[i] = 1;  // pole multiplicities are all 1
   updateCoeffs();
 }
 
@@ -188,29 +190,45 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // the array of zeros should be all inf - all zeros are at infinity because we have an allpole
   // filter - it's not actually used here (yet?)
 
-  // todo: make the pole-array digestible for the partial fraction expansion routine - the zeros
+  // make the pole-array digestible for the partial fraction expansion routine - the zeros
   // array is not needed in this case - the numerator of our rational function is just unity
+
+  // create the complex conjugate partners (needed for partial fraction expansion):
   int i;
-  //int k = order / 2; // offset
-  for(i = order/2; i >= 0; i-)
-    p[2*i] = p[i];
-
-  // make a function rsArray::interleave or spread or upsample
-  // upsample([1,2,3], 2, 0): 1 2 3 -> 1 0 2 0 3 0
-  // upsample([1,2,3], 3, 7): 1 2 3 -> 1 7 7 2 7 7 3 7 7
-  // use it here with the p array (and factor 2 and filler 0)
-
-
-
-
-  /*
-  for(i = order; i >= 0; i--)
-  {
+  for(i = (order-1)/2; i >= 0; i--) {
     p[2*i]   = p[i];
-    p[2*i+1] = conj(p[i]);
+    p[2*i+1] = conj(p[i]); }
 
-  }
-  */
+  // do s-domain lowpass-to-lowpass transform to set up cutoff frequency:
+  T k  = T(1);       // maybe make this a member...
+  T wc = 2*PI*freq;  // ...and this too?
+  rsPoleZeroMapper<T>::sLowpassToLowpass(z, p, &k, z, p, &k, order, wc);
+
+  // create the sum-form of the denominator:
+  rsPolynomial<T>::rootsToCoeffs(p, den, order);
+
+  // do the partial fraction expansion:
+  rsRationalFunction<T>::partialFractionExpansion(num, 0, den, order, p, muls, order, r);
+
+
+
+
+
+  // todo: 
+
+  // -transform prototype filters to digital domain by means of impulse-invariant transform
+
+
+
+
+
+    //sLowpassToLowpass(Complex* z, Complex* p, T* k, Complex* zNew, Complex* pNew, 
+    //  T* kNew, int N, T wc);
+
+  // set up the one-pole filters (to do: get rid of that - implement one-poles directly here to
+  // avoid data redundancies)
+  for(i = 0; i < order; i++)
+    onePoles[i].setCoeffs(r[i], p[i]);
 
 
   int dummy = 0;

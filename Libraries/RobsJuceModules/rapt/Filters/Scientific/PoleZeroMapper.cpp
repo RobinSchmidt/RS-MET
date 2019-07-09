@@ -73,10 +73,8 @@ template<class T>
 void rsPoleZeroMapper<T>::sLowpassToLowpass(Complex* z, Complex* p, T* k, Complex* zNew, 
   Complex* pNew, T* kNew, int N, T wc)
 {
-  for(int n = 0; n < N; n++)
-    zNew[n] = wc * z[n];
-  for(int n = 0; n < N; n++)
-    pNew[n] = wc * p[n];
+  for(int n = 0; n < N; n++) zNew[n] = wc * z[n];
+  for(int n = 0; n < N; n++) pNew[n] = wc * p[n];
   int nz = rsGetNumFiniteValues(z, N); // number of finite zeros in prototype
   *kNew = *k * pow(wc, N-nz);
 }

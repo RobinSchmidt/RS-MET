@@ -10,7 +10,7 @@ template<class T>
 class rsPoleZeroMapper
 {
 
-  typedef std::complex<T> Complex; // preliminary
+  typedef std::complex<T> Complex; // preliminary - get rid
 
 public:
 
@@ -19,6 +19,7 @@ public:
   gain G. */
   static void sLowpassToLowshelf(Complex* z, Complex* p, T* k, Complex* zNew, Complex* pNew, 
     T* kNew, int N, T G0, T G);
+  // allocates heap memory
 
   /** Transforms an analog lowpass prototype filter represented by its zeros, poles and gain (in 
   "z", "p", "k") with nominal radian cutoff frequency of unity to an analog lowpass with nominal 
@@ -26,6 +27,8 @@ public:
   "pNew" and "kNew". */
   static void sLowpassToLowpass(Complex* z, Complex* p, T* k, Complex* zNew, Complex* pNew, 
     T* kNew, int N, T wc);
+  // can this be used in place? -> yes!
+  // todo: maybe allow for complex k
 
   /** Transforms an analog lowpass prototype filter to an analog highpass with nominal radian 
   cutoff frequency of wc.  @see sLowpassToLowpass */

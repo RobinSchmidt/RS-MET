@@ -759,14 +759,15 @@ void nonUniformAllpole()
 
   typedef rsNonUniformFilterIIR<double>::ApproximationMethod AM;
   rsNonUniformFilterIIR<double> flt;
-  flt.setApproximationMethod(AM::butterworth);
-  flt.setFrequency(fc);
   flt.setOrder(1);
   flt.setOrder(2);
   flt.setOrder(3);
   flt.setOrder(4);
   flt.setOrder(5);
   flt.setOrder(6);
+  flt.setApproximationMethod(AM::butterworth);
+  flt.setFrequency(fc);
+
   // flt.setType(FT::lowpass);
   //... 
 
