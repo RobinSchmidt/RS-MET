@@ -2,28 +2,22 @@
 
 /** Implements a one pole filter for non-uniformly sampled data. This filter class is real-valued, 
 so it supports only lowpass mode (todo: add highpass). One-pole bandpasses are necessarrily complex 
-valued...
-
-
+valued.....
 
 References:
 (1) High-Order Recursive Filtering of Non-Uniformly Sampled Signals for Image and Video Processing
 http://inf.ufrgs.br/~eslgastal/NonUniformFiltering/Gastal_Oliveira_EG2015_Non-Uniform_Filtering.pdf
 
 todo: 
--add highpass mode ...and maybe others, too?
--maybe we can implement this as subclass of the uniform filter?
-
-*/
+-add highpass mode ...and maybe others, too? but how? maybe just highpass = in - lowpass? ...but 
+ in this case, this should be better left to client code 
+-maybe we can implement this as subclass of the uniform filter? hmm...probably no good idea */
 
 template<class T>
 class rsNonUniformOnePole
 {
 
 public:
-
-
-
 
 
   rsNonUniformOnePole() { reset(); }
@@ -34,14 +28,14 @@ public:
   void setOmega(T newOmega);
 
 
-
-
   enum class NormalizeMode
   {
     noNormalization,
     spatiallyVariantScaling,
     piecewiseResampling
   };
+  // maybe drag outside the class, so it can be used by the complex and high-order version, too
+  // rsNonUniformFilterNormalization
 
   /** Sets the normalization mode for the getSample dispatcher method, which calls one the three
   versions  */
@@ -91,15 +85,16 @@ public:
 
 protected:
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data */
 
   T y = 0;         // output (g in the paper)
   T a = 1, b = 0;  // coefficients, a: feedforward, b: feedback (notation as in the paper)
-                   // in more common dsp conventions a = b0, b = a1, b1 does not exist
-                   // maybe rename later
-
+  // in more common dsp conventions a = b0, b = a1, b1 does not exist - maybe rename later
+  // maybe use r and p for residue an pole - make its consistent with the complex version
 
   T x1 = 0; // previous input (f in the paper) - only needed for "piecewise resampling" method
-  T s  = 1; // scaler (gamma in the paper) - only needed for "spatially-invariant scaling" method
+  T s  = 1; // scaler (gamma in the paper) - only needed for "spatially-variant scaling" method
   // todo: maybe split into two classes, one with the x-member, the other with s-member
   //T p = 1; 
   //T q = 1; 
@@ -112,7 +107,7 @@ protected:
 //=================================================================================================
 
 /** Implements a complex-valued one-pole filter for non-uniformly sampled data. Higher order 
-non-uniform filters (Butterworth, elliptic, etc.) are created as a parallel connection of these
+non-uniform filters (Butterworth, Gaussian, etc.) are created as a parallel connection of these
 complex one-pole units via a partial fraction expansion of the transfer function. */
 
 template<class T>
@@ -273,24 +268,26 @@ protected:
   void updateCoeffs();
 
 
-  // data:
-  ApproximationMethod approxMethod = ApproximationMethod::butterworth;
-  T freq = 0.25;  // 0.25 for halfband -> w = 2*PI*f/fs = PI/2 for fs = 1
-  int order = 1;
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data */
 
-  // embedded objects:
+  // array of complex one-pole filters:
   static const int maxOrder = 20;
   rsNonUniformComplexOnePole<T> onePoles[maxOrder]; 
   // maybe get rid - has redundancy with r,p - but we then need a y-array - but maybe not - we
   // to use the piecewise resampling method per stage and implement it within the stage
 
-  RAPT::rsPrototypeDesigner<T> protoDesigner;
+  // settings:
+  int order = 1;
+  T freq    = 0.25;  // 0.25 for halfband -> w = 2*PI*f/fs = PI/2 for fs = 1
+  ApproximationMethod approxMethod = ApproximationMethod::butterworth;
 
-  // temporary buffers needed for the partial fraction expansion routine:
+  // prototype designer and buffers for partial fraction expansion routine:
+  RAPT::rsPrototypeDesigner<T> protoDesigner;
   std::complex<T> p[maxOrder];     // prototype poles
   std::complex<T> z[maxOrder];     // prototype zeros (not yet used - maybe get rid)
   std::complex<T> r[maxOrder];     // residues
   std::complex<T> num[1] = { 1 };  // numerator of transfer function
-  std::complex<T> den[maxOrder+1]; // denominator
+  std::complex<T> den[maxOrder+1]; // denominator of transfer function
   int muls[maxOrder];              // pole multiplicities (all 1 at the moment)
 };

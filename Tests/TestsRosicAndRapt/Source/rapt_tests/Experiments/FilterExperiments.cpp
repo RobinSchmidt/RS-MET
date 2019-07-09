@@ -610,8 +610,8 @@ void nonUniformOnePole2()
   rsNonUniformOnePole<double> flt;
   typedef rsNonUniformOnePole<double>::NormalizeMode NM;
   //flt.setNormalizationMode(NM::noNormalization);         // matches impulse response exactly
-  //flt.setNormalizationMode(NM::spatiallyVariantScaling); // erratic around desired values
-  flt.setNormalizationMode(NM::piecewiseResampling);       // matches step response exactly
+  flt.setNormalizationMode(NM::spatiallyVariantScaling); // erratic around desired values
+  //flt.setNormalizationMode(NM::piecewiseResampling);       // matches step response exactly
   flt.setOmega(wc);
   flt.reset();
   yf[0] = flt.getSample(1.0, 1.0);

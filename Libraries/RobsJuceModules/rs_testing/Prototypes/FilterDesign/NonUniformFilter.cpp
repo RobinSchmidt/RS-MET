@@ -1,19 +1,9 @@
-
 template<class T>
 void rsNonUniformOnePole<T>::setOmega(T newOmega)
 {
   w = newOmega;
-  T dummy;       // will be set to 0
-  //RAPT::rsFirstOrderFilterBase<T, T>::coeffsLowpassIIT(w, &a, &b, &dummy);
-
+  T dummy;       // will be set to zero
   RAPT::rsFirstOrderFilterBase<T, T>::coeffsLowpassIIT(w, &a, &dummy, &b);
-
-
-  //coeffsLowpassIIT(T w, T* b0, T* b1, T* a1)
-
-  // update s? or maybe in reset?
-
-  dummy = 0;
 }
 
 template<class T>
@@ -41,32 +31,10 @@ T rsNonUniformOnePole<T>::getSampleNonNormalized(T x, T dt)
 template<class T>
 T rsNonUniformOnePole<T>::getSampleSpatiallyVariantScaled(T x, T dt)
 {
-  T bdt = pow(b, dt);  // b^dt
-  // can later be optimized as bdt = exp(log(b) * dt) where log(b) can be precomputed
-  
-  // update scaler:
-  s = a + bdt*s;       //  Eq. 16, with w = 0
-
-
-
-
-
-  // update state:
-  //y = (a*x + bdt*y) / rsAbs(s);   //  Eq. 13
-  //return y;
-
-  // verify, if the scaler really has to be applied when updating the state or if it should be 
-  // applied only to the returned output
-
-  // alternative version:
-  y = a*x + bdt*y;
-  return y / rsAbs(s);  // seems better
-
-
-  // with dt == 1, there's no difference - s is always 1 - but probably it's correct to apply it
-  // to the output because the paper says, with several parallel filters the normalization should
-  // *not* be done in the individual complex one-poles but once for the whole filter - which makes 
-  // sense only if it's applied to the output
+  T bdt = pow(b, dt);    // b^dt - optimize: bdt = exp(log(b) * dt) where log(b) is precomputed
+  s = a + bdt*s;         // update scaler via Eq. 16 with w = 0 (normalize gain at DC)
+  y = a*x + bdt*y;       // update state
+  return y / rsAbs(s);   // apply re-normalization
 }
 
 template<class T>
@@ -88,10 +56,8 @@ T rsNonUniformOnePole<T>::getSamplePiecewiseResampled(T x, T dt)
   y  = a*x + bdt*y + Phi;
   return y;
 }
-// needs testing and debugging
 // maybe allow the user to set a scaler (between 0...1) for Phi - so we can fade between 
-// no-normalization and full normalization
-
+// no-normalization (good for impulse response) and full normalization (good for step response)
 
 template<class T>
 void rsNonUniformOnePole<T>::reset()
