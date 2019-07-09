@@ -749,37 +749,41 @@ void nonUniformAllpole()
 {
   // Test for a high-order non-uniform allpole filter (Butterworth, Bessel, etc.)
 
-  //double cutoff = 20;
-
-  int N = 500;           // number of samples
-  double dtMin = 0.2;     // minimum time-difference between non-uniform samples
-  double dtMax = 1.8;     // maximum ..
+  int N = 2000;           // number of samples
+  double dtMin = 0.9;     // minimum time-difference between non-uniform samples
+  double dtMax = 1.1;     // maximum ..
   double fc    = 0.01;    // cutoff freq
-  int order    = 7;
-
+  int order    = 8;
+  double x     = 0;       // 0: impulse response, 1: step response
 
   typedef rsNonUniformFilterIIR<double>::ApproximationMethod AM;
   rsNonUniformFilterIIR<double> flt;
   flt.setApproximationMethod(AM::butterworth);
+  //flt.setApproximationMethod(AM::bessel);
+  //flt.setApproximationMethod(AM::papoulis);
   flt.setFrequency(fc);
   flt.setOrder(order);
   // flt.setType(FT::lowpass);
-  //... 
+
 
   typedef std::vector<double> Vec;
   Vec h(N);  // impulse response
   Vec t = randomSampleInstants(N, dtMin, dtMax, 0);
   h[0] = flt.getSample(1.0, 1.0);
   for(int n = 1; n < N; n++)
-    h[n] = flt.getSample(0, t[n]-t[n-1]);
+    h[n] = flt.getSample(x, t[n]-t[n-1]);
 
   GNUPlotter plt;
   plt.addDataArrays(N, &t[0], &h[0]);
   plt.plot();
 
-  // -the gain is far too high and gets higher with increasing order - otherwise, the impulse
-  //  responses look good
-  // -crash, wehn order == maxOrder
+  // -check, if the gain is correct (it seems very small) - but how? maybe compare to regular, uniform
+  //  butterworth lowpass? or numerically integrate impulse response...this should(?) give the DC gain
+  // -or just feed in DC -> step response
+  // -the step response behaves totally erratic (it seems to have a mean of 1, though)
+  //  it seems like the noise in the dt values creates the noise in the step response - might this
+  //  be due to time-varying DC gain? should we use one of the normalization modes?
+  // -papoulis filter has wrong gain (check step response)
   // -todo: make a plot with a whole bunch of impulse responses
 }
 

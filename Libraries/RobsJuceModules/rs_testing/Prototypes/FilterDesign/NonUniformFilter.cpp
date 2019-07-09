@@ -134,6 +134,7 @@ rsNonUniformFilterIIR<T>::rsNonUniformFilterIIR()
 {
   for(int i = 0; i < maxOrder; i++)
     muls[i] = 1;  // pole multiplicities are all 1
+  setOrder(8);    // just for test
   updateCoeffs();
 }
 
@@ -199,10 +200,14 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
     p[2*i]   = p[i];
     p[2*i+1] = conj(p[i]); }
 
+  // z is only half-full with inf - fill it up completely:
+  rsArray::fillWithValue(z, order, std::complex<T>(RS_INF(T), T(0)));
+
   // do s-domain lowpass-to-lowpass transform to set up cutoff frequency:
   T k  = T(1);       // maybe make this a member...
   T wc = 2*PI*freq;  // ...and this too?
   rsPoleZeroMapper<T>::sLowpassToLowpass(z, p, &k, z, p, &k, order, wc);
+  // ...produces inf - j*nan for the zeros -> fix this!
 
   // create the sum-form of the denominator:
   rsPolynomial<T>::rootsToCoeffs(p, den, order);
@@ -219,7 +224,13 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // set up the one-pole filters (to do: get rid of that - implement one-poles directly here to
   // avoid data redundancies)
   for(i = 0; i < order; i++)
-    onePoles[i].setCoeffs(r[i], p[i]);
+  {
+    onePoles[i].setCoeffs(k*r[i], p[i]);
+    //onePoles[i].setCoeffs(r[i], p[i]);
+  }
+  // the gain factor seems to be still wrong
+  // it seems, in sLowpassToLowpass, the z-array is not all inf as it should be - we get some nans and 
+  // some zeros as well
 
   //int dummy = 0;
 }

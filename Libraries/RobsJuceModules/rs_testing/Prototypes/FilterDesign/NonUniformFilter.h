@@ -253,7 +253,7 @@ protected:
   // data:
   ApproximationMethod approxMethod = ApproximationMethod::butterworth;
   T freq = 0.25;  // 0.25 for halfband -> w = 2*PI*f/fs = PI/2 for fs = 1
-  int order = 1;  
+  int order = 1;
 
   // embedded objects:
   static const int maxOrder = 8; // later use 20
@@ -266,19 +266,11 @@ protected:
 
   // temporary buffers needed for the partial fraction expansion routine:
   std::complex<T> p[maxOrder];     // prototype poles
-  std::complex<T> z[maxOrder];     // prototype zeros (not yet used);
+  std::complex<T> z[maxOrder];     // prototype zeros (not yet used - maybe get rid)
   std::complex<T> r[maxOrder];     // residues
   std::complex<T> num[1] = { 1 };  // numerator (of prototype transfer function)
-  std::complex<T> den[maxOrder];   // denominator ..or maybe +1?
+  std::complex<T> den[maxOrder+1]; // denominator
   int muls[maxOrder];              // pole multiplicities (all 1 at the moment)
-
-
-
-
-
-
-
-  //bool dirty = true;  // maybe use atomic::bool
 
 
   //std::vector<std::complex<T>> r, p, y;
