@@ -293,10 +293,12 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // say anything about doing such a thing:
   std::complex<T> tmp = T(0);
   for(i = 0; i < order; i++) {
-    onePoles[i].reset(); // triggers computation of scaler s
+    onePoles[i].reset(); // triggers computation of scaler s_i
     tmp += onePoles[i].getScaler();  
   }
-  scaler = T(1) / tmp.real(); 
+  scaler = T(1) / tmp.real();
+  // but it makes sense: when the transfer function is a sum of terms like r_i / (s - p_i) and we 
+  // plug in s = 0, we have a sum -r_i/p_i ...but s_i = r_i / (1-p_i) ...hmmm
 }
 
 

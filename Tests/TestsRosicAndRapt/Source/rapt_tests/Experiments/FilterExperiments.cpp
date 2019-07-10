@@ -788,10 +788,10 @@ void nonUniformAllpole()
 
   typedef rsNonUniformFilterIIR<double>::ApproximationMethod AM;
   rsNonUniformFilterIIR<double> flt;
-  //flt.setApproximationMethod(AM::butterworth);
+  flt.setApproximationMethod(AM::butterworth);
   //flt.setApproximationMethod(AM::bessel);
   //flt.setApproximationMethod(AM::gaussian);
-  flt.setApproximationMethod(AM::papoulis);
+  //flt.setApproximationMethod(AM::papoulis);
   //flt.setApproximationMethod(AM::halpern);
   //flt.setApproximationMethod(AM::elliptic); // triggers assert bcs pfe a can't deal with numDeg >= denDeg
   flt.setFrequency(fc);
@@ -821,14 +821,14 @@ void nonUniformAllpole()
 
   // Observations:
   // -without normalization: 
-  //  -impulse-responses look good, but the setp responses are a total mess
+  //  -impulse-responses look good, but the step responses are a total mess
   // -piecewise resampling: 
   //  -step responses look good - but the first order ones approach a value != 1 (slightly above) 
   //   higher order filters don't have that problem
   //  -impulse responses look also ok, but the first sample of the first order responses seems too
   //   large
   // -spatially variant scaling:
-  //  -both responses are a total mess - but that may not be surprising since we don the 
+  //  -both responses are a total mess - but that may not be surprising since we do the 
   //   normalization per stage and the paper says it must be done once for the whole filter
 
   // todo: check, why the first order filters have wrong DC gain 
@@ -838,6 +838,11 @@ void nonUniformAllpole()
   // -it seems when order = 1, it approaches the value of s (1.038 for gaussian) - maybe just 
   //  divide everything by s? ...or: divide the final result by the sum of s values? 
   //  ..seems to work!
+
+
+  // -check gaussian cutoff normalization (maybe make it available in EngineersFilter/ToolChain
+  //  and check mag-resp there
+  // -allow filters with zeros (elliptic, etc)
 
 }
 

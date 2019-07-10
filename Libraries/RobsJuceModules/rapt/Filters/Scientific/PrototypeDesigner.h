@@ -45,10 +45,10 @@ public:
     HALPERN,           /**< minimizes ratio of bandwidths at specified magnitudes (shaping factor)
                             under constraint of monotonicity. similar to Papoulis but less steep 
                             at cutoff and steeper in stopband */
-    GAUSSIAN,          /**< smallest ringingTime*bandWidth product, good time response (no 
+    GAUSSIAN,          /**< smallest ringingTime*bandWidth product, good time response (very little
                             overshoot), step response rises faster than Bessel. but wait - do we 
                             normalize the cutoff the same way as in bessel? ..with respect to 
-                            the asymptote? -> check this!  */
+                            the asymptote? -> check this! otherwise, it's not comparable  */
     NUM_APPROXIMATION_METHODS
   };
   // re-order: COINCINDENT_POLE, GAUSS, BESSEL, BUTTERWORTH, PAPOULIS <-?-> HALPERN, CHEBY1 <-?-> 
