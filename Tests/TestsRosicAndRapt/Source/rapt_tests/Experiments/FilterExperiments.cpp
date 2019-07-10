@@ -610,8 +610,8 @@ void nonUniformOnePole2()
   rsNonUniformOnePole<double> flt;
   typedef rsNonUniformOnePole<double>::NormalizeMode NM;
   //flt.setNormalizationMode(NM::noNormalization);         // matches impulse response exactly
-  flt.setNormalizationMode(NM::spatiallyVariantScaling); // erratic around desired values
-  //flt.setNormalizationMode(NM::piecewiseResampling);       // matches step response exactly
+  //flt.setNormalizationMode(NM::spatiallyVariantScaling); // erratic around desired values
+  flt.setNormalizationMode(NM::piecewiseResampling);       // matches step response exactly
   flt.setOmega(wc);
   flt.reset();
   yf[0] = flt.getSample(1.0, 1.0);
@@ -631,24 +631,18 @@ void nonUniformOnePole2()
   // create densely sampled (pseudo-continuous) impulse- or step response:
   double tMax = rsLast(tf);
   AR::fillWithRangeLinear(&tc[0], Nc, 0.0, tMax);
-  if(x == 0) {  // plot continuosu impulse response
+  if(x == 0) {  // plot continuous impulse response
     //double scaler = wc;  // wrong - i think, this normalizes the integral, not the sum?
     double scaler = fltUni.getB0();
     for(int n = 0; n < Nc; n++)
       yc[n] = scaler * exp(-tc[n]*wc);  // tau = 1/wc 
-    // ..close (when using dt=1 for filter) - but not exactly the same
   }
   else { // if x == 1, plot the step-response:
     for(int n = 0; n < Nc; n++)
       yc[n] = 1 - exp((-tc[n]-1)*wc);   // verify formula
   }
-
-
   // https://en.wikipedia.org/wiki/RC_time_constant
   // http://www.dspguide.com/ch19/2.htm
-
-  // maybe plot a uniform filter impulse response as well for comparison to see, if the continuous 
-  // solution is correct
 
 
   GNUPlotter plt;
@@ -670,6 +664,11 @@ void nonUniformOnePole2()
   // -with spatially variant scaling, both look somewhat disturbed - it seems to be a compromise
   //  between good impulse-response and good step response (todo: verify, if it's actually
   //  correctly implemented)
+  // -it seems like piecewise resampling is better than time-variant scaling (unless my 
+  //  implementation of the latter is faulty - verify it!)
+  // -actually, the impulse response with piecewise resampling looks "almost good" - the signal 
+  //  just seems to be overall a bit too small - except for the first sample, which is exact
+  //  -could this be an issue about the initial state?
 
   // ToDo:
   // -implement highpass..but how would the continuous highpass look like? a delta function minus 
@@ -678,7 +677,9 @@ void nonUniformOnePole2()
   //  from the original
   // -figure out, how the deviation of the step-response in the non-normalized case depends on the
   //  dt values - i think, for small dt (when samples are dense) it shoots above the target and when 
-  //  samples are sparse, it is below the target ...maybe a scaling by 1/dt helps?
+  //  samples are sparse, it is below the target ...maybe a scaling by 1/dt helps? -> i tried to
+  //  scale by dt and 1/dt - and nope, that doesn't make any sense - but maybe adding something
+  //  could help - but actually that's what Phi in the piecewise resampling method does
   // -try, if the complex implementation gives the same results, when the resonance(?) frequency is
   //  set to 0Hz
 }
@@ -695,6 +696,7 @@ void nonUniformComplexOnePole()
   double phase     = 45;    // start-phase in degrees
   double decay     = 50;    // number of samples to decay to A/e
   double freq      = 0.05;  // normalized resonance frequency (freq/sampleRate)
+  double in        = 0;     // 0: impulse response, 1: step response
 
   // sampling parameters:
   int Nf = 100;           // number of samples taken from the filter
@@ -710,7 +712,7 @@ void nonUniformComplexOnePole()
   rsDampedSineFilterCoeffs(2*PI*freq, amplitude, decay, rsDegreeToRadiant(phase),
     &b[0], &b[1], &a[1], &a[2]);
   std::vector<double> x(Nf), yu(Nf);
-  AR::fillWithZeros(&x[0], Nf); x[0] = 1;  // create impulse as input signal
+  AR::fillWithValue(&x[0], Nf, in); x[0] = 1;  // create impulse or step as input signal
   AR::filter(&x[0], Nf, &yu[0], Nf, b, 1, a, 2);
 
   // create non-uniformly sampled impulse-response:
@@ -722,16 +724,20 @@ void nonUniformComplexOnePole()
   flt.setCoeffs(r, p);
   yn[0] = 2*flt.getSampleReal(1.0, 1.0);
   for(int n = 1; n < Nf; n++)
-    yn[n] = 2*flt.getSampleReal(0.0, t[n]-t[n-1]);
+    yn[n] = 2*flt.getSampleReal(in, t[n]-t[n-1]);
 
   // create pseudo-continuous impulse response (via oversampling):
   int Nc = Nf * oversampling;
   rsDampedSineFilterCoeffs(2*PI*freq/oversampling, amplitude, decay*oversampling,
     rsDegreeToRadiant(phase),  &b[0], &b[1], &a[1], &a[2]);
   std::vector<double> tc(Nc), yc(Nc);
-  AR::fillWithZeros(&yc[0], Nc); yc[0] = 1;  // create impulse as input signal
+  AR::fillWithValue(&yc[0], Nc, in); yc[0] = 1;  // create impulse or step as input signal
+  //if(in == 1) AR::scale(&yc[0], Nc, 1./oversampling);  // ad hoc - not sure, if correct
   AR::fillWithRangeLinear(&tc[0], Nc, 0.0, (Nc-1.0)/oversampling);
   AR::filter(&yc[0], Nc, &yc[0], Nc, b, 1, a, 2);
+  //AR::scale(&yc[0], Nc, yu[0]/yc[0]);  // ad hoc - nope!
+  // pseudo-continuous step response is still wrong - why? ...looks scaled and shifted
+
 
 
   // plot:
@@ -740,15 +746,14 @@ void nonUniformComplexOnePole()
   plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
   plt.addDataArrays(Nf, &t[0], &yn[0]);   // non-uniformly sampled data
   plt.addGraph("index 1 with points pt 7 ps 0.8 lc rgb \"#000000\" notitle");
-  //plt.addDataArrays(Nf, &yu[0]);          // uniformly sampled data
-  //plt.addGraph("index 2 with points pt 7 ps 0.8 lc rgb \"#000080\" notitle");
+  plt.addDataArrays(Nf, &yu[0]);          // uniformly sampled data
+  plt.addGraph("index 2 with points pt 7 ps 0.8 lc rgb \"#0000ff\" notitle");
   plt.setGrid(false, false);
   plt.setPixelSize(1000, 250);
   plt.plot();
 }
 
 // next: 
-// -figure out, why oversampling and analytic solution disagree
 
 // -figure out, how to implement a general non-uniform biquad 
 //  -a uniform biquad can be represented as a unit-delayed two-pole-one-zero plus a (weighted)

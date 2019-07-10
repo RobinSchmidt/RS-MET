@@ -28,6 +28,7 @@ T rsNonUniformOnePole<T>::getSampleNonNormalized(T x, T dt)
 }
 // maybe inline this function
 
+
 template<class T>
 T rsNonUniformOnePole<T>::getSampleSpatiallyVariantScaled(T x, T dt)
 {
@@ -36,6 +37,20 @@ T rsNonUniformOnePole<T>::getSampleSpatiallyVariantScaled(T x, T dt)
   y = a*x + bdt*y;       // update state
   return y / rsAbs(s);   // apply re-normalization
 }
+/*
+// ...could it be that the update of s must be done *after* the output is computed? see Eq 13: 
+// gamma_0 = a should used for the 0-th sample - let's try it:
+template<class T>
+T rsNonUniformOnePole<T>::getSampleSpatiallyVariantScaled(T x, T dt)
+{
+  T bdt = pow(b, dt);    // b^dt - optimize: bdt = exp(log(b) * dt) where log(b) is precomputed
+  y     = a*x + bdt*y;   // update state
+  T out = y / rsAbs(s);  // apply re-normalization
+  s     = a + bdt*s;     // update scaler via Eq. 16 with w = 0 (normalize gain at DC)
+  return out;
+}
+// ...hmmm - well - the version above with pre-update has the "better looking" step response
+*/
 
 template<class T>
 T rsNonUniformOnePole<T>::getSamplePiecewiseResampled(T x, T dt)
@@ -50,6 +65,7 @@ T rsNonUniformOnePole<T>::getSamplePiecewiseResampled(T x, T dt)
   // compute additional compensation term:
   T R   = (bdt-1)/(r0*dt);
   T Phi = (R-r1*b)*x - (R-r1*bdt)*x1;
+  //T test = (R-r1*bdt);  // multiplier for x1 - goes to zero when dt goes to 1
 
   // update state and return output:
   x1 = x;
@@ -62,15 +78,26 @@ T rsNonUniformOnePole<T>::getSamplePiecewiseResampled(T x, T dt)
 template<class T>
 void rsNonUniformOnePole<T>::reset()
 {
-  x1 = T(0);
   y  = T(0);
-  //s = a;
-  s = a / (T(1) - b);
-  // the general formula is s = a / (1 - b * exp(j*wr)) where wr is the reference frequency where 
-  // we  want unit gain, which is zero in this (lowpass) case
+
+  x1 = T(0);
+
+  //x1 = T(1000);  
+  // test: doesn't seem to make a difference for imp-resp or step-resp. It seems like the
+  // factor (R-r1*bdt) that multiplies x1 is always zero for the first sample -> it goes to zero
+  // when dt goes to 1.
+
+  //s = a;              // step response looks wrong...
+  s = a / (T(1) - b);   // ...better
+  // the general formula is Eq18: s = a / (1 - b * exp(j*wr)) where wr is the reference frequency
+  // where we want unit gain, which is zero in this (lowpass) case
   // there's an alternative formula: s = a ...figure out, which one should be used
   // ...comparing results with a uniform 1-pole filter, it seems like s = a/(1-b) is the correct 
   // one - in this case, s comes out as 1 - but probably only in the special case of a lowpass
+
+  // Looking at Eq.15, it seems, this gamma term (our s) is just the sum over all the 
+  // impulse-response samples encountered so far when wr = 0. When wr != 0, it's the sum over the 
+  // modulated impulse response
 }
 
 //=================================================================================================

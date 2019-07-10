@@ -13,6 +13,9 @@ todo:
  in this case, this should be better left to client code 
 -maybe we can implement this as subclass of the uniform filter? hmm...probably no good idea */
 
+
+
+
 template<class T>
 class rsNonUniformOnePole
 {
@@ -143,19 +146,20 @@ public:
 
   std::complex<T> getSampleNonNormalized(std::complex<T> x, T dt);
 
-
   std::complex<T> getSampleSpatiallyVariantScaled(std::complex<T> x, T dt);
 
   std::complex<T> getSamplePiecewiseResampled(std::complex<T> x, T dt);
 
 
 
-  /*
+ 
   std::complex<T> getSample(std::complex<T> x, T dt)
   {
-    return getSampleNonNormalized(x, dt);
+    //return getSampleNonNormalized(x, dt);
+    //return getSampleSpatiallyVariantScaled(x, dt);
+    return getSamplePiecewiseResampled(x, dt);
   }
-  */
+ 
   // preliminary - todo: implement it as dispatcher - have a normalizationMode variable
 
   /** Accepts a real input sample and returns the real part of our complex output. The idea here is
@@ -169,7 +173,7 @@ public:
   purposes (it needs to be done only once for the whole sum over all stages). */
   T getSampleReal(T x, T dt)
   {
-    std::complex<T> z = getSampleNonNormalized(std::complex<T>(x, T(0)), dt);
+    std::complex<T> z = getSample(std::complex<T>(x, T(0)), dt);
     return z.real();
   }
 

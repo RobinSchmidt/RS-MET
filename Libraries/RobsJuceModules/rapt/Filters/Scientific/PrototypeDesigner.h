@@ -11,9 +11,9 @@ boost (when G > 1) or an attenuation/cut (when G < 1) - for standard lowpass des
 would be unity.
 
 References:
- -(1) Sophocles J. Orfanidis: Lecture Notes on Elliptic Filter Design
- -(2) Sophocles J. Orfanidis: High-Order Elliptical Equalizer Design
- -(3) Larry D.Paarmann: Design and Analysis of Analog Filters
+  (1) Sophocles J. Orfanidis: Lecture Notes on Elliptic Filter Design
+  (2) Sophocles J. Orfanidis: High-Order Elliptical Equalizer Design
+  (3) Larry D. Paarmann: Design and Analysis of Analog Filters
 
 \todo
  -test the gaussian design (compare poles with reference design, like Paarmann's GAUSSDE.m)
@@ -51,11 +51,19 @@ public:
   };
   // re-order: COINCINDENT_POLE, GAUSS, BESSEL, BUTTERWORTH, PAPOULIS <-?-> HALPERN, CHEBY1 <-?-> 
   // CHEBY2, ELLIPTIC ->sorted by desirability of time response vs. frequency response (roughly)
-  // or maybe sort by ringing time?
+  // or maybe sort by ringing time? or maybe list allpole types first, so we may implement an easy
+  // isAllpole() check?
 
   // ideas: try other polynomials, for example non-reversed Bessel, Laguerre, etc. - if roots occur 
   // in the right half-plane, reflect them, maybe try Power-Series expansions of various 
   // interesting functions as it is done with the Gaussian filter
+
+  // in (3), page 16, it says: "Scanlan introduced filters with poles that fall on an ellipse with 
+  // equal frequency spacing and noted the tradeoff between magnitude response characteristics and 
+  // time-domain response characteristics as the eccentricity of the ellipse is varied" -> try it
+  // ...maybe call them "ellipsoid" filters...because "elliptic" already means something else 
+  // -> includes butterworth as special case, when the ellipse becomes a circle - maybe the user 
+  // parameter should be the log of the ratio of major and minor axis?
 
   /** This enumerates the two possible prototype filter characterisitics. */
   enum prototypeModes
