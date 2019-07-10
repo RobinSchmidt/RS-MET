@@ -35,18 +35,20 @@ public:
   /** This is an enumeration of the available approximation methods. */
   enum approximationMethods
   {
-    //BUTTERWORTH = 1,   ///< maximally flat at DC
-    BUTTERWORTH = 0,   ///< maximally flat at DC
-    CHEBYCHEV,         ///< equiripple in passband, monotonic in stopband
-    INVERSE_CHEBYCHEV, ///< equiripple in stopband, monotonic in passband
-    ELLIPTIC,          ///< equiripple in passband and stopband, maximally steep transition
-    BESSEL,            ///< approximates linear phase
-    PAPOULIS,          ///< maximizes steepness at cutoff (selectivity) under constraint of monotonicity
-
-    HALPERN,           ///< minimizes ratio of bandwidths at specified magnitudes (shaping factor) under constraint of monotonicity
-                       ///< ...less steep at cutoff but steeper in stopband than Papoulis
-    GAUSSIAN,          ///< smallest timelength*bandwidth product, good time response (no overshoot?)
-
+    BUTTERWORTH = 0,   /**< maximally flat at DC: all derivatives zero, up to filter order */
+    CHEBYCHEV,         /**< equiripple in passband, monotonic in stopband */
+    INVERSE_CHEBYCHEV, /**< equiripple in stopband, monotonic in passband */
+    ELLIPTIC,          /**< equiripple in passband and stopband, maximally steep transition */
+    BESSEL,            /**< approximates linear phase */
+    PAPOULIS,          /**< maximizes steepness at cutoff (selectivity) under constraint of 
+                            monotonicity */
+    HALPERN,           /**< minimizes ratio of bandwidths at specified magnitudes (shaping factor)
+                            under constraint of monotonicity. similar to Papoulis but less steep 
+                            at cutoff and steeper in stopband */
+    GAUSSIAN,          /**< smallest ringingTime*bandWidth product, good time response (no 
+                            overshoot), step response rises faster than Bessel. but wait - do we 
+                            normalize the cutoff the same way as in bessel? ..with respect to 
+                            the asymptote? -> check this!  */
     NUM_APPROXIMATION_METHODS
   };
   // re-order: COINCINDENT_POLE, GAUSS, BESSEL, BUTTERWORTH, PAPOULIS <-?-> HALPERN, CHEBY1 <-?-> 
@@ -63,7 +65,8 @@ public:
   // time-domain response characteristics as the eccentricity of the ellipse is varied" -> try it
   // ...maybe call them "ellipsoid" filters...because "elliptic" already means something else 
   // -> includes butterworth as special case, when the ellipse becomes a circle - maybe the user 
-  // parameter should be the log of the ratio of major and minor axis?
+  // parameter should be the log of the ratio of major and minor axis? how about other geometric
+  // definitions of pole/zero locations?
 
   /** This enumerates the two possible prototype filter characterisitics. */
   enum prototypeModes

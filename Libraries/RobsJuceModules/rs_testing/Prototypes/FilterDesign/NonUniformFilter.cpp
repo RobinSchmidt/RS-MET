@@ -264,25 +264,42 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   rsPolynomial<T>::rootsToCoeffs(p, den, order);
 
   // todo: do the same for the numerator - we need to figure out the number of finite zeros...
+  int nz = protoDesigner.getNumFiniteZeros();
+  rsPolynomial<T>::rootsToCoeffs(z, num, nz);
+
 
   // do the partial fraction expansion:
-  rsRationalFunction<T>::partialFractionExpansion(num, 0, den, order, p, muls, order, r);
+  //rsRationalFunction<T>::partialFractionExpansion(num, 0, den, order, p, muls, order, r);
+  rsRationalFunction<T>::partialFractionExpansion(num, nz, den, order, p, muls, order, r);
+  // does not yet work when nz >= oder (numerator's degree >= denominator's) because the partial
+  // fraction expansion will then contain a polynomial ("FIR") part and that's not yet implemented
 
 
 
   // transform analog poles to digital domain by means of impulse-invariant transform
   // see: https://ccrma.stanford.edu/~jos/pasp/Impulse_Invariant_Method.html
   for(i = 0; i < order; i++) {
-    //z[i] = exp(z[i]);  // not needed
+    //z[i] = exp(z[i]);  // mapped zeros are not needed when dealing with a PFE
     p[i] = exp(p[i]);  // Eq. 9.2 with T=1 (T: sampling interval)
   }
   // todo: factor out into function impulseInvariantAnalogToDigital in class rsPoleZeroMapper
 
-  // set up the one-pole filters (to do: get rid of that - implement one-poles directly here to
-  // avoid data redundancies)
+  // set up the one-pole filters:
   for(i = 0; i < order; i++)
     onePoles[i].setCoeffs(k*r[i], p[i]);
+
+  // this seems to fix the problem of 1st order filter step responses shooting at a value higher 
+  // than 1 (when piecewise resampling is used) - i don't know, why that works - the paper doesn't
+  // say anything about doing such a thing:
+  std::complex<T> tmp = T(0);
+  for(i = 0; i < order; i++) {
+    onePoles[i].reset(); // triggers computation of scaler s
+    tmp += onePoles[i].getScaler();  
+  }
+  scaler = T(1) / tmp.real(); 
 }
+
+
 
 template class rsNonUniformComplexOnePole<double>;
 template class rsNonUniformOnePole<double>;

@@ -158,6 +158,8 @@ public:
     //return getSampleNonNormalized(x, dt);
     //return getSampleSpatiallyVariantScaled(x, dt);
     return getSamplePiecewiseResampled(x, dt);
+
+    //return getSamplePiecewiseResampled(x, dt) / rsAbs(s);  // test
   }
  
   // preliminary - todo: implement it as dispatcher - have a normalizationMode variable
@@ -180,6 +182,10 @@ public:
   /** Resets the filter state. */
   void reset();
 
+
+
+  std::complex<T> getScaler() const { return s; }
+
 protected:
 
   std::complex<T> y = T(0);            // maybe use g (as in the paper)
@@ -191,6 +197,8 @@ protected:
   std::complex<T> s  = 1;
   T wr = 0;  // reference frequency for unit gain in time-variant scaling normalization
 
+
+  //template<class S> friend class rsNonUniformFilterIIR<S>;
 };
 
 //=================================================================================================
@@ -264,9 +272,11 @@ public:
       y += onePoles[i].getSample(x, dt);
       //y += onePoles[i].getSampleNonNormalized(x, dt);
 
-    return y.real();
+    return scaler * y.real();
   }
   // could we also use getSampleReal and use a real accumulator? i think so - try it!
+  // as an optimization, we may run only over half of the samples - the other half would just 
+  // produce the complex conjugate - and at the end multiply everything by 2
 
   /** Resets the internal state of the filter. */
   void reset()
@@ -296,13 +306,15 @@ protected:
   T freq    = 0.25;  // 0.25 for halfband -> w = 2*PI*f/fs = PI/2 for fs = 1
   ApproximationMethod approxMethod = ApproximationMethod::butterworth;
 
+  T scaler = 1.0;
+
   // prototype designer and buffers for partial fraction expansion routine:
   RAPT::rsPrototypeDesigner<T> protoDesigner;
   std::complex<T> p[maxOrder];     // prototype poles
-  std::complex<T> z[maxOrder];     // prototype zeros (not yet used - maybe get rid)
+  std::complex<T> z[maxOrder];     // prototype zeros
   std::complex<T> r[maxOrder];     // residues
-  std::complex<T> num[1] = { 1 };  // numerator of transfer function
-  //std::complex<T> num[maxOrder+1]; // numerator of transfer function
+  //std::complex<T> num[1] = { 1 };  // numerator of transfer function
+  std::complex<T> num[maxOrder+1]; // numerator of transfer function
   std::complex<T> den[maxOrder+1]; // denominator of transfer function
   int muls[maxOrder];              // pole multiplicities (all 1 at the moment)
 };

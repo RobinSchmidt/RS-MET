@@ -788,12 +788,12 @@ void nonUniformAllpole()
 
   typedef rsNonUniformFilterIIR<double>::ApproximationMethod AM;
   rsNonUniformFilterIIR<double> flt;
-  flt.setApproximationMethod(AM::butterworth);
+  //flt.setApproximationMethod(AM::butterworth);
   //flt.setApproximationMethod(AM::bessel);
   //flt.setApproximationMethod(AM::gaussian);
-  //flt.setApproximationMethod(AM::papoulis);
+  flt.setApproximationMethod(AM::papoulis);
   //flt.setApproximationMethod(AM::halpern);
-  //flt.setApproximationMethod(AM::elliptic); // doe not yet work, bcs the numerator is still assumed to be 1
+  //flt.setApproximationMethod(AM::elliptic); // triggers assert bcs pfe a can't deal with numDeg >= denDeg
   flt.setFrequency(fc);
   //flt.setOrder(order);
   // flt.setType(FT::lowpass);
@@ -835,6 +835,9 @@ void nonUniformAllpole()
   // -check initial conditions
   // -check bahavior at uniform sample rate -> the problem persists! -> look at the coeffs, compare
   //  to simple first order filter
+  // -it seems when order = 1, it approaches the value of s (1.038 for gaussian) - maybe just 
+  //  divide everything by s? ...or: divide the final result by the sum of s values? 
+  //  ..seems to work!
 
 }
 

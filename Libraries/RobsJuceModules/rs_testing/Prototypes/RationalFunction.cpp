@@ -24,7 +24,7 @@ void rsRationalFunction<T>::partialFractionExpansion(
   // rational function, the latter of which can then be fed into this routine
 
   // make denominator monic:
-  rsArray::scale(numerator,   numeratorDegree+1,   T(1)/denominator[denominatorDegree]);
+  rsArray::scale(numerator,   numeratorDegree+1,   T(1)/denominator[denominatorDegree]); //!! wrong? should use numerator?
   rsArray::scale(denominator, denominatorDegree+1, T(1)/denominator[denominatorDegree]);
   // hmm - modifying the input arrays is no good idea - maybe use temporary memory - or require the
   // inputs to be monic - client code should deal with making it monic
