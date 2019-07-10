@@ -773,23 +773,27 @@ void nonUniformAllpole()
 {
   // Test for a high-order non-uniform allpole filter (Butterworth, Bessel, etc.)
 
-  int N = 500;           // number of samples
-  double dtMin = 0.2;     // minimum time-difference between non-uniform samples
-  double dtMax = 1.8;     // maximum ..
+
+
+  int N = 500;            // number of samples
+  double d     = 0.8;     // amount of randomness in the sample spacing
+  double dtMin = 1-d;     // minimum time-difference between non-uniform samples
+  double dtMax = 1+d;     // maximum ..
   double fc    = 0.01;    // cutoff freq
   //int order    = 8;
-  double x     = 0;       // 0: impulse response, 1: step response
+  double x     = 1;       // 0: impulse response, 1: step response
 
   std::vector<int> orders = { 1,2,3,4,5,6,7,8 };
 
 
   typedef rsNonUniformFilterIIR<double>::ApproximationMethod AM;
   rsNonUniformFilterIIR<double> flt;
-  //flt.setApproximationMethod(AM::butterworth);
-  flt.setApproximationMethod(AM::bessel);
+  flt.setApproximationMethod(AM::butterworth);
+  //flt.setApproximationMethod(AM::bessel);
   //flt.setApproximationMethod(AM::gaussian);
   //flt.setApproximationMethod(AM::papoulis);
   //flt.setApproximationMethod(AM::halpern);
+  //flt.setApproximationMethod(AM::elliptic); // doe not yet work, bcs the numerator is still assumed to be 1
   flt.setFrequency(fc);
   //flt.setOrder(order);
   // flt.setType(FT::lowpass);
@@ -826,8 +830,11 @@ void nonUniformAllpole()
   // -spatially variant scaling:
   //  -both responses are a total mess - but that may not be surprising since we don the 
   //   normalization per stage and the paper says it must be done once for the whole filter
-  // -papoulis, gaussian and halpern filter have wrong DC gain -> check normalization of transfer 
-  //  function
+
+  // todo: check, why the first order filters have wrong DC gain 
+  // -check initial conditions
+  // -check bahavior at uniform sample rate -> the problem persists! -> look at the coeffs, compare
+  //  to simple first order filter
 
 }
 

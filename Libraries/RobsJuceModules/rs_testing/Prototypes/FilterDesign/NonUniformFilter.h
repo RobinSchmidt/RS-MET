@@ -230,7 +230,9 @@ public:
     butterworth,
     //chebychev,   // needs a ripple parameter
     papoulis,
-    halpern
+    halpern,
+
+    elliptic      // experimental - does not yet work
   };
 
   /** Sets the approximation method for the prototype filter (Butterworth, Bessel, etc.). */
@@ -239,6 +241,13 @@ public:
   /** Sets the order of the (prototype) filter - when we do bandpasses later, the order of the
   actual filter will be twice the prototype order, but that's not yet implemented. */
   void setOrder(int newOrder);
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  // getTransferFunction(z), getMagnitudeAt(w)
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -293,6 +302,7 @@ protected:
   std::complex<T> z[maxOrder];     // prototype zeros (not yet used - maybe get rid)
   std::complex<T> r[maxOrder];     // residues
   std::complex<T> num[1] = { 1 };  // numerator of transfer function
+  //std::complex<T> num[maxOrder+1]; // numerator of transfer function
   std::complex<T> den[maxOrder+1]; // denominator of transfer function
   int muls[maxOrder];              // pole multiplicities (all 1 at the moment)
 };

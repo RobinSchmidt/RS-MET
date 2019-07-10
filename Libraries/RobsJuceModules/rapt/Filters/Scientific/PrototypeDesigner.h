@@ -296,8 +296,10 @@ public:
   variable s - seems to be buggy. */
   Complex getFilterResponseAt(Complex s);
 
-  /** Returns the normalized (divided by the DC gain) magnitude at the given radian frequency w. */
+  /** Returns the normalized (divided by the DC gain - ...really?!) magnitude at the given radian
+  frequency w. */
   T getMagnitudeAt(T w);
+
 
   /** Finds the radian frequency w inside the interval wLow...wHigh at which the specified 
   magnitude (as raw amplitude value, not in dB) occurs. For the function to work properly, the 

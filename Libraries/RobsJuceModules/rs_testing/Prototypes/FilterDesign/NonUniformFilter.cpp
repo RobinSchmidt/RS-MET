@@ -205,6 +205,10 @@ void rsNonUniformFilterIIR<T>::setApproximationMethod(ApproximationMethod newMet
   case AM::butterworth: protoDesigner.setApproximationMethod(PAM::BUTTERWORTH); break;
   case AM::papoulis:    protoDesigner.setApproximationMethod(PAM::PAPOULIS);    break;
   case AM::halpern:     protoDesigner.setApproximationMethod(PAM::HALPERN);     break;
+
+  // experimental:
+  case AM::elliptic:    protoDesigner.setApproximationMethod(PAM::ELLIPTIC);    break;
+
   default: rsError("unknown approximation method");  
   }
 
@@ -229,12 +233,16 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
 
   // create the complex conjugate partners (needed for partial fraction expansion):
   int i;
-  for(i = (order-1)/2; i >= 0; i--) {
+  for(i = (order-1)/2; i >= 0; i--) 
+  {
     p[2*i]   = p[i];
-    p[2*i+1] = conj(p[i]); }
+    p[2*i+1] = conj(p[i]); 
+    z[2*i]   = z[i];
+    z[2*i+1] = conj(z[i]); 
+  }
 
   // z is only half-full with inf - fill it up completely:
-  rsArray::fillWithValue(z, order, std::complex<T>(RS_INF(T), T(0)));
+  //rsArray::fillWithValue(z, order, std::complex<T>(RS_INF(T), T(0)));
   // we should probably handle the zeros in exactly the same way as the poles - then we may later
   // be able to use all filter-types - also those with zeros - but when the number of finite zeros
   // is the same as the number of poles, the partial fraction expansion will produce a polynomial
@@ -243,6 +251,11 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
 
   // do s-domain lowpass-to-lowpass transform to set up cutoff frequency:
   T k  = T(1);       // maybe make this a member...
+  // maybe 1 is not correct in all cases? for Gaussian, Papoulis and Halpern filters, we get wrong 
+  // DC gains
+
+  k = T(1) / protoDesigner.getMagnitudeAt(T(0));
+
   T wc = 2*PI*freq;  // ...and this too?
   rsPoleZeroMapper<T>::sLowpassToLowpass(z, p, &k, z, p, &k, order, wc);
   // ...produces inf - j*nan for the zeros -> fix this!
@@ -250,13 +263,19 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // create the sum-form of the denominator:
   rsPolynomial<T>::rootsToCoeffs(p, den, order);
 
+  // todo: do the same for the numerator - we need to figure out the number of finite zeros...
+
   // do the partial fraction expansion:
   rsRationalFunction<T>::partialFractionExpansion(num, 0, den, order, p, muls, order, r);
 
+
+
   // transform analog poles to digital domain by means of impulse-invariant transform
   // see: https://ccrma.stanford.edu/~jos/pasp/Impulse_Invariant_Method.html
-  for(i = 0; i < order; i++)
+  for(i = 0; i < order; i++) {
+    //z[i] = exp(z[i]);  // not needed
     p[i] = exp(p[i]);  // Eq. 9.2 with T=1 (T: sampling interval)
+  }
   // todo: factor out into function impulseInvariantAnalogToDigital in class rsPoleZeroMapper
 
   // set up the one-pole filters (to do: get rid of that - implement one-poles directly here to

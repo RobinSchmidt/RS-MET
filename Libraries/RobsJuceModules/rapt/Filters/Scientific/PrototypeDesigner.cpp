@@ -475,7 +475,7 @@ void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
     k = (N-2)/2;
     for(r = 0; r <= k+1; r++)
       updateLegendrePolynomial(&P, P1, P2, r);  // generate Legendre polynomial of order k+1 in P
-    rsPolynomial<T>::derivative(P, v, k+1); // take the derivative, store in v:
+    rsPolynomial<T>::derivative(P, v, k+1);     // take the derivative, store in v
     rsArray::convolve(v, k+1, v, k+1, v);       // square it
     v[2*k+1] = 0;                               // multiply ...
     for(r = 2*k+1; r >= 1; r--)                 // ... by (x+1)
@@ -556,13 +556,10 @@ void rsPrototypeDesigner<T>::halpernDenominator(T *a, int N)
 template<class T>
 void rsPrototypeDesigner<T>::gaussianPolynomial(T *a, int N, T wc)
 { 
-  //T a[maxCoeffs]; // preliminary - use parameter array later
-
   rsArray::fillWithZeros(a, 2*N+1);
-  T g = log(T(2)) / (wc*wc);    // gamma
-  T s = 1;                      // scaler
-  for(int k = 0; k <= N; k++)
-  {
+  T g = log(T(2)) / (wc*wc);    // gamma, (3), page 236
+  T s = 1;                      // scaler/coeff in denominator in (3), Eq. 8.7
+  for(int k = 0; k <= N; k++) {
     a[2*k] = s;    // == g^k / k! == pow(g, k) / rsFactorial(k);
     s *= g/(k+1);
   }
@@ -578,7 +575,7 @@ void rsPrototypeDesigner<T>::gaussianPolynomial(T *a, int N, T wc)
 template<class T>
 void rsPrototypeDesigner<T>::gaussianDenominator(T *a, int N)
 {
-  gaussianPolynomial(a, N, 1);  // sum in (3) Eq. 8.7
+  gaussianPolynomial(a, N, 1);  // denominator of |H(j*w)|^2 in (3), Eq. 8.7
   adjustDenominator(a, N);      // denominator of H(s)*H(-s)
   a[0] -= 1;                    // adjustDenominator adds one but we don't need that
 }

@@ -619,33 +619,23 @@ Complex rsPrototypeDesigner::getFilterResponseAt(Complex s)
   int     Lz, Lp;
 
   // initialize the numerator and denominator:
-  if( RAPT::rsIsOdd(numFiniteZeros) )
-  {
+  if( RAPT::rsIsOdd(numFiniteZeros) ) {
     num = -z[L+r-1].re;
-    Lz  = (numFiniteZeros-1)/2;
-  }
-  else
-  {
+    Lz  = (numFiniteZeros-1)/2;  }
+  else {
     num = 1.0;
-    Lz  = numFiniteZeros/2;
-  }
-  if( RAPT::rsIsOdd(numFinitePoles) )
-  {
+    Lz  = numFiniteZeros/2; }
+  if( RAPT::rsIsOdd(numFinitePoles) ) {
     den = -p[L+r-1].re;
-    Lp  = (numFinitePoles-1)/2;
-  }
-  else
-  {
+    Lp  = (numFinitePoles-1)/2; }
+  else {
     den = 1.0;
-    Lp  = numFinitePoles/2;
-  }
+    Lp  = numFinitePoles/2; }
 
   // accumulate product of linear factors for denominator (poles) and numerator (zeros):
   int i;
-  for(i = 0; i < Lz; i++)
-    num *= ((s-z[i]) * (s-z[i].getConjugate()));
-  for(i = 0; i < Lp; i++)
-    den *= ((s-p[i]) * (s-p[i].getConjugate()));
+  for(i = 0; i < Lz; i++) num *= ((s-z[i]) * (s-z[i].getConjugate()));
+  for(i = 0; i < Lp; i++) den *= ((s-p[i]) * (s-p[i].getConjugate()));
 
   return num/den;
 }
