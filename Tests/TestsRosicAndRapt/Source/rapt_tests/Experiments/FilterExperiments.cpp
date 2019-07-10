@@ -778,16 +778,18 @@ void nonUniformAllpole()
   double dtMax = 1.8;     // maximum ..
   double fc    = 0.01;    // cutoff freq
   //int order    = 8;
-  double x     = 1;       // 0: impulse response, 1: step response
+  double x     = 0;       // 0: impulse response, 1: step response
 
   std::vector<int> orders = { 1,2,3,4,5,6,7,8 };
 
 
   typedef rsNonUniformFilterIIR<double>::ApproximationMethod AM;
   rsNonUniformFilterIIR<double> flt;
-  flt.setApproximationMethod(AM::butterworth);
-  //flt.setApproximationMethod(AM::bessel);
+  //flt.setApproximationMethod(AM::butterworth);
+  flt.setApproximationMethod(AM::bessel);
+  //flt.setApproximationMethod(AM::gaussian);
   //flt.setApproximationMethod(AM::papoulis);
+  //flt.setApproximationMethod(AM::halpern);
   flt.setFrequency(fc);
   //flt.setOrder(order);
   // flt.setType(FT::lowpass);
@@ -813,15 +815,20 @@ void nonUniformAllpole()
   plt.setPixelSize(1000, 300);
   plt.plot();
 
-  // -check, if the gain is correct (it seems very small) - but how? maybe compare to regular, uniform
-  //  butterworth lowpass? or numerically integrate impulse response...this should(?) give the DC gain
-  // -or just feed in DC -> step response
-  // -the step response behaves totally erratic (it seems to have a mean of 1, though)
-  //  it seems like the noise in the dt values creates the noise in the step response - might this
-  //  be due to time-varying DC gain? should we use one of the normalization modes?
-  // -papoulis filter has wrong gain (check step response)
+  // Observations:
+  // -without normalization: 
+  //  -impulse-responses look good, but the setp responses are a total mess
+  // -piecewise resampling: 
+  //  -step responses look good - but the first order ones approach a value != 1 (slightly above) 
+  //   higher order filters don't have that problem
+  //  -impulse responses look also ok, but the first sample of the first order responses seems too
+  //   large
+  // -spatially variant scaling:
+  //  -both responses are a total mess - but that may not be surprising since we don the 
+  //   normalization per stage and the paper says it must be done once for the whole filter
+  // -papoulis, gaussian and halpern filter have wrong DC gain -> check normalization of transfer 
+  //  function
 
-  // -todo: check step responses of non-uniform one-pole filters
 }
 
 void nonUniformBiquad()

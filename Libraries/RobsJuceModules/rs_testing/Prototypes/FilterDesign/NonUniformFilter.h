@@ -252,7 +252,8 @@ public:
     std::complex<T> y(T(0), T(0));      // accumulator for parallel (complex) filter outputs
 
     for(int i = 0; i < order; i++)
-      y += onePoles[i].getSampleNonNormalized(x, dt);
+      y += onePoles[i].getSample(x, dt);
+      //y += onePoles[i].getSampleNonNormalized(x, dt);
 
     return y.real();
   }

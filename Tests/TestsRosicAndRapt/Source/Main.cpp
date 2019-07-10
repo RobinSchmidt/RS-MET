@@ -89,8 +89,8 @@ int main(int argc, char* argv[])
   //nonUniformMovingAverage();
   //nonUniformOnePole1();
   //nonUniformOnePole2();
-  nonUniformComplexOnePole();
-  //nonUniformAllpole();
+  //nonUniformComplexOnePole();
+  nonUniformAllpole();
   //nonUniformBiquad();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
