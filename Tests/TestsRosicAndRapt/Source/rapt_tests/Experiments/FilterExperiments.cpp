@@ -885,6 +885,10 @@ void nonUniformBiDirectional()
   int order     = 8;  // filter order 
   int numPasses = 3;  // number of filter passes
 
+  // test: normalize the sample-rate to 1 and scale all frequencies accordingly:
+  double s = 1/fs; 
+  fs *= s; f1 *= s; f2 *= s; f3 *= s; fc *= s;
+
   // create input signals:
   typedef std::vector<double> Vec;
   double dtMin = (1-d)/fs;          // minimum time-difference between non-uniform samples
@@ -910,14 +914,29 @@ void nonUniformBiDirectional()
   Vec yu(N);
   BDF::applyButterworthLowpass(&xu[0], &yu[0], N, fc, fs, order, numPasses);
 
+  // create non-uniformly sampled filtered signal:
+  Vec yn(N);
+  BDF::applyButterworthLowpass(&xn[0], &tn[0], &yn[0], N, fc, order, numPasses);
 
 
   GNUPlotter plt;
   //plt.addDataArrays(N, &tn[0], &xn[0]);
   //plt.addDataArrays(N, &tu[0], &xu[0]);
 
-  plt.addDataArrays(N, &tu[0], &xu1[0]);  // lowest sine
-  plt.addDataArrays(N, &tu[0], &yu[0]);   // output should be mostly the lowest sine
+  //plt.addDataArrays(N, &tu[0], &xu1[0]);  // lowest sine
+  //plt.addDataArrays(N, &tu[0], &yu[0]);   // output should be mostly the lowest sine
+
+  plt.addDataArrays(N, &tn[0], &xn1[0]);  // lowest sine
+  plt.addDataArrays(N, &tn[0], &yn[0]);   // output should be mostly the lowest sine
+
+  // Observations:
+  // -yn is totally wrong
+  // -it doesn't get better when setting d = 0
+  // -todo: try, what happens, if the sample-rate is 1
+  //  -> yes! that solves it! it seems, we need to normalize the average time-delta between samples
+  //     to be of the order of unity, otherwise there seem to be numerical problems
+  // -todo: figure out, what the "best" sample-rate is in terms of numerical precision - tweak the
+  //  s-factor above
 
   plt.plot();
 }

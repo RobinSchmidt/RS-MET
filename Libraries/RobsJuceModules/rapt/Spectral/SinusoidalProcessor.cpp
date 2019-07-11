@@ -323,7 +323,8 @@ std::vector<T> rsPartialBeatingRemover<T>::smoothPhases(
   BDF::applyButterworthLowpass(&p[0], &p[0], (int)p.size(), cutoff, sampleRate, order, numPasses);
 
   //// new - use non-uniform filter:
-  //BDF::applyButterworthLowpass(&p[0], &t[0], &p[0], (int)p.size(), cutoff, order, numPasses);
+  if(false) // just to force a template instantiation
+    BDF::applyButterworthLowpass(&p[0], &t[0], &p[0], (int)p.size(), cutoff, order, numPasses);
   // ...this doesn't work yet ...produces total garbage - test the non-uniform lowpass on a 
   // sawtooth and/or square-wave and make plots - compare to uniform case
 
