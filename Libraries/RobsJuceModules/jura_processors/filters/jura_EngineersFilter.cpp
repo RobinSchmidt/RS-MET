@@ -67,13 +67,16 @@ void EngineersFilterAudioModule::createParameters()
   p->addStringValue("Bessel");
   p->addStringValue("Papoulis");
   p->addStringValue("Halpern");
-  //p->addStringValue("Gauss");
+  p->addStringValue("Gauss");
   //p->addStringValue("Linkwitz/Riley");
   //p->addStringValue("Coincident Poles");
   addObservedParameter(p);
   // maybe sort the differently: Bessel->Butter->Papoulis->Cheby->Ellip
   // or better: Coincident, Gauss, Bessel, Linkwitz, Butter, Papoulis, Halpern, Inv Cheby, Cheby
   // elliptic
+  // it is currently important that the order in which the "StringValue"s are added matches the 
+  // order in the enum in RAPT::rsPrototypeDesigner - todo: use the new ChoiceParameter and an enum
+  // class
 
   p = new Param("Frequency" , 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   p->setValueChangeCallback<EF>(ef, &EF::setFrequency);

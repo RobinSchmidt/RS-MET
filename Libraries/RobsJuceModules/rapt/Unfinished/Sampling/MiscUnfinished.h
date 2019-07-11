@@ -52,14 +52,29 @@ public:
   static void applyButterworthBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs, 
     int order, int numPasses = 1, TPar gc = SQRT2_INV);
 
-
+  /** Applies a Butterworth lowpass filter bidirectionally to the data in array x of length N and 
+  writes the result to the array y. fc: cutoff frequency, fs: sampleRate */
   template<class TSig, class TPar>
   static void applyButterworthLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int order, 
     int numPasses = 1, TPar gc = SQRT2_INV);
 
+  /** Applies a bidirectional Butterworth highpass ...it actually uses a lowpass and subtracts the 
+  result from the original. Can NOT be used in place: x and y must be distinct. */
   template<class TSig, class TPar>
   static void applyButterworthHighpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int order, 
     int numPasses = 1, TPar gc = SQRT2_INV);
+
+
+
+  /** Applies a Butterworth lowpass filter bidirectionally to the non-uniformly sampled data in 
+  array x of length N with time-stamps in the array t and writes the result to the array y. 
+  fc: cutoff frequency, fs: sampleRate */
+  template<class TSig, class TTim, class TPar> // signal, time, parameter
+  static void applyButterworthLowpass(TSig *x, TTim *t, TSig *y, int N, TPar fc, int order, 
+    int numPasses = 1, TPar gc = SQRT2_INV);
+
+
+
 
 
   /** Applies a bidirectional 1st order lowpass to the signal x of length N and stores the

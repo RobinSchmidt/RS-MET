@@ -592,12 +592,17 @@ void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLP(Complex* z, Complex* p, T
   denomCoeffsFunc(a, N);                // coeffs of magnitude-squared polynomial D(s)*D(-s)
   getLeftHalfPlaneRoots(a, p, 2*N);                       // find stable poles of D(s)*D(-s)
   rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));  // zeros are at infinity
-  *k = sqrt(T(1)/fabs(a[2*N]));                           // set gain at DC to unity - shouldn't we divide by a[0]?
+
+  // i think, here, we should do something that nromalizes the asymptotic behavior for the
+  // Gaussian filter - this is determined by coeff of highest power in the denominator
+
+  *k = sqrt(T(1)/fabs(a[2*N]));                           // set gain at DC to unity 
+                                                          // - shouldn't we divide by a[0]?
 }
 
 template<class T>
-void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLS(Complex* z, Complex* p, T* k, int N, T G, T G0,
-  void (*denomCoeffsFunc)(T* a, int N))
+void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLS(
+  Complex* z, Complex* p, T* k, int N, T G, T G0, void (*denomCoeffsFunc)(T* a, int N))
 {
   // catch lowpass case:
   if( G0 == 0.0 )
@@ -698,7 +703,8 @@ void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLP(Complex* z, Complex* p, T* 
   else
     *k = a[0];
   // works for Bessel but not for Gaussian - why? maybe the leading coeff is 1 in Bessel but not in
-  // Gaussian? ...and/or the k is different?
+  // Gaussian? ...and/or the k is different? ..it seems this function is not even get called for 
+  // the Gauss filter
 
   delete[] a;
 }
@@ -820,33 +826,23 @@ std::complex<T> rsPrototypeDesigner<T>::getFilterResponseAt(Complex s)
   int     Lz, Lp;
 
   // initialize the numerator and denominator:
-  if( rsIsOdd(numFiniteZeros) )
-  {
+  if( rsIsOdd(numFiniteZeros) ) {
     num = -z[L+r-1].real();
-    Lz  = (numFiniteZeros-1)/2;
-  }
-  else
-  {
+    Lz  = (numFiniteZeros-1)/2; }
+  else {
     num = 1.0;
-    Lz  = numFiniteZeros/2;
-  }
-  if( rsIsOdd(numFinitePoles) )
-  {
+    Lz  = numFiniteZeros/2; }
+  if( rsIsOdd(numFinitePoles) ) {
     den = -p[L+r-1].real();
-    Lp  = (numFinitePoles-1)/2;
-  }
-  else
-  {
+    Lp  = (numFinitePoles-1)/2; }
+  else {
     den = 1.0;
-    Lp  = numFinitePoles/2;
-  }
+    Lp  = numFinitePoles/2; }
 
   // accumulate product of linear factors for denominator (poles) and numerator (zeros):
   int i;
-  for(i = 0; i < Lz; i++)
-    num *= ((s-z[i]) * (s-conj(z[i])));
-  for(i = 0; i < Lp; i++)
-    den *= ((s-p[i]) * (s-conj(p[i])));
+  for(i = 0; i < Lz; i++) num *= ((s-z[i]) * (s-conj(z[i])));
+  for(i = 0; i < Lp; i++) den *= ((s-p[i]) * (s-conj(p[i])));
 
   return num/den;
 }
@@ -1034,7 +1030,6 @@ void rsPrototypeDesigner<T>::makeButterworthLowpass()
   for(int i = 0; i < L; i++)
   {
     Complex u_i  = (T) (2*(i+1)-1) / (T) N;                // Eq.69
-    //p[i] = ep_pow*j*rsExpC(j*u_i*T(PI*0.5));                  // old
     p[i] = ep_pow*j*exp(j*u_i*T(PI*0.5));                  // Eq.70
     z[i] = RS_INF(T);                                      // zeros are at infinity
   }

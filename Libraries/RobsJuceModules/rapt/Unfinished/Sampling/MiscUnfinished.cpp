@@ -16,15 +16,9 @@ void rsApplyBiDirectionally(TSig *x, TSig *y, int N, TFlt &processor, int P, int
 
   // apply processor (multipass, bidirectionally):
   int p, n;
-  for(p = 1; p <= numPasses; p++)
-  {
-    // forward pass:
-    for(n = 0; n < M; n++)
-      tmp[n] = processor.getSample(tmp[n]);
-
-    // backward pass:
-    for(n = M-1; n >= 0; n--)
-      tmp[n] = processor.getSample(tmp[n]);
+  for(p = 1; p <= numPasses; p++) {
+    for(n = 0;   n <  M; n++) tmp[n] = processor.getSample(tmp[n]); // forward pass
+    for(n = M-1; n >= 0; n--) tmp[n] = processor.getSample(tmp[n]); // backward pass
   }
 
   // copy result to output and clean up:
@@ -32,7 +26,9 @@ void rsApplyBiDirectionally(TSig *x, TSig *y, int N, TFlt &processor, int P, int
   delete[] tmp;
 
   // todo: Actually, we don't really need pre- and post padding. Using just post padding and
-  // applying first all forward passes and then all backward passes should give the same result.
+  // applying first all forward passes and then all backward passes should give the same result. 
+  // ...but maybe it would show a different numeric roundoff behavior? -> test it - maybe make the
+  // function a (static) member of rsBiDirectionalFilter
 }
 
 template<class T>
@@ -40,7 +36,8 @@ int rsBiDirectionalFilter::getPaddingLength(T bw, T fs)
 {
   return rsCeilInt(10 * fs / bw);
   // factor 10 is ad hoc - experiment to find optimal factor, maybe the formula should include
-  // the number of passes as well? and maybe also the order?
+  // the number of passes as well? and maybe also the order? ...ideally, it should be based on the
+  // filter's ringing time
 }
 
 template<class TSig, class TPar>
@@ -111,6 +108,8 @@ void rsBiDirectionalFilter::applyButterworthHighpass(TSig *x, TSig *y, int N, TP
 {
   applyButterworthLowpass(x, y, N, fc, fs, order, numPasses, gc);
   rsArray::subtract(x, y, y, N); // works because we use a bidirectional (zero-phase) filter
+  // but is this really equivalent to a proper bidirectional Butterworth highpass? i think so, but
+  // this should to be verified....
 
 
   //// quick and dirty code duplication from applyButterworthLowpass - refactor
@@ -129,6 +128,15 @@ void rsBiDirectionalFilter::applyButterworthHighpass(TSig *x, TSig *y, int N, TP
   //// apply filter:
   //int P = rsCeilInt(numPasses * flt.getRingingTimeEstimate(rsDB2amp(-100.0)));
   //rsApplyBiDirectionally(x, y, N, flt, P, numPasses);
+}
+
+template<class TSig, class TTim, class TPar> // signal, time, parameter
+void rsBiDirectionalFilter::applyButterworthLowpass(TSig* x, TTim* t, TSig* y, int N, TPar fc,
+  int order, int numPasses, TPar gc)
+{
+
+  // not yet implemented
+
 }
 
 template<class TSig, class TPar>

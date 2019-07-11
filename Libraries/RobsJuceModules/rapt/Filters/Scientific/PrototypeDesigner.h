@@ -48,13 +48,15 @@ public:
     GAUSSIAN,          /**< smallest ringingTime*bandWidth product, good time response (very little
                             overshoot), step response rises faster than Bessel. but wait - do we 
                             normalize the cutoff the same way as in bessel? ..with respect to 
-                            the asymptote? -> check this! otherwise, it's not comparable  */
+                            the asymptote? -> nope - it's not! it's not comparable  */
     NUM_APPROXIMATION_METHODS
   };
   // re-order: COINCINDENT_POLE, GAUSS, BESSEL, BUTTERWORTH, PAPOULIS <-?-> HALPERN, CHEBY1 <-?-> 
   // CHEBY2, ELLIPTIC ->sorted by desirability of time response vs. frequency response (roughly)
   // or maybe sort by ringing time? or maybe list allpole types first, so we may implement an easy
   // isAllpole() check?
+  // however, currently the ordering of the choices in EngineersFilter (in ToolChain) depends on
+  // the order being the way it is...
 
   // ideas: try other polynomials, for example non-reversed Bessel, Laguerre, etc. - if roots occur 
   // in the right half-plane, reflect them, maybe try Power-Series expansions of various 
