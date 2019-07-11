@@ -29,6 +29,9 @@ void rsApplyBiDirectionally(TSig *x, TSig *y, int N, TFlt &processor, int P, int
   // applying first all forward passes and then all backward passes should give the same result. 
   // ...but maybe it would show a different numeric roundoff behavior? -> test it - maybe make the
   // function a (static) member of rsBiDirectionalFilter
+  // maybe it's better in practice to have all of the ring-out/warm-up section at the end of the 
+  // sample because samples may have a ahrd transient at the start but are already decayed down
+  // toward the end such that at the end, the total amount of ringing effects is even less
 }
 
 
@@ -42,14 +45,16 @@ std::vector<T> getPaddedSignal(T* x, int N, int P)
   rsArray::fillWithZeros(&xp[P+N], P);  // post-padding
   return xp;
 }
+// todo: use this function also for the function above - gets rid of code duplication
 
 // non-uniform version of function above
 template<class TSig, class TTim, class TFlt> // signal, time and filter type
 void rsApplyBiDirectionally(
   TSig* x, TTim* t, TSig* y, int N, TFlt& processor, int P, int numPasses)
 {
-  // signal array with pre- and post-padding, has length N+2*P:
-  std::vector<T> xp = getPaddedSignal(x, N, P);
+  // signal array with pre- and post-padding:
+  std::vector<T> tmp = getPaddedSignal(x, N, P);
+  int M = (int) tmp.size(); // M = N+2*P
 
   // pre/post-padded time-delta array:
   std::vector<T> dt = getPaddedSignal(t, N, P);
@@ -58,8 +63,16 @@ void rsApplyBiDirectionally(
   for(n = 0;     n <=     P; n++) dt[n] = T(1);              // don't do this before the 1st loop!
   for(n = N+P+1; n <  N+2*P; n++) dt[n] = T(1);
 
+  // apply processor (multipass, bidirectionally):
+  int p, n;
+  for(p = 1; p <= numPasses; p++) {
+    for(n = 0;   n <  M; n++) tmp[n] = processor.getSample(tmp[n], dt[n]);   // forward pass
+    for(n = M-2; n >= 0; n--) tmp[n] = processor.getSample(tmp[n], dt[n+1]); // backward pass
+    // ...verify the dt[n+1] in the backward pass...
+  }
 
-  int dummy = 0;
+  // copy result to output:
+  rsArray::copyBuffer(&tmp[P], y, N);
 }
 
 
