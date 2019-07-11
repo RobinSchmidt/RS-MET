@@ -897,6 +897,8 @@ void nonUniformBiDirectional()
   Vec xu1(N), xu2(N), xu3(N), xu(N); // same signals uniformly sampled
   Vec tn = randomSampleInstants(N, dtMin, dtMax, 0);
   Vec tu = rsLinearRangeVector( N, 0.0, (N-1)/fs);
+  // tn should also end at N-1 to avoid artifact at right boundary:
+  RAPT::rsArray::scale(&tn[0], N, tu[N-1]/tn[N-1]);
   for(int n = 0; n < N; n++) {
     xn1[n] = sin(2*PI*f1*tn[n]);
     xn2[n] = sin(2*PI*f2*tn[n]);
@@ -909,41 +911,44 @@ void nonUniformBiDirectional()
     xu[n]  = xu1[n]+xu2[n]+xu3[n];
   }
 
-  // create uniformly sampled filtered signal:
+  // create uniformly and non-uniformly sampled filtered signals:
+  Vec yu(N), yn(N);
   typedef RAPT::rsBiDirectionalFilter BDF;
-  Vec yu(N);
-  BDF::applyButterworthLowpass(&xu[0], &yu[0], N, fc, fs, order, numPasses);
+  BDF::applyButterworthLowpass(&xu[0],         &yu[0], N, fc, fs, order, numPasses);
+  BDF::applyButterworthLowpass(&xn[0], &tn[0], &yn[0], N, fc,     order, numPasses);
 
-  // create non-uniformly sampled filtered signal:
-  Vec yn(N);
-  BDF::applyButterworthLowpass(&xn[0], &tn[0], &yn[0], N, fc, order, numPasses);
-
-
+  // plot results:
   GNUPlotter plt;
   //plt.addDataArrays(N, &tn[0], &xn[0]);
   //plt.addDataArrays(N, &tu[0], &xu[0]);
 
-  plt.addDataArrays(N, &tu[0], &xu1[0]);  // lowest sine
-  plt.addDataArrays(N, &tu[0], &yu[0]);   // output should be mostly the lowest sine
+  //plt.addDataArrays(N, &tu[0], &xu1[0]);  // lowest sine only
+  plt.addDataArrays(N, &tu[0], &yu[0]);   // output (should be mostly the lowest sine)
 
-  plt.addDataArrays(N, &tn[0], &xn1[0]);  // lowest sine
-  plt.addDataArrays(N, &tn[0], &yn[0]);   // output should be mostly the lowest sine
+  //plt.addDataArrays(N, &tn[0], &xn1[0]);  // lowest sine
+  plt.addDataArrays(N, &tn[0], &yn[0]);   // output (should be mostly the lowest sine)
 
   plt.plot();
 
-
   // Observations:
-  // -when the sample-rate is a somewhat high, value like fs=500, the result is garbage - there are
+  // -when the sample-rate is a somewhat high value like fs=500, the result is garbage - there are
   //  apparently numerical issues
-  // -they don't get better when setting d = 0 (i.e. chossing equidistant samples)
+  // -they don't get better when setting d=0 (i.e. chossing equidistant samples)
   // -if the sample-rate is normalized to unity (and all frequencies are scaled accordingly), 
   //  everything works fine
+  // -however, at the right boundary the non-uniform and uniform results deviate a lot - but this 
+  //  effect goes aways when choosing d=0 (when the padding in the BDF is lowered to P=100, 
+  //  however, a little deviation remains)
+  //  -maybe this related to the end-time being unequal? try to scale all the times such that the
+  //  end time is exactly N-1 also for the non-uniform signal..
   // -todo: figure out, what the "best" sample-rate is in terms of numerical precision - tweak the
   //  s-factor above
+  // -todo: implement highpass, bandpass and bandreject and use them to isolate the upper or middle
+  //  sine
 
   // Conclusion:
   // We should normalize the average time-delta between samples to be of the order of unity and 
-  // scale the cutoff frequency of the filter accordingly.
+  // scale the cutoff frequency of the non-uniform filter accordingly.
 }
 
 void smoothingFilterOrders()

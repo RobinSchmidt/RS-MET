@@ -269,14 +269,15 @@ public:
     std::complex<T> y(T(0), T(0));      // accumulator for parallel (complex) filter outputs
 
     for(int i = 0; i < order; i++)
-      y += onePoles[i].getSample(x, dt);
-      //y += onePoles[i].getSamplePiecewiseResampled(x, dt);
+      //y += onePoles[i].getSample(x, dt);
+      y += onePoles[i].getSamplePiecewiseResampled(x, dt);
 
     return scaler * y.real();
   }
   // could we also use getSampleReal and use a real accumulator? i think so - try it!
   // as an optimization, we may run only over half of the samples - the other half would just 
-  // produce the complex conjugate - and at the end multiply everything by 2
+  // produce the complex conjugate - and at the end multiply everything by 2 - but the output of
+  // the real stage, if present, should not be multiplied by 2
 
   /** Resets the internal state of the filter. */
   void reset()

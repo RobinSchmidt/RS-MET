@@ -301,10 +301,6 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // plug in s = 0, we have a sum -r_i/p_i ...but s_i = r_i / (1-p_i) ...hmmm
 }
 
-//template class rsNonUniformComplexOnePole<double>;
-//template class rsNonUniformOnePole<double>;
-//template class rsNonUniformFilterIIR<double>;
-
 /*
 Resources:
 
