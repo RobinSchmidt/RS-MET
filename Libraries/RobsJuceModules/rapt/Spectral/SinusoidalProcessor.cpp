@@ -299,8 +299,7 @@ void rsPartialBeatingRemover<T>::removePhaseBeating(rsSinusoidalPartial<T>& part
 
 template<class T>
 std::vector<T> rsPartialBeatingRemover<T>::smoothPhases(
-  std::vector<T>& t, std::vector<T>& f, std::vector<T>& pIn, 
-  T cutoff)
+  std::vector<T>& t, std::vector<T>& f, std::vector<T>& pIn, T cutoff)
 {
   //GNUPlotter plt;
 
@@ -314,10 +313,24 @@ std::vector<T> rsPartialBeatingRemover<T>::smoothPhases(
 
   // apply lowpass to de-trended phase - this is preliminary - we treat the data as if it were
   // uniformly sampled - todo: refine this later to the non-uniformly sampled case...
+
+  typedef rsBiDirectionalFilter BDF;
+  int order     = 2;
+  int numPasses = 2;
+
+  // preliminary - treat signal as uniform:
   T sampleRate = t.size() / (rsLast(t) - t[0]); // average sample-rate
-  rsBiDirectionalFilter::applyButterworthLowpass(&p[0], &p[0], (int)p.size(), cutoff, 
-    sampleRate, 2, 2);  // order = 2, numPasses = 2
+  BDF::applyButterworthLowpass(&p[0], &p[0], (int)p.size(), cutoff, sampleRate, order, numPasses);
+
+  //// new - use non-uniform filter:
+  //BDF::applyButterworthLowpass(&p[0], &t[0], &p[0], (int)p.size(), cutoff, order, numPasses);
+  // ...this doesn't work yet ...produces total garbage - test the non-uniform lowpass on a 
+  // sawtooth and/or square-wave and make plots - compare to uniform case
+
+
   //plt.addDataArrays((int)rsSize(t), &t[0], &p[0]);
+
+
 
   // re-apply trend:
   dtr.applyTrendAndOffset((int)p.size(), &t[0], &p[0], &p[0]);

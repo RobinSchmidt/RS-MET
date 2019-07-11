@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
   //nonUniformOnePole1();
   //nonUniformOnePole2();
   //nonUniformComplexOnePole();
-  nonUniformAllpole();
+//  nonUniformAllpole();
   //nonUniformBiquad();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
@@ -377,7 +377,7 @@ int main(int argc, char* argv[])
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
-//  harmonicDeBeating1();
+  harmonicDeBeating1();
   //harmonicDeBeating2();
 
 

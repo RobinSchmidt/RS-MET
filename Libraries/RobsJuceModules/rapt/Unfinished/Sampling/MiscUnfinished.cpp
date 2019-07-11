@@ -53,20 +53,22 @@ void rsApplyBiDirectionally(
   TSig* x, TTim* t, TSig* y, int N, TFlt& processor, int P, int numPasses)
 {
   // signal array with pre- and post-padding:
-  std::vector<T> tmp = getPaddedSignal(x, N, P);
+  std::vector<TSig> tmp = getPaddedSignal(x, N, P);
   int M = (int) tmp.size(); // M = N+2*P
 
   // pre/post-padded time-delta array:
-  std::vector<T> dt = getPaddedSignal(t, N, P);
+  std::vector<TTim> dt = getPaddedSignal(t, N, P);
+  TTim dtAv = (t[N-1]-t[0]) / N; // average sampling interval
   int n;
-  for(n = P+1;   n <  N + P; n++) dt[n] = dt[n] - dt[n-1];
-  for(n = 0;     n <=     P; n++) dt[n] = T(1);              // don't do this before the 1st loop!
-  for(n = N+P+1; n <  N+2*P; n++) dt[n] = T(1);
-  // hmm - why 1? wouldn't a an average sampling rate make more sense, i.e. N / (t[N-1]-t[0])
+
+  //for(n = P+1;   n <  N + P; n++) dt[n] = dt[n] - dt[n-1]; // seems wrong!
+  for(n = N+P-1; n >      P; n--) dt[n] = dt[n] - dt[n-1];
+  for(n = 0;     n <=     P; n++) dt[n] = dtAv;              // don't do this before the 1st loop! ..or can we?
+  for(n = N+P;   n <  N+2*P; n++) dt[n] = dtAv;
+  //for(n = N+P+1; n <  N+2*P; n++) dt[n] = dtAv; // wrong!
 
   // apply processor (multipass, bidirectionally):
-  int p, n;
-  for(p = 1; p <= numPasses; p++) {
+  for(int p = 1; p <= numPasses; p++) {
     for(n = 0;   n <  M; n++) tmp[n] = processor.getSample(tmp[n], dt[n]);   // forward pass
     for(n = M-2; n >= 0; n--) tmp[n] = processor.getSample(tmp[n], dt[n+1]); // backward pass
     // ...verify the dt[n+1] in the backward pass...
