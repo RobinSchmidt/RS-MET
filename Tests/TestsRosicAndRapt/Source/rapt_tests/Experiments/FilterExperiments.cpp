@@ -923,22 +923,27 @@ void nonUniformBiDirectional()
   //plt.addDataArrays(N, &tn[0], &xn[0]);
   //plt.addDataArrays(N, &tu[0], &xu[0]);
 
-  //plt.addDataArrays(N, &tu[0], &xu1[0]);  // lowest sine
-  //plt.addDataArrays(N, &tu[0], &yu[0]);   // output should be mostly the lowest sine
+  plt.addDataArrays(N, &tu[0], &xu1[0]);  // lowest sine
+  plt.addDataArrays(N, &tu[0], &yu[0]);   // output should be mostly the lowest sine
 
   plt.addDataArrays(N, &tn[0], &xn1[0]);  // lowest sine
   plt.addDataArrays(N, &tn[0], &yn[0]);   // output should be mostly the lowest sine
 
+  plt.plot();
+
+
   // Observations:
-  // -yn is totally wrong
-  // -it doesn't get better when setting d = 0
-  // -todo: try, what happens, if the sample-rate is 1
-  //  -> yes! that solves it! it seems, we need to normalize the average time-delta between samples
-  //     to be of the order of unity, otherwise there seem to be numerical problems
+  // -when the sample-rate is a somewhat high, value like fs=500, the result is garbage - there are
+  //  apparently numerical issues
+  // -they don't get better when setting d = 0 (i.e. chossing equidistant samples)
+  // -if the sample-rate is normalized to unity (and all frequencies are scaled accordingly), 
+  //  everything works fine
   // -todo: figure out, what the "best" sample-rate is in terms of numerical precision - tweak the
   //  s-factor above
 
-  plt.plot();
+  // Conclusion:
+  // We should normalize the average time-delta between samples to be of the order of unity and 
+  // scale the cutoff frequency of the filter accordingly.
 }
 
 void smoothingFilterOrders()
