@@ -15,6 +15,8 @@ namespace RAPT
 #include "Math/Statistics.cpp"
 #include "Math/GeometricFunctions.cpp"
 #include "Math/ModularInteger.cpp"
+#include "Math/RationalFunctionTools.cpp"
+#include "Math/RationalFunction.cpp"
 
 #include "MiscAudio/Interpolator.cpp"
 #include "MiscAudio/DelayLine.cpp"
@@ -37,6 +39,7 @@ namespace RAPT
 #include "Filters/LadderFilter.cpp"
 #include "Filters/FakeResonanceFilter.cpp"
 #include "Filters/Biquad.cpp"
+#include "Filters/NonUniformFilter.cpp"
 
 // under construction:
 #include "Analysis/LinearPredictor.cpp"

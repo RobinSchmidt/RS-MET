@@ -1,11 +1,11 @@
 template<class T>
 bool rsRationalFunction<T>::reduce(T tol)
 {
-  std::vector<T> gcd = polyGCD(num, den, tol);
+  std::vector<T> gcd = polyGCD(num.coeffs, den.coeffs, tol);
   if(gcd.size() == 1)
     return false;  // was already in reduced form
-  num = polyDiv(num, gcd, tol);
-  den = polyDiv(den, gcd, tol);
+  num.coeffs = polyDiv(num.coeffs, gcd, tol);
+  den.coeffs = polyDiv(den.coeffs, gcd, tol);
   return true;
 }
 

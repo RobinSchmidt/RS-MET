@@ -1,7 +1,7 @@
 #pragma once
 
-namespace RAPT
-{
+//namespace RAPT
+//{
 
 /** A class for representing rational functions R(x) = P(x) / Q(x) where P and Q are both 
 polynomials in x. Rational functions are important in signal processing because the transfer 
@@ -59,8 +59,8 @@ public:
   rsRationalFunction<T> operator-(const rsRationalFunction<T>& q) const
   {
     rsRationalFunction<T> r;
-    ratAdd(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, r.num.coeffs, r.den.coeffs,
-      0, 1, -1);
+    ratAdd(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, r.num.coeffs, r.den.coeffs, 
+      T(0), T(1), T(-1));
     return r;
   }
 
@@ -132,7 +132,7 @@ protected:
 };
 
 
-}
+//}
 
 /*
 todo:

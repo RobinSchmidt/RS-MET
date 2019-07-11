@@ -13,7 +13,6 @@ using namespace RAPT;
 #include "FilterDesign/PoleZeroDesignerAnalog.h"
 #include "FilterDesign/PoleZeroDesignerDigital.h"
 #include "FilterDesign/ComplementaryFilters.h"
-#include "FilterDesign/NonUniformFilter.h"
 
 #include "ModalAnalyzer.h"
 #include "ParticleBouncer.h"
