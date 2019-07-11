@@ -62,6 +62,7 @@ void rsApplyBiDirectionally(
   for(n = P+1;   n <  N + P; n++) dt[n] = dt[n] - dt[n-1];
   for(n = 0;     n <=     P; n++) dt[n] = T(1);              // don't do this before the 1st loop!
   for(n = N+P+1; n <  N+2*P; n++) dt[n] = T(1);
+  // hmm - why 1? wouldn't a an average sampling rate make more sense, i.e. N / (t[N-1]-t[0])
 
   // apply processor (multipass, bidirectionally):
   int p, n;
@@ -182,11 +183,17 @@ template<class TSig, class TTim, class TPar> // signal, time, parameter
 void rsBiDirectionalFilter::applyButterworthLowpass(TSig* x, TTim* t, TSig* y, int N, TPar fc,
   int order, int numPasses, TPar gc)
 {
+  fc *= rsBandwidthConverter::multipassScalerButterworth(2*numPasses, order, gc);
+  rsNonUniformFilterIIR<TSig> flt;
+  flt.setApproximationMethod(rsNonUniformFilterIIR<TSig>::ApproximationMethod::butterworth);
+  flt.setFrequency(fc);
+  flt.setOrder(order);
 
-
-
-  // not yet implemented
-
+  //int P = rsCeilInt(numPasses * flt.getRingingTimeEstimate(rsDB2amp(-100.0)));
+  // make such an estimation function for the non-uniform filter - it should probably return a 
+  // value in seconds
+  int P = 100; // ad-hoc - later we need to use something based a ringing time estimate
+  rsApplyBiDirectionally(x, t, y, N, flt, P, numPasses);
 }
 
 template<class TSig, class TPar>

@@ -205,7 +205,7 @@ protected:
 
 /** Implements a high order infinite impulse response filter for non-uniformly sampled signals. */
 
-template<class T>
+template<class T>  // todo: have template parameters for signal, time and parameter
 class rsNonUniformFilterIIR
 {
 
@@ -270,7 +270,7 @@ public:
 
     for(int i = 0; i < order; i++)
       y += onePoles[i].getSample(x, dt);
-      //y += onePoles[i].getSampleNonNormalized(x, dt);
+      //y += onePoles[i].getSamplePiecewiseResampled(x, dt);
 
     return scaler * y.real();
   }
