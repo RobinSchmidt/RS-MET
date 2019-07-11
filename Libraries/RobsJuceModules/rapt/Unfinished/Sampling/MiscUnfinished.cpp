@@ -31,6 +31,41 @@ void rsApplyBiDirectionally(TSig *x, TSig *y, int N, TFlt &processor, int P, int
   // function a (static) member of rsBiDirectionalFilter
 }
 
+
+template<class T>
+std::vector<T> getPaddedSignal(T* x, int N, int P)
+{
+  int M = N+2*P;
+  std::vector<T> xp(M);
+  rsArray::fillWithZeros(&xp[0], P);    // pre-padding
+  rsArray::copyBuffer(x, &xp[P], N);    // actual signal
+  rsArray::fillWithZeros(&xp[P+N], P);  // post-padding
+  return xp;
+}
+
+// non-uniform version of function above
+template<class TSig, class TTim, class TFlt> // signal, time and filter type
+void rsApplyBiDirectionally(
+  TSig* x, TTim* t, TSig* y, int N, TFlt& processor, int P, int numPasses)
+{
+  // signal array with pre- and post-padding, has length N+2*P:
+  std::vector<T> xp = getPaddedSignal(x, N, P);
+
+  // pre/post-padded time-delta array:
+  std::vector<T> dt = getPaddedSignal(t, N, P);
+  int n;
+  for(n = P+1;   n <  N + P; n++) dt[n] = dt[n] - dt[n-1];
+  for(n = 0;     n <=     P; n++) dt[n] = T(1);              // don't do this before the 1st loop!
+  for(n = N+P+1; n <  N+2*P; n++) dt[n] = T(1);
+
+
+  int dummy = 0;
+}
+
+
+
+
+
 template<class T>
 int rsBiDirectionalFilter::getPaddingLength(T bw, T fs)
 {
@@ -134,6 +169,8 @@ template<class TSig, class TTim, class TPar> // signal, time, parameter
 void rsBiDirectionalFilter::applyButterworthLowpass(TSig* x, TTim* t, TSig* y, int N, TPar fc,
   int order, int numPasses, TPar gc)
 {
+
+
 
   // not yet implemented
 
