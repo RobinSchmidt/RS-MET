@@ -16,6 +16,8 @@ void nonUniformOnePole2();
 void nonUniformComplexOnePole();
 void nonUniformAllpole();
 void nonUniformBiquad();
+void nonUniformBiDirectional();
+
 
 void smoothingFilterOrders();
 void smoothingFilterTransitionTimes();

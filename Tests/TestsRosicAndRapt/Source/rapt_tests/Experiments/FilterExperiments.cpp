@@ -773,8 +773,6 @@ void nonUniformAllpole()
 {
   // Test for a high-order non-uniform allpole filter (Butterworth, Bessel, etc.)
 
-
-
   int N = 500;            // number of samples
   double d     = 0.8;     // amount of randomness in the sample spacing
   double dtMin = 1-d;     // minimum time-difference between non-uniform samples
@@ -843,7 +841,6 @@ void nonUniformAllpole()
   // -check gaussian cutoff normalization (maybe make it available in EngineersFilter/ToolChain
   //  and check mag-resp there
   // -allow filters with zeros (elliptic, etc)
-
 }
 
 void nonUniformBiquad()
@@ -861,9 +858,6 @@ void nonUniformBiquad()
   int Nc = Nf * oversampling; // number of samples for oversampled signal
 }
 
-
-
-
 // todo: for testing the complex bandpass filters later, maybe try to separate two sinusoids of
 // different frequencies and/or an sinusoid buried in white noise
 
@@ -875,7 +869,44 @@ void nonUniformBiquad()
 // ...maybe then try an N-th order butterworth 
 // filter
 
+void nonUniformBiDirectional()
+{
+  // We test our non-uniform bidirectional filter on a mix of 3 sinusoids with the goeal to 
+  // separate them.
+  
+  int N = 1000;        // number of samples
+  double d  = 0.8;    // amount of randomness in the sample spacing
+  double fs = 500;    // average sample rate
+  double f1 =    5;   // first frequency in Hz
+  double f2 =   10;   // second frequency in Hz
+  double f3 =   20;   // third frequency in Hz
 
+
+  // create signals:
+  typedef std::vector<double> Vec;
+  double dtMin = (1-d)/fs;          // minimum time-difference between non-uniform samples
+  double dtMax = (1+d)/fs;          // maximum ..
+  Vec x1(N), x2(N), x3(N), x(N);    // the 3 sines and their sum
+  Vec u1(N), u2(N), u3(N), u(N);    // same signals uniformly sampled
+  Vec t  = randomSampleInstants(N, dtMin, dtMax, 0);
+  Vec tu = rsLinearRangeVector(N, 0.0, (N-1)/fs);
+  for(int n = 0; n < N; n++) {
+    x1[n] = sin(2*PI*f1*t[n]);
+    x2[n] = sin(2*PI*f2*t[n]);
+    x3[n] = sin(2*PI*f3*t[n]);
+    x[n]  = x1[n]+x2[n]+x3[n];
+
+    u1[n] = sin(2*PI*f1*n/fs);
+    u2[n] = sin(2*PI*f2*n/fs);
+    u3[n] = sin(2*PI*f3*n/fs);
+    u[n]  = u1[n]+u2[n]+u3[n];
+  }
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &t[0],  &x[0]);
+  plt.addDataArrays(N, &tu[0], &u[0]);
+  plt.plot();
+}
 
 void smoothingFilterOrders()
 {
