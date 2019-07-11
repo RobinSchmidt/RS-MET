@@ -873,38 +873,52 @@ void nonUniformBiDirectional()
 {
   // We test our non-uniform bidirectional filter on a mix of 3 sinusoids with the goeal to 
   // separate them.
-  
-  int N = 1000;        // number of samples
+
+  // user parameters:
+  int N = 1000;       // number of samples
   double d  = 0.8;    // amount of randomness in the sample spacing
   double fs = 500;    // average sample rate
-  double f1 =    5;   // first frequency in Hz
-  double f2 =   10;   // second frequency in Hz
-  double f3 =   20;   // third frequency in Hz
+  double f1 =   5;    // first frequency in Hz
+  double f2 =  10;    // second frequency in Hz
+  double f3 =  20;    // third frequency in Hz
+  double fc =   7;    // filter cutoff/center freq
+  int order     = 8;  // filter order 
+  int numPasses = 3;  // number of filter passes
 
-
-  // create signals:
+  // create input signals:
   typedef std::vector<double> Vec;
   double dtMin = (1-d)/fs;          // minimum time-difference between non-uniform samples
   double dtMax = (1+d)/fs;          // maximum ..
-  Vec x1(N), x2(N), x3(N), x(N);    // the 3 sines and their sum
-  Vec u1(N), u2(N), u3(N), u(N);    // same signals uniformly sampled
-  Vec t  = randomSampleInstants(N, dtMin, dtMax, 0);
-  Vec tu = rsLinearRangeVector(N, 0.0, (N-1)/fs);
+  Vec xn1(N), xn2(N), xn3(N), xn(N); // the 3 non-uniform sines and their sum
+  Vec xu1(N), xu2(N), xu3(N), xu(N); // same signals uniformly sampled
+  Vec tn = randomSampleInstants(N, dtMin, dtMax, 0);
+  Vec tu = rsLinearRangeVector( N, 0.0, (N-1)/fs);
   for(int n = 0; n < N; n++) {
-    x1[n] = sin(2*PI*f1*t[n]);
-    x2[n] = sin(2*PI*f2*t[n]);
-    x3[n] = sin(2*PI*f3*t[n]);
-    x[n]  = x1[n]+x2[n]+x3[n];
+    xn1[n] = sin(2*PI*f1*tn[n]);
+    xn2[n] = sin(2*PI*f2*tn[n]);
+    xn3[n] = sin(2*PI*f3*tn[n]);
+    xn[n]  = xn1[n]+xn2[n]+xn3[n];
 
-    u1[n] = sin(2*PI*f1*n/fs);
-    u2[n] = sin(2*PI*f2*n/fs);
-    u3[n] = sin(2*PI*f3*n/fs);
-    u[n]  = u1[n]+u2[n]+u3[n];
+    xu1[n] = sin(2*PI*f1*n/fs);
+    xu2[n] = sin(2*PI*f2*n/fs);
+    xu3[n] = sin(2*PI*f3*n/fs);
+    xu[n]  = xu1[n]+xu2[n]+xu3[n];
   }
 
+  // create uniformly sampled filtered signal:
+  typedef RAPT::rsBiDirectionalFilter BDF;
+  Vec yu(N);
+  BDF::applyButterworthLowpass(&xu[0], &yu[0], N, fc, fs, order, numPasses);
+
+
+
   GNUPlotter plt;
-  plt.addDataArrays(N, &t[0],  &x[0]);
-  plt.addDataArrays(N, &tu[0], &u[0]);
+  //plt.addDataArrays(N, &tn[0], &xn[0]);
+  //plt.addDataArrays(N, &tu[0], &xu[0]);
+
+  plt.addDataArrays(N, &tu[0], &xu1[0]);  // lowest sine
+  plt.addDataArrays(N, &tu[0], &yu[0]);   // output should be mostly the lowest sine
+
   plt.plot();
 }
 
