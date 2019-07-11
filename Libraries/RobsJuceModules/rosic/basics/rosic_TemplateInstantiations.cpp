@@ -17,9 +17,16 @@ namespace RAPT {
 // functions gbsv, etc. ....maybe 
 
 
+//-------------------------------------------------------------------------------------------------
+// Data:
+
+template void RAPT::rsArray::fillWithRandomValues(rsFloat32x4* x, int N, double min, double max, int seed);
+template double RAPT::rsArray::meanSquare(const double *x, int N);
+
+//-------------------------------------------------------------------------------------------------
+// Math:
+
 template class RAPT::rsBandDiagonalSolver<double>;
-
-
 
 // Ouura FFT instantiations (trying to fix linker errors on mac):
 template void RAPT::bitrv2conj(int, int*, double*);
@@ -44,12 +51,6 @@ template void RAPT::dfst(int, double *, double *, int *, double *);
 // ...try what happens now, if we delete these instantiations again (and maybe revert fft4g to its
 // old state - maybe it was using the rapt version in rosic that made the difference...)
 
-
-template void RAPT::rsArray::fillWithRandomValues(rsFloat32x4* x, int N, double min, double max, int seed);
-template double RAPT::rsArray::meanSquare(const double *x, int N);
-
-
-// Math:
 template class RAPT::rsMatrixView<double>;
 template class RAPT::rsMatrixNew<double>;
 
@@ -74,7 +75,6 @@ template void RAPT::rsFindPrimesUpTo(std::vector<RAPT::rsUint64>& primes, RAPT::
 template void RAPT::rsPrimeFactors(RAPT::rsUint32 x, std::vector<RAPT::rsUint32>& factors,
   std::vector<RAPT::rsUint32>& exponents, std::vector<RAPT::rsUint32>* primeTable);
 
-
 // Interpolation:
 template void RAPT::fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1,
   double yd2, double *a3, double *a2, double *a1, double *a0);
@@ -92,7 +92,9 @@ template double RAPT::getDelayedSampleAsymmetricHermite1(double d, double *y, do
 template double RAPT::getDelayedSampleLinear(double d, double *y);
 template void RAPT::rsNaturalCubicSpline(const double *x, const double *y, int N, const double *xi, double *yi, int Ni, double scaleRhs);
 
+template class RAPT::rsRationalFunction<double>;
 
+//-------------------------------------------------------------------------------------------------
 
 template void RAPT::rsWindowFunction::salFlatTopFast3(double* w, int N, bool normalize);
 template void RAPT::rsWindowFunction::salFlatTopFast4(double* w, int N, bool normalize);
@@ -100,37 +102,20 @@ template void RAPT::rsWindowFunction::salFlatTopFast5(double* w, int N, bool nor
 template void RAPT::rsWindowFunction::salFlatTopMin3( double* w, int N, bool normalize);
 template void RAPT::rsWindowFunction::salFlatTopMin4( double* w, int N, bool normalize);
 template void RAPT::rsWindowFunction::salFlatTopMin5( double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop70(   double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop95(   double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop90D(  double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop116D( double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop144D( double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop169D( double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop196D( double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop223D( double* w, int N, bool normalize);
+template void RAPT::rsWindowFunction::hrsFlatTop248D( double* w, int N, bool normalize);
 
-template void RAPT::rsWindowFunction::hrsFlatTop70(  double* w, int N, bool normalize);
-template void RAPT::rsWindowFunction::hrsFlatTop95(  double* w, int N, bool normalize);
-template void RAPT::rsWindowFunction::hrsFlatTop90D( double* w, int N, bool normalize);
-template void RAPT::rsWindowFunction::hrsFlatTop116D(double* w, int N, bool normalize);
-template void RAPT::rsWindowFunction::hrsFlatTop144D(double* w, int N, bool normalize);
-template void RAPT::rsWindowFunction::hrsFlatTop169D(double* w, int N, bool normalize);
-template void RAPT::rsWindowFunction::hrsFlatTop196D(double* w, int N, bool normalize);
-template void RAPT::rsWindowFunction::hrsFlatTop223D(double* w, int N, bool normalize);
-template void RAPT::rsWindowFunction::hrsFlatTop248D(double* w, int N, bool normalize);
-
+//-------------------------------------------------------------------------------------------------
+// Filters:
 
 template class RAPT::rsStateVariableFilter<double, double>;
-
-template class RAPT::rsImage<float>;
-template class RAPT::rsAlphaMask<float>;
-template class RAPT::rsImagePainter<float, float, float>;
-
-// for PhaseScope:
-template class RAPT::rsAlphaMask<double>;
-template class RAPT::rsScopeScreenScanner<float>;  // do we need this?
-template class RAPT::rsScopeScreenScanner<double>;
-template class RAPT::rsPhaseScopeBuffer<double, float, double>;
-template class RAPT::rsPhaseScopeBuffer2<double, float, double>;
-
-// needed for the release build of Chaosfly on Linux - without them, apparently the compiler
-// generates the classes only partially - some member functions are missing probably because they
-// not called from anywhere inside jura or rosic:
-template double RAPT::rsAbs(double x);
-template class RAPT::rsBreakpointModulator<double>;
-
 
 //template class RAPT::rsOnePoleFilter<double, double>;
 //template class RAPT::rsOnePoleFilter<rsFloat64x2, double>;
@@ -139,9 +124,7 @@ template class RAPT::rsSmoothingFilter<double, double>;
 template class RAPT::rsBiquadCascade<double, double>;
 template class RAPT::rsBiquadCascade<rsFloat64x2, double>;
 template class RAPT::rsDirectFormFilter<double, double>;
-
 template class RAPT::rsFilterAnalyzer<double>;
-
 template class RAPT::rsPrototypeDesigner<double>;
 template class RAPT::rsPoleZeroMapper<double>;
 template class RAPT::rsFilterCoefficientConverter<double>;
@@ -159,7 +142,6 @@ template class RAPT::rsEllipticSubBandFilterDirectForm<double, double>;
 template struct RAPT::rsFilterSpecificationZPK<double>;
 template struct RAPT::rsFilterSpecificationBA<double>;
 
-
 template class RAPT::rsLadderFilter<double, double>;
 template class RAPT::rsLadderFilter<rsFloat64x2, double>;
 
@@ -175,24 +157,8 @@ template class RAPT::rsPhasorStateMapper<double>;
 // todo: get rid of directly using rapt classes in jura and/or products - create instantiations for
 // double in rosic and use these instantiations only
 
-template class RAPT::rsBouncillator<double>;
-template class RAPT::rsRayBouncer<double>;
-template class RAPT::rsRayBouncerDriver<double>;
-template class RAPT::rsLissajousOscillator3D<double>;
-template class RAPT::rsEllipseOscillator<double>;
-template class RAPT::rsTriSawOscillator<double>;
-template class RAPT::rsOscArray<double>;
-template class RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, RAPT::rsPolyBlep1<double, double>>;
-
-
 template class RAPT::rsMultiBandSplitter<double, double>;
 template class RAPT::rsMultiBandSplitter<rsFloat64x2, double>;
-
-template class RAPT::rsHalfWaveSaturator<double, double>;
-template class RAPT::rsSaturator<double, double>;
-template class RAPT::rsSlewRateLimiterLinear<double, double>;
-template class RAPT::rsSlewRateLimiterWithHold<double, double>;
-//template class RAPT::rsBreakpointModulator<double>;
 
 template class RAPT::rsOnePoleFilter<double, double>;
 template class RAPT::rsOnePoleFilter<rsFloat64x2, double>;
@@ -219,6 +185,48 @@ template class RAPT::rsLadderMystran<double, double>;
 template std::complex<double> RAPT::dcGainNormalizer(
   const std::complex<double>* zeros, size_t numZeros, 
   const std::complex<double>* poles, size_t numPoles);
+// this should probably be moved into some class, where it fits (maybe rsFilterSpecificationZPK)
+
+template class RAPT::rsNonUniformComplexOnePole<double>;
+template class RAPT::rsNonUniformOnePole<double>;
+template class RAPT::rsNonUniformFilterIIR<double>;
+
+
+//-------------------------------------------------------------------------------------------------
+// Misc:
+
+template class RAPT::rsImage<float>;
+template class RAPT::rsAlphaMask<float>;
+template class RAPT::rsImagePainter<float, float, float>;
+
+// for PhaseScope:
+template class RAPT::rsAlphaMask<double>;
+template class RAPT::rsScopeScreenScanner<float>;  // do we need this?
+template class RAPT::rsScopeScreenScanner<double>;
+template class RAPT::rsPhaseScopeBuffer<double, float, double>;
+template class RAPT::rsPhaseScopeBuffer2<double, float, double>;
+
+// needed for the release build of Chaosfly on Linux - without them, apparently the compiler
+// generates the classes only partially - some member functions are missing probably because they
+// not called from anywhere inside jura or rosic:
+template double RAPT::rsAbs(double x);
+template class RAPT::rsBreakpointModulator<double>;
+
+
+template class RAPT::rsBouncillator<double>;
+template class RAPT::rsRayBouncer<double>;
+template class RAPT::rsRayBouncerDriver<double>;
+template class RAPT::rsLissajousOscillator3D<double>;
+template class RAPT::rsEllipseOscillator<double>;
+template class RAPT::rsTriSawOscillator<double>;
+template class RAPT::rsOscArray<double>;
+template class RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, RAPT::rsPolyBlep1<double, double>>;
+
+template class RAPT::rsHalfWaveSaturator<double, double>;
+template class RAPT::rsSaturator<double, double>;
+template class RAPT::rsSlewRateLimiterLinear<double, double>;
+template class RAPT::rsSlewRateLimiterWithHold<double, double>;
+//template class RAPT::rsBreakpointModulator<double>;
 
 
 template class RAPT::rsDelayLine<double, double>;

@@ -57,7 +57,7 @@ void rsRationalFunction<T>::partialFractionExpansion(
 // see also here:
 // https://en.wikipedia.org/wiki/Partial_fraction_decomposition
 
-template class rsRationalFunction<double>; // remove when moving code to library
+//template class rsRationalFunction<double>; // remove when moving code to library
 
 /*
 
