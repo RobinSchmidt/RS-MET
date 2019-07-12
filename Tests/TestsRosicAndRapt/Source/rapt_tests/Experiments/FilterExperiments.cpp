@@ -886,8 +886,10 @@ void nonUniformBiDirectional()
   int numPasses = 1;  // number of filter passes
 
   // test: normalize the sample-rate to 1 and scale all frequencies accordingly:
-  double s = 1/fs; // s=1.5/fs gives even closer match to uniform case
+  double s = 1/fs;
   fs *= s; f1 *= s; f2 *= s; f3 *= s; fc *= s;
+  // not needed anymore since the dtScaler has been implemented in rsNonUniformFilterIIR
+  // ...now s can be anything from very small to very large, the filter doesn't care
 
   // create input signals:
   typedef std::vector<double> Vec;

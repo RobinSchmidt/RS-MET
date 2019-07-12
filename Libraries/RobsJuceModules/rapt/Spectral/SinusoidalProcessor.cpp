@@ -317,14 +317,15 @@ std::vector<T> rsPartialBeatingRemover<T>::smoothPhases(
   typedef rsBiDirectionalFilter BDF;
   int order     = 2;
   int numPasses = 2;
+  // todo: tweak these - find optimal values - or let the user set them up
 
   // preliminary - treat signal as uniform:
-  T sampleRate = t.size() / (rsLast(t) - t[0]); // average sample-rate
-  BDF::applyButterworthLowpass(&p[0], &p[0], (int)p.size(), cutoff, sampleRate, order, numPasses);
+  //T sampleRate = t.size() / (rsLast(t) - t[0]); // average sample-rate
+  //BDF::applyButterworthLowpass(&p[0], &p[0], (int)p.size(), cutoff, sampleRate, order, numPasses);
 
   //// new - use non-uniform filter:
-  if(false) // just to force a template instantiation
-    BDF::applyButterworthLowpass(&p[0], &t[0], &p[0], (int)p.size(), cutoff, order, numPasses);
+  //if(false) // just to force a template instantiation
+  BDF::applyButterworthLowpass(&p[0], &t[0], &p[0], (int)p.size(), cutoff, order, numPasses);
   // ...this doesn't work yet ...produces total garbage - test the non-uniform lowpass on a 
   // sawtooth and/or square-wave and make plots - compare to uniform case
 
