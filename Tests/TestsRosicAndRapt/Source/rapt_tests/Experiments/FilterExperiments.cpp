@@ -953,6 +953,7 @@ void nonUniformBiDirectional()
   // -todo: introduce "dtScale" member in rsNonUniformFilterIIR that scales all incoming "dt" 
   //  values before passing them to the embedded 1-pole objects - the goal is to keep the cutoff 
   //  frequency at some optimal "operating point"
+  //  -maybe always let wc=1 (obviates, s-plane lp->lp trafo) and scale dt by 1/(2*pi*fc)
   // -todo: figure out, if the optimal dt has some relationship to the cutoff frequency
   // -todo: implement highpass, bandpass and bandreject and use them to isolate the upper or middle
   //  sine

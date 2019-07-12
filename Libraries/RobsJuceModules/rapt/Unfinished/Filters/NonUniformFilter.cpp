@@ -231,6 +231,15 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // make the pole-array digestible for the partial fraction expansion routine - the zeros
   // array is not needed in this case - the numerator of our rational function is just unity
 
+  // experimental - it turned out that some range of cutoff freqs works better than other 
+  // numerically, so we enforce the cutoff to be in this range - this, in turn, requires to scale
+  // all the incoming "dt" values during operation:
+  T operatingPoint = 0.125;  // maybe try something that obviates the sLowpassToLowpass call?
+                             // maybe 1/(2pi) = 0.159...
+  T freqScaler = operatingPoint/(2*PI*freq); // makes wc == 1, when operatingPoint == 1
+  dtScaler = 1 / freqScaler;
+
+
   // create the complex conjugate partners (needed for partial fraction expansion):
   int i;
   for(i = (order-1)/2; i >= 0; i--) 
@@ -256,7 +265,7 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
 
   k = T(1) / protoDesigner.getMagnitudeAt(T(0));
 
-  T wc = 2*PI*freq;  // ...and this too?
+  T wc = 2*PI*freqScaler*freq;  // ...and this too?
   rsPoleZeroMapper<T>::sLowpassToLowpass(z, p, &k, z, p, &k, order, wc);
   // ...produces inf - j*nan for the zeros -> fix this!
 

@@ -268,6 +268,8 @@ public:
   {
     std::complex<T> y(T(0), T(0));      // accumulator for parallel (complex) filter outputs
 
+    dt *= dtScaler;  // new, experimental
+
     for(int i = 0; i < order; i++)
       y += onePoles[i].getSamplePiecewiseResampled(x, dt); // this seems to work best
       //y += onePoles[i].getSampleNonNormalized(x, dt);
@@ -312,7 +314,11 @@ protected:
   T freq    = 0.25;  // 0.25 for halfband -> w = 2*PI*f/fs = PI/2 for fs = 1
   ApproximationMethod approxMethod = ApproximationMethod::butterworth;
 
-  T dtScaler  = 1.0;  // not yet used
+  // experimental:
+  T dtScaler = 1.0;
+  //T fs = 1.0;
+
+
   T outScaler = 1.0;
 
   // prototype designer and buffers for partial fraction expansion routine:
