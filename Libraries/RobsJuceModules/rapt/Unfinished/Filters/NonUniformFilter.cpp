@@ -221,69 +221,57 @@ void rsNonUniformFilterIIR<T>::setApproximationMethod(ApproximationMethod newMet
 template<class T>
 void rsNonUniformFilterIIR<T>::updateCoeffs()
 {
-  protoDesigner.getPolesAndZeros(p, z);
-  // this gets us only the non-redundant poles and zeros - complex poles always have a conjugate 
-  // partner which is not in the array. if a real pole exists, it's in the last position of the
-  // array
-  // the array of zeros should be all inf - all zeros are at infinity because we have an allpole
-  // filter - it's not actually used here (yet?)
-
-  // make the pole-array digestible for the partial fraction expansion routine - the zeros
-  // array is not needed in this case - the numerator of our rational function is just unity
-
   // experimental - it turned out that some range of cutoff freqs works better than other 
   // numerically, so we enforce the cutoff to be in this range - this, in turn, requires to scale
   // all the incoming "dt" values during operation:
   T operatingPoint = 0.125;  // maybe try something that obviates the sLowpassToLowpass call?
                              // maybe 1/(2pi) = 0.159...
+  //T operatingPoint = 0.0625;
+  //T operatingPoint = 1/(2*PI); // ..but no: 0.125 is better - it leads to wc = 0.125 which is
+                                 // exactly representable -> no error in sLowpassToLowpass
+  //T operatingPoint = 0.03125; 
   T freqScaler = operatingPoint/(2*PI*freq); // makes wc == 1, when operatingPoint == 1
   dtScaler = 1 / freqScaler;
+  // todo: make impulse-invariant design available in uniform filters and compare outputs - tweak
+  // the operating point for the best match / least error - it should be a power of two
+  // probably either 0.125 or 0.0625 - for other values, there seems to be a bias (signal always
+  // too strong or too weak)
 
 
-  // create the complex conjugate partners (needed for partial fraction expansion):
   int i;
-  for(i = (order-1)/2; i >= 0; i--) 
-  {
+  protoDesigner.getPolesAndZeros(p, z); // get non-redundant poles and zeros...
+  for(i = (order-1)/2; i >= 0; i--) {   // ...and create their complex conjugate partners
     p[2*i]   = p[i];
     p[2*i+1] = conj(p[i]); 
     z[2*i]   = z[i];
     z[2*i+1] = conj(z[i]); 
   }
-
-  // z is only half-full with inf - fill it up completely:
-  //rsArray::fillWithValue(z, order, std::complex<T>(RS_INF(T), T(0)));
-  // we should probably handle the zeros in exactly the same way as the poles - then we may later
-  // be able to use all filter-types - also those with zeros - but when the number of finite zeros
-  // is the same as the number of poles, the partial fraction expansion will produce a polynomial
+  // filters with finite zeros do not work yet: when the number of finite zeros
+  // is the same as the number of poles, the partial fraction expansion should produce a polynomial
   // part ...i think, a 0th order polynomial, i.e. just an added constant? may this be implemented
-  // by just feeding through some of the filter's input? that would seem plausible...
+  // by just feeding through some of the filter's input? that would seem plausible...it's no yet
+  // implemented, however
 
   // do s-domain lowpass-to-lowpass transform to set up cutoff frequency:
-  T k  = T(1);       // maybe make this a member...
-  // maybe 1 is not correct in all cases? for Gaussian, Papoulis and Halpern filters, we get wrong 
-  // DC gains
-
-  k = T(1) / protoDesigner.getMagnitudeAt(T(0));
-
-  T wc = 2*PI*freqScaler*freq;  // ...and this too?
+  T k  = T(1) / protoDesigner.getMagnitudeAt(T(0));
+  T wc = 2*PI*freqScaler*freq;  // can be streamlined - always equals operatingPoint
   rsPoleZeroMapper<T>::sLowpassToLowpass(z, p, &k, z, p, &k, order, wc);
   // ...produces inf - j*nan for the zeros -> fix this!
 
-  // create the sum-form of the denominator:
-  rsPolynomial<T>::rootsToCoeffs(p, den, order);
-
-  // todo: do the same for the numerator - we need to figure out the number of finite zeros...
+  // create the sum-form of numerator and denominator:
   int nz = protoDesigner.getNumFiniteZeros();
   rsPolynomial<T>::rootsToCoeffs(z, num, nz);
+  rsPolynomial<T>::rootsToCoeffs(p, den, order);
+  // todo: maybe this conversion can be avoided when the prototype designer already has to create
+  // the sum form before finding the poles and zeros - it would require the prototype-designer to 
+  // maintain arrays for the sum form that can be pulled out by client code
 
+  
 
   // do the partial fraction expansion:
-  //rsRationalFunction<T>::partialFractionExpansion(num, 0, den, order, p, muls, order, r);
   rsRationalFunction<T>::partialFractionExpansion(num, nz, den, order, p, muls, order, r);
   // does not yet work when nz >= oder (numerator's degree >= denominator's) because the partial
   // fraction expansion will then contain a polynomial ("FIR") part and that's not yet implemented
-
-
 
   // transform analog poles to digital domain by means of impulse-invariant transform
   // see: https://ccrma.stanford.edu/~jos/pasp/Impulse_Invariant_Method.html
