@@ -871,7 +871,7 @@ void nonUniformBiquad()
 
 void nonUniformBiDirectional()
 {
-  // We test our non-uniform bidirectional filter on a mix of 3 sinusoids with the goeal to 
+  // We test our non-uniform bidirectional filter on a mix of 3 sinusoids with the goal to 
   // separate them.
 
   // user parameters:
@@ -882,11 +882,11 @@ void nonUniformBiDirectional()
   double f2 =  10;    // second frequency in Hz
   double f3 =  20;    // third frequency in Hz
   double fc =   7;    // filter cutoff/center freq
-  int order     = 8;  // filter order 
-  int numPasses = 3;  // number of filter passes
+  int order     = 4;  // filter order 
+  int numPasses = 1;  // number of filter passes
 
   // test: normalize the sample-rate to 1 and scale all frequencies accordingly:
-  double s = 1/fs; 
+  double s = 1/fs; // s=1.5/fs gives even closer match to uniform case
   fs *= s; f1 *= s; f2 *= s; f3 *= s; fc *= s;
 
   // create input signals:
@@ -904,7 +904,6 @@ void nonUniformBiDirectional()
     xn2[n] = sin(2*PI*f2*tn[n]);
     xn3[n] = sin(2*PI*f3*tn[n]);
     xn[n]  = xn1[n]+xn2[n]+xn3[n];
-
     xu1[n] = sin(2*PI*f1*n/fs);
     xu2[n] = sin(2*PI*f2*n/fs);
     xu3[n] = sin(2*PI*f3*n/fs);
@@ -940,11 +939,25 @@ void nonUniformBiDirectional()
   //  effect goes aways when choosing d=0 (when the padding in the BDF is lowered to P=100, 
   //  however, a little deviation remains)
   //  -maybe this related to the end-time being unequal? try to scale all the times such that the
-  //  end time is exactly N-1 also for the non-uniform signal..
+  //   end time is exactly N-1 also for the non-uniform signal -> yes - that fixes it
+  // -filter order up to 11 works, from 12 onward, we get a "matrix numerically close to singular"
+  //  error - can probably be avoided by implementing the special partial fraction expansion 
+  //  algorithm that works when all poles are distinct - perhaps that's numerically better anyway
   // -todo: figure out, what the "best" sample-rate is in terms of numerical precision - tweak the
-  //  s-factor above
+  //  s-factor above -> it seems like when going down like s=4/fs, s=2/fs, s=1/fs, the last is 
+  //  the first, for which the non-uniformly sampled signal is not above the uniformly sampled one
+  //  s=0.5/fs also still works, but 0.25/fs triggers a singluar-matrix assert (all tested with 4th
+  //  order), s=1.5 looks really good - could this be a hint to pi/2? is this plausible for an 
+  //  optimal spacing? why would pi show up? ...but maybe the comparison should be done again when 
+  //  we have impulse invariant design in place for the uniform filter...
+  // -todo: introduce "dtScale" member in rsNonUniformFilterIIR that scales all incoming "dt" 
+  //  values before passing them to the embedded 1-pole objects - the goal is to keep the cutoff 
+  //  frequency at some optimal "operating point"
+  // -todo: figure out, if the optimal dt has some relationship to the cutoff frequency
   // -todo: implement highpass, bandpass and bandreject and use them to isolate the upper or middle
   //  sine
+  // -todo: let the uniform filter use impulse-invariant transform too - then, the outputs should
+  //  be exactly the same when d=0
 
   // Conclusion:
   // We should normalize the average time-delta between samples to be of the order of unity and 

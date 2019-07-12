@@ -193,12 +193,12 @@ protected:
   // maybe rename to b0, a1 for consistency with other filters - or to r,p for residue,pole
 
   // maybe factor out into subclass(es):
-  std::complex<T> x1 = 0;
+  std::complex<T> x1 = 0; // for production, keep this in the outlying rsNonUniformFilterIIR
+
+  // remove these for production - we don't use time-variant scaling:
   std::complex<T> s  = 1;
   T wr = 0;  // reference frequency for unit gain in time-variant scaling normalization
 
-
-  //template<class S> friend class rsNonUniformFilterIIR<S>;
 };
 
 //=================================================================================================
@@ -269,10 +269,15 @@ public:
     std::complex<T> y(T(0), T(0));      // accumulator for parallel (complex) filter outputs
 
     for(int i = 0; i < order; i++)
+      y += onePoles[i].getSamplePiecewiseResampled(x, dt); // this seems to work best
+      //y += onePoles[i].getSampleNonNormalized(x, dt);
       //y += onePoles[i].getSample(x, dt);
-      y += onePoles[i].getSamplePiecewiseResampled(x, dt);
+      //y += onePoles[i].getSampleSpatiallyVariantScaled(x, dt); 
+         // nope! this doesn't work! normalizing should not be done per stage!
 
-    return scaler * y.real();
+
+
+    return outScaler * y.real();
   }
   // could we also use getSampleReal and use a real accumulator? i think so - try it!
   // as an optimization, we may run only over half of the samples - the other half would just 
@@ -307,7 +312,8 @@ protected:
   T freq    = 0.25;  // 0.25 for halfband -> w = 2*PI*f/fs = PI/2 for fs = 1
   ApproximationMethod approxMethod = ApproximationMethod::butterworth;
 
-  T scaler = 1.0;
+  T dtScaler  = 1.0;  // not yet used
+  T outScaler = 1.0;
 
   // prototype designer and buffers for partial fraction expansion routine:
   RAPT::rsPrototypeDesigner<T> protoDesigner;

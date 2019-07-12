@@ -34,7 +34,6 @@ void rsApplyBiDirectionally(TSig *x, TSig *y, int N, TFlt &processor, int P, int
   // toward the end such that at the end, the total amount of ringing effects is even less
 }
 
-
 template<class T>
 std::vector<T> getPaddedSignal(T* x, int N, int P)
 {
@@ -47,7 +46,7 @@ std::vector<T> getPaddedSignal(T* x, int N, int P)
 }
 // todo: use this function also for the function above - gets rid of code duplication
 
-// non-uniform version of function above
+// non-uniform version of function above:
 template<class TSig, class TTim, class TFlt> // signal, time and filter type
 void rsApplyBiDirectionally(
   TSig* x, TTim* t, TSig* y, int N, TFlt& processor, int P, int numPasses)
@@ -60,27 +59,19 @@ void rsApplyBiDirectionally(
   std::vector<TTim> dt = getPaddedSignal(t, N, P);
   TTim dtAv = (t[N-1]-t[0]) / N; // average sampling interval
   int n;
-
-  //for(n = P+1;   n <  N + P; n++) dt[n] = dt[n] - dt[n-1]; // seems wrong!
   for(n = N+P-1; n >      P; n--) dt[n] = dt[n] - dt[n-1];
-  for(n = 0;     n <=     P; n++) dt[n] = dtAv;              // don't do this before the 1st loop! ..or can we?
+  for(n = 0;     n <=     P; n++) dt[n] = dtAv;   // don't do this before the 1st loop!
   for(n = N+P;   n <  N+2*P; n++) dt[n] = dtAv;
-  //for(n = N+P+1; n <  N+2*P; n++) dt[n] = dtAv; // wrong!
 
   // apply processor (multipass, bidirectionally):
   for(int p = 1; p <= numPasses; p++) {
     for(n = 0;   n <  M; n++) tmp[n] = processor.getSample(tmp[n], dt[n]);   // forward pass
     for(n = M-2; n >= 0; n--) tmp[n] = processor.getSample(tmp[n], dt[n+1]); // backward pass
-    // ...verify the dt[n+1] in the backward pass...
   }
 
   // copy result to output:
   rsArray::copyBuffer(&tmp[P], y, N);
 }
-
-
-
-
 
 template<class T>
 int rsBiDirectionalFilter::getPaddingLength(T bw, T fs)
@@ -195,7 +186,9 @@ void rsBiDirectionalFilter::applyButterworthLowpass(TSig* x, TTim* t, TSig* y, i
   // t itself ...the reason is that we want to scale dt such that it has an average value of 1 and
   //  we need to sclae the filter's cutoff frequency by the same factor ...or: let the 
   // rsNonUniformFilterIIR class maintain an average sample-rate member which multiplies the 
-  // incoming dt values ...but no - that's inelegant
+  // incoming dt values ...but no - that's inelegant..hmm - i think, passing a dt array is the best 
+  // way anyway - the user may already have the dt values available and converting to t and back to 
+  // dt introduces accumualtion error
 
   //int P = rsCeilInt(numPasses * flt.getRingingTimeEstimate(rsDB2amp(-100.0)));
   // make such an estimation function for the non-uniform filter - it should probably return a 

@@ -296,12 +296,19 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
     onePoles[i].reset(); // triggers computation of scaler s_i
     tmp += onePoles[i].getScaler();  
   }
-  scaler = T(1) / tmp.real();
+  outScaler = T(1) / tmp.real();
   // but it makes sense: when the transfer function is a sum of terms like r_i / (s - p_i) and we 
   // plug in s = 0, we have a sum -r_i/p_i ...but s_i = r_i / (1-p_i) ...hmmm
 }
 
 /*
+
+It seems like the only useful mode is "piecewise resampling" (unless i'm doing something wrong with 
+the other modes) - make a production code version that strips off the stuff for the other modes,
+includes optimizations and maybe continuous fade between piecewise resampling and no normalization.
+This code here may then be moved back into the prototypes section (for further experiments with the
+other modes)
+
 Resources:
 
 http://inf.ufrgs.br/~eslgastal/NonUniformFiltering/

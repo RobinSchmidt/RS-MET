@@ -62,7 +62,7 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
     if(rsIsCloseTo(biggest, 0.0, 1.e-12))  // todo: use something based on std::numeric_limits<T>
     {                                      // and/or let the user pick a threshold..also, it should
       matrixIsSingular = true;             // probably be a relative value
-      rsError("Matrix (numerically close to) singular.");
+      rsError("Matrix singular (or numerically close to)");
       // shouldn't we return here?
     }
 
