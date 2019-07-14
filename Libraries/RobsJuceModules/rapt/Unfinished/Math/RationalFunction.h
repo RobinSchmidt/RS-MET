@@ -118,8 +118,6 @@ public:
   // allocates heap memory
   // ToDo:
   // -comment the format of the output - how does it deal with repeated poles? see unit tests
-  // -maybe have another complex array *polyCoeffs which will contain the polynomial part when
-  //  numeratorDegree >= denominatorDegree
   // -have a higher-level version of the function that doesn't require the poles to be passed (the
   //  function should find them itself via a root finder)
 

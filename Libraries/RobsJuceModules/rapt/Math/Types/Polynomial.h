@@ -648,9 +648,6 @@ protected:
 
 // todo: implement polynomial GCD (i.e. adapt the integer gcd for polynomials)
 
-// \todo: implement differentiation and integration, make a class, implement some algos for
-// rational functions (partial fraction expansion, differentiation, integration)
-
 // \todo implement funcitons to construct coefficient arrays for certain recursively defined
 // polynomials, such as Chebychev, etc. provide functions to evaluate linear combinations of
 // them efficiently (maybe look up Clenshaw algorithm)

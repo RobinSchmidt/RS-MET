@@ -18,9 +18,18 @@ void rsRationalFunction<T>::partialFractionExpansion(
   // todo: if(numDeg >= denDeg), do a polynomial division to obtain the polynomial part, see:
   // https://ccrma.stanford.edu/~jos/filters/FIR_Part_PFE.html
 
+  if(numDeg >= denDeg)
+  {
+    rsPolynomial<std::complex<T>>::divide(num, numDeg, den, denDeg, polyCoeffs, num);
+    // verify, if this function can work in place, otherwise we must allocate a temporary array
+    // for the new numerator - needs test
+  }
+
+  // divide(const T* dividend, int dividendDegree, const T* divisor, int divisorDegree,
+  // T* quotient, T* remainder);
 
   // sanity check for inputs:
-  rsAssert(numDeg < denDeg);
+  //rsAssert(numDeg < denDeg);
   rsAssert(rsArray::sum(multiplicities, numDistinctPoles) == denDeg);
   // todo: make a function that handles the case numeratorDegree >= denominatorDegree
   // -> this must do a polynomial division to obtain a purely polynomial part and a stricly proper
