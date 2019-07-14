@@ -1641,13 +1641,25 @@ void partialFractionExpansion3()
   //      = a(x) + b(x)/q(x) = polynomial(x) + numerator(x) / denominator(x)
   //      =        p(x)/q(x) =                 numerator(x) / denominator(x)
   // where p(x) = q(x)*a(x) + b(x)
+  // sage:
+  // f(x) = 3*x^2-2*x+7 + 3/(x+5) - 4/(x+3) + 2/(x-1) + 5/(x-1)^2 - 3/(x-5)
+  // f.simplify_rational()
+  // gives:
+  // (3*x^7+x^6-85*x^5-x^4+196*x^3-604*x^2+750*x-740) / (x^5+x^4-30*x^3-22*x^2+125*x-75)
 
   typedef std::complex<double> Complex;
-  static const int Na = 2, Nb = 4, Nq = 5;  // degrees of the various polynomials
+  typedef RAPT::rsPolynomial<Complex> Poly;
+
+  static const int Na = 2, Nb = 4, Nq = 5, Np = Na+Nq;  // degrees of the various polynomials
   Complex a[Na+1] = { 7,-2,3 };
   Complex b[Nb+1] = {-215,-275,25,-13,-2};
-  Complex q[Nq+1] = {-75,125,-22,-30,1,1};
+  Complex q[Nq+1] = {-75,125,-22,-30,1,1};              // what, if q isn't monic?
+  Complex p[Np+1] = {-740,750,-604,196,-1,-85,1,3};
 
+
+
+  //RAPT::rsRationalFunction<T>::partialFractionExpansion(
+  //  p, Np, q, Nq, poles, muls, numDistinctPoles, pfeCoeffs, polyCoeffs);
 
 
   int dummy = 0;

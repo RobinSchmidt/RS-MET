@@ -15,7 +15,9 @@ void rsRationalFunction<T>::partialFractionExpansion(
   std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
   std::complex<T> *pfeCoeffs, std::complex<T>* polyCoeffs)
 {
-  // todo: if(numDeg >= denDeg), do a polynomial division to obtain the polynomial part
+  // todo: if(numDeg >= denDeg), do a polynomial division to obtain the polynomial part, see:
+  // https://ccrma.stanford.edu/~jos/filters/FIR_Part_PFE.html
+
 
   // sanity check for inputs:
   rsAssert(numDeg < denDeg);
@@ -29,6 +31,8 @@ void rsRationalFunction<T>::partialFractionExpansion(
   // case r[i] = P(p[i]) / Q'(p[i]) where r[i] is the i-th residue for the the i-th pole p[i]
   // hmm - here: https://en.wikipedia.org/wiki/Partial_fraction_decomposition#Residue_method
   // it seems like the resiude method is also applicable for multiple roots?
+
+  // https://ccrma.stanford.edu/~jos/filters/Partial_Fraction_Expansion.html
 
 
 

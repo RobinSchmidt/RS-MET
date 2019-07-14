@@ -20,6 +20,8 @@ namespace RAPT {
 //-------------------------------------------------------------------------------------------------
 // Data:
 
+//template void RAPT::rsArray::convolve(const std::complex<double>* x, int Nx, 
+//  const std::complex<double>* h, int Nh, std::complex<double> *y);
 template void RAPT::rsArray::fillWithRandomValues(rsFloat32x4* x, int N, double min, double max, int seed);
 template double RAPT::rsArray::meanSquare(const double *x, int N);
 
@@ -92,6 +94,8 @@ template double RAPT::getDelayedSampleAsymmetricHermite1(double d, double *y, do
 template double RAPT::getDelayedSampleLinear(double d, double *y);
 template void RAPT::rsNaturalCubicSpline(const double *x, const double *y, int N, const double *xi, double *yi, int Ni, double scaleRhs);
 
+
+//template class RAPT::rsPolynomial<std::complex<double>>;
 template class RAPT::rsRationalFunction<double>;
 
 //-------------------------------------------------------------------------------------------------
