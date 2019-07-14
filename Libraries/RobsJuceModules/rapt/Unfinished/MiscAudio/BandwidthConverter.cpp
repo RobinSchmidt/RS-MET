@@ -74,3 +74,5 @@ T rsBandwidthConverter::multipassScalerButterworth(int M, int N, T g)
 // k = 0.5/N
 // E = pi*gamma(M-k) / (N*gamma(M)*gamma(1-k)*sin(k*pi)) 
 // maybe compare the energy normalization to the formula above
+// this formula has been implemented in
+// rsPrototypeDesigner<T>::butterworthEnergy

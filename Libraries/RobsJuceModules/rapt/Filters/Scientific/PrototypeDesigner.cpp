@@ -1,4 +1,4 @@
-// helper functions (maybe make static member functions)
+// helper functions maybe make static member functions - or better: move to rsPolynomial
 
 template<class T>
 void updateLegendrePolynomial(T **P, T *P1, T *P2, int r)

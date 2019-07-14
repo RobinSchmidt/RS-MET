@@ -773,16 +773,14 @@ void nonUniformAllpole()
 {
   // Test for a high-order non-uniform allpole filter (Butterworth, Bessel, etc.)
 
-  int N = 500;            // number of samples
+  int N = 1000;            // number of samples
   double d     = 0.8;     // amount of randomness in the sample spacing
   double dtMin = 1-d;     // minimum time-difference between non-uniform samples
   double dtMax = 1+d;     // maximum ..
   double fc    = 0.01;    // cutoff freq
-  //int order    = 8;
-  double x     = 0;       // 0: impulse response, 1: step response
+  double x     = 1;       // 0: impulse response, 1: step response
 
   std::vector<int> orders = { 1,2,3,4,5,6,7,8 };
-
 
   typedef rsNonUniformFilterIIR<double>::ApproximationMethod AM;
   rsNonUniformFilterIIR<double> flt;
@@ -791,7 +789,7 @@ void nonUniformAllpole()
   //flt.setApproximationMethod(AM::gaussian);
   //flt.setApproximationMethod(AM::papoulis);
   //flt.setApproximationMethod(AM::halpern);
-  flt.setApproximationMethod(AM::elliptic);  // doesn't work yet - step-resp is weird
+  flt.setApproximationMethod(AM::elliptic);
   flt.setFrequency(fc);
   //flt.setOrder(order);
   // flt.setType(FT::lowpass);
@@ -840,7 +838,26 @@ void nonUniformAllpole()
 
   // -check gaussian cutoff normalization (maybe make it available in EngineersFilter/ToolChain
   //  and check mag-resp there
-  // -allow filters with zeros (elliptic, etc)
+  // -allow filters with zeros (elliptic, etc.)
+  //  -has been implemented but doesn't work - todo: try to decompose a uniform elliptic filter
+  //   into partial fractions - or: try some more general filter that has a somewhat longer
+  //   FIR part ...maybe 6th order numerator and 4th order denominator
+  //  -it seems like for odd orders the 0th polynomial coeff is always 0 and for even order it's
+  //   always 1 - but that seems to be wrong - we have an offset in the step response for even 
+  //   order filters
+  //  -but wait - what's the actual number of *finite* zeros in elliptic filters? could there be 
+  //   one zero at infinity in certain cases? yes - there is, but that seems to be taken into
+  //   account already
+  //  -is it actually correct to directly add the polynomial part of the laplace trafo? what does
+  //   a polynomial part in the s-domain actually mean? the inverse laplace trafo of a constant is
+  //   a dirac impulse
+  //  -> multiplying the FIR part by k fixes the offset - but the step responses still look strange
+  //  todo: compare with uniform EngineersFilter
+  //  -i think, it my due to the way i'm scaling - compare to paarmann, page 195 and 206 - the 
+  //   even ones have a non-unity DC gain - i think, if i scale my even filters appropriately,
+  //   the step response will look better - maybe allow for an optional setting that normalizes the
+  //   filters like in paarmann - no overshoot over unit gain
+
 }
 
 void nonUniformBiquad()

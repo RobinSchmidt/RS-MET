@@ -167,8 +167,7 @@ rsNonUniformFilterIIR<T>::rsNonUniformFilterIIR()
 {
   for(int i = 0; i < maxOrder; i++)
     muls[i] = 1;  // pole multiplicities are all 1
-  setOrder(8);    // just for test
-  updateCoeffs();
+  setOrder(1);    // will update the coeffs
 }
 
 template<class T>
@@ -271,6 +270,7 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // do the partial fraction expansion:
   fir[0] = 0; // that's the only coeff that is actually used during processing
   rsRationalFunction<T>::partialFractionExpansion(num, nz, den, order, p, muls, order, r, fir);
+  fir[0] *= k;  // is this correct? looks like it fixes the DC offset in step-resp
 
 
   // transform analog poles to digital domain by means of impulse-invariant transform
@@ -296,6 +296,14 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   outScaler = T(1) / tmp.real();
   // but it makes sense: when the transfer function is a sum of terms like r_i / (s - p_i) and we 
   // plug in s = 0, we have a sum -r_i/p_i ...but s_i = r_i / (1-p_i) ...hmmm
+
+
+  // test - to normalize elliptic filters - maybe make this optional:
+  if(rsIsEven(order)) {
+    T rp = protoDesigner.getPassbandRipple();
+    outScaler /= rsDbToAmp(rp);
+  }
+
 }
 
 /*

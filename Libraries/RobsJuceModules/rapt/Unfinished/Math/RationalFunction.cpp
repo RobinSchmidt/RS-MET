@@ -25,6 +25,17 @@ void rsRationalFunction<T>::partialFractionExpansion(
   std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
   std::complex<T> *pfeCoeffs, std::complex<T>* polyCoeffs)
 {
+  // make denominator monic:
+  std::complex<T> s = T(1)/den[denDeg];
+  rsArray::scale(num, numDeg+1, s);
+  rsArray::scale(den, denDeg+1, s);
+  // hmm - modifying the input arrays is no good idea - maybe use temporary memory - or require the
+  // inputs to be monic - client code should deal with making it monic
+  // ..or well, actually, we potentially destroy the numerator array anyway due to the in-place
+  // polynomial division above - i should probably write into the documentation that this function
+  // may destroy the original content of the input arrays
+  // maybe this should be done before the polynomial division?
+
 
 
   // obtain polynomial ("FIR") part by polynomial division, see:
@@ -48,16 +59,7 @@ void rsRationalFunction<T>::partialFractionExpansion(
 
   // https://ccrma.stanford.edu/~jos/filters/Partial_Fraction_Expansion.html
 
-  // make denominator monic:
-  std::complex<T> s = T(1)/den[denDeg];
-  rsArray::scale(num, numDeg+1, s);
-  rsArray::scale(den, denDeg+1, s);
-  // hmm - modifying the input arrays is no good idea - maybe use temporary memory - or require the
-  // inputs to be monic - client code should deal with making it monic
-  // ..or well, actually, we potentially destroy the numerator array anyway due to the in-place
-  // polynomial division above - i should probably write into the documentation that this function
-  // may destroy the original content of the input arrays
-  // maybe this should be done before the polynomial division?
+
 
   // establish coefficient matrix:
   std::complex<T> **A; rsArray::allocateSquareArray2D(A, denDeg);
