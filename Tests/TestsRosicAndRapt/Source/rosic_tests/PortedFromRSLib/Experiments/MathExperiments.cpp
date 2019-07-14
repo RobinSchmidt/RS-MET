@@ -1632,6 +1632,26 @@ void partialFractionExpansion2()
   RAPT::rsArray::deAllocateSquareArray2D(A, denominatorOrder);
 }
 
+void partialFractionExpansion3()
+{
+  // We test the RAPT::rsRationalFunction::partialFractionExpansion with a function that contains
+  // a polynomial part and partial fractions with different multiplicities
+  // f(x) = 3*x^2-2*x+7 + 3/(x+5) - 4/(x+3) + 2/(x-1) + 5/(x-1)^2 - 3/(x-5)
+  //      = 3*x^2-2*x+7 + (-2*x^4-13*x^3+25*x^2-275*x-215)/(x^5+x^4-30*x^3-22*x^2+125*x-75)
+  //      = a(x) + b(x)/q(x) = polynomial(x) + numerator(x) / denominator(x)
+  //      =        p(x)/q(x) =                 numerator(x) / denominator(x)
+  // where p(x) = q(x)*a(x) + b(x)
+
+  typedef std::complex<double> Complex;
+  static const int Na = 2, Nb = 4, Nq = 5;  // degrees of the various polynomials
+  Complex a[Na+1] = { 7,-2,3 };
+  Complex b[Nb+1] = {-215,-275,25,-13,-2};
+  Complex q[Nq+1] = {-75,125,-22,-30,1,1};
+
+
+
+  int dummy = 0;
+}
 
 /** For two complex numbers r1, r2 which are supposed to be roots of a polynomial, this function
 decides, if these should be considered as distinct roots or a double root. When computing roots of 
@@ -1768,7 +1788,7 @@ void quadraticPartialFractionCompositionNegativePowers(rsComplexDbl r1, rsComple
                                
 void partialFractionExpansionQuadratic()
 {
-  // may be moved to unit-tests later
+  // may be moved to unit-tests later and move the functions that are tested in rsRationalFunction
 
   // We consider the rational function with 1st order numerator and 2nd order (quadratic) 
   // denominator:

@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
   //nonUniformComplexOnePole();
   //nonUniformAllpole();
   //nonUniformBiquad();
-  nonUniformBiDirectional();
+//  nonUniformBiDirectional();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
@@ -213,6 +213,7 @@ int main(int argc, char* argv[])
   //parametricBell();
   //partialFractionExpansion();
   //partialFractionExpansion2();
+  partialFractionExpansion3();
   //partialFractionExpansionQuadratic();
   //dampedSineEnergy();
   //sineIntegral();

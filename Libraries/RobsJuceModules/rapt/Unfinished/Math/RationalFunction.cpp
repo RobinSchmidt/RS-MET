@@ -24,9 +24,18 @@ void rsRationalFunction<T>::partialFractionExpansion(
   // -> this must do a polynomial division to obtain a purely polynomial part and a stricly proper
   // rational function, the latter of which can then be fed into this routine
 
+
+  // todo: check if all poles are simple - if so, we may use a more efficient algorithm. in this 
+  // case r[i] = P(p[i]) / Q'(p[i]) where r[i] is the i-th residue for the the i-th pole p[i]
+  // hmm - here: https://en.wikipedia.org/wiki/Partial_fraction_decomposition#Residue_method
+  // it seems like the resiude method is also applicable for multiple roots?
+
+
+
   // make denominator monic:
-  rsArray::scale(num, numDeg+1, T(1)/den[denDeg]); //!! wrong? should use numerator?
-  rsArray::scale(den, denDeg+1, T(1)/den[denDeg]);
+  std::complex<T> s = T(1)/den[denDeg];
+  rsArray::scale(num, numDeg+1, s);
+  rsArray::scale(den, denDeg+1, s);
   // hmm - modifying the input arrays is no good idea - maybe use temporary memory - or require the
   // inputs to be monic - client code should deal with making it monic
 

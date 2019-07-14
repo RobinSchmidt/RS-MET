@@ -26,6 +26,7 @@ void monotonicPolynomials();
 void parametricBell();
 void partialFractionExpansion();
 void partialFractionExpansion2();
+void partialFractionExpansion3();
 void partialFractionExpansionQuadratic();
 void dampedSineEnergy();
 void sineIntegral();
