@@ -120,6 +120,8 @@ public:
   // -comment the format of the output - how does it deal with repeated poles? see unit tests
   // -have a higher-level version of the function that doesn't require the poles to be passed (the
   //  function should find them itself via a root finder)
+  // -the function may destroy the original numerator array ...and the denominator will be made 
+  //  monic, if it isn't already
 
 
 

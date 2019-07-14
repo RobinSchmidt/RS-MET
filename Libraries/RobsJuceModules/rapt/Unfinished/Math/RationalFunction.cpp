@@ -10,40 +10,38 @@ bool rsRationalFunction<T>::reduce(T tol)
 }
 
 template<class T>
+int actualDegree(std::complex<T>* p, int maxDegree, T tol)
+{
+  int i = maxDegree;
+  while(rsAbs(p[i]) < tol && i > 0)
+    i--;
+  return i;
+}
+// maybe move to rsPolynomial
+
+template<class T>
 void rsRationalFunction<T>::partialFractionExpansion(
   std::complex<T> *num, int numDeg, std::complex<T> *den, int denDeg,
   std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
   std::complex<T> *pfeCoeffs, std::complex<T>* polyCoeffs)
 {
-  // todo: if(numDeg >= denDeg), do a polynomial division to obtain the polynomial part, see:
+  // obtain polynomial ("FIR") part by polynomial division, see:
   // https://ccrma.stanford.edu/~jos/filters/FIR_Part_PFE.html
-
-  if(numDeg >= denDeg)
-  {
+  T tol = 1.e-12; // ad hoc - use something based on numeric_limits::epsilon
+  if(numDeg >= denDeg) {
     rsPolynomial<std::complex<T>>::divide(num, numDeg, den, denDeg, polyCoeffs, num);
-    // verify, if this function can work in place, otherwise we must allocate a temporary array
-    // for the new numerator - needs test
+    numDeg = actualDegree(num, numDeg, tol); // new degree of numerator
   }
 
-  // divide(const T* dividend, int dividendDegree, const T* divisor, int divisorDegree,
-  // T* quotient, T* remainder);
-
   // sanity check for inputs:
-  //rsAssert(numDeg < denDeg);
+  rsAssert(numDeg < denDeg);
   rsAssert(rsArray::sum(multiplicities, numDistinctPoles) == denDeg);
-  // todo: make a function that handles the case numeratorDegree >= denominatorDegree
-  // -> this must do a polynomial division to obtain a purely polynomial part and a stricly proper
-  // rational function, the latter of which can then be fed into this routine
-
 
   // todo: check if all poles are simple - if so, we may use a more efficient algorithm. in this 
   // case r[i] = P(p[i]) / Q'(p[i]) where r[i] is the i-th residue for the the i-th pole p[i]
   // hmm - here: https://en.wikipedia.org/wiki/Partial_fraction_decomposition#Residue_method
   // it seems like the resiude method is also applicable for multiple roots?
-
   // https://ccrma.stanford.edu/~jos/filters/Partial_Fraction_Expansion.html
-
-
 
   // make denominator monic:
   std::complex<T> s = T(1)/den[denDeg];
@@ -51,6 +49,9 @@ void rsRationalFunction<T>::partialFractionExpansion(
   rsArray::scale(den, denDeg+1, s);
   // hmm - modifying the input arrays is no good idea - maybe use temporary memory - or require the
   // inputs to be monic - client code should deal with making it monic
+  // ..or well, actually, we potentially destroy the numerator array anyway due to the in-place
+  // polynomial division above - i should probably write into the documentation that this function
+  // may destroy the original content of the input arrays
 
   // establish coefficient matrix:
   std::complex<T> **A; rsArray::allocateSquareArray2D(A, denDeg);

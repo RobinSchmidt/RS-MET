@@ -1656,10 +1656,28 @@ void partialFractionExpansion3()
   Complex q[Nq+1] = {-75,125,-22,-30,1,1};              // what, if q isn't monic?
   Complex p[Np+1] = {-740,750,-604,196,-1,-85,1,3};
 
+  static const int numPoles         = 5;
+  static const int numDistinctPoles = 4;                // only 4, because is a double-root
+  Complex poles[numDistinctPoles]   = {-5,-3,+1,+5};
+  int muls[numDistinctPoles]        = { 1, 1, 2, 1};
 
 
-  //RAPT::rsRationalFunction<T>::partialFractionExpansion(
-  //  p, Np, q, Nq, poles, muls, numDistinctPoles, pfeCoeffs, polyCoeffs);
+  // try to recover b by polynomial division:
+  //Complex quotient[Np+1], remainder[Np+1];
+  //rsPolynomial<Complex>::divide(p, Np, q, Nq, quotient, remainder);
+  // ok - this works: quotient == a and remainder == b - but we should try to use it in place, too
+  // the remainder becomes the new numerator and the quotient is polynomial part
+  //rsPolynomial<Complex>::divide(p, Np, q, Nq, quotient, p);
+  // ok - works in place
+
+  // compute the results:
+  Complex pfeCoeffs[numPoles];
+  Complex polyCoeffs[Np+1];     // can we get away with allocating only Na+1?
+  RAPT::rsRationalFunction<double>::partialFractionExpansion(
+    p, Np, q, Nq, poles, muls, numDistinctPoles, pfeCoeffs, polyCoeffs);
+
+
+  // ok - this seems to work
 
 
   int dummy = 0;

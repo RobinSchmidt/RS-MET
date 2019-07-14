@@ -303,13 +303,9 @@ template<class T>
 void rsPolynomial<T>::integrateWithPolynomialLimits(
   const T* p, int pN, const T* a, int aN, const T* b, int bN, T* q)
 {
-  int PN = pN+1;
-  int AN = aN*PN;
-  int BN = bN*PN;
-
-  T* P = new T[PN+1];
-  T* A = new T[AN+1];
-  T* B = new T[BN+1];
+  int PN = pN+1;  T* P = new T[PN+1];
+  int AN = aN*PN; T* A = new T[AN+1];
+  int BN = bN*PN; T* B = new T[BN+1];
 
   integral(p, P, pN);        // P(x) is the antiderivative of p(x)
   compose(a, aN, P, PN, A);  // A(x) = P(a(x))
@@ -472,7 +468,6 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T>
       r = r - fractions[i/itsBeforeFracStep]*dr; // fractional step to break limit cycle
   }
 
-  //rsAssert(false);  // error - too many iterations taken, algorithm did not converge
   rsError("Too many iterations taken, algorithm did not converge.");
   return 0.0;
 }

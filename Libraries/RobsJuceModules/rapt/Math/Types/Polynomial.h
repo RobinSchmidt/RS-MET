@@ -71,7 +71,6 @@ public:
 
   //T definiteIntegral(const T& lowerLimit, const T& upperLimit);
 
-
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
