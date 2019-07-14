@@ -236,6 +236,7 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // the operating point for the best match / least error - it should be a power of two
   // probably either 0.125 or 0.0625 - for other values, there seems to be a bias (signal always
   // too strong or too weak)
+  // in (1) appanedix 1, it says that dt -> 0 may lead to numerical instabilities
 
 
   int i;

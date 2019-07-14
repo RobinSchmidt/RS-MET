@@ -125,24 +125,24 @@ public:
   /** Applies beating-removal to all partials. */
   virtual void processModel(rsSinusoidalModel<T>& model) override;
 
-  /** applies the beating removal to a selection of partials */
+  /** Applies the beating removal to a selection of partials */
   virtual void processModel(rsSinusoidalModel<T>& model, const std::vector<int>& partialIndices);
 
   /** Applies beating-removal to the given partial. */
   virtual void removeBeating(rsSinusoidalPartial<T>& partial);
 
-
+  /** De-beats the amplitude envelope of the given partial. */
   virtual void removeAmplitudeBeating(rsSinusoidalPartial<T>& partial);
 
+  /** De-beats the phase trajectory of the givne partial. */
   virtual void removePhaseBeating(rsSinusoidalPartial<T>& partial);
-
 
   /** Smoothes the given phase-array... */
   static std::vector<T> smoothPhases(
     std::vector<T>& time, std::vector<T>& freqs, std::vector<T>& phases, 
     T cutoff);
   // maybe factor this out - it could be useful for other processors, too ...maybe have a class
-  // rsPhaseSmoother that lets the user select cutoff-freq, filter-type, etc.
+  // rsPhaseSmoother that lets the user select cutoff-freq, filter-type, order, numPasses, etc.
   // todo: make input vectors const (-> make GNUPlotter const-correct)
 
 

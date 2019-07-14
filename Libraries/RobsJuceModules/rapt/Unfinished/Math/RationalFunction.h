@@ -114,7 +114,7 @@ public:
     std::complex<T>* numerator, int numeratorDegree,
     std::complex<T>* denominator, int denominatorDegree,
     std::complex<T>* poles, int* multiplicities, int numDistinctPoles,
-    std::complex<T>* pfeCoeffs);
+    std::complex<T>* pfeCoeffs, std::complex<T>* polyCoeffs = nullptr);
   // allocates heap memory
   // ToDo:
   // -comment the format of the output - how does it deal with repeated poles? see unit tests

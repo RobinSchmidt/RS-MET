@@ -182,14 +182,6 @@ void rsBiDirectionalFilter::applyButterworthLowpass(TSig* x, TTim* t, TSig* y, i
   flt.setFrequency(fc);
   flt.setOrder(order);
 
-  // todo: maybe create the "dt" array here and pass it to rsApplyBiDirectionally instead of passing
-  // t itself ...the reason is that we want to scale dt such that it has an average value of 1 and
-  //  we need to sclae the filter's cutoff frequency by the same factor ...or: let the 
-  // rsNonUniformFilterIIR class maintain an average sample-rate member which multiplies the 
-  // incoming dt values ...but no - that's inelegant..hmm - i think, passing a dt array is the best 
-  // way anyway - the user may already have the dt values available and converting to t and back to 
-  // dt introduces accumualtion error
-
   //int P = rsCeilInt(numPasses * flt.getRingingTimeEstimate(rsDB2amp(-100.0)));
   // make such an estimation function for the non-uniform filter - it should probably return a 
   // value in seconds

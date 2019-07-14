@@ -46,7 +46,9 @@ public:
                             under constraint of monotonicity. similar to Papoulis but less steep 
                             at cutoff and steeper in stopband */
     GAUSSIAN,          /**< smallest ringingTime*bandWidth product, good time response (very little
-                            overshoot), step response rises faster than Bessel. but wait - do we 
+                            overshoot), isotropic in 2D
+                            
+                            step response rises faster than Bessel. but wait - do we 
                             normalize the cutoff the same way as in bessel? ..with respect to 
                             the asymptote? -> nope - it's not! it's not comparable  */
     NUM_APPROXIMATION_METHODS
