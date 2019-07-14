@@ -25,6 +25,8 @@ void rsRationalFunction<T>::partialFractionExpansion(
   std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
   std::complex<T> *pfeCoeffs, std::complex<T>* polyCoeffs)
 {
+
+
   // obtain polynomial ("FIR") part by polynomial division, see:
   // https://ccrma.stanford.edu/~jos/filters/FIR_Part_PFE.html
   T tol = 1.e-12; // ad hoc - use something based on numeric_limits::epsilon
@@ -40,7 +42,10 @@ void rsRationalFunction<T>::partialFractionExpansion(
   // todo: check if all poles are simple - if so, we may use a more efficient algorithm. in this 
   // case r[i] = P(p[i]) / Q'(p[i]) where r[i] is the i-th residue for the the i-th pole p[i]
   // hmm - here: https://en.wikipedia.org/wiki/Partial_fraction_decomposition#Residue_method
-  // it seems like the resiude method is also applicable for multiple roots?
+  // it seems like the resiude method is also applicable for multiple roots? if so, implement it
+  // and maybe let client code choose which algorithm it wants to use
+
+
   // https://ccrma.stanford.edu/~jos/filters/Partial_Fraction_Expansion.html
 
   // make denominator monic:
@@ -52,6 +57,7 @@ void rsRationalFunction<T>::partialFractionExpansion(
   // ..or well, actually, we potentially destroy the numerator array anyway due to the in-place
   // polynomial division above - i should probably write into the documentation that this function
   // may destroy the original content of the input arrays
+  // maybe this should be done before the polynomial division?
 
   // establish coefficient matrix:
   std::complex<T> **A; rsArray::allocateSquareArray2D(A, denDeg);

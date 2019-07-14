@@ -779,19 +779,19 @@ void nonUniformAllpole()
   double dtMax = 1+d;     // maximum ..
   double fc    = 0.01;    // cutoff freq
   //int order    = 8;
-  double x     = 1;       // 0: impulse response, 1: step response
+  double x     = 0;       // 0: impulse response, 1: step response
 
   std::vector<int> orders = { 1,2,3,4,5,6,7,8 };
 
 
   typedef rsNonUniformFilterIIR<double>::ApproximationMethod AM;
   rsNonUniformFilterIIR<double> flt;
-  flt.setApproximationMethod(AM::butterworth);
+  //flt.setApproximationMethod(AM::butterworth);
   //flt.setApproximationMethod(AM::bessel);
   //flt.setApproximationMethod(AM::gaussian);
   //flt.setApproximationMethod(AM::papoulis);
   //flt.setApproximationMethod(AM::halpern);
-  //flt.setApproximationMethod(AM::elliptic); // triggers assert bcs pfe a can't deal with numDeg >= denDeg
+  flt.setApproximationMethod(AM::elliptic);  // doesn't work yet - step-resp is weird
   flt.setFrequency(fc);
   //flt.setOrder(order);
   // flt.setType(FT::lowpass);

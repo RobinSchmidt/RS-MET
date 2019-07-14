@@ -266,7 +266,9 @@ public:
   instant for x[n-1]. dt is in seconds, i.e. 1/sampleRate for uniformly sampled signals. */
   T getSample(T x, T dt)
   {
-    std::complex<T> y(T(0), T(0));      // accumulator for parallel (complex) filter outputs
+    //std::complex<T> y(T(0), T(0));  // accumulator for parallel (complex) filter outputs
+
+    std::complex<T> y = fir[0]*x;  // accumulator for parallel (complex) filter outputs
 
     dt *= dtScaler;  // new, experimental
 
@@ -304,7 +306,7 @@ protected:
   /** \name Data */
 
   // array of complex one-pole filters:
-  static const int maxOrder = 20;
+  static const int maxOrder = 10;
   rsNonUniformComplexOnePole<T> onePoles[maxOrder]; 
   // maybe get rid - has redundancy with r,p - but we then need a y-array - but maybe not - we
   // to use the piecewise resampling method per stage and implement it within the stage
@@ -329,5 +331,6 @@ protected:
   //std::complex<T> num[1] = { 1 };  // numerator of transfer function
   std::complex<T> num[maxOrder+1]; // numerator of transfer function
   std::complex<T> den[maxOrder+1]; // denominator of transfer function
+  std::complex<T> fir[maxOrder+1]; // FIR part (polynomial)
   int muls[maxOrder];              // pole multiplicities (all 1 at the moment)
 };

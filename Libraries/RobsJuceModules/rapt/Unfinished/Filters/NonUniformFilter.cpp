@@ -268,11 +268,10 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // maintain arrays for the sum form that can be pulled out by client code
 
   
-
   // do the partial fraction expansion:
-  rsRationalFunction<T>::partialFractionExpansion(num, nz, den, order, p, muls, order, r);
-  // does not yet work when nz >= oder (numerator's degree >= denominator's) because the partial
-  // fraction expansion will then contain a polynomial ("FIR") part and that's not yet implemented
+  fir[0] = 0; // that's the only coeff that is actually used during processing
+  rsRationalFunction<T>::partialFractionExpansion(num, nz, den, order, p, muls, order, r, fir);
+
 
   // transform analog poles to digital domain by means of impulse-invariant transform
   // see: https://ccrma.stanford.edu/~jos/pasp/Impulse_Invariant_Method.html

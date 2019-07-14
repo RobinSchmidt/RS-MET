@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
   //nonUniformOnePole1();
   //nonUniformOnePole2();
   //nonUniformComplexOnePole();
-  //nonUniformAllpole();
+  nonUniformAllpole();
   //nonUniformBiquad();
 //  nonUniformBiDirectional();
   //smoothingFilterOrders();

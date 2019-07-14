@@ -1661,26 +1661,15 @@ void partialFractionExpansion3()
   Complex poles[numDistinctPoles]   = {-5,-3,+1,+5};
   int muls[numDistinctPoles]        = { 1, 1, 2, 1};
 
-
-  // try to recover b by polynomial division:
-  //Complex quotient[Np+1], remainder[Np+1];
-  //rsPolynomial<Complex>::divide(p, Np, q, Nq, quotient, remainder);
-  // ok - this works: quotient == a and remainder == b - but we should try to use it in place, too
-  // the remainder becomes the new numerator and the quotient is polynomial part
-  //rsPolynomial<Complex>::divide(p, Np, q, Nq, quotient, p);
-  // ok - works in place
-
   // compute the results:
   Complex pfeCoeffs[numPoles];
-  Complex polyCoeffs[Np+1];     // can we get away with allocating only Na+1?
+  Complex polyCoeffs[Np+1];     // can we get away with allocating only Na+1? ...nope!
   RAPT::rsRationalFunction<double>::partialFractionExpansion(
     p, Np, q, Nq, poles, muls, numDistinctPoles, pfeCoeffs, polyCoeffs);
 
-
-  // ok - this seems to work
-
-
-  int dummy = 0;
+  // ok - this seems to work - polyCoeffs come out as 7,-2,3 and pfeCoeffs as 3,-4,2,5,-3
+  // todo: turn into unit test
+  int dummy = 0;  
 }
 
 /** For two complex numbers r1, r2 which are supposed to be roots of a polynomial, this function
