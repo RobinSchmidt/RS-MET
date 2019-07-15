@@ -80,12 +80,18 @@ std::complex<T> rsPolynomial<T>::evaluateFromRoots(const std::complex<T>& s,
   const std::complex<T>* r, int N)
 {
   std::complex<T> result = 1.0;
-  for(int i = 0; i < N; i++)
-  {
+  for(int i = 0; i < N; i++) {
     if(!isInfinite(r[i]))
       result *= (s - r[i]);
   }
   return result;
+}
+
+template<class T>
+std::complex<T> rsPolynomial<T>::evaluateFromRootsOneLeftOut(
+  const std::complex<T>& x, const std::complex<T>* r, int nr, int i)
+{
+  return evaluateFromRoots(x, r, i) * evaluateFromRoots(x, &r[i+1], nr-i-1);
 }
 
 template <class T>

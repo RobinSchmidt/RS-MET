@@ -163,9 +163,17 @@ public:
   a[degree] which is the multiplier for a^degree. */
   static T evaluate(const T& x, const T *a, int degree);
 
-  /** Evaluates the polynomial defined by the array of roots "r" at argument "x". */
+  /** Evaluates the polynomial defined by the array of roots "r" at argument "x". If infinite roots
+  are encountered, they are skipped - this is consistent with what we need when evaluating filter
+  transfer functions that have zeros at infinity. */
   static std::complex<T> evaluateFromRoots(const std::complex<T>& x,
     const std::complex<T>* roots, int numRoots);
+
+  /** Like evaluateFromRoots but leaves one root out in the evaluation. This is equivalent to 
+  evaluating the polynomial and divide the result by the linear factor corresponding to the left
+  out root (at the given x), i.e. evaluating g(x) = f(x)/(x-r_i) where r_i is the i-th root. */
+  static std::complex<T> evaluateFromRootsOneLeftOut(const std::complex<T>& x,
+    const std::complex<T>* roots, int numRoots, int leaveOutIndex);
 
   /** Evaluates the polynomial defined by the array of coefficients 'a' and its first derivative at
   argument 'x'. The value of the polynomial will be stored in y and the value of the derivative

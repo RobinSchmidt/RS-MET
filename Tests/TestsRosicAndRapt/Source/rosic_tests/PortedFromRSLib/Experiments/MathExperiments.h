@@ -27,6 +27,8 @@ void parametricBell();
 void partialFractionExpansion();
 void partialFractionExpansion2();
 void partialFractionExpansion3();
+//void partialFractionExpansion4();
+
 void partialFractionExpansionQuadratic();
 void dampedSineEnergy();
 void sineIntegral();

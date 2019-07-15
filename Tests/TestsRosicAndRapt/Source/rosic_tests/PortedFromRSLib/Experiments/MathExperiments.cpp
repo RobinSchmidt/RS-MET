@@ -1575,10 +1575,14 @@ void partialFractionExpansion()
 
   // solve the linear system:
   double x[3];
-  RAPT::rsLinearAlgebra::rsSolveLinearSystem3x3(A, x, p); // x == {2,-3,5}, so: f(x) = 2/(x+1) - 3/(x-2) + 5/(x-5)
+  RAPT::rsLinearAlgebra::rsSolveLinearSystem3x3(A, x, p); 
+  // x == {2,-3,5}, so: f(x) = 2/(x+1) - 3/(x-2) + 5/(x-5)
 
   // how would we approach multiple zeros? and what, if the numerator order is lower (i guess, we 
   // just fill up the right-hand side vector of the linear system with zeros)
+
+
+
 
   dummy = 0;
 }
@@ -1609,45 +1613,8 @@ void partialFractionExpansion2()
   // todo: turn into unit test
   int dummy = 0;  
 
-
-  // todo: use RAPT::rsRationalFunction<double>::partialFractionExpansion
-
   // todo: check if all poles are simple - if so, we may use a more efficient algorithm. in this 
   // case r[i] = P(p[i]) / Q'(p[i]) where r[i] is the i-th residue for the the i-th pole p[i]
-
-
-
-  /*
-  // normalize, to make denominator monic (todo: use temporary arrays later):
-  RAPT::rsArray::scale(numerator,   numeratorOrder+1,   1.0/denominator[denominatorOrder]);
-  RAPT::rsArray::scale(denominator, denominatorOrder+1, 1.0/denominator[denominatorOrder]);
-
-  // establish coefficient matrix:
-  double **A; 
-  RAPT::rsArray::allocateSquareArray2D(A, denominatorOrder);
-  double remainder;               // required by function call, will always be zero
-  double tmp[denominatorOrder+1]; // denominator divided by a scalar factor
-  for(int i = 0, k = 0; i < numRoots; i++)
-  {
-    RAPT::rsArray::copyBuffer(denominator, tmp, denominatorOrder+1);
-    for(int m = 0; m < multiplicities[i]; m++)
-    {
-      RAPT::rsPolynomial<double>::divideByMonomialInPlace(tmp, denominatorOrder-m, roots[i], &remainder);
-      for(int j = 0; j < denominatorOrder; j++)
-        A[j][k] = tmp[j];
-      k++;
-    }
-  }
-
-  // solve the linear system using an appropriately zero-padded numerator:
-  RAPT::rsArray::fillWithZeros(tmp, denominatorOrder);
-  RAPT::rsArray::copyBuffer(numerator, tmp, numeratorOrder+1);
-  double x[denominatorOrder];   // the pfe coeffs
-  RAPT::rsLinearAlgebra::rsSolveLinearSystem(A, x, tmp, denominatorOrder);
-
-  // clean up matrix:
-  RAPT::rsArray::deAllocateSquareArray2D(A, denominatorOrder);
-  */
 }
 
 void partialFractionExpansion3()
@@ -1689,6 +1656,16 @@ void partialFractionExpansion3()
   // todo: turn into unit test
   int dummy = 0;  
 }
+/*
+void partialFractionExpansion4()
+{
+  // We try different algorithms for a partial fraction expansion of a strictly proper rational
+  // function with all poles distinct
+
+}
+*/
+
+
 
 /** For two complex numbers r1, r2 which are supposed to be roots of a polynomial, this function
 decides, if these should be considered as distinct roots or a double root. When computing roots of 

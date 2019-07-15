@@ -211,9 +211,9 @@ int main(int argc, char* argv[])
   ////void stretchPolynomial();  // commented in header
   //monotonicPolynomials();
   //parametricBell();
-  //partialFractionExpansion();
-  partialFractionExpansion2();
-  partialFractionExpansion3();
+  partialFractionExpansion();
+  //partialFractionExpansion2();
+  //partialFractionExpansion3();
   //partialFractionExpansionQuadratic();
   //dampedSineEnergy();
   //sineIntegral();
