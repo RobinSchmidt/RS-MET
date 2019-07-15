@@ -212,7 +212,7 @@ int main(int argc, char* argv[])
   //monotonicPolynomials();
   //parametricBell();
   //partialFractionExpansion();
-  //partialFractionExpansion2();
+  partialFractionExpansion2();
   partialFractionExpansion3();
   //partialFractionExpansionQuadratic();
   //dampedSineEnergy();

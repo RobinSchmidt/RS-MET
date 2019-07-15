@@ -235,8 +235,7 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // the operating point for the best match / least error - it should be a power of two
   // probably either 0.125 or 0.0625 - for other values, there seems to be a bias (signal always
   // too strong or too weak)
-  // in (1) appanedix 1, it says that dt -> 0 may lead to numerical instabilities
-
+  // in (1) appendix 1, it says that dt -> 0 may lead to numerical instabilities
 
   int i;
   protoDesigner.getPolesAndZeros(p, z); // get non-redundant poles and zeros...
@@ -246,11 +245,6 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
     z[2*i]   = z[i];
     z[2*i+1] = conj(z[i]); 
   }
-  // filters with finite zeros do not work yet: when the number of finite zeros
-  // is the same as the number of poles, the partial fraction expansion should produce a polynomial
-  // part ...i think, a 0th order polynomial, i.e. just an added constant? may this be implemented
-  // by just feeding through some of the filter's input? that would seem plausible...it's no yet
-  // implemented, however
 
   // do s-domain lowpass-to-lowpass transform to set up cutoff frequency:
   T k  = T(1) / protoDesigner.getMagnitudeAt(T(0));
@@ -266,11 +260,10 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // the sum form before finding the poles and zeros - it would require the prototype-designer to 
   // maintain arrays for the sum form that can be pulled out by client code
 
-  
   // do the partial fraction expansion:
-  fir[0] = 0; // that's the only coeff that is actually used during processing
   rsRationalFunction<T>::partialFractionExpansion(num, nz, den, order, p, muls, order, r, fir);
-  fir[0] *= k;  // is this correct? looks like it fixes the DC offset in step-resp
+  rsArray::scale(fir, order-nz+1, k);  // FIR part needs to be scaled by k, too
+                                       // ...check, if order-nz+1 is correct
 
 
   // transform analog poles to digital domain by means of impulse-invariant transform
@@ -298,12 +291,13 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // plug in s = 0, we have a sum -r_i/p_i ...but s_i = r_i / (1-p_i) ...hmmm
 
 
-  // test - to normalize elliptic filters - maybe make this optional:
+  // test - to normalize elliptic filters - maybe make this optional - maybe have an option that 
+  // switches between normalization at DC and normalization of the maximum magnitude (for even 
+  // order elliptic and chebychev-2 filters, there's a dip at DC)
   if(rsIsEven(order)) {
     T rp = protoDesigner.getPassbandRipple();
     outScaler /= rsDbToAmp(rp);
   }
-
 }
 
 /*

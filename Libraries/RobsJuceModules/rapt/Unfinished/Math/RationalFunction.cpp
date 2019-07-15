@@ -42,9 +42,13 @@ void rsRationalFunction<T>::partialFractionExpansion(
   // https://ccrma.stanford.edu/~jos/filters/FIR_Part_PFE.html
   T tol = 1.e-12; // ad hoc - use something based on numeric_limits::epsilon
   if(numDeg >= denDeg) {
+    rsAssert(polyCoeffs != nullptr, "function has a polynomial part"); 
     rsPolynomial<std::complex<T>>::divide(num, numDeg, den, denDeg, polyCoeffs, num);
     numDeg = actualDegree(num, numDeg, tol); // new degree of numerator
   }
+  else if(polyCoeffs != nullptr)
+    rsArray::fillWithZeros(polyCoeffs, denDeg+1);  // or should it be numDeg+1, does it matter?
+
 
   // sanity check for inputs:
   rsAssert(numDeg < denDeg);

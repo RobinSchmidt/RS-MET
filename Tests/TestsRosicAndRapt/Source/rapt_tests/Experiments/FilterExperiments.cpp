@@ -769,7 +769,7 @@ void nonUniformComplexOnePole()
 //   butterworth, bessel, gaussian, papoulis, halpern, cheby-1) to avoid this problem
 //   -> we may also do a proper impulse-invariant transform with such filters
 
-void nonUniformAllpole()
+void nonUniformAllpole()  // rename - it now also includes filters with zeros (elliptic)
 {
   // Test for a high-order non-uniform allpole filter (Butterworth, Bessel, etc.)
 

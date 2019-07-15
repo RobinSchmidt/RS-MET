@@ -266,21 +266,14 @@ public:
   instant for x[n-1]. dt is in seconds, i.e. 1/sampleRate for uniformly sampled signals. */
   T getSample(T x, T dt)
   {
-    //std::complex<T> y(T(0), T(0));  // accumulator for parallel (complex) filter outputs
-
+    dt *= dtScaler;
     std::complex<T> y = fir[0]*x;  // accumulator for parallel (complex) filter outputs
-
-    dt *= dtScaler;  // new, experimental
-
     for(int i = 0; i < order; i++)
       y += onePoles[i].getSamplePiecewiseResampled(x, dt); // this seems to work best
       //y += onePoles[i].getSampleNonNormalized(x, dt);
       //y += onePoles[i].getSample(x, dt);
       //y += onePoles[i].getSampleSpatiallyVariantScaled(x, dt); 
          // nope! this doesn't work! normalizing should not be done per stage!
-
-
-
     return outScaler * y.real();
   }
   // could we also use getSampleReal and use a real accumulator? i think so - try it!
