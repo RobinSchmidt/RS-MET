@@ -1545,7 +1545,12 @@ void parametricBell()
 
 void partialFractionExpansion()
 {
-  // see Höhere Mathematik ...(Bärwolff), page 147 for the example.
+  // We recover the partial fraction expansion of the strictly proper rational function:
+  // f(x) = 2/(x+1) - 3/(x-2) + 5/(x-5) 
+  //      = (4x^2 - 7x + 25) / ((x+1)*(x-2)*(x-5))
+  //      = (4x^2 - 7x + 25) / (x^3 - 6x^2 + 3x + 10)
+  // via various algorithms. Example taken from "Höhere Mathematik für Naturwissenschaftler und
+  // Ingenieure", 2.Auflage (Bärwolff), page 147
 
   static const int N = 2;      // numerator order
   static const int M = 3;      // denominator order
@@ -1553,35 +1558,68 @@ void partialFractionExpansion()
   double q[M+1] = {10,3,-6,1}; // q(x) = x^3 - 6x^2 + 3x + 10
   double r[M]   = {-1,2,5};    // roots of q(x)
 
+
+
+  typedef RAPT::rsPolynomial<double> Poly;
+  typedef std::complex<double> Complex;
+  typedef RAPT::rsArray Array;
+
+
   // probably, we have to divide the numerator coefficients by the leading coefficient of the 
   // denominator - in our example, it's unity, so it doesn't matter:
-  RAPT::rsArray::scale(p, N+1, 1.0/q[M]);
+  Array::scale(p, N+1, 1.0/q[M]);
 
-  // establish coefficient matrix:
+
+  // First, we use the approach via establishing and solving the linear system of equations that
+  // results from equating coefficients:
   double A[M][M];
   double tmp[M+1];
   double dummy;
-  for(int i = 0; i < M; i++)
-  {
-    RAPT::rsArray::copyBuffer(q, tmp, M+1);
-    RAPT::rsPolynomial<double>::divideByMonomialInPlace(tmp, M, r[i], &dummy);
+  int i, j;
+  for(i = 0; i < M; i++) { // establish coefficient matrix
+    Array::copyBuffer(q, tmp, M+1);
+    Poly::divideByMonomialInPlace(tmp, M, r[i], &dummy);
       // todo: use a function that does not do it "in-place" - avoids copying and is probably 
       // simpler. perhaps, here, we have to do that division in a loop from 1 up to the 
       // multiplicity of the root r[i] - but where would the result go in the coefficient matrix?
-
-    for(int j = 0; j < M; j++)
+    for(j = 0; j < M; j++)
       A[j][i] = tmp[j];
   }
-
-  // solve the linear system:
   double x[3];
-  RAPT::rsLinearAlgebra::rsSolveLinearSystem3x3(A, x, p); 
+  RAPT::rsLinearAlgebra::rsSolveLinearSystem3x3(A, x, p);   // solve the linear system
   // x == {2,-3,5}, so: f(x) = 2/(x+1) - 3/(x-2) + 5/(x-5)
+  // ok - this works - but it's inefficient for larger systems
 
-  // how would we approach multiple zeros? and what, if the numerator order is lower (i guess, we 
-  // just fill up the right-hand side vector of the linear system with zeros)
+  // now try a different approach - evaluating the numerator p(x) at the pole r_i and dividing by 
+  // polynomial resulting from dividing out r_i from the denominator also gives the residuum a_i
+  // corresponding to r_i, see page 148 (but i think, this only works when all poles are distinct, 
+  // which is the case here:
+  Complex rc[M];  // roots as complex numbers (as required by the evaluation routine)
+  Complex xc[3];
+  Array::convertBuffer(r, rc, M);
+  Complex num, den;
+  for(i = 0; i < M; i++) {
+    num = Poly::evaluate(r[i], p, N);
+    den = Poly::evaluateFromRootsOneLeftOut(Complex(r[i]), rc, M, i);
+    double y, yd; // ...verify, if q'(r_i) is the same as den...
+    Poly::evaluateWithDerivative(r[i], q, M, &y, &yd); // ...yes - it is!
+    xc[i] = num/den;
+  }
+  // xc == {2,-3,5} - this works, too and is probably more desirable for production code - but it 
+  // requires all poles to be distinct - can the approach be modified to also work for multiple 
+  // poles?
+  // I think, this is this method:
+  // https://en.wikipedia.org/wiki/Heaviside_cover-up_method
+  // here:
+  // http://math.mit.edu/~jorloff/suppnotes/suppnotes03/h.pdf
+  // it says, this method can only be used to find the coefficient for the highest power of a 
+  // bunch of terms like a_i1/(x-r_i) + a_i2/(x-r_i)^2 + a_i3/(x-r_i)^3 + ..., so this means, we 
+  // could find only a_i3 with this method if terms up to .../(x-r_i)^3 are present?
 
-
+  // ...and if this is not possible, then what about the approach taken here:
+  // https://en.wikipedia.org/wiki/Partial_fraction_decomposition#Residue_method
+  // is this the same? that would mean that the derivative of q at the pole r_i is the same as q 
+  // with the linear factor (x-r_i) divided out ...right? verify this....it seems to be
 
 
   dummy = 0;
