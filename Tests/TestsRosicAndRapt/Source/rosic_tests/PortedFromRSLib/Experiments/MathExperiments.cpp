@@ -1585,25 +1585,42 @@ void partialFractionExpansion()
 
 void partialFractionExpansion2()
 {
+  // We try to recover the partial fraction expansion of the strictly proper rational function:
   // f(x) = 3/(x+5) - 4/(x+3) + 2/(x-1) + 5/(x-1)^2 - 3/(x-5)
   //      = P(x)/Q(x) = numerator(x) / denominator(x)
   //      = (-2*x^4-13*x^3+25*x^2-275*x-215)/(x^5+x^4-30*x^3-22*x^2+125*x-75)
 
-  static const int numeratorOrder   = 4;
-  static const int denominatorOrder = 5;
-  static const int numRoots         = 4;  // only 4, because of them is a double-root
-  double numerator[numeratorOrder+1]     = {-215,-275,25,-13,-2};
-  double denominator[denominatorOrder+1] = {-75,125,-22,-30,1,1};
-  double roots[numRoots]                 = {-5,-3,+1,+5};
-  int    multiplicities[numRoots]        = { 1, 1, 2, 1};
+  typedef std::complex<double> Complex;
 
-  // normalize, to make denominator monic (todo: use temporary arrays later):
-  RAPT::rsArray::scale(numerator,   numeratorOrder+1,   1.0/denominator[denominatorOrder]);
-  RAPT::rsArray::scale(denominator, denominatorOrder+1, 1.0/denominator[denominatorOrder]);
+  static const int Np = 4;  // numerator order
+  static const int Nq = 5;  // denominator order
+  static const int numPoles         = 5;
+  static const int numDistinctPoles = 4;           // only 4, because of them is a double-root
+  Complex p[Np+1] = {-215,-275,25,-13,-2};         // numerator
+  Complex q[Nq+1] = {-75,125,-22,-30,1,1};         // denominator
+  Complex poles[numDistinctPoles] = {-5,-3,+1,+5};
+  int muls[numDistinctPoles] = { 1, 1, 2, 1};      // pole multiplicities
+
+  // compute the results:
+  Complex pfeCoeffs[numPoles];
+  RAPT::rsRationalFunction<double>::partialFractionExpansion(
+    p, Np, q, Nq, poles, muls, numDistinctPoles, pfeCoeffs);
+
+  // todo: turn into unit test
+  int dummy = 0;  
+
+
+  // todo: use RAPT::rsRationalFunction<double>::partialFractionExpansion
 
   // todo: check if all poles are simple - if so, we may use a more efficient algorithm. in this 
   // case r[i] = P(p[i]) / Q'(p[i]) where r[i] is the i-th residue for the the i-th pole p[i]
 
+
+
+  /*
+  // normalize, to make denominator monic (todo: use temporary arrays later):
+  RAPT::rsArray::scale(numerator,   numeratorOrder+1,   1.0/denominator[denominatorOrder]);
+  RAPT::rsArray::scale(denominator, denominatorOrder+1, 1.0/denominator[denominatorOrder]);
 
   // establish coefficient matrix:
   double **A; 
@@ -1625,17 +1642,18 @@ void partialFractionExpansion2()
   // solve the linear system using an appropriately zero-padded numerator:
   RAPT::rsArray::fillWithZeros(tmp, denominatorOrder);
   RAPT::rsArray::copyBuffer(numerator, tmp, numeratorOrder+1);
-  double x[denominatorOrder];
+  double x[denominatorOrder];   // the pfe coeffs
   RAPT::rsLinearAlgebra::rsSolveLinearSystem(A, x, tmp, denominatorOrder);
 
   // clean up matrix:
   RAPT::rsArray::deAllocateSquareArray2D(A, denominatorOrder);
+  */
 }
 
 void partialFractionExpansion3()
 {
   // We test the RAPT::rsRationalFunction::partialFractionExpansion with a function that contains
-  // a polynomial part and partial fractions with different multiplicities
+  // a polynomial part and partial fractions with different multiplicities:
   // f(x) = 3*x^2-2*x+7 + 3/(x+5) - 4/(x+3) + 2/(x-1) + 5/(x-1)^2 - 3/(x-5)
   //      = 3*x^2-2*x+7 + (-2*x^4-13*x^3+25*x^2-275*x-215)/(x^5+x^4-30*x^3-22*x^2+125*x-75)
   //      = a(x) + b(x)/q(x) = polynomial(x) + numerator(x) / denominator(x)

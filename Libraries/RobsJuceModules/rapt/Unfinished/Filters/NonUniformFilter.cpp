@@ -250,7 +250,8 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   T k  = T(1) / protoDesigner.getMagnitudeAt(T(0));
   T wc = 2*PI*freqScaler*freq;  // can be streamlined - always equals operatingPoint
   rsPoleZeroMapper<T>::sLowpassToLowpass(z, p, &k, z, p, &k, order, wc);
-  // ...produces inf - j*nan for the zeros -> fix this!
+  // ...produces inf - j*nan for infinite prototype zeros -> fix this! (it doesn't have any effect
+  // in this context here, but still - they should just map to inf again)
 
   // create the sum-form of numerator and denominator:
   int nz = protoDesigner.getNumFiniteZeros();
@@ -262,8 +263,8 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
 
   // do the partial fraction expansion:
   rsRationalFunction<T>::partialFractionExpansion(num, nz, den, order, p, muls, order, r, fir);
-  rsArray::scale(fir, order-nz+1, k);  // FIR part needs to be scaled by k, too
-                                       // ...check, if order-nz+1 is correct
+  rsArray::scale(fir, rsMax(nz-order+1, 0), k);  // FIR part needs to be scaled by k, too
+                                                 // ...check, if nz-order+1 is correct
 
 
   // transform analog poles to digital domain by means of impulse-invariant transform
