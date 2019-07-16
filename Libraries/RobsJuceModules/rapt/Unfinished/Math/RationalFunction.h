@@ -123,6 +123,10 @@ public:
   // -the function may destroy the original numerator array ...and the denominator will be made 
   //  monic, if it isn't already
 
+  static void rsRationalFunction<T>::partialFractionExpansionDistinctPoles(
+    std::complex<T> *num, int numDeg, std::complex<T> *den, int denDeg,
+    std::complex<T> *poles, std::complex<T> *pfeCoeffs);
+
 
 
 protected:

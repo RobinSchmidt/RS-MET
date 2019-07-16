@@ -1620,6 +1620,42 @@ void partialFractionExpansion()
   // https://en.wikipedia.org/wiki/Partial_fraction_decomposition#Residue_method
   // is this the same? that would mean that the derivative of q at the pole r_i is the same as q 
   // with the linear factor (x-r_i) divided out ...right? verify this....it seems to be
+  // but it seems, the residue method is useless for n-th poles since it includes taking 
+  // the n-th derivative of a rational function - and taking derivatives of rational functions 
+  // makes their order blow up exponentially (due to the g^2 term in the quotient rule) - each 
+  // derivative doubles the order of the denominator
+
+
+  // this here is also a good summary over all the relevant methods:
+  // https://stanford.edu/~boyd/ee102/rational.pdf
+  // which is part of this course:
+  // https://stanford.edu/~boyd/ee102/
+
+  // trying to find a way to figure out coeffs for multiple poles via the example
+  // f(x) = 2/(x-1) + 3/(x-1)^2 + 4/(x-3)  with double-pole at x=1 and simple-pole at x=3
+  // f.simplify_rational()
+  // (6*x^2 - 13*x + 1)/(x^3 - 5*x^2 + 7*x - 3)
+
+  // to recover the resiude 2, we need to consider:
+  // f(x) = (6*x^2-13*x+1)/((x-1)*(x-3)) - 3/(x-1)
+  // plot(f, 0, 2, gridlines=True)
+  // it indeed goes through 2 at x=1, even though, it's actually not really defined there due to
+  // the singularities - but apparently, they cancel each other...somehow subtractively inf-inf or
+  // something, see here:
+  // https://math.oregonstate.edu/home/programs/undergrad/CalculusQuestStudyGuides/SandS/lHopital/inf_minus_inf.html
+  // -> yep - that works, returns the correct result and seems to lead to a feasible algorithm
+  // -> todo: work out the algorithm in full generality
+
+
+  // f(x) = 2/(x-1) + 3/(x-1)^2 + 1/(x-1)^3 + 1/(x-2) with triple-pole at x=1 and simple-root at x=2
+  // f.simplify_rational()
+  // (3*x^3 - 8*x^2 + 5*x - 1)/(x^4 - 5*x^3 + 9*x^2 - 7*x + 2)
+
+  // papers on algorithms for partial fraction decomposition:
+  // http://www.eecs.harvard.edu/~htk/publication/1977-siam-journal-on-computing-kung-tong.pdf
+  // http://www-users.math.umn.edu/~am/Math5583-CompAnal/PartialFractions.pdf
+  // https://arxiv.org/pdf/math/0408189.pdf
+  // http://people.math.sfu.ca/~kya17/teaching/math343/3-343.pdf
 
 
   dummy = 0;

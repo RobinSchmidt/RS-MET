@@ -19,6 +19,16 @@ int actualDegree(std::complex<T>* p, int maxDegree, T tol)
 }
 // maybe move to rsPolynomial
 
+
+template<class T>
+void rsRationalFunction<T>::partialFractionExpansionDistinctPoles(
+  std::complex<T>* num, int numDeg, std::complex<T>* den, int denDeg,
+  std::complex<T>* poles, std::complex<T>* pfeCoeffs)
+{
+
+}
+
+
 template<class T>
 void rsRationalFunction<T>::partialFractionExpansion(
   std::complex<T> *num, int numDeg, std::complex<T> *den, int denDeg,
@@ -54,12 +64,26 @@ void rsRationalFunction<T>::partialFractionExpansion(
   rsAssert(numDeg < denDeg);
   rsAssert(rsArray::sum(multiplicities, numDistinctPoles) == denDeg);
 
+
+
   // todo: check if all poles are simple - if so, we may use a more efficient algorithm. in this 
   // case r[i] = P(p[i]) / Q'(p[i]) where r[i] is the i-th residue for the the i-th pole p[i]
   // hmm - here: https://en.wikipedia.org/wiki/Partial_fraction_decomposition#Residue_method
   // it seems like the resiude method is also applicable for multiple roots? if so, implement it
   // and maybe let client code choose which algorithm it wants to use
 
+
+  // if all poles are distinct, we can use a simpler (more efficient and hopefully also more
+  // numerically precise) algorithm:
+  if(denDeg == numDistinctPoles){
+    partialFractionExpansionDistinctPoles(num, numDeg, den, denDeg, poles, pfeCoeffs);
+    //return;  // ...uncomment this when function is actually implemented...
+  }
+
+
+  // maybe factor out the stuff below into a function partialFractionExpansionMultiplePoles and 
+  // call it in an else-branch - the we can have different implementation of that function - using
+  // a linear system, the residue method or the extended "cover up" method
 
   // https://ccrma.stanford.edu/~jos/filters/Partial_Fraction_Expansion.html
 
@@ -99,5 +123,9 @@ void rsRationalFunction<T>::partialFractionExpansion(
 maybe implement a conversion to a Taylor series:
 https://en.wikipedia.org/wiki/Rational_function#Taylor_series
 that may be useful to approximate an IIR filter by an FIR filter or vice versa
+
+for integrating, see here: ftp://ftp.cs.wisc.edu/pub/techreports/1970/TR91.pdf
+page 9 in particluar - we could let the function return another rational function for the rational 
+part and the alpha_i, b_i coeffs for the transcendental part
 
 */
