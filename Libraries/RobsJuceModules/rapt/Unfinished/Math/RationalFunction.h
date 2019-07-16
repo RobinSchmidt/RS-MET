@@ -170,13 +170,10 @@ public:
   // convenience functions to work on std::vector (not recommended for production code due to 
   // extra memory allocations - mostly for making tests and experiments more convenient):
 
-  //static std::vector<std::complex<T>> partialFractions();
-
   static std::vector<std::complex<T>> partialFractions(
     const std::vector<std::complex<T>>& numerator,
     const std::vector<std::complex<T>>& denominator,
     const std::vector<std::complex<T>>& poles);
-  // maybe move to rs_testing 
 
   static std::vector<std::complex<T>> partialFractions(
     const std::vector<std::complex<T>>& numerator,

@@ -295,10 +295,16 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   // test - to normalize elliptic filters - maybe make this optional - maybe have an option that 
   // switches between normalization at DC and normalization of the maximum magnitude (for even 
   // order elliptic and chebychev-2 filters, there's a dip at DC)
+  /*
   if(rsIsEven(order)) {
     T rp = protoDesigner.getPassbandRipple();
     outScaler /= rsDbToAmp(rp);
   }
+  */
+  // when doing this, the output in nonUniformBiDirectional has only half of the amplitude it 
+  // should have when using the elliptic filter - i really should make the normalization optional
+  // have a function setNormalizeDcDip or setCompensateDcDip or setNormalizeMaxGain - if false,
+  // we'll normalize at DC
 }
 
 /*

@@ -773,8 +773,8 @@ void nonUniformAllpole()  // rename - it now also includes filters with zeros (e
 {
   // Test for a high-order non-uniform allpole filter (Butterworth, Bessel, etc.)
 
-  int N = 1000;            // number of samples
-  double d     = 0.8;     // amount of randomness in the sample spacing
+  int N = 1000;           // number of samples
+  double d     = 0.9;     // amount of randomness in the sample spacing
   double dtMin = 1-d;     // minimum time-difference between non-uniform samples
   double dtMax = 1+d;     // maximum ..
   double fc    = 0.01;    // cutoff freq
@@ -893,13 +893,13 @@ void nonUniformBiDirectional()
 
   // user parameters:
   int N = 1000;       // number of samples
-  double d  = 0.8;    // amount of randomness in the sample spacing
+  double d  = 0.9;    // amount of randomness in the sample spacing
   double fs = 500;    // average sample rate
   double f1 =   5;    // first frequency in Hz
   double f2 =  10;    // second frequency in Hz
   double f3 =  20;    // third frequency in Hz
   double fc =   7;    // filter cutoff/center freq
-  int order     = 4;  // filter order 
+  int order     = 20; // filter order 
   int numPasses = 1;  // number of filter passes
 
   // test: normalize the sample-rate to 1 and scale all frequencies accordingly:
@@ -910,8 +910,8 @@ void nonUniformBiDirectional()
 
   // create input signals:
   typedef std::vector<double> Vec;
-  double dtMin = (1-d)/fs;          // minimum time-difference between non-uniform samples
-  double dtMax = (1+d)/fs;          // maximum ..
+  double dtMin = (1-d)/fs;           // minimum time-difference between non-uniform samples
+  double dtMax = (1+d)/fs;           // maximum ..
   Vec xn1(N), xn2(N), xn3(N), xn(N); // the 3 non-uniform sines and their sum
   Vec xu1(N), xu2(N), xu3(N), xu(N); // same signals uniformly sampled
   Vec tn = randomSampleInstants(N, dtMin, dtMax, 0);
@@ -948,20 +948,18 @@ void nonUniformBiDirectional()
 
   plt.plot();
 
+  //rsPlotVector(rsDifference(tn)); // just to inspect to dt values
+
   // Observations:
-  // -when the sample-rate is a somewhat high value like fs=500, the result is garbage - there are
-  //  apparently numerical issues
-  // -they don't get better when setting d=0 (i.e. chossing equidistant samples)
-  // -if the sample-rate is normalized to unity (and all frequencies are scaled accordingly), 
-  //  everything works fine
-  // -however, at the right boundary the non-uniform and uniform results deviate a lot - but this 
-  //  effect goes aways when choosing d=0 (when the padding in the BDF is lowered to P=100, 
-  //  however, a little deviation remains)
-  //  -maybe this related to the end-time being unequal? try to scale all the times such that the
-  //   end time is exactly N-1 also for the non-uniform signal -> yes - that fixes it
   // -filter order up to 11 works, from 12 onward, we get a "matrix numerically close to singular"
   //  error - can probably be avoided by implementing the special partial fraction expansion 
   //  algorithm that works when all poles are distinct - perhaps that's numerically better anyway
+  //  -> done -> try again now with higher orders
+  // -todo: implement highpass, bandpass and bandreject and use them to isolate the upper or middle
+  //  sine
+  // -todo: let the uniform filter use impulse-invariant transform too - then, the outputs should
+  //  be exactly the same when d=0
+
   // -todo: figure out, what the "best" sample-rate is in terms of numerical precision - tweak the
   //  s-factor above -> it seems like when going down like s=4/fs, s=2/fs, s=1/fs, the last is 
   //  the first, for which the non-uniformly sampled signal is not above the uniformly sampled one
@@ -974,10 +972,7 @@ void nonUniformBiDirectional()
   //  frequency at some optimal "operating point"
   //  -maybe always let wc=1 (obviates, s-plane lp->lp trafo) and scale dt by 1/(2*pi*fc)
   // -todo: figure out, if the optimal dt has some relationship to the cutoff frequency
-  // -todo: implement highpass, bandpass and bandreject and use them to isolate the upper or middle
-  //  sine
-  // -todo: let the uniform filter use impulse-invariant transform too - then, the outputs should
-  //  be exactly the same when d=0
+
 
   // Conclusion:
   // We should normalize the average time-delta between samples to be of the order of unity and 

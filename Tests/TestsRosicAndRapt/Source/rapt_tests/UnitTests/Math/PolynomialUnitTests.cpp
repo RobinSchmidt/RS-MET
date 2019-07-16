@@ -740,6 +740,8 @@ bool testPartialFractionExpansion(std::string &reportString)
   testResult &= abs(a[2]-1.0) < tol;
 
   // \todo: check a couple of other cases, one where the denominator is not monic is still missing
+  // maybe move these tests into function below with more convenient code - merge all tests into 
+  // one function
 
   return testResult;
 }
@@ -776,6 +778,12 @@ bool testPartialFractionExpansion2(std::string& reportString)
   poles   = {  1, 2 };
   muls    = {  3, 1 };
   pfeCofs = RF::partialFractions(num, den, poles, muls);
+  //
+
+
+  // copy (or move) code from MathExperiments to here
+
+  // try it also with functions where den is not monic
 
 
 

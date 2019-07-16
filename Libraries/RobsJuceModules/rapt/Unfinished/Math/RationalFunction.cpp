@@ -100,18 +100,12 @@ void rsRationalFunction<T>::partialFractionExpansion(
   rsAssert(rsArray::sum(multiplicities, numDistinctPoles) == denDeg);
 
   // dispatch between all-poles-distinct or poles-with-multiplicities algorithm: 
-  if(denDeg == numDistinctPoles){
-
+  if(denDeg == numDistinctPoles)
+    //partialFractionExpansionMultiplePoles(num, numDeg, den, denDeg, poles, multiplicities, numDistinctPoles, pfeCoeffs);    // ...preliminary - until function below is tested...
+    partialFractionExpansionDistinctPoles(num, numDeg, den, denDeg, poles, pfeCoeffs);
+  else
     partialFractionExpansionMultiplePoles(num, numDeg, den, denDeg,
       poles, multiplicities, numDistinctPoles, pfeCoeffs);
-
-    // ...preliminary - until function below is tested...
-    //partialFractionExpansionDistinctPoles(num, numDeg, den, denDeg, poles, pfeCoeffs);
-  }
-  else {
-    partialFractionExpansionMultiplePoles(num, numDeg, den, denDeg,
-      poles, multiplicities, numDistinctPoles, pfeCoeffs);
-  }
 }
 
 template<class T>
