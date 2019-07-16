@@ -110,14 +110,33 @@ public:
   //===============================================================================================
   /** \name Computations on raw coefficient arrays */
 
+
+  /** A general routine for performing a partial fraction expansion of a rational function with 
+  known poles. You must pass the coefficient arrays of numerator and denominator, the array of 
+  poles along with an array of their respective multiplicities (these two arrays are both of length
+  "numDistinctPoles". On return, the pfeCoeffs will contain the residues corresponding the the 
+  given poles. The array is of length equal to the total number of poles, each counted with its 
+  multiplicity, which is the same number as the degree of the denominator. The ordering of the 
+  pfeCoeffs corresponds to the ordering of the poles and if a pole p_i has a  multiplicity k, then 
+  you will first get the residue for r_i/(x-p_i), then r_i/(x-p_i)^2, etc. If the rational function
+  is not strictly proper (i.e. numeratorDegree >= denominatorDegree), the expansion will also 
+  feature a polynomial part which is returned in polyCoeffs - which must be of length 
+  numeratorDegree+1 which is the *maximum potential* number of coefficients in the polynomial part.
+  It's *not* enough if it is just long enough to hold the *actual* number of coeffs. If the actual 
+  number of polynomial coeffs is less than the maximum possible number, you'll notice this by 
+  getting (numerically close to) zero-valued coeffs for the higher order terms. 
+
+  Note that function may manipulate the incoming numerator and denominator arrays in place (in 
+  order to make the denominator monic and/or divide out the polynomial part from the numerator). 
+  So, if you still need them in their original form after the function returns, you should create a
+  local copy to pass into the function. */
   static void partialFractionExpansion(
     std::complex<T>* numerator, int numeratorDegree,
     std::complex<T>* denominator, int denominatorDegree,
-    std::complex<T>* poles, int* multiplicities, int numDistinctPoles,
+    const std::complex<T>* poles, const int* multiplicities, int numDistinctPoles,
     std::complex<T>* pfeCoeffs, std::complex<T>* polyCoeffs = nullptr);
   // allocates heap memory
   // ToDo:
-  // -comment the format of the output - how does it deal with repeated poles? see unit tests
   // -have a higher-level version of the function that doesn't require the poles to be passed (the
   //  function should find them itself via a root finder)
   // -the function may destroy the original numerator array ...and the denominator will be made 
@@ -125,14 +144,25 @@ public:
 
 
 
+  /** A routine to perform a partial fraction expansion of a strictly proper rational function when
+  all poles are distinct. In this common special case, a much more efficient and numerically more 
+  precise (supposedly - verify that) algorithm can be used than in the general case where poles may 
+  have multiplicities. This function implements teh cover-up method, see:
+  https://en.wikipedia.org/wiki/Heaviside_cover-up_method  */
   static void rsRationalFunction<T>::partialFractionExpansionDistinctPoles(
     std::complex<T> *num, int numDeg, std::complex<T> *den, int denDeg,
     const std::complex<T> *poles, std::complex<T> *pfeCoeffs);
 
+  /** A routine to perform a partial fraction expansion of a strictly proper rational function when
+  some poles may have mutliplicities. The algorithm implemented here solves the linear system
+  of equations that results from equating the original rational function to a partial fraction
+  expansion with undetermined coefficients, multiplying both sides by the denominator and equating
+  coefficients of the polynomials on both sides. */
   static void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
     std::complex<T>* num, int numDeg, std::complex<T>* den, int denDeg,
-    std::complex<T>* poles, int* multiplicities, int numDistinctPoles,
+    const std::complex<T>* poles, const int* multiplicities, int numDistinctPoles,
     std::complex<T>* pfeCoeffs);
+  // can we make num and den const, too?
 
 
 

@@ -42,7 +42,7 @@ void rsRationalFunction<T>::partialFractionExpansionDistinctPoles(
 template<class T>
 void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
   std::complex<T>* num, int numDeg, std::complex<T>* den, int denDeg,
-  std::complex<T>* poles, int* multiplicities, int numDistinctPoles,
+  const std::complex<T>* poles, const int* multiplicities, int numDistinctPoles,
   std::complex<T>* pfeCoeffs)
 {
   // establish coefficient matrix:
@@ -75,7 +75,7 @@ void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
 template<class T>
 void rsRationalFunction<T>::partialFractionExpansion(
   std::complex<T> *num, int numDeg, std::complex<T> *den, int denDeg,
-  std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
+  const std::complex<T> *poles, const int *multiplicities, int numDistinctPoles,
   std::complex<T> *pfeCoeffs, std::complex<T>* polyCoeffs)
 {
   // make denominator monic:
