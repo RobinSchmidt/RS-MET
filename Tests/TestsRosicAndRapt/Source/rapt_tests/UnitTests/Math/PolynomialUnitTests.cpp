@@ -753,7 +753,7 @@ bool testPartialFractionExpansion2(std::string& reportString)
 
   typedef std::vector<std::complex<double>> Vec;
   typedef rsRationalFunction<double> RF;
-
+  double tol = 1.e-14;    // tolerance for our equality checks
   Vec num, den, poles;    // numerator, denominator and distinct poles
   std::vector<int> muls;  // pole multiplicities
   Vec pfeCofs, polyCofs;  // coeffs of partial fraction expansion and polynomial part
@@ -763,8 +763,8 @@ bool testPartialFractionExpansion2(std::string& reportString)
   //      = (4x^2 - 7x + 25) / (x^3 - 6x^2 + 3x + 10)
   num   = { 25,-7,  4    };  // p(x) =       4x^2 - 7x + 25
   den   = { 10, 3, -6, 1 };  // q(x) = x^3 - 6x^2 + 3x + 10
-  poles = { -1, 2,  5    };  // 
-  muls  = {  1, 1,  1    };
+  poles = { -1, 2,  5    };  // q(x) = (x+1) * (x-2) * (x-5)
+  muls  = {  1, 1,  1    };  // all multiplicities are 1
   pfeCofs = RF::partialFractions(num, den, poles, muls); // function for multiple poles
   testResult &= pfeCofs == Vec({ 2,-3, 5 });
   pfeCofs = RF::partialFractions(num, den, poles);       // function for distinct poles
@@ -778,16 +778,23 @@ bool testPartialFractionExpansion2(std::string& reportString)
   poles   = {  1, 2 };
   muls    = {  3, 1 };
   pfeCofs = RF::partialFractions(num, den, poles, muls);
-  //
+  testResult &= rsAreVectorsEqual(pfeCofs, Vec({2,3,1,1}), tol);
+
+  // f(x) = 3/(x+5) - 4/(x+3) + 2/(x-1) + 5/(x-1)^2 - 3/(x-5)
+  //      = (-2x^4 - 13x^3 + 25x^2 - 275x - 215) / (x^5 + x^4 - 30x^3 - 22x^2 + 125x-75)
+  num   = {-215,-275,25,-13,-2};
+  den   = {-75,125,-22,-30,1,1};
+  poles = {-5,-3,+1,+5};
+  muls  = { 1, 1, 2, 1}; 
+  pfeCofs = RF::partialFractions(num, den, poles, muls);
+  testResult &= rsAreVectorsEqual(pfeCofs, Vec({3,-4,2,5,-3}), tol);
 
 
-  // copy (or move) code from MathExperiments to here
+  // todo: take function from partialFractionExpansion3 - this has a polynomial part, so we need a
+  // convenience function that may also return a polynomial part...
+
 
   // try it also with functions where den is not monic
-
-
-
-
 
 
   return testResult;

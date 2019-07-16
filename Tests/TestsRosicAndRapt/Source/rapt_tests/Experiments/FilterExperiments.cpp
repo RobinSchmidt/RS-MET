@@ -950,15 +950,18 @@ void nonUniformBiDirectional()
 
   //rsPlotVector(rsDifference(tn)); // just to inspect to dt values
 
+
+
+
   // Observations:
-  // -filter order up to 11 works, from 12 onward, we get a "matrix numerically close to singular"
-  //  error - can probably be avoided by implementing the special partial fraction expansion 
-  //  algorithm that works when all poles are distinct - perhaps that's numerically better anyway
-  //  -> done -> try again now with higher orders
+  // -isolating the lowest sine via lowpass works
   // -todo: implement highpass, bandpass and bandreject and use them to isolate the upper or middle
-  //  sine
+  //  sine ...maybe implement peaking and shelving types, too - although, i currently don't see any
+  //  use for them...maybe to boost certain modulating frequencies in the sine model?
   // -todo: let the uniform filter use impulse-invariant transform too - then, the outputs should
   //  be exactly the same when d=0
+
+
 
   // -todo: figure out, what the "best" sample-rate is in terms of numerical precision - tweak the
   //  s-factor above -> it seems like when going down like s=4/fs, s=2/fs, s=1/fs, the last is 
@@ -967,11 +970,11 @@ void nonUniformBiDirectional()
   //  order), s=1.5 looks really good - could this be a hint to pi/2? is this plausible for an 
   //  optimal spacing? why would pi show up? ...but maybe the comparison should be done again when 
   //  we have impulse invariant design in place for the uniform filter...
-  // -todo: introduce "dtScale" member in rsNonUniformFilterIIR that scales all incoming "dt" 
-  //  values before passing them to the embedded 1-pole objects - the goal is to keep the cutoff 
-  //  frequency at some optimal "operating point"
-  //  -maybe always let wc=1 (obviates, s-plane lp->lp trafo) and scale dt by 1/(2*pi*fc)
-  // -todo: figure out, if the optimal dt has some relationship to the cutoff frequency
+  //  -there is now a dtScale parameter in rsNonUniformFiterIIR that normalizes everything with
+  //   respect to the sample-rate - but may try to figure out, if the selected operating
+  //   point is really chosen optimally 
+
+
 
 
   // Conclusion:

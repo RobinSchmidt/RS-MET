@@ -1655,13 +1655,7 @@ void partialFractionExpansion()
   // http://www-users.math.umn.edu/~am/Math5583-CompAnal/PartialFractions.pdf
   // https://arxiv.org/pdf/math/0408189.pdf
   // http://people.math.sfu.ca/~kya17/teaching/math343/3-343.pdf
-
-
-
 }
-
-
-
 
 
 void partialFractionExpansion2()
@@ -1672,7 +1666,6 @@ void partialFractionExpansion2()
   //      = (-2*x^4-13*x^3+25*x^2-275*x-215)/(x^5+x^4-30*x^3-22*x^2+125*x-75)
 
   // todo: make a version of that test, where all poles are distinct...
-
 
   typedef std::complex<double> Complex;
 
@@ -1690,7 +1683,7 @@ void partialFractionExpansion2()
   RAPT::rsRationalFunction<double>::partialFractionExpansion(
     p, Np, q, Nq, poles, muls, numDistinctPoles, pfeCoeffs);
 
-  // todo: turn into unit test
+  // todo: turn into unit test - done - this function is now obslete - delete it
   int dummy = 0;  
 }
 
