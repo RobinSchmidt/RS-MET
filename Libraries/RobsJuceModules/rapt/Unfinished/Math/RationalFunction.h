@@ -178,6 +178,14 @@ public:
     const std::vector<std::complex<T>>& poles);
   // maybe move to rs_testing 
 
+  static std::vector<std::complex<T>> partialFractions(
+    const std::vector<std::complex<T>>& numerator,
+    const std::vector<std::complex<T>>& denominator,
+    const std::vector<std::complex<T>>& poles,
+    const std::vector<int>& multiplicities);
+  // maybe have another parameter later to switch between algorithms
+
+
 
 
 protected:

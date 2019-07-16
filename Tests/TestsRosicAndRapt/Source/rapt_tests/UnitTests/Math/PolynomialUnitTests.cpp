@@ -749,6 +749,36 @@ bool testPartialFractionExpansion2(std::string& reportString)
   std::string testName = "PartialFractionExpansion2";
   bool testResult = true;
 
+  typedef std::vector<std::complex<double>> Vec;
+  typedef rsRationalFunction<double> RF;
+
+  Vec num, den, poles;    // numerator, denominator and distinct poles
+  std::vector<int> muls;  // pole multiplicities
+  Vec pfeCofs, polyCofs;  // coeffs of partial fraction expansion and polynomial part
+
+
+
+
+  num   = { 25,-7,  4    };  // p(x) =       4x^2 - 7x + 25
+  den   = { 10, 3, -6, 1 };  // q(x) = x^3 - 6x^2 + 3x + 10
+  poles = { -1, 2,  5    };  // 
+  muls  = {  1, 1,  1    };
+  pfeCofs = RF::partialFractions(num, den, poles, muls); // singular matrix error - why?
+
+
+  // f(x) = 2/(x-1) + 3/(x-1)^2 + 1/(x-1)^3 + 1/(x-2)
+  //      = (3x^3 - 8x^2 + 5x - 1) / (x^4 - 5x^3 + 9x^2 - 7x + 2)
+  // 2 poles at 1 and 2, first is triple pole, second simple pole
+  num     = { -1, 5,-8, 3    };
+  den     = {  2,-7, 9,-5, 1 };
+  poles   = {  1, 2 };
+  muls    = {  3, 1 };
+  pfeCofs = RF::partialFractions(num, den, poles, muls); // singular matrix error - why?
+
+
+
+
+
 
   return testResult;
 }
