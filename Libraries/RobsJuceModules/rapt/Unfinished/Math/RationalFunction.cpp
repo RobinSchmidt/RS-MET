@@ -30,7 +30,7 @@ void rsRationalFunction<T>::partialFractionExpansionDistinctPoles(
   std::complex<T> numVal, denVal;
   for(int i = 0; i < denDeg; i++) {  // denDeg == # poles == # pfeCoeffs
     numVal = PolyC::evaluate(poles[i], num, numDeg);
-    denVal = PolyR::evaluateFromRootsOneLeftOut(poles[i], den, denDeg, i);
+    denVal = PolyR::evaluateFromRootsOneLeftOut(poles[i], poles, denDeg, i);
     pfeCoeffs[i] = numVal/denVal;
   }
 }

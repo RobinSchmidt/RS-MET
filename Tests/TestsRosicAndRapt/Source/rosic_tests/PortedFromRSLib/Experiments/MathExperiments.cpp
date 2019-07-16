@@ -1613,6 +1613,8 @@ void partialFractionExpansion()
   // bunch of terms like a_i1/(x-r_i) + a_i2/(x-r_i)^2 + a_i3/(x-r_i)^3 + ..., so this means, we 
   // could find only a_i3 with this method if terms up to .../(x-r_i)^3 are present?
 
+  dummy = 0;
+
   // ...and if this is not possible, then what about the approach taken here:
   // https://en.wikipedia.org/wiki/Partial_fraction_decomposition#Residue_method
   // is this the same? that would mean that the derivative of q at the pole r_i is the same as q 
@@ -1655,7 +1657,7 @@ void partialFractionExpansion()
   // http://people.math.sfu.ca/~kya17/teaching/math343/3-343.pdf
 
 
-  dummy = 0;
+
 }
 
 

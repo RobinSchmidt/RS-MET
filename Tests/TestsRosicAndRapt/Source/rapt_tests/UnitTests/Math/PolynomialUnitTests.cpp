@@ -756,7 +756,6 @@ bool testPartialFractionExpansion2(std::string& reportString)
   std::vector<int> muls;  // pole multiplicities
   Vec pfeCofs, polyCofs;  // coeffs of partial fraction expansion and polynomial part
 
-
   // f(x) = 2/(x+1) - 3/(x-2) + 5/(x-5) 
   //      = (4x^2 - 7x + 25) / ((x+1)*(x-2)*(x-5))
   //      = (4x^2 - 7x + 25) / (x^3 - 6x^2 + 3x + 10)
@@ -768,8 +767,6 @@ bool testPartialFractionExpansion2(std::string& reportString)
   testResult &= pfeCofs == Vec({ 2,-3, 5 });
   pfeCofs = RF::partialFractions(num, den, poles);       // function for distinct poles
   testResult &= pfeCofs == Vec({ 2,-3, 5 });
-  // function for distinct poles this fails!
-
 
   // f(x) = 2/(x-1) + 3/(x-1)^2 + 1/(x-1)^3 + 1/(x-2)
   //      = (3x^3 - 8x^2 + 5x - 1) / (x^4 - 5x^3 + 9x^2 - 7x + 2)
