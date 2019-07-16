@@ -41,7 +41,7 @@ void rsRationalFunction<T>::partialFractionExpansionDistinctPoles(
 
 template<class T>
 void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
-  std::complex<T>* num, int numDeg, std::complex<T>* den, int denDeg,
+  const std::complex<T>* num, int numDeg, const std::complex<T>* den, int denDeg,
   const std::complex<T>* poles, const int* multiplicities, int numDistinctPoles,
   std::complex<T>* pfeCoeffs)
 {
@@ -96,6 +96,8 @@ void rsRationalFunction<T>::partialFractionExpansion(
     rsAssert(polyCoeffs != nullptr, "function has a polynomial part"); 
     rsPolynomial<std::complex<T>>::divide(num, numDeg, den, denDeg, polyCoeffs, num);
     numDeg = actualDegree(num, numDeg, tol); // new degree of numerator
+    // todo: maybe zero out the higher coeffs that are close to zero totally
+
   }
   else if(polyCoeffs != nullptr)
     rsArray::fillWithZeros(polyCoeffs, denDeg+1);  // or should it be numDeg+1, does it matter?

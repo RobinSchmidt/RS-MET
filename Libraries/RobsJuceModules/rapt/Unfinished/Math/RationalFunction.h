@@ -124,7 +124,10 @@ public:
   numeratorDegree+1 which is the *maximum potential* number of coefficients in the polynomial part.
   It's *not* enough if it is just long enough to hold the *actual* number of coeffs. If the actual 
   number of polynomial coeffs is less than the maximum possible number, you'll notice this by 
-  getting (numerically close to) zero-valued coeffs for the higher order terms. 
+  getting (numerically close to) zero-valued coeffs for the higher order terms. Depending on 
+  whether or not all poles are distinct, it dipsatches between the two functions 
+  partialFractionExpansionDistinctPoles and partialFractionExpansionMultiplePoles for the actual
+  work. It's the high-level interface function meant to be called from client code.
 
   Note that function may manipulate the incoming numerator and denominator arrays in place (in 
   order to make the denominator monic and/or divide out the polynomial part from the numerator). 
@@ -135,20 +138,18 @@ public:
     std::complex<T>* denominator, int denominatorDegree,
     const std::complex<T>* poles, const int* multiplicities, int numDistinctPoles,
     std::complex<T>* pfeCoeffs, std::complex<T>* polyCoeffs = nullptr);
-  // allocates heap memory
+  // -may allocate heap memory (in case of multiple poles)
   // ToDo:
-  // -have a higher-level version of the function that doesn't require the poles to be passed (the
-  //  function should find them itself via a root finder)
-  // -the function may destroy the original numerator array ...and the denominator will be made 
-  //  monic, if it isn't already
-
+  // -have a higher-level version of the function that doesn't require the poles to be known and
+  //  passed in by the caller (the function should find them itself via a root finder)
 
 
   /** A routine to perform a partial fraction expansion of a strictly proper rational function when
   all poles are distinct. In this common special case, a much more efficient and numerically more 
   precise (supposedly - verify that) algorithm can be used than in the general case where poles may 
-  have multiplicities. This function implements teh cover-up method, see:
-  https://en.wikipedia.org/wiki/Heaviside_cover-up_method  */
+  have multiplicities. This function implements the cover-up method, see:
+  https://en.wikipedia.org/wiki/Heaviside_cover-up_method  
+  called interbally by partialFractionExpansion  */
   static void rsRationalFunction<T>::partialFractionExpansionDistinctPoles(
     std::complex<T> *num, int numDeg, std::complex<T> *den, int denDeg,
     const std::complex<T> *poles, std::complex<T> *pfeCoeffs);
@@ -157,14 +158,12 @@ public:
   some poles may have mutliplicities. The algorithm implemented here solves the linear system
   of equations that results from equating the original rational function to a partial fraction
   expansion with undetermined coefficients, multiplying both sides by the denominator and equating
-  coefficients of the polynomials on both sides. */
+  coefficients of the polynomials on both sides. called interbally by partialFractionExpansion */
   static void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
-    std::complex<T>* num, int numDeg, std::complex<T>* den, int denDeg,
+    const std::complex<T>* num, int numDeg, const std::complex<T>* den, int denDeg,
     const std::complex<T>* poles, const int* multiplicities, int numDistinctPoles,
     std::complex<T>* pfeCoeffs);
-  // can we make num and den const, too?
-
-
+  // allocates heap memory
 
 
 protected:
