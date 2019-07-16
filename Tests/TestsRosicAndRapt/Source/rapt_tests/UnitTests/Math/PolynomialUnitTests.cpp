@@ -22,6 +22,7 @@ bool testPolynomial()
   testResult &= testPolynomialInterpolation(                  reportString);
   testResult &= testPolynomialRootFinder(                     reportString);
   testResult &= testPartialFractionExpansion(                 reportString);
+  testResult &= testPartialFractionExpansion2(                reportString);
   testResult &= testPolynomialBaseChange(                     reportString);
   testResult &= testPolynomialRecursion(                      reportString);
   testResult &= testJacobiPolynomials(                        reportString);
@@ -660,17 +661,14 @@ bool testPolynomialRootFinder(std::string &reportString)
   std::complex<double> rFound[maxN];  // roots that were found
   rsRandomUniform(-range, range, 0);  // set seed
   int i, j, k;
-  for(i = 1; i <= numTests; i++)
-  {
+  for(i = 1; i <= numTests; i++) {
     // polynomial order for this test:
     int N = (int) rsRandomUniform(1.0, maxN);
 
     // generate a bunch of random roots:
-    for(k = 0; k < N; k++)
-    {
+    for(k = 0; k < N; k++) {
       rTrue[k].real(rsRandomUniform(-range, range));
-      rTrue[k].imag(rsRandomUniform(-range, range));
-    }
+      rTrue[k].imag(rsRandomUniform(-range, range)); }
 
     // obtain polynomial coeffs:
     rsPolynomial<double>::rootsToCoeffs(rTrue, a, N);
@@ -679,21 +677,13 @@ bool testPolynomialRootFinder(std::string &reportString)
     rsPolynomial<double>::roots(a, N, rFound);
 
     // try to find a matching root in the found roots for each of the true roots:
-    for(j = 0; j < N; j++)
-    {
+    for(j = 0; j < N; j++) {
       bool matchFound = false;
-      for(k = 0; k < N; k++)
-      {
-        if( abs(rFound[j]-rTrue[k]) < tol )
-        {
-          matchFound = true;
-          break;
-        }
-      }
+      for(k = 0; k < N; k++) {
+        if( abs(rFound[j]-rTrue[k]) < tol ) {
+          matchFound = true; break; }}
       rsAssert(matchFound);
-      testResult &= matchFound;
-    }
-  }
+      testResult &= matchFound; }}
 
   return testResult;
 }
@@ -703,27 +693,30 @@ bool testPartialFractionExpansion(std::string &reportString)
   std::string testName = "PartialFractionExpansion";
   bool testResult = true;
 
+  typedef std::complex<double> Complex;
+  typedef rsRationalFunction<double> RF;
+
   // local variables:
-  std::complex<double> n[9], d[9], p[9]; // numerator, denominator, poles
-  std::complex<double> a[9];             // partial fraction expansion coefficients
-  int m[9];                              // multiplicities
-  std::complex<double> j(0.0, 1.0);      // imaginary unit
-  int numeratorOrder, denominatorOrder, numPoles;
-  double tol = 1.e-14;
+  Complex j(0.0, 1.0);      // imaginary unit
+  Complex n[9], d[9], p[9]; // numerator, denominator, poles
+  Complex a[9];             // partial fraction expansion coefficients
+  int numPoles;             // number of distinc poles
+  int m[9];                 // pole multiplicities
+  int numDeg, denDeg;       // numerator and denominator degrees
+  double tol = 1.e-14;      // tolerance for equality checks
 
   // 1st test - contains a double root:
   // f(x) = 3/(x+5) - 4/(x+3) + 2/(x-1) + 5/(x-1)^2 - 3/(x-5)
   //      = n(x)/d(x) = numerator(x) / denominator(x)
   //      = (-2*x^4-13*x^3+25*x^2-275*x-215)/(x^5+x^4-30*x^3-22*x^2+125*x-75)
-  numeratorOrder   = 4;
-  denominatorOrder = 5;
-  numPoles         = 4;  // only 4, because the 3rd one is a double-root
+  numDeg   = 4;  // numerator degree
+  denDeg   = 5; 
+  numPoles = 4;  // only 4, because the 3rd one is a double-root
   n[0] = -215; n[1] = -275; n[2] = 25;  n[3] = -13; n[4] = -2;
   d[0] = -75;  d[1] = 125;  d[2] = -22; d[3] = -30; d[4] =  1; d[5] = 1;
   p[0] = -5; p[1] = -3; p[2] = +1; p[3] =  5;
   m[0] =  1; m[1] =  1; m[2] =  2; m[3] =  1;
-  rsRationalFunction<double>::partialFractionExpansion(
-    n, numeratorOrder, d, denominatorOrder, p, m, numPoles, a);
+  RF::partialFractionExpansion(n, numDeg, d, denDeg, p, m, numPoles, a);
   testResult &= abs(a[0]-3.0) < tol;
   testResult &= abs(a[1]+4.0) < tol;
   testResult &= abs(a[2]-2.0) < tol;
@@ -734,20 +727,28 @@ bool testPartialFractionExpansion(std::string &reportString)
   // double root:
   // f(x) = 2/(x+2) - 2/(x+1) + 1/(x+1)^2
   //      = -x / (x^3+4*x^2+5*x+2)
-  numeratorOrder   = 1;
-  denominatorOrder = 3;
-  numPoles         = 2;
+  numDeg   = 1;
+  denDeg   = 3;
+  numPoles = 2;
   n[0] =  0; n[1] = -1;
   d[0] =  2; d[1] =  5; d[2] = 4; d[3] = 1;
   p[0] = -2; p[1] = -1;
   m[0] =  1; m[1] =  2;
-  rsRationalFunction<double>::partialFractionExpansion(
-    n, numeratorOrder, d, denominatorOrder, p, m, numPoles, a);
+  RF::partialFractionExpansion(n, numDeg, d, denDeg, p, m, numPoles, a);
   testResult &= abs(a[0]-2.0) < tol;
   testResult &= abs(a[1]+2.0) < tol;
   testResult &= abs(a[2]-1.0) < tol;
 
   // \todo: check a couple of other cases, one where the denominator is not monic is still missing
+
+  return testResult;
+}
+
+bool testPartialFractionExpansion2(std::string& reportString)
+{
+  std::string testName = "PartialFractionExpansion2";
+  bool testResult = true;
+
 
   return testResult;
 }

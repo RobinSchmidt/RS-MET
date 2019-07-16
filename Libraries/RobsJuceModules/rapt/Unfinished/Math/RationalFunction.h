@@ -142,6 +142,7 @@ public:
   // ToDo:
   // -have a higher-level version of the function that doesn't require the poles to be known and
   //  passed in by the caller (the function should find them itself via a root finder)
+  // maybe rename to partialFractions
 
 
   /** A routine to perform a partial fraction expansion of a strictly proper rational function when
@@ -150,7 +151,7 @@ public:
   have multiplicities. This function implements the cover-up method, see:
   https://en.wikipedia.org/wiki/Heaviside_cover-up_method  
   called interbally by partialFractionExpansion  */
-  static void rsRationalFunction<T>::partialFractionExpansionDistinctPoles(
+  static void partialFractionExpansionDistinctPoles(
     std::complex<T> *num, int numDeg, std::complex<T> *den, int denDeg,
     const std::complex<T> *poles, std::complex<T> *pfeCoeffs);
 
@@ -159,11 +160,24 @@ public:
   of equations that results from equating the original rational function to a partial fraction
   expansion with undetermined coefficients, multiplying both sides by the denominator and equating
   coefficients of the polynomials on both sides. called interbally by partialFractionExpansion */
-  static void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
+  static void partialFractionExpansionMultiplePoles(
     const std::complex<T>* num, int numDeg, const std::complex<T>* den, int denDeg,
     const std::complex<T>* poles, const int* multiplicities, int numDistinctPoles,
     std::complex<T>* pfeCoeffs);
   // allocates heap memory
+
+
+  // convenience functions to work on std::vector (not recommended for production code due to 
+  // extra memory allocations - mostly for making tests and experiments more convenient):
+
+  //static std::vector<std::complex<T>> partialFractions();
+
+  static std::vector<std::complex<T>> partialFractions(
+    const std::vector<std::complex<T>>& numerator,
+    const std::vector<std::complex<T>>& denominator,
+    const std::vector<std::complex<T>>& poles);
+  // maybe move to rs_testing 
+
 
 
 protected:

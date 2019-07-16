@@ -22,6 +22,7 @@ bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString);
 bool testPolynomialInterpolation(std::string &reportString);
 bool testPolynomialRootFinder(std::string &reportString);
 bool testPartialFractionExpansion(std::string &reportString);
+bool testPartialFractionExpansion2(std::string &reportString);
 bool testPolynomialBaseChange(std::string &reportString);
 bool testPolynomialRecursion(std::string &reportString);
 bool testJacobiPolynomials(std::string &reportString);

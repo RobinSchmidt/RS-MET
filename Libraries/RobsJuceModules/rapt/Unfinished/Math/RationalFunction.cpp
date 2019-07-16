@@ -82,15 +82,8 @@ void rsRationalFunction<T>::partialFractionExpansion(
   std::complex<T> s = T(1)/den[denDeg];
   rsArray::scale(num, numDeg+1, s);
   rsArray::scale(den, denDeg+1, s);
-  // hmm - modifying the input arrays is no good idea - maybe use temporary memory - or require the
-  // inputs to be monic - client code should deal with making it monic
-  // ..or well, actually, we potentially destroy the numerator array anyway due to the in-place
-  // polynomial division above - i should probably write into the documentation that this function
-  // may destroy the original content of the input arrays
-  // maybe this should be done before the polynomial division?
 
-  // obtain polynomial ("FIR") part by polynomial division, see:
-  // https://ccrma.stanford.edu/~jos/filters/FIR_Part_PFE.html
+  // obtain polynomial ("FIR") part by polynomial division (maybe factor out):
   T tol = 1.e-12; // ad hoc - use something based on numeric_limits::epsilon
   if(numDeg >= denDeg) {
     rsAssert(polyCoeffs != nullptr, "function has a polynomial part"); 
@@ -101,38 +94,45 @@ void rsRationalFunction<T>::partialFractionExpansion(
   }
   else if(polyCoeffs != nullptr)
     rsArray::fillWithZeros(polyCoeffs, denDeg+1);  // or should it be numDeg+1, does it matter?
-  // maybe factor out into function polynomialPart?
 
-
-  // sanity check for inputs:
+  // sanity checks:
   rsAssert(numDeg < denDeg);
   rsAssert(rsArray::sum(multiplicities, numDistinctPoles) == denDeg);
 
-  // if all poles are distinct, we can use a simpler (more efficient and hopefully also more
-  // numerically precise) algorithm:
+  // dispatch between all-poles-distinct or poles-with-multiplicities algorithm: 
   if(denDeg == numDistinctPoles){
 
     partialFractionExpansionMultiplePoles(num, numDeg, den, denDeg,
       poles, multiplicities, numDistinctPoles, pfeCoeffs);
-    // ...preliminary - until function below is tested...
 
+    // ...preliminary - until function below is tested...
     //partialFractionExpansionDistinctPoles(num, numDeg, den, denDeg, poles, pfeCoeffs);
   }
   else {
     partialFractionExpansionMultiplePoles(num, numDeg, den, denDeg,
       poles, multiplicities, numDistinctPoles, pfeCoeffs);
   }
-
-  // https://ccrma.stanford.edu/~jos/filters/Partial_Fraction_Expansion.html
 }
 
+template<class T>
+std::vector<std::complex<T>> rsRationalFunction<T>::partialFractions(
+  const std::vector<std::complex<T>>& numerator,
+  const std::vector<std::complex<T>>& denominator,
+  const std::vector<std::complex<T>>& poles)
+{
+  typedef std::vector<std::complex<T>> Vec;
+  Vec num = numerator;   // local copies
+  Vec den = denominator; 
+  Vec pfeCoeffs(den.size());
+  partialFractionExpansionDistinctPoles(
+    &num[0], (int) num.size(), &den[0], (int) den.size(), &poles[0], &pfeCoeffs[0]);
+  return pfeCoeffs;
+}
 
-
-
-// use a more efficent algorithm if all poles are simple, (see also Experiments - there's something
-// said about that)
-// see also here:
+// resources:
 // https://en.wikipedia.org/wiki/Partial_fraction_decomposition
+// https://ccrma.stanford.edu/~jos/filters/Partial_Fraction_Expansion.html
+// https://ccrma.stanford.edu/~jos/filters/FIR_Part_PFE.html
 
 
 /*
