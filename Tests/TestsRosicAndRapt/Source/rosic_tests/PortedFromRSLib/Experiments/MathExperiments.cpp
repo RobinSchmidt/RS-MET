@@ -1559,16 +1559,13 @@ void partialFractionExpansion()
   double r[M]   = {-1,2,5};    // roots of q(x)
 
 
-
   typedef RAPT::rsPolynomial<double> Poly;
   typedef std::complex<double> Complex;
   typedef RAPT::rsArray Array;
 
-
   // probably, we have to divide the numerator coefficients by the leading coefficient of the 
   // denominator - in our example, it's unity, so it doesn't matter:
   Array::scale(p, N+1, 1.0/q[M]);
-
 
   // First, we use the approach via establishing and solving the linear system of equations that
   // results from equating coefficients:
@@ -1661,12 +1658,19 @@ void partialFractionExpansion()
   dummy = 0;
 }
 
+
+
+
+
 void partialFractionExpansion2()
 {
   // We try to recover the partial fraction expansion of the strictly proper rational function:
   // f(x) = 3/(x+5) - 4/(x+3) + 2/(x-1) + 5/(x-1)^2 - 3/(x-5)
   //      = P(x)/Q(x) = numerator(x) / denominator(x)
   //      = (-2*x^4-13*x^3+25*x^2-275*x-215)/(x^5+x^4-30*x^3-22*x^2+125*x-75)
+
+  // todo: make a version of that test, where all poles are distinct...
+
 
   typedef std::complex<double> Complex;
 
@@ -1676,7 +1680,7 @@ void partialFractionExpansion2()
   static const int numDistinctPoles = 4;           // only 4, because of them is a double-root
   Complex p[Np+1] = {-215,-275,25,-13,-2};         // numerator
   Complex q[Nq+1] = {-75,125,-22,-30,1,1};         // denominator
-  Complex poles[numDistinctPoles] = {-5,-3,+1,+5};
+  Complex poles[numDistinctPoles] = {-5,-3,+1,+5}; // positions of distinct poles
   int muls[numDistinctPoles] = { 1, 1, 2, 1};      // pole multiplicities
 
   // compute the results:
@@ -1686,9 +1690,6 @@ void partialFractionExpansion2()
 
   // todo: turn into unit test
   int dummy = 0;  
-
-  // todo: check if all poles are simple - if so, we may use a more efficient algorithm. in this 
-  // case r[i] = P(p[i]) / Q'(p[i]) where r[i] is the i-th residue for the the i-th pole p[i]
 }
 
 void partialFractionExpansion3()
@@ -1716,7 +1717,7 @@ void partialFractionExpansion3()
   Complex p[Np+1] = {-740,750,-604,196,-1,-85,1,3};
 
   static const int numPoles         = 5;
-  static const int numDistinctPoles = 4;                // only 4, because is a double-root
+  static const int numDistinctPoles = 4;                // only 4, because is a double-pole
   Complex poles[numDistinctPoles]   = {-5,-3,+1,+5};
   int muls[numDistinctPoles]        = { 1, 1, 2, 1};
 
