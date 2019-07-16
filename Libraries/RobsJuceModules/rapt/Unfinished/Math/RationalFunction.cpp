@@ -123,9 +123,9 @@ std::vector<std::complex<T>> rsRationalFunction<T>::partialFractions(
   typedef std::vector<std::complex<T>> Vec;
   Vec num = numerator;   // local copies
   Vec den = denominator; 
-  Vec pfeCoeffs(den.size());
+  Vec pfeCoeffs(den.size()-1);
   partialFractionExpansionDistinctPoles(
-    &num[0], (int) num.size(), &den[0], (int) den.size(), &poles[0], &pfeCoeffs[0]);
+    &num[0], (int) num.size()-1, &den[0], (int) den.size()-1, &poles[0], &pfeCoeffs[0]);
   return pfeCoeffs;
 }
 
@@ -139,19 +139,12 @@ std::vector<std::complex<T>> rsRationalFunction<T>::partialFractions(
   typedef std::vector<std::complex<T>> Vec;
   Vec num = numerator;   // local copies
   Vec den = denominator; 
-  Vec pfeCoeffs(den.size());
+  Vec pfeCoeffs(den.size()-1);
   partialFractionExpansionMultiplePoles(
-    &num[0], (int) num.size(), &den[0], (int) den.size(), 
+    &num[0], (int) num.size()-1, &den[0], (int) den.size()-1, 
     &poles[0], &muls[0], (int) poles.size(), &pfeCoeffs[0]);
   return pfeCoeffs;
 }
-/*
-static std::vector<std::complex<T>> partialFractions(
-  const std::vector<std::complex<T>>& numerator,
-  const std::vector<std::complex<T>>& denominator,
-  const std::vector<std::complex<T>>& poles,
-  const std::vector<int>& multiplicities);
-  */
 
 
 // resources:

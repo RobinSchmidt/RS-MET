@@ -757,13 +757,18 @@ bool testPartialFractionExpansion2(std::string& reportString)
   Vec pfeCofs, polyCofs;  // coeffs of partial fraction expansion and polynomial part
 
 
-
-
+  // f(x) = 2/(x+1) - 3/(x-2) + 5/(x-5) 
+  //      = (4x^2 - 7x + 25) / ((x+1)*(x-2)*(x-5))
+  //      = (4x^2 - 7x + 25) / (x^3 - 6x^2 + 3x + 10)
   num   = { 25,-7,  4    };  // p(x) =       4x^2 - 7x + 25
   den   = { 10, 3, -6, 1 };  // q(x) = x^3 - 6x^2 + 3x + 10
   poles = { -1, 2,  5    };  // 
   muls  = {  1, 1,  1    };
-  pfeCofs = RF::partialFractions(num, den, poles, muls); // singular matrix error - why?
+  pfeCofs = RF::partialFractions(num, den, poles, muls); // function for multiple poles
+  testResult &= pfeCofs == Vec({ 2,-3, 5 });
+  pfeCofs = RF::partialFractions(num, den, poles);       // function for distinct poles
+  testResult &= pfeCofs == Vec({ 2,-3, 5 });
+  // function for distinct poles this fails!
 
 
   // f(x) = 2/(x-1) + 3/(x-1)^2 + 1/(x-1)^3 + 1/(x-2)
@@ -773,7 +778,7 @@ bool testPartialFractionExpansion2(std::string& reportString)
   den     = {  2,-7, 9,-5, 1 };
   poles   = {  1, 2 };
   muls    = {  3, 1 };
-  pfeCofs = RF::partialFractions(num, den, poles, muls); // singular matrix error - why?
+  pfeCofs = RF::partialFractions(num, den, poles, muls);
 
 
 
