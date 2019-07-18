@@ -1657,32 +1657,74 @@ void partialFractionExpansion()
   // http://people.math.sfu.ca/~kya17/teaching/math343/3-343.pdf
 }
 
+template<class T>
+std::vector<T> polyDiv(std::vector<T> p, std::vector<T> d, T tol, int numTimes)
+{
+
+
+}
+
 
 void partialFractionExpansion2()
 {
   // Here, i implement a prototype of my new algorithm for a partial fraction expansion with 
   // multiple poles (see PartialFractions.txt in the Notes folder)
 
-  //typedef RAPT::rsPolynomial<double> Poly;
-  typedef std::complex<double> Complex;
-  typedef std::vector<Complex> VecC;
+  typedef RAPT::rsPolynomial<double> Poly;
+  typedef std::vector<double> VecD;
   typedef std::vector<int> VecI;
 
   // inputs:
-  VecC B = { -1,  5, -8,  3    };    // numerator
-  VecC A = {  2, -7,  9, -5, 1 };    // denominator (must be monic)
-  VecC p = {  1,  2 };               // distinct poles
-  VecI m = {  3,  1 };               // multiplicities of the poles
+  Poly B(VecD{ -1,  5, -8,  3   });  // numerator
+  Poly A(VecD{  2, -7,  9, -5, 1});  // denominator (must be monic)
+  VecD p =   {  1,  2 };             // distinct poles
+  VecI m =   {  3,  1 };             // multiplicities of the poles
 
   // output:
-  VecC r(4);                         // the residues (as flat array)
+  VecD r(4);                         // the residues (as flat array)
+
+  // Computaion:
+  int ri = 0;                        // flat array index into r
+  for(int i = 0; i < (int)p.size(); i++)
+  {
+    Poly Li  = VecD{ -p[i], 1.0 };         // linear factor (x-pi)
+    Poly Bij = B;
+    //Poly Aij = A;                 // init this to A / Li^m[i]
+
+    for(int j = m[i]; j >= 1; j--)
+    {
+
+      ri++;
+    }
+  }
+
+
+  /*
+  VecC B = { -1,  5, -8,  3    };    // numerator
+  VecC A = {  2, -7,  9, -5, 1 };    // denominator (must be monic)
+
+
+
 
   // intermediates:
-  VecC Aij(5);                       // A_i,j
+  //VecC Aij(5);                       // A_i,j
   VecC Aim(5);                       // A_i,mi
-  VecC Bij(5);                       // B - sum_k r_i,j+k * A_i,j+k,  k=1,...,mi-j
+  //VecC Bij(5);                       // B - sum_k r_i,j+k * A_i,j+k,  k=1,...,mi-j
   VecC Cij(5);                       // Bij / (x-p_i)^j
+  int ri = 0;                        // flat array index into r
+  for(int i = 0; i < (int)p.size(); i++)
+  {
+    VecC Aij = A;
+    VecC Bij = B;
+    VecC Li  = { -p[i], 1 };         // linear factor x-pi
 
+    for(int j = m[i]; j >= 1; j--)
+    {
+
+      ri++;
+    }
+  }
+  */
 
 
 

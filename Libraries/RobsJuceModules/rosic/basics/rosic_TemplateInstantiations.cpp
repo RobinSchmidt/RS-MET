@@ -95,7 +95,10 @@ template double RAPT::getDelayedSampleLinear(double d, double *y);
 template void RAPT::rsNaturalCubicSpline(const double *x, const double *y, int N, const double *xi, double *yi, int Ni, double scaleRhs);
 
 
-//template class RAPT::rsPolynomial<std::complex<double>>;
+//template class RAPT::rsPolynomial<std::complex<double>>; 
+// produces lots of errors because of comparison operators - maybe introduce a sort of 
+// rsComplexAbs(T x) function that resolves to the identity when T is a real type
+
 template class RAPT::rsRationalFunction<double>;
 
 //-------------------------------------------------------------------------------------------------
