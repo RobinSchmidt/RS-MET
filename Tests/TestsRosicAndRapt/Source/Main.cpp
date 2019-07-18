@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  runAllUnitTests();  // todo: merge with unit tests for RSLib
+  //runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
   //nonUniformComplexOnePole();
   //nonUniformAllpole(); // rename - it's not restricted to allpoles anymore
   //nonUniformBiquad();
-  nonUniformBiDirectional();
+//  nonUniformBiDirectional();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
@@ -211,9 +211,9 @@ int main(int argc, char* argv[])
   ////void stretchPolynomial();  // commented in header
   //monotonicPolynomials();
   //parametricBell();
-  partialFractionExpansion();
+  //partialFractionExpansion();
   partialFractionExpansion2();
-  partialFractionExpansion3();
+  //partialFractionExpansion3();
   //partialFractionExpansionQuadratic();
   //dampedSineEnergy();
   //sineIntegral();

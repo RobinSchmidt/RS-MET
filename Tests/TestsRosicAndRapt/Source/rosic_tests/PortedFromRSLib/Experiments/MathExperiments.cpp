@@ -1660,6 +1660,39 @@ void partialFractionExpansion()
 
 void partialFractionExpansion2()
 {
+  // Here, i implement a prototype of my new algorithm for a partial fraction expansion with 
+  // multiple poles (see PartialFractions.txt in the Notes folder)
+
+  //typedef RAPT::rsPolynomial<double> Poly;
+  typedef std::complex<double> Complex;
+  typedef std::vector<Complex> VecC;
+  typedef std::vector<int> VecI;
+
+  // inputs:
+  VecC B = { -1,  5, -8,  3    };    // numerator
+  VecC A = {  2, -7,  9, -5, 1 };    // denominator (must be monic)
+  VecC p = {  1,  2 };               // distinct poles
+  VecI m = {  3,  1 };               // multiplicities of the poles
+
+  // output:
+  VecC r(4);                         // the residues (as flat array)
+
+  // intermediates:
+  VecC Aij(5);                       // A_i,j
+  VecC Aim(5);                       // A_i,mi
+  VecC Bij(5);                       // B - sum_k r_i,j+k * A_i,j+k,  k=1,...,mi-j
+  VecC Cij(5);                       // Bij / (x-p_i)^j
+
+
+
+
+  int dummy = 0; 
+}
+
+
+/*
+void partialFractionExpansion2()
+{
   // We try to recover the partial fraction expansion of the strictly proper rational function:
   // f(x) = 3/(x+5) - 4/(x+3) + 2/(x-1) + 5/(x-1)^2 - 3/(x-5)
   //      = P(x)/Q(x) = numerator(x) / denominator(x)
@@ -1686,6 +1719,7 @@ void partialFractionExpansion2()
   // todo: turn into unit test - done - this function is now obslete - delete it
   int dummy = 0;  
 }
+*/
 
 void partialFractionExpansion3()
 {
