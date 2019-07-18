@@ -90,7 +90,6 @@ void rsRationalFunction<T>::partialFractionExpansion(
     rsPolynomial<std::complex<T>>::divide(num, numDeg, den, denDeg, polyCoeffs, num);
     numDeg = actualDegree(num, numDeg, tol); // new degree of numerator
     // todo: maybe zero out the higher coeffs that are close to zero totally
-
   }
   else if(polyCoeffs != nullptr)
     rsArray::fillWithZeros(polyCoeffs, denDeg+1);  // or should it be numDeg+1, does it matter?
@@ -101,11 +100,10 @@ void rsRationalFunction<T>::partialFractionExpansion(
 
   // dispatch between all-poles-distinct or poles-with-multiplicities algorithm: 
   if(denDeg == numDistinctPoles)
-    //partialFractionExpansionMultiplePoles(num, numDeg, den, denDeg, poles, multiplicities, numDistinctPoles, pfeCoeffs);    // ...preliminary - until function below is tested...
     partialFractionExpansionDistinctPoles(num, numDeg, den, denDeg, poles, pfeCoeffs);
   else
-    partialFractionExpansionMultiplePoles(num, numDeg, den, denDeg,
-      poles, multiplicities, numDistinctPoles, pfeCoeffs);
+    partialFractionExpansionMultiplePoles(
+      num, numDeg, den, denDeg, poles, multiplicities, numDistinctPoles, pfeCoeffs);
 }
 
 template<class T>
@@ -117,6 +115,7 @@ std::vector<std::complex<T>> rsRationalFunction<T>::partialFractions(
   typedef std::vector<std::complex<T>> Vec;
   Vec num = numerator;   // local copies
   Vec den = denominator; 
+  rsAssert(num.size() < den.size()); // function must be strictly proper
   Vec pfeCoeffs(den.size()-1);
   partialFractionExpansionDistinctPoles(
     &num[0], (int) num.size()-1, &den[0], (int) den.size()-1, &poles[0], &pfeCoeffs[0]);
@@ -133,6 +132,7 @@ std::vector<std::complex<T>> rsRationalFunction<T>::partialFractions(
   typedef std::vector<std::complex<T>> Vec;
   Vec num = numerator;   // local copies
   Vec den = denominator; 
+  rsAssert(num.size() < den.size()); // function must be strictly proper
   Vec pfeCoeffs(den.size()-1);
   partialFractionExpansionMultiplePoles(
     &num[0], (int) num.size()-1, &den[0], (int) den.size()-1, 
