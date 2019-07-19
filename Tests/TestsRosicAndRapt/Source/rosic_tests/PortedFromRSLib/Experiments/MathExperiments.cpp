@@ -1683,11 +1683,14 @@ void partialFractionExpansion2()
   // output:
   VecD r(4);                         // the residues (as flat array)
 
+
+  double tol = 1.e-13;
+
   // Computation:
   int ri = 0;                        // flat array index into r
   for(int i = 0; i < (int)p.size(); i++)
   {
-    Poly Li  = VecD{ -p[i], 1.0 };         // linear factor (x-pi)
+    Poly Li  = VecD{ -p[i], 1.0 };         // linear factor (x-p_i)
     Poly Bij = B;
     Poly Aij = A;                         // init this to A / Li^m[i] ...
     for(int k = 0; k < m[i]; k++)         // ..it may be a bit silly to do it like this
@@ -1696,10 +1699,16 @@ void partialFractionExpansion2()
     for(int j = m[i]; j >= 1; j--) {
       //r[ri] = Bij(p[i]) / Aij(p[i]);  // this is wrong!
       Poly Lij = Li^(m[i]-j);
-      Poly Cij = Bij / Lij;
-      r[ri] = Cij(p[i]) / Aim(p[i]);      // Aim(p[i]) can be evaluated outside the loop
+      Poly Cij = Bij / Lij;              // has nans because polynomial division works on trailing zeros
+      double num = Cij(p[i]);
+      double den = Aim(p[i]);            // can be evaluated outside the loop
+      r[ri] = num / den; 
       Bij = Bij - Aij * r[ri];
       Aij = Aij * Li;                     // ...gets more and more trailing zeros...
+
+      //Aij.removeTrailingZeros(tol);
+      //Bij.removeTrailingZeros(tol);
+
       ri++;
       // actually the index int r is wrong
 
