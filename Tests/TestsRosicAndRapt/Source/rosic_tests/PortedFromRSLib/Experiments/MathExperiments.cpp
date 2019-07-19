@@ -1669,9 +1669,9 @@ std::vector<double> partialFractions(
   typedef RAPT::rsPolynomial<double> Poly;
   typedef std::vector<double> VecD;
   typedef std::vector<int> VecI;
-  int N = A.getDegree();                    // degree of numerator = number of residues
-  VecD r(N);                                // array of residues
+  int N = A.getDegree();                    // degree of denominator = number of residues
   int k, j0 = 0;                            // flat array index into r and base-index
+  VecD r(N);                                // array of residues
   Poly Li, Bij, Aij, Lij, Cij;              // the involved polynomials
   double num, den;                          // numerator and denominator, evaluated at the pole
   for(int i = 0; i < (int)p.size(); i++) {  // loop over distinct poles
@@ -1703,39 +1703,30 @@ void partialFractionExpansion2()
   typedef std::vector<double> VecD;
   typedef std::vector<int> VecI;
 
-  // inputs:
+  // f(x) = 2/(x-1) + 3/(x-1)^2 + 1/(x-1)^3 + 1/(x-2)
+  //      = (3x^3 - 8x^2 + 5x - 1) / ((x-1)^3 * (x-2))
+  //      = (3x^3 - 8x^2 + 5x - 1) / (x^4 - 5x^3 + 9x^2 - 7x + 2)
   Poly B(VecD{ -1,  5, -8,  3   });         // numerator
   Poly A(VecD{  2, -7,  9, -5, 1});         // denominator (must be monic)
   VecD p =   {  1,  2 };                    // distinct poles
   VecI m =   {  3,  1 };                    // multiplicities of the poles
+  VecD r = partialFractions(B, A, p, m);    // find residues - should be: 2,3,1,1
 
-  // output:
-  VecD r(4);                                // the residues (as flat array)
+  // f(x) = 2/(x-1) + 3/(x-1)^2 + 4/(x-3)
+  //      = (6x^2 - 13x + 1) / ((x-1)^2 * (x-3))
+  //      = (6x^2 - 13x + 1) / (x^3 - 5x^2 + 7x - 3)
+  B = VecD({ 1, -13,  6   });
+  A = VecD({-3,   7, -5, 1});
+  p =      { 1,   3 };
+  m =      { 2,   1 };
+  r = partialFractions(B, A, p, m); // 2,3,4
 
-  // computation:
-  int k, j0 = 0;                            // flat array index into r and base-index
-  Poly Li, Bij, Aij, Lij, Cij;              // the involved polynomials
-  double num, den;                          // numerator and denominator, evaluated at the pole
-  for(int i = 0; i < (int)p.size(); i++) {
-    Li  = VecD{ -p[i], 1.0 };               // linear factor (x - p[i])
-    Bij = B;
-    Aij = A / (Li^m[i]);                    // parentheses needed, ^ has lower precedence than /
-    den = Aij(p[i]);                        // we need to evaluate this only once
-    for(int j = m[i]; j >= 1; j--) {
-      k    = j0+j-1;                        // index into r-array
-      Lij  = Li^(m[i]-j);                   // Shlemiel the painter strikes again
-      Cij  = Bij / Lij;                     // cancel common factor with denominator
-      num  = Cij(p[i]);                     // evaluate numerator
-      r[k] = num / den;                     // denominator stays the same inside the j-loop
-      Bij  = Bij - Aij * r[k];              // establish B-polynomial for next iteration
-      Aij  = Aij * Li;                      // establish A-polynomial for next iteration
-    }
-    j0 += m[i];                             // increment base-index
-  }
+  int dummy = 0; 
+
+
 
   // todo: 
-  // -turn algo into callable function - takes B,A,p,m arrays as inputs and returns r array
-  // -move to prototypes
+  // -move function to prototypes
   // -test it on more examples - maybe write unit-test
   // -implement alternatively the computation via l'Hospital - that might actually be more 
   //  efficient because we avoid a bunch of polynomial divisions
@@ -1747,10 +1738,6 @@ void partialFractionExpansion2()
   //  re-allocations
   // -in production code, we may check, if m[i] == 1 and if it is, do the simpler step like in the
   //  all-poles distinct case
-
-  r = partialFractions(B, A, p, m);
-
-  int dummy = 0; // r now contains the resiudes 2,3,1,1
 }
 
 
