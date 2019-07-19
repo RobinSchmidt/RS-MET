@@ -1658,6 +1658,41 @@ void partialFractionExpansion()
 }
 
 
+std::vector<double> partialFractions(
+  const RAPT::rsPolynomial<double>& B, 
+  const RAPT::rsPolynomial<double>& A, 
+  const std::vector<double>& p, 
+  const std::vector<int>& m)  
+{
+  // todo: sanity checks for inputs
+
+  typedef RAPT::rsPolynomial<double> Poly;
+  typedef std::vector<double> VecD;
+  typedef std::vector<int> VecI;
+  int N = A.getDegree();                    // degree of numerator = number of residues
+  VecD r(N);                                // array of residues
+  int k, j0 = 0;                            // flat array index into r and base-index
+  Poly Li, Bij, Aij, Lij, Cij;              // the involved polynomials
+  double num, den;                          // numerator and denominator, evaluated at the pole
+  for(int i = 0; i < (int)p.size(); i++) {  // loop over distinct poles
+    Li  = VecD{ -p[i], 1.0 };               // linear factor (x - p[i])
+    Bij = B;                                // needed for computation of numerator
+    Aij = A / (Li^m[i]);                    // parentheses needed, ^ has lower precedence than /
+    den = Aij(p[i]);                        // we need to evaluate this only once
+    for(int j = m[i]; j >= 1; j--) {        // loop over the exponents for pole i
+      k    = j0+j-1;                        // index into r-array
+      Lij  = Li^(m[i]-j);                   // Shlemiel the painter strikes again
+      Cij  = Bij / Lij;                     // cancel common factor with denominator
+      num  = Cij(p[i]);                     // evaluate numerator
+      r[k] = num / den;                     // denominator stays the same inside the j-loop
+      Bij  = Bij - Aij * r[k];              // establish B-polynomial for next iteration
+      Aij  = Aij * Li;                      // establish A-polynomial for next iteration
+    }
+    j0 += m[i];                             // increment base-index
+  }
+  return r;
+}
+
 void partialFractionExpansion2()
 {
   // Here, i implement a prototype of my new algorithm for a partial fraction expansion with 
@@ -1677,10 +1712,10 @@ void partialFractionExpansion2()
   // output:
   VecD r(4);                                // the residues (as flat array)
 
-  // Computation:
+  // computation:
   int k, j0 = 0;                            // flat array index into r and base-index
   Poly Li, Bij, Aij, Lij, Cij;              // the involved polynomials
-  double num, den;                          // numerator and denominator (evaluated at the pole)
+  double num, den;                          // numerator and denominator, evaluated at the pole
   for(int i = 0; i < (int)p.size(); i++) {
     Li  = VecD{ -p[i], 1.0 };               // linear factor (x - p[i])
     Bij = B;
@@ -1699,19 +1734,23 @@ void partialFractionExpansion2()
   }
 
   // todo: 
-  // -turn algo into callable function
+  // -turn algo into callable function - takes B,A,p,m arrays as inputs and returns r array
   // -move to prototypes
   // -test it on more examples - maybe write unit-test
   // -implement alternatively the computation via l'Hospital - that might actually be more 
-  //  efficient because we avoid a bunch polynomial divisions
+  //  efficient because we avoid a bunch of polynomial divisions
   // -analyze scaling - i think, it's still quadratic in the degree of the num and/or denom due to
   //  the polynomial operations in the inner loop (which are themsleves linear in the degree)
   //  ->try, if may get it down to linear by re-using/accumulating variables from previous
   //    iterations
   // -implement production versions that operate on raw arrays and avoid unnecesarry memory
   //  re-allocations
+  // -in production code, we may check, if m[i] == 1 and if it is, do the simpler step like in the
+  //  all-poles distinct case
 
-  int dummy = 0; 
+  r = partialFractions(B, A, p, m);
+
+  int dummy = 0; // r now contains the resiudes 2,3,1,1
 }
 
 

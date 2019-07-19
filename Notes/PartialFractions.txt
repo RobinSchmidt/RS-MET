@@ -155,11 +155,11 @@ r11 = ----|    = --- = 2
       x-2 |x=1   -1
 
 gives the same result, as it should. Done. We have found all 3 coeffs for the triple pole at x=1 
-without invoking the residue rule and with solving a linear system of equations. All we needed to 
-do is to add polynomials and find derivatives of polynomials or do divisions of a polynomial by a
-monomial. It seems that the route via factoring-out method is more attractive algorithmically than
-the derivative route because the involved polynomials tended to have smaller coeffs ...but does 
-that actually matter - maybe implement both and do precision- and performance comparisons
+without invoking the residue rule and without solving a linear system of equations. All we needed 
+to do is to add polynomials and find derivatives of polynomials or do divisions of a polynomial by 
+a monomial. It seems that the route via factoring-out method is more attractive algorithmically 
+than the derivative route because the involved polynomials tended to have smaller coeffs ...but 
+does that actually matter - maybe implement both and do precision- and performance comparisons
 
 ---------------------------------------------------------------------------------------------------
 
@@ -171,7 +171,7 @@ r13: ----, r12: ----------------, r11: ----------------------------------
      x-2          (x-2)*(x-1)                   (x-2)*(x-1)^2
      
 i'm not using an equals sign here because that wouldn't make sense - the rhs are all still 
-functions of x. To compute the rij values, we had to plug the pole at x=1 into these formulas. 
+functions of x. To compute the rij values, we had to plug the pole at x=1 into these expressions. 
 The first one works as is. The second one requires invoking l'Hospital once or cancel a common 
 factor of (x-1) in numerator and denominator once. The third requires to take these steps twice. 
 We can see a pattern here. To establish a general formula, we introduce the notation:
