@@ -130,6 +130,12 @@ public:
     return *this;
   }
 
+
+  /** Multiplies a number and a polynomial. */
+  rsPolynomial<T> operator*(const T& k) const {
+    return rsPolynomial<T>(k*coeffs);
+  }
+
   /** Allow the rsPolynomial object to be converted to a (const) std::vector of coefficients. */
   operator const std::vector<T>&() const { return coeffs; }
   // todo: maybe have a non-const version?

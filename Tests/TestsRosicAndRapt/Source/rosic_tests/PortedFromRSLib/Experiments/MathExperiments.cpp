@@ -1689,11 +1689,20 @@ void partialFractionExpansion2()
   {
     Poly Li  = VecD{ -p[i], 1.0 };         // linear factor (x-pi)
     Poly Bij = B;
-    //Poly Aij = A;                 // init this to A / Li^m[i]
+    Poly Aij = A;                         // init this to A / Li^m[i] ...
+    for(int k = 0; k < m[i]; k++)         // ..it may be a bit silly to do it like this
+      Aij = Aij / Li;                     // ...but this is proof-of-concept code
+
+
 
     for(int j = m[i]; j >= 1; j--)
     {
+      //r[ri] = Bij(p[i]) / Aij(p[i]);  // this is wrong!
 
+      //r[ri] = (Bij(p[i]) / Li^(m[i]-j)) / Aij(p[i]); // this needs the operator ^ to be defined
+
+      Bij = Bij - Aij * r[ri];
+      Aij = Aij * Li;                     // ...gets more and more trailing zeros...
       ri++;
     }
   }
