@@ -1657,13 +1657,6 @@ void partialFractionExpansion()
   // http://people.math.sfu.ca/~kya17/teaching/math343/3-343.pdf
 }
 
-template<class T>
-std::vector<T> polyDiv(std::vector<T> p, std::vector<T> d, T tol, int numTimes)
-{
-
-
-}
-
 
 void partialFractionExpansion2()
 {
@@ -1686,34 +1679,41 @@ void partialFractionExpansion2()
 
 
   // Computation:
-  int ri = 0;                        // flat array index into r
+  //int ri = 0;                        // flat array index into r
+  int j0 = 0;
   for(int i = 0; i < (int)p.size(); i++)
   {
     Poly Li  = VecD{ -p[i], 1.0 };         // linear factor (x-p_i)
     Poly Bij = B;
-    Poly Aij = A;                         // init this to A / Li^m[i] ...
-    for(int k = 0; k < m[i]; k++)         // ..it may be a bit silly to do it like this
-      Aij = Aij / Li;                     // ...but this is proof-of-concept code
+    Poly Aij = A;                          // init this to A / Li^m[i] ...
+    for(int k = 0; k < m[i]; k++)          // ..it may be a bit silly to do it like this
+      Aij = Aij / Li;                      // ...but this is proof-of-concept code
     Poly Aim = Aij;
     for(int j = m[i]; j >= 1; j--) {
-      Poly Lij = Li^(m[i]-j);
-      Lij.truncateTrailingZeros(tol);    // why does this even have trailing zeros?
+      int ri = j0+j-1;                     // index into r-array
+      Poly Lij = Li^(m[i]-j);              // Shlemiel the painter strikes again
+      Lij.truncateTrailingZeros(tol);      // why does this even have trailing zeros?
       Poly Cij = Bij / Lij;
       double num = Cij(p[i]);
-      double den = Aim(p[i]);            // can be evaluated outside the loop
+      double den = Aim(p[i]);              // can be evaluated outside the loop
       r[ri] = num / den; 
       Bij = Bij - Aij * r[ri];
-      Aij = Aij * Li;                     // ...gets more and more trailing zeros...
+      Aij = Aij * Li;
       Aij.truncateTrailingZeros(tol);
       Bij.truncateTrailingZeros(tol);
-      ri++;
-      // actually the index int r is wrong - but we do get the right numbers - just fix the order!
     }
+    j0 += m[i];
   }
 
 
-  // todo: implement alternatively the computation via l'Hospital - that might actually be more 
-  // efficient because we avoid a bunch polynomial divisions
+  // todo: 
+  // -clean up - pre-declare varibales - makes code cleaner
+  // -check, why we need Lij.truncateTrailingZeros
+  // -comment computational steps
+  // -turn algo into callable function
+  // -move to prototypes
+  // -implement alternatively the computation via l'Hospital - that might actually be more 
+  //  efficient because we avoid a bunch polynomial divisions
 
   int dummy = 0; 
 }
