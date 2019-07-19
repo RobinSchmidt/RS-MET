@@ -1663,51 +1663,48 @@ void partialFractionExpansion2()
   // Here, i implement a prototype of my new algorithm for a partial fraction expansion with 
   // multiple poles (see PartialFractions.txt in the Notes folder)
 
+  // shorthands for convenience:
   typedef RAPT::rsPolynomial<double> Poly;
   typedef std::vector<double> VecD;
   typedef std::vector<int> VecI;
 
   // inputs:
-  Poly B(VecD{ -1,  5, -8,  3   });  // numerator
-  Poly A(VecD{  2, -7,  9, -5, 1});  // denominator (must be monic)
-  VecD p =   {  1,  2 };             // distinct poles
-  VecI m =   {  3,  1 };             // multiplicities of the poles
-  double tol = 1.e-13;
+  Poly B(VecD{ -1,  5, -8,  3   });         // numerator
+  Poly A(VecD{  2, -7,  9, -5, 1});         // denominator (must be monic)
+  VecD p =   {  1,  2 };                    // distinct poles
+  VecI m =   {  3,  1 };                    // multiplicities of the poles
 
   // output:
-  VecD r(4);                         // the residues (as flat array)
-
+  VecD r(4);                                // the residues (as flat array)
 
   // Computation:
   int k, j0 = 0;                            // flat array index into r and base-index
-  Poly Li, Bij, Aij, Aim, Lij, Cij;         // the involved polynomials
+  Poly Li, Bij, Aij, Lij, Cij;              // the involved polynomials
   double num, den;                          // numerator and denominator (evaluated at the pole)
   for(int i = 0; i < (int)p.size(); i++) {
     Li  = VecD{ -p[i], 1.0 };               // linear factor (x-p_i)
     Bij = B;
-    Aij = A;                                // init this to A / Li^m[i] ...
-    for(int k = 0; k < m[i]; k++)           // ..it may be a bit silly to do it like this
-      Aij = Aij / Li;                       // ...but this is proof-of-concept code
-    Aim = Aij;
+
+    Aij = A;                                // we need to init this to A / Li^m[i]...
+    for(int k = 0; k < m[i]; k++)           // ..it may be a bit silly to do it like this..
+      Aij = Aij / Li;                       // ..but this is proof-of-concept code..
+
+    //Aij = A / Li^m[i];                    // doesn't work - why?
+
+    den = Aij(p[i]);
     for(int j = m[i]; j >= 1; j--) {
       k    = j0+j-1;                        // index into r-array
       Lij  = Li^(m[i]-j);                   // Shlemiel the painter strikes again
-      //Lij.truncateTrailingZeros(tol);       // why does this even have trailing zeros?
       Cij  = Bij / Lij;
       num  = Cij(p[i]);
-      den  = Aim(p[i]);                     // can be evaluated outside the loop
       r[k] = num / den; 
-      Bij  = Bij - Aij * r[k];
-      Aij  = Aij * Li;
-      Aij.truncateTrailingZeros(tol);
-      Bij.truncateTrailingZeros(tol);
+      Bij  = Bij - Aij * r[k];              // establish B-polynomial for next iteration
+      Aij  = Aij * Li;                      // establish A-polynomial for next iteration
     }
     j0 += m[i];
   }
 
-
   // todo: 
-  // -comment computational steps
   // -turn algo into callable function
   // -move to prototypes
   // -implement alternatively the computation via l'Hospital - that might actually be more 
