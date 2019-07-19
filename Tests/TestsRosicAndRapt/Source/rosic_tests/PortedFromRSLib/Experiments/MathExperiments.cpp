@@ -1679,26 +1679,26 @@ void partialFractionExpansion2()
 
 
   // Computation:
-  //int ri = 0;                        // flat array index into r
-  int j0 = 0;
-  for(int i = 0; i < (int)p.size(); i++)
-  {
-    Poly Li  = VecD{ -p[i], 1.0 };         // linear factor (x-p_i)
-    Poly Bij = B;
-    Poly Aij = A;                          // init this to A / Li^m[i] ...
-    for(int k = 0; k < m[i]; k++)          // ..it may be a bit silly to do it like this
-      Aij = Aij / Li;                      // ...but this is proof-of-concept code
-    Poly Aim = Aij;
+  int k, j0 = 0;                            // flat array index into r and base-index
+  Poly Li, Bij, Aij, Aim, Lij, Cij;         // the involved polynomials
+  double num, den;                          // numerator and denominator (evaluated at the pole)
+  for(int i = 0; i < (int)p.size(); i++) {
+    Li  = VecD{ -p[i], 1.0 };               // linear factor (x-p_i)
+    Bij = B;
+    Aij = A;                                // init this to A / Li^m[i] ...
+    for(int k = 0; k < m[i]; k++)           // ..it may be a bit silly to do it like this
+      Aij = Aij / Li;                       // ...but this is proof-of-concept code
+    Aim = Aij;
     for(int j = m[i]; j >= 1; j--) {
-      int ri = j0+j-1;                     // index into r-array
-      Poly Lij = Li^(m[i]-j);              // Shlemiel the painter strikes again
-      Lij.truncateTrailingZeros(tol);      // why does this even have trailing zeros?
-      Poly Cij = Bij / Lij;
-      double num = Cij(p[i]);
-      double den = Aim(p[i]);              // can be evaluated outside the loop
-      r[ri] = num / den; 
-      Bij = Bij - Aij * r[ri];
-      Aij = Aij * Li;
+      k    = j0+j-1;                        // index into r-array
+      Lij  = Li^(m[i]-j);                   // Shlemiel the painter strikes again
+      //Lij.truncateTrailingZeros(tol);       // why does this even have trailing zeros?
+      Cij  = Bij / Lij;
+      num  = Cij(p[i]);
+      den  = Aim(p[i]);                     // can be evaluated outside the loop
+      r[k] = num / den; 
+      Bij  = Bij - Aij * r[k];
+      Aij  = Aij * Li;
       Aij.truncateTrailingZeros(tol);
       Bij.truncateTrailingZeros(tol);
     }
@@ -1707,13 +1707,16 @@ void partialFractionExpansion2()
 
 
   // todo: 
-  // -clean up - pre-declare varibales - makes code cleaner
-  // -check, why we need Lij.truncateTrailingZeros
   // -comment computational steps
   // -turn algo into callable function
   // -move to prototypes
   // -implement alternatively the computation via l'Hospital - that might actually be more 
   //  efficient because we avoid a bunch polynomial divisions
+  // -test it on more examples
+  // -analyze scaling - i think, it's still quadratic in the degree of the num and/or denom due to
+  //  the polynomial operations in the inner loop (which are themsleves linear in the degree)
+  //  ->try, if may get it down to linear by re-using/accumulating variables from previous
+  //    iterations
 
   int dummy = 0; 
 }

@@ -94,7 +94,8 @@ public:
 
   /** Multiplies two polynomials. */
   rsPolynomial<T> operator*(const rsPolynomial<T>& q) const {
-    rsPolynomial<T> r(getDegree() + q.getDegree() + 1, false);
+    //rsPolynomial<T> r(getDegree() + q.getDegree() + 1, false);
+    rsPolynomial<T> r(getDegree() + q.getDegree(), false);
     multiply(coeffs.data(), getDegree(), q.coeffs.data(), q.getDegree(), r.coeffs.data());
     return r;
   }
