@@ -227,6 +227,12 @@ public:
 
   // todo: evaluateDerivative, evaluateIntegral (or AntiDerivative)
 
+  /** Given a coefficient array p of length maxDegree+1, this function returns the actual degree
+  of the polynomial - meaning that trailing zeros in the array don't count. So it's the degree 
+  that takes only into account the non-zero coefficients. */
+  //static int actualDegree(T* p, int maxDegree, T tol = T(0));
+  // maybe move to an "Inquiry" section ...or "Misc"
+
   //-----------------------------------------------------------------------------------------------
   /** \name Arithmetic */
 

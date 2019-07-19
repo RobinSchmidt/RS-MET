@@ -1679,12 +1679,11 @@ void partialFractionExpansion2()
   Poly A(VecD{  2, -7,  9, -5, 1});  // denominator (must be monic)
   VecD p =   {  1,  2 };             // distinct poles
   VecI m =   {  3,  1 };             // multiplicities of the poles
+  double tol = 1.e-13;
 
   // output:
   VecD r(4);                         // the residues (as flat array)
 
-
-  double tol = 1.e-13;
 
   // Computation:
   int ri = 0;                        // flat array index into r
@@ -1697,54 +1696,24 @@ void partialFractionExpansion2()
       Aij = Aij / Li;                     // ...but this is proof-of-concept code
     Poly Aim = Aij;
     for(int j = m[i]; j >= 1; j--) {
-      //r[ri] = Bij(p[i]) / Aij(p[i]);  // this is wrong!
       Poly Lij = Li^(m[i]-j);
-      Poly Cij = Bij / Lij;              // has nans because polynomial division works on trailing zeros
+      Lij.truncateTrailingZeros(tol);    // why does this even have trailing zeros?
+      Poly Cij = Bij / Lij;
       double num = Cij(p[i]);
       double den = Aim(p[i]);            // can be evaluated outside the loop
       r[ri] = num / den; 
       Bij = Bij - Aij * r[ri];
       Aij = Aij * Li;                     // ...gets more and more trailing zeros...
-
-      //Aij.removeTrailingZeros(tol);
-      //Bij.removeTrailingZeros(tol);
-
+      Aij.truncateTrailingZeros(tol);
+      Bij.truncateTrailingZeros(tol);
       ri++;
-      // actually the index int r is wrong
-
-
+      // actually the index int r is wrong - but we do get the right numbers - just fix the order!
     }
   }
 
 
-  /*
-  VecC B = { -1,  5, -8,  3    };    // numerator
-  VecC A = {  2, -7,  9, -5, 1 };    // denominator (must be monic)
-
-
-
-
-  // intermediates:
-  //VecC Aij(5);                       // A_i,j
-  VecC Aim(5);                       // A_i,mi
-  //VecC Bij(5);                       // B - sum_k r_i,j+k * A_i,j+k,  k=1,...,mi-j
-  VecC Cij(5);                       // Bij / (x-p_i)^j
-  int ri = 0;                        // flat array index into r
-  for(int i = 0; i < (int)p.size(); i++)
-  {
-    VecC Aij = A;
-    VecC Bij = B;
-    VecC Li  = { -p[i], 1 };         // linear factor x-pi
-
-    for(int j = m[i]; j >= 1; j--)
-    {
-
-      ri++;
-    }
-  }
-  */
-
-
+  // todo: implement alternatively the computation via l'Hospital - that might actually be more 
+  // efficient because we avoid a bunch polynomial divisions
 
   int dummy = 0; 
 }

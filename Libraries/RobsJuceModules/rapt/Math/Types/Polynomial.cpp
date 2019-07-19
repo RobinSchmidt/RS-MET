@@ -141,6 +141,16 @@ T rsPolynomial<T>::evaluateWithTwoDerivativesAndError(
   return err;
 }
 
+/*
+template<class T>
+int rsPolynomial<T>::actualDegree(T* p, int maxDegree, T tol)
+{
+  int i = maxDegree;
+  while(rsAbs(p[i]) <= tol && i > 0)
+    i--;
+  return i;
+}
+*/
 //-------------------------------------------------------------------------------------------------
 // arithmetic:
 
