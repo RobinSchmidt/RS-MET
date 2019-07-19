@@ -131,9 +131,20 @@ public:
   }
 
 
-  /** Multiplies a number and a polynomial. */
-  rsPolynomial<T> operator*(const T& k) const {
+  /** Multiplies a polynomial and a number. */
+  rsPolynomial<T> operator*(const T& k) const 
+  {
     return rsPolynomial<T>(k*coeffs);
+  }
+
+  /** Raises a polynomial to a (non-negative) integer power. */
+  rsPolynomial<T> operator^(int k) const 
+  {
+    // todo: make this more efficient - only one memory allocation is needed
+    rsPolynomial<T> r(std::vector<T>({T(1)}));
+    for(int i = 1; i <= k; i++)
+      r = r * (*this);
+    return r;
   }
 
   /** Allow the rsPolynomial object to be converted to a (const) std::vector of coefficients. */

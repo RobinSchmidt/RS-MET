@@ -1683,7 +1683,7 @@ void partialFractionExpansion2()
   // output:
   VecD r(4);                         // the residues (as flat array)
 
-  // Computaion:
+  // Computation:
   int ri = 0;                        // flat array index into r
   for(int i = 0; i < (int)p.size(); i++)
   {
@@ -1692,18 +1692,18 @@ void partialFractionExpansion2()
     Poly Aij = A;                         // init this to A / Li^m[i] ...
     for(int k = 0; k < m[i]; k++)         // ..it may be a bit silly to do it like this
       Aij = Aij / Li;                     // ...but this is proof-of-concept code
-
-
-
-    for(int j = m[i]; j >= 1; j--)
-    {
+    Poly Aim = Aij;
+    for(int j = m[i]; j >= 1; j--) {
       //r[ri] = Bij(p[i]) / Aij(p[i]);  // this is wrong!
-
-      //r[ri] = (Bij(p[i]) / Li^(m[i]-j)) / Aij(p[i]); // this needs the operator ^ to be defined
-
+      Poly Lij = Li^(m[i]-j);
+      Poly Cij = Bij / Lij;
+      r[ri] = Cij(p[i]) / Aim(p[i]);      // Aim(p[i]) can be evaluated outside the loop
       Bij = Bij - Aij * r[ri];
       Aij = Aij * Li;                     // ...gets more and more trailing zeros...
       ri++;
+      // actually the index int r is wrong
+
+
     }
   }
 
