@@ -138,7 +138,9 @@ public:
     return rsPolynomial<T>(k*coeffs);
   }
 
-  /** Raises a polynomial to a (non-negative) integer power. */
+  /** Raises a polynomial to a (non-negative) integer power. ...Hmm...it's perhaps no good idea to 
+  implement the operator that way because it has lower precedence than *, / in C++ - this can be 
+  confusing - maybe write a "pow" function instead. */
   rsPolynomial<T> operator^(int k) const 
   {
     // todo: make this more efficient - only one memory allocation is needed

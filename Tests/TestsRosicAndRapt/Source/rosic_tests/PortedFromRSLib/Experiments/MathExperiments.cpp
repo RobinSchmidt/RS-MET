@@ -1682,38 +1682,34 @@ void partialFractionExpansion2()
   Poly Li, Bij, Aij, Lij, Cij;              // the involved polynomials
   double num, den;                          // numerator and denominator (evaluated at the pole)
   for(int i = 0; i < (int)p.size(); i++) {
-    Li  = VecD{ -p[i], 1.0 };               // linear factor (x-p_i)
+    Li  = VecD{ -p[i], 1.0 };               // linear factor (x - p[i])
     Bij = B;
-
-    Aij = A;                                // we need to init this to A / Li^m[i]...
-    for(int k = 0; k < m[i]; k++)           // ..it may be a bit silly to do it like this..
-      Aij = Aij / Li;                       // ..but this is proof-of-concept code..
-
-    //Aij = A / Li^m[i];                    // doesn't work - why?
-
-    den = Aij(p[i]);
+    Aij = A / (Li^m[i]);                    // parentheses needed, ^ has lower precedence than /
+    den = Aij(p[i]);                        // we need to evaluate this only once
     for(int j = m[i]; j >= 1; j--) {
       k    = j0+j-1;                        // index into r-array
       Lij  = Li^(m[i]-j);                   // Shlemiel the painter strikes again
-      Cij  = Bij / Lij;
-      num  = Cij(p[i]);
-      r[k] = num / den; 
+      Cij  = Bij / Lij;                     // cancel common factor with denominator
+      num  = Cij(p[i]);                     // evaluate numerator
+      r[k] = num / den;                     // denominator stays the same inside the j-loop
       Bij  = Bij - Aij * r[k];              // establish B-polynomial for next iteration
       Aij  = Aij * Li;                      // establish A-polynomial for next iteration
     }
-    j0 += m[i];
+    j0 += m[i];                             // increment base-index
   }
 
   // todo: 
   // -turn algo into callable function
   // -move to prototypes
+  // -test it on more examples - maybe write unit-test
   // -implement alternatively the computation via l'Hospital - that might actually be more 
   //  efficient because we avoid a bunch polynomial divisions
-  // -test it on more examples
   // -analyze scaling - i think, it's still quadratic in the degree of the num and/or denom due to
   //  the polynomial operations in the inner loop (which are themsleves linear in the degree)
   //  ->try, if may get it down to linear by re-using/accumulating variables from previous
   //    iterations
+  // -implement production versions that operate on raw arrays and avoid unnecesarry memory
+  //  re-allocations
 
   int dummy = 0; 
 }
