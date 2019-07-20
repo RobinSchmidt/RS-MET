@@ -1670,6 +1670,7 @@ bool checkPartialFractionInputs(
   r &= A.getDegree() == RAPT::rsSum(m);  // pole multiplicities must sum to denominator degree
   r &= A.isMonic();                      // denominator must be monic
   //r &= A.hasRootsAt(p, m, tol); // should evaluate also derivatives for multiple roots
+  // have function isRootWithMultiplicity(r, m, tol) ...or something
   return r;
 }
 
@@ -1681,33 +1682,32 @@ std::vector<double> partialFractions(
 {
   rsAssert(checkPartialFractionInputs(B, A, p, m)); // sanity checks for inputs
   typedef RAPT::rsPolynomial<double> Poly;
-  typedef std::vector<double> VecD;
-  typedef std::vector<int> VecI;
-  int N = A.getDegree();                    // degree of denominator = number of residues
-  int k, j0 = 0;                            // flat array index into r and base-index
-  VecD r(N);                                // array of residues
-  Poly Li, Bij, Aij, Lij, Cij;              // the involved polynomials
-  double num, den;                          // numerator and denominator, evaluated at the pole
-  for(int i = 0; i < (int)p.size(); i++) {  // loop over distinct poles
-    Li  = VecD{ -p[i], 1.0 };               // linear factor (x - p[i])
-    Bij = B;                                // needed for computation of numerator
-    Aij = A / (Li^m[i]);                    // parentheses needed, ^ has lower precedence than /
-    den = Aij(p[i]);                        // we need to evaluate this only once
-    for(int j = m[i]; j >= 1; j--) {        // loop over the exponents for pole i
-      k    = j0+j-1;                        // index into r-array
-      Lij  = Li^(m[i]-j);                   // Shlemiel the painter strikes again
-      Cij  = Bij / Lij;                     // cancel common factor with denominator
-      num  = Cij(p[i]);                     // evaluate numerator
-      r[k] = num / den;                     // denominator stays the same inside the j-loop
-      Bij  = Bij - Aij * r[k];              // establish B-polynomial for next iteration
-      Aij  = Aij * Li;                      // establish A-polynomial for next iteration
+  int N = A.getDegree();                     // degree of denominator = number of residues
+  int k, j0 = 0;                             // flat array index into r and base-index
+  std::vector<double> r(N);                  // array of residues
+  Poly Li, Bij, Aij, Lij, Cij;               // the involved polynomials
+  double num, den;                           // numerator and denominator, evaluated at the pole
+  for(int i = 0; i < (int)p.size(); i++) {   // loop over distinct poles
+    Li  = std::vector<double>{ -p[i], 1.0 }; // linear factor (x - p[i])
+    Bij = B;                                 // needed for computation of numerator
+    Aij = A / (Li^m[i]);                     // parentheses needed, ^ has lower precedence than /
+    den = Aij(p[i]);                         // we need to evaluate this only once
+    for(int j = m[i]; j >= 1; j--) {         // loop over the exponents for pole i
+      k    = j0+j-1;                         // index into r-array
+      Lij  = Li^(m[i]-j);                    // Shlemiel the painter strikes again
+      Cij  = Bij / Lij;                      // cancel common factor with denominator
+      num  = Cij(p[i]);                      // evaluate numerator
+      r[k] = num / den;                      // denominator stays the same inside the j-loop
+      Bij  = Bij - Aij * r[k];               // establish B-polynomial for next iteration
+      Aij  = Aij * Li;                       // establish A-polynomial for next iteration
     }
-    j0 += m[i];                             // increment base-index
+    j0 += m[i];                              // increment base-index
   }
   return r;
 }
 
-// 2nd version, using l'Hospital instead of cancellation - only the differences are commented:
+// 2nd version, using l'Hospital instead of cancellation - the algorithm has the same overall 
+// struture, so only the differences to the version above are commented:
 std::vector<double> partialFractions2( 
   const RAPT::rsPolynomial<double>& B, 
   const RAPT::rsPolynomial<double>& A, 
@@ -1716,15 +1716,13 @@ std::vector<double> partialFractions2(
 {
   rsAssert(checkPartialFractionInputs(B, A, p, m));
   typedef RAPT::rsPolynomial<double> Poly;
-  typedef std::vector<double> VecD;
-  typedef std::vector<int> VecI;
   int N = A.getDegree();
   int k, j0 = 0;
-  VecD r(N);
+  std::vector<double> r(N);
   Poly Li, Bij, Aij, Lij;                        // no Cij anymore
   double num, den;
   for(int i = 0; i < (int)p.size(); i++) { 
-    Li  = VecD{ -p[i], 1.0 };
+    Li  = std::vector<double>{ -p[i], 1.0 };
     Bij = B; 
     Aij = A / (Li^m[i]);
     for(int j = m[i]; j >= 1; j--) {
@@ -1740,7 +1738,6 @@ std::vector<double> partialFractions2(
   }
   return r;
 }
-
 
 void partialFractionExpansion2()
 {
@@ -1759,7 +1756,8 @@ void partialFractionExpansion2()
   Poly A(VecD{  2, -7,  9, -5, 1});         // denominator (must be monic)
   VecD p =   {  1,  2 };                    // distinct poles
   VecI m =   {  3,  1 };                    // multiplicities of the poles
-  VecD r = partialFractions(B, A, p, m);    // find residues - should be: 2,3,1,1
+  VecD r = partialFractions( B, A, p, m);   // find residues - should be: 2,3,1,1
+  r      = partialFractions2(B, A, p, m);   // 2nd version of algo
 
   // f(x) = 2/(x-1) + 3/(x-1)^2 + 4/(x-3)
   //      = (6x^2 - 13x + 1) / ((x-1)^2 * (x-3))
@@ -1768,17 +1766,14 @@ void partialFractionExpansion2()
   A = VecD({-3,   7, -5, 1});
   p =      { 1,   3 };
   m =      { 2,   1 };
-  r = partialFractions(B, A, p, m); // 2,3,4
+  r = partialFractions( B, A, p, m); // 2,3,4
+  r = partialFractions2(B, A, p, m);
 
   int dummy = 0; 
-
-
 
   // todo: 
   // -move function to prototypes
   // -test it on more examples - maybe write unit-test
-  // -implement alternatively the computation via l'Hospital - that might actually be more 
-  //  efficient because we avoid a bunch of polynomial divisions
   // -analyze scaling - i think, it's still quadratic in the degree of the num and/or denom due to
   //  the polynomial operations in the inner loop (which are themsleves linear in the degree)
   //  ->try, if may get it down to linear by re-using/accumulating variables from previous
@@ -1788,7 +1783,6 @@ void partialFractionExpansion2()
   // -in production code, we may check, if m[i] == 1 and if it is, do the simpler step like in the
   //  all-poles distinct case
 }
-
 
 /*
 void partialFractionExpansion2()
