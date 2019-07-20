@@ -210,47 +210,6 @@ end up at A_i,mi - so we may compute that denominator once. So, we may also writ
 r_i,j = ---------------------------------------------------------------------------|
                                    A_i,mi (x)                                      |x=p_i
 
-...verify this...perhaps best by implementing and unit-testing it
-
-
-
-
-
----------------------------------------------------------------------------------------------------
-from here only scribbles / scratchpad stuff - may be wrong...
-
-
-   B(x) 
---------- = Z1 + r_i,mi + Z2
-A_i,mi(x)
-
-we use Z1,Z2 for terms that will eventually go to zero and take some freedom in using or not using
-underscores to signify a subscript and to use or don't use a comma between two subscripts - the
-symbols should be read in way such they make sense.
-
-            B(x)
-r_i,mi = ----------
-          A_i,mi(x)
-
-
- B(x)         r_i1*(x-p_i)^m_i
------- = Z1 + ---------------- + ... + r_ij     +   Z2
-A_ij(x)            x-p_i
-          
- 
-        B(x)     r_i,j+1     r_i,j+2              r_i,mi
-r_ij = ------- - --------- - --------- - ... - --------------
-       A_ik(x)   (x-p_i)^1   (x-p_i)^2         (x-p_i)^(mi-1)
-
-       
-        B(x)            r_i,j+l
-r_ij = ------- - sum_l ---------
-       A_ik(x)         (x-p_i)^l
-       
-       
-       
-where k=mi-j ..or mi-j+1?
-      
 
 
 

@@ -62,12 +62,24 @@ public:
   //int getMaxOrder() const { return (int)coeffs.size()-1; }
   // deprecate this 
 
+  /** Returns the degree of the polynomial, defined as... */
   int getDegree() const { return (int)coeffs.size()-1; }
   // should take into account traling zeros ..or maybe have a boolean flag
   // "takeZeroCoeffsIntoAccount" which defaults to false...or maybe it shouldn't have any default
   // value - client code must be explicit...or maybe have functions getAllocatedDegree, 
   // getActualDegree(tolerance)...or getDegree has an optional parameter for the tolerance 
   // defaulting to 0
+
+  /** Returns true, iff this polynomial is monic, i.e. the coefficient for the highest power (the
+  leading coefficient) is unity. Monic polynomials are important because they arise when 
+  multiplying out the product form. */
+  bool isMonic() const { return rsLast(coeffs) == T(1); }
+  // what if we have trailing zeros in the coeff array?
+
+
+  T derivativeAt(const T& x, int order) 
+  { return evaluateDerivative(x, &coeffs[0], getDegree(), order); }
+
 
   //T definiteIntegral(const T& lowerLimit, const T& upperLimit);
 
@@ -194,6 +206,17 @@ public:
   out root (at the given x), i.e. evaluating g(x) = f(x)/(x-r_i) where r_i is the i-th root. */
   static std::complex<T> evaluateFromRootsOneLeftOut(const std::complex<T>& x,
     const std::complex<T>* roots, int numRoots, int leaveOutIndex);
+
+  /** Evaluates the first derivative of the polynomial a at the given x. It's a convenience 
+  function that internally invokes evaluateWithDerivative and throws away the function value. So, 
+  if you need value *and* derivative value, it's better to call that function directly - it should 
+  be used only when really need *only* the value of the derivative. */
+  static inline T evaluateDerivative(const T& x, const T *a, int degree)
+  { T y, yd; evaluateWithDerivative(x, a, degree, &y, &yd); return yd; }
+
+  /** Evaluates the order-th derivative at the given x.... */
+  static inline T evaluateDerivative(const T& x, const T *a, int degree, int order)
+  { T y[32]; evaluateWithDerivatives(x, a, degree, y, order); return y[order]; }
 
   /** Evaluates the polynomial defined by the array of coefficients 'a' and its first derivative at
   argument 'x'. The value of the polynomial will be stored in y and the value of the derivative

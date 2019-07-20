@@ -1658,14 +1658,28 @@ void partialFractionExpansion()
 }
 
 
+// sanity checks for inputs to partialFractions
+bool checkPartialFractionInputs(
+  const RAPT::rsPolynomial<double>& B,
+  const RAPT::rsPolynomial<double>& A,
+  const std::vector<double>& p,
+  const std::vector<int>& m)
+{
+  bool r = true;
+  r &= B.getDegree() < A.getDegree();    // rational function must be strictly proper
+  r &= A.getDegree() == RAPT::rsSum(m);  // pole multiplicities must sum to denominator degree
+  r &= A.isMonic();                      // denominator must be monic
+  //r &= A.hasRootsAt(p, m, tol); // should evaluate also derivatives for multiple roots
+  return r;
+}
+
 std::vector<double> partialFractions(
   const RAPT::rsPolynomial<double>& B, 
   const RAPT::rsPolynomial<double>& A, 
   const std::vector<double>& p, 
   const std::vector<int>& m)  
 {
-  // todo: sanity checks for inputs
-
+  rsAssert(checkPartialFractionInputs(B, A, p, m)); // sanity checks for inputs
   typedef RAPT::rsPolynomial<double> Poly;
   typedef std::vector<double> VecD;
   typedef std::vector<int> VecI;
@@ -1692,6 +1706,41 @@ std::vector<double> partialFractions(
   }
   return r;
 }
+
+// 2nd version, using l'Hospital instead of cancellation - only the differences are commented:
+std::vector<double> partialFractions2( 
+  const RAPT::rsPolynomial<double>& B, 
+  const RAPT::rsPolynomial<double>& A, 
+  const std::vector<double>& p, 
+  const std::vector<int>& m)  
+{
+  rsAssert(checkPartialFractionInputs(B, A, p, m));
+  typedef RAPT::rsPolynomial<double> Poly;
+  typedef std::vector<double> VecD;
+  typedef std::vector<int> VecI;
+  int N = A.getDegree();
+  int k, j0 = 0;
+  VecD r(N);
+  Poly Li, Bij, Aij, Lij;                        // no Cij anymore
+  double num, den;
+  for(int i = 0; i < (int)p.size(); i++) { 
+    Li  = VecD{ -p[i], 1.0 };
+    Bij = B; 
+    Aij = A / (Li^m[i]);
+    for(int j = m[i]; j >= 1; j--) {
+      k    = j0+j-1;
+      Lij  = Li^(m[i]-j);
+      num  = Bij.derivativeAt(p[i], m[i]-j);
+      den  = Aij.derivativeAt(p[i], m[i]-j);     // den must now be evaluated for each j
+      r[k] = num / den;
+      Bij  = Bij - Aij * r[k];
+      Aij  = Aij * Li;
+    }
+    j0 += m[i]; 
+  }
+  return r;
+}
+
 
 void partialFractionExpansion2()
 {
