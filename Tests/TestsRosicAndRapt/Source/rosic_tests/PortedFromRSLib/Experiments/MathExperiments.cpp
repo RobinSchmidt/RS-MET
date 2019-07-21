@@ -1788,6 +1788,7 @@ void partialFractionExpansion2()
   double val;
   val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 0); //   6
   val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 1); //  15
+  val = Poly::evaluateDerivative(1.0, &testPoly[0], 5);    //  15
   val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 2); //  40
   val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 3); //  90
   val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 4); // 144

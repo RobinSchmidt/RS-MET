@@ -211,16 +211,13 @@ public:
   static std::complex<T> evaluateFromRootsOneLeftOut(const std::complex<T>& x,
     const std::complex<T>* roots, int numRoots, int leaveOutIndex);
 
-  /** Evaluates the first derivative of the polynomial a at the given x. It's a convenience 
-  function that internally invokes evaluateWithDerivative and throws away the function value. So, 
-  if you need value *and* derivative value, it's better to call that function directly - it should 
-  be used only when really need *only* the value of the derivative. */
-  static inline T evaluateDerivative(const T& x, const T *a, int degree)
-  { T y, yd; evaluateWithDerivative(x, a, degree, &y, &yd); return yd; }
+  /** Evaluates the first derivative of the polynomial a at the given x.  */
+  static inline T evaluateDerivative(const T& x, const T *a, int degree);
+  //{ T y, yd; evaluateWithDerivative(x, a, degree, &y, &yd); return yd; }
   // todo: implement it similar to evaluateDerivative that allows the order to be passed - the only
   // difference is that the product is replaced by a single term
 
-  /** Evaluates the order-th derivative at the given x.... */
+  /** Evaluates the order-th derivative at the given x. */
   static T evaluateDerivative(const T& x, const T *a, int degree, int order);
   //static inline T evaluateDerivative(const T& x, const T *a, int degree, int order)
   //{ T y[32]; evaluateWithDerivatives(x, a, degree, y, order); return y[order]; }

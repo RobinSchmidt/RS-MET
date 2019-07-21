@@ -95,6 +95,15 @@ std::complex<T> rsPolynomial<T>::evaluateFromRootsOneLeftOut(
 }
 
 template<class T>
+T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N)
+{
+  T y = T(N) * a[N];
+  for(int i = N-1; i >= 1; i--)
+    y = y*x + T(i) * a[i];
+  return y;
+}
+
+template<class T>
 T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N, int n)
 {
   T y = rsProduct(N-n+1, N) * a[N];
