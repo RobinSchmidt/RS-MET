@@ -70,15 +70,22 @@ public:
   // getActualDegree(tolerance)...or getDegree has an optional parameter for the tolerance 
   // defaulting to 0
 
+  /** Returns the leading coefficient, i.e. the coefficient that multiplies the highest power of 
+  x. */
+  T getLeadingCoeff() const { return rsLast(coeffs); }
+  // what if we have trailing zeros in the coeff array?
+
   /** Returns true, iff this polynomial is monic, i.e. the coefficient for the highest power (the
   leading coefficient) is unity. Monic polynomials are important because they arise when 
   multiplying out the product form. */
-  bool isMonic() const { return rsLast(coeffs) == T(1); }
-  // what if we have trailing zeros in the coeff array?
+  bool isMonic() const { return getLeadingCoeff() == T(1); }
+  // what if we have trailing zeros in the coeff array? should we have a tolerance?
 
-
+  /** Evaulates the order-th derivative of this polynomial at the given x. */
   T derivativeAt(const T& x, int order) 
   { return evaluateDerivative(x, &coeffs[0], getDegree(), order); }
+  // internally, this evaluates derivatives of all orders up to order - can a more efficient 
+  // algorithm be devised that avoids this? ...i think so
 
 
   //T definiteIntegral(const T& lowerLimit, const T& upperLimit);

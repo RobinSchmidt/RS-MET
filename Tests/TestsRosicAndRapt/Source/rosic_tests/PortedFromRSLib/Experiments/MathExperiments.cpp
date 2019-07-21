@@ -1719,7 +1719,7 @@ std::vector<double> partialFractions2(
   int N = A.getDegree();
   int k, j0 = 0;
   std::vector<double> r(N);
-  Poly Li, Bij, Aij, Lij;                        // no Cij anymore
+  Poly Li, Bij, Aij, Lij;                        // no Cij needed anymore
   double num, den;
   for(int i = 0; i < (int)p.size(); i++) { 
     Li  = std::vector<double>{ -p[i], 1.0 };
@@ -1737,6 +1737,19 @@ std::vector<double> partialFractions2(
     j0 += m[i]; 
   }
   return r;
+}
+
+template<class T>
+T polyDerivative(T x, T* a, int N, int n)  // N: degree, n: order of derivative
+{
+  //if(degree < 0) return T(0);  // maybe we should use rsAssert
+  T c = rsProduct(N-n+1, N);
+  T y = c * a[N];
+  for(int i = N-1; i >= n; i--) {
+    c = rsProduct(i-n+1, i);
+    y = y*x + c * a[i];
+  }
+  return y;
 }
 
 void partialFractionExpansion2()
@@ -1769,19 +1782,46 @@ void partialFractionExpansion2()
   r = partialFractions( B, A, p, m); // 2,3,4
   r = partialFractions2(B, A, p, m);
 
+  // f(x) = 1/(x-1)+2/(x-1)^2+3/(x-2)+4/(x-2)^2+5/(x-2)^3+6/(x-2)^4+7/(x-3)+8/(x-3)^2+9/(x-3)^3
+  //
+  //          11x^8 - 167x^7 + 1098x^6 - 4059x^5 + 9150x^4 - 12713x^3 + 10403x^2 - 4399x + 660
+  // = ----------------------------------------------------------------------------------------
+  //    x^9 - 19x^8 + 158x^7 -  754x^6 + 2273x^5 - 4483x^4 +  5776x^3 -  4680x^2 + 2160x - 432
+  B = VecD({ 660, -4399, 10403, -12713,  9150, -4059, 1098, -167,  11   });
+  A = VecD({-432,  2160, -4680,   5776, -4483,  2273, -754,  158, -19, 1});
+  p = { 1, 2, 3 };
+  m = { 2, 4, 3 };
+  r = partialFractions( B, A, p, m); // 1,2,3,4,5,6,7,8,9
+  r = partialFractions2(B, A, p, m);
+
+  // testing new algo to evaluate derivative of polynomial - move to unit tests:
+  VecD testPoly = { 1,1,1,1,1,1 };
+  double val;
+  val = polyDerivative(1.0, &testPoly[0], 5, 0);
+  val = polyDerivative(1.0, &testPoly[0], 5, 1);
+  val = polyDerivative(1.0, &testPoly[0], 5, 2);
+  val = polyDerivative(1.0, &testPoly[0], 5, 3);
+
+
   int dummy = 0; 
 
   // todo: 
-  // -move function to prototypes
-  // -test it on more examples - maybe write unit-test
+  // -move partialFractions/2 functions to Prototypes.h/cpp in rs_testing module
+  // -turn this experiment into unit-test
   // -analyze scaling - i think, it's still quadratic in the degree of the num and/or denom due to
   //  the polynomial operations in the inner loop (which are themsleves linear in the degree)
-  //  ->try, if may get it down to linear by re-using/accumulating variables from previous
-  //    iterations
   // -implement production versions that operate on raw arrays and avoid unnecesarry memory
-  //  re-allocations
+  //  re-allocations, use accumulation, avoid shlemiel-the-painter
   // -in production code, we may check, if m[i] == 1 and if it is, do the simpler step like in the
-  //  all-poles distinct case
+  //  all-poles distinct case - avoids some overhead in the case of a mix of single and multiple 
+  //  poles
+  // -make performance and precision tests - also for the algo that uses the linear system approach
+  // -maybe production code should be able to deal with non-monic denominators? we could easily do 
+  //  it by initializing Aij,Bij to be c*A, c*B where c=1/leadingCoeff(A)
+
+  // see also:
+  // Partial Fraction Decomposition by Repeated Synthetic Division
+  // https://pdfs.semanticscholar.org/57a6/8c9cee292db58a6c6f9deac76e8ef686085d.pdf
 }
 
 /*
