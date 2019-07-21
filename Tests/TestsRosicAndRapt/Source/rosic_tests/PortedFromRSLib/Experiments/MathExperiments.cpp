@@ -1739,19 +1739,6 @@ std::vector<double> partialFractions2(
   return r;
 }
 
-template<class T>
-T polyDerivative(T x, T* a, int N, int n)  // N: degree, n: order of derivative
-{
-  T y = rsProduct(N-n+1, N) * a[N];
-  for(int i = N-1; i >= n; i--)
-    y = y*x + rsProduct(i-n+1, i) * a[i];
-  return y;
-}
-// runtime: (N-n)*n? ..the number of terms in each product is n, the i-loop runs N-n times
-// we could probably also init y to 0 and run the loop from N to n - maybe the code would be neater
-// but we would add a 0*x term - so we would have have one extra multiplication and one extra 
-// addition that doesn't really do anything useful
-
 void partialFractionExpansion2()
 {
   // Here, i implement a prototype of my new algorithm for a partial fraction expansion with 
@@ -1797,17 +1784,19 @@ void partialFractionExpansion2()
 
 
   // testing new algo to evaluate derivative of polynomial - move to unit tests:
-  VecD testPoly = { 1,1,1,1,1,1 };
+  VecD testPoly = { 1,1,1,1,1,1 }; // 1 + x^2 + x^3 + x^4 + x^5
   double val;
-  val = polyDerivative(1.0, &testPoly[0], 5, 0); //   6
-  val = polyDerivative(1.0, &testPoly[0], 5, 1); //  15
-  val = polyDerivative(1.0, &testPoly[0], 5, 2); //  40
-  val = polyDerivative(1.0, &testPoly[0], 5, 3); //  90
-  val = polyDerivative(1.0, &testPoly[0], 5, 4); // 144
-  val = polyDerivative(1.0, &testPoly[0], 5, 5); // 120
-  val = polyDerivative(1.0, &testPoly[0], 5, 6); //   0
-  val = polyDerivative(1.0, &testPoly[0], 5, 7); //   0
-  val = polyDerivative(1.0, &testPoly[0], 5, 8); //   0
+  val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 0); //   6
+  val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 1); //  15
+  val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 2); //  40
+  val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 3); //  90
+  val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 4); // 144
+  val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 5); // 120
+  val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 6); //   0
+  val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 7); //   0
+  val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 8); //   0
+  // this algo should go into class rsPolynomial and the .derivativeAt function should be based on
+  // it - this is then used inside partialFractions2
 
 
 

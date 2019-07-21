@@ -94,6 +94,19 @@ std::complex<T> rsPolynomial<T>::evaluateFromRootsOneLeftOut(
   return evaluateFromRoots(x, r, i) * evaluateFromRoots(x, &r[i+1], nr-i-1);
 }
 
+template<class T>
+T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N, int n)
+{
+  T y = rsProduct(N-n+1, N) * a[N];
+  for(int i = N-1; i >= n; i--)
+    y = y*x + rsProduct(i-n+1, i) * a[i];
+  return y;
+}
+// runtime: (N-n)*n? ..the number of terms in each product is n, the i-loop runs N-n times
+// we could probably also init y to 0 and run the loop from N to n - maybe the code would be neater
+// but we would add a 0*x term - so we would have have one extra multiplication and one extra 
+// addition that doesn't really do anything useful
+
 template <class T>
 void rsPolynomial<T>::evaluateWithDerivative(const T& x, const T *a, int degree, T *y, T *yd)
 {

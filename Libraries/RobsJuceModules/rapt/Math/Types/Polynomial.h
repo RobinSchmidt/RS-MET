@@ -84,9 +84,6 @@ public:
   /** Evaulates the order-th derivative of this polynomial at the given x. */
   T derivativeAt(const T& x, int order) 
   { return evaluateDerivative(x, &coeffs[0], getDegree(), order); }
-  // internally, this evaluates derivatives of all orders up to order - can a more efficient 
-  // algorithm be devised that avoids this? ...i think so
-
 
   //T definiteIntegral(const T& lowerLimit, const T& upperLimit);
 
@@ -220,10 +217,13 @@ public:
   be used only when really need *only* the value of the derivative. */
   static inline T evaluateDerivative(const T& x, const T *a, int degree)
   { T y, yd; evaluateWithDerivative(x, a, degree, &y, &yd); return yd; }
+  // todo: implement it similar to evaluateDerivative that allows the order to be passed - the only
+  // difference is that the product is replaced by a single term
 
   /** Evaluates the order-th derivative at the given x.... */
-  static inline T evaluateDerivative(const T& x, const T *a, int degree, int order)
-  { T y[32]; evaluateWithDerivatives(x, a, degree, y, order); return y[order]; }
+  static T evaluateDerivative(const T& x, const T *a, int degree, int order);
+  //static inline T evaluateDerivative(const T& x, const T *a, int degree, int order)
+  //{ T y[32]; evaluateWithDerivatives(x, a, degree, y, order); return y[order]; }
   // todo: use algorithm in polyDerivative in MathExperiments.cpp - maybe compare performance to
   // the current one
 
