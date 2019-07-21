@@ -1798,6 +1798,9 @@ void partialFractionExpansion2()
   val = Poly::evaluateDerivative(1.0, &testPoly[0], 5, 8); //   0
   // this algo should go into class rsPolynomial and the .derivativeAt function should be based on
   // it - this is then used inside partialFractions2
+  // why does it actually produce 0 for the derivatives of order higher than 5? because the product
+  // starts at a negative integer and ends at a positive, so it includes 0 as factor - but we 
+  // should treat the case order > degree separately
 
 
 

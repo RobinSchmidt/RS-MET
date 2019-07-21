@@ -106,6 +106,8 @@ T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N)
 template<class T>
 T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N, int n)
 {
+  if(n > N) 
+    return T(0); // avoid evaluating products including zero (starting at negative indices)
   T y = rsProduct(N-n+1, N) * a[N];
   for(int i = N-1; i >= n; i--)
     y = y*x + rsProduct(i-n+1, i) * a[i];
