@@ -215,7 +215,7 @@ r_i,j = ------------------------------------------------------------------------
 
 An unoptimized prototype implementation in C++ (using RAPT::rsPolynomial) could look like this:
 
-`std::vector<double> partialFractions(
+std::vector<double> partialFractions(
   const RAPT::rsPolynomial<double>& B, 
   const RAPT::rsPolynomial<double>& A, 
   const std::vector<double>& p, 
@@ -244,7 +244,7 @@ An unoptimized prototype implementation in C++ (using RAPT::rsPolynomial) could 
     j0 += m[i];                              // increment base-index
   }
   return r;
-}`
+}
 
 The implementaton above uses the factoring-out approach. A variant using l'Hospital looks like:
 
