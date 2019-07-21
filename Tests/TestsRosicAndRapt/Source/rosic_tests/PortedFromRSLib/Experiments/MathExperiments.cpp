@@ -1742,15 +1742,15 @@ std::vector<double> partialFractions2(
 template<class T>
 T polyDerivative(T x, T* a, int N, int n)  // N: degree, n: order of derivative
 {
-  //if(degree < 0) return T(0);  // maybe we should use rsAssert
-  T c = rsProduct(N-n+1, N);
-  T y = c * a[N];
-  for(int i = N-1; i >= n; i--) {
-    c = rsProduct(i-n+1, i);
-    y = y*x + c * a[i];
-  }
+  T y = rsProduct(N-n+1, N) * a[N];
+  for(int i = N-1; i >= n; i--)
+    y = y*x + rsProduct(i-n+1, i) * a[i];
   return y;
 }
+// runtime: (N-n)*n? ..the number of terms in each product is n, the i-loop runs N-n times
+// we could probably also init y to 0 and run the loop from N to n - maybe the code would be neater
+// but we would add a 0*x term - so we would have have one extra multiplication and one extra 
+// addition that doesn't really do anything useful
 
 void partialFractionExpansion2()
 {
@@ -1794,13 +1794,21 @@ void partialFractionExpansion2()
   r = partialFractions( B, A, p, m); // 1,2,3,4,5,6,7,8,9
   r = partialFractions2(B, A, p, m);
 
+
+
   // testing new algo to evaluate derivative of polynomial - move to unit tests:
   VecD testPoly = { 1,1,1,1,1,1 };
   double val;
-  val = polyDerivative(1.0, &testPoly[0], 5, 0);
-  val = polyDerivative(1.0, &testPoly[0], 5, 1);
-  val = polyDerivative(1.0, &testPoly[0], 5, 2);
-  val = polyDerivative(1.0, &testPoly[0], 5, 3);
+  val = polyDerivative(1.0, &testPoly[0], 5, 0); //   6
+  val = polyDerivative(1.0, &testPoly[0], 5, 1); //  15
+  val = polyDerivative(1.0, &testPoly[0], 5, 2); //  40
+  val = polyDerivative(1.0, &testPoly[0], 5, 3); //  90
+  val = polyDerivative(1.0, &testPoly[0], 5, 4); // 144
+  val = polyDerivative(1.0, &testPoly[0], 5, 5); // 120
+  val = polyDerivative(1.0, &testPoly[0], 5, 6); //   0
+  val = polyDerivative(1.0, &testPoly[0], 5, 7); //   0
+  val = polyDerivative(1.0, &testPoly[0], 5, 8); //   0
+
 
 
   int dummy = 0; 

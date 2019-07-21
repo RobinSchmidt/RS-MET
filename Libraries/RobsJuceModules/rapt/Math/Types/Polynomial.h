@@ -224,6 +224,8 @@ public:
   /** Evaluates the order-th derivative at the given x.... */
   static inline T evaluateDerivative(const T& x, const T *a, int degree, int order)
   { T y[32]; evaluateWithDerivatives(x, a, degree, y, order); return y[order]; }
+  // todo: use algorithm in polyDerivative in MathExperiments.cpp - maybe compare performance to
+  // the current one
 
   /** Evaluates the polynomial defined by the array of coefficients 'a' and its first derivative at
   argument 'x'. The value of the polynomial will be stored in y and the value of the derivative
