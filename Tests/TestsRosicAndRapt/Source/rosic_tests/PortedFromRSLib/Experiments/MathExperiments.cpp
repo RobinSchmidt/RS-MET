@@ -1705,6 +1705,8 @@ std::vector<double> partialFractions(
   }
   return r;
 }
+// production code should repeated use divideByMonomialInPlace to create the Lij polynomial to 
+// avoid the Shlemiel 
 
 // 2nd version, using l'Hospital instead of cancellation - the algorithm has the same overall 
 // struture, so only the differences to the version above are commented:

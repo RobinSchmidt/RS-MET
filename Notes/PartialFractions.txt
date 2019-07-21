@@ -26,7 +26,7 @@ with as-of-yet unknown residues:
 
 The residue r21 for the pole at x=2 can be easily found by the regular cover-up method. We are 
 interested in the resiudes for the triple pole. The residue r13 for the term with the highest
-power of x-3 can also still be found by the regular cover-up method - namely by multiplying the
+power of x-1 can also still be found by the regular cover-up method - namely by multiplying the
 equation by (x-1)^3. This gives:
 
 3x^3-8x^2+5x-1                                    r21*(x-1)^3
@@ -55,8 +55,9 @@ method, so far. But now let's find r12 - we do this by multiplying the (Eq.1) by
         (x-1)*(x-2)     (x-1)                   x-2
         
 If we now just plug in x=1, the last two terms would vanish as before but the first two terms would 
-evaluate to infinity - so we have a problem here. But let's bring the first and second term over 
-the common denominator (x-1)*(x-2):
+evaluate to infinity - so we have a problem here. We are dealing with an infinity-minus-infinity 
+situation here. Let's transform it into a zero-divided-by-zero by bringing the first and second 
+term over the common denominator (x-1)*(x-2):
 
        3x^3-8x^2+5x-1    r13*(x-2)        3x^3-8x^2+5x-1 - r13*x + r13*2
  r12 = -------------- - ----------- - Z = ------------------------------ - Z
@@ -159,7 +160,7 @@ without invoking the residue rule and without solving a linear system of equatio
 to do is to add polynomials and find derivatives of polynomials or do divisions of a polynomial by 
 a monomial. It seems that the route via factoring-out method is more attractive algorithmically 
 than the derivative route because the involved polynomials tended to have smaller coeffs ...but 
-does that actually matter - maybe implement both and do precision- and performance comparisons
+does that actually matter - maybe implement both and do precision- and performance comparisons..
 
 ---------------------------------------------------------------------------------------------------
 
@@ -201,26 +202,78 @@ The formula is recursive in the sense that the computation of r_i,j requires kno
 higher r_i,j+k coeffs, where j+k runs up to mi (the i-th pole's mutliplicity) - and these coeffs 
 are those which were computed in previous steps of the algorithm. The recursion starts with 
 computing r_i,mi for which no higher coeffs are needed and then always computes the next lower 
-residue. The evaluation at x=p_i will then require either taking the limit as x approaches p_i and
-then invoking l'Hospital's rule mi-j times or cancelling a common factor of (x-p_i)^(mi-j) from 
-numerator and denominator. In the case of cancelling, note that in the denominator, we'll always 
-end up at A_i,mi - so we may compute that denominator once. So, we may also write:
+residue. For j=mi, the evaluation of the formula at x=p_i poses no problem, but for j < mi, the 
+evaluation at x=p_i will result in a 0/0 expression, so it requires either taking the limit as x 
+approaches p_i and then invoking l'Hospital's rule mi-j times or cancelling a common factor of 
+(x-p_i)^(mi-j) from numerator and denominator. In the case of cancelling, note that in the 
+denominator, we'll always end up at A_i,mi - so we may compute that denominator once. So, we may 
+also write:
 
         [B(x) - r_i,j+1 * A_i,j+1(x) - ... - r_i,mi * A_i,mi (x)] / (x-p_i)^(mi-j) |
 r_i,j = ---------------------------------------------------------------------------|
                                    A_i,mi (x)                                      |x=p_i
 
+An unoptimized prototype implementation in C++ (using RAPT::rsPolynomial) could look like this:
 
+std::vector<double> partialFractions(
+  const RAPT::rsPolynomial<double>& B, 
+  const RAPT::rsPolynomial<double>& A, 
+  const std::vector<double>& p, 
+  const std::vector<int>& m)  
+{
+  typedef RAPT::rsPolynomial<double> Poly;
+  int N = A.getDegree();                     // degree of denominator = number of residues
+  int k, j0 = 0;                             // flat array index into r and base-index
+  std::vector<double> r(N);                  // array of residues
+  Poly Li, Bij, Aij, Lij, Cij;               // the involved polynomials
+  double num, den;                           // numerator and denominator, evaluated at the pole
+  for(int i = 0; i < (int)p.size(); i++) {   // loop over distinct poles
+    Li  = std::vector<double>{ -p[i], 1.0 }; // linear factor (x - p[i])
+    Bij = B;                                 // needed for computation of numerator
+    Aij = A / (Li^m[i]);                     // parentheses needed, ^ has lower precedence than /
+    den = Aij(p[i]);                         // we need to evaluate this only once
+    for(int j = m[i]; j >= 1; j--) {         // loop over the exponents for pole i
+      k    = j0+j-1;                         // index into r-array
+      Lij  = Li^(m[i]-j);                    // Shlemiel the painter strikes again
+      Cij  = Bij / Lij;                      // cancel common factor with denominator
+      num  = Cij(p[i]);                      // evaluate numerator
+      r[k] = num / den;                      // denominator stays the same inside the j-loop
+      Bij  = Bij - Aij * r[k];               // establish B-polynomial for next iteration
+      Aij  = Aij * Li;                       // establish A-polynomial for next iteration
+    }
+    j0 += m[i];                              // increment base-index
+  }
+  return r;
+}
 
+The implementaton above uses the factoring-out approach. A variant using l'Hospital looks like:
 
-
- 
-
-
-
-
-
-
-
-
-
+std::vector<double> partialFractions2( 
+  const RAPT::rsPolynomial<double>& B, 
+  const RAPT::rsPolynomial<double>& A, 
+  const std::vector<double>& p, 
+  const std::vector<int>& m)  
+{
+  typedef RAPT::rsPolynomial<double> Poly;
+  int N = A.getDegree();
+  int k, j0 = 0;
+  std::vector<double> r(N);
+  Poly Li, Bij, Aij, Lij;                        // no Cij needed anymore
+  double num, den;
+  for(int i = 0; i < (int)p.size(); i++) { 
+    Li  = std::vector<double>{ -p[i], 1.0 };
+    Bij = B; 
+    Aij = A / (Li^m[i]);
+    for(int j = m[i]; j >= 1; j--) {
+      k    = j0+j-1;
+      Lij  = Li^(m[i]-j);
+      num  = Bij.derivativeAt(p[i], m[i]-j);
+      den  = Aij.derivativeAt(p[i], m[i]-j);     // den must now be evaluated for each j
+      r[k] = num / den;
+      Bij  = Bij - Aij * r[k];
+      Aij  = Aij * Li;
+    }
+    j0 += m[i]; 
+  }
+  return r;
+} 

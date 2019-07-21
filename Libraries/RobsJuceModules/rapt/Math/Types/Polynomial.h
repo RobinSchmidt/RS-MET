@@ -207,7 +207,8 @@ public:
 
   /** Like evaluateFromRoots but leaves one root out in the evaluation. This is equivalent to 
   evaluating the polynomial and divide the result by the linear factor corresponding to the left
-  out root (at the given x), i.e. evaluating g(x) = f(x)/(x-r_i) where r_i is the i-th root. */
+  out root (at the given x), i.e. evaluating g(x) = f(x)/(x-r_i) where r_i is the i-th root that
+  has been left out. */
   static std::complex<T> evaluateFromRootsOneLeftOut(const std::complex<T>& x,
     const std::complex<T>* roots, int numRoots, int leaveOutIndex);
 
