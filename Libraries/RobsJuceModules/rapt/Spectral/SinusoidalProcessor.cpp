@@ -289,9 +289,8 @@ void rsPartialBeatingRemover<T>::removePhaseBeating(rsSinusoidalPartial<T>& part
   // process phases: in a signal that shows beating, we see phase inversions when we go from
   // one bump/grain to the next - these are hard switches which are audible, so we somehow need to
   // get rid of them - we do this by smoothing out the discontinuities:
-  T cutoff = 5; // make user parameter
   std::vector<T> p = smoothPhases(partial.getTimeArray(), partial.getFrequencyArray(), 
-    partial.getPhaseArray(), cutoff);
+    partial.getPhaseArray(), phaseSmootherCutoff, phaseSmootherOrder, phaseSmootherNumPasses);
   partial.setPhases(p);
   //rsPlotVector(p);
   // maybe try other ways to get rid of the phase discontinuities
@@ -299,7 +298,7 @@ void rsPartialBeatingRemover<T>::removePhaseBeating(rsSinusoidalPartial<T>& part
 
 template<class T>
 std::vector<T> rsPartialBeatingRemover<T>::smoothPhases(
-  std::vector<T>& t, std::vector<T>& f, std::vector<T>& pIn, T cutoff)
+  std::vector<T>& t, std::vector<T>& f, std::vector<T>& pIn, T cutoff, int order, int numPasses)
 {
   //GNUPlotter plt;
 
@@ -311,32 +310,22 @@ std::vector<T> rsPartialBeatingRemover<T>::smoothPhases(
   //plt.addDataArrays((int)rsSize(t), &t[0], &p[0]);
 
 
-  // apply lowpass to de-trended phase - this is preliminary - we treat the data as if it were
-  // uniformly sampled - todo: refine this later to the non-uniformly sampled case...
+  // apply lowpass to de-trended phase:
 
-  typedef rsBiDirectionalFilter BDF;
-  int order     = 2;
-  int numPasses = 2;
-  // todo: tweak these - find optimal values - or let the user set them up / make them function
-  // parameters - also: we should probably use a bessel or gaussian filter instead of butterworth
-
-  // preliminary - treat signal as uniform:
+  // preliminary - treat signal as uniformly sampled:
   //T sampleRate = t.size() / (rsLast(t) - t[0]); // average sample-rate
   //BDF::applyButterworthLowpass(&p[0], &p[0], (int)p.size(), cutoff, sampleRate, order, numPasses);
 
   // new - use non-uniform filter:
-  BDF::applyButterworthLowpass(&p[0], &t[0], &p[0], (int)p.size(), cutoff, order, numPasses);
-
-
+  rsBiDirectionalFilter::applyButterworthLowpass(
+    &p[0], &t[0], &p[0], (int)p.size(), cutoff, order, numPasses);
 
   //plt.addDataArrays((int)rsSize(t), &t[0], &p[0]);
 
-
-
-  // re-apply trend:
+  // re-apply the linear trend:
   dtr.applyTrendAndOffset((int)p.size(), &t[0], &p[0], &p[0]);
 
-  // wrap (factor out):
+  // wrap phases into -pi..pi (maybe factor out):
   for(size_t i = 0; i < p.size(); i++)
     p[i] = rsWrapToInterval(p[i], -PI, PI);
 

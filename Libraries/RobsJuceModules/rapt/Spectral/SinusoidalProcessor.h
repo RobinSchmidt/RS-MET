@@ -122,6 +122,24 @@ public:
   /** Constuctor. Sets up the embedded envExtractor object to its default settings. */
   rsPartialBeatingRemover();
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  /** Sets up the parameters for the phase-smoothing filter. This is the filter that is used to 
+  smooth away the discontinuities in the (de-trended) phase data. These phase discontinuities are a
+  feature of the beating - for an explanation, why these occur and why we need to get rid of them, 
+  see here: https://github.com/RobinSchmidt/RS-MET/issues/280 */
+  virtual void setPhaseSmoothingParameters(T cutoff, int filterOrder, int numFilterPasses)
+  {
+    phaseSmootherCutoff    = cutoff;
+    phaseSmootherOrder     = filterOrder;
+    phaseSmootherNumPasses = numFilterPasses;
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
   /** Applies beating-removal to all partials. */
   virtual void processModel(rsSinusoidalModel<T>& model) override;
 
@@ -140,15 +158,23 @@ public:
   /** Smoothes the given phase-array... */
   static std::vector<T> smoothPhases(
     std::vector<T>& time, std::vector<T>& freqs, std::vector<T>& phases, 
-    T cutoff);
+    T cutoff, int order, int numPasses);
   // maybe factor this out - it could be useful for other processors, too ...maybe have a class
   // rsPhaseSmoother that lets the user select cutoff-freq, filter-type, order, numPasses, etc.
   // todo: make input vectors const (-> make GNUPlotter const-correct)
+  // ...hmm - or maybe the filter-type should be fixed - to Bessel or Gaussian?
 
 
 
   /** Embedded envelope extrator object - made public, so client code can set up its options 
   directly by accessing it via dot-syntax. */
   rsEnvelopeExtractor<T> envExtractor;
+
+protected:
+
+  // settings for the phase smoothing filter:
+  T phaseSmootherCutoff = T(5);
+  int phaseSmootherOrder = 1;
+  int phaseSmootherNumPasses = 4;
 
 };

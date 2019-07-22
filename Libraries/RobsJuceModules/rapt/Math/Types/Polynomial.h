@@ -81,9 +81,18 @@ public:
   bool isMonic() const { return getLeadingCoeff() == T(1); }
   // what if we have trailing zeros in the coeff array? should we have a tolerance?
 
-  /** Evaulates the order-th derivative of this polynomial at the given x. */
+  /** Evaluates the first derivative of this polynomial at the given x. */
+  T derivativeAt(const T& x) 
+  { return evaluateDerivative(x, &coeffs[0], getDegree()); }
+
+  /** Evaluates the order-th derivative of this polynomial at the given x. Works also for the 0th 
+  derivative, which is the function value itself. ...but the order must be non-negative. */
   T derivativeAt(const T& x, int order) 
   { return evaluateDerivative(x, &coeffs[0], getDegree(), order); }
+  // todo: maybe make it also work for negative orders (in which case the antiderivative of 
+  // given order will be evaluated (setting integration constants to zero))
+
+
 
   //T definiteIntegral(const T& lowerLimit, const T& upperLimit);
 
@@ -213,7 +222,7 @@ public:
     const std::complex<T>* roots, int numRoots, int leaveOutIndex);
 
   /** Evaluates the first derivative of the polynomial a at the given x.  */
-  static inline T evaluateDerivative(const T& x, const T *a, int degree);
+  static T evaluateDerivative(const T& x, const T *a, int degree);
   //{ T y, yd; evaluateWithDerivative(x, a, degree, &y, &yd); return yd; }
   // todo: implement it similar to evaluateDerivative that allows the order to be passed - the only
   // difference is that the product is replaced by a single term

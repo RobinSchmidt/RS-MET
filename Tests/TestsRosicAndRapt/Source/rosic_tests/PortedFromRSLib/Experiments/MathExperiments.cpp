@@ -1748,6 +1748,7 @@ void partialFractionExpansion2()
 
   // shorthands for convenience:
   typedef RAPT::rsPolynomial<double> Poly;
+  typedef RAPT::rsRationalFunction<double> RF;
   typedef std::vector<double> VecD;
   typedef std::vector<int> VecI;
 
@@ -1782,7 +1783,7 @@ void partialFractionExpansion2()
   m = { 2, 4, 3 };
   r = partialFractions( B, A, p, m); // 1,2,3,4,5,6,7,8,9
   r = partialFractions2(B, A, p, m);
-
+  //r = RF::partialFractions(B, A, p, m); // doesn't work because parameters are complex
 
 
   // testing new algo to evaluate derivative of polynomial - move to unit tests:
