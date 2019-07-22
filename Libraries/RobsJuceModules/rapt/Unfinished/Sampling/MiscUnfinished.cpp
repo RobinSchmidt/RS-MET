@@ -185,7 +185,11 @@ void rsBiDirectionalFilter::applyButterworthLowpass(TSig* x, TTim* t, TSig* y, i
   //int P = rsCeilInt(numPasses * flt.getRingingTimeEstimate(rsDB2amp(-100.0)));
   // make such an estimation function for the non-uniform filter - it should probably return a 
   // value in seconds
-  int P = 1000; // ad-hoc - later we need to use something based a ringing time estimate
+  int P = 1000; 
+  // ad-hoc - later we need to use something based a ringing time estimate - maybe something like
+  // k * averageSampleRate / cutoff where k is a constant that depends on the ringing behavior of 
+  // the filter (Butterwort in this case - but we may later make it more general)
+
   rsApplyBiDirectionally(x, t, y, N, flt, P, numPasses);
 }
 

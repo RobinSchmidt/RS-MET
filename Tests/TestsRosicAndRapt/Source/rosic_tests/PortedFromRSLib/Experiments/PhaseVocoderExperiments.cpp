@@ -1712,7 +1712,7 @@ void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
   // resynthesize without modifications:
   std::vector<double> y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile("DeBeat2SinesOutputUnmodified.wav", &y[0], (int)y.size(), (int)fs);
-  // maybe make a convenicne function renderToFile(mdl, fs, filename)
+  // maybe make a convenience function renderToFile(mdl, fs, filename)
   // has a VERY bad transient artifact! why?!
   // i think, in rsSinusoidalSynthesizer<T>::synthesizePartial, the interpolated amplitude array
   // has a big excursion at the start - maybe it's the cubic interpolation that creates excessive
@@ -1722,14 +1722,23 @@ void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
 
     // apply de-beating to model data:
   rsPartialBeatingRemover<double> deBeater;
-  deBeater.processModel(mdl);
+  deBeater.setPhaseSmoothingParameters(10.0, 1, 4); // cutoff = 10 leaves a vibrato, with 5 it's 
+  deBeater.processModel(mdl);                       // hardly noticable, with 2 even less
   //plotSineModelAmplitudes(mdl, { 1 }); 
   plotSineModelPhases(mdl, { 1 }, true);  // phase-derivative
   plotSineModelPhases(mdl, { 1 }, false); // de-trended phase
   // the 1st value of the derivative is an outlier - it has a huge negative value...maybe that's 
   // because the time instant of the 1st (not the 0th) datapoint has a spacing wildly different 
   // from from the average spacing (it's at 1.e-9, whereas the next is at 5.e-4 - probably a 
-  // non-uniform filter may fix this
+  // non-uniform filter may fix this -> yes, it does!
+
+  // at the moment, it's recommended to use only 1st order filters (the 1 in 
+  // setPhaseSmoothingParameters) because higher order Butterworth filters have overshoot in their
+  // step response, which may be undesirable in this context (may introduce spurious frequency 
+  // wobbles at the discontinuities, i guess) ...todo: switch to Bessel- or Gaussian filters - or 
+  // make the filter type selectable
+
+
 
   // resynthesize with modifications:
   mdl.keepOnly({1});                     // get rid of DC artifacts at the start
