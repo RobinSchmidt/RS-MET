@@ -471,6 +471,65 @@ public:
 
 //=================================================================================================
 
+/** Baseclass for polyphonic AudioModules. They have polyphonic audio outputs, so you can chain a 
+polyphonic oscillator with a polyphonic filter and drop in some polyphonic modulators in ToolChain.
+
+...just a stub, at the moment....tbc.... */
+
+class JUCE_API AudioModulePoly : public AudioModuleWithMidiIn
+{
+
+public:
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup:
+
+  // setVoiceManager(rosic::rsVoiceManager* managerToUse)
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Audio processing:
+
+  virtual void processBlockVoice(double **inOutBuffer, int numChannels, int numSamples, int voice) 
+  {
+
+  }
+
+  virtual void processStereoFrameVoice(double *left, double *right, int voice) 
+  {
+  
+  }
+
+  virtual void processBlockPoly(double ***inOutBuffer, int numChannels, int numSamples) 
+  {
+
+  }
+
+  virtual void processStereoFramePoly(double **left, double **right) 
+  {
+
+  }
+
+
+protected:
+
+  // rosic::rsVoiceManager* voiceManager;
+
+};
+
+
+
+
+
+
+
+
+
+
+
+//=================================================================================================
+
 /** Baseclass for GUI editors for AudioModule objects. */
 
 class AudioModuleEditor : public jura::Editor, public ChangeListener, public RDialogBoxListener, 
@@ -638,7 +697,7 @@ protected:
 underlying AudioModule's Parameters. Which kind of widget is shown depends on the type of the 
 respective Parameter - for continuous numeric parameters, it shows a slider, for multiple choice 
 parameters a combobox and for boolean parameters a button. An object of this generic editor class 
-is returned in the baseclass cimplementation AudioModule::createEditor. */
+is returned in the baseclass implementation AudioModule::createEditor. */
 
 class GenericAudioModuleEditor : public AudioModuleEditor
 {

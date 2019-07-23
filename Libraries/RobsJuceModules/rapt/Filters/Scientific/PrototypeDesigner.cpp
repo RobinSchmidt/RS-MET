@@ -579,6 +579,13 @@ void rsPrototypeDesigner<T>::gaussianDenominator(T *a, int N)
   adjustDenominator(a, N);      // denominator of H(s)*H(-s)
   a[0] -= 1;                    // adjustDenominator adds one but we don't need that
 }
+// for the cutoff normalization, we want the asymptote of the mag-squared function to match
+// 1 / w^(2*N), which is the asymptote of the Butterworth filter and we already do the same 
+// normalization for the Bessel filter - todo: work out the pole-scaling factor (and possibly the
+// required gain-scaling factor). I think, in general, the asymptote of a mag-squared function of
+// a transfer function (sum_{i=0}^M b_i s^i) / (sum_{j=0}^N a_i s^i) is given by 
+// (b_M * w^M)^2 / (a_N * w^N)^2, so maybe we should scale poles by sqrt(a_N) for any allpole 
+// filter -> figure out!
 
 // end new
 //-----------------------------------------------
