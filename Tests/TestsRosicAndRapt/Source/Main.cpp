@@ -92,14 +92,13 @@ int main(int argc, char* argv[])
   //nonUniformComplexOnePole();
   //nonUniformAllpole(); // rename - it's not restricted to allpoles anymore
   //nonUniformBiquad();
-//  nonUniformBiDirectional();
+  //nonUniformBiDirectional();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
   //poleZeroPrototype();  // new implementation - but we don't need that
 
   // Physics:
-
   //heatEquation1D();
   //particleForceDistanceLaw();
   //particleSystem();
@@ -127,6 +126,9 @@ int main(int argc, char* argv[])
   //triSawOsc();
   //triSawOscAntiAlias();
   //xoxosOsc();
+
+  // Modulators:
+  
 
   // Graphics:
   //lineDrawing();
