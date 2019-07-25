@@ -3,6 +3,7 @@
 #include "../rapt_tests/Experiments/MathExperiments.cpp"
 #include "../rapt_tests/Experiments/FilterExperiments.cpp"
 #include "../rapt_tests/Experiments/GeneratorExperiments.cpp"
+#include "../rapt_tests/Experiments/ModulatorExperiments.cpp"
 #include "../rapt_tests/Experiments/GraphicsExperiments.cpp"
 
 // get rid:

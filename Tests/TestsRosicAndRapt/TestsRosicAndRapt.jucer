@@ -139,6 +139,10 @@
                 file="Source/rapt_tests/Experiments/MathExperiments.cpp"/>
           <FILE id="EfK5dG" name="MathExperiments.h" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/MathExperiments.h"/>
+          <FILE id="P5GhjY" name="ModulatorExperiments.cpp" compile="0" resource="0"
+                file="Source/rapt_tests/Experiments/ModulatorExperiments.cpp"/>
+          <FILE id="IiyBfY" name="ModulatorExperiments.h" compile="0" resource="0"
+                file="Source/rapt_tests/Experiments/ModulatorExperiments.h"/>
         </GROUP>
       </GROUP>
       <GROUP id="{CDBDEF1D-BB8A-7D2D-D038-9B74B068C290}" name="Experiments">

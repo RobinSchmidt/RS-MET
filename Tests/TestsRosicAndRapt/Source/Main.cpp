@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
   //xoxosOsc();
 
   // Modulators:
-  
+  attackDecayEnvelope();
 
   // Graphics:
   //lineDrawing();

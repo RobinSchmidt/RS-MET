@@ -457,6 +457,9 @@
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\MathExperiments.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\ModulatorExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp">
       <Filter>TestsRosicAndRapt\Source\Experiments</Filter>
     </ClCompile>
@@ -2707,6 +2710,9 @@
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\MathExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rapt_tests\Experiments\ModulatorExperiments.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Experiments\Experiments.h">

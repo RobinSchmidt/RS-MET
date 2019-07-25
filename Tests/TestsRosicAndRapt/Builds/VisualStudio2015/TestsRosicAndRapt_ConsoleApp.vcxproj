@@ -228,6 +228,9 @@
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\MathExperiments.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\ModulatorExperiments.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
@@ -2397,6 +2400,7 @@
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\GeneratorExperiments.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\MathExperiments.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\Experiments\ModulatorExperiments.h"/>
     <ClInclude Include="..\..\Source\Experiments\Experiments.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Array.h"/>
