@@ -174,6 +174,7 @@ template class RAPT::rsModalFilter<double, double>;
 template class RAPT::rsNonlinearModalFilter<double, double>;
 template class RAPT::rsModalFilterBank<double, double>;
 template class RAPT::rsModalFilterWithAttack2<double, double>;
+template class RAPT::rsAttackDecayFilter<double>;
 
 //template class RAPT::rsStateVariableFilter<double, double>;
 template class RAPT::rsPhonoFilter<double, double>;
@@ -218,6 +219,7 @@ template class RAPT::rsPhaseScopeBuffer2<double, float, double>;
 // not called from anywhere inside jura or rosic:
 template double RAPT::rsAbs(double x);
 template class RAPT::rsBreakpointModulator<double>;
+template class RAPT::rsAttackDecayEnvelope<double>;
 
 
 template class RAPT::rsBouncillator<double>;

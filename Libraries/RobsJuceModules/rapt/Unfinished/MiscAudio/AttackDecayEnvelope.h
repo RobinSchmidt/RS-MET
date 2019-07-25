@@ -14,6 +14,8 @@ class rsAttackDecayFilter
 public:
 
 
+  rsAttackDecayFilter();
+
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
@@ -35,10 +37,9 @@ public:
   {
     if(coeffsDirty)
       updateCoeffs();
-
     ya = in + ca * ya;
     yd = in + cd * yd;
-    return yd - ya;
+    return s * (yd - ya);
     // ....verify these formulas
   }
 
@@ -48,19 +49,23 @@ public:
     ya = yd = T(0);
   }
 
-protected:
-
-
   /** Updates our filter coefficients according to user parameters. */
   void updateCoeffs();
+
+
+protected:
+
 
   // Data:
   T ca, cd;  // coefficients for attack and decay filters
   T ya, yd;  // state of attack and decay filter
+  T s;
   bool coeffsDirty = true;  // flag to indicate that coeffs need to be re-computed
   //std::atomic<bool> coeffsDirty = true;  // flag to indicate that coeffs need to be re-computed
   T attackSamples = T(20), decaySamples = 100; // sort of arbitrary
 };
+// maybe move into the same file where the modal filters are - it can be seen as a "modal" filter 
+// with zero frequency so it would fit in there
 
 //=================================================================================================
 

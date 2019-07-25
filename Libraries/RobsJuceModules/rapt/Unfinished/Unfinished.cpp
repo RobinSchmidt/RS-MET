@@ -31,11 +31,6 @@ namespace RAPT
 #include "MiscAudio/BlepBlampOscs.cpp"
 #include "MiscAudio/OscArrays.cpp"
 
-// the new polyphony stuff:
-#include "MiscAudio/Polyphony.cpp"
-#include "MiscAudio/AttackDecayEnvelope.cpp"
-
-
 #include "Filters/BandSplitter.cpp"
 #include "Filters/FilterDesignFormulas.cpp"
 #include "Filters/MovingAverage.cpp"
@@ -45,6 +40,10 @@ namespace RAPT
 #include "Filters/FakeResonanceFilter.cpp"
 #include "Filters/Biquad.cpp"
 #include "Filters/NonUniformFilter.cpp"
+
+// the new polyphony stuff:
+#include "MiscAudio/Polyphony.cpp"
+#include "MiscAudio/AttackDecayEnvelope.cpp"
 
 // under construction:
 #include "Analysis/LinearPredictor.cpp"
