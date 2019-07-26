@@ -1,16 +1,17 @@
 #pragma once
 
+// comment below is not actually true anymore - but i think, i should make it true....or take care
+// to manually remove or comment out all plotting code before making a release - actually, plotting
+// commands in library code should be injected only temporarily for debugging anyway
 /** Plotting functions - if the macro RS_PLOTTING is defined in you project, they will compile to
 actual invocations of GNUPlotter and plot stuff. If it is not defined, they will compile to empty
 dummy no-op functions that will get optimized away. With this mechanism, we can simply inject calls
 to functions like rsPlotVector() anywhere in RAPT code for debugging purposes which will get 
 optimized out in cases when they are not needed. In TestsRosicAndRapt.jucer it is defined, so 
 plotting functions wil actually invoke the plotter in this project. */
-// ...hmm...this is not actually true - but i think, i should make it true....
 
 
 #include "GNUPlotter.h"
-
 
 template<class T>
 inline void rsPlotArray(T* x, int N)
@@ -46,15 +47,6 @@ inline void rsStemPlot(int N, T *x, T *y)
   plt.plot();
 }
 
-template<class T>
-inline void rsStemPlot(std::vector<T> v)
-{
-  std::vector<T> x(v.size());
-  RAPT::rsArray::fillWithIndex(&x[0], (int) x.size());
-  rsStemPlot((int) x.size(), &x[0], &v[0]);
-}
-
-
 /** Plots a bunch of vectors. */
 template<class T>
 inline void rsPlotVectors(
@@ -85,11 +77,6 @@ inline void rsPlotVectors(
   plt.plot();
 }
 
-
-
-
-
-
 /** Plots a whole bunch of vectors which are themselves put together into a vector of vectors. */
 //template<class T>
 //inline void rsPlotVectors(std::vector<std::vector<T>> v)
@@ -99,33 +86,6 @@ inline void rsPlotVectors(
 //    plt.addDataArrays((int) v[i].size(), &v[i][0]);
 //  plt.plot;
 //}
-
-/** Plots markers on the x-axis at the values given in the array. */
-template<class T>
-inline void rsPlotMarkers(T* markers, int numMarkers)
-{
-  std::vector<T> zeros(numMarkers);    // y values for plotting (all zero)
-  RAPT::rsArray::fillWithZeros(&zeros[0], numMarkers);
-  GNUPlotter plt;
-  plt.addDataArrays(numMarkers,   markers, &zeros[0]);
-  plt.setGraphStyles("points");
-  plt.plot();
-}
-
-/** Plots a signal together with a set of markers (useful, for example, to mark time-instants of 
-signal features such as zero-crossings) */
-template<class T>
-inline void rsPlotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers)
-{
-  std::vector<T> zeros(numMarkers);    // y values for plotting (all zero)
-  RAPT::rsArray::fillWithZeros(&zeros[0], numMarkers);
-  GNUPlotter plt;
-  plt.addDataArrays(signalLength, signal);
-  plt.addDataArrays(numMarkers,   markers, &zeros[0]);
-  plt.setGraphStyles("lines", "points");
-  plt.setPixelSize(1000, 300);
-  plt.plot();
-}
 
 /** Plots the given spectral magnitude values as decibels. You may pass a sampleRate and 
 floor/threshold for the dB values. If you pass no sample-rate (or zero), the frequency axis will 
@@ -160,15 +120,25 @@ inline void rsPlotSpectrum(std::vector<T> fftMagnitudes, T sampleRate = T(0),
   plt.plot();
 }
 
+
+// The functions below are not inlined, because they use some functionality from rapt. To inline
+// them, we would have to include the relevant parts of rapt before including Plotting.h, but then 
+// we wouldnt have access to the plotting functions from these parts of rapt anymore. So, their 
+// implementation is moved to the cpp file and there are explicit instantiations for the relevant
+// datatypes:
+
+template<class T>
+void rsStemPlot(std::vector<T> v);
+
+/** Plots markers on the x-axis at the values given in the array. */
+template<class T>
+void rsPlotMarkers(T* markers, int numMarkers);
+
+/** Plots a signal together with a set of markers (useful, for example, to mark time-instants of 
+signal features such as zero-crossings) */
+template<class T>
+void rsPlotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers);
+
 // somewhat redundant with rsPlotSpectrum...
 template<class T>
-inline void rsPlotDecibels(int N, T* x, T *mag)
-{
-  T* dB = new T[N];
-  for(int i = 0; i < N; i++)
-    dB[i] = rsAmpToDbWithCheck(mag[i], 0.00000001);
-  GNUPlotter plt;
-  plt.addDataArrays(N, x, dB);
-  plt.plot();
-  delete[] dB;
-}
+void rsPlotDecibels(int N, T* x, T *mag);

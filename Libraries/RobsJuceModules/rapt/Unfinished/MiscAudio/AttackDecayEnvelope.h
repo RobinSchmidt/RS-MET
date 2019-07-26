@@ -23,12 +23,8 @@ public:
   void setAttackSamples(T newAttack) { attackSamples = newAttack; coeffsDirty = true; }
 
   /** Sets the decay time constant in samples, i.e. the number of samples, it takes to decay to 
-  1/e for the more slowly decaying exponen */
+  1/e for the more slowly decaying exponential. */
   void setDecaySamples(T newDecay) { decaySamples = newDecay; coeffsDirty = true; }
-
-
-
-
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -40,7 +36,6 @@ public:
     ya = in + ca * ya;
     yd = in + cd * yd;
     return s * (yd - ya);
-    // ....verify these formulas
   }
 
   /** Resets the internal state of both filters to zero. */
@@ -85,7 +80,9 @@ public:
 
   /** Sets the sustain level. This is the value that is added to the filter's input as long a note
   is being held. */
-  void setSustain(T newSustain) { sustain = newSustain; }
+  //void setSustain(T newSustain) { sustain = newSustain; }
+  // doesn't work yet - we probably need to scale the sustain input according to the DC gain of the
+  // filter
 
   //-----------------------------------------------------------------------------------------------
   /** \name Event Handling */
@@ -95,9 +92,9 @@ public:
   void noteOn(int key, int vel)
   {
     currentNote = key;
-    impulse = T(1);   // maybe it should be scaled by vel?
-    // ...and/or maybe we should call geSample once? (to avoid the one sample delay due to the 
-    // subtraction - the two exponentials cancel each other at the very first sample)
+    rsAttackDecayFilter::getSample(T(1)); // maybe input should be scaled by vel?
+    // We call geSample here to avoid the one sample delay due to the subtraction - the two
+    // exponentials cancel each other at the very first sample
   }
 
   void noteOff(int key, int vel)
@@ -111,52 +108,99 @@ public:
 
   T getSample()
   {
-    T y(0);
-    if(currentNote != -1)
-      y = rsAttackDecayFilter::getSample(sustain+impulse);
-    else
-      y = rsAttackDecayFilter::getSample(impulse);
-    impulse = T(0);
-    return y;
+    if(currentNote != -1)  return rsAttackDecayFilter::getSample(sustain);
+    else                   return rsAttackDecayFilter::getSample(T(0));
   }
-
-
-
 
 
 protected:
 
-
   T sustain = T(0);
-  T impulse = T(0);
   int currentNote = -1;  // -1 is code for "none"
 
 };
 
 //=================================================================================================
 
+// maybe this class should not be part of rapt but be moved to rosic - maybe also for the rsVoice
+// and related classes
+
 template<class T>
-class rsAttackDecayEnvelopePoly //: public rsVoice
+class rsAttackDecayEnvelopeVoice : public rsVoice
 {
 
 public:
 
+  virtual void noteOn(int key, int vel) override;
+  virtual void noteOff(int key, int vel) override;
 
 protected:
 
-  rsAttackDecayEnvelope* master;
+  // template object containing shared state:
+  rsAttackDecayEnvelope<T>* master;
 
-  T y, ca, cd;  // state and coeffs for attack and decay
-
+  // per voice state:
+  T ya, yd, ca, cd;  // state and coeffs for attack and decay
 
 };
+
+template<class T>
+class rsTriSawVoice : public rsVoice
+{
+
+public:
+
+  virtual void noteOn(int key, int vel) override;
+  virtual void noteOff(int key, int vel) override;
+
+protected:
+
+  // template object containing shared state:
+  rsTriSawOscillator<T>* master;
+
+  // per voice state:
+  T p = 0;     // current phase in 0..1
+  T inc = 0;   // phase increment
+
+};
+
+  
+template<class TSig, class TPar>
+class rsLadderVoice : public rsVoice
+{
+
+public:
+
+  virtual void noteOn(int key, int vel) override;
+  virtual void noteOff(int key, int vel) override;
+
+protected:
+
+  // template object containing shared state:
+  rsLadderFilter<TSig, TPar>* master;
+
+  // per voice state:
+  TSig y[5];   // outputs of the stages 0..4
+  TPar a, b;   // leaky integrator coefficients for a stage: y[n] = b*x[n] - a*y[n-1]
+  TPar k;      // feedback gain
+  TPar g;      // output gain
+
+};
+
+// how can we handle to avoid duplicating the algorithmic code from the getSample functions of the
+// underlying monophonic DSP classes ...and also all the coefficient calculation code? maybe by
+// factoring the code out into (static) functions that do not operate on member data but instead
+// get all their inputs and states as arguments - but that would uglify/complicate the monophonic 
+// implementations - something, i'd like to avoid - hmmm...but maybe, it's inavoidable?
+// The rsLadderFilter class already has these static computeCoeffs functions - so it's already 
+// prepared for it - we would also need a static processSample function that works in a similar
+// way
+
+
 
 
 /* 
 todo: 
--implement  an attack/decay envelope based on a difference of exponentials
--use the formulas from the modal filter - there's code to compute the time-constants and weights 
- from attack/decay settings
 -later extend it to allow for a two-stage decay (maybe in a subclass)
 -make it polyphonic - allow to build a very basic subtractive synth from such envelopes, a simple 
  osc class (maybe TriSaw osc?) and the rsLadder filter

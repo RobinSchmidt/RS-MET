@@ -7,6 +7,7 @@ void attackDecayEnvelope()
   int N = 200;
 
   rsAttackDecayEnvelope<double> env;
+  //env.setSustain(0.5);  // for test - sustain doesn't work yet
 
   std::vector<double> y(N);
   env.noteOn(64, 64);

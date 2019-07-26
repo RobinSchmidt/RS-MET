@@ -10,6 +10,8 @@ SmoothedValue:
  with 0, we have linear scaling (a = 1), with 1 exponential (b = 0)
  maybe a = 1-p, b = p * c (for some suitable c, maybe 1/N (?) where N 
  is the desired number of updates to reach the target)
+ 
+-------------------------------------------------------------------------------
 
 CommandQueue:
 -lockfree queue of commands
@@ -28,14 +30,18 @@ CommandQueue:
 -fields for "Command":
  uint32: identifier, std::atomic<uint32> status, void* data
  
+-------------------------------------------------------------------------------
+ 
 Thread-Safety:
 -when the user sets a parameter (setCutoff, etc.), don't update the coeffs 
  immediately but set a "dirty" flag (of type std::atomic_bool)
 -in getSample, check the flag, and if it's true, trigger the coefficient
- update there
+ update there, the update sets the flag back to false
 -this also avoids recomputing the coeffs twice when the user calls setCutoff, 
  setResonance in succession at the same sample
 
+-------------------------------------------------------------------------------
+ 
 Polyphony:
 -have a Voice baseclass with virtual functions like
  -noteOn(key, vel), noteOff(key, vel), setPitchBend(amount), etc.
@@ -85,6 +91,20 @@ protected:
  that - only the subclass LadderVoice introdcues this concept, so Ladder can 
  be used monophonically without the burden of voice-handling code
  
+...hmm - but the disadvantage of that is that a lot of boilerplate code would 
+have to be written to make a dsp class polyphonic
+-it also doesn't seem to make much sense anymore when we want to make a big 
+ fraction of the data members/parameters modulatable
+-what if a polyphonic modulator wants to modulate one of its own parameters? 
+ it seems, we would need duplicate objects then anyway
+-maybe it's actually better to just use arrays of dsp-objects (for modulation
+ sources and targets) and to factor out the non-modulatable part of the state
+ into a "data" class, as i have done with breakpoint modulator
+-ideally, it should be possible to make *any* dsp object polyphonic with no or 
+ only a minimal amount of boilerplate code - and that boilerplat code should be
+ of the wire-up kind - it should not involve defining new (sub)classes
+ 
+-------------------------------------------------------------------------------
  
 Sampler Engine
 -let it use an object to take care of the streaming of the samples (from disc
