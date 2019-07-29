@@ -449,6 +449,7 @@ public:
 
   /** Triggered by a note-off event. */
   virtual void noteOff(int noteNumber) {}
+  // todo: support note-off velocity
 
   /** Triggered by an all-notes-off event. */
   virtual void allNotesOff() {}

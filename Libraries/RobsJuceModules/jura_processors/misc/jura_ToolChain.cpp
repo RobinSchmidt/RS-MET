@@ -519,6 +519,7 @@ void ToolChain::populateModuleFactory()
   f.registerModuleType([](CS cs)->AM { return new BreakpointModulatorAudioModule(cs); }, s, "BreakpointModulator");
   f.registerModuleType([](CS cs)->AM { return new TriSawModulatorModule(cs); },          s, "TriSawModulator");
 
+
   s = "Dynamics";
   f.registerModuleType([](CS cs)->AM { return new LimiterAudioModule(cs);   }, s, "Limiter");
 
@@ -554,6 +555,9 @@ void ToolChain::populateModuleFactory()
   // Filters:
   //f.registerModuleType([](CS cs)->AM { return new PhasorFilter(cs);               }, s, "PhasorFilter");
   //f.registerModuleType([](CS cs)->AM { return new CrossOverAudioModule(cs);       }, s, "CrossOver");
+
+  // Modulators:
+  f.registerModuleType([](CS cs)->AM { return new AttackDecayEnvelopeModule(cs); },      s, "AttackDecayEnvelope");
 
   // Effects:
   //f.registerModuleType([](CS cs)->AM { return new NodeShaperAudioModule(cs);   }, s, "NodeShaper");

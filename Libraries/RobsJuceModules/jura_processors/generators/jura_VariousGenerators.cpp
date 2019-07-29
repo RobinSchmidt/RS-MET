@@ -99,11 +99,14 @@ void TriSawOscModule::createParameters()
 
   std::vector<double> defaultValues; // used for figuring out map-points during development
 
+  p = new Param("Amplitude", -2.0, 2.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<TriSawOscModule>(this, &TriSawOscModule::setAmplitude);
+
   p = new Param("Asymmetry", -1.0, 1.0, 0.0, Parameter::LINEAR);
   //p->setMapper(new rsParameterMapperRationalBipolar(-1, +1, 0.80)); // test
   addObservedParameter(p);
   p->setValueChangeCallback<TSO>(tso, &TSO::setAsymmetry);
-
 
   // for later, to replace AttackBending and DecayBending parameters - but that doesn't work yet:
   p = new Param("Bending", -1.0, 1.0, 0.0, Parameter::LINEAR);
@@ -116,7 +119,6 @@ void TriSawOscModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<TriSawOscModule>(this, &TriSawOscModule::setBendAsym);
 
-  
   /*
   p = new Param("AttackBending", -1.0, 1.0, 0.0, Parameter::LINEAR);
   //p->setMapper(new rsParameterMapperRationalBipolar(-1, +1, 0.9));
@@ -135,7 +137,6 @@ void TriSawOscModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<TSO>(tso, &TSO::setDecayBending);
   */
-
 
   p = new Param("AttackSigmoid", -1.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
@@ -171,7 +172,7 @@ void TriSawOscModule::createParameters()
 
 void TriSawOscModule::processStereoFrame(double *left, double *right)
 {
-  *left = *right = oscCore.getSample();
+  *left = *right = amplitude * oscCore.getSample();
 }
 
 void TriSawOscModule::setSampleRate(double newSampleRate)

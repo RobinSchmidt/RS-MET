@@ -55,6 +55,7 @@ public:
   virtual void noteOn(int noteNumber, int velocity) override;
 
   // parameter callback targets:
+  void setAmplitude(double newAmplitude) { amplitude = newAmplitude; }
   void setBend(double newBend);
   void setBendAsym(double newAsym);
   //void setSigmoid(double newSigmoid);  // or maybe call it sinusoidality/smoothness
@@ -74,6 +75,7 @@ protected:
   double freq = 0, sampleRate = 44100;
   double bend = 0, bendAsym = 0;
   double sigmoid = 0, sigmoidAsym = 0;
+  double amplitude = 1;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriSawOscModule)
 };

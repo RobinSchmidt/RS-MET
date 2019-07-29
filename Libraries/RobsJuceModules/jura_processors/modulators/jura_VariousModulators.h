@@ -46,7 +46,10 @@ public:
 
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void reset() override { core.reset();  }
-  //virtual void noteOn(int noteNumber, int velocity) override { core.reset(); }
+
+  virtual void noteOn( int key, int vel) override { core.noteOn(key, vel); }
+  virtual void noteOff(int key)          override { core.noteOff(key, 0); }
+
   virtual double getModulatorOutputSample() override { return core.getSample(); }
 
   // parameter callback targets:
