@@ -104,6 +104,10 @@ have to be written to make a dsp class polyphonic
  only a minimal amount of boilerplate code - and that boilerplat code should be
  of the wire-up kind - it should not involve defining new (sub)classes
  
+ maybe look at how juce does it:
+ https://docs.juce.com/master/classSynthesiserVoice.html
+ https://docs.juce.com/master/classSynthesiser.html
+ 
 -------------------------------------------------------------------------------
  
 Sampler Engine

@@ -1,6 +1,11 @@
 #ifndef jura_ModulatableParameter_h
 #define jura_ModulatableParameter_h
 
+// todo: 
+// -rename files to ModulationSystem.h/cpp - they contain several classes, not only 
+//  ModulatableParameter
+// -use rs-prefixes for class names
+
 /*
 
 The Modulation System
@@ -840,5 +845,61 @@ class JUCE_API ModulatableParameter2 : public ModulatableParameter
     valueChangeCallbackFunction(getModulatedValue());
   }
 };
+
+//=================================================================================================
+
+// the stuff below is under construction - it's for the polyphonic version of the modulation system
+
+
+class JUCE_API ModulationSourcePoly : public ModulationSource
+{
+
+public:
+
+  virtual double getModulatorOutputSample(int voiceIndex) = 0;
+  //virtual double getModulatorOutputSample() = 0;
+
+
+};
+
+class JUCE_API ModulationTargetPoly : virtual public ModulationTarget
+  // virtual inheritance, because we need a ModulatableParameterPoly subclass of 
+  // ModulatableParameter - which already has ModulationTarget as baseclass
+  // maybe we should not use "poly" subclasses for ModulationSource/Target but instead have the 
+  // respective member functions/variables already defined in the basclasses ...this would avoid 
+  // the virtual inheritance stuff - which is always a pain) - but it would slightly complicate 
+  // these classes even when polyphony is not needed - we'll see....
+{
+
+public:
+
+protected:
+
+  std::vector<double> modulatedValues; 
+  // this array is the replacement the single "modulatedValue" member of the monophonic baseclass
+
+};
+
+
+class JUCE_API ModulatableParameterPoly 
+  : public ModulatableParameter, public ModulationTargetPoly
+  // todo: check, if the inheritance order makes a difference
+{
+
+
+};
+
+// i think, a special ModulationConnection (sub)class is not needed for polyphony - we can use the
+// ame class as in the monophonic case
+
+class JUCE_API ModulationManagerPoly : public ModulationManager
+{
+
+};
+
+
+
+
+
 
 #endif

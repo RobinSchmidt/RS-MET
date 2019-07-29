@@ -481,12 +481,27 @@ class JUCE_API AudioModulePoly : public AudioModuleWithMidiIn
 
 public:
 
+  /*
+  AudioModulePoly(CriticalSection *lockToUse, 
+    MetaParameterManager* metaManagerToUse = nullptr, 
+    ModulationManager* modManagerToUse = nullptr,
+    VoiceManager* voiceManagerToUse = nullptr) 
+    : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse) {}
+  */
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup:
 
   // setVoiceManager(rosic::rsVoiceManager* managerToUse)
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry:
+
+  // int getMaxNumVoices();
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Audio processing:
