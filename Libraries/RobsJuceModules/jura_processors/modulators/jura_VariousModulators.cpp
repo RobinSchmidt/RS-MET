@@ -54,3 +54,51 @@ void TriSawModulatorModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<TSM>(&core, &TSM::setDecaySigmoid);
 }
+
+//=================================================================================================
+
+AttackDecayEnvelopeModule::AttackDecayEnvelopeModule(CriticalSection *lockToUse,
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
+  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)
+{
+  ScopedLock scopedLock(*lock);
+  setModuleTypeName("AttackDecayEnvelope");
+  createParameters();
+}
+
+void AttackDecayEnvelopeModule::createParameters()
+{
+  ScopedLock scopedLock(*lock);
+
+  //typedef RAPT::rsAttackDecayEnvelope<double> ADE;
+  typedef AttackDecayEnvelopeModule ADM;
+  typedef ModulatableParameter Param;  // later: ModulatableParameterPoly
+  Param* p;
+
+  p = new Param("Attack", 0.1, 100.0, 10.0, Parameter::EXPONENTIAL); 
+  addObservedParameter(p);
+  p->setValueChangeCallback<ADM>(this, &ADM::setAttack); 
+
+  p = new Param("Decay", 10., 1000.0, 100.0, Parameter::EXPONENTIAL); 
+  addObservedParameter(p);
+  p->setValueChangeCallback<ADM>(this, &ADM::setDecay); 
+}
+
+void AttackDecayEnvelopeModule::setSampleRate(double newSampleRate)
+{ 
+  sampleRate = newSampleRate;
+  core.setAttackSamples(0.001 * attack * sampleRate);
+  core.setDecaySamples( 0.001 * decay  * sampleRate);
+}
+
+void AttackDecayEnvelopeModule::setAttack(double newAttack)
+{
+  attack = newAttack;
+  core.setAttackSamples(0.001 * attack * sampleRate);
+}
+
+void AttackDecayEnvelopeModule::setDecay(double newDecay)
+{
+  decay = newDecay;
+  core.setDecaySamples(0.001 * decay * sampleRate);
+}

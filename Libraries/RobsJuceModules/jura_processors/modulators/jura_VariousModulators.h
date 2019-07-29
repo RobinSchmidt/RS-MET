@@ -7,7 +7,8 @@ class JUCE_API TriSawModulatorModule : public AudioModuleWithMidiIn, public Modu
 public:
 
   TriSawModulatorModule(CriticalSection *lockToUse,
-    MetaParameterManager* metaManagerToUse = nullptr, ModulationManager* modManagerToUse = nullptr);
+    MetaParameterManager* metaManagerToUse = nullptr, 
+    ModulationManager* modManagerToUse = nullptr);
 
 
   virtual void setSampleRate(double newSampleRate) override { core.setSampleRate(newSampleRate); }
@@ -19,7 +20,6 @@ public:
   // todo: change interface in order to return the modValue and let the framework take care of 
   // where to store it
 
-
 protected:
 
   virtual void createParameters();
@@ -29,5 +29,46 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriSawModulatorModule)
 };
+
+//=================================================================================================
+
+
+class JUCE_API AttackDecayEnvelopeModule 
+  : public AudioModuleWithMidiIn, public ModulationSource // later: ModulationSourcePoly
+{
+
+public:
+
+  AttackDecayEnvelopeModule(CriticalSection *lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr, 
+    ModulationManager* modManagerToUse = nullptr);
+
+
+  virtual void setSampleRate(double newSampleRate) override; 
+  virtual void reset() override { core.reset();  }
+  //virtual void noteOn(int noteNumber, int velocity) override { core.reset(); }
+  virtual double getModulatorOutputSample() override { return core.getSample(); }
+
+  // parameter callback targets:
+  void setAttack(double newAttack);
+  void setDecay( double newDecay);
+
+
+
+protected:
+
+  virtual void createParameters();
+
+  RAPT::rsAttackDecayEnvelope<double> core;
+
+  // parameters:
+  double sampleRate = 44100;
+  double attack = 10.0, decay = 100.0;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AttackDecayEnvelopeModule)
+};
+
+
+
 
 #endif
