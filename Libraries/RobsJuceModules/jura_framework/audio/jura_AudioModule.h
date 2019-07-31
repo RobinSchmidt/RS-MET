@@ -472,6 +472,11 @@ public:
 
 //=================================================================================================
 
+class rsVoiceManager // stub - maybe move to rosic
+{
+
+};
+
 /** Baseclass for polyphonic AudioModules. They have polyphonic audio outputs, so you can chain a 
 polyphonic oscillator with a polyphonic filter and drop in some polyphonic modulators in ToolChain.
 
@@ -484,19 +489,16 @@ class JUCE_API AudioModulePoly : public AudioModuleWithMidiIn
 
 public:
 
-  /*
-  AudioModulePoly(CriticalSection *lockToUse, 
-    MetaParameterManager* metaManagerToUse = nullptr, 
-    ModulationManager* modManagerToUse = nullptr,
-    VoiceManager* voiceManagerToUse = nullptr) 
-    : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse) {}
-  */
+  /** Constructor. May set up the managers. */
+  AudioModulePoly(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr, 
+    ModulationManager* modManagerToUse = nullptr, rsVoiceManager* voiceManagerToUse = nullptr);
+
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup:
 
-  // setVoiceManager(rosic::rsVoiceManager* managerToUse)
+  void setVoiceManager(rsVoiceManager* managerToUse);
 
 
   //-----------------------------------------------------------------------------------------------
@@ -532,7 +534,7 @@ public:
 
 protected:
 
-  // rosic::rsVoiceManager* voiceManager;
+  rsVoiceManager* voiceManager;
 
 };
 

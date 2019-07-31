@@ -76,6 +76,49 @@ protected:
 // maybe it's best to have a monophonic and a polyphonic version of this class - just to show the 
 // differences - for future modules, we'll only do the polyphonic one
 
+//=================================================================================================
+
+class JUCE_API AttackDecayEnvelopeModulePoly : public AudioModulePoly, public ModulationSourcePoly
+{
+
+public:
+
+  AttackDecayEnvelopeModulePoly(CriticalSection *lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr, 
+    ModulationManager* modManagerToUse = nullptr,
+    rsVoiceManager* voiceManagerToUse = nullptr);
+
+  /*
+  virtual void setSampleRate(double newSampleRate) override; 
+  virtual void reset() override { core.reset();  }
+
+  virtual void noteOn( int key, int vel) override { core.noteOn(key, vel); }
+  virtual void noteOff(int key)          override { core.noteOff(key, 0);  }
+
+  virtual double getModulatorOutputSample() override { return core.getSample(); }
+  */
+
+  // parameter callback targets:
+  void setAttack(double newAttack, int voice);
+  void setDecay( double newDecay,  int voice);
+  // maybe for the polyphonic case, these functions should just receive a second argument for the 
+  // voice index? this will be a quite flexible design but will require to write a lot of 
+  // boilerplate code to make objects polyphonic - for each modulatable parameter, we must write a 
+  // boilerplate per-voice callback function
+
+protected:
+
+  virtual void createParameters();
+
+  //RAPT::rsAttackDecayEnvelope<double> core;
+
+  // parameters:
+  double sampleRate = 44100;
+  //double attack = 10.0, decay = 100.0;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AttackDecayEnvelopeModulePoly)
+};
+
 
 
 

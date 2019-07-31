@@ -103,3 +103,35 @@ void AttackDecayEnvelopeModule::setDecay(double newDecay)
   decay = newDecay;
   core.setDecaySamples(0.001 * decay * sampleRate);
 }
+
+//=================================================================================================
+
+AttackDecayEnvelopeModulePoly::AttackDecayEnvelopeModulePoly(CriticalSection* lockToUse,
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse,
+  rsVoiceManager* voiceManagerToUse) 
+  : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+{
+  ScopedLock scopedLock(*lock);
+  setModuleTypeName("AttackDecayEnvelope");
+  createParameters();
+}
+
+void AttackDecayEnvelopeModulePoly::createParameters()
+{
+  ScopedLock scopedLock(*lock);
+
+  typedef AttackDecayEnvelopeModulePoly ADM;
+  typedef ModulatableParameter Param;
+  //typedef ModulatableParameterPoly Param;  // for later use
+  Param* p;
+
+  /*
+  p = new Param("Attack", 0.1, 100.0, 10.0, Parameter::EXPONENTIAL); 
+  addObservedParameter(p);
+  p->setValueChangeCallback<ADM>(this, &ADM::setAttack);  // we need a setValueChangeCallbackPoly
+
+  p = new Param("Decay", 10., 1000.0, 100.0, Parameter::EXPONENTIAL); 
+  addObservedParameter(p);
+  p->setValueChangeCallback<ADM>(this, &ADM::setDecay);
+  */
+}

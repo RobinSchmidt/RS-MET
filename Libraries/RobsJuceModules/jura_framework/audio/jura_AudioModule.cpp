@@ -696,6 +696,26 @@ void AudioModuleWithMidiIn::setPitchBend(int pitchBendValue)
 }
 
 //=================================================================================================
+// class AudioModulePoly
+
+AudioModulePoly::AudioModulePoly(CriticalSection *lockToUse, 
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse, 
+  rsVoiceManager* voiceManagerToUse) 
+  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse) 
+{
+  setVoiceManager(voiceManagerToUse);
+}
+
+void AudioModulePoly::setVoiceManager(rsVoiceManager* managerToUse)
+{
+  voiceManager = managerToUse;
+  // todo: maybe loop through child-modules and set the managere there, too
+}
+
+
+
+
+//=================================================================================================
 // class AudioModuleEditor
 
 AudioModuleEditor::AudioModuleEditor(AudioModule* newModuleToEdit)
