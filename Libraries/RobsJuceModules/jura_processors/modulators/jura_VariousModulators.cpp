@@ -72,7 +72,8 @@ void AttackDecayEnvelopeModule::createParameters()
 
   //typedef RAPT::rsAttackDecayEnvelope<double> ADE;
   typedef AttackDecayEnvelopeModule ADM;
-  typedef ModulatableParameter Param;  // later: ModulatableParameterPoly
+  typedef ModulatableParameter Param;
+  //typedef ModulatableParameterPoly Param;  // for later use
   Param* p;
 
   p = new Param("Attack", 0.1, 100.0, 10.0, Parameter::EXPONENTIAL); 
@@ -81,7 +82,7 @@ void AttackDecayEnvelopeModule::createParameters()
 
   p = new Param("Decay", 10., 1000.0, 100.0, Parameter::EXPONENTIAL); 
   addObservedParameter(p);
-  p->setValueChangeCallback<ADM>(this, &ADM::setDecay); 
+  p->setValueChangeCallback<ADM>(this, &ADM::setDecay);
 }
 
 void AttackDecayEnvelopeModule::setSampleRate(double newSampleRate)

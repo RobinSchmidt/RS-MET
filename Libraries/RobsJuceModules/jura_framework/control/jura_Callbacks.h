@@ -61,8 +61,8 @@ public:
 // class SpecificMemberFunctionCallback1:
 
 /** This template can be used to create callback objects that can be assigned to a (non-static) 
-member function for some instance of a class that has has to specified via the first template 
-arguments. This template here is made for member functions that have one parameter and a 
+member function for some instance of a class that has to be specified via the first template 
+argument. This template here is made for member functions that have one parameter and a 
 return-value (which may be void). If you have a class 'MyClass' with a member-function 
 'myMemberFunction' that takes a parameter of type 'MyParameterType' and returns a value of type 
 'MyReturnType', you can instantiate the template like this:
@@ -80,7 +80,7 @@ syntax - mainly because i believe that callback invocations should be distinguis
 function calls in client code to avoid confusion. */
 
 template<class CalleeObjectType, class ReturnType, class ArgumentType>
-class JUCE_API SpecificMemberFunctionCallback1 
+class JUCE_API SpecificMemberFunctionCallback1  // get rid of "Specific"
   : public GenericMemberFunctionCallback1<ReturnType, ArgumentType>
 {
 

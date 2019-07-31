@@ -3,3 +3,7 @@ http://www.codeproject.com/Articles/48575/How-to-define-a-template-class-in-a-h-
 
 Lock free programming:
 http://moodycamel.com/blog/2013/a-fast-lock-free-queue-for-c++
+
+
+Math:
+https://math.stackexchange.com/questions/1708146/shortest-path-between-two-points-on-a-surface

@@ -850,7 +850,6 @@ class JUCE_API ModulatableParameter2 : public ModulatableParameter
 
 // the stuff below is under construction - it's for the polyphonic version of the modulation system
 
-
 class JUCE_API ModulationSourcePoly : public ModulationSource
 {
 
@@ -859,8 +858,11 @@ public:
   virtual double getModulatorOutputSample(int voiceIndex) = 0;
   //virtual double getModulatorOutputSample() = 0;
 
-
 };
+// maybe it's not a good idea to have such a subclass - it may mess up the class hierarchy - the 
+// baseclass should probably already facilitate polyphony - but the use of it should be optional
+// - like getModulatorOutputSample always takes a voice-index parameter and monophonic 
+// implementations may just ignore it
 
 class JUCE_API ModulationTargetPoly : virtual public ModulationTarget
   // virtual inheritance, because we need a ModulatableParameterPoly subclass of 
@@ -883,11 +885,32 @@ protected:
 
 class JUCE_API ModulatableParameterPoly 
   : public ModulatableParameter, public ModulationTargetPoly
-  // todo: check, if the inheritance order makes a difference
+  // todo: check, if the inheritance order makes a difference - 
 {
 
 
 };
+// -maybe it should have its own callCallbacks function that takes the voice index as second 
+//  parameter
+// -or we have an array of callback objects
+// -or, use the same simple callback object but pointer arithemetic (based on the voice index) to 
+//  address the appropriate object - this may be a bit dirty and hacky internally but would be the 
+//  leanest solution - maybe we would have to change the callback class like this:
+// ReturnType call(const ArgumentType argument, int index)
+// {
+//    CalleeObjectType* indexedCallee = calleeObject + sizeof(CalleeObjectType);
+//    return (*indexedCallee.*memberToCall)(argument);
+// }
+//  maybe we would have to make a subclass of the callback class
+//  BUT: this strategy assumes that the modulated dsp objects are all in a contiguous array - which 
+//  may not be the case (think of recursive composition of objects) ...unless we allow for a sort of 
+//  object-stride that is not necessarily equal to sizeof(CalleeObjectType)
+//  -but maybe that restriction to dsp objects in contiguous arrays is not a big issue? we probably 
+//   always want them to be in an array anyway?
+// -we probably need an array of callee-objects instead of a single object
+//  -maybe have an calleeArray - actually, we just need to augment SpecificMemberFunctionCallback1 
+//   by a numCallees field
+
 
 // i think, a special ModulationConnection (sub)class is not needed for polyphony - we can use the
 // ame class as in the monophonic case

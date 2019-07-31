@@ -477,7 +477,9 @@ polyphonic oscillator with a polyphonic filter and drop in some polyphonic modul
 
 ...just a stub, at the moment....tbc.... */
 
-class JUCE_API AudioModulePoly : public AudioModuleWithMidiIn
+class JUCE_API AudioModulePoly : public AudioModuleWithMidiIn 
+  // maybe don't inherit - the class is a mix-in - maybe rename to 
+  // PolyphonicModule (such that the name doesn't suggest being a subclass of AudioModule
 {
 
 public:
