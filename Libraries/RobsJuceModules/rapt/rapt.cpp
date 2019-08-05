@@ -9,6 +9,6 @@ header files that the compiler may be using. */
 
 // This file is where all the non-templated code of the rapt-library goes
 
-#include "Basics/Plotting.cpp"  
+#include "Basics/Plotting.cpp"
 // only the plotting code gets compiled into rapt.obj - everything else is template code and must
 // be included and instantiated elsewhere, for example in rosic

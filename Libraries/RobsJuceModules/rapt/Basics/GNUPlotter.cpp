@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+//#include <string>
 using namespace std;
 
 GNUPlotter::GNUPlotter()
@@ -638,7 +639,8 @@ std::string GNUPlotter::getGraphLegend(unsigned int i)
 std::string GNUPlotter::s(unsigned int x)
 {
   //return std::to_string((_Longlong)x); // does not compile with gcc on linux
-  return std::to_string((long long)x);
+  return std::to_string((long long)x); // error in CodeBlocks/Win - #include<string> doesn't help - WTF?
+  //return to_string((long long)x);
 }
 
 std::string GNUPlotter::s(double x)

@@ -3,9 +3,9 @@
 //=================================================================================================
 
 /** Implements a realtime moving maximum filter, that is: a filter that looks at audio samples
-x[n], x[n-1],..., x[n-k] and extracts the maximum value in this range of samples. The algorithm is 
-based on a double ended queue and has an amortized complexity of O(1) per sample (a naive 
-implementation would have complexity O(k) per sample). For an explanation of the algorithm, 
+x[n], x[n-1],..., x[n-k] and extracts the maximum value in this range of samples. The algorithm is
+based on a double ended queue and has an amortized complexity of O(1) per sample (a naive
+implementation would have complexity O(k) per sample). For an explanation of the algorithm,
 see: https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm  */
 
 template<class T>
@@ -16,19 +16,19 @@ public:
 
   rsMovingMaximumFilter(size_t maxLength);
 
-  /** Sets up the length of the filter, i.e. the number of samples within which a maximum is 
-  searched. 
-  Currently, this will also cause the delayline to be flushed - todo: allow for dynamic 
+  /** Sets up the length of the filter, i.e. the number of samples within which a maximum is
+  searched.
+  Currently, this will also cause the delayline to be flushed - todo: allow for dynamic
   length changes. */
-  void setLength(size_t newLength) 
-  { 
-    delayLine.setLength(newLength); 
+  void setLength(size_t newLength)
+  {
+    delayLine.setLength(newLength);
 
 
     reset();
-    // preliminary - we need to put the filter into its initial state on length changes, so the 
+    // preliminary - we need to put the filter into its initial state on length changes, so the
     // length cannot yet be
-    // todo: we may have to update the content of the maxDeque - when this is called during running 
+    // todo: we may have to update the content of the maxDeque - when this is called during running
     // the filter and new length is shorter than the old, some values that are currently in the deque
     // will never be removed - so we should remove them in the moment, when the length changes
   }
@@ -43,11 +43,11 @@ public:
   {
     greater = greaterThan;
   }
-  //void setComparisonFunction(const std::function<bool(const T&, const T&)>& greaterThan) 
+  //void setComparisonFunction(const std::function<bool(const T&, const T&)>& greaterThan)
   //{ greater = greaterThan; }
 
 
-  /** Returns the length of the filter, i.e. the number of samples within which a maximum is 
+  /** Returns the length of the filter, i.e. the number of samples within which a maximum is
   searched. */
   size_t getLength() const { return delayLine.getLength(); }
 
@@ -58,35 +58,35 @@ public:
   /** Computes and returns an output sample.  */
   inline T getSample(T in)
   {
-    // accept new incoming sample - this corresponds to 
+    // accept new incoming sample - this corresponds to
     // Nayuki's Step 2 - "increment the array range’s right endpoint"
-    while(!maxDeque.isEmpty() && greater(in, maxDeque.readTail()) )  
+    while(!maxDeque.isEmpty() && greater(in, maxDeque.readTail()) )
       maxDeque.popBack();
     maxDeque.pushBack(in);
-    // maybe we could further reduce the worst case processing cost by using binary search to 
+    // maybe we could further reduce the worst case processing cost by using binary search to
     // adjust the new tail-pointer instead of linearly popping elements one by one? search
-    // between tail and head for the first element that is >= in (or not < in) - but maybe that 
+    // between tail and head for the first element that is >= in (or not < in) - but maybe that
     // would destroy the amortized O(1) cost? ...but actually, i don't think so
-    // maybe using a "greater" function instead of a > operator is not such a good idea, 
+    // maybe using a "greater" function instead of a > operator is not such a good idea,
     // performance-wise - we should do performance tests and maybe for production code, provide
     // a version of getSample that just uses >
 
-    // update delayline (forget oldest sample and remember current sample for later), this 
+    // update delayline (forget oldest sample and remember current sample for later), this
     // corresponds to Nayuki's Step 3 - "increment the array range’s left endpoint":
     T oldest = delayLine.getSample(in);
     if(!maxDeque.isEmpty()) {            // happens when length is set to zero
       T maxVal = maxDeque.readHead();
       if(maxVal == oldest)
-        maxDeque.popFront();          
+        maxDeque.popFront();
       return maxVal;
     }
     else
       return in;
   }
 
-  /** Computes an output sample using a naive algorithm that scans the whole ringbuffer for its 
-  maximum value. The algorithm has a per sample complexity O(k) where k is the length of the 
-  filter. The implementation is mainly for testing purposes and should probably not be used in 
+  /** Computes an output sample using a naive algorithm that scans the whole ringbuffer for its
+  maximum value. The algorithm has a per sample complexity O(k) where k is the length of the
+  filter. The implementation is mainly for testing purposes and should probably not be used in
   production code. */
   inline T getSampleNaive(T in)
   {
@@ -112,14 +112,14 @@ protected:
 
 };
 
-// maybe call it rsMovingSelector, movingExtremum ...an even more general concept would be a 
+// maybe call it rsMovingSelector, movingExtremum ...an even more general concept would be a
 // moving aggregator which could also be something like a moving median (or r-th quantile)
 //
 // https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm
 
 //=================================================================================================
 
-/** A variant of the rsMovingMaximumFilter that also extracts the minimum. It's slightly more 
+/** A variant of the rsMovingMaximumFilter that also extracts the minimum. It's slightly more
 economic to extract min and max with a single filter object rather than using separate filters for
 min and max (specifically, the delayline can be shared by both filters). */
 
@@ -129,29 +129,29 @@ class rsMovingMinMaxFilter : public rsMovingMaximumFilter<T>
 
 public:
 
-  rsMovingMinMaxFilter(size_t maxLength) : rsMovingMaximumFilter(maxLength), minDeque(maxLength) {}
+  rsMovingMinMaxFilter(size_t maxLength) : rsMovingMaximumFilter<T>(maxLength), minDeque(maxLength) {}
 
   void setLessThanFunction(bool (*lessThan)(const T&, const T&)) { less = lessThan; }
 
   inline void getMinMax(T in, T* minVal, T* maxVal)
   {
     // update deque tails:
-    while(!maxDeque.isEmpty() && greater(in, maxDeque.readTail()) )
-      maxDeque.popBack();
-    maxDeque.pushBack(in);
-    while(!minDeque.isEmpty() && less(   in, minDeque.readTail()) )
-      minDeque.popBack();
-    minDeque.pushBack(in);
+    while(!this->maxDeque.isEmpty() && greater(in, this->maxDeque.readTail()) )
+      this->maxDeque.popBack();
+    this->maxDeque.pushBack(in);
+    while(!this->minDeque.isEmpty() && less(   in, this->minDeque.readTail()) )
+      this->minDeque.popBack();
+    this->minDeque.pushBack(in);
 
     // update delayline and init outputs:
-    T oldest = delayLine.getSample(in);
+    T oldest = this->delayLine.getSample(in);
     *maxVal = *minVal = in;
 
     // update deque heads:
-    if(!maxDeque.isEmpty()) {
-      *maxVal = maxDeque.readHead();
+    if(!this->maxDeque.isEmpty()) {
+      *maxVal = this->maxDeque.readHead();
       if(*maxVal == oldest)
-        maxDeque.popFront(); }
+        this->maxDeque.popFront(); }
     if(!minDeque.isEmpty()) {
       *minVal = minDeque.readHead();
       if(*minVal == oldest)
@@ -215,7 +215,7 @@ public:
 
 protected:
 
-  T upwardLimit = RS_INF(T), downwardLimit = RS_INF(T);  
+  T upwardLimit = RS_INF(T), downwardLimit = RS_INF(T);
   T y1 = T(0);  // previous output sample
 
 };
@@ -223,15 +223,15 @@ protected:
 //=================================================================================================
 
 /** A class for applying a special kind of nonlinear smoothing algorithm. It is based on min/max
-filtering over a certain number of samples and taking an adjustable linear combination of both and 
-then applying a linear slew rate limiter to the result where the limit on the slew rate is 
-adaptively updated according to the current values of min and max such that that it could go from 
+filtering over a certain number of samples and taking an adjustable linear combination of both and
+then applying a linear slew rate limiter to the result where the limit on the slew rate is
+adaptively updated according to the current values of min and max such that that it could go from
 min to max in the same given number of samples (or some fraction or multiple thereof).
 
 It is good for post-processing the raw output of an envelope follower to make it smoother. The raw
-envelope follower output will typically show parasitic oscillations with the signal's frequency. 
+envelope follower output will typically show parasitic oscillations with the signal's frequency.
 Setting up a smoother with a length equal to the cycle-length of the (enveloped) input wave will
-give optimal smoothing for the signal - in an ideal situation, the oscillations in the detected 
+give optimal smoothing for the signal - in an ideal situation, the oscillations in the detected
 envelope will be completely flattened out. */
 
 template<class T>
@@ -247,7 +247,7 @@ public:
   /** \name Setup */
 
   /** Sets the smoothing length in samples. */
-  void setLength(size_t newLength) 
+  void setLength(size_t newLength)
   {
     minMaxFilter.setLength(newLength);
     updateSlewRateLimitingFactor();
@@ -255,7 +255,7 @@ public:
 
   /** Adjusts the scaling factor for the slew-rate. With a factor of one, the slew rate is set up
   such that a transition between the currently measured min and max can occur in between L samples
-  where L is the length of the min-max filter. An amount of zero turns slew rate limitig off and 
+  where L is the length of the min-max filter. An amount of zero turns slew rate limitig off and
   amounts higher than one make the whole thing sluggish and are probably not useful. */
   void setSlewRateLimiting(T newAmount)
   {
@@ -263,9 +263,9 @@ public:
     updateSlewRateLimitingFactor();
   }
 
-  /** Sets the mix between min and max which is used as output signal (before it goes into the 
-  adaptive, linear slew rate limiter) where 0 corresponds to min only, 1 corresponds to max only 
-  and 0.5 to the arithmetic mean between min and max (todo: maybe a generalized mean could be 
+  /** Sets the mix between min and max which is used as output signal (before it goes into the
+  adaptive, linear slew rate limiter) where 0 corresponds to min only, 1 corresponds to max only
+  and 0.5 to the arithmetic mean between min and max (todo: maybe a generalized mean could be
   useful?). */
   void setMinMaxMix(T newMix)
   {

@@ -75,7 +75,7 @@ Frequency- and Phase-Modulation:
 http://www.kvraudio.com/forum/viewtopic.php?f=33&t=399705 FM Synth anti aliasing.
 
 
-http://www.dsprelated.com/showarticle/176.php Understanding the 'Phasing Method' of Single Sideband Demodulation
+
 
 Oscillators:
 http://www.kvraudio.com/forum/viewtopic.php?t=412674 Efficient sine oscillator
@@ -105,6 +105,7 @@ http://www.kvraudio.com/forum/viewtopic.php?f=33&t=424096 Variable rate /change 
 http://www.kvraudio.com/forum/viewtopic.php?f=33&t=423754 Understanding hadamard matrices in reverb
 http://www.kvraudio.com/forum/viewtopic.php?f=33&t=445438 Efficient antialiasing for distortion of any input
 http://www.kvraudio.com/forum/viewtopic.php?f=33&t=445684 how to zero centre audio for Forward FFT
+https://www.kvraudio.com/forum/viewtopic.php?t=406595 Deinterpolation - inserting samples at fractional positions
 
 Optimization:
 http://www.kvraudio.com/forum/viewtopic.php?&t=466649 Trying to optimize sin, pow & atan, getting nowhere...
@@ -119,4 +120,13 @@ http://www.kvraudio.com/forum/viewtopic.php?p=4154535 licensing dsp code - what 
 http://www.kvraudio.com/forum/viewtopic.php?f=33&t=418966 Need custom off-line pitch correction app - for pay
 http://www.kvraudio.com/forum/viewtopic.php?f=33&t=441669 Looking for DSP Developer
 http://www.kvraudio.com/forum/viewtopic.php?f=33&t=429568 Job - Audio Programmer
+
+
+Other forums:
+
+Math:
+https://math.stackexchange.com/questions/1708146/shortest-path-between-two-points-on-a-surface Geodesics
+
+
+http://www.dsprelated.com/showarticle/176.php Understanding the 'Phasing Method' of Single Sideband Demodulation
 

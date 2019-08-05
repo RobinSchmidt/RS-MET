@@ -17,8 +17,9 @@ public:
     setModuleName(errorText);
   }
 
-  // maybe override get/setState function setState just stores the passed xml and getState returns 
-  // it - this way, the settings are not lost when a module is not found
+  // maybe override get/setState function. setState just stores the passed xml and getState returns 
+  // it - this way, the settings are not lost when a module is not found and an ensemble containing
+  // the module is re-saved
 
   // todo: the error message should appear also in the AudioModuleSelector (currently, it appears
   // only the editor headline)

@@ -452,6 +452,8 @@
                        windowsCodeBlocksArchitecture="-m64"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TestsRosicAndRapt"
                        windowsCodeBlocksArchitecture="-m64"/>
+        <CONFIGURATION name="Debug 32-bit" isDebug="1" optimisation="1" targetName="TestsRosicAndRapt"
+                       windowsCodeBlocksArchitecture="-m32"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="rapt" path="../../Libraries/RobsJuceModules"/>

@@ -251,7 +251,14 @@ public:
 
 protected:
 
-  double modValue = 0;
+  double modValue = 0;  
+  // maybe use a std::vector to support polyphony already here - obviates subclass 
+  // ModulationSourcePoly which would make some things easier - when then AudioModulePoly is 
+  // realized as a mix-in class, then polyphonic modulator classes could be realized by 
+  // subclassing their monophonic counterparts (just by mixing in the AudioModulePoly class) - 
+  // without any issues with virtual inheritance ...but they would still need to delete the 
+  // monophonic parameters and replace them by polyphonic ones
+
   juce::String modSourceName = "ModulationSource";
   juce::String displayName   = "";
 
