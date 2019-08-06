@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
-//#include <string>
+#include <string>
 using namespace std;
 
 GNUPlotter::GNUPlotter()
@@ -645,6 +645,8 @@ std::string GNUPlotter::s(unsigned int x)
   // only by C++11 - i guess, i should update the compiler and try again - and maybe i need to set
   // the compiler flag, too as described here:
   // https://stackoverflow.com/questions/15569179/to-string-not-declared-in-scope
+  // https://stackoverflow.com/questions/12975341/to-string-is-not-a-member-of-std-says-g-mingw
+  // ...hmm...doesn't help
 
 
   //return to_string((long long)x);

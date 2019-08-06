@@ -37,6 +37,7 @@
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
           <Add option="-g"/>
+          <Add option="-std=c++0x"/>
           <Add directory="."/>
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../Libraries/RobsJuceModules"/>
@@ -73,6 +74,7 @@
           <Add option="-O3"/>
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
+          <Add option="-std=c++0x"/>
           <Add directory="."/>
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../Libraries/RobsJuceModules"/>
@@ -112,6 +114,7 @@
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
           <Add option="-g"/>
+          <Add option="-std=c++0x"/>
           <Add directory="."/>
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../Libraries/RobsJuceModules"/>
