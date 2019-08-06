@@ -266,6 +266,35 @@ void testModalResynthesis(const std::string& name, std::vector<double>& x,
 
   rosic::writeToMonoWaveFile("ModalInput.wav",  &x[0],  N, (int)fs);
   rosic::writeToMonoWaveFile("ModalOutput.wav", &y[0],  N, (int)fs);
-
 }
+
+void testDeBeating(const std::string& name, std::vector<double>& x, double fs, double f0)
+{
+  int N = (int) x.size(); // x is the input signal
+
+  // create and set up analyzer and obtain sinusoidal model:
+  RAPT::rsHarmonicAnalyzer<double> analyzer;
+  analyzer.setSampleRate(fs);
+  analyzer.setSpectralOversampling(4);
+  analyzer.setNumCyclesPerBlock(4);
+  analyzer.setWindowType(stringToWindowType("hm")); // options: rc,hn,hm,bm,bh
+  analyzer.getCycleFinder().setFundamental(f0);
+  RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
+
+  // mdl now contains the sinusoidal model for the sound. Now, we set up a rsPartialBeatingRemover 
+  // and apply the de-beating to model data:
+  rsPartialBeatingRemover<double> deBeater;
+  deBeater.setPhaseSmoothingParameters(5.0, 1, 4); // cutoff = 10 leaves a vibrato
+  deBeater.processModel(mdl);
+
+  // mdl now contains the modified, de-beated model data - synthesize the signal from the model and
+  // write it into a wave file (for convenient reference, also write the input next to it):
+  std::vector<double> y = synthesizeSinusoidal(mdl, fs);
+  rosic::writeToMonoWaveFile("DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
+  rosic::writeToMonoWaveFile("DeBeatInput.wav",  &x[0], (int)x.size(), (int)fs);
+  // ...we should probably use the passed name somehow for naming the files
+}
+
+
+
 

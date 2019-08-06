@@ -1174,7 +1174,8 @@ void testHarmonicResynthesis(const std::string& name, double fs, int N, double f
   testHarmonicResynthesis(name, input, fs, f0, writeWaveFiles, plotResults);
 }
 
-// convenience function - move to rs_testing
+/*
+// convenience function - moved to rs_testing
 RAPT::rsWindowFunction::WindowType stringToWindowType(const std::string& wt)
 {
   typedef RAPT::rsWindowFunction::WindowType WT;
@@ -1186,6 +1187,7 @@ RAPT::rsWindowFunction::WindowType stringToWindowType(const std::string& wt)
   RAPT::rsError("Unknown window type");
   return WT::rectangular;
 }
+*/
 
 void harmonicDetection2Sines()
 {

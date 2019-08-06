@@ -91,3 +91,15 @@ bool areNumbersEqual(double x, double y, double relativeTolerance)
   // x == y, if the absolute difference is below a relative tolerance:
   return fabs(x-y) <= relativeTolerance * max(fabs(x), fabs(y));
 }
+
+RAPT::rsWindowFunction::WindowType stringToWindowType(const std::string& wt)
+{
+  typedef RAPT::rsWindowFunction::WindowType WT;
+  if(wt == "rc") return WT::rectangular;
+  if(wt == "hn") return WT::hanningZZ;
+  if(wt == "hm") return WT::hamming;
+  if(wt == "bm") return WT::blackman;
+  if(wt == "bh") return WT::blackmanHarris;
+  RAPT::rsError("Unknown window type");
+  return WT::rectangular;
+}

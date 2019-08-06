@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
   //xoxosOsc();
 
   // Modulators:
-  attackDecayEnvelope();
+  //attackDecayEnvelope();
 
   // Graphics:
   //lineDrawing();
@@ -241,7 +241,7 @@ int main(int argc, char* argv[])
   //autoCorrelationPitchDetectorOffline();
   //crossCorrelationBestMatch();
   //combineFFTs(); // move to math experiments
-  envelopeFollower();
+  //envelopeFollower();
   ////zeroCrossingPitchDetector(); // commented in header - why?
   //instantaneousFrequency();
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)

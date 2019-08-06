@@ -43,7 +43,8 @@ void getPaddedSignals(double* xIn, int Nx,  const RAPT::rsSinusoidalModel<double
 void testModalResynthesis(const std::string& name, std::vector<double>& input, 
   double sampleRate, double fundamental = 0);
 
-
+void testDeBeating(const std::string& name, std::vector<double>& input, 
+  double sampleRate, double fundamental = 0);
 
 
 // move to RAPT::rsArray

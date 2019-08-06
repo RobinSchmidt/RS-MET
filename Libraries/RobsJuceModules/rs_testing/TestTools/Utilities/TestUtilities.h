@@ -128,5 +128,8 @@ inline void appendTestResultToReport(std::string &reportString, const std::strin
 involved numbers are NaNs or infinities. */
 bool areNumbersEqual(double x, double y, double relativeTolerance);
 
+/** Convenience function to convert a string to a window-type.  options: rc,hn,hm,bm,bh */
+RAPT::rsWindowFunction::WindowType stringToWindowType(const std::string& wt);
+
 
 #endif
