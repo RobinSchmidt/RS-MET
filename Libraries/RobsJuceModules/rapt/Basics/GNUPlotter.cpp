@@ -639,7 +639,14 @@ std::string GNUPlotter::getGraphLegend(unsigned int i)
 std::string GNUPlotter::s(unsigned int x)
 {
   //return std::to_string((_Longlong)x); // does not compile with gcc on linux
-  return std::to_string((long long)x); // error in CodeBlocks/Win - #include<string> doesn't help - WTF?
+
+  return std::to_string((long long)x);
+  // error in CodeBlocks/Win - #include<string> doesn't help - WTF? ...it seems this is supported
+  // only by C++11 - i guess, i should update the compiler and try again - and maybe i need to set
+  // the compiler flag, too as described here:
+  // https://stackoverflow.com/questions/15569179/to-string-not-declared-in-scope
+
+
   //return to_string((long long)x);
 }
 
@@ -671,7 +678,7 @@ std::string GNUPlotter::sd(double x)
 
 std::string GNUPlotter::sd(int x)
 {
-  return to_string(x);
+  return std::to_string(x);
 }
 
 // internal functions
