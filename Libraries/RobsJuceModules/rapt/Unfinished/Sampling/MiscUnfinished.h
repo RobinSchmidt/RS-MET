@@ -1,8 +1,8 @@
 #ifndef RAPT_RESAMPLER_H
 #define RAPT_RESAMPLER_H
 
-// todo: this file is messed up and contains a lot of functions classes that have nothing to do 
-// with resampling directly. move all those other functions into appropriate files, maybe for 
+// todo: this file is messed up and contains a lot of functions classes that have nothing to do
+// with resampling directly. move all those other functions into appropriate files, maybe for
 // those which are still under construction, create a special UnderConstructionAudio.h/cpp file
 
 /** Implements bidirectional filtering, which means the signal is first passed through the filter
@@ -43,41 +43,41 @@ public:
   be adjusted internally.
   gc: gain at bandedge frequencies (raw amplitude) */
   template<class TSig, class TPar>
-  static void applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs, 
+  static void applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs,
     int numPasses = 1, TPar gc = SQRT2_INV);
 
   /** Similar to applyConstPeakBandpassBwInHz but uses a Butterworth bandpass with given order
   instead of a 2nd order bandpass. */
   template<class TSig, class TPar>
-  static void applyButterworthBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs, 
+  static void applyButterworthBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs,
     int order, int numPasses = 1, TPar gc = SQRT2_INV);
 
-  /** Applies a Butterworth lowpass filter bidirectionally to the data in array x of length N and 
+  /** Applies a Butterworth lowpass filter bidirectionally to the data in array x of length N and
   writes the result to the array y. fc: cutoff frequency, fs: sampleRate */
   template<class TSig, class TPar>
-  static void applyButterworthLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int order, 
+  static void applyButterworthLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int order,
     int numPasses = 1, TPar gc = SQRT2_INV);
 
-  /** Applies a bidirectional Butterworth highpass ...it actually uses a lowpass and subtracts the 
+  /** Applies a bidirectional Butterworth highpass ...it actually uses a lowpass and subtracts the
   result from the original. Can NOT be used in place: x and y must be distinct. */
   template<class TSig, class TPar>
-  static void applyButterworthHighpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int order, 
+  static void applyButterworthHighpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int order,
     int numPasses = 1, TPar gc = SQRT2_INV);
 
 
 
-  /** Applies a Butterworth lowpass filter bidirectionally to the non-uniformly sampled data in 
-  array x of length N with time-stamps in the array t and writes the result to the array y. It 
-  works very similar to the function for uniformly sampled data, but instead of passing a 
+  /** Applies a Butterworth lowpass filter bidirectionally to the non-uniformly sampled data in
+  array x of length N with time-stamps in the array t and writes the result to the array y. It
+  works very similar to the function for uniformly sampled data, but instead of passing a
   sample-rate, you need to pass a time-stamp array. If the data is, in fact, uniformly sampled,
-  then the time-stamp array would look like [0T 1T 2T 3T 4T 5T ...] where T is the sampling 
+  then the time-stamp array would look like [0T 1T 2T 3T 4T 5T ...] where T is the sampling
   interval. fc: cutoff frequency in Hz */
   template<class TSig, class TTim, class TPar> // signal, time, parameter
-  static void applyButterworthLowpass(TSig *x, TTim *t, TSig *y, int N, TPar fc, int order, 
+  static void applyButterworthLowpass(TSig *x, TTim *t, TSig *y, int N, TPar fc, int order,
     int numPasses = 1, TPar gc = SQRT2_INV);
   // todo: compare outputs of uniformly sampled function to outputs of this function, when
   // the data-spacing is chosen to be uniform - result will not be exactly the same because the
-  // uniform filter uses bilinear trafo and the non-uniform impulse-invariant (todo: make the 
+  // uniform filter uses bilinear trafo and the non-uniform impulse-invariant (todo: make the
   // uniform filter switchable to impulse-invariant (or pole/zero-mapping) and maybe others like
   // MZTi)
 
@@ -91,7 +91,7 @@ public:
   for the effects of multiple passes, the cutoff frequency of the single-pass filter will be
   adjusted internally. */
   template<class TSig, class TPar>
-  static void applyLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses = 1, 
+  static void applyLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses = 1,
     TPar gc = SQRT2_INV);
 
 protected:
@@ -156,34 +156,34 @@ class rsZeroCrossingFinder
 public:
 
   /** Returns true, if x[n] < 0.0 and x[n+1] >= 0.0.
-    
+
   Using < and >= as opposed to <= and > is a convention.
-  When there is a sample < 0 followed by a sequence of zeros followed by sample > 0, this places 
-  the marker at the beginning of the sequenece of zeros. When there's a sample > 0 at n = 0, it 
-  will be not considered a zero...hmm...maybe the convention x[n] <= 0.0 and x[n+1] > 0.0 for a 
-  zero crossing may be more intuitive in such contrived cases...maybe change it...make 
+  When there is a sample < 0 followed by a sequence of zeros followed by sample > 0, this places
+  the marker at the beginning of the sequenece of zeros. When there's a sample > 0 at n = 0, it
+  will be not considered a zero...hmm...maybe the convention x[n] <= 0.0 and x[n+1] > 0.0 for a
+  zero crossing may be more intuitive in such contrived cases...maybe change it...make
   experiments */
   template<class T>
   static bool isUpwardCrossing(T *x, int n);
 
-  /** Finds the position of the upward zero-crossing that is closest to n and left to n. If none 
+  /** Finds the position of the upward zero-crossing that is closest to n and left to n. If none
   is found, -1 is returned. */
   template<class T>
   static int closestUpwardCrossingLeft(T *x, int N, int n);
 
-  /** Finds the position of the upward zero-crossing that is closest to n and right to n. If none 
+  /** Finds the position of the upward zero-crossing that is closest to n and right to n. If none
   is found, -1 is returned. */
   template<class T>
   static int closestUpwardCrossingRight(T *x, int N, int n);
 
-  /** Finds the position of the upward zero-crossing that is closest to n. If none is found, -1 is 
+  /** Finds the position of the upward zero-crossing that is closest to n. If none is found, -1 is
   returned. */
   template<class T>
   static int closestUpwardCrossing(T *x, int N, int n);
 
-  /** Assuming an upward zero crossing somewhere in the range n..n+1 (n must be in the range 
-  0..N-2), this function returns the fractional part of that zero crossing, i.e. a number f in the 
-  range 0..1 such that the actual position of the zero crossing is at n+f. Parameter p is the 
+  /** Assuming an upward zero crossing somewhere in the range n..n+1 (n must be in the range
+  0..N-2), this function returns the fractional part of that zero crossing, i.e. a number f in the
+  range 0..1 such that the actual position of the zero crossing is at n+f. Parameter p is the
   precision... */
   template<class T>
   static T upwardCrossingFrac(T *x, int N, int n, int p = 1);
@@ -212,7 +212,7 @@ public:
   frequency, bw: bandwidth, fs: samplerate, np: number of passes, p: precision for subsample
   detection. */
   template<class T>
-  static std::vector<T> bandpassedUpwardCrossings(T *x, int N, T fc, T bw, T fs, int np, 
+  static std::vector<T> bandpassedUpwardCrossings(T *x, int N, T fc, T bw, T fs, int np,
     int p = 1);
 
 };
@@ -239,7 +239,7 @@ public:
     ZERO_CROSSINGS,
     CORRELATED_ZERO,        // hybrid - use correlation first, then zero-crossing
 
-    CYCLE_CORRELATION_OLD   // refines f0 zero-crossings by correlation (has sometimes problems, 
+    CYCLE_CORRELATION_OLD   // refines f0 zero-crossings by correlation (has sometimes problems,
                             // should not be used anymore)
   };
 
@@ -253,9 +253,9 @@ public:
   /** Sets the sample-rate of the signal to be analyzed. */
   inline void setSampleRate(T newSampleRate) { fs = newSampleRate; }
 
-  /** Sets the fundamental frequency of the signal to be analyzed. If this is set to zero, the 
-  object will try to detect it. This frequency is used to tune the bandpass in the 
-  f0-zero-crossings algorithm and to set correlation lengths in the autocorrelation based 
+  /** Sets the fundamental frequency of the signal to be analyzed. If this is set to zero, the
+  object will try to detect it. This frequency is used to tune the bandpass in the
+  f0-zero-crossings algorithm and to set correlation lengths in the autocorrelation based
   algorithms. */
   inline void setFundamental(T newFundamental) { fundamental = newFundamental; }
 
@@ -286,9 +286,9 @@ public:
   }
 
   /** This sets the length of the correlation that should be used in the CYCLE_CORRELATION
-  algorithm as fraction of the cycle length. The larger it is, the more of the neighbourhood of the 
-  (old, estimated) cycle-mark will be taken into account to find the new, refined cycle-mark. A 
-  value of 1 one means to take a neighbourhood corresponding to one cycle (a half-cycle to the left 
+  algorithm as fraction of the cycle length. The larger it is, the more of the neighbourhood of the
+  (old, estimated) cycle-mark will be taken into account to find the new, refined cycle-mark. A
+  value of 1 one means to take a neighbourhood corresponding to one cycle (a half-cycle to the left
   and another half-cycle to the right). */
   inline void setRelativeCorrelationLength(T newLength)
   {
@@ -332,19 +332,19 @@ public:
 
   // the various algorithms:
 
-  /** Filters the signal with a bandpass tuned to (an estimate of) the fundamental frequency and 
+  /** Filters the signal with a bandpass tuned to (an estimate of) the fundamental frequency and
   then uses the zero-crossings of this bandpassed signal as cycle-marks. */
   std::vector<T> findCycleMarksByFundamentalZeros(T* x, int N);
 
   /** Uses one of several refinement methods that use an initial estimate for a mark and then look
   in the vicinity of that estimate for a better position to place the mark by criteria based on
-  correlation, etc... 
+  correlation, etc...
   ...explain better...
   */
   std::vector<T> findCycleMarksByRefinement(T* x, int N);
     // experimental
 
-  /** DEPRECATED. Uses cycle marks from fundamental zeros refined by autocorrelation - but it 
+  /** DEPRECATED. Uses cycle marks from fundamental zeros refined by autocorrelation - but it
   doesn't work because the refined marks may overrun the initial estimates etc...to be deleted. */
   std::vector<T> findCycleMarksByCorrelationOld(T* x, int N);
     // deprecated
@@ -360,8 +360,8 @@ public:
   };
 
   /** Given an array of cycle marks (supposedly produced by an object of this class) and a true,
-  known, target value for signal's period in samples (assumed to be static, non-time varying here), 
-  this function returns a data structure containing various measures about the errors in the 
+  known, target value for signal's period in samples (assumed to be static, non-time varying here),
+  this function returns a data structure containing various measures about the errors in the
   cycle-mark array. It mainly intended for quality assessment of the various algorithms. */
   ErrorMeasures getErrorMeasures(const std::vector<T>& cycleMarks, T period);
 
@@ -386,11 +386,11 @@ protected:
   T fs;                  /**< sample rate */
   T fMin;                /**< minimum expected fundamental */
   T fMax;                /**< maximum expected fundamental */
-  T fundamental = T(0);  /**< if set 0, object will try to auto-detect */ 
+  T fundamental = T(0);  /**< if set 0, object will try to auto-detect */
   int algo = 0;          /**< algorithm to use */
 
   // parameters for the zero-crossing algo:
-  //T bandPassFreq = T(0);         /**< if set 0, object will try to auto-detect */ 
+  //T bandPassFreq = T(0);         /**< if set 0, object will try to auto-detect */
   T bandPassWidth = 1.0;
   int bandpassSteepness = 3;
   int precision = 3;
@@ -401,20 +401,20 @@ protected:
 
 
 
-  /** We assume that left and right are preliminary estimates for the starting times of two 
-  successive cycles in the signal x assumed to be of length N. This function computes 
+  /** We assume that left and right are preliminary estimates for the starting times of two
+  successive cycles in the signal x assumed to be of length N. This function computes
   cross-correlation between two chunks of x, centered at left and right respectively (the length
   is determined by k*(right-left), where k is a user constant set by setRelativeCorrelationLength
   and is 1 by default) and computes an estimate for the signal period from the cross-correlation
-  sequence. The return value is the error between the initial period estimate given by the 
-  difference (right-left) and the estimated period, i.e. error = period - (right-left). If left and 
-  right are indeed the correct cycle start-points, it should be zero. If it's nonzero, the returned 
-  value can be used to refine either the left mark by subtracting the returned value or to refine 
+  sequence. The return value is the error between the initial period estimate given by the
+  difference (right-left) and the estimated period, i.e. error = period - (right-left). If left and
+  right are indeed the correct cycle start-points, it should be zero. If it's nonzero, the returned
+  value can be used to refine either the left mark by subtracting the returned value or to refine
   the right mark by adding the returned value..  */
   T periodErrorByCorrelation(T* x, int N, int left, int right);
 
   T periodErrorByCorrelation(T* x, int N, T left, T right);
-    // should call the function with same name but integer left/right preliminary marks 
+    // should call the function with same name but integer left/right preliminary marks
     // maybe make public for testing
 
 
@@ -425,14 +425,14 @@ protected:
   void deBiasConvolutionResult(T* x, int N);
 
 
-  /** Given an array x of length N, this function computes the sum of the products 
-  x[n1+n] * x[n2+n] for n = 0,..,M-1, so M is the number of products that are summed up. The 
+  /** Given an array x of length N, this function computes the sum of the products
+  x[n1+n] * x[n2+n] for n = 0,..,M-1, so M is the number of products that are summed up. The
   function will take care of array bounds and assume zero values there. */
   //T sumOfProducts(T* x, int N, int n1, int n2, int M);
     // repalced by autoCorrelation
 
-  /** Given an array x of length N, this function computes the autocorrelation of two chunks of x 
-  starting at n1 and n2 respectively. The function will take care to not try to sum up values 
+  /** Given an array x of length N, this function computes the autocorrelation of two chunks of x
+  starting at n1 and n2 respectively. The function will take care to not try to sum up values
   outside array bounds (which is equivalent to assuming zero values there). */
   T autoCorrelation(T* x, int N, int n1, int n2, int M);
 
@@ -442,7 +442,7 @@ protected:
   // rename to refineByCorrelation
 
 
-  /** Given an array x of length N and a known, fixed cycle-mark "anchor" and a preliminary 
+  /** Given an array x of length N and a known, fixed cycle-mark "anchor" and a preliminary
   estimate of a neighbouring cycle-mark "mark" (either to the left or to the right of anchor), this
   function returns a refined value for "mark" according to the selected algorithm. */
   T refineCycleMark(T* x, int N, T anchor, T mark);
@@ -497,12 +497,12 @@ at once
 
 make a file Preliminary.h/cpp which contains classes and functions that are currently under
 construction - currently we have a lot of such code here in this file which should eventually
-be moved into appropriate places in the library 
+be moved into appropriate places in the library
 
 maybe rename class...it's more like a collections of functions, maybe a true Resampler class
-should be able to operate in realtime...hmm...but maybe that can be integrated into that class 
+should be able to operate in realtime...hmm...but maybe that can be integrated into that class
 too...have a "ratio" member and getSample and/or getBlock functions...maybe look at soundtouch
-or zPlane elastique for a realtime resampling interface 
+or zPlane elastique for a realtime resampling interface
 */
 
 
@@ -554,7 +554,7 @@ public:
 
 \todo move the class into a separate file (maybe) .... */
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 class rsTimeWarper
 {
 
@@ -612,7 +612,7 @@ public:
 
 /** A class for variable speed readout of a signal.  */
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 class rsVariableSpeedPlayer
 {
 
@@ -680,7 +680,7 @@ public:
   static std::vector<TPos> invertSpeeds(std::vector<TPos>& speeds);
 
 
-  static std::vector<TSig> applyPlaybackSpeed(std::vector<TSig>& input, 
+  static std::vector<TSig> applyPlaybackSpeed(std::vector<TSig>& input,
     std::vector<TPos>& speeds);
     // rename to applyPlaybackSpeed
 
@@ -703,7 +703,7 @@ protected:
   // x-to-y, warp y-to-x
 
 };
-// todo: maybe factor out w, wi, Nx, Ny, x and the conversion and output processing functions 
+// todo: maybe factor out w, wi, Nx, Ny, x and the conversion and output processing functions
 // into the rsTimeWarper class
 
 
@@ -712,7 +712,7 @@ protected:
 /** A class for flattening the pitch of an audio signal. It is assumed that the instantaneous
 frequency is known at each sample instant. */
 
-template<class TSig, class TPos> 
+template<class TSig, class TPos>
 class rsPitchFlattener : public rsVariableSpeedPlayer<TSig, TPos>
 {
 
@@ -787,7 +787,7 @@ public:
   std::vector<TPos> getTimeWarpMapYX1();
   std::vector<TPos> getTimeWarpMapXY2();
   std::vector<TPos> getTimeWarpMapYX2();
-  // Return the warping maps and their inverses for inputs x1, x2. See comments in 
+  // Return the warping maps and their inverses for inputs x1, x2. See comments in
   // rsVariableSpeedPlayer getTimeWarpMapXY/YX
 
 protected:
@@ -873,7 +873,7 @@ protected:
 
 //=================================================================================================
 
-/** A class for non-realtime envelope extraction. you cann feed it some input signal, and the 
+/** A class for non-realtime envelope extraction. you cann feed it some input signal, and the
 rsEnvelopeExtractor object will return an extracted envelope signal of the same length at the same
 sample rate. */
 
@@ -897,7 +897,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  /** Sets the mode by which the peaks should be interpolated to obtain the envelope signal at 
+  /** Sets the mode by which the peaks should be interpolated to obtain the envelope signal at
   sample-rate. Should be one of the enumerated values in rsInterpolatingFunction::modes. */
   void setInterpolationMode(int newMode) { interpolationMode = newMode; }
 
@@ -912,9 +912,9 @@ public:
   void setEndMode(int newEndMode) { endMode = newEndMode; }
 
   /** Sets the cutoff frequency and the number of passes of the bidirectional smoothing filter that
-  can be applied to the extracted envelope as pots processing. If numPasses is set to zero, 
+  can be applied to the extracted envelope as pots processing. If numPasses is set to zero,
   smoothing is turned off. */
-  //void setSmoothing(double cutoff, int numPasses) 
+  //void setSmoothing(double cutoff, int numPasses)
   //{ smoothingFreq = cutoff; smoothingOrder = numPasses; }
 
   /** Sets the sample-rate. This setting is relevant for the smoothing filter (if any). */
@@ -925,8 +925,8 @@ public:
 
   //void extractEnvelope(const T* input, int length, T* envelope);
 
-  /** Function suitable for extracting the envelope of an extracted partial that shows beating 
-  between two nearby modes. The input signal is an array of given length that presumably contains 
+  /** Function suitable for extracting the envelope of an extracted partial that shows beating
+  between two nearby modes. The input signal is an array of given length that presumably contains
   two (or maybbe more) sinusoids of nearby frequencies and the output is the envelope. */
   void sineEnvelopeWithDeBeating(const T* input, int length, T* envelope);
 
@@ -937,7 +937,7 @@ public:
     std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime);
     // or should endTime be of type T?
 
-  void interpolateEnvelope(const T* envTimes, T* envValues, int envLength, 
+  void interpolateEnvelope(const T* envTimes, T* envValues, int envLength,
     const T* interpolatedTimes, T* interpolatedValues, int interpolatedLength);
   // make envValues and interpolatedValues const, too
 
@@ -946,32 +946,32 @@ public:
     // make envValues const, too
 
 
-  /** Given two arrays of abscissa values x and corresponding ordinate value y, both of length N, 
-  this function will fill the peaksX and peaksY arrays with only those values from x,y where there 
+  /** Given two arrays of abscissa values x and corresponding ordinate value y, both of length N,
+  this function will fill the peaksX and peaksY arrays with only those values from x,y where there
   is a peak or plateau, i.e. where y[i-1] <= y[i] <= y[i+1]. */
-  static void getPeaks(const T *x, const T *y, int N, 
+  static void getPeaks(const T *x, const T *y, int N,
     std::vector<T>& peaksX, std::vector<T>& peaksY);
   // rename to getPeaksAndPlateausXY
 
-  /** Returns an array of indices where the x-array (of length N) has a peak or plateau, i.e. all 
-  indices i where x[i-1] <= x[i] <= x[i+1] (note, that using <= instead of < will also catch 
-  plateaus, where the x-value is constant over a range of indices). The includeFirst/Last options 
-  select, whether the index of x[0] and/or x[N-1] will be included in cases where x[0] >= x[1] 
+  /** Returns an array of indices where the x-array (of length N) has a peak or plateau, i.e. all
+  indices i where x[i-1] <= x[i] <= x[i+1] (note, that using <= instead of < will also catch
+  plateaus, where the x-value is constant over a range of indices). The includeFirst/Last options
+  select, whether the index of x[0] and/or x[N-1] will be included in cases where x[0] >= x[1]
   and/or x[N-1] >= x[N-2] respectively.  */
   static std::vector<size_t> findPeakIndices(const T* x, int N, bool includeFirst = false,
     bool includeLast = false);
   // maybe move to rsArray, maybe return a vector of int, rename to findPeaksAndPlateauIndices or
   // maybe have another boolean option includePlateaus
 
-  /** Given a signal x of length N, this function fills the sampleTime array with the 
-  sample-instants where the absolute value of x has a peak and also fills the envValue array with 
-  the corresponding absolute signal values themselves. So what you get is a bunch of time-instants 
-  and absolute signal values for those time-instants where there's a peak in the amplitude 
-  envelope. You may interpolate this data up to sample-rate later to obtain an estimated amplitude 
-  envelope - but this will work well only for simple waveforms which don't have multiple local 
-  maxima within a cycle. It's meant mostly for use with sinewaves - in this case you'll get two 
+  /** Given a signal x of length N, this function fills the sampleTime array with the
+  sample-instants where the absolute value of x has a peak and also fills the envValue array with
+  the corresponding absolute signal values themselves. So what you get is a bunch of time-instants
+  and absolute signal values for those time-instants where there's a peak in the amplitude
+  envelope. You may interpolate this data up to sample-rate later to obtain an estimated amplitude
+  envelope - but this will work well only for simple waveforms which don't have multiple local
+  maxima within a cycle. It's meant mostly for use with sinewaves - in this case you'll get two
   envelope samples for each cycle (one for the positive and one for the negative half-wave). */
-  static void getAmpEnvelope(const T* x, int N, 
+  static void getAmpEnvelope(const T* x, int N,
     std::vector<T>& sampleTime, std::vector<T>& envValue);
   // maybe rename to envelopeTimesAndValues
 
@@ -986,8 +986,10 @@ protected:
 
   // void applySmoothing
 
-  int interpolationMode = rsInterpolatingFunction<T, T>::LINEAR;
-  //T interpolationTension = T(0);
+  //int interpolationMode = rsInterpolatingFunction<T, T>::LINEAR;                // doesn't compile in gcc
+  //int interpolationMode = rsInterpolatingFunction<T, T>::modes::LINEAR;         // dito
+  int interpolationMode = rsInterpolatingFunction<double, double>::modes::LINEAR; // workaround in gcc
+  //int interpolationMode = rsInterpolatingFunction::LINEAR;
 
   int startMode = endPointModes::FREE_END;
   int endMode   = endPointModes::FREE_END;
@@ -996,6 +998,7 @@ protected:
   int smoothingOrder = 0;
   T sampleRate       = 44100;
   T smoothingFreq    = 22050;
+  //T interpolationTension = T(0);
 };
 
 //=================================================================================================
@@ -1063,7 +1066,7 @@ void rsEnvelopedPhaseCatchSweep(T *y, int N, T p0, T pN, T wN, T *a, int sweepDi
 sample index k that should be caught up there by sweeping the sine's frequency between sample 0
 and sample k accordingly. The "y" and "a" arrays must be distinct.  */
 template<class T>
-void rsEnvelopedPhaseCatchSine(T *y, int N, T f, T fs, T p0, T pk, int k, T *a, 
+void rsEnvelopedPhaseCatchSine(T *y, int N, T f, T fs, T p0, T pk, int k, T *a,
   int sweepDirection = 0);
 
 /** Given a sinusoidal input signal x of length N, having a frequency fx, this function extracts
@@ -1075,7 +1078,7 @@ template<class T>
 void rsRecreateSine(T *x, T *y, int N, T fx, T fy, T fs, T p0, T smooth = 0.0);
 
 template<class T>
-void rsRecreateSineWithPhaseCatch(T *x, T *y, int N, T fx, T fy, T fs, T p0, T pk, int k, 
+void rsRecreateSineWithPhaseCatch(T *x, T *y, int N, T fx, T fy, T fs, T p0, T pk, int k,
   T smooth = 0.0, int sweepDirection = 0);
 
 /** Computes the maximum of a short-time RMS signal with given averaging length in samples. It uses
