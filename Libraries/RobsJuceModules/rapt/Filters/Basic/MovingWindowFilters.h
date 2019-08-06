@@ -136,10 +136,12 @@ public:
   inline void getMinMax(T in, T* minVal, T* maxVal)
   {
     // update deque tails:
-    while(!this->maxDeque.isEmpty() && greater(in, this->maxDeque.readTail()) )
+    //while(!this->maxDeque.isEmpty() && greater(in, this->maxDeque.readTail()) )  // old, fails on gcc
+    //  this->maxDeque.popBack();
+    while(!this->maxDeque.isEmpty() && less(this->maxDeque.readTail(), in) )    // new, seems ok
       this->maxDeque.popBack();
     this->maxDeque.pushBack(in);
-    while(!this->minDeque.isEmpty() && less(   in, this->minDeque.readTail()) )
+    while(!this->minDeque.isEmpty() && less(in, this->minDeque.readTail()) )
       this->minDeque.popBack();
     this->minDeque.pushBack(in);
 

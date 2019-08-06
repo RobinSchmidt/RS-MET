@@ -425,12 +425,6 @@ void envelopeFollower()
     x[n] *= e[n];;
   }
 
-
-
-
-
-
-
   // new - do the same thing but now with the new convenience class:
   rsEnvelopeFollower2<double> ef2;
   ef2.setSampleRate(fs);
