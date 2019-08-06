@@ -60,6 +60,8 @@
                        headerPath="..\..\..\..\..\Libraries\JUCE\modules" windowsCodeBlocksArchitecture="-m64"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="ToolChain"
                        headerPath="..\..\..\..\..\Libraries\JUCE\modules" windowsCodeBlocksArchitecture="-m64"/>
+        <CONFIGURATION name="Debug32" isDebug="1" optimisation="1" targetName="ToolChain"
+                       headerPath="..\..\..\..\..\Libraries\JUCE\modules" windowsCodeBlocksArchitecture="-m32"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="jura_processors" path="../../../Libraries/RobsJuceModules"/>
