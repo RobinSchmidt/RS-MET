@@ -4,7 +4,7 @@
 
 
 /** A filter that has an attack/decay shape as its impulse response. The user can adjust the attack
-and decay time. It is based on the difference of two exponential decays with different time 
+and decay time. It is based on the difference of two exponential decays with different time
 constants. */
 
 template<class T>
@@ -22,7 +22,7 @@ public:
   /** Sets the attack time in samples, i.e. the number of samples it takes to reach the peak. */
   void setAttackSamples(T newAttack) { attackSamples = newAttack; coeffsDirty = true; }
 
-  /** Sets the decay time constant in samples, i.e. the number of samples, it takes to decay to 
+  /** Sets the decay time constant in samples, i.e. the number of samples, it takes to decay to
   1/e for the more slowly decaying exponential. */
   void setDecaySamples(T newDecay) { decaySamples = newDecay; coeffsDirty = true; }
 
@@ -59,12 +59,12 @@ protected:
   //std::atomic<bool> coeffsDirty = true;  // flag to indicate that coeffs need to be re-computed
   T attackSamples = T(20), decaySamples = 100; // sort of arbitrary
 };
-// maybe move into the same file where the modal filters are - it can be seen as a "modal" filter 
+// maybe move into the same file where the modal filters are - it can be seen as a "modal" filter
 // with zero frequency so it would fit in there
 
 //=================================================================================================
 
-/** An envelope generator based on rsAttackDecayFilter. It feeds the filter with a mix of a unit 
+/** An envelope generator based on rsAttackDecayFilter. It feeds the filter with a mix of a unit
 impulse and a constant value, where the latter is responsible for a sustain phase */
 
 template<class T>
@@ -92,7 +92,7 @@ public:
   void noteOn(int key, int vel)
   {
     currentNote = key;
-    rsAttackDecayFilter::getSample(T(1)); // maybe input should be scaled by vel?
+    rsAttackDecayFilter<T>::getSample(T(1)); // maybe input should be scaled by vel?
     // We call geSample here to avoid the one sample delay due to the subtraction - the two
     // exponentials cancel each other at the very first sample
   }
@@ -108,8 +108,8 @@ public:
 
   T getSample()
   {
-    if(currentNote != -1)  return rsAttackDecayFilter::getSample(sustain);
-    else                   return rsAttackDecayFilter::getSample(T(0));
+    if(currentNote != -1)  return rsAttackDecayFilter<T>::getSample(sustain);
+    else                   return rsAttackDecayFilter<T>::getSample(T(0));
   }
 
 
@@ -164,7 +164,7 @@ protected:
 
 };
 
-  
+
 template<class TSig, class TPar>
 class rsLadderVoice : public rsVoice
 {
@@ -190,21 +190,21 @@ protected:
 // how can we handle to avoid duplicating the algorithmic code from the getSample functions of the
 // underlying monophonic DSP classes ...and also all the coefficient calculation code? maybe by
 // factoring the code out into (static) functions that do not operate on member data but instead
-// get all their inputs and states as arguments - but that would uglify/complicate the monophonic 
+// get all their inputs and states as arguments - but that would uglify/complicate the monophonic
 // implementations - something, i'd like to avoid - hmmm...but maybe, it's inavoidable?
-// The rsLadderFilter class already has these static computeCoeffs functions - so it's already 
+// The rsLadderFilter class already has these static computeCoeffs functions - so it's already
 // prepared for it - we would also need a static processSample function that works in a similar
 // way
 
 
 
 
-/* 
-todo: 
+/*
+todo:
 -later extend it to allow for a two-stage decay (maybe in a subclass)
--make it polyphonic - allow to build a very basic subtractive synth from such envelopes, a simple 
+-make it polyphonic - allow to build a very basic subtractive synth from such envelopes, a simple
  osc class (maybe TriSaw osc?) and the rsLadder filter
- -the filter cutoff, osc-frequency and overall amplitude should be (polyphonically) modulated by 
+ -the filter cutoff, osc-frequency and overall amplitude should be (polyphonically) modulated by
   this simple envelope
  -maybe also have some simple LFO class
 */

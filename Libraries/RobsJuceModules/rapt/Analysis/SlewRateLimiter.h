@@ -106,7 +106,7 @@ public:
   void setHoldTime(TPar newHoldTime)
   {
     holdTime = newHoldTime;
-    holdSamples = rsRoundToInt(0.001 * holdTime * sampleRate);
+    holdSamples = rsRoundToInt(0.001 * holdTime * this->sampleRate);
   }
 
   RS_INLINE TSig getSample(TSig in); // override;
@@ -128,17 +128,17 @@ protected:
 template<class TSig, class TPar>
 RS_INLINE TSig rsSlewRateLimiterWithHold<TSig, TPar>::getSample(TSig in)
 {
-  if(y1 > in) {
+  if(this->y1 > in) {
     if(sampleCounter >= holdSamples)
-      y1 = in + coeffRelease * (y1-in);
+      this->y1 = in + this->coeffRelease * (this->y1 - in);
     else
       sampleCounter++;
   }
   else {
-    y1 = in + coeffAttack  * (y1-in);
+    this->y1 = in + this->coeffAttack  * (this->y1 - in);
     sampleCounter = 0;
   }
-  return y1;
+  return this->y1;
 }
 
 

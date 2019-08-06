@@ -161,7 +161,7 @@ public:
 
   void reset()
   {
-    rsMovingMaximumFilter::reset();
+    rsMovingMaximumFilter<T>::reset();
     minDeque.clear();
   }
 
