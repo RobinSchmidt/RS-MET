@@ -319,6 +319,8 @@ std::vector<T> rsPartialBeatingRemover<T>::smoothPhases(
   // new - use non-uniform filter:
   rsBiDirectionalFilter::applyButterworthLowpass(
     &p[0], &t[0], &p[0], (int)p.size(), cutoff, order, numPasses);
+  // todo: introduce functions applyGaussianLowpass, applyBesselLowpass - they should all call a
+  // general applyLowpass function than takes the filter type as parameter
 
   //plt.addDataArrays((int)rsSize(t), &t[0], &p[0]);
 

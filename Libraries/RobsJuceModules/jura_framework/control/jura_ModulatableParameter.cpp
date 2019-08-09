@@ -652,3 +652,12 @@ juce::String ModulatableParameter::getModulationTargetName()
   else
     return ownerModule->getAudioModulePath() + getName();
 }
+
+//=================================================================================================
+
+void ModulatableParameterPoly::callValueChangeCallbacks(
+  int numActiveVoices, double* values, int* voiceIndices)
+{
+  for(int i = 0; i < numActiveVoices; i++)
+    callValueChangeCallbackPoly(values[i], voiceIndices[i]);
+}

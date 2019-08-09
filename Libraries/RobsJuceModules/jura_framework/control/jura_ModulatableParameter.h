@@ -891,9 +891,55 @@ protected:
 
 
 class JUCE_API ModulatableParameterPoly 
-  : public ModulatableParameter, public ModulationTargetPoly
+  : public ModulatableParameter, virtual public ModulationTargetPoly
   // todo: check, if the inheritance order makes a difference - 
 {
+
+public:
+
+
+
+  void setValueChangeCallbackPoly(std::function<void(double, int)> cb)
+  {
+    ScopedPointerLock spl(mutex);
+    valueChangeCallbackPoly = cb;
+    //callValueChangeCallbackPoly(value);
+  }
+
+  void callValueChangeCallbackPoly(double value, int voiceIndex)
+  {
+    valueChangeCallbackPoly(value, voiceIndex);
+  }
+
+  virtual void callValueChangeCallbacks(int numActiveVoices, double* values, int *voiceIndices);
+
+protected:
+
+  //typedef GenericMemberFunctionCallback1<void, double> SetValueCallback;
+  //std::vector<SetValueCallback*> valueChangeCallbacks;
+  // for testing, we only use a "double" callback - it's very ugly design in Parameter, to have 
+  // pointers to all 3 kinds of callbacks (double, int, bool) - maybe refactor and/or templatize 
+  // the design...or maybe just use std::function, as Elan does
+
+  //typedef std::function<void(double)> SetValueCallback;
+  //std::vector<SetValueCallback*> valueChangeCallbacks;
+
+
+  //typedef std::function<void(double, int)> SetValueCallbackPoly;
+  //std::vector<SetValueCallbackPoly> valueChangeCallbackPoly;
+
+
+  std::function<void(double, int)> valueChangeCallbackPoly;
+
+
+private:
+
+  virtual void callValueChangeCallbacks(double argument) override {}
+  // this inherited function should not be used anymore - instead, the function with same name but 
+  // different signature: callValueChangeCallbacks(int, double*, int*) should be used here
+
+
+  //GenericMemberFunctionCallback1<void, double> *valueChangeCallbackDouble
 
 
 };

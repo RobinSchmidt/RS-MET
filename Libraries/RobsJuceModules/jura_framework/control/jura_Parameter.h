@@ -589,6 +589,9 @@ protected:
   GenericMemberFunctionCallback1<void, int>    *valueChangeCallbackInt    = nullptr;
   GenericMemberFunctionCallback1<void, bool>   *valueChangeCallbackBool   = nullptr;
   std::function<void(double)> valueChangeCallbackFunction;
+
+
+
   std::vector<ParameterObserver*> parameterObservers;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Parameter)
