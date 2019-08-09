@@ -254,22 +254,35 @@ public:
 
 
 
-
+  /** Computes poles and zeros for one of the lowpass filter types that is determined by it 
+  magnitude-squared denominator polynomial, which can be any of the functions
+  papoulisDenominator, halpernDenominator, gaussianDenominator. The matchButterworth parameter
+  decides whether or not the Butterworth magnitude response should be matched asymptotically. */
   static void zpkFromMagSquaredCoeffsLP(Complex* z, Complex* p, T* k, int N,
-    void (*denominatorCoeffsFunction)(T* a, int N));
+    void (*denominatorCoeffsFunction)(T* a, int N), bool matchButterworth);
+  // todo: get rid of the z parameter array - fill it with infinity in the calling function
+  // zpkFromMagSquaredCoeffsLS
 
+  /** Similar to zpkFromMagSquaredCoeffsLP, but for low-shelving prototypes. The matchButterworth
+  parameter is relevant only for the special case G0 == 0 (a lowpass filter) in which case the 
+  design will be delegated to zpkFromMagSquaredCoeffsLP. Otherwise, the poles and zeros will be
+  scaled according to having the bandwidth gain halfway between G and G0 (verify this) */
   static void zpkFromMagSquaredCoeffsLS(Complex* z, Complex* p, T* k, int N, T G, T G0,
-    void (*denominatorCoeffsFunction)(T* a, int N));
+    void (*denominatorCoeffsFunction)(T* a, int N), bool matchButterworth);
 
-
+  /** Computes poles and zeros for one of the lowpass filter types that is determined by it 
+  transfer-function denominator polynomial, which can currently only be the function 
+  besselDenominator (maybe more to come later). The matchButterworth parameter decides whether or 
+  not the Butterworth magnitude response should be matched asymptotically (unmatched case needs 
+  testing). */
   static void zpkFromTransferCoeffsLP(Complex* z, Complex* p, T* k, int N,
-    void (*denominatorCoeffsFunction)(T* a, int N));
+    void (*denominatorCoeffsFunction)(T* a, int N), bool matchButterworth);
 
   /** Given a "denominatorCoeffsFunction" that generates polynomial coefficients for a lowpass prototype 
   transfer function, this function creates the zeros, poles and gain for the corresponding 
   low-shelving prototype with given shelving-gain G and reference-gain G0. */
   static void zpkFromTransferCoeffsLS(Complex* z, Complex* p, T* k, int N, T G, T G0,
-    void (*denominatorCoeffsFunction)(T* a, int N));
+    void (*denominatorCoeffsFunction)(T* a, int N), bool matchButterworth);
     // maybe have an optional numeratorCoeffsFunction (defaulting to a nullptr in which case the 
     // numerator is taken to be 1
 

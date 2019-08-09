@@ -448,7 +448,7 @@ void rsPrototypeDesigner<T>::besselDenominator(T* a, int N)
 template<class T>
 void rsPrototypeDesigner<T>::besselZPK(Complex* z, Complex* p, T* k, int N, T G, T G0)
 {
-  zpkFromTransferCoeffsLS(z, p, k, N, G, G0, &besselDenominator);
+  zpkFromTransferCoeffsLS(z, p, k, N, G, G0, &besselDenominator, true);
   return;
 }
 
@@ -592,7 +592,7 @@ void rsPrototypeDesigner<T>::gaussianDenominator(T *a, int N)
 
 template<class T>
 void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLP(Complex* z, Complex* p, T* k, int N,
-  void (*denomCoeffsFunc)(T* a, int N))
+  void (*denomCoeffsFunc)(T* a, int N), bool matchButterworth)
 {
   T a[maxCoeffs];
   //rsArray::fillWithValue(a, maxCoeffs, RS_INF(T)); // for debug
@@ -601,12 +601,13 @@ void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLP(Complex* z, Complex* p, T
   rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));  // zeros are at infinity
 
 
-  *k = sqrt(T(1)/fabs(a[2*N]));   
+  //*k = sqrt(T(1)/fabs(a[2*N]));
   // set gain at DC to unity - shouldn't we divide by a[0]? i think, it may work in EngineersFilter
   // regardless what we do here, because the final gain is re-adjusted later in the design pipeline 
-  // again
+  // again ...noo - i think, ka should be 1 - the numerator is one and the a0 coeff of the 
+  // denominator also comes out as one, when multiplying out the product form from the poles
 
-
+  *k = T(1);
 
   // i think, here, we should do something that nromalizes the asymptotic behavior for the
   // Gaussian filter - this is determined by coeff of highest power in the denominator
@@ -616,33 +617,28 @@ void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLP(Complex* z, Complex* p, T
   // design - why? is it, because the Bessel design creates transfer function coeffs directly, as 
   // opposed to mag-squred function coeffs that are created in Gauss/Papoulis/Halpern designs?
   // that would be plausible
-  bool matchButterworth = false;   // make that a function parameter
+  //bool matchButterworth = true;   // make that a function parameter - and/or maybe a member
   if(matchButterworth)
   {
-    //T scaler = sqrt(T(1) / fabs(a[2*N]));
-    //T scaler = sqrt(fabs(a[0]) / fabs(a[2*N]));
-    //T scaler = T(1) / pow(a[2*N], T(0.5)/N);  // nope
     T scaler = pow(a[2*N], T(0.5)/N);  // yes! this formula seems to work!
-    //scaler = 2;  // test
     for(int i = 0; i < N; i++)
       p[i] *= scaler;
     //*k /= scaler; // verify this
     int dummy = 0;
   }
 
-
-
   int dummy = 0;
 }
+// todo: clean up the comments
 
 template<class T>
-void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLS(
-  Complex* z, Complex* p, T* k, int N, T G, T G0, void (*denomCoeffsFunc)(T* a, int N))
+void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLS(Complex* z, Complex* p, T* k, int N, T G, T G0, 
+  void (*denomCoeffsFunc)(T* a, int N), bool matchButterworth)
 {
   // catch lowpass case:
   if( G0 == 0.0 )
   {
-    zpkFromMagSquaredCoeffsLP(z, p, k, N, denomCoeffsFunc);
+    zpkFromMagSquaredCoeffsLP(z, p, k, N, denomCoeffsFunc, matchButterworth);
     *k *= G;
     return;
   }
@@ -699,24 +695,28 @@ void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLS(
 template<class T>
 void rsPrototypeDesigner<T>::papoulisZPK(Complex* z, Complex* p, T* k, int N, T G, T G0)
 {
-  zpkFromMagSquaredCoeffsLS(z, p, k, N, G, G0, &papoulisDenominator);
+  zpkFromMagSquaredCoeffsLS(z, p, k, N, G, G0, &papoulisDenominator, false);
 }
 
 template<class T>
 void rsPrototypeDesigner<T>::halpernZPK(Complex* z, Complex* p, T* k, int N, T G, T G0)
 {
-  zpkFromMagSquaredCoeffsLS(z, p, k, N, G, G0, &halpernDenominator);
+  zpkFromMagSquaredCoeffsLS(z, p, k, N, G, G0, &halpernDenominator, false);
 }
 
 template<class T>
 void rsPrototypeDesigner<T>::gaussianZPK(Complex* z, Complex* p, T* k, int N, T G, T G0)
 {
-  zpkFromMagSquaredCoeffsLS(z, p, k, N, G, G0, &gaussianDenominator);
+  zpkFromMagSquaredCoeffsLS(z, p, k, N, G, G0, &gaussianDenominator, true);
 }
+// currently, we match the asymptotic behavior for Gaussian and Bessel filters to that of 
+// Butterworth filters, but don't do such a match for Papoulis and Halpern filters (which are 
+// matched with respect to the -3.01 dB point) - todo: make it consistent and maybe let the user 
+// switch between the two behaviors
 
 template<class T>
 void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLP(Complex* z, Complex* p, T* k, int N,
-  void (*denominatorCoeffsFunction)(T* a, int N))
+  void (*denominatorCoeffsFunction)(T* a, int N), bool matchButterworth)
 {
   // zeros are at infinity:
   rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));
@@ -727,7 +727,7 @@ void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLP(Complex* z, Complex* p, T* 
   rsPolynomial<T>::roots(a, N, p);
 
   // set gain and scale poles to match Butterworth magnitude response asymptotically, if desired:
-  bool matchButterworth = true; // maybe make this a parameter later
+  //bool matchButterworth = true; // maybe make this a parameter later
   if( matchButterworth == true )
   {
     T scaler = T(1) / pow(a[0], T(1)/N);
@@ -746,20 +746,18 @@ void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLP(Complex* z, Complex* p, T* 
 
 template<class T>
 void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLS(Complex* z, Complex* p, T* k, int N, 
-  T G, T G0, void (*denominatorCoeffsFunction)(T* a, int N))
+  T G, T G0, void (*denominatorCoeffsFunction)(T* a, int N), bool matchButterworth)
 {
   // catch lowpass case:
-  if( G0 == 0.0 )
-  {
-    zpkFromTransferCoeffsLP(z, p, k, N, denominatorCoeffsFunction);
+  if( G0 == 0.0 ) {
+    zpkFromTransferCoeffsLP(z, p, k, N, denominatorCoeffsFunction, matchButterworth);
     *k *= G;
     return;
   }
 
   // design boost filter and invert later, if a dip is desired:
   bool dip = false;
-  if(G < G0)
-  {
+  if(G < G0) {
     dip = true;
     G   = T(1) / G;
     G0  = T(1) / G0;
@@ -795,7 +793,7 @@ void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLS(Complex* z, Complex* p, T* 
 
   // invert filter in case of a dip:
   if( dip == true )
-  getInverseFilter(z, p, k, z, p, k, N);
+    getInverseFilter(z, p, k, z, p, k, N);
 
   // cleanup:
   delete[] a;
