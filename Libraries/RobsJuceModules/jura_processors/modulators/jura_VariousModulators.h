@@ -108,13 +108,14 @@ public:
 
 protected:
 
+  virtual void createCores();
   virtual void createParameters();
 
-  //RAPT::rsAttackDecayEnvelope<double> core;
+  std::vector<RAPT::rsAttackDecayEnvelope<double>*> cores;
+
 
   // parameters:
   double sampleRate = 44100;
-  //double attack = 10.0, decay = 100.0;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AttackDecayEnvelopeModulePoly)
 };

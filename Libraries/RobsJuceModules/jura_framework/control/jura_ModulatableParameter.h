@@ -852,6 +852,8 @@ class JUCE_API ModulatableParameter2 : public ModulatableParameter
     valueChangeCallbackFunction(getModulatedValue());
   }
 };
+// Elan uses this - eventually, i should probably switch to this too and get rid of all the other
+// callback types in class Parameter
 
 //=================================================================================================
 
@@ -898,6 +900,12 @@ class JUCE_API ModulatableParameterPoly
 public:
 
 
+  /** Constructor */
+  ModulatableParameterPoly(const juce::String& name, double min = 0.0, double max = 1.0,
+    double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0)
+    : ModulatableParameter(name, min, max, defaultValue, scaling, interval) {}
+
+
 
   void setValueChangeCallbackPoly(std::function<void(double, int)> cb)
   {
@@ -912,6 +920,14 @@ public:
   }
 
   virtual void callValueChangeCallbacks(int numActiveVoices, double* values, int *voiceIndices);
+
+
+  virtual juce::String getModulationTargetName() override
+  {
+    return ModulatableParameter::getModulationTargetName();
+  }
+  // idk, why we don't inherit that method
+
 
 protected:
 

@@ -113,7 +113,16 @@ AttackDecayEnvelopeModulePoly::AttackDecayEnvelopeModulePoly(CriticalSection* lo
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("AttackDecayEnvelope");
+  createCores();
   createParameters();
+}
+
+void AttackDecayEnvelopeModulePoly::createCores()
+{
+  int numCores = 16; // todo: use maxNumVoices - inquire from voiceManager or AudioModulePoly baseclass
+
+
+  int dummy = 0;
 }
 
 void AttackDecayEnvelopeModulePoly::createParameters()
@@ -121,17 +130,26 @@ void AttackDecayEnvelopeModulePoly::createParameters()
   ScopedLock scopedLock(*lock);
 
   typedef AttackDecayEnvelopeModulePoly ADM;
-  typedef ModulatableParameter Param;
-  //typedef ModulatableParameterPoly Param;  // for later use
+  typedef ModulatableParameterPoly Param;
   Param* p;
 
-  /*
   p = new Param("Attack", 0.1, 100.0, 10.0, Parameter::EXPONENTIAL); 
   addObservedParameter(p);
-  p->setValueChangeCallback<ADM>(this, &ADM::setAttack);  // we need a setValueChangeCallbackPoly
+  p->setValueChangeCallbackPoly([this](double v, int i) { setAttack(v, i); });
 
   p = new Param("Decay", 10., 1000.0, 100.0, Parameter::EXPONENTIAL); 
   addObservedParameter(p);
-  p->setValueChangeCallback<ADM>(this, &ADM::setDecay);
-  */
+  p->setValueChangeCallbackPoly([this](double v, int i) { setDecay(v, i); });
+}
+
+void AttackDecayEnvelopeModulePoly::setAttack(double newAttack, int voice)
+{
+  jassert(voice < cores.size());
+
+}
+
+void AttackDecayEnvelopeModulePoly::setDecay(double newDecay, int voice)
+{
+  jassert(voice < cores.size());
+
 }
