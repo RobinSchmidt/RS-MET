@@ -786,10 +786,10 @@ void nonUniformAllpole()  // rename - it now also includes filters with zeros (e
   rsNonUniformFilterIIR<double> flt;
   //flt.setApproximationMethod(AM::butterworth);
   //flt.setApproximationMethod(AM::bessel);
-  //flt.setApproximationMethod(AM::gaussian);
+  flt.setApproximationMethod(AM::gaussian);
   //flt.setApproximationMethod(AM::papoulis);
   //flt.setApproximationMethod(AM::halpern);
-  flt.setApproximationMethod(AM::elliptic);
+  //flt.setApproximationMethod(AM::elliptic);
   flt.setFrequency(fc);
   //flt.setOrder(order);
   // flt.setType(FT::lowpass);

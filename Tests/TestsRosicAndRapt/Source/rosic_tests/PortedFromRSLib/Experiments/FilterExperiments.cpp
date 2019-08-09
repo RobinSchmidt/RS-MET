@@ -794,7 +794,7 @@ void compareApproximationMethods()
   double fc    =  1000.0;  // cutoff frequency
   double Ap    =     1.0;  // passband ripple in dB
   double As    =    50.0;  // stopband rejection in dB
-  int    order =    6;    // prototype filter order
+  int    order =    5;    // prototype filter order
 
   typedef RAPT::rsInfiniteImpulseResponseDesigner<double> IIRD;
   typedef RAPT::rsPrototypeDesigner<double> PTD;

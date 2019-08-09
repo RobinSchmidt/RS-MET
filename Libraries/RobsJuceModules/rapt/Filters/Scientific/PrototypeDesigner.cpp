@@ -599,37 +599,15 @@ void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLP(Complex* z, Complex* p, T
   denomCoeffsFunc(a, N);                // coeffs of magnitude-squared polynomial D(s)*D(-s)
   getLeftHalfPlaneRoots(a, p, 2*N);                       // find stable poles of D(s)*D(-s)
   rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));  // zeros are at infinity
-
-
-  //*k = sqrt(T(1)/fabs(a[2*N]));
-  // set gain at DC to unity - shouldn't we divide by a[0]? i think, it may work in EngineersFilter
-  // regardless what we do here, because the final gain is re-adjusted later in the design pipeline 
-  // again ...noo - i think, ka should be 1 - the numerator is one and the a0 coeff of the 
-  // denominator also comes out as one, when multiplying out the product form from the poles
-
-  *k = T(1);
-
-  // i think, here, we should do something that nromalizes the asymptotic behavior for the
-  // Gaussian filter - this is determined by coeff of highest power in the denominator
-
-  // or maybe it should be done in zpkFromTransferCoeffsLP?
-  // but there, it *is* actually done, but it seems, this function is only called for the Bessel
-  // design - why? is it, because the Bessel design creates transfer function coeffs directly, as 
-  // opposed to mag-squred function coeffs that are created in Gauss/Papoulis/Halpern designs?
-  // that would be plausible
-  //bool matchButterworth = true;   // make that a function parameter - and/or maybe a member
-  if(matchButterworth)
-  {
-    T scaler = pow(a[2*N], T(0.5)/N);  // yes! this formula seems to work!
+  if(matchButterworth) {
+    T scaler = pow(fabs(a[2*N]), T(0.5)/N);  // yes! this formula seems to work!
     for(int i = 0; i < N; i++)
       p[i] *= scaler;
-    //*k /= scaler; // verify this
-    int dummy = 0;
   }
-
-  int dummy = 0;
+  *k = T(1);
+  // 1 is the correct gain because the numerator is 1 and the a[0] coeff of the denominator also 
+  // comes out as 1, when multiplying out the product form from the poles
 }
-// todo: clean up the comments
 
 template<class T>
 void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLS(Complex* z, Complex* p, T* k, int N, T G, T G0, 

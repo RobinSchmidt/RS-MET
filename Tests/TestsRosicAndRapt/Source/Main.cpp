@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
   //nonUniformOnePole1();
   //nonUniformOnePole2();
   //nonUniformComplexOnePole();
-  //nonUniformAllpole(); // rename - it's not restricted to allpoles anymore
+  nonUniformAllpole(); // rename - it's not restricted to allpoles anymore
   //nonUniformBiquad();
   //nonUniformBiDirectional();
   //smoothingFilterOrders();
