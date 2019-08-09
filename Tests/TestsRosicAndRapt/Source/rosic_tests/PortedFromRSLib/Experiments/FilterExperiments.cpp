@@ -859,11 +859,33 @@ void compareApproximationMethods()
   //plotData(N/10, 0, 1/fs, hBut, hCheb2);
   //plotData(N, 0, 1/fs, hBut, hPap, hCheb1);
   //plotDataLogX(N, f, mBes, mBut, mCheb2, mCheb1, mEll);
-  //plotDataLogX(N, f, mBut, mPap, mHalp);   // Butterworth, Papoulis, Halpern
-  plotDataLogX(N, f, mBut, mBes, mGaus);     // Butterworth, Besssel, Gaussian - gauss too wide - use asymptotic normalization
+  plotDataLogX(N, f, mBut, mPap, mHalp);   // Butterworth, Papoulis, Halpern
+  plotDataLogX(N, f, mBut, mBes, mGaus);     // Butterworth, Bessel, Gaussian - gauss too wide - use asymptotic normalization
   //plotDataLogX(N, f, mBut, mPap, mCheb1);  // Butterworth, Papoulis, Chebychev1
   //plotDataLogX(N, f, mBut, mPap, mEll);
   //plotDataLogX(N, f, mBut, mCheb2);
+
+  // for the asymptotic normalization (for Gaussian), we take the Butterworth frequency response as
+  // reference - the mag-squared response goes like: 
+  //   |H(w)|^2 = 1 / (1 + w^(2*N))
+  // and that's what we want the asymptotic response of all the other allpole filters also look 
+  // like. In general, for a transfer functions given by 
+  //   H(s) = (sum_i=0^M b_i s^i) / (sum_j=0^N a_i s^i)
+  // we see an aymptotic behavior of the mag-squared response of
+  //   |A(w)|^2 = (b_M * w^M)^2 / (a_N * w^N)^2 ...verify this
+  // and in case of allpole filters just:
+  //   |A(w)|^2 = 1 / (a_N * w^N)^2
+  // so, to get the same asymptotic behavior, we need to scale the poles by a_N 
+  // ....or a_N^2 or sqrt(a_N)
+  //
+  // i think, the normalization should be implemented in rsPrototypeDesigner<T>::zpkFromTransferCoeffsLP
+  // maybe we should just multiply all poles (and zeros, if any), by a factor b_M / a_M and scale 
+  // the gain by the reciprocal of that value? maybe intorduce functions 
+  // normalizeAsymptote(poles, numPoles, zeros, numZeros, b, a) ...maybe that should call a 
+  // getAsymptoticNormalizer(b, Nb, a, Na)
+
+  // ...actually, that normalization may make sense for Papoulis and Halpern too - they are 
+  // asymtotocially too narrow compared to Butterworth - the same is true for Chebychev1
 
   /*
   // normalize impulse repsonses and write to wavefiles (maybe remove)

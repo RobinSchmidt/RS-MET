@@ -208,7 +208,7 @@ int main(int argc, char* argv[])
   //splineInterpolationNonEquidistant();
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
-  //numericDiffAndInt();
+  //numericDiffAndInt();  // numeric differentiation and integration
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header
   //monotonicPolynomials();
@@ -278,8 +278,8 @@ int main(int argc, char* argv[])
 
   //gaussianPrototype();
   //halpernPrototype();
-  //compareApproximationMethods();
-  //compareOldAndNewEngineersFilter();
+  compareApproximationMethods();
+  //compareOldAndNewEngineersFilter(); // is this obsolete now? i think, there is no "old" version anymore
   //testPoleZeroMapper();
 
   //ringingTime();
@@ -381,7 +381,7 @@ int main(int argc, char* argv[])
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
-  harmonicDeBeating1();
+//  harmonicDeBeating1();
   //harmonicDeBeating2();
 
 

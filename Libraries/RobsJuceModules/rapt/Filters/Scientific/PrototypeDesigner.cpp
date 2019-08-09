@@ -496,7 +496,7 @@ void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
 template<class T>
 void adjustDenominator(T* a, int N)
 {
-  // i'm not sure anymore why we need this but i think, it is may be because the original 
+  // i'm not sure anymore why we need this but i think, it may be because the original 
   // polynomial is in "w" and when we convert to input "s", we get i^2 = -1 terms ...figure out
   for(int k = 2; k <= 2*N; k += 4)
     a[k] = -a[k];
@@ -600,11 +600,39 @@ void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLP(Complex* z, Complex* p, T
   getLeftHalfPlaneRoots(a, p, 2*N);                       // find stable poles of D(s)*D(-s)
   rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));  // zeros are at infinity
 
+
+  *k = sqrt(T(1)/fabs(a[2*N]));   
+  // set gain at DC to unity - shouldn't we divide by a[0]? i think, it may work in EngineersFilter
+  // regardless what we do here, because the final gain is re-adjusted later in the design pipeline 
+  // again
+
+
+
   // i think, here, we should do something that nromalizes the asymptotic behavior for the
   // Gaussian filter - this is determined by coeff of highest power in the denominator
 
-  *k = sqrt(T(1)/fabs(a[2*N]));                           // set gain at DC to unity 
-                                                          // - shouldn't we divide by a[0]?
+  // or maybe it should be done in zpkFromTransferCoeffsLP?
+  // but there, it *is* actually done, but it seems, this function is only called for the Bessel
+  // design - why? is it, because the Bessel design creates transfer function coeffs directly, as 
+  // opposed to mag-squred function coeffs that are created in Gauss/Papoulis/Halpern designs?
+  // that would be plausible
+  bool matchButterworth = false;   // make that a function parameter
+  if(matchButterworth)
+  {
+    //T scaler = sqrt(T(1) / fabs(a[2*N]));
+    //T scaler = sqrt(fabs(a[0]) / fabs(a[2*N]));
+    //T scaler = T(1) / pow(a[2*N], T(0.5)/N);  // nope
+    T scaler = pow(a[2*N], T(0.5)/N);  // yes! this formula seems to work!
+    //scaler = 2;  // test
+    for(int i = 0; i < N; i++)
+      p[i] *= scaler;
+    //*k /= scaler; // verify this
+    int dummy = 0;
+  }
+
+
+
+  int dummy = 0;
 }
 
 template<class T>

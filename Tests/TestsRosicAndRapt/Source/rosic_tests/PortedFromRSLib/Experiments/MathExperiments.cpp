@@ -1284,6 +1284,23 @@ void numericDiffAndInt()
 // hold the differences of the x and z arrays, like a[i] = x[i] - x[i-1], b[i] = z[i] - z[i-1]
 // ...but what about a[0], b[0]?
 
+// or - see it like a filter - the bilinear/trapezoidal integrator (using filter x,y notation) is:
+//   y[n] = y[n-1] + 0.5 * (x[n] + x[n-1])
+// and just solve this for x[n]:
+//   x[n] = 2*(y[n] - y[n-1]) - x[n-1]   // x,y (in/out) have swapped roles
+// of course, this works only, if the sample-spacing is 1 - but the formula can be generalized:
+//   y[n] = y[n-1] + 0.5*dt * (x[n] + x[n-1])
+//   x[n] = (y[n] - y[n-1]) / (0.5*dt) - x[n-1]
+// where dt is the temporal spacing between sample x[n-1] and x[n]. The simplemost running-sum 
+// integrator and the corresponding differentiatior would be:
+//   y[n] = y[n-1] + dt * x[n]
+//   x[n] = (y[n] - y[n-1]) / dt
+// Maybe implement them and use them in a non-uniform version of the SVF. But what about this 
+// "embedded integrator gain" thing? Also, maybe implement and expeeriment with PID controllers
+// https://en.wikipedia.org/wiki/PID_controller ..maybe such a thing can be used for dynamics 
+// processors?
+
+
 
 void shiftPolynomial()
 {
