@@ -543,6 +543,7 @@ void ToolChain::populateModuleFactory()
   s = "Under Construction";
 
   // Sources:
+  f.registerModuleType([](CS cs)->AM { return new SineOscAudioModule(cs);  },           s, "SineOscillator");
   f.registerModuleType([](CS cs)->AM { return new TriSawOscModule(cs);  },              s, "TriSawOscillator");
   f.registerModuleType([](CS cs)->AM { return new EllipseOscillatorAudioModule(cs);  }, s, "EllipseOscillator");
   f.registerModuleType([](CS cs)->AM { return new RotationOscillatorAudioModule(cs); }, s, "Oscillator3D");

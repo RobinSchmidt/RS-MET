@@ -24,6 +24,10 @@ void SineOscAudioModule::createParameters()
   p = new Param("Detune", -60.0, +60.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<SO>(so, &SO::setDetune);
+  // trying to modulate the freq doesn't work because in each call to setFrequency, the osc resets
+  // its phase? ...maybe use a more basic osc class such as RAPT::rsSineIterator - but maybe a 
+  // phasor-based implementation is better for freq modulation anyway - for the time being, just
+  // don't modulate detune
   
   // maybe  make a start-phase parameter
 }
