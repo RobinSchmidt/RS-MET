@@ -1,3 +1,41 @@
+SineOscAudioModule::SineOscAudioModule(CriticalSection* lockToUse,
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
+  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)
+{
+  ScopedLock scopedLock(*lock);
+  setModuleTypeName("SineOscillator");
+  createParameters();
+}
+
+void SineOscAudioModule::createParameters()
+{
+  ScopedLock scopedLock(*lock);
+
+  typedef SineOscCore SO;
+  SO* so = &core;
+
+  typedef ModulatableParameter Param;
+  Param* p;
+
+  p = new Param("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SO>(so, &SO::setAmplitude);
+
+  p = new Param("Detune", -60.0, +60.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SO>(so, &SO::setDetune);
+  
+  // maybe  make a start-phase parameter
+}
+
+
+
+
+
+
+
+//=================================================================================================
+
 EllipseOscillatorAudioModule::EllipseOscillatorAudioModule(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)

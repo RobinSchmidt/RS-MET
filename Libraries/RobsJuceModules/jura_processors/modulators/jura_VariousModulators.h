@@ -88,6 +88,8 @@ public:
     ModulationManager* modManagerToUse = nullptr,
     rsVoiceManager* voiceManagerToUse = nullptr);
 
+  virtual ~AttackDecayEnvelopeModulePoly();
+
   /*
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void reset() override { core.reset();  }
@@ -112,6 +114,7 @@ protected:
   virtual void createParameters();
 
   std::vector<RAPT::rsAttackDecayEnvelope<double>*> cores;
+
 
 
   // parameters:

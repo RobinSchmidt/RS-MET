@@ -63,7 +63,7 @@ namespace rosic
     // event handling:
 
     /** Resets the oscillator to its start phase. */
-    void trigger();
+    void trigger(); // rename to reset...maybe
 
     /** Triggers the oscillator with an arbitrary start phase. */
     void triggerWithPhase(double phase);

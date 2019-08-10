@@ -1,6 +1,72 @@
 #ifndef jura_EllipseOscillator_h
 #define jura_EllipseOscillator_h
 // rename to Oscillators
+//=================================================================================================
+
+/** A thin wrapper around rosic::SineOscillator to facilitate use as an AudioModule. */
+
+class JUCE_API SineOscCore : private rosic::SineOscillator
+{
+
+public:
+
+  typedef rosic::SineOscillator Base;
+  SineOscCore() {}
+  void setSampleRate(double newRate)   { Base::setSampleRate(newRate); }
+  void setAmplitude( double newAmp)    { amp = newAmp; }
+  void setDetune(    double newDetune) { detune = newDetune; updateFreq(); }
+  void setNoteKey(   double newKey)    { key    = newKey;    updateFreq(); }
+
+  double getSample() { return amp * Base::getSample(); }
+  void   reset()     { Base::trigger(); }
+
+protected:
+
+  void updateFreq() { Base::setFrequency(RAPT::rsPitchToFreq(key+detune)); }
+
+  double key = 64;
+  double detune = 0.0, amp = 1.0;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SineOscCore)
+};
+
+//=================================================================================================
+
+/** A simple sine oscillator. Serves mostly as a simple/minimal example oscillator during 
+development of the framework - may not be included into any product. */
+
+class JUCE_API SineOscAudioModule : public jura::AudioModuleWithMidiIn
+{
+
+public:
+
+  SineOscAudioModule(CriticalSection *lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr, 
+    ModulationManager* modManagerToUse = nullptr);
+
+  // overriden from AudioModule baseclass:
+  virtual void processBlock(double** inOutBuffer, int numChannels, int numSamples) override
+  {
+    jassert(numChannels == 2);
+    for(int n = 0; n < numSamples; n++)
+      inOutBuffer[0][n] = inOutBuffer[1][n] = core.getSample();
+  }
+  virtual void processStereoFrame(double* L, double* R) override { *L = *R = core.getSample(); }
+
+  virtual void setSampleRate(double newRate) override { core.setSampleRate(newRate); }
+  virtual void reset()                       override { core.reset(); }
+  virtual void noteOn(int key, int vel)      override { core.setNoteKey(key); }
+
+protected:
+
+  virtual void createParameters();
+
+  SineOscCore core;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SineOscAudioModule)
+};
+
+//=================================================================================================
 
 class JUCE_API EllipseOscillatorAudioModule : public jura::AudioModuleWithMidiIn
 {
@@ -23,6 +89,8 @@ public:
   virtual void noteOn(int noteNumber, int velocity) override;
 
 protected:
+
+
 
   rosic::rsEllipseOscillator oscCore;
 
@@ -80,6 +148,7 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriSawOscModule)
 };
 
+//=================================================================================================
 
 
 

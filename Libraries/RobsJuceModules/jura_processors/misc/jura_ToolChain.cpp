@@ -558,6 +558,7 @@ void ToolChain::populateModuleFactory()
 
   // Modulators:
   f.registerModuleType([](CS cs)->AM { return new AttackDecayEnvelopeModule(cs); },      s, "AttackDecayEnvelope");
+  //f.registerModuleType([](CS cs)->AM { return new AttackDecayEnvelopeModulePoly(cs); },      s, "AttackDecayEnvelope");
 
   // Effects:
   //f.registerModuleType([](CS cs)->AM { return new NodeShaperAudioModule(cs);   }, s, "NodeShaper");

@@ -117,10 +117,22 @@ AttackDecayEnvelopeModulePoly::AttackDecayEnvelopeModulePoly(CriticalSection* lo
   createParameters();
 }
 
+AttackDecayEnvelopeModulePoly::~AttackDecayEnvelopeModulePoly()
+{
+  for(size_t i = 0; i < cores.size(); i++)
+    delete cores[i];
+  // maybe make a subclass of std::vector rsOwnedPointerArray that deletes the objects when it
+  // goes out of scope ...i think, that's also what juce::OwnedArray does? ...maybe have an 
+  // intermediate clas rsPointerArray that doesn't do the deletion
+}
+
 void AttackDecayEnvelopeModulePoly::createCores()
 {
   int numCores = 16; // todo: use maxNumVoices - inquire from voiceManager or AudioModulePoly baseclass
 
+  cores.resize(numCores);
+  for(size_t i = 0; i < cores.size(); i++)
+    cores[i] = new RAPT::rsAttackDecayEnvelope<double>;
 
   int dummy = 0;
 }
