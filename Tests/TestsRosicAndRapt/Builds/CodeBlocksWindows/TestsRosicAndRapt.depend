@@ -2849,3 +2849,433 @@
 
 1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\harmonicanalyzer.h
 
+1556963781 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\include_rapt_templates.cpp
+	"AppConfig.h"
+	<rapt/rapt_templates.cpp>
+
+1557486697 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\rapt_templates.cpp
+	"rapt.h"
+	"Basics/Basics.cpp"
+	"Data/Data.cpp"
+	"Math/Math.cpp"
+	"AudioBasics/AudioBasics.cpp"
+	"Filters/Filters.cpp"
+	"Analysis/Analysis.cpp"
+	"Physics/Physics.cpp"
+	"Visualization/Visualization.cpp"
+	"Generators/Generators.cpp"
+	"Modulators/Modulators.cpp"
+	"Unfinished/Unfinished.cpp"
+	"Spectral/Spectral.cpp"
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\basics.cpp
+	"Basics.h"
+	"DebugTools.cpp"
+	"SortAndSearch.cpp"
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\debugtools.cpp
+
+1557657251 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\sortandsearch.cpp
+
+1557246483 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\data.cpp
+	"Data.h"
+	"ArrayTools.cpp"
+	"MatrixTools.cpp"
+	"StandardContainerTools.cpp"
+	"Buffers.cpp"
+
+1560937807 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\matrixtools.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\standardcontainertools.cpp
+
+1566228935 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\buffers.cpp
+
+1557330378 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\math.cpp
+	"Math.h"
+	"LinearAlgebra/BandDiagonalSolver.cpp"
+	"LinearAlgebra/LinearAlgebra.cpp"
+	"Misc/Statistics.cpp"
+	"Misc/CurveFitting.cpp"
+	"Misc/RatioGenerator.cpp"
+	"Functions/BasicFunctions.cpp"
+	"Functions/IntegerFunctions.cpp"
+	"Functions/InterpolatingFunction.cpp"
+	"Functions/NodeBasedFunction.cpp"
+	"Functions/RealFunctions.cpp"
+	"Functions/ComplexFunctions.cpp"
+	"Functions/FunctionIterators.cpp"
+	"Functions/Mappers.cpp"
+	"Functions/BellFunctions.cpp"
+	"Functions/Sigmoids.cpp"
+	"Functions/SinCosTable.cpp"
+	"Types/Matrix.cpp"
+	"Types/Polynomial.cpp"
+	"Types/Vector.cpp"
+	"Geometry/Line2D.cpp"
+	"Geometry/ConicSection.cpp"
+	"Geometry/Ellipse.cpp"
+	"Geometry/GeometricTransformations.cpp"
+	"Numerics/RootFinder.cpp"
+	"Numerics/NumericCalculus.cpp"
+	"Numerics/Interpolation.cpp"
+	"Numerics/Optimization.cpp"
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\banddiagonalsolver.cpp
+	"LaPackCPP/LaPack.hpp"
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\lapack.hpp
+	"LibF2C.hpp"
+	"Blas.hpp"
+	"XBlas.hpp"
+	"LapackBanded.hpp"
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\libf2c.hpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\blas.hpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\xblas.hpp
+	<float.h>
+	<fpu_control.h>
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\lapackbanded.hpp
+
+1562894209 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\linearalgebra.cpp
+
+1559927945 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\statistics.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\curvefitting.cpp
+
+1557660404 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\ratiogenerator.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\basicfunctions.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\integerfunctions.cpp
+
+1559915202 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\interpolatingfunction.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\nodebasedfunction.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\realfunctions.cpp
+
+1560861398 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\complexfunctions.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\functioniterators.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\mappers.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\bellfunctions.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\sigmoids.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\sincostable.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\matrix.cpp
+
+1563815287 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\vector.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\line2d.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\conicsection.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\ellipse.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\geometrictransformations.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\rootfinder.cpp
+
+1560631103 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\numericcalculus.cpp
+
+1562158308 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\interpolation.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\optimization.cpp
+
+1557246221 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\audiobasics\audiobasics.cpp
+	"AudioBasics.h"
+	"AudioFunctions.cpp"
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\audiobasics\audiofunctions.cpp
+
+1557248239 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\filters.cpp
+	"Filters.h"
+	"Basic/MovingWindowFilters.cpp"
+	"Basic/OnePoleFilter.cpp"
+	"Basic/SmoothingFilter.cpp"
+	"Scientific/PrototypeDesigner.cpp"
+	"Scientific/PoleZeroMapper.cpp"
+	"Scientific/FilterCoefficientConverter.cpp"
+	"Scientific/InfiniteImpulseResponseDesigner.cpp"
+	"Scientific/FilterAnalyzer.cpp"
+	"Scientific/BiquadCascade.cpp"
+	"Scientific/EngineersFilter.cpp"
+	"Scientific/LinkwitzRileyCrossOver.cpp"
+	"Scientific/CrossOver4Way.cpp"
+	"Scientific/DirectFormFilter.cpp"
+	"Scientific/EllipticSubBandFilter.cpp"
+	"Scientific/EllipticSubBandFilterDirectForm.cpp"
+	"Scientific/QuadratureNetwork.cpp"
+	"Scientific/FilterSpecifications.cpp"
+	"Musical/LadderFilter.cpp"
+	"Musical/PhasorFilter.cpp"
+	"Musical/StateVariableFilter.cpp"
+
+1557248202 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\movingwindowfilters.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\onepolefilter.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\smoothingfilter.cpp
+
+1565344276 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\prototypedesigner.cpp
+
+1562684241 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\polezeromapper.cpp
+
+1560934138 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filtercoefficientconverter.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\infiniteimpulseresponsedesigner.cpp
+
+1559838828 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filteranalyzer.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\biquadcascade.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\engineersfilter.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\linkwitzrileycrossover.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\crossover4way.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\directformfilter.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\ellipticsubbandfilter.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\ellipticsubbandfilterdirectform.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quadraturenetwork.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filterspecifications.cpp
+
+1558648192 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\ladderfilter.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\phasorfilter.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\statevariablefilter.cpp
+
+1557486860 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\analysis.cpp
+	"Analysis.h"
+	"SlewRateLimiter.cpp"
+	"SlewRateLimiterLinear.cpp"
+	"EnvelopeFollower.cpp"
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\slewratelimiter.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\slewratelimiterlinear.cpp
+
+1558708010 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\envelopefollower.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\physics.cpp
+	"Physics.h"
+	"ParticleSystem.cpp"
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\particlesystem.cpp
+
+1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\visualization.cpp
+	"Visualization.h"
+	"Graphics/Image.cpp"
+	"Graphics/AlphaMask.cpp"
+	"Graphics/ImageDrawer.cpp"
+	"Graphics/RealTimeSpline.cpp"
+	"Graphics/ImagePainter.cpp"
+	"Misc/ScopeScreenScanner.cpp"
+	"Misc/PhaseScopeBuffer.cpp"
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\image.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\alphamask.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagedrawer.cpp
+
+1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\realtimespline.cpp
+
+1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagepainter.cpp
+
+1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\scopescreenscanner.cpp
+
+1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\phasescopebuffer.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\generators.cpp
+	"Generators.h"
+	"VariousOscillators.cpp"
+	"Oscillator3D.cpp"
+	"RayBouncer.cpp"
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\variousoscillators.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\oscillator3d.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\raybouncer.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\modulators\modulators.cpp
+	"Modulators.h"
+	"Envelopes/BreakpointModulator.cpp"
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\modulators\envelopes\breakpointmodulator.cpp
+
+1564093622 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\unfinished.cpp
+	"Unfinished.h"
+	"Data/MultiArray.cpp"
+	"Math/Matrix.cpp"
+	"Math/FunctionObjects.cpp"
+	"Math/GradientBasedMinimizer.cpp"
+	"Math/MultiLayerPerceptron.cpp"
+	"Math/FourierTransformer.cpp"
+	"Math/NumberTheory.cpp"
+	"Math/Transforms.cpp"
+	"Math/Statistics.cpp"
+	"Math/GeometricFunctions.cpp"
+	"Math/ModularInteger.cpp"
+	"Math/RationalFunctionTools.cpp"
+	"Math/RationalFunction.cpp"
+	"MiscAudio/Interpolator.cpp"
+	"MiscAudio/DelayLine.cpp"
+	"MiscAudio/MiscAudio.cpp"
+	"MiscAudio/Saturator.cpp"
+	"MiscAudio/WindowFunctions.cpp"
+	"MiscAudio/AudioFunctions.cpp"
+	"MiscAudio/BandwidthConverter.cpp"
+	"MiscAudio/DoublePendulum.cpp"
+	"MiscAudio/ResponseGetters.cpp"
+	"MiscAudio/BlitBlepBlamp.cpp"
+	"MiscAudio/BlepBlampOscs.cpp"
+	"MiscAudio/OscArrays.cpp"
+	"Filters/BandSplitter.cpp"
+	"Filters/FilterDesignFormulas.cpp"
+	"Filters/MovingAverage.cpp"
+	"Filters/PhonoFilter.cpp"
+	"Filters/ModalFilterBank.cpp"
+	"Filters/LadderFilter.cpp"
+	"Filters/FakeResonanceFilter.cpp"
+	"Filters/Biquad.cpp"
+	"Filters/NonUniformFilter.cpp"
+	"MiscAudio/Polyphony.cpp"
+	"MiscAudio/AttackDecayEnvelope.cpp"
+	"Analysis/LinearPredictor.cpp"
+	"Analysis/FormantRemover.cpp"
+	"Analysis/CyclicAutoCorrelator.cpp"
+	"Analysis/AutoCorrelationPitchDetector.cpp"
+	"Analysis/ZeroCrossingPitchDetector.cpp"
+	"Sampling/MiscUnfinished.cpp"
+	"Sampling/SampleManipulation.cpp"
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\data\multiarray.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\matrix.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\functionobjects.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\gradientbasedminimizer.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\multilayerperceptron.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\fouriertransformer.cpp
+	"OouraFFT/fft4g.cpp"
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\oourafft\fft4g.cpp
+	<math.h>
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\numbertheory.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\transforms.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\statistics.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\geometricfunctions.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\modularinteger.cpp
+
+1562863236 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\rationalfunctiontools.cpp
+
+1563322947 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\rationalfunction.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\interpolator.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\delayline.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\miscaudio.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\saturator.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\windowfunctions.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\audiofunctions.cpp
+
+1563144292 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\bandwidthconverter.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\doublependulum.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\responsegetters.cpp
+
+1566229315 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\blitblepblamp.cpp
+
+1557149472 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\blepblamposcs.cpp
+
+1566229509 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\oscarrays.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\bandsplitter.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\filterdesignformulas.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\movingaverage.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\phonofilter.cpp
+
+1562417742 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\modalfilterbank.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\ladderfilter.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\fakeresonancefilter.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\biquad.cpp
+
+1566229597 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\nonuniformfilter.cpp
+
+1564079988 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\polyphony.cpp
+
+1564095207 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\attackdecayenvelope.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\linearpredictor.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\formantremover.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\cyclicautocorrelator.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\autocorrelationpitchdetector.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\zerocrossingpitchdetector.cpp
+
+1563816432 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\miscunfinished.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\samplemanipulation.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\spectral.cpp
+	"Spectral.h"
+	"Spectrogram.cpp"
+	"SinusoidalModel.cpp"
+	"SinusoidalProcessor.cpp"
+	"SinusoidalSynthesizer.cpp"
+	"SinusoidalAnalyzer.cpp"
+	"HarmonicAnalyzer.cpp"
+
+1562158308 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\spectrogram.cpp
+
+1562325600 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalmodel.cpp
+
+1565788697 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalprocessor.cpp
+
+1562333305 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalsynthesizer.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalanalyzer.cpp
+
+1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\harmonicanalyzer.cpp
+

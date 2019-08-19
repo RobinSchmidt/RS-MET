@@ -1,12 +1,12 @@
 #ifndef rosic_TemplateInstantiations_h
 #define rosic_TemplateInstantiations_h
 
-/** This file contains typedefs for explicit template instantiations for templates from the RAPT 
+/** This file contains typedefs for explicit template instantiations for templates from the RAPT
 library. Sometimes we also create a subclass of a class template from RAPT in order to provide
 additional functionality to make it more convenient to use the classes. These convenience functions
-are for tasks like converting between two doubles and rsFloat64x2 in case of SIMD-type 
+are for tasks like converting between two doubles and rsFloat64x2 in case of SIMD-type
 instantiations and/or providing suitable callback target functions in the case where the underlying
-RAPT class doesn't conform to the interface required by our callback system in jura etc. This code 
+RAPT class doesn't conform to the interface required by our callback system in jura etc. This code
 is all really ugly administrative clutter - don't look at it, if you want to avoid eye cancer! */
 
 namespace rosic
@@ -104,22 +104,25 @@ typedef RAPT::rsPhaseLockedCrossfader<double, double>  rsPhaseLockedCrossfaderDD
 typedef RAPT::rsEnvelopeExtractor<double> rsEnvelopeExtractorD;
 
 
-//typedef RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, RAPT::rsPolyBlep1<double, double>> 
+//typedef RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, RAPT::rsPolyBlep1<double, double>>
 //  rsOscArrayPolyBlep1;
 
 // maybe move this into its own file in the generators folder - it's grown a bit big for keeping it
 // here...
-class rsOscArrayPolyBlep1 : public RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, 
+class rsOscArrayPolyBlep1 : public RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>,
                                                         RAPT::rsPolyBlep1<double, double>>
 {
 public:
 
-  typedef public RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>, 
+  typedef RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>,
     RAPT::rsPolyBlep1<double, double>> Base;
+
+//  typedef public RAPT::rsBlepOscArray<double, RAPT::rsBlepReadyOscBase<double>,
+//    RAPT::rsPolyBlep1<double, double>> Base;
 
   using Base::Base; // to inherit baseclass constructors with arguments
 
-  
+
   rsOscArrayPolyBlep1()
   {
     ratioGenerator = new RAPT::rsRatioGenerator<double>;
@@ -131,7 +134,7 @@ public:
   {
     delete ratioGenerator;
   }
-  
+
 
   void setSampleRate(double newRate)
   {
@@ -161,15 +164,15 @@ public:
   {
     Base::setFrequencyDistribution((RAPT::rsRatioGenerator<double>::RatioKind) newDistribution);
   }
-  // needed as callback target for the valueChangeCallback in jura::Parameter - converts the 
-  // incoming integer (passed from the callback system) to the strongly typed enumeration type 
+  // needed as callback target for the valueChangeCallback in jura::Parameter - converts the
+  // incoming integer (passed from the callback system) to the strongly typed enumeration type
   // required by RAPT::rsBlepOscArray
 
 
 
 protected:
 
-  //RAPT::rsRatioGenerator<double>* ratioGenerator = nullptr; 
+  //RAPT::rsRatioGenerator<double>* ratioGenerator = nullptr;
 
 
   std::vector<RAPT::rsUint32> primeTable;

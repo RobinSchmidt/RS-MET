@@ -5,7 +5,7 @@
 #elif defined(__APPLE__)
 #include <sys/uio.h>         // works on mac
 #else
-#include<sys/io.h>           // works on linux
+//#include<sys/io.h>           // works on linux
 #include<fcntl.h>
 #endif
 #include<sys/stat.h>

@@ -51,7 +51,7 @@
 //#include <new>
 //#include <iterator>
 
-#include <intrin.h>       // for some reason, it's needed on Elan's machine but not on mine
+//#include <intrin.h>       // for some reason, it's needed on Elan's machine but not on mine
 
 #include <emmintrin.h>    // SSE2
 

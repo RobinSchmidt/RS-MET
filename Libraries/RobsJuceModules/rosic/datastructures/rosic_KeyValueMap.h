@@ -41,9 +41,7 @@ bool keyValuePairPointerLessByValue(KeyValuePair<KeyType, ValueType>* pointer1, 
 };
 
 
-
 /* Wraps the function keyValuePairPointerLessByKey() into a functor class, as required by the STL. */
-/*
 template<class KeyType, class ValueType>
 struct KeyValuePairPointerLessByKey
   : std::binary_function<KeyValuePair<KeyType, ValueType>*,
@@ -54,12 +52,11 @@ struct KeyValuePairPointerLessByKey
     return keyValuePairPointerLessByKey(pointer1, pointer2);
   }
 };
-*/
+
 // doesn't compile in c++17 - see here:
 // https://stackoverflow.com/questions/33114656/replacement-for-binary-function
 
 /* Wraps the function keyValuePairPointerLessByValue() into a functor class, as required by the STL. */
-/*
 template<class KeyType, class ValueType>
 struct KeyValuePairPointerLessByValue
   : std::binary_function<KeyValuePair<KeyType, ValueType>*,
@@ -70,7 +67,7 @@ struct KeyValuePairPointerLessByValue
     return keyValuePairPointerLessByValue(pointer1, pointer2);
   }
 };
-*/
+
 
 
 
