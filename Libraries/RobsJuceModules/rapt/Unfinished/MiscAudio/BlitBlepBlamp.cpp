@@ -51,17 +51,17 @@ void rsTableLinBlep<TSig, TTim>::updateTables()
 
     s *= window(t);
 
-    timeTbl[ic + i] =  t;
-    timeTbl[ic - i] = -t;
-    blitTbl[ic + i] =  s;
-    blitTbl[ic - i] =  s;
+    this->timeTbl[ic + i] =  t;
+    this->timeTbl[ic - i] = -t;
+    this->blitTbl[ic + i] =  s;
+    this->blitTbl[ic - i] =  s;
   }
 
   // ..and we also need to fill the blitDrv table with the derivative of the blit - can be
   // computed analytically...the integrals also (in terms of the Si function)
 
   // numerically integrate the blit to obtain the blep:
-  rsNumericIntegral(&timeTbl[0], &blitTbl[0], &blepTbl[0], L, TTim(0));
+  rsNumericIntegral(&timeTbl[0], &this->blitTbl[0], &this->blepTbl[0], L, TTim(0));
   // do the numerical integration only up to L/2+1 and obtain the rest via symmetry (-> less
   // accumulation of numerical integration error)
   // or maybe even store only the right half and obtain the left half by symmetry when computing
@@ -70,10 +70,10 @@ void rsTableLinBlep<TSig, TTim>::updateTables()
   // scale it such that the last sample is exactly 1 (the first sample is already exactly zero by
   // construction):
   //rsArray::scale(&blepTbl[0], &blepTbl[0], L, TTim(1)/rsLast(blepTbl));*
-  rsArray::scale(&blepTbl[0], &blepTbl[0], L, TTim(1)/blepTbl[L-1]);
+  rsArray::scale(&this->blepTbl[0], &this->blepTbl[0], L, TTim(1)/this->blepTbl[L-1]);
 
   // integrate blep to get blamp:
-  rsNumericIntegral(&timeTbl[0], &blepTbl[0], &blampTbl[0], L, TTim(0));
+  rsNumericIntegral(&timeTbl[0], &this->blepTbl[0], &this->blampTbl[0], L, TTim(0));
   // maybe use better numeric integration later or find analytic expressions
 
   //rsPlotVectors(blitTbl, blepTbl, blampTbl);
@@ -84,7 +84,7 @@ void rsTableLinBlep<TSig, TTim>::updateTables()
   // something like that:
   for(int i = ic; i < L; i++) {
     //blepTbl[i]  -= 1;
-    blampTbl[i] -= timeTbl[i];
+    this->blampTbl[i] -= timeTbl[i];
   }
   //blepTbl[ic] = 0;
   // is this correct? supposed to fix spurious peaks when linearly interpolating
@@ -99,9 +99,9 @@ void rsTableLinBlep<TSig, TTim>::updateTables()
   //rsPlotVectors(blitTbl, blepTbl, blampTbl);
 
   // the guard samples in the tables just repeat the last actual samples:
-  blitTbl[L]  = blitTbl[L-1];
-  blepTbl[L]  = blepTbl[L-1];
-  blampTbl[L] = blampTbl[L-1];
+  this->blitTbl[L]  = this->blitTbl[L-1];
+  this->blepTbl[L]  = this->blepTbl[L-1];
+  this->blampTbl[L] = this->blampTbl[L-1];
 
   //rsPlotVectors(blitTbl, blepTbl, blampTbl);
 
@@ -137,8 +137,8 @@ void rsTableLinBlep<TSig, TTim>::allocateBuffers()
   tempBuffer.resize(2*halfLength);
   // for sampled correction signal - to be spread between delayline and corrector
 
-  delayline.resize(bufferSize);
-  corrector.resize(bufferSize);
+  this->delayline.resize(this->bufferSize);
+  this->corrector.resize(this->bufferSize);
 
   // maybe apply the corrector directly to stored past samples in addImpulse and use the
   // future-corrector when writing into the delayline
@@ -149,9 +149,9 @@ void rsTableLinBlep<TSig, TTim>::allocateBuffers()
 template<class TSig, class TTim>
 void rsTableLinBlep<TSig, TTim>::reset()
 {
-  rsSetZero(delayline);
-  rsSetZero(corrector);
-  bufIndex = 0;
+  rsSetZero(this->delayline);
+  rsSetZero(this->corrector);
+  this->bufIndex = 0;
 }
 
 //=================================================================================================
@@ -165,42 +165,42 @@ rsTableMinBlep<TSig, TTim>::rsTableMinBlep()
 template<class TSig, class TTim>
 void rsTableMinBlep<TSig, TTim>::updateTables()
 {
-  int L = blepLength * tablePrecision + 1; // why +1? guard for interpolator? ...nope...but...
+  int L = this->blepLength * this->tablePrecision + 1; // why +1? guard for interpolator? ...nope...but...
   //int L = blepLength * tablePrecision;   // ...without, it crashes for blepLength == 0
   int Lg = L+1;                            // this +1 here is for the guard sample
-  blitTbl.resize(Lg);
-  blepTbl.resize(Lg);
-  blampTbl.resize(Lg);
+  this->blitTbl.resize(Lg);
+  this->blepTbl.resize(Lg);
+  this->blampTbl.resize(Lg);
 
   // create temporary elliptic subband filter object - we use its impulse/step/ramp response for
   // the tables (maybe later allow the user to set up the EngineersFilter settings):
   rsEllipticSubBandFilter<TTim, TTim> flt;
-  flt.setSubDivision(tablePrecision);
+  flt.setSubDivision(this->tablePrecision);
   // later: tablePrecision * cutoffScaler ..or maybe use flt.setCutoffScaler (that function doesn't
   // exist yet - rsEllipticSubBandFilter uses a fixed scaler of 0.9)
 
   // create time axis and (unilateral) window:
   std::vector<TTim> timeAxis(L), wnd(L);
-  TTim ts = TTim(1) / TTim(tablePrecision);  // time axis scaler
+  TTim ts = TTim(1) / TTim(this->tablePrecision);  // time axis scaler
   for(int n = 0; n < L; n++) {
     timeAxis[n] = ts * TTim(n);
     wnd[n] = window(0.5 * timeAxis[n]);      // 0.5 because of unilaterality
   }
 
   // create blit:
-  blitTbl[0] = wnd[0] * (flt.getSample(TTim(tablePrecision))); // correct to scale by tablePrecision?
+  this->blitTbl[0] = wnd[0] * (flt.getSample(TTim(this->tablePrecision))); // correct to scale by tablePrecision?
   for(int n = 1; n < L; n++)
-    blitTbl[n] = wnd[n] * flt.getSample(TTim(0));
+    this->blitTbl[n] = wnd[n] * flt.getSample(TTim(0));
 
   // create blep-resiudal:
   flt.reset();
   for(int n = 0; n < L; n++)
-    blepTbl[n] = wnd[n] * ( flt.getSample(TTim(1)) - TTim(1) );
+    this->blepTbl[n] = wnd[n] * ( flt.getSample(TTim(1)) - TTim(1) );
 
   // create blamp-residual:
   flt.reset();
   for(int n = 0; n < L; n++)
-    blampTbl[n] = wnd[n] * (flt.getSample(timeAxis[n]) - timeAxis[n]);
+    this->blampTbl[n] = wnd[n] * (flt.getSample(timeAxis[n]) - timeAxis[n]);
 
   // higher order residuals could be computed as:
   // blarabola: flt.getSample( t^2/2 ) - t^2/2;
@@ -208,9 +208,9 @@ void rsTableMinBlep<TSig, TTim>::updateTables()
   // etc.: t^k / k!
 
   // the guard samples in the tables just repeat the last actual samples:
-  blitTbl[L]  = blitTbl[L-1];
-  blepTbl[L]  = blepTbl[L-1];
-  blampTbl[L] = blampTbl[L-1];
+  this->blitTbl[L]  = this->blitTbl[L-1];
+  this->blepTbl[L]  = this->blepTbl[L-1];
+  this->blampTbl[L] = this->blampTbl[L-1];
 
   //rsPlotVectors(blitTbl, blepTbl);
   //rsPlotVectors(blitTbl, blepTbl, blampTbl, wnd);
@@ -221,15 +221,15 @@ void rsTableMinBlep<TSig, TTim>::updateTables()
 template<class TSig, class TTim>
 void rsTableMinBlep<TSig, TTim>::allocateBuffers()
 {
-  corrector.resize(bufferSize);
+  this->corrector.resize(this->bufferSize);
   reset();
 }
 
 template<class TSig, class TTim>
 void rsTableMinBlep<TSig, TTim>::reset()
 {
-  rsSetZero(corrector);
-  bufIndex = 0;
+  rsSetZero(this->corrector);
+  this->bufIndex = 0;
 }
 
 
