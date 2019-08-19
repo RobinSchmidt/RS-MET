@@ -270,29 +270,29 @@ void testModalResynthesis(const std::string& name, std::vector<double>& x,
 
 void testDeBeating(const std::string& name, std::vector<double>& x, double fs, double f0)
 {
+  // for reference, write input into a wavefile:
+  rosic::writeToMonoWaveFile(name + "DeBeatInput.wav",  &x[0], (int)x.size(), (int)fs);
+
+  // create and set up analyzer and obtain sinusoidal model and write a resynthesized unmodified
+  // signal into a wavefile:
   int N = (int) x.size(); // x is the input signal
 
-  // create and set up analyzer and obtain sinusoidal model:
   RAPT::rsHarmonicAnalyzer<double> analyzer;
-  analyzer.setSampleRate(fs);
-  analyzer.setSpectralOversampling(4);
-  analyzer.setNumCyclesPerBlock(4);
-  analyzer.setWindowType(stringToWindowType("hm")); // options: rc,hn,hm,bm,bh
-  analyzer.getCycleFinder().setFundamental(f0);
+  setupHarmonicAnalyzerFor(analyzer, name, fs, f0);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
+  std::vector<double> y = synthesizeSinusoidal(mdl, fs);
+  rosic::writeToMonoWaveFile(name + "DeBeatOutputUnmodified.wav", &y[0], (int)y.size(), (int)fs);
 
   // mdl now contains the sinusoidal model for the sound. Now, we set up a rsPartialBeatingRemover 
-  // and apply the de-beating to model data:
+  // and apply the de-beating to model data, then synthesize the de-beated signal and write into
+  // wavefile:
   rsPartialBeatingRemover<double> deBeater;
   deBeater.setPhaseSmoothingParameters(5.0, 1, 4); // cutoff = 10 leaves a vibrato
   deBeater.processModel(mdl);
+  y = synthesizeSinusoidal(mdl, fs);
+  rosic::writeToMonoWaveFile(name + "DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
 
-  // mdl now contains the modified, de-beated model data - synthesize the signal from the model and
-  // write it into a wave file (for convenient reference, also write the input next to it):
-  std::vector<double> y = synthesizeSinusoidal(mdl, fs);
-  rosic::writeToMonoWaveFile("DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
-  rosic::writeToMonoWaveFile("DeBeatInput.wav",  &x[0], (int)x.size(), (int)fs);
-  // ...we should probably use the passed name somehow for naming the files
+
 }
 
 

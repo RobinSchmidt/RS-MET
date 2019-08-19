@@ -275,12 +275,15 @@ void rsPartialBeatingRemover<T>::removeAmplitudeBeating(rsSinusoidalPartial<T>& 
   // "first-order" envelope - this removes the amplitude modulation due to beating:
   std::vector<T> t = partial.getTimeArray();
   std::vector<T> a = partial.getAmplitudeArray();
+
+  GNUPlotter plt;
+  plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
+
   envExtractor.connectPeaks(&t[0], &a[0], &a[0], (int)t.size());
   partial.setAmplitudes(a);
 
-  //GNUPlotter plt;
-  //plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
-  //plt.plot();
+  plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
+  plt.plot();
 }
 
 template<class T>

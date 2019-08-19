@@ -23,6 +23,11 @@ namespace rosic
   void writeToMonoWaveFile(const char* path, double *signal, int numFrames, int sampleRate,
     int numBits = 16);
 
+  // convenience function that uses std::string instead of char*
+  void writeToMonoWaveFile(const std::string& path, double *signal, int numFrames, int sampleRate,
+    int numBits = 16);
+
+
   /** Writes a stereo signal into a wavefile. */
   void writeToStereoWaveFile(const char* path, double *left, double *right, int numFrames,
     int sampleRate, int numBits = 16);

@@ -21,6 +21,12 @@ void rosic::writeToMonoWaveFile(const char* path, double *signal, int numFrames,
   delete[] tmp;
 }
 
+void rosic::writeToMonoWaveFile(const std::string& path, double* signal, int numFrames,
+  int sampleRate, int numBits)
+{
+  writeToMonoWaveFile(path.c_str(), signal, numFrames, sampleRate, numBits);
+}
+
 void rosic::writeToStereoWaveFile(const char* path, double *left, double *right, int numFrames,
                                   int sampleRate, int numBits)
 {
