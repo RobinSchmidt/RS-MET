@@ -50,7 +50,9 @@
 //#include <stdio.h>
 //#include <new>
 //#include <iterator>
+
 #include <intrin.h>       // for some reason, it's needed on Elan's machine but not on mine
+
 #include <emmintrin.h>    // SSE2
 
 #ifndef __APPLE__

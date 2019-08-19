@@ -38,7 +38,7 @@ T rsNonUniformOnePole<T>::getSampleSpatiallyVariantScaled(T x, T dt)
   return y / rsAbs(s);   // apply re-normalization
 }
 /*
-// ...could it be that the update of s must be done *after* the output is computed? see Eq 13: 
+// ...could it be that the update of s must be done *after* the output is computed? see Eq 13:
 // gamma_0 = a should used for the 0-th sample - let's try it:
 template<class T>
 T rsNonUniformOnePole<T>::getSampleSpatiallyVariantScaled(T x, T dt)
@@ -72,7 +72,7 @@ T rsNonUniformOnePole<T>::getSamplePiecewiseResampled(T x, T dt)
   y  = a*x + bdt*y + Phi;
   return y;
 }
-// maybe allow the user to set a scaler (between 0...1) for Phi - so we can fade between 
+// maybe allow the user to set a scaler (between 0...1) for Phi - so we can fade between
 // no-normalization (good for impulse response) and full normalization (good for step response)
 
 template<class T>
@@ -82,7 +82,7 @@ void rsNonUniformOnePole<T>::reset()
 
   x1 = T(0);
 
-  //x1 = T(1000);  
+  //x1 = T(1000);
   // test: doesn't seem to make a difference for imp-resp or step-resp. It seems like the
   // factor (R-r1*bdt) that multiplies x1 is always zero for the first sample -> it goes to zero
   // when dt goes to 1.
@@ -92,11 +92,11 @@ void rsNonUniformOnePole<T>::reset()
   // the general formula is Eq18: s = a / (1 - b * exp(j*wr)) where wr is the reference frequency
   // where we want unit gain, which is zero in this (lowpass) case
   // there's an alternative formula: s = a ...figure out, which one should be used
-  // ...comparing results with a uniform 1-pole filter, it seems like s = a/(1-b) is the correct 
+  // ...comparing results with a uniform 1-pole filter, it seems like s = a/(1-b) is the correct
   // one - in this case, s comes out as 1 - but probably only in the special case of a lowpass
 
-  // Looking at Eq.15, it seems, this gamma term (our s) is just the sum over all the 
-  // impulse-response samples encountered so far when wr = 0. When wr != 0, it's the sum over the 
+  // Looking at Eq.15, it seems, this gamma term (our s) is just the sum over all the
+  // impulse-response samples encountered so far when wr = 0. When wr != 0, it's the sum over the
   // modulated impulse response
 }
 
@@ -193,9 +193,10 @@ void rsNonUniformFilterIIR<T>::setApproximationMethod(ApproximationMethod newMet
 
   // todo: let the prototype designer also use an enum class - maybe even the same - maybe list the
   // allpole types first, so we can simply do a < check to see, if the selected type is allpole
-  // ...oh - but enum classes can't be converted to int - or can they explictly? we really want to 
+  // ...oh - but enum classes can't be converted to int - or can they explictly? we really want to
   // avoid the "translation" - it's inelegant
-  typedef RAPT::rsPrototypeDesigner<T>::approximationMethods PAM;
+  //typedef RAPT::rsPrototypeDesigner<T>::approximationMethods PAM; // gcc complains
+  typedef RAPT::rsPrototypeDesigner<double>::approximationMethods PAM;
   typedef ApproximationMethod AM;
   switch(approxMethod)
   {
@@ -208,7 +209,7 @@ void rsNonUniformFilterIIR<T>::setApproximationMethod(ApproximationMethod newMet
   // experimental:
   case AM::elliptic:    protoDesigner.setApproximationMethod(PAM::ELLIPTIC);    break;
 
-  default: rsError("unknown approximation method");  
+  default: rsError("unknown approximation method");
   }
 
   updateCoeffs();
@@ -220,7 +221,7 @@ void rsNonUniformFilterIIR<T>::setApproximationMethod(ApproximationMethod newMet
 template<class T>
 void rsNonUniformFilterIIR<T>::updateCoeffs()
 {
-  // experimental - it turned out that some range of cutoff freqs works better than other 
+  // experimental - it turned out that some range of cutoff freqs works better than other
   // numerically, so we enforce the cutoff to be in this range - this, in turn, requires to scale
   // all the incoming "dt" values during operation:
   T operatingPoint = 0.125;  // maybe try something that obviates the sLowpassToLowpass call?
@@ -228,7 +229,7 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   //T operatingPoint = 0.0625;
   //T operatingPoint = 1/(2*PI); // ..but no: 0.125 is better - it leads to wc = 0.125 which is
                                  // exactly representable -> no error in sLowpassToLowpass
-  //T operatingPoint = 0.03125; 
+  //T operatingPoint = 0.03125;
   T freqScaler = operatingPoint/(2*PI*freq); // makes wc == 1, when operatingPoint == 1
   dtScaler = 1 / freqScaler;
   // todo: make impulse-invariant design available in uniform filters and compare outputs - tweak
@@ -241,9 +242,9 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   protoDesigner.getPolesAndZeros(p, z); // get non-redundant poles and zeros...
   for(i = (order-1)/2; i >= 0; i--) {   // ...and create their complex conjugate partners
     p[2*i]   = p[i];
-    p[2*i+1] = conj(p[i]); 
+    p[2*i+1] = conj(p[i]);
     z[2*i]   = z[i];
-    z[2*i+1] = conj(z[i]); 
+    z[2*i+1] = conj(z[i]);
   }
 
   // do s-domain lowpass-to-lowpass transform to set up cutoff frequency:
@@ -258,7 +259,7 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   rsPolynomial<T>::rootsToCoeffs(z, num, nz);
   rsPolynomial<T>::rootsToCoeffs(p, den, order);
   // todo: maybe this conversion can be avoided when the prototype designer already has to create
-  // the sum form before finding the poles and zeros - it would require the prototype-designer to 
+  // the sum form before finding the poles and zeros - it would require the prototype-designer to
   // maintain arrays for the sum form that can be pulled out by client code
 
   // do the partial fraction expansion:
@@ -279,21 +280,21 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
   for(i = 0; i < order; i++)
     onePoles[i].setCoeffs(k*r[i], p[i]);
 
-  // this seems to fix the problem of 1st order filter step responses shooting at a value higher 
+  // this seems to fix the problem of 1st order filter step responses shooting at a value higher
   // than 1 (when piecewise resampling is used) - i don't know, why that works - the paper doesn't
   // say anything about doing such a thing:
   std::complex<T> tmp = T(0);
   for(i = 0; i < order; i++) {
     onePoles[i].reset(); // triggers computation of scaler s_i
-    tmp += onePoles[i].getScaler();  
+    tmp += onePoles[i].getScaler();
   }
   outScaler = T(1) / tmp.real();
-  // but it makes sense: when the transfer function is a sum of terms like r_i / (s - p_i) and we 
+  // but it makes sense: when the transfer function is a sum of terms like r_i / (s - p_i) and we
   // plug in s = 0, we have a sum -r_i/p_i ...but s_i = r_i / (1-p_i) ...hmmm
 
 
-  // test - to normalize elliptic filters - maybe make this optional - maybe have an option that 
-  // switches between normalization at DC and normalization of the maximum magnitude (for even 
+  // test - to normalize elliptic filters - maybe make this optional - maybe have an option that
+  // switches between normalization at DC and normalization of the maximum magnitude (for even
   // order elliptic and chebychev-2 filters, there's a dip at DC)
   /*
   if(rsIsEven(order)) {
@@ -301,7 +302,7 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
     outScaler /= rsDbToAmp(rp);
   }
   */
-  // when doing this, the output in nonUniformBiDirectional has only half of the amplitude it 
+  // when doing this, the output in nonUniformBiDirectional has only half of the amplitude it
   // should have when using the elliptic filter - i really should make the normalization optional
   // have a function setNormalizeDcDip or setCompensateDcDip or setNormalizeMaxGain - if false,
   // we'll normalize at DC
@@ -309,7 +310,7 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
 
 /*
 
-It seems like the only useful mode is "piecewise resampling" (unless i'm doing something wrong with 
+It seems like the only useful mode is "piecewise resampling" (unless i'm doing something wrong with
 the other modes) - make a production code version that strips off the stuff for the other modes,
 includes optimizations and maybe continuous fade between piecewise resampling and no normalization.
 This code here may then be moved back into the prototypes section (for further experiments with the
