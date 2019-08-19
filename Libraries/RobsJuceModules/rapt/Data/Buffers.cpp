@@ -21,7 +21,7 @@ void rsBuffer<T>::initBufferValues(T value)
 template<class T>
 void rsRingBuffer<T>::reset()
 {
-  initBufferValues(0);
+  this->initBufferValues(0);
   rightIndex = 0;
   updateLeftIndex();
 }
