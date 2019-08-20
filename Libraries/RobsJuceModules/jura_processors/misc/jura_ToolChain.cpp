@@ -202,8 +202,8 @@ void ToolChain::processBlock(double **inOutBuffer, int numChannels, int numSampl
     for(size_t i = 0; i < modules.size(); i++)
       modules[i]->processBlock(inOutBuffer, numChannels, numSamples);
   else {
-    // we have to iterate through all the samples and for each sample update all the modulators and
-    // then compute a sample-frame from each non-modulator module:
+    // we have to iterate through all the samples and for each sample, update all the modulators 
+    // and then compute a sample-frame from each non-modulator module:
     for(int n = 0; n < numSamples; n++) {
       if(needsSmoothing)   smoothingManager->updateSmoothedValuesNoLock();
       if(needsModulation)  modManager.applyModulationsNoLock();
@@ -213,6 +213,9 @@ void ToolChain::processBlock(double **inOutBuffer, int numChannels, int numSampl
         // That means, they inherit the empty baseclass method and do nothing in this call.
     }
   }
+
+  // todo: all instrument and source modules should pass through the incoming audio and add their 
+  // own signal (unless the use it inside for their own signal processing) -> allows for layering
 }
 
 void ToolChain::setSampleRate(double newSampleRate)
@@ -237,9 +240,6 @@ void ToolChain::handleMidiMessage(MidiMessage message)
   // have MIDI effects such as appregiators and sequencers which modify the sequence and pass
   // the modified sequence to the next module - we could have an appregiator in front of a
   // synth, for example
-
-  // all isntrument and source modules should pass through the incoming audio and add their own
-  // signal (unless the use it inside for their own signal processing) -> this allows for layering
 }
 
 /*

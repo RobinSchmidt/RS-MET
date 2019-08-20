@@ -80,9 +80,10 @@ public:
   /** Removes the last module from the chain. */
   void deleteLastModule();
 
-  /** Replaces the module at the given with a new module of given type unless the given type 
+  /** Replaces the module at the given index with a new module of given type unless the given type 
   matches that of the module which is already there at this position in which case nothing 
-  happens. Returns true, if the module was replaced, false otherwise. */
+  happens. 
+  todo: maybe it should return true, if the module was actually replaced, false otherwise */
   void replaceModule(int index, const juce::String& type);
 
   /** Returns true if the module at the given index matches the type specified by the type 
@@ -173,6 +174,9 @@ protected:
     // we should better use the inherited childAudioModules array - but there are errors
 
   ModulationManager modManager;
+  // name clash with modManager inherited ModulationParticipant (baseclass of 
+  // ModulatableAudioModule) - maybe rename this
+
   //rsSmoothingManager smoothingManager;
 
   AudioModuleFactory moduleFactory;
