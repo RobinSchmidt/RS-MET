@@ -6,7 +6,7 @@ namespace LaPackCPP {
 // wrappers/delegators here inside the namspace - todo: clean this up! try to get rid and if
 // impossible, at least inline them and maybe move to some other file
 
-// some silly headers define these as macros - leading to utterly inscrutable compiler errors of 
+// some silly headers define these as macros - leading to utterly inscrutable compiler errors of
 // the forms
 // 'char' should be preceded by ';'
 // 'double' followed by 'char' is illegal
@@ -19,12 +19,12 @@ namespace LaPackCPP {
 //template<class T> inline T max(T x, T y) {  return std::max(x, y); }
 
 
-// maybe move to Blas.cpp
-inline long min(long x, long y) {  return std::min(x, y); }
-inline long max(long x, long y) {  return std::max(x, y); }
-
-inline double min(double x, double y) {  return std::min(x, y); }
-inline double max(double x, double y) {  return std::max(x, y); }
+// maybe move to Blas.cpp (done for min/max)
+//inline long min(long x, long y) {  return std::min(x, y); }
+//inline long max(long x, long y) {  return std::max(x, y); }
+//
+//inline double min(double x, double y) {  return std::min(x, y); }
+//inline double max(double x, double y) {  return std::max(x, y); }
 
 inline double sqrt(double x)  { return ::sqrt(x); }
 
@@ -72,7 +72,7 @@ blas_prec_type toPrecType(integer* value)
 //=================================================================================================
 // DRIVER routines
 
-// translated from dgbsv, LAPACK driver routine (version 3.7.0) -- 
+// translated from dgbsv, LAPACK driver routine (version 3.7.0) --
 template<class T>
 int gbsv(long int *n, long int *kl, long int *ku, long int *nrhs, T *ab, long int *ldab,
   long int *ipiv, T *b, long int *ldb, long int *info)
@@ -139,16 +139,16 @@ int gbsv(long int *n, long int *kl, long int *ku, long int *nrhs, T *ab, long in
 
 // translated from dgbsvx - LAPACK driver routine (version 3.7.0)
 template<class T>
-int gbsvx(char *fact, char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, 
-  T *ab, integer *ldab, T *afb, integer *ldafb, integer *ipiv, char *equed, T *r__, T *c__, T *b, 
-  integer *ldb, T *x, integer *ldx, T *rcond, T *ferr, T *berr, T *work, integer *iwork, 
+int gbsvx(char *fact, char *trans, integer *n, integer *kl, integer *ku, integer *nrhs,
+  T *ab, integer *ldab, T *afb, integer *ldafb, integer *ipiv, char *equed, T *r__, T *c__, T *b,
+  integer *ldb, T *x, integer *ldx, T *rcond, T *ferr, T *berr, T *work, integer *iwork,
   integer *info, ftnlen fact_len, ftnlen trans_len, ftnlen equed_len)
 {
   /* Table of constant values */
   static integer c__1 = 1;
 
   /* System generated locals */
-  integer ab_dim1, ab_offset, afb_dim1, afb_offset, b_dim1, b_offset, 
+  integer ab_dim1, ab_offset, afb_dim1, afb_offset, b_dim1, b_offset,
     x_dim1, x_offset, i__1, i__2, i__3, i__4, i__5;
   T d__1, d__2, d__3;
 
@@ -158,37 +158,37 @@ int gbsvx(char *fact, char *trans, integer *n, integer *kl, integer *ku, integer
   static char norm[1];
   //extern logical lsame_(char *, char *, ftnlen, ftnlen);
   static T rcmin, rcmax, anorm;
-  //extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+  //extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *,
   //  doublereal *, integer *);
   static logical equil;
-  //extern doublereal dlangb_(char *, integer *, integer *, integer *, 
-  //  doublereal *, integer *, doublereal *, ftnlen), dlamch_(char *, 
+  //extern doublereal dlangb_(char *, integer *, integer *, integer *,
+  //  doublereal *, integer *, doublereal *, ftnlen), dlamch_(char *,
   //    ftnlen);
-  //extern /* Subroutine */ int dlaqgb_(integer *, integer *, integer *, 
-  //  integer *, doublereal *, integer *, doublereal *, doublereal *, 
-  //  doublereal *, doublereal *, doublereal *, char *, ftnlen), 
-  //  dgbcon_(char *, integer *, integer *, integer *, doublereal *, 
-  //    integer *, integer *, doublereal *, doublereal *, doublereal *, 
+  //extern /* Subroutine */ int dlaqgb_(integer *, integer *, integer *,
+  //  integer *, doublereal *, integer *, doublereal *, doublereal *,
+  //  doublereal *, doublereal *, doublereal *, char *, ftnlen),
+  //  dgbcon_(char *, integer *, integer *, integer *, doublereal *,
+  //    integer *, integer *, doublereal *, doublereal *, doublereal *,
   //    integer *, integer *, ftnlen);
   static T colcnd;
-  //extern doublereal dlantb_(char *, char *, char *, integer *, integer *, 
+  //extern doublereal dlantb_(char *, char *, char *, integer *, integer *,
   //  doublereal *, integer *, doublereal *, ftnlen, ftnlen, ftnlen);
-  //extern /* Subroutine */ int dgbequ_(integer *, integer *, integer *, 
-  //  integer *, doublereal *, integer *, doublereal *, doublereal *, 
+  //extern /* Subroutine */ int dgbequ_(integer *, integer *, integer *,
+  //  integer *, doublereal *, integer *, doublereal *, doublereal *,
   //  doublereal *, doublereal *, doublereal *, integer *), dgbrfs_(
-  //    char *, integer *, integer *, integer *, integer *, doublereal *, 
-  //    integer *, doublereal *, integer *, integer *, doublereal *, 
-  //    integer *, doublereal *, integer *, doublereal *, doublereal *, 
-  //    doublereal *, integer *, integer *, ftnlen), dgbtrf_(integer *, 
-  //      integer *, integer *, integer *, doublereal *, integer *, integer 
+  //    char *, integer *, integer *, integer *, integer *, doublereal *,
+  //    integer *, doublereal *, integer *, integer *, doublereal *,
+  //    integer *, doublereal *, integer *, doublereal *, doublereal *,
+  //    doublereal *, integer *, integer *, ftnlen), dgbtrf_(integer *,
+  //      integer *, integer *, integer *, doublereal *, integer *, integer
   //      *, integer *);
   static logical nofact;
-  //extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-  //  doublereal *, integer *, doublereal *, integer *, ftnlen), 
+  //extern /* Subroutine */ int dlacpy_(char *, integer *, integer *,
+  //  doublereal *, integer *, doublereal *, integer *, ftnlen),
   //  xerbla_(char *, integer *, ftnlen);
   static T bignum;
-  //extern /* Subroutine */ int dgbtrs_(char *, integer *, integer *, integer 
-  //  *, integer *, doublereal *, integer *, integer *, doublereal *, 
+  //extern /* Subroutine */ int dgbtrs_(char *, integer *, integer *, integer
+  //  *, integer *, doublereal *, integer *, integer *, doublereal *,
   //  integer *, integer *, ftnlen);
   static integer infequ;
   static logical colequ;
@@ -229,9 +229,9 @@ int gbsvx(char *fact, char *trans, integer *n, integer *kl, integer *ku, integer
     rowequ = FALSE_;
     colequ = FALSE_;
   } else {
-    rowequ = lsame(equed, "R", (ftnlen)1, (ftnlen)1) || lsame(equed, 
+    rowequ = lsame(equed, "R", (ftnlen)1, (ftnlen)1) || lsame(equed,
       "B", (ftnlen)1, (ftnlen)1);
-    colequ = lsame(equed, "C", (ftnlen)1, (ftnlen)1) || lsame(equed, 
+    colequ = lsame(equed, "C", (ftnlen)1, (ftnlen)1) || lsame(equed,
       "B", (ftnlen)1, (ftnlen)1);
     smlnum = lamch("Safe minimum", (ftnlen)12);
     bignum = 1. / smlnum;
@@ -241,7 +241,7 @@ int gbsvx(char *fact, char *trans, integer *n, integer *kl, integer *ku, integer
 
   if (! nofact && ! equil && ! lsame(fact, "F", (ftnlen)1, (ftnlen)1)) {
     *info = -1;
-  } else if (! notran && ! lsame(trans, "T", (ftnlen)1, (ftnlen)1) && ! 
+  } else if (! notran && ! lsame(trans, "T", (ftnlen)1, (ftnlen)1) && !
     lsame(trans, "C", (ftnlen)1, (ftnlen)1)) {
     *info = -2;
   } else if (*n < 0) {
@@ -256,7 +256,7 @@ int gbsvx(char *fact, char *trans, integer *n, integer *kl, integer *ku, integer
     *info = -8;
   } else if (*ldafb < (*kl << 1) + *ku + 1) {
     *info = -10;
-  } else if (lsame(fact, "F", (ftnlen)1, (ftnlen)1) && ! (rowequ || colequ 
+  } else if (lsame(fact, "F", (ftnlen)1, (ftnlen)1) && ! (rowequ || colequ
     || lsame(equed, "N", (ftnlen)1, (ftnlen)1))) {
     *info = -12;
   } else {
@@ -411,7 +411,7 @@ int gbsvx(char *fact, char *trans, integer *n, integer *kl, integer *ku, integer
       i__1 = min(i__3,i__2);
       /* Computing MAX */
       i__4 = 1, i__5 = *kl + *ku + 2 - *info;
-      rpvgrw = lantb("M", "U", "N", info, &i__1, &afb[max(i__4,i__5) 
+      rpvgrw = lantb("M", "U", "N", info, &i__1, &afb[max(i__4,i__5)
         + afb_dim1], ldafb, &work[1], (ftnlen)1, (ftnlen)1, (
           ftnlen)1);
       if (rpvgrw == 0.) {
@@ -459,7 +459,7 @@ int gbsvx(char *fact, char *trans, integer *n, integer *kl, integer *ku, integer
   /*     Use iterative refinement to improve the computed solution and */
   /*     compute error bounds and backward error estimates for it. */
 
-  gbrfs(trans, n, kl, ku, nrhs, &ab[ab_offset], ldab, &afb[afb_offset], 
+  gbrfs(trans, n, kl, ku, nrhs, &ab[ab_offset], ldab, &afb[afb_offset],
     ldafb, &ipiv[1], &b[b_offset], ldb, &x[x_offset], ldx, &ferr[1], &
     berr[1], &work[1], &iwork[1], info, (ftnlen)1);
 
@@ -514,42 +514,42 @@ int gbsvx(char *fact, char *trans, integer *n, integer *kl, integer *ku, integer
 
 //-------------------------------------------------------------------------------------------------
 
-// from  dgbsvxx -- LAPACK driver routine (version 3.7.0)  
+// from  dgbsvxx -- LAPACK driver routine (version 3.7.0)
 template<class T>
-int gbsvxx(char *fact, char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *ab, 
-  integer *ldab, T *afb, integer *ldafb, integer *ipiv, char *equed, T *r__, T *c__, T *b, 
-  integer *ldb, T *x, integer *ldx, T *rcond, T *rpvgrw, T *berr, integer *n_err_bnds__, 
-  T *err_bnds_norm__, T *err_bnds_comp__, integer *nparams, T *params, T *work, integer *iwork, 
+int gbsvxx(char *fact, char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *ab,
+  integer *ldab, T *afb, integer *ldafb, integer *ipiv, char *equed, T *r__, T *c__, T *b,
+  integer *ldb, T *x, integer *ldx, T *rcond, T *rpvgrw, T *berr, integer *n_err_bnds__,
+  T *err_bnds_norm__, T *err_bnds_comp__, integer *nparams, T *params, T *work, integer *iwork,
   integer *info, ftnlen fact_len, ftnlen trans_len, ftnlen equed_len)
 {
   /* System generated locals */
-  integer ab_dim1, ab_offset, afb_dim1, afb_offset, b_dim1, b_offset, 
-    x_dim1, x_offset, err_bnds_norm_dim1, err_bnds_norm_offset, 
+  integer ab_dim1, ab_offset, afb_dim1, afb_offset, b_dim1, b_offset,
+    x_dim1, x_offset, err_bnds_norm_dim1, err_bnds_norm_offset,
     err_bnds_comp_dim1, err_bnds_comp_offset, i__1, i__2;
   doublereal d__1, d__2;
 
   /* Local variables */
   static integer i__, j;
   static T amax;
-  //extern doublereal dla_gbrpvgrw__(integer *, integer *, integer *, integer 
+  //extern doublereal dla_gbrpvgrw__(integer *, integer *, integer *, integer
   //  *, doublereal *, integer *, doublereal *, integer *);
   //extern logical lsame_(char *, char *, ftnlen, ftnlen);
   static T rcmin, rcmax;
   static logical equil;
   //extern doublereal dlamch_(char *, ftnlen);
-  //extern /* Subroutine */ int dlaqgb_(integer *, integer *, integer *, 
-  //  integer *, doublereal *, integer *, doublereal *, doublereal *, 
+  //extern /* Subroutine */ int dlaqgb_(integer *, integer *, integer *,
+  //  integer *, doublereal *, integer *, doublereal *, doublereal *,
   //  doublereal *, doublereal *, doublereal *, char *, ftnlen);
   static T colcnd;
-  //extern /* Subroutine */ int dgbtrf_(integer *, integer *, integer *, 
+  //extern /* Subroutine */ int dgbtrf_(integer *, integer *, integer *,
   //  integer *, doublereal *, integer *, integer *, integer *);
   static logical nofact;
-  //extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-  //  doublereal *, integer *, doublereal *, integer *, ftnlen), 
+  //extern /* Subroutine */ int dlacpy_(char *, integer *, integer *,
+  //  doublereal *, integer *, doublereal *, integer *, ftnlen),
   //  xerbla_(char *, integer *, ftnlen);
   static T bignum;
-  //extern /* Subroutine */ int dgbtrs_(char *, integer *, integer *, integer 
-  //  *, integer *, doublereal *, integer *, integer *, doublereal *, 
+  //extern /* Subroutine */ int dgbtrs_(char *, integer *, integer *, integer
+  //  *, integer *, doublereal *, integer *, integer *, doublereal *,
   //  integer *, integer *, ftnlen);
   static integer infequ;
   static logical colequ;
@@ -557,15 +557,15 @@ int gbsvxx(char *fact, char *trans, integer *n, integer *kl, integer *ku, intege
   static logical notran;
   static T smlnum;
   static logical rowequ;
-  //extern /* Subroutine */ int dlascl2_(integer *, integer *, doublereal *, 
+  //extern /* Subroutine */ int dlascl2_(integer *, integer *, doublereal *,
   //  doublereal *, integer *), dgbequb_(integer *, integer *, integer *
-  //    , integer *, doublereal *, integer *, doublereal *, doublereal *, 
+  //    , integer *, doublereal *, integer *, doublereal *, doublereal *,
   //    doublereal *, doublereal *, doublereal *, integer *), dgbrfsx_(
-  //      char *, char *, integer *, integer *, integer *, integer *, 
-  //      doublereal *, integer *, doublereal *, integer *, integer *, 
+  //      char *, char *, integer *, integer *, integer *, integer *,
+  //      doublereal *, integer *, doublereal *, integer *, integer *,
   //      doublereal *, doublereal *, doublereal *, integer *, doublereal *,
-  //      integer *, doublereal *, doublereal *, integer *, doublereal *, 
-  //      doublereal *, integer *, doublereal *, doublereal *, integer *, 
+  //      integer *, doublereal *, doublereal *, integer *, doublereal *,
+  //      doublereal *, integer *, doublereal *, doublereal *, integer *,
   //      integer *, ftnlen, ftnlen);
 
 
@@ -609,9 +609,9 @@ int gbsvxx(char *fact, char *trans, integer *n, integer *kl, integer *ku, intege
     rowequ = FALSE_;
     colequ = FALSE_;
   } else {
-    rowequ = lsame(equed, "R", (ftnlen)1, (ftnlen)1) || lsame(equed, 
+    rowequ = lsame(equed, "R", (ftnlen)1, (ftnlen)1) || lsame(equed,
       "B", (ftnlen)1, (ftnlen)1);
-    colequ = lsame(equed, "C", (ftnlen)1, (ftnlen)1) || lsame(equed, 
+    colequ = lsame(equed, "C", (ftnlen)1, (ftnlen)1) || lsame(equed,
       "B", (ftnlen)1, (ftnlen)1);
   }
 
@@ -625,7 +625,7 @@ int gbsvxx(char *fact, char *trans, integer *n, integer *kl, integer *ku, intege
 
   if (! nofact && ! equil && ! lsame(fact, "F", (ftnlen)1, (ftnlen)1)) {
     *info = -1;
-  } else if (! notran && ! lsame(trans, "T", (ftnlen)1, (ftnlen)1) && ! 
+  } else if (! notran && ! lsame(trans, "T", (ftnlen)1, (ftnlen)1) && !
     lsame(trans, "C", (ftnlen)1, (ftnlen)1)) {
     *info = -2;
   } else if (*n < 0) {
@@ -640,7 +640,7 @@ int gbsvxx(char *fact, char *trans, integer *n, integer *kl, integer *ku, intege
     *info = -8;
   } else if (*ldafb < (*kl << 1) + *ku + 1) {
     *info = -10;
-  } else if (lsame(fact, "F", (ftnlen)1, (ftnlen)1) && ! (rowequ || colequ 
+  } else if (lsame(fact, "F", (ftnlen)1, (ftnlen)1) && ! (rowequ || colequ
     || lsame(equed, "N", (ftnlen)1, (ftnlen)1))) {
     *info = -12;
   } else {
@@ -794,7 +794,7 @@ int gbsvxx(char *fact, char *trans, integer *n, integer *kl, integer *ku, intege
     afb_offset], ldafb, &ipiv[1], &r__[1], &c__[1], &b[b_offset], ldb,
       &x[x_offset], ldx, rcond, &berr[1], n_err_bnds__, &
       err_bnds_norm__[err_bnds_norm_offset], &err_bnds_comp__[
-        err_bnds_comp_offset], nparams, &params[1], &work[1], &iwork[1], 
+        err_bnds_comp_offset], nparams, &params[1], &work[1], &iwork[1],
           info, (ftnlen)1, (ftnlen)1);
 
   /*     Scale solutions. */
@@ -814,9 +814,9 @@ int gbsvxx(char *fact, char *trans, integer *n, integer *kl, integer *ku, intege
 //=================================================================================================
 // COMPUTATIONAL routines
 
-// from dgbcon - LAPACK computational routine (version 3.7.0) 
+// from dgbcon - LAPACK computational routine (version 3.7.0)
 template<class T>
-int gbcon(char *norm, integer *n, integer *kl, integer *ku, T *ab, integer *ldab, integer *ipiv, 
+int gbcon(char *norm, integer *n, integer *kl, integer *ku, T *ab, integer *ldab, integer *ipiv,
   T *anorm, T *rcond, T *work, integer *iwork, integer *info, ftnlen norm_len)
 {
   /* Table of constant values */
@@ -830,24 +830,24 @@ int gbcon(char *norm, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
   static integer j;
   static T t;
   static integer kd, lm, jp, ix, kase;
-  //extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *, 
+  //extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *,
   //  integer *);
   static integer kase1;
   static T scale;
   //extern logical lsame_(char *, char *, ftnlen, ftnlen);
   static integer isave[3];
-  //extern /* Subroutine */ int drscl_(integer *, doublereal *, doublereal *, 
+  //extern /* Subroutine */ int drscl_(integer *, doublereal *, doublereal *,
   //  integer *);
   static logical lnoti;
-  //extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
-  //  integer *, doublereal *, integer *), dlacn2_(integer *, 
-  //    doublereal *, doublereal *, integer *, doublereal *, integer *, 
+  //extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *,
+  //  integer *, doublereal *, integer *), dlacn2_(integer *,
+  //    doublereal *, doublereal *, integer *, doublereal *, integer *,
   //    integer *);
   //extern doublereal dlamch_(char *, ftnlen);
   //extern integer idamax_(integer *, doublereal *, integer *);
-  //extern /* Subroutine */ int dlatbs_(char *, char *, char *, char *, 
-  //  integer *, integer *, doublereal *, integer *, doublereal *, 
-  //  doublereal *, doublereal *, integer *, ftnlen, ftnlen, ftnlen, 
+  //extern /* Subroutine */ int dlatbs_(char *, char *, char *, char *,
+  //  integer *, integer *, doublereal *, integer *, doublereal *,
+  //  doublereal *, doublereal *, integer *, ftnlen, ftnlen, ftnlen,
   //  ftnlen), xerbla_(char *, integer *, ftnlen);
   static T ainvnm;
   static logical onenrm;
@@ -939,7 +939,7 @@ L10:
 
       i__1 = *kl + *ku;
       latbs("Upper", "No transpose", "Non-unit", normin, n, &i__1, &
-        ab[ab_offset], ldab, &work[1], &scale, &work[(*n << 1) + 
+        ab[ab_offset], ldab, &work[1], &scale, &work[(*n << 1) +
         1], info, (ftnlen)5, (ftnlen)12, (ftnlen)8, (ftnlen)1);
     } else {
 
@@ -947,7 +947,7 @@ L10:
 
       i__1 = *kl + *ku;
       latbs("Upper", "Transpose", "Non-unit", normin, n, &i__1, &ab[
-        ab_offset], ldab, &work[1], &scale, &work[(*n << 1) + 1], 
+        ab_offset], ldab, &work[1], &scale, &work[(*n << 1) + 1],
           info, (ftnlen)5, (ftnlen)9, (ftnlen)8, (ftnlen)1);
 
       /*           Multiply by inv(L**T). */
@@ -975,7 +975,7 @@ L10:
     *(unsigned char *)normin = 'Y';
     if (scale != 1.) {
       ix = iamax(n, &work[1], &c__1);
-      if (scale < (d__1 = work[ix], abs(d__1)) * smlnum || scale == 0.) 
+      if (scale < (d__1 = work[ix], abs(d__1)) * smlnum || scale == 0.)
       {
         goto L40;
       }
@@ -1001,7 +1001,7 @@ L40:
 
 // from gbequ - LAPACK computational routine (version 3.7.0)
 template<class T>
-int gbequ(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab, T *r__, T *c__, 
+int gbequ(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab, T *r__, T *c__,
   T *rowcnd, T *colcnd, T *amax, integer *info)
 {
   /* System generated locals */
@@ -1075,7 +1075,7 @@ int gbequ(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
     i__3 = min(i__4,*m);
     for (i__ = max(i__2,1); i__ <= i__3; ++i__) {
       /* Computing MAX */
-      d__2 = r__[i__], d__3 = (d__1 = ab[kd + i__ - j + j * ab_dim1], 
+      d__2 = r__[i__], d__3 = (d__1 = ab[kd + i__ - j + j * ab_dim1],
         abs(d__1));
       r__[i__] = max(d__2,d__3);
       /* L20: */
@@ -1215,7 +1215,7 @@ int gbequ(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
 
 // dgbequb_ -- LAPACK computational routine (version 3.7.0) -
 template<class T>
-int gbequb(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab, T *r__, T *c__, 
+int gbequb(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab, T *r__, T *c__,
   T *rowcnd, T *colcnd, T *amax, integer *info)
 {
   /* System generated locals */
@@ -1294,7 +1294,7 @@ int gbequb(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *lda
     i__3 = min(i__4,*m);
     for (i__ = max(i__2,1); i__ <= i__3; ++i__) {
       /* Computing MAX */
-      d__2 = r__[i__], d__3 = (d__1 = ab[kd + i__ - j + j * ab_dim1], 
+      d__2 = r__[i__], d__3 = (d__1 = ab[kd + i__ - j + j * ab_dim1],
         abs(d__1));
       r__[i__] = max(d__2,d__3);
       /* L20: */
@@ -1446,7 +1446,7 @@ int gbequb(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *lda
 // from dgbrfs - LAPACK computational routine (version 3.7.0)
 template<class T>
 int gbrfs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *ab, integer *ldab,
-  T *afb, integer *ldafb, integer *ipiv, T *b, integer *ldb, T *x, integer *ldx, T *ferr, T *berr, 
+  T *afb, integer *ldafb, integer *ipiv, T *b, integer *ldb, T *x, integer *ldx, T *ferr, T *berr,
   T *work, integer *iwork, integer *info, ftnlen trans_len)
 {
   /* Table of constant values */
@@ -1456,7 +1456,7 @@ int gbrfs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
 
 
   /* System generated locals */
-  integer ab_dim1, ab_offset, afb_dim1, afb_offset, b_dim1, b_offset, 
+  integer ab_dim1, ab_offset, afb_dim1, afb_offset, b_dim1, b_offset,
     x_dim1, x_offset, i__1, i__2, i__3, i__4, i__5, i__6, i__7;
   T d__1, d__2, d__3;
 
@@ -1470,12 +1470,12 @@ int gbrfs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
   static integer kase;
   static T safe1, safe2;
   //extern /* Subroutine */ int dgbmv_(char *, integer *, integer *, integer *
-  //  , integer *, doublereal *, doublereal *, integer *, doublereal *, 
+  //  , integer *, doublereal *, doublereal *, integer *, doublereal *,
   //  integer *, doublereal *, doublereal *, integer *, ftnlen);
   //extern logical lsame_(char *, char *, ftnlen, ftnlen);
   static integer isave[3];
-  //extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
-  //  doublereal *, integer *), daxpy_(integer *, doublereal *, 
+  //extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *,
+  //  doublereal *, integer *), daxpy_(integer *, doublereal *,
   //    doublereal *, integer *, doublereal *, integer *);
   static integer count;
   //extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
@@ -1483,7 +1483,7 @@ int gbrfs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
   //extern doublereal dlamch_(char *, ftnlen);
   static T safmin;
   //extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dgbtrs_(
-  //  char *, integer *, integer *, integer *, integer *, doublereal *, 
+  //  char *, integer *, integer *, integer *, integer *, doublereal *,
   //  integer *, integer *, doublereal *, integer *, integer *, ftnlen);
   static logical notran;
   static char transt[1];
@@ -1580,7 +1580,7 @@ int gbrfs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
     /*        where op(A) = A, A**T, or A**H, depending on TRANS. */
 
     copy(n, &b[j * b_dim1 + 1], &c__1, &work[*n + 1], &c__1);
-    gbmv(trans, n, n, kl, ku, &c_b15, &ab[ab_offset], ldab, &x[j * 
+    gbmv(trans, n, n, kl, ku, &c_b15, &ab[ab_offset], ldab, &x[j *
       x_dim1 + 1], &c__1, &c_b17, &work[*n + 1], &c__1, (ftnlen)1);
 
     /*        Compute componentwise relative backward error from formula */
@@ -1646,7 +1646,7 @@ int gbrfs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
         s = max(d__2,d__3);
       } else {
         /* Computing MAX */
-        d__2 = s, d__3 = ((d__1 = work[*n + i__], abs(d__1)) + safe1) 
+        d__2 = s, d__3 = ((d__1 = work[*n + i__], abs(d__1)) + safe1)
           / (work[i__] + safe1);
         s = max(d__2,d__3);
       }
@@ -1664,7 +1664,7 @@ int gbrfs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
 
       /*           Update solution and try again. */
 
-      gbtrs(trans, n, kl, ku, &c__1, &afb[afb_offset], ldafb, &ipiv[1], 
+      gbtrs(trans, n, kl, ku, &c__1, &afb[afb_offset], ldafb, &ipiv[1],
         &work[*n + 1], n, info, (ftnlen)1);
       axpy(n, &c_b17, &work[*n + 1], &c__1, &x[j * x_dim1 + 1], &c__1);
       lstres = berr[j];
@@ -1697,10 +1697,10 @@ int gbrfs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
     i__2 = *n;
     for (i__ = 1; i__ <= i__2; ++i__) {
       if (work[i__] > safe2) {
-        work[i__] = (d__1 = work[*n + i__], abs(d__1)) + nz * eps * 
+        work[i__] = (d__1 = work[*n + i__], abs(d__1)) + nz * eps *
           work[i__];
       } else {
-        work[i__] = (d__1 = work[*n + i__], abs(d__1)) + nz * eps * 
+        work[i__] = (d__1 = work[*n + i__], abs(d__1)) + nz * eps *
           work[i__] + safe1;
       }
       /* L90: */
@@ -1714,7 +1714,7 @@ int gbrfs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
 
         /*              Multiply by diag(W)*inv(op(A)**T). */
 
-        gbtrs(transt, n, kl, ku, &c__1, &afb[afb_offset], ldafb, 
+        gbtrs(transt, n, kl, ku, &c__1, &afb[afb_offset], ldafb,
           &ipiv[1], &work[*n + 1], n, info, (ftnlen)1);
         i__2 = *n;
         for (i__ = 1; i__ <= i__2; ++i__) {
@@ -1761,12 +1761,12 @@ int gbrfs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
 
 //-------------------------------------------------------------------------------------------------
 
-// from dgbrfsx,  LAPACK computational routine (version 3.7.0) -- 
+// from dgbrfsx,  LAPACK computational routine (version 3.7.0) --
 template<class T>
-int gbrfsx(char *trans, char *equed, integer *n, integer *kl, integer *ku, integer *nrhs, 
-  T *ab, integer *ldab, T *afb, integer *ldafb, integer *ipiv, T *r__, T *c__, T *b, integer *ldb, 
-  T *x, integer *ldx, T *rcond, T *berr, integer *n_err_bnds__, T *err_bnds_norm__, 
-  T *err_bnds_comp__, integer *nparams, T *params, T *work, integer *iwork, integer *info, 
+int gbrfsx(char *trans, char *equed, integer *n, integer *kl, integer *ku, integer *nrhs,
+  T *ab, integer *ldab, T *afb, integer *ldafb, integer *ipiv, T *r__, T *c__, T *b, integer *ldb,
+  T *x, integer *ldx, T *rcond, T *berr, integer *n_err_bnds__, T *err_bnds_norm__,
+  T *err_bnds_comp__, integer *nparams, T *params, T *work, integer *iwork, integer *info,
   ftnlen trans_len, ftnlen equed_len)
 {
   /* Table of constant values */
@@ -1776,8 +1776,8 @@ int gbrfsx(char *trans, char *equed, integer *n, integer *kl, integer *ku, integ
 
 
   /* System generated locals */
-  integer ab_dim1, ab_offset, afb_dim1, afb_offset, b_dim1, b_offset, 
-    x_dim1, x_offset, err_bnds_norm_dim1, err_bnds_norm_offset, 
+  integer ab_dim1, ab_offset, afb_dim1, afb_offset, b_dim1, b_offset,
+    x_dim1, x_offset, err_bnds_norm_dim1, err_bnds_norm_offset,
     err_bnds_comp_dim1, err_bnds_comp_offset, i__1;
   T d__1, d__2;
 
@@ -1791,15 +1791,15 @@ int gbrfsx(char *trans, char *equed, integer *n, integer *kl, integer *ku, integ
   static integer j;
   static T rcond_tmp__;
   static integer prec_type__, trans_type__;
-  //extern doublereal dla_gbrcond__(char *, integer *, integer *, integer *, 
-  //  doublereal *, integer *, doublereal *, integer *, integer *, 
-  //  integer *, doublereal *, integer *, doublereal *, integer *, 
+  //extern doublereal dla_gbrcond__(char *, integer *, integer *, integer *,
+  //  doublereal *, integer *, doublereal *, integer *, integer *,
+  //  integer *, doublereal *, integer *, doublereal *, integer *,
   //  ftnlen);
   static T cwise_wrong__;
-  //extern /* Subroutine */ int dla_gbrfsx_extended__(integer *, integer *, 
-  //  integer *, integer *, integer *, integer *, doublereal *, integer 
-  //  *, doublereal *, integer *, integer *, logical *, doublereal *, 
-  //  doublereal *, integer *, doublereal *, integer *, doublereal *, 
+  //extern /* Subroutine */ int dla_gbrfsx_extended__(integer *, integer *,
+  //  integer *, integer *, integer *, integer *, doublereal *, integer
+  //  *, doublereal *, integer *, integer *, logical *, doublereal *,
+  //  doublereal *, integer *, doublereal *, integer *, doublereal *,
   //  integer *, doublereal *, doublereal *, doublereal *, doublereal *,
   //  doublereal *, doublereal *, doublereal *, integer *, doublereal *
   //  , doublereal *, logical *, integer *);
@@ -1807,12 +1807,12 @@ int gbrfsx(char *trans, char *equed, integer *n, integer *kl, integer *ku, integ
   static logical ignore_cwise__;
   //extern logical lsame_(char *, char *, ftnlen, ftnlen);
   static T anorm;
-  //extern doublereal dlangb_(char *, integer *, integer *, integer *, 
-  //  doublereal *, integer *, doublereal *, ftnlen), dlamch_(char *, 
+  //extern doublereal dlangb_(char *, integer *, integer *, integer *,
+  //  doublereal *, integer *, doublereal *, ftnlen), dlamch_(char *,
   //    ftnlen);
-  //extern /* Subroutine */ int dgbcon_(char *, integer *, integer *, integer 
+  //extern /* Subroutine */ int dgbcon_(char *, integer *, integer *, integer
   //  *, doublereal *, integer *, integer *, doublereal *, doublereal *,
-  //  doublereal *, integer *, integer *, ftnlen), xerbla_(char *, 
+  //  doublereal *, integer *, integer *, ftnlen), xerbla_(char *,
   //    integer *, ftnlen);
   static logical colequ, notran, rowequ;
   //extern integer ilaprec_(char *, ftnlen);
@@ -1989,21 +1989,21 @@ int gbrfsx(char *trans, char *equed, integer *n, integer *kl, integer *ku, integ
   if (ref_type__ != 0 && *info == 0) {
     prec_type__ = ilaprec("E", (ftnlen)1);
     if (notran) {
-      la_gbrfsx_extended(&prec_type__, &trans_type__, n, kl, ku, 
+      la_gbrfsx_extended(&prec_type__, &trans_type__, n, kl, ku,
         nrhs, &ab[ab_offset], ldab, &afb[afb_offset], ldafb, &
         ipiv[1], &colequ, &c__[1], &b[b_offset], ldb, &x[x_offset]
         , ldx, &berr[1], &n_norms__, &err_bnds_norm__[
           err_bnds_norm_offset], &err_bnds_comp__[
-            err_bnds_comp_offset], &work[*n + 1], &work[1], &work[(*n 
+            err_bnds_comp_offset], &work[*n + 1], &work[1], &work[(*n
               << 1) + 1], &work[1], rcond, &ithresh, &rthresh, &
               unstable_thresh__, &ignore_cwise__, info);
     } else {
-      la_gbrfsx_extended(&prec_type__, &trans_type__, n, kl, ku, 
+      la_gbrfsx_extended(&prec_type__, &trans_type__, n, kl, ku,
         nrhs, &ab[ab_offset], ldab, &afb[afb_offset], ldafb, &
         ipiv[1], &rowequ, &r__[1], &b[b_offset], ldb, &x[x_offset]
         , ldx, &berr[1], &n_norms__, &err_bnds_norm__[
           err_bnds_norm_offset], &err_bnds_comp__[
-            err_bnds_comp_offset], &work[*n + 1], &work[1], &work[(*n 
+            err_bnds_comp_offset], &work[*n + 1], &work[1], &work[(*n
               << 1) + 1], &work[1], rcond, &ithresh, &rthresh, &
               unstable_thresh__, &ignore_cwise__, info);
     }
@@ -2016,16 +2016,16 @@ int gbrfsx(char *trans, char *equed, integer *n, integer *kl, integer *ku, integ
     /*     Compute scaled normwise condition number cond(A*C). */
 
     if (colequ && notran) {
-      rcond_tmp__ = la_gbrcond(trans, n, kl, ku, &ab[ab_offset], 
-        ldab, &afb[afb_offset], ldafb, &ipiv[1], &c_n1, &c__[1], 
+      rcond_tmp__ = la_gbrcond(trans, n, kl, ku, &ab[ab_offset],
+        ldab, &afb[afb_offset], ldafb, &ipiv[1], &c_n1, &c__[1],
         info, &work[1], &iwork[1], (ftnlen)1);
     } else if (rowequ && ! notran) {
-      rcond_tmp__ = la_gbrcond(trans, n, kl, ku, &ab[ab_offset], 
-        ldab, &afb[afb_offset], ldafb, &ipiv[1], &c_n1, &r__[1], 
+      rcond_tmp__ = la_gbrcond(trans, n, kl, ku, &ab[ab_offset],
+        ldab, &afb[afb_offset], ldafb, &ipiv[1], &c_n1, &r__[1],
         info, &work[1], &iwork[1], (ftnlen)1);
     } else {
-      rcond_tmp__ = la_gbrcond(trans, n, kl, ku, &ab[ab_offset], 
-        ldab, &afb[afb_offset], ldafb, &ipiv[1], &c__0, &r__[1], 
+      rcond_tmp__ = la_gbrcond(trans, n, kl, ku, &ab[ab_offset],
+        ldab, &afb[afb_offset], ldafb, &ipiv[1], &c__0, &r__[1],
         info, &work[1], &iwork[1], (ftnlen)1);
     }
     i__1 = *nrhs;
@@ -2033,7 +2033,7 @@ int gbrfsx(char *trans, char *equed, integer *n, integer *kl, integer *ku, integ
 
       /*     Cap the error at 1.0. */
 
-      if (*n_err_bnds__ >= 2 && err_bnds_norm__[j + (err_bnds_norm_dim1 
+      if (*n_err_bnds__ >= 2 && err_bnds_norm__[j + (err_bnds_norm_dim1
         << 1)] > 1.) {
         err_bnds_norm__[j + (err_bnds_norm_dim1 << 1)] = 1.;
       }
@@ -2046,7 +2046,7 @@ int gbrfsx(char *trans, char *equed, integer *n, integer *kl, integer *ku, integ
         if (*info <= *n) {
           *info = *n + j;
         }
-      } else if (err_bnds_norm__[j + (err_bnds_norm_dim1 << 1)] < 
+      } else if (err_bnds_norm__[j + (err_bnds_norm_dim1 << 1)] <
         err_lbnd__) {
         err_bnds_norm__[j + (err_bnds_norm_dim1 << 1)] = err_lbnd__;
         err_bnds_norm__[j + err_bnds_norm_dim1] = 1.;
@@ -2072,9 +2072,9 @@ int gbrfsx(char *trans, char *equed, integer *n, integer *kl, integer *ku, integ
     cwise_wrong__ = sqrt(lamch("Epsilon", (ftnlen)7));
     i__1 = *nrhs;
     for (j = 1; j <= i__1; ++j) {
-      if (err_bnds_comp__[j + (err_bnds_comp_dim1 << 1)] < 
+      if (err_bnds_comp__[j + (err_bnds_comp_dim1 << 1)] <
         cwise_wrong__) {
-        rcond_tmp__ = la_gbrcond(trans, n, kl, ku, &ab[ab_offset], 
+        rcond_tmp__ = la_gbrcond(trans, n, kl, ku, &ab[ab_offset],
           ldab, &afb[afb_offset], ldafb, &ipiv[1], &c__1, &x[j *
           x_dim1 + 1], info, &work[1], &iwork[1], (ftnlen)1);
       } else {
@@ -2083,7 +2083,7 @@ int gbrfsx(char *trans, char *equed, integer *n, integer *kl, integer *ku, integ
 
       /*     Cap the error at 1.0. */
 
-      if (*n_err_bnds__ >= 2 && err_bnds_comp__[j + (err_bnds_comp_dim1 
+      if (*n_err_bnds__ >= 2 && err_bnds_comp__[j + (err_bnds_comp_dim1
         << 1)] > 1.) {
         err_bnds_comp__[j + (err_bnds_comp_dim1 << 1)] = 1.;
       }
@@ -2096,7 +2096,7 @@ int gbrfsx(char *trans, char *equed, integer *n, integer *kl, integer *ku, integ
         if (params[3] == 1. && *info < *n + j) {
           *info = *n + j;
         }
-      } else if (err_bnds_comp__[j + (err_bnds_comp_dim1 << 1)] < 
+      } else if (err_bnds_comp__[j + (err_bnds_comp_dim1 << 1)] <
         err_lbnd__) {
         err_bnds_comp__[j + (err_bnds_comp_dim1 << 1)] = err_lbnd__;
         err_bnds_comp__[j + err_bnds_comp_dim1] = 1.;
@@ -2130,7 +2130,7 @@ int gbrfsx(char *trans, char *equed, integer *n, integer *kl, integer *ku, integ
 
 // translated from dgbtf2, LAPACK computational routine (version 3.7.0)
 template<class T>
-int gbtf2(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab, integer *ipiv, 
+int gbtf2(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab, integer *ipiv,
   integer *info)
 {
   /* Table of constant values */
@@ -2143,10 +2143,10 @@ int gbtf2(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
 
   /* Local variables */
   static integer i__, j, km, jp, ju, kv;
-  //extern /* Subroutine */ int dger_(integer *, integer *, T *, 
-  //  T *, integer *, T *, integer *, T *, 
-  //  integer *), dscal_(integer *, T *, T *, integer 
-  //    *), dswap_(integer *, T *, integer *, T *, 
+  //extern /* Subroutine */ int dger_(integer *, integer *, T *,
+  //  T *, integer *, T *, integer *, T *,
+  //  integer *), dscal_(integer *, T *, T *, integer
+  //    *), dswap_(integer *, T *, integer *, T *,
   //      integer *);
   //extern integer idamax_(integer *, T *, integer *);
   //extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -2243,7 +2243,7 @@ int gbtf2(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
         i__2 = ju - j + 1;
         i__3 = *ldab - 1;
         i__4 = *ldab - 1;
-        swap(&i__2, &ab[kv + jp + j * ab_dim1], &i__3, &ab[kv + 1 + 
+        swap(&i__2, &ab[kv + jp + j * ab_dim1], &i__3, &ab[kv + 1 +
           j * ab_dim1], &i__4);
       }
 
@@ -2261,7 +2261,7 @@ int gbtf2(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
           i__3 = *ldab - 1;
           i__4 = *ldab - 1;
           ger(&km, &i__2, &c_b9, &ab[kv + 2 + j * ab_dim1], &c__1,
-            &ab[kv + (j + 1) * ab_dim1], &i__3, &ab[kv + 1 + 
+            &ab[kv + (j + 1) * ab_dim1], &i__3, &ab[kv + 1 +
             (j + 1) * ab_dim1], &i__4);
         }
       }
@@ -2295,11 +2295,11 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
   static T c_b18 = -1.;
   static T c_b31 = 1.;
 
-  // System generated locals 
+  // System generated locals
   integer ab_dim1, ab_offset, i__1, i__2, i__3, i__4, i__5, i__6;
   T d__1;
 
-  // Local variables 
+  // Local variables
   static integer i__, j, i2, i3, j2, j3, k2, jb, nb, ii, jj, jm, ip, jp, km,
     ju, kv, nw;
   // we need to comment these declarations - otherwise, the linker tries to find those functions
@@ -2388,9 +2388,9 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
       i__2 = j - 1;
       for(i__ = 1; i__ <= i__2; ++i__) {
         work13[i__ + j * 65 - 66] = 0.;
-        // L10: 
+        // L10:
       }
-      // L20: 
+      // L20:
     }
 
     // Zero the subdiagonal elements of the work array WORK31
@@ -2399,9 +2399,9 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
       i__2 = nb;
       for(i__ = j + 1; i__ <= i__2; ++i__) {
         work31[i__ + j * 65 - 66] = 0.;
-        // L30: 
+        // L30:
       }
-      // L40: 
+      // L40:
     }
 
     // Gaussian elimination with partial pivoting
@@ -2411,42 +2411,42 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
       i__2 = *kl;
       for(i__ = kv - j + 2; i__ <= i__2; ++i__) {
         ab[i__ + j * ab_dim1] = 0.;
-        // L50: 
+        // L50:
       }
-      // L60: 
+      // L60:
     }
 
-    // JU is the index of the last column affected by the current 
-    // stage of the factorization 
+    // JU is the index of the last column affected by the current
+    // stage of the factorization
     ju = 1;
 
     i__1 = min(*m, *n);
     i__2 = nb;
     for(j = 1; i__2 < 0 ? j >= i__1 : j <= i__1; j += i__2) {
-      // Computing MIN 
+      // Computing MIN
       i__3 = nb, i__4 = min(*m, *n) - j + 1;
       jb = min(i__3, i__4);
 
-      // The active part of the matrix is partitioned 
-      // A11   A12   A13 
-      // A21   A22   A23 
-      // A31   A32   A33 
-      // Here A11, A21 and A31 denote the current block of JB columns 
-      // which is about to be factorized. The number of rows in the 
-      // partitioning are JB, I2, I3 respectively, and the numbers 
+      // The active part of the matrix is partitioned
+      // A11   A12   A13
+      // A21   A22   A23
+      // A31   A32   A33
+      // Here A11, A21 and A31 denote the current block of JB columns
+      // which is about to be factorized. The number of rows in the
+      // partitioning are JB, I2, I3 respectively, and the numbers
       // of columns are JB, J2, J3. The superdiagonal elements of A13
       // and the subdiagonal elements of A31 lie outside the band.
 
-      // Computing MIN 
+      // Computing MIN
       i__3 = *kl - jb, i__4 = *m - j - jb + 1;
       i2 = min(i__3, i__4);
       // Computing MIN
       i__3 = jb, i__4 = *m - j - *kl + 1;
       i3 = min(i__3, i__4);
 
-      // J2 and J3 are computed after JU has been updated. 
+      // J2 and J3 are computed after JU has been updated.
 
-      // Factorize the current block of JB columns 
+      // Factorize the current block of JB columns
       i__3 = j + jb - 1;
       for(jj = j; jj <= i__3; ++jj) {
 
@@ -2456,21 +2456,21 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
           i__4 = *kl;
           for(i__ = 1; i__ <= i__4; ++i__) {
             ab[i__ + (jj + kv) * ab_dim1] = 0.;
-            // L70: 
+            // L70:
           }
         }
 
-        // Find pivot and test for singularity. KM is the number of 
+        // Find pivot and test for singularity. KM is the number of
         // subdiagonal elements in the current column. */
 
-        // Computing MIN 
+        // Computing MIN
         i__4 = *kl, i__5 = *m - jj;
         km = min(i__4, i__5);
         i__4 = km + 1;
         jp = iamax(&i__4, &ab[kv + 1 + jj * ab_dim1], &c__1);
         ipiv[jj] = jp + jj - j;
         if(ab[kv + jp + jj * ab_dim1] != 0.) {
-          // Computing MAX 
+          // Computing MAX
           // Computing MIN
           i__6 = jj + *ku + jp - 1;
           i__4 = ju, i__5 = min(i__6, *n);
@@ -2488,8 +2488,8 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
             }
             else {
 
-            // The interchange affects columns J to JJ-1 of A31 
-            // which are stored in the work array WORK31 
+            // The interchange affects columns J to JJ-1 of A31
+            // which are stored in the work array WORK31
               i__4 = jj - j;
               i__5 = *ldab - 1;
               swap(&i__4, &ab[kv + 1 + jj - j + j * ab_dim1],
@@ -2503,14 +2503,14 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
             }
           }
 
-          // Compute multipliers 
+          // Compute multipliers
 
           d__1 = 1. / ab[kv + 1 + jj * ab_dim1];
           scal(&km, &d__1, &ab[kv + 2 + jj * ab_dim1], &c__1);
 
-          // Update trailing submatrix within the band and within 
-          // the current block. JM is the index of the last column 
-          // which needs to be updated. 
+          // Update trailing submatrix within the band and within
+          // the current block. JM is the index of the last column
+          // which needs to be updated.
 
           // Computing MIN
           i__4 = ju, i__5 = j + jb - 1;
@@ -2526,7 +2526,7 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
         }
         else {
 
-       // If pivot is zero, set INFO to the index of the pivot 
+       // If pivot is zero, set INFO to the index of the pivot
        // unless a zero pivot has already been found.
 
           if(*info == 0) {
@@ -2534,29 +2534,29 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
           }
         }
 
-        // Copy current column of A31 into the work array WORK31 
+        // Copy current column of A31 into the work array WORK31
 
-        // Computing MIN 
+        // Computing MIN
         i__4 = jj - j + 1;
         nw = min(i__4, i3);
         if(nw > 0) {
           copy(&nw, &ab[kv + *kl + 1 - jj + j + jj * ab_dim1], &
             c__1, &work31[(jj - j + 1) * 65 - 65], &c__1);
         }
-        // L80: 
+        // L80:
       }
       if(j + jb <= *n) {
 
         // Apply the row interchanges to the other blocks.
 
-        // Computing MIN 
+        // Computing MIN
         i__3 = ju - j + 1;
         j2 = min(i__3, kv) - jb;
         // Computing MAX
         i__3 = 0, i__4 = ju - j - kv + 1;
         j3 = max(i__3, i__4);
 
-        // Use DLASWP to apply the row interchanges to A12, A22, and 
+        // Use DLASWP to apply the row interchanges to A12, A22, and
         // A32.
         i__3 = *ldab - 1;
         laswp(&j2, &ab[kv + 1 - jb + (j + jb) * ab_dim1], &i__3, &
@@ -2569,8 +2569,8 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
           // L90:
         }
 
-        // Apply the row interchanges to A13, A23, and A33 
-        // columnwise. 
+        // Apply the row interchanges to A13, A23, and A33
+        // columnwise.
         k2 = j - 1 + jb + j2;
         i__3 = j3;
         for(i__ = 1; i__ <= i__3; ++i__) {
@@ -2584,16 +2584,16 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
                 ip - jj + jj * ab_dim1];
               ab[kv + 1 + ip - jj + jj * ab_dim1] = temp;
             }
-            // L100: 
+            // L100:
           }
-          // L110: 
+          // L110:
         }
 
-        // Update the relevant part of the trailing submatrix 
+        // Update the relevant part of the trailing submatrix
 
         if(j2 > 0) {
 
-          // Update A12 
+          // Update A12
           i__3 = *ldab - 1;
           i__4 = *ldab - 1;
           trsm("Left", "Lower", "No transpose", "Unit", &jb, &j2,
@@ -2637,12 +2637,12 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
             for(ii = jj; ii <= i__4; ++ii) {
               work13[ii + jj * 65 - 66] = ab[ii - jj + 1 + (jj
                 + j + kv - 1) * ab_dim1];
-              // L120: 
+              // L120:
             }
-            // L130: 
+            // L130:
           }
 
-          // Update A13 in the work array 
+          // Update A13 in the work array
           i__3 = *ldab - 1;
           trsm("Left", "Lower", "No transpose", "Unit", &jb, &j3,
             &c_b31, &ab[kv + 1 + j * ab_dim1], &i__3, work13,
@@ -2650,7 +2650,7 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
             4);
 
           if(i2 > 0) {
-            // Update A23 
+            // Update A23
             i__3 = *ldab - 1;
             i__4 = *ldab - 1;
             gemm("No transpose", "No transpose", &i2, &j3, &jb,
@@ -2660,7 +2660,7 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
           }
 
           if(i3 > 0) {
-            // Update A33 
+            // Update A33
             i__3 = *ldab - 1;
             gemm("No transpose", "No transpose", &i3, &j3, &jb,
               &c_b18, work31, &c__65, work13, &c__65, &
@@ -2675,9 +2675,9 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
             for(ii = jj; ii <= i__4; ++ii) {
               ab[ii - jj + 1 + (jj + j + kv - 1) * ab_dim1] =
                 work13[ii + jj * 65 - 66];
-              // L140: 
+              // L140:
             }
-            // L150: 
+            // L150:
           }
         }
       }
@@ -2692,9 +2692,9 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
         }
       }
 
-      // Partially undo the interchanges in the current block to 
-      // restore the upper triangular form of A31 and copy the upper 
-      // triangle of A31 back into place 
+      // Partially undo the interchanges in the current block to
+      // restore the upper triangular form of A31 and copy the upper
+      // triangle of A31 back into place
       i__3 = j;
       for(jj = j + jb - 1; jj >= i__3; --jj) {
         jp = ipiv[jj] - jj + 1;
@@ -2721,7 +2721,7 @@ int gbtrf(integer *m, integer *n, integer *kl, integer *ku, T *ab, integer *ldab
         }
 
         // Copy the current column of A31 back into place
-        // Computing MIN 
+        // Computing MIN
         i__4 = i3, i__5 = jj - j + 1;
         nw = min(i__4, i__5);
         if(nw > 0) {
@@ -2752,7 +2752,7 @@ int gbtrs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
   // System generated locals
   integer ab_dim1, ab_offset, b_dim1, b_offset, i__1, i__2, i__3;
 
-  // Local variables 
+  // Local variables
   static integer i__, j, l, kd, lm;
   //extern int dger_(integer *, integer *, doublereal *,
   //  doublereal *, integer *, doublereal *, integer *, doublereal *,
@@ -2818,16 +2818,16 @@ int gbtrs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
 
   if(notran) {
 
-    // Solve  A*X = B. 
-    // Solve L*X = B, overwriting B with X. 
-    // L is represented as a product of permutations and unit lower 
-    // triangular matrices L = P(1) * L(1) * ... * P(n-1) * L(n-1), 
-    // where each transformation L(i) is a rank-one modification of 
-    // the identity matrix. 
+    // Solve  A*X = B.
+    // Solve L*X = B, overwriting B with X.
+    // L is represented as a product of permutations and unit lower
+    // triangular matrices L = P(1) * L(1) * ... * P(n-1) * L(n-1),
+    // where each transformation L(i) is a rank-one modification of
+    // the identity matrix.
     if(lnoti) {
       i__1 = *n - 1;
       for(j = 1; j <= i__1; ++j) {
-        // Computing MIN 
+        // Computing MIN
         i__2 = *kl, i__3 = *n - j;
         lm = min(i__2, i__3);
         l = ipiv[j];
@@ -2848,7 +2848,7 @@ int gbtrs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
       tbsv("Upper", "No transpose", "Non-unit", n, &i__2, &ab[
         ab_offset], ldab, &b[i__ * b_dim1 + 1], &c__1, (ftnlen)5,
           (ftnlen)12, (ftnlen)8);
-      // L20: 
+      // L20:
     }
 
   }
@@ -2869,7 +2869,7 @@ int gbtrs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
     // Solve L**T * X = B, overwriting B with X.
     if(lnoti) {
       for(j = *n - 1; j >= 1; --j) {
-        // Computing MIN 
+        // Computing MIN
         i__1 = *kl, i__2 = *n - j;
         lm = min(i__1, i__2);
         gemv("Transpose", &lm, nrhs, &c_b7, &b[j + 1 + b_dim1], ldb,
@@ -2885,7 +2885,7 @@ int gbtrs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
   }
   return 0;
 
-  // End of DGBTRS 
+  // End of DGBTRS
 
 } // gbtrs
 
@@ -2893,7 +2893,7 @@ int gbtrs(char *trans, integer *n, integer *kl, integer *ku, integer *nrhs, T *a
 
 // dla_gbamv -- LAPACK computational routine (version 3.7.1)
 template<class T>
-int la_gbamv(integer *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha, T *ab, 
+int la_gbamv(integer *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha, T *ab,
   integer *ldab, T *x, integer *incx, T *beta, T *y, integer *incy)
 {
   /* System generated locals */
@@ -3010,7 +3010,7 @@ int la_gbamv(integer *trans, integer *m, integer *n, integer *kl, integer *ku, T
           for (j = max(i__2,1); j <= i__3; ++j) {
             temp = (d__1 = ab[kd + i__ - j + j * ab_dim1], abs(
               d__1));
-            symb_zero__ = symb_zero__ && (x[j] == 0. || temp == 
+            symb_zero__ = symb_zero__ && (x[j] == 0. || temp ==
               0.);
             y[iy] += *alpha * (d__1 = x[j], abs(d__1)) * temp;
           }
@@ -3041,7 +3041,7 @@ int la_gbamv(integer *trans, integer *m, integer *n, integer *kl, integer *ku, T
           for (j = max(i__3,1); j <= i__2; ++j) {
             temp = (d__1 = ab[ke - i__ + j + i__ * ab_dim1], abs(
               d__1));
-            symb_zero__ = symb_zero__ && (x[j] == 0. || temp == 
+            symb_zero__ = symb_zero__ && (x[j] == 0. || temp ==
               0.);
             y[iy] += *alpha * (d__1 = x[j], abs(d__1)) * temp;
           }
@@ -3075,7 +3075,7 @@ int la_gbamv(integer *trans, integer *m, integer *n, integer *kl, integer *ku, T
           for (j = max(i__2,1); j <= i__3; ++j) {
             temp = (d__1 = ab[kd + i__ - j + j * ab_dim1], abs(
               d__1));
-            symb_zero__ = symb_zero__ && (x[jx] == 0. || temp == 
+            symb_zero__ = symb_zero__ && (x[jx] == 0. || temp ==
               0.);
             y[iy] += *alpha * (d__1 = x[jx], abs(d__1)) * temp;
             jx += *incx;
@@ -3108,7 +3108,7 @@ int la_gbamv(integer *trans, integer *m, integer *n, integer *kl, integer *ku, T
           for (j = max(i__3,1); j <= i__2; ++j) {
             temp = (d__1 = ab[ke - i__ + j + i__ * ab_dim1], abs(
               d__1));
-            symb_zero__ = symb_zero__ && (x[jx] == 0. || temp == 
+            symb_zero__ = symb_zero__ && (x[jx] == 0. || temp ==
               0.);
             y[iy] += *alpha * (d__1 = x[jx], abs(d__1)) * temp;
             jx += *incx;
@@ -3130,10 +3130,10 @@ int la_gbamv(integer *trans, integer *m, integer *n, integer *kl, integer *ku, T
 
 //-------------------------------------------------------------------------------------------------
 
-// dla_gbrcond -- LAPACK computational routine (version 3.7.0) -- 
+// dla_gbrcond -- LAPACK computational routine (version 3.7.0) --
 template<class T>
-T la_gbrcond(char *trans, integer *n, integer *kl, integer *ku, T *ab, integer *ldab, 
-  T *afb, integer *ldafb, integer *ipiv, integer *cmode, T *c__, integer *info, T *work, 
+T la_gbrcond(char *trans, integer *n, integer *kl, integer *ku, T *ab, integer *ldab,
+  T *afb, integer *ldafb, integer *ipiv, integer *cmode, T *c__, integer *info, T *work,
   integer *iwork, ftnlen trans_len)
 {
   /* Table of constant values */
@@ -3150,9 +3150,9 @@ T la_gbrcond(char *trans, integer *n, integer *kl, integer *ku, T *ab, integer *
   //extern logical lsame_(char *, char *, ftnlen, ftnlen);
   static integer isave[3];
   //extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
-  //  integer *, doublereal *, integer *, integer *), xerbla_(char *, 
-  //    integer *, ftnlen), dgbtrs_(char *, integer *, integer *, integer 
-  //      *, integer *, doublereal *, integer *, integer *, doublereal *, 
+  //  integer *, doublereal *, integer *, integer *), xerbla_(char *,
+  //    integer *, ftnlen), dgbtrs_(char *, integer *, integer *, integer
+  //      *, integer *, doublereal *, integer *, integer *, doublereal *,
   //      integer *, integer *, ftnlen);
   static T ainvnm;
   static logical notrans;
@@ -3214,7 +3214,7 @@ T la_gbrcond(char *trans, integer *n, integer *kl, integer *ku, T *ab, integer *
         i__4 = i__ + *ku;
         i__3 = min(i__4,*n);
         for (j = max(i__2,1); j <= i__3; ++j) {
-          tmp += (d__1 = ab[kd + i__ - j + j * ab_dim1] * c__[j], 
+          tmp += (d__1 = ab[kd + i__ - j + j * ab_dim1] * c__[j],
             abs(d__1));
         }
       } else if (*cmode == 0) {
@@ -3233,7 +3233,7 @@ T la_gbrcond(char *trans, integer *n, integer *kl, integer *ku, T *ab, integer *
         i__4 = i__ + *ku;
         i__3 = min(i__4,*n);
         for (j = max(i__2,1); j <= i__3; ++j) {
-          tmp += (d__1 = ab[kd + i__ - j + j * ab_dim1] / c__[j], 
+          tmp += (d__1 = ab[kd + i__ - j + j * ab_dim1] / c__[j],
             abs(d__1));
         }
       }
@@ -3250,7 +3250,7 @@ T la_gbrcond(char *trans, integer *n, integer *kl, integer *ku, T *ab, integer *
         i__4 = i__ + *ku;
         i__2 = min(i__4,*n);
         for (j = max(i__3,1); j <= i__2; ++j) {
-          tmp += (d__1 = ab[ke - i__ + j + i__ * ab_dim1] * c__[j], 
+          tmp += (d__1 = ab[ke - i__ + j + i__ * ab_dim1] * c__[j],
             abs(d__1));
         }
       } else if (*cmode == 0) {
@@ -3270,7 +3270,7 @@ T la_gbrcond(char *trans, integer *n, integer *kl, integer *ku, T *ab, integer *
         i__4 = i__ + *ku;
         i__2 = min(i__4,*n);
         for (j = max(i__3,1); j <= i__2; ++j) {
-          tmp += (d__1 = ab[ke - i__ + j + i__ * ab_dim1] / c__[j], 
+          tmp += (d__1 = ab[ke - i__ + j + i__ * ab_dim1] / c__[j],
             abs(d__1));
         }
       }
@@ -3294,10 +3294,10 @@ L10:
         work[i__] *= work[(*n << 1) + i__];
       }
       if (notrans) {
-        gbtrs("No transpose", n, kl, ku, &c__1, &afb[afb_offset], 
+        gbtrs("No transpose", n, kl, ku, &c__1, &afb[afb_offset],
           ldafb, &ipiv[1], &work[1], n, info, (ftnlen)12);
       } else {
-        gbtrs("Transpose", n, kl, ku, &c__1, &afb[afb_offset], 
+        gbtrs("Transpose", n, kl, ku, &c__1, &afb[afb_offset],
           ldafb, &ipiv[1], &work[1], n, info, (ftnlen)9);
       }
 
@@ -3330,10 +3330,10 @@ L10:
         }
       }
       if (notrans) {
-        gbtrs("Transpose", n, kl, ku, &c__1, &afb[afb_offset], 
+        gbtrs("Transpose", n, kl, ku, &c__1, &afb[afb_offset],
           ldafb, &ipiv[1], &work[1], n, info, (ftnlen)9);
       } else {
-        gbtrs("No transpose", n, kl, ku, &c__1, &afb[afb_offset], 
+        gbtrs("No transpose", n, kl, ku, &c__1, &afb[afb_offset],
           ldafb, &ipiv[1], &work[1], n, info, (ftnlen)12);
       }
 
@@ -3362,10 +3362,10 @@ L10:
 
 // dla_gbrfsx_extended -- LAPACK computational routine (version 3.7.1) --
 template<class T>
-int la_gbrfsx_extended(integer *prec_type__, integer *trans_type__, integer *n, integer *kl, 
-  integer *ku, integer *nrhs, T *ab, integer *ldab, T *afb, integer *ldafb, integer *ipiv, 
-  logical *colequ, T *c__, T *b, integer *ldb, T *y, integer *ldy, T *berr_out__, 
-  integer *n_norms__, T *err_bnds_norm__, T *err_bnds_comp__, T *res, T *ayb, T *dy, T *y_tail__, 
+int la_gbrfsx_extended(integer *prec_type__, integer *trans_type__, integer *n, integer *kl,
+  integer *ku, integer *nrhs, T *ab, integer *ldab, T *afb, integer *ldafb, integer *ipiv,
+  logical *colequ, T *c__, T *b, integer *ldb, T *y, integer *ldy, T *berr_out__,
+  integer *n_norms__, T *err_bnds_norm__, T *err_bnds_comp__, T *res, T *ayb, T *dy, T *y_tail__,
   T *rcond, integer *ithresh, T *rthresh, T *dz_ub__, logical *ignore_cwise__, integer *info)
 {
   /* Table of constant values */
@@ -3374,8 +3374,8 @@ int la_gbrfsx_extended(integer *prec_type__, integer *trans_type__, integer *n, 
   static T c_b8 = 1.;
 
   /* System generated locals */
-  integer ab_dim1, ab_offset, afb_dim1, afb_offset, b_dim1, b_offset, 
-    y_dim1, y_offset, err_bnds_norm_dim1, err_bnds_norm_offset, 
+  integer ab_dim1, ab_offset, afb_dim1, afb_offset, b_dim1, b_offset,
+    y_dim1, y_offset, err_bnds_norm_dim1, err_bnds_norm_offset,
     err_bnds_comp_dim1, err_bnds_comp_offset, i__1, i__2, i__3;
   T d__1, d__2;
   char ch__1[1];
@@ -3383,12 +3383,12 @@ int la_gbrfsx_extended(integer *prec_type__, integer *trans_type__, integer *n, 
   /* Local variables */
   static T dxratmax, dzratmax;
   static integer i__, j, m;
-  //extern /* Subroutine */ int dla_gbamv__(integer *, integer *, integer *, 
-  //  integer *, integer *, doublereal *, doublereal *, integer *, 
+  //extern /* Subroutine */ int dla_gbamv__(integer *, integer *, integer *,
+  //  integer *, integer *, doublereal *, doublereal *, integer *,
   //  doublereal *, integer *, doublereal *, doublereal *, integer *);
   static logical incr_prec__;
   static T prev_dz_z__, yk, final_dx_x__;
-  //extern /* Subroutine */ int dla_wwaddw__(integer *, doublereal *, 
+  //extern /* Subroutine */ int dla_wwaddw__(integer *, doublereal *,
   //  doublereal *, doublereal *);
   static T final_dz_z__, prevnormdx;
   static integer cnt;
@@ -3397,26 +3397,26 @@ int la_gbrfsx_extended(integer *prec_type__, integer *trans_type__, integer *n, 
   //  , doublereal *, doublereal *, doublereal *);
   static T ymin;
   //extern /* Subroutine */ int blas_dgbmv_x__(integer *, integer *, integer *
-  //  , integer *, integer *, doublereal *, doublereal *, integer *, 
-  //  doublereal *, integer *, doublereal *, doublereal *, integer *, 
+  //  , integer *, integer *, doublereal *, doublereal *, integer *,
+  //  doublereal *, integer *, doublereal *, doublereal *, integer *,
   //  integer *);
   static integer y_prec_state__;
-  //extern /* Subroutine */ int blas_dgbmv2_x__(integer *, integer *, integer 
-  //  *, integer *, integer *, doublereal *, doublereal *, integer *, 
+  //extern /* Subroutine */ int blas_dgbmv2_x__(integer *, integer *, integer
+  //  *, integer *, integer *, doublereal *, doublereal *, integer *,
   //  doublereal *, doublereal *, integer *, doublereal *, doublereal *,
-  //  integer *, integer *), dgbmv_(char *, integer *, integer *, 
-  //    integer *, integer *, doublereal *, doublereal *, integer *, 
-  //    doublereal *, integer *, doublereal *, doublereal *, integer *, 
-  //    ftnlen), dcopy_(integer *, doublereal *, integer *, doublereal *, 
+  //  integer *, integer *), dgbmv_(char *, integer *, integer *,
+  //    integer *, integer *, doublereal *, doublereal *, integer *,
+  //    doublereal *, integer *, doublereal *, doublereal *, integer *,
+  //    ftnlen), dcopy_(integer *, doublereal *, integer *, doublereal *,
   //      integer *);
   static T dxrat, dzrat;
-  //extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+  //extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *,
   //  integer *, doublereal *, integer *);
   static char trans[1];
   static T normx, normy;
   //extern doublereal dlamch_(char *, ftnlen);
-  //extern /* Subroutine */ int dgbtrs_(char *, integer *, integer *, integer 
-  //  *, integer *, doublereal *, integer *, integer *, doublereal *, 
+  //extern /* Subroutine */ int dgbtrs_(char *, integer *, integer *, integer
+  //  *, integer *, doublereal *, integer *, integer *, doublereal *,
   //  integer *, integer *, ftnlen);
   static T normdx;
   //extern /* Character */ VOID chla_transtype__(char *, ftnlen, integer *);
@@ -3497,18 +3497,18 @@ int la_gbrfsx_extended(integer *prec_type__, integer *trans_type__, integer *n, 
           j * y_dim1 + 1], &c__1, &c_b8, &res[1], &c__1, (
             ftnlen)1);
       } else if (y_prec_state__ == 1) {
-        // call to blas_dgbmv_x was edited by Robin Schmidt to make it compatible to the xblas 
+        // call to blas_dgbmv_x was edited by Robin Schmidt to make it compatible to the xblas
         // routine - the original code is retained as comment below (todo: try to templatize)
         blas_gbmv_x(blas_colmajor,  // blas_colmajor added by Robin - guess!!!
           toTransType(trans_type__), *n, *n, *kl, *ku, c_b6, &ab[ab_offset], *ldab,
           &y[j * y_dim1 + 1], c__1, c_b8, &res[1], c__1, toPrecType(prec_type__));
-        //blas_dgbmv_x(trans_type__, n, n, kl, ku, &c_b6, &ab[    
+        //blas_dgbmv_x(trans_type__, n, n, kl, ku, &c_b6, &ab[
         //  ab_offset], ldab, &y[j * y_dim1 + 1], &c__1, &c_b8, &
         //    res[1], &c__1, prec_type__);
       } else {
         // also edited by Robin, original below..
         blas_gbmv2_x(blas_colmajor,  // blas_colmajor added by Robin - guess!!!
-          toTransType(trans_type__), *n, *n, *kl, *ku, c_b6, &ab[ab_offset], *ldab, 
+          toTransType(trans_type__), *n, *n, *kl, *ku, c_b6, &ab[ab_offset], *ldab,
           &y[j * y_dim1 + 1], &y_tail__[1], c__1, c_b8, &res[1], c__1, toPrecType(prec_type__));
         //blas_dgbmv2_x(trans_type__, n, n, kl, ku, &c_b6, &ab[
         //  ab_offset], ldab, &y[j * y_dim1 + 1], &y_tail__[1], &
@@ -3563,7 +3563,7 @@ int la_gbrfsx_extended(integer *prec_type__, integer *trans_type__, integer *n, 
 
       /*         Check termination criteria. */
 
-      if (! (*ignore_cwise__) && ymin * *rcond < incr_thresh__ * normy 
+      if (! (*ignore_cwise__) && ymin * *rcond < incr_thresh__ * normy
         && y_prec_state__ < 2) {
         incr_prec__ = TRUE_;
       }
@@ -3683,7 +3683,7 @@ int la_gbrfsx_extended(integer *prec_type__, integer *trans_type__, integer *n, 
     /*            op(A) = A, A**T, or A**H depending on TRANS (and type). */
 
     copy(n, &b[j * b_dim1 + 1], &c__1, &res[1], &c__1);
-    gbmv(trans, n, n, kl, ku, &c_b6, &ab[ab_offset], ldab, &y[j * 
+    gbmv(trans, n, n, kl, ku, &c_b6, &ab[ab_offset], ldab, &y[j *
       y_dim1 + 1], &c__1, &c_b8, &res[1], &c__1, (ftnlen)1);
     i__2 = *n;
     for (i__ = 1; i__ <= i__2; ++i__) {
@@ -3705,7 +3705,7 @@ int la_gbrfsx_extended(integer *prec_type__, integer *trans_type__, integer *n, 
 
 //-------------------------------------------------------------------------------------------------
 
-// from dla_gbrpvgrw -- LAPACK computational routine (version 3.7.0) 
+// from dla_gbrpvgrw -- LAPACK computational routine (version 3.7.0)
 template<class T>
 T la_gbrpvgrw(integer *n, integer *kl, integer *ku, integer *ncols, T *ab, integer *ldab,
   T *afb, integer *ldafb)
@@ -3764,7 +3764,7 @@ T la_gbrpvgrw(integer *n, integer *kl, integer *ku, integer *ncols, T *ab, integ
 
 //-------------------------------------------------------------------------------------------------
 
-// dla_lin_berr__ -- LAPACK computational routine (version 3.7.0) 
+// dla_lin_berr__ -- LAPACK computational routine (version 3.7.0)
 template<class T>
 int la_lin_berr(integer *n, integer *nz, integer *nrhs, T *res, T *ayb, T *berr)
 {
@@ -3799,7 +3799,7 @@ int la_lin_berr(integer *n, integer *nz, integer *nrhs, T *res, T *ayb, T *berr)
     i__2 = *n;
     for (i__ = 1; i__ <= i__2; ++i__) {
       if (ayb[i__ + j * ayb_dim1] != 0.) {
-        tmp = (safe1 + (d__1 = res[i__ + j * res_dim1], abs(d__1))) / 
+        tmp = (safe1 + (d__1 = res[i__ + j * res_dim1], abs(d__1))) /
           ayb[i__ + j * ayb_dim1];
         /* Computing MAX */
         d__1 = berr[j];
@@ -3815,7 +3815,7 @@ int la_lin_berr(integer *n, integer *nz, integer *nrhs, T *res, T *ayb, T *berr)
 
 //-------------------------------------------------------------------------------------------------
 
-// dlascl2 -- LAPACK computational routine (version 3.7.0) -- 
+// dlascl2 -- LAPACK computational routine (version 3.7.0) --
 template<class T>
 int lascl2(integer *m, integer *n, T *d__, T *x, integer *ldx)
 {
@@ -3878,7 +3878,7 @@ int la_wwaddw(integer *n, T *x, T *y, T *w)
 
 //-------------------------------------------------------------------------------------------------
 
-// -- LAPACK auxiliary routine (version 3.7.0) 
+// -- LAPACK auxiliary routine (version 3.7.0)
 template<class T>
 int labad(T *small, T *large)
 {
@@ -3905,7 +3905,7 @@ int lacn2(integer *n, T *v, T *x, integer *isgn, T *est, integer *kase, integer 
   int i__1;
   T d__1;
 
-  // Local variables 
+  // Local variables
   static integer i__;
   static  T temp;
   static integer jlast;
@@ -4030,7 +4030,7 @@ L120:
   altsgn = 1.;
   i__1 = *n;
   for (i__ = 1; i__ <= i__1; ++i__) {
-    x[i__] = altsgn * ((doublereal) (i__ - 1) / (doublereal) (*n - 1) + 
+    x[i__] = altsgn * ((doublereal) (i__ - 1) / (doublereal) (*n - 1) +
       1.);
     altsgn = -altsgn;
     /* L130: */
@@ -4061,7 +4061,7 @@ L150:
 
 // translated from dlangb - LAPACK auxiliary routine (version 3.7.0) */
 template<class T>
-T langb(char *norm, integer *n, integer *kl, integer *ku, T *ab, integer *ldab, T *work, 
+T langb(char *norm, integer *n, integer *kl, integer *ku, T *ab, integer *ldab, T *work,
   ftnlen norm_len)
 {
   /* Table of constant values */
@@ -4198,9 +4198,9 @@ T langb(char *norm, integer *n, integer *kl, integer *ku, T *ab, integer *ldab, 
 
 //-------------------------------------------------------------------------------------------------
 
-// translated from dlacpy - LAPACK auxiliary routine (version 3.7.0) 
+// translated from dlacpy - LAPACK auxiliary routine (version 3.7.0)
 template<class T>
-int lacpy(char *uplo, integer *m, integer *n, T *a, integer *lda, T *b, integer *ldb, 
+int lacpy(char *uplo, integer *m, integer *n, T *a, integer *lda, T *b, integer *ldb,
   ftnlen uplo_len)
 {
   /* System generated locals */
@@ -4258,7 +4258,7 @@ int lacpy(char *uplo, integer *m, integer *n, T *a, integer *lda, T *b, integer 
 
 // from dlantb - LAPACK auxiliary routine (version 3.7.0)
 template<class T>
-T lantb(char *norm, char *uplo, char *diag, integer *n, integer *k, T *ab, integer *ldab, 
+T lantb(char *norm, char *uplo, char *diag, integer *n, integer *k, T *ab, integer *ldab,
   T *work, ftnlen norm_len, ftnlen uplo_len, ftnlen diag_len)
 {
   /* Table of constant values */
@@ -4587,10 +4587,10 @@ T lantb(char *norm, char *uplo, char *diag, integer *n, integer *k, T *ab, integ
 
 //-------------------------------------------------------------------------------------------------
 
-// from dlaqgb - LAPACK auxiliary routine (version 3.7.0) 
+// from dlaqgb - LAPACK auxiliary routine (version 3.7.0)
 template<class T>
 int laqgb(integer *m, integer *n, integer *kl, integer *ku,
-  T *ab, integer *ldab, T *r__, T *c__, T *rowcnd, T *colcnd, T *amax, char *equed, 
+  T *ab, integer *ldab, T *r__, T *c__, T *rowcnd, T *colcnd, T *amax, char *equed,
   ftnlen equed_len)
 {
   /* System generated locals */
@@ -4641,7 +4641,7 @@ int laqgb(integer *m, integer *n, integer *kl, integer *ku,
         i__5 = *m, i__6 = j + *kl;
         i__4 = min(i__5,i__6);
         for (i__ = max(i__2,i__3); i__ <= i__4; ++i__) {
-          ab[*ku + 1 + i__ - j + j * ab_dim1] = cj * ab[*ku + 1 + 
+          ab[*ku + 1 + i__ - j + j * ab_dim1] = cj * ab[*ku + 1 +
             i__ - j + j * ab_dim1];
           /* L10: */
         }
@@ -4661,7 +4661,7 @@ int laqgb(integer *m, integer *n, integer *kl, integer *ku,
       i__5 = *m, i__6 = j + *kl;
       i__3 = min(i__5,i__6);
       for (i__ = max(i__4,i__2); i__ <= i__3; ++i__) {
-        ab[*ku + 1 + i__ - j + j * ab_dim1] = r__[i__] * ab[*ku + 1 + 
+        ab[*ku + 1 + i__ - j + j * ab_dim1] = r__[i__] * ab[*ku + 1 +
           i__ - j + j * ab_dim1];
         /* L30: */
       }
@@ -4681,7 +4681,7 @@ int laqgb(integer *m, integer *n, integer *kl, integer *ku,
       i__5 = *m, i__6 = j + *kl;
       i__2 = min(i__5,i__6);
       for (i__ = max(i__3,i__4); i__ <= i__2; ++i__) {
-        ab[*ku + 1 + i__ - j + j * ab_dim1] = cj * r__[i__] * ab[*ku 
+        ab[*ku + 1 + i__ - j + j * ab_dim1] = cj * r__[i__] * ab[*ku
           + 1 + i__ - j + j * ab_dim1];
         /* L50: */
       }
@@ -4698,7 +4698,7 @@ int laqgb(integer *m, integer *n, integer *kl, integer *ku,
 
 //-------------------------------------------------------------------------------------------------
 
-// from dlassq - LAPACK auxiliary routine (version 3.7.0) 
+// from dlassq - LAPACK auxiliary routine (version 3.7.0)
 template<class T>
 int lassq(integer *n, T *x, integer *incx, T *scale, T *sumsq)
 {
@@ -4782,7 +4782,7 @@ int laswp(integer *n, T *a, integer *lda, integer *k1, integer *k2, integer *ipi
       ix = ix0;
       i__2 = i2;
       i__3 = inc;
-      for (i__ = i1; i__3 < 0 ? i__ >= i__2 : i__ <= i__2; i__ += i__3) 
+      for (i__ = i1; i__3 < 0 ? i__ >= i__2 : i__ <= i__2; i__ += i__3)
       {
         ip = ipiv[ix];
         if (ip != i__) {
@@ -4831,8 +4831,8 @@ int laswp(integer *n, T *a, integer *lda, integer *k1, integer *k2, integer *ipi
 
 /* from  dlatbs_ - LAPACK auxiliary routine (version 3.7.0) */
 template<class T>
-int latbs(char *uplo, char *trans, char *diag, char *normin, integer *n, integer *kd, T *ab, 
-  integer *ldab, T *x, T *scale, T *cnorm, integer *info, ftnlen uplo_len, ftnlen trans_len, 
+int latbs(char *uplo, char *trans, char *diag, char *normin, integer *n, integer *kd, T *ab,
+  integer *ldab, T *x, T *scale, T *cnorm, integer *info, ftnlen uplo_len, ftnlen trans_len,
   ftnlen diag_len, ftnlen normin_len)
 {
   // Table of constant values
@@ -4848,21 +4848,21 @@ int latbs(char *uplo, char *trans, char *diag, char *normin, integer *n, integer
   static integer i__, j;
   static T xj, rec, tjj;
   static integer jinc, jlen;
-  //extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *, 
+  //extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *,
   //  integer *);
   static T xbnd;
   static integer imax;
   static T tmax, tjjs, xmax, grow, sumj;
-  //extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+  //extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *,
   //  integer *);
   static integer maind;
   //extern logical lsame_(char *, char *, ftnlen, ftnlen);
   static T tscal, uscal;
   //extern doublereal dasum_(integer *, doublereal *, integer *);
   static integer jlast;
-  //extern /* Subroutine */ int dtbsv_(char *, char *, char *, integer *, 
-  //  integer *, doublereal *, integer *, doublereal *, integer *, 
-  //  ftnlen, ftnlen, ftnlen), daxpy_(integer *, doublereal *, 
+  //extern /* Subroutine */ int dtbsv_(char *, char *, char *, integer *,
+  //  integer *, doublereal *, integer *, doublereal *, integer *,
+  //  ftnlen, ftnlen, ftnlen), daxpy_(integer *, doublereal *,
   //    doublereal *, integer *, doublereal *, integer *);
   static logical upper;
   //extern doublereal dlamch_(char *, ftnlen);
@@ -4891,7 +4891,7 @@ int latbs(char *uplo, char *trans, char *diag, char *normin, integer *n, integer
 
   if (! upper && ! lsame(uplo, "L", (ftnlen)1, (ftnlen)1)) {
     *info = -1;
-  } else if (! notran && ! lsame(trans, "T", (ftnlen)1, (ftnlen)1) && ! 
+  } else if (! notran && ! lsame(trans, "T", (ftnlen)1, (ftnlen)1) && !
     lsame(trans, "C", (ftnlen)1, (ftnlen)1)) {
     *info = -2;
   } else if (! nounit && ! lsame(diag, "U", (ftnlen)1, (ftnlen)1)) {
@@ -5381,7 +5381,7 @@ int latbs(char *uplo, char *trans, char *diag, char *normin, integer *n, integer
             jlen = min(i__3,i__4);
             i__3 = jlen;
             for (i__ = 1; i__ <= i__3; ++i__) {
-              sumj += ab[*kd + i__ - jlen + j * ab_dim1] * 
+              sumj += ab[*kd + i__ - jlen + j * ab_dim1] *
                 uscal * x[j - jlen - 1 + i__];
               /* L120: */
             }
@@ -5391,7 +5391,7 @@ int latbs(char *uplo, char *trans, char *diag, char *normin, integer *n, integer
             jlen = min(i__3,i__4);
             i__3 = jlen;
             for (i__ = 1; i__ <= i__3; ++i__) {
-              sumj += ab[i__ + 1 + j * ab_dim1] * uscal * x[j + 
+              sumj += ab[i__ + 1 + j * ab_dim1] * uscal * x[j +
                 i__];
               /* L130: */
             }
@@ -5494,14 +5494,14 @@ int latbs(char *uplo, char *trans, char *diag, char *normin, integer *n, integer
 
 //-------------------------------------------------------------------------------------------------
 
-//  drscl - LAPACK auxiliary routine (version 3.8.0) 
-int rscl(integer *n, doublereal *sa, doublereal *sx, 
+//  drscl - LAPACK auxiliary routine (version 3.8.0)
+int rscl(integer *n, doublereal *sa, doublereal *sx,
   integer *incx)
 {
   static doublereal mul, cden;
   static logical done;
   static doublereal cnum, cden1, cnum1;
-  //extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+  //extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *,
   //  integer *), dlabad_(doublereal *, doublereal *);
   //extern doublereal dlamch_(char *, ftnlen);
   static doublereal bignum, smlnum;

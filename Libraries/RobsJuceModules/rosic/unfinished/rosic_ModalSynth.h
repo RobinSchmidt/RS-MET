@@ -2,23 +2,23 @@
 namespace rosic
 {
 
-/** A class for generating the frequency ratios of the modes for modal synthesis. In the very 
+/** A class for generating the frequency ratios of the modes for modal synthesis. In the very
 simplest case, the frequency ratios are just all he integers, giving a harmonic series. There are
 other formulas, some of which are based on musical considerations, some on physical ones and some
-ad-hoc. For the physically inspired mode frequency ratios, such as those of a rod with two free 
-ends, note that these values are computed from a theoretically idealized situation. In a practical 
-instrument, the mode frequencies may be shifted away from these idealized ones due to non-ideal or 
-even purposefully changed shapes - and there seems to be no real musical significance of the 
-*exact* values computed by some of the physically based formulas which are based on simple, 
-idealized geometries. In fact, it's the job of a good instrument maker to adjust physical 
+ad-hoc. For the physically inspired mode frequency ratios, such as those of a rod with two free
+ends, note that these values are computed from a theoretically idealized situation. In a practical
+instrument, the mode frequencies may be shifted away from these idealized ones due to non-ideal or
+even purposefully changed shapes - and there seems to be no real musical significance of the
+*exact* values computed by some of the physically based formulas which are based on simple,
+idealized geometries. In fact, it's the job of a good instrument maker to adjust physical
 parameters such as shapes in order tweak the mode frequencies from the ratios obtained from simple
-geometries into more musically meaningful ones - so it seems to be a rather pointless excersise to 
-exactly hit these exact frequency ratios of simply shaped resonators - however, if they are given 
-in a book, we may want to have code for that. They may serve as a starting point for finding more 
-musically interesting ratios that preserve some general qualities of the underlying instrument 
-classes. But the true power of modal synthesis actually lies in the fact that we have *direct* 
-access to the modal frequencies and may tune them individually to musical taste rather than 
-indirectly tweaking them in complicated interrelated ways by altering a (possibly complicated) 
+geometries into more musically meaningful ones - so it seems to be a rather pointless excersise to
+exactly hit these exact frequency ratios of simply shaped resonators - however, if they are given
+in a book, we may want to have code for that. They may serve as a starting point for finding more
+musically interesting ratios that preserve some general qualities of the underlying instrument
+classes. But the true power of modal synthesis actually lies in the fact that we have *direct*
+access to the modal frequencies and may tune them individually to musical taste rather than
+indirectly tweaking them in complicated interrelated ways by altering a (possibly complicated)
 geometry of a physical resonator. */
 
 class rsModalFrequencyGenerator
@@ -26,27 +26,27 @@ class rsModalFrequencyGenerator
 
 public:
 
-  /** Fills the array "r" of length "N" with the frequency ratios corresponding to a harmonic 
+  /** Fills the array "r" of length "N" with the frequency ratios corresponding to a harmonic
   series. */
   static void allHarmonics(double* r, int N);
 
   static void oddHarmonics(double* r, int N);
 
   /** The mode frequencies are powers of the twelfth-root-of-two, but for the lower modes, not all
-  powers are used but only those that are close to harmonic ratios. This mode tuning will play 
+  powers are used but only those that are close to harmonic ratios. This mode tuning will play
   maximally consonant in 12-TET in the sense explained here:
   http://sethares.engr.wisc.edu/consemi.html */
   static void twelveTone(double* r, int N);
 
-  /** The lower modes are the same as in twelveTone but the upper modes follow a harmonic series 
+  /** The lower modes are the same as in twelveTone but the upper modes follow a harmonic series
   instead of being yet more powers of the twelfth-root-of-two. */
   static void twelveTonePseudoHarmonic(double* r, int N);
 
-  /** Calculates the relative frequencies of the vibrational modes of a stiff rod with both ends 
+  /** Calculates the relative frequencies of the vibrational modes of a stiff rod with both ends
   free. */
   static void rodFreeFree(double* r, int N);
 
-  /** Calculates the relative frequencies of the vibrational modes of a stiff rod with one free end 
+  /** Calculates the relative frequencies of the vibrational modes of a stiff rod with one free end
   and one clamped end. */
   static void rodFreeClamped(double* r, int N);
 
@@ -55,13 +55,13 @@ public:
 
   //static void circularMembrane(double* r, int N);
 
-  /** Frequency ratios of a stiff string, such as a piano string. the parameter B controls the 
+  /** Frequency ratios of a stiff string, such as a piano string. the parameter B controls the
   amount of stiffness and hence the amount of inharmonicity. */
   static void stiffString(double* r, int N, double B);
 
 protected:
 
-  /** First 21 modes for the 12-TET based tunings. Used by twelveTone and 
+  /** First 21 modes for the 12-TET based tunings. Used by twelveTone and
   twelveTonePseudoHarmonic */
   static void twelveTone21(double* r, int N);
 
@@ -88,7 +88,7 @@ protected:
 //
 //public:
 //
-//  /** Sets our members by converting a set of user parameters for a modal filter to the 
+//  /** Sets our members by converting a set of user parameters for a modal filter to the
 //  corresponding set of algorithm parameters. */
 //  void setFromUserParameters(const rsModalUserParameters& userParams, double sampleRate);
 //
@@ -108,10 +108,10 @@ protected:
 
 //=================================================================================================
 
-/** A monophonic modal synthesizer. The parameters for the modes (their relative frequencies, 
+/** A monophonic modal synthesizer. The parameters for the modes (their relative frequencies,
 amplitudes, decay times, attack times, etc.) are set up in terms of higher level macro parameters.
 When you trigger a note, an impulse is fed inot the bank of modal filters and you hear the impulse
-response 
+response
 
 ToDo: let it process incoming audio, add noise to the excitation signal while the note is on */
 
@@ -196,7 +196,7 @@ public:
   void setLevel(       double newLevel)        { level      = newLevel; }
 
   /** Sets the key tracking of overall level. The unit is +-dB at extreme keys with respect to the
-  neutral reference key 64. When you set LevelByKey to 10 dB, the level will be unchanged, if the 
+  neutral reference key 64. When you set LevelByKey to 10 dB, the level will be unchanged, if the
   key is 64, 10 dB louder when the key is 127 and 10 dB quieter when the key is 1. */
   void setLevelByKey(  double newLevelByKey)   { levelByKey = newLevelByKey; }
 
@@ -205,8 +205,8 @@ public:
 
   // insert Tune/Key/Vel
 
-  /** The slope of the magnitude spectrum in dB/oct. Actually, due to the different attack and 
-  decay-rates, this slope changes over time - this here sets the reference slope that applies 
+  /** The slope of the magnitude spectrum in dB/oct. Actually, due to the different attack and
+  decay-rates, this slope changes over time - this here sets the reference slope that applies
   when all attack and decay times are equal for each mode. */
   void setAmpSlope(     double newAmpSlope)      { ampSlope      = newAmpSlope; }
 
@@ -220,13 +220,13 @@ public:
   void setAttack(       double newAttack)        { attack        = newAttack; }
 
   /** Dependency of the attack time on the modal frequency ratio in percent. At 100%, it means that
-  a mode that has twice the frequency of the fundamental will also have twice the attack time, at 
-  -100% it will have half the attack time (typically you will want to use negative values - higher 
+  a mode that has twice the frequency of the fundamental will also have twice the attack time, at
+  -100% it will have half the attack time (typically you will want to use negative values - higher
   frequency modes develope faster in time). */
   void setAttackByRatio(double newAttackByRatio) { attackByRatio = 0.01*newAttackByRatio; }
 
   /** Key tracking of the attack time in percent. 100% means, that a note that is an octave above
-  the reference key 64 will get twice the attack time. Similarly to setAttackByRatio, you will 
+  the reference key 64 will get twice the attack time. Similarly to setAttackByRatio, you will
   typically want negative values. */
   void setAttackByKey(  double newAttackByKey)   { attackByKey   = 0.01*newAttackByKey; }
 
@@ -305,7 +305,7 @@ public:
     //if(noteAge > decayLength)
     //  return;
     // todo: we should actually somehow reset the note-length whenever we receive a new excitation
-    // but then "noteAge" is the wrong name...but maybe we don't need this cutting off of notes 
+    // but then "noteAge" is the wrong name...but maybe we don't need this cutting off of notes
     // anyway - when we use continuous excitation signals, it doesn't make sense anymore anyway
 
 
@@ -326,7 +326,7 @@ public:
     // use adjustable factor
   }
 
-  /** A note-on function where key and vel are passed as floating point numbers because in the 
+  /** A note-on function where key and vel are passed as floating point numbers because in the
   context of experimenting, it may be convenient to allow arbitrary/continuous frequencies. */
   void noteOn(double key, double velocity);
 
@@ -408,10 +408,12 @@ protected:
   int decayLength = INT_MAX;
   double sampleRate = 44100;
 
-  std::atomic_bool freqRatiosAreReady = false;
+  std::atomic_bool freqRatiosAreReady;
+  //std::atomic_bool freqRatiosAreReady = false; // doesn't compile on gcc
+  //std::atomic_bool freqRatiosAreReady(false);
 };
 
-// let the user define the modal parameters at various keys and for each key that is defined, have 
+// let the user define the modal parameters at various keys and for each key that is defined, have
 // a high and a low velocity setting. on note-on, these datapoints are interpolated for the current
 // note and velocity setting. if the incoming note is outside the range of defined key, use linear
 // extrapolation

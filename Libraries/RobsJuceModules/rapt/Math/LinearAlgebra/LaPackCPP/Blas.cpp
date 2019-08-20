@@ -1,6 +1,12 @@
 
 namespace LaPackCPP {
 
+inline long min(long x, long y) {  return std::min(x, y); }
+inline long max(long x, long y) {  return std::max(x, y); }
+
+inline double min(double x, double y) {  return std::min(x, y); }
+inline double max(double x, double y) {  return std::max(x, y); }
+
 //=================================================================================================
 // BLAS level 1 routines
 
@@ -8,7 +14,7 @@ namespace LaPackCPP {
 
 //-------------------------------------------------------------------------------------------------
 
-// from dasum - Reference BLAS level1 routine (version 3.8.0) 
+// from dasum - Reference BLAS level1 routine (version 3.8.0)
 template<class T>
 T asum(integer *n, T *dx, integer *incx)
 {
@@ -48,8 +54,8 @@ T asum(integer *n, T *dx, integer *incx)
     i__1 = *n;
     for (i__ = mp1; i__ <= i__1; i__ += 6) {
       dtemp = dtemp + (d__1 = dx[i__], abs(d__1)) + (d__2 = dx[i__ + 1],
-        abs(d__2)) + (d__3 = dx[i__ + 2], abs(d__3)) + (d__4 = 
-          dx[i__ + 3], abs(d__4)) + (d__5 = dx[i__ + 4], abs(d__5)) 
+        abs(d__2)) + (d__3 = dx[i__ + 2], abs(d__3)) + (d__4 =
+          dx[i__ + 3], abs(d__4)) + (d__5 = dx[i__ + 4], abs(d__5))
         + (d__6 = dx[i__ + 5], abs(d__6));
     }
   } else {
@@ -137,24 +143,24 @@ int axpy(long int* n, T *da, T *dx, long int *incx, T *dy, long int *incy)
 template<class T>
 int copy(integer *n, T *dx, integer *incx, T *dy, integer *incy)
 {
-  // System generated locals 
+  // System generated locals
   integer i__1;
 
-  // Local variables 
+  // Local variables
   static integer i__, m, ix, iy, mp1;
 
-  // Parameter adjustments 
+  // Parameter adjustments
   --dy;
   --dx;
 
-  // Function Body 
+  // Function Body
   if (*n <= 0) {
     return 0;
   }
   if (*incx == 1 && *incy == 1) {
 
     // code for both increments equal to 1
-    // clean-up loop 
+    // clean-up loop
 
     m = *n % 7;
     if (m != 0) {
@@ -180,7 +186,7 @@ int copy(integer *n, T *dx, integer *incx, T *dy, integer *incy)
   } else {
 
     // code for unequal increments or equal increments
-    // not equal to 1 
+    // not equal to 1
 
     ix = 1;
     iy = 1;
@@ -203,7 +209,7 @@ int copy(integer *n, T *dx, integer *incx, T *dy, integer *incy)
 
 //-------------------------------------------------------------------------------------------------
 
-// ddot -- Reference BLAS level1 routine (version 3.8.0) -- 
+// ddot -- Reference BLAS level1 routine (version 3.8.0) --
 template<class T>
 T dot(integer *n, T *dx, integer *incx, T *dy, integer *incy)
 {
@@ -246,8 +252,8 @@ T dot(integer *n, T *dx, integer *incx, T *dy, integer *incy)
     mp1 = m + 1;
     i__1 = *n;
     for (i__ = mp1; i__ <= i__1; i__ += 5) {
-      dtemp = dtemp + dx[i__] * dy[i__] + dx[i__ + 1] * dy[i__ + 1] + 
-        dx[i__ + 2] * dy[i__ + 2] + dx[i__ + 3] * dy[i__ + 3] + 
+      dtemp = dtemp + dx[i__] * dy[i__] + dx[i__ + 1] * dy[i__ + 1] +
+        dx[i__ + 2] * dy[i__ + 2] + dx[i__ + 3] * dy[i__ + 3] +
         dx[i__ + 4] * dy[i__ + 4];
     }
   } else {
@@ -395,25 +401,25 @@ int scal(integer *n, T *da, T *dx, integer *incx)
 template<class T>
 int swap(integer *n, T *dx, integer *incx, T *dy, integer *incy)
 {
-  // System generated locals 
+  // System generated locals
   integer i__1;
 
-  // Local variables 
+  // Local variables
   static integer i__, m, ix, iy, mp1;
   static T dtemp;
 
-  // Parameter adjustments 
+  // Parameter adjustments
   --dy;
   --dx;
 
-  // Function Body 
+  // Function Body
   if (*n <= 0) {
     return 0;
   }
   if (*incx == 1 && *incy == 1) {
 
     // code for both increments equal to 1
-    // clean-up loop 
+    // clean-up loop
     m = *n % 3;
     if (m != 0) {
       i__1 = m;
@@ -469,7 +475,7 @@ int swap(integer *n, T *dx, integer *incx, T *dy, integer *incy)
 
 // translated from dger, Reference BLAS level2 routine (version 3.7.0)
 template<class T>
-int ger(integer *m, integer *n, T *alpha, T *x, integer *incx, T *y, integer *incy, T *a, 
+int ger(integer *m, integer *n, T *alpha, T *x, integer *incx, T *y, integer *incy, T *a,
   integer *lda)
 {
   // System generated locals
@@ -511,7 +517,7 @@ int ger(integer *m, integer *n, T *alpha, T *x, integer *incx, T *y, integer *in
     return 0;
   }
 
-  // Start the operations. In this version the elements of A are 
+  // Start the operations. In this version the elements of A are
   // accessed sequentially with one pass through A.
   if (*incy > 0) {
     jy = 1;
@@ -526,7 +532,7 @@ int ger(integer *m, integer *n, T *alpha, T *x, integer *incx, T *y, integer *in
         i__2 = *m;
         for (i__ = 1; i__ <= i__2; ++i__) {
           a[i__ + j * a_dim1] += x[i__] * temp;
-          // L10: 
+          // L10:
         }
       }
       jy += *incy;
@@ -547,17 +553,17 @@ int ger(integer *m, integer *n, T *alpha, T *x, integer *incx, T *y, integer *in
         for (i__ = 1; i__ <= i__2; ++i__) {
           a[i__ + j * a_dim1] += x[ix] * temp;
           ix += *incx;
-          // L30: 
+          // L30:
         }
       }
       jy += *incy;
-      // L40: 
+      // L40:
     }
   }
 
   return 0;
 
-  // End of DGER 
+  // End of DGER
 
 } // ger
 
@@ -565,7 +571,7 @@ int ger(integer *m, integer *n, T *alpha, T *x, integer *incx, T *y, integer *in
 
 // translated from dgbmv, Reference BLAS level2 routine (version 3.7.0)
 template<class T>
-int gbmv(char *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha, T *a, 
+int gbmv(char *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha, T *a,
   integer *lda, T *x, integer *incx, T *beta, T *y, integer *incy, ftnlen trans_len)
 {
   // System generated locals
@@ -616,7 +622,7 @@ int gbmv(char *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha
     return 0;
   }
 
-  // Set  LENX  and  LENY, the lengths of the vectors x and y, and set 
+  // Set  LENX  and  LENY, the lengths of the vectors x and y, and set
   // up the start points in  X  and  Y.
   if (lsame(trans, "N", (ftnlen)1, (ftnlen)1)) {
     lenx = *n;
@@ -636,8 +642,8 @@ int gbmv(char *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha
     ky = 1 - (leny - 1) * *incy;
   }
 
-  // Start the operations. In this version the elements of A are 
-  // accessed sequentially with one pass through the band part of A. 
+  // Start the operations. In this version the elements of A are
+  // accessed sequentially with one pass through the band part of A.
   // First form  y := beta*y.
 
   if (*beta != 1.) {
@@ -646,13 +652,13 @@ int gbmv(char *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha
         i__1 = leny;
         for (i__ = 1; i__ <= i__1; ++i__) {
           y[i__] = 0.;
-          // L10: 
+          // L10:
         }
       } else {
         i__1 = leny;
         for (i__ = 1; i__ <= i__1; ++i__) {
           y[i__] = *beta * y[i__];
-          // L20: 
+          // L20:
         }
       }
     } else {
@@ -662,14 +668,14 @@ int gbmv(char *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha
         for (i__ = 1; i__ <= i__1; ++i__) {
           y[iy] = 0.;
           iy += *incy;
-          // L30: 
+          // L30:
         }
       } else {
         i__1 = leny;
         for (i__ = 1; i__ <= i__1; ++i__) {
           y[iy] = *beta * y[iy];
           iy += *incy;
-          // L40: 
+          // L40:
         }
       }
     }
@@ -687,17 +693,17 @@ int gbmv(char *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha
       for (j = 1; j <= i__1; ++j) {
         temp = *alpha * x[jx];
         k = kup1 - j;
-        // Computing MAX 
+        // Computing MAX
         i__2 = 1, i__3 = j - *ku;
-        // Computing MIN 
+        // Computing MIN
         i__5 = *m, i__6 = j + *kl;
         i__4 = min(i__5,i__6);
         for (i__ = max(i__2,i__3); i__ <= i__4; ++i__) {
           y[i__] += temp * a[k + i__ + j * a_dim1];
-          // L50: 
+          // L50:
         }
         jx += *incx;
-        // L60: 
+        // L60:
       }
     } else {
       i__1 = *n;
@@ -705,21 +711,21 @@ int gbmv(char *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha
         temp = *alpha * x[jx];
         iy = ky;
         k = kup1 - j;
-        // Computing MAX 
+        // Computing MAX
         i__4 = 1, i__2 = j - *ku;
-        // Computing MIN 
+        // Computing MIN
         i__5 = *m, i__6 = j + *kl;
         i__3 = min(i__5,i__6);
         for (i__ = max(i__4,i__2); i__ <= i__3; ++i__) {
           y[iy] += temp * a[k + i__ + j * a_dim1];
           iy += *incy;
-          // L70: 
+          // L70:
         }
         jx += *incx;
         if (j > *ku) {
           ky += *incy;
         }
-        // L80: 
+        // L80:
       }
     }
   } else {
@@ -731,9 +737,9 @@ int gbmv(char *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha
       for (j = 1; j <= i__1; ++j) {
         temp = 0.;
         k = kup1 - j;
-        // Computing MAX 
+        // Computing MAX
         i__3 = 1, i__4 = j - *ku;
-        // Computing MIN 
+        // Computing MIN
         i__5 = *m, i__6 = j + *kl;
         i__2 = min(i__5,i__6);
         for (i__ = max(i__3,i__4); i__ <= i__2; ++i__) {
@@ -742,7 +748,7 @@ int gbmv(char *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha
         }
         y[jy] += *alpha * temp;
         jy += *incy;
-        // L100: 
+        // L100:
       }
     } else {
       i__1 = *n;
@@ -750,9 +756,9 @@ int gbmv(char *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha
         temp = 0.;
         ix = kx;
         k = kup1 - j;
-        // Computing MAX 
+        // Computing MAX
         i__2 = 1, i__3 = j - *ku;
-        // Computing MIN 
+        // Computing MIN
         i__5 = *m, i__6 = j + *kl;
         i__4 = min(i__5,i__6);
         for (i__ = max(i__2,i__3); i__ <= i__4; ++i__) {
@@ -765,7 +771,7 @@ int gbmv(char *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha
         if (j > *ku) {
           kx += *incx;
         }
-        // L120: 
+        // L120:
       }
     }
   }
@@ -778,7 +784,7 @@ int gbmv(char *trans, integer *m, integer *n, integer *kl, integer *ku, T *alpha
 
 // translated from dgemv, Reference BLAS level2 routine (version 3.7.0)
 template<class T>
-int gemv(char *trans, integer *m, integer *n, T *alpha, T *a, integer *lda, T *x, integer *incx, 
+int gemv(char *trans, integer *m, integer *n, T *alpha, T *a, integer *lda, T *x, integer *incx,
   T *beta, T *y, integer *incy, ftnlen trans_len)
 {
   /* System generated locals */
@@ -969,7 +975,7 @@ int gemv(char *trans, integer *m, integer *n, T *alpha, T *a, integer *lda, T *x
 
 // translated from dtbsv, Reference BLAS level2 routine (version 3.7.0)
 template<class T>
-int tbsv(char *uplo, char *trans, char *diag, integer *n, integer *k, T *a, integer *lda, T *x, 
+int tbsv(char *uplo, char *trans, char *diag, integer *n, integer *k, T *a, integer *lda, T *x,
   integer *incx, ftnlen uplo_len, ftnlen trans_len, ftnlen diag_len)
 {
   /* System generated locals */
@@ -994,11 +1000,11 @@ int tbsv(char *uplo, char *trans, char *diag, integer *n, integer *k, T *a, inte
   if (! lsame(uplo, "U", (ftnlen)1, (ftnlen)1) && ! lsame(uplo, "L", (
     ftnlen)1, (ftnlen)1)) {
     info = 1;
-  } else if (! lsame(trans, "N", (ftnlen)1, (ftnlen)1) && ! lsame(trans, 
+  } else if (! lsame(trans, "N", (ftnlen)1, (ftnlen)1) && ! lsame(trans,
     "T", (ftnlen)1, (ftnlen)1) && ! lsame(trans, "C", (ftnlen)1, (
       ftnlen)1)) {
     info = 2;
-  } else if (! lsame(diag, "U", (ftnlen)1, (ftnlen)1) && ! lsame(diag, 
+  } else if (! lsame(diag, "U", (ftnlen)1, (ftnlen)1) && ! lsame(diag,
     "N", (ftnlen)1, (ftnlen)1)) {
     info = 3;
   } else if (*n < 0) {
@@ -1238,12 +1244,12 @@ int tbsv(char *uplo, char *trans, char *diag, integer *n, integer *k, T *a, inte
 
 // translated from dgemm, Reference BLAS level3 routine (version 3.7.0)
 template<class T>
-int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alpha, T *a, 
-  integer *lda, T *b, integer *ldb, T *beta, T *c__, 
+int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alpha, T *a,
+  integer *lda, T *b, integer *ldb, T *beta, T *c__,
   integer *ldc, ftnlen transa_len, ftnlen transb_len)
 {
   // System generated locals
-  integer a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2, 
+  integer a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2,
     i__3;
 
   // Local variables
@@ -1255,9 +1261,9 @@ int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alph
   static integer nrowa, nrowb;
   extern int xerbla(char *, integer *, ftnlen);
 
-  // Set  NOTA  and  NOTB  as  true if  A  and  B  respectively are not 
-  // transposed and set  NROWA, NCOLA and  NROWB  as the number of rows 
-  // and  columns of  A  and the  number of  rows  of  B  respectively. 
+  // Set  NOTA  and  NOTB  as  true if  A  and  B  respectively are not
+  // transposed and set  NROWA, NCOLA and  NROWB  as the number of rows
+  // and  columns of  A  and the  number of  rows  of  B  respectively.
 
   // Parameter adjustments
   a_dim1 = *lda;
@@ -1291,7 +1297,7 @@ int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alph
   if (! nota && ! lsame(transa, "C", (ftnlen)1, (ftnlen)1) && ! lsame(
     transa, "T", (ftnlen)1, (ftnlen)1)) {
     info = 1;
-  } else if (! notb && ! lsame(transb, "C", (ftnlen)1, (ftnlen)1) && ! 
+  } else if (! notb && ! lsame(transb, "C", (ftnlen)1, (ftnlen)1) && !
     lsame(transb, "T", (ftnlen)1, (ftnlen)1)) {
     info = 2;
   } else if (*m < 0) {
@@ -1326,9 +1332,9 @@ int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alph
         i__2 = *m;
         for (i__ = 1; i__ <= i__2; ++i__) {
           c__[i__ + j * c_dim1] = 0.;
-          // L10: 
+          // L10:
         }
-        // L20: 
+        // L20:
       }
     } else {
       i__1 = *n;
@@ -1336,9 +1342,9 @@ int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alph
         i__2 = *m;
         for (i__ = 1; i__ <= i__2; ++i__) {
           c__[i__ + j * c_dim1] = *beta * c__[i__ + j * c_dim1];
-          // L30: 
+          // L30:
         }
-        // L40: 
+        // L40:
       }
     }
     return 0;
@@ -1349,7 +1355,7 @@ int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alph
   if (notb) {
     if (nota) {
 
-      // Form  C := alpha*A*B + beta*C. 
+      // Form  C := alpha*A*B + beta*C.
 
       i__1 = *n;
       for (j = 1; j <= i__1; ++j) {
@@ -1357,13 +1363,13 @@ int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alph
           i__2 = *m;
           for (i__ = 1; i__ <= i__2; ++i__) {
             c__[i__ + j * c_dim1] = 0.;
-            // L50: 
+            // L50:
           }
         } else if (*beta != 1.) {
           i__2 = *m;
           for (i__ = 1; i__ <= i__2; ++i__) {
             c__[i__ + j * c_dim1] = *beta * c__[i__ + j * c_dim1];
-            // L60: 
+            // L60:
           }
         }
         i__2 = *k;
@@ -1372,11 +1378,11 @@ int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alph
           i__3 = *m;
           for (i__ = 1; i__ <= i__3; ++i__) {
             c__[i__ + j * c_dim1] += temp * a[i__ + l * a_dim1];
-            // L70: 
+            // L70:
           }
-          // L80: 
+          // L80:
         }
-        // L90: 
+        // L90:
       }
     } else {
 
@@ -1390,7 +1396,7 @@ int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alph
           i__3 = *k;
           for (l = 1; l <= i__3; ++l) {
             temp += a[l + i__ * a_dim1] * b[l + j * b_dim1];
-            // L100: 
+            // L100:
           }
           if (*beta == 0.) {
             c__[i__ + j * c_dim1] = *alpha * temp;
@@ -1398,15 +1404,15 @@ int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alph
             c__[i__ + j * c_dim1] = *alpha * temp + *beta * c__[
               i__ + j * c_dim1];
           }
-          // L110: 
+          // L110:
         }
-        // L120: 
+        // L120:
       }
     }
   } else {
     if (nota) {
 
-      // Form  C := alpha*A*B**T + beta*C 
+      // Form  C := alpha*A*B**T + beta*C
 
       i__1 = *n;
       for (j = 1; j <= i__1; ++j) {
@@ -1414,13 +1420,13 @@ int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alph
           i__2 = *m;
           for (i__ = 1; i__ <= i__2; ++i__) {
             c__[i__ + j * c_dim1] = 0.;
-            // L130: 
+            // L130:
           }
         } else if (*beta != 1.) {
           i__2 = *m;
           for (i__ = 1; i__ <= i__2; ++i__) {
             c__[i__ + j * c_dim1] = *beta * c__[i__ + j * c_dim1];
-            // L140: 
+            // L140:
           }
         }
         i__2 = *k;
@@ -1429,11 +1435,11 @@ int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alph
           i__3 = *m;
           for (i__ = 1; i__ <= i__3; ++i__) {
             c__[i__ + j * c_dim1] += temp * a[i__ + l * a_dim1];
-            // L150: 
+            // L150:
           }
-          // L160: 
+          // L160:
         }
-        // L170: 
+        // L170:
       }
     } else {
 
@@ -1447,7 +1453,7 @@ int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alph
           i__3 = *k;
           for (l = 1; l <= i__3; ++l) {
             temp += a[l + i__ * a_dim1] * b[j + l * b_dim1];
-            // L180: 
+            // L180:
           }
           if (*beta == 0.) {
             c__[i__ + j * c_dim1] = *alpha * temp;
@@ -1455,9 +1461,9 @@ int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alph
             c__[i__ + j * c_dim1] = *alpha * temp + *beta * c__[
               i__ + j * c_dim1];
           }
-          // L190: 
+          // L190:
         }
-        // L200: 
+        // L200:
       }
     }
   }
@@ -1470,11 +1476,11 @@ int gemm(char *transa, char *transb, integer *m, integer *n, integer *k, T *alph
 
 // translated from dtrsm, Reference BLAS level3 routine (version 3.7.0) */
 template<class T>
-int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *n, T *alpha, 
-  T *a, integer * lda, T *b, integer *ldb, ftnlen side_len, ftnlen uplo_len, ftnlen transa_len, 
+int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *n, T *alpha,
+  T *a, integer * lda, T *b, integer *ldb, ftnlen side_len, ftnlen uplo_len, ftnlen transa_len,
   ftnlen diag_len)
 {
-  // System generated locals 
+  // System generated locals
   integer a_dim1, a_offset, b_dim1, b_offset, i__1, i__2, i__3;
 
   // Local variables
@@ -1495,7 +1501,7 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
   b_offset = 1 + b_dim1;
   b -= b_offset;
 
-  // Function Body 
+  // Function Body
   lside = lsame(side, "L", (ftnlen)1, (ftnlen)1);
   if (lside) {
     nrowa = *m;
@@ -1514,7 +1520,7 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
     "T", (ftnlen)1, (ftnlen)1) && ! lsame(transa, "C", (ftnlen)1, (
       ftnlen)1)) {
     info = 3;
-  } else if (! lsame(diag, "U", (ftnlen)1, (ftnlen)1) && ! lsame(diag, 
+  } else if (! lsame(diag, "U", (ftnlen)1, (ftnlen)1) && ! lsame(diag,
     "N", (ftnlen)1, (ftnlen)1)) {
     info = 4;
   } else if (*m < 0) {
@@ -1545,9 +1551,9 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
       i__2 = *m;
       for (i__ = 1; i__ <= i__2; ++i__) {
         b[i__ + j * b_dim1] = 0.;
-        // L10: 
+        // L10:
       }
-      // L20: 
+      // L20:
     }
     return 0;
   }
@@ -1579,7 +1585,7 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
               for (i__ = 1; i__ <= i__2; ++i__) {
                 b[i__ + j * b_dim1] -= b[k + j * b_dim1] * a[
                   i__ + k * a_dim1];
-                // L40: 
+                // L40:
               }
             }
             // L50:
@@ -1594,7 +1600,7 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
             for (i__ = 1; i__ <= i__2; ++i__) {
               b[i__ + j * b_dim1] = *alpha * b[i__ + j * b_dim1]
                 ;
-              // L70: 
+              // L70:
             }
           }
           i__2 = *m;
@@ -1607,12 +1613,12 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
               for (i__ = k + 1; i__ <= i__3; ++i__) {
                 b[i__ + j * b_dim1] -= b[k + j * b_dim1] * a[
                   i__ + k * a_dim1];
-                // L80: 
+                // L80:
               }
             }
-            // L90: 
+            // L90:
           }
-          // L100: 
+          // L100:
         }
       }
     } else {
@@ -1628,15 +1634,15 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
             i__3 = i__ - 1;
             for (k = 1; k <= i__3; ++k) {
               temp -= a[k + i__ * a_dim1] * b[k + j * b_dim1];
-              // L110: 
+              // L110:
             }
             if (nounit) {
               temp /= a[i__ + i__ * a_dim1];
             }
             b[i__ + j * b_dim1] = temp;
-            // L120: 
+            // L120:
           }
-          // L130: 
+          // L130:
         }
       } else {
         i__1 = *n;
@@ -1646,22 +1652,22 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
             i__2 = *m;
             for (k = i__ + 1; k <= i__2; ++k) {
               temp -= a[k + i__ * a_dim1] * b[k + j * b_dim1];
-              // L140: 
+              // L140:
             }
             if (nounit) {
               temp /= a[i__ + i__ * a_dim1];
             }
             b[i__ + j * b_dim1] = temp;
-            // L150: 
+            // L150:
           }
-          // L160: 
+          // L160:
         }
       }
     }
   } else {
     if (lsame(transa, "N", (ftnlen)1, (ftnlen)1)) {
 
-      // Form  B := alpha*B*inv( A ). 
+      // Form  B := alpha*B*inv( A ).
 
       if (upper) {
         i__1 = *n;
@@ -1671,7 +1677,7 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
             for (i__ = 1; i__ <= i__2; ++i__) {
               b[i__ + j * b_dim1] = *alpha * b[i__ + j * b_dim1]
                 ;
-              // L170: 
+              // L170:
             }
           }
           i__2 = j - 1;
@@ -1681,20 +1687,20 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
               for (i__ = 1; i__ <= i__3; ++i__) {
                 b[i__ + j * b_dim1] -= a[k + j * a_dim1] * b[
                   i__ + k * b_dim1];
-                // L180: 
+                // L180:
               }
             }
-            // L190: 
+            // L190:
           }
           if (nounit) {
             temp = 1. / a[j + j * a_dim1];
             i__2 = *m;
             for (i__ = 1; i__ <= i__2; ++i__) {
               b[i__ + j * b_dim1] = temp * b[i__ + j * b_dim1];
-              // L200: 
+              // L200:
             }
           }
-          // L210: 
+          // L210:
         }
       } else {
         for (j = *n; j >= 1; --j) {
@@ -1703,7 +1709,7 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
             for (i__ = 1; i__ <= i__1; ++i__) {
               b[i__ + j * b_dim1] = *alpha * b[i__ + j * b_dim1]
                 ;
-              // L220: 
+              // L220:
             }
           }
           i__1 = *n;
@@ -1713,17 +1719,17 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
               for (i__ = 1; i__ <= i__2; ++i__) {
                 b[i__ + j * b_dim1] -= a[k + j * a_dim1] * b[
                   i__ + k * b_dim1];
-                // L230: 
+                // L230:
               }
             }
-            // L240: 
+            // L240:
           }
           if (nounit) {
             temp = 1. / a[j + j * a_dim1];
             i__1 = *m;
             for (i__ = 1; i__ <= i__1; ++i__) {
               b[i__ + j * b_dim1] = temp * b[i__ + j * b_dim1];
-              // L250: 
+              // L250:
             }
           }
           // L260:
@@ -1740,7 +1746,7 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
             i__1 = *m;
             for (i__ = 1; i__ <= i__1; ++i__) {
               b[i__ + k * b_dim1] = temp * b[i__ + k * b_dim1];
-              // L270: 
+              // L270:
             }
           }
           i__1 = k - 1;
@@ -1749,22 +1755,22 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
               temp = a[j + k * a_dim1];
               i__2 = *m;
               for (i__ = 1; i__ <= i__2; ++i__) {
-                b[i__ + j * b_dim1] -= temp * b[i__ + k * 
+                b[i__ + j * b_dim1] -= temp * b[i__ + k *
                   b_dim1];
-                // L280: 
+                // L280:
               }
             }
-            // L290: 
+            // L290:
           }
           if (*alpha != 1.) {
             i__1 = *m;
             for (i__ = 1; i__ <= i__1; ++i__) {
               b[i__ + k * b_dim1] = *alpha * b[i__ + k * b_dim1]
                 ;
-              // L300: 
+              // L300:
             }
           }
-          // L310: 
+          // L310:
         }
       } else {
         i__1 = *n;
@@ -1783,22 +1789,22 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
               temp = a[j + k * a_dim1];
               i__3 = *m;
               for (i__ = 1; i__ <= i__3; ++i__) {
-                b[i__ + j * b_dim1] -= temp * b[i__ + k * 
+                b[i__ + j * b_dim1] -= temp * b[i__ + k *
                   b_dim1];
-                // L330: 
+                // L330:
               }
             }
-            // L340: 
+            // L340:
           }
           if (*alpha != 1.) {
             i__2 = *m;
             for (i__ = 1; i__ <= i__2; ++i__) {
               b[i__ + k * b_dim1] = *alpha * b[i__ + k * b_dim1]
                 ;
-              // L350: 
+              // L350:
             }
           }
-          // L360: 
+          // L360:
         }
       }
     }
@@ -1806,6 +1812,6 @@ int trsm(char *side, char *uplo, char *transa, char *diag, integer *m, integer *
 
   return 0;
 
-} // trsm 
+} // trsm
 
 }

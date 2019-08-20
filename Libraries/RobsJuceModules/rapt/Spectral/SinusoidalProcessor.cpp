@@ -30,7 +30,7 @@ std::vector<T> rsSinusoidalProcessor<T>::unwrapPhase(const std::vector<T>& t,
       for(size_t k = m+1; k < M; k++) // re-adjustment at m should also affect m+1, m+2, ...
         up[k] += d;
   }
-  // maybe provide an alternative implementation that uses the measured (unwrapped) phases y and 
+  // maybe provide an alternative implementation that uses the measured (unwrapped) phases y and
   // the measured instantaneous frequencies as y'' in a Hermite interpolation scheme (this is how
   // it's described in the literature). to unwrap the phase of datapoint m, take the phase of m-1
   // and add the integral over t[m-1]..t[m] of the average frequency (f[m-1]+f[m])/2 and choose
@@ -49,7 +49,7 @@ void rsMinSqrDiffWithGivnSum(T* x, T* s, int N)
 {
   T *w = nullptr;
   rsMinSqrDifFixSum(x, N, s, w);
-  // todo: when N is even (or odd? look at experiment) create a weight-vector with values 
+  // todo: when N is even (or odd? look at experiment) create a weight-vector with values
   // of 1/2 for the first and last value (and 1 everywhere else);
 
 
@@ -65,15 +65,15 @@ void rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(rsSinusoidalPartial
   std::vector<T> p = partial.getPhaseArray();
   int M = (int) t.size(), m;
   RAPT::rsAssert(M >= 2);  // valid partials should have at least two datapoints
-  // for optimization, we could do away with obtaining these arrays, working on them and then 
-  // writing the frequency back. Instead, we could operate directly on the datapoints- 
+  // for optimization, we could do away with obtaining these arrays, working on them and then
+  // writing the frequency back. Instead, we could operate directly on the datapoints-
   // but the algorithm is clearer that way - maybe optimize later
 
   // wrap the phases from -pi..+pi to 0..2pi - it's more convenient to deal with this interval and
   // we don't change the original data anyway, we just use it here internally for our computations:
   for(m = 0; m < M; m++)
     p[m] = RAPT::rsWrapToInterval(p[m], 0, 2*PI);
-  //plotVector(p); 
+  //plotVector(p);
 
   std::vector<T> a(M-1);   // average frequencies (optimized code could avoid this array, too)
   for(m = 0; m < M-1; m++) {
@@ -89,7 +89,7 @@ void rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(rsSinusoidalPartial
 
     T dq = q - qp;  // |dq| should be (much) less than pi - otherwise the hopSize is too small for
     // correctly estimating frequencies from phase-differences - maybe return the maximum dp as
-    // feedback and/or maybe have a function getMaximumPhaseDeviation (where the deviation is 
+    // feedback and/or maybe have a function getMaximumPhaseDeviation (where the deviation is
     // measured with respect to integrated frequency)
 
     // at m=31 and m = 32, we get a large dq (around 1.7) - this leads to wildly alternating new
@@ -101,10 +101,10 @@ void rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(rsSinusoidalPartial
     RAPT::rsAssert(rsArePhasesConsistent(q, p[m+1])); // a phase q that is consistent with p[m+1]
   }
 
-  //rsPlotVector(a); 
+  //rsPlotVector(a);
 
   // OK - we have our new desired average frequencies for the segments - from these, we now compute
-  // the new frequencies at the datapoints (we are actually one equation short of determining all 
+  // the new frequencies at the datapoints (we are actually one equation short of determining all
   // frequencies, so we make the choice that the last two datapoint should have the same frequency
   // as our additional equation/condition):
   f[M-1] = f[M-2] = a[M-2];
@@ -113,21 +113,21 @@ void rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(rsSinusoidalPartial
     f[m] = 2*a[m] - f[m+1];
   // maybe we should have a switch, if we run the loop over the datapoints forward or backward - in
   // the backward case, we set the two last frequencies equal and in the forward case the two first
-  // frequencies...can a more symmetric way be found and one that doens't enforce two equal 
-  // frequencies - think about, how we could provide the "missing equation" in other ways - maybe 
+  // frequencies...can a more symmetric way be found and one that doens't enforce two equal
+  // frequencies - think about, how we could provide the "missing equation" in other ways - maybe
   // an equation that involves all datapoints on the same footing? maybe a condition that minimizes
   // the tendency to produce alternating corrections in successive datapoints? ...maybe keep the
-  // old freqs data available, compute the new freqs, obtain their difference, 
+  // old freqs data available, compute the new freqs, obtain their difference,
   // lowpass this difference, apply the lowpassed corrections to the old data
   // or: use the f array as computed above as preliminary and then apply an "equalize" function
-  // that looks at a pair of neighbours at a time and adjusts their frequencies in a way to make 
-  // them as close to equal as possible while maintaining the phase constraint, choose first 
+  // that looks at a pair of neighbours at a time and adjusts their frequencies in a way to make
+  // them as close to equal as possible while maintaining the phase constraint, choose first
   // pairs (0,1),(2,3),(4,5) etc. and then do it again with (1,2),(3,4),(5,6) to couple 1 to 2, too
   // etc maybe iterate until it converges to something
-  // see the textfile MinDiffGivenSum.txt - the additional equation should be to minimize the 
-  // sum-of-squared-differences - this leads to a constrained optimization problem soluble via 
+  // see the textfile MinDiffGivenSum.txt - the additional equation should be to minimize the
+  // sum-of-squared-differences - this leads to a constrained optimization problem soluble via
   // Lagrange mulitpliers
-  
+
   // preliminary:
   std::vector<T> sum = 2.0 * a;
   rsMinSqrDiffWithGivnSum(&f[0], &sum[0], M);
@@ -136,7 +136,7 @@ void rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(rsSinusoidalPartial
   for(m = 0; m < M; m++)
     partial.setFrequency(m, f[m]);
 
-  // this actually increases the freq-estimate bias in sinusoidalAnalysis2 - do i have a 
+  // this actually increases the freq-estimate bias in sinusoidalAnalysis2 - do i have a
   // theory bug? the implementation seems good..the assert doesn't trigger - or maybe the hopsize
   // is indeed too small and we get an adjustment by more than pi?
 }
@@ -184,7 +184,7 @@ void rsSinusoidalProcessor<T>::refineFreqsViaPhaseDerivative(rsSinusoidalPartial
   rsNumericDerivative(&t[0], &pu[0], &fr[0], M);  // derivative of unwrapped phase gives omega
   fr = T(1/(2*PI)) * fr;                          // convert from omega to Hertz
   //rsPlotVectors(f, fr);
-  
+
   // write refined frequencies back into partial:
   for(int m = 0; m < M; m++)
     partial.setFrequency(m, fr[m]);
@@ -206,7 +206,7 @@ void rsSinusoidalProcessor<T>::fixPartialFrequency(rsSinusoidalPartial<T>& p, T 
 }
 
 template<class T>
-void rsSinusoidalProcessor<T>::makeStrictlyHarmonic(rsSinusoidalModel<T>& mdl, T f0, 
+void rsSinusoidalProcessor<T>::makeStrictlyHarmonic(rsSinusoidalModel<T>& mdl, T f0,
   T B, T pickPhaseAt)
 {
   for(size_t i = 0; i < mdl.getNumPartials(); i++) {
@@ -216,7 +216,7 @@ void rsSinusoidalProcessor<T>::makeStrictlyHarmonic(rsSinusoidalModel<T>& mdl, T
     //fixPartialFrequency(p, (i+1)*f0);  // old
     // maybe we should somehow take care to make it work, even if there's a DC component
   }
-  // todo: maybe allow for an inharmonicity factor - use the formula for piano-string  
+  // todo: maybe allow for an inharmonicity factor - use the formula for piano-string
   // inharmoncity/string-stiffness) - if zero (the default), the spectrum is strictly harmonic
 }
 
@@ -240,7 +240,7 @@ rsPartialBeatingRemover<T>::rsPartialBeatingRemover()
   //envExtractor.setStartMode(EE::EXTRAPOLATE_END);
   //envExtractor.setEndMode(  EE::EXTRAPOLATE_END);
   */
-  // oh no - this doesn't work - the envExtractor expects an audio signal as input - we need to 
+  // oh no - this doesn't work - the envExtractor expects an audio signal as input - we need to
   // refactor it to extract the de-beating (i.e. extracting the "meta-envelope" (env-of-env) algo
 
 }
@@ -254,7 +254,7 @@ void rsPartialBeatingRemover<T>::processModel(rsSinusoidalModel<T>& model)
 }
 
 template<class T>
-void rsPartialBeatingRemover<T>::processModel(rsSinusoidalModel<T>& model, 
+void rsPartialBeatingRemover<T>::processModel(rsSinusoidalModel<T>& model,
   const std::vector<int>& partialIndices)
 {
   for(size_t i = 0; i < partialIndices.size(); i++)
@@ -271,7 +271,7 @@ void rsPartialBeatingRemover<T>::removeBeating(rsSinusoidalPartial<T>& partial)
 template<class T>
 void rsPartialBeatingRemover<T>::removeAmplitudeBeating(rsSinusoidalPartial<T>& partial)
 {
-  // process amplitudes: we take the envelope-of-the-envelope by connecting the peaks of the 
+  // process amplitudes: we take the envelope-of-the-envelope by connecting the peaks of the
   // "first-order" envelope - this removes the amplitude modulation due to beating:
   std::vector<T> t = partial.getTimeArray();
   std::vector<T> a = partial.getAmplitudeArray();
@@ -292,9 +292,16 @@ void rsPartialBeatingRemover<T>::removePhaseBeating(rsSinusoidalPartial<T>& part
   // process phases: in a signal that shows beating, we see phase inversions when we go from
   // one bump/grain to the next - these are hard switches which are audible, so we somehow need to
   // get rid of them - we do this by smoothing out the discontinuities:
-  std::vector<T> p = smoothPhases(partial.getTimeArray(), partial.getFrequencyArray(), 
-    partial.getPhaseArray(), phaseSmootherCutoff, phaseSmootherOrder, phaseSmootherNumPasses);
+  std::vector<T> p = smoothPhases(
+    partial.getTimeArray(),
+    partial.getFrequencyArray(),
+    partial.getPhaseArray(),
+    phaseSmootherCutoff, phaseSmootherOrder, phaseSmootherNumPasses);
   partial.setPhases(p);
+
+  // gcc produces this error:
+  // https://stackoverflow.com/questions/17905101/invalid-initialization-of-non-const-reference-of-type-stdvectordouble-fro
+
   //rsPlotVector(p);
   // maybe try other ways to get rid of the phase discontinuities
 }

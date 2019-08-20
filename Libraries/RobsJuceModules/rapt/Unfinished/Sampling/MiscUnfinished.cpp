@@ -26,10 +26,10 @@ void rsApplyBiDirectionally(TSig *x, TSig *y, int N, TFlt &processor, int P, int
   delete[] tmp;
 
   // todo: Actually, we don't really need pre- and post padding. Using just post padding and
-  // applying first all forward passes and then all backward passes should give the same result. 
+  // applying first all forward passes and then all backward passes should give the same result.
   // ...but maybe it would show a different numeric roundoff behavior? -> test it - maybe make the
   // function a (static) member of rsBiDirectionalFilter
-  // maybe it's better in practice to have all of the ring-out/warm-up section at the end of the 
+  // maybe it's better in practice to have all of the ring-out/warm-up section at the end of the
   // sample because samples may have a ahrd transient at the start but are already decayed down
   // toward the end such that at the end, the total amount of ringing effects is even less
 }
@@ -57,6 +57,11 @@ void rsApplyBiDirectionally(
 
   // pre/post-padded time-delta array:
   std::vector<TTim> dt = getPaddedSignal(t, N, P);
+
+  //size_t i = 0;
+  //dt[0] = TTim(1); // test - gcc/win produces "assignment of read-only location" error - also in
+             // the loops below - WTF? why is a vector element "read-only"?
+
   TTim dtAv = (t[N-1]-t[0]) / N; // average sampling interval
   int n;
   for(n = N+P-1; n >      P; n--) dt[n] = dt[n] - dt[n-1];
@@ -183,11 +188,11 @@ void rsBiDirectionalFilter::applyButterworthLowpass(TSig* x, TTim* t, TSig* y, i
   flt.setOrder(order);
 
   //int P = rsCeilInt(numPasses * flt.getRingingTimeEstimate(rsDB2amp(-100.0)));
-  // make such an estimation function for the non-uniform filter - it should probably return a 
+  // make such an estimation function for the non-uniform filter - it should probably return a
   // value in seconds
-  int P = 1000; 
+  int P = 1000;
   // ad-hoc - later we need to use something based a ringing time estimate - maybe something like
-  // k * averageSampleRate / cutoff where k is a constant that depends on the ringing behavior of 
+  // k * averageSampleRate / cutoff where k is a constant that depends on the ringing behavior of
   // the filter (Butterwort in this case - but we may later make it more general)
 
   rsApplyBiDirectionally(x, t, y, N, flt, P, numPasses);
@@ -337,7 +342,7 @@ std::vector<T> rsZeroCrossingFinder::bandpassedUpwardCrossings(T *x, int N, T fc
 
 //=================================================================================================
 
-// move to rsArray, maybe get rid of using rsPolynomial<T>::fitQuadratic (formula simplifies 
+// move to rsArray, maybe get rid of using rsPolynomial<T>::fitQuadratic (formula simplifies
 // because x-values are simple)
 template<class T>
 T rsMaxPosition(T* buffer, int N)
@@ -470,16 +475,16 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
     rsArray::copyBuffer(x, &y[0], N);
   // rename correlationHighpass to refinementHighpass
 
-  // nCenter serves as the initial cycle mark - from there, find the next one to the left by 
+  // nCenter serves as the initial cycle mark - from there, find the next one to the left by
   // correlating two segments of length p (or maybe 2*pn with windowing? - maybe experiment)
   std::vector<T> z;
   z.reserve((int) (2*ceil(N/p))); // estimated size needed is N/p, so twice that value should be more than enough
 
-  // find cycle-marks to the left of nCenter by correlating two segments of length p (which is the 
+  // find cycle-marks to the left of nCenter by correlating two segments of length p (which is the
   // current estimate of the period):
   T right  = nCenter + rsZeroCrossingFinder::upwardCrossingFrac(&y[0], N, nCenter, precision);
   T left   = right - p;
-  T length = right-left; 
+  T length = right-left;
   z.push_back(right);  // nCenter = right serves as the initial cycle mark
   while(true)
   {
@@ -504,7 +509,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
     right = refineCycleMark(&y[0], N, left, right); // new, refined right mark
     if(right == T(-1))
       break;
-    z.push_back(right);  
+    z.push_back(right);
     length = right - left;
     left   = right;
     right  = left + length;
@@ -553,7 +558,7 @@ T rsCycleMarkFinder<T>::getFundamental(T* x, int N)
 // introspection:
 
 template<class T>
-typename rsCycleMarkFinder<T>::ErrorMeasures 
+typename rsCycleMarkFinder<T>::ErrorMeasures
 rsCycleMarkFinder<T>::getErrorMeasures(const std::vector<T>& cycleMarks, T period)
 {
   int N = (int) cycleMarks.size();
@@ -588,7 +593,7 @@ rsCycleMarkFinder<T>::getErrorMeasures(const std::vector<T>& cycleMarks, T perio
 template<class T>
 T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, T left, T right)
 {
-  // a sort of crude, preliminary way to avoid producing garbage data or even crashes in 
+  // a sort of crude, preliminary way to avoid producing garbage data or even crashes in
   // fade-in/out sections:
   T minPeriod = fs/fMax;
   if(right - left < minPeriod)
@@ -628,7 +633,7 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
   //deBiasConvolutionResult(&corr[0], length);   // test
 
   // new:
-  //rsCrossCorrelation(&cl[0], &cr[0], length, &corr[0], false); 
+  //rsCrossCorrelation(&cl[0], &cr[0], length, &corr[0], false);
   // doesn't seem to work -> make unit test -> ah, it produces a length N output instead of 2*N-1
 
 
@@ -658,9 +663,9 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
 // more ideas for improvement:
 // -use de-biased cross-correlation sequence
 // -fit quartic instead of quadratic for finding the subsample-precision maximum
-// -apply a nonlinearity before fitting the parabola (it should be such that the found maximum 
+// -apply a nonlinearity before fitting the parabola (it should be such that the found maximum
 //  stays invariant with respect to scaling the signal - maybe log qualifies, maybe powers, too?)
-// -use zero-crossings of the original signal near a correlation maximum (zeros are better than 
+// -use zero-crossings of the original signal near a correlation maximum (zeros are better than
 //  just any value because they are (almost) invariant with respect to amplitude changes between
 //  the cycles)
 
@@ -677,7 +682,7 @@ void rsCycleMarkFinder<T>::applyWindow(T* x, int N)
     // maybe try a window that has zeros for the first and second derivative at +-1
   }
 
-  // todo: optimize (using some kind of rsWindowIterator class), flexibilize (allow client to 
+  // todo: optimize (using some kind of rsWindowIterator class), flexibilize (allow client to
   // select window)
 }
 
@@ -690,7 +695,7 @@ void rsCycleMarkFinder<T>::deBiasConvolutionResult(T* x, int N)
     x[N-1-n] *= scale;
   }
 }
-// experimental - multiplies the result of a convolution with a sequence that compesates for the 
+// experimental - multiplies the result of a convolution with a sequence that compesates for the
 // number of summed terms - the center value is due to a sum of N nonzero terms, left and right of
 // it, only N-1 terms were summed, and so on
 
@@ -719,7 +724,7 @@ T rsCycleMarkFinder<T>::autoCorrelation(T* x, int N, int n1, int n2, int M)
   }
   //return xy;  // old - unnormalized sum-of-products
   if(xx == 0 || yy == 0)
-    return 0; 
+    return 0;
   return xy / sqrt(xx*yy); // new - normalized autocorrelation - better results
 }
 
@@ -760,7 +765,7 @@ T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, int nFix, int nVar, int M)
   if(rsAbs(a[2]) < RS_EPS(T))
     return T(nVar);
   // maybe i should investigate the issue some more - why does it become degenerate - should that
-  // be possible to happen - for these investigations, just comment out this early return and 
+  // be possible to happen - for these investigations, just comment out this early return and
   // uncomment the debug-plotting code below:
 
   /*
@@ -775,7 +780,7 @@ T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, int nFix, int nVar, int M)
   // we hit this with the (long) rhodes sample - look into rsSinusoidalAnalyzer how to deal with it
   // it has to do with the parabolic interpolant becoming degenerate, i.e. a[2] == 0 ..actually,
   // in the case of the rhodes sample, a[1] is also zero - figure out, why the parabola becomes
-  // degenerate in the first place ...it's because left, right, mid are all the same - but why are 
+  // degenerate in the first place ...it's because left, right, mid are all the same - but why are
   // they all the same?....
   */
 
@@ -787,14 +792,14 @@ T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, int nFix, int nVar, int M)
 template<class T>
 T rsCycleMarkFinder<T>::bestMatchOffset(T* x, int N, T nFix, T nVar)
 {
-  // a sort of crude, preliminary way to avoid producing garbage data or even crashes in 
+  // a sort of crude, preliminary way to avoid producing garbage data or even crashes in
   // fade-in/out sections:
   T minPeriod = fs/fMax;
   if(abs(nVar-nFix) < minPeriod)
     return T(0);
 
   int iFix = rsRoundToInt(nFix);
-  int iVar = rsRoundToInt(nVar); 
+  int iVar = rsRoundToInt(nVar);
   int M    = (int) ceil(correlationLength*abs(iVar-iFix));
 
   T result = bestMatchOffset(x, N, iFix, iVar, M);
@@ -1611,7 +1616,7 @@ void rsEnvelopeExtractor<T>::interpolateEnvelope(const T* envTimes, T* envValues
 }
 
 template<class T>
-void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* peakValues, 
+void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* peakValues,
   int length)
 {
   std::vector<T> metaEnvTime, metaEnvValue;
@@ -1656,7 +1661,7 @@ void rsEnvelopeExtractor<T>::setupEndValues(
 }
 
 template<class T>
-std::vector<size_t> rsEnvelopeExtractor<T>::findPeakIndices(const T* x, int N, 
+std::vector<size_t> rsEnvelopeExtractor<T>::findPeakIndices(const T* x, int N,
   bool includeFirst, bool includeLast)
 {
   std::vector<size_t> peaks;
@@ -1676,7 +1681,7 @@ std::vector<size_t> rsEnvelopeExtractor<T>::findPeakIndices(const T* x, int N,
   if(includePlateaus) {
     for(int n = 1; n < N-1; n++) {
       if(RAPT::rsArray::isPeakOrPlateau(x, n))
-        peaks.push_back(n); }} 
+        peaks.push_back(n); }}
   else {
     for(int n = 1; n < N-1; n++) {
       if(RAPT::rsArray::isPeak(x, n))
@@ -1694,16 +1699,16 @@ std::vector<size_t> rsEnvelopeExtractor<T>::findPeakIndices(const T* x, int N,
 // what about situations where there are several values of the same height, like
 // 0 1 2 2 2 1 0 1 3 3 2 1 2 1
 //       *          *      *    desired peaks
-// ...actually, it seems like quadratic interpolation using 3 points seems unfair/asymmetric 
+// ...actually, it seems like quadratic interpolation using 3 points seems unfair/asymmetric
 // - probably it's better to use cubic interpolation and use two points to the left and two
 // to the right to find the actual peak location
 // or use >= as condition, then we would get
 // 0 1 2 2 2 1 0 1 3 3 2 1 2 1
-//     * * *       * *     *  
+//     * * *       * *     *
 // seems better for envelope extraction
 
 template<class T>
-void rsEnvelopeExtractor<T>::getAmpEnvelope(const T* x, int N, 
+void rsEnvelopeExtractor<T>::getAmpEnvelope(const T* x, int N,
   std::vector<T>& sampleTime, std::vector<T>& envValue)
 {
   std::vector<T> xAbs(N);
@@ -1712,7 +1717,7 @@ void rsEnvelopeExtractor<T>::getAmpEnvelope(const T* x, int N,
 
   // peak coordinates:
   size_t M = peakIndices.size();
-  sampleTime.resize(M); 
+  sampleTime.resize(M);
   envValue.resize(M);
   for(size_t m = 0; m < M; m++) {
     size_t n = peakIndices[m];
@@ -1723,12 +1728,12 @@ void rsEnvelopeExtractor<T>::getAmpEnvelope(const T* x, int N,
 }
 
 template<class T>
-void rsEnvelopeExtractor<T>::getPeaks(const T *x, const T *y, int N, 
+void rsEnvelopeExtractor<T>::getPeaks(const T *x, const T *y, int N,
   std::vector<T>& peaksX, std::vector<T>& peaksY)
 {
   std::vector<size_t> peakIndices = findPeakIndices(y, N, true, true);
   size_t M = peakIndices.size();
-  peaksX.resize(M); 
+  peaksX.resize(M);
   peaksY.resize(M);
   for(size_t m = 0; m < M; m++) {
     size_t n = peakIndices[m];

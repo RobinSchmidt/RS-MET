@@ -75,12 +75,18 @@ void ToolChain::deleteModule(int index)
 {
   ScopedLock scopedLock(*lock);
   jassert(index >= 0 && index < size(modules)); // index out of range
-  if(activeSlot == index)
+  if(activeSlot == index) 
     activeSlot--;
   sendAudioModuleWillBeDeletedNotification(modules[index], index);
   removeFromModulatorsIfApplicable(modules[index]);
   delete modules[index];
   remove(modules, index);
+
+  // handle case when 0th module was deleted (needs test):
+  if(activeSlot == -1 && size(modules) > 0 )
+    activeSlot = 0;
+  // ...in ToolChain, it's impossible to have a completely empty module list, but subclasses (like 
+  // Elan's) may want to allow this, so we need to support it
 }
 
 void ToolChain::deleteLastModule()

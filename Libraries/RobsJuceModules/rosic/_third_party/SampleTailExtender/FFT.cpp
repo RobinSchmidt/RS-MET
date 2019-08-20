@@ -9,23 +9,27 @@
 #include "FFT.h"
 #include <iostream>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264338327950288
+#endif
+
 //=================================================================================
 FFT::FFT (int frameSize)
 {
     // store audio frame size
     audioFrameSize = frameSize;
-    
+
     // setup FFT
     fftIn = new kiss_fft_cpx[audioFrameSize];
     fftOut = new kiss_fft_cpx[audioFrameSize];
     cfg = kiss_fft_alloc (audioFrameSize, 0, 0, 0);
-    
+
     // resize vectors
     real.resize (audioFrameSize);
     imag.resize (audioFrameSize);
     magnitude.resize ((audioFrameSize / 2) + 1);
     phase.resize ((audioFrameSize / 2) + 1);
-    
+
     // generate hanning window
     calculateHanningWindow();
 }
@@ -47,17 +51,17 @@ void FFT::performFFT (std::vector<double> audioFrame)
         fftIn[i].r = (float)(audioFrame[i] * hanningWindow[i]);
         fftIn[i].i = 0.0;
     }
-    
+
     // perform the FFT
     kiss_fft (cfg, fftIn, fftOut);
-    
+
     // retrieve samples from FFT output array
     for (int i = 0; i < audioFrameSize; i++)
     {
         real[i] = (double)fftOut[i].r;
         imag[i] = (double)fftOut[i].i;
     }
-    
+
     // calculate magnitude and phase
     for (int i = 0; i < magnitude.size(); i++)
     {
@@ -82,9 +86,9 @@ const std::vector<double>& FFT::getPhase()
 void FFT::calculateHanningWindow()
 {
     hanningWindow.resize (audioFrameSize);
-    
+
     double divisor = (double) (audioFrameSize - 1);
-    
+
     for (int i = 0; i < audioFrameSize; i++)
         hanningWindow[i] = 0.5 * (1 - cos (2. * M_PI * (i / divisor)));
 }
