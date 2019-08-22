@@ -86,13 +86,18 @@ public:
   /** Returns an array containing the type strings of the registered module types. */
   std::vector<String> getRegisteredModuleTypes() const;
 
+  /** Our vector of module-infos (todo: maybe use a tree (by category)) */
+  std::vector<AudioModuleInfo> moduleInfos;
+  // temporarily made public, so SeToolChain can clear it - todo: factor out a class from ToolChain
+  // that doesn't populate the ModulaFactory so Elan can derive from this and doesn't need to clear 
+  // it
+
 protected:
 
   /** Mutex to be passed to the AudioModule constructors. */
   CriticalSection* lock;
 
-  /** Our vector of module-infos (todo: maybe use a tree (by category)) */
-  std::vector<AudioModuleInfo> moduleInfos;
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleFactory)
 };

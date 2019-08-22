@@ -63,6 +63,9 @@ public:
   ToolChain(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr);
   virtual ~ToolChain();
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
   /** Adds an empty slot the end of the chain. */
   void addEmptySlot();
 
@@ -86,6 +89,12 @@ public:
   todo: maybe it should return true, if the module was actually replaced, false otherwise */
   void replaceModule(int index, const juce::String& type);
 
+  // todo:
+  //void moveModule(int oldIndex, int newIndex);
+
+
+  //-----------------------------------------------------------------------------------------------
+
   /** Returns true if the module at the given index matches the type specified by the type 
   string. */
   bool isModuleOfType(int index, const juce::String& type);
@@ -93,6 +102,7 @@ public:
   /** Returns the moduel in the chain at the given index. If the index is out of range, it will 
   return a nullptr. */
   AudioModule* getModuleAt(int index);
+
 
   /** Ensures that at the end of the module chain, there is exactly one empty slot that can be used
   to insert another module into the chain. If the last slot is not empty, an empty slot will be 
@@ -137,6 +147,23 @@ public:
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
     bool markAsClean) override;
 
+
+
+  // temporariliy made public:
+
+  std::vector<AudioModule*> modules;
+  // Elan's editor needs to access it, when tabs are moved - todo:
+  // provide a function moveModule that can be called from the editor
+  // we should better use the inherited childAudioModules array - but there are errors
+
+  AudioModuleFactory moduleFactory;  
+  // todo: provide getter - editor subclasses need access to getRegisteredModuleInfos etc.
+
+  int activeSlot = 0;            // slot for which the editor is currently shown 
+  // for Elan's subclass
+
+
+
 protected:
 
   void recallSlotsFromXml(      const XmlElement &xmlState, bool markAsClean);
@@ -170,22 +197,14 @@ protected:
   void populateModuleFactory();
                      
 
-  std::vector<AudioModule*> modules;
-    // we should better use the inherited childAudioModules array - but there are errors
-
   ModulationManager modManager;
   // name clash with modManager inherited ModulationParticipant (baseclass of 
   // ModulatableAudioModule) - maybe rename this
 
   //rsSmoothingManager smoothingManager;
-
-  AudioModuleFactory moduleFactory;
-
   //std::vector<AudioModule*> modulators;
 
-  int activeSlot = 0;            // slot for which the editor is currently shown 
   double sampleRate = 44100;
-
   std::vector<ToolChainObserver*> observers;
 
   friend class ToolChainEditor;
