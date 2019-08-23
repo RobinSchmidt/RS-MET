@@ -248,8 +248,8 @@ ModulationManager::~ModulationManager()
 {
   ScopedLock scopedLock(*modLock);
   removeAllConnections();
-  deRegisterAllSources();
-  deRegisterAllTargets();
+  deRegisterAllSources();  // to avoid dangling pointers in the sources
+  deRegisterAllTargets();  // dito for the targets
 }
 
 void ModulationManager::applyModulations()

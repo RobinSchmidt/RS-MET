@@ -38,6 +38,17 @@ ToolChain::ToolChain(CriticalSection *lockToUse,
 ToolChain::~ToolChain()
 {
   ScopedLock scopedLock(*lock);
+
+  // Trying to fix the crash of Elan's SeToolChain on destruction:
+  modManager.deRegisterAllTargets();
+  modManager.deRegisterAllSources();
+  // Yep - that seems to fix it. I think the problem was this: when our modManager member goes out
+  // of scope, it calls these 2 functions in its destructor - and in these functions the pointers
+  // to the source/target modules are referenced (for nulling their modManager reference) - but at
+  // this point, the source/target modules were already deleted (in the loop below, which is 
+  // executed before the modManager goes out of scope). But i wonder, why i don't have the 
+  // same crash in my ToolChain. hmm....
+
   for(int i = 0; i < size(modules); i++)
     delete modules[i];
 }
