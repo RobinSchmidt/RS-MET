@@ -106,6 +106,10 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   // artifacts? if they occur evene though we remove the partials above 9, they occur in synthesis
   // ->they seem to be analysis artifacts
 
+  //double splitFreq = 1000;
+  //RAPT::rsSinusoidalModel<double> lp = rsSinusoidalProcessor<double>::extractLowpassPart(mdl, splitFreq);
+  //RAPT::rsSinusoidalModel<double> hp = rsSinusoidalProcessor<double>::extractHighpassPart(mdl, splitFreq);
+
 
   // Resynthesis:
 

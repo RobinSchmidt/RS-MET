@@ -95,6 +95,14 @@ public:
   static void makeStrictlyHarmonic(rsSinusoidalModel<T>& model, T fundamentalFreq,
     T inharmonicity, T pickPhaseAt = T(0.5));
 
+  /** Extracts the partials whose mean frequency is less than or equal to the given splitFreq. */
+  static rsSinusoidalModel<T> extractLowpassPart(rsSinusoidalModel<T>& model, T splitFreq);
+
+  /** Extracts the partials whose mean frequency is greater than the given splitFreq. */
+  static rsSinusoidalModel<T> extractHighpassPart(rsSinusoidalModel<T>& model, T splitFreq);
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing functions to override

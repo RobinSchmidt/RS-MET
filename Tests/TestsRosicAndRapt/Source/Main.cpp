@@ -380,8 +380,8 @@ int main(int argc, char* argv[])
   //harmonicDetection2Sines();
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
-  //harmonicAnalysis1();
-  harmonicDeBeating1();
+  harmonicAnalysis1();
+  //harmonicDeBeating1();
   //harmonicDeBeating2();
 
 

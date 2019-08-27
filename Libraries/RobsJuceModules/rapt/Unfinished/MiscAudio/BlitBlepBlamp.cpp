@@ -51,8 +51,8 @@ void rsTableLinBlep<TSig, TTim>::updateTables()
 
     s *= window(t);
 
-    this->timeTbl[ic + i] =  t;
-    this->timeTbl[ic - i] = -t;
+    timeTbl[ic + i] =  t;
+    timeTbl[ic - i] = -t;
     this->blitTbl[ic + i] =  s;
     this->blitTbl[ic - i] =  s;
   }

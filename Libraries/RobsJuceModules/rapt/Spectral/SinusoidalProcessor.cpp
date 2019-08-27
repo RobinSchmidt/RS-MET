@@ -220,6 +220,32 @@ void rsSinusoidalProcessor<T>::makeStrictlyHarmonic(rsSinusoidalModel<T>& mdl, T
   // inharmoncity/string-stiffness) - if zero (the default), the spectrum is strictly harmonic
 }
 
+template<class T>
+rsSinusoidalModel<T> rsSinusoidalProcessor<T>::extractLowpassPart(rsSinusoidalModel<T>& mdl, T splitFreq)
+{
+  rsSinusoidalModel<T> lp = mdl;
+  std::vector<size_t> keep;
+  for(size_t i = 0; i < mdl.getNumPartials(); i++) {
+    if(mdl.getPartial(i).getMeanFreq() <= splitFreq)
+      keep.push_back(i);
+  }
+  lp.keepOnly(keep);
+  return lp;
+}
+
+template<class T>
+rsSinusoidalModel<T> rsSinusoidalProcessor<T>::extractHighpassPart(rsSinusoidalModel<T>& mdl, T splitFreq)
+{
+  rsSinusoidalModel<T> hp = mdl;
+  std::vector<size_t> keep;
+  for(size_t i = 0; i < mdl.getNumPartials(); i++) {
+    if(mdl.getPartial(i).getMeanFreq() > splitFreq)
+      keep.push_back(i);
+  }
+  hp.keepOnly(keep);
+  return hp;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 template<class T>
