@@ -233,6 +233,7 @@ int main(int argc, char* argv[])
   ////primeSieve();  // crashes
   //primeDistribution();
   ////numberTheoreticTransform(); // triggers assert
+  variousFunctions();
 
   // Analysis:
   //autoCorrelation();
@@ -380,7 +381,7 @@ int main(int argc, char* argv[])
   //harmonicDetection2Sines();
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
-  harmonicAnalysis1();
+  //harmonicAnalysis1();
   //harmonicDeBeating1();
   //harmonicDeBeating2();
 

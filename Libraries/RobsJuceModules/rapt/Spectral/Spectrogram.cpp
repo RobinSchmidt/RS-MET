@@ -357,7 +357,7 @@ todo:
  necessarily harmonic and vary in frequency (and maybe also allowing the filters to have 
  time-variying bandwidths) - this could be used to track the frequency of the partial being 
  analyzed (but requires a preliminary knowlegde of the frequency trajectory of the partial=
- ...maybe we can firsat obtain preliminary (rough) frequency tracks by spectrogram processing and
+ ...maybe we can first obtain preliminary (rough) frequency tracks by spectrogram processing and
  the refine them by a time-varying phase vocoder approach...and then use that data to refine 
  further etc. until it converges
 

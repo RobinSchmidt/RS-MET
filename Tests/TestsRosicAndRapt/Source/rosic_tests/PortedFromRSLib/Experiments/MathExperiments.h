@@ -38,6 +38,7 @@ void bernoulliNumbers();
 void sequenceSquareRoot();
 void conicSystem();
 void logisticMapNoise();
+void variousFunctions(); 
 
 // these are some ideas, there's not much code yet:
 void bigFloatErrors();
@@ -49,6 +50,8 @@ void primeSieveAtkin();
 void primeSieve();
 void primeDistribution();
 void numberTheoreticTransform();
+
+
 
 
 

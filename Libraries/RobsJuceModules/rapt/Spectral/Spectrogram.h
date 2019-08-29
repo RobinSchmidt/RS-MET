@@ -3,7 +3,12 @@
 
 /** This is .... under construction ...
 
-
+-maybe rename to rsSpectrogramProcessor - a spectrogram itself is actually just a matrix of 
+ complex values...or magnitude/phase values....but what about re-assignment? there may be 
+ re-assigned spectrograms
+-i think, i have implemented analysis and (re)synthesis in a single class rather than two separate
+ classes (like with the sinusoidal model) in order to allow for identity resynthesis with arbitrary
+ windows (the demodulation procedure needs to know both windows - analysis and synthesis)
 -implement move contructors for rsArray and rsMatrix  */
 
 template<class T>
@@ -166,6 +171,10 @@ public:
   // maybe have a version NZ, ZZ, NN
   // moved to rsWindowFunction
 
+  /** Zeroes out all bin-values values except those in the range lowBin <= bin <= highBin. If 
+  lowBin == 0 or highBin == numBins-1, you can also get lowpass- and highpass-filters, 
+  respectively. */
+  //void bandpass(rsMatrix<std::complex<T>>& spectrogram, int lowBin, int highBin);
 
 
 
@@ -176,7 +185,7 @@ public:
   window w of length B (which is the blocksize) with hopsize H. The number of equals the number
   of columns in the matrix s - each row is one short-time spectrum (of positive frequencies only
   due to symmetry). */
-  std::vector<T> synthesize(const rsMatrix<std::complex<T>> &spectrogram);
+  std::vector<T> synthesize(const rsMatrix<std::complex<T>>& spectrogram);
 
   /** Given a signal and its complex spectrogram, this function computes the matrix of time
   reassignments for each time/frequency value. The rampedWindow array should be a time-ramped
@@ -198,7 +207,7 @@ public:
   modulation artifacts that result from overlapping grains that don't sum up to unity are not
   yet compensated for. If you want that compensation, use synthesize(). For properly chosen 
   analysis and synthesis windows and hop-size and block-size, the demodulation step can be 
-  legitimately skipped because the overallped windows add up to unity - but this is not the case
+  legitimately skipped because the overlapped windows add up to unity - but this is not the case
   in general. */
   std::vector<T> synthesizeRaw(const rsMatrix<std::complex<T>> &spectrogram);
 
@@ -206,7 +215,7 @@ public:
   analysis/synthesis roundtrip with the given analysis- and synthesis-windows and block- and
   hop-size. This can be used for demodulating a resynthesized signal, making the
   analysis/resynthesis/demodulation roundtrip a identity-operation (up to roundoff).
-  Note: In typical phase-vocoder implementations, these window-shapes and block- and hopssizes are
+  Note: In typical phase-vocoder implementations, these window-shapes and block- and hopsizes are
   chosen such that this amplitude modulation signal comes out as a constant value (or, even better,
   unity). To make the implementation more flexible with regard to the choice of these parameters,
   this function can be can be used to get the modulation signal and divide by it for
@@ -261,7 +270,7 @@ protected:
   int trafoSize = 0;    // FFT size - initialized in constructor
   int blockSize = 0;    // initialized in constructor which also generates the window functions   
   int hopSize   = 128;
-  // maybe we should also distiguish between analysis and synthesis hop-and block-size
+  // maybe we should also distiguish between analysis and synthesis hop- and block-size
 
   rsWindowFunction::WindowType analysisWindowType  = rsWindowFunction::WindowType::hanningZN;
   rsWindowFunction::WindowType synthesisWindowType = rsWindowFunction::WindowType::hanningZN;
