@@ -27,6 +27,8 @@ namespace RAPT
 #include "Functions/FunctionObjects.h" // obsolete thx to std::function?
 #include "Functions/Sigmoids.h"
 #include "Functions/SinCosTable.h"
+#include "Functions/FunctionOperators.h" // may use stuff from NumericCalculus later - move it down, then
+
 
 #include "Types/Matrix.h"
 #include "Types/Polynomial.h"
@@ -42,6 +44,8 @@ namespace RAPT
 #include "Numerics/Interpolation.h"
 #include "Numerics/Optimization.h"
 // todo: Optimizer, CurveFitter, Interpolator, Differentiator, InitialValueSolver, 
+
+
 
 }
 

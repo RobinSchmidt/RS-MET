@@ -27,6 +27,7 @@ namespace RAPT
 #include "Functions/BellFunctions.cpp"
 #include "Functions/Sigmoids.cpp"
 #include "Functions/SinCosTable.cpp"
+#include "Functions/FunctionOperators.cpp" 
 
 #include "Types/Matrix.cpp"
 #include "Types/Polynomial.cpp"

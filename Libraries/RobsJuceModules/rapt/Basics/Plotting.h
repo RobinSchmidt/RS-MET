@@ -120,10 +120,22 @@ inline void rsPlotSpectrum(std::vector<T> fftMagnitudes, T sampleRate = T(0),
   plt.plot();
 }
 
+/** Plots the given function for the given range of x-values using N equally spaced samples. */
+template<class T>
+inline void rsPlotFunction(const std::function<T(T)>& func, T xMin, T xMax, int N)
+{
+  GNUPlotter plt;
+  std::vector<T> x(N), y(N);
+  plt.rangeLinear(&x[0], N, xMin, xMax);
+  for(int i = 0; i < N; i++)
+    y[i] = func(x[i]);
+  plt.plotFunctionTables(N, &x[0], &y[0]);
+}
+
 
 // The functions below are not inlined, because they use some functionality from rapt. To inline
 // them, we would have to include the relevant parts of rapt before including Plotting.h, but then 
-// we wouldnt have access to the plotting functions from these parts of rapt anymore. So, their 
+// we wouldn't have access to the plotting functions from these parts of rapt anymore. So, their 
 // implementation is moved to the cpp file and there are explicit instantiations for the relevant
 // datatypes:
 

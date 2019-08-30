@@ -39,6 +39,7 @@ void sequenceSquareRoot();
 void conicSystem();
 void logisticMapNoise();
 void variousFunctions(); 
+void functionOperators();
 
 // these are some ideas, there's not much code yet:
 void bigFloatErrors();

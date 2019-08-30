@@ -257,6 +257,9 @@
     <Filter Include="JUCE Modules\rosic\_third_party\tnt">
       <UniqueIdentifier>{2FCA5A56-D224-C7DE-E961-49925084C3F9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\rosic\_third_party\Various">
+      <UniqueIdentifier>{53450CF5-DA33-6E95-BDD4-B46ED00950D0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\rosic\_third_party">
       <UniqueIdentifier>{65B355CA-5D4F-5B6C-FCE7-C0AA71E46645}</UniqueIdentifier>
     </Filter>
@@ -785,6 +788,9 @@
       <Filter>JUCE Modules\rapt\Math\Functions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\FunctionIterators.cpp">
+      <Filter>JUCE Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\FunctionOperators.cpp">
       <Filter>JUCE Modules\rapt\Math\Functions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\IntegerFunctions.cpp">
@@ -3117,6 +3123,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\FunctionObjects.h">
       <Filter>JUCE Modules\rapt\Math\Functions</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\FunctionOperators.h">
+      <Filter>JUCE Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\IntegerFunctions.h">
       <Filter>JUCE Modules\rapt\Math\Functions</Filter>
     </ClInclude>
@@ -3851,6 +3860,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\_third_party\tnt\tnt_version.h">
       <Filter>JUCE Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\_third_party\Various\simdMath.h">
+      <Filter>JUCE Modules\rosic\_third_party\Various</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\analysis\rosic_BeatDetector.h">
       <Filter>JUCE Modules\rosic\analysis</Filter>

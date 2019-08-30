@@ -552,6 +552,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\FunctionIterators.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\FunctionOperators.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\IntegerFunctions.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2535,6 +2538,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\ComplexFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\FunctionIterators.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\FunctionObjects.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\FunctionOperators.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\IntegerFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\InterpolatingFunction.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\Mappers.h"/>
@@ -2780,6 +2784,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\_third_party\tnt\tnt_subscript.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\_third_party\tnt\tnt_vec.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\_third_party\tnt\tnt_version.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\_third_party\Various\simdMath.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\analysis\rosic_BeatDetector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\analysis\rosic_CyclicAutoCorrelator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\analysis\rosic_EnvelopeFollower.h"/>

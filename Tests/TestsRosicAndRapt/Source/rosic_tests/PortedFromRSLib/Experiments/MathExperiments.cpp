@@ -2743,45 +2743,26 @@ void logisticMapNoise()
   plt.plot();
 }
 
-// Takes the segment of the function func from xMin to xMax and periodically repeats it. The result
-// is returned as another function object.
-template<class T>
-std::function<T(T)> makePeriodic(const std::function<T(T)>& func, T xMin, T xMax)
-{
-  T P = xMax - xMin;      // period length
-  std::function<T(T)> f;
-  f = [=] (double x) { 
-    T d = ceil((x-xMax) / P);  // see https://www.youtube.com/watch?v=Ao16MKl-NKU&t=29m45s
-    return func(x-P*d); };
-  return f;
-}
-
-template<class T>
-void plotFunction(const std::function<T(T)>& func, T xMin, T xMax, int N)
-{
-  GNUPlotter plt;
-  std::vector<T> x(N), y(N);
-  plt.rangeLinear(&x[0], N, xMin, xMax);
-  for(int i = 0; i < N; i++)
-    y[i] = func(x[i]);
-  plt.plotFunctionTables(N, &x[0], &y[0]);
-}
-// move to GNUPlotter (as static function)
-
 void variousFunctions()
 {
-  // Various functions of the type y = f(x)
+  // For plotting various functions of the type y = f(x) to see if they look as expected.
 
-  std::function<double(double)> p, pp;
+  std::function<double(double)> f, fp; // original and periodicized function
 
-  p = [=](double x) { return x*(x-PI)*(x+PI); }; // polynomial
-  pp = makePeriodic(p, -PI, PI); 
+  //f = [=](double x) { return x*(x-PI)*(x+PI); }; // polynomial
+  //fp = makePeriodic(f, -PI, PI); 
 
-  //p = [=](double x) { return x; };                  // identity
-  //pp = makePeriodic(p, -3.0, 2.0);   // periodicized version
+  f = [=](double x) { return x; };   // identity
+  fp = rsMakePeriodic(f, -3.0, 2.0);
 
-  plotFunction(pp, -10.0, +10.0, 1000);
+  rsPlotFunction(fp, -10.0, +10.0, 1000);
 }
+
+void functionOperators()
+{
+
+}
+
 
 // maybe move to vairiousFunctions
 void hyperbolicFunctions()
