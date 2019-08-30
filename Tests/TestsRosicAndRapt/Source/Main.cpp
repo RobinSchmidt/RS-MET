@@ -233,7 +233,8 @@ int main(int argc, char* argv[])
   ////primeSieve();  // crashes
   //primeDistribution();
   ////numberTheoreticTransform(); // triggers assert
-  variousFunctions();
+  //variousFunctions();
+  functionOperators();
 
   // Analysis:
   //autoCorrelation();

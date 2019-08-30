@@ -2746,21 +2746,37 @@ void logisticMapNoise()
 void variousFunctions()
 {
   // For plotting various functions of the type y = f(x) to see if they look as expected.
+}
 
-  std::function<double(double)> f, fp; // original and periodicized function
-
-  //f = [=](double x) { return x*(x-PI)*(x+PI); }; // polynomial
-  //fp = makePeriodic(f, -PI, PI); 
-
-  f = [=](double x) { return x; };   // identity
-  fp = rsMakePeriodic(f, -3.0, 2.0);
-
-  rsPlotFunction(fp, -10.0, +10.0, 1000);
+inline double sin2(double x)
+{
+  return sin(x);
 }
 
 void functionOperators()
 {
+  // For testing various operators that take a function as input and return another functions as 
+  // output
 
+  std::function<double(double)> f;               // holds our function
+
+  f = [=](double x) { return x*(x-PI)*(x+PI); }; // polynomial
+  f = rsMakePeriodic(f, -PI, PI);                // sine-ish
+  rsPlotFunction(f, -10.0, +10.0, 1000);
+
+  f = [=](double x) { return x; };               // identity
+  f = rsMakePeriodic(f, -3.0, 2.0);              // sawtooth
+  rsPlotFunction(f, -10.0, +10.0, 1000);
+
+  f = [=](double x) { return sin(2*x); };        // f(x)  =   sin(2*x)
+  f = rsDerivative(f, 0.01);                     // f'(x) = 2*cos(2*x);
+  rsPlotFunction(f, -10.0, +10.0, 1000);
+
+
+
+  //f = &sin2;  // works
+  //f = sin2;  // works
+  //f = &sin;   // fails - why? has it to do with sin having many overloaded versions?
 }
 
 
