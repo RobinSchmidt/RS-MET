@@ -4,7 +4,7 @@
 /** This class implements various (one-dimensional) root finding algorithms, i.e. it finds 
 solutions to the equation f(x) = 0 for an arbitrary given function f(x). For more generality, the
 right hand side does not actually need to be equal to zero but can be any target value, so it 
-actually find solutions to f(x) = y for given f(x) and given y. This little addition to standard 
+actually finds solutions to f(x) = y for given f(x) and given y. This little addition to standard 
 textbook root-finding algorithms doesn't change much algorithmically (we just need to subtract the 
 target value in each function evaluation), yet adds a lot to the flexibility. Some algorithms 
 require the user to pass an initial interval that is assumed to bracket the root, others require an

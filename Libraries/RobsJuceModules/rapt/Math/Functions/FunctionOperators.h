@@ -13,8 +13,9 @@ inline std::function<T(T)> rsMakePeriodic(const std::function<T(T)>& func, T xMi
   T P = xMax - xMin;  // period length
   return [=](T x) { T d = ceil((x-xMax) / P); return func(x-P*d); };
 }
+// maybe make a bivariate version of that
 
-/** Returns the numerical derivative computed via a central difference using step-size h. */
+/** Returns the numerical derivative of f computed via a central difference using step-size h. */
 template<class T>
 inline std::function<T(T)> rsDerivative(const std::function<T(T)>& f, T h)
 {
@@ -29,6 +30,7 @@ inline std::function<T(T)> rsDerivative(const std::function<T(T)>& f, T h)
 //  x and f(x)?
 // -advantage of forward/backward difference: only one evaluation of f, may be used at points where
 //  the function is undefined in either of the two directions from the point
+// -maybe fit a parabola through x-h, h, x+h and take the derivative of that -> more accurate (?)
 
 
 
@@ -36,5 +38,7 @@ inline std::function<T(T)> rsDerivative(const std::function<T(T)>& f, T h)
 // todo: invert, numerical integral (definite and indefinite, the latter 
 // needs a lower limit as parameter, the former both limits), 
 // maybe implement a convolution (by some specific function), i.e.
-// rsConvolve(const std::function<T(T)>& f, const std::function<T(T)>& g)
+// rsConvolve(const std::function<T(T)>& f, const std::function<T(T)>& g) - maybe the convolution
+// integral should be limited to a finite range (i.e. finite instead of infinite integration 
+// limits)
 // maybe de-inline

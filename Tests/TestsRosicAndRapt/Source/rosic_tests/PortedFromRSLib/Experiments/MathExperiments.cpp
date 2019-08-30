@@ -2779,7 +2779,7 @@ inline std::function<T(T)> rsInverse(const std::function<T(T)>& f)
     // wrap these 3 lines into rsRootFinder::findRoot(f, y)
     T xL = findLeftBracket( f, y);
     T xR = findRightBracket(f, y);
-    T x = rsRootFinder<T>::bisection(f, xL, xR, y);
+    T x = rsRootFinder<T>::bisection(f, xL, xR, y); // use better algo
     return x;
   };
   return fi;
@@ -2788,20 +2788,39 @@ inline std::function<T(T)> rsInverse(const std::function<T(T)>& f)
   // functions - otherwise, they are not uniqely invertible anyway
 }
 
-// computes the definite integral of f from a to b
+// computes the definite integral of f from a to b using the trapezoidal rule with N steps
+// this is a formula for a closed interval, i.e. it evaluates the function at the endpoints a and b
 template<class T>
-T rsIntegral(const std::function<T(T)>& f, T a, T b)
+T rsIntegral(const std::function<T(T)>& f, T a, T b, int N = 16)
 {
-  return 0;  // not yet implemented 
-// todo: use trapezoidal formula with refinement until the desired accuracy is obtained
+  // make sure a < b:
+  if(b == a) return T(0);
+  if(b <  a) return -rsIntegral(f, b, a, N); // swap limits and invert sign
+
+  T fL  = f(a);
+  T y   = 0;
+  T h   =  (b-a)/N;
+  for(int i = 1; i <= N; i++) {
+    T x  = a + i*h; // maybe optimize: x += h (avoids int/float conversion but accumulates error)
+    T fR = f(x);
+    y   += 0.5 * h * (fL + fR);
+    fL   = fR;
+  }
+  return y;
+
+  // very preliminary - uses fixed N - todo: refine until desired accuracy is obtained
+  // NR has code that can re-use the results of previous computations
 }
 
-// computes the indefinite integral of f with lower integration limit "a" (= integration constant)
+// computes the indefinite integral of f with lower integration limit "a" and integration 
+// constant "c"
 template<class T>
-T rsIntegral(const std::function<T(T)>& f, T a)
+std::function<T(T)> rsAntiDerivative(const std::function<T(T)>& f, T a, T c, int N)
 {
-  return [=](T x) { return rsIntegral(f, a, x); };
+  return [=](T x) { return rsIntegral(f, a, x, N) + c; };
 }
+// todo: remove N parameter - either replace with an accuracy parameter or (better) let the 
+// function figure out the number of steps that gives maxium accuracy
 
 
 void functionOperators()
@@ -2810,28 +2829,29 @@ void functionOperators()
   // output
 
   std::function<double(double)> f;               // holds our function
+  //double y;
 
+  // periodicized polynomial:
   f = [=](double x) { return x*(x-PI)*(x+PI); }; // polynomial
   f = rsMakePeriodic(f, -PI, PI);                // sine-ish
   rsPlotFunction(f, -10.0, +10.0, 1000);
 
+  // periodicized indentity:
   f = [=](double x) { return x; };               // identity
   f = rsMakePeriodic(f, -3.0, 2.0);              // sawtooth
   rsPlotFunction(f, -10.0, +10.0, 1000);
 
+  // derivative:
   f = [=](double x) { return sin(2*x); };        // f(x)  =   sin(2*x)
   f = rsDerivative(f, 0.01);                     // f'(x) = 2*cos(2*x)
   rsPlotFunction(f, -10.0, +10.0, 1000);
 
-  // todo: implement this:
-  //f = [=](double x) { return sin(2*x); };        // f(x) = sin(2*x)
-  //f = rsAntiDerivative(f, 0);                    // F(x) = integral_0^x sin(2*x) = -1/2 * cos(2*x)
-  //rsPlotFunction(f, -10.0, +10.0, 1000);
-  // look up numerical recipies for numeric integration algorithms - before that, we need a 
-  // function for the definite integral - the antiderivative then uses that by passing x for the 
-  // upper integration limit
+  // antiderivative:
+  f = [=](double x) { return sin(2*x); };        // f(x) = sin(2*x)
+  f = rsAntiDerivative(f, 0.0, -0.5, 128);       // F(x) = -1/2 * cos(2*x) + c
+  rsPlotFunction(f, -6.0, +6.0, 1000);
 
-
+  // inverse function:
   f = [=](double x) { return x*x*x; };           // f(x)    = x^3
   f = rsInverse(f);                              // f^-1(x) = cubeRoot(x)
   rsPlotFunction(f, -5.0, +5.0, 1000);
@@ -2843,9 +2863,23 @@ void functionOperators()
   // the main branch of arcsin - it should trigger an assert when called with values that are not
   // within the range -1...+1
 
+  // this will probably not work (hang):
+  //f = [=](double x) { return -x*x*x; };           // f(x)   = -x^3
+  //f = rsInverse(f);                              // f^-1(x) = -cubeRoot(x)
+  //rsPlotFunction(f, -5.0, +5.0, 1000); 
+  // yep - hangs because the function is decreasing and the bracket-search assumes an increasing 
+  // function
+
+
+
   //f = &sin2;  // works
   //f = sin2;  // works
   //f = &sin;   // fails - why? has it to do with sin having many overloaded versions?
+
+  // is it possible to find numerical solutions of differential equations using the derivative
+  // opertator? try: y + a*y' + b*y'' = g(x) ...maybe throw a root-finder at...
+  // ....‰‰‰hh - no - i think, that doesn't work if we don't know the input function y(x) already
+  // and that's exactly what we try to find
 }
 
 
