@@ -2753,6 +2753,40 @@ inline double sin2(double x)
   return sin(x);
 }
 
+
+
+
+// move to rsRootFinder:
+template<class T>
+T findLeftBracket(const std::function<T(T)>& f, T y, T xL = T(0), T d = T(1))
+{
+  while(f(xL) > y) { xL -= d; d *= 2; }
+  return xL;
+}
+template<class T>
+T findRightBracket(const std::function<T(T)>& f, T y, T xR = T(0), T d = T(1))
+{
+  while(f(xR) < y) { xR += d; d *= 2; }
+  return xR;
+}
+// passed xR is initial guess, d is the initial increment
+
+template<class T>
+inline std::function<T(T)> rsInverse(const std::function<T(T)>& f)
+{
+  std::function<T(T)> fi;  // inverse function
+  fi = [=](T y) {
+    // wrap these 3 lines into rsRootFinder::findRoot(f, y)
+    T xL = findLeftBracket( f, y);
+    T xR = findRightBracket(f, y);
+    T x = rsRootFinder<T>::bisection(f, xL, xR, y);
+    return x;
+  };
+  return fi;
+  // todo: figure out, what it does when there are multiple solutions or no solution
+  // and make the behavior well defined in these cases
+}
+
 void functionOperators()
 {
   // For testing various operators that take a function as input and return another functions as 
@@ -2772,7 +2806,9 @@ void functionOperators()
   f = rsDerivative(f, 0.01);                     // f'(x) = 2*cos(2*x);
   rsPlotFunction(f, -10.0, +10.0, 1000);
 
-
+  f = [=](double x) { return x*x*x; };           // f(x)    = x^3
+  f = rsInverse(f);                              // f^-1(x) = cubeRoot(x)
+  rsPlotFunction(f, -5.0, +5.0, 1000);
 
   //f = &sin2;  // works
   //f = sin2;  // works

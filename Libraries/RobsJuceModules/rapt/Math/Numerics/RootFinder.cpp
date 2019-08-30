@@ -23,7 +23,7 @@ inline bool isConvergedToRoot(T xL, T xR, T yM, T xTol, T yTol)
 template<class T>
 T rsRootFinder<T>::bisection(const std::function<T(T)>& f, T xL, T xR, T y)
 {
-  static const int maxNumIterations = 60; // should be enough for double-precision
+  static const int maxNumIterations = 100; // 100 should be enough for double-precision
   T tol = std::numeric_limits<T>::epsilon();
   T fL  = f(xL) - y;
   T xM, fM;

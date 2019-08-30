@@ -101,6 +101,8 @@ template void RAPT::rsNaturalCubicSpline(const double *x, const double *y, int N
 
 template class RAPT::rsRationalFunction<double>;
 
+template class RAPT::rsRootFinder<double>;
+
 //-------------------------------------------------------------------------------------------------
 
 template void RAPT::rsWindowFunction::salFlatTopFast3(double* w, int N, bool normalize);

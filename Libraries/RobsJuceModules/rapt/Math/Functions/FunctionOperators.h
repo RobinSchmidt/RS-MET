@@ -12,7 +12,6 @@ inline std::function<T(T)> rsMakePeriodic(const std::function<T(T)>& func, T xMi
 {
   T P = xMax - xMin;  // period length
   return [=](T x) { T d = ceil((x-xMax) / P); return func(x-P*d); };
-
 }
 
 /** Returns the numerical derivative computed via a central difference using step-size h. */
@@ -28,6 +27,11 @@ inline std::function<T(T)> rsDerivative(const std::function<T(T)>& f, T h)
 //  the cancellation error (subtracting similar numbers) - so there should be an optimal choice 
 //  somewhere - maybe there's a formula for that optimal choice based on the machine epsilon and
 //  x and f(x)?
+// -advantage of forward/backward difference: only one evaluation of f, may be used at points where
+//  the function is undefined in either of the two directions from the point
+
+
+
 
 // todo: invert, numerical integral (definite and indefinite, the latter 
 // needs a lower limit as parameter, the former both limits), 
