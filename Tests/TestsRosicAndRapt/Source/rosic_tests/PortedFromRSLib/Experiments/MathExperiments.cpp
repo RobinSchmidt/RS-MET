@@ -2788,6 +2788,22 @@ inline std::function<T(T)> rsInverse(const std::function<T(T)>& f)
   // functions - otherwise, they are not uniqely invertible anyway
 }
 
+// computes the definite integral of f from a to b
+template<class T>
+T rsIntegral(const std::function<T(T)>& f, T a, T b)
+{
+  return 0;  // not yet implemented 
+// todo: use trapezoidal formula with refinement until the desired accuracy is obtained
+}
+
+// computes the indefinite integral of f with lower integration limit "a" (= integration constant)
+template<class T>
+T rsIntegral(const std::function<T(T)>& f, T a)
+{
+  return [=](T x) { return rsIntegral(f, a, x); };
+}
+
+
 void functionOperators()
 {
   // For testing various operators that take a function as input and return another functions as 

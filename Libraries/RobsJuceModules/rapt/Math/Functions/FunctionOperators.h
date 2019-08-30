@@ -35,4 +35,6 @@ inline std::function<T(T)> rsDerivative(const std::function<T(T)>& f, T h)
 
 // todo: invert, numerical integral (definite and indefinite, the latter 
 // needs a lower limit as parameter, the former both limits), 
+// maybe implement a convolution (by some specific function), i.e.
+// rsConvolve(const std::function<T(T)>& f, const std::function<T(T)>& g)
 // maybe de-inline
