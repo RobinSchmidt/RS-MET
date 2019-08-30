@@ -42,6 +42,24 @@ public:
   // when no convergence can be epxected (like when the function has poles like 1/x)
 
 
+  /** For a given function f = f(x) and target vaule y, finds a reasonable left bracket xL such 
+  that f(xL) <= y. You can pass an initial guess for xL as well as an initial distance d by which
+  xL will be decremented, in case, the condition f(xL) doesn't hold. */
+  //static inline T findLeftBracket(const std::function<T(T)>& f, T y, T xL = T(0), T d = T(1))
+  //{
+  //  while(f(xL) > y) { xL -= d; d *= 2; }
+  //  return xL;
+  //}
+  //// hmm - but this function works only for increasing functions
+
+  //static inline T findRightBracket(const std::function<T(T)>& f, T y, T xR = T(0), T d = T(1))
+  //{
+  //  while(f(xR) < y) { xR += d; d *= 2; }
+  //  return xR;
+  //}
+
+
+
   //static T modifiedFalsePosition(std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
 
 

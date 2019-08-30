@@ -2784,7 +2784,8 @@ inline std::function<T(T)> rsInverse(const std::function<T(T)>& f)
   };
   return fi;
   // todo: figure out, what it does when there are multiple solutions or no solution
-  // and make the behavior well defined in these cases
+  // and make the behavior well defined in these cases - or maybe we should assume monotonic
+  // functions - otherwise, they are not uniqely invertible anyway
 }
 
 void functionOperators()
@@ -2803,12 +2804,28 @@ void functionOperators()
   rsPlotFunction(f, -10.0, +10.0, 1000);
 
   f = [=](double x) { return sin(2*x); };        // f(x)  =   sin(2*x)
-  f = rsDerivative(f, 0.01);                     // f'(x) = 2*cos(2*x);
+  f = rsDerivative(f, 0.01);                     // f'(x) = 2*cos(2*x)
   rsPlotFunction(f, -10.0, +10.0, 1000);
+
+  // todo: implement this:
+  //f = [=](double x) { return sin(2*x); };        // f(x) = sin(2*x)
+  //f = rsAntiDerivative(f, 0);                    // F(x) = integral_0^x sin(2*x) = -1/2 * cos(2*x)
+  //rsPlotFunction(f, -10.0, +10.0, 1000);
+  // look up numerical recipies for numeric integration algorithms - before that, we need a 
+  // function for the definite integral - the antiderivative then uses that by passing x for the 
+  // upper integration limit
+
 
   f = [=](double x) { return x*x*x; };           // f(x)    = x^3
   f = rsInverse(f);                              // f^-1(x) = cubeRoot(x)
   rsPlotFunction(f, -5.0, +5.0, 1000);
+  // inversion needs some more care - we need to support (monotonically) decreasing functions as 
+  // well (we should automatically determine which case it is) - maybe have two versions
+  // rsInverseIncreasing/Decreasing and let rsInverse dispatch bewteen these two
+  // maybe the operator should also get a domain xL...xR as input to support functions that are
+  // not monotonic over all real numbers - for example: rsInverse(sin, -pi/2, +pi/2) should give
+  // the main branch of arcsin - it should trigger an assert when called with values that are not
+  // within the range -1...+1
 
   //f = &sin2;  // works
   //f = sin2;  // works
