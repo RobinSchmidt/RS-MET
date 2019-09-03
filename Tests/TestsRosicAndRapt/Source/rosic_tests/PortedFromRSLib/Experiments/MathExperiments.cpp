@@ -2753,9 +2753,6 @@ inline double sin2(double x)
   return sin(x);
 }
 
-
-
-
 // move to rsRootFinder:
 template<class T>
 T findLeftBracket(const std::function<T(T)>& f, T y, T xL = T(0), T d = T(1))
@@ -2783,9 +2780,15 @@ inline std::function<T(T)> rsInverse(const std::function<T(T)>& f)
     return x;
   };
   return fi;
-  // todo: figure out, what it does when there are multiple solutions or no solution
-  // and make the behavior well defined in these cases - or maybe we should assume monotonic
-  // functions - otherwise, they are not uniqely invertible anyway
+
+  // todo: 
+  // -make it work for monotonically decreasing functions (it currently works only for 
+  //  monotonically increasing function)
+  // -allow the user to restrict the domain such that we can pick a chunk of a function where it
+  //  is monotonic in case it is not monotonic over the whole real number line
+  // -figure out, what it does when there are multiple solutions or no solution
+  //  and make the behavior well defined in these cases - or maybe we should assume monotonic
+  //  functions - otherwise, they are not uniqely invertible anyway
 }
 
 // computes the definite integral of f from a to b using the trapezoidal rule with N steps
@@ -2810,17 +2813,19 @@ T rsIntegral(const std::function<T(T)>& f, T a, T b, int N = 16)
 
   // very preliminary - uses fixed N - todo: refine until desired accuracy is obtained
   // NR has code that can re-use the results of previous computations
+  // mayb implement the Romberg integration algorithm from NR
 }
 
-// computes the indefinite integral of f with lower integration limit "a" and integration 
-// constant "c"
+// Computes the indefinite integral "F" of the function "f" with lower integration limit "a" and 
+// integration constant "c" where c is the value of the antiderivative at x=a, such that F(a) = c
 template<class T>
 std::function<T(T)> rsAntiDerivative(const std::function<T(T)>& f, T a, T c, int N)
 {
   return [=](T x) { return rsIntegral(f, a, x, N) + c; };
 }
 // todo: remove N parameter - either replace with an accuracy parameter or (better) let the 
-// function figure out the number of steps that gives maxium accuracy
+// function figure out the number of steps that gives maxium accuracy or even better make accuracy
+// parameter optional
 
 
 void functionOperators()

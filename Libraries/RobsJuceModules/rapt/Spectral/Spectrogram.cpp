@@ -157,6 +157,33 @@ rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N
 }
 
 template<class T>
+void rsSpectrogram<T>::lowpass(rsMatrix<std::complex<T>>& s, int hi)
+{
+  int numFrames = s.getNumRows();
+  int numBins   = s.getNumColumns();
+  for(int i = 0; i < numFrames; i++)
+    for(int k = hi+1; k < numBins; k++)
+      s(i, k) = T(0);
+}
+
+template<class T>
+void rsSpectrogram<T>::highpass(rsMatrix<std::complex<T>>& s, int lo)
+{
+  int numFrames = s.getNumRows();
+  int numBins   = s.getNumColumns();
+  for(int i = 0; i < numFrames; i++)
+    for(int k = 0; k < lo; k++)
+      s(i, k) = T(0);
+}
+
+template<class T>
+void rsSpectrogram<T>::bandpass(rsMatrix<std::complex<T>>& s, int lo, int hi)
+{
+  lowpass( s, hi);
+  highpass(s, lo);
+}
+
+template<class T>
 std::vector<T> rsSpectrogram<T>::synthesize(const rsMatrix<std::complex<T>> &s)
 {
   // s: spectrogram

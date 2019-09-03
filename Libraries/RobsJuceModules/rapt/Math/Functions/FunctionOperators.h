@@ -30,7 +30,8 @@ inline std::function<T(T)> rsDerivative(const std::function<T(T)>& f, T h)
 //  x and f(x)?
 // -advantage of forward/backward difference: only one evaluation of f, may be used at points where
 //  the function is undefined in either of the two directions from the point
-// -maybe fit a parabola through x-h, h, x+h and take the derivative of that -> more accurate (?)
+// -maybe fit a parabola through x-h, x, x+h and take the derivative of that -> more accurate (?) 
+ // ..or maybe the contribution of the (x,f(x)) point cancels and it actually gives the same result?
 
 
 

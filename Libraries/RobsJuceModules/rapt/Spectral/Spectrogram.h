@@ -108,6 +108,10 @@ public:
 
   int getHopSize() const { return hopSize; }
 
+  /** Converts a physical frequency in Hz to an FFT bin index for the given sample-rate. This 
+  depends on our trafoSize setting and will return a real number. Client code should round the 
+  returned itself as appropriate. */
+  T frequencyToBinIndex(T freq, T sampleRate) const { return trafoSize*freq/sampleRate; }
 
   /** Returns the amplitude scale factor by which the outputs of shortTimeSpectrum() has to be 
   scaled to obtain the actual amplitude of a real sinusoid. This is used internally but made 
@@ -171,12 +175,16 @@ public:
   // maybe have a version NZ, ZZ, NN
   // moved to rsWindowFunction
 
+  /** Zeroes out all bins above "highestBinToKeep" (in all frames) */
+  static void lowpass(rsMatrix<std::complex<T>>& spectrogram, int highestBinToKeep);
+
+  /** Zeroes out all bins below "lowestBinToKeep" (in all frames) */
+  static void highpass(rsMatrix<std::complex<T>>& spectrogram, int lowestBinToKeep);
+
   /** Zeroes out all bin-values values except those in the range lowBin <= bin <= highBin. If 
   lowBin == 0 or highBin == numBins-1, you can also get lowpass- and highpass-filters, 
   respectively. */
-  //void bandpass(rsMatrix<std::complex<T>>& spectrogram, int lowBin, int highBin);
-
-
+  static void bandpass(rsMatrix<std::complex<T>>& spectrogram, int lowBin, int highBin);
 
   /** Given a complex spectrogram, this function synthesizes a signal using given synthesis
   window, blockSize and hopSize. You must also pass the analysis window that was used - this is
