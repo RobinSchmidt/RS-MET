@@ -222,6 +222,7 @@ void plotWindows()
 void spectrogramSine()
 {
   typedef RAPT::rsWindowFunction::WindowType WT;
+  WT W = WT::hanningZN;
   static const int B  = 512;            // blocksize
   static const int H  = B/4;            // hopsize
   static const int N  = 10000;          // number of samples in the test signal
@@ -230,8 +231,6 @@ void spectrogramSine()
   static const int K  = M/2 + 1;        // number of non-redundant bins
   double           fs = 44100;          // samplerate
   double           f  = 5000;           // sinusoid frequency
-  WT W = WT::hanningZN;
-
 
   // A hopsize of B/4 will result in a constant when overlapping successive frames, assuming that
   // the window is applied twice (once in the analysis stage and once in the synthesis stage). This
@@ -280,7 +279,7 @@ void spectrogramSine()
   // ...
 
   // plot the magnitude spectrogram (later: with or without reassignment):
-  //plotSpectrogram(F, K, dB, fs, H);
+  plotSpectrogram(F, K, dB, fs, H);
 
   // resynthesize and plot signal:
   std::vector<double> y  = sp.synthesize(s);
@@ -306,6 +305,65 @@ void spectrogramSine()
   MatrixTools::rsDeAllocateMatrix(mag, F, K);
   MatrixTools::rsDeAllocateMatrix(phs, F, K);
   MatrixTools::rsDeAllocateMatrix(dB,  F, K);
+}
+
+void spectrogramFilter()
+{
+  static const int N  = 10000;          // number of samples in the test signal
+  double sampleRate = 44100;
+  double splitFreq  = 1000;
+
+  int blockSize = 512;
+  int hopSize   = 256;
+  int trafoSize = 512;  // can be a multiple of blockSize -> zero-padding
+
+  // create the test signal:
+  typedef std::vector<double> Vec;
+  Vec x = createNoise(N, -0.5, 0.5);
+
+  // compute the complex spectrogram:
+  typedef RAPT::rsWindowFunction::WindowType WT;
+  WT W = WT::hanningZN;
+  rsSpectrogramD sp;
+  sp.setBlockAndTrafoSize(blockSize, trafoSize);
+  sp.setHopSize(hopSize);
+  sp.setAnalysisWindowType(W);
+  sp.setSynthesisWindowType(W); 
+  //sp.setOutputDemodulation(false); // with appropriate settings, demodulation should be superfluous
+  typedef rsMatrix<rsComplexDbl> Mat;
+  Mat s = sp.complexSpectrogram(&x[0], N);
+
+
+
+  // create highpassed and lowpassed versions of the spectrogram:
+
+  //Mat sl = s, sh = s;  // initialize with copies of the original
+  // due to a bug or design flaw, this doesn't work -  the matrix assignment operator doesn't 
+  // create a deep copy - todo: make a new, better matrix class in rapt
+
+  // workaround to create the deep copies
+  int numFrames = s.getNumRows();
+  int numBins   = sp.getNumNonRedundantBins();
+  Mat sl(numFrames, numBins); sl.copyDataFrom(s);
+  Mat sh(numFrames, numBins); sh.copyDataFrom(s);
+
+  int splitBin = round(sp.frequencyToBinIndex(splitFreq, sampleRate));
+  rsSpectrogramD::lowpass( sl, splitBin);
+  rsSpectrogramD::highpass(sh, splitBin+1);
+
+
+  // plot original, lowpassed and highpassed spectrograms:
+  plotSpectrogram(numFrames, numBins, s,  sampleRate, hopSize);
+  plotSpectrogram(numFrames, numBins, sl, sampleRate, hopSize);
+  plotSpectrogram(numFrames, numBins, sh, sampleRate, hopSize);
+
+  //plotSpectrogram(numFrames, numBins, std::complex<double> **spec, double sampleRate,
+  //  int hopSize, double dbMin = -100, double dbMax = +10);
+
+
+
+
+  int dummy = 0;
 }
 
 void sineParameterEstimation()

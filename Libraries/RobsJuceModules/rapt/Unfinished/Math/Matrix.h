@@ -156,6 +156,16 @@ public:
   }
   // untested
 
+
+  void copyDataFrom(const rsMatrix<T>& mat)
+  {
+    rsAssert(getNumRows()    == mat.getNumRows());
+    rsAssert(getNumColumns() == mat.getNumColumns());
+    for(int r = 0; r < data->numRows; r++)
+      for(int c = 0; c < data->numColumns; c++)
+        data->m[r][c] = mat.data->m[r][c];
+  }
+
   /** Initializes all elements with zero values. */
   // \todo use rsInitMatrix
   void initWithZeros()

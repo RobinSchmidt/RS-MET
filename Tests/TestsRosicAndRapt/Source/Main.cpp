@@ -234,7 +234,7 @@ int main(int argc, char* argv[])
   //primeDistribution();
   ////numberTheoreticTransform(); // triggers assert
   //variousFunctions();
-  functionOperators();
+  //functionOperators();
 
   // Analysis:
   //autoCorrelation();
@@ -370,6 +370,7 @@ int main(int argc, char* argv[])
   //phaseRepresentation();
   //grainRoundTrip();        // under construction
   //spectrogramSine();
+  spectrogramFilter();
   //sineParameterEstimation();
   //plotWindows();   // rename to plotOverlappingWindowSum
   //phaseInterpolation();

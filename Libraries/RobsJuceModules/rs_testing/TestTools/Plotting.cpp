@@ -194,6 +194,18 @@ void plotSpectrogram(int numFrames, int numBins, double **s, double fs, int H,
 }
 // maybe factor out a matrix plotting function
 
+void plotSpectrogram(int numFrames, int numBins, const rsMatrix<std::complex<double>>& spec, 
+  double sampleRate, int hopSize, double dbMin, double dbMax)
+{
+  double **dB;
+  MatrixTools::rsAllocateMatrix(dB, numFrames, numBins);
+  for(int i = 0; i < numFrames; i++)
+    for(int  j = 0; j < numBins; j++)
+      dB[i][j]  = rsMax( rsAmp2dB(abs(spec(i,j))) , dbMin);
+  plotSpectrogram(numFrames, numBins, dB, sampleRate, hopSize, dbMin, dbMax);
+  MatrixTools::rsDeAllocateMatrix(dB, numFrames, numBins);
+}
+
 
 void plotPhasogram(int numFrames, int numBins, double **phases, double sampleRate, int hopSize)
 {

@@ -7,6 +7,7 @@ void phaseRepresentation();
 void grainRoundTrip();        // under construction
 void plotWindows();
 void spectrogramSine();
+void spectrogramFilter();
 
 void sineParameterEstimation();
 
