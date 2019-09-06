@@ -100,11 +100,13 @@ public:
 
   //size_t getFftSize() const { return blockSize * zeroPaddingFactor; }
 
-  size_t getFftSize() const { return trafoSize; }
+  //size_t getFftSize() const { return trafoSize; }
+  int getFftSize() const { return trafoSize; }
   // rename to getTrafoSize
 
 
-  size_t getNumNonRedundantBins() const { return getFftSize()/2 + 1; }
+  //size_t getNumNonRedundantBins() const { return getFftSize()/2 + 1; }
+  int getNumNonRedundantBins() const { return getFftSize()/2 + 1; }
 
   int getHopSize() const { return hopSize; }
 

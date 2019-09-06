@@ -338,7 +338,7 @@ void spectrogramFilter()
   // create highpassed and lowpassed versions of the spectrogram:
 
   //Mat sl = s, sh = s;  // initialize with copies of the original
-  // due to a bug or design flaw, this doesn't work -  the matrix assignment operator doesn't 
+  // due to a bug or design flaw, this doesn't work - the matrix assignment operator doesn't 
   // create a deep copy - todo: make a new, better matrix class in rapt
 
   // workaround to create the deep copies
@@ -347,23 +347,28 @@ void spectrogramFilter()
   Mat sl(numFrames, numBins); sl.copyDataFrom(s);
   Mat sh(numFrames, numBins); sh.copyDataFrom(s);
 
-  int splitBin = round(sp.frequencyToBinIndex(splitFreq, sampleRate));
+  int splitBin = (int) round(sp.frequencyToBinIndex(splitFreq, sampleRate));
   rsSpectrogramD::lowpass( sl, splitBin);
   rsSpectrogramD::highpass(sh, splitBin+1);
-
 
   // plot original, lowpassed and highpassed spectrograms:
   plotSpectrogram(numFrames, numBins, s,  sampleRate, hopSize);
   plotSpectrogram(numFrames, numBins, sl, sampleRate, hopSize);
   plotSpectrogram(numFrames, numBins, sh, sampleRate, hopSize);
 
-  //plotSpectrogram(numFrames, numBins, std::complex<double> **spec, double sampleRate,
-  //  int hopSize, double dbMin = -100, double dbMax = +10);
 
 
 
 
-  int dummy = 0;
+  // resynthesize the lowpass and highpass part from the respective (partial) spectrograms:
+  Vec xl = sp.synthesize(sl);
+  Vec xh = sp.synthesize(sh);
+
+  // add the two parts together (they should sum up to the original signal) and compare to the
+  // original signal by computing an error signal (which should be all zeros up to roundoff):
+  Vec xr  = xl + xh;   // reconstructed signal x
+  Vec err = x - xr;    // reconstruction error
+  plotVector(err);     // ...looks good - around 3e-16
 }
 
 void sineParameterEstimation()
