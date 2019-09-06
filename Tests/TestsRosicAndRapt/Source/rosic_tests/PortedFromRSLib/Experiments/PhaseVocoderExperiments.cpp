@@ -343,7 +343,7 @@ void spectrogramFilter()
 
   // workaround to create the deep copies
   int numFrames = s.getNumRows();
-  int numBins   = sp.getNumNonRedundantBins();
+  int numBins   = sp.getNumNonRedundantBins();  // == s.getNumColumns()
   Mat sl(numFrames, numBins); sl.copyDataFrom(s);
   Mat sh(numFrames, numBins); sh.copyDataFrom(s);
 
