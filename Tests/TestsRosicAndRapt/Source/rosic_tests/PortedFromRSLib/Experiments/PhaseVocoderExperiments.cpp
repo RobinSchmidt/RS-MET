@@ -157,7 +157,7 @@ void cheby_win(double *out, int N, double atten)
 
 
 
-void plotWindows()
+void plotOverlappingWindowSum()
 {
   // Plots the overlapping windows an their sum
 

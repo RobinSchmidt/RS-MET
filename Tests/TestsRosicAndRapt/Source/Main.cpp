@@ -370,9 +370,9 @@ int main(int argc, char* argv[])
   //phaseRepresentation();
   //grainRoundTrip();        // under construction
   //spectrogramSine();
-  spectrogramFilter();
+  //spectrogramFilter();
   //sineParameterEstimation();
-  //plotWindows();   // rename to plotOverlappingWindowSum
+  plotOverlappingWindowSum();
   //phaseInterpolation();
   //sinusoidalSynthesis1();
   //sinusoidalSynthesis2();

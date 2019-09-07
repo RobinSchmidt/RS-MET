@@ -5,7 +5,7 @@
 void phaseRepresentation();
 
 void grainRoundTrip();        // under construction
-void plotWindows();
+void plotOverlappingWindowSum();
 void spectrogramSine();
 void spectrogramFilter();
 
