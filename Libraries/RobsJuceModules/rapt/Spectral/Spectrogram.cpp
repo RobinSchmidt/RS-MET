@@ -73,6 +73,26 @@ T rsSpectrogram<T>::getWindowSum(T *wa, T *ws, int B, int H)
   return s;
 }
 
+template<class T>
+std::vector<T> rsSpectrogram<T>::getRoundTripModulation(int F)
+{
+  //  F: number of frames
+
+  T*  wa = &analysisWindow[0];
+  T*  ws = &synthesisWindow[0];
+  int B  = blockSize;
+  int H  = hopSize;
+  int N = (F-1) * H + B/2;      // number of samples
+  std::vector<T> y(N);          // modulation signal
+  T *w = new T[B];              // product-window
+  for(int n = 0; n < B; n++)
+    w[n] = wa[n] * ws[n];
+  for(int i = 0; i < F; i++)
+    rsArray::addInto(y.data(), N, w, B, i*H-B/2);
+  delete[] w;
+  return y;
+}
+
 // Processing:
 
 // x: signal, N: number of samples, n: block center sample, X: complex short-time spectrum (output)
@@ -281,25 +301,7 @@ std::vector<T> rsSpectrogram<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &
   return y;
 }
 
-template<class T>
-std::vector<T> rsSpectrogram<T>::getRoundTripModulation(int F)
-{
-  //  F: number of frames
 
-  T*  wa = &analysisWindow[0];
-  T*  ws = &synthesisWindow[0];
-  int B  = blockSize;
-  int H  = hopSize;
-  int N = (F-1) * H + B/2;      // number of samples
-  std::vector<T> y(N);          // modulation signal
-  T *w = new T[B];              // product-window
-  for(int n = 0; n < B; n++)
-    w[n] = wa[n] * ws[n];
-  for(int i = 0; i < F; i++)
-    rsArray::addInto(y.data(), N, w, B, i*H-B/2);
-  delete[] w;
-  return y;
-}
 
 // Misc:
 

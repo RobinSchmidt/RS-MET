@@ -141,6 +141,10 @@ public:
   static void getLeftRightPaddingAmount(int blockSize, int trafoSize, int* left, int* right);
 
 
+
+
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
@@ -160,9 +164,18 @@ public:
   void prepareTrafoBuffer(const T* x, int N, int n, std::complex<T> *X);
 
 
+  /** Computes the amplitude modulation signal that would be imposed on a signal when doing an
+  analysis/synthesis roundtrip with the given analysis- and synthesis-windows and block- and
+  hop-size. This can be used for demodulating a resynthesized signal, making the
+  analysis/resynthesis/demodulation roundtrip a identity-operation (up to roundoff).
+  Note: In typical phase-vocoder implementations, these window-shapes and block- and hopsizes are
+  chosen such that this amplitude modulation signal comes out as a constant value (or, even better,
+  unity). To make the implementation more flexible with regard to the choice of these parameters,
+  this function can be can be used to get the modulation signal and divide by it for
+  demodulation. */
+  std::vector<T> getRoundTripModulation(int numFrames);
 
-
-
+  // is this formula also correct for odd fft sizes? verify?
 
 
   //-----------------------------------------------------------------------------------------------
@@ -221,19 +234,7 @@ public:
   in general. */
   std::vector<T> synthesizeRaw(const rsMatrix<std::complex<T>> &spectrogram);
 
-  /** Computes the amplitude modulation signal that would be imposed on a signal when doing an
-  analysis/synthesis roundtrip with the given analysis- and synthesis-windows and block- and
-  hop-size. This can be used for demodulating a resynthesized signal, making the
-  analysis/resynthesis/demodulation roundtrip a identity-operation (up to roundoff).
-  Note: In typical phase-vocoder implementations, these window-shapes and block- and hopsizes are
-  chosen such that this amplitude modulation signal comes out as a constant value (or, even better,
-  unity). To make the implementation more flexible with regard to the choice of these parameters,
-  this function can be can be used to get the modulation signal and divide by it for
-  demodulation. */
-  std::vector<T> getRoundTripModulation(int numFrames);
 
-
-    // is this formula also correct for odd fft sizes? verify?
 
   //-----------------------------------------------------------------------------------------------
   /** \name Misc */

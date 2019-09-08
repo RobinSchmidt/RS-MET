@@ -157,7 +157,7 @@ void cheby_win(double *out, int N, double atten)
 
 
 
-void plotWindows()
+void plotOverlappingWindowSum()
 {
   // Plots the overlapping windows an their sum
 
@@ -314,8 +314,8 @@ void spectrogramFilter()
   double splitFreq  = 1000;
 
   int blockSize = 512;
-  int hopSize   = 256;
-  int trafoSize = 512;  // can be a multiple of blockSize -> zero-padding
+  int hopSize   = blockSize/4;  // should be a power-of-2 fraction of the blockSize
+  int trafoSize = blockSize;    // can be a multiple of blockSize -> zero-padding
 
   // create the test signal:
   typedef std::vector<double> Vec;
@@ -367,8 +367,12 @@ void spectrogramFilter()
   // add the two parts together (they should sum up to the original signal) and compare to the
   // original signal by computing an error signal (which should be all zeros up to roundoff):
   Vec xr  = xl + xh;   // reconstructed signal x
-  Vec err = x - xr;    // reconstruction error
+  Vec err = x  - xr;   // reconstruction error
   plotVector(err);     // ...looks good - around 3e-16
+
+
+  Vec mod = sp.getRoundTripModulation(numFrames);
+  plotVector(mod);  // sums to 1.5 and there are fade-in/out artifacts -> fix this!
 }
 
 void sineParameterEstimation()
