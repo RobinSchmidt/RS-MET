@@ -14,13 +14,31 @@ class rsMatrixView
 
 public:
 
+  /** \name Construction/Destruction */
 
+
+
+
+  /**  */
+  rsMatrixView(int numRows = 0, int numColumns = 0, T* data = nullptr)
+  {
+    this->numRows = numRows;
+    this->numCols = numColumns;
+    d = data;
+  }
 
   /** \name Setup */
 
   inline void setAllValues(T value)
   {
-    rsArray::fillWithValue(d, int(N*M), value);
+    rsArray::fillWithValue(d, int(numRows * numCols), value);
+  }
+
+  inline void reshape(int newNumRows, int newNumColumns)
+  {
+    rsAssert(newNumRows*newNumColumns == numRows*numCols);
+    numRows = newNumRows;
+    numCols = newNumColumns;
   }
 
   // void setToIdentityMatrix(T scaler = 1);
@@ -31,7 +49,7 @@ public:
   /** Read and write access to matrix elements. */
   inline T& operator()(const int i, const int j)
   {
-    return d[M*i+j];
+    return d[numCols*i + j];
   }
 
 
@@ -40,7 +58,9 @@ protected:
 
   /** \name Data */
 
-  size_t N, M;    // number of rows and columns
+  //size_t N, M;    // number of rows and columns
+
+  int numRows, numCols;
   T *d;           // data pointer
 
 };
@@ -59,7 +79,7 @@ public:
 
 
   /** Standard constructor. You must pass the initial number of rows and columns */
-  rsMatrixNew(size_t numRows = 0, size_t numColumns = 0);
+  rsMatrixNew(int numRows = 0, int numColumns = 0);
   //rsMatrix(size_t numRows = 1, size_t numColumns = 1); // leads to memory leaks
 
  
@@ -79,7 +99,7 @@ public:
   /** Sets the number of rows and columns, this matrix should have. ToDo: provide a way to retain 
   the data (optionally) - what does std::vector's resize do? Does it retain data...but if it does,
   it would be useless anyway in case the number of columns changed. */
-  void setSize(size_t numRows, size_t numColumns);
+  void setSize(int numRows, int numColumns);
 
     
   /** \name Manipulations */

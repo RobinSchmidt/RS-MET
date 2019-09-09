@@ -1221,6 +1221,9 @@ void splineInterpolationAreaNormalized()
 // freedom (the monotonicity is kind of an additional constraint?), so we would have to use a 4th
 // order polynomial.
 
+
+
+
 // todo: implement trapezoidal rule a la numerical recipies and driver routine
 
 template<class T>
@@ -1236,11 +1239,12 @@ public:
       return s = T(0.5) * (b-a) * (f(a) + f(b));
     else 
     {
-      int i = 1;  // numIterations
-      for(int j = 1; j < n-1; j++)  
-        i <<= 1;                   // i *= 2?
-      // todo: use an integer-power function: i = 2^(n-1) or 2^n
+      //int i = 1;  // numIterations
+      //for(int j = 1; j < n-1; j++)  
+      //  i <<= 1;                   // i *= 2
+      //// todo: use an integer-power function: i = 2^(n-2)
 
+      int i = rsPowInt(2, n-2);
       T t   = T(i);
       T dx  = (b-a) / t;         // spacing of points to be added
       T x   = a + T(0.5) * dx;   // current evaluation point
@@ -1281,14 +1285,55 @@ T integrateTrapezoidal(const std::function<T(T)>& f, T a, T b)
   //rsError("integrateTrapezoidal failed to converge");
   return s;
 }
+// not recommended for production code - too inefficient (takes many stages)
+
+template<class T>
+T integrateSimpson(const std::function<T(T)>& f, T a, T b)
+{
+  T tol = T(100) * std::numeric_limits<T>::epsilon();
+  int minNumStages = 5;
+  int maxNumStages = 25;
+  rsTrapezoidalStage<T> stage;
+  T s, st, ost = T(0), os = T(0);
+
+  for(int j = 1; j <= maxNumStages; j++) {
+    st = stage.update(f, a, b, j); // trapezoidal sum
+    s  = (T(4)*st - ost)/T(3);     // simpson sum
+    if(j > minNumStages) {
+      if(rsAbs(s-os) < tol*rsAbs(os) || (s == T(0) && os == T(0)) ) // why the 2nd criterion?
+        return s;
+      os  = s;
+      ost = st;
+    }
+  }
+
+  //rsError("integrateTrapezoidal failed to converge");
+  return s;
+}
+// this doesn't semm to be much of an improvement over integrateTrapezoidal
+// try romberg integration and/or Ooura's routines: http://www.kurims.kyoto-u.ac.jp/~ooura/
 
 
 void numericIntegration()
 {
   std::function<double(double)> f;
-  f = [=](double x) { return sin(x); };
+  double a, b, I;
 
-  double I = integrateTrapezoidal(f, 0.0, PI); // equals 2
+  // integral_0^pi sin(x) dx = 2:
+  f = [=](double x) { return sin(x); };
+  a = 0;
+  b = PI;
+  I = integrateTrapezoidal(f, a, b);
+  I = integrateSimpson(    f, a, b);
+
+  // integral_0^1 4/(pi*(1+x^2)) = 1:
+  // wolfram alpha: integral 4/(pi*(1+x^2)) from 0 to 1
+  f = [=](double x) { return 4/(PI*(1+x*x)); };
+  a = 0;
+  b = 1;
+  I = integrateTrapezoidal(f, a, b);
+  I = integrateSimpson(    f, a, b);
+
 
   int dummy = 0;
 }

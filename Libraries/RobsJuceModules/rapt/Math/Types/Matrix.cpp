@@ -1,15 +1,15 @@
 template<class T>
-rsMatrixNew<T>::rsMatrixNew(size_t numRows, size_t numColumns)
+rsMatrixNew<T>::rsMatrixNew(int numRows, int numColumns)
 {
   setSize(numRows, numColumns);
 }
 
 template<class T>
-void rsMatrixNew<T>::setSize(size_t numRows, size_t numColumns)
+void rsMatrixNew<T>::setSize(int numRows, int numColumns)
 {
-  this->N = numRows;
-  this->M = numColumns;
-  data.resize(this->N * this->M);
+  this->numRows = numRows;
+  this->numCols = numColumns;
+  data.resize(this->numRows * this->numCols);
   if(data.size() > 0)
     this->d = &data[0];
   else

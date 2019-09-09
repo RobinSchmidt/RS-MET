@@ -4,4 +4,8 @@
 bool testMatrix();
 bool testMatrixArithmetic(std::string &reportString);
 
+
+bool testMatrixView();
+bool testMatrix2(); // test the new matrix class
+
 #endif
