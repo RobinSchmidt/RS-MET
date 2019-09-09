@@ -19,7 +19,10 @@ void hyperbolicFunctions();
 void splineInterpolationNonEquidistant();
 void rationalInterpolation();
 void splineInterpolationAreaNormalized();
-void numericDiffAndInt();
+void numericIntegration();
+void numericDiffAndInt();  // 
+
+
 void shiftPolynomial();
 //void stretchPolynomial();
 void monotonicPolynomials();

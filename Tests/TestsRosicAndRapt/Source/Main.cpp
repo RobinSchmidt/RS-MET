@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //runAllUnitTests();  // todo: merge with unit tests for RSLib
+  runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -208,7 +208,8 @@ int main(int argc, char* argv[])
   //splineInterpolationNonEquidistant();
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
-  //numericDiffAndInt();  // numeric differentiation and integration
+  //numericIntegration(); // a.k.a. numeric "quadrature"
+  //numericDiffAndInt();  // numeric differentiation and integration - rename to nonUniformArrayDiffAndInt
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header
   //monotonicPolynomials();
@@ -372,7 +373,7 @@ int main(int argc, char* argv[])
   //spectrogramSine();
   //spectrogramFilter();
   //sineParameterEstimation();
-  plotOverlappingWindowSum();
+  //plotOverlappingWindowSum();
   //phaseInterpolation();
   //sinusoidalSynthesis1();
   //sinusoidalSynthesis2();

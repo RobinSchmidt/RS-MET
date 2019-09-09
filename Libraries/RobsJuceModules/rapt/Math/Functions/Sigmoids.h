@@ -265,7 +265,8 @@ public:
 
   /** Sets the prototype sigmoid function. It is assumed that the prototype is bounded by +-1 and
   goes through the origin. */
-  void setPrototypeSigmoid(T (*newSigmoid)(T));
+  //void setPrototypeSigmoid(T (*newSigmoid)(T));  // old name
+  void setSigmoid(T (*newSigmoid)(T));
 
 
   /** \name Function Evaluation */

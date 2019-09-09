@@ -12,6 +12,10 @@ bool testMatrix()
   testResult &= testMatrixArithmetic(dummy);
   //...
 
+
+  testResult &= testMatrixView();
+  testResult &= testMatrix2();
+
   return testResult;
 }
 
@@ -277,7 +281,46 @@ bool testMatrixArithmetic(std::string &reportString)
   return testResult;
 }
 
+bool testMatrixView()
+{
+  std::string testName = "MatrixView";
+  bool r = true;  // est result
 
+  typedef rsMatrixView<double> MatrixView;
+
+  double A6[6] = { 1,2,3,4,5,6 }; // array of 6 elements
+
+  // 1 2 3
+  // 4 5 6
+  MatrixView m(2, 3, A6);
+  r &= m(0,0) == 1; r &= m(0,1) == 2; r &= m(0,2) == 3;
+  r &= m(1,0) == 4; r &= m(1,1) == 5; r &= m(1,2) == 6;
+
+  // 1 2 
+  // 3 4 
+  // 5 6
+  m.reshape(3, 2);
+  r &= m(0,0) == 1; r &= m(0,1) == 2; 
+  r &= m(1,0) == 3; r &= m(1,1) == 4;
+  r &= m(2,0) == 5; r &= m(2,1) == 6; 
+
+
+
+
+
+
+  return r;
+}
+
+bool testMatrix2()
+{
+  std::string testName = "Matrix2";
+  bool testResult = true;
+
+
+
+  return testResult;
+}
 
 
 

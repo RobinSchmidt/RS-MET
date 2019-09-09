@@ -15,6 +15,7 @@ GNUPlotter::GNUPlotter()
   // installation path of the GNUPlot executable:
   gnuplotPath = "C:/Program Files/gnuplot/bin/gnuplot.exe";
   //gnuplotPath = "C:/Program Files/gnuplot/bin/wgnuplot.exe";
+  //gnuplotPath = "C:/Octave/Octave-5.1.0.0/mingw64/bin/gnuplot.exe";
 
   // paths for data file and command batchfile:
   dataPath    = "C:/Temp/gnuplotData.dat";

@@ -1222,6 +1222,122 @@ void splineInterpolationAreaNormalized()
 // order polynomial.
 
 
+
+
+// todo: implement trapezoidal rule a la numerical recipies and driver routine
+
+template<class T>
+class rsTrapezoidalStage
+{
+
+public:
+
+  // maybe rename updateAndGetResult
+  T update(const std::function<T(T)>& f, T a, T b, int n)
+  {
+    if( n == 1 )
+      return s = T(0.5) * (b-a) * (f(a) + f(b));
+    else 
+    {
+      //int i = 1;  // numIterations
+      //for(int j = 1; j < n-1; j++)  
+      //  i <<= 1;                   // i *= 2
+      //// todo: use an integer-power function: i = 2^(n-2)
+
+      int i = rsPowInt(2, n-2);
+      T t   = T(i);
+      T dx  = (b-a) / t;         // spacing of points to be added
+      T x   = a + T(0.5) * dx;   // current evaluation point
+      T sum = T(0);              // rename to s (rename member s to "result" or something
+      for(int j = 1; j <= i; j++) {
+        x   += dx;
+        sum += f(x);
+      }
+      s = 0.5 * (s+(b-a)*sum/t); // update with refined value
+      return s;
+    }
+  }
+
+protected:
+
+  T s = T(0); 
+
+};
+
+template<class T>
+T integrateTrapezoidal(const std::function<T(T)>& f, T a, T b)
+{
+  T tol = T(100) * std::numeric_limits<T>::epsilon();
+  int minNumStages = 5;
+  int maxNumStages = 25;
+  rsTrapezoidalStage<T> stage;
+  T s, sOld = 0.0;
+
+  for(int j = 1; j <= maxNumStages; j++) {
+    s = stage.update(f, a, b, j);
+    if(j > minNumStages) {
+      if(rsAbs(s-sOld) < tol*rsAbs(sOld) || (s == T(0) && sOld == T(0)) ) // why the 2nd criterion?
+        return s;
+      sOld = s;
+    }
+  }
+
+  //rsError("integrateTrapezoidal failed to converge");
+  return s;
+}
+// not recommended for production code - too inefficient (takes many stages)
+
+template<class T>
+T integrateSimpson(const std::function<T(T)>& f, T a, T b)
+{
+  T tol = T(100) * std::numeric_limits<T>::epsilon();
+  int minNumStages = 5;
+  int maxNumStages = 25;
+  rsTrapezoidalStage<T> stage;
+  T s, st, ost = T(0), os = T(0);
+
+  for(int j = 1; j <= maxNumStages; j++) {
+    st = stage.update(f, a, b, j); // trapezoidal sum
+    s  = (T(4)*st - ost)/T(3);     // simpson sum
+    if(j > minNumStages) {
+      if(rsAbs(s-os) < tol*rsAbs(os) || (s == T(0) && os == T(0)) ) // why the 2nd criterion?
+        return s;
+      os  = s;
+      ost = st;
+    }
+  }
+
+  //rsError("integrateTrapezoidal failed to converge");
+  return s;
+}
+// this doesn't semm to be much of an improvement over integrateTrapezoidal
+// try romberg integration and/or Ooura's routines: http://www.kurims.kyoto-u.ac.jp/~ooura/
+
+
+void numericIntegration()
+{
+  std::function<double(double)> f;
+  double a, b, I;
+
+  // integral_0^pi sin(x) dx = 2:
+  f = [=](double x) { return sin(x); };
+  a = 0;
+  b = PI;
+  I = integrateTrapezoidal(f, a, b);
+  I = integrateSimpson(    f, a, b);
+
+  // integral_0^1 4/(pi*(1+x^2)) = 1:
+  // wolfram alpha: integral 4/(pi*(1+x^2)) from 0 to 1
+  f = [=](double x) { return 4/(PI*(1+x*x)); };
+  a = 0;
+  b = 1;
+  I = integrateTrapezoidal(f, a, b);
+  I = integrateSimpson(    f, a, b);
+
+
+  int dummy = 0;
+}
+
 void numericDiffAndInt()
 {
   // Test numerical differentiation and integration routines. We sample a sinewave at 
@@ -1291,7 +1407,8 @@ void numericDiffAndInt()
 // of course, this works only, if the sample-spacing is 1 - but the formula can be generalized:
 //   y[n] = y[n-1] + 0.5*dt * (x[n] + x[n-1])
 //   x[n] = (y[n] - y[n-1]) / (0.5*dt) - x[n-1]
-// where dt is the temporal spacing between sample x[n-1] and x[n]. The simplemost running-sum 
+// where dt is the temporal spacing between sample x[n-1] and x[n], i.e. dt = t[n] - t[n-1], if we have a 
+// t-array with time-stamps. The simplemost running-sum 
 // integrator and the corresponding differentiatior would be:
 //   y[n] = y[n-1] + dt * x[n]
 //   x[n] = (y[n] - y[n-1]) / dt
@@ -2875,7 +2992,15 @@ void functionOperators()
   // yep - hangs because the function is decreasing and the bracket-search assumes an increasing 
   // function
 
+  // even part:
+  f = [=](double x) { return exp(x); };          // f(x)  = e^x
+  f = rsEvenPart(f);                             // fe(x) = (e^x + e^-x) / 2 = cosh(x)
+  rsPlotFunction(f, -5.0, +5.0, 1000);
 
+  // odd part::
+  f = [=](double x) { return exp(x); };          // f(x)  = e^x
+  f = rsOddPart(f);                              // fo(x) = (e^x - e^-x) / 2 = sinh(x)
+  rsPlotFunction(f, -5.0, +5.0, 1000);
 
   //f = &sin2;  // works
   //f = sin2;  // works
