@@ -208,7 +208,8 @@ int main(int argc, char* argv[])
   //splineInterpolationNonEquidistant();
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
-  //numericDiffAndInt();  // numeric differentiation and integration
+  numericIntegration(); // a.k.a. numeric "quadrature"
+  //numericDiffAndInt();  // numeric differentiation and integration - rename to nonUniformArrayDiffAndInt
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header
   //monotonicPolynomials();
@@ -234,7 +235,7 @@ int main(int argc, char* argv[])
   //primeDistribution();
   ////numberTheoreticTransform(); // triggers assert
   //variousFunctions();
-  functionOperators();
+//  functionOperators();
 
   // Analysis:
   //autoCorrelation();

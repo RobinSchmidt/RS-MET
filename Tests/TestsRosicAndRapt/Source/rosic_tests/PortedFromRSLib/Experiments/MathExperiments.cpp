@@ -1221,6 +1221,14 @@ void splineInterpolationAreaNormalized()
 // freedom (the monotonicity is kind of an additional constraint?), so we would have to use a 4th
 // order polynomial.
 
+// todo: implement trapezoidal rule a la numerical recipies and driver routine
+
+void numericIntegration()
+{
+
+
+  int dummy = 0;
+}
 
 void numericDiffAndInt()
 {
@@ -1291,7 +1299,8 @@ void numericDiffAndInt()
 // of course, this works only, if the sample-spacing is 1 - but the formula can be generalized:
 //   y[n] = y[n-1] + 0.5*dt * (x[n] + x[n-1])
 //   x[n] = (y[n] - y[n-1]) / (0.5*dt) - x[n-1]
-// where dt is the temporal spacing between sample x[n-1] and x[n]. The simplemost running-sum 
+// where dt is the temporal spacing between sample x[n-1] and x[n], i.e. dt = t[n] - t[n-1], if we have a 
+// t-array with time-stamps. The simplemost running-sum 
 // integrator and the corresponding differentiatior would be:
 //   y[n] = y[n-1] + dt * x[n]
 //   x[n] = (y[n] - y[n-1]) / dt
