@@ -1223,9 +1223,72 @@ void splineInterpolationAreaNormalized()
 
 // todo: implement trapezoidal rule a la numerical recipies and driver routine
 
-void numericIntegration()
+template<class T>
+class rsTrapezoidalStage
 {
 
+public:
+
+  // maybe rename updateAndGetResult
+  T update(const std::function<T(T)>& f, T a, T b, int n)
+  {
+    if( n == 1 )
+      return s = T(0.5) * (b-a) * (f(a) + f(b));
+    else 
+    {
+      int i = 1;  // numIterations
+      for(int j = 1; j < n-1; j++)  
+        i <<= 1;                   // i *= 2?
+      // todo: use an integer-power function: i = 2^(n-1) or 2^n
+
+      T t   = T(i);
+      T dx  = (b-a) / t;         // spacing of points to be added
+      T x   = a + T(0.5) * dx;   // current evaluation point
+      T sum = T(0);              // rename to s (rename member s to "result" or something
+      for(int j = 1; j <= i; j++) {
+        x   += dx;
+        sum += f(x);
+      }
+      s = 0.5 * (s+(b-a)*sum/t); // update with refined value
+      return s;
+    }
+  }
+
+protected:
+
+  T s = T(0); 
+
+};
+
+template<class T>
+T integrateTrapezoidal(const std::function<T(T)>& f, T a, T b)
+{
+  T tol = T(100) * std::numeric_limits<T>::epsilon();
+  int minNumStages = 5;
+  int maxNumStages = 25;
+  rsTrapezoidalStage<T> stage;
+  T s, sOld = 0.0;
+
+  for(int j = 1; j <= maxNumStages; j++) {
+    s = stage.update(f, a, b, j);
+    if(j > minNumStages) {
+      if(rsAbs(s-sOld) < tol*rsAbs(sOld) || (s == T(0) && sOld == T(0)) ) // why the 2nd criterion?
+        return s;
+      sOld = s;
+    }
+  }
+
+  //rsError("integrateTrapezoidal failed to converge");
+  return s;
+}
+
+
+void numericIntegration()
+{
+  std::function<double(double)> f;
+  f = [=](double x) { return sin(x); };
+
+  double I = integrateTrapezoidal(f, 0.0, PI); // equals 2
 
   int dummy = 0;
 }
