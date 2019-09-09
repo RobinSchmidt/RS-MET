@@ -234,7 +234,7 @@ int main(int argc, char* argv[])
   //primeDistribution();
   ////numberTheoreticTransform(); // triggers assert
   //variousFunctions();
-  //functionOperators();
+  functionOperators();
 
   // Analysis:
   //autoCorrelation();
@@ -372,7 +372,7 @@ int main(int argc, char* argv[])
   //spectrogramSine();
   //spectrogramFilter();
   //sineParameterEstimation();
-  plotOverlappingWindowSum();
+  //plotOverlappingWindowSum();
   //phaseInterpolation();
   //sinusoidalSynthesis1();
   //sinusoidalSynthesis2();

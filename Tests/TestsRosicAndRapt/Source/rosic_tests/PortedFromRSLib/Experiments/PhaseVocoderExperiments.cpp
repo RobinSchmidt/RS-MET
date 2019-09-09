@@ -170,8 +170,13 @@ void plotOverlappingWindowSum()
 
   // create the window function:
   double wa[B], ws[B], w[B];
-  rsWindowFunction::hanningZN(wa, B);
-  rsWindowFunction::hanningZN(ws, B);
+
+  //rsWindowFunction::hanningZN(wa, B);
+  //rsWindowFunction::hanningZN(ws, B);
+
+  rsWindowFunction::blackman(wa, B);
+  rsWindowFunction::blackman(ws, B);
+
   RAPT::rsArray::multiply(wa, ws, w, B);
 
   // todo: try different window functions: Hmaming, Blackman, versions with both ends nonzero

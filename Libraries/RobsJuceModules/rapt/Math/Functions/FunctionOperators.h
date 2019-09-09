@@ -36,6 +36,9 @@ inline std::function<T(T)> rsDerivative(const std::function<T(T)>& f, T h)
 
 
 
+// -extract even and odd parts
+// -make scaled/shifted version(see class rsScaledAndShiftedSigmoid)
+
 // todo: invert, numerical integral (definite and indefinite, the latter 
 // needs a lower limit as parameter, the former both limits), 
 // maybe implement a convolution (by some specific function), i.e.

@@ -184,6 +184,9 @@ void rsSpectrogram<T>::lowpass(rsMatrix<std::complex<T>>& s, int hi)
   for(int i = 0; i < numFrames; i++)
     for(int k = hi+1; k < numBins; k++)
       s(i, k) = T(0);
+
+  // todo: maybe allow for a floating point cutoff value - the amplitude of the last bin would then
+  // be something between 0 and 1
 }
 
 template<class T>

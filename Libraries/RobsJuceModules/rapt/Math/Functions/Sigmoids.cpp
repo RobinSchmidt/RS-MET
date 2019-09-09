@@ -350,7 +350,7 @@ void rsScaledAndShiftedSigmoid<T>::setWidth(T newWidth)
 }
 
 template<class T>
-void rsScaledAndShiftedSigmoid<T>::setPrototypeSigmoid(T (*newSigmoid)(T))
+void rsScaledAndShiftedSigmoid<T>::setSigmoid(T (*newSigmoid)(T))
 {
   sigmoid = newSigmoid;
 }
