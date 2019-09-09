@@ -33,10 +33,22 @@ inline std::function<T(T)> rsDerivative(const std::function<T(T)>& f, T h)
 // -maybe fit a parabola through x-h, x, x+h and take the derivative of that -> more accurate (?) 
  // ..or maybe the contribution of the (x,f(x)) point cancels and it actually gives the same result?
 
+/** Extracts the even part of the function, i.e. the part with even symmetry (axial symmetry with 
+respect to the y-axis). */
+template<class T>
+inline std::function<T(T)> rsEvenPart(const std::function<T(T)>& f)
+{
+  return [=](T x) { return (f(x) + f(-x)) / 2; };
+}
 
+/** Extracts the odd part of the function, i.e. the part with odd symmetry (point symmetry with 
+respect to the origin). */
+template<class T>
+inline std::function<T(T)> rsOddPart(const std::function<T(T)>& f)
+{
+  return [=](T x) { return (f(x) - f(-x)) / 2; };
+}
 
-
-// -extract even and odd parts
 // -make scaled/shifted version(see class rsScaledAndShiftedSigmoid)
 
 // todo: invert, numerical integral (definite and indefinite, the latter 

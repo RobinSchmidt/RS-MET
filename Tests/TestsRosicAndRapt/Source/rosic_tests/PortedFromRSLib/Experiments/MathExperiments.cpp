@@ -2875,7 +2875,15 @@ void functionOperators()
   // yep - hangs because the function is decreasing and the bracket-search assumes an increasing 
   // function
 
+  // even part:
+  f = [=](double x) { return exp(x); };          // f(x)  = e^x
+  f = rsEvenPart(f);                             // fe(x) = (e^x + e^-x) / 2 = cosh(x)
+  rsPlotFunction(f, -5.0, +5.0, 1000);
 
+  // odd part::
+  f = [=](double x) { return exp(x); };          // f(x)  = e^x
+  f = rsOddPart(f);                              // fo(x) = (e^x - e^-x) / 2 = sinh(x)
+  rsPlotFunction(f, -5.0, +5.0, 1000);
 
   //f = &sin2;  // works
   //f = sin2;  // works
