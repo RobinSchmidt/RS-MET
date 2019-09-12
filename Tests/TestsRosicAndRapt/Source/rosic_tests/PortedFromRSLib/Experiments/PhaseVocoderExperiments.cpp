@@ -1775,6 +1775,13 @@ std::vector<double> attackDecaySine(int N, double frequency, double amplitude, d
   return y;
 }
 
+std::vector<double> rsRangeLinear(double min, double max, int N)
+{
+  std::vector<double> r(N);
+  RAPT::rsArray::fillWithRangeLinear(&r[0], N, min, max);
+  return r;
+}
+
 void amplitudeDeBeating()
 {
   // We create an attack/decay sine envelope superimposed with a decaying sine modulation/berating
@@ -1783,7 +1790,7 @@ void amplitudeDeBeating()
 
   int sampleRate = 44100;
   int hopSize    = 128;
-  int numFrames  = 1000;    // number of envelope frames
+  int numFrames  = 700;    // number of envelope frames
 
   double envAtt  = 0.2;     // attack for envelope in seconds
   double envDec  = 0.8;     // decay for envelope in seconds
@@ -1793,14 +1800,24 @@ void amplitudeDeBeating()
   double beatDec = 0.2;     // beating decay
   double beatAmt = 0.3;     // beating amount
 
+  // create test signal:
   double frameRate = sampleRate/hopSize;
   typedef std::vector<double> Vec;
   Vec ampEnv  = attackDecayEnvelope(numFrames, envAtt*frameRate, envDec*frameRate);
   Vec beating = attackDecaySine(numFrames, beatFrq, beatAmt, beatAtt, beatDec, 0.0, frameRate);
-  Vec env = ampEnv + beating;
+  Vec beatEnv = ampEnv + beating;
+
+  // remove the beating:
+  rsEnvelopeExtractor<double> envExtractor;
+  Vec time = rsRangeLinear(0.0, double(numFrames-1), numFrames);
+  Vec result(numFrames);
+  envExtractor.connectPeaks(&time[0], &beatEnv[0], &result[0], numFrames);
 
   //rsPlotVector(env);
-  rsPlotVectors(ampEnv, beating, env);
+  rsPlotVectors(ampEnv, beating, beatEnv, result);
+
+  // Observations
+  // -when the beating stops in the original, the de-beated envelope messes up
 }
 
 void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
