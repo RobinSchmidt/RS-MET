@@ -1790,7 +1790,7 @@ void amplitudeDeBeating()
 
   int sampleRate = 44100;
   int hopSize    = 128;
-  int numFrames  = 700;    // number of envelope frames
+  int numFrames  = 900;    // number of envelope frames
 
   double envAtt  = 0.2;     // attack for envelope in seconds
   double envDec  = 0.8;     // decay for envelope in seconds
@@ -1811,13 +1811,28 @@ void amplitudeDeBeating()
   rsEnvelopeExtractor<double> envExtractor;
   Vec time = rsRangeLinear(0.0, double(numFrames-1), numFrames);
   Vec result(numFrames);
+
+  typedef rsEnvelopeExtractor<double>::endPointModes EM;
+
+  //envExtractor.setStartMode(EM::ZERO_END);  
+  envExtractor.setEndMode(EM::ZERO_END);   // definitely better that extraploation but still not good enough
+  envExtractor.setMaxSampleSpacing(100);
+
   envExtractor.connectPeaks(&time[0], &beatEnv[0], &result[0], numFrames);
 
+
+
   //rsPlotVector(env);
-  rsPlotVectors(ampEnv, beating, beatEnv, result);
+  //rsPlotVectors(ampEnv, beating, beatEnv, result);
+  rsPlotVectors(beatEnv, result);
 
   // Observations
   // -when the beating stops in the original, the de-beated envelope messes up
+  // -we need a sort of minimum distance between datapoints in the result - we also need to make
+  //  sure that all values are positive...well, that will follow automatically, if we never 
+  //  extrapolate
+
+  // 
 }
 
 void harmonicDeBeating1() // rename to harmonicDeBeating2Sines

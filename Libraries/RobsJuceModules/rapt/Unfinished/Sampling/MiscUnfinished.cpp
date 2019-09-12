@@ -1603,6 +1603,10 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
   // skip the de-beating process
 
   setupEndValues(metaEnvTime, metaEnvValue, endTime);
+
+  // to do: fill up the metaEnv with more samples of the original env in regions where it is only 
+  // sparsely sampled due to absence of peak values - maybe we need some sort of minSampleDistance
+  // setting ...maybe this should be done before setupEndValues
 }
 
 template<class T>
@@ -1658,6 +1662,19 @@ void rsEnvelopeExtractor<T>::setupEndValues(
     rsAppend(envValues, rsMax(v, T(0)));
     rsAppend(envTimes, endTime);
   }
+}
+
+template<class T>
+void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
+  std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue)
+{
+  rsError("not yet implemented");
+
+  // todo: check for sparsely sampled areas and increase the sample-density such that we have at 
+  // least one sample within maxSpacing...i.e. the spacing of two successive metaEnvTime values 
+  // should be <= maxSpacing - if it isn't, insert further samples in between taken from the raw
+  // envelope
+
 }
 
 template<class T>
