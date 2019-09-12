@@ -1751,8 +1751,57 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 // look at files decompositionSteelGuitar002.m, testHarmonicAnalysis.M
 }
 
+// move to TestInputCreation:
+std::vector<double> attackDecayEnvelope(int N, double attackSamples, double decaySamples)
+{
+  std::vector<double> env(N);
+  rsModalFilterWithAttack<double, double> flt;
+  flt.setModalParameters(0.0, 1.0, attackSamples, decaySamples, 90.0, 1.0);
+  env[0] = flt.getSample(1);
+  for(int n = 1; n < N; n++)
+    env[n] = flt.getSample(0);
+  return env;
+}
 
+std::vector<double> attackDecaySine(int N, double frequency, double amplitude, double attack, 
+  double decay, double startPhase, double sampleRate)
+{
+  std::vector<double> y(N);
+  rsModalFilterWithAttack<double, double> flt;
+  flt.setModalParameters(frequency, amplitude, attack, decay, startPhase, sampleRate);
+  y[0] = flt.getSample(1);
+  for(int n = 1; n < N; n++)
+    y[n] = flt.getSample(0);
+  return y;
+}
 
+void amplitudeDeBeating()
+{
+  // We create an attack/decay sine envelope superimposed with a decaying sine modulation/berating
+  // envelope that decays faster than the first such that we see beating in the beginning but not 
+  // in the end. The goal is to get rid of the beating while still preserving the overall amp-env.
+
+  int sampleRate = 44100;
+  int hopSize    = 128;
+  int numFrames  = 1000;    // number of envelope frames
+
+  double envAtt  = 0.2;     // attack for envelope in seconds
+  double envDec  = 0.8;     // decay for envelope in seconds
+
+  double beatFrq = 9.0;     // beating freq in Hz
+  double beatAtt = 0.05;    // beating attack
+  double beatDec = 0.2;     // beating decay
+  double beatAmt = 0.3;     // beating amount
+
+  double frameRate = sampleRate/hopSize;
+  typedef std::vector<double> Vec;
+  Vec ampEnv  = attackDecayEnvelope(numFrames, envAtt*frameRate, envDec*frameRate);
+  Vec beating = attackDecaySine(numFrames, beatFrq, beatAmt, beatAtt, beatDec, 0.0, frameRate);
+  Vec env = ampEnv + beating;
+
+  //rsPlotVector(env);
+  rsPlotVectors(ampEnv, beating, env);
+}
 
 void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
 {
