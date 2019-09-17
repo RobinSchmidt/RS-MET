@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  runAllUnitTests();  // todo: merge with unit tests for RSLib
+  //runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -333,6 +333,7 @@ int main(int argc, char* argv[])
   // Misc Audio:
   //centroid();
   //cubicCrossfade();
+  //pythagoreanTuning();    // move to some music/music-theory section
   //recursiveSineSweep();
   //recursiveSineWithCubicPhase();
   //ringModNoise();
@@ -385,6 +386,7 @@ int main(int argc, char* argv[])
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
+  amplitudeDeBeating();
   //harmonicDeBeating1();
   //harmonicDeBeating2();
 

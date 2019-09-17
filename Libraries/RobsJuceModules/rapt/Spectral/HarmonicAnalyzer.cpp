@@ -49,7 +49,7 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
 
   // Find cycle marks and assign FFT blockSize:
   Vec cycleMarks = findCycleMarks(x, Nx);        // cycle marks
-  //plotSignalWithMarkers(x, Nx, &cycleMarks[0], (int) cycleMarks.size());
+  //rsPlotSignalWithMarkers(x, Nx, &cycleMarks[0], (int) cycleMarks.size());
   if(cycleMarks.size() < 2)
     return false;                                // report failure
   Vec cycleLengths = rsDifference(cycleMarks);   // cycle lengths
@@ -58,6 +58,7 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   //maxLength   = rsMax(maxLength, (Nx-1)-rsLast(cycleMarks)); // delta between end and last mark
   cycleLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
   setCycleLength(cycleLength);  // does also some buffer-re-allocation
+  //rsPlotVector(cycleLengths);
   //rsPlotVector(sampleRate/cycleLengths);
 
 
@@ -411,6 +412,11 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
   int numBins     = trafo.getBlockSize();  // number of FFT bins
   int numPartials = getNumHarmonics();     // number of (pseudo) harmonics
   int kHarm;                               // bin index where partial/harmonic is expected
+
+  if(numPartials == 0)
+    return; 
+    // fix crash - but probably, a situation like this should be avoided at a higher level         
+    // of the algo - i.e. make sure that all cycles have a length >= minLength or something
 
   if(zeroPad == 1 && cyclesPerBlock == 1) { 
     // old version (before multi-cycle and zero-padding support):

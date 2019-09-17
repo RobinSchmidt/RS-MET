@@ -918,7 +918,10 @@ public:
   //{ smoothingFreq = cutoff; smoothingOrder = numPasses; }
 
   /** Sets the sample-rate. This setting is relevant for the smoothing filter (if any). */
-  void setSampleRate(double newSampleRate) { sampleRate = newSampleRate; }
+  void setSampleRate(T newSampleRate) { sampleRate = newSampleRate; }
+
+  /** Not yet finished.... */
+  void setMaxSampleSpacing(T newDistance) { maxSpacing = newDistance;  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -984,6 +987,11 @@ protected:
 
   void setupEndValues(std::vector<T>& envTimes, std::vector<T>& envValues, T endTime);
 
+
+  void fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
+    std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue);
+  // not yet finished
+
   // void applySmoothing
 
   //int interpolationMode = rsInterpolatingFunction<T, T>::LINEAR;                // doesn't compile in gcc
@@ -998,6 +1006,9 @@ protected:
   int smoothingOrder = 0;
   T sampleRate       = 44100;
   T smoothingFreq    = 22050;
+  T maxSpacing       = 0;
+
+
   //T interpolationTension = T(0);
 };
 

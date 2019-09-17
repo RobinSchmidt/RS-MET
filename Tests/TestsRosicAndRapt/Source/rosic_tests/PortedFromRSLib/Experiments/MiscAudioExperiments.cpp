@@ -27,6 +27,30 @@ void cubicCrossfade()
   ////p.plotTwoFunctions(rsCubicFadeIn, rsCubicFadeOut, -0.5, 1.5);
 }
 
+template<class T>
+void getPythagoreanFreqRatios(T* r, int N)
+{
+  r[0] = T(1);
+  for(int i = 1; i < N; i++) {
+    r[i] = 1.5 * r[i-1];
+    while(r[i] > 2)
+      r[i] /= 2;
+  }
+  rsHeapSort(r, N);
+  // todo: implement this algo with rational numbers
+}
+
+void pythagoreanTuning()
+{
+  int N = 15;   // number of different notes - interesting values: 12, 53
+  std::vector<double> f(N+1);
+  getPythagoreanFreqRatios(&f[0], N);
+  f[N] = 2;
+  rsStemPlot(f);
+  //rsPlotVector(f);
+  // see: https://www.youtube.com/watch?v=IT9CPoe5LnM
+}
+
 void recursiveSineSweep()
 {
   // We create a linearly sweeeping complex exponential from which sine and cosine sweeps can be 

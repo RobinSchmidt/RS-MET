@@ -50,6 +50,8 @@ public:
   inline T& operator()(const int i, const int j)
   {
     return d[numCols*i + j];
+    // more general colStride*i + rowStride*j
+    // even more general: colOffset + colStride*i + (rowOffset + rowStride)*j
   }
 
 
