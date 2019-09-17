@@ -1691,6 +1691,7 @@ int rsBinarySearch(const T* A, T key, int imin, int imax)
   else
     return imin-1;
 }
+// move to SortAndSearch, write unit tests
 
 template<class T>
 int rsIndexOfClosestValueSorted(const T* a, int N, T val)
@@ -1701,7 +1702,7 @@ int rsIndexOfClosestValueSorted(const T* a, int N, T val)
       i++;
   return i;
 }
-// move to rsArray - write unit test - maybe comparea against more general function that doesn't
+// move to rsArray - write unit test - maybe compare against more general function that doesn't
 // assume the array to be sorted
 
 template<class T>
@@ -1714,44 +1715,25 @@ template<class T>
 void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue)
 {
-  //rsError("not yet implemented");
-
-  std::vector<T> tmpTime, tmpValue;  // temporary buffers for extra datapoints to be inserted
+  std::vector<T> tmpTime, tmpValue;   // buffers for extra datapoints to be inserted
   for(size_t i = 1; i < metaEnvTime.size(); i++) {
     T t1 = metaEnvTime[i];
     T t0 = metaEnvTime[i-1];
     T dt = t1 - t0;
-    if(dt > maxSpacing) { // we need insert extra datapoints
+    if(dt > maxSpacing) { // we need to insert extra datapoints between i-1 and i
       int numExtraPoints = (int) floor(dt/maxSpacing);  // verify floor ...maybe use ceil?
-
       tmpTime.resize(numExtraPoints);
       tmpValue.resize(numExtraPoints);
-      for(int j = 0; j < numExtraPoints; j++)
-      {
+      for(int j = 0; j < numExtraPoints; j++) {
         T t = t0 + (j+1) * (dt/(numExtraPoints+1));  // verify this formula
         int idx = rsIndexOfClosestValueSorted(rawEnvTime, rawEnvLength, t);
-        t   = rawEnvTime[idx];
-        T v = rawEnvValue[idx];
-        tmpTime[j]  = t;
-        tmpValue[j] = v;
+        tmpTime[j]  = rawEnvTime[idx];
+        tmpValue[j] = rawEnvValue[idx];
       }
       rsInsert(metaEnvTime,  tmpTime,  i);
       rsInsert(metaEnvValue, tmpValue, i);
-      int dummy = 0;
     }
   }
-  // needs tests
-
-
-
-
-  // todo: check for sparsely sampled areas and increase the sample-density such that we have at 
-  // least one sample within maxSpacing...i.e. the spacing of two successive metaEnvTime values 
-  // should be <= maxSpacing - if it isn't, insert further samples in between taken from the raw
-  // envelope
-
-  // ...maybe that should be done in interpolateEnvelope
-
 }
 
 template<class T>
