@@ -1814,8 +1814,8 @@ void amplitudeDeBeating()
 
   typedef rsEnvelopeExtractor<double>::endPointModes EM;
 
-  //envExtractor.setStartMode(EM::ZERO_END);  
-  envExtractor.setEndMode(EM::ZERO_END);   // definitely better that extraploation but still not good enough
+  envExtractor.setStartMode(EM::ZERO_END);  
+  envExtractor.setEndMode(EM::ZERO_END);   // definitely better than extraploation but still not good enough
   envExtractor.setMaxSampleSpacing(100);
 
   envExtractor.connectPeaks(&time[0], &beatEnv[0], &result[0], numFrames);

@@ -3767,6 +3767,8 @@ we have all the summands. maybe cast this problem in terms of prime the differen
 primes themselves (this will make the output prettier, so it might be easier to see a pattern). 
 maybe, we should also look at higher order differences
 */
+
+
 // Returns the last index in the ascendingly sorted array "A", where the value is less-than or
 // equal-to "key", if 0 is returned, and the 0th element does not equal "key", then all values in 
 // the array are either less or all are greater than key -> check this
@@ -3789,6 +3791,9 @@ rsUint32 rsBinarySearch(T A[], T key, rsUint32 imin, rsUint32 imax)
   else
     return imin-1;
 }
+// remove - use function from rapt
+
+
 double rsLogIntegral(double x)
 {
   // very quick and dirty implementation, realising:
