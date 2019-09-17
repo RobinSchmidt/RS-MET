@@ -1705,13 +1705,18 @@ int rsIndexOfClosestValueSorted(const T* a, int N, T val)
 // assume the array to be sorted
 
 template<class T>
+inline void rsInsert(std::vector<T>& v, const std::vector<T>& w, size_t index)
+{
+  v.insert(v.begin() + index, w.begin(), w.end());
+}
+
+template<class T>
 void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue)
 {
   //rsError("not yet implemented");
 
   std::vector<T> tmpTime, tmpValue;  // temporary buffers for extra datapoints to be inserted
-
   for(size_t i = 1; i < metaEnvTime.size(); i++) {
     T t1 = metaEnvTime[i];
     T t0 = metaEnvTime[i-1];
@@ -1727,23 +1732,15 @@ void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEn
         int idx = rsIndexOfClosestValueSorted(rawEnvTime, rawEnvLength, t);
         t   = rawEnvTime[idx];
         T v = rawEnvValue[idx];
-
-
-
-        //T v = rsInterpolateLinear(rawEnvTime, rawEnvValue, rawEnvLength, t);
-          // todo: maybe pass an initial guess for where the raw-env readout position is to the 
-          // interpolating function for optimization (otherwise, it does a binary search)
-
-
+        tmpTime[j]  = t;
+        tmpValue[j] = v;
       }
-
-
-
-  
+      rsInsert(metaEnvTime,  tmpTime,  i);
+      rsInsert(metaEnvValue, tmpValue, i);
       int dummy = 0;
     }
   }
-
+  // needs tests
 
 
 

@@ -1805,19 +1805,17 @@ void amplitudeDeBeating()
   typedef std::vector<double> Vec;
   Vec ampEnv  = attackDecayEnvelope(numFrames, envAtt*frameRate, envDec*frameRate);
   Vec beating = attackDecaySine(numFrames, beatFrq, beatAmt, beatAtt, beatDec, 0.0, frameRate);
+  //rsReverse(beating); // test
   Vec beatEnv = ampEnv + beating;
 
   // remove the beating:
-  rsEnvelopeExtractor<double> envExtractor;
+  typedef rsEnvelopeExtractor<double>::endPointModes EM;
   Vec time = rsRangeLinear(0.0, double(numFrames-1), numFrames);
   Vec result(numFrames);
-
-  typedef rsEnvelopeExtractor<double>::endPointModes EM;
-
+  rsEnvelopeExtractor<double> envExtractor;
   envExtractor.setStartMode(EM::ZERO_END);  
   envExtractor.setEndMode(EM::ZERO_END);   // definitely better than extraploation but still not good enough
-  envExtractor.setMaxSampleSpacing(100);
-
+  envExtractor.setMaxSampleSpacing(100);   // should be >= beatingPeriod
   envExtractor.connectPeaks(&time[0], &beatEnv[0], &result[0], numFrames);
 
 
@@ -1832,7 +1830,8 @@ void amplitudeDeBeating()
   //  sure that all values are positive...well, that will follow automatically, if we never 
   //  extrapolate
 
-  // 
+  // todo: test other situations, where the beating occurs only in the middle, at the end, start 
+  // and end, etc.
 }
 
 void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
