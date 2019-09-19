@@ -198,7 +198,7 @@ int main(int argc, char* argv[])
   //pentaDiagnonalMatrix2();
   //minSqrdDifsForFixSums();
   //minSqrdCurvForFixSums();
-  //binomialDistribution();
+  binomialDistribution();
   //sineParameters();
   //bandLimitedStep();
   //naturalCubicSpline();
@@ -386,7 +386,7 @@ int main(int argc, char* argv[])
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
-  amplitudeDeBeating();
+//  amplitudeDeBeating();
   //harmonicDeBeating1();
   //harmonicDeBeating2();
 

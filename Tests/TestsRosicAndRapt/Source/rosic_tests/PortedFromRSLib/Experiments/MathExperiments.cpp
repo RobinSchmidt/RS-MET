@@ -550,14 +550,30 @@ void minSqrdCurvForFixSums()
 }
 
 
+// uses the recursive formula found on page 1170 in 
+// Mathematical Methods for Physics and Engineering (Riley, Hobson, Bence), 3rd Edition
+template<class T>
+void rsBinomialDistribution2(T* P, int n, T p)
+{
+  P[0] = pow(p, n);
+  T r  = p/(1-p);
+  for(int k = 0; k < n-1; k++)
+    P[k+1] = r * P[k] * (n-k) / (k+1);  // Eq. 30.95
+}
+// would perhaps be nice to use with a rational number type for T
+
+
 void binomialDistribution()
 {
-  int    n = 20;                       // number of coin tosses
-  double p = 0.5;                      // probability that the result of a single toss is "heads"
-  vector<double> P(n+1);               // probability of seeing P[k] heads in n tosses
-  RAPT::rsBinomialDistribution(&P[0], n, p); // compute probabilities
+  int    n = 20;                        // number of coin tosses
+  double p = 0.5;                       // probability that the result of a single toss is "heads"
+  vector<double> P(n+1), Q(n+1);        // probability of seeing P[k] heads in n tosses
+  rsBinomialDistribution( &P[0], n, p); // compute probabilities
+  rsBinomialDistribution2(&Q[0], n, p); // dito, but uses another algorithm/formula
+
   GNUPlotter plt;
   plt.addDataArrays(n+1, &P[0]);
+  plt.addDataArrays(n+1, &Q[0]);
   plt.plot();
 }
 
@@ -3767,6 +3783,8 @@ we have all the summands. maybe cast this problem in terms of prime the differen
 primes themselves (this will make the output prettier, so it might be easier to see a pattern). 
 maybe, we should also look at higher order differences
 */
+
+
 // Returns the last index in the ascendingly sorted array "A", where the value is less-than or
 // equal-to "key", if 0 is returned, and the 0th element does not equal "key", then all values in 
 // the array are either less or all are greater than key -> check this
@@ -3789,6 +3807,9 @@ rsUint32 rsBinarySearch(T A[], T key, rsUint32 imin, rsUint32 imax)
   else
     return imin-1;
 }
+// remove - use function from rapt
+
+
 double rsLogIntegral(double x)
 {
   // very quick and dirty implementation, realising:

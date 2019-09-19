@@ -987,10 +987,12 @@ protected:
 
   void setupEndValues(std::vector<T>& envTimes, std::vector<T>& envValues, T endTime);
 
-
+  /** Fills up sparsely sampled areas in the meta-envelope by adding extra datapoints (taken from 
+  the raw envelope) such that the distance between two successive samples in the meta env is at 
+  most maxSpacing. */
   void fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
     std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue);
-  // not yet finished
+  // needs tests
 
   // void applySmoothing
 

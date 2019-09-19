@@ -1604,9 +1604,13 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
 
   setupEndValues(metaEnvTime, metaEnvValue, endTime);
 
-  // to do: fill up the metaEnv with more samples of the original env in regions where it is only 
+
+
+  // fill up the metaEnv with more samples of the original env in regions where it is only 
   // sparsely sampled due to absence of peak values - maybe we need some sort of minSampleDistance
-  // setting ...maybe this should be done before setupEndValues
+  // setting:
+  fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
+  // maybe this should be done before setupEndValues?
 }
 
 template<class T>
@@ -1664,17 +1668,72 @@ void rsEnvelopeExtractor<T>::setupEndValues(
   }
 }
 
+// Returns the last index in the ascendingly sorted array "A", where the value is less-than or
+// equal-to "key", if 0 is returned, and the 0th element does not equal "key", then all values in 
+// the array are either less or all are greater than key -> check this
+template<class T>
+int rsBinarySearch(const T* A, T key, int imin, int imax)
+{
+  while( imin < imax ) {
+
+    int imid = imin/2 + imax/2; 
+    // divide before add to avoid overflow  ...hmm - is this a good idea? 
+    // (5+3)/2 = 8/2 = 4 but 5/2 + 3/2 = 2 + 1 = 3 with integer division
+
+    rsAssert(imid < imax);
+    if( A[imid] < key )
+      imin = imid + 1;
+    else
+      imax = imid;
+  }
+  if(A[imin] == key || imin == 0)
+    return imin;
+  else
+    return imin-1;
+}
+// move to SortAndSearch, write unit tests
+
+template<class T>
+int rsIndexOfClosestValueSorted(const T* a, int N, T val)
+{
+  int i = rsBinarySearch(a, val, 0, N-1);
+  if(i < N-1) 
+    if( rsAbs(a[i]-val) > rsAbs(a[i+1]-val) )
+      i++;
+  return i;
+}
+// move to rsArray - write unit test - maybe compare against more general function that doesn't
+// assume the array to be sorted
+
+template<class T>
+inline void rsInsert(std::vector<T>& v, const std::vector<T>& w, size_t index)
+{
+  v.insert(v.begin() + index, w.begin(), w.end());
+}
+
 template<class T>
 void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue)
 {
-  rsError("not yet implemented");
-
-  // todo: check for sparsely sampled areas and increase the sample-density such that we have at 
-  // least one sample within maxSpacing...i.e. the spacing of two successive metaEnvTime values 
-  // should be <= maxSpacing - if it isn't, insert further samples in between taken from the raw
-  // envelope
-
+  std::vector<T> tmpTime, tmpValue;   // buffers for extra datapoints to be inserted
+  for(size_t i = 1; i < metaEnvTime.size(); i++) {
+    T t1 = metaEnvTime[i];
+    T t0 = metaEnvTime[i-1];
+    T dt = t1 - t0;
+    if(dt > maxSpacing) { // we need to insert extra datapoints between i-1 and i
+      int numExtraPoints = (int) floor(dt/maxSpacing);  // verify floor ...maybe use ceil?
+      tmpTime.resize(numExtraPoints);
+      tmpValue.resize(numExtraPoints);
+      for(int j = 0; j < numExtraPoints; j++) {
+        T t = t0 + (j+1) * (dt/(numExtraPoints+1));  // verify this formula
+        int idx = rsIndexOfClosestValueSorted(rawEnvTime, rawEnvLength, t);
+        tmpTime[j]  = rawEnvTime[idx];
+        tmpValue[j] = rawEnvValue[idx];
+      }
+      rsInsert(metaEnvTime,  tmpTime,  i);
+      rsInsert(metaEnvValue, tmpValue, i);
+    }
+  }
 }
 
 template<class T>
@@ -1789,7 +1848,7 @@ void rsSmoothSineEnvelope(T *y, int N, T f, T fs, T s)
   T a[3], b[3]; // filter coeffs
   if( s > 0.0 && f/s < 0.5*fs )
   {
-    rsBiquadDesigner::calculateFirstOrderLowpassCoeffs(b[0], b[1], b[2], a[1], a[2], 1.0/fs, f/s);
+    rsBiquadDesigner::calculateFirstOrderLowpassCoeffs(b[0], b[1], b[2], a[1], a[2], T(1.0/fs), T(f/s));
     rsArray::negate(a, a, 3);
     a[0] = 1.0;
     rsArray::filter(y, N, y, N, b, 1, a, 1);
