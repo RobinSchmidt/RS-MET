@@ -1789,7 +1789,7 @@ void rsSmoothSineEnvelope(T *y, int N, T f, T fs, T s)
   T a[3], b[3]; // filter coeffs
   if( s > 0.0 && f/s < 0.5*fs )
   {
-    rsBiquadDesigner::calculateFirstOrderLowpassCoeffs(b[0], b[1], b[2], a[1], a[2], 1.0/fs, f/s);
+    rsBiquadDesigner::calculateFirstOrderLowpassCoeffs(b[0], b[1], b[2], a[1], a[2], T(1.0/fs), T(f/s));
     rsArray::negate(a, a, 3);
     a[0] = 1.0;
     rsArray::filter(y, N, y, N, b, 1, a, 1);
