@@ -21,6 +21,10 @@ P[k] = B(n,k) * p^k * (1-p)^(n-k) where B(n,k) is the binomial coefficient "n-ch
 only up to n = 34 - above that, internal overflow occurs. */
 template<class TUInt>
 void rsBinomialDistribution(double *P, TUInt n, double p);
+// todo: maybe use the recursive algorithm (see function binomialDistribution math experiments 
+// -> more efficient and avoids overflow - but may introduce roundoff error, unless used with 
+// exact rational numbers) ...this implementation here should then probably used only for 
+// prototype and test code and the recursive algo for production
 
 /** Kronecker delta function. Returns 1, if i == j and 0 otherwise. */
 template<class TInt>
