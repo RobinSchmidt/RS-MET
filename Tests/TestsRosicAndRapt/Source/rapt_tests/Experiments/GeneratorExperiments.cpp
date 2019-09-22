@@ -1591,6 +1591,82 @@ void particleSystem()
   //  -maybe we should apply the stepSize to the velocity update?
 }
 
+
+// https://www.youtube.com/watch?v=1VPfZ_XzisU
+// https://en.wikipedia.org/wiki/Tennis_racket_theorem
+// https://arxiv.org/pdf/1606.08237.pdf
+void tennisRacket()
+{
+  // Numerically integrates the system of differential equations describing the angular velocities 
+  // of a rirgid object about its 3 pricipal axes of rotation. Rotation around the axis with the 
+  // intermediate moment of inertia is unstable....
+
+  // User parameters:
+  int N = 5000;       // number of samples
+  double h = 0.01;    // step-size ("delta-t")
+  double I1, I2, I3;  // the 3 moments inertia
+  I1 = 4;
+  I2 = 2;
+  I3 = 1;
+  double w1, w2, w3;  // the 3 (initial) angular velocities
+  w1 = 0.01;
+  w2 = 1;
+  w3 = 0.0;
+
+  // create time axis and vector to hold the results (wi as functions of time):
+  std::vector<double> t(N), W1(N), W2(N), W3(N);
+  double a1, a2, a3;  // the 3 angular accelerations
+  double k1, k2, k3;
+  k1 = (I2-I3)/I1;
+  k2 = (I3-I1)/I2;
+  k3 = (I1-I2)/I3;
+
+  // Use forward Euler method for integrating the ODE system:
+  for(int i = 0; i < N; i++)
+  {
+    // compute absolute time and record angular velocities:
+    t[i]  = i*h;
+    W1[i] = w1;
+    W2[i] = w2;
+    W3[i] = w3;
+
+    // compute angular accelerations:
+    a1 = k1*w2*w3;
+    a2 = k2*w3*w1;
+    a3 = k3*w1*w2;
+
+    // update angular velocities:
+    w1 += h*a1;
+    w2 += h*a2;
+    w3 += h*a3;
+  }
+
+  // Plot w1,w2,w3 as functions of time:
+  GNUPlotter plt;
+  plt.addDataArrays(N, &t[0], &W1[0], &W2[0], &W3[0]);
+  plt.plot();
+
+  // Observations:
+  // -if there's a small initial w1 or w3 component, the instability let's the w2 (blue) flip back 
+  //  and forth
+  // -the excursions w3 (green) are greater than those of w1 (black)
+  // -the difference in the strength of these excursions depends of the ratio of I1 and I3
+  // -in case of an initial w1 component, the w1 excursions are always positive and the w3 
+  //  excursions alternate
+  // -in case of an initial w3 component, the w1 excursions alternate and the w3 excursion are 
+  //  always positive
+  // -choosing I1=4,I2=5,I3=1 (i.e. the middle I is greatest), we get a stable rotation, as the 
+  //  theory predicts (w2 stays constant) 
+  //  -there is some (sinusodial?) wobble between w1 and w3 - they seem to exchange energy
+  // -choosing I1=4,I2=0.5,I3=1 (i.e. the middle I is smallest), w2 wobbles a little bit, w1 and w3
+  //  also wobble but with unequal amounts (w3 wobbles more)
+
+  // todo: figure out effects of having initial nonzero values for both, w1 and w3 
+}
+
+
+
+
 void bouncillator()
 {
   rsBouncillator<float> rb;
