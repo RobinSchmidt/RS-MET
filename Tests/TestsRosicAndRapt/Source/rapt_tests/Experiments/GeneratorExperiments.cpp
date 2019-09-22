@@ -1597,7 +1597,7 @@ void tennisRacket()
   // of a rigid object about its 3 principal axes of rotation. Rotation around the axis with the 
   // intermediate moment of inertia is unstable and flips over periodically whenever there is a 
   // small amount of initial angular velocity along any of the other two axes. It's an unstable
-  // equlibrium of the Euler equations.
+  // equilibrium of the Euler equations.
   // see:
   // https://en.wikipedia.org/wiki/Tennis_racket_theorem
   // https://en.wikipedia.org/wiki/Euler%27s_equations_(rigid_body_dynamics)
@@ -1605,7 +1605,7 @@ void tennisRacket()
   // https://arxiv.org/pdf/1606.08237.pdf
 
   // User parameters:
-  int N = 5000;       // number of samples
+  int N = 8000;       // number of samples
   double h = 0.01;    // step-size ("delta-t")
   double I1, I2, I3;  // the 3 moments inertia
   I1 = 4;
@@ -1615,6 +1615,11 @@ void tennisRacket()
   w1 = 0.01;
   w2 = 1;
   w3 = 0.0;
+
+  // coefficients for the extra terms:
+  double p = -0.01; // a small negative number leads to some asymmetry (and decay, which can 
+                    // probably be compensated by enforcing constant rotational energy and/or
+                    // angular momentum)
 
   // create time axis and vectors to hold the results (w1,w2,w3 as functions of time):
   std::vector<double> t(N), W1(N), W2(N), W3(N);
@@ -1636,7 +1641,7 @@ void tennisRacket()
 
     // compute angular accelerations:
     a1 = k1*w2*w3;
-    a2 = k2*w3*w1;
+    a2 = k2*w3*w1 + p*w2;
     a3 = k3*w1*w2;
 
     // update angular velocities:
@@ -1653,7 +1658,7 @@ void tennisRacket()
   // Observations:
   // -if there's a small initial w1 or w3 component, the instability let's the w2 (blue) flip back 
   //  and forth
-  // -the excursions w3 (green) are greater than those of w1 (black)
+  // -the excursions of w3 (green) are greater than those of w1 (black)
   // -the difference in the strength of these excursions depends of the ratio of I1 and I3
   // -in case of an initial w1 component, the w1 excursions are always positive and the w3 
   //  excursions alternate
@@ -1661,7 +1666,7 @@ void tennisRacket()
   //  always positive
   // -choosing I1=4,I2=5,I3=1 (i.e. the middle I is greatest), we get a stable rotation, as the 
   //  theory predicts (w2 stays constant) 
-  //  -there is some (sinusodial?) wobble between w1 and w3 - they seem to exchange energy
+  //  -there is some (sinusoidal?) wobble between w1 and w3 - they seem to exchange energy
   // -choosing I1=4,I2=0.5,I3=1 (i.e. the middle I is smallest), w2 wobbles a little bit, w1 and w3
   //  also wobble but with unequal amounts (w3 wobbles more)
 
@@ -1674,6 +1679,7 @@ void tennisRacket()
   // -maybe make a second implementation using vectors (i.e. rsVector3D), cross-products, etc.
   // -i guess, the instability around the intermediate axis is due to k2 being negative while k1,k3
   //  are positive?
+  // -make another function with extra terms
 }
 
 
