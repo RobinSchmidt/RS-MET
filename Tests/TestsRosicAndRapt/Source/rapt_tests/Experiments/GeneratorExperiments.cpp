@@ -1591,15 +1591,18 @@ void particleSystem()
   //  -maybe we should apply the stepSize to the velocity update?
 }
 
-
-// https://www.youtube.com/watch?v=1VPfZ_XzisU
-// https://en.wikipedia.org/wiki/Tennis_racket_theorem
-// https://arxiv.org/pdf/1606.08237.pdf
 void tennisRacket()
 {
   // Numerically integrates the system of differential equations describing the angular velocities 
-  // of a rirgid object about its 3 pricipal axes of rotation. Rotation around the axis with the 
-  // intermediate moment of inertia is unstable....
+  // of a rigid object about its 3 principal axes of rotation. Rotation around the axis with the 
+  // intermediate moment of inertia is unstable and flips over periodically whenever there is a 
+  // small amount of initial angular velocity along any of the other two axes. It's an unstable
+  // equlibrium of the Euler equations.
+  // see:
+  // https://en.wikipedia.org/wiki/Tennis_racket_theorem
+  // https://en.wikipedia.org/wiki/Euler%27s_equations_(rigid_body_dynamics)
+  // https://www.youtube.com/watch?v=1VPfZ_XzisU
+  // https://arxiv.org/pdf/1606.08237.pdf
 
   // User parameters:
   int N = 5000;       // number of samples
@@ -1613,7 +1616,7 @@ void tennisRacket()
   w2 = 1;
   w3 = 0.0;
 
-  // create time axis and vector to hold the results (wi as functions of time):
+  // create time axis and vectors to hold the results (w1,w2,w3 as functions of time):
   std::vector<double> t(N), W1(N), W2(N), W3(N);
   double a1, a2, a3;  // the 3 angular accelerations
   double k1, k2, k3;
@@ -1621,7 +1624,8 @@ void tennisRacket()
   k2 = (I3-I1)/I2;
   k3 = (I1-I2)/I3;
 
-  // Use forward Euler method for integrating the ODE system:
+  // Use forward Euler method to integrate the ODE system of the Euler rotation equations 
+  // (...Euler is every-fucking-where):
   for(int i = 0; i < N; i++)
   {
     // compute absolute time and record angular velocities:
@@ -1653,7 +1657,7 @@ void tennisRacket()
   // -the difference in the strength of these excursions depends of the ratio of I1 and I3
   // -in case of an initial w1 component, the w1 excursions are always positive and the w3 
   //  excursions alternate
-  // -in case of an initial w3 component, the w1 excursions alternate and the w3 excursion are 
+  // -in case of an initial w3 component, the w1 excursions alternate and the w3 excursions are 
   //  always positive
   // -choosing I1=4,I2=5,I3=1 (i.e. the middle I is greatest), we get a stable rotation, as the 
   //  theory predicts (w2 stays constant) 
@@ -1661,7 +1665,15 @@ void tennisRacket()
   // -choosing I1=4,I2=0.5,I3=1 (i.e. the middle I is smallest), w2 wobbles a little bit, w1 and w3
   //  also wobble but with unequal amounts (w3 wobbles more)
 
-  // todo: figure out effects of having initial nonzero values for both, w1 and w3 
+  // todo: 
+  // -figure out effects of having initial nonzero values for both, w1 and w3 
+  // -compute angular momentum and rotational energy (as functions of time) - they should remain
+  //  constant
+  // -it seems, the rotation gets slightly stronger over time, presumably because of numerical 
+  //  errors - maybe rescale all angular velocities to maintain a constant rotational energy
+  // -maybe make a second implementation using vectors (i.e. rsVector3D), cross-products, etc.
+  // -i guess, the instability around the intermediate axis is due to k2 being negative while k1,k3
+  //  are positive?
 }
 
 
