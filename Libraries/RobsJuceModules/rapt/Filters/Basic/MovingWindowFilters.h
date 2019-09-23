@@ -6,7 +6,11 @@
 x[n], x[n-1],..., x[n-k] and extracts the maximum value in this range of samples. The algorithm is
 based on a double ended queue and has an amortized complexity of O(1) per sample (a naive
 implementation would have complexity O(k) per sample). For an explanation of the algorithm,
-see: https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm  */
+see: https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm  
+
+see also here:
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=465829 
+*/
 
 template<class T>
 class rsMovingMaximumFilter

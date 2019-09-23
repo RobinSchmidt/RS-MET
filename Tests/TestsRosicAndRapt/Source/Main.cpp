@@ -102,6 +102,8 @@ int main(int argc, char* argv[])
   //heatEquation1D();
   //particleForceDistanceLaw();
   //particleSystem();
+  //tennisRacket();
+  tennisRacket2();
 
   // Generators:
   //blit();
@@ -198,7 +200,7 @@ int main(int argc, char* argv[])
   //pentaDiagnonalMatrix2();
   //minSqrdDifsForFixSums();
   //minSqrdCurvForFixSums();
-  binomialDistribution();
+  //binomialDistribution();
   //sineParameters();
   //bandLimitedStep();
   //naturalCubicSpline();

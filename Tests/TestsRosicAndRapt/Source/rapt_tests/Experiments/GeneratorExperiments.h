@@ -1,10 +1,12 @@
 #ifndef RAPT_GENERATOREXPERIMENTS_H
 #define RAPT_GENERATOREXPERIMENTS_H
 
+// move to PhysicsExperiments:
 void heatEquation1D();
 void particleForceDistanceLaw();
-void particleSystem();            // move to PhysicsExperiments
-
+void particleSystem();            
+void tennisRacket();
+void tennisRacket2();
 
 void blit();
 void blep();
