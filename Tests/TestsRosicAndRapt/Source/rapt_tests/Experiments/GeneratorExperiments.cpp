@@ -1591,6 +1591,155 @@ void particleSystem()
   //  -maybe we should apply the stepSize to the velocity update?
 }
 
+void tennisRacket()
+{
+  // Numerically integrates the system of differential equations describing the angular velocities 
+  // of a rigid object about its 3 principal axes of rotation. Rotation around the axis with the 
+  // intermediate moment of inertia is unstable and flips over periodically whenever there is a 
+  // small amount of initial angular velocity along any of the other two axes. It's an unstable
+  // equilibrium of the Euler equations.
+  // see:
+  // https://en.wikipedia.org/wiki/Tennis_racket_theorem
+  // https://en.wikipedia.org/wiki/Euler%27s_equations_(rigid_body_dynamics)
+  // https://www.youtube.com/watch?v=1VPfZ_XzisU
+  // https://arxiv.org/pdf/1606.08237.pdf
+
+  // User parameters:
+  int N = 5000;       // number of samples
+  double h = 0.01;    // step-size ("delta-t")
+  double I1, I2, I3;  // the 3 moments inertia
+  I1 = 4;
+  I2 = 2;
+  I3 = 1;
+  double w1, w2, w3;  // the 3 (initial) angular velocities (with respect to the principal axes)
+  w1 = 0.01;
+  w2 = 1;
+  w3 = 0.0;
+  bool renormalize = true; // renormalize rotational energy in each step (counteract numeric drift)
+
+  // coefficients for the creative extra terms:
+  double p = 0.0;   // a small negative number (-0.01) leads to some asymmetry (and decay, which 
+                    // can probably be compensated by enforcing constant rotational energy and/or
+                    // angular momentum)
+  // move this into a 2nd implementation with more creative add-ons
+
+  // create time axis and vectors to hold the results (w1,w2,w3 as functions of time):
+  std::vector<double> t(N), W1(N), W2(N), W3(N);
+  double a1, a2, a3;  // the 3 angular accelerations
+  double E, E0;       // rotational energy and its initial value
+  double k1, k2, k3;  // multipliers resulting from the moments of inertia
+  k1 = (I2-I3)/I1;
+  k2 = (I3-I1)/I2;
+  k3 = (I1-I2)/I3;
+  E0 = (I1*w1*w1 + I2*w2*w2 + I3*w3*w3)/2; // https://en.wikipedia.org/wiki/Moment_of_inertia#Kinetic_energy_2
+
+  // Use forward Euler method to integrate the ODE system of the Euler rotation equations 
+  // (...Euler is every-fucking-where):
+  for(int i = 0; i < N; i++)
+  {
+    // compute absolute time and record angular velocities:
+    t[i]  = i*h;
+    W1[i] = w1;
+    W2[i] = w2;
+    W3[i] = w3;
+
+    // compute angular accelerations:
+    a1 = k1*w2*w3;
+    a2 = k2*w3*w1 + p*w2;
+    a3 = k3*w1*w2;
+
+    // update angular velocities:
+    w1 += h*a1;
+    w2 += h*a2;
+    w3 += h*a3;
+
+    // optionally renormalize rotational energy:
+    E = (I1*w1*w1 + I2*w2*w2 + I3*w3*w3)/2;
+    if(renormalize) {
+      double r = sqrt(E0/E);
+      w1 *= r;
+      w2 *= r;
+      w3 *= r;
+    }
+  }
+
+  // Plot w1,w2,w3 as functions of time:
+  GNUPlotter plt;
+  plt.addDataArrays(N, &t[0], &W1[0], &W2[0], &W3[0]);
+  plt.plot();
+
+  //rosic::writeToMonoWaveFile("TennisRacket.wav", &W2[0], N, 44100);
+
+  // Observations:
+  // -if there's a small initial w1 or w3 component, the instability lets the w2 component (blue) 
+  //  flip back and forth periodically
+  // -the excursions of w3 (green) are greater than those of w1 (black)
+  // -the difference in the strength of these excursions depends of the ratio of I1 and I3
+  // -in case of an initial w1 component, the w1 excursions are always positive and the w3 
+  //  excursions alternate
+  // -in case of an initial w3 component, the w1 excursions alternate and the w3 excursions are 
+  //  always positive
+  // -choosing I1=4,I2=5,I3=1 (i.e. the middle I is greatest), we get a stable rotation, as the 
+  //  theory predicts (w2 stays constant) 
+  //  -there is some (sinusoidal?) wobble between w1 and w3 - they seem to exchange energy
+  // -choosing I1=4,I2=0.5,I3=1 (i.e. the middle I is smallest), w2 wobbles a little bit, w1 and w3
+  //  also wobble but with unequal amounts (w3 wobbles more)
+  // -i guess, the instability around the intermediate axis is due to k2 being negative while k1,k3
+  //  are positive?
+  // -using I=(8,4,1) instead of I=(4,2,1) results in an increase of frequency of the flips
+  //  -guess: is the frequency proportional to the magnitude to the vector valued moment of inertia 
+  //   sqrt(I1^2 + I2^2 + I3^2)
+  // -the frequency of the flips seems to go up with the length of the initial angular velocity 
+  //  vector but also with the ratio of the initial disturbance to w2 (figure out details)
+
+  // todo:
+  // -figure out effects of having initial nonzero values for both, w1 and w3 
+  // -figure out effects of the sign(s) of the initial angular velocities
+  // -compute angular momentum and rotational energy (as functions of time) - they should remain
+  //  constant
+  // -it seems, the rotation gets slightly stronger over time, presumably because of numerical 
+  //  errors - maybe rescale all angular velocities at each time-step to maintain a constant 
+  //  rotational energy
+  // -maybe make a second implementation using vectors (i.e. rsVector3D), cross-products, etc.
+  // -make another function with extra terms
+  // -figure out the formula for the angular momentum in the fixed "lab" reference frame - maybe 
+  //  enforce this to stay constant
+  // -implement the version of the equation that includes external torques - can be used to process
+  //  input signals instead of just generating a signal from nothing
+}
+
+// see also:
+// https://en.wikipedia.org/wiki/Moment_of_inertia
+// https://en.wikipedia.org/wiki/Poinsot%27s_ellipsoid
+
+
+void tennisRacket2()
+{
+  // In contrast to tennisRacket, we use vectors here and introduce some additional tweaks in an 
+  // attempt to provide a musically viable set of user parameters so this thing can be used as a 
+  // waveform generator or resonator.
+
+  // User parameters:
+  typedef rsVector3D<double> Vec;
+  int    N = 5000;    // number of samples
+  double h = 0.01;    // step-size ("delta-t")
+  Vec I(   4, 2, 1);  // moments of inertia along principa axes
+  Vec w(0.01, 1, 0);  // initial angular velocities
+
+
+
+
+  int dummy = 0;
+
+
+
+
+
+  //...
+
+}
+
+
 void bouncillator()
 {
   rsBouncillator<float> rb;
