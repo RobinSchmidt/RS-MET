@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
   //heatEquation1D();
   //particleForceDistanceLaw();
   //particleSystem();
-  //tennisRacket();
+  tennisRacket();
   tennisRacket2();
 
   // Generators:

@@ -1711,6 +1711,31 @@ void tennisRacket()
 // see also:
 // https://en.wikipedia.org/wiki/Moment_of_inertia
 // https://en.wikipedia.org/wiki/Poinsot%27s_ellipsoid
+// https://en.wikipedia.org/wiki/Polhode
+
+template<class T>
+T rotationalEnergy(const rsVector3D<T>& I, const rsVector3D<T>& w)
+{
+  return T(0.5) * (I.x*w.x*w.x + I.y*w.y*w.y + I.z*w.z*w.z);
+  // https://en.wikipedia.org/wiki/Moment_of_inertia#Kinetic_energy_2
+}
+
+template<class T>
+void plotVectorComponents(std::vector<T>& t, std::vector<rsVector3D<T>>& v)
+{
+  int N = (int) t.size();
+  rsAssert((int)v.size() == N);
+  std::vector<T> x(N), y(N), z(N);
+  for(int n = 0; n < N; n++) {
+    x[n] = v[n].x;
+    y[n] = v[n].y;
+    z[n] = v[n].z;
+  }
+  GNUPlotter plt;
+  plt.addDataArrays(N, &t[0], &x[0], &y[0], &z[0]);
+  plt.plot();
+}
+// move to rapt, make input vectors const (requires changes to GNUPlotter)
 
 
 void tennisRacket2()
@@ -1721,22 +1746,47 @@ void tennisRacket2()
 
   // User parameters:
   typedef rsVector3D<double> Vec;
-  int    N = 5000;    // number of samples
-  double h = 0.01;    // step-size ("delta-t")
-  Vec I(   4, 2, 1);  // moments of inertia along principa axes
-  Vec w(0.01, 1, 0);  // initial angular velocities
+  int    N = 5000;          // number of samples
+  double h = 0.01;          // step-size ("delta-t")
+  Vec I(   4, 2, 1);        // moments of inertia along principa axes
+  Vec w(0.01, 1, 0);        // initial angular velocities
+  bool renormalize = true;  // keep energy constant
 
 
+  // integrate ODE system via forward Euler method :
+  Vec a;                     // angular acceleration
+  Vec M(0, 0, 0);            // external torque vector (zero at the moment)
+  std::vector<double> t(N);  // time axis
+  std::vector<Vec>    W(N);  // vectorial angular velocity as function of time
+  double E;                  // rotational energy...
+  double E0 = rotationalEnergy(I, w); //...and its initial value
+  for(int i = 0; i < N; i++)
+  {
+    // compute absolute time and record angular velocity vector:
+    t[i] = i*h;
+    W[i] = w;
+
+    // compute angular acceleration vector:
+    a.x = (M.x - (I.z - I.y)*w.y*w.z) / I.x;
+    a.y = (M.y - (I.x - I.z)*w.z*w.x) / I.y;
+    a.z = (M.z - (I.y - I.x)*w.x*w.y) / I.z;
+    // formula from https://en.wikipedia.org/wiki/Euler%27s_equations_(rigid_body_dynamics)
 
 
-  int dummy = 0;
+    // todo: add experimental extra terms to the angular acceleration...
 
 
+    // update angular velocity vector:
+    w += h*a;
+
+    // optionally renormalize rotational energy:
+    E = rotationalEnergy(I, w);
+    if(renormalize)
+      w *= sqrt(E0/E);
+  }
 
 
-
-  //...
-
+  plotVectorComponents(t, W);
 }
 
 
