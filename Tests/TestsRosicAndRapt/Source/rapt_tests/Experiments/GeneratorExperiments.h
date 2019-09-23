@@ -6,7 +6,7 @@ void heatEquation1D();
 void particleForceDistanceLaw();
 void particleSystem();            
 void tennisRacket();
-
+void tennisRacket2();
 
 void blit();
 void blep();

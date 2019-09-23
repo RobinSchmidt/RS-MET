@@ -1611,7 +1611,7 @@ void tennisRacket()
   I1 = 4;
   I2 = 2;
   I3 = 1;
-  double w1, w2, w3;  // the 3 (initial) angular velocities
+  double w1, w2, w3;  // the 3 (initial) angular velocities (with respect to the principal axes)
   w1 = 0.01;
   w2 = 1;
   w3 = 0.0;
@@ -1718,6 +1718,21 @@ void tennisRacket2()
   // In contrast to tennisRacket, we use vectors here and introduce some additional tweaks in an 
   // attempt to provide a musically viable set of user parameters so this thing can be used as a 
   // waveform generator or resonator.
+
+  // User parameters:
+  typedef rsVector3D<double> Vec;
+  int    N = 5000;    // number of samples
+  double h = 0.01;    // step-size ("delta-t")
+  Vec I(   4, 2, 1);  // moments of inertia along principa axes
+  Vec w(0.01, 1, 0);  // initial angular velocities
+
+
+
+
+  int dummy = 0;
+
+
+
 
 
   //...
