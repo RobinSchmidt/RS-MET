@@ -7,6 +7,8 @@ void particleForceDistanceLaw();
 void particleSystem();            
 void tennisRacket();
 void tennisRacket2();
+void tennisRacket3();
+void tennisRacketFreq();
 
 void blit();
 void blep();

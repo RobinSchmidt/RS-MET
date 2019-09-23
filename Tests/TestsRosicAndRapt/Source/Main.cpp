@@ -103,7 +103,9 @@ int main(int argc, char* argv[])
   //particleForceDistanceLaw();
   //particleSystem();
   //tennisRacket();
-  tennisRacket2();
+  //tennisRacket2();
+  //tennisRacket3();
+  tennisRacketFreq();
 
   // Generators:
   //blit();

@@ -1608,9 +1608,10 @@ void tennisRacket()
   int N = 5000;       // number of samples
   double h = 0.01;    // step-size ("delta-t")
   double I1, I2, I3;  // the 3 moments inertia
-  I1 = 4;
-  I2 = 2;
-  I3 = 1;
+  double c = 2;       // ratio of I1/I2 and I2/I3
+  I1 =  c;
+  I2 =  1;
+  I3 =  1/c;
   double w1, w2, w3;  // the 3 (initial) angular velocities (with respect to the principal axes)
   w1 = 0.01;
   w2 = 1;
@@ -1692,20 +1693,27 @@ void tennisRacket()
   // -the frequency of the flips seems to go up with the length of the initial angular velocity 
   //  vector but also with the ratio of the initial disturbance to w2 (figure out details)
 
+
+
   // todo:
+  // -try to figure out, how the frequency of the flips depends on the various parameters - can we 
+  //  find a formula - or even better, a sort of inverse formula that let's us dial in the 
+  //  frequency as user parameter?
+  //  -nope: I=(4,2,1) has the same frequency as I=(8,4,2), so the absolute numbers seem irrelevant
+  //  -I=(16,4,2) has much higher frequency than I=(8,4,2)
+  //  -try I = (c,1,1/c) and figure out frequency f as function of c (make plots)
+  //   -c=1 -> f=0
+
+  //  ...maybe it depends on the total mass or the norm of the inertia vector?
   // -figure out effects of having initial nonzero values for both, w1 and w3 
   // -figure out effects of the sign(s) of the initial angular velocities
   // -compute angular momentum and rotational energy (as functions of time) - they should remain
   //  constant
-  // -it seems, the rotation gets slightly stronger over time, presumably because of numerical 
-  //  errors - maybe rescale all angular velocities at each time-step to maintain a constant 
-  //  rotational energy
-  // -maybe make a second implementation using vectors (i.e. rsVector3D), cross-products, etc.
-  // -make another function with extra terms
   // -figure out the formula for the angular momentum in the fixed "lab" reference frame - maybe 
   //  enforce this to stay constant
-  // -implement the version of the equation that includes external torques - can be used to process
-  //  input signals instead of just generating a signal from nothing
+
+  // -according to this https://arxiv.org/pdf/1606.08237.pdf (section 3), the system has as analytic 
+  //  solutions the jacobi elliptic functions cn,sn,dn - plot them, too
 }
 
 // see also:
@@ -1802,6 +1810,88 @@ void tennisRacket2()
   plotVectorComponents(t, W);
 }
 
+void tennisRacket3()
+{
+  // This produces the same plot as the functions above but uses the rsTennisRacket class
+
+  int N = 8000; 
+  double h = 0.01;
+  rsTennisRacket<double> tr;
+  tr.setInertiaRatio(2);
+  tr.setState(0.01, 1, 0);  // initial state
+  tr.setStepSize(h);
+
+  std::vector<double> t(N), w1(N), w2(N), w3(N);
+  for(int n = 0; n < N; n++) {
+    t[n]  = n*h;
+    w1[n] = tr.getW1();
+    w2[n] = tr.getW2();
+    w3[n] = tr.getW3();
+    tr.updateState(0, 0, 0);
+  }
+
+  GNUPlotter plt;
+  plt.plotFunctionTables(N, &t[0], &w1[0], &w2[0], &w3[0]);
+}
+
+// todo: make a function tennisRacketFreqs that plots the frequency or period of the flipping
+// against the inertia ratio - goal: figure out how the inertia ratio controls the freq
+
+double tennisRacketPeriod(rsTennisRacket<double>& tr)
+{
+  // todo: estimate period of the tennis racket by measuring the distance between two upward
+  // zero crossings...
+
+  int first = -1, second = -1;  // sample instants of zero crossings
+  double x1 = tr.getSample(0);
+  int n = 0;
+  while(second == -1) {
+    double x  = tr.getSample(0);
+    if(x1 <= 0 && x > 0) // zero crossing found
+    {
+      if(first == -1)
+        first = n;
+      else
+        second = n;
+    }
+    x1 = x;
+    n++;
+  }
+  return second - first;
+
+  // we could refine this to estimate zeros with subsample precision - but that may be overkill 
+  // here
+}
+
+void tennisRacketFreq()
+{
+  // We plot the frequency of the flipping as function of the inertia ratio
+
+
+  rsTennisRacket<double> tr;
+  tr.setStepSize(0.01);
+
+  std::vector<double> r = { 1.125,1.25,1.5,1.75,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20 };
+  //std::vector<double> r = { 2,4,8,16,32,64 };
+  int N = (int) r.size();
+  std::vector<double> p(N), f(N); // period and frequency
+
+  for(int i = 0; i < N; i++)
+  {
+    tr.setInertiaRatio(r[i]);
+    tr.setState(0.01, 1, 0);  // initial state
+    p[i] = tennisRacketPeriod(tr);
+    f[i] = 1/p[i];
+  }
+
+  GNUPlotter plt;
+  //plt.plotFunctionTables(N, &r[0], &p[0]);
+  plt.plotFunctionTables(N, &r[0], &f[0]);
+
+  // It looks similar to a straight line, but not quite...
+
+  // maybe plot the numerical derivative
+}
 
 void bouncillator()
 {

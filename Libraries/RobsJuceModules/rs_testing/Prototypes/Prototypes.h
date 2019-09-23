@@ -117,6 +117,102 @@ References:
 void cheby_win(double *out, int N, double atten);
 
 
+//=================================================================================================
+
+template<class T>
+class rsTennisRacket
+{
+
+
+public:
+
+  /** \name Setup */
+
+  /** Sets the ratio of the moments of inertia. This determines the frequency of the flips....
+  todo: have a function setFrequency */
+  void setInertiaRatio(T newRatio)
+  {
+    // maybe wrap into if(newRatio != ratio):
+    ratio = newRatio;
+    I1 = ratio;
+    // I2 = 1;  // always
+    I3 = T(1) / ratio;
+  }
+
+  /** Sets the current state consisting of the angular velocities along the 3 principal axes. */
+  void setState(T w1, T w2, T w3)
+  {
+    this->w1 = w1;
+    this->w2 = w2;
+    this->w3 = w3;
+  }
+
+  /** Sets the step size for the numerical integration scheme */
+  void setStepSize(T newSize)
+  {
+    h = newSize;
+  }
+
+
+  /** \name Inquiry */
+
+  T getW1() const { return w1; }
+  T getW2() const { return w2; }
+  T getW3() const { return w3; }
+
+
+
+  /** \name Processing */
+
+  void updateState(T M1, T M2, T M3)
+  {
+    // compute angular acceleration vector:
+    T a1 = (M1 - (I3 - I2)*w2*w3) / I1;
+    T a2 = (M2 - (I1 - I3)*w3*w1) / I2;
+    T a3 = (M3 - (I2 - I1)*w1*w2) / I3;
+    // formula from https://en.wikipedia.org/wiki/Euler%27s_equations_(rigid_body_dynamics)
+
+    // todo: add damping terms...
+
+
+    // update angular velocities:
+    w1 += h*a1;
+    w2 += h*a2;
+    w3 += h*a3;
+
+    // optionally renormalize rotational energy:
+    if(normalizeEnergy) {
+      T E = (I1*w1*w1 + I2*w2*w2 + I3*w3*w3); // is actually twice the energy
+      T s = sqrt(T(1)/E);
+      w1 *= s; w2 *= s; w3 *= s;
+    }
+  }
+
+
+  T getSample(T in)
+  {
+    updateState(0, in, 0); // todo: use injection vector
+    return w2;             // todo: use output vector
+  }
+
+protected:
+
+  // user parameters:
+  T ratio = 2;
+
+
+  // algo parameters:
+  T I1 = 2, I2 = 1, I3 = T(0.5); // moments of inertia along principal axes
+  T h = T(0.01);                 // step size
+  bool normalizeEnergy = true;
+
+  // state:
+  T w1 = 0, w2 = 1, w3 = 0;      // angular velocities along principal axes
+
+};
+
+
+
 
 //=================================================================================================
 
