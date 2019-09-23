@@ -1733,6 +1733,7 @@ void plotVectorComponents(std::vector<T>& t, std::vector<rsVector3D<T>>& v)
   }
   GNUPlotter plt;
   plt.addDataArrays(N, &t[0], &x[0], &y[0], &z[0]);
+  plt.setPixelSize(1000, 300);
   plt.plot();
 }
 // move to rapt, make input vectors const (requires changes to GNUPlotter)
@@ -1746,11 +1747,14 @@ void tennisRacket2()
 
   // User parameters:
   typedef rsVector3D<double> Vec;
-  int    N = 5000;          // number of samples
+  int    N = 8000;          // number of samples
   double h = 0.01;          // step-size ("delta-t")
   Vec I(   4, 2, 1);        // moments of inertia along principa axes
   Vec w(0.01, 1, 0);        // initial angular velocities
-  bool renormalize = true;  // keep energy constant
+  bool renormalize = false; // keep energy constant
+
+  // experimental parameters: 
+  Vec d(0.0, 0.02, 0.0); // damping/dissipation - works only when renormalization is off
 
 
   // integrate ODE system via forward Euler method :
@@ -1772,8 +1776,10 @@ void tennisRacket2()
     a.z = (M.z - (I.y - I.x)*w.x*w.y) / I.z;
     // formula from https://en.wikipedia.org/wiki/Euler%27s_equations_(rigid_body_dynamics)
 
-
     // todo: add experimental extra terms to the angular acceleration...
+    a.x -= d.x*w.x / I.x;
+    a.y -= d.y*w.y / I.y;
+    a.z -= d.z*w.z / I.z;
 
 
     // update angular velocity vector:
@@ -1785,6 +1791,13 @@ void tennisRacket2()
       w *= sqrt(E0/E);
   }
 
+  // -when only the 1st axis is damped, it tends towards rotating only around the 3rd axis
+  // -when only the 3rd axis is damped, it tends towards rotating only around the 1st axis
+  // -when only the 2nd axis is damped, it dies out
+
+  // todo: 
+  // -try asymmetrical damping that affects the both half-waves of the "square-wave" differently
+  //  ->goal: some sort of pulse-width control
 
   plotVectorComponents(t, W);
 }
