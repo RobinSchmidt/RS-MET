@@ -329,6 +329,14 @@ public:
     return getStateProbability(A, in());
   }
 
+  /** Tests, if the state A is close to this state withij the given tolerance. */
+  bool isCloseTo(const rsQuantumSpin& A, T tol)
+  {
+    if(rsAbs(A.au-au) <= tol && rsAbs(A.ad-ad) <= tol)
+      return true;
+    return false;
+  }
+
 
   //rsQuantumSpin<T> r = right();
 
@@ -496,6 +504,82 @@ todo: explain the unitarity stuff
 */
 
 template<class T>
+T rsEigenvalue2x2_1(T a, T b, T c, T d)
+{
+  return T(0.5) * (a + d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
+}
+
+template<class T>
+T rsEigenvalue2x2_2(T a, T b, T c, T d)
+{
+  return T(0.5) * (a + d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
+}
+
+// move to RAPT::rsLinearAlgebra, make a function that computes bothe eigenvalues at once (we can
+// re-use the value of the sqrt)
+// Sage code to produce the formulas:
+// var("a b c d")
+// A = matrix([[a, b], [c, d]])
+// A.eigenvalues()
+
+
+template<class T>
+void rsEigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy)
+{
+  if(b != T(0)) {
+    vx = T(1);
+    vy = T(0.5) * (a - d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; }
+  else {
+    vx = T(0);
+    vy = T(1); }
+
+  // todo: normalize (optionally) - only needed in b != 0 case
+}
+// ...needs tests
+
+template<class T>
+void rsEigenvector2x2_2(T a, T b, T c, T d, T& vx, T& vy)
+{
+  if(b != T(0)) {
+    vx = T(1);
+    vy = T(0.5) * (a - d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; }
+  else {
+    if(a != d) {
+      vx = T(1);
+      vy = c/(a-d); }
+    else {
+      vx = T(0);
+      vy = T(1);  }} 
+
+  // todo: normalize (optionally)
+}
+
+// the sqrt appears in all 4 formulas - what's its significance? maybe its worth to factor out and
+// give it a name? maybe eigenSqrt...or has it to do with the determinant?
+
+
+// var("a b c d")
+// A = matrix([[a, b], [c, d]])
+// A.eigenvectors_right()
+// [(1/2*a + 1/2*d - 1/2*sqrt(a^2 + 4*b*c - 2*a*d + d^2), [(1, -1/2*(a - d + sqrt(a^2 + 4*b*c - 2*a*d + d^2))/b)],  1),
+//  (1/2*a + 1/2*d + 1/2*sqrt(a^2 + 4*b*c - 2*a*d + d^2), [(1, -1/2*(a - d - sqrt(a^2 + 4*b*c - 2*a*d + d^2))/b)],  1) ]
+//
+// special case when b=0 (leads to div-by-0 in formula above):
+//   var("a b c d")
+//   A = matrix([[a, 0], [c, d]])
+//   A.eigenvectors_right()
+//   [(d, [(0, 1)], 1), (a, [(1, c/(a - d))], 1)]
+//
+// needs further special case when a=d:
+//   var("a b c d")
+//   A = matrix([[a, 0], [c, a]])
+//   A.eigenvectors_right()
+//   [(a, [(0, 1)], 2)]
+
+// these are the right eigenvectors - maybe have similar functions for the left eigenvectors
+
+
+template<class T>
 class rsSpinOperator // maybe rename to rsQuantumSpinOperator
 {
 
@@ -521,20 +605,25 @@ public:
 
   /** \name Inquiry */
 
-  // have functions to compute eigenvalues and eigenvectors....
+  std::complex<T> getEigenvalue1() const { return rsEigenvalue2x2_1(a, b, c, d); }
+  std::complex<T> getEigenvalue2() const { return rsEigenvalue2x2_2(a, b, c, d); }
 
-
-  std::complex<T> getEigenvalue1() const
+  rsQuantumSpin<T> getEigenvector1() const
   {
-    return T(0.5) * (a + d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
+    std::complex<T> vx, vy;
+    rsEigenvector2x2_1(a, b, c, d, vx, vy);
+    return rsQuantumSpin<T>(vx, vy);
   }
 
-  std::complex<T> getEigenvalue2() const
+  rsQuantumSpin<T> getEigenvector2() const
   {
-    return T(0.5) * (a + d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
+    std::complex<T> vx, vy;
+    rsEigenvector2x2_2(a, b, c, d, vx, vy);
+    return rsQuantumSpin<T>(vx, vy);
   }
 
-  // 1/2*a + 1/2*d + 1/2*sqrt(a^2 + 4*b*c - 2*a*d + d^2)
+
+
 
 
   /** Access function (read/write) for the matrix elements. The indices i,j can both be 0 or 1. */

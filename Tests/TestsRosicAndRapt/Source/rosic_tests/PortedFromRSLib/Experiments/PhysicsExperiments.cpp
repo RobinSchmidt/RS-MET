@@ -400,8 +400,10 @@ bool quantumSpin()
   pauliY.setToPauliY();
   pauliX.setToPauliX();
 
-  p = pauliZ.getEigenvalue1(); pass &= p == -1.0;
-  p = pauliZ.getEigenvalue2(); pass &= p == +1.0;
+  p = pauliZ.getEigenvalue1();  pass &= p == -1.0;
+  p = pauliZ.getEigenvalue2();  pass &= p == +1.0;
+  A = pauliZ.getEigenvector1(); pass &= A.isCloseTo(d, tol); // "down"
+  A = pauliZ.getEigenvector2(); pass &= A.isCloseTo(u, tol); // "up"
 
 
 
