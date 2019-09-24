@@ -33,7 +33,7 @@ template<class T>
 inline T rsExpToLinWithOffset(T in, T inMin, T inMax, T outMin, T outMax, T offset = 0.0);
 
 /** Checks, if x is close to some target-value within some tolerance. */
-inline bool rsIsCloseTo(double x, double targetValue, double tolerance);
+//inline bool rsIsCloseTo(double x, double targetValue, double tolerance);
   // actually, we should not need this anymore due to the templated version
 
 /** Checks, if x is close to some target-value within some tolerance. */

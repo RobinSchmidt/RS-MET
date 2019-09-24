@@ -194,6 +194,16 @@ public:
   }
 
 
+  /** \name Inquiry */
+
+  std::complex<T> getUpComponent()   const { return au; }
+
+  std::complex<T> getDownComponent() const { return ad; }
+
+
+
+  // have a function to convert to bra - this is a complex conjugation of au, ad and also
+  // turns the column vector into a row vector
 
 
 protected:
@@ -217,6 +227,24 @@ const T rsQuantumBit<T>::s = T(1) / sqrt(T(2));
 template<class T>
 const std::complex<T> rsQuantumBit<T>::i = std::complex<T>(0, 1);
 
+
+// define operators +,-
+
+/** Computes the inner product between two states. Both states B,A are assumed to be ket
+vectors - the operation of taking the inner product involves turning the first ket into a 
+bra first (by complex conjugation of the au, ad coeffs) and then computing the sum of the 
+products of corresponding elements. The important point is that you don't need to turn the
+ket into a bra before using this - this is done internally by this operator. */
+template<class T>
+inline std::complex<T> operator*(const rsQuantumBit<T>& B, const rsQuantumBit<T>& A)
+{
+  return conj(B.getUpComponent())   * A.getUpComponent() 
+       + conj(B.getDownComponent()) * A.getDownComponent(); // (1), page 20 ff
+}
+// 
+// interchanging arguments leads to complex conjugation of the result
+// maybe turn this into a function braKet(bra, ket)
+// ..what abotu outer products? do we need such a thing?
 // maybe have rsBra, rsKet classes (maybe as subclasses of some rsRowVector, rsColumnVector 
 // classes)
 

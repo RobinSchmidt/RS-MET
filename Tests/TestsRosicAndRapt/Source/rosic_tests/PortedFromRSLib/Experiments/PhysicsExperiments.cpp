@@ -289,7 +289,20 @@ void quantumBit()
   i.prepareInState();
   o.prepareOutState();
 
+
+  std::complex<double> p; // for inner products
+
   // todo: check orthogonality ...maybe this should be turned into a unit test
+  bool pass = true;
+  double tol = 1.e-13;
+  pass &= u*u == 1.0;
+  pass &= d*d == 1.0;
+  //pass &= rsIsCloseTo(l*l, 1.0, tol);
+  //pass &= r*r == 1.0;
+  //pass &= i*i == 1.0;
+  //pass &= o*o == 1.0;
+
+  p = l*l;
 
 
   GNUPlotter plt;

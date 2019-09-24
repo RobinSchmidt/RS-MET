@@ -18,11 +18,11 @@ public:
 
   /** Returns the squared Euclidean norm of this vector. */
   T getSquaredEuclideanNorm() { return x*x + y*y; }
-  // rename to squaredNorm or getSquaredLength
+  // rename to squaredNorm or getSquaredLength or getSquaredNorm
 
   /** Returns the Euclidean norm of this vector. */
   T getEuclideanNorm() { return sqrt(getSquaredEuclideanNorm()); }
-  // rename to getLength
+  // rename to getLength or getNorm
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
