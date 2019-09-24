@@ -134,8 +134,10 @@ Unlike real quantum systems, we can look into the actual state which consists of
 numbers. 
 
 ...the design with teh pointer to the PRNG as member is a bit odd and may lead to bugs when the
-pointer is unassigned (which may happen easily when you re-assign a a state variable)...come up with 
-something better...
+pointer is unassigned (which may happen easily when you re-assign a a state variable)...come up 
+with something better - maybe functions that need to create random numbers should get passed a 
+pointer to the prng ...yes - that seems better - it also makes it more obvious from client code
+which functions introduce random components
 
 ...
 
@@ -169,6 +171,8 @@ References:
 //template<class T>
 //inline std::complex<T> operator*(const rsQuantumSpin<T>& B, const rsQuantumSpin<T>& A);
 
+template<class T> class rsSpinOperator;
+
 template<class T>
 class rsQuantumSpin
 {
@@ -187,9 +191,6 @@ public:
     au = upComponent;
     ad = downComponent;
   }
-
-
-
 
   static rsQuantumSpin<T> up()    { rsQuantumSpin<T> s; s.prepareUpState();    return s; }
   static rsQuantumSpin<T> down()  { rsQuantumSpin<T> s; s.prepareDownState();  return s; }
@@ -424,6 +425,9 @@ protected:
   static const T s;                // 1/sqrt(2)
   static const std::complex<T> i;  // imaginary unit
     // for convenience (we need these a lot)
+
+
+  friend class rsSpinOperator<T>;
 };
 
 template<class T>
@@ -497,22 +501,61 @@ todo: explain the unitarity stuff
 */
 
 template<class T>
-class rsSpinOperator
+class rsSpinOperator // maybe rename to rsQuantumSpinOperator
 {
 
 public:
 
 
+  /*
+  static rsSpinOperator<T> pauliZ() { rsSpinOperator<T> z; z.setToPauliZ(); return z; }
+  static rsSpinOperator<T> pauliX() { rsSpinOperator<T> x; z.setToPauliX(); return x; }
+  static rsSpinOperator<T> pauliY() { rsSpinOperator<T> y; y.setToPauliZ(); return y; }
+  */
+
+
+  /** \name Setup */
+
+  /** Measurement operator for spin along the z-axis. Returns +1 for up, -1 for down. */
+  void setToPauliZ() { m[0][0] = T(1); m[0][1] = T(0); m[1][0] = T(0); m[1][1] = T(-1); }
+
+  /** Measurement operator for spin along the x-axis. Returns +1 for right, -1 for left. */
+  void setToPauliX() { m[0][0] = T(0); m[0][1] = T(1); m[1][0] = T(1); m[1][1] = T(0);  }
+
+  /** Measurement operator for spin along the y-axis. Returns +1 for in, -1 for out. */
+  void setToPauliY() { m[0][0] = T(0); m[0][1] = -i;   m[1][0] = i; m[1][1] = T(0);  }
+
+
+
+  /** \name Inquiry */
+
+  // have functions to compute eigenvalues and eigenvectors....
+
+
+
   /** Access function (read/write) for the matrix elements. The indices i,j can both be 0 or 1. */
-  inline T& operator()(const int i, const int j) { return m[i][j]; }
+  inline std::complex<T>& operator()(const int i, const int j) { return m[i][j]; }
+
+  /** Applies this quantum spin operator to the given ket v and returns the resulting ket. */
+  rsQuantumSpin<T> operator*(const rsQuantumSpin<T>& v) const
+  {
+    rsQuantumSpin<T> r;
+    r.au = m[0][0]*v.au + m[0][1]*v.ad;
+    r.ad = m[1][0]*v.au + m[1][1]*v.ad;
+    return r;
+  }
+
+
 
 protected:
 
   std::complex<T> m[2][2];
 
+  static const std::complex<T> i;  // imaginary unit
 };
 
-
+template<class T>
+const std::complex<T> rsSpinOperator<T>::i = std::complex<T>(0, 1);
 
 //=================================================================================================
 

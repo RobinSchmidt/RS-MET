@@ -376,8 +376,6 @@ bool quantumSpin()
   A.normalize();                  // this call normalizes the total probability
   pass &= isCloseTo(P = QS::getTotalProbability(A), 1.0, tol);
 
-
-
   A = u;
   B = d;
   C = s*u + s*d;
@@ -385,11 +383,8 @@ bool quantumSpin()
   //pass &= (s*u - s*d == l);
 
 
-
-
   // maybe check probabilities for some mixed states, i.e. spin-states that are not aligned to
   // any axis
-
 
   A.randomizeState();
   B.randomizeState();
@@ -397,6 +392,16 @@ bool quantumSpin()
   pass &= isCloseTo(P = QS::getTotalProbability(B), 1.0, tol);
 
   //C.randomizeState(); // has unassigned PRNG
+
+
+  typedef rsSpinOperator<double> QSO;
+  QSO pauliZ, pauliY, pauliX;
+  pauliZ.setToPauliZ();
+  pauliY.setToPauliY();
+  pauliX.setToPauliX();
+
+
+
 
 
 
