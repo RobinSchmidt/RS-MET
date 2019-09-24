@@ -278,6 +278,14 @@ void particleSystem()
 }
 
 
+void quantumBit()
+{
+  rsQuantumBit<double> q1, q2;  // our qubit obejcts
+
+
+  GNUPlotter plt;
+}
+
 void tennisRacket()
 {
   // Numerically integrates the system of differential equations describing the angular velocities 

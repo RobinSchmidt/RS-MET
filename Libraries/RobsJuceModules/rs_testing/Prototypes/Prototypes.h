@@ -119,6 +119,89 @@ void cheby_win(double *out, int N, double atten);
 
 //=================================================================================================
 
+
+/**
+
+...
+
+To specify any state as a ket vector |A>, we express it as a linear combination of two (somewhat 
+arbitrarily) choosen basis ket vectors |u> and |d> for "up" and "down" spin:
+
+  |A> = au*|u> + ad*|d>
+
+...
+
+*/
+
+
+template<class T>
+class rsQuantumBit
+{
+
+public:
+
+  /** Constructor. Creates a qubit in a pure "up" state. */
+  rsQuantumBit() { prepareUpState(); }
+
+
+  /** \name Setup */
+
+  void prepareUpState()
+  {
+    au = std::complex<T>(T(1), T(0));  // 1 + 0i
+    ad = std::complex<T>(T(0), T(0));  // 0 + 0i
+  }
+
+  void prepareDownState()
+  {
+    au = std::complex<T>(T(0), T(0));  // 0 + 0i
+    ad = std::complex<T>(T(1), T(0));  // 1 + 0i
+  }
+
+
+
+
+protected:
+
+
+  // for convenience we need this scale factor a lot:
+  static const T s;  // 1/sqrt(2)
+  //static const T s =  T(1)/sqrt(2);
+
+  // our state  consisting of the coefficients for up and down spin basis vectors:
+  std::complex<T> au, ad;
+
+};
+
+template<class T>
+const T rsQuantumBit<T>::s = T(1) / sqrt(T(2));
+
+// maybe have rsBra, rsKet classes (maybe as subclasses of some rsRowVector, rsColumnVector 
+// classes)
+
+//=================================================================================================
+
+/** Simulates the dynamics of a rotating rigid body around its three pricipal axes of intertia. If
+they are all different, when it initially rotates around the axis of the middle/intermediate moment
+of inertia with some small perturbation of having a rotational component around any of the other 
+two axes, the rotation axis periodically flips over. This is known as the "tennis racket effect" 
+because it also occurs when throwing up a tennis racket in a particular way. It is due to the 
+rotation around the intermediate axis being an unstable equilibrium of the dynamic equations that
+describe the rotation. Rotation around any of the other two principal axes (those with maximum and 
+minimum moment of inertia) are stable equlibria.
+
+
+// see:
+https://en.wikipedia.org/wiki/Tennis_racket_theorem
+https://en.wikipedia.org/wiki/Euler%27s_equations_(rigid_body_dynamics)
+https://en.wikipedia.org/wiki/Moment_of_inertia
+https://en.wikipedia.org/wiki/Poinsot%27s_ellipsoid
+https://en.wikipedia.org/wiki/Polhode
+https://www.youtube.com/watch?v=1VPfZ_XzisU
+https://arxiv.org/pdf/1606.08237.pdf
+
+*/
+
 template<class T>
 class rsTennisRacket
 {

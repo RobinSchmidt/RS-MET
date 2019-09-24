@@ -3,15 +3,16 @@
 
 
 void doublePendulum();
-// move particle system here
-
 void heatEquation1D();
 void particleForceDistanceLaw();
-void particleSystem();            
+void particleSystem();
+void quantumBit();
 void tennisRacket();
 void tennisRacket2();
 void tennisRacket3();
 void tennisRacketFreq();
+
+// where's the lorenz system stuff? that would fit here, too
 
 
 #endif
