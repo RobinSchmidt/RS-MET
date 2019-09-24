@@ -338,21 +338,90 @@ bool quantumSpin()
   // check up-spin probabilities of the various pure spin states:
   pass &= isCloseTo(P = QS::getUpProbability(u), 1.0, tol); // pure up-spin   has P(up) = 1
   pass &= isCloseTo(P = QS::getUpProbability(d), 0.0, tol); // pure down-spin has P(up) = 0
-  pass &= isCloseTo(P = QS::getUpProbability(l), 0.5, tol); // all other pure spin states (left, 
-  pass &= isCloseTo(P = QS::getUpProbability(r), 0.5, tol); // right, in, out) have up-spin 
+  pass &= isCloseTo(P = QS::getUpProbability(r), 0.5, tol); // all other pure spin states (left, 
+  pass &= isCloseTo(P = QS::getUpProbability(l), 0.5, tol); // right, in, out) have up-spin 
   pass &= isCloseTo(P = QS::getUpProbability(i), 0.5, tol); // probability of 1/2
   pass &= isCloseTo(P = QS::getUpProbability(o), 0.5, tol);
+
+  pass &= isCloseTo(P = QS::getRightProbability(u), 0.5, tol);
+  pass &= isCloseTo(P = QS::getRightProbability(d), 0.5, tol);
+  pass &= isCloseTo(P = QS::getRightProbability(r), 1.0, tol);
+  pass &= isCloseTo(P = QS::getRightProbability(l), 0.0, tol);
+  pass &= isCloseTo(P = QS::getRightProbability(i), 0.5, tol);
+  pass &= isCloseTo(P = QS::getRightProbability(o), 0.5, tol);
+
+  pass &= isCloseTo(P = QS::getInProbability(u), 0.5, tol);
+  pass &= isCloseTo(P = QS::getInProbability(d), 0.5, tol);
+  pass &= isCloseTo(P = QS::getInProbability(r), 0.5, tol);
+  pass &= isCloseTo(P = QS::getInProbability(l), 0.5, tol);
+  pass &= isCloseTo(P = QS::getInProbability(i), 1.0, tol);
+  pass &= isCloseTo(P = QS::getInProbability(o), 0.0, tol);
+
+
+
 
   // maybe check probabilities for some mixed states, i.e. spin-states that are not aligned to
   // any axis
 
-  // todo: implement and check operations on spin states (multiplication by (Pauli?) matrices?,
-  // quantum gates (and, or, Hadamard, cnot
 
+
+  // set up the random number generator and pass it to the spin-objects to allow doing measurements:
+  rsNoiseGenerator<double> prng;
+  prng.setRange(0.0, 1.0);
+  u.setRandomGenerator(&prng);
+  d.setRandomGenerator(&prng);
+  l.setRandomGenerator(&prng);
+  r.setRandomGenerator(&prng);
+  i.setRandomGenerator(&prng);
+  o.setRandomGenerator(&prng);
+
+  // now, do some actual measurements:
+  QS A, B;
+  double s;     // sign of up-spin component
+  int N = 500;  // number of measurements to take
+  std::vector<double> spins(N);
+  for(int i = 0; i < N; i++) {
+    A = r;                                 // initialize state - todo: mayb try different states
+    s = A.measureUpComponent();            // should have a 50/50 chance to be +1 or -1
+    pass &= (s == A.measureUpComponent()); // a 2nd measurement must always give the same result
+    spins[i] = s;
+  }
+
+
+  double mean = rsMean(spins);
+  rsPlotVector(spins);
+
+
+
+
+
+
+  // todo: implement and check operations on spin states (multiplication by (Pauli?) matrices?,
+  // quantum gates (and, or, Hadamard, cnot, toffoli)
+  // this here:
+  // https://www.youtube.com/watch?v=ZN0lhYU1f5Q
+  // says: measure, hadamard, phase, T (rotate |1> by pi/4), cnot
+
+
+  // https://homepages.cwi.nl/~rdewolf/qcnotes.pdf
+  // http://mmrc.amss.cas.cn/tlb/201702/W020170224608150244118.pdf
 
   return pass;
   //GNUPlotter plt;
 }
+// Notes:
+// I think, the relationship to what is called the "wavefunction" in quantum mechanics is as 
+// follows: The wavefunction is in general some function from a set S into the complex numbers. 
+// For position and momentum of a particle, that set S is the set of real numbers R (for 1D) or 
+// R^2 or R^3 for 2D and 3D space. In our case, the set S is just S = { up, down } - which can be
+// renamed to S = { 0, 1 } or S = { |0>, |1> } to get the common qubit noation. The "collapse of 
+// the wavefunction" occurs when we assign the pure up/down states in the measurement operation. In
+// a general state, both of these pure states have a complex number associated with them - the 
+// "probability amplitude" - and the square of its magnitude gives the actual probability. When the
+// wavefunctions is collapsed due to a measurement one the values becomes 1 and the other 0 - it 
+// becomes a delta distribution - although its spikey nature is not really obvious in this simple 
+// case where we have only two possible input values into the function.
+
 
 void tennisRacket()
 {

@@ -120,7 +120,18 @@ void cheby_win(double *out, int N, double atten);
 //=================================================================================================
 
 
-/**
+/** Implements a quantum system that describes the spin of a particle such as an electron. This is
+the most simple and prototypical quantum system and can also be used as quantum bit (qubit). The 
+user can set the system into various predefined states and has functions to manipulate the state. 
+The state can also be measured in which case the system will - with a certain probability 
+determined by the state - fall into one of two possible pure states corresponding to the measured
+variable. An example of such a measured observable is the spin along the z-axis. The measured value
+will be either +1 or -1 ("up" or "down") with probabilities determined by the current state. After 
+the measurement, however, this state will have been changed into a pure state such that subsequent 
+measurements of the same observable will always produce the same result (with probability one).
+
+Unlike real quantum systems, we can look into the actual state which consists of two complex 
+numbers. 
 
 ...
 
@@ -134,6 +145,10 @@ maybe rename to rsQuantumSpin - what is used as the quantum "bit" is actually on
 components, such as the z-component (a pure "up" represents binary 1 and a pure "down" state
 represents binary 0. Mixed states (with respect to the z-axis) represent a superposition of 0 and
 1 (a pure left or right or in or out state is "mixed" with respect to the z axis)
+done ..maybe make a simpler class rsQuantumBit that deals exclusively with the up/down direction
+and doesn't consider the others at all - it should also not call the states "up" and "down" but
+|1> and |0> respectively
+
 
 References:
   (1) The Theoretical Minimum - Quantum Mechanics (Leonard Susskind, Art Friedman)
@@ -156,18 +171,55 @@ class rsQuantumSpin
 
 public:
 
+  /** \name Construction */
+
   /** Constructor. Creates a qubit in a pure "up" state. */
   rsQuantumSpin() { prepareUpState(); }
+
+  static rsQuantumSpin<T> up()    { rsQuantumSpin<T> s; s.prepareUpState();    return s; }
+  static rsQuantumSpin<T> down()  { rsQuantumSpin<T> s; s.prepareDownState();  return s; }
+  static rsQuantumSpin<T> right() { rsQuantumSpin<T> s; s.prepareRightState(); return s; }
+  static rsQuantumSpin<T> left()  { rsQuantumSpin<T> s; s.prepareLeftState();  return s; }
+  static rsQuantumSpin<T> in()    { rsQuantumSpin<T> s; s.prepareInState();    return s; }
+  static rsQuantumSpin<T> out()   { rsQuantumSpin<T> s; s.prepareOutState();   return s; }
+
 
 
   /** \name Setup */
 
   void prepareUpState()    { au = 1; ad =  0;   }
   void prepareDownState()  { au = 0; ad =  1;   }
-  void prepareLeftState()  { au = s; ad = -s;   }  // (1) Eq 2.6
   void prepareRightState() { au = s; ad =  s;   }  // (1) Eq 2.5
+  void prepareLeftState()  { au = s; ad = -s;   }  // (1) Eq 2.6
   void prepareInState()    { au = s; ad =  s*i; }  // (1) Eq 2.10
   void prepareOutState()   { au = s; ad = -s*i; }  // (1) Eq 2.10
+
+  /*
+  void randomizeState() 
+  {
+    au = std::polar(1, 2*PI*prng->getSample());
+    ad = std::polar(1, 2*PI*prng->getSample());
+    normalizeState();
+  }
+  */
+  // maybe have an amount parameter between 0..1 - linearly interpolate between current state and
+  // random new state - may be used to simulate decoherence
+
+  /*
+  void normalizeState()
+  {
+    T r = getTotalProbability();
+
+  }
+  */
+
+
+  /** Sets a a pointer to a pseudo random number generator that is used in measurement operations.
+  These operations destroy superposition, i.e. put the spin into on of two possible pure states. 
+  Which of the two that is, is determined randomly according to the probabilities of the two 
+  states. That random decision is what this PRNG is used for. Client code should make sure that the
+  PRNG is correctly set up to produce numbers in the range 0...1. */
+  void setRandomGenerator(rsNoiseGenerator<T>* newGenerator) { prng = newGenerator; }
 
 
   /** \name Inquiry */
@@ -175,6 +227,20 @@ public:
   std::complex<T> getUpComponent()   const { return au; }
   std::complex<T> getDownComponent() const { return ad; }
   // todo: getLeft/Right/In/Out Component
+
+  /** Returns the squared norm (or magnitude, length, radius) of a complex number. */
+  static T getSquaredNorm(const std::complex<T>& z)
+  {
+    return z.real()*z.real() + z.imag()*z.imag(); // == conj(z) * z, (1) page 39
+  }
+
+  /** Returns the total probability, i.e. the probability to be in any state. This should always 
+  return unity for a valid state. Can be used for sanity checks and/or to (re)normalize random 
+  states. */
+  static T getTotalProbability(const rsQuantumSpin& A)
+  {
+    return getSquaredNorm(au) + getSquaredNorm(ad); // (1) Eq 2.4
+  }
 
 
   /** Computes the up component of the given ket/state |A>. */
@@ -191,13 +257,42 @@ public:
   // make similar functions for left,right,in,out components
 
 
+
+
+  /** Returns the probability for the given state A to be measured in "up" configuration. */
   static T getUpProbability(const rsQuantumSpin& A)
   {
-    rsQuantumSpin u;
+    rsQuantumSpin<T> u;
     u.prepareUpState();
     std::complex<T> r = (A*u) * (u*A); // (1), Eq 2.2
     return r.real();                   // imag should be zero
   }
+
+  /** I'm not sure, if this is correct...this is supposed to return the probability for the given 
+  state A to be measured in the target configuration t (i use this to generalize the 
+  getUpProbability for getRightProbability and getInProbability)...but for other target states t,
+  there may not even be measurement functiosn...so...dunno....todo: figure this stuff out. */
+  static T getStateProbability(const rsQuantumSpin& A, const rsQuantumSpin& t)
+  {
+    std::complex<T> r = (A*t) * (t*A); // (1), Eq 2.2 - i hope, it generalizes the right way
+    return r.real();                   // imag should be zero
+  }
+
+  /** Returns the probability for the given state A to be measured in "right" configuration. */
+  static T getRightProbability(const rsQuantumSpin& A)
+  {
+    return getStateProbability(A, right());
+  }
+
+  /** Returns the probability for the given state A to be measured in "in" configuration. */
+  static T getInProbability(const rsQuantumSpin& A)
+  {
+    return getStateProbability(A, in());
+  }
+
+
+  //rsQuantumSpin<T> r = right();
+
 
   // maybe have const static state members up,down,left,right,in,out and a general 
   // getStateComponent, getStateProbability functions and implelement
@@ -207,14 +302,72 @@ public:
   // turns the column vector into a row vector
 
 
+  /** \name Operations */
+
+  //void rotateUpComponent, rotateDownComponent, applyHadamard, etc.
+  // measureUpState - should use p = getUpProbability(*this) and then put it into pure up state 
+  // (with probability p) or down state (with probability 1-p) - the measurement destroys the 
+  // superposition - the function probably get a pointer to a PRNG ...or maybe the class should 
+  // have a PRNG pointer as member
+
+  /** Applies a measurement operation to the state. This measurement will put the state vector 
+  either into a pure "up" or pure "down" state and will return +1 in the former and -1 in the 
+  latter case. Which one of the two it is is selected randomly (using our prng) according to the
+  up-probability of our state. */
+  T measureUpComponent()
+  {
+    //T Pu  = getUpProbability(*this); // optimize this!
+    //T Pu  = au.real()*au.real() + au.imag()*au.imag(); // == conj(au) * au, (1) page 39
+    T Pu = getSquaredNorm(au);
+    T rnd = prng->getSample();
+    if(rnd <= Pu) {       // should it be <= or < ?
+      prepareUpState();
+      return +1; }
+    else {
+      prepareDownState();
+      return -1; }
+  }
+
+  T measureRightComponent()
+  {
+    //rsQuantumSpin<T> r = right();
+
+    T Pr  = getRightProbability(*this);
+
+
+
+  }
+
+
+  // have similar measureRightComponent, measureInComponent functions and also for arbitrary 
+  // observables described by a (Hermitian) 2x2 matrix of complex numbers (have a class 
+  // "rsSpinOperator" for such matrices) - observables correspond to such matrices and the outcome
+  // of any measurement will be one of the eigenvalues of the matrix - and if the state is an 
+  // eigenvector, the measurement *will* be the corresponding eigenvalue (having an the eigenvector 
+  // as state lets the probability for measuring the corresponding eigenvalue become one)
+  // ...so that means, |u> and |d> are eigenvectors with eigenvalues +1 and -1 ...but what is the
+  // matrix representing the observable? see (1) Eq 3.17 or 3.20 - the matrices seem to be the 
+  // Pauli matrices (so they are not meant as operations to manipulate the state?)
+
+  // todo: implement assignemnt-operator and copy-constructor - these should assign the prng
+  // or maybe they should...yeah - i think, that's more convenient
+
 protected:
 
-  // our state consisting of the coefficients for up and down spin basis vectors:
   std::complex<T> au, ad;
+    // our state consisting of the coefficients for up and down spin basis vectors
 
-  // for convenience (we need these a lot):
+  rsNoiseGenerator<T>* prng = nullptr;
+    // a pointer to a pseudo random number generator that is used in measurement operations which
+    // destroy superposition, i.e. put the spin into a pure state - but which of the two possible
+    // pure stats that is, is determined randomly - that's what this prng is used for
+
+
+
+
   static const T s;                // 1/sqrt(2)
   static const std::complex<T> i;  // imaginary unit
+    // for convenience (we need these a lot)
 };
 
 template<class T>
