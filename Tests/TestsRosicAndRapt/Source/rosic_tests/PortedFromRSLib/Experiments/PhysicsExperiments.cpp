@@ -418,28 +418,41 @@ bool quantumSpin()
 
 
 
+
   // now, do some actual measurements:
   double res;   // measurement result - sign of up-spin component
-  int N = 500;  // number of measurements to take
-  std::vector<double> spins(N);
-  for(int n = 0; n < N; n++) {
+  int N = 100;  // number of measurements to take
+  std::vector<double> spins1(N);
+  int n;
+  prng.reset();
+  for(n = 0; n < N; n++) {
     A = r;                                   // initialize state - todo: mayb try different states
     res = A.measureUpComponent();            // should have a 50/50 chance to be +1 or -1
     pass &= (res == A.measureUpComponent()); // a 2nd measurement must always give the same result
-    spins[n] = res;
+    spins1[n] = res;
   }
+  double mean1 = rsMean(spins1);
+  //rsPlotVector(spins1);
+
+  // now do the same thing using the Pauli matrix for the z-component - this is more general but 
+  // the computations are also more expensive, the results should be the same
+  std::vector<double> spins2(N);
+  prng.reset();
+  for(n = 0; n < N; n++) {
+    A = r;
+    res = A.measureObservable(pauliZ);
+    pass &= (res == A.measureObservable(pauliZ)); // 2nd measurement must give same result
+    //pass &= (res == A.measureUpComponent());      // does same thing more simply
+    spins2[n] = res;
+  }
+  double mean2 = rsMean(spins2);
+  rsPlotVectors(spins1, spins2); 
 
 
-  double mean = rsMean(spins);
-  rsPlotVector(spins);
 
+ 
 
-
-
-
-
-  // todo: implement and check operations on spin states (multiplication by (Pauli?) matrices?,
-  // quantum gates (and, or, Hadamard, cnot, toffoli)
+  // todo: implement quantum gates (and, or, Hadamard, cnot, toffoli)
   // this here:
   // https://www.youtube.com/watch?v=ZN0lhYU1f5Q
   // says: measure, hadamard, phase, T (rotate |1> by pi/4), cnot

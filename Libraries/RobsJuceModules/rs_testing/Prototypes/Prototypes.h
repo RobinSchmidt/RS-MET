@@ -218,6 +218,13 @@ public:
   }
   // maybe it should automatically (optionally) renormalize the state?
 
+  void setState(const rsQuantumSpin<T>& newState)
+  {
+    au = newState.getUpComponent();
+    ad = newState.getDownComponent();
+  }
+
+
   
   void randomizeState() 
   {
@@ -235,6 +242,7 @@ public:
     //normalize(); // should already be normalized thanks to *= r
   }
   // needs nore tests - especially for the phase range
+  // move to cpp file
   
   // maybe have an amount parameter between 0..1 - linearly interpolate between current state and
   // random new state - may be used to simulate decoherence
@@ -291,7 +299,7 @@ public:
   // redundant...
 
   static std::complex<T> getDownComponent(const rsQuantumSpin& A)
-  { rsQuantumBit d; u.prepareDownState(); return d*A; }
+  { rsQuantumSpin<T> d; d.prepareDownState(); return d*A; }
 
   // make similar functions for left,right,in,out components
 
@@ -364,6 +372,10 @@ public:
   T measureUpComponent()
   {
     //T Pu  = getUpProbability(*this); // optimize this!
+
+    //T Pu = getStateProbability(*this, up());       // (1) Eq 2.2
+
+
     T Pu = getSquaredNorm(au); // same result as Pu = getUpProbability(*this) but more efficient
     T rnd = prng->getSample();
     if(rnd <= Pu) {       // should it be <= or < ?
@@ -391,7 +403,7 @@ public:
   {
     T Pi = getInProbability(*this);
     T rnd = prng->getSample();
-    if(rnd <= Pr) {
+    if(rnd <= Pi) {
       prepareInState();
       return +1; }
     else {
@@ -399,6 +411,10 @@ public:
       return -1; }
   }
   // not yet tested
+
+  T measureObservable(const rsSpinOperator<T>& M);
+
+
 
   // have functions for arbitrary observables described by a (Hermitian) 2x2 matrix of complex 
   // numbers (have a class "rsSpinOperator" for such matrices) - observables correspond to such 
@@ -594,7 +610,7 @@ class rsSpinOperator // maybe rename to rsQuantumSpinOperator
 public:
 
   static rsSpinOperator<T> pauliZ() { rsSpinOperator<T> z; z.setToPauliZ(); return z; }
-  static rsSpinOperator<T> pauliX() { rsSpinOperator<T> x; z.setToPauliX(); return x; }
+  static rsSpinOperator<T> pauliX() { rsSpinOperator<T> x; x.setToPauliX(); return x; }
   static rsSpinOperator<T> pauliY() { rsSpinOperator<T> y; y.setToPauliZ(); return y; }
 
 
@@ -635,7 +651,7 @@ public:
 
 
   /** Access function (read/write) for the matrix elements. The indices i,j can both be 0 or 1. */
-  inline std::complex<T>& operator()(const int i, const int j) { return m[i][j]; }
+  //inline std::complex<T>& operator()(const int i, const int j) { return m[i][j]; }
 
   /** Applies this quantum spin operator to the given ket v and returns the resulting ket. */
   rsQuantumSpin<T> operator*(const rsQuantumSpin<T>& v) const
