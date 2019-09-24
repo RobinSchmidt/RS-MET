@@ -141,14 +141,23 @@ References:
 */
 
 
+
+// forward declarations:
+
+//template<class T>
+//class rsQuantumSpin;
+//
+//template<class T>
+//inline std::complex<T> operator*(const rsQuantumSpin<T>& B, const rsQuantumSpin<T>& A);
+
 template<class T>
-class rsQuantumBit
+class rsQuantumSpin
 {
 
 public:
 
   /** Constructor. Creates a qubit in a pure "up" state. */
-  rsQuantumBit() { prepareUpState(); }
+  rsQuantumSpin() { prepareUpState(); }
 
 
   /** \name Setup */
@@ -169,25 +178,25 @@ public:
 
 
   /** Computes the up component of the given ket/state |A>. */
-  static std::complex<T> getUpComponent(const rsQuantumBit& A)
+  static std::complex<T> getUpComponent(const rsQuantumSpin& A)
   {
-    rsQuantumBit u;
+    rsQuantumSpin u;
     u.prepareUpState();
     return u*A;         // (1), Eq 2.1
   }
 
-  static std::complex<T> getDownComponent(const rsQuantumBit& A)
+  static std::complex<T> getDownComponent(const rsQuantumSpin& A)
   { rsQuantumBit d; u.prepareDownState(); return d*A; }
 
   // make similar functions for left,right,in,out components
 
 
-  static T getUpProbability(const rsQuantumBit& A)
+  static T getUpProbability(const rsQuantumSpin& A)
   {
-    rsQuantumBit u;
+    rsQuantumSpin u;
     u.prepareUpState();
-    std::complex<T> r = A*u * u*A;    // (1), Eq 2.2
-    return r.real();                  // imag should be zero
+    std::complex<T> r = (A*u) * (u*A); // (1), Eq 2.2
+    return r.real();                   // imag should be zero
   }
 
   // maybe have const static state members up,down,left,right,in,out and a general 
@@ -200,24 +209,19 @@ public:
 
 protected:
 
-
-  // for convenience we need this scale factor a lot:
-  static const T s;  // 1/sqrt(2)
-
-  static const std::complex<T> i;  // imaginary unit
-
-  //static const T s =  T(1)/sqrt(2);
-
-  // our state  consisting of the coefficients for up and down spin basis vectors:
+  // our state consisting of the coefficients for up and down spin basis vectors:
   std::complex<T> au, ad;
 
+  // for convenience (we need these a lot):
+  static const T s;                // 1/sqrt(2)
+  static const std::complex<T> i;  // imaginary unit
 };
 
 template<class T>
-const T rsQuantumBit<T>::s = T(1) / sqrt(T(2));
+const T rsQuantumSpin<T>::s = T(1) / sqrt(T(2));
 
 template<class T>
-const std::complex<T> rsQuantumBit<T>::i = std::complex<T>(0, 1);
+const std::complex<T> rsQuantumSpin<T>::i = std::complex<T>(0, 1);
 
 
 // define operators +,-
@@ -228,7 +232,7 @@ bra first (by complex conjugation of the au, ad coeffs) and then computing the s
 products of corresponding elements. The important point is that you don't need to turn the
 ket into a bra before using this - this is done internally by this operator. */
 template<class T>
-inline std::complex<T> operator*(const rsQuantumBit<T>& B, const rsQuantumBit<T>& A)
+inline std::complex<T> operator*(const rsQuantumSpin<T>& B, const rsQuantumSpin<T>& A)
 {
   return conj(B.getUpComponent())   * A.getUpComponent() 
        + conj(B.getDownComponent()) * A.getDownComponent(); // (1), page 20 ff

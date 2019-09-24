@@ -288,10 +288,13 @@ inline bool isCloseTo(TArg x, TArg y, TTol tol)
 }
 // move to rapt
 
-void quantumBit()
+bool quantumSpin()
 {
+  // This should be turned into a unit test...
+
   // create some qubits in pure states:
-  rsQuantumBit<double> u, d, l, r, i, o;
+  typedef rsQuantumSpin<double> QS;
+  rsQuantumSpin<double> u, d, l, r, i, o;
   u.prepareUpState();
   d.prepareDownState();
   l.prepareLeftState();
@@ -299,15 +302,12 @@ void quantumBit()
   i.prepareInState();
   o.prepareOutState();
 
-
+  // some work variables:
   std::complex<double> p; // for inner products
   double P;               // for probabilities
+  double tol = 1.e-13;    // tolerance for rounding errors
   std::complex<double> one(1,0), zero(0,0), half(.5,0);
-
-
-  // ..maybe this should be turned into a unit test
   bool pass = true;
-  double tol = 1.e-13;
 
   // check normalization of pure states:
   pass &= (p=u*u) == 1.0;
@@ -335,13 +335,23 @@ void quantumBit()
   pass &= isCloseTo(p = (i*r)*(r*i), half, tol);
   pass &= isCloseTo(p = (i*l)*(l*i), half, tol);
 
-  // check probabilities
+  // check up-spin probabilities of the various pure spin states:
+  pass &= isCloseTo(P = QS::getUpProbability(u), 1.0, tol); // pure up-spin   has P(up) = 1
+  pass &= isCloseTo(P = QS::getUpProbability(d), 0.0, tol); // pure down-spin has P(up) = 0
+  pass &= isCloseTo(P = QS::getUpProbability(l), 0.5, tol); // all other pure spin states (left, 
+  pass &= isCloseTo(P = QS::getUpProbability(r), 0.5, tol); // right, in, out) have up-spin 
+  pass &= isCloseTo(P = QS::getUpProbability(i), 0.5, tol); // probability of 1/2
+  pass &= isCloseTo(P = QS::getUpProbability(o), 0.5, tol);
+
+  // maybe check probabilities for some mixed states, i.e. spin-states that are not aligned to
+  // any axis
+
+  // todo: implement and check operations on spin states (multiplication by (Pauli?) matrices?,
+  // quantum gates (and, or, Hadamard, cnot
 
 
-
-
-
-  GNUPlotter plt;
+  return pass;
+  //GNUPlotter plt;
 }
 
 void tennisRacket()
