@@ -393,7 +393,7 @@ bool quantumSpin()
 
   //C.randomizeState(); // has unassigned PRNG
 
-
+  // some test with spin operators:
   typedef rsSpinOperator<double> QSO;
   QSO pauliZ, pauliY, pauliX;
   pauliZ.setToPauliZ();
@@ -404,6 +404,17 @@ bool quantumSpin()
   p = pauliZ.getEigenvalue2();  pass &= p == +1.0;
   A = pauliZ.getEigenvector1(); pass &= A.isCloseTo(d, tol); // "down"
   A = pauliZ.getEigenvector2(); pass &= A.isCloseTo(u, tol); // "up"
+
+  p = pauliX.getEigenvalue1();  pass &= p == -1.0;
+  p = pauliX.getEigenvalue2();  pass &= p == +1.0;
+  A = pauliX.getEigenvector1(); pass &= A.isCloseTo(r, tol); // "left"
+  A = pauliX.getEigenvector2(); pass &= A.isCloseTo(l, tol); // "right"
+
+  p = pauliY.getEigenvalue1();  pass &= p == -1.0;
+  p = pauliY.getEigenvalue2();  pass &= p == +1.0;
+  A = pauliY.getEigenvector1(); pass &= A.isCloseTo(i, tol); // "in"
+  A = pauliY.getEigenvector2(); pass &= A.isCloseTo(o, tol); // "out"
+
 
 
 

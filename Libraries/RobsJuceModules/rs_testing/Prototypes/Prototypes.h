@@ -522,18 +522,26 @@ T rsEigenvalue2x2_2(T a, T b, T c, T d)
 // A = matrix([[a, b], [c, d]])
 // A.eigenvalues()
 
+template<class T>
+void normalize(T& vx, T& vy)
+{
+  T rx = rsAbs(vx); rx *= rx;
+  T ry = rsAbs(vy); ry *= ry;
+  T s  = T(1) / sqrt(rx+ry);
+  vx *= s;
+  vy *= s;
+}
 
 template<class T>
 void rsEigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy)
 {
   if(b != T(0)) {
     vx = T(1);
-    vy = T(0.5) * (a - d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; }
+    vy = T(0.5) * (a - d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
+    normalize(vx, vy); }
   else {
     vx = T(0);
     vy = T(1); }
-
-  // todo: normalize (optionally) - only needed in b != 0 case
 }
 // ...needs tests
 
@@ -542,16 +550,16 @@ void rsEigenvector2x2_2(T a, T b, T c, T d, T& vx, T& vy)
 {
   if(b != T(0)) {
     vx = T(1);
-    vy = T(0.5) * (a - d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; }
+    vy = T(0.5) * (a - d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
+    normalize(vx, vy); }
   else {
     if(a != d) {
       vx = T(1);
-      vy = c/(a-d); }
+      vy = c/(a-d); 
+      normalize(vx, vy); }
     else {
       vx = T(0);
       vy = T(1);  }} 
-
-  // todo: normalize (optionally)
 }
 
 // the sqrt appears in all 4 formulas - what's its significance? maybe its worth to factor out and
