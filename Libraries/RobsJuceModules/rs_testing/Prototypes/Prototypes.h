@@ -291,6 +291,8 @@ public:
     u.prepareUpState();
     return u*A;         // (1), Eq 2.1
   }
+  // can this be simplified? we could just call A.getUpComponent - actually, this function is 
+  // redundant...
 
   static std::complex<T> getDownComponent(const rsQuantumSpin& A)
   { rsQuantumBit d; u.prepareDownState(); return d*A; }
@@ -312,7 +314,7 @@ public:
   /** I'm not sure, if this is correct...this is supposed to return the probability for the given 
   state A to be measured in the target configuration t (i use this to generalize the 
   getUpProbability for getRightProbability and getInProbability)...but for other target states t,
-  there may not even be measurement functiosn...so...dunno....todo: figure this stuff out. */
+  there may not even be measurement functions...so...dunno....todo: figure this stuff out. */
   static T getStateProbability(const rsQuantumSpin& A, const rsQuantumSpin& t)
   {
     std::complex<T> r = (A*t) * (t*A); // (1), Eq 2.2 - i hope, it generalizes the right way
@@ -358,8 +360,7 @@ public:
   T measureUpComponent()
   {
     //T Pu  = getUpProbability(*this); // optimize this!
-    //T Pu  = au.real()*au.real() + au.imag()*au.imag(); // == conj(au) * au, (1) page 39
-    T Pu = getSquaredNorm(au);
+    T Pu = getSquaredNorm(au); // same result as Pu = getUpProbability(*this) but more efficient
     T rnd = prng->getSample();
     if(rnd <= Pu) {       // should it be <= or < ?
       prepareUpState();
@@ -371,26 +372,40 @@ public:
 
   T measureRightComponent()
   {
-    //rsQuantumSpin<T> r = right();
-
-    T Pr  = getRightProbability(*this);
-
-
-
+    T Pr = getRightProbability(*this);
+    T rnd = prng->getSample();
+    if(rnd <= Pr) {
+      prepareRightState();
+      return +1; }
+    else {
+      prepareLeftState();
+      return -1; }
   }
+  // not yet tested
 
+  T measureInComponent()
+  {
+    T Pi = getInProbability(*this);
+    T rnd = prng->getSample();
+    if(rnd <= Pr) {
+      prepareInState();
+      return +1; }
+    else {
+      prepareOutState();
+      return -1; }
+  }
+  // not yet tested
 
-  // have similar measureRightComponent, measureInComponent functions and also for arbitrary 
-  // observables described by a (Hermitian) 2x2 matrix of complex numbers (have a class 
-  // "rsSpinOperator" for such matrices) - observables correspond to such matrices and the outcome
-  // of any measurement will be one of the eigenvalues of the matrix - and if the state is an 
-  // eigenvector, the measurement *will* be the corresponding eigenvalue (having an the eigenvector 
-  // as state lets the probability for measuring the corresponding eigenvalue become one)
-  // ...so that means, |u> and |d> are eigenvectors with eigenvalues +1 and -1 ...but what is the
-  // matrix representing the observable? see (1) Eq 3.17 or 3.20 - the matrices seem to be the 
-  // Pauli matrices (so they are not meant as operations to manipulate the state?)
+  // have functions for arbitrary observables described by a (Hermitian) 2x2 matrix of complex 
+  // numbers (have a class "rsSpinOperator" for such matrices) - observables correspond to such 
+  // matrices and the outcome of any measurement will be one of the eigenvalues of the matrix - and 
+  // if the state is an eigenvector, the measurement *will* be the corresponding eigenvalue (having 
+  // an the eigenvector as state lets the probability for measuring the corresponding eigenvalue 
+  // become one) ...so that means, |u> and |d> are eigenvectors with eigenvalues +1 and -1 ...but 
+  // what is the matrix representing the observable? see (1) Eq 3.17 or 3.20 - the matrices seem to 
+  // be the Pauli matrices (so they are not meant as operations to manipulate the state?)
 
-  // todo: implement assignemnt-operator and copy-constructor - these should assign the prng
+  // todo: implement assignment-operator and copy-constructor - these should assign the prng
   // or maybe they should...yeah - i think, that's more convenient
 
 protected:
@@ -460,6 +475,44 @@ inline rsQuantumSpin<T> operator*(const std::complex<T>& z, const rsQuantumSpin<
 {
   return rsQuantumSpin<T>(z * A.getUpComponent(), z * A.getDownComponent());
 }
+
+//-------------------------------------------------------------------------------------------------
+
+/** A class for representing linear operators on quantum spins (objects of class rsQuantumSpin). 
+An operator is represented as complex valued 2x2 matrix M and applying the operator to a spin 
+state v (represented by a complex valued row-vector, a.k.a. "ket") amounts to computing the 
+matrix-vector product M*v. ...
+
+There's a special class of operators associated with observable variables. Measuring a variable 
+associated with such an operator will put the state into one of the eigenvectors of the operator 
+and the result of the measurement will be one of its eigenvalues. Because physical measurements 
+must be real numbers, an operator M corresponding to an observable must be Hermitian (i.e. 
+M = M^H where M^H denotes the Hermitian transpose (= transpose and conjugate)). This ensures real
+eigenvalues.....
+
+
+todo: explain the unitarity stuff
+
+
+*/
+
+template<class T>
+class rsSpinOperator
+{
+
+public:
+
+
+  /** Access function (read/write) for the matrix elements. The indices i,j can both be 0 or 1. */
+  inline T& operator()(const int i, const int j) { return m[i][j]; }
+
+protected:
+
+  std::complex<T> m[2][2];
+
+};
+
+
 
 //=================================================================================================
 
