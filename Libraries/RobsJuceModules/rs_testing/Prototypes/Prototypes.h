@@ -224,13 +224,14 @@ public:
   // maybe have an amount parameter between 0..1 - linearly interpolate between current state and
   // random new state - may be used to simulate decoherence
 
-  /*
-  void normalizeState()
+  /** Normalizes the state such that the total probability is unity - which it must be for a valid 
+  state. */
+  void normalize()
   {
-    T r = getTotalProbability();
-
+    T r = sqrt(T(1) / getTotalProbability(*this));
+    au *= r;
+    ad *= r;
   }
-  */
 
 
   /** Sets a a pointer to a pseudo random number generator that is used in measurement operations.
@@ -253,12 +254,12 @@ public:
     return z.real()*z.real() + z.imag()*z.imag(); // == conj(z) * z, (1) page 39
   }
 
-  /** Returns the total probability, i.e. the probability to be in any state. This should always 
-  return unity for a valid state. Can be used for sanity checks and/or to (re)normalize random 
-  states. */
+  /** Returns the total probability for given ket A, i.e. the probability to be in any state at 
+  all - which must, of course, always return unity for a valid state. The function can be used for 
+  sanity checks and/or to (re)normalize random states. */
   static T getTotalProbability(const rsQuantumSpin& A)
   {
-    return getSquaredNorm(au) + getSquaredNorm(ad); // (1) Eq 2.4
+    return getSquaredNorm(A.getUpComponent()) + getSquaredNorm(A.getDownComponent()); // (1) Eq 2.4
   }
 
 

@@ -366,6 +366,11 @@ bool quantumSpin()
   //pass &= (C == r);  // (1) Eq 2.5  ..implement ==
   //pass &= (s*u - s*d == l);
 
+  A = QS(one, one);               // this is an invalid state because..
+  P = QS::getTotalProbability(A); // ..it has total probability 2
+  A.normalize();                  // this call normalizes the total probability
+  pass &= isCloseTo(P = QS::getTotalProbability(A), 1.0, tol);
+
 
 
   // maybe check probabilities for some mixed states, i.e. spin-states that are not aligned to
