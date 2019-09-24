@@ -232,14 +232,9 @@ public:
     au = std::polar(Pu, pu);
     ad = std::polar(Pd, pd);
 
-    normalize(); // should already be normalized thanks to *= r
-
-
-
-    //au = std::polar(s, T(2.0*PI) * prng->getSample());
-    //ad = std::polar(s, T(2.0*PI) * prng->getSample());
-
+    //normalize(); // should already be normalized thanks to *= r
   }
+  // needs nore tests - especially for the phase range
   
   // maybe have an amount parameter between 0..1 - linearly interpolate between current state and
   // random new state - may be used to simulate decoherence
@@ -411,7 +406,7 @@ public:
 
 protected:
 
-  std::complex<T> au, ad;
+  std::complex<T> au, ad;  // maybe rename to u,d
     // our state consisting of the coefficients for up and down spin basis vectors
 
   rsNoiseGenerator<T>* prng = nullptr;
