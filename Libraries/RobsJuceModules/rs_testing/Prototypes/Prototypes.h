@@ -524,6 +524,18 @@ public:
   // have functions to compute eigenvalues and eigenvectors....
 
 
+  std::complex<T> getEigenvalue1() const
+  {
+    return T(0.5) * (a + d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
+  }
+
+  std::complex<T> getEigenvalue2() const
+  {
+    return T(0.5) * (a + d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
+  }
+
+  // 1/2*a + 1/2*d + 1/2*sqrt(a^2 + 4*b*c - 2*a*d + d^2)
+
 
   /** Access function (read/write) for the matrix elements. The indices i,j can both be 0 or 1. */
   inline std::complex<T>& operator()(const int i, const int j) { return m[i][j]; }

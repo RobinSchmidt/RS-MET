@@ -400,9 +400,8 @@ bool quantumSpin()
   pauliY.setToPauliY();
   pauliX.setToPauliX();
 
-
-
-
+  p = pauliZ.getEigenvalue1(); pass &= p == -1.0;
+  p = pauliZ.getEigenvalue2(); pass &= p == +1.0;
 
 
 
