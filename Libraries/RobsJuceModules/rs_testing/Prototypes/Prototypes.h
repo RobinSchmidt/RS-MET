@@ -150,56 +150,33 @@ public:
 
   /** \name Setup */
 
-  void prepareUpState()
-  {
-    au = 1; ad = 0;
-    //au = std::complex<T>(T(1), T(0));  // 1 + 0i
-    //ad = std::complex<T>(T(0), T(0));  // 0 + 0i
-  }
-
-  void prepareDownState()
-  {
-    au = 0; ad = 1;
-    //au = std::complex<T>(T(0), T(0));  // 0 + 0i
-    //ad = std::complex<T>(T(1), T(0));  // 1 + 0i
-  }
-
-  void prepareLeftState()
-  {
-    au = s; ad = -s;
-    //au = std::complex<T>(T( s), T(0));  //  s + 0i   (1) Eq. 2.6
-    //ad = std::complex<T>(T(-s), T(0));  // -s + 0i
-  }
-
-  void prepareRightState()
-  {
-    au = s; ad = s;
-    //au = std::complex<T>(T(s), T(0));  // s + 0i     (1) Eq. 2.5
-    //ad = std::complex<T>(T(s), T(0));  // s + 0i
-  }
-
-  void prepareInState()
-  {
-    au = s; ad = s*i;
-    //au = std::complex<T>(T(s), T(0));  //  s + 0i    (1) Eq. 2.10
-    //ad = std::complex<T>(T(0), T(s));  //  0 + si
-  }
-
-  void prepareOutState()
-  {
-    au =  s;
-    ad = -s*i;
-    //au = std::complex<T>(T(s), T( 0)); //  s + 0i    (1) Eq. 2.10
-    //ad = std::complex<T>(T(0), T(-s)); //  0 - si
-  }
+  void prepareUpState()    { au = 1; ad =  0;   }
+  void prepareDownState()  { au = 0; ad =  1;   }
+  void prepareLeftState()  { au = s; ad = -s;   }  // (1) Eq. 2.6
+  void prepareRightState() { au = s; ad =  s;   }  // (1) Eq. 2.5
+  void prepareInState()    { au = s; ad =  s*i; }  // (1) Eq. 2.10
+  void prepareOutState()   { au = s; ad = -s*i; }  // (1) Eq. 2.10
 
 
   /** \name Inquiry */
 
   std::complex<T> getUpComponent()   const { return au; }
-
   std::complex<T> getDownComponent() const { return ad; }
+  // todo: getLeft/Right/In/Out Component
 
+
+  /** Computes the up component of the given ket/state |A>. */
+  static std::complex<T> getUpComponent(const rsQuantumBit& A)
+  {
+    rsQuantumBit u;
+    u.prepareUpState();
+    return u*A;         // (1), Eq 2.1
+  }
+
+  static std::complex<T> getDownComponent(const rsQuantumBit& A)
+  { rsQuantumBit d; u.prepareDownState(); return d*A; }
+
+  // make similar functions for left,right,in,out components
 
 
   // have a function to convert to bra - this is a complex conjugation of au, ad and also

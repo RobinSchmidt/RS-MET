@@ -278,6 +278,16 @@ void particleSystem()
 }
 
 
+template<class TArg, class TTol>
+inline bool isCloseTo(TArg x, TArg y, TTol tol)
+{
+  if(rsAbs(x - y) <= tol)
+    return true;
+  else
+    return false;
+}
+// move to rapt
+
 void quantumBit()
 {
   // create some qubits in pure states:
@@ -291,18 +301,29 @@ void quantumBit()
 
 
   std::complex<double> p; // for inner products
+  std::complex<double> one(1,0), zero(0,0), half(.5,0);
 
-  // todo: check orthogonality ...maybe this should be turned into a unit test
+
+  // ..maybe this should be turned into a unit test
   bool pass = true;
   double tol = 1.e-13;
-  pass &= u*u == 1.0;
-  pass &= d*d == 1.0;
-  //pass &= rsIsCloseTo(l*l, 1.0, tol);
-  //pass &= r*r == 1.0;
-  //pass &= i*i == 1.0;
-  //pass &= o*o == 1.0;
 
-  p = l*l;
+  // check normalization of pure states:
+  pass &= (p=u*u) == 1.0;
+  pass &= (p=d*d) == 1.0;
+  pass &= isCloseTo(p=l*l, one, tol);
+  pass &= isCloseTo(p=r*r, one, tol);
+  pass &= isCloseTo(p=i*i, one, tol);
+  pass &= isCloseTo(p=o*o, one, tol);
+
+  // check orthogonality:
+  pass &= (p=u*d) == 0.0;  // (1) Eq 2.3
+  pass &= (p=d*u) == 0.0;
+  pass &= (p=r*l) == 0.0;
+  pass &= (p=l*r) == 0.0;
+  pass &= (p=i*o) == 0.0;
+  pass &= (p=o*i) == 0.0;
+
 
 
   GNUPlotter plt;
