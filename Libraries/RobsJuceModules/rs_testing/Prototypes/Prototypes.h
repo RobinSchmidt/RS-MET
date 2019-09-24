@@ -186,6 +186,8 @@ public:
       T s = sqrt(T(1)/E);
       w1 *= s; w2 *= s; w3 *= s;
     }
+    // maybe factor this out - client code may call it after calling setState to ensure an
+    // energy normalized state - maybe include a target energy
   }
 
 

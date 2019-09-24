@@ -99,6 +99,7 @@ int main(int argc, char* argv[])
   //poleZeroPrototype();  // new implementation - but we don't need that
 
   // Physics:
+  //doublePendulum(); // takes long
   //heatEquation1D();
   //particleForceDistanceLaw();
   //particleSystem();
@@ -394,9 +395,6 @@ int main(int argc, char* argv[])
   //harmonicDeBeating1();
   //harmonicDeBeating2();
 
-
-  // Physics:
-  //doublePendulum(); // takes long
 
   // Resampling:
   //fadeOut();  // move to a new file SampleEditingExperiments
