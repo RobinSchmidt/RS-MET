@@ -501,24 +501,21 @@ class rsSpinOperator // maybe rename to rsQuantumSpinOperator
 
 public:
 
-
-  /*
   static rsSpinOperator<T> pauliZ() { rsSpinOperator<T> z; z.setToPauliZ(); return z; }
   static rsSpinOperator<T> pauliX() { rsSpinOperator<T> x; z.setToPauliX(); return x; }
   static rsSpinOperator<T> pauliY() { rsSpinOperator<T> y; y.setToPauliZ(); return y; }
-  */
 
 
   /** \name Setup */
 
   /** Measurement operator for spin along the z-axis. Returns +1 for up, -1 for down. */
-  void setToPauliZ() { m[0][0] = T(1); m[0][1] = T(0); m[1][0] = T(0); m[1][1] = T(-1); }
+  void setToPauliZ() { a = T(1); b = T(0); c = T(0); d = T(-1); }
 
   /** Measurement operator for spin along the x-axis. Returns +1 for right, -1 for left. */
-  void setToPauliX() { m[0][0] = T(0); m[0][1] = T(1); m[1][0] = T(1); m[1][1] = T(0);  }
+  void setToPauliX() { a = T(0); b = T(1); c = T(1); d = T(0);  }
 
   /** Measurement operator for spin along the y-axis. Returns +1 for in, -1 for out. */
-  void setToPauliY() { m[0][0] = T(0); m[0][1] = -i;   m[1][0] = i; m[1][1] = T(0);  }
+  void setToPauliY() { a = T(0); b = -i;   c = i;    d = T(0);  }
 
 
 
@@ -535,8 +532,8 @@ public:
   rsQuantumSpin<T> operator*(const rsQuantumSpin<T>& v) const
   {
     rsQuantumSpin<T> r;
-    r.au = m[0][0]*v.au + m[0][1]*v.ad;
-    r.ad = m[1][0]*v.au + m[1][1]*v.ad;
+    r.au = a * v.au  +  b * v.ad;
+    r.ad = c * v.au  +  d * v.ad;
     return r;
   }
 
@@ -544,7 +541,9 @@ public:
 
 protected:
 
-  std::complex<T> m[2][2];
+  std::complex<T> a, b, c, d; // matrix coefficients |a b|
+                              //                     |c d|
+
 
   static const std::complex<T> i;  // imaginary unit
 };
