@@ -358,26 +358,6 @@ bool quantumSpin()
   pass &= isCloseTo(P = QS::getInProbability(i), 1.0, tol);
   pass &= isCloseTo(P = QS::getInProbability(o), 0.0, tol);
 
-  // test arithmetic operators:
-  QS A, B, C;
-  A = u;
-  B = d;
-  C = s*u + s*d;
-  //pass &= (C == r);  // (1) Eq 2.5  ..implement ==
-  //pass &= (s*u - s*d == l);
-
-  A = QS(one, one);               // this is an invalid state because..
-  P = QS::getTotalProbability(A); // ..it has total probability 2
-  A.normalize();                  // this call normalizes the total probability
-  pass &= isCloseTo(P = QS::getTotalProbability(A), 1.0, tol);
-
-
-
-  // maybe check probabilities for some mixed states, i.e. spin-states that are not aligned to
-  // any axis
-
-
-
   // set up the random number generator and pass it to the spin-objects to allow doing measurements:
   rsNoiseGenerator<double> prng;
   prng.setRange(0.0, 1.0);
@@ -387,6 +367,39 @@ bool quantumSpin()
   r.setRandomGenerator(&prng);
   i.setRandomGenerator(&prng);
   o.setRandomGenerator(&prng);
+
+  // test arithmetic operators:
+  QS A, B, C;
+
+  A = QS(one, one);               // this is an invalid state because..
+  P = QS::getTotalProbability(A); // ..it has total probability 2
+  A.normalize();                  // this call normalizes the total probability
+  pass &= isCloseTo(P = QS::getTotalProbability(A), 1.0, tol);
+
+
+
+  A = u;
+  B = d;
+  C = s*u + s*d;
+  //pass &= (C == r);  // (1) Eq 2.5  ..implement ==
+  //pass &= (s*u - s*d == l);
+
+
+
+
+  // maybe check probabilities for some mixed states, i.e. spin-states that are not aligned to
+  // any axis
+
+
+  A.randomizeState();
+  B.randomizeState();
+  pass &= isCloseTo(P = QS::getTotalProbability(A), 1.0, tol);
+  pass &= isCloseTo(P = QS::getTotalProbability(B), 1.0, tol);
+
+  //C.randomizeState(); // has unassigned PRNG
+
+
+
 
   // now, do some actual measurements:
   double res;   // measurement result - sign of up-spin component
