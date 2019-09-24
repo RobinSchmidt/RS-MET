@@ -294,7 +294,7 @@ bool quantumSpin()
 
   // create some qubits in pure states:
   typedef rsQuantumSpin<double> QS;
-  rsQuantumSpin<double> u, d, l, r, i, o;
+  rsQuantumSpin<double> u, d, l, r, i, o; // maybe use capital letters
   u.prepareUpState();
   d.prepareDownState();
   l.prepareLeftState();
@@ -306,7 +306,8 @@ bool quantumSpin()
   std::complex<double> p; // for inner products
   double P;               // for probabilities
   double tol = 1.e-13;    // tolerance for rounding errors
-  std::complex<double> one(1,0), zero(0,0), half(.5,0);
+  std::complex<double> one(1,0), zero(0,0), half(.5,0), s(1/sqrt(2.0),0); // i(0,1);
+  //double s = 1/sqrt(2.0);
   bool pass = true;
 
   // check normalization of pure states:
@@ -357,6 +358,13 @@ bool quantumSpin()
   pass &= isCloseTo(P = QS::getInProbability(i), 1.0, tol);
   pass &= isCloseTo(P = QS::getInProbability(o), 0.0, tol);
 
+  // test arithmetic operators:
+  QS A, B, C;
+  A = u;
+  B = d;
+  C = s*u + s*d;
+  //pass &= (C == r);  // (1) Eq 2.5  ..implement ==
+  //pass &= (s*u - s*d == l);
 
 
 
@@ -376,15 +384,14 @@ bool quantumSpin()
   o.setRandomGenerator(&prng);
 
   // now, do some actual measurements:
-  QS A, B;
-  double s;     // sign of up-spin component
+  double res;   // measurement result - sign of up-spin component
   int N = 500;  // number of measurements to take
   std::vector<double> spins(N);
-  for(int i = 0; i < N; i++) {
-    A = r;                                 // initialize state - todo: mayb try different states
-    s = A.measureUpComponent();            // should have a 50/50 chance to be +1 or -1
-    pass &= (s == A.measureUpComponent()); // a 2nd measurement must always give the same result
-    spins[i] = s;
+  for(int n = 0; n < N; n++) {
+    A = r;                                   // initialize state - todo: mayb try different states
+    res = A.measureUpComponent();            // should have a 50/50 chance to be +1 or -1
+    pass &= (res == A.measureUpComponent()); // a 2nd measurement must always give the same result
+    spins[n] = res;
   }
 
 

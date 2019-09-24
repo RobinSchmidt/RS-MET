@@ -173,8 +173,19 @@ public:
 
   /** \name Construction */
 
-  /** Constructor. Creates a qubit in a pure "up" state. */
+  /** Default constructor. Creates a qubit in a pure "up" state. */
   rsQuantumSpin() { prepareUpState(); }
+
+  /** Constructor to create a spin object with given up and down components. It does not verify, if
+  these components specify a valid state. ...maybe do an assert... */
+  rsQuantumSpin(const std::complex<T>& upComponent, const std::complex<T>& downComponent) 
+  { 
+    au = upComponent;
+    ad = downComponent;
+  }
+
+
+
 
   static rsQuantumSpin<T> up()    { rsQuantumSpin<T> s; s.prepareUpState();    return s; }
   static rsQuantumSpin<T> down()  { rsQuantumSpin<T> s; s.prepareDownState();  return s; }
@@ -193,6 +204,14 @@ public:
   void prepareLeftState()  { au = s; ad = -s;   }  // (1) Eq 2.6
   void prepareInState()    { au = s; ad =  s*i; }  // (1) Eq 2.10
   void prepareOutState()   { au = s; ad = -s*i; }  // (1) Eq 2.10
+
+
+  void setState(const std::complex<T>& newUpComponent, const std::complex<T>& newDownComponent)
+  {
+    au = newUpComponent;
+    ad = newDownComponent;
+  }
+  // maybe it should automatically (optionally) renormalize the state?
 
   /*
   void randomizeState() 
@@ -396,6 +415,29 @@ inline std::complex<T> operator*(const rsQuantumSpin<T>& B, const rsQuantumSpin<
 // ..what abotu outer products? do we need such a thing?
 // maybe have rsBra, rsKet classes (maybe as subclasses of some rsRowVector, rsColumnVector 
 // classes)
+
+/** Adds two kets. */
+template<class T>
+inline rsQuantumSpin<T> operator+(const rsQuantumSpin<T>& A, const rsQuantumSpin<T>& B)
+{
+  return rsQuantumSpin<T>(A.getUpComponent()   + B.getUpComponent(), 
+                          A.getDownComponent() + B.getDownComponent() );
+}
+
+/** Subtracts two kets. */
+template<class T>
+inline rsQuantumSpin<T> operator-(const rsQuantumSpin<T>& A, const rsQuantumSpin<T>& B)
+{
+  return rsQuantumSpin<T>(A.getUpComponent()   - B.getUpComponent(), 
+                          A.getDownComponent() - B.getDownComponent() );
+}
+
+/** Multiplies a scalar and a ket. */
+template<class T>
+inline rsQuantumSpin<T> operator*(const std::complex<T>& z, const rsQuantumSpin<T>& A)
+{
+  return rsQuantumSpin<T>(z * A.getUpComponent(), z * A.getDownComponent());
+}
 
 //=================================================================================================
 
