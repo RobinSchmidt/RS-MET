@@ -129,7 +129,11 @@ arbitrarily) choosen basis ket vectors |u> and |d> for "up" and "down" spin:
 
   |A> = au*|u> + ad*|d>
 
+
 ...
+
+References:
+  (1) The Theoretical Minimum - Quantum Mechanics (Leonard Susskind, Art Friedman)
 
 */
 
@@ -148,14 +152,45 @@ public:
 
   void prepareUpState()
   {
-    au = std::complex<T>(T(1), T(0));  // 1 + 0i
-    ad = std::complex<T>(T(0), T(0));  // 0 + 0i
+    au = 1; ad = 0;
+    //au = std::complex<T>(T(1), T(0));  // 1 + 0i
+    //ad = std::complex<T>(T(0), T(0));  // 0 + 0i
   }
 
   void prepareDownState()
   {
-    au = std::complex<T>(T(0), T(0));  // 0 + 0i
-    ad = std::complex<T>(T(1), T(0));  // 1 + 0i
+    au = 0; ad = 1;
+    //au = std::complex<T>(T(0), T(0));  // 0 + 0i
+    //ad = std::complex<T>(T(1), T(0));  // 1 + 0i
+  }
+
+  void prepareLeftState()
+  {
+    au = s; ad = -s;
+    //au = std::complex<T>(T( s), T(0));  //  s + 0i   (1) Eq. 2.6
+    //ad = std::complex<T>(T(-s), T(0));  // -s + 0i
+  }
+
+  void prepareRightState()
+  {
+    au = s; ad = s;
+    //au = std::complex<T>(T(s), T(0));  // s + 0i     (1) Eq. 2.5
+    //ad = std::complex<T>(T(s), T(0));  // s + 0i
+  }
+
+  void prepareInState()
+  {
+    au = s; ad = s*i;
+    //au = std::complex<T>(T(s), T(0));  //  s + 0i    (1) Eq. 2.10
+    //ad = std::complex<T>(T(0), T(s));  //  0 + si
+  }
+
+  void prepareOutState()
+  {
+    au =  s;
+    ad = -s*i;
+    //au = std::complex<T>(T(s), T( 0)); //  s + 0i    (1) Eq. 2.10
+    //ad = std::complex<T>(T(0), T(-s)); //  0 - si
   }
 
 
@@ -166,6 +201,9 @@ protected:
 
   // for convenience we need this scale factor a lot:
   static const T s;  // 1/sqrt(2)
+
+  static const std::complex<T> i;  // imaginary unit
+
   //static const T s =  T(1)/sqrt(2);
 
   // our state  consisting of the coefficients for up and down spin basis vectors:
@@ -175,6 +213,9 @@ protected:
 
 template<class T>
 const T rsQuantumBit<T>::s = T(1) / sqrt(T(2));
+
+template<class T>
+const std::complex<T> rsQuantumBit<T>::i = std::complex<T>(0, 1);
 
 // maybe have rsBra, rsKet classes (maybe as subclasses of some rsRowVector, rsColumnVector 
 // classes)

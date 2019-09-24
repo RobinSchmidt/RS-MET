@@ -280,7 +280,16 @@ void particleSystem()
 
 void quantumBit()
 {
-  rsQuantumBit<double> q1, q2;  // our qubit obejcts
+  // create some qubits in pure states:
+  rsQuantumBit<double> u, d, l, r, i, o;
+  u.prepareUpState();
+  d.prepareDownState();
+  l.prepareLeftState();
+  r.prepareRightState();
+  i.prepareInState();
+  o.prepareOutState();
+
+  // todo: check orthogonality ...maybe this should be turned into a unit test
 
 
   GNUPlotter plt;
