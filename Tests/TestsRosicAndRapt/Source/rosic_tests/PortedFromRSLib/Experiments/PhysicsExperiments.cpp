@@ -301,6 +301,7 @@ void quantumBit()
 
 
   std::complex<double> p; // for inner products
+  double P;               // for probabilities
   std::complex<double> one(1,0), zero(0,0), half(.5,0);
 
 
@@ -323,6 +324,20 @@ void quantumBit()
   pass &= (p=l*r) == 0.0;
   pass &= (p=i*o) == 0.0;
   pass &= (p=o*i) == 0.0;
+
+  // check, if Eq 2.8 and 2.9 are satisfied:
+  pass &= isCloseTo(p = (o*u)*(u*o), half, tol);
+  pass &= isCloseTo(p = (o*d)*(d*o), half, tol);
+  pass &= isCloseTo(p = (i*u)*(u*i), half, tol);
+  pass &= isCloseTo(p = (i*d)*(d*i), half, tol);
+  pass &= isCloseTo(p = (o*r)*(r*o), half, tol);
+  pass &= isCloseTo(p = (o*l)*(l*o), half, tol);
+  pass &= isCloseTo(p = (i*r)*(r*i), half, tol);
+  pass &= isCloseTo(p = (i*l)*(l*i), half, tol);
+
+  // check probabilities
+
+
 
 
 

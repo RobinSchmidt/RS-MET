@@ -130,7 +130,10 @@ arbitrarily) choosen basis ket vectors |u> and |d> for "up" and "down" spin:
   |A> = au*|u> + ad*|d>
 
 
-...
+maybe rename to rsQuantumSpin - what is used as the quantum "bit" is actually one of spin's 
+components, such as the z-component (a pure "up" represents binary 1 and a pure "down" state
+represents binary 0. Mixed states (with respect to the z-axis) represent a superposition of 0 and
+1 (a pure left or right or in or out state is "mixed" with respect to the z axis)
 
 References:
   (1) The Theoretical Minimum - Quantum Mechanics (Leonard Susskind, Art Friedman)
@@ -152,10 +155,10 @@ public:
 
   void prepareUpState()    { au = 1; ad =  0;   }
   void prepareDownState()  { au = 0; ad =  1;   }
-  void prepareLeftState()  { au = s; ad = -s;   }  // (1) Eq. 2.6
-  void prepareRightState() { au = s; ad =  s;   }  // (1) Eq. 2.5
-  void prepareInState()    { au = s; ad =  s*i; }  // (1) Eq. 2.10
-  void prepareOutState()   { au = s; ad = -s*i; }  // (1) Eq. 2.10
+  void prepareLeftState()  { au = s; ad = -s;   }  // (1) Eq 2.6
+  void prepareRightState() { au = s; ad =  s;   }  // (1) Eq 2.5
+  void prepareInState()    { au = s; ad =  s*i; }  // (1) Eq 2.10
+  void prepareOutState()   { au = s; ad = -s*i; }  // (1) Eq 2.10
 
 
   /** \name Inquiry */
@@ -178,6 +181,18 @@ public:
 
   // make similar functions for left,right,in,out components
 
+
+  static T getUpProbability(const rsQuantumBit& A)
+  {
+    rsQuantumBit u;
+    u.prepareUpState();
+    std::complex<T> r = A*u * u*A;    // (1), Eq 2.2
+    return r.real();                  // imag should be zero
+  }
+
+  // maybe have const static state members up,down,left,right,in,out and a general 
+  // getStateComponent, getStateProbability functions and implelement
+  // getUpProbability by using the general getStateProbability(A, targetState)
 
   // have a function to convert to bra - this is a complex conjugation of au, ad and also
   // turns the column vector into a row vector
