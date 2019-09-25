@@ -398,12 +398,18 @@ class rsSpinOperator // maybe rename to rsQuantumSpinOperator
 
 public:
 
+
   static rsSpinOperator<T> pauliZ() { rsSpinOperator<T> z; z.setToPauliZ(); return z; }
   static rsSpinOperator<T> pauliX() { rsSpinOperator<T> x; x.setToPauliX(); return x; }
   static rsSpinOperator<T> pauliY() { rsSpinOperator<T> y; y.setToPauliZ(); return y; }
 
 
   /** \name Setup */
+
+  void setValues(std::complex<T> a, std::complex<T> b, std::complex<T> c, std::complex<T> d)
+  {
+    this->a = a; this->b = b; this->c = c; this->d = d;
+  }
 
   /** Measurement operator for spin along the z-axis. Returns +1 for up, -1 for down. */
   void setToPauliZ() { a = T(1); b = T(0); c = T(0); d = T(-1); }

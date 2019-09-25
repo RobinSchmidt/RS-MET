@@ -306,7 +306,7 @@ bool quantumSpin()
   std::complex<double> p; // for inner products
   double P;               // for probabilities
   double tol = 1.e-13;    // tolerance for rounding errors
-  std::complex<double> one(1,0), zero(0,0), half(.5,0), s(1/sqrt(2.0),0); // i(0,1);
+  std::complex<double> one(1,0), zero(0,0), two(2,0), half(.5,0), s(1/sqrt(2.0),0); // i(0,1);
   //double s = 1/sqrt(2.0);
   bool pass = true;
 
@@ -409,6 +409,18 @@ bool quantumSpin()
   p = pauliY.getEigenvalue2();  pass &= p == +1.0;
   A = pauliY.getEigenvector1(); pass &= A.isCloseTo(i, tol); // "in"
   A = pauliY.getEigenvector2(); pass &= A.isCloseTo(o, tol); // "out"
+
+  // test eigenvalue and eigenvector compuation:
+  QSO op;
+  op.setValues(one, two, two, one);
+  std::complex<double> e1 = op.getEigenvalue1(); pass &= e1 == -1.0;
+  std::complex<double> e2 = op.getEigenvalue2(); pass &= e2 == +3.0;
+  QS E1 = op.getEigenvector1(); // (1, 0)     -> wrong result
+  QS E2 = op.getEigenvector2(); // (1,-1) * s
+  // seems like the eigenvector formulas are still buggy - eigenvalues are correct
+  // -> move general eigenvalue/vector functions to RAPT::rsLinearAlgebra and write unit test
+  // for them
+
 
   // test measurements of observables represented by operators (Pauli matrices in this case):
   A.prepareUpState();
