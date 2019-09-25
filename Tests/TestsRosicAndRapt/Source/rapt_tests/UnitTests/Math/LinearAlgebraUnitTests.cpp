@@ -85,16 +85,56 @@ bool testLinearSystem2x2(std::string &reportString)
 {
   std::string testName = "LinearSystem2x2";
   bool testResult = true;
+  typedef rsLinearAlgebra LA;
 
   double x[2];
   double y[2]    = {17, 39};
   double A[2][2] = {{1, 2},
                     {3, 4}};
 
-  rsLinearAlgebra::rsSolveLinearSystem2x2(A, x, y);
-
+  LA::rsSolveLinearSystem2x2(A, x, y);
   testResult &= (x[0] == 5.0);
   testResult &= (x[1] == 6.0);
+
+  // The eigenvalues and eigenvectors of
+  // |-102 -60| 
+  // | 175 103|
+  // are: e1 = -2, E1 = (7,-5), e2 = 3, E2 = (4,-3)
+  double ev, ex, ey;
+
+  /*
+  ev = LA::eigenvalue2x2_1(-102.0, -60.0, 175.0, 103.0);         // -2
+  LA::eigenvector2x2_1(    -102.0, -60.0, 175.0, 103.0, ex, ey); // k*(7,-5)
+ 
+  ev = LA::eigenvalue2x2_2(-102.0, -60.0, 175.0, 103.0);
+  LA::eigenvector2x2_2(    -102.0, -60.0, 175.0, 103.0, ex, ey);
+  */
+
+  // hmm - somethin seems wrong
+
+
+  ev = LA::eigenvalue2x2_1(-4.0, 6.0, -3.0, 5.0);         // -1
+  LA::eigenvector2x2_1(    -4.0, 6.0, -3.0, 5.0, ex, ey); // k*(2,1) - is (1,0.5), so k=0.5
+  testResult &= ev    == -1;
+  testResult &= ex/ey ==  2;
+
+  ev = LA::eigenvalue2x2_2(-4.0, 6.0, -3.0, 5.0);         // 2
+  LA::eigenvector2x2_2(    -4.0, 6.0, -3.0, 5.0, ex, ey); // k*(1,1), is (1,1), so k=1
+  testResult &= ev    == 2;
+  testResult &= ex/ey == 1;
+
+
+  // something is wrong with the eigenvector computation - maybe i have used formulas for the right
+  // eigenvectors but should have used formulas for left eigenvalues? -nope - thes right 
+  // eigenvectors are what we need
+
+ 
+
+
+
+
+
+
 
   return testResult;
 }

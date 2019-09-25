@@ -53,6 +53,8 @@ T rsLinearAlgebra::eigenvalue2x2_2(T a, T b, T c, T d)
 template<class T>
 inline void normalize(T& vx, T& vy)
 {
+  return;  // preliminary
+
   T rx = rsAbs(vx); rx *= rx;
   T ry = rsAbs(vy); ry *= ry;
   T s  = T(1) / sqrt(rx+ry);
@@ -68,7 +70,7 @@ void rsLinearAlgebra::eigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy)
 {
   if(b != T(0)) {
     vx = T(1);
-    vy = T(0.5) * (a - d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
+    vy = T(-0.5) * (a - d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
     normalize(vx, vy); }
   else {
     vx = T(0);
@@ -81,7 +83,7 @@ void rsLinearAlgebra::eigenvector2x2_2(T a, T b, T c, T d, T& vx, T& vy)
 {
   if(b != T(0)) {
     vx = T(1);
-    vy = T(0.5) * (a - d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
+    vy = T(-0.5) * (a - d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
     normalize(vx, vy); }
   else {
     if(a != d) {

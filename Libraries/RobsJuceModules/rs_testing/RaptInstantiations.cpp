@@ -144,6 +144,12 @@ template void MatrixTools::rsMatrixInPlaceMultiply(double **A, double **B, int N
 //template RAPT::rsLinearAlgebra<float>; // doens't work bcs the template parameters are decalred in the member functions
 template void rsLinearAlgebra::rsSolveLinearSystem2x2(const double A[2][2], double x[2], const double y[2]);
 template void rsLinearAlgebra::rsSolveLinearSystem3x3(const double A[3][3], double x[3], const double y[3]);
+
+template double rsLinearAlgebra::eigenvalue2x2_1(double, double, double, double);
+template double rsLinearAlgebra::eigenvalue2x2_2(double, double, double, double);
+template void rsLinearAlgebra::eigenvector2x2_1(double, double, double, double, double&, double&);
+template void rsLinearAlgebra::eigenvector2x2_2(double, double, double, double, double&, double&);
+
 template bool rsLinearAlgebra::rsSolveLinearSystem(double **A, double *x, const double *b, int N);
 template bool rsLinearAlgebra::rsInvertMatrix(double **A, int N);
 template bool rsLinearAlgebra::rsSolveTridiagonalSystem(double *lowerDiagonal, double *mainDiagonal,
@@ -155,6 +161,8 @@ template bool rsLinearAlgebra::rsChangeOfBasisRowWise(double **A, double **B, do
 template bool rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(double **A, double **B, double **C, int N);
 template bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(   double **A, double **B, double **C, int N);
 template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, const cmplxD *b, int N);
+
+
 
 
 template class RAPT::rsMatrix<double>;

@@ -39,6 +39,7 @@ public:
 
   template<class T>
   static void eigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy);
+  // use pointers for output variables
 
   template<class T>
   static void eigenvector2x2_2(T a, T b, T c, T d, T& vx, T& vy);
