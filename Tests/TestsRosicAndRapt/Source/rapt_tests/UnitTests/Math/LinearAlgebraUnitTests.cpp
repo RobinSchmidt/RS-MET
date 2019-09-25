@@ -121,25 +121,47 @@ bool testLinearSystem2x2(std::string &reportString)
   testResult &= ev    == 6;
   testResult &= ex/ey == 1/2.;
 
-  // todo: try some of the special cases (b==0, b==0 && a==d)
+  // try special cases with b = 0:
 
   // b = 0, a < d:
 
-  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, 5.0);     // -4
-  LA::eigenvector2x2_1(-4.0, 0.0, -3.0, 5.0, ex, ey); // (1,1/3)
+  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, 5.0);         // -4
+  LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, 5.0, ex, ey); // (1,1/3)
   testResult &= ev    == -4;
   testResult &= ex/ey ==  3.;
 
-  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, 5.0);     // 5
-  LA::eigenvector2x2_2(-4.0, 0.0, -3.0, 5.0, ex, ey); // (0,1)
+  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, 5.0);         // 5
+  LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, 5.0, ex, ey); // (0,1)
   testResult &= ev == 5 && ex == 0 && ey == 1; // maybe when we normalize, check only for ey > 0
 
 
   // b = 0, a > d:
 
-  // ...
+  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, -5.0);         // -5
+  LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, -5.0, ex, ey); // (0,1)
+  testResult &= ev == -5 && ex == 0 && ey == 1; 
 
-  // try also an a > d case
+  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, -5.0);         // -4
+  LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, -5.0, ex, ey); // (1,-3)
+  testResult &= ev    == -4;
+  testResult &= ex/ey == -1/3.;
+
+
+  // b = 0, a = d:
+
+  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, -4.0);         // -4
+  LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, -4.0, ex, ey); // (0,1)
+  testResult &= ev == -4 && ex == 0 && ey == 1; 
+
+  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, -4.0);         // -4
+  LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, -4.0, ex, ey); // (0,1)
+  testResult &= ev == -4 && ex == 0 && ey == 1; 
+
+  // todo: try the special cases with complex numbers - we may also need tolerances in the
+  // comparisons
+  // the current implementaion will fall into the wrong branch when real parts of a and d
+  // are equal
+
 
 
   return testResult;

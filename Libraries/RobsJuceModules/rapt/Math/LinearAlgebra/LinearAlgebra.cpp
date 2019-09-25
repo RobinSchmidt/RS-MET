@@ -71,8 +71,6 @@ T rsLinearAlgebra::eigenvalue2x2_2(T a, T b, T c, T d)
   return T(0.5) * (a + d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
 }
 
-
-
 template<class T>
 void rsLinearAlgebra::eigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy)
 {
@@ -81,7 +79,7 @@ void rsLinearAlgebra::eigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy)
     vy = T(-0.5) * (a - d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
     normalize(vx, vy); }
   else {
-    if(rsReal(a) < rsReal(d)) {         // is this correct? ..maybe we need a tolerance, i.e. if tol < d-a
+    if(rsReal(a) < rsReal(d)) { // .maybe we need a tolerance, i.e. if tol < d-a
       vx = T(1);
       vy = c/(a-d);
       normalize(vx, vy); }
@@ -90,8 +88,12 @@ void rsLinearAlgebra::eigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy)
       vy = T(1); }
   }
 }
-
 // ...needs tests, make normalization optional
+// but: what if the real parts of a and d are equal but still a != d, i.e. they have different 
+// imaginary parts? in this case, we should still use vy = c/(a-d) - but the current implementation
+// falls into vvy = 0, vy = 1 ---damn! what condition should we use that works for real and complex 
+// numbers equally well? maybe we should first compare real parts and if they are equal, compare 
+// imaginary parts - have functions rsLess(a,d), rsGreater(a,d)
 
 template<class T>
 void rsLinearAlgebra::eigenvector2x2_2(T a, T b, T c, T d, T& vx, T& vy)
@@ -101,26 +103,13 @@ void rsLinearAlgebra::eigenvector2x2_2(T a, T b, T c, T d, T& vx, T& vy)
     vy = T(-0.5) * (a - d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
     normalize(vx, vy); }
   else {
-
-    if(rsReal(a) > rsReal(d)) {         // is this correct?
+    if(rsReal(a) > rsReal(d)) {
       vx = T(1);
       vy = c/(a-d);
       normalize(vx, vy); }
     else {
       vx = T(0);
       vy = T(1); }
-
-    /*
-    if(a != d) {
-      vx = T(1);
-      vy = c/(a-d); 
-      normalize(vx, vy); }
-    else {
-      vx = T(0);
-      vy = T(1);  }
-      */
-  
-  
   } 
 }
 
