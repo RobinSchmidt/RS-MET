@@ -1,6 +1,6 @@
 #pragma once
-//=================================================================================================
 
+//=================================================================================================
 
 /** Implements a quantum system that describes the spin of a particle such as an electron. This is
 the most simple and prototypical quantum system and can also be used as quantum bit (qubit). The 
@@ -12,16 +12,16 @@ will be either +1 or -1 ("up" or "down") with probabilities determined by the cu
 the measurement, however, this state will have been changed into a pure state such that subsequent 
 measurements of the same observable will always produce the same result (with probability one).
 
-Unlike real quantum systems, we can look into the actual state which consists of two complex 
-numbers. These two complex numbers are called probability amplitudes and their squared magnitudes
-represent the probabilities that the system will be found in an "up" or "down" state when the 
-z-component of the spin is measured.
+Unlike real quantum systems which are like a black box, we can look into the actual state which 
+consists of two complex numbers. These two complex numbers are called probability amplitudes and 
+their squared magnitudes represent the probabilities that the system will be found in an "up" or 
+"down" state when the z-component of the spin is measured. The probability amplitudes of a quantum 
+system actually behave totally deterministically - the random element only comes into play when you
+do an actual measurement. In order to do so, you need to pass a pointer to a pseudo random number 
+generator to the respective measurement function. You should make sure, that this generator is set
+up to produce numbers between 0 and 1 with a uniform probability distribution.
 
-...the design with teh pointer to the PRNG as member is a bit odd and may lead to bugs when the
-pointer is unassigned (which may happen easily when you re-assign a a state variable)...come up 
-with something better - maybe functions that need to create random numbers should get passed a 
-pointer to the prng ...yes - that seems better - it also makes it more obvious from client code
-which functions introduce random components
+
 
 ...
 
@@ -98,7 +98,7 @@ public:
   }
 
   /** Randomizes the state.... */
-  void randomizeState();
+  void randomizeState(rsNoiseGenerator<T>* prng);
   // needs nore tests - especially for the phase range
   // move to cpp file
   // maybe have an amount parameter between 0..1 - linearly interpolate between current state and
@@ -112,13 +112,6 @@ public:
     au *= r;
     ad *= r;
   }
-
-  /** Sets a a pointer to a pseudo random number generator that is used in measurement operations.
-  These operations destroy superposition, i.e. put the spin into on of two possible pure states. 
-  Which of the two that is, is determined randomly according to the probabilities of the two 
-  states. That random decision is what this PRNG is used for. Client code should make sure that the
-  PRNG is correctly set up to produce numbers in the range 0...1. */
-  void setRandomGenerator(rsNoiseGenerator<T>* newGenerator) { prng = newGenerator; }
 
 
   /** \name Inquiry */
@@ -143,7 +136,6 @@ public:
     return getSquaredNorm(A.getUpComponent()) + getSquaredNorm(A.getDownComponent()); // (1) Eq 2.4
   }
 
-
   /** Computes the up component of the given ket/state |A>. */
   static std::complex<T> getUpComponent(const rsQuantumSpin& A)
   {
@@ -159,8 +151,6 @@ public:
 
   // make similar functions for left,right,in,out components and a general
   // getStateComponent
-
-
 
 
   /** Returns the probability to measure a target state t when a system is in state A. */
@@ -218,7 +208,7 @@ public:
   fact that the act measurement will put the system in an eigenvector state of M, implies that 
   subsequent measurements of the same observable will always give the same result (assuming, of 
   course, that no manipulations of the state take place in between the measurements). */
-  T measureObservable(const rsSpinOperator<T>& M); 
+  T measureObservable(const rsSpinOperator<T>& M, rsNoiseGenerator<T>* prng); 
   // still buggy
 
   /** Applies a measurement operation to the state. This measurement will put the state vector 
@@ -226,37 +216,28 @@ public:
   latter case. Which one of the two it is is selected randomly (using our prng) according to the
   up-probability of our state. The operator/matrix that corresponds to that measurement is the 
   Pauli matrix sigma_z = [[1 0], [0,-1]]. */
-  T measureUpComponent();
+  T measureUpComponent(rsNoiseGenerator<T>* prng);
 
   /** Like measureUpComponent(), but for the "right" component represented by the Pauli matrix 
   sigma_x = [[0,1], [1,0]].  */
-  T measureRightComponent(); 
+  T measureRightComponent(rsNoiseGenerator<T>* prng); 
   // not yet tested
 
   /** Like measureUpComponent(), but for the "in" component represented by the Pauli matrix 
   sigma_y = [[0,-i], [i,0]].  */
-
-  T measureInComponent();    
+  T measureInComponent(rsNoiseGenerator<T>* prng);    
   // not yet tested
 
 
 protected:
 
-  std::complex<T> au, ad;  // maybe rename to u,d
-    // our state consisting of the coefficients for up and down spin basis vectors
-
-  rsNoiseGenerator<T>* prng = nullptr;
-    // a pointer to a pseudo random number generator that is used in measurement operations which
-    // destroy superposition, i.e. put the spin into a pure state - but which of the two possible
-    // pure stats that is, is determined randomly - that's what this prng is used for
-  // get rid - pass the prng to measurement functions
-
+  std::complex<T> au, ad;  // probability amplitudes for "up" and "down" - maybe rename to u,d
+                           // coefficients for up and down spin basis vectors
 
 
   static const T s;                // 1/sqrt(2)
   static const std::complex<T> i;  // imaginary unit
     // for convenience (we need these a lot)
-
 
   friend class rsSpinOperator<T>;
 };

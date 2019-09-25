@@ -5,7 +5,7 @@
 // setup
 
 template<class T>
-void rsQuantumSpin<T>::randomizeState() 
+void rsQuantumSpin<T>::randomizeState(rsNoiseGenerator<T>* prng) 
 {
   T Pu = prng->getSample();             // probability of "up"
   T Pd = T(1) - Pu;                     // probability of "down"
@@ -25,7 +25,7 @@ void rsQuantumSpin<T>::randomizeState()
 // measurements
 
 template<class T>
-T rsQuantumSpin<T>::measureObservable(const rsSpinOperator<T>& M)
+T rsQuantumSpin<T>::measureObservable(const rsSpinOperator<T>& M, rsNoiseGenerator<T>* prng)
 {
   rsQuantumSpin<T> E1 = M.getEigenvector1();
   T P1 = getStateProbability(*this, E1);       // (1) Eq 2.2
@@ -45,7 +45,7 @@ T rsQuantumSpin<T>::measureObservable(const rsSpinOperator<T>& M)
 }
 
 template<class T>
-T rsQuantumSpin<T>::measureUpComponent()
+T rsQuantumSpin<T>::measureUpComponent(rsNoiseGenerator<T>* prng)
 {
   //T Pu  = getUpProbability(*this); // optimize this!
   //T Pu = getStateProbability(*this, up());       // (1) Eq 2.2
@@ -60,7 +60,7 @@ T rsQuantumSpin<T>::measureUpComponent()
 }
 
 template<class T>
-T rsQuantumSpin<T>::measureRightComponent()
+T rsQuantumSpin<T>::measureRightComponent(rsNoiseGenerator<T>* prng)
 {
   T Pr = getRightProbability(*this);
   T rnd = prng->getSample();
@@ -73,7 +73,7 @@ T rsQuantumSpin<T>::measureRightComponent()
 }
 
 template<class T>
-T rsQuantumSpin<T>::measureInComponent()
+T rsQuantumSpin<T>::measureInComponent(rsNoiseGenerator<T>* prng)
 {
   T Pi = getInProbability(*this);
   T rnd = prng->getSample();

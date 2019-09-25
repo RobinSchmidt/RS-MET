@@ -361,12 +361,12 @@ bool quantumSpin()
   // set up the random number generator and pass it to the spin-objects to allow doing measurements:
   rsNoiseGenerator<double> prng;
   prng.setRange(0.0, 1.0);
-  u.setRandomGenerator(&prng);
-  d.setRandomGenerator(&prng);
-  l.setRandomGenerator(&prng);
-  r.setRandomGenerator(&prng);
-  i.setRandomGenerator(&prng);
-  o.setRandomGenerator(&prng);
+  //u.setRandomGenerator(&prng);
+  //d.setRandomGenerator(&prng);
+  //l.setRandomGenerator(&prng);
+  //r.setRandomGenerator(&prng);
+  //i.setRandomGenerator(&prng);
+  //o.setRandomGenerator(&prng);
 
   // test arithmetic operators:
   QS A, B, C;
@@ -386,8 +386,8 @@ bool quantumSpin()
   // maybe check probabilities for some mixed states, i.e. spin-states that are not aligned to
   // any axis
 
-  A.randomizeState();
-  B.randomizeState();
+  A.randomizeState(&prng);
+  B.randomizeState(&prng);
   pass &= isCloseTo(P = QS::getTotalProbability(A), 1.0, tol);
   pass &= isCloseTo(P = QS::getTotalProbability(B), 1.0, tol);
 
@@ -426,9 +426,9 @@ bool quantumSpin()
   int n;
   prng.reset();
   for(n = 0; n < N; n++) {
-    A = r;                       // initialize state - todo: mayb try different states
-    r1 = A.measureUpComponent(); // should have a 50/50 chance to be +1 or -1
-    r2 = A.measureUpComponent(); // a 2nd measurement must always give the same result
+    A = r;                            // initialize state - todo: mayb try different states
+    r1 = A.measureUpComponent(&prng); // should have a 50/50 chance to be +1 or -1
+    r2 = A.measureUpComponent(&prng); // a 2nd measurement must always give the same result
     pass &= (r1 == r2);
     spins1[n] = r1;
   }
@@ -441,10 +441,8 @@ bool quantumSpin()
   prng.reset();
   for(n = 0; n < N; n++) {
     A = r;
-    r1 = A.measureObservable(pauliZ);
-
-    r2 = A.measureObservable(pauliZ);    // error! prepares the wrong state?
-
+    r1 = A.measureObservable(pauliZ, &prng);
+    r2 = A.measureObservable(pauliZ, &prng);    // error! prepares the wrong state?
     // r2 = A.measureUpComponent();      // does same thing more simply
     pass &= (r1 == r2);
     spins2[n] = r1;
