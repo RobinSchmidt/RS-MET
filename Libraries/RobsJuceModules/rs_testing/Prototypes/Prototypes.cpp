@@ -11,6 +11,7 @@
 #include "Projection3Dto2D.cpp"
 #include "Polygon.cpp"
 #include "Drawing.cpp"
+#include "QuantumSystems.cpp"
 
 //#include "SinusoidalModeling.cpp" // moved to rapt
 

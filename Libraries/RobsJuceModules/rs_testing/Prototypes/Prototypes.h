@@ -20,6 +20,7 @@ using namespace RAPT;
 #include "Projection3Dto2D.h"
 #include "Polygon.h"
 #include "Drawing.h"
+#include "QuantumSystems.h"
 
 
 

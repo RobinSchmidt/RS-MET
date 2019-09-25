@@ -420,16 +420,17 @@ bool quantumSpin()
 
 
   // now, do some actual measurements:
-  double res;   // measurement result - sign of up-spin component
-  int N = 100;  // number of measurements to take
+  double r1, r2; // resultsof 1st and 2nd measurement - sign of up-spin component
+  int N = 100;   // number of measurements to take
   std::vector<double> spins1(N);
   int n;
   prng.reset();
   for(n = 0; n < N; n++) {
-    A = r;                                   // initialize state - todo: mayb try different states
-    res = A.measureUpComponent();            // should have a 50/50 chance to be +1 or -1
-    pass &= (res == A.measureUpComponent()); // a 2nd measurement must always give the same result
-    spins1[n] = res;
+    A = r;                       // initialize state - todo: mayb try different states
+    r1 = A.measureUpComponent(); // should have a 50/50 chance to be +1 or -1
+    r2 = A.measureUpComponent(); // a 2nd measurement must always give the same result
+    pass &= (r1 == r2);
+    spins1[n] = r1;
   }
   double mean1 = rsMean(spins1);
   //rsPlotVector(spins1);
@@ -440,10 +441,13 @@ bool quantumSpin()
   prng.reset();
   for(n = 0; n < N; n++) {
     A = r;
-    res = A.measureObservable(pauliZ);
-    pass &= (res == A.measureObservable(pauliZ)); // 2nd measurement must give same result
-    //pass &= (res == A.measureUpComponent());      // does same thing more simply
-    spins2[n] = res;
+    r1 = A.measureObservable(pauliZ);
+
+    r2 = A.measureObservable(pauliZ);    // error! prepares the wrong state?
+
+    // r2 = A.measureUpComponent();      // does same thing more simply
+    pass &= (r1 == r2);
+    spins2[n] = r1;
   }
   double mean2 = rsMean(spins2);
   rsPlotVectors(spins1, spins2); 
