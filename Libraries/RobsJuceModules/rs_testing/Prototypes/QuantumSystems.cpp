@@ -2,6 +2,28 @@
 
 //=================================================================================================
 
+// setup
+
+template<class T>
+void rsQuantumSpin<T>::randomizeState() 
+{
+  T Pu = prng->getSample();             // probability of "up"
+  T Pd = T(1) - Pu;                     // probability of "down"
+  T r  = T(1) / sqrt(Pu*Pu + Pd*Pd);    // normalizer
+  Pu  *= r;
+  Pd  *= r;
+  T pu = T(2.0*PI) * prng->getSample(); // phase of au
+  T pd = T(2.0*PI) * prng->getSample(); // phase of ad
+
+  au = std::polar(Pu, pu);
+  ad = std::polar(Pd, pd);
+
+  //normalize(); // should already be normalized thanks to *= r
+}
+
+
+// measurements
+
 template<class T>
 T rsQuantumSpin<T>::measureObservable(const rsSpinOperator<T>& M)
 {

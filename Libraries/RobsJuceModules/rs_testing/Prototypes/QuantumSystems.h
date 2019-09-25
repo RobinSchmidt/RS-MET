@@ -13,7 +13,9 @@ the measurement, however, this state will have been changed into a pure state su
 measurements of the same observable will always produce the same result (with probability one).
 
 Unlike real quantum systems, we can look into the actual state which consists of two complex 
-numbers. 
+numbers. These two complex numbers are called probability amplitudes and their squared magnitudes
+represent the probabilities that the system will be found in an "up" or "down" state when the 
+z-component of the spin is measured.
 
 ...the design with teh pointer to the PRNG as member is a bit odd and may lead to bugs when the
 pointer is unassigned (which may happen easily when you re-assign a a state variable)...come up 
@@ -29,31 +31,18 @@ arbitrarily) choosen basis ket vectors |u> and |d> for "up" and "down" spin:
   |A> = au*|u> + ad*|d>
 
 
-maybe rename to rsQuantumSpin - what is used as the quantum "bit" is actually one of spin's 
+maybe rename to rsQuantumSpin (done) - what is used as the quantum "bit" is actually one of spin's 
 components, such as the z-component (a pure "up" represents binary 1 and a pure "down" state
 represents binary 0. Mixed states (with respect to the z-axis) represent a superposition of 0 and
 1 (a pure left or right or in or out state is "mixed" with respect to the z axis)
 done ..maybe make a simpler class rsQuantumBit that deals exclusively with the up/down direction
 and doesn't consider the others at all - it should also not call the states "up" and "down" but
-|1> and |0> respectively
-
+|1> and |0> respectively - it's more abstract and needs less "physical" features
 
 References:
-  (1) The Theoretical Minimum - Quantum Mechanics (Leonard Susskind, Art Friedman)
+  (1) The Theoretical Minimum - Quantum Mechanics (Leonard Susskind, Art Friedman)  */
 
-*/
-
-
-
-// forward declarations:
-
-//template<class T>
-//class rsQuantumSpin;
-//
-//template<class T>
-//inline std::complex<T> operator*(const rsQuantumSpin<T>& B, const rsQuantumSpin<T>& A);
-
-template<class T> class rsSpinOperator;
+template<class T> class rsSpinOperator; // forward declaration
 
 template<class T>
 class rsQuantumSpin
@@ -74,6 +63,7 @@ public:
     ad = downComponent;
   }
 
+  /** Creates a spin object in pure "up" state. */
   static rsQuantumSpin<T> up()    { rsQuantumSpin<T> s; s.prepareUpState();    return s; }
   static rsQuantumSpin<T> down()  { rsQuantumSpin<T> s; s.prepareDownState();  return s; }
   static rsQuantumSpin<T> right() { rsQuantumSpin<T> s; s.prepareRightState(); return s; }
@@ -82,9 +72,9 @@ public:
   static rsQuantumSpin<T> out()   { rsQuantumSpin<T> s; s.prepareOutState();   return s; }
 
 
-
   /** \name Setup */
 
+  /** Puts the system into a pure "up" state. */
   void prepareUpState()    { au = 1; ad =  0;   }
   void prepareDownState()  { au = 0; ad =  1;   }
   void prepareRightState() { au = s; ad =  s;   }  // (1) Eq 2.5
@@ -92,40 +82,25 @@ public:
   void prepareInState()    { au = s; ad =  s*i; }  // (1) Eq 2.10
   void prepareOutState()   { au = s; ad = -s*i; }  // (1) Eq 2.10
 
-
+  /** Assigns the coefficients (a.k.a. probability amplitudes) for "up" and "down" state to the 
+  given values. It does not verify, if the numbers represent a valid state. */
   void setState(const std::complex<T>& newUpComponent, const std::complex<T>& newDownComponent)
   {
     au = newUpComponent;
     ad = newDownComponent;
   }
-  // maybe it should automatically (optionally) renormalize the state?
 
+  /** Sets this spin object into a given state copied from another spin object. */
   void setState(const rsQuantumSpin<T>& newState)
   {
     au = newState.getUpComponent();
     ad = newState.getDownComponent();
   }
 
-
-  
-  void randomizeState() 
-  {
-    T Pu = prng->getSample();             // probability of "up"
-    T Pd = T(1) - Pu;                     // probability of "down"
-    T r  = T(1) / sqrt(Pu*Pu + Pd*Pd);    // normalizer
-    Pu  *= r;
-    Pd  *= r;
-    T pu = T(2.0*PI) * prng->getSample(); // phase of au
-    T pd = T(2.0*PI) * prng->getSample(); // phase of ad
-
-    au = std::polar(Pu, pu);
-    ad = std::polar(Pd, pd);
-
-    //normalize(); // should already be normalized thanks to *= r
-  }
+  /** Randomizes the state.... */
+  void randomizeState();
   // needs nore tests - especially for the phase range
   // move to cpp file
-  
   // maybe have an amount parameter between 0..1 - linearly interpolate between current state and
   // random new state - may be used to simulate decoherence
 
@@ -133,13 +108,10 @@ public:
   state. */
   void normalize()
   {
-    T r = sqrt(T(1) / getTotalProbability(*this));
-    // or should we do 1/sqrt(t) instead of sqrt(1/t) - which one is better numerically?
-
+    T r = sqrt(T(1) / getTotalProbability(*this));  // or 1/sqrt(t) instead of sqrt(1/t) - which one is better numerically?
     au *= r;
     ad *= r;
   }
-
 
   /** Sets a a pointer to a pseudo random number generator that is used in measurement operations.
   These operations destroy superposition, i.e. put the spin into on of two possible pure states. 
@@ -153,13 +125,15 @@ public:
 
   std::complex<T> getUpComponent()   const { return au; }
   std::complex<T> getDownComponent() const { return ad; }
-  // todo: getLeft/Right/In/Out Component
+  // todo: getLeft/Right/In/Out Component - but these require more compilcated calculations
+  // maybe rename all the "Component" functions to "Amplitude"
 
   /** Returns the squared norm (or magnitude, length, radius) of a complex number. */
   static T getSquaredNorm(const std::complex<T>& z)
   {
     return z.real()*z.real() + z.imag()*z.imag(); // == conj(z) * z, (1) page 39
   }
+  // move to RAPT as rsSquaredNorm
 
   /** Returns the total probability for given ket A, i.e. the probability to be in any state at 
   all - which must, of course, always return unity for a valid state. The function can be used for 
@@ -183,7 +157,8 @@ public:
   static std::complex<T> getDownComponent(const rsQuantumSpin& A)
   { rsQuantumSpin<T> d; d.prepareDownState(); return d*A; }
 
-  // make similar functions for left,right,in,out components
+  // make similar functions for left,right,in,out components and a general
+  // getStateComponent
 
 
 
@@ -210,19 +185,13 @@ public:
   /** Returns the probability for the given state A to be measured in "in" configuration. */
   static T getInProbability(const rsQuantumSpin& A) { return getStateProbability(A, in());  }
 
-  /** Tests, if the state A is close to this state withij the given tolerance. */
+  /** Tests, if the state A is close to the state of "this" with the given tolerance. */
   bool isCloseTo(const rsQuantumSpin& A, T tol)
   {
     if(rsAbs(A.au-au) <= tol && rsAbs(A.ad-ad) <= tol)
       return true;
     return false;
   }
-
-
-
-  // maybe have const static state members up,down,left,right,in,out and a general 
-  // getStateComponent, getStateProbability functions and implelement
-  // getUpProbability by using the general getStateProbability(A, targetState)
 
   // have a function to convert to bra - this is a complex conjugation of au, ad and also
   // turns the column vector into a row vector
@@ -292,12 +261,8 @@ protected:
   friend class rsSpinOperator<T>;
 };
 
-template<class T>
-const T rsQuantumSpin<T>::s = T(1) / sqrt(T(2));
-
-template<class T>
-const std::complex<T> rsQuantumSpin<T>::i = std::complex<T>(0, 1);
-
+template<class T> const T rsQuantumSpin<T>::s = T(1) / sqrt(T(2));
+template<class T> const std::complex<T> rsQuantumSpin<T>::i = std::complex<T>(0, 1);
 
 /** Computes the inner product between two states. Both states B,A are assumed to be ket
 vectors - the operation of taking the inner product involves turning the first ket into a 
