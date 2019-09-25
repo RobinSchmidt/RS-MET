@@ -123,15 +123,23 @@ bool testLinearSystem2x2(std::string &reportString)
 
   // todo: try some of the special cases (b==0, b==0 && a==d)
 
-  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, 5.0);
-  LA::eigenvector2x2_1(-4.0, 0.0, -3.0, 5.0, ex, ey);  // selects the wrong one
+  // b = 0, a < d:
+
+  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, 5.0);     // -4
+  LA::eigenvector2x2_1(-4.0, 0.0, -3.0, 5.0, ex, ey); // (1,1/3)
   testResult &= ev    == -4;
+  testResult &= ex/ey ==  3.;
 
-  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, 5.0);
-  LA::eigenvector2x2_2(-4.0, 0.0, -3.0, 5.0, ex, ey);
-  testResult &= ev    == 5;
+  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, 5.0);     // 5
+  LA::eigenvector2x2_2(-4.0, 0.0, -3.0, 5.0, ex, ey); // (0,1)
+  testResult &= ev == 5 && ex == 0 && ey == 1; // maybe when we normalize, check only for ey > 0
 
-  // wrong! eigenvectors are swapped !
+
+  // b = 0, a > d:
+
+  // ...
+
+  // try also an a > d case
 
 
   return testResult;
