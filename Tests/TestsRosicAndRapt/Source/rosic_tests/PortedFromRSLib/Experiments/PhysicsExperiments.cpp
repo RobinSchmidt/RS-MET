@@ -450,7 +450,9 @@ bool quantumSpin()
     spins2[n] = r1;
   }
   double mean2 = rsMean(spins2);
-  rsPlotVectors(spins1, spins2); 
+  rsPlotVectors(spins1, spins2);
+
+  // todo: check the eigenvector computations (unit test)
 
 
 
