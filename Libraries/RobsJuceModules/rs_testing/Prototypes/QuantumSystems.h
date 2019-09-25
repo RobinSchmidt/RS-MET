@@ -301,98 +301,7 @@ M = M^H where M^H denotes the Hermitian transpose (= transpose and conjugate)). 
 eigenvalues.....
 
 
-todo: explain the unitarity stuff
-
-
-*/
-
-// move to RAPT::rsLinearAlagebra:
-/*
-template<class T>
-T rsEigenvalue2x2_1(T a, T b, T c, T d)
-{
-  return T(0.5) * (a + d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
-}
-
-template<class T>
-T rsEigenvalue2x2_2(T a, T b, T c, T d)
-{
-  return T(0.5) * (a + d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
-}
-
-// move to RAPT::rsLinearAlgebra, make a function that computes bothe eigenvalues at once (we can
-// re-use the value of the sqrt)
-// Sage code to produce the formulas:
-// var("a b c d")
-// A = matrix([[a, b], [c, d]])
-// A.eigenvalues()
-
-template<class T>
-void normalizeLength(T& vx, T& vy)
-{
-  T rx = rsAbs(vx); rx *= rx;
-  T ry = rsAbs(vy); ry *= ry;
-  T s  = T(1) / sqrt(rx+ry);
-  vx *= s;
-  vy *= s;
-}
-*/
-/*
-template<class T>
-void rsEigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy)
-{
-  if(b != T(0)) {
-    vx = T(1);
-    vy = T(0.5) * (a - d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
-    normalizeLength(vx, vy); }
-  else {
-    vx = T(0);
-    vy = T(1); }
-}
-// ...needs tests
-
-template<class T>
-void rsEigenvector2x2_2(T a, T b, T c, T d, T& vx, T& vy)
-{
-  if(b != T(0)) {
-    vx = T(1);
-    vy = T(0.5) * (a - d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
-    normalizeLength(vx, vy); }
-  else {
-    if(a != d) {
-      vx = T(1);
-      vy = c/(a-d); 
-      normalizeLength(vx, vy); }
-    else {
-      vx = T(0);
-      vy = T(1);  }} 
-}
-*/
-
-// the sqrt appears in all 4 formulas - what's its significance? maybe its worth to factor out and
-// give it a name? maybe eigenSqrt...or has it to do with the determinant?
-
-
-// var("a b c d")
-// A = matrix([[a, b], [c, d]])
-// A.eigenvectors_right()
-// [(1/2*a + 1/2*d - 1/2*sqrt(a^2 + 4*b*c - 2*a*d + d^2), [(1, -1/2*(a - d + sqrt(a^2 + 4*b*c - 2*a*d + d^2))/b)],  1),
-//  (1/2*a + 1/2*d + 1/2*sqrt(a^2 + 4*b*c - 2*a*d + d^2), [(1, -1/2*(a - d - sqrt(a^2 + 4*b*c - 2*a*d + d^2))/b)],  1) ]
-//
-// special case when b=0 (leads to div-by-0 in formula above):
-//   var("a b c d")
-//   A = matrix([[a, 0], [c, d]])
-//   A.eigenvectors_right()
-//   [(d, [(0, 1)], 1), (a, [(1, c/(a - d))], 1)]
-//
-// needs further special case when a=d:
-//   var("a b c d")
-//   A = matrix([[a, 0], [c, a]])
-//   A.eigenvectors_right()
-//   [(a, [(0, 1)], 2)]
-
-// these are the right eigenvectors - maybe have similar functions for the left eigenvectors
-
+todo: explain the unitarity stuff  */
 
 template<class T>
 class rsSpinOperator // maybe rename to rsQuantumSpinOperator
@@ -429,27 +338,27 @@ public:
   //std::complex<T> getEigenvalue1() const { return rsEigenvalue2x2_1(a, b, c, d); }
   //std::complex<T> getEigenvalue2() const { return rsEigenvalue2x2_2(a, b, c, d); }
 
+  /** Returns the first eigenvalue of this operator. */
   std::complex<T> getEigenvalue1() const { return RAPT::rsLinearAlgebra::eigenvalue2x2_1(a, b, c, d); }
+
+  /** Returns the second eigenvalue of this operator. */
   std::complex<T> getEigenvalue2() const { return RAPT::rsLinearAlgebra::eigenvalue2x2_2(a, b, c, d); }
 
+  /** Returns the first eigenvector of this operator. */
   rsQuantumSpin<T> getEigenvector1() const
   {
     std::complex<T> vx, vy;
     RAPT::rsLinearAlgebra::eigenvector2x2_1(a, b, c, d, vx, vy);
-    //rsEigenvector2x2_1(a, b, c, d, vx, vy);
     return rsQuantumSpin<T>(vx, vy);
   }
 
+  /** Returns the second eigenvector of this operator. */
   rsQuantumSpin<T> getEigenvector2() const
   {
     std::complex<T> vx, vy;
     RAPT::rsLinearAlgebra::eigenvector2x2_2(a, b, c, d, vx, vy);
-    //rsEigenvector2x2_2(a, b, c, d, vx, vy);
     return rsQuantumSpin<T>(vx, vy);
   }
-
-
-
 
 
   /** Access function (read/write) for the matrix elements. The indices i,j can both be 0 or 1. */
