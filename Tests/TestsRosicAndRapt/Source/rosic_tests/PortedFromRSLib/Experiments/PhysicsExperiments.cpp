@@ -358,15 +358,10 @@ bool quantumSpin()
   pass &= isCloseTo(P = QS::getInProbability(i), 1.0, tol);
   pass &= isCloseTo(P = QS::getInProbability(o), 0.0, tol);
 
-  // set up the random number generator and pass it to the spin-objects to allow doing measurements:
+  // set up the random number generator to be used for measurements:
   rsNoiseGenerator<double> prng;
   prng.setRange(0.0, 1.0);
-  //u.setRandomGenerator(&prng);
-  //d.setRandomGenerator(&prng);
-  //l.setRandomGenerator(&prng);
-  //r.setRandomGenerator(&prng);
-  //i.setRandomGenerator(&prng);
-  //o.setRandomGenerator(&prng);
+
 
   // test arithmetic operators:
   QS A, B, C;
@@ -415,6 +410,11 @@ bool quantumSpin()
   A = pauliY.getEigenvector1(); pass &= A.isCloseTo(i, tol); // "in"
   A = pauliY.getEigenvector2(); pass &= A.isCloseTo(o, tol); // "out"
 
+  // test measurements of observables represented by operators (Pauli matrices in this case):
+  A.prepareUpState();
+  p = A.measureObservable(pauliZ, &prng); pass &= p == +1.0;
+  p = A.measureObservable(pauliZ, &prng); pass &= p == +1.0;
+  // this goes wrong!
 
 
 
@@ -467,6 +467,8 @@ bool quantumSpin()
 
   return pass;
   //GNUPlotter plt;
+
+  // todo: maybe use float instead of double
 }
 // Notes:
 // I think, the relationship to what is called the "wavefunction" in quantum mechanics is as 
