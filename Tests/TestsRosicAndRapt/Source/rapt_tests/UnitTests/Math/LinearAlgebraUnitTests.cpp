@@ -96,22 +96,10 @@ bool testLinearSystem2x2(std::string &reportString)
   testResult &= (x[0] == 5.0);
   testResult &= (x[1] == 6.0);
 
-  // The eigenvalues and eigenvectors of
-  // |-102 -60| 
-  // | 175 103|
-  // are: e1 = -2, E1 = (7,-5), e2 = 3, E2 = (4,-3)
+
+  // Test compuatation of eigenvalues and eigenvectors:
+
   double ev, ex, ey;
-
-  /*
-  ev = LA::eigenvalue2x2_1(-102.0, -60.0, 175.0, 103.0);         // -2
-  LA::eigenvector2x2_1(    -102.0, -60.0, 175.0, 103.0, ex, ey); // k*(7,-5)
- 
-  ev = LA::eigenvalue2x2_2(-102.0, -60.0, 175.0, 103.0);
-  LA::eigenvector2x2_2(    -102.0, -60.0, 175.0, 103.0, ex, ey);
-  */
-
-  // hmm - somethin seems wrong
-
 
   ev = LA::eigenvalue2x2_1(-4.0, 6.0, -3.0, 5.0);         // -1
   LA::eigenvector2x2_1(    -4.0, 6.0, -3.0, 5.0, ex, ey); // k*(2,1) - is (1,0.5), so k=0.5
@@ -123,15 +111,17 @@ bool testLinearSystem2x2(std::string &reportString)
   testResult &= ev    == 2;
   testResult &= ex/ey == 1;
 
+  ev = LA::eigenvalue2x2_1(4.0, 1.0, 6.0, 3.0);
+  LA::eigenvector2x2_1(    4.0, 1.0, 6.0, 3.0, ex, ey);
+  testResult &= ev    == 1;
+  testResult &= ex/ey == -1/3.;
 
-  // something is wrong with the eigenvector computation - maybe i have used formulas for the right
-  // eigenvectors but should have used formulas for left eigenvalues? -nope - thes right 
-  // eigenvectors are what we need
+  ev = LA::eigenvalue2x2_2(4.0, 1.0, 6.0, 3.0);
+  LA::eigenvector2x2_2(    4.0, 1.0, 6.0, 3.0, ex, ey);
+  testResult &= ev    == 6;
+  testResult &= ex/ey == 1/2.;
 
- 
-
-
-
+  // todo: try some of the special cases (b==0, b==0 && a==d
 
 
 
