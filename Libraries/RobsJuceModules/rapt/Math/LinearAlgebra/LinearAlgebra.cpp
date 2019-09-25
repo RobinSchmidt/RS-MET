@@ -39,18 +39,6 @@ void rsLinearAlgebra::rsSolveLinearSystem3x3(const T A[3][3], T x[3], const T y[
 
 
 template<class T>
-T rsLinearAlgebra::eigenvalue2x2_1(T a, T b, T c, T d)
-{
-  return T(0.5) * (a + d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
-}
-
-template<class T>
-T rsLinearAlgebra::eigenvalue2x2_2(T a, T b, T c, T d)
-{
-  return T(0.5) * (a + d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
-}
-
-template<class T>
 inline void normalize(T& vx, T& vy)
 {
   return;  // preliminary
@@ -65,6 +53,22 @@ inline void normalize(T& vx, T& vy)
 }
 // maybe de-inline and make a static class member
 
+
+
+template<class T>
+T rsLinearAlgebra::eigenvalue2x2_1(T a, T b, T c, T d)
+{
+  return T(0.5) * (a + d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
+}
+
+template<class T>
+T rsLinearAlgebra::eigenvalue2x2_2(T a, T b, T c, T d)
+{
+  return T(0.5) * (a + d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
+}
+
+
+
 template<class T>
 void rsLinearAlgebra::eigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy)
 {
@@ -73,6 +77,8 @@ void rsLinearAlgebra::eigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy)
     vy = T(-0.5) * (a - d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
     normalize(vx, vy); }
   else {
+    // we need some logic here, whether to return (0,1) or (1, c/(a - d))
+
     vx = T(0);
     vy = T(1); }
 }
@@ -109,12 +115,21 @@ void rsLinearAlgebra::eigenvector2x2_2(T a, T b, T c, T d, T& vx, T& vy)
 //   A = matrix([[a, 0], [c, d]])
 //   A.eigenvectors_right()
 //   [(d, [(0, 1)], 1), (a, [(1, c/(a - d))], 1)]
+// this formula may not lead to the same ordering of the values/vectors as the one above - i think, 
+// in the eigenvalue function, we need to test if b==0 and if so, test, if d < a and if it is, the 
+// 1st function should return d (and a otherwise) and the 2nd function should return a (and d 
+// otherwise) ...or ...no - i actually think, we need more complex logic in the eigenvector 
+// functions ...if(a < d) ...else if(a > d)...else - and we need that in both functions - it's a 
+// mess
+// - the eigenvalues should be fine
+
 //
 // needs further special case when a=d:
 //   var("a b c d")
 //   A = matrix([[a, 0], [c, a]])
 //   A.eigenvectors_right()
 //   [(a, [(0, 1)], 2)]
+
 
 // these are the right eigenvectors - maybe have similar functions for the left eigenvectors
 

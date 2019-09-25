@@ -121,9 +121,17 @@ bool testLinearSystem2x2(std::string &reportString)
   testResult &= ev    == 6;
   testResult &= ex/ey == 1/2.;
 
-  // todo: try some of the special cases (b==0, b==0 && a==d
+  // todo: try some of the special cases (b==0, b==0 && a==d)
 
+  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, 5.0);
+  LA::eigenvector2x2_1(-4.0, 0.0, -3.0, 5.0, ex, ey);  // selects the wrong one
+  testResult &= ev    == -4;
 
+  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, 5.0);
+  LA::eigenvector2x2_2(-4.0, 0.0, -3.0, 5.0, ex, ey);
+  testResult &= ev    == 5;
+
+  // wrong! eigenvectors are swapped !
 
 
   return testResult;
