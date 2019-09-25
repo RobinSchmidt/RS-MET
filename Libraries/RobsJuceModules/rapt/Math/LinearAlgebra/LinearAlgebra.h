@@ -13,16 +13,39 @@ class rsLinearAlgebra
 
 public:
 
+
+
+
   /** Solves the 2x2 system A*x = y where A is a 2x2 matrix and x, y are 2-dimensional vectors. The
   result is returned in x, the other parameters will not be modified. */
   template<class T>
   static void rsSolveLinearSystem2x2(const T A[2][2], T x[2], const T y[2]);
+    // rename to solve2x2
 
   /** Solves the 3x3 system A*x = y where A is a 3x3 matrix and x, y are 3-dimensional vectors. The
   result is returned in x, the other parameters will not be modified. */
   template<class T>
   static void rsSolveLinearSystem3x3(const T A[3][3], T x[3], const T y[3]);
     // todo: check, if this is the right form of const-ness
+    // rename to solve3x3
+
+
+
+  template<class T>
+  static T eigenvalue2x2_1(T a, T b, T c, T d);
+
+  template<class T>
+  static T eigenvalue2x2_2(T a, T b, T c, T d);
+
+  template<class T>
+  static void eigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy);
+
+  template<class T>
+  static void eigenvector2x2_2(T a, T b, T c, T d, T& vx, T& vy);
+
+
+
+
 
   /** Solves the linear system of equations:
   \f[ a_{00}x_0      + a_{01}x_1      + \ldots + a_{0 (N-1)}    x_{N-1} &= b_0      \f] 

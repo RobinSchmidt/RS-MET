@@ -307,7 +307,7 @@ todo: explain the unitarity stuff
 */
 
 // move to RAPT::rsLinearAlagebra:
-
+/*
 template<class T>
 T rsEigenvalue2x2_1(T a, T b, T c, T d)
 {
@@ -328,7 +328,7 @@ T rsEigenvalue2x2_2(T a, T b, T c, T d)
 // A.eigenvalues()
 
 template<class T>
-void normalize(T& vx, T& vy)
+void normalizeLength(T& vx, T& vy)
 {
   T rx = rsAbs(vx); rx *= rx;
   T ry = rsAbs(vy); ry *= ry;
@@ -336,14 +336,15 @@ void normalize(T& vx, T& vy)
   vx *= s;
   vy *= s;
 }
-
+*/
+/*
 template<class T>
 void rsEigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy)
 {
   if(b != T(0)) {
     vx = T(1);
     vy = T(0.5) * (a - d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
-    normalize(vx, vy); }
+    normalizeLength(vx, vy); }
   else {
     vx = T(0);
     vy = T(1); }
@@ -356,16 +357,17 @@ void rsEigenvector2x2_2(T a, T b, T c, T d, T& vx, T& vy)
   if(b != T(0)) {
     vx = T(1);
     vy = T(0.5) * (a - d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
-    normalize(vx, vy); }
+    normalizeLength(vx, vy); }
   else {
     if(a != d) {
       vx = T(1);
       vy = c/(a-d); 
-      normalize(vx, vy); }
+      normalizeLength(vx, vy); }
     else {
       vx = T(0);
       vy = T(1);  }} 
 }
+*/
 
 // the sqrt appears in all 4 formulas - what's its significance? maybe its worth to factor out and
 // give it a name? maybe eigenSqrt...or has it to do with the determinant?
@@ -424,20 +426,25 @@ public:
 
   /** \name Inquiry */
 
-  std::complex<T> getEigenvalue1() const { return rsEigenvalue2x2_1(a, b, c, d); }
-  std::complex<T> getEigenvalue2() const { return rsEigenvalue2x2_2(a, b, c, d); }
+  //std::complex<T> getEigenvalue1() const { return rsEigenvalue2x2_1(a, b, c, d); }
+  //std::complex<T> getEigenvalue2() const { return rsEigenvalue2x2_2(a, b, c, d); }
+
+  std::complex<T> getEigenvalue1() const { return RAPT::rsLinearAlgebra::eigenvalue2x2_1(a, b, c, d); }
+  std::complex<T> getEigenvalue2() const { return RAPT::rsLinearAlgebra::eigenvalue2x2_2(a, b, c, d); }
 
   rsQuantumSpin<T> getEigenvector1() const
   {
     std::complex<T> vx, vy;
-    rsEigenvector2x2_1(a, b, c, d, vx, vy);
+    RAPT::rsLinearAlgebra::eigenvector2x2_1(a, b, c, d, vx, vy);
+    //rsEigenvector2x2_1(a, b, c, d, vx, vy);
     return rsQuantumSpin<T>(vx, vy);
   }
 
   rsQuantumSpin<T> getEigenvector2() const
   {
     std::complex<T> vx, vy;
-    rsEigenvector2x2_2(a, b, c, d, vx, vy);
+    RAPT::rsLinearAlgebra::eigenvector2x2_2(a, b, c, d, vx, vy);
+    //rsEigenvector2x2_2(a, b, c, d, vx, vy);
     return rsQuantumSpin<T>(vx, vy);
   }
 

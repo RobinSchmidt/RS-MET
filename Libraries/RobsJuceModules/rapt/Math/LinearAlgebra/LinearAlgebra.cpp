@@ -35,6 +35,92 @@ void rsLinearAlgebra::rsSolveLinearSystem3x3(const T A[3][3], T x[3], const T y[
   */
 }
 
+
+
+
+template<class T>
+T rsLinearAlgebra::eigenvalue2x2_1(T a, T b, T c, T d)
+{
+  return T(0.5) * (a + d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
+}
+
+template<class T>
+T rsLinearAlgebra::eigenvalue2x2_2(T a, T b, T c, T d)
+{
+  return T(0.5) * (a + d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
+}
+
+template<class T>
+inline void normalize(T& vx, T& vy)
+{
+  T rx = rsAbs(vx); rx *= rx;
+  T ry = rsAbs(vy); ry *= ry;
+  T s  = T(1) / sqrt(rx+ry);
+  vx *= s;
+  vy *= s;
+  // this is written such it can work for T being a complex number class, too ...but maybe it can
+  // be optimized even for the complex case?
+}
+// maybe de-inline and make a static class member
+
+template<class T>
+void rsLinearAlgebra::eigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy)
+{
+  if(b != T(0)) {
+    vx = T(1);
+    vy = T(0.5) * (a - d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
+    normalize(vx, vy); }
+  else {
+    vx = T(0);
+    vy = T(1); }
+}
+// ...needs tests, make normalization optional
+
+template<class T>
+void rsLinearAlgebra::eigenvector2x2_2(T a, T b, T c, T d, T& vx, T& vy)
+{
+  if(b != T(0)) {
+    vx = T(1);
+    vy = T(0.5) * (a - d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
+    normalize(vx, vy); }
+  else {
+    if(a != d) {
+      vx = T(1);
+      vy = c/(a-d); 
+      normalize(vx, vy); }
+    else {
+      vx = T(0);
+      vy = T(1);  }} 
+}
+
+// the same sqrt appears in all 4 formulas - what's its significance? maybe its worth to factor out 
+// and give it a name? maybe eigenSqrt2x2 ...or has it to do with the determinant?
+
+// var("a b c d")
+// A = matrix([[a, b], [c, d]])
+// A.eigenvectors_right()
+// [(1/2*a + 1/2*d - 1/2*sqrt(a^2 + 4*b*c - 2*a*d + d^2), [(1, -1/2*(a - d + sqrt(a^2 + 4*b*c - 2*a*d + d^2))/b)],  1),
+//  (1/2*a + 1/2*d + 1/2*sqrt(a^2 + 4*b*c - 2*a*d + d^2), [(1, -1/2*(a - d - sqrt(a^2 + 4*b*c - 2*a*d + d^2))/b)],  1) ]
+//
+// special case when b=0 (leads to div-by-0 in formula above):
+//   var("a b c d")
+//   A = matrix([[a, 0], [c, d]])
+//   A.eigenvectors_right()
+//   [(d, [(0, 1)], 1), (a, [(1, c/(a - d))], 1)]
+//
+// needs further special case when a=d:
+//   var("a b c d")
+//   A = matrix([[a, 0], [c, a]])
+//   A.eigenvectors_right()
+//   [(a, [(0, 1)], 2)]
+
+// these are the right eigenvectors - maybe have similar functions for the left eigenvectors
+
+
+
+
+
+
 template<class T>
 bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
 {
