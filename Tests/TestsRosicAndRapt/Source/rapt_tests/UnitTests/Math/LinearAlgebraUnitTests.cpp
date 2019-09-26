@@ -93,7 +93,7 @@ bool testMatrix2x2(std::string& reportString)
 
   // Test compuatation of eigenvalues and eigenvectors:
 
-  double ev, ex, ey;
+  double ev, ex, ey, d;
   bool nrm = false;   // normalize eigenvectors to unit length
 
   ev = LA::eigenvalue2x2_1(-4.0, 6.0, -3.0, 5.0);                // -1
@@ -158,14 +158,16 @@ bool testMatrix2x2(std::string& reportString)
   // are equal
 
   typedef rsMatrix2x2<double> Mat;
-  rsMatrix2x2<double> A(1,2,3,4), B(5,6,7,8), C;
+  rsMatrix2x2<double> A(1,2,3,4), B(5,6,7,8), C, D;
   C = A+B; testResult &= C == Mat(  6,  8, 10, 12);
   C = A-B; testResult &= C == Mat( -4, -4, -4, -4);
   C = A*B; testResult &= C == Mat( 19, 22, 43, 50);
   C = B*A; testResult &= C == Mat( 23, 34, 31, 46);
-
   C = Mat::commutator(A,B); testResult &= C == Mat( -4, -12, 12, 4); // A*B - B*A
-  C = A*B - B*A; testResult &= C == Mat( -4, -12, 12, 4);
+  d = A.determinant(); testResult &= d == -2;
+  d = B.determinant(); testResult &= d == -2;
+  C = A.inverse(); testResult &= C == Mat(-2, 1, 3./2, -1./2);
+  C = B.inverse(); testResult &= C == Mat(-4, 3, 7./2, -5./2);
 
   return testResult;
 }

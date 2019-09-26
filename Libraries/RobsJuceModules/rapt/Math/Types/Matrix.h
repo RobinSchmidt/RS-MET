@@ -27,6 +27,9 @@ public:
 
   /** \name Inquiry */
 
+  /** Returns the determinant of this matrix. */
+  T determinant() const { return a*d - b*c; }
+
   /** Returns the first eigenvalue of this matrix. */
   T eigenvalue1() const { return rsLinearAlgebra::eigenvalue2x2_1(a, b, c, d); }
 
@@ -40,6 +43,16 @@ public:
   /** Returns the second eigenvector of this matrix. */
   rsVector2D<T> eigenvector2() const
   { rsVector2D<T> v; rsLinearAlgebra::eigenvector2x2_2(a, b, c, d, &v.x, &v.y, true); return v; }
+
+  /** Returns the inverse of this matrix. */
+  rsMatrix2x2<T> inverse() const
+  {
+    T D = determinant();
+    T s = T(1) / D;
+    //T s = d;
+    return rsMatrix2x2<T>(s*d, -s*b, -s*c, s*a);
+  }
+
 
   // todo: determinant, inverse, etc.
 
@@ -96,6 +109,8 @@ public:
     return w;
   }
   // todo: left multiplication w = v^H * A
+
+  // todo: operators that take a scalar as left or right argument
 
 
 
