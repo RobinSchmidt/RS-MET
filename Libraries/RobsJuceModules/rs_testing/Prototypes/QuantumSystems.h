@@ -156,17 +156,23 @@ public:
 
 
   static std::complex<T> getDownAmplitude(const rsQuantumSpin& A)
-  { rsQuantumSpin<T> d; d.prepareDownState(); return d*A; }
+  { 
+    return A.x;
+    //rsQuantumSpin<T> d; d.prepareDownState(); return d*A; 
+  }
+  // this should just be x
 
   /** Computes the up component of the given ket/state |A>. */
   static std::complex<T> getUpAmplitude(const rsQuantumSpin& A)
   {
-    rsQuantumSpin u;
-    u.prepareUpState();
-    return u*A;         // (1), Eq 2.1
+    return A.y;
+    //rsQuantumSpin u;
+    //u.prepareUpState();
+    //return u*A;         // (1), Eq 2.1
   }
   // can this be simplified? we could just call A.getUpComponent - actually, this function is 
   // redundant...
+  // should just be y
 
 
 
@@ -313,11 +319,8 @@ inline rsQuantumSpin<T> operator+(const rsQuantumSpin<T>& A, const rsQuantumSpin
 template<class T>
 inline rsQuantumSpin<T> operator-(const rsQuantumSpin<T>& A, const rsQuantumSpin<T>& B)
 {
-  return rsQuantumSpin<T>(
-                          A.getDownAmplitude() - B.getDownAmplitude() ,
-    A.getUpAmplitude()   - B.getUpAmplitude()
-
-    );
+  return rsQuantumSpin<T>(A.getDownAmplitude() - B.getDownAmplitude(),
+                          A.getUpAmplitude()   - B.getUpAmplitude()    );
 }
 
 /** Multiplies a scalar and a ket. */
@@ -421,9 +424,12 @@ public:
   {
     std::complex<T> vx, vy;
     RAPT::rsLinearAlgebra::eigenvector2x2_1(a, b, c, d, &vx, &vy, true);
+    //return rsQuantumSpin<T>(vx, vy);   // wrong - why?
     return rsQuantumSpin<T>(vy, vx);
   }
   // try to get rid - shoudl be inherited
+  // why are they it in that order - can we chaneg the order (and therefore use the inherited function)
+  // when we modify the measureObservable function? try it!
 
   /** Returns the second eigenvector of this operator. */
   rsQuantumSpin<T> eigenvector2() const
