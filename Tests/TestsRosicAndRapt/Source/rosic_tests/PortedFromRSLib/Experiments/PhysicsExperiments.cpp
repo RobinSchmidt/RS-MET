@@ -859,7 +859,19 @@ bool quantumSpinMeasurement2()
     A = B; r2 = QF::measureSpinY(A, &prng2);
     pass &= (r1 == r2);
   }
+  // todo: make additional meausrements after the collapse - they should always give the same 
+  // results
 
+  // test, if the statistical distribution is as desired - set it into a state
+  // au = sqrt(0.8), ad = sqrt(0.2) - we should see roughly 80% "up" measurements and 20% "down"
+  B = Vec(std::complex<double>(sqrt(0.8), 0), std::complex<double>(sqrt(0.2), 0));
+  std::vector<double> spins(N);
+  for(n = 0; n < N; n++) {
+    A = B;
+    spins[n] = QF::measureSpinZ(A, &prng);
+  }
+  double mean = rsMean(spins);
+  P = (mean+1)/2;  // -1..+1 -> 0..1  P = 0.81 (with N=1000) - close enough to 0.8
 
 
   rsAssert(pass);
