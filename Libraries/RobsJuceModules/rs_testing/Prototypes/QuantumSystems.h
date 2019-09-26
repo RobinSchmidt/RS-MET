@@ -244,12 +244,6 @@ public:
 
 
 
-  static T getExpectedMeasurement(const rsSpinOperator<T>& M, const rsQuantumSpin& A);
-  // needs test - maybe this fits better into class rsSpinOperator
-
-
-
-
 protected:
 
   std::complex<T> au, ad;  // probability amplitudes for "up" and "down" - maybe rename to u,d
@@ -387,6 +381,9 @@ public:
     return rsQuantumSpin<T>(vx, vy);
   }
 
+  /** Returns the expectation value for the observable M when the system is in state A. */
+  static T getExpectedMeasurement(const rsSpinOperator<T>& M, const rsQuantumSpin<T>& A);
+
 
   /** Access function (read/write) for the matrix elements. The indices i,j can both be 0 or 1. */
   //inline std::complex<T>& operator()(const int i, const int j) { return m[i][j]; }
@@ -399,6 +396,8 @@ public:
     r.ad = c * v.au  +  d * v.ad;
     return r;
   }
+
+
 
 
 

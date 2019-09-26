@@ -596,9 +596,9 @@ bool quantumSpin()
 
   // compute expectation values for the spin component measurements in state B:
   double Ez, Ex, Ey;  
-  Ez = QS::getExpectedMeasurement(pauliZ, B); // should be 0.6 = (0.8*2)-1 and close to mean1
-  Ex = QS::getExpectedMeasurement(pauliX, B);
-  Ey = QS::getExpectedMeasurement(pauliY, B);
+  Ez = QSO::getExpectedMeasurement(pauliZ, B); // should be 0.6 = (0.8*2)-1 and close to mean1
+  Ex = QSO::getExpectedMeasurement(pauliX, B); // 0.8
+  Ey = QSO::getExpectedMeasurement(pauliY, B); // 0.0
   P  = Ex*Ex + Ey*Ey + Ez*Ez;  // should be one according to (1) Eq 3.27
   pass &= isCloseTo(P,  1.0, tol);
   pass &= isCloseTo(Ez, 0.6, tol);

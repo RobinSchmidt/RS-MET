@@ -98,9 +98,13 @@ T rsQuantumSpin<T>::measureSpinY(rsNoiseGenerator<T>* prng)
     return +1; }
 }
 
+//=================================================================================================
+
 template<class T>
-T rsQuantumSpin<T>::getExpectedMeasurement(const rsSpinOperator<T>& M, const rsQuantumSpin& A)
+T rsSpinOperator<T>::getExpectedMeasurement(
+  const rsSpinOperator<T>& M, const rsQuantumSpin<T>& A)
 {
+  /*
   // computation via (1) Eq 3.26 - this is just naively applying the general formula for 
   // an expectation value:
   rsQuantumSpin<T> E1 = M.getEigenvector1();
@@ -111,10 +115,11 @@ T rsQuantumSpin<T>::getExpectedMeasurement(const rsSpinOperator<T>& M, const rsQ
   T P2 = getStateProbability(A, E2);
   T E  = (e1*P1 + e2*P2).real();
   return E;
+  */
 
   // ...but the same value can be computed more efficiently by (1) Eq 4.14:
-  //E = A * M * A; // we need to define left-multiplication for operators, i.e. the A * M part
-
+  T E = (A * (M * A)).real();
+  return E;
 }
 
 
