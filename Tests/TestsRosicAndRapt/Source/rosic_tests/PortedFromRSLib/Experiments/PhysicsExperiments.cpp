@@ -687,6 +687,9 @@ bool quantumSpinEvolution()
   // a number of steps and a step-size
   // move the plotting into a different function
 
+  // todo: can we accumulate all the steps into a single big step represented by a matrix U(t) 
+  // (the time-development operator, see Eq 4.1) that has accumulated all the little steps up to t?
+
   return pass;
 }
 
