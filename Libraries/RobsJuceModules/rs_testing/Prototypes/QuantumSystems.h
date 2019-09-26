@@ -338,7 +338,7 @@ stuff should be implemented procedurally - yes - that sounds like a better idea
 */
 
 template<class T>
-class rsSpinOperator // maybe rename to rsQuantumSpinOperator
+class rsSpinOperator : public rsMatrix2x2<std::complex<T>> // maybe rename to rsQuantumSpinOperator
 {
 
 public:
@@ -439,12 +439,12 @@ public:
 
 
 
-  std::complex<T> a, b, c, d; // matrix coefficients |a b|
-                              //                     |c d|
+  //std::complex<T> a, b, c, d; // matrix coefficients |a b|
+  //                            //                     |c d|
   // todo: either use rsMatrix2x2 or derive from rsMatrix2x2
 
 
-  rsMatrix2x2<std::complex<T>> M; // for transition/refactoring - later maybe derive from this class
+  //rsMatrix2x2<std::complex<T>> M; // for transition/refactoring - later maybe derive from this class
 
 protected:
 
