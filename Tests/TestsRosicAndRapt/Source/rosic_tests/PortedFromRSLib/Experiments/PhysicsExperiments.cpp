@@ -731,6 +731,35 @@ bool quantumSpinMeasurement2()
 
 
 
+  // some test with spin operators:
+  typedef rsSpinOperator<double> QSO;
+  QSO pauliZ, pauliY, pauliX;
+  pauliZ.setToPauliZ();
+  pauliY.setToPauliY();
+  pauliX.setToPauliX();
+
+  p = pauliZ.eigenvalue1();  pass &= p == -1.0;
+  p = pauliZ.eigenvalue2();  pass &= p == +1.0;
+  A = pauliZ.eigenvector1(); pass &= QF::isCloseTo(A, d, tol); // "down"
+  A = pauliZ.eigenvector2(); pass &= QF::isCloseTo(A, u, tol); // "up"
+
+  p = pauliX.eigenvalue1();  pass &= p == -1.0;
+  p = pauliX.eigenvalue2();  pass &= p == +1.0;
+  A = pauliX.eigenvector1(); pass &= QF::isCloseTo(A, l, tol); // "left" - wrong - not normalized
+  A = pauliX.eigenvector2(); pass &= QF::isCloseTo(A, r, tol); // "right"
+
+  p = pauliY.eigenvalue1();  pass &= p == -1.0;
+  p = pauliY.eigenvalue2();  pass &= p == +1.0;
+  A = pauliY.eigenvector1(); pass &= QF::isCloseTo(A, o, tol); // "out"
+  A = pauliY.eigenvector2(); pass &= QF::isCloseTo(A, i, tol); // "in"
+
+  // test eigenvalue and eigenvector compuation:
+  Mat op;
+  op.setValues(one, two, two, one);
+  std::complex<double> e1 = op.eigenvalue1(); pass &= e1 == -1.0;
+  std::complex<double> e2 = op.eigenvalue2(); pass &= e2 == +3.0;
+  Vec E1 = op.eigenvector1(); // (1, 0)     -> wrong result
+  Vec E2 = op.eigenvector2(); // (1,-1) * s
 
 
 

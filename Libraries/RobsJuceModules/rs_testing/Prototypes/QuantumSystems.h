@@ -112,7 +112,7 @@ public:
   }
 
   /**  */
-  bool isCloseTo(const Vec& A, const Vec& B,  T tol)
+  static bool isCloseTo(const Vec& A, const Vec& B,  T tol)
   {
     if(rsAbs(A.y-B.y) <= tol && rsAbs(A.x-B.x) <= tol)
       return true;
