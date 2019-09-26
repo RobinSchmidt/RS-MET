@@ -42,17 +42,14 @@ T rsQuantumSpinFunctions<T>::measureObservable(Vec& A, const Mat& M, rsNoiseGene
   Vec E1 = M.eigenvector1();
   T P1 = getStateProbability(A, E1);
   T rnd = prng->getSample();
-  //if(rnd >= P1) { // new
-  if(rnd <= P1) { // should it be <= or < ?  old
+  if(rnd <= P1) { // should it be <= or < ? 
     //T P2 = getStateProbability(A, M.getEigenvector2()); // should be 1-P1
-    //setState(E1);
     A = E1;
     return M.eigenvalue1().real(); // is real if M is Hermitian
   }
   else {
     Vec E2 = M.eigenvector2();
     A = E2;
-    //setState(E2);
     return M.eigenvalue2().real(); // is real if M is Hermitian
   }
 }
@@ -67,7 +64,46 @@ T rsQuantumSpinFunctions<T>::measureObservable(Vec& A, const Mat& M, rsNoiseGene
 
 
 
+template<class T>
+T rsQuantumSpinFunctions<T>::measureSpinZ(Vec& A, rsNoiseGenerator<T>* prng)
+{
+  //T Pd  = getStateProbability(A, down());       // (1) Eq 2.2
+  T Pd = getDownProbability(A);
+  //T Pd  = getSquaredNorm(x);
+  T rnd = prng->getSample();
+  if(rnd <= Pd) {       // should it be <= or < ?
+    prepareDownState(A);
+    return -1; }
+  else {
+    prepareUpState(A);
+    return +1; }
+}
 
+template<class T>
+T rsQuantumSpinFunctions<T>::measureSpinX(Vec& A, rsNoiseGenerator<T>* prng)
+{
+  T Pl  = getLeftProbability(A); // optimizable?
+  T rnd = prng->getSample();
+  if(rnd <= Pl) {
+    prepareLeftState(A);
+    return -1; }
+  else {
+    prepareRightState(A);
+    return +1; }
+}
+
+template<class T>
+T rsQuantumSpinFunctions<T>::measureSpinY(Vec& A, rsNoiseGenerator<T>* prng)
+{
+  T Po = getOutProbability(A); // optimizable?
+  T rnd = prng->getSample();
+  if(rnd <= Po) {
+    prepareOutState(A);
+    return -1; }
+  else {
+    prepareInState(A);
+    return +1; }
+}
 
 
 

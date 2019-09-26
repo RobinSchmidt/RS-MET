@@ -152,7 +152,20 @@ public:
   static T measureObservable(Vec& A, const Mat& M, rsNoiseGenerator<T>* prng); 
 
 
+  /** Measures the z-component of the spin. This measurement will put the state vector either into
+  a pure "up" or pure "down" state and will return +1 in the former and -1 in the latter case. 
+  Which one of the two it is is selected randomly using the prng according to the up-probability 
+  of our state. The operator/matrix that corresponds to that measurement is the 
+  Pauli matrix sigma_z = [[1 0], [0,-1]]. */
+  static T measureSpinZ(Vec& A, rsNoiseGenerator<T>* prng);
 
+  /** Similar to measureSpinZ, but for the x-component represented by the Pauli matrix 
+  sigma_x = [[0,1], [1,0]]. */
+  static T measureSpinX(Vec& A, rsNoiseGenerator<T>* prng);
+
+  /** Similar to measureSpinZ, but for the y-component represented by the Pauli matrix 
+  sigma_y = [[0,-i], [i,0]]. */
+  static T measureSpinY(Vec& A, rsNoiseGenerator<T>* prng);
 
 
 

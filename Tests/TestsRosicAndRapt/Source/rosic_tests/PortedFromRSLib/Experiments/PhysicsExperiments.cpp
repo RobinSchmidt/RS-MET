@@ -778,35 +778,57 @@ bool quantumSpinMeasurement2()
   QF::prepareDownState(A);
   p = QF::measureObservable(A, pauliZ, &prng); pass &= p == -1.0;
   p = QF::measureObservable(A, pauliZ, &prng); pass &= p == -1.0;
-  P = QF::getStateProbability(A, d);      pass &= P ==  1.0;
-
-
+  P = QF::getStateProbability(A, d);           pass &= P ==  1.0;
   QF::prepareUpState(A);
   p = QF::measureObservable(A, pauliZ, &prng); pass &= p == +1.0;
   p = QF::measureObservable(A, pauliZ, &prng); pass &= p == +1.0;
-  P = QF::getStateProbability(A, u);      pass &= P ==  1.0;
+  P = QF::getStateProbability(A, u);           pass &= P ==  1.0;
 
   QF::prepareLeftState(A);
   p = QF::measureObservable(A, pauliX, &prng); pass &= p == -1.0;
   p = QF::measureObservable(A, pauliX, &prng); pass &= p == -1.0;
-  P = QF::getStateProbability(A, l);      pass &= isCloseTo(P, 1.0, tol);
+  P = QF::getStateProbability(A, l);           pass &= isCloseTo(P, 1.0, tol);
   QF::prepareRightState(A);
   p = QF::measureObservable(A, pauliX, &prng); pass &= p == +1.0;
   p = QF::measureObservable(A, pauliX, &prng); pass &= p == +1.0;
-  P = QF::getStateProbability(A, r);      pass &= isCloseTo(P, 1.0, tol);
+  P = QF::getStateProbability(A, r);           pass &= isCloseTo(P, 1.0, tol);
 
   QF::prepareOutState(A);
   p = QF::measureObservable(A, pauliY, &prng); pass &= p == -1.0;
   p = QF::measureObservable(A, pauliY, &prng); pass &= p == -1.0;
-  P = QF::getStateProbability(A, o);      pass &= isCloseTo(P, 1.0, tol);
+  P = QF::getStateProbability(A, o);           pass &= isCloseTo(P, 1.0, tol);
   QF::prepareInState(A);
   p = QF::measureObservable(A, pauliY, &prng); pass &= p == +1.0;
   p = QF::measureObservable(A, pauliY, &prng); pass &= p == +1.0;  // fails
-  P = QF::getStateProbability(A, i);      pass &= isCloseTo(P, 1.0, tol);
+  P = QF::getStateProbability(A, i);           pass &= isCloseTo(P, 1.0, tol);
 
+  // test spin measurements via dedicated functions:
+  QF::prepareDownState(A);
+  p = QF::measureSpinZ(A, &prng);    pass &= p == -1.0;
+  p = QF::measureSpinZ(A, &prng);    pass &= p == -1.0;
+  P = QF::getStateProbability(A, d); pass &= P ==  1.0;
+  QF::prepareUpState(A);
+  p = QF::measureSpinZ(A, &prng);    pass &= p == +1.0;
+  p = QF::measureSpinZ(A, &prng);    pass &= p == +1.0;
+  P = QF::getStateProbability(A, u); pass &= P ==  1.0;
 
+  QF::prepareLeftState(A);
+  p = QF::measureSpinX(A, &prng);    pass &= p == -1.0;
+  p = QF::measureSpinX(A, &prng);    pass &= p == -1.0;
+  P = QF::getStateProbability(A, l); pass &= isCloseTo(P, 1.0, tol);
+  QF::prepareRightState(A);
+  p = QF::measureSpinX(A, &prng);    pass &= p == +1.0;
+  p = QF::measureSpinX(A, &prng);    pass &= p == +1.0;
+  P = QF::getStateProbability(A, r); pass &= isCloseTo(P, 1.0, tol);
 
-
+  QF::prepareOutState(A);
+  p = QF::measureSpinY(A, &prng);    pass &= p == -1.0;
+  p = QF::measureSpinY(A, &prng);    pass &= p == -1.0;
+  P = QF::getStateProbability(A, o); pass &= isCloseTo(P, 1.0, tol);
+  QF::prepareInState(A);
+  p = QF::measureSpinY(A, &prng);    pass &= p == +1.0;
+  p = QF::measureSpinY(A, &prng);    pass &= p == +1.0;
+  P = QF::getStateProbability(A, i); pass &= isCloseTo(P, 1.0, tol);
 
 
 
