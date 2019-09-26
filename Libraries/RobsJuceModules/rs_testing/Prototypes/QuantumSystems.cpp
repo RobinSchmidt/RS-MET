@@ -9,11 +9,32 @@ void rsQuantumSpinFunctions<T>::randomizeState(Vec& v, PRNG* prng)
   T pu = T(2.0*PI) * prng->getSample(); // phase of v.y
   T pd = T(2.0*PI) * prng->getSample(); // phase of v.x
 
-  A.y = std::polar(Pu, pu);
-  A.x = std::polar(Pd, pd);
+  v.y = std::polar(Pu, pu);
+  v.x = std::polar(Pd, pd);
 }
 
+template<class T>
+T rsQuantumSpinFunctions<T>::getExpectedMeasurement(const Mat& M, const Vec& A)
+{
+  // computation via (1) Eq 3.26 - this is just naively applying the general formula for 
+  // an expectation value:
+  rsQuantumSpin<T> E1 = M.eigenvector1();
+  rsQuantumSpin<T> E2 = M.eigenvector2();
+  std::complex<T>  e1 = M.eigenvalue1();
+  std::complex<T>  e2 = M.eigenvalue2();
+  T P1 = rsQuantumSpin<T>::getStateProbability(A, E1);
+  T P2 = rsQuantumSpin<T>::getStateProbability(A, E2);
+  T E  = (e1*P1 + e2*P2).real();
+  return E;
 
+
+  // ...but the same value can be computed more efficiently by (1) Eq 4.14:
+  //T E = (A * (M * A)).real();
+  // use a function E = bracket(A, M, A) that takes two kets and a matrix, converts the 1st into 
+  // a bra and computes the inner product
+
+  return E;
+}
 
 
 

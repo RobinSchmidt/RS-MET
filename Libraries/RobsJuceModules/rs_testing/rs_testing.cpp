@@ -60,3 +60,5 @@ template class rsHeatEquation1D<double>;
 
 template class rsQuantumSpin<double>;
 template class rsSpinOperator<double>;
+template class rsQuantumSpinFunctions<double>;
+

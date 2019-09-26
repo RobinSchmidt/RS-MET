@@ -36,15 +36,15 @@ public:
 
    /** Normalizes the state such that the total probability is unity - which it must be for a valid 
   state. */
-  void normalizeState(Vec& A)
+  static void normalizeState(Vec& A)
   {
     T r = sqrt(T(1) / getTotalProbability(A));  // or 1/sqrt(t) instead of sqrt(1/t) - which one is better numerically?
-    y *= r;
-    x *= r;
+    A.x *= r;
+    A.y *= r;
   }
 
   /** Randomizes the state.... */
-  void randomizeState(Vec& v, PRNG* prng);
+  static void randomizeState(Vec& v, PRNG* prng);
 
 
 
@@ -53,13 +53,13 @@ public:
   /** \name Operator setup */
 
   /** Measurement operator for spin along the z-axis. Returns +1 for up, -1 for down. */
-  void setToPauliZ(Mat& M) { M.a = T(1); M.b = T(0); M.c = T(0); M.d = T(-1); }
+  static void setToPauliZ(Mat& M) { M.a = T(1); M.b = T(0); M.c = T(0); M.d = T(-1); }
 
   /** Measurement operator for spin along the x-axis. Returns +1 for right, -1 for left. */
-  void setToPauliX(Mat& M) { M.a = T(0); M.b = T(1); M.c = T(1); M.d = T(0);  }
+  static void setToPauliX(Mat& M) { M.a = T(0); M.b = T(1); M.c = T(1); M.d = T(0);  }
 
   /** Measurement operator for spin along the y-axis. Returns +1 for in, -1 for out. */
-  void setToPauliY(Mat& M) { M.a = T(0); M.b = -i;   M.c = i;    M.d = T(0);  }
+  static void setToPauliY(Mat& M) { M.a = T(0); M.b = -i;   M.c = i;    M.d = T(0);  }
 
 
 
@@ -108,7 +108,7 @@ public:
   sanity checks and/or to (re)normalize random states. */
   static T getTotalProbability(const Vec& A)
   {
-    return getSquaredNorm(A.getUpAmplitude()) + getSquaredNorm(A.getDownAmplitude()); // (1) Eq 2.4
+    return getSquaredNorm(getUpAmplitude(A)) + getSquaredNorm(getDownAmplitude(A)); // (1) Eq 2.4
   }
 
   /**  */

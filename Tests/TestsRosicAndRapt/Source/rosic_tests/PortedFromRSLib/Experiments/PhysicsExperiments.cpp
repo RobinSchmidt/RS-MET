@@ -649,10 +649,12 @@ bool quantumSpinMeasurement2()
   typedef rsNoiseGenerator<double> PRNG;
 
   // some work variables:
+  Vec A, B, C;            // for generic states
   std::complex<double> p; // for inner products
   double P;               // for probabilities
   double tol = 1.e-13;    // tolerance for rounding errors
   std::complex<double> one(1,0), zero(0,0), two(2,0), half(.5,0), s(1/sqrt(2.0),0);
+  PRNG prng;  // randum number genertor for measurements
 
   // create some qubits in pure states:
   Vec u, d, l, r, i, o; // maybe use capital letters
@@ -710,6 +712,29 @@ bool quantumSpinMeasurement2()
   pass &= isCloseTo(P = QF::getInProbability(l), 0.5, tol);
   pass &= isCloseTo(P = QF::getInProbability(i), 1.0, tol);
   pass &= isCloseTo(P = QF::getInProbability(o), 0.0, tol);
+
+  // test some stuff:
+  A = Vec(one, one);              // this is an invalid state because..
+  P = QF::getTotalProbability(A); // ..it has total probability 2
+  QF::normalizeState(A);          // this call normalizes the total probability
+  pass &= isCloseTo(P = QF::getTotalProbability(A), 1.0, tol);
+  A = u;
+  B = d;
+  C = s*u + s*d;
+  pass &= (C == r);               // (1) Eq 2.5 
+  pass &= (s*u - s*d == l);
+  QF::randomizeState(A, &prng);
+  QF::randomizeState(A, &prng);
+  pass &= isCloseTo(P = QF::getTotalProbability(A), 1.0, tol);
+  pass &= isCloseTo(P = QF::getTotalProbability(B), 1.0, tol);
+
+
+
+
+
+
+
+
 
 
 
