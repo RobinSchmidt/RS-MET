@@ -656,6 +656,8 @@ bool quantumSpinMeasurement2()
   double r1, r2;          // results of 1st and 2nd measurement
   std::complex<double> one(1,0), zero(0,0), two(2,0), half(.5,0), s(1/sqrt(2.0),0);
   PRNG prng;  // randum number genertor for measurements
+  prng.setRange(0, 1);  // this is super important and a source for trouble if forgotten
+                        // todo: allow ony a specific kind of PRNG that only has range 0..1
 
   // create some qubits in pure states:
   Vec u, d, l, r, i, o; // maybe use capital letters
@@ -696,9 +698,6 @@ bool quantumSpinMeasurement2()
   // check up-spin probabilities of the various pure spin states:
   pass &= isCloseTo(P = QF::getUpProbability(u), 1.0, tol); // pure up-spin   has P(up) = 1
   pass &= isCloseTo(P = QF::getUpProbability(d), 0.0, tol); // pure down-spin has P(up) = 0
-  // these two fail
-
-
   pass &= isCloseTo(P = QF::getUpProbability(r), 0.5, tol); // all other pure spin states (left, 
   pass &= isCloseTo(P = QF::getUpProbability(l), 0.5, tol); // right, in, out) have up-spin 
   pass &= isCloseTo(P = QF::getUpProbability(i), 0.5, tol); // probability of 1/2
@@ -779,7 +778,7 @@ bool quantumSpinMeasurement2()
   QF::prepareDownState(A);
   p = QF::measureObservable(A, pauliZ, &prng); pass &= p == -1.0;
   p = QF::measureObservable(A, pauliZ, &prng); pass &= p == -1.0;
-  P = QF::getStateProbability(A, d);      pass &= P ==  1.0;  // fails!
+  P = QF::getStateProbability(A, d);      pass &= P ==  1.0;
 
 
   QF::prepareUpState(A);
@@ -802,7 +801,7 @@ bool quantumSpinMeasurement2()
   P = QF::getStateProbability(A, o);      pass &= isCloseTo(P, 1.0, tol);
   QF::prepareInState(A);
   p = QF::measureObservable(A, pauliY, &prng); pass &= p == +1.0;
-  p = QF::measureObservable(A, pauliY, &prng); pass &= p == +1.0;
+  p = QF::measureObservable(A, pauliY, &prng); pass &= p == +1.0;  // fails
   P = QF::getStateProbability(A, i);      pass &= isCloseTo(P, 1.0, tol);
 
 
