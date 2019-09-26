@@ -147,8 +147,8 @@ template void rsLinearAlgebra::rsSolveLinearSystem3x3(const double A[3][3], doub
 
 template double rsLinearAlgebra::eigenvalue2x2_1(double, double, double, double);
 template double rsLinearAlgebra::eigenvalue2x2_2(double, double, double, double);
-template void rsLinearAlgebra::eigenvector2x2_1(double, double, double, double, double&, double&);
-template void rsLinearAlgebra::eigenvector2x2_2(double, double, double, double, double&, double&);
+template void rsLinearAlgebra::eigenvector2x2_1(double, double, double, double, double*, double*, bool);
+template void rsLinearAlgebra::eigenvector2x2_2(double, double, double, double, double*, double*, bool);
 
 template bool rsLinearAlgebra::rsSolveLinearSystem(double **A, double *x, const double *b, int N);
 template bool rsLinearAlgebra::rsInvertMatrix(double **A, int N);

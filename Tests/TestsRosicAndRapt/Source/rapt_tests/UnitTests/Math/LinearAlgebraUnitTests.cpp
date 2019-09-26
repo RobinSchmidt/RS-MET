@@ -100,24 +100,25 @@ bool testLinearSystem2x2(std::string &reportString)
   // Test compuatation of eigenvalues and eigenvectors:
 
   double ev, ex, ey;
+  bool nrm = false;   // normalize eigenvectors to unit length
 
-  ev = LA::eigenvalue2x2_1(-4.0, 6.0, -3.0, 5.0);         // -1
-  LA::eigenvector2x2_1(    -4.0, 6.0, -3.0, 5.0, ex, ey); // k*(2,1) - is (1,0.5), so k=0.5
+  ev = LA::eigenvalue2x2_1(-4.0, 6.0, -3.0, 5.0);                // -1
+  LA::eigenvector2x2_1(    -4.0, 6.0, -3.0, 5.0, &ex, &ey, nrm); // k*(2,1) - is (1,0.5), so k=0.5
   testResult &= ev    == -1;
   testResult &= ex/ey ==  2;
 
-  ev = LA::eigenvalue2x2_2(-4.0, 6.0, -3.0, 5.0);         // 2
-  LA::eigenvector2x2_2(    -4.0, 6.0, -3.0, 5.0, ex, ey); // k*(1,1), is (1,1), so k=1
+  ev = LA::eigenvalue2x2_2(-4.0, 6.0, -3.0, 5.0);                // 2
+  LA::eigenvector2x2_2(    -4.0, 6.0, -3.0, 5.0, &ex, &ey, nrm); // k*(1,1), is (1,1), so k=1
   testResult &= ev    == 2;
   testResult &= ex/ey == 1;
 
   ev = LA::eigenvalue2x2_1(4.0, 1.0, 6.0, 3.0);
-  LA::eigenvector2x2_1(    4.0, 1.0, 6.0, 3.0, ex, ey);
+  LA::eigenvector2x2_1(    4.0, 1.0, 6.0, 3.0, &ex, &ey, nrm);
   testResult &= ev    == 1;
   testResult &= ex/ey == -1/3.;
 
   ev = LA::eigenvalue2x2_2(4.0, 1.0, 6.0, 3.0);
-  LA::eigenvector2x2_2(    4.0, 1.0, 6.0, 3.0, ex, ey);
+  LA::eigenvector2x2_2(    4.0, 1.0, 6.0, 3.0, &ex, &ey, nrm);
   testResult &= ev    == 6;
   testResult &= ex/ey == 1/2.;
 
@@ -125,36 +126,36 @@ bool testLinearSystem2x2(std::string &reportString)
 
   // b = 0, a < d:
 
-  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, 5.0);         // -4
-  LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, 5.0, ex, ey); // (1,1/3)
+  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, 5.0);                // -4
+  LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, 5.0, &ex, &ey, nrm); // (1,1/3)
   testResult &= ev    == -4;
   testResult &= ex/ey ==  3.;
 
-  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, 5.0);         // 5
-  LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, 5.0, ex, ey); // (0,1)
+  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, 5.0);                // 5
+  LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, 5.0, &ex, &ey, nrm); // (0,1)
   testResult &= ev == 5 && ex == 0 && ey == 1; // maybe when we normalize, check only for ey > 0
 
 
   // b = 0, a > d:
 
-  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, -5.0);         // -5
-  LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, -5.0, ex, ey); // (0,1)
+  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, -5.0);                // -5
+  LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, -5.0, &ex, &ey, nrm); // (0,1)
   testResult &= ev == -5 && ex == 0 && ey == 1; 
 
-  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, -5.0);         // -4
-  LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, -5.0, ex, ey); // (1,-3)
+  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, -5.0);                // -4
+  LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, -5.0, &ex, &ey, nrm); // (1,-3)
   testResult &= ev    == -4;
   testResult &= ex/ey == -1/3.;
 
 
   // b = 0, a = d:
 
-  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, -4.0);         // -4
-  LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, -4.0, ex, ey); // (0,1)
+  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, -4.0);                // -4
+  LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, -4.0, &ex, &ey, nrm); // (0,1)
   testResult &= ev == -4 && ex == 0 && ey == 1; 
 
-  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, -4.0);         // -4
-  LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, -4.0, ex, ey); // (0,1)
+  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, -4.0);                // -4
+  LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, -4.0, &ex, &ey, nrm); // (0,1)
   testResult &= ev == -4 && ex == 0 && ey == 1; 
 
   // todo: try the special cases with complex numbers - we may also need tolerances in the

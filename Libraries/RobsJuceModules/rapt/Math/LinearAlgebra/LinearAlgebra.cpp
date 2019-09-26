@@ -39,17 +39,16 @@ void rsLinearAlgebra::rsSolveLinearSystem3x3(const T A[3][3], T x[3], const T y[
 
 
 template<class T>
-inline void normalize(T& vx, T& vy)
+inline void normalizeLength(T* vx, T* vy)
 {
-  return;  // preliminary
-
-  T rx = rsAbs(vx); rx *= rx;
-  T ry = rsAbs(vy); ry *= ry;
+  //return;  // preliminary
+  T rx = rsAbs(*vx); rx *= rx;
+  T ry = rsAbs(*vy); ry *= ry;
   T s  = T(1) / sqrt(rx+ry);
-  vx *= s;
-  vy *= s;
-  // this is written such it can work for T being a complex number class, too ...but maybe it can
-  // be optimized even for the complex case?
+  *vx *= s;
+  *vy *= s;
+  // this is written such it can work for T being a real or complex number class ...but maybe it 
+  // can be optimized even for the complex case?
 }
 // maybe de-inline and make a static class member
 
@@ -102,39 +101,43 @@ T rsLinearAlgebra::eigenvalue2x2_2(T a, T b, T c, T d)
 }
 
 template<class T>
-void rsLinearAlgebra::eigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy)
+void rsLinearAlgebra::eigenvector2x2_1(T a, T b, T c, T d, T* vx, T* vy, bool normalize)
 {
   if(b != T(0)) {
-    vx = T(1);
-    vy = T(-0.5) * (a - d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
-    normalize(vx, vy); }
+    *vx = T(1);
+    *vy = T(-0.5) * (a - d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
+    if(normalize) 
+      normalizeLength(vx, vy); }
   else {
     if(rsLess(a, d)) {   // .maybe we need a tolerance, i.e. if tol < d-a
-      vx = T(1);
-      vy = c/(a-d);
-      normalize(vx, vy); }
+      *vx = T(1);
+      *vy = c/(a-d);
+      if(normalize) 
+        normalizeLength(vx, vy); }
     else {
-      vx = T(0);
-      vy = T(1); }
+      *vx = T(0);
+      *vy = T(1); }
   }
 }
-// ...needs tests with complex numbers, make normalization optional
+// ...needs tests with complex numbers
 
 template<class T>
-void rsLinearAlgebra::eigenvector2x2_2(T a, T b, T c, T d, T& vx, T& vy)
+void rsLinearAlgebra::eigenvector2x2_2(T a, T b, T c, T d, T* vx, T* vy, bool normalize)
 {
   if(b != T(0)) {
-    vx = T(1);
-    vy = T(-0.5) * (a - d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
-    normalize(vx, vy); }
+    *vx = T(1);
+    *vy = T(-0.5) * (a - d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
+    if(normalize) 
+      normalizeLength(vx, vy); }
   else {
     if(rsGreater(a, d)) {  // maybe tolerance is needed here too
-      vx = T(1);
-      vy = c/(a-d);
-      normalize(vx, vy); }
+      *vx = T(1);
+      *vy = c/(a-d);
+      if(normalize) 
+        normalizeLength(vx, vy); }
     else {
-      vx = T(0);
-      vy = T(1); }
+      *vx = T(0);
+      *vy = T(1); }
   } 
 }
 

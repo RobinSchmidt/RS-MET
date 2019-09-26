@@ -348,7 +348,7 @@ public:
   rsQuantumSpin<T> getEigenvector1() const
   {
     std::complex<T> vx, vy;
-    RAPT::rsLinearAlgebra::eigenvector2x2_1(a, b, c, d, vx, vy);
+    RAPT::rsLinearAlgebra::eigenvector2x2_1(a, b, c, d, &vx, &vy, true);
     return rsQuantumSpin<T>(vx, vy);
   }
 
@@ -356,7 +356,7 @@ public:
   rsQuantumSpin<T> getEigenvector2() const
   {
     std::complex<T> vx, vy;
-    RAPT::rsLinearAlgebra::eigenvector2x2_2(a, b, c, d, vx, vy);
+    RAPT::rsLinearAlgebra::eigenvector2x2_2(a, b, c, d, &vx, &vy, true);
     return rsQuantumSpin<T>(vx, vy);
   }
 

@@ -38,11 +38,11 @@ public:
   static T eigenvalue2x2_2(T a, T b, T c, T d);
 
   template<class T>
-  static void eigenvector2x2_1(T a, T b, T c, T d, T& vx, T& vy);
+  static void eigenvector2x2_1(T a, T b, T c, T d, T* vx, T* vy, bool normalize = true);
   // use pointers for output variables
 
   template<class T>
-  static void eigenvector2x2_2(T a, T b, T c, T d, T& vx, T& vy);
+  static void eigenvector2x2_2(T a, T b, T c, T d, T* vx, T* vy, bool normalize = true);
 
 
 
