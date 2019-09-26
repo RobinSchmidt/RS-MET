@@ -171,10 +171,34 @@ bool testMatrix2x2(std::string& reportString)
   C = A/B; testResult &= C == Mat( 3, -2, 2, -1);
   C = B/A; testResult &= C == Mat(-1,  2, -2, 3);
 
-  // no, let's tyr some complex matrices
-  typedef rsMatrix2x2<std::complex<double>>  MatC;
+  // no, let's try some complex matrices
+  typedef std::complex<double> Cmplx;
+  typedef rsMatrix2x2<Cmplx>   MatC;
+  typedef rsVector2D<Cmplx>    VecC;
+  std::complex<double> one(1,0), zero(0,0), i(0,1);
+  MatC Z(one, zero, zero, -one); // the Pauli z matrix
+  Cmplx c1, c2;  // eigenvalues
+  VecC  C1, C2;  // eigenvectors
+  c1 = Z.eigenvalue1();    // -1
+  c2 = Z.eigenvalue2();    // (1,0)
+  C1 = Z.eigenvector1();   // +1
+  C2 = Z.eigenvector2();   // (0,1)
+  // eigenvectors are swapped
 
+  // try it with the real version of pauli Z
 
+  typedef rsVector2D<double> Vec;
+  A = Mat(1,0,0,1);
+  double r1, r2;
+  Vec R1, R2;
+  r1 = A.eigenvalue1();    // -1
+  r2 = A.eigenvalue2();    // (1,0)
+  R1 = A.eigenvector1();   // +1
+  R2 = A.eigenvector2();   // (0,1)
+
+  // what? actually sage says that (0,1) belongs to +1 and (1,0) belongs to -1 indeed:
+  //A = matrix([[1, 0], [0, -1]])
+  //A.eigenvectors_right()
 
   return testResult;
 }

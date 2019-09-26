@@ -653,6 +653,7 @@ bool quantumSpinMeasurement2()
   std::complex<double> p; // for inner products
   double P;               // for probabilities
   double tol = 1.e-13;    // tolerance for rounding errors
+  double r1, r2;          // results of 1st and 2nd measurement
   std::complex<double> one(1,0), zero(0,0), two(2,0), half(.5,0), s(1/sqrt(2.0),0);
   PRNG prng;  // randum number genertor for measurements
 
@@ -731,38 +732,74 @@ bool quantumSpinMeasurement2()
 
 
 
+  std::complex<double> e1, e2;
+  Vec E1, E2;
+
   // some test with spin operators:
-  typedef rsSpinOperator<double> QSO;
-  QSO pauliZ, pauliY, pauliX;
-  pauliZ.setToPauliZ();
-  pauliY.setToPauliY();
-  pauliX.setToPauliX();
+  Mat pauliZ, pauliY, pauliX;
+  QF::setToPauliZ(pauliZ);
+  QF::setToPauliY(pauliY);
+  QF::setToPauliX(pauliX);
 
-  p = pauliZ.eigenvalue1();  pass &= p == -1.0;
-  p = pauliZ.eigenvalue2();  pass &= p == +1.0;
-  A = pauliZ.eigenvector1(); pass &= QF::isCloseTo(A, d, tol); // "down"
-  A = pauliZ.eigenvector2(); pass &= QF::isCloseTo(A, u, tol); // "up"
+  e1 = pauliZ.eigenvalue1();  pass &= e1 == -1.0;
+  e2 = pauliZ.eigenvalue2();  pass &= e2 == +1.0;
+  E1 = pauliZ.eigenvector1(); pass &= QF::isCloseTo(E1, d, tol); // "down"
+  E2 = pauliZ.eigenvector2(); pass &= QF::isCloseTo(E2, u, tol); // "up"
+  // E1 ane E2 are swapped - why?
 
-  p = pauliX.eigenvalue1();  pass &= p == -1.0;
-  p = pauliX.eigenvalue2();  pass &= p == +1.0;
-  A = pauliX.eigenvector1(); pass &= QF::isCloseTo(A, l, tol); // "left" - wrong - not normalized
-  A = pauliX.eigenvector2(); pass &= QF::isCloseTo(A, r, tol); // "right"
+  e1 = pauliX.eigenvalue1();  pass &= e1 == -1.0;
+  e2 = pauliX.eigenvalue2();  pass &= e2 == +1.0;
+  E1 = pauliX.eigenvector1(); pass &= QF::isCloseTo(E1, l, tol); // "left" - wrong - not normalized
+  E2 = pauliX.eigenvector2(); pass &= QF::isCloseTo(E2, r, tol); // "right"
 
-  p = pauliY.eigenvalue1();  pass &= p == -1.0;
-  p = pauliY.eigenvalue2();  pass &= p == +1.0;
-  A = pauliY.eigenvector1(); pass &= QF::isCloseTo(A, o, tol); // "out"
-  A = pauliY.eigenvector2(); pass &= QF::isCloseTo(A, i, tol); // "in"
+  e1 = pauliY.eigenvalue1();  pass &= e1 == -1.0;
+  e2 = pauliY.eigenvalue2();  pass &= e2 == +1.0;
+  E1 = pauliY.eigenvector1(); pass &= QF::isCloseTo(E1, o, tol); // "out"
+  E2 = pauliY.eigenvector2(); pass &= QF::isCloseTo(E2, i, tol); // "in"
 
   // test eigenvalue and eigenvector compuation:
   Mat op;
   op.setValues(one, two, two, one);
-  std::complex<double> e1 = op.eigenvalue1(); pass &= e1 == -1.0;
-  std::complex<double> e2 = op.eigenvalue2(); pass &= e2 == +3.0;
-  Vec E1 = op.eigenvector1(); // (1, 0)     -> wrong result
-  Vec E2 = op.eigenvector2(); // (1,-1) * s
+  e1 = op.eigenvalue1(); pass &= e1 == -1.0;
+  e2 = op.eigenvalue2(); pass &= e2 == +3.0;
+  E1 = op.eigenvector1(); // (1, 0)     -> wrong result
+  E2 = op.eigenvector2(); // (1,-1) * s
 
 
 
+
+  E1 = pauliZ.eigenvector1(); 
+  E2 = pauliZ.eigenvector2();
+
+  // test spin measurements via Pauli matrices:
+  QF::prepareDownState(A);
+  p = QF::measureObservable(A, pauliZ, &prng); pass &= p == -1.0;
+  p = QF::measureObservable(A, pauliZ, &prng); pass &= p == -1.0;
+  P = QF::getStateProbability(A, d);      pass &= P ==  1.0;  // fails!
+
+
+  QF::prepareUpState(A);
+  p = QF::measureObservable(A, pauliZ, &prng); pass &= p == +1.0;
+  p = QF::measureObservable(A, pauliZ, &prng); pass &= p == +1.0;
+  P = QF::getStateProbability(A, u);      pass &= P ==  1.0;
+
+  QF::prepareLeftState(A);
+  p = QF::measureObservable(A, pauliX, &prng); pass &= p == -1.0;
+  p = QF::measureObservable(A, pauliX, &prng); pass &= p == -1.0;
+  P = QF::getStateProbability(A, l);      pass &= isCloseTo(P, 1.0, tol);
+  QF::prepareRightState(A);
+  p = QF::measureObservable(A, pauliX, &prng); pass &= p == +1.0;
+  p = QF::measureObservable(A, pauliX, &prng); pass &= p == +1.0;
+  P = QF::getStateProbability(A, r);      pass &= isCloseTo(P, 1.0, tol);
+
+  QF::prepareOutState(A);
+  p = QF::measureObservable(A, pauliY, &prng); pass &= p == -1.0;
+  p = QF::measureObservable(A, pauliY, &prng); pass &= p == -1.0;
+  P = QF::getStateProbability(A, o);      pass &= isCloseTo(P, 1.0, tol);
+  QF::prepareInState(A);
+  p = QF::measureObservable(A, pauliY, &prng); pass &= p == +1.0;
+  p = QF::measureObservable(A, pauliY, &prng); pass &= p == +1.0;
+  P = QF::getStateProbability(A, i);      pass &= isCloseTo(P, 1.0, tol);
 
 
 

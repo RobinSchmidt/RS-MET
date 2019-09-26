@@ -36,6 +36,37 @@ T rsQuantumSpinFunctions<T>::getExpectedMeasurement(const Mat& M, const Vec& A)
   return E;
 }
 
+template<class T>
+T rsQuantumSpinFunctions<T>::measureObservable(Vec& A, const Mat& M, rsNoiseGenerator<T>* prng)
+{
+  Vec E1 = M.eigenvector1();
+  T P1 = getStateProbability(A, E1);
+  T rnd = prng->getSample();
+  //if(rnd >= P1) { // new
+  if(rnd <= P1) { // should it be <= or < ?  old
+    //T P2 = getStateProbability(A, M.getEigenvector2()); // should be 1-P1
+    //setState(E1);
+    A = E1;
+    return M.eigenvalue1().real(); // is real if M is Hermitian
+  }
+  else {
+    Vec E2 = M.eigenvector2();
+    A = E2;
+    //setState(E2);
+    return M.eigenvalue2().real(); // is real if M is Hermitian
+  }
+}
+// in general, we'll have an NxN matrix and the probability to be in state k is given by
+//  (v * Ek) * (v * Ek) where v is our N dimensional complex state vector and Ek is the k-th
+// eigenvector of M. To collapse into one of the N states, we'll have to look at into which 
+// interval the random variable falls. For example, if P1 = 0.2, P2 = 0.5, P3 = 0.3 for a
+// 3D state, we'll fall into E1 if rnd in 0..0.2, into E2 if rnd in 0.2...0.7 and into E3 if
+// rnd in 0.7..1.0 (and return eigenvalue e1, e1 or e3 respectively) - it's probably a good idea
+// to pass precomputed eigenvalues and -vectors into such a N-dimensional measurement function
+
+
+
+
 
 
 

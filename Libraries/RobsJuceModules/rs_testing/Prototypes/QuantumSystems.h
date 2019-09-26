@@ -27,8 +27,8 @@ public:
   static Vec in()    { rsQuantumSpin<T> s; s.prepareInState();    return s; }
   static Vec out()   { rsQuantumSpin<T> s; s.prepareOutState();   return s; }
 
-  static void prepareDownState(Vec& A)  { A.x =  1;   A.y = 0;  }
-  static void prepareUpState(Vec& A)    { A.x =  0;   A.y = 1;  }
+  static void prepareDownState(Vec& A)  { A.x =  1;   A.y = 0;  }  // wrong! see 2.11
+  static void prepareUpState(Vec& A)    { A.x =  0;   A.y = 1;  }  // dito - 2.12
   static void prepareLeftState(Vec& A)  { A.x = -s;   A.y = s;  }  // (1) Eq 2.6
   static void prepareRightState(Vec& A) { A.x =  s;   A.y = s;  }  // (1) Eq 2.5
   static void prepareOutState(Vec& A)   { A.x = -s*i; A.y = s;  }  // (1) Eq 2.10
@@ -79,6 +79,9 @@ public:
   static std::complex<T> getDownAmplitude(const Vec& A) { return A.x; }
   static std::complex<T> getUpAmplitude(  const Vec& A) { return A.y; }
 
+  // i think, this may also be wrong - see Eq 2.1: 
+  // au = <u|A>, ad = <d|A> where |u> = (1,0), |d> = (0,1)  (according to 2.11, 2.12)
+
   /** Returns the probability to measure a target state t when a system is in state A. */
   static T getStateProbability(const Vec& A, const Vec& t)
   {
@@ -127,7 +130,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Measurements */
 
-
+  /** Measures the obervable variable that is associated with the given operator M. The result of
+  this measurement will be one of the eigenvalues of M and after the measurement, the spin will be
+  in a state given by the eigenvector that corresponds to the returned eigenvalue. The operator M 
+  is supposed to be Hermitian (i.e. equal to itself transposed and conjugated): M = M^H which 
+  implies its eigenvalues to be real numbers. It is also worth noting that, if the spin is in a 
+  state of an eigenvector of M before the measurement, it will be guaranteed that the corresponding
+  eigenvalue will result in the measurement (its probability becomes one). This, together with the 
+  fact that the act measurement will put the system in an eigenvector state of M, implies that 
+  subsequent measurements of the same observable will always give the same result (assuming, of 
+  course, that no manipulations of the state take place in between the measurements). */
+  static T measureObservable(Vec& A, const Mat& M, rsNoiseGenerator<T>* prng); 
 
 
 
