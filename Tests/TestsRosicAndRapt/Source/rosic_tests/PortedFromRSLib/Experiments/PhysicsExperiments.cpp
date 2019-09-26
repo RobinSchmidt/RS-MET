@@ -593,7 +593,22 @@ bool quantumSpin()
   }
   mean1 = rsMean(spins1);
   P = (mean1+1)/2;  // -1..+1 -> 0..1  P = 0.788 (with N=1000) - close enough to 0.8
+
+  // compute expectation values for the spin component measurements in state B:
+  double Ez, Ex, Ey;  
+  Ez = QS::getExpectedMeasurement(pauliZ, B); // should be 0.6 = (0.8*2)-1 and close to mean1
+  Ex = QS::getExpectedMeasurement(pauliX, B);
+  Ey = QS::getExpectedMeasurement(pauliY, B);
+  P  = Ex*Ex + Ey*Ey + Ez*Ez;  // should be one according to (1) Eq 3.27
+  pass &= isCloseTo(P,  1.0, tol);
+  pass &= isCloseTo(Ez, 0.6, tol);
+  // Ex = 0.8 and Ey = 0 - maybe try to compute these manually
+
+
  
+
+
+
 
   // todo: implement quantum gates (and, or, Hadamard, cnot, toffoli)
   // this here:

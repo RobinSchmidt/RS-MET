@@ -49,6 +49,13 @@ T rsQuantumSpin<T>::measureObservable(const rsSpinOperator<T>& M, rsNoiseGenerat
 // rnd in 0.7..1.0 (and return eigenvalue e1, e1 or e3 respectively) - it's probably a good idea
 // to pass precomputed eigenvalues and -vectors into such a N-dimensional measurement function
 
+template<class T>
+T rsQuantumSpin<T>::measureSpin(T nx, T ny, T nz, rsNoiseGenerator<T>* prng)
+{
+  rsSpinOperator<T> M;
+  M.setValues(nz, nx-i*ny, nx+i*ny, -nz); // (1) Eq 3.23
+  return measureObservable(M, prng);
+}
 
 template<class T>
 T rsQuantumSpin<T>::measureSpinZ(rsNoiseGenerator<T>* prng)
@@ -89,6 +96,25 @@ T rsQuantumSpin<T>::measureSpinY(rsNoiseGenerator<T>* prng)
   else {
     prepareInState();
     return +1; }
+}
+
+template<class T>
+T rsQuantumSpin<T>::getExpectedMeasurement(const rsSpinOperator<T>& M, const rsQuantumSpin& A)
+{
+  // computation via (1) Eq 3.26 - this is just naively applying the general formula for 
+  // an expectation value:
+  rsQuantumSpin<T> E1 = M.getEigenvector1();
+  rsQuantumSpin<T> E2 = M.getEigenvector2();
+  std::complex<T>  e1 = M.getEigenvalue1();
+  std::complex<T>  e2 = M.getEigenvalue2();
+  T P1 = getStateProbability(A, E1);
+  T P2 = getStateProbability(A, E2);
+  T E  = (e1*P1 + e2*P2).real();
+  return E;
+
+  // ...but the same value can be computed more efficiently by (1) Eq 4.14:
+  //E = A * M * A; // we need to define left-multiplication for operators, i.e. the A * M part
+
 }
 
 

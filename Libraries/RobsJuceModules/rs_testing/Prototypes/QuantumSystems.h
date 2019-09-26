@@ -222,14 +222,10 @@ public:
   course, that no manipulations of the state take place in between the measurements). */
   T measureObservable(const rsSpinOperator<T>& M, rsNoiseGenerator<T>* prng); 
 
-
-  /** Applies a measurement operation to the state. This measurement will put the state vector 
-  either into a pure "up" or pure "down" state and will return +1 in the former and -1 in the 
-  latter case. Which one of the two it is is selected randomly (using our prng) according to the
-  up-probability of our state. The operator/matrix that corresponds to that measurement is the 
-  Pauli matrix sigma_z = [[1 0], [0,-1]]. */
-  //T measureUpComponent(rsNoiseGenerator<T>* prng);
-  // rename to measureSpinZ...this seems to return the wrong (inverted) results
+  /** Measures the spin along an arbitrary axis in 3D space given by the vector components
+  nx, ny, nz. It is assumed that these components form a unit-length vector in 3-space. */
+  T measureSpin(T nx, T ny, T nz, rsNoiseGenerator<T>* prng);
+  // not yet tested
 
   /** Measures the z-component of the spin. This measurement will put the state vector either into
   a pure "up" or pure "down" state and will return +1 in the former and -1 in the latter case. 
@@ -247,15 +243,11 @@ public:
   T measureSpinY(rsNoiseGenerator<T>* prng);
 
 
-  /** Like measureUpComponent(), but for the "right" component represented by the Pauli matrix 
-  sigma_x = [[0,1], [1,0]].  */
-  //T measureRightComponent(rsNoiseGenerator<T>* prng); 
-  // not yet tested
 
-  /** Like measureUpComponent(), but for the "in" component represented by the Pauli matrix 
-  sigma_y = [[0,-i], [i,0]].  */
-  //T measureInComponent(rsNoiseGenerator<T>* prng);    
-  // not yet tested
+  static T getExpectedMeasurement(const rsSpinOperator<T>& M, const rsQuantumSpin& A);
+  // needs test - maybe this fits better into class rsSpinOperator
+
+
 
 
 protected:
