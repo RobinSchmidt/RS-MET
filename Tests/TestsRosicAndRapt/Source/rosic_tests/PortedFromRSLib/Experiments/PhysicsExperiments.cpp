@@ -677,7 +677,7 @@ bool quantumSpinEvolution()
   Complex cStep = Complex(step);      // ...needs to be complexified 
   for(n = 0; n < N; n++) {
     stateTrajectory[n] = Psi;
-    QS dPsi = -i * H * Psi;   // (1) Eq 4.9 (time dependent Schrödinger equation)
+    QS dPsi = -i * H * Psi;   // (1) Eq 4.9 or 4.10 (time dependent Schrödinger equation)
     Psi = Psi + cStep * dPsi; // forward Euler step
     Psi.normalize();          // avoid divergence due to error build up
   }
@@ -686,6 +686,9 @@ bool quantumSpinEvolution()
   // todo: factor out the computation of a state trajectory, given an initial state, a Hamiltonian
   // a number of steps and a step-size
   // move the plotting into a different function
+
+  // plot not only the state but also the expectation value(s) of some observable(s) as function(s)
+  // of time, see if this matches hat Eq 4.17 predicts
 
   // todo: can we accumulate all the steps into a single big step represented by a matrix U(t) 
   // (the time-development operator, see Eq 4.1) that has accumulated all the little steps up to t?

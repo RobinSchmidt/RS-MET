@@ -301,6 +301,12 @@ inline rsQuantumSpin<T> operator*(const std::complex<T>& z, const rsQuantumSpin<
   return rsQuantumSpin<T>(z * A.getUpComponent(), z * A.getDownComponent());
 }
 
+
+
+
+
+
+
 //=================================================================================================
 
 /** A class for representing linear operators on quantum spins (objects of class rsQuantumSpin). 
@@ -322,7 +328,12 @@ Note that the act of setting the spin into an eigenstate of a measurement operat
 the same thing as forming the matrix-vector product like it is done with the first kind of 
 operator. Note also that it is only these measurements that involve setting the quantum state
 into a randomly chosen one. Operations of the first kind act deterministically on the state 
-consisting of the probability amplitudes.  */
+consisting of the probability amplitudes.  
+
+maybe factor out a baseclass rsMatrix2x2 - or maybe represent spins and operators generally as
+rsVector2D and rsMatrix2x2 objects and all the functions and operatiions specific to quantum
+stuff should be implemented procedurally - yes - that sounds like a better idea
+*/
 
 template<class T>
 class rsSpinOperator // maybe rename to rsQuantumSpinOperator
@@ -399,8 +410,39 @@ public:
   static T getExpectedMeasurement(const rsSpinOperator<T>& M, const rsQuantumSpin<T>& A);
 
 
+  // computes the commutator between two operators
+  //static rsSpinOperator<T> commutator(const rsSpinOperator<T>& L, const rsSpinOperator<T>& M);
+
+
+
+
   /** Access function (read/write) for the matrix elements. The indices i,j can both be 0 or 1. */
   //inline std::complex<T>& operator()(const int i, const int j) { return m[i][j]; }
+
+
+  rsSpinOperator<T> operator+(const rsSpinOperator<T>& R) const
+  {
+    rsSpinOperator<T> S; // sum
+    S.a = a + R.a;
+    S.b = b + R.b;
+    S.c = c + R.c;
+    S.d = d + R.d;
+    return S;
+  }
+
+  rsSpinOperator<T> operator-(const rsSpinOperator<T>& R) const
+  {
+    rsSpinOperator<T> D; // difference
+    D.a = a - R.a;
+    D.b = b - R.b;
+    D.c = c - R.c;
+    D.d = d - R.d;
+    return D;
+  }
+
+
+
+
 
   /** Applies this quantum spin operator to the given ket v and returns the resulting ket. */
   rsQuantumSpin<T> operator*(const rsQuantumSpin<T>& v) const

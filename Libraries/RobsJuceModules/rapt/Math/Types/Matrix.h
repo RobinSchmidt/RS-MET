@@ -2,6 +2,17 @@
 #define RAPT_MATRIX_H
 
 
+/*
+template<class T>
+class rsMatrix2x2
+{
+
+};
+*/
+
+
+//=================================================================================================
+
 /** This is a class for treating C-arrays as matrices. It does not store/own the actual matrix 
 data, it just acts as wrapper around an existing array for more conveniently accessing and 
 manipulating matrix elements.
