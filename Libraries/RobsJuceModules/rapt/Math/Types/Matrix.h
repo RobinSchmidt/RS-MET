@@ -14,7 +14,6 @@ public:
   //                     |c d|
 
 
-
   /** Stadard constructor. You can pass the matrix elements. If you pass nothing, an identity 
   matrix will be created. */
   rsMatrix2x2(T a = T(1), T b = T(0), T c = T(0), T d = T(1)) { setValues(a, b, c, d); }
@@ -46,59 +45,30 @@ public:
 
   /** Returns the inverse of this matrix. */
   rsMatrix2x2<T> inverse() const
-  {
-    T D = determinant();
-    T s = T(1) / D;
-    //T s = d;
-    return rsMatrix2x2<T>(s*d, -s*b, -s*c, s*a);
-  }
-
-
-  // todo: determinant, inverse, etc.
-
-
+  { T D = determinant(); T s = T(1) / D; return rsMatrix2x2<T>(s*d, -s*b, -s*c, s*a); }
 
 
   /** \name Operators */
 
   /** Adds two matrices: C = A + B. */
   rsMatrix2x2<T> operator+(const rsMatrix2x2<T>& B) const
-  {
-    rsMatrix2x2<T> C;
-    C.a = a + B.a;
-    C.b = b + B.b;
-    C.c = c + B.c;
-    C.d = d + B.d;
-    return C;
-  }
+  { rsMatrix2x2<T> C; C.a = a + B.a; C.b = b + B.b; C.c = c + B.c; C.d = d + B.d; return C; }
 
   /** Subtracts two matrices: C = A - B. */
   rsMatrix2x2<T> operator-(const rsMatrix2x2<T>& B) const
-  {
-    rsMatrix2x2<T> C;
-    C.a = a - B.a;
-    C.b = b - B.b;
-    C.c = c - B.c;
-    C.d = d - B.d;
-    return C;
-  }
+  { rsMatrix2x2<T> C; C.a = a - B.a; C.b = b - B.b; C.c = c - B.c; C.d = d - B.d; return C; }
 
   /** Multiplies two matrices: C = A * B. */
   rsMatrix2x2<T> operator*(const rsMatrix2x2<T>& B) const
-  {
-    rsMatrix2x2<T> C;
-    C.a = a*B.a + b*B.c;
-    C.b = a*B.b + b*B.d;
-    C.c = c*B.a + d*B.c;
-    C.d = c*B.b + d*B.d;
-    return C;
-  }
+  { rsMatrix2x2<T> C; C.a = a*B.a + b*B.c; C.b = a*B.b + b*B.d; 
+    C.c = c*B.a + d*B.c; C.d = c*B.b + d*B.d; return C; }
 
+  /** Multiplies the left matrix operand with the inverse of the right matrix operand. */
+  rsMatrix2x2<T> operator/(const rsMatrix2x2<T>& B) const { return *this * B.inverse(); }
 
+  /** Compares matrices for equality */
   bool operator==(const rsMatrix2x2<T>& B) const 
   { return a == B.a && b == B.b && c == B.c && d == B.d; }
-
-  //rsMatrix2x2<T> operator/(const rsMatrix2x2<T>& B) const { return *this * B.inverse(); }
 
   /** Multiplies matrix by a vector: w = A*v */
   rsVector2D<T> operator*(const rsVector2D<T>& v) const
@@ -112,9 +82,6 @@ public:
 
   // todo: operators that take a scalar as left or right argument
 
-
-
-
   /** Returns the commutator of the two matrices A and B: C = A*B - B*A. In general, matrix 
   multiplication is non-commutative, but for some special cases, it may be commutative nonetheless. 
   The commutator captures, how non-commutative two matrices behave when being multiplied. If the 
@@ -124,11 +91,7 @@ public:
     return A*B - B*A;
   }
 
-
-
 };
-
-
 
 //=================================================================================================
 

@@ -168,6 +168,8 @@ bool testMatrix2x2(std::string& reportString)
   d = B.determinant(); testResult &= d == -2;
   C = A.inverse(); testResult &= C == Mat(-2, 1, 3./2, -1./2);
   C = B.inverse(); testResult &= C == Mat(-4, 3, 7./2, -5./2);
+  C = A/B; testResult &= C == Mat( 3, -2, 2, -1);
+  C = B/A; testResult &= C == Mat(-1,  2, -2, 3);
 
   return testResult;
 }
