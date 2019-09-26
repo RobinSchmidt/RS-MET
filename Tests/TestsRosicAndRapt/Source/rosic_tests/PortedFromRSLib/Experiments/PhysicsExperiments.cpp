@@ -457,9 +457,9 @@ bool quantumSpin()
   int n;
   prng.reset();
   for(n = 0; n < N; n++) {
-    A = r;                            // initialize state - todo: mayb try different states
-    r1 = A.measureUpComponent(&prng); // should have a 50/50 chance to be +1 or -1
-    r2 = A.measureUpComponent(&prng); // a 2nd measurement must always give the same result
+    A = r;                      // initialize state - todo: mayb try different states
+    r1 = A.measureSpinZ(&prng); // should have a 50/50 chance to be +1 or -1
+    r2 = A.measureSpinZ(&prng); // a 2nd measurement must always give the same result
     pass &= (r1 == r2);
     spins1[n] = r1;
   }
@@ -473,16 +473,14 @@ bool quantumSpin()
   for(n = 0; n < N; n++) {
     A = r;
     r1 = A.measureObservable(pauliZ, &prng);
-    r2 = A.measureObservable(pauliZ, &prng);    // error! prepares the wrong state?
-    // r2 = A.measureUpComponent();      // does same thing more simply
+    r2 = A.measureObservable(pauliZ, &prng);
     pass &= (r1 == r2);
     spins2[n] = r1;
   }
   double mean2 = rsMean(spins2);
   rsPlotVectors(spins1, spins2); 
 
-  // have opposite signs - something is wrong - i think, the measureUpComponent function is
-  // wrong...
+
 
 
 

@@ -202,7 +202,7 @@ public:
   is supposed to be Hermitian (i.e. equal to itself transposed and conjugated): M = M^H which 
   implies its eigenvalues to be real numbers. It is also worth noting that, if the spin is in a 
   state of an eigenvector of M before the measurement, it will be guaranteed that the corresponding
-  eigenvalue will result in the measurement (it's probability becomes one). This, together with the 
+  eigenvalue will result in the measurement (its probability becomes one). This, together with the 
   fact that the act measurement will put the system in an eigenvector state of M, implies that 
   subsequent measurements of the same observable will always give the same result (assuming, of 
   course, that no manipulations of the state take place in between the measurements). */
@@ -214,8 +214,15 @@ public:
   latter case. Which one of the two it is is selected randomly (using our prng) according to the
   up-probability of our state. The operator/matrix that corresponds to that measurement is the 
   Pauli matrix sigma_z = [[1 0], [0,-1]]. */
-  T measureUpComponent(rsNoiseGenerator<T>* prng);
+  //T measureUpComponent(rsNoiseGenerator<T>* prng);
   // rename to measureSpinZ...this seems to return the wrong (inverted) results
+
+  T measureSpinZ(rsNoiseGenerator<T>* prng);
+
+  T measureSpinX(rsNoiseGenerator<T>* prng);
+
+  T measureSpinY(rsNoiseGenerator<T>* prng);
+
 
   /** Like measureUpComponent(), but for the "right" component represented by the Pauli matrix 
   sigma_x = [[0,1], [1,0]].  */

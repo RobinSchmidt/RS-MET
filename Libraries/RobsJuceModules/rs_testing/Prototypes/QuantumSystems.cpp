@@ -49,21 +49,50 @@ T rsQuantumSpin<T>::measureObservable(const rsSpinOperator<T>& M, rsNoiseGenerat
 // rnd in 0.7..1.0 (and return eigenvalue e1, e1 or e3 respectively) - it's probably a good idea
 // to pass precomputed eigenvalues and -vectors into such a N-dimensional measurement function
 
+
 template<class T>
-T rsQuantumSpin<T>::measureUpComponent(rsNoiseGenerator<T>* prng)
+T rsQuantumSpin<T>::measureSpinZ(rsNoiseGenerator<T>* prng)
 {
-  //T Pu  = getUpProbability(*this); // optimize this!
+  T Pu  = getUpProbability(*this); // optimize this!
   //T Pu = getStateProbability(*this, up());       // (1) Eq 2.2
-  T Pu = getSquaredNorm(au); // same result as Pu = getUpProbability(*this) but more efficient
+  //T Pu = getSquaredNorm(au); // same result as Pu = getUpProbability(*this) but more efficient
   T rnd = prng->getSample();
   if(rnd <= Pu) {       // should it be <= or < ?
-    prepareUpState();
-    return +1; }
-  else {
     prepareDownState();
     return -1; }
+  else {
+    prepareUpState();
+    return +1; }
 }
 
+template<class T>
+T rsQuantumSpin<T>::measureSpinX(rsNoiseGenerator<T>* prng)
+{
+  T Pr = getRightProbability(*this); // optimizable?
+  T rnd = prng->getSample();
+  if(rnd <= Pr) {
+    prepareLeftState();
+    return -1; }
+  else {
+    prepareRightState();
+    return +1; }
+}
+
+template<class T>
+T rsQuantumSpin<T>::measureSpinY(rsNoiseGenerator<T>* prng)
+{
+  T Pi = getInProbability(*this); // optimizable?
+  T rnd = prng->getSample();
+  if(rnd <= Pi) {
+    prepareOutState();
+    return -1; }
+  else {
+    prepareInState();
+    return +1; }
+}
+
+
+/*
 template<class T>
 T rsQuantumSpin<T>::measureRightComponent(rsNoiseGenerator<T>* prng)
 {
@@ -89,6 +118,7 @@ T rsQuantumSpin<T>::measureInComponent(rsNoiseGenerator<T>* prng)
     prepareOutState();
     return -1; }
 }
+*/
 
 
 
