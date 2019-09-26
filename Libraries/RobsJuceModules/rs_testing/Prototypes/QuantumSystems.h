@@ -250,6 +250,8 @@ protected:
                            // coefficients for up and down spin basis vectors
 
 
+  rsVector2D<std::complex<T>> v; // for transitioning v.x == ad, v.y == au
+
   static const T s;                // 1/sqrt(2)
   static const std::complex<T> i;  // imaginary unit
     // for convenience (we need these a lot)
@@ -439,6 +441,10 @@ public:
 
   std::complex<T> a, b, c, d; // matrix coefficients |a b|
                               //                     |c d|
+  // todo: either use rsMatrix2x2 or derive from rsMatrix2x2
+
+
+  rsMatrix2x2<std::complex<T>> M; // for transition/refactoring - later maybe derive from this class
 
 protected:
 
