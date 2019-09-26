@@ -15,6 +15,38 @@ public:
 
 
 
+  /** Stadard constructor. You can pass the matrix elements. If you pass nothing, an identity 
+  matrix will be created. */
+  rsMatrix2x2(T a = T(1), T b = T(0), T c = T(0), T d = T(1)) { setValues(a, b, c, d); }
+
+
+  /** \name Setup */
+
+  void setValues(T a, T b, T c, T d) { this->a = a; this->b = b; this->c = c; this->d = d; }
+
+
+  /** \name Inquiry */
+
+  /** Returns the first eigenvalue of this matrix. */
+  T eigenvalue1() const { return rsLinearAlgebra::eigenvalue2x2_1(a, b, c, d); }
+
+  /** Returns the second eigenvalue of this matrix. */
+  T eigenvalue2() const { return rsLinearAlgebra::eigenvalue2x2_2(a, b, c, d); }
+
+  /** Returns the first eigenvector of this matrix. */
+  rsVector2D<T> eigenvector1() const
+  { rsVector2D<T> v; rsLinearAlgebra::eigenvector2x2_1(a, b, c, d, &v.x, &v.y, true); return v; }
+
+  /** Returns the second eigenvector of this matrix. */
+  rsVector2D<T> eigenvector2() const
+  { rsVector2D<T> v; rsLinearAlgebra::eigenvector2x2_2(a, b, c, d, &v.x, &v.y, true); return v; }
+
+  // todo: determinant, inverse, etc.
+
+
+
+
+  /** \name Operators */
 
   /** Adds two matrices: C = A + B. */
   rsMatrix2x2<T> operator+(const rsMatrix2x2<T>& B) const
@@ -28,7 +60,7 @@ public:
   }
 
   /** Subtracts two matrices: C = A - B. */
-  rsMatrix2x2<T> operator-(const rsMatrix2x2<T>& R) const
+  rsMatrix2x2<T> operator-(const rsMatrix2x2<T>& B) const
   {
     rsMatrix2x2<T> C;
     C.a = a - B.a;
@@ -42,12 +74,16 @@ public:
   rsMatrix2x2<T> operator*(const rsMatrix2x2<T>& B) const
   {
     rsMatrix2x2<T> C;
-    C.a = A.a*B.a + A.b*B.c;
-    C.b = A.a*B*b + A.b*B.d;
-    C.c = A.c*B.a + A.d*B.c;
-    C.d = A.c*B.b + A.d*B.d;
+    C.a = a*B.a + b*B.c;
+    C.b = a*B.b + b*B.d;
+    C.c = c*B.a + d*B.c;
+    C.d = c*B.b + d*B.d;
     return C;
   }
+
+
+  bool operator==(const rsMatrix2x2<T>& B) const 
+  { return a == B.a && b == B.b && c == B.c && d == B.d; }
 
   //rsMatrix2x2<T> operator/(const rsMatrix2x2<T>& B) const { return *this * B.inverse(); }
 
@@ -61,6 +97,9 @@ public:
   }
   // todo: left multiplication w = v^H * A
 
+
+
+
   /** Returns the commutator of the two matrices A and B: C = A*B - B*A. In general, matrix 
   multiplication is non-commutative, but for some special cases, it may be commutative nonetheless. 
   The commutator captures, how non-commutative two matrices behave when being multiplied. If the 
@@ -71,25 +110,6 @@ public:
   }
 
 
-  /** Returns the first eigenvalue of this matrix. */
-  T eigenvalue1() const { return rsLinearAlgebra::eigenvalue2x2_1(a, b, c, d); }
-
-  /** Returns the second eigenvalue of this matrix. */
-  T eigenvalue2() const { return rsLinearAlgebra::eigenvalue2x2_2(a, b, c, d); }
-
-  /** Returns the first eigenvector of this matrix. */
-  rsVector2D<T> eigenvector1() const
-  {
-    rsVector2D<T> v; rsLinearAlgebra::eigenvector2x2_1(a, b, c, d, &v.x, &v.y, true); return v;
-  }
-
-  /** Returns the second eigenvector of this matrix. */
-  rsQuantumSpin<T> eigenvector2() const
-  {
-    rsVector2D<T> v; rsLinearAlgebra::eigenvector2x2_2(a, b, c, d, &v.x, &v.y, true); return v;
-  }
-
-  // todo: determinant, inverse, etc.
 
 };
 

@@ -9,6 +9,7 @@ bool testLinearAlgebra()
   bool testResult = true;
 
   testResult &= testBandDiagonalSolver(   reportString);
+  testResult &= testMatrix2x2(            reportString);
   testResult &= testLinearSystem2x2(      reportString);
   testResult &= testLinearSystem3x3(      reportString);
   testResult &= testLinearSystemViaGauss( reportString);
@@ -81,20 +82,13 @@ bool testBandDiagonalSolver(std::string &reportString)
   return testResult;
 }
 
-bool testLinearSystem2x2(std::string &reportString)
+bool testMatrix2x2(std::string& reportString)
 {
-  std::string testName = "LinearSystem2x2";
+  std::string testName = "Matrix2x2";
   bool testResult = true;
   typedef rsLinearAlgebra LA;
 
-  double x[2];
-  double y[2]    = {17, 39};
-  double A[2][2] = {{1, 2},
-                    {3, 4}};
 
-  LA::rsSolveLinearSystem2x2(A, x, y);
-  testResult &= (x[0] == 5.0);
-  testResult &= (x[1] == 6.0);
 
 
   // Test compuatation of eigenvalues and eigenvectors:
@@ -163,7 +157,33 @@ bool testLinearSystem2x2(std::string &reportString)
   // the current implementaion will fall into the wrong branch when real parts of a and d
   // are equal
 
+  typedef rsMatrix2x2<double> Mat;
+  rsMatrix2x2<double> A(1,2,3,4), B(5,6,7,8), C;
+  C = A+B; testResult &= C == Mat(  6,  8, 10, 12);
+  C = A-B; testResult &= C == Mat( -4, -4, -4, -4);
+  C = A*B; testResult &= C == Mat( 19, 22, 43, 50);
+  C = B*A; testResult &= C == Mat( 23, 34, 31, 46);
 
+  C = Mat::commutator(A,B); testResult &= C == Mat( -4, -12, 12, 4); // A*B - B*A
+  C = A*B - B*A; testResult &= C == Mat( -4, -12, 12, 4);
+
+  return testResult;
+}
+
+bool testLinearSystem2x2(std::string &reportString)
+{
+  std::string testName = "LinearSystem2x2";
+  bool testResult = true;
+  typedef rsLinearAlgebra LA;
+
+  double x[2];
+  double y[2]    = {17, 39};
+  double A[2][2] = {{1, 2},
+                    {3, 4}};
+
+  LA::rsSolveLinearSystem2x2(A, x, y);
+  testResult &= (x[0] == 5.0);
+  testResult &= (x[1] == 6.0);
 
   return testResult;
 }
