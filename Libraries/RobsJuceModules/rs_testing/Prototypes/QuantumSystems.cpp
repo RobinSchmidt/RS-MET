@@ -104,21 +104,23 @@ template<class T>
 T rsSpinOperator<T>::getExpectedMeasurement(
   const rsSpinOperator<T>& M, const rsQuantumSpin<T>& A)
 {
-  /*
   // computation via (1) Eq 3.26 - this is just naively applying the general formula for 
   // an expectation value:
-  rsQuantumSpin<T> E1 = M.getEigenvector1();
-  rsQuantumSpin<T> E2 = M.getEigenvector2();
-  std::complex<T>  e1 = M.getEigenvalue1();
-  std::complex<T>  e2 = M.getEigenvalue2();
-  T P1 = getStateProbability(A, E1);
-  T P2 = getStateProbability(A, E2);
+  rsQuantumSpin<T> E1 = M.eigenvector1();
+  rsQuantumSpin<T> E2 = M.eigenvector2();
+  std::complex<T>  e1 = M.eigenvalue1();
+  std::complex<T>  e2 = M.eigenvalue2();
+  T P1 = rsQuantumSpin<T>::getStateProbability(A, E1);
+  T P2 = rsQuantumSpin<T>::getStateProbability(A, E2);
   T E  = (e1*P1 + e2*P2).real();
   return E;
-  */
+  
 
   // ...but the same value can be computed more efficiently by (1) Eq 4.14:
-  T E = (A * (M * A)).real();
+  //T E = (A * (M * A)).real();
+  // use a function E = bracket(A, M, A) that takes two kets and a matrix, converts the 1st into 
+  // a bra and computes the inner product
+
   return E;
 }
 

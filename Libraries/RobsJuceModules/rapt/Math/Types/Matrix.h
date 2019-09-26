@@ -74,8 +74,8 @@ public:
   rsVector2D<T> operator*(const rsVector2D<T>& v) const
   {
     rsVector2D<T> w;
-    w.au = a * v.x  +  b * v.y;
-    w.ad = c * v.x  +  d * v.y;
+    w.x = a * v.x  +  b * v.y;
+    w.y = c * v.x  +  d * v.y;
     return w;
   }
   // todo: left multiplication w = v^H * A

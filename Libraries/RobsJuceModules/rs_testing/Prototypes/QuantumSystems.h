@@ -392,11 +392,6 @@ public:
 
   /** \name Setup */
 
-  //void setValues(std::complex<T> a, std::complex<T> b, std::complex<T> c, std::complex<T> d)
-  //{
-  //  this->a = a; this->b = b; this->c = c; this->d = d;
-  //}
-
   /** Measurement operator for spin along the z-axis. Returns +1 for up, -1 for down. */
   void setToPauliZ() { a = T(1); b = T(0); c = T(0); d = T(-1); }
 
@@ -407,17 +402,8 @@ public:
   void setToPauliY() { a = T(0); b = -i;   c = i;    d = T(0);  }
 
 
-
   /** \name Inquiry */
 
-  //std::complex<T> getEigenvalue1() const { return rsEigenvalue2x2_1(a, b, c, d); }
-  //std::complex<T> getEigenvalue2() const { return rsEigenvalue2x2_2(a, b, c, d); }
-
-  /** Returns the first eigenvalue of this operator. */
-  //std::complex<T> getEigenvalue1() const { return RAPT::rsLinearAlgebra::eigenvalue2x2_1(a, b, c, d); }
-
-  /** Returns the second eigenvalue of this operator. */
-  //std::complex<T> getEigenvalue2() const { return RAPT::rsLinearAlgebra::eigenvalue2x2_2(a, b, c, d); }
 
   /** Returns the first eigenvector of this operator. */
   rsQuantumSpin<T> eigenvector1() const
@@ -443,30 +429,16 @@ public:
   static T getExpectedMeasurement(const rsSpinOperator<T>& M, const rsQuantumSpin<T>& A);
 
 
-  // computes the commutator between two operators
-  //static rsSpinOperator<T> commutator(const rsSpinOperator<T>& L, const rsSpinOperator<T>& M);
-
-
-
-
-  /** Access function (read/write) for the matrix elements. The indices i,j can both be 0 or 1. */
-  //inline std::complex<T>& operator()(const int i, const int j) { return m[i][j]; }
-
-
-
-
-
-
-
 
   /** Applies this quantum spin operator to the given ket v and returns the resulting ket. */
-  rsQuantumSpin<T> operator*(const rsQuantumSpin<T>& v) const
-  {
-    rsQuantumSpin<T> r;
-    r.y = a * v.y  +  b * v.x;
-    r.x = c * v.y  +  d * v.x;
-    return r;
-  }
+  //rsQuantumSpin<T> operator*(const rsQuantumSpin<T>& v) const
+  //{
+  //  rsQuantumSpin<T> r;
+  //  r.y = a * v.y  +  b * v.x;
+  //  r.x = c * v.y  +  d * v.x;
+  //  return r;
+  //}
+  //// should be inherited - but we use the elements of v in reverse order here - bad!
 
 
 
