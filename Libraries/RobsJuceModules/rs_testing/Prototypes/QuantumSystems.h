@@ -308,27 +308,27 @@ inline std::complex<T> operator*(const rsQuantumSpin<T>& B, const rsQuantumSpin<
 // classes)
 
 /** Adds two kets. */
-template<class T>
-inline rsQuantumSpin<T> operator+(const rsQuantumSpin<T>& A, const rsQuantumSpin<T>& B)
-{
-  return rsQuantumSpin<T>(A.getDownAmplitude() + B.getDownAmplitude(),
-    A.getUpAmplitude()   + B.getUpAmplitude()                         );
-}
+//template<class T>
+//inline rsQuantumSpin<T> operator+(const rsQuantumSpin<T>& A, const rsQuantumSpin<T>& B)
+//{
+//  return rsQuantumSpin<T>(A.getDownAmplitude() + B.getDownAmplitude(),
+//    A.getUpAmplitude()   + B.getUpAmplitude()                         );
+//}
 
 /** Subtracts two kets. */
-template<class T>
-inline rsQuantumSpin<T> operator-(const rsQuantumSpin<T>& A, const rsQuantumSpin<T>& B)
-{
-  return rsQuantumSpin<T>(A.getDownAmplitude() - B.getDownAmplitude(),
-                          A.getUpAmplitude()   - B.getUpAmplitude()    );
-}
+//template<class T>
+//inline rsQuantumSpin<T> operator-(const rsQuantumSpin<T>& A, const rsQuantumSpin<T>& B)
+//{
+//  return rsQuantumSpin<T>(A.getDownAmplitude() - B.getDownAmplitude(),
+//                          A.getUpAmplitude()   - B.getUpAmplitude()    );
+//}
 
 /** Multiplies a scalar and a ket. */
-template<class T>
-inline rsQuantumSpin<T> operator*(const std::complex<T>& z, const rsQuantumSpin<T>& A)
-{
-  return rsQuantumSpin<T>(z * A.getDownAmplitude(), z * A.getUpAmplitude());
-}
+//template<class T>
+//inline rsQuantumSpin<T> operator*(const std::complex<T>& z, const rsQuantumSpin<T>& A)
+//{
+//  return rsQuantumSpin<T>(z * A.getDownAmplitude(), z * A.getUpAmplitude());
+//}
 
 
 
