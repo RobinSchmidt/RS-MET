@@ -625,7 +625,22 @@ bool quantumSpinMeasurement()
   // todo: maybe use float instead of double
 }
 
-
+template<class T>
+void plotQuantumSpinStateTrajectory(const std::vector<rsQuantumSpin<T>>& Psi, T dt)
+{
+  int N = (int) Psi.size();
+  std::vector<T> t(N), dr(N), di(N), ur(N), ui(N);
+  for(int n = 0; n < N; n++) {
+    t[n] = n*dt;   // time axis
+    dr[n] = Psi[n].getDownComponent().real(); // rename to DownAmplitude
+    di[n] = Psi[n].getDownComponent().imag();
+    ur[n] = Psi[n].getUpComponent().real();
+    ui[n] = Psi[n].getUpComponent().imag();
+  }
+  GNUPlotter plt;
+  plt.addDataArrays(N, &t[0], &dr[0], &di[0], &ur[0], &ui[0]);
+  plt.plot();
+}
 
 bool quantumSpinEvolution()
 {
@@ -644,7 +659,8 @@ bool quantumSpinEvolution()
 
   // Create an initial spin state:
   QS Psi;
-  Psi.prepareRightState();
+  //Psi.prepareLeftState();
+  //Psi.prepareRightState();
   Psi.randomizeState(&prng);
 
   // Define the Hamiltonian (Eq 4.23):
@@ -653,25 +669,23 @@ bool quantumSpinEvolution()
   H = Complex(hBar*w/2) * H;
 
 
+  // numerically integrate the time dependent Schrödinger equation using the forward Euler method:
+  int n, N = 3000;
   Complex i(0, 1);  // imaginary unit
-
-  int n, N = 1000;
-  double step = 0.01;             // integration step size
-  Complex cStep = Complex(step);  // ...needs to be complexified 
-  for(n = 0; n < N; n++)
-  {
+  std::vector<QS> stateTrajectory(N); // records the trajectory of our spin state Psi
+  double step = 0.01;                 // integration step size
+  Complex cStep = Complex(step);      // ...needs to be complexified 
+  for(n = 0; n < N; n++) {
+    stateTrajectory[n] = Psi;
     QS dPsi = -i * H * Psi;   // (1) Eq 4.9 (time dependent Schrödinger equation)
     Psi = Psi + cStep * dPsi; // forward Euler step
-
-    // todo: record the state and plot state trajectory
-
+    Psi.normalize();          // avoid divergence due to error build up
   }
+  plotQuantumSpinStateTrajectory(stateTrajectory, step);
 
-
-
-
-
-
+  // todo: factor out the computation of a state trajectory, given an initial state, a Hamiltonian
+  // a number of steps and a step-size
+  // move the plotting into a different function
 
   return pass;
 }
