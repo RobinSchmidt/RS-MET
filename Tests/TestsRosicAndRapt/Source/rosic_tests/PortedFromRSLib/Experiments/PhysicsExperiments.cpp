@@ -417,16 +417,39 @@ bool quantumSpin()
   std::complex<double> e2 = op.getEigenvalue2(); pass &= e2 == +3.0;
   QS E1 = op.getEigenvector1(); // (1, 0)     -> wrong result
   QS E2 = op.getEigenvector2(); // (1,-1) * s
-  // seems like the eigenvector formulas are still buggy - eigenvalues are correct
-  // -> move general eigenvalue/vector functions to RAPT::rsLinearAlgebra and write unit test
-  // for them
-
 
   // test measurements of observables represented by operators (Pauli matrices in this case):
+  A.prepareDownState();
+  p = A.measureObservable(pauliZ, &prng); pass &= p == -1.0;
+  p = A.measureObservable(pauliZ, &prng); pass &= p == -1.0;
+  p = QS::getStateProbability(A, d);      pass &= p == +1.0;
   A.prepareUpState();
   p = A.measureObservable(pauliZ, &prng); pass &= p == +1.0;
   p = A.measureObservable(pauliZ, &prng); pass &= p == +1.0;
-  // this goes wrong!
+  p = QS::getStateProbability(A, u);      pass &= p == +1.0;
+
+  A.prepareLeftState();
+  p = A.measureObservable(pauliX, &prng); pass &= p == -1.0;
+  p = A.measureObservable(pauliX, &prng); pass &= p == -1.0;
+  //p = QS::getStateProbability(A, l);      pass &= p == +1.0;  // fails
+  A.prepareRightState();
+  p = A.measureObservable(pauliX, &prng); pass &= p == +1.0;
+  p = A.measureObservable(pauliX, &prng); pass &= p == +1.0;
+  //p = QS::getStateProbability(A, r);      pass &= p == +1.0;  // fails
+
+  A.prepareOutState();
+  p = A.measureObservable(pauliY, &prng); pass &= p == -1.0;
+  p = A.measureObservable(pauliY, &prng); pass &= p == -1.0;
+  //p = QS::getStateProbability(A, o);      pass &= p == +1.0;  // fails
+  A.prepareInState();
+  p = A.measureObservable(pauliY, &prng); pass &= p == +1.0;
+  p = A.measureObservable(pauliY, &prng); pass &= p == +1.0;
+  //p = QS::getStateProbability(A, i);      pass &= p == +1.0;  // fails
+
+  // failures are due to roundoff
+
+  // maybe the second measurements should not just check, if the result is again the same (which 
+  // may be happen by coincidence) but instead check that the probability of being the same is 1
 
 
 

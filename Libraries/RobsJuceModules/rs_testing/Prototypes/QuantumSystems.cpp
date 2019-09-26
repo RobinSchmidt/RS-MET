@@ -28,21 +28,26 @@ template<class T>
 T rsQuantumSpin<T>::measureObservable(const rsSpinOperator<T>& M, rsNoiseGenerator<T>* prng)
 {
   rsQuantumSpin<T> E1 = M.getEigenvector1();
-  T P1 = getStateProbability(*this, E1);       // (1) Eq 2.2
+  T P1 = getStateProbability(*this, E1);
   T rnd = prng->getSample();
   if(rnd <= P1) {
-    rsQuantumSpin<T> E2 = M.getEigenvector2();
-    //T P2 = getStateProbability(*this, E2); // should be 1-P1 - move to tests
-    setState(E2);
-    return M.getEigenvalue2().real(); // should be real anyway, if M is Hermitian
+    //T P2 = getStateProbability(*this, M.getEigenvector2()); // should be 1-P1
+    setState(E1);
+    return M.getEigenvalue1().real(); // is real if M is Hermitian
   }
   else {
-    setState(E1);
-    return M.getEigenvalue1().real(); // should be real anyway, if M is Hermitian
+    rsQuantumSpin<T> E2 = M.getEigenvector2();
+    setState(E2);
+    return M.getEigenvalue2().real(); // is real if M is Hermitian
   }
-  // my intuition says, the branches should be theo other way around but that doesn't fit with 
-  // measureUpComponent - why is this so?
 }
+// in general, we'll have an NxN matrix and the probability to be in state k is given by
+//  (v * Ek) * (v * Ek) where v is our N dimensional complex state vector and Ek is the k-th
+// eigenvector of M. To collapse into one of the N states, we'll have to look at into which 
+// interval the random variable falls. For example, if P1 = 0.2, P2 = 0.5, P3 = 0.3 for a
+// 3D state, we'll fall into E1 if rnd in 0..0.2, into E2 if rnd in 0.2...0.7 and into E3 if
+// rnd in 0.7..1.0 (and return eigenvalue e1, e1 or e3 respectively) - it's probably a good idea
+// to pass precomputed eigenvalues and -vectors into such a N-dimensional measurement function
 
 template<class T>
 T rsQuantumSpin<T>::measureUpComponent(rsNoiseGenerator<T>* prng)

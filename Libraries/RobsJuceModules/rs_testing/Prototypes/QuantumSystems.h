@@ -289,19 +289,25 @@ inline rsQuantumSpin<T> operator*(const std::complex<T>& z, const rsQuantumSpin<
 //=================================================================================================
 
 /** A class for representing linear operators on quantum spins (objects of class rsQuantumSpin). 
-An operator is represented as complex valued 2x2 matrix M and applying the operator to a spin 
-state v (represented by a complex valued row-vector, a.k.a. "ket") amounts to computing the 
-matrix-vector product M*v. ...
+An operator is represented as complex valued 2x2 matrix M. There are two very distinct things that 
+such operators are used for:
 
-There's a special class of operators associated with observable variables. Measuring a variable 
-associated with such an operator will put the state into one of the eigenvectors of the operator 
-and the result of the measurement will be one of its eigenvalues. Because physical measurements 
-must be real numbers, an operator M corresponding to an observable must be Hermitian (i.e. 
-M = M^H where M^H denotes the Hermitian transpose (= transpose and conjugate)). This ensures real
-eigenvalues.....
+Firstly, an operator M can "act" on (or be applied to) a quantum state v. This means, that a new 
+state is computed as the matrix-vector product w = M*v where v is the old state. Operators of that 
+kind must be unitary matrices, because....
 
+Secondly, operators may represent measurable or observable quantities. Measuring the value of an
+observable associated with such an operator will put the state into one of the eigenvectors of the 
+operator and the result of the measurement will be one of its eigenvalues. Because physical 
+measurements must be real numbers, an operator M corresponding to an observable must be Hermitian 
+(i.e. M = M^H where M^H denotes the Hermitian transpose (= transpose and conjugate)). This ensures 
+real eigenvalues. 
 
-todo: explain the unitarity stuff  */
+Note that the act of setting the spin into an eigenstate of a measurement operator is *not*
+the same thing as forming the matrix-vector product like it is done with the first kind of 
+operator. Note also that it is only these measurements that involve setting the quantum state
+into a randomly chosen one. Operations of the first kind act deterministically on the state 
+consisting of the probability amplitudes.  */
 
 template<class T>
 class rsSpinOperator // maybe rename to rsQuantumSpinOperator
