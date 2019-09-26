@@ -84,17 +84,26 @@ public:
 
   /** Assigns the coefficients (a.k.a. probability amplitudes) for "up" and "down" state to the 
   given values. It does not verify, if the numbers represent a valid state. */
-  void setState(const std::complex<T>& newUpAmplitude, const std::complex<T>& newDownAmplitude)
+  //void setState(const std::complex<T>& newUpAmplitude, const std::complex<T>& newDownAmplitude)
+  //{
+  //  y = newUpAmplitude;
+  //  x = newDownAmplitude;
+  //}
+
+  // transitional - shall become setState - takes arguments in reversed order
+  void setState2(const std::complex<T>& newDownAmplitude, const std::complex<T>& newUpAmplitude)
   {
-    y = newUpAmplitude;
     x = newDownAmplitude;
+    y = newUpAmplitude;
   }
+
+
 
   /** Sets this spin object into a given state copied from another spin object. */
   void setState(const rsQuantumSpin<T>& newState)
   {
-    y = newState.getUpAmplitude();
     x = newState.getDownAmplitude();
+    y = newState.getUpAmplitude();
   }
 
   /** Randomizes the state.... */
@@ -116,8 +125,9 @@ public:
 
   /** \name Inquiry */
 
-  std::complex<T> getUpAmplitude()   const { return y; }
+
   std::complex<T> getDownAmplitude() const { return x; }
+  std::complex<T> getUpAmplitude()   const { return y; }
   // todo: getLeft/Right/In/Out Component - but these require more compilcated calculations
   // maybe rename all the "Component" functions to "Amplitude"
 
@@ -136,6 +146,11 @@ public:
     return getSquaredNorm(A.getUpAmplitude()) + getSquaredNorm(A.getDownAmplitude()); // (1) Eq 2.4
   }
 
+
+
+  static std::complex<T> getDownAmplitude(const rsQuantumSpin& A)
+  { rsQuantumSpin<T> d; d.prepareDownState(); return d*A; }
+
   /** Computes the up component of the given ket/state |A>. */
   static std::complex<T> getUpAmplitude(const rsQuantumSpin& A)
   {
@@ -146,8 +161,7 @@ public:
   // can this be simplified? we could just call A.getUpComponent - actually, this function is 
   // redundant...
 
-  static std::complex<T> getDownAmplitude(const rsQuantumSpin& A)
-  { rsQuantumSpin<T> d; d.prepareDownState(); return d*A; }
+
 
   // make similar functions for left,right,in,out components and a general
   // getStateComponent

@@ -580,7 +580,7 @@ bool quantumSpinMeasurement()
 
   // test, if the statistical distribution is as desired - set it into a state
   // au = sqrt(0.8), ad = sqrt(0.2) - we should see roughly 80% "up" measurements and 20% "down"
-  B.setState(std::complex<double>(sqrt(0.8), 0), std::complex<double>(sqrt(0.2), 0));
+  B.setState2(std::complex<double>(sqrt(0.2), 0), std::complex<double>(sqrt(0.8), 0));
   for(n = 0; n < N; n++) {
     A = B;
     spins1[n] = A.measureSpinZ(&prng);
