@@ -57,10 +57,10 @@ public:
 
   /** Constructor to create a spin object with given up and down components. It does not verify, if
   these components specify a valid state. ...maybe do an assert... */
-  rsQuantumSpin(const std::complex<T>& upComponent, const std::complex<T>& downComponent) 
+  rsQuantumSpin(const std::complex<T>& upAmplitude, const std::complex<T>& downAmplitude) 
   { 
-    y = upComponent;
-    x = downComponent;
+    y = upAmplitude;
+    x = downAmplitude;
   }
 
   /** Creates a spin object in pure "up" state. */
@@ -84,17 +84,17 @@ public:
 
   /** Assigns the coefficients (a.k.a. probability amplitudes) for "up" and "down" state to the 
   given values. It does not verify, if the numbers represent a valid state. */
-  void setState(const std::complex<T>& newUpComponent, const std::complex<T>& newDownComponent)
+  void setState(const std::complex<T>& newUpAmplitude, const std::complex<T>& newDownAmplitude)
   {
-    y = newUpComponent;
-    x = newDownComponent;
+    y = newUpAmplitude;
+    x = newDownAmplitude;
   }
 
   /** Sets this spin object into a given state copied from another spin object. */
   void setState(const rsQuantumSpin<T>& newState)
   {
-    y = newState.getUpComponent();
-    x = newState.getDownComponent();
+    y = newState.getUpAmplitude();
+    x = newState.getDownAmplitude();
   }
 
   /** Randomizes the state.... */
@@ -116,8 +116,8 @@ public:
 
   /** \name Inquiry */
 
-  std::complex<T> getUpComponent()   const { return y; }
-  std::complex<T> getDownComponent() const { return x; }
+  std::complex<T> getUpAmplitude()   const { return y; }
+  std::complex<T> getDownAmplitude() const { return x; }
   // todo: getLeft/Right/In/Out Component - but these require more compilcated calculations
   // maybe rename all the "Component" functions to "Amplitude"
 
@@ -133,11 +133,11 @@ public:
   sanity checks and/or to (re)normalize random states. */
   static T getTotalProbability(const rsQuantumSpin& A)
   {
-    return getSquaredNorm(A.getUpComponent()) + getSquaredNorm(A.getDownComponent()); // (1) Eq 2.4
+    return getSquaredNorm(A.getUpAmplitude()) + getSquaredNorm(A.getDownAmplitude()); // (1) Eq 2.4
   }
 
   /** Computes the up component of the given ket/state |A>. */
-  static std::complex<T> getUpComponent(const rsQuantumSpin& A)
+  static std::complex<T> getUpAmplitude(const rsQuantumSpin& A)
   {
     rsQuantumSpin u;
     u.prepareUpState();
@@ -146,7 +146,7 @@ public:
   // can this be simplified? we could just call A.getUpComponent - actually, this function is 
   // redundant...
 
-  static std::complex<T> getDownComponent(const rsQuantumSpin& A)
+  static std::complex<T> getDownAmplitude(const rsQuantumSpin& A)
   { rsQuantumSpin<T> d; d.prepareDownState(); return d*A; }
 
   // make similar functions for left,right,in,out components and a general
@@ -270,8 +270,8 @@ ket into a bra before using this - this is done internally by this operator. */
 template<class T>
 inline std::complex<T> operator*(const rsQuantumSpin<T>& B, const rsQuantumSpin<T>& A)
 {
-  return conj(B.getUpComponent())   * A.getUpComponent() 
-       + conj(B.getDownComponent()) * A.getDownComponent(); // (1), page 30 ff
+  return conj(B.getUpAmplitude())   * A.getUpAmplitude() 
+       + conj(B.getDownAmplitude()) * A.getDownAmplitude(); // (1), page 30 ff
 }
 // 
 // interchanging arguments leads to complex conjugation of the result
@@ -284,23 +284,23 @@ inline std::complex<T> operator*(const rsQuantumSpin<T>& B, const rsQuantumSpin<
 template<class T>
 inline rsQuantumSpin<T> operator+(const rsQuantumSpin<T>& A, const rsQuantumSpin<T>& B)
 {
-  return rsQuantumSpin<T>(A.getUpComponent()   + B.getUpComponent(), 
-                          A.getDownComponent() + B.getDownComponent() );
+  return rsQuantumSpin<T>(A.getUpAmplitude()   + B.getUpAmplitude(), 
+                          A.getDownAmplitude() + B.getDownAmplitude() );
 }
 
 /** Subtracts two kets. */
 template<class T>
 inline rsQuantumSpin<T> operator-(const rsQuantumSpin<T>& A, const rsQuantumSpin<T>& B)
 {
-  return rsQuantumSpin<T>(A.getUpComponent()   - B.getUpComponent(), 
-                          A.getDownComponent() - B.getDownComponent() );
+  return rsQuantumSpin<T>(A.getUpAmplitude()   - B.getUpAmplitude(), 
+                          A.getDownAmplitude() - B.getDownAmplitude() );
 }
 
 /** Multiplies a scalar and a ket. */
 template<class T>
 inline rsQuantumSpin<T> operator*(const std::complex<T>& z, const rsQuantumSpin<T>& A)
 {
-  return rsQuantumSpin<T>(z * A.getUpComponent(), z * A.getDownComponent());
+  return rsQuantumSpin<T>(z * A.getUpAmplitude(), z * A.getDownAmplitude());
 }
 
 

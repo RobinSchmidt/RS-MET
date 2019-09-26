@@ -633,10 +633,10 @@ void plotQuantumSpinStateTrajectory(const std::vector<rsQuantumSpin<T>>& Psi, T 
   std::vector<T> t(N), dr(N), di(N), ur(N), ui(N);
   for(int n = 0; n < N; n++) {
     t[n] = n*dt;   // time axis
-    dr[n] = Psi[n].getDownComponent().real(); // rename to DownAmplitude
-    di[n] = Psi[n].getDownComponent().imag();
-    ur[n] = Psi[n].getUpComponent().real();
-    ui[n] = Psi[n].getUpComponent().imag();
+    dr[n] = Psi[n].getDownAmplitude().real(); // rename to DownAmplitude
+    di[n] = Psi[n].getDownAmplitude().imag();
+    ur[n] = Psi[n].getUpAmplitude().real();
+    ui[n] = Psi[n].getUpAmplitude().imag();
   }
   GNUPlotter plt;
   plt.addDataArrays(N, &t[0], &dr[0], &di[0], &ur[0], &ui[0]);
