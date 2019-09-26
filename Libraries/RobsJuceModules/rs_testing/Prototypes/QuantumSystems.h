@@ -410,19 +410,22 @@ public:
   {
     std::complex<T> vx, vy;
     RAPT::rsLinearAlgebra::eigenvector2x2_1(a, b, c, d, &vx, &vy, true);
-    //return rsQuantumSpin<T>(vx, vy);   // wrong - why?
-    return rsQuantumSpin<T>(vy, vx);
+    //return rsQuantumSpin<T>(vx, vy);   // new - not yet working
+    return rsQuantumSpin<T>(vy, vx); // old
   }
-  // try to get rid - shoudl be inherited
+  // try to get rid - should be inherited
   // why are they it in that order - can we chaneg the order (and therefore use the inherited function)
-  // when we modify the measureObservable function? try it!
+  // when we modify the measureObservable function? try it! hmm nope
+  // if we can get it to work with the new version, then we should be able to delete it as well and 
+  // fall back to the inherited function
 
   /** Returns the second eigenvector of this operator. */
   rsQuantumSpin<T> eigenvector2() const
   {
     std::complex<T> vx, vy;
     RAPT::rsLinearAlgebra::eigenvector2x2_2(a, b, c, d, &vx, &vy, true);
-    return rsQuantumSpin<T>(vy, vx);
+    //return rsQuantumSpin<T>(vx, vy);  // new - not yet working
+    return rsQuantumSpin<T>(vy, vx);    // old
   }
 
   /** Returns the expectation value for the observable M when the system is in state A. */

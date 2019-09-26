@@ -30,7 +30,8 @@ T rsQuantumSpin<T>::measureObservable(const rsSpinOperator<T>& M, rsNoiseGenerat
   rsQuantumSpin<T> E1 = M.eigenvector1();
   T P1 = getStateProbability(*this, E1);
   T rnd = prng->getSample();
-  if(rnd <= P1) { // should it be <= or < ?
+  //if(rnd >= P1) { // new
+  if(rnd <= P1) { // should it be <= or < ?  old
     //T P2 = getStateProbability(*this, M.getEigenvector2()); // should be 1-P1
     setState(E1);
     return M.eigenvalue1().real(); // is real if M is Hermitian
