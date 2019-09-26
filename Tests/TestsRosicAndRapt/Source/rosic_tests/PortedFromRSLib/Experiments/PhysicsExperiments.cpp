@@ -422,40 +422,36 @@ bool quantumSpin()
   A.prepareDownState();
   p = A.measureObservable(pauliZ, &prng); pass &= p == -1.0;
   p = A.measureObservable(pauliZ, &prng); pass &= p == -1.0;
-  p = QS::getStateProbability(A, d);      pass &= p == +1.0;
+  P = QS::getStateProbability(A, d);      pass &= P ==  1.0;
   A.prepareUpState();
   p = A.measureObservable(pauliZ, &prng); pass &= p == +1.0;
   p = A.measureObservable(pauliZ, &prng); pass &= p == +1.0;
-  p = QS::getStateProbability(A, u);      pass &= p == +1.0;
+  P = QS::getStateProbability(A, u);      pass &= P ==  1.0;
 
   A.prepareLeftState();
   p = A.measureObservable(pauliX, &prng); pass &= p == -1.0;
   p = A.measureObservable(pauliX, &prng); pass &= p == -1.0;
-  //p = QS::getStateProbability(A, l);      pass &= p == +1.0;  // fails
+  P = QS::getStateProbability(A, l);      pass &= isCloseTo(P, 1.0, tol);
   A.prepareRightState();
   p = A.measureObservable(pauliX, &prng); pass &= p == +1.0;
   p = A.measureObservable(pauliX, &prng); pass &= p == +1.0;
-  //p = QS::getStateProbability(A, r);      pass &= p == +1.0;  // fails
+  P = QS::getStateProbability(A, r);      pass &= isCloseTo(P, 1.0, tol);
 
   A.prepareOutState();
   p = A.measureObservable(pauliY, &prng); pass &= p == -1.0;
   p = A.measureObservable(pauliY, &prng); pass &= p == -1.0;
-  //p = QS::getStateProbability(A, o);      pass &= p == +1.0;  // fails
+  P = QS::getStateProbability(A, o);      pass &= isCloseTo(P, 1.0, tol);
   A.prepareInState();
   p = A.measureObservable(pauliY, &prng); pass &= p == +1.0;
   p = A.measureObservable(pauliY, &prng); pass &= p == +1.0;
-  //p = QS::getStateProbability(A, i);      pass &= p == +1.0;  // fails
+  P = QS::getStateProbability(A, i);      pass &= isCloseTo(P, 1.0, tol);
 
-  // failures are due to roundoff
-
-  // maybe the second measurements should not just check, if the result is again the same (which 
-  // may be happen by coincidence) but instead check that the probability of being the same is 1
 
 
 
 
   // now, do some actual measurements:
-  double r1, r2; // resultsof 1st and 2nd measurement - sign of up-spin component
+  double r1, r2; // results of 1st and 2nd measurement - sign of up-spin component
   int N = 100;   // number of measurements to take
   std::vector<double> spins1(N);
   int n;
@@ -483,9 +479,12 @@ bool quantumSpin()
     spins2[n] = r1;
   }
   double mean2 = rsMean(spins2);
-  rsPlotVectors(spins1, spins2);
+  rsPlotVectors(spins1, spins2); 
 
-  // todo: check the eigenvector computations (unit test)
+  // have opposite signs - something is wrong - i think, the measureUpComponent function is
+  // wrong...
+
+
 
 
 

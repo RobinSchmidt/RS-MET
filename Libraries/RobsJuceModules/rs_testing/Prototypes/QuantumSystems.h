@@ -192,9 +192,7 @@ public:
   //void rotateUpComponent, rotateDownComponent, applyHadamard, etc.
   // measureUpState - should use p = getUpProbability(*this) and then put it into pure up state 
   // (with probability p) or down state (with probability 1-p) - the measurement destroys the 
-  // superposition - the function probably get a pointer to a PRNG ...or maybe the class should 
-  // have a PRNG pointer as member
-
+  // superposition - the function probably get a pointer to a PRNG 
 
   /** \name Measurements */
 
@@ -209,7 +207,7 @@ public:
   subsequent measurements of the same observable will always give the same result (assuming, of 
   course, that no manipulations of the state take place in between the measurements). */
   T measureObservable(const rsSpinOperator<T>& M, rsNoiseGenerator<T>* prng); 
-  // still buggy
+
 
   /** Applies a measurement operation to the state. This measurement will put the state vector 
   either into a pure "up" or pure "down" state and will return +1 in the former and -1 in the 
@@ -217,15 +215,16 @@ public:
   up-probability of our state. The operator/matrix that corresponds to that measurement is the 
   Pauli matrix sigma_z = [[1 0], [0,-1]]. */
   T measureUpComponent(rsNoiseGenerator<T>* prng);
+  // rename to measureSpinZ...this seems to return the wrong (inverted) results
 
   /** Like measureUpComponent(), but for the "right" component represented by the Pauli matrix 
   sigma_x = [[0,1], [1,0]].  */
-  T measureRightComponent(rsNoiseGenerator<T>* prng); 
+  //T measureRightComponent(rsNoiseGenerator<T>* prng); 
   // not yet tested
 
   /** Like measureUpComponent(), but for the "in" component represented by the Pauli matrix 
   sigma_y = [[0,-i], [i,0]].  */
-  T measureInComponent(rsNoiseGenerator<T>* prng);    
+  //T measureInComponent(rsNoiseGenerator<T>* prng);    
   // not yet tested
 
 
