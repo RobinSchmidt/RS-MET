@@ -27,7 +27,7 @@ void rsQuantumSpin<T>::randomizeState(rsNoiseGenerator<T>* prng)
 template<class T>
 T rsQuantumSpin<T>::measureObservable(const rsSpinOperator<T>& M, rsNoiseGenerator<T>* prng)
 {
-  rsQuantumSpin<T> E1 = M.getEigenvector1();
+  rsQuantumSpin<T> E1 = M.eigenvector1();
   T P1 = getStateProbability(*this, E1);
   T rnd = prng->getSample();
   if(rnd <= P1) { // should it be <= or < ?
@@ -36,7 +36,7 @@ T rsQuantumSpin<T>::measureObservable(const rsSpinOperator<T>& M, rsNoiseGenerat
     return M.eigenvalue1().real(); // is real if M is Hermitian
   }
   else {
-    rsQuantumSpin<T> E2 = M.getEigenvector2();
+    rsQuantumSpin<T> E2 = M.eigenvector2();
     setState(E2);
     return M.eigenvalue2().real(); // is real if M is Hermitian
   }

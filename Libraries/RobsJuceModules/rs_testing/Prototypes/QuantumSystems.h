@@ -63,6 +63,13 @@ public:
     x = downAmplitude;
   }
 
+
+  rsQuantumSpin(const rsVector2D<std::complex<T>>& v) 
+  { 
+    x = v.x;
+    y = v.y;
+  }
+
   /** Creates a spin object in pure "up" state. */
   static rsQuantumSpin<T> up()    { rsQuantumSpin<T> s; s.prepareUpState();    return s; }
   static rsQuantumSpin<T> down()  { rsQuantumSpin<T> s; s.prepareDownState();  return s; }
@@ -407,15 +414,16 @@ public:
   //std::complex<T> getEigenvalue2() const { return RAPT::rsLinearAlgebra::eigenvalue2x2_2(a, b, c, d); }
 
   /** Returns the first eigenvector of this operator. */
-  rsQuantumSpin<T> getEigenvector1() const
+  rsQuantumSpin<T> eigenvector1() const
   {
     std::complex<T> vx, vy;
     RAPT::rsLinearAlgebra::eigenvector2x2_1(a, b, c, d, &vx, &vy, true);
     return rsQuantumSpin<T>(vx, vy);
   }
+  // try to get rid - shoudl be inherited
 
   /** Returns the second eigenvector of this operator. */
-  rsQuantumSpin<T> getEigenvector2() const
+  rsQuantumSpin<T> eigenvector2() const
   {
     std::complex<T> vx, vy;
     RAPT::rsLinearAlgebra::eigenvector2x2_2(a, b, c, d, &vx, &vy, true);
