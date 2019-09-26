@@ -420,25 +420,7 @@ public:
   //inline std::complex<T>& operator()(const int i, const int j) { return m[i][j]; }
 
 
-  rsSpinOperator<T> operator+(const rsSpinOperator<T>& R) const
-  {
-    rsSpinOperator<T> S; // sum
-    S.a = a + R.a;
-    S.b = b + R.b;
-    S.c = c + R.c;
-    S.d = d + R.d;
-    return S;
-  }
 
-  rsSpinOperator<T> operator-(const rsSpinOperator<T>& R) const
-  {
-    rsSpinOperator<T> D; // difference
-    D.a = a - R.a;
-    D.b = b - R.b;
-    D.c = c - R.c;
-    D.d = d - R.d;
-    return D;
-  }
 
 
 
