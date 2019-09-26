@@ -619,6 +619,7 @@ bool quantumSpinMeasurement()
   // https://homepages.cwi.nl/~rdewolf/qcnotes.pdf
   // http://mmrc.amss.cas.cn/tlb/201702/W020170224608150244118.pdf
 
+  rsAssert(pass);
   return pass;
   //GNUPlotter plt;
 

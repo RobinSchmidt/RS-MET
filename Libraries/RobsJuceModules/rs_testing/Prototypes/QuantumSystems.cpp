@@ -15,8 +15,8 @@ void rsQuantumSpin<T>::randomizeState(rsNoiseGenerator<T>* prng)
   T pu = T(2.0*PI) * prng->getSample(); // phase of v.y
   T pd = T(2.0*PI) * prng->getSample(); // phase of v.x
 
-  v.y = std::polar(Pu, pu);
-  v.x = std::polar(Pd, pd);
+  y = std::polar(Pu, pu);
+  x = std::polar(Pd, pd);
 
   //normalize(); // should already be normalized thanks to *= r
 }
@@ -62,7 +62,7 @@ T rsQuantumSpin<T>::measureSpinZ(rsNoiseGenerator<T>* prng)
 {
   //T Pd  = getStateProbability(*this, down());       // (1) Eq 2.2
   //T Pd  = getDownProbability(*this);
-  T Pd  = getSquaredNorm(v.x);
+  T Pd  = getSquaredNorm(x);
   T rnd = prng->getSample();
   if(rnd <= Pd) {       // should it be <= or < ?
     prepareDownState();
