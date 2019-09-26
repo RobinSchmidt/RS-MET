@@ -160,6 +160,11 @@ public:
     return r.real();                   // imag should be zero
   }
 
+
+
+  /** Returns the probability for the given state A to be measured in "down" configuration. */
+  static T getDownProbability(const rsQuantumSpin& A) { return getStateProbability(A, down()); }
+
   /** Returns the probability for the given state A to be measured in "up" configuration. */
   static T getUpProbability(const rsQuantumSpin& A)
   {
@@ -169,11 +174,20 @@ public:
     return r.real();                   // imag should be zero
   }
 
+  /** Returns the probability for the given state A to be measured in "left" configuration. */
+  static T getLeftProbability(const rsQuantumSpin& A) { return getStateProbability(A, left()); }
+
   /** Returns the probability for the given state A to be measured in "right" configuration. */
   static T getRightProbability(const rsQuantumSpin& A) { return getStateProbability(A, right()); }
 
+
+  /** Returns the probability for the given state A to be measured in "out" configuration. */
+  static T getOutProbability(const rsQuantumSpin& A) { return getStateProbability(A, out());  }
+
   /** Returns the probability for the given state A to be measured in "in" configuration. */
   static T getInProbability(const rsQuantumSpin& A) { return getStateProbability(A, in());  }
+
+
 
   /** Tests, if the state A is close to the state of "this" with the given tolerance. */
   bool isCloseTo(const rsQuantumSpin& A, T tol)

@@ -63,86 +63,33 @@ T rsQuantumSpin<T>::measureSpinZ(rsNoiseGenerator<T>* prng)
   else {
     prepareUpState();
     return +1; }
-
-
-  /*
-  //T Pu  = getUpProbability(*this); // optimize this!
-
-  //T Pu = getSquaredNorm(au); // same result as Pu = getUpProbability(*this) but more efficient
-  T rnd = prng->getSample();
-  if(rnd <= Pu) {       // should it be <= or < ?
-    prepareUpState();
-    return +1; }
-  else {
-    prepareDownState();
-    return -1; }
-    */
 }
 
 template<class T>
 T rsQuantumSpin<T>::measureSpinX(rsNoiseGenerator<T>* prng)
 {
-  T Pr = getRightProbability(*this); // optimizable?
+  T Pl  = getLeftProbability(*this); // optimizable?
   T rnd = prng->getSample();
-  if(rnd <= Pr) 
-  {
-    prepareRightState();
-    return +1; 
-  }
-  else 
-  {
+  if(rnd <= Pl) {
     prepareLeftState();
-    return -1; 
-  }
+    return -1; }
+  else {
+    prepareRightState();
+    return +1; }
 }
 
 template<class T>
 T rsQuantumSpin<T>::measureSpinY(rsNoiseGenerator<T>* prng)
 {
-  T Pi = getInProbability(*this); // optimizable?
+  T Po = getOutProbability(*this); // optimizable?
   T rnd = prng->getSample();
-  if(rnd <= Pi) {
-    prepareInState();
-    return +1; 
-
-  }
-  else 
-  {
-    prepareOutState();
-    return -1; 
-
-  }
-}
-
-
-/*
-template<class T>
-T rsQuantumSpin<T>::measureRightComponent(rsNoiseGenerator<T>* prng)
-{
-  T Pr = getRightProbability(*this);
-  T rnd = prng->getSample();
-  if(rnd <= Pr) {
-    prepareRightState();
-    return +1; }
-  else {
-    prepareLeftState();
-    return -1; }
-}
-
-template<class T>
-T rsQuantumSpin<T>::measureInComponent(rsNoiseGenerator<T>* prng)
-{
-  T Pi = getInProbability(*this);
-  T rnd = prng->getSample();
-  if(rnd <= Pi) {
-    prepareInState();
-    return +1; }
-  else {
+  if(rnd <= Po) {
     prepareOutState();
     return -1; }
+  else {
+    prepareInState();
+    return +1; }
 }
-*/
-
 
 
 // todo: make a function that computes the two angles that describe the state as point on
