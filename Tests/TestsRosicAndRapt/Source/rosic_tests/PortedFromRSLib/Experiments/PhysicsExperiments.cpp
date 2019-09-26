@@ -418,7 +418,8 @@ bool quantumSpin()
   QS E1 = op.getEigenvector1(); // (1, 0)     -> wrong result
   QS E2 = op.getEigenvector2(); // (1,-1) * s
 
-  // test measurements of observables represented by operators (Pauli matrices in this case):
+
+  // test spin measurements via Pauli matrices:
   A.prepareDownState();
   p = A.measureObservable(pauliZ, &prng); pass &= p == -1.0;
   p = A.measureObservable(pauliZ, &prng); pass &= p == -1.0;
@@ -447,11 +448,42 @@ bool quantumSpin()
   P = QS::getStateProbability(A, i);      pass &= isCloseTo(P, 1.0, tol);
 
 
+  // test spin measurements via dedicated functions:
+
+  A.prepareDownState();
+  p = A.measureSpinZ(&prng);         pass &= p == -1.0;
+  p = A.measureSpinZ(&prng);         pass &= p == -1.0;
+  P = QS::getStateProbability(A, d); pass &= P ==  1.0;
+
+  A.prepareUpState();
+  p = A.measureSpinZ(&prng);         pass &= p == +1.0;
+  p = A.measureSpinZ(&prng);         pass &= p == +1.0;
+  P = QS::getStateProbability(A, u); pass &= P ==  1.0;
+
+
+  A.prepareLeftState();
+  p = A.measureSpinX(&prng);         pass &= p == -1.0;
+  p = A.measureSpinX(&prng);         pass &= p == -1.0;
+  P = QS::getStateProbability(A, l); pass &= isCloseTo(P, 1.0, tol);
+
+  A.prepareRightState();
+  p = A.measureSpinX(&prng);         pass &= p == +1.0;
+  p = A.measureSpinX(&prng);         pass &= p == +1.0;
+  P = QS::getStateProbability(A, r); pass &= isCloseTo(P, 1.0, tol);
+
+
+
+
+
+
+
+
+
 
 
 
   // now, do some actual measurements:
-  double r1, r2; // results of 1st and 2nd measurement - sign of up-spin component
+  double r1, r2; // results of 1st and 2nd measurement
   int N = 100;   // number of measurements to take
   std::vector<double> spins1(N);
   int n;
@@ -478,12 +510,43 @@ bool quantumSpin()
     spins2[n] = r1;
   }
   double mean2 = rsMean(spins2);
-  rsPlotVectors(spins1, spins2); 
+  rsPlotVectors(spins1, spins2); // are inverted - why?
 
 
 
+  prng.reset();
+  for(n = 0; n < N; n++) {
 
+    A.randomizeState(&prng);
+    r1 = A.measureObservable(pauliZ, &prng);
+    r2 = A.measureSpinZ(&prng);
+    pass &= (r1 == r2);
 
+    A.randomizeState(&prng);
+    r2 = A.measureSpinZ(&prng);
+    r1 = A.measureObservable(pauliZ, &prng);
+    pass &= (r1 == r2);
+
+    A.randomizeState(&prng);
+    r1 = A.measureObservable(pauliX, &prng);
+    r2 = A.measureSpinX(&prng);
+    pass &= (r1 == r2);
+
+    A.randomizeState(&prng);
+    r2 = A.measureSpinX(&prng);
+    r1 = A.measureObservable(pauliX, &prng);
+    pass &= (r1 == r2);
+
+    A.randomizeState(&prng);
+    r1 = A.measureObservable(pauliY, &prng);
+    r2 = A.measureSpinY(&prng);
+    pass &= (r1 == r2);
+
+    A.randomizeState(&prng);
+    r2 = A.measureSpinY(&prng);
+    r1 = A.measureObservable(pauliY, &prng);
+    pass &= (r1 == r2);
+  }
 
 
  

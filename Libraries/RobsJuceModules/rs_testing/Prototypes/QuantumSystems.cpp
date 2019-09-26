@@ -53,16 +53,16 @@ T rsQuantumSpin<T>::measureObservable(const rsSpinOperator<T>& M, rsNoiseGenerat
 template<class T>
 T rsQuantumSpin<T>::measureSpinZ(rsNoiseGenerator<T>* prng)
 {
-  T Pu  = getUpProbability(*this); // optimize this!
-  //T Pu = getStateProbability(*this, up());       // (1) Eq 2.2
+  //T Pu  = getUpProbability(*this); // optimize this!
+  T Pu = getStateProbability(*this, up());       // (1) Eq 2.2
   //T Pu = getSquaredNorm(au); // same result as Pu = getUpProbability(*this) but more efficient
   T rnd = prng->getSample();
   if(rnd <= Pu) {       // should it be <= or < ?
-    prepareDownState();
-    return -1; }
-  else {
     prepareUpState();
     return +1; }
+  else {
+    prepareDownState();
+    return -1; }
 }
 
 template<class T>
@@ -70,12 +70,16 @@ T rsQuantumSpin<T>::measureSpinX(rsNoiseGenerator<T>* prng)
 {
   T Pr = getRightProbability(*this); // optimizable?
   T rnd = prng->getSample();
-  if(rnd <= Pr) {
-    prepareLeftState();
-    return -1; }
-  else {
+  if(rnd <= Pr) 
+  {
     prepareRightState();
-    return +1; }
+    return +1; 
+  }
+  else 
+  {
+    prepareLeftState();
+    return -1; 
+  }
 }
 
 template<class T>
