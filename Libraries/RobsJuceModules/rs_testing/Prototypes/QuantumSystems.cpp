@@ -12,10 +12,10 @@ void rsQuantumSpin<T>::randomizeState(rsNoiseGenerator<T>* prng)
   T r  = T(1) / sqrt(Pu*Pu + Pd*Pd);    // normalizer
   Pu  *= r;
   Pd  *= r;
-  T pu = T(2.0*PI) * prng->getSample(); // phase of au
+  T pu = T(2.0*PI) * prng->getSample(); // phase of v.y
   T pd = T(2.0*PI) * prng->getSample(); // phase of v.x
 
-  au = std::polar(Pu, pu);
+  v.y = std::polar(Pu, pu);
   v.x = std::polar(Pd, pd);
 
   //normalize(); // should already be normalized thanks to *= r

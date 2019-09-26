@@ -59,7 +59,7 @@ public:
   these components specify a valid state. ...maybe do an assert... */
   rsQuantumSpin(const std::complex<T>& upComponent, const std::complex<T>& downComponent) 
   { 
-    au = upComponent;
+    v.y = upComponent;
     v.x = downComponent;
   }
 
@@ -75,25 +75,25 @@ public:
   /** \name Setup */
 
   /** Puts the system into a pure "up" state. */
-  void prepareUpState()    { au = 1; v.x =  0;   }
-  void prepareDownState()  { au = 0; v.x =  1;   }
-  void prepareRightState() { au = s; v.x =  s;   }  // (1) Eq 2.5
-  void prepareLeftState()  { au = s; v.x = -s;   }  // (1) Eq 2.6
-  void prepareInState()    { au = s; v.x =  s*i; }  // (1) Eq 2.10
-  void prepareOutState()   { au = s; v.x = -s*i; }  // (1) Eq 2.10
+  void prepareUpState()    { v.y = 1; v.x =  0;   }
+  void prepareDownState()  { v.y = 0; v.x =  1;   }
+  void prepareRightState() { v.y = s; v.x =  s;   }  // (1) Eq 2.5
+  void prepareLeftState()  { v.y = s; v.x = -s;   }  // (1) Eq 2.6
+  void prepareInState()    { v.y = s; v.x =  s*i; }  // (1) Eq 2.10
+  void prepareOutState()   { v.y = s; v.x = -s*i; }  // (1) Eq 2.10
 
   /** Assigns the coefficients (a.k.a. probability amplitudes) for "up" and "down" state to the 
   given values. It does not verify, if the numbers represent a valid state. */
   void setState(const std::complex<T>& newUpComponent, const std::complex<T>& newDownComponent)
   {
-    au = newUpComponent;
+    v.y = newUpComponent;
     v.x = newDownComponent;
   }
 
   /** Sets this spin object into a given state copied from another spin object. */
   void setState(const rsQuantumSpin<T>& newState)
   {
-    au = newState.getUpComponent();
+    v.y = newState.getUpComponent();
     v.x = newState.getDownComponent();
   }
 
@@ -109,14 +109,14 @@ public:
   void normalize()
   {
     T r = sqrt(T(1) / getTotalProbability(*this));  // or 1/sqrt(t) instead of sqrt(1/t) - which one is better numerically?
-    au *= r;
+    v.y *= r;
     v.x *= r;
   }
 
 
   /** \name Inquiry */
 
-  std::complex<T> getUpComponent()   const { return au; }
+  std::complex<T> getUpComponent()   const { return v.y; }
   std::complex<T> getDownComponent() const { return v.x; }
   // todo: getLeft/Right/In/Out Component - but these require more compilcated calculations
   // maybe rename all the "Component" functions to "Amplitude"
@@ -192,12 +192,12 @@ public:
   /** Tests, if the state A is close to the state of "this" with the given tolerance. */
   bool isCloseTo(const rsQuantumSpin& A, T tol)
   {
-    if(rsAbs(A.au-au) <= tol && rsAbs(A.v.x-v.x) <= tol)
+    if(rsAbs(A.v.y-v.y) <= tol && rsAbs(A.v.x-v.x) <= tol)
       return true;
     return false;
   }
 
-  // have a function to convert to bra - this is a complex conjugation of au, ad and also
+  // have a function to convert to bra - this is a complex conjugation of v.y, ad and also
   // turns the column vector into a row vector
 
 
@@ -246,7 +246,7 @@ public:
 
 protected:
 
-  std::complex<T> au; //, ad;  // probability amplitudes for "up" and "down" - maybe rename to u,d
+  //std::complex<T> au; //, ad;  // probability amplitudes for "up" and "down" - maybe rename to u,d
                            // coefficients for up and down spin basis vectors
 
 
@@ -432,8 +432,8 @@ public:
   rsQuantumSpin<T> operator*(const rsQuantumSpin<T>& v) const
   {
     rsQuantumSpin<T> r;
-    r.au = a * v.au  +  b * v.v.x;
-    r.v.x = c * v.au  +  d * v.v.x;
+    r.v.y = a * v.v.y  +  b * v.v.x;
+    r.v.x = c * v.v.y  +  d * v.v.x;
     return r;
   }
 
