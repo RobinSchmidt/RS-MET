@@ -874,6 +874,16 @@ bool quantumSpinMeasurement2()
   P = (mean+1)/2;  // -1..+1 -> 0..1  P = 0.81 (with N=1000) - close enough to 0.8
 
 
+  // compute expectation values for the spin component measurements in state B:
+  double Ez, Ex, Ey;  
+  Ez = QF::getExpectedMeasurement(pauliZ, B); // should be 0.6 = (0.8*2)-1 and close to mean1
+  Ex = QF::getExpectedMeasurement(pauliX, B); // 0.8
+  Ey = QF::getExpectedMeasurement(pauliY, B); // 0.0
+  P  = Ex*Ex + Ey*Ey + Ez*Ez;  // should be one according to (1) Eq 3.27
+  pass &= isCloseTo(P,  1.0, tol);
+  pass &= isCloseTo(Ez, 0.6, tol);
+  // Ex = 0.8 and Ey = 0 - maybe try to compute these manually
+
   rsAssert(pass);
   return pass;
 }

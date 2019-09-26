@@ -1,6 +1,5 @@
 #pragma once
 
-
 //=================================================================================================
 
 // we do all the stuff like below but operate directly procedurally with rsVector2D and rsMatrix2x2
@@ -27,21 +26,12 @@ public:
   static Vec in()    { Vec s; prepareInState(s);    return s; }
   static Vec out()   { Vec s; prepareOutState(s);   return s; }
 
-  //static void prepareDownState(Vec& A)  { A.x =  1;   A.y = 0;  }  // wrong! see 2.11
-  //static void prepareUpState(Vec& A)    { A.x =  0;   A.y = 1;  }  // dito - 2.12
-  //static void prepareLeftState(Vec& A)  { A.x = -s;   A.y = s;  }  // (1) Eq 2.6
-  //static void prepareRightState(Vec& A) { A.x =  s;   A.y = s;  }  // (1) Eq 2.5
-  //static void prepareOutState(Vec& A)   { A.x = -s*i; A.y = s;  }  // (1) Eq 2.10
-  //static void prepareInState(Vec& A)    { A.x =  s*i; A.y = s;  }  // (1) Eq 2.10
-
   static void prepareUpState(   Vec& A) { A.x = 1; A.y =  0;   }  // (1) Eq 2.11
   static void prepareDownState( Vec& A) { A.x = 0; A.y =  1;   }  // (1) Eq 2.12
   static void prepareRightState(Vec& A) { A.x = s; A.y =  s;   }  // (1) Eq 2.5
   static void prepareLeftState( Vec& A) { A.x = s; A.y = -s;   }  // (1) Eq 2.6
   static void prepareInState(   Vec& A) { A.x = s; A.y =  s*i; }  // (1) Eq 2.10
   static void prepareOutState(  Vec& A) { A.x = s; A.y = -s*i; }  // (1) Eq 2.10
-
-
 
    /** Normalizes the state such that the total probability is unity - which it must be for a valid 
   state. */
@@ -56,8 +46,6 @@ public:
   static void randomizeState(Vec& v, PRNG* prng);
 
 
-
-
   //-----------------------------------------------------------------------------------------------
   /** \name Operator setup */
 
@@ -69,11 +57,6 @@ public:
 
   /** Measurement operator for spin along the y-axis. Returns +1 for in, -1 for out. */
   static void setToPauliY(Mat& M) { M.a = T(0); M.b = -i;   M.c = i;    M.d = T(0);  }
-
-
-
-
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -105,8 +88,6 @@ public:
   static T getRightProbability(const Vec& A) { return getStateProbability(A, right()); }
   static T getOutProbability(  const Vec& A) { return getStateProbability(A, out());   }
   static T getInProbability(   const Vec& A) { return getStateProbability(A, in());    }
-
-
 
   /** Returns the squared norm (or magnitude, length, radius) of a complex number. */
   static T getSquaredNorm(const std::complex<T>& z)
@@ -169,12 +150,9 @@ public:
 
 
 
-
-
   static const T s;                // 1/sqrt(2)
   static const std::complex<T> i;  // imaginary unit
 };
-
 template<class T> const T rsQuantumSpinFunctions<T>::s = T(1) / sqrt(T(2));
 template<class T> const std::complex<T> rsQuantumSpinFunctions<T>::i = std::complex<T>(0, 1);
 
