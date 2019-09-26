@@ -419,6 +419,20 @@ bool quantumSpin()
   QS E2 = op.getEigenvector2(); // (1,-1) * s
 
 
+
+
+
+  double r1, r2; // results of 1st and 2nd measurement
+
+  // test:
+  A = r; prng.reset(); r1 = A.measureObservable(pauliZ, &prng);
+  A = r; prng.reset(); r2 = A.measureSpinZ(&prng);
+  // r1 = -1. r2 = +1
+
+
+
+
+
   // test spin measurements via Pauli matrices:
   A.prepareDownState();
   p = A.measureObservable(pauliZ, &prng); pass &= p == -1.0;
@@ -473,6 +487,15 @@ bool quantumSpin()
 
 
 
+  A.prepareOutState();
+  p = A.measureSpinY(&prng);         pass &= p == -1.0;
+  p = A.measureSpinY(&prng);         pass &= p == -1.0;
+  P = QS::getStateProbability(A, o); pass &= isCloseTo(P, 1.0, tol);
+
+  A.prepareInState();
+  p = A.measureSpinY(&prng);         pass &= p == +1.0;
+  p = A.measureSpinY(&prng);         pass &= p == +1.0;
+  P = QS::getStateProbability(A, i); pass &= isCloseTo(P, 1.0, tol);
 
 
 
@@ -483,7 +506,7 @@ bool quantumSpin()
 
 
   // now, do some actual measurements:
-  double r1, r2; // results of 1st and 2nd measurement
+
   int N = 100;   // number of measurements to take
   std::vector<double> spins1(N);
   int n;

@@ -30,7 +30,7 @@ T rsQuantumSpin<T>::measureObservable(const rsSpinOperator<T>& M, rsNoiseGenerat
   rsQuantumSpin<T> E1 = M.getEigenvector1();
   T P1 = getStateProbability(*this, E1);
   T rnd = prng->getSample();
-  if(rnd <= P1) {
+  if(rnd <= P1) { // should it be <= or < ?
     //T P2 = getStateProbability(*this, M.getEigenvector2()); // should be 1-P1
     setState(E1);
     return M.getEigenvalue1().real(); // is real if M is Hermitian
@@ -53,8 +53,21 @@ T rsQuantumSpin<T>::measureObservable(const rsSpinOperator<T>& M, rsNoiseGenerat
 template<class T>
 T rsQuantumSpin<T>::measureSpinZ(rsNoiseGenerator<T>* prng)
 {
+  //T Pd  = getStateProbability(*this, down());       // (1) Eq 2.2
+  //T Pd  = getDownProbability(*this);
+  T Pd  = getSquaredNorm(ad);
+  T rnd = prng->getSample();
+  if(rnd <= Pd) {       // should it be <= or < ?
+    prepareDownState();
+    return -1; }
+  else {
+    prepareUpState();
+    return +1; }
+
+
+  /*
   //T Pu  = getUpProbability(*this); // optimize this!
-  T Pu = getStateProbability(*this, up());       // (1) Eq 2.2
+
   //T Pu = getSquaredNorm(au); // same result as Pu = getUpProbability(*this) but more efficient
   T rnd = prng->getSample();
   if(rnd <= Pu) {       // should it be <= or < ?
@@ -63,6 +76,7 @@ T rsQuantumSpin<T>::measureSpinZ(rsNoiseGenerator<T>* prng)
   else {
     prepareDownState();
     return -1; }
+    */
 }
 
 template<class T>
@@ -88,11 +102,16 @@ T rsQuantumSpin<T>::measureSpinY(rsNoiseGenerator<T>* prng)
   T Pi = getInProbability(*this); // optimizable?
   T rnd = prng->getSample();
   if(rnd <= Pi) {
-    prepareOutState();
-    return -1; }
-  else {
     prepareInState();
-    return +1; }
+    return +1; 
+
+  }
+  else 
+  {
+    prepareOutState();
+    return -1; 
+
+  }
 }
 
 
