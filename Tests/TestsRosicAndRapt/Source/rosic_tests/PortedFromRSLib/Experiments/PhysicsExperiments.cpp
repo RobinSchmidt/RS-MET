@@ -420,6 +420,13 @@ bool quantumSpinMeasurement()
 
 
 
+  e1 = pauliZ.eigenvalue1();
+  E1 = pauliZ.eigenvector1();
+  e2 = pauliZ.eigenvalue2();
+  E2 = pauliZ.eigenvector2();
+
+
+
   double r1, r2; // results of 1st and 2nd measurement
 
   // test:

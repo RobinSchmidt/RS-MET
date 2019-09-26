@@ -1,5 +1,125 @@
 #pragma once
 
+
+//=================================================================================================
+
+// we do all the stuff like below but operate directly procedurally with rsVector2D and rsMatrix2x2
+// objects - i think, that's more convenient an will more readily generalize
+
+template<class T>
+class rsQuantumSpinFunctions
+{
+
+public:
+
+  typedef rsVector2D<std::complex<T>>  Vec;
+  typedef rsMatrix2x2<std::complex<T>> Mat;
+  typedef rsNoiseGenerator<T> PRNG;
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name State setup */
+
+  void prepareDownState(Vec& A)  { A.x =  1;   A.y = 0;  }
+  void prepareUpState(Vec& A)    { A.x =  0;   A.y = 1;  }
+  void prepareLeftState(Vec& A)  { A.x = -s;   A.y = s;  }  // (1) Eq 2.6
+  void prepareRightState(Vec& A) { A.x =  s;   A.y = s;  }  // (1) Eq 2.5
+  void prepareOutState(Vec& A)   { A.x = -s*i; A.y = s;  }  // (1) Eq 2.10
+  void prepareInState(Vec& A)    { A.x =  s*i; A.y = s;  }  // (1) Eq 2.10
+
+   /** Normalizes the state such that the total probability is unity - which it must be for a valid 
+  state. */
+  void normalizeState(Vec& A)
+  {
+    T r = sqrt(T(1) / getTotalProbability(A));  // or 1/sqrt(t) instead of sqrt(1/t) - which one is better numerically?
+    y *= r;
+    x *= r;
+  }
+
+  /** Randomizes the state.... */
+  void randomizeState(Vec& v, PRNG* prng); // needs implementation
+
+
+  /** \name Operator setup */
+
+  /** Measurement operator for spin along the z-axis. Returns +1 for up, -1 for down. */
+  void setToPauliZ(Mat<T>& M) { M.a = T(1); M.b = T(0); M.c = T(0); M.d = T(-1); }
+
+  /** Measurement operator for spin along the x-axis. Returns +1 for right, -1 for left. */
+  void setToPauliX(Mat<T>& M) { M.a = T(0); M.b = T(1); M.c = T(1); M.d = T(0);  }
+
+  /** Measurement operator for spin along the y-axis. Returns +1 for in, -1 for out. */
+  void setToPauliY(Mat<T>& M) { M.a = T(0); M.b = -i;   M.c = i;    M.d = T(0);  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Computes the "bracket" <A|B> of two "ket" vectors A,B. The left "ket" is converted into a 
+  "bra" vector first (by complex conjugation and transposition). */
+  std::complex<T> bracket(const Vec& A, const Vec& B) { return conj(A.x) * B.x + (A.y) * B.y; }
+
+  /** Returns the probability to measure a target state t when a system is in state A. */
+  static T getStateProbability(const Vec& A, const Vec& t)
+  {
+    //std::complex<T> r = (A*t) * (t*A); // (1), Eq 3.11 (with lambda_i replaced by t)
+    // is this correct? i mean, th regular scalar product? i think, we need to conjugate the first
+    // vector - make a fucntion innerProduct or bracket
+
+    std::complex<T> r = bracket(A,t) * bracket(t,A); // (1), Eq 3.11 (with lambda_i replaced by t)
+    return r.real();                                 // imag should be zero
+  }
+
+  static std::complex<T> getDownAmplitude(const Vec& A) { return A.x; }
+  static std::complex<T> getUpAmplitude(  const Vec& A) { return A.y; }
+
+
+  /** Returns the squared norm (or magnitude, length, radius) of a complex number. */
+  static T getSquaredNorm(const std::complex<T>& z)
+  {
+    return z.real()*z.real() + z.imag()*z.imag(); // == conj(z) * z, (1) page 39
+  }
+  // move to RAPT as rsSquaredNorm
+
+  /** Returns the total probability for given ket A, i.e. the probability to be in any state at 
+  all - which must, of course, always return unity for a valid state. The function can be used for 
+  sanity checks and/or to (re)normalize random states. */
+  static T getTotalProbability(const Vec& A)
+  {
+    return getSquaredNorm(A.getUpAmplitude()) + getSquaredNorm(A.getDownAmplitude()); // (1) Eq 2.4
+  }
+
+  /**  */
+  bool isCloseTo(const Vec& A, const Vec& B,  T tol)
+  {
+    if(rsAbs(A.y-B.y) <= tol && rsAbs(A.x-B.x) <= tol)
+      return true;
+    return false;
+  }
+
+  /** Returns the expectation value for the observable M when the system is in state A. */
+  static T getExpectedMeasurement(const Mat<T>& M, const Vec<T>& A);
+  // needs implementation
+
+
+
+
+
+
+
+
+  static const T s;                // 1/sqrt(2)
+  static const std::complex<T> i;  // imaginary unit
+};
+
+template<class T> const T rsQuantumSpinFunctions<T>::s = T(1) / sqrt(T(2));
+template<class T> const std::complex<T> rsQuantumSpinFunctions<T>::i = std::complex<T>(0, 1);
+
+
+
+
+
+
+
 //=================================================================================================
 
 /** Implements a quantum system that describes the spin of a particle such as an electron. This is
@@ -59,10 +179,9 @@ public:
   these components specify a valid state. ...maybe do an assert... */
   rsQuantumSpin(const std::complex<T>& downAmplitude, const std::complex<T>& upAmplitude) 
   { 
-    y = upAmplitude;
     x = downAmplitude;
+    y = upAmplitude;
   }
-
 
   rsQuantumSpin(const rsVector2D<std::complex<T>>& v) 
   { 
@@ -153,28 +272,8 @@ public:
     return getSquaredNorm(A.getUpAmplitude()) + getSquaredNorm(A.getDownAmplitude()); // (1) Eq 2.4
   }
 
-
-
-  static std::complex<T> getDownAmplitude(const rsQuantumSpin& A)
-  { 
-    return A.x;
-    //rsQuantumSpin<T> d; d.prepareDownState(); return d*A; 
-  }
-  // this should just be x
-
-  /** Computes the up component of the given ket/state |A>. */
-  static std::complex<T> getUpAmplitude(const rsQuantumSpin& A)
-  {
-    return A.y;
-    //rsQuantumSpin u;
-    //u.prepareUpState();
-    //return u*A;         // (1), Eq 2.1
-  }
-  // can this be simplified? we could just call A.getUpComponent - actually, this function is 
-  // redundant...
-  // should just be y
-
-
+  static std::complex<T> getDownAmplitude(const rsQuantumSpin& A) { return A.x; }
+  static std::complex<T> getUpAmplitude(const rsQuantumSpin& A)   { return A.y; }
 
   // make similar functions for left,right,in,out components and a general
   // getStateComponent
@@ -270,14 +369,7 @@ public:
   T measureSpinY(rsNoiseGenerator<T>* prng);
 
 
-
 protected:
-
-  //std::complex<T> au; //, ad;  // probability amplitudes for "up" and "down" - maybe rename to u,d
-                           // coefficients for up and down spin basis vectors
-
-
-  //rsVector2D<std::complex<T>> v; // for transitioning v.x == ad, v.y == au
 
   static const T s;                // 1/sqrt(2)
   static const std::complex<T> i;  // imaginary unit
@@ -307,34 +399,6 @@ inline std::complex<T> operator*(const rsQuantumSpin<T>& B, const rsQuantumSpin<
 // maybe have rsBra, rsKet classes (maybe as subclasses of some rsRowVector, rsColumnVector 
 // classes)
 
-/** Adds two kets. */
-//template<class T>
-//inline rsQuantumSpin<T> operator+(const rsQuantumSpin<T>& A, const rsQuantumSpin<T>& B)
-//{
-//  return rsQuantumSpin<T>(A.getDownAmplitude() + B.getDownAmplitude(),
-//    A.getUpAmplitude()   + B.getUpAmplitude()                         );
-//}
-
-/** Subtracts two kets. */
-//template<class T>
-//inline rsQuantumSpin<T> operator-(const rsQuantumSpin<T>& A, const rsQuantumSpin<T>& B)
-//{
-//  return rsQuantumSpin<T>(A.getDownAmplitude() - B.getDownAmplitude(),
-//                          A.getUpAmplitude()   - B.getUpAmplitude()    );
-//}
-
-/** Multiplies a scalar and a ket. */
-//template<class T>
-//inline rsQuantumSpin<T> operator*(const std::complex<T>& z, const rsQuantumSpin<T>& A)
-//{
-//  return rsQuantumSpin<T>(z * A.getDownAmplitude(), z * A.getUpAmplitude());
-//}
-
-
-
-
-
-
 
 //=================================================================================================
 
@@ -357,12 +421,7 @@ Note that the act of setting the spin into an eigenstate of a measurement operat
 the same thing as forming the matrix-vector product like it is done with the first kind of 
 operator. Note also that it is only these measurements that involve setting the quantum state
 into a randomly chosen one. Operations of the first kind act deterministically on the state 
-consisting of the probability amplitudes.  
-
-maybe factor out a baseclass rsMatrix2x2 - or maybe represent spins and operators generally as
-rsVector2D and rsMatrix2x2 objects and all the functions and operatiions specific to quantum
-stuff should be implemented procedurally - yes - that sounds like a better idea
-*/
+consisting of the probability amplitudes.  */
 
 template<class T>
 class rsSpinOperator : public rsMatrix2x2<std::complex<T>> // maybe rename to rsQuantumSpinOperator
@@ -382,6 +441,9 @@ public:
     this->c = c;
     this->d = d;
   }
+ 
+  // can we inherit that constructor?
+  //using rsMatrix2x2<std::complex<T>>::rsMatrix2x2<std::complex<T>>; // inherit constructor
 
   static rsSpinOperator<T> pauliZ() { rsSpinOperator<T> z; z.setToPauliZ(); return z; }
   static rsSpinOperator<T> pauliX() { rsSpinOperator<T> x; x.setToPauliX(); return x; }
@@ -418,6 +480,9 @@ public:
   // when we modify the measureObservable function? try it! hmm nope
   // if we can get it to work with the new version, then we should be able to delete it as well and 
   // fall back to the inherited function
+  // ...but maybe instead of trying to fix that, it makes more sense to directly work with 
+  // rsVector2D and rsMatrix2x2  with a procedural interface
+
 
   /** Returns the second eigenvector of this operator. */
   rsQuantumSpin<T> eigenvector2() const
@@ -432,7 +497,6 @@ public:
   static T getExpectedMeasurement(const rsSpinOperator<T>& M, const rsQuantumSpin<T>& A);
 
 
-
   /** Applies this quantum spin operator to the given ket v and returns the resulting ket. */
   //rsQuantumSpin<T> operator*(const rsQuantumSpin<T>& v) const
   //{
@@ -444,18 +508,7 @@ public:
   //// should be inherited - but we use the elements of v in reverse order here - bad!
 
 
-
-  //std::complex<T> a, b, c, d; // matrix coefficients |a b|
-  //                            //                     |c d|
-  // todo: either use rsMatrix2x2 or derive from rsMatrix2x2
-
-
-  //rsMatrix2x2<std::complex<T>> M; // for transition/refactoring - later maybe derive from this class
-
 protected:
-
-
-
 
   static const std::complex<T> i;  // imaginary unit
 };
@@ -469,3 +522,7 @@ inline rsSpinOperator<T> operator*(const std::complex<T>& z, const rsSpinOperato
 {
   return rsSpinOperator<T>(z * A.a, z * A.b, z*A.c, z*A.d);
 }
+
+
+
+

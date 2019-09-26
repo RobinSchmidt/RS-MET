@@ -171,6 +171,11 @@ bool testMatrix2x2(std::string& reportString)
   C = A/B; testResult &= C == Mat( 3, -2, 2, -1);
   C = B/A; testResult &= C == Mat(-1,  2, -2, 3);
 
+  // no, let's tyr some complex matrices
+  typedef rsMatrix2x2<std::complex<double>>  MatC;
+
+
+
   return testResult;
 }
 
