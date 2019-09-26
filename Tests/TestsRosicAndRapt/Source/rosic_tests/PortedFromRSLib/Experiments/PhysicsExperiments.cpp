@@ -566,6 +566,11 @@ bool quantumSpinMeasurement()
     pass &= (r1 == r2);
   }
 
+
+
+
+
+
   // now do a similar test that ensures, that they operate on the same state:
   rsNoiseGenerator<double> prng1, prng2;
   prng1.setRange(0.0, 1.0);
@@ -765,14 +770,12 @@ bool quantumSpinMeasurement2()
   op.setValues(one, two, two, one);
   e1 = op.eigenvalue1(); pass &= e1 == -1.0;
   e2 = op.eigenvalue2(); pass &= e2 == +3.0;
-  E1 = op.eigenvector1(); // (1, 0)     -> wrong result
-  E2 = op.eigenvector2(); // (1,-1) * s
 
+  //E1 = op.eigenvector1(); // (1, 0)     -> wrong result
+  //E2 = op.eigenvector2(); // (1,-1) * s
+  //E1 = pauliZ.eigenvector1(); 
+  //E2 = pauliZ.eigenvector2();
 
-
-
-  E1 = pauliZ.eigenvector1(); 
-  E2 = pauliZ.eigenvector2();
 
   // test spin measurements via Pauli matrices:
   QF::prepareDownState(A);
@@ -829,6 +832,33 @@ bool quantumSpinMeasurement2()
   p = QF::measureSpinY(A, &prng);    pass &= p == +1.0;
   p = QF::measureSpinY(A, &prng);    pass &= p == +1.0;
   P = QF::getStateProbability(A, i); pass &= isCloseTo(P, 1.0, tol);
+
+
+  // test with random states, if matrix based and dedicated function based measurements do the
+  // same thing:
+  int n;
+  int N = 1000;
+  rsNoiseGenerator<double> prng1, prng2;
+  prng1.setRange(0.0, 1.0);
+  prng1.reset();
+  prng2.setRange(0.0, 1.0);
+  prng2.reset();
+  for(n = 0; n < N; n++)
+  {
+    QF::randomizeState(B, &prng);
+
+    A = B; r1 = QF::measureObservable(A, pauliZ, &prng1);
+    A = B; r2 = QF::measureSpinZ(A, &prng2);
+    pass &= (r1 == r2);
+
+    A = B; r1 = QF::measureObservable(A, pauliX, &prng1);
+    A = B; r2 = QF::measureSpinX(A, &prng2);
+    pass &= (r1 == r2);
+
+    A = B; r1 = QF::measureObservable(A, pauliY, &prng1);
+    A = B; r2 = QF::measureSpinY(A, &prng2);
+    pass &= (r1 == r2);
+  }
 
 
 
