@@ -330,10 +330,24 @@ class rsSpinOperator // maybe rename to rsQuantumSpinOperator
 
 public:
 
+  /** Stadard constructor. You can pass the matrix elements. if you pass nothing, an identity 
+  matrix will be created. */
+  rsSpinOperator(std::complex<T> a = T(1), 
+                 std::complex<T> b = T(0), 
+                 std::complex<T> c = T(0), 
+                 std::complex<T> d = T(1))
+  {
+    this->a = a;
+    this->b = b;
+    this->c = c;
+    this->d = d;
+  }
 
   static rsSpinOperator<T> pauliZ() { rsSpinOperator<T> z; z.setToPauliZ(); return z; }
   static rsSpinOperator<T> pauliX() { rsSpinOperator<T> x; x.setToPauliX(); return x; }
   static rsSpinOperator<T> pauliY() { rsSpinOperator<T> y; y.setToPauliZ(); return y; }
+  // (1) says (on page 80 in the footnote) that these Pauli matrices together with the identity 
+  // matrix are the quaternions - figure out what that means
 
 
   /** \name Setup */
@@ -399,12 +413,12 @@ public:
 
 
 
-
+  std::complex<T> a, b, c, d; // matrix coefficients |a b|
+                              //                     |c d|
 
 protected:
 
-  std::complex<T> a, b, c, d; // matrix coefficients |a b|
-                              //                     |c d|
+
 
 
   static const std::complex<T> i;  // imaginary unit
@@ -412,3 +426,10 @@ protected:
 
 template<class T>
 const std::complex<T> rsSpinOperator<T>::i = std::complex<T>(0, 1);
+
+/** Multiplies a scalar and an operator. */
+template<class T>
+inline rsSpinOperator<T> operator*(const std::complex<T>& z, const rsSpinOperator<T>& A)
+{
+  return rsSpinOperator<T>(z * A.a, z * A.b, z*A.c, z*A.d);
+}

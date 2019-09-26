@@ -288,7 +288,7 @@ inline bool isCloseTo(TArg x, TArg y, TTol tol)
 }
 // move to rapt
 
-bool quantumSpin()
+bool quantumSpinMeasurement()
 {
   // This should be turned into a unit test...
 
@@ -420,18 +420,12 @@ bool quantumSpin()
 
 
 
-
-
   double r1, r2; // results of 1st and 2nd measurement
 
   // test:
-  A = r; prng.reset(); r1 = A.measureObservable(pauliZ, &prng);
-  A = r; prng.reset(); r2 = A.measureSpinZ(&prng);
+  //A = r; prng.reset(); r1 = A.measureObservable(pauliZ, &prng);
+  //A = r; prng.reset(); r2 = A.measureSpinZ(&prng);
   // r1 = -1. r2 = +1
-
-
-
-
 
   // test spin measurements via Pauli matrices:
   A.prepareDownState();
@@ -605,12 +599,18 @@ bool quantumSpin()
   // Ex = 0.8 and Ey = 0 - maybe try to compute these manually
 
 
- 
 
-
-
-
+  // OK - states and measurements (chapters 2, 3) are done and seem to work
+  // next: evolution of states, i.e. applying unitary operators to modify a state
   // todo: implement quantum gates (and, or, Hadamard, cnot, toffoli)
+
+  // structure the tests:
+  // 1: states, probabilities
+  // 2: measurements
+  // 3: state evolution
+  // 4: entanglement
+
+
   // this here:
   // https://www.youtube.com/watch?v=ZN0lhYU1f5Q
   // says: measure, hadamard, phase, T (rotate |1> by pi/4), cnot
@@ -624,18 +624,57 @@ bool quantumSpin()
 
   // todo: maybe use float instead of double
 }
-// Notes:
-// I think, the relationship to what is called the "wavefunction" in quantum mechanics is as 
-// follows: The wavefunction is in general some function from a set S into the complex numbers. 
-// For position and momentum of a particle, that set S is the set of real numbers R (for 1D) or 
-// R^2 or R^3 for 2D and 3D space. In our case, the set S is just S = { up, down } - which can be
-// renamed to S = { 0, 1 } or S = { |0>, |1> } to get the common qubit noation. The "collapse of 
-// the wavefunction" occurs when we assign the pure up/down states in the measurement operation. In
-// a general state, both of these pure states have a complex number associated with them - the 
-// "probability amplitude" - and the square of its magnitude gives the actual probability. When the
-// wavefunctions is collapsed due to a measurement one the values becomes 1 and the other 0 - it 
-// becomes a delta distribution - although its spikey nature is not really obvious in this simple 
-// case where we have only two possible input values into the function.
+
+
+
+bool quantumSpinEvolution()
+{
+  bool pass = true;   // move to unit tests
+
+  typedef rsQuantumSpin<double>  QS;
+  typedef rsSpinOperator<double> QSO;
+  typedef std::complex<double> Complex;
+
+  double w    = 1;
+  double hBar = 1; // we use https://en.wikipedia.org/wiki/Planck_units
+
+  // set up the random number generator to be used for measurements:
+  rsNoiseGenerator<double> prng;
+  prng.setRange(0.0, 1.0);
+
+  // Create an initial spin state:
+  QS Psi;
+  Psi.prepareRightState();
+  Psi.randomizeState(&prng);
+
+  // Define the Hamiltonian (Eq 4.23):
+  QSO H;
+  H.setToPauliZ();
+  H = Complex(hBar*w/2) * H;
+
+
+  Complex i(0, 1);  // imaginary unit
+
+  int n, N = 1000;
+  double step = 0.01;             // integration step size
+  Complex cStep = Complex(step);  // ...needs to be complexified 
+  for(n = 0; n < N; n++)
+  {
+    QS dPsi = -i * H * Psi;   // (1) Eq 4.9 (time dependent Schrödinger equation)
+    Psi = Psi + cStep * dPsi; // forward Euler step
+
+    // todo: record the state and plot state trajectory
+
+  }
+
+
+
+
+
+
+
+  return pass;
+}
 
 
 void tennisRacket()

@@ -6,7 +6,8 @@ void doublePendulum();
 void heatEquation1D();
 void particleForceDistanceLaw();
 void particleSystem();
-bool quantumSpin();     // move to unit tests
+bool quantumSpinMeasurement();     // move to unit tests
+bool quantumSpinEvolution();
 void tennisRacket();
 void tennisRacket2();
 void tennisRacket3();

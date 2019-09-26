@@ -103,7 +103,8 @@ int main(int argc, char* argv[])
   //heatEquation1D();
   //particleForceDistanceLaw();
   //particleSystem();
-  quantumSpin();
+  quantumSpinMeasurement();
+  quantumSpinEvolution();
   //tennisRacket();
   //tennisRacket2();
   //tennisRacket3();

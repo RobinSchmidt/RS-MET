@@ -125,3 +125,28 @@ T rsSpinOperator<T>::getExpectedMeasurement(
 
 // todo: make a function that computes the two angles that describe the state as point on
 // the Bloch sphere https://en.wikipedia.org/wiki/Bloch_sphere
+
+
+
+
+
+//=================================================================================================
+/*                            Background Information
+
+
+
+Notes:
+I think, the relationship to what is called the "wavefunction" in quantum mechanics is as 
+follows: The wavefunction is in general some function from a set S into the complex numbers. 
+For position and momentum of a particle, that set S is the set of real numbers R (for 1D) or 
+R^2 or R^3 for 2D and 3D space. In our case, the set S is just S = { up, down } - which can be
+renamed to S = { 0, 1 } or S = { |0>, |1> } to get the common qubit noation. The "collapse of 
+the wavefunction" occurs when we assign the pure up/down states in the measurement operation. In
+a general state, both of these pure states have a complex number associated with them - the 
+"probability amplitude" - and the square of its magnitude gives the actual probability. When the
+wavefunctions is collapsed due to a measurement one the values becomes 1 and the other 0 - it 
+becomes a delta distribution - although its spikey nature is not really obvious in this simple 
+case where we have only two possible input values into the function.
+
+
+*/
