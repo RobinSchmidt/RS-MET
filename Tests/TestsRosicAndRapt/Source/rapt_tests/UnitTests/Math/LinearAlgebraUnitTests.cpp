@@ -171,6 +171,9 @@ bool testMatrix2x2(std::string& reportString)
   C = A/B; testResult &= C == Mat( 3, -2, 2, -1);
   C = B/A; testResult &= C == Mat(-1,  2, -2, 3);
 
+
+
+  /*
   // no, let's try some complex matrices
   typedef std::complex<double> Cmplx;
   typedef rsMatrix2x2<Cmplx>   MatC;
@@ -199,6 +202,7 @@ bool testMatrix2x2(std::string& reportString)
   // what? actually sage says that (0,1) belongs to +1 and (1,0) belongs to -1 indeed:
   //A = matrix([[1, 0], [0, -1]])
   //A.eigenvectors_right()
+  */
 
   return testResult;
 }

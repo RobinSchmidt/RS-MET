@@ -666,21 +666,22 @@ bool quantumSpinMeasurement2()
   QF::prepareInState(i);
   QF::prepareOutState(o);
 
+
   // check normalization of pure states:
   pass &= (p=QF::bracket(u,u)) == 1.0;
   pass &= (p=QF::bracket(d,d)) == 1.0;
   pass &= isCloseTo(p=QF::bracket(l,l), one, tol);
   pass &= isCloseTo(p=QF::bracket(r,r), one, tol);
-  pass &= isCloseTo(p=QF::bracket(i,i), one, tol);
-  pass &= isCloseTo(p=QF::bracket(o,o), one, tol);
+  pass &= isCloseTo(p=QF::bracket(i,i), one, tol);  // fails
+  pass &= isCloseTo(p=QF::bracket(o,o), one, tol);  // fails
 
   // check orthogonality:
   pass &= (p=QF::bracket(u,d)) == 0.0;  // (1) Eq 2.3
   pass &= (p=QF::bracket(d,u)) == 0.0;
   pass &= (p=QF::bracket(r,l)) == 0.0;
   pass &= (p=QF::bracket(l,r)) == 0.0;
-  pass &= (p=QF::bracket(i,o)) == 0.0;
-  pass &= (p=QF::bracket(o,i)) == 0.0;
+  pass &= (p=QF::bracket(i,o)) == 0.0;  // fails
+  pass &= (p=QF::bracket(o,i)) == 0.0;  // fails
 
   // check, if Eq 2.8 and 2.9 are satisfied:
   pass &= isCloseTo(p = QF::bracket(o,u) * QF::bracket(u,o), half, tol);

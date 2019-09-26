@@ -27,12 +27,21 @@ public:
   static Vec in()    { rsQuantumSpin<T> s; s.prepareInState();    return s; }
   static Vec out()   { rsQuantumSpin<T> s; s.prepareOutState();   return s; }
 
-  static void prepareDownState(Vec& A)  { A.x =  1;   A.y = 0;  }  // wrong! see 2.11
-  static void prepareUpState(Vec& A)    { A.x =  0;   A.y = 1;  }  // dito - 2.12
-  static void prepareLeftState(Vec& A)  { A.x = -s;   A.y = s;  }  // (1) Eq 2.6
-  static void prepareRightState(Vec& A) { A.x =  s;   A.y = s;  }  // (1) Eq 2.5
-  static void prepareOutState(Vec& A)   { A.x = -s*i; A.y = s;  }  // (1) Eq 2.10
-  static void prepareInState(Vec& A)    { A.x =  s*i; A.y = s;  }  // (1) Eq 2.10
+  //static void prepareDownState(Vec& A)  { A.x =  1;   A.y = 0;  }  // wrong! see 2.11
+  //static void prepareUpState(Vec& A)    { A.x =  0;   A.y = 1;  }  // dito - 2.12
+  //static void prepareLeftState(Vec& A)  { A.x = -s;   A.y = s;  }  // (1) Eq 2.6
+  //static void prepareRightState(Vec& A) { A.x =  s;   A.y = s;  }  // (1) Eq 2.5
+  //static void prepareOutState(Vec& A)   { A.x = -s*i; A.y = s;  }  // (1) Eq 2.10
+  //static void prepareInState(Vec& A)    { A.x =  s*i; A.y = s;  }  // (1) Eq 2.10
+
+  static void prepareUpState(   Vec& A) { A.x = 1; A.y =  0;   }  // (1) Eq 2.11
+  static void prepareDownState( Vec& A) { A.x = 0; A.y =  1;   }  // (1) Eq 2.12
+  static void prepareRightState(Vec& A) { A.x = s; A.y =  s;   }  // (1) Eq 2.5
+  static void prepareLeftState( Vec& A) { A.x = s; A.y = -s;   }  // (1) Eq 2.6
+  static void prepareInState(   Vec& A) { A.x = s; A.y =  s*i; }  // (1) Eq 2.10
+  static void prepareOutState(  Vec& A) { A.x = s; A.y = -s*i; }  // (1) Eq 2.10
+
+
 
    /** Normalizes the state such that the total probability is unity - which it must be for a valid 
   state. */
@@ -73,7 +82,7 @@ public:
   /** Computes the "bracket" <A|B> of two "ket" vectors A,B. The left "ket" is converted into a 
   "bra" vector first (by complex conjugation and transposition). */
   static std::complex<T> bracket(const Vec& A, const Vec& B) 
-  { return conj(A.x) * B.x + (A.y) * B.y; }
+  { return conj(A.x) * B.x + conj(A.y) * B.y; }
 
 
   static std::complex<T> getDownAmplitude(const Vec& A) { return A.x; }
