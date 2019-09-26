@@ -57,7 +57,7 @@ public:
 
   /** Constructor to create a spin object with given up and down components. It does not verify, if
   these components specify a valid state. ...maybe do an assert... */
-  rsQuantumSpin(const std::complex<T>& upAmplitude, const std::complex<T>& downAmplitude) 
+  rsQuantumSpin(const std::complex<T>& downAmplitude, const std::complex<T>& upAmplitude) 
   { 
     y = upAmplitude;
     x = downAmplitude;
@@ -305,23 +305,26 @@ inline std::complex<T> operator*(const rsQuantumSpin<T>& B, const rsQuantumSpin<
 template<class T>
 inline rsQuantumSpin<T> operator+(const rsQuantumSpin<T>& A, const rsQuantumSpin<T>& B)
 {
-  return rsQuantumSpin<T>(A.getUpAmplitude()   + B.getUpAmplitude(), 
-                          A.getDownAmplitude() + B.getDownAmplitude() );
+  return rsQuantumSpin<T>(A.getDownAmplitude() + B.getDownAmplitude(),
+    A.getUpAmplitude()   + B.getUpAmplitude()                         );
 }
 
 /** Subtracts two kets. */
 template<class T>
 inline rsQuantumSpin<T> operator-(const rsQuantumSpin<T>& A, const rsQuantumSpin<T>& B)
 {
-  return rsQuantumSpin<T>(A.getUpAmplitude()   - B.getUpAmplitude(), 
-                          A.getDownAmplitude() - B.getDownAmplitude() );
+  return rsQuantumSpin<T>(
+                          A.getDownAmplitude() - B.getDownAmplitude() ,
+    A.getUpAmplitude()   - B.getUpAmplitude()
+
+    );
 }
 
 /** Multiplies a scalar and a ket. */
 template<class T>
 inline rsQuantumSpin<T> operator*(const std::complex<T>& z, const rsQuantumSpin<T>& A)
 {
-  return rsQuantumSpin<T>(z * A.getUpAmplitude(), z * A.getDownAmplitude());
+  return rsQuantumSpin<T>(z * A.getDownAmplitude(), z * A.getUpAmplitude());
 }
 
 
@@ -418,7 +421,7 @@ public:
   {
     std::complex<T> vx, vy;
     RAPT::rsLinearAlgebra::eigenvector2x2_1(a, b, c, d, &vx, &vy, true);
-    return rsQuantumSpin<T>(vx, vy);
+    return rsQuantumSpin<T>(vy, vx);
   }
   // try to get rid - shoudl be inherited
 
@@ -427,7 +430,7 @@ public:
   {
     std::complex<T> vx, vy;
     RAPT::rsLinearAlgebra::eigenvector2x2_2(a, b, c, d, &vx, &vy, true);
-    return rsQuantumSpin<T>(vx, vy);
+    return rsQuantumSpin<T>(vy, vx);
   }
 
   /** Returns the expectation value for the observable M when the system is in state A. */
