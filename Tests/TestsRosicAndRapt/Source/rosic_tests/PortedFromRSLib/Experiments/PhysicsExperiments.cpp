@@ -485,8 +485,6 @@ bool quantumSpin()
   p = A.measureSpinX(&prng);         pass &= p == +1.0;
   P = QS::getStateProbability(A, r); pass &= isCloseTo(P, 1.0, tol);
 
-
-
   A.prepareOutState();
   p = A.measureSpinY(&prng);         pass &= p == -1.0;
   p = A.measureSpinY(&prng);         pass &= p == -1.0;
@@ -496,13 +494,6 @@ bool quantumSpin()
   p = A.measureSpinY(&prng);         pass &= p == +1.0;
   p = A.measureSpinY(&prng);         pass &= p == +1.0;
   P = QS::getStateProbability(A, i); pass &= isCloseTo(P, 1.0, tol);
-
-
-
-
-
-
-
 
 
   // now, do some actual measurements:
@@ -533,13 +524,12 @@ bool quantumSpin()
     spins2[n] = r1;
   }
   double mean2 = rsMean(spins2);
-  rsPlotVectors(spins1, spins2); // are inverted - why?
+  //rsPlotVectors(spins1, spins2);
 
-
-
+  // now test, if the matrix-based and dedicated function based measurements give the same results
+  // (note that they operate on different states because the first measurement alters the state):
   prng.reset();
   for(n = 0; n < N; n++) {
-
     A.randomizeState(&prng);
     r1 = A.measureObservable(pauliZ, &prng);
     r2 = A.measureSpinZ(&prng);
@@ -571,7 +561,31 @@ bool quantumSpin()
     pass &= (r1 == r2);
   }
 
+  // now do a similar test that ensures, that they operate on the same state:
+  rsNoiseGenerator<double> prng1, prng2;
+  prng1.setRange(0.0, 1.0);
+  prng1.reset();
+  prng2.setRange(0.0, 1.0);
+  prng2.reset();
+  for(n = 0; n < N; n++)
+  {
+    B.randomizeState(&prng);
 
+    A = B; r1 = A.measureObservable(pauliZ, &prng1);
+    A = B; r2 = A.measureSpinZ(&prng2);
+    pass &= (r1 == r2);
+
+    A = B; r1 = A.measureObservable(pauliX, &prng1);
+    A = B; r2 = A.measureSpinX(&prng2);
+    pass &= (r1 == r2);
+
+    A = B; r1 = A.measureObservable(pauliY, &prng1);
+    A = B; r2 = A.measureSpinY(&prng2);
+    pass &= (r1 == r2);
+  }
+
+  // todo: test, if the statistical distribution is as desired - set it into a state
+  // au = sqrt(0.8), ad = sqrt(0.2) - we should see roughly 80% "up" measurements and 20% down
  
 
   // todo: implement quantum gates (and, or, Hadamard, cnot, toffoli)
