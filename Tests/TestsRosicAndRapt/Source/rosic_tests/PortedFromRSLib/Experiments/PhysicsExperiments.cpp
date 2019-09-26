@@ -648,6 +648,12 @@ bool quantumSpinMeasurement2()
   typedef rsMatrix2x2<std::complex<double>> Mat;
   typedef rsNoiseGenerator<double> PRNG;
 
+  // some work variables:
+  std::complex<double> p; // for inner products
+  double P;               // for probabilities
+  double tol = 1.e-13;    // tolerance for rounding errors
+  std::complex<double> one(1,0), zero(0,0), two(2,0), half(.5,0), s(1/sqrt(2.0),0);
+
   // create some qubits in pure states:
   Vec u, d, l, r, i, o; // maybe use capital letters
   QF::prepareUpState(u);
@@ -656,13 +662,6 @@ bool quantumSpinMeasurement2()
   QF::prepareRightState(r);
   QF::prepareInState(i);
   QF::prepareOutState(o);
-
-  // some work variables:
-  std::complex<double> p; // for inner products
-  double P;               // for probabilities
-  double tol = 1.e-13;    // tolerance for rounding errors
-  std::complex<double> one(1,0), zero(0,0), two(2,0), half(.5,0), s(1/sqrt(2.0),0);
-
 
   // check normalization of pure states:
   pass &= (p=QF::bracket(u,u)) == 1.0;
@@ -679,6 +678,42 @@ bool quantumSpinMeasurement2()
   pass &= (p=QF::bracket(l,r)) == 0.0;
   pass &= (p=QF::bracket(i,o)) == 0.0;
   pass &= (p=QF::bracket(o,i)) == 0.0;
+
+  // check, if Eq 2.8 and 2.9 are satisfied:
+  pass &= isCloseTo(p = QF::bracket(o,u) * QF::bracket(u,o), half, tol);
+  pass &= isCloseTo(p = QF::bracket(o,d) * QF::bracket(d,o), half, tol);
+  pass &= isCloseTo(p = QF::bracket(i,u) * QF::bracket(u,i), half, tol);
+  pass &= isCloseTo(p = QF::bracket(i,d) * QF::bracket(d,i), half, tol);
+  pass &= isCloseTo(p = QF::bracket(o,r) * QF::bracket(r,o), half, tol);
+  pass &= isCloseTo(p = QF::bracket(o,l) * QF::bracket(l,o), half, tol);
+  pass &= isCloseTo(p = QF::bracket(i,r) * QF::bracket(r,i), half, tol);
+  pass &= isCloseTo(p = QF::bracket(i,l) * QF::bracket(l,i), half, tol);
+
+  // check up-spin probabilities of the various pure spin states:
+  pass &= isCloseTo(P = QF::getUpProbability(u), 1.0, tol); // pure up-spin   has P(up) = 1
+  pass &= isCloseTo(P = QF::getUpProbability(d), 0.0, tol); // pure down-spin has P(up) = 0
+  pass &= isCloseTo(P = QF::getUpProbability(r), 0.5, tol); // all other pure spin states (left, 
+  pass &= isCloseTo(P = QF::getUpProbability(l), 0.5, tol); // right, in, out) have up-spin 
+  pass &= isCloseTo(P = QF::getUpProbability(i), 0.5, tol); // probability of 1/2
+  pass &= isCloseTo(P = QF::getUpProbability(o), 0.5, tol);
+
+  pass &= isCloseTo(P = QF::getRightProbability(u), 0.5, tol);
+  pass &= isCloseTo(P = QF::getRightProbability(d), 0.5, tol);
+  pass &= isCloseTo(P = QF::getRightProbability(r), 1.0, tol);
+  pass &= isCloseTo(P = QF::getRightProbability(l), 0.0, tol);
+  pass &= isCloseTo(P = QF::getRightProbability(i), 0.5, tol);
+  pass &= isCloseTo(P = QF::getRightProbability(o), 0.5, tol);
+
+  pass &= isCloseTo(P = QF::getInProbability(u), 0.5, tol);
+  pass &= isCloseTo(P = QF::getInProbability(d), 0.5, tol);
+  pass &= isCloseTo(P = QF::getInProbability(r), 0.5, tol);
+  pass &= isCloseTo(P = QF::getInProbability(l), 0.5, tol);
+  pass &= isCloseTo(P = QF::getInProbability(i), 1.0, tol);
+  pass &= isCloseTo(P = QF::getInProbability(o), 0.0, tol);
+
+
+
+
 
 
   rsAssert(pass);
