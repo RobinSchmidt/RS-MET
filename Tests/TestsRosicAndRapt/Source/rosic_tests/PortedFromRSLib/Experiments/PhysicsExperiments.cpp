@@ -395,26 +395,26 @@ bool quantumSpinMeasurement()
   pauliY.setToPauliY();
   pauliX.setToPauliX();
 
-  p = pauliZ.getEigenvalue1();  pass &= p == -1.0;
-  p = pauliZ.getEigenvalue2();  pass &= p == +1.0;
+  p = pauliZ.eigenvalue1();  pass &= p == -1.0;
+  p = pauliZ.eigenvalue2();  pass &= p == +1.0;
   A = pauliZ.getEigenvector1(); pass &= A.isCloseTo(d, tol); // "down"
   A = pauliZ.getEigenvector2(); pass &= A.isCloseTo(u, tol); // "up"
 
-  p = pauliX.getEigenvalue1();  pass &= p == -1.0;
-  p = pauliX.getEigenvalue2();  pass &= p == +1.0;
+  p = pauliX.eigenvalue1();  pass &= p == -1.0;
+  p = pauliX.eigenvalue2();  pass &= p == +1.0;
   A = pauliX.getEigenvector1(); pass &= A.isCloseTo(l, tol); // "left" - wrong - not normalized
   A = pauliX.getEigenvector2(); pass &= A.isCloseTo(r, tol); // "right"
 
-  p = pauliY.getEigenvalue1();  pass &= p == -1.0;
-  p = pauliY.getEigenvalue2();  pass &= p == +1.0;
+  p = pauliY.eigenvalue1();  pass &= p == -1.0;
+  p = pauliY.eigenvalue2();  pass &= p == +1.0;
   A = pauliY.getEigenvector1(); pass &= A.isCloseTo(o, tol); // "out"
   A = pauliY.getEigenvector2(); pass &= A.isCloseTo(i, tol); // "in"
 
   // test eigenvalue and eigenvector compuation:
   QSO op;
   op.setValues(one, two, two, one);
-  std::complex<double> e1 = op.getEigenvalue1(); pass &= e1 == -1.0;
-  std::complex<double> e2 = op.getEigenvalue2(); pass &= e2 == +3.0;
+  std::complex<double> e1 = op.eigenvalue1(); pass &= e1 == -1.0;
+  std::complex<double> e2 = op.eigenvalue2(); pass &= e2 == +3.0;
   QS E1 = op.getEigenvector1(); // (1, 0)     -> wrong result
   QS E2 = op.getEigenvector2(); // (1,-1) * s
 

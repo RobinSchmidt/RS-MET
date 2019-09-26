@@ -271,7 +271,7 @@ template<class T>
 inline std::complex<T> operator*(const rsQuantumSpin<T>& B, const rsQuantumSpin<T>& A)
 {
   return conj(B.getUpComponent())   * A.getUpComponent() 
-       + conj(B.getDownComponent()) * A.getDownComponent(); // (1), page 20 ff
+       + conj(B.getDownComponent()) * A.getDownComponent(); // (1), page 30 ff
 }
 // 
 // interchanging arguments leads to complex conjugation of the result
@@ -365,10 +365,10 @@ public:
 
   /** \name Setup */
 
-  void setValues(std::complex<T> a, std::complex<T> b, std::complex<T> c, std::complex<T> d)
-  {
-    this->a = a; this->b = b; this->c = c; this->d = d;
-  }
+  //void setValues(std::complex<T> a, std::complex<T> b, std::complex<T> c, std::complex<T> d)
+  //{
+  //  this->a = a; this->b = b; this->c = c; this->d = d;
+  //}
 
   /** Measurement operator for spin along the z-axis. Returns +1 for up, -1 for down. */
   void setToPauliZ() { a = T(1); b = T(0); c = T(0); d = T(-1); }
@@ -387,10 +387,10 @@ public:
   //std::complex<T> getEigenvalue2() const { return rsEigenvalue2x2_2(a, b, c, d); }
 
   /** Returns the first eigenvalue of this operator. */
-  std::complex<T> getEigenvalue1() const { return RAPT::rsLinearAlgebra::eigenvalue2x2_1(a, b, c, d); }
+  //std::complex<T> getEigenvalue1() const { return RAPT::rsLinearAlgebra::eigenvalue2x2_1(a, b, c, d); }
 
   /** Returns the second eigenvalue of this operator. */
-  std::complex<T> getEigenvalue2() const { return RAPT::rsLinearAlgebra::eigenvalue2x2_2(a, b, c, d); }
+  //std::complex<T> getEigenvalue2() const { return RAPT::rsLinearAlgebra::eigenvalue2x2_2(a, b, c, d); }
 
   /** Returns the first eigenvector of this operator. */
   rsQuantumSpin<T> getEigenvector1() const

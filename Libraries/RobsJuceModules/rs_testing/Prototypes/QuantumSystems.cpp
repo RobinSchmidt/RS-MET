@@ -33,12 +33,12 @@ T rsQuantumSpin<T>::measureObservable(const rsSpinOperator<T>& M, rsNoiseGenerat
   if(rnd <= P1) { // should it be <= or < ?
     //T P2 = getStateProbability(*this, M.getEigenvector2()); // should be 1-P1
     setState(E1);
-    return M.getEigenvalue1().real(); // is real if M is Hermitian
+    return M.eigenvalue1().real(); // is real if M is Hermitian
   }
   else {
     rsQuantumSpin<T> E2 = M.getEigenvector2();
     setState(E2);
-    return M.getEigenvalue2().real(); // is real if M is Hermitian
+    return M.eigenvalue2().real(); // is real if M is Hermitian
   }
 }
 // in general, we'll have an NxN matrix and the probability to be in state k is given by
