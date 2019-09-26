@@ -119,7 +119,13 @@ void rsLinearAlgebra::eigenvector2x2_1(T a, T b, T c, T d, T* vx, T* vy, bool no
       *vy = T(1); }
   }
 }
-// ...needs tests with complex numbers
+// ...needs tests with complex numbers - what if the function is called with real inputs but the 
+// matrix has complex eigenvalues - we will get a negative number in the sqrt - maybe we should 
+// use something like:
+// d = eigenDiscriminant2x2(a,b,c,d);
+// *vy = T(-0.5) * (a - d + sqrt(max(d,0)) ) / b; 
+// ..in this case, it would return the real part of the complex eigenvalue which would be 
+// consistent with rsPolynomial::rootsQuadraticReal
 
 template<class T>
 void rsLinearAlgebra::eigenvector2x2_2(T a, T b, T c, T d, T* vx, T* vy, bool normalize)

@@ -14,8 +14,6 @@ class rsLinearAlgebra
 public:
 
 
-
-
   /** Solves the 2x2 system A*x = y where A is a 2x2 matrix and x, y are 2-dimensional vectors. The
   result is returned in x, the other parameters will not be modified. */
   template<class T>
@@ -29,24 +27,26 @@ public:
     // todo: check, if this is the right form of const-ness
     // rename to solve3x3
 
-
-
+  /** Computes the first eigenvalue of the matrix [[a,b],[c,d]] where "first" means the one with 
+  the minus-sign in the term under the square-root in the formula. For real eigenvalues, this is
+  the smaller of the two. If a matrix with real coefficients has complex eigenvalues ... it 
+  currently doesn't work (encounters a sqrt of a negative number...todo: maybe return the real part
+  of the result) */
   template<class T>
   static T eigenvalue2x2_1(T a, T b, T c, T d);
 
+  /** Computes the second eigenvalue of the matrix [[a,b],[c,d]]. */
   template<class T>
   static T eigenvalue2x2_2(T a, T b, T c, T d);
 
+  /** Computes the first eigenvector of the matrix [[a,b],[c,d]] and stores the result in vx, vy. 
+  It may optionally normalize the the result to unit length. */
   template<class T>
   static void eigenvector2x2_1(T a, T b, T c, T d, T* vx, T* vy, bool normalize = true);
-  // use pointers for output variables
 
+  /** Computes the second eigenvector of the matrix [[a,b],[c,d]] */
   template<class T>
   static void eigenvector2x2_2(T a, T b, T c, T d, T* vx, T* vy, bool normalize = true);
-
-
-
-
 
   /** Solves the linear system of equations:
   \f[ a_{00}x_0      + a_{01}x_1      + \ldots + a_{0 (N-1)}    x_{N-1} &= b_0      \f] 
