@@ -498,7 +498,7 @@ bool quantumSpin()
 
   // now, do some actual measurements:
 
-  int N = 100;   // number of measurements to take
+  int N = 1000;   // number of measurements to take
   std::vector<double> spins1(N);
   int n;
   prng.reset();
@@ -584,8 +584,15 @@ bool quantumSpin()
     pass &= (r1 == r2);
   }
 
-  // todo: test, if the statistical distribution is as desired - set it into a state
-  // au = sqrt(0.8), ad = sqrt(0.2) - we should see roughly 80% "up" measurements and 20% down
+  // test, if the statistical distribution is as desired - set it into a state
+  // au = sqrt(0.8), ad = sqrt(0.2) - we should see roughly 80% "up" measurements and 20% "down"
+  B.setState(std::complex<double>(sqrt(0.8), 0), std::complex<double>(sqrt(0.2), 0));
+  for(n = 0; n < N; n++) {
+    A = B;
+    spins1[n] = A.measureSpinZ(&prng);
+  }
+  mean1 = rsMean(spins1);
+  P = (mean1+1)/2;  // -1..+1 -> 0..1  P = 0.788 (with N=1000) - close enough to 0.8
  
 
   // todo: implement quantum gates (and, or, Hadamard, cnot, toffoli)
