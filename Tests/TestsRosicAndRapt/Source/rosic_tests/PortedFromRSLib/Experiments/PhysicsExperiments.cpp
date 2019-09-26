@@ -696,6 +696,9 @@ bool quantumSpinMeasurement2()
   // check up-spin probabilities of the various pure spin states:
   pass &= isCloseTo(P = QF::getUpProbability(u), 1.0, tol); // pure up-spin   has P(up) = 1
   pass &= isCloseTo(P = QF::getUpProbability(d), 0.0, tol); // pure down-spin has P(up) = 0
+  // these two fail
+
+
   pass &= isCloseTo(P = QF::getUpProbability(r), 0.5, tol); // all other pure spin states (left, 
   pass &= isCloseTo(P = QF::getUpProbability(l), 0.5, tol); // right, in, out) have up-spin 
   pass &= isCloseTo(P = QF::getUpProbability(i), 0.5, tol); // probability of 1/2

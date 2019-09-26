@@ -20,12 +20,12 @@ public:
   /** \name State setup */
 
   // pure state creation functions:
-  static Vec up()    { rsQuantumSpin<T> s; s.prepareUpState();    return s; }
-  static Vec down()  { rsQuantumSpin<T> s; s.prepareDownState();  return s; }
-  static Vec right() { rsQuantumSpin<T> s; s.prepareRightState(); return s; }
-  static Vec left()  { rsQuantumSpin<T> s; s.prepareLeftState();  return s; }
-  static Vec in()    { rsQuantumSpin<T> s; s.prepareInState();    return s; }
-  static Vec out()   { rsQuantumSpin<T> s; s.prepareOutState();   return s; }
+  static Vec up()    { Vec s; prepareUpState(s);    return s; }
+  static Vec down()  { Vec s; prepareDownState(s);  return s; }
+  static Vec right() { Vec s; prepareRightState(s); return s; }
+  static Vec left()  { Vec s; prepareLeftState(s);  return s; }
+  static Vec in()    { Vec s; prepareInState(s);    return s; }
+  static Vec out()   { Vec s; prepareOutState(s);   return s; }
 
   //static void prepareDownState(Vec& A)  { A.x =  1;   A.y = 0;  }  // wrong! see 2.11
   //static void prepareUpState(Vec& A)    { A.x =  0;   A.y = 1;  }  // dito - 2.12
