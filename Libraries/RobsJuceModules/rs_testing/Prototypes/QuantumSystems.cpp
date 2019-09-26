@@ -61,8 +61,13 @@ T rsQuantumSpinFunctions<T>::measureObservable(Vec& A, const Mat& M, rsNoiseGene
 // rnd in 0.7..1.0 (and return eigenvalue e1, e1 or e3 respectively) - it's probably a good idea
 // to pass precomputed eigenvalues and -vectors into such a N-dimensional measurement function
 
-
-
+template<class T>
+T rsQuantumSpinFunctions<T>::measureSpin(Vec& A, T nx, T ny, T nz, rsNoiseGenerator<T>* prng)
+{
+  Mat M;
+  M.setValues(nz, nx-i*ny, nx+i*ny, -nz); // (1) Eq 3.23
+  return measureObservable(A, M, prng);
+}
 
 template<class T>
 T rsQuantumSpinFunctions<T>::measureSpinZ(Vec& A, rsNoiseGenerator<T>* prng)

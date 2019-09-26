@@ -132,6 +132,10 @@ public:
   course, that no manipulations of the state take place in between the measurements). */
   static T measureObservable(Vec& A, const Mat& M, rsNoiseGenerator<T>* prng); 
 
+  /** Measures the spin along an arbitrary axis in 3D space given by the vector components
+  nx, ny, nz. It is assumed that these components form a unit-length vector in 3-space. */
+  static T measureSpin(Vec& A, T nx, T ny, T nz, rsNoiseGenerator<T>* prng);
+  // not yet tested
 
   /** Measures the z-component of the spin. This measurement will put the state vector either into
   a pure "up" or pure "down" state and will return +1 in the former and -1 in the latter case. 
@@ -159,7 +163,8 @@ template<class T> const std::complex<T> rsQuantumSpinFunctions<T>::i = std::comp
 
 
 
-
+// much of the code below is obsolete now - drag over the relevant comments to 
+// rsQuantumSpinFunctions and get rid of the obsolete code
 
 
 //=================================================================================================
