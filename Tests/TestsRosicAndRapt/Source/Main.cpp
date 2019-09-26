@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  runAllUnitTests();  // todo: merge with unit tests for RSLib
+  //runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -104,6 +104,7 @@ int main(int argc, char* argv[])
   //particleForceDistanceLaw();
   //particleSystem();
   quantumSpinMeasurement();
+  quantumSpinMeasurement2();
   quantumSpinEvolution();
   //tennisRacket();
   //tennisRacket2();

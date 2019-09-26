@@ -1,3 +1,24 @@
+template<class T>
+void rsQuantumSpinFunctions<T>::randomizeState(Vec& v, PRNG* prng)
+{
+  T Pu = prng->getSample();             // probability of "up"
+  T Pd = T(1) - Pu;                     // probability of "down"
+  T r  = T(1) / sqrt(Pu*Pu + Pd*Pd);    // normalizer
+  Pu  *= r;
+  Pd  *= r;
+  T pu = T(2.0*PI) * prng->getSample(); // phase of v.y
+  T pd = T(2.0*PI) * prng->getSample(); // phase of v.x
+
+  A.y = std::polar(Pu, pu);
+  A.x = std::polar(Pd, pd);
+}
+
+
+
+
+
+
+
 
 
 //=================================================================================================

@@ -19,12 +19,20 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name State setup */
 
-  void prepareDownState(Vec& A)  { A.x =  1;   A.y = 0;  }
-  void prepareUpState(Vec& A)    { A.x =  0;   A.y = 1;  }
-  void prepareLeftState(Vec& A)  { A.x = -s;   A.y = s;  }  // (1) Eq 2.6
-  void prepareRightState(Vec& A) { A.x =  s;   A.y = s;  }  // (1) Eq 2.5
-  void prepareOutState(Vec& A)   { A.x = -s*i; A.y = s;  }  // (1) Eq 2.10
-  void prepareInState(Vec& A)    { A.x =  s*i; A.y = s;  }  // (1) Eq 2.10
+  // pure state creation functions:
+  static Vec up()    { rsQuantumSpin<T> s; s.prepareUpState();    return s; }
+  static Vec down()  { rsQuantumSpin<T> s; s.prepareDownState();  return s; }
+  static Vec right() { rsQuantumSpin<T> s; s.prepareRightState(); return s; }
+  static Vec left()  { rsQuantumSpin<T> s; s.prepareLeftState();  return s; }
+  static Vec in()    { rsQuantumSpin<T> s; s.prepareInState();    return s; }
+  static Vec out()   { rsQuantumSpin<T> s; s.prepareOutState();   return s; }
+
+  static void prepareDownState(Vec& A)  { A.x =  1;   A.y = 0;  }
+  static void prepareUpState(Vec& A)    { A.x =  0;   A.y = 1;  }
+  static void prepareLeftState(Vec& A)  { A.x = -s;   A.y = s;  }  // (1) Eq 2.6
+  static void prepareRightState(Vec& A) { A.x =  s;   A.y = s;  }  // (1) Eq 2.5
+  static void prepareOutState(Vec& A)   { A.x = -s*i; A.y = s;  }  // (1) Eq 2.10
+  static void prepareInState(Vec& A)    { A.x =  s*i; A.y = s;  }  // (1) Eq 2.10
 
    /** Normalizes the state such that the total probability is unity - which it must be for a valid 
   state. */
@@ -36,19 +44,27 @@ public:
   }
 
   /** Randomizes the state.... */
-  void randomizeState(Vec& v, PRNG* prng); // needs implementation
+  void randomizeState(Vec& v, PRNG* prng);
 
 
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Operator setup */
 
   /** Measurement operator for spin along the z-axis. Returns +1 for up, -1 for down. */
-  void setToPauliZ(Mat<T>& M) { M.a = T(1); M.b = T(0); M.c = T(0); M.d = T(-1); }
+  void setToPauliZ(Mat& M) { M.a = T(1); M.b = T(0); M.c = T(0); M.d = T(-1); }
 
   /** Measurement operator for spin along the x-axis. Returns +1 for right, -1 for left. */
-  void setToPauliX(Mat<T>& M) { M.a = T(0); M.b = T(1); M.c = T(1); M.d = T(0);  }
+  void setToPauliX(Mat& M) { M.a = T(0); M.b = T(1); M.c = T(1); M.d = T(0);  }
 
   /** Measurement operator for spin along the y-axis. Returns +1 for in, -1 for out. */
-  void setToPauliY(Mat<T>& M) { M.a = T(0); M.b = -i;   M.c = i;    M.d = T(0);  }
+  void setToPauliY(Mat& M) { M.a = T(0); M.b = -i;   M.c = i;    M.d = T(0);  }
+
+
+
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -56,21 +72,28 @@ public:
 
   /** Computes the "bracket" <A|B> of two "ket" vectors A,B. The left "ket" is converted into a 
   "bra" vector first (by complex conjugation and transposition). */
-  std::complex<T> bracket(const Vec& A, const Vec& B) { return conj(A.x) * B.x + (A.y) * B.y; }
+  static std::complex<T> bracket(const Vec& A, const Vec& B) 
+  { return conj(A.x) * B.x + (A.y) * B.y; }
+
+
+  static std::complex<T> getDownAmplitude(const Vec& A) { return A.x; }
+  static std::complex<T> getUpAmplitude(  const Vec& A) { return A.y; }
 
   /** Returns the probability to measure a target state t when a system is in state A. */
   static T getStateProbability(const Vec& A, const Vec& t)
   {
-    //std::complex<T> r = (A*t) * (t*A); // (1), Eq 3.11 (with lambda_i replaced by t)
-    // is this correct? i mean, th regular scalar product? i think, we need to conjugate the first
-    // vector - make a fucntion innerProduct or bracket
-
     std::complex<T> r = bracket(A,t) * bracket(t,A); // (1), Eq 3.11 (with lambda_i replaced by t)
     return r.real();                                 // imag should be zero
   }
 
-  static std::complex<T> getDownAmplitude(const Vec& A) { return A.x; }
-  static std::complex<T> getUpAmplitude(  const Vec& A) { return A.y; }
+  /** Returns the probability for the given state A to be measured in "down" configuration. */
+  static T getDownProbability( const Vec& A) { return getStateProbability(A, down());  }
+  static T getUpProbability(   const Vec& A) { return getStateProbability(A, up());    } 
+  static T getLeftProbability( const Vec& A) { return getStateProbability(A, left());  }
+  static T getRightProbability(const Vec& A) { return getStateProbability(A, right()); }
+  static T getOutProbability(  const Vec& A) { return getStateProbability(A, out());   }
+  static T getInProbability(   const Vec& A) { return getStateProbability(A, in());    }
+
 
 
   /** Returns the squared norm (or magnitude, length, radius) of a complex number. */
@@ -97,8 +120,14 @@ public:
   }
 
   /** Returns the expectation value for the observable M when the system is in state A. */
-  static T getExpectedMeasurement(const Mat<T>& M, const Vec<T>& A);
+  static T getExpectedMeasurement(const Mat& M, const Vec& A);
   // needs implementation
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Measurements */
+
+
 
 
 
@@ -256,6 +285,10 @@ public:
   std::complex<T> getUpAmplitude()   const { return y; }
   // todo: getLeft/Right/In/Out Component - but these require more compilcated calculations
   // maybe rename all the "Component" functions to "Amplitude"
+
+
+
+
 
   /** Returns the squared norm (or magnitude, length, radius) of a complex number. */
   static T getSquaredNorm(const std::complex<T>& z)

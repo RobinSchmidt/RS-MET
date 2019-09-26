@@ -288,6 +288,10 @@ inline bool isCloseTo(TArg x, TArg y, TTol tol)
 }
 // move to rapt
 
+
+
+
+
 bool quantumSpinMeasurement()
 {
   // This should be turned into a unit test...
@@ -632,6 +636,55 @@ bool quantumSpinMeasurement()
 
   // todo: maybe use float instead of double
 }
+
+
+bool quantumSpinMeasurement2()
+{
+  // This should be turned into a unit test...
+  bool pass = true;   // move to unit tests
+
+  typedef rsQuantumSpinFunctions<double> QF;
+  typedef rsVector2D<std::complex<double>>  Vec;
+  typedef rsMatrix2x2<std::complex<double>> Mat;
+  typedef rsNoiseGenerator<double> PRNG;
+
+  // create some qubits in pure states:
+  Vec u, d, l, r, i, o; // maybe use capital letters
+  QF::prepareUpState(u);
+  QF::prepareDownState(d);
+  QF::prepareLeftState(l);
+  QF::prepareRightState(r);
+  QF::prepareInState(i);
+  QF::prepareOutState(o);
+
+  // some work variables:
+  std::complex<double> p; // for inner products
+  double P;               // for probabilities
+  double tol = 1.e-13;    // tolerance for rounding errors
+  std::complex<double> one(1,0), zero(0,0), two(2,0), half(.5,0), s(1/sqrt(2.0),0);
+
+
+  // check normalization of pure states:
+  pass &= (p=QF::bracket(u,u)) == 1.0;
+  pass &= (p=QF::bracket(d,d)) == 1.0;
+  pass &= isCloseTo(p=QF::bracket(l,l), one, tol);
+  pass &= isCloseTo(p=QF::bracket(r,r), one, tol);
+  pass &= isCloseTo(p=QF::bracket(i,i), one, tol);
+  pass &= isCloseTo(p=QF::bracket(o,o), one, tol);
+
+  // check orthogonality:
+  pass &= (p=QF::bracket(u,d)) == 0.0;  // (1) Eq 2.3
+  pass &= (p=QF::bracket(d,u)) == 0.0;
+  pass &= (p=QF::bracket(r,l)) == 0.0;
+  pass &= (p=QF::bracket(l,r)) == 0.0;
+  pass &= (p=QF::bracket(i,o)) == 0.0;
+  pass &= (p=QF::bracket(o,i)) == 0.0;
+
+
+  rsAssert(pass);
+  return pass;
+}
+
 
 template<class T>
 void plotQuantumSpinStateTrajectory(const std::vector<rsQuantumSpin<T>>& Psi, T dt)
