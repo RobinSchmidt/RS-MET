@@ -1,3 +1,7 @@
+
+// Operator facory functions
+
+
 template<class T>
 rsVector3D<rsMatrix2x2<std::complex<T>>> rsQuantumSpin<T>::pauliVector() 
 {

@@ -114,14 +114,30 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Operator setup */
 
-  /** Measurement operator for spin along the z-axis. Returns +1 for up, -1 for down. */
-  static void setToPauliZ(Mat& M) { M.a = T(1); M.b = T(0); M.c = T(0); M.d = T(-1); }
-
   /** Measurement operator for spin along the x-axis. Returns +1 for right, -1 for left. */
   static void setToPauliX(Mat& M) { M.a = T(0); M.b = T(1); M.c = T(1); M.d = T(0);  }
 
   /** Measurement operator for spin along the y-axis. Returns +1 for in, -1 for out. */
   static void setToPauliY(Mat& M) { M.a = T(0); M.b = -i;   M.c = i;    M.d = T(0);  }
+
+  /** Measurement operator for spin along the z-axis. Returns +1 for up, -1 for down. */
+  static void setToPauliZ(Mat& M) { M.a = T(1); M.b = T(0); M.c = T(0); M.d = T(-1); }
+  // turn these into factory functions
+
+
+  static Mat pauliX() { return Mat(T(0), T(1), T(1), T(0)); }
+  static Mat pauliY() { return Mat(T(0),   -i,    i, T(0)); }
+  static Mat pauliZ() { return Mat(T(1), T(0), T(0), T(1)); }
+  // not yet tested
+
+  // see here for more operators/"gates"
+  // https://en.wikipedia.org/wiki/Quantum_logic_gate
+
+  // for the multi-qubit gates, don't craete the matrices but instead directly operate on a 
+  // number of input vectors like:
+  // static void toffoli(Vec& v1, Vec& v2, Vec& v3);
+  // maybe this should be done in another class rsQuantumGates
+
 
   /** Creates the Pauli vector which is the 3-vector of the 2x2 Pauli matrices. see (1) pg 83 or
   https://en.wikipedia.org/wiki/Pauli_matrices#Pauli_vector - i think, on wikipedia, the 

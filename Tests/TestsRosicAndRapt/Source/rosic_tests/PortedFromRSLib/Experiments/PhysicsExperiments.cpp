@@ -312,7 +312,7 @@ inline bool isCloseTo(
 
 
 
-bool quantumSpinMeasurement2()
+bool quantumSpinMeasurement()
 {
   // This should be turned into a unit test...
   bool pass = true;   // move to unit tests
@@ -570,10 +570,58 @@ bool quantumSpinMeasurement2()
   // https://homepages.cwi.nl/~rdewolf/qcnotes.pdf
   // http://mmrc.amss.cas.cn/tlb/201702/W020170224608150244118.pdf
 
+  rsAssert(pass);
+  return pass;
+}
+
+
+template<class T>
+class rsQuantumGates
+{
+
+public:
+
+  typedef rsVector2D<std::complex<T>> QBit;
+
+
+  static void pauliX(QBit& q) 
+  {
+    QBit t = q;  // temporary
+    q.x = t.y;
+    q.y = t.x;
+  }
+
+  static void hadamard(QBit& q)
+  {
+    T s = T(1)/sqrt(T(2));  // maybe make static member, if used often
+    QBit t = q;  // temporary
+    q.x = s*t.x + s*t.y;
+    q.y = s*t.x - s*t.y;
+  }
+
+
+  /*
+  static void toffoli(Vec& v1, Vec& v2, Vec& v3)
+  {
+
+  }
+  */
+
+};
+// https://en.wikipedia.org/wiki/Quantum_logic_gate
+// https://medium.com/@jonathan_hui/qc-programming-with-quantum-gates-8996b667d256
+// https://medium.com/@jonathan_hui/qc-programming-with-quantum-gates-2-qubit-operator-871528d136db
+
+bool quantumGates()
+{  
+  bool pass = true;  // move to unit tests
+
+
 
   rsAssert(pass);
   return pass;
 }
+
 
 template<class T>
 void plotQuantumSpinStateTrajectory(
