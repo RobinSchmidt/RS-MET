@@ -1,5 +1,5 @@
 template<class T>
-rsVector3D<rsMatrix2x2<std::complex<T>>> rsQuantumSpinFunctions<T>::pauliVector() 
+rsVector3D<rsMatrix2x2<std::complex<T>>> rsQuantumSpin<T>::pauliVector() 
 {
   rsVector3D<rsMatrix2x2<Complex>> sigma;
   setToPauliX(sigma.x);
@@ -11,7 +11,7 @@ rsVector3D<rsMatrix2x2<std::complex<T>>> rsQuantumSpinFunctions<T>::pauliVector(
 // state setup:
 
 template<class T>
-void rsQuantumSpinFunctions<T>::normalizeState(Vec& A)
+void rsQuantumSpin<T>::normalizeState(Vec& A)
 {
   T r = sqrt(T(1) / getTotalProbability(A));  
   // or 1/sqrt(t) instead of sqrt(1/t)? - which one is better numerically?
@@ -20,7 +20,7 @@ void rsQuantumSpinFunctions<T>::normalizeState(Vec& A)
 }
 
 template<class T>
-void rsQuantumSpinFunctions<T>::randomizeState(Vec& v, PRNG* prng)
+void rsQuantumSpin<T>::randomizeState(Vec& v, PRNG* prng)
 {
   T Pu = prng->getSample();             // probability of "up"
   T Pd = T(1) - Pu;                     // probability of "down"
@@ -38,14 +38,14 @@ void rsQuantumSpinFunctions<T>::randomizeState(Vec& v, PRNG* prng)
 // inquiry:
 
 template<class T>
-T rsQuantumSpinFunctions<T>::getStateProbability(const Vec& A, const Vec& t)
+T rsQuantumSpin<T>::getStateProbability(const Vec& A, const Vec& t)
 {
   std::complex<T> r = bracket(A,t) * bracket(t,A); // (1), Eq 3.11 (with lambda_i replaced by t)
   return r.real();                                 // imag should be zero
 }
 
 template<class T>
-T rsQuantumSpinFunctions<T>::getExpectedMeasurement(const Mat& M, const Vec& A)
+T rsQuantumSpin<T>::getExpectedMeasurement(const Mat& M, const Vec& A)
 {
   // computation via (1) Eq 3.26 - this is just naively applying the general formula for 
   // an expectation value:
@@ -70,7 +70,7 @@ T rsQuantumSpinFunctions<T>::getExpectedMeasurement(const Mat& M, const Vec& A)
 // measurement:
 
 template<class T>
-T rsQuantumSpinFunctions<T>::measureObservable(Vec& A, const Mat& M, rsNoiseGenerator<T>* prng)
+T rsQuantumSpin<T>::measureObservable(Vec& A, const Mat& M, rsNoiseGenerator<T>* prng)
 {
   Vec E1 = M.eigenvector1();
   T P1 = getStateProbability(A, E1);
@@ -95,7 +95,7 @@ T rsQuantumSpinFunctions<T>::measureObservable(Vec& A, const Mat& M, rsNoiseGene
 // to pass precomputed eigenvalues and -vectors into such a N-dimensional measurement function
 
 template<class T>
-T rsQuantumSpinFunctions<T>::measureSpin(Vec& A, T nx, T ny, T nz, rsNoiseGenerator<T>* prng)
+T rsQuantumSpin<T>::measureSpin(Vec& A, T nx, T ny, T nz, rsNoiseGenerator<T>* prng)
 {
   Mat M;
   M.setValues(nz, nx-i*ny, nx+i*ny, -nz); // (1) Eq 3.23
@@ -103,7 +103,7 @@ T rsQuantumSpinFunctions<T>::measureSpin(Vec& A, T nx, T ny, T nz, rsNoiseGenera
 }
 
 template<class T>
-T rsQuantumSpinFunctions<T>::measureSpinZ(Vec& A, rsNoiseGenerator<T>* prng)
+T rsQuantumSpin<T>::measureSpinZ(Vec& A, rsNoiseGenerator<T>* prng)
 {
   //T Pd  = getStateProbability(A, down());       // (1) Eq 2.2
   T Pd = getDownProbability(A);
@@ -118,7 +118,7 @@ T rsQuantumSpinFunctions<T>::measureSpinZ(Vec& A, rsNoiseGenerator<T>* prng)
 }
 
 template<class T>
-T rsQuantumSpinFunctions<T>::measureSpinX(Vec& A, rsNoiseGenerator<T>* prng)
+T rsQuantumSpin<T>::measureSpinX(Vec& A, rsNoiseGenerator<T>* prng)
 {
   T Pl  = getLeftProbability(A); // optimizable?
   T rnd = prng->getSample();
@@ -131,7 +131,7 @@ T rsQuantumSpinFunctions<T>::measureSpinX(Vec& A, rsNoiseGenerator<T>* prng)
 }
 
 template<class T>
-T rsQuantumSpinFunctions<T>::measureSpinY(Vec& A, rsNoiseGenerator<T>* prng)
+T rsQuantumSpin<T>::measureSpinY(Vec& A, rsNoiseGenerator<T>* prng)
 {
   T Po = getOutProbability(A); // optimizable?
   T rnd = prng->getSample();

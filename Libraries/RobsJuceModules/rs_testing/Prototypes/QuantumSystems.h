@@ -68,7 +68,7 @@ References:
 (1) The Theoretical Minimum - Quantum Mechanics (Leonard Susskind, Art Friedman) */
 
 template<class T>
-class rsQuantumSpinFunctions
+class rsQuantumSpin
 {
 
 public:
@@ -212,5 +212,5 @@ public:
   static const T s;                // 1/sqrt(2)
   static const std::complex<T> i;  // imaginary unit
 };
-template<class T> const T rsQuantumSpinFunctions<T>::s = T(1) / sqrt(T(2));
-template<class T> const std::complex<T> rsQuantumSpinFunctions<T>::i = std::complex<T>(0, 1);
+template<class T> const T rsQuantumSpin<T>::s = T(1) / sqrt(T(2));
+template<class T> const std::complex<T> rsQuantumSpin<T>::i = std::complex<T>(0, 1);

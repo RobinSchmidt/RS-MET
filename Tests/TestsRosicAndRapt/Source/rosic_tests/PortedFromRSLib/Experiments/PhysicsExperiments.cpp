@@ -317,7 +317,7 @@ bool quantumSpinMeasurement2()
   // This should be turned into a unit test...
   bool pass = true;   // move to unit tests
 
-  typedef rsQuantumSpinFunctions<double> QF;
+  typedef rsQuantumSpin<double> QS;
   typedef rsVector2D<std::complex<double>>  Vec;
   typedef rsMatrix2x2<std::complex<double>> Mat;
   typedef rsNoiseGenerator<double> PRNG;
@@ -335,77 +335,77 @@ bool quantumSpinMeasurement2()
 
   // create some qubits in pure states:
   Vec u, d, l, r, i, o; // maybe use capital letters
-  QF::prepareUpState(u);
-  QF::prepareDownState(d);
-  QF::prepareLeftState(l);
-  QF::prepareRightState(r);
-  QF::prepareInState(i);
-  QF::prepareOutState(o);
+  QS::prepareUpState(u);
+  QS::prepareDownState(d);
+  QS::prepareLeftState(l);
+  QS::prepareRightState(r);
+  QS::prepareInState(i);
+  QS::prepareOutState(o);
 
 
   // check normalization of pure states:
-  pass &= (p=QF::bracket(u,u)) == 1.0;
-  pass &= (p=QF::bracket(d,d)) == 1.0;
-  pass &= isCloseTo(p=QF::bracket(l,l), one, tol);
-  pass &= isCloseTo(p=QF::bracket(r,r), one, tol);
-  pass &= isCloseTo(p=QF::bracket(i,i), one, tol);  // fails
-  pass &= isCloseTo(p=QF::bracket(o,o), one, tol);  // fails
+  pass &= (p=QS::bracket(u,u)) == 1.0;
+  pass &= (p=QS::bracket(d,d)) == 1.0;
+  pass &= isCloseTo(p=QS::bracket(l,l), one, tol);
+  pass &= isCloseTo(p=QS::bracket(r,r), one, tol);
+  pass &= isCloseTo(p=QS::bracket(i,i), one, tol);  // fails
+  pass &= isCloseTo(p=QS::bracket(o,o), one, tol);  // fails
 
   // check orthogonality:
-  pass &= (p=QF::bracket(u,d)) == 0.0;  // (1) Eq 2.3
-  pass &= (p=QF::bracket(d,u)) == 0.0;
-  pass &= (p=QF::bracket(r,l)) == 0.0;
-  pass &= (p=QF::bracket(l,r)) == 0.0;
-  pass &= (p=QF::bracket(i,o)) == 0.0;  // fails
-  pass &= (p=QF::bracket(o,i)) == 0.0;  // fails
+  pass &= (p=QS::bracket(u,d)) == 0.0;  // (1) Eq 2.3
+  pass &= (p=QS::bracket(d,u)) == 0.0;
+  pass &= (p=QS::bracket(r,l)) == 0.0;
+  pass &= (p=QS::bracket(l,r)) == 0.0;
+  pass &= (p=QS::bracket(i,o)) == 0.0;  // fails
+  pass &= (p=QS::bracket(o,i)) == 0.0;  // fails
 
   // check, if Eq 2.8 and 2.9 are satisfied:
-  pass &= isCloseTo(p = QF::bracket(o,u) * QF::bracket(u,o), half, tol);
-  pass &= isCloseTo(p = QF::bracket(o,d) * QF::bracket(d,o), half, tol);
-  pass &= isCloseTo(p = QF::bracket(i,u) * QF::bracket(u,i), half, tol);
-  pass &= isCloseTo(p = QF::bracket(i,d) * QF::bracket(d,i), half, tol);
-  pass &= isCloseTo(p = QF::bracket(o,r) * QF::bracket(r,o), half, tol);
-  pass &= isCloseTo(p = QF::bracket(o,l) * QF::bracket(l,o), half, tol);
-  pass &= isCloseTo(p = QF::bracket(i,r) * QF::bracket(r,i), half, tol);
-  pass &= isCloseTo(p = QF::bracket(i,l) * QF::bracket(l,i), half, tol);
+  pass &= isCloseTo(p = QS::bracket(o,u) * QS::bracket(u,o), half, tol);
+  pass &= isCloseTo(p = QS::bracket(o,d) * QS::bracket(d,o), half, tol);
+  pass &= isCloseTo(p = QS::bracket(i,u) * QS::bracket(u,i), half, tol);
+  pass &= isCloseTo(p = QS::bracket(i,d) * QS::bracket(d,i), half, tol);
+  pass &= isCloseTo(p = QS::bracket(o,r) * QS::bracket(r,o), half, tol);
+  pass &= isCloseTo(p = QS::bracket(o,l) * QS::bracket(l,o), half, tol);
+  pass &= isCloseTo(p = QS::bracket(i,r) * QS::bracket(r,i), half, tol);
+  pass &= isCloseTo(p = QS::bracket(i,l) * QS::bracket(l,i), half, tol);
 
   // check up-spin probabilities of the various pure spin states:
-  pass &= isCloseTo(P = QF::getUpProbability(u), 1.0, tol); // pure up-spin   has P(up) = 1
-  pass &= isCloseTo(P = QF::getUpProbability(d), 0.0, tol); // pure down-spin has P(up) = 0
-  pass &= isCloseTo(P = QF::getUpProbability(r), 0.5, tol); // all other pure spin states (left, 
-  pass &= isCloseTo(P = QF::getUpProbability(l), 0.5, tol); // right, in, out) have up-spin 
-  pass &= isCloseTo(P = QF::getUpProbability(i), 0.5, tol); // probability of 1/2
-  pass &= isCloseTo(P = QF::getUpProbability(o), 0.5, tol);
+  pass &= isCloseTo(P = QS::getUpProbability(u), 1.0, tol); // pure up-spin   has P(up) = 1
+  pass &= isCloseTo(P = QS::getUpProbability(d), 0.0, tol); // pure down-spin has P(up) = 0
+  pass &= isCloseTo(P = QS::getUpProbability(r), 0.5, tol); // all other pure spin states (left, 
+  pass &= isCloseTo(P = QS::getUpProbability(l), 0.5, tol); // right, in, out) have up-spin 
+  pass &= isCloseTo(P = QS::getUpProbability(i), 0.5, tol); // probability of 1/2
+  pass &= isCloseTo(P = QS::getUpProbability(o), 0.5, tol);
 
-  pass &= isCloseTo(P = QF::getRightProbability(u), 0.5, tol);
-  pass &= isCloseTo(P = QF::getRightProbability(d), 0.5, tol);
-  pass &= isCloseTo(P = QF::getRightProbability(r), 1.0, tol);
-  pass &= isCloseTo(P = QF::getRightProbability(l), 0.0, tol);
-  pass &= isCloseTo(P = QF::getRightProbability(i), 0.5, tol);
-  pass &= isCloseTo(P = QF::getRightProbability(o), 0.5, tol);
+  pass &= isCloseTo(P = QS::getRightProbability(u), 0.5, tol);
+  pass &= isCloseTo(P = QS::getRightProbability(d), 0.5, tol);
+  pass &= isCloseTo(P = QS::getRightProbability(r), 1.0, tol);
+  pass &= isCloseTo(P = QS::getRightProbability(l), 0.0, tol);
+  pass &= isCloseTo(P = QS::getRightProbability(i), 0.5, tol);
+  pass &= isCloseTo(P = QS::getRightProbability(o), 0.5, tol);
 
-  pass &= isCloseTo(P = QF::getInProbability(u), 0.5, tol);
-  pass &= isCloseTo(P = QF::getInProbability(d), 0.5, tol);
-  pass &= isCloseTo(P = QF::getInProbability(r), 0.5, tol);
-  pass &= isCloseTo(P = QF::getInProbability(l), 0.5, tol);
-  pass &= isCloseTo(P = QF::getInProbability(i), 1.0, tol);
-  pass &= isCloseTo(P = QF::getInProbability(o), 0.0, tol);
+  pass &= isCloseTo(P = QS::getInProbability(u), 0.5, tol);
+  pass &= isCloseTo(P = QS::getInProbability(d), 0.5, tol);
+  pass &= isCloseTo(P = QS::getInProbability(r), 0.5, tol);
+  pass &= isCloseTo(P = QS::getInProbability(l), 0.5, tol);
+  pass &= isCloseTo(P = QS::getInProbability(i), 1.0, tol);
+  pass &= isCloseTo(P = QS::getInProbability(o), 0.0, tol);
 
   // test some stuff:
   A = Vec(one, one);              // this is an invalid state because..
-  P = QF::getTotalProbability(A); // ..it has total probability 2
-  QF::normalizeState(A);          // this call normalizes the total probability
-  pass &= isCloseTo(P = QF::getTotalProbability(A), 1.0, tol);
+  P = QS::getTotalProbability(A); // ..it has total probability 2
+  QS::normalizeState(A);          // this call normalizes the total probability
+  pass &= isCloseTo(P = QS::getTotalProbability(A), 1.0, tol);
   A = u;
   B = d;
   C = s*u + s*d;
   pass &= (C == r);               // (1) Eq 2.5 
   pass &= (s*u - s*d == l);
-  QF::randomizeState(A, &prng);
-  QF::randomizeState(B, &prng);
-  pass &= isCloseTo(P = QF::getTotalProbability(A), 1.0, tol);
-  pass &= isCloseTo(P = QF::getTotalProbability(B), 1.0, tol);
-  pass &= QF::bracket(A,B) == conj(QF::bracket(B,A));
+  QS::randomizeState(A, &prng);
+  QS::randomizeState(B, &prng);
+  pass &= isCloseTo(P = QS::getTotalProbability(A), 1.0, tol);
+  pass &= isCloseTo(P = QS::getTotalProbability(B), 1.0, tol);
+  pass &= QS::bracket(A,B) == conj(QS::bracket(B,A));
 
 
   std::complex<double> e1, e2;
@@ -413,9 +413,9 @@ bool quantumSpinMeasurement2()
 
   // some test with spin operators:
   Mat pauliZ, pauliY, pauliX;
-  QF::setToPauliZ(pauliZ);
-  QF::setToPauliY(pauliY);
-  QF::setToPauliX(pauliX);
+  QS::setToPauliZ(pauliZ);
+  QS::setToPauliY(pauliY);
+  QS::setToPauliX(pauliX);
 
   e1 = pauliZ.eigenvalue1();  pass &= e1 == -1.0;
   e2 = pauliZ.eigenvalue2();  pass &= e2 == +1.0;
@@ -446,60 +446,60 @@ bool quantumSpinMeasurement2()
 
 
   // test spin measurements via Pauli matrices:
-  QF::prepareDownState(A);
-  p = QF::measureObservable(A, pauliZ, &prng); pass &= p == -1.0;
-  p = QF::measureObservable(A, pauliZ, &prng); pass &= p == -1.0;
-  P = QF::getStateProbability(A, d);           pass &= P ==  1.0;
-  QF::prepareUpState(A);
-  p = QF::measureObservable(A, pauliZ, &prng); pass &= p == +1.0;
-  p = QF::measureObservable(A, pauliZ, &prng); pass &= p == +1.0;
-  P = QF::getStateProbability(A, u);           pass &= P ==  1.0;
+  QS::prepareDownState(A);
+  p = QS::measureObservable(A, pauliZ, &prng); pass &= p == -1.0;
+  p = QS::measureObservable(A, pauliZ, &prng); pass &= p == -1.0;
+  P = QS::getStateProbability(A, d);           pass &= P ==  1.0;
+  QS::prepareUpState(A);
+  p = QS::measureObservable(A, pauliZ, &prng); pass &= p == +1.0;
+  p = QS::measureObservable(A, pauliZ, &prng); pass &= p == +1.0;
+  P = QS::getStateProbability(A, u);           pass &= P ==  1.0;
 
-  QF::prepareLeftState(A);
-  p = QF::measureObservable(A, pauliX, &prng); pass &= p == -1.0;
-  p = QF::measureObservable(A, pauliX, &prng); pass &= p == -1.0;
-  P = QF::getStateProbability(A, l);           pass &= isCloseTo(P, 1.0, tol);
-  QF::prepareRightState(A);
-  p = QF::measureObservable(A, pauliX, &prng); pass &= p == +1.0;
-  p = QF::measureObservable(A, pauliX, &prng); pass &= p == +1.0;
-  P = QF::getStateProbability(A, r);           pass &= isCloseTo(P, 1.0, tol);
+  QS::prepareLeftState(A);
+  p = QS::measureObservable(A, pauliX, &prng); pass &= p == -1.0;
+  p = QS::measureObservable(A, pauliX, &prng); pass &= p == -1.0;
+  P = QS::getStateProbability(A, l);           pass &= isCloseTo(P, 1.0, tol);
+  QS::prepareRightState(A);
+  p = QS::measureObservable(A, pauliX, &prng); pass &= p == +1.0;
+  p = QS::measureObservable(A, pauliX, &prng); pass &= p == +1.0;
+  P = QS::getStateProbability(A, r);           pass &= isCloseTo(P, 1.0, tol);
 
-  QF::prepareOutState(A);
-  p = QF::measureObservable(A, pauliY, &prng); pass &= p == -1.0;
-  p = QF::measureObservable(A, pauliY, &prng); pass &= p == -1.0;
-  P = QF::getStateProbability(A, o);           pass &= isCloseTo(P, 1.0, tol);
-  QF::prepareInState(A);
-  p = QF::measureObservable(A, pauliY, &prng); pass &= p == +1.0;
-  p = QF::measureObservable(A, pauliY, &prng); pass &= p == +1.0;  // fails
-  P = QF::getStateProbability(A, i);           pass &= isCloseTo(P, 1.0, tol);
+  QS::prepareOutState(A);
+  p = QS::measureObservable(A, pauliY, &prng); pass &= p == -1.0;
+  p = QS::measureObservable(A, pauliY, &prng); pass &= p == -1.0;
+  P = QS::getStateProbability(A, o);           pass &= isCloseTo(P, 1.0, tol);
+  QS::prepareInState(A);
+  p = QS::measureObservable(A, pauliY, &prng); pass &= p == +1.0;
+  p = QS::measureObservable(A, pauliY, &prng); pass &= p == +1.0;  // fails
+  P = QS::getStateProbability(A, i);           pass &= isCloseTo(P, 1.0, tol);
 
   // test spin measurements via dedicated functions:
-  QF::prepareDownState(A);
-  p = QF::measureSpinZ(A, &prng);    pass &= p == -1.0;
-  p = QF::measureSpinZ(A, &prng);    pass &= p == -1.0;
-  P = QF::getStateProbability(A, d); pass &= P ==  1.0;
-  QF::prepareUpState(A);
-  p = QF::measureSpinZ(A, &prng);    pass &= p == +1.0;
-  p = QF::measureSpinZ(A, &prng);    pass &= p == +1.0;
-  P = QF::getStateProbability(A, u); pass &= P ==  1.0;
+  QS::prepareDownState(A);
+  p = QS::measureSpinZ(A, &prng);    pass &= p == -1.0;
+  p = QS::measureSpinZ(A, &prng);    pass &= p == -1.0;
+  P = QS::getStateProbability(A, d); pass &= P ==  1.0;
+  QS::prepareUpState(A);
+  p = QS::measureSpinZ(A, &prng);    pass &= p == +1.0;
+  p = QS::measureSpinZ(A, &prng);    pass &= p == +1.0;
+  P = QS::getStateProbability(A, u); pass &= P ==  1.0;
 
-  QF::prepareLeftState(A);
-  p = QF::measureSpinX(A, &prng);    pass &= p == -1.0;
-  p = QF::measureSpinX(A, &prng);    pass &= p == -1.0;
-  P = QF::getStateProbability(A, l); pass &= isCloseTo(P, 1.0, tol);
-  QF::prepareRightState(A);
-  p = QF::measureSpinX(A, &prng);    pass &= p == +1.0;
-  p = QF::measureSpinX(A, &prng);    pass &= p == +1.0;
-  P = QF::getStateProbability(A, r); pass &= isCloseTo(P, 1.0, tol);
+  QS::prepareLeftState(A);
+  p = QS::measureSpinX(A, &prng);    pass &= p == -1.0;
+  p = QS::measureSpinX(A, &prng);    pass &= p == -1.0;
+  P = QS::getStateProbability(A, l); pass &= isCloseTo(P, 1.0, tol);
+  QS::prepareRightState(A);
+  p = QS::measureSpinX(A, &prng);    pass &= p == +1.0;
+  p = QS::measureSpinX(A, &prng);    pass &= p == +1.0;
+  P = QS::getStateProbability(A, r); pass &= isCloseTo(P, 1.0, tol);
 
-  QF::prepareOutState(A);
-  p = QF::measureSpinY(A, &prng);    pass &= p == -1.0;
-  p = QF::measureSpinY(A, &prng);    pass &= p == -1.0;
-  P = QF::getStateProbability(A, o); pass &= isCloseTo(P, 1.0, tol);
-  QF::prepareInState(A);
-  p = QF::measureSpinY(A, &prng);    pass &= p == +1.0;
-  p = QF::measureSpinY(A, &prng);    pass &= p == +1.0;
-  P = QF::getStateProbability(A, i); pass &= isCloseTo(P, 1.0, tol);
+  QS::prepareOutState(A);
+  p = QS::measureSpinY(A, &prng);    pass &= p == -1.0;
+  p = QS::measureSpinY(A, &prng);    pass &= p == -1.0;
+  P = QS::getStateProbability(A, o); pass &= isCloseTo(P, 1.0, tol);
+  QS::prepareInState(A);
+  p = QS::measureSpinY(A, &prng);    pass &= p == +1.0;
+  p = QS::measureSpinY(A, &prng);    pass &= p == +1.0;
+  P = QS::getStateProbability(A, i); pass &= isCloseTo(P, 1.0, tol);
 
 
   // test with random states, if matrix based and dedicated function based measurements do the
@@ -513,18 +513,18 @@ bool quantumSpinMeasurement2()
   prng2.reset();
   for(n = 0; n < N; n++)
   {
-    QF::randomizeState(B, &prng);
+    QS::randomizeState(B, &prng);
 
-    A = B; r1 = QF::measureObservable(A, pauliZ, &prng1);
-    A = B; r2 = QF::measureSpinZ(A, &prng2);
+    A = B; r1 = QS::measureObservable(A, pauliZ, &prng1);
+    A = B; r2 = QS::measureSpinZ(A, &prng2);
     pass &= (r1 == r2);
 
-    A = B; r1 = QF::measureObservable(A, pauliX, &prng1);
-    A = B; r2 = QF::measureSpinX(A, &prng2);
+    A = B; r1 = QS::measureObservable(A, pauliX, &prng1);
+    A = B; r2 = QS::measureSpinX(A, &prng2);
     pass &= (r1 == r2);
 
-    A = B; r1 = QF::measureObservable(A, pauliY, &prng1);
-    A = B; r2 = QF::measureSpinY(A, &prng2);
+    A = B; r1 = QS::measureObservable(A, pauliY, &prng1);
+    A = B; r2 = QS::measureSpinY(A, &prng2);
     pass &= (r1 == r2);
   }
   // todo: make additional meausrements after the collapse - they should always give the same 
@@ -536,7 +536,7 @@ bool quantumSpinMeasurement2()
   std::vector<double> spins(N);
   for(n = 0; n < N; n++) {
     A = B;
-    spins[n] = QF::measureSpinZ(A, &prng);
+    spins[n] = QS::measureSpinZ(A, &prng);
   }
   double mean = rsMean(spins);
   P = (mean+1)/2;  // -1..+1 -> 0..1  P = 0.81 (with N=1000) - close enough to 0.8
@@ -544,9 +544,9 @@ bool quantumSpinMeasurement2()
 
   // compute expectation values for the spin component measurements in state B:
   double Ez, Ex, Ey;  
-  Ez = QF::getExpectedMeasurement(pauliZ, B); // should be 0.6 = (0.8*2)-1 and close to mean1
-  Ex = QF::getExpectedMeasurement(pauliX, B); // 0.8
-  Ey = QF::getExpectedMeasurement(pauliY, B); // 0.0
+  Ez = QS::getExpectedMeasurement(pauliZ, B); // should be 0.6 = (0.8*2)-1 and close to mean1
+  Ex = QS::getExpectedMeasurement(pauliX, B); // 0.8
+  Ey = QS::getExpectedMeasurement(pauliY, B); // 0.0
   P  = Ex*Ex + Ey*Ey + Ez*Ez;  // should be one according to (1) Eq 3.27
   pass &= isCloseTo(P,  1.0, tol);
   pass &= isCloseTo(Ez, 0.6, tol);
@@ -579,15 +579,15 @@ template<class T>
 void plotQuantumSpinStateTrajectory(
   const std::vector<rsVector2D<std::complex<T>>>& Psi, T dt)
 {
-  typedef rsQuantumSpinFunctions<double> QF;
+  typedef rsQuantumSpin<double> QS;
   int N = (int) Psi.size();
   std::vector<T> t(N), dr(N), di(N), ur(N), ui(N);
   for(int n = 0; n < N; n++) {
     t[n] = n*dt;   // time axis
-    ur[n] = QF::getUpAmplitude(  Psi[n]).real();
-    ui[n] = QF::getUpAmplitude(  Psi[n]).imag();
-    dr[n] = QF::getDownAmplitude(Psi[n]).real();
-    di[n] = QF::getDownAmplitude(Psi[n]).imag();
+    ur[n] = QS::getUpAmplitude(  Psi[n]).real();
+    ui[n] = QS::getUpAmplitude(  Psi[n]).imag();
+    dr[n] = QS::getDownAmplitude(Psi[n]).real();
+    di[n] = QS::getDownAmplitude(Psi[n]).imag();
   }
   GNUPlotter plt;
   plt.addDataArrays(N, &t[0],  &ur[0], &ui[0], &dr[0], &di[0]);
@@ -622,7 +622,7 @@ bool quantumSpinEvolution()
   // ((1) page 116)
 
   typedef std::complex<double> Complex;
-  typedef rsQuantumSpinFunctions<double> QF;
+  typedef rsQuantumSpin<double> QS;
   typedef rsVector2D<Complex>  Vec;
   typedef rsMatrix2x2<Complex> Mat;
 
@@ -633,22 +633,22 @@ bool quantumSpinEvolution()
 
   // Create an initial spin state:
   Vec Psi0;
-  QF::randomizeState(Psi0, &prng);
-  //QF::prepareUpState(Psi0);
-  //QF::prepareDownState(Psi0);
-  //QF::prepareRightState(Psi0);
-  //QF::prepareLeftState(Psi0);
-  //QF::prepareInState(Psi0);
-  //QF::prepareOutState(Psi0);
+  QS::randomizeState(Psi0, &prng);
+  //QS::prepareUpState(Psi0);
+  //QS::prepareDownState(Psi0);
+  //QS::prepareRightState(Psi0);
+  //QS::prepareLeftState(Psi0);
+  //QS::prepareInState(Psi0);
+  //QS::prepareOutState(Psi0);
 
   double p = 2;             // phase - tweaking this is intersting
   double k = 1 / sqrt(2.);  // to normalize the state
   double s = k * sin(p);
   double c = k * cos(p);
-  //QF::prepareState(Psi0, c, s, s, -c); 
+  //QS::prepareState(Psi0, c, s, s, -c); 
 
   // create Pauli matrices and Hamiltonian:
-  rsVector3D<rsMatrix2x2<Complex>> sigma = QF::pauliVector();
+  rsVector3D<rsMatrix2x2<Complex>> sigma = QS::pauliVector();
   Mat H = Complex(hBar*w/2) * sigma.z; // (1) Eq 4.23
 
 
@@ -663,14 +663,14 @@ bool quantumSpinEvolution()
   {
     // record time series:
     stateTrajectory[n] = Psi;
-    ex[n] = QF::getExpectedMeasurement(sigma.x, Psi);
-    ey[n] = QF::getExpectedMeasurement(sigma.y, Psi);
-    ez[n] = QF::getExpectedMeasurement(sigma.z, Psi);
+    ex[n] = QS::getExpectedMeasurement(sigma.x, Psi);
+    ey[n] = QS::getExpectedMeasurement(sigma.y, Psi);
+    ez[n] = QS::getExpectedMeasurement(sigma.z, Psi);
 
     // update state:
     Vec dPsi = -i * H * Psi;   // (1) Eq 4.9 or 4.10 (time dependent Schrödinger equation)
     Psi = Psi + cStep * dPsi;  // forward Euler step
-    QF::normalizeState(Psi);   // avoid divergence due to error build up
+    QS::normalizeState(Psi);   // avoid divergence due to error build up
   }
   plotQuantumSpinStateTrajectory(stateTrajectory, step);
   rsPlotVectors(ex, ey, ez);
@@ -682,8 +682,8 @@ bool quantumSpinEvolution()
   Vec E2 = H.eigenvector2();
   Complex e1  = H.eigenvalue1();
   Complex e2  = H.eigenvalue2();
-  Complex a10 = QF::bracket(E1, Psi0);   // initial multiplier for E1, (1) Eq 4.31
-  Complex a20 = QF::bracket(E2, Psi0);   // initial multiplier for E2, (1) Eq 4.31
+  Complex a10 = QS::bracket(E1, Psi0);   // initial multiplier for E1, (1) Eq 4.31
+  Complex a20 = QS::bracket(E2, Psi0);   // initial multiplier for E2, (1) Eq 4.31
   std::vector<Vec> stateTrajectory2(N);
   Psi = Psi0;                            // re-initialize time dependent state vector
   Complex a1, a2;                        // time dependent multipliers

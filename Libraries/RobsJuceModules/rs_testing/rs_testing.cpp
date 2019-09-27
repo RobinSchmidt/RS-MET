@@ -57,5 +57,5 @@ template class rsDualBlepOsc<double, rsTableMinBlep<double, double>>;
 
 
 template class rsHeatEquation1D<double>;
-template class rsQuantumSpinFunctions<double>;
+template class rsQuantumSpin<double>;
 
