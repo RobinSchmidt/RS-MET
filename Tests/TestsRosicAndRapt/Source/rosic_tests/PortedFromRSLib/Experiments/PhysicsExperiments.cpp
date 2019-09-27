@@ -614,8 +614,9 @@ bool quantumSpinEvolution()
   typedef rsMatrix2x2<Complex> Mat;
 
 
+  int n, N    = 2000;
   double w    = 1;
-  double hBar = 1; // we use https://en.wikipedia.org/wiki/Planck_units
+  double hBar = 1;     // we use https://en.wikipedia.org/wiki/Planck_units
 
   // set up the random number generator to be used for measurements:
   rsNoiseGenerator<double> prng;
@@ -639,14 +640,14 @@ bool quantumSpinEvolution()
   //QF::prepareState(Psi, c, s, s, -c); 
 
   // create Pauli matrices and Hamiltonian (Eq 4.23):
-  Mat pauliX, pauliY, pauliZ;
-  QF::setToPauliX(pauliX);
-  QF::setToPauliY(pauliY);
-  QF::setToPauliZ(pauliZ);
-  Mat H = Complex(hBar*w/2) * pauliZ;
+  Mat X, Y, Z;
+  QF::setToPauliX(X);
+  QF::setToPauliY(Y);
+  QF::setToPauliZ(Z);
+  Mat H = Complex(hBar*w/2) * Z;
 
   // numerically integrate the time dependent Schrödinger equation using the forward Euler method:
-  int n, N = 3000;
+
   Complex i(0, 1);  // imaginary unit
   std::vector<Vec> stateTrajectory(N);     // records the trajectory of our spin state Psi
   std::vector<double> ex(N), ey(N), ez(N); // expectation values of spin component measurements
@@ -656,9 +657,9 @@ bool quantumSpinEvolution()
   {
     // record time series:
     stateTrajectory[n] = Psi;
-    ex[n] = QF::getExpectedMeasurement(pauliX, Psi);
-    ey[n] = QF::getExpectedMeasurement(pauliY, Psi);
-    ez[n] = QF::getExpectedMeasurement(pauliZ, Psi);
+    ex[n] = QF::getExpectedMeasurement(X, Psi);
+    ey[n] = QF::getExpectedMeasurement(Y, Psi);
+    ez[n] = QF::getExpectedMeasurement(Z, Psi);
 
     // update state:
     Vec dPsi = -i * H * Psi;   // (1) Eq 4.9 or 4.10 (time dependent Schrödinger equation)
@@ -669,8 +670,31 @@ bool quantumSpinEvolution()
   rsPlotVectors(ex, ey, ez);
 
 
+
+  // Verify experiementally soem formulas in (1)
+
+  // compute commutators of the observables represented by the Pauli matrices X,Y,Z with the 
+  // Hamiltonian H (see (1) Eq. 4.24):
+  Mat ZH = Mat::commutator(Z, H);  // 0
+  Mat XH = Mat::commutator(X, H);
+  Mat YH = Mat::commutator(Y, H);
+  // ZH is the zero matrix. This implies that (d/dt) <Z> = (-i/hBar) * <[Z,H]> = 0 (Eq 4.18). This 
+  // means that the change (with time) of the expectation value is zero, i.e. the expectation value 
+  // of Z is constant over time. In general, the expectation value of observables that commute with
+  // the Hamiltonian are conserved (see (1) pg 115)
+  // compare results to (1) Eq 4.27
+
+  // compute commutators of Pauli matrices (see (1) Eq. 4.26)
+  Mat XY = Mat::commutator(X, Y);  // 2*i*Z
+  Mat YZ = Mat::commutator(Y, Z);  // 2*i*X
+  Mat ZX = Mat::commutator(Z, X);  // 2*i*Y
+  int dummy = 0;
+
+  // ToDo: implement analytic solution 
+
   // Observations:
-  // -The real and imaginary parts of au and ad move sinusoidally.
+  // -The real and imaginary parts of au and ad move sinusoidally with a frequency determined by w
+  //  ->figure out the formula for the frequency (scale the time axis appropriately)
   // -when starting it |r> state, the sinusoidal amplitudes are all equal
   // -when starting in |u> state, u has amplitude 1 and d amplitude u, u.re is cosine and u.im is
   //  negative sine
@@ -684,8 +708,11 @@ bool quantumSpinEvolution()
   // -blue/black seem to be alway 90° shifted with respect to each other, same for grren/red
   // -Q: what's the phase-shift between the blue/black pair and the green/red pair? is this fixed
   //  or does it depend on the seed?
-  // -with a random start state, we my get any constant value for ez (around 0.4 for seed=420) and ex,ey
-  //  vary sinusodially
+  // -with a random start state, we my get any constant value for ez (around 0.4 for seed=420) and 
+  //  ex,ey vary sinusodially - but the frequency is higher than that of re/im components of u/d 
+  //  (twice as high? maybe that's because an absolute value is involved which itself involves 
+  //  taking squares? -> figure out)
+  // -ez always being a constant
   // todo:
   // -figure out, how the phase relationships depend on the initial state
   // -maybe try to find a "nice" initial state where 
@@ -703,6 +730,13 @@ bool quantumSpinEvolution()
   //  motion can be described by a system of two (real) differential equations 
   //  (iirc: x' = -y, y' = x or something), so everything fits.
   // -It seems, we are getting some sort of rotation in 4D space
+
+  // -According to Eq 4.17, for any observable represented by a matrix L, we have
+  //  (d/dt) <L> = (i/hBar) * <[H,L]>, where <L> is the expectation value of observable L and 
+  //  [H,L] is the commutator of H and L i.e. H*L-L*H (and <[H,L]> is its expectation value)
+  //  i*[H,L] is Hermitatian (i.ie an observable), if H and L are both Hermitian - the i is 
+  //  important, [H,L] itself is not Hermitian (says the book)
+  //  ->test this experimentally
 
   // todo: take as observable not the spin along the z-axis but along an arbitrary axis (i think, along 
   // the z-axis, the spin is constant anyway?
