@@ -624,46 +624,57 @@ bool quantumSpinEvolution()
 
   // Create an initial spin state:
   Vec Psi;
-  //QF::randomizeState(Psi, &prng);
+  QF::randomizeState(Psi, &prng);
   //QF::prepareUpState(Psi);
   //QF::prepareDownState(Psi);
   //QF::prepareRightState(Psi);
   //QF::prepareLeftState(Psi);
   //QF::prepareInState(Psi);
-  QF::prepareOutState(Psi);
+  //QF::prepareOutState(Psi);
 
-  double p = 0;             // phase - tweaking this is intersting
+  double p = 2;             // phase - tweaking this is intersting
   double k = 1 / sqrt(2.);  // to normalize the state
   double s = k * sin(p);
   double c = k * cos(p);
-  QF::prepareState(Psi, c, s, s, -c); 
+  //QF::prepareState(Psi, c, s, s, -c); 
 
-
-
-  // Define the Hamiltonian (Eq 4.23):
-  Mat H;
-  QF::setToPauliZ(H);
-  H = Complex(hBar*w/2) * H;
+  // create Pauli matrices and Hamiltonian (Eq 4.23):
+  Mat pauliX, pauliY, pauliZ;
+  QF::setToPauliX(pauliX);
+  QF::setToPauliY(pauliY);
+  QF::setToPauliZ(pauliZ);
+  Mat H = Complex(hBar*w/2) * pauliZ;
 
   // numerically integrate the time dependent Schrödinger equation using the forward Euler method:
   int n, N = 3000;
   Complex i(0, 1);  // imaginary unit
-  std::vector<Vec> stateTrajectory(N); // records the trajectory of our spin state Psi
-  double step = 0.01;                  // integration step size
-  Complex cStep = Complex(step);       // ...needs to be complexified 
-  for(n = 0; n < N; n++) {
+  std::vector<Vec> stateTrajectory(N);     // records the trajectory of our spin state Psi
+  std::vector<double> ex(N), ey(N), ez(N); // expectation values of spin component measurements
+  double step = 0.01;                      // integration step size
+  Complex cStep = Complex(step);           // ...needs to be complexified 
+  for(n = 0; n < N; n++) 
+  {
+    // record time series:
     stateTrajectory[n] = Psi;
+    ex[n] = QF::getExpectedMeasurement(pauliX, Psi);
+    ey[n] = QF::getExpectedMeasurement(pauliY, Psi);
+    ez[n] = QF::getExpectedMeasurement(pauliZ, Psi);
+
+    // update state:
     Vec dPsi = -i * H * Psi;   // (1) Eq 4.9 or 4.10 (time dependent Schrödinger equation)
     Psi = Psi + cStep * dPsi;  // forward Euler step
     QF::normalizeState(Psi);   // avoid divergence due to error build up
   }
   plotQuantumSpinStateTrajectory(stateTrajectory, step);
+  rsPlotVectors(ex, ey, ez);
+
 
   // Observations:
   // -The real and imaginary parts of au and ad move sinusoidally.
   // -when starting it |r> state, the sinusoidal amplitudes are all equal
   // -when starting in |u> state, u has amplitude 1 and d amplitude u, u.re is cosine and u.im is
   //  negative sine
+  //  -ez is constant 1 and ex, ey are constant 0
   // -when starting in |d> state, d.r = cos, d.i = sin, u.r = u.i = 0
   // -when starting in |i> state, u and d pairs actually are not phase-shifted with respect to one
   //  another
@@ -673,6 +684,8 @@ bool quantumSpinEvolution()
   // -blue/black seem to be alway 90° shifted with respect to each other, same for grren/red
   // -Q: what's the phase-shift between the blue/black pair and the green/red pair? is this fixed
   //  or does it depend on the seed?
+  // -with a random start state, we my get any constant value for ez (around 0.4 for seed=420) and ex,ey
+  //  vary sinusodially
   // todo:
   // -figure out, how the phase relationships depend on the initial state
   // -maybe try to find a "nice" initial state where 
@@ -703,6 +716,10 @@ bool quantumSpinEvolution()
 
   // todo: can we accumulate all the steps into a single big step represented by a matrix U(t) 
   // (the time-development operator, see Eq 4.1) that has accumulated all the little steps up to t?
+
+  // todo:
+  // Maybe this can be turned into an oscillatore ...like rsQuantumSpinOsc or something? it creates
+  // 4 sines that have a certain pahses relationship between them - can this be useful?
 
   return pass;
 }
