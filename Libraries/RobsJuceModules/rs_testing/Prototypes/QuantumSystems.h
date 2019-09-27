@@ -124,7 +124,8 @@ public:
   static void setToPauliY(Mat& M) { M.a = T(0); M.b = -i;   M.c = i;    M.d = T(0);  }
 
   /** Creates the Pauli vector which is the 3-vector of the 2x2 Pauli matrices. see (1) pg 83 or
-  https://en.wikipedia.org/wiki/Pauli_matrices#Pauli_vector */
+  https://en.wikipedia.org/wiki/Pauli_matrices#Pauli_vector - i think, on wikipedia, the 
+  (x,y,z)-hat vectors are simply the unit vectors in x,y,z directions of 3-space? */
   static rsVector3D<rsMatrix2x2<Complex>> pauliVector();
   // maybe move into a special section of factory functions
 

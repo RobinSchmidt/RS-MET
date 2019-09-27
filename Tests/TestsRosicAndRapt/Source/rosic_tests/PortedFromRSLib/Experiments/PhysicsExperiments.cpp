@@ -608,15 +608,17 @@ bool quantumSpinEvolution()
   //  (1) The Theoretical Minimum - Quantum Mechanics (Leonard Susskind, Art Friedman)
 
 
+  int n, N    = 2000;
+  double w    = 1;
+  double hBar = 1;     // we use https://en.wikipedia.org/wiki/Planck_units
+  // todo: let user define a B-vector (for the magnitic field) and use that for the Hamiltonian
+
+
   typedef std::complex<double> Complex;
   typedef rsQuantumSpinFunctions<double> QF;
   typedef rsVector2D<Complex>  Vec;
   typedef rsMatrix2x2<Complex> Mat;
 
-
-  int n, N    = 2000;
-  double w    = 1;
-  double hBar = 1;     // we use https://en.wikipedia.org/wiki/Planck_units
 
   // set up the random number generator to be used for measurements:
   rsNoiseGenerator<double> prng;
@@ -624,27 +626,29 @@ bool quantumSpinEvolution()
   prng.setRange(0.0, 1.0);
 
   // Create an initial spin state:
-  Vec Psi;
-  QF::randomizeState(Psi, &prng);
-  //QF::prepareUpState(Psi);
-  //QF::prepareDownState(Psi);
-  //QF::prepareRightState(Psi);
-  //QF::prepareLeftState(Psi);
-  //QF::prepareInState(Psi);
-  //QF::prepareOutState(Psi);
+  Vec Psi0;
+  QF::randomizeState(Psi0, &prng);
+  //QF::prepareUpState(Psi0);
+  //QF::prepareDownState(Psi0);
+  //QF::prepareRightState(Psi0);
+  //QF::prepareLeftState(Psi0);
+  //QF::prepareInState(Psi0);
+  //QF::prepareOutState(Psi0);
 
   double p = 2;             // phase - tweaking this is intersting
   double k = 1 / sqrt(2.);  // to normalize the state
   double s = k * sin(p);
   double c = k * cos(p);
-  //QF::prepareState(Psi, c, s, s, -c); 
+  //QF::prepareState(Psi0, c, s, s, -c); 
 
-  // create Pauli matrices and Hamiltonian (Eq 4.23):
+  // create Pauli matrices and Hamiltonian:
   Mat X, Y, Z;
-  QF::setToPauliX(X);
+  QF::setToPauliX(X);  // todo: get rid of creting them manually - use QF::pauliVector
   QF::setToPauliY(Y);
   QF::setToPauliZ(Z);
-  Mat H = Complex(hBar*w/2) * Z;
+  Mat H = Complex(hBar*w/2) * Z; // (1) Eq 4.23
+
+
 
   // numerically integrate the time dependent Schrödinger equation using the forward Euler method:
 
@@ -653,6 +657,7 @@ bool quantumSpinEvolution()
   std::vector<double> ex(N), ey(N), ez(N); // expectation values of spin component measurements
   double step = 0.01;                      // integration step size
   Complex cStep = Complex(step);           // ...needs to be complexified 
+  Vec Psi = Psi0;                          // initialize state vector Psi(t) = Psi(0)
   for(n = 0; n < N; n++) 
   {
     // record time series:
@@ -667,11 +672,41 @@ bool quantumSpinEvolution()
     QF::normalizeState(Psi);   // avoid divergence due to error build up
   }
   plotQuantumSpinStateTrajectory(stateTrajectory, step);
-  rsPlotVectors(ex, ey, ez);
+  //rsPlotVectors(ex, ey, ez);
+
+
+  // ToDo: 
+  // -implement analytic solution 
+  Vec E1 = H.eigenvector1();
+  Vec E2 = H.eigenvector2();
+  Complex e1  = H.eigenvalue1();
+  Complex e2  = H.eigenvalue2();
+  Complex a10 = QF::bracket(E1, Psi0);   // initial multiplier for E1, (1) Eq 4.31
+  Complex a20 = QF::bracket(E2, Psi0);   // initial multiplier for E2, (1) Eq 4.31
+  std::vector<Vec> stateTrajectory2(N);
+  Psi = Psi0;                            // re-initialize time dependent state vector
+  Complex a1, a2;                        // time dependent multipliers
+  for(n = 0; n < N; n++)
+  {
+    // compute state analytically:
+    double t = step * n;
+    a1  = a10 * exp(-i/hBar * e1 * t);  // (1) Eq 4.30
+    a2  = a20 * exp(-i/hBar * e2 * t);
+    Psi = a1*E1 + a2*E2;                // (1) Eq 4.29 
+
+    // record time series:
+    stateTrajectory2[n] = Psi;
+  }
+  plotQuantumSpinStateTrajectory(stateTrajectory2, step);
+
+  // compute error of numeric solution and plot it:
+  std::vector<Vec> error = stateTrajectory2 - stateTrajectory;
+  plotQuantumSpinStateTrajectory(error, step);
 
 
 
-  // Verify experiementally soem formulas in (1)
+
+  // Verify experiementally some formulas in (1)
 
   // compute commutators of the observables represented by the Pauli matrices X,Y,Z with the 
   // Hamiltonian H (see (1) Eq. 4.24):
@@ -689,8 +724,7 @@ bool quantumSpinEvolution()
   Mat YZ = Mat::commutator(Y, Z);  // 2*i*X
   Mat ZX = Mat::commutator(Z, X);  // 2*i*Y
 
-  // ToDo: 
-  // -implement analytic solution 
+ 
 
 
   // Define the sigma-vector, which is a 3-vector of Pauli matrices (pg 83,84):
