@@ -95,6 +95,12 @@ public:
   static void prepareInState(   Vec& A) { A.x = s; A.y =  s*i; }  // (1) Eq 2.10
   static void prepareOutState(  Vec& A) { A.x = s; A.y = -s*i; }  // (1) Eq 2.10
 
+
+  static void prepareState(Vec& A, T ur, T ui, T dr, T di)
+  {
+    A.x.real(ur); A.x.imag(ui); A.y.real(dr); A.y.imag(di);
+  }
+
    /** Normalizes the state such that the total probability is unity - which it must be for a valid 
   state. */
   static void normalizeState(Vec& A);

@@ -584,9 +584,9 @@ void plotQuantumSpinStateTrajectory(
   std::vector<T> t(N), dr(N), di(N), ur(N), ui(N);
   for(int n = 0; n < N; n++) {
     t[n] = n*dt;   // time axis
-    ur[n] = QF::getUpAmplitude(Psi[n]).real();
-    ui[n] = QF::getUpAmplitude(Psi[n]).imag();
-    dr[n] = QF::getDownAmplitude(Psi[n]).real(); // rename to DownAmplitude
+    ur[n] = QF::getUpAmplitude(  Psi[n]).real();
+    ui[n] = QF::getUpAmplitude(  Psi[n]).imag();
+    dr[n] = QF::getDownAmplitude(Psi[n]).real();
     di[n] = QF::getDownAmplitude(Psi[n]).imag();
   }
   GNUPlotter plt;
@@ -626,9 +626,19 @@ bool quantumSpinEvolution()
   Vec Psi;
   //QF::randomizeState(Psi, &prng);
   //QF::prepareUpState(Psi);
-  QF::prepareDownState(Psi);
+  //QF::prepareDownState(Psi);
   //QF::prepareRightState(Psi);
   //QF::prepareLeftState(Psi);
+  //QF::prepareInState(Psi);
+  QF::prepareOutState(Psi);
+
+  double p = 0;             // phase - tweaking this is intersting
+  double k = 1 / sqrt(2.);  // to normalize the state
+  double s = k * sin(p);
+  double c = k * cos(p);
+  QF::prepareState(Psi, c, s, s, -c); 
+
+
 
   // Define the Hamiltonian (Eq 4.23):
   Mat H;
@@ -651,20 +661,22 @@ bool quantumSpinEvolution()
 
   // Observations:
   // -The real and imaginary parts of au and ad move sinusoidally.
-  // -The amplitudes of the sinusoids seem to not depend on the seed of the prng, but the phases do.
-  //  -oh! not - that's wrong!
   // -when starting it |r> state, the sinusoidal amplitudes are all equal
   // -when starting in |u> state, u has amplitude 1 and d amplitude u, u.re is cosine and u.im is
   //  negative sine
   // -when starting in |d> state, d.r = cos, d.i = sin, u.r = u.i = 0
-  // -blue/black (au.re, au.im) have amplitude 0.32 and gren/red (ad.re, ad.im) have amplitude 0.95
-  // -blue/black seem to be 90° shifted with respect to each other, same for grren/red
+  // -when starting in |i> state, u and d pairs actually are not phase-shifted with respect to one
+  //  another
+  // -when starting in |o> state, u and d seem to be shfted 180° degrees 
+  //  ur = cos, ui = -sin, dr = sin, di = -cos - so we see the full qudruplet of phase shifts - a 
+  //  rather nice state to start with
+  // -blue/black seem to be alway 90° shifted with respect to each other, same for grren/red
   // -Q: what's the phase-shift between the blue/black pair and the green/red pair? is this fixed
   //  or does it depend on the seed?
   // todo:
   // -figure out, how the phase relationships depend on the initial state
   // -maybe try to find a "nice" initial state where 
-  //  u.re = cos, u.im = sin, d.re = -cos, d.im = -sin
+  //  u.re = cos(phi), u.im = sin(phi), d.re = -cos(phi), d.im = -sin(phi)
 
   // Notes:
   // -The time dependent Schrödinger equation dPsi = -i * H * Psi actually encapsulates a system of
