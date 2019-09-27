@@ -230,3 +230,52 @@ public:
 };
 template<class T> const T rsQuantumSpin<T>::s = T(1) / sqrt(T(2));
 template<class T> const std::complex<T> rsQuantumSpin<T>::i = std::complex<T>(0, 1);
+
+
+
+//=================================================================================================
+
+/**
+
+
+References:
+ (1) Simulating Quantum Computers Using OpenCL: https://arxiv.org/pdf/1805.00988.pdf
+     Source code: https://github.com/libtangle/qcgpu
+
+*/
+
+template<class T>
+class rsQuantumComputer
+{
+
+public:
+
+  typedef std::complex<T> Complex;
+  typedef rsVector2D<std::complex<T>> Vec;
+  typedef rsMatrix2x2<std::complex<T>> QGate;
+
+  rsQuantumComputer() { allocateMemory(); }
+
+
+  void applyGate(const QGate& g, int bitIndex);
+
+  /** Returns the nth number where a given digit is cleared in the binary representation of the 
+  number. */
+  static int nth_cleared(int n, int target)  
+  {
+    int mask = (1 << target ) - 1;
+    int not_mask = ~mask; 
+    return (n & mask) | ((n & not_mask ) << 1);
+  }
+
+
+
+protected:
+
+  void allocateMemory() { qbits.resize(numStates); }
+
+  int numQBits  = 5;
+  int numStates = 32; // = 2^numQBits
+  std::vector<Vec> qbits;
+
+};

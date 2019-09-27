@@ -611,10 +611,6 @@ public:
 // https://en.wikipedia.org/wiki/Quantum_logic_gate
 // https://medium.com/@jonathan_hui/qc-programming-with-quantum-gates-8996b667d256
 // https://medium.com/@jonathan_hui/qc-programming-with-quantum-gates-2-qubit-operator-871528d136db
-// i don't really understand, how the interaction between teh states via the gates works - how
-// do staes get entangled and how can we simulate this entanglement when applying gates? say
-// q1 is entengled with q2 and we apply pauli-x ("not") to q1. something should automatically
-// happen with q2, too - i guess....
 
 bool quantumGates()
 {  
@@ -634,11 +630,37 @@ bool quantumGates()
   q3 = q1;                   // q3 = q1 = |1)
   QG::pauliX(q3);            // q3 = |0> = q2, bcs Pauli-X acts as logical "not"
   pass &= q3 == q2;
+  //...or is |up> used as |0> and |down> as |1>? look up what is conventional
+  // seems so: https://en.wikipedia.org/wiki/Bloch_sphere
+
+
+  Mat2 pauliX; QS::setToPauliX(pauliX); // not gate
+
+
+  rsQuantumComputer<double> cmp;
+  cmp.applyGate(pauliX, 3);
+
+
 
 
   rsAssert(pass);
   return pass;
 }
+// i don't really understand, how the interaction between teh states via the gates works - how
+// do staes get entangled and how can we simulate this entanglement when applying gates? say
+// q1 is entengled with q2 and we apply pauli-x ("not") to q1. something should automatically
+// happen with q2, too - i guess....
+// https://www.monoidal.net/papers/tutorialqpl-1.pdf
+// https://www.monoidal.net/papers/tutorialqpl-2.pdf
+
+// see here - Quirk - a toy quantum computer simulator
+// https://www.youtube.com/watch?v=aloFwlBUwsQ
+// https://algassert.com/quirk
+// https://github.com/Strilanc/Quirk
+
+// this is a really good paper on how to simulate a quantum computer
+// https://arxiv.org/pdf/1805.00988.pdf
+
 
 
 template<class T>
@@ -851,9 +873,13 @@ bool quantumSpinEvolution()
   // todo: can we accumulate all the steps into a single big step represented by a matrix U(t) 
   // (the time-development operator, see Eq 4.1) that has accumulated all the little steps up to t?
 
+
   // todo:
   // Maybe this can be turned into an oscillatore ...like rsQuantumSpinOsc or something? it creates
   // 4 sines that have a certain pahses relationship between them - can this be useful?
+
+  // see also:
+  // https://en.wikipedia.org/wiki/Quantum_state#Pure_states
 
   return pass;
 }

@@ -171,3 +171,52 @@ and doesn't consider the others at all - it should also not call the states "up"
 |1> and |0> respectively - it's more abstract and needs less "physical" features
 
 */
+//=================================================================================================
+
+
+template<class T>
+void rsQuantumComputer<T>::applyGate(const QGate& g, int t)
+{
+  std::vector<Vec> tmp = qbits;  
+  // silly - make this tmp a member - hmm - but the code int the paper doesn't use a temporary
+  // array - it only uses local temporaries during the update of the two amplitudes
+
+  int iMax = pow(2, numQBits-1);
+
+  //for(int i = 0; i < numStates; i++)
+  for(int i = 0; i < iMax; i++) // the paper says i goes to 2^(n-1) but then the last gives an access violation
+  {
+    int a = nth_cleared(i, t);
+    int b = a | (1 << t);
+    // with numQBits = 4, numStates = 16, b gets larger than 15 - but that would mean an access
+    // violation - something must be wrong here (the code is taken from (1)) - they call it with
+    // global_id - yeas - that seems to correspond to teh loop index:
+    // https://www.khronos.org/registry/OpenCL/sdk/1.0/docs/man/xhtml/get_global_id.html
+    // could it have to do with the number representation? maybe we should use unsigned ints?
+    // ...nope - that doesn't seem to make any difference
+    // int in OpenCL is a 32-bit signed int in two's complement - that should be fine...
+    // https://www.khronos.org/registry/OpenCL/sdk/1.0/docs/man/xhtml/scalarDataTypes.html
+    // todo: maybe figure out a function for the n-th digit clear myself (maybe an ineeficient 
+    // one)
+    // ...maybe we must additionally mask by numStates? but the paper says no such thing - might 
+    // this be done implieitly by OpenCL? a sort of auto-wrap around? or do the bitwise 
+    // operators work differently?
+    // https://www.khronos.org/registry/OpenCL//sdk/2.2/docs/man/html/bitwiseOperators.html
+    // maybe check out the actual source code - maybe the code in the paper is buggy?
+
+    // oh no - the text says: "The structure of the algorithm is a for loop through have the 
+    // number of amplitudes." .....and that "have" probably means "half"?
+    // ...but even that gives an access violation on the last index (if we use 
+    // i <= pow(2, numQBits-1)) - perhaps it should be < instead of <=
+    // ..ok - no access violation anymore - but with so much guesswork necessarry, who knowsm 
+    // what else is wrong (i think, i probably should no use a tempoprary array)
+    // ...how can we verify, if the algo does the right thing?
+
+
+    qbits[a] = g.a * tmp[a] + g.b * tmp[b];
+    qbits[b] = g.c * tmp[a] + g.d * tmp[b];
+    int dummy = 0;
+  }
+
+  // see also https://quantum-journal.org/papers/q-2018-01-31-49/pdf/?
+}
