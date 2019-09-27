@@ -179,12 +179,15 @@ void rsQuantumComputer<T>::applyGate(const QGate& g, int t)
 {
   std::vector<Vec> tmp = qbits;  
   // silly - make this tmp a member - hmm - but the code int the paper doesn't use a temporary
-  // array - it only uses local temporaries during the update of the two amplitudes
+  // array - it only uses local temporaries during the update of the two amplitudes - i think, it 
+  // makes no difference - each index appears exactly once in the loop, so there should be no
+  // issues of overwriting and then reading a state again
 
   int iMax = pow(2, numQBits-1);
 
   //for(int i = 0; i < numStates; i++)
-  for(int i = 0; i < iMax; i++) // the paper says i goes to 2^(n-1) but then the last gives an access violation
+  for(int i = 0; i < iMax; i++) 
+    // the paper says i goes to 2^(n-1) but then the last gives an access violation (n=4,t=3)
   {
     int a = nth_cleared(i, t);
     int b = a | (1 << t);

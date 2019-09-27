@@ -274,8 +274,8 @@ protected:
 
   void allocateMemory() { qbits.resize(numStates); }
 
-  int numQBits  = 5;
-  int numStates = 32; // = 2^numQBits
-  std::vector<Vec> qbits;
+  int numQBits  = 4;
+  int numStates = 16; // = 2^numQBits
+  std::vector<Vec> qbits;  // these are actually the states
 
 };

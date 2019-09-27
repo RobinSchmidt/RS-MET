@@ -638,6 +638,9 @@ bool quantumGates()
 
 
   rsQuantumComputer<double> cmp;
+  cmp.applyGate(pauliX, 0);
+  cmp.applyGate(pauliX, 1);
+  cmp.applyGate(pauliX, 2);
   cmp.applyGate(pauliX, 3);
 
 
