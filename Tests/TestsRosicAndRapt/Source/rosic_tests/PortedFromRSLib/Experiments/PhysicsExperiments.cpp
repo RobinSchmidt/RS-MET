@@ -576,14 +576,14 @@ bool quantumSpinMeasurement()
 
 
 template<class T>
-class rsQuantumGates
+class rsQuantumGate
 {
 
 public:
 
   typedef rsVector2D<std::complex<T>> QBit;
 
-
+  /** Acts as a logical "not" on a single qubit. */
   static void pauliX(QBit& q) 
   {
     QBit t = q;  // temporary
@@ -611,11 +611,29 @@ public:
 // https://en.wikipedia.org/wiki/Quantum_logic_gate
 // https://medium.com/@jonathan_hui/qc-programming-with-quantum-gates-8996b667d256
 // https://medium.com/@jonathan_hui/qc-programming-with-quantum-gates-2-qubit-operator-871528d136db
+// i don't really understand, how the interaction between teh states via the gates works - how
+// do staes get entangled and how can we simulate this entanglement when applying gates? say
+// q1 is entengled with q2 and we apply pauli-x ("not") to q1. something should automatically
+// happen with q2, too - i guess....
 
 bool quantumGates()
 {  
   bool pass = true;  // move to unit tests
 
+  typedef std::complex<double> Complex;
+  typedef rsVector2D<Complex> QBit;
+  typedef rsQuantumSpin<double> QS;
+  typedef rsQuantumGate<double> QG;
+  typedef rsMatrix2x2<Complex> Mat2;  // for comparing actions of QG to matrix multiplications
+
+  QBit q1, q2, q3, q4;  // a couple of qbits
+
+  // test Pauli-X:
+  QS::prepareUpState(q1);    // q1 = |1>  (up)
+  QS::prepareDownState(q2);  // q2 = |0>  (down)
+  q3 = q1;                   // q3 = q1 = |1)
+  QG::pauliX(q3);            // q3 = |0> = q2, bcs Pauli-X acts as logical "not"
+  pass &= q3 == q2;
 
 
   rsAssert(pass);
