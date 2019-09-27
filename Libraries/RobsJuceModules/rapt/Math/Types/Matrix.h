@@ -93,6 +93,14 @@ public:
 
 };
 
+/** Multiplies a scalar and a matrix. */
+template<class T>
+inline rsMatrix2x2<T> operator*(const T& s, const rsMatrix2x2<T>& A)
+{
+  return rsMatrix2x2<T>(s*A.a, s*A.b, s*A.c, s*A.d);
+}
+
+
 //=================================================================================================
 
 /** This is a class for treating C-arrays as matrices. It does not store/own the actual matrix 

@@ -888,23 +888,19 @@ bool quantumSpinMeasurement2()
   return pass;
 }
 
-
 template<class T>
-//void plotQuantumSpinStateTrajectory(
-//  const std::vector<rsQuantumSpin<T>>& Psi, T dt)
 void plotQuantumSpinStateTrajectory(
   const std::vector<rsVector2D<std::complex<T>>>& Psi, T dt)
 {
+  typedef rsQuantumSpinFunctions<double> QF;
   int N = (int) Psi.size();
   std::vector<T> t(N), dr(N), di(N), ur(N), ui(N);
   for(int n = 0; n < N; n++) {
     t[n] = n*dt;   // time axis
-
-
-    dr[n] = Psi[n].getDownAmplitude().real(); // rename to DownAmplitude
-    di[n] = Psi[n].getDownAmplitude().imag();
-    ur[n] = Psi[n].getUpAmplitude().real();
-    ui[n] = Psi[n].getUpAmplitude().imag();
+    dr[n] = QF::getDownAmplitude(Psi[n]).real(); // rename to DownAmplitude
+    di[n] = QF::getDownAmplitude(Psi[n]).imag();
+    ur[n] = QF::getUpAmplitude(Psi[n]).real();
+    ui[n] = QF::getUpAmplitude(Psi[n]).imag();
   }
   GNUPlotter plt;
   plt.addDataArrays(N, &t[0], &dr[0], &di[0], &ur[0], &ui[0]);
@@ -915,9 +911,13 @@ bool quantumSpinEvolution()
 {
   bool pass = true;   // move to unit tests
 
-  typedef rsQuantumSpin<double>  QS;
-  typedef rsSpinOperator<double> QSO;
+  //typedef rsQuantumSpin<double>  QS;
+  //typedef rsSpinOperator<double> QSO;
   typedef std::complex<double> Complex;
+  typedef rsQuantumSpinFunctions<double> QF;
+  typedef rsVector2D<Complex>  Vec;
+  typedef rsMatrix2x2<Complex> Mat;
+
 
   double w    = 1;
   double hBar = 1; // we use https://en.wikipedia.org/wiki/Planck_units
@@ -927,30 +927,36 @@ bool quantumSpinEvolution()
   prng.setRange(0.0, 1.0);
 
   // Create an initial spin state:
-  QS Psi;
-  //Psi.prepareLeftState();
-  //Psi.prepareRightState();
-  Psi.randomizeState(&prng);
+  Vec Psi;
+  QF::randomizeState(Psi, &prng);
 
   // Define the Hamiltonian (Eq 4.23):
-  QSO H;
-  H.setToPauliZ();
+  Mat H;
+  QF::setToPauliZ(H);
   H = Complex(hBar*w/2) * H;
-
 
   // numerically integrate the time dependent Schrödinger equation using the forward Euler method:
   int n, N = 3000;
   Complex i(0, 1);  // imaginary unit
-  std::vector<QS> stateTrajectory(N); // records the trajectory of our spin state Psi
-  double step = 0.01;                 // integration step size
-  Complex cStep = Complex(step);      // ...needs to be complexified 
+  std::vector<Vec> stateTrajectory(N); // records the trajectory of our spin state Psi
+  double step = 0.01;                  // integration step size
+  Complex cStep = Complex(step);       // ...needs to be complexified 
   for(n = 0; n < N; n++) {
     stateTrajectory[n] = Psi;
-    QS dPsi = -i * H * Psi;   // (1) Eq 4.9 or 4.10 (time dependent Schrödinger equation)
-    Psi = Psi + cStep * dPsi; // forward Euler step
-    Psi.normalize();          // avoid divergence due to error build up
+    Vec dPsi = -i * H * Psi;   // (1) Eq 4.9 or 4.10 (time dependent Schrödinger equation)
+    Psi = Psi + cStep * dPsi;  // forward Euler step
+    QF::normalizeState(Psi);   // avoid divergence due to error build up
   }
   plotQuantumSpinStateTrajectory(stateTrajectory, step);
+
+
+  // Notes:
+  // -The time dependent Schrödinger equation dPsi = -i * H * Psi actually encapsulates a system of
+  //  4 differential equations - the state vector Psi has two elements and each is a complex number 
+  //  (todo: write the 4 equations out in full). If the state vector would be N-dimensional, it 
+  //  would be a system of 2*N (first order) differential equations. If the state "vector" would be 
+  //  a continuous function, it would be a partial differential equation and H would be a continuous
+  //  differntial operator (right?).
 
   // todo: factor out the computation of a state trajectory, given an initial state, a Hamiltonian
   // a number of steps and a step-size
