@@ -584,13 +584,13 @@ void plotQuantumSpinStateTrajectory(
   std::vector<T> t(N), dr(N), di(N), ur(N), ui(N);
   for(int n = 0; n < N; n++) {
     t[n] = n*dt;   // time axis
-    dr[n] = QF::getDownAmplitude(Psi[n]).real(); // rename to DownAmplitude
-    di[n] = QF::getDownAmplitude(Psi[n]).imag();
     ur[n] = QF::getUpAmplitude(Psi[n]).real();
     ui[n] = QF::getUpAmplitude(Psi[n]).imag();
+    dr[n] = QF::getDownAmplitude(Psi[n]).real(); // rename to DownAmplitude
+    di[n] = QF::getDownAmplitude(Psi[n]).imag();
   }
   GNUPlotter plt;
-  plt.addDataArrays(N, &t[0], &dr[0], &di[0], &ur[0], &ui[0]);
+  plt.addDataArrays(N, &t[0],  &ur[0], &ui[0], &dr[0], &di[0]);
   plt.plot();
 }
 
@@ -619,11 +619,16 @@ bool quantumSpinEvolution()
 
   // set up the random number generator to be used for measurements:
   rsNoiseGenerator<double> prng;
+  prng.setSeed(420);
   prng.setRange(0.0, 1.0);
 
   // Create an initial spin state:
   Vec Psi;
-  QF::randomizeState(Psi, &prng);
+  //QF::randomizeState(Psi, &prng);
+  //QF::prepareUpState(Psi);
+  QF::prepareDownState(Psi);
+  //QF::prepareRightState(Psi);
+  //QF::prepareLeftState(Psi);
 
   // Define the Hamiltonian (Eq 4.23):
   Mat H;
@@ -644,6 +649,22 @@ bool quantumSpinEvolution()
   }
   plotQuantumSpinStateTrajectory(stateTrajectory, step);
 
+  // Observations:
+  // -The real and imaginary parts of au and ad move sinusoidally.
+  // -The amplitudes of the sinusoids seem to not depend on the seed of the prng, but the phases do.
+  //  -oh! not - that's wrong!
+  // -when starting it |r> state, the sinusoidal amplitudes are all equal
+  // -when starting in |u> state, u has amplitude 1 and d amplitude u, u.re is cosine and u.im is
+  //  negative sine
+  // -when starting in |d> state, d.r = cos, d.i = sin, u.r = u.i = 0
+  // -blue/black (au.re, au.im) have amplitude 0.32 and gren/red (ad.re, ad.im) have amplitude 0.95
+  // -blue/black seem to be 90° shifted with respect to each other, same for grren/red
+  // -Q: what's the phase-shift between the blue/black pair and the green/red pair? is this fixed
+  //  or does it depend on the seed?
+  // todo:
+  // -figure out, how the phase relationships depend on the initial state
+  // -maybe try to find a "nice" initial state where 
+  //  u.re = cos, u.im = sin, d.re = -cos, d.im = -sin
 
   // Notes:
   // -The time dependent Schrödinger equation dPsi = -i * H * Psi actually encapsulates a system of
@@ -651,7 +672,11 @@ bool quantumSpinEvolution()
   //  (todo: write the 4 equations out in full). If the state vector would be N-dimensional, it 
   //  would be a system of 2*N (first order) differential equations. If the state "vector" would be 
   //  a continuous function, it would be a partial differential equation and H would be a continuous
-  //  differntial operator (right?).
+  //  differential operator (right?). Maybe it's also worthwhile to think about the trivial quantum
+  //  system that has only a single possible value to be measured, i.e. N=1. I think, in this case,
+  //  the Schrödinger equation just rotates a single complex number around the unit circle? Such a 
+  //  motion can be described by a system of two (real) differential equations 
+  //  (iirc: x' = -y, y' = x or something), so everything fits.
   // -It seems, we are getting some sort of rotation in 4D space
 
   // todo: take as observable not the spin along the z-axis but along an arbitrary axis (i think, along 
