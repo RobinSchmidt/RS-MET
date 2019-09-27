@@ -688,9 +688,26 @@ bool quantumSpinEvolution()
   Mat XY = Mat::commutator(X, Y);  // 2*i*Z
   Mat YZ = Mat::commutator(Y, Z);  // 2*i*X
   Mat ZX = Mat::commutator(Z, X);  // 2*i*Y
-  int dummy = 0;
 
-  // ToDo: implement analytic solution 
+  // ToDo: 
+  // -implement analytic solution 
+
+
+  // Define the sigma-vector, which is a 3-vector of Pauli matrices (pg 83,84):
+  rsVector3D<rsMatrix2x2<Complex>> sigma1(X, Y, Z);
+  rsVector3D<rsMatrix2x2<Complex>> sigma2 = QF::pauliVector();
+  int dummy = 0;
+  // maybe encapsulate that - move into rsQuantumSpinFunctions - pauliSigmaVector or something
+  // https://blog.cupcakephysics.com/math%20methods/quantum%20field%20theory/2014/10/19/the-pauli-vector-and-lie-groups-part-1.html
+  // https://en.wikipedia.org/wiki/Pauli_matrices#Pauli_vector
+  // i think, on wikipedia, the (x,y,z)-hat vectors are simply the unit vectors in x,y,z 
+  // direction of 3-space?
+
+  // todo: form the scalar product sigma * B where B is the 3 vector defining the magnetic field
+  // (page 116)
+
+
+
 
   // Observations:
   // -The real and imaginary parts of au and ad move sinusoidally with a frequency determined by w

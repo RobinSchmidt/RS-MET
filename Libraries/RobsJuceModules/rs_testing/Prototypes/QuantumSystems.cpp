@@ -1,3 +1,12 @@
+template<class T>
+rsVector3D<rsMatrix2x2<std::complex<T>>> rsQuantumSpinFunctions<T>::pauliVector() 
+{
+  rsVector3D<rsMatrix2x2<Complex>> sigma;
+  setToPauliX(sigma.x);
+  setToPauliY(sigma.y);
+  setToPauliZ(sigma.z);
+  return sigma;
+}
 
 // state setup:
 

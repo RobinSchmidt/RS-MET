@@ -144,7 +144,7 @@ public:
   T x, y, z;
 
   /** Constructor. Initializes coordinates with the passed values. */
-  rsVector3D(T _x = 0, T _y = 0, T _z = 0) : x(_x), y(_y), z(_z) {}
+  rsVector3D(T _x = T(0), T _y = T(0), T _z = T(0)) : x(_x), y(_y), z(_z) {}
     // for optimization, make a constructor without initialization
 
   /** Returns the squared Euclidean norm of this vector. */

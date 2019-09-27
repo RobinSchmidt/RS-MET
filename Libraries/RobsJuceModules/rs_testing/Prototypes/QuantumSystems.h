@@ -73,6 +73,7 @@ class rsQuantumSpinFunctions
 
 public:
 
+  typedef std::complex<T> Complex;
   typedef rsVector2D<std::complex<T>>  Vec;
   typedef rsMatrix2x2<std::complex<T>> Mat;
   typedef rsNoiseGenerator<T> PRNG;
@@ -121,6 +122,11 @@ public:
 
   /** Measurement operator for spin along the y-axis. Returns +1 for in, -1 for out. */
   static void setToPauliY(Mat& M) { M.a = T(0); M.b = -i;   M.c = i;    M.d = T(0);  }
+
+  /** Creates the Pauli vector which is the 3-vector of the 2x2 Pauli matrices. see (1) pg 83 or
+  https://en.wikipedia.org/wiki/Pauli_matrices#Pauli_vector */
+  static rsVector3D<rsMatrix2x2<Complex>> pauliVector();
+  // maybe move into a special section of factory functions
 
   // todo: void rotate(rotX, rotY), hadamard, cnot, etc
 
