@@ -1,3 +1,15 @@
+
+// state setup:
+
+template<class T>
+void rsQuantumSpinFunctions<T>::normalizeState(Vec& A)
+{
+  T r = sqrt(T(1) / getTotalProbability(A));  
+  // or 1/sqrt(t) instead of sqrt(1/t)? - which one is better numerically?
+  A.x *= r;
+  A.y *= r;
+}
+
 template<class T>
 void rsQuantumSpinFunctions<T>::randomizeState(Vec& v, PRNG* prng)
 {
@@ -12,6 +24,15 @@ void rsQuantumSpinFunctions<T>::randomizeState(Vec& v, PRNG* prng)
   v.x = std::polar(Pu, pu);
   v.y = std::polar(Pd, pd);
   // exchange x,y - have amount parameter
+}
+
+// inquiry:
+
+template<class T>
+T rsQuantumSpinFunctions<T>::getStateProbability(const Vec& A, const Vec& t)
+{
+  std::complex<T> r = bracket(A,t) * bracket(t,A); // (1), Eq 3.11 (with lambda_i replaced by t)
+  return r.real();                                 // imag should be zero
 }
 
 template<class T>
@@ -32,9 +53,12 @@ T rsQuantumSpinFunctions<T>::getExpectedMeasurement(const Mat& M, const Vec& A)
   //T E = (A * (M * A)).real();
   // use a function E = bracket(A, M, A) that takes two kets and a matrix, converts the 1st into 
   // a bra and computes the inner product
+  // todo: make this code work again
 
   return E;
 }
+
+// measurement:
 
 template<class T>
 T rsQuantumSpinFunctions<T>::measureObservable(Vec& A, const Mat& M, rsNoiseGenerator<T>* prng)
@@ -74,7 +98,7 @@ T rsQuantumSpinFunctions<T>::measureSpinZ(Vec& A, rsNoiseGenerator<T>* prng)
 {
   //T Pd  = getStateProbability(A, down());       // (1) Eq 2.2
   T Pd = getDownProbability(A);
-  //T Pd  = getSquaredNorm(x);   // more efficient
+  //T Pd  = getSquaredNorm(x);   // more efficient - uncomment again
   T rnd = prng->getSample();
   if(rnd <= Pd) {       // should it be <= or < ?
     prepareDownState(A);

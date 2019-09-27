@@ -97,12 +97,7 @@ public:
 
    /** Normalizes the state such that the total probability is unity - which it must be for a valid 
   state. */
-  static void normalizeState(Vec& A)
-  {
-    T r = sqrt(T(1) / getTotalProbability(A));  // or 1/sqrt(t) instead of sqrt(1/t) - which one is better numerically?
-    A.x *= r;
-    A.y *= r;
-  }
+  static void normalizeState(Vec& A);
 
   /** Randomizes the state....todo: allow to specify an amount between 0 and 1 - can be used to 
   inject noise to simulate quantum decoherence */
@@ -134,20 +129,18 @@ public:
   { return conj(A.x) * B.x + conj(A.y) * B.y; }
 
   /** Returns the probability amplitude to measure an "up" configuration when z-spin is
-  measured and the system is in state A. */
+  measured and the system is in state A. If we denote this amplitude by au, it is given by
+  au = <u|A> = (u1, u2)^H * (A.x, A.y) = (1, 0)^H * (A.x, A.y)= A.x. 
+  (see (1) Eq 2.1 with 2.11 for |u>) */
   static std::complex<T> getUpAmplitude(const Vec& A) { return A.x; }
-  // au = <u|A> = (u1, u2)^H * (A.x, A.y) = (1, 0)^H * (A.x, A.y)= A.x
-  // see Eq 2.1, 2.11, 2.12
-
+  
+  /** Returns the probability amplitude to measure a "down" configuration when z-spin is
+  measured and the system is in state A. It's given by
+  ad = <d|A> = (d1, d2)^H * (A.x, A.y) = (0, 1)^H * (A.x, A.y)= A.y  */
   static std::complex<T> getDownAmplitude(const Vec& A) { return A.y; }
-  // ad = <d|A> = (d1, d2)^H * (A.x, A.y) = (0, 1)^H * (A.x, A.y)= A.y
 
   /** Returns the probability to measure a target state t when a system is in state A. */
-  static T getStateProbability(const Vec& A, const Vec& t)
-  {
-    std::complex<T> r = bracket(A,t) * bracket(t,A); // (1), Eq 3.11 (with lambda_i replaced by t)
-    return r.real();                                 // imag should be zero
-  }
+  static T getStateProbability(const Vec& A, const Vec& t);
 
   /** Returns the probability for the given state A to be measured in "down" configuration. */
   static T getUpProbability(   const Vec& A) { return getStateProbability(A, up());    } 

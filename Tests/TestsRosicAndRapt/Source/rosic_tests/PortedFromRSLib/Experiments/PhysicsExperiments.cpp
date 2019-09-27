@@ -596,10 +596,18 @@ void plotQuantumSpinStateTrajectory(
 
 bool quantumSpinEvolution()
 {
-  bool pass = true;   // move to unit tests
+  bool pass = true;   // move to unit tests - or maybe not
 
-  //typedef rsQuantumSpin<double>  QS;
-  //typedef rsSpinOperator<double> QSO;
+  // Simulates a spin (i.e. a spinning electron) in a magnetic field as explained in (1) pg 116 ff. 
+  // The magnetic field is aligned with the z-axis. For a classical spinning charge, the energy of 
+  // the system is proportional to the dot product of the spin and the field. In quantum mechanics,
+  // the Hamiltonian H is proportional to the z-spin operator (the observable associated with the
+  // Pauli matrix sigma_z. ....
+  //
+  // References:
+  //  (1) The Theoretical Minimum - Quantum Mechanics (Leonard Susskind, Art Friedman)
+
+
   typedef std::complex<double> Complex;
   typedef rsQuantumSpinFunctions<double> QF;
   typedef rsVector2D<Complex>  Vec;
@@ -644,6 +652,10 @@ bool quantumSpinEvolution()
   //  would be a system of 2*N (first order) differential equations. If the state "vector" would be 
   //  a continuous function, it would be a partial differential equation and H would be a continuous
   //  differntial operator (right?).
+  // -It seems, we are getting some sort of rotation in 4D space
+
+  // todo: take as observable not the spin along the z-axis but along an arbitrary axis (i think, along 
+  // the z-axis, the spin is constant anyway?
 
   // todo: factor out the computation of a state trajectory, given an initial state, a Hamiltonian
   // a number of steps and a step-size
