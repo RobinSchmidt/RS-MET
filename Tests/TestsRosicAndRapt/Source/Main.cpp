@@ -103,8 +103,7 @@ int main(int argc, char* argv[])
   //heatEquation1D();
   //particleForceDistanceLaw();
   //particleSystem();
-  //quantumSpinMeasurement();   // obsolete soon - the stuff has been re-implemented procedurally
-  quantumSpinMeasurement2();
+  quantumSpinMeasurement2();  // rename
   quantumSpinEvolution();
   //tennisRacket();
   //tennisRacket2();
