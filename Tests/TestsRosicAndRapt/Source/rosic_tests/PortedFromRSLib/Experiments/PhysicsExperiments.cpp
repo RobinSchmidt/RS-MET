@@ -602,23 +602,29 @@ bool quantumSpinEvolution()
   // The magnetic field is aligned with the z-axis. For a classical spinning charge, the energy of 
   // the system is proportional to the dot product of the spin and the field. In quantum mechanics,
   // the Hamiltonian H is proportional to the z-spin operator (the observable associated with the
-  // Pauli matrix sigma_z. ....
+  // Pauli matrix sigma_z). We solve the time dependent Schrödinger equation both numerically  and
+  // analytically and plot the trajectories of the real and imaginary parts of the probability 
+  // amplitudes of |u> and |d> ("up" and "down"). From the numeric solution, we also plot the 
+  // expectation values of the spin measurements along the 3 axes. The expectation value for the 
+  // z-spin is constant while the other two oscillate. We also plot the difference between analytic
+  // an numeric solution representig the error of the numerical solver algorithm (which is forward 
+  // Euler)
   //
   // References:
   //  (1) The Theoretical Minimum - Quantum Mechanics (Leonard Susskind, Art Friedman)
 
-
-  int n, N    = 2000;
-  double w    = 1;
+  int n, N    = 2000;  // loop index and number of samples
+  double w    = 1;     // angular frequency?
   double hBar = 1;     // we use https://en.wikipedia.org/wiki/Planck_units
-  // todo: let user define a B-vector (for the magnitic field) and use that for the Hamiltonian
 
+  // todo: let user define a B-vector (for the magnitic field) and use that for the Hamiltonian by
+  // forming the scalar product sigma * B where B is the 3 vector defining the magnetic field
+  // ((1) page 116)
 
   typedef std::complex<double> Complex;
   typedef rsQuantumSpinFunctions<double> QF;
   typedef rsVector2D<Complex>  Vec;
   typedef rsMatrix2x2<Complex> Mat;
-
 
   // set up the random number generator to be used for measurements:
   rsNoiseGenerator<double> prng;
@@ -642,16 +648,11 @@ bool quantumSpinEvolution()
   //QF::prepareState(Psi0, c, s, s, -c); 
 
   // create Pauli matrices and Hamiltonian:
-  Mat X, Y, Z;
-  QF::setToPauliX(X);  // todo: get rid of creting them manually - use QF::pauliVector
-  QF::setToPauliY(Y);
-  QF::setToPauliZ(Z);
-  Mat H = Complex(hBar*w/2) * Z; // (1) Eq 4.23
+  rsVector3D<rsMatrix2x2<Complex>> sigma = QF::pauliVector();
+  Mat H = Complex(hBar*w/2) * sigma.z; // (1) Eq 4.23
 
 
-
-  // numerically integrate the time dependent Schrödinger equation using the forward Euler method:
-
+  // Solve the time dependent Schrödinger equation numerically using the forward Euler method:
   Complex i(0, 1);  // imaginary unit
   std::vector<Vec> stateTrajectory(N);     // records the trajectory of our spin state Psi
   std::vector<double> ex(N), ey(N), ez(N); // expectation values of spin component measurements
@@ -662,9 +663,9 @@ bool quantumSpinEvolution()
   {
     // record time series:
     stateTrajectory[n] = Psi;
-    ex[n] = QF::getExpectedMeasurement(X, Psi);
-    ey[n] = QF::getExpectedMeasurement(Y, Psi);
-    ez[n] = QF::getExpectedMeasurement(Z, Psi);
+    ex[n] = QF::getExpectedMeasurement(sigma.x, Psi);
+    ey[n] = QF::getExpectedMeasurement(sigma.y, Psi);
+    ez[n] = QF::getExpectedMeasurement(sigma.z, Psi);
 
     // update state:
     Vec dPsi = -i * H * Psi;   // (1) Eq 4.9 or 4.10 (time dependent Schrödinger equation)
@@ -672,11 +673,11 @@ bool quantumSpinEvolution()
     QF::normalizeState(Psi);   // avoid divergence due to error build up
   }
   plotQuantumSpinStateTrajectory(stateTrajectory, step);
-  //rsPlotVectors(ex, ey, ez);
+  rsPlotVectors(ex, ey, ez);
 
 
-  // ToDo: 
-  // -implement analytic solution 
+  // Solve the time dependent Schrödinger equation analytically using the "Recipe for a 
+  // Schrödinger Ket" in (1):
   Vec E1 = H.eigenvector1();
   Vec E2 = H.eigenvector2();
   Complex e1  = H.eigenvalue1();
@@ -699,20 +700,20 @@ bool quantumSpinEvolution()
   }
   plotQuantumSpinStateTrajectory(stateTrajectory2, step);
 
-  // compute error of numeric solution and plot it:
+  // Compute error of numeric solution and plot it:
   std::vector<Vec> error = stateTrajectory2 - stateTrajectory;
   plotQuantumSpinStateTrajectory(error, step);
 
 
 
 
-  // Verify experiementally some formulas in (1)
+  // Verify experimentally some formulas in (1):
 
   // compute commutators of the observables represented by the Pauli matrices X,Y,Z with the 
   // Hamiltonian H (see (1) Eq. 4.24):
-  Mat ZH = Mat::commutator(Z, H);  // 0
-  Mat XH = Mat::commutator(X, H);
-  Mat YH = Mat::commutator(Y, H);
+  Mat ZH = Mat::commutator(sigma.z, H);  // 0
+  Mat XH = Mat::commutator(sigma.x, H);
+  Mat YH = Mat::commutator(sigma.y, H);
   // ZH is the zero matrix. This implies that (d/dt) <Z> = (-i/hBar) * <[Z,H]> = 0 (Eq 4.18). This 
   // means that the change (with time) of the expectation value is zero, i.e. the expectation value 
   // of Z is constant over time. In general, the expectation value of observables that commute with
@@ -720,29 +721,11 @@ bool quantumSpinEvolution()
   // compare results to (1) Eq 4.27
 
   // compute commutators of Pauli matrices (see (1) Eq. 4.26)
-  Mat XY = Mat::commutator(X, Y);  // 2*i*Z
-  Mat YZ = Mat::commutator(Y, Z);  // 2*i*X
-  Mat ZX = Mat::commutator(Z, X);  // 2*i*Y
+  Mat XY = Mat::commutator(sigma.x, sigma.y);  // 2*i*Z
+  Mat YZ = Mat::commutator(sigma.y, sigma.z);  // 2*i*X
+  Mat ZX = Mat::commutator(sigma.z, sigma.x);  // 2*i*Y
 
  
-
-
-  // Define the sigma-vector, which is a 3-vector of Pauli matrices (pg 83,84):
-  rsVector3D<rsMatrix2x2<Complex>> sigma1(X, Y, Z);
-  rsVector3D<rsMatrix2x2<Complex>> sigma2 = QF::pauliVector();
-  int dummy = 0;
-  // maybe encapsulate that - move into rsQuantumSpinFunctions - pauliSigmaVector or something
-  // https://blog.cupcakephysics.com/math%20methods/quantum%20field%20theory/2014/10/19/the-pauli-vector-and-lie-groups-part-1.html
-  // https://en.wikipedia.org/wiki/Pauli_matrices#Pauli_vector
-  // i think, on wikipedia, the (x,y,z)-hat vectors are simply the unit vectors in x,y,z 
-  // direction of 3-space?
-
-  // todo: form the scalar product sigma * B where B is the 3 vector defining the magnetic field
-  // (page 116)
-
-
-
-
   // Observations:
   // -The real and imaginary parts of au and ad move sinusoidally with a frequency determined by w
   //  ->figure out the formula for the frequency (scale the time axis appropriately)
