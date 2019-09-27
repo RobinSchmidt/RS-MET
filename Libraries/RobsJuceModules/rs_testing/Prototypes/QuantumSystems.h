@@ -156,21 +156,10 @@ public:
   static T getInProbability(   const Vec& A) { return getStateProbability(A, in());    }
   static T getOutProbability(  const Vec& A) { return getStateProbability(A, out());   }
 
-  /** Returns the squared norm (or magnitude, length, radius) of a complex number. */
-  static T getSquaredNorm(const std::complex<T>& z)
-  {
-    return z.real()*z.real() + z.imag()*z.imag(); // == conj(z) * z, (1) page 39
-  }
-  // move to RAPT as rsSquaredNorm
-
   /** Returns the total probability for given ket A, i.e. the probability to be in any state at 
   all - which must, of course, always return unity for a valid state. The function can be used for 
   sanity checks and/or to (re)normalize random states. */
-  static T getTotalProbability(const Vec& A)
-  {
-    return getSquaredNorm(A.x) + getSquaredNorm(A.y);
-    //return getSquaredNorm(getUpAmplitude(A)) + getSquaredNorm(getDownAmplitude(A)); // (1) Eq 2.4
-  }
+  static T getTotalProbability(const Vec& A) { return rsAbsSquared(A.x) + rsAbsSquared(A.y); }
 
   /** move to rsVector2D - maybe use A.isCloseTo(B, tol) */
   static bool isCloseTo(const Vec& A, const Vec& B,  T tol)
