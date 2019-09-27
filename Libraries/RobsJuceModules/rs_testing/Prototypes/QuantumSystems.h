@@ -23,7 +23,7 @@ arbitrarily) choosen basis ket vectors |u> = (1,0) and |d> = (0,1) for "up" and 
 |A> = au * |u> + ad * |d>    (1) Pg 38
 
 where au and ad are the probability amplitudes to find the system und "up" or "down" state when
-the z-component of the spin is measured. They can be computed from an arbitrary state A as:
+the z-component of the spin is measured. They can be computed for an arbitrary state A as:
 
 au = <u|A>, ad = <d|A>   (1) Eq 2.1
 
@@ -31,13 +31,10 @@ where the inner product of two ket vectors A,B is defined as:
 
 <A|B> = conj(A.x) * B.x + conj(A.y) * B.y.   (1) Eq 1.2 (with renaming)
 
-..which also implies that au = A.x and ad = A.y (verify this - i think, this is because of our
-choice of basis to be |u>, |d> and the form of |u> and |d>). The numbers au, ad are called 
-probability amplitudes and their squared magnitudes represent the probabilities that the system 
-will be found in an "up" or "down" state when the z-component of the spin is measured.
-
-todo: explain more fully, how the state consists of a complex vector A and how and why its 
-components A.x and A.y actually *are* the probability amplitudes au and ad....
+which also implies that au = A.x and ad = A.y (this comes out due our choice |u> = (1,0), 
+|d> = (0,1)). The numbers au, ad are called probability amplitudes and their squared magnitudes 
+represent the probabilities that the system will be found in an "up" or "down" state when the 
+z-component of the spin is measured.
 
 
 Operators:
@@ -125,22 +122,30 @@ public:
   /** Measurement operator for spin along the y-axis. Returns +1 for in, -1 for out. */
   static void setToPauliY(Mat& M) { M.a = T(0); M.b = -i;   M.c = i;    M.d = T(0);  }
 
+  // todo: void rotate(rotX, rotY), hadamard, cnot, etc
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  /** Computes the "bracket" <A|B> of two "ket" vectors A,B. The left "ket" is converted into a 
-  "bra" vector first (by complex conjugation and transposition). */
+  /** Computes the inner product ("bracket") <A|B> of two "ket" vectors A,B. The left "ket" is 
+  converted into a "bra" vector first (by complex conjugation and transposition). 
+  interchanging arguments leads to complex conjugation of the result (verify)  */
   static std::complex<T> bracket(const Vec& A, const Vec& B) 
   { return conj(A.x) * B.x + conj(A.y) * B.y; }
 
 
-  static std::complex<T> getDownAmplitude(const Vec& A) { return A.x; }
-  static std::complex<T> getUpAmplitude(  const Vec& A) { return A.y; }
 
-  // i think, this may also be WRONG - see Eq 2.1: 
-  // au = <u|A>, ad = <d|A> where |u> = (1,0), |d> = (0,1)  (according to 2.11, 2.12)
-  // so au = A.x, ad = A.y
+
+  /** Returns the probability amplitude to measure an "up" configuration when z-spin is
+  measured and the system is in state A. */
+  static std::complex<T> getUpAmplitude(const Vec& A) { return A.x; }
+  // au = <u|A> = (u1, u2)^H * (A.x, A.y) = (1, 0)^H * (A.x, A.y)= A.x
+  // see Eq 2.1, 2.11, 2.12
+
+  static std::complex<T> getDownAmplitude(const Vec& A) { return A.y; }
+  // ad = <d|A> = (d1, d2)^H * (A.x, A.y) = (0, 1)^H * (A.x, A.y)= A.y
+
 
   /** Returns the probability to measure a target state t when a system is in state A. */
   static T getStateProbability(const Vec& A, const Vec& t)
@@ -150,12 +155,13 @@ public:
   }
 
   /** Returns the probability for the given state A to be measured in "down" configuration. */
-  static T getDownProbability( const Vec& A) { return getStateProbability(A, down());  }
   static T getUpProbability(   const Vec& A) { return getStateProbability(A, up());    } 
-  static T getLeftProbability( const Vec& A) { return getStateProbability(A, left());  }
+  static T getDownProbability( const Vec& A) { return getStateProbability(A, down());  }
   static T getRightProbability(const Vec& A) { return getStateProbability(A, right()); }
-  static T getOutProbability(  const Vec& A) { return getStateProbability(A, out());   }
+  static T getLeftProbability( const Vec& A) { return getStateProbability(A, left());  }
   static T getInProbability(   const Vec& A) { return getStateProbability(A, in());    }
+  static T getOutProbability(  const Vec& A) { return getStateProbability(A, out());   }
+
 
   /** Returns the squared norm (or magnitude, length, radius) of a complex number. */
   static T getSquaredNorm(const std::complex<T>& z)
@@ -169,7 +175,8 @@ public:
   sanity checks and/or to (re)normalize random states. */
   static T getTotalProbability(const Vec& A)
   {
-    return getSquaredNorm(getUpAmplitude(A)) + getSquaredNorm(getDownAmplitude(A)); // (1) Eq 2.4
+    return getSquaredNorm(A.x) + getSquaredNorm(A.y);
+    //return getSquaredNorm(getUpAmplitude(A)) + getSquaredNorm(getDownAmplitude(A)); // (1) Eq 2.4
   }
 
   /**  */

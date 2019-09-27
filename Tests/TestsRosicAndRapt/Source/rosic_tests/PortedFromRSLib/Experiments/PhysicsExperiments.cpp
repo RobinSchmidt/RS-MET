@@ -733,11 +733,10 @@ bool quantumSpinMeasurement2()
   pass &= (C == r);               // (1) Eq 2.5 
   pass &= (s*u - s*d == l);
   QF::randomizeState(A, &prng);
-  QF::randomizeState(A, &prng);
+  QF::randomizeState(B, &prng);
   pass &= isCloseTo(P = QF::getTotalProbability(A), 1.0, tol);
   pass &= isCloseTo(P = QF::getTotalProbability(B), 1.0, tol);
-
-
+  pass &= QF::bracket(A,B) == conj(QF::bracket(B,A));
 
 
   std::complex<double> e1, e2;
