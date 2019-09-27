@@ -101,8 +101,8 @@ template<class T>
 T rsQuantumSpin<T>::measureSpinZ(Vec& A, rsNoiseGenerator<T>* prng)
 {
   //T Pd  = getStateProbability(A, down());       // (1) Eq 2.2
-  T Pd = getDownProbability(A);
-  //T Pd  = getSquaredNorm(x);   // more efficient - uncomment again
+  //T Pd = getDownProbability(A);
+  T Pd  = rsAbsSquared(A.y);   // more efficient
   T rnd = prng->getSample();
   if(rnd <= Pd) {       // should it be <= or < ?
     prepareDownState(A);
