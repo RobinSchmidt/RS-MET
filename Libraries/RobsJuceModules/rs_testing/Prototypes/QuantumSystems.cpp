@@ -6,12 +6,12 @@ void rsQuantumSpinFunctions<T>::randomizeState(Vec& v, PRNG* prng)
   T r  = T(1) / sqrt(Pu*Pu + Pd*Pd);    // normalizer
   Pu  *= r;
   Pd  *= r;
-  T pu = T(2.0*PI) * prng->getSample(); // phase of v.y
-  T pd = T(2.0*PI) * prng->getSample(); // phase of v.x
+  T pu = T(2.0*PI) * prng->getSample(); // phase of v.x
+  T pd = T(2.0*PI) * prng->getSample(); // phase of v.y
 
-  v.y = std::polar(Pu, pu);
-  v.x = std::polar(Pd, pd);
-  // exchaneg x,y - have amount parameter
+  v.x = std::polar(Pu, pu);
+  v.y = std::polar(Pd, pd);
+  // exchange x,y - have amount parameter
 }
 
 template<class T>

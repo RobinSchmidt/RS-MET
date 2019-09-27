@@ -16,6 +16,9 @@ public:
   rsVector2D(T _x = 0, T _y = 0) : x(_x), y(_y) {}
   // for optimization, make a constructor without initialization
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
   /** Returns the squared Euclidean norm of this vector. */
   T getSquaredEuclideanNorm() { return x*x + y*y; }
   // rename to squaredNorm or getSquaredLength or getSquaredNorm
@@ -23,6 +26,15 @@ public:
   /** Returns the Euclidean norm of this vector. */
   T getEuclideanNorm() { return sqrt(getSquaredEuclideanNorm()); }
   // rename to getLength or getNorm
+
+  /** Tests, if another vector v is close to this vector within a given tolerance (both components
+  of the difference must be <= tolerance). */
+  bool isCloseTo(const rsVector2D<T>& v, T tol)
+  {
+    if(rsAbs(v.y - y) <= tol && rsAbs(v.x - x) <= tol)
+      return true;
+    return false;
+  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */

@@ -278,6 +278,15 @@ void particleSystem()
 }
 
 
+
+//template<class T>
+//inline double rsAbs(rsVector2D<T> v)
+//{
+//  return (double) sqrt(v.x*v.x + v.y*v.y); // abs(vector) is defined as length(vector)
+//}
+// that's a bit weird naming ("absolute value of a vector") but is needed in isCloseTo for vector
+// arguments - find a better way
+
 template<class TArg, class TTol>
 inline bool isCloseTo(TArg x, TArg y, TTol tol)
 {
@@ -286,9 +295,20 @@ inline bool isCloseTo(TArg x, TArg y, TTol tol)
   else
     return false;
 }
-// move to rapt
+// move to rapt or test utilities
 
-
+inline bool isCloseTo(
+  rsVector2D<std::complex<double>> v, rsVector2D<std::complex<double>> w, double tol)
+{
+  bool r = true;
+  rsVector2D<std::complex<double>> d = w-v;
+  r &= d.x.real() <= tol;
+  r &= d.x.imag() <= tol;
+  r &= d.y.real() <= tol;
+  r &= d.y.imag() <= tol;
+  return r;
+}
+// move to
 
 
 
@@ -399,19 +419,19 @@ bool quantumSpinMeasurement2()
 
   e1 = pauliZ.eigenvalue1();  pass &= e1 == -1.0;
   e2 = pauliZ.eigenvalue2();  pass &= e2 == +1.0;
-  E1 = pauliZ.eigenvector1(); pass &= QF::isCloseTo(E1, d, tol); // "down"
-  E2 = pauliZ.eigenvector2(); pass &= QF::isCloseTo(E2, u, tol); // "up"
+  E1 = pauliZ.eigenvector1(); pass &= isCloseTo(E1, d, tol); // "down"
+  E2 = pauliZ.eigenvector2(); pass &= isCloseTo(E2, u, tol); // "up"
   // E1 ane E2 are swapped - why?
 
   e1 = pauliX.eigenvalue1();  pass &= e1 == -1.0;
   e2 = pauliX.eigenvalue2();  pass &= e2 == +1.0;
-  E1 = pauliX.eigenvector1(); pass &= QF::isCloseTo(E1, l, tol); // "left" - wrong - not normalized
-  E2 = pauliX.eigenvector2(); pass &= QF::isCloseTo(E2, r, tol); // "right"
+  E1 = pauliX.eigenvector1(); pass &= isCloseTo(E1, l, tol); // "left" - wrong - not normalized
+  E2 = pauliX.eigenvector2(); pass &= isCloseTo(E2, r, tol); // "right"
 
   e1 = pauliY.eigenvalue1();  pass &= e1 == -1.0;
   e2 = pauliY.eigenvalue2();  pass &= e2 == +1.0;
-  E1 = pauliY.eigenvector1(); pass &= QF::isCloseTo(E1, o, tol); // "out"
-  E2 = pauliY.eigenvector2(); pass &= QF::isCloseTo(E2, i, tol); // "in"
+  E1 = pauliY.eigenvector1(); pass &= isCloseTo(E1, o, tol); // "out"
+  E2 = pauliY.eigenvector2(); pass &= isCloseTo(E2, i, tol); // "in"
 
   // test eigenvalue and eigenvector compuation:
   Mat op;

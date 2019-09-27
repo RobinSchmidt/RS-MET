@@ -104,7 +104,8 @@ public:
     A.y *= r;
   }
 
-  /** Randomizes the state.... */
+  /** Randomizes the state....todo: allow to specify an amount between 0 and 1 - can be used to 
+  inject noise to simulate quantum decoherence */
   static void randomizeState(Vec& v, PRNG* prng);
 
 
@@ -160,14 +161,6 @@ public:
   all - which must, of course, always return unity for a valid state. The function can be used for 
   sanity checks and/or to (re)normalize random states. */
   static T getTotalProbability(const Vec& A) { return rsAbsSquared(A.x) + rsAbsSquared(A.y); }
-
-  /** move to rsVector2D - maybe use A.isCloseTo(B, tol) */
-  static bool isCloseTo(const Vec& A, const Vec& B,  T tol)
-  {
-    if(rsAbs(A.y-B.y) <= tol && rsAbs(A.x-B.x) <= tol)
-      return true;
-    return false;
-  }
 
   /** Returns the expectation value for the observable M when the system is in state A. */
   static T getExpectedMeasurement(const Mat& M, const Vec& A);
