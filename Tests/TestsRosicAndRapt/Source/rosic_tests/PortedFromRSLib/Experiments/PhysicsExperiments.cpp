@@ -890,12 +890,17 @@ bool quantumSpinMeasurement2()
 
 
 template<class T>
-void plotQuantumSpinStateTrajectory(const std::vector<rsQuantumSpin<T>>& Psi, T dt)
+//void plotQuantumSpinStateTrajectory(
+//  const std::vector<rsQuantumSpin<T>>& Psi, T dt)
+void plotQuantumSpinStateTrajectory(
+  const std::vector<rsVector2D<std::complex<T>>>& Psi, T dt)
 {
   int N = (int) Psi.size();
   std::vector<T> t(N), dr(N), di(N), ur(N), ui(N);
   for(int n = 0; n < N; n++) {
     t[n] = n*dt;   // time axis
+
+
     dr[n] = Psi[n].getDownAmplitude().real(); // rename to DownAmplitude
     di[n] = Psi[n].getDownAmplitude().imag();
     ur[n] = Psi[n].getUpAmplitude().real();

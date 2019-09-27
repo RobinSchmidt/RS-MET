@@ -133,7 +133,8 @@ public:
   static T measureObservable(Vec& A, const Mat& M, rsNoiseGenerator<T>* prng); 
 
   /** Measures the spin along an arbitrary axis in 3D space given by the vector components
-  nx, ny, nz. It is assumed that these components form a unit-length vector in 3-space. */
+  nx, ny, nz. It is assumed that these components form a unit-length vector in 3-space
+  (todo: relax that assumption - i.e. normalize internally, if necessarry).   */
   static T measureSpin(Vec& A, T nx, T ny, T nz, rsNoiseGenerator<T>* prng);
   // not yet tested
 
@@ -459,20 +460,21 @@ such operators are used for:
 
 Firstly, an operator M can "act" on (or be applied to) a quantum state v. This means, that a new 
 state is computed as the matrix-vector product w = M*v where v is the old state. Operators of that 
-kind must be unitary matrices, because....
+kind must be unitary matrices (i.e the inverse must be given by the conjugate transpose) because 
+that's what the laws of quantum mechanics say (todo: add the *actual* explanation - why do they say
+that?)
 
 Secondly, operators may represent measurable or observable quantities. Measuring the value of an
 observable associated with such an operator will put the state into one of the eigenvectors of the 
-operator and the result of the measurement will be one of its eigenvalues. Because physical 
-measurements must be real numbers, an operator M corresponding to an observable must be Hermitian 
-(i.e. M = M^H where M^H denotes the Hermitian transpose (= transpose and conjugate)). This ensures 
-real eigenvalues. 
+operator (randomly, with probabilities determined by the state) and the result of the measurement 
+will be the corresponding eigenvalue. Because physical measurements must be real numbers, an 
+operator M corresponding to an observable must be Hermitian (i.e. M = M^H where M^H denotes the 
+Hermitian transpose (= transpose and conjugate)). This ensures real eigenvalues. 
 
 Note that the act of setting the spin into an eigenstate of a measurement operator is *not*
 the same thing as forming the matrix-vector product like it is done with the first kind of 
 operator. Note also that it is only these measurements that involve setting the quantum state
-into a randomly chosen one. Operations of the first kind act deterministically on the state 
-consisting of the probability amplitudes.  */
+into a randomly chosen one. Operations of the first kind act deterministically on the state.  */
 
 template<class T>
 class rsSpinOperator : public rsMatrix2x2<std::complex<T>> // maybe rename to rsQuantumSpinOperator
