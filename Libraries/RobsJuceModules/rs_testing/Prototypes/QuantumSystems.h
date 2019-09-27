@@ -2,8 +2,56 @@
 
 //=================================================================================================
 
-// we do all the stuff like below but operate directly procedurally with rsVector2D and rsMatrix2x2
-// objects - i think, that's more convenient an will more readily generalize
+/** Implements functions that deal with 2-dimensional complex vectors that represent the quantum 
+state of a single spin (for example of an electron) and 2x2 complex matrices that represent 
+operators on such state vectors. This is the most simple and prototypical quantum system and can 
+also be used as quantum bit (qubit). The user can set the system into various predefined states and
+has functions to manipulate the state. The state can also be measured in which case the system 
+will - with a certain probability determined by the state - fall into one of two possible pure 
+states corresponding to the measured variable. An example of such a measured observable is the spin
+along the z-axis. The measured value will be either +1 or -1 (corresponding to "up" or "down") with
+probabilities determined by the current state. After the measurement, however, this state will have 
+been changed into a pure state such that subsequent measurements of the same observable will always 
+produce the same result (with probability one).
+
+
+States:
+
+To specify any state as a ket vector |A>, we express it as a linear combination of two (somewhat 
+arbitrarily) choosen basis ket vectors |u> = (1,0) and |d> = (0,1) for "up" and "down" spin:
+
+|A> = au * |u> + ad * |d>    (1) Pg 38
+
+where au and ad are the probability amplitudes to find the system und "up" or "down" state when
+the z-component of the spin is measured. They can be computed from an arbitrary stae A as:
+
+au = <u|A>, ad = <d|A>   (1) Eq 2.1
+
+where the inner product of two ket vectors A,B is defined as:
+
+<A|B> = conj(A.x) * B.x + conj(A.y) * B.y.   (1) Eq 1.2 (with renaming)
+
+..which also implies that au = A.x and ad = A.y (verify this - i think, this is because of our
+choice of basis to be |u>, |d> and the form of |u> and |d>). The numbers au, ad are called 
+probability amplitudes and their squared magnitudes represent the probabilities that the system 
+will be found in an "up" or "down" state when the z-component of the spin is measured. The 
+probability amplitudes of a quantum system actually behave totally deterministically - the random 
+element only comes into play when you do an actual measurement. In order to do so, you need to 
+pass a pointer to a pseudo random number generator to the respective measurement function. You 
+should make sure, that this generator is set up to produce numbers between 0 and 1 with a uniform
+probability distribution.
+
+
+Operators:
+
+
+
+
+
+
+
+References:
+(1) The Theoretical Minimum - Quantum Mechanics (Leonard Susskind, Art Friedman) */
 
 template<class T>
 class rsQuantumSpinFunctions
@@ -160,6 +208,14 @@ public:
 };
 template<class T> const T rsQuantumSpinFunctions<T>::s = T(1) / sqrt(T(2));
 template<class T> const std::complex<T> rsQuantumSpinFunctions<T>::i = std::complex<T>(0, 1);
+
+
+
+
+
+
+
+
 
 
 
