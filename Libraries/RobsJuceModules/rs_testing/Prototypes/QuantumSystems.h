@@ -11,8 +11,8 @@ will - with a certain probability determined by the state - fall into one of two
 states corresponding to the measured variable. An example of such a measured observable is the spin
 along the z-axis. The measured value will be either +1 or -1 (corresponding to "up" or "down") with
 probabilities determined by the current state. After the measurement, however, this state will have 
-been changed into a pure state such that subsequent measurements of the same observable will always 
-produce the same result (with probability one).
+been changed into a pure "up" or "down" state such that subsequent measurements of the z-component 
+of the spin will always produce the same result again (with probability one).
 
 
 States:
@@ -23,7 +23,7 @@ arbitrarily) choosen basis ket vectors |u> = (1,0) and |d> = (0,1) for "up" and 
 |A> = au * |u> + ad * |d>    (1) Pg 38
 
 where au and ad are the probability amplitudes to find the system und "up" or "down" state when
-the z-component of the spin is measured. They can be computed from an arbitrary stae A as:
+the z-component of the spin is measured. They can be computed from an arbitrary state A as:
 
 au = <u|A>, ad = <d|A>   (1) Eq 2.1
 
@@ -34,21 +34,40 @@ where the inner product of two ket vectors A,B is defined as:
 ..which also implies that au = A.x and ad = A.y (verify this - i think, this is because of our
 choice of basis to be |u>, |d> and the form of |u> and |d>). The numbers au, ad are called 
 probability amplitudes and their squared magnitudes represent the probabilities that the system 
-will be found in an "up" or "down" state when the z-component of the spin is measured. The 
-probability amplitudes of a quantum system actually behave totally deterministically - the random 
-element only comes into play when you do an actual measurement. In order to do so, you need to 
-pass a pointer to a pseudo random number generator to the respective measurement function. You 
-should make sure, that this generator is set up to produce numbers between 0 and 1 with a uniform
-probability distribution.
+will be found in an "up" or "down" state when the z-component of the spin is measured.
+
+todo: explain more fully, how the state consists of a complex vector A and how and why its 
+components A.x and A.y actually *are* the probability amplitudes au and ad....
 
 
 Operators:
 
+An operator is represented as complex valued 2x2 matrix M. There are two very distinct things that 
+such operators are used for:
 
+Firstly, an operator M can "act" on (or be applied to) a quantum state v. This means, that a new 
+state is computed as the matrix-vector product w = M*v where v is the old state. Operators of that 
+kind must be unitary matrices (i.e the inverse must be given by the conjugate transpose) because 
+that's what the laws of quantum mechanics say (todo: add the *actual* explanation - why do they say
+that?)
 
+Secondly, operators may represent measurable or observable quantities. Measuring the value of an
+observable associated with such an operator will put the state into one of the eigenvectors of the 
+operator (randomly, with probabilities determined by the state) and the result of the measurement 
+will be the corresponding eigenvalue. Because physical measurements must be real numbers, an 
+operator M corresponding to an observable must be Hermitian (i.e. M = M^H where M^H denotes the 
+Hermitian transpose (= transpose and conjugate)). This ensures real eigenvalues. 
 
-
-
+Note that the act of setting the spin into an eigenstate of a measurement operator is *not*
+the same thing as forming the matrix-vector product like it is done with the first kind of 
+operator. Note also that it is only these measurements that involve setting the quantum state
+into a randomly chosen one. Operations of the first kind act deterministically on the state.
+The random element only comes into play when you do an actual measurement. In order to do so, you 
+need to pass a pointer to a pseudo random number generator to the respective measurement function. 
+You should make sure, that this generator is set up to produce numbers between 0 and 1 with a 
+uniform probability distribution (TODO: this is a huge source of trouble - it's so easy to forget
+and by default, my noise-generators produce values in -1...+1 and then one gets randomly wrong 
+measurement results - use a specific kind of PRNG that can only produce numbers in 0..1)
 
 References:
 (1) The Theoretical Minimum - Quantum Mechanics (Leonard Susskind, Art Friedman) */
@@ -119,8 +138,9 @@ public:
   static std::complex<T> getDownAmplitude(const Vec& A) { return A.x; }
   static std::complex<T> getUpAmplitude(  const Vec& A) { return A.y; }
 
-  // i think, this may also be wrong - see Eq 2.1: 
+  // i think, this may also be WRONG - see Eq 2.1: 
   // au = <u|A>, ad = <d|A> where |u> = (1,0), |d> = (0,1)  (according to 2.11, 2.12)
+  // so au = A.x, ad = A.y
 
   /** Returns the probability to measure a target state t when a system is in state A. */
   static T getStateProbability(const Vec& A, const Vec& t)
