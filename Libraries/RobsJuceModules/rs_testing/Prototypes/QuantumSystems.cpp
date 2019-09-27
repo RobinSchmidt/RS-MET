@@ -47,24 +47,19 @@ T rsQuantumSpin<T>::getStateProbability(const Vec& A, const Vec& t)
 template<class T>
 T rsQuantumSpin<T>::getExpectedMeasurement(const Mat& M, const Vec& A)
 {
-  // computation via (1) Eq 3.26 - this is just naively applying the general formula for 
-  // an expectation value:
-  Vec E1 = M.eigenvector1();
-  Vec E2 = M.eigenvector2();
-  std::complex<T> e1 = M.eigenvalue1();
-  std::complex<T> e2 = M.eigenvalue2();
-  T P1 = getStateProbability(A, E1);
-  T P2 = getStateProbability(A, E2);
-  T E  = (e1*P1 + e2*P2).real();
-  return E;
+  //// computation via (1) Eq 3.26 - this is just naively applying the general formula for 
+  //// an expectation value:
+  //Vec E1 = M.eigenvector1();
+  //Vec E2 = M.eigenvector2();
+  //std::complex<T> e1 = M.eigenvalue1();
+  //std::complex<T> e2 = M.eigenvalue2();
+  //T P1 = getStateProbability(A, E1);
+  //T P2 = getStateProbability(A, E2);
+  //T E  = (e1*P1 + e2*P2).real();
+  //return E;
 
   // ...but the same value can be computed more efficiently by (1) Eq 4.14:
-  //T E = (A * (M * A)).real();
-  // use a function E = bracket(A, M, A) that takes two kets and a matrix, converts the 1st into 
-  // a bra and computes the inner product
-  // todo: make this code work again
-
-  return E;
+  return bracket(A, M*A).real();
 }
 
 // measurement:
