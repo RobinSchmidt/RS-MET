@@ -552,24 +552,26 @@ bool quantumSpinMeasurement()
   // Ex = 0.8 and Ey = 0 - maybe try to compute these manually
 
 
+  // todo:
+  // test uncertainty computation:
+  // -if the system is in an eigenstate of an observable (say PauliZ), this should be zero for
+  //  that observable, i.e. uncertainty(pauliZ, A) = 0, iff A is eigenstate of pauliZ
+  // -if the system is in eigenstate pauliX, uncertainty of pauliZ should be maximal
+  // -is the uncertainty product of pauliX,pauliZ independent of the state? i think so
 
-
-
+  // test 7.12:
 
   rsAssert(pass);
   return pass;
 }
 
-// OK - states and measurements (chapters 2, 3) are done and seem to work
-// next: evolution of states, i.e. applying unitary operators to modify a state
-// todo: implement quantum gates (and, or, Hadamard, cnot, toffoli)
+// todo: implement equations for entanglement:
+// -check pg 166, singlet and triple states
+// -pg 188, eq 7.7: c kronekcer product of matrices
 
-// structure the tests:
-// 1: states, probabilities
-// 2: measurements
-// 3: state evolution
-// 4: entanglement
 
+
+// gates:
 // this here:
 // https://www.youtube.com/watch?v=ZN0lhYU1f5Q
 // says: measure, hadamard, phase, T (rotate |1> by pi/4), cnot

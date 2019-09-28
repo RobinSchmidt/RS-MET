@@ -84,8 +84,6 @@ T rsQuantumSpin<T>::getUncertaintyProduct(const Mat& M, const Mat& L, const Vec&
   Le = getExpectedMeasurement(L, A); Lc = L - Complex(Le) * Mat::identity();
   C  = Mat::commutator(Mc, Lc);
   return T(0.5) * sandwich(A, C, A).real();  // (1) Eq 5.13 (with centered matrices)
-
-  //return T(0); // not yet implemented
 }
 
 
