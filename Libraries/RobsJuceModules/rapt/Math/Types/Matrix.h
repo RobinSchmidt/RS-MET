@@ -203,12 +203,12 @@ public:
   }
 
   /** Subtracts elements of B from corresponding elements A in and stores results in C. */
-  static void sub(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>& C)
+  static void sub(const rsMatrixView<T>* A, const rsMatrixView<T>* B, rsMatrixView<T>* C)
   {
-    rsAssert(areSameShape(A, B) && areSameShape(A, C), "arguments incompatible");
-    for(int i = 0; i < A.numRows; i++)
-      for(int j = 0; j < A.numCols; j++)
-        C(i, j) = A.at(i, j) - B.at(i, j);
+    rsAssert(areSameShape(*A, *B) && areSameShape(*A, *C), "arguments incompatible");
+    for(int i = 0; i < A->numRows; i++)
+      for(int j = 0; j < A->numCols; j++)
+        (*C)(i, j) = A->at(i, j) - B->at(i, j);
   }
 
   /** Computes the matrix product C = A*B. */
@@ -288,18 +288,46 @@ public:
 
 
   /** Standard constructor. You must pass the initial number of rows and columns */
-  rsMatrixNew(int numRows = 0, int numColumns = 0);
-  //rsMatrix(size_t numRows = 1, size_t numColumns = 1); // leads to memory leaks
+  rsMatrixNew(int numRows = 0, int numColumns = 0)
+  {
+    setSize(numRows, numColumns);
+    // todo: optionally init with zeros
+  }
 
- 
-  rsMatrixNew(int numRows, int numColumns, const std::vector<T>& data);
-
+  /** Creates matrix from a std::vector - convenient to initialize elements.  */
+  rsMatrixNew(int numRows, int numColumns, const std::vector<T>& newData) 
+    : data(newData)
+  {
+    rsAssert(numRows*numColumns == newData.size());
+    this->numRows = numRows;
+    this->numCols = numColumns;
+    updateDataPointer();
+  }
 
   /** Copy constructor. */
-  //rsMatrix(const rsMatrix& other);
-                              
+  rsMatrixNew(const rsMatrixNew& B)
+  {
+    setSize(B.numRows, B.numCols);
+    rsArray::copyBuffer(B.d, d, getSize());
+  }
+
   /** Move constructor. */
-  //rsMatrix(const rsMatrix&& other);
+  rsMatrixNew(const rsMatrixNew&& B)
+  {
+    this->numRows = B.numRows;
+    this->numCols = B.numCols;
+    d = B.d;  
+    // no data copied - but what about our "data" vector - will this get moved, too? otherwise,
+    // maybe we need to use a plain pointer
+  }
+
+  //rsMatrixNew(const rsMatrixNew& B)
+  //{
+  //  setSize(B.numRows, B.numCols);
+  //  rsArray::copyBuffer(B.d, d, getSize());
+  //}
+
+  // https://en.cppreference.com/w/cpp/language/operators#Assignment_operator
 
 
   // todo: implement the various copy/move assigment operators and -constructors - this should
@@ -316,9 +344,18 @@ public:
   /** Sets the number of rows and columns, this matrix should have. ToDo: provide a way to retain 
   the data (optionally) - what does std::vector's resize do? Does it retain data...but if it does,
   it would be useless anyway in case the number of columns changed. */
-  void setSize(int numRows, int numColumns);
+  void setSize(int numRows, int numColumns)
+  {
+    this->numRows = numRows;
+    this->numCols = numColumns;
+    data.resize(this->numRows * this->numCols);
+    updateDataPointer();
+    // optionally initialize with zeros
+  }
 
     
+
+
   /** \name Manipulations */
 
 
@@ -338,17 +375,19 @@ public:
       return false;
     return rsArray::areBuffersEqual(d, B.d, getSize());
   }
+  // move to rsMatrixView
 
   /** Compares matrices for inequality */
   bool operator!=(const rsMatrixNew<T>& B) const { return !(*this == B); }
+  // move to rsMatrixView
 
   /** Adds two matrices: C = A + B. */
   rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
   { rsMatrixNew<T> C(numRows, numCols); add(this, &B, &C); return C; }
 
   /** Subtracts two matrices: C = A - B. */
-  //rsMatrixNew<T> operator-(const rsMatrixNew<T>& B) const
-  //{ rsMatrixNew<T> C(numRows, numCols); sub(this, &B, &C); return C; }
+  rsMatrixNew<T> operator-(const rsMatrixNew<T>& B) const
+  { rsMatrixNew<T> C(numRows, numCols); sub(this, &B, &C); return C; }
 
   /** Multiplies two matrices: C = A * B. */
   //rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
@@ -359,9 +398,23 @@ public:
 
 protected:
 
+
+
+  /** Updates the data-pointer inherited from rsMatrixView to point to the begin of our std::vector
+  that holds the actual data. */
+  void updateDataPointer()
+  {
+    if(data.size() > 0)  
+      this->d = &data[0];
+    else
+      this->d = nullptr;
+  }
+
+
   /** \name Data */
 
-  std::vector<T> data;
+  std::vector<T> data; // maybe instead of having a vector, we shoud inherit from vector
+  // or maybe we should just work with our inherited d pointer
   
 }; 
 

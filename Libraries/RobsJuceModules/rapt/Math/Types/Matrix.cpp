@@ -1,3 +1,4 @@
+/*
 template<class T>
 rsMatrixNew<T>::rsMatrixNew(int numRows, int numColumns)
 {
@@ -11,12 +12,7 @@ rsMatrixNew<T>::rsMatrixNew(int numRows, int numColumns, const std::vector<T>& n
   rsAssert(numRows*numColumns == newData.size());
   this->numRows = numRows;
   this->numCols = numColumns;
-
-  // factor out: updateDataPointer:
-  if(data.size() > 0)  
-    this->d = &data[0];
-  else
-    this->d = nullptr;
+  updateDataPointer();
 }
 
 template<class T>
@@ -25,13 +21,19 @@ void rsMatrixNew<T>::setSize(int numRows, int numColumns)
   this->numRows = numRows;
   this->numCols = numColumns;
   data.resize(this->numRows * this->numCols);
+  updateDataPointer();
+  // optionally initialize with zeros
+}
 
-  // factor out: updateDataPointer:
+template<class T>
+void rsMatrixNew<T>::updateDataPointer()
+{
   if(data.size() > 0)  
     this->d = &data[0];
   else
     this->d = nullptr;
-  // optionally initialize with zeros
 }
+*/
+// maybe move these functions into the header
 
 // fillWithValue
