@@ -636,6 +636,7 @@ bool quantumSpinMeasurement()
   return pass;
 }
 
+
 // todo: implement equations for entanglement - this becomes a new function
 bool quantumEntanglement()
 {
@@ -655,15 +656,12 @@ bool quantumEntanglement()
 
   //Vec S[2];  // our state, consisting of 2 spins
 
-
   rsAssert(pass);
   return pass;
 }
 
 // -check pg 166, singlet and triple states
 // -pg 188, eq 7.7: c kronekcer product of matrices
-
-
 
 
 
@@ -994,6 +992,18 @@ void quantum3StateSystem()
   // we implemenent a numerical soultion to:
   // http://folk.uio.no/jaakko/FYS3110/Griffiths_3.38.pdf
 
+  typedef complex<double> Complex;
+  typedef rsMatrixNew<Complex> Mat;
+  typedef vector<Complex> Vec;
+
+  Mat H(3, 3, Vec({1,0,0, 0,2,0, 0,0,2}));
+  Complex lambda = 2, mu = 3;
+
+  Mat A = lambda * Mat(3, 3, Vec({0,1,0, 1,0,0, 0,0,2}));
+  Mat B = mu     * Mat(3, 3, Vec({2,0,0, 0,0,1, 0,1,0}));
+
+
+  int dummy = 0;
 
 }
 

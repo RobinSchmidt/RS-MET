@@ -157,10 +157,10 @@ public:
 
   /** \name Setup */
 
-  inline void setAllValues(T value)
-  {
-    rsArray::fillWithValue(d, int(numRows * numCols), value);
-  }
+  inline void setAllValues(T value) { rsArray::fillWithValue(d, getSize(), value); }
+
+  inline void scale(T factor) { rsArray::scale(d, getSize(), factor); }
+
 
   inline void reshape(int newNumRows, int newNumColumns)
   {
@@ -327,6 +327,9 @@ public:
   // optimize returning values from functions and operators (avoid unnessary copying)
   // https://en.cppreference.com/w/cpp/language/operators#Assignment_operator
   // ..i tried - but no avail yet
+  // but we have to implement them because the standard versions will copy the pointer variable 
+  // inherited from the baseclass - we must call updateDataPointer in the copy/move 
+  // construtors/assigners
 
 
   /** \name Setup */
@@ -408,6 +411,15 @@ protected:
   // data in the debugger anymore -> very bad! so, nope!
   
 }; 
+
+/** Multiplies a scalar and a matrix. */
+template<class T>
+inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
+{
+  rsMatrixNew<T> B(A);
+  B.scale(s);
+  return B;
+}
 
 
 

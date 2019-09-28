@@ -103,9 +103,10 @@ int main(int argc, char* argv[])
   //heatEquation1D();
   //particleForceDistanceLaw();
   //particleSystem();
-  quantumSpinMeasurement();  // move to unit tests
+  //quantumSpinMeasurement();  // move to unit tests
   //quantumGates();            // move to unit tests
   //quantumSpinEvolution();
+  quantum3StateSystem();;
   //tennisRacket();
   //tennisRacket2();
   //tennisRacket3();

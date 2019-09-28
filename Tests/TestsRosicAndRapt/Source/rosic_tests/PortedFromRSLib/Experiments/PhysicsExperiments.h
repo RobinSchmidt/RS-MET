@@ -9,6 +9,7 @@ void particleSystem();
 bool quantumSpinMeasurement(); // move to unit tests
 bool quantumGates();           // dito
 bool quantumSpinEvolution();
+void quantum3StateSystem();
 void tennisRacket();
 void tennisRacket2();
 void tennisRacket3();

@@ -222,6 +222,7 @@ bool testMatrixNew(std::string& reportString)
   //B = Mat(2, 1, Vec({3,4}));
   C = A * B;
   C = B * A;
+  // todo: check, if result is correct
 
 
 
