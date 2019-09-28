@@ -182,16 +182,22 @@ public:
     return A.numRows == B.numRows && A.numCols == B.numCols;
   }
 
+  int getNumRows()    const { return numRows; }
+
+  int getNumColumns() const { return numCols; }
+
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Arithmetic */
 
   /** Adds elements of A to corresponding elements in B and stores results in C. */
-  static void add(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>& C)
+  static void add(const rsMatrixView<T>* A, const rsMatrixView<T>* B, rsMatrixView<T>* C)
   {
-    rsAssert(areSameShape(A, B) && areSameShape(A, C), "arguments incompatible");
-    for(int i = 0; i < A.numRows; i++)
-      for(int j = 0; j < A.numCols; j++)
-        C(i, j) = A.at(i, j) + B.at(i, j);
+    rsAssert(areSameShape(*A, *B) && areSameShape(*A, *C), "arguments incompatible");
+    for(int i = 0; i < A->numRows; i++)
+      for(int j = 0; j < A->numCols; j++)
+        (*C)(i, j) = A->at(i, j) + B->at(i, j);
   }
 
   /** Subtracts elements of B from corresponding elements A in and stores results in C. */
@@ -212,6 +218,7 @@ public:
     rsAssert(P == B.numCols);
     rsAssert(N == C.numRows);
     rsAssert(P == C.numCols);
+    // A: NxM, B: MxP, C: NxP 
     // verify these conditions - factor them out into areMultiplicable(A, B, C)
 
     for(int i = 0; i < N; i++) {
@@ -221,7 +228,7 @@ public:
           C(i,j) += A.at(i,k) * B.at(k,j); }}
   }
 
-  /** Multiplies NxM matrix A by MxP matrix B and stores the result in NxP matrix C = A * B. */
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
@@ -290,6 +297,11 @@ public:
   //rsMatrix(const rsMatrix&& other);
 
 
+  // todo: implement the various copy/move assigment operators and -constructors - this should
+  // optimize returning values from functions and operators (avoid unnessary copying)
+
+
+
   /** Destructor. */
   ~rsMatrixNew() {}
 
@@ -307,13 +319,27 @@ public:
 
   /** \name Inquiry */
 
-    
-
-
 
   /** \name Decompositions */
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Operators */
+
+
+  /** Adds two matrices: C = A + B. */
+  /*
+  rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
+  { 
+    rsMatrix<T> C(numRows, numCols);
+    add(*this, B, C);
+    return C;
+  }
+  */
+
+
+
+protected:
 
   /** \name Data */
 
