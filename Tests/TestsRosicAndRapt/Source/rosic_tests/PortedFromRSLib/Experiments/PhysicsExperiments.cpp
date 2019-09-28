@@ -580,7 +580,7 @@ bool quantumSpinMeasurement()
   // -is the uncertainty product of pauliX,pauliZ independent of the state? i think so
 
   // verify (1) Eq 7.11 for our 3 sets of basis vectors:
-  Mat M, M2;
+  Mat M, M2, L;
   Mat I = Mat::identity();
   M = QS::projector(u) + QS::projector(d); pass &= M == I;
   M = QS::projector(r) + QS::projector(l); pass &= isCloseTo(M, I, tol);
@@ -603,18 +603,37 @@ bool quantumSpinMeasurement()
   pass &= isCloseTo(c1, zero, tol); // E1 should be orthogonal to E2
   M2 = M*M;
   pass &= isCloseTo(M, M2, tol);    // M should be equal to its square
-  c1 = QS::sandwich(A, pauliZ, A);  // todo: use some more general observable instead of pauliZ
+  c1 = QS::sandwich(A, pauliZ, A); // todo: use some more general observable instead of pauliZ
   c2 = (M*pauliZ).trace();
-  pass &= isCloseTo(c1, c2, tol);   // should be equal (for any observable) by (1) Eq 7.12
-  // ...
+  pass &= isCloseTo(c1, c2, tol);  // should be equal (for any observable) by (1) Eq 7.12
+  QS::randomizeState(B, &prng);
+  L = QS::projector(B);            // since projectors are Hermitian, L is an observable (right?)
+  c1 = QS::sandwich(A, L, A);
+  c2 = (M*L).trace();
+  pass &= isCloseTo(c1, c2, tol);  // should be equal (for any observable) by (1) Eq 7.12
 
-  // test 7.13
+  // ...
+  // todo: test Eq. 7.13, page 198: 
+  // -create two random states psi, phi and their projectors projPsi, projPhi
+  // -assign probabilities probPsi, probPhi and create a denstity matrix 
+  //  rho = probPsi*projPsi + probPhi*projPhi
+  // -create a random observable L (maybe by using the projector of yet another random state)
+  // -compute both sides of 7.13
+  //Mat PA, PB;  // projectors of A and B
+  //QS::randomizeState(A, &prng);   // state psi (created by Alice with probability 0.7)
+  //QS::randomizeState(B, &prng);   // state phi (created by Alice with probability 0.3)
+  //QS::randomizeState(C, &prng);   // used as observable by Bob
+  //PA = QS::projector(A);
+  //PB = QS::projector(B);
+  // ...oh - wait - there is no other way to evaluate the lhs of eq 7.13 - hmm - scrap that test
+
 
   rsAssert(pass);
   return pass;
 }
 
 // todo: implement equations for entanglement:
+// -hwat about eq 71. pg 185 - is this an implicit equation for any observable M?
 // -check pg 166, singlet and triple states
 // -pg 188, eq 7.7: c kronekcer product of matrices
 
