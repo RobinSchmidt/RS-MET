@@ -559,7 +559,10 @@ bool quantumSpinMeasurement()
   // -if the system is in eigenstate pauliX, uncertainty of pauliZ should be maximal
   // -is the uncertainty product of pauliX,pauliZ independent of the state? i think so
 
-  // test 7.12:
+  // test 7.12
+  // ...
+
+  // test 7.13
 
   rsAssert(pass);
   return pass;

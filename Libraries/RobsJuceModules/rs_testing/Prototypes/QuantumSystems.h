@@ -175,6 +175,9 @@ public:
   Mat projector(const Vec& A) { return outer(A, A); } // (1) Pg 194
   // move these 4 to a section "algebra" or something
 
+  Mat densityMatrix(std::vector<T> probabilities, std::vector<Vec> states);
+
+
 
   /** Returns the probability amplitude to measure an "up" configuration when z-spin is
   measured and the system is in state A. If we denote this amplitude by au, it is given by

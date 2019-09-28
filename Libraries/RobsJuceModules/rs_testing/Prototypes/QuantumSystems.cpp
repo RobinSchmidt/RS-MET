@@ -12,6 +12,17 @@ rsVector3D<rsMatrix2x2<std::complex<T>>> rsQuantumSpin<T>::pauliVector()
   return sigma;
 }
 
+template<class T>
+rsMatrix2x2<std::complex<T>> rsQuantumSpin<T>::densityMatrix(
+  std::vector<T> p, std::vector<rsVector2D<std::complex<T>>> s)
+{
+  rsAssert(p.size() == s.size(), "sizes must match");
+  Mat r(T(0), T(0), T(0), T(0));
+  for(size_t i = 0; i < p.size(); i++)
+    r = r + Complex(p[i]) * projector(s[i]);
+  return r;
+}
+
 // state setup:
 
 template<class T>

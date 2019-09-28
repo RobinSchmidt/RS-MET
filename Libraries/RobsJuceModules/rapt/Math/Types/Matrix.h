@@ -17,6 +17,8 @@ public:
   /** Stadard constructor. You can pass the matrix elements. If you pass nothing, an identity 
   matrix will be created. */
   rsMatrix2x2(T a = T(1), T b = T(0), T c = T(0), T d = T(1)) { setValues(a, b, c, d); }
+  // todo: maybe require arguments to be passed - or initialze teh matrix to the zero matrix
+  // by default
 
 
   /** \name Setup */
@@ -91,6 +93,8 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   /** \name Factory */
+
+  static rsMatrix2x2<T> zero()     { return rsMatrix2x2<T>(T(0), T(0), T(0), T(0)); }
 
   static rsMatrix2x2<T> identity() { return rsMatrix2x2<T>(T(1), T(0), T(0), T(1)); }
 
