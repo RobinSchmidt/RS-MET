@@ -326,17 +326,19 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
-
   /** Adds two matrices: C = A + B. */
-  /*
   rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
-  { 
-    rsMatrix<T> C(numRows, numCols);
-    add(*this, B, C);
-    return C;
-  }
-  */
+  { rsMatrixNew<T> C(numRows, numCols); add(this, &B, &C); return C; }
 
+  /** Subtracts two matrices: C = A - B. */
+  rsMatrixNew<T> operator-(const rsMatrixNew<T>& B) const
+  { rsMatrixNew<T> C(numRows, numCols); sub(this, &B, &C); return C; }
+
+  /** Multiplies two matrices: C = A * B. */
+  rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
+  { rsMatrixNew<T> C(numRows, B.numCols); mul(this, &B, &C); return C; }
+
+  // todo: /, ==,,+=,-=,*= 
 
 
 protected:
