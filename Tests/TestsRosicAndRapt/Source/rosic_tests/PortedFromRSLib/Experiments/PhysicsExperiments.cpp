@@ -603,9 +603,9 @@ bool quantumSpinMeasurement()
   pass &= isCloseTo(c1, zero, tol); // E1 should be orthogonal to E2
   M2 = M*M;
   pass &= isCloseTo(M, M2, tol);    // M should be equal to its square
-
-
-  // test 7.12
+  c1 = QS::sandwich(A, pauliZ, A);  // todo: use some more general observable instead of pauliZ
+  c2 = (M*pauliZ).trace();
+  pass &= isCloseTo(c1, c2, tol);   // should be equal (for any observable) by (1) Eq 7.12
   // ...
 
   // test 7.13

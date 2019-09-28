@@ -34,6 +34,9 @@ public:
   /** Returns the determinant of this matrix. */
   T determinant() const { return a*d - b*c; }
 
+  /** Returns the trace (sum of diagonal elements) of this matrix.  */
+  T trace() const { return a+d; }
+
   /** Returns the first eigenvalue of this matrix. */
   T eigenvalue1() const { return rsLinearAlgebra::eigenvalue2x2_1(a, b, c, d); }
 
