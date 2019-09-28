@@ -308,7 +308,25 @@ inline bool isCloseTo(
   r &= d.y.imag() <= tol;
   return r;
 }
-// move to
+
+inline bool isCloseTo(
+  rsMatrix2x2<std::complex<double>> A, rsMatrix2x2<std::complex<double>> B, double tol)
+{
+  bool r = true;
+  rsMatrix2x2<std::complex<double>> D = A-B;
+  r &= D.a.real() <= tol;
+  r &= D.a.imag() <= tol;
+  r &= D.b.real() <= tol;
+  r &= D.b.imag() <= tol;
+  r &= D.c.real() <= tol;
+  r &= D.c.imag() <= tol;
+  r &= D.d.real() <= tol;
+  r &= D.d.imag() <= tol;
+  return r;
+}
+// move to test utilities
+
+
 
 
 
@@ -561,10 +579,14 @@ bool quantumSpinMeasurement()
 
   // verify (1) Eq 7.11 for our 3 sets of basis vectors:
   Mat M;
-  M = QS::projector(u) + QS::projector(d); pass &= M == Mat::identity();
-  //M = QS::projector(r) + QS::projector(l); pass &= M == Mat::identity();
-  //M = QS::projector(i) + QS::projector(o); pass &= M == Mat::identity();
-  // the 2nd 2 fail beacuse of numeric errors
+  Mat I = Mat::identity();
+  M = QS::projector(u) + QS::projector(d); pass &= M == I;
+  M = QS::projector(r) + QS::projector(l); pass &= isCloseTo(M, I, tol);
+  M = QS::projector(i) + QS::projector(o); pass &= isCloseTo(M, I, tol);
+
+  // test for a random (normalized) state A, if A is an eigenvector of its projector |A><A| with
+  // eigenvalue 1:
+  // ...
 
 
   // test 7.12

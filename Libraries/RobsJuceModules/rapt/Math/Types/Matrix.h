@@ -55,6 +55,16 @@ public:
   // maybe these functions should be named getDeterminant, etc. - more consistent with other 
   // classes and states more explicitly what they do
 
+  /** Tests, if another matrix B is close to this matrix within a given tolerance (all components
+  of the difference must be <= tolerance). */
+  bool isCloseTo(const rsMatrix2x2<T>& B, T tol)
+  {
+    if(rsAbs(a-B.a) <= tol && rsAbs(b-B.b) <= tol && rsAbs(c-B.c) <= tol && rsAbs(d-B.d) <= tol)
+      return true;
+    return false;
+  }
+  // doesn't work with complex matrices
+
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
