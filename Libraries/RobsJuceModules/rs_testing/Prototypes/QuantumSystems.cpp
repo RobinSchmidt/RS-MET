@@ -120,7 +120,7 @@ T rsQuantumSpin<T>::measureObservable(Vec& A, const Mat& M, rsNoiseGenerator<T>*
   }
 }
 // in general, we'll have an NxN matrix and the probability to be in state k is given by
-//  (v * Ek) * (v * Ek) where v is our N dimensional complex state vector and Ek is the k-th
+//  <v|Ek> * <v|Ek> where v is our N dimensional complex state vector and Ek is the k-th
 // eigenvector of M. To collapse into one of the N states, we'll have to look at into which 
 // interval the random variable falls. For example, if P1 = 0.2, P2 = 0.5, P3 = 0.3 for a
 // 3D state, we'll fall into E1 if rnd in 0..0.2, into E2 if rnd in 0.2...0.7 and into E3 if

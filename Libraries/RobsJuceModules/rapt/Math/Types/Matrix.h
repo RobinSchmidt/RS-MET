@@ -147,9 +147,6 @@ public:
 
   /** \name Construction/Destruction */
 
-
-
-
   /**  */
   rsMatrixView(int numRows = 0, int numColumns = 0, T* data = nullptr)
   {
@@ -175,16 +172,59 @@ public:
   // void setToIdentityMatrix(T scaler = 1);
 
 
-  /** \name Operators */
 
-  /** Read and write access to matrix elements. */
-  inline T& operator()(const int i, const int j)
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /**  */
+  static bool areSameShape(const rsMatrixView<T>& A, const rsMatrixView<T>& B)
   {
-    return d[numCols*i + j];
-    // more general colStride*i + rowStride*j
-    // even more general: colOffset + colStride*i + (rowOffset + rowStride)*j
+    return A.numRows == B.numRows && A.numCols == B.numCols;
   }
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Arithmetic */
+
+  static void add(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>& C)
+  {
+    rsAssert(areSameShape(A, B) && areSameShape(A, C), "arguments incompatible");
+    for(int i = 0; i < A.numRows; i++)
+      for(int j = 0; j < A.numCols; j++)
+        C(i, j) = A.at(i, j) + B.at(i, j);
+  }
+  // try to make A,B const
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Operators */
+
+  /** Read and write access to matrix elements with row-index i and column-index j. */
+  inline T& operator()(const int i, const int j)
+  {
+    return d[flatIndex(i, j)];
+
+  }
+
+  /** Read only accees - used mainly internally with const reference arguments (for example, 
+  in add). */
+  inline const T& at(const int i, const int j) const
+  {
+    return d[flatIndex(i, j)];
+  }
+
+  /** Converts a row index i and a column index j to a flat array index. */
+  inline int flatIndex(const int i, const int j) const
+  {
+    return numCols*i + j;
+    // todo: 
+    //  -be more general: colStride*i + rowStride*j. goal: allow row-major and column-major storage
+    //   while the syntax of the operator is always row-major (as is conventional in math) 
+    //   regardless whatever the internal storage format is - column major storage is required for 
+    //   compatibility with lapack
+    // -maybe be even more general: colOffset + colStride*i + (rowOffset + rowStride)*j
+    //  -> may allow to access sub-matrices with the same syntax (todo: verify formula)
+  }
 
 
 protected:

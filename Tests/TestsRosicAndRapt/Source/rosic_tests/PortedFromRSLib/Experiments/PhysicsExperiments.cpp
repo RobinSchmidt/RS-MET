@@ -628,14 +628,40 @@ bool quantumSpinMeasurement()
   // ...oh - wait - there is no other way to evaluate the lhs of eq 7.13 - hmm - scrap that test
 
 
+// -what about eq 71. pg 185 - is this an implicit equation for any observable M?
+
   rsAssert(pass);
   return pass;
 }
 
-// todo: implement equations for entanglement:
-// -hwat about eq 71. pg 185 - is this an implicit equation for any observable M?
+// todo: implement equations for entanglement - this becomes a new function
+bool quantumEntanglement()
+{
+  bool pass = true;  // move to unit tests
+
+  typedef std::complex<double> Complex;
+  typedef rsQuantumSpin<double> QS;
+  typedef rsVector2D<std::complex<double>>  Vec;
+  typedef rsMatrix2x2<std::complex<double>> Mat;
+
+
+  Complex S[4];  // our state (or wave function), consisting of amplitudes for the 4 basis vectors
+  // Note that the fact that we need 4 complex numbers (amplitudes) to represent the state is 
+  // because 2^2 = 4 and not because 2*2 = 4. A state made from 3 spins would need 2^3 = 8 
+  // amplitudes and we can't represent that as an array of 3 spins
+  // see 136...
+
+  //Vec S[2];  // our state, consisting of 2 spins
+
+
+  rsAssert(pass);
+  return pass;
+}
+
 // -check pg 166, singlet and triple states
 // -pg 188, eq 7.7: c kronekcer product of matrices
+
+
 
 
 
@@ -671,7 +697,6 @@ public:
     q.x = s*t.x + s*t.y;
     q.y = s*t.x - s*t.y;
   }
-
 
   /*
   static void toffoli(Vec& v1, Vec& v2, Vec& v3)
@@ -870,7 +895,6 @@ bool quantumSpinEvolution()
 
 
 
-
   // Verify experimentally some formulas in (1):
 
   // compute commutators of the observables represented by the Pauli matrices X,Y,Z with the 
@@ -888,7 +912,6 @@ bool quantumSpinEvolution()
   Mat XY = Mat::commutator(sigma.x, sigma.y);  // 2*i*Z
   Mat YZ = Mat::commutator(sigma.y, sigma.z);  // 2*i*X
   Mat ZX = Mat::commutator(sigma.z, sigma.x);  // 2*i*Y
-
  
   // Observations:
   // -The real and imaginary parts of au and ad move sinusoidally with a frequency determined by w
@@ -959,6 +982,19 @@ bool quantumSpinEvolution()
 
   return pass;
 }
+
+
+// maybe combine a 2-state system with a 3-state system (for an example 3-state system, see
+
+
+void quantum3StateSystem()
+{
+  // we implemenent a numerical soultion to:
+  // http://folk.uio.no/jaakko/FYS3110/Griffiths_3.38.pdf
+
+
+}
+
 
 
 void tennisRacket()

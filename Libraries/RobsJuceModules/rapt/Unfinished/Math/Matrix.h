@@ -32,7 +32,7 @@
   */
 
 template<class T>
-class rsMatrix
+class rsMatrix  // rename to rsMatrixOld
 {
 
 public:

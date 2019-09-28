@@ -124,8 +124,6 @@ inline rsVector2D<T> operator*(const T &r, const rsVector2D<T> &p)
   return tmp;
 }
 
-
-
 //=================================================================================================
 
 /** Class for representing 3-dimensional vectors. 
@@ -266,7 +264,33 @@ b = (1/a^2) * (ab)a + (1/a^2) (a x b) x a = parallel + normal component of b wit
 
 */
 
+//=================================================================================================
 
+
+template<class T>
+class rsVectorView  // rename to rsVector and the current rsVector class to rsVectorOld
+{
+
+public:
+
+  int N;   // dimensionality
+  T*  v;   // the actual data
+
+protected:
+
+
+
+};
+
+template<class T>
+class rsVectorNew  // rename to rsVector and the current rsVector class to rsVectorOld
+{
+
+public:
+
+protected:
+
+};
 
 
 #endif

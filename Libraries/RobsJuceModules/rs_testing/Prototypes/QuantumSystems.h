@@ -217,7 +217,9 @@ public:
   // not tested
 
   /** Returns the minimum value of the product of the uncertainties of two observables M and L, 
-  given the system is in state A. */
+  given the system is in state A. 
+  todo: explain more, how this relates to the Heisenberg uncertainty principle
+  */
   static T getUncertaintyProduct(const Mat& M, const Mat& L, const Vec& A);
   // not tested
 
