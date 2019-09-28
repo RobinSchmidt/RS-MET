@@ -335,6 +335,8 @@ bool quantumSpinMeasurement()
   // This should be turned into a unit test...
   bool pass = true;   // move to unit tests
 
+
+  typedef std::complex<double> Complex;
   typedef rsQuantumSpin<double> QS;
   typedef rsVector2D<std::complex<double>>  Vec;
   typedef rsMatrix2x2<std::complex<double>> Mat;
@@ -578,7 +580,7 @@ bool quantumSpinMeasurement()
   // -is the uncertainty product of pauliX,pauliZ independent of the state? i think so
 
   // verify (1) Eq 7.11 for our 3 sets of basis vectors:
-  Mat M;
+  Mat M, M2;
   Mat I = Mat::identity();
   M = QS::projector(u) + QS::projector(d); pass &= M == I;
   M = QS::projector(r) + QS::projector(l); pass &= isCloseTo(M, I, tol);
@@ -586,7 +588,21 @@ bool quantumSpinMeasurement()
 
   // test for a random (normalized) state A, if A is an eigenvector of its projector |A><A| with
   // eigenvalue 1:
-  // ...
+  QS::randomizeState(A, &prng);
+  //QS::normalizeState(A); // not necessarry
+  M  = QS::projector(A);
+  e1 = M.eigenvalue1();   // 0
+  e2 = M.eigenvalue2();   // 1
+  E1 = M.eigenvector1();  // 
+  E2 = M.eigenvector2();  // is this = k * A for some (complex) constant k
+  Complex c1, c2;         // move decalaration to top
+  c1 = E2.x / A.x;
+  c2 = E2.y / A.y;
+  pass &= isCloseTo(c1, c2, tol);   // if c1 == c2, E2 is a multiple of A, so A is eigenvetor of M
+  c1 = QS::bracket(E1, E2);         
+  pass &= isCloseTo(c1, zero, tol); // E1 should be orthogonal to E2
+  M2 = M*M;
+  pass &= isCloseTo(M, M2, tol);    // M should be equal to its square
 
 
   // test 7.12
