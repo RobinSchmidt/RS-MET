@@ -163,7 +163,7 @@ public:
 
   /** Computes the outer product |A><B| of two states given as ket vectors |A>,|B>. This 
   computation gives a 2x2 matrix, i.e. an operator. */
-  Mat outer(const Vec& A, const Vec& B)
+  static Mat outer(const Vec& A, const Vec& B)
   { return Mat(A.x*conj(B.x), A.x*conj(B.y), A.y*conj(B.x), A.y*conj(B.y)); } // (1) Pg 193
 
   /** Computes the projection operator P for the state A (assumes, A is normalized). This is the 
@@ -172,10 +172,10 @@ public:
   (3) vectors orthogonal to A are eigenvectors with eigenvalue 0, (4) the square of it is equal 
   to the operator itself: P^2 = P, (5) the trace is 1, (6) adding up all projectors for a system of
   basis vectors (such as |u>, |d>) gives the identity matrix.  */
-  Mat projector(const Vec& A) { return outer(A, A); } // (1) Pg 194
+  static Mat projector(const Vec& A) { return outer(A, A); } // (1) Pg 194
   // move these 4 to a section "algebra" or something
 
-  Mat densityMatrix(std::vector<T> probabilities, std::vector<Vec> states);
+  static Mat densityMatrix(std::vector<T> probabilities, std::vector<Vec> states);
 
 
 

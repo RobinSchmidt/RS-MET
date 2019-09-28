@@ -559,6 +559,14 @@ bool quantumSpinMeasurement()
   // -if the system is in eigenstate pauliX, uncertainty of pauliZ should be maximal
   // -is the uncertainty product of pauliX,pauliZ independent of the state? i think so
 
+  // verify (1) Eq 7.11 for our 3 sets of basis vectors:
+  Mat M;
+  M = QS::projector(u) + QS::projector(d); pass &= M == Mat::identity();
+  //M = QS::projector(r) + QS::projector(l); pass &= M == Mat::identity();
+  //M = QS::projector(i) + QS::projector(o); pass &= M == Mat::identity();
+  // the 2nd 2 fail beacuse of numeric errors
+
+
   // test 7.12
   // ...
 
