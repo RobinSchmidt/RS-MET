@@ -186,6 +186,8 @@ public:
 
   int getNumColumns() const { return numCols; }
 
+  int getSize()       const { return numRows * numCols; }
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -290,6 +292,9 @@ public:
   //rsMatrix(size_t numRows = 1, size_t numColumns = 1); // leads to memory leaks
 
  
+  rsMatrixNew(int numRows, int numColumns, const std::vector<T>& data);
+
+
   /** Copy constructor. */
   //rsMatrix(const rsMatrix& other);
                               
@@ -326,17 +331,28 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
+  /** Compares matrices for equality */
+  bool operator==(const rsMatrixNew<T>& B) const 
+  { 
+    if(numRows != B.numRows || numCols != B.numCols)
+      return false;
+    return rsArray::areBuffersEqual(d, B.d, getSize());
+  }
+
+  /** Compares matrices for inequality */
+  bool operator!=(const rsMatrixNew<T>& B) const { return !(*this == B); }
+
   /** Adds two matrices: C = A + B. */
   rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
   { rsMatrixNew<T> C(numRows, numCols); add(this, &B, &C); return C; }
 
   /** Subtracts two matrices: C = A - B. */
-  rsMatrixNew<T> operator-(const rsMatrixNew<T>& B) const
-  { rsMatrixNew<T> C(numRows, numCols); sub(this, &B, &C); return C; }
+  //rsMatrixNew<T> operator-(const rsMatrixNew<T>& B) const
+  //{ rsMatrixNew<T> C(numRows, numCols); sub(this, &B, &C); return C; }
 
   /** Multiplies two matrices: C = A * B. */
-  rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
-  { rsMatrixNew<T> C(numRows, B.numCols); mul(this, &B, &C); return C; }
+  //rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
+  //{ rsMatrixNew<T> C(numRows, B.numCols); mul(this, &B, &C); return C; }
 
   // todo: /, ==,,+=,-=,*= 
 

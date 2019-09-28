@@ -436,12 +436,14 @@ bool quantumSpinMeasurement()
   QS::setToPauliZ(pauliZ);
   QS::setToPauliY(pauliY);
   QS::setToPauliX(pauliX);
+  // (1) pg 138 says that any spin operator can be written a linear combination of the 3 Pauli
+  // matrices and the identity matrix
 
   e1 = pauliZ.eigenvalue1();  pass &= e1 == -1.0;
   e2 = pauliZ.eigenvalue2();  pass &= e2 == +1.0;
   E1 = pauliZ.eigenvector1(); pass &= isCloseTo(E1, d, tol); // "down"
   E2 = pauliZ.eigenvector2(); pass &= isCloseTo(E2, u, tol); // "up"
-  // E1 ane E2 are swapped - why?
+  // E1 ane E2 are swapped - why?  ...not true anymore?
 
   e1 = pauliX.eigenvalue1();  pass &= e1 == -1.0;
   e2 = pauliX.eigenvalue2();  pass &= e2 == +1.0;

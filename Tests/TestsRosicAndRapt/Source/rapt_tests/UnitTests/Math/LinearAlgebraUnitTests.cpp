@@ -9,6 +9,7 @@ bool testLinearAlgebra()
   bool testResult = true;
 
   testResult &= testBandDiagonalSolver(   reportString);
+  testResult &= testMatrixNew(            reportString);
   testResult &= testMatrix2x2(            reportString);
   testResult &= testLinearSystem2x2(      reportString);
   testResult &= testLinearSystem3x3(      reportString);
@@ -87,8 +88,6 @@ bool testMatrix2x2(std::string& reportString)
   std::string testName = "Matrix2x2";
   bool testResult = true;
   typedef rsLinearAlgebra LA;
-
-
 
 
   // Test compuatation of eigenvalues and eigenvectors:
@@ -205,6 +204,24 @@ bool testMatrix2x2(std::string& reportString)
   */
 
   return testResult;
+}
+
+bool testMatrixNew(std::string& reportString)
+{
+  bool res = true;
+  typedef rsMatrixNew<double> Mat;
+  typedef std::vector<double> Vec;
+
+  Mat A(2, 3, Vec({1,2,3,4,5,6}));
+  Mat B(3, 2, Vec({7,8,9,10,11,12}));
+
+  Mat C = A+A;
+
+  res &= C == Mat(2, 3, Vec({2,4,6,8,10,12}));
+
+
+
+  return res;
 }
 
 bool testLinearSystem2x2(std::string &reportString)

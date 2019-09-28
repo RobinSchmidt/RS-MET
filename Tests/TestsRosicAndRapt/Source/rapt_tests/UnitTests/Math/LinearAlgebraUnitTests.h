@@ -9,6 +9,7 @@ bool testBandDiagonalSolver(std::string &reportString);
 
 
 bool testMatrix2x2(std::string &reportString);
+bool testMatrixNew(std::string &reportString);
 bool testLinearSystem2x2(std::string &reportString);
 bool testLinearSystem3x3(std::string &reportString);
 bool testLinearSystemViaGauss(std::string &reportString);
