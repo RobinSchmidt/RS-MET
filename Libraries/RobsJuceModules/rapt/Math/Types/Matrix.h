@@ -212,22 +212,17 @@ public:
   }
 
   /** Computes the matrix product C = A*B. */
-  static void mul(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>& C)
+  static void mul(const rsMatrixView<T>* A, const rsMatrixView<T>* B, rsMatrixView<T>* C)
   {
-    int N = A.numRows;
-    int M = B.numRows;
-    int P = A.numCols;
-    rsAssert(P == B.numCols);
-    rsAssert(N == C.numRows);
-    rsAssert(P == C.numCols);
-    // A: NxM, B: MxP, C: NxP 
-    // verify these conditions - factor them out into areMultiplicable(A, B, C)
-
-    for(int i = 0; i < N; i++) {
-      for(int j = 0; j < P; j++) {
-        C(i,j) = T(0);
-        for(int k = 0; k < M; k++)
-          C(i,j) += A.at(i,k) * B.at(k,j); }}
+    // maybe factor out a function: areMultiplicable(A, B)
+    rsAssert(A->numCols == B->numRows);
+    rsAssert(C->numCols == B->numCols);
+    rsAssert(C->numRows == A->numRows);
+    for(int i = 0; i < C->numRows; i++) {
+      for(int j = 0; j < C->numCols; j++) {
+        (*C)(i,j) = T(0);
+        for(int k = 0; k < A->numCols; k++)
+          (*C)(i,j) += A->at(i,k) * B->at(k,j); }}
   }
 
 
@@ -328,15 +323,10 @@ public:
   //}
 
 
-
-
-
   // todo: implement the various copy/move assigment operators and -constructors - this should
   // optimize returning values from functions and operators (avoid unnessary copying)
   // https://en.cppreference.com/w/cpp/language/operators#Assignment_operator
   // ..i tried - but no avail yet
-
-
 
 
   /** \name Setup */
@@ -390,10 +380,10 @@ public:
   { rsMatrixNew<T> C(numRows, numCols); sub(this, &B, &C); return C; }
 
   /** Multiplies two matrices: C = A * B. */
-  //rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
-  //{ rsMatrixNew<T> C(numRows, B.numCols); mul(this, &B, &C); return C; }
+  rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
+  { rsMatrixNew<T> C(numRows, B.numCols); mul(this, &B, &C); return C; }
 
-  // todo: /, ==,,+=,-=,*= 
+  // todo: /, ==,,+=,-=,*=,-
 
 
 protected:
@@ -413,8 +403,9 @@ protected:
 
   /** \name Data */
 
-  std::vector<T> data; // maybe instead of having a vector, we shoud inherit from vector
-  // or maybe we should just work with our inherited d pointer
+  std::vector<T> data;
+  // maybe we should just work with our inherited d pointer - but then we can't look easily at the
+  // data in the debugger anymore -> very bad! so, nope!
   
 }; 
 
