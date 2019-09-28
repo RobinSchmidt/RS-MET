@@ -185,6 +185,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Arithmetic */
 
+  /** Adds elements of A to corresponding elements in B and stores results in C. */
   static void add(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>& C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, C), "arguments incompatible");
@@ -192,9 +193,35 @@ public:
       for(int j = 0; j < A.numCols; j++)
         C(i, j) = A.at(i, j) + B.at(i, j);
   }
-  // try to make A,B const
 
+  /** Subtracts elements of B from corresponding elements A in and stores results in C. */
+  static void sub(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>& C)
+  {
+    rsAssert(areSameShape(A, B) && areSameShape(A, C), "arguments incompatible");
+    for(int i = 0; i < A.numRows; i++)
+      for(int j = 0; j < A.numCols; j++)
+        C(i, j) = A.at(i, j) - B.at(i, j);
+  }
 
+  /** Computes the matrix product C = A*B. */
+  static void mul(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>& C)
+  {
+    int N = A.numRows;
+    int M = B.numRows;
+    int P = A.numCols;
+    rsAssert(P == B.numCols);
+    rsAssert(N == C.numRows);
+    rsAssert(P == C.numCols);
+    // verify these conditions - factor them out into areMultiplicable(A, B, C)
+
+    for(int i = 0; i < N; i++) {
+      for(int j = 0; j < P; j++) {
+        C(i,j) = T(0);
+        for(int k = 0; k < M; k++)
+          C(i,j) += A.at(i,k) * B.at(k,j); }}
+  }
+
+  /** Multiplies NxM matrix A by MxP matrix B and stores the result in NxP matrix C = A * B. */
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */

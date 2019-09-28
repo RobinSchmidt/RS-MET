@@ -266,7 +266,10 @@ b = (1/a^2) * (ab)a + (1/a^2) (a x b) x a = parallel + normal component of b wit
 
 //=================================================================================================
 
-
+/*
+// maybe, we don't really need a an rsVector class - we may represent vectors as column matrices
+// ...or: maybe have rsRowVector, rsColumnVector classes as subclasses (special cases) of rsMatrix
+// ...or maybe call the rsRowMatrix, rsColumnMatrix
 template<class T>
 class rsVectorView  // rename to rsVector and the current rsVector class to rsVectorOld
 {
@@ -291,6 +294,7 @@ public:
 protected:
 
 };
+*/
 
 
 #endif
