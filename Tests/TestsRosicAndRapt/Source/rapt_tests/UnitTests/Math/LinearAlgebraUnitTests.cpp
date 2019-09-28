@@ -216,7 +216,8 @@ bool testMatrixNew(std::string& reportString)
   Mat B(3, 2, Vec({7,8,9,10,11,12}));
 
 
-  Mat C = A+A; res &= C == Mat(2, 3, Vec({2,4,6,8,10,12}));
+  Mat C = A+A; 
+  res &= C == Mat(2, 3, Vec({2,4,6,8,10,12}));
 
   Mat Z23(2,3,Vec({0,0,0,0,0,0})) ;
 

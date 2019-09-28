@@ -279,7 +279,7 @@ protected:
 /** This is a class for representing matrices and doing mathematical operations with them. */
 
 template<class T>
-class rsMatrixNew : public rsMatrixView<T>
+class rsMatrixNew : public std::vector<T>, public rsMatrixView<T>
 {
 
 public:
@@ -296,7 +296,7 @@ public:
 
   /** Creates matrix from a std::vector - convenient to initialize elements.  */
   rsMatrixNew(int numRows, int numColumns, const std::vector<T>& newData) 
-    : data(newData)
+    : std::vector<T>(newData)
   {
     rsAssert(numRows*numColumns == newData.size());
     this->numRows = numRows;
@@ -321,13 +321,39 @@ public:
     // maybe we need to use a plain pointer
   }
 
+
+  rsMatrixNew<T>& operator=(const rsMatrixNew<T>& other) // copy assignment
+  {
+    if(this != &other) {            // self-assignment check expected
+      numRows = other.numRows;
+      numCols = other.numCols;
+      if(other.size() != size()) {  // storage cannot be reused
+        resize(other.size());
+        updateDataPointer();
+      }
+      rsArray::copyBuffer(other.d, d, getSize());
+    }
+    return *this;
+  }
+  // code adapted from: https://en.cppreference.com/w/cpp/language/operators#Assignment_operator
+
+  rsMatrixNew<T>& operator=(rsMatrixNew<T>&& other) noexcept // move assignment
+  {
+    if(this != &other) { // no-op on self-move-assignment (delete[]/size=0 also ok)
+      numRows = other.numRows;
+      numCols = other.numCols;
+      d = other.d;
+    }
+    return *this;
+  }
+
   //rsMatrixNew(const rsMatrixNew& B)
   //{
   //  setSize(B.numRows, B.numCols);
   //  rsArray::copyBuffer(B.d, d, getSize());
   //}
 
-  // https://en.cppreference.com/w/cpp/language/operators#Assignment_operator
+
 
 
   // todo: implement the various copy/move assigment operators and -constructors - this should
@@ -348,7 +374,7 @@ public:
   {
     this->numRows = numRows;
     this->numCols = numColumns;
-    data.resize(this->numRows * this->numCols);
+    resize(this->numRows * this->numCols);
     updateDataPointer();
     // optionally initialize with zeros
   }
@@ -404,16 +430,23 @@ protected:
   that holds the actual data. */
   void updateDataPointer()
   {
+    if(size() > 0)
+      this->d = &((*this)[0]);  // point to the first vector element
+    else
+      this->d = nullptr;
+
+    /*
     if(data.size() > 0)  
       this->d = &data[0];
     else
       this->d = nullptr;
+      */
   }
 
 
   /** \name Data */
 
-  std::vector<T> data; // maybe instead of having a vector, we shoud inherit from vector
+  //std::vector<T> data; // maybe instead of having a vector, we shoud inherit from vector
   // or maybe we should just work with our inherited d pointer
   
 }; 
