@@ -300,27 +300,38 @@ public:
   }
 
   /** Copy constructor. */
-  //rsMatrixNew(const rsMatrixNew& B)
-  //{
-  //  setSize(B.numRows, B.numCols);
-  //  rsArray::copyBuffer(B.d, d, getSize());
-  //}
+  rsMatrixNew(const rsMatrixNew& B)
+  {
+    setSize(B.numRows, B.numCols);
+    rsArray::copyBuffer(B.d, d, getSize());
+  }
 
   /** Move constructor. */
-  //rsMatrixNew(const rsMatrixNew&& B)
-  //{
-  //  this->numRows = B.numRows;
-  //  this->numCols = B.numCols;
-  //  d = B.d;  
-  //  // no data copied - but what about our "data" vector - will this get moved, too? otherwise,
-  //  // maybe we need to use a plain pointer
-  //}
+  rsMatrixNew(const rsMatrixNew&& B)
+  {
+    setSize(B.numRows, B.numCols);
+    rsArray::copyBuffer(B.d, d, getSize());
+  }
 
-  //rsMatrixNew(const rsMatrixNew& B)
-  //{
-  //  setSize(B.numRows, B.numCols);
-  //  rsArray::copyBuffer(B.d, d, getSize());
-  //}
+  rsMatrixNew<T>& operator=(const rsMatrixNew<T>& other) // copy assignment
+  {
+    if (this != &other) { // self-assignment check expected
+      setSize(other.numRows, other.numCols);
+      rsArray::copyBuffer(other.d, d, getSize());
+    }
+    return *this;
+  }
+
+  rsMatrixNew<T>& operator=(const rsMatrixNew<T>&& other) // move assignment
+  {
+    if (this != &other) { // self-assignment check expected
+      setSize(other.numRows, other.numCols);
+      rsArray::copyBuffer(other.d, d, getSize());
+    }
+    return *this;
+  }
+  // can we avoid the copying? ..i mean, that's the wohle point of move operators
+
 
 
   // todo: implement the various copy/move assigment operators and -constructors - this should
@@ -346,7 +357,29 @@ public:
     // optionally initialize with zeros
   }
 
-    
+
+  /** Computes the Kronecker product between matrices A and B. For a 3x2 matrix A, it looks like 
+  that:
+              |a11*B a12*B|
+  A (x) B  =  |a21*B a22*B|
+              |a31*B a32*B|
+
+  Where each entry aij*B is a submatrix of dimensions of B with the entries of b scaled by an 
+  appropriate element from A. */
+  static rsMatrixNew<T> kroneckerProduct(const rsMatrixNew<T>& A, const rsMatrixNew<T>& B)
+  { 
+    rsMatrixNew<T> C(A.numRows*B.numRows, A.numCols*B.numCols);
+    for(int ia = 0; ia < A.numRows; ia++) {
+      for(int ja = 0; ja < A.numCols; ja++) {
+        int startRow = ia*B.numRows;
+        int startCol = ja*B.numCols;
+        for(int ib = 0; ib < B.numRows; ib++) {
+          for(int jb = 0; jb < B.numCols; jb++) {
+            C(startRow+ib, startCol+jb) = A.at(ia,ja) * B.at(ib, jb); }}}}
+    return C; 
+  }
+  // see https://rosettacode.org/wiki/Kronecker_product#C
+
 
 
   /** \name Manipulations */

@@ -224,6 +224,10 @@ bool testMatrixNew(std::string& reportString)
   C = B * A;
   // todo: check, if result is correct
 
+  C = Mat::kroneckerProduct(A, B);
+  // todo: check, if result is correct
+  // maybe try with 1x2 and 4x3 matrix (all dimensions different)
+
 
 
   return res;
