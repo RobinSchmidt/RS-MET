@@ -24,6 +24,9 @@ public:
   void setValues(T a, T b, T c, T d) { this->a = a; this->b = b; this->c = c; this->d = d; }
 
 
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the determinant of this matrix. */
@@ -47,7 +50,10 @@ public:
   rsMatrix2x2<T> inverse() const
   { T D = determinant(); T s = T(1) / D; return rsMatrix2x2<T>(s*d, -s*b, -s*c, s*a); }
 
+  // maybe these functions should be named getDeterminant, etc. - more consistent with other 
+  // classes and states more explicitly what they do
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
   /** Adds two matrices: C = A + B. */
@@ -81,6 +87,13 @@ public:
   // todo: left multiplication w = v^H * A
 
   // todo: operators that take a scalar as left or right argument
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Factory */
+
+  static rsMatrix2x2<T> identity() { return rsMatrix2x2<T>(T(1), T(0), T(0), T(1)); }
+
 
   /** Returns the commutator of the two matrices A and B: C = A*B - B*A. In general, matrix 
   multiplication is non-commutative, but for some special cases, it may be commutative nonetheless. 

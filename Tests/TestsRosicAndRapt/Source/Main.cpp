@@ -104,8 +104,8 @@ int main(int argc, char* argv[])
   //particleForceDistanceLaw();
   //particleSystem();
   quantumSpinMeasurement();  // move to unit tests
-  quantumGates();            // move to unit tests
-  quantumSpinEvolution();
+  //quantumGates();            // move to unit tests
+  //quantumSpinEvolution();
   //tennisRacket();
   //tennisRacket2();
   //tennisRacket3();

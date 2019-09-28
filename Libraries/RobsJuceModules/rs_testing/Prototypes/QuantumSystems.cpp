@@ -63,8 +63,33 @@ T rsQuantumSpin<T>::getExpectedMeasurement(const Mat& M, const Vec& A)
   //return E;
 
   // ...but the same value can be computed more efficiently by (1) Eq 4.14:
-  return bracket(A, M*A).real();
+  return sandwich(A, M, A).real();
+  //return bracket(A, M*A).real(); // make a function sandwich
 }
+
+template<class T>
+T rsQuantumSpin<T>::getUncertaintySquared(const Mat& M, const Vec& A)
+{
+  T Me = getExpectedMeasurement(M, A);         // expectation value of observable M in state A
+  Mat Mc = M - Complex(Me) * Mat::identity();  // centered version of M, has expectation zero
+  return sandwich(A, Mc*Mc, A).real();         // (1) pg 141
+}
+
+template<class T>
+T rsQuantumSpin<T>::getUncertaintyProduct(const Mat& M, const Mat& L, const Vec& A)
+{
+  T   Me, Le;     // expectation values of measurables associated with M,L
+  Mat Mc, Lc, C;  // centered operators and their commutator
+  Me = getExpectedMeasurement(M, A); Mc = M - Complex(Me) * Mat::identity();
+  Le = getExpectedMeasurement(L, A); Lc = L - Complex(Le) * Mat::identity();
+  C  = Mat::commutator(Mc, Lc);
+  return T(0.5) * sandwich(A, C, A).real();  // (1) Eq 5.13 (with centered matrices)
+
+  //return T(0); // not yet implemented
+}
+
+
+
 
 // measurement:
 

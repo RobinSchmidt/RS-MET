@@ -541,7 +541,6 @@ bool quantumSpinMeasurement()
   double mean = rsMean(spins);
   P = (mean+1)/2;  // -1..+1 -> 0..1  P = 0.81 (with N=1000) - close enough to 0.8
 
-
   // compute expectation values for the spin component measurements in state B:
   double Ez, Ex, Ey;  
   Ez = QS::getExpectedMeasurement(pauliZ, B); // should be 0.6 = (0.8*2)-1 and close to mean1
@@ -552,27 +551,31 @@ bool quantumSpinMeasurement()
   pass &= isCloseTo(Ez, 0.6, tol);
   // Ex = 0.8 and Ey = 0 - maybe try to compute these manually
 
-  // OK - states and measurements (chapters 2, 3) are done and seem to work
-  // next: evolution of states, i.e. applying unitary operators to modify a state
-  // todo: implement quantum gates (and, or, Hadamard, cnot, toffoli)
-
-  // structure the tests:
-  // 1: states, probabilities
-  // 2: measurements
-  // 3: state evolution
-  // 4: entanglement
 
 
-  // this here:
-  // https://www.youtube.com/watch?v=ZN0lhYU1f5Q
-  // says: measure, hadamard, phase, T (rotate |1> by pi/4), cnot
 
-  // https://homepages.cwi.nl/~rdewolf/qcnotes.pdf
-  // http://mmrc.amss.cas.cn/tlb/201702/W020170224608150244118.pdf
+
 
   rsAssert(pass);
   return pass;
 }
+
+// OK - states and measurements (chapters 2, 3) are done and seem to work
+// next: evolution of states, i.e. applying unitary operators to modify a state
+// todo: implement quantum gates (and, or, Hadamard, cnot, toffoli)
+
+// structure the tests:
+// 1: states, probabilities
+// 2: measurements
+// 3: state evolution
+// 4: entanglement
+
+// this here:
+// https://www.youtube.com/watch?v=ZN0lhYU1f5Q
+// says: measure, hadamard, phase, T (rotate |1> by pi/4), cnot
+
+// https://homepages.cwi.nl/~rdewolf/qcnotes.pdf
+// http://mmrc.amss.cas.cn/tlb/201702/W020170224608150244118.pdf
 
 
 template<class T>

@@ -157,6 +157,10 @@ public:
   static std::complex<T> bracket(const Vec& A, const Vec& B) 
   { return conj(A.x) * B.x + conj(A.y) * B.y; }
 
+  /** Computes the triple product <A|M|B> of a matrix M "sandwiched" two states A and B. */
+  static std::complex<T> sandwich(const Vec& A, const Mat& M, const Vec& B) 
+  { return bracket(A, M*B); }
+
   /** Returns the probability amplitude to measure an "up" configuration when z-spin is
   measured and the system is in state A. If we denote this amplitude by au, it is given by
   au = <u|A> = (u1, u2)^H * (A.x, A.y) = (1, 0)^H * (A.x, A.y)= A.x. 
@@ -186,6 +190,14 @@ public:
 
   /** Returns the expectation value for the observable M when the system is in state A. */
   static T getExpectedMeasurement(const Mat& M, const Vec& A);
+  // todo: rename to getExpectation or just expectation, maybe pass the state first and matrix
+  // second (consistent with measureObservable - but maybe its better to chane theorder there)
+
+  static T getUncertaintySquared(const Mat& M, const Vec& A);
+
+  static T getUncertaintyProduct(const Mat& M, const Mat& L, const Vec& A);
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -201,7 +213,8 @@ public:
   fact that the act measurement will put the system in an eigenvector state of M, implies that 
   subsequent measurements of the same observable will always give the same result (assuming, of 
   course, that no manipulations of the state take place in between the measurements). */
-  static T measureObservable(Vec& A, const Mat& M, rsNoiseGenerator<T>* prng); 
+  static T measureObservable(Vec& A, const Mat& M, rsNoiseGenerator<T>* prng);
+  // maybe rename to measure(...)
 
   /** Measures the spin along an arbitrary axis in 3D space given by the vector components
   nx, ny, nz. It is assumed that these components form a unit-length vector in 3-space
@@ -279,3 +292,10 @@ protected:
   std::vector<Vec> qbits;  // these are actually the states
 
 };
+
+/*
+see also:
+https://github.com/libtangle/qcgpu/blob/master/qcgpu/backend.py
+
+
+*/
