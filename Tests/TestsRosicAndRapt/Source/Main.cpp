@@ -491,7 +491,7 @@ int main(int argc, char* argv[])
   //testRosicAnalysis();
   //testRosicBasics();
   //testRosicFile();
-  //testRosicEffects();
+  testRosicEffects();
   //testRosicGenerators();
   //testRosicFilter();
   //testRosicNumerical();

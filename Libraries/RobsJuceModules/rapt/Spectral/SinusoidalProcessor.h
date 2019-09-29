@@ -169,7 +169,8 @@ public:
     T cutoff, int order, int numPasses);
   // maybe factor this out - it could be useful for other processors, too ...maybe have a class
   // rsPhaseSmoother that lets the user select cutoff-freq, filter-type, order, numPasses, etc.
-  // todo: make input vectors const (-> make GNUPlotter const-correct)
+  // todo: make input vectors const (-> make GNUPlotter const-correct) - but this gives weird 
+  // compiler errors
   // ...hmm - or maybe the filter-type should be fixed - to Bessel or Gaussian?
 
 
