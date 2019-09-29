@@ -88,13 +88,14 @@ namespace rosic
     Transform". When the default values are used, it reduces to the standard Hadamard 
     transform without scaling or sequency based ordering. The result will again end up in
     x. N is supposed to be a power of two that gives the vector's dimensionality and log2N should 
-    be the base-2 logarithm of N.
+    be the base-2 logarithm of N. The "work" pointer should point to an array (of the same length 
+    as x) that can be used as internal workspace.
     \todo move this function out of this class - it might be useful in other contexts as well */
-    static void fastGeneralizedHadamardTransform(double *x, int N, int log2N, 
+    static void fastGeneralizedHadamardTransform(double *x, int N, int log2N, double *work, 
       double a = 1.0, double b = 1.0, double c = 1.0, double d = -1.0);
 
 
-    static void fastInverseGeneralizedHadamardTransform(double *x, int N, int log2N, 
+    static void fastInverseGeneralizedHadamardTransform(double *x, int N, int log2N, double *work, 
       double a = 1.0, double b = 1.0, double c = 1.0, double d = -1.0);
 
   protected:

@@ -14,7 +14,7 @@ public:
   //                     |c d|
 
 
-  /** Stadard constructor. You can pass the matrix elements. If you pass nothing, an identity 
+  /** Stadard constructor. You can pass the matrix elements. If you pass nothing, an identity
   matrix will be created. */
   rsMatrix2x2(T a = T(1), T b = T(0), T c = T(0), T d = T(1)) { setValues(a, b, c, d); }
   // todo: maybe require arguments to be passed - or initialze teh matrix to the zero matrix
@@ -55,7 +55,7 @@ public:
   rsMatrix2x2<T> inverse() const
   { T D = determinant(); T s = T(1) / D; return rsMatrix2x2<T>(s*d, -s*b, -s*c, s*a); }
 
-  // maybe these functions should be named getDeterminant, etc. - more consistent with other 
+  // maybe these functions should be named getDeterminant, etc. - more consistent with other
   // classes and states more explicitly what they do
 
   /** Tests, if another matrix B is close to this matrix within a given tolerance (all components
@@ -81,14 +81,14 @@ public:
 
   /** Multiplies two matrices: C = A * B. */
   rsMatrix2x2<T> operator*(const rsMatrix2x2<T>& B) const
-  { rsMatrix2x2<T> C; C.a = a*B.a + b*B.c; C.b = a*B.b + b*B.d; 
+  { rsMatrix2x2<T> C; C.a = a*B.a + b*B.c; C.b = a*B.b + b*B.d;
     C.c = c*B.a + d*B.c; C.d = c*B.b + d*B.d; return C; }
 
   /** Multiplies the left matrix operand with the inverse of the right matrix operand. */
   rsMatrix2x2<T> operator/(const rsMatrix2x2<T>& B) const { return *this * B.inverse(); }
 
   /** Compares matrices for equality */
-  bool operator==(const rsMatrix2x2<T>& B) const 
+  bool operator==(const rsMatrix2x2<T>& B) const
   { return a == B.a && b == B.b && c == B.c && d == B.d; }
 
   /** Multiplies matrix by a vector: w = A*v */
@@ -112,9 +112,9 @@ public:
   static rsMatrix2x2<T> identity() { return rsMatrix2x2<T>(T(1), T(0), T(0), T(1)); }
 
 
-  /** Returns the commutator of the two matrices A and B: C = A*B - B*A. In general, matrix 
-  multiplication is non-commutative, but for some special cases, it may be commutative nonetheless. 
-  The commutator captures, how non-commutative two matrices behave when being multiplied. If the 
+  /** Returns the commutator of the two matrices A and B: C = A*B - B*A. In general, matrix
+  multiplication is non-commutative, but for some special cases, it may be commutative nonetheless.
+  The commutator captures, how non-commutative two matrices behave when being multiplied. If the
   two matrices commute (i.e. behave commutatively), their commutator is the zero matrix. */
   static rsMatrix2x2<T> commutator(const rsMatrix2x2<T>& A, const rsMatrix2x2<T>& B)
   {
@@ -133,8 +133,8 @@ inline rsMatrix2x2<T> operator*(const T& s, const rsMatrix2x2<T>& A)
 
 //=================================================================================================
 
-/** This is a class for treating C-arrays as matrices. It does not store/own the actual matrix 
-data, it just acts as wrapper around an existing array for more conveniently accessing and 
+/** This is a class for treating C-arrays as matrices. It does not store/own the actual matrix
+data, it just acts as wrapper around an existing array for more conveniently accessing and
 manipulating matrix elements. */
 
 template<class T>
@@ -229,7 +229,7 @@ public:
   /** Read and write access to matrix elements with row-index i and column-index j. */
   inline T& operator()(const int i, const int j) { return d[flatIndex(i, j)]; }
 
-  /** Read only accees - used mainly internally with const reference arguments (for example, 
+  /** Read only accees - used mainly internally with const reference arguments (for example,
   in add). */
   inline const T& at(const int i, const int j) const { return d[flatIndex(i, j)]; }
 
@@ -237,10 +237,10 @@ public:
   inline int flatIndex(const int i, const int j) const
   {
     return numCols*i + j;
-    // todo: 
+    // todo:
     //  -be more general: colStride*i + rowStride*j. goal: allow row-major and column-major storage
-    //   while the syntax of the operator is always row-major (as is conventional in math) 
-    //   regardless whatever the internal storage format is - column major storage is required for 
+    //   while the syntax of the operator is always row-major (as is conventional in math)
+    //   regardless whatever the internal storage format is - column major storage is required for
     //   compatibility with lapack
     // -maybe be even more general: colOffset + colStride*i + (rowOffset + rowStride)*j
     //  -> may allow to access sub-matrices with the same syntax (todo: verify formula)
@@ -279,7 +279,7 @@ public:
   }
 
   /** Creates matrix from a std::vector - convenient to initialize elements.  */
-  rsMatrixNew(int numRows, int numColumns, const std::vector<T>& newData) 
+  rsMatrixNew(int numRows, int numColumns, const std::vector<T>& newData)
     : data(newData)
   {
     rsAssert(numRows*numColumns == newData.size());
@@ -292,21 +292,21 @@ public:
   rsMatrixNew(const rsMatrixNew& B)
   {
     setSize(B.numRows, B.numCols);
-    rsArray::copyBuffer(B.d, d, getSize());
+    rsArray::copyBuffer(B.d, this->d, this->getSize());
   }
 
   /** Move constructor. */
   rsMatrixNew(const rsMatrixNew&& B)
   {
     setSize(B.numRows, B.numCols);
-    rsArray::copyBuffer(B.d, d, getSize());
+    rsArray::copyBuffer(B.d, this->d, this->getSize());
   }
 
   rsMatrixNew<T>& operator=(const rsMatrixNew<T>& other) // copy assignment
   {
     if (this != &other) { // self-assignment check expected
       setSize(other.numRows, other.numCols);
-      rsArray::copyBuffer(other.d, d, getSize());
+      rsArray::copyBuffer(other.d, this->d, this->getSize());
     }
     return *this;
   }
@@ -315,7 +315,7 @@ public:
   {
     if (this != &other) { // self-assignment check expected
       setSize(other.numRows, other.numCols);
-      rsArray::copyBuffer(other.d, d, getSize());
+      rsArray::copyBuffer(other.d, this->d, this->getSize());
     }
     return *this;
   }
@@ -327,14 +327,14 @@ public:
   // optimize returning values from functions and operators (avoid unnessary copying)
   // https://en.cppreference.com/w/cpp/language/operators#Assignment_operator
   // ..i tried - but no avail yet
-  // but we have to implement them because the standard versions will copy the pointer variable 
-  // inherited from the baseclass - we must call updateDataPointer in the copy/move 
+  // but we have to implement them because the standard versions will copy the pointer variable
+  // inherited from the baseclass - we must call updateDataPointer in the copy/move
   // construtors/assigners
 
 
   /** \name Setup */
 
-  /** Sets the number of rows and columns, this matrix should have. ToDo: provide a way to retain 
+  /** Sets the number of rows and columns, this matrix should have. ToDo: provide a way to retain
   the data (optionally) - what does std::vector's resize do? Does it retain data...but if it does,
   it would be useless anyway in case the number of columns changed. */
   void setSize(int numRows, int numColumns)
@@ -347,16 +347,16 @@ public:
   }
 
 
-  /** Computes the Kronecker product between matrices A and B. For a 3x2 matrix A, it looks like 
+  /** Computes the Kronecker product between matrices A and B. For a 3x2 matrix A, it looks like
   that:
               |a11*B a12*B|
   A (x) B  =  |a21*B a22*B|
               |a31*B a32*B|
 
-  Where each entry aij*B is a submatrix of dimensions of B with the entries of b scaled by an 
+  Where each entry aij*B is a submatrix of dimensions of B with the entries of b scaled by an
   appropriate element from A. */
   static rsMatrixNew<T> kroneckerProduct(const rsMatrixNew<T>& A, const rsMatrixNew<T>& B)
-  { 
+  {
     rsMatrixNew<T> C(A.numRows*B.numRows, A.numCols*B.numCols);
     for(int ia = 0; ia < A.numRows; ia++) {
       for(int ja = 0; ja < A.numCols; ja++) {
@@ -365,7 +365,7 @@ public:
         for(int ib = 0; ib < B.numRows; ib++) {
           for(int jb = 0; jb < B.numCols; jb++) {
             C(startRow+ib, startCol+jb) = A.at(ia,ja) * B.at(ib, jb); }}}}
-    return C; 
+    return C;
   }
   // see https://rosettacode.org/wiki/Kronecker_product#C
 
@@ -384,11 +384,11 @@ public:
   /** \name Operators */
 
   /** Compares matrices for equality */
-  bool operator==(const rsMatrixNew<T>& B) const 
-  { 
-    if(numRows != B.numRows || numCols != B.numCols)
+  bool operator==(const rsMatrixNew<T>& B) const
+  {
+    if(this->numRows != B.numRows || this->numCols != B.numCols)
       return false;
-    return rsArray::areBuffersEqual(d, B.d, getSize());
+    return rsArray::areBuffersEqual(this->d, B.d, this->getSize());
   }
   // move to rsMatrixView
 
@@ -398,15 +398,15 @@ public:
 
   /** Adds two matrices: C = A + B. */
   rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
-  { rsMatrixNew<T> C(numRows, numCols); add(this, &B, &C); return C; }
+  { rsMatrixNew<T> C(this->numRows, this->numCols); this->add(this, &B, &C); return C; }
 
   /** Subtracts two matrices: C = A - B. */
   rsMatrixNew<T> operator-(const rsMatrixNew<T>& B) const
-  { rsMatrixNew<T> C(numRows, numCols); sub(this, &B, &C); return C; }
+  { rsMatrixNew<T> C(this->numRows, this->numCols); this->sub(this, &B, &C); return C; }
 
   /** Multiplies two matrices: C = A * B. */
   rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
-  { rsMatrixNew<T> C(numRows, B.numCols); mul(this, &B, &C); return C; }
+  { rsMatrixNew<T> C(this->numRows, B.numCols); this->mul(this, &B, &C); return C; }
 
   // todo: /, ==,,+=,-=,*=,-
 
@@ -419,7 +419,7 @@ protected:
   that holds the actual data. */
   void updateDataPointer()
   {
-    if(data.size() > 0)  
+    if(data.size() > 0)
       this->d = &data[0];
     else
       this->d = nullptr;
@@ -431,8 +431,8 @@ protected:
   std::vector<T> data;
   // maybe we should just work with our inherited d pointer - but then we can't look easily at the
   // data in the debugger anymore -> very bad! so, nope!
-  
-}; 
+
+};
 
 /** Multiplies a scalar and a matrix. */
 template<class T>

@@ -142,12 +142,12 @@ void FeedbackDelayNetwork::reset()
   setupReadIndices();
 }
 
-void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(double *x, int N, int log2N,
-                                                            double a, double b, double c, double d)
+void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(
+  double *x, int N, int log2N, double *y, double a, double b, double c, double d)
 {
-  double *y               = (double*) alloca(N*sizeof(double));
-  int     N2              = N/2;
-  bool    xContainsResult = true;
+  //double *y               = (double*) alloca(N*sizeof(double));
+  int  N2 = N/2;
+  bool xContainsResult = true;
   for(int i = 1; i <= log2N; i++)
   {
     for(int j = 0; j < N2; j++)
@@ -169,12 +169,11 @@ void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(double *x, int N, in
      // neutral
 }
 
-void FeedbackDelayNetwork::fastInverseGeneralizedHadamardTransform(double *x, int N, int log2N,
-                                                                   double a, double b,
-                                                                   double c, double d)
+void FeedbackDelayNetwork::fastInverseGeneralizedHadamardTransform(
+  double *x, int N, int log2N, double *work, double a, double b, double c, double d)
 {
   double s = 1.0 / (a*d - b*c);
-  fastGeneralizedHadamardTransform(x, N, log2N, s*d, -s*b, -s*c, s*a);
+  fastGeneralizedHadamardTransform(x, N, log2N, work, s*d, -s*b, -s*c, s*a);
 }
 
 void FeedbackDelayNetwork::setupRelativeDelayTimes()
@@ -268,7 +267,8 @@ void FeedbackDelayNetwork::freeDelayLines()
 void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
 {
   double delayLineOuts[1024];
-  // maybe use a member later with dynamic allocation
+  double fhtWorkspace[1024];  
+  // later use a members with dynamic allocation, also 1024 is excessive
 
 
 
@@ -339,7 +339,8 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
 
 
   // apply feedback via matrix:
-  fastGeneralizedHadamardTransform(delayLineOuts, numDelayLines, log2NumDelayLines, a, b, -b, a);
+  fastGeneralizedHadamardTransform(delayLineOuts, numDelayLines, log2NumDelayLines, fhtWorkspace, 
+    a, b, -b, a);
   for(i = 0; i < numDelayLines; i++)
     delayLines[i][writeIndices[i]] += 0.9 * delayLineOuts[i];
 

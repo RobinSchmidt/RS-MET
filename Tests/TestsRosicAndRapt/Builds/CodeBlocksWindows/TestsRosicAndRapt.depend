@@ -2372,32 +2372,32 @@
 
 1526496790 /media/rob/5008-6DD5/Programming/RS-MET/Libraries/JUCE/modules/rosic/unfinished/rosic_NewSynth.cpp
 
-1556963781 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\include_rapt.cpp
+1569511732 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\include_rapt.cpp
 	"AppConfig.h"
 	<rapt/rapt.cpp>
 
-1556964766 e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\appconfig.h
+1569511732 e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\appconfig.h
 
-1565023309 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\rapt.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\rapt.cpp
 	"Basics/Plotting.cpp"
 
-1564163692 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\plotting.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\plotting.cpp
 	"GNUPlotter.cpp"
 	"../rapt.h"
 
-1565102138 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\gnuplotter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\gnuplotter.cpp
 	"GNUPlotter.h"
 	<fstream>
 	<iostream>
 	<algorithm>
 	<string>
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\gnuplotter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\gnuplotter.h
 	<string>
 	<vector>
 	<complex>
 
-1565023295 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\rapt.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\rapt.h
 	<cstdio>
 	<complex>
 	<vector>
@@ -2420,27 +2420,27 @@
 	"Unfinished/Unfinished.h"
 	"Spectral/Spectral.h"
 
-1564163314 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\plotting.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\plotting.h
 	"GNUPlotter.h"
 
-1562156257 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\basics.h
+1569579845 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\basics.h
 	"Constants.h"
 	"TypeDefinitions.h"
 	"MacroDefinitions.h"
 	"DebugTools.h"
 	"SortAndSearch.h"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\constants.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\constants.h
 
-1557493360 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\typedefinitions.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\typedefinitions.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\macrodefinitions.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\macrodefinitions.h
 
-1562155931 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\debugtools.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\debugtools.h
 
-1557657251 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\sortandsearch.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\sortandsearch.h
 
-1557305997 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\data.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\data.h
 	"ArrayTools.h"
 	"MatrixTools.h"
 	"StandardContainerTools.h"
@@ -2450,17 +2450,17 @@
 	"Simd/Float64x2.h"
 	"Simd/ComplexFloat64x2.h"
 
-1560937663 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.h
 
-1557657251 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\matrixtools.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\matrixtools.h
 
-1560866459 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\standardcontainertools.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\standardcontainertools.h
 
-1565023802 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\buffers.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\buffers.h
 
-1557306817 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\range.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\range.h
 
-1557330378 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\math.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\math.h
 	"LinearAlgebra/BandDiagonalSolver.hpp"
 	"LinearAlgebra/LinearAlgebra.h"
 	"Misc/Statistics.h"
@@ -2479,9 +2479,9 @@
 	"Functions/FunctionObjects.h"
 	"Functions/Sigmoids.h"
 	"Functions/SinCosTable.h"
+	"Types/Vector.h"
 	"Types/Matrix.h"
 	"Types/Polynomial.h"
-	"Types/Vector.h"
 	"Geometry/Line2D.h"
 	"Geometry/ConicSection.h"
 	"Geometry/Ellipse.h"
@@ -2490,71 +2490,72 @@
 	"Numerics/NumericCalculus.h"
 	"Numerics/Interpolation.h"
 	"Numerics/Optimization.h"
+	"Functions/FunctionOperators.h"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\banddiagonalsolver.hpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\banddiagonalsolver.hpp
 
-1560862722 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\linearalgebra.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\linearalgebra.h
 
-1559928384 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\statistics.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\statistics.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\curvefitting.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\curvefitting.h
 
-1557657251 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\ratiogenerator.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\ratiogenerator.h
 
-1561724414 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\basicfunctions.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\basicfunctions.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\integerfunctions.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\integerfunctions.h
 
-1559915202 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\interpolatingfunction.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\interpolatingfunction.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\nodebasedfunction.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\nodebasedfunction.h
 
-1560812974 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\realfunctions.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\realfunctions.h
 
-1560861421 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\complexfunctions.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\complexfunctions.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\functioniterators.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\functioniterators.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\mappers.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\mappers.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\moebiustransform.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\moebiustransform.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\bellfunctions.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\bellfunctions.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\functionobjects.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\functionobjects.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\sigmoids.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\sigmoids.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\sincostable.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\sincostable.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\matrix.h
+1569758454 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\matrix.h
 
-1563815493 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\vector.h
+1569684466 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\vector.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\line2d.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\line2d.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\conicsection.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\conicsection.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\ellipse.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\ellipse.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\geometrictransformations.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\geometrictransformations.h
 
-1561122348 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\rootfinder.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\rootfinder.h
 
-1560629198 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\numericcalculus.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\numericcalculus.h
 
-1559913322 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\interpolation.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\interpolation.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\optimization.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\optimization.h
 
-1557246221 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\audiobasics\audiobasics.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\audiobasics\audiobasics.h
 	"AudioFunctions.h"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\audiobasics\audiofunctions.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\audiobasics\audiofunctions.h
 
-1557248229 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\filters.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\filters.h
 	"Basic/MovingWindowFilters.h"
 	"Basic/OnePoleFilter.h"
 	"Basic/SmoothingFilter.h"
@@ -2576,63 +2577,63 @@
 	"Musical/PhasorFilter.h"
 	"Musical/StateVariableFilter.h"
 
-1565101239 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\movingwindowfilters.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\movingwindowfilters.h
 
-1560343845 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\onepolefilter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\onepolefilter.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\smoothingfilter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\smoothingfilter.h
 
-1565343107 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\prototypedesigner.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\prototypedesigner.h
 
-1562684403 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\polezeromapper.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\polezeromapper.h
 
-1560933638 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filtercoefficientconverter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filtercoefficientconverter.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\infiniteimpulseresponsedesigner.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\infiniteimpulseresponsedesigner.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filteranalyzer.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filteranalyzer.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\biquadcascade.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\biquadcascade.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\engineersfilter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\engineersfilter.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\linkwitzrileycrossover.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\linkwitzrileycrossover.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\crossover4way.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\crossover4way.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\directformfilter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\directformfilter.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\ellipticsubbandfilter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\ellipticsubbandfilter.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\ellipticsubbandfilterdirectform.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\ellipticsubbandfilterdirectform.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quadraturenetwork.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quadraturenetwork.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filterspecifications.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filterspecifications.h
 
-1564106749 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\ladderfilter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\ladderfilter.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\phasorfilter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\phasorfilter.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\statevariablefilter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\statevariablefilter.h
 
-1557486484 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\analysis.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\analysis.h
 	"SlewRateLimiter.h"
 	"SlewRateLimiterLinear.h"
 	"EnvelopeFollower.h"
 
-1565098726 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\slewratelimiter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\slewratelimiter.h
 
-1558699546 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\slewratelimiterlinear.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\slewratelimiterlinear.h
 
-1558374555 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\envelopefollower.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\envelopefollower.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\physics.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\physics.h
 	"ParticleSystem.h"
 
-1557386656 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\particlesystem.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\particlesystem.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\visualization.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\visualization.h
 	"Graphics/Image.h"
 	"Graphics/AlphaMask.h"
 	"Graphics/ImageDrawer.h"
@@ -2641,40 +2642,40 @@
 	"Misc/ScopeScreenScanner.h"
 	"Misc/PhaseScopeBuffer.h"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\image.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\image.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\alphamask.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\alphamask.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagedrawer.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagedrawer.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\realtimespline.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\realtimespline.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagepainter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagepainter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\scopescreenscanner.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\scopescreenscanner.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\phasescopebuffer.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\phasescopebuffer.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\generators.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\generators.h
 	"NoiseGenerator.h"
 	"VariousOscillators.h"
 	"Oscillator3D.h"
 	"RayBouncer.h"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\noisegenerator.h
+1569584038 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\noisegenerator.h
 
-1564096650 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\variousoscillators.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\variousoscillators.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\oscillator3d.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\oscillator3d.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\raybouncer.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\raybouncer.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\modulators\modulators.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\modulators\modulators.h
 	"Envelopes/BreakpointModulator.h"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\modulators\envelopes\breakpointmodulator.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\modulators\envelopes\breakpointmodulator.h
 
-1564093623 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\unfinished.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\unfinished.h
 	"Data/Flags.h"
 	"Data/MultiArray.h"
 	"Math/Vector.h"
@@ -2727,109 +2728,109 @@
 	"Sampling/MiscUnfinished.h"
 	"Sampling/SampleManipulation.h"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\data\flags.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\data\flags.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\data\multiarray.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\data\multiarray.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\vector.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\vector.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\matrix.h
+1569681544 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\matrix.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\functionobjects.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\functionobjects.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\gradientbasedminimizer.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\gradientbasedminimizer.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\multilayerperceptron.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\multilayerperceptron.h
 
-1561380693 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\differentialequationsystem.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\differentialequationsystem.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\fouriertransformer.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\fouriertransformer.h
 
-1557174500 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\numbertheory.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\numbertheory.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\transforms.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\transforms.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\statistics.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\statistics.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\geometricfunctions.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\geometricfunctions.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\point2d.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\point2d.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\polygon2d.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\polygon2d.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\rectangle2d.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\rectangle2d.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\triangle2d.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\triangle2d.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\affinetransform2d.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\affinetransform2d.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\modularinteger.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\modularinteger.h
 
-1562863124 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\rationalfunctiontools.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\rationalfunctiontools.h
 
-1563318201 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\rationalfunction.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\rationalfunction.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\interpolator.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\interpolator.h
 
-1562155956 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\delayline.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\delayline.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\miscaudio.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\miscaudio.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\saturator.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\saturator.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\windowfunctions.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\windowfunctions.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\audiofunctions.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\audiofunctions.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\bandwidthconverter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\bandwidthconverter.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\doublependulum.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\doublependulum.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\responsegetters.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\responsegetters.h
 
-1565099110 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\blitblepblamp.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\blitblepblamp.h
 
-1557771239 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\blepblamposcs.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\blepblamposcs.h
 
-1565099186 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\oscarrays.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\oscarrays.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\bandsplitter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\bandsplitter.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\filterdesignformulas.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\filterdesignformulas.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\movingaverage.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\movingaverage.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\phonofilter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\phonofilter.h
 
-1560633703 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\modalfilterbank.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\modalfilterbank.h
 
-1562156135 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\ladderfilter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\ladderfilter.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\fakeresonancefilter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\fakeresonancefilter.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\biquad.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\biquad.h
 
-1563318958 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\nonuniformfilter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\nonuniformfilter.h
 
-1564096264 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\polyphony.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\polyphony.h
 
-1565099210 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\attackdecayenvelope.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\attackdecayenvelope.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\linearpredictor.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\linearpredictor.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\formantremover.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\formantremover.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\cyclicautocorrelator.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\cyclicautocorrelator.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\autocorrelationpitchdetector.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\autocorrelationpitchdetector.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\zerocrossingpitchdetector.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\zerocrossingpitchdetector.h
 
-1565100663 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\miscunfinished.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\miscunfinished.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\samplemanipulation.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\samplemanipulation.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\spectral.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\spectral.h
 	"Spectrogram.h"
 	"SinusoidalModel.h"
 	"SinusoidalProcessor.h"
@@ -2837,23 +2838,23 @@
 	"SinusoidalAnalyzer.h"
 	"HarmonicAnalyzer.h"
 
-1558027261 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\spectrogram.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\spectrogram.h
 
-1562325474 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalmodel.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalmodel.h
 
-1566231682 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalprocessor.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalprocessor.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalsynthesizer.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalsynthesizer.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalanalyzer.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalanalyzer.h
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\harmonicanalyzer.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\harmonicanalyzer.h
 
-1556963781 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\include_rapt_templates.cpp
+1569511732 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\include_rapt_templates.cpp
 	"AppConfig.h"
 	<rapt/rapt_templates.cpp>
 
-1557486697 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\rapt_templates.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\rapt_templates.cpp
 	"rapt.h"
 	"Basics/Basics.cpp"
 	"Data/Data.cpp"
@@ -2868,31 +2869,31 @@
 	"Unfinished/Unfinished.cpp"
 	"Spectral/Spectral.cpp"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\basics.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\basics.cpp
 	"Basics.h"
 	"DebugTools.cpp"
 	"SortAndSearch.cpp"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\debugtools.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\debugtools.cpp
 
-1557657251 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\sortandsearch.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\sortandsearch.cpp
 
-1557246483 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\data.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\data.cpp
 	"Data.h"
 	"ArrayTools.cpp"
 	"MatrixTools.cpp"
 	"StandardContainerTools.cpp"
 	"Buffers.cpp"
 
-1560937807 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\matrixtools.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\matrixtools.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\standardcontainertools.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\standardcontainertools.cpp
 
-1566228935 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\buffers.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\buffers.cpp
 
-1557330378 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\math.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\math.cpp
 	"Math.h"
 	"LinearAlgebra/BandDiagonalSolver.cpp"
 	"LinearAlgebra/LinearAlgebra.cpp"
@@ -2921,85 +2922,86 @@
 	"Numerics/NumericCalculus.cpp"
 	"Numerics/Interpolation.cpp"
 	"Numerics/Optimization.cpp"
+	"Functions/FunctionOperators.cpp"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\banddiagonalsolver.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\banddiagonalsolver.cpp
 	"LaPackCPP/LaPack.hpp"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\lapack.hpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\lapack.hpp
 	"LibF2C.hpp"
 	"Blas.hpp"
 	"XBlas.hpp"
 	"LapackBanded.hpp"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\libf2c.hpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\libf2c.hpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\blas.hpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\blas.hpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\xblas.hpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\xblas.hpp
 	<float.h>
 	<fpu_control.h>
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\lapackbanded.hpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\lapackbanded.hpp
 
-1562894209 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\linearalgebra.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\linearalgebra.cpp
 
-1559927945 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\statistics.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\statistics.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\curvefitting.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\curvefitting.cpp
 
-1557660404 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\ratiogenerator.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\ratiogenerator.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\basicfunctions.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\basicfunctions.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\integerfunctions.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\integerfunctions.cpp
 
-1559915202 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\interpolatingfunction.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\interpolatingfunction.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\nodebasedfunction.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\nodebasedfunction.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\realfunctions.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\realfunctions.cpp
 
-1560861398 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\complexfunctions.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\complexfunctions.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\functioniterators.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\functioniterators.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\mappers.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\mappers.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\bellfunctions.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\bellfunctions.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\sigmoids.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\sigmoids.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\sincostable.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\sincostable.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\matrix.cpp
+1569696383 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\matrix.cpp
 
-1563815287 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\vector.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\vector.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\line2d.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\line2d.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\conicsection.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\conicsection.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\ellipse.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\ellipse.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\geometrictransformations.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\geometrictransformations.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\rootfinder.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\rootfinder.cpp
 
-1560631103 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\numericcalculus.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\numericcalculus.cpp
 
-1562158308 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\interpolation.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\interpolation.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\optimization.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\optimization.cpp
 
-1557246221 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\audiobasics\audiobasics.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\audiobasics\audiobasics.cpp
 	"AudioBasics.h"
 	"AudioFunctions.cpp"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\audiobasics\audiofunctions.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\audiobasics\audiofunctions.cpp
 
-1557248239 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\filters.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\filters.cpp
 	"Filters.h"
 	"Basic/MovingWindowFilters.cpp"
 	"Basic/OnePoleFilter.cpp"
@@ -3022,65 +3024,65 @@
 	"Musical/PhasorFilter.cpp"
 	"Musical/StateVariableFilter.cpp"
 
-1557248202 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\movingwindowfilters.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\movingwindowfilters.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\onepolefilter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\onepolefilter.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\smoothingfilter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\basic\smoothingfilter.cpp
 
-1565344276 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\prototypedesigner.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\prototypedesigner.cpp
 
-1562684241 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\polezeromapper.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\polezeromapper.cpp
 
-1560934138 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filtercoefficientconverter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filtercoefficientconverter.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\infiniteimpulseresponsedesigner.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\infiniteimpulseresponsedesigner.cpp
 
-1559838828 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filteranalyzer.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filteranalyzer.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\biquadcascade.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\biquadcascade.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\engineersfilter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\engineersfilter.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\linkwitzrileycrossover.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\linkwitzrileycrossover.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\crossover4way.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\crossover4way.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\directformfilter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\directformfilter.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\ellipticsubbandfilter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\ellipticsubbandfilter.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\ellipticsubbandfilterdirectform.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\ellipticsubbandfilterdirectform.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quadraturenetwork.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quadraturenetwork.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filterspecifications.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\filterspecifications.cpp
 
-1558648192 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\ladderfilter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\ladderfilter.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\phasorfilter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\phasorfilter.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\statevariablefilter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\musical\statevariablefilter.cpp
 
-1557486860 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\analysis.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\analysis.cpp
 	"Analysis.h"
 	"SlewRateLimiter.cpp"
 	"SlewRateLimiterLinear.cpp"
 	"EnvelopeFollower.cpp"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\slewratelimiter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\slewratelimiter.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\slewratelimiterlinear.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\slewratelimiterlinear.cpp
 
-1558708010 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\envelopefollower.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\analysis\envelopefollower.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\physics.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\physics.cpp
 	"Physics.h"
 	"ParticleSystem.cpp"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\particlesystem.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\particlesystem.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\visualization.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\visualization.cpp
 	"Visualization.h"
 	"Graphics/Image.cpp"
 	"Graphics/AlphaMask.cpp"
@@ -3090,39 +3092,39 @@
 	"Misc/ScopeScreenScanner.cpp"
 	"Misc/PhaseScopeBuffer.cpp"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\image.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\image.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\alphamask.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\alphamask.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagedrawer.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagedrawer.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\realtimespline.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\realtimespline.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagepainter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagepainter.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\scopescreenscanner.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\scopescreenscanner.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\phasescopebuffer.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\phasescopebuffer.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\generators.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\generators.cpp
 	"Generators.h"
 	"VariousOscillators.cpp"
 	"Oscillator3D.cpp"
 	"RayBouncer.cpp"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\variousoscillators.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\variousoscillators.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\oscillator3d.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\oscillator3d.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\raybouncer.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\raybouncer.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\modulators\modulators.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\modulators\modulators.cpp
 	"Modulators.h"
 	"Envelopes/BreakpointModulator.cpp"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\modulators\envelopes\breakpointmodulator.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\modulators\envelopes\breakpointmodulator.cpp
 
-1564093622 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\unfinished.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\unfinished.cpp
 	"Unfinished.h"
 	"Data/MultiArray.cpp"
 	"Math/Matrix.cpp"
@@ -3168,97 +3170,97 @@
 	"Sampling/MiscUnfinished.cpp"
 	"Sampling/SampleManipulation.cpp"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\data\multiarray.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\data\multiarray.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\matrix.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\matrix.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\functionobjects.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\functionobjects.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\gradientbasedminimizer.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\gradientbasedminimizer.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\multilayerperceptron.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\multilayerperceptron.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\fouriertransformer.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\fouriertransformer.cpp
 	"OouraFFT/fft4g.cpp"
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\oourafft\fft4g.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\oourafft\fft4g.cpp
 	<math.h>
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\numbertheory.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\numbertheory.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\transforms.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\transforms.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\statistics.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\statistics.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\geometricfunctions.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\geometricfunctions.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\modularinteger.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\modularinteger.cpp
 
-1562863236 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\rationalfunctiontools.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\rationalfunctiontools.cpp
 
-1563322947 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\rationalfunction.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\math\rationalfunction.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\interpolator.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\interpolator.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\delayline.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\delayline.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\miscaudio.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\miscaudio.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\saturator.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\saturator.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\windowfunctions.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\windowfunctions.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\audiofunctions.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\audiofunctions.cpp
 
-1563144292 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\bandwidthconverter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\bandwidthconverter.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\doublependulum.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\doublependulum.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\responsegetters.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\responsegetters.cpp
 
-1566229315 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\blitblepblamp.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\blitblepblamp.cpp
 
-1557149472 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\blepblamposcs.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\blepblamposcs.cpp
 
-1566229509 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\oscarrays.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\oscarrays.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\bandsplitter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\bandsplitter.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\filterdesignformulas.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\filterdesignformulas.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\movingaverage.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\movingaverage.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\phonofilter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\phonofilter.cpp
 
-1562417742 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\modalfilterbank.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\modalfilterbank.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\ladderfilter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\ladderfilter.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\fakeresonancefilter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\fakeresonancefilter.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\biquad.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\biquad.cpp
 
-1566229597 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\nonuniformfilter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\filters\nonuniformfilter.cpp
 
-1564079988 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\polyphony.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\polyphony.cpp
 
-1564095207 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\attackdecayenvelope.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\miscaudio\attackdecayenvelope.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\linearpredictor.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\linearpredictor.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\formantremover.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\formantremover.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\cyclicautocorrelator.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\cyclicautocorrelator.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\autocorrelationpitchdetector.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\autocorrelationpitchdetector.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\zerocrossingpitchdetector.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\zerocrossingpitchdetector.cpp
 
-1566232728 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\miscunfinished.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\miscunfinished.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\samplemanipulation.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\samplemanipulation.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\spectral.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\spectral.cpp
 	"Spectral.h"
 	"Spectrogram.cpp"
 	"SinusoidalModel.cpp"
@@ -3267,23 +3269,23 @@
 	"SinusoidalAnalyzer.cpp"
 	"HarmonicAnalyzer.cpp"
 
-1562158308 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\spectrogram.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\spectrogram.cpp
 
-1562325600 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalmodel.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalmodel.cpp
 
-1566231682 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalprocessor.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalprocessor.cpp
 
-1562333305 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalsynthesizer.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalsynthesizer.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalanalyzer.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalanalyzer.cpp
 
-1556964764 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\harmonicanalyzer.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\harmonicanalyzer.cpp
 
-1556963781 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\include_romos.cpp
+1569511732 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\include_romos.cpp
 	"AppConfig.h"
 	<romos/romos.cpp>
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\romos.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\romos.cpp
 	"romos.h"
 	"Algorithms/romos_FilterDesign.cpp"
 	"Algorithms/romos_Interpolation.cpp"
@@ -3330,7 +3332,7 @@
 	"TestSuite/TestHelpers.cpp"
 	"TestSuite/TestsMain.cpp"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\romos.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\romos.h
 	<rosic/rosic.h>
 	"Algorithms/romos_FilterDesign.h"
 	"Algorithms/romos_Interpolation.h"
@@ -3368,7 +3370,7 @@
 	"TestSuite/romos_PerformanceTestRunner.h"
 	"TestSuite/romos_InteractiveTestRunner.h"
 
-1566229660 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rosic.h
+1569757483 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rosic.h
 	<rapt/rapt.h>
 	<math.h>
 	<float.h>
@@ -3379,8 +3381,8 @@
 	<climits>
 	<limits>
 	<atomic>
+	<intrin.h>
 	<emmintrin.h>
-	<malloc.h>
 	<windows.h>
 	<pthread.h>
 	<mutex>
@@ -3633,37 +3635,37 @@
 	"unfinished/rosic_ModalSynth.h"
 	"_third_party/SampleTailExtender/SampleTailExtender.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\float32x4.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\float32x4.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\float64x2.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\float64x2.h
 
-1566230080 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_templateinstantiations.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_templateinstantiations.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\globaldefinitions.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\globaldefinitions.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_constants.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_constants.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\complexfloat64x2.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\complexfloat64x2.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_channelmatrix2x2.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_channelmatrix2x2.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_helperfunctions.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_helperfunctions.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_numbermanipulations.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_numbermanipulations.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_mutexlock.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_mutexlock.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_cephesdeclarations.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_cephesdeclarations.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_realfunctionevaluationalgorithms.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_realfunctionevaluationalgorithms.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_specialfunctionsreal.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_specialfunctionsreal.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_complex.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_complex.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_complexfunctions.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_complexfunctions.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\expreval.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\expreval.h
 	"vallist.h"
 	"funclist.h"
 	"datalist.h"
@@ -3672,712 +3674,716 @@
 	"parser.h"
 	"except.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\vallist.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\vallist.h
 	<string>
 	<vector>
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\funclist.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\funclist.h
 	<string>
 	<vector>
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\datalist.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\datalist.h
 	<string>
 	<vector>
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\expr.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\expr.h
 	<string>
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\node.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\node.h
 	<vector>
 	"parser.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\parser.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\parser.h
 	<vector>
 	<string>
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\except.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\expreval_v3_4\except.h
 	<exception>
 	<string>
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\scripting\rosic_expressionevaluatorfunctions.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\scripting\rosic_expressionevaluatorfunctions.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\scripting\rosic_expressionevaluatorcomplexfunctions.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\scripting\rosic_expressionevaluatorcomplexfunctions.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\scripting\rosic_expressionevaluator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\scripting\rosic_expressionevaluator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_interpolator.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_interpolator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_samplebuffer.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_samplebuffer.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_sampleplaybackparameters.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_sampleplaybackparameters.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_tabulatedfunction.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_tabulatedfunction.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_warpedallpassinterpolator.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_warpedallpassinterpolator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_windowdesigner.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_windowdesigner.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\datastructures\rosic_array.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\datastructures\rosic_array.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\datastructures\rosic_string.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\datastructures\rosic_string.h
 
-1566230303 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\datastructures\rosic_keyvaluemap.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\datastructures\rosic_keyvaluemap.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\datastructures\rosic_extensionsforstl.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\datastructures\rosic_extensionsforstl.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_linearalgebra.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_linearalgebra.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_matrix.h
+1569758198 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_matrix.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_vector.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_vector.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_matrixvectorfunctions.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_matrixvectorfunctions.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_primenumbers.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_primenumbers.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_transformations.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\math\rosic_transformations.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\transforms\rosic_fouriertransformerradix2.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\transforms\rosic_fouriertransformerradix2.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\transforms\rosic_fouriertransformerbluestein.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\transforms\rosic_fouriertransformerbluestein.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\transforms\rosic_spectralmanipulator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\transforms\rosic_spectralmanipulator.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\transforms\rosic_wavelettransforms.h
+1569757974 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\transforms\rosic_wavelettransforms.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\numerical\rosic_functionobjects.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\numerical\rosic_functionobjects.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\numerical\rosic_gradientbasedminimizer.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\numerical\rosic_gradientbasedminimizer.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_biquaddesigner.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_biquaddesigner.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_allpasschain.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_allpasschain.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_biquadbase.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_biquadbase.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_biquadmonodf1.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_biquadmonodf1.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_biquadstereodf1.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_biquadstereodf1.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_biquadstereodf2.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_biquadstereodf2.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_combfilter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_combfilter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_dampingfilter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_dampingfilter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_combresonator.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_combresonator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_convolverbruteforce.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_convolverbruteforce.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_convolverfft.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_convolverfft.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_convolverpartitioned.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_convolverpartitioned.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_cookbookfilter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_cookbookfilter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_twopolefilter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_twopolefilter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_dualtwopolefilter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_dualtwopolefilter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_ellipticquarterbandfilter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_ellipticquarterbandfilter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_equalizer.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_equalizer.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_equalizerstereo.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_equalizerstereo.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_finiteimpulseresponsedesigner.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_finiteimpulseresponsedesigner.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_finiteimpulseresponsefilter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_finiteimpulseresponsefilter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_fourpolefilter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_fourpolefilter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_ladderfilter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_ladderfilter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_ladderfilterold.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_ladderfilterold.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_leakyintegrator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_leakyintegrator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_lowpasshighpass.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_lowpasshighpass.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_lowpasshighpassstereo.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_lowpasshighpassstereo.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_lpfhpfapf.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_lpfhpfapf.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_multimodefilter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_multimodefilter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_nyquistblocker.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_nyquistblocker.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_slopefilter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_slopefilter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_teebeefilter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_teebeefilter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_tonecontrol.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_tonecontrol.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_twopolebandpass.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_twopolebandpass.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_vowelfilterstereo.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_vowelfilterstereo.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_whitetopinkfilter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\filters\rosic_whitetopinkfilter.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_exponentialsmoother.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_exponentialsmoother.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_overlapaddprocessor.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_overlapaddprocessor.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_piecewisefunction.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_piecewisefunction.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\soundtouch\wavfile.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\soundtouch\wavfile.h
 	<stdio.h>
 
-1565784705 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_fileinputoutput.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_fileinputoutput.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_processorcyclecounter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_processorcyclecounter.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_randomnumbergenerator01.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_randomnumbergenerator01.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_randomnumbergenerator02.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_randomnumbergenerator02.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_routingmatrix.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_routingmatrix.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_slewratelimiter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_slewratelimiter.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_slewratelimiterlinear.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_slewratelimiterlinear.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_spectralprocessor.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_spectralprocessor.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_spectralenvelopeprocessor.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_spectralenvelopeprocessor.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_spectralfilter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_spectralfilter.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_tuningtable.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_tuningtable.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_vectormixer.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\others\rosic_vectormixer.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_mipmappedwavetable.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_mipmappedwavetable.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_mipmappedwavetableold.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_mipmappedwavetableold.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_mipmappedwavetablestereo.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_mipmappedwavetablestereo.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_blendoscillator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_blendoscillator.h
 
-1561277684 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_lorentzsystem.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_lorentzsystem.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_noisegenerator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_noisegenerator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_noisegeneratorold.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_noisegeneratorold.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_oscillator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_oscillator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_oscillatorbank.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_oscillatorbank.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_oscillatorstereo.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_oscillatorstereo.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_fouroscsection.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_fouroscsection.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_sampleoscillator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_sampleoscillator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_sampleplayer.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_sampleplayer.h
 
-1565430825 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_sineoscillator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_sineoscillator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_sineoscillatorstereo.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_sineoscillatorstereo.h
 
-1557237457 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_superoscillator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_superoscillator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_testgenerator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_testgenerator.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_ampenvrc.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_ampenvrc.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_analogenvelope.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_analogenvelope.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_analogenvelopescaled.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_analogenvelopescaled.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_variousmodulators.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_variousmodulators.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_breakpointmodulator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_breakpointmodulator.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_decayenvelope.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_decayenvelope.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_envelopegenerator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_envelopegenerator.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_envelopegenerator2.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_envelopegenerator2.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_exponentialramp.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_exponentialramp.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_pitchenvrc.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_pitchenvrc.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_samplemodulator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_samplemodulator.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_algorithmicwaveformrenderer.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_algorithmicwaveformrenderer.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_multisegmentwaveformrenderer.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_multisegmentwaveformrenderer.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_standardwaveformrenderer.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_standardwaveformrenderer.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_waveformbuffer.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_waveformbuffer.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_waveformrenderer.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_waveformrenderer.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_nonrealtimeprocesses.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_nonrealtimeprocesses.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_turtlegraphics.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_turtlegraphics.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_lindenmayersystem.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\rendering\rosic_lindenmayersystem.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_wavetable.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_wavetable.h
 	"../rendering/rosic_WaveformRenderer.h"
 	"../others/rosic_SlewRateLimiter.h"
 	"../transforms/rosic_FourierTransformerRadix2.h"
 
-1562080317 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_turtlesource.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_turtlesource.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_snowflake.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_snowflake.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_lowfrequencyoscillator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_lowfrequencyoscillator.h
 	"../generators/rosic_WaveTable.h"
 	"../others/rosic_SlewRateLimiter.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_vectorsampleplayer.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_vectorsampleplayer.h
 	"../generators/rosic_SamplePlayer.h"
 	"../others/rosic_VectorMixer.h"
 	"../modulators/rosic_LowFrequencyOscillator.h"
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_modulator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\modulators\rosic_modulator.h
 	"rosic_BreakpointModulator.h"
 	"rosic_ExponentialRamp.h"
 	"rosic_LowFrequencyOscillator.h"
 	"rosic_SampleModulator.h"
 	"../others/rosic_SlewRateLimiter.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_basicintegerdelayline.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_basicintegerdelayline.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_integerdelayline.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_integerdelayline.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_allpassdiffusor.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_allpassdiffusor.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_delaylinestereo.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_delaylinestereo.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_echolabdelayline.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_echolabdelayline.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_fractionaldelayline.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_fractionaldelayline.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_fractionaldelaylinestereo.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_fractionaldelaylinestereo.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_modulateddelayline.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_modulateddelayline.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_pingpongecho.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\delaylines\rosic_pingpongecho.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_cyclicautocorrelator.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_cyclicautocorrelator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_envelopefollower.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_envelopefollower.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_linearpredictor.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_linearpredictor.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_formantremover.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_formantremover.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_formantpreserver.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_formantpreserver.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_instantaneousenvelopedetector.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_instantaneousenvelopedetector.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_leveldetector.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_leveldetector.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_oscilloscopebufferold.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_oscilloscopebufferold.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_pitchdetector.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_pitchdetector.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_scopescreenscanner.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_scopescreenscanner.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_signalmeasures.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_signalmeasures.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_spectrumanalyzer.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_spectrumanalyzer.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_trackmeter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_trackmeter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_waveformdisplaybuffer.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_waveformdisplaybuffer.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_onsetdetector.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_onsetdetector.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_beatdetector.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\analysis\rosic_beatdetector.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_besselfilterforgainsignal.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_besselfilterforgainsignal.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_dynamicsprocessorbase.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_dynamicsprocessorbase.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_compressor.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_compressor.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_expander.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_expander.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_limiter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_limiter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_noisegate.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_noisegate.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_softkneecompressor.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_softkneecompressor.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_softkneeexpander.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_softkneeexpander.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_multibandcompressor.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\dynamics\rosic_multibandcompressor.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_feedbackdelaynetwork.h
+1569759235 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_feedbackdelaynetwork.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_feedbackdelaynetwork8.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_feedbackdelaynetwork8.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_feedbackdelaynetwork16.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_feedbackdelaynetwork16.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_algoverb.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_algoverb.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_audiotomidi.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_audiotomidi.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_bitcrusher.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_bitcrusher.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_modulationeffect.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_modulationeffect.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_vibrato.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_vibrato.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_chorus.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_chorus.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_combbank.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_combbank.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_combresonatorstereo.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_combresonatorstereo.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_combstereoizer.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_combstereoizer.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_compshaper.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_compshaper.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_distortion.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_distortion.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_echolab.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_echolab.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_flanger.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_flanger.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_formantshifter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_formantshifter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_frequencyshifter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_frequencyshifter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_funcshaper.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_funcshaper.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_harmonics.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_harmonics.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_modulatedallpass.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_modulatedallpass.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_moduluxury.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_moduluxury.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_noisifier.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_noisifier.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_phaser.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_phaser.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_delayphaser.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_delayphaser.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_phasestereoizer.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_phasestereoizer.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_pitchshifter.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_pitchshifter.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_pitchshiftergrainadaptive.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_pitchshiftergrainadaptive.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_reverb.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_reverb.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_ringmodulator.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_ringmodulator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_singlesidebandmodulator.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_singlesidebandmodulator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_stereodelay.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_stereodelay.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_stereopan.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_stereopan.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_stereowidth.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_stereowidth.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_tremolo.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_tremolo.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_wahwah.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_wahwah.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_waveshaper.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_waveshaper.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_modulationrouting.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_modulationrouting.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_module.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_module.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_effectmodules.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_effectmodules.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_generatormodules.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_generatormodules.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_modulatormodules.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_modulatormodules.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_file.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_file.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_memoryuser.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_memoryuser.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_midinoteevent.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_midinoteevent.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_polyphonicinstrumentvoice.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_polyphonicinstrumentvoice.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_polyphonicinstrument.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\infrastructure\rosic_polyphonicinstrument.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_quadrifex.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\effects\rosic_quadrifex.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_quadrigen.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\generators\rosic_quadrigen.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\sequencing\rosic_acidpattern.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\sequencing\rosic_acidpattern.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\sequencing\rosic_acidsequencer.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\sequencing\rosic_acidsequencer.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\scripting\rosic_dspscriptinterpreter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\scripting\rosic_dspscriptinterpreter.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\scripting\rosic_dspworkbench.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\scripting\rosic_dspworkbench.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_acidevil.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_acidevil.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_keyshotvoice.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_keyshotvoice.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_keyshot.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_keyshot.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_magiccarpetvoice.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_magiccarpetvoice.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_magiccarpet.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_magiccarpet.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_open303.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_open303.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_quadrigavoice.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_quadrigavoice.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_quadriga.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_quadriga.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_simplesampleroscsection.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_simplesampleroscsection.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_simplesamplervoice.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_simplesamplervoice.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_simplesampler.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_simplesampler.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_straightlinervoice.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_straightlinervoice.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_straightliner.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_straightliner.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_workhorseoscsection.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_workhorseoscsection.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_workhorsevoice.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_workhorsevoice.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_workhorse.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\instruments\rosic_workhorse.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_polyphony.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_polyphony.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_ellipseoscillator.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_ellipseoscillator.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_quadsource.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_quadsource.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_dualfilter.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_dualfilter.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_newsynth.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_newsynth.h
 
-1556964766 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_miscunfinished.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_miscunfinished.h
 
-1558549186 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_modalfilters.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_modalfilters.h
 
-1558549226 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_modalfilterbank.h
+1569511730 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_modalfilterbank.h
 
-1566230571 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_modalsynth.h
+1569584005 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\unfinished\rosic_modalsynth.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\sampletailextender\sampletailextender.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\sampletailextender\sampletailextender.h
 	<iostream>
 	<vector>
 	"HarmonicAnalyser.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\sampletailextender\harmonicanalyser.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\sampletailextender\harmonicanalyser.h
 	<vector>
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_filterdesign.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_filterdesign.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_interpolation.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_interpolation.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_audioconnection.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_audioconnection.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_modulefactory.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_modulefactory.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_voiceallocator.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_voiceallocator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_processingstatus.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_processingstatus.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_module.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_module.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_atomicmodule.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_atomicmodule.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_containermodule.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_containermodule.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_noteevent.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_noteevent.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_toplevelmodule.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_toplevelmodule.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_workarea.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_workarea.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_moduledefinitionmacros.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_moduledefinitionmacros.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_arithmeticmodules.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_arithmeticmodules.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_delaymodules.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_delaymodules.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_filtermodules.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_filtermodules.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_functionmodules.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_functionmodules.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_formulamodules.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_formulamodules.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_infrastructuralmodules.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_infrastructuralmodules.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_modulationmodules.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_modulationmodules.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_soundgeneratormodules.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_soundgeneratormodules.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_liberty.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_liberty.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_testeventgenerator.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_testeventgenerator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_unittest.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_unittest.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_processingtest.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_processingtest.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_performancetest.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_performancetest.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_generatedesiredoutput.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_generatedesiredoutput.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_modularsystemtest.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_modularsystemtest.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_modulebuildcodegenerator.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_modulebuildcodegenerator.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_testmodulebuilder.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_testmodulebuilder.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\misctests.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\misctests.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_unittestrunner.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_unittestrunner.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_performancetestrunner.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_performancetestrunner.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_interactivetestrunner.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_interactivetestrunner.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_filterdesign.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_filterdesign.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_interpolation.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_interpolation.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_audioconnection.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_audioconnection.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_liberty.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_liberty.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_module.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_module.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_atomicmodule.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_atomicmodule.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_containermodule.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_containermodule.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_modulefactory.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_modulefactory.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_noteevent.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_noteevent.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_processingstatus.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_processingstatus.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_toplevelmodule.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_toplevelmodule.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_voiceallocator.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_voiceallocator.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_workarea.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_workarea.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_arithmeticmodules.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_arithmeticmodules.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_delaymodules.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_delaymodules.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_filtermodules.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_filtermodules.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_functionmodules.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_functionmodules.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_formulamodules.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_formulamodules.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_infrastructuralmodules.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_infrastructuralmodules.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_modulationmodules.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_modulationmodules.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_soundgeneratormodules.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_soundgeneratormodules.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\automatictests.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\automatictests.cpp
 	"AutomaticTests.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\automatictests.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\automatictests.h
 	"TestHelpers.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testhelpers.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testhelpers.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\interactivetests.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\interactivetests.cpp
 	"TestHelpers.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concretemodularsystemtests.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concretemodularsystemtests.cpp
 	"romos_ConcreteModularSystemTests.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concretemodularsystemtests.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concretemodularsystemtests.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteperformancetests.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteperformancetests.cpp
 	"romos_ConcretePerformanceTests.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteperformancetests.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteperformancetests.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteprocessingtests.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteprocessingtests.cpp
 	"romos_ConcreteProcessingTests.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteprocessingtests.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteprocessingtests.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_containermanipulationtests.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_containermanipulationtests.cpp
 	"romos_ContainerManipulationTests.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_containermanipulationtests.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_containermanipulationtests.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_generatedesiredoutput.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_generatedesiredoutput.cpp
 	"romos_GenerateDesiredOutput.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_globalframeworktests.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_globalframeworktests.cpp
 	"romos_GlobalFrameworkTests.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_globalframeworktests.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_globalframeworktests.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_interactiveplottingtests.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_interactiveplottingtests.cpp
 	"romos_InteractivePlottingTests.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_interactiveplottingtests.h
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_interactiveplottingtests.h
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_interactivetestrunner.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_interactivetestrunner.cpp
 	"romos_InteractiveTestRunner.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_modularsystemtest.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_modularsystemtest.cpp
 	"romos_ModularSystemTest.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_modulebuildcodegenerator.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_modulebuildcodegenerator.cpp
 	"romos_ModuleBuildCodeGenerator.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_performancetest.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_performancetest.cpp
 	"romos_PerformanceTest.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_performancetestrunner.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_performancetestrunner.cpp
 	"romos_PerformanceTestRunner.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_processingtest.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_processingtest.cpp
 	"romos_ProcessingTest.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_testeventgenerator.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_testeventgenerator.cpp
 	"romos_TestEventGenerator.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_testmodulebuilder.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_testmodulebuilder.cpp
 	"romos_TestModuleBuilder.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_unittest.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_unittest.cpp
 	"romos_UnitTest.h"
 	<cstring>
 	"stdio.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\misctests.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\misctests.cpp
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_unittestrunner.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_unittestrunner.cpp
 	"romos_UnitTestRunner.h"
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testfilter.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testfilter.cpp
 
-1566229828 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testhelpers.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testhelpers.cpp
 	"AutomaticTests.h"
 	<io.h>
 	<sys/uio.h>
 	<fcntl.h>
 	<sys/stat.h>
 
-1556964765 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testsmain.cpp
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testsmain.cpp
 	"../romos.h"
+
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\functionoperators.h
+
+1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\functionoperators.cpp
 

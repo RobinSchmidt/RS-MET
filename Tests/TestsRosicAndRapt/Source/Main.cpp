@@ -29,6 +29,9 @@ int main(int argc, char* argv[])
   // tempoarary throw-away-code:
   //testCrossoverNewVsOld();
 
+  // todo: get rid of the distintion between testing classes form rapt and rosic - that makes it 
+  // confusing and hard to find a particular test
+
   //===============================================================================================
   // RAPT tests:
 

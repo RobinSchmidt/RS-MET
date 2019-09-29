@@ -9,11 +9,11 @@ namespace rosic
 
   /**
 
-  This is a class for representing matrices and doing mathematical operations with them. To make 
-  the class fast, no consistency checking is done in the mathematical operators. You must ensure 
-  yourself that the input arguments are compatible - for example don't try to add two matrices of 
-  different dimensionality or multiply an n times m matrix with a q times p matrix when m != q. 
-  The more sophisticated matrix computations (like singular value decomposition and 
+  This is a class for representing matrices and doing mathematical operations with them. To make
+  the class fast, no consistency checking is done in the mathematical operators. You must ensure
+  yourself that the input arguments are compatible - for example don't try to add two matrices of
+  different dimensionality or multiply an n times m matrix with a q times p matrix when m != q.
+  The more sophisticated matrix computations (like singular value decomposition and
   eigendecomposition) are powered by the Template Numerical Toolkit (TNT).
 
   References:
@@ -21,7 +21,7 @@ namespace rosic
 
   */
 
-  class Matrix  
+  class Matrix
   {
 
   public:
@@ -30,14 +30,14 @@ namespace rosic
     // public member variables:
 
     /** Number of rows. */
-    int numRows; 
+    int numRows;
 
     /** Number of colums. */
-    int numColumns; 
+    int numColumns;
 
-    /** The actual values of the matrix. The first index refers to the row, the second to the 
+    /** The actual values of the matrix. The first index refers to the row, the second to the
     column. */
-    double **m;   
+    double **m;
 
     /** The matrix as flat array - this is only used to facilitate contiguous memory allocation. */
     double *mFlat;
@@ -50,18 +50,18 @@ namespace rosic
     // check
 
     /** Constructor. You must pass the number of rows and colums here. */
-    Matrix(int numRows, int numColumns, bool initElementsWithZeros = false); 
+    Matrix(int numRows, int numColumns, bool initElementsWithZeros = false);
     // check
 
     /** Constructor. You must pass the number of rows and colums here and the values to intialize
     the matix. */
-    Matrix(int numRows, int numColumns, double **values); 
+    Matrix(int numRows, int numColumns, double **values);
 
     /** Copy constructor. */
-    Matrix(const Matrix& other); 
+    Matrix(const Matrix& other);
     // check
 
-    /** Returns a square matrix with diagonal elements given by 'scalarValue' and zero off-diagonal 
+    /** Returns a square matrix with diagonal elements given by 'scalarValue' and zero off-diagonal
     elements. */
     static Matrix scalarMatrix(double scalarValue, int dimension)
     {
@@ -73,12 +73,12 @@ namespace rosic
       }
       for(int r=0; r<dimension; r++)
         result.m[r][r] = scalarValue;
-      return result; 
+      return result;
     }
     // check
 
-    /** Returns a square matrix with diagonal elements given by the array 'diagonalValues' and zero 
-    off-diagonal elements. The array is assumed to contain a number of elements equal to 
+    /** Returns a square matrix with diagonal elements given by the array 'diagonalValues' and zero
+    off-diagonal elements. The array is assumed to contain a number of elements equal to
     'dimension'. */
     static Matrix diagonalMatrix(double *diagonalValues, int dimension)
     {
@@ -90,12 +90,12 @@ namespace rosic
       }
       for(int r=0; r<dimension; r++)
         result.m[r][r] = diagonalValues[r];
-      return result; 
+      return result;
     }
     // check
 
     /** Destructor. */
-    ~Matrix(); 
+    ~Matrix();
 
     //---------------------------------------------------------------------------------------------
     // manipulations:
@@ -118,27 +118,29 @@ namespace rosic
     }
 
     /** Sets one of the matrix elements. */
-    void setElement(int row, int column, double newValue) 
-    { 
+    void setElement(int row, int column, double newValue)
+    {
       rassert( row < numRows && column < numColumns ); // invalid row or column index
-      m[row][column] = newValue; 
+      m[row][column] = newValue;
     }
     // check
 
     /** Transposes this matrix (exchanges the roles of rows and columns). */
     void transpose()
     {
-      // treat square matrices seperately using temporary stack-memory (via alloca) to avoid heap 
-      // fragmentation:
+      // treat square matrices seperately using temporary stack-memory (via alloca) to avoid heap
+      // fragmentation - nope - don't do it like that - todo: do it in place!
       if( numRows == numColumns )
-      {  
-        double *tmp = (double*) alloca(numRows*numColumns*sizeof(double));
+      {
+        //double *tmp = (double*) alloca(numRows*numColumns*sizeof(double));
+        double *tmp = new double[numRows*numColumns]; // should not be needed at all!
         memcpy(tmp, mFlat, numRows*numColumns*sizeof(double));
         for(int r=0; r<numRows; r++)
         {
           for(int c=0; c<numColumns; c++)
             m[r][c] = tmp[c*numRows+r];   //m[r][c] = tmp[c][r];
         }
+        delete[] tmp;
       }
       else
       {
@@ -158,7 +160,7 @@ namespace rosic
         }
 
         // free old memory and re-assign pointers
-        delete[] m;      
+        delete[] m;
         delete[] mFlat;
         m         = mNew;
         mFlat     = mFlatNew;
@@ -230,7 +232,7 @@ namespace rosic
     // check
 
     /** Compares two matrices for equality. */
-    bool operator==(const Matrix& m2) const  
+    bool operator==(const Matrix& m2) const
     {
       if( numRows != m2.numRows || numColumns != m2.numColumns )
         return false;
@@ -250,7 +252,7 @@ namespace rosic
     // check
 
     /** Compares two matrices for inequality. */
-    bool operator!=(const Matrix& m2) const  
+    bool operator!=(const Matrix& m2) const
     {
       return !(*this == m2);
     }
@@ -258,14 +260,14 @@ namespace rosic
 
     /** Defines the negative of a matrix. */
     Matrix operator-()
-    { 
+    {
       Matrix result(numRows, numColumns);
       for(int r=0; r<numRows; r++)
       {
         for(int c=0; c<numColumns; c++)
           result.m[r][c] = -m[r][c];
       }
-      return result; 
+      return result;
     }
     // check
 
@@ -346,7 +348,7 @@ namespace rosic
 
     /** Adds two matrices. */
     Matrix operator+(const Matrix &m2)
-    { 
+    {
       rassert( numRows == m2.numRows && numColumns == m2.numColumns ); // matrices incompatible
       Matrix result(numRows, numColumns);
       for(int r=0; r<numRows; r++)
@@ -354,26 +356,26 @@ namespace rosic
         for(int c=0; c<numColumns; c++)
           result.m[r][c] = m[r][c] + m2.m[r][c];
       }
-      return result; 
+      return result;
     }
     // check
 
     /** Adds a matrix and a scalar. */
     Matrix operator+(const double &x)
-    { 
+    {
       Matrix result(numRows, numColumns);
       for(int r=0; r<numRows; r++)
       {
         for(int c=0; c<numColumns; c++)
           result.m[r][c] = m[r][c] + x;
       }
-      return result; 
+      return result;
     }
     // check
 
     /** Subtracts two matrices. */
     Matrix operator-(const Matrix &m2)
-    { 
+    {
       rassert( numRows == m2.numRows && numColumns == m2.numColumns ); // matrices incompatible
       Matrix result(numRows, numColumns);
       for(int r=0; r<numRows; r++)
@@ -381,39 +383,39 @@ namespace rosic
         for(int c=0; c<numColumns; c++)
           result.m[r][c] = m[r][c] - m2.m[r][c];
       }
-      return result; 
+      return result;
     }
     // check
 
     /** Subtracts a scalar from a matrix. */
     Matrix operator-(const double &x)
-    { 
+    {
       Matrix result(numRows, numColumns);
       for(int r=0; r<numRows; r++)
       {
         for(int c=0; c<numColumns; c++)
           result.m[r][c] = m[r][c] - x;
       }
-      return result; 
+      return result;
     }
     // check
 
     /** Multiplies a matrix and a scalar. */
     Matrix operator*(const double &x)
-    { 
+    {
       Matrix result(numRows, numColumns);
       for(int r=0; r<numRows; r++)
       {
         for(int c=0; c<numColumns; c++)
           result.m[r][c] = m[r][c] * x;
       }
-      return result; 
+      return result;
     }
     // check
 
     /** Multiplies two matrices. */
     Matrix operator*(const Matrix &m2)
-    { 
+    {
       rassert( this->numColumns == m2.numRows )  // matrices incompatible
       Matrix result(numRows, m2.numColumns);
       for(int r=0; r<numRows; r++)
@@ -425,12 +427,12 @@ namespace rosic
             result.m[r][c] += m[r][k] * m2.m[k][c];
         }
       }
-      return result; 
+      return result;
     }
     // check
 
     /** Divides a matrix by a scalar. */
-    Matrix operator/(const double &x)  
+    Matrix operator/(const double &x)
     {
       double scale = 1.0 / x;
       Matrix result(numRows, numColumns);
@@ -439,7 +441,7 @@ namespace rosic
         for(int c=0; c<numColumns; c++)
           result.m[r][c] = m[r][c] * scale;
       }
-      return result; 
+      return result;
     }
     // check
 
@@ -470,8 +472,8 @@ namespace rosic
     // matrix computations:
 
     ///** Returns the the singular value decomposition of this matrix (lets denote it by A) such that
-    //A = U * S * V' where U and V are orthogonal matrices (U' * U = E, V' * V = E) and S is a 
-    //diagonal matrix with positive or zero elements (the singular values). The singular values are 
+    //A = U * S * V' where U and V are orthogonal matrices (U' * U = E, V' * V = E) and S is a
+    //diagonal matrix with positive or zero elements (the singular values). The singular values are
     //ordered such that S[0][0] >= S[1][1] >= ...  */
     //void getSingularValueDecomposition(Matrix *U, Matrix *S, Matrix *V);
 
@@ -486,45 +488,45 @@ namespace rosic
 
   }; // end of class Matrix
 
-  // some binary operators are defined outside the class such that the left hand operand does 
+  // some binary operators are defined outside the class such that the left hand operand does
   // not necesarrily need to be of class Matrix
 
   /** Adds a scalar and a matrix. */
   inline Matrix operator+(const double &x, const Matrix &m)
-  { 
+  {
     Matrix result(m.numRows, m.numColumns);
     for(int r=0; r<m.numRows; r++)
     {
       for(int c=0; c<m.numColumns; c++)
         result.m[r][c] = m.m[r][c] + x;
     }
-    return result; 
+    return result;
   }
   // check
 
   /** Subtracts a matrix from a scalar. */
   inline Matrix operator-(const double &x, const Matrix &m)
-  { 
+  {
     Matrix result(m.numRows, m.numColumns);
     for(int r=0; r<m.numRows; r++)
     {
       for(int c=0; c<m.numColumns; c++)
         result.m[r][c] = x - m.m[r][c];
     }
-    return result; 
+    return result;
   }
   // check
 
   /** Multiplies a scalar and a matrix. */
   inline Matrix operator*(const double &x, const Matrix &m)
-  { 
+  {
     Matrix result(m.numRows, m.numColumns);
     for(int r=0; r<m.numRows; r++)
     {
       for(int c=0; c<m.numColumns; c++)
         result.m[r][c] = x * m.m[r][c];
     }
-    return result; 
+    return result;
   }
   // check
 
