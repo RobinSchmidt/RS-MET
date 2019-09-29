@@ -57,9 +57,9 @@
 
 #include <emmintrin.h>    // SSE2
 
-#ifndef __APPLE__
-#include <malloc.h>     // for alloca - try to get rid..
-#endif
+//#ifndef __APPLE__
+//#include <malloc.h>     // for alloca - try to get rid - alloca is bad, mkay?
+//#endif
 
 //#if (defined (_WIN32) || defined (_WIN64))
 //#define USE_WINAPI_CRITICAL_SECTION
