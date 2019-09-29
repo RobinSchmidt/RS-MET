@@ -315,7 +315,7 @@ template class RAPT::rsEllipticSubBandFilterDirectForm<float, float>;
 template class RAPT::rsQuadratureNetwork<float, float>;
 
 template void RAPT::rsBiDirectionalFilter::applyLowpass(
-  double *x, double *y, int N, double fc, double fs, int numPasses, double gc);
+  const double *x, double *y, int N, double fc, double fs, int numPasses, double gc);
 
 // Physics:
 template class RAPT::rsParticleSystem<float>;
@@ -388,9 +388,9 @@ template double RAPT::analogBiquadMagnitudeSquaredAt(double B0, double B1, doubl
   double A1, double A2, double w);
 
 
-template void RAPT::rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(double *x, double *y,
+template void RAPT::rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(const double *x, double *y,
   int N, double fc, double bw, double fs, int numPasses, double gc);
-template void RAPT::rsBiDirectionalFilter::applyButterworthBandpassBwInHz(double *x, double *y,
+template void RAPT::rsBiDirectionalFilter::applyButterworthBandpassBwInHz(const double *x, double *y,
   int N, double fc, double bw, double fs, int order, int numPasses, double gc);
 
 //template class RAPT::rsSinusoidalSynthesizer<double>;

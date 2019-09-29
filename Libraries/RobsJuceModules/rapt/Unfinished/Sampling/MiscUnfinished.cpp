@@ -89,7 +89,7 @@ int rsBiDirectionalFilter::getPaddingLength(T bw, T fs)
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc,
+void rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(const TSig *x, TSig *y, int N, TPar fc,
   TPar bw, TPar fs, int numPasses, TPar gc)
 {
   // compute desired bandwidth for single-pass filter in octaves:
@@ -109,7 +109,7 @@ void rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyButterworthBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc,
+void rsBiDirectionalFilter::applyButterworthBandpassBwInHz(const TSig *x, TSig *y, int N, TPar fc,
   TPar bw, TPar fs, int order, int numPasses, TPar gc)
 {
   // compute desired bandwidth for single-pass filter in octaves:
@@ -131,7 +131,7 @@ void rsBiDirectionalFilter::applyButterworthBandpassBwInHz(TSig *x, TSig *y, int
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyButterworthLowpass(TSig *x, TSig *y, int N, TPar fc,
+void rsBiDirectionalFilter::applyButterworthLowpass(const TSig *x, TSig *y, int N, TPar fc,
   TPar fs, int order, int numPasses, TPar gc)
 {
   // compute desired lowpass cutoff:
@@ -151,7 +151,7 @@ void rsBiDirectionalFilter::applyButterworthLowpass(TSig *x, TSig *y, int N, TPa
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyButterworthHighpass(TSig *x, TSig *y, int N, TPar fc,
+void rsBiDirectionalFilter::applyButterworthHighpass(const TSig *x, TSig *y, int N, TPar fc,
   TPar fs, int order, int numPasses, TPar gc)
 {
   applyButterworthLowpass(x, y, N, fc, fs, order, numPasses, gc);
@@ -180,7 +180,7 @@ void rsBiDirectionalFilter::applyButterworthHighpass(TSig *x, TSig *y, int N, TP
 
 template<class TSig, class TTim, class TPar> // signal, time, parameter
 void rsBiDirectionalFilter::applyButterworthLowpass(
-  TSig* x, TTim* t, TSig* y, int N, TPar fc, int order, int numPasses, TPar gc)
+  const TSig* x, const TTim* t, TSig* y, int N, TPar fc, int order, int numPasses, TPar gc)
 {
   fc *= rsBandwidthConverter::multipassScalerButterworth(2*numPasses, order, gc);
   rsNonUniformFilterIIR<TSig> flt;
@@ -200,7 +200,7 @@ void rsBiDirectionalFilter::applyButterworthLowpass(
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses,
+void rsBiDirectionalFilter::applyLowpass(const TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses,
   TPar gc)
 {
   // compute desired cutoff for single-pass filter:

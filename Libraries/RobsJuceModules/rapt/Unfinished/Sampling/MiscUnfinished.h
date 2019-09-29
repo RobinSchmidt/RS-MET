@@ -43,25 +43,25 @@ public:
   be adjusted internally.
   gc: gain at bandedge frequencies (raw amplitude) */
   template<class TSig, class TPar>
-  static void applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs,
+  static void applyConstPeakBandpassBwInHz(const TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs,
     int numPasses = 1, TPar gc = SQRT2_INV);
 
   /** Similar to applyConstPeakBandpassBwInHz but uses a Butterworth bandpass with given order
   instead of a 2nd order bandpass. */
   template<class TSig, class TPar>
-  static void applyButterworthBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs,
+  static void applyButterworthBandpassBwInHz(const TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs,
     int order, int numPasses = 1, TPar gc = SQRT2_INV);
 
   /** Applies a Butterworth lowpass filter bidirectionally to the data in array x of length N and
   writes the result to the array y. fc: cutoff frequency, fs: sampleRate */
   template<class TSig, class TPar>
-  static void applyButterworthLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int order,
+  static void applyButterworthLowpass(const TSig *x, TSig *y, int N, TPar fc, TPar fs, int order,
     int numPasses = 1, TPar gc = SQRT2_INV);
 
   /** Applies a bidirectional Butterworth highpass ...it actually uses a lowpass and subtracts the
   result from the original. Can NOT be used in place: x and y must be distinct. */
   template<class TSig, class TPar>
-  static void applyButterworthHighpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int order,
+  static void applyButterworthHighpass(const TSig *x, TSig *y, int N, TPar fc, TPar fs, int order,
     int numPasses = 1, TPar gc = SQRT2_INV);
 
 
@@ -73,7 +73,7 @@ public:
   then the time-stamp array would look like [0T 1T 2T 3T 4T 5T ...] where T is the sampling
   interval. fc: cutoff frequency in Hz */
   template<class TSig, class TTim, class TPar> // signal, time, parameter
-  static void applyButterworthLowpass(TSig *x, TTim *t, TSig *y, int N, TPar fc, 
+  static void applyButterworthLowpass(const TSig *x, const TTim *t, TSig *y, int N, TPar fc, 
     int order, int numPasses = 1, TPar gc = SQRT2_INV);
   // todo: compare outputs of uniformly sampled function to outputs of this function, when
   // the data-spacing is chosen to be uniform - result will not be exactly the same because the
@@ -82,16 +82,13 @@ public:
   // MZTi)
 
 
-
-
-
   /** Applies a bidirectional 1st order lowpass to the signal x of length N and stores the
   result in y. The filter has a cutoff frequency fc at a samplerate fs. With the optional
   numPasses parameter, you can control, how many times the filter will be applied. To compensate
   for the effects of multiple passes, the cutoff frequency of the single-pass filter will be
   adjusted internally. */
   template<class TSig, class TPar>
-  static void applyLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses = 1,
+  static void applyLowpass(const TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses = 1,
     TPar gc = SQRT2_INV);
 
 protected:

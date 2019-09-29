@@ -547,7 +547,7 @@ public:
   /** Subtracts the elements of 'buffer2' from 'buffer1' - type must define operator '-'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
   template <class T>
-  static void subtract(T *buffer1, T *buffer2, T *result, int length);
+  static void subtract(const T *buffer1, const T *buffer2, T *result, int length);
 
   /** Returns the sum of the elements in the buffer for types which define the
   addition operator (the += version thereof) and a constructor which can take an int

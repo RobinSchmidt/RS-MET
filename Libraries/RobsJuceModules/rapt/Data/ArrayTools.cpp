@@ -1096,7 +1096,7 @@ void rsArray::shift(T *buffer, int length, int numPlaces)
 }
 
 template <class T>
-void rsArray::subtract(T *buffer1, T *buffer2, T *result, int length)
+void rsArray::subtract(const T *buffer1, const T *buffer2, T *result, int length)
 {
   for(int i = 0; i < length; i++)
     result[i] = buffer1[i] - buffer2[i];
