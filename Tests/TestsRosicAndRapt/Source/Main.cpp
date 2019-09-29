@@ -24,8 +24,24 @@
 // passed &= runUnitTest(&triangleRasterization,  "Triangle Rasterization");
 // in UnitTests.cpp
 
+std::vector<int> getIntVector(int N)
+{
+  std::vector<int> v(N);
+  return v;
+}
+
+void testConstPointerVector(const int* x, int N)
+{
+  std::vector<int> tmp = getIntVector(N);
+}
+
 int main(int argc, char* argv[])
 {
+  int x[3];
+  testConstPointerVector(x, 3);
+  int dummy = 0;
+
+
   // tempoarary throw-away-code:
   //testCrossoverNewVsOld();
 

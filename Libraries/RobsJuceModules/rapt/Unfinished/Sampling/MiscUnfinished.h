@@ -73,8 +73,8 @@ public:
   then the time-stamp array would look like [0T 1T 2T 3T 4T 5T ...] where T is the sampling
   interval. fc: cutoff frequency in Hz */
   template<class TSig, class TTim, class TPar> // signal, time, parameter
-  static void applyButterworthLowpass(TSig *x, TTim *t, TSig *y, int N, TPar fc, int order,
-    int numPasses = 1, TPar gc = SQRT2_INV);
+  static void applyButterworthLowpass(TSig *x, TTim *t, TSig *y, int N, TPar fc, 
+    int order, int numPasses = 1, TPar gc = SQRT2_INV);
   // todo: compare outputs of uniformly sampled function to outputs of this function, when
   // the data-spacing is chosen to be uniform - result will not be exactly the same because the
   // uniform filter uses bilinear trafo and the non-uniform impulse-invariant (todo: make the

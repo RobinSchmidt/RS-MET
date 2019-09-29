@@ -4,7 +4,8 @@
 // implement double getSample(double), P: padding length, numPasses: number of forward/backward
 // passes maybe move to another file
 template<class TSig, class TFlt> // signal and filter type
-void rsApplyBiDirectionally(TSig *x, TSig *y, int N, TFlt &processor, int P, int numPasses)
+void rsApplyBiDirectionally(
+  const TSig *x, TSig *y, int N, TFlt &processor, int P, int numPasses)
 {
   // create a buffer containing the signal with (pre- and post) zero padding to allow the
   // processor/filter to ring out at the ends:
@@ -35,7 +36,7 @@ void rsApplyBiDirectionally(TSig *x, TSig *y, int N, TFlt &processor, int P, int
 }
 
 template<class T>
-std::vector<T> getPaddedSignal(T* x, int N, int P)
+std::vector<T> getPaddedSignal(const T* x, int N, int P)
 {
   int M = N+2*P;
   std::vector<T> xp(M);
@@ -49,7 +50,7 @@ std::vector<T> getPaddedSignal(T* x, int N, int P)
 // non-uniform version of function above:
 template<class TSig, class TTim, class TFlt> // signal, time and filter type
 void rsApplyBiDirectionally(
-  TSig* x, TTim* t, TSig* y, int N, TFlt& processor, int P, int numPasses)
+  const TSig* x, const TTim* t, TSig* y, int N, TFlt& processor, int P, int numPasses)
 {
   // signal array with pre- and post-padding:
   std::vector<TSig> tmp = getPaddedSignal(x, N, P);
@@ -178,8 +179,8 @@ void rsBiDirectionalFilter::applyButterworthHighpass(TSig *x, TSig *y, int N, TP
 }
 
 template<class TSig, class TTim, class TPar> // signal, time, parameter
-void rsBiDirectionalFilter::applyButterworthLowpass(TSig* x, TTim* t, TSig* y, int N, TPar fc,
-  int order, int numPasses, TPar gc)
+void rsBiDirectionalFilter::applyButterworthLowpass(
+  TSig* x, TTim* t, TSig* y, int N, TPar fc, int order, int numPasses, TPar gc)
 {
   fc *= rsBandwidthConverter::multipassScalerButterworth(2*numPasses, order, gc);
   rsNonUniformFilterIIR<TSig> flt;
