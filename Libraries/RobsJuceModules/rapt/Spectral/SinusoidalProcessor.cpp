@@ -344,7 +344,7 @@ void rsPartialBeatingRemover<T>::removePhaseBeating(rsSinusoidalPartial<T>& part
 
 template<class T>
 std::vector<T> rsPartialBeatingRemover<T>::smoothPhases(
-  std::vector<T>& t, std::vector<T>& f, std::vector<T>& pIn, 
+  const std::vector<T>& t, const std::vector<T>& f, const std::vector<T>& pIn, 
   T cutoff, int order, int numPasses)
 {
   //GNUPlotter plt;

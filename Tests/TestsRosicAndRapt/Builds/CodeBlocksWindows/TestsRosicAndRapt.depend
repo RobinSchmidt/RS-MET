@@ -2450,7 +2450,7 @@
 	"Simd/Float64x2.h"
 	"Simd/ComplexFloat64x2.h"
 
-1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.h
+1569763238 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.h
 
 1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\matrixtools.h
 
@@ -2826,7 +2826,7 @@
 
 1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\zerocrossingpitchdetector.h
 
-1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\miscunfinished.h
+1569763358 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\miscunfinished.h
 
 1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\samplemanipulation.h
 
@@ -2842,7 +2842,7 @@
 
 1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalmodel.h
 
-1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalprocessor.h
+1569763601 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalprocessor.h
 
 1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalsynthesizer.h
 
@@ -2885,7 +2885,7 @@
 	"StandardContainerTools.cpp"
 	"Buffers.cpp"
 
-1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.cpp
+1569763265 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.cpp
 
 1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\matrixtools.cpp
 
@@ -3256,7 +3256,7 @@
 
 1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\analysis\zerocrossingpitchdetector.cpp
 
-1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\miscunfinished.cpp
+1569763380 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\miscunfinished.cpp
 
 1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\unfinished\sampling\samplemanipulation.cpp
 
@@ -3273,7 +3273,7 @@
 
 1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalmodel.cpp
 
-1569760634 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalprocessor.cpp
+1569763613 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalprocessor.cpp
 
 1569511729 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalsynthesizer.cpp
 

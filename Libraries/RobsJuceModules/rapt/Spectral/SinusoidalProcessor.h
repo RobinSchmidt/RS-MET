@@ -165,7 +165,7 @@ public:
 
   /** Smoothes the given phase-array... */
   static std::vector<T> smoothPhases(
-    std::vector<T>& time, std::vector<T>& freqs, std::vector<T>& phases,
+    const std::vector<T>& time, const std::vector<T>& freqs, const std::vector<T>& phases,
     T cutoff, int order, int numPasses);
   // maybe factor this out - it could be useful for other processors, too ...maybe have a class
   // rsPhaseSmoother that lets the user select cutoff-freq, filter-type, order, numPasses, etc.
