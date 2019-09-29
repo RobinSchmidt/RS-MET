@@ -25,6 +25,9 @@ public:
 
   /** Constructs a value from int (needed for implicit conversions). */
   inline rsFloat32x4(int a) : v(_mm_set1_ps(float(a))) {}
+  // gcc produces error (in 32-bit configuration);
+  // inlining failed in call to always_inline '__m128 _mm_set1_ps(float)': target specific option mismatch|
+  // unless the SSE instruction set is explicitly activated in the compiler settings
 
   /** Constructs a value from double (needed for implicit conversions). */
   inline rsFloat32x4(double a) : v(_mm_set1_ps(float(a))) {}
@@ -44,7 +47,7 @@ public:
   inline float get(size_t i) const { return asArray()[i]; }
   // redundant with [] ...but this is const
 
-  /** Writes our vector into the 4-element float array p. (needs test, maybe implement a similar 
+  /** Writes our vector into the 4-element float array p. (needs test, maybe implement a similar
   function for rsFloat64x2 - this has been added after copy/paste ) */
   inline void get(float* p) const { _mm_store_ps(p, v); }
 
@@ -219,7 +222,7 @@ inline rsFloat32x4 rsTan(const rsFloat32x4& x) { float* a = x.asArray(); return 
 
 
 // see here for optimized vector math functions - free and open-source:
-// http://gruntthepeon.free.fr/ssemath/ 
+// http://gruntthepeon.free.fr/ssemath/
 // code is available in the _third_party folder of rosic
 
 /*
@@ -230,18 +233,18 @@ inline rsFloat32x4 rsTan(const rsFloat32x4& x) { float* a = x.asArray(); return 
 load:
 __m128 _mm_load1_ps(float* p)    Loads a single SP FP value, copying it into all four words
 __m128 _mm_load_ps(float* p)     Loads four SP FP values. The address must be 16-byte-aligned
-__m128 _mm_loadu_ps(float* p)    Loads four SP FP values. The address need not be 16-byte-aligned. 
+__m128 _mm_loadu_ps(float* p)    Loads four SP FP values. The address need not be 16-byte-aligned.
 
 set:
-__m128 _mm_setzero_ps(void)                            Clears the four SP FP values. 
-__m128 _mm_set1_ps(float w )                           Sets the four SP FP values to w. 
-__m128 _mm_set_ps(float z, float y, float x, float w)  Sets the four SP FP values to the four inputs. 
-__m128 _mm_setr_ps(float z, float y, float x, float w) Sets the four SP FP values to the four inputs in reverse order. 
+__m128 _mm_setzero_ps(void)                            Clears the four SP FP values.
+__m128 _mm_set1_ps(float w )                           Sets the four SP FP values to w.
+__m128 _mm_set_ps(float z, float y, float x, float w)  Sets the four SP FP values to the four inputs.
+__m128 _mm_setr_ps(float z, float y, float x, float w) Sets the four SP FP values to the four inputs in reverse order.
 ..check which one actually reverses - the reference seems contradictory there
 
 store:
-void _mm_store_ps(float *p, __m128 a)    Stores four SP FP values. The address must be 16-byte-aligned. 
-void _mm_storeu_ps(float *p, __m128 a)   Stores four SP FP values. The address need not be 16-byte-aligned. 
+void _mm_store_ps(float *p, __m128 a)    Stores four SP FP values. The address must be 16-byte-aligned.
+void _mm_storeu_ps(float *p, __m128 a)   Stores four SP FP values. The address need not be 16-byte-aligned.
 
 function that operate simultaneously on all elements:
 
@@ -261,7 +264,7 @@ __m128 _mm_cmpge_ps(__m128 a, __m128 b)    greater or equal
 __m128 _mm_cmpneq_ps(__m128 a, __m128 b)   inequality
 __m128 _mm_cmpnlt_ps(__m128 a, __m128 b)   not less than
 ...reference page 38
-the ps suffix operates on all elements, the same functions with the ss suffix operate only on the 
+the ps suffix operates on all elements, the same functions with the ss suffix operate only on the
 1st and pass through all other values
 
 
@@ -276,7 +279,7 @@ the ps suffix operates on all elements, the same functions with the ss suffix op
 /** This is datatype to represent 4 32-bit floating point numbers at once.
 THIS IS NOT USABLE YET (it currently uses 4 actual floats)
 
-\todo: 
+\todo:
 -write some unit tests
 -write some performance tests
 -use the 128-bit SSE type internally to speed up the computations in the arithmetic operators
@@ -303,7 +306,7 @@ public:
     setValues(value, value, value, value);
   }
 
-  /** Constructor for conversion from double to float and setting up all 4 elements to the same 
+  /** Constructor for conversion from double to float and setting up all 4 elements to the same
   value. */
   rsFloat32x4(double value)
   {
@@ -345,8 +348,8 @@ public:
 
   /** Unary minus */
   inline rsFloat32x4 operator-() const
-  { 
-    return rsFloat32x4(-v[0], -v[1], -v[2], -v[3]); 
+  {
+    return rsFloat32x4(-v[0], -v[1], -v[2], -v[3]);
   }
 
   /** Addition of 2 Float32x4 vectors. */
@@ -397,7 +400,7 @@ public:
 
   // the set of operators is still incomplete, we need
   // +, -, *, /;  +=, -=, *=, /=;  ==, !=, >=, <=, >, <; unary -
-  // for the binary operators, we need also versions where either left or right operator can be a 
+  // for the binary operators, we need also versions where either left or right operator can be a
   // single float
 
 
