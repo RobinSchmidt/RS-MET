@@ -51,7 +51,8 @@ template<class T>
 void rsHeatEquation1D<T>::normalizeHeatDistribution(T targetMean, T targetVariance)
 {
   // set mean to desired target value (maybe factor out):
-  int N = (int) rodArray1.size();
+  //int N = (int) rodArray1.size();
+  int N = (int) rodLength;
   typedef rsArray AR;
   T mean = AR::mean(rodIn, N);
   AR::add(rodIn, -mean, rodIn, N); 

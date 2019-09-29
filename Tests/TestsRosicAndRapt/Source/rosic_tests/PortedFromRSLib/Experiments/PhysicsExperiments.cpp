@@ -80,37 +80,47 @@ void doublePendulum()
 
 void heatEquation1D()
 {
-  int fs          = 44100;
-  int numCycles   = 40;
-  int cycleLength = 50;
-  int N           = numCycles * cycleLength;    // number of samples
+  int fs           = 44100;
+  int numCycles    = 128;    // plot: ~50, audio: ~1000
+  int cycleLength  = 1024;   // plot: ~40, audio: ~200
+  int N            = numCycles * cycleLength;    // number of samples
+  double amplitude = 0.5;
 
 
   rsHeatEquation1D<double> hteq;
   hteq.setMaxCycleLength(2048);
-  hteq.setDiffusionCoefficient(1.0);
-  //hteq.setRandomHeatDistribution(2, cycleLength);
-  hteq.setTwoValueDistribution(0.45, cycleLength); 
+  hteq.setDiffusionCoefficient(0.95); // it seems to decay more slowly, the higher the coeff - ?
+  hteq.setRandomHeatDistribution(5, cycleLength);
+  //hteq.setTwoValueDistribution(0.10, cycleLength); 
   hteq.normalizeHeatDistribution();
 
   std::vector<double> y(N);
   for(int n = 0; n < N; n++)
-    y[n] = hteq.getSample();
+    y[n] = amplitude * hteq.getSample2();
 
-  rsPlotVector(y);
-  //rosic::writeToMonoWaveFile("HeatEquation1D.wav", &y[0], N, fs);
+  //rsPlotVector(y);
+
+  RAPT::rsArray::normalize(&y[0], N, 1.0, true);
+  rosic::writeToMonoWaveFile("HeatEquation1D.wav", &y[0], N, fs);
 
   // todo: plot it as a 3D plot - each cycle is shown in its own plane in the (inward) 
   // z-direction
 
   // it's buzzy and there's a parasitic oscillation at the Nyquist freq.
   // -buzz is probably because of end-handling (try cyclic end-handling to get rid of the buzz)
+  // -or maybe the buzz is due to the slight discontinuity when going from one cycle to the next
+  //  (because we update the rod only once per cycle - not per sample - which wouldn't make sense
+  //  in this setup)
   // -i think, the parasitic oscillation was due to choosing 1.0 as diffusion coeff - maybe it must
   //  be strictly less than 1
   //  hmmm...with 0.95, there's still s little bit of tha oscillation in the transient
   // -different seeds give wildly different sounds - maybe try a random phase-spectrum with defined
   //  magnitude sprectrum
   // -with cyclic end-handling, it converges to some non-zero DC
+
+  // todo: produce sets of samples:
+  // -to go one octave up, we should use the same (random) distribution as in the lower octave but
+  //  downsampled, such that the samples are consistent
   
   //GNUPlotter plt;
 }
