@@ -75,7 +75,6 @@ T rsQuantumSpin<T>::getExpectedMeasurement(const Mat& M, const Vec& A)
 
   // ...but the same value can be computed more efficiently by (1) Eq 4.14:
   return sandwich(A, M, A).real();
-  //return bracket(A, M*A).real(); // make a function sandwich
 }
 
 template<class T>
@@ -94,11 +93,8 @@ T rsQuantumSpin<T>::getUncertaintyProduct(const Mat& M, const Mat& L, const Vec&
   Me = getExpectedMeasurement(M, A); Mc = M - Complex(Me) * Mat::identity();
   Le = getExpectedMeasurement(L, A); Lc = L - Complex(Le) * Mat::identity();
   C  = Mat::commutator(Mc, Lc);
-  return T(0.5) * sandwich(A, C, A).real();  // (1) Eq 5.13 (with centered matrices)
+  return T(0.5) * abs(sandwich(A, C, A));  // (1) Eq 5.13 (with centered matrices)
 }
-
-
-
 
 // measurement:
 
@@ -110,13 +106,13 @@ T rsQuantumSpin<T>::measureObservable(Vec& A, const Mat& M, rsNoiseGenerator<T>*
   T rnd = prng->getSample();
   if(rnd <= P1) { // should it be <= or < ? 
     //T P2 = getStateProbability(A, M.getEigenvector2()); // should be 1-P1
-    A = E1;
-    return M.eigenvalue1().real(); // is real if M is Hermitian
+    A = E1;                        // collapse the state into eigenstate 1
+    return M.eigenvalue1().real(); // return eigenvalue 1, (it's real if M is Hermitian)
   }
   else {
-    Vec E2 = M.eigenvector2();
-    A = E2;
-    return M.eigenvalue2().real(); // is real if M is Hermitian
+    //Vec E2 = M.eigenvector2();
+    A = M.eigenvector2();          // collapse into eigenstate 2
+    return M.eigenvalue2().real(); // return eigenvalue 2
   }
 }
 // in general, we'll have an NxN matrix and the probability to be in state k is given by
@@ -217,11 +213,12 @@ void rsQuantumComputer<T>::applyGate(const QGate& g, int t)
   // makes no difference - each index appears exactly once in the loop, so there should be no
   // issues of overwriting and then reading a state again
 
-  int iMax = pow(2, numQBits-1);
+  //int iMax = pow(2, numQBits-1);
+  int iMax = rsPowInt(2, numQBits-1);
 
   //for(int i = 0; i < numStates; i++)
   for(int i = 0; i < iMax; i++) 
-    // the paper says i goes to 2^(n-1) but then the last gives an access violation (n=4,t=3)
+    // the paper says it goes to 2^(n-1) but then the last gives an access violation (n=4,t=3)
   {
     int a = nth_cleared(i, t);
     int b = a | (1 << t);
@@ -246,7 +243,7 @@ void rsQuantumComputer<T>::applyGate(const QGate& g, int t)
     // ...but even that gives an access violation on the last index (if we use 
     // i <= pow(2, numQBits-1)) - perhaps it should be < instead of <=
     // ..ok - no access violation anymore - but with so much guesswork necessarry, who knowsm 
-    // what else is wrong (i think, i probably should no use a tempoprary array)
+    // what else is wrong (i think, i probably should not use a tempoprary array)
     // ...how can we verify, if the algo does the right thing?
 
 

@@ -51,7 +51,9 @@
 //#include <new>
 //#include <iterator>
 
+#ifdef _MSC_VER           // Elans says, this is needed to compile on mac
 #include <intrin.h>       // for some reason, it's needed on Elan's machine but not on mine
+#endif
 
 #include <emmintrin.h>    // SSE2
 

@@ -5,12 +5,15 @@ state of a single spin (for example of an electron) and 2x2 complex matrices tha
 operators on such state vectors. This is the most simple and prototypical quantum system and can 
 also be used as quantum bit (qubit). The user can set the system into various predefined states and
 has functions to manipulate the state. The state can also be measured in which case the system 
-will - with a certain probability determined by the state - fall into one of two possible pure 
-states corresponding to the measured variable. An example of such a measured observable is the spin
-along the z-axis. The measured value will be either +1 or -1 (corresponding to "up" or "down") with
-probabilities determined by the current state. After the measurement, however, this state will have 
-been changed into a pure "up" or "down" state such that subsequent measurements of the z-component 
-of the spin will always produce the same result again (with probability one).
+will - with a certain probability determined by the state - fall into one of two possible states 
+corresponding to specific values of the measured variable. An example of such a measured observable
+is the spin along the z-axis. The measured value will be either +1 or -1 (corresponding to "up" or 
+"down") with probabilities determined by the current state. After the measurement, however, this 
+state will have been changed into an "up" or "down" state such that subsequent measurements of 
+the z-component of the spin (without state modifications in between) will always reproduce the 
+same result again. The probability of measuring the same value again has become unity due to the
+state "collapse" due to the measurement. If used as qubit, it is conventional to identify the "up"
+state (z-spin measurement is +1) with 0 and the "down" state (z-spin = -1) with 1.
 
 
 States:
@@ -20,8 +23,10 @@ arbitrarily) choosen basis ket vectors |u> = (1,0) and |d> = (0,1) for "up" and 
 
 |A> = au * |u> + ad * |d>    (1) Pg 38
 
-where au and ad are the probability amplitudes to find the system und "up" or "down" state when
-the z-component of the spin is measured. They can be computed for an arbitrary state A as:
+where au and ad are complex numbers, called probability amplitudes, whose squared magnitude gives
+the probability to find the system und "up" or "down" state when the z-component of the spin is 
+measured. The elements of the ket vectors are also complex numbers. The amplitudes can be computed
+for an arbitrary state A as:
 
 au = <u|A>, ad = <d|A>   (1) Eq 2.1
 
@@ -30,9 +35,7 @@ where the inner product of two ket vectors A,B is defined as:
 <A|B> = conj(A.x) * B.x + conj(A.y) * B.y.   (1) Eq 1.2 (with renaming)
 
 which also implies that au = A.x and ad = A.y (this comes out due our choice |u> = (1,0), 
-|d> = (0,1)). The numbers au, ad are called probability amplitudes and their squared magnitudes 
-represent the probabilities that the system will be found in an "up" or "down" state when the 
-z-component of the spin is measured.
+|d> = (0,1)).
 
 
 Operators:
@@ -41,17 +44,18 @@ An operator is represented as complex valued 2x2 matrix M. There are two very di
 such operators are used for:
 
 Firstly, an operator M can "act" on (or be applied to) a quantum state v. This means, that a new 
-state is computed as the matrix-vector product w = M*v where v is the old state. Operators of that 
-kind must be unitary matrices (i.e the inverse must be given by the conjugate transpose) because 
-that's what the laws of quantum mechanics say (todo: add the *actual* explanation - why do they say
-that?)
+state w is computed as the matrix-vector product w = M*v where v is the old state. Operators of 
+that kind must be unitary matrices (i.e the inverse must be given by the conjugate transpose) 
+because that's what the laws of quantum mechanics say (todo: add the *actual* explanation - why do
+they say that?)
 
 Secondly, operators may represent measurable or observable quantities. Measuring the value of an
 observable associated with such an operator will put the state into one of the eigenvectors of the 
 operator (randomly, with probabilities determined by the state) and the result of the measurement 
 will be the corresponding eigenvalue. Because physical measurements must be real numbers, an 
 operator M corresponding to an observable must be Hermitian (i.e. M = M^H where M^H denotes the 
-Hermitian transpose (= transpose and conjugate)). This ensures real eigenvalues. 
+Hermitian transpose (= transpose and conjugate)). This ensures real eigenvalues. (Q: are being 
+unitary and Hermitian independent properties?)
 
 Note that the act of setting the spin into an eigenstate of a measurement operator is *not*
 the same thing as forming the matrix-vector product like it is done with the first kind of 
@@ -73,6 +77,7 @@ class rsQuantumSpin
 
 public:
 
+  // for convenience - we use these types a lot:
   typedef std::complex<T> Complex;
   typedef rsVector2D<std::complex<T>>  Vec;
   typedef rsMatrix2x2<std::complex<T>> Mat;
@@ -81,7 +86,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name State setup */
 
-  // pure state creation functions:
+  // state creation (factory) functions:
   static Vec up()    { Vec s; prepareUpState(s);    return s; }
   static Vec down()  { Vec s; prepareDownState(s);  return s; }
   static Vec right() { Vec s; prepareRightState(s); return s; }
@@ -89,6 +94,7 @@ public:
   static Vec in()    { Vec s; prepareInState(s);    return s; }
   static Vec out()   { Vec s; prepareOutState(s);   return s; }
 
+  // setting the state of vector A:
   static void prepareUpState(   Vec& A) { A.x = 1; A.y =  0;   }  // (1) Eq 2.11
   static void prepareDownState( Vec& A) { A.x = 0; A.y =  1;   }  // (1) Eq 2.12
   static void prepareRightState(Vec& A) { A.x = s; A.y =  s;   }  // (1) Eq 2.5
@@ -97,16 +103,15 @@ public:
   static void prepareOutState(  Vec& A) { A.x = s; A.y = -s*i; }  // (1) Eq 2.10
 
 
-  static void prepareState(Vec& A, T ur, T ui, T dr, T di)
-  {
-    A.x.real(ur); A.x.imag(ui); A.y.real(dr); A.y.imag(di);
-  }
+  /** Prepare state to be au = ur + i*ui, ad = dr + i*di. */
+  static void prepareState(Vec& A, T ur, T ui, T dr, T di)  
+  { A.x.real(ur); A.x.imag(ui); A.y.real(dr); A.y.imag(di); }
 
    /** Normalizes the state such that the total probability is unity - which it must be for a valid 
   state. */
   static void normalizeState(Vec& A);
 
-  /** Randomizes the state....todo: allow to specify an amount between 0 and 1 - can be used to 
+  /** Randomizes the state....todo: allow to specify an amount between 0 and 1 - can the be used to 
   inject noise to simulate quantum decoherence */
   static void randomizeState(Vec& v, PRNG* prng);
 
@@ -130,6 +135,14 @@ public:
   static Mat pauliZ() { return Mat(T(1), T(0), T(0), T(1)); }
   // not yet tested
 
+  /** Creates the Pauli vector which is the 3-vector of the 2x2 Pauli matrices. see (1) pg 83 or
+  https://en.wikipedia.org/wiki/Pauli_matrices#Pauli_vector - i think, on wikipedia, the 
+  (x,y,z)-hat vectors are simply the unit vectors in x,y,z directions of 3-space? */
+  static rsVector3D<rsMatrix2x2<Complex>> pauliVector();
+  // maybe move into a special section of factory functions
+
+
+
   // see here for more operators/"gates"
   // https://en.wikipedia.org/wiki/Quantum_logic_gate
 
@@ -137,13 +150,6 @@ public:
   // number of input vectors like:
   // static void toffoli(Vec& v1, Vec& v2, Vec& v3);
   // maybe this should be done in another class rsQuantumGates
-
-
-  /** Creates the Pauli vector which is the 3-vector of the 2x2 Pauli matrices. see (1) pg 83 or
-  https://en.wikipedia.org/wiki/Pauli_matrices#Pauli_vector - i think, on wikipedia, the 
-  (x,y,z)-hat vectors are simply the unit vectors in x,y,z directions of 3-space? */
-  static rsVector3D<rsMatrix2x2<Complex>> pauliVector();
-  // maybe move into a special section of factory functions
 
   // todo: void rotate(rotX, rotY), hadamard, cnot, etc
 
@@ -157,7 +163,7 @@ public:
   static std::complex<T> bracket(const Vec& A, const Vec& B) 
   { return conj(A.x) * B.x + conj(A.y) * B.y; }
 
-  /** Computes the triple product <A|M|B> of a matrix M "sandwiched" two states A and B. */
+  /** Computes the triple product <A|M|B> of a matrix M "sandwiched" by two states vectors A, B. */
   static std::complex<T> sandwich(const Vec& A, const Mat& M, const Vec& B) 
   { return bracket(A, M*B); }
 
@@ -249,10 +255,10 @@ public:
   // not yet tested
 
   /** Measures the z-component of the spin. This measurement will put the state vector either into
-  a pure "up" or pure "down" state and will return +1 in the former and -1 in the latter case. 
-  Which one of the two it is is selected randomly using the prng according to the up-probability 
-  of our state. The operator/matrix that corresponds to that measurement is the 
-  Pauli matrix sigma_z = [[1 0], [0,-1]]. */
+  an "up" or a "down" state and will return +1 in the former and -1 in the latter case. Which one 
+  of the two it is is selected randomly using the prng according to the up-probability of our 
+  state. The operator/matrix that corresponds to that measurement is the Pauli matrix 
+  sigma_z = [[1,0], [0,-1]]. */
   static T measureSpinZ(Vec& A, rsNoiseGenerator<T>* prng);
 
   /** Similar to measureSpinZ, but for the x-component represented by the Pauli matrix 

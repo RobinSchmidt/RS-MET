@@ -135,9 +135,7 @@ inline rsMatrix2x2<T> operator*(const T& s, const rsMatrix2x2<T>& A)
 
 /** This is a class for treating C-arrays as matrices. It does not store/own the actual matrix 
 data, it just acts as wrapper around an existing array for more conveniently accessing and 
-manipulating matrix elements.
-
-*/
+manipulating matrix elements. */
 
 template<class T>
 class rsMatrixView
@@ -225,24 +223,15 @@ public:
           (*C)(i,j) += A->at(i,k) * B->at(k,j); }}
   }
 
-
-
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
   /** Read and write access to matrix elements with row-index i and column-index j. */
-  inline T& operator()(const int i, const int j)
-  {
-    return d[flatIndex(i, j)];
-
-  }
+  inline T& operator()(const int i, const int j) { return d[flatIndex(i, j)]; }
 
   /** Read only accees - used mainly internally with const reference arguments (for example, 
   in add). */
-  inline const T& at(const int i, const int j) const
-  {
-    return d[flatIndex(i, j)];
-  }
+  inline const T& at(const int i, const int j) const { return d[flatIndex(i, j)]; }
 
   /** Converts a row index i and a column index j to a flat array index. */
   inline int flatIndex(const int i, const int j) const
