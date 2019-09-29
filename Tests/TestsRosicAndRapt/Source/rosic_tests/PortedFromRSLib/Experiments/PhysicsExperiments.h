@@ -4,6 +4,8 @@
 
 void doublePendulum();
 void heatEquation1D();
+void waveEquation1D();
+//void schrödingerEquation1D();
 void particleForceDistanceLaw();
 void particleSystem();
 bool quantumSpinMeasurement(); // move to unit tests

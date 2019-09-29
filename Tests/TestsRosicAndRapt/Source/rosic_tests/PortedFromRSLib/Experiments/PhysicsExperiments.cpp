@@ -80,24 +80,28 @@ void doublePendulum()
 
 void heatEquation1D()
 {
-  int fs = 44100;
-  int N  = 2000;    // number of samples
+  int fs          = 44100;
+  int numCycles   = 40;
+  int cycleLength = 50;
+  int N           = numCycles * cycleLength;    // number of samples
+
 
   rsHeatEquation1D<double> hteq;
   hteq.setMaxCycleLength(2048);
   hteq.setDiffusionCoefficient(1.0);
-  //hteq.setRandomHeatDistribution(2, 50);
-  hteq.setTwoValueDistribution(0.45, 50); 
+  //hteq.setRandomHeatDistribution(2, cycleLength);
+  hteq.setTwoValueDistribution(0.45, cycleLength); 
   hteq.normalizeHeatDistribution();
 
   std::vector<double> y(N);
   for(int n = 0; n < N; n++)
     y[n] = hteq.getSample();
 
-
-
   rsPlotVector(y);
   //rosic::writeToMonoWaveFile("HeatEquation1D.wav", &y[0], N, fs);
+
+  // todo: plot it as a 3D plot - each cycle is shown in its own plane in the (inward) 
+  // z-direction
 
   // it's buzzy and there's a parasitic oscillation at the Nyquist freq.
   // -buzz is probably because of end-handling (try cyclic end-handling to get rid of the buzz)
@@ -107,9 +111,14 @@ void heatEquation1D()
   // -different seeds give wildly different sounds - maybe try a random phase-spectrum with defined
   //  magnitude sprectrum
   // -with cyclic end-handling, it converges to some non-zero DC
-
   
   //GNUPlotter plt;
+}
+
+void waveEquation1D()
+{
+
+  GNUPlotter plt;
 }
 
 
