@@ -639,6 +639,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\MatrixBroken.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2337,6 +2340,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Prototypes.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems - Copy.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2377,21 +2383,6 @@
     <ClInclude Include="..\..\Source\Misc\Misc.h"/>
     <ClInclude Include="..\..\Source\PerformanceTests\PerformanceTests.h"/>
     <ClInclude Include="..\..\Source\UnitTests\UnitTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\DifferentialEquationTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\IntegerFunctionTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\LinearAlgebraUnitTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MatrixUnitTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MiscMathUnitTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MoebiusTransformTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MultiArrayTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\NumberTheoryTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\Point2DTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\Polygon2DTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\RealFunctionTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\TransformsTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\Triangle2DTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DrawingUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.h"/>
@@ -2569,6 +2560,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\Optimization.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\RootFinder.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\MatrixBroken.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Vector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Math.h"/>
@@ -3178,6 +3170,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Probability.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Projection3Dto2D.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Prototypes.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems - Copy.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Tensor.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\FileWriting.h"/>

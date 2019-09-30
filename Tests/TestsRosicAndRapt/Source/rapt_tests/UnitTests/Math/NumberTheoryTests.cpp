@@ -1,4 +1,3 @@
-#include "NumberTheoryTests.h"
 
 bool testPrimeTableGeneration(std::string &reportString)
 {

@@ -1,8 +1,5 @@
-#include "RealFunctionTests.h"
 
 typedef std::complex<double> rsComplexDbl; // get rid
-
-
 
 //inline double rsAbsFast(double x)
 //{

@@ -1,5 +1,3 @@
-#include "Polygon2DTests.h"
-
 
 bool testRegularPolygonCreation2D(std::string &reportString)
 {

@@ -1,6 +1,3 @@
-#include "MiscMathUnitTests.h"
-
-
 
 bool testExponentialCurveFitting(std::string &reportString)
 {

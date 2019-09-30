@@ -1,5 +1,3 @@
-#include "Triangle2DTests.h"
-
 
 bool testPointInsideTriangle2D(std::string &reportString)
 {

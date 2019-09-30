@@ -1,4 +1,3 @@
-#include "MatrixUnitTests.h"
 
 bool testMatrixScalarOperations()
 {
@@ -302,6 +301,8 @@ bool testMatrix2()
 
   return testResult;
 }
+
+
 
 bool testTransformMatrices()
 {

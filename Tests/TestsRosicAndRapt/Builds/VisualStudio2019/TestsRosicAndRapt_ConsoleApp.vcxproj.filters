@@ -877,6 +877,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\MatrixBroken.cpp">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
@@ -2578,6 +2581,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Prototypes.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems - Copy.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
@@ -2633,51 +2639,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UnitTests\UnitTests.h">
       <Filter>TestsRosicAndRapt\Source\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\DifferentialEquationTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\IntegerFunctionTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\LinearAlgebraUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MatrixUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MiscMathUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MoebiusTransformTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MultiArrayTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\NumberTheoryTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\Point2DTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\Polygon2DTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\RealFunctionTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\TransformsTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\Triangle2DTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
@@ -3208,6 +3169,9 @@
       <Filter>JUCE Modules\rapt\Math\Numerics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.h">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\MatrixBroken.h">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h">
@@ -5035,6 +4999,9 @@
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Prototypes.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems - Copy.h">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems.h">

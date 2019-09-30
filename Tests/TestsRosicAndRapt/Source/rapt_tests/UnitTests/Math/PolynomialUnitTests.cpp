@@ -1,8 +1,5 @@
-#include "PolynomialUnitTests.h"
 
 using namespace RAPT;
-
-
 
 /*
   template <class T>
@@ -26,7 +23,6 @@ using namespace RAPT;
     }
   }
 */
-
 
 
   /** Given the sequence y of length yLength, this function returns a sequence x which, when

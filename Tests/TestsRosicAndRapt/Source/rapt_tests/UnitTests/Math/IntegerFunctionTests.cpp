@@ -1,4 +1,3 @@
-#include "IntegerFunctionTests.h"
 
 bool testIntAbs(std::string &reportString)
 {

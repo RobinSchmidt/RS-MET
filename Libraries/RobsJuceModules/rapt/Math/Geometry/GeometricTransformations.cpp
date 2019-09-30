@@ -1,3 +1,32 @@
+
+template<class T>
+void rsGeometricTransforms<T>::perspectiveProjection(T* A[4][4], T l, T r, T b, T t, T n, T f)
+{
+  // todo: precompute 1/(r-l), 1/(t-b), 1/(f-n) -> replace 3 divisions by multiplications
+
+  A[0][0] = 2*n/(r-l);
+  A[0][1] = 0;
+  A[0][2] = (r+l)/(r-l);
+  A[0][3] = 0;
+
+  A[1][0] = 0;
+  A[1][1] = (2*n)/(t-b);
+  A[1][2] = (t+b)/(t-b);
+  A[1][4] = 0;
+
+  A[2][0] = 0;
+  A[2][1] = 0;
+  A[2][2] = -(f+n)/(f-n);
+  A[2][4] = -(2*f*n)/(f-n);
+
+  A[3][0] =  0;
+  A[3][1] =  0;
+  A[3][2] = -1;
+  A[3][4] =  0;
+}
+
+//=================================================================================================
+
 template<class T>
 void rsRotationXY<T>::apply(T* x, T* y)
 {

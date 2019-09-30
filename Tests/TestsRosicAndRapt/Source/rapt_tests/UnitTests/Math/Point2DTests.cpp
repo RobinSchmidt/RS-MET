@@ -1,5 +1,3 @@
-#include "Point2DTests.h"
-
 
 bool testPoint2DOperators(std::string &reportString)
 {

@@ -1,4 +1,3 @@
-#include "MultiArrayTests.h"
 
 bool testMultiArrayInit(std::string &reportString)
 {

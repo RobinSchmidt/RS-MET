@@ -1,4 +1,3 @@
-#include "TransformsTests.h"
 
 typedef std::complex<double> rsComplexDbl;
 
