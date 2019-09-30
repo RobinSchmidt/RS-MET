@@ -782,6 +782,7 @@ void waveMorph()
   }
 
 
+  /*
   // init interior by bilinear interpolation:
   double zl, zr, zb, zt, z1, z2;
   double wl, wr, wb, wt;  // weights
@@ -819,7 +820,10 @@ void waveMorph()
       wt /= s;
 
 
-      z[i][j] = wl*zl + wr*zr + wb*zb + wt*zt; // this looks wrong
+      z[i][j] = wl*zl + wr*zr + wb*zb + wt*zt; 
+      // this looks wrong - maybe we should use a weighted avergae over the whole boundary
+      // but the initialization it is supposed to fade away anyway - we can find some better
+      // initialization later
 
       //z[i][j]= 0.5*(z1+z2);
 
@@ -829,11 +833,34 @@ void waveMorph()
       //z[i][j] = (1-y[j])*zb + y[j]*zt;
     }
   }
+  */
 
 
 
   GNUPlotter plt;
+  for(int k = 0; k < 10; k++)
+  {
+    plt.plotSurface(Nx, Ny, &x[0], &y[0], z);
+    for(i = 1; i < Nx-1; i++)
+    {
+      for(j = 1; j < Ny-1; j++) 
+      {
+        double avg = 0.25 * (z[i-1][j-1] + z[i-1][j+1] + z[i+1][j-1] + z[i+1][j+1]);
+        // todo: maybe try to use diognal neighbours in the average as well (with weight 
+        // 1/sqrt(2))
+
+        double delta = z[i][j] - avg;
+
+        z[i][j] = avg;
+        // maybe we need a temporary buffer in order to not overwrite values that will still be
+        // needed
+      }
+    }
+  }
+
   plt.plotSurface(Nx, Ny, &x[0], &y[0], z);
+
+
 
 
   RAPT::MatrixTools::rsDeAllocateMatrix(z, Nx, Ny); 
