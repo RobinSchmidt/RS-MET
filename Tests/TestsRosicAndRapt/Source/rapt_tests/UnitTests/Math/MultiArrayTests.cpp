@@ -1,21 +1,5 @@
 #include "MultiArrayTests.h"
 
-bool testMultiArray()
-{
-  std::string testName = "rsMultiArray";
-  std::string dummy;
-  bool testResult = true;
-
-  testResult &= testMultiArrayInit(dummy);
-  testResult &= testMultiArrayOffsetComputation(dummy);
-  testResult &= testMultiArrayOuterProduct(dummy);
-  testResult &= testMultiArrayContraction(dummy);
-
-  //appendTestResultToReport(reportString, testName, testResult);
-  return testResult;
-}
-
-
 bool testMultiArrayInit(std::string &reportString)
 {
   std::string testName = "rsMultiArrayInit";
@@ -212,5 +196,17 @@ bool testMultiArrayContraction(std::string &reportString)
   return testResult;
 }
 
+bool testMultiArray()
+{
+  std::string testName = "rsMultiArray";
+  std::string dummy;
+  bool testResult = true;
 
+  testResult &= testMultiArrayInit(dummy);
+  testResult &= testMultiArrayOffsetComputation(dummy);
+  testResult &= testMultiArrayOuterProduct(dummy);
+  testResult &= testMultiArrayContraction(dummy);
 
+  //appendTestResultToReport(reportString, testName, testResult);
+  return testResult;
+}

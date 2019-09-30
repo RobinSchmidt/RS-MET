@@ -2,27 +2,7 @@
 
 using namespace RAPT;
 
-//bool testLinearAlgebra(std::string &reportString)
-bool testLinearAlgebra()
-{
-  std::string reportString = "LinearAlgebra"; // dummy-string - delete later
-  bool testResult = true;
 
-  testResult &= testBandDiagonalSolver(   reportString);
-  testResult &= testMatrixNew(            reportString);
-  testResult &= testMatrix2x2(            reportString);
-  testResult &= testLinearSystem2x2(      reportString);
-  testResult &= testLinearSystem3x3(      reportString);
-  testResult &= testLinearSystemViaGauss( reportString);
-  testResult &= testGaussJordanInversion( reportString);
-  testResult &= testTridiagonalSystem(    reportString);
-  testResult &= testSquareMatrixTranspose(reportString);
-  testResult &= testMatrixVectorMultiply( reportString);
-  testResult &= testMatrixMultiply(       reportString);
-  testResult &= testChangeOfBasis(        reportString);
-
-  return testResult;
-}
 
 bool testBandDiagonalSolver(std::string &reportString)
 {
@@ -758,3 +738,27 @@ bool testChangeOfBasis(std::string &reportString)
 // it can easily be found from A*x = B*y (where x,y and either A or B are assumed to be known) and
 // the solving for x and y respectively and defining C as conversion matrix from x to y and C-^1
 // the inverse conversion, can also be verified by E = C * C^-1 = A^-1 * B * B^-1 * A
+
+
+
+//bool testLinearAlgebra(std::string &reportString)
+bool testLinearAlgebra()
+{
+  std::string reportString = "LinearAlgebra"; // dummy-string - delete later
+  bool testResult = true;
+
+  testResult &= testBandDiagonalSolver(   reportString);
+  testResult &= testMatrixNew(            reportString);
+  testResult &= testMatrix2x2(            reportString);
+  testResult &= testLinearSystem2x2(      reportString);
+  testResult &= testLinearSystem3x3(      reportString);
+  testResult &= testLinearSystemViaGauss( reportString);
+  testResult &= testGaussJordanInversion( reportString);
+  testResult &= testTridiagonalSystem(    reportString);
+  testResult &= testSquareMatrixTranspose(reportString);
+  testResult &= testMatrixVectorMultiply( reportString);
+  testResult &= testMatrixMultiply(       reportString);
+  testResult &= testChangeOfBasis(        reportString);
+
+  return testResult;
+}

@@ -3,15 +3,5 @@
 
 bool testMiscMath();
 
-bool testExponentialCurveFitting(  std::string &reportString);
-bool testRootFinding(              std::string &reportString);
-bool testGradientBasedOptimization(std::string &reportString);
-bool testMinSqrDifFixSum(          std::string &reportString);
-bool testPhaseUnwrapStuff(         std::string &reportString);
-bool testMultiLayerPerceptronOld(std::string &reportString);
-bool testMultiLayerPerceptron(   std::string &reportString);
-
-
-
 
 #endif
