@@ -746,3 +746,67 @@ void windowedSinc()
 
   plotData(N, x, y, s, w);
 }
+
+void waveMorph()
+{
+  // At the moment, this is just a vague idea - not yet implemented
+
+  // We morph one waveshape into another using the wave equation and treating it as a boundary 
+  // value problem. This can be seen as giving a string an initial and final shape and using
+  // the wave equation to figure out the in-between shapes. These in between shapes are oriented 
+  // along the time axis. The whole thing can be seen as figuring out, how a string would most 
+  // natually morph from one shape into another by the rules of the wave equation...right?
+
+  // see Höhere Mathematik in Rezepten, page 946 - ah damn - no - the book specifies an initial
+  // condition for shape and velocity - not an initial and final shape - nevertheless, the idea is
+  // interesting - explore it further - can we do such a thing? if so, we coul perhaps select 
+  // different PDEs to govern the morph?
+
+  int n = 100;          // number of spatial samples
+  int m = 1000;         // number of temporal samples, m should be > n
+
+  double h = 1. / (n+1);  // spatial stepsize
+  double k = 1. / (m+1);  // temporal stepsize
+
+
+  RAPT::MatrixTools::rsAllocateMatrix(u, m, n); 
+  // 1st index i time index, 2nd index space index
+
+
+  // set up boundary conditions:
+
+  PhaseModulationWaveformRenderer wr;
+
+  wr.setCarrierRelativeFrequency(1);
+  wr.setModulatorRelativeFrequency(2);
+  wr.setModulationIndex(2);
+  wr.renderWaveform(u[0], n);            // initial string shape
+  wr.setModulatorRelativeFrequency(3);
+  wr.renderWaveform(u[m-1], n);          // final string shape
+  RAPT::rsArray::fillWithZeros(ut, n);   // initial string velocity
+
+
+  double** u;
+  double* ut = new double[n];
+
+  double
+
+  for(int i = 1; i < m-1; i++)  // loop over time
+  {
+    for(int j = 0; j < n; j++) // loop over space
+    {
+
+    }
+
+  }
+
+
+  //rsPlotArray(u[0], n);
+  rsPlotArrays(n, u[0], u[m-1]);
+
+
+
+ 
+  delete[] ut;
+  RAPT::MatrixTools::rsDeAllocateMatrix(u, m, n);
+}

@@ -4,7 +4,7 @@ void rsGeometricTransforms<T>::perspectiveProjection(T* A[4][4], T l, T r, T b, 
 {
   // todo: precompute 1/(r-l), 1/(t-b), 1/(f-n) -> replace 3 divisions by multiplications
 
-  // compute the 4 columns of the matrix (we ordet the assignments by last index because that 
+  // compute the 4 columns of the matrix (we order the assignments by last index because that 
   // better reveals the structure of the matrix)
   A[0][0] = 2*n/(r-l);
   A[1][0] = 0;

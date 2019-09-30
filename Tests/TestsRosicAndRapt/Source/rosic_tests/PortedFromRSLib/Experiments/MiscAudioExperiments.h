@@ -18,4 +18,6 @@ void windowFunctionsContinuous();
 void windowFunctionSpectra();
 void windowedSinc();
 
+void waveMorph();
+
 #endif
