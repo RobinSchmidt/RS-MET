@@ -4,7 +4,7 @@
 /** A collection of functions that operate on 1-dimensional arrays. 
 
 todo: 
--declare all input arrays as const
+-declare all input arrays as const - done up to divide
 -inline, where it makes sense (trivial functions like copy/convert)
 -turn into an actual class (with members) implementing a dynamically sized array
 
@@ -27,12 +27,12 @@ public:
   /** Adds the elements of 'buffer1' and 'buffer2' - type must define operator '+'. The 'result'
   buffer may be the same as 'buffer1' or 'buffer2'. */
   template <class T>
-  static void add(T *buffer1, T *buffer2, T *result, int length);
+  static void add(const T *buffer1, const T *buffer2, T *result, int length);
 
   /** Adds the scalar 'valueToAdd' to the elements of 'buffer' - the type must define
   operator '+'. The 'result' buffer may be the same as 'buffer'. */
   template <class T>
-  static void add(T *buffer, T valueToAdd, T *result, int length);
+  static void add(const T *buffer, T valueToAdd, T *result, int length);
 
   /** Adds a weighted, circularly shifted copy of the buffer to itself - the shift-offest may be
   non-integer in which case linear interpolation will be used. 
@@ -44,7 +44,7 @@ public:
   /** Adds length-L array y into length-N array x starting at n (in x), taking care of not reading 
   beyond the limits of y and writing beyond the limits of x */
   template<class T>
-  static void addInto(T *x, int N, T *y, int L, int n = 0);
+  static void addInto(T *x, int N, const T *y, int L, int n = 0);
 
   /** Applies the affine transformation y = a*x + b to all array elements. */
   template<class T>
@@ -63,12 +63,13 @@ public:
 
   /** Checks, if the two buffers are elementwise approximately equal within the given tolerance. */
   template <class T>
-  static inline bool areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance);
+  static inline bool areBuffersApproximatelyEqual(const T *buffer1, const T *buffer2, int length, 
+    T tolerance);
   // rename to allAlmostEqual
 
   /** Checks, if the two buffers are elementwise equal. */
   template <class T>
-  static inline bool areBuffersEqual(T *buffer1, T *buffer2, int length);
+  static inline bool areBuffersEqual(const T *buffer1, const T *buffer2, int length);
   // rename to allEqual
 
 
@@ -99,14 +100,14 @@ public:
   considered to be greater. This is consistent with strcmp or numbers in a positional number
   system. */
   template <class T>
-  static int compare(T *a, T *b, int length);
+  static int compare(const T *a, const T *b, int length);
 
   /** Similar to rsCompare(T *a, T *b, int length) but allows for the 2 buffers to have different
   lengths. If they match up to the length of the shorter buffer, the longer buffer is considered
   equal, iff all the remaining entries in the tail zero, otherwise the longer buffer is considered
   to be greater. */
   template <class T>
-  static int compare(T *a, int na, T *b, int nb);
+  static int compare(const T *a, int na, const T *b, int nb);
 
   /** Searches the array for an element (via the '==' operator of type T) and returns true if the
   element was found. */
@@ -136,7 +137,7 @@ public:
 
   /** Copies the data of one array into another one and converts the type if necessary. */
   template <class T1, class T2>
-  static inline void convertBuffer(T1 *source, T2 *destination, int length);
+  static inline void convertBuffer(const T1 *source, T2 *destination, int length);
   // rename to convert
 
   /** Convolves x with h and stored the result in x. The xLength parameter denotes the number of
@@ -181,7 +182,7 @@ public:
   operand of type double and an addition operator with both operands of type T. At the right border
   of the source buffer, a periodicity assumption is made. */
   template <class T>
-  static void copyBufferWithLinearInterpolation(T *source, int sourceLength, T *destination,
+  static void copyBufferWithLinearInterpolation(const T *source, int sourceLength, T *destination,
     int destinationLength);
 
   /** Copies a section of length "copyLength" starting at "copyStart" from "source" to 
@@ -190,7 +191,8 @@ public:
   will be filled with zeros appropriately, i.e. we assume "source" to contain zero values for 
   indices < 0 and indices >= sourceLength. */
   template<class T1, class T2>
-  static void copySection(T1 *source, int sourceLength, T2 *destination, int copyStart, int copyLength);
+  static void copySection(const T1 *source, int sourceLength, T2 *destination, 
+    int copyStart, int copyLength);
 
   // old - without type conversion
   //template<class T>
@@ -205,11 +207,11 @@ public:
   /** Computes the cumulative sum of x and stores it in y. Can also be used in place (i.e. y may 
   point to the same array as x). */
   template <class T>
-  static void cumulativeSum(T *x, T *y, int N);
+  static void cumulativeSum(const T *x, T *y, int N);
 
   /** Computes a cumulative sum of arbirtry order of x and stores it in y. Can be used in place. */
   template <class T>
-  static void cumulativeSum(T *x, T *y, int N, int order);
+  static void cumulativeSum(const T *x, T *y, int N, int order);
   // why two functions? use default argument instead
 
   /** Frees memory allocated previously via rsAllocateSquareArray2D. */
@@ -219,7 +221,7 @@ public:
   /** Deconvolves the impulse response h out of the signal y resulting in the signal x which has a
   length of yLength-hLength+1. It's the inverse of convolve. */
   template <class T>
-  static void deConvolve(T *y, int yLength, T *h, int hLength, T *x);
+  static void deConvolve(const T *y, int yLength, const T *h, int hLength, T *x);
 
   /** De-interleaves a buffer of interleaved data. @see rsInterleave */
   template <class T>
@@ -237,7 +239,7 @@ public:
   /** Divides the elements of 'buffer1' and 'buffer2' - type must define operator '/'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
   template <class T1, class T2, class TR>
-  static void divide(T1 *buffer1, T2 *buffer2, TR *result, int length);
+  static void divide(const T1 *buffer1, const T2 *buffer2, TR *result, int length);
 
   /** Fills the passed array with a unit impulse. */
   template <class T>
@@ -286,7 +288,8 @@ public:
   samples in the input buffer are zero. The input and output buffers may also be identical (i.e.
   point to the same location), in which case the filtering will be done in place. */
   template <class T>
-  static void filter(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a, int aOrder);
+  static void filter(const T *x, int xLength, T *y, int yLength, 
+    const T *b, int bOrder, const T *a, int aOrder);
 
   /** \todo check and comment this function - maybe move it to RSLib */
   template <class T>
@@ -610,7 +613,8 @@ public:
 // inlined implementations
 
 template <class T>
-inline bool rsArray::areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance)
+inline bool rsArray::areBuffersApproximatelyEqual(const T *buffer1, const T *buffer2, int length, 
+  T tolerance)
 {
   for(int i = 0; i < length; i++)
   {
@@ -621,7 +625,7 @@ inline bool rsArray::areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int le
 }
 
 template <class T>
-inline bool rsArray::areBuffersEqual(T *buffer1, T *buffer2, int length)
+inline bool rsArray::areBuffersEqual(const T *buffer1, const T *buffer2, int length)
 {
   for(int i = 0; i < length; i++)
   {
@@ -632,7 +636,7 @@ inline bool rsArray::areBuffersEqual(T *buffer1, T *buffer2, int length)
 }
 
 template <class T1, class T2>
-inline void rsArray::convertBuffer(T1 *source, T2 *destination, int length)
+inline void rsArray::convertBuffer(const T1 *source, T2 *destination, int length)
 {
   for(int i = 0; i < length; i++)
     destination[i] = (T2)source[i];

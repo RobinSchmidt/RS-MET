@@ -747,6 +747,23 @@ void windowedSinc()
   plotData(N, x, y, s, w);
 }
 
+
+template<class T>
+void plotMatrix(RAPT::rsMatrixNew<T>& z, std::vector<T>& x, std::vector<T>& y)
+{
+  double** z2;
+  RAPT::MatrixTools::rsAllocateMatrix(z2, z.getNumRows(), z.getNumColumns());
+
+  for(int i = 0; i < z.getNumRows(); i++)
+    for(int j = 0; j < z.getNumColumns(); j++)
+      z2[i][j] = z(i,j);
+
+  GNUPlotter plt;
+  plt.plotSurface((int)x.size(), (int)y.size(), &x[0], &y[0], z2);
+
+  RAPT::MatrixTools::rsDeAllocateMatrix(z2, z.getNumRows(), z.getNumColumns());
+}
+
 void waveMorph()
 {
   // We consider the unit square and prescribe function values z = f(x,y) along the boundary. We 
@@ -756,14 +773,14 @@ void waveMorph()
   // both....
 
 
-  int Nx = 21;
-  int Ny = 11;
+  int Nx = 41;
+  int Ny = 41;
 
-  double** z;
-  RAPT::MatrixTools::rsAllocateMatrix(z, Nx, Ny);
-  RAPT::MatrixTools::rsInitMatrix(z, Nx, Ny, 0.0);
+
 
   std::vector<double> x(Nx), y(Ny);
+
+  RAPT::rsMatrixNew<double> z(Nx, Ny);
 
 
   rsNoiseGenerator<double> ng;
@@ -771,14 +788,16 @@ void waveMorph()
   // init boundaries:
   int i, j;
   for(i = 0; i < Nx; i++) {
-    x[i]       = double(i) / (Nx-1);
-    z[i][0]    = ng.getSample();  // bottom boundary y=0
-    z[i][Ny-1] = ng.getSample();  // top boundary y=1
+    x[i]      = double(i) / (Nx-1);
+    z(i,0)    = sin(2*PI*x[i]*x[i]*x[i]);  // bottom boundary y=0
+    z(i,Ny-1) = sin(2*PI*x[i]);  // top boundary y=1
   }
   for(j = 0; j < Ny; j++) {
-    y[j]       = double(j) / (Ny-1);
-    z[0][j]    = ng.getSample();  // left boundary x=0
-    z[Nx-1][j] = ng.getSample();  // right  boundary x=1
+    y[j]      = double(j) / (Ny-1);
+    z(0,j)    = 0;  // bottom boundary y=0
+    z(Nx-1,j) = 0;  // top boundary y=1
+    //z(0,j)    = sin(3*PI*y[j]);  // bottom boundary y=0
+    //z(Nx-1,j) = sin(4*PI*y[j]);  // top boundary y=1
   }
 
 
@@ -837,33 +856,36 @@ void waveMorph()
 
 
 
-  GNUPlotter plt;
-  for(int k = 0; k < 10; k++)
+
+  for(int k = 0; k < 100; k++)
   {
-    plt.plotSurface(Nx, Ny, &x[0], &y[0], z);
+    //plotMatrix(z, x, y);
+    RAPT::rsMatrixNew<double> t = z;  // temporary
     for(i = 1; i < Nx-1; i++)
     {
       for(j = 1; j < Ny-1; j++) 
       {
-        double avg = 0.25 * (z[i-1][j-1] + z[i-1][j+1] + z[i+1][j-1] + z[i+1][j+1]);
-        // todo: maybe try to use diognal neighbours in the average as well (with weight 
+        //double avg = 0.25 * (t(i-1,j-1) + t(i-1,j+1) + t(i+1,j-1) + t(i+1,j+1));
+
+        double avg = 0.2 * (t(i-1,j-1) + t(i-1,j+1) + t(i,j) + t(i+1,j-1) + t(i+1,j+1));
+
+        // todo: maybe try to use diagonal neighbours in the average as well (with weight 
         // 1/sqrt(2))
 
-        double delta = z[i][j] - avg;
+        double delta = z(i,j) - avg;
 
-        z[i][j] = avg;
+        z(i, j) = avg;
         // maybe we need a temporary buffer in order to not overwrite values that will still be
         // needed
       }
     }
   }
 
-  plt.plotSurface(Nx, Ny, &x[0], &y[0], z);
 
 
+  plotMatrix(z, x, y);
+  // hmm - may be not that useful - it tends to get flat in the middle
 
-
-  RAPT::MatrixTools::rsDeAllocateMatrix(z, Nx, Ny); 
 }
 
 
