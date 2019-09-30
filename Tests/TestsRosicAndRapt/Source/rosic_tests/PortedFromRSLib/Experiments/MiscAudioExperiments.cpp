@@ -819,7 +819,7 @@ void waveMorph()
       wt /= s;
 
 
-      z[i][j] = wl*zl + wr*zr + wb*zb + wt*zt;
+      z[i][j] = wl*zl + wr*zr + wb*zb + wt*zt; // this looks wrong
 
       //z[i][j]= 0.5*(z1+z2);
 
