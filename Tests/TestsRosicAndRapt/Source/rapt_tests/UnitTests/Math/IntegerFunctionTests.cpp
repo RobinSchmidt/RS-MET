@@ -1,21 +1,5 @@
 #include "IntegerFunctionTests.h"
 
-bool testIntegerFunctions()
-{
-  std::string testName = "rsIntegerFunctions";
-  std::string dummy;
-  bool testResult = true;
-
-  testResult &= testIntAbs(dummy);
-  testResult &= testBinomialCoefficients(dummy);
-  testResult &= testMultinomialCoefficients(dummy);
-  testResult &= testMultinomialFormula(dummy);
-  testResult &= testLeviCivita(dummy);
-
-  //appendTestResultToReport(reportString, testName, testResult);
-  return testResult;
-}
-
 bool testIntAbs(std::string &reportString)
 {
   std::string testName = "IntAbs";
@@ -212,6 +196,22 @@ bool testLeviCivita(std::string &reportString)
       target *= -1;
     }
   }
+
+  //appendTestResultToReport(reportString, testName, testResult);
+  return testResult;
+}
+
+bool testIntegerFunctions()
+{
+  std::string testName = "rsIntegerFunctions";
+  std::string dummy;
+  bool testResult = true;
+
+  testResult &= testIntAbs(dummy);
+  testResult &= testBinomialCoefficients(dummy);
+  testResult &= testMultinomialCoefficients(dummy);
+  testResult &= testMultinomialFormula(dummy);
+  testResult &= testLeviCivita(dummy);
 
   //appendTestResultToReport(reportString, testName, testResult);
   return testResult;

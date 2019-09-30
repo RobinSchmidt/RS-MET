@@ -10,6 +10,7 @@ bool testMiscMath()
   testResult &= testGradientBasedOptimization(dummy);
   testResult &= testMinSqrDifFixSum(          dummy);
   testResult &= testPhaseUnwrapStuff(         dummy);
+  testResult &= testTransformMatrices();
 
   //testResult &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
   //testResult &= testMultiLayerPerceptron(     dummy); // maybe move to experiments
@@ -122,8 +123,6 @@ bool testMinSqrDifFixSum(std::string &reportString)
   // code moved to experiments - todo: implement actual unit-tests
   std::string testName = "MinSqrDifFixSum";
   bool testResult = true;
-
-
 
 
   return testResult;

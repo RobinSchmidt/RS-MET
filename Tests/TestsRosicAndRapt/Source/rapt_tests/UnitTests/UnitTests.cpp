@@ -37,9 +37,6 @@ bool runAllUnitTests()
   passed &= runUnitTest(&correlationUnitTest,            "correlation");
   passed &= runUnitTest(&testVector,                     "rsVector");
   passed &= runUnitTest(&testMatrix,                     "rsMatrix");
-
-
-
   passed &= runUnitTest(&testMiscMath,                   "misc math");  // fails on linux ("illegal instruction") - encounters a singular matrix
   passed &= runUnitTest(&testLinearAlgebra,              "rsLinearAlgebra");  // fails on linux ("illegal instruction")
   passed &= runUnitTest(&testPolynomial,                 "rsPolynomial");

@@ -78,8 +78,41 @@ void doublePendulum()
 // -maybe we could also consider more derivatives like the increase/decrease of acceleration 
 //  ("jerk"?)
 
+
+void heatEquationNyquistBug()
+{
+  // We try to figure out what causes the parasitic osciallation at the Nyquist freq by giving
+  // it an initial distribution that alternates - could it be that the Nyquist freq dies out
+  // more slowly than other high frequencies? is this filter maybe not really a lowpass?
+  // ...if this turns out to be the case, the easy fix is to filter it out as post-process - but
+  // first, let's try to get rid of it directly in the algo
+
+  rsHeatEquation1D<double> hteq;
+  hteq.setMaxCycleLength(8);
+
+  double initDist[6] = {1,-1,1,-1,1,-1};  // initial distribution
+  hteq.setHeatDistribution(initDist, 6);
+
+  hteq.setDiffusionCoefficient(0.1);
+  // 1: nothig ever happens, 0.5: oscillation completely dies out in first iteration
+  // 0.45: it dies by a factor of 10 in each iteration, 0.1: dies out with reasonable speed
+
+
+  static const int N = 100;
+  double x;
+  for(int n = 0; n < N; n++)
+    x = hteq.getSample2();
+
+
+
+  int dummy = 0;
+}
+
 void heatEquation1D()
 {
+  //heatEquationNyquistBug();
+
+
   int fs           = 44100;
   int numCycles    = 128;    // plot: ~50, audio: ~1000
   int cycleLength  = 1024;   // plot: ~40, audio: ~200
@@ -89,14 +122,15 @@ void heatEquation1D()
 
   rsHeatEquation1D<double> hteq;
   hteq.setMaxCycleLength(2048);
-  hteq.setDiffusionCoefficient(0.95); // it seems to decay more slowly, the higher the coeff - ?
-  hteq.setRandomHeatDistribution(5, cycleLength);
-  //hteq.setTwoValueDistribution(0.10, cycleLength); 
+  //hteq.setDiffusionCoefficient(0.90); // it seems to decay more slowly, the higher the coeff - ?
+  hteq.setDiffusionCoefficient(0.5);
+  hteq.setRandomHeatDistribution(5, cycleLength); // nice: 5,9
+  //hteq.setTwoValueDistribution(0.25, cycleLength); 
   hteq.normalizeHeatDistribution();
 
   std::vector<double> y(N);
   for(int n = 0; n < N; n++)
-    y[n] = amplitude * hteq.getSample2();
+    y[n] = amplitude * hteq.getSample();
 
   //rsPlotVector(y);
 
@@ -114,9 +148,15 @@ void heatEquation1D()
   // -i think, the parasitic oscillation was due to choosing 1.0 as diffusion coeff - maybe it must
   //  be strictly less than 1
   //  hmmm...with 0.95, there's still s little bit of tha oscillation in the transient
+  //  ...i think, with 1, the rod element would be set to exactly the average of its neighbours 
+  //  and with > 1, it would overshoot the average? -> try with very short strings and with
+  //  and initially alternating configuration - maybe: 1,-1,1,-1,1,-1
+  // -i think, 0.5 is the maximum to avoid the nyquist oscillations
   // -different seeds give wildly different sounds - maybe try a random phase-spectrum with defined
   //  magnitude sprectrum
-  // -with cyclic end-handling, it converges to some non-zero DC
+  // -with cyclic end-handling, it converges to some non-zero DC (fixed?)
+  // -it generally sounds karplus-strong-ish - which is no surprise - the update of the rod acts as
+  //  a sort of lowpass 
 
   // todo: produce sets of samples:
   // -to go one octave up, we should use the same (random) distribution as in the lower octave but

@@ -15,7 +15,7 @@ void rsHeatEquation1D<T>::setHeatDistribution(T* d, int N)
   rodLength = N;
 
   for(int i = 0; i < N; i++)
-    rodIn[i] = d[i];
+    rodIn[i] = rodOut[i] = d[i];
 }
 
 template<class T>

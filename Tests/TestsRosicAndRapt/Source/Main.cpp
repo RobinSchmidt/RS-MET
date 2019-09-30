@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //runAllUnitTests();  // todo: merge with unit tests for RSLib
+  runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
   // Physics:
   //doublePendulum(); // takes long
   heatEquation1D();
-  waveEquation1D();
+  //waveEquation1D();  // not yet implemented
   //particleForceDistanceLaw();
   //particleSystem();
   //quantumSpinMeasurement();  // move to unit tests

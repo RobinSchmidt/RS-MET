@@ -92,6 +92,8 @@ protected:
   T rx, ry, rz; // rotation angles around x, y and z-axis
   T xx, xy, xz, yx, yy, yz, zx, zy, zz; // matrix coeffs
 
+  // 
+
 };
 
 #endif
