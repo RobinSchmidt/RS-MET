@@ -293,28 +293,28 @@ public:
 
   /** \todo check and comment this function - maybe move it to RSLib */
   template <class T>
-  static void filterBiDirectional(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a,
-    int aOrder, int numRingOutSamples = 10000);
+  static void filterBiDirectional(const T *x, int xLength, T *y, int yLength, 
+    const T *b, int bOrder, const T *a, int aOrder, int numRingOutSamples = 10000);
 
   /** Returns the index of the first value that matches the elementToFind, return -1 when no 
   matching element is found. */
   template <class T>
-  static inline int findIndexOf(T *buffer, T elementToFind, int length);
+  static inline int findIndexOf(const T *buffer, T elementToFind, int length);
   // rename to firstIndexOf make also a lastIndexOf
 
   /** Returns the index of the maximum absolute value in the buffer. */
   template <class T>
-  static inline int findMaxAbs(T *buffer, int length);
+  static inline int findMaxAbs(const T *buffer, int length);
 
   /** Returns the index of a peak or value in the length-N array x right or equal to n0 or -1 if 
   none is found. */
   template<class T>
-  static int findPeakOrValleyRight(T *x, int N, int n0);
+  static int findPeakOrValleyRight(const T *x, int N, int n0);
 
   /** Returns the index of a peak or value in the length-N array x left or equal to n0 or -1 if 
   none is found. */
   template<class T>
-  static int findPeakOrValleyLeft(T *x, int N, int n0);
+  static int findPeakOrValleyLeft(const T *x, int N, int n0);
 
   /** Given a buffer of values, this function returns the first index where there's a nonzero value
   in the buffer. If there's no nonzero element at all, it returns -1.
@@ -324,7 +324,7 @@ public:
 
   */
   template <class T>
-  static int firstIndexWithNonZeroValue(T *buffer, int length);
+  static int firstIndexWithNonZeroValue(const T *buffer, int length);
 
   /** Scales and offsets the passed buffer such that the minimum value hits 'min' and the
   maximum value hits 'max'. */
@@ -335,7 +335,7 @@ public:
   given in b and a. \todo comment on the sign of the a-coeffs, whether or not an a0 is included,
   etc., maybe move to RSLib into the filter section */
   template <class T>
-  static void impulseResponse(T *h, int hLength, T *b, int bOrder, T *a, int aOrder);
+  static void impulseResponse(T *h, int hLength, const T *b, int bOrder, const T *a, int aOrder);
 
   /** Interleaves a buffer of non-interleaved data. */
   template <class T>
@@ -344,20 +344,20 @@ public:
   /** Returns a linearly interpolated value from the array at the given (non-integer) position. If
   the position is out of range, 0 is returned. */
   template<class T>
-  static T interpolatedValueAt(T *buffer, int length, double position);
+  static T interpolatedValueAt(const T *buffer, int length, double position);
 
   /** Returns a linearly interpolated value from the array at the given (non-integer) position. If
   the position is out of range, the output is clamped to the end values of the array. */
   template<class T>
-  static T interpolateClamped(T *buffer, int length, double position);
+  static T interpolateClamped(const T *buffer, int length, double position);
 
   /** Returns true, if the passed buffer has only zero values, false otherwise. */
   template <class T>
-  static inline bool isAllZeros(T *buffer, int length);
+  static inline bool isAllZeros(const T *buffer, int length);
 
   /** Returns true, if the passed buffer has values equal to the given value, false otherwise. */
   template <class T>
-  static inline bool isFilledWithValue(T *buffer, int length, T value);
+  static inline bool isFilledWithValue(const T *buffer, int length, T value);
 
   /** Returns true if the value in array x at position n is larger than its left and right 
   neighbour (the caller must be sure, that n-1, n, n+1 are valid array indices). */
@@ -391,7 +391,7 @@ public:
 
   /** Finds and returns the maximum absolute value of the buffer. */
   template <class T>
-  static T maxAbs(T *buffer, int length);
+  static T maxAbs(const T *buffer, int length);
 
   /** Finds and returns the index with the maximum absolute value of the buffer. */
   template <class T>
@@ -675,7 +675,7 @@ inline void rsArray::fillWithNaN(T* x, int N)
 }
 
 template <class T>
-inline int rsArray::findIndexOf(T *buffer, T elementToFind, int length)
+inline int rsArray::findIndexOf(const T *buffer, T elementToFind, int length)
 {
   for(int i = 0; i < length; i++)
   {
@@ -686,7 +686,7 @@ inline int rsArray::findIndexOf(T *buffer, T elementToFind, int length)
 }
 
 template <class T>
-inline int rsArray::findMaxAbs(T *buffer, int length)
+inline int rsArray::findMaxAbs(const T *buffer, int length)
 {
   int maxIndex = 0;
   T maxValue   = T(0);
@@ -702,13 +702,13 @@ inline int rsArray::findMaxAbs(T *buffer, int length)
 }
 
 template <class T>
-inline bool rsArray::isAllZeros(T *buffer, int length)
+inline bool rsArray::isAllZeros(const T *buffer, int length)
 {
   return isFilledWithValue(buffer, length, T(0));
 }
 
 template <class T>
-inline bool rsArray::isFilledWithValue(T *buffer, int length, T value)
+inline bool rsArray::isFilledWithValue(const T *buffer, int length, T value)
 {
   for(int n = 0; n < length; n++)
   {

@@ -379,7 +379,7 @@ void rsArray::deAllocateSquareArray2D(T**& theArray, int size)
 }
 
 template <class T>
-int rsArray::firstIndexWithNonZeroValue(T *buffer, int N)
+int rsArray::firstIndexWithNonZeroValue(const T *buffer, int N)
 {
   for(int i = 0; i < N; i++)
   {
@@ -569,7 +569,7 @@ void rsArray::filter(const T *x, int xLength, T *y, int yLength, const T *b, int
 }
 
 template <class T>
-void rsArray::filterBiDirectional(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a,
+void rsArray::filterBiDirectional(const T *x, int xLength, T *y, int yLength, const T *b, int bOrder, const T *a,
   int aOrder, int numRingOutSamples)
 {
   // allocate and intitialize memory for the filters internal state:
@@ -688,7 +688,7 @@ void rsArray::fitIntoRange(T *buffer, int length, T min, T max)
 }
 
 template <class T>
-void rsArray::impulseResponse(T *h, int hLength, T *b, int bOrder, T *a, int aOrder)
+void rsArray::impulseResponse(T *h, int hLength, const T *b, int bOrder, const T *a, int aOrder)
 {
   T x = T(1);
   filter(&x, 1, h, hLength, b, bOrder, a, aOrder);
@@ -711,7 +711,7 @@ void rsArray::interleave(T *buffer, int numFrames, int numElementsPerFrame)
 }
 
 template<class T>
-T rsArray::interpolatedValueAt(T *x, int N, double n)
+T rsArray::interpolatedValueAt(const T *x, int N, double n)
 {
   if(n < 0.0 || n > N-1)
     return 0.0;
@@ -726,7 +726,7 @@ T rsArray::interpolatedValueAt(T *x, int N, double n)
 }
 
 template<class T>
-T rsArray::interpolateClamped(T *y, int N, double n)
+T rsArray::interpolateClamped(const T *y, int N, double n)
 {
   if(n <= 0.0)
     return y[0];
@@ -760,7 +760,7 @@ bool rsArray::isPeakOrValley(const T *x, int n)
 }
 
 template<class T>
-int rsArray::findPeakOrValleyRight(T *x, int N, int n0)
+int rsArray::findPeakOrValleyRight(const T *x, int N, int n0)
 {
   int nR = -1;
   for(int n = rsMax(1, n0); n < N-1; n++)
@@ -775,7 +775,7 @@ int rsArray::findPeakOrValleyRight(T *x, int N, int n0)
 }
 
 template<class T>
-int rsArray::findPeakOrValleyLeft(T *x, int N, int n0)
+int rsArray::findPeakOrValleyLeft(const T *x, int N, int n0)
 {
   int nL = -1;
   for(int n = rsMin(N-2, n0); n > 0; n--)
@@ -812,7 +812,7 @@ T rsArray::limitToRange(T value, T min, T max)
 }
 
 template <class T>
-T rsArray::maxAbs(T *buffer, int length)
+T rsArray::maxAbs(const T *buffer, int length)
 {
   T max = T(0);
   for(int i = 0; i < length; i++)

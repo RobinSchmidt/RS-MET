@@ -76,7 +76,7 @@ template void rsArray::cumulativeSum(const double *x, double *y, int length, int
 template void rsArray::difference(double *buffer, int length, int order, bool periodic);
 template double rsArray::minValue(const double *x, int length);
 template double rsArray::maxValue(const double *x, int length);
-template double rsArray::maxAbs(double *x, int length);
+template double rsArray::maxAbs(const double *x, int length);
 template void rsArray::normalize(double *buffer, int length, double maximum, bool subtractMean);
 template void rsArray::normalizeMean(double *x, int N, double newMean);
 template double rsArray::mean(double *x, int length);
@@ -90,8 +90,8 @@ template void rsArray::applyFunction(const double *x, double *y, int N, double (
 template void rsArray::negate(double *source, double *destination, int length);
 template void rsArray::filter(const double *x, int xLength, double *y, int yLength,
   const double *b, int bOrder, const double *a, int aOrder);
-template void rsArray::filterBiDirectional(double *x, int xLength, double *y, int yLength,
-  double *b, int bOrder, double *a, int aOrder, int numRingOutSamples);
+template void rsArray::filterBiDirectional(const double *x, int xLength, double *y, int yLength,
+  const double *b, int bOrder, const double *a, int aOrder, int numRingOutSamples);
 template void rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
 template void rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?
 //template void rsArray::fillWithRandomValues(rosic::rsFloat32x4* x, int N, double min, double max, int seed);
@@ -115,7 +115,7 @@ template void rsArray::cumulativeSum(const int *x, int *y, int length, int order
 template rsUint32 rsArray::maxValue(const rsUint32 *x, int length);
 template void rsArray::fillWithRangeLinear(rsUint32* x, int N, rsUint32 min, rsUint32 max);
 template void rsArray::copyBuffer(const rsUint32 *src, rsUint32 *dst, int N);
-template int rsArray::firstIndexWithNonZeroValue(rsUint32 *a, int N);
+template int rsArray::firstIndexWithNonZeroValue(const rsUint32 *a, int N);
 template bool rsArray::contains(const rsUint32 *buffer, int length, rsUint32 elementToFind);
 template void rsArray::fillWithZeros(rsUint32 *buffer, int length);
 template void rsArray::fillWithValue(char* buffer, int length, char value);
