@@ -15,11 +15,13 @@ public:
   */
   static void perspectiveProjection(T* A[4][4], T left, T right, T bottom, T top, T near, T far);
 
+  /** Computes the orthographic projection matrix in4D homogeneous coordinates.  */
+  static void orthographicProjection(T* A[4][4], T left, T right, T bottom, T top, T near, T far);
 
+  // todo: see also vmath::ortho in OpenGL - lets user specify the projection in terms of 3 vectors
+  // eye, center, up
 
-
-
-
+  static void rotationAroundAxis(T* A[3][3], T angle, T x, T y, T z);
 
 };
 // class needs tests
