@@ -749,6 +749,61 @@ void windowedSinc()
 
 void waveMorph()
 {
+  // We consider the unit square and prescribe function values z = f(x,y) along the boundary. We 
+  // fill the interior of the square with function values that minimize the curvature of the 
+  // resulting surface. ...this can be used to morph waveforms - a read phasor my pphase into the
+  // x direction, the y parameter selects the waveform. ...but we could also have a y-phasor or 
+  // both....
+
+
+  int Nx = 21;
+  int Ny = 11;
+
+  double** z;
+  RAPT::MatrixTools::rsAllocateMatrix(z, Nx, Ny);
+  //RAPT::MatrixTools::rsInitMatrix(A, Nx, Ny, 0);
+
+  std::vector<double> x(Nx), y(Ny);
+
+
+  rsNoiseGenerator<double> ng;
+
+  // init boundaries:
+  int i, j;
+  for(i = 0; i < Nx; i++) {
+    x[i]       = double(i) / (Nx-1);
+    z[i][0]    = ng.getSample();  // bottom boundary y=0
+    z[i][Ny-1] = ng.getSample();  // top boundary y=1
+  }
+  for(j = 0; j < Ny; j++) {
+    y[j]       = double(j) / (Ny-1);
+    z[0][j]    = ng.getSample();  // left boundary x=0
+    z[Nx-1][j] = ng.getSample();  // right  boundary x=1
+  }
+
+  // init interior by bilinear interpolation:
+  double dx, dy, zb, zt, zl, zr;
+  for(i = 1; i < Nx-1; i++)
+  {
+    // interpolate top and bottom row along x: 
+    zb = (1-x[i])*z[0][0]    + x[i]*z[Nx-1][0];    // z bottom
+    zt = (1-x[i])*z[0][Ny-1] + x[i]*z[Nx-1][Ny-1]; // z top
+    for(j = 1; j < Ny-1; j++) {
+      z[i][j] = (1-y[j])*zb + y[j]*zt;
+    }
+  }
+
+
+  GNUPlotter plt;
+  plt.plotSurface(Nx, Ny, &x[0], &y[0], z);
+
+
+  RAPT::MatrixTools::rsDeAllocateMatrix(z, Nx, Ny); 
+}
+
+
+void waveMorph2()
+{
   // At the moment, this is just a vague idea - not yet implemented
 
   // We morph one waveshape into another using the wave equation and treating it as a boundary 
@@ -760,7 +815,13 @@ void waveMorph()
   // see Höhere Mathematik in Rezepten, page 946 - ah damn - no - the book specifies an initial
   // condition for shape and velocity - not an initial and final shape - nevertheless, the idea is
   // interesting - explore it further - can we do such a thing? if so, we coul perhaps select 
-  // different PDEs to govern the morph?
+  // different PDEs to govern the morph? maybe this:
+  // https://en.wikipedia.org/wiki/Minimal_surface
+  // initial and final waveform u0(x) and u1(x) specify the boundary conditions along the two 
+  // horizontal lines of the unit square. along the y-axis, we can just connect the the initial 
+  // and final amplitudes of the two waveforms - or: we could use two other waveforms for that, 
+  // too - that would be interesting
+  // see https://pythonhosted.org/algopy/examples/minimal_surface.html
 
   int n = 100;          // number of spatial samples
   int m = 1000;         // number of temporal samples, m should be > n
@@ -769,6 +830,9 @@ void waveMorph()
   double k = 1. / (m+1);  // temporal stepsize
 
 
+
+  double* ut = new double[n];
+  double** u;
   RAPT::MatrixTools::rsAllocateMatrix(u, m, n); 
   // 1st index i time index, 2nd index space index
 
@@ -786,10 +850,7 @@ void waveMorph()
   RAPT::rsArray::fillWithZeros(ut, n);   // initial string velocity
 
 
-  double** u;
-  double* ut = new double[n];
 
-  double
 
   for(int i = 1; i < m-1; i++)  // loop over time
   {
