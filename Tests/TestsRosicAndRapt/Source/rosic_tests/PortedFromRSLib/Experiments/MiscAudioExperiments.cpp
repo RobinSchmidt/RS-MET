@@ -761,7 +761,7 @@ void waveMorph()
 
   double** z;
   RAPT::MatrixTools::rsAllocateMatrix(z, Nx, Ny);
-  //RAPT::MatrixTools::rsInitMatrix(A, Nx, Ny, 0);
+  RAPT::MatrixTools::rsInitMatrix(z, Nx, Ny, 0.0);
 
   std::vector<double> x(Nx), y(Ny);
 
@@ -781,17 +781,55 @@ void waveMorph()
     z[Nx-1][j] = ng.getSample();  // right  boundary x=1
   }
 
+
   // init interior by bilinear interpolation:
-  double dx, dy, zb, zt, zl, zr;
+  double zl, zr, zb, zt, z1, z2;
+  double wl, wr, wb, wt;  // weights
+  double s;
   for(i = 1; i < Nx-1; i++)
   {
     // interpolate top and bottom row along x: 
-    zb = (1-x[i])*z[0][0]    + x[i]*z[Nx-1][0];    // z bottom
-    zt = (1-x[i])*z[0][Ny-1] + x[i]*z[Nx-1][Ny-1]; // z top
+
     for(j = 1; j < Ny-1; j++) {
-      z[i][j] = (1-y[j])*zb + y[j]*zt;
+      //z[i][j] = 1;
+      //z[i][j] = ng.getSample();
+
+      ///z[i][j] = zb;
+
+      //zb = (1-x[i])*z[0][0]    + x[i]*z[Nx-1][0];    // z bottom
+      //zt = (1-x[i])*z[0][Ny-1] + x[i]*z[Nx-1][Ny-1]; // z top
+
+
+      zl = z[0][j];
+      zr = z[Nx-1][j];
+      zb = z[i][0];
+      zt = z[i][Ny-1];
+
+      //z1 = (1-x[i])*zl + x[i]*zr;
+      //z2 = (1-y[j])*zb + y[j]*zt;
+
+      wl = 1-x[i];
+      wr = x[i];
+      wb = 1-y[j];
+      wt = y[j];
+      s  = wl+wr+wb+wt;
+      wl /= s;
+      wr /= s;
+      wb /= s;
+      wt /= s;
+
+
+      z[i][j] = wl*zl + wr*zr + wb*zb + wt*zt;
+
+      //z[i][j]= 0.5*(z1+z2);
+
+
+      //z[i][j] = (1-x[i])*zl + x[i]*zr;
+
+      //z[i][j] = (1-y[j])*zb + y[j]*zt;
     }
   }
+
 
 
   GNUPlotter plt;
