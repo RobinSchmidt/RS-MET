@@ -2,44 +2,7 @@
 
 using namespace RAPT;
 
-//bool testPolynomial(std::string &reportString)
-bool testPolynomial()
-{
-  std::string reportString = "Polynomial"; // dummy -> remove
-  bool testResult = true;
 
-  testResult &= testConvolution(                              reportString);
-  testResult &= testCubicCoeffsFourPoints(                    reportString);
-  testResult &= testCubicCoeffsTwoPointsAndDerivatives(       reportString);
-  testResult &= testPolynomialEvaluation(                     reportString);
-  testResult &= testPolynomialDivision(                       reportString);
-  testResult &= testPolynomialArgumentShift(                  reportString);
-  testResult &= testPolynomialDiffAndInt(                     reportString);
-  testResult &= testPolynomialFiniteDifference(               reportString);
-  testResult &= testPolynomialComposition(                    reportString);
-  testResult &= testPolynomialWeightedSum(                    reportString);
-  testResult &= testPolynomialIntegrationWithPolynomialLimits(reportString);
-  testResult &= testPolynomialInterpolation(                  reportString);
-  testResult &= testPolynomialRootFinder(                     reportString);
-  testResult &= testPartialFractionExpansion(                 reportString);
-  testResult &= testPartialFractionExpansion2(                reportString);
-  testResult &= testPolynomialBaseChange(                     reportString);
-  testResult &= testPolynomialRecursion(                      reportString);
-  testResult &= testJacobiPolynomials(                        reportString);
-
-  // under construction:
-  testResult &= testPowersChebychevExpansionConversion(       reportString);
-
-  // polynomial class:
-  testResult &= testPolynomialOperators(                      reportString);
-
-
-
-  testResult &= testRationalFunction(reportString);
-
-
-  return testResult;
-}
 
 /*
   template <class T>
@@ -1290,6 +1253,43 @@ bool testRationalFunction(std::string& reportString)
   // https://www.geeksforgeeks.org/gcd-two-array-numbers/
 
 
+
+
+  return testResult;
+}
+
+//bool testPolynomial(std::string &reportString)
+bool testPolynomial()
+{
+  std::string reportString = "Polynomial"; // dummy -> remove
+  bool testResult = true;
+
+  testResult &= testConvolution(                              reportString);
+  testResult &= testCubicCoeffsFourPoints(                    reportString);
+  testResult &= testCubicCoeffsTwoPointsAndDerivatives(       reportString);
+  testResult &= testPolynomialEvaluation(                     reportString);
+  testResult &= testPolynomialDivision(                       reportString);
+  testResult &= testPolynomialArgumentShift(                  reportString);
+  testResult &= testPolynomialDiffAndInt(                     reportString);
+  testResult &= testPolynomialFiniteDifference(               reportString);
+  testResult &= testPolynomialComposition(                    reportString);
+  testResult &= testPolynomialWeightedSum(                    reportString);
+  testResult &= testPolynomialIntegrationWithPolynomialLimits(reportString);
+  testResult &= testPolynomialInterpolation(                  reportString);
+  testResult &= testPolynomialRootFinder(                     reportString);
+  testResult &= testPartialFractionExpansion(                 reportString);
+  testResult &= testPartialFractionExpansion2(                reportString);
+  testResult &= testPolynomialBaseChange(                     reportString);
+  testResult &= testPolynomialRecursion(                      reportString);
+  testResult &= testJacobiPolynomials(                        reportString);
+
+  // under construction:
+  testResult &= testPowersChebychevExpansionConversion(       reportString);
+
+  // polynomial class:
+  testResult &= testPolynomialOperators(                      reportString);
+
+  testResult &= testRationalFunction(reportString);
 
 
   return testResult;

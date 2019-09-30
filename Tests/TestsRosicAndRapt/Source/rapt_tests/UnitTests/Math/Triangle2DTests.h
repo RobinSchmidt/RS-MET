@@ -4,6 +4,5 @@
 
 bool testTriangle2D();
 
-bool testPointInsideTriangle2D(std::string &reportString);
 
 #endif

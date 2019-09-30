@@ -1,16 +1,5 @@
 #include "Triangle2DTests.h"
 
-bool testTriangle2D()
-{
-  std::string testName = "Triangle2D";
-  std::string dummy;
-  bool testResult = true;
-
-  testResult &= testPointInsideTriangle2D(dummy);
-
-  //appendTestResultToReport(reportString, testName, testResult);
-  return testResult;
-}
 
 bool testPointInsideTriangle2D(std::string &reportString)
 {
@@ -54,5 +43,18 @@ bool testPointInsideTriangle2D(std::string &reportString)
   testResult &= !t.containsPoint( Point(1, 0) );
 
   appendTestResultToReport(reportString, testName, testResult);
+  return testResult;
+}
+
+
+bool testTriangle2D()
+{
+  std::string testName = "Triangle2D";
+  std::string dummy;
+  bool testResult = true;
+
+  testResult &= testPointInsideTriangle2D(dummy);
+
+  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
