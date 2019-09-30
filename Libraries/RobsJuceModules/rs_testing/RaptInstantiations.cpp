@@ -70,7 +70,7 @@ template void rsArray::fillWithRangeExponential(double* x, int N, double min, do
 template void rsArray::fillWithRandomValues(double* x, int N, double min, double max, int seed);
 template void rsArray::deConvolve(const double *y, int yLength, const double *h, int hLength, double *x);
 template void rsArray::deInterleave(double*, int, int);
-template void rsArray::sequenceSqrt(double *y, int yLength, double *x);
+template void rsArray::sequenceSqrt(const double *y, int yLength, double *x);
 template void rsArray::transposeSquareArray(double **in, double **out, int size);
 template void rsArray::cumulativeSum(const double *x, double *y, int length, int order);
 template void rsArray::difference(double *buffer, int length, int order, bool periodic);
@@ -79,15 +79,15 @@ template double rsArray::maxValue(const double *x, int length);
 template double rsArray::maxAbs(const double *x, int length);
 template void rsArray::normalize(double *buffer, int length, double maximum, bool subtractMean);
 template void rsArray::normalizeMean(double *x, int N, double newMean);
-template double rsArray::mean(double *x, int length);
-template double rsArray::maxDeviation(double *buffer1, double *buffer2, int length);
-template int rsArray::maxDeviationIndex(float *buffer1, float *buffer2, int length);
+template double rsArray::mean(const double *x, int length);
+template double rsArray::maxDeviation(const double *buffer1, const double *buffer2, int length);
+template int rsArray::maxDeviationIndex(const float *buffer1, const float *buffer2, int length);
 template int rsArray::maxAbsIndex(const double* const buffer, int length);
 template int rsArray::maxIndex(const rsRange<double>*, int length);
 
 
 template void rsArray::applyFunction(const double *x, double *y, int N, double (*f) (double));
-template void rsArray::negate(double *source, double *destination, int length);
+template void rsArray::negate(const double *source, double *destination, int length);
 template void rsArray::filter(const double *x, int xLength, double *y, int yLength,
   const double *b, int bOrder, const double *a, int aOrder);
 template void rsArray::filterBiDirectional(const double *x, int xLength, double *y, int yLength,
@@ -97,12 +97,12 @@ template void rsArray::fillWithRandomValues(float* x, int N, double min, double 
 //template void rsArray::fillWithRandomValues(rosic::rsFloat32x4* x, int N, double min, double max, int seed);
 template void rsArray::divide(const double *buffer1, const double *buffer2, double *result, int length);
 
-template void rsArray::reverse(double* x, double* y, int length);
+template void rsArray::reverse(const double* x, double* y, int length);
 template void rsArray::rightShift(double *buffer, int length, int numPlaces);
 template void rsArray::shift(double *buffer, int length, int numPlaces);
 template void rsArray::unwrap(double* a, int N, double p);
 
-template float rsArray::maxDeviation(float *buffer1, float *buffer2, int length);
+template float rsArray::maxDeviation(const float *buffer1, const float *buffer2, int length);
 
 template void rsArray::fillWithRangeLinear(int* x, int N, int min, int max);
 template void rsArray::fillWithRandomValues(int* x, int N, double min, double max, int seed);

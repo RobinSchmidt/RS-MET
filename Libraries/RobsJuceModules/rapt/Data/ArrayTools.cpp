@@ -840,7 +840,7 @@ int rsArray::maxAbsIndex(const T* const buffer, int length)
 }
 
 template <class T>
-T rsArray::maxDeviation(T *buffer1, T *buffer2, int length)
+T rsArray::maxDeviation(const T *buffer1, const T *buffer2, int length)
 {
   T max = T(0);
   for(int i = 0; i < length; i++)
@@ -853,7 +853,7 @@ T rsArray::maxDeviation(T *buffer1, T *buffer2, int length)
 }
 
 template <class T>
-int rsArray::maxDeviationIndex(T *x, T *y, int N)
+int rsArray::maxDeviationIndex(const T *x, const T *y, int N)
 {
   T maxErr = T(0);  // rename to maxDev
   int maxIdx = 0;
@@ -912,7 +912,7 @@ T rsArray::minValue(const T *buffer, int length)
 }
 
 template <class T>
-T rsArray::mean(T *buffer, int length)
+T rsArray::mean(const T *buffer, int length)
 {
   return sum(buffer, length) / (T)length;
 }
@@ -933,7 +933,7 @@ T rsArray::meanSquare(const T *x, int N)
 }
 
 template <class T>
-T rsArray::median(T *buffer, int length)
+T rsArray::median(const T *buffer, int length)
 {
   T* tmpBuffer = new T[length];
   copyBuffer(buffer, tmpBuffer, length);
@@ -950,14 +950,14 @@ T rsArray::median(T *buffer, int length)
 }
 
 template <class T1, class T2, class TR>
-void rsArray::multiply(T1 *buffer1, T2 *buffer2, TR *result, int length)
+void rsArray::multiply(const T1 *buffer1, const T2 *buffer2, TR *result, int length)
 {
   for(int i = 0; i < length; i++)
     result[i] = TR(buffer1[i] * buffer2[i]);
 }
 
 template<class T>
-void rsArray::negate(T *source, T *destination, int length)
+void rsArray::negate(const T *source, T *destination, int length)
 {
   for(int i = 0; i < length; i++)
     destination[i] = -source[i];
@@ -997,7 +997,7 @@ void rsArray::orderBitReversed(T *buffer, int N, int log2N)
 }
 
 template <class T>
-void rsArray::orderBitReversedOutOfPlace(T *inBuffer, T *outBuffer, int length, int numBits)
+void rsArray::orderBitReversedOutOfPlace(const T *inBuffer, T *outBuffer, int length, int numBits)
 {
   // gather up the values from the bit-reversed positions in the input array:
   for(int n = 0; n < length; n++)
@@ -1035,7 +1035,7 @@ void rsArray::reverse(T *buffer, int length)
 }
 
 template <class T>
-void rsArray::reverse(T* x, T* y, int N)
+void rsArray::reverse(const T* x, T* y, int N)
 {
   for(int i = 0; i < N; i++)
     y[i] = x[N-1-i];
@@ -1058,14 +1058,14 @@ void rsArray::scale(T1 *buffer, int length, T2 scaleFactor)
 }
 
 template <class T1, class T2>
-void rsArray::scale(T1 *src, T1 *dst, int length, T2 scaleFactor)
+void rsArray::scale(const T1 *src, T1 *dst, int length, T2 scaleFactor)
 {
   for(int n = 0; n < length; n++)
     dst[n] = scaleFactor * src[n];
 }
 
 template <class T>
-void rsArray::sequenceSqrt(T *y, int yLength, T *x)
+void rsArray::sequenceSqrt(const T *y, int yLength, T *x)
 {
   int m2 = firstIndexWithNonZeroValue(y, yLength);
   if(m2 == -1)

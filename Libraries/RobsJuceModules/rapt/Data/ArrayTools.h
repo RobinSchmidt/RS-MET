@@ -4,7 +4,7 @@
 /** A collection of functions that operate on 1-dimensional arrays. 
 
 todo: 
--declare all input arrays as const - done up to divide
+-declare all input arrays as const - done up to sequencSqrt
 -inline, where it makes sense (trivial functions like copy/convert)
 -turn into an actual class (with members) implementing a dynamically sized array
 
@@ -399,11 +399,11 @@ public:
 
    /** Returns the maximum deviation (absolute value of the difference) between two buffers. */
   template <class T>
-  static T maxDeviation(T *buffer1, T *buffer2, int length);
+  static T maxDeviation(const T *buffer1, const T *buffer2, int length);
 
   /** Returns the index of the maximum deviation (see maxDeviation). */
   template <class T>
-  static int maxDeviationIndex(T *buffer1, T *buffer2, int length);
+  static int maxDeviationIndex(const T *buffer1, const T *buffer2, int length);
 
   /** Returns the index of maximum value of the buffer (">"-operator must be defined). */
   template <class T>
@@ -425,7 +425,7 @@ public:
   operators: +=, / and a constructor which takes an int and initializes to zero when 0 is passed
   and a typecast from int. */
   template <class T>
-  static T mean(T *buffer, int length);
+  static T mean(const T *buffer, int length);
 
   /** Computes the mean of the differences of the array elements. */
   template <class T>
@@ -437,16 +437,16 @@ public:
 
   /** Returns the median of the passed buffer. */
   template <class T>
-  static T median(T *buffer, int length);
+  static T median(const T *buffer, int length);
 
   /** Multiplies the elements of 'buffer1' and 'buffer2' - type must define operator '*'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
   template <class T1, class T2, class TR>
-  static void multiply(T1 *buffer1, T2 *buffer2, TR *result, int length);
+  static void multiply(const T1 *buffer1, const T2 *buffer2, TR *result, int length);
 
   /** Writes the element-wise negation of the source buffer into the destination buffer. */
   template<class T>
-  static void negate(T *source, T *destination, int length);
+  static void negate(const T *source, T *destination, int length);
 
   /** Normalizes the maximum absolute value of the passed array by multiplying the whole array 
   through by "maximum"/maxAbs(buffer) - where "maximum" is the passed argument and maxAbs(buffer)
@@ -476,7 +476,7 @@ public:
   /** Rearranges/permutes and array of type T into bit-reversed order. The 'length' MUST be the
   'numBits' th power of two (this is not checked for). */
   template <class T>
-  static void orderBitReversedOutOfPlace(T *inBuffer, T *outBuffer, int length, int numBits);
+  static void orderBitReversedOutOfPlace(const T *inBuffer, T *outBuffer, int length, int numBits);
 
   /** Returns the product of the elements in the buffer for types which define the
   multiplication operator (the *= version thereof) and a constructor which can take an int
@@ -503,7 +503,7 @@ public:
   /** Fills array y with the reversed content of array x. x and y must be distinct and 
   non-overlapping. */
   template <class T>
-  static void reverse(T* x, T* y, int length);
+  static void reverse(const T* x, T* y, int length);
 
   /** Shifts the content of the buffer numPlaces to the right, filling it up with zeros from the
   left. */
@@ -520,7 +520,7 @@ public:
 
   /** Scales the "src" buffer by a constant factor and writes the result into the "dst" buffer. */
   template <class T1, class T2>
-  static void scale(T1 *src, T1 *dst, int length, T2 scaleFactor);
+  static void scale(const T1 *src, T1 *dst, int length, T2 scaleFactor);
 
   /** Given the sequence y of length yLength, this function returns a sequence x which, when
   convolved with itself, gives y. yLength is assumed to be odd, the index of first nonzero value
@@ -539,7 +539,7 @@ public:
   therefore and/or if there is a usefule generalization - like using a sequence x which has the
   same length as y, convolve it with itslef and truncate the result to the length of y */
   template <class T>
-  static void sequenceSqrt(T *y, int yLength, T *x);
+  static void sequenceSqrt(const T *y, int yLength, T *x);
 
   /** Shifts the content of the buffer numPlaces to the right, filling it up with zeros from the
   left. If numPlaces is negative, the contents will be shifted to the left, filling up with zeros 
