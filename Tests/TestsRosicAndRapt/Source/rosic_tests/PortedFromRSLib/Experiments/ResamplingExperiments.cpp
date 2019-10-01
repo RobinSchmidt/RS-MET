@@ -1096,10 +1096,24 @@ void amplitudeMatch()
   tm2 = (matchLevel - b2) / a2;  // same for xdB2
   dt  =  tm1 - tm2;              // this is the result
 
+  // create a time-shifted time-axis for x2 for plotting x1 and x2 with the time-shift applied
+  // to x2;
+  std::vector<double> t2s(N2);  // t2 with shift
+  for(n = 0; n < N2; n++) t2s[n] = n + dt; 
 
 
   //rsPlotVectors(x1, x2);
-  rsPlotVectors(xdB1, xdB2);
+
+  GNUPlotter plt;
+  plt.addDataArrays(N1, &t1[0],  &x1[0]);
+  plt.addDataArrays(N1, &t1[0],  &x1[0]); // simple trick, to plot the shifted x2 red
+  plt.addDataArrays(N2, &t2[0],  &x2[0]);
+  plt.addDataArrays(N2, &t2s[0], &x2[0]);
+  plt.plot();
+
+
+
+  //rsPlotVectors(xdB1, xdB2);
 }
 
 void sineShift()
