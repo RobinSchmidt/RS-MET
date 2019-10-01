@@ -1079,15 +1079,23 @@ void amplitudeMatch()
   std::vector<double> t1(N1), t2(N2);
   for(n = 0; n < N1; n++) t1[n] = n;
   for(n = 0; n < N2; n++) t2[n] = n;
-  rsStatistics::linearRegression(N1, &t1[0], &x1[0], a1, b1);
-  rsStatistics::linearRegression(N2, &t2[0], &x2[0], a2, b2);
-  // huh? a1 and a2 are different! why? they should be the same! 
+  rsStatistics::linearRegression(N1, &t1[0], &xl1[0], a1, b1);
+  rsStatistics::linearRegression(N2, &t2[0], &xl2[0], a2, b2);
+
+
+  //// test: reconstruct xl1, xl2 from regression coeffs:
+  //std::vector<double> yl1(N1), yl2(N2);
+  //for(n = 0; n < N1; n++) yl1[n] = a1*t1[n] + b1;
+  //for(n = 0; n < N2; n++) yl2[n] = a2*t2[n] + b2;
+  //rsPlotVectors(xl1, xl2, yl1, yl2); // ..ok, looks good
+
 
 
 
 
   //rsPlotVectors(x1, x2);
-  rsPlotVectors(xl1, xl2);
+  //rsPlotVectors(xl1, xl2);
+
 }
 
 void sineShift()
