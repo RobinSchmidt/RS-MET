@@ -1052,12 +1052,12 @@ void amplitudeMatch()
   // Fopr two signals with exponentially decaying envelope, we estimate, how much we would have to 
   // time-shift the second to best match the apm-envelope of the first.
 
-  int    N1 = 1000;   // number of samples in 1st signal
-  int    N2 =  500;   // number of samples in 2nd signal
-  double A1 =  1.0;   // amplitude of 1st signal
-  double A2 =  0.5;   // amplitude of 2nd signal
-  double d1 =  0.005; // normalized 1st decay
-  double d2 =  0.010; // normalized 2nd decay
+  int    N1 = 1000;    // number of samples in 1st signal
+  int    N2 = 1500;    // number of samples in 2nd signal
+  double A1 =  1.0;    // amplitude of 1st signal
+  double A2 =  0.5;    // amplitude of 2nd signal
+  double d1 =  0.005;  // normalized 1st decay
+  double d2 =  0.0025; // normalized 2nd decay
 
   double matchLevel = -20;
 

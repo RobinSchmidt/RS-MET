@@ -129,16 +129,16 @@ void GNUPlotter::plot3D()
 }
 
 template <class T>
-void GNUPlotter::plotFunctionTables(int N, T *x, T *y1, T *y2, T *y3, T *y4, T *y5, T *y6, T *y7,
-  T *y8, T *y9)
+void GNUPlotter::plotFunctionTables(int N, const T *x, const T *y1, const T *y2, const T *y3, 
+  const T *y4, const T *y5, const T *y6, const T *y7, const T *y8, const T *y9)
 {
   addDataArrays(N, x, y1, y2, y3, y4, y5, y6, y7, y8, y9);
   plot();
 }
 
 template <class T>
-void GNUPlotter::plotArrays(int N, T *y1, T *y2, T *y3, T *y4, T *y5, T *y6, T *y7, T *y8,
-  T *y9)
+void GNUPlotter::plotArrays(int N, const T *y1, const T *y2, const T *y3, const T *y4, 
+  const T *y5, const T *y6, const T *y7, const T *y8, const T *y9)
 {
   T *x = new T[N];
   rangeLinear(x, N, T(0), T(N-1));
@@ -146,12 +146,14 @@ void GNUPlotter::plotArrays(int N, T *y1, T *y2, T *y3, T *y4, T *y5, T *y6, T *
   delete[] x;
 }
 // explicit instantiations for double, float and int:
-template void GNUPlotter::plotArrays(int N, double *y1, double *y2, double *y3, double *y4,
-  double *y5, double *y6, double *y7, double *y8, double *y9);
-template void GNUPlotter::plotArrays(int N, float *y1, float *y2, float *y3, float *y4, float *y5,
-  float *y6, float *y7, float *y8, float *y9);
-template void GNUPlotter::plotArrays(int N, int *y1, int *y2, int *y3, int *y4, int *y5,
-  int *y6, int *y7, int *y8, int *y9);
+template void GNUPlotter::plotArrays(int N, const double *y1, const double *y2, const double *y3, 
+  const double *y4, const double *y5, const double *y6, const double *y7, const double *y8, 
+  const double *y9);
+template void GNUPlotter::plotArrays(int N, const float *y1, const float *y2, const float *y3, 
+  const float *y4, const float *y5, const float *y6, const float *y7, const float *y8, 
+  const float *y9);
+template void GNUPlotter::plotArrays(int N, const int *y1, const int *y2, const int *y3, 
+  const int *y4, const int *y5, const int *y6, const int *y7, const int *y8, const int *y9);
 
 template <class T>
 void GNUPlotter::plotFunctions(int N, T *x, T (*f0)(T), T (*f1)(T), T (*f2)(T), T (*f3)(T),
@@ -473,11 +475,11 @@ template void GNUPlotter::addDataArrays(int N, float *x, int M, float **y);
 template void GNUPlotter::addDataArrays(int N, double *x, int M, double **y);
 
 template <class T>
-void GNUPlotter::addDataArrays(int N, T *c0, T *c1, T *c2, T *c3, T *c4, T *c5, T *c6, T *c7,
-  T *c8, T *c9)
+void GNUPlotter::addDataArrays(int N, const T *c0, const T *c1, const T *c2, const T *c3, 
+  const T *c4, const T *c5, const T *c6, const T *c7, const T *c8, const T *c9)
 {
-  vector<T*> v = collectLeadingNonNullArguments(c0, c1, c2, c3, c4, c5, c6, c7, c8, c9);
-  T* a[10];
+  const vector<const T*> v = collectLeadingNonNullArguments(c0, c1, c2, c3, c4, c5, c6, c7, c8, c9);
+  const T* a[10];
   for(size_t i = 0; i < v.size(); i++)
     a[i] = v[i];
   addData(N, (int) v.size(), a);
@@ -1013,8 +1015,8 @@ string GNUPlotter::nullValue(string)
 }
 
 template<class T>
-vector<T> GNUPlotter::collectLeadingNonNullArguments(T a0, T a1, T a2, T a3, T a4, T a5, T a6,
-  T a7, T a8, T a9)
+const vector<T> GNUPlotter::collectLeadingNonNullArguments(const T a0, const T a1, const T a2, 
+  const T a3, const T a4, const T a5, const T a6, const T a7, const T a8, const T a9)
 {
   T null = nullValue(a0);
   vector<T> v;
@@ -1040,8 +1042,8 @@ void GNUPlotter::append(vector<T>& v, const vector<T>& appendix)
 }
 
 template<class T>
-vector<vector<T>> GNUPlotter::wrapIntoVectors(int N, T *a0, T *a1, T *a2, T *a3, T *a4, T *a5,
-  T *a6, T *a7, T *a8, T *a9)
+vector<vector<T>> GNUPlotter::wrapIntoVectors(int N, const T *a0, const T *a1, const T *a2, 
+  const T *a3, const T *a4, const T *a5, const T *a6, const T *a7, const T *a8, const T *a9)
 {
   vector<T*> pointers = collectLeadingNonNullArguments(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
   vector<vector<T>> v;

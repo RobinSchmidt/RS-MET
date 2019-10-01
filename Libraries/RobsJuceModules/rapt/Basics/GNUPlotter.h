@@ -58,8 +58,9 @@ public:
   /** Convenience function to allow plotting without having client code instantiate a plotter 
   object, set it up, etc. */
   template <class T>
-  inline static void plot(int N, T *x, T *y1, T *y2 = nullptr, T *y3 = nullptr, T *y4 = nullptr,
-    T *y5 = nullptr, T *y6 = nullptr, T *y7 = nullptr, T *y8 = nullptr, T *y9 = nullptr)
+  inline static void plot(int N, const T *x, const T *y1, const T *y2 = nullptr, 
+    const T *y3 = nullptr, const T *y4 = nullptr, const T *y5 = nullptr, const T *y6 = nullptr, 
+    const T *y7 = nullptr, const T *y8 = nullptr, const T *y9 = nullptr)
   {
     GNUPlotter plt;
     plt.addDataArrays(N, x, y1, y2, y3, y4, y5, y6, y7, y8, y9);
@@ -121,13 +122,15 @@ public:
 
   /** Plots the function values in the arrays y1, y2, ... against an abscissa given by the array x. */
   template <class T>
-  void plotFunctionTables(int N, T *x, T *y1, T *y2 = nullptr, T *y3 = nullptr, T *y4 = nullptr, 
-    T *y5 = nullptr, T *y6 = nullptr, T *y7 = nullptr, T *y8 = nullptr, T *y9 = nullptr);
+  void plotFunctionTables(int N, const T *x, const T *y1, const T *y2 = nullptr, 
+    const T *y3 = nullptr, const T *y4 = nullptr, const T *y5 = nullptr, const T *y6 = nullptr, 
+    const T *y7 = nullptr, const T *y8 = nullptr, const T *y9 = nullptr);
 
   /** Plots the values in the arrays y1, y2, ... against an abscissa given by the array index. */
   template <class T>
-  void plotArrays(int N, T *y1, T *y2 = nullptr, T *y3 = nullptr, T *y4 = nullptr, T *y5 = nullptr,
-    T *y6 = nullptr, T *y7 = nullptr, T *y8 = nullptr, T *y9 = nullptr);
+  void plotArrays(int N, const T *y1, const T *y2 = nullptr, const T *y3 = nullptr, 
+    const T *y4 = nullptr, const T *y5 = nullptr, const T *y6 = nullptr, const T *y7 = nullptr, 
+    const T *y8 = nullptr, const T *y9 = nullptr);
 
   /** Plots univariate functions. For example, assume you have an array of 100 x-values and you 
   want to plot the sine, cosine and tangent values of these x-values, using the x-array as 
@@ -292,6 +295,7 @@ public:
   line. */
   template <class T>
   void addData(int numBlocks, int *blockLengths, int numColumns, T **data);
+  // try to make data pointer const
 
   /** Adds the dataset given in the matrix "data" to our datafile. The 1st index is the column, the
   2nd index is the row in our datafile. This means, each row of the datafile will represent one 
@@ -315,9 +319,9 @@ public:
   example, the 1st array could contain the x-axis values and subsequent arrays could be values of
   a bunch of functions of x, like: c0=x, c1=f(x), c2=g(x), etc. */
   template <class T>
-  void addDataArrays(int N, T *c0, T *c1 = nullptr, T *c2 = nullptr, T *c3 = nullptr, 
-    T *c4 = nullptr, T *c5 = nullptr, T *c6 = nullptr, T *c7 = nullptr, T *c8 = nullptr, 
-    T *c9 = nullptr);
+  void addDataArrays(int N, const T *c0, const T *c1 = nullptr, const T *c2 = nullptr, 
+    const T *c3 = nullptr, const T *c4 = nullptr, const T *c5 = nullptr, const T *c6 = nullptr, 
+    const T *c7 = nullptr, const T *c8 = nullptr, const T *c9 = nullptr);
 
   /** Adds data from univariate functions. */
   template <class T>
@@ -515,15 +519,15 @@ public:
   static std::string nullValue(std::string);
 
   template<class T>
-  static std::vector<T> collectLeadingNonNullArguments(T a0, T a1, T a2, T a3, T a4, T a5, T a6, 
-    T a7, T a8, T a9);
+  static const std::vector<T> collectLeadingNonNullArguments(const T a0, const T a1, const T a2, 
+    const T a3, const T a4, const T a5, const T a6, const T a7, const T a8, const T a9);
 
   template<class T>
   static void append(std::vector<T>& v, const std::vector<T>& appendix);
 
   template<class T>
-  static std::vector<std::vector<T>> wrapIntoVectors(int N, T *a0, T *a1, T *a2, T *a3, T *a4, 
-    T *a5, T *a6, T *a7, T *a8, T *a9);
+  static std::vector<std::vector<T>> wrapIntoVectors(int N, const T *a0, const T *a1, const T *a2, 
+    const T *a3, const T *a4, const T *a5, const T *a6, const T *a7, const T *a8, const T *a9);
 
   static void addToStringVector(std::vector<std::string>& v, CSR s0, CSR s1, CSR s2, CSR s3, CSR s4, 
     CSR s5, CSR s6, CSR s7, CSR s8, CSR s9);
