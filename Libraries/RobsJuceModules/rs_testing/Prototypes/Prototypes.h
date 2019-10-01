@@ -539,6 +539,8 @@ public:
 
   rsGroupString(const std::vector<unsigned int>& initialString) { s = initialString; }
 
+  rsGroupString(int length) { s.resize(length); }
+
   // define operator =, 
   // maybe: < (lexicographical order), * (i still have to invent a suitable multiplication rule)
 
@@ -556,8 +558,24 @@ public:
   /** Binary subtraction by adding the additive inverse. */
   rsGroupString operator-(const rsGroupString &rhs) { return *this + (-rhs); }
 
+  /** Read/write access to i-th character. */
+  unsigned int& operator[](int i) { return s[i]; }
+
+  unsigned int last() const 
+  { 
+    if(s.size() > 0) return s[s.size()-1]; 
+    else             return 0; // is this reasonable? or should we use a special "error" signal
+  }
 
 
+  void removeLast()
+  {
+    if(s.size() > 0)
+      s.pop_back();
+  }
+
+  /** Length of the string. */
+  int length() const { return (int) s.size(); }
 
 
 
@@ -569,6 +587,8 @@ public:
 
    // maybe let integers 0 and 1 be used and implement 1/s = s.multiplicativeInverse, etc.
 
+
+  void resize(int newSize) { s.resize((int)newSize); }
 
   std::vector<unsigned int> get() const { return s; }
 
