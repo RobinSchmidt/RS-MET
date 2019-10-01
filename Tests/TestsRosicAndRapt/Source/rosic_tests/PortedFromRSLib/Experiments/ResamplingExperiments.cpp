@@ -1059,6 +1059,8 @@ void amplitudeMatch()
   double d1 =  0.005; // normalized 1st decay
   double d2 =  0.005; // normalized 2nd decay
 
+  double matchLevel = -20;
+
   // create our two input envelopes and time axes:
   std::vector<double> x1(N1), x2(N2); 
   int n;
@@ -1068,20 +1070,19 @@ void amplitudeMatch()
 
   // here, the actual algorithm begins:
 
-  // take the logarithm of both input envelopes - this transforms the exponential decay into a 
+  // take decibel values of both input envelopes - this transforms the exponential decay into a 
   // linear one and when both decays are the same, the lines have the same slope:
-  std::vector<double> xl1(N1), xl2(N2);   // "l" for log
-  for(n = 0; n < N1; n++) xl1[n] = log2(x1[n]); // log2 just makes nicer numbers than natural log
-  for(n = 0; n < N2; n++) xl2[n] = log2(x2[n]);
+  std::vector<double> xdB1(N1), xdB2(N2);
+  for(n = 0; n < N1; n++) xdB1[n] = rsAmpToDb(x1[n]); 
+  for(n = 0; n < N2; n++) xdB2[n] = rsAmpToDb(x2[n]);
 
   // find the regression lines y = a*t + b for both signals:
   double a1, b1, a2, b2;                // linear regression coeffs
   std::vector<double> t1(N1), t2(N2);
   for(n = 0; n < N1; n++) t1[n] = n;
   for(n = 0; n < N2; n++) t2[n] = n;
-  rsStatistics::linearRegression(N1, &t1[0], &xl1[0], a1, b1);
-  rsStatistics::linearRegression(N2, &t2[0], &xl2[0], a2, b2);
-
+  rsStatistics::linearRegression(N1, &t1[0], &xdB1[0], a1, b1);
+  rsStatistics::linearRegression(N2, &t2[0], &xdB2[0], a2, b2);
 
   //// test: reconstruct xl1, xl2 from regression coeffs:
   //std::vector<double> yl1(N1), yl2(N2);
@@ -1089,13 +1090,16 @@ void amplitudeMatch()
   //for(n = 0; n < N2; n++) yl2[n] = a2*t2[n] + b2;
   //rsPlotVectors(xl1, xl2, yl1, yl2); // ..ok, looks good
 
-
+  // compute, by how mmuch we must shift x1 to match x2 at the given match level:
+  double tm1, tm2, dt;
+  tm1 = (matchLevel - b1) / a1;  // time instant, where xdB1 crosses the matchLevel
+  tm2 = (matchLevel - b2) / a2;  // same for xdB2
+  dt  =  tm1 - tm2;              // this is the result
 
 
 
   //rsPlotVectors(x1, x2);
-  //rsPlotVectors(xl1, xl2);
-
+  rsPlotVectors(xdB1, xdB2);
 }
 
 void sineShift()
