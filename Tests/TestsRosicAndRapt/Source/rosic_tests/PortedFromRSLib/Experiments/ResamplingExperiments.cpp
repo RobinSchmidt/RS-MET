@@ -1054,20 +1054,40 @@ void amplitudeMatch()
 
   int    N1 = 1000;   // number of samples in 1st signal
   int    N2 =  500;   // number of samples in 2nd signal
-  double a1 =  1.0;   // amplitude of 1st signal
-  double a2 =  0.5;   // amplitude of 2nd signal
+  double A1 =  1.0;   // amplitude of 1st signal
+  double A2 =  0.5;   // amplitude of 2nd signal
   double d1 =  0.005; // normalized 1st decay
   double d2 =  0.005; // normalized 2nd decay
 
-
-  // create our two input envelopes:
+  // create our two input envelopes and time axes:
   std::vector<double> x1(N1), x2(N2); 
   int n;
-  for(n = 0; n < N1; n++)  x1[n] = a1 * exp(-d1*n);
-  for(n = 0; n < N2; n++)  x2[n] = a2 * exp(-d2*n);
+  for(n = 0; n < N1; n++) x1[n] = A1 * exp(-d1*n);
+  for(n = 0; n < N2; n++) x2[n] = A2 * exp(-d2*n);
 
 
-  rsPlotVectors(x1, x2);
+  // here, the actual algorithm begins:
+
+  // take the logarithm of both input envelopes - this transforms the exponential decay into a 
+  // linear one and when both decays are the same, the lines have the same slope:
+  std::vector<double> xl1(N1), xl2(N2);   // "l" for log
+  for(n = 0; n < N1; n++) xl1[n] = log2(x1[n]); // log2 just makes nicer numbers than natural log
+  for(n = 0; n < N2; n++) xl2[n] = log2(x2[n]);
+
+  // find the regression lines y = a*t + b for both signals:
+  double a1, b1, a2, b2;                // linear regression coeffs
+  std::vector<double> t1(N1), t2(N2);
+  for(n = 0; n < N1; n++) t1[n] = n;
+  for(n = 0; n < N2; n++) t2[n] = n;
+  rsStatistics::linearRegression(N1, &t1[0], &x1[0], a1, b1);
+  rsStatistics::linearRegression(N2, &t2[0], &x2[0], a2, b2);
+  // huh? a1 and a2 are different! why? they should be the same! 
+
+
+
+
+  //rsPlotVectors(x1, x2);
+  rsPlotVectors(xl1, xl2);
 }
 
 void sineShift()
