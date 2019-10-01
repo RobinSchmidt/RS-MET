@@ -1057,7 +1057,7 @@ void amplitudeMatch()
   double A1 =  1.0;   // amplitude of 1st signal
   double A2 =  0.5;   // amplitude of 2nd signal
   double d1 =  0.005; // normalized 1st decay
-  double d2 =  0.005; // normalized 2nd decay
+  double d2 =  0.010; // normalized 2nd decay
 
   double matchLevel = -20;
 
@@ -1111,9 +1111,10 @@ void amplitudeMatch()
   plt.addDataArrays(N2, &t2s[0], &x2[0]);
   plt.plot();
 
-
-
-  //rsPlotVectors(xdB1, xdB2);
+  // Observations:
+  // -when d1 and d2 match, it works perfectly
+  // -when d2 > d1, the signal get shifted more and when d2 < d1 it gets shifted less - it may even
+  //  get left shifted
 }
 
 void sineShift()
