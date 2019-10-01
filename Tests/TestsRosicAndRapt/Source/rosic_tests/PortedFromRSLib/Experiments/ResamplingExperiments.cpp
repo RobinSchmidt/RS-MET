@@ -1049,19 +1049,18 @@ void phaseLockedCrossfade2()
 
 void amplitudeMatch()
 {
-  // Fopr two signals with exponentially decaying envelope, we estimate, how much we would have to 
-  // time-shift the second to best match the apm-envelope of the first.
+  // For two signals with exponentially decaying envelope, we estimate, how much we would have to 
+  // time-shift the second to best match the amp-envelope of the first.
 
   int    N1 = 1000;    // number of samples in 1st signal
   int    N2 = 1500;    // number of samples in 2nd signal
   double A1 =  1.0;    // amplitude of 1st signal
   double A2 =  0.5;    // amplitude of 2nd signal
   double d1 =  0.005;  // normalized 1st decay
-  double d2 =  0.0025; // normalized 2nd decay
+  double d2 =  0.004;  // normalized 2nd decay
+  double matchLevel = -20; // level (in dB) at which the two envelopes should meet
 
-  double matchLevel = -20;
-
-  // create our two input envelopes and time axes:
+  // create our two input envelopes:
   std::vector<double> x1(N1), x2(N2); 
   int n;
   for(n = 0; n < N1; n++) x1[n] = A1 * exp(-d1*n);
@@ -1094,7 +1093,7 @@ void amplitudeMatch()
   double tm1, tm2, dt;
   tm1 = (matchLevel - b1) / a1;  // time instant, where xdB1 crosses the matchLevel
   tm2 = (matchLevel - b2) / a2;  // same for xdB2
-  dt  =  tm1 - tm2;              // this is the result
+  dt  =  tm1 - tm2;              // this is the resulting desired shift
 
   // create a time-shifted time-axis for x2 for plotting x1 and x2 with the time-shift applied
   // to x2;
@@ -1107,14 +1106,21 @@ void amplitudeMatch()
   GNUPlotter plt;
   plt.addDataArrays(N1, &t1[0],  &x1[0]);
   plt.addDataArrays(N1, &t1[0],  &x1[0]); // simple trick, to plot the shifted x2 red
-  plt.addDataArrays(N2, &t2[0],  &x2[0]);
-  plt.addDataArrays(N2, &t2s[0], &x2[0]);
+  plt.addDataArrays(N2, &t2[0],  &x2[0]); // 2nd signal at its original position
+  plt.addDataArrays(N2, &t2s[0], &x2[0]); // 2ns signal time-shifted
   plt.plot();
 
   // Observations:
   // -when d1 and d2 match, it works perfectly
-  // -when d2 > d1, the signal get shifted more and when d2 < d1 it gets shifted less - it may even
-  //  get left shifted
+  // -when d1 and d2 do not match, x2 is shifted in such a way that the two curves cross at an
+  //  amplitude determined by the matchLevel
+
+  // Ideas:
+  // -for non-matching decay times, we could manipulate the decay time of the 2nd signal to make 
+  //  it match
+  // -maybe for enveloped periodic signals, we should use this algorithm for a rough estimate and
+  //  then refine it by finding the maximum of a correlation function - this should at most shift
+  //  the estimated dt by half a period
 }
 
 void sineShift()

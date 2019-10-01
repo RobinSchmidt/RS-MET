@@ -162,9 +162,9 @@ public:
   of them and plot the spectral magintudes as decibel values.  
   (the FFT size is determined by setFfftSize and may be different from signalLength) */
   //template <class T>
-  void plotDecibelSpectra(int signalLength, T *x0, T *x1 = nullptr, T *x2 = nullptr, 
-    T *x3 = nullptr, T *x4 = nullptr, T *x5 = nullptr, T *x6 = nullptr, T *x7 = nullptr, 
-    T *x8 = nullptr, T *x9 = nullptr);
+  void plotDecibelSpectra(int signalLength, const T *x0, const T *x1 = nullptr, const T *x2 = nullptr, 
+    const T *x3 = nullptr, const T *x4 = nullptr, const T *x5 = nullptr, const T *x6 = nullptr, 
+    const T *x7 = nullptr, const T *x8 = nullptr, const T *x9 = nullptr);
 
 
 

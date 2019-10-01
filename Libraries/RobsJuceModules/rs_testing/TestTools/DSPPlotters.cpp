@@ -330,8 +330,9 @@ template class FilterPlotter<double>;
 
 
 template <class T>
-void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, T *x0, T *x1, T *x2, T *x3, T *x4, 
-  T *x5, T *x6, T *x7, T *x8, T *x9)
+void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const T *x1, 
+  const T *x2, const T *x3, const T *x4, const T *x5, const T *x6, const T *x7, const T *x8, 
+  const T *x9)
 {
   RAPT::rsAssert(signalLength <= fftSize);
 
@@ -344,7 +345,8 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, T *x0, T *x1, T *x
   // use this for y-axis minimum - let the user set it up:
   T ampFloor = RAPT::rsDbToAmp(dBFloor);
 
-  std::vector<T*> inputArrays = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
+  //std::vector<T*> inputArrays = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
+  const vector<const T*> inputArrays = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
 
   int N = rsMax(signalLength, fftSize);
   int maxBin = fftSize/2; // later have a user option for that -> zoom
