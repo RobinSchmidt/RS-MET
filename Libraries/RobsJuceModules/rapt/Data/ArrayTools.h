@@ -4,9 +4,8 @@
 /** A collection of functions that operate on 1-dimensional arrays. 
 
 todo: 
--declare all input arrays as const - done up to sequencSqrt
 -inline, where it makes sense (trivial functions like copy/convert)
--turn into an actual class (with members) implementing a dynamically sized array
+-maybe turn into an actual class (with members) implementing a dynamically sized array
 
 */
 
@@ -14,15 +13,6 @@ class rsArray
 {
 
 public:
-
-  // todo write functions for element-wise multiply, divide, negate,
-  // max, min, absMax, createCopy, filter, impulseResponse, impulseResponseLength,
-  // fillWith(double value = 0.0), circularShift, resample,
-
-  // todo: split this large file into several files containing related functions such as filling,
-  // copying, permutations, filtering, comparisons, subarray-extraction, etc.
-
-  // maybe introduce a range (start....end) to which the process is to be applied
 
   /** Adds the elements of 'buffer1' and 'buffer2' - type must define operator '+'. The 'result'
   buffer may be the same as 'buffer1' or 'buffer2'. */
@@ -130,7 +120,8 @@ public:
   static inline void convolveWithTwoElems(const T* x, int xLength, const T* h, T* y);
 
   /** Convolves the array x with the two elements [h0 h1] and stores the result in y. The y array 
-  is allowed to alias to the x array. */
+  is allowed to alias to the x array. This special case is needed for multiplying in a linear 
+  factor into an array of polynomial coefficients. */
   template <class T>
   static inline void convolveWithTwoElems(const T* x, int xLength, T h0, T h1, T* y);
 
@@ -601,11 +592,11 @@ public:
 
   /** Returns the sum-over-i w[i]*x[i]. */
   template <class T>
-  static T weightedSum(T *w, T *x, rsUint32 length);  // redundant with sumOfProducts
+  static T weightedSum(const T *w, const T *x, rsUint32 length);  // redundant with sumOfProducts
 
   /** Forms a weighted sum of the two buffers. */
   template <class T>
-  static  void weightedSum(T *buffer1, T *buffer2, T *result, int length, T weight1, T weight2);
+  static  void weightedSum(const T *buffer1, const T *buffer2, T *result, int length, T weight1, T weight2);
 
 };
 

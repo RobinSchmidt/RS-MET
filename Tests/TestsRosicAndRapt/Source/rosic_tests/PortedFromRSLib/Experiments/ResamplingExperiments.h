@@ -15,8 +15,12 @@ void pitchDemodulation();
 void phaseLockedCrossfade();
 void phaseLockedCrossfade2();
 
+// move to analysis:
+void amplitudeMatch();
 void sineShift();
 void sineShift2();
+
+
 void pitchDetectWithSilence();
 
 // tests with Elan's example files:

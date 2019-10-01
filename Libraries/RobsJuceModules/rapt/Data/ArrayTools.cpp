@@ -1181,7 +1181,7 @@ void rsArray::unwrap(T* a, int N, T p)
 }
 
 template <class T>
-T rsArray::weightedSum(T *w, T *x, rsUint32 length)
+T rsArray::weightedSum(const T *w, const T *x, rsUint32 length)
 {
   T s(0);
   for(rsUint32 i = 0; i < length; i++)
@@ -1190,7 +1190,7 @@ T rsArray::weightedSum(T *w, T *x, rsUint32 length)
 }
 
 template <class T>
-void rsArray::weightedSum(T *buffer1, T *buffer2, T *result, int length, T weight1, T weight2)
+void rsArray::weightedSum(const T *buffer1, const T *buffer2, T *result, int length, T weight1, T weight2)
 {
   for(int n = 0; n < length; n++)
     result[n] = weight1 * buffer1[n] + weight2 * buffer2[n];

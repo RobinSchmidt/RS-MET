@@ -1047,6 +1047,28 @@ void phaseLockedCrossfade2()
 //  int dummy = 0;
 //}
 
+void amplitudeMatch()
+{
+  // Fopr two signals with exponentially decaying envelope, we estimate, how much we would have to 
+  // time-shift the second to best match the apm-envelope of the first.
+
+  int    N1 = 1000;   // number of samples in 1st signal
+  int    N2 =  500;   // number of samples in 2nd signal
+  double a1 =  1.0;   // amplitude of 1st signal
+  double a2 =  0.5;   // amplitude of 2nd signal
+  double d1 =  0.005; // normalized 1st decay
+  double d2 =  0.005; // normalized 2nd decay
+
+
+  // create our two input envelopes:
+  std::vector<double> x1(N1), x2(N2); 
+  int n;
+  for(n = 0; n < N1; n++)  x1[n] = a1 * exp(-d1*n);
+  for(n = 0; n < N2; n++)  x2[n] = a2 * exp(-d2*n);
+
+
+  rsPlotVectors(x1, x2);
+}
 
 void sineShift()
 {

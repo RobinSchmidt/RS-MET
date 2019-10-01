@@ -360,7 +360,7 @@ int main(int argc, char* argv[])
   //windowFunctionsContinuous();
   //windowFunctionSpectra();
   //windowedSinc();
-  waveMorph();  // under construction
+  //waveMorph();  // under construction
 
 
 
@@ -421,9 +421,13 @@ int main(int argc, char* argv[])
   //pitchDemodulation();
   //phaseLockedCrossfade();
   //phaseLockedCrossfade2();
+  //pitchDetectWithSilence();
+
+  // Matching:
   //sineShift();
   //sineShift2();
-  //pitchDetectWithSilence();
+  amplitudeMatch();
+
 
   ////// tests with Elan's example files (they don't work unless the files are available):
   ////pitchDetectA3();

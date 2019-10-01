@@ -772,6 +772,8 @@ void waveMorph()
   // x direction, the y parameter selects the waveform. ...but we could also have a y-phasor or 
   // both....
 
+  // seems to be not very useful - it tends to a flat area in the middle
+
 
   int Nx = 41;
   int Ny = 41;
@@ -791,13 +793,19 @@ void waveMorph()
     x[i]      = double(i) / (Nx-1);
     z(i,0)    = sin(2*PI*x[i]*x[i]*x[i]);  // bottom boundary y=0
     z(i,Ny-1) = sin(2*PI*x[i]);  // top boundary y=1
+
+    //z(i,0)    = ng.getSample();
+    //z(i,Ny-1) = ng.getSample();
   }
   for(j = 0; j < Ny; j++) {
     y[j]      = double(j) / (Ny-1);
     z(0,j)    = 0;  // bottom boundary y=0
     z(Nx-1,j) = 0;  // top boundary y=1
-    //z(0,j)    = sin(3*PI*y[j]);  // bottom boundary y=0
-    //z(Nx-1,j) = sin(4*PI*y[j]);  // top boundary y=1
+    z(0,j)    = sin(3*PI*y[j]);  // bottom boundary y=0
+    z(Nx-1,j) = sin(1*PI*y[j]);  // top boundary y=1
+
+    //z(0,j)    = ng.getSample();
+    //z(Nx-1,j) = ng.getSample();
   }
 
 
