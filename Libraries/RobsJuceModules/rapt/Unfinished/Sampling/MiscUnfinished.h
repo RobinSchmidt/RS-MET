@@ -1032,7 +1032,7 @@ public:
   regression. This can be used to prevent the attack part of the sound from distorting the 
   measurement of the regression coefficients. It should be set to some value where the attack is
   over and the sample in its decaying portion. */
-  void setInitialIgnoreSection1(int numSamples) { initialIgnore1 = numSamples; }
+  void setInitialIgnoreSection1(int numSamples) { initIgnore1 = numSamples; }
 
   /** Sets up, how many samples of the final section should be ignored. This is meant to avoid 
   letting the final noise floor or silence distort the regression coeff measurement. It should be
@@ -1046,7 +1046,7 @@ public:
   void setIgnoreThreshold1(T newThreshold) { ignoreThresh1 = newThreshold; }
 
   // same things for envelope 2
-  void setInitialIgnoreSection2(int numSamples) { initialIgnore2 = numSamples; }
+  void setInitialIgnoreSection2(int numSamples) { initIgnore2 = numSamples; }
   void setFinalIgnoreSection2(  int numSamples) { finalIgnore2   = numSamples; }
   void setIgnoreThreshold2(T newThreshold) { ignoreThresh2 = newThreshold; }
 
