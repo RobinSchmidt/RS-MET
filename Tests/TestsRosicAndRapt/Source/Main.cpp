@@ -187,27 +187,22 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit Tests - these should be integrated into the appropriate unit tests file::
 
-  //passed &= testBufferFunctions(str);       // passes -> move to rapt tests
+  // these two pass and should be merged with the other rapt tests:
+  //passed &= testBufferFunctions(str);
+  //passed &= testSortAndSearch(str);
 
 
 
-  //passed &= testFilterPolynomials(str);
+
+  // these should probably be merged with rosic tests:
+  passed &= testFilterPolynomials(str);
   //passed &= testHighOrderFilter(  str);  // fails
-
-
   //passed &= testModalFilter2(str);
   ////passed &= testModalSynth(str);         // triggers assert
-
   ////passed &= testNumberManipulations( str); // triggers assert (calls the two below)
   ////passed &= testDoubleIntConversions(str); // triggers same assert (called by function above)
   //passed &= testExponentExtraction(str);
-
   //passed &= testAutoCorrelationPitchDetector(str);
-
-  //passed &= testSortAndSearch(str);          // calls the two below (redundant)
-  //passed &= testHeapSort(str);
-  //passed &= testKnuthMorrisPrattSearch(str);
-
   //passed &= testTypeSizes(str);
 
   //-----------------------------------------------------------------------------------------------

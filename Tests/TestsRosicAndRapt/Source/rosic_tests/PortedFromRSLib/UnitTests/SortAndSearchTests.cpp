@@ -1,17 +1,5 @@
 #include "SortAndSearchTests.h"
 
-bool testSortAndSearch(std::string &reportString)
-{
-  std::string testName = "rsSortAndSearch";
-  bool testResult = true;
-
-  testResult &= testHeapSort(reportString);
-  testResult &= testKnuthMorrisPrattSearch(reportString);
-
-  appendTestResultToReport(reportString, testName, testResult);
-  return testResult;
-}
-
 bool testHeapSort(std::string &reportString)
 {
   std::string testName = "rsHeapSort";
@@ -59,4 +47,14 @@ bool testKnuthMorrisPrattSearch(std::string &reportString)
   return testResult;
 }
 
+bool testSortAndSearch(std::string &reportString)
+{
+  std::string testName = "rsSortAndSearch";
+  bool testResult = true;
 
+  testResult &= testHeapSort(reportString);
+  testResult &= testKnuthMorrisPrattSearch(reportString);
+
+  appendTestResultToReport(reportString, testName, testResult);
+  return testResult;
+}
