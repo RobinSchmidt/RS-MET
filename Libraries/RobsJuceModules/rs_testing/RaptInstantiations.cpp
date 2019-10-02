@@ -349,6 +349,8 @@ template class RAPT::rsResampler<double, double>;
 // Unfinished:
 template class RAPT::rsTwoBandSplitter<float, float>;
 template class RAPT::rsMultiBandSplitter<float, float>;
+template class RAPT::rsExponentialEnvelopeMatcher<double>;
+
 
 // misc audio functions
 template void RAPT::rsFadeOut(double* buffer, int start, int end);
@@ -392,6 +394,9 @@ template void RAPT::rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(const do
   int N, double fc, double bw, double fs, int numPasses, double gc);
 template void RAPT::rsBiDirectionalFilter::applyButterworthBandpassBwInHz(const double *x, double *y,
   int N, double fc, double bw, double fs, int order, int numPasses, double gc);
+
+
+
 
 //template class RAPT::rsSinusoidalSynthesizer<double>;
 //template class RAPT::rsHarmonicAnalyzer<double>;

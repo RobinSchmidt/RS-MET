@@ -1057,7 +1057,7 @@ void amplitudeMatch()
   double A1 =  1.0;    // amplitude of 1st signal
   double A2 =  0.5;    // amplitude of 2nd signal
   double d1 =  0.005;  // normalized 1st decay
-  double d2 =  0.004;  // normalized 2nd decay
+  double d2 =  0.005;  // normalized 2nd decay
   double matchLevel = -20; // level (in dB) at which the two envelopes should meet
 
   // create our two input envelopes:
@@ -1069,6 +1069,12 @@ void amplitudeMatch()
 
   // here, the actual algorithm begins:
 
+  std::vector<double> t1(N1), t2(N2);
+  for(n = 0; n < N1; n++) t1[n] = n;
+  for(n = 0; n < N2; n++) t2[n] = n;
+
+
+  /*
   // take decibel values of both input envelopes - this transforms the exponential decay into a 
   // linear one and when both decays are the same, the lines have the same slope:
   std::vector<double> xdB1(N1), xdB2(N2);
@@ -1077,9 +1083,6 @@ void amplitudeMatch()
 
   // find the regression lines y = a*t + b for both signals:
   double a1, b1, a2, b2;                // linear regression coeffs
-  std::vector<double> t1(N1), t2(N2);
-  for(n = 0; n < N1; n++) t1[n] = n;
-  for(n = 0; n < N2; n++) t2[n] = n;
   rsStatistics::linearRegression(N1, &t1[0], &xdB1[0], a1, b1);
   rsStatistics::linearRegression(N2, &t2[0], &xdB2[0], a2, b2);
 
@@ -1089,11 +1092,18 @@ void amplitudeMatch()
   //for(n = 0; n < N2; n++) yl2[n] = a2*t2[n] + b2;
   //rsPlotVectors(xl1, xl2, yl1, yl2); // ..ok, looks good
 
-  // compute, by how mmuch we must shift x1 to match x2 at the given match level:
+  // compute, by how much we must shift x1 to match x2 at the given match level:
   double tm1, tm2, dt;
   tm1 = (matchLevel - b1) / a1;  // time instant, where xdB1 crosses the matchLevel
   tm2 = (matchLevel - b2) / a2;  // same for xdB2
   dt  =  tm1 - tm2;              // this is the resulting desired shift
+  */
+
+
+  rsExponentialEnvelopeMatcher<double> matcher;
+  matcher.setMatchLevel(matchLevel);
+  double dt = matcher.getMatchOffset(&x1[0], N1, &x2[0], N2);
+
 
   // create a time-shifted time-axis for x2 for plotting x1 and x2 with the time-shift applied
   // to x2;
@@ -1122,6 +1132,11 @@ void amplitudeMatch()
   //  then refine it by finding the maximum of a correlation function - this should at most shift
   //  the estimated dt by half a period
 }
+// todo: set up an experiment that uses two attack/decay enveloped sines - maybe with a noise floor
+// ...this should be used to test the algorithms robustness - we probably need parameters to iganor 
+// an initial and final section of the sound (which presumably contains the attack portion at the 
+// start and the noise-floor at the end
+
 
 void sineShift()
 {

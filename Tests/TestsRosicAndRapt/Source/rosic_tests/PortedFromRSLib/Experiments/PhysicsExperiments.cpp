@@ -712,6 +712,12 @@ bool quantumEntanglement()
   // because 2^2 = 4 and not because 2*2 = 4. A state made from 3 spins would need 2^3 = 8 
   // amplitudes and we can't represent that as an array of 3 spins
   // see 136...
+  // the measurement of one of the two spins can be simulated by figuring out the probabilities of 
+  // the 4 eigenstates of the 4x4 matrix representing the measurement of the respective spin (it's
+  // constructed by taking the kronecker product of the 2x2 1-spin operator and the 1x1 identity 
+  // matrix), selecting one at random according to the probabilities and setting the whole 4D 
+  // system into the corrsponding eigenstate - which happens to be a product state which implies
+  // that it will also fix what will be mesured for the corrsponding observable in the other spin
 
   //Vec S[2];  // our state, consisting of 2 spins
 

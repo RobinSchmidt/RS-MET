@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
 
 
   // just for fun:
-  groupString();
+  //groupString();
   //primeAlternatingSums();
   //divisibility();
   //arithmeticDerivative();

@@ -567,6 +567,7 @@ public:
     else             return 0; // is this reasonable? or should we use a special "error" signal
   }
 
+  void append(unsigned int x) { s.push_back(x); }
 
   void removeLast()
   {

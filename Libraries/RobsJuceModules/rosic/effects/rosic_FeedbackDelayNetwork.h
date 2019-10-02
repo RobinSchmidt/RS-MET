@@ -93,6 +93,12 @@ namespace rosic
     \todo move this function out of this class - it might be useful in other contexts as well */
     static void fastGeneralizedHadamardTransform(double *x, int N, int log2N, double *work, 
       double a = 1.0, double b = 1.0, double c = 1.0, double d = -1.0);
+    // todo: maybe try a generalized Hadamard trafo with complex coeffs
+    // oh - and figure out for which choices of a,b,c,d the resulting matrix is unitary - will it 
+    // be when using a matrix with c=-b, d=a or c=b, d=-a - oh - i checked with the 2x2 seed matrix
+    // it is unitary indeed does this immply the higher order matrices are unitary too?
+    // idea - try arbitrary a,b,c,d and rescale the output to have the same length as the input
+    // vector - thtis makes the system nonlinear - maybe in an interesting way?
 
 
     static void fastInverseGeneralizedHadamardTransform(double *x, int N, int log2N, double *work, 

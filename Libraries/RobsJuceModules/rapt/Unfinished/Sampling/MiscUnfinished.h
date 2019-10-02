@@ -1014,6 +1014,37 @@ protected:
 //=================================================================================================
 // move to AudioFunctions or maybe some sort of SinusoidalAnalysis/Modeling/Resynthesis class
 
+template<class T>
+class rsExponentialEnvelopeMatcher
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  /** Sets the level at which the two envelopes are forced to meet. If they happen to have the 
+  same exponential decay shape, the match at this one level will imply a match of the whole 
+  curves - otherwise they will just match at the specified level. */
+  void setMatchLevel(T newLevel) { matchLevel = newLevel; }
+
+  // void setInitialIgnoreSection1(int numSamples) { initialIgnore1 = numSamples; }
+  // void setFinalIgnoreSection1(  int numSamples) { finalIgnore1   = numSamples; }
+  // void setInitialIgnoreSection1(int numSamples) { initialIgnore2 = numSamples; }
+  // void setFinalIgnoreSection1(  int numSamples) { finalIgnore2   = numSamples; }
+
+  /** Computes the offset (in samples) for a best match of the amplitude envelopes. */
+  T getMatchOffset(
+    const T* referenceEnv, int referenceNumSamples, 
+    const T* shifteeEnv,   int shifteeNumSamples);
+
+
+protected:
+
+  T matchLevel = -20;
+
+};
+
 
 /** Given a sinusoidal signal x of length N with frequency f at samplerate fs, this function will
 produce a 90° phase-shifted "quadrature" component corresponding to the sine and store it in y by

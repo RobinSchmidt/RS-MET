@@ -921,6 +921,22 @@ rsGroupString mul2(rsGroupString A, rsGroupString B)
 // -mod-add element--wise...but what if inputs have different length?
 // -some sort of "convolution"
 
+rsGroupString mul3(rsGroupString A, rsGroupString B)
+{
+  rsGroupString C = A;
+  for(int i = 0; i < B.length(); i++) {
+    if(C.length() > 0 && C[C.length()-1] != B[i])
+      C.append(B[i]);
+    else if(C.length() > 0)     // avoid popping on empty vector
+      C.removeLast();
+  }
+  return C;
+}
+// is the same as the current "+" operator of the class - but is probably better to use as mul
+// maybe we should give the operations neutral names here, such as op1, op2, etc. or name them
+// what they do - concatDel, modAdd
+
+
 rsGroupString add2(rsGroupString A, rsGroupString B, unsigned int m) // m: modulus
 {
   // do modular addition of of the characters where the shorter string is appropriately zero-padded
@@ -935,6 +951,7 @@ rsGroupString add2(rsGroupString A, rsGroupString B, unsigned int m) // m: modul
   int LA = A.length();
   int LB = B.length();
   //int m  = 5;              // modulus
+
   int i;                   // loop index 
   rsGroupString C;
   if(LA >= LB) {           // A is longer than B or has same length
@@ -950,7 +967,32 @@ rsGroupString add2(rsGroupString A, rsGroupString B, unsigned int m) // m: modul
   while(C.last() == 0)  C.removeLast();  // remove trailing zeros
   return C;
 }
+rsGroupString add2(rsGroupString A, rsGroupString B) // to make compatible with isAsso..., etc.
+{
+  return add2(A, B, 7);  // uses fixed modulus
+}
 
+
+// tests associativity of the given operation for the given triple of arguments
+bool isAssociative(rsGroupString (*op) (rsGroupString A, rsGroupString B),
+  rsGroupString A, rsGroupString B, rsGroupString C)
+{
+  rsGroupString s1 = op(op(A, B), C); // (A+B)+C
+  rsGroupString s2 = op(A, op(B, C)); // A+(B+C)
+  return s1 == s2; 
+}
+
+// tests, if the given "mul" operation is distributive over the given "add" operation for the given
+// triple of input arguments
+bool isDistributive(
+  rsGroupString (*add) (rsGroupString A, rsGroupString B),
+  rsGroupString (*mul) (rsGroupString A, rsGroupString B),
+  rsGroupString A, rsGroupString B, rsGroupString C)
+{
+  rsGroupString s1 = mul(A,add(B,C));         // A*(B+C)
+  rsGroupString s2 = add(mul(A,B), mul(A,C)); // A*B + A*C
+  return s1 == s2; 
+}
 
 bool testStringMultiplication(rsGroupString (*mul) (rsGroupString A, rsGroupString B))
 {
@@ -987,8 +1029,6 @@ bool testStringMultiplication(rsGroupString (*mul) (rsGroupString A, rsGroupStri
 
   // maybe try all strings of length up to 4 from the alphabet a,b,c,d - each of the 3 inputs
   // A,B,C should take on all possible values - so we need a doubly nested loop
-
-
 
 
   return asso && dist;
@@ -1032,7 +1072,11 @@ bool groupString()
   t2 = add2(s2314, add2(s546, s3613, m), m);  // 361 -> associative
   // OK - this looks good - addition is commutative and associative - at least for the tried 
   // examples - todo: try more examples - if it works out, try inverse elements and then 
-  // distributivity with the concat-delete operation
+  // distributivity with the concat-delete operation ...hmm - this addition actually allows
+  // pairs of equal characters - which is a good thing
+
+  bool asso = isAssociative(&add2, s2314, s3613, s546);
+  bool distri = isDistributive(&add2, &mul3, s2314, s3613, s546);
 
 
 
