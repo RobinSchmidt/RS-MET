@@ -95,3 +95,27 @@ void attackDecayEnvelope();
 
 //-------------------------------------------------------------------------------------------------
 // Performance Tests
+
+// Audio Performance Tests:
+
+void filterSignConventionPerformance();
+void ladderPerformance();
+void stateVectorFilterPerformance();
+void engineersFilterPerformance();
+void turtleGraphicsPerformance();
+
+
+// Math Performance Tests:
+
+void fftPerformance();
+void matrixAdressingTest();
+//void simdPerformanceFloat64x2();
+
+template<class TScalar, class TVector>
+void simdPerformance(TScalar scl, TVector vec);
+
+void sinCosPerformance();
+
+// Misc Performance Tests:
+
+void callbackPerformance();
