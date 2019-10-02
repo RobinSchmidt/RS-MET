@@ -1072,10 +1072,11 @@ void amplitudeMatch()
   double dt = matcher.getMatchOffset(&x1[0], N1, &x2[0], N2);
 
   // create a time axes for x1 and x2, for x2 also an axis with the shift:
-  std::vector<double> t1(N1), t2(N2), t2s;  // t2s: t2 with shift
+  std::vector<double> t1(N1), t2(N2), t2s(N2); // t2s: t2 with shift
   for(n = 0; n < N1; n++) t1[n]  = n;
   for(n = 0; n < N2; n++) t2[n]  = n;
   for(n = 0; n < N2; n++) t2s[n] = n + dt; 
+
 
   // plot results:
   GNUPlotter plt;
@@ -1084,6 +1085,7 @@ void amplitudeMatch()
   plt.addDataArrays(N2, &t2[0],  &x2[0]); // 2nd signal at its original position
   plt.addDataArrays(N2, &t2s[0], &x2[0]); // 2ns signal time-shifted
   plt.plot();
+
 
   // Observations:
   // -when d1 and d2 match, it works perfectly

@@ -1827,25 +1827,32 @@ T rsExponentialEnvelopeMatcher<T>::getMatchOffset(const T* x1, int N1, const T* 
 {
   // take decibel values of both input envelopes - this transforms the exponential decay into a 
   // linear one and when both decays are the same, the lines have the same slope:
-  std::vector<T> xdB1(N1), xdB2(N2);  // envelopes converted to decibels
-  std::vector<T> t1(N1),   t2(N2);    // time axes
-  for(int n = 0; n < N1; n++)
-  {
-    t1[n]   = T(n);
-    xdB1[n] = rsAmpToDb(x1[n]);
+  std::vector<T> xdB1, xdB2;  // envelopes converted to decibels
+  std::vector<T> t1,   t2;    // time axes
+  xdB1.reserve(N1);
+  xdB2.reserve(N2);
+  t1.reserve(N1);
+  t2.reserve(N2);
+
+  for(int n = initIgnore1; n < N1 - finalIgnore1; n++) {
+    if(x1[n] >= ignoreThresh1) {
+      t1.push_back(T(n));
+      xdB1.push_back(rsAmpToDb(x1[n]));
+    }
   }
-  for(int n = 0; n < N2; n++)
-  {
-    t2[n]   = T(n);
-    xdB2[n] = rsAmpToDb(x2[n]);
+  for(int n = initIgnore2; n < N2 - finalIgnore2; n++) {
+    if(x2[n] >= ignoreThresh2) {
+      t2.push_back(T(n));
+      xdB2.push_back(rsAmpToDb(x2[n]));
+    }
   }
-  // preliminary - later use only a subset of the samples of x1 and x2 - only those which are not 
-  // in the initial and final ignore sections and above some amplitude threshold
+
+  //return 0;  // test
 
   // find the regression lines y = a*t + b for both signals:
   T a1, b1, a2, b2;                // linear regression coeffs
-  rsStatistics::linearRegression(N1, &t1[0], &xdB1[0], a1, b1);
-  rsStatistics::linearRegression(N2, &t2[0], &xdB2[0], a2, b2);
+  rsStatistics::linearRegression((int)t1.size(), &t1[0], &xdB1[0], a1, b1);
+  rsStatistics::linearRegression((int)t2.size(), &t2[0], &xdB2[0], a2, b2);
 
   // compute, by how much we must shift x1 to match x2 at the given match level:
   T tm1, tm2;

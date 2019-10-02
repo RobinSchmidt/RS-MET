@@ -1028,10 +1028,15 @@ public:
   curves - otherwise they will just match at the specified level. */
   void setMatchLevel(T newLevel) { matchLevel = newLevel; }
 
-  // void setInitialIgnoreSection1(int numSamples) { initialIgnore1 = numSamples; }
-  // void setFinalIgnoreSection1(  int numSamples) { finalIgnore1   = numSamples; }
-  // void setInitialIgnoreSection1(int numSamples) { initialIgnore2 = numSamples; }
-  // void setFinalIgnoreSection1(  int numSamples) { finalIgnore2   = numSamples; }
+
+  void setInitialIgnoreSection1(int numSamples) { initialIgnore1 = numSamples; }
+
+  void setFinalIgnoreSection1(  int numSamples) { finalIgnore1   = numSamples; }
+
+  void setInitialIgnoreSection2(int numSamples) { initialIgnore2 = numSamples; }
+
+
+  void setFinalIgnoreSection2(  int numSamples) { finalIgnore2   = numSamples; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1047,6 +1052,12 @@ protected:
 
   T matchLevel = -20;
 
+  int initIgnore1  = 0;
+  int finalIgnore1 = 0;
+  int initIgnore2  = 0;
+  int finalIgnore2 = 0;
+  T ignoreThresh1  = 0.001;  // -60 dB
+  T ignoreThresh2  = 0.001; 
 };
 
 
