@@ -2,7 +2,7 @@
 #define RAPT_IMAGEUNITTESTS_H
 
 
-bool imagePainterUnitTest();
+//bool imagePainterUnitTest();
 
 
 
