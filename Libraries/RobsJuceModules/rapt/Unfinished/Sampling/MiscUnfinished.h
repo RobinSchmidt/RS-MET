@@ -1028,16 +1028,29 @@ public:
   curves - otherwise they will just match at the specified level. */
   void setMatchLevel(T newLevel) { matchLevel = newLevel; }
 
-
+  /** Sets up, how many samples of the initial section should be ignored when doing the linear 
+  regression. This can be used to prevent the attack part of the sound from distorting the 
+  measurement of the regression coefficients. It should be set to some value where the attack is
+  over and the sample in its decaying portion. */
   void setInitialIgnoreSection1(int numSamples) { initialIgnore1 = numSamples; }
 
+  /** Sets up, how many samples of the final section should be ignored. This is meant to avoid 
+  letting the final noise floor or silence distort the regression coeff measurement. It should be
+  set to some value, such that the sample is still in its decaying section and not yet decayed away
+  completely. It's measured from the end of the signal - so it's the length of the final 
+  noise-floor or silence portion after the decay, if any.  */
   void setFinalIgnoreSection1(  int numSamples) { finalIgnore1   = numSamples; }
 
+  /** Sets a level threshold (in dB) below which samples are not taken into account for the 
+  regression computation. should be set to somewhere above the noise floor. */
+  void setIgnoreThreshold1(T newThreshold) { ignoreThresh1 = newThreshold; }
+
+  // same things for envelope 2
   void setInitialIgnoreSection2(int numSamples) { initialIgnore2 = numSamples; }
-
-
   void setFinalIgnoreSection2(  int numSamples) { finalIgnore2   = numSamples; }
+  void setIgnoreThreshold2(T newThreshold) { ignoreThresh2 = newThreshold; }
 
+  // maybe make convenience functions that set these things for both signals at once
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing

@@ -1847,8 +1847,6 @@ T rsExponentialEnvelopeMatcher<T>::getMatchOffset(const T* x1, int N1, const T* 
     }
   }
 
-  //return 0;  // test
-
   // find the regression lines y = a*t + b for both signals:
   T a1, b1, a2, b2;                // linear regression coeffs
   rsStatistics::linearRegression((int)t1.size(), &t1[0], &xdB1[0], a1, b1);
