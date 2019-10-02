@@ -1,4 +1,3 @@
-#include "GraphicsExperiments.h"
 using namespace RAPT;
 
 void lineDrawing()

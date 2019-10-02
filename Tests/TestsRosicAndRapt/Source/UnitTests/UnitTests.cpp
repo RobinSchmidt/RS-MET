@@ -1,5 +1,7 @@
 #include "UnitTests.h"
 
+// unity build file for the unit tests
+
 #include "../rapt_tests/UnitTests/DataUnitTests.cpp"
 #include "../rapt_tests/UnitTests/FilterUnitTests.cpp"
 #include "../rapt_tests/UnitTests/ImageUnitTests.cpp"

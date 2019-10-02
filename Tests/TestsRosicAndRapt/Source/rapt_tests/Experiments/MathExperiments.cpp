@@ -1,4 +1,3 @@
-#include "MathExperiments.h"
 using namespace RAPT;
 using namespace std;
 

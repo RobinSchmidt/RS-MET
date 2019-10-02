@@ -86,6 +86,10 @@ template int rsArray::maxAbsIndex(const double* const buffer, int length);
 template int rsArray::maxIndex(const rsRange<double>*, int length);
 
 
+template int rsArray::copyIfMatching(const int *, int *, int, const int *, int);
+template int rsArray::copyIfNotMatching(const int *, int *, int, const int *, int);
+
+
 template void rsArray::applyFunction(const double *x, double *y, int N, double (*f) (double));
 template void rsArray::negate(const double *source, double *destination, int length);
 template void rsArray::filter(const double *x, int xLength, double *y, int yLength,

@@ -1,5 +1,3 @@
-#include "ImageUnitTests.h"
-
 using namespace RAPT;
 
 void fillWithCheckerBoardPattern(rsImageF& image)

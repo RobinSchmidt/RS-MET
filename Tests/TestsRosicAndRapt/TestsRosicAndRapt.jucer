@@ -53,68 +53,43 @@
                   file="Source/rapt_tests/UnitTests/Math/TransformsTests.cpp"/>
             <FILE id="fD3ILC" name="Triangle2DTests.cpp" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/Triangle2DTests.cpp"/>
+            <FILE id="GxbZ5q" name="UnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.h"/>
             <FILE id="Zhdjdh" name="VectorUnitTests.cpp" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/VectorUnitTests.cpp"/>
           </GROUP>
           <FILE id="crSQKa" name="DataUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/DataUnitTests.cpp"/>
-          <FILE id="dj1inx" name="DataUnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/DataUnitTests.h"/>
           <FILE id="L0CxIn" name="DrawingUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/DrawingUnitTests.cpp"/>
-          <FILE id="PAepQL" name="DrawingUnitTests.h" compile="0" resource="0"
-                file="Source/rapt_tests/UnitTests/DrawingUnitTests.h"/>
           <FILE id="vo1C57" name="FilterUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/FilterUnitTests.cpp"/>
-          <FILE id="S3g7Rt" name="FilterUnitTests.h" compile="0" resource="0"
-                file="Source/rapt_tests/UnitTests/FilterUnitTests.h"/>
           <FILE id="yWZr9A" name="ImageUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/ImageUnitTests.cpp"/>
-          <FILE id="Jkti6q" name="ImageUnitTests.h" compile="0" resource="0"
-                file="Source/rapt_tests/UnitTests/ImageUnitTests.h"/>
           <FILE id="n0ecux" name="MathUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/MathUnitTests.cpp"/>
-          <FILE id="xAAX6K" name="MathUnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/MathUnitTests.h"/>
           <FILE id="fkkHCy" name="MiscUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/MiscUnitTests.cpp"/>
-          <FILE id="D8zWcF" name="MiscUnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/MiscUnitTests.h"/>
           <FILE id="f93wHx" name="UnitTests.cpp" compile="0" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.cpp"/>
-          <FILE id="S3Y8ov" name="UnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.h"/>
         </GROUP>
         <GROUP id="{47DEF60D-47E1-97D9-4623-845086C6F137}" name="PerformanceTests">
           <FILE id="g0WJb3" name="AudioPerformanceTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/PerformanceTests/AudioPerformanceTests.cpp"/>
-          <FILE id="g4ucO2" name="AudioPerformanceTests.h" compile="0" resource="0"
-                file="Source/rapt_tests/PerformanceTests/AudioPerformanceTests.h"/>
           <FILE id="QfWR9e" name="MathPerformanceTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/PerformanceTests/MathPerformanceTests.cpp"/>
-          <FILE id="hBoBzf" name="MathPerformanceTests.h" compile="0" resource="0"
-                file="Source/rapt_tests/PerformanceTests/MathPerformanceTests.h"/>
           <FILE id="Tt4cHh" name="MiscPerformanceTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/PerformanceTests/MiscPerformanceTests.cpp"/>
-          <FILE id="zjflBD" name="MiscPerformanceTests.h" compile="0" resource="0"
-                file="Source/rapt_tests/PerformanceTests/MiscPerformanceTests.h"/>
         </GROUP>
         <GROUP id="{9B3DF9C6-510B-1467-E9E7-3E8187C592F8}" name="Experiments">
           <FILE id="jYh9KO" name="FilterExperiments.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/FilterExperiments.cpp"/>
-          <FILE id="OTp55x" name="FilterExperiments.h" compile="0" resource="0"
-                file="Source/rapt_tests/Experiments/FilterExperiments.h"/>
           <FILE id="Cau1xx" name="GeneratorExperiments.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/GeneratorExperiments.cpp"/>
-          <FILE id="Q19B2r" name="GeneratorExperiments.h" compile="0" resource="0"
-                file="Source/rapt_tests/Experiments/GeneratorExperiments.h"/>
           <FILE id="MpBTt9" name="GraphicsExperiments.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/GraphicsExperiments.cpp"/>
-          <FILE id="OhAvkW" name="GraphicsExperiments.h" compile="0" resource="0"
-                file="Source/rapt_tests/Experiments/GraphicsExperiments.h"/>
           <FILE id="NqLe9c" name="MathExperiments.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/MathExperiments.cpp"/>
-          <FILE id="EfK5dG" name="MathExperiments.h" compile="0" resource="0"
-                file="Source/rapt_tests/Experiments/MathExperiments.h"/>
           <FILE id="P5GhjY" name="ModulatorExperiments.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/ModulatorExperiments.cpp"/>
-          <FILE id="IiyBfY" name="ModulatorExperiments.h" compile="0" resource="0"
-                file="Source/rapt_tests/Experiments/ModulatorExperiments.h"/>
         </GROUP>
       </GROUP>
       <GROUP id="{CDBDEF1D-BB8A-7D2D-D038-9B74B068C290}" name="Experiments">

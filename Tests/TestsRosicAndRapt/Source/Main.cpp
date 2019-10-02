@@ -9,11 +9,12 @@
 
 #include "rapt_tests/RaptTests.h"
 
+// get rid of these includes - the best would be, to move all that stuff into the rs_testing juce
+// module:
 #include "Experiments/Experiments.h"
 #include "UnitTests/UnitTests.h"
 #include "PerformanceTests/PerformanceTests.h"
 #include "Misc/Misc.h"  // demos, examples, rendering, ... // todo: make unity build cpp file
-
 // todo: move all the code into rs_testing module such that it can be compiled as a single 
 // compilation unit -> faster build times for testing
 
@@ -47,7 +48,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  runAllUnitTests();  // todo: merge with unit tests for RSLib
+  //runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -56,16 +57,16 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Performance tests:
 
-  callbackPerformance();
-
+  //callbackPerformance();
   //matrixAdressingTest();
-  simdPerformance(1.0, rsFloat64x2(1.0));
+
+  //simdPerformance(1.0, rsFloat64x2(1.0));
   //simdPerformance(1.f, rsFloat32x4(1.f));
   //sinCosPerformance();
-
   //fftPerformance();
+
   //filterSignConventionPerformance();
-  ladderPerformance();
+  //ladderPerformance();
   //stateVectorFilterPerformance();
   //engineersFilterPerformance();
   //turtleGraphicsPerformance();
@@ -77,7 +78,7 @@ int main(int argc, char* argv[])
   //particleBouncerExperiment();
 
   // Math:
-  ellipseLineIntersections();
+  //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
   //interpolatingFunction();
@@ -105,7 +106,7 @@ int main(int argc, char* argv[])
   //nonUniformComplexOnePole();
   //nonUniformAllpole(); // rename - it's not restricted to allpoles anymore
   //nonUniformBiquad();
-  nonUniformBiDirectional();
+  //nonUniformBiDirectional();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
@@ -119,7 +120,7 @@ int main(int argc, char* argv[])
   //particleSystem();
   //quantumSpinMeasurement();  // move to unit tests
   //quantumGates();            // move to unit tests
-  quantumSpinEvolution();
+  //quantumSpinEvolution();
   //quantum3StateSystem();;
   //tennisRacket();
   //tennisRacket2();
@@ -148,10 +149,10 @@ int main(int argc, char* argv[])
   //snowFlake();
   //triSawOsc();
   //triSawOscAntiAlias();
-  xoxosOsc();
+  //xoxosOsc();
 
   // Modulators:
-  attackDecayEnvelope();
+  //attackDecayEnvelope();
 
   // Graphics:
   //lineDrawing();
@@ -163,7 +164,7 @@ int main(int argc, char* argv[])
   //phaseScopeLissajous();
   //splineArc();
   //triangles();
-  pixelCoverage();
+  //pixelCoverage();
 
 
   // just for fun:
@@ -180,20 +181,17 @@ int main(int argc, char* argv[])
   // Tests for dragged over RSLib code:
 
   //int dummy;
-  //std::string str;    // causes a memleak
+  std::string str;      // causes a memleak
   bool passed = true;
 
   //-----------------------------------------------------------------------------------------------
-  // Unit Tests:
+  // Unit Tests - these should be integrated into the appropriate unit tests file::
 
-  //passed &= testBufferFunctions(str);
-  //passed &= testCopySection(    str);
-  //passed &= testMoveElements(   str);
-  //passed &= testRemoveElements( str);
+  //passed &= testBufferFunctions(str);       // passes -> move to rapt tests
+
 
 
   //passed &= testFilterPolynomials(str);
-
   //passed &= testHighOrderFilter(  str);  // fails
 
 

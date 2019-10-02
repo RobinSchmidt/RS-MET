@@ -2643,50 +2643,8 @@
     <ClInclude Include="..\..\Source\rapt_tests\RaptTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DrawingUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\ImageUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\MathUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\MiscUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\UnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\PerformanceTests\AudioPerformanceTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\PerformanceTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\PerformanceTests\MathPerformanceTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\PerformanceTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\PerformanceTests\MiscPerformanceTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\PerformanceTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\Experiments\GeneratorExperiments.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\Experiments\MathExperiments.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\Experiments\ModulatorExperiments.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Experiments\Experiments.h">
       <Filter>TestsRosicAndRapt\Source\Experiments</Filter>

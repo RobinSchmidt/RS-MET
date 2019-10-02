@@ -1,17 +1,5 @@
 #include "BufferFunctionTests.h"
 
-bool testBufferFunctions(std::string &reportString)
-{
-  std::string testName = "rsFunctionTemplates";
-  bool testResult = true;
-
-  testResult &= testCopySection(reportString);
-  //testResult &= testRemoveElements(reportString);
-  //testResult &= testMoveElements(reportString);
-
-  appendTestResultToReport(reportString, testName, testResult);
-  return testResult;
-}
 
 
 /*
@@ -144,16 +132,31 @@ bool testRemoveElements(std::string &reportString)
   std::string testName = "rsRemoveElements";
   bool testResult = true;
 
-  /*
+  typedef RAPT::rsArray AR;
   static const int length = 10;
   int testBuffer1[length] = {1,6,7,1,4,5,7,6,1,2};
   int testBuffer2[length] = {0,0,0,0,0,0,0,0,0,0};
   int matchBuffer[3]      = {1,6,7};
-  int numMatches = rsCopyIfMatching(testBuffer1, testBuffer2, length, matchBuffer, 3);
-  int numNonMatches = rsCopyIfNotMatching(testBuffer1, testBuffer2, length, matchBuffer, 3);
+  int numMatches    = AR::copyIfMatching(   testBuffer1, testBuffer2, length, matchBuffer, 3);
+  int numNonMatches = AR::copyIfNotMatching(testBuffer1, testBuffer2, length, matchBuffer, 3);
+  numNonMatches     = AR::copyIfNotMatching(testBuffer1, testBuffer1, length, matchBuffer, 3);
 
-  numNonMatches = rsCopyIfNotMatching(testBuffer1, testBuffer1, length, matchBuffer, 3);
-   */
+  // todo: verify that the function did the right thing - after copyIfMatching, the target buffer
+  // should be: 1,6,7,1,7,6,1 and after copyIfNotMatching: 4,5,2
+
+  appendTestResultToReport(reportString, testName, testResult);
+  return testResult;
+}
+
+
+bool testBufferFunctions(std::string &reportString)
+{
+  std::string testName = "rsFunctionTemplates";
+  bool testResult = true;
+
+  testResult &= testCopySection(reportString);
+  testResult &= testRemoveElements(reportString);
+  testResult &= testMoveElements(reportString);
 
   appendTestResultToReport(reportString, testName, testResult);
   return testResult;

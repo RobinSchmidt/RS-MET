@@ -1,4 +1,3 @@
-#include "MathPerformanceTests.h"
 using namespace RAPT;
 
 //#include "../../../../../Libraries/JUCE/modules/rapt/Data/Simd/Float64x2.h"
@@ -44,8 +43,8 @@ void matrixAdressingTest()
   //typedef float Data;
   typedef double Data;
 
-  size_t N = 8;     // number of rows
-  size_t M = 8;     // number of columns
+  size_t N = 70;     // number of rows
+  size_t M = 20;     // number of columns
   size_t i, j;       // row and column indices
 
   // allocate flat matrices and row-pointers, fill a-matrix with random values:
@@ -93,7 +92,9 @@ void matrixAdressingTest()
   // matrices, pointer arithmetic beats pointer arrays.
 
   // Hmm...having done these measurements the other day again, i got different results - now the
-  // pointer-to-pointer version performing better. What now?
+  // pointer-to-pointer version performing better. What now? ...also, the numbers are ridiculously
+  // high anyway :-O ...whatever, i should use pointer arithmetic and flat storage for 
+  // compatibility with lapack routines anyway
 
   //delete[] af, bf, a, b; // nope - gives memory leak - we need to delete them all separately
   delete[] af;

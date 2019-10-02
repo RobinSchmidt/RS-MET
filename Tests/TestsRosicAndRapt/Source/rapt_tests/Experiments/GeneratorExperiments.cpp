@@ -1,6 +1,4 @@
-#include "GeneratorExperiments.h"
 using namespace RAPT;
-//using namespace rosic;
 
 // maybe let it take a parameter for the length and produce various test signals with various 
 // lengths to see, how the quality depends on the length:

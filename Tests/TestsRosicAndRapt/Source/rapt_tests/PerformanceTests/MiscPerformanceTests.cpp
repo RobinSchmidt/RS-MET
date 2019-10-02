@@ -1,4 +1,3 @@
-#include "MiscPerformanceTests.h"
 using namespace RAPT;
 
 void testFunction(double x)
