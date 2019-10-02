@@ -1023,8 +1023,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  /** Sets the level at which the two envelopes are forced to meet. If they happen to have the 
-  same exponential decay shape, the match at this one level will imply a match of the whole 
+  /** Sets the level (in dB) at which the two envelopes are forced to meet. If they happen to have
+  the same exponential decay shape, the match at this one level will imply a match of the whole 
   curves - otherwise they will just match at the specified level. */
   void setMatchLevel(T newLevel) { matchLevel = newLevel; }
 
@@ -1032,6 +1032,10 @@ public:
   // void setFinalIgnoreSection1(  int numSamples) { finalIgnore1   = numSamples; }
   // void setInitialIgnoreSection1(int numSamples) { initialIgnore2 = numSamples; }
   // void setFinalIgnoreSection1(  int numSamples) { finalIgnore2   = numSamples; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
 
   /** Computes the offset (in samples) for a best match of the amplitude envelopes. */
   T getMatchOffset(

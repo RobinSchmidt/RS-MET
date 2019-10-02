@@ -1066,53 +1066,18 @@ void amplitudeMatch()
   for(n = 0; n < N1; n++) x1[n] = A1 * exp(-d1*n);
   for(n = 0; n < N2; n++) x2[n] = A2 * exp(-d2*n);
 
-
-  // here, the actual algorithm begins:
-
-  std::vector<double> t1(N1), t2(N2);
-  for(n = 0; n < N1; n++) t1[n] = n;
-  for(n = 0; n < N2; n++) t2[n] = n;
-
-
-  /*
-  // take decibel values of both input envelopes - this transforms the exponential decay into a 
-  // linear one and when both decays are the same, the lines have the same slope:
-  std::vector<double> xdB1(N1), xdB2(N2);
-  for(n = 0; n < N1; n++) xdB1[n] = rsAmpToDb(x1[n]); 
-  for(n = 0; n < N2; n++) xdB2[n] = rsAmpToDb(x2[n]);
-
-  // find the regression lines y = a*t + b for both signals:
-  double a1, b1, a2, b2;                // linear regression coeffs
-  rsStatistics::linearRegression(N1, &t1[0], &xdB1[0], a1, b1);
-  rsStatistics::linearRegression(N2, &t2[0], &xdB2[0], a2, b2);
-
-  //// test: reconstruct xl1, xl2 from regression coeffs:
-  //std::vector<double> yl1(N1), yl2(N2);
-  //for(n = 0; n < N1; n++) yl1[n] = a1*t1[n] + b1;
-  //for(n = 0; n < N2; n++) yl2[n] = a2*t2[n] + b2;
-  //rsPlotVectors(xl1, xl2, yl1, yl2); // ..ok, looks good
-
-  // compute, by how much we must shift x1 to match x2 at the given match level:
-  double tm1, tm2, dt;
-  tm1 = (matchLevel - b1) / a1;  // time instant, where xdB1 crosses the matchLevel
-  tm2 = (matchLevel - b2) / a2;  // same for xdB2
-  dt  =  tm1 - tm2;              // this is the resulting desired shift
-  */
-
-
+  // find best match time-shift:
   rsExponentialEnvelopeMatcher<double> matcher;
   matcher.setMatchLevel(matchLevel);
   double dt = matcher.getMatchOffset(&x1[0], N1, &x2[0], N2);
 
-
-  // create a time-shifted time-axis for x2 for plotting x1 and x2 with the time-shift applied
-  // to x2;
-  std::vector<double> t2s(N2);  // t2 with shift
+  // create a time axes for x1 and x2, for x2 also an axis with the shift:
+  std::vector<double> t1(N1), t2(N2), t2s;  // t2s: t2 with shift
+  for(n = 0; n < N1; n++) t1[n]  = n;
+  for(n = 0; n < N2; n++) t2[n]  = n;
   for(n = 0; n < N2; n++) t2s[n] = n + dt; 
 
-
-  //rsPlotVectors(x1, x2);
-
+  // plot results:
   GNUPlotter plt;
   plt.addDataArrays(N1, &t1[0],  &x1[0]);
   plt.addDataArrays(N1, &t1[0],  &x1[0]); // simple trick, to plot the shifted x2 red
