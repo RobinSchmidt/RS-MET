@@ -1,6 +1,7 @@
 #ifndef RAPT_GENERATOREXPERIMENTS_H
 #define RAPT_GENERATOREXPERIMENTS_H
 
+/*
 void blit();
 void blep();
 //void blamp();
@@ -25,6 +26,7 @@ void snowFlake();
 void triSawOsc();
 void triSawOscAntiAlias();
 void xoxosOsc();
+*/
 
 
 #endif

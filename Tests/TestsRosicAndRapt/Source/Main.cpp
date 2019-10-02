@@ -7,6 +7,8 @@
 // includes for unity build:
 //#include "Shared/Shared.h"
 
+#include "rapt_tests/RaptTests.h"
+
 #include "Experiments/Experiments.h"
 #include "UnitTests/UnitTests.h"
 #include "PerformanceTests/PerformanceTests.h"
@@ -32,8 +34,12 @@ int main(int argc, char* argv[])
   // tempoarary throw-away-code:
   //testCrossoverNewVsOld();
 
-  // todo: get rid of the distintion between testing classes form rapt and rosic - that makes it 
-  // confusing and hard to find a particular test
+  // todo: 
+  // -get rid of the distinction between testing classes form rapt and rosic - that makes it 
+  //  confusing and hard to find a particular test -> merge the tests
+  // -get rid of header files FilterExperiments., GnereatorExperiments.h etc. - do it all in a 
+  //  single include file -> less files are easier to maintain
+   // ...maybe make even just a single include file for all rapt tests
 
   //===============================================================================================
   // RAPT tests:
@@ -70,7 +76,7 @@ int main(int argc, char* argv[])
   //particleBouncerExperiment();
 
   // Math:
-  //ellipseLineIntersections();
+  ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
   //interpolatingFunction();
@@ -98,7 +104,7 @@ int main(int argc, char* argv[])
   //nonUniformComplexOnePole();
   //nonUniformAllpole(); // rename - it's not restricted to allpoles anymore
   //nonUniformBiquad();
-  //nonUniformBiDirectional();
+  nonUniformBiDirectional();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
@@ -112,7 +118,7 @@ int main(int argc, char* argv[])
   //particleSystem();
   //quantumSpinMeasurement();  // move to unit tests
   //quantumGates();            // move to unit tests
-  //quantumSpinEvolution();
+  quantumSpinEvolution();
   //quantum3StateSystem();;
   //tennisRacket();
   //tennisRacket2();
@@ -141,10 +147,10 @@ int main(int argc, char* argv[])
   //snowFlake();
   //triSawOsc();
   //triSawOscAntiAlias();
-  //xoxosOsc();
+  xoxosOsc();
 
   // Modulators:
-  //attackDecayEnvelope();
+  attackDecayEnvelope();
 
   // Graphics:
   //lineDrawing();
@@ -156,7 +162,7 @@ int main(int argc, char* argv[])
   //phaseScopeLissajous();
   //splineArc();
   //triangles();
-  //pixelCoverage();
+  pixelCoverage();
 
 
   // just for fun:
@@ -426,7 +432,7 @@ int main(int argc, char* argv[])
   // Matching:
   //sineShift();
   //sineShift2();
-  amplitudeMatch();
+  //amplitudeMatch();
 
 
   ////// tests with Elan's example files (they don't work unless the files are available):

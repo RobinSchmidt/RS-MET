@@ -1,6 +1,7 @@
 #ifndef RAPT_MATHEXPERIMENTS_H
 #define RAPT_MATHEXPERIMENTS_H
 
+/*
 void ellipseLineIntersections();
 void interpolatingFunction();
 void linearRegression();
@@ -22,7 +23,7 @@ bool groupString();
 void primeAlternatingSums();
 void divisibility();
 void arithmeticDerivative();
-
+*/
 
 
 

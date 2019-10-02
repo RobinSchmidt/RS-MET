@@ -2383,6 +2383,7 @@
     <ClInclude Include="..\..\Source\Misc\Misc.h"/>
     <ClInclude Include="..\..\Source\PerformanceTests\PerformanceTests.h"/>
     <ClInclude Include="..\..\Source\UnitTests\UnitTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\RaptTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DrawingUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.h"/>

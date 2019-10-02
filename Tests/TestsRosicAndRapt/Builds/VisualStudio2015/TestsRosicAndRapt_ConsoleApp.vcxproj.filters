@@ -2640,6 +2640,9 @@
     <ClInclude Include="..\..\Source\UnitTests\UnitTests.h">
       <Filter>TestsRosicAndRapt\Source\UnitTests</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\rapt_tests\RaptTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClInclude>
