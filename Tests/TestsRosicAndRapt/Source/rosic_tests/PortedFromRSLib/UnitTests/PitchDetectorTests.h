@@ -2,7 +2,7 @@
 #define RS_PITCHDETECTORTESTS_H
 
 
-bool testAutoCorrelationPitchDetector(std::string &reportString);
+bool testAutoCorrelationPitchDetector();
 
 
 

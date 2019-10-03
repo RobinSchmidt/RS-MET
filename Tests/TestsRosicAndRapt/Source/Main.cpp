@@ -188,21 +188,21 @@ int main(int argc, char* argv[])
   // Tests for dragged over RSLib code - merge with fiiting rapt and rosic test code
 
   //int dummy;
-  std::string str;      // causes a memleak
+  //std::string str;      // causes a memleak
 
 
   //-----------------------------------------------------------------------------------------------
   // Unit Tests - these should be integrated into the appropriate unit tests file::
   
   // these should probably be merged with rosic unit test tests (see somewhere below):
+  passed = true;
   passed &= testTypeSizes();                     // passes
   passed &= testExponentExtraction();            // passes - is sub-test, called by testNumberManipulations
   passed &= testFilterPolynomials();             // passes
   passed &= testHighOrderFilter();               // passes but takes long
-  passed &= testModalFilter2(str);                  // passes
-  passed &= testAutoCorrelationPitchDetector(str);  // passes
-  //passed &= testModalSynth(str);         // triggers assert - doesn't do meaningful test -> get rid
-  passed &= testModalFilter2(str);                  // passes
+  passed &= testModalFilter2();                  // passes
+  //passed &= testModalSynth();         // triggers assert - doesn't do meaningful test -> get rid
+  passed &= testAutoCorrelationPitchDetector();  // passes - there's a lot of code commented -> check why
   //passed &= testNumberManipulations(); // fails due to rounding -> figure out
 
   int dummi = 0;

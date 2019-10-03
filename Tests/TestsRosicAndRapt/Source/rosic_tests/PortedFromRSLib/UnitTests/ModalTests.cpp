@@ -1,8 +1,7 @@
 #include "ModalTests.h"
 
-bool testModalFilter2(std::string &reportString)
+bool testModalFilter2()
 {
-  std::string testName = "ModalFilter";
   bool testResult = true;
 
   // user parameters:
@@ -82,18 +81,15 @@ bool testModalFilter2(std::string &reportString)
   err = RAPT::rsArray::maxDeviation(xt, x1, N);
   testResult &= err < 0.002;
 
-  //cout << reportString;
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
 
-bool testModalSynth(std::string &reportString)
+bool testModalSynth()
 {
   return true; 
   // maybe we can get rid of this "test" - it doesn't really test anything meaningful
 
-  std::string testName = "ModalSynth";
   bool testResult = true;
 
   rsModalFilterBankDD ms;
@@ -124,7 +120,6 @@ bool testModalSynth(std::string &reportString)
 
   testResult &= fabs(y[0]) < 1.e-17;  //y[0] should be close to zero
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 

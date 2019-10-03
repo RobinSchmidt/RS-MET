@@ -12,9 +12,8 @@ bool isRangeLinear(T *buffer, int length, T min, T max)
   return true;
 }
 
-bool testAutoCorrelationPitchDetector(std::string &reportString)
+bool testAutoCorrelationPitchDetector()
 {
-  std::string testName = "AutoCorrelationPitchDetector";
   bool testResult = true;
 
   //static const int bufferSize = 16;
@@ -185,6 +184,5 @@ bool testAutoCorrelationPitchDetector(std::string &reportString)
   start += size;
   estimate = pd.processBlock(&x[start], size);
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
