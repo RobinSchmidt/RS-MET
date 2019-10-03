@@ -42,3 +42,6 @@ using namespace rosic;
 #include "../rosic_tests/PortedFromRSLib/UnitTests/NumberManipulationsTests.cpp"
 #include "../rosic_tests/PortedFromRSLib/UnitTests/PitchDetectorTests.cpp"
 #include "../rosic_tests/PortedFromRSLib/UnitTests/TypeSizeTests.cpp"
+
+
+//#include "../rosic_tests/UnitTestsRosic.cpp"  // should become unity build file for rosic unit tests

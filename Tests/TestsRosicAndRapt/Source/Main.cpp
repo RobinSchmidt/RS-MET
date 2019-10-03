@@ -47,8 +47,15 @@ int main(int argc, char* argv[])
 
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
+  bool passed = true;
+  passed &= runUnitTestsRosic();
+  passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
+  passed = passed;  // dummy
 
-  runAllUnitTests();  // todo: merge with unit tests for RSLib
+
+
+
+
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -182,11 +189,11 @@ int main(int argc, char* argv[])
 
   //int dummy;
   std::string str;      // causes a memleak
-  bool passed = true;
+
 
   //-----------------------------------------------------------------------------------------------
   // Unit Tests - these should be integrated into the appropriate unit tests file::
-
+  
   // these should probably be merged with rosic unit test tests (see somewhere below):
   passed &= testTypeSizes(str);                     // passes
   passed &= testExponentExtraction(str);            // passes

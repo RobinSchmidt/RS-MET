@@ -2,7 +2,7 @@
 #define UNITTESTS_INCLUDED
 
 // The function that runs all the unit tests:
-bool runAllUnitTests();
+bool runAllUnitTests();  // rename to runUntTestsRapt
 
 // Data:
 bool arrayUnitTest();
