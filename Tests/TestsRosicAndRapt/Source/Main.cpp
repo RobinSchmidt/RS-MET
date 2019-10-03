@@ -47,15 +47,10 @@ int main(int argc, char* argv[])
 
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
-  bool passed = true;
-  passed &= runUnitTestsRosic();
-  passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
-  passed = passed;  // dummy
-
-
-
-
-
+  //bool passed = true;
+  //passed &= runUnitTestsRosic();
+  //passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
+  //passed = passed;  // dummy
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -128,7 +123,8 @@ int main(int argc, char* argv[])
   //quantumSpinMeasurement();  // move to unit tests
   //quantumGates();            // move to unit tests
   //quantumSpinEvolution();
-  //quantum3StateSystem();;
+  //quantum3StateSystem();
+  quantumParticle();
   //tennisRacket();
   //tennisRacket2();
   //tennisRacket3();
@@ -182,28 +178,6 @@ int main(int argc, char* argv[])
 
   // third party code:
   //sampleTailExtenderTest();
-
-
-  //===============================================================================================
-  // Tests for dragged over RSLib code - merge with fiiting rapt and rosic test code
-
-
-  //-----------------------------------------------------------------------------------------------
-  // Unit Tests - these should be integrated into the appropriate unit tests file::
-  
-  // these should probably be merged with rosic unit test tests (see somewhere below):
-  passed = true;
-  passed &= testTypeSizes();                     // passes
-  passed &= testExponentExtraction();            // passes - is sub-test, called by testNumberManipulations
-  passed &= testFilterPolynomials();             // passes
-  passed &= testHighOrderFilter();               // passes but takes long
-  passed &= testModalFilter2();                  // passes
-  //passed &= testModalSynth();         // triggers assert - doesn't do meaningful test -> get rid
-  passed &= testAutoCorrelationPitchDetector();  // passes - there's a lot of code commented -> check why
-  //passed &= testNumberManipulations(); // fails due to rounding -> figure out
-
-  int dummi = 0;
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -474,8 +448,6 @@ int main(int argc, char* argv[])
   //testSincInterpolator(str);
 
   // Modal:
-  //testModalFilter2(str);    // this is actually a unit test
-  //testModalSynth(str);      // this too ...move elsewhere
   //testModalFilter3(str);
   //testModalFilterBank(str);
 
@@ -497,19 +469,21 @@ int main(int argc, char* argv[])
   // RoSiC tests:
 
   //-----------------------------------------------------------------------------------------------
-  // Unit tests:
-
-  //testAllRosicClasses();
-  //testRosicAnalysis();
-  //testRosicBasics();
-  //testRosicFile();
-  //testRosicEffects();
-  //testRosicGenerators();
-  //testRosicFilter();
-  //testRosicNumerical();
-  //testRosicMath();
-  //testRosicNonRealTime();
-  //testRosicOthers();
+  // Unit tests - tese need to be adapted: 
+  /*
+  testRosicAnalysis();
+  testRosicBasics();
+  testRosicFile();
+  testRosicEffects();
+  testRosicGenerators();
+  testRosicFilter();
+  testRosicNumerical();
+  testRosicMath();
+  testRosicNonRealTime();
+  testRosicOthers();
+  testAllRosicClasses();
+  // hmm...maybe of those are actually not unit tests but experiments - disentangle that...
+  */
 
   //-----------------------------------------------------------------------------------------------
   // Experiments:

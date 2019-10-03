@@ -1083,6 +1083,13 @@ void quantum3StateSystem()
 
 }
 
+void quantumParticle()
+{
+  rsQuantumParticle<double> p;
+
+
+  int dummy = 0;
+}
 
 
 void tennisRacket()

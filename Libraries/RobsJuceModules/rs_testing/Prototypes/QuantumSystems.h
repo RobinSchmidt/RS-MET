@@ -276,6 +276,41 @@ public:
 template<class T> const T rsQuantumSpin<T>::s = T(1) / sqrt(T(2));
 template<class T> const std::complex<T> rsQuantumSpin<T>::i = std::complex<T>(0, 1);
 
+//=================================================================================================
+
+/** Simulates the time evolution of a quantum particle in 1 dimension according to the 
+Schroedinger equation. */
+
+template<class T>
+class rsQuantumParticle
+{
+
+public:
+
+  typedef std::complex<T> Complex;
+
+  /** Sets up the initial state of the wavefunction. */
+  void initializeState(std::vector<Complex>& Psi_0);
+
+  /** Updates the wavefunction by the given timestep (using the forward Euler method in time and
+  central differences in space. */
+  void updateState(T timeStep);
+
+  /** Returns a reference to the wavefunction in its current state */
+  std::vector<Complex>& getWaveFunction() { return Psi; }
+
+protected:
+
+
+
+  std::vector<T>       x;      // x-coordinate values
+  std::vector<Complex> Psi;    // the wave-function (or state) itself
+  std::vector<Complex> Psi_t;  // time-derivative of wave function 
+  std::vector<Complex> Psi_xx; // 2nd spatial derivative of wavefunction
+
+  //size_t mask;
+
+};
 
 
 //=================================================================================================

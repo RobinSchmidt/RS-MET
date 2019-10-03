@@ -175,6 +175,10 @@ T rsQuantumSpin<T>::measureSpinY(Vec& A, rsNoiseGenerator<T>* prng)
 // todo: make a function that computes the two angles that describe the state as point on
 // the Bloch sphere https://en.wikipedia.org/wiki/Bloch_sphere
 
+
+
+
+
 //=================================================================================================
 /*                            Background Information
 
@@ -201,6 +205,21 @@ and doesn't consider the others at all - it should also not call the states "up"
 |1> and |0> respectively - it's more abstract and needs less "physical" features
 
 */
+//=================================================================================================
+
+
+template<class T>
+void rsQuantumParticle<T>::initializeState(std::vector<Complex>& Psi_0)
+{
+
+}
+
+template<class T>
+void rsQuantumParticle<T>::updateState(T timeStep)
+{
+
+}
+
 //=================================================================================================
 
 

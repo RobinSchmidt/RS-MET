@@ -15,6 +15,18 @@ bool runUnitTestsRosic()
   passed &= runUnitTest(&testAutoCorrelationPitchDetector, "AutoCorrPitchDetect");
   passed &= runUnitTest(&testNumberManipulations,          "NumberManipulations"); // fails due to rounding -> figure out
 
+  // these need to be adapted
+  //testAllRosicClasses();
+  //testRosicAnalysis();
+  //testRosicBasics();
+  //testRosicFile();
+  //testRosicEffects();
+  //testRosicGenerators();
+  //testRosicFilter();
+  //testRosicNumerical();
+  //testRosicMath();
+  //testRosicNonRealTime();
+  //testRosicOthers();
 
 
   return passed;

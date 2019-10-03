@@ -12,8 +12,8 @@ bool testModalSynth();
 
 
 bool testNumberManipulations();
-bool testDoubleIntConversions();  // get rid
-bool testExponentExtraction();    // get rid
+bool testDoubleIntConversions();  // get rid - is subtest of  testNumberManipulations
+bool testExponentExtraction();    // dito
 
 
 bool testAutoCorrelationPitchDetector();
