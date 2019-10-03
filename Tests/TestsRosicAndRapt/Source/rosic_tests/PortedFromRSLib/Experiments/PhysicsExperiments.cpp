@@ -1086,19 +1086,18 @@ void quantum3StateSystem()
 void quantumParticle()
 {
 
-  int    Nx    = 256;    // number of spatial samples
-  //int    Nt    = 50000;  // number of temporal samples
+  int    Nx    = 128;    // number of spatial samples
   double xMin  = -1.0;   // minimum x-coordinate
   double xMax  =  1.0;   // maximum x-coordinate
-  double dt    = 5.e-5;  // time step for Euler solver
+  double dt    = 1.e-4;  // time step for Euler solver
   double mu    = 0.0;    // center of the initial (Gaussian) wavefunction
-  double sigma = 0.1;    // width (standard deviation) of initial wavefunction
+  double sigma = 0.05;    // width (standard deviation) of initial wavefunction
   double m     = 100;    // mass
   double k     = 300;    // spring constant - larger values hold the thing together more strongly, 
                          // 0 gives a free particle
 
   int numCycles = 400;   // number of cycles to record
-  int skipRatio = 1;     // number of iterations to per recorded cycle (i.e. oversampling)
+  int skipRatio = 500;   // number of iterations to per recorded cycle (i.e. oversampling)
                          // ...needs more
   //int Nt = 
 
@@ -1144,13 +1143,9 @@ void quantumParticle()
   // ....
 
 
-
-
-  int plotInterval = 500;
   int numSamples = numCycles * Nx;
   std::vector<Complex> xOut;
   xOut.reserve(numSamples);
-
   // simulate the time evolution of the wavefunction:
   int recordedCycles = 0;
   int iterations = 0;
@@ -1164,15 +1159,19 @@ void quantumParticle()
     p.updateWaveFunction(dt);
     iterations++;
   }
- 
   writeToWaveFile("SchroedingerParticle.wav", xOut, 44100);
-
-  //for(int n = 0; n < Nt; n++)
-  //{
-  //  if(n % plotInterval == 0)
-  //    GNUPlotter::plotComplexArrayReIm(&x[0], &(p.getWaveFunction())[0], Nx); // ugly syntax
-  //  p.updateWaveFunction(dt);
-  //}
+  
+ 
+  /*
+  int plotInterval = 500;
+  int Nt = 100000;
+  for(int n = 0; n < Nt; n++)
+  {
+    if(n % plotInterval == 0)
+      GNUPlotter::plotComplexArrayReIm(&x[0], &(p.getWaveFunction())[0], Nx); // ugly syntax
+    p.updateWaveFunction(dt);
+  }
+  */
 
 
   //GNUPlotter::plotComplexArrayReIm(&x[0], &Psi_0[0], Nx);
