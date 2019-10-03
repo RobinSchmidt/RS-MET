@@ -187,9 +187,6 @@ int main(int argc, char* argv[])
   //===============================================================================================
   // Tests for dragged over RSLib code - merge with fiiting rapt and rosic test code
 
-  //int dummy;
-  //std::string str;      // causes a memleak
-
 
   //-----------------------------------------------------------------------------------------------
   // Unit Tests - these should be integrated into the appropriate unit tests file::

@@ -1,6 +1,7 @@
 #ifndef RS_TYPESIZETESTS_H
 #define RS_TYPESIZETESTS_H
 
-bool testTypeSizes();
+//file obsolete
+//bool testTypeSizes();
 
 #endif
