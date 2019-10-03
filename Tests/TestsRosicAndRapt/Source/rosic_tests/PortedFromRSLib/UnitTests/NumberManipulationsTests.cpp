@@ -1,20 +1,7 @@
 #include "NumberManipulationsTests.h"
 
-bool testNumberManipulations(std::string &reportString)
+bool testDoubleIntConversions()
 {
-  std::string testName = "rsNumberManipulations";
-  bool testResult = true;
-
-  testResult &= testDoubleIntConversions(reportString);
-  testResult &= testExponentExtraction(reportString);
-
-  appendTestResultToReport(reportString, testName, testResult);
-  return testResult;
-}
-
-bool testDoubleIntConversions(std::string &reportString)
-{
-  std::string testName = "rsDoubleIntConversions";
   bool testResult = true;
 
   int  x;
@@ -55,14 +42,11 @@ bool testDoubleIntConversions(std::string &reportString)
   x = truncateToInt(-1.5); testResult &= (x==-1);
   x = truncateToInt(-2.5); testResult &= (x==-2);
 
-
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
-bool testExponentExtraction(std::string &reportString)
+bool testExponentExtraction()
 {
-  std::string testName = "rsDoubleIntConversions";
   bool testResult = true;
 
   int exponent;
@@ -89,9 +73,15 @@ bool testExponentExtraction(std::string &reportString)
   exponent = extractExponent(4.0f);     testResult &= ( exponent ==  2 );
   exponent = extractExponent(4.00001f); testResult &= ( exponent ==  2 );
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
+bool testNumberManipulations()
+{
+  bool testResult = true;
 
+  testResult &= testDoubleIntConversions();
+  testResult &= testExponentExtraction();
 
+  return testResult;
+}

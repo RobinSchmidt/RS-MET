@@ -195,15 +195,15 @@ int main(int argc, char* argv[])
   // Unit Tests - these should be integrated into the appropriate unit tests file::
   
   // these should probably be merged with rosic unit test tests (see somewhere below):
-  passed &= testTypeSizes(str);                     // passes
-  passed &= testExponentExtraction(str);            // passes
-  passed &= testFilterPolynomials(str);             // passes
-  passed &= testHighOrderFilter(  str);           // passes but takes long
+  passed &= testTypeSizes();                     // passes
+  passed &= testExponentExtraction();            // passes - is sub-test, called by testNumberManipulations
+  passed &= testFilterPolynomials();             // passes
+  passed &= testHighOrderFilter();               // passes but takes long
   passed &= testModalFilter2(str);                  // passes
   passed &= testAutoCorrelationPitchDetector(str);  // passes
   //passed &= testModalSynth(str);         // triggers assert - doesn't do meaningful test -> get rid
   passed &= testModalFilter2(str);                  // passes
-  //passed &= testNumberManipulations( str); // fails due to rounding -> figure out
+  //passed &= testNumberManipulations(); // fails due to rounding -> figure out
 
   int dummi = 0;
 
