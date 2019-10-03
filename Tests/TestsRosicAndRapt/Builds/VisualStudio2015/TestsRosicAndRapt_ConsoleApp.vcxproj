@@ -186,6 +186,12 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\BufferFunctionTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\SortAndSearchTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -290,9 +296,6 @@
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -306,9 +309,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\PitchDetectorTests.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\SortAndSearchTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\TypeSizeTests.cpp">
@@ -2426,13 +2426,11 @@
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\ExperimentsRSLib.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTestsRSLib.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\MiscAudioTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\ModalTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\NumberManipulationsTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\PitchDetectorTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\SortAndSearchTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\TypeSizeTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\AnalysisTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\CoreTests.h"/>

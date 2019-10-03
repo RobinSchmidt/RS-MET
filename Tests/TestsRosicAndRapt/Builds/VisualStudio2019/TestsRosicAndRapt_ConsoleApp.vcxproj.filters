@@ -418,6 +418,12 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\BufferFunctionTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\SortAndSearchTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClCompile>
@@ -526,9 +532,6 @@
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.cpp">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
     </ClCompile>
@@ -542,9 +545,6 @@
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\PitchDetectorTests.cpp">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\SortAndSearchTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\TypeSizeTests.cpp">
@@ -2644,7 +2644,7 @@
       <Filter>TestsRosicAndRapt\Source\rapt_tests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\UnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Experiments\Experiments.h">
       <Filter>TestsRosicAndRapt\Source\Experiments</Filter>
@@ -2769,9 +2769,6 @@
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
     </ClInclude>
@@ -2785,9 +2782,6 @@
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\PitchDetectorTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\SortAndSearchTests.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\TypeSizeTests.h">

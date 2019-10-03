@@ -44,5 +44,10 @@ bool syncUnitTest();
 bool spectrogramUnitTest();
 bool sineModelingUnitTest();
 
+// newley added (need some adaptions):
+bool testBufferFunctions(std::string &reportString);
+bool testSortAndSearch(std::string &reportString);
+
+
 
 #endif

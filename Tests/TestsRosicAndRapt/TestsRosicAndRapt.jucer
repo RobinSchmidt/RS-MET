@@ -53,10 +53,14 @@
                   file="Source/rapt_tests/UnitTests/Math/TransformsTests.cpp"/>
             <FILE id="fD3ILC" name="Triangle2DTests.cpp" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/Triangle2DTests.cpp"/>
-            <FILE id="GxbZ5q" name="UnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.h"/>
             <FILE id="Zhdjdh" name="VectorUnitTests.cpp" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/VectorUnitTests.cpp"/>
           </GROUP>
+          <FILE id="GxbZ5q" name="UnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.h"/>
+          <FILE id="O624kg" name="BufferFunctionTests.cpp" compile="0" resource="0"
+                file="Source/rapt_tests/UnitTests/BufferFunctionTests.cpp"/>
+          <FILE id="wszQ7a" name="SortAndSearchTests.cpp" compile="0" resource="0"
+                file="Source/rapt_tests/UnitTests/SortAndSearchTests.cpp"/>
           <FILE id="crSQKa" name="DataUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/DataUnitTests.cpp"/>
           <FILE id="L0CxIn" name="DrawingUnitTests.cpp" compile="0" resource="0"
@@ -207,10 +211,6 @@
           <FILE id="ih1a8q" name="UnitTestsRSLib.h" compile="0" resource="0"
                 file="Source/rosic_tests/PortedFromRSLib/UnitTestsRSLib.h"/>
           <GROUP id="{E211B07B-0D0B-BE93-8EEF-79E9F655C637}" name="UnitTests">
-            <FILE id="TSv7aa" name="BufferFunctionTests.cpp" compile="0" resource="0"
-                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/BufferFunctionTests.cpp"/>
-            <FILE id="TgRTd7" name="BufferFunctionTests.h" compile="0" resource="0"
-                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/BufferFunctionTests.h"/>
             <FILE id="SKajol" name="FilterTests.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/UnitTests/FilterTests.cpp"/>
             <FILE id="cYA1XK" name="FilterTests.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/UnitTests/FilterTests.h"/>
             <FILE id="k16UrY" name="MiscAudioTests.cpp" compile="0" resource="0"
@@ -227,10 +227,6 @@
                   file="Source/rosic_tests/PortedFromRSLib/UnitTests/PitchDetectorTests.cpp"/>
             <FILE id="yAF5Xk" name="PitchDetectorTests.h" compile="0" resource="0"
                   file="Source/rosic_tests/PortedFromRSLib/UnitTests/PitchDetectorTests.h"/>
-            <FILE id="VvWO1B" name="SortAndSearchTests.cpp" compile="0" resource="0"
-                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/SortAndSearchTests.cpp"/>
-            <FILE id="lA2dlO" name="SortAndSearchTests.h" compile="0" resource="0"
-                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/SortAndSearchTests.h"/>
             <FILE id="NvkHEp" name="TypeSizeTests.cpp" compile="0" resource="0"
                   file="Source/rosic_tests/PortedFromRSLib/UnitTests/TypeSizeTests.cpp"/>
             <FILE id="VTy1vA" name="TypeSizeTests.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/UnitTests/TypeSizeTests.h"/>
