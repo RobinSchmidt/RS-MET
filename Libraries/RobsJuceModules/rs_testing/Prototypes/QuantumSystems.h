@@ -289,31 +289,47 @@ public:
 
   typedef std::complex<T> Complex;
 
+
+  void setAxisX(std::vector<T>& axis) { x = axis; }
+  // must be equidistant(!)
+
+
+  void setPotentialFunction(const std::function<Complex (double x)>& newV)
+  {
+    V = newV;
+  }
+
   /** Sets up the initial state of the wavefunction. */
-  void initializeState(std::vector<Complex>& Psi_0);
+  void initializeWaveFunction(std::vector<Complex>& Psi_0);
 
   /** Updates the wavefunction by the given timestep (using the forward Euler method in time and
   central differences in space. */
-  void updateState(T timeStep);
+  void updateWaveFunction(T timeStep);
 
   /** Returns a reference to the wavefunction in its current state */
   std::vector<Complex>& getWaveFunction() { return Psi; }
 
 protected:
 
-
+  // move to rapt - actually, there is already such a function - but for floats..hmmmm
+  int wrap(int x, int m) {
+    while(x <  0) x += m;
+    while(x >= m) x -= m;
+    return x;
+  }
 
   std::vector<T>       x;      // x-coordinate values
   std::vector<Complex> Psi;    // the wave-function (or state) itself
   std::vector<Complex> Psi_t;  // time-derivative of wave function 
   std::vector<Complex> Psi_xx; // 2nd spatial derivative of wavefunction
 
+  std::function<Complex (double x)> V;  // potential function
+
   //size_t mask;
 
   T hBar = 1;
   T m    = 100;  // mass
   T k    = 300;  // spring constant
-
 };
 
 

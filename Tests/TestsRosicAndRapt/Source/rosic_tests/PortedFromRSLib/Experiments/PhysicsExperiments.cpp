@@ -1085,9 +1085,8 @@ void quantum3StateSystem()
 
 void quantumParticle()
 {
-  rsQuantumParticle<double> p;
-
   int    Nx    = 81;     // number of spatial samples
+  int    Nt    = 10000;  // number of temporal samples
   double xMin  = 0.0;    // minimum x-coordinate
   double xMax  = 1.0;    // maximum x-coordinate
   double dt    = 1.e-4;  // time step for Euler solver
@@ -1098,18 +1097,17 @@ void quantumParticle()
                          // 0 gives a free particle
 
 
-
   // define the potential function:
   double w = sqrt(k/m); // angular frequency of oscillator
   Complex i(0,1);       // imaginary unit
-
   typedef std::complex<double> Complex;
   std::function<Complex (double x)> V;
   //V = [&](double x) { return 0.0; };             // no potential -> free particle
   V = [&](double x) {  double xs = x-mu; return 0.5*m*w*w * xs*xs;  }; 
   // quadratic potential -> harmonic oscillator
-  // oh - but our our x-range is cneterd at 05 - should be at 0 -> define a range for x (min/max)
 
+
+  // create the initial wavefunction:
   std::vector<double>  x(Nx);
   std::vector<Complex> Psi_0(Nx);
   RAPT::rsArray::fillWithRangeLinear(&x[0], Nx, xMin, xMax);
@@ -1127,6 +1125,31 @@ void quantumParticle()
   //  oscillator - the order of the polynomial is the energy level 
   //    https://en.wikipedia.org/wiki/Hermite_polynomials
   // maybe normalize to unit mean
+
+
+  // create and set up the particle object:
+  rsQuantumParticle<double> p;
+  p.setAxisX(x);
+  p.initializeWaveFunction(Psi_0);
+  p.setPotentialFunction(V);
+  //p.setMass(m);
+  // ....
+
+
+
+
+  // simulate the time evolution of the wavefunction:
+  for(int n = 0; n < Nt; n++)
+  {
+    if(n % 100 == 0)
+      GNUPlotter::plotComplexArrayReIm(&x[0], &(p.getWaveFunction())[0], Nx); // ugly syntax!
+
+    p.updateWaveFunction(dt);
+  }
+
+
+
+
 
   GNUPlotter::plotComplexArrayReIm(&x[0], &Psi_0[0], Nx);
 

@@ -207,17 +207,40 @@ and doesn't consider the others at all - it should also not call the states "up"
 */
 //=================================================================================================
 
-
 template<class T>
-void rsQuantumParticle<T>::initializeState(std::vector<Complex>& Psi_0)
+void rsQuantumParticle<T>::initializeWaveFunction(std::vector<Complex>& Psi_0)
 {
-
+  Psi = Psi_0;
+  Psi_t.resize(Psi.size());
+  Psi_xx.resize(Psi.size());
 }
 
 template<class T>
-void rsQuantumParticle<T>::updateState(T timeStep)
+void rsQuantumParticle<T>::updateWaveFunction(T dt)
 {
+  int n;
+  int Nx = (int)Psi.size();
+  T dx   = (rsLast(x) - x[0]) / (x.size()-1);
+  Complex i(0, 1); // imaginary unit
 
+
+  // compute second spatial derivative of wave function Psi by central differences (treating the
+  // ends cyclically):
+  for(n = 0; n < Nx; n++)
+    Psi_xx[n] = (Psi[wrap(n-1,Nx)] + Psi[wrap(n+1,Nx)] - 2.*Psi[n])/(dx*dx);
+  // how else (other than cyclically) could we treat the ends?
+
+  // compute time derivative and update wave function:
+  for(n = 0; n < Nx; n++) 
+  {
+    // compute time derivative of the wave function via the Schroedinger equation:
+    // Psi_t = (i*hBar)/(2*m)*Psi_xx - (i/hBar)*V*Psi:
+    Psi_t[n] = ((i*hBar)/(2*m))    * Psi_xx[n]     // term for free particle
+              -((i/hBar)* V(x[n])) * Psi[n];       // term from the potential
+
+    // update the wave function:
+    Psi[n]  = Psi[n] + dt * Psi_t[n];
+  }
 }
 
 //=================================================================================================
