@@ -223,25 +223,23 @@ void rsQuantumParticle<T>::updateWaveFunction(T dt)
   T dx   = (rsLast(x) - x[0]) / (x.size()-1);
   Complex i(0, 1); // imaginary unit
 
-
-  // compute second spatial derivative of wave function Psi by central differences (treating the
-  // ends cyclically):
+  // compute second spatial derivative of wave function Psi by central differences 
+  // (treating the ends cyclically):
   for(n = 0; n < Nx; n++)
     Psi_xx[n] = (Psi[wrap(n-1,Nx)] + Psi[wrap(n+1,Nx)] - 2.*Psi[n])/(dx*dx);
-  // how else (other than cyclically) could we treat the ends?
 
-  // compute time derivative and update wave function:
+  // compute time derivative of wave function via the Schroedinger equation:
+  //   Psi_t = (i*hBar)/(2*m)*Psi_xx - (i/hBar)*V*Psi
+  // and update wave function using a forward Euler step:
   for(n = 0; n < Nx; n++) 
   {
-    // compute time derivative of the wave function via the Schroedinger equation:
-    // Psi_t = (i*hBar)/(2*m)*Psi_xx - (i/hBar)*V*Psi:
-    Psi_t[n] = ((i*hBar)/(2*m))    * Psi_xx[n]     // term for free particle
-              -((i/hBar)* V(x[n])) * Psi[n];       // term from the potential
-
-    // update the wave function:
-    Psi[n]  = Psi[n] + dt * Psi_t[n];
+    Psi_t[n] = ((i*hBar)/(2*m))    * Psi_xx[n] // term for free particle
+              -((i/hBar)* V(x[n])) * Psi[n];   // term from the potential
+    Psi[n]  = Psi[n] + dt * Psi_t[n];          // update the wave function
   }
 }
+
+// how else (other than cyclically) could we treat the ends?
 
 //=================================================================================================
 

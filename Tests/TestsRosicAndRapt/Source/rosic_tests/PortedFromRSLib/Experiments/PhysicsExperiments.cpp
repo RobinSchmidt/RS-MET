@@ -1085,22 +1085,30 @@ void quantum3StateSystem()
 
 void quantumParticle()
 {
-  int    Nx    = 81;     // number of spatial samples
-  int    Nt    = 10000;  // number of temporal samples
-  double xMin  = 0.0;    // minimum x-coordinate
-  double xMax  = 1.0;    // maximum x-coordinate
-  double dt    = 1.e-4;  // time step for Euler solver
-  double mu    = 0.5;    // center of the initial (Gaussian) wavefunction
-  double sigma = 0.05;   // width (standard deviation) of initial wavefunction
+
+  int    Nx    = 256;    // number of spatial samples
+  //int    Nt    = 50000;  // number of temporal samples
+  double xMin  = -1.0;   // minimum x-coordinate
+  double xMax  =  1.0;   // maximum x-coordinate
+  double dt    = 5.e-5;  // time step for Euler solver
+  double mu    = 0.0;    // center of the initial (Gaussian) wavefunction
+  double sigma = 0.1;    // width (standard deviation) of initial wavefunction
   double m     = 100;    // mass
   double k     = 300;    // spring constant - larger values hold the thing together more strongly, 
                          // 0 gives a free particle
 
+  int numCycles = 400;   // number of cycles to record
+  int skipRatio = 1;     // number of iterations to per recorded cycle (i.e. oversampling)
+                         // ...needs more
+  //int Nt = 
+
+  // the numerical solving scheme may get unstable when choosing higher number of spatial samples
+  // -> counteract with smaller dt
 
   // define the potential function:
+  typedef std::complex<double> Complex;
   double w = sqrt(k/m); // angular frequency of oscillator
   Complex i(0,1);       // imaginary unit
-  typedef std::complex<double> Complex;
   std::function<Complex (double x)> V;
   //V = [&](double x) { return 0.0; };             // no potential -> free particle
   V = [&](double x) {  double xs = x-mu; return 0.5*m*w*w * xs*xs;  }; 
@@ -1111,9 +1119,9 @@ void quantumParticle()
   std::vector<double>  x(Nx);
   std::vector<Complex> Psi_0(Nx);
   RAPT::rsArray::fillWithRangeLinear(&x[0], Nx, xMin, xMax);
-  for(int i = 0; i < Nx; i++)  {
-    double gauss = exp(-(x[i]-mu)*(x[i]-mu) / (sigma*sigma));
-    Psi_0[i] = gauss;
+  for(int k = 0; k < Nx; k++)  {
+    double gauss = exp(-(x[k]-mu)*(x[k]-mu) / (sigma*sigma));
+    Psi_0[k] = 0.5 * (1.0+i) * gauss;
   }
   // todo: 
   //  -maybe multiply by +i or -i or maybe exp(i*phi) for phi being an arbitrary angle
@@ -1138,28 +1146,38 @@ void quantumParticle()
 
 
 
+  int plotInterval = 500;
+  int numSamples = numCycles * Nx;
+  std::vector<Complex> xOut;
+  xOut.reserve(numSamples);
+
   // simulate the time evolution of the wavefunction:
-  for(int n = 0; n < Nt; n++)
+  int recordedCycles = 0;
+  int iterations = 0;
+  while(recordedCycles < numCycles)
   {
-    if(n % 100 == 0)
-      GNUPlotter::plotComplexArrayReIm(&x[0], &(p.getWaveFunction())[0], Nx); // ugly syntax!
-
+    if(iterations % skipRatio == 0) {
+      //GNUPlotter::plotComplexArrayReIm(&x[0], &(p.getWaveFunction())[0], Nx); // ugly syntax
+      RAPT::rsAppend(xOut, p.getWaveFunction());
+      recordedCycles++;
+    }
     p.updateWaveFunction(dt);
+    iterations++;
   }
+ 
+  writeToWaveFile("SchroedingerParticle.wav", xOut, 44100);
+
+  //for(int n = 0; n < Nt; n++)
+  //{
+  //  if(n % plotInterval == 0)
+  //    GNUPlotter::plotComplexArrayReIm(&x[0], &(p.getWaveFunction())[0], Nx); // ugly syntax
+  //  p.updateWaveFunction(dt);
+  //}
 
 
-
-
-
-  GNUPlotter::plotComplexArrayReIm(&x[0], &Psi_0[0], Nx);
-
-  GNUPlotter plt;
+  //GNUPlotter::plotComplexArrayReIm(&x[0], &Psi_0[0], Nx);
+  //GNUPlotter plt;
   //plt.addDataArrays(Nx, &x[0], 
-
-
-
-
-
 
   int dummy = 0;
 }
