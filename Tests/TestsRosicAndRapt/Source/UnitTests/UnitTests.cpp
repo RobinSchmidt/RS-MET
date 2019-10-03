@@ -8,10 +8,12 @@
 #include "../rapt_tests/UnitTests/ImageUnitTests.cpp"
 #include "../rapt_tests/UnitTests/MathUnitTests.cpp"
 #include "../rapt_tests/UnitTests/DrawingUnitTests.cpp"
-#include "../rapt_tests/UnitTests/UnitTests.cpp"
 #include "../rapt_tests/UnitTests/MiscUnitTests.cpp"
 #include "../rapt_tests/UnitTests/SortAndSearchTests.cpp"
 #include "../rapt_tests/UnitTests/BufferFunctionTests.cpp"
+
+#include "../rapt_tests/UnitTests/UnitTestsRapt.cpp"  // this should become the unity build file for rapt unit tests
+
 
 
 

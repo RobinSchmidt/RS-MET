@@ -220,7 +220,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/rapt_tests/UnitTests/UnitTests.h">
+    <Unit filename="../../Source/rapt_tests/UnitTests/UnitTestsRapt.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
@@ -274,7 +274,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/rapt_tests/UnitTests/UnitTests.cpp">
+    <Unit filename="../../Source/rapt_tests/UnitTests/UnitTestsRapt.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
@@ -1177,6 +1177,16 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/rosic_tests/rosic_StringTests.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/rosic_tests/UnitTestsRosic.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+    </Unit>
+    <Unit filename="../../Source/rosic_tests/UnitTestsRosic.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>

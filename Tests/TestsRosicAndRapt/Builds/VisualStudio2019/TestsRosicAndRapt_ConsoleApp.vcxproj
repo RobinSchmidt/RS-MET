@@ -210,7 +210,7 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\MiscUnitTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\UnitTests.cpp">
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\UnitTestsRapt.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\AudioPerformanceTests.cpp">
@@ -416,6 +416,7 @@
     <ClCompile Include="..\..\Source\rosic_tests\rosic_StringTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\UnitTestsRosic.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
@@ -2384,7 +2385,7 @@
     <ClInclude Include="..\..\Source\PerformanceTests\PerformanceTests.h"/>
     <ClInclude Include="..\..\Source\UnitTests\UnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\RaptTests.h"/>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\UnitTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\UnitTestsRapt.h"/>
     <ClInclude Include="..\..\Source\Experiments\Experiments.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\RSLib\Core\Containers\Array.h"/>
@@ -2466,6 +2467,7 @@
     <ClInclude Include="..\..\Source\rosic_tests\rosic_NumericalTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_OthersTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_StringTests.h"/>
+    <ClInclude Include="..\..\Source\rosic_tests\UnitTestsRosic.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiter.h"/>

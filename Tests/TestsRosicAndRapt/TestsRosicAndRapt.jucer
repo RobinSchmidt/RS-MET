@@ -56,7 +56,7 @@
             <FILE id="Zhdjdh" name="VectorUnitTests.cpp" compile="0" resource="0"
                   file="Source/rapt_tests/UnitTests/Math/VectorUnitTests.cpp"/>
           </GROUP>
-          <FILE id="GxbZ5q" name="UnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.h"/>
+          <FILE id="GxbZ5q" name="UnitTestsRapt.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/UnitTestsRapt.h"/>
           <FILE id="O624kg" name="BufferFunctionTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/BufferFunctionTests.cpp"/>
           <FILE id="wszQ7a" name="SortAndSearchTests.cpp" compile="0" resource="0"
@@ -73,7 +73,8 @@
                 file="Source/rapt_tests/UnitTests/MathUnitTests.cpp"/>
           <FILE id="fkkHCy" name="MiscUnitTests.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/MiscUnitTests.cpp"/>
-          <FILE id="f93wHx" name="UnitTests.cpp" compile="0" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.cpp"/>
+          <FILE id="f93wHx" name="UnitTestsRapt.cpp" compile="0" resource="0"
+                file="Source/rapt_tests/UnitTests/UnitTestsRapt.cpp"/>
         </GROUP>
         <GROUP id="{47DEF60D-47E1-97D9-4623-845086C6F137}" name="PerformanceTests">
           <FILE id="g0WJb3" name="AudioPerformanceTests.cpp" compile="0" resource="0"
@@ -367,6 +368,10 @@
               file="Source/rosic_tests/rosic_StringTests.cpp"/>
         <FILE id="vQeECd" name="rosic_StringTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_StringTests.h"/>
+        <FILE id="NLyn6u" name="UnitTestsRosic.cpp" compile="1" resource="0"
+              file="Source/rosic_tests/UnitTestsRosic.cpp"/>
+        <FILE id="lqsU4x" name="UnitTestsRosic.h" compile="0" resource="0"
+              file="Source/rosic_tests/UnitTestsRosic.h"/>
       </GROUP>
       <FILE id="uqYpon" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>

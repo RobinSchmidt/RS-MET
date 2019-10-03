@@ -442,7 +442,7 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\MiscUnitTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\UnitTests.cpp">
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\UnitTestsRapt.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\AudioPerformanceTests.cpp">
@@ -650,6 +650,9 @@
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\rosic_StringTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\UnitTestsRosic.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
@@ -2643,7 +2646,7 @@
     <ClInclude Include="..\..\Source\rapt_tests\RaptTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\UnitTests.h">
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\UnitTestsRapt.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Experiments\Experiments.h">
@@ -2887,6 +2890,9 @@
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_StringTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\UnitTestsRosic.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h">
