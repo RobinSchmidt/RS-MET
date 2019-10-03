@@ -35,9 +35,8 @@ void rsCopySection(T *source, int sourceLength, T *destination, int copyStart, i
 }
 */
 
-bool testCopySection(std::string &reportString)
+bool testCopySection()
 {
-  std::string testName = "rsCopySection";
   bool testResult = true;
 
   static const int Na = 10;            // length of input buffer
@@ -109,14 +108,12 @@ bool testCopySection(std::string &reportString)
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
 // these two functions are apparently not yet complete:
-bool testMoveElements(  std::string &reportString)
+bool testMoveElements()
 {
-  std::string testName = "rsMoveElements";
   bool testResult = true;
 
   static const int length = 10;
@@ -124,12 +121,10 @@ bool testMoveElements(  std::string &reportString)
 
   RAPT::rsArray::rightShift(b, length, 2);
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
-bool testRemoveElements(std::string &reportString)
+bool testRemoveElements()
 {
-  std::string testName = "rsRemoveElements";
   bool testResult = true;
 
   typedef RAPT::rsArray AR;
@@ -144,20 +139,17 @@ bool testRemoveElements(std::string &reportString)
   // todo: verify that the function did the right thing - after copyIfMatching, the target buffer
   // should be: 1,6,7,1,7,6,1 and after copyIfNotMatching: 4,5,2
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
 
-bool testBufferFunctions(std::string &reportString)
+bool testBufferFunctions()
 {
-  std::string testName = "rsFunctionTemplates";
   bool testResult = true;
 
-  testResult &= testCopySection(reportString);
-  testResult &= testRemoveElements(reportString);
-  testResult &= testMoveElements(reportString);
+  testResult &= testCopySection();
+  testResult &= testRemoveElements();
+  testResult &= testMoveElements();
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }

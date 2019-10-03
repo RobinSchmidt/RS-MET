@@ -187,10 +187,6 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit Tests - these should be integrated into the appropriate unit tests file::
 
-  // these two pass and should be merged with the other rapt tests:
-  passed &= testBufferFunctions(str);
-  passed &= testSortAndSearch(str);
-
   // these should probably be merged with rosic unit test tests (see somewhere below):
   passed &= testTypeSizes(str);                     // passes
   passed &= testExponentExtraction(str);            // passes

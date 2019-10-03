@@ -14,6 +14,8 @@ bool runAllUnitTests();
 
 // Data:
 bool arrayUnitTest();
+bool testBufferFunctions();      // rename or absorb in arrayUnitTests
+bool testSortAndSearch();        // rename to sortAndSearchUnitTest
 bool doubleEndedQueueUnitTest();
 bool float64x2UnitTest();
 bool float32x4UnitTest();
@@ -44,9 +46,7 @@ bool syncUnitTest();
 bool spectrogramUnitTest();
 bool sineModelingUnitTest();
 
-// newley added (need some adaptions):
-bool testBufferFunctions(std::string &reportString);
-bool testSortAndSearch(std::string &reportString);
+
 
 
 
