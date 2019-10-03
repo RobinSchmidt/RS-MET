@@ -1,19 +1,4 @@
-#include "UnitTests.h"
-
-using namespace RAPT;
-
-bool runUnitTest(bool (*test)(), const string& name)
-{
-  //cout << "Testing: " + name + ": ";
-  cout << name + ": ";
-  bool passed = test();
-  //rsAssert(passed); // break, if test fails
-  if(passed)
-    cout << "Passed\n";
-  else
-    cout << "!!!!----> F A I L E D <----!!!!\n";
-  return passed;
-}
+#include "UnitTestsRapt.h"
 
 bool runAllUnitTests()
 {

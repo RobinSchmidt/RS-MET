@@ -29,7 +29,7 @@
 #include <rapt/rapt.h>
 #include <rosic/rosic.h>
 
-using namespace RAPT;
+using namespace RAPT;  // get rid of this
 
 #include "Prototypes/OscDrivers.h"
 #include "Prototypes/PartialDifferentialEquations.h"

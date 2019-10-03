@@ -1,5 +1,19 @@
 #include "TestUtilities.h"
 
+
+bool runUnitTest(bool (*test)(), const std::string& name)
+{
+  //cout << "Testing: " + name + ": ";
+  std::cout << name + ": ";
+  bool passed = test();
+  //rsAssert(passed); // break, if test fails
+  if(passed)
+    std::cout << "Passed\n";
+  else
+    std::cout << "!!!!----> F A I L E D <----!!!!\n";
+  return passed;
+}
+
 /*
 bool detectMemoryLeaks()
 {
