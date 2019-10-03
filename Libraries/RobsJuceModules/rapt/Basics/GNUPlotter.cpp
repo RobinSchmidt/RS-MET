@@ -36,6 +36,31 @@ void GNUPlotter::initialize()
 
 // convenience functions:
 
+template<class T>
+void GNUPlotter::plotComplexArrayReIm(const T* x, const std::complex<T>* z, int N)
+{
+  std::vector<T> re(N), im(N);
+  for(int i = 0; i < N; i++) {
+    re[i] = z[i].real();
+    im[i] = z[i].imag();
+  }
+  GNUPlotter plt;
+  plt.addDataArrays(N, x, &re[0]);
+  plt.addDataArrays(N, x, &im[0]);
+  plt.plot();
+}
+
+template<class T>
+void GNUPlotter::plotComplexArrayReIm(const std::complex<T>* z, int N)
+{
+  std::vector<T> x(N);
+  rangeLinear(&x[0], N, T(0), T(N-1));
+  plotComplexArrayReIm(&x[0], &z[0], N);
+}
+template void GNUPlotter::plotComplexArrayReIm(const std::complex<int>* z, int N);
+template void GNUPlotter::plotComplexArrayReIm(const std::complex<float>* z, int N);
+template void GNUPlotter::plotComplexArrayReIm(const std::complex<double>* z, int N);
+
 template <class T>
 void GNUPlotter::plotCurve2D(const std::function<T(T)>& fx, const std::function<T(T)>& fy,
   int Nt, T tMin, T tMax)

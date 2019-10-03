@@ -310,6 +310,10 @@ protected:
 
   //size_t mask;
 
+  T hBar = 1;
+  T m    = 100;  // mass
+  T k    = 300;  // spring constant
+
 };
 
 

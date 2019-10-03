@@ -1087,6 +1087,56 @@ void quantumParticle()
 {
   rsQuantumParticle<double> p;
 
+  int    Nx    = 81;     // number of spatial samples
+  double xMin  = 0.0;    // minimum x-coordinate
+  double xMax  = 1.0;    // maximum x-coordinate
+  double dt    = 1.e-4;  // time step for Euler solver
+  double mu    = 0.5;    // center of the initial (Gaussian) wavefunction
+  double sigma = 0.05;   // width (standard deviation) of initial wavefunction
+  double m     = 100;    // mass
+  double k     = 300;    // spring constant - larger values hold the thing together more strongly, 
+                         // 0 gives a free particle
+
+
+
+  // define the potential function:
+  double w = sqrt(k/m); // angular frequency of oscillator
+  Complex i(0,1);       // imaginary unit
+
+  typedef std::complex<double> Complex;
+  std::function<Complex (double x)> V;
+  //V = [&](double x) { return 0.0; };             // no potential -> free particle
+  V = [&](double x) {  double xs = x-mu; return 0.5*m*w*w * xs*xs;  }; 
+  // quadratic potential -> harmonic oscillator
+  // oh - but our our x-range is cneterd at 05 - should be at 0 -> define a range for x (min/max)
+
+  std::vector<double>  x(Nx);
+  std::vector<Complex> Psi_0(Nx);
+  RAPT::rsArray::fillWithRangeLinear(&x[0], Nx, xMin, xMax);
+  for(int i = 0; i < Nx; i++)  {
+    double gauss = exp(-(x[i]-mu)*(x[i]-mu) / (sigma*sigma));
+    Psi_0[i] = gauss;
+  }
+  // todo: 
+  //  -maybe multiply by +i or -i or maybe exp(i*phi) for phi being an arbitrary angle
+  //  -is this how we give it an initial velocity? nope! but how do we? i think, we need to shift 
+  //   the Fourier trafe to a frequency other than 0 - by multiplying it with exp(i*lamda*x)? - we 
+  //   probably should not multiply by a real sinusoid because that would give a symmetric 
+  //   magnitude spectrum for the momentum
+  // -maybe multiply by a Hermite polynomial this gives the eigenfunctions of the harmonic 
+  //  oscillator - the order of the polynomial is the energy level 
+  //    https://en.wikipedia.org/wiki/Hermite_polynomials
+  // maybe normalize to unit mean
+
+  GNUPlotter::plotComplexArrayReIm(&x[0], &Psi_0[0], Nx);
+
+  GNUPlotter plt;
+  //plt.addDataArrays(Nx, &x[0], 
+
+
+
+
+
 
   int dummy = 0;
 }

@@ -68,11 +68,19 @@ public:
   }
   // maybe de-inline
 
+  /** Plots real and imaginary parts of the complex array z agains the x-axis given by x. */
+  template<class T>
+  static void plotComplexArrayReIm(const T* x, const std::complex<T>* z, int N);
+
+  /** Plots real and imaginary parts of the complex array z agains a x-axis given by the index. */
+  template<class T>
+  static void plotComplexArrayReIm(const std::complex<T>* z, int N);
+
   /** Plots parametric curve on a 2-dimensional plane. Such curves are described by 2 functions 
   x(t), y(t) - one for each coordinate - that depend on a single parameter t, which is often 
   thought of as time. In this interpretation, the curve could represent the trace of a point-like 
   particle moving around in the plane. */
-  template <class T>
+  template<class T>
   static void plotCurve2D(const std::function<T(T)>& fx, const std::function<T(T)>& fy, 
     int Nt, T tMin, T tMax);
 
