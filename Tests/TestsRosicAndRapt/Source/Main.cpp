@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //runAllUnitTests();  // todo: merge with unit tests for RSLib
+  runAllUnitTests();  // todo: merge with unit tests for RSLib
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -178,7 +178,7 @@ int main(int argc, char* argv[])
 
 
   //===============================================================================================
-  // Tests for dragged over RSLib code:
+  // Tests for dragged over RSLib code - merge with fiiting rapt and rosic test code
 
   //int dummy;
   std::string str;      // causes a memleak
@@ -188,22 +188,23 @@ int main(int argc, char* argv[])
   // Unit Tests - these should be integrated into the appropriate unit tests file::
 
   // these two pass and should be merged with the other rapt tests:
-  //passed &= testBufferFunctions(str);
-  //passed &= testSortAndSearch(str);
+  passed &= testBufferFunctions(str);
+  passed &= testSortAndSearch(str);
+
+  // these should probably be merged with rosic unit test tests (see somewhere below):
+  passed &= testTypeSizes(str);                     // passes
+  passed &= testExponentExtraction(str);            // passes
+  passed &= testFilterPolynomials(str);             // passes
+  passed &= testHighOrderFilter(  str);           // passes but takes long
+  passed &= testModalFilter2(str);                  // passes
+  passed &= testAutoCorrelationPitchDetector(str);  // passes
+  //passed &= testModalSynth(str);         // triggers assert - doesn't do meaningful test -> get rid
+  passed &= testModalFilter2(str);                  // passes
+  //passed &= testNumberManipulations( str); // fails due to rounding -> figure out
+
+  int dummi = 0;
 
 
-
-
-  // these should probably be merged with rosic tests:
-  passed &= testFilterPolynomials(str);
-  //passed &= testHighOrderFilter(  str);  // fails
-  //passed &= testModalFilter2(str);
-  ////passed &= testModalSynth(str);         // triggers assert
-  ////passed &= testNumberManipulations( str); // triggers assert (calls the two below)
-  ////passed &= testDoubleIntConversions(str); // triggers same assert (called by function above)
-  //passed &= testExponentExtraction(str);
-  //passed &= testAutoCorrelationPitchDetector(str);
-  //passed &= testTypeSizes(str);
 
   //-----------------------------------------------------------------------------------------------
   // Experiments:
@@ -438,7 +439,7 @@ int main(int argc, char* argv[])
   ////sylophoneCycleMarks();
   ////autoTuneSylophone();
   ////bestMatchShift();
-  // move them into the test repo and add the relevant smaple files there
+  // move them into the test repo and add the relevant sample files there
 
   // Saturation:
   //powRatioParametricSigmoid();

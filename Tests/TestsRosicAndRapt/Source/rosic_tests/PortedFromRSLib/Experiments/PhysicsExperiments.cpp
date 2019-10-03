@@ -2,7 +2,9 @@
 
 void doublePendulum()
 {
-  int N  = 150000;    // number of samples
+  int freqDivider = 4;
+
+  int N  = freqDivider*150000;    // number of samples
   int fs = 44100;
 
   // create and set up the double pendulum object:
@@ -11,7 +13,8 @@ void doublePendulum()
   dp.setLength2(0.5);
   dp.setMass1(1.0);
   dp.setMass2(0.5);
-  dp.setStepSize(0.01);
+  dp.setStepSize(0.01/freqDivider);
+  //dp.setStepSize(0.0025);
 
 
   // let the pendulum swing and record the locations of both bobs over time:
@@ -687,6 +690,14 @@ bool quantumSpinMeasurement()
   //PA = QS::projector(A);
   //PB = QS::projector(B);
   // ...oh - wait - there is no other way to evaluate the lhs of eq 7.13 - hmm - scrap that test
+
+  // test 7.10, pg 192: (A (x) B) * (a (x) b) = A*a (x) B*b where (x) is the Kronecker product and
+  // * is the matrix product - does this relation hold for matrices of any size or just for NxN 
+  // matrices A,B and Nx1 column vectors a,b?
+
+  // what about the eq in the middel of pg 195: Tr(L) = sum_i sandwich(i, L, i)
+  // or pg 197: Tr(projector(phi) * L) = sandwich(phi, L, phi)
+
 
 
 // -what about eq 71. pg 185 - is this an implicit equation for any observable M?
