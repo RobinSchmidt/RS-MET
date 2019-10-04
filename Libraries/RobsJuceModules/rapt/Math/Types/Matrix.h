@@ -396,6 +396,17 @@ public:
   bool operator!=(const rsMatrixNew<T>& B) const { return !(*this == B); }
   // move to rsMatrixView
 
+
+  /** Defines the negative of a matrix. */
+  rsMatrixNew<T> operator-()
+  {
+    rsMatrixNew<T> C(this->numRows, this->numCols);
+    for(int i = 0; i < this->getSize(); i++)
+      C.d[i] = -d[i]; // maybe factor out into "neg" function in baseclass
+    return C;
+  }
+
+
   /** Adds two matrices: C = A + B. */
   rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
   { rsMatrixNew<T> C(this->numRows, this->numCols); this->add(this, &B, &C); return C; }

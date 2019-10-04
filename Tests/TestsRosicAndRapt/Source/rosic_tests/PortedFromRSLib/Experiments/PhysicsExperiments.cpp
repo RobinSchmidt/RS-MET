@@ -755,6 +755,17 @@ bool quantumSpinEntanglement()
     // see page 170 bottom "if we were being pedantic,..." - yes, we are!
 
   // create singlet state and the 3 triplet states (pg 166):
+  Complex s = Complex(1. / sqrt(2), 0.0);
+  Mat sing = s * (ud - du);   // singlet state
+  Mat trp1 = s * (ud + du);   // triplet state 1
+  Mat trp2 = s * (uu + dd);   // triplet state 2
+  Mat trp3 = s * (uu - dd);   // triplet state 3
+
+  // check relations on page 350:
+  pass &= szI * uu ==  uu;
+  pass &= szI * ud ==  ud;
+  pass &= szI * du == -du;
+  pass &= szI * dd == -dd;
 
   // todo: check, if the base states are indeed eigenvectors of of observables sigma_z, etc.
   // check 7.10
