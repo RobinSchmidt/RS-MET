@@ -735,6 +735,7 @@ bool quantumSpinEntanglement()
 
   //Vec S[2];  // our state, consisting of 2 spins
 
+  // create base states |uu>, |ud>, |du>, |dd> of the cobined system of two spins (see pg 189):
   Complex one(1,0), zero(0,0);
   Mat u(2, 1, Vec({ one, zero }));         // |u> - spin up
   Mat d(2, 1, Vec({ zero, one }));         // |d> - spin down
@@ -743,6 +744,20 @@ bool quantumSpinEntanglement()
   Mat du = Mat::kroneckerProduct(d, u);    // |du> - down/up
   Mat dd = Mat::kroneckerProduct(d, d);    // |dd> - down/down
 
+  // create observables sz, tz (simga-z, tau-z) and the product observables (pg 190)
+  Mat pauliZ(2, 2, Vec({ one,  zero, zero, -one  }));
+  Mat pauliX(2, 2, Vec({ zero, one,  one,   zero }));
+  Mat id2x2( 2, 2, Vec({ one,  zero, zero,  one  }));  // 2x2 identity matrix
+  Mat sztx = Mat::kroneckerProduct(pauliZ, pauliX); // sigma_z  (x) tau_x
+  Mat sxtz = Mat::kroneckerProduct(pauliX, pauliZ); // sigma_x  (x) tau_z
+  Mat szI  = Mat::kroneckerProduct(pauliZ,  id2x2);  // sigma_z (x) identity, Eq 7.4, pg 187
+  Mat Itx  = Mat::kroneckerProduct(id2x2,  pauliX); // identity (x) tau_x
+    // see page 170 bottom "if we were being pedantic,..." - yes, we are!
+
+  // create singlet state and the 3 triplet states (pg 166):
+
+  // todo: check, if the base states are indeed eigenvectors of of observables sigma_z, etc.
+  // check 7.10
 
   rsAssert(pass);
   return pass;
