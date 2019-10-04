@@ -353,7 +353,7 @@ public:
   A (x) B  =  |a21*B a22*B|
               |a31*B a32*B|
 
-  Where each entry aij*B is a submatrix of dimensions of B with the entries of b scaled by an
+  Where each entry aij*B is a submatrix of dimensions of B with the entries of B scaled by an
   appropriate element from A. */
   static rsMatrixNew<T> kroneckerProduct(const rsMatrixNew<T>& A, const rsMatrixNew<T>& B)
   {
@@ -367,7 +367,9 @@ public:
             C(startRow+ib, startCol+jb) = A.at(ia,ja) * B.at(ib, jb); }}}}
     return C;
   }
+  // maybe rename to tensorProduct
   // see https://rosettacode.org/wiki/Kronecker_product#C
+
 
 
 

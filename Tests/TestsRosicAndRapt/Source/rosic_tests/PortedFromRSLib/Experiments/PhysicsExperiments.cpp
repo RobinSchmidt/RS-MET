@@ -736,7 +736,7 @@ bool quantumSpinEntanglement()
   //Vec S[2];  // our state, consisting of 2 spins
 
   // create base states |uu>, |ud>, |du>, |dd> of the cobined system of two spins (see pg 189):
-  Complex one(1,0), zero(0,0);
+  Complex one(1,0), zero(0,0), i(0,1);
   Mat u(2, 1, Vec({ one, zero }));         // |u> - spin up
   Mat d(2, 1, Vec({ zero, one }));         // |d> - spin down
   Mat uu = Mat::kroneckerProduct(u, u);    // |uu> - up/up
@@ -754,6 +754,26 @@ bool quantumSpinEntanglement()
   Mat Itx  = Mat::kroneckerProduct(id2x2,  pauliX); // identity (x) tau_x
     // see page 170 bottom "if we were being pedantic,..." - yes, we are!
 
+  // check some of the relations on page 350 (relations that hold for the Alice- and 
+  // Bob-observables):
+  pass &= szI * uu ==  uu;
+  pass &= szI * ud ==  ud;
+  pass &= szI * du == -du;
+  pass &= szI * dd == -dd;
+  pass &= Itx * uu ==  ud;
+  pass &= Itx * ud ==  uu;
+  pass &= Itx * du ==  dd;
+  pass &= Itx * dd ==  du;
+  // ...maybe check more - maybe calso relations on 351
+
+  // check effect of our mixed observables on some states:
+  pass &= sztx * ud == uu;
+
+
+
+
+
+
   // create singlet state and the 3 triplet states (pg 166):
   Complex s = Complex(1. / sqrt(2), 0.0);
   Mat sing = s * (ud - du);   // singlet state
@@ -761,11 +781,7 @@ bool quantumSpinEntanglement()
   Mat trp2 = s * (uu + dd);   // triplet state 2
   Mat trp3 = s * (uu - dd);   // triplet state 3
 
-  // check relations on page 350:
-  pass &= szI * uu ==  uu;
-  pass &= szI * ud ==  ud;
-  pass &= szI * du == -du;
-  pass &= szI * dd == -dd;
+
 
   // todo: check, if the base states are indeed eigenvectors of of observables sigma_z, etc.
   // check 7.10
