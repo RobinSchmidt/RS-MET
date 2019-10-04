@@ -850,6 +850,9 @@ bool quantumSpinEntanglement()
   // for general N-dimensional state vectors - move int QunatumSystems.h/cpp - maybe make a class 
   // rsQuantumSystem,
 
+
+  // check 6.11 - the sum of expectation values of sx, sy, sz should be one for product states
+
   // check equations on page 173
 
 

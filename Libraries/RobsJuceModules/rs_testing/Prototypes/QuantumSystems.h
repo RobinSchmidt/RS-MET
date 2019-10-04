@@ -276,6 +276,41 @@ public:
 template<class T> const T rsQuantumSpin<T>::s = T(1) / sqrt(T(2));
 template<class T> const std::complex<T> rsQuantumSpin<T>::i = std::complex<T>(0, 1);
 
+
+//=================================================================================================
+
+/** Generalizes the class rsQuantumSpin which represents systems with two states to systems with
+an arbitrary number of states. States are represented as N-diemnsional complex column vectors 
+(using the matrix class) */
+
+template<class T>
+class rsQuantumState
+{
+
+public:
+
+  typedef std::complex<T> Complex;
+  typedef rsMatrixNew<Complex> Mat;
+  //typedef rsNoiseGenerator<T> PRNG;
+
+
+  static Complex bracket(const Mat& A, const Mat& B) 
+  { 
+    rsAssert(A.isColumnVector() && B.isColumnVector());
+    rsAssert(A.getNumRows()     == B.getNumRows());
+    Complex r(T(0),T(0));
+    for(size_t i = 0; i < A.getNumRows(); i++)
+      r = r + conj(A.at(i,0)) * B.at(i*0);
+    return r;
+  }
+
+
+protected:
+
+
+};
+
+
 //=================================================================================================
 
 /** Simulates the time evolution of a quantum particle in 1 dimension according to the 

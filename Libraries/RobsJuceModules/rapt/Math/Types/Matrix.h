@@ -180,6 +180,11 @@ public:
     return A.numRows == B.numRows && A.numCols == B.numCols;
   }
 
+  static bool areMultiplicable(const rsMatrixView<T>& A, const rsMatrixView<T>& B)
+  {
+    return A.numCols == B.numRows;
+  }
+
   int getNumRows()    const { return numRows; }
 
   int getNumColumns() const { return numCols; }
@@ -222,7 +227,6 @@ public:
   /** Computes the matrix product C = A*B. */
   static void mul(const rsMatrixView<T>* A, const rsMatrixView<T>* B, rsMatrixView<T>* C)
   {
-    // maybe factor out a function: areMultiplicable(A, B)
     rsAssert(A->numCols == B->numRows);
     rsAssert(C->numCols == B->numCols);
     rsAssert(C->numRows == A->numRows);
