@@ -706,19 +706,22 @@ bool quantumSpinMeasurement()
   return pass;
 }
 
+//bool quantumSpinMeasurement()
 
 // todo: implement equations for entanglement - this becomes a new function
-bool quantumEntanglement()
+bool quantumSpinEntanglement()
 {
   bool pass = true;  // move to unit tests
 
   typedef std::complex<double> Complex;
-  typedef rsQuantumSpin<double> QS;
-  typedef rsVector2D<std::complex<double>>  Vec;
-  typedef rsMatrix2x2<std::complex<double>> Mat;
+  typedef rsMatrixNew<Complex> Mat;
+  typedef std::vector<Complex> Vec;
 
 
-  Complex S[4];  // our state (or wave function), consisting of amplitudes for the 4 basis vectors
+  //typedef rsQuantumSpin<double> QS;
+  //typedef rsVector2D<std::complex<double>>  Vec;
+  //typedef rsMatrix2x2<std::complex<double>> Mat;
+  //Complex S[4];  // our state (or wave function), consisting of amplitudes for the 4 basis vectors
   // Note that the fact that we need 4 complex numbers (amplitudes) to represent the state is 
   // because 2^2 = 4 and not because 2*2 = 4. A state made from 3 spins would need 2^3 = 8 
   // amplitudes and we can't represent that as an array of 3 spins
@@ -732,12 +735,30 @@ bool quantumEntanglement()
 
   //Vec S[2];  // our state, consisting of 2 spins
 
+  Complex one(1,0), zero(0,0);
+  Mat u(2, 1, Vec({ one, zero }));         // |u> - spin up
+  Mat d(2, 1, Vec({ zero, one }));         // |d> - spin down
+  Mat uu = Mat::kroneckerProduct(u, u);    // |uu> - up/up
+  Mat ud = Mat::kroneckerProduct(u, d);    // |ud> - up/down
+  Mat du = Mat::kroneckerProduct(d, u);    // |du> - down/up
+  Mat dd = Mat::kroneckerProduct(d, d);    // |dd> - down/down
+
+
   rsAssert(pass);
   return pass;
 }
 
 // -check pg 166, singlet and triple states
 // -pg 188, eq 7.7: c kronekcer product of matrices
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1091,9 +1112,9 @@ void quantumParticle()
   double xMax  =  1.0;   // maximum x-coordinate
   double dt    = 1.e-4;  // time step for Euler solver
   double mu    = 0.0;    // center of the initial (Gaussian) wavefunction
-  double sigma = 0.05;    // width (standard deviation) of initial wavefunction
+  double sigma = 0.1;   // width (standard deviation) of initial wavefunction
   double m     = 100;    // mass
-  double k     = 300;    // spring constant - larger values hold the thing together more strongly, 
+  double k     = 0;      // spring constant - larger values hold the thing together more strongly, 
                          // 0 gives a free particle
 
   int numCycles = 400;   // number of cycles to record
@@ -1160,6 +1181,7 @@ void quantumParticle()
     iterations++;
   }
   writeToWaveFile("SchroedingerParticle.wav", xOut, 44100);
+  std::cout << "Done";
   
  
   /*
@@ -1173,6 +1195,20 @@ void quantumParticle()
   }
   */
 
+
+  // Ovservations:
+  // -k controls the "LFO"
+  // -with increasing sigma, the signal gets louder - we may need to normalize somehow
+  //  -it also seems get more unstable
+
+  // Ideas: 
+  // -stabilize the algorithm by filtering out the Nyquist freq after each iteration and/or
+  //  normalizing the total probability over the whole buffer
+  // -the filter could be a two-sample moving average
+  // -see: https://en.wikipedia.org/wiki/Finite_difference_method#Explicit_method - it says,
+  //  it's stable for: r := dt / dx^2 <= 1/2  ...at leats in the cae of the ehat equation - but
+  //  maybe that applies more generally?
+  // -maybe try the implicit and the crank-nicholson method (tridiagonal system?)
 
   //GNUPlotter::plotComplexArrayReIm(&x[0], &Psi_0[0], Nx);
   //GNUPlotter plt;

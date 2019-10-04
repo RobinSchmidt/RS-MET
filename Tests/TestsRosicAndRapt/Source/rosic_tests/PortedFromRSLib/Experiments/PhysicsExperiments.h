@@ -8,8 +8,9 @@ void waveEquation1D();
 //void schrödingerEquation1D();
 void particleForceDistanceLaw();
 void particleSystem();
-bool quantumSpinMeasurement(); // move to unit tests
-bool quantumGates();           // dito
+bool quantumSpinMeasurement();   // move to unit tests
+bool quantumSpinEntanglement();  // this too 
+bool quantumGates();             // dito
 bool quantumSpinEvolution();
 void quantum3StateSystem();
 void quantumParticle();
