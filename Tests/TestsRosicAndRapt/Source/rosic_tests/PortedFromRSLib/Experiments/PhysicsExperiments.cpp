@@ -708,6 +708,8 @@ bool quantumSpinMeasurement()
 
 //bool quantumSpinMeasurement()
 
+/** Checks, if the vector v is an eigenvector of the matrix A by verifying if A*v equals some 
+multiple of v within a given tolerance. */
 template<class TElem, class TTol>
 bool isEigenVector(const rsMatrixNew<TElem>& A, const rsMatrixNew<TElem>& v, TTol tol)
 {
@@ -716,16 +718,12 @@ bool isEigenVector(const rsMatrixNew<TElem>& A, const rsMatrixNew<TElem>& v, TTo
   // figure out the element in v with the largest absolute value - if it is zero, then the vector
   // v must be the zero vector which is an eigenvector of any matrix:
   int N = v.getNumRows(); // dimensionality of v
-  //int n = RAPT::rsArray::maxAbsIndex(&(v.getDataConst())[0], N);
   int n = 0;
   TTol max = 0; 
-  for(int i = 0; i < N; i++)
-  {
+  for(int i = 0; i < N; i++) {
     if(rsAbs(v.at(i, 0)) > max) {
       max = rsAbs(v.at(i,0));
-      n = i;
-    }
-  }
+      n = i; }}
   if(v.at(n,0) == TElem(0))
     return true;
 
@@ -737,8 +735,7 @@ bool isEigenVector(const rsMatrixNew<TElem>& A, const rsMatrixNew<TElem>& v, TTo
   TElem lambda = w.at(n,0) / v.at(n,0);
   for(n = 0; n < N; n++) {
     if(rsAbs(lambda*v.at(n,0) - w.at(n,0)) > tol)
-      return false;
-  }
+      return false; }
   return true;
 }
 // maybe rename to isRightEigenVector, make a similar function isLeftEigenVector
@@ -786,11 +783,16 @@ bool quantumSpinEntanglement()
   // create observables sz, tz (simga-z, tau-z) and the product observables (pg 190)
   Mat pauliZ(2, 2, Vec({ one,  zero, zero, -one  }));
   Mat pauliX(2, 2, Vec({ zero, one,  one,   zero }));
+  Mat pauliY(2, 2, Vec({ zero, -i,   i,     zero }));
   Mat id2x2( 2, 2, Vec({ one,  zero, zero,  one  }));  // 2x2 identity matrix
-  Mat sztx = Mat::kroneckerProduct(pauliZ, pauliX); // sigma_z  (x) tau_x
-  Mat sxtz = Mat::kroneckerProduct(pauliX, pauliZ); // sigma_x  (x) tau_z
-  Mat szI  = Mat::kroneckerProduct(pauliZ,  id2x2);  // sigma_z (x) identity, Eq 7.4, pg 187
-  Mat Itx  = Mat::kroneckerProduct(id2x2,  pauliX); // identity (x) tau_x
+  Mat sztx = Mat::kroneckerProduct(pauliZ, pauliX);    // sigma_z  (x) tau_x
+  Mat sxtz = Mat::kroneckerProduct(pauliX, pauliZ);    // sigma_x  (x) tau_z
+  Mat tzsz = Mat::kroneckerProduct(pauliZ, pauliZ);    // tau_z (x) sigma_z
+  Mat txsx = Mat::kroneckerProduct(pauliX, pauliX);    // tau_x (x) sigma_x
+  Mat tysy = Mat::kroneckerProduct(pauliY, pauliY);    // tau_y (x) sigma_y
+  Mat st   = txsx + tysy + tzsz;                       // sigma * tau, pg 180
+  Mat szI  = Mat::kroneckerProduct(pauliZ,  id2x2);    // sigma_z (x) identity, Eq 7.4, pg 187
+  Mat Itx  = Mat::kroneckerProduct(id2x2,  pauliX);    // identity (x) tau_x
     // see page 170 bottom "if we were being pedantic,..." - yes, we are!
 
   // check some of the relations on page 350 (relations that hold for the Alice- and 
@@ -808,19 +810,22 @@ bool quantumSpinEntanglement()
   // check effect of our mixed observables on some states:
   pass &= sztx * ud == uu;
 
-  // todo: check, if the base states are indeed eigenvectors of of observables sigma_z, etc.
-  pass &= isEigenVector(szI, uu, tol);
-  // ...
+  // Check, if base states are eigenvectors of observables sigma_z and tau_x:
+  pass &= isEigenVector(szI, uu, tol); // +1 (eigenvalue)
+  pass &= isEigenVector(szI, ud, tol); // +1
+  pass &= isEigenVector(szI, du, tol); // -1
+  pass &= isEigenVector(szI, dd, tol); // -1
+  // maybe, we should also check the eigenvalues?
+
+  // oh - for these, it fails - aren't they supposed to be eigenvectors of tau_x, too?
+  // or wait - no - they are already checked above - the equation on page 350
+  //pass &= isEigenVector(Itx, uu, tol);
+  //pass &= isEigenVector(Itx, ud, tol);
+  //pass &= isEigenVector(Itx, du, tol);
+  //pass &= isEigenVector(Itx, dd, tol);
 
 
-
-
-
-  // check 7.10
-
-
-
-
+  // what are the eigenvectors of sztx, sxtz? are these the maximally entangled states?
 
   // create singlet state and the 3 triplet states (pg 166):
   Complex s = Complex(1. / sqrt(2), 0.0);
@@ -829,7 +834,23 @@ bool quantumSpinEntanglement()
   Mat trp2 = s * (uu + dd);   // triplet state 2
   Mat trp3 = s * (uu - dd);   // triplet state 3
 
+  // check some relations for these states
+  pass &= tzsz * sing == -sing;  // pg 177, |sing>| is eigenvector with eigenvalue -1
+  pass &= txsx * sing == -sing;  // pg 178
 
+  pass &= isEigenVector(st, sing, tol);  // pg 181
+  pass &= isEigenVector(st, trp1, tol);  
+  pass &= isEigenVector(st, trp2, tol);  
+  pass &= isEigenVector(st, trp3, tol);  
+  //
+
+  // check 7.10
+
+  // make operations that compute sandwiches, expectation values, projectors, correlations, etc.
+  // for general N-dimensional state vectors - move int QunatumSystems.h/cpp - maybe make a class 
+  // rsQuantumSystem,
+
+  // check equations on page 173
 
 
   rsAssert(pass);
