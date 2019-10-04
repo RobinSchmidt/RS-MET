@@ -293,16 +293,24 @@ public:
   typedef rsMatrixNew<Complex> Mat;
   //typedef rsNoiseGenerator<T> PRNG;
 
+  // these functions area analogous to the corresponding functions in rsQuantumSpin, but work with
+  // N-dimensional states
 
   static Complex bracket(const Mat& A, const Mat& B) 
   { 
     rsAssert(A.isColumnVector() && B.isColumnVector());
     rsAssert(A.getNumRows()     == B.getNumRows());
     Complex r(T(0),T(0));
-    for(size_t i = 0; i < A.getNumRows(); i++)
-      r = r + conj(A.at(i,0)) * B.at(i*0);
+    for(int i = 0; i < A.getNumRows(); i++)
+      r += conj(A.at(i,0)) * B.at(i,0);
     return r;
   }
+
+
+  static Complex sandwich(const Mat& A, const Mat& M, const Mat& B)
+  { return bracket(A, M*B); }
+
+  // todo: outer, projector
 
 
 protected:

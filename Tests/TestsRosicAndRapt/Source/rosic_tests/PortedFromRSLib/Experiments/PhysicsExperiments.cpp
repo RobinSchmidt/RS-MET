@@ -750,6 +750,7 @@ bool quantumSpinEntanglement()
   typedef std::complex<double> Complex;
   typedef rsMatrixNew<Complex> Mat;
   typedef std::vector<Complex> Vec;
+  typedef rsQuantumState<double> QS;
 
   double tol = 1.e-13;
 
@@ -792,6 +793,10 @@ bool quantumSpinEntanglement()
   Mat tysy = Mat::kroneckerProduct(pauliY, pauliY);    // tau_y (x) sigma_y
   Mat st   = txsx + tysy + tzsz;                       // sigma * tau, pg 180
   Mat szI  = Mat::kroneckerProduct(pauliZ,  id2x2);    // sigma_z (x) identity, Eq 7.4, pg 187
+
+  Mat sxI  = Mat::kroneckerProduct(pauliX,  id2x2);
+  Mat syI  = Mat::kroneckerProduct(pauliY,  id2x2);
+
   Mat Itx  = Mat::kroneckerProduct(id2x2,  pauliX);    // identity (x) tau_x
     // see page 170 bottom "if we were being pedantic,..." - yes, we are!
 
@@ -844,16 +849,38 @@ bool quantumSpinEntanglement()
   pass &= isEigenVector(st, trp3, tol);  
   //
 
-  // check 7.10
-
-  // make operations that compute sandwiches, expectation values, projectors, correlations, etc.
-  // for general N-dimensional state vectors - move int QunatumSystems.h/cpp - maybe make a class 
-  // rsQuantumSystem,
-
-
   // check 6.11 - the sum of expectation values of sx, sy, sz should be one for product states
+  //Mat v = uu; 
+  Complex Ex, Ey, Ez;
+  Ex = QS::sandwich(uu, sxI, uu);  // 0
+  Ey = QS::sandwich(uu, syI, uu);  // 0
+  Ez = QS::sandwich(uu, szI, uu);  // 1
+  pass &= Ex == zero && Ey == zero && Ez == one;
+  Ex = QS::sandwich(ud, sxI, ud);  // 0
+  Ey = QS::sandwich(ud, syI, ud);  // 0
+  Ez = QS::sandwich(ud, szI, ud);  // 1
+  pass &= Ex == zero && Ey == zero && Ez == one;
+  Ex = QS::sandwich(du, sxI, du);  // 0
+  Ey = QS::sandwich(du, syI, du);  // 0
+  Ez = QS::sandwich(du, szI, du);  // -1
+  pass &= Ex == zero && Ey == zero && Ez == -one;
+  Ex = QS::sandwich(dd, sxI, dd);  // 0
+  Ey = QS::sandwich(dd, syI, dd);  // 0
+  Ez = QS::sandwich(dd, szI, dd);  // -1
+  pass &= Ex == zero && Ey == zero && Ez == -one;
+
+  // For a more general product state, the relation Ex + Ey + Ez = 1 should still hold (Eq 6.11). 
+  // This is not true for entangled states. For a maximally entangled state, this sum should become
+  // zero, indicating that the measurement of z-spin is totally unpredictable when the system
+  // is in a maximally entangeld state - on the other hand, if we do make the measurment, we can
+  // predict with 100% probability, that the z-spin of the other half of the state (Bob's half, 
+  // Itz, tau-z) will be the opposite from our "Alice" measurement
 
   // check equations on page 173
+
+
+
+  // check 7.10
 
 
   rsAssert(pass);
