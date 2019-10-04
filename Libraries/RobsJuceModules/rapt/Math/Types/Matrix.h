@@ -204,6 +204,13 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Initializes all elements with given value. */
+  void init(T value = T(0)) { RAPT::rsArray::fillWithValue(d, getSize(), value); }
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Arithmetic */
 
   /** Adds elements of A to corresponding elements in B and stores results in C. */

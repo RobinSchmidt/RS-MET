@@ -306,11 +306,27 @@ public:
     return r;
   }
 
-
   static Complex sandwich(const Mat& A, const Mat& M, const Mat& B)
   { return bracket(A, M*B); }
 
-  // todo: outer, projector
+  static Mat outer(const Mat& A, const Mat& B)
+  { 
+    rsAssert(A.isColumnVector() && B.isColumnVector());
+    rsAssert(A.getNumRows()     == B.getNumRows());
+    int N = A.getNumRows();
+    Mat P(N, N); P.init();
+    for(int i = 0; i < N; i++)
+      for(int j = 0; j < N; j++)
+        P(i, j) = A(i,0) * conj(B(j,0));  // verify this
+
+    //return Mat(A.x*conj(B.x), A.x*conj(B.y), A.y*conj(B.x), A.y*conj(B.y)); // from 2x2
+  }
+  // move to cpp file
+
+
+  static Mat projector(const Mat& A) { return outer(A, A); }
+  // needs test
+
 
 
 protected:

@@ -876,7 +876,11 @@ bool quantumSpinEntanglement()
   // predict with 100% probability, that the z-spin of the other half of the state (Bob's half, 
   // Itz, tau-z) will be the opposite from our "Alice" measurement
 
-  // check equations on page 173
+  // pg 173/174:
+  Ex = QS::sandwich(sing, sxI, sing);  // 0
+  Ey = QS::sandwich(sing, syI, sing);  // 0
+  Ez = QS::sandwich(sing, szI, sing);  // 0
+  pass &= Ez == zero;
 
 
 
