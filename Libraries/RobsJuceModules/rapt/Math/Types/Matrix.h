@@ -186,6 +186,16 @@ public:
 
   int getSize()       const { return numRows * numCols; }
 
+  bool isRowVector() const { return numRows == 1; }
+
+  bool isColumnVector() const { return numCols == 1; }
+
+
+  /** Returns a pointer to the stored data. When using this, be sure that you know exactly what 
+  you are doing.... */
+  //T* getData() { return d; }
+
+  const T* getDataConst() const { return d; }
 
 
   //-----------------------------------------------------------------------------------------------

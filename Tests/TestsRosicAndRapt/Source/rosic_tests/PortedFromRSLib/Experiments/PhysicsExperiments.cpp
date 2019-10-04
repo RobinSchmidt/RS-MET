@@ -708,6 +708,43 @@ bool quantumSpinMeasurement()
 
 //bool quantumSpinMeasurement()
 
+template<class TElem, class TTol>
+bool isEigenVector(const rsMatrixNew<TElem>& A, const rsMatrixNew<TElem>& v, TTol tol)
+{
+  rsAssert(v.isColumnVector());
+
+  // figure out the element in v with the largest absolute value - if it is zero, then the vector
+  // v must be the zero vector which is an eigenvector of any matrix:
+  int N = v.getNumRows(); // dimensionality of v
+  //int n = RAPT::rsArray::maxAbsIndex(&(v.getDataConst())[0], N);
+  int n = 0;
+  TTol max = 0; 
+  for(int i = 0; i < N; i++)
+  {
+    if(rsAbs(v.at(i, 0)) > max) {
+      max = rsAbs(v.at(i,0));
+      n = i;
+    }
+  }
+  if(v.at(n,0) == TElem(0))
+    return true;
+
+  // the largest (absolute) element in v (which is at at index n) in nonzero - compute the matrix
+  // vector product w = A*v and the ratio of w[n]/v[n] - if v is an eigenvector, this ratio should
+  // be the corresponding eigenvalue (we call it lambda) and all elements w[i] should be in the 
+  // same ratio, i.e. w[i] should be lambda*v[i] for all i:
+  rsMatrixNew<TElem> w = A*v;
+  TElem lambda = w.at(n,0) / v.at(n,0);
+  for(n = 0; n < N; n++) {
+    if(rsAbs(lambda*v.at(n,0) - w.at(n,0)) > tol)
+      return false;
+  }
+  return true;
+}
+// maybe rename to isRightEigenVector, make a similar function isLeftEigenVector
+// move into matrix class
+// maybe, it could return the computed eigenvalue?
+
 // todo: implement equations for entanglement - this becomes a new function
 bool quantumSpinEntanglement()
 {
@@ -716,6 +753,8 @@ bool quantumSpinEntanglement()
   typedef std::complex<double> Complex;
   typedef rsMatrixNew<Complex> Mat;
   typedef std::vector<Complex> Vec;
+
+  double tol = 1.e-13;
 
 
   //typedef rsQuantumSpin<double> QS;
@@ -769,6 +808,15 @@ bool quantumSpinEntanglement()
   // check effect of our mixed observables on some states:
   pass &= sztx * ud == uu;
 
+  // todo: check, if the base states are indeed eigenvectors of of observables sigma_z, etc.
+  pass &= isEigenVector(szI, uu, tol);
+  // ...
+
+
+
+
+
+  // check 7.10
 
 
 
@@ -783,8 +831,6 @@ bool quantumSpinEntanglement()
 
 
 
-  // todo: check, if the base states are indeed eigenvectors of of observables sigma_z, etc.
-  // check 7.10
 
   rsAssert(pass);
   return pass;

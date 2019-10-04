@@ -83,6 +83,7 @@ template double rsArray::mean(const double *x, int length);
 template double rsArray::maxDeviation(const double *buffer1, const double *buffer2, int length);
 template int rsArray::maxDeviationIndex(const float *buffer1, const float *buffer2, int length);
 template int rsArray::maxAbsIndex(const double* const buffer, int length);
+//template int rsArray::maxAbsIndex(const std::complex<double>* const buffer, int length);
 template int rsArray::maxIndex(const rsRange<double>*, int length);
 
 
