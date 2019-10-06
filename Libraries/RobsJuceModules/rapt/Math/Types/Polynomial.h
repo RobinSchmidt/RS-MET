@@ -267,6 +267,11 @@ public:
   }
   // make consistent with rootCubic
 
+  /** Evaluates the Hermite polynomial of given degree. This is the physicist's version of the
+  Hermite polynomials with leading coefficient 2^n. The probabilist would use those with leading 
+  coeff 1. */
+  static T evaluateHermite(const T& x, int degree);
+
   // todo: evaluateDerivative, evaluateIntegral (or AntiDerivative)
 
   /** Given a coefficient array p of length maxDegree+1, this function returns the actual degree

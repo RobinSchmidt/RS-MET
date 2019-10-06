@@ -1247,6 +1247,8 @@ void quantum3StateSystem()
 
 }
 
+
+// this is just some quick throw-away code and can be deleted soon:
 double hermitePolynomial(double x, int n)
 {
   if(n == 0) return 1;
@@ -1255,14 +1257,14 @@ double hermitePolynomial(double x, int n)
   double h1 = 2*x;
   for(int i = 1; i < n; i++)
   {
-    double tmp = 2*x*h1 - 2*n*h0; // H[n+1](x) = 2*x*H[n](x) - 2*n*H[n-1](x)
+    double tmp = 2 * (x*h1 - i*h0); // H[n+1](x) = 2*x*H[n](x) - 2*n*H[n-1](x)
     h0 = h1;
     h1 = tmp;
   }
   return h1;
 }
-// this is still wrong
-
+// this is the physicist's version of Hermite polynomials, the probabilist's version would use the
+// recursion: tmp = x*h1 - i*h0. ...without the factor two
 double hermitePolynomial2(double x, int n)  // just for test
 {
   if(n == 0) return  1;
@@ -1273,35 +1275,24 @@ double hermitePolynomial2(double x, int n)  // just for test
   if(n == 5) return 32*x*x*x*x*x - 160*x*x*x + 120*x;
   return 0;
 }
-
-
 void testHermitePoly()
 {
-
-
-
   GNUPlotter plt;
   int N = 501;
   std::vector<double> x(N), y(N);
   RAPT::rsArray::fillWithRangeLinear(&x[0], N, -2.0, +2.0);
   double tmp1, tmp2;
-
   tmp1 = hermitePolynomial( 5.0, 2);
   tmp2 = hermitePolynomial2(5.0, 2);
-
-  for(int i = 0; i < 5; i++)
-  {
+  for(int i = 0; i < 5; i++) {
     for(int n = 0; n < N; n++)
-    {
-      y[n] = hermitePolynomial(x[n], i);
-      tmp1 = hermitePolynomial(x[n], i);
-      tmp2 = hermitePolynomial2(x[n], i);
-      rsAssert(tmp1 == tmp2);
-    }
+      y[n] = rsPolynomial<double>::evaluateHermite(x[n], i);
     plt.addDataArrays(N, &x[0], &y[0]);
   }
   plt.plot();
 }
+
+
 
 void quantumParticle()
 {
