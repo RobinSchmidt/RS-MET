@@ -768,7 +768,7 @@ bool quantumSpinEntanglement()
   // constructed by taking the kronecker product of the 2x2 1-spin operator and the 1x1 identity 
   // matrix), selecting one at random according to the probabilities and setting the whole 4D 
   // system into the corrsponding eigenstate - which happens to be a product state which implies
-  // that it will also fix what will be mesured for the corrsponding observable in the other spin
+  // that it will also fix what will be mesured for the corresponding observable in the other spin
 
   //Vec S[2];  // our state, consisting of 2 spins
 
@@ -1247,23 +1247,86 @@ void quantum3StateSystem()
 
 }
 
+double hermitePolynomial(double x, int n)
+{
+  if(n == 0) return 1;
+  if(n == 1) return 2*x;
+  double h0 = 1;
+  double h1 = 2*x;
+  for(int i = 1; i < n; i++)
+  {
+    double tmp = 2*x*h1 - 2*n*h0; // H[n+1](x) = 2*x*H[n](x) - 2*n*H[n-1](x)
+    h0 = h1;
+    h1 = tmp;
+  }
+  return h1;
+}
+// this is still wrong
+
+double hermitePolynomial2(double x, int n)  // just for test
+{
+  if(n == 0) return  1;
+  if(n == 1) return  2*x;
+  if(n == 2) return  4*x*x - 2;
+  if(n == 3) return  8*x*x*x - 12*x;
+  if(n == 4) return 16*x*x*x*x - 48*x*x + 12;
+  if(n == 5) return 32*x*x*x*x*x - 160*x*x*x + 120*x;
+  return 0;
+}
+
+
+void testHermitePoly()
+{
+
+
+
+  GNUPlotter plt;
+  int N = 501;
+  std::vector<double> x(N), y(N);
+  RAPT::rsArray::fillWithRangeLinear(&x[0], N, -2.0, +2.0);
+  double tmp1, tmp2;
+
+  tmp1 = hermitePolynomial( 5.0, 2);
+  tmp2 = hermitePolynomial2(5.0, 2);
+
+  for(int i = 0; i < 5; i++)
+  {
+    for(int n = 0; n < N; n++)
+    {
+      y[n] = hermitePolynomial(x[n], i);
+      tmp1 = hermitePolynomial(x[n], i);
+      tmp2 = hermitePolynomial2(x[n], i);
+      rsAssert(tmp1 == tmp2);
+    }
+    plt.addDataArrays(N, &x[0], &y[0]);
+  }
+  plt.plot();
+}
+
 void quantumParticle()
 {
+  testHermitePoly();
+
 
   int    Nx    = 128;    // number of spatial samples
   double xMin  = -1.0;   // minimum x-coordinate
   double xMax  =  1.0;   // maximum x-coordinate
-  double dt    = 1.e-4;  // time step for Euler solver
+  double dt    = 5.e-5;  // time step for Euler solver
   double mu    = 0.0;    // center of the initial (Gaussian) wavefunction
-  double sigma = 0.1;   // width (standard deviation) of initial wavefunction
+  double sigma = 0.5;    // width (standard deviation) of initial wavefunction
   double m     = 100;    // mass
-  double k     = 0;      // spring constant - larger values hold the thing together more strongly, 
+  double k     = 100;    // spring constant - larger values hold the thing together more strongly, 
                          // 0 gives a free particle
 
-  int numCycles = 400;   // number of cycles to record
-  int skipRatio = 500;   // number of iterations to per recorded cycle (i.e. oversampling)
+  int numCycles = 4000;   // number of cycles to record
+  int skipRatio = 1000;   // number of iterations to per recorded cycle (i.e. oversampling)
                          // ...needs more
-  //int Nt = 
+
+
+
+  double dx = (xMax-xMin)/(Nx-1);  // spatial sampling rate
+  double r  = dt / (dx*dx);        // should be <= 1/2 for stability of explicit method
+
 
   // the numerical solving scheme may get unstable when choosing higher number of spatial samples
   // -> counteract with smaller dt
@@ -1284,7 +1347,7 @@ void quantumParticle()
   RAPT::rsArray::fillWithRangeLinear(&x[0], Nx, xMin, xMax);
   for(int k = 0; k < Nx; k++)  {
     double gauss = exp(-(x[k]-mu)*(x[k]-mu) / (sigma*sigma));
-    Psi_0[k] = 0.5 * (1.0+i) * gauss;
+    Psi_0[k] = 0.125 * (1.0+i) * gauss;
   }
   // todo: 
   //  -maybe multiply by +i or -i or maybe exp(i*phi) for phi being an arbitrary angle
@@ -1340,9 +1403,18 @@ void quantumParticle()
 
 
   // Ovservations:
-  // -k controls the "LFO"
+  // -k controls the "LFO" frequency
+  // -sigma controls the initial width - and the shape of the amp-envelope is different for each 
+  //  sigma
+  // -it sounds like a wah-wah - increasing sigma turns up the "resonance"
+  // -maybe the amp-envelope is more interesting as waveform than the signal itself?
+  // -maybe try other initial shapes
+  //  -gaussian bell multiplied by Hermite polynomials (these are the other eigenfunctions to the
+  //   different energy levels)
+  //  -anything
   // -with increasing sigma, the signal gets louder - we may need to normalize somehow
   //  -it also seems get more unstable
+  //
 
   // Ideas: 
   // -stabilize the algorithm by filtering out the Nyquist freq after each iteration and/or
@@ -1352,6 +1424,9 @@ void quantumParticle()
   //  it's stable for: r := dt / dx^2 <= 1/2  ...at leats in the cae of the ehat equation - but
   //  maybe that applies more generally?
   // -maybe try the implicit and the crank-nicholson method (tridiagonal system?)
+  // -ok, with Nx = 128, dt = 5.e-5, the explicit method seems to be stable, too - nevertheless
+  //  -> try crank-nicolson - mayb we can choose a bigger time-step with it and get an overall
+  //  faster algorithm -  oh no - it just stays stable for longer but not indefinitely
 
   //GNUPlotter::plotComplexArrayReIm(&x[0], &Psi_0[0], Nx);
   //GNUPlotter plt;

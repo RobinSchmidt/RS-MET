@@ -121,11 +121,11 @@ int main(int argc, char* argv[])
   //particleForceDistanceLaw();
   //particleSystem();
   //quantumSpinMeasurement();  // move to unit tests
-  quantumSpinEntanglement();
+  //quantumSpinEntanglement();
   //quantumGates();            // move to unit tests
   //quantumSpinEvolution();
   //quantum3StateSystem();
-  //quantumParticle();
+  quantumParticle();
   //tennisRacket();
   //tennisRacket2();
   //tennisRacket3();

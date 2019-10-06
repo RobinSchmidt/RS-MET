@@ -229,17 +229,17 @@ void rsQuantumParticle<T>::updateWaveFunction(T dt)
     Psi_xx[n] = (Psi[wrap(n-1,Nx)] + Psi[wrap(n+1,Nx)] - 2.*Psi[n])/(dx*dx);
 
   // compute time derivative of wave function via the Schroedinger equation:
-  //   Psi_t = (i*hBar)/(2*m)*Psi_xx - (i/hBar)*V*Psi
-  // and update wave function using a forward Euler step:
+  // Psi_t = (i*hBar)/(2*m)*Psi_xx - (i/hBar)*V*Psi:
   for(n = 0; n < Nx; n++) 
-  {
     Psi_t[n] = ((i*hBar)/(2*m))    * Psi_xx[n] // term for free particle
               -((i/hBar)* V(x[n])) * Psi[n];   // term from the potential
-    Psi[n]  = Psi[n] + dt * Psi_t[n];          // update the wave function
-  }
-}
 
+  // update wave function using a forward Euler step:
+  for(n = 0; n < Nx; n++) 
+    Psi[n]  = Psi[n] + dt * Psi_t[n];
+}
 // how else (other than cyclically) could we treat the ends?
+// optimize: get rid of the call to "wrap" by treating the ends separately outside the loop 
 
 //=================================================================================================
 
