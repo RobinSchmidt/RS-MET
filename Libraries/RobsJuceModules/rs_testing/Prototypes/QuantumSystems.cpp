@@ -230,9 +230,25 @@ void rsQuantumParticle<T>::updateWaveFunction(T dt)
 
   // compute time derivative of wave function via the Schroedinger equation:
   // Psi_t = (i*hBar)/(2*m)*Psi_xx - (i/hBar)*V*Psi:
+
+  //for(n = 0; n < Nx; n++) 
+  //  Psi_t[n] = ((i*hBar)/(2*m))    * Psi_xx[n] // term for free particle
+  //            -((i/hBar)* V(x[n])) * Psi[n];   // term from the potential
+
   for(n = 0; n < Nx; n++) 
     Psi_t[n] = ((i*hBar)/(2*m))    * Psi_xx[n] // term for free particle
-              -((i/hBar)* V(x[n])) * Psi[n];   // term from the potential
+              +((i/hBar)* V(x[n])) * Psi[n];   // term from the potential
+
+  //for(n = 0; n < Nx; n++) 
+  //  Psi_t[n] = ((-hBar/2.)*Psi_xx[n]  +  (1./(hBar))*V(x[n])*Psi[n])/i; // 10.13
+
+  //// 10.13:
+  //for(n = 0; n < Nx; n++)
+  //{
+  //  Psi_t[n]  = (-hBar/2.) * Psi_xx[n];
+  //  Psi_t[n] += (1./(2*hBar)) * x[n]*x[n] * Psi[n];
+  //  Psi_t[n] /= i;
+  //}
 
   // update wave function using a forward Euler step:
   for(n = 0; n < Nx; n++) 
@@ -240,6 +256,13 @@ void rsQuantumParticle<T>::updateWaveFunction(T dt)
 }
 // how else (other than cyclically) could we treat the ends?
 // optimize: get rid of the call to "wrap" by treating the ends separately outside the loop 
+// susskind, pg 119
+// somehow, the wvaefunctions shown here
+// https://en.wikipedia.org/wiki/Quantum_harmonic_oscillator
+// look different - is there something wrong with my potential function? and/or the implementation 
+// of the schroedinger equation? something seems to be wrong - triple-check everything
+// ...maybe get rid of hBar - set it to 1, also get rid of the mass here
+// https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation#One-dimensional_examples
 
 //=================================================================================================
 
