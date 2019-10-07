@@ -235,20 +235,20 @@ void rsQuantumParticle<T>::updateWaveFunction(T dt)
   //  Psi_t[n] = ((i*hBar)/(2*m))    * Psi_xx[n] // term for free particle
   //            -((i/hBar)* V(x[n])) * Psi[n];   // term from the potential
 
-  for(n = 0; n < Nx; n++) 
-    Psi_t[n] = ((i*hBar)/(2*m))    * Psi_xx[n] // term for free particle
-              +((i/hBar)* V(x[n])) * Psi[n];   // term from the potential
+  //for(n = 0; n < Nx; n++) 
+  //  Psi_t[n] = ((i*hBar)/(2*m))    * Psi_xx[n] // term for free particle
+  //            +((i/hBar)* V(x[n])) * Psi[n];   // term from the potential
 
   //for(n = 0; n < Nx; n++) 
   //  Psi_t[n] = ((-hBar/2.)*Psi_xx[n]  +  (1./(hBar))*V(x[n])*Psi[n])/i; // 10.13
 
-  //// 10.13:
-  //for(n = 0; n < Nx; n++)
-  //{
-  //  Psi_t[n]  = (-hBar/2.) * Psi_xx[n];
-  //  Psi_t[n] += (1./(2*hBar)) * x[n]*x[n] * Psi[n];
-  //  Psi_t[n] /= i;
-  //}
+  // 10.13:
+  for(n = 0; n < Nx; n++)
+  {
+    Psi_t[n]  = -0.5 * Psi_xx[n];
+    Psi_t[n] +=  V(x[n]) * Psi[n];
+    Psi_t[n] /= i;
+  }
 
   // update wave function using a forward Euler step:
   for(n = 0; n < Nx; n++) 

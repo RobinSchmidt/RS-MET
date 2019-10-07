@@ -1312,20 +1312,15 @@ void quantumParticle()
   int    Nx    = 128;    // number of spatial samples
   double xMin  = -1.0;   // minimum x-coordinate
   double xMax  =  1.0;   // maximum x-coordinate
-  double dt    = 5.e-5;  // time step for Euler solver
-  double mu    = 0.0;    // center of the initial (Gaussian) wavefunction
-  double sigma = 0.25;   // width (standard deviation) of initial wavefunction
-  double m     = 100;    // mass
-  double k     = 100;    // spring constant - larger values hold the thing together more strongly, 
-                         // 0 gives a free particle
+  double dt    = 1.e-5;  // time step for Euler solver
+
+  double w     = 40;     // angular frequency (?) - controls actually width of initial distribution
   int    E     = 0;      // energy level
   double scl   = 5;      // scales x in the Hermite polynomial
 
   int numCycles = 400;  // number of cycles to record
-  int skipRatio = 5000;  // number of iterations to per recorded cycle (i.e. oversampling)
+  int skipRatio = 200;   // number of iterations to per recorded cycle (i.e. oversampling)
                          // ...needs more
-
-
 
   double dx = (xMax-xMin)/(Nx-1);  // spatial sampling rate
   double r  = dt / (dx*dx);        // should be <= 1/2 for stability of explicit method
@@ -1336,17 +1331,11 @@ void quantumParticle()
 
   // define the potential function:
   typedef std::complex<double> Complex;
-  double w = sqrt(k/m); // angular frequency of oscillator
   Complex i(0,1);       // imaginary unit
   std::function<Complex (double x)> V;
-  double c = 1.0;  // the higher, the faster the initial gaussian becomes bimodal or muldtimodal
-  V = [=](double x) 
-  {  
-    double xs = x-mu; 
-    //return c * 0.5*m*w*w * xs*xs;  // https://en.wikipedia.org/wiki/Quantum_harmonic_oscillator
-    return 0.5 * w*w * xs*xs;  // from 10.13
-  }; 
-  // quadratic potential -> harmonic oscillator
+  V = [=](double x)  { return 0.5 * w*w * x*x; }; // from 10.13
+  // use 10.13 together with 10.15 for the initial state
+  // old: return c * 0.5*m*w*w * xs*xs;  // https://en.wikipedia.org/wiki/Quantum_harmonic_oscillator
 
 
   // create the initial wavefunction:
@@ -1355,10 +1344,13 @@ void quantumParticle()
   std::vector<Complex> Psi_0(Nx);
   RAPT::rsArray::fillWithRangeLinear(&x[0], Nx, xMin, xMax);
   for(int k = 0; k < Nx; k++)  {
-    double gauss = exp(-(x[k]-mu)*(x[k]-mu) / (sigma*sigma));
-    Psi_0[k]  = 0.125 * (1.0+i) * gauss;
-    Psi_0[k] *= rsPolynomial<double>::evaluateHermite(scl * x[k], E); // energy level
-    Psi_0[k] *= exp(i*(2.*PI*f*x[k]/(xMax-xMin)));                    // initial momentum/velocity
+    double gauss = exp(-0.5 * w * x[k]*x[k]);  // Eq 10.15
+    Psi_0[k] = gauss;
+
+    //double gauss = exp(-(x[k]-mu)*(x[k]-mu) / (sigma*sigma));
+    //Psi_0[k]  = 0.125 * (1.0+i) * gauss;
+    //Psi_0[k] *= rsPolynomial<double>::evaluateHermite(scl * x[k], E); // energy level
+    //Psi_0[k] *= exp(i*(2.*PI*f*x[k]/(xMax-xMin)));                    // initial momentum/velocity
   }
   // todo: 
   //  -maybe multiply by +i or -i or maybe exp(i*phi) for phi being an arbitrary angle
@@ -1380,8 +1372,7 @@ void quantumParticle()
   p.setAxisX(x);
   p.initializeWaveFunction(Psi_0);
   p.setPotentialFunction(V);
-  //p.setMass(m);
-  // ....
+
 
 
   int numSamples = numCycles * Nx;
