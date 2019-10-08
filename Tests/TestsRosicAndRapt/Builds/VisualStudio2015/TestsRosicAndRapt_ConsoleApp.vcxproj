@@ -2341,10 +2341,10 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Prototypes.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems - Copy.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Relativity.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Tensor.cpp">
@@ -3157,8 +3157,8 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Probability.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Projection3Dto2D.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Prototypes.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems - Copy.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Relativity.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Tensor.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\FileWriting.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\PerformanceTestTools.h"/>

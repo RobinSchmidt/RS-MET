@@ -12,6 +12,7 @@
 #include "Polygon.cpp"
 #include "Drawing.cpp"
 #include "QuantumSystems.cpp"
+#include "Relativity.cpp"
 
 //#include "SinusoidalModeling.cpp" // moved to rapt
 

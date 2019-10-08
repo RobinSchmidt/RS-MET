@@ -21,7 +21,7 @@ using namespace RAPT;
 #include "Polygon.h"
 #include "Drawing.h"
 #include "QuantumSystems.h"
-
+#include "Relativity.h"
 
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant 
