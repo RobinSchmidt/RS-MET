@@ -1,5 +1,11 @@
 #pragma once
 
+/** A class to represent spacetime events from relativity theory. A spacetime event has 4 
+coordinates: the 3 spatial coordinates x,y,z from regular 3D space and one time coordinate t. 
+
+not yet tested
+*/
+
 template<class T>
 struct rsSpaceTimeVector
 {
@@ -29,9 +35,12 @@ struct rsSpaceTimeVector
   // are the same in the (x,t) and in the (x',t') system -> verify numerically!
 
   /** Computes the Lorentz factor gamma that occurs in converting between stationary and moving
-  reference frames. */
+  reference frames as a function of the relative speed v (expressed as fraction of the 
+  lightspeed). */
   static T gamma(T v) { return T(1) / sqrt(T(1) - v*v); }
   // in common units: gamma = 1 / sqrt(1 - v^2/c^2)
+  // todo: what's the vector version of that, i.e. the version that takes a velocity vector
+  // maybe rename to lorentzFactor
 
   /** Converts an x-coordinate given in a stationary frame to the corresponding x' coordinate in 
   the moving frame at time t with relative velocity v between the frames. */
@@ -54,6 +63,15 @@ struct rsSpaceTimeVector
 
   static bool isSeparationLightLike(const STV& a, const STV& b)
   { return getInterval(a, b) == T(0); }
+
+
+  /** Given a relative velocity v between a rest frame A and a moving frame B and another relative 
+  velocity u between the moving frame B and another moving frame C, this function computes the 
+  relative velocity betwen the rest frame A and the second moving frame C. This can not just be the 
+  regular sum because that would potentially lead to velocities faster than light (take v=u=0.9c, 
+  for example). */
+  static T addVelocities(T u, T v) { return (u + v) / (T(1) + u*v); }  // 2.9
+  // common units: w = (u + v) / (1 + u*v/c^2), 2.13
 
 
 
