@@ -105,10 +105,19 @@ for example: v+u = 1.8c is not allowed). */
   }
   // todo: verify 3.7: the proper time of a 4-velocity vector should always equal 1
 
-  //STV fourMomentum(T m, T vx, T vy, T vz) { return m * foruVelocity(vx, vy, vz); }
+  STV fourMomentum(T m, T vx, T vy, T vz) { return m * fourVelocity(vx, vy, vz); }
   // 3.31, 3.36
 
   T lagrangian(T m, T vx, T vy, T vz) { return -m * gamma(vx, vy, vz); } // 3.26
+
+
+  T energy(T m, T vx, T vy, T vz)
+  {
+    return m * gamma(vx, vy, vz)
+  } // 3.38 with c = 1
+  // common units: E = m*c^2 / sqrt(1 - v^2/c^2), reduces to E = m*c^2 for v=0
+  // maybe implement approximation Eq 3.39
+  // what about 3.44 - what's the P^2 there? 
 
   //-----------------------------------------------------------------------------------------------
 
@@ -118,3 +127,10 @@ for example: v+u = 1.8c is not allowed). */
 
 
 };
+
+/** Multiplies a scalar and a spacetime vector. */
+template<class T>
+inline rsSpaceTimeVector<T> operator*(const T& s, const rsSpaceTimeVector<T>& v)
+{
+  return rsSpaceTimeVector<T>(s*v.t, s*v.x, s*v.y, s*v.z);
+}
