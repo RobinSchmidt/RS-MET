@@ -181,9 +181,13 @@ public:
   static Mat projector(const Vec& A) { return outer(A, A); } // (1) Pg 194
   // move these 4 to a section "algebra" or something
 
+  /** Given a bunch of states with associated probabilities to be in this state (assumed to sum to 
+  one), this function creates the density matrix for these states which encodes the information 
+  that we have about the state. For example, to compute the expectation value of an observable, we 
+  can take the trace of the matrix product of the density matrix with the matrix representing the 
+  observable (Eq. 71.3). The density matrix is a weighted sum of the projection operators 
+  corresponding to the states (the weights being given by the probabilities) */
   static Mat densityMatrix(std::vector<T> probabilities, std::vector<Vec> states);
-
-
 
   /** Returns the probability amplitude to measure an "up" configuration when z-spin is
   measured and the system is in state A. If we denote this amplitude by au, it is given by

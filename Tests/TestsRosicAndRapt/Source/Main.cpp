@@ -120,12 +120,12 @@ int main(int argc, char* argv[])
   //waveEquation1D();  // not yet implemented
   //particleForceDistanceLaw();
   //particleSystem();
-  //quantumSpinMeasurement();  // move to unit tests
+  quantumSpinMeasurement();  // move to unit tests
   //quantumSpinEntanglement();
   //quantumGates();            // move to unit tests
   //quantumSpinEvolution();
   //quantum3StateSystem();
-  quantumParticle();
+  //quantumParticle();
   //tennisRacket();
   //tennisRacket2();
   //tennisRacket3();

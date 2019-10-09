@@ -676,6 +676,12 @@ bool quantumSpinMeasurement()
   c2 = (M*L).trace();
   pass &= isCloseTo(c1, c2, tol);  // should be equal (for any observable) by (1) Eq 7.12
 
+
+
+  // density matrix stuff:
+
+
+
   // ...
   // todo: test Eq. 7.13, page 198: 
   // -create two random states psi, phi and their projectors projPsi, projPhi
@@ -683,12 +689,21 @@ bool quantumSpinMeasurement()
   //  rho = probPsi*projPsi + probPhi*projPhi
   // -create a random observable L (maybe by using the projector of yet another random state)
   // -compute both sides of 7.13
-  //Mat PA, PB;  // projectors of A and B
-  //QS::randomizeState(A, &prng);   // state psi (created by Alice with probability 0.7)
-  //QS::randomizeState(B, &prng);   // state phi (created by Alice with probability 0.3)
-  //QS::randomizeState(C, &prng);   // used as observable by Bob
-  //PA = QS::projector(A);
-  //PB = QS::projector(B);
+  Mat PA, PB;  // projectors of A and B
+  QS::randomizeState(A, &prng);   // state psi (created by Alice with probability 0.7)
+  QS::randomizeState(B, &prng);   // state phi (created by Alice with probability 0.3)
+  QS::randomizeState(C, &prng);   // used as observable by Bob
+  PA = QS::projector(A);
+  PB = QS::projector(B);
+  L  = pauliZ;
+  Complex EA, EB, EL;
+  Mat rho = QS::densityMatrix(std::vector<double>({ 0.75, 0.25 }), std::vector<Vec>({ A, B }));
+  EA = QS::sandwich(A,L,A); pass &= EA == (PA*L).trace();  // 7.12
+  EB = QS::sandwich(B,L,B); pass &= EB == (PB*L).trace();  // 7.12
+  EL = (rho * L).trace();   pass &= isCloseTo(EL, 0.75*EA + 0.25*EB, tol);
+
+
+
   // ...oh - wait - there is no other way to evaluate the lhs of eq 7.13 - hmm - scrap that test
 
   // test 7.10, pg 192: (A (x) B) * (a (x) b) = A*a (x) B*b where (x) is the Kronecker product and
@@ -882,6 +897,9 @@ bool quantumSpinEntanglement()
   Ez = QS::sandwich(sing, szI, sing);  // 0
   pass &= Ez == zero;
 
+
+
+  // todo: check desnity matrices for entangled states
 
 
   // check 7.10
