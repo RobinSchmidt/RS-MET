@@ -6,7 +6,7 @@
 todo: 
 -make everything const that is possible (also by-value parameters, local variables, etc. - and use
  constexpr for compile-time constants)
- ->done up to convolve
+ ->done up to copyBuffer
  ...maybe change the const by-value parameters to by-reference parameters
 -inline, where it makes sense (trivial functions like copy/convert)
 -maybe turn into an actual class (with members) implementing a dynamically sized array
@@ -90,6 +90,7 @@ public:
   operators '<' and '>'. */
   template <class T>
   static void clipBuffer(T *buffer, const int length, const T min, const T max);
+  // rename to clip
 
   /** Returns -1 if a < b, 0 if a == b, +1 if a > b. The elements are compared succesively starting
   at index 0 and when an unequal element is encountered, the buffer with the greater element is
@@ -123,30 +124,32 @@ public:
   /** Convolves the array x with the two-element array h and stores the result in y. The y array 
   is allowed to alias to the x array. */
   template <class T>
-  static inline void convolveWithTwoElems(const T* x, int xLength, const T* h, T* y);
+  static inline void convolveWithTwoElems(const T* x, const int xLength, const T* h, T* y);
 
   /** Convolves the array x with the two elements [h0 h1] and stores the result in y. The y array 
   is allowed to alias to the x array. This special case is needed for multiplying in a linear 
   factor into an array of polynomial coefficients. */
   template <class T>
-  static inline void convolveWithTwoElems(const T* x, int xLength, T h0, T h1, T* y);
+  static inline void convolveWithTwoElems(
+    const T* x, const int xLength, const T h0, const T h1, T* y);
 
 
   /** Copies the data of one array into another one and converts the type if necessary. */
   template <class T1, class T2>
-  static inline void convertBuffer(const T1 *source, T2 *destination, int length);
+  static inline void convertBuffer(const T1 *source, T2 *destination, const int length);
   // rename to convert
 
   /** Convolves x with h and stored the result in x. The xLength parameter denotes the number of
   values in the x-array that will be considered as input signal. The actual array must be longer
   than that (namely xLength+hLength-1) to store the appended values. */
   template <class T>
-  static void convolveInPlace(T *x, int xLength, const T *h, int hLength);
-    // DEPRECATED - we can now do in-place covolution with the regular convolve function
+  static void convolveInPlace(T *x, const int xLength, const T *h, const int hLength);
+  // DEPRECATED - we can now do in-place covolution with the regular convolve function
+  // ...but maybe keep it as convenience function
 
   /** Copies the data of one array into another one, converting the datatype, if necessarry. */
   template <class T1, class T2>
-  static void copyBuffer(const T1 *source, T2 *destination, int length);
+  static void copyBuffer(const T1 *source, T2 *destination, const int length);
   // rename to copy
 
   // old version:
@@ -633,14 +636,14 @@ inline bool rsArray::areBuffersEqual(const T *buffer1, const T *buffer2, const i
 }
 
 template <class T1, class T2>
-inline void rsArray::convertBuffer(const T1 *source, T2 *destination, int length)
+inline void rsArray::convertBuffer(const T1 *source, T2 *destination, const int length)
 {
   for(int i = 0; i < length; i++)
     destination[i] = (T2)source[i];
 }
 
 template <class T>
-inline void rsArray::convolveWithTwoElems(const T* x, int xLength, const T* h, T* y)
+inline void rsArray::convolveWithTwoElems(const T* x, const int xLength, const T* h, T* y)
 {
   y[xLength] = x[xLength-1]*h[1];
   for(int n = xLength-1; n > 0; n--)
@@ -649,7 +652,8 @@ inline void rsArray::convolveWithTwoElems(const T* x, int xLength, const T* h, T
 }
 
 template <class T>
-inline void rsArray::convolveWithTwoElems(const T* x, int xLength, T h0, T h1, T* y) 
+inline void rsArray::convolveWithTwoElems(
+  const T* x, const int xLength, const T h0, const T h1, T* y) 
 {
   y[xLength] = x[xLength-1]*h1;
   for(int n = xLength-1; n > 0; n--)
