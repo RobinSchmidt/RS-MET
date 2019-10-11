@@ -68,7 +68,7 @@ void rsArray::addInto(T *x, const int N, const T *y, int L, int n)
 // the index manipulation code can be factored out
 
 template<class T>
-void rsArray::affineTrafo(const T* x, T* y, int N, T a, T b)
+void rsArray::affineTrafo(const T* x, T* y, const int N, const T a, const T b)
 {
   for(int i = 0; i < N; i++)
     y[i] = a * x[i] + b;
@@ -76,7 +76,7 @@ void rsArray::affineTrafo(const T* x, T* y, int N, T a, T b)
 // maybe inline this
 
 template<class T>
-void rsArray::allocateSquareArray2D(T**& theArray, int size)
+void rsArray::allocateSquareArray2D(T**& theArray, const int size)
 {
   theArray = new T*[size];
   for(int i = 0; i < size; i++)
@@ -84,7 +84,7 @@ void rsArray::allocateSquareArray2D(T**& theArray, int size)
 }
 
 template <class T>
-void rsArray::applyFunction(const T *inBuffer, T *outBuffer, int length, T (*f) (T))
+void rsArray::applyFunction(const T *inBuffer, T *outBuffer, const int length, T (*f) (T))
 {
   for(int i = 0; i < length; i++)
     outBuffer[i] = f(inBuffer[i]);
@@ -93,7 +93,7 @@ void rsArray::applyFunction(const T *inBuffer, T *outBuffer, int length, T (*f) 
 
 
 template <class T>
-void rsArray::circularShift(T *buffer, int length, int numPositions)
+void rsArray::circularShift(T *buffer, const int length, const int numPositions)
 {
   int na = abs(numPositions);
   while(na > length)
@@ -115,15 +115,14 @@ void rsArray::circularShift(T *buffer, int length, int numPositions)
 }
 
 template <class T>
-void rsArray::circularShiftInterpolated(T *buffer, int length, double numPositions)
+void rsArray::circularShiftInterpolated(T *buffer, const int length, const double numPositions)
 {
-  double read = rsWrapAround(numPositions, (double)length);
-  int    w    = 0;                       // write position
-  int    r    = rsFloorInt(read);          // integer part of read position
-  //int    r    = (int) read;              // integer part of read position
-  double f    = read-r;                  // fractional part of read position
-  double f2   = 1.0-f;
-  T *tmp      = new T[length];
+  const double read = rsWrapAround(numPositions, (double)length);
+  int w = 0;                       // write position
+  int r = rsFloorInt(read);        // integer part of read position
+  const double f  = read-r;        // fractional part of read position
+  const double f2 = 1.0-f;
+  T *tmp = new T[length];
   copyBuffer(buffer, tmp, length);
   while(r < length-1)
   {
@@ -144,10 +143,9 @@ void rsArray::circularShiftInterpolated(T *buffer, int length, double numPositio
 }
 
 template <class T>
-void rsArray::clipBuffer(T *buffer, int length, T min, T max)
+void rsArray::clipBuffer(T *buffer, const int length, const T min, const T max)
 {
-  for(int i = 0; i < length; i++)
-  {
+  for(int i = 0; i < length; i++) {
     if(buffer[i] < min)
       buffer[i] = min;
     else if(buffer[i] > max)
@@ -156,7 +154,7 @@ void rsArray::clipBuffer(T *buffer, int length, T min, T max)
 }
 
 template <class T>
-int rsArray::compare(const T *a, const T *b, int length)
+int rsArray::compare(const T *a, const T *b, const int length)
 {
   for(int i = 0; i < length; i++)
   {
@@ -169,9 +167,9 @@ int rsArray::compare(const T *a, const T *b, int length)
 }
 
 template <class T>
-int rsArray::compare(const T *a, int na, const T *b, int nb)
+int rsArray::compare(const T *a, int na, const T *b, const int nb)
 {
-  int nMin = rsMin(na, nb);
+  const int nMin = rsMin(na, nb);
   for(int i = 0; i < nMin; i++)
   {
     if(a[i] < b[i])
@@ -193,7 +191,7 @@ int rsArray::compare(const T *a, int na, const T *b, int nb)
 }
 
 template <class T>
-bool rsArray::contains(const T *buffer, int length, T elementToFind)
+bool rsArray::contains(const T *buffer, const int length, const T elementToFind)
 {
   for(int i = 0; i < length; i++)
   {
@@ -205,7 +203,7 @@ bool rsArray::contains(const T *buffer, int length, T elementToFind)
 }
 
 template <class T>
-void rsArray::convolve(const T *x, int xLength, const T *h, int hLength, T *y)
+void rsArray::convolve(const T *x, const int xLength, const T *h, const int hLength, T *y)
 {
   for(int n = xLength+hLength-2; n >= 0; n--) {
     T s = T(0);

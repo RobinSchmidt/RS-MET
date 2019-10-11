@@ -6,7 +6,7 @@
 todo: 
 -make everything const that is possible (also by-value parameters, local variables, etc. - and use
  constexpr for compile-time constants)
- ->done up to addInto
+ ->done up to convolve
  ...maybe change the const by-value parameters to by-reference parameters
 -inline, where it makes sense (trivial functions like copy/convert)
 -maybe turn into an actual class (with members) implementing a dynamically sized array
@@ -44,30 +44,30 @@ public:
 
   /** Applies the affine transformation y = a*x + b to all array elements. */
   template<class T>
-  static void affineTrafo(const T* x, T* y, int N, T a, T b);
+  static void affineTrafo(const T* x, T* y, const int N, const T a, const T b);
 
   /** Allocates memory for a 2-dimensional array (i.e. a matrix) with equal dimensions in both
   directions. 
   \todo: remove - redundant with rsAllocateMatrix  */
   template<class T>
-  static void allocateSquareArray2D(T**& theArray, int size);
+  static void allocateSquareArray2D(T**& theArray, const int size);
 
   /** Applies the function f given by the function-pointer to all elements in inBuffer and stores
   the result in outBuffer (both buffers may be equal). */
   template <class T>
-  static void applyFunction(const T* inBuffer, T* outBuffer, int length, T (*f) (T));
+  static void applyFunction(const T* inBuffer, T* outBuffer, const int length, T (*f) (T));
+  // why can't we make the function-pointer const? ...rosic doesn't compile when trying
 
   /** Checks, if the two buffers are elementwise approximately equal within the given tolerance. */
   template <class T>
-  static inline bool areBuffersApproximatelyEqual(const T *buffer1, const T *buffer2, int length, 
-    T tolerance);
+  static inline bool areBuffersApproximatelyEqual(const T *buffer1, const T *buffer2, 
+    const int length, const T tolerance);
   // rename to allAlmostEqual
 
   /** Checks, if the two buffers are elementwise equal. */
   template <class T>
-  static inline bool areBuffersEqual(const T *buffer1, const T *buffer2, int length);
+  static inline bool areBuffersEqual(const T *buffer1, const T *buffer2, const int length);
   // rename to allEqual
-
 
 
   /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward
@@ -75,7 +75,7 @@ public:
   than the length of the buffer, it will use numPositions modulo the length - so if the length is 6
   and numPositions is 8, it will whift by 2 positions. */
   template<class T>
-  static void circularShift(T *buffer, int length, int numPositions);
+  static void circularShift(T *buffer, const int length, const int numPositions);
   // allocates temporary heap memory - todo: make a version that doesn't and uses a workspace
   // that is passed inot the function - but keep the one without workspace as convenience function
 
@@ -84,31 +84,31 @@ public:
   circularShift(T*, int, int) but allows for non-integer shifts by using linear interpolation of
   the buffer. */
   template <class T>
-  static void circularShiftInterpolated(T *buffer, int length, double numPositions);
+  static void circularShiftInterpolated(T *buffer, const int length, const double numPositions);
 
   /** Restricts the values in the buffer to the range between min and max for types that define the
   operators '<' and '>'. */
   template <class T>
-  static void clipBuffer(T *buffer, int length, T min, T max);
+  static void clipBuffer(T *buffer, const int length, const T min, const T max);
 
   /** Returns -1 if a < b, 0 if a == b, +1 if a > b. The elements are compared succesively starting
   at index 0 and when an unequal element is encountered, the buffer with the greater element is
   considered to be greater. This is consistent with strcmp or numbers in a positional number
   system. */
   template <class T>
-  static int compare(const T *a, const T *b, int length);
+  static int compare(const T *a, const T *b, const int length);
 
   /** Similar to rsCompare(T *a, T *b, int length) but allows for the 2 buffers to have different
   lengths. If they match up to the length of the shorter buffer, the longer buffer is considered
   equal, iff all the remaining entries in the tail zero, otherwise the longer buffer is considered
   to be greater. */
   template <class T>
-  static int compare(const T *a, int na, const T *b, int nb);
+  static int compare(const T *a, int na, const T *b, const int nb);
 
   /** Searches the array for an element (via the '==' operator of type T) and returns true if the
   element was found. */
   template <class T>
-  static bool contains(const T *buffer, int length, T elementToFind);
+  static bool contains(const T *buffer, const int length, const T elementToFind);
 
   /** Convolves an array x (seen as input signal) with another array h (seen as impulse response)
   and stores the result in the array y. The type must define the operators: *, += and a constructor
@@ -118,7 +118,7 @@ public:
   sequence with the convolution product of the sequence with some other sequence or even with
   itself (such as when squaring polynomials). */
   template <class T>
-  static void convolve(const T *x, int xLength, const T *h, int hLength, T *y);
+  static void convolve(const T *x, const int xLength, const T *h, const int hLength, T *y);
 
   /** Convolves the array x with the two-element array h and stores the result in y. The y array 
   is allowed to alias to the x array. */
@@ -610,8 +610,8 @@ public:
 // inlined implementations
 
 template <class T>
-inline bool rsArray::areBuffersApproximatelyEqual(const T *buffer1, const T *buffer2, int length, 
-  T tolerance)
+inline bool rsArray::areBuffersApproximatelyEqual(const T *buffer1, const T *buffer2, 
+  const int length, const T tolerance)
 {
   for(int i = 0; i < length; i++)
   {
@@ -622,7 +622,7 @@ inline bool rsArray::areBuffersApproximatelyEqual(const T *buffer1, const T *buf
 }
 
 template <class T>
-inline bool rsArray::areBuffersEqual(const T *buffer1, const T *buffer2, int length)
+inline bool rsArray::areBuffersEqual(const T *buffer1, const T *buffer2, const int length)
 {
   for(int i = 0; i < length; i++)
   {
