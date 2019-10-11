@@ -232,7 +232,7 @@ void rsFilterAnalyzer<T>::getBiquadCascadeMagnitudeResponse(T* b0, T* b1, T* b2,
       rsArray::copyBuffer(tmp, mag, numBins);  
     else
       rsArray::add(mag, tmp, mag, numBins);
-    rsArray::clipBuffer(mag, numBins, T(-200), RS_INF(T));  // avoid negative infinities
+    rsArray::clip(mag, numBins, T(-200), RS_INF(T));  // avoid negative infinities
   }
   else
   {

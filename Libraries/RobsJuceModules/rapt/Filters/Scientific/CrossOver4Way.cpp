@@ -157,7 +157,7 @@ void rsCrossOver4Way<TSig, TPar>::getMagnitudeResponse(TPar* frequencies, TPar* 
 
   rsFilterAnalyzer<TPar>::clampValuesAboveNyquist(frequencies, magnitudes, numBins, 
     stage1.getSampleRate(), -100.0);
-  rsArray::clipBuffer(magnitudes, numBins, TPar(-150), TPar(10));
+  rsArray::clip(magnitudes, numBins, TPar(-150), TPar(10));
 }
 
 // audio-processing:

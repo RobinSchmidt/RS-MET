@@ -143,7 +143,7 @@ void rsArray::circularShiftInterpolated(T *buffer, const int length, const doubl
 }
 
 template <class T>
-void rsArray::clipBuffer(T *buffer, const int length, const T min, const T max)
+void rsArray::clip(T *buffer, const int length, const T min, const T max)
 {
   for(int i = 0; i < length; i++) {
     if(buffer[i] < min)

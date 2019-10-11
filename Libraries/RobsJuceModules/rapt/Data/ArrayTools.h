@@ -86,8 +86,7 @@ public:
   /** Restricts the values in the buffer to the range between min and max for types that define the
   operators '<' and '>'. */
   template <class T>
-  static void clipBuffer(T *buffer, const int length, const T min, const T max);
-  // rename to clip
+  static void clip(T *buffer, const int length, const T min, const T max);
 
   /** Returns -1 if a < b, 0 if a == b, +1 if a > b. The elements are compared succesively starting
   at index 0 and when an unequal element is encountered, the buffer with the greater element is
