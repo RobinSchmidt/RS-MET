@@ -200,7 +200,8 @@ public:
   // star anymore
   //
 
-  // operators: +,-,==,unary-, element access (i,j,k,...)
+  // operators: +,-,==,unary-, element access (i,j,k,...) - make different versions for various 
+  // numbers of indices
 
   
 

@@ -22,6 +22,7 @@ public:
 
 };
 
+//=================================================================================================
 
 /** A class to remove a linear trend and absoulte offset from data and possibly later re-apply 
 it. This is useful for dealing with data that has an intrinsic linear trend, such as unwrapped 
@@ -43,7 +44,7 @@ public:
 
   /** Analyzes the trend and offset in the data and removes it, while storing the coefficients
   that have been used in order to re-apply the trend later. If for some reason, the a,b, coeffs are
-  still valid from an earlier analysis, the analyisi may be skipped by passing false for "analyze".
+  still valid from an earlier analysis, the analysia may be skipped by passing false for "analyze".
   The y-axis input is taken from yIn and the output is written to yOut, but these arrays may be the 
   same. */
   void removeTrendAndOffset(int N, const T* x, const T* yIn, T* yOut, bool analyze = true)

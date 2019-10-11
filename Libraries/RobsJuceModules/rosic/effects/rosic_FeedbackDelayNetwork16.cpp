@@ -365,6 +365,11 @@ void FeedbackDelayNetwork16::assignRelativeDelayTimesAlgorithmically(int distrib
 
   }
   adjustDelayTimes();
+
+  // todo: compute delay-times according to room acoustic considerations - each delaline can the 
+  // thought of modeling standing wvaes in a particular direction - maybe use the dimensions of
+  // a rectangular room, the 3 different plane diagonals and the room diagonal - this gives
+  // 7 out of 16 delay-times
 }
 
 

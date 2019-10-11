@@ -41,7 +41,7 @@ bool rsMultiArray<ElementType>::operator==(const rsMultiArray<ElementType> &othe
   if( !this->isOfSameTypeAs(other) )
     return false;
   else
-    return rsArray::areBuffersEqual(data, other.data, getNumElements());
+    return rsArray::equal(data, other.data, getNumElements());
 }
 
 template<class ElementType>
@@ -184,7 +184,7 @@ bool rsMultiArray<ElementType>::isOfSameTypeAs(const rsMultiArray<ElementType> &
   if( numIndices != other.numIndices )
     return false;
   else
-    return rsArray::areBuffersEqual(indexRanges, other.indexRanges, numIndices);
+    return rsArray::equal(indexRanges, other.indexRanges, numIndices);
 }
 
 // internal functions:
@@ -272,7 +272,7 @@ void rsMultiArray<ElementType>::leftFactor(const rsMultiArray<ElementType> &oute
   rsUint32 numResultIndices = outerProduct.numIndices-rightFactor.numIndices;
   rsUint32 *resultIndices   = new rsUint32[numResultIndices];
 
-  rsAssert(rsArray::areBuffersEqual(&outerProduct.indexRanges[numResultIndices],
+  rsAssert(rsArray::equal(&outerProduct.indexRanges[numResultIndices],
     rightFactor.indexRanges, rightFactor.numIndices)); // multiarrays incompatible
 
   memcpy(resultIndices, outerProduct.indexRanges, numResultIndices*sizeof(rsUint32));
@@ -303,7 +303,7 @@ void rsMultiArray<ElementType>::rightFactor(const rsMultiArray<ElementType> &out
   rsUint32 numResultIndices = outerProduct.numIndices-leftFactor.numIndices;
   rsUint32 *resultIndices   = new rsUint32[numResultIndices];
 
-  rsAssert(rsArray::areBuffersEqual(outerProduct.indexRanges,
+  rsAssert(rsArray::equal(outerProduct.indexRanges,
     leftFactor.indexRanges, leftFactor.numIndices)); // multiarrays incompatible for this operation
 
   memcpy(resultIndices, &outerProduct.indexRanges[leftFactor.numIndices],

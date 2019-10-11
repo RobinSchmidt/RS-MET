@@ -36,6 +36,9 @@ halfway between two integers (instead of returning the nearest even integer in t
 Argument x must satify (INT_MIN/2)ñ1.0 < x < (INT_MAX/2)+1.0.  */
 INLINE int roundToInt(double x)
 {
+  return (int) round(x);
+
+  /*
   int i;
 
 #if MSC_X86_ASM
@@ -49,7 +52,7 @@ INLINE int roundToInt(double x)
     sar i, 1;
   }
 #else
-// preliminary:
+  // preliminary - this doesn't work:
   i = (int)floor(x);
   int r = (int) (x-i);
   if(r >= 0.5)
@@ -57,6 +60,7 @@ INLINE int roundToInt(double x)
 #endif
 
   return (i);
+*/
 }
 
 INLINE int floorInt(double x)
@@ -101,6 +105,9 @@ INLINE int ceilInt(double x)
 
 INLINE int truncateToInt(double x)
 {
+  return (int) trunc(x);
+
+  /*
   int i;
 
 #if MSC_X86_ASM
@@ -124,6 +131,7 @@ INLINE int truncateToInt(double x)
     i = -i;
   }
   return (i);
+  */
 }
 
 INLINE int extractExponent(double x)

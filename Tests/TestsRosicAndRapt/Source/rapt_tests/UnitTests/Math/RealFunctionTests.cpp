@@ -1,23 +1,5 @@
-#include "RealFunctionTests.h"
 
 typedef std::complex<double> rsComplexDbl; // get rid
-
-bool testRealFunctions()
-{
-  std::string testName = "rsRealFunctions";
-  std::string dummy;
-  bool testResult = true;
-
-  testResult &= testAbsAndSign(         dummy);
-  //testResult &= testHyperbolicFunctions(dummy); // test doesn't pass
-  testResult &= testSinc(               dummy);
-  testResult &= testFunctionIterators(  dummy);
-  testResult &= testWrap(               dummy);
-
-  //appendTestResultToReport(reportString, testName, testResult);
-  return testResult;
-}
-
 
 //inline double rsAbsFast(double x)
 //{
@@ -291,4 +273,20 @@ bool testWrap(std::string &reportString)
 
   appendTestResultToReport(reportString, testName, r);
   return r;
+}
+
+bool testRealFunctions()
+{
+  std::string testName = "rsRealFunctions";
+  std::string dummy;
+  bool testResult = true;
+
+  testResult &= testAbsAndSign(         dummy);
+  //testResult &= testHyperbolicFunctions(dummy); // test doesn't pass
+  testResult &= testSinc(               dummy);
+  testResult &= testFunctionIterators(  dummy);
+  testResult &= testWrap(               dummy);
+
+  //appendTestResultToReport(reportString, testName, testResult);
+  return testResult;
 }

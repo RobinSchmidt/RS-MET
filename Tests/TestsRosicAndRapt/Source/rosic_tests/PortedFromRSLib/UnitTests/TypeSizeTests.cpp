@@ -3,9 +3,8 @@
 #undef min  // some silly include header on windows (minwindef.h) defines min/max as macros
 #undef max
 
-bool testTypeSizes(std::string &reportString)
+bool testTypeSizes()
 {
-  std::string testName = "rsTypeSizes";
   bool testResult = true;
 
   // note: we first assign the sizes to variables (instead of driectly using sizeof inside the comparison) to be able to inspect the actual
@@ -48,7 +47,6 @@ bool testTypeSizes(std::string &reportString)
 
   //double doubleMin = RS_MIN(double);
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 

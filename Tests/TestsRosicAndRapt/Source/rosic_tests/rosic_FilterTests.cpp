@@ -264,23 +264,23 @@ void rotes::testFiniteImpulseResponseDesigner()
   filter.setFrequency(10000.0);
 
   filter.getMagnitudeResponse(frequencies, magnitudes1, fftLength, true, false);
-  RAPT::rsArray::clipBuffer(magnitudes1, fftLength, -200.0, 10.0);
+  RAPT::rsArray::clip(magnitudes1, fftLength, -200.0, 10.0);
 
   filter.setWindowType(WindowDesigner::BLACKMAN);
   filter.getMagnitudeResponse(frequencies, magnitudes2, fftLength, true, false);
-  RAPT::rsArray::clipBuffer(magnitudes2, fftLength, -200.0, 10.0);
+  RAPT::rsArray::clip(magnitudes2, fftLength, -200.0, 10.0);
 
   filter.setWindowType(WindowDesigner::HAMMING);
   filter.getMagnitudeResponse(frequencies, magnitudes3, fftLength, true, false);
-  RAPT::rsArray::clipBuffer(magnitudes2, fftLength, -200.0, 10.0);
+  RAPT::rsArray::clip(magnitudes2, fftLength, -200.0, 10.0);
 
   filter.setWindowType(WindowDesigner::HANN);
   filter.getMagnitudeResponse(frequencies, magnitudes4, fftLength, true, false);
-  RAPT::rsArray::clipBuffer(magnitudes2, fftLength, -200.0, 10.0);
+  RAPT::rsArray::clip(magnitudes2, fftLength, -200.0, 10.0);
 
   filter.setWindowType(WindowDesigner::COSINE_SQUARED);
   filter.getMagnitudeResponse(frequencies, magnitudes5, fftLength, true, false);
-  RAPT::rsArray::clipBuffer(magnitudes2, fftLength, -200.0, 10.0);
+  RAPT::rsArray::clip(magnitudes2, fftLength, -200.0, 10.0);
 
 
   //plotData(fftLength/2, frequencies, magnitudes1, magnitudes2, magnitudes3, magnitudes4, magnitudes5);
@@ -428,7 +428,7 @@ void rotes::testFilterAnalyzer()
   rosic::rsFilterAnalyzerD::getMagnitudes( rsCastPointer(H), magnitudes, numBins);
   rosic::rsFilterAnalyzerD::convertToDecibels(magnitudes, numBins);
 
-  RAPT::rsArray::clipBuffer(magnitudes, numBins, -60.0, 20.0);
+  RAPT::rsArray::clip(magnitudes, numBins, -60.0, 20.0);
 
 
   plotData(numBins, frequencies, magnitudes);
@@ -821,7 +821,7 @@ void rotes::testCrossoverNewVsOld()
 
     coOld.processSampleFrame(yo);
     coNew.processSampleFrameStereo(yn);
-    rsAssert(RAPT::rsArray::areBuffersApproximatelyEqual(yo, yn, 8, tol));
+    rsAssert(RAPT::rsArray::almostEqual(yo, yn, 8, tol));
 
     int dummy = 0;
   }

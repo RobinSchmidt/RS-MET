@@ -1,45 +1,5 @@
-#include "PolynomialUnitTests.h"
 
 using namespace RAPT;
-
-//bool testPolynomial(std::string &reportString)
-bool testPolynomial()
-{
-  std::string reportString = "Polynomial"; // dummy -> remove
-  bool testResult = true;
-
-  testResult &= testConvolution(                              reportString);
-  testResult &= testCubicCoeffsFourPoints(                    reportString);
-  testResult &= testCubicCoeffsTwoPointsAndDerivatives(       reportString);
-  testResult &= testPolynomialEvaluation(                     reportString);
-  testResult &= testPolynomialDivision(                       reportString);
-  testResult &= testPolynomialArgumentShift(                  reportString);
-  testResult &= testPolynomialDiffAndInt(                     reportString);
-  testResult &= testPolynomialFiniteDifference(               reportString);
-  testResult &= testPolynomialComposition(                    reportString);
-  testResult &= testPolynomialWeightedSum(                    reportString);
-  testResult &= testPolynomialIntegrationWithPolynomialLimits(reportString);
-  testResult &= testPolynomialInterpolation(                  reportString);
-  testResult &= testPolynomialRootFinder(                     reportString);
-  testResult &= testPartialFractionExpansion(                 reportString);
-  testResult &= testPartialFractionExpansion2(                reportString);
-  testResult &= testPolynomialBaseChange(                     reportString);
-  testResult &= testPolynomialRecursion(                      reportString);
-  testResult &= testJacobiPolynomials(                        reportString);
-
-  // under construction:
-  testResult &= testPowersChebychevExpansionConversion(       reportString);
-
-  // polynomial class:
-  testResult &= testPolynomialOperators(                      reportString);
-
-
-
-  testResult &= testRationalFunction(reportString);
-
-
-  return testResult;
-}
 
 /*
   template <class T>
@@ -63,7 +23,6 @@ bool testPolynomial()
     }
   }
 */
-
 
 
   /** Given the sequence y of length yLength, this function returns a sequence x which, when
@@ -133,19 +92,19 @@ bool testConvolution(std::string &reportString)
 
   // test algorithm when all pointers are distinct:
   rsArray::convolve(x, xN, h, hN, y);
-  testResult &= rsArray::areBuffersEqual(y, yt, yN);
+  testResult &= rsArray::equal(y, yt, yN);
 
   // test in-place convolution where x == y:
   rsArray::fillWithZeros(y, yN);
   rsArray::copyBuffer(x, y, xN);
   rsArray::convolve(y, xN, h, hN, y);
-  testResult &= rsArray::areBuffersEqual(y, yt, yN);
+  testResult &= rsArray::equal(y, yt, yN);
 
   // test in-place convolution where h == y:
   rsArray::fillWithZeros(y, yN);
   rsArray::copyBuffer(h, y, hN);
   rsArray::convolve(x, xN, y, hN, y);
-  testResult &= rsArray::areBuffersEqual(y, yt, yN);
+  testResult &= rsArray::equal(y, yt, yN);
 
   // test in-place convolution where x == h == y:
   rsArray::fillWithZeros(y, yN);
@@ -170,19 +129,19 @@ bool testConvolution(std::string &reportString)
   rsArray::convolve(x, xN, h, hN, y);
   double xx[xN];
   rsArray::deConvolve(y, yN, h, hN, xx);
-  testResult &= rsArray::areBuffersApproximatelyEqual(x, xx, xN, 1.e-13);
+  testResult &= rsArray::almostEqual(x, xx, xN, 1.e-13);
 
   // convolve and deconvolve with an impulse response with leading zeros:
   h[0] = 0.0;
   h[1] = 0.0;
   rsArray::convolve(x, xN, h, hN, y);
   rsArray::deConvolve(y, yN, h, hN, xx);
-  testResult &= rsArray::areBuffersApproximatelyEqual(x, xx, xN, 1.e-13);
+  testResult &= rsArray::almostEqual(x, xx, xN, 1.e-13);
 
   // recover the impulse response h:
   double hh[hN];
   rsArray::deConvolve(y, yN, x, xN, hh);
-  testResult &= rsArray::areBuffersApproximatelyEqual(h, hh, hN, 1.e-13);
+  testResult &= rsArray::almostEqual(h, hh, hN, 1.e-13);
 
   // test (de)convolution with all-zero impulse response:
   rsArray::fillWithZeros(h, hN);
@@ -197,13 +156,13 @@ bool testConvolution(std::string &reportString)
   int h2N = 2*hN-1;                         // length of h^2
   rsArray::fillWithZeros(hh, hN);
   rsArray::sequenceSqrt(y, h2N, hh);
-  testResult &= rsArray::areBuffersApproximatelyEqual(h, hh, hN, 1.e-13);
+  testResult &= rsArray::almostEqual(h, hh, hN, 1.e-13);
 
   // test sequence square-root, when the sequence has leading zeros:
   h[0]=0; h[1]=0; h[2]=4; h[3]=-8; h[4]=2;
   rsArray::convolve(h, hN, h, hN, y);
   rsArray::sequenceSqrt(y, h2N, hh);
-  testResult &= rsArray::areBuffersApproximatelyEqual(h, hh, hN, 1.e-13);
+  testResult &= rsArray::almostEqual(h, hh, hN, 1.e-13);
 
   // if we try to take the square-root x of an arbitrary sequence y (which was not constructed
   // by squaring some given sequence), and convolve the computed square-root with itself again,
@@ -215,7 +174,7 @@ bool testConvolution(std::string &reportString)
   rsArray::sequenceSqrt(y, 11, x);
   double yy[11];
   rsArray::convolve(x, 6, x, 6, yy);
-  testResult &= rsArray::areBuffersApproximatelyEqual(y, yy, 6, 1.e-13);
+  testResult &= rsArray::almostEqual(y, yy, 6, 1.e-13);
 
   return testResult;
 }
@@ -352,8 +311,8 @@ bool testPolynomialDivision(std::string &reportString)
 
   // p(x)/d(x) = q(x) + r(x)/d(x)
 
-  testResult &= rsArray::areBuffersEqual(q, qq, 4);
-  testResult &= rsArray::areBuffersEqual(r, rr, 5);
+  testResult &= rsArray::equal(q, qq, 4);
+  testResult &= rsArray::equal(r, rr, 5);
 
   return testResult;
 }
@@ -484,13 +443,13 @@ bool testPolynomialFiniteDifference(std::string &reportString)
   rsPolynomial<double>::finiteDifference(a, ad, order, 1, h);
   for(n = 0; n < numValues; n++)
     yfc[n] = rsPolynomial<double>::evaluate(x[n], ad, order-1);
-  testResult &= rsArray::areBuffersEqual(yf, yfc, numValues-1);
+  testResult &= rsArray::equal(yf, yfc, numValues-1);
 
   // check backward difference:
   rsPolynomial<double>::finiteDifference(a, ad, order, -1, h);
   for(n = 0; n < numValues; n++)
     ybc[n] = rsPolynomial<double>::evaluate(x[n], ad, order-1);
-  testResult &= rsArray::areBuffersEqual(&yb[1], &ybc[1], numValues-1);
+  testResult &= rsArray::equal(&yb[1], &ybc[1], numValues-1);
 
   return testResult;
 }
@@ -1105,12 +1064,12 @@ bool testPolynomialRecursion(std::string &reportString)
   rsArray::copyBuffer(a[2], t2, 5);
   rsArray::copyBuffer(a[3], t1, 5);
   rsPolynomial<double>::threeTermRecursion(t1, w0, 4, t1, w1, w1x, t2, w2);
-  testResult &= rsArray::areBuffersEqual(a[4], t1, 5);
+  testResult &= rsArray::equal(a[4], t1, 5);
 
   // in-place application - 2nd input is reused as output:
   rsArray::copyBuffer(a[3], t1, 5);
   rsPolynomial<double>::threeTermRecursion(t2, w0, 4, t1, w1, w1x, t2, w2);
-  testResult &= rsArray::areBuffersEqual(a[4], t2, 5);
+  testResult &= rsArray::equal(a[4], t2, 5);
 
   return testResult;
 }
@@ -1290,6 +1249,43 @@ bool testRationalFunction(std::string& reportString)
   // https://www.geeksforgeeks.org/gcd-two-array-numbers/
 
 
+
+
+  return testResult;
+}
+
+//bool testPolynomial(std::string &reportString)
+bool testPolynomial()
+{
+  std::string reportString = "Polynomial"; // dummy -> remove
+  bool testResult = true;
+
+  testResult &= testConvolution(                              reportString);
+  testResult &= testCubicCoeffsFourPoints(                    reportString);
+  testResult &= testCubicCoeffsTwoPointsAndDerivatives(       reportString);
+  testResult &= testPolynomialEvaluation(                     reportString);
+  testResult &= testPolynomialDivision(                       reportString);
+  testResult &= testPolynomialArgumentShift(                  reportString);
+  testResult &= testPolynomialDiffAndInt(                     reportString);
+  testResult &= testPolynomialFiniteDifference(               reportString);
+  testResult &= testPolynomialComposition(                    reportString);
+  testResult &= testPolynomialWeightedSum(                    reportString);
+  testResult &= testPolynomialIntegrationWithPolynomialLimits(reportString);
+  testResult &= testPolynomialInterpolation(                  reportString);
+  testResult &= testPolynomialRootFinder(                     reportString);
+  testResult &= testPartialFractionExpansion(                 reportString);
+  testResult &= testPartialFractionExpansion2(                reportString);
+  testResult &= testPolynomialBaseChange(                     reportString);
+  testResult &= testPolynomialRecursion(                      reportString);
+  testResult &= testJacobiPolynomials(                        reportString);
+
+  // under construction:
+  testResult &= testPowersChebychevExpansionConversion(       reportString);
+
+  // polynomial class:
+  testResult &= testPolynomialOperators(                      reportString);
+
+  testResult &= testRationalFunction(reportString);
 
 
   return testResult;

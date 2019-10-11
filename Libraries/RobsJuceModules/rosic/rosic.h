@@ -51,13 +51,15 @@
 //#include <new>
 //#include <iterator>
 
+#ifdef _MSC_VER           // Elans says, this is needed to compile on mac
 #include <intrin.h>       // for some reason, it's needed on Elan's machine but not on mine
+#endif
 
 #include <emmintrin.h>    // SSE2
 
-#ifndef __APPLE__
-#include <malloc.h>     // for alloca - try to get rid..
-#endif
+//#ifndef __APPLE__
+//#include <malloc.h>     // for alloca - try to get rid - alloca is bad, mkay?
+//#endif
 
 //#if (defined (_WIN32) || defined (_WIN64))
 //#define USE_WINAPI_CRITICAL_SECTION

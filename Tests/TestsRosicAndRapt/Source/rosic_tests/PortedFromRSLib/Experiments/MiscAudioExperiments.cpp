@@ -746,3 +746,223 @@ void windowedSinc()
 
   plotData(N, x, y, s, w);
 }
+
+
+template<class T>
+void plotMatrix(RAPT::rsMatrixNew<T>& z, std::vector<T>& x, std::vector<T>& y)
+{
+  double** z2;
+  RAPT::MatrixTools::rsAllocateMatrix(z2, z.getNumRows(), z.getNumColumns());
+
+  for(int i = 0; i < z.getNumRows(); i++)
+    for(int j = 0; j < z.getNumColumns(); j++)
+      z2[i][j] = z(i,j);
+
+  GNUPlotter plt;
+  plt.plotSurface((int)x.size(), (int)y.size(), &x[0], &y[0], z2);
+
+  RAPT::MatrixTools::rsDeAllocateMatrix(z2, z.getNumRows(), z.getNumColumns());
+}
+
+void waveMorph()
+{
+  // We consider the unit square and prescribe function values z = f(x,y) along the boundary. We 
+  // fill the interior of the square with function values that minimize the curvature of the 
+  // resulting surface. ...this can be used to morph waveforms - a read phasor my pphase into the
+  // x direction, the y parameter selects the waveform. ...but we could also have a y-phasor or 
+  // both....
+
+  // seems to be not very useful - it tends to a flat area in the middle
+
+
+  int Nx = 41;
+  int Ny = 41;
+
+
+
+  std::vector<double> x(Nx), y(Ny);
+
+  RAPT::rsMatrixNew<double> z(Nx, Ny);
+
+
+  rsNoiseGenerator<double> ng;
+
+  // init boundaries:
+  int i, j;
+  for(i = 0; i < Nx; i++) {
+    x[i]      = double(i) / (Nx-1);
+    z(i,0)    = sin(2*PI*x[i]*x[i]*x[i]);  // bottom boundary y=0
+    z(i,Ny-1) = sin(2*PI*x[i]);  // top boundary y=1
+
+    //z(i,0)    = ng.getSample();
+    //z(i,Ny-1) = ng.getSample();
+  }
+  for(j = 0; j < Ny; j++) {
+    y[j]      = double(j) / (Ny-1);
+    z(0,j)    = 0;  // bottom boundary y=0
+    z(Nx-1,j) = 0;  // top boundary y=1
+    z(0,j)    = sin(3*PI*y[j]);  // bottom boundary y=0
+    z(Nx-1,j) = sin(1*PI*y[j]);  // top boundary y=1
+
+    //z(0,j)    = ng.getSample();
+    //z(Nx-1,j) = ng.getSample();
+  }
+
+
+  /*
+  // init interior by bilinear interpolation:
+  double zl, zr, zb, zt, z1, z2;
+  double wl, wr, wb, wt;  // weights
+  double s;
+  for(i = 1; i < Nx-1; i++)
+  {
+    // interpolate top and bottom row along x: 
+
+    for(j = 1; j < Ny-1; j++) {
+      //z[i][j] = 1;
+      //z[i][j] = ng.getSample();
+
+      ///z[i][j] = zb;
+
+      //zb = (1-x[i])*z[0][0]    + x[i]*z[Nx-1][0];    // z bottom
+      //zt = (1-x[i])*z[0][Ny-1] + x[i]*z[Nx-1][Ny-1]; // z top
+
+
+      zl = z[0][j];
+      zr = z[Nx-1][j];
+      zb = z[i][0];
+      zt = z[i][Ny-1];
+
+      //z1 = (1-x[i])*zl + x[i]*zr;
+      //z2 = (1-y[j])*zb + y[j]*zt;
+
+      wl = 1-x[i];
+      wr = x[i];
+      wb = 1-y[j];
+      wt = y[j];
+      s  = wl+wr+wb+wt;
+      wl /= s;
+      wr /= s;
+      wb /= s;
+      wt /= s;
+
+
+      z[i][j] = wl*zl + wr*zr + wb*zb + wt*zt; 
+      // this looks wrong - maybe we should use a weighted avergae over the whole boundary
+      // but the initialization it is supposed to fade away anyway - we can find some better
+      // initialization later
+
+      //z[i][j]= 0.5*(z1+z2);
+
+
+      //z[i][j] = (1-x[i])*zl + x[i]*zr;
+
+      //z[i][j] = (1-y[j])*zb + y[j]*zt;
+    }
+  }
+  */
+
+
+
+
+  for(int k = 0; k < 100; k++)
+  {
+    //plotMatrix(z, x, y);
+    RAPT::rsMatrixNew<double> t = z;  // temporary
+    for(i = 1; i < Nx-1; i++)
+    {
+      for(j = 1; j < Ny-1; j++) 
+      {
+        //double avg = 0.25 * (t(i-1,j-1) + t(i-1,j+1) + t(i+1,j-1) + t(i+1,j+1));
+
+        double avg = 0.2 * (t(i-1,j-1) + t(i-1,j+1) + t(i,j) + t(i+1,j-1) + t(i+1,j+1));
+
+        // todo: maybe try to use diagonal neighbours in the average as well (with weight 
+        // 1/sqrt(2))
+
+        double delta = z(i,j) - avg;
+
+        z(i, j) = avg;
+        // maybe we need a temporary buffer in order to not overwrite values that will still be
+        // needed
+      }
+    }
+  }
+
+
+
+  plotMatrix(z, x, y);
+  // hmm - may be not that useful - it tends to get flat in the middle
+
+}
+
+
+void waveMorph2()
+{
+  // At the moment, this is just a vague idea - not yet implemented
+
+  // We morph one waveshape into another using the wave equation and treating it as a boundary 
+  // value problem. This can be seen as giving a string an initial and final shape and using
+  // the wave equation to figure out the in-between shapes. These in between shapes are oriented 
+  // along the time axis. The whole thing can be seen as figuring out, how a string would most 
+  // natually morph from one shape into another by the rules of the wave equation...right?
+
+  // see Höhere Mathematik in Rezepten, page 946 - ah damn - no - the book specifies an initial
+  // condition for shape and velocity - not an initial and final shape - nevertheless, the idea is
+  // interesting - explore it further - can we do such a thing? if so, we coul perhaps select 
+  // different PDEs to govern the morph? maybe this:
+  // https://en.wikipedia.org/wiki/Minimal_surface
+  // initial and final waveform u0(x) and u1(x) specify the boundary conditions along the two 
+  // horizontal lines of the unit square. along the y-axis, we can just connect the the initial 
+  // and final amplitudes of the two waveforms - or: we could use two other waveforms for that, 
+  // too - that would be interesting
+  // see https://pythonhosted.org/algopy/examples/minimal_surface.html
+
+  int n = 100;          // number of spatial samples
+  int m = 1000;         // number of temporal samples, m should be > n
+
+  double h = 1. / (n+1);  // spatial stepsize
+  double k = 1. / (m+1);  // temporal stepsize
+
+
+
+  double* ut = new double[n];
+  double** u;
+  RAPT::MatrixTools::rsAllocateMatrix(u, m, n); 
+  // 1st index i time index, 2nd index space index
+
+
+  // set up boundary conditions:
+
+  PhaseModulationWaveformRenderer wr;
+
+  wr.setCarrierRelativeFrequency(1);
+  wr.setModulatorRelativeFrequency(2);
+  wr.setModulationIndex(2);
+  wr.renderWaveform(u[0], n);            // initial string shape
+  wr.setModulatorRelativeFrequency(3);
+  wr.renderWaveform(u[m-1], n);          // final string shape
+  RAPT::rsArray::fillWithZeros(ut, n);   // initial string velocity
+
+
+
+
+  for(int i = 1; i < m-1; i++)  // loop over time
+  {
+    for(int j = 0; j < n; j++) // loop over space
+    {
+
+    }
+
+  }
+
+
+  //rsPlotArray(u[0], n);
+  rsPlotArrays(n, u[0], u[m-1]);
+
+
+
+ 
+  delete[] ut;
+  RAPT::MatrixTools::rsDeAllocateMatrix(u, m, n);
+}

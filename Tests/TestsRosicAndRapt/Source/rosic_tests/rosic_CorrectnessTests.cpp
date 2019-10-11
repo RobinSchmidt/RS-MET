@@ -20,47 +20,47 @@ void rotes::testAllRosicClasses()
 
 void rotes::testRosicAnalysis()
 {
-  //testOscilloscopeBuffer();  // creates plot
+  testOscilloscopeBuffer();  // creates plot
 }
 
 void rotes::testRosicBasics()
 {
-  //testBinomialCoefficients();
-  //testMathFunctions();
-  //testWindowFunctions();
-  //testInterpolation();
+  testBinomialCoefficients();
+  testMathFunctions();
+  testWindowFunctions();
+  testInterpolation();
 }
 
 void rotes::testRosicFile()
 {
-  //testFileTextReadWrite();
+  testFileTextReadWrite();
 }
 
 void rotes::testRosicEffects()
 {
   testFastGeneralizedHadamardTransform(); // returns bool 
-  //testFeedbackDelayNetwork();             // writes wave file
+  testFeedbackDelayNetwork();             // writes wave file
 }
 
 void rotes::testRosicFilter()
 {
-  //testLadderFilter();
-  //testModalFilter();
-  //testModalFilterWithAttack();
-  //testBiquadPhasePlot();
-  //testFiniteImpulseResponseDesigner();
-  //testConvolverPartitioned();
-  //testFiniteImpulseResponseFilter();
-  //testFilterAnalyzer();
-  //testBiquadCascade();
-  //testCrossover4Way();
-  //testCrossover4Way2();
-  //testSlopeFilter();
-  //testPrototypeDesigner();
-  //testLowpassToLowshelf();
-  //testBesselPrototypeDesign();
-  //testPapoulisPrototypeDesign();
-  //testEngineersFilter();
+  testLadderFilter();
+  testModalFilter();
+  testModalFilterWithAttack();
+  testBiquadPhasePlot();
+  testFiniteImpulseResponseDesigner();
+  testConvolverPartitioned();
+  testFiniteImpulseResponseFilter();
+  testFilterAnalyzer();
+  testBiquadCascade();
+  //testCrossover4Way(); // linker error
+  testCrossover4Way2();
+  testSlopeFilter();
+  testPrototypeDesigner();
+  testLowpassToLowshelf();
+  testBesselPrototypeDesign();
+  testPapoulisPrototypeDesign();
+  testEngineersFilter();
   testPoleZeroMapping();
 
   // reference output production for RSLib:
@@ -70,8 +70,8 @@ void rotes::testRosicFilter()
 
 void rotes::testRosicGenerators()
 {
-  //testOscillatorStereo();
-  //testLorentzSystem();  // creates a plot
+  testOscillatorStereo();
+  testLorentzSystem();  // creates a plot
 }
 
 void rotes::testRosicModulators()
@@ -88,7 +88,7 @@ void rotes::testRosicMath()
   testPolynomialWeightedSum();
   testPolynomialIntegrationWithPolynomialLimits();
   testPolynomialRootFinder();
-  //testLinLogEquationSolver();  // creates plot
+  testLinLogEquationSolver();  // creates plot
   testLinearSystemSolver();
 }
 
@@ -105,5 +105,5 @@ void rotes::testRosicNonRealTime()
 
 void rotes::testRosicOthers()
 {
-  //testSlewRateLimiterLinear();  // creates plot
+  testSlewRateLimiterLinear();  // creates plot
 }

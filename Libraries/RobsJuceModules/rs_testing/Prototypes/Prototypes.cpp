@@ -11,6 +11,8 @@
 #include "Projection3Dto2D.cpp"
 #include "Polygon.cpp"
 #include "Drawing.cpp"
+#include "QuantumSystems.cpp"
+#include "Relativity.cpp"
 
 //#include "SinusoidalModeling.cpp" // moved to rapt
 
@@ -474,6 +476,7 @@ void cheby_win(double *out, int N, double atten)
 
 
 
+
 //=================================================================================================
 
 template<class TSig, class TPar>
@@ -715,6 +718,11 @@ rsGroupString rsGroupString::operator+(const rsGroupString &rhs) const
   return r;
   // todo: check, if this implementation actually does the right thing.
   // a more naive implementation would be: just concatenate and then call removeDoublets
+
+  // as a generalization, we could disallow certain pairings - at the moment, the pairings aa, bb, 
+  // cc, are disallowed - we could define a bijective function from the character-set to itself 
+  // that defines an "annihilator" for each character. at the moment, each character is it own
+  // annihilator - maybe use pairings that are unnatural for an actual language
 }
 
 

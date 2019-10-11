@@ -20,7 +20,8 @@ using namespace RAPT;
 #include "Projection3Dto2D.h"
 #include "Polygon.h"
 #include "Drawing.h"
-
+#include "QuantumSystems.h"
+#include "Relativity.h"
 
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant 
@@ -115,6 +116,127 @@ References:
 [1] Lyons, R., "Understanding Digital Signal Processing", Prentice Hall, 2004.
 [2] Antoniou, A., "Digital Filters", McGraw-Hill, 2000.  */
 void cheby_win(double *out, int N, double atten);
+
+
+
+
+//=================================================================================================
+
+/** Simulates the dynamics of a rotating rigid body around its three pricipal axes of intertia. If
+they are all different, when it initially rotates around the axis of the middle/intermediate moment
+of inertia with some small perturbation of having a rotational component around any of the other 
+two axes, the rotation axis periodically flips over. This is known as the "tennis racket effect" 
+because it also occurs when throwing up a tennis racket in a particular way. It is due to the 
+rotation around the intermediate axis being an unstable equilibrium of the dynamic equations that
+describe the rotation. Rotation around any of the other two principal axes (those with maximum and 
+minimum moment of inertia) are stable equlibria.
+
+
+// see:
+https://en.wikipedia.org/wiki/Tennis_racket_theorem
+https://en.wikipedia.org/wiki/Euler%27s_equations_(rigid_body_dynamics)
+https://en.wikipedia.org/wiki/Moment_of_inertia
+https://en.wikipedia.org/wiki/Poinsot%27s_ellipsoid
+https://en.wikipedia.org/wiki/Polhode
+https://www.youtube.com/watch?v=1VPfZ_XzisU
+https://arxiv.org/pdf/1606.08237.pdf
+
+*/
+
+template<class T>
+class rsTennisRacket
+{
+
+
+public:
+
+  /** \name Setup */
+
+  /** Sets the ratio of the moments of inertia. This determines the frequency of the flips....
+  todo: have a function setFrequency */
+  void setInertiaRatio(T newRatio)
+  {
+    // maybe wrap into if(newRatio != ratio):
+    ratio = newRatio;
+    I1 = ratio;
+    // I2 = 1;  // always
+    I3 = T(1) / ratio;
+  }
+
+  /** Sets the current state consisting of the angular velocities along the 3 principal axes. */
+  void setState(T w1, T w2, T w3)
+  {
+    this->w1 = w1;
+    this->w2 = w2;
+    this->w3 = w3;
+  }
+
+  /** Sets the step size for the numerical integration scheme */
+  void setStepSize(T newSize)
+  {
+    h = newSize;
+  }
+
+
+  /** \name Inquiry */
+
+  T getW1() const { return w1; }
+  T getW2() const { return w2; }
+  T getW3() const { return w3; }
+
+
+
+  /** \name Processing */
+
+  void updateState(T M1, T M2, T M3)
+  {
+    // compute angular acceleration vector:
+    T a1 = (M1 - (I3 - I2)*w2*w3) / I1;
+    T a2 = (M2 - (I1 - I3)*w3*w1) / I2;
+    T a3 = (M3 - (I2 - I1)*w1*w2) / I3;
+    // formula from https://en.wikipedia.org/wiki/Euler%27s_equations_(rigid_body_dynamics)
+
+    // todo: add damping terms...
+
+
+    // update angular velocities:
+    w1 += h*a1;
+    w2 += h*a2;
+    w3 += h*a3;
+
+    // optionally renormalize rotational energy:
+    if(normalizeEnergy) {
+      T E = (I1*w1*w1 + I2*w2*w2 + I3*w3*w3); // is actually twice the energy
+      T s = sqrt(T(1)/E);
+      w1 *= s; w2 *= s; w3 *= s;
+    }
+    // maybe factor this out - client code may call it after calling setState to ensure an
+    // energy normalized state - maybe include a target energy
+  }
+
+
+  T getSample(T in)
+  {
+    updateState(0, in, 0); // todo: use injection vector
+    return w2;             // todo: use output vector
+  }
+
+protected:
+
+  // user parameters:
+  T ratio = 2;
+
+
+  // algo parameters:
+  T I1 = 2, I2 = 1, I3 = T(0.5); // moments of inertia along principal axes
+  T h = T(0.01);                 // step size
+  bool normalizeEnergy = true;
+
+  // state:
+  T w1 = 0, w2 = 1, w3 = 0;      // angular velocities along principal axes
+
+};
+
 
 
 
@@ -417,6 +539,8 @@ public:
 
   rsGroupString(const std::vector<unsigned int>& initialString) { s = initialString; }
 
+  rsGroupString(int length) { s.resize(length); }
+
   // define operator =, 
   // maybe: < (lexicographical order), * (i still have to invent a suitable multiplication rule)
 
@@ -434,8 +558,25 @@ public:
   /** Binary subtraction by adding the additive inverse. */
   rsGroupString operator-(const rsGroupString &rhs) { return *this + (-rhs); }
 
+  /** Read/write access to i-th character. */
+  unsigned int& operator[](int i) { return s[i]; }
 
+  unsigned int last() const 
+  { 
+    if(s.size() > 0) return s[s.size()-1]; 
+    else             return 0; // is this reasonable? or should we use a special "error" signal
+  }
 
+  void append(unsigned int x) { s.push_back(x); }
+
+  void removeLast()
+  {
+    if(s.size() > 0)
+      s.pop_back();
+  }
+
+  /** Length of the string. */
+  int length() const { return (int) s.size(); }
 
 
 
@@ -447,6 +588,8 @@ public:
 
    // maybe let integers 0 and 1 be used and implement 1/s = s.multiplicativeInverse, etc.
 
+
+  void resize(int newSize) { s.resize((int)newSize); }
 
   std::vector<unsigned int> get() const { return s; }
 

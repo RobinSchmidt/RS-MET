@@ -1,23 +1,3 @@
-#include "MatrixUnitTests.h"
-
-bool testMatrix()
-{
-  std::string dummy;
-  bool testResult = true;
-
-  //rsMatrixDbl A(2, 3, true);
-  //A = A + 2.0;
-
-
-  testResult &= testMatrixArithmetic(dummy);
-  //...
-
-
-  testResult &= testMatrixView();
-  testResult &= testMatrix2();
-
-  return testResult;
-}
 
 bool testMatrixScalarOperations()
 {
@@ -324,4 +304,35 @@ bool testMatrix2()
 
 
 
+bool testTransformMatrices()
+{
+  bool testResult = true;
+
+
+
+
+
+
+  return testResult;
+}
+
+bool testMatrix()
+{
+  std::string dummy;
+  bool testResult = true;
+
+  //rsMatrixDbl A(2, 3, true);
+  //A = A + 2.0;
+
+
+  testResult &= testMatrixArithmetic(dummy);
+  //...
+
+
+  testResult &= testMatrixView();
+  testResult &= testMatrix2();
+  testResult &= testTransformMatrices();
+
+  return testResult;
+}
 

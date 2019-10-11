@@ -1,19 +1,4 @@
-#include "UnitTests.h"
-
-using namespace RAPT;
-
-bool runUnitTest(bool (*test)(), const string& name)
-{
-  //cout << "Testing: " + name + ": ";
-  cout << name + ": ";
-  bool passed = test();
-  //rsAssert(passed); // break, if test fails
-  if(passed)
-    cout << "Passed\n";
-  else
-    cout << "!!!!----> F A I L E D <----!!!!\n";
-  return passed;
-}
+#include "UnitTestsRapt.h"
 
 bool runAllUnitTests()
 {
@@ -21,7 +6,9 @@ bool runAllUnitTests()
 
   // Data:
   passed &= runUnitTest(&arrayUnitTest,            "rsArray and std::vector stuff");
-  passed &= runUnitTest(&doubleEndedQueueUnitTest, "rsDoubleEndedQueue");
+  passed &= runUnitTest(&testBufferFunctions,      "BufferFunctions");  // merge with rsArray tests
+  passed &= runUnitTest(&testSortAndSearch,        "SortAndSearch");
+  passed &= runUnitTest(&doubleEndedQueueUnitTest, "rsDoubleEndedQueue");   // fails! -> fix that!
   passed &= runUnitTest(&float64x2UnitTest,        "rsFloat64x2");
   passed &= runUnitTest(&float32x4UnitTest,        "rsFloat32x4");
   passed &= runUnitTest(&complexFloat64x2UnitTest, "std::complex<rsFloat64x2>");
@@ -37,9 +24,6 @@ bool runAllUnitTests()
   passed &= runUnitTest(&correlationUnitTest,            "correlation");
   passed &= runUnitTest(&testVector,                     "rsVector");
   passed &= runUnitTest(&testMatrix,                     "rsMatrix");
-
-
-
   passed &= runUnitTest(&testMiscMath,                   "misc math");  // fails on linux ("illegal instruction") - encounters a singular matrix
   passed &= runUnitTest(&testLinearAlgebra,              "rsLinearAlgebra");  // fails on linux ("illegal instruction")
   passed &= runUnitTest(&testPolynomial,                 "rsPolynomial");

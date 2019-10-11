@@ -1,4 +1,3 @@
-#include "MathExperiments.h"
 using namespace RAPT;
 using namespace std;
 
@@ -921,6 +920,79 @@ rsGroupString mul2(rsGroupString A, rsGroupString B)
 // -mod-add element--wise...but what if inputs have different length?
 // -some sort of "convolution"
 
+rsGroupString mul3(rsGroupString A, rsGroupString B)
+{
+  rsGroupString C = A;
+  for(int i = 0; i < B.length(); i++) {
+    if(C.length() > 0 && C[C.length()-1] != B[i])
+      C.append(B[i]);
+    else if(C.length() > 0)     // avoid popping on empty vector
+      C.removeLast();
+  }
+  return C;
+}
+// is the same as the current "+" operator of the class - but is probably better to use as mul
+// maybe we should give the operations neutral names here, such as op1, op2, etc. or name them
+// what they do - concatDel, modAdd
+
+
+rsGroupString add2(rsGroupString A, rsGroupString B, unsigned int m) // m: modulus
+{
+  // do modular addition of of the characters where the shorter string is appropriately zero-padded
+  // (zero standing for a "blank" character). if the result contains trailing 0s, these will be 
+  // removed. the inverse element is obtained by taking charcter-wise m-x where x is the input char
+  // and m is the modulus
+  // could this be distributive with this concatenation and delete pairs thing that we use as the
+  // other addition? if so, we could switch to using concatenation as multiplication
+
+  //std::vector<unsigned int> s1 = A.get(), s1 = B.get();
+
+  int LA = A.length();
+  int LB = B.length();
+  //int m  = 5;              // modulus
+
+  int i;                   // loop index 
+  rsGroupString C;
+  if(LA >= LB) {           // A is longer than B or has same length
+    C.resize(LA);
+    for(i = 0; i < LB; i++)   C[i] = (A[i] + B[i]) % m;
+    for(i = LB; i < LA; i++)  C[i] =  A[i];
+  }
+  else {                   // A is shorter than B
+    C.resize(LB);
+    for(i = 0; i < LA; i++)   C[i] = (A[i] + B[i]) % m;
+    for(i = LA; i < LB; i++)  C[i] =  B[i];
+  }
+  while(C.last() == 0)  C.removeLast();  // remove trailing zeros
+  return C;
+}
+rsGroupString add2(rsGroupString A, rsGroupString B) // to make compatible with isAsso..., etc.
+{
+  return add2(A, B, 7);  // uses fixed modulus
+}
+
+
+// tests associativity of the given operation for the given triple of arguments
+bool isAssociative(rsGroupString (*op) (rsGroupString A, rsGroupString B),
+  rsGroupString A, rsGroupString B, rsGroupString C)
+{
+  rsGroupString s1 = op(op(A, B), C); // (A+B)+C
+  rsGroupString s2 = op(A, op(B, C)); // A+(B+C)
+  return s1 == s2; 
+}
+
+// tests, if the given "mul" operation is distributive over the given "add" operation for the given
+// triple of input arguments
+bool isDistributive(
+  rsGroupString (*add) (rsGroupString A, rsGroupString B),
+  rsGroupString (*mul) (rsGroupString A, rsGroupString B),
+  rsGroupString A, rsGroupString B, rsGroupString C)
+{
+  rsGroupString s1 = mul(A,add(B,C));         // A*(B+C)
+  rsGroupString s2 = add(mul(A,B), mul(A,C)); // A*B + A*C
+  return s1 == s2; 
+}
+
 bool testStringMultiplication(rsGroupString (*mul) (rsGroupString A, rsGroupString B))
 {
   //bool r = true;
@@ -933,7 +1005,11 @@ bool testStringMultiplication(rsGroupString (*mul) (rsGroupString A, rsGroupStri
   std::string t1, t2;
 
   // do this in a loop with various A, B, C (maybe random or by systematically checking all 
-  // possible strings up to a given length)
+  // possible strings up to a given length) - it should be a function that automatically
+  // checks a lot of strings and also takes the operations as inputs (as pointers), so we can try
+  // various things
+
+
   bool asso = true;
   GS s1 = mul(mul(A, B), C); // (A*B)*C
   GS s2 = mul(A, mul(B, C)); // A*(B*C)
@@ -952,6 +1028,7 @@ bool testStringMultiplication(rsGroupString (*mul) (rsGroupString A, rsGroupStri
 
   // maybe try all strings of length up to 4 from the alphabet a,b,c,d - each of the 3 inputs
   // A,B,C should take on all possible values - so we need a doubly nested loop
+
 
   return asso && dist;
 }
@@ -979,6 +1056,27 @@ bool groupString()
   //r &= testStringMultiplication(&add); // asso, not distri
   //r &= testStringMultiplication(&mul1); // not asso, not distri - bad!
   r &= testStringMultiplication(&mul2);
+
+
+  typedef std::vector<unsigned int> Vec;
+
+  unsigned int m = 7; // the modulus
+  rsGroupString s2314 = (Vec({2, 3, 1, 4}));
+  rsGroupString s546  = (Vec({5, 4, 6}));
+  rsGroupString s3613 = (Vec({3, 6, 1, 3}));
+  rsGroupString t1, t2, t3;     // temporaries
+  t1 = add2(s2314, s546,  m);   // 0004
+  t2 = add2(s546, s2314,  m);   // 0004 -> commutative
+  t1 = add2(add2(s2314, s546, m), s3613, m);  // 361
+  t2 = add2(s2314, add2(s546, s3613, m), m);  // 361 -> associative
+  // OK - this looks good - addition is commutative and associative - at least for the tried 
+  // examples - todo: try more examples - if it works out, try inverse elements and then 
+  // distributivity with the concat-delete operation ...hmm - this addition actually allows
+  // pairs of equal characters - which is a good thing
+
+  bool asso = isAssociative(&add2, s2314, s3613, s546);
+  bool distri = isDistributive(&add2, &mul3, s2314, s3613, s546);
+
 
 
   // test multiplication: define various candidate multiplication functions

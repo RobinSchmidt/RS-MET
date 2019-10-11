@@ -3615,7 +3615,7 @@ void primeSieve()
   }
 
 
-  test = RAPT::rsArray::areBuffersEqual(b, c, N);
+  test = RAPT::rsArray::equal(b, c, N);
 
 
   // idea: when (mutiples of) 2 were already sieved out, we can use and increment of 2p for all 
@@ -3645,7 +3645,7 @@ void primeSieve()
     ip   = RAPT::rsArray::firstIndexWithNonZeroValue(&c[ip+1], N-ip-1) + ip + 1; 
     dMax = bMax / pi;
   }
-  test = RAPT::rsArray::areBuffersEqual(b, c, N);
+  test = RAPT::rsArray::equal(b, c, N);
 
 
 

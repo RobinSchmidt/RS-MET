@@ -318,15 +318,25 @@ void rsPartialBeatingRemover<T>::removePhaseBeating(rsSinusoidalPartial<T>& part
   // process phases: in a signal that shows beating, we see phase inversions when we go from
   // one bump/grain to the next - these are hard switches which are audible, so we somehow need to
   // get rid of them - we do this by smoothing out the discontinuities:
-  std::vector<T> p = smoothPhases(
+  //std::vector<T> p = smoothPhases(
+  //  partial.getTimeArray(),
+  //  partial.getFrequencyArray(),
+  //  partial.getPhaseArray(),
+  //  phaseSmootherCutoff, phaseSmootherOrder, phaseSmootherNumPasses);
+  // gcc produces this error:
+  // https://stackoverflow.com/questions/17905101/invalid-initialization-of-non-const-reference-of-type-stdvectordouble-fro
+  // http://www.cplusplus.com/forum/general/34133/
+
+
+  const std::vector<T> p = smoothPhases(
     partial.getTimeArray(),
     partial.getFrequencyArray(),
     partial.getPhaseArray(),
     phaseSmootherCutoff, phaseSmootherOrder, phaseSmootherNumPasses);
+
   partial.setPhases(p);
 
-  // gcc produces this error:
-  // https://stackoverflow.com/questions/17905101/invalid-initialization-of-non-const-reference-of-type-stdvectordouble-fro
+
 
   //rsPlotVector(p);
   // maybe try other ways to get rid of the phase discontinuities
@@ -334,7 +344,8 @@ void rsPartialBeatingRemover<T>::removePhaseBeating(rsSinusoidalPartial<T>& part
 
 template<class T>
 std::vector<T> rsPartialBeatingRemover<T>::smoothPhases(
-  std::vector<T>& t, std::vector<T>& f, std::vector<T>& pIn, T cutoff, int order, int numPasses)
+  const std::vector<T>& t, const std::vector<T>& f, const std::vector<T>& pIn, 
+  T cutoff, int order, int numPasses)
 {
   //GNUPlotter plt;
 

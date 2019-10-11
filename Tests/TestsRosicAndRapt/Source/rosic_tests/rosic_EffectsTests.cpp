@@ -13,16 +13,20 @@ bool rotes::testFastGeneralizedHadamardTransform()
   // 4-point FGWHT:
   double x4[4] = {4, -8, 12, -4};
   double y4[4];
+  double work[8];  // workspace
+
+  typedef rosic::FeedbackDelayNetwork FDN;
+
 
   RAPT::rsArray::copyBuffer(x4, y4, 4);
-  rosic::FeedbackDelayNetwork::fastGeneralizedHadamardTransform(y4, 4, 2);
+  FDN::fastGeneralizedHadamardTransform(y4, 4, 2, work);
   result &= y4[0] ==   4;
   result &= y4[1] ==  28;
   result &= y4[2] == -12;
   result &= y4[3] == - 4;
 
   RAPT::rsArray::copyBuffer(x4, y4, 4);
-  rosic::FeedbackDelayNetwork::fastGeneralizedHadamardTransform(y4, 4, 2, 2, 3, 5, 7);
+  FDN::fastGeneralizedHadamardTransform(y4, 4, 2, work, 2, 3, 5, 7);
   result &= y4[0] ==  4;
   result &= y4[1] == 24;
   result &= y4[2] ==  4;
@@ -34,7 +38,7 @@ bool rotes::testFastGeneralizedHadamardTransform()
   double y8[8];
 
   RAPT::rsArray::copyBuffer(x8, y8, 8);
-  rosic::FeedbackDelayNetwork::fastGeneralizedHadamardTransform(y8, 8, 3);
+  FDN::fastGeneralizedHadamardTransform(y8, 8, 3, work);
   result &= y8[0] ==  10;
   result &= y8[1] == - 4;
   result &= y8[2] ==   2;
@@ -45,7 +49,7 @@ bool rotes::testFastGeneralizedHadamardTransform()
   result &= y8[7] ==   8;
 
   RAPT::rsArray::copyBuffer(x8, y8, 8);
-  rosic::FeedbackDelayNetwork::fastGeneralizedHadamardTransform(y8, 8, 3, 2, 3, 5, 7);
+  FDN::fastGeneralizedHadamardTransform(y8, 8, 3, work, 2, 3, 5, 7);
   result &= y8[0] ==   149;
   result &= y8[1] ==   357;
   result &= y8[2] ==   360;
@@ -57,8 +61,8 @@ bool rotes::testFastGeneralizedHadamardTransform()
 
   // forward/backward trafo - check if input is reconstructed:
   RAPT::rsArray::copyBuffer(x8, y8, 8);
-  rosic::FeedbackDelayNetwork::fastGeneralizedHadamardTransform(       y8, 8, 3, 2, 3, 5, -7);
-  rosic::FeedbackDelayNetwork::fastInverseGeneralizedHadamardTransform(y8, 8, 3, 2, 3, 5, -7);
+  FDN::fastGeneralizedHadamardTransform(       y8, 8, 3, work, 2, 3, 5, -7);
+  FDN::fastInverseGeneralizedHadamardTransform(y8, 8, 3, work, 2, 3, 5, -7);
   result &= fabs(RAPT::rsArray::maxDeviation(x8, y8, 8)) < 1.e-15;
 
   return result;

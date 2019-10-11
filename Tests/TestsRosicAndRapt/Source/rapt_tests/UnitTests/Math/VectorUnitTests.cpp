@@ -1,5 +1,3 @@
-#include "VectorUnitTests.h"
-
   
 rsVectorDbl dummy(const rsVectorDbl &v)
 {

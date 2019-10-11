@@ -28,9 +28,9 @@ namespace RAPT
 #include "Functions/Sigmoids.h"
 #include "Functions/SinCosTable.h"
 
+#include "Types/Vector.h"
 #include "Types/Matrix.h"
 #include "Types/Polynomial.h"
-#include "Types/Vector.h"
 
 #include "Geometry/Line2D.h"
 #include "Geometry/ConicSection.h"

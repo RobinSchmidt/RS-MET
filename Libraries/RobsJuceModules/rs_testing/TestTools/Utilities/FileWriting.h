@@ -13,6 +13,12 @@ void writeScaledImageToFilePPM(RAPT::rsImage<float>& image, const char* path, in
 void writeToMonoWaveFile(std::string path, float *signal, int numFrames, int sampleRate,
   int numBits);
 
+/** Writes a complex signal to a stereo wavefile using the real part as left channel and the 
+imaginary part as right channel. */
+void writeToWaveFile(std::string path, const std::vector<std::complex<double>>& signal, 
+  int sampleRate = 44100);
+// maybe rename to rsWavWrite
+
 
 
 #endif

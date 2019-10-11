@@ -11,12 +11,12 @@ namespace rosic
   /** Performs a 1D Haar-transform on the passed buffer. The number of levels should be at most
   the number of times, which the length is divisible by 2 (without remainder). */
   template <class T>
-  void trafoHaar1D(T *buffer, int length, int numLevels); 
+  void trafoHaar1D(T *buffer, int length, int numLevels);
 
-  /** Performs a 1D inverse Haar-transform on the passed buffer. The number of levels should be at 
+  /** Performs a 1D inverse Haar-transform on the passed buffer. The number of levels should be at
   most the number of times, which the length is divisible by 2 (without remainder). */
   template <class T>
-  void trafoInverseHaar1D(T *buffer, int length, int numLevels); 
+  void trafoInverseHaar1D(T *buffer, int length, int numLevels);
 
   //===============================================================================================
   // implementation:
@@ -25,10 +25,11 @@ namespace rosic
   void trafoHaar1D(T *buffer, int length, int numLevels)
   {
     const double c = ONE_OVER_SQRT2;
-    T *tmp = (T*) alloca(length*sizeof(T));
+    //T *tmp = (T*) alloca(length*sizeof(T));
+    T* tmp = new T[length]; // todo: get ird - let client pass workspace pointer
     int w  = length;
     for(int level=1; level<=numLevels; level++)
-    {  
+    {
       int j = w/2;
       for(int i=0; i<j; i++)
       {
@@ -38,16 +39,18 @@ namespace rosic
       memcpy(buffer, tmp, w*sizeof(T));
       w /= 2;
     }
+    delete[] tmp;
   }
 
   template <class T>
   void trafoInverseHaar1D(T *buffer, int length, int numLevels)
   {
     const double c = ONE_OVER_SQRT2;
-    T *tmp = (T*) alloca(length*sizeof(T));
+    //T *tmp = (T*) alloca(length*sizeof(T));
+    T* tmp = new T[length];  // get rid
     int w  = length/numLevels;
     for(int level=1; level<=numLevels; level++)
-    {  
+    {
       int j = w/2;
       for(int i=0; i<j; i++)
       {
@@ -57,6 +60,7 @@ namespace rosic
       memcpy(buffer, tmp, w*sizeof(T));
       w *= 2;
     }
+    delete[] tmp;
   }
 
 } // end namespace rosic

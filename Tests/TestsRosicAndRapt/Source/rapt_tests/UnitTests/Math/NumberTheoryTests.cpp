@@ -1,28 +1,8 @@
-#include "NumberTheoryTests.h"
-
-bool testNumberTheory()
-{
-  std::string testName = "NumberTheory";
-  std::string dummy;
-  bool testResult = true;
-
-  testResult &= testPrimeTableGeneration(dummy);
-  testResult &= testPrimeFactorization(  dummy);
-  testResult &= testNumberTheoryMisc(    dummy);
-
-  //appendTestResultToReport(reportString, testName, testResult);
-  return testResult;
-}
 
 bool testPrimeTableGeneration(std::string &reportString)
 {
   std::string testName = "PrimeTableGeneration";
   bool testResult = true;
-
-
-
-
-
 
   // create table of primes up to 1000 and check against this target-table:
   static const rsUint32 np = 168;
@@ -263,5 +243,19 @@ bool testNumberTheoryMisc(std::string &reportString)
   testResult &= R == 534;
 
   appendTestResultToReport(reportString, testName, testResult);
+  return testResult;
+}
+
+bool testNumberTheory()
+{
+  std::string testName = "NumberTheory";
+  std::string dummy;
+  bool testResult = true;
+
+  testResult &= testPrimeTableGeneration(dummy);
+  testResult &= testPrimeFactorization(  dummy);
+  testResult &= testNumberTheoryMisc(    dummy);
+
+  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }

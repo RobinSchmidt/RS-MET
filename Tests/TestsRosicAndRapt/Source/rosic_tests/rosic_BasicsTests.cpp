@@ -143,7 +143,7 @@ void testCompensatedLinearInterpolator()
   RAPT::rsArray::scale(mag, mag, N, g);
   for(int n = 0; n < N; n++)
     mag[n] = RAPT::rsAmpToDb(mag[n]);
-  RAPT::rsArray::clipBuffer(mag, N, -60.0, 20.0);
+  RAPT::rsArray::clip(mag, N, -60.0, 20.0);
   plotData(N, w, mag);
 }
 

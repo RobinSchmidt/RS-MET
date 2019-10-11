@@ -43,25 +43,25 @@ public:
   be adjusted internally.
   gc: gain at bandedge frequencies (raw amplitude) */
   template<class TSig, class TPar>
-  static void applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs,
+  static void applyConstPeakBandpassBwInHz(const TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs,
     int numPasses = 1, TPar gc = SQRT2_INV);
 
   /** Similar to applyConstPeakBandpassBwInHz but uses a Butterworth bandpass with given order
   instead of a 2nd order bandpass. */
   template<class TSig, class TPar>
-  static void applyButterworthBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs,
+  static void applyButterworthBandpassBwInHz(const TSig *x, TSig *y, int N, TPar fc, TPar bw, TPar fs,
     int order, int numPasses = 1, TPar gc = SQRT2_INV);
 
   /** Applies a Butterworth lowpass filter bidirectionally to the data in array x of length N and
   writes the result to the array y. fc: cutoff frequency, fs: sampleRate */
   template<class TSig, class TPar>
-  static void applyButterworthLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int order,
+  static void applyButterworthLowpass(const TSig *x, TSig *y, int N, TPar fc, TPar fs, int order,
     int numPasses = 1, TPar gc = SQRT2_INV);
 
   /** Applies a bidirectional Butterworth highpass ...it actually uses a lowpass and subtracts the
   result from the original. Can NOT be used in place: x and y must be distinct. */
   template<class TSig, class TPar>
-  static void applyButterworthHighpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int order,
+  static void applyButterworthHighpass(const TSig *x, TSig *y, int N, TPar fc, TPar fs, int order,
     int numPasses = 1, TPar gc = SQRT2_INV);
 
 
@@ -73,16 +73,13 @@ public:
   then the time-stamp array would look like [0T 1T 2T 3T 4T 5T ...] where T is the sampling
   interval. fc: cutoff frequency in Hz */
   template<class TSig, class TTim, class TPar> // signal, time, parameter
-  static void applyButterworthLowpass(TSig *x, TTim *t, TSig *y, int N, TPar fc, int order,
-    int numPasses = 1, TPar gc = SQRT2_INV);
+  static void applyButterworthLowpass(const TSig *x, const TTim *t, TSig *y, int N, TPar fc, 
+    int order, int numPasses = 1, TPar gc = SQRT2_INV);
   // todo: compare outputs of uniformly sampled function to outputs of this function, when
   // the data-spacing is chosen to be uniform - result will not be exactly the same because the
   // uniform filter uses bilinear trafo and the non-uniform impulse-invariant (todo: make the
   // uniform filter switchable to impulse-invariant (or pole/zero-mapping) and maybe others like
   // MZTi)
-
-
-
 
 
   /** Applies a bidirectional 1st order lowpass to the signal x of length N and stores the
@@ -91,7 +88,7 @@ public:
   for the effects of multiple passes, the cutoff frequency of the single-pass filter will be
   adjusted internally. */
   template<class TSig, class TPar>
-  static void applyLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses = 1,
+  static void applyLowpass(const TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses = 1,
     TPar gc = SQRT2_INV);
 
 protected:
@@ -1016,6 +1013,65 @@ protected:
 
 //=================================================================================================
 // move to AudioFunctions or maybe some sort of SinusoidalAnalysis/Modeling/Resynthesis class
+
+template<class T>
+class rsExponentialEnvelopeMatcher
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  /** Sets the level (in dB) at which the two envelopes are forced to meet. If they happen to have
+  the same exponential decay shape, the match at this one level will imply a match of the whole 
+  curves - otherwise they will just match at the specified level. */
+  void setMatchLevel(T newLevel) { matchLevel = newLevel; }
+
+  /** Sets up, how many samples of the initial section should be ignored when doing the linear 
+  regression. This can be used to prevent the attack part of the sound from distorting the 
+  measurement of the regression coefficients. It should be set to some value where the attack is
+  over and the sample in its decaying portion. */
+  void setInitialIgnoreSection1(int numSamples) { initIgnore1 = numSamples; }
+
+  /** Sets up, how many samples of the final section should be ignored. This is meant to avoid 
+  letting the final noise floor or silence distort the regression coeff measurement. It should be
+  set to some value, such that the sample is still in its decaying section and not yet decayed away
+  completely. It's measured from the end of the signal - so it's the length of the final 
+  noise-floor or silence portion after the decay, if any.  */
+  void setFinalIgnoreSection1(  int numSamples) { finalIgnore1   = numSamples; }
+
+  /** Sets a level threshold (in dB) below which samples are not taken into account for the 
+  regression computation. should be set to somewhere above the noise floor. */
+  void setIgnoreThreshold1(T newThreshold) { ignoreThresh1 = newThreshold; }
+
+  // same things for envelope 2
+  void setInitialIgnoreSection2(int numSamples) { initIgnore2 = numSamples; }
+  void setFinalIgnoreSection2(  int numSamples) { finalIgnore2   = numSamples; }
+  void setIgnoreThreshold2(T newThreshold) { ignoreThresh2 = newThreshold; }
+
+  // maybe make convenience functions that set these things for both signals at once
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
+  /** Computes the offset (in samples) for a best match of the amplitude envelopes. */
+  T getMatchOffset(
+    const T* referenceEnv, int referenceNumSamples, 
+    const T* shifteeEnv,   int shifteeNumSamples);
+
+
+protected:
+
+  T matchLevel = -20;
+
+  int initIgnore1  = 0;
+  int finalIgnore1 = 0;
+  int initIgnore2  = 0;
+  int finalIgnore2 = 0;
+  T ignoreThresh1  = 0.001;  // -60 dB
+  T ignoreThresh2  = 0.001; 
+};
 
 
 /** Given a sinusoidal signal x of length N with frequency f at samplerate fs, this function will

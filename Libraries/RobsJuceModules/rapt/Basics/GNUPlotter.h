@@ -4,10 +4,10 @@
 #include <string>
 #include <vector>
 #include <complex>
+#include <functional>   // for passing functions
+#include <algorithm>    // for min
 
-/**
-
-This class allows for plotting data and functions directly from C++ code by invoking GNUPlot.
+/** This class allows for plotting data and functions directly from C++ code by invoking GNUPlot.
 You can pass in the data to be plotted and set up a couple of things that control how the data will
 be presented. From this data and the setup, an object of this class will create a datafile and a 
 batchfile with GNUPlot commands. Then, GNUPlot is invoked from the command line and told to read 
@@ -21,7 +21,10 @@ For this to work, the following preliminaries must be met:
 -the directory defined in the member variables datapath and commandPath must exist (currently 
  fixed to E:/Temp/) - that's where the temporary data- and command batchfile will be written
 
-*/
+ToDo:
+-use const pointers to pass data into the functions
+-instead of plain C function pointers, allow std::function
+-implement more high-level plotting functions for vector-fields, complex mappings, etc. */
 
 typedef const std::string & CSR;     // type "CSR" is a const reference to a std::string
                                      // maybe rename to CRS
@@ -48,18 +51,71 @@ public:
   void initialize();
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Plotting */
+  /** \name Convenience functions 
+  These functions can be called simply like GNUPlotter::plot... without creating a GNUPlotter 
+  object and are meant for some quick and dirty plots with default look. */
 
   /** Convenience function to allow plotting without having client code instantiate a plotter 
   object, set it up, etc. */
   template <class T>
-  inline static void plot(int N, T *x, T *y1, T *y2 = nullptr, T *y3 = nullptr, T *y4 = nullptr,
-    T *y5 = nullptr, T *y6 = nullptr, T *y7 = nullptr, T *y8 = nullptr, T *y9 = nullptr)
+  inline static void plot(int N, const T *x, const T *y1, const T *y2 = nullptr, 
+    const T *y3 = nullptr, const T *y4 = nullptr, const T *y5 = nullptr, const T *y6 = nullptr, 
+    const T *y7 = nullptr, const T *y8 = nullptr, const T *y9 = nullptr)
   {
     GNUPlotter plt;
     plt.addDataArrays(N, x, y1, y2, y3, y4, y5, y6, y7, y8, y9);
     plt.plot();
   }
+  // maybe de-inline
+
+  /** Plots real and imaginary parts of the complex array z agains the x-axis given by x. */
+  template<class T>
+  static void plotComplexArrayReIm(const T* x, const std::complex<T>* z, int N);
+
+  /** Plots real and imaginary parts of the complex array z agains a x-axis given by the index. */
+  template<class T>
+  static void plotComplexArrayReIm(const std::complex<T>* z, int N);
+
+  /** Plots parametric curve on a 2-dimensional plane. Such curves are described by 2 functions 
+  x(t), y(t) - one for each coordinate - that depend on a single parameter t, which is often 
+  thought of as time. In this interpretation, the curve could represent the trace of a point-like 
+  particle moving around in the plane. */
+  template<class T>
+  static void plotCurve2D(const std::function<T(T)>& fx, const std::function<T(T)>& fy, 
+    int Nt, T tMin, T tMax);
+
+  /** Plots a parametric surface in 3-dimensional space. Such a surface is described by 3 bivariate 
+  scalar-valued functions fx(u,v), fy(u,v), fz(u,v) which respectively compute the 3 coordinates of
+  a point on the surface, parameterized by the two input variables/parameters u and v. */
+  template <class T>
+  static void plotSurface(
+    const std::function<T(T, T)>& fx, 
+    const std::function<T(T, T)>& fy, 
+    const std::function<T(T, T)>& fz,
+    int Nu, T uMin, T uMax, int Nv, T vMin, T vMax);
+
+  /** Plots a 2-dimensional vector field defined by the two bivariate functions fx,fy which shall
+  compute the components of the output vector. They should both take two arguments which are the 
+  x,y-coordinates of the input vector. The vector field is drawn such that all vectors have the
+  same length and their actual magnitudes are indicated by color. */
+  template<class T>
+  static void plotVectorField2D(const std::function<T(T, T)>& fx, const std::function<T(T, T)>& fy,
+    int Nx, T xMin, T xMax, int Ny, T yMin, T yMax);
+
+  /** Interprets a complex function w = f(z) as a 2D vector field and plots it as such. By default, 
+  it conjugates the result to create what is also known as a Polya plot, but this conjugation can 
+  also be turned off, if desired.
+  see: http://mathworld.wolfram.com/PolyaPlot.html  */
+  template<class T>
+  static void plotComplexVectorField(const std::function<std::complex<T>(std::complex<T>)>& f,
+    int Nr, T rMin, T rMax, int Ni, T iMin, T iMax, bool conjugate = true);
+
+
+  // todo: plotFunction, plotBivariateFunction ...this would be the same as plotScalarField2D
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Plotting */
 
   /** After the data has been set up and possibly a couple of formatting functions have been
   called, calling this function will actually invoke GNUPlot for plotting the data according to the
@@ -74,13 +130,15 @@ public:
 
   /** Plots the function values in the arrays y1, y2, ... against an abscissa given by the array x. */
   template <class T>
-  void plotFunctionTables(int N, T *x, T *y1, T *y2 = nullptr, T *y3 = nullptr, T *y4 = nullptr, 
-    T *y5 = nullptr, T *y6 = nullptr, T *y7 = nullptr, T *y8 = nullptr, T *y9 = nullptr);
+  void plotFunctionTables(int N, const T *x, const T *y1, const T *y2 = nullptr, 
+    const T *y3 = nullptr, const T *y4 = nullptr, const T *y5 = nullptr, const T *y6 = nullptr, 
+    const T *y7 = nullptr, const T *y8 = nullptr, const T *y9 = nullptr);
 
   /** Plots the values in the arrays y1, y2, ... against an abscissa given by the array index. */
   template <class T>
-  void plotArrays(int N, T *y1, T *y2 = nullptr, T *y3 = nullptr, T *y4 = nullptr, T *y5 = nullptr,
-    T *y6 = nullptr, T *y7 = nullptr, T *y8 = nullptr, T *y9 = nullptr);
+  void plotArrays(int N, const T *y1, const T *y2 = nullptr, const T *y3 = nullptr, 
+    const T *y4 = nullptr, const T *y5 = nullptr, const T *y6 = nullptr, const T *y7 = nullptr, 
+    const T *y8 = nullptr, const T *y9 = nullptr);
 
   /** Plots univariate functions. For example, assume you have an array of 100 x-values and you 
   want to plot the sine, cosine and tangent values of these x-values, using the x-array as 
@@ -245,6 +303,7 @@ public:
   line. */
   template <class T>
   void addData(int numBlocks, int *blockLengths, int numColumns, T **data);
+  // try to make data pointer const
 
   /** Adds the dataset given in the matrix "data" to our datafile. The 1st index is the column, the
   2nd index is the row in our datafile. This means, each row of the datafile will represent one 
@@ -268,9 +327,9 @@ public:
   example, the 1st array could contain the x-axis values and subsequent arrays could be values of
   a bunch of functions of x, like: c0=x, c1=f(x), c2=g(x), etc. */
   template <class T>
-  void addDataArrays(int N, T *c0, T *c1 = nullptr, T *c2 = nullptr, T *c3 = nullptr, 
-    T *c4 = nullptr, T *c5 = nullptr, T *c6 = nullptr, T *c7 = nullptr, T *c8 = nullptr, 
-    T *c9 = nullptr);
+  void addDataArrays(int N, const T *c0, const T *c1 = nullptr, const T *c2 = nullptr, 
+    const T *c3 = nullptr, const T *c4 = nullptr, const T *c5 = nullptr, const T *c6 = nullptr, 
+    const T *c7 = nullptr, const T *c8 = nullptr, const T *c9 = nullptr);
 
   /** Adds data from univariate functions. */
   template <class T>
@@ -289,7 +348,7 @@ public:
   example - by a two-dimensional function z = f(x,y). You pass the arrays of x- and y values 
   (which should be of length Nx and Ny respectively) and a matrix of z-values such that 
   z[i][j] = f(x[i], y[j]). 
-  Let N=Nx-1, M=Ny-1. Then the dataformat in the file is given by:
+  Let N=Nx-1, M=Ny-1. Then the data format in the file is given by:
   x[0] y[0] z[0][0]    1st block
   x[0] y[1] z[0][1]
   ...  ...    ...
@@ -325,14 +384,74 @@ public:
   template <class T>
   void addDataMatrix(int Nx, int Ny, T *x, T *y, T **z);
 
+  /** Adds a data set representing parametric curve on a 2-dimensional plane. The optional 
+  writeParameters argument decides, whether or not the t-values shall be written into the 
+  datafile - if so, they will be written into the first column. */
+  template <class T>
+  void addDataCurve2D(const std::function<T(T)>& fx, const std::function<T(T)>& fy, 
+    int Nt, T tMin, T tMax, bool writeParameters = false);
+
+  // todo: addDataCurve3D
+
+  /** Adds a data set representing parametric surface in 3-dimensional space. */
+  template <class T>
+  void addDataSurface(
+    const std::function<T(T, T)>& fx,
+    const std::function<T(T, T)>& fy,
+    const std::function<T(T, T)>& fz,
+    int Nu, T uMin, T uMax, int Nv, T vMin, T vMax);
+
 
   template <class T>
-  void addDataBivariateFunction(int Nx, int Ny, T *x, T *y,  T (*f)(T,T));
+  void addDataBivariateFunction(int Nx, int Ny, T *x, T *y, const std::function<T(T, T)>& f);
+
+  template <class T>
+  void addDataBivariateFunction(int Nx, int Ny, T *x, T *y, T (*f)(T,T));
+
+
+
+
+
+
+  template <class T>
+  void addDataBivariateFunction(int Nx, T xMin, T xMax, int Ny, T yMin, T yMax, 
+    const std::function<T(T, T)>& f);
+
 
   template <class T>
   void addDataBivariateFunction(int Nx, T xMin, T xMax, int Ny, T yMin, T yMax, T (*f)(T, T));
-    // \todo: add 2 optional boolean parameters to let x- and/or y array be exponentially scaled 
-    // instead of linear bool xLog = false, bool yLog = false
+  // todo: add 2 optional boolean parameters to let x- and/or y array be exponentially scaled 
+  // instead of linear bool xLog = false, bool yLog = false
+
+  // todo: add function that takes bivariate data and uses std::function instead of a function
+  // pointer
+  // 2D-input/1D output
+
+
+
+  /** Adds data for 2-dimensional vector fields. Such data is passed to GNUPlot in 4 or 5 columns: 
+  x, y, dx, dy, c where the optional 5th column c is used to color the vectors. The dx,dy values 
+  represent the vector to be drawn at x,y as defined by the vector-field like 
+  (dx,dy) = (fx(x,y, fy(x,y)). Here, we use the 5-column format and normalize the lengths of the 
+  dx,dy vectors and pass the length seperately in the 5th column which can be used for coloring, 
+  such that in the plot, all drawn vectors will have the same length (and indicate only direction) 
+  and the color will indicate the magnitudes. */
+  template<class T>
+  void addDataVectorField2D(const std::function<T(T, T)>& fx, const std::function<T(T, T)>& fy,
+    int Nx, T xMin, T xMax, int Ny, T yMin, T yMax);
+
+  /** Adds a field line for a 2D vector field defined by the two bivariate functions fx and fy 
+  (which together define a 2D vector field) and a starting point x0, y0 (which define an initial 
+  condition). If x represents position and y velocity, the field line may also be inetrpreted as
+  a trajectory. The field-line/trajectory is obtained by numerically integrating the velocity field
+  using the forward Euler method with given step-size and number of steps. You may also set an 
+  oversampling factor to let the solve use a finer stepsize than used for the plot data (the 
+  effective step-size for the solver then becomes stepSize/oversampling, numPoints is the number of
+  data points in the plot). */
+  template<class T>
+  void addDataFieldLine2D(const std::function<T(T, T)>& fx, const std::function<T(T, T)>& fy,
+    T x0, T y0, T stepSize, int numPoints, int oversampling = 1);
+
 
 
   /** Adds a graph to the plot. You must pass a string that describes how the data (from the 
@@ -349,6 +468,23 @@ public:
   deal with this function, but it has been included (and exposed to client code) for greater 
   flexibility and generality in the use of this plotter class. */
   void addGraph(CSR descriptor);
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Combined addData + addGraph functions */
+
+
+  template<class T>
+  void addVectorField2D(const std::function<T(T, T)>& fx, const std::function<T(T, T)>& fy,
+    int Nx, T xMin, T xMax, int Ny, T yMin, T yMax);
+
+  template<class T>
+  void addFieldLine2D(const std::function<T(T, T)>& fx, const std::function<T(T, T)>& fy,
+    T x0, T y0, T stepSize, int numPoints, int oversampling = 1);
+
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -369,6 +505,16 @@ public:
   template <class T>
   static void rangeLogarithmic(T *x, int N, T min, T max);
 
+  /** Decimates an array x (of length Nx) by the given factor and writes the result into array y
+  (of length Nx/factor). Used to deal with oversampled data. */
+  template<class T>
+  static void decimate(T* x, int Nx, T* y, int factor);
+
+
+  /** Initializes the command file. May be called by client code, if it wants to start with an 
+  empty command file, i.e. a file that doesn't contain the default commands. */
+  void clearCommandFile();
+
   /** Executes GNUPlot with the appropriate commandline parameter to read the command file. */
   void invokeGNUPlot();
 
@@ -381,15 +527,15 @@ public:
   static std::string nullValue(std::string);
 
   template<class T>
-  static std::vector<T> collectLeadingNonNullArguments(T a0, T a1, T a2, T a3, T a4, T a5, T a6, 
-    T a7, T a8, T a9);
+  static const std::vector<T> collectLeadingNonNullArguments(const T a0, const T a1, const T a2, 
+    const T a3, const T a4, const T a5, const T a6, const T a7, const T a8, const T a9);
 
   template<class T>
   static void append(std::vector<T>& v, const std::vector<T>& appendix);
 
   template<class T>
-  static std::vector<std::vector<T>> wrapIntoVectors(int N, T *a0, T *a1, T *a2, T *a3, T *a4, 
-    T *a5, T *a6, T *a7, T *a8, T *a9);
+  static std::vector<std::vector<T>> wrapIntoVectors(int N, const T *a0, const T *a1, const T *a2, 
+    const T *a3, const T *a4, const T *a5, const T *a6, const T *a7, const T *a8, const T *a9);
 
   static void addToStringVector(std::vector<std::string>& v, CSR s0, CSR s1, CSR s2, CSR s3, CSR s4, 
     CSR s5, CSR s6, CSR s7, CSR s8, CSR s9);

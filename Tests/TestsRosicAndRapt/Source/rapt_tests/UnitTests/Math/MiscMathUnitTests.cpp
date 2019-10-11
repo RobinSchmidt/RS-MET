@@ -1,21 +1,3 @@
-#include "MiscMathUnitTests.h"
-
-bool testMiscMath()
-{
-  std::string dummy;
-  bool testResult = true;
-
-  testResult &= testExponentialCurveFitting(  dummy);
-  testResult &= testRootFinding(              dummy);
-  testResult &= testGradientBasedOptimization(dummy);
-  testResult &= testMinSqrDifFixSum(          dummy);
-  testResult &= testPhaseUnwrapStuff(         dummy);
-
-  //testResult &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
-  //testResult &= testMultiLayerPerceptron(     dummy); // maybe move to experiments
-
-  return testResult;
-}
 
 bool testExponentialCurveFitting(std::string &reportString)
 {
@@ -122,8 +104,6 @@ bool testMinSqrDifFixSum(std::string &reportString)
   // code moved to experiments - todo: implement actual unit-tests
   std::string testName = "MinSqrDifFixSum";
   bool testResult = true;
-
-
 
 
   return testResult;
@@ -420,6 +400,24 @@ bool testMultiLayerPerceptron(std::string &reportString)
   mlpTrainer.setAlgorithm(GradientBasedMinimizer<double>::SCALED_CONJUGATE_GRADIENT);
   rsVectorDbl w = mlpTrainer.minimizeFunction(&mlpError, mlp.getWeightsAsVector());
   mlp.setWeightVector(w);  // set up the network with the optimal weight-vector
+
+  return testResult;
+}
+
+bool testMiscMath()
+{
+  std::string dummy;
+  bool testResult = true;
+
+  testResult &= testExponentialCurveFitting(  dummy);
+  testResult &= testRootFinding(              dummy);
+  testResult &= testGradientBasedOptimization(dummy);
+  testResult &= testMinSqrDifFixSum(          dummy);
+  testResult &= testPhaseUnwrapStuff(         dummy);
+  testResult &= testTransformMatrices();
+
+  //testResult &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
+  //testResult &= testMultiLayerPerceptron(     dummy); // maybe move to experiments
 
   return testResult;
 }

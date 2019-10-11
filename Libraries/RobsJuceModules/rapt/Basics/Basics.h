@@ -86,6 +86,12 @@ inline rsInt32 rsAbs(rsInt32 x) { return  abs(x); }
 template<class T> inline T rsAbs(std::complex<T> z) { return abs(z); }
 
 
+/** Squared absolute value of a complex number. */
+template<class T> 
+T rsAbsSquared(const std::complex<T>& z)
+{
+  return z.real()*z.real() + z.imag()*z.imag(); // == conj(z) * z
+}
 
 
 

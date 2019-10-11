@@ -63,7 +63,7 @@ public:
     T neighborhood;
 
     
-    // cyclic end-handling:
+    // cyclic end-handling (better for audio - avoids buzz):
     if(sampleCount == 0)
       neighborhood = T(0.5) * (rodIn[rodLength-1] + rodIn[1]);
     else if(sampleCount == rodLength-1) 
@@ -80,6 +80,7 @@ public:
     else
       neighborhood = T(0.5) * ( rodIn[sampleCount-1] + rodIn[sampleCount+1] );
     */
+
     
 
 
@@ -99,6 +100,40 @@ public:
     }
     return out;
   }
+
+
+  T getSample2()
+  {
+    T out = rodIn[sampleCount]; // rodIn is currently used for audio output but as input to the update formula
+    sampleCount++;
+
+    if(sampleCount == rodLength) {
+
+      // update the whole rod at once:
+      T delta   = rodIn[1] - rodIn[0];
+      rodOut[0] = rodIn[0] + diffusionCoeff  * delta;
+      for(int i = 1; i < rodLength-1; i++)
+      {
+        T neighborhood = T(0.5) * ( rodIn[i-1] + rodIn[i+1] );
+        delta = neighborhood - rodIn[i];
+        rodOut[i] = rodIn[i] + diffusionCoeff * delta;
+      }
+      delta = rodIn[rodLength-2] - rodIn[rodLength-1];
+      rodOut[rodLength-1] = rodIn[rodLength-1] + diffusionCoeff * delta;
+
+      // reset counter and swap input and output rods:
+      sampleCount = 0;
+      rsSwap(rodIn, rodOut);
+    }
+
+    if(sampleCount == 0)
+      rsPlotArray(rodIn, rodLength); 
+      //rsPlotVectors(rodArray1, rodArray2);
+
+
+    return out;
+  }
+  // updtae the rod every cycle - should give the same result (needed for test)
 
   void reset() {
     sampleCount = 0;

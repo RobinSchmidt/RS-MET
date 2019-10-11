@@ -1,7 +1,3 @@
-#include "DifferentialEquationTests.h"
-
-//#include "../../../../../../Libraries/RSCore/RSCore.h"
-//using namespace RSCore;
 
 // create some arrays for the time-axis and the 3 time series created by the system:
 namespace rsTestODE

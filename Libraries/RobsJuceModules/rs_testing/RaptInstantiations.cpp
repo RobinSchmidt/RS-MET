@@ -68,59 +68,64 @@ template int RAPT::rsFindHighestPeakIndex(double *buffer, int length); // move t
 template void rsArray::fillWithRangeLinear(double* x, int N, double min, double max);
 template void rsArray::fillWithRangeExponential(double* x, int N, double min, double max);
 template void rsArray::fillWithRandomValues(double* x, int N, double min, double max, int seed);
-template void rsArray::deConvolve(double *y, int yLength, double *h, int hLength, double *x);
+template void rsArray::deConvolve(const double *y, int yLength, const double *h, int hLength, double *x);
 template void rsArray::deInterleave(double*, int, int);
-template void rsArray::sequenceSqrt(double *y, int yLength, double *x);
+template void rsArray::sequenceSqrt(const double *y, int yLength, double *x);
 template void rsArray::transposeSquareArray(double **in, double **out, int size);
-template void rsArray::cumulativeSum(double *x, double *y, int length, int order);
+template void rsArray::cumulativeSum(const double *x, double *y, int length, int order);
 template void rsArray::difference(double *buffer, int length, int order, bool periodic);
 template double rsArray::minValue(const double *x, int length);
 template double rsArray::maxValue(const double *x, int length);
-template double rsArray::maxAbs(double *x, int length);
+template double rsArray::maxAbs(const double *x, int length);
 template void rsArray::normalize(double *buffer, int length, double maximum, bool subtractMean);
 template void rsArray::normalizeMean(double *x, int N, double newMean);
-template double rsArray::mean(double *x, int length);
-template double rsArray::maxDeviation(double *buffer1, double *buffer2, int length);
-template int rsArray::maxDeviationIndex(float *buffer1, float *buffer2, int length);
+template double rsArray::mean(const double *x, int length);
+template double rsArray::maxDeviation(const double *buffer1, const double *buffer2, int length);
+template int rsArray::maxDeviationIndex(const float *buffer1, const float *buffer2, int length);
 template int rsArray::maxAbsIndex(const double* const buffer, int length);
+//template int rsArray::maxAbsIndex(const std::complex<double>* const buffer, int length);
 template int rsArray::maxIndex(const rsRange<double>*, int length);
 
 
+template int rsArray::copyIfMatching(const int *, int *, int, const int *, int);
+template int rsArray::copyIfNotMatching(const int *, int *, int, const int *, int);
+
+
 template void rsArray::applyFunction(const double *x, double *y, int N, double (*f) (double));
-template void rsArray::negate(double *source, double *destination, int length);
-template void rsArray::filter(double *x, int xLength, double *y, int yLength,
-  double *b, int bOrder, double *a, int aOrder);
-template void rsArray::filterBiDirectional(double *x, int xLength, double *y, int yLength,
-  double *b, int bOrder, double *a, int aOrder, int numRingOutSamples);
+template void rsArray::negate(const double *source, double *destination, int length);
+template void rsArray::filter(const double *x, int xLength, double *y, int yLength,
+  const double *b, int bOrder, const double *a, int aOrder);
+template void rsArray::filterBiDirectional(const double *x, int xLength, double *y, int yLength,
+  const double *b, int bOrder, const double *a, int aOrder, int numRingOutSamples);
 template void rsArray::fillWithRangeLinear(float* x, int N, float min, float max);
 template void rsArray::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?
 //template void rsArray::fillWithRandomValues(rosic::rsFloat32x4* x, int N, double min, double max, int seed);
-template void rsArray::divide(double *buffer1, double *buffer2, double *result, int length);
+template void rsArray::divide(const double *buffer1, const double *buffer2, double *result, int length);
 
-template void rsArray::reverse(double* x, double* y, int length);
+template void rsArray::reverse(const double* x, double* y, int length);
 template void rsArray::rightShift(double *buffer, int length, int numPlaces);
 template void rsArray::shift(double *buffer, int length, int numPlaces);
 template void rsArray::unwrap(double* a, int N, double p);
 
-template float rsArray::maxDeviation(float *buffer1, float *buffer2, int length);
+template float rsArray::maxDeviation(const float *buffer1, const float *buffer2, int length);
 
 template void rsArray::fillWithRangeLinear(int* x, int N, int min, int max);
 template void rsArray::fillWithRandomValues(int* x, int N, double min, double max, int seed);
 template void rsArray::allocateSquareArray2D(int**& theArray, int size);
 template void rsArray::deAllocateSquareArray2D(int**& theArray, int size);
 template void rsArray::rightShift(int *buffer, int length, int numPlaces);
-template void rsArray::copySection(int *source, int sourceLength, int *destination, int copyStart, int copyLength);
-template void rsArray::cumulativeSum(int *x, int *y, int length, int order);
+template void rsArray::copySection(const int *source, int sourceLength, int *destination, int copyStart, int copyLength);
+template void rsArray::cumulativeSum(const int *x, int *y, int length, int order);
 
 template rsUint32 rsArray::maxValue(const rsUint32 *x, int length);
 template void rsArray::fillWithRangeLinear(rsUint32* x, int N, rsUint32 min, rsUint32 max);
 template void rsArray::copyBuffer(const rsUint32 *src, rsUint32 *dst, int N);
-template int rsArray::firstIndexWithNonZeroValue(rsUint32 *a, int N);
+template int rsArray::firstIndexWithNonZeroValue(const rsUint32 *a, int N);
 template bool rsArray::contains(const rsUint32 *buffer, int length, rsUint32 elementToFind);
 template void rsArray::fillWithZeros(rsUint32 *buffer, int length);
 template void rsArray::fillWithValue(char* buffer, int length, char value);
 
-template void rsArray::convertBuffer(std::complex<double> *source, std::complex<double> *destination, int length);
+template void rsArray::convertBuffer(const std::complex<double> *source, std::complex<double> *destination, int length);
 template void rsArray::fillWithRandomValues(std::complex<double>* x, int N, double min, double max, int seed);
 
 
@@ -144,6 +149,12 @@ template void MatrixTools::rsMatrixInPlaceMultiply(double **A, double **B, int N
 //template RAPT::rsLinearAlgebra<float>; // doens't work bcs the template parameters are decalred in the member functions
 template void rsLinearAlgebra::rsSolveLinearSystem2x2(const double A[2][2], double x[2], const double y[2]);
 template void rsLinearAlgebra::rsSolveLinearSystem3x3(const double A[3][3], double x[3], const double y[3]);
+
+template double rsLinearAlgebra::eigenvalue2x2_1(double, double, double, double);
+template double rsLinearAlgebra::eigenvalue2x2_2(double, double, double, double);
+template void rsLinearAlgebra::eigenvector2x2_1(double, double, double, double, double*, double*, bool);
+template void rsLinearAlgebra::eigenvector2x2_2(double, double, double, double, double*, double*, bool);
+
 template bool rsLinearAlgebra::rsSolveLinearSystem(double **A, double *x, const double *b, int N);
 template bool rsLinearAlgebra::rsInvertMatrix(double **A, int N);
 template bool rsLinearAlgebra::rsSolveTridiagonalSystem(double *lowerDiagonal, double *mainDiagonal,
@@ -155,6 +166,8 @@ template bool rsLinearAlgebra::rsChangeOfBasisRowWise(double **A, double **B, do
 template bool rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(double **A, double **B, double **C, int N);
 template bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(   double **A, double **B, double **C, int N);
 template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, const cmplxD *b, int N);
+
+
 
 
 template class RAPT::rsMatrix<double>;
@@ -307,7 +320,7 @@ template class RAPT::rsEllipticSubBandFilterDirectForm<float, float>;
 template class RAPT::rsQuadratureNetwork<float, float>;
 
 template void RAPT::rsBiDirectionalFilter::applyLowpass(
-  double *x, double *y, int N, double fc, double fs, int numPasses, double gc);
+  const double *x, double *y, int N, double fc, double fs, int numPasses, double gc);
 
 // Physics:
 template class RAPT::rsParticleSystem<float>;
@@ -341,6 +354,8 @@ template class RAPT::rsResampler<double, double>;
 // Unfinished:
 template class RAPT::rsTwoBandSplitter<float, float>;
 template class RAPT::rsMultiBandSplitter<float, float>;
+template class RAPT::rsExponentialEnvelopeMatcher<double>;
+
 
 // misc audio functions
 template void RAPT::rsFadeOut(double* buffer, int start, int end);
@@ -380,10 +395,13 @@ template double RAPT::analogBiquadMagnitudeSquaredAt(double B0, double B1, doubl
   double A1, double A2, double w);
 
 
-template void RAPT::rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(double *x, double *y,
+template void RAPT::rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(const double *x, double *y,
   int N, double fc, double bw, double fs, int numPasses, double gc);
-template void RAPT::rsBiDirectionalFilter::applyButterworthBandpassBwInHz(double *x, double *y,
+template void RAPT::rsBiDirectionalFilter::applyButterworthBandpassBwInHz(const double *x, double *y,
   int N, double fc, double bw, double fs, int order, int numPasses, double gc);
+
+
+
 
 //template class RAPT::rsSinusoidalSynthesizer<double>;
 //template class RAPT::rsHarmonicAnalyzer<double>;

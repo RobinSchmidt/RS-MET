@@ -1047,6 +1047,63 @@ void phaseLockedCrossfade2()
 //  int dummy = 0;
 //}
 
+void amplitudeMatch()
+{
+  // For two signals with exponentially decaying envelope, we estimate, how much we would have to 
+  // time-shift the second to best match the amp-envelope of the first.
+
+  int    N1 = 1000;    // number of samples in 1st signal
+  int    N2 = 1500;    // number of samples in 2nd signal
+  double A1 =  1.0;    // amplitude of 1st signal
+  double A2 =  0.5;    // amplitude of 2nd signal
+  double d1 =  0.005;  // normalized 1st decay
+  double d2 =  0.005;  // normalized 2nd decay
+  double matchLevel = -20; // level (in dB) at which the two envelopes should meet
+
+  // create our two input envelopes:
+  std::vector<double> x1(N1), x2(N2); 
+  int n;
+  for(n = 0; n < N1; n++) x1[n] = A1 * exp(-d1*n);
+  for(n = 0; n < N2; n++) x2[n] = A2 * exp(-d2*n);
+
+  // find best match time-shift:
+  rsExponentialEnvelopeMatcher<double> matcher;
+  matcher.setMatchLevel(matchLevel);
+  double dt = matcher.getMatchOffset(&x1[0], N1, &x2[0], N2);
+
+  // create a time axes for x1 and x2, for x2 also an axis with the shift:
+  std::vector<double> t1(N1), t2(N2), t2s(N2); // t2s: t2 with shift
+  for(n = 0; n < N1; n++) t1[n]  = n;
+  for(n = 0; n < N2; n++) t2[n]  = n;
+  for(n = 0; n < N2; n++) t2s[n] = n + dt; 
+
+
+  // plot results:
+  GNUPlotter plt;
+  plt.addDataArrays(N1, &t1[0],  &x1[0]);
+  plt.addDataArrays(N1, &t1[0],  &x1[0]); // simple trick, to plot the shifted x2 red
+  plt.addDataArrays(N2, &t2[0],  &x2[0]); // 2nd signal at its original position
+  plt.addDataArrays(N2, &t2s[0], &x2[0]); // 2ns signal time-shifted
+  plt.plot();
+
+
+  // Observations:
+  // -when d1 and d2 match, it works perfectly
+  // -when d1 and d2 do not match, x2 is shifted in such a way that the two curves cross at an
+  //  amplitude determined by the matchLevel
+
+  // Ideas:
+  // -for non-matching decay times, we could manipulate the decay time of the 2nd signal to make 
+  //  it match
+  // -maybe for enveloped periodic signals, we should use this algorithm for a rough estimate and
+  //  then refine it by finding the maximum of a correlation function - this should at most shift
+  //  the estimated dt by half a period
+}
+// todo: set up an experiment that uses two attack/decay enveloped sines - maybe with a noise floor
+// ...this should be used to test the algorithms robustness - we probably need parameters to iganor 
+// an initial and final section of the sound (which presumably contains the attack portion at the 
+// start and the noise-floor at the end
+
 
 void sineShift()
 {

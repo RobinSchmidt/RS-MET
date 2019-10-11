@@ -11,6 +11,12 @@
 #include "rosic/rosic.h"
 #include "rs_testing/rs_testing.h"
 
+
+
+bool runUnitTest(bool (*test)(), const std::string& name);
+
+
+
 //bool detectMemoryLeaks();  // currently works only in MSVC
 
 /** This function should be called on program startup when automatic detection of memory leaks 

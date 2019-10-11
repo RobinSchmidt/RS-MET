@@ -1,4 +1,3 @@
-#include "AudioPerformanceTests.h"
 using namespace RAPT;
 using namespace std;
 

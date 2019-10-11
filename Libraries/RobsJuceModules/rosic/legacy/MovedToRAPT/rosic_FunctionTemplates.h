@@ -36,11 +36,11 @@ namespace rosic
 
   /** Checks whether two buffer match element-wise with some tolerance. */
   //template <class T>
-  //bool areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance);
+  //bool almostEqual(T *buffer1, T *buffer2, int length, T tolerance);
 
   /** Checks whether two buffer match element-wise. */
   //template <class T>
-  //bool areBuffersEqual(T *buffer1, T *buffer2, int length);
+  //bool equal(T *buffer1, T *buffer2, int length);
 
   /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward shifts use negative values for
   numPositions. If the absolute value of 'numPositions' is greater than the length of the buffer, it will use numPositions modulo the
@@ -316,7 +316,7 @@ namespace rosic
   }
 
   template <class T>
-  bool areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance)
+  bool almostEqual(T *buffer1, T *buffer2, int length, T tolerance)
   {
     for(int i=0; i<length; i++)
     {
@@ -327,7 +327,7 @@ namespace rosic
   }
 
   template <class T>
-  bool areBuffersEqual(T *buffer1, T *buffer2, int length)
+  bool equal(T *buffer1, T *buffer2, int length)
   {
     for(int i=0; i<length; i++)
     {

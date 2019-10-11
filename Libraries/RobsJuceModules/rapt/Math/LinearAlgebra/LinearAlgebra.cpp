@@ -35,6 +35,138 @@ void rsLinearAlgebra::rsSolveLinearSystem3x3(const T A[3][3], T x[3], const T y[
   */
 }
 
+
+
+
+template<class T>
+inline void normalizeLength(T* vx, T* vy)
+{
+  //return;  // preliminary
+  T rx = rsAbs(*vx); rx *= rx;
+  T ry = rsAbs(*vy); ry *= ry;
+  T s  = T(1) / sqrt(rx+ry);
+  *vx *= s;
+  *vy *= s;
+  // this is written such it can work for T being a real or complex number class ...but maybe it 
+  // can be optimized even for the complex case?
+}
+// maybe de-inline and make a static class member
+
+// move to where rsAbs is:
+//template<class T> inline T rsReal(T x) { return x; }
+//template<class T> inline T rsReal(std::complex<T> x) { return x.real(); }
+//inline double rsReal(std::complex<double> x) { return x.real(); }
+
+//template<class T> inline bool rsLess(   const T& x, const T& y) { return x < y; }
+//template<class T> inline bool rsGreater(const T& x, const T& y) { return x > y; }
+
+
+// move elsewhere:
+
+template<class T> 
+inline bool rsLess(const std::complex<T>& x, const std::complex<T>& y) // maybe have a tolerance
+{
+  if(x.real() < y.real()) return true;
+  if(x.imag() < y.imag()) return true;
+  return false;
+}
+
+template<class T> 
+inline bool rsGreater(const std::complex<T>& x, const std::complex<T>& y) // maybe have a tolerance
+{
+  if(x.real() > y.real()) return true;
+  if(x.imag() > y.imag()) return true;
+  return false;
+}
+
+template<class T> 
+inline T eigenDiscriminant2x2(T a, T b, T c, T d)
+{
+  return a*a + T(4)*b*c - T(2)*a*d + d*d;
+}
+// this expression occurs in all the square-roots in the functions below - it discriminates between
+// real and complex eigenvalues, when the coeffs are real - dunno, if it's useful to have this 
+// function - if so, maybe add it to rsLinearAlgebra
+
+template<class T>
+T rsLinearAlgebra::eigenvalue2x2_1(T a, T b, T c, T d)
+{
+  return T(0.5) * (a + d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
+}
+
+template<class T>
+T rsLinearAlgebra::eigenvalue2x2_2(T a, T b, T c, T d)
+{
+  return T(0.5) * (a + d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
+}
+
+template<class T>
+void rsLinearAlgebra::eigenvector2x2_1(T a, T b, T c, T d, T* vx, T* vy, bool normalize)
+{
+  if(b != T(0)) {
+    *vx = T(1);
+    *vy = T(-0.5) * (a - d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
+    if(normalize) 
+      normalizeLength(vx, vy); }
+  else {
+    if(rsLess(a, d)) {   // .maybe we need a tolerance, i.e. if tol < d-a
+      *vx = T(1);
+      *vy = c/(a-d);
+      if(normalize) 
+        normalizeLength(vx, vy); }
+    else {
+      *vx = T(0);
+      *vy = T(1); }
+  }
+}
+// ...needs tests with complex numbers - what if the function is called with real inputs but the 
+// matrix has complex eigenvalues - we will get a negative number in the sqrt - maybe we should 
+// use something like:
+// d = eigenDiscriminant2x2(a,b,c,d);
+// *vy = T(-0.5) * (a - d + sqrt(max(d,0)) ) / b; 
+// ..in this case, it would return the real part of the complex eigenvalue which would be 
+// consistent with rsPolynomial::rootsQuadraticReal
+
+template<class T>
+void rsLinearAlgebra::eigenvector2x2_2(T a, T b, T c, T d, T* vx, T* vy, bool normalize)
+{
+  if(b != T(0)) {
+    *vx = T(1);
+    *vy = T(-0.5) * (a - d - sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d)) / b; 
+    if(normalize) 
+      normalizeLength(vx, vy); }
+  else {
+    if(rsGreater(a, d)) {  // maybe tolerance is needed here too
+      *vx = T(1);
+      *vy = c/(a-d);
+      if(normalize) 
+        normalizeLength(vx, vy); }
+    else {
+      *vx = T(0);
+      *vy = T(1); }
+  } 
+}
+
+
+// the same sqrt appears in all 4 formulas - what's its significance? maybe its worth to factor out 
+// and give it a name? maybe eigenSqrt2x2 ...or has it to do with the determinant? i think, it's a 
+// sort of discriminant that discriminates the cases of real and complex eigenvalues (when the 
+// coeffs are real)
+
+// the general formula can be found with the following sage code:
+// var("a b c d")
+// A = matrix([[a, b], [c, d]])
+// A.eigenvectors_right()
+// [(1/2*a + 1/2*d - 1/2*sqrt(a^2 + 4*b*c - 2*a*d + d^2), [(1, -1/2*(a - d + sqrt(a^2 + 4*b*c - 2*a*d + d^2))/b)],  1),
+//  (1/2*a + 1/2*d + 1/2*sqrt(a^2 + 4*b*c - 2*a*d + d^2), [(1, -1/2*(a - d - sqrt(a^2 + 4*b*c - 2*a*d + d^2))/b)],  1) ]
+// special cases are obtained by setting b=0 and maybe additionally d=a, these are the right 
+// eigenvectors - maybe have similar functions for the left eigenvectors?
+
+
+
+
+
+
 template<class T>
 bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
 {

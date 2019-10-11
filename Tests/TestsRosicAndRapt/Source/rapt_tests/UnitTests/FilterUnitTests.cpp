@@ -1,4 +1,3 @@
-#include "FilterUnitTests.h"
 
 //#include "../../../../Libraries/ThirdParty/Nayuki/SlidingWindowMinMax.hpp"
 #include "../../../../Libraries/ThirdParty/Nayuki/SlidingWindowMinMax.hpp"

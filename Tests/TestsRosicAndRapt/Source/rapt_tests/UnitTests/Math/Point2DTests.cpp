@@ -1,17 +1,3 @@
-#include "Point2DTests.h"
-
-bool testPoint2D()
-{
-  std::string testName = "rsPoint2D";
-  std::string dummy;
-  bool testResult = true;
-
-  testResult &= testPoint2DOperators(dummy);
-  testResult &= testPoint2DTransformations(dummy);
-
-  //appendTestResultToReport(reportString, testName, testResult);
-  return testResult;
-}
 
 bool testPoint2DOperators(std::string &reportString)
 {
@@ -134,6 +120,19 @@ bool testPoint2DTransformations(std::string &reportString)
   t2 = Trafo::reflection(1, -1);
   testResult &= ( t1 == t2 );
 
+
+  //appendTestResultToReport(reportString, testName, testResult);
+  return testResult;
+}
+
+bool testPoint2D()
+{
+  std::string testName = "rsPoint2D";
+  std::string dummy;
+  bool testResult = true;
+
+  testResult &= testPoint2DOperators(dummy);
+  testResult &= testPoint2DTransformations(dummy);
 
   //appendTestResultToReport(reportString, testName, testResult);
   return testResult;

@@ -4,7 +4,8 @@
 // implement double getSample(double), P: padding length, numPasses: number of forward/backward
 // passes maybe move to another file
 template<class TSig, class TFlt> // signal and filter type
-void rsApplyBiDirectionally(TSig *x, TSig *y, int N, TFlt &processor, int P, int numPasses)
+void rsApplyBiDirectionally(
+  const TSig *x, TSig *y, int N, TFlt &processor, int P, int numPasses)
 {
   // create a buffer containing the signal with (pre- and post) zero padding to allow the
   // processor/filter to ring out at the ends:
@@ -35,7 +36,7 @@ void rsApplyBiDirectionally(TSig *x, TSig *y, int N, TFlt &processor, int P, int
 }
 
 template<class T>
-std::vector<T> getPaddedSignal(T* x, int N, int P)
+std::vector<T> getPaddedSignal(const T* x, int N, int P)
 {
   int M = N+2*P;
   std::vector<T> xp(M);
@@ -49,7 +50,7 @@ std::vector<T> getPaddedSignal(T* x, int N, int P)
 // non-uniform version of function above:
 template<class TSig, class TTim, class TFlt> // signal, time and filter type
 void rsApplyBiDirectionally(
-  TSig* x, TTim* t, TSig* y, int N, TFlt& processor, int P, int numPasses)
+  const TSig* x, const TTim* t, TSig* y, int N, TFlt& processor, int P, int numPasses)
 {
   // signal array with pre- and post-padding:
   std::vector<TSig> tmp = getPaddedSignal(x, N, P);
@@ -88,7 +89,7 @@ int rsBiDirectionalFilter::getPaddingLength(T bw, T fs)
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc,
+void rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(const TSig *x, TSig *y, int N, TPar fc,
   TPar bw, TPar fs, int numPasses, TPar gc)
 {
   // compute desired bandwidth for single-pass filter in octaves:
@@ -108,7 +109,7 @@ void rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(TSig *x, TSig *y, int N
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyButterworthBandpassBwInHz(TSig *x, TSig *y, int N, TPar fc,
+void rsBiDirectionalFilter::applyButterworthBandpassBwInHz(const TSig *x, TSig *y, int N, TPar fc,
   TPar bw, TPar fs, int order, int numPasses, TPar gc)
 {
   // compute desired bandwidth for single-pass filter in octaves:
@@ -130,7 +131,7 @@ void rsBiDirectionalFilter::applyButterworthBandpassBwInHz(TSig *x, TSig *y, int
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyButterworthLowpass(TSig *x, TSig *y, int N, TPar fc,
+void rsBiDirectionalFilter::applyButterworthLowpass(const TSig *x, TSig *y, int N, TPar fc,
   TPar fs, int order, int numPasses, TPar gc)
 {
   // compute desired lowpass cutoff:
@@ -150,7 +151,7 @@ void rsBiDirectionalFilter::applyButterworthLowpass(TSig *x, TSig *y, int N, TPa
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyButterworthHighpass(TSig *x, TSig *y, int N, TPar fc,
+void rsBiDirectionalFilter::applyButterworthHighpass(const TSig *x, TSig *y, int N, TPar fc,
   TPar fs, int order, int numPasses, TPar gc)
 {
   applyButterworthLowpass(x, y, N, fc, fs, order, numPasses, gc);
@@ -178,8 +179,8 @@ void rsBiDirectionalFilter::applyButterworthHighpass(TSig *x, TSig *y, int N, TP
 }
 
 template<class TSig, class TTim, class TPar> // signal, time, parameter
-void rsBiDirectionalFilter::applyButterworthLowpass(TSig* x, TTim* t, TSig* y, int N, TPar fc,
-  int order, int numPasses, TPar gc)
+void rsBiDirectionalFilter::applyButterworthLowpass(
+  const TSig* x, const TTim* t, TSig* y, int N, TPar fc, int order, int numPasses, TPar gc)
 {
   fc *= rsBandwidthConverter::multipassScalerButterworth(2*numPasses, order, gc);
   rsNonUniformFilterIIR<TSig> flt;
@@ -199,7 +200,7 @@ void rsBiDirectionalFilter::applyButterworthLowpass(TSig* x, TTim* t, TSig* y, i
 }
 
 template<class TSig, class TPar>
-void rsBiDirectionalFilter::applyLowpass(TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses,
+void rsBiDirectionalFilter::applyLowpass(const TSig *x, TSig *y, int N, TPar fc, TPar fs, int numPasses,
   TPar gc)
 {
   // compute desired cutoff for single-pass filter:
@@ -1819,6 +1820,44 @@ void rsEnvelopeExtractor<T>::getPeaks(const T *x, const T *y, int N,
   }
 }
 
+//=================================================================================================
+
+template<class T>
+T rsExponentialEnvelopeMatcher<T>::getMatchOffset(const T* x1, int N1, const T* x2, int N2)
+{
+  // take decibel values of both input envelopes - this transforms the exponential decay into a 
+  // linear one and when both decays are the same, the lines have the same slope:
+  std::vector<T> xdB1, xdB2;  // envelopes converted to decibels
+  std::vector<T> t1,   t2;    // time axes
+  xdB1.reserve(N1);
+  xdB2.reserve(N2);
+  t1.reserve(N1);
+  t2.reserve(N2);
+
+  for(int n = initIgnore1; n < N1 - finalIgnore1; n++) {
+    if(x1[n] >= ignoreThresh1) {
+      t1.push_back(T(n));
+      xdB1.push_back(rsAmpToDb(x1[n]));
+    }
+  }
+  for(int n = initIgnore2; n < N2 - finalIgnore2; n++) {
+    if(x2[n] >= ignoreThresh2) {
+      t2.push_back(T(n));
+      xdB2.push_back(rsAmpToDb(x2[n]));
+    }
+  }
+
+  // find the regression lines y = a*t + b for both signals:
+  T a1, b1, a2, b2;                // linear regression coeffs
+  rsStatistics::linearRegression((int)t1.size(), &t1[0], &xdB1[0], a1, b1);
+  rsStatistics::linearRegression((int)t2.size(), &t2[0], &xdB2[0], a2, b2);
+
+  // compute, by how much we must shift x1 to match x2 at the given match level:
+  T tm1, tm2;
+  tm1 = (matchLevel - b1) / a1;  // time instant, where xdB1 crosses the matchLevel
+  tm2 = (matchLevel - b2) / a2;  // same for xdB2
+  return tm1 - tm2;              // this is the resulting desired shift
+}
 
 //=================================================================================================
 

@@ -54,3 +54,15 @@ void writeToMonoWaveFile(std::string path, float *signal, int numFrames, int sam
 {
   rosic::writeToMonoWaveFile(path.c_str(), signal, numFrames, sampleRate, numBits);
 }
+
+void writeToWaveFile(std::string path, const std::vector<std::complex<double>>& signal,
+  int sampleRate)
+{
+  int N = (int)signal.size();
+  std::vector<double> xL(N), xR(N);
+  for(int n = 0; n < N; n++) {
+    xL[n] = signal[n].real();
+    xR[n] = signal[n].imag();
+  }
+  rosic::writeToStereoWaveFile(path.c_str(), &xL[0], &xR[0], N, sampleRate);
+}

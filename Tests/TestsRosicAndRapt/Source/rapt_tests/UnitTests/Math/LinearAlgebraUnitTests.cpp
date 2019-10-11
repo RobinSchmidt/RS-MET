@@ -1,26 +1,5 @@
-#include "LinearAlgebraUnitTests.h"
 
 using namespace RAPT;
-
-//bool testLinearAlgebra(std::string &reportString)
-bool testLinearAlgebra()
-{
-  std::string reportString = "LinearAlgebra"; // dummy-string - delete later
-  bool testResult = true;
-
-  testResult &= testBandDiagonalSolver(   reportString);
-  testResult &= testLinearSystem2x2(      reportString);
-  testResult &= testLinearSystem3x3(      reportString);
-  testResult &= testLinearSystemViaGauss( reportString);
-  testResult &= testGaussJordanInversion( reportString);
-  testResult &= testTridiagonalSystem(    reportString);
-  testResult &= testSquareMatrixTranspose(reportString);
-  testResult &= testMatrixVectorMultiply( reportString);
-  testResult &= testMatrixMultiply(       reportString);
-  testResult &= testChangeOfBasis(        reportString);
-
-  return testResult;
-}
 
 bool testBandDiagonalSolver(std::string &reportString)
 {
@@ -81,18 +60,168 @@ bool testBandDiagonalSolver(std::string &reportString)
   return testResult;
 }
 
+bool testMatrix2x2(std::string& reportString)
+{
+  std::string testName = "Matrix2x2";
+  bool testResult = true;
+  typedef rsLinearAlgebra LA;
+
+
+  // Test compuatation of eigenvalues and eigenvectors:
+
+  double ev, ex, ey, d;
+  bool nrm = false;   // normalize eigenvectors to unit length
+
+  ev = LA::eigenvalue2x2_1(-4.0, 6.0, -3.0, 5.0);                // -1
+  LA::eigenvector2x2_1(    -4.0, 6.0, -3.0, 5.0, &ex, &ey, nrm); // k*(2,1) - is (1,0.5), so k=0.5
+  testResult &= ev    == -1;
+  testResult &= ex/ey ==  2;
+
+  ev = LA::eigenvalue2x2_2(-4.0, 6.0, -3.0, 5.0);                // 2
+  LA::eigenvector2x2_2(    -4.0, 6.0, -3.0, 5.0, &ex, &ey, nrm); // k*(1,1), is (1,1), so k=1
+  testResult &= ev    == 2;
+  testResult &= ex/ey == 1;
+
+  ev = LA::eigenvalue2x2_1(4.0, 1.0, 6.0, 3.0);
+  LA::eigenvector2x2_1(    4.0, 1.0, 6.0, 3.0, &ex, &ey, nrm);
+  testResult &= ev    == 1;
+  testResult &= ex/ey == -1/3.;
+
+  ev = LA::eigenvalue2x2_2(4.0, 1.0, 6.0, 3.0);
+  LA::eigenvector2x2_2(    4.0, 1.0, 6.0, 3.0, &ex, &ey, nrm);
+  testResult &= ev    == 6;
+  testResult &= ex/ey == 1/2.;
+
+  // try special cases with b = 0:
+
+  // b = 0, a < d:
+
+  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, 5.0);                // -4
+  LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, 5.0, &ex, &ey, nrm); // (1,1/3)
+  testResult &= ev    == -4;
+  testResult &= ex/ey ==  3.;
+
+  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, 5.0);                // 5
+  LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, 5.0, &ex, &ey, nrm); // (0,1)
+  testResult &= ev == 5 && ex == 0 && ey == 1; // maybe when we normalize, check only for ey > 0
+
+
+  // b = 0, a > d:
+
+  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, -5.0);                // -5
+  LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, -5.0, &ex, &ey, nrm); // (0,1)
+  testResult &= ev == -5 && ex == 0 && ey == 1; 
+
+  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, -5.0);                // -4
+  LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, -5.0, &ex, &ey, nrm); // (1,-3)
+  testResult &= ev    == -4;
+  testResult &= ex/ey == -1/3.;
+
+
+  // b = 0, a = d:
+
+  ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, -4.0);                // -4
+  LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, -4.0, &ex, &ey, nrm); // (0,1)
+  testResult &= ev == -4 && ex == 0 && ey == 1; 
+
+  ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, -4.0);                // -4
+  LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, -4.0, &ex, &ey, nrm); // (0,1)
+  testResult &= ev == -4 && ex == 0 && ey == 1; 
+
+  // todo: try the special cases with complex numbers - we may also need tolerances in the
+  // comparisons
+  // the current implementaion will fall into the wrong branch when real parts of a and d
+  // are equal
+
+  typedef rsMatrix2x2<double> Mat;
+  rsMatrix2x2<double> A(1,2,3,4), B(5,6,7,8), C, D;
+  C = A+B; testResult &= C == Mat(  6,  8, 10, 12);
+  C = A-B; testResult &= C == Mat( -4, -4, -4, -4);
+  C = A*B; testResult &= C == Mat( 19, 22, 43, 50);
+  C = B*A; testResult &= C == Mat( 23, 34, 31, 46);
+  C = Mat::commutator(A,B); testResult &= C == Mat( -4, -12, 12, 4); // A*B - B*A
+  d = A.determinant(); testResult &= d == -2;
+  d = B.determinant(); testResult &= d == -2;
+  C = A.inverse(); testResult &= C == Mat(-2, 1, 3./2, -1./2);
+  C = B.inverse(); testResult &= C == Mat(-4, 3, 7./2, -5./2);
+  C = A/B; testResult &= C == Mat( 3, -2, 2, -1);
+  C = B/A; testResult &= C == Mat(-1,  2, -2, 3);
+
+
+
+  /*
+  // no, let's try some complex matrices
+  typedef std::complex<double> Cmplx;
+  typedef rsMatrix2x2<Cmplx>   MatC;
+  typedef rsVector2D<Cmplx>    VecC;
+  std::complex<double> one(1,0), zero(0,0), i(0,1);
+  MatC Z(one, zero, zero, -one); // the Pauli z matrix
+  Cmplx c1, c2;  // eigenvalues
+  VecC  C1, C2;  // eigenvectors
+  c1 = Z.eigenvalue1();    // -1
+  c2 = Z.eigenvalue2();    // (1,0)
+  C1 = Z.eigenvector1();   // +1
+  C2 = Z.eigenvector2();   // (0,1)
+  // eigenvectors are swapped
+
+  // try it with the real version of pauli Z
+
+  typedef rsVector2D<double> Vec;
+  A = Mat(1,0,0,1);
+  double r1, r2;
+  Vec R1, R2;
+  r1 = A.eigenvalue1();    // -1
+  r2 = A.eigenvalue2();    // (1,0)
+  R1 = A.eigenvector1();   // +1
+  R2 = A.eigenvector2();   // (0,1)
+
+  // what? actually sage says that (0,1) belongs to +1 and (1,0) belongs to -1 indeed:
+  //A = matrix([[1, 0], [0, -1]])
+  //A.eigenvectors_right()
+  */
+
+  return testResult;
+}
+
+bool testMatrixNew(std::string& reportString)
+{
+  bool res = true;
+  typedef rsMatrixNew<double> Mat;
+  typedef std::vector<double> Vec;
+
+  Mat A(2, 3, Vec({1,2,3,4,5,6}));
+  Mat B(3, 2, Vec({7,8,9,10,11,12}));
+
+  Mat C = A+A; res &= C == Mat(2, 3, Vec({2,4,6,8,10,12}));
+  C = A - A;   res &= C == Mat(2, 3, Vec({0,0,0,0,0,0}));
+
+  //A = Mat(1, 2, Vec({1,2}));
+  //B = Mat(2, 1, Vec({3,4}));
+  C = A * B;
+  C = B * A;
+  // todo: check, if result is correct
+
+  C = Mat::kroneckerProduct(A, B);
+  // todo: check, if result is correct
+  // maybe try with 1x2 and 4x3 matrix (all dimensions different)
+
+
+
+  return res;
+}
+
 bool testLinearSystem2x2(std::string &reportString)
 {
   std::string testName = "LinearSystem2x2";
   bool testResult = true;
+  typedef rsLinearAlgebra LA;
 
   double x[2];
   double y[2]    = {17, 39};
   double A[2][2] = {{1, 2},
                     {3, 4}};
 
-  rsLinearAlgebra::rsSolveLinearSystem2x2(A, x, y);
-
+  LA::rsSolveLinearSystem2x2(A, x, y);
   testResult &= (x[0] == 5.0);
   testResult &= (x[1] == 6.0);
 
@@ -576,7 +705,7 @@ bool testChangeOfBasis(std::string &reportString)
   double vea[3], veb[3];
   MatrixTools::rsMatrixVectorMultiply(pA, va, vea, 3, 3);
   MatrixTools::rsMatrixVectorMultiply(pB, vb, veb, 3, 3);
-  testResult &= rsArray::areBuffersEqual(vea, veb, 3);
+  testResult &= rsArray::equal(vea, veb, 3);
 
   // compute change-of-base matrix to go from basis A to B:
   rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(pA, pB, pC, 3);
@@ -585,15 +714,15 @@ bool testChangeOfBasis(std::string &reportString)
   // previously computed coordinates:
   double vb2[3];
   MatrixTools::rsMatrixVectorMultiply(pC, va, vb2, 3, 3);
-  testResult &= rsArray::areBuffersApproximatelyEqual(vb, vb2, 3, 1.e-14);
+  testResult &= rsArray::almostEqual(vb, vb2, 3, 1.e-14);
 
   // tests for row-based representations of bases A and B:
   rsLinearAlgebra::rsChangeOfBasisRowWise(pAT, pBT, va, vb, 3);
-  testResult &= rsArray::areBuffersApproximatelyEqual(vb, vb2, 3, 1.e-14);
+  testResult &= rsArray::almostEqual(vb, vb2, 3, 1.e-14);
 
   rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(pAT, pBT, pCT, 3);
   MatrixTools::rsMatrixVectorMultiply(pCT, va, vb2, 3, 3);
-  testResult &= rsArray::areBuffersApproximatelyEqual(vb, vb2, 3, 1.e-14);
+  testResult &= rsArray::almostEqual(vb, vb2, 3, 1.e-14);
 
   testResult &= MatrixTools::rsAreMatricesApproximatelyEqual(pC, pCT, 3, 3, 1.e-14);
    // the change-of-base matrix doesn't care about, how the base-vectors are represented in some 
@@ -606,3 +735,27 @@ bool testChangeOfBasis(std::string &reportString)
 // it can easily be found from A*x = B*y (where x,y and either A or B are assumed to be known) and
 // the solving for x and y respectively and defining C as conversion matrix from x to y and C-^1
 // the inverse conversion, can also be verified by E = C * C^-1 = A^-1 * B * B^-1 * A
+
+
+
+//bool testLinearAlgebra(std::string &reportString)
+bool testLinearAlgebra()
+{
+  std::string reportString = "LinearAlgebra"; // dummy-string - delete later
+  bool testResult = true;
+
+  testResult &= testBandDiagonalSolver(   reportString);
+  testResult &= testMatrixNew(            reportString);
+  testResult &= testMatrix2x2(            reportString);
+  testResult &= testLinearSystem2x2(      reportString);
+  testResult &= testLinearSystem3x3(      reportString);
+  testResult &= testLinearSystemViaGauss( reportString);
+  testResult &= testGaussJordanInversion( reportString);
+  testResult &= testTridiagonalSystem(    reportString);
+  testResult &= testSquareMatrixTranspose(reportString);
+  testResult &= testMatrixVectorMultiply( reportString);
+  testResult &= testMatrixMultiply(       reportString);
+  testResult &= testChangeOfBasis(        reportString);
+
+  return testResult;
+}

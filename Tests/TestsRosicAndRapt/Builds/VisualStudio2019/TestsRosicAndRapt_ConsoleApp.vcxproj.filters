@@ -418,6 +418,12 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\BufferFunctionTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\SortAndSearchTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClCompile>
@@ -436,7 +442,7 @@
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\MiscUnitTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\UnitTests.cpp">
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\UnitTestsRapt.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\AudioPerformanceTests.cpp">
@@ -526,9 +532,6 @@
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.cpp">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
     </ClCompile>
@@ -542,9 +545,6 @@
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\PitchDetectorTests.cpp">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\SortAndSearchTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\TypeSizeTests.cpp">
@@ -650,6 +650,9 @@
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\rosic_StringTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\UnitTestsRosic.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
@@ -875,6 +878,9 @@
       <Filter>JUCE Modules\rapt\Math\Numerics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.cpp">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\MatrixBroken.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.cpp">
@@ -2578,6 +2584,12 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Prototypes.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Relativity.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Tensor.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
@@ -2631,95 +2643,11 @@
     <ClInclude Include="..\..\Source\UnitTests\UnitTests.h">
       <Filter>TestsRosicAndRapt\Source\UnitTests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\DifferentialEquationTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
+    <ClInclude Include="..\..\Source\rapt_tests\RaptTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\IntegerFunctionTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\LinearAlgebraUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MatrixUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MiscMathUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MoebiusTransformTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\MultiArrayTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\NumberTheoryTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\Point2DTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\Polygon2DTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\PolynomialUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\RealFunctionTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\TransformsTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\Triangle2DTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\Math\VectorUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h">
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\UnitTestsRapt.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DrawingUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\ImageUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\MathUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\MiscUnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\UnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\PerformanceTests\AudioPerformanceTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\PerformanceTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\PerformanceTests\MathPerformanceTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\PerformanceTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\PerformanceTests\MiscPerformanceTests.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\PerformanceTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\Experiments\GeneratorExperiments.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\Experiments\MathExperiments.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rapt_tests\Experiments\ModulatorExperiments.h">
-      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Experiments\Experiments.h">
       <Filter>TestsRosicAndRapt\Source\Experiments</Filter>
@@ -2844,9 +2772,6 @@
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\BufferFunctionTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
     </ClInclude>
@@ -2860,9 +2785,6 @@
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\PitchDetectorTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\SortAndSearchTests.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\TypeSizeTests.h">
@@ -2968,6 +2890,9 @@
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_StringTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\UnitTestsRosic.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h">
@@ -3205,6 +3130,9 @@
       <Filter>JUCE Modules\rapt\Math\Numerics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.h">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\MatrixBroken.h">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h">
@@ -5032,6 +4960,12 @@
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Prototypes.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Relativity.h">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Tensor.h">

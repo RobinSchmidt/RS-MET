@@ -2,9 +2,8 @@
 
 typedef std::complex<double> rsComplexDbl;  // get rid
 
-bool testFilterPolynomials(std::string &reportString)
+bool testFilterPolynomials()
 {
-  std::string testName = "FilterPolynomials";
   bool testResult = true;
 
   double a[30], at[30];
@@ -12,14 +11,13 @@ bool testFilterPolynomials(std::string &reportString)
   {
     halpernT2(at, n);
     rsPrototypeDesignerD::halpernPolynomial(a, n);
-    testResult &= RAPT::rsArray::areBuffersEqual(a, at, 2*n+1);
+    testResult &= RAPT::rsArray::equal(a, at, 2*n+1);
 
     papoulisL2(at, n);
     rsPrototypeDesignerD::papoulisPolynomial(a, n);
-    testResult &= RAPT::rsArray::areBuffersEqual(a, at, 2*n+1);
+    testResult &= RAPT::rsArray::equal(a, at, 2*n+1);
   }
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -218,7 +216,7 @@ bool testIIRDesign(int method, int mode, int protoOrder)
   return r;
 }
 
-bool testHighOrderFilter(std::string &reportString)
+bool testHighOrderFilter()
 {
   bool r = true;
 

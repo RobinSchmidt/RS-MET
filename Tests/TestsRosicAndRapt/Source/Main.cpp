@@ -7,11 +7,14 @@
 // includes for unity build:
 //#include "Shared/Shared.h"
 
+#include "rapt_tests/RaptTests.h"
+
+// get rid of these includes - the best would be, to move all that stuff into the rs_testing juce
+// module:
 #include "Experiments/Experiments.h"
 #include "UnitTests/UnitTests.h"
 #include "PerformanceTests/PerformanceTests.h"
 #include "Misc/Misc.h"  // demos, examples, rendering, ... // todo: make unity build cpp file
-
 // todo: move all the code into rs_testing module such that it can be compiled as a single 
 // compilation unit -> faster build times for testing
 
@@ -24,18 +27,30 @@
 // passed &= runUnitTest(&triangleRasterization,  "Triangle Rasterization");
 // in UnitTests.cpp
 
+
+
 int main(int argc, char* argv[])
 {
+
   // tempoarary throw-away-code:
   //testCrossoverNewVsOld();
+
+  // todo: 
+  // -get rid of the distinction between testing classes form rapt and rosic - that makes it 
+  //  confusing and hard to find a particular test -> merge the tests
+  // -get rid of header files FilterExperiments., GnereatorExperiments.h etc. - do it all in a 
+  //  single include file -> less files are easier to maintain
+   // ...maybe make even just a single include file for all rapt tests
 
   //===============================================================================================
   // RAPT tests:
 
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
-
-  //runAllUnitTests();  // todo: merge with unit tests for RSLib
+  bool passed = true;
+  passed &= runUnitTestsRosic();
+  passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
+  passed = passed;  // dummy
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -46,11 +61,12 @@ int main(int argc, char* argv[])
 
   //callbackPerformance();
   //matrixAdressingTest();
+
   //simdPerformance(1.0, rsFloat64x2(1.0));
   //simdPerformance(1.f, rsFloat32x4(1.f));
   //sinCosPerformance();
-
   //fftPerformance();
+
   //filterSignConventionPerformance();
   //ladderPerformance();
   //stateVectorFilterPerformance();
@@ -99,11 +115,21 @@ int main(int argc, char* argv[])
   //poleZeroPrototype();  // new implementation - but we don't need that
 
   // Physics:
+  //doublePendulum(); // takes long
   //heatEquation1D();
+  //waveEquation1D();  // not yet implemented
   //particleForceDistanceLaw();
   //particleSystem();
+  quantumSpinMeasurement();  // move to unit tests
+  //quantumSpinEntanglement();
+  //quantumGates();            // move to unit tests
+  //quantumSpinEvolution();
+  //quantum3StateSystem();
+  //quantumParticle();
   //tennisRacket();
-  tennisRacket2();
+  //tennisRacket2();
+  //tennisRacket3();
+  //tennisRacketFreq();
 
   // Generators:
   //blit();
@@ -154,42 +180,6 @@ int main(int argc, char* argv[])
   // third party code:
   //sampleTailExtenderTest();
 
-
-  //===============================================================================================
-  // Tests for dragged over RSLib code:
-
-  //int dummy;
-  //std::string str;    // causes a memleak
-  bool passed = true;
-
-  //-----------------------------------------------------------------------------------------------
-  // Unit Tests:
-
-  //passed &= testBufferFunctions(str);
-  //passed &= testCopySection(    str);
-  //passed &= testMoveElements(   str);
-  //passed &= testRemoveElements( str);
-
-
-  //passed &= testFilterPolynomials(str);
-
-  //passed &= testHighOrderFilter(  str);  // fails
-
-
-  //passed &= testModalFilter2(str);
-  ////passed &= testModalSynth(str);         // triggers assert
-
-  ////passed &= testNumberManipulations( str); // triggers assert (calls the two below)
-  ////passed &= testDoubleIntConversions(str); // triggers same assert (called by function above)
-  //passed &= testExponentExtraction(str);
-
-  //passed &= testAutoCorrelationPitchDetector(str);
-
-  //passed &= testSortAndSearch(str);          // calls the two below (redundant)
-  //passed &= testHeapSort(str);
-  //passed &= testKnuthMorrisPrattSearch(str);
-
-  //passed &= testTypeSizes(str);
 
   //-----------------------------------------------------------------------------------------------
   // Experiments:
@@ -346,6 +336,9 @@ int main(int argc, char* argv[])
   //windowFunctionsContinuous();
   //windowFunctionSpectra();
   //windowedSinc();
+  //waveMorph();  // under construction
+
+
 
   // Modulator:
   //breakpointModulator();
@@ -393,9 +386,6 @@ int main(int argc, char* argv[])
   //harmonicDeBeating2();
 
 
-  // Physics:
-  //doublePendulum(); // takes long
-
   // Resampling:
   //fadeOut();  // move to a new file SampleEditingExperiments
   //resampler();
@@ -407,9 +397,13 @@ int main(int argc, char* argv[])
   //pitchDemodulation();
   //phaseLockedCrossfade();
   //phaseLockedCrossfade2();
+  //pitchDetectWithSilence();
+
+  // Matching:
   //sineShift();
   //sineShift2();
-  //pitchDetectWithSilence();
+  //amplitudeMatch();
+
 
   ////// tests with Elan's example files (they don't work unless the files are available):
   ////pitchDetectA3();
@@ -420,7 +414,7 @@ int main(int argc, char* argv[])
   ////sylophoneCycleMarks();
   ////autoTuneSylophone();
   ////bestMatchShift();
-  // move them into the test repo and add the relevant smaple files there
+  // move them into the test repo and add the relevant sample files there
 
   // Saturation:
   //powRatioParametricSigmoid();
@@ -455,8 +449,6 @@ int main(int argc, char* argv[])
   //testSincInterpolator(str);
 
   // Modal:
-  //testModalFilter2(str);    // this is actually a unit test
-  //testModalSynth(str);      // this too ...move elsewhere
   //testModalFilter3(str);
   //testModalFilterBank(str);
 
@@ -478,19 +470,21 @@ int main(int argc, char* argv[])
   // RoSiC tests:
 
   //-----------------------------------------------------------------------------------------------
-  // Unit tests:
-
-  //testAllRosicClasses();
-  //testRosicAnalysis();
-  //testRosicBasics();
-  //testRosicFile();
-  //testRosicEffects();
-  //testRosicGenerators();
-  //testRosicFilter();
-  //testRosicNumerical();
-  //testRosicMath();
-  //testRosicNonRealTime();
-  //testRosicOthers();
+  // Unit tests - tese need to be adapted: 
+  /*
+  testRosicAnalysis();
+  testRosicBasics();
+  testRosicFile();
+  testRosicEffects();
+  testRosicGenerators();
+  testRosicFilter();
+  testRosicNumerical();
+  testRosicMath();
+  testRosicNonRealTime();
+  testRosicOthers();
+  testAllRosicClasses();
+  // hmm...maybe of those are actually not unit tests but experiments - disentangle that...
+  */
 
   //-----------------------------------------------------------------------------------------------
   // Experiments:

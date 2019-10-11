@@ -1,6 +1,34 @@
 #ifndef RAPT_GEOMETRICTRANSFORMATIONS_H_INCLUDED
 #define RAPT_GEOMETRICTRANSFORMATIONS_H_INCLUDED
 
+/** Collection of functions for geometric transforms. */
+
+template<class T>
+class rsGeometricTransforms
+{
+
+public:
+
+  /** Computes the perspective projection matrix in4D homogeneous coordinates. Corresponds to 
+  vmath::frustum in OpenGL, but we use row-major indexing. see
+  https://www.scratchapixel.com/lessons/3d-basic-rendering/perspective-and-orthographic-projection-matrix/opengl-perspective-projection-matrix 
+  */
+  static void perspectiveProjection(T* A[4][4], T left, T right, T bottom, T top, T near, T far);
+
+  /** Computes the orthographic projection matrix in 4D homogeneous coordinates.  */
+  static void orthographicProjection(T* A[4][4], T left, T right, T bottom, T top, T near, T far);
+
+  // todo: see also vmath::ortho in OpenGL - lets user specify the projection in terms of 3 vectors
+  // eye, center, up
+
+  static void rotationAroundAxis(T* A[3][3], T angle, T x, T y, T z);
+
+};
+// class needs tests
+
+
+//=================================================================================================
+
 /** A class for 2D rotations. */
 
 template<class T>
@@ -91,6 +119,8 @@ protected:
 
   T rx, ry, rz; // rotation angles around x, y and z-axis
   T xx, xy, xz, yx, yy, yz, zx, zy, zz; // matrix coeffs
+
+  // 
 
 };
 

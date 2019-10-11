@@ -1,22 +1,3 @@
-#include "Polygon2DTests.h"
-
-
-bool testPolygon2D()
-{
-  std::string testName = "Polygon2D";
-  std::string dummy; 
-  bool r = true;
-
-
-  //r &= testRegularPolygonCreation2D(dummy);
-  //r &= testPointInsidePolygon2D(dummy);
-  r &= convexPolygonClipping(dummy);
-  r &= pixelCoverage(dummy);
-  //r &= triangleRasterization(dummy);  // has been moved
-
-  //appendTestResultToReport(reportString, testName, testResult);
-  return r;
-}
 
 bool testRegularPolygonCreation2D(std::string &reportString)
 {
@@ -264,3 +245,19 @@ bool pixelCoverage(std::string &reportString)
   return r;
 }
 
+bool testPolygon2D()
+{
+  std::string testName = "Polygon2D";
+  std::string dummy; 
+  bool r = true;
+
+
+  //r &= testRegularPolygonCreation2D(dummy);
+  //r &= testPointInsidePolygon2D(dummy);
+  r &= convexPolygonClipping(dummy);
+  r &= pixelCoverage(dummy);
+  //r &= triangleRasterization(dummy);  // has been moved
+
+  //appendTestResultToReport(reportString, testName, testResult);
+  return r;
+}
