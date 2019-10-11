@@ -129,19 +129,19 @@ bool testConvolution(std::string &reportString)
   rsArray::convolve(x, xN, h, hN, y);
   double xx[xN];
   rsArray::deConvolve(y, yN, h, hN, xx);
-  testResult &= rsArray::areBuffersApproximatelyEqual(x, xx, xN, 1.e-13);
+  testResult &= rsArray::almostEqual(x, xx, xN, 1.e-13);
 
   // convolve and deconvolve with an impulse response with leading zeros:
   h[0] = 0.0;
   h[1] = 0.0;
   rsArray::convolve(x, xN, h, hN, y);
   rsArray::deConvolve(y, yN, h, hN, xx);
-  testResult &= rsArray::areBuffersApproximatelyEqual(x, xx, xN, 1.e-13);
+  testResult &= rsArray::almostEqual(x, xx, xN, 1.e-13);
 
   // recover the impulse response h:
   double hh[hN];
   rsArray::deConvolve(y, yN, x, xN, hh);
-  testResult &= rsArray::areBuffersApproximatelyEqual(h, hh, hN, 1.e-13);
+  testResult &= rsArray::almostEqual(h, hh, hN, 1.e-13);
 
   // test (de)convolution with all-zero impulse response:
   rsArray::fillWithZeros(h, hN);
@@ -156,13 +156,13 @@ bool testConvolution(std::string &reportString)
   int h2N = 2*hN-1;                         // length of h^2
   rsArray::fillWithZeros(hh, hN);
   rsArray::sequenceSqrt(y, h2N, hh);
-  testResult &= rsArray::areBuffersApproximatelyEqual(h, hh, hN, 1.e-13);
+  testResult &= rsArray::almostEqual(h, hh, hN, 1.e-13);
 
   // test sequence square-root, when the sequence has leading zeros:
   h[0]=0; h[1]=0; h[2]=4; h[3]=-8; h[4]=2;
   rsArray::convolve(h, hN, h, hN, y);
   rsArray::sequenceSqrt(y, h2N, hh);
-  testResult &= rsArray::areBuffersApproximatelyEqual(h, hh, hN, 1.e-13);
+  testResult &= rsArray::almostEqual(h, hh, hN, 1.e-13);
 
   // if we try to take the square-root x of an arbitrary sequence y (which was not constructed
   // by squaring some given sequence), and convolve the computed square-root with itself again,
@@ -174,7 +174,7 @@ bool testConvolution(std::string &reportString)
   rsArray::sequenceSqrt(y, 11, x);
   double yy[11];
   rsArray::convolve(x, 6, x, 6, yy);
-  testResult &= rsArray::areBuffersApproximatelyEqual(y, yy, 6, 1.e-13);
+  testResult &= rsArray::almostEqual(y, yy, 6, 1.e-13);
 
   return testResult;
 }

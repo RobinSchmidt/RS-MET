@@ -60,7 +60,7 @@ public:
 
   /** Checks, if the two buffers are elementwise approximately equal within the given tolerance. */
   template <class T>
-  static inline bool areBuffersApproximatelyEqual(const T *buffer1, const T *buffer2, 
+  static inline bool almostEqual(const T *buffer1, const T *buffer2, 
     const int length, const T tolerance);
   // rename to allAlmostEqual
 
@@ -613,7 +613,7 @@ public:
 // inlined implementations
 
 template <class T>
-inline bool rsArray::areBuffersApproximatelyEqual(const T *buffer1, const T *buffer2, 
+inline bool rsArray::almostEqual(const T *buffer1, const T *buffer2, 
   const int length, const T tolerance)
 {
   for(int i = 0; i < length; i++)

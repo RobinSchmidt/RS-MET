@@ -714,15 +714,15 @@ bool testChangeOfBasis(std::string &reportString)
   // previously computed coordinates:
   double vb2[3];
   MatrixTools::rsMatrixVectorMultiply(pC, va, vb2, 3, 3);
-  testResult &= rsArray::areBuffersApproximatelyEqual(vb, vb2, 3, 1.e-14);
+  testResult &= rsArray::almostEqual(vb, vb2, 3, 1.e-14);
 
   // tests for row-based representations of bases A and B:
   rsLinearAlgebra::rsChangeOfBasisRowWise(pAT, pBT, va, vb, 3);
-  testResult &= rsArray::areBuffersApproximatelyEqual(vb, vb2, 3, 1.e-14);
+  testResult &= rsArray::almostEqual(vb, vb2, 3, 1.e-14);
 
   rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(pAT, pBT, pCT, 3);
   MatrixTools::rsMatrixVectorMultiply(pCT, va, vb2, 3, 3);
-  testResult &= rsArray::areBuffersApproximatelyEqual(vb, vb2, 3, 1.e-14);
+  testResult &= rsArray::almostEqual(vb, vb2, 3, 1.e-14);
 
   testResult &= MatrixTools::rsAreMatricesApproximatelyEqual(pC, pCT, 3, 3, 1.e-14);
    // the change-of-base matrix doesn't care about, how the base-vectors are represented in some 

@@ -821,7 +821,7 @@ void rotes::testCrossoverNewVsOld()
 
     coOld.processSampleFrame(yo);
     coNew.processSampleFrameStereo(yn);
-    rsAssert(RAPT::rsArray::areBuffersApproximatelyEqual(yo, yn, 8, tol));
+    rsAssert(RAPT::rsArray::almostEqual(yo, yn, 8, tol));
 
     int dummy = 0;
   }

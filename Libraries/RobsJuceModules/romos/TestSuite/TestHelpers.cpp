@@ -328,7 +328,7 @@ bool checkResult(double **y, double **d, int numChannels, int numFrames, double 
 {
   bool result = true;
   for(int c = 0; c < numChannels; c++)
-    result &= RAPT::rsArray::areBuffersApproximatelyEqual(y[c], d[c], numFrames, tolerance);
+    result &= RAPT::rsArray::almostEqual(y[c], d[c], numFrames, tolerance);
   return result;
 }
 

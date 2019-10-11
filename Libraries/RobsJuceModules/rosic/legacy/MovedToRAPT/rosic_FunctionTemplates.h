@@ -36,7 +36,7 @@ namespace rosic
 
   /** Checks whether two buffer match element-wise with some tolerance. */
   //template <class T>
-  //bool areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance);
+  //bool almostEqual(T *buffer1, T *buffer2, int length, T tolerance);
 
   /** Checks whether two buffer match element-wise. */
   //template <class T>
@@ -316,7 +316,7 @@ namespace rosic
   }
 
   template <class T>
-  bool areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance)
+  bool almostEqual(T *buffer1, T *buffer2, int length, T tolerance)
   {
     for(int i=0; i<length; i++)
     {
