@@ -4,6 +4,10 @@
 /** A collection of functions that operate on 1-dimensional arrays. 
 
 todo: 
+-make everything const that is possible (also by-value parameters, local variables, etc. - and use
+ constexpr for compile-time constants)
+ ->done up to addInto
+ ...maybe change the const by-value parameters to by-reference parameters
 -inline, where it makes sense (trivial functions like copy/convert)
 -maybe turn into an actual class (with members) implementing a dynamically sized array
 
@@ -17,24 +21,26 @@ public:
   /** Adds the elements of 'buffer1' and 'buffer2' - type must define operator '+'. The 'result'
   buffer may be the same as 'buffer1' or 'buffer2'. */
   template <class T>
-  static void add(const T *buffer1, const T *buffer2, T *result, int length);
+  static void add(const T *buffer1, const T *buffer2, T *result, const int length);
 
   /** Adds the scalar 'valueToAdd' to the elements of 'buffer' - the type must define
   operator '+'. The 'result' buffer may be the same as 'buffer'. */
   template <class T>
-  static void add(const T *buffer, T valueToAdd, T *result, int length);
+  static void add(const T *buffer, const T valueToAdd, T *result, const int length);
 
   /** Adds a weighted, circularly shifted copy of the buffer to itself - the shift-offest may be
   non-integer in which case linear interpolation will be used. 
   \todo: maybe generalize such that a circularly shifted 2nd buffer can be added (which may or
   may not be the same buffer).  */
   template <class T>
-  static void addCircularShiftedCopy(T *buffer, int length, double offset, T weight);
+  static void addCircularShiftedCopy(T *buffer, const int length, const double offset, 
+    const T weight);
+  // allocates heap memory - todo: use a workspace parameter
 
   /** Adds length-L array y into length-N array x starting at n (in x), taking care of not reading 
   beyond the limits of y and writing beyond the limits of x */
   template<class T>
-  static void addInto(T *x, int N, const T *y, int L, int n = 0);
+  static void addInto(T *x, const int N, const T *y, int L, int n = 0);
 
   /** Applies the affine transformation y = a*x + b to all array elements. */
   template<class T>

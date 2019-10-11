@@ -24,21 +24,22 @@ inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
 //-------------------------------------------------------------------------------------------------
 
 template <class T>
-void rsArray::add(const T *buffer1, const T *buffer2, T *result, int length)
+void rsArray::add(const T *buffer1, const T *buffer2, T *result, const int length)
 {
   for(int i = 0; i < length; i++)
     result[i] = buffer1[i] + buffer2[i];
 }
 
 template <class T>
-void rsArray::add(const T *buffer, T valueToAdd, T *result, int length)
+void rsArray::add(const T *buffer, const T valueToAdd, T *result, const int length)
 {
   for(int i = 0; i < length; i++)
     result[i] = buffer[i] + valueToAdd;
 }
 
 template <class T>
-void rsArray::addCircularShiftedCopy(T *buffer, int length, double offset, T weight)
+void rsArray::addCircularShiftedCopy(
+  T *buffer, const int length, const double offset, const T weight)
 {
   T *tmp = new T[length];
   copyBuffer(buffer, tmp, length);
@@ -49,7 +50,7 @@ void rsArray::addCircularShiftedCopy(T *buffer, int length, double offset, T wei
 }
 
 template<class T>
-void rsArray::addInto(T *x, int N, const T *y, int L, int n)
+void rsArray::addInto(T *x, const int N, const T *y, int L, int n)
 {
   int r = 0;                // read start
   if(n < 0)
@@ -58,7 +59,7 @@ void rsArray::addInto(T *x, int N, const T *y, int L, int n)
     r -= n;
     n  = 0;
   }
-  int d = n + L - N;        // number of overhanging values
+  const int d = n + L - N;        // number of overhanging values
   if(d > 0)
     L -= d;
   for(int i = 0; i < L; i++)
