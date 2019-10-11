@@ -113,12 +113,12 @@ namespace RAPT
 
   /** Copies the data of one array into another one, converting the datatype, if necessarry. */
   template <class T1, class T2>
-  void copyBuffer(const T1 *source, T2 *destination, int length);
+  void copy(const T1 *source, T2 *destination, int length);
 
   // old version:
   /** Copies the data of one array into another one. */
   //template <class T>
-  //void copyBuffer(const T *source, T *destination, int length);
+  //void copy(const T *source, T *destination, int length);
 
   /** Copies values from the source into the target buffer if they match (via the '==' operator of
   type T) one of the elements contained in the elementsToMatch buffer. The source and target

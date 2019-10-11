@@ -313,21 +313,21 @@ public:
   rsMatrixNew(const rsMatrixNew& B)
   {
     setSize(B.numRows, B.numCols);
-    rsArray::copyBuffer(B.d, this->d, this->getSize());
+    rsArray::copy(B.d, this->d, this->getSize());
   }
 
   /** Move constructor. */
   rsMatrixNew(const rsMatrixNew&& B)
   {
     setSize(B.numRows, B.numCols);
-    rsArray::copyBuffer(B.d, this->d, this->getSize());
+    rsArray::copy(B.d, this->d, this->getSize());
   }
 
   rsMatrixNew<T>& operator=(const rsMatrixNew<T>& other) // copy assignment
   {
     if (this != &other) { // self-assignment check expected
       setSize(other.numRows, other.numCols);
-      rsArray::copyBuffer(other.d, this->d, this->getSize());
+      rsArray::copy(other.d, this->d, this->getSize());
     }
     return *this;
   }
@@ -336,7 +336,7 @@ public:
   {
     if (this != &other) { // self-assignment check expected
       setSize(other.numRows, other.numCols);
-      rsArray::copyBuffer(other.d, this->d, this->getSize());
+      rsArray::copy(other.d, this->d, this->getSize());
     }
     return *this;
   }

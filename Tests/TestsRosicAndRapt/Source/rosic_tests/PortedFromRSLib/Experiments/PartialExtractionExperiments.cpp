@@ -688,7 +688,7 @@ void sineWithPhaseCatchUp()
 
   // create amplitude envelope (and copy to x):
   RAPT::rsArray::fillWithRangeLinear(a, N, as, ae);
-  RAPT::rsArray::copyBuffer(a, x, N);
+  RAPT::rsArray::copy(a, x, N);
 
   // create the sine with envelope - we pass x as envelope to see if it also works when x and a
   // point to the same array:
@@ -846,7 +846,7 @@ void partialExtractionBell()
   double **sampleData = readFromWaveFile(samplePath, numChannels, N, fs);
 
   // allocate internal buffers:
-  double *x  = new double[N]; RAPT::rsArray::copyBuffer(sampleData[0], x, N); // input signal
+  double *x  = new double[N]; RAPT::rsArray::copy(sampleData[0], x, N); // input signal
   double *t  = new double[N]; createTimeAxis(N, t, fs);          // time axis for plot
   double *yr = new double[N];                                    // real part of filtered signal
   double *yi = new double[N];                                    // imaginary part
@@ -1016,7 +1016,7 @@ double isolatePartialWithBiquad(double *x, double *y, int N, double fL, double f
   int M  = N+2*Np; // length with pre- and post-padding
   double *tmp = new double[M];
   RAPT::rsArray::fillWithZeros(tmp, Np);
-  RAPT::rsArray::copyBuffer(x, &tmp[Np], N);
+  RAPT::rsArray::copy(x, &tmp[Np], N);
   RAPT::rsArray::fillWithZeros(&tmp[Np+N], Np);
   double a[3], b[3]; // filter coeffs
   rsBiquadDesigner::calculateCookbookBandpassConstSkirtCoeffsViaQ
@@ -1028,7 +1028,7 @@ double isolatePartialWithBiquad(double *x, double *y, int N, double fL, double f
     //filterBiDirectional(tmp, M, tmp, M, b, 2, a, 2);
     RAPT::rsArray::filterBiDirectional(tmp, M, tmp, M, b, 2, a, 2);
   }
-  RAPT::rsArray::copyBuffer(&tmp[Np], y, N);
+  RAPT::rsArray::copy(&tmp[Np], y, N);
   delete[] tmp;
 
   /*
@@ -1135,7 +1135,7 @@ void plotModalEnvelope(const char *samplePath, double fL, double fM, double fU, 
   double **sampleData = readFromWaveFile(samplePath, numChannels, N, fs);
 
   // allocate internal buffers:
-  double *x  = new double[N]; RAPT::rsArray::copyBuffer(sampleData[0], x, N); // input signal
+  double *x  = new double[N]; RAPT::rsArray::copy(sampleData[0], x, N); // input signal
   double *y  = new double[N];                                    // filtered signal
   double *ye = new double[N];                                    // envelope
   double *yn = new double[N];                                    // negated envelope

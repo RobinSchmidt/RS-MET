@@ -354,7 +354,7 @@ namespace rosic
     aPowers[0][0] = 1;
     if( highestPower < 1 )
       return;
-    copyBuffer(a, aPowers[1], N+1);
+    copy(a, aPowers[1], N+1);
     for(int k = 2; k <= highestPower; k++)
       convolve(aPowers[k-1], (k-1)*N+1, a, N+1, aPowers[k]);
   }

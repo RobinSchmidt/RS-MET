@@ -22,7 +22,7 @@ WaveformBuffer::~WaveformBuffer()
 void WaveformBuffer::setWaveform(double* newWaveForm, int newLength, rsString newName)
 {
   allocateMemory(newLength);
-  RAPT::rsArray::copyBuffer(newWaveForm, buffer, numSamples);
+  RAPT::rsArray::copy(newWaveForm, buffer, numSamples);
   name = newName;
 }
 
@@ -53,7 +53,7 @@ void WaveformBuffer::getWaveform(double *targetBuffer, int length)
     return;
   }
   if( length == numSamples )
-    RAPT::rsArray::copyBuffer(buffer, targetBuffer, numSamples);
+    RAPT::rsArray::copy(buffer, targetBuffer, numSamples);
   else
     RAPT::rsArray::copyBufferWithLinearInterpolation(buffer, numSamples, targetBuffer, length);
 }

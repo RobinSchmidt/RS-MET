@@ -143,10 +143,10 @@ void ModularSystemTest::fillDesiredOutputSignalArrays()
 
 void ModularSystemTest::processOutputSignal(bool useSinglePrecision)
 {
-  RAPT::rsArray::copyBuffer(inputs[0],      outputs[0],      signalLength);
-  RAPT::rsArray::copyBuffer(inputs[1],      outputs[1],      signalLength);
-  RAPT::rsArray::copyBuffer(inputsFloat[0], outputsFloat[0], signalLength);
-  RAPT::rsArray::copyBuffer(inputsFloat[1], outputsFloat[1], signalLength);
+  RAPT::rsArray::copy(inputs[0],      outputs[0],      signalLength);
+  RAPT::rsArray::copy(inputs[1],      outputs[1],      signalLength);
+  RAPT::rsArray::copy(inputsFloat[0], outputsFloat[0], signalLength);
+  RAPT::rsArray::copy(inputsFloat[1], outputsFloat[1], signalLength);
 
   int blockStart      = 0;
   int remainingFrames = signalLength;

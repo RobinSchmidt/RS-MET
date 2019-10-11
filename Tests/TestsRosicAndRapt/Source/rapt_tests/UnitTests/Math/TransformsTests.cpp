@@ -108,7 +108,7 @@ bool testRsFFT(std::string &reportString)
   T[15] = rsComplexDbl( 0.578246697705605, 2.112908873015884);
 
   // compute spectrum via FFT:
-  rsArray::copyBuffer(x, X, N);
+  rsArray::copy(x, X, N);
   rsFFT(X, N);
 
   // check maximum deviation between target- and computed spectrum:
@@ -118,7 +118,7 @@ bool testRsFFT(std::string &reportString)
   testResult &= (error < 1.e-15);
 
   // compute and check spectrum via DFT:
-  rsArray::copyBuffer(x, X, N);
+  rsArray::copy(x, X, N);
   rsDFT(X, N);
   error = 0.0;
   for(n = 0; n < N; n++)
@@ -126,7 +126,7 @@ bool testRsFFT(std::string &reportString)
   testResult &= (error < 1.e-14); // needs more tolerance than FFT
 
   // check a forward/inverse turnaround cycle:
-  rsArray::copyBuffer(x, y, N);
+  rsArray::copy(x, y, N);
   rsFFT( y, N);
   rsIFFT(y, N);
   error = 0.0;
@@ -191,14 +191,14 @@ bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRad
 
   // fill x and t with the same N random values:
   rsFillWithComplexRandomValues(x, -1.0, 1.0);
-  AR::copyBuffer(&x[0], &t[0], N);
+  AR::copy(&x[0], &t[0], N);
 
   // compute target spectrum by using the naive DFT implementation:
-  AR::copyBuffer(&t[0], &T[0], N); // because DFT works in place
+  AR::copy(&t[0], &T[0], N); // because DFT works in place
   RAPT::rsDFT(&T[0], N);
 
   // compute spectrum via RAPT::rsRadix2FFT and compare:
-  AR::copyBuffer(&x[0], &X[0], N);
+  AR::copy(&x[0], &X[0], N);
   RAPT::rsRadix2FFT(&X[0], N);
   r &= rsAlmostEqual(T, X, tol);
 
@@ -211,7 +211,7 @@ bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRad
   r &= rsAlmostEqual(T, X, tol);
 
   // now test inverse trafos:
-  AR::copyBuffer(&T[0], &x[0], N); // target spectrum into signal buffer x for in-place iFFT
+  AR::copy(&T[0], &x[0], N); // target spectrum into signal buffer x for in-place iFFT
   RAPT::rsIFFT(&x[0], N);
   r &= rsAlmostEqual(t, x, tol);
 
@@ -234,14 +234,14 @@ bool testFourierTrafoArbitrary(int N)
 
   // fill x and t with the same N random values:
   rsFillWithComplexRandomValues(x, -1.0, 1.0);
-  AR::copyBuffer(&x[0], &t[0], N);
+  AR::copy(&x[0], &t[0], N);
 
   // compute target spectrum by using the naive DFT implementation:
-  AR::copyBuffer(&t[0], &T[0], N); // because DFT works in place
+  AR::copy(&t[0], &T[0], N); // because DFT works in place
   RAPT::rsDFT(&T[0], N);
 
   //// compute spectrum via RAPT::rsBluesteinFFT and compare (not yet implemented):
-  //AR::copyBuffer(&x[0], &X[0], N);
+  //AR::copy(&x[0], &X[0], N);
   //RAPT::rsBluesteinFFT(&X[0], N);
   //r &= rsAlmostEqual(T, X, tol);
 
@@ -254,7 +254,7 @@ bool testFourierTrafoArbitrary(int N)
   r &= rsAlmostEqual(T, X, tol);
 
   // now test inverse trafos:
-  //AR::copyBuffer(&T[0], &x[0], N); // target spectrum into signal buffer x for in-place iFFT
+  //AR::copy(&T[0], &x[0], N); // target spectrum into signal buffer x for in-place iFFT
   //RAPT::rsIFFT(&x[0], N);
   //r &= rsAlmostEqual(t, x, tol);
 

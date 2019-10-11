@@ -163,7 +163,7 @@ void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(
     xContainsResult = !xContainsResult;
   }
   if( !xContainsResult )
-    memcpy(y, x, N*sizeof(double)); // try rosic::copyBuffer instead, measure performance
+    memcpy(y, x, N*sizeof(double)); // try rosic::copy instead, measure performance
      // huh - shouldn't we copy from y to x? ...but maybe it works because the pointers are also
      // swapped ->that's confusing, clean this up - maybe just rename the flag into something
      // neutral

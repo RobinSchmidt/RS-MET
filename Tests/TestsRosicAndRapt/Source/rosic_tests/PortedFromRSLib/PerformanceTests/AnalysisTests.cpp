@@ -25,7 +25,7 @@ void testFourierTransformer(std::string &reportString)
   counter.init();
   for(b = 0; b < numBuffers; b++)
   {
-    RAPT::rsArray::copyBuffer(x, X, bufferSize);
+    RAPT::rsArray::copy(x, X, bufferSize);
     rsFFT(X, bufferSize);
   }
   cycles = (double) counter.getNumCyclesSinceInit();

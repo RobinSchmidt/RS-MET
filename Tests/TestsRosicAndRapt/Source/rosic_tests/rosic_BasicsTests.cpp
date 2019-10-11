@@ -318,7 +318,7 @@ void plotMagnitudeResponsesOf(rosic::Matrix &x, int fftSize, double plotFloor, i
   RAPT::rsArray::fillWithZeros(xPadded, fftSize);
   for(int m = 0; m < 5; m++)
   {
-    RAPT::rsArray::copyBuffer(x.m[m], xPadded, length);
+    RAPT::rsArray::copy(x.m[m], xPadded, length);
     fftMagnitudesAndPhases(xPadded, fftSize, magH.m[m], phsH.m[m], fftSize);
     for(int n = 0; n < numBins; n++)
       magH.m[m][n] = RAPT::rsMax(RAPT::rsAmpToDb(magH.m[m][n] * ampScale * fftSize), plotFloor);
@@ -512,17 +512,17 @@ void rotes::testAsymmetricPolynomialInterpolatorsOld()
   double plotFloor = -120.0;
   RAPT::rsArray::fillWithZeros(tmp, fftSize);
 
-  RAPT::rsArray::copyBuffer(yl, tmp, length);
+  RAPT::rsArray::copy(yl, tmp, length);
   fftMagnitudesAndPhases(tmp, fftSize, magL, phsL, fftSize);
   for(n=0; n<numBins; n++)
     magL[n] = RAPT::rsMax(RAPT::rsAmpToDb(4 * magL[n] * fftSize/length), plotFloor);
 
-  RAPT::rsArray::copyBuffer(yc, tmp, length);
+  RAPT::rsArray::copy(yc, tmp, length);
   fftMagnitudesAndPhases(tmp, fftSize, magC, phsC, fftSize);
   for(n=0; n<numBins; n++)
     magC[n] = RAPT::rsMax(RAPT::rsAmpToDb(4 * magC[n] * fftSize/length), plotFloor);
 
-  RAPT::rsArray::copyBuffer(yq, tmp, length);
+  RAPT::rsArray::copy(yq, tmp, length);
   fftMagnitudesAndPhases(tmp, fftSize, magQ, phsQ, fftSize);
   for(n=0; n<numBins; n++)
     magQ[n] = RAPT::rsMax(RAPT::rsAmpToDb(4 * magQ[n] * fftSize/length), plotFloor);

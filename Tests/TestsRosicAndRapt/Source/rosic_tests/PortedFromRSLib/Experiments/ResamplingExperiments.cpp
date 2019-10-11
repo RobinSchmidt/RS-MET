@@ -8,7 +8,7 @@ void fadeOut()
   double t[N], x[N], y[N];
   createTimeAxis(N, t, 1.0);
   RAPT::rsArray::fillWithValue( x, N, 1.0);
-  RAPT::rsArray::copyBuffer(x, y, N);
+  RAPT::rsArray::copy(x, y, N);
   rsFadeOut(y, 100, 300);
   plotData(N, t, x, y);
 
@@ -1131,12 +1131,12 @@ void sineShift()
 
   // create shifted signal using a rounded integer shift value:
   double yi[N];
-  RAPT::rsArray::copyBuffer(x, yi, N);
+  RAPT::rsArray::copy(x, yi, N);
   RAPT::rsArray::shift(yi, N, (int) rsRound(dn));
 
   // create shifted signal using the exact shift value and sinc-interpolation:
   double y[N];
-  RAPT::rsArray::copyBuffer(x, y, N);
+  RAPT::rsArray::copy(x, y, N);
 
   rsResamplerDD::shiftSinc(y, y, N, dn, 64.0);
 
@@ -1281,7 +1281,7 @@ void phaseLockSaxophone()
 
   double **px = readFromWaveFile(path, numChannels, N, fs);
   double *x = new double[N];
-  RAPT::rsArray::copyBuffer(px[0], x, N);
+  RAPT::rsArray::copy(px[0], x, N);
 
   n0 = RAPT::rsArray::maxAbsIndex(x, N); // corresponds to sAlignPos = FindHighestAmplitudeInSignal(data[0]);
                                          // it finds n0 = 1872
@@ -1325,7 +1325,7 @@ void phaseLockSaxophone2()
 
   double **px = readFromWaveFile(path, numChannels, N, fs);
   double *x = new double[N];
-  RAPT::rsArray::copyBuffer(px[0], x, N);
+  RAPT::rsArray::copy(px[0], x, N);
 
   n0 = RAPT::rsArray::maxAbsIndex(x, N); // corresponds to sAlignPos = FindHighestAmplitudeInSignal(data[0]);
                                          // it finds n0 = 1872
@@ -1364,7 +1364,7 @@ void autoTuneHorn()
   int fs;
   double **px = readFromWaveFile(path, numChannels, N, fs);
   double *x = new double[N];
-  RAPT::rsArray::copyBuffer(px[0], x, N);
+  RAPT::rsArray::copy(px[0], x, N);
 
   double f0 = 87.0; // target frequency
   int i, n;
@@ -1418,7 +1418,7 @@ void autoTuneHorn2()
   // read full horn sample:
   double **px = readFromWaveFile("../../TestInputs/Horn_F1.wav", numChannels, N, fs);
   double *xFull = new double[N];
-  RAPT::rsArray::copyBuffer(px[0], xFull, N);
+  RAPT::rsArray::copy(px[0], xFull, N);
   for(n = 0; n < numChannels; n++)
     delete px[n];
   delete[] px;
@@ -1426,7 +1426,7 @@ void autoTuneHorn2()
   // read chunk of 1st harmonic of horn sample:
   px = readFromWaveFile("../../TestInputs/Horn_F1_H1_Chunk.wav", numChannels, N, fs);
   double *xH1 = new double[N];
-  RAPT::rsArray::copyBuffer(px[0], xH1, N);
+  RAPT::rsArray::copy(px[0], xH1, N);
   for(n = 0; n < numChannels; n++)
     delete px[n];
   delete[] px;

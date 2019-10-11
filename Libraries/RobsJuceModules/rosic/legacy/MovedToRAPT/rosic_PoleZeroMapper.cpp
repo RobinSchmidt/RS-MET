@@ -3,8 +3,8 @@ void rsPoleZeroMapper::sLowpassToLowshelf(Complex *z, Complex *p, double *k, Com
 {
   if( G0 == 0.0 )
   {
-    RAPT::rsArray::copyBuffer(z, zNew, N);
-    RAPT::rsArray::copyBuffer(p, pNew, N);
+    RAPT::rsArray::copy(z, zNew, N);
+    RAPT::rsArray::copy(p, pNew, N);
     *kNew = *k * G;
     return;
   }
@@ -33,8 +33,8 @@ void rsPoleZeroMapper::sLowpassToLowshelf(Complex *z, Complex *p, double *k, Com
   //PrototypeDesigner::scaleToMatchGainAtUnity(z, p, k, zTmp, pTmp, &kTmp, N, GC);  // commented for test
 
   // for debug:
-  RAPT::rsArray::copyBuffer(z, zTmp, N);
-  RAPT::rsArray::copyBuffer(p, pTmp, N);
+  RAPT::rsArray::copy(z, zTmp, N);
+  RAPT::rsArray::copy(p, pTmp, N);
   kTmp = *k;
 
   // obtain magnitude-squared numerator polynomial for shelving filter:
@@ -50,14 +50,14 @@ void rsPoleZeroMapper::sLowpassToLowshelf(Complex *z, Complex *p, double *k, Com
   // if we make a dip-filter, poles and zeros exchange roles:
   if( dip == false )
   {
-    RAPT::rsArray::copyBuffer(zTmp, zNew, N);
-    RAPT::rsArray::copyBuffer(pTmp, pNew, N);
+    RAPT::rsArray::copy(zTmp, zNew, N);
+    RAPT::rsArray::copy(pTmp, pNew, N);
     *kNew = sqrt(fabs(bS[2*N]));
   }
   else
   {
-    RAPT::rsArray::copyBuffer(zTmp, pNew, N);
-    RAPT::rsArray::copyBuffer(pTmp, zNew, N);
+    RAPT::rsArray::copy(zTmp, pNew, N);
+    RAPT::rsArray::copy(pTmp, zNew, N);
     *kNew = 1.0 / sqrt(fabs(bS[2*N]));
   }
 

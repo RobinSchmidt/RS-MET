@@ -556,8 +556,8 @@ void rotes::testCrossover4Way()
   FilterAnalyzer::getMagnitudes(H_Sum, magnitudesSum, numBins);
   FilterAnalyzer::convertToDecibels(magnitudesSum, numBins);
 
-  copyBuffer(magnitudesLP_1_1, magnitudesLow, numBins);
-  copyBuffer(magnitudesHP_1_1, magnitudesHigh, numBins);
+  copy(magnitudesLP_1_1, magnitudesLow, numBins);
+  copy(magnitudesHP_1_1, magnitudesHigh, numBins);
     
   //Plotter::plotData(numBins, frequencies, magnitudesLow, magnitudesHigh, magnitudesSum);
 
@@ -583,7 +583,7 @@ void rotes::testCrossover4Way()
 
   // obtain frequency response for high band:
   crossover.stage1.crossoverL.getHighpassFrequencyResponse(frequencies, H_HP_1_1, numBins, false);
-  rosic::copyBuffer(H_HP_1_1, H_High, numBins);
+  rosic::copy(H_HP_1_1, H_High, numBins);
   crossover.highBranchCompensationAllpass.getFrequencyResponse(omegas, H_High, numBins, FilterAnalyzer::MULTIPLICATIVE_ACCUMULATION);
   FilterAnalyzer::getMagnitudes(H_High, magnitudesHigh, numBins);
   FilterAnalyzer::convertToDecibels(magnitudesHigh, numBins);
@@ -605,7 +605,7 @@ void rotes::testCrossover4Way()
 
   // obtain frequency response for low band:
   crossover.stage1.crossoverL.getLowpassFrequencyResponse(frequencies, H_LP_1_1, numBins, false);
-  rosic::copyBuffer(H_LP_1_1, H_Low, numBins);
+  rosic::copy(H_LP_1_1, H_Low, numBins);
   crossover.lowBranchCompensationAllpass.getFrequencyResponse(omegas, H_Low, numBins, FilterAnalyzer::MULTIPLICATIVE_ACCUMULATION);
   FilterAnalyzer::getMagnitudes(H_Low, magnitudesLow, numBins);
   FilterAnalyzer::convertToDecibels(magnitudesLow, numBins);

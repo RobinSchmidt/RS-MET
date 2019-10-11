@@ -140,7 +140,7 @@ void OnsetDetector::feedSignalBlock(float *sampleData, int numSamples)
       computeMagnitudes(complexSpectrum, magnitudes, blockSize);
       rms.push_back(  computeBlockRms(linearBuffer) );
       flux.push_back( computeSpectralFluxValue(magnitudes, magnitudesOld, weights) );
-      RAPT::rsArray::copyBuffer(magnitudes, magnitudesOld, blockSize/2);
+      RAPT::rsArray::copy(magnitudes, magnitudesOld, blockSize/2);
 
       // set the mark for the next completed block:
       nextBlockEnd += hopSize;
@@ -286,7 +286,7 @@ void OnsetDetector::computeSpectralFlux()
   blockIndex += 1;
   blockStart += hopSize;
   blockEnd    = blockStart + blockSize - 1;
-  RAPT::rsArray::copyBuffer(magnitudes, magnitudesOld, blockSize/2);
+  RAPT::rsArray::copy(magnitudes, magnitudesOld, blockSize/2);
 
   // loop over the blocks:
   while( blockEnd < length )
@@ -305,7 +305,7 @@ void OnsetDetector::computeSpectralFlux()
     blockIndex += 1;
     blockStart += hopSize;
     blockEnd    = blockStart + blockSize - 1;
-    RAPT::rsArray::copyBuffer(magnitudes, magnitudesOld, blockSize/2);
+    RAPT::rsArray::copy(magnitudes, magnitudesOld, blockSize/2);
   }
 }
 

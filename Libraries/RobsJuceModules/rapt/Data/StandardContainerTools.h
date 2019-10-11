@@ -35,7 +35,7 @@ inline void rsAppend(std::vector<T>& v, const std::vector<T>& w)
   size_t nv = v.size();  // old size of v
   size_t nw = w.size();  // 
   v.resize(v.size() + w.size()); // if v and w are the same, this will also change the size of w, 
-  rsArray::copyBuffer(&w[0], &v[nv], (int)nw);  // ...that's why we needed to figure out nw before
+  rsArray::copy(&w[0], &v[nv], (int)nw);  // ...that's why we needed to figure out nw before
 
   // another implementation - looks safer but the above works, too
   //if(&v[0] == &w[0]) {       // appending a vector to itself, we need a temporary...
@@ -45,7 +45,7 @@ inline void rsAppend(std::vector<T>& v, const std::vector<T>& w)
   //else {
   //  size_t nv = v.size();    // old size of v
   //  v.resize(v.size() + w.size());
-  //  rsArray::copyBuffer(&w[0], &v[nv], (int)w.size());
+  //  rsArray::copy(&w[0], &v[nv], (int)w.size());
   //}
 }
 

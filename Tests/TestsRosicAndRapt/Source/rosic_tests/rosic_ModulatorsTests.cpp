@@ -27,7 +27,7 @@ void rotes::testConsecutiveExponentialDecay()
 
 
 
-  //RAPT::rsArray::copyBuffer(impulseResponse, stepResponse, numSamples);
+  //RAPT::rsArray::copy(impulseResponse, stepResponse, numSamples);
   //RAPT::rsArray::cumulativeSum(stepResponse, numSamples, 1);
 
   RAPT::rsArray::cumulativeSum(impulseResponse, stepResponse, numSamples, 1);
