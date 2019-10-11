@@ -92,19 +92,19 @@ bool testConvolution(std::string &reportString)
 
   // test algorithm when all pointers are distinct:
   rsArray::convolve(x, xN, h, hN, y);
-  testResult &= rsArray::areBuffersEqual(y, yt, yN);
+  testResult &= rsArray::equal(y, yt, yN);
 
   // test in-place convolution where x == y:
   rsArray::fillWithZeros(y, yN);
   rsArray::copyBuffer(x, y, xN);
   rsArray::convolve(y, xN, h, hN, y);
-  testResult &= rsArray::areBuffersEqual(y, yt, yN);
+  testResult &= rsArray::equal(y, yt, yN);
 
   // test in-place convolution where h == y:
   rsArray::fillWithZeros(y, yN);
   rsArray::copyBuffer(h, y, hN);
   rsArray::convolve(x, xN, y, hN, y);
-  testResult &= rsArray::areBuffersEqual(y, yt, yN);
+  testResult &= rsArray::equal(y, yt, yN);
 
   // test in-place convolution where x == h == y:
   rsArray::fillWithZeros(y, yN);
@@ -311,8 +311,8 @@ bool testPolynomialDivision(std::string &reportString)
 
   // p(x)/d(x) = q(x) + r(x)/d(x)
 
-  testResult &= rsArray::areBuffersEqual(q, qq, 4);
-  testResult &= rsArray::areBuffersEqual(r, rr, 5);
+  testResult &= rsArray::equal(q, qq, 4);
+  testResult &= rsArray::equal(r, rr, 5);
 
   return testResult;
 }
@@ -443,13 +443,13 @@ bool testPolynomialFiniteDifference(std::string &reportString)
   rsPolynomial<double>::finiteDifference(a, ad, order, 1, h);
   for(n = 0; n < numValues; n++)
     yfc[n] = rsPolynomial<double>::evaluate(x[n], ad, order-1);
-  testResult &= rsArray::areBuffersEqual(yf, yfc, numValues-1);
+  testResult &= rsArray::equal(yf, yfc, numValues-1);
 
   // check backward difference:
   rsPolynomial<double>::finiteDifference(a, ad, order, -1, h);
   for(n = 0; n < numValues; n++)
     ybc[n] = rsPolynomial<double>::evaluate(x[n], ad, order-1);
-  testResult &= rsArray::areBuffersEqual(&yb[1], &ybc[1], numValues-1);
+  testResult &= rsArray::equal(&yb[1], &ybc[1], numValues-1);
 
   return testResult;
 }
@@ -1064,12 +1064,12 @@ bool testPolynomialRecursion(std::string &reportString)
   rsArray::copyBuffer(a[2], t2, 5);
   rsArray::copyBuffer(a[3], t1, 5);
   rsPolynomial<double>::threeTermRecursion(t1, w0, 4, t1, w1, w1x, t2, w2);
-  testResult &= rsArray::areBuffersEqual(a[4], t1, 5);
+  testResult &= rsArray::equal(a[4], t1, 5);
 
   // in-place application - 2nd input is reused as output:
   rsArray::copyBuffer(a[3], t1, 5);
   rsPolynomial<double>::threeTermRecursion(t2, w0, 4, t1, w1, w1x, t2, w2);
-  testResult &= rsArray::areBuffersEqual(a[4], t2, 5);
+  testResult &= rsArray::equal(a[4], t2, 5);
 
   return testResult;
 }

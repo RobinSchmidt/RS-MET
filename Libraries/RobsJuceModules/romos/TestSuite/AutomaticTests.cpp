@@ -224,7 +224,7 @@ bool testContainerizationAddedConstants(bool verboseOutput)
     processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
     if( verboseOutput == true )
       printModuleStructure(testModule, 0);
-    if( !RAPT::rsArray::areBuffersEqual(y[0][0], d[0][0], N) )
+    if( !RAPT::rsArray::equal(y[0][0], d[0][0], N) )
     {
       printf("%s", "!!! ContainerizationAddedConstants failed !!!\n");
       //printModuleStructure(testModule, 0);

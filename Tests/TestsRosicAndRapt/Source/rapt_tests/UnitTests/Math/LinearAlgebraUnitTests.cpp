@@ -705,7 +705,7 @@ bool testChangeOfBasis(std::string &reportString)
   double vea[3], veb[3];
   MatrixTools::rsMatrixVectorMultiply(pA, va, vea, 3, 3);
   MatrixTools::rsMatrixVectorMultiply(pB, vb, veb, 3, 3);
-  testResult &= rsArray::areBuffersEqual(vea, veb, 3);
+  testResult &= rsArray::equal(vea, veb, 3);
 
   // compute change-of-base matrix to go from basis A to B:
   rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(pA, pB, pC, 3);

@@ -62,13 +62,10 @@ public:
   template <class T>
   static inline bool almostEqual(const T *buffer1, const T *buffer2, 
     const int length, const T tolerance);
-  // rename to allAlmostEqual
 
   /** Checks, if the two buffers are elementwise equal. */
   template <class T>
-  static inline bool areBuffersEqual(const T *buffer1, const T *buffer2, const int length);
-  // rename to allEqual
-
+  static inline bool equal(const T *buffer1, const T *buffer2, const int length);
 
   /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward
   shifts use negative values for numPositions. If the absolute value of 'numPositions' is greater
@@ -625,7 +622,7 @@ inline bool rsArray::almostEqual(const T *buffer1, const T *buffer2,
 }
 
 template <class T>
-inline bool rsArray::areBuffersEqual(const T *buffer1, const T *buffer2, const int length)
+inline bool rsArray::equal(const T *buffer1, const T *buffer2, const int length)
 {
   for(int i = 0; i < length; i++)
   {

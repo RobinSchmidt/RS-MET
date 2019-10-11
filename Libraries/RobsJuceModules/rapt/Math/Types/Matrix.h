@@ -411,7 +411,7 @@ public:
   {
     if(this->numRows != B.numRows || this->numCols != B.numCols)
       return false;
-    return rsArray::areBuffersEqual(this->d, B.d, this->getSize());
+    return rsArray::equal(this->d, B.d, this->getSize());
   }
   // move to rsMatrixView
 

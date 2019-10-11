@@ -5,6 +5,7 @@ that break client code.
 Client-Code-Breaking Changes:
 
 2019/10/11: rapt::rsArray: renamed areBuffersApproximatelyEqual to almostEqual
+                                   areBuffersEqual              to equal
 2019/09/09: rapt::rsScaledAndShiftedSigmoid: renamed setPrototypeSigmoid to setSigmoid
 2018/10/04: rosic::rsSubBandFilterDirectForm is now rsSubBandFilterMono
 2018/08/10: AudioModule::createEditor expects an int parameter now
