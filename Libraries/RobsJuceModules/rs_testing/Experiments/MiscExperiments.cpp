@@ -300,8 +300,26 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
 void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
 {
   // todo: 
-  // (1) extract envelopes of bothe signals
+  // (1) extract envelopes of both signals
   // (2) find best match offset
+
+  //rsEnvelopeExtractor<double> ee;
+
+  rsEnvelopeFollower2<double> ef;
+  ef.setSampleRate(44100);  // make this a function parameter
+  ef.setInputFrequency(85); // this too
+
+  // exctract envelopes:
+  std::vector<double> e1(x1.size()), e2(x2.size());
+  int n;
+  for(n = 0; n < (int )x1.size(); n++) e1[n] = ef.getSample(x1[n]);
+  ef.reset();
+  for(n = 0; n < (int )x2.size(); n++) e2[n] = ef.getSample(x2[n]);
+
+  rsPlotVectors(x2, e2);
+
+
+
 
   int dummy = 0;
 }
