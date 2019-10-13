@@ -1858,6 +1858,20 @@ T rsExponentialEnvelopeMatcher<T>::getMatchOffset(const T* x1, int N1, const T* 
   tm2 = (matchLevel - b2) / a2;  // same for xdB2
   return tm1 - tm2;              // this is the resulting desired shift
 }
+// idea: maybe to be more flexible with respect to the shape of the envelope, we should try 
+// polynomial regression: https://en.wikipedia.org/wiki/Polynomial_regression instead of linear
+// regression. that would amount to not necessarily assume an exponential envelope shape - instead,
+// the shape would be estimated as well. this would complicate the situation in two ways - 1st, 
+// obviously, we need an algorithm to find the polynomial coeffs, 2nd, we would have to find the 
+// points, where the polynomials are equal to one another in the same way that we now find the 
+// point where the lines cross - but that could give multiple solutions - how do we pick the right 
+// one? ...or maybe we should not look for points where the curves cross but rather make them match
+// in some sort of (to be suitably defined) least-squares sense? ...maybe the user could specify a
+// "degree" parameter for the polynomial - with 1, we get the linear regression that we have now
+
+// or maybe spline-regression:  https://data.princeton.edu/eco572/smoothing.pdf ...but for that, we
+// would also need a procedure to place the knots
+
 
 //=================================================================================================
 
