@@ -295,8 +295,15 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   deBeater.processModel(mdl);
   y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
+}
 
+void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
+{
+  // todo: 
+  // (1) extract envelopes of bothe signals
+  // (2) find best match offset
 
+  int dummy = 0;
 }
 
 

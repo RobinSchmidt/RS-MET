@@ -47,6 +47,10 @@ void testDeBeating(const std::string& name, std::vector<double>& input,
   double sampleRate, double fundamental = 0);
 
 
+void testEnvelopeMatching(std::vector<double>& input1, std::vector<double>& input2);
+
+
+
 // move to RAPT::rsArray
 template<class T>
 void applyFadeIn(T* x, int N, int numFadeSamples)
