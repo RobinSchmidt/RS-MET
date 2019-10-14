@@ -277,7 +277,7 @@ void rsParticleSystem<T>::updateForces()
   size_t i, j;
 
   for(i = 0; i < N; i++)
-    forces[i] = 0;
+    forces[i] = rsVector3D<T>(T(0), T(0), T(0)); // use setComponents(0,0,0) - no copying
 
   //// naive:
   //for(i = 0; i < N; i++){

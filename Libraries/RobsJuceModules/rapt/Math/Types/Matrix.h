@@ -16,10 +16,15 @@ public:
 
   /** Stadard constructor. You can pass the matrix elements. If you pass nothing, an identity
   matrix will be created. */
-  rsMatrix2x2(T a = T(1), T b = T(0), T c = T(0), T d = T(1)) { setValues(a, b, c, d); }
+  //rsMatrix2x2(T a = T(1), T b = T(0), T c = T(0), T d = T(1)) { setValues(a, b, c, d); }
   // todo: maybe require arguments to be passed - or initialze teh matrix to the zero matrix
   // by default
 
+  /** Constructor. Initializes elements with  given values. */
+  rsMatrix2x2(T a, T b, T c, T d) { setValues(a, b, c, d); }
+
+  /** Standard constructor. Leaves elements uninitialized. */
+  rsMatrix2x2() {}
 
   /** \name Setup */
 

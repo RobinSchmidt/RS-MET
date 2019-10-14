@@ -146,3 +146,44 @@ inline rsSpaceTimeVector<T> operator*(const T& s, const rsSpaceTimeVector<T>& v)
 {
   return rsSpaceTimeVector<T>(s*v.t, s*v.x, s*v.y, s*v.z);
 }
+
+//=================================================================================================
+
+template<class T>
+class rsQuaternion
+{
+
+public:
+
+ 
+  /** The quaternion is given by: q = a + b*i + c*j + d*k */
+  T a, b, c, d; 
+
+
+
+  /** Constructor. Initializes elements such that the quaternion is given by:
+  q = a + b*i + c*j + d*k */
+  rsQuaternion(T a, T b, T c, T d) { setValues(a, b, c, d); }
+
+  /** Standard constructor. Leaves elements uninitialized. */
+  rsQuaternion() {}
+
+
+
+  /** \name Setup */
+
+  void setValues(T a, T b, T c, T d) { this->a = a; this->b = b; this->c = c; this->d = d; }
+
+
+
+  /** Multiplies two quaternions. */
+  rsQuaternion<T> operator*(const rsQuaternion<T>& q2) const
+  { 
+    rsQuaternion<T> q();  // preliminary
+    return q;
+  }
+
+
+};
+// this class should go somewhere into rapt/Math 
+

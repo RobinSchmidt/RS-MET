@@ -142,12 +142,16 @@ public:
   T x, y, z;
 
   /** Constructor. Initializes coordinates with the passed values. */
-  rsVector3D(T _x = T(0), T _y = T(0), T _z = T(0)) : x(_x), y(_y), z(_z) {}
-    // for optimization, make a constructor without initialization
+  rsVector3D(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
+
+  /** Standard constructor. Leaves components uninitialized. */
+  rsVector3D() {}
+
+
 
   /** Returns the squared Euclidean norm of this vector. */
   T getSquaredEuclideanNorm() { return x*x + y*y + z*z; }
-    // rename to squaredNorm
+    // rename to squaredNorm or getSquaredNorm
 
   /** Returns the Euclidean norm of this vector. */
   T getEuclideanNorm() { return sqrt(getSquaredEuclideanNorm()); }
