@@ -6,7 +6,7 @@
 todo: 
 -make everything const that is possible (also by-value parameters, local variables, etc. - and use
  constexpr for compile-time constants)
- ->done up to copyBuffer
+ ->done up to copy
  ...maybe change the const by-value parameters to by-reference parameters
 -inline, where it makes sense (trivial functions like copy/convert)
 -maybe turn into an actual class (with members) implementing a dynamically sized array
@@ -145,13 +145,13 @@ public:
 
   /** Copies the data of one array into another one, converting the datatype, if necessarry. */
   template <class T1, class T2>
-  static void copyBuffer(const T1 *source, T2 *destination, const int length);
+  static inline void copy(const T1 *source, T2 *destination, const int length);
   // rename to copy
 
   // old version:
   /** Copies the data of one array into another one. */
   //template <class T>
-  //void copyBuffer(const T *source, T *destination, int length);
+  //void copy(const T *source, T *destination, int length);
 
 
   /** Copies values from the source into the target buffer if they match (via the '==' operator of
@@ -618,6 +618,13 @@ inline bool rsArray::almostEqual(const T *buffer1, const T *buffer2,
       return false;
   }
   return true;
+}
+
+template <class T1, class T2>
+inline void rsArray::copy(const T1 *source, T2 *destination, const int length)
+{
+  for(int i = 0; i < length; i++)
+    destination[i] = (T2)source[i];
 }
 
 template <class T>

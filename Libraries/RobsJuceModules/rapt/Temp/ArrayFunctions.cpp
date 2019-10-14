@@ -24,7 +24,7 @@ namespace RAPT
   void addCircularShiftedCopy(T *buffer, int length, double offset, T weight)
   {
     T *tmp = new T[length];
-    copyBuffer(buffer, tmp, length);
+    copy(buffer, tmp, length);
     circularShiftInterpolated(tmp, length, offset);
     scale(tmp, length, weight);
     add(buffer, tmp, buffer, length);
@@ -116,7 +116,7 @@ namespace RAPT
     double f    = read-r;                  // fractional part of read position
     double f2   = 1.0-f;
     T *tmp      = new T[length];
-    copyBuffer(buffer, tmp, length);
+    copy(buffer, tmp, length);
     while( r < length-1 )
     {
       buffer[w] = f2*tmp[r] + f*tmp[r+1];
@@ -229,7 +229,7 @@ namespace RAPT
   //}
 
   template <class T1, class T2>
-  void copyBuffer(const T1 *source, T2 *destination, int length)
+  void copy(const T1 *source, T2 *destination, int length)
   {
     for(int i = 0; i < length; i++)
       destination[i] = (T2) source[i];
@@ -237,7 +237,7 @@ namespace RAPT
 
   // old version without type conversion:
   //template <class T>
-  //void copyBuffer(const T *source, T *destination, int length)
+  //void copy(const T *source, T *destination, int length)
   //{
   //  for(int i = 0; i < length; i++)
   //    destination[i] = source[i];
@@ -315,7 +315,7 @@ namespace RAPT
     {
       // copying:
       cl = rsMin(copyLength, sourceLength-copyStart);
-      copyBuffer(&source[copyStart], destination, cl);
+      copy(&source[copyStart], destination, cl);
 
       // post-padding:
       pl2 = copyLength-cl;
@@ -329,7 +329,7 @@ namespace RAPT
 
       // copying:
       cl = rsMin(copyLength-pl1, sourceLength);
-      copyBuffer(source, &destination[pl1], cl);
+      copy(source, &destination[pl1], cl);
 
       // post-padding:
       pl2 = copyLength-cl-pl1;
@@ -345,7 +345,7 @@ namespace RAPT
   //  {
   //    // copying:
   //    cl = rsMin(copyLength, sourceLength-copyStart);
-  //    copyBuffer(&source[copyStart], destination, cl);
+  //    copy(&source[copyStart], destination, cl);
 
   //    // post-padding:
   //    pl2 = copyLength-cl;
@@ -359,7 +359,7 @@ namespace RAPT
 
   //    // copying:
   //    cl = rsMin(copyLength-pl1, sourceLength);
-  //    copyBuffer(source, &destination[pl1], cl);
+  //    copy(source, &destination[pl1], cl);
 
   //    // post-padding:
   //    pl2 = copyLength-cl-pl1;
@@ -378,7 +378,7 @@ namespace RAPT
   template <class T>
   void rsCumulativeSum(T *x, T *y, int N, int order)
   {  
-    copyBuffer(x, y, N);
+    copy(x, y, N);
     for(int i = 1; i <= order; i++)
       rsCumulativeSum(y, y, N);
   }
@@ -448,7 +448,7 @@ namespace RAPT
     T *tmp = new T[numFrames*numElementsPerFrame];
     int i, j;
     for(i = 0; i < numFrames*numElementsPerFrame; i++)
-      tmp[i] = buffer[i];  // \todo use copyBuffer
+      tmp[i] = buffer[i];  // \todo use copy
     for(j = 0; j < numElementsPerFrame; j++)
     {
       int k = numFrames*j;
@@ -713,7 +713,7 @@ namespace RAPT
     T *tmp = new T[numFrames*numElementsPerFrame];
     int i, j;
     for(i=0; i<numFrames*numElementsPerFrame; i++)
-      tmp[i] = buffer[i];  // \todo use copyBuffer
+      tmp[i] = buffer[i];  // \todo use copy
     for(j = 0; j < numElementsPerFrame; j++)
     {
       int k = numFrames*j;
@@ -935,7 +935,7 @@ namespace RAPT
   T rsMedian(T *buffer, int length)
   {
     T* tmpBuffer = new T[length];
-    copyBuffer(buffer, tmpBuffer, length);
+    copy(buffer, tmpBuffer, length);
 
     std::sort(tmpBuffer, &tmpBuffer[length]);
     T med;

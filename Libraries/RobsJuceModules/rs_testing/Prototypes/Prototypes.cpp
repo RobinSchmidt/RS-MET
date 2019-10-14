@@ -330,7 +330,7 @@ void halpernT2(double *c, int N)
     // this is actually the same as just taking the antiderivative of s
 
   // copy to output:
-  RAPT::rsArray::copyBuffer(t, c, 2*N+1);
+  RAPT::rsArray::copy(t, c, 2*N+1);
 }
 
 void papoulisL2(double *v, int N)

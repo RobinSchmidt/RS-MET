@@ -425,7 +425,7 @@ double getValue(const std::string& str, const std::string& key, double defaultVa
 
   // extract number substring as c-string and convert to double:
   char* numStr = new char[length+1];
-  RAPT::rsArray::copyBuffer(&str[index], numStr, length);
+  RAPT::rsArray::copy(&str[index], numStr, length);
   numStr[length] = '\0';
   double value = atof(numStr);
   delete[] numStr;

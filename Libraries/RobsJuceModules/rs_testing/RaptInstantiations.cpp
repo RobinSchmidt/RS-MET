@@ -119,7 +119,7 @@ template void rsArray::cumulativeSum(const int *x, int *y, int length, int order
 
 template rsUint32 rsArray::maxValue(const rsUint32 *x, int length);
 template void rsArray::fillWithRangeLinear(rsUint32* x, int N, rsUint32 min, rsUint32 max);
-template void rsArray::copyBuffer(const rsUint32 *src, rsUint32 *dst, int N);
+template void rsArray::copy(const rsUint32 *src, rsUint32 *dst, int N);
 template int rsArray::firstIndexWithNonZeroValue(const rsUint32 *a, int N);
 template bool rsArray::contains(const rsUint32 *buffer, int length, rsUint32 elementToFind);
 template void rsArray::fillWithZeros(rsUint32 *buffer, int length);

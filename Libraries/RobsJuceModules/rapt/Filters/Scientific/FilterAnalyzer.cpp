@@ -229,7 +229,7 @@ void rsFilterAnalyzer<T>::getBiquadCascadeMagnitudeResponse(T* b0, T* b1, T* b2,
   {  
     convertToDecibels(tmp, numBins, 0.0);    
     if( accumulate == false )
-      rsArray::copyBuffer(tmp, mag, numBins);  
+      rsArray::copy(tmp, mag, numBins);  
     else
       rsArray::add(mag, tmp, mag, numBins);
     rsArray::clip(mag, numBins, T(-200), RS_INF(T));  // avoid negative infinities
@@ -237,7 +237,7 @@ void rsFilterAnalyzer<T>::getBiquadCascadeMagnitudeResponse(T* b0, T* b1, T* b2,
   else
   {
     if( accumulate == false )
-      rsArray::copyBuffer(tmp, mag, numBins);  
+      rsArray::copy(tmp, mag, numBins);  
     else
       rsArray::multiply(mag, tmp, mag, numBins);
   }

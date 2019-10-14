@@ -50,7 +50,7 @@ void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
   std::complex<T> *tmp = new std::complex<T>[denDeg+1]; // deflated denominator
   std::complex<T> remainder;                            // always zero
   for(int i = 0, k = 0; i < numDistinctPoles; i++) {
-    rsArray::copyBuffer(den, tmp, denDeg+1);
+    rsArray::copy(den, tmp, denDeg+1);
     for(int m = 0; m < multiplicities[i]; m++) {
       rsPolynomial<T>::divideByMonomialInPlace(tmp, denDeg-m, poles[i], &remainder);
       for(int j = 0; j < denDeg; j++)
@@ -60,7 +60,7 @@ void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
   }
 
   // solve the linear system using an appropriately zero-padded numerator as RHS:
-  rsArray::copyBuffer(num, tmp, numDeg+1);
+  rsArray::copy(num, tmp, numDeg+1);
   rsArray::fillWithZeros(&tmp[numDeg+1], denDeg-(numDeg+1));
   rsLinearAlgebra::rsSolveLinearSystem(A, pfeCoeffs, tmp, denDeg);
 

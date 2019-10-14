@@ -222,7 +222,7 @@ void Equalizer::getMagnitudeResponse(double *frequencies, double *magnitudes, in
 
 //  // debug:
 //  double m[1000];
-//  copyBuffer(magnitudes, m, rmin(numBins, 1000));
+//  copy(magnitudes, m, rmin(numBins, 1000));
 //  int dummy = 0;
 }
 

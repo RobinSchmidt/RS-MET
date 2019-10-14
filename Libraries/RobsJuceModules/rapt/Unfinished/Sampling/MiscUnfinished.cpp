@@ -12,7 +12,7 @@ void rsApplyBiDirectionally(
   int M = N+2*P;
   TSig *tmp = new TSig[M];
   rsArray::fillWithZeros(tmp, P);
-  rsArray::copyBuffer(x, &tmp[P], N);
+  rsArray::copy(x, &tmp[P], N);
   rsArray::fillWithZeros(&tmp[P+N], P);
 
   // apply processor (multipass, bidirectionally):
@@ -23,7 +23,7 @@ void rsApplyBiDirectionally(
   }
 
   // copy result to output and clean up:
-  rsArray::copyBuffer(&tmp[P], y, N);
+  rsArray::copy(&tmp[P], y, N);
   delete[] tmp;
 
   // todo: Actually, we don't really need pre- and post padding. Using just post padding and
@@ -41,7 +41,7 @@ std::vector<T> getPaddedSignal(const T* x, int N, int P)
   int M = N+2*P;
   std::vector<T> xp(M);
   rsArray::fillWithZeros(&xp[0], P);    // pre-padding
-  rsArray::copyBuffer(x, &xp[P], N);    // actual signal
+  rsArray::copy(x, &xp[P], N);    // actual signal
   rsArray::fillWithZeros(&xp[P+N], P);  // post-padding
   return xp;
 }
@@ -76,7 +76,7 @@ void rsApplyBiDirectionally(
   }
 
   // copy result to output:
-  rsArray::copyBuffer(&tmp[P], y, N);
+  rsArray::copy(&tmp[P], y, N);
 }
 
 template<class T>
@@ -383,7 +383,7 @@ void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(T *x, int N, std::vecto
   if(correlationHighpass > 0)
     rsBiDirectionalFilter::applyButterworthHighpass(x, y, N, f0*correlationHighpass, fs, 4, 1);
   else
-    rsArray::copyBuffer(x, y, N);
+    rsArray::copy(x, y, N);
 
   // bug: i cannot refine the cycle marks in place inside the passed array because the refined mark
   // may overrun the unrefined, leading to a negative length in the process
@@ -473,7 +473,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
     rsBiDirectionalFilter::applyButterworthHighpass(
       x, &y[0], N, f0*correlationHighpass, fs, 4, 1);
   else
-    rsArray::copyBuffer(x, &y[0], N);
+    rsArray::copy(x, &y[0], N);
   // rename correlationHighpass to refinementHighpass
 
   // nCenter serves as the initial cycle mark - from there, find the next one to the left by
@@ -1026,7 +1026,7 @@ void rsResampler<TSig, TPos>::shiftSinc(TSig *x, TSig *y, int N, TPos amount, TP
   {
     TSig *tmp = new TSig[N];
     shiftSinc(x, tmp, N, amount, sincLength);
-    rsArray::copyBuffer(tmp, y, N);
+    rsArray::copy(tmp, y, N);
     delete[] tmp;
   }
   else
@@ -1196,7 +1196,7 @@ template<class TSig, class TPos>
 std::vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::getTimeWarpMapXY()
 {
   std::vector<TPos> map(Nx);
-  rsArray::copyBuffer(wi, &map[0], Nx);
+  rsArray::copy(wi, &map[0], Nx);
   return map;
 }
 
@@ -1204,7 +1204,7 @@ template<class TSig, class TPos>
 std::vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::getTimeWarpMapYX()
 {
   std::vector<TPos> map(Ny);
-  rsArray::copyBuffer(w, &map[0], Ny);
+  rsArray::copy(w, &map[0], Ny);
   return map;
 }
 
@@ -1858,6 +1858,21 @@ T rsExponentialEnvelopeMatcher<T>::getMatchOffset(const T* x1, int N1, const T* 
   tm2 = (matchLevel - b2) / a2;  // same for xdB2
   return tm1 - tm2;              // this is the resulting desired shift
 }
+// idea: maybe to be more flexible with respect to the shape of the envelope, we should try 
+// polynomial regression: https://en.wikipedia.org/wiki/Polynomial_regression instead of linear
+// regression. that would amount to not necessarily assume an exponential envelope shape - instead,
+// the shape would be estimated as well. this would complicate the situation in two ways - 1st, 
+// obviously, we need an algorithm to find the polynomial coeffs, 2nd, we would have to find the 
+// points, where the polynomials are equal to one another in the same way that we now find the 
+// point where the lines cross - but that could give multiple solutions - how do we pick the right 
+// one? ...or maybe we should not look for points where the curves cross but rather make them match
+// in some sort of (to be suitably defined) least-squares sense? ...maybe the user could specify a
+// "degree" parameter for the polynomial - with 1, we get the linear regression that we have now
+
+// or maybe spline-regression:  https://data.princeton.edu/eco572/smoothing.pdf ...but for that, we
+// would also need a procedure to place the knots
+
+// if we allow for shapes other than exponential, the class should be renamed
 
 //=================================================================================================
 

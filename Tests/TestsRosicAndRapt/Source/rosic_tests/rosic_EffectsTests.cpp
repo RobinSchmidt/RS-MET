@@ -18,14 +18,14 @@ bool rotes::testFastGeneralizedHadamardTransform()
   typedef rosic::FeedbackDelayNetwork FDN;
 
 
-  RAPT::rsArray::copyBuffer(x4, y4, 4);
+  RAPT::rsArray::copy(x4, y4, 4);
   FDN::fastGeneralizedHadamardTransform(y4, 4, 2, work);
   result &= y4[0] ==   4;
   result &= y4[1] ==  28;
   result &= y4[2] == -12;
   result &= y4[3] == - 4;
 
-  RAPT::rsArray::copyBuffer(x4, y4, 4);
+  RAPT::rsArray::copy(x4, y4, 4);
   FDN::fastGeneralizedHadamardTransform(y4, 4, 2, work, 2, 3, 5, 7);
   result &= y4[0] ==  4;
   result &= y4[1] == 24;
@@ -37,7 +37,7 @@ bool rotes::testFastGeneralizedHadamardTransform()
   double x8[8] = {1, 4, -2, 3, 0, 1, 4, -1};
   double y8[8];
 
-  RAPT::rsArray::copyBuffer(x8, y8, 8);
+  RAPT::rsArray::copy(x8, y8, 8);
   FDN::fastGeneralizedHadamardTransform(y8, 8, 3, work);
   result &= y8[0] ==  10;
   result &= y8[1] == - 4;
@@ -48,7 +48,7 @@ bool rotes::testFastGeneralizedHadamardTransform()
   result &= y8[6] ==   6;
   result &= y8[7] ==   8;
 
-  RAPT::rsArray::copyBuffer(x8, y8, 8);
+  RAPT::rsArray::copy(x8, y8, 8);
   FDN::fastGeneralizedHadamardTransform(y8, 8, 3, work, 2, 3, 5, 7);
   result &= y8[0] ==   149;
   result &= y8[1] ==   357;
@@ -60,7 +60,7 @@ bool rotes::testFastGeneralizedHadamardTransform()
   result &= y8[7] ==  2092;
 
   // forward/backward trafo - check if input is reconstructed:
-  RAPT::rsArray::copyBuffer(x8, y8, 8);
+  RAPT::rsArray::copy(x8, y8, 8);
   FDN::fastGeneralizedHadamardTransform(       y8, 8, 3, work, 2, 3, 5, -7);
   FDN::fastInverseGeneralizedHadamardTransform(y8, 8, 3, work, 2, 3, 5, -7);
   result &= fabs(RAPT::rsArray::maxDeviation(x8, y8, 8)) < 1.e-15;

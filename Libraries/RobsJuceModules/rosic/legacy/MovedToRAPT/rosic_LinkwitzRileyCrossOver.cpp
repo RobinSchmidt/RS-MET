@@ -73,7 +73,7 @@ void rsLinkwitzRileyCrossOver::getLowpassFrequencyResponse(double* frequencies, 
     RAPT::rsArray::fillWithValue(H, numBins, Complex(1.0));
 
   double *w = new double[numBins];
-  RAPT::rsArray::copyBuffer(frequencies, w, numBins);
+  RAPT::rsArray::copy(frequencies, w, numBins);
   RAPT::rsArray::scale(w, w, numBins, 2*PI/sampleRate);
 
   lowpass1.getFrequencyResponse(w, H, numBins, rsFilterAnalyzerD::MULTIPLICATIVE_ACCUMULATION);
@@ -122,7 +122,7 @@ void rsLinkwitzRileyCrossOver::getHighpassFrequencyResponse(double* frequencies,
   int numBins, bool accumulate)
 {
   double *w = new double[numBins];
-  RAPT::rsArray::copyBuffer(frequencies, w, numBins);
+  RAPT::rsArray::copy(frequencies, w, numBins);
   RAPT::rsArray::scale(w, w, numBins, 2*PI/sampleRate);
 
   Complex *tmpLowpass = new Complex[numBins];

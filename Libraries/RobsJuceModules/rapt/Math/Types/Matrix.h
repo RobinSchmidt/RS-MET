@@ -16,10 +16,15 @@ public:
 
   /** Stadard constructor. You can pass the matrix elements. If you pass nothing, an identity
   matrix will be created. */
-  rsMatrix2x2(T a = T(1), T b = T(0), T c = T(0), T d = T(1)) { setValues(a, b, c, d); }
+  //rsMatrix2x2(T a = T(1), T b = T(0), T c = T(0), T d = T(1)) { setValues(a, b, c, d); }
   // todo: maybe require arguments to be passed - or initialze teh matrix to the zero matrix
   // by default
 
+  /** Constructor. Initializes elements with  given values. */
+  rsMatrix2x2(T a, T b, T c, T d) { setValues(a, b, c, d); }
+
+  /** Standard constructor. Leaves elements uninitialized. */
+  rsMatrix2x2() {}
 
   /** \name Setup */
 
@@ -313,21 +318,21 @@ public:
   rsMatrixNew(const rsMatrixNew& B)
   {
     setSize(B.numRows, B.numCols);
-    rsArray::copyBuffer(B.d, this->d, this->getSize());
+    rsArray::copy(B.d, this->d, this->getSize());
   }
 
   /** Move constructor. */
   rsMatrixNew(const rsMatrixNew&& B)
   {
     setSize(B.numRows, B.numCols);
-    rsArray::copyBuffer(B.d, this->d, this->getSize());
+    rsArray::copy(B.d, this->d, this->getSize());
   }
 
   rsMatrixNew<T>& operator=(const rsMatrixNew<T>& other) // copy assignment
   {
     if (this != &other) { // self-assignment check expected
       setSize(other.numRows, other.numCols);
-      rsArray::copyBuffer(other.d, this->d, this->getSize());
+      rsArray::copy(other.d, this->d, this->getSize());
     }
     return *this;
   }
@@ -336,7 +341,7 @@ public:
   {
     if (this != &other) { // self-assignment check expected
       setSize(other.numRows, other.numCols);
-      rsArray::copyBuffer(other.d, this->d, this->getSize());
+      rsArray::copy(other.d, this->d, this->getSize());
     }
     return *this;
   }

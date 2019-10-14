@@ -30,7 +30,7 @@ template<class T>
 void rsPolynomial<T>::setCoeffs(const T* newCoeffs, int newDegree)
 {
   coeffs.resize(newDegree+1);
-  rsArray::copyBuffer(newCoeffs, &coeffs[0], newDegree+1);
+  rsArray::copy(newCoeffs, &coeffs[0], newDegree+1);
 }
 
 template<class T>
@@ -219,7 +219,7 @@ void rsPolynomial<T>::weightedSum(
 template <class T>
 void rsPolynomial<T>::divide(const T *p, int pDegree, const T *d, int dDegree, T *q, T *r)
 {
-  rsArray::copyBuffer(p, r, pDegree+1); // init remainder with p
+  rsArray::copy(p, r, pDegree+1); // init remainder with p
   rsArray::fillWithZeros(q, pDegree+1); // init quotient with zeros
   for(int k = pDegree-dDegree; k >= 0; k--) {
     q[k] = r[dDegree+k] / d[dDegree];
@@ -277,7 +277,7 @@ void rsPolynomial<T>::powers(const T* a, int N, T** aPowers, int highestPower)
   aPowers[0][0] = 1;
   if(highestPower < 1)
     return;
-  rsArray::copyBuffer(a, aPowers[1], N+1);
+  rsArray::copy(a, aPowers[1], N+1);
   for(int k = 2; k <= highestPower; k++)
     rsArray::convolve(aPowers[k-1], (k-1)*N+1, a, N+1, aPowers[k]);
 }
@@ -423,7 +423,7 @@ void rsPolynomial<T>::roots(const std::complex<T>* a, int degree, std::complex<T
   // allocate memory for the coefficients of the deflated polynomial and initialize it as
   // non-deflated polynomial:
   std::complex<T>* ad = new std::complex<T>[degree+1];
-  rsArray::copyBuffer(a, ad, degree+1);
+  rsArray::copy(a, ad, degree+1);
 
   // loop over the roots:
   for(int j = degree; j >= 1; j--)
@@ -1319,7 +1319,7 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   std::complex<T> remainder;                                   // always zero
   for(int i = 0, k = 0; i < numDistinctPoles; i++)
   {
-    rsArray::copyBuffer(denominator, tmp, denominatorDegree+1);
+    rsArray::copy(denominator, tmp, denominatorDegree+1);
     for(int m = 0; m < multiplicities[i]; m++)
     {
       divideByMonomialInPlace(tmp, denominatorDegree-m, poles[i], &remainder);
@@ -1330,7 +1330,7 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   }
 
   // solve the linear system using an appropriately zero-padded numerator as RHS:
-  rsArray::copyBuffer(numerator, tmp, numeratorDegree+1);
+  rsArray::copy(numerator, tmp, numeratorDegree+1);
   rsArray::fillWithZeros(&tmp[numeratorDegree+1], denominatorDegree-(numeratorDegree+1));
   rsLinearAlgebra::rsSolveLinearSystem(A, pfeCoeffs, tmp, denominatorDegree);
 

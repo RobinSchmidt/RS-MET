@@ -61,7 +61,7 @@ void rsLadderFilter2<TSig, TPar>::setMode(int newMode)
 template<class TSig, class TPar>
 void rsLadderFilter2<TSig, TPar>::getState(TSig *state)
 {
-  rsArray::copyBuffer(y, state, 5);
+  rsArray::copy(y, state, 5);
 }
 
 template<class TSig, class TPar>

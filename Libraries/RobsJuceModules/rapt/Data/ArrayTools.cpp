@@ -42,7 +42,7 @@ void rsArray::addCircularShiftedCopy(
   T *buffer, const int length, const double offset, const T weight)
 {
   T *tmp = new T[length];
-  copyBuffer(buffer, tmp, length);
+  copy(buffer, tmp, length);
   circularShiftInterpolated(tmp, length, offset);
   scale(tmp, length, weight);
   add(buffer, tmp, buffer, length);
@@ -123,7 +123,7 @@ void rsArray::circularShiftInterpolated(T *buffer, const int length, const doubl
   const double f  = read-r;        // fractional part of read position
   const double f2 = 1.0-f;
   T *tmp = new T[length];
-  copyBuffer(buffer, tmp, length);
+  copy(buffer, tmp, length);
   while(r < length-1)
   {
     buffer[w] = f2*tmp[r] + f*tmp[r+1];
@@ -213,16 +213,16 @@ void rsArray::convolve(const T *x, const int xLength, const T *h, const int hLen
   }
 }
 
-template <class T1, class T2>
-void rsArray::copyBuffer(const T1 *source, T2 *destination, const int length)
-{
-  for(int i = 0; i < length; i++)
-    destination[i] = (T2)source[i];
-}
+//template <class T1, class T2>
+//void rsArray::copy(const T1 *source, T2 *destination, const int length)
+//{
+//  for(int i = 0; i < length; i++)
+//    destination[i] = (T2)source[i];
+//}
 
 // old version without type conversion:
 //template <class T>
-//void copyBuffer(const T *source, T *destination, int length)
+//void copy(const T *source, T *destination, int length)
 //{
 //  for(int i = 0; i < length; i++)
 //    destination[i] = source[i];
@@ -301,7 +301,7 @@ void rsArray::copySection(const T1 *source, int sourceLength, T2 *destination, i
   {
     // copying:
     cl = rsMin(copyLength, sourceLength-copyStart);
-    copyBuffer(&source[copyStart], destination, cl);
+    copy(&source[copyStart], destination, cl);
 
     // post-padding:
     pl2 = copyLength-cl;
@@ -315,7 +315,7 @@ void rsArray::copySection(const T1 *source, int sourceLength, T2 *destination, i
 
     // copying:
     cl = rsMin(copyLength-pl1, sourceLength);
-    copyBuffer(source, &destination[pl1], cl);
+    copy(source, &destination[pl1], cl);
 
     // post-padding:
     pl2 = copyLength-cl-pl1;
@@ -331,7 +331,7 @@ void rsArray::copySection(const T1 *source, int sourceLength, T2 *destination, i
 //  {
 //    // copying:
 //    cl = rsMin(copyLength, sourceLength-copyStart);
-//    copyBuffer(&source[copyStart], destination, cl);
+//    copy(&source[copyStart], destination, cl);
 
 //    // post-padding:
 //    pl2 = copyLength-cl;
@@ -345,7 +345,7 @@ void rsArray::copySection(const T1 *source, int sourceLength, T2 *destination, i
 
 //    // copying:
 //    cl = rsMin(copyLength-pl1, sourceLength);
-//    copyBuffer(source, &destination[pl1], cl);
+//    copy(source, &destination[pl1], cl);
 
 //    // post-padding:
 //    pl2 = copyLength-cl-pl1;
@@ -364,7 +364,7 @@ void rsArray::cumulativeSum(const T *x, T *y, int N)
 template <class T>
 void rsArray::cumulativeSum(const T *x, T *y, int N, int order)
 {
-  copyBuffer(x, y, N);
+  copy(x, y, N);
   for(int i = 1; i <= order; i++)
     cumulativeSum(y, y, N);
 }
@@ -434,7 +434,7 @@ void rsArray::deInterleave(T *buffer, int numFrames, int numElementsPerFrame)
   T *tmp = new T[numFrames*numElementsPerFrame];
   int i, j;
   for(i = 0; i < numFrames*numElementsPerFrame; i++)
-    tmp[i] = buffer[i];  // \todo use copyBuffer
+    tmp[i] = buffer[i];  // \todo use copy
   for(j = 0; j < numElementsPerFrame; j++)
   {
     int k = numFrames*j;
@@ -699,7 +699,7 @@ void rsArray::interleave(T *buffer, int numFrames, int numElementsPerFrame)
   T *tmp = new T[numFrames*numElementsPerFrame];
   int i, j;
   for(i=0; i<numFrames*numElementsPerFrame; i++)
-    tmp[i] = buffer[i];  // \todo use copyBuffer
+    tmp[i] = buffer[i];  // \todo use copy
   for(j = 0; j < numElementsPerFrame; j++)
   {
     int k = numFrames*j;
@@ -935,7 +935,7 @@ template <class T>
 T rsArray::median(const T *buffer, int length)
 {
   T* tmpBuffer = new T[length];
-  copyBuffer(buffer, tmpBuffer, length);
+  copy(buffer, tmpBuffer, length);
 
   std::sort(tmpBuffer, &tmpBuffer[length]);
   T med;

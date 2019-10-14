@@ -295,8 +295,102 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   deBeater.processModel(mdl);
   y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
+}
+
+template<class T>
+std::vector<T> rsDecimate(const std::vector<T>& x, int factor)
+{
+  int Ny = (int) x.size() / factor;
+  std::vector<T> y(Ny);
+  for(int i = 0; i < Ny; i++)
+    y[i] = x[i*factor];
+  return y;
+}
+// move to rapt
+// todo: use more sophisticated techniques like taking the average or min and max
+
+void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
+{
+  // todo: 
+  // (1) extract envelopes of both signals
+  // (2) find best match offset
+
+  //rsEnvelopeExtractor<double> ee;
+
+  //rsEnvelopeFollower2<double> ef;
+  //ef.setSampleRate(44100);  // make this a function parameter
+  //ef.setInputFrequency(85); // this too
+
+  rsEnvelopeFollower<double, double> ef;
+  ef.setSampleRate(44100);  // make this a function parameter
+  ef.setAttackTime(0.0);    // in ms?
+  ef.setReleaseTime(200.0);
+  //ef.setInputFrequency(85); // this too
 
 
+
+  // todo: use simpler envelope follower with faster attack - and then use a smaller initial ignore
+  // section for the shiftee (the need for an initial ignore section is an artifact of the slow 
+  // attack of the env follower)
+
+  // exctract envelopes:
+  std::vector<double> e1(x1.size()), e2(x2.size());
+  int n;
+  for(n = 0; n < (int )x1.size(); n++) e1[n] = ef.getSample(x1[n]);
+  ef.reset();
+  for(n = 0; n < (int )x2.size(); n++) e2[n] = ef.getSample(x2[n]);
+
+  //rsPlotVectors(x2, e2);
+
+  double thresh = -65;
+
+  RAPT::rsExponentialEnvelopeMatcher<double> em;
+  em.setMatchLevel(-55);               // make function parameter
+
+  //em.setInitialIgnoreSection1(16000);  // reference signal has 2-stage decay
+  em.setInitialIgnoreSection1(60000);  // ..or actually mor like a 3-stage decay
+  em.setInitialIgnoreSection2( 1000);
+
+  // good for when the tail is actually cut out from the full signal:
+  //em.setInitialIgnoreSection1(60000); 
+  //em.setInitialIgnoreSection2(    0);
+
+  em.setIgnoreThreshold1(thresh);
+  em.setIgnoreThreshold2(thresh);
+
+  int dt = (int) em.getMatchOffset(&e1[0], (int) e1.size(), &e2[0], (int) e2.size());
+  // hmm...maybe we should pass references to the enve-follower and env-matcher, so the caller can
+  // set them up - it would be too many function parameters otherwise
+
+
+
+
+  // decimate enevlopes for plotting (GNUPlot doesn't like big datasets):
+  int decimation = 16;
+  std::vector<double> e1d = rsDecimate(e1, decimation);
+  std::vector<double> e2d = rsDecimate(e2, decimation);
+
+  // convert to decibels:
+  std::vector<double> db1d(e1d.size()), db2d(e2d.size());
+  for(n = 0; n < e1d.size(); n++)  db1d[n] = rsMax(rsAmp2dB(e1d[n]), thresh);
+  for(n = 0; n < e2d.size(); n++)  db2d[n] = rsMax(rsAmp2dB(e2d[n]), thresh);
+
+  // create the two time axes:
+  std::vector<double> t1d(e1d.size()), t2d(e2d.size());
+  for(n = 0; n < t1d.size(); n++)  t1d[n] = n * decimation;
+  for(n = 0; n < t2d.size(); n++)  t2d[n] = n * decimation + dt;
+
+  // plot:
+  GNUPlotter plt;
+  //plt.addDataArrays((int) t1d.size(), &t1d[0], &e1d[0]);
+  //plt.addDataArrays((int) t2d.size(), &t2d[0], &e2d[0]);
+  plt.addDataArrays((int) t1d.size(), &t1d[0], &db1d[0]);
+  plt.addDataArrays((int) t2d.size(), &t2d[0], &db2d[0]);
+  plt.plot();
+
+  // todo: maybe plot the two regression lines as well
+  // try to cut an actual section of the tail from the 1st signal and match that to the full
+  // length signal
 }
 
 

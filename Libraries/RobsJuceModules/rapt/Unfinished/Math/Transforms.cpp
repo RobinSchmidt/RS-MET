@@ -75,7 +75,7 @@ void rsDFT(std::complex<T> *x, int N) // maybe have a boolean "inverse" paramete
     for(int n = 0; n < N; n++)
       X[k] += x[n]*exp(std::complex<T>(T(0), T(-2.0*PI*n*k/N)));
   }
-  rsArray::copyBuffer(X, x, N);
+  rsArray::copy(X, x, N);
   delete[] X;
 }
 

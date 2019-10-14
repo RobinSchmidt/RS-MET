@@ -215,7 +215,7 @@ bool testContainerizationAddedConstants(bool verboseOutput)
   //testModule->resetState();  
   testModule->resetStateForAllVoices();
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  RAPT::rsArray::copyBuffer(y[0][0], d[0][0], N);
+  RAPT::rsArray::copy(y[0][0], d[0][0], N);
 
   for(int i=0; i<numIterations; i++)
   {

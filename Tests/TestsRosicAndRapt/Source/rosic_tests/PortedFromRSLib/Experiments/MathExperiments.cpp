@@ -1724,7 +1724,7 @@ void partialFractionExpansion()
   double dummy;
   int i, j;
   for(i = 0; i < M; i++) { // establish coefficient matrix
-    Array::copyBuffer(q, tmp, M+1);
+    Array::copy(q, tmp, M+1);
     Poly::divideByMonomialInPlace(tmp, M, r[i], &dummy);
       // todo: use a function that does not do it "in-place" - avoids copying and is probably 
       // simpler. perhaps, here, we have to do that division in a loop from 1 up to the 
@@ -3127,7 +3127,7 @@ void primeRecursion()
 
   // init first few primes, d and Pd:
   rsUint32 np = 11;
-  RAPT::rsArray::copyBuffer(tp, p, np);
+  RAPT::rsArray::copy(tp, p, np);
   rsUint32 d  = 7;
   rsUint32 Pd = 2*3*5*7;
   while( np < N )

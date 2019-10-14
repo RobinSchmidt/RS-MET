@@ -96,19 +96,19 @@ bool testConvolution(std::string &reportString)
 
   // test in-place convolution where x == y:
   rsArray::fillWithZeros(y, yN);
-  rsArray::copyBuffer(x, y, xN);
+  rsArray::copy(x, y, xN);
   rsArray::convolve(y, xN, h, hN, y);
   testResult &= rsArray::equal(y, yt, yN);
 
   // test in-place convolution where h == y:
   rsArray::fillWithZeros(y, yN);
-  rsArray::copyBuffer(h, y, hN);
+  rsArray::copy(h, y, hN);
   rsArray::convolve(x, xN, y, hN, y);
   testResult &= rsArray::equal(y, yt, yN);
 
   // test in-place convolution where x == h == y:
   rsArray::fillWithZeros(y, yN);
-  rsArray::copyBuffer(h, y, hN);
+  rsArray::copy(h, y, hN);
   rsArray::convolve(y, xN, y, hN, y);
   testResult &= y[0]  ==   4;
   testResult &= y[1]  == -12;
@@ -842,7 +842,7 @@ void rsChebychevToPowers(double *b, double *a, int N)
 {
   double tmp, tmp2;
   double *bb = new double[N+1]; // use a tmp-buffer, because it will be modified
-  rsArray::copyBuffer(b, bb, N+1);
+  rsArray::copy(b, bb, N+1);
   int k, i;
 
   // this is basically rsPowersToChebychev run backwards:
@@ -952,7 +952,7 @@ bool testPowersChebychevExpansionConversion(std::string &reportString)
     B[s][i] = 0.5*B[s-1][i-1];  // i == s+1 here
     */
   }
-  rsArray::copyBuffer(B[N-1], b, N+1);
+  rsArray::copy(B[N-1], b, N+1);
   // looks plausible and seems to work in this case
 
 
@@ -1061,13 +1061,13 @@ bool testPolynomialRecursion(std::string &reportString)
 
   // in-place application - 1st input is reused as output:
   double t1[5], t2[5];
-  rsArray::copyBuffer(a[2], t2, 5);
-  rsArray::copyBuffer(a[3], t1, 5);
+  rsArray::copy(a[2], t2, 5);
+  rsArray::copy(a[3], t1, 5);
   rsPolynomial<double>::threeTermRecursion(t1, w0, 4, t1, w1, w1x, t2, w2);
   testResult &= rsArray::equal(a[4], t1, 5);
 
   // in-place application - 2nd input is reused as output:
-  rsArray::copyBuffer(a[3], t1, 5);
+  rsArray::copy(a[3], t1, 5);
   rsPolynomial<double>::threeTermRecursion(t2, w0, 4, t1, w1, w1x, t2, w2);
   testResult &= rsArray::equal(a[4], t2, 5);
 

@@ -419,9 +419,9 @@ void rsPrototypeDesigner<T>::getInverseFilter(Complex* z, Complex* p, T* k, Comp
   //                // and gain zeros into zNew, pNew, kNew
 
   Complex *zTmp = new Complex[N]; // to make it work, when the new arrays are equal to the old ones
-  rsArray::copyBuffer(z,    zTmp, N);
-  rsArray::copyBuffer(p,    zNew, N);
-  rsArray::copyBuffer(zTmp, pNew, N);
+  rsArray::copy(z,    zTmp, N);
+  rsArray::copy(p,    zNew, N);
+  rsArray::copy(zTmp, pNew, N);
   *kNew = T(1) / *k;
   delete[] zTmp;
 }
@@ -1395,8 +1395,8 @@ void rsPrototypeDesigner<T>::makeLowShelfFromZPK(
   // then reverse it, so the new code is:
   rsHeapSort(zTmp, N, rsComplexLessByImRe<T>);
   rsHeapSort(pTmp, N, rsComplexLessByImRe<T>);
-  rsArray::copyBuffer(zTmp, z, L+r);  // select first half (lower halfplane) roots
-  rsArray::copyBuffer(pTmp, p, L+r);
+  rsArray::copy(zTmp, z, L+r);  // select first half (lower halfplane) roots
+  rsArray::copy(pTmp, p, L+r);
   rsConjugate(z, L+r);                // convert to corresponding upper halfplane roots
   rsConjugate(p, L+r);                
   // last pole/zero is the real one, if present (they are now sorted by descending imaginary part
@@ -1417,8 +1417,8 @@ void rsPrototypeDesigner<T>::pickNonRedundantPolesAndZeros(Complex *zTmp, Comple
   rsZeroNegligibleImaginaryParts(zTmp, N, thresh);
   rsOnlyUpperHalfPlane(pTmp, pTmp, N);
   rsOnlyUpperHalfPlane(zTmp, zTmp, N);
-  rsArray::copyBuffer(pTmp, p, L+r);
-  rsArray::copyBuffer(zTmp, z, L+r);
+  rsArray::copy(pTmp, p, L+r);
+  rsArray::copy(zTmp, z, L+r);
 
   // the caller is supposed to ensure that the real zero/pole, if present, is in zTmp[0], pTmp[0] - 
   // but we need it in the last positions z[L+r], p[L+r], so we reverse the arrays:

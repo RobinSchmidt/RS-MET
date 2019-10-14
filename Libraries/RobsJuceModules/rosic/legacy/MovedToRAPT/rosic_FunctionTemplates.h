@@ -75,7 +75,7 @@ namespace rosic
 
   /** Copies the data of one array into another one. */
   //template <class T>
-  //void copyBuffer(T *source, T *destination, int length);
+  //void copy(T *source, T *destination, int length);
 
   /** Copies the data of one array into another one where the lengths of the source- and target-arrays may be different - in this case, the
   target array will be filled by linearly interpolating the values in the source array. The type T must define a multiplication operator
@@ -308,7 +308,7 @@ namespace rosic
   void addCircularShiftedCopy(T *buffer, int length, double offset, T weight)
   {
     T *tmp = new T[length];
-    copyBuffer(buffer, tmp, length);
+    copy(buffer, tmp, length);
     circularShiftInterpolated(tmp, length, offset);
     scale(tmp, tmp, length, weight);
     add(buffer, tmp, buffer, length);
@@ -378,7 +378,7 @@ namespace rosic
     double f    = read-r;                  // fractional part of read position
     double f2   = 1.0-f;
     T *tmp      = new T[length];
-    copyBuffer(buffer, tmp, length);
+    copy(buffer, tmp, length);
     while( r < length-1 )
     {
       buffer[w] = f2*tmp[r] + f*tmp[r+1];
@@ -452,7 +452,7 @@ namespace rosic
   }
 
   template <class T>
-  void copyBuffer(T *source, T *destination, int length)
+  void copy(T *source, T *destination, int length)
   {
     for(int i=0; i<length; i++)
       destination[i] = source[i];
@@ -901,7 +901,7 @@ namespace rosic
   T median(T *buffer, int length)
   {
     T* tmpBuffer = new T[length];
-    RAPT::rsArray::copyBuffer(buffer, tmpBuffer, length);
+    RAPT::rsArray::copy(buffer, tmpBuffer, length);
 
     std::sort(tmpBuffer, &tmpBuffer[length]);
     T med;

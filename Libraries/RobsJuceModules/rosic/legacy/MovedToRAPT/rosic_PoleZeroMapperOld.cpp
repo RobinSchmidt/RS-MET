@@ -109,8 +109,8 @@ void PoleZeroMapper::sLowpassToLowshelf(Complex *z, Complex *p, double *k, Compl
   //double GC = sqrt((GB*GB-G0*G0)/(G*G-G0*G0));  // desired lowpass gain at unit frequency
   //scaleToMatchGainAtCutoff(z, p, k, zTmp, pTmp, &kTmp, N, GC);
 
-  copyBuffer(z, zTmp, N);
-  copyBuffer(p, pTmp, N);
+  copy(z, zTmp, N);
+  copy(p, pTmp, N);
 
 
   // obtain magnitude-squared polynomial for shelving filter:
@@ -138,16 +138,16 @@ void PoleZeroMapper::sLowpassToLowshelf(Complex *z, Complex *p, double *k, Compl
   // if we make a dip-filter, poles and zeros exchange roles:
   if( dip == false )
   {
-    copyBuffer(zTmp, zNew, N);
-    copyBuffer(pTmp, pNew, N);
+    copy(zTmp, zNew, N);
+    copy(pTmp, pNew, N);
     *kNew = kTmp;
     
     //*kNew = sqrt(bS[2*N].getRadius());
   }
   else
   {
-    copyBuffer(zTmp, pNew, N);
-    copyBuffer(pTmp, zNew, N);
+    copy(zTmp, pNew, N);
+    copy(pTmp, zNew, N);
     *kNew = 1.0 / kTmp;
 
     //*kNew = 1.0 / sqrt(bS[2*N].getRadius());

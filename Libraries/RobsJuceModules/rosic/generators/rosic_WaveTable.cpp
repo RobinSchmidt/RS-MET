@@ -58,8 +58,8 @@ void WaveTable::getWaveform(double *targetBufferL, double *targetBufferR,
 {
   if( targetBufferLength == tableLength )
   {
-    RAPT::rsArray::copyBuffer(waveBufferL, targetBufferL, tableLength);
-    RAPT::rsArray::copyBuffer(waveBufferR, targetBufferR, tableLength);
+    RAPT::rsArray::copy(waveBufferL, targetBufferL, tableLength);
+    RAPT::rsArray::copy(waveBufferR, targetBufferR, tableLength);
   }
   else
   {
@@ -76,7 +76,7 @@ void WaveTable::getWaveform(double *targetBufferL, double *targetBufferR,
 void WaveTable::updateBuffers()
 {
   waveformRenderer.renderWaveForm(prototypeBufferL, tableLength);
-  RAPT::rsArray::copyBuffer(prototypeBufferL, prototypeBufferR, tableLength);
+  RAPT::rsArray::copy(prototypeBufferL, prototypeBufferR, tableLength);
   // \todo: let the waveformRenderer directly create a stereo waveform
 
   int    n, k;
@@ -211,8 +211,8 @@ void WaveTable::updateBuffers()
   RAPT::rsArray::addCircularShiftedCopy(tmpL, tableLength, combOffset, 0.01*combAmount);
   RAPT::rsArray::addCircularShiftedCopy(tmpR, tableLength, combOffset, 0.01*combAmount);
 
-  RAPT::rsArray::copyBuffer(tmpL, waveBufferL, tableLength);
-  RAPT::rsArray::copyBuffer(tmpR, waveBufferR, tableLength);
+  RAPT::rsArray::copy(tmpL, waveBufferL, tableLength);
+  RAPT::rsArray::copy(tmpR, waveBufferR, tableLength);
   const int numWarmUpCycles = 3;
   slewRateLimiter.reset();
   for(int c=0; c<numWarmUpCycles+1; c++)
@@ -262,8 +262,8 @@ void WaveTable::updateBuffers()
   //-----------------------------------------------------------------
   // manipulations done - copy temporary buffers into member-buffers:
 
-  RAPT::rsArray::copyBuffer(tmpL, waveBufferL, tableLength);
-  RAPT::rsArray::copyBuffer(tmpR, waveBufferR, tableLength);
+  RAPT::rsArray::copy(tmpL, waveBufferL, tableLength);
+  RAPT::rsArray::copy(tmpR, waveBufferR, tableLength);
 
   waveBufferL[tableLength] = waveBufferL[0]; // for interpolation
   waveBufferR[tableLength] = waveBufferR[0]; 

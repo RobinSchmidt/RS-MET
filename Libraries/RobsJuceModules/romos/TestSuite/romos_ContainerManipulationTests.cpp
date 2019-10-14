@@ -329,9 +329,9 @@ PinSortingTest::PinSortingTest()
 void PinSortingTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   processModuleInFrames();
-  RAPT::rsArray::copyBuffer(outputs[0][0], desiredOutputs[0][0], numFramesToProcess);
-  RAPT::rsArray::copyBuffer(outputs[0][1], desiredOutputs[0][1], numFramesToProcess);
-  RAPT::rsArray::copyBuffer(outputs[0][2], desiredOutputs[0][2], numFramesToProcess);
+  RAPT::rsArray::copy(outputs[0][0], desiredOutputs[0][0], numFramesToProcess);
+  RAPT::rsArray::copy(outputs[0][1], desiredOutputs[0][1], numFramesToProcess);
+  RAPT::rsArray::copy(outputs[0][2], desiredOutputs[0][2], numFramesToProcess);
 }
 bool PinSortingTest::runTest()
 {

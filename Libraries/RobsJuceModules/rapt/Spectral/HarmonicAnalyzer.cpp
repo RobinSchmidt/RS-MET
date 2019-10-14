@@ -116,7 +116,7 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   typedef RAPT::rsArray AR;
   AR::fillWithZeros(&sig[0], K-L);
   if(L > 0)
-    AR::copyBuffer(&y[n0], &sig[K-L], L);
+    AR::copy(&y[n0], &sig[K-L], L);
   //rsPlotVector(sig);
   fillHarmonicData(mdl, m, getTimeStampForFrame(m));
 
@@ -124,7 +124,7 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   L = K;                               // length of inner cycles
   for(m = 1; m < getNumFrames()-1; m++) {
     n0 = (int) tOut[m];                   // ...why not round?
-    AR::copyBuffer(&y[n0], &sig[0], L);
+    AR::copy(&y[n0], &sig[0], L);
 
     //rsPlotVector(sig);
     //// plot 2nd-to-last (debug):
@@ -138,7 +138,7 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   n0 = (int) tOut[m]; 
   L = int(tOut[tOut.size()-1] - tOut[tOut.size()-2]) + 1;
   rsAssert(L >= 0 && L <= K);
-  AR::copyBuffer(&y[n0], &sig[0], L);
+  AR::copy(&y[n0], &sig[0], L);
   if(L < K)  // is this correct?
     AR::fillWithZeros(&sig[L], K-L);
   //rsPlotVector(sig);  // debug

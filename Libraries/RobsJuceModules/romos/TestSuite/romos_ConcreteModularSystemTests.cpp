@@ -17,8 +17,8 @@ void BypassTest::createAndConnectTestChildModules()
 }
 void BypassTest::fillDesiredOutputSignalArrays()
 {
-  RAPT::rsArray::copyBuffer(inputs[0], desiredOutputs[0], signalLength);
-  RAPT::rsArray::copyBuffer(inputs[1], desiredOutputs[1], signalLength);
+  RAPT::rsArray::copy(inputs[0], desiredOutputs[0], signalLength);
+  RAPT::rsArray::copy(inputs[1], desiredOutputs[1], signalLength);
 }
 
 

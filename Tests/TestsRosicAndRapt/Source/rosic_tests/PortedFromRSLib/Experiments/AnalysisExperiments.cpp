@@ -55,7 +55,7 @@ void autoCorrelation()
   /*
   // obtain a smoothed acf by a 3-point moving average (MA) filter:
   double sacf[bufferSize];
-  copyBuffer(acf, sacf, bufferSize);
+  copy(acf, sacf, bufferSize);
   double h[3] = {1, 1, 0};
   sacf[0] = h[1]*acf[0] + h[2]*acf[1];
   for(n = 1; n <= bufferSize-2; n++)
@@ -72,7 +72,7 @@ void autoCorrelation()
   // avoids octave errors when a sinusoid of f = fs/(k+1/2) (k integer) is applied. Later we will
   // need to take accout of this by moving the exact location of the maximum by -0.5:
   double sacf[bufferSize];
-  RAPT::rsArray::copyBuffer(acf, sacf, bufferSize);
+  RAPT::rsArray::copy(acf, sacf, bufferSize);
   /*
   sacf[0] = 2*acf[0];
   for(int n = 1; n < bufferSize; n++)
@@ -378,13 +378,13 @@ void combineFFTs()
   }
 
   // compute an N-point FFT:
-  RAPT::rsArray::copyBuffer(x, X, N);
+  RAPT::rsArray::copy(x, X, N);
   rsFFT(X, N);
 
   // compute two N/2-point FFTs (of the 1st and 2nd half of the buffer):
-  RAPT::rsArray::copyBuffer(x, X1, N/2);
+  RAPT::rsArray::copy(x, X1, N/2);
   rsFFT(X1, N/2);
-  RAPT::rsArray::copyBuffer(&x[N/2], X2, N/2);
+  RAPT::rsArray::copy(&x[N/2], X2, N/2);
   rsFFT(X2, N/2);
 
   // combine the two N/2 point FFTs into one N-point FFT:
