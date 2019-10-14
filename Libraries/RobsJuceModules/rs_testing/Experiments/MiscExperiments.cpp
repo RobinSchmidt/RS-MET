@@ -330,12 +330,15 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
 
   //rsPlotVectors(x2, e2);
 
+  double thresh = -70;
+
   RAPT::rsExponentialEnvelopeMatcher<double> em;
-  em.setMatchLevel(-25);               // make function parameter
-  em.setInitialIgnoreSection1(16000);  // reference signal has 2-stage decay
+  em.setMatchLevel(-50);               // make function parameter
+  //em.setInitialIgnoreSection1(16000);  // reference signal has 2-stage decay
+  em.setInitialIgnoreSection1(60000);  // ..or actually mor like a 3-stage decay
   em.setInitialIgnoreSection2( 6000);
-  em.setIgnoreThreshold1(-60);
-  em.setIgnoreThreshold2(-60);
+  em.setIgnoreThreshold1(thresh);
+  em.setIgnoreThreshold2(thresh);
 
   int dt = (int) em.getMatchOffset(&e1[0], (int) e1.size(), &e2[0], (int) e2.size());
   // hmm...maybe we should pass references to the enve-follower and env-matcher, so the caller can
@@ -349,6 +352,11 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
   std::vector<double> e1d = rsDecimate(e1, decimation);
   std::vector<double> e2d = rsDecimate(e2, decimation);
 
+  // convert to decibels:
+  std::vector<double> db1d(e1d.size()), db2d(e2d.size());
+  for(n = 0; n < e1d.size(); n++)  db1d[n] = rsMax(rsAmp2dB(e1d[n]), thresh);
+  for(n = 0; n < e2d.size(); n++)  db2d[n] = rsMax(rsAmp2dB(e2d[n]), thresh);
+
   // create the two time axes:
   std::vector<double> t1d(e1d.size()), t2d(e2d.size());
   for(n = 0; n < t1d.size(); n++)  t1d[n] = n * decimation;
@@ -356,9 +364,13 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
 
   // plot:
   GNUPlotter plt;
-  plt.addDataArrays((int) t1d.size(), &t1d[0], &e1d[0]);
-  plt.addDataArrays((int) t2d.size(), &t2d[0], &e2d[0]);
+  //plt.addDataArrays((int) t1d.size(), &t1d[0], &e1d[0]);
+  //plt.addDataArrays((int) t2d.size(), &t2d[0], &e2d[0]);
+  plt.addDataArrays((int) t1d.size(), &t1d[0], &db1d[0]);
+  plt.addDataArrays((int) t2d.size(), &t2d[0], &db2d[0]);
   plt.plot();
+
+  // todo: maybe plot the two regression lines as well
 }
 
 
