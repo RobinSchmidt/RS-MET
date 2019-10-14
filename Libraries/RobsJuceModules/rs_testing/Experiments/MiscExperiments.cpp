@@ -331,7 +331,7 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
   //rsPlotVectors(x2, e2);
 
   RAPT::rsExponentialEnvelopeMatcher<double> em;
-  em.setMatchLevel(-45);               // make function parameter
+  em.setMatchLevel(-25);               // make function parameter
   em.setInitialIgnoreSection1(16000);  // reference signal has 2-stage decay
   em.setInitialIgnoreSection2( 6000);
   em.setIgnoreThreshold1(-60);
@@ -341,16 +341,24 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
   // hmm...maybe we should pass references to the enve-follower and env-matcher, so the caller can
   // set them up - it would be too many function parameters otherwise
 
-  // plot envelopes (decimated, because they are soo looong):
+
+
+
+  // decimate enevlopes for plotting (GNUPlot doesn't like big datasets):
   int decimation = 16;
   std::vector<double> e1d = rsDecimate(e1, decimation);
   std::vector<double> e2d = rsDecimate(e2, decimation);
-  rsPlotVectors(e1d, e2d);
 
-  // but we should plot them *with* the shift - we need to create custom time-axes...
-  // maybe we should plot the dB-envelopes instead of the raw ones
+  // create the two time axes:
+  std::vector<double> t1d(e1d.size()), t2d(e2d.size());
+  for(n = 0; n < t1d.size(); n++)  t1d[n] = n * decimation;
+  for(n = 0; n < t2d.size(); n++)  t2d[n] = n * decimation + dt;
 
-  int dummy = 0;
+  // plot:
+  GNUPlotter plt;
+  plt.addDataArrays((int) t1d.size(), &t1d[0], &e1d[0]);
+  plt.addDataArrays((int) t2d.size(), &t2d[0], &e2d[0]);
+  plt.plot();
 }
 
 
