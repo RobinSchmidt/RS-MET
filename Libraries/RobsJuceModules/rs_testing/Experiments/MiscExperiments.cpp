@@ -321,6 +321,10 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
   ef.setSampleRate(44100);  // make this a function parameter
   ef.setInputFrequency(85); // this too
 
+  // todo: use simpler envelope follower with faster attack - and then use a smaller initial ignore
+  // section for the shiftee (the need for an initial ignore section is an artifact of the slow 
+  // attack of the env follower)
+
   // exctract envelopes:
   std::vector<double> e1(x1.size()), e2(x2.size());
   int n;
@@ -330,13 +334,19 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
 
   //rsPlotVectors(x2, e2);
 
-  double thresh = -70;
+  double thresh = -60;
 
   RAPT::rsExponentialEnvelopeMatcher<double> em;
-  em.setMatchLevel(-50);               // make function parameter
+  em.setMatchLevel(-45);               // make function parameter
+
   //em.setInitialIgnoreSection1(16000);  // reference signal has 2-stage decay
   em.setInitialIgnoreSection1(60000);  // ..or actually mor like a 3-stage decay
   em.setInitialIgnoreSection2( 6000);
+
+  // good for when the tail is actually cut out from the full signal:
+  //em.setInitialIgnoreSection1(60000); 
+  //em.setInitialIgnoreSection2(    0);
+
   em.setIgnoreThreshold1(thresh);
   em.setIgnoreThreshold2(thresh);
 
@@ -371,6 +381,8 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
   plt.plot();
 
   // todo: maybe plot the two regression lines as well
+  // try to cut an actual section of the tail from the 1st signal and match that to the full
+  // length signal
 }
 
 
