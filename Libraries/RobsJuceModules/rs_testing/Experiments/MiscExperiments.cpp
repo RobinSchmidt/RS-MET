@@ -297,6 +297,18 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   rosic::writeToMonoWaveFile(name + "DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
 }
 
+template<class T>
+std::vector<T> rsDecimate(const std::vector<T>& x, int factor)
+{
+  int Ny = (int) x.size() / factor;
+  std::vector<T> y(Ny);
+  for(int i = 0; i < Ny; i++)
+    y[i] = x[i*factor];
+  return y;
+}
+// move to rapt
+// todo: use more sophisticated techniques like taking the average or min and max
+
 void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
 {
   // todo: 
@@ -316,10 +328,27 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
   ef.reset();
   for(n = 0; n < (int )x2.size(); n++) e2[n] = ef.getSample(x2[n]);
 
-  rsPlotVectors(x2, e2);
+  //rsPlotVectors(x2, e2);
 
+  RAPT::rsExponentialEnvelopeMatcher<double> em;
+  em.setMatchLevel(-45);               // make function parameter
+  em.setInitialIgnoreSection1(16000);  // reference signal has 2-stage decay
+  em.setInitialIgnoreSection2( 6000);
+  em.setIgnoreThreshold1(-60);
+  em.setIgnoreThreshold2(-60);
 
+  int dt = (int) em.getMatchOffset(&e1[0], (int) e1.size(), &e2[0], (int) e2.size());
+  // hmm...maybe we should pass references to the enve-follower and env-matcher, so the caller can
+  // set them up - it would be too many function parameters otherwise
 
+  // plot envelopes (decimated, because they are soo looong):
+  int decimation = 16;
+  std::vector<double> e1d = rsDecimate(e1, decimation);
+  std::vector<double> e2d = rsDecimate(e2, decimation);
+  rsPlotVectors(e1d, e2d);
+
+  // but we should plot them *with* the shift - we need to create custom time-axes...
+  // maybe we should plot the dB-envelopes instead of the raw ones
 
   int dummy = 0;
 }

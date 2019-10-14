@@ -1872,6 +1872,7 @@ T rsExponentialEnvelopeMatcher<T>::getMatchOffset(const T* x1, int N1, const T* 
 // or maybe spline-regression:  https://data.princeton.edu/eco572/smoothing.pdf ...but for that, we
 // would also need a procedure to place the knots
 
+// if we allow for shapes other than exponential, the class should be renamed
 
 //=================================================================================================
 
