@@ -176,14 +176,43 @@ public:
 
 
 
+  T getSquaredNorm() const { return a*a + b*b + c*c + d*d; }
+
+  T getNorm() const { return sqrt(getSquaredNorm); }
+
+  rsQuaternion<T> conj() const { return rsQuaternion<T>(a, -b, -c, -d); }
+
+  rsQuaternion<T> reciprocal() const { return this->conj() / this->getSquaredNorm(); }
+  // needs division by scalar to be defined
+
   /** Multiplies two quaternions. */
-  rsQuaternion<T> operator*(const rsQuaternion<T>& q2) const
+  rsQuaternion<T> operator*(const rsQuaternion<T>& q) const
   { 
-    rsQuaternion<T> q();  // preliminary
-    return q;
+    return rsQuaternion<T>(
+      a*q.a - b*q.b - c*q.c - d*q.d, 
+      a*q.b + b*q.a + c*q.d - d*q.c,
+      a*q.c - b*q.d + c*q.a + d*q.b,
+      a*q.d + b*q.c - c*q.b + d*q.a);
+    // formula from: https://en.wikipedia.org/wiki/Quaternion#Hamilton_product
   }
+
+
+  // todo: +,-,/
 
 
 };
 // this class should go somewhere into rapt/Math 
+
+// the idea is to construct an example electromagnetic vector potential A from q^2 where q is a 
+// quaternion and do experiments with that vector potential - i.e. derive electric and magnetic 
+// fields (E and B) from it and simulate the motion of a charged particle in that field - once with 
+// the regular maxwell equations and then also with the maxwell equations in tensor form. in the 
+// former case, use time t as independent parameter, in the latter, use proper time tau as 
+// independent parameter -> we may get a non-equidistant time-axis in the latter case
+// the example vector potential is then:
+// A(t,x,y,z) = |t^2 - x^2 - y^2 - z^2|
+//              |t*x + x*t + y*z - z*y|
+//              |t*y - x*z + y*t + z*x|
+//              |t*z + x*y - y*x + z*t|
+// -> verify and simplify...
 
