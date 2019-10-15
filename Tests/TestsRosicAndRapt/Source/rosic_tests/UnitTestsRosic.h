@@ -98,6 +98,23 @@ void plotOneSidedInterpolatorPolyphaseResponses(int M, double shape, double d[5]
 void testAsymmetricPolynomialInterpolatorsOld();
 
 
+// math:
+bool testComplexSqrt();
+bool testCubicCoeffsTwoPointsAndDerivatives();
+bool testPolynomialDiffAndInt();
+bool testPolynomialComposition();
+bool testPolynomialWeightedSum();
+bool testPolynomialIntegrationWithPolynomialLimits();
+void testPolynomialRootFinder();
+void testLinLogEquationSolver();
+void testLinLogEquationSolverOld();
+void testLinearSystemSolver();
+
+// numerical (maybe merge with math - or get rid):
+void testUnivariateScalarFunction();
+void testUnivariateRootFinder();
+
+
 // unit test drivers:
 void testAllRosicClasses();
 void testRosicAnalysis();
