@@ -11,15 +11,12 @@
 
 
 
-//#include "rosic_CorrectnessTests.h" // copy contents here, get rid of file - done
-
-
 namespace rotes  // maybe get rid of this namespace
 {
 
 // todo: many of the tests here seem to not be unit tests but rather experiments (they don't return
-// a bool) - maybe sort the tests according to their nature ...hmm - soe work with raising 
-// assertions - taht was the old way - they should be adapted to return a bool instead of breaking
+// a bool) - maybe sort the tests according to their nature ...hmm - some work with raising 
+// assertions - that was the old way - they should be adapted to return a bool instead of breaking
 // in case of failure
 
 // string

@@ -2847,45 +2847,6 @@
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\SampleMapGenerator.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Examples</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_AnalysisTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_BasicsTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_CorrectnessTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_EffectsTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_FileTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_FilterTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_GeneratorsTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_MathTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_ModulatorsTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_NonRealTimeTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_NumericalTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_OthersTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_StringTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\UnitTestsRosic.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClInclude>

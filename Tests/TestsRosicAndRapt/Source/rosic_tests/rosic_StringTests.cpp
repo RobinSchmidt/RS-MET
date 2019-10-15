@@ -1,4 +1,4 @@
-#include "rosic_StringTests.h"
+//#include "rosic_StringTests.h"
 using namespace rotes;
 
 //#include "rosic/rosic.h"
