@@ -12,7 +12,12 @@
 // get rid of these includes - the best would be, to move all that stuff into the rs_testing juce
 // module:
 #include "Experiments/Experiments.h"
-#include "UnitTests/UnitTests.h"
+
+
+//#include "UnitTests/UnitTests.h"
+#include "rosic_tests/UnitTestsRosic.h"
+
+
 #include "PerformanceTests/PerformanceTests.h"
 #include "Misc/Misc.h"  // demos, examples, rendering, ... // todo: make unity build cpp file
 // todo: move all the code into rs_testing module such that it can be compiled as a single 
