@@ -1,14 +1,11 @@
 #pragma once
 
 // get rid, move content of those files here:
-#include <string> // get rid - we don't need the report strings anymore
-
+//#include <string> // get rid - we don't need the report strings anymore
 //#include <rs_testing/rs_testing.h>
 
 
-
 #include "PortedFromRSLib/UnitTestsRSLib.h" // clean up and copy contents to here
-
 
 
 namespace rotes  // maybe get rid of this namespace
@@ -135,11 +132,7 @@ void testRosicOthers();
 
 
 
-// check and copy contents of MiscAudioTests.h
-
-
 bool runUnitTestsRosic();
-
 
 bool testFilterPolynomials();
 bool testHighOrderFilter();
@@ -147,12 +140,10 @@ bool testHighOrderFilter();
 bool testModalFilter2();
 bool testModalSynth();
 
-
-bool testBandwidthConversions(std::string &reportString); // get rid of the string
-bool testSincInterpolation(   std::string &reportString);
-bool testSineParameters(      std::string &reportString);
-bool testZeroCrossingFinder(  std::string &reportString);
-
+bool testBandwidthConversions();
+bool testSincInterpolation();
+bool testSineParameters();
+bool testZeroCrossingFinder();
 
 bool testNumberManipulations();
 bool testDoubleIntConversions();  // get rid - is subtest of  testNumberManipulations
@@ -160,5 +151,4 @@ bool testExponentExtraction();    // dito
 
 
 bool testAutoCorrelationPitchDetector();
-
 bool testTypeSizes();

@@ -22,9 +22,8 @@
 //void rsBandedgesTonterFreqAndBandwidthHz
 
 
-bool testBandwidthConversions(std::string &reportString)
+bool testBandwidthConversions()
 {
-  std::string testName = "BandwidthConversions";
   bool testResult = true;
 
   double fl =  125;    // lower bandedge frequency   fl = fc/k 
@@ -55,7 +54,6 @@ bool testBandwidthConversions(std::string &reportString)
   bo = rsBandwidthConverter::absoluteBandwidthToOctaves(ba, fc);
   testResult &= rsIsCloseTo(bo, 6.0, tol);
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -86,9 +84,8 @@ bool testSincInterpolationAtPickedInstants(double *x, int N, int L, double s, do
   return testResult;
 }
 
-bool testSincInterpolation(std::string &reportString)
+bool testSincInterpolation()
 {
-  std::string testName = "SincInterpolation";
   bool testResult = true;
 
   static const int N = 200;                   // number of samples in our buffer
@@ -132,13 +129,11 @@ bool testSincInterpolation(std::string &reportString)
 
   testResult &= eMax <= tol;
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
-bool testSineParameters(std::string &reportString)
+bool testSineParameters()
 {
-  std::string testName = "SineParameters";
   bool testResult = true;
 
   double w = 0.1;      // normalized radian frequency
@@ -191,14 +186,12 @@ bool testSineParameters(std::string &reportString)
   testResult &= a2 == 0.0;
   testResult &= p2 == 0.0;
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
 
-bool testZeroCrossingFinder(std::string &reportString)
+bool testZeroCrossingFinder()
 {
-  std::string testName = "ZeroCrossingFinder";
   bool testResult = true;
 
   static const int N = 200;  // number of samples
@@ -227,7 +220,5 @@ bool testZeroCrossingFinder(std::string &reportString)
   n0 = rsFindZeroNear(x, N, 80, -1, true, false);
   testResult &= n0 == 62;
 
-
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
