@@ -1,7 +1,7 @@
 #ifndef rosic_CorrectnessTests_h
 #define rosic_CorrectnessTests_h
 
-#include "rosic_StringTests.h"
+//#include "rosic_StringTests.h"
 #include "rosic_FileTests.h"
 #include "rosic_EffectsTests.h"
 #include "rosic_FilterTests.h"

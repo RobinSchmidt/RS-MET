@@ -16,7 +16,22 @@
 namespace rotes  // maybe get rid of this namespace
 {
 
-
+// string
+void testRosicString(); // all tests for rosic::String
+//void testStringComparisons();
+void testCharacterComparisons();
+void testStringBufferCopying();
+void testStringIntConversions(int numIterations = 10000); 
+void testStringDoubleConversions(); 
+void testStringDoubleConversionsRandom(int numIterations = 10000); 
+void testStringDoubleConversionsSpecialValues(); 
+void testStringDoubleConversionsDenormals(); 
+void testStringDoubleConversionsLarge(); 
+void testStringDoubleConversionsGeometricProgression(double start, double factor);
+//void testStringConcatenation();
+//void testStringComparison();...
+rosic::rsString createStringWithAllCharacters();
+rosic::rsString createStringWithAllPrintableCharacters();
 
 
 // unit test drivers:
