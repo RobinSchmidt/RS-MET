@@ -1104,6 +1104,65 @@ void amplitudeMatch()
 // an initial and final section of the sound (which presumably contains the attack portion at the 
 // start and the noise-floor at the end
 
+
+
+
+template<class T>
+T rsSimilarity1(const T* x, int Nx, const T* y, int Ny)
+{
+  int N = rsMin(Nx, Ny);
+  T a(0);
+  for(int n = 0; n < N; n++)
+    a += x[n] * y[n];  
+  return a / N;
+  // this is (up to a factor?) the cross-correlation
+  // should we divide by N? or by the sum of x or y or both? maybe we could make it asymmetric, 
+  // i.e. let x and y play different roles - the same goes for the other similarity functiosn below
+}
+
+// sum of absolute differences
+template<class T>
+T rsSimilarity2(const T* x, int Nx, const T* y, int Ny)
+{
+  int N = rsMin(Nx, Ny);
+  T a(0);
+  for(int n = 0; n < N; n++)
+    a += rsAbs(x[n] - y[n]);
+  return a / N;
+}
+template<class T>
+T rsSimilarity3(const T* x, int Nx, const T* y, int Ny)
+{
+  int N = rsMin(Nx, Ny);
+  T a(0);
+  for(int n = 0; n < N; n++)
+    a += rsAbs(x[n] - y[n]);
+  return a; // no division
+}
+// the division seems to be good - without, we get another minimum at the end which is not really 
+// meaningful
+
+
+// sum of squared differences
+template<class T>
+T rsSimilarity4(const T* x, int Nx, const T* y, int Ny)
+{
+  int N = rsMin(Nx, Ny);
+  T a(0);
+  for(int n = 0; n < N; n++)
+    a += (x[n]-y[n]) * (x[n]-y[n]) ;
+  return a / N;
+}
+template<class T>
+T rsSimilarity5(const T* x, int Nx, const T* y, int Ny)
+{
+  int N = rsMin(Nx, Ny);
+  T a(0);
+  for(int n = 0; n < N; n++)
+    a += (x[n]-y[n]) * (x[n]-y[n]) ;
+  return a;
+}
+
 void amplitudeMatch2()
 {
   // new tests with different algorithms that do not assume an exponentially decaying shape
@@ -1136,26 +1195,34 @@ void amplitudeMatch2()
   //
   M = N1; // preliminary - we perhaps need to zero pad the reference signal (maybe front and back)
 
-  std::vector<double> s1(M);
+  std::vector<double> s1(M), s2(M), s3(M), s4(M), s5(M);
   //rosic::crossCorrelation(&x1[0], N1, &x2[0], N2, &s1[0]); 
   // doesn't work - compare to the similar functions in rapt - get rid of redundancies
 
   for(int k = 0; k < M; k++)
   {
-    //s1[k] = RAPT::rsCrossCorrelation(&x1[0], N1, &x2[0], N2);
-    s1[k] = RAPT::rsCrossCorrelation(&x1[k], N1-k, &x2[0], N2);
-    //s2[k] = ...
+    //s1[k] = RAPT::rsCrossCorrelation(&x1[k], N1-k, &x2[0], N2);
+    s1[k] = rsSimilarity1(&x1[k], N1-k, &x2[0], N2);
 
+    s2[k] = rsSimilarity2(&x1[k], N1-k, &x2[0], N2);
+    s3[k] = rsSimilarity3(&x1[k], N1-k, &x2[0], N2);
+
+    s4[k] = rsSimilarity4(&x1[k], N1-k, &x2[0], N2);
+    s5[k] = rsSimilarity5(&x1[k], N1-k, &x2[0], N2);
   }
 
-  // s1 has a wide plateau at unity at the beginning, it only goes down to zero toward the end
-  // ->that's useless for this purpose
+  // rsCrossCorrelation has a wide plateau at unity at the beginning, it only goes down to zero
+  // toward the end -> that's useless for this purpose
   // maybe rename s1 to something more descriptive
+  // s2 and s3 look promising - for s2, we could perhaps even get subsample-precision by computing
+  // the intersection of lines resulting from extending the incoming and outgoing line
 
 
 
   //GNUPlotter plt;
   rsPlotVectors(s1);
+  rsPlotVectors(s2, s4);
+  rsPlotVectors(s3, s5);
 }
 
 void sineShift()
