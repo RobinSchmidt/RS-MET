@@ -148,6 +148,12 @@ bool testModalFilter2();
 bool testModalSynth();
 
 
+bool testBandwidthConversions(std::string &reportString); // get rid of the string
+bool testSincInterpolation(   std::string &reportString);
+bool testSineParameters(      std::string &reportString);
+bool testZeroCrossingFinder(  std::string &reportString);
+
+
 bool testNumberManipulations();
 bool testDoubleIntConversions();  // get rid - is subtest of  testNumberManipulations
 bool testExponentExtraction();    // dito

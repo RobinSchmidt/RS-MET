@@ -1,5 +1,7 @@
 //#include "rosic_CorrectnessTests.h"
-using namespace rotes;
+//using namespace rotes;
+
+// try to get rid of this file
 
 void rotes::testAllRosicClasses()
 {
