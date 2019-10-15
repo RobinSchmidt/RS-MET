@@ -37,6 +37,10 @@ rosic::rsString createStringWithAllPrintableCharacters();
 void testFileTextReadWrite();  // tests, if we can write a string into a file and retrieve it 
                                // again, the string must not contain non-printable characters
 
+// effects:
+bool testFastGeneralizedHadamardTransform();
+bool testFeedbackDelayNetwork();
+bool testMultiComp();
 
 // unit test drivers:
 void testAllRosicClasses();
