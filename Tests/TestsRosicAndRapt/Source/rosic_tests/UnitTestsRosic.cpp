@@ -1,5 +1,27 @@
 #include "UnitTestsRosic.h"
-#include <rs_testing/rs_testing.h>  // get rid
+
+#include <rs_testing/rs_testing.h>  // get rid - or maybe not?
+
+#include "rosic_AnalysisTests.cpp"
+#include "rosic_BasicsTests.cpp"
+#include "rosic_CorrectnessTests.cpp"
+#include "rosic_EffectsTests.cpp"
+#include "rosic_FileTests.cpp"
+#include "rosic_FilterTests.cpp"
+#include "rosic_GeneratorsTests.cpp"
+#include "rosic_MathTests.cpp"
+#include "rosic_ModulatorsTests.cpp"
+#include "rosic_NonRealTimeTests.cpp"
+#include "rosic_NumericalTests.cpp"
+#include "rosic_OthersTests.cpp"
+#include "rosic_StringTests.cpp"
+#include "PortedFromRSLib/UnitTests/FilterTests.cpp"
+#include "PortedFromRSLib/UnitTests/MiscAudioTests.cpp"
+#include "PortedFromRSLib/UnitTests/ModalTests.cpp"
+#include "PortedFromRSLib/UnitTests/NumberManipulationsTests.cpp"
+#include "PortedFromRSLib/UnitTests/PitchDetectorTests.cpp"
+#include "PortedFromRSLib/UnitTests/TypeSizeTests.cpp"
+
 
 bool runUnitTestsRosic()
 {

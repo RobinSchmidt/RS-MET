@@ -416,7 +416,9 @@
     <ClCompile Include="..\..\Source\rosic_tests\rosic_StringTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\rosic_tests\UnitTestsRosic.cpp"/>
+    <ClCompile Include="..\..\Source\rosic_tests\UnitTestsRosic.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>

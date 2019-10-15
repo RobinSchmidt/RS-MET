@@ -367,7 +367,7 @@
               file="Source/rosic_tests/rosic_StringTests.cpp"/>
         <FILE id="vQeECd" name="rosic_StringTests.h" compile="0" resource="0"
               file="Source/rosic_tests/rosic_StringTests.h"/>
-        <FILE id="NLyn6u" name="UnitTestsRosic.cpp" compile="1" resource="0"
+        <FILE id="NLyn6u" name="UnitTestsRosic.cpp" compile="0" resource="0"
               file="Source/rosic_tests/UnitTestsRosic.cpp"/>
         <FILE id="lqsU4x" name="UnitTestsRosic.h" compile="0" resource="0"
               file="Source/rosic_tests/UnitTestsRosic.h"/>
