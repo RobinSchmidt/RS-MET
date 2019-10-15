@@ -640,9 +640,6 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\MatrixBroken.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2383,7 +2380,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\Source\Misc\Misc.h"/>
     <ClInclude Include="..\..\Source\PerformanceTests\PerformanceTests.h"/>
-    <ClInclude Include="..\..\Source\UnitTests\UnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\RaptTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\UnitTestsRapt.h"/>
     <ClInclude Include="..\..\Source\Experiments\Experiments.h"/>
@@ -2547,7 +2543,6 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\Optimization.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\RootFinder.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\MatrixBroken.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Vector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Math.h"/>

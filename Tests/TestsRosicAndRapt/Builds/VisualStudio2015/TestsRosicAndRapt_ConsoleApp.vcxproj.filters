@@ -880,9 +880,6 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\MatrixBroken.cpp">
-      <Filter>JUCE Modules\rapt\Math\Types</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
@@ -2640,9 +2637,6 @@
     <ClInclude Include="..\..\Source\PerformanceTests\PerformanceTests.h">
       <Filter>TestsRosicAndRapt\Source\PerformanceTests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UnitTests\UnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\UnitTests</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\RaptTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests</Filter>
     </ClInclude>
@@ -3130,9 +3124,6 @@
       <Filter>JUCE Modules\rapt\Math\Numerics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.h">
-      <Filter>JUCE Modules\rapt\Math\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\MatrixBroken.h">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h">
