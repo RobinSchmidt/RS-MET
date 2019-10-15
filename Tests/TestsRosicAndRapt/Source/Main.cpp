@@ -31,16 +31,21 @@
 
 int main(int argc, char* argv[])
 {
+  // Here, a lot of experimentation and test functions are called. It's for research and 
+  // development. Most of the time, most function calls are commented out - the idea is to 
+  // uncomment one at a time while working on a particular problem. We may also call the driver
+  // routines for the unit tests here.
+
 
   // tempoarary throw-away-code:
   //testCrossoverNewVsOld();
 
   // todo: 
+  // -with the increasing number of tests and experiments, it gets increasingly hard to find a 
+  //  particular one - we need some better organization and order
   // -get rid of the distinction between testing classes form rapt and rosic - that makes it 
   //  confusing and hard to find a particular test -> merge the tests
-  // -get rid of header files FilterExperiments., GnereatorExperiments.h etc. - do it all in a 
-  //  single include file -> less files are easier to maintain
-   // ...maybe make even just a single include file for all rapt tests
+  // -maybe make even just a single include file for all rapt tests
 
   //===============================================================================================
   // RAPT tests:
@@ -120,7 +125,7 @@ int main(int argc, char* argv[])
   //waveEquation1D();  // not yet implemented
   //particleForceDistanceLaw();
   //particleSystem();
-  quantumSpinMeasurement();  // move to unit tests
+  //quantumSpinMeasurement();  // move to unit tests
   //quantumSpinEntanglement();
   //quantumGates();            // move to unit tests
   //quantumSpinEvolution();
@@ -402,7 +407,7 @@ int main(int argc, char* argv[])
   // Matching:
   //sineShift();
   //sineShift2();
-  //amplitudeMatch();
+//  amplitudeMatch();
 
 
   ////// tests with Elan's example files (they don't work unless the files are available):
@@ -414,7 +419,8 @@ int main(int argc, char* argv[])
   ////sylophoneCycleMarks();
   ////autoTuneSylophone();
   ////bestMatchShift();
-  // move them into the test repo and add the relevant sample files there
+  // move them into the test repo and add the relevant sample files there (if i still cna find
+  // them, that is)
 
   // Saturation:
   //powRatioParametricSigmoid();

@@ -1852,12 +1852,14 @@ T rsExponentialEnvelopeMatcher<T>::getMatchOffset(const T* x1, int N1, const T* 
   rsStatistics::linearRegression((int)t1.size(), &t1[0], &xdB1[0], a1, b1);
   rsStatistics::linearRegression((int)t2.size(), &t2[0], &xdB2[0], a2, b2);
 
-  // compute, by how much we must shift x1 to match x2 at the given match level:
+  // compute, by how much we must shift x2 to match x1 at the given match level:
   T tm1, tm2;
   tm1 = (matchLevel - b1) / a1;  // time instant, where xdB1 crosses the matchLevel
   tm2 = (matchLevel - b2) / a2;  // same for xdB2
   return tm1 - tm2;              // this is the resulting desired shift
 }
+// factor out a function getRegressionCoeffs - can be used for plotting the regression lines
+
 // idea: maybe to be more flexible with respect to the shape of the envelope, we should try 
 // polynomial regression: https://en.wikipedia.org/wiki/Polynomial_regression instead of linear
 // regression. that would amount to not necessarily assume an exponential envelope shape - instead,

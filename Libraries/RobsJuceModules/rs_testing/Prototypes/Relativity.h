@@ -167,6 +167,7 @@ public:
 
   /** Standard constructor. Leaves elements uninitialized. */
   rsQuaternion() {}
+  // try to get rid to enforce RAII
 
 
 

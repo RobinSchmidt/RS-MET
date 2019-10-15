@@ -1050,6 +1050,8 @@ public:
   void setFinalIgnoreSection2(  int numSamples) { finalIgnore2   = numSamples; }
   void setIgnoreThreshold2(T newThreshold) { ignoreThresh2 = rsDbToAmp(newThreshold); }
 
+  // maybe have ingnoreAboveThreshold and ignoreBelowThreshold
+
   // maybe make convenience functions that set these things for both signals at once
 
   //-----------------------------------------------------------------------------------------------

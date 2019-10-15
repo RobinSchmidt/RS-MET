@@ -17,6 +17,7 @@ void phaseLockedCrossfade2();
 
 // move to analysis:
 void amplitudeMatch();
+void amplitudeMatch2();
 void sineShift();
 void sineShift2();
 

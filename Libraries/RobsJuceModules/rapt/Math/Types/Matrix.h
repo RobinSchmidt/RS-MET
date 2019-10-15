@@ -23,8 +23,10 @@ public:
   /** Constructor. Initializes elements with  given values. */
   rsMatrix2x2(T a, T b, T c, T d) { setValues(a, b, c, d); }
 
-  /** Standard constructor. Leaves elements uninitialized. */
+  /** Standard constructor. Leaves elements uninitialized. 
+  (...try to avoid using it - prefer RAII) */
   rsMatrix2x2() {}
+
 
   /** \name Setup */
 

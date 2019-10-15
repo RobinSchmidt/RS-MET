@@ -1,5 +1,12 @@
 #pragma once
 
+// get rid, move content of those files here:
+#include <string> // get rid - we don't need the report strings anymore
+#include "PortedFromRSLib/UnitTestsRSLib.h" 
+#include "rosic_CorrectnessTests.h"
+
+
+
 
 bool runUnitTestsRosic();
 
