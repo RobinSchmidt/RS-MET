@@ -83,6 +83,21 @@ void testConsecutiveExponentialDecay();
 // analysis:
 void testOscilloscopeBuffer();
 
+// basics:
+void testBinomialCoefficients();
+void testMathFunctions();
+void testWindowFunctions();
+void testInterpolation();
+void testHermiteTwoPoint1();
+void testHermiteTwoPoint2();
+void testHermiteTwoPoint3();
+void testHermiteTwoPointM();
+rosic::Matrix createHermiteInterpolatorImpulseResponses(int inLength, int oversampling, const int M[5], double shape);
+void plotOneSidedInterpolatorContinuousResponses(int M[5], double shape);
+void plotOneSidedInterpolatorPolyphaseResponses(int M, double shape, double d[5]);
+void testAsymmetricPolynomialInterpolatorsOld();
+
+
 // unit test drivers:
 void testAllRosicClasses();
 void testRosicAnalysis();

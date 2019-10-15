@@ -8,7 +8,7 @@
 //#include "rosic_GeneratorsTests.h"
 //#include "rosic_ModulatorsTests.h"
 //#include "rosic_AnalysisTests.h"
-#include "rosic_BasicsTests.h"
+//#include "rosic_BasicsTests.h"
 #include "rosic_MathTests.h"
 #include "rosic_NumericalTests.h"
 #include "rosic_NonRealTimeTests.h"
