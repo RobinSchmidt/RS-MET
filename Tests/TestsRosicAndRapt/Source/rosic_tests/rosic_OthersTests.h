@@ -1,3 +1,4 @@
+/*
 #ifndef rosic_OthersTests_h
 #define rosic_OthersTests_h
 
@@ -9,3 +10,4 @@ namespace rotes
 }
 
 #endif 
+*/

@@ -1,3 +1,4 @@
+/*
 #ifndef rosic_NonRealtimeTests_h
 #define rosic_NonRealtimeTests_h
 
@@ -8,6 +9,5 @@ namespace rotes
   bool testMinimumPhaseReconstruction();
 }
 
-
-
 #endif 
+*/

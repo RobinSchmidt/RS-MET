@@ -11,7 +11,8 @@
 
 
 
-#include "rosic_CorrectnessTests.h" // copy contents here, get rid of file
+//#include "rosic_CorrectnessTests.h" // copy contents here, get rid of file - done
+
 
 namespace rotes  // maybe get rid of this namespace
 {
@@ -114,6 +115,11 @@ void testLinearSystemSolver();
 void testUnivariateScalarFunction();
 void testUnivariateRootFinder();
 
+// non-realtime:
+bool testMinimumPhaseReconstruction();
+
+// others:
+void testSlewRateLimiterLinear();
 
 // unit test drivers:
 void testAllRosicClasses();
