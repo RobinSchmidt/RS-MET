@@ -212,24 +212,15 @@
                 file="Source/rosic_tests/PortedFromRSLib/UnitTestsRSLib.h"/>
           <GROUP id="{E211B07B-0D0B-BE93-8EEF-79E9F655C637}" name="UnitTests">
             <FILE id="SKajol" name="FilterTests.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/UnitTests/FilterTests.cpp"/>
-            <FILE id="cYA1XK" name="FilterTests.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/UnitTests/FilterTests.h"/>
             <FILE id="k16UrY" name="MiscAudioTests.cpp" compile="0" resource="0"
                   file="Source/rosic_tests/PortedFromRSLib/UnitTests/MiscAudioTests.cpp"/>
-            <FILE id="n26eCF" name="MiscAudioTests.h" compile="0" resource="0"
-                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/MiscAudioTests.h"/>
             <FILE id="jHUqAj" name="ModalTests.cpp" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/UnitTests/ModalTests.cpp"/>
-            <FILE id="ho5p6m" name="ModalTests.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/UnitTests/ModalTests.h"/>
             <FILE id="xLSEu6" name="NumberManipulationsTests.cpp" compile="0" resource="0"
                   file="Source/rosic_tests/PortedFromRSLib/UnitTests/NumberManipulationsTests.cpp"/>
-            <FILE id="cjyB1g" name="NumberManipulationsTests.h" compile="0" resource="0"
-                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/NumberManipulationsTests.h"/>
             <FILE id="UxMuS1" name="PitchDetectorTests.cpp" compile="0" resource="0"
                   file="Source/rosic_tests/PortedFromRSLib/UnitTests/PitchDetectorTests.cpp"/>
-            <FILE id="yAF5Xk" name="PitchDetectorTests.h" compile="0" resource="0"
-                  file="Source/rosic_tests/PortedFromRSLib/UnitTests/PitchDetectorTests.h"/>
             <FILE id="NvkHEp" name="TypeSizeTests.cpp" compile="0" resource="0"
                   file="Source/rosic_tests/PortedFromRSLib/UnitTests/TypeSizeTests.cpp"/>
-            <FILE id="VTy1vA" name="TypeSizeTests.h" compile="0" resource="0" file="Source/rosic_tests/PortedFromRSLib/UnitTests/TypeSizeTests.h"/>
           </GROUP>
           <GROUP id="{150F6231-3E51-29B3-6982-F62432C7656B}" name="PerformanceTests">
             <FILE id="aKNzR5" name="AnalysisTests.cpp" compile="0" resource="0"

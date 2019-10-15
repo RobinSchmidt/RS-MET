@@ -477,8 +477,11 @@ void rosic::crossCorrelation(double *x, int xLength, double *y, int yLength, dou
 
   ifftReal(X, fftSize, result);
 
-  delete[] X;
-  delete[] Y;
+  delete X;  // triggers debug break
+  delete Y;
+
+  //delete[] X;  // hangs
+  //delete[] Y;
 }
 
 double rosic::estimateFundamental(double* /*x*/, int /*N*/, double /*sampleRate*/,

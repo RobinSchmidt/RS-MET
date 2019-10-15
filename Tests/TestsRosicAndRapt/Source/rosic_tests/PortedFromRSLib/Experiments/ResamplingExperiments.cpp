@@ -1104,6 +1104,59 @@ void amplitudeMatch()
 // an initial and final section of the sound (which presumably contains the attack portion at the 
 // start and the noise-floor at the end
 
+void amplitudeMatch2()
+{
+  // new tests with different algorithms that do not assume an exponentially decaying shape
+  // .....
+
+  int    N1 = 1000;    // number of samples in 1st signal
+  int    N2 = 1500;    // number of samples in 2nd signal
+  double A1 =  1.0;    // amplitude of 1st signal
+  double A2 =  0.5;    // amplitude of 2nd signal
+  double d1 =  0.005;  // normalized 1st decay
+  double d2 =  0.005;  // normalized 2nd decay
+  // todo: let the envelopes also have an attack phases and some undulation
+
+  // create our two input envelopes:
+  std::vector<double> x1(N1), x2(N2); 
+  int n;
+  for(n = 0; n < N1; n++) x1[n] = A1 * exp(-d1*n);
+  for(n = 0; n < N2; n++) x2[n] = A2 * exp(-d2*n);
+
+  // find best match time-shift:
+  rsExponentialEnvelopeMatcher<double> matcher;
+  matcher.setMatchLevel(-20);
+  double dt = matcher.getMatchOffset(&x1[0], N1, &x2[0], N2);
+
+  // we look for a similarity measure that featues a distinctive maximum or minimum at dt
+
+  // compute various similarity measurse:
+  int M = N1 + N2 - 1;  
+  // verify - maybe we should use N1 + 2*N2 - 2 or something? to allow overhang at the front, too
+  //
+  M = N1; // preliminary - we perhaps need to zero pad the reference signal (maybe front and back)
+
+  std::vector<double> s1(M);
+  //rosic::crossCorrelation(&x1[0], N1, &x2[0], N2, &s1[0]); 
+  // doesn't work - compare to the similar functions in rapt - get rid of redundancies
+
+  for(int k = 0; k < M; k++)
+  {
+    //s1[k] = RAPT::rsCrossCorrelation(&x1[0], N1, &x2[0], N2);
+    s1[k] = RAPT::rsCrossCorrelation(&x1[k], N1-k, &x2[0], N2);
+    //s2[k] = ...
+
+  }
+
+  // s1 has a wide plateau at unity at the beginning, it only goes down to zero toward the end
+  // ->that's useless for this purpose
+  // maybe rename s1 to something more descriptive
+
+
+
+  //GNUPlotter plt;
+  rsPlotVectors(s1);
+}
 
 void sineShift()
 {

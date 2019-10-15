@@ -2766,24 +2766,6 @@
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\MiscAudioTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\ModalTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\NumberManipulationsTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\PitchDetectorTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\TypeSizeTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\AnalysisTests.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\PerformanceTests</Filter>
     </ClInclude>

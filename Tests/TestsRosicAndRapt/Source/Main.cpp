@@ -13,8 +13,6 @@
 // module:
 #include "Experiments/Experiments.h"
 
-
-//#include "UnitTests/UnitTests.h"
 #include "rosic_tests/UnitTestsRosic.h"
 
 
@@ -58,8 +56,8 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  passed &= runUnitTestsRosic();
-  passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
+  //passed &= runUnitTestsRosic();
+  //passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
   passed = passed;  // dummy
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
@@ -412,7 +410,8 @@ int main(int argc, char* argv[])
   // Matching:
   //sineShift();
   //sineShift2();
-//  amplitudeMatch();
+  //amplitudeMatch();
+  amplitudeMatch2();
 
 
   ////// tests with Elan's example files (they don't work unless the files are available):

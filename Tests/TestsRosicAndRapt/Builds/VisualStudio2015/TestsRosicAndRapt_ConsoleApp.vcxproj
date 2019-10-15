@@ -2425,12 +2425,6 @@
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\ExperimentsRSLib.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTestsRSLib.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\MiscAudioTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\ModalTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\NumberManipulationsTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\PitchDetectorTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\TypeSizeTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\AnalysisTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\CoreTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\MathTests.h"/>

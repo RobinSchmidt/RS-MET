@@ -1,11 +1,12 @@
 #pragma once
 
-// get rid, move content of those files here:
-//#include <string> // get rid - we don't need the report strings anymore
-//#include <rs_testing/rs_testing.h>
+
+// make similar files PerformanceTestsRosic, ExperimentsRosic, ExamplesRosic
 
 
-#include "PortedFromRSLib/UnitTestsRSLib.h" // clean up and copy contents to here
+//#include "PortedFromRSLib/UnitTestsRSLib.h" 
+// clean up and copy contents to here - hmm -it's actually not used anymore - figure out, if the 
+// tests from there are already integrated somewhere here - if not, do it
 
 
 namespace rotes  // maybe get rid of this namespace
