@@ -11,7 +11,7 @@
 
 
 
-#include "rosic_CorrectnessTests.h" // copy contents her, get rid of file
+#include "rosic_CorrectnessTests.h" // copy contents here, get rid of file
 
 namespace rotes  // maybe get rid of this namespace
 {
@@ -63,6 +63,14 @@ void testPapoulisPrototypeDesign();
 void testEngineersFilter();
 void testPoleZeroMapping();
 void highOrderFilterPolesAndZeros();
+
+// generators:
+void testOscillatorStereo();
+void testLorentzSystem();
+bool testSnowflake();
+bool testResetter();
+void testTurtleReverse();
+void testTurtleSource();
 
 
 // unit test drivers:

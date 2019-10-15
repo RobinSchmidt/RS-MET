@@ -1,3 +1,4 @@
+/*
 #ifndef rosic_GeneratorsTests_h
 #define rosic_GeneratorsTests_h
 
@@ -16,6 +17,5 @@ namespace rotes
 
 }
 
-
-
 #endif 
+*/

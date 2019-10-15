@@ -5,7 +5,7 @@
 //#include "rosic_FileTests.h"
 //#include "rosic_EffectsTests.h"
 //#include "rosic_FilterTests.h"
-#include "rosic_GeneratorsTests.h"
+//#include "rosic_GeneratorsTests.h"
 #include "rosic_ModulatorsTests.h"
 #include "rosic_AnalysisTests.h"
 #include "rosic_BasicsTests.h"
