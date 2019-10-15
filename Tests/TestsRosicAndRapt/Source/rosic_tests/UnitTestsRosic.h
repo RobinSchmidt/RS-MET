@@ -42,6 +42,29 @@ bool testFastGeneralizedHadamardTransform();
 bool testFeedbackDelayNetwork();
 bool testMultiComp();
 
+// filters:
+void testLadderFilter();
+void testModalFilter();
+void testModalFilterWithAttack();
+void testBiquadPhasePlot();
+void testFiniteImpulseResponseDesigner();
+void testConvolverPartitioned();
+void testFiniteImpulseResponseFilter();
+void testFilterAnalyzer();
+void testBiquadCascade();
+void testCrossover4Way();
+void testCrossover4Way2();
+void testCrossoverNewVsOld();
+void testSlopeFilter();
+void testPrototypeDesigner();
+void testLowpassToLowshelf();
+void testBesselPrototypeDesign();
+void testPapoulisPrototypeDesign();
+void testEngineersFilter();
+void testPoleZeroMapping();
+void highOrderFilterPolesAndZeros();
+
+
 // unit test drivers:
 void testAllRosicClasses();
 void testRosicAnalysis();
