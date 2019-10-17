@@ -1162,4 +1162,47 @@ T getMaxShortTimeRMS(T* x, int N, int averagingLength);
 // rename to rsMaxShortTimeRMS
 
 
+
+
+
+template<class T>
+inline T rsSimilarityMeanAbsDiff(const T* x, int Nx, const T* y, int Ny)
+{
+  int N = rsMin(Nx, Ny);
+  T a(0);
+  for(int n = 0; n < N; n++)
+    a += rsAbs(x[n] - y[n]);
+  return a / N;
+}
+
+
+template<class T>
+inline int getBestMatchOffset(const T* x, int Nx, const T* y, int Ny)
+{
+  // compute the similarity measure as function of the offset:
+  //int M = Nx + Ny - 1; 
+  // we probably need Nx + 2*Ny - 2 ...but with the decimated Nx, Ny - we should use padding that 
+  // make the padded signals divisible by the decimation factor - use some extra padding
+
+  int M = Nx; // preliminary - we perhaps need to zero pad the reference signal (maybe front and back)
+
+  std::vector<T> s(M); 
+  for(int k = 0; k < M; k++)
+    s[k] = rsSimilarityMeanAbsDiff(&x[k], Nx-k, &y[0], Ny);
+
+  // find and return minimum:
+  return RAPT::rsArray::minIndex(&s[0], M);
+
+  // todo: maybe use zero-padding at the front and back and decimation - caller should specify 
+  // decimation factor
+
+  // todo: find index with subsample precision (compute intersection of two lines)
+}
+
+
+
+
+
+
+
 #endif

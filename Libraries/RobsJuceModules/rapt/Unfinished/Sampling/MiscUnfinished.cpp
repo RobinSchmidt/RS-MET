@@ -2073,3 +2073,4 @@ T getMaxShortTimeRMS(T* x, int N, int averagingLength)
   }
   return maxRms;
 }
+

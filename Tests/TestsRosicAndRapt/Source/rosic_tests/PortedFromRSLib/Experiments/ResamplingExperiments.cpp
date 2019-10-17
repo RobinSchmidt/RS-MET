@@ -1123,7 +1123,7 @@ T rsSimilarity1(const T* x, int Nx, const T* y, int Ny)
 // sum of absolute differences
 
 
-
+/*
 template<class T>
 T rsSimilarityMeanAbsDiff(const T* x, int Nx, const T* y, int Ny)
 {
@@ -1133,8 +1133,9 @@ T rsSimilarityMeanAbsDiff(const T* x, int Nx, const T* y, int Ny)
     a += rsAbs(x[n] - y[n]);
   return a / N;
 }
-// rename function to meanAbsDiff, move to rsArray, use N isntead of Nx, Ny -> caller should use
+// rename function to meanAbsDiff, move to rsArray, use N instead of Nx, Ny -> caller should use
 // rsMin
+*/
 
 template<class T>
 T rsSimilarity3(const T* x, int Nx, const T* y, int Ny) // SumAbsDiff
@@ -1169,6 +1170,7 @@ T rsSimilarity5(const T* x, int Nx, const T* y, int Ny) // SumSquaredDiff
   return a;
 }
 
+/*
 template<class T>
 int getBestMatchOffset(const T* x, int Nx, const T* y, int Ny)
 {
@@ -1191,6 +1193,7 @@ int getBestMatchOffset(const T* x, int Nx, const T* y, int Ny)
 
   // todo: find index with subsample precision (compute intersection of two lines)
 }
+*/
 
 
 void amplitudeMatch2()
