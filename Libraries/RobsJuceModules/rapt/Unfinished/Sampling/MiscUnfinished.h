@@ -1076,6 +1076,9 @@ protected:
 };
 
 
+// these are free functions all related to some analysis or synthesis procedure - maybe they should
+// be put into a class rsMiscAudioAnalysis rsMiscAudioSynthesis
+
 /** Given a sinusoidal signal x of length N with frequency f at samplerate fs, this function will
 produce a 90° phase-shifted "quadrature" component corresponding to the sine and store it in y by
 means of applying a 1st order allpass to x, with its 90° frequency adjusted to f. As there might

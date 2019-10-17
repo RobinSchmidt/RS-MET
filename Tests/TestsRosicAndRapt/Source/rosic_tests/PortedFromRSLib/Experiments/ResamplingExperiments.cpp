@@ -1163,6 +1163,30 @@ T rsSimilarity5(const T* x, int Nx, const T* y, int Ny)
   return a;
 }
 
+template<class T>
+int getBestMatchOffset(const T* x, int Nx, const T* y, int Ny)
+{
+  // compute the similarity measure as function of the offset:
+  //int M = Nx + Ny - 1; 
+  // we probably need Nx + 2*Ny - 2 ...but with the decimated Nx, Ny - we should use padding that 
+  // make the padded signals divisible by the decimation factor - use some extra padding
+
+  int M = Nx; // preliminary - we perhaps need to zero pad the reference signal (maybe front and back)
+
+  std::vector<T> s(M); 
+  for(int k = 0; k < M; k++)
+    s[k] = rsSimilarity2(&x[k], Nx-k, &y[0], Ny);
+
+  // find and return minimum:
+  return RAPT::rsArray::minIndex(&s[0], M);
+
+  // todo: maybe use zero-padding at the front and back and decimation - caller should specify 
+  // decimation factor
+
+  // todo: find index with subsample precision (compute intersection of two lines)
+}
+
+
 void amplitudeMatch2()
 {
   // new tests with different algorithms that do not assume an exponentially decaying shape
@@ -1185,7 +1209,9 @@ void amplitudeMatch2()
   // find best match time-shift:
   rsExponentialEnvelopeMatcher<double> matcher;
   matcher.setMatchLevel(-20);
-  double dt = matcher.getMatchOffset(&x1[0], N1, &x2[0], N2);
+  double dt  = matcher.getMatchOffset(&x1[0], N1, &x2[0], N2);
+  int    dt2 = getBestMatchOffset(&x1[0], N1, &x2[0], N2);
+
 
   // we look for a similarity measure that featues a distinctive maximum or minimum at dt
 
@@ -1220,9 +1246,10 @@ void amplitudeMatch2()
 
 
   //GNUPlotter plt;
-  rsPlotVectors(s1);
-  rsPlotVectors(s2, s4);
-  rsPlotVectors(s3, s5);
+  rsPlotVectors(s2);   // s2 seems to be the most promising similarity measure
+  //rsPlotVectors(s1);
+  //rsPlotVectors(s2, s4);
+  //rsPlotVectors(s3, s5);
 }
 
 void sineShift()
