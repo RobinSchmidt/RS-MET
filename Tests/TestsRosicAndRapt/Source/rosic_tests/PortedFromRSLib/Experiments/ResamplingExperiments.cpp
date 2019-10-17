@@ -1121,8 +1121,11 @@ T rsSimilarity1(const T* x, int Nx, const T* y, int Ny)
 }
 
 // sum of absolute differences
+
+
+
 template<class T>
-T rsSimilarity2(const T* x, int Nx, const T* y, int Ny)
+T rsSimilarityMeanAbsDiff(const T* x, int Nx, const T* y, int Ny)
 {
   int N = rsMin(Nx, Ny);
   T a(0);
@@ -1130,8 +1133,11 @@ T rsSimilarity2(const T* x, int Nx, const T* y, int Ny)
     a += rsAbs(x[n] - y[n]);
   return a / N;
 }
+// rename function to meanAbsDiff, move to rsArray, use N isntead of Nx, Ny -> caller should use
+// rsMin
+
 template<class T>
-T rsSimilarity3(const T* x, int Nx, const T* y, int Ny)
+T rsSimilarity3(const T* x, int Nx, const T* y, int Ny) // SumAbsDiff
 {
   int N = rsMin(Nx, Ny);
   T a(0);
@@ -1145,7 +1151,7 @@ T rsSimilarity3(const T* x, int Nx, const T* y, int Ny)
 
 // sum of squared differences
 template<class T>
-T rsSimilarity4(const T* x, int Nx, const T* y, int Ny)
+T rsSimilarity4(const T* x, int Nx, const T* y, int Ny) // MeanSquaredDiff
 {
   int N = rsMin(Nx, Ny);
   T a(0);
@@ -1154,7 +1160,7 @@ T rsSimilarity4(const T* x, int Nx, const T* y, int Ny)
   return a / N;
 }
 template<class T>
-T rsSimilarity5(const T* x, int Nx, const T* y, int Ny)
+T rsSimilarity5(const T* x, int Nx, const T* y, int Ny) // SumSquaredDiff
 {
   int N = rsMin(Nx, Ny);
   T a(0);
@@ -1175,7 +1181,7 @@ int getBestMatchOffset(const T* x, int Nx, const T* y, int Ny)
 
   std::vector<T> s(M); 
   for(int k = 0; k < M; k++)
-    s[k] = rsSimilarity2(&x[k], Nx-k, &y[0], Ny);
+    s[k] = rsSimilarityMeanAbsDiff(&x[k], Nx-k, &y[0], Ny);
 
   // find and return minimum:
   return RAPT::rsArray::minIndex(&s[0], M);
@@ -1230,7 +1236,7 @@ void amplitudeMatch2()
     //s1[k] = RAPT::rsCrossCorrelation(&x1[k], N1-k, &x2[0], N2);
     s1[k] = rsSimilarity1(&x1[k], N1-k, &x2[0], N2);
 
-    s2[k] = rsSimilarity2(&x1[k], N1-k, &x2[0], N2);
+    s2[k] = rsSimilarityMeanAbsDiff(&x1[k], N1-k, &x2[0], N2);
     s3[k] = rsSimilarity3(&x1[k], N1-k, &x2[0], N2);
 
     s4[k] = rsSimilarity4(&x1[k], N1-k, &x2[0], N2);
@@ -1246,10 +1252,10 @@ void amplitudeMatch2()
 
 
   //GNUPlotter plt;
-  rsPlotVectors(s2);   // s2 seems to be the most promising similarity measure
-  //rsPlotVectors(s1);
-  //rsPlotVectors(s2, s4);
-  //rsPlotVectors(s3, s5);
+  //rsPlotVectors(s2);   // s2 seems to be the most promising similarity measure
+  rsPlotVectors(s1);
+  rsPlotVectors(s2, s4);
+  rsPlotVectors(s3, s5);
 }
 
 void sineShift()
