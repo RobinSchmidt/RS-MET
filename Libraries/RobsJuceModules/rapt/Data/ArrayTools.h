@@ -495,7 +495,7 @@ public:
   template <class T>
   static T product(const T* const buffer, int length);
 
-  /** Shifts the values in the 4-element array a one position back, discarding the last one a[3] 
+  /** Shifts the values in the 4-element array "a" one position back, discarding the last one a[3] 
   and inserting the new x at the front a[0]. */
   template<class T>
   static inline void pushFrontPopBack4(T x, T* a);

@@ -2080,18 +2080,50 @@ T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny)
   std::vector<T> s(Nx);
   for(int k = 0; k < Nx; k++)
     s[k] = rsArray::meanOfAbsoluteDifferences(&x[k], &y[0], rsMin(Nx-k, Ny));
-  return RAPT::rsArray::minIndex(&s[0], Nx);  // find and return minimum
-  // todo: subsample estimation
+
+
+  return RAPT::rsArray::minIndex(&s[0], Nx);  // find and return minimum - preliminary - todo: subsample estimation
+
+  // factor out into minimumViaLines ...determines subsample position of minimum via fitting lines 
+  // - similar to parabolic interpolation - use same syntax to call it (look up, how we do it in 
+  // the sinusoidal analyszer)
+
+  int km = RAPT::rsArray::minIndex(&s[0], Nx); // index of minimum
+
+  if(km == 0 || km == Nx-1)
+    return T(km);
+
+
+  int kl = km-1;
+  int kr = km+1;
+
+  if(s[kl] <= s[kr])
+  {
+    if(kl == 0)
+      return km;
+
+
+  }
+  else
+  {
+    if(kr == Nx-1)
+      return km;
+
+  }
+
+  //rsPlotVector(s);
+
+  return km;  
+  
+  
 }
 
 template<class T>
 T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny, int D)
 {
-  if(D == 1) {
+  if(D == 1)
     return rsEnvelopeMatchOffset(x, Nx, y, Ny);
-  }
-  else
-  {
+  else {
     int NxD = Nx/D;
     int NyD = Ny/D;
     std::vector<T> xd(NxD), yd(NyD);
@@ -2099,5 +2131,4 @@ T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny, int D)
     RAPT::rsArray::decimate(&y[0], &yd[0], Ny, D);
     return T(D) * rsEnvelopeMatchOffset(&xd[0], NxD, &yd[0], NyD);
   }
-
 }
