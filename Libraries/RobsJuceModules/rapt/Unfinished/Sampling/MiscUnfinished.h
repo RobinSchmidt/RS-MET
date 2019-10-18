@@ -1167,7 +1167,7 @@ T getMaxShortTimeRMS(T* x, int N, int averagingLength);
 
 
 template<class T>
-int rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny, int decimation = 1);
+T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny, int decimation);
 
 
 /*

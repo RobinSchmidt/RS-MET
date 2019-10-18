@@ -2074,41 +2074,30 @@ T getMaxShortTimeRMS(T* x, int N, int averagingLength)
   return maxRms;
 }
 
-
+template<class T>
+T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny)
+{
+  std::vector<T> s(Nx);
+  for(int k = 0; k < Nx; k++)
+    s[k] = rsArray::meanOfAbsoluteDifferences(&x[k], &y[0], rsMin(Nx-k, Ny));
+  return RAPT::rsArray::minIndex(&s[0], Nx);  // find and return minimum
+  // todo: subsample estimation
+}
 
 template<class T>
-int rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny, int D)
+T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny, int D)
 {
   if(D == 1) {
-    std::vector<T> s(Nx);
-
-    // factor out:
-    for(int k = 0; k < Nx; k++)
-      s[k] = rsArray::meanOfAbsoluteDifferences(&x[k], &y[0], rsMin(Nx-k, Ny));
-    return RAPT::rsArray::minIndex(&s[0], Nx);  // find and return minimum
+    return rsEnvelopeMatchOffset(x, Nx, y, Ny);
   }
   else
   {
-    // todo: implement decimation:
-  
     int NxD = Nx/D;
     int NyD = Ny/D;
-
-
     std::vector<T> xd(NxD), yd(NyD);
-    RAPT::rsArray::decimate(&x[0], &xd[0], Nx, D);
+    RAPT::rsArray::decimate(&x[0], &xd[0], Nx, D);  // use decimateViaMean
     RAPT::rsArray::decimate(&y[0], &yd[0], Ny, D);
-
-
-    // factor out:
-
-    std::vector<T> s(NxD);      // we may actually re-use xd for this
-
-    for(int k = 0; k < NxD; k++)
-      s[k] = rsArray::meanOfAbsoluteDifferences(&xd[k], &yd[0], rsMin(NxD-k, NyD));
-    return D * RAPT::rsArray::minIndex(&s[0], NxD); 
-
-    //return 0;  // not yet implemented
+    return T(D) * rsEnvelopeMatchOffset(&xd[0], NxD, &yd[0], NyD);
   }
 
 }
