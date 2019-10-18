@@ -389,6 +389,7 @@ template void RAPT::rsRecreateSineWithPhaseCatch(double *x, double *y, int N, do
   double fs, double p0, double pk, int k, double smooth, int sweepDirection);
 template double RAPT::rsSineShiftAmount(double *x, int N, int n0, double p0, double w);
 template double RAPT::rsSineShiftAmount(double *x, int N, int n0, double p0);
+template int RAPT::rsEnvelopeMatchOffset(const double* x, int Nx, const double* y, int Ny, int D);
 
 // move to rsFilterAnalyzer:
 template double RAPT::analogBiquadMagnitudeSquaredAt(double B0, double B1, double B2, double A0,

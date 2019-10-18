@@ -1117,29 +1117,19 @@ T rsSimilarity1(const T* x, int Nx, const T* y, int Ny)
   return a / N;
   // this is (up to a factor?) the cross-correlation
   // should we divide by N? or by the sum of x or y or both? maybe we could make it asymmetric, 
-  // i.e. let x and y play different roles - the same goes for the other similarity functiosn below
+  // i.e. let x and y play different roles - the same goes for the other similarity functions below
 }
 
 // sum of absolute differences
 
 
-/*
-template<class T>
-T rsSimilarityMeanAbsDiff(const T* x, int Nx, const T* y, int Ny)
-{
-  int N = rsMin(Nx, Ny);
-  T a(0);
-  for(int n = 0; n < N; n++)
-    a += rsAbs(x[n] - y[n]);
-  return a / N;
-}
-// rename function to meanAbsDiff, move to rsArray, use N instead of Nx, Ny -> caller should use
-// rsMin
-*/
+
 
 template<class T>
 T rsSimilarity3(const T* x, int Nx, const T* y, int Ny) // SumAbsDiff
 {
+  T s = RAPT::rsArray::sumOfAbsoluteDifferences(x, y, rsMin(Nx, Ny));
+
   int N = rsMin(Nx, Ny);
   T a(0);
   for(int n = 0; n < N; n++)
@@ -1219,7 +1209,8 @@ void amplitudeMatch2()
   rsExponentialEnvelopeMatcher<double> matcher;
   matcher.setMatchLevel(-20);
   double dt  = matcher.getMatchOffset(&x1[0], N1, &x2[0], N2);
-  int    dt2 = getBestMatchOffset(&x1[0], N1, &x2[0], N2);
+  //int    dt2 = getBestMatchOffset(&x1[0], N1, &x2[0], N2);       // old
+  int    dt3 = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2, 1); // new
 
 
   // we look for a similarity measure that featues a distinctive maximum or minimum at dt
@@ -1234,15 +1225,17 @@ void amplitudeMatch2()
   //rosic::crossCorrelation(&x1[0], N1, &x2[0], N2, &s1[0]); 
   // doesn't work - compare to the similar functions in rapt - get rid of redundancies
 
+  typedef RAPT::rsArray AR;
+
   for(int k = 0; k < M; k++)
   {
     //s1[k] = RAPT::rsCrossCorrelation(&x1[k], N1-k, &x2[0], N2);
-    s1[k] = rsSimilarity1(&x1[k], N1-k, &x2[0], N2);
+    s1[k] = rsSimilarity1(&x1[k], N1-k, &x2[0], N2);  // is this the same as rsArray::sumOfProducts?
 
-    s2[k] = rsSimilarityMeanAbsDiff(&x1[k], N1-k, &x2[0], N2);
-    s3[k] = rsSimilarity3(&x1[k], N1-k, &x2[0], N2);
+    s2[k] = AR::meanOfAbsoluteDifferences(&x1[k], &x2[0], rsMin(N1-k, N2));
+    s3[k] = AR::sumOfAbsoluteDifferences( &x1[k], &x2[0], rsMin(N1-k, N2));
 
-    s4[k] = rsSimilarity4(&x1[k], N1-k, &x2[0], N2);
+    s4[k] = rsSimilarity4(&x1[k], N1-k, &x2[0], N2);  // move to rsArray, too
     s5[k] = rsSimilarity5(&x1[k], N1-k, &x2[0], N2);
   }
 

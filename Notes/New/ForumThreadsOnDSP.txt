@@ -28,6 +28,8 @@ http://www.kvraudio.com/forum/viewtopic.php?t=467832 resource for learning s-pla
 http://www.kvraudio.com/forum/viewtopic.php?t=483173 SCREW IT I'm building a 64-bit RubberFilter clone     .."descending q-order"
 http://www.kvraudio.com/forum/viewtopic.php?t=510122 Massberg LPF issue
 http://www.kvraudio.com/forum/viewtopic.php?t=509438 3dB/0.5 pole filter?
+http://www.kvraudio.com/forum/viewtopic.php?t=505634 Variable Peak/Bell or Shelf Slopes in EQ
+
 
 Crossovers:
 http://www.kvraudio.com/forum/viewtopic.php?t=278736       mutliband-crossover IIR-design with allpass-sum?

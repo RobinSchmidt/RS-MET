@@ -2074,3 +2074,30 @@ T getMaxShortTimeRMS(T* x, int N, int averagingLength)
   return maxRms;
 }
 
+template<class T>
+int rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny, int D)
+{
+  if(D == 1) {
+    int M = Nx;  // get rid
+    std::vector<T> s(M);
+    for(int k = 0; k < M; k++)
+      s[k] = rsArray::meanOfAbsoluteDifferences(&x[k], &y[0], rsMin(Nx-k, Ny));
+    return RAPT::rsArray::minIndex(&s[0], M);  // find and return minimum
+  }
+  else
+  {
+    // todo: implement decimation:
+  
+    int NxD = Nx/D;
+    int NyD = Ny/D;
+
+
+    //std::vector<T> s(M);
+
+
+
+
+    return 0;  // not yet implemented
+  }
+
+}

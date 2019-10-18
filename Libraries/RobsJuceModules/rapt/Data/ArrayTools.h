@@ -431,6 +431,11 @@ public:
   template<class T>
   static T meanSquare(const T *x, int N);
 
+  /** Computes the mean of the absoulte values of the differences of arrays x and y */
+  template<class T>
+  inline static T meanOfAbsoluteDifferences(const T* x, const T* y, const int N)
+  { return sumOfAbsoluteDifferences(x, y, N) / T(N); }
+
   /** Returns the median of the passed buffer. */
   template <class T>
   static T median(const T *buffer, int length);
@@ -565,6 +570,10 @@ public:
   template<class T>
   static T sumOfSquares(const T *x, int N);
 
+  /** Computes the sum of the absoulte values of the differences of arrays x and y */
+  template<class T>
+  static T sumOfAbsoluteDifferences(const T *x, const T *y, const int N);
+
   /** Swaps the contents of of buffer1 and buffer2 using an auxiliary buffer bufferTmp. All buffers
   are assumed to have a size of sizeInBytes. */
   static void swapDataBuffers(void *buffer1, void *buffer2, void *bufferTmp, int sizeInBytes);
@@ -626,6 +635,12 @@ inline void rsArray::copy(const T1 *source, T2 *destination, const int length)
   for(int i = 0; i < length; i++)
     destination[i] = (T2)source[i];
 }
+// todo: switch at compile time between using memcopy for trivially copyable types and using the 
+// assignment operator in a loop (such as now) otherwise - see:
+// https://en.cppreference.com/w/cpp/types/is_trivially_copyable
+// ...but maybe for short arrays, the overhead of calling memcpy may outweigh its efficiency, so 
+// for very small arrays, the loop is actually faster? -> do benchmarks
+// -> inline it
 
 template <class T>
 inline bool rsArray::equal(const T *buffer1, const T *buffer2, const int length)

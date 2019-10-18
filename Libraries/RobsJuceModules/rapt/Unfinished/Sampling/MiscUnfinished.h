@@ -1078,6 +1078,7 @@ protected:
 
 // these are free functions all related to some analysis or synthesis procedure - maybe they should
 // be put into a class rsMiscAudioAnalysis rsMiscAudioSynthesis
+// move to AudioFunctions.h/cpp
 
 /** Given a sinusoidal signal x of length N with frequency f at samplerate fs, this function will
 produce a 90° phase-shifted "quadrature" component corresponding to the sine and store it in y by
@@ -1166,6 +1167,12 @@ T getMaxShortTimeRMS(T* x, int N, int averagingLength);
 
 
 template<class T>
+int rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny, int decimation = 1);
+
+
+/*
+// obsolete
+template<class T>
 inline T rsSimilarityMeanAbsDiff(const T* x, int Nx, const T* y, int Ny)
 {
   int N = rsMin(Nx, Ny);
@@ -1174,7 +1181,6 @@ inline T rsSimilarityMeanAbsDiff(const T* x, int Nx, const T* y, int Ny)
     a += rsAbs(x[n] - y[n]);
   return a / N;
 }
-
 
 template<class T>
 inline int getBestMatchOffset(const T* x, int Nx, const T* y, int Ny)
@@ -1198,7 +1204,7 @@ inline int getBestMatchOffset(const T* x, int Nx, const T* y, int Ny)
 
   // todo: find index with subsample precision (compute intersection of two lines)
 }
-
+*/
 
 
 

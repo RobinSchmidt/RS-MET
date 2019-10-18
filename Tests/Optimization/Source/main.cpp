@@ -60,3 +60,5 @@ int main(int argc, char* argv[])
 // this is really useful to see the assembly code generated from short code snippets - here's a 
 // video about it: 
 // https://www.youtube.com/watch?v=kIoZDUd5DKw
+// https://www.youtube.com/watch?v=4_HL3PH4wDg
+// https://www.youtube.com/watch?v=1u_ku_OJPDg
