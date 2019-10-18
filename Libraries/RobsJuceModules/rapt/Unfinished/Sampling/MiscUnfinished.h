@@ -1163,9 +1163,19 @@ T getMaxShortTimeRMS(T* x, int N, int averagingLength);
 // rename to rsMaxShortTimeRMS
 
 
+/** Given two amplitude envelopes x and y (of lengths Nx, Ny), this function computes an offset for
+the second envelope so as to best match the first. It's based on minimizing the sum of the absolute 
+differences. The second envelope is shifted along the first and for each shift, this sum is 
+computed (this is somewhat similar to a cross-correlation between the envelopes). The optimal shift 
+is where this sum becomes a minimum. */
+template<class T>
+T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny);
 
-
-
+/** Like above but may internally decimate the passed envelopes by a given decimation factor. The 
+core algo has a complexity of O(Nx*Ny), so for long envelopes, it may be prohibitively expensive. 
+But typically, envelopes at full sample-rate are highly oversampled signals anyway, so we can afford 
+some decimation. I recommend to tune the decimation factor to get one envelope datapoint per cycle. 
+That amounts to a decimations factor equal to the number of samples in a cycle.  */
 template<class T>
 T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny, int decimation);
 

@@ -2113,10 +2113,6 @@ T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny)
    
   T d = (br-bl) / (al-ar);
   return T(km) + d;
-
-  //return km;  
-  
-  
 }
 // this subsample estimation may produce unreasonable results, i.e. results that are not in between
 // the minimum and its smaller neighbour - maybe a parabolic fit would be better - and maybe 
