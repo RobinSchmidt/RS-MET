@@ -1162,14 +1162,15 @@ template<class T>
 T getMaxShortTimeRMS(T* x, int N, int averagingLength);
 // rename to rsMaxShortTimeRMS
 
-
 /** Given two amplitude envelopes x and y (of lengths Nx, Ny), this function computes an offset for
 the second envelope so as to best match the first. It's based on minimizing the sum of the absolute 
 differences. The second envelope is shifted along the first and for each shift, this sum is 
 computed (this is somewhat similar to a cross-correlation between the envelopes). The optimal shift 
-is where this sum becomes a minimum. */
+is where this sum becomes a minimum. The algorithm computes a subsample precision result by 
+considering the two neighbours to each side of the miniumum, fitting a line to each pair of 
+neighbours and computing the x-coordinate of the intersection of these two lines. */
 template<class T>
-T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny);
+T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny);
 
 /** Like above but may internally decimate the passed envelopes by a given decimation factor. The 
 core algo has a complexity of O(Nx*Ny), so for long envelopes, it may be prohibitively expensive. 
@@ -1177,45 +1178,7 @@ But typically, envelopes at full sample-rate are highly oversampled signals anyw
 some decimation. I recommend to tune the decimation factor to get one envelope datapoint per cycle. 
 That amounts to a decimations factor equal to the number of samples in a cycle.  */
 template<class T>
-T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny, int decimation);
-
-
-/*
-// obsolete
-template<class T>
-inline T rsSimilarityMeanAbsDiff(const T* x, int Nx, const T* y, int Ny)
-{
-  int N = rsMin(Nx, Ny);
-  T a(0);
-  for(int n = 0; n < N; n++)
-    a += rsAbs(x[n] - y[n]);
-  return a / N;
-}
-
-template<class T>
-inline int getBestMatchOffset(const T* x, int Nx, const T* y, int Ny)
-{
-  // compute the similarity measure as function of the offset:
-  //int M = Nx + Ny - 1; 
-  // we probably need Nx + 2*Ny - 2 ...but with the decimated Nx, Ny - we should use padding that 
-  // make the padded signals divisible by the decimation factor - use some extra padding
-
-  int M = Nx; // preliminary - we perhaps need to zero pad the reference signal (maybe front and back)
-
-  std::vector<T> s(M); 
-  for(int k = 0; k < M; k++)
-    s[k] = rsSimilarityMeanAbsDiff(&x[k], Nx-k, &y[0], Ny);
-
-  // find and return minimum:
-  return RAPT::rsArray::minIndex(&s[0], M);
-
-  // todo: maybe use zero-padding at the front and back and decimation - caller should specify 
-  // decimation factor
-
-  // todo: find index with subsample precision (compute intersection of two lines)
-}
-*/
-
+T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, const int decimation);
 
 
 

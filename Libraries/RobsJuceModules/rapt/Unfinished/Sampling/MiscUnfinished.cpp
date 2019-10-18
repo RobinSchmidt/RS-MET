@@ -2085,15 +2085,15 @@ T rsInterpolatedMinimum(const T* x, const int N, const int k)
   // check, if our minimum point has two neighbours to each side:
   if(k < 2 || k > N-3) return k;  // can we do something better?
 
-  // use the two neighbours of the inimum to the left and the two neighbours to the right to define 
-  // two lines and find the x-coordinate of the intersection of these two lines - this is our 
-  // estimate with subsample precision:
+  // use the two neighbours of the minimum to the left and the two neighbours to the right to 
+  // define two lines and find the x-coordinate of the intersection of these two lines - this is 
+  // our estimate with subsample precision:
   T al, bl, ar, br;
   rsLine2D<T>::twoPointToExplicit(T(-1), s[k-1], T(-2), s[k-2], al, bl);
   rsLine2D<T>::twoPointToExplicit(T(+1), s[k+1], T(+2), s[k+2], ar, br);
   // this can be optimized - it divides by x2-x1 = 1 -> divisions are superfluous
 
-  T d = (br-bl) / (al-ar);  // delta
+  const T d = (br-bl) / (al-ar);  // delta
   return T(k) + rsClip(d, T(-1), T(+1));
 }
 // maybe a parabolic fit would be better - and maybe squared differences are better for this?
@@ -2101,23 +2101,23 @@ T rsInterpolatedMinimum(const T* x, const int N, const int k)
 // the two autocorrelations and the cross-correlation?)
 
 template<class T>
-T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny)
+T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny)
 {
   std::vector<T> s(Nx);
   for(int k = 0; k < Nx; k++)
     s[k] = rsArray::meanOfAbsoluteDifferences(&x[k], &y[0], rsMin(Nx-k, Ny));
-  int k = RAPT::rsArray::minIndex(&s[0], Nx); // index of minimum...
-  return rsInterpolatedMinimum(s, Nx, k);     // ...refined to subsample precision
+  const int k = RAPT::rsArray::minIndex(&s[0], Nx); // index of minimum...
+  return rsInterpolatedMinimum(s, Nx, k);           // ...refined to subsample precision
 }
 
 template<class T>
-T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny, int D)
+T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, const int D)
 {
   if(D == 1)
     return rsEnvelopeMatchOffset(x, Nx, y, Ny);
   else {
-    int NxD = Nx/D;
-    int NyD = Ny/D;
+    const int NxD = Nx/D;
+    const int NyD = Ny/D;
     std::vector<T> xd(NxD), yd(NyD);
     RAPT::rsArray::decimate(&x[0], &xd[0], Nx, D);  // use decimateViaMean
     RAPT::rsArray::decimate(&y[0], &yd[0], Ny, D);
