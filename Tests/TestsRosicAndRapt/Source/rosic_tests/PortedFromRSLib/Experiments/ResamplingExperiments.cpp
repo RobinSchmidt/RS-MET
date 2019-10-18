@@ -1209,9 +1209,26 @@ void amplitudeMatch2()
   rsExponentialEnvelopeMatcher<double> matcher;
   matcher.setMatchLevel(-20);
   double dt  = matcher.getMatchOffset(&x1[0], N1, &x2[0], N2);
-  //int    dt2 = getBestMatchOffset(&x1[0], N1, &x2[0], N2);       // old
-  int    dt3 = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2, 1); // new
 
+  // try various decimation factors:
+  int dt1  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  1);
+  int dt2  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  2);
+  int dt3  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  3);
+  int dt4  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  4);
+  int dt5  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  5);
+  int dt6  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  6);
+  int dt7  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  7);
+  int dt8  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  8);
+  int dt9  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  9);
+  int dt10 = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2, 10);
+  // these should be doubles, too - use a subsample-precision algo in the innermost function - it's
+  // not overkill anymore when we use decimated envelopes
+  // dt9 is 135 and dt10 is 140 (the correct value is 139 or 138.63) - so with the higher decimation 
+  // factor 10, we get a better approximation than with 9 - is this due to the naive decimation?
+  // -> figure out ...ah no: 135 is divisible by 9, the next possible outcome would be 144 - which
+  // is actually farther away from 139 than 135 is - so 135 is the better approximation to 139 than
+  // 144
+  // -> anyway -> do a subsample estimation....
 
   // we look for a similarity measure that featues a distinctive maximum or minimum at dt
 

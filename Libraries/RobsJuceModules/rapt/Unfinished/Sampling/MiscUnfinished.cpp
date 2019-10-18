@@ -2074,15 +2074,18 @@ T getMaxShortTimeRMS(T* x, int N, int averagingLength)
   return maxRms;
 }
 
+
+
 template<class T>
 int rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny, int D)
 {
   if(D == 1) {
-    int M = Nx;  // get rid
-    std::vector<T> s(M);
-    for(int k = 0; k < M; k++)
+    std::vector<T> s(Nx);
+
+    // factor out:
+    for(int k = 0; k < Nx; k++)
       s[k] = rsArray::meanOfAbsoluteDifferences(&x[k], &y[0], rsMin(Nx-k, Ny));
-    return RAPT::rsArray::minIndex(&s[0], M);  // find and return minimum
+    return RAPT::rsArray::minIndex(&s[0], Nx);  // find and return minimum
   }
   else
   {
@@ -2092,12 +2095,20 @@ int rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny, int D)
     int NyD = Ny/D;
 
 
-    //std::vector<T> s(M);
+    std::vector<T> xd(NxD), yd(NyD);
+    RAPT::rsArray::decimate(&x[0], &xd[0], Nx, D);
+    RAPT::rsArray::decimate(&y[0], &yd[0], Ny, D);
 
 
+    // factor out:
 
+    std::vector<T> s(NxD);      // we may actually re-use xd for this
 
-    return 0;  // not yet implemented
+    for(int k = 0; k < NxD; k++)
+      s[k] = rsArray::meanOfAbsoluteDifferences(&xd[k], &yd[0], rsMin(NxD-k, NyD));
+    return D * RAPT::rsArray::minIndex(&s[0], NxD); 
+
+    //return 0;  // not yet implemented
   }
 
 }

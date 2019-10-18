@@ -213,6 +213,15 @@ public:
   /** Frees memory allocated previously via rsAllocateSquareArray2D. */
   template<class T>
   static void deAllocateSquareArray2D(T**& theArray, int size);
+  // move to MatrixTools
+
+  /** Decimates the array x of length N by the given factor and writes the result into y, which
+  must be of length N/factor. This is a naive decimation without any pre-filtering. */
+  template <class T>
+  static void decimate(const T* x, T* y, const int N, const int factor);
+  // todo: make a function decimateViaMean that uses the mean, i.e. a moving average of length 
+  // "factor"
+
 
   /** Deconvolves the impulse response h out of the signal y resulting in the signal x which has a
   length of yLength-hLength+1. It's the inverse of convolve. */
@@ -640,7 +649,15 @@ inline void rsArray::copy(const T1 *source, T2 *destination, const int length)
 // https://en.cppreference.com/w/cpp/types/is_trivially_copyable
 // ...but maybe for short arrays, the overhead of calling memcpy may outweigh its efficiency, so 
 // for very small arrays, the loop is actually faster? -> do benchmarks
-// -> inline it
+
+
+template <class T>
+void rsArray::decimate(const T* x, T* y, const int Nx, const int factor)
+{
+  int Ny = Nx / factor;
+  for(int i = 0; i < Ny; i++)
+    y[i] = x[i*factor];
+}
 
 template <class T>
 inline bool rsArray::equal(const T *buffer1, const T *buffer2, const int length)
