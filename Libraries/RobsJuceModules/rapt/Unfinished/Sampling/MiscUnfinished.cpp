@@ -2082,7 +2082,7 @@ T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny)
     s[k] = rsArray::meanOfAbsoluteDifferences(&x[k], &y[0], rsMin(Nx-k, Ny));
 
 
-  return RAPT::rsArray::minIndex(&s[0], Nx);  // find and return minimum - preliminary - todo: subsample estimation
+  //return RAPT::rsArray::minIndex(&s[0], Nx);  // find and return minimum - preliminary - todo: subsample estimation
 
   // factor out into minimumViaLines ...determines subsample position of minimum via fitting lines 
   // - similar to parabolic interpolation - use same syntax to call it (look up, how we do it in 
@@ -2093,30 +2093,34 @@ T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny)
   if(km == 0 || km == Nx-1)
     return T(km);
 
+  //rsPlotVector(s);
+
 
   int kl = km-1;
   int kr = km+1;
 
-  if(s[kl] <= s[kr])
-  {
-    if(kl == 0)
-      return km;
+    
+  // check, if our minimum point has two neighbours to each side:
+  if(kl < 1 || kr > Nx-2) return km;
 
+  // use the two neighbours of the inimum to the left and the two neighbours to the right to define 
+  // two lines and find the x-coordinate of the intersection of these two lines - this is our 
+  // estimate with subsample precision:
+  T al, bl, ar, br;
+  rsLine2D<T>::twoPointToExplicit(T(-1), s[km-1], T(-2), s[km-2], al, bl);
+  rsLine2D<T>::twoPointToExplicit(T(+1), s[km+1], T(+2), s[km+2], ar, br);
+  // this can be optimized - it divides by x2-x1 = 1 -> divisions are superfluous
+   
+  T d = (br-bl) / (al-ar);
+  return T(km) + d;
 
-  }
-  else
-  {
-    if(kr == Nx-1)
-      return km;
-
-  }
-
-  //rsPlotVector(s);
-
-  return km;  
+  //return km;  
   
   
 }
+// this subsample estimation may produce unreasonable results, i.e. results that are not in between
+// the minimum and its smaller neighbour - maybe a parabolic fit would be better - and maybe 
+// squared differences are better for this?
 
 template<class T>
 T rsEnvelopeMatchOffset(const T* x, int Nx, const T* y, int Ny, int D)
