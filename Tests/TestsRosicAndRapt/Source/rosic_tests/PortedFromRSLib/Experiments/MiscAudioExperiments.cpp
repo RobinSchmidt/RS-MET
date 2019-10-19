@@ -68,13 +68,13 @@ void decimateViaMean2(const T* x, const int Nx, T* y, const int D)
 */
 
 template <class T>
-void decimateViaMean(const T* x, const int Nx, T* y, const int D)
+void decimateViaMean(const T* x, const int N, T* y, const int D)
 {
-  const int Ny = Nx / D;
-  typedef RAPT::rsArray AR;
-  int n;
-  for(n = 0; n < Ny; n++)
-    y[n] = AR::mean(&x[n*D], D); 
+  //const int Ny = Nx / D;
+  //typedef RAPT::rsArray AR;
+  //int n;
+  for(int n = 0; n < N/D; n++)
+    y[n] = RAPT::rsArray::mean(&x[n*D], D); 
 }
 
 
@@ -101,7 +101,7 @@ void decimate()
   // signal (original and decimated):
   AR::fillWithRandomValues(&x[0], N, -1.0, 1.0, 0);
   AR::decimate(&x[0], N, &xd[0], D);  // change order: x, N, y, D
-  decimateViaMean(&x[0], N, &xa[0], D);
+  AR::decimateViaMean(&x[0], N, &xa[0], D);
 
   // todo: implement and try decimateViaMean
 

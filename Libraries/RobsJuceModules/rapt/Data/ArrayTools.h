@@ -225,6 +225,9 @@ public:
   // todo: make a function decimateViaMean that uses the mean, i.e. a moving average of length 
   // "factor"
 
+  template <class T>
+  static void decimateViaMean(const T* x, const int N, T* y, const int factor);
+
 
   /** Deconvolves the impulse response h out of the signal y resulting in the signal x which has a
   length of yLength-hLength+1. It's the inverse of convolve. */
@@ -683,15 +686,19 @@ inline void rsArray::convolveWithTwoElems(
 }
 
 template <class T>
-inline void rsArray::decimate(const T* x, const int Nx, T* y, const int factor)
+inline void rsArray::decimate(const T* x, const int N, T* y, const int D)
 {
-  int Ny = Nx / factor;
-  for(int i = 0; i < Ny; i++)
-    y[i] = x[i*factor];
+  for(int i = 0; i < N/D; i++)
+    y[i] = x[i*D];
 }
 
-
-
+template <class T>
+inline void rsArray::decimateViaMean(const T* x, const int N, T* y, const int D)
+{
+  const T s = T(1) / T(D);       // scaler
+  for(int i = 0; i < N/D; i++)
+    y[i] = s * sum(&x[i*D], D);  // s * sum(...) == mean(...)
+}
 
 template <class T>
 inline bool rsArray::equal(const T *buffer1, const T *buffer2, const int length)
