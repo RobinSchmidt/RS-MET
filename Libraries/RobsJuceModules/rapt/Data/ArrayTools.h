@@ -218,9 +218,10 @@ public:
   // move to MatrixTools
 
   /** Decimates the array x of length N by the given factor and writes the result into y, which
-  must be of length N/factor. This is a naive decimation without any pre-filtering. */
+  must be of length N/factor (floor-division). This is a naive decimation without any 
+  pre-filtering. */
   template <class T>
-  static void decimate(const T* x, T* y, const int N, const int factor);
+  static void decimate(const T* x, const int N, T* y, const int factor);
   // todo: make a function decimateViaMean that uses the mean, i.e. a moving average of length 
   // "factor"
 
@@ -654,31 +655,13 @@ inline void rsArray::copy(const T1 *source, T2 *destination, const int length)
 // for very small arrays, the loop is actually faster? -> do benchmarks
 
 
-template <class T>
-void rsArray::decimate(const T* x, T* y, const int Nx, const int factor)
-{
-  int Ny = Nx / factor;
-  for(int i = 0; i < Ny; i++)
-    y[i] = x[i*factor];
-}
-
-template <class T>
-inline bool rsArray::equal(const T *buffer1, const T *buffer2, const int length)
-{
-  for(int i = 0; i < length; i++)
-  {
-    if(buffer1[i] != buffer2[i])
-      return false;
-  }
-  return true;
-}
-
 template <class T1, class T2>
 inline void rsArray::convertBuffer(const T1 *source, T2 *destination, const int length)
 {
   for(int i = 0; i < length; i++)
     destination[i] = (T2)source[i];
 }
+// rename to convert
 
 template <class T>
 inline void rsArray::convolveWithTwoElems(const T* x, const int xLength, const T* h, T* y)
@@ -697,6 +680,28 @@ inline void rsArray::convolveWithTwoElems(
   for(int n = xLength-1; n > 0; n--)
     y[n] = x[n]*h0 + x[n-1]*h1;
   y[0] = x[0]*h0;
+}
+
+template <class T>
+inline void rsArray::decimate(const T* x, const int Nx, T* y, const int factor)
+{
+  int Ny = Nx / factor;
+  for(int i = 0; i < Ny; i++)
+    y[i] = x[i*factor];
+}
+
+
+
+
+template <class T>
+inline bool rsArray::equal(const T *buffer1, const T *buffer2, const int length)
+{
+  for(int i = 0; i < length; i++)
+  {
+    if(buffer1[i] != buffer2[i])
+      return false;
+  }
+  return true;
 }
 
 template <class T>

@@ -2119,8 +2119,8 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, cons
     const int NxD = Nx/D;
     const int NyD = Ny/D;
     std::vector<T> xd(NxD), yd(NyD);
-    RAPT::rsArray::decimate(&x[0], &xd[0], Nx, D);  // use decimateViaMean
-    RAPT::rsArray::decimate(&y[0], &yd[0], Ny, D);
+    RAPT::rsArray::decimate(&x[0], Nx, &xd[0], D);  // use decimateViaMean
+    RAPT::rsArray::decimate(&y[0], Ny, &yd[0], D);
     return T(D) * rsEnvelopeMatchOffset(&xd[0], NxD, &yd[0], NyD);
   }
 }

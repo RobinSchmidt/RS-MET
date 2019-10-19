@@ -80,7 +80,7 @@ void decimateViaMean(const T* x, const int Nx, T* y, const int D)
 
 void decimate()
 {
-  int N  = 50;  // number of samples in example signal
+  int N  = 50;   // number of samples in example signal
   int D  = 4;    // decimation factor
   int ND = N/D;
   //int ND = rsCeilDiv(N,D);
@@ -96,11 +96,11 @@ void decimate()
 
   // time axis (original and decimated):
   AR::fillWithIndex(&t[0], N);
-  AR::decimate(&t[0], &td[0], N, D);   // change order: x, N, y, D
+  AR::decimate(&t[0], N, &td[0], D);   // change order: x, N, y, D
 
   // signal (original and decimated):
   AR::fillWithRandomValues(&x[0], N, -1.0, 1.0, 0);
-  AR::decimate(&x[0], &xd[0], N, D);  // change order: x, N, y, D
+  AR::decimate(&x[0], N, &xd[0], D);  // change order: x, N, y, D
   decimateViaMean(&x[0], N, &xa[0], D);
 
   // todo: implement and try decimateViaMean
