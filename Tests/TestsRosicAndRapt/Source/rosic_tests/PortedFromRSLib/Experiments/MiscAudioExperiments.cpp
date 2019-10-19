@@ -36,10 +36,35 @@ int rsCeilDiv(int n, int m)
   // if(n > k*m) k+=1;
 }
 
+template <class T>
+void decimateViaMean(const T* x, const int Nx, T* y, const int D)
+{
+  const int Ny = Nx / D;
+
+  const int d2 = D / 2;
+
+  typedef RAPT::rsArray AR;
+
+  if(rsIsOdd(D))
+  {
+    y[0] = AR::mean(&x[0], d2+1);
+    for(int n = 1; n < Ny-1; n++)
+      y[n] = AR::mean(&x[n*D-d2], D);
+      //y[n] = AR::sum(&x[n*D-d2], D) / D;
+
+    //y[Ny-1] =... we don't seem to need that - why?
+  }
+
+
+  //for(int i = 0; i < Ny; i++)
+  //  y[i] = x[i*factor];
+}
+
+
 void decimate()
 {
-  int N  = 21;  // number of samples in example signal
-  int D  = 3;   // decimation factor
+  int N  = 34;  // number of samples in example signal
+  int D  = 5;   // decimation factor
 
   int ND = N/D;
   // todo: floor(N/D) may not be the best choice - it may throw away data at the end - how about
@@ -48,23 +73,25 @@ void decimate()
   // for N=20, D=3 -the decimated signal should be at leats one sample longer, i think - maybe even
   // two - maybe we should use a value that does not discard any samples
 
-  std::vector<double> t(N), td(N/D), x(N), xd(ND);
+  std::vector<double> t(N), td(N/D), x(N), xd(ND), xa(ND);
 
   typedef RAPT::rsArray AR;
 
   // time axis (original and decimated):
   AR::fillWithIndex(&t[0], N);
-  AR::decimate(&t[0], &td[0], N, D); // maybe change order: x, N, y, D
+  AR::decimate(&t[0], &td[0], N, D);   // change order: x, N, y, D
 
   // signal (original and decimated):
   AR::fillWithRandomValues(&x[0], N, -1.0, 1.0, 0);
-  AR::decimate(&x[0], &xd[0], N, D);
+  AR::decimate(&x[0], &xd[0], N, D);  // change order: x, N, y, D
+  decimateViaMean(&x[0], N, &xa[0], D);
 
   // todo: implement and try decimateViaMean
 
   GNUPlotter plt;
   plt.addDataArrays(N,  &t[0],  &x[0]);
   plt.addDataArrays(ND, &td[0], &xd[0]);
+  plt.addDataArrays(ND, &td[0], &xa[0]);
   plt.plot();
 }
 
