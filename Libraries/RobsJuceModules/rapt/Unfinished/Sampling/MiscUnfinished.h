@@ -1176,7 +1176,7 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny);
 core algo has a complexity of O(Nx*Ny), so for long envelopes, it may be prohibitively expensive. 
 But typically, envelopes at full sample-rate are highly oversampled signals anyway, so we can afford 
 some decimation. I recommend to tune the decimation factor to get one envelope datapoint per cycle. 
-That amounts to a decimations factor equal to the number of samples in a cycle.  */
+That amounts to a decimation factor equal to the number of samples in a cycle.  */
 template<class T>
 T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, const int decimation);
 

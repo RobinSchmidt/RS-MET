@@ -2,7 +2,12 @@
 #define RAPT_LINE2D_H_INCLUDED
 
 /** This is a class for dealing with two-dimensional lines. 
-\tod0: drag over code from RSLib
+
+
+\todo: 
+-drag over code from RSLib
+-use pointers for output parameters
+-use const, where applicable
 */
 
 template<class T>

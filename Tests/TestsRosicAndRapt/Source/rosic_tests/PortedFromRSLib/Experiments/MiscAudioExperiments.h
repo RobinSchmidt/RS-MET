@@ -4,6 +4,7 @@
 
 void centroid();
 void cubicCrossfade();
+void decimate();
 void pythagoreanTuning();
 void recursiveSineSweep();
 void recursiveSineWithCubicPhase();

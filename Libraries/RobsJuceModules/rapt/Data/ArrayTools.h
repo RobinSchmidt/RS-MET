@@ -3,6 +3,8 @@
 
 /** A collection of functions that operate on 1-dimensional arrays. 
 
+add to the documentation, to which std::algorithm a function corresponds, if applicable
+
 todo: 
 -make everything const that is possible (also by-value parameters, local variables, etc. - and use
  constexpr for compile-time constants)
@@ -274,6 +276,7 @@ public:
   \todo: rename min/max into start/end  */
   template <class T>
   static void fillWithRangeLinear(T *buffer, int length, T min, T max);
+  // corresponds to std::iota?
 
   /** Fills the passed array with one value at all indices. */
   template <class T>

@@ -333,6 +333,7 @@ int main(int argc, char* argv[])
   // Misc Audio:
   //centroid();
   //cubicCrossfade();
+  decimate();
   //pythagoreanTuning();    // move to some music/music-theory section
   //recursiveSineSweep();
   //recursiveSineWithCubicPhase();
@@ -411,7 +412,7 @@ int main(int argc, char* argv[])
   //sineShift();
   //sineShift2();
   //amplitudeMatch();
-  amplitudeMatch2();
+  //amplitudeMatch2();
 
 
   ////// tests with Elan's example files (they don't work unless the files are available):
