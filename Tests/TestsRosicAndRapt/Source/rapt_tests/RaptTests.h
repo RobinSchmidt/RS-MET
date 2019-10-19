@@ -1,5 +1,7 @@
 #pragma once
 
+#include "UnitTests/UnitTestsRapt.h"
+
 //-------------------------------------------------------------------------------------------------
 // Experiments
 
@@ -122,7 +124,7 @@ void callbackPerformance();
 
 //-------------------------------------------------------------------------------------------------
 // Unit Tests
-// ...they actually have theri own include
+// ...they actually have their own include file
 
 // Data Unit Tests
 

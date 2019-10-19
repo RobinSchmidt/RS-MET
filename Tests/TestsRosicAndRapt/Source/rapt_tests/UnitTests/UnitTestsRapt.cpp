@@ -1,5 +1,18 @@
 #include "UnitTestsRapt.h"
 
+#include <rs_testing/rs_testing.h>
+
+
+#include "DataUnitTests.cpp"
+#include "FilterUnitTests.cpp"
+#include "ImageUnitTests.cpp"
+#include "MathUnitTests.cpp"
+#include "DrawingUnitTests.cpp"
+#include "MiscUnitTests.cpp"
+#include "SortAndSearchTests.cpp"
+#include "BufferFunctionTests.cpp"
+
+
 bool runAllUnitTests()
 {
   bool passed = true;  // test result

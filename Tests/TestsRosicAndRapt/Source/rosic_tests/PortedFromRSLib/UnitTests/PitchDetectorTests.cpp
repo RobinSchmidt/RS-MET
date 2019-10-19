@@ -1,4 +1,4 @@
-#include "PitchDetectorTests.h"
+//#include "PitchDetectorTests.h"
 
 template <class T>
 bool isRangeLinear(T *buffer, int length, T min, T max)

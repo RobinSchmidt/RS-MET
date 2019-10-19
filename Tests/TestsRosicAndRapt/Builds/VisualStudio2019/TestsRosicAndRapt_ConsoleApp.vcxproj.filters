@@ -880,9 +880,6 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\MatrixBroken.cpp">
-      <Filter>JUCE Modules\rapt\Math\Types</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
@@ -2640,9 +2637,6 @@
     <ClInclude Include="..\..\Source\PerformanceTests\PerformanceTests.h">
       <Filter>TestsRosicAndRapt\Source\PerformanceTests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UnitTests\UnitTests.h">
-      <Filter>TestsRosicAndRapt\Source\UnitTests</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\RaptTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests</Filter>
     </ClInclude>
@@ -2772,24 +2766,6 @@
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\MiscAudioTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\ModalTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\NumberManipulationsTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\PitchDetectorTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\TypeSizeTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\UnitTests</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\AnalysisTests.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\PerformanceTests</Filter>
     </ClInclude>
@@ -2852,45 +2828,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\SampleMapGenerator.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Examples</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_AnalysisTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_BasicsTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_CorrectnessTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_EffectsTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_FileTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_FilterTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_GeneratorsTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_MathTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_ModulatorsTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_NonRealTimeTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_NumericalTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_OthersTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_StringTests.h">
-      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\UnitTestsRosic.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
@@ -3130,9 +3067,6 @@
       <Filter>JUCE Modules\rapt\Math\Numerics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.h">
-      <Filter>JUCE Modules\rapt\Math\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\MatrixBroken.h">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h">

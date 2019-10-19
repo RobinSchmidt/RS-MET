@@ -1,7 +1,7 @@
 #ifndef RAPT_STATISTICS_H
 #define RAPT_STATISTICS_H
 
-// wrap into class
+// move into class rsStatistics and get rid of rs prefixes
 
 /** Computes the sample cross-correlation sequence of 2 sequences x, y of length N and stores the
 result in r which is also of length N. You may use this function also to compute an
@@ -43,7 +43,8 @@ array and the shorter array is conceptually zero-padded to match the length of t
 (there's no literal zero-padding done, just the summation loop is shorter). */
 template<class T>
 T rsCrossCorrelation(T *x, int Nx, T *y, int Ny);
-// ?formula assumes zero mean for x and y? ...check this...maybe rename/generalize
+// ?formula assumes zero mean for x and y? ...check this...maybe rename/generalize - look up 
+// definitions (correlation vs covariance)
 
 /** Given two arrays x and y of lengths Nx and Ny, this function computes the cross-correlation
 between the arrays where the shorter one of the arrays is first stretched to the length of the

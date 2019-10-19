@@ -1852,12 +1852,14 @@ T rsExponentialEnvelopeMatcher<T>::getMatchOffset(const T* x1, int N1, const T* 
   rsStatistics::linearRegression((int)t1.size(), &t1[0], &xdB1[0], a1, b1);
   rsStatistics::linearRegression((int)t2.size(), &t2[0], &xdB2[0], a2, b2);
 
-  // compute, by how much we must shift x1 to match x2 at the given match level:
+  // compute, by how much we must shift x2 to match x1 at the given match level:
   T tm1, tm2;
   tm1 = (matchLevel - b1) / a1;  // time instant, where xdB1 crosses the matchLevel
   tm2 = (matchLevel - b2) / a2;  // same for xdB2
   return tm1 - tm2;              // this is the resulting desired shift
 }
+// factor out a function getRegressionCoeffs - can be used for plotting the regression lines
+
 // idea: maybe to be more flexible with respect to the shape of the envelope, we should try 
 // polynomial regression: https://en.wikipedia.org/wiki/Polynomial_regression instead of linear
 // regression. that would amount to not necessarily assume an exponential envelope shape - instead,
@@ -2070,4 +2072,55 @@ T getMaxShortTimeRMS(T* x, int N, int averagingLength)
       maxRms = rms;
   }
   return maxRms;
+}
+
+
+template<class T>
+T rsInterpolatedMinimum(const T* x, const int N, const int k)  
+{
+  // rename: can also be used for maximum, name should also reflect that we use two lines
+  // maybe extremumViaLineIntersect or something -> make a similar function extremumViaParabola
+  // move to rsArray
+
+  // check, if our minimum point has two neighbours to each side:
+  if(k < 2 || k > N-3) return k;  // can we do something better?
+
+  // use the two neighbours of the minimum to the left and the two neighbours to the right to 
+  // define two lines and find the x-coordinate of the intersection of these two lines - this is 
+  // our estimate with subsample precision:
+  T al, bl, ar, br;
+  rsLine2D<T>::twoPointToExplicit(T(-1), s[k-1], T(-2), s[k-2], al, bl);
+  rsLine2D<T>::twoPointToExplicit(T(+1), s[k+1], T(+2), s[k+2], ar, br);
+  // this can be optimized - it divides by x2-x1 = 1 -> divisions are superfluous
+
+  const T d = (br-bl) / (al-ar);  // delta
+  return T(k) + rsClip(d, T(-1), T(+1));
+}
+// maybe a parabolic fit would be better - and maybe squared differences are better for this?
+// perhaps, even an FFT based algo can be used for the squared differences (messing around with
+// the two autocorrelations and the cross-correlation?)
+
+template<class T>
+T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny)
+{
+  std::vector<T> s(Nx);
+  for(int k = 0; k < Nx; k++)
+    s[k] = rsArray::meanOfAbsoluteDifferences(&x[k], &y[0], rsMin(Nx-k, Ny));
+  const int k = RAPT::rsArray::minIndex(&s[0], Nx); // index of minimum...
+  return rsInterpolatedMinimum(s, Nx, k);           // ...refined to subsample precision
+}
+
+template<class T>
+T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, const int D)
+{
+  if(D == 1)
+    return rsEnvelopeMatchOffset(x, Nx, y, Ny);
+  else {
+    const int NxD = Nx/D;
+    const int NyD = Ny/D;
+    std::vector<T> xd(NxD), yd(NyD);
+    RAPT::rsArray::decimate(&x[0], &xd[0], Nx, D);  // use decimateViaMean
+    RAPT::rsArray::decimate(&y[0], &yd[0], Ny, D);
+    return T(D) * rsEnvelopeMatchOffset(&xd[0], NxD, &yd[0], NyD);
+  }
 }

@@ -1105,6 +1105,172 @@ void amplitudeMatch()
 // start and the noise-floor at the end
 
 
+
+
+template<class T>
+T rsSimilarity1(const T* x, int Nx, const T* y, int Ny)
+{
+  int N = rsMin(Nx, Ny);
+  T a(0);
+  for(int n = 0; n < N; n++)
+    a += x[n] * y[n];  
+  return a / N;
+  // this is (up to a factor?) the cross-correlation
+  // should we divide by N? or by the sum of x or y or both? maybe we could make it asymmetric, 
+  // i.e. let x and y play different roles - the same goes for the other similarity functions below
+}
+
+// sum of absolute differences
+
+
+
+
+template<class T>
+T rsSimilarity3(const T* x, int Nx, const T* y, int Ny) // SumAbsDiff
+{
+  T s = RAPT::rsArray::sumOfAbsoluteDifferences(x, y, rsMin(Nx, Ny));
+
+  int N = rsMin(Nx, Ny);
+  T a(0);
+  for(int n = 0; n < N; n++)
+    a += rsAbs(x[n] - y[n]);
+  return a; // no division
+}
+// the division seems to be good - without, we get another minimum at the end which is not really 
+// meaningful
+
+
+// sum of squared differences
+template<class T>
+T rsSimilarity4(const T* x, int Nx, const T* y, int Ny) // MeanSquaredDiff
+{
+  int N = rsMin(Nx, Ny);
+  T a(0);
+  for(int n = 0; n < N; n++)
+    a += (x[n]-y[n]) * (x[n]-y[n]) ;
+  return a / N;
+}
+template<class T>
+T rsSimilarity5(const T* x, int Nx, const T* y, int Ny) // SumSquaredDiff
+{
+  int N = rsMin(Nx, Ny);
+  T a(0);
+  for(int n = 0; n < N; n++)
+    a += (x[n]-y[n]) * (x[n]-y[n]) ;
+  return a;
+}
+
+/*
+template<class T>
+int getBestMatchOffset(const T* x, int Nx, const T* y, int Ny)
+{
+  // compute the similarity measure as function of the offset:
+  //int M = Nx + Ny - 1; 
+  // we probably need Nx + 2*Ny - 2 ...but with the decimated Nx, Ny - we should use padding that 
+  // make the padded signals divisible by the decimation factor - use some extra padding
+
+  int M = Nx; // preliminary - we perhaps need to zero pad the reference signal (maybe front and back)
+
+  std::vector<T> s(M); 
+  for(int k = 0; k < M; k++)
+    s[k] = rsSimilarityMeanAbsDiff(&x[k], Nx-k, &y[0], Ny);
+
+  // find and return minimum:
+  return RAPT::rsArray::minIndex(&s[0], M);
+
+  // todo: maybe use zero-padding at the front and back and decimation - caller should specify 
+  // decimation factor
+
+  // todo: find index with subsample precision (compute intersection of two lines)
+}
+*/
+
+
+void amplitudeMatch2()
+{
+  // new tests with different algorithms that do not assume an exponentially decaying shape
+  // .....
+
+  int    N1 = 1000;    // number of samples in 1st signal
+  int    N2 = 1500;    // number of samples in 2nd signal
+  double A1 =  1.0;    // amplitude of 1st signal
+  double A2 =  0.5;    // amplitude of 2nd signal
+  double d1 =  0.005;  // normalized 1st decay
+  double d2 =  0.005;  // normalized 2nd decay
+  // todo: let the envelopes also have an attack phases and some undulation
+
+  // create our two input envelopes:
+  std::vector<double> x1(N1), x2(N2); 
+  int n;
+  for(n = 0; n < N1; n++) x1[n] = A1 * exp(-d1*n);
+  for(n = 0; n < N2; n++) x2[n] = A2 * exp(-d2*n);
+
+  // find best match time-shift:
+  rsExponentialEnvelopeMatcher<double> matcher;
+  matcher.setMatchLevel(-20);
+  double dt  = matcher.getMatchOffset(&x1[0], N1, &x2[0], N2);
+
+  // try various decimation factors:
+  double dt1  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  1);
+  double dt2  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  2);
+  double dt3  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  3);
+  double dt4  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  4);
+  double dt5  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  5);
+  double dt6  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  6);
+  double dt7  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  7);
+  double dt8  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  8);
+  double dt9  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  9);
+  double dt10 = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2, 10);
+  // these should be doubles, too - use a subsample-precision algo in the innermost function - it's
+  // not overkill anymore when we use decimated envelopes
+  // dt9 is 135 and dt10 is 140 (the correct value is 139 or 138.63) - so with the higher decimation 
+  // factor 10, we get a better approximation than with 9 - is this due to the naive decimation?
+  // -> figure out ...ah no: 135 is divisible by 9, the next possible outcome would be 144 - which
+  // is actually farther away from 139 than 135 is - so 135 is the better approximation to 139 than
+  // 144
+  // -> anyway -> do a subsample estimation....
+
+  // we look for a similarity measure that featues a distinctive maximum or minimum at dt
+
+  // compute various similarity measurse:
+  int M = N1 + N2 - 1;  
+  // verify - maybe we should use N1 + 2*N2 - 2 or something? to allow overhang at the front, too
+  //
+  M = N1; // preliminary - we perhaps need to zero pad the reference signal (maybe front and back)
+
+  std::vector<double> s1(M), s2(M), s3(M), s4(M), s5(M);
+  //rosic::crossCorrelation(&x1[0], N1, &x2[0], N2, &s1[0]); 
+  // doesn't work - compare to the similar functions in rapt - get rid of redundancies
+
+  typedef RAPT::rsArray AR;
+
+  for(int k = 0; k < M; k++)
+  {
+    //s1[k] = RAPT::rsCrossCorrelation(&x1[k], N1-k, &x2[0], N2);
+    s1[k] = rsSimilarity1(&x1[k], N1-k, &x2[0], N2);  // is this the same as rsArray::sumOfProducts?
+
+    s2[k] = AR::meanOfAbsoluteDifferences(&x1[k], &x2[0], rsMin(N1-k, N2));
+    s3[k] = AR::sumOfAbsoluteDifferences( &x1[k], &x2[0], rsMin(N1-k, N2));
+
+    s4[k] = rsSimilarity4(&x1[k], N1-k, &x2[0], N2);  // move to rsArray, too
+    s5[k] = rsSimilarity5(&x1[k], N1-k, &x2[0], N2);
+  }
+
+  // rsCrossCorrelation has a wide plateau at unity at the beginning, it only goes down to zero
+  // toward the end -> that's useless for this purpose
+  // maybe rename s1 to something more descriptive
+  // s2 and s3 look promising - for s2, we could perhaps even get subsample-precision by computing
+  // the intersection of lines resulting from extending the incoming and outgoing line
+
+
+
+  //GNUPlotter plt;
+  //rsPlotVectors(s2);   // s2 seems to be the most promising similarity measure
+  rsPlotVectors(s1);
+  rsPlotVectors(s2, s4);
+  rsPlotVectors(s3, s5);
+}
+
 void sineShift()
 {
   // input signal parameters:

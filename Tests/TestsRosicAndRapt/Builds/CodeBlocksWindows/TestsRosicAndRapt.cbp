@@ -165,13 +165,6 @@
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
     </Unit>
-    <Unit filename="../../Source/UnitTests/UnitTests.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/rapt_tests/RaptTests.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
@@ -847,21 +840,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/rosic_tests/PortedFromRSLib/UnitTests/FilterTests.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/rosic_tests/PortedFromRSLib/UnitTests/MiscAudioTests.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/rosic_tests/PortedFromRSLib/UnitTests/MiscAudioTests.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
@@ -875,21 +854,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/rosic_tests/PortedFromRSLib/UnitTests/ModalTests.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/rosic_tests/PortedFromRSLib/UnitTests/NumberManipulationsTests.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/rosic_tests/PortedFromRSLib/UnitTests/NumberManipulationsTests.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
@@ -903,21 +868,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/rosic_tests/PortedFromRSLib/UnitTests/PitchDetectorTests.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/rosic_tests/PortedFromRSLib/UnitTests/TypeSizeTests.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/rosic_tests/PortedFromRSLib/UnitTests/TypeSizeTests.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
@@ -1232,21 +1183,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/rosic_tests/rosic_AnalysisTests.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/rosic_tests/rosic_BasicsTests.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/rosic_tests/rosic_BasicsTests.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
@@ -1260,21 +1197,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/rosic_tests/rosic_CorrectnessTests.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/rosic_tests/rosic_EffectsTests.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/rosic_tests/rosic_EffectsTests.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
@@ -1288,21 +1211,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/rosic_tests/rosic_FileTests.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/rosic_tests/rosic_FilterTests.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/rosic_tests/rosic_FilterTests.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
@@ -1316,21 +1225,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/rosic_tests/rosic_GeneratorsTests.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/rosic_tests/rosic_MathTests.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/rosic_tests/rosic_MathTests.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
@@ -1344,21 +1239,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/rosic_tests/rosic_ModulatorsTests.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/rosic_tests/rosic_NonRealTimeTests.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/rosic_tests/rosic_NonRealTimeTests.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
@@ -1372,21 +1253,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/rosic_tests/rosic_NumericalTests.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../Source/rosic_tests/rosic_OthersTests.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/rosic_tests/rosic_OthersTests.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
@@ -1400,17 +1267,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/rosic_tests/rosic_StringTests.h">
+    <Unit filename="../../Source/rosic_tests/UnitTestsRosic.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
       <Option compile="0"/>
       <Option link="0"/>
-    </Unit>
-    <Unit filename="../../Source/rosic_tests/UnitTestsRosic.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
     </Unit>
     <Unit filename="../../Source/rosic_tests/UnitTestsRosic.h">
       <Option target="ConsoleApp | Debug"/>
@@ -2503,20 +2365,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Math/Types/Matrix.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Math/Types/MatrixBroken.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Math/Types/MatrixBroken.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>

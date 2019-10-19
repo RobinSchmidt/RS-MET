@@ -124,7 +124,7 @@ namespace rosic
   which should be of length xLength+yLength-1. If x and y are are equal (point to the same buffer,
   the result will be the autocorrelation of x. 
   
-  \todo: TEST THIS!!!
+  \todo: TEST THIS!!! not yet ready for production
   
   */
   void crossCorrelation(double *x, int xLength, double *y, int yLength, double *result);

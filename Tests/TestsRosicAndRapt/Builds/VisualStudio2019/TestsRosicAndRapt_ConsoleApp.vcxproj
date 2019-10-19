@@ -416,7 +416,9 @@
     <ClCompile Include="..\..\Source\rosic_tests\rosic_StringTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\rosic_tests\UnitTestsRosic.cpp"/>
+    <ClCompile Include="..\..\Source\rosic_tests\UnitTestsRosic.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
@@ -638,9 +640,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\MatrixBroken.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.cpp">
@@ -2383,7 +2382,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\Source\Misc\Misc.h"/>
     <ClInclude Include="..\..\Source\PerformanceTests\PerformanceTests.h"/>
-    <ClInclude Include="..\..\Source\UnitTests\UnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\RaptTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\UnitTestsRapt.h"/>
     <ClInclude Include="..\..\Source\Experiments\Experiments.h"/>
@@ -2427,12 +2425,6 @@
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\ExperimentsRSLib.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTestsRSLib.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTestsRSLib.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\FilterTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\MiscAudioTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\ModalTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\NumberManipulationsTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\PitchDetectorTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\UnitTests\TypeSizeTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\AnalysisTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\CoreTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\PerformanceTests\MathTests.h"/>
@@ -2454,19 +2446,6 @@
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\SaturationExperiments.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\ModalExamples.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\SampleMapGenerator.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_AnalysisTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_BasicsTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_CorrectnessTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_EffectsTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_FileTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_FilterTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_GeneratorsTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_MathTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_ModulatorsTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_NonRealTimeTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_NumericalTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_OthersTests.h"/>
-    <ClInclude Include="..\..\Source\rosic_tests\rosic_StringTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\UnitTestsRosic.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.h"/>
@@ -2547,7 +2526,6 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\Optimization.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\RootFinder.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\MatrixBroken.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Vector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Math.h"/>

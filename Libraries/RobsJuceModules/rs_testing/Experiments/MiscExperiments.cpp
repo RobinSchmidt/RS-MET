@@ -345,7 +345,7 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
   double thresh = -65;
 
   RAPT::rsExponentialEnvelopeMatcher<double> em;
-  em.setMatchLevel(-55);               // make function parameter
+  em.setMatchLevel(-20);               // make function parameter
 
   //em.setInitialIgnoreSection1(16000);  // reference signal has 2-stage decay
   em.setInitialIgnoreSection1(60000);  // ..or actually mor like a 3-stage decay

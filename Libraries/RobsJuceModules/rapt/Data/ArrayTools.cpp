@@ -1126,6 +1126,15 @@ T rsArray::sumOfSquares(const T *x, int N)
   return sumOfProducts(x, x, N);
 }
 
+template<class T>
+T rsArray::sumOfAbsoluteDifferences(const T* x, const T* y, const int N)
+{
+  T s(0);
+  for(int n = 0; n < N; n++)
+    s += rsAbs(x[n] - y[n]);
+  return s; 
+}
+
 inline void rsArray::swapDataBuffers(void *buffer1, void *buffer2, void *bufferTmp, int sizeInBytes)
 {
   memcpy(bufferTmp, buffer1, sizeInBytes);

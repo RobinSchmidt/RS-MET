@@ -1050,6 +1050,8 @@ public:
   void setFinalIgnoreSection2(  int numSamples) { finalIgnore2   = numSamples; }
   void setIgnoreThreshold2(T newThreshold) { ignoreThresh2 = rsDbToAmp(newThreshold); }
 
+  // maybe have ingnoreAboveThreshold and ignoreBelowThreshold
+
   // maybe make convenience functions that set these things for both signals at once
 
   //-----------------------------------------------------------------------------------------------
@@ -1073,6 +1075,10 @@ protected:
   T ignoreThresh2  = 0.001; 
 };
 
+
+// these are free functions all related to some analysis or synthesis procedure - maybe they should
+// be put into a class rsMiscAudioAnalysis rsMiscAudioSynthesis
+// move to AudioFunctions.h/cpp
 
 /** Given a sinusoidal signal x of length N with frequency f at samplerate fs, this function will
 produce a 90° phase-shifted "quadrature" component corresponding to the sine and store it in y by
@@ -1155,6 +1161,27 @@ a recursive moving average box filter for efficient implementation. */
 template<class T>
 T getMaxShortTimeRMS(T* x, int N, int averagingLength);
 // rename to rsMaxShortTimeRMS
+
+/** Given two amplitude envelopes x and y (of lengths Nx, Ny), this function computes an offset for
+the second envelope so as to best match the first. It's based on minimizing the sum of the absolute 
+differences. The second envelope is shifted along the first and for each shift, this sum is 
+computed (this is somewhat similar to a cross-correlation between the envelopes). The optimal shift 
+is where this sum becomes a minimum. The algorithm computes a subsample precision result by 
+considering the two neighbours to each side of the miniumum, fitting a line to each pair of 
+neighbours and computing the x-coordinate of the intersection of these two lines. */
+template<class T>
+T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny);
+
+/** Like above but may internally decimate the passed envelopes by a given decimation factor. The 
+core algo has a complexity of O(Nx*Ny), so for long envelopes, it may be prohibitively expensive. 
+But typically, envelopes at full sample-rate are highly oversampled signals anyway, so we can afford 
+some decimation. I recommend to tune the decimation factor to get one envelope datapoint per cycle. 
+That amounts to a decimations factor equal to the number of samples in a cycle.  */
+template<class T>
+T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, const int decimation);
+
+
+
 
 
 #endif

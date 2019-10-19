@@ -12,7 +12,10 @@
 // get rid of these includes - the best would be, to move all that stuff into the rs_testing juce
 // module:
 #include "Experiments/Experiments.h"
-#include "UnitTests/UnitTests.h"
+
+#include "rosic_tests/UnitTestsRosic.h"
+
+
 #include "PerformanceTests/PerformanceTests.h"
 #include "Misc/Misc.h"  // demos, examples, rendering, ... // todo: make unity build cpp file
 // todo: move all the code into rs_testing module such that it can be compiled as a single 
@@ -31,16 +34,21 @@
 
 int main(int argc, char* argv[])
 {
+  // Here, a lot of experimentation and test functions are called. It's for research and 
+  // development. Most of the time, most function calls are commented out - the idea is to 
+  // uncomment one at a time while working on a particular problem. We may also call the driver
+  // routines for the unit tests here.
+
 
   // tempoarary throw-away-code:
   //testCrossoverNewVsOld();
 
   // todo: 
+  // -with the increasing number of tests and experiments, it gets increasingly hard to find a 
+  //  particular one - we need some better organization and order
   // -get rid of the distinction between testing classes form rapt and rosic - that makes it 
   //  confusing and hard to find a particular test -> merge the tests
-  // -get rid of header files FilterExperiments., GnereatorExperiments.h etc. - do it all in a 
-  //  single include file -> less files are easier to maintain
-   // ...maybe make even just a single include file for all rapt tests
+  // -maybe make even just a single include file for all rapt tests
 
   //===============================================================================================
   // RAPT tests:
@@ -48,8 +56,8 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  passed &= runUnitTestsRosic();
-  passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
+  //passed &= runUnitTestsRosic();
+  //passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
   passed = passed;  // dummy
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
@@ -120,7 +128,7 @@ int main(int argc, char* argv[])
   //waveEquation1D();  // not yet implemented
   //particleForceDistanceLaw();
   //particleSystem();
-  quantumSpinMeasurement();  // move to unit tests
+  //quantumSpinMeasurement();  // move to unit tests
   //quantumSpinEntanglement();
   //quantumGates();            // move to unit tests
   //quantumSpinEvolution();
@@ -403,6 +411,7 @@ int main(int argc, char* argv[])
   //sineShift();
   //sineShift2();
   //amplitudeMatch();
+  amplitudeMatch2();
 
 
   ////// tests with Elan's example files (they don't work unless the files are available):
@@ -414,7 +423,8 @@ int main(int argc, char* argv[])
   ////sylophoneCycleMarks();
   ////autoTuneSylophone();
   ////bestMatchShift();
-  // move them into the test repo and add the relevant sample files there
+  // move them into the test repo and add the relevant sample files there (if i still cna find
+  // them, that is)
 
   // Saturation:
   //powRatioParametricSigmoid();
