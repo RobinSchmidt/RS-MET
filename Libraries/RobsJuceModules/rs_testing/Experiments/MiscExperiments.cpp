@@ -302,12 +302,27 @@ std::vector<T> rsDecimate(const std::vector<T>& x, int factor)
 {
   int Ny = (int) x.size() / factor;
   std::vector<T> y(Ny);
+  RAPT::rsArray::decimate(&x[0], (int)x.size(), &y[0], factor);
+  return y;
+  /*
+  std::vector<T> y(Ny);
   for(int i = 0; i < Ny; i++)
     y[i] = x[i*factor];
   return y;
+  */
 }
 // move to rapt
 // todo: use more sophisticated techniques like taking the average or min and max
+
+template<class T>
+std::vector<T> rsDecimateViaMean(const std::vector<T>& x, int factor)
+{
+  int Ny = (int) x.size() / factor;
+  std::vector<T> y(Ny);
+  RAPT::rsArray::decimateViaMean(&x[0], (int)x.size(), &y[0], factor);
+  return y;
+}
+
 
 void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
 {
@@ -345,7 +360,7 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
   double thresh = -65;
 
   RAPT::rsExponentialEnvelopeMatcher<double> em;
-  em.setMatchLevel(-20);               // make function parameter
+  em.setMatchLevel(-55);               // make function parameter
 
   //em.setInitialIgnoreSection1(16000);  // reference signal has 2-stage decay
   em.setInitialIgnoreSection1(60000);  // ..or actually mor like a 3-stage decay
@@ -391,6 +406,41 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
   // todo: maybe plot the two regression lines as well
   // try to cut an actual section of the tail from the 1st signal and match that to the full
   // length signal
+}
+
+void testEnvelopeMatching2(std::vector<double>& x1, std::vector<double>& x2)
+{
+  typedef std::vector<double> Vec;
+
+  // exctract envelopes:
+  rsEnvelopeFollower<double, double> ef;
+  ef.setSampleRate(44100);  // make this a function parameter
+  ef.setAttackTime(0.0);    // in ms?
+  ef.setReleaseTime(200.0);
+  Vec e1(x1.size()), e2(x2.size());
+  int n;
+  for(n = 0; n < (int )x1.size(); n++) e1[n] = ef.getSample(x1[n]);
+  ef.reset();
+  for(n = 0; n < (int )x2.size(); n++) e2[n] = ef.getSample(x2[n]);
+
+  // find match offset:
+  double dt = 0;
+  int D = 30;  // decimation factor
+  dt = rsEnvelopeMatchOffset(&e1[0], (int) e1.size(), &e2[0], (int) e2.size(), D);
+
+  // create the two time axes and decimated enveloeps for plotting (using the same decimation
+  // factor as for matching):
+  Vec e1d = rsDecimateViaMean(e1, D);
+  Vec e2d = rsDecimateViaMean(e2, D);  
+  Vec t1d(e1d.size()), t2d(e2d.size());
+  for(n = 0; n < t1d.size(); n++)  t1d[n] = n * D;
+  for(n = 0; n < t2d.size(); n++)  t2d[n] = n * D + dt;
+
+  // plot:
+  GNUPlotter plt;
+  plt.addDataArrays((int) t1d.size(), &t1d[0], &e1d[0]);
+  plt.addDataArrays((int) t2d.size(), &t2d[0], &e2d[0]);
+  plt.plot();
 }
 
 

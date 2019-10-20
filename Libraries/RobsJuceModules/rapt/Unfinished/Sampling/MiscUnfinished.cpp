@@ -2104,8 +2104,11 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny)
   std::vector<T> s(Nx);
   for(int k = 0; k < Nx; k++)
     s[k] = rsArray::meanOfAbsoluteDifferences(&x[k], &y[0], rsMin(Nx-k, Ny));
+
+  rsPlotVector(s);
+
   const int k = RAPT::rsArray::minIndex(&s[0], Nx); // index of minimum...
-  return extremumViaLineIntersect(&s[0], Nx, k);       // ...refined to subsample precision
+  return extremumViaLineIntersect(&s[0], Nx, k);    // ...refined to subsample precision
 }
 
 template<class T>
@@ -2123,6 +2126,11 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, cons
 
     //RAPT::rsArray::decimate(&x[0], Nx, &xd[0], D);  // use decimateViaMean
     //RAPT::rsArray::decimate(&y[0], Ny, &yd[0], D);
+
+    //// debug:
+    //T dbg = rsEnvelopeMatchOffset(&xd[0], NxD, &yd[0], NyD);
+    //dbg *= D;
+    //return dbg;
 
     return T(D) * rsEnvelopeMatchOffset(&xd[0], NxD, &yd[0], NyD);
   }
