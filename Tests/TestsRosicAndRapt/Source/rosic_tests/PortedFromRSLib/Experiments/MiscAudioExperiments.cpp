@@ -36,47 +36,6 @@ int rsCeilDiv(int n, int m)
   // if(n > k*m) k+=1;
 }
 
-/*
-template <class T>
-void decimateViaMean2(const T* x, const int Nx, T* y, const int D)
-{
-  //const int Ny = Nx / D;
-
-  int Ny = rsCeilDiv(Nx, D);
-  const int d2 = D / 2;
-  typedef RAPT::rsArray AR;
-
-  if(rsIsOdd(D))
-  {
-    y[0] = AR::mean(&x[0], d2+1);
-    int n;
-    for(n = 1; n < Ny-1; n++)
-      y[n] = AR::mean(&x[n*D-d2], D); // optimize: precompute 1/D and use AR::sum * (1/D)
-
-
-    //int D2 = rsMin(D, Nx-(n*D+d2)+1);
-    int D2 = rsMin(D, Nx-(n*D-d2+D));
-
-    y[Ny-1] = AR::mean(&x[n*D-d2], D2); // final D is wrong - length might be less
-    // ...nope - this is still worng :-(
-  }
-
-
-  //for(int i = 0; i < Ny; i++)
-  //  y[i] = x[i*factor];
-}
-*/
-
-template <class T>
-void decimateViaMean(const T* x, const int N, T* y, const int D)
-{
-  //const int Ny = Nx / D;
-  //typedef RAPT::rsArray AR;
-  //int n;
-  for(int n = 0; n < N/D; n++)
-    y[n] = RAPT::rsArray::mean(&x[n*D], D); 
-}
-
 
 void decimate()
 {

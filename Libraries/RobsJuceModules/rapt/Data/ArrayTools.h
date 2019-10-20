@@ -225,9 +225,12 @@ public:
   // todo: make a function decimateViaMean that uses the mean, i.e. a moving average of length 
   // "factor"
 
+  /** Like decimate, but instead of just taking every "factor"-th sample of the input, it computes
+  a mean over "factor" samples. Note that the mean is computed using samples in the forward 
+  direction from the readout position in the input signal (todo: make a version that uses a mean
+  centered at the input read position) */
   template <class T>
   static void decimateViaMean(const T* x, const int N, T* y, const int factor);
-
 
   /** Deconvolves the impulse response h out of the signal y resulting in the signal x which has a
   length of yLength-hLength+1. It's the inverse of convolve. */

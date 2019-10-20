@@ -1211,26 +1211,16 @@ void amplitudeMatch2()
   double dt  = matcher.getMatchOffset(&x1[0], N1, &x2[0], N2);
 
   // try various decimation factors:
-  double dt1  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  1);
-  double dt2  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  2);
-  double dt3  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  3);
-  double dt4  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  4);
-  double dt5  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  5);
-  double dt6  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  6);
-  double dt7  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  7);
-  double dt8  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  8);
-  double dt9  = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2,  9);
-  double dt10 = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2, 10);
-  // these should be doubles, too - use a subsample-precision algo in the innermost function - it's
-  // not overkill anymore when we use decimated envelopes
-  // dt9 is 135 and dt10 is 140 (the correct value is 139 or 138.63) - so with the higher decimation 
-  // factor 10, we get a better approximation than with 9 - is this due to the naive decimation?
-  // -> figure out ...ah no: 135 is divisible by 9, the next possible outcome would be 144 - which
-  // is actually farther away from 139 than 135 is - so 135 is the better approximation to 139 than
-  // 144
-  // -> anyway -> do a subsample estimation....
+  int maxDecimation = 20;
+  std::vector<double> dts(maxDecimation), err(maxDecimation);
+  for(int i = 0; i < maxDecimation; i++) {
+    dts[i] = rsEnvelopeMatchOffset(&x1[0], N1, &x2[0], N2, i+1);
+    err[i] = dt - dts[i];
+  }
+  rsPlotVector(err);
+  // with the perfect exp decay, it doesn't seem to make much difference, if we use naive or 
+  // mean-based decimation - but it may, if we use real-world signals - we'll see
 
-  // we look for a similarity measure that featues a distinctive maximum or minimum at dt
 
   // compute various similarity measurse:
   int M = N1 + N2 - 1;  
