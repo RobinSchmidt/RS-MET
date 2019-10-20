@@ -2105,7 +2105,7 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny)
   for(int k = 0; k < Nx; k++)
     s[k] = rsArray::meanOfAbsoluteDifferences(&x[k], &y[0], rsMin(Nx-k, Ny));
 
-  rsPlotVector(s);
+  //rsPlotVector(s);
 
   const int k = RAPT::rsArray::minIndex(&s[0], Nx); // index of minimum...
   return extremumViaLineIntersect(&s[0], Nx, k);    // ...refined to subsample precision
@@ -2131,6 +2131,10 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, cons
     //T dbg = rsEnvelopeMatchOffset(&xd[0], NxD, &yd[0], NyD);
     //dbg *= D;
     //return dbg;
+
+    // todo: maybe use log-of-envelope instead of raw envelope - maybe use a boolean parameter
+    // ...or maybe it's about time to wrap it all into a class - let user switch between lin/log
+    // and absolute/squared difference, and parabolic/linear interpolation for subsample precision
 
     return T(D) * rsEnvelopeMatchOffset(&xd[0], NxD, &yd[0], NyD);
   }
