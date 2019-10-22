@@ -48,7 +48,7 @@ namespace rosic
     void setSideGain(double newSideGain) { sideGain = RAPT::rsDbToAmp(newSideGain); }
 
     /** Adjusts the global gain for the signal - value is expected in dB. */
-    void setGlobalGain(double newGlobalGain) { globalGain = ONE_OVER_SQRT2*RAPT::rsDbToAmp(newGlobalGain); }
+    void setGlobalGain(double newGlobalGain) { globalGain = SQRT2_INV*RAPT::rsDbToAmp(newGlobalGain); }
 
     /** Selects, that the final output should be mixed to mono to quickly check mono 
     compatibility. */
@@ -84,7 +84,7 @@ namespace rosic
     *inOutR     = globalGain * (  mid - side );
 
     if( mixToMono == true )
-      *inOutL = *inOutR = ONE_OVER_SQRT2 * (*inOutL + *inOutR);
+      *inOutL = *inOutR = SQRT2_INV * (*inOutL + *inOutR);
 
     // \todo: optimize (maybe)
   }

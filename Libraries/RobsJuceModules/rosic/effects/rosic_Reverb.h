@@ -183,7 +183,7 @@ INLINE void rsReverb::getSampleFrameStereo(double* inOutL, double* inOutR)
     if(tapOuts[d] >= maxDelayInSamples)
       tapOuts[d] = 0;
     delayLineOuts[d]     = dampingFilters[d].getSample(delayLines[d][tapOuts[d]]);
-    delayLines[d][tapIn] = ONE_OVER_SQRT2*(tmpL+tmpR);
+    delayLines[d][tapIn] = SQRT2_INV*(tmpL+tmpR);
   }
   applyTheFeedbackMatrix();
 

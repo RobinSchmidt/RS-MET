@@ -33,12 +33,12 @@ MagicCarpetEqualizer::MagicCarpetEqualizer()
  {
   eqFreq[s] = 1000.0;
   eqGain[s] = 0.0;
-  eqQ[s]    = ONE_OVER_SQRT2;
+  eqQ[s]    = SQRT2_INV;
   eqDesigners[s].setMode(BiquadDesigner::RBJ_PEAK);
   eqDesigners[s].setSampleRate(sampleRate);
   eqDesigners[s].setFreq(1000.0);
   eqDesigners[s].setGain(0.0);
-  eqDesigners[s].setQ(ONE_OVER_SQRT2);
+  eqDesigners[s].setQ(SQRT2_INV);
  }
 
 }

@@ -126,11 +126,11 @@ namespace rosic
     //*inOutR = wetR;
 
     //double inM  = ONE_OVER_SQRT2 * (*inOutL + *inOutR);
-    double inS  = ONE_OVER_SQRT2 * (*inOutL - *inOutR);
+    double inS  = SQRT2_INV * (*inOutL - *inOutR);
     double outM = wetM;
     double outS = dry*inS + wet*wetS;
-    *inOutL     = ONE_OVER_SQRT2 * (outM + outS);
-    *inOutR     = ONE_OVER_SQRT2 * (outM - outS);
+    *inOutL     = SQRT2_INV * (outM + outS);
+    *inOutR     = SQRT2_INV * (outM - outS);
 
     //*inOutL     = dry*(*inOutL) + wet*wetL;
     //*inOutR     = dry*(*inOutR) + wet*wetR;

@@ -84,7 +84,7 @@ namespace rosic
   INLINE void CombStereoizer::getSampleFrameStereo(double* inOutL,  double* inOutR)
   {
     // obtain the mono-sum:
-    double tmp = ONE_OVER_SQRT2 * (*inOutL + *inOutR);
+    double tmp = SQRT2_INV * (*inOutL + *inOutR);
 
     // delay the mono-sum:
     tmp = delayLine.getSample(tmp);

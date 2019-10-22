@@ -12,7 +12,10 @@ Style guidelines/updates:
 -for any low-level, number-crunching routine, avoid memory allocations - pass a workspace pointer
  instead (maybe keep the functions without workspace pointer as convenience functions
 
-
+seems like #pragma once is not really recommended as replacement for include gurads - so we should
+stick to them, fo rthe time being
+https://stackoverflow.com/questions/1143936/pragma-once-vs-include-guards
+ 
 -check use of std::list<> in rosic::PolymorphicIntrumentVoice
 
 

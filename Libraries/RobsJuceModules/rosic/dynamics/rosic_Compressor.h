@@ -94,7 +94,7 @@ namespace rosic
     // establish the mono sum of the (non-delayed) input signal and obtain its envelope:
     double tmpL    = inputGainFactor * (*inOutL);
     double tmpR    = inputGainFactor * (*inOutR);  
-    double inM     = ONE_OVER_SQRT2  * (tmpL + tmpR);
+    double inM     = SQRT2_INV  * (tmpL + tmpR);
     double inLevel = levelDetector.getLevel(inM);
 
     // calculate the compressor gain:
