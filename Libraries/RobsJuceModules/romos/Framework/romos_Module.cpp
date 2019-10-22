@@ -97,6 +97,7 @@ void romos::Module::cleanUp()
 void romos::Module::setModuleName(const std::string& newName)
 {
   // \todo this function seems to be called twice when entering a new name - find out why, fix it
+  // ...is it really a good idea to do this check? probably not - get rid
   if( name != newName )
     name = newName;
 }

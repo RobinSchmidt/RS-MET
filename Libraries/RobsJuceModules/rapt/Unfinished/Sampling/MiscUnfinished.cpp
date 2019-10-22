@@ -2133,9 +2133,16 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, cons
     //return dbg;
 
     // todo: maybe use log-of-envelope instead of raw envelope - maybe use a boolean parameter
+    // or dB envelopes - and use a threshold, like: 
+    // sum += abs(max(e1[n], thres) - max(e2[n], thresh))
+    // or better: apply that threshold when computing the dB values
     // ...or maybe it's about time to wrap it all into a class - let user switch between lin/log
     // and absolute/squared difference, and parabolic/linear interpolation for subsample precision
 
     return T(D) * rsEnvelopeMatchOffset(&xd[0], NxD, &yd[0], NyD);
   }
 }
+// maybe merge this with the rsExponentialEnvelopeMatcher class (rename to rsEnvelopeMatcher), so we
+// may also use its ingnore-facilities - needs functions 
+//  setAlgorithm(absoluteDifference, squaredDifference, correlation, linearRegression, ...)
+//  setDecimation, setInterpolation

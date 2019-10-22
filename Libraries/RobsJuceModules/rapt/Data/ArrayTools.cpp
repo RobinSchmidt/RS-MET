@@ -37,6 +37,10 @@ void rsArray::add(const T *buffer, const T valueToAdd, T *result, const int leng
     result[i] = buffer[i] + valueToAdd;
 }
 
+
+
+
+
 template <class T>
 void rsArray::addCircularShiftedCopy(
   T *buffer, const int length, const double offset, const T weight)
@@ -89,8 +93,6 @@ void rsArray::applyFunction(const T *inBuffer, T *outBuffer, const int length, T
   for(int i = 0; i < length; i++)
     outBuffer[i] = f(inBuffer[i]);
 }
-
-
 
 template <class T>
 void rsArray::circularShift(T *buffer, const int length, const int numPositions)
@@ -947,6 +949,8 @@ T rsArray::median(const T *buffer, int length)
   delete[] tmpBuffer;
   return med;
 }
+// maybe use std::n_thelement, see here:
+// https://www.youtube.com/watch?v=sWgDk-o-6ZE 33:25
 
 template <class T1, class T2, class TR>
 void rsArray::multiply(const T1 *buffer1, const T2 *buffer2, TR *result, int length)
@@ -1207,7 +1211,7 @@ void rsArray::weightedSum(const T *buffer1, const T *buffer2, T *result, int len
 
 /*
 
-maybe for more ideas hwat could be useful, see:
+maybe for more ideas what could be useful, see:
 
 
 https://www.youtube.com/watch?v=h4Jl1fk3MkQ

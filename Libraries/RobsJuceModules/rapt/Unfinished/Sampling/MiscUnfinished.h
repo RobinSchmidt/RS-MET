@@ -1020,6 +1020,15 @@ class rsExponentialEnvelopeMatcher
 
 public:
 
+  enum class algorithm
+  {
+    linearRegression,      
+    absoluteDifferences,
+    //squaredDifferences,
+    //crossCorrelation
+  };
+  // not yet used - supposed to let the use switch between different algorithms
+
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
@@ -1053,6 +1062,8 @@ public:
   // maybe have ingnoreAboveThreshold and ignoreBelowThreshold
 
   // maybe make convenience functions that set these things for both signals at once
+
+  // bool setUseDecibels(bool shouldUseDb)
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing

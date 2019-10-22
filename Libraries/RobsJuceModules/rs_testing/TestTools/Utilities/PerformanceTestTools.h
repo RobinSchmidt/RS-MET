@@ -34,6 +34,7 @@ inline void dontOptimize(T x)
   if(f)
     cout << x;
 }
+// maybe try this: https://www.youtube.com/watch?v=vrfYLlR8X8k (at 30:30 - but only on gcc)
 
 
 #ifdef _MSC_VER
@@ -169,6 +170,9 @@ class PerformanceCounterQPC : public ProcessorCycleCounter
 https://docs.microsoft.com/en-us/windows/desktop/api/sysinfoapi/nf-sysinfoapi-gettickcount64
 and/or this:
 https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/ntifs/nf-ntifs-kequeryperformancecounter
+
+see:
+// https://www.youtube.com/watch?v=vrfYLlR8X8k (00:32:49)
 */
 
 

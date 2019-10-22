@@ -425,7 +425,7 @@ void testEnvelopeMatching2(std::vector<double>& x1, std::vector<double>& x2)
 
   // find match offset:
   double dt = 0;
-  int D = 30;  // decimation factor
+  int D = 100;  // decimation factor
   dt = rsEnvelopeMatchOffset(&e1[0], (int) e1.size(), &e2[0], (int) e2.size(), D);
 
   // create the two time axes and decimated enveloeps for plotting (using the same decimation

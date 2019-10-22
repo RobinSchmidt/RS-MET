@@ -4,6 +4,8 @@
 //// rosic-indcludes:
 //#include "rosic_ElementaryFunctionsReal.h"
 
+// try to retire this code in favor of std::complex<double>
+
 namespace rosic
 {
 

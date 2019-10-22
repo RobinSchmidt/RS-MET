@@ -1,3 +1,24 @@
+Style guidelines/updates:
+
+-"Modern c++" guidelines say, that we should avoid raw "new" and "delete" and use smart-pointers 
+ instead std::unique_ptr, std::shared_ptr
+ -try to do that, where reasonable (but always take potential performance degradation into account)
+ -where not reasonable, convey information of ownership takeover in the respective function 
+  names - instead of addChildFoo( new Foo ) use things like addOwnedChildFoo( new Foo )
+ -
+
+-if a pointer cannot be a nullptr, say so by using not_null
+
+-for any low-level, number-crunching routine, avoid memory allocations - pass a workspace pointer
+ instead (maybe keep the functions without workspace pointer as convenience functions
+
+
+-check use of std::list<> in rosic::PolymorphicIntrumentVoice
+
+
+
+
+
 fix linker errors in win/gcc:
 http://stackoverflow.com/questions/9329020/undefined-reference-to-sync-val-compare-and-swap-4-error-at-compilation-usi
 -maybe updating gcc will help...

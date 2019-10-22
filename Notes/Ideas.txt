@@ -1,3 +1,43 @@
+-------------------------------------------------------------------------------
+-maybe, at the lower "number crunching" level of rapt, we should take a more 
+ data-oriented-design approach - see here
+ https://www.youtube.com/watch?v=yy8jQgmhbAU
+ maybe with things like:
+
+struct rsBiquadCoeffs   { b0, b1, b2, a1, a2 };
+struct rsBiquadStateDF1 { x1, x2, y1, y2 };
+void updateBiquadState(const rsBiquadCoeffs& c, rsBiquadState& s) { ... }
+
+-an actual biquad filter (convenience) class would then contain a coeffs and 
+ state object and perhaps others (user parameters, sample-rate, etc.)
+-it would make it easier to realize an array of biquads (for example, for N 
+ voices) in an economic way (no (possibly redundant) parameters, sample-rates,
+ etc. polluting the cache)
+
+-------------------------------------------------------------------------------
+
+Concepts: 
+-C++20 will introduce this new language feature
+-it allows to restrict the types with which client code may instantiate a 
+ template
+-for classes in RAPT, we often have two template types for signals and 
+ parameters (often denoted as TSig, TPar)
+-instead of writing
+   template<class TSig, class TPar> MyClass { /* stuff */ };
+ we could write
+   template<SignalType TSig, ParamType TPar> MyClass { /* stuff */ };
+ where SignalType and ParamType would be concepts that specify, which 
+ constraints the two types must satisfy
+-we could use #defines for both which evaluate to the respective conept in 
+ C++20 and to "typename" or "class" in pre C++20
+-a concept is more than a "type of a type" - it may also encode relationships 
+ between two (or more) types. in our case, we would require (besides other 
+ things) that ParamType and SignalType values can be multiplied and produce
+ a SignalType (akin to scalar multiplication of vectors when signal is a SIMD 
+ type and param is the underlying scalar type, for example)
+
+-------------------------------------------------------------------------------
+
 SmoothedValue:
 -see class juce::LinearSmoothedValue
 -generalize to an update equation: x[n+1] = a*x[n] + b

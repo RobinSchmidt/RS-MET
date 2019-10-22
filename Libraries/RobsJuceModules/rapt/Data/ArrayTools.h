@@ -12,6 +12,7 @@ todo:
  ...maybe change the const by-value parameters to by-reference parameters
 -inline, where it makes sense (trivial functions like copy/convert)
 -maybe turn into an actual class (with members) implementing a dynamically sized array
+-use workspace pointers instead of heap allocation
 
 */
 
@@ -84,6 +85,7 @@ public:
   the buffer. */
   template <class T>
   static void circularShiftInterpolated(T *buffer, const int length, const double numPositions);
+  // // Allocates heap memory - todo: pass a workspace.
 
   /** Restricts the values in the buffer to the range between min and max for types that define the
   operators '<' and '>'. */
@@ -240,6 +242,7 @@ public:
   /** De-interleaves a buffer of interleaved data. @see rsInterleave */
   template <class T>
   static void deInterleave(T *buffer, int numFrames, int numElementsPerFrame);
+  // // Allocates heap memory - todo: pass a workspace.
 
   /** Computes the difference y[n] = x[n] - x[n-1] of some signal. The initial condition x[-1] is
   determined from the 'periodic' parameter - if true, the signal is assumed as periodic and the
@@ -305,11 +308,13 @@ public:
   template <class T>
   static void filter(const T *x, int xLength, T *y, int yLength, 
     const T *b, int bOrder, const T *a, int aOrder);
+  // Allocates heap memory - todo: pass a workspace.
 
   /** \todo check and comment this function - maybe move it to RSLib */
   template <class T>
   static void filterBiDirectional(const T *x, int xLength, T *y, int yLength, 
     const T *b, int bOrder, const T *a, int aOrder, int numRingOutSamples = 10000);
+  // Allocates heap memory - todo: pass a workspace.
 
   /** Returns the index of the first value that matches the elementToFind, return -1 when no 
   matching element is found. */
@@ -355,6 +360,7 @@ public:
   /** Interleaves a buffer of non-interleaved data. */
   template <class T>
   static void interleave(T *buffer, int numFrames, int numElementsPerFrame);
+  // Allocates heap memory - todo: pass a workspace.
 
   /** Returns a linearly interpolated value from the array at the given (non-integer) position. If
   the position is out of range, 0 is returned. */
@@ -455,9 +461,11 @@ public:
   inline static T meanOfAbsoluteDifferences(const T* x, const T* y, const int N)
   { return sumOfAbsoluteDifferences(x, y, N) / T(N); }
 
-  /** Returns the median of the passed buffer. */
+  /** Returns the median of the passed buffer.  */
   template <class T>
   static T median(const T *buffer, int length);
+  // Allocates heap memory - todo: pass a workspace.
+
 
   /** Multiplies the elements of 'buffer1' and 'buffer2' - type must define operator '*'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
@@ -659,6 +667,7 @@ inline void rsArray::copy(const T1 *source, T2 *destination, const int length)
 // https://en.cppreference.com/w/cpp/types/is_trivially_copyable
 // ...but maybe for short arrays, the overhead of calling memcpy may outweigh its efficiency, so 
 // for very small arrays, the loop is actually faster? -> do benchmarks
+// see her, around 50min:  https://www.youtube.com/watch?v=ZeU6OPaGxwM
 
 
 template <class T1, class T2>
