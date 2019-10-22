@@ -46,6 +46,12 @@ template<class T> inline bool rsIsFiniteNumber(T x)
   return true;
 }
 
+template<class T> inline bool rsIsFiniteNonNegativeNumber(T x)
+{
+  return rsIsFiniteNumber(x) && x >= T(0);
+}
+
+
 /** Returns true, if the passed array of length N contains only finite numbers, false otherwise, */
 template<class T> inline bool rsIsFiniteNumbers(T* x, int N)
 {

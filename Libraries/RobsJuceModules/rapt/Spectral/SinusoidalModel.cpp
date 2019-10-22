@@ -320,11 +320,20 @@ bool rsSinusoidalPartial<T>::isDataValid() const
   std::vector<T> p = getPhaseArray();
 
   bool valid = true;
+  valid &= rsArray::isSortedStrictlyAscending(&t[0], (int) t.size());      // time increases
+  valid &= rsNoneOf(f, [](T x){ return rsIsFiniteNonNegativeNumber(x); }); // freqs nonnegative
+  valid &= rsNoneOf(a, [](T x){ return rsIsFiniteNonNegativeNumber(x); }); // amps nonnegative
+  valid &= rsNoneOf(p, [](T x){ return x < -PI || x > PI; });              // phases in -pi..pi
+  // ..should one of the ends be excluded like x in [-pi, pi) or (-pi, pi]? look up what atain2
+  // returns...or test it, if no info is available
 
-  valid &= rsArray::isSortedStrictlyAscending(&t[0], (int) t.size()); // time must increase strictly
-  valid &= rsNoneOf(a, [](T x){ return x >= 0.0; }); // amplitudes must be nonnegative
+  // is that it or should we check anything else? 
 
-    // std::all_of(v.cbegin(), v.cend(), [](int i){ return i % 2 == 0; })
+  // eventually, we may avoid the creation of the vectors and directly loop through our data in 4 
+  // functions areTimeStampsValid, areAmplitudesValid, etc.
+
+  rsPlotVectorsXY(t, f);
+  rsPlotVectorsXY(t, a);
 
   return valid;
 }

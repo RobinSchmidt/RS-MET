@@ -47,7 +47,7 @@ inline void rsStemPlot(int N, T *x, T *y)
   plt.plot();
 }
 
-/** Plots a bunch of vectors. */
+/** Plots a bunch of vectors as functions of the index. */
 template<class T>
 inline void rsPlotVectors(
   std::vector<T> v0, 
@@ -77,6 +77,7 @@ inline void rsPlotVectors(
   plt.plot();
 }
 
+/** Plots a bunch of y-vectors as functions of a given x-vector. */
 template<class T>
 inline void rsPlotVectorsXY(
   std::vector<T> x,
@@ -88,10 +89,11 @@ inline void rsPlotVectorsXY(
   GNUPlotter plt;
   int N = (int) x.size();
   //rsAssert(y1.size() == N);
-  if(y1.size() > 0) plt.addDataArrays(N, &x[0], y1[0]);
-  if(y2.size() > 0) plt.addDataArrays(N, &x[0], y2[0]);
-  if(y3.size() > 0) plt.addDataArrays(N, &x[0], y3[0]);
+  if(y1.size() > 0) plt.addDataArrays(N, &x[0], &y1[0]);
+  if(y2.size() > 0) plt.addDataArrays(N, &x[0], &y2[0]);
+  if(y3.size() > 0) plt.addDataArrays(N, &x[0], &y3[0]);
   // ...add more
+  plt.plot();
 }
 
 
