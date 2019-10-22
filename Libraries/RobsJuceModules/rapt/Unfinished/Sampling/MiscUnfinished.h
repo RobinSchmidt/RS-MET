@@ -870,7 +870,7 @@ protected:
 
 //=================================================================================================
 
-/** A class for non-realtime envelope extraction. you cann feed it some input signal, and the
+/** A class for non-realtime envelope extraction. You can feed it some input signal, and the
 rsEnvelopeExtractor object will return an extracted envelope signal of the same length at the same
 sample rate. */
 
@@ -909,16 +909,20 @@ public:
   void setEndMode(int newEndMode) { endMode = newEndMode; }
 
   /** Sets the cutoff frequency and the number of passes of the bidirectional smoothing filter that
-  can be applied to the extracted envelope as pots processing. If numPasses is set to zero,
+  can be applied to the extracted envelope as post processing. If numPasses is set to zero,
   smoothing is turned off. */
   //void setSmoothing(double cutoff, int numPasses)
   //{ smoothingFreq = cutoff; smoothingOrder = numPasses; }
 
   /** Sets the sample-rate. This setting is relevant for the smoothing filter (if any). */
-  void setSampleRate(T newSampleRate) { sampleRate = newSampleRate; }
+  //void setSampleRate(T newSampleRate) { sampleRate = newSampleRate; }
 
   /** Not yet finished.... */
-  void setMaxSampleSpacing(T newDistance) { maxSpacing = newDistance;  }
+  void setMaxSampleSpacing(T newDistance) 
+  { 
+    maxSpacing = newDistance;  
+  }
+  // find a better name
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -927,7 +931,7 @@ public:
 
   /** Function suitable for extracting the envelope of an extracted partial that shows beating
   between two nearby modes. The input signal is an array of given length that presumably contains
-  two (or maybbe more) sinusoids of nearby frequencies and the output is the envelope. */
+  two (or maybe more) sinusoids of nearby frequencies and the output is the envelope. */
   void sineEnvelopeWithDeBeating(const T* input, int length, T* envelope);
 
 
@@ -935,7 +939,8 @@ public:
 
   void getMetaEnvelope(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
     std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime);
-    // or should endTime be of type T?
+  // documentation needed
+
 
   void interpolateEnvelope(const T* envTimes, T* envValues, int envLength,
     const T* interpolatedTimes, T* interpolatedValues, int interpolatedLength);
@@ -1002,10 +1007,15 @@ protected:
   int endMode   = endPointModes::FREE_END;
 
   // for the smoothing lowpass:
-  int smoothingOrder = 0;
-  T sampleRate       = 44100;
-  T smoothingFreq    = 22050;
-  T maxSpacing       = 0;
+  //int smoothingOrder = 0;
+  //T sampleRate       = 44100;
+  //T smoothingFreq    = 22050;
+
+
+  T maxSpacing = 0; // maximum allowed spacing between envelope datapoints/samples
+  // ...explain this better - in which unit is this measured - how does it relate to the time-unit
+  // stored in the rsSinusoidalModel? ...i think, it should just be the same unit, whatever that 
+  // unit is (it's seconds but we may later alos allow it to be in samples)
 
 
   //T interpolationTension = T(0);

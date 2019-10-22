@@ -284,6 +284,7 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   RAPT::rsHarmonicAnalyzer<double> analyzer;
   setupHarmonicAnalyzerFor(analyzer, name, fs, f0);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
+  rsAssert(mdl.isDataValid());
   std::vector<double> y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutputUnmodified.wav", &y[0], (int)y.size(), (int)fs);
 
@@ -292,8 +293,9 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   // wavefile:
   rsPartialBeatingRemover<double> deBeater;
   deBeater.setPhaseSmoothingParameters(5.0, 1, 4); // cutoff = 10 leaves a vibrato
-  mdl.removePartial(0);  // test - remove DC - the DC component crashes with Rhodes Tuned F3 V12TX -16.4 10-17-16 short
+  //mdl.removePartial(0);  // test - remove DC - the DC component crashes with Rhodes Tuned F3 V12TX -16.4 10-17-16 short
   deBeater.processModel(mdl);
+  rsAssert(mdl.isDataValid());
   y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
 }

@@ -1,6 +1,9 @@
 #ifndef RAPT_CONSTANTS_H_INCLUDED
 #define RAPT_CONSTANTS_H_INCLUDED
 
+// todo: change the #defines into constants and wrap them into the RAPT namespace - we don't want
+// to pollute everything with #defines
+
 // mathematical constants (maybe prepend RS_ ):
 #define PI 3.1415926535897932384626433832795
 #define PI_INV 0.31830988618379067153776752674503       // 1/PI

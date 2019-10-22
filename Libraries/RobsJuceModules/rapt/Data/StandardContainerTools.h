@@ -320,8 +320,6 @@ void rsScale(std::vector<T>& x, T scaler)
 }
 
 
-
-
 /** Converts C-array to std::vector. */
 template<class T>
 inline std::vector<T> toVector(T* theArray, size_t size) // rename to rsToVector
@@ -330,6 +328,15 @@ inline std::vector<T> toVector(T* theArray, size_t size) // rename to rsToVector
   for(size_t i = 0; i < size; i++)
     v[i] = theArray[i];
   return v;
+}
+
+/** Copies data from existing C-array into an existing std::vector */
+template<class T>
+inline void rsCopyToVector(const T* a, int N, std::vector<T>& v)
+{
+  v.resize(N);
+  for(int i = 0; i < N; i++)
+    v[i] = a[i];
 }
 
 /** Multiplies a scalar and a vector. */

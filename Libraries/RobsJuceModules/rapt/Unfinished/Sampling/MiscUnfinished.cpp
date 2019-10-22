@@ -1700,6 +1700,8 @@ int rsBinarySearch(const T* A, T key, int imin, int imax)
     return imin-1;
 }
 // move to SortAndSearch, write unit tests
+// compare to this: https://en.wikipedia.org/wiki/Binary_search_algorithm
+// what abotu RSLib? look, if we have something like hat there already
 
 template<class T>
 int rsIndexOfClosestValueSorted(const T* a, int N, T val)
@@ -1723,13 +1725,26 @@ template<class T>
 void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue)
 {
+  if(maxSpacing == T(0))
+  {
+    rsCopyToVector(rawEnvTime,  rawEnvLength, metaEnvTime);
+    rsCopyToVector(rawEnvValue, rawEnvLength, metaEnvValue);
+    return;
+  }
+
+
   std::vector<T> tmpTime, tmpValue;   // buffers for extra datapoints to be inserted
   for(size_t i = 1; i < metaEnvTime.size(); i++) {
     T t1 = metaEnvTime[i];
     T t0 = metaEnvTime[i-1];
     T dt = t1 - t0;
     if(dt > maxSpacing) { // we need to insert extra datapoints between i-1 and i
+
       int numExtraPoints = (int) floor(dt/maxSpacing);  // verify floor ...maybe use ceil?
+      rsAssert(numExtraPoints >= 0);
+
+      // it seems, maxSpacing is zero? :-O
+
       tmpTime.resize(numExtraPoints);
       tmpValue.resize(numExtraPoints);
       for(int j = 0; j < numExtraPoints; j++) {

@@ -317,6 +317,20 @@ void rsPartialBeatingRemover<T>::removeAmplitudeBeating(rsSinusoidalPartial<T>& 
   // nevertheless, we should figure out, how we can get negative magnitudes - maybe use an 
   // rsAssert(std::none_of(a ...>= 0.0)
 
+  T maxCyclesPerEnvPoint = 10;  
+  // ad hoc - make user parameter - we want at least 1 envelope datapoint for every 10
+  // cycles - that means at most 10 cycles per env datapoint
+
+  T maxEnvSampleSpacing = maxCyclesPerEnvPoint / partial.getMeanFreq();
+  envExtractor.setMaxSampleSpacing(maxEnvSampleSpacing);
+
+  // hmmm...should this really depend on the partial's frequency? shouldn't we just use the 
+  // fundamental frequency as reference - it doesn't seem to make much sense to make the envelope
+  // samples denser towards higher partials because the analyssis resolution is tied to the 
+  // fundamental anyway ....but maybe that doesn't have to remain so....
+
+
+
   envExtractor.connectPeaks(&t[0], &a[0], &a[0], (int)t.size());
   partial.setAmplitudes(a);
 

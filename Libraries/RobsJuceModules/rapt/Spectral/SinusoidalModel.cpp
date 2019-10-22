@@ -338,8 +338,8 @@ bool rsSinusoidalPartial<T>::isDataValid() const
   // eventually, we may avoid the creation of the vectors and directly loop through our data in 4 
   // functions areTimeStampsValid, areAmplitudesValid, etc.
 
-  rsPlotVectorsXY(t, f);
-  rsPlotVectorsXY(t, a);
+  //rsPlotVectorsXY(t, f);
+  //rsPlotVectorsXY(t, a);
 
   return valid;
 }
