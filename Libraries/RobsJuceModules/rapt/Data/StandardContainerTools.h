@@ -83,6 +83,14 @@ inline void rsInsertValue(std::vector<T>& v, T newElement, size_t index)
   v.insert(v.begin() + index, newElement);
 }
 
+/** Wraps iterator syntax to simplify calls to std::none_of. */
+template<class T, class UnaryPredicate >
+bool rsNoneOf(const std::vector<T>& v, UnaryPredicate p)
+{
+  return std::none_of(v.cbegin(), v.cend(), p);
+}
+// todo: make similar functions for any_of, all_of
+
 template<class T>
 inline void rsPrepend(std::vector<T>& v, const T& newElement)
 {

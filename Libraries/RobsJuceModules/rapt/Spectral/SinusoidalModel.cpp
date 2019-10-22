@@ -311,7 +311,23 @@ std::vector<T> rsSinusoidalPartial<T>::getPhaseArray() const
   return p;
 }
 
+template<class T>
+bool rsSinusoidalPartial<T>::isDataValid() const
+{
+  std::vector<T> t = getTimeArray();
+  std::vector<T> f = getFrequencyArray();
+  std::vector<T> a = getAmplitudeArray();
+  std::vector<T> p = getPhaseArray();
 
+  bool valid = true;
+
+  valid &= rsArray::isSortedStrictlyAscending(&t[0], (int) t.size()); // time must increase strictly
+  valid &= rsNoneOf(a, [](T x){ return x >= 0.0; }); // amplitudes must be nonnegative
+
+    // std::all_of(v.cbegin(), v.cend(), [](int i){ return i % 2 == 0; })
+
+  return valid;
+}
 
 //=================================================================================================
 
@@ -368,7 +384,7 @@ T rsSinusoidalModel<T>::getEndTime() const
 }
 
 template<class T>
-bool rsSinusoidalModel<T>::isSampledSynchronously()
+bool rsSinusoidalModel<T>::isSampledSynchronously() const
 {
   for(size_t i = 1; i < partials.size(); i++)
     if(!partials[i].isSampledInSyncWith(partials[0]))
@@ -376,6 +392,14 @@ bool rsSinusoidalModel<T>::isSampledSynchronously()
   return true;
 }
 
+template<class T>
+bool rsSinusoidalModel<T>::isDataValid() const
+{
+  for(size_t i = 1; i < partials.size(); i++)
+    if(!partials[i].isDataValid())
+      return false;
+  return true;
+}
 
 //=================================================================================================
 // Analyzer:

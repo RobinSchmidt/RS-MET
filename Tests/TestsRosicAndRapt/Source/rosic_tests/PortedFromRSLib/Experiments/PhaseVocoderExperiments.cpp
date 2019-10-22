@@ -1543,7 +1543,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
 
 
-  //testHarmonicResynthesis("TremoloSine_Freq=200_Rate=10_Depth=5", 44100, 15000);
+  testHarmonicResynthesis("TremoloSine_Freq=200_Rate=10_Depth=5", 44100, 15000);
   // try a little bit of amplitude modulation - could the spurious high-freq components be due to 
   // that? the varying amplitude of low-freq components somehow gets translated to spurious 
   // high-freqs? maybe a tremolo sine - yes! that seems to be it! when the sine is amp-mdoulated,
@@ -1552,7 +1552,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
 
   //testHarmonicResynthesis("TwoSines",   44100, 5000);
-  testHarmonicResynthesis("ModalPluck", 44100, 5000);
+  //testHarmonicResynthesis("ModalPluck", 44100, 5000);
   // convert all calls to include the frequency in the string (done), then get rid of the frequency 
   // parameter of the function
 
@@ -1862,6 +1862,7 @@ void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
   //plotSineModelAmplitudes(mdl, { 1 });
   //plotSineModelPhases(mdl, { 1 }, true);  // phase-derivative
   //plotSineModelPhases(mdl, { 1 }, false); // de-trended phase
+  rsAssert(mdl.isDataValid());
 
   // resynthesize without modifications:
   std::vector<double> y = synthesizeSinusoidal(mdl, fs);

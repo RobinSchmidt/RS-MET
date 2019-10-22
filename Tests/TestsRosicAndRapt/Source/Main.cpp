@@ -390,8 +390,8 @@ int main(int argc, char* argv[])
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
-  amplitudeDeBeating();
-  //harmonicDeBeating1();
+  //amplitudeDeBeating();
+  harmonicDeBeating1();
   //harmonicDeBeating2();
 
 

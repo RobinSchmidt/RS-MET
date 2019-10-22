@@ -302,9 +302,11 @@ void rsPartialBeatingRemover<T>::removeAmplitudeBeating(rsSinusoidalPartial<T>& 
   std::vector<T> t = partial.getTimeArray();
   std::vector<T> a = partial.getAmplitudeArray();
 
-  GNUPlotter plt;
-  plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
-  plt.plot();
+
+
+  //GNUPlotter plt;
+  //plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
+  //plt.plot();
   // in rsEnvelopeExtractor<T>::fillSparseAreas, the numExtraPoints local variable gets a negative
   // value 
   // does this happen because the amp-env gets negative? - why does it get negative anyway - that's

@@ -65,7 +65,11 @@ public:
 //=================================================================================================
 
 /** Data structure to hold and edit the information about one single sinusoidal partial. This is 
-effectively an array of rsInstantaneousSineParams objects ordered by time-stamp.  */
+effectively an array of rsInstantaneousSineParams objects ordered by time-stamp. 
+
+todo: maybe try to convert into a representation consisting of parallel arrays - more convenient 
+for certain purposes (interpolation) but less for others (analysis) -> benchmark
+*/
 
 template<class T>
 class rsSinusoidalPartial  // maybe rename to rsSinusoidalTrack
@@ -328,6 +332,10 @@ public:
   }
 
 
+  /** Performs sanity check of the data (strictly increasing time-stamps, nonnegative amplitudes, 
+  phases in -pi..pi, etc.). */
+  bool isDataValid() const;
+
 
   //rsInstantaneousSineParams<T> getInstantaneousParameters() const;
 
@@ -471,7 +479,13 @@ public:
   }
 
   /** Returns true, if all partials are sampled at the same time-instants. */
-  bool isSampledSynchronously();
+  bool isSampledSynchronously() const;
+
+  /** Performs sanity check of the data (strictly increasing time-stamps, nonnegative amplitudes, 
+  phases in -pi..pi, etc.). */
+  bool isDataValid() const;
+
+
 
 
 protected:
