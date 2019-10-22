@@ -622,7 +622,7 @@ public:
   /** In-place version of rsTransposeSquareArray(T **in, T **out, int size). */
   template<class T>
   static void transposeSquareArray(T **theArray, int size);
-  // move to MatrixFunctions
+  // move to MatrixFunctions, rename to transposeMatrix
 
   /** Given an array that contains values that have been subject to some kind wrap-around into some
   period p, this function (heuristically) unwraps them again. This is useful for plotting a 

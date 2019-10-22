@@ -395,6 +395,8 @@ namespace RAPT
 
   */
 
+#ifdef BLAH
+
   template <class T>
   int rsFirstIndexWithNonZeroValue(T *buffer, int N)
   {
@@ -1172,5 +1174,7 @@ namespace RAPT
   }
 
 }
+
+#endif // BLAH
 
 #endif

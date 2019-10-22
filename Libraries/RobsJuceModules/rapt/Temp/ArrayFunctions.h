@@ -1,9 +1,7 @@
 #ifndef RAPT_ARRAYFUNCTIONS_H_INCLUDED
 #define RAPT_ARRAYFUNCTIONS_H_INCLUDED
 
-// todo write functions for element-wise multiply, divide, negate,
-// max, min, absMax, createCopy, filter, impulseResponse, impulseResponseLength,
-// fillWith(double value = 0.0), circularShift, resample,
+// code obsolete - remove (the stuff is now in RAPT::rsArray)
 
 //class ArrayFunctions
 namespace RAPT
@@ -200,6 +198,8 @@ namespace RAPT
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
   //template <class T1, class T2, class TR>
   //void rsDivide(T1 *buffer1, T2 *buffer2, TR *result, int length);
+
+#ifdef BLAH
 
   /** Fills the passed array with the values of the indices - the type T must have a
   constructor that takes an int and performs appropriate conversion. */
@@ -500,6 +500,8 @@ namespace RAPT
   template <class T>
   inline void rsWeightedSum(T *buffer1, T *buffer2, T *result, int length, T weight1, 
     T weight2);
+
+#endif
 
 }
 
