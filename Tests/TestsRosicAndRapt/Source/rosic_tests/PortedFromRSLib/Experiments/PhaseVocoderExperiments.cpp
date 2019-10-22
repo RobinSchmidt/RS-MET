@@ -1784,7 +1784,7 @@ std::vector<double> rsRangeLinear(double min, double max, int N)
 
 void amplitudeDeBeating()
 {
-  // We create an attack/decay sine envelope superimposed with a decaying sine modulation/berating
+  // We create an attack/decay sine envelope superimposed with a decaying sine modulation/beating
   // envelope that decays faster than the first such that we see beating in the beginning but not 
   // in the end. The goal is to get rid of the beating while still preserving the overall amp-env.
 
@@ -1822,7 +1822,7 @@ void amplitudeDeBeating()
 
   //rsPlotVector(env);
   //rsPlotVectors(ampEnv, beating, beatEnv, result);
-  rsPlotVectors(beatEnv, result);
+  //rsPlotVectors(beatEnv, result);
 
   // Observations
   // -when the beating stops in the original, the de-beated envelope messes up

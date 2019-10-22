@@ -790,6 +790,25 @@ int rsArray::findPeakOrValleyLeft(const T *x, int N, int n0)
   return nL;
 }
 
+template <class T>
+bool rsArray::isSortedAscending(const T *buffer, int length)
+{
+  for(int i = 0; i < length-1; i++) {
+    if(!(buffer[i] <= buffer[i+1]))
+      return false;
+  }
+  return true;
+}
+
+template <class T>
+bool rsArray::isSortedStrictlyAscending(const T *buffer, int length)
+{
+  for(int i = 0; i < length-1; i++) {
+    if(!(buffer[i] < buffer[i+1]))
+      return false;
+  }
+  return true;
+}
 
 template <class T>
 void rsArray::leftShift(T *buffer, int length, int numPlaces)

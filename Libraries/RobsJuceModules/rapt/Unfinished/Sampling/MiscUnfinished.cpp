@@ -1634,6 +1634,11 @@ void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* pe
   getMetaEnvelope(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
    // gives warning last argument of getMetaEnvelope should be T not int
 
+
+  rsAssert(rsArray::isSortedStrictlyAscending(&envTimes[0], length));
+
+
+
   interpolateEnvelope(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(),
     envTimes, peakValues, length);
 }

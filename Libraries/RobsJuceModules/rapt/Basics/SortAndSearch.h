@@ -57,13 +57,15 @@ void rsHeapSort(T *buffer, int length,
 
 /** Checks whether the buffer is sorted in ascending order, that is buffer[i] <= buffer[i+1] for
 all i. */
-template <class T>
-bool rsIsSortedAscending(T *buffer, int length);
+//template <class T>
+//bool rsIsSortedAscending(T *buffer, int length);
+// moved to rsArray
 
 /** Checks whether the buffer is sorted in ascending order, that is buffer[i] < buffer[i+1] for
 all i. */
-template <class T>
-bool rsIsSortedStrictlyAscending(T *buffer, int length);
+//template <class T>
+//bool rsIsSortedStrictlyAscending(T *buffer, int length);
+// moved to rsArray
 
 /** Finds all occurrences of the given pattern in the buffer and returns the start-indices for
 the pattern inside the buffer as a std::vector which is in ascending order. The function uses the

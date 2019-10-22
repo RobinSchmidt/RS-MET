@@ -11,12 +11,12 @@ bool testHeapSort()
   {
     RAPT::rsArray::fillWithRandomValues(testArray, length, -100, +100, 1);
     rsHeapSort(testArray, length);
-    testResult &= rsIsSortedAscending(testArray, length);
+    testResult &= rsArray::isSortedAscending(testArray, length);
 
     // check odd lengths by just sorting the subarray up to length-1:
     RAPT::rsArray::fillWithRandomValues(testArray, length, -100, +100, 1);
     rsHeapSort(testArray, length-1);
-    testResult &= rsIsSortedAscending(testArray, length-1);
+    testResult &= rsArray::isSortedAscending(testArray, length-1);
   }
 
   return testResult;

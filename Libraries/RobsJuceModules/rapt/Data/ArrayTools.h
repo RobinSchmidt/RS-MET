@@ -401,6 +401,17 @@ public:
   template<class T>
   static bool isPeakOrValley(const T *x, int n);
 
+  /** Checks whether the buffer is sorted in ascending order, that is buffer[i] <= buffer[i+1] for
+  all i. */
+  template <class T>
+  static bool isSortedAscending(const T *buffer, int length);
+
+  /** Checks whether the buffer is sorted in strictly ascending order, that is 
+  buffer[i] < buffer[i+1] for all i. */
+  template <class T>
+  static bool isSortedStrictlyAscending(const T *buffer, int length);
+
+
   /** Shifts the content of the buffer numPlaces to the left, filling it up with zeros from the
   right. */
   template <class T>

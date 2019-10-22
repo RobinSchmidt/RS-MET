@@ -57,7 +57,10 @@ template void RAPT::rsHeapSort(int *buffer, int length,
 template void RAPT::rsHeapSort(rsRange<double>* buffer, int length,
   bool (*lessThen)(const rsRange<double>& left, const rsRange<double>& right));
 
-template bool RAPT::rsIsSortedAscending(int *buffer, int length);
+//template bool RAPT::rsIsSortedAscending(int *buffer, int length);
+template bool rsArray::isSortedAscending(const int *buffer, int length);
+
+
 template std::vector<int> RAPT::rsFindAllOccurencesOf(char* buffer, int bufferLength,
   char* pattern, int patternLength);
 template int RAPT::rsFindHighestPeakIndex(double *buffer, int length); // move to rsArray
