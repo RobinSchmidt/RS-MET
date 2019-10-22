@@ -450,19 +450,13 @@ template <class T>
 void rsArray::difference(T *buffer, int length, int order, bool periodic)
 {
   T x, x1; // for temporary storage of the x, x[n-1] samples
-  for(int o = 1; o <= order; o++)
-  {
-    if(periodic == true)
-      x1 = buffer[length-1];
-    else
-      x1 = T(0);
-    for(int n = 0; n < length; n++)
-    {
+  for(int o = 1; o <= order; o++) {
+    if(periodic) x1 = buffer[length-1];
+    else         x1 = T(0);
+    for(int n = 0; n < length; n++) {
       x         = buffer[n];
       buffer[n] = x - x1;    // y[n] = x[n] - x[n-1]
-      x1        = x;
-    }
-  }
+      x1        = x;  }}
 }
 
 template <class T1, class T2, class TR>
@@ -499,11 +493,9 @@ void rsArray::fillWithRangeExponential(T *buffer, int length, T min, T max)
 {
   if(min == max)
     fillWithValue(buffer, length, min);
-  else
-  {
+  else {
     for(int i = 0; i < length; i++)
-      buffer[i] = (T)rsLinToExp((T)i, (T)0, (T)(length-1), min, max);
-  }
+      buffer[i] = (T)rsLinToExp((T)i, (T)0, (T)(length-1), min, max); }
 }
 
 template <class T>
@@ -511,12 +503,10 @@ void rsArray::fillWithRangeLinear(T *buffer, int length, T min, T max)
 {
   if(min == max)
     fillWithValue(buffer, length, min);
-  else
-  {
+  else {
     double factor = (max-min) / (double)(length-1);
     for(int i = 0; i < length; i++)
-      buffer[i] = (T)(factor * T(i) + min);
-  }
+      buffer[i] = (T)(factor * T(i) + min); }
 }
 
 template <class T>
@@ -702,12 +692,10 @@ void rsArray::interleave(T *buffer, int numFrames, int numElementsPerFrame)
   int i, j;
   for(i=0; i<numFrames*numElementsPerFrame; i++)
     tmp[i] = buffer[i];  // \todo use copy
-  for(j = 0; j < numElementsPerFrame; j++)
-  {
+  for(j = 0; j < numElementsPerFrame; j++) {
     int k = numFrames*j;
     for(i = 0; i < numFrames; i+=1)
-      buffer[numElementsPerFrame*i+j] = tmp[k+i];
-  }
+      buffer[numElementsPerFrame*i+j] = tmp[k+i]; }
   delete[] tmp;
 }
 
@@ -716,8 +704,7 @@ T rsArray::interpolatedValueAt(const T *x, int N, double n)
 {
   if(n < 0.0 || n > N-1)
     return 0.0;
-  else
-  {
+  else {
     int ni = (int)floor(n);            // integer part of n
     if(ni == N-1)
       return x[ni];
@@ -764,14 +751,10 @@ template<class T>
 int rsArray::findPeakOrValleyRight(const T *x, int N, int n0)
 {
   int nR = -1;
-  for(int n = rsMax(1, n0); n < N-1; n++)
-  {
-    if(isPeakOrValley(x, n))
-    {
+  for(int n = rsMax(1, n0); n < N-1; n++) {
+    if(isPeakOrValley(x, n)) {
       nR = n;
-      break;
-    }
-  }
+      break; }}
   return nR;
 }
 
@@ -779,14 +762,10 @@ template<class T>
 int rsArray::findPeakOrValleyLeft(const T *x, int N, int n0)
 {
   int nL = -1;
-  for(int n = rsMin(N-2, n0); n > 0; n--)
-  {
-    if(isPeakOrValley(x, n))
-    {
+  for(int n = rsMin(N-2, n0); n > 0; n--) {
+    if(isPeakOrValley(x, n)) {
       nL = n;
-      break;
-    }
-  }
+      break; }}
   return nL;
 }
 
@@ -795,8 +774,7 @@ bool rsArray::isSortedAscending(const T *buffer, int length)
 {
   for(int i = 0; i < length-1; i++) {
     if(!(buffer[i] <= buffer[i+1]))
-      return false;
-  }
+      return false; }
   return true;
 }
 
@@ -805,8 +783,7 @@ bool rsArray::isSortedStrictlyAscending(const T *buffer, int length)
 {
   for(int i = 0; i < length-1; i++) {
     if(!(buffer[i] < buffer[i+1]))
-      return false;
-  }
+      return false; }
   return true;
 }
 
@@ -823,23 +800,18 @@ void rsArray::leftShift(T *buffer, int length, int numPlaces)
 template <class T>
 T rsArray::limitToRange(T value, T min, T max)
 {
-  if(value < min)
-    return min;
-  else if(value > max)
-    return max;
-  else
-    return value;
+  if(     value < min)  return min;
+  else if(value > max)  return max;
+  else                  return value;
 }
 
 template <class T>
 T rsArray::maxAbs(const T *buffer, int length)
 {
   T max = T(0);
-  for(int i = 0; i < length; i++)
-  {
+  for(int i = 0; i < length; i++) {
     if(rsAbs(buffer[i]) > max)
-      max = rsAbs(buffer[i]);
-  }
+      max = rsAbs(buffer[i]); }
   return max;
 }
 
@@ -848,14 +820,10 @@ int rsArray::maxAbsIndex(const T* const buffer, int length)
 {
   T max = T(0);
   int maxIndex = 0;
-  for(int i = 0; i < length; i++)
-  {
-    if(rsAbs(buffer[i]) > max)
-    {
+  for(int i = 0; i < length; i++) {
+    if(rsAbs(buffer[i]) > max) {
       max      = rsAbs(buffer[i]);
-      maxIndex = i;
-    }
-  }
+      maxIndex = i; }}
   return maxIndex;
 }
 
@@ -881,9 +849,7 @@ int rsArray::maxDeviationIndex(const T *x, const T *y, int N)
     T err = rsAbs(x[i]-y[i]);
     if(err > maxErr) {
       maxErr = err;
-      maxIdx = i;
-    }
-  }
+      maxIdx = i; }}
   return maxIdx;
 }
 
@@ -892,14 +858,10 @@ int rsArray::maxIndex(const T *buffer, int length)
 {
   T   value = buffer[0];
   int index = 0;
-  for(int i=0; i<length; i++)
-  {
-    if(buffer[i] > value)
-    {
+  for(int i = 0; i < length; i++) {
+    if(buffer[i] > value) {
       value = buffer[i];
-      index = i;
-    }
-  }
+      index = i; }}
   return index;
 }
 
@@ -914,14 +876,10 @@ int rsArray::minIndex(const T *buffer, int length)
 {
   T   value = buffer[0];
   int index = 0;
-  for(int i=0; i<length; i++)
-  {
-    if(buffer[i] < value)
-    {
+  for(int i = 0; i < length; i++) {
+    if(buffer[i] < value) {
       value = buffer[i];
-      index = i;
-    }
-  }
+      index = i; }}
   return index;
 }
 

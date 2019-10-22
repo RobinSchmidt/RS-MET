@@ -94,7 +94,8 @@ stretch of equal maximum values, it will return the index of the first of them. 
 value inside the buffer that satifies the above condition, 0 will be returned. */
 template<class T>
 int rsFindHighestPeakIndex(T *buffer, int length);
- // move to rsArray
+ // move to rsArray ...actually redundant with rsArray::maxIndex? ..check this - the logic is 
+ // actually more complicated, but perhaps unnecessarily so
 
 /** Returns the last occurrence of an element in the passed buffer and its index, -1 if the
 element is not found in the buffer. The optional searchStart parameter can be used to specify,
