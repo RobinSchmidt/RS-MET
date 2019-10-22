@@ -163,8 +163,8 @@ namespace rosic
     float tmp1, tmp2;
     if( midSideMode == true )
     {
-      tmp1 = (float) ONE_OVER_SQRT2 * (*inL + *inR);
-      tmp2 = (float) ONE_OVER_SQRT2 * (*inL - *inR);
+      tmp1 = (float) SQRT2_INV * (*inL + *inR);
+      tmp2 = (float) SQRT2_INV * (*inL - *inR);
     }
     else
     {

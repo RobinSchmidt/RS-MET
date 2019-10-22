@@ -16,6 +16,7 @@ namespace rosic
 
     NUM_STANDARD_WAVEFORMS
   };
+  // make enum class, rename to rsStandardWaveforms ...or just rsWaveForms
 
   // \todo: move mathematical constants here too (PI, SQRT2, etc.)
 

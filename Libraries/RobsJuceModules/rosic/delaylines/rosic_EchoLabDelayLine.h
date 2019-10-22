@@ -205,7 +205,7 @@ namespace rosic
     double inM, y1, y2, yL, yR, tmp;
 
     // establish the mono sum of the input signal:
-    inM = ONE_OVER_SQRT2 * (*inL + *inR);
+    inM = SQRT2_INV * (*inL + *inR);
     if( pingPongMode == false )
     {
       // read the ouput form the delayline:

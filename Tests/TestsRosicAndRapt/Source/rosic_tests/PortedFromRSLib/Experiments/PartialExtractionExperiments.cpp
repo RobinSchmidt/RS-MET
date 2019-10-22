@@ -538,7 +538,7 @@ void envelopeDeBeating()
   EE envExtractor;
   envExtractor.setInterpolationMode(IF::CUBIC_NATURAL);
   //envExtractor.setInterpolationMode(IF::LINEAR);
-  envExtractor.setSampleRate(fs);
+  //envExtractor.setSampleRate(fs);
   //envExtractor.setSmoothing(20.0, 4);
   envExtractor.setStartMode(EE::FREE_END);
   envExtractor.setEndMode(  EE::FREE_END);

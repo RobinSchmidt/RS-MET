@@ -199,7 +199,7 @@ namespace rosic
     double inM, y1, y2, yL, yR, tmp1, tmp2;
     if( trueStereoMode == false )
     {
-      inM = wetInGain * ONE_OVER_SQRT2 * (*inOutL + *inOutR);
+      inM = wetInGain * SQRT2_INV * (*inOutL + *inOutR);
       if( pingPongMode == false )
       {
         // mono/normal:
