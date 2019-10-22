@@ -7,6 +7,22 @@ library (STL), such as std::vector, std::map, etc. */
 //=================================================================================================
 // functions for std::vector
 
+
+/** Wraps iterator syntax to simplify calls to std::all_of. */
+template<class T, class UnaryPredicate >
+bool rsAllOf(const std::vector<T>& v, UnaryPredicate p)
+{
+  return std::all_of(v.cbegin(), v.cend(), p);
+}
+
+/** Wraps iterator syntax to simplify calls to std::any_of. */
+template<class T, class UnaryPredicate >
+bool rsAnyOf(const std::vector<T>& v, UnaryPredicate p)
+{
+  return std::any_of(v.cbegin(), v.cend(), p);
+}
+
+
 template<class T>
 inline std::vector<T> rsConstantVector(size_t size, T value)
 {
@@ -82,6 +98,8 @@ inline void rsInsertValue(std::vector<T>& v, T newElement, size_t index)
 {
   v.insert(v.begin() + index, newElement);
 }
+
+
 
 /** Wraps iterator syntax to simplify calls to std::none_of. */
 template<class T, class UnaryPredicate >
@@ -248,21 +266,36 @@ std::vector<T> rsAmpToDb(const std::vector<T>& a, T floorDb = -std::numeric_limi
 }
 
 
-//template<class T>
-//T rsMinValue(T 
 
 template<class T>
-T rsMax(const std::vector<T>& x)
-{
-  T max = std::numeric_limits<T>::min(); 
-  // we should instead use -inf for double/float? -> make explicit specilizations
+auto rsMinIter(const std::vector<T>& x) { return std::min_element(x.cbegin(), x.cend()); }
 
-  for(size_t i = 0; i < x.size(); i++) {
-    if(x[i] > max)
-      max = x[i];
-  }
-  return max;
-}
+template<class T>
+T rsMinValue(const std::vector<T>& x) { return *rsMinIter(x); }
+
+template<class T>
+auto rsMaxIter(const std::vector<T>& x) { return std::max_element(x.cbegin(), x.cend()); }
+
+template<class T>
+T rsMaxValue(const std::vector<T>& x) { return *rsMaxIter(x); }
+
+
+
+
+
+//template<class T>
+//T rsMaxValue(const std::vector<T>& x)
+//{
+//  return *std::max_element(x.cbegin(), x.cend());
+//}
+
+  //T max = std::numeric_limits<T>::min(); // we should instead use -inf for double/float? -> make explicit specilizations
+  //for(size_t i = 0; i < x.size(); i++) {
+  //  if(x[i] > max)
+  //    max = x[i];
+  //}
+  //return max;
+
 
 template<class T>
 T rsSum(const std::vector<T>& x)

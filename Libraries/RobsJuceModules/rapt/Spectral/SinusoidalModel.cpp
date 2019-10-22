@@ -320,12 +320,18 @@ bool rsSinusoidalPartial<T>::isDataValid() const
   std::vector<T> p = getPhaseArray();
 
   bool valid = true;
-  valid &= rsArray::isSortedStrictlyAscending(&t[0], (int) t.size());      // time increases
-  valid &= rsNoneOf(f, [](T x){ return rsIsFiniteNonNegativeNumber(x); }); // freqs nonnegative
-  valid &= rsNoneOf(a, [](T x){ return rsIsFiniteNonNegativeNumber(x); }); // amps nonnegative
-  valid &= rsNoneOf(p, [](T x){ return x < -PI || x > PI; });              // phases in -pi..pi
+  valid &= rsArray::isSortedStrictlyAscending(&t[0], (int) t.size());       // time increases
+  valid &= rsAllOf(f,  [=](T x){ return rsIsFiniteNonNegativeNumber(x); }); // freqs nonnegative
+  valid &= rsAllOf(a,  [=](T x){ return rsIsFiniteNonNegativeNumber(x); }); // amps nonnegative
+  valid &= rsNoneOf(p, [=](T x){ return x < -PI || x > PI; });              // phases in -pi..pi
   // ..should one of the ends be excluded like x in [-pi, pi) or (-pi, pi]? look up what atain2
   // returns...or test it, if no info is available
+
+
+  //size_t minFreqIdx = rsMinIndex(f);
+  //size_t minAmpIdx  = rsMinIndex(a);
+  //double minFreqVal = rsMinValue(f);
+  //double minAmpVal  = rsMinValue(a);
 
   // is that it or should we check anything else? 
 

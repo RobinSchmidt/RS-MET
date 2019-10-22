@@ -53,7 +53,7 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   if(cycleMarks.size() < 2)
     return false;                                // report failure
   Vec cycleLengths = rsDifference(cycleMarks);   // cycle lengths
-  T maxLength = rsMax(cycleLengths);
+  T maxLength = rsMaxValue(cycleLengths);
   //maxLength   = rsMax(maxLength, cycleMarks[0]);             // delta between 0 and 1st mark
   //maxLength   = rsMax(maxLength, (Nx-1)-rsLast(cycleMarks)); // delta between end and last mark
   cycleLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
