@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  //passed &= runUnitTestsRosic();
+  passed &= runUnitTestsRosic();
   passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
   passed = passed;  // dummy
 

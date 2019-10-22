@@ -184,6 +184,7 @@ public:
   template <class T>
   static void copyBufferWithLinearInterpolation(const T *source, int sourceLength, T *destination,
     int destinationLength);
+  // rename to copyInterpolated
 
   /** Copies a section of length "copyLength" starting at "copyStart" from "source" to 
   "destination". If "copyStart" is less than 0 and/or the desired "copyLength" is such that the end 
