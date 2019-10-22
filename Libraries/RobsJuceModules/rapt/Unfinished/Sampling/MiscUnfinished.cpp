@@ -517,7 +517,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
     if(right >= N-1)
       break;
   }
-  // hangs with Rhodes_F3.wav
+  // hangs with Rhodes_F3.wav ...seems not true anymore
 
 #ifdef RS_DEBUG_PLOTTING
   // plot the (possibly highpassed) signal and cycle marks:
@@ -529,6 +529,8 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
   plt.setPixelSize(1000, 300);
   plt.plot();
 #endif
+
+  //rsPlotVector(rsDifference(z)); // plot the cycle-lengths
 
   return z;
 }

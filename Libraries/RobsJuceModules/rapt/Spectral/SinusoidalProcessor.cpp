@@ -303,7 +303,17 @@ void rsPartialBeatingRemover<T>::removeAmplitudeBeating(rsSinusoidalPartial<T>& 
   std::vector<T> a = partial.getAmplitudeArray();
 
   GNUPlotter plt;
-  //plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
+  plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
+  plt.plot();
+  // in rsEnvelopeExtractor<T>::fillSparseAreas, the numExtraPoints local variable gets a negative
+  // value 
+  // does this happen because the amp-env gets negative? - why does it get negative anyway - that's
+  // also a bug - it occurs in the DC component - i think, a negative DC component should be 
+  // represented by a phase of 180° - a "cosine" of zero frequency at 180° phase is -1
+  // -> try to remove the DC
+  // ...ok - i think fillSparseAreas needs more thorough testing - there seem to be still bugs
+  // nevertheless, we should figure out, how we can get negative magnitudes - maybe use an 
+  // rsAssert(std::none_of(a ...>= 0.0)
 
   envExtractor.connectPeaks(&t[0], &a[0], &a[0], (int)t.size());
   partial.setAmplitudes(a);

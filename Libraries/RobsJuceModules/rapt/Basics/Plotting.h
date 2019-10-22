@@ -77,6 +77,24 @@ inline void rsPlotVectors(
   plt.plot();
 }
 
+template<class T>
+inline void rsPlotVectorsXY(
+  std::vector<T> x,
+  std::vector<T> y1,
+  std::vector<T> y2 = std::vector<T>(),
+  std::vector<T> y3 = std::vector<T>()   // add more
+)
+{
+  GNUPlotter plt;
+  int N = (int) x.size();
+  //rsAssert(y1.size() == N);
+  if(y1.size() > 0) plt.addDataArrays(N, &x[0], y1[0]);
+  if(y2.size() > 0) plt.addDataArrays(N, &x[0], y2[0]);
+  if(y3.size() > 0) plt.addDataArrays(N, &x[0], y3[0]);
+  // ...add more
+}
+
+
 /** Plots a whole bunch of vectors which are themselves put together into a vector of vectors. */
 //template<class T>
 //inline void rsPlotVectors(std::vector<std::vector<T>> v)
