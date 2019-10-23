@@ -23,6 +23,7 @@ romos::AtomicModule::~AtomicModule()
 //-----------------------------------------------------------------------------------------------------------------------------------------    
 // setup of pins:
 /*
+// this old code is obsolete now
 void AtomicModule::initInputPins(int numberOfPins, const char*, ...)
 {
   va_list ap;

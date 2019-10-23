@@ -21,6 +21,9 @@
 #define SEMITONE_FACTOR 1.0594630943592952645618252949463           // 12th root of 2
 #define PI_F ((float)PI)
 #define NANO 0.000000001  // used by romos - get rid of usage there - define a constexpr there
+// when trying to convert macros to constexpr, i get compiler errors for some - for example for 
+// LN10_INV - one those errors is:
+// rapt\Basics\TypeDefinitions.h(8,1): error C2144:  syntax error: 'signed char' should be preceded by ';'
 
 // music/audio related constants:
 

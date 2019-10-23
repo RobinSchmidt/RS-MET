@@ -155,16 +155,17 @@ public:
   /**  */
   rsMatrixView(int numRows = 0, int numColumns = 0, T* data = nullptr)
   {
+    rsAssert(numRows >= 1 && numColumns >= 1);
     this->numRows = numRows;
     this->numCols = numColumns;
-    d = data;
+    dataPointer = data;
   }
 
   /** \name Setup */
 
-  inline void setAllValues(T value) { rsArray::fillWithValue(d, getSize(), value); }
+  inline void setAllValues(T value) { rsArray::fillWithValue(dataPointer, getSize(), value); }
 
-  inline void scale(T factor) { rsArray::scale(d, getSize(), factor); }
+  inline void scale(T factor) { rsArray::scale(dataPointer, getSize(), factor); }
 
 
   inline void reshape(int newNumRows, int newNumColumns)
@@ -205,16 +206,16 @@ public:
 
   /** Returns a pointer to the stored data. When using this, be sure that you know exactly what 
   you are doing.... */
-  //T* getData() { return d; }
+  //T* getData() { return dataPointer; }
 
-  const T* getDataConst() const { return d; }
+  const T* getDataConst() const { return dataPointer; }
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Initializes all elements with given value. */
-  void init(T value = T(0)) { RAPT::rsArray::fillWithValue(d, getSize(), value); }
+  void init(T value = T(0)) { RAPT::rsArray::fillWithValue(dataPointer, getSize(), value); }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -227,6 +228,7 @@ public:
     for(int i = 0; i < A->numRows; i++)
       for(int j = 0; j < A->numCols; j++)
         (*C)(i, j) = A->at(i, j) + B->at(i, j);
+    // use: rsArray::add(A->d, B->d, C->d, A->getSize();
   }
 
   /** Subtracts elements of B from corresponding elements A in and stores results in C. */
@@ -236,6 +238,7 @@ public:
     for(int i = 0; i < A->numRows; i++)
       for(int j = 0; j < A->numCols; j++)
         (*C)(i, j) = A->at(i, j) - B->at(i, j);
+    // use: rsArray::subtract(A->d, B->d, C->d, A->getSize();
   }
 
   /** Computes the matrix product C = A*B. */
@@ -255,11 +258,11 @@ public:
   /** \name Operators */
 
   /** Read and write access to matrix elements with row-index i and column-index j. */
-  inline T& operator()(const int i, const int j) { return d[flatIndex(i, j)]; }
+  inline T& operator()(const int i, const int j) { return dataPointer[flatIndex(i, j)]; }
 
   /** Read only accees - used mainly internally with const reference arguments (for example,
   in add). */
-  inline const T& at(const int i, const int j) const { return d[flatIndex(i, j)]; }
+  inline const T& at(const int i, const int j) const { return dataPointer[flatIndex(i, j)]; }
 
   /** Converts a row index i and a column index j to a flat array index. */
   inline int flatIndex(const int i, const int j) const
@@ -282,7 +285,7 @@ protected:
   //size_t N, M;    // number of rows and columns
 
   int numRows, numCols;
-  T *d;           // data pointer
+  T *dataPointer;   // data pointer - rename to dataPointer (data itself is already used in rsMatrix)
 
 };
 
@@ -320,21 +323,21 @@ public:
   rsMatrixNew(const rsMatrixNew& B)
   {
     setSize(B.numRows, B.numCols);
-    rsArray::copy(B.d, this->d, this->getSize());
+    rsArray::copy(B.dataPointer, this->dataPointer, this->getSize());
   }
 
   /** Move constructor. */
   rsMatrixNew(const rsMatrixNew&& B)
   {
     setSize(B.numRows, B.numCols);
-    rsArray::copy(B.d, this->d, this->getSize());
+    rsArray::copy(B.dataPointer, this->dataPointer, this->getSize());
   }
 
   rsMatrixNew<T>& operator=(const rsMatrixNew<T>& other) // copy assignment
   {
     if (this != &other) { // self-assignment check expected
       setSize(other.numRows, other.numCols);
-      rsArray::copy(other.d, this->d, this->getSize());
+      rsArray::copy(other.dataPointer, this->dataPointer, this->getSize());
     }
     return *this;
   }
@@ -343,7 +346,7 @@ public:
   {
     if (this != &other) { // self-assignment check expected
       setSize(other.numRows, other.numCols);
-      rsArray::copy(other.d, this->d, this->getSize());
+      rsArray::copy(other.dataPointer, this->dataPointer, this->getSize());
     }
     return *this;
   }
@@ -418,7 +421,7 @@ public:
   {
     if(this->numRows != B.numRows || this->numCols != B.numCols)
       return false;
-    return rsArray::equal(this->d, B.d, this->getSize());
+    return rsArray::equal(this->dataPointer, B.dataPointer, this->getSize());
   }
   // move to rsMatrixView
 
@@ -432,7 +435,7 @@ public:
   {
     rsMatrixNew<T> C(this->numRows, this->numCols);
     for(int i = 0; i < this->getSize(); i++)
-      C.d[i] = -d[i]; // maybe factor out into "neg" function in baseclass
+      C.dataPointer[i] = -dataPointer[i]; // maybe factor out into "neg" function in baseclass
     return C;
   }
 
@@ -461,17 +464,21 @@ protected:
   void updateDataPointer()
   {
     if(data.size() > 0)
-      this->d = &data[0];
+      this->dataPointer = &data[0];
     else
-      this->d = nullptr;
+      this->dataPointer = nullptr;
   }
 
 
   /** \name Data */
 
   std::vector<T> data;
-  // maybe we should just work with our inherited d pointer - but then we can't look easily at the
-  // data in the debugger anymore -> very bad! so, nope!
+  // maybe we should just work with our inherited dataPointer and use new/delete 
+  // -saves a little bit of storage
+  // -but then we can't look easily at the data in the debugger anymore -> very bad! so, nope!
+  // -the little storage overhead of std::vector becomes negligible for all but the smallest 
+  //  matrices - on the other hand, very small matrices may be common 
+  // -maybe use std::vector in debug builds and new/delete in release builds
 
 };
 
@@ -493,5 +500,31 @@ inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
 
   // todo: make some special-case classes for 2x2, 3x3 matrices which can use simpler algorithms
   // for some of the computations
+
+
+// Notes:
+// -class is under construction
+// -design goals:
+//  -use std::vector to hold the data in a flat array (so we can inspect it in the debugger)
+//  -storage format should be compatible with lapack routines (maybe not by default, but can be 
+//   made so) - that means to support column major storage
+//  -in expressions like rsMatrix<float> C = B*(A + B) + B; we want to avoid copying the data 
+//   unnecessarily - i.e. avoid that the temporaries that occur inside this expression use heap 
+//   allocation only when absolutely necessarry
+//   ...this especially means, we need to pass the return values of the arithmetic operators by
+//   reference rather than by value - typically, in an implementation like
+//  -ideally, i want to be able to use it in production code for realtime processing...but that
+//   may not be possible...but maybe with rsMatrixView, it is?
+//
+//    rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
+//    { rsMatrixNew<T> C(this->numRows, this->numCols); this->add(this, &B, &C); return C; }
+//
+//   we have one constructor call (-> heap allocation) to create C - but C is a local variable - to
+//   return it to the caller, there would be *another* (copy?)constructor call - ...right? and that
+//   second call is what we want to get rid of
+
+
+
+// maybe see here: https://www.youtube.com/watch?v=PNRju6_yn3o
 
 #endif

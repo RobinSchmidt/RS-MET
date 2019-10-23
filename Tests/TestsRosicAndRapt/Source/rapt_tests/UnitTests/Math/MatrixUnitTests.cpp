@@ -286,7 +286,8 @@ bool testMatrixView()
 
 
 
-
+  typedef rsMatrix<double> Matrix;
+  //Matrix A(
 
 
   return r;
