@@ -43,6 +43,10 @@ bool testKnuthMorrisPrattSearch()
   return testResult;
 }
 
+
+
+
+
 bool testBinarySearch()
 {
   bool testResult = true;
@@ -63,11 +67,19 @@ bool testBinarySearch()
   }
   // what if searchedValue >= any_of(a)
 
-  // test cases, where the array values are not equal to teh indices - maybe twice the indices, 
-  // maybe with an offset, etc.
 
+  AR::fillWithRangeLinear(a, length, 0, 18); // 0,2,4,6,...16,18
+  for(int subLength = 0; subLength <= length; subLength++) {
+    for(int searchedValue = 0; searchedValue < subLength; searchedValue++) {
+      int foundIndex = AR::binarySearch(a, subLength, searchedValue);
+      testResult &= foundIndex == searchedValue/2;
+    }
+  }
 
-
+  // todo: test with value scaler*index + offset for different scalers and offsets
+  // maybe factor out the loop into a function that takes an array, length, searchedValue and 
+  // (lambda)function that computes the target index from the value (in the first case, that would
+  // be the iedentity, in the 2nd, x/2 etc.
 
 
 
