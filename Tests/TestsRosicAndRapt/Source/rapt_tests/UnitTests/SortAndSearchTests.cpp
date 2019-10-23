@@ -47,17 +47,27 @@ bool testBinarySearch()
 {
   bool testResult = true;
 
-  static const int N = 10;  // length of example array
+  static const int length = 10;  // length of example array
 
-  int a[N] = {0,1,2,3,4,5,6,7,8,9};
+  int a[length] = {0,1,2,3,4,5,6,7,8,9};
 
   using AR = RAPT::rsArray;
 
-  int i;
 
-  // do this in a loop i = 0..N-1:
-  i = AR::binarySearch(a, N, 7); 
-  testResult &= i == 7;
+
+  for(int subLength = 0; subLength <= length; subLength++) {  // what about sublength == 0?
+    for(int searchedValue = 0; searchedValue < subLength; searchedValue++) {
+      int foundIndex = AR::binarySearch(a, subLength, searchedValue);
+      testResult &= foundIndex == searchedValue; // the indices equal the values in array a
+    }
+  }
+  // what if searchedValue >= any_of(a)
+
+  // test cases, where the array values are not equal to teh indices - maybe twice the indices, 
+  // maybe with an offset, etc.
+
+
+
 
 
 
