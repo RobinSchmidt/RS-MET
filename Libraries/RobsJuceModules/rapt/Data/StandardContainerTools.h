@@ -99,6 +99,12 @@ inline void rsInsertValue(std::vector<T>& v, T newElement, size_t index)
   v.insert(v.begin() + index, newElement);
 }
 
+template<class T>
+inline void rsInsert(std::vector<T>& v, const std::vector<T>& w, size_t index)
+{
+  v.insert(v.begin() + index, w.begin(), w.end());
+}
+
 
 
 /** Wraps iterator syntax to simplify calls to std::none_of. */

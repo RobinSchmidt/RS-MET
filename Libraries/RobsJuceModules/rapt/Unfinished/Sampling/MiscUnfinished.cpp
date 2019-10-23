@@ -1679,6 +1679,7 @@ void rsEnvelopeExtractor<T>::setupEndValues(
 // Returns the last index in the ascendingly sorted array "A", where the value is less-than or
 // equal-to "key", if 0 is returned, and the 0th element does not equal "key", then all values in 
 // the array are either less or all are greater than key -> check this
+/*
 template<class T>
 int rsBinarySearch(const T* A, T key, int imin, int imax)
 {
@@ -1699,10 +1700,11 @@ int rsBinarySearch(const T* A, T key, int imin, int imax)
   else
     return imin-1;
 }
+*/
 // move to SortAndSearch, write unit tests
 // compare to this: https://en.wikipedia.org/wiki/Binary_search_algorithm
 // what abotu RSLib? look, if we have something like hat there already
-
+/*
 template<class T>
 int rsIndexOfClosestValueSorted(const T* a, int N, T val)
 {
@@ -1712,14 +1714,17 @@ int rsIndexOfClosestValueSorted(const T* a, int N, T val)
       i++;
   return i;
 }
+*/
 // move to rsArray - write unit test - maybe compare against more general function that doesn't
 // assume the array to be sorted
-
+/*
 template<class T>
 inline void rsInsert(std::vector<T>& v, const std::vector<T>& w, size_t index)
 {
   v.insert(v.begin() + index, w.begin(), w.end());
 }
+*/
+// move to container tools
 
 template<class T>
 void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
@@ -1749,7 +1754,7 @@ void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEn
       tmpValue.resize(numExtraPoints);
       for(int j = 0; j < numExtraPoints; j++) {
         T t = t0 + (j+1) * (dt/(numExtraPoints+1));  // verify this formula
-        int idx = rsIndexOfClosestValueSorted(rawEnvTime, rawEnvLength, t);
+        int idx = rsArray::indexOfClosestValueSorted(rawEnvTime, rawEnvLength, t);
         tmpTime[j]  = rawEnvTime[idx];
         tmpValue[j] = rawEnvValue[idx];
       }

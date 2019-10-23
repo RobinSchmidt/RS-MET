@@ -37,10 +37,6 @@ void rsArray::add(const T *buffer, const T valueToAdd, T *result, const int leng
     result[i] = buffer[i] + valueToAdd;
 }
 
-
-
-
-
 template <class T>
 void rsArray::addCircularShiftedCopy(
   T *buffer, const int length, const double offset, const T weight)
@@ -93,6 +89,29 @@ void rsArray::applyFunction(const T *inBuffer, T *outBuffer, const int length, T
   for(int i = 0; i < length; i++)
     outBuffer[i] = f(inBuffer[i]);
 }
+
+template<class T>
+int rsArray::binarySearch(const T* A, T key, int imin, int imax)
+{
+  while( imin < imax ) {
+
+    int imid = imin/2 + imax/2; 
+    // divide before add to avoid overflow  ...hmm - is this a good idea? 
+    // (5+3)/2 = 8/2 = 4 but 5/2 + 3/2 = 2 + 1 = 3 with integer division
+
+    rsAssert(imid < imax);
+    if( A[imid] < key )
+      imin = imid + 1;
+    else
+      imax = imid;
+  }
+  if(A[imin] == key || imin == 0)
+    return imin;
+  else
+    return imin-1;
+}
+// compare to this: https://en.wikipedia.org/wiki/Binary_search_algorithm
+// what about RSLib? look, if we have something like hat there already
 
 template <class T>
 void rsArray::circularShift(T *buffer, const int length, const int numPositions)
@@ -684,6 +703,18 @@ void rsArray::impulseResponse(T *h, int hLength, const T *b, int bOrder, const T
   T x = T(1);
   filter(&x, 1, h, hLength, b, bOrder, a, aOrder);
 }
+
+
+template<class T>
+int rsArray::indexOfClosestValueSorted(const T* a, const int N, const T val)
+{
+  int i = binarySearch(a, val, 0, N-1);
+  if(i < N-1) 
+    if( rsAbs(a[i]-val) > rsAbs(a[i+1]-val) )
+      i++;
+  return i;
+}
+
 
 template <class T>
 void rsArray::interleave(T *buffer, int numFrames, int numElementsPerFrame)

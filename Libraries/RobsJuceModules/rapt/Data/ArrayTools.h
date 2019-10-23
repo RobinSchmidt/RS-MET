@@ -66,6 +66,25 @@ public:
   static inline bool almostEqual(const T *buffer1, const T *buffer2, 
     const int length, const T tolerance);
 
+
+  /** Returns the last index in the ascendingly sorted array "A", where the value is less-than or
+  equal-to "key", if 0 is returned, and the 0th element does not equal "key", then all values in 
+  the array are either less or all are greater than key -> check this */
+  template<class T>
+  static int binarySearch(const T* A, T key, int imin, int imax);
+  // todo: document imin, imax - maybe make a convenience function
+  // binarySearch(const T* A, int length, T key);
+  // take key by const reference
+  // rename this - the name is confusing - it suggests that there actually is an element that
+  // equals key - it should be called binarySearchLessOrEqual or something like that
+  // an actual binarySearch should return -1 when the element is not found
+
+  template<class T>
+  static int binarySearch(const T* A, int N, T key) { return binarySearch(A, key, 0, N-1); }
+  // maybe keep only this function - the signature with imin, imax is confusing - it's also 
+  // incosistent with stl end() for iterators -> bad!
+
+
   /** Checks, if the two buffers are elementwise equal. */
   template <class T>
   static inline bool equal(const T *buffer1, const T *buffer2, const int length);
@@ -357,6 +376,13 @@ public:
   etc., maybe move to RSLib into the filter section */
   template <class T>
   static void impulseResponse(T *h, int hLength, const T *b, int bOrder, const T *a, int aOrder);
+
+
+  template<class T>
+  static int indexOfClosestValueSorted(const T* a, const int N, const T val);
+  // T should be Ordered -> use concept Ordered in c++20
+
+
 
   /** Interleaves a buffer of non-interleaved data. */
   template <class T>

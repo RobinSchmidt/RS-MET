@@ -152,14 +152,19 @@ public:
 
   /** \name Construction/Destruction */
 
+  /** Default constructor */
+  rsMatrixView() {}
+
+
   /**  */
-  rsMatrixView(int numRows = 0, int numColumns = 0, T* data = nullptr)
+  rsMatrixView(int numRows, int numColumns, T* data)
   {
-    rsAssert(numRows >= 1 && numColumns >= 1);
+    rsAssert(numRows >= 1 && numColumns >= 1 && data != nullptr);
     this->numRows = numRows;
     this->numCols = numColumns;
     dataPointer = data;
   }
+  // can this be optimized by turning the assignments into copy-constructions?
 
   /** \name Setup */
 
@@ -282,10 +287,8 @@ protected:
 
   /** \name Data */
 
-  //size_t N, M;    // number of rows and columns
-
-  int numRows, numCols;
-  T *dataPointer;   // data pointer - rename to dataPointer (data itself is already used in rsMatrix)
+  int numRows = 0, numCols = 0;  // number of rows and columns
+  T *dataPointer = nullptr;      // pointer to the actual data
 
 };
 
@@ -327,7 +330,7 @@ public:
   }
 
   /** Move constructor. */
-  rsMatrixNew(const rsMatrixNew&& B)
+  rsMatrixNew(const rsMatrixNew&& B)  // should B be declared const const?
   {
     setSize(B.numRows, B.numCols);
     rsArray::copy(B.dataPointer, this->dataPointer, this->getSize());
@@ -389,6 +392,9 @@ public:
   static rsMatrixNew<T> kroneckerProduct(const rsMatrixNew<T>& A, const rsMatrixNew<T>& B)
   {
     rsMatrixNew<T> C(A.numRows*B.numRows, A.numCols*B.numCols);
+
+    // factor out into rsMatrixView, so we can call
+    // this->kroneckerProduct(A, B, C)
     for(int ia = 0; ia < A.numRows; ia++) {
       for(int ja = 0; ja < A.numCols; ja++) {
         int startRow = ia*B.numRows;
@@ -396,6 +402,8 @@ public:
         for(int ib = 0; ib < B.numRows; ib++) {
           for(int jb = 0; jb < B.numCols; jb++) {
             C(startRow+ib, startCol+jb) = A.at(ia,ja) * B.at(ib, jb); }}}}
+
+
     return C;
   }
   // maybe rename to tensorProduct

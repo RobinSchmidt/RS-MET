@@ -43,12 +43,35 @@ bool testKnuthMorrisPrattSearch()
   return testResult;
 }
 
+bool testBinarySearch()
+{
+  bool testResult = true;
+
+  static const int N = 10;  // length of example array
+
+  int a[N] = {0,1,2,3,4,5,6,7,8,9};
+
+  using AR = RAPT::rsArray;
+
+  int i;
+
+  // do this in a loop i = 0..N-1:
+  i = AR::binarySearch(a, N, 7); 
+  testResult &= i == 7;
+
+
+
+  return testResult;
+}
+
+
 bool testSortAndSearch()
 {
   bool testResult = true;
 
   testResult &= testHeapSort();
   testResult &= testKnuthMorrisPrattSearch();
+  testResult &= testBinarySearch();
 
   return testResult;
 }
