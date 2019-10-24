@@ -90,36 +90,6 @@ void rsArray::applyFunction(const T *inBuffer, T *outBuffer, const int length, T
     outBuffer[i] = f(inBuffer[i]);
 }
 
-template<class T>
-int rsArray::splitIndex(const T* A, int N, T key)
-{
-  int imin = 0;
-  int imax = N-1;
-  while( imin < imax ) {
-
-    int imid = imin/2 + imax/2; 
-    //int imid = (imin+imax)/2; 
-    // divide before add to avoid overflow  ...hmm - is this a good idea? 
-    // (5+3)/2 = 8/2 = 4 but 5/2 + 3/2 = 2 + 1 = 3 with integer division
-    // integer division is expensive....but not for powers of two - so it should be fine
-
-
-    //rsAssert(imid < imax); // only for debug
-    if( A[imid] < key )
-      imin = imid + 1;
-    else
-      imax = imid;
-  }
-
-  // why do we need this?
-  if(A[imin] == key || imin == 0)
-    return imin;
-  else
-    return imin-1;
-}
-// compare to this: https://en.wikipedia.org/wiki/Binary_search_algorithm
-// what about RSLib? look, if we have something like hat there already
-
 template <class T>
 void rsArray::circularShift(T *buffer, const int length, const int numPositions)
 {
@@ -711,18 +681,6 @@ void rsArray::impulseResponse(T *h, int hLength, const T *b, int bOrder, const T
   filter(&x, 1, h, hLength, b, bOrder, a, aOrder);
 }
 
-
-template<class T>
-int rsArray::splitIndexClosest(const T* a, const int N, const T val)
-{
-  int i = splitIndex(a, N, val);
-  if(i < N-1) 
-    if( rsAbs(a[i]-val) > rsAbs(a[i+1]-val) )
-      i++;
-  return i;
-}
-
-
 template <class T>
 void rsArray::interleave(T *buffer, int numFrames, int numElementsPerFrame)
 {
@@ -1112,6 +1070,52 @@ void rsArray::shift(T *buffer, int length, int numPlaces)
     rightShift(buffer, length, numPlaces);
   else
     leftShift(buffer, length, -numPlaces);
+}
+
+template<class T>
+int rsArray::splitIndex(const T* A, int N, T key)
+{
+  int imin = 0;
+  int imax = N-1;
+  while( imin < imax ) {
+
+    int imid = imin/2 + imax/2; 
+    //int imid = (imin+imax)/2; 
+    // divide before add to avoid overflow  ...hmm - is this a good idea? 
+    // (5+3)/2 = 8/2 = 4 but 5/2 + 3/2 = 2 + 1 = 3 with integer division
+    // integer division is expensive....but not for powers of two - so it should be fine
+
+
+    //rsAssert(imid < imax); // only for debug
+    if( A[imid] < key )
+      imin = imid + 1;
+    else
+      imax = imid;
+  }
+  return imin;
+
+  //// why do we need this?:
+  //if(A[imin] == key || imin == 0)
+  //  return imin;
+  //else
+  //  return imin-1;
+}
+// compare to this: https://en.wikipedia.org/wiki/Binary_search_algorithm
+// what about RSLib? look, if we have something like hat there already
+
+template<class T>
+int rsArray::splitIndexClosest(const T* a, const int N, const T val)
+{
+  int i = splitIndex(a, N, val);
+  if(i > 0 && rsAbs(a[i]-val) > rsAbs(a[i-1]-val))
+    i--;
+  return i;
+
+  //// i think, this is wrong - we should compare to rsAbs(a[i-1]-val) and decrement, if true
+  //if(i < N-1) 
+  //  if( rsAbs(a[i]-val) > rsAbs(a[i+1]-val) )
+  //    i++;
+  //return i;
 }
 
 template <class T>

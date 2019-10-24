@@ -148,12 +148,14 @@ bool testBinarySearch()
   fill(a, length, f1);
   testResult &= testBinSearch(a, length, f1, f2);
 
-
+  int foundIndex;
   std::vector<int> b = {1,2,2,2,4,4,4,4,5,6};
-  int foundIndex = RAPT::rsArray::splitIndex(&b[0], (int)b.size(), 4);  // finds 4 - is that what we want?
-  foundIndex = RAPT::rsArray::splitIndex(&b[0], (int)b.size(), 2);
-
-
+  foundIndex  = AR::splitIndex(&b[0], (int)b.size(), 4);
+  testResult &= foundIndex == 4;
+  foundIndex  = AR::splitIndex(&b[0], (int)b.size(), 3);
+  testResult &= foundIndex == 4;
+  foundIndex  = AR::splitIndex(&b[0], (int)b.size(), 2);
+  testResult &= foundIndex == 1;
 
   //fillRandomSorted(a, length, -9, +9);
 

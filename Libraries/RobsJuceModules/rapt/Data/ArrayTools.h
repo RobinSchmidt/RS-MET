@@ -66,19 +66,6 @@ public:
   static inline bool almostEqual(const T *buffer1, const T *buffer2, 
     const int length, const T tolerance);
 
-
-
-
-  /** Returns the first index in the ascendingly sorted array "A", where the value is greater 
-  than or equal to "key", or - put another way - one plus the last index, for which all elements
-  are strictly less than "key". If 0 is returned, and the 0th element does not equal "key", then 
-  all values in the array are either less or all are greater than key -> check this */
-  template<class T>
-  static int splitIndex(const T* A, int N, T splitValue);
-  // move down..
-
-
-
   /** Checks, if the two buffers are elementwise equal. */
   template <class T>
   static inline bool equal(const T *buffer1, const T *buffer2, const int length);
@@ -371,14 +358,6 @@ public:
   template <class T>
   static void impulseResponse(T *h, int hLength, const T *b, int bOrder, const T *a, int aOrder);
 
-
-  template<class T>
-  static int splitIndexClosest(const T* a, const int N, const T val);
-  // T should be Ordered -> use concept Ordered in c++20
-  // rename to splitIndexClosest - splitIndex itself is more like splitIndexCeil
-
-
-
   /** Interleaves a buffer of non-interleaved data. */
   template <class T>
   static void interleave(T *buffer, int numFrames, int numElementsPerFrame);
@@ -607,6 +586,21 @@ public:
   from the right. */
   template <class T>
   static void shift(T *buffer, int length, int numPlaces);
+
+  /** Returns the first index in the ascendingly sorted array "a", where the value is greater 
+  than or equal to splitValue, or - put another way - one plus the last index, for which all 
+  elements are strictly less than "key". If 0 is returned, and the 0th element does not equal 
+  splitValue, then all values in the array are either less or all are greater than key -> check this */
+  template<class T>
+  static int splitIndex(const T* a, int N, T splitValue);
+
+  /** Like splitIndex, but instead of just returning the first index i, where a[i] >= splitValue, 
+  it checks, if a[i-1] is closer to the splitValue than a[i]. If it is, then it returns i-1
+  instead of i. */
+  template<class T>
+  static int splitIndexClosest(const T* a, const int N, const T splitValue);
+  // T should be Ordered -> use concept Ordered in c++20
+  // rename to splitIndexClosest - splitIndex itself is more like splitIndexCeil
 
   /** Subtracts the elements of 'buffer2' from 'buffer1' - type must define operator '-'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
