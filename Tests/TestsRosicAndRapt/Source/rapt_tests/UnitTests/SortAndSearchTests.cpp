@@ -44,9 +44,8 @@ bool testKnuthMorrisPrattSearch()
 }
 
 
-
 template<class F1, class F2>
-bool testBinSearch(int* array, int length, F1 indexToValue, F2 valueToIndex)
+bool testSplitIndex(int* array, int length, F1 indexToValue, F2 valueToIndex)
 {
   bool testResult = true;
   for(int subLength = 0; subLength <= length; subLength++) 
@@ -60,53 +59,7 @@ bool testBinSearch(int* array, int length, F1 indexToValue, F2 valueToIndex)
   }
   return testResult;
 }
-// rename to testSplitIndex
-
-template<class T, class F>
-void fill(T* a, int N, F indexToValue)
-{
-  for(int i = 0; i < N; i++)
-    a[i] = indexToValue(i);
-}
-// move to rsArray
-// ...has the std library something similar for containers? if so, conform to its syntax
-
-template<class T, class F1, class F2>
-T applyComposedFunction(T x, F1 innerFunction, F2 outerFunction)
-{
-  return outerFunction(innerFunction(x));
-}
-// maybe move to functional...stuf (i think, in prototypes)
-template<class T, class F>
-bool mapsToItself(T x, F f)
-{
-  return x == f(x);
-}
-
-/** Checks, if the 2nd function is the inverse function of the first for the given input argument 
-x. */
-template<class T, class F1, class F2>
-bool mapsBack(T x, F1 forwardFunction, F2 maybeInverseFunction)
-{
-  return x == applyComposedFunction(x, forwardFunction, maybeInverseFunction);
-  //return x == maybeInverseFunction(forwardFunction(x));
-}
-// maybe rename to isFunctionLocallyInverse
-
-template<class T, class F1, class F2>
-bool isInverseFunction(F1 forwardFunc, F2 maybeInverseFunc, T minValue, T maxValue, T increment)
-{
-  T value = minValue;
-  while(value < maxValue) {
-    if( !mapsBack(value, forwardFunc, maybeInverseFunc) )
-      return false;
-    value += increment;
-  }
-  return true;
-}
-
-
-bool testBinarySearch()
+bool testSplitIndex()
 {
   bool testResult = true;
 
@@ -117,36 +70,21 @@ bool testBinarySearch()
   using AR = RAPT::rsArray;
 
   auto identity = [](int i){ return i; };  // converts indices to values via the identity function...
-  rsAssert(isInverseFunction(identity, identity, 0, length-1, 1));
-  fill(a, length, identity);
-  testResult &= testBinSearch(a, length, identity, identity);
+  //rsAssert(isInverseFunction(identity, identity, 0, length-1, 1));
+  AR::fill(a, length, identity);
+  testResult &= testSplitIndex(a, length, identity, identity);
 
   auto timesTwo = [](int i){ return 2*i; };
   auto divByTwo = [](int i){ return i/2; };
-  rsAssert(isInverseFunction(timesTwo, divByTwo, 0, length-1, 1));
-  fill(a, length, timesTwo);
-  testResult &= testBinSearch(a, length, timesTwo, divByTwo);
+  //rsAssert(isInverseFunction(timesTwo, divByTwo, 0, length-1, 1));
+  AR::fill(a, length, timesTwo);
+  testResult &= testSplitIndex(a, length, timesTwo, divByTwo);
 
-  // the rsAssert(isInverseFunction...) may be commented out - they are onyl needed for verifying 
-  // *once*, that the index-to-value and value-to-index functions actually are inverses of each 
-  // other as intended. they are not part of the unit test for the search-algo -c they are used to 
-  // test, that we actually generate proper test-inputs
-
-
-
-  // what, if we exchange the roles?
-  //testResult &= testBinSearch(a, length, divByTwo, timesTwo);
-  // ...it fails, because in the integers, multiplying by 2 does not undo division by 2, 
-  // for example 3 != (3/2)*2 = 2
-  //rsAssert(isInverseFunction(divByTwo, timesTwo, 0, length-1, 1));
-
-
-  auto f1 = [](int i){ return 3*i+1; };    // give better names ...times3plus1
-  auto f2 = [](int i){ return (i-1)/3; };  // ...minus1divBy3
-  //bool isInverse = isInverseFunction(f1, f2, 0, length-1, 1);
-  rsAssert(isInverseFunction(f1, f2, 0, length-1, 1));
-  fill(a, length, f1);
-  testResult &= testBinSearch(a, length, f1, f2);
+  auto times3plus1 = [](int i){ return 3*i+1; }; 
+  auto minus1divBy3 = [](int i){ return (i-1)/3; };
+  //rsAssert(isInverseFunction(times3plus1, minus1divBy3, 0, length-1, 1));
+  AR::fill(a, length, times3plus1);
+  testResult &= testSplitIndex(a, length, times3plus1, minus1divBy3);
 
   int foundIndex;
   std::vector<int> b = {1,2,2,2,4,4,4,4,5,6};
@@ -171,16 +109,13 @@ bool testBinarySearch()
   foundIndex  = AR::splitIndexClosest(&c[0], (int)c.size(), 2.1);
   testResult &= foundIndex == 3;
 
-
-
-  //fillRandomSorted(a, length, -9, +9);
-
-  // find invertible functions in the integers that do interesting things - or: use random numbers
-  // and sort them
+  // the rsAssert(isInverseFunction...) are commented out because they were only needed for 
+  // verifying *once*, that the index-to-value and value-to-index functions actually are inverses 
+  // of each other as intended. they are not part of the unit test for the search-algo -c they are
+  // used to test, that we actually generate proper test-inputs
 
   return testResult;
 }
-
 
 bool testSortAndSearch()
 {
@@ -188,7 +123,7 @@ bool testSortAndSearch()
 
   testResult &= testHeapSort();
   testResult &= testKnuthMorrisPrattSearch();
-  testResult &= testBinarySearch();
+  testResult &= testSplitIndex();
 
   return testResult;
 }

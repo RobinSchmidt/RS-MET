@@ -259,6 +259,12 @@ public:
   template <class T1, class T2, class TR>
   static void divide(const T1 *buffer1, const T2 *buffer2, TR *result, int length);
 
+  /** Fills the array with values given by a function. For example, calling it like:
+        fill(a, length, [](int i){ return 3*i+1; });
+   gives each array element the value 3*i+1 where i is the array index. */
+  template<class T, class F>
+  static void fill(T* a, int N, F indexToValueFunction);
+
   /** Fills the passed array with a unit impulse. */
   template <class T>
   static inline void fillWithImpulse(T *buffer, int length);
@@ -270,7 +276,7 @@ public:
 
   /** Fills the buffer with NaN values. This may be useful as initialization for testing code that
   is supposed to initialize the buffer correctly - failing to do so will leave NaNs which are 
-  easily discovered druing debugging. */
+  easily discovered during debugging. */
   template <class T>
   static inline void fillWithNaN(T *buffer, int length);
 
@@ -593,15 +599,13 @@ public:
   splitValue, then all values in the array are either less or all are greater than key -> check this */
   template<class T>
   static int splitIndex(const T* a, int N, T splitValue);
-  // needs test
+  // T should be Ordered -> use concept Ordered/Sortable in c++20
 
   /** Like splitIndex, but instead of just returning the first index i, where a[i] >= splitValue, 
   it checks, if a[i-1] is closer to the splitValue than a[i]. If it is, then it returns i-1
   instead of i. */
   template<class T>
   static int splitIndexClosest(const T* a, const int N, const T splitValue);
-  // T should be Ordered -> use concept Ordered in c++20
-  // rename to splitIndexClosest - splitIndex itself is more like splitIndexCeil
 
   /** Subtracts the elements of 'buffer2' from 'buffer1' - type must define operator '-'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
@@ -749,6 +753,13 @@ inline bool rsArray::equal(const T *buffer1, const T *buffer2, const int length)
       return false;
   }
   return true;
+}
+
+template<class T, class F>
+inline void rsArray::fill(T* a, int N, F indexToValueFunction)
+{
+  for(int i = 0; i < N; i++)
+    a[i] = indexToValueFunction(i);
 }
 
 template <class T>
