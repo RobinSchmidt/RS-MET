@@ -593,6 +593,7 @@ public:
   splitValue, then all values in the array are either less or all are greater than key -> check this */
   template<class T>
   static int splitIndex(const T* a, int N, T splitValue);
+  // needs test
 
   /** Like splitIndex, but instead of just returning the first index i, where a[i] >= splitValue, 
   it checks, if a[i-1] is closer to the splitValue than a[i]. If it is, then it returns i-1

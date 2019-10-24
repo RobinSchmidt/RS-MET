@@ -157,6 +157,22 @@ bool testBinarySearch()
   foundIndex  = AR::splitIndex(&b[0], (int)b.size(), 2);
   testResult &= foundIndex == 1;
 
+  std::vector<double> c = {1.,2.,2.,2.,4.,4.,4.,4.,5.,6.};
+  foundIndex  = AR::splitIndex(&c[0], (int)c.size(), 3.9);
+  testResult &= foundIndex == 4;
+  foundIndex  = AR::splitIndex(&c[0], (int)c.size(), 4.0);
+  testResult &= foundIndex == 4;
+  foundIndex  = AR::splitIndex(&c[0], (int)c.size(), 4.1);
+  testResult &= foundIndex == 8;
+  foundIndex  = AR::splitIndex(&c[0], (int)c.size(), 2.1);
+  testResult &= foundIndex == 4;
+  foundIndex  = AR::splitIndexClosest(&c[0], (int)c.size(), 3.9);
+  testResult &= foundIndex == 4;
+  foundIndex  = AR::splitIndexClosest(&c[0], (int)c.size(), 2.1);
+  testResult &= foundIndex == 3;
+
+
+
   //fillRandomSorted(a, length, -9, +9);
 
   // find invertible functions in the integers that do interesting things - or: use random numbers
