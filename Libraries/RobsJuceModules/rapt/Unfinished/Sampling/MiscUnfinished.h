@@ -239,6 +239,9 @@ public:
     CYCLE_CORRELATION_OLD   // refines f0 zero-crossings by correlation (has sometimes problems,
                             // should not be used anymore)
   };
+  // old - to be replaced by enum class:
+
+ 
 
   /** Constructor. You should pass a sample-rate and the minimum and maximum expected values
   for the fundamental frequency. */
@@ -385,6 +388,7 @@ protected:
   T fMax;                /**< maximum expected fundamental */
   T fundamental = T(0);  /**< if set 0, object will try to auto-detect */
   int algo = 0;          /**< algorithm to use */
+
 
   // parameters for the zero-crossing algo:
   //T bandPassFreq = T(0);         /**< if set 0, object will try to auto-detect */

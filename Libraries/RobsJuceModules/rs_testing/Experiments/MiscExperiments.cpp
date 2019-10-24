@@ -282,13 +282,18 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   int N = (int) x.size(); // x is the input signal
 
   RAPT::rsHarmonicAnalyzer<double> analyzer;
+
+  analyzer.getCycleFinder().setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
+  // for test with Rhodes Tuned F3 V12TX -16.4 10-17-16 shorter
+
   setupHarmonicAnalyzerFor(analyzer, name, fs, f0);
+  std::cout << "Analyzing...\n";  // maybe write function that prints the time it took to analyze
+                                  // takes a string and a function to call - callAndEcho
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
   rsAssert(mdl.isDataValid());
+  std::cout << "Resynthesizing...\n";
   std::vector<double> y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutputUnmodified.wav", &y[0], (int)y.size(), (int)fs);
-
-
 
   // mdl now contains the sinusoidal model for the sound. Now, we set up a rsPartialBeatingRemover 
   // and apply the de-beating to model data, then synthesize the de-beated signal and write into
@@ -304,8 +309,10 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   // frame-rate ...or - wait - is that actually true
 
   //mdl.removePartial(0);  // test - remove DC - the DC component crashes with Rhodes Tuned F3 V12TX -16.4 10-17-16 short
+  std::cout << "De-Beating...\n";
   deBeater.processModel(mdl);
   rsAssert(mdl.isDataValid());
+  std::cout << "Resynthesizing...\n";
   y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
 }
