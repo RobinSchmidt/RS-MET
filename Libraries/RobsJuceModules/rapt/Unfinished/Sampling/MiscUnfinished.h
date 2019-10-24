@@ -888,6 +888,12 @@ public:
     //PERIODIC_END
   };
 
+  rsEnvelopeExtractor()
+  {
+    int dummy = 0;
+  }
+
+
   //void setInterpolationMode(int newMode);
   // linear, cubic
 

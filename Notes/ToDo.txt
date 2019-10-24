@@ -1,26 +1,3 @@
-Style guidelines/updates:
-
-here are the guidelines recommended by the c++ commitee:
-https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md
-
--"Modern c++" guidelines say, that we should avoid raw "new" and "delete" and use smart-pointers 
- instead std::unique_ptr, std::shared_ptr
- -try to do that, where reasonable (but always take potential performance degradation into account)
- -where not reasonable, convey information of ownership takeover in the respective function 
-  names - instead of addChildFoo( new Foo ) use things like addOwnedChildFoo( new Foo )
- -
-
--if a pointer cannot be a nullptr, say so by using not_null
-
--for any low-level, number-crunching routine, avoid memory allocations - pass a workspace pointer
- instead (maybe keep the functions without workspace pointer as convenience functions
-
-seems like #pragma once is not really recommended as replacement for include gurads - so we should
-stick to them, fo rthe time being
-https://stackoverflow.com/questions/1143936/pragma-once-vs-include-guards
- 
--check use of std::list<> in rosic::PolymorphicIntrumentVoice
-
 
 
 

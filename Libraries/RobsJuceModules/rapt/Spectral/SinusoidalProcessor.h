@@ -145,6 +145,12 @@ public:
     phaseSmootherNumPasses = numFilterPasses;
   }
 
+  virtual void setMaxEnvelopeSampleSpacing(T newSpacing) 
+  { 
+    envExtractor.setMaxSampleSpacing(newSpacing);
+  }
+  // this is a bad name - choose a better ...use minPrecision or just Precision...or Resolution
+
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 

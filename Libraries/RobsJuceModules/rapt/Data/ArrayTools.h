@@ -6,6 +6,10 @@
 add to the documentation, to which std::algorithm a function corresponds, if applicable
 
 todo: 
+-maybe rename to rsArrayTools, class rsArray should be an actual dynamically allocated array with
+ the same interface as std::vector - having my own implementation might be more efficient since
+ std::vector initializes the memory - say this blog-post, at least
+ https://lemire.me/blog/2012/06/20/do-not-waste-time-with-stl-vectors/
 -make everything const that is possible (also by-value parameters, local variables, etc. - and use
  constexpr for compile-time constants)
  ->done up to copy
@@ -16,7 +20,7 @@ todo:
 
 */
 
-class rsArray
+class rsArray  // 
 {
 
 public:

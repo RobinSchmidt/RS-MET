@@ -248,7 +248,6 @@ inline void rsPadLeft(std::vector<double>& v, size_t amount, T value)
   // maybe, it can be done with memmove and memset more efficiently?
 }
 
-
 template<class T>
 std::vector<T> rsDifference(const std::vector<T> x)
 {
@@ -271,11 +270,32 @@ std::vector<T> rsAmpToDb(const std::vector<T>& a, T floorDb = -std::numeric_limi
   return db;
 }
 
+template<class T>
+std::vector<T> rsDecimate(const std::vector<T>& x, int factor)
+{
+  int Ny = (int) x.size() / factor;
+  std::vector<T> y(Ny);
+  RAPT::rsArray::decimate(&x[0], (int)x.size(), &y[0], factor);
+  return y;
+}
+
+template<class T>
+std::vector<T> rsDecimateViaMean(const std::vector<T>& x, int factor)
+{
+  int Ny = (int) x.size() / factor;
+  std::vector<T> y(Ny);
+  RAPT::rsArray::decimateViaMean(&x[0], (int)x.size(), &y[0], factor);
+  return y;
+}
 
 
+/** Iterator to minimum element. */
 template<class T>
 auto rsMinIter(const std::vector<T>& x) { return std::min_element(x.cbegin(), x.cend()); }
 
+// todo: write rsMinIndex - returns size_t (or int)
+
+/** Minimum element. */
 template<class T>
 T rsMinValue(const std::vector<T>& x) { return *rsMinIter(x); }
 

@@ -288,44 +288,24 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   std::vector<double> y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutputUnmodified.wav", &y[0], (int)y.size(), (int)fs);
 
+
+
   // mdl now contains the sinusoidal model for the sound. Now, we set up a rsPartialBeatingRemover 
   // and apply the de-beating to model data, then synthesize the de-beated signal and write into
   // wavefile:
   rsPartialBeatingRemover<double> deBeater;
   deBeater.setPhaseSmoothingParameters(5.0, 1, 4); // cutoff = 10 leaves a vibrato
+
+  // 10 is ad hoc - at least one sample per 10 cycles:
+  deBeater.setMaxEnvelopeSampleSpacing(
+    10.0/mdl.getPartial(0).getMeanFreq());   
+
   //mdl.removePartial(0);  // test - remove DC - the DC component crashes with Rhodes Tuned F3 V12TX -16.4 10-17-16 short
   deBeater.processModel(mdl);
   rsAssert(mdl.isDataValid());
   y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
 }
-
-template<class T>
-std::vector<T> rsDecimate(const std::vector<T>& x, int factor)
-{
-  int Ny = (int) x.size() / factor;
-  std::vector<T> y(Ny);
-  RAPT::rsArray::decimate(&x[0], (int)x.size(), &y[0], factor);
-  return y;
-  /*
-  std::vector<T> y(Ny);
-  for(int i = 0; i < Ny; i++)
-    y[i] = x[i*factor];
-  return y;
-  */
-}
-// move to rapt
-// todo: use more sophisticated techniques like taking the average or min and max
-
-template<class T>
-std::vector<T> rsDecimateViaMean(const std::vector<T>& x, int factor)
-{
-  int Ny = (int) x.size() / factor;
-  std::vector<T> y(Ny);
-  RAPT::rsArray::decimateViaMean(&x[0], (int)x.size(), &y[0], factor);
-  return y;
-}
-
 
 void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
 {

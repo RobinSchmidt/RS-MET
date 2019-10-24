@@ -1818,10 +1818,8 @@ void amplitudeDeBeating()
   envExtractor.setMaxSampleSpacing(100);   // should be >= beatingPeriod
   envExtractor.connectPeaks(&time[0], &beatEnv[0], &result[0], numFrames);
 
-
-
   //rsPlotVector(env);
-  //rsPlotVectors(ampEnv, beating, beatEnv, result);
+  rsPlotVectors(ampEnv, beating, beatEnv, result);
   //rsPlotVectors(beatEnv, result);
 
   // Observations
