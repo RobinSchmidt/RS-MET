@@ -533,6 +533,9 @@ inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
 
 
 
-// maybe see here: https://www.youtube.com/watch?v=PNRju6_yn3o
+// maybe see here: 
+// https://www.youtube.com/watch?v=PNRju6_yn3o
+// https://www.ibm.com/developerworks/community/blogs/5894415f-be62-4bc0-81c5-3956e82276f3/entry/RVO_V_S_std_move?lang=en
+// https://en.cppreference.com/w/cpp/language/copy_elision
 
 #endif
