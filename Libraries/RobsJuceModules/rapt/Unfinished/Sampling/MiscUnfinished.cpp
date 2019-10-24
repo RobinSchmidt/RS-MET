@@ -1674,6 +1674,14 @@ void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEn
     return;
   }
 
+  /*
+  // for debug:
+  GNUPlotter plt1;
+  plt1.addDataArrays(rawEnvLength, rawEnvTime, rawEnvValue);
+  plt1.addDataArrays((int)metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
+  plt1.plot();
+  */
+
   std::vector<T> tmpTime, tmpValue;   // buffers for extra datapoints to be inserted
   for(size_t i = 1; i < metaEnvTime.size(); i++) {
     T t1 = metaEnvTime[i];
@@ -1698,6 +1706,15 @@ void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEn
       rsInsert(metaEnvValue, tmpValue, i);
     }
   }
+
+  /*
+  // for debug:
+  GNUPlotter plt2;
+  plt2.addDataArrays(rawEnvLength, rawEnvTime, rawEnvValue);
+  plt2.addDataArrays((int)metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
+  plt2.plot();
+  int dummy = 0;
+  */
 }
 
 template<class T>

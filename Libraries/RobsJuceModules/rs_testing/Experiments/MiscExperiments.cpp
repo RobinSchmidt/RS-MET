@@ -297,8 +297,11 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   deBeater.setPhaseSmoothingParameters(5.0, 1, 4); // cutoff = 10 leaves a vibrato
 
   // 10 is ad hoc - at least one sample per 10 cycles:
-  deBeater.setMaxEnvelopeSampleSpacing(
-    10.0/mdl.getPartial(0).getMeanFreq());   
+  if(f0 == 0) 
+    f0 = mdl.getPartial(1).getMeanFreq();
+  deBeater.setMaxEnvelopeSampleSpacing(10.0/f0);
+  // that is wrong - we need to set it to a value a bit above the beat-period expressed in the 
+  // frame-rate ...or - wait - is that actually true
 
   //mdl.removePartial(0);  // test - remove DC - the DC component crashes with Rhodes Tuned F3 V12TX -16.4 10-17-16 short
   deBeater.processModel(mdl);

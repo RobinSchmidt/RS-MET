@@ -19,6 +19,9 @@ Interface:
 -consistent use of enum class for choices  
 -(maybe) avoid free functions - wrap them into namespaces - maybe use 
  sub-namespaces (RAPT::Filters, RAPT::Generators, etc.)
+-i've been thinking about using std::vector for all i/o of the the non-realtime
+ classes - but some client code may use something else, so plain arrays is most
+ flexible - anyone can use it
 
 Implementation:
 -whether algo parameters are updated directly in setCutoff, setResonance, etc.

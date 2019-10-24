@@ -1000,7 +1000,8 @@ protected:
   most maxSpacing. */
   void fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
     std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue);
-  // needs tests
+  // needs tests - maybe make public - maybe even move it into some other class - it could be more
+  // generally useful
 
   // void applySmoothing
 
