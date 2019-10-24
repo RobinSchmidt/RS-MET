@@ -54,12 +54,13 @@ bool testBinSearch(int* array, int length, F1 indexToValue, F2 valueToIndex)
     for(int index = 0; index < subLength; index++) 
     {
       int searchedValue = indexToValue(index);
-      int foundIndex = RAPT::rsArray::binarySearch(array, subLength, searchedValue);
+      int foundIndex = RAPT::rsArray::splitIndex(array, subLength, searchedValue);
       testResult &= foundIndex == valueToIndex(searchedValue);
     }
   }
   return testResult;
 }
+// rename to testSplitIndex
 
 template<class T, class F>
 void fill(T* a, int N, F indexToValue)
@@ -75,7 +76,7 @@ T applyComposedFunction(T x, F1 innerFunction, F2 outerFunction)
 {
   return outerFunction(innerFunction(x));
 }
-
+// maybe move to functional...stuf (i think, in prototypes)
 template<class T, class F>
 bool mapsToItself(T x, F f)
 {
@@ -115,28 +116,6 @@ bool testBinarySearch()
 
   using AR = RAPT::rsArray;
 
-  /*
-  // these two loops are now redundant with the calls to testBinSearch below:
-  for(int subLength = 0; subLength <= length; subLength++) {
-    for(int searchedValue = 0; searchedValue < subLength; searchedValue++) {
-      int foundIndex = AR::binarySearch(a, subLength, searchedValue);
-      testResult &= foundIndex == searchedValue; // the indices equal the values in array a
-    }
-  }
-  AR::fillWithRangeLinear(a, length, 0, 18); // 0,2,4,6,...16,18
-  for(int subLength = 0; subLength <= length; subLength++) {
-    for(int searchedValue = 0; searchedValue < subLength; searchedValue++) {
-      int foundIndex = AR::binarySearch(a, subLength, searchedValue);
-      testResult &= foundIndex == searchedValue/2;
-    }
-  }
-  */
-
-  // todo: test with value scaler*index + offset for different scalers and offsets
-  // maybe factor out the loop into a function that takes an array, length, searchedValue and 
-  // (lambda)function that computes the target index from the value (in the first case, that would
-  // be the iedentity, in the 2nd, x/2 etc.
-
   auto identity = [](int i){ return i; };  // converts indices to values via the identity function...
   rsAssert(isInverseFunction(identity, identity, 0, length-1, 1));
   fill(a, length, identity);
@@ -169,7 +148,17 @@ bool testBinarySearch()
   fill(a, length, f1);
   testResult &= testBinSearch(a, length, f1, f2);
 
-  // find invertible functions in the integers that do interesting things
+
+  std::vector<int> b = {1,2,2,2,4,4,4,4,5,6};
+  int foundIndex = RAPT::rsArray::splitIndex(&b[0], (int)b.size(), 4);  // finds 4 - is that what we want?
+  foundIndex = RAPT::rsArray::splitIndex(&b[0], (int)b.size(), 2);
+
+
+
+  //fillRandomSorted(a, length, -9, +9);
+
+  // find invertible functions in the integers that do interesting things - or: use random numbers
+  // and sort them
 
   return testResult;
 }

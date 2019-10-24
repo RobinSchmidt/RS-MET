@@ -711,7 +711,8 @@ void rsArray::impulseResponse(T *h, int hLength, const T *b, int bOrder, const T
 template<class T>
 int rsArray::indexOfClosestValueSorted(const T* a, const int N, const T val)
 {
-  int i = binarySearch(a, val, 0, N-1);
+  //int i = binarySearch(a, val, 0, N-1);
+  int i = splitIndex(a, N, val);
   if(i < N-1) 
     if( rsAbs(a[i]-val) > rsAbs(a[i+1]-val) )
       i++;
