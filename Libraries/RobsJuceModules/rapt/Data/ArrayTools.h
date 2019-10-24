@@ -67,28 +67,16 @@ public:
     const int length, const T tolerance);
 
 
+
+
   /** Returns the first index in the ascendingly sorted array "A", where the value is greater 
   than or equal to "key", or - put another way - one plus the last index, for which all elements
   are strictly less than "key". If 0 is returned, and the 0th element does not equal "key", then 
   all values in the array are either less or all are greater than key -> check this */
   template<class T>
-  static int binarySearch(const T* A, T key, int imin, int imax);
-  // todo: document imin, imax - maybe make a convenience function
-  // binarySearch(const T* A, int length, T key);
-  // take key by const reference
-  // rename this - the name is confusing - it suggests that there actually is an element that
-  // equals key - it should be called binarySearchLessOrEqual or something like that
-  // an actual binarySearch should return -1 when the element is not found
-  // maybe it should be called findPartition or partitionIndex, findSplitIndex
-  // splitIndex
+  static int splitIndex(const T* A, int N, T splitValue);
+  // move down..
 
-  template<class T>
-  static int splitIndex(const T* A, int N, T splitValue) 
-  { 
-    return binarySearch(A, splitValue, 0, N-1); 
-  }
-  // maybe keep only this function - the signature with imin, imax is confusing - it's also 
-  // incosistent with stl end() for iterators -> bad!
 
 
   /** Checks, if the two buffers are elementwise equal. */
@@ -385,7 +373,7 @@ public:
 
 
   template<class T>
-  static int indexOfClosestValueSorted(const T* a, const int N, const T val);
+  static int splitIndexClosest(const T* a, const int N, const T val);
   // T should be Ordered -> use concept Ordered in c++20
   // rename to splitIndexClosest - splitIndex itself is more like splitIndexCeil
 

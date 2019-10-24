@@ -73,7 +73,7 @@ template int RAPT::rsFindHighestPeakIndex(double *buffer, int length); // move t
 template void rsArray::fillWithValue(char* buffer, int length, char value);
 
 // rsArray<int>
-template int rsArray::binarySearch(const int* A, int key, int imin, int imax);
+template int rsArray::splitIndex(const int* A, int N, int key);
 template int rsArray::copyIfMatching(const int *, int *, int, const int *, int);
 template int rsArray::copyIfNotMatching(const int *, int *, int, const int *, int);
 template void rsArray::copySection(const int *source, int sourceLength, int *destination, int copyStart, int copyLength);

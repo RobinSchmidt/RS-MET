@@ -1676,56 +1676,6 @@ void rsEnvelopeExtractor<T>::setupEndValues(
   }
 }
 
-// Returns the last index in the ascendingly sorted array "A", where the value is less-than or
-// equal-to "key", if 0 is returned, and the 0th element does not equal "key", then all values in 
-// the array are either less or all are greater than key -> check this
-/*
-template<class T>
-int rsBinarySearch(const T* A, T key, int imin, int imax)
-{
-  while( imin < imax ) {
-
-    int imid = imin/2 + imax/2; 
-    // divide before add to avoid overflow  ...hmm - is this a good idea? 
-    // (5+3)/2 = 8/2 = 4 but 5/2 + 3/2 = 2 + 1 = 3 with integer division
-
-    rsAssert(imid < imax);
-    if( A[imid] < key )
-      imin = imid + 1;
-    else
-      imax = imid;
-  }
-  if(A[imin] == key || imin == 0)
-    return imin;
-  else
-    return imin-1;
-}
-*/
-// move to SortAndSearch, write unit tests
-// compare to this: https://en.wikipedia.org/wiki/Binary_search_algorithm
-// what abotu RSLib? look, if we have something like hat there already
-/*
-template<class T>
-int rsIndexOfClosestValueSorted(const T* a, int N, T val)
-{
-  int i = rsBinarySearch(a, val, 0, N-1);
-  if(i < N-1) 
-    if( rsAbs(a[i]-val) > rsAbs(a[i+1]-val) )
-      i++;
-  return i;
-}
-*/
-// move to rsArray - write unit test - maybe compare against more general function that doesn't
-// assume the array to be sorted
-/*
-template<class T>
-inline void rsInsert(std::vector<T>& v, const std::vector<T>& w, size_t index)
-{
-  v.insert(v.begin() + index, w.begin(), w.end());
-}
-*/
-// move to container tools
-
 template<class T>
 void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue)
@@ -1736,7 +1686,6 @@ void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEn
     rsCopyToVector(rawEnvValue, rawEnvLength, metaEnvValue);
     return;
   }
-
 
   std::vector<T> tmpTime, tmpValue;   // buffers for extra datapoints to be inserted
   for(size_t i = 1; i < metaEnvTime.size(); i++) {
@@ -1754,7 +1703,7 @@ void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEn
       tmpValue.resize(numExtraPoints);
       for(int j = 0; j < numExtraPoints; j++) {
         T t = t0 + (j+1) * (dt/(numExtraPoints+1));  // verify this formula
-        int idx = rsArray::indexOfClosestValueSorted(rawEnvTime, rawEnvLength, t);
+        int idx = rsArray::splitIndexClosest(rawEnvTime, rawEnvLength, t);
         tmpTime[j]  = rawEnvTime[idx];
         tmpValue[j] = rawEnvValue[idx];
       }

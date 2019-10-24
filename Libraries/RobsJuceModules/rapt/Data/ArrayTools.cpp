@@ -91,23 +91,27 @@ void rsArray::applyFunction(const T *inBuffer, T *outBuffer, const int length, T
 }
 
 template<class T>
-int rsArray::binarySearch(const T* A, T key, int imin, int imax)
+int rsArray::splitIndex(const T* A, int N, T key)
 {
+  int imin = 0;
+  int imax = N-1;
   while( imin < imax ) {
 
     int imid = imin/2 + imax/2; 
     //int imid = (imin+imax)/2; 
     // divide before add to avoid overflow  ...hmm - is this a good idea? 
     // (5+3)/2 = 8/2 = 4 but 5/2 + 3/2 = 2 + 1 = 3 with integer division
-    // integer division is expensive....but not for powres of two - so it should be fine
+    // integer division is expensive....but not for powers of two - so it should be fine
 
 
-    rsAssert(imid < imax);
+    //rsAssert(imid < imax); // only for debug
     if( A[imid] < key )
       imin = imid + 1;
     else
       imax = imid;
   }
+
+  // why do we need this?
   if(A[imin] == key || imin == 0)
     return imin;
   else
@@ -709,9 +713,8 @@ void rsArray::impulseResponse(T *h, int hLength, const T *b, int bOrder, const T
 
 
 template<class T>
-int rsArray::indexOfClosestValueSorted(const T* a, const int N, const T val)
+int rsArray::splitIndexClosest(const T* a, const int N, const T val)
 {
-  //int i = binarySearch(a, val, 0, N-1);
   int i = splitIndex(a, N, val);
   if(i < N-1) 
     if( rsAbs(a[i]-val) > rsAbs(a[i+1]-val) )
