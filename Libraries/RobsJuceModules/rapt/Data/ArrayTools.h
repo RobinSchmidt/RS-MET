@@ -78,6 +78,7 @@ public:
   // rename this - the name is confusing - it suggests that there actually is an element that
   // equals key - it should be called binarySearchLessOrEqual or something like that
   // an actual binarySearch should return -1 when the element is not found
+  // maybe it should be called findPartition or partitionIndex, findSplitIndex
 
   template<class T>
   static int binarySearch(const T* A, int N, T key) { return binarySearch(A, key, 0, N-1); }

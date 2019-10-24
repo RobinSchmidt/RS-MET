@@ -96,8 +96,11 @@ int rsArray::binarySearch(const T* A, T key, int imin, int imax)
   while( imin < imax ) {
 
     int imid = imin/2 + imax/2; 
+    //int imid = (imin+imax)/2; 
     // divide before add to avoid overflow  ...hmm - is this a good idea? 
     // (5+3)/2 = 8/2 = 4 but 5/2 + 3/2 = 2 + 1 = 3 with integer division
+    // integer division is expensive....but not for powres of two - so it should be fine
+
 
     rsAssert(imid < imax);
     if( A[imid] < key )
