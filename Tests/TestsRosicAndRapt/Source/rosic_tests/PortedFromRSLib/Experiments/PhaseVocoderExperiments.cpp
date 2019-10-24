@@ -1810,12 +1810,13 @@ void amplitudeDeBeating()
 
   // remove the beating:
   typedef rsEnvelopeExtractor<double>::endPointModes EM;
+  double beatPeriodInFrames = frameRate / beatFrq;  // 38.222...
   Vec time = rsRangeLinear(0.0, double(numFrames-1), numFrames);
   Vec result(numFrames);
   rsEnvelopeExtractor<double> envExtractor;
   envExtractor.setStartMode(EM::ZERO_END);  
   envExtractor.setEndMode(EM::ZERO_END);   // definitely better than extraploation but still not good enough
-  envExtractor.setMaxSampleSpacing(100);   // should be >= beatingPeriod
+  envExtractor.setMaxSampleSpacing(100);   // should be >= beating period in frames
   envExtractor.connectPeaks(&time[0], &beatEnv[0], &result[0], numFrames);
 
   //rsPlotVector(env);
@@ -1823,10 +1824,18 @@ void amplitudeDeBeating()
   //rsPlotVectors(beatEnv, result);
 
   // Observations
+  // -envExtractor.setMaxSampleSpacing should be >= beatPeriodInFrames (38.22), otherwise, the 
+  //  beating will be tracked 
+  //  -with 1, the original envelope is taken over unchanged
+  //  - <= 36: beating is tracked
+  //  - >= 37: fine
+  //  -maybe use some safety-factor > 1 times beatPeriodInFrames
+  // -i think, for the amp-env, linear interpolation and smoothing is the best option
   // -when the beating stops in the original, the de-beated envelope messes up
   // -we need a sort of minimum distance between datapoints in the result - we also need to make
   //  sure that all values are positive...well, that will follow automatically, if we never 
   //  extrapolate
+  //  ...this is fixed
 
   // todo: test other situations, where the beating occurs only in the middle, at the end, start 
   // and end, etc.

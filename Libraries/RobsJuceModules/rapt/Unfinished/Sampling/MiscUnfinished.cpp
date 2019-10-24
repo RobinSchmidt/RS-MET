@@ -1602,19 +1602,12 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime)
 {
   getPeaks(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
-  // maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
-  // skip the de-beating process
-
   setupEndValues(metaEnvTime, metaEnvValue, endTime);
-
-
-
-  // fill up the metaEnv with more samples of the original env in regions where it is only 
-  // sparsely sampled due to absence of peak values - maybe we need some sort of minSampleDistance
-  // setting:
   fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
-  // maybe this should be done before setupEndValues?
 }
+// -maybe fillSparseAreas should be done before setupEndValues?
+// -maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
+//  skip the de-beating process
 
 template<class T>
 void rsEnvelopeExtractor<T>::interpolateEnvelope(const T* envTimes, T* envValues, int envLength,
