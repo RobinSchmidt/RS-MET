@@ -40,6 +40,7 @@ Implementation:
  
 Efficiency:
 -use const and constexpr whereever possible
+-always declare members in order of descencing size (reduces padding)
 -use workspaces for operations on arrays that need auxiliary memory - and have
  convenience functions that allocate a workspace internally
 

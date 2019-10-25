@@ -142,6 +142,10 @@ public:
   // void setTemporalOversampling(int newFactor)
   // ...produce intermediate datapoints between the already existing ones...
 
+  // not yet used - todo: make these limits functional:
+  void setMinPartialIndex(int newIndex) { minPartialIndex = newIndex; }
+  void setMaxPartialIndex(int newIndex) { maxPartialIndex = newIndex; }
+
   /** This option can be used to remove any harmonics that exceed the Nyquist limit, even if just 
   temporarily. The analysis may prodcue such frequencies due to the fact that the original audio is 
   stretched before analysis and the post-processing then shifts all frequencies up. However, if a 
@@ -355,6 +359,11 @@ protected:
 
   T sampleRate = 1;
   T sincLength = 512.0;  // length of sinc-interpolator for time-warping
+
+
+  // limits to the range of analyzed partials:
+  int minPartialIndex = 0;
+  int maxPartialIndex = std::numeric_limits<int>::max();
 
 
 

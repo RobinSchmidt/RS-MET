@@ -10,6 +10,12 @@ to functions like rsPlotVector() anywhere in RAPT code for debugging purposes wh
 optimized out in cases when they are not needed. In TestsRosicAndRapt.jucer it is defined, so 
 plotting functions wil actually invoke the plotter in this project. */
 
+//#if defined(DEBUG) || defined(_DEBUG)
+// plotting code compiles only in debug builds - that helps to avoid forgetting to delete the 
+// (temporary, added for debug-purposes only) plotting commands in the code
+// ..nah - that breaks the release build of rs_testing - but maybe we can try doing this in the
+// cpp file?
+
 
 #include "GNUPlotter.h"
 
@@ -174,3 +180,5 @@ void rsPlotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMar
 // somewhat redundant with rsPlotSpectrum...
 template<class T>
 void rsPlotDecibels(int N, T* x, T *mag);
+
+//#endif // #if defined(DEBUG) || defined(_DEBUG)

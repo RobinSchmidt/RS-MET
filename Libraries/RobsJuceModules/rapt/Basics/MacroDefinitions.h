@@ -12,13 +12,14 @@
 #define RS_INLINE inline
 
 #if defined(DEBUG) || defined(_DEBUG)
+  #define RS_DEBUG
+  #define RS_ASSERT(expression) { if (! (expression)) RS_DEBUG_BREAK }
   #ifdef _MSC_VER
     #pragma intrinsic (__debugbreak)
     #define RS_DEBUG_BREAK __debugbreak();
   #else
     #define RS_DEBUG_BREAK __builtin_trap();  // preliminary - gcc only
   #endif
-  #define RS_ASSERT(expression) { if (! (expression)) RS_DEBUG_BREAK }
 #else
   #define RS_DEBUG_BREAK { }
   #define RS_ASSERT(expression) { }

@@ -283,6 +283,13 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
 
   RAPT::rsHarmonicAnalyzer<double> analyzer;
 
+  // temporary - to make experimentation faster:
+  //int minPartial = 0;
+  //int maxPartial = 10;
+  analyzer.setMinPartialIndex(1);
+  analyzer.setMaxPartialIndex(5);
+
+
   analyzer.getCycleFinder().setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
   // for test with Rhodes Tuned F3 V12TX -16.4 10-17-16 shorter
 
