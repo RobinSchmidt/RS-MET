@@ -2,6 +2,9 @@
 #define RAPT_MATRIX_H
 
 
+/** A class for representing 2x2 matrices. They are treated as a special case because a lot of 
+things which are impractical in the general case can be done for the 2x2 case. For example, it's 
+possible to compute eigenvalues and eigenvectors via closed form formulas. */
 
 template<class T>
 class rsMatrix2x2
@@ -30,9 +33,9 @@ public:
 
   /** \name Setup */
 
+
+  /** Sets up the elements of the matrix. */
   void setValues(T a, T b, T c, T d) { this->a = a; this->b = b; this->c = c; this->d = d; }
-
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -81,6 +84,9 @@ public:
   /** Adds two matrices: C = A + B. */
   rsMatrix2x2<T> operator+(const rsMatrix2x2<T>& B) const
   { rsMatrix2x2<T> C; C.a = a + B.a; C.b = b + B.b; C.c = c + B.c; C.d = d + B.d; return C; }
+  // can't we just do:
+  // return rsMatrix2x2<T>(a + B.a, b + B.b, c + B.c, d + B.d);
+  // and likewise for the other operators
 
   /** Subtracts two matrices: C = A - B. */
   rsMatrix2x2<T> operator-(const rsMatrix2x2<T>& B) const
@@ -292,6 +298,7 @@ protected:
 
 };
 
+
 //=================================================================================================
 
 /** This is a class for representing matrices and doing mathematical operations with them. */
@@ -313,14 +320,26 @@ public:
   }
 
   /** Creates matrix from a std::vector - convenient to initialize elements.  */
-  rsMatrixNew(int numRows, int numColumns, const std::vector<T>& newData)
-    : data(newData)
+  rsMatrixNew(int numRows, int numColumns, const std::vector<T>& newData) : data(newData)
   {
+    numHeapAllocations++;
     rsAssert(numRows*numColumns == newData.size());
     this->numRows = numRows;
     this->numCols = numColumns;
     updateDataPointer();
   }
+  // make a version that takes rvalue reference to a vector and moves it into our member vector. With 
+  // that, we can create matrices via Matrix A(2, 3, {1,2,3, 4,5,6}) ...i hope
+
+  rsMatrixNew(int numRows, int numColumns, std::vector<T>&& newData) : data(newData)
+  {
+    numHeapAllocations++;
+    rsAssert(numRows*numColumns == newData.size());
+    this->numRows = numRows;
+    this->numCols = numColumns;
+    updateDataPointer();
+  }
+
 
   /** Copy constructor. */
   rsMatrixNew(const rsMatrixNew& B)
@@ -330,11 +349,12 @@ public:
   }
 
   /** Move constructor. */
-  rsMatrixNew(const rsMatrixNew&& B)  // should B be declared const const?
-  {
-    setSize(B.numRows, B.numCols);
-    rsArray::copy(B.dataPointer, this->dataPointer, this->getSize());
-  }
+  //rsMatrixNew(const rsMatrixNew&& B)  // should B be declared const const?
+  //rsMatrixNew(rsMatrixNew&& B)
+  //{
+  //  setSize(B.numRows, B.numCols);
+  //  rsArray::copy(B.dataPointer, this->dataPointer, this->getSize());
+  //}
 
   rsMatrixNew<T>& operator=(const rsMatrixNew<T>& other) // copy assignment
   {
@@ -373,6 +393,10 @@ public:
   it would be useless anyway in case the number of columns changed. */
   void setSize(int numRows, int numColumns)
   {
+    if(numRows != this->numRows && numColumns != this->numCols)
+      numHeapAllocations++; // data.resize may re-allocate heap memory
+    // todo: compile that conditionally, only for tests
+
     this->numRows = numRows;
     this->numCols = numColumns;
     data.resize(this->numRows * this->numCols);
@@ -463,9 +487,9 @@ public:
   // todo: /, ==,,+=,-=,*=,-
 
 
+  static int numHeapAllocations; // for testing - maybe comment out or delete someday
+
 protected:
-
-
 
   /** Updates the data-pointer inherited from rsMatrixView to point to the begin of our std::vector
   that holds the actual data. */
@@ -488,7 +512,10 @@ protected:
   //  matrices - on the other hand, very small matrices may be common 
   // -maybe use std::vector in debug builds and new/delete in release builds
 
+
 };
+
+template<class T> int rsMatrixNew<T>::numHeapAllocations = 0;
 
 /** Multiplies a scalar and a matrix. */
 template<class T>
