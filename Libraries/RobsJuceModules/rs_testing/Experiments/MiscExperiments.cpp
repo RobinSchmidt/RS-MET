@@ -285,8 +285,7 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
 
   // temporary - to make experimentation faster:
   //analyzer.setMinPartialIndex(0);  // not yet working
-  analyzer.setMaxPartialIndex(10);
-
+  //analyzer.setMaxPartialIndex(10);
 
   //analyzer.getCycleFinder().setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
   // for test with Rhodes Tuned F3 V12TX -16.4 10-17-16 shorter
@@ -315,16 +314,15 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   // that is wrong - we need to set it to a value a bit above the beat-period expressed in the 
   // frame-rate ...or - wait - is that actually true
 
-
-  deBeater.removeAmplitudeBeating(mdl.getModifiablePartialRef(5)); //for debugging
-
+  //deBeater.removeAmplitudeBeating(mdl.getModifiablePartialRef(5)); //for debugging
 
   //mdl.removePartial(0);  // test - remove DC - the DC component crashes with Rhodes Tuned F3 V12TX -16.4 10-17-16 short
   std::cout << "De-Beating...\n";
   deBeater.processModel(mdl);
   rsAssert(mdl.isDataValid());
+  // write a function mdl.getInvalidDataPoints - for debugging
   //plotSineModel(mdl, fs);
-  //plotSineModelAmplitudes(mdl, {5});  // partial 5 shows this go-below-zero bug with the rhodes sample
+  //plotSineModelAmplitudes(mdl, {1,2,3,4,5,5,6,7,8,9,10});  // partial 5 shows this go-below-zero bug with the rhodes sample
   std::cout << "Resynthesizing...\n";
   y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);

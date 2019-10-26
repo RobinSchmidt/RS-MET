@@ -1016,6 +1016,8 @@ protected:
 
   int startMode = endPointModes::FREE_END;
   int endMode   = endPointModes::FREE_END;
+  // this is a bad-default - in the enum, it says, it should be used only with spline interpolation
+  // mode
 
   // for the smoothing lowpass:
   //int smoothingOrder = 0;

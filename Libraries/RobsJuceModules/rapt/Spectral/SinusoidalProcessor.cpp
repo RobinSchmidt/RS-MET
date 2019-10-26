@@ -251,8 +251,12 @@ rsSinusoidalModel<T> rsSinusoidalProcessor<T>::extractHighpassPart(rsSinusoidalM
 template<class T>
 rsPartialBeatingRemover<T>::rsPartialBeatingRemover()
 {
-  // maybe factor out into setToDefaultSettings or resetSettings or something
+  typedef rsEnvelopeExtractor<T>::endPointModes EM;
+  envExtractor.setStartMode(EM::ZERO_END);
+  envExtractor.setEndMode(  EM::ZERO_END);
 
+
+  // maybe factor out into setToDefaultSettings or resetSettings or something
   /*
   typedef RAPT::rsInterpolatingFunction<T, T> IF;
   envExtractor.setInterpolationMode(IF::CUBIC_NATURAL);
@@ -268,9 +272,8 @@ rsPartialBeatingRemover<T>::rsPartialBeatingRemover()
   */
   // oh no - this doesn't work - the envExtractor expects an audio signal as input - we need to
   // refactor it to extract the de-beating (i.e. extracting the "meta-envelope" (env-of-env) algo
-
+  // ...done
 }
-
 
 template<class T>
 void rsPartialBeatingRemover<T>::processModel(rsSinusoidalModel<T>& model)

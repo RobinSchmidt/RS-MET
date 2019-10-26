@@ -1600,7 +1600,6 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
 
   setupEndValues(metaEnvTime, metaEnvValue, endTime);
   fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
-  rsAssert(rawEnvTime[rawEnvLength-1] == rsLast(metaEnvTime));
 
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
   //metaEnvValue = metaEnvValue; // little offset for visibility
@@ -1630,6 +1629,7 @@ void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* pe
   getMetaEnvelope(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
   interpolateEnvelope(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(),
     envTimes, peakValues, length);
+  rsAssert(rsLast(metaEnvTime) == envTimes[length-1]);
 
   //GNUPlotter plt;
   //plt.addDataArrays(length, envTimes, envValues);
@@ -1670,6 +1670,8 @@ void rsEnvelopeExtractor<T>::setupEndValues(
     rsAppend(envValues, rsMax(v, T(0)));
     rsAppend(envTimes, endTime);
   }
+
+  // rsAssert(rsLast(envTimes) == endTime); // no - in free-end mode, it may be different
 }
 
 template<class T>
