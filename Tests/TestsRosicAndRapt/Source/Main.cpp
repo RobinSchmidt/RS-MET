@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
+  //passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
   //passed &= runUnitTestsRosic();
   //passed = passed;  // dummy
 
@@ -121,6 +121,7 @@ int main(int argc, char* argv[])
   //smoothingFilterTransitionTimes();
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
   //poleZeroPrototype();  // new implementation - but we don't need that
+  seriesConnectionDecay();
 
   // Physics:
   //doublePendulum(); // takes long
@@ -390,8 +391,8 @@ int main(int argc, char* argv[])
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
-  amplitudeDeBeating();
-  //harmonicDeBeating1();
+  //amplitudeDeBeating();
+  harmonicDeBeating1();
   //harmonicDeBeating2();
 
 

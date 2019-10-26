@@ -1,3 +1,14 @@
+
+template<class T>
+bool rsInstantaneousSineParams<T>::isValid() const
+{
+  return rsIsFiniteNonNegativeNumber(freq) 
+    && rsIsFiniteNonNegativeNumber(gain) 
+    && phase >= -PI && phase <= PI;
+}
+
+//=================================================================================================
+
 template<class T>
 void rsSinusoidalPartial<T>::applyFadeIn(T fadeTime)
 {
@@ -46,16 +57,7 @@ void rsSinusoidalPartial<T>::setPhases(const std::vector<T>& p)
     setPhase(i, p[i]);
 }
 
-
-
-
-
-
-
-
-
 /*
-
 template<class T>
 void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
 {
@@ -145,12 +147,7 @@ void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
   // theory bug? the implementation seems good..the assert doesn't trigger - or maybe the hopsize
   // is indeed too small and we get an adjustment by more than pi?
 }
-
 */
-
-
-
-
 
 //-------------------------------------------------------------------------------------------------
 // inquiry
@@ -344,6 +341,16 @@ bool rsSinusoidalPartial<T>::isDataValid() const
   return valid;
 }
 
+template<class T>
+std::vector<rsInstantaneousSineParams<T>> rsSinusoidalPartial<T>::getInvalidDataPoints() const
+{
+  std::vector<rsInstantaneousSineParams<T>> v;
+  for(size_t i = 0; i < instParams.size(); i++)
+    if( !instParams[i].isValid() )
+      v.push_back(instParams[i]);
+  return v;
+}
+
 //=================================================================================================
 
 template<class T>
@@ -419,6 +426,16 @@ bool rsSinusoidalModel<T>::isDataValid() const
 // should we start the loop at 0 instead of 1? it seems, the DC component may indeed have negative
 // values after analysis - who does this come about? we should ensure it to be positive and set the 
 // phase to + or -180°
+
+template<class T>
+std::vector<rsInstantaneousSineParams<T>> rsSinusoidalModel<T>::getInvalidDataPoints() const
+{
+  std::vector<rsInstantaneousSineParams<T>> v;
+  for(size_t i = 0; i < partials.size(); i++)
+    rsAppend(v, partials[i].getInvalidDataPoints());
+  return v;
+}
+
 
 //=================================================================================================
 // Analyzer:

@@ -1276,3 +1276,36 @@ void poleZeroPrototype()
   int dummy = 0;
 }
 
+void seriesConnectionDecay()  
+{
+  // We compare the impulse responses of a series connection of two first order lowpass filters 
+  // with the impulse response of both filters alone.
+  // ..well, we actually also look at a parallel connection - rename the function - maybe also look
+  // at the difference
+
+  int    N  = 1000;
+  double fs = 44100;
+  double f1 = 100;
+  double f2 = 200;
+
+
+
+  RAPT::rsOnePoleFilter<double, double> flt;
+  flt.setMode(flt.LOWPASS_IIT);
+  flt.setSampleRate(fs);
+
+  using Vec = std::vector<double>;
+
+  flt.setCutoff(f1);
+  Vec y1 = impulseResponse(flt, N, 1.0);
+  flt.setCutoff(f2);
+  Vec y2 = impulseResponse(flt, N, 1.0);
+  Vec ys = filterResponse(flt, N, y1);    // serial
+  Vec yp = y1 + y2;                       // parallel
+  Vec yd = y1 - y2;                       // difference - doesn't start at zero
+
+  // maybe compute the number of samples, after which they fall below a given threshold 
+  // (like -60dB) ...just look at the output signals
+
+  rsPlotVectors(y1, y2, ys, yp, yd);
+}

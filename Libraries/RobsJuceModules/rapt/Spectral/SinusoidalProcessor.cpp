@@ -338,8 +338,7 @@ void rsPartialBeatingRemover<T>::removeAmplitudeBeating(rsSinusoidalPartial<T>& 
   envExtractor.connectPeaks(&t[0], &a[0], &a[0], (int)t.size());
   partial.setAmplitudes(a);
 
-  //plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
-  //plt.plot();
+  //rsPlotVectorsXY(t, a);
 }
 
 template<class T>

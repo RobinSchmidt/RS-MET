@@ -7,6 +7,7 @@ using namespace RAPT;
 std::vector<double> synthesizeSinusoidal(
   const RAPT::rsSinusoidalModel<double>& model, double sampleRate, double fadeTime)
 {
+  std::cout << "Synthesizing sinusoidal model with " << model.getNumPartials() << " partials...";
   typedef RAPT::rsSinusoidalSynthesizer<double> SS;
   typedef SS::PhaseInterpolationMethod PIM;
   SS synth;
@@ -16,6 +17,7 @@ std::vector<double> synthesizeSinusoidal(
   std::vector<double> x = synth.synthesize(model);
   if(fadeTime > 0.0)
     applyFadeInAndOut( &x[0], (int) x.size(), int (fadeTime*sampleRate));
+  std::cout << "Done\n";
   return x;
 }
 
@@ -285,7 +287,7 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
 
   // temporary - to make experimentation faster:
   //analyzer.setMinPartialIndex(0);  // not yet working
-  //analyzer.setMaxPartialIndex(10);
+  analyzer.setMaxPartialIndex(2);
 
   //analyzer.getCycleFinder().setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
   // for test with Rhodes Tuned F3 V12TX -16.4 10-17-16 shorter
@@ -297,7 +299,7 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   rsAssert(mdl.isDataValid());
   //plotSineModel(mdl, fs);
   //plotSineModelAmplitudes(mdl);
-  std::cout << "Resynthesizing...\n";
+  //std::cout << "Resynthesizing...\n";
   std::vector<double> y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutputUnmodified.wav", &y[0], (int)y.size(), (int)fs);
 
@@ -320,10 +322,9 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   std::cout << "De-Beating...\n";
   deBeater.processModel(mdl);
   rsAssert(mdl.isDataValid());
-  // write a function mdl.getInvalidDataPoints - for debugging
-  //plotSineModel(mdl, fs);
-  //plotSineModelAmplitudes(mdl, {1,2,3,4,5,5,6,7,8,9,10});  // partial 5 shows this go-below-zero bug with the rhodes sample
-  std::cout << "Resynthesizing...\n";
+  std::vector<rsInstantaneousSineParams<double>> invalidDataPoints = mdl.getInvalidDataPoints();
+  plotSineModel(mdl, fs);
+  plotSineModelAmplitudes(mdl);
   y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
 }

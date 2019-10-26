@@ -49,6 +49,10 @@ public:
 
   inline T getWrappedPhase() const { return phase; }
 
+  /** Returns true, if this represents a valid datapoint. A datatpoint is valid, if frequency and 
+  amplitude are nonnegative and the phase is in the range -pi..pi. */
+  bool isValid() const;
+
   //inline T getUnwrappedPhase() const { return phase + 2*PI*cycles; }
 
 
@@ -336,6 +340,11 @@ public:
   phases in -pi..pi, etc.). */
   bool isDataValid() const;
 
+  /** Returns a vector containing only the invalid datapoints - mostly for testing and debugging
+  purposes.  */
+  std::vector<rsInstantaneousSineParams<T>> getInvalidDataPoints() const;
+
+
 
   //rsInstantaneousSineParams<T> getInstantaneousParameters() const;
 
@@ -344,7 +353,7 @@ public:
 
 protected:
 
-  std::vector<rsInstantaneousSineParams<T>> instParams;
+  std::vector<rsInstantaneousSineParams<T>> instParams;  // maybe rename to dataPoints
 
   //friend class rsSinusoidalModel<T>; // doesn't compile - why?
 
@@ -485,7 +494,9 @@ public:
   phases in -pi..pi, etc.). */
   bool isDataValid() const;
 
-
+  /** Returns a vector containing only the invalid datapoints - mostly for testing and debugging
+  purposes.  */
+  std::vector<rsInstantaneousSineParams<T>> getInvalidDataPoints() const;
 
 
 protected:

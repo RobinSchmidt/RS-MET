@@ -1593,13 +1593,17 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime)
 {
   getPeaks(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
+  //rsAssert(rsArray::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
   //GNUPlotter plt;
   //plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
 
   setupEndValues(metaEnvTime, metaEnvValue, endTime);
+  //rsAssert(rsArray::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
+
   fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
+  //rsAssert(rsArray::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
   //metaEnvValue = metaEnvValue; // little offset for visibility
@@ -1671,6 +1675,7 @@ void rsEnvelopeExtractor<T>::setupEndValues(
     rsAppend(envTimes, endTime);
   }
 
+  rsAssert(rsArray::isSortedStrictlyAscending(&envTimes[0], (int)envTimes.size()));
   // rsAssert(rsLast(envTimes) == endTime); // no - in free-end mode, it may be different
 }
 

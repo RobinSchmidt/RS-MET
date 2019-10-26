@@ -1543,7 +1543,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
 
 
-  testHarmonicResynthesis("TremoloSine_Freq=200_Rate=10_Depth=5", 44100, 15000);
+  //testHarmonicResynthesis("TremoloSine_Freq=200_Rate=10_Depth=5", 44100, 15000);
   // try a little bit of amplitude modulation - could the spurious high-freq components be due to 
   // that? the varying amplitude of low-freq components somehow gets translated to spurious 
   // high-freqs? maybe a tremolo sine - yes! that seems to be it! when the sine is amp-mdoulated,
@@ -1552,7 +1552,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
 
   //testHarmonicResynthesis("TwoSines",   44100, 5000);
-  //testHarmonicResynthesis("ModalPluck", 44100, 5000);
+  testHarmonicResynthesis("ModalPluck", 44100, 15000);
   // convert all calls to include the frequency in the string (done), then get rid of the frequency 
   // parameter of the function
 
@@ -1903,7 +1903,7 @@ void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
 
 
   // resynthesize with modifications:
-  mdl.keepOnly({1});                     // get rid of DC artifacts at the start
+  //mdl.keepOnly({1});                     // get rid of DC artifacts at the start
   y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile("DeBeat2SinesOutput.wav", &y[0], (int)y.size(), (int)fs);
   // here, the transient artifact is much less severe - but we see some linearly decaying DC
