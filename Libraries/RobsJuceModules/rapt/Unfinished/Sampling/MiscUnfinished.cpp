@@ -1593,8 +1593,18 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime)
 {
   getPeaks(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
+
+  //GNUPlotter plt;
+  //plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
+  ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
+
   setupEndValues(metaEnvTime, metaEnvValue, endTime);
   fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
+
+  ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
+  //metaEnvValue = metaEnvValue; // little offset for visibility
+  //plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
+  //plt.plot();
 }
 // -maybe fillSparseAreas should be done before setupEndValues?
 // -maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
@@ -1619,6 +1629,15 @@ void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* pe
   rsAssert(rsArray::isSortedStrictlyAscending(&envTimes[0], length));
   interpolateEnvelope(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(),
     envTimes, peakValues, length);
+
+
+
+  GNUPlotter plt;
+  plt.addDataArrays(length, envTimes, envValues);
+  plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
+  plt.plot();
+  //rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
+  //rsPlotArraysXY(length, envTimes, envValues); // debug
 }
 
 template<class T>

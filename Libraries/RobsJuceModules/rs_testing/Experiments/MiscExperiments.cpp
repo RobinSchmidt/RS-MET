@@ -297,7 +297,7 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
   rsAssert(mdl.isDataValid());
   //plotSineModel(mdl, fs);
-  plotSineModelAmplitudes(mdl);
+  //plotSineModelAmplitudes(mdl);
   std::cout << "Resynthesizing...\n";
   std::vector<double> y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutputUnmodified.wav", &y[0], (int)y.size(), (int)fs);
@@ -315,12 +315,16 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   // that is wrong - we need to set it to a value a bit above the beat-period expressed in the 
   // frame-rate ...or - wait - is that actually true
 
+
+  deBeater.removeAmplitudeBeating(mdl.getModifiablePartialRef(5)); //for debugging
+
+
   //mdl.removePartial(0);  // test - remove DC - the DC component crashes with Rhodes Tuned F3 V12TX -16.4 10-17-16 short
   std::cout << "De-Beating...\n";
   deBeater.processModel(mdl);
   rsAssert(mdl.isDataValid());
   //plotSineModel(mdl, fs);
-  plotSineModelAmplitudes(mdl);
+  //plotSineModelAmplitudes(mdl, {5});  // partial 5 shows this go-below-zero bug with the rhodes sample
   std::cout << "Resynthesizing...\n";
   y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);

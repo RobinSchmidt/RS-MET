@@ -20,20 +20,29 @@ plotting functions wil actually invoke the plotter in this project. */
 #include "GNUPlotter.h"
 
 template<class T>
-inline void rsPlotArray(T* x, int N)
+inline void rsPlotArray(const T* x, int N)
 {
   GNUPlotter plt;
   plt.plotArrays(N, x);
 }
 
 template<class T>
-inline void rsPlotArrays(int N, T* a1, T* a2 = nullptr, T* a3 = nullptr, T* a4 = nullptr,
-  T* a5 = nullptr)
+inline void rsPlotArrays(int N, const T* a1, const T* a2 = nullptr, const T* a3 = nullptr, 
+  const T* a4 = nullptr, const T* a5 = nullptr)
 {
   GNUPlotter plt;
   plt.plotArrays(N, a1, a2, a3, a4, a5);
 }
 // maybe allow for more than 5
+
+template<class T>
+inline void rsPlotArraysXY(int N, const T* x, const T* y1 = nullptr, const T* y2 = nullptr, 
+  const T* y3 = nullptr, const T* y4 = nullptr)
+{
+  GNUPlotter plt;
+  plt.addDataArrays(N, x, y1, y2, y3, y4);
+  plt.plot();
+}
 
 template<class T>
 inline void rsPlotVector(std::vector<T> v)
