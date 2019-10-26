@@ -1600,6 +1600,7 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
 
   setupEndValues(metaEnvTime, metaEnvValue, endTime);
   fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
+  rsAssert(rawEnvTime[rawEnvLength-1] == rsLast(metaEnvTime));
 
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
   //metaEnvValue = metaEnvValue; // little offset for visibility
@@ -1624,20 +1625,18 @@ template<class T>
 void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* peakValues,
   int length)
 {
+  rsAssert(rsArray::isSortedStrictlyAscending(&envTimes[0], length));
   std::vector<T> metaEnvTime, metaEnvValue;
   getMetaEnvelope(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
-  rsAssert(rsArray::isSortedStrictlyAscending(&envTimes[0], length));
   interpolateEnvelope(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(),
     envTimes, peakValues, length);
 
-
-
-  GNUPlotter plt;
-  plt.addDataArrays(length, envTimes, envValues);
-  plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
-  plt.plot();
-  //rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
-  //rsPlotArraysXY(length, envTimes, envValues); // debug
+  //GNUPlotter plt;
+  //plt.addDataArrays(length, envTimes, envValues);
+  //plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
+  //plt.plot();
+  ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
+  ////rsPlotArraysXY(length, envTimes, envValues); // debug
 }
 
 template<class T>

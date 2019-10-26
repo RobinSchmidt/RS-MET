@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="TestsRosicAndRapt\Source\Misc">
@@ -1372,6 +1373,9 @@
       <Filter>JUCE Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\_third_party\kiss_fft_v1_2_6\test\pstats.c">
+      <Filter>JUCE Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\_third_party\kiss_fft_v1_2_6\test\tailscrap.m">
       <Filter>JUCE Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\_third_party\kiss_fft_v1_2_6\test\test_real.c">
@@ -4891,6 +4895,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Source\ToDo.txt">
+      <Filter>TestsRosicAndRapt\Source</Filter>
+    </None>
     <None Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ConicsURLs.txt">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
     </None>

@@ -4895,6 +4895,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Source\ToDo.txt">
+      <Filter>TestsRosicAndRapt\Source</Filter>
+    </None>
     <None Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ConicsURLs.txt">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
     </None>
