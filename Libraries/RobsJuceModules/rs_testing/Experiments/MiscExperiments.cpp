@@ -284,13 +284,11 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   RAPT::rsHarmonicAnalyzer<double> analyzer;
 
   // temporary - to make experimentation faster:
-  //int minPartial = 0;
-  //int maxPartial = 10;
-  analyzer.setMinPartialIndex(1);
-  analyzer.setMaxPartialIndex(5);
+  //analyzer.setMinPartialIndex(0);  // not yet working
+  analyzer.setMaxPartialIndex(10);
 
 
-  analyzer.getCycleFinder().setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
+  //analyzer.getCycleFinder().setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
   // for test with Rhodes Tuned F3 V12TX -16.4 10-17-16 shorter
 
   setupHarmonicAnalyzerFor(analyzer, name, fs, f0);
@@ -298,6 +296,8 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
                                   // takes a string and a function to call - callAndEcho
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
   rsAssert(mdl.isDataValid());
+  //plotSineModel(mdl, fs);
+  plotSineModelAmplitudes(mdl);
   std::cout << "Resynthesizing...\n";
   std::vector<double> y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutputUnmodified.wav", &y[0], (int)y.size(), (int)fs);
@@ -319,6 +319,8 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   std::cout << "De-Beating...\n";
   deBeater.processModel(mdl);
   rsAssert(mdl.isDataValid());
+  //plotSineModel(mdl, fs);
+  plotSineModelAmplitudes(mdl);
   std::cout << "Resynthesizing...\n";
   y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);

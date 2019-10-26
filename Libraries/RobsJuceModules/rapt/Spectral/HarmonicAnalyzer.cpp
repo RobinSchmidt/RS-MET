@@ -433,9 +433,13 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
     T freq, gain, phase, peakBin;
     mdl.setData(0, dataIndex, time, T(0), T(2*zeroPad)*mag[0], phs[0]); // handle DC separately
     for(int h = 1; h < numPartials; h++) {
-      kHarm = cyclesPerBlock*zeroPad*h;    // bin index where partial/harmonic is expected
+
+      kHarm = cyclesPerBlock*zeroPad*h;  // bin index where partial/harmonic is expected
+      //kHarm = getPartialBinIndex();        // may be used when we use minPartialIndex
+
       kPeak = kHarm;                       // preliminary - refined below
       //kPeak = -1;                          // preliminary - assigned below
+
       if(allowInharmonics)                 // search for peaks near expected harmonics
       {
         kPeak = findPeakBinNear(mag, kHarm, w2);

@@ -410,11 +410,15 @@ bool rsSinusoidalModel<T>::isSampledSynchronously() const
 template<class T>
 bool rsSinusoidalModel<T>::isDataValid() const
 {
-  for(size_t i = 1; i < partials.size(); i++)
+  //for(size_t i = 1; i < partials.size(); i++) // old
+  for(size_t i = 0; i < partials.size(); i++)
     if(!partials[i].isDataValid())
       return false;
   return true;
 }
+// should we start the loop at 0 instead of 1? it seems, the DC component may indeed have negative
+// values after analysis - who does this come about? we should ensure it to be positive and set the 
+// phase to + or -180°
 
 //=================================================================================================
 // Analyzer:

@@ -172,7 +172,7 @@ void plotTwoSineModels(
 partialIndices selects, which partial's envelopes should be drawn. */
 void plotSineModelAmplitudes(
   const RAPT::rsSinusoidalModel<double>& model,
-  const std::vector<int>& partialIndices);
+  std::vector<int> partialIndices = std::vector<int>()); 
 
 /** Plots a subset of the unwrapped phases of the model - but because the phases themselves are not
 that useful to look at (you would basically just see an upward sloping line), the function plots 
