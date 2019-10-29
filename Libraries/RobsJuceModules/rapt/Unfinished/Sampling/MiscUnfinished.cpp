@@ -1683,6 +1683,11 @@ template<class T>
 void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue)
 {
+
+  //T maxSpacing = rsArray::maxDifference(&metaEnvTime[0], (int)metaEnvTime.size());
+  // nope - that doesn't work - it must be done *before* setupEndValues - we need a function parameter
+  // maxSpacing
+
   if(maxSpacing == T(0))
   {
     rsCopyToVector(rawEnvTime,  rawEnvLength, metaEnvTime);

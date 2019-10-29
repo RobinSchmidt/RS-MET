@@ -850,6 +850,20 @@ int rsArray::maxDeviationIndex(const T *x, const T *y, int N)
 }
 
 template <class T>
+static T rsArray::maxDifference(const T* x, int N)
+{
+  T x1   = T(0);
+  T dMax = -RS_INF(T);
+  for(int i = 0; i < N; i++) {
+    T d = x[i] - x1;;
+    if(d > dMax)
+      dMax = d;
+    x1 = x[i];
+  }
+  return dMax;
+}
+
+template <class T>
 int rsArray::maxIndex(const T *buffer, int length)
 {
   T   value = buffer[0];

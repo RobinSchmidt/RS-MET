@@ -448,6 +448,10 @@ public:
   template <class T>
   static int maxDeviationIndex(const T *buffer1, const T *buffer2, int length);
 
+  /** Returns the maximum value of the differences of adjacent array entries.  */
+  template <class T>
+  static T maxDifference(const T *buffer, int length);
+
   /** Returns the index of maximum value of the buffer (">"-operator must be defined). */
   template <class T>
   static int maxIndex(const T *buffer, int length);
