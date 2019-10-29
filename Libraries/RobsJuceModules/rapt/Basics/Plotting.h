@@ -10,24 +10,39 @@ to functions like rsPlotVector() anywhere in RAPT code for debugging purposes wh
 optimized out in cases when they are not needed. In TestsRosicAndRapt.jucer it is defined, so 
 plotting functions wil actually invoke the plotter in this project. */
 
+//#if defined(DEBUG) || defined(_DEBUG)
+// plotting code compiles only in debug builds - that helps to avoid forgetting to delete the 
+// (temporary, added for debug-purposes only) plotting commands in the code
+// ..nah - that breaks the release build of rs_testing - but maybe we can try doing this in the
+// cpp file?
+
 
 #include "GNUPlotter.h"
 
 template<class T>
-inline void rsPlotArray(T* x, int N)
+inline void rsPlotArray(const T* x, int N)
 {
   GNUPlotter plt;
   plt.plotArrays(N, x);
 }
 
 template<class T>
-inline void rsPlotArrays(int N, T* a1, T* a2 = nullptr, T* a3 = nullptr, T* a4 = nullptr,
-  T* a5 = nullptr)
+inline void rsPlotArrays(int N, const T* a1, const T* a2 = nullptr, const T* a3 = nullptr, 
+  const T* a4 = nullptr, const T* a5 = nullptr)
 {
   GNUPlotter plt;
   plt.plotArrays(N, a1, a2, a3, a4, a5);
 }
 // maybe allow for more than 5
+
+template<class T>
+inline void rsPlotArraysXY(int N, const T* x, const T* y1 = nullptr, const T* y2 = nullptr, 
+  const T* y3 = nullptr, const T* y4 = nullptr)
+{
+  GNUPlotter plt;
+  plt.addDataArrays(N, x, y1, y2, y3, y4);
+  plt.plot();
+}
 
 template<class T>
 inline void rsPlotVector(std::vector<T> v)
@@ -47,7 +62,7 @@ inline void rsStemPlot(int N, T *x, T *y)
   plt.plot();
 }
 
-/** Plots a bunch of vectors. */
+/** Plots a bunch of vectors as functions of the index. */
 template<class T>
 inline void rsPlotVectors(
   std::vector<T> v0, 
@@ -76,6 +91,37 @@ inline void rsPlotVectors(
   if(v9.size() > 0) plt.addDataArrays((int) v9.size(), &v9[0]);
   plt.plot();
 }
+
+/** Plots a bunch of y-vectors as functions of a given x-vector. */
+template<class T>
+inline void rsPlotVectorsXY(
+  std::vector<T> x,
+  std::vector<T> y1,
+  std::vector<T> y2 = std::vector<T>(),
+  std::vector<T> y3 = std::vector<T>(),
+  std::vector<T> y4 = std::vector<T>(),
+  std::vector<T> y5 = std::vector<T>(),
+  std::vector<T> y6 = std::vector<T>(),
+  std::vector<T> y7 = std::vector<T>(),
+  std::vector<T> y8 = std::vector<T>(),
+  std::vector<T> y9 = std::vector<T>()
+)
+{
+  GNUPlotter plt;
+  int N = (int) x.size();
+  //rsAssert(y1.size() == N);
+  if(y1.size() > 0) plt.addDataArrays(N, &x[0], &y1[0]);
+  if(y2.size() > 0) plt.addDataArrays(N, &x[0], &y2[0]);
+  if(y3.size() > 0) plt.addDataArrays(N, &x[0], &y3[0]);
+  if(y4.size() > 0) plt.addDataArrays(N, &x[0], &y4[0]);
+  if(y5.size() > 0) plt.addDataArrays(N, &x[0], &y5[0]);
+  if(y6.size() > 0) plt.addDataArrays(N, &x[0], &y6[0]);
+  if(y7.size() > 0) plt.addDataArrays(N, &x[0], &y7[0]);
+  if(y8.size() > 0) plt.addDataArrays(N, &x[0], &y8[0]);
+  if(y9.size() > 0) plt.addDataArrays(N, &x[0], &y9[0]);
+  plt.plot();
+}
+
 
 /** Plots a whole bunch of vectors which are themselves put together into a vector of vectors. */
 //template<class T>
@@ -154,3 +200,5 @@ void rsPlotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMar
 // somewhat redundant with rsPlotSpectrum...
 template<class T>
 void rsPlotDecibels(int N, T* x, T *mag);
+
+//#endif // #if defined(DEBUG) || defined(_DEBUG)

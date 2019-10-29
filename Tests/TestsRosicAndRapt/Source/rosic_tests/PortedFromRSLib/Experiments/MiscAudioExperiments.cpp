@@ -27,6 +27,50 @@ void cubicCrossfade()
   ////p.plotTwoFunctions(rsCubicFadeIn, rsCubicFadeOut, -0.5, 1.5);
 }
 
+int rsCeilDiv(int n, int m)  
+{
+  return (int) ceil(double(n) / double(m)); 
+  // stupid version - maybe use something like // (n + n % m) / n
+  // or 
+  // k = n/m
+  // if(n > k*m) k+=1;
+}
+
+
+void decimate()
+{
+  int N  = 50;   // number of samples in example signal
+  int D  = 4;    // decimation factor
+  int ND = N/D;
+  //int ND = rsCeilDiv(N,D);
+  // todo: floor(N/D) may not be the best choice - it may throw away data at the end - how about
+  // ceil? ...maybe make a funtion rsCeilDiv(n, m) as opposed to the regular floor-division aka
+  // integer division
+  // for N=20, D=3 -the decimated signal should be at leats one sample longer, i think - maybe even
+  // two - maybe we should use a value that does not discard any samples
+
+  std::vector<double> t(N), td(N/D), x(N), xd(ND), xa(ND);
+
+  typedef RAPT::rsArray AR;
+
+  // time axis (original and decimated):
+  AR::fillWithIndex(&t[0], N);
+  AR::decimate(&t[0], N, &td[0], D);   // change order: x, N, y, D
+
+  // signal (original and decimated):
+  AR::fillWithRandomValues(&x[0], N, -1.0, 1.0, 0);
+  AR::decimate(&x[0], N, &xd[0], D);  // change order: x, N, y, D
+  AR::decimateViaMean(&x[0], N, &xa[0], D);
+
+  // todo: implement and try decimateViaMean
+
+  GNUPlotter plt;
+  plt.addDataArrays(N,  &t[0],  &x[0]);
+  plt.addDataArrays(ND, &td[0], &xd[0]);
+  plt.addDataArrays(ND, &td[0], &xa[0]);
+  plt.plot();
+}
+
 template<class T>
 void getPythagoreanFreqRatios(T* r, int N)
 {

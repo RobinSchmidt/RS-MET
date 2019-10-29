@@ -97,7 +97,7 @@ namespace rosic
 
   INLINE void ModulatedAllpass::getSampleFrameStereo(double *inOutL, double *inOutR)
   {
-    double x = ONE_OVER_SQRT2 * (*inOutL + *inOutR);  
+    double x = SQRT2_INV * (*inOutL + *inOutR);  
       // todo: apply drive and filter to x
     double m = RAPT::rsTanhApprox( factor*x + offset );
 

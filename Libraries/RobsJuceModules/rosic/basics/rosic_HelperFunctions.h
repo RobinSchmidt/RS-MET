@@ -1,12 +1,7 @@
 #ifndef rosic_HelperFunctions_h
 #define rosic_HelperFunctions_h
 
-//// standard includes:
-//#include <math.h>
-//#include <stdio.h>
-//
-//// rosic includes:
-//#include "GlobalDefinitions.h"
+// get rid - redundant with rapt
 
 namespace rosic
 {

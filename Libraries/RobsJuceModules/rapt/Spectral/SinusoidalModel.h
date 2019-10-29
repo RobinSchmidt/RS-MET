@@ -49,6 +49,10 @@ public:
 
   inline T getWrappedPhase() const { return phase; }
 
+  /** Returns true, if this represents a valid datapoint. A datatpoint is valid, if frequency and 
+  amplitude are nonnegative and the phase is in the range -pi..pi. */
+  bool isValid() const;
+
   //inline T getUnwrappedPhase() const { return phase + 2*PI*cycles; }
 
 
@@ -65,7 +69,11 @@ public:
 //=================================================================================================
 
 /** Data structure to hold and edit the information about one single sinusoidal partial. This is 
-effectively an array of rsInstantaneousSineParams objects ordered by time-stamp.  */
+effectively an array of rsInstantaneousSineParams objects ordered by time-stamp. 
+
+todo: maybe try to convert into a representation consisting of parallel arrays - more convenient 
+for certain purposes (interpolation) but less for others (analysis) -> benchmark
+*/
 
 template<class T>
 class rsSinusoidalPartial  // maybe rename to rsSinusoidalTrack
@@ -328,6 +336,15 @@ public:
   }
 
 
+  /** Performs sanity check of the data (strictly increasing time-stamps, nonnegative amplitudes, 
+  phases in -pi..pi, etc.). */
+  bool isDataValid() const;
+
+  /** Returns a vector containing only the invalid datapoints - mostly for testing and debugging
+  purposes.  */
+  std::vector<rsInstantaneousSineParams<T>> getInvalidDataPoints() const;
+
+
 
   //rsInstantaneousSineParams<T> getInstantaneousParameters() const;
 
@@ -336,7 +353,7 @@ public:
 
 protected:
 
-  std::vector<rsInstantaneousSineParams<T>> instParams;
+  std::vector<rsInstantaneousSineParams<T>> instParams;  // maybe rename to dataPoints
 
   //friend class rsSinusoidalModel<T>; // doesn't compile - why?
 
@@ -471,7 +488,15 @@ public:
   }
 
   /** Returns true, if all partials are sampled at the same time-instants. */
-  bool isSampledSynchronously();
+  bool isSampledSynchronously() const;
+
+  /** Performs sanity check of the data (strictly increasing time-stamps, nonnegative amplitudes, 
+  phases in -pi..pi, etc.). */
+  bool isDataValid() const;
+
+  /** Returns a vector containing only the invalid datapoints - mostly for testing and debugging
+  purposes.  */
+  std::vector<rsInstantaneousSineParams<T>> getInvalidDataPoints() const;
 
 
 protected:

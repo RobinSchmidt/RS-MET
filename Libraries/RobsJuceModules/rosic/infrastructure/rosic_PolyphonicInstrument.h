@@ -228,10 +228,10 @@ namespace rosic
     *right *= masterAmplitude*compensator;
 
     // apply mid/side scaling:
-    double mid  = midScale  * ONE_OVER_SQRT2 * ( *left + *right );
-    double side = sideScale * ONE_OVER_SQRT2 * ( *left - *right );
-    *left       =             ONE_OVER_SQRT2 * (  mid  +  side  );
-    *right      =             ONE_OVER_SQRT2 * (  mid  -  side  );
+    double mid  = midScale  * SQRT2_INV * ( *left + *right );
+    double side = sideScale * SQRT2_INV * ( *left - *right );
+    *left       =             SQRT2_INV * (  mid  +  side  );
+    *right      =             SQRT2_INV * (  mid  -  side  );
   }
 
   INLINE double PolyphonicInstrument::getCumulativePowerCompensator(double cumulativePower)

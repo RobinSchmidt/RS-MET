@@ -241,9 +241,13 @@ namespace rosic
     /** A flag to indicate whether glide is active or not. */
     bool glideIsActive;
 
-    /** A list of MIDI note events - we keep track of more than one event in order to implement glides which can go back and forth
-    (a typical feature of monophonic synthesizers). */
+    /** A list of MIDI note events - we keep track of more than one event in order to implement 
+    glides which can go back and forth (a typical feature of monophonic synthesizers). */
     std::list<MidiNoteEvent> noteList;
+    // maybe a std::vector would be more performant for this - see this talk:
+    // https://www.youtube.com/watch?v=LrVi9LHP8Bk
+    // up to some 1000s of elements, vector beats list - also, we don't want memory allocations to happen
+    // or RAPT::rsDoubleEndedQueue which is based on stad::vector
 
     /** A mutex-lock to avoid threading problems with accesees to the noteList. */
     MutexLock mutex;

@@ -5,3 +5,13 @@ https://stackoverflow.com/questions/5849457/using-namespace-in-c-headers
 You should definitely NOT use using namespace in headers for precisely the reason you say, that it can unexpectedly change the meaning of code in any other files that include that header. There's no way to undo a using namespace which is another reason it's so dangerous.
 
 The header should include just the headers that it needs to compile. An easy way to enforce this is to always include each source file's own header as the first thing, before any other headers. Then the source file will fail to compile if the header isn't self-contained.
+
+
+
+
+
+
+
+
+
+

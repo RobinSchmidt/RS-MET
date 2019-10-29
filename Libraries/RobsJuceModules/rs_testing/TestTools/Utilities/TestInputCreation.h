@@ -7,6 +7,8 @@
 //void createTimeAxis(int numSamples, float *timeAxis, float sampleRate);
 //void createTimeAxis(int numSamples, double *timeAxis, double sampleRate);
 
+// maybe wrap into class TestSignals or TestSignalGenerator
+
 //template<class T>
 inline std::vector<double> createSilence(int numSamples)
 {
@@ -52,6 +54,10 @@ void createSawWave(double *x, int N, double f, double fs, double a = 1, int numH
 /** Creates a sine-wave of length N (in samples) with an instantaneous frequency given by f at each 
 sample and an amplitude given by a, at samplerate fs. */
 void createSineWave(double *x, int N, double *f, double a, double fs);
+// make order of parameters consistent with other createSineWave functions
+
+
+
 
 /** Creates a sum of sine waves with given frequencies, amplitudes and phases (phases will be 
 zero, if a nullptr is passed); */

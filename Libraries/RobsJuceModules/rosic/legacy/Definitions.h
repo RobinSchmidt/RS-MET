@@ -82,7 +82,7 @@ typedef __declspec( align(1) ) signed __int8 int8A;
 //some mathematical contants:
 #define PI 3.1415926535897932384626433832795
 #define SQRT2 1.4142135623730950488016887242097
-#define ONE_OVER_SQRT2 0.70710678118654752440084436210485
+#define SQRT2_INV 0.70710678118654752440084436210485
 
 //some useful macros for VST-Plug-In-Development:
 //calculates the logarithm to an arbitrary base:

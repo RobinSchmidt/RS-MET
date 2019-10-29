@@ -57,13 +57,15 @@ void rsHeapSort(T *buffer, int length,
 
 /** Checks whether the buffer is sorted in ascending order, that is buffer[i] <= buffer[i+1] for
 all i. */
-template <class T>
-bool rsIsSortedAscending(T *buffer, int length);
+//template <class T>
+//bool rsIsSortedAscending(T *buffer, int length);
+// moved to rsArray
 
 /** Checks whether the buffer is sorted in ascending order, that is buffer[i] < buffer[i+1] for
 all i. */
-template <class T>
-bool rsIsSortedStrictlyAscending(T *buffer, int length);
+//template <class T>
+//bool rsIsSortedStrictlyAscending(T *buffer, int length);
+// moved to rsArray
 
 /** Finds all occurrences of the given pattern in the buffer and returns the start-indices for
 the pattern inside the buffer as a std::vector which is in ascending order. The function uses the
@@ -92,7 +94,8 @@ stretch of equal maximum values, it will return the index of the first of them. 
 value inside the buffer that satifies the above condition, 0 will be returned. */
 template<class T>
 int rsFindHighestPeakIndex(T *buffer, int length);
- // move to rsArray
+ // move to rsArray ...actually redundant with rsArray::maxIndex? ..check this - the logic is 
+ // actually more complicated, but perhaps unnecessarily so
 
 /** Returns the last occurrence of an element in the passed buffer and its index, -1 if the
 element is not found in the buffer. The optional searchStart parameter can be used to specify,

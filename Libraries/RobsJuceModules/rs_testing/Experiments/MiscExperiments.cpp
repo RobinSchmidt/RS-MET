@@ -7,6 +7,7 @@ using namespace RAPT;
 std::vector<double> synthesizeSinusoidal(
   const RAPT::rsSinusoidalModel<double>& model, double sampleRate, double fadeTime)
 {
+  std::cout << "Synthesizing sinusoidal model with " << model.getNumPartials() << " partials...";
   typedef RAPT::rsSinusoidalSynthesizer<double> SS;
   typedef SS::PhaseInterpolationMethod PIM;
   SS synth;
@@ -16,6 +17,7 @@ std::vector<double> synthesizeSinusoidal(
   std::vector<double> x = synth.synthesize(model);
   if(fadeTime > 0.0)
     applyFadeInAndOut( &x[0], (int) x.size(), int (fadeTime*sampleRate));
+  std::cout << "Done\n";
   return x;
 }
 
@@ -282,8 +284,22 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   int N = (int) x.size(); // x is the input signal
 
   RAPT::rsHarmonicAnalyzer<double> analyzer;
+
+  // temporary - to make experimentation faster:
+  //analyzer.setMinPartialIndex(0);  // not yet working
+  //analyzer.setMaxPartialIndex(2);
+
+  //analyzer.getCycleFinder().setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
+  // for test with Rhodes Tuned F3 V12TX -16.4 10-17-16 shorter
+
   setupHarmonicAnalyzerFor(analyzer, name, fs, f0);
+  std::cout << "Analyzing...\n";  // maybe write function that prints the time it took to analyze
+                                  // takes a string and a function to call - callAndEcho
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
+  rsAssert(mdl.isDataValid());
+  //plotSineModel(mdl, fs);
+  //plotSineModelAmplitudes(mdl);
+  //std::cout << "Resynthesizing...\n";
   std::vector<double> y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutputUnmodified.wav", &y[0], (int)y.size(), (int)fs);
 
@@ -292,22 +308,31 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   // wavefile:
   rsPartialBeatingRemover<double> deBeater;
   deBeater.setPhaseSmoothingParameters(5.0, 1, 4); // cutoff = 10 leaves a vibrato
+
+  // 10 is ad hoc - at least one sample per 10 cycles:
+  if(f0 == 0) 
+    f0 = mdl.getPartial(1).getMeanFreq();
+  //deBeater.setMaxEnvelopeSampleSpacing(16.0/f0);     // works reasonably
+  //deBeater.setMaxEnvelopeSampleSpacing(1.0/f0);    // hangs
+  //deBeater.setMaxEnvelopeSampleSpacing(2.0/f0);    // works but doesn't actually de-beat
+  // ...maybe use the maximum distance between the found peaks as the minimum distance between 
+  // datapoints in the de-beated envelope
+
+  // that is wrong - we need to set it to a value a bit above the beat-period expressed in the 
+  // frame-rate ...or - wait - is that actually true
+
+  //deBeater.removeAmplitudeBeating(mdl.getModifiablePartialRef(5)); //for debugging
+
+  //mdl.removePartial(0);  // test - remove DC - the DC component crashes with Rhodes Tuned F3 V12TX -16.4 10-17-16 short
+  std::cout << "De-Beating...\n";
   deBeater.processModel(mdl);
+  rsAssert(mdl.isDataValid());
+  std::vector<rsInstantaneousSineParams<double>> invalidDataPoints = mdl.getInvalidDataPoints();
+  //plotSineModel(mdl, fs);
+  //plotSineModelAmplitudes(mdl);
   y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
 }
-
-template<class T>
-std::vector<T> rsDecimate(const std::vector<T>& x, int factor)
-{
-  int Ny = (int) x.size() / factor;
-  std::vector<T> y(Ny);
-  for(int i = 0; i < Ny; i++)
-    y[i] = x[i*factor];
-  return y;
-}
-// move to rapt
-// todo: use more sophisticated techniques like taking the average or min and max
 
 void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
 {
@@ -345,7 +370,7 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
   double thresh = -65;
 
   RAPT::rsExponentialEnvelopeMatcher<double> em;
-  em.setMatchLevel(-20);               // make function parameter
+  em.setMatchLevel(-55);               // make function parameter
 
   //em.setInitialIgnoreSection1(16000);  // reference signal has 2-stage decay
   em.setInitialIgnoreSection1(60000);  // ..or actually mor like a 3-stage decay
@@ -391,6 +416,41 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
   // todo: maybe plot the two regression lines as well
   // try to cut an actual section of the tail from the 1st signal and match that to the full
   // length signal
+}
+
+void testEnvelopeMatching2(std::vector<double>& x1, std::vector<double>& x2)
+{
+  typedef std::vector<double> Vec;
+
+  // exctract envelopes:
+  rsEnvelopeFollower<double, double> ef;
+  ef.setSampleRate(44100);  // make this a function parameter
+  ef.setAttackTime(0.0);    // in ms?
+  ef.setReleaseTime(200.0);
+  Vec e1(x1.size()), e2(x2.size());
+  int n;
+  for(n = 0; n < (int )x1.size(); n++) e1[n] = ef.getSample(x1[n]);
+  ef.reset();
+  for(n = 0; n < (int )x2.size(); n++) e2[n] = ef.getSample(x2[n]);
+
+  // find match offset:
+  double dt = 0;
+  int D = 100;  // decimation factor
+  dt = rsEnvelopeMatchOffset(&e1[0], (int) e1.size(), &e2[0], (int) e2.size(), D);
+
+  // create the two time axes and decimated enveloeps for plotting (using the same decimation
+  // factor as for matching):
+  Vec e1d = rsDecimateViaMean(e1, D);
+  Vec e2d = rsDecimateViaMean(e2, D);  
+  Vec t1d(e1d.size()), t2d(e2d.size());
+  for(n = 0; n < t1d.size(); n++)  t1d[n] = n * D;
+  for(n = 0; n < t2d.size(); n++)  t2d[n] = n * D + dt;
+
+  // plot:
+  GNUPlotter plt;
+  plt.addDataArrays((int) t1d.size(), &t1d[0], &e1d[0]);
+  plt.addDataArrays((int) t2d.size(), &t2d[0], &e2d[0]);
+  plt.plot();
 }
 
 

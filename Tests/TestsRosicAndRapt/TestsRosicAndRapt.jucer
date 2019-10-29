@@ -7,6 +7,7 @@
               cppLanguageStandard="11" companyCopyright="">
   <MAINGROUP id="faVDnE" name="TestsRosicAndRapt">
     <GROUP id="{1E9A4B2E-B083-724B-094D-49D8FBCEF73F}" name="Source">
+      <FILE id="EQxOr7" name="ToDo.txt" compile="0" resource="0" file="Source/ToDo.txt"/>
       <GROUP id="{59094510-7833-4796-F4A7-379C8B18FAB3}" name="Misc">
         <FILE id="x4bxBy" name="Misc.cpp" compile="1" resource="0" file="Source/Misc/Misc.cpp"/>
         <FILE id="Spitji" name="Misc.h" compile="0" resource="0" file="Source/Misc/Misc.h"/>

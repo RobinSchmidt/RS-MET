@@ -1,9 +1,7 @@
 #ifndef RAPT_ARRAYFUNCTIONS_H_INCLUDED
 #define RAPT_ARRAYFUNCTIONS_H_INCLUDED
 
-// todo write functions for element-wise multiply, divide, negate,
-// max, min, absMax, createCopy, filter, impulseResponse, impulseResponseLength,
-// fillWith(double value = 0.0), circularShift, resample,
+// code obsolete - remove (the stuff is now in RAPT::rsArray)
 
 //class ArrayFunctions
 namespace RAPT
@@ -11,82 +9,82 @@ namespace RAPT
 
   /** Adds the elements of 'array1' and 'array2' - type must define operator '+'. The 'result' 
   buffer may be the same as 'array1' and/or 'array2'. */
-  template <class T>
-  void add(T *array1, T *array2, T *result, int length);
+  //template <class T>
+  //void add(T *array1, T *array2, T *result, int length);
    // todo: generalize the function further to take possibly different types for array1, array2, result
 
   /** Adds the scalar 'valueToAdd' to the elements of 'input' - the type must define operator '+'. 
   The 'result' buffer may be the same as 'input'. */
-  template <class T>
-  void add(T *input, T valueToAdd, T *result, int length);
+  //template <class T>
+  //void add(T *input, T valueToAdd, T *result, int length);
 
   /** Adds a weighted, circularly shifted copy of the buffer to itself - the shift-offest may be
   non-integer in which case linear interpolation will be used. 
   \todo: maybe generalize such that a circularly shifted 2nd buffer can be added (which may or
   may not be the same buffer).  */
-  template <class T>
-  void rsAddCircularShiftedCopy(T *buffer, int length, double offset, T weight);
+  //template <class T>
+  //void rsAddCircularShiftedCopy(T *buffer, int length, double offset, T weight);
 
   // add length-L array y into length-N array x starting at n
-  template<class T>
-  void rsAddInto(T *x, int N, T *y, int L, int n = 0);
+  //template<class T>
+  //void rsAddInto(T *x, int N, T *y, int L, int n = 0);
 
   /** Allocates memory for a 2-dimensional array (i.e. a matrix) with equal dimensions in both
   directions. 
   \todo: remove - redundant with rsAllocateMatrix  */
-  template<class T>
-  void rsAllocateSquareArray2D(T**& theArray, int size);
+  //template<class T>
+  //void rsAllocateSquareArray2D(T**& theArray, int size);
 
   /** Applies the function f given by the function-pointer to all elements in inBuffer and stores
   the result in outBuffer (both buffers may be equal). */
-  template <class T>
-  void rsApplyFunction(T *inBuffer, T *outBuffer, int length, T (*f) (T));
+  //template <class T>
+  //void rsApplyFunction(T *inBuffer, T *outBuffer, int length, T (*f) (T));
 
   /** Checks, if the two buffers are elementwise approximately equal within the given tolerance. */
-  template <class T>
-  bool rsAreBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance);
+  //template <class T>
+  //bool rsAreBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance);
 
   /** Checks, if the two buffers are elementwise equal. */
-  template <class T>
-  bool rsAreBuffersEqual(T *buffer1, T *buffer2, int length);
+  //template <class T>
+  //bool rsAreBuffersEqual(T *buffer1, T *buffer2, int length);
 
   /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward
   shifts use negative values for numPositions. If the absolute value of 'numPositions' is greater
   than the length of the buffer, it will use numPositions modulo the length - so if the length is 6
   and numPositions is 8, it will whift by 2 positions. */
-  template<class T>
-  void rsCircularShift(T *buffer, int length, int numPositions);
+  //template<class T>
+  //void rsCircularShift(T *buffer, int length, int numPositions);
 
   /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward
   shifts use negative values for numPositions. The function behaves analogous to
   circularShift(T*, int, int) but allows for non-integer shifts by using linear interpolation of
   the buffer. */
-  template <class T>
-  void rsCircularShiftInterpolated(T *buffer, int length, double numPositions);
+  //template <class T>
+  //void rsCircularShiftInterpolated(T *buffer, int length, double numPositions);
 
   /** Restricts the values in the buffer to the range between min and max for types that define the
   operators '<' and '>'. */
-  template <class T>
-  void rsClipBuffer(T *buffer, int length, T min, T max);
+  //template <class T>
+  //void rsClipBuffer(T *buffer, int length, T min, T max);
 
   /** Returns -1 if a < b, 0 if a == b, +1 if a > b. The elements are compared succesively starting
   at index 0 and when an unequal element is encountered, the buffer with the greater element is
   considered to be greater. This is consistent with strcmp or numbers in a positional number
   system. */
-  template <class T>
-  int rsCompare(T *a, T *b, int length);
+  //template <class T>
+  //int rsCompare(T *a, T *b, int length);
 
   /** Similar to rsCompare(T *a, T *b, int length) but allows for the 2 buffers to have different
   lengths. If they match up to the length of the shorter buffer, the longer buffer is considered
   equal, iff all the remaining entries in the tail zero, otherwise the longer buffer is considered
   to be greater. */
-  template <class T>
-  int rsCompare(T *a, int na, T *b, int nb);
+  //template <class T>
+  //int rsCompare(T *a, int na, T *b, int nb);
 
   /** Searches the array for an element (via the '==' operator of type T) and returns true if the
   element was found. */
-  template <class T>
-  bool rsContains(T *buffer, int length, T elementToFind);
+  //template <class T>
+  //bool rsContains(T *buffer, int length, T elementToFind);
 
   /** Convolves an array x (seen as input signal) with another array h (seen as impulse response)
   and stores the result in the array y. The type must define the operators: *, += and a constructor
@@ -95,12 +93,12 @@ namespace RAPT
   pointer - i.e. the function can be used for in-place convolution, for example for overwriting a
   sequence with the convolution product of the sequence with some other sequence or even with
   itself (such as when squaring polynomials). */
-  template <class Tx, class Th, class Ty>
-  void convolve(Tx *x, int xLength, Th *h, int hLength, Ty *y);
+  //template <class Tx, class Th, class Ty>
+  //void convolve(Tx *x, int xLength, Th *h, int hLength, Ty *y);
 
   /** Copies the data of one array into another one and converts the type if necessary. */
-  template <class T1, class T2>
-  void rsConvertBuffer(T1 *source, T2 *destination, int length);
+  //template <class T1, class T2>
+  //void rsConvertBuffer(T1 *source, T2 *destination, int length);
 
   /** Convolves x with h and stored the result in x. The xLength parameter denotes the number of
   values in the x-array that will be considered as input signal. The actual array must be longer
@@ -112,8 +110,8 @@ namespace RAPT
     // DEPRECATED - we can now do in-place covolution with the regular convolve function
 
   /** Copies the data of one array into another one, converting the datatype, if necessarry. */
-  template <class T1, class T2>
-  void copy(const T1 *source, T2 *destination, int length);
+  //template <class T1, class T2>
+  //void copy(const T1 *source, T2 *destination, int length);
 
   // old version:
   /** Copies the data of one array into another one. */
@@ -128,32 +126,32 @@ namespace RAPT
   buffer need not to be distinct, so the function can be used to strip off undesired elements from
   a buffer in place. Just remember that in any case in the extra elements in the targetBuffer are
   garbage. */
-  template <class T>
-  int rsCopyIfMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
-                       T *elementsToMatch, int matchLength);
+  //template <class T>
+  //int rsCopyIfMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
+  //                     T *elementsToMatch, int matchLength);
 
   /** Similar to rsCopyIfMatching, but here the criterion is to NOT match one of the elements in 
   the set of elementsToStrip. */
-  template <class T>
-  int rsCopyIfNotMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
-                        T *elementsToStrip, int stripLength);
+  //template <class T>
+  //int rsCopyIfNotMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
+  //                      T *elementsToStrip, int stripLength);
 
   /** Copies the data of one array into another one where the lengths of the source- and target-
   arrays may be different - in this case, the target array will be filled by linearly interpolating
   the values in the source array. The type T must define a multiplication operator with a left
   operand of type double and an addition operator with both operands of type T. At the right border
   of the source buffer, a periodicity assumption is made. */
-  template <class T>
-  void rsCopyBufferWithLinearInterpolation(T *source, int sourceLength, T *destination,
-    int destinationLength);
+  //template <class T>
+  //void rsCopyBufferWithLinearInterpolation(T *source, int sourceLength, T *destination,
+  //  int destinationLength);
 
   /** Copies a section of length "copyLength" starting at "copyStart" from "source" to 
   "destination". If "copyStart" is less than 0 and/or the desired "copyLength" is such that the end 
   of the copied section is beyond the end of the source-array, the head and tail of "destination" 
   will be filled with zeros appropriately, i.e. we assume "source" to contain zero values for 
   indices < 0 and indices >= sourceLength. */
-  template<class T1, class T2>
-  void rsCopySection(T1 *source, int sourceLength, T2 *destination, int copyStart, int copyLength);
+  //template<class T1, class T2>
+  //void rsCopySection(T1 *source, int sourceLength, T2 *destination, int copyStart, int copyLength);
 
   // old - without type conversion
   //template<class T>
@@ -167,25 +165,25 @@ namespace RAPT
 
   /** Computes the cumulative sum of x and stores it in y. Can also be used in place (i.e. y may 
   point to the same array as x). */
-  template <class T>
-  void rsCumulativeSum(T *x, T *y, int N);
+  //template <class T>
+  //void rsCumulativeSum(T *x, T *y, int N);
 
   /** Computes a cumulative sum of arbirtry order of x and stores it in y. Can be used in place. */
-  template <class T>
-  void rsCumulativeSum(T *x, T *y, int N, int order);
+  //template <class T>
+  //void rsCumulativeSum(T *x, T *y, int N, int order);
 
   /** Frees memory allocated previously via rsAllocateSquareArray2D. */
-  template<class T>
-  void rsDeAllocateSquareArray2D(T**& theArray, int size);
+  //template<class T>
+  //void rsDeAllocateSquareArray2D(T**& theArray, int size);
 
   /** Deconvolves the impulse response h out of the signal y resulting in the signal x which has a
   length of yLength-hLength+1. It's the inverse of convolve. */
-  template <class T>
-  void rsDeConvolve(T *y, int yLength, T *h, int hLength, T *x);
+  //template <class T>
+  //void rsDeConvolve(T *y, int yLength, T *h, int hLength, T *x);
 
   /** De-interleaves a buffer of interleaved data. @see rsInterleave */
-  template <class T>
-  void rsDeInterleave(T *buffer, int numFrames, int numElementsPerFrame);
+  //template <class T>
+  //void rsDeInterleave(T *buffer, int numFrames, int numElementsPerFrame);
 
   /** Computes the difference y[n] = x[n] - x[n-1] of some signal. The initial condition x[-1] is
   determined from the 'periodic' parameter - if true, the signal is assumed as periodic and the
@@ -193,13 +191,15 @@ namespace RAPT
   assigned to zero. When multiplying the result with the interval between successive samples,
   this function can be used for numeric differentiation. If the order is greater than 1, the
   operation will be performed iteratively on the respective result of the previous pass.  */
-  template <class T>
-  void rsDifference(T *buffer, int length, int order = 1, bool periodic = false);
+  //template <class T>
+  //void rsDifference(T *buffer, int length, int order = 1, bool periodic = false);
 
   /** Divides the elements of 'buffer1' and 'buffer2' - type must define operator '/'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
-  template <class T1, class T2, class TR>
-  void rsDivide(T1 *buffer1, T2 *buffer2, TR *result, int length);
+  //template <class T1, class T2, class TR>
+  //void rsDivide(T1 *buffer1, T2 *buffer2, TR *result, int length);
+
+#ifdef BLAH
 
   /** Fills the passed array with the values of the indices - the type T must have a
   constructor that takes an int and performs appropriate conversion. */
@@ -500,6 +500,8 @@ namespace RAPT
   template <class T>
   inline void rsWeightedSum(T *buffer1, T *buffer2, T *result, int length, T weight1, 
     T weight2);
+
+#endif
 
 }
 

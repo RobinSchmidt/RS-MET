@@ -52,7 +52,7 @@ bool testPoint2DTransformations(std::string &reportString)
   testResult &= ( q1.isCloseTo(Point(0, 1), 0.000001) );
   t1 = Trafo::rotation(PI/4);
   q1 = t1.getTransformedPoint(Point(1, 0));
-  testResult &= ( q1.isCloseTo(Point(ONE_OVER_SQRT2, ONE_OVER_SQRT2), 0.000001) );
+  testResult &= ( q1.isCloseTo(Point(SQRT2_INV, SQRT2_INV), 0.000001) );
   t1 = Trafo::rotationByHalfPi();
   q1 = t1.getTransformedPoint(Point(1, 1));
   testResult &= ( q1  == Point(-1, 1) );

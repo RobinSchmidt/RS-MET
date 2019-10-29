@@ -69,10 +69,10 @@ INLINE void MidSideMixer::getSampleFrameStereo(double* inL,
 {
  static doubleA mid, side;
 
- mid   = midGain    * ONE_OVER_SQRT2 * ( *inL + *inR );
- side  = sideGain   * ONE_OVER_SQRT2 * ( *inL - *inR ); 
- *outL = globalGain * ONE_OVER_SQRT2 * (  mid + side );
- *outR = globalGain * ONE_OVER_SQRT2 * (  mid - side );
+ mid   = midGain    * SQRT2_INV * ( *inL + *inR );
+ side  = sideGain   * SQRT2_INV * ( *inL - *inR ); 
+ *outL = globalGain * SQRT2_INV * (  mid + side );
+ *outR = globalGain * SQRT2_INV * (  mid - side );
 }
 
 #endif // MidSideMixer_h

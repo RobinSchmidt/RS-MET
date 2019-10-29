@@ -24,7 +24,7 @@ namespace rosic
   template <class T>
   void trafoHaar1D(T *buffer, int length, int numLevels)
   {
-    const double c = ONE_OVER_SQRT2;
+    const double c = SQRT2_INV;
     //T *tmp = (T*) alloca(length*sizeof(T));
     T* tmp = new T[length]; // todo: get ird - let client pass workspace pointer
     int w  = length;
@@ -45,7 +45,7 @@ namespace rosic
   template <class T>
   void trafoInverseHaar1D(T *buffer, int length, int numLevels)
   {
-    const double c = ONE_OVER_SQRT2;
+    const double c = SQRT2_INV;
     //T *tmp = (T*) alloca(length*sizeof(T));
     T* tmp = new T[length];  // get rid
     int w  = length/numLevels;

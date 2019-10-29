@@ -276,7 +276,7 @@ void SampleMapGenerator::generateSampleForKey(int key)
       if( buffer.numChannels == 2 )
       {
         for(n = 0; n < RAPT::rsMin(fftSize, buffer.numFrames); n++)
-          tmpBuf.data[0][n] = ONE_OVER_SQRT2 * (buffer.data[0][n] + buffer.data[1][n]);
+          tmpBuf.data[0][n] = SQRT2_INV * (buffer.data[0][n] + buffer.data[1][n]);
       }
       else
       {

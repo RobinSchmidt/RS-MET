@@ -103,6 +103,46 @@ bool rsAlmostEqual(std::vector<std::complex<T>>& x, std::vector<std::complex<T>>
 }
 
 
+/** Applies the inner function to the value x and then the outer function to the result of that
+inner function and returns the final result. This is known as function composition in 
+mathematics. */
+template<class T, class F1, class F2>
+T applyComposedFunction(T x, F1 innerFunction, F2 outerFunction)
+{
+  return outerFunction(innerFunction(x));
+}
+
+/** Returns true, if the function f maps the given argument x to itself. */
+template<class T, class F>
+bool mapsToItself(T x, F f)
+{
+  return x == f(x);
+}
+
+/** Checks, if the 2nd function is the inverse function of the first for the given input argument 
+x. */
+template<class T, class F1, class F2>
+bool mapsBack(T x, F1 forwardFunction, F2 maybeInverseFunction)
+{
+  return x == applyComposedFunction(x, forwardFunction, maybeInverseFunction);
+  //return x == maybeInverseFunction(forwardFunction(x));
+}
+// maybe rename to isFunctionLocallyInverse, isFunctionInverseAt
+
+/** Checks, if the 2nd function is the inverse function of the first for a given range of input 
+arguments between minValue and maxValue with given. */
+template<class T, class F1, class F2>
+bool isInverseFunction(F1 forwardFunc, F2 maybeInverseFunc, T minValue, T maxValue, T increment)
+{
+  T value = minValue;
+  while(value < maxValue) {
+    if( !mapsBack(value, forwardFunc, maybeInverseFunc) )
+      return false;
+    value += increment;
+  }
+  return true;
+}
+
 
 
 

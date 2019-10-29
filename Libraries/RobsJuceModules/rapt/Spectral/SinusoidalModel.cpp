@@ -1,3 +1,14 @@
+
+template<class T>
+bool rsInstantaneousSineParams<T>::isValid() const
+{
+  return rsIsFiniteNonNegativeNumber(freq) 
+    && rsIsFiniteNonNegativeNumber(gain) 
+    && phase >= -PI && phase <= PI;
+}
+
+//=================================================================================================
+
 template<class T>
 void rsSinusoidalPartial<T>::applyFadeIn(T fadeTime)
 {
@@ -46,16 +57,7 @@ void rsSinusoidalPartial<T>::setPhases(const std::vector<T>& p)
     setPhase(i, p[i]);
 }
 
-
-
-
-
-
-
-
-
 /*
-
 template<class T>
 void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
 {
@@ -145,12 +147,7 @@ void rsSinusoidalPartial<T>::makeFreqsConsistentWithPhases()
   // theory bug? the implementation seems good..the assert doesn't trigger - or maybe the hopsize
   // is indeed too small and we get an adjustment by more than pi?
 }
-
 */
-
-
-
-
 
 //-------------------------------------------------------------------------------------------------
 // inquiry
@@ -311,7 +308,48 @@ std::vector<T> rsSinusoidalPartial<T>::getPhaseArray() const
   return p;
 }
 
+template<class T>
+bool rsSinusoidalPartial<T>::isDataValid() const
+{
+  std::vector<T> t = getTimeArray();
+  std::vector<T> f = getFrequencyArray();
+  std::vector<T> a = getAmplitudeArray();
+  std::vector<T> p = getPhaseArray();
 
+  bool valid = true;
+  valid &= rsArray::isSortedStrictlyAscending(&t[0], (int) t.size());       // time increases
+  valid &= rsAllOf(f,  [=](T x){ return rsIsFiniteNonNegativeNumber(x); }); // freqs nonnegative
+  valid &= rsAllOf(a,  [=](T x){ return rsIsFiniteNonNegativeNumber(x); }); // amps nonnegative
+  valid &= rsNoneOf(p, [=](T x){ return x < -PI || x > PI; });              // phases in -pi..pi
+  // ..should one of the ends be excluded like x in [-pi, pi) or (-pi, pi]? look up what atain2
+  // returns...or test it, if no info is available
+
+
+  //size_t minFreqIdx = rsMinIndex(f);
+  //size_t minAmpIdx  = rsMinIndex(a);
+  //double minFreqVal = rsMinValue(f);
+  //double minAmpVal  = rsMinValue(a);
+
+  // is that it or should we check anything else? 
+
+  // eventually, we may avoid the creation of the vectors and directly loop through our data in 4 
+  // functions areTimeStampsValid, areAmplitudesValid, etc.
+
+  //rsPlotVectorsXY(t, f);
+  //rsPlotVectorsXY(t, a);
+
+  return valid;
+}
+
+template<class T>
+std::vector<rsInstantaneousSineParams<T>> rsSinusoidalPartial<T>::getInvalidDataPoints() const
+{
+  std::vector<rsInstantaneousSineParams<T>> v;
+  for(size_t i = 0; i < instParams.size(); i++)
+    if( !instParams[i].isValid() )
+      v.push_back(instParams[i]);
+  return v;
+}
 
 //=================================================================================================
 
@@ -368,12 +406,37 @@ T rsSinusoidalModel<T>::getEndTime() const
 }
 
 template<class T>
-bool rsSinusoidalModel<T>::isSampledSynchronously()
+bool rsSinusoidalModel<T>::isSampledSynchronously() const
 {
   for(size_t i = 1; i < partials.size(); i++)
     if(!partials[i].isSampledInSyncWith(partials[0]))
       return false;
   return true;
+}
+
+template<class T>
+bool rsSinusoidalModel<T>::isDataValid() const
+{
+  for(size_t i = 1; i < partials.size(); i++) // old
+  //for(size_t i = 0; i < partials.size(); i++) // DC may be < 0 from analysis -> fix this
+    if(!partials[i].isDataValid())
+      return false;
+  return true;
+}
+// should we start the loop at 0 instead of 1? it seems, the DC component may indeed have negative
+// values after analysis - who does this come about? we should ensure it to be positive and set the 
+// phase to + or -180°
+
+template<class T>
+std::vector<rsInstantaneousSineParams<T>> rsSinusoidalModel<T>::getInvalidDataPoints() const
+{
+  std::vector<rsInstantaneousSineParams<T>> v, w;
+  for(size_t i = 0; i < partials.size(); i++)
+  {
+    w = partials[i].getInvalidDataPoints();
+    rsAppend(v, w);
+  }
+  return v;
 }
 
 

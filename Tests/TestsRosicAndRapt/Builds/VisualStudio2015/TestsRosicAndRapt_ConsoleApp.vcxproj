@@ -684,24 +684,6 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\Spectrogram.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Analysis.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\ArrayFunctions.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Math.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Misc.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Polynomial.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Vector.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\AutoCorrelationPitchDetector.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2540,12 +2522,6 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\SinusoidalSynthesizer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\Spectral.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\Spectrogram.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Analysis.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\ArrayFunctions.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Math.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Misc.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Polynomial.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Vector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\AutoCorrelationPitchDetector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\CyclicAutoCorrelator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\FormantRemover.h"/>
@@ -3149,6 +3125,7 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Source\ToDo.txt"/>
     <None Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ConicsURLs.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\License.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\ReadMe.txt"/>

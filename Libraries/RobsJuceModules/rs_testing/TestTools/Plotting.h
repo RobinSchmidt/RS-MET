@@ -36,7 +36,27 @@ inline std::vector<TSig> impulseResponse(TFlt &filter, int length, TSig scale)
     y[n] = filter.getSample(0.0);
   return y;
 }
+template<class TSig, class TFlt>
+inline std::vector<TSig> filterResponse(TFlt& filter, int length, std::vector<TSig> x)
+{
+  std::vector<TSig> y(length);
+  filter.reset();
+  for(int n = 0; n < length; n++)
+    y[n] = filter.getSample(x[n]);
+  return y;
+}
+template<class T>
+inline std::vector<T> ampToDb(const std::vector<T>& x, T minDb)
+{
+  std::vector<T> y(x.size());
+  for(size_t i = 0; i < x.size(); i++) 
+    y[i] = rsMax(rsAmpToDb(rsAbs(x[i])), minDb);
+  return y;
+}
+
+
 // move to Utilities
+
 
 
 /** Plots N samples of the impulse response of the passed filter. */
@@ -172,7 +192,7 @@ void plotTwoSineModels(
 partialIndices selects, which partial's envelopes should be drawn. */
 void plotSineModelAmplitudes(
   const RAPT::rsSinusoidalModel<double>& model,
-  const std::vector<int>& partialIndices);
+  std::vector<int> partialIndices = std::vector<int>()); 
 
 /** Plots a subset of the unwrapped phases of the model - but because the phases themselves are not
 that useful to look at (you would basically just see an upward sloping line), the function plots 

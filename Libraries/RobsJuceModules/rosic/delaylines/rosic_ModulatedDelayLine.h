@@ -269,7 +269,7 @@ namespace rosic
     double yR = interpolatorR.getSample(fPart, &(delayBuffer[readPos]));
 
     // establish the mono sum of the input signal:
-    double inM = ONE_OVER_SQRT2 * (*inL + *inR);
+    double inM = SQRT2_INV * (*inL + *inR);
     //double inM = 0.5 * (*inL + *inR);    // debug
 
     // add the feedback of the unmodulated output:

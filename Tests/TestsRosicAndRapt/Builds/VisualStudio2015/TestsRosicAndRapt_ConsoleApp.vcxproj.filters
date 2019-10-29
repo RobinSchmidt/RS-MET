@@ -140,9 +140,6 @@
     <Filter Include="JUCE Modules\rapt\Spectral">
       <UniqueIdentifier>{AD9CFE0E-1EE6-D508-AA9B-7764C7DFFEDF}</UniqueIdentifier>
     </Filter>
-    <Filter Include="JUCE Modules\rapt\Temp">
-      <UniqueIdentifier>{23818B4B-3839-81A6-D149-379C69C134BC}</UniqueIdentifier>
-    </Filter>
     <Filter Include="JUCE Modules\rapt\Unfinished\Analysis">
       <UniqueIdentifier>{2FB745BE-9D48-5545-37D2-BF03418F2F26}</UniqueIdentifier>
     </Filter>
@@ -921,24 +918,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\Spectrogram.cpp">
       <Filter>JUCE Modules\rapt\Spectral</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Analysis.cpp">
-      <Filter>JUCE Modules\rapt\Temp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\ArrayFunctions.cpp">
-      <Filter>JUCE Modules\rapt\Temp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Math.cpp">
-      <Filter>JUCE Modules\rapt\Temp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Misc.cpp">
-      <Filter>JUCE Modules\rapt\Temp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Polynomial.cpp">
-      <Filter>JUCE Modules\rapt\Temp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Vector.cpp">
-      <Filter>JUCE Modules\rapt\Temp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\AutoCorrelationPitchDetector.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Analysis</Filter>
@@ -3111,24 +3090,6 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\Spectrogram.h">
       <Filter>JUCE Modules\rapt\Spectral</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Analysis.h">
-      <Filter>JUCE Modules\rapt\Temp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\ArrayFunctions.h">
-      <Filter>JUCE Modules\rapt\Temp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Math.h">
-      <Filter>JUCE Modules\rapt\Temp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Misc.h">
-      <Filter>JUCE Modules\rapt\Temp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Polynomial.h">
-      <Filter>JUCE Modules\rapt\Temp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Temp\Vector.h">
-      <Filter>JUCE Modules\rapt\Temp</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\AutoCorrelationPitchDetector.h">
       <Filter>JUCE Modules\rapt\Unfinished\Analysis</Filter>
     </ClInclude>
@@ -4934,6 +4895,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Source\ToDo.txt">
+      <Filter>TestsRosicAndRapt\Source</Filter>
+    </None>
     <None Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ConicsURLs.txt">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
     </None>

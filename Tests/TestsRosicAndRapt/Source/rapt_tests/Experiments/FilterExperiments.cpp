@@ -1276,3 +1276,69 @@ void poleZeroPrototype()
   int dummy = 0;
 }
 
+void seriesConnectionDecay()  
+{
+  // We compare the impulse responses of a series connection of two first order lowpass filters 
+  // with the impulse response of both filters alone.
+  // ..well, we actually also look at a parallel connection - rename the function - maybe also look
+  // at the difference
+
+  int    N  = 501;
+  double fs = 44100;
+  double f1 = 100;
+  double f2 = 200;
+  double f3 = 200;
+
+
+
+  RAPT::rsOnePoleFilter<double, double> flt;
+  flt.setMode(flt.LOWPASS_IIT);
+  //flt.setMode(flt.ALLPASS_BLT);
+  flt.setSampleRate(fs);
+
+  using Vec = std::vector<double>;
+
+  flt.setCutoff(f1);
+  Vec y1 = impulseResponse(flt, N, 1.0);
+  flt.setCutoff(f2);
+  Vec y2    = impulseResponse(flt, N, 1.0);
+  Vec ys12  = filterResponse( flt, N, y1);   // serial 1->2
+  Vec yp12  = y1 + y2;                       // parallel 1+2
+  Vec yd12  = y1 - y2;                       // difference - doesn't start at zero
+  flt.setCutoff(f3);
+  Vec y3    = impulseResponse(flt, N, 1.0);
+  Vec ys123 = filterResponse( flt, N, ys12); // serial 1->2->3
+
+
+  // maybe compute the number of samples, after which they fall below a given threshold 
+  // (like -60dB) ...just look at the output signals
+
+  double minDb = -100;
+  Vec db1    = ampToDb(y1,    minDb);
+  Vec db2    = ampToDb(y2,    minDb);
+  Vec db3    = ampToDb(y3,    minDb);
+  Vec dbs12  = ampToDb(ys12,  minDb);
+  Vec dbp12  = ampToDb(yp12,  minDb);
+  Vec dbs123 = ampToDb(ys123, minDb);
+
+
+  //rsPlotVectors(y1,  y2,  ys12,  yp12);
+  //rsPlotVectors(db1, db2, dbs12, dbp12);
+  rsPlotVectors(db1, db2, db3, dbs12, dbs123);
+  //rsPlotVectors(y1, y2, ys, yp, yd);
+
+  // todo: 
+  // -find the T60 experimentally
+  // -what happens, if we put a 3rd filter in series
+  // -maybe, as a first approximation, use the sum of the T60s of the individual stages?
+  // -the x-offset of the serial connection with respect to the longer filter seems to be equal to 
+  //  the x-coordinate of the point, where 1st, 2nd and the serial filter meet - so, to find it,
+  //  we'd have to equate a1*exp(-t/tau1) = a2*exp(-t/tau2)
+  //  -> log(a1) - t/tau1 = log(a2) - t/tau2 -> solve for t
+  // -but how does this generalize to more than two filters? ..it seems to be also the location of
+  //  the peak of the serial filter - perhaps that should be used as the offset in general
+  // -so in general, use the decay-time of the longest tail and add to that the location of the 
+  //  peak-amplitude?
+  //
+  // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=533696
+}

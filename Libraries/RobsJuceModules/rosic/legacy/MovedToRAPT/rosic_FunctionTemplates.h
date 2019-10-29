@@ -1,13 +1,6 @@
 #ifndef rosic_FunctionTemplates_h
 #define rosic_FunctionTemplates_h
 
-//#include "GlobalDefinitions.h"
-//#include "GlobalFunctions.h"
-//#include "rosic_NumberManipulations.h"
-//#include "rosic_HelperFunctions.h"
-//#include <algorithm>
-//#include <cstring>      // for memcpy on linux/gcc
-
 namespace rosic
 {
   // todo write functions for element-wise multiply, divide, negate, max, min, absMax, createCopy, filter, impulseResponse,

@@ -48,8 +48,7 @@ void testDeBeating(const std::string& name, std::vector<double>& input,
 
 
 void testEnvelopeMatching(std::vector<double>& input1, std::vector<double>& input2);
-
-
+void testEnvelopeMatching2(std::vector<double>& input1, std::vector<double>& input2);
 
 // move to RAPT::rsArray
 template<class T>

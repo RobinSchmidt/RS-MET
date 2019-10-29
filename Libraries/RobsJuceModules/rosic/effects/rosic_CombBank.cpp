@@ -12,8 +12,8 @@ CombBank::CombBank()
   pan1           = 0.0;
   pan2           = 1.0;
   gain           = 1.0/sqrt((double)numActiveCombs);
-  dry            = ONE_OVER_SQRT2;
-  wet            = ONE_OVER_SQRT2;
+  dry            = SQRT2_INV;
+  wet            = SQRT2_INV;
 
   setStereoSpread(0.0);
   initPitchOffsets();

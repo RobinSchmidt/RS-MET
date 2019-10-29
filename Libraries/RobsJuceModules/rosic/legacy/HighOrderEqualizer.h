@@ -358,8 +358,8 @@ INLINE void HighOrderEqualizer::getSampleFrameStereo(double* inL,
   case STEREO_MS:
   {
    // calculate the mid- and side-signal from the left- and right-signal:
-   tmpM = ONE_OVER_SQRT2 * (tmpL + tmpR);
-   tmpS = ONE_OVER_SQRT2 * (tmpL - tmpR);
+   tmpM = SQRT2_INV * (tmpL + tmpR);
+   tmpS = SQRT2_INV * (tmpL - tmpR);
 
    // apply the highpass:
    tmpM = hpf[0].getSampleDirect1(tmpM);
@@ -377,8 +377,8 @@ INLINE void HighOrderEqualizer::getSampleFrameStereo(double* inL,
    tmpS = vol[1] * lpf[1].getSampleDirect1(tmpS);
 
    // calculate the left- and right-signal from the mid- and side-signal:
-   tmpL = ONE_OVER_SQRT2 * (tmpM + tmpS);
-   tmpR = ONE_OVER_SQRT2 * (tmpM - tmpS);
+   tmpL = SQRT2_INV * (tmpM + tmpS);
+   tmpR = SQRT2_INV * (tmpM - tmpS);
   }
   break;
 

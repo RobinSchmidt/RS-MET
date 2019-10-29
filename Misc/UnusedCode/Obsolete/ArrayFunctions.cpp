@@ -6,6 +6,7 @@
 namespace RAPT
 {
 
+/*
   template <class T>
   void add(T *buffer1, T *buffer2, T *result, int length)
   {
@@ -84,6 +85,7 @@ namespace RAPT
     }
     return true;
   }
+
 
   template <class T>
   void rsCircularShift(T *buffer, int length, int numPositions)
@@ -390,6 +392,10 @@ namespace RAPT
       delete[] theArray[i];
     delete[] theArray;
   }
+
+  */
+
+#ifdef BLAH
 
   template <class T>
   int rsFirstIndexWithNonZeroValue(T *buffer, int N)
@@ -1168,5 +1174,7 @@ namespace RAPT
   }
 
 }
+
+#endif // BLAH
 
 #endif

@@ -20,9 +20,9 @@ rsVector2DF lineIntersection(const rsVector2DF& p0, const rsVector2DF& p1,
 {
   // coeffs for the two implicit line equations:
   float a, b, c;
-  rsLine2DF::twoPointToImplicit(p0.x, p0.y, p1.x, p1.y, a, b, c, false);
+  rsLine2DF::twoPointToImplicit(p0.x, p0.y, p1.x, p1.y, &a, &b, &c, false);
   float A, B, C;
-  rsLine2DF::twoPointToImplicit(q0.x, q0.y, q1.x, q1.y, A, B, C, false);
+  rsLine2DF::twoPointToImplicit(q0.x, q0.y, q1.x, q1.y, &A, &B, &C, false);
 
   // solve 2x2 linear system M*v = r:
   // a*x + b*y = c

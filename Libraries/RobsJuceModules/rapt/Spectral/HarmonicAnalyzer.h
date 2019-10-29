@@ -142,6 +142,16 @@ public:
   // void setTemporalOversampling(int newFactor)
   // ...produce intermediate datapoints between the already existing ones...
 
+  // not yet used - todo: make these limits functional:
+  //void setMinPartialIndex(int newIndex) { minPartialIndex = newIndex; }
+  // does not yet work due to treating DC outside the loop in fillHarmonicData
+
+  /** Sets the maximum harmonic index to be analyzed */
+  void setMaxPartialIndex(int newIndex) { maxPartialIndex = newIndex; }
+
+  /** Sets the maximum number of partials to be an (including DC) */
+  //void setMaxNumPartials(int newMaximum) { maxNumPartials = newMaximum; }
+
   /** This option can be used to remove any harmonics that exceed the Nyquist limit, even if just 
   temporarily. The analysis may prodcue such frequencies due to the fact that the original audio is 
   stretched before analysis and the post-processing then shifts all frequencies up. However, if a 
@@ -254,12 +264,24 @@ protected:
   int getNumFrames() const { return getMapLength()-1; }
 
   /** Returns the number of analyzed harmonics (including DC). */
-  //int getNumHarmonics() const { return blockSize / 2; }  // old
-  int getNumHarmonics() const { return cycleLength / 2; }  // new
-  //int getNumHarmonics() const { return blockSize / (2*cyclesPerBlock); } // is the same
+  int getNumHarmonics() const 
+  { 
+    if(maxPartialIndex == -1)
+      return cycleLength / 2;
+    else
+      return rsMin(cycleLength / 2, maxPartialIndex) + 1; // +1 correct?
+  } 
+  // rename to getNumPartials (maybe)
   // todo: maybe decide in advance, which harmonics will or will not alias and analyze only those
   // which won't as an optimization (instead of analyzing them all and then discarding the aliasing 
   // ones) - in this case, return the actual number of harmonics here
+
+  /** Returns the FFT bin index for the partial with given harmonic index. This may differ from the
+  harmonic index due to having multiple cycles within an analysis frame, using zero-padding before 
+  the FFT and omitting low-frequency partials */
+  //int getPartialBinIndex(int partialIndex) const 
+  //{ return cyclesPerBlock*zeroPad*(partialIndex-minPartialIndex); } 
+
 
   /** Returns the number of datapoints (per partial) in the sinusoidal model. */
   int getNumDataPoints() const { return getNumFrames() + 2; } // + 2 for fade in/out frames
@@ -355,6 +377,13 @@ protected:
 
   T sampleRate = 1;
   T sincLength = 512.0;  // length of sinc-interpolator for time-warping
+
+
+  // limits to the range of analyzed partials:
+  //int minPartialIndex = 0; 
+  //int maxPartialIndex = std::numeric_limits<int>::max();
+  int maxPartialIndex = -1;  // -1 encodes "no upper limit" - maybe use std::optional
+  //int maxNumPartials = std::numeric_limits<int>::max();
 
 
 

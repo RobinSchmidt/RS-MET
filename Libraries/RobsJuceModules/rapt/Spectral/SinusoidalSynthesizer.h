@@ -33,6 +33,7 @@ public:
     quinticHermite,
     tweakedFreqIntegral
   };
+  // the options need documentation
 
 
   /** \name Setup */
@@ -44,7 +45,8 @@ public:
   default, the amplitude is interpolated linearly between datapoints, mainly to avoid 
   overshooting artifacts, when the model has "fade-in/out" datapoints that are very close to the
   actual data points. When this is not the case, using cubic interpolation may give a "rounder"
-  sounding result. */
+  sounding result. However, it's perhaps better to use linear interpolation and a smoothing
+  filter (todo: add optional smoothing facilities) */
   void setCubicAmplitudeInterpolation(bool shouldBeCubic) { cubicAmplitude = shouldBeCubic; }
 
   /** Switches the phase interpolation method between cubic (true) and linear (false). By default,

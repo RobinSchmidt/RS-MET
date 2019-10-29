@@ -95,7 +95,9 @@ public:
   /** Sets up an appendix (like "Demo Version") for the name of this AudioModule. */
   virtual void setModuleNameAppendix(const juce::String& newAppendix);
 
-  /** Adds a child AudioModule to this one. */
+  /** Adds a child AudioModule to this one. This module will take ownership over the pased module, 
+  i.e. delete it in the destructor (maybe rename to addOwnedChildAudioModule to convey that 
+  information at the call site). */
   virtual void addChildAudioModule(AudioModule* moduleToAdd);
 
   /** Removes a child AudioModule from this one and optionally deletes the object (it will only 
@@ -353,7 +355,8 @@ protected:
   juce::String moduleTypeName;     // type name like "LadderFilter"
   juce::String moduleName;         // name of this AudioModule, like "Filter1"
   juce::String moduleNameAppendix; // string to be appended to the name on the GUI (such as 
-                                   // Demo-Version, etc.) - remove (or factor into some subclass)
+                                   // Demo-Version, etc.) todo: factor into some subclass - only 
+                                   // top-level modules actually use this
 
   friend class AudioModuleEditor;  // the editor must access our plugInLock member
 

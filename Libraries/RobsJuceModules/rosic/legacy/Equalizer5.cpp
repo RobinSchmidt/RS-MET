@@ -66,12 +66,12 @@ Equalizer5::Equalizer5()
    eqMode[s][c] = PEAK;
    eqFreq[s][c] = 1000.0;
    eqGain[s][c] = 0.0;
-   eqQ[s][c]    = ONE_OVER_SQRT2;
+   eqQ[s][c]    = SQRT2_INV;
    eqDesigners[s][c].setMode(BiquadDesigner::RBJ_PEAK);
    eqDesigners[s][c].setSampleRate(sampleRate);
    eqDesigners[s][c].setFreq(1000.0);
    eqDesigners[s][c].setGain(0.0);
-   eqDesigners[s][c].setQ(ONE_OVER_SQRT2);
+   eqDesigners[s][c].setQ(SQRT2_INV);
   }
  }
 

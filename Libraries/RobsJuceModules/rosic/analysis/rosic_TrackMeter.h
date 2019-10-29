@@ -87,11 +87,11 @@ namespace rosic
     if( tmp > maxRightLevel )
       maxRightLevel = tmp;
 
-    tmp = midLevelExtractor.getSample( ONE_OVER_SQRT2 * (*inL + *inR) );
+    tmp = midLevelExtractor.getSample( SQRT2_INV * (*inL + *inR) );
     if( tmp > maxMidLevel )
       maxMidLevel = tmp;
 
-    tmp = sideLevelExtractor.getSample( ONE_OVER_SQRT2 * (*inL - *inR) );
+    tmp = sideLevelExtractor.getSample( SQRT2_INV * (*inL - *inR) );
     if( tmp > maxSideLevel )
       maxSideLevel = tmp;
 

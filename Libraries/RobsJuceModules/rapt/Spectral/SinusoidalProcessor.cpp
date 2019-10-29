@@ -251,8 +251,12 @@ rsSinusoidalModel<T> rsSinusoidalProcessor<T>::extractHighpassPart(rsSinusoidalM
 template<class T>
 rsPartialBeatingRemover<T>::rsPartialBeatingRemover()
 {
-  // maybe factor out into setToDefaultSettings or resetSettings or something
+  typedef rsEnvelopeExtractor<T>::endPointModes EM;
+  envExtractor.setStartMode(EM::ZERO_END);
+  envExtractor.setEndMode(  EM::ZERO_END);
 
+
+  // maybe factor out into setToDefaultSettings or resetSettings or something
   /*
   typedef RAPT::rsInterpolatingFunction<T, T> IF;
   envExtractor.setInterpolationMode(IF::CUBIC_NATURAL);
@@ -268,9 +272,8 @@ rsPartialBeatingRemover<T>::rsPartialBeatingRemover()
   */
   // oh no - this doesn't work - the envExtractor expects an audio signal as input - we need to
   // refactor it to extract the de-beating (i.e. extracting the "meta-envelope" (env-of-env) algo
-
+  // ...done
 }
-
 
 template<class T>
 void rsPartialBeatingRemover<T>::processModel(rsSinusoidalModel<T>& model)
@@ -301,15 +304,41 @@ void rsPartialBeatingRemover<T>::removeAmplitudeBeating(rsSinusoidalPartial<T>& 
   // "first-order" envelope - this removes the amplitude modulation due to beating:
   std::vector<T> t = partial.getTimeArray();
   std::vector<T> a = partial.getAmplitudeArray();
+  std::vector<T> a2(a.size());  // only for plotting during development, get rid later, re-use "a"
 
-  GNUPlotter plt;
-  //plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
-
-  envExtractor.connectPeaks(&t[0], &a[0], &a[0], (int)t.size());
-  partial.setAmplitudes(a);
-
+  //GNUPlotter plt;
   //plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
   //plt.plot();
+  // in rsEnvelopeExtractor<T>::fillSparseAreas, the numExtraPoints local variable gets a negative
+  // value 
+  // does this happen because the amp-env gets negative? - why does it get negative anyway - that's
+  // also a bug - it occurs in the DC component - i think, a negative DC component should be 
+  // represented by a phase of 180° - a "cosine" of zero frequency at 180° phase is -1
+  // -> try to remove the DC
+  // ...ok - i think fillSparseAreas needs more thorough testing - there seem to be still bugs
+  // nevertheless, we should figure out, how we can get negative magnitudes - maybe use an 
+  // rsAssert(std::none_of(a ...>= 0.0)
+
+  //T maxCyclesPerEnvPoint = 10;  
+  // ad hoc - make user parameter - we want at least 1 envelope datapoint for every 10
+  // cycles - that means at most 10 cycles per env datapoint
+  //T maxEnvSampleSpacing = maxCyclesPerEnvPoint / partial.getMeanFreq();
+  //envExtractor.setMaxSampleSpacing(maxEnvSampleSpacing);
+
+  // hmmm...should this really depend on the partial's frequency? shouldn't we just use the 
+  // fundamental frequency as reference - it doesn't seem to make much sense to make the envelope
+  // samples denser towards higher partials because the analyssis resolution is tied to the 
+  // fundamental anyway ....but maybe that doesn't have to remain so....
+  // yeah - it should definitely depend on the fundamental - the frequency may even be zero - DC
+  // is allowed
+
+  //envExtractor.connectPeaks(&t[0], &a[0], &a[0], (int)t.size());
+  //partial.setAmplitudes(a);
+
+  envExtractor.connectPeaks(&t[0], &a[0], &a2[0], (int)t.size());
+  partial.setAmplitudes(a2);
+
+  //rsPlotVectorsXY(t, a, a2);
 }
 
 template<class T>

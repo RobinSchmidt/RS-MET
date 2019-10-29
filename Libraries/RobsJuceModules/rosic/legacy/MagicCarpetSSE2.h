@@ -266,16 +266,16 @@ INLINE void MagicCarpetSSE2::getSampleFrameStereo(double *outL, double *outR)
  right = * ((double*)(&outVector) + 1); 
 
  // apply mid/side adjustment:
- mid   = ONE_OVER_SQRT2 * (left + right);
- side  = ONE_OVER_SQRT2 * (left - right);
+ mid   = SQRT2_INV * (left + right);
+ side  = SQRT2_INV * (left - right);
  //mid  *= cos(0.5*PI*midSideMix);
  //side *= sin(0.5*PI*midSideMix);
  //tmp   = 0.5*PI*midSideMix;
  sinCosApprox(0.5*PI*midSideMix, &sine, &cosine);
  mid  *= cosine;
  side *= sine;
- left  = ONE_OVER_SQRT2 * ( mid + side );
- right = ONE_OVER_SQRT2 * ( mid - side);
+ left  = SQRT2_INV * ( mid + side );
+ right = SQRT2_INV * ( mid - side);
 
  //write the final output samples into the memory-slots:
  *outL = left;

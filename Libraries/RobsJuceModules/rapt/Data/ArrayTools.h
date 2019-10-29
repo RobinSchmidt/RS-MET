@@ -3,17 +3,24 @@
 
 /** A collection of functions that operate on 1-dimensional arrays. 
 
+add to the documentation, to which std::algorithm a function corresponds, if applicable
+
 todo: 
+-maybe rename to rsArrayTools, class rsArray should be an actual dynamically allocated array with
+ the same interface as std::vector - having my own implementation might be more efficient since
+ std::vector initializes the memory - say this blog-post, at least
+ https://lemire.me/blog/2012/06/20/do-not-waste-time-with-stl-vectors/
 -make everything const that is possible (also by-value parameters, local variables, etc. - and use
  constexpr for compile-time constants)
  ->done up to copy
  ...maybe change the const by-value parameters to by-reference parameters
 -inline, where it makes sense (trivial functions like copy/convert)
 -maybe turn into an actual class (with members) implementing a dynamically sized array
+-use workspace pointers instead of heap allocation
 
 */
 
-class rsArray
+class rsArray  // 
 {
 
 public:
@@ -82,6 +89,7 @@ public:
   the buffer. */
   template <class T>
   static void circularShiftInterpolated(T *buffer, const int length, const double numPositions);
+  // // Allocates heap memory - todo: pass a workspace.
 
   /** Restricts the values in the buffer to the range between min and max for types that define the
   operators '<' and '>'. */
@@ -180,6 +188,7 @@ public:
   template <class T>
   static void copyBufferWithLinearInterpolation(const T *source, int sourceLength, T *destination,
     int destinationLength);
+  // rename to copyInterpolated
 
   /** Copies a section of length "copyLength" starting at "copyStart" from "source" to 
   "destination". If "copyStart" is less than 0 and/or the desired "copyLength" is such that the end 
@@ -216,12 +225,19 @@ public:
   // move to MatrixTools
 
   /** Decimates the array x of length N by the given factor and writes the result into y, which
-  must be of length N/factor. This is a naive decimation without any pre-filtering. */
+  must be of length N/factor (floor-division). This is a naive decimation without any 
+  pre-filtering. */
   template <class T>
-  static void decimate(const T* x, T* y, const int N, const int factor);
+  static void decimate(const T* x, const int N, T* y, const int factor);
   // todo: make a function decimateViaMean that uses the mean, i.e. a moving average of length 
   // "factor"
 
+  /** Like decimate, but instead of just taking every "factor"-th sample of the input, it computes
+  a mean over "factor" samples. Note that the mean is computed using samples in the forward 
+  direction from the readout position in the input signal (todo: make a version that uses a mean
+  centered at the input read position) */
+  template <class T>
+  static void decimateViaMean(const T* x, const int N, T* y, const int factor);
 
   /** Deconvolves the impulse response h out of the signal y resulting in the signal x which has a
   length of yLength-hLength+1. It's the inverse of convolve. */
@@ -231,6 +247,7 @@ public:
   /** De-interleaves a buffer of interleaved data. @see rsInterleave */
   template <class T>
   static void deInterleave(T *buffer, int numFrames, int numElementsPerFrame);
+  // // Allocates heap memory - todo: pass a workspace.
 
   /** Computes the difference y[n] = x[n] - x[n-1] of some signal. The initial condition x[-1] is
   determined from the 'periodic' parameter - if true, the signal is assumed as periodic and the
@@ -246,6 +263,12 @@ public:
   template <class T1, class T2, class TR>
   static void divide(const T1 *buffer1, const T2 *buffer2, TR *result, int length);
 
+  /** Fills the array with values given by a function. For example, calling it like:
+        fill(a, length, [](int i){ return 3*i+1; });
+   gives each array element the value 3*i+1 where i is the array index. */
+  template<class T, class F>
+  static void fill(T* a, int N, F indexToValueFunction);
+
   /** Fills the passed array with a unit impulse. */
   template <class T>
   static inline void fillWithImpulse(T *buffer, int length);
@@ -257,7 +280,7 @@ public:
 
   /** Fills the buffer with NaN values. This may be useful as initialization for testing code that
   is supposed to initialize the buffer correctly - failing to do so will leave NaNs which are 
-  easily discovered druing debugging. */
+  easily discovered during debugging. */
   template <class T>
   static inline void fillWithNaN(T *buffer, int length);
 
@@ -274,6 +297,7 @@ public:
   \todo: rename min/max into start/end  */
   template <class T>
   static void fillWithRangeLinear(T *buffer, int length, T min, T max);
+  // corresponds to std::iota?
 
   /** Fills the passed array with one value at all indices. */
   template <class T>
@@ -295,11 +319,13 @@ public:
   template <class T>
   static void filter(const T *x, int xLength, T *y, int yLength, 
     const T *b, int bOrder, const T *a, int aOrder);
+  // Allocates heap memory - todo: pass a workspace.
 
   /** \todo check and comment this function - maybe move it to RSLib */
   template <class T>
   static void filterBiDirectional(const T *x, int xLength, T *y, int yLength, 
     const T *b, int bOrder, const T *a, int aOrder, int numRingOutSamples = 10000);
+  // Allocates heap memory - todo: pass a workspace.
 
   /** Returns the index of the first value that matches the elementToFind, return -1 when no 
   matching element is found. */
@@ -345,6 +371,7 @@ public:
   /** Interleaves a buffer of non-interleaved data. */
   template <class T>
   static void interleave(T *buffer, int numFrames, int numElementsPerFrame);
+  // Allocates heap memory - todo: pass a workspace.
 
   /** Returns a linearly interpolated value from the array at the given (non-integer) position. If
   the position is out of range, 0 is returned. */
@@ -384,6 +411,17 @@ public:
   template<class T>
   static bool isPeakOrValley(const T *x, int n);
 
+  /** Checks whether the buffer is sorted in ascending order, that is buffer[i] <= buffer[i+1] for
+  all i. */
+  template <class T>
+  static bool isSortedAscending(const T *buffer, int length);
+
+  /** Checks whether the buffer is sorted in strictly ascending order, that is 
+  buffer[i] < buffer[i+1] for all i. */
+  template <class T>
+  static bool isSortedStrictlyAscending(const T *buffer, int length);
+
+
   /** Shifts the content of the buffer numPlaces to the left, filling it up with zeros from the
   right. */
   template <class T>
@@ -409,6 +447,10 @@ public:
   /** Returns the index of the maximum deviation (see maxDeviation). */
   template <class T>
   static int maxDeviationIndex(const T *buffer1, const T *buffer2, int length);
+
+  /** Returns the maximum value of the differences of adjacent array entries.  */
+  template <class T>
+  static T maxDifference(const T *buffer, int length);
 
   /** Returns the index of maximum value of the buffer (">"-operator must be defined). */
   template <class T>
@@ -445,9 +487,11 @@ public:
   inline static T meanOfAbsoluteDifferences(const T* x, const T* y, const int N)
   { return sumOfAbsoluteDifferences(x, y, N) / T(N); }
 
-  /** Returns the median of the passed buffer. */
+  /** Returns the median of the passed buffer.  */
   template <class T>
   static T median(const T *buffer, int length);
+  // Allocates heap memory - todo: pass a workspace.
+
 
   /** Multiplies the elements of 'buffer1' and 'buffer2' - type must define operator '*'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
@@ -557,6 +601,20 @@ public:
   template <class T>
   static void shift(T *buffer, int length, int numPlaces);
 
+  /** Returns the first index in the ascendingly sorted array "a", where the value is greater 
+  than or equal to splitValue, or - put another way - one plus the last index, for which all 
+  elements are strictly less than "key". If 0 is returned, and the 0th element does not equal 
+  splitValue, then all values in the array are either less or all are greater than key -> check this */
+  template<class T>
+  static int splitIndex(const T* a, int N, T splitValue);
+  // T should be Ordered -> use concept Ordered/Sortable in c++20
+
+  /** Like splitIndex, but instead of just returning the first index i, where a[i] >= splitValue, 
+  it checks, if a[i-1] is closer to the splitValue than a[i]. If it is, then it returns i-1
+  instead of i. */
+  template<class T>
+  static int splitIndexClosest(const T* a, const int N, const T splitValue);
+
   /** Subtracts the elements of 'buffer2' from 'buffer1' - type must define operator '-'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
   template <class T>
@@ -603,7 +661,7 @@ public:
   /** In-place version of rsTransposeSquareArray(T **in, T **out, int size). */
   template<class T>
   static void transposeSquareArray(T **theArray, int size);
-  // move to MatrixFunctions
+  // move to MatrixFunctions, rename to transposeMatrix
 
   /** Given an array that contains values that have been subject to some kind wrap-around into some
   period p, this function (heuristically) unwraps them again. This is useful for plotting a 
@@ -649,26 +707,8 @@ inline void rsArray::copy(const T1 *source, T2 *destination, const int length)
 // https://en.cppreference.com/w/cpp/types/is_trivially_copyable
 // ...but maybe for short arrays, the overhead of calling memcpy may outweigh its efficiency, so 
 // for very small arrays, the loop is actually faster? -> do benchmarks
+// see her, around 50min:  https://www.youtube.com/watch?v=ZeU6OPaGxwM
 
-
-template <class T>
-void rsArray::decimate(const T* x, T* y, const int Nx, const int factor)
-{
-  int Ny = Nx / factor;
-  for(int i = 0; i < Ny; i++)
-    y[i] = x[i*factor];
-}
-
-template <class T>
-inline bool rsArray::equal(const T *buffer1, const T *buffer2, const int length)
-{
-  for(int i = 0; i < length; i++)
-  {
-    if(buffer1[i] != buffer2[i])
-      return false;
-  }
-  return true;
-}
 
 template <class T1, class T2>
 inline void rsArray::convertBuffer(const T1 *source, T2 *destination, const int length)
@@ -676,6 +716,7 @@ inline void rsArray::convertBuffer(const T1 *source, T2 *destination, const int 
   for(int i = 0; i < length; i++)
     destination[i] = (T2)source[i];
 }
+// rename to convert
 
 template <class T>
 inline void rsArray::convolveWithTwoElems(const T* x, const int xLength, const T* h, T* y)
@@ -694,6 +735,39 @@ inline void rsArray::convolveWithTwoElems(
   for(int n = xLength-1; n > 0; n--)
     y[n] = x[n]*h0 + x[n-1]*h1;
   y[0] = x[0]*h0;
+}
+
+template <class T>
+inline void rsArray::decimate(const T* x, const int N, T* y, const int D)
+{
+  for(int i = 0; i < N/D; i++)
+    y[i] = x[i*D];
+}
+
+template <class T>
+inline void rsArray::decimateViaMean(const T* x, const int N, T* y, const int D)
+{
+  const T s = T(1) / T(D);       // scaler
+  for(int i = 0; i < N/D; i++)
+    y[i] = s * sum(&x[i*D], D);  // s * sum(...) == mean(...)
+}
+
+template <class T>
+inline bool rsArray::equal(const T *buffer1, const T *buffer2, const int length)
+{
+  for(int i = 0; i < length; i++)
+  {
+    if(buffer1[i] != buffer2[i])
+      return false;
+  }
+  return true;
+}
+
+template<class T, class F>
+inline void rsArray::fill(T* a, int N, F indexToValueFunction)
+{
+  for(int i = 0; i < N; i++)
+    a[i] = indexToValueFunction(i);
 }
 
 template <class T>

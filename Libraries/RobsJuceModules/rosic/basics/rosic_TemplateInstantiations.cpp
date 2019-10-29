@@ -22,6 +22,8 @@ namespace RAPT {
 
 //template void RAPT::rsArray::convolve(const std::complex<double>* x, int Nx, 
 //  const std::complex<double>* h, int Nh, std::complex<double> *y);
+
+//template int RAPT::rsArray::binarySearch(const double* A, double key, int imin, int imax);
 template void RAPT::rsArray::fillWithRandomValues(rsFloat32x4* x, int N, double min, double max, int seed);
 template double RAPT::rsArray::meanSquare(const double *x, int N);
 

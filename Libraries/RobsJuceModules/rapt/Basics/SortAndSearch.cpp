@@ -45,6 +45,7 @@ void rsHeapSort(T *buffer, int length, bool (*less)(const T& left, const T& righ
   }
 }
 
+/*
 template <class T>
 bool rsIsSortedAscending(T *buffer, int length)
 {
@@ -64,6 +65,8 @@ bool rsIsSortedStrictlyAscending(T *buffer, int length)
   }
   return true;
 }
+*/
+// moved to rsArray
 
 template <class T>
 std::vector<int> rsFindAllOccurencesOf(T* buffer, int bufferLength,

@@ -97,6 +97,11 @@ public:
   /** Sets the name of the module. */
   virtual void setModuleName(const std::string& newName);
 
+
+  virtual void setModuleName(std::string&& newName) noexcept { name = std::move(newName); }
+  // optimization for rvalue references, see: https://www.youtube.com/watch?v=xnqTKD8uD64&t=1h9m50s
+  // todo: test, benchmark...
+
   /** Changes the name of one of the input- or output pins. */
   //virtual void setPinName(int kind, int direction, int pinIndex, const rosic::rsString &newName);
 

@@ -517,18 +517,11 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
     if(right >= N-1)
       break;
   }
-  // hangs with Rhodes_F3.wav
+  // hangs with Rhodes_F3.wav - still true?
 
-#ifdef RS_DEBUG_PLOTTING
-  // plot the (possibly highpassed) signal and cycle marks:
-  GNUPlotter plt; // #define DEBUG_PLOTTING in rapt.h to make it work
-  std::vector<T> cmy(z.size());    // y values for plotting (all zero)
-  plt.addDataArrays(N, &y[0]);
-  plt.addDataArrays((int)z.size(), &z[0], &cmy[0]);
-  plt.setGraphStyles("lines", "points");
-  plt.setPixelSize(1000, 300);
-  plt.plot();
-#endif
+
+  //rsPlotSignalWithMarkers(x, N, &z[0], (int) z.size());
+  //rsPlotVector(rsDifference(z)); // plot the cycle-lengths
 
   return z;
 }
@@ -1600,19 +1593,29 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime)
 {
   getPeaks(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
-  // maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
-  // skip the de-beating process
+  //rsAssert(rsArray::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
+
+  //GNUPlotter plt;
+  //plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
+  ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
+
+  T maxSpacing = 
+    maxSpacingMultiplier * rsArray::maxDifference(&metaEnvTime[0], (int)metaEnvTime.size());
 
   setupEndValues(metaEnvTime, metaEnvValue, endTime);
+  //rsAssert(rsArray::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
+  fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue, maxSpacing);
+  //rsAssert(rsArray::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
-
-  // fill up the metaEnv with more samples of the original env in regions where it is only 
-  // sparsely sampled due to absence of peak values - maybe we need some sort of minSampleDistance
-  // setting:
-  fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
-  // maybe this should be done before setupEndValues?
+  ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
+  //metaEnvValue = metaEnvValue; // little offset for visibility
+  //plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
+  //plt.plot();
 }
+// -maybe fillSparseAreas should be done before setupEndValues?
+// -maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
+//  skip the de-beating process
 
 template<class T>
 void rsEnvelopeExtractor<T>::interpolateEnvelope(const T* envTimes, T* envValues, int envLength,
@@ -1628,12 +1631,19 @@ template<class T>
 void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* peakValues,
   int length)
 {
+  rsAssert(rsArray::isSortedStrictlyAscending(&envTimes[0], length));
   std::vector<T> metaEnvTime, metaEnvValue;
   getMetaEnvelope(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
-   // gives warning last argument of getMetaEnvelope should be T not int
-
   interpolateEnvelope(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(),
     envTimes, peakValues, length);
+  rsAssert(rsLast(metaEnvTime) == envTimes[length-1]);
+
+  //GNUPlotter plt;
+  //plt.addDataArrays(length, envTimes, envValues);
+  //plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
+  //plt.plot();
+  ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
+  ////rsPlotArraysXY(length, envTimes, envValues); // debug
 }
 
 template<class T>
@@ -1667,67 +1677,47 @@ void rsEnvelopeExtractor<T>::setupEndValues(
     rsAppend(envValues, rsMax(v, T(0)));
     rsAppend(envTimes, endTime);
   }
-}
 
-// Returns the last index in the ascendingly sorted array "A", where the value is less-than or
-// equal-to "key", if 0 is returned, and the 0th element does not equal "key", then all values in 
-// the array are either less or all are greater than key -> check this
-template<class T>
-int rsBinarySearch(const T* A, T key, int imin, int imax)
-{
-  while( imin < imax ) {
-
-    int imid = imin/2 + imax/2; 
-    // divide before add to avoid overflow  ...hmm - is this a good idea? 
-    // (5+3)/2 = 8/2 = 4 but 5/2 + 3/2 = 2 + 1 = 3 with integer division
-
-    rsAssert(imid < imax);
-    if( A[imid] < key )
-      imin = imid + 1;
-    else
-      imax = imid;
-  }
-  if(A[imin] == key || imin == 0)
-    return imin;
-  else
-    return imin-1;
-}
-// move to SortAndSearch, write unit tests
-
-template<class T>
-int rsIndexOfClosestValueSorted(const T* a, int N, T val)
-{
-  int i = rsBinarySearch(a, val, 0, N-1);
-  if(i < N-1) 
-    if( rsAbs(a[i]-val) > rsAbs(a[i+1]-val) )
-      i++;
-  return i;
-}
-// move to rsArray - write unit test - maybe compare against more general function that doesn't
-// assume the array to be sorted
-
-template<class T>
-inline void rsInsert(std::vector<T>& v, const std::vector<T>& w, size_t index)
-{
-  v.insert(v.begin() + index, w.begin(), w.end());
+  rsAssert(rsArray::isSortedStrictlyAscending(&envTimes[0], (int)envTimes.size()));
+  // rsAssert(rsLast(envTimes) == endTime); // no - in free-end mode, it may be different
 }
 
 template<class T>
 void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
-  std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue)
+  std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T maxSpacing)
 {
+  if(maxSpacing == T(0))
+  {
+    rsCopyToVector(rawEnvTime,  rawEnvLength, metaEnvTime);
+    rsCopyToVector(rawEnvValue, rawEnvLength, metaEnvValue);
+    return;
+  }
+
+  /*
+  // for debug:
+  GNUPlotter plt1;
+  plt1.addDataArrays(rawEnvLength, rawEnvTime, rawEnvValue);
+  plt1.addDataArrays((int)metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
+  plt1.plot();
+  */
+
   std::vector<T> tmpTime, tmpValue;   // buffers for extra datapoints to be inserted
   for(size_t i = 1; i < metaEnvTime.size(); i++) {
     T t1 = metaEnvTime[i];
     T t0 = metaEnvTime[i-1];
     T dt = t1 - t0;
     if(dt > maxSpacing) { // we need to insert extra datapoints between i-1 and i
+
       int numExtraPoints = (int) floor(dt/maxSpacing);  // verify floor ...maybe use ceil?
+      rsAssert(numExtraPoints >= 0);
+
+      // it seems, maxSpacing is zero? :-O
+
       tmpTime.resize(numExtraPoints);
       tmpValue.resize(numExtraPoints);
       for(int j = 0; j < numExtraPoints; j++) {
         T t = t0 + (j+1) * (dt/(numExtraPoints+1));  // verify this formula
-        int idx = rsIndexOfClosestValueSorted(rawEnvTime, rawEnvLength, t);
+        int idx = rsArray::splitIndexClosest(rawEnvTime, rawEnvLength, t);
         tmpTime[j]  = rawEnvTime[idx];
         tmpValue[j] = rawEnvValue[idx];
       }
@@ -1735,6 +1725,15 @@ void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEn
       rsInsert(metaEnvValue, tmpValue, i);
     }
   }
+
+  /*
+  // for debug:
+  GNUPlotter plt2;
+  plt2.addDataArrays(rawEnvLength, rawEnvTime, rawEnvValue);
+  plt2.addDataArrays((int)metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
+  plt2.plot();
+  int dummy = 0;
+  */
 }
 
 template<class T>
@@ -1808,7 +1807,12 @@ template<class T>
 void rsEnvelopeExtractor<T>::getPeaks(const T *x, const T *y, int N,
   std::vector<T>& peaksX, std::vector<T>& peaksY)
 {
-  std::vector<size_t> peakIndices = findPeakIndices(y, N, true, true);
+  //std::vector<size_t> peakIndices = findPeakIndices(y, N, true, true);
+
+  std::vector<size_t> peakIndices = findPeakIndices(y, N, false, false);
+    // false, false because, we don't want to include the end-values, because they will be set
+    // setupEndValues in getMetaEnvelope
+
   size_t M = peakIndices.size();
   peaksX.resize(M);
   peaksY.resize(M);
@@ -1904,7 +1908,7 @@ void rsSmoothSineEnvelope(T *y, int N, T f, T fs, T s)
   T a[3], b[3]; // filter coeffs
   if( s > 0.0 && f/s < 0.5*fs )
   {
-    rsBiquadDesigner::calculateFirstOrderLowpassCoeffs(b[0], b[1], b[2], a[1], a[2], T(1.0/fs), T(f/s));
+    rsBiquadDesigner::calculateFirstOrderLowpassCoeffs(b[0], b[1], b[2], a[1], a[2], 1.0/fs, f/s);
     rsArray::negate(a, a, 3);
     a[0] = 1.0;
     rsArray::filter(y, N, y, N, b, 1, a, 1);
@@ -2076,11 +2080,9 @@ T getMaxShortTimeRMS(T* x, int N, int averagingLength)
 
 
 template<class T>
-T rsInterpolatedMinimum(const T* x, const int N, const int k)  
+T extremumViaLineIntersect(const T* x, const int N, const int k)  
 {
-  // rename: can also be used for maximum, name should also reflect that we use two lines
-  // maybe extremumViaLineIntersect or something -> make a similar function extremumViaParabola
-  // move to rsArray
+  // make a similar function extremumViaParabola, move to rsArray
 
   // check, if our minimum point has two neighbours to each side:
   if(k < 2 || k > N-3) return k;  // can we do something better?
@@ -2089,8 +2091,8 @@ T rsInterpolatedMinimum(const T* x, const int N, const int k)
   // define two lines and find the x-coordinate of the intersection of these two lines - this is 
   // our estimate with subsample precision:
   T al, bl, ar, br;
-  rsLine2D<T>::twoPointToExplicit(T(-1), x[k-1], T(-2), x[k-2], al, bl);
-  rsLine2D<T>::twoPointToExplicit(T(+1), x[k+1], T(+2), x[k+2], ar, br);
+  rsLine2D<T>::twoPointToExplicit(T(-1), x[k-1], T(-2), x[k-2], &al, &bl);
+  rsLine2D<T>::twoPointToExplicit(T(+1), x[k+1], T(+2), x[k+2], &ar, &br);
   // this can be optimized - it divides by x2-x1 = 1 -> divisions are superfluous
 
   const T d = (br-bl) / (al-ar);  // delta
@@ -2106,8 +2108,11 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny)
   std::vector<T> s(Nx);
   for(int k = 0; k < Nx; k++)
     s[k] = rsArray::meanOfAbsoluteDifferences(&x[k], &y[0], rsMin(Nx-k, Ny));
+
+  //rsPlotVector(s);
+
   const int k = RAPT::rsArray::minIndex(&s[0], Nx); // index of minimum...
-  return rsInterpolatedMinimum(s.data(), Nx, k);           // ...refined to subsample precision
+  return extremumViaLineIntersect(&s[0], Nx, k);    // ...refined to subsample precision
 }
 
 template<class T>
@@ -2119,8 +2124,29 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, cons
     const int NxD = Nx/D;
     const int NyD = Ny/D;
     std::vector<T> xd(NxD), yd(NyD);
-    RAPT::rsArray::decimate(&x[0], &xd[0], Nx, D);  // use decimateViaMean
-    RAPT::rsArray::decimate(&y[0], &yd[0], Ny, D);
+
+    RAPT::rsArray::decimateViaMean(&x[0], Nx, &xd[0], D); 
+    RAPT::rsArray::decimateViaMean(&y[0], Ny, &yd[0], D);
+
+    //RAPT::rsArray::decimate(&x[0], Nx, &xd[0], D);  // use decimateViaMean
+    //RAPT::rsArray::decimate(&y[0], Ny, &yd[0], D);
+
+    //// debug:
+    //T dbg = rsEnvelopeMatchOffset(&xd[0], NxD, &yd[0], NyD);
+    //dbg *= D;
+    //return dbg;
+
+    // todo: maybe use log-of-envelope instead of raw envelope - maybe use a boolean parameter
+    // or dB envelopes - and use a threshold, like: 
+    // sum += abs(max(e1[n], thres) - max(e2[n], thresh))
+    // or better: apply that threshold when computing the dB values
+    // ...or maybe it's about time to wrap it all into a class - let user switch between lin/log
+    // and absolute/squared difference, and parabolic/linear interpolation for subsample precision
+
     return T(D) * rsEnvelopeMatchOffset(&xd[0], NxD, &yd[0], NyD);
   }
 }
+// maybe merge this with the rsExponentialEnvelopeMatcher class (rename to rsEnvelopeMatcher), so we
+// may also use its ingnore-facilities - needs functions 
+//  setAlgorithm(absoluteDifference, squaredDifference, correlation, linearRegression, ...)
+//  setDecimation, setInterpolation

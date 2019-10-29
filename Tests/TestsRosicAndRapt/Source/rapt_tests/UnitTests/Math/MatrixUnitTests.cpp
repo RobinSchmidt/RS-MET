@@ -286,30 +286,51 @@ bool testMatrixView()
 
 
 
-
+  typedef rsMatrix<double> Matrix;
+  //Matrix A(
 
 
   return r;
 }
 
-bool testMatrix2()
+
+
+bool testMatrixNew()
 {
   std::string testName = "Matrix2";
   bool testResult = true;
+
+  using Matrix = rsMatrixNew<double>;
+
+  int allocs = 0;
+
+  // A = |1 2 3|
+  //     |4 5 6|
+  Matrix A(2, 3, {1.,2.,3., 4.,5.,6.});
+  testResult &= A(0,0) == 1 &&  A(0,1) == 2 && A(0,2) == 3;
+  testResult &= A(1,0) == 4 &&  A(1,1) == 5 && A(1,2) == 6;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 1;
+
+  // B = |1 2| 
+  //     |3 4|
+  //     |5 6|
+  Matrix B(3, 2, {1.,2.,3., 4.,5.,6.});
+  testResult &= B(0,0) == 1 &&  B(0,1) == 2;
+  testResult &= B(1,0) == 3 &&  B(1,1) == 4;
+  testResult &= B(2,0) == 5 &&  B(2,1) == 6;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 2;
+
+  Matrix C = A*B;
+  //testResult &= (allocs = Matrix::numHeapAllocations) == 3;  // fails - it's 4
 
 
 
   return testResult;
 }
 
-
-
 bool testTransformMatrices()
 {
   bool testResult = true;
-
-
-
 
 
 
@@ -330,7 +351,7 @@ bool testMatrix()
 
 
   testResult &= testMatrixView();
-  testResult &= testMatrix2();
+  testResult &= testMatrixNew();
   testResult &= testTransformMatrices();
 
   return testResult;

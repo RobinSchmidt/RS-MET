@@ -66,10 +66,10 @@ public:
     pitchEnvDepth          = 0.0;
 
     amplitude              = 1.0;
-    panFactorL             = ONE_OVER_SQRT2;
-    panFactorR             = ONE_OVER_SQRT2;
-    midScale               = ONE_OVER_SQRT2;
-    sideScale              = ONE_OVER_SQRT2;
+    panFactorL             = SQRT2_INV;
+    panFactorR             = SQRT2_INV;
+    midScale               = SQRT2_INV;
+    sideScale              = SQRT2_INV;
     startPosition          = 0.0;
     detuneFactor           = 1.0;
     stereoDetuneFactorL    = 1.0;

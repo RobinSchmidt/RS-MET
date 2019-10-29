@@ -56,9 +56,9 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  //passed &= runUnitTestsRosic();
   //passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
-  passed = passed;  // dummy
+  //passed &= runUnitTestsRosic();
+  //passed = passed;  // dummy
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -121,6 +121,7 @@ int main(int argc, char* argv[])
   //smoothingFilterTransitionTimes();
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
   //poleZeroPrototype();  // new implementation - but we don't need that
+  //seriesConnectionDecay();
 
   // Physics:
   //doublePendulum(); // takes long
@@ -333,6 +334,7 @@ int main(int argc, char* argv[])
   // Misc Audio:
   //centroid();
   //cubicCrossfade();
+  //decimate();
   //pythagoreanTuning();    // move to some music/music-theory section
   //recursiveSineSweep();
   //recursiveSineWithCubicPhase();
@@ -389,7 +391,8 @@ int main(int argc, char* argv[])
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
-//  amplitudeDeBeating();
+  amplitudeDeBeating();
+  amplitudeDeBeating2();
   //harmonicDeBeating1();
   //harmonicDeBeating2();
 
@@ -411,7 +414,7 @@ int main(int argc, char* argv[])
   //sineShift();
   //sineShift2();
   //amplitudeMatch();
-  amplitudeMatch2();
+  //amplitudeMatch2();
 
 
   ////// tests with Elan's example files (they don't work unless the files are available):

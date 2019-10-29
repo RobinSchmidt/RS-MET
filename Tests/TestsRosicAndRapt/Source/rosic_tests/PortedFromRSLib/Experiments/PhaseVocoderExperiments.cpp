@@ -1552,7 +1552,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
 
   //testHarmonicResynthesis("TwoSines",   44100, 5000);
-  testHarmonicResynthesis("ModalPluck", 44100, 5000);
+  testHarmonicResynthesis("ModalPluck", 44100, 15000);
   // convert all calls to include the frequency in the string (done), then get rid of the frequency 
   // parameter of the function
 
@@ -1784,7 +1784,7 @@ std::vector<double> rsRangeLinear(double min, double max, int N)
 
 void amplitudeDeBeating()
 {
-  // We create an attack/decay sine envelope superimposed with a decaying sine modulation/berating
+  // We create an attack/decay sine envelope superimposed with a decaying sine modulation/beating
   // envelope that decays faster than the first such that we see beating in the beginning but not 
   // in the end. The goal is to get rid of the beating while still preserving the overall amp-env.
 
@@ -1810,29 +1810,94 @@ void amplitudeDeBeating()
 
   // remove the beating:
   typedef rsEnvelopeExtractor<double>::endPointModes EM;
-  Vec time = rsRangeLinear(0.0, double(numFrames-1), numFrames);
+  double beatPeriodInFrames = frameRate / beatFrq;  // 38.222...
+  Vec time = rsRangeLinear(0.0, double(numFrames-1), numFrames);  // time is measured in frames
   Vec result(numFrames);
   rsEnvelopeExtractor<double> envExtractor;
   envExtractor.setStartMode(EM::ZERO_END);  
   envExtractor.setEndMode(EM::ZERO_END);   // definitely better than extraploation but still not good enough
-  envExtractor.setMaxSampleSpacing(100);   // should be >= beatingPeriod
+  //envExtractor.setMaxSampleSpacing(100);   // should be >= beating period in frames
   envExtractor.connectPeaks(&time[0], &beatEnv[0], &result[0], numFrames);
 
-
-
   //rsPlotVector(env);
-  //rsPlotVectors(ampEnv, beating, beatEnv, result);
-  rsPlotVectors(beatEnv, result);
+  rsPlotVectors(ampEnv, beating, beatEnv, result);
+  //rsPlotVectors(beatEnv, result);
 
   // Observations
+  // -envExtractor.setMaxSampleSpacing should be >= beatPeriodInFrames (38.22), otherwise, the 
+  //  beating will be tracked 
+  //  -with 1, the original envelope is taken over unchanged
+  //  - <= 36: beating is tracked
+  //  - >= 37: fine
+  //  -maybe use some safety-factor > 1 times beatPeriodInFrames
+  // -i think, for the amp-env, linear interpolation and smoothing is the best option
   // -when the beating stops in the original, the de-beated envelope messes up
   // -we need a sort of minimum distance between datapoints in the result - we also need to make
   //  sure that all values are positive...well, that will follow automatically, if we never 
   //  extrapolate
+  //  ...this is fixed
 
   // todo: test other situations, where the beating occurs only in the middle, at the end, start 
-  // and end, etc.
+  // and end, etc. - also use a beating that has a time-varying frequency - make another test for 
+  // this
 }
+
+std::vector<double> createLinearSineSweep(int N, double f1, double f2, double fs, double a = 1)
+{
+  std::vector<double> x(N), f(N);
+  RAPT::rsArray::fillWithRangeLinear(&f[0], N, f1, f2);  // maybe make a function for exponential sweeps
+  createSineWave(&x[0], N, &f[0], a, fs);
+  return x;
+}
+// move 
+
+void amplitudeDeBeating2()
+{
+  int sampleRate = 44100;
+  int hopSize    = 128;
+  int numFrames  = 900;     // number of envelope frames
+
+  double envAtt   = 0.2;    // attack for envelope in seconds
+  double envDec   = 0.8;    // decay for envelope in seconds
+
+  double beatFrq1 =  9.0;    // beating freq 1 in Hz
+  double beatFrq2 = -9.0;    // beating freq 2 in Hz
+  double beatAtt  =  0.1;   // beating attack
+  double beatDec  =  0.4;    // beating decay
+  double beatAmt  =  0.2;    // beating amount
+
+
+  // create test signal:
+  double frameRate = sampleRate/hopSize;
+  typedef std::vector<double> Vec;
+  Vec time    = rsRangeLinear(0.0, hopSize*double(numFrames-1)/sampleRate, numFrames);  // time in seconds
+  Vec ampEnv  = attackDecayEnvelope(numFrames, envAtt*frameRate,  envDec*frameRate);
+  Vec beatEnv = attackDecayEnvelope(numFrames, beatAtt*frameRate, beatDec*frameRate);
+  Vec sweep   = createLinearSineSweep(numFrames, beatFrq1, beatFrq2, frameRate);
+  Vec beating = beatEnv * sweep;
+  Vec env     = ampEnv + beatAmt*beating;
+
+  // remove the beating:
+  typedef rsEnvelopeExtractor<double>::endPointModes EM;
+  Vec result(numFrames);
+  rsEnvelopeExtractor<double> envExtractor;
+  envExtractor.setStartMode(EM::ZERO_END);  
+  envExtractor.setEndMode(EM::ZERO_END);   // definitely better than extraploation but still not good enough
+  //envExtractor.setMaxSampleSpacing(0.25);
+  //envExtractor.setMaxSampleSpacing(0.2);    // should be >= beating period in seconds
+  envExtractor.connectPeaks(&time[0], &env[0], &result[0], numFrames);
+  // to automatically set up the max-sample spacing, we whould use the maximum measured distance between
+  // any pair of peaks
+
+
+
+  //rsPlotVectorsXY(time, ampEnv, beatEnv, sweep, beating);
+  //rsPlotVectorsXY(time, ampEnv, env);
+  rsPlotVectorsXY(time, ampEnv, env, result);
+}
+
+
+
 
 void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
 {
@@ -1862,6 +1927,7 @@ void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
   //plotSineModelAmplitudes(mdl, { 1 });
   //plotSineModelPhases(mdl, { 1 }, true);  // phase-derivative
   //plotSineModelPhases(mdl, { 1 }, false); // de-trended phase
+  rsAssert(mdl.isDataValid());
 
   // resynthesize without modifications:
   std::vector<double> y = synthesizeSinusoidal(mdl, fs);
@@ -1895,7 +1961,7 @@ void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
 
 
   // resynthesize with modifications:
-  mdl.keepOnly({1});                     // get rid of DC artifacts at the start
+  //mdl.keepOnly({1});                     // get rid of DC artifacts at the start
   y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile("DeBeat2SinesOutput.wav", &y[0], (int)y.size(), (int)fs);
   // here, the transient artifact is much less severe - but we see some linearly decaying DC

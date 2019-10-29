@@ -1,0 +1,71 @@
+Make the following things consistent:
+
+Interface:
+-class names (use prefix rs everywhere)
+-function names:
+ -have a getSample and processBlock function consistently in all DSP classes
+ -if the module produces stereo samples, use processFrame - getSample is only
+  for mono stuff ...maybe that makes it redundant but it is nice to be able to
+  write things like:
+    out = env.getSample() * filter.getSample(osc.getSample());
+-consistently use pointers (not references) for output variables - makes it 
+ visible in client code, what is an output
+-the argument order should be consistent for functions that do similar things
+ -especially in rsArray (dangerous change)
+-the units (seconds, milliseconds) for parameters should be the same in all 
+ classes (dangerous change)
+ -in rapt, we should probably not deal with physical units at all and instead 
+  use normalized units (samples, omega = 2*pi*f/fs, etc.)
+-consistent use of enum class for choices  
+-(maybe) avoid free functions - wrap them into namespaces - maybe use 
+ sub-namespaces (RAPT::Filters, RAPT::Generators, etc.)
+-i've been thinking about using std::vector for all i/o of the the non-realtime
+ classes - but some client code may use something else, so plain arrays is most
+ flexible - anyone can use it
+-consistently make embedded objects accessible either via having them as public 
+ members or by providing getters ...the former seems better - simpler client-side 
+ syntax and does the exact same  thing
+-use consistently int - not size_t or something (in the sinusoidal model)
+
+Implementation:
+-whether algo parameters are updated directly in setCutoff, setResonance, etc.
+ or are updated in getSample based on an "upToDate" flag should be consistent
+ ...maybe that can be decided on a case-by-case basis....but maybe it shouldn't
+ ...but enforced consistency may make it harder to optimize cases individually
+-what about thread safety? should probably be completely abolished, at least in 
+ rapt - synchronization should be dealt with on a higher level - maybe rosic, 
+ but probably jura
+-how polyphony is handled - each DSP class should have a simple, monophonic 
+ implementation and some may optionally have a polyphonic version (maybe as 
+ subclass with suffix "Poly")
+ 
+Efficiency:
+-use const and constexpr whereever possible
+-always declare members in order of descencing size (reduces padding)
+-use workspaces for operations on arrays that need auxiliary memory - and have
+ convenience functions that allocate a workspace internally
+
+Safety:
+-if a pointer cannot be a nullptr, say so by using not_null
+
+
+seems like #pragma once is not really recommended as replacement for include gurads - so we should
+stick to them, fo rthe time being
+https://stackoverflow.com/questions/1143936/pragma-once-vs-include-guards
+
+this talk has interesting stuff about API design:
+https://www.youtube.com/watch?v=5tg1ONG18H8
+one thing: avoid adjacent aparmeters of the same type to minimize the chance of the caller getting
+the order wrong
+
+here are the guidelines recommended by the c++ commitee:
+https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md
+
+-"Modern c++" guidelines say, that we should avoid raw "new" and "delete" and use smart-pointers 
+ instead std::unique_ptr, std::shared_ptr
+ -try to do that, where reasonable (but always take potential performance degradation into account)
+ -where not reasonable, convey information of ownership takeover in the respective function 
+  names - instead of addChildFoo( new Foo ) use things like addOwnedChildFoo( new Foo )
+ 
+-check use of std::list<> in rosic::PolymorphicIntrumentVoice
+

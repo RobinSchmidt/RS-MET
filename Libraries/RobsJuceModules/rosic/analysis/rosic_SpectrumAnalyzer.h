@@ -137,8 +137,8 @@ namespace rosic
     double tmp1, tmp2;
     if( midSideMode == true )
     {
-      tmp1 = ONE_OVER_SQRT2 * (*inL + *inR);
-      tmp2 = ONE_OVER_SQRT2 * (*inL - *inR);
+      tmp1 = SQRT2_INV * (*inL + *inR);
+      tmp2 = SQRT2_INV * (*inL - *inR);
     }
     else
     {

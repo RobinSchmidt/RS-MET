@@ -7,6 +7,22 @@ library (STL), such as std::vector, std::map, etc. */
 //=================================================================================================
 // functions for std::vector
 
+
+/** Wraps iterator syntax to simplify calls to std::all_of. */
+template<class T, class UnaryPredicate >
+bool rsAllOf(const std::vector<T>& v, UnaryPredicate p)
+{
+  return std::all_of(v.cbegin(), v.cend(), p);
+}
+
+/** Wraps iterator syntax to simplify calls to std::any_of. */
+template<class T, class UnaryPredicate >
+bool rsAnyOf(const std::vector<T>& v, UnaryPredicate p)
+{
+  return std::any_of(v.cbegin(), v.cend(), p);
+}
+
+
 template<class T>
 inline std::vector<T> rsConstantVector(size_t size, T value)
 {
@@ -32,6 +48,8 @@ inline void rsAppend(std::vector<T>& v, T newElement)
 template<class T>
 inline void rsAppend(std::vector<T>& v, const std::vector<T>& w)
 {
+  if(w.size() == 0) 
+    return;
   size_t nv = v.size();  // old size of v
   size_t nw = w.size();  // 
   v.resize(v.size() + w.size()); // if v and w are the same, this will also change the size of w, 
@@ -82,6 +100,22 @@ inline void rsInsertValue(std::vector<T>& v, T newElement, size_t index)
 {
   v.insert(v.begin() + index, newElement);
 }
+
+template<class T>
+inline void rsInsert(std::vector<T>& v, const std::vector<T>& w, size_t index)
+{
+  v.insert(v.begin() + index, w.begin(), w.end());
+}
+
+
+
+/** Wraps iterator syntax to simplify calls to std::none_of. */
+template<class T, class UnaryPredicate >
+bool rsNoneOf(const std::vector<T>& v, UnaryPredicate p)
+{
+  return std::none_of(v.cbegin(), v.cend(), p);
+}
+// todo: make similar functions for any_of, all_of
 
 template<class T>
 inline void rsPrepend(std::vector<T>& v, const T& newElement)
@@ -216,7 +250,6 @@ inline void rsPadLeft(std::vector<double>& v, size_t amount, T value)
   // maybe, it can be done with memmove and memset more efficiently?
 }
 
-
 template<class T>
 std::vector<T> rsDifference(const std::vector<T> x)
 {
@@ -239,22 +272,58 @@ std::vector<T> rsAmpToDb(const std::vector<T>& a, T floorDb = -std::numeric_limi
   return db;
 }
 
-
-//template<class T>
-//T rsMinValue(T 
+template<class T>
+std::vector<T> rsDecimate(const std::vector<T>& x, int factor)
+{
+  int Ny = (int) x.size() / factor;
+  std::vector<T> y(Ny);
+  RAPT::rsArray::decimate(&x[0], (int)x.size(), &y[0], factor);
+  return y;
+}
 
 template<class T>
-T rsMax(const std::vector<T>& x)
+std::vector<T> rsDecimateViaMean(const std::vector<T>& x, int factor)
 {
-  T max = std::numeric_limits<T>::min(); 
-  // we should instead use -inf for double/float? -> make explicit specilizations
-
-  for(size_t i = 0; i < x.size(); i++) {
-    if(x[i] > max)
-      max = x[i];
-  }
-  return max;
+  int Ny = (int) x.size() / factor;
+  std::vector<T> y(Ny);
+  RAPT::rsArray::decimateViaMean(&x[0], (int)x.size(), &y[0], factor);
+  return y;
 }
+
+
+/** Iterator to minimum element. */
+template<class T>
+auto rsMinIter(const std::vector<T>& x) { return std::min_element(x.cbegin(), x.cend()); }
+
+// todo: write rsMinIndex - returns size_t (or int)
+
+/** Minimum element. */
+template<class T>
+T rsMinValue(const std::vector<T>& x) { return *rsMinIter(x); }
+
+template<class T>
+auto rsMaxIter(const std::vector<T>& x) { return std::max_element(x.cbegin(), x.cend()); }
+
+template<class T>
+T rsMaxValue(const std::vector<T>& x) { return *rsMaxIter(x); }
+
+
+
+
+
+//template<class T>
+//T rsMaxValue(const std::vector<T>& x)
+//{
+//  return *std::max_element(x.cbegin(), x.cend());
+//}
+
+  //T max = std::numeric_limits<T>::min(); // we should instead use -inf for double/float? -> make explicit specilizations
+  //for(size_t i = 0; i < x.size(); i++) {
+  //  if(x[i] > max)
+  //    max = x[i];
+  //}
+  //return max;
+
 
 template<class T>
 T rsSum(const std::vector<T>& x)
@@ -279,8 +348,6 @@ void rsScale(std::vector<T>& x, T scaler)
 }
 
 
-
-
 /** Converts C-array to std::vector. */
 template<class T>
 inline std::vector<T> toVector(T* theArray, size_t size) // rename to rsToVector
@@ -289,6 +356,15 @@ inline std::vector<T> toVector(T* theArray, size_t size) // rename to rsToVector
   for(size_t i = 0; i < size; i++)
     v[i] = theArray[i];
   return v;
+}
+
+/** Copies data from existing C-array into an existing std::vector */
+template<class T>
+inline void rsCopyToVector(const T* a, int N, std::vector<T>& v)
+{
+  v.resize(N);
+  for(int i = 0; i < N; i++)
+    v[i] = a[i];
 }
 
 /** Multiplies a scalar and a vector. */

@@ -228,12 +228,12 @@ namespace rosic
     }
     else  // stereoMode == MID_SIDE
     {
-      double mid  = ONE_OVER_SQRT2 * (*inOutL + *inOutR);
-      double side = ONE_OVER_SQRT2 * (*inOutL - *inOutR);
+      double mid  = SQRT2_INV * (*inOutL + *inOutR);
+      double side = SQRT2_INV * (*inOutL - *inOutR);
       mid         = equalizers[0].getSample(mid);
       side        = equalizers[1].getSample(side);
-      *inOutL     = ONE_OVER_SQRT2 * (mid + side);
-      *inOutR     = ONE_OVER_SQRT2 * (mid - side);
+      *inOutL     = SQRT2_INV * (mid + side);
+      *inOutR     = SQRT2_INV * (mid - side);
     }
   }
 
