@@ -1864,23 +1864,36 @@ void amplitudeDeBeating2()
   double beatFrq2 = -9.0;    // beating freq 2 in Hz
   double beatAtt  =  0.1;   // beating attack
   double beatDec  =  0.4;    // beating decay
-  double beatAmt  =  0.3;    // beating amount
+  double beatAmt  =  0.2;    // beating amount
 
 
   // create test signal:
   double frameRate = sampleRate/hopSize;
   typedef std::vector<double> Vec;
-  Vec time    = rsRangeLinear(0.0, double(numFrames-1)/sampleRate, numFrames);  // time in seconds
+  Vec time    = rsRangeLinear(0.0, hopSize*double(numFrames-1)/sampleRate, numFrames);  // time in seconds
   Vec ampEnv  = attackDecayEnvelope(numFrames, envAtt*frameRate,  envDec*frameRate);
   Vec beatEnv = attackDecayEnvelope(numFrames, beatAtt*frameRate, beatDec*frameRate);
   Vec sweep   = createLinearSineSweep(numFrames, beatFrq1, beatFrq2, frameRate);
   Vec beating = beatEnv * sweep;
   Vec env     = ampEnv + beatAmt*beating;
 
+  // remove the beating:
+  typedef rsEnvelopeExtractor<double>::endPointModes EM;
+  Vec result(numFrames);
+  rsEnvelopeExtractor<double> envExtractor;
+  envExtractor.setStartMode(EM::ZERO_END);  
+  envExtractor.setEndMode(EM::ZERO_END);   // definitely better than extraploation but still not good enough
+  envExtractor.setMaxSampleSpacing(0.25);
+  //envExtractor.setMaxSampleSpacing(0.2);    // should be >= beating period in seconds
+  envExtractor.connectPeaks(&time[0], &env[0], &result[0], numFrames);
+  // to automatically set up the max-sample spacing, we whould use the maximum measured distance between
+  // any pair of peaks
+
 
 
   //rsPlotVectorsXY(time, ampEnv, beatEnv, sweep, beating);
-  rsPlotVectorsXY(time, ampEnv, env);
+  //rsPlotVectorsXY(time, ampEnv, env);
+  rsPlotVectorsXY(time, ampEnv, env, result);
 }
 
 
