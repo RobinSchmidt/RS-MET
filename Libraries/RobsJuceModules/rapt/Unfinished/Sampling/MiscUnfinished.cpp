@@ -2089,8 +2089,8 @@ T rsInterpolatedMinimum(const T* x, const int N, const int k)
   // define two lines and find the x-coordinate of the intersection of these two lines - this is 
   // our estimate with subsample precision:
   T al, bl, ar, br;
-  rsLine2D<T>::twoPointToExplicit(T(-1), s[k-1], T(-2), s[k-2], al, bl);
-  rsLine2D<T>::twoPointToExplicit(T(+1), s[k+1], T(+2), s[k+2], ar, br);
+  rsLine2D<T>::twoPointToExplicit(T(-1), x[k-1], T(-2), x[k-2], al, bl);
+  rsLine2D<T>::twoPointToExplicit(T(+1), x[k+1], T(+2), x[k+2], ar, br);
   // this can be optimized - it divides by x2-x1 = 1 -> divisions are superfluous
 
   const T d = (br-bl) / (al-ar);  // delta
@@ -2107,7 +2107,7 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny)
   for(int k = 0; k < Nx; k++)
     s[k] = rsArray::meanOfAbsoluteDifferences(&x[k], &y[0], rsMin(Nx-k, Ny));
   const int k = RAPT::rsArray::minIndex(&s[0], Nx); // index of minimum...
-  return rsInterpolatedMinimum(s, Nx, k);           // ...refined to subsample precision
+  return rsInterpolatedMinimum(s.data(), Nx, k);           // ...refined to subsample precision
 }
 
 template<class T>
