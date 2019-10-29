@@ -1804,7 +1804,12 @@ template<class T>
 void rsEnvelopeExtractor<T>::getPeaks(const T *x, const T *y, int N,
   std::vector<T>& peaksX, std::vector<T>& peaksY)
 {
-  std::vector<size_t> peakIndices = findPeakIndices(y, N, true, true);
+  //std::vector<size_t> peakIndices = findPeakIndices(y, N, true, true);
+
+  std::vector<size_t> peakIndices = findPeakIndices(y, N, false, false);
+    // false, false because, we don't want to include the end-values, because they will be set
+    // setupEndValues in getMetaEnvelope
+
   size_t M = peakIndices.size();
   peaksX.resize(M);
   peaksY.resize(M);

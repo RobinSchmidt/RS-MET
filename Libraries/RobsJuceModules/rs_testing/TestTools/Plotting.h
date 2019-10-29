@@ -45,6 +45,16 @@ inline std::vector<TSig> filterResponse(TFlt& filter, int length, std::vector<TS
     y[n] = filter.getSample(x[n]);
   return y;
 }
+template<class T>
+inline std::vector<T> ampToDb(const std::vector<T>& x, T minDb)
+{
+  std::vector<T> y(x.size());
+  for(size_t i = 0; i < x.size(); i++) 
+    y[i] = rsMax(rsAmpToDb(rsAbs(x[i])), minDb);
+  return y;
+}
+
+
 // move to Utilities
 
 

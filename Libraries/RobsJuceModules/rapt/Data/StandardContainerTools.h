@@ -48,6 +48,8 @@ inline void rsAppend(std::vector<T>& v, T newElement)
 template<class T>
 inline void rsAppend(std::vector<T>& v, const std::vector<T>& w)
 {
+  if(w.size() == 0) 
+    return;
   size_t nv = v.size();  // old size of v
   size_t nw = w.size();  // 
   v.resize(v.size() + w.size()); // if v and w are the same, this will also change the size of w, 

@@ -430,9 +430,12 @@ bool rsSinusoidalModel<T>::isDataValid() const
 template<class T>
 std::vector<rsInstantaneousSineParams<T>> rsSinusoidalModel<T>::getInvalidDataPoints() const
 {
-  std::vector<rsInstantaneousSineParams<T>> v;
+  std::vector<rsInstantaneousSineParams<T>> v, w;
   for(size_t i = 0; i < partials.size(); i++)
-    rsAppend(v, partials[i].getInvalidDataPoints());
+  {
+    w = partials[i].getInvalidDataPoints();
+    rsAppend(v, w);
+  }
   return v;
 }
 
