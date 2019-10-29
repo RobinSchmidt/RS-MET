@@ -928,11 +928,11 @@ public:
   //void setSampleRate(T newSampleRate) { sampleRate = newSampleRate; }
 
   /** Not yet finished.... */
-  //void setMaxSampleSpacing(T newDistance) 
-  //{ 
-  //  maxSpacing = newDistance;  
-  //}
-  // obsolete
+  void setMaxSpacingMultiplier(T newMultiplier) 
+  { 
+    maxSpacingMultiplier = newMultiplier;  
+  }
+  // find better name
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -1024,6 +1024,8 @@ protected:
   //T sampleRate       = 44100;
   //T smoothingFreq    = 22050;
 
+
+  T maxSpacingMultiplier = T(1);
 
   //T maxSpacing = 0; // maximum allowed spacing between envelope datapoints/samples
   // ...explain this better - in which unit is this measured - how does it relate to the time-unit
