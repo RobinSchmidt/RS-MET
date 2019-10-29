@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
   //smoothingFilterTransitionTimes();
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
   //poleZeroPrototype();  // new implementation - but we don't need that
-  seriesConnectionDecay();
+  //seriesConnectionDecay();
 
   // Physics:
   //doublePendulum(); // takes long
@@ -392,7 +392,8 @@ int main(int argc, char* argv[])
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
   //amplitudeDeBeating();
-  harmonicDeBeating1();
+  amplitudeDeBeating2();
+  //harmonicDeBeating1();
   //harmonicDeBeating2();
 
 

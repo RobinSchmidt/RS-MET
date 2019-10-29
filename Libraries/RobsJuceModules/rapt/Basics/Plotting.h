@@ -98,7 +98,13 @@ inline void rsPlotVectorsXY(
   std::vector<T> x,
   std::vector<T> y1,
   std::vector<T> y2 = std::vector<T>(),
-  std::vector<T> y3 = std::vector<T>()   // add more
+  std::vector<T> y3 = std::vector<T>(),
+  std::vector<T> y4 = std::vector<T>(),
+  std::vector<T> y5 = std::vector<T>(),
+  std::vector<T> y6 = std::vector<T>(),
+  std::vector<T> y7 = std::vector<T>(),
+  std::vector<T> y8 = std::vector<T>(),
+  std::vector<T> y9 = std::vector<T>()
 )
 {
   GNUPlotter plt;
@@ -107,7 +113,12 @@ inline void rsPlotVectorsXY(
   if(y1.size() > 0) plt.addDataArrays(N, &x[0], &y1[0]);
   if(y2.size() > 0) plt.addDataArrays(N, &x[0], &y2[0]);
   if(y3.size() > 0) plt.addDataArrays(N, &x[0], &y3[0]);
-  // ...add more
+  if(y4.size() > 0) plt.addDataArrays(N, &x[0], &y4[0]);
+  if(y5.size() > 0) plt.addDataArrays(N, &x[0], &y5[0]);
+  if(y6.size() > 0) plt.addDataArrays(N, &x[0], &y6[0]);
+  if(y7.size() > 0) plt.addDataArrays(N, &x[0], &y7[0]);
+  if(y8.size() > 0) plt.addDataArrays(N, &x[0], &y8[0]);
+  if(y9.size() > 0) plt.addDataArrays(N, &x[0], &y9[0]);
   plt.plot();
 }
 

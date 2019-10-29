@@ -1811,7 +1811,7 @@ void amplitudeDeBeating()
   // remove the beating:
   typedef rsEnvelopeExtractor<double>::endPointModes EM;
   double beatPeriodInFrames = frameRate / beatFrq;  // 38.222...
-  Vec time = rsRangeLinear(0.0, double(numFrames-1), numFrames);
+  Vec time = rsRangeLinear(0.0, double(numFrames-1), numFrames);  // time is measured in frames
   Vec result(numFrames);
   rsEnvelopeExtractor<double> envExtractor;
   envExtractor.setStartMode(EM::ZERO_END);  
@@ -1838,8 +1838,53 @@ void amplitudeDeBeating()
   //  ...this is fixed
 
   // todo: test other situations, where the beating occurs only in the middle, at the end, start 
-  // and end, etc.
+  // and end, etc. - also use a beating that has a time-varying frequency - make another test for 
+  // this
 }
+
+std::vector<double> createLinearSineSweep(int N, double f1, double f2, double fs, double a = 1)
+{
+  std::vector<double> x(N), f(N);
+  RAPT::rsArray::fillWithRangeLinear(&f[0], N, f1, f2);  // maybe make a function for exponential sweeps
+  createSineWave(&x[0], N, &f[0], a, fs);
+  return x;
+}
+// move 
+
+void amplitudeDeBeating2()
+{
+  int sampleRate = 44100;
+  int hopSize    = 128;
+  int numFrames  = 900;     // number of envelope frames
+
+  double envAtt   = 0.2;    // attack for envelope in seconds
+  double envDec   = 0.8;    // decay for envelope in seconds
+
+  double beatFrq1 =  9.0;    // beating freq 1 in Hz
+  double beatFrq2 = -9.0;    // beating freq 2 in Hz
+  double beatAtt  =  0.1;   // beating attack
+  double beatDec  =  0.4;    // beating decay
+  double beatAmt  =  0.3;    // beating amount
+
+
+  // create test signal:
+  double frameRate = sampleRate/hopSize;
+  typedef std::vector<double> Vec;
+  Vec time    = rsRangeLinear(0.0, double(numFrames-1)/sampleRate, numFrames);  // time in seconds
+  Vec ampEnv  = attackDecayEnvelope(numFrames, envAtt*frameRate,  envDec*frameRate);
+  Vec beatEnv = attackDecayEnvelope(numFrames, beatAtt*frameRate, beatDec*frameRate);
+  Vec sweep   = createLinearSineSweep(numFrames, beatFrq1, beatFrq2, frameRate);
+  Vec beating = beatEnv * sweep;
+  Vec env     = ampEnv + beatAmt*beating;
+
+
+
+  //rsPlotVectorsXY(time, ampEnv, beatEnv, sweep, beating);
+  rsPlotVectorsXY(time, ampEnv, env);
+}
+
+
+
 
 void harmonicDeBeating1() // rename to harmonicDeBeating2Sines
 {

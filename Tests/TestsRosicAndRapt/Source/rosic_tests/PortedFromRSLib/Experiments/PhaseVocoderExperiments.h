@@ -29,6 +29,7 @@ void harmonicAnalysis1();
 
 //void harmonicBeatingDemo();   // 
 void amplitudeDeBeating();
+void amplitudeDeBeating2();
 void harmonicDeBeating1();
 void harmonicDeBeating2();     // remove beating from a partial via harmonic analysis/resynthesis framework
 
