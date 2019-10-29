@@ -304,8 +304,7 @@ void rsPartialBeatingRemover<T>::removeAmplitudeBeating(rsSinusoidalPartial<T>& 
   // "first-order" envelope - this removes the amplitude modulation due to beating:
   std::vector<T> t = partial.getTimeArray();
   std::vector<T> a = partial.getAmplitudeArray();
-
-
+  std::vector<T> a2(a.size());  // only for plotting during development, get rid later, re-use "a"
 
   //GNUPlotter plt;
   //plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
@@ -333,12 +332,13 @@ void rsPartialBeatingRemover<T>::removeAmplitudeBeating(rsSinusoidalPartial<T>& 
   // yeah - it should definitely depend on the fundamental - the frequency may even be zero - DC
   // is allowed
 
+  //envExtractor.connectPeaks(&t[0], &a[0], &a[0], (int)t.size());
+  //partial.setAmplitudes(a);
 
+  envExtractor.connectPeaks(&t[0], &a[0], &a2[0], (int)t.size());
+  partial.setAmplitudes(a2);
 
-  envExtractor.connectPeaks(&t[0], &a[0], &a[0], (int)t.size());
-  partial.setAmplitudes(a);
-
-  //rsPlotVectorsXY(t, a);
+  rsPlotVectorsXY(t, a, a2);
 }
 
 template<class T>

@@ -287,7 +287,7 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
 
   // temporary - to make experimentation faster:
   //analyzer.setMinPartialIndex(0);  // not yet working
-  analyzer.setMaxPartialIndex(2);
+  //analyzer.setMaxPartialIndex(2);
 
   //analyzer.getCycleFinder().setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
   // for test with Rhodes Tuned F3 V12TX -16.4 10-17-16 shorter
@@ -312,7 +312,12 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   // 10 is ad hoc - at least one sample per 10 cycles:
   if(f0 == 0) 
     f0 = mdl.getPartial(1).getMeanFreq();
-  deBeater.setMaxEnvelopeSampleSpacing(10.0/f0);
+  deBeater.setMaxEnvelopeSampleSpacing(16.0/f0);     // works reasonably
+  //deBeater.setMaxEnvelopeSampleSpacing(1.0/f0);    // hangs
+  //deBeater.setMaxEnvelopeSampleSpacing(2.0/f0);    // works but doesn't actually de-beat
+  // ...maybe use the maximum distance between the found peaks as the minimum distance between 
+  // datapoints in the de-beated envelope
+
   // that is wrong - we need to set it to a value a bit above the beat-period expressed in the 
   // frame-rate ...or - wait - is that actually true
 
@@ -323,8 +328,8 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   deBeater.processModel(mdl);
   rsAssert(mdl.isDataValid());
   std::vector<rsInstantaneousSineParams<double>> invalidDataPoints = mdl.getInvalidDataPoints();
-  plotSineModel(mdl, fs);
-  plotSineModelAmplitudes(mdl);
+  //plotSineModel(mdl, fs);
+  //plotSineModelAmplitudes(mdl);
   y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
 }

@@ -145,11 +145,14 @@ public:
     phaseSmootherNumPasses = numFilterPasses;
   }
 
+  
   virtual void setMaxEnvelopeSampleSpacing(T newSpacing) 
   { 
     envExtractor.setMaxSampleSpacing(newSpacing);
   }
   // this is a bad name - choose a better ...use minPrecision or just Precision...or Resolution
+  // get rid of this parameter - automatically choose an appropriate value - given by the maximum
+  // distance between actual peaks in the meta envelope
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
