@@ -1599,10 +1599,12 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
   //plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
 
+  T maxSpacing = rsArray::maxDifference(&metaEnvTime[0], (int)metaEnvTime.size());
+
   setupEndValues(metaEnvTime, metaEnvValue, endTime);
   //rsAssert(rsArray::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
-  fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
+  fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue, maxSpacing);
   //rsAssert(rsArray::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
@@ -1681,7 +1683,7 @@ void rsEnvelopeExtractor<T>::setupEndValues(
 
 template<class T>
 void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
-  std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue)
+  std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T maxSpacing)
 {
 
   //T maxSpacing = rsArray::maxDifference(&metaEnvTime[0], (int)metaEnvTime.size());

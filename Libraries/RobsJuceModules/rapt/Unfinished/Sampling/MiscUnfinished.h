@@ -928,11 +928,11 @@ public:
   //void setSampleRate(T newSampleRate) { sampleRate = newSampleRate; }
 
   /** Not yet finished.... */
-  void setMaxSampleSpacing(T newDistance) 
-  { 
-    maxSpacing = newDistance;  
-  }
-  // find a better name
+  //void setMaxSampleSpacing(T newDistance) 
+  //{ 
+  //  maxSpacing = newDistance;  
+  //}
+  // obsolete
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -1003,7 +1003,7 @@ protected:
   the raw envelope) such that the distance between two successive samples in the meta env is at 
   most maxSpacing. */
   void fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
-    std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue);
+    std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T maxSpacing);
   // needs tests - maybe make public - maybe even move it into some other class - it could be more
   // generally useful
 
@@ -1025,7 +1025,7 @@ protected:
   //T smoothingFreq    = 22050;
 
 
-  T maxSpacing = 0; // maximum allowed spacing between envelope datapoints/samples
+  //T maxSpacing = 0; // maximum allowed spacing between envelope datapoints/samples
   // ...explain this better - in which unit is this measured - how does it relate to the time-unit
   // stored in the rsSinusoidalModel? ...i think, it should just be the same unit, whatever that 
   // unit is (it's seconds but we may later alos allow it to be in samples)

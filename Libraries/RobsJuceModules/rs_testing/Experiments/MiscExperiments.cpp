@@ -312,7 +312,7 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   // 10 is ad hoc - at least one sample per 10 cycles:
   if(f0 == 0) 
     f0 = mdl.getPartial(1).getMeanFreq();
-  deBeater.setMaxEnvelopeSampleSpacing(16.0/f0);     // works reasonably
+  //deBeater.setMaxEnvelopeSampleSpacing(16.0/f0);     // works reasonably
   //deBeater.setMaxEnvelopeSampleSpacing(1.0/f0);    // hangs
   //deBeater.setMaxEnvelopeSampleSpacing(2.0/f0);    // works but doesn't actually de-beat
   // ...maybe use the maximum distance between the found peaks as the minimum distance between 
