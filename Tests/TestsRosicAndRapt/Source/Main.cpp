@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  //passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
+  passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
   //passed &= runUnitTestsRosic();
   //passed = passed;  // dummy
 
@@ -391,8 +391,8 @@ int main(int argc, char* argv[])
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
-  amplitudeDeBeating();
-  amplitudeDeBeating2();
+  //amplitudeDeBeating();
+  //amplitudeDeBeating2();
   //harmonicDeBeating1();
   //harmonicDeBeating2();
 

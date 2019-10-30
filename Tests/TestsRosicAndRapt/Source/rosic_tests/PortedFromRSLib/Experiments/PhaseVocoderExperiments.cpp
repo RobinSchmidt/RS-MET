@@ -1883,17 +1883,16 @@ void amplitudeDeBeating2()
   rsEnvelopeExtractor<double> envExtractor;
   envExtractor.setStartMode(EM::ZERO_END);  
   envExtractor.setEndMode(EM::ZERO_END);   // definitely better than extraploation but still not good enough
-  //envExtractor.setMaxSampleSpacing(0.25);
-  //envExtractor.setMaxSampleSpacing(0.2);    // should be >= beating period in seconds
   envExtractor.connectPeaks(&time[0], &env[0], &result[0], numFrames);
-  // to automatically set up the max-sample spacing, we whould use the maximum measured distance between
-  // any pair of peaks
+  // maybe the zero-ends strategy is not optimal - maybe use the actual envelope datapoints 
+  // instead?
 
 
 
   //rsPlotVectorsXY(time, ampEnv, beatEnv, sweep, beating);
   //rsPlotVectorsXY(time, ampEnv, env);
-  rsPlotVectorsXY(time, ampEnv, env, result);
+  //rsPlotVectorsXY(time, ampEnv, env, result);
+  rsPlotVectorsXY(time, env, result);
 }
 
 

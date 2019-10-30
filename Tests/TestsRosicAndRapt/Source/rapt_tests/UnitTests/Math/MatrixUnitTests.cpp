@@ -306,7 +306,7 @@ bool testMatrixNew()
 
   // A = |1 2 3|
   //     |4 5 6|
-  Matrix A(2, 3, {1.,2.,3., 4.,5.,6.});
+  Matrix A(2, 3, {1.,2.,3., 4.,5.,6.}); // calls rsMatrixNew(int, int, std::vector<T>&&)
   testResult &= A(0,0) == 1 &&  A(0,1) == 2 && A(0,2) == 3;
   testResult &= A(1,0) == 4 &&  A(1,1) == 5 && A(1,2) == 6;
   testResult &= (allocs = Matrix::numHeapAllocations) == 1;
@@ -314,14 +314,19 @@ bool testMatrixNew()
   // B = |1 2| 
   //     |3 4|
   //     |5 6|
-  Matrix B(3, 2, {1.,2.,3., 4.,5.,6.});
+  Matrix B(3, 2, {1.,2.,3., 4.,5.,6.}); // calls rsMatrixNew(int, int, std::vector<T>&&)
   testResult &= B(0,0) == 1 &&  B(0,1) == 2;
   testResult &= B(1,0) == 3 &&  B(1,1) == 4;
   testResult &= B(2,0) == 5 &&  B(2,1) == 6;
   testResult &= (allocs = Matrix::numHeapAllocations) == 2;
 
-  Matrix C = A*B;
-  //testResult &= (allocs = Matrix::numHeapAllocations) == 3;  // fails - it's 4
+  // multiplication:
+  Matrix C = A*B; 
+  // calls: 
+  //   operator*(const rsMatrixNew<T>&)
+  //     rsMatrixNew(int numRows, int numColumns)
+  //     rsMatrixNew(rsMatrixNew&& B)
+  testResult &= (allocs = Matrix::numHeapAllocations) == 3;
 
 
 

@@ -322,7 +322,7 @@ public:
   /** Creates matrix from a std::vector - convenient to initialize elements.  */
   rsMatrixNew(int numRows, int numColumns, const std::vector<T>& newData) : data(newData)
   {
-    numHeapAllocations++;
+    numHeapAllocations++;   // data(newData) allocates
     rsAssert(numRows*numColumns == newData.size());
     this->numRows = numRows;
     this->numCols = numColumns;
@@ -331,9 +331,9 @@ public:
   // make a version that takes rvalue reference to a vector and moves it into our member vector. With 
   // that, we can create matrices via Matrix A(2, 3, {1,2,3, 4,5,6}) ...i hope
 
-  rsMatrixNew(int numRows, int numColumns, std::vector<T>&& newData) : data(newData)
+  rsMatrixNew(int numRows, int numColumns, std::vector<T>&& newData) : data(newData)  // use std::move
   {
-    numHeapAllocations++;
+    numHeapAllocations++;   // data(newData) allocates
     rsAssert(numRows*numColumns == newData.size());
     this->numRows = numRows;
     this->numCols = numColumns;
@@ -348,13 +348,13 @@ public:
     rsArray::copy(B.dataPointer, this->dataPointer, this->getSize());
   }
 
-  /** Move constructor. */
-  //rsMatrixNew(const rsMatrixNew&& B)  // should B be declared const const?
-  //rsMatrixNew(rsMatrixNew&& B)
-  //{
-  //  setSize(B.numRows, B.numCols);
-  //  rsArray::copy(B.dataPointer, this->dataPointer, this->getSize());
-  //}
+  /** Move constructor. Takes over ownership of the data stored in B. */
+  rsMatrixNew(rsMatrixNew&& B) : data(std::move(B.data))
+  {
+    rsAssert(B.data.size() == 0); // B's data has now become our data
+    B.numRows = 0;                // ...so we must also set its numRows
+    B.numCols = 0;                // ...and numCols to zero
+  }
 
   rsMatrixNew<T>& operator=(const rsMatrixNew<T>& other) // copy assignment
   {
@@ -393,13 +393,13 @@ public:
   it would be useless anyway in case the number of columns changed. */
   void setSize(int numRows, int numColumns)
   {
-    if(numRows != this->numRows && numColumns != this->numCols)
-      numHeapAllocations++; // data.resize may re-allocate heap memory
-    // todo: compile that conditionally, only for tests
+    if(numRows == this->numRows && numColumns == this->numCols)
+      return;  // nothing to do
 
     this->numRows = numRows;
     this->numCols = numColumns;
     data.resize(this->numRows * this->numCols);
+    numHeapAllocations++;                        // data.resize() may have re-allocated heap memory
     updateDataPointer();
     // optionally initialize with zeros
   }
@@ -482,12 +482,18 @@ public:
 
   /** Multiplies two matrices: C = A * B. */
   rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
-  { rsMatrixNew<T> C(this->numRows, B.numCols); this->mul(this, &B, &C); return C; }
+  { 
+    rsMatrixNew<T> C(this->numRows, B.numCols); 
+    this->mul(this, &B, &C); 
+    return C; 
+  }
 
   // todo: /, ==,,+=,-=,*=,-
 
 
-  static int numHeapAllocations; // for testing - maybe comment out or delete someday
+  static int numHeapAllocations;  
+  // instrumentation for unit-testing - it's actually the number of *potential* heap-allocations, 
+  // namely, the number of calls to data.resize() which may or may not re-allocate memory
 
 protected:
 

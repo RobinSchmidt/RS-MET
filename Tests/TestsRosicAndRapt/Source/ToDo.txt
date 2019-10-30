@@ -1,1 +1,2 @@
-debug rsEnvelopeExtractor<T>::connectPeaks - it sometimes extrapolates
+-figure out, why rsSinusoidalAnalyzer my produce negative values for the amplitude of the DC 
+ component (and fix it)
