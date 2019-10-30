@@ -319,6 +319,12 @@ public:
     // todo: optionally init with zeros
   }
 
+  /** Destructor. */
+  ~rsMatrixNew()
+  {
+    int dummy = 0;
+  }
+
   /** Creates matrix from a std::vector - convenient to initialize elements.  */
   rsMatrixNew(int numRows, int numColumns, const std::vector<T>& newData) : data(newData)
   {
@@ -331,10 +337,12 @@ public:
   // make a version that takes rvalue reference to a vector and moves it into our member vector. With 
   // that, we can create matrices via Matrix A(2, 3, {1,2,3, 4,5,6}) ...i hope
 
-  rsMatrixNew(int numRows, int numColumns, std::vector<T>&& newData) : data(newData)  // use std::move
+  //rsMatrixNew(int numRows, int numColumns, std::vector<T>&& newData) : data(newData)  // use std::move
+  rsMatrixNew(int numRows, int numColumns, std::vector<T>&& newData) : data(std::move(newData))
   {
-    numHeapAllocations++;   // data(newData) allocates
-    rsAssert(numRows*numColumns == newData.size());
+    numHeapAllocations++;             // we count the allocation that took place in the caller
+    rsAssert(newData.size() == 0);
+    rsAssert(numRows*numColumns == data.size());
     this->numRows = numRows;
     this->numCols = numColumns;
     updateDataPointer();
@@ -352,11 +360,18 @@ public:
   rsMatrixNew(rsMatrixNew&& B) : data(std::move(B.data))
   {
     rsAssert(B.data.size() == 0); // B's data has now become our data
+    numRows = B.numRows;
+    numCols = B.numCols;
+    updateDataPointer();
+
+    // wrap into rsmatrixView::reset():
     B.numRows = 0;                // ...so we must also set its numRows
     B.numCols = 0;                // ...and numCols to zero
+    B.dataPointer = nullptr;
   }
 
-  rsMatrixNew<T>& operator=(const rsMatrixNew<T>& other) // copy assignment
+  /** Copy assignment operator. */
+  rsMatrixNew<T>& operator=(const rsMatrixNew<T>& other)
   {
     if (this != &other) { // self-assignment check expected
       setSize(other.numRows, other.numCols);
@@ -365,15 +380,23 @@ public:
     return *this;
   }
 
-  rsMatrixNew<T>& operator=(const rsMatrixNew<T>&& other) // move assignment
+  //rsMatrixNew<T>& operator=(const rsMatrixNew<T>&& other) // move assignment
+  rsMatrixNew<T>& operator=(rsMatrixNew<T>&& rhs)
   {
-    if (this != &other) { // self-assignment check expected
-      setSize(other.numRows, other.numCols);
-      rsArray::copy(other.dataPointer, this->dataPointer, this->getSize());
-    }
+    data = std::move(rhs.data);
+    rsAssert(rhs.data.size() == 0);
+    numRows = rhs.numRows;
+    numCols = rhs.numCols;
+    updateDataPointer();
+
+    rhs.numRows = 0;
+    rhs.numCols = 0;
+    rhs.dataPointer = nullptr;
+
     return *this;
   }
-  // can we avoid the copying? ..i mean, that's the wohle point of move operators
+  // when does this actually get called? it's not called in the unit test in line  Matrix C = A*B; 
+
 
 
 
@@ -450,14 +473,18 @@ public:
 
   /** Compares matrices for equality */
   bool operator==(const rsMatrixNew<T>& B) const
+  //bool operator==(rsMatrixNew<T>&& B) const
   {
     if(this->numRows != B.numRows || this->numCols != B.numCols)
       return false;
     return rsArray::equal(this->dataPointer, B.dataPointer, this->getSize());
   }
+
+
   // move to rsMatrixView
 
   /** Compares matrices for inequality */
+  //bool operator!=(rsMatrixNew<T>&& B) const { return !(*this == B); }
   bool operator!=(const rsMatrixNew<T>& B) const { return !(*this == B); }
   // move to rsMatrixView
 
@@ -474,7 +501,11 @@ public:
 
   /** Adds two matrices: C = A + B. */
   rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
-  { rsMatrixNew<T> C(this->numRows, this->numCols); this->add(this, &B, &C); return C; }
+  { 
+    rsMatrixNew<T> C(this->numRows, this->numCols); 
+    this->add(this, &B, &C); 
+    return C; 
+  }
 
   /** Subtracts two matrices: C = A - B. */
   rsMatrixNew<T> operator-(const rsMatrixNew<T>& B) const

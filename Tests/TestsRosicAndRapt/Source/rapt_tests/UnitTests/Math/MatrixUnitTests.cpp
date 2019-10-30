@@ -327,6 +327,20 @@ bool testMatrixNew()
   //     rsMatrixNew(int numRows, int numColumns)
   //     rsMatrixNew(rsMatrixNew&& B)
   testResult &= (allocs = Matrix::numHeapAllocations) == 3;
+  // todo: check content of matrix C
+
+
+  C = A;  // calls copy assigment operator
+  testResult &= (allocs = Matrix::numHeapAllocations) == 4;
+  testResult &= C == A;
+
+  A = A;  // self copy assignment - should not re-allocate
+  testResult &= (allocs = Matrix::numHeapAllocations) == 4;
+
+  Matrix D = A+A;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 5;
+  testResult &= D == Matrix(2, 3, {2.,4.,6., 8.,10.,12.});  // crashes!!
+
 
 
 
