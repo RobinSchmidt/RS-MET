@@ -186,6 +186,14 @@ public:
     numCols = newNumColumns;
   }
 
+  /** Resets the number of rows and columns to zero and the dataPointer to nullptr. */
+  inline void reset()
+  {
+    numRows = 0;
+    numCols = 0;
+    dataPointer = nullptr;
+  }
+
   // void setToIdentityMatrix(T scaler = 1);
 
 
@@ -309,8 +317,8 @@ class rsMatrixNew : public rsMatrixView<T>
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Construction/Destruction */
-
 
   /** Standard constructor. You must pass the initial number of rows and columns */
   rsMatrixNew(int numRows = 0, int numColumns = 0)
@@ -325,7 +333,7 @@ public:
     int dummy = 0;
   }
 
-  /** Creates matrix from a std::vector - convenient to initialize elements.  */
+  /** Creates matrix from a std::vector.  */
   rsMatrixNew(int numRows, int numColumns, const std::vector<T>& newData) : data(newData)
   {
     numHeapAllocations++;   // data(newData) allocates
@@ -334,10 +342,10 @@ public:
     this->numCols = numColumns;
     updateDataPointer();
   }
-  // make a version that takes rvalue reference to a vector and moves it into our member vector. With 
-  // that, we can create matrices via Matrix A(2, 3, {1,2,3, 4,5,6}) ...i hope
 
-  //rsMatrixNew(int numRows, int numColumns, std::vector<T>&& newData) : data(newData)  // use std::move
+  /** Creates matrix from an unnamed/temporary/rvalue std::vector - convenient to initialize elements. 
+  You can initialize matrices like this: 
+    rsMatrix<double> A(2, 3, {1.,2.,3., 4.,5.,6.});   */
   rsMatrixNew(int numRows, int numColumns, std::vector<T>&& newData) : data(std::move(newData))
   {
     numHeapAllocations++;             // we count the allocation that took place in the caller
@@ -348,8 +356,7 @@ public:
     updateDataPointer();
   }
 
-
-  /** Copy constructor. */
+  /** Copy constructor. Copies data from B into this object.  */
   rsMatrixNew(const rsMatrixNew& B)
   {
     setSize(B.numRows, B.numCols);
@@ -363,24 +370,20 @@ public:
     numRows = B.numRows;
     numCols = B.numCols;
     updateDataPointer();
-
-    // wrap into rsmatrixView::reset():
-    B.numRows = 0;                // ...so we must also set its numRows
-    B.numCols = 0;                // ...and numCols to zero
-    B.dataPointer = nullptr;
+    B.reset();                    // invalidates pointer in B
   }
 
-  /** Copy assignment operator. */
-  rsMatrixNew<T>& operator=(const rsMatrixNew<T>& other)
+  /** Copy assignment operator. Copies data from rhs into this object. */
+  rsMatrixNew<T>& operator=(const rsMatrixNew<T>& rhs)
   {
-    if (this != &other) { // self-assignment check expected
-      setSize(other.numRows, other.numCols);
-      rsArray::copy(other.dataPointer, this->dataPointer, this->getSize());
+    if (this != &rhs) { // self-assignment check expected
+      setSize(rhs.numRows, rhs.numCols);
+      rsArray::copy(rhs.dataPointer, this->dataPointer, this->getSize());
     }
     return *this;
   }
 
-  //rsMatrixNew<T>& operator=(const rsMatrixNew<T>&& other) // move assignment
+  /** Move assignment operator. Takes over ownership of the data stored in rhs. */
   rsMatrixNew<T>& operator=(rsMatrixNew<T>&& rhs)
   {
     data = std::move(rhs.data);
@@ -388,11 +391,7 @@ public:
     numRows = rhs.numRows;
     numCols = rhs.numCols;
     updateDataPointer();
-
-    rhs.numRows = 0;
-    rhs.numCols = 0;
-    rhs.dataPointer = nullptr;
-
+    rhs.reset();
     return *this;
   }
   // when does this actually get called? it's not called in the unit test in line  Matrix C = A*B; 
@@ -408,7 +407,7 @@ public:
   // inherited from the baseclass - we must call updateDataPointer in the copy/move
   // construtors/assigners
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets the number of rows and columns, this matrix should have. ToDo: provide a way to retain
@@ -473,21 +472,15 @@ public:
 
   /** Compares matrices for equality */
   bool operator==(const rsMatrixNew<T>& B) const
-  //bool operator==(rsMatrixNew<T>&& B) const
   {
     if(this->numRows != B.numRows || this->numCols != B.numCols)
       return false;
     return rsArray::equal(this->dataPointer, B.dataPointer, this->getSize());
   }
-
-
-  // move to rsMatrixView
+  // maybe move to rsMatrixView, if possible
 
   /** Compares matrices for inequality */
-  //bool operator!=(rsMatrixNew<T>&& B) const { return !(*this == B); }
   bool operator!=(const rsMatrixNew<T>& B) const { return !(*this == B); }
-  // move to rsMatrixView
-
 
   /** Defines the negative of a matrix. */
   rsMatrixNew<T> operator-()
@@ -497,7 +490,6 @@ public:
       C.dataPointer[i] = -dataPointer[i]; // maybe factor out into "neg" function in baseclass
     return C;
   }
-
 
   /** Adds two matrices: C = A + B. */
   rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
@@ -518,8 +510,6 @@ public:
     this->mul(this, &B, &C); 
     return C; 
   }
-
-  // todo: /, ==,,+=,-=,*=,-
 
 
   static int numHeapAllocations;  
