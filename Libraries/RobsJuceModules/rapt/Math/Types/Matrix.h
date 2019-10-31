@@ -528,11 +528,15 @@ public:
   /** Multiplies two matrices: C = A * B. */
   rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
   { 
+    //if(!areMultiplicable(*this, B))
+    //  return rsMatrixNew<T>(0, 0); // return empty matrix when attempting to multiply incompatible matrices
+
     rsMatrixNew<T> C(this->numRows, B.numCols); 
     this->mul(this, &B, &C); 
     return C; 
   }
-
+  // maybe it should return an empty matrix, when attempting to multiply incompatible matrices
+  // ...or maybe we should throw an exception in such cases?
 
   /** Adds another matrix to this matrix and returns the result. */
   rsMatrixNew<T>& operator+=(const rsMatrixNew<T>& B)

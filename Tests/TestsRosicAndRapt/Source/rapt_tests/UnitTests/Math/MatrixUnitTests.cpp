@@ -425,16 +425,23 @@ bool testMatrixNew()
   testResult &= allocs == 25;
 
 
-  C = Matrix(2, 4, {1,2,3,4, 5,6,7,8});
+  C = Matrix(2, 4, {1,2,3,4, 5,6,7,8});     // 2x4
   testResult &= allocs == 26;
-  D = Matrix(4, 2, {1,2, 3,4, 5,6, 7,8});
+  D = Matrix(4, 2, {1,2, 3,4, 5,6, 7,8});   // 4x2
   testResult &= allocs == 27;
 
-  E = B*C;
+  E = B*C;                                  // 3x2 * 2x4 = 3x4
   testResult &= allocs == 28;
   testResult &= E.getNumRows()    == 3;
   testResult &= E.getNumColumns() == 4;
+  testResult &= E(0,0) == 11 && E(0,1) == 14 && E(0,2) == 17 && E(0,3) == 20;
+  testResult &= E(1,0) == 23 && E(1,1) == 30 && E(1,2) == 37 && E(1,3) == 44;
+  testResult &= E(2,0) == 35 && E(2,1) == 46 && E(2,2) == 57 && E(2,3) == 68;
 
+
+
+
+  //E = C*B;  // should trigger assert
 
 
 
