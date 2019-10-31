@@ -302,6 +302,7 @@ bool testMatrixNew()
 
   using Matrix = rsMatrixNew<double>;
 
+  Matrix::numHeapAllocations = 0;
   int allocs = 0;
 
   // A = |1 2 3|
@@ -327,8 +328,8 @@ bool testMatrixNew()
   //     rsMatrixNew(int numRows, int numColumns)
   //     rsMatrixNew(rsMatrixNew&& B)
   testResult &= (allocs = Matrix::numHeapAllocations) == 3;
-  // todo: check content of matrix C
-
+  testResult &= C(0,0) == 22 &&  C(0,1) == 28;
+  testResult &= C(1,0) == 49 &&  C(1,1) == 64;
 
   C = A;  // calls copy assigment operator
   testResult &= (allocs = Matrix::numHeapAllocations) == 4;
@@ -344,11 +345,25 @@ bool testMatrixNew()
   testResult &= D == A+A;
   testResult &= (allocs = Matrix::numHeapAllocations) == 7;
 
-
   C = B*A;
   testResult &= (allocs = Matrix::numHeapAllocations) == 8;
-  // todo: check content of matrix C
+  testResult &= C(0,0) ==  9 &&  C(0,1) == 12 && C(0,2) == 15;
+  testResult &= C(1,0) == 19 &&  C(1,1) == 26 && C(1,2) == 33;
+  testResult &= C(2,0) == 29 &&  C(2,1) == 40 && C(2,2) == 51;
 
+
+
+  Matrix E(A+D);  // should call move constructor
+  testResult &= (allocs = Matrix::numHeapAllocations) == 9;
+
+  Matrix F(E);   // should call copy constructor
+  testResult &= (allocs = Matrix::numHeapAllocations) == 10;
+
+  Matrix G = A+D; // should call move assignment
+  testResult &= (allocs = Matrix::numHeapAllocations) == 11;
+
+  Matrix H = G;  // should call copy assignment
+  testResult &= (allocs = Matrix::numHeapAllocations) == 12;
 
 
 

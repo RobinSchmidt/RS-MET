@@ -311,6 +311,8 @@ protected:
 
 /** This is a class for representing matrices and doing mathematical operations with them. */
 
+
+
 template<class T>
 class rsMatrixNew : public rsMatrixView<T>
 {
@@ -560,8 +562,8 @@ inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
 
   // matrix/vector functions:
 
-  // todo: make some special-case classes for 2x2, 3x3 matrices which can use simpler algorithms
-  // for some of the computations
+// todo: make some special-case classes for 2x2, 3x3 matrices which can use simpler algorithms
+// for some of the computations
 
 
 // Notes:
@@ -585,6 +587,13 @@ inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
 //   return it to the caller, there would be *another* (copy?)constructor call - ...right? and that
 //   second call is what we want to get rid of
 
+// ToDo: 
+//  -maybe rename to rsMatrixOnHeap and have a similar class rsMatrixOnStack (maybe using
+//   std::dynarray instead of std::vector)...or by defining the size via template parameters at 
+//   compile time ...maybe the std::vector vs std::dynarrray distinction can determined by passing
+//   the storage container as template argument like so:
+//   template<class ElemType, class ContainerType>
+//   class rsMatrix { ContainerType<ElemType> data; };
 
 
 // maybe see here:
