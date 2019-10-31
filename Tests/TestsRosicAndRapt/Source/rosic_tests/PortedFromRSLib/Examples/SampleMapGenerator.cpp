@@ -6,8 +6,9 @@
 #ifdef _MSC_VER
 #include <direct.h>  // for msvc - otherwise maybe dirent.h
 #else
-//#include <dirent.h>
-#include <sys/stat.h>
+#include <dirent.h>
+//#include <sys/types.h>
+//#include <sys/stat.h>
 #endif
 
 void rsCreateDirectoryIfNonExistent(const RSLib::rsString &path)
@@ -17,7 +18,8 @@ void rsCreateDirectoryIfNonExistent(const RSLib::rsString &path)
 #ifdef _MSC_VER
   if( _mkdir( cString ) != 0 )
 #else
-  if( mkdir(cString, 0777) != 0 )
+  //if( mkdir(cString, 0777) != 0 )
+  if( mkdir(cString) != 0 )
 #endif
   {
     if( errno == EEXIST )
@@ -521,7 +523,7 @@ rsModalBankParametersD SampleMapGeneratorModal::interpolateParameters(
     r.a[i] = rsWeightedGeometricMean(p1.a[i], p2.a[i], w1);
     r.d[i] = rsWeightedGeometricMean(p1.d[i], p2.d[i], w1);
 
-    r.p[i] = w1*p1.p[i] + (1-w1)*p2.p[i]; 
+    r.p[i] = w1*p1.p[i] + (1-w1)*p2.p[i];
      // weighted arithmetic mean - todo: use wrapped-interpolation (see sine-modeling code)
   }
 

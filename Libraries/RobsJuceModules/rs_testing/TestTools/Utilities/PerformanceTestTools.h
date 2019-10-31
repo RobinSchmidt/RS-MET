@@ -152,33 +152,39 @@ protected:
 
 /** Non-functional implementations for non MS compilers...just to make it compile. */
 
+class ProcessorCycleCounter // maybe rename to PerformanceCounter
+{
+public:
+  inline void init() { std::cout << "ERROR: Performance counter not implemented on this platform"; }
+  inline long long getNumCyclesSinceInit() { return 0; }
+};
+class PerformanceCounterTSC : public ProcessorCycleCounter {};
+class PerformanceCounterQPC : public ProcessorCycleCounter {};
+class PerformanceCounterPMC : public ProcessorCycleCounter {};
+
+/*
+// these could be made subclasses of PerformanceCounter
 class PerformanceCounterQPC
 {
 public:
   inline void init() {  }
   inline long long getNumCyclesSinceInit() { return 0; }
 };
-
 class PerformanceCounterTSC
 {
 public:
   inline void init() {  }
   inline long long getNumCyclesSinceInit() { return 0; }
 };
-
 class PerformanceCounterPMC
 {
 public:
   inline void init() {  }
   inline long long getNumCyclesSinceInit() { return 0; }
 };
-
-/*
-class PerformanceCounterTSC : public ProcessorCycleCounter
-{
-
-};
 */
+
+
 
 
 

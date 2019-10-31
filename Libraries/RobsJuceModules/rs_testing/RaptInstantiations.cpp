@@ -352,6 +352,7 @@ template class RAPT::rsEnvelopeFollower2<double>;
 template class RAPT::rsImage<float>;
 template class RAPT::rsAlphaMask<float>;
 template class RAPT::rsImagePainter<float, float, float>;
+template class RAPT::rsImageDrawer<float, float, float>;
 template class RAPT::rsLineDrawer<float, float, float>;
 template class RAPT::rsPhaseScopeBuffer<float, float, double>;
 

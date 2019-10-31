@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="ht4IIg" name="TestsRosicAndRapt" projectType="consoleapp"
               version="1.0.0" bundleIdentifier="com.yourcompany.TestsRosicAndRapt"
-              includeBinaryInAppConfig="1" jucerVersion="5.4.3" defines="DONT_SET_USING_JUCE_NAMESPACE&#10;RS_PLOTTING"
+              includeBinaryInAppConfig="1" jucerVersion="5.4.3" defines="DONT_SET_USING_JUCE_NAMESPACE=1&#10;RS_PLOTTING=1"
               displaySplashScreen="1" reportAppUsage="1" splashScreenColour="Dark"
               cppLanguageStandard="11" companyCopyright="">
   <MAINGROUP id="faVDnE" name="TestsRosicAndRapt">

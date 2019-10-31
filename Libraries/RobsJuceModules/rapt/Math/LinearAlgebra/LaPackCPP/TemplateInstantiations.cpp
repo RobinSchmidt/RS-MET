@@ -107,5 +107,11 @@ template int latbs(char *uplo, char *trans, char *diag, char *normin, integer *n
   double *ab, integer *ldab, double *x, double *scale, double *cnorm, integer *info, 
   ftnlen uplo_len, ftnlen trans_len, ftnlen diag_len, ftnlen normin_len);
 
+//template int rscl(integer *n, double *sa, double *sx, integer *incx);
+// this instantiation gives a linker error with gcc: "no definition available" but leaving the 
+// instantiation out gives another linker error: "undefined reference"
+// ...why is no definition available? -> figure out, where we include the definitions
+// maybe try this tool: https://include-what-you-use.org/
 
 }
+

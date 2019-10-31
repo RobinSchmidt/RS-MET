@@ -4660,7 +4660,7 @@
 	<algorithm>
 	"LaPack.hpp"
 
-1570815251 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\templateinstantiations.cpp
+1572522431 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\templateinstantiations.cpp
 
 1570815251 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\basics\rosic_channelmatrix2x2.cpp
 
@@ -5402,7 +5402,7 @@
 1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\filewriting.h
 	"rosic/rosic.h"
 
-1572518616 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\performancetesttools.h
+1572521166 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\performancetesttools.h
 	<iostream>
 	<string>
 	<vector>
@@ -5508,7 +5508,7 @@
 
 1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\misc\testclasses.cpp
 
-1572518812 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\raptinstantiations.cpp
+1572521651 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\raptinstantiations.cpp
 	"../rapt/rapt_templates.cpp"
 
 1570815254 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\experiments\experiments.cpp
@@ -5538,7 +5538,7 @@
 	"../rosic_tests/PortedFromRSLib/RSLib/Core/RSCore.h"
 	"../rosic_tests/PortedFromRSLib/ExperimentsRSLib.h"
 
-1572519484 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\rscore.h
+1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\rscore.h
 	"Definitions/Setup.h"
 	"Definitions/StandardHeaders.h"
 	"Definitions/ConstantDefinitions.h"
@@ -5749,4 +5749,320 @@
 
 1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\saturationexperiments.cpp
 	"SaturationExperiments.h"
+
+1572434979 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\main.cpp
+	"../JuceLibraryCode/JuceHeader.h"
+	"rapt_tests/RaptTests.h"
+	"Experiments/Experiments.h"
+	"rosic_tests/UnitTestsRosic.h"
+	"PerformanceTests/PerformanceTests.h"
+	"Misc/Misc.h"
+	"../../../Libraries/RobsJuceModules/romos/TestSuite/TestsMain.h"
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\juceheader.h
+	"AppConfig.h"
+	<rapt/rapt.h>
+	<romos/romos.h>
+	<rosic/rosic.h>
+	<rs_testing/rs_testing.h>
+
+1572129615 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\rapttests.h
+	"UnitTests/UnitTestsRapt.h"
+
+1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\unittestsrapt.h
+
+1571176447 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\unittestsrosic.h
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\performancetests\performancetests.h
+	<rs_testing/rs_testing.h>
+	"../rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.h"
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetestsrslib.h
+	"PerformanceTests/AnalysisTests.h"
+	"PerformanceTests/CoreTests.h"
+	"PerformanceTests/MathTests.h"
+	"PerformanceTests/MiscAudioTests.h"
+	"PerformanceTests/ModalTests.h"
+
+1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\analysistests.h
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\coretests.h
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\mathtests.h
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\miscaudiotests.h
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\modaltests.h
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\misc\misc.h
+	"../rosic_tests/PortedFromRSLib/ExamplesRSLib.h"
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\examplesrslib.h
+	"Examples/ModalExamples.h"
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\examples\modalexamples.h
+	<iostream>
+	"SampleMapGenerator.h"
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\examples\samplemapgenerator.h
+	<rapt/rapt.h>
+	"../RSLib/Core/RSCore.h"
+
+1570815251 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testsmain.h
+
+1570815254 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\misc\misc.cpp
+	"Misc.h"
+	<rosic/rosic.h>
+	"../rosic_tests/PortedFromRSLib/Examples/ModalExamples.cpp"
+	"../rosic_tests/PortedFromRSLib/Examples/SampleMapGenerator.cpp"
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\examples\modalexamples.cpp
+	"ModalExamples.h"
+
+1572520373 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\examples\samplemapgenerator.cpp
+	"SampleMapGenerator.h"
+	<direct.h>
+	<dirent.h>
+
+1570815254 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\performancetests\performancetests.cpp
+	"PerformanceTests.h"
+	"../rapt_tests/PerformanceTests/MathPerformanceTests.cpp"
+	"../rapt_tests/PerformanceTests/AudioPerformanceTests.cpp"
+	"../rapt_tests/PerformanceTests/MiscPerformanceTests.cpp"
+	"../rosic_tests/PortedFromRSLib/PerformanceTests/AnalysisTests.cpp"
+	"../rosic_tests/PortedFromRSLib/PerformanceTests/CoreTests.cpp"
+	"../rosic_tests/PortedFromRSLib/PerformanceTests/MathTests.cpp"
+	"../rosic_tests/PortedFromRSLib/PerformanceTests/MiscAudioTests.cpp"
+	"../rosic_tests/PortedFromRSLib/PerformanceTests/ModalTests.cpp"
+
+1572521082 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\performancetests\mathperformancetests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\performancetests\audioperformancetests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\performancetests\miscperformancetests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\analysistests.cpp
+	"AnalysisTests.h"
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\coretests.cpp
+	"CoreTests.h"
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\mathtests.cpp
+	"MathTests.h"
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\miscaudiotests.cpp
+	"MiscAudioTests.h"
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\modaltests.cpp
+	"ModalTests.h"
+
+1572519886 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\rscore.cpp
+	"RSCore.h"
+	"Containers/Array.h"
+	"Containers/Flags.cpp"
+	"Containers/KeyValueMap.h"
+	"Containers/List.h"
+	"Containers/Range.h"
+	"Containers/Tree.h"
+	"Files/File.cpp"
+	"Files/FileInputOutput.cpp"
+	"Files/FileStream.cpp"
+	"Files/WaveFile.cpp"
+	"Misc/ErrorHandling.cpp"
+	"Misc/Logger.cpp"
+	"Misc/SystemInformation.cpp"
+	"Misc/Parameter.cpp"
+	"Text/KeyValueStringPair.cpp"
+	"Text/KeyValueStringArray.cpp"
+	"Text/KeyValueStringTree.cpp"
+	"Text/String.cpp"
+	"Utilities/NumberManipulations.cpp"
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\flags.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\files\file.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\files\fileinputoutput.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\files\filestream.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\files\wavefile.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\misc\errorhandling.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\misc\logger.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\misc\systeminformation.cpp
+	<windows.h>
+	<unistd.h>
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\misc\parameter.cpp
+	"Parameter.h"
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\text\keyvaluestringpair.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\text\keyvaluestringarray.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\text\keyvaluestringtree.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\text\string.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\numbermanipulations.cpp
+
+1572519886 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\unittests\unittests.cpp
+	"../rapt_tests/UnitTests/UnitTestsRapt.cpp"
+	"../rosic_tests/UnitTestsRosic.cpp"
+
+1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\unittestsrapt.cpp
+	"UnitTestsRapt.h"
+	<rs_testing/rs_testing.h>
+	"DataUnitTests.cpp"
+	"FilterUnitTests.cpp"
+	"ImageUnitTests.cpp"
+	"MathUnitTests.cpp"
+	"DrawingUnitTests.cpp"
+	"MiscUnitTests.cpp"
+	"SortAndSearchTests.cpp"
+	"BufferFunctionTests.cpp"
+
+1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\dataunittests.cpp
+
+1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\filterunittests.cpp
+	"../../../../Libraries/ThirdParty/Nayuki/SlidingWindowMinMax.hpp"
+
+1570815252 e:\programming\c++\rs-met\libraries\thirdparty\nayuki\slidingwindowminmax.hpp
+	<cstddef>
+	<deque>
+	<stdexcept>
+	<vector>
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\imageunittests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\mathunittests.cpp
+	"Math/LinearAlgebraUnitTests.cpp"
+	"Math/PolynomialUnitTests.cpp"
+	"Math/VectorUnitTests.cpp"
+	"Math/MatrixUnitTests.cpp"
+	"Math/MiscMathUnitTests.cpp"
+	"Math/DifferentialEquationTests.cpp"
+	"Math/IntegerFunctionTests.cpp"
+	"Math/MoebiusTransformTests.cpp"
+	"Math/NumberTheoryTests.cpp"
+	"Math/RealFunctionTests.cpp"
+	"Math/TransformsTests.cpp"
+	"Math/Point2DTests.cpp"
+	"Math/Polygon2DTests.cpp"
+	"Math/Triangle2DTests.cpp"
+	"Math/MultiArrayTests.cpp"
+
+1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\linearalgebraunittests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\polynomialunittests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\vectorunittests.cpp
+
+1572443754 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\matrixunittests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\miscmathunittests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\differentialequationtests.cpp
+
+1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\integerfunctiontests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\moebiustransformtests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\numbertheorytests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\realfunctiontests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\transformstests.cpp
+
+1571787017 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\point2dtests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\polygon2dtests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\triangle2dtests.cpp
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\multiarraytests.cpp
+
+1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\drawingunittests.cpp
+
+1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\miscunittests.cpp
+
+1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\sortandsearchtests.cpp
+	"SortAndSearchTests.h"
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\sortandsearchtests.h
+
+1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\bufferfunctiontests.cpp
+	"BufferFunctionTests.h"
+
+1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\bufferfunctiontests.h
+
+1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\unittestsrosic.cpp
+	"UnitTestsRosic.h"
+	<rs_testing/rs_testing.h>
+	"rosic_AnalysisTests.cpp"
+	"rosic_BasicsTests.cpp"
+	"rosic_CorrectnessTests.cpp"
+	"rosic_EffectsTests.cpp"
+	"rosic_FileTests.cpp"
+	"rosic_FilterTests.cpp"
+	"rosic_GeneratorsTests.cpp"
+	"rosic_MathTests.cpp"
+	"rosic_ModulatorsTests.cpp"
+	"rosic_NonRealTimeTests.cpp"
+	"rosic_NumericalTests.cpp"
+	"rosic_OthersTests.cpp"
+	"rosic_StringTests.cpp"
+	"PortedFromRSLib/UnitTests/FilterTests.cpp"
+	"PortedFromRSLib/UnitTests/MiscAudioTests.cpp"
+	"PortedFromRSLib/UnitTests/ModalTests.cpp"
+	"PortedFromRSLib/UnitTests/NumberManipulationsTests.cpp"
+	"PortedFromRSLib/UnitTests/PitchDetectorTests.cpp"
+	"PortedFromRSLib/UnitTests/TypeSizeTests.cpp"
+
+1571168210 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\rosic_analysistests.cpp
+
+1571168244 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\rosic_basicstests.cpp
+
+1571169183 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\rosic_correctnesstests.cpp
+
+1571168274 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\rosic_effectstests.cpp
+	"rosic/rosic.h"
+
+1571168288 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\rosic_filetests.cpp
+
+1571168302 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\rosic_filtertests.cpp
+
+1571168340 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\rosic_generatorstests.cpp
+
+1571168395 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\rosic_mathtests.cpp
+
+1571168412 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\rosic_modulatorstests.cpp
+
+1571168449 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\rosic_nonrealtimetests.cpp
+	"rosic/rosic.h"
+
+1571168466 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\rosic_numericaltests.cpp
+	"rosic/rosic.h"
+
+1571168534 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\rosic_otherstests.cpp
+
+1571168560 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\rosic_stringtests.cpp
+
+1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\unittests\filtertests.cpp
+
+1571169591 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\unittests\miscaudiotests.cpp
+
+1571169017 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\unittests\modaltests.cpp
+
+1571169033 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\unittests\numbermanipulationstests.cpp
+
+1571169048 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\unittests\pitchdetectortests.cpp
+
+1571169066 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\unittests\typesizetests.cpp
+
+1570815254 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\builds\codeblockswindows\resources.rc
+	<windows.h>
 
