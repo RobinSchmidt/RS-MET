@@ -320,7 +320,7 @@ class rsMatrixNew : public rsMatrixView<T>
 public:
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Construction/Destruction */
+  /** \name Construction/Assignment/Destruction */
 
   /** Standard constructor. You must pass the initial number of rows and columns */
   rsMatrixNew(int numRows = 0, int numColumns = 0)
@@ -332,7 +332,7 @@ public:
   /** Destructor. */
   ~rsMatrixNew()
   {
-    int dummy = 0;
+    int dummy = 0; // to figure out, when it gets called for debugging
   }
 
   /** Creates matrix from a std::vector.  */
@@ -396,18 +396,9 @@ public:
     rhs.reset();
     return *this;
   }
-  // when does this actually get called? it's not called in the unit test in line  Matrix C = A*B;
 
-
-
-
-  // todo: implement the various copy/move assigment operators and -constructors - this should
-  // optimize returning values from functions and operators (avoid unnessary copying)
-  // https://en.cppreference.com/w/cpp/language/operators#Assignment_operator
-  // ..i tried - but no avail yet
-  // but we have to implement them because the standard versions will copy the pointer variable
-  // inherited from the baseclass - we must call updateDataPointer in the copy/move
-  // construtors/assigners
+  // todo: make factory-functions: zero(numRows, numCols), identity(size), diag(vector), 
+  // etc.
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -495,11 +486,7 @@ public:
 
   /** Adds two matrices: C = A + B. */
   rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
-  {
-    rsMatrixNew<T> C(this->numRows, this->numCols);
-    this->add(this, &B, &C);
-    return C;
-  }
+  { rsMatrixNew<T> C(this->numRows, this->numCols); this->add(this, &B, &C); return C; }
 
   /** Subtracts two matrices: C = A - B. */
   rsMatrixNew<T> operator-(const rsMatrixNew<T>& B) const
@@ -507,16 +494,12 @@ public:
 
   /** Multiplies two matrices: C = A * B. */
   rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
-  {
-    rsMatrixNew<T> C(this->numRows, B.numCols);
-    this->mul(this, &B, &C);
-    return C;
-  }
+  { rsMatrixNew<T> C(this->numRows, B.numCols); this->mul(this, &B, &C); return C; }
 
 
   static int numHeapAllocations;
-  // instrumentation for unit-testing - it's actually the number of *potential* heap-allocations,
-  // namely, the number of calls to data.resize() which may or may not re-allocate memory
+    // instrumentation for unit-testing - it's actually the number of *potential* heap-allocations,
+    // namely, the number of calls to data.resize() which may or may not re-allocate memory
 
 protected:
 
@@ -541,7 +524,6 @@ protected:
   //  matrices - on the other hand, very small matrices may be common
   // -maybe use std::vector in debug builds and new/delete in release builds
 
-
 };
 
 template<class T> int rsMatrixNew<T>::numHeapAllocations = 0;
@@ -554,6 +536,8 @@ inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
   B.scale(s);
   return B;
 }
+
+// todo: implement righ-multiplication by a scalar
 
 
 

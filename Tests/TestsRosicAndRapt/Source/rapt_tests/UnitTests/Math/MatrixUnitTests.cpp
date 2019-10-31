@@ -345,26 +345,42 @@ bool testMatrixNew()
   testResult &= D == A+A;
   testResult &= (allocs = Matrix::numHeapAllocations) == 7;
 
-  C = B*A;
+  C = B*A;  // calls move assignment operator
   testResult &= (allocs = Matrix::numHeapAllocations) == 8;
   testResult &= C(0,0) ==  9 &&  C(0,1) == 12 && C(0,2) == 15;
   testResult &= C(1,0) == 19 &&  C(1,1) == 26 && C(1,2) == 33;
   testResult &= C(2,0) == 29 &&  C(2,1) == 40 && C(2,2) == 51;
 
 
-
-  Matrix E(A+D);  // should call move constructor
+  Matrix E(A+D);  // calls move constructor
   testResult &= (allocs = Matrix::numHeapAllocations) == 9;
+  testResult &= E == A+D;  // temporary A+D needs allocation
+  testResult &= (allocs = Matrix::numHeapAllocations) == 10; 
 
-  Matrix F(E);   // should call copy constructor
-  testResult &= (allocs = Matrix::numHeapAllocations) == 10;
-
-  Matrix G = A+D; // should call move assignment
+  Matrix F(E);   // calls copy constructor
+  testResult &= (allocs = Matrix::numHeapAllocations) == 11;
+  testResult &= F == E;   // no allocation here
   testResult &= (allocs = Matrix::numHeapAllocations) == 11;
 
-  Matrix H = G;  // should call copy assignment
+  // hmm - these here call move/copy constructors and not move/copy assigment operators - why
+  // ..ah - it's because it's not a re-assignment
+  Matrix G = A+D; // calls move constructor
   testResult &= (allocs = Matrix::numHeapAllocations) == 12;
+  testResult &= G == A+D;  // temporary A+D needs allocation
+  testResult &= (allocs = Matrix::numHeapAllocations) == 13;
 
+  Matrix H = G;   // calls copy constructor
+  testResult &= (allocs = Matrix::numHeapAllocations) == 14;
+  testResult &= H == G;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 14;
+
+
+  Matrix I, J;  // no allocations yet
+  testResult &= (allocs = Matrix::numHeapAllocations) == 14;
+  I = A+D;      // move assignment
+  testResult &= (allocs = Matrix::numHeapAllocations) == 15;
+  J = I;        // copy assignment
+  testResult &= (allocs = Matrix::numHeapAllocations) == 16;
 
 
   return testResult;
