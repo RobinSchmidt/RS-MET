@@ -297,20 +297,20 @@ bool testMatrixView()
 
 bool testMatrixNew()
 {
-  std::string testName = "Matrix2";
+  std::string testName = "MatrixNew";
   bool testResult = true;
 
   using Matrix = rsMatrixNew<double>;
+  int& allocs  = Matrix::numHeapAllocations;  // to count allocations
+  allocs = 0;
 
-  Matrix::numHeapAllocations = 0;
-  int allocs = 0;
 
   // A = |1 2 3|
   //     |4 5 6|
   Matrix A(2, 3, {1.,2.,3., 4.,5.,6.}); // calls rsMatrixNew(int, int, std::vector<T>&&)
   testResult &= A(0,0) == 1 &&  A(0,1) == 2 && A(0,2) == 3;
   testResult &= A(1,0) == 4 &&  A(1,1) == 5 && A(1,2) == 6;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 1;
+  testResult &= allocs == 1;
 
   // B = |1 2| 
   //     |3 4|
@@ -319,7 +319,7 @@ bool testMatrixNew()
   testResult &= B(0,0) == 1 &&  B(0,1) == 2;
   testResult &= B(1,0) == 3 &&  B(1,1) == 4;
   testResult &= B(2,0) == 5 &&  B(2,1) == 6;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 2;
+  testResult &= allocs == 2;
 
   // multiplication:
   Matrix C = A*B; 
@@ -327,108 +327,116 @@ bool testMatrixNew()
   //   operator*(const rsMatrixNew<T>&)
   //     rsMatrixNew(int numRows, int numColumns)
   //     rsMatrixNew(rsMatrixNew&& B)
-  testResult &= (allocs = Matrix::numHeapAllocations) == 3;
+  testResult &= allocs == 3;
   testResult &= C(0,0) == 22 &&  C(0,1) == 28;
   testResult &= C(1,0) == 49 &&  C(1,1) == 64;
 
   C = A;  // calls copy assigment operator
-  testResult &= (allocs = Matrix::numHeapAllocations) == 4;
+  testResult &= allocs == 4;
   testResult &= C == A;
 
   A = A;  // self copy assignment - should not re-allocate
-  testResult &= (allocs = Matrix::numHeapAllocations) == 4;
+  testResult &= allocs == 4;
 
   Matrix D = A+A;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 5;
+  testResult &= allocs == 5;
   testResult &= D == Matrix(2, 3, {2.,4.,6., 8.,10.,12.});
-  testResult &= (allocs = Matrix::numHeapAllocations) == 6;
+  testResult &= allocs == 6;
   testResult &= D == A+A;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 7;
+  testResult &= allocs == 7;
 
   C = B*A;  // calls move assignment operator
-  testResult &= (allocs = Matrix::numHeapAllocations) == 8;
+  testResult &= allocs == 8;
   testResult &= C(0,0) ==  9 &&  C(0,1) == 12 && C(0,2) == 15;
   testResult &= C(1,0) == 19 &&  C(1,1) == 26 && C(1,2) == 33;
   testResult &= C(2,0) == 29 &&  C(2,1) == 40 && C(2,2) == 51;
 
 
   Matrix E(A+D);  // calls move constructor
-  testResult &= (allocs = Matrix::numHeapAllocations) == 9;
+  testResult &= allocs == 9;
   testResult &= E == A+D;  // temporary A+D needs allocation
-  testResult &= (allocs = Matrix::numHeapAllocations) == 10; 
+  testResult &= allocs == 10; 
 
   Matrix F(E);   // calls copy constructor
-  testResult &= (allocs = Matrix::numHeapAllocations) == 11;
+  testResult &= allocs == 11;
   testResult &= F == E;   // no allocation here
-  testResult &= (allocs = Matrix::numHeapAllocations) == 11;
+  testResult &= allocs == 11;
 
   // hmm - these here call move/copy constructors and not move/copy assigment operators - why
   // ..ah - it's because it's not a re-assignment
   Matrix G = A+D; // calls move constructor
-  testResult &= (allocs = Matrix::numHeapAllocations) == 12;
+  testResult &= allocs == 12;
   testResult &= G == A+D;  // temporary A+D needs allocation
-  testResult &= (allocs = Matrix::numHeapAllocations) == 13;
+  testResult &= allocs == 13;
 
   Matrix H = G;   // calls copy constructor
-  testResult &= (allocs = Matrix::numHeapAllocations) == 14;
+  testResult &= allocs == 14;
   testResult &= H == G;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 14;
+  testResult &= allocs == 14;
 
 
   Matrix I, J;  // no allocations yet
-  testResult &= (allocs = Matrix::numHeapAllocations) == 14;
+  testResult &= allocs == 14;
   I = A+D;      // move assignment
-  testResult &= (allocs = Matrix::numHeapAllocations) == 15;
+  testResult &= allocs == 15;
   J = I;        // copy assignment
-  testResult &= (allocs = Matrix::numHeapAllocations) == 16;
+  testResult &= allocs == 16;
 
 
   // multiplication with a scalar:
   I = 2.0 * A;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 17;
+  testResult &= allocs == 17;
   testResult &=  I == Matrix(2, 3, {2.,4.,6., 8.,10.,12.});
-  testResult &= (allocs = Matrix::numHeapAllocations) == 18;
+  testResult &= allocs == 18;
 
   J = A * 2.0;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 19;
+  testResult &= allocs == 19;
   testResult &= I == J;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 19;
+  testResult &= allocs == 19;
 
   // in-place addition and subtraction via +=, -=:
   J += A;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 19;
+  testResult &= allocs == 19;
   testResult &= J == 3.0 * A;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 20;
+  testResult &= allocs == 20;
   J -= A;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 20;
+  testResult &= allocs == 20;
   testResult &= J == 2.0 * A;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 21;
+  testResult &= allocs == 21;
 
   // the *= operator can't operate in-place:
   J = A;    // should not re-allocate because J already has the right shape
-  testResult &= (allocs = Matrix::numHeapAllocations) == 21;
+  testResult &= allocs == 21;
   J *= B;   // allocates
-  testResult &= (allocs = Matrix::numHeapAllocations) == 22;
+  testResult &= allocs == 22;
   testResult &= J == A*B;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 23;
+  testResult &= allocs == 23;
 
   // in-place scaling by a scalar:
   J = A;    
-  testResult &= (allocs = Matrix::numHeapAllocations) == 24;
+  testResult &= allocs == 24;
   J *= 2.0;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 24;
+  testResult &= allocs == 24;
   testResult &= J == 2.0 * A;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 25;
+  testResult &= allocs == 25;
   J /= 2.0;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 25;
+  testResult &= allocs == 25;
   testResult &= J == A;
-  testResult &= (allocs = Matrix::numHeapAllocations) == 25;
+  testResult &= allocs == 25;
 
 
-  C = Matrix(4, 2, {1,2, 3,4, 5,6, 7,8});
-  testResult &= (allocs = Matrix::numHeapAllocations) == 26;
-  D = Matrix(2, 4, {1,2,3,4, 5,6,7,8});
-  testResult &= (allocs = Matrix::numHeapAllocations) == 27;
+  C = Matrix(2, 4, {1,2,3,4, 5,6,7,8});
+  testResult &= allocs == 26;
+  D = Matrix(4, 2, {1,2, 3,4, 5,6, 7,8});
+  testResult &= allocs == 27;
+
+  E = B*C;
+  testResult &= allocs == 28;
+  testResult &= E.getNumRows()    == 3;
+  testResult &= E.getNumColumns() == 4;
+
+
+
 
   // todo:
   // -try some more multiplications: 4x2 * 2x3, 3x2 * 2x4
