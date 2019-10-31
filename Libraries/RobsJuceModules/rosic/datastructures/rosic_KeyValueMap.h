@@ -21,7 +21,8 @@ struct KeyValuePair
 /* Less-than comparison between two pointers to key/value pairs which returns true when the key in the first pointer is less than the
 key in the second pointer. */
 template<class KeyType, class ValueType>
-bool keyValuePairPointerLessByKey(KeyValuePair<KeyType, ValueType>* pointer1, KeyValuePair<KeyType, ValueType>* pointer2)
+bool keyValuePairPointerLessByKey(
+  KeyValuePair<KeyType, ValueType>* pointer1, KeyValuePair<KeyType, ValueType>* pointer2)
 {
   if(pointer1->key < pointer2->key)
     return true;
@@ -32,7 +33,8 @@ bool keyValuePairPointerLessByKey(KeyValuePair<KeyType, ValueType>* pointer1, Ke
 /* Less-than comparison between two pointers to key/value pairs which returns true when the value in the first pointer is less than the
 value in the second pointer. */
 template<class KeyType, class ValueType>
-bool keyValuePairPointerLessByValue(KeyValuePair<KeyType, ValueType>* pointer1, KeyValuePair<KeyType, ValueType>* pointer2)
+bool keyValuePairPointerLessByValue(
+  KeyValuePair<KeyType, ValueType>* pointer1, KeyValuePair<KeyType, ValueType>* pointer2)
 {
   if(pointer1->value < pointer2->value)
     return true;
@@ -42,6 +44,7 @@ bool keyValuePairPointerLessByValue(KeyValuePair<KeyType, ValueType>* pointer1, 
 
 
 /* Wraps the function keyValuePairPointerLessByKey() into a functor class, as required by the STL. */
+/*
 template<class KeyType, class ValueType>
 struct KeyValuePairPointerLessByKey
   : std::binary_function<KeyValuePair<KeyType, ValueType>*,
@@ -52,11 +55,12 @@ struct KeyValuePairPointerLessByKey
     return keyValuePairPointerLessByKey(pointer1, pointer2);
   }
 };
-
+*/
 // doesn't compile in c++17 - see here:
 // https://stackoverflow.com/questions/33114656/replacement-for-binary-function
 
 /* Wraps the function keyValuePairPointerLessByValue() into a functor class, as required by the STL. */
+/*
 template<class KeyType, class ValueType>
 struct KeyValuePairPointerLessByValue
   : std::binary_function<KeyValuePair<KeyType, ValueType>*,
@@ -67,6 +71,7 @@ struct KeyValuePairPointerLessByValue
     return keyValuePairPointerLessByValue(pointer1, pointer2);
   }
 };
+*/
 
 
 
@@ -110,6 +115,7 @@ public:
     newEntry->value = value;
     typename std::vector<KeyValuePair<KeyType, ValueType>*>::iterator iter;
 
+    /* old, pre C++11:
     // insert into the sorted-by-key array at the right position:
     KeyValuePairPointerLessByKey<KeyType, ValueType> compareByKey;
     iter = lower_bound(entriesSortedByKey.begin(), entriesSortedByKey.end(), newEntry, compareByKey);
@@ -119,6 +125,21 @@ public:
     KeyValuePairPointerLessByValue<KeyType, ValueType> compareByValue;
     iter = lower_bound(entriesSortedByValue.begin(), entriesSortedByValue.end(), newEntry, compareByValue);
     entriesSortedByValue.insert(iter, newEntry);
+    */
+
+    // new, C++11:
+        // insert into the sorted-by-key array at the right position:
+    iter = lower_bound(entriesSortedByKey.begin(), entriesSortedByKey.end(),
+                       newEntry, keyValuePairPointerLessByKey);
+    entriesSortedByKey.insert(iter, newEntry);
+
+    // insert into the sorted-by-value array at the right position:
+    iter = lower_bound(entriesSortedByValue.begin(), entriesSortedByValue.end(),
+                       newEntry, keyValuePairPointerLessByValue);
+    entriesSortedByValue.insert(iter, newEntry);
+
+
+    //keyValuePairPointerLessByKey
   }
 
   // todo: write mergeKeyValueMaps, ...
@@ -144,9 +165,19 @@ public:
     KeyValuePair<KeyType, ValueType>* dummyEntry = new KeyValuePair<KeyType, ValueType>;
     dummyEntry->key = key;
 
+    /*
+    // pre C++11:
     KeyValuePairPointerLessByKey<KeyType, ValueType> compareByKey;
     typename std::vector<KeyValuePair<KeyType, ValueType>*>::iterator iter;
     iter = lower_bound(entriesSortedByKey.begin(), entriesSortedByKey.end(), dummyEntry, compareByKey);
+    */
+
+    // C++11:
+    typename std::vector<KeyValuePair<KeyType, ValueType>*>::iterator iter;
+    iter = lower_bound(entriesSortedByKey.begin(), entriesSortedByKey.end(),
+                       dummyEntry, keyValuePairPointerLessByKey);
+
+
 
     if(iter != entriesSortedByKey.end() && (*iter)->key == key)
     {
@@ -170,9 +201,17 @@ public:
     KeyValuePair<KeyType, ValueType>* dummyEntry = new KeyValuePair<KeyType, ValueType>;
     dummyEntry->value = value;
 
+    /*
+    // pre C++11:
     KeyValuePairPointerLessByValue<KeyType, ValueType> compareByValue;
     typename std::vector<KeyValuePair<KeyType, ValueType>*>::iterator iter;
     iter = lower_bound(entriesSortedByValue.begin(), entriesSortedByValue.end(), dummyEntry, compareByValue);
+    */
+
+    // C++11:
+    typename std::vector<KeyValuePair<KeyType, ValueType>*>::iterator iter;
+    iter = lower_bound(entriesSortedByValue.begin(), entriesSortedByValue.end(),
+                       dummyEntry, keyValuePairPointerLessByValue);
 
     if(iter != entriesSortedByValue.end() && (*iter)->value == value)
     {

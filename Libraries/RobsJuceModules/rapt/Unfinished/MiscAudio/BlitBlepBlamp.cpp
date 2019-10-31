@@ -34,7 +34,7 @@ void rsTableLinBlep<TSig, TTim>::updateTables()
 
   int ic      = (L-1)/2;  // center index
   timeTbl[ic] = TTim(0);  // time axis in samples
-  this->blitTbl[ic] = window(TTim(0));
+  this->blitTbl[ic] = this->window(TTim(0));
   int i;
   for(i = 1; i <= ic; i++) {
     TTim t = TTim(i) / TTim(this->tablePrecision);  // time in samples
@@ -49,7 +49,7 @@ void rsTableLinBlep<TSig, TTim>::updateTables()
     // for the desired integral (it will be a sum of such terms, each weighted by the coefficient
     // of the cosine term)
 
-    s *= window(t);
+    s *= this->window(t);
 
     timeTbl[ic + i] =  t;
     timeTbl[ic - i] = -t;
@@ -184,7 +184,7 @@ void rsTableMinBlep<TSig, TTim>::updateTables()
   TTim ts = TTim(1) / TTim(this->tablePrecision);  // time axis scaler
   for(int n = 0; n < L; n++) {
     timeAxis[n] = ts * TTim(n);
-    wnd[n] = window(0.5 * timeAxis[n]);      // 0.5 because of unilaterality
+    wnd[n] = this->window(0.5 * timeAxis[n]);      // 0.5 because of unilaterality
   }
 
   // create blit:

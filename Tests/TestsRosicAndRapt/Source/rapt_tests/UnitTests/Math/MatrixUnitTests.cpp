@@ -339,7 +339,15 @@ bool testMatrixNew()
 
   Matrix D = A+A;
   testResult &= (allocs = Matrix::numHeapAllocations) == 5;
-  testResult &= D == Matrix(2, 3, {2.,4.,6., 8.,10.,12.});  // crashes!!
+  testResult &= D == Matrix(2, 3, {2.,4.,6., 8.,10.,12.});
+  testResult &= (allocs = Matrix::numHeapAllocations) == 6;
+  testResult &= D == A+A;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 7;
+
+
+  C = B*A;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 8;
+  // todo: check content of matrix C
 
 
 

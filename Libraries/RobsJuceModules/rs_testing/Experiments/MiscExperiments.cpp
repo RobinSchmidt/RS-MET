@@ -289,7 +289,7 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   //analyzer.setMinPartialIndex(0);  // not yet working
   //analyzer.setMaxPartialIndex(2);
 
-  //analyzer.getCycleFinder().setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
+  analyzer.getCycleFinder().setAlgorithm(rsCycleMarkFinder<double>::F0_ZERO_CROSSINGS);
   // for test with Rhodes Tuned F3 V12TX -16.4 10-17-16 shorter
 
   setupHarmonicAnalyzerFor(analyzer, name, fs, f0);

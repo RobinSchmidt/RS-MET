@@ -60,7 +60,7 @@ struct rsSpaceTimeVector
   |x'| = | g   -vg| * |x|
   |t'|   |-vg   g |   |t|
 
-  where g = 1/sqrt(1-v^2), vg = v*g. maybe we should put the t-coordinate first? ...maybe 
+  where g = 1/sqrt(1-v^2), vg = v*g. maybe we should put the t-coordinate first? ...maybe
   generalize to allow for separate vx, vy, vz velocities
   */
 
@@ -123,11 +123,11 @@ struct rsSpaceTimeVector
 
   T energy(T m, T vx, T vy, T vz)
   {
-    return m * gamma(vx, vy, vz)
+    return m * gamma(vx, vy, vz);
   } // 3.38 with c = 1
   // common units: E = m*c^2 / sqrt(1 - v^2/c^2), reduces to E = m*c^2 for v=0
   // maybe implement approximation Eq 3.39
-  // what about 3.44 - what's the P^2 there? 
+  // what about 3.44 - what's the P^2 there?
 
   //-----------------------------------------------------------------------------------------------
 
@@ -155,9 +155,9 @@ class rsQuaternion
 
 public:
 
- 
+
   /** The quaternion is given by: q = a + b*i + c*j + d*k */
-  T a, b, c, d; 
+  T a, b, c, d;
 
 
 
@@ -188,9 +188,9 @@ public:
 
   /** Multiplies two quaternions. */
   rsQuaternion<T> operator*(const rsQuaternion<T>& q) const
-  { 
+  {
     return rsQuaternion<T>(
-      a*q.a - b*q.b - c*q.c - d*q.d, 
+      a*q.a - b*q.b - c*q.c - d*q.d,
       a*q.b + b*q.a + c*q.d - d*q.c,
       a*q.c - b*q.d + c*q.a + d*q.b,
       a*q.d + b*q.c - c*q.b + d*q.a);
@@ -202,13 +202,13 @@ public:
 
 
 };
-// this class should go somewhere into rapt/Math 
+// this class should go somewhere into rapt/Math
 
-// the idea is to construct an example electromagnetic vector potential A from q^2 where q is a 
-// quaternion and do experiments with that vector potential - i.e. derive electric and magnetic 
-// fields (E and B) from it and simulate the motion of a charged particle in that field - once with 
-// the regular maxwell equations and then also with the maxwell equations in tensor form. in the 
-// former case, use time t as independent parameter, in the latter, use proper time tau as 
+// the idea is to construct an example electromagnetic vector potential A from q^2 where q is a
+// quaternion and do experiments with that vector potential - i.e. derive electric and magnetic
+// fields (E and B) from it and simulate the motion of a charged particle in that field - once with
+// the regular maxwell equations and then also with the maxwell equations in tensor form. in the
+// former case, use time t as independent parameter, in the latter, use proper time tau as
 // independent parameter -> we may get a non-equidistant time-axis in the latter case
 // the example vector potential is then:
 // A(t,x,y,z) = |t^2 - x^2 - y^2 - z^2|

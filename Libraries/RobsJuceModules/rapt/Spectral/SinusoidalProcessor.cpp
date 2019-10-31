@@ -251,9 +251,13 @@ rsSinusoidalModel<T> rsSinusoidalProcessor<T>::extractHighpassPart(rsSinusoidalM
 template<class T>
 rsPartialBeatingRemover<T>::rsPartialBeatingRemover()
 {
-  typedef rsEnvelopeExtractor<T>::endPointModes EM;
-  envExtractor.setStartMode(EM::ZERO_END);
-  envExtractor.setEndMode(  EM::ZERO_END);
+  //typedef rsEnvelopeExtractor<T>::endPointModes EM;
+//  using EM = rsEnvelopeExtractor<T>::endPointModes;
+//  envExtractor.setStartMode(EM::ZERO_END);
+//  envExtractor.setEndMode(  EM::ZERO_END);
+
+  envExtractor.setStartMode(rsEnvelopeExtractor<T>::ZERO_END);
+  envExtractor.setEndMode(  rsEnvelopeExtractor<T>::ZERO_END);
 
 
   // maybe factor out into setToDefaultSettings or resetSettings or something
@@ -310,24 +314,24 @@ void rsPartialBeatingRemover<T>::removeAmplitudeBeating(rsSinusoidalPartial<T>& 
   //plt.addDataArrays((int)rsSize(t), &t[0], &a[0]);
   //plt.plot();
   // in rsEnvelopeExtractor<T>::fillSparseAreas, the numExtraPoints local variable gets a negative
-  // value 
+  // value
   // does this happen because the amp-env gets negative? - why does it get negative anyway - that's
-  // also a bug - it occurs in the DC component - i think, a negative DC component should be 
+  // also a bug - it occurs in the DC component - i think, a negative DC component should be
   // represented by a phase of 180° - a "cosine" of zero frequency at 180° phase is -1
   // -> try to remove the DC
   // ...ok - i think fillSparseAreas needs more thorough testing - there seem to be still bugs
-  // nevertheless, we should figure out, how we can get negative magnitudes - maybe use an 
+  // nevertheless, we should figure out, how we can get negative magnitudes - maybe use an
   // rsAssert(std::none_of(a ...>= 0.0)
 
-  //T maxCyclesPerEnvPoint = 10;  
+  //T maxCyclesPerEnvPoint = 10;
   // ad hoc - make user parameter - we want at least 1 envelope datapoint for every 10
   // cycles - that means at most 10 cycles per env datapoint
   //T maxEnvSampleSpacing = maxCyclesPerEnvPoint / partial.getMeanFreq();
   //envExtractor.setMaxSampleSpacing(maxEnvSampleSpacing);
 
-  // hmmm...should this really depend on the partial's frequency? shouldn't we just use the 
+  // hmmm...should this really depend on the partial's frequency? shouldn't we just use the
   // fundamental frequency as reference - it doesn't seem to make much sense to make the envelope
-  // samples denser towards higher partials because the analyssis resolution is tied to the 
+  // samples denser towards higher partials because the analyssis resolution is tied to the
   // fundamental anyway ....but maybe that doesn't have to remain so....
   // yeah - it should definitely depend on the fundamental - the frequency may even be zero - DC
   // is allowed
@@ -373,7 +377,7 @@ void rsPartialBeatingRemover<T>::removePhaseBeating(rsSinusoidalPartial<T>& part
 
 template<class T>
 std::vector<T> rsPartialBeatingRemover<T>::smoothPhases(
-  const std::vector<T>& t, const std::vector<T>& f, const std::vector<T>& pIn, 
+  const std::vector<T>& t, const std::vector<T>& f, const std::vector<T>& pIn,
   T cutoff, int order, int numPasses)
 {
   //GNUPlotter plt;

@@ -2,8 +2,8 @@
 #define RAPT_MATRIX_H
 
 
-/** A class for representing 2x2 matrices. They are treated as a special case because a lot of 
-things which are impractical in the general case can be done for the 2x2 case. For example, it's 
+/** A class for representing 2x2 matrices. They are treated as a special case because a lot of
+things which are impractical in the general case can be done for the 2x2 case. For example, it's
 possible to compute eigenvalues and eigenvectors via closed form formulas. */
 
 template<class T>
@@ -26,7 +26,7 @@ public:
   /** Constructor. Initializes elements with  given values. */
   rsMatrix2x2(T a, T b, T c, T d) { setValues(a, b, c, d); }
 
-  /** Standard constructor. Leaves elements uninitialized. 
+  /** Standard constructor. Leaves elements uninitialized.
   (...try to avoid using it - prefer RAII) */
   rsMatrix2x2() {}
 
@@ -223,7 +223,7 @@ public:
   bool isColumnVector() const { return numCols == 1; }
 
 
-  /** Returns a pointer to the stored data. When using this, be sure that you know exactly what 
+  /** Returns a pointer to the stored data. When using this, be sure that you know exactly what
   you are doing.... */
   //T* getData() { return dataPointer; }
 
@@ -343,8 +343,8 @@ public:
     updateDataPointer();
   }
 
-  /** Creates matrix from an unnamed/temporary/rvalue std::vector - convenient to initialize elements. 
-  You can initialize matrices like this: 
+  /** Creates matrix from an unnamed/temporary/rvalue std::vector - convenient to initialize elements.
+  You can initialize matrices like this:
     rsMatrix<double> A(2, 3, {1.,2.,3., 4.,5.,6.});   */
   rsMatrixNew(int numRows, int numColumns, std::vector<T>&& newData) : data(std::move(newData))
   {
@@ -367,8 +367,8 @@ public:
   rsMatrixNew(rsMatrixNew&& B) : data(std::move(B.data))
   {
     rsAssert(B.data.size() == 0); // B's data has now become our data
-    numRows = B.numRows;
-    numCols = B.numCols;
+    this->numRows = B.numRows;
+    this->numCols = B.numCols;
     updateDataPointer();
     B.reset();                    // invalidates pointer in B
   }
@@ -388,13 +388,13 @@ public:
   {
     data = std::move(rhs.data);
     rsAssert(rhs.data.size() == 0);
-    numRows = rhs.numRows;
-    numCols = rhs.numCols;
+    this->numRows = rhs.numRows;
+    this->numCols = rhs.numCols;
     updateDataPointer();
     rhs.reset();
     return *this;
   }
-  // when does this actually get called? it's not called in the unit test in line  Matrix C = A*B; 
+  // when does this actually get called? it's not called in the unit test in line  Matrix C = A*B;
 
 
 
@@ -487,16 +487,16 @@ public:
   {
     rsMatrixNew<T> C(this->numRows, this->numCols);
     for(int i = 0; i < this->getSize(); i++)
-      C.dataPointer[i] = -dataPointer[i]; // maybe factor out into "neg" function in baseclass
+      C.dataPointer[i] = -this->dataPointer[i]; // maybe factor out into "neg" function in baseclass
     return C;
   }
 
   /** Adds two matrices: C = A + B. */
   rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
-  { 
-    rsMatrixNew<T> C(this->numRows, this->numCols); 
-    this->add(this, &B, &C); 
-    return C; 
+  {
+    rsMatrixNew<T> C(this->numRows, this->numCols);
+    this->add(this, &B, &C);
+    return C;
   }
 
   /** Subtracts two matrices: C = A - B. */
@@ -505,15 +505,15 @@ public:
 
   /** Multiplies two matrices: C = A * B. */
   rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
-  { 
-    rsMatrixNew<T> C(this->numRows, B.numCols); 
-    this->mul(this, &B, &C); 
-    return C; 
+  {
+    rsMatrixNew<T> C(this->numRows, B.numCols);
+    this->mul(this, &B, &C);
+    return C;
   }
 
 
-  static int numHeapAllocations;  
-  // instrumentation for unit-testing - it's actually the number of *potential* heap-allocations, 
+  static int numHeapAllocations;
+  // instrumentation for unit-testing - it's actually the number of *potential* heap-allocations,
   // namely, the number of calls to data.resize() which may or may not re-allocate memory
 
 protected:
@@ -532,11 +532,11 @@ protected:
   /** \name Data */
 
   std::vector<T> data;
-  // maybe we should just work with our inherited dataPointer and use new/delete 
+  // maybe we should just work with our inherited dataPointer and use new/delete
   // -saves a little bit of storage
   // -but then we can't look easily at the data in the debugger anymore -> very bad! so, nope!
-  // -the little storage overhead of std::vector becomes negligible for all but the smallest 
-  //  matrices - on the other hand, very small matrices may be common 
+  // -the little storage overhead of std::vector becomes negligible for all but the smallest
+  //  matrices - on the other hand, very small matrices may be common
   // -maybe use std::vector in debug builds and new/delete in release builds
 
 
@@ -568,10 +568,10 @@ inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
 // -class is under construction
 // -design goals:
 //  -use std::vector to hold the data in a flat array (so we can inspect it in the debugger)
-//  -storage format should be compatible with lapack routines (maybe not by default, but can be 
+//  -storage format should be compatible with lapack routines (maybe not by default, but can be
 //   made so) - that means to support column major storage
-//  -in expressions like rsMatrix<float> C = B*(A + B) + B; we want to avoid copying the data 
-//   unnecessarily - i.e. avoid that the temporaries that occur inside this expression use heap 
+//  -in expressions like rsMatrix<float> C = B*(A + B) + B; we want to avoid copying the data
+//   unnecessarily - i.e. avoid that the temporaries that occur inside this expression use heap
 //   allocation only when absolutely necessarry
 //   ...this especially means, we need to pass the return values of the arithmetic operators by
 //   reference rather than by value - typically, in an implementation like
@@ -587,7 +587,7 @@ inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
 
 
 
-// maybe see here: 
+// maybe see here:
 // https://www.youtube.com/watch?v=PNRju6_yn3o
 // https://www.ibm.com/developerworks/community/blogs/5894415f-be62-4bc0-81c5-3956e82276f3/entry/RVO_V_S_std_move?lang=en
 // https://en.cppreference.com/w/cpp/language/copy_elision
