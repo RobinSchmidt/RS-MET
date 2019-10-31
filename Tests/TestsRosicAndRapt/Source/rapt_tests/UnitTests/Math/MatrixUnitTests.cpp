@@ -424,6 +424,12 @@ bool testMatrixNew()
   testResult &= J == A;
   testResult &= (allocs = Matrix::numHeapAllocations) == 25;
 
+
+  C = Matrix(4, 2, {1,2, 3,4, 5,6, 7,8});
+  testResult &= (allocs = Matrix::numHeapAllocations) == 26;
+  D = Matrix(2, 4, {1,2,3,4, 5,6,7,8});
+  testResult &= (allocs = Matrix::numHeapAllocations) == 27;
+
   // todo:
   // -try some more multiplications: 4x2 * 2x3, 3x2 * 2x4
   // -try matrix/vector products

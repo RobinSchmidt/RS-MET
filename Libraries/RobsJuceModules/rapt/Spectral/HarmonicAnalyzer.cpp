@@ -50,12 +50,18 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   // Find cycle marks and assign FFT blockSize:
   Vec cycleMarks = findCycleMarks(x, Nx);        // cycle marks
   //rsPlotSignalWithMarkers(x, Nx, &cycleMarks[0], (int) cycleMarks.size());
-  if(cycleMarks.size() < 2)
-    return false;                                // report failure
+
+  rsAssert(cycleMarks.size() >= 2);              // something went wrong in the cycel mark finder
+  if(cycleMarks.size() < 2) return false;        // report failure
+
   Vec cycleLengths = rsDifference(cycleMarks);   // cycle lengths
   T maxLength = rsMaxValue(cycleLengths);
   //maxLength   = rsMax(maxLength, cycleMarks[0]);             // delta between 0 and 1st mark
   //maxLength   = rsMax(maxLength, (Nx-1)-rsLast(cycleMarks)); // delta between end and last mark
+
+  rsAssert(maxLength >= 2);                      // at least 2 samples per cycle
+  if(maxLength < 2) return false;                // report failure
+
   cycleLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
   setCycleLength(cycleLength);  // does also some buffer-re-allocation
   //rsPlotVector(cycleLengths);
