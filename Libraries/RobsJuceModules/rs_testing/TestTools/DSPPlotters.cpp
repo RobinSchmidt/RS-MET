@@ -330,8 +330,8 @@ template class FilterPlotter<double>;
 
 
 template <class T>
-void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const T *x1, 
-  const T *x2, const T *x3, const T *x4, const T *x5, const T *x6, const T *x7, const T *x8, 
+void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const T *x1,
+  const T *x2, const T *x3, const T *x4, const T *x5, const T *x6, const T *x7, const T *x8,
   const T *x9)
 {
   RAPT::rsAssert(signalLength <= fftSize);
@@ -396,7 +396,7 @@ std::vector<T> SpectrumPlotter<T>::getFreqAxis(int maxBin)
   case FU::hertz:      scaler = r*sampleRate; break;
   }
 
-  RAPT::rsArray::scale(&f[0], maxBin, scaler); 
+  RAPT::rsArray::scale(&f[0], maxBin, scaler);
 
   return f;
 }
@@ -409,7 +409,7 @@ template class SpectrumPlotter<double>;
 //=================================================================================================
 
 template <class T>
-void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int numBins, 
+void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int numBins,
   T **s, T fs, int H, T dbMin, T dbMax)
 {
   // fs: sample rate, H: hop size
@@ -457,7 +457,7 @@ void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int
 
 template <class T>
 void SinusoidalModelPlotter<T>::addModelToPlot(
-  const RAPT::rsSinusoidalModel<T>& model, GNUPlotter& plt,T sampleRate, 
+  const RAPT::rsSinusoidalModel<T>& model, GNUPlotter& plt,T sampleRate,
   const std::string& graphColor)
 {
   std::vector<float> t, f; // we plot frequency vs time
@@ -481,7 +481,7 @@ void SinusoidalModelPlotter<T>::addModelToPlot(
 
     graphIndex++;
   }
-  // maybe factor out an addPartialToPlot function - may become useful when we want to plot 
+  // maybe factor out an addPartialToPlot function - may become useful when we want to plot
   // partials seperately
 }
 
@@ -517,7 +517,7 @@ void SinusoidalModelPlotter<T>::plotAnalysisResult(
   GNUPlotter plt;
 
   // factor out an addSpectrogramToPlot or something
-  // todo: plot the spectrogram underneath the sine tracks - when doing so, the tracks are not 
+  // todo: plot the spectrogram underneath the sine tracks - when doing so, the tracks are not
   // plotted
   bool plotSpectrogram = false; // make member, let user set it
   if(plotSpectrogram == true)
@@ -534,8 +534,9 @@ void SinusoidalModelPlotter<T>::plotAnalysisResult(
 
     dB.transpose();
 
-    addSpectrogramData(plt, numFrames, numBins, dB.getDataPointer(), fs, sa.getHopSize(), 
-      minDb, maxDb);
+    this->addSpectrogramData(
+      plt, numFrames, numBins, dB.getDataPointer(),
+      fs, sa.getHopSize(), this->minDb, this->maxDb);
   }
 
   // create model and add it to the plot:

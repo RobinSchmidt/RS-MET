@@ -19,7 +19,7 @@ bool runUnitTest(bool (*test)(), const std::string& name);
 
 //bool detectMemoryLeaks();  // currently works only in MSVC
 
-/** This function should be called on program startup when automatic detection of memory leaks 
+/** This function should be called on program startup when automatic detection of memory leaks
 should be turned on. */
 inline void checkForMemoryLeaksOnExit()
 {
@@ -36,7 +36,7 @@ inline void checkForMemoryLeaksOnExit()
 std::vector<double> rsLinearRangeVector(     int N, double min, double max);
 std::vector<double> rsExponentialRangeVector(int N, double min, double max);
 std::vector<double> rsRandomVector(          int N, double min, double max, int seed = 0);
-std::vector<double> rsApplyFunction(const std::vector<double>& v, double p, 
+std::vector<double> rsApplyFunction(const std::vector<double>& v, double p,
   double (*f) (double, double));
 
 // conversions to std::string:
@@ -52,7 +52,7 @@ inline double random(double min, double max)
 // returns x^2 = x*x, useful for testing application of a unary function using a function pointer
 //double rsSquare(double x);
 
-// 
+//
 template<class T>
 T square(T x)
 {
@@ -60,18 +60,18 @@ T square(T x)
 }
 
 template<class T>
-void rsFillWithComplexRandomValues(std::complex<T>* x, size_t N, T min, T max, 
+void rsFillWithComplexRandomValues(std::complex<T>* x, size_t N, T min, T max,
   unsigned long seed = 0)
 {
   RAPT::rsNoiseGenerator<double> prng;
   prng.setRange(min, max);
   prng.setSeed(seed);
   for(size_t n = 0; n < N; n++)
-    x[n] = complex<T>(prng.getSample(), prng.getSample());
+    x[n] = std::complex<T>(prng.getSample(), prng.getSample());
 }
 
 template<class T> // convenience function for std::vector
-void rsFillWithComplexRandomValues(std::vector<std::complex<T>>& x, T min, T max, 
+void rsFillWithComplexRandomValues(std::vector<std::complex<T>>& x, T min, T max,
   unsigned long seed = 0)
 {
   rsFillWithComplexRandomValues(&x[0], x.size(), min, max, seed);
@@ -104,7 +104,7 @@ bool rsAlmostEqual(std::vector<std::complex<T>>& x, std::vector<std::complex<T>>
 
 
 /** Applies the inner function to the value x and then the outer function to the result of that
-inner function and returns the final result. This is known as function composition in 
+inner function and returns the final result. This is known as function composition in
 mathematics. */
 template<class T, class F1, class F2>
 T applyComposedFunction(T x, F1 innerFunction, F2 outerFunction)
@@ -119,7 +119,7 @@ bool mapsToItself(T x, F f)
   return x == f(x);
 }
 
-/** Checks, if the 2nd function is the inverse function of the first for the given input argument 
+/** Checks, if the 2nd function is the inverse function of the first for the given input argument
 x. */
 template<class T, class F1, class F2>
 bool mapsBack(T x, F1 forwardFunction, F2 maybeInverseFunction)
@@ -129,7 +129,7 @@ bool mapsBack(T x, F1 forwardFunction, F2 maybeInverseFunction)
 }
 // maybe rename to isFunctionLocallyInverse, isFunctionInverseAt
 
-/** Checks, if the 2nd function is the inverse function of the first for a given range of input 
+/** Checks, if the 2nd function is the inverse function of the first for a given range of input
 arguments between minValue and maxValue with given. */
 template<class T, class F1, class F2>
 bool isInverseFunction(F1 forwardFunc, F2 maybeInverseFunc, T minValue, T maxValue, T increment)
@@ -161,7 +161,7 @@ inline bool detectMemoryLeaks()
 }
 
 // get rid of that:
-inline void appendTestResultToReport(std::string &reportString, const std::string &nameOfTest, 
+inline void appendTestResultToReport(std::string &reportString, const std::string &nameOfTest,
   bool result)
 {
   if( result == true )
@@ -170,7 +170,7 @@ inline void appendTestResultToReport(std::string &reportString, const std::strin
     reportString += nameOfTest + ": !!! FAILED !!!\n";
 }
 
-/** Comparison function that compares with a given error tolerance and also returns true when the 
+/** Comparison function that compares with a given error tolerance and also returns true when the
 involved numbers are NaNs or infinities. */
 bool areNumbersEqual(double x, double y, double relativeTolerance);
 

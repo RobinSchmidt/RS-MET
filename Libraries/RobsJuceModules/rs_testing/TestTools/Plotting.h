@@ -7,7 +7,7 @@
 #include "rs_testing/rs_testing.h"
 
 //#include "../Prototypes/SinusoidalModeling.h"
-//#include "../../../../Tests/TestsRosicAndRapt/Source/Shared/Prototypes/SinusoidalModeling.h" 
+//#include "../../../../Tests/TestsRosicAndRapt/Source/Shared/Prototypes/SinusoidalModeling.h"
 // get rid - class should be moved to rapt - done
 
 ///** Plots at most five y-functions against a common x-axis. */
@@ -49,7 +49,7 @@ template<class T>
 inline std::vector<T> ampToDb(const std::vector<T>& x, T minDb)
 {
   std::vector<T> y(x.size());
-  for(size_t i = 0; i < x.size(); i++) 
+  for(size_t i = 0; i < x.size(); i++)
     y[i] = rsMax(rsAmpToDb(rsAbs(x[i])), minDb);
   return y;
 }
@@ -75,7 +75,7 @@ inline std::vector<std::complex<TSig>> getFrequencyResponse(
 {
   size_t N = w.size();
   std::complex<TSig> j(0,1);        // imaginary unit
-  std::vector<complex<TSig>> H(N);  // H(e^jw)
+  std::vector<std::complex<TSig>> H(N);  // H(e^jw)
   for(size_t k = 0; k < N; k++)
     H[k] = filter.getTransferFunctionAt(exp(j*w[k]));
   return H;
@@ -102,7 +102,7 @@ inline void plotFrequencyResponse(TFlt &filter, int N, TSig fMin, TSig fMax, TSi
   RAPT::rsArray::scale(&w[0], N, 2*PI/fs);
 
   // compute magnitude and phase response:
-  std::vector<complex<TSig>> H = getFrequencyResponse(filter, w);
+  std::vector<std::complex<TSig>> H = getFrequencyResponse(filter, w);
   std::vector<TSig> dB(N), phs(N);
   for(int k = 0; k < N; k++) {
     dB[k]  = RAPT::rsAmpToDb(abs(H[k]));
@@ -155,7 +155,7 @@ void plotSpectrogram(int numFrames, int numBins, double **decibels, double sampl
 // introduce parameters to control scaling of time- and frequency axis..
 
 /** Plots spectrogram magnitudes from a complex spectrogram. */
-void plotSpectrogram(int numFrames, int numBins, const rsMatrix<std::complex<double>>& spec, 
+void plotSpectrogram(int numFrames, int numBins, const rsMatrix<std::complex<double>>& spec,
   double sampleRate, int hopSize, double dbMin = -100, double dbMax = +10);
 
 
@@ -170,7 +170,7 @@ void plotMagnitudeResponse(const RAPT::rsFilterSpecificationBA<double>& specBA);
 void plotPolesAndZeros(    const RAPT::rsFilterSpecificationBA<double>& specBA);
 void showFilterPlots(      const RAPT::rsFilterSpecificationBA<double>& specBA);
 
-/** Plots y against x using stems, i.e impulses with a filled circle - suitable to draw discrete 
+/** Plots y against x using stems, i.e impulses with a filled circle - suitable to draw discrete
 time signals. */
 void stemPlot(int N, double *x, double *y);
 
@@ -178,25 +178,25 @@ void stemPlot(int N, double *x, double *y);
 // functions for plotting sinusoidal model data:
 
 /** Convenience function. Uses class SinusoidalModelPlotter. */
-void plotSinusoidalAnalysisResult(RAPT::rsSinusoidalAnalyzer<double>& sa, double* sampleData, int N, 
+void plotSinusoidalAnalysisResult(RAPT::rsSinusoidalAnalyzer<double>& sa, double* sampleData, int N,
   double sampleRate);
 
 void plotSineModel(const RAPT::rsSinusoidalModel<double>& model, double sampleRate);
 
 void plotTwoSineModels(
-  const RAPT::rsSinusoidalModel<double>& model1, 
-  const RAPT::rsSinusoidalModel<double>& model2, 
+  const RAPT::rsSinusoidalModel<double>& model1,
+  const RAPT::rsSinusoidalModel<double>& model2,
   double sampleRate);
 
-/** Plots a subset of the amplitude envelopes of the given sinusoidal model. The vector 
+/** Plots a subset of the amplitude envelopes of the given sinusoidal model. The vector
 partialIndices selects, which partial's envelopes should be drawn. */
 void plotSineModelAmplitudes(
   const RAPT::rsSinusoidalModel<double>& model,
-  std::vector<int> partialIndices = std::vector<int>()); 
+  std::vector<int> partialIndices = std::vector<int>());
 
 /** Plots a subset of the unwrapped phases of the model - but because the phases themselves are not
-that useful to look at (you would basically just see an upward sloping line), the function plots 
-either a de-trended version of the phases or the phase-derivative, depending on the boolean 
+that useful to look at (you would basically just see an upward sloping line), the function plots
+either a de-trended version of the phases or the phase-derivative, depending on the boolean
 parameter - if false, de-trended phases are plotted, if true, phase-derivatives are plotted. */
 void plotSineModelPhases(
   const RAPT::rsSinusoidalModel<double>& model,
@@ -218,7 +218,7 @@ void plotModelOutputComparison(
 
 void plotModalAmplitudes(const std::vector<rsModalFilterParameters<double>>& modelModel);
 
-/** Plots the amplitude envelope of a sinusoidal partial and the amplitude envelope of a modal 
+/** Plots the amplitude envelope of a sinusoidal partial and the amplitude envelope of a modal
 model of a partial for comparison. */
 void plotModeVsSineAmpEnv(
   rsModalFilterParameters<double>& modal, RAPT::rsSinusoidalPartial<double>& sinusoidal);
