@@ -389,15 +389,30 @@ bool testMatrixNew()
   testResult &=  I == Matrix(2, 3, {2.,4.,6., 8.,10.,12.});
   testResult &= (allocs = Matrix::numHeapAllocations) == 18;
 
-  J = A   * 2.0;
+  J = A * 2.0;
   testResult &= (allocs = Matrix::numHeapAllocations) == 19;
   testResult &= I == J;
   testResult &= (allocs = Matrix::numHeapAllocations) == 19;
 
+  // in-place addition and subtraction:
+  J += A;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 19;
+  testResult &= J == 3.0 * A;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 20;
+  J -= A;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 20;
+  testResult &= J == 2.0 * A;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 21;
+
+  J = A;    // should not re-allocate because J already has the right shape
+  testResult &= (allocs = Matrix::numHeapAllocations) == 21;
+  J *= B;   // allocates
+  testResult &= (allocs = Matrix::numHeapAllocations) == 22;
+  testResult &= J == A*B;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 23;
 
   // todo:
   // I *= 2.0; I /= 2.0;
-  // implement *=, /= with scalars
   // implement +=, -=, *= operators another matrix, *= should avoid re-allocation if the matrix 
   // already has the desired shape/size
 

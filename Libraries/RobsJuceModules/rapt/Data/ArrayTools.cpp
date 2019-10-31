@@ -23,19 +23,19 @@ inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
 
 //-------------------------------------------------------------------------------------------------
 
-template <class T>
-void rsArray::add(const T *buffer1, const T *buffer2, T *result, const int length)
-{
-  for(int i = 0; i < length; i++)
-    result[i] = buffer1[i] + buffer2[i];
-}
-
-template <class T>
-void rsArray::add(const T *buffer, const T valueToAdd, T *result, const int length)
-{
-  for(int i = 0; i < length; i++)
-    result[i] = buffer[i] + valueToAdd;
-}
+//template <class T>
+//void rsArray::add(const T *buffer1, const T *buffer2, T *result, const int length)
+//{
+//  for(int i = 0; i < length; i++)
+//    result[i] = buffer1[i] + buffer2[i];
+//}
+//
+//template <class T>
+//void rsArray::add(const T *buffer, const T valueToAdd, T *result, const int length)
+//{
+//  for(int i = 0; i < length; i++)
+//    result[i] = buffer[i] + valueToAdd;
+//}
 
 template <class T>
 void rsArray::addCircularShiftedCopy(

@@ -41,6 +41,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+  // todo: prepend get
+
   /** Returns the determinant of this matrix. */
   T determinant() const { return a*d - b*c; }
 
@@ -222,6 +224,8 @@ public:
 
   bool isColumnVector() const { return numCols == 1; }
 
+  bool isSquare() const { return numRows == numCols; }
+
 
   /** Returns a pointer to the stored data. When using this, be sure that you know exactly what
   you are doing.... */
@@ -244,20 +248,14 @@ public:
   static void add(const rsMatrixView<T>* A, const rsMatrixView<T>* B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(*A, *B) && areSameShape(*A, *C), "arguments incompatible");
-    for(int i = 0; i < A->numRows; i++)
-      for(int j = 0; j < A->numCols; j++)
-        (*C)(i, j) = A->at(i, j) + B->at(i, j);
-    // use: rsArray::add(A->d, B->d, C->d, A->getSize();
+    rsArray::add(A->dataPointer, B->dataPointer, C->dataPointer, A->getSize());
   }
 
   /** Subtracts elements of B from corresponding elements A in and stores results in C. */
   static void sub(const rsMatrixView<T>* A, const rsMatrixView<T>* B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(*A, *B) && areSameShape(*A, *C), "arguments incompatible");
-    for(int i = 0; i < A->numRows; i++)
-      for(int j = 0; j < A->numCols; j++)
-        (*C)(i, j) = A->at(i, j) - B->at(i, j);
-    // use: rsArray::subtract(A->d, B->d, C->d, A->getSize();
+    rsArray::subtract(A->dataPointer, B->dataPointer, C->dataPointer, A->getSize());
   }
 
   /** Computes the matrix product C = A*B. */
@@ -311,8 +309,6 @@ protected:
 
 /** This is a class for representing matrices and doing mathematical operations with them. */
 
-
-
 template<class T>
 class rsMatrixNew : public rsMatrixView<T>
 {
@@ -345,8 +341,8 @@ public:
     updateDataPointer();
   }
 
-  /** Creates matrix from an unnamed/temporary/rvalue std::vector - convenient to initialize elements.
-  You can initialize matrices like this:
+  /** Creates matrix from an unnamed/temporary/rvalue std::vector - convenient to initialize 
+  elements. You can initialize matrices like this:
     rsMatrix<double> A(2, 3, {1.,2.,3., 4.,5.,6.});   */
   rsMatrixNew(int numRows, int numColumns, std::vector<T>&& newData) : data(std::move(newData))
   {
@@ -458,6 +454,8 @@ public:
   /** Negates all values of the matrix, i.e. inverts their sign. */
   void negate() { rsArray::negate(&data[0], &data[0], getSize()); }
 
+
+
   //void conjugate
 
 
@@ -509,12 +507,28 @@ public:
 
   /** Multiplies two matrices: C = A * B. */
   rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
-  { rsMatrixNew<T> C(this->numRows, B.numCols); this->mul(this, &B, &C); return C; }
+  { 
+    rsMatrixNew<T> C(this->numRows, B.numCols); 
+    this->mul(this, &B, &C); 
+    return C; 
+  }
 
   /** Multiplies this matrix with a scalar s: B = A*s. The scalar is to the right of the matrix. */
   rsMatrixNew<T> operator*(const T& s) const
   { rsMatrixNew<T> B(*this); B.scale(s); return B; }
 
+  /** Adds another matrix to this matrix and returns the result. */
+  rsMatrixNew<T>& operator+=(const rsMatrixNew<T>& B)
+  { this->add(this, &B, this); return *this; }
+
+  /** Subtracts another matrix from this matrix and returns the result. */
+  rsMatrixNew<T>& operator-=(const rsMatrixNew<T>& B)
+  { this->sub(this, &B, this); return *this; }
+
+  /** Multiplies this matrix by another and returns the result. This is not an in-place process, i.e. it 
+  will allocate temporary heap-memory. */
+  rsMatrixNew<T>& operator*=(const rsMatrixNew<T>& B)
+  { *this = *this * B; return *this; } 
 
 
 
