@@ -359,8 +359,7 @@
         <MODULEPATH id="rs_testing" path="../../Libraries/RobsJuceModules"/>
       </MODULEPATHS>
     </VS2015>
-    <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraDefs="" extraCompilerFlags="-std=c++0x"
-                        userNotes="maybe replace &#10;-std=c++0x &#10;by &#10;-std=c++11&#10;later, wehn new compiler is installed">
+    <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraDefs="" extraCompilerFlags="-march=pentium4">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestsRosicAndRapt"
                        windowsCodeBlocksArchitecture="-m64"/>
