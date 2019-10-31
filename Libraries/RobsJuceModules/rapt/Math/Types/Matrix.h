@@ -450,32 +450,47 @@ public:
 
 
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Manipulations */
 
+  // transpose, negate, 
 
+  /** Negates all values of the matrix, i.e. inverts their sign. */
+  void negate() { rsArray::negate(&data[0], &data[0], getSize()); }
+
+  //void conjugate
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+  // getDeterminant, getInverse, getFrobeniusNorm, get[Other]Norm, isPositiveDefinite, 
+  // getEigenvalues, getTrace, isUpperLeftTriangular, getTransposed, getConjugateTransposed
 
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Decompositions */
+
+  // getLowerUpperDecomposition ...or decomposeLU, decomposeQR, decomposeSVD
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
   /** Compares matrices for equality */
-  bool operator==(const rsMatrixNew<T>& B) const
+  bool operator==(const rsMatrixNew<T>& rhs) const
   {
-    if(this->numRows != B.numRows || this->numCols != B.numCols)
+    if(this->numRows != rhs.numRows || this->numCols != rhs.numCols)
       return false;
-    return rsArray::equal(this->dataPointer, B.dataPointer, this->getSize());
+    return rsArray::equal(this->dataPointer, rhs.dataPointer, this->getSize());
   }
   // maybe move to rsMatrixView, if possible
 
   /** Compares matrices for inequality */
-  bool operator!=(const rsMatrixNew<T>& B) const { return !(*this == B); }
+  bool operator!=(const rsMatrixNew<T>& rhs) const { return !(*this == rhs); }
 
-  /** Defines the negative of a matrix. */
+  /** Returns the negative of this matrix. */
   rsMatrixNew<T> operator-()
   {
     rsMatrixNew<T> C(this->numRows, this->numCols);
@@ -495,6 +510,12 @@ public:
   /** Multiplies two matrices: C = A * B. */
   rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
   { rsMatrixNew<T> C(this->numRows, B.numCols); this->mul(this, &B, &C); return C; }
+
+  /** Multiplies this matrix with a scalar s: B = A*s. The scalar is to the right of the matrix. */
+  rsMatrixNew<T> operator*(const T& s) const
+  { rsMatrixNew<T> B(*this); B.scale(s); return B; }
+
+
 
 
   static int numHeapAllocations;
@@ -537,7 +558,9 @@ inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
   return B;
 }
 
-// todo: implement righ-multiplication by a scalar
+
+
+// todo: implement right-multiplication by a scalar
 
 
 

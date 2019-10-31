@@ -383,6 +383,25 @@ bool testMatrixNew()
   testResult &= (allocs = Matrix::numHeapAllocations) == 16;
 
 
+  // multiplication with a scalar:
+  I = 2.0 * A;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 17;
+  testResult &=  I == Matrix(2, 3, {2.,4.,6., 8.,10.,12.});
+  testResult &= (allocs = Matrix::numHeapAllocations) == 18;
+
+  J = A   * 2.0;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 19;
+  testResult &= I == J;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 19;
+
+
+  // todo:
+  // I *= 2.0; I /= 2.0;
+  // implement *=, /= with scalars
+  // implement +=, -=, *= operators another matrix, *= should avoid re-allocation if the matrix 
+  // already has the desired shape/size
+
+
   return testResult;
 }
 
