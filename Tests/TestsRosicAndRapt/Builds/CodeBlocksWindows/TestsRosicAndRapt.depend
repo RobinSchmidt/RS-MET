@@ -5304,3 +5304,210 @@
 	"FFT.h"
 	<algorithm>
 
+1570815254 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\include_rs_testing.cpp
+	"AppConfig.h"
+	<rs_testing/rs_testing.cpp>
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\rs_testing.cpp
+	"rs_testing.h"
+	"TestTools/Utilities/FileWriting.cpp"
+	"TestTools/Utilities/PerformanceTestTools.cpp"
+	"TestTools/Utilities/TestInputCreation.cpp"
+	"TestTools/Utilities/TestUtilities.cpp"
+	"Prototypes/OscDrivers.cpp"
+	"Prototypes/PartialDifferentialEquations.cpp"
+	"Prototypes/Prototypes.cpp"
+	"Prototypes/FiniteAutomaton.cpp"
+	"Prototypes/ParticleBouncer.cpp"
+	"Prototypes/ParticleSystem.cpp"
+	"Prototypes/Tensor.cpp"
+	"TestTools/DSPPlotters.cpp"
+	"TestTools/Plotting.cpp"
+	"Experiments/MiscExperiments.cpp"
+	"Misc/TestClasses.cpp"
+	"RaptInstantiations.cpp"
+
+1572025380 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\rs_testing.h
+	<rapt/rapt.h>
+	<rosic/rosic.h>
+	"Prototypes/OscDrivers.h"
+	"Prototypes/PartialDifferentialEquations.h"
+	"Prototypes/Prototypes.h"
+	"TestTools/DSPPlotters.h"
+	"TestTools/Plotting.h"
+	"TestTools/Utilities/TestInputCreation.h"
+	"TestTools/Utilities/FileWriting.h"
+	"TestTools/Utilities/PerformanceTestTools.h"
+	"TestTools/Utilities/TestUtilities.h"
+	"Experiments/MiscExperiments.h"
+	"Misc/TestClasses.h"
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\oscdrivers.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\partialdifferentialequations.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\prototypes.h
+	"rosic/rosic.h"
+	"FilterDesign/PoleZeroPrototype.h"
+	"FilterDesign/PoleZeroMapper.h"
+	"FilterDesign/PoleZeroDesignerAnalog.h"
+	"FilterDesign/PoleZeroDesignerDigital.h"
+	"FilterDesign/ComplementaryFilters.h"
+	"ModalAnalyzer.h"
+	"ParticleBouncer.h"
+	"Probability.h"
+	"Projection3Dto2D.h"
+	"Polygon.h"
+	"Drawing.h"
+	"QuantumSystems.h"
+	"Relativity.h"
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezeroprototype.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezeromapper.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezerodesigneranalog.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezerodesignerdigital.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\complementaryfilters.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\modalanalyzer.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\particlebouncer.h
+	"rosic/rosic.h"
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\probability.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\projection3dto2d.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\polygon.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\drawing.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\quantumsystems.h
+
+1572518221 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\relativity.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\dspplotters.h
+	"../../../Libraries/RobsJuceModules/rosic/rosic.h"
+
+1572518361 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\plotting.h
+	"rapt/rapt.h"
+	"rosic/rosic.h"
+	"rs_testing/rs_testing.h"
+
+1572359810 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testinputcreation.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\filewriting.h
+	"rosic/rosic.h"
+
+1572518616 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\performancetesttools.h
+	<iostream>
+	<string>
+	<vector>
+	<functional>
+	<intrin.h>
+	<WTypesbase.h>
+
+1572518713 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testutilities.h
+	"rosic/rosic.h"
+	"rs_testing/rs_testing.h"
+	"jura_framework/control/jura_Callbacks.h"
+
+1570815250 e:\programming\c++\rs-met\libraries\robsjucemodules\jura_framework\control\jura_callbacks.h
+
+1571534649 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\experiments\miscexperiments.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\misc\testclasses.h
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\filewriting.cpp
+	"FileWriting.h"
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\performancetesttools.cpp
+	"PerformanceTestTools.h"
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testinputcreation.cpp
+	"TestInputCreation.h"
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testutilities.cpp
+	"TestUtilities.h"
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\oscdrivers.cpp
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\partialdifferentialequations.cpp
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\prototypes.cpp
+	"Prototypes.h"
+	"FilterDesign/PoleZeroPrototype.cpp"
+	"FilterDesign/PoleZeroMapper.cpp"
+	"FilterDesign/PoleZeroDesignerAnalog.cpp"
+	"FilterDesign/PoleZeroDesignerDigital.cpp"
+	"FilterDesign/ComplementaryFilters.cpp"
+	"ModalAnalyzer.cpp"
+	"Probability.cpp"
+	"Projection3Dto2D.cpp"
+	"Polygon.cpp"
+	"Drawing.cpp"
+	"QuantumSystems.cpp"
+	"Relativity.cpp"
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezeroprototype.cpp
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezeromapper.cpp
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezerodesigneranalog.cpp
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezerodesignerdigital.cpp
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\complementaryfilters.cpp
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\modalanalyzer.cpp
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\probability.cpp
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\projection3dto2d.cpp
+
+1571532609 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\polygon.cpp
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\drawing.cpp
+
+1571162521 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\quantumsystems.cpp
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\relativity.cpp
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\finiteautomaton.cpp
+	"FiniteAutomaton.h"
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\finiteautomaton.h
+	<vector>
+	<string>
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\particlebouncer.cpp
+	"ParticleBouncer.h"
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\particlesystem.cpp
+	"ParticleSystem.h"
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\particlesystem.h
+	"rapt/rapt.h"
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\tensor.cpp
+	"Tensor.h"
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\tensor.h
+	<vector>
+
+1572518785 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\dspplotters.cpp
+	"DSPPlotters.h"
+
+1572049087 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\plotting.cpp
+	"Plotting.h"
+
+1572511210 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\experiments\miscexperiments.cpp
+
+1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\misc\testclasses.cpp
+
+1572518812 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\raptinstantiations.cpp
+	"../rapt/rapt_templates.cpp"
+
