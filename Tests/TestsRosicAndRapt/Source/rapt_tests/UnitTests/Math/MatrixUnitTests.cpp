@@ -394,7 +394,7 @@ bool testMatrixNew()
   testResult &= I == J;
   testResult &= (allocs = Matrix::numHeapAllocations) == 19;
 
-  // in-place addition and subtraction:
+  // in-place addition and subtraction via +=, -=:
   J += A;
   testResult &= (allocs = Matrix::numHeapAllocations) == 19;
   testResult &= J == 3.0 * A;
@@ -404,6 +404,7 @@ bool testMatrixNew()
   testResult &= J == 2.0 * A;
   testResult &= (allocs = Matrix::numHeapAllocations) == 21;
 
+  // the *= operator can't operate in-place:
   J = A;    // should not re-allocate because J already has the right shape
   testResult &= (allocs = Matrix::numHeapAllocations) == 21;
   J *= B;   // allocates
@@ -411,10 +412,25 @@ bool testMatrixNew()
   testResult &= J == A*B;
   testResult &= (allocs = Matrix::numHeapAllocations) == 23;
 
+  // in-place scaling by a scalar:
+  J = A;    
+  testResult &= (allocs = Matrix::numHeapAllocations) == 24;
+  J *= 2.0;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 24;
+  testResult &= J == 2.0 * A;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 25;
+  J /= 2.0;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 25;
+  testResult &= J == A;
+  testResult &= (allocs = Matrix::numHeapAllocations) == 25;
+
   // todo:
-  // I *= 2.0; I /= 2.0;
-  // implement +=, -=, *= operators another matrix, *= should avoid re-allocation if the matrix 
-  // already has the desired shape/size
+  // -try some more multiplications: 4x2 * 2x3, 3x2 * 2x4
+  // -try matrix/vector products
+  // -maybe add/subtract scalars (in-place and out-of-place)....but maybe not: mathematically, the
+  //  space of MxN matrices is a vector space and addition of a scalar and a vector is not a thing
+  //  in vector spaces
+
 
 
   return testResult;

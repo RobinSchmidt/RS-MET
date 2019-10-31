@@ -174,10 +174,24 @@ public:
   }
   // can this be optimized by turning the assignments into copy-constructions?
 
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  /** Sets all elements in the matrix to the given value. */
   inline void setAllValues(T value) { rsArray::fillWithValue(dataPointer, getSize(), value); }
 
+  /** Sets all elements on the main diagonal to the given value. If the matrix is not square, only
+  the top-left square submatrix will be affected. */
+  inline void setDiagonalValues(T value)
+  {
+    for(int i = 0; i < rsMin(numRows, numCols); i++)
+      dataPointer[i*numCols + i] = value;
+  }
+  // needs test
+
+  /** Scales all elements in the matrix by a given factor. */
   inline void scale(T factor) { rsArray::scale(dataPointer, getSize(), factor); }
 
 
@@ -231,6 +245,7 @@ public:
   you are doing.... */
   //T* getData() { return dataPointer; }
 
+  /** Returns a const pointer to the data for read access as a flat array. */
   const T* getDataConst() const { return dataPointer; }
 
 
@@ -292,6 +307,7 @@ public:
     //   compatibility with lapack
     // -maybe be even more general: colOffset + colStride*i + (rowOffset + rowStride)*j
     //  -> may allow to access sub-matrices with the same syntax (todo: verify formula)
+    //  ...but maybe that should be done in a class rsSubMatrixView
   }
 
 
@@ -307,7 +323,10 @@ protected:
 
 //=================================================================================================
 
-/** This is a class for representing matrices and doing mathematical operations with them. */
+/** This is a class for representing matrices and doing mathematical operations with them. It's 
+implemented as subclass of rsMatrixView and stores the actual matrix data in a std::vector. Copy- 
+and move constructors and -assignment operators have been implemented in order to avoid 
+unnecessary heap allocations in arithmetic expressions with matrices. */
 
 template<class T>
 class rsMatrixNew : public rsMatrixView<T>
@@ -497,6 +516,7 @@ public:
     return C;
   }
 
+
   /** Adds two matrices: C = A + B. */
   rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
   { rsMatrixNew<T> C(this->numRows, this->numCols); this->add(this, &B, &C); return C; }
@@ -513,9 +533,6 @@ public:
     return C; 
   }
 
-  /** Multiplies this matrix with a scalar s: B = A*s. The scalar is to the right of the matrix. */
-  rsMatrixNew<T> operator*(const T& s) const
-  { rsMatrixNew<T> B(*this); B.scale(s); return B; }
 
   /** Adds another matrix to this matrix and returns the result. */
   rsMatrixNew<T>& operator+=(const rsMatrixNew<T>& B)
@@ -529,6 +546,21 @@ public:
   will allocate temporary heap-memory. */
   rsMatrixNew<T>& operator*=(const rsMatrixNew<T>& B)
   { *this = *this * B; return *this; } 
+
+
+
+  /** Multiplies this matrix with a scalar s: B = A*s. The scalar is to the right of the matrix. */
+  rsMatrixNew<T> operator*(const T& s) const
+  { rsMatrixNew<T> B(*this); B.scale(s); return B; }
+
+  /** Multiplies this matrix by a scalar and returns the result. */
+  rsMatrixNew<T>& operator*=(const T& s)
+  { scale(s); return *this; }
+
+  /** Divides this matrix by a scalar and returns the result. */
+  rsMatrixNew<T>& operator/=(const T& s)
+  { scale(T(1)/s); return *this; }
+
 
 
 
@@ -573,18 +605,6 @@ inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
 }
 
 
-
-// todo: implement right-multiplication by a scalar
-
-
-
-  // some binary operators are defined outside the class such that the left hand operand does
-  // not necesarrily need to be of class rsMatrix
-
-  // matrix/vector functions:
-
-// todo: make some special-case classes for 2x2, 3x3 matrices which can use simpler algorithms
-// for some of the computations
 
 
 // Notes:
