@@ -483,6 +483,20 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
   testResult &= V3 == Matrix(1, 3, {1,2,3});
   testResult &= allocs == 36;
 
+  // factory functions:
+  E = Matrix::identity(4);
+  testResult &= allocs == 37;
+  testResult &= E == Matrix(4, 4, {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1});
+  testResult &= allocs == 38;
+
+  E = Matrix::zero(3, 4);
+  testResult &= allocs == 39;
+  testResult &= E == Matrix(3, 4, {0,0,0,0, 0,0,0,0, 0,0,0,0});
+  testResult &= allocs == 40;
+
+  // create diagonal matrix
+
+
 
   // todo:
   // -implement factory functions

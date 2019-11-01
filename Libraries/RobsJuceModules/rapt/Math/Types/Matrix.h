@@ -252,7 +252,7 @@ public:
   /** Returns true, iff this matrix is either a row-vector or column-vector. */
   bool isVector() const { return isRowVector() || isColumnVector(); }
 
-  /** Returns true, iff this matrix is a square matrix, i.e. has the smae number of rows and 
+  /** Returns true, iff this matrix is a square matrix, i.e. has the same number of rows and 
   columns. */
   bool isSquare() const { return numRows == numCols; }
 
@@ -280,7 +280,6 @@ public:
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
     rsArray::add(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
-  // pass input arguments by reference, not by pointer
 
   /** Subtracts elements of B from corresponding elements A in and stores results in C. */
   static void sub(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
@@ -468,7 +467,16 @@ public:
     return *this;
   }
 
-  // todo: make factory-functions: zero(numRows, numCols), identity(size), diag(vector), 
+  /** Creates a zero matrix with given number of rows and columns. */
+  static rsMatrixNew<T> zero(int numRows, int numColumns) 
+  { rsMatrixNew<T> Z(numRows, numColumns); Z.setToZero(); return Z; }
+
+  /** Creates an identity matrix of given size. */
+  static rsMatrixNew<T> identity(int size) 
+  { rsMatrixNew<T> E(size, size); E.setToIdentity(); return E; }
+
+
+  // todo: zero(numRows, numCols), diag(int size, T* data), 
   // etc.
 
   //-----------------------------------------------------------------------------------------------
