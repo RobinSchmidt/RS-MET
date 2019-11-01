@@ -148,9 +148,9 @@ inline rsMatrix2x2<T> operator*(const T& s, const rsMatrix2x2<T>& A)
 
 //=================================================================================================
 
-/** This is a class for treating C-arrays as matrices. It does not store/own the actual matrix
-data, it just acts as wrapper around an existing array for more conveniently accessing and
-manipulating matrix elements. */
+/** This is a class for treating raw C-arrays as matrices. It does not store/own the actual matrix
+data. It just acts as wrapper around an existing array for conveniently accessing and manipulating 
+matrix elements via row/column indicies using the () operator with two integers. */
 
 template<class T>
 class rsMatrixView
@@ -158,13 +158,14 @@ class rsMatrixView
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Construction/Destruction */
 
-  /** Default constructor */
+  /** Default constructor. */
   rsMatrixView() {}
 
-
-  /**  */
+  /** Creates a matrix view with the given number of rows and columns for the given raw array of 
+  values in "data". The view will *not* take ownership over the data. */
   rsMatrixView(int numRows, int numColumns, T* data)
   {
     rsAssert(numRows >= 1 && numColumns >= 1 && data != nullptr);
@@ -172,9 +173,6 @@ public:
     this->numCols = numColumns;
     dataPointer = data;
   }
-  // can this be optimized by turning the assignments into copy-constructions?
-
-
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -194,7 +192,9 @@ public:
   /** Scales all elements in the matrix by a given factor. */
   inline void scale(T factor) { rsArray::scale(dataPointer, getSize(), factor); }
 
-
+  /** Re-interprets the arrangement of the underlying array as having the new given numbers of rows
+  and columns. Their product must remain the same, though. For example, you can reshape a 3x4 
+  matrix into 4x3, 2x6, 6x2, 1x12, 12x1 but nothing else. ..todo: maybe lift that restriction? */
   inline void reshape(int newNumRows, int newNumColumns)
   {
     rsAssert(newNumRows*newNumColumns == numRows*numCols);
@@ -202,7 +202,8 @@ public:
     numCols = newNumColumns;
   }
 
-  /** Resets the number of rows and columns to zero and the dataPointer to nullptr. */
+  /** Resets the number of rows and columns to zero and the dataPointer to nullptr. Should be called 
+  whenever you need to invalidate our pointer member. */
   inline void reset()
   {
     numRows = 0;
@@ -210,45 +211,57 @@ public:
     dataPointer = nullptr;
   }
 
-  // void setToIdentityMatrix(T scaler = 1);
+  /** Sets all matrix elements to zero. */
+  inline void setToZero() { rsArray::fillWithZeros(dataPointer, getSize()); }
 
+  /** Sets the matrix elements to the identity matrix, i.e. fills the main diagonal with ones and 
+  the rest with zeros. If the matrix is not square, then the overhanging portion to the right or 
+  bottom will be all zeros as well (-> verify this). */
+  inline void setToIdentity() { setToZero(); setDiagonalValues(T(1)); }
+  // needs test
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  /**  */
+  /** Returns true, iff matrices A and B have the same number of rows and columns, such that 
+  their sum A+B and difference A-B can be formed. */
   static bool areSameShape(const rsMatrixView<T>& A, const rsMatrixView<T>& B)
-  {
-    return A.numRows == B.numRows && A.numCols == B.numCols;
-  }
+  { return A.numRows == B.numRows && A.numCols == B.numCols; }
 
+  /** Returns true, iff the matrices A and B have dimensions, such that the matrix-matrix product 
+  A*B can be formed. */
   static bool areMultiplicable(const rsMatrixView<T>& A, const rsMatrixView<T>& B)
-  {
-    return A.numCols == B.numRows;
-  }
+  { return A.numCols == B.numRows; }
 
+  /** Returns the number of rows. */
   int getNumRows()    const { return numRows; }
 
+  /** Returns the number of columns. */
   int getNumColumns() const { return numCols; }
 
+  /** Returns the total size, i.e. the number of elements in the matrix. */
   int getSize()       const { return numRows * numCols; }
 
+  /** Returns true, iff this matrix is a row vector. */
   bool isRowVector() const { return numRows == 1; }
 
+  /** Returns true, iff this matrix is a column vector. */
   bool isColumnVector() const { return numCols == 1; }
 
+  /** Returns true, iff this matrix is either a row-vector or column-vector. */
   bool isVector() const { return isRowVector() || isColumnVector(); }
 
+  /** Returns true, iff this matrix is a square matrix, i.e. has the smae number of rows and 
+  columns. */
   bool isSquare() const { return numRows == numCols; }
 
+  /** Returns a const pointer to the data for read access as a flat array. */
+  const T* getDataPointerConst() const { return dataPointer; }
 
   /** Returns a pointer to the stored data. When using this, be sure that you know exactly what
   you are doing.... */
   //T* getData() { return dataPointer; }
-
-  /** Returns a const pointer to the data for read access as a flat array. */
-  const T* getDataPointerConst() const { return dataPointer; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -262,31 +275,31 @@ public:
   /** \name Arithmetic */
 
   /** Adds elements of A to corresponding elements in B and stores results in C. */
-  static void add(const rsMatrixView<T>* A, const rsMatrixView<T>* B, rsMatrixView<T>* C)
+  static void add(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
-    rsAssert(areSameShape(*A, *B) && areSameShape(*A, *C), "arguments incompatible");
-    rsArray::add(A->dataPointer, B->dataPointer, C->dataPointer, A->getSize());
+    rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
+    rsArray::add(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
   // pass input arguments by reference, not by pointer
 
   /** Subtracts elements of B from corresponding elements A in and stores results in C. */
-  static void sub(const rsMatrixView<T>* A, const rsMatrixView<T>* B, rsMatrixView<T>* C)
+  static void sub(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
-    rsAssert(areSameShape(*A, *B) && areSameShape(*A, *C), "arguments incompatible");
-    rsArray::subtract(A->dataPointer, B->dataPointer, C->dataPointer, A->getSize());
+    rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
+    rsArray::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
   /** Computes the matrix product C = A*B. */
-  static void mul(const rsMatrixView<T>* A, const rsMatrixView<T>* B, rsMatrixView<T>* C)
+  static void mul(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
-    rsAssert(A->numCols == B->numRows);
-    rsAssert(C->numCols == B->numCols);
-    rsAssert(C->numRows == A->numRows);
+    rsAssert(A.numCols  == B.numRows);
+    rsAssert(C->numCols == B.numCols);
+    rsAssert(C->numRows == A.numRows);
     for(int i = 0; i < C->numRows; i++) {
       for(int j = 0; j < C->numCols; j++) {
         (*C)(i,j) = T(0);
-        for(int k = 0; k < A->numCols; k++)
-          (*C)(i,j) += A->at(i,k) * B->at(k,j); }}
+        for(int k = 0; k < A.numCols; k++)
+          (*C)(i,j) += A.at(i,k) * B.at(k,j); }}
   }
 
   /** Fills the matrix B with the transpose of matrix A. Assumes that A and B have compatible 
@@ -503,8 +516,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Manipulations */
 
-  // transpose, negate, 
-
   /** Negates all values of the matrix, i.e. inverts their sign. */
   void negate() { rsArray::negate(&data[0], &data[0], getSize()); }
 
@@ -528,9 +539,7 @@ public:
   }
   // maybe move to cpp file
 
-
-  //void conjugate
-
+  // todo: conjugate
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -538,9 +547,8 @@ public:
   /** Returns a const reference to the std::vector that stores the data. Mostly for unit tests. */
   const std::vector<T>& getDataVectorConst() const { return data; }
 
-  // getDeterminant, getInverse, getFrobeniusNorm, get[Other]Norm, isPositiveDefinite, 
+  // todo: getDeterminant, getInverse, getFrobeniusNorm, get[Other]Norm, isPositiveDefinite, 
   // getEigenvalues, getTrace, isUpperLeftTriangular, getTransposed, getConjugateTransposed
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -573,41 +581,39 @@ public:
     return C;
   }
 
-
   /** Adds two matrices: C = A + B. */
   rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
-  { rsMatrixNew<T> C(this->numRows, this->numCols); this->add(this, &B, &C); return C; }
+  { rsMatrixNew<T> C(this->numRows, this->numCols); this->add(*this, B, &C); return C; }
 
   /** Subtracts two matrices: C = A - B. */
   rsMatrixNew<T> operator-(const rsMatrixNew<T>& B) const
-  { rsMatrixNew<T> C(this->numRows, this->numCols); this->sub(this, &B, &C); return C; }
+  { rsMatrixNew<T> C(this->numRows, this->numCols); this->sub(*this, B, &C); return C; }
 
   /** Multiplies two matrices: C = A * B. */
   rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
   { 
     //if(!areMultiplicable(*this, B))
     //  return rsMatrixNew<T>(0, 0); // return empty matrix when attempting to multiply incompatible matrices
-
     rsMatrixNew<T> C(this->numRows, B.numCols); 
-    this->mul(this, &B, &C); 
+    this->mul(*this, B, &C); 
     return C; 
   }
   // maybe it should return an empty matrix, when attempting to multiply incompatible matrices
   // ...or maybe we should throw an exception in such cases?
 
+
   /** Adds another matrix to this matrix and returns the result. */
   rsMatrixNew<T>& operator+=(const rsMatrixNew<T>& B)
-  { this->add(this, &B, this); return *this; }
+  { this->add(*this, B, this); return *this; }
 
   /** Subtracts another matrix from this matrix and returns the result. */
   rsMatrixNew<T>& operator-=(const rsMatrixNew<T>& B)
-  { this->sub(this, &B, this); return *this; }
+  { this->sub(*this, B, this); return *this; }
 
   /** Multiplies this matrix by another and returns the result. This is not an in-place process, i.e. it 
   will allocate temporary heap-memory. */
   rsMatrixNew<T>& operator*=(const rsMatrixNew<T>& B)
   { *this = *this * B; return *this; } 
-
 
 
   /** Multiplies this matrix with a scalar s: B = A*s. The scalar is to the right of the matrix. */
@@ -623,7 +629,8 @@ public:
   { scale(T(1)/s); return *this; }
 
 
-
+  //-----------------------------------------------------------------------------------------------
+  /** \name Misc */
 
   static int numHeapAllocations;
     // instrumentation for unit-testing - it's actually the number of *potential* heap-allocations,
@@ -645,12 +652,6 @@ protected:
   /** \name Data */
 
   std::vector<T> data;
-  // maybe we should just work with our inherited dataPointer and use new/delete
-  // -saves a little bit of storage
-  // -but then we can't look easily at the data in the debugger anymore -> very bad! so, nope!
-  // -the little storage overhead of std::vector becomes negligible for all but the smallest
-  //  matrices - on the other hand, very small matrices may be common
-  // -maybe use std::vector in debug builds and new/delete in release builds
 
 };
 
@@ -665,15 +666,21 @@ inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
   return B;
 }
 
-
-
-
+//-------------------------------------------------------------------------------------------------
 // Notes:
-// -class is under construction
 // -design goals:
 //  -use std::vector to hold the data in a flat array (so we can inspect it in the debugger)
 //  -storage format should be compatible with lapack routines (maybe not by default, but can be
 //   made so) - that means to support column major storage
+// -maybe we should just work with our inherited dataPointer and use new/delete
+//  -saves a little bit of storage
+//  -but then we can't look easily at the data in the debugger anymore -> very bad! so, nope!
+//  -the little storage overhead of std::vector becomes negligible for all but the smallest
+//   matrices - on the other hand, very small matrices may be common
+//  -maybe use std::vector in debug builds and new/delete in release builds
+//  -maybe the numHeapAllocations variable can also be used only in debug builds? i guess we may 
+//   need to define some function incrementAllocationCounter that reduces to no-op in release 
+//   builds
 //  -in expressions like rsMatrix<float> C = B*(A + B) + B; we want to avoid copying the data
 //   unnecessarily - i.e. avoid that the temporaries that occur inside this expression use heap
 //   allocation only when absolutely necessarry
