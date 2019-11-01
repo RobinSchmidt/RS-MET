@@ -789,30 +789,30 @@ bool quantumSpinEntanglement()
 
   // create base states |uu>, |ud>, |du>, |dd> of the cobined system of two spins (see pg 189):
   Complex one(1,0), zero(0,0), i(0,1);
-  Mat u(2, 1, Vec({ one, zero }));         // |u> - spin up
-  Mat d(2, 1, Vec({ zero, one }));         // |d> - spin down
-  Mat uu = Mat::kroneckerProduct(u, u);    // |uu> - up/up
-  Mat ud = Mat::kroneckerProduct(u, d);    // |ud> - up/down
-  Mat du = Mat::kroneckerProduct(d, u);    // |du> - down/up
-  Mat dd = Mat::kroneckerProduct(d, d);    // |dd> - down/down
+  Mat u(2, 1, Vec({ one, zero }));            // |u> - spin up
+  Mat d(2, 1, Vec({ zero, one }));            // |d> - spin down
+  Mat uu = Mat::getKroneckerProduct(u, u);    // |uu> - up/up
+  Mat ud = Mat::getKroneckerProduct(u, d);    // |ud> - up/down
+  Mat du = Mat::getKroneckerProduct(d, u);    // |du> - down/up
+  Mat dd = Mat::getKroneckerProduct(d, d);    // |dd> - down/down
 
   // create observables sz, tz (simga-z, tau-z) and the product observables (pg 190)
   Mat pauliZ(2, 2, Vec({ one,  zero, zero, -one  }));
   Mat pauliX(2, 2, Vec({ zero, one,  one,   zero }));
   Mat pauliY(2, 2, Vec({ zero, -i,   i,     zero }));
-  Mat id2x2( 2, 2, Vec({ one,  zero, zero,  one  }));  // 2x2 identity matrix
-  Mat sztx = Mat::kroneckerProduct(pauliZ, pauliX);    // sigma_z  (x) tau_x
-  Mat sxtz = Mat::kroneckerProduct(pauliX, pauliZ);    // sigma_x  (x) tau_z
-  Mat tzsz = Mat::kroneckerProduct(pauliZ, pauliZ);    // tau_z (x) sigma_z
-  Mat txsx = Mat::kroneckerProduct(pauliX, pauliX);    // tau_x (x) sigma_x
-  Mat tysy = Mat::kroneckerProduct(pauliY, pauliY);    // tau_y (x) sigma_y
-  Mat st   = txsx + tysy + tzsz;                       // sigma * tau, pg 180
-  Mat szI  = Mat::kroneckerProduct(pauliZ,  id2x2);    // sigma_z (x) identity, Eq 7.4, pg 187
+  Mat id2x2( 2, 2, Vec({ one,  zero, zero,  one  }));     // 2x2 identity matrix
+  Mat sztx = Mat::getKroneckerProduct(pauliZ, pauliX);    // sigma_z  (x) tau_x
+  Mat sxtz = Mat::getKroneckerProduct(pauliX, pauliZ);    // sigma_x  (x) tau_z
+  Mat tzsz = Mat::getKroneckerProduct(pauliZ, pauliZ);    // tau_z (x) sigma_z
+  Mat txsx = Mat::getKroneckerProduct(pauliX, pauliX);    // tau_x (x) sigma_x
+  Mat tysy = Mat::getKroneckerProduct(pauliY, pauliY);    // tau_y (x) sigma_y
+  Mat st   = txsx + tysy + tzsz;                          // sigma * tau, pg 180
+  Mat szI  = Mat::getKroneckerProduct(pauliZ,  id2x2);    // sigma_z (x) identity, Eq 7.4, pg 187
 
-  Mat sxI  = Mat::kroneckerProduct(pauliX,  id2x2);
-  Mat syI  = Mat::kroneckerProduct(pauliY,  id2x2);
+  Mat sxI  = Mat::getKroneckerProduct(pauliX,  id2x2);
+  Mat syI  = Mat::getKroneckerProduct(pauliY,  id2x2);
 
-  Mat Itx  = Mat::kroneckerProduct(id2x2,  pauliX);    // identity (x) tau_x
+  Mat Itx  = Mat::getKroneckerProduct(id2x2,  pauliX);    // identity (x) tau_x
     // see page 170 bottom "if we were being pedantic,..." - yes, we are!
 
   // check some of the relations on page 350 (relations that hold for the Alice- and 

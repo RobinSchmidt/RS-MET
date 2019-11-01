@@ -309,8 +309,25 @@ public:
         rsSwap((*A)(i,j), (*A)(j,i));
   }
 
+  /** Computes the Kronecker product between matrices A and B and stores the result in C. Assumes, 
+  that C has the right dimensions. For more info, see the documentation of 
+  rsMatrixNew::kroneckerProduct. */
+  static void kroneckerProduct(
+    const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
+  {
+    rsAssert(C->numRows == A.numRows * B.numRows);
+    rsAssert(C->numCols == A.numCols * B.numCols);
+    for(int ia = 0; ia < A.numRows; ia++) {
+      for(int ja = 0; ja < A.numCols; ja++) {
+        int startRow = ia*B.numRows;
+        int startCol = ja*B.numCols;
+        for(int ib = 0; ib < B.numRows; ib++) {
+          for(int jb = 0; jb < B.numCols; jb++) {
+            (*C)(startRow+ib, startCol+jb) = A.at(ia,ja) * B.at(ib, jb); }}}}
+  }
+
   //-----------------------------------------------------------------------------------------------
-  /** \name Operators */
+  /** \name Accessors */
 
   /** Read and write access to matrix elements with row-index i and column-index j. */
   inline T& operator()(const int i, const int j) { return dataPointer[flatIndex(i, j)]; }
@@ -318,6 +335,9 @@ public:
   /** Read only accees - used mainly internally with const reference arguments (for example,
   in add). */
   inline const T& at(const int i, const int j) const { return dataPointer[flatIndex(i, j)]; }
+  // maybe rename to get
+
+  // void set(i, j, val) ...to make it compatible with old implementation
 
   /** Converts a row index i and a column index j to a flat array index. */
   inline int flatIndex(const int i, const int j) const
@@ -457,7 +477,6 @@ public:
     // optionally initialize with zeros
   }
 
-
   /** Computes the Kronecker product between matrices A and B. For a 3x2 matrix A, it looks like:
 
               |a11*B a12*B|
@@ -472,28 +491,13 @@ public:
   just 2 indices - it is again a matrix and not some 4-dimensional "block". See here:
   https://en.wikipedia.org/wiki/Kronecker_product
   https://en.wikipedia.org/wiki/Tensor_product     */
-  static rsMatrixNew<T> kroneckerProduct(const rsMatrixNew<T>& A, const rsMatrixNew<T>& B)
+  static rsMatrixNew<T> getKroneckerProduct(const rsMatrixNew<T>& A, const rsMatrixNew<T>& B)
   {
     rsMatrixNew<T> C(A.numRows*B.numRows, A.numCols*B.numCols);
-
-    // factor out into rsMatrixView, so we can call
-    // this->kroneckerProduct(A, B, C)
-    for(int ia = 0; ia < A.numRows; ia++) {
-      for(int ja = 0; ja < A.numCols; ja++) {
-        int startRow = ia*B.numRows;
-        int startCol = ja*B.numCols;
-        for(int ib = 0; ib < B.numRows; ib++) {
-          for(int jb = 0; jb < B.numCols; jb++) {
-            C(startRow+ib, startCol+jb) = A.at(ia,ja) * B.at(ib, jb); }}}}
-
-
+    rsMatrixView<T>::kroneckerProduct(A, B, &C);
     return C;
   }
-  // maybe rename to tensorProduct - or maybe not, i think, Kronecker product is more appropriate:
-
-
-  // see https://rosettacode.org/wiki/Kronecker_product#C
-
+  // move to Computations - there, we should also define getInverse, getTranspose, 
 
 
   //-----------------------------------------------------------------------------------------------

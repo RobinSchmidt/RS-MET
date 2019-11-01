@@ -495,25 +495,22 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
   return testResult;
 }
 
-bool testMatrixNew2()  // rename to testMatrixTensorProduct
+bool testKroneckerProduct()
 {
   bool res = true;
   typedef rsMatrixNew<double> Matrix;
 
-
   int& allocs  = Matrix::numHeapAllocations;  // to count allocations
   allocs = 0;
-
 
   Matrix A(2, 3, {1,2,3,4,5,6});
   res &= allocs == 1;
   Matrix B(4, 5, {1,2,3,4,5, 6,7,8,9,10, 11,12,13,14,15, 16,17,18,19,20});
   res &= allocs == 2;
 
-  Matrix C = Matrix::kroneckerProduct(A, B);
+  Matrix C = Matrix::getKroneckerProduct(A, B);
   res &= allocs == 3;
   res &= C.getNumRows() == 8 && C.getNumColumns() == 15;
-  // todo: check all elements
 
   Matrix T(8, 15,   // target Kronecker product
     { 1, 2, 3, 4, 5, 2, 4, 6, 8, 10, 3,  6,  9, 12, 15,
@@ -551,7 +548,7 @@ bool testMatrix()
 
   testResult &= testMatrixView();
   testResult &= testMatrixNew1();
-  testResult &= testMatrixNew2();
+  testResult &= testKroneckerProduct();
 
 
   //testResult &= testTransformMatrices();

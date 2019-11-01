@@ -26,6 +26,7 @@ Interface:
  members or by providing getters ...the former seems better - simpler client-side 
  syntax and does the exact same  thing
 -use consistently int - not size_t or something (in the sinusoidal model)
+-use get/set consistently bad: Matrix::eigenvalues, good: Matrix::getEigenvalues
 
 Implementation:
 -whether algo parameters are updated directly in setCutoff, setResonance, etc.
