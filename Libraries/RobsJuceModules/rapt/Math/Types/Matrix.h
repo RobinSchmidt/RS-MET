@@ -287,7 +287,6 @@ public:
           (*C)(i,j) += A->at(i,k) * B->at(k,j); }}
   }
 
-
   /** Fills the matrix B with the transpose of matrix A. Assumes that A and B have compatible 
   shapes. */
   static void transpose(const rsMatrixView<T>& A, rsMatrixView<T>* B)
@@ -299,7 +298,14 @@ public:
         (*B)(j,i) = A.at(i,j);
   }
 
-
+  /** Transposes the square matrix A in place. */
+  static void transposeSquare(rsMatrixView<T>* A)
+  {
+    rsAssert(A->isSquare());
+    for(int i = 0; i < A->getNumRows(); i++)
+      for(int j = i+1; j < A->getNumRows(); j++)
+        rsSwap((*A)(i,j), (*A)(j,i));
+  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
@@ -492,6 +498,14 @@ public:
   {
     // todo: handle special cases numRows==numCols, numRows==1, numCols==1 without reallocation
 
+
+    // handle square matrices:
+    if(isSquare()) { rsMatrixView<T>::transposeSquare(this); return; }
+
+    // handle row- and column vectors:
+    if(isRowVector() || isColumnVector()) { rsSwap(numRows, numCols); return; }
+
+    // handle general case (needs reallocation):
     std::vector<T> v(getSize());
     numHeapAllocations++;
     rsMatrixView<T> B(numCols, numRows, &v[0]);
