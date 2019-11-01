@@ -265,6 +265,7 @@ public:
     rsAssert(areSameShape(*A, *B) && areSameShape(*A, *C), "arguments incompatible");
     rsArray::add(A->dataPointer, B->dataPointer, C->dataPointer, A->getSize());
   }
+  // pass input arguments by reference, not by pointer
 
   /** Subtracts elements of B from corresponding elements A in and stores results in C. */
   static void sub(const rsMatrixView<T>* A, const rsMatrixView<T>* B, rsMatrixView<T>* C)
@@ -285,6 +286,20 @@ public:
         for(int k = 0; k < A->numCols; k++)
           (*C)(i,j) += A->at(i,k) * B->at(k,j); }}
   }
+
+
+  /** Fills the matrix B with the transpose of matrix A. Assumes that A and B have compatible 
+  shapes. */
+  static void transpose(const rsMatrixView<T>& A, rsMatrixView<T>* B)
+  {
+    rsAssert(A.numRows == B->numCols);
+    rsAssert(A.numCols == B->numRows);
+    for(int i = 0; i < A.numRows; i++)
+      for(int j = 0; j < A.numCols; j++)
+        (*B)(j,i) = A.at(i,j);
+  }
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
@@ -479,10 +494,9 @@ public:
 
     std::vector<T> v(getSize());
     numHeapAllocations++;
-    rsMatrixView T(numCols, numRows, &v[0]);
-    for(int i = 0; i < numRows; i++)     // maybe factor this double-loop out into rsMatrixView
-      for(int j = 0; j < numCols; j++)   // transpose(A, B)
-        T(j, i) = this->at(i, j);
+    rsMatrixView<T> B(numCols, numRows, &v[0]);
+    rsMatrixView<T>::transpose(*this, &B);
+    rsSwap(numRows, numCols);
     data = v;
   }
   // needs test

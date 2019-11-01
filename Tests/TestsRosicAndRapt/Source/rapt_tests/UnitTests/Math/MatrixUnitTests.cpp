@@ -468,8 +468,7 @@ bool testMatrixNew() // rename to testMatrixAllocationAndArithmetic
   testResult &= K.getDataPointerConst() == nullptr;
 
 
-
-
+  // transposition:
   E = A;
   testResult &= allocs == 30;
   testResult &= E.getNumRows() == 2 && E.getNumColumns() == 3;
