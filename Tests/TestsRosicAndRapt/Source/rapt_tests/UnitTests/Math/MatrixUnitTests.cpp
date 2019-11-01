@@ -295,7 +295,7 @@ bool testMatrixView()
 
 
 
-bool testMatrixNew()
+bool testMatrixNew() // rename to testMatrixAllocationAndArithmetic
 {
   std::string testName = "MatrixNew";
   bool testResult = true;
@@ -438,21 +438,51 @@ bool testMatrixNew()
   testResult &= E(1,0) == 23 && E(1,1) == 30 && E(1,2) == 37 && E(1,3) == 44;
   testResult &= E(2,0) == 35 && E(2,1) == 46 && E(2,2) == 57 && E(2,3) == 68;
 
+  E = D*A;
+  testResult &= allocs == 29;               // 4x2 * 2x3 = 4x3
+  testResult &= E.getNumRows()    == 4;
+  testResult &= E.getNumColumns() == 3;
+  testResult &= E(0,0) ==  9 && E(0,1) == 12 && E(0,2) == 15;
+  testResult &= E(1,0) == 19 && E(1,1) == 26 && E(1,2) == 33;
+  testResult &= E(2,0) == 29 && E(2,1) == 40 && E(2,2) == 51;
+  testResult &= E(3,0) == 39 && E(3,1) == 54 && E(3,2) == 69;
+
+  // move constructor:
+  Matrix K(std::move(E));
+  testResult &= allocs == 29;
+  testResult &= K.getNumRows() == 4 && K.getNumColumns() == 3;
+  testResult &= E.getNumRows() == 0 && E.getNumColumns() == 0;
+  testResult &= K.getDataVectorConst().size() == 12;
+  testResult &= E.getDataVectorConst().size() == 0;
+  testResult &= K.getDataPointerConst() != nullptr;
+  testResult &= E.getDataPointerConst() == nullptr;
+
+  // move assignment operator:
+  E = std::move(K);
+  testResult &= allocs == 29;
+  testResult &= E.getNumRows() == 4 && E.getNumColumns() == 3;
+  testResult &= K.getNumRows() == 0 && K.getNumColumns() == 0;
+  testResult &= E.getDataVectorConst().size() == 12;
+  testResult &= K.getDataVectorConst().size() == 0;
+  testResult &= E.getDataPointerConst() != nullptr;
+  testResult &= K.getDataPointerConst() == nullptr;
 
 
 
-  //E = C*B;  // should trigger assert
 
+  //E = A;
+  //E.transpose();
 
 
   // todo:
-  // -try some more multiplications: 4x2 * 2x3, 3x2 * 2x4
+  // -implement and test transposition - should handle special cases M=N, M=1, N=1 without
+  //  reallocation
   // -try matrix/vector products
+  // -try isRowVector, isColumnVector
+
   // -maybe add/subtract scalars (in-place and out-of-place)....but maybe not: mathematically, the
   //  space of MxN matrices is a vector space and addition of a scalar and a vector is not a thing
   //  in vector spaces
-
-
 
   return testResult;
 }

@@ -246,7 +246,7 @@ public:
   //T* getData() { return dataPointer; }
 
   /** Returns a const pointer to the data for read access as a flat array. */
-  const T* getDataConst() const { return dataPointer; }
+  const T* getDataPointerConst() const { return dataPointer; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -473,13 +473,28 @@ public:
   /** Negates all values of the matrix, i.e. inverts their sign. */
   void negate() { rsArray::negate(&data[0], &data[0], getSize()); }
 
+  void transpose()
+  {
+    // todo: handle special cases numRows==numCols, numRows==1, numCols==1 without reallocation
 
+    std::vector<T> v(getSize());
+    numHeapAllocations++;
+    rsMatrixView T(numCols, numRows, &v[0]);
+    for(int i = 0; i < numRows; i++)     // maybe factor this double-loop out into rsMatrixView
+      for(int j = 0; j < numCols; j++)   // transpose(A, B)
+        T(j, i) = this->at(i, j);
+    data = v;
+  }
+  // needs test
 
   //void conjugate
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
+
+  /** Returns a const reference to the std::vector that stores the data. Mostly for unit tests. */
+  const std::vector<T>& getDataVectorConst() const { return data; }
 
   // getDeterminant, getInverse, getFrobeniusNorm, get[Other]Norm, isPositiveDefinite, 
   // getEigenvalues, getTrace, isUpperLeftTriangular, getTransposed, getConjugateTransposed
