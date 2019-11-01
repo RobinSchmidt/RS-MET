@@ -338,29 +338,15 @@ void spectrogramFilter()
   typedef rsMatrixNew<rsComplexDbl> Mat;
   Mat s = sp.complexSpectrogram(&x[0], N);
 
-
-
   // create highpassed and lowpassed versions of the spectrogram:
-
-  //Mat sl = s, sh = s;  // initialize with copies of the original
-  // due to a bug or design flaw, this doesn't work - the matrix assignment operator doesn't 
-  // create a deep copy - todo: make a new, better matrix class in rapt
-
-
-  //// workaround to create the deep copies
-  int numFrames = s.getNumRows();
-  int numBins   = sp.getNumNonRedundantBins();  // == s.getNumColumns()
-  //Mat sl(numFrames, numBins); sl.copyDataFrom(s);
-  //Mat sh(numFrames, numBins); sh.copyDataFrom(s);
-  Mat sl = s;  // new
-  Mat sh = s;
-
-
+  Mat sl = s, sh = s;  // initialize with copies of the original
   int splitBin = (int) round(sp.frequencyToBinIndex(splitFreq, sampleRate));
   rsSpectrogramD::lowpass( sl, splitBin);
   rsSpectrogramD::highpass(sh, splitBin+1);
 
   // plot original, lowpassed and highpassed spectrograms:
+  int numFrames = s.getNumRows();
+  int numBins   = s.getNumColumns();  // == sp.getNumNonRedundantBins()
   plotSpectrogram(numFrames, numBins, s,  sampleRate, hopSize);
   plotSpectrogram(numFrames, numBins, sl, sampleRate, hopSize);
   plotSpectrogram(numFrames, numBins, sh, sampleRate, hopSize);
