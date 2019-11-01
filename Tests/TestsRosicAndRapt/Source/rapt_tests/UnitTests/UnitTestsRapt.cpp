@@ -70,6 +70,8 @@ bool runAllUnitTests()
 
   passed &= runUnitTest(&spectrogramUnitTest,   "rsSpectrogram");
   passed &= runUnitTest(&sineModelingUnitTest,  "SineModeling");
+  // todo: test rsCycleMarkFinder: give it a sine-sweep as input and check, if mark-deltas are 
+  // within sane limits ...but maybe that's better for an experiment
 
 
 

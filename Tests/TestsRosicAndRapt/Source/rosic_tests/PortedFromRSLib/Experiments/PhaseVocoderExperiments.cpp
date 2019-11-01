@@ -361,10 +361,6 @@ void spectrogramFilter()
   plotSpectrogram(numFrames, numBins, sl, sampleRate, hopSize);
   plotSpectrogram(numFrames, numBins, sh, sampleRate, hopSize);
 
-
-
-
-
   // resynthesize the lowpass and highpass part from the respective (partial) spectrograms:
   Vec xl = sp.synthesize(sl);
   Vec xh = sp.synthesize(sh);

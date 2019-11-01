@@ -221,6 +221,9 @@ public:
   // needs test
 
 
+
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
@@ -475,9 +478,7 @@ public:
   static rsMatrixNew<T> identity(int size) 
   { rsMatrixNew<T> E(size, size); E.setToIdentity(); return E; }
 
-
-  // todo: zero(numRows, numCols), diag(int size, T* data), 
-  // etc.
+  // todo: diag(int size, T* data), diag(int size, T value)
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -711,6 +712,8 @@ inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
 //   the storage container as template argument like so:
 //   template<class ElemType, class ContainerType>
 //   class rsMatrix { ContainerType<ElemType> data; };
+//  -maybe make subclasses rsRowVector, rsColumnVector with a simplified element access operator 
+//   that takes only one index
 
 
 // maybe see here:

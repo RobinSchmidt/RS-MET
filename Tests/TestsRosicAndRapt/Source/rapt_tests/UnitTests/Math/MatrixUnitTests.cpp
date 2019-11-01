@@ -499,9 +499,6 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
 
 
   // todo:
-  // -implement factory functions
-  // -try matrix/vector products
-
   // -maybe add/subtract scalars (in-place and out-of-place)....but maybe not: mathematically, the
   //  space of MxN matrices is a vector space and addition of a scalar and a vector is not a thing
   //  in vector spaces

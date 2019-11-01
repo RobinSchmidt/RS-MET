@@ -376,8 +376,8 @@ int main(int argc, char* argv[])
   // Phase Vocoder:
   //phaseRepresentation();
   //grainRoundTrip();        // under construction
-  //spectrogramSine();
-  //spectrogramFilter();
+  spectrogramSine();
+  spectrogramFilter();
   //sineParameterEstimation();
   //plotOverlappingWindowSum();
   //phaseInterpolation();
