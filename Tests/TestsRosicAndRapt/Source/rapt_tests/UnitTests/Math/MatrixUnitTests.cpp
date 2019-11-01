@@ -510,14 +510,28 @@ bool testMatrixNew2()  // rename to testMatrixTensorProduct
   Matrix B(4, 5, {1,2,3,4,5, 6,7,8,9,10, 11,12,13,14,15, 16,17,18,19,20});
   res &= allocs == 2;
 
-
   Matrix C = Matrix::kroneckerProduct(A, B);
   res &= allocs == 3;
   res &= C.getNumRows() == 8 && C.getNumColumns() == 15;
-  // todo: check, if result is correct
-  // maybe try with 1x2 and 4x3 matrix (all dimensions different)
+  // todo: check all elements
 
+  Matrix T(8, 15,   // target Kronecker product
+    { 1, 2, 3, 4, 5, 2, 4, 6, 8, 10, 3,  6,  9, 12, 15,
+      6, 7, 8, 9,10,12,14,16,18, 20,18, 21, 24, 27, 30,
+     11,12,13,14,15,22,24,26,28, 30,33, 36, 39, 42, 45,
+     16,17,18,19,20,32,34,36,38, 40,48, 51, 54, 57, 60,
+      4, 8,12,16,20, 5,10,15,20, 25, 6, 12, 18, 24, 30,
+     24,28,32,36,40,30,35,40,45, 50,36, 42, 48, 54, 60,
+     44,48,52,56,60,55,60,65,70, 75,66, 72, 78, 84, 90,
+     64,68,72,76,80,80,85,90,95,100,96,102,108,114,120});
+  res &= allocs == 4;
+  res &= C == T;
 
+  // the following sage code produces the result:
+  // A = matrix([[1,2,3],[4,5,6]])
+  // B = matrix([[1,2,3,4,5],[6,7,8,9,10],[11,12,13,14,15],[16,17,18,19,20]])
+  // C = A.tensor_product(B)
+  // A, B, C
 
   return res;
 }
