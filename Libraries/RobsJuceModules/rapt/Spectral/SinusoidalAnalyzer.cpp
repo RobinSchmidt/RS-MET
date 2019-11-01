@@ -227,7 +227,7 @@ void rsSinusoidalAnalyzer<T>::applyContinuations(
 }
 
 template<class T>
-rsMatrix<std::complex<T>> rsSinusoidalAnalyzer<T>::getComplexSpectrogram(
+rsMatrixNew<std::complex<T>> rsSinusoidalAnalyzer<T>::getComplexSpectrogram(
   T* sampleData, int numSamples)
 {
   return sp.complexSpectrogram(sampleData, numSamples);
@@ -235,7 +235,7 @@ rsMatrix<std::complex<T>> rsSinusoidalAnalyzer<T>::getComplexSpectrogram(
 
 template<class T>
 RAPT::rsSinusoidalModel<T> rsSinusoidalAnalyzer<T>::analyzeSpectrogram(
-  const RAPT::rsMatrix<std::complex<T>>& stft, T sampleRate)
+  const RAPT::rsMatrixNew<std::complex<T>>& stft, T sampleRate)
 {
   // Initializations:
   typedef RAPT::rsInstantaneousSineParams<double> InstParams;
@@ -249,8 +249,8 @@ RAPT::rsSinusoidalModel<T> rsSinusoidalAnalyzer<T>::analyzeSpectrogram(
   T frameDelta = sp.getHopSize() / sampleRate;
 
 
-  rsMatrix<T> mag = matrixMagnitudes(stft);
-  rsMatrix<T> phs = matrixPhases(stft);
+  rsMatrixNew<T> mag = matrixMagnitudes(stft);
+  rsMatrixNew<T> phs = matrixPhases(stft);
 
   // ...maybe plot the spectrogram here...
   //plotPhasogram(numFrames, numBins, phs.getDataPointer(), sampleRate, sp.getHopSize());
@@ -274,7 +274,7 @@ RAPT::rsSinusoidalModel<T> rsSinusoidalAnalyzer<T>::analyzeSpectrogram(
     T time  = frameIndex * frameDelta;
     T* pMag = mag.getRowPointer(frameIndex);
     T* pPhs = phs.getRowPointer(frameIndex);
-    std::complex<T>* pCmp = stft.getRowPointer(frameIndex);  // pointer to complex short-time spectrum
+    const std::complex<T>* pCmp = stft.getRowPointerConst(frameIndex);  // pointer to complex short-time spectrum
 
 
     //plotData(numBins, pMag);
@@ -423,7 +423,7 @@ rsSinusoidalModel<T> rsSinusoidalAnalyzer<T>::analyze(
   //  ...but later - first, let's see how far we get without such a pre-processing and try to make 
   //  the algorithm work well under this (suboptimal) condition, too
 
-  rsMatrix<std::complex<T>> stft = getComplexSpectrogram(sampleData, numSamples);
+  rsMatrixNew<std::complex<T>> stft = getComplexSpectrogram(sampleData, numSamples);
   return analyzeSpectrogram(stft, sampleRate);
 }
 

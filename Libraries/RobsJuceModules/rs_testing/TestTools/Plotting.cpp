@@ -194,7 +194,7 @@ void plotSpectrogram(int numFrames, int numBins, double **s, double fs, int H,
 }
 // maybe factor out a matrix plotting function
 
-void plotSpectrogram(int numFrames, int numBins, const rsMatrix<std::complex<double>>& spec, 
+void plotSpectrogram(int numFrames, int numBins, const rsMatrixNew<std::complex<double>>& spec, 
   double sampleRate, int hopSize, double dbMin, double dbMax)
 {
   double **dB;

@@ -144,7 +144,7 @@ void rsSpectrogram<T>::prepareTrafoBuffer(const T* x, int N, int n, std::complex
 }
 
 template<class T>
-rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N)
+rsMatrixNew<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N)
 {
   // x: signal, N: number of samples
 
@@ -154,8 +154,8 @@ rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N
   int F = getNumFrames(N, H);                  // number of STFT frames
   int M = trafoSize;
   int K = M/2 + 1;                             // number of non-redundant bins
-  rsMatrix<std::complex<T>> s(F, K);           // spectrogram (only positive frequency bins)
-  //T a = 2 / rsArray::sum(w, B);                // amplitude scaler
+  rsMatrixNew<std::complex<T>> s(F, K);        // spectrogram (only positive frequency bins)
+  //T a = 2 / rsArray::sum(w, B);              // amplitude scaler
   T a = getAnalysisScaler();                   // amplitude scaler = 2 / rsArray::sum(w, B)
   int n = 0;                                   // sample, where current block is centered
   std::complex<T> *X = new std::complex<T>[M]; // short-time spectrum centered at sample n
@@ -177,7 +177,7 @@ rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N
 }
 
 template<class T>
-void rsSpectrogram<T>::lowpass(rsMatrix<std::complex<T>>& s, int hi)
+void rsSpectrogram<T>::lowpass(rsMatrixNew<std::complex<T>>& s, int hi)
 {
   int numFrames = s.getNumRows();
   int numBins   = s.getNumColumns();
@@ -190,7 +190,7 @@ void rsSpectrogram<T>::lowpass(rsMatrix<std::complex<T>>& s, int hi)
 }
 
 template<class T>
-void rsSpectrogram<T>::highpass(rsMatrix<std::complex<T>>& s, int lo)
+void rsSpectrogram<T>::highpass(rsMatrixNew<std::complex<T>>& s, int lo)
 {
   int numFrames = s.getNumRows();
   int numBins   = s.getNumColumns();
@@ -200,14 +200,14 @@ void rsSpectrogram<T>::highpass(rsMatrix<std::complex<T>>& s, int lo)
 }
 
 template<class T>
-void rsSpectrogram<T>::bandpass(rsMatrix<std::complex<T>>& s, int lo, int hi)
+void rsSpectrogram<T>::bandpass(rsMatrixNew<std::complex<T>>& s, int lo, int hi)
 {
   lowpass( s, hi);
   highpass(s, lo);
 }
 
 template<class T>
-std::vector<T> rsSpectrogram<T>::synthesize(const rsMatrix<std::complex<T>> &s)
+std::vector<T> rsSpectrogram<T>::synthesize(const rsMatrixNew<std::complex<T>> &s)
 {
   // s: spectrogram
   int B = blockSize;
@@ -229,13 +229,13 @@ std::vector<T> rsSpectrogram<T>::synthesize(const rsMatrix<std::complex<T>> &s)
 }
 
 template<class T>
-rsMatrix<T> rsSpectrogram<T>::timeReassignment(T *x, int N,
-  const rsMatrix<std::complex<T>> &s, T *wr, int B, int H)
+rsMatrixNew<T> rsSpectrogram<T>::timeReassignment(T *x, int N,
+  const rsMatrixNew<std::complex<T>> &s, T *wr, int B, int H)
 {
   // x: signal, N: number of samples, s: complex spectrogram, wr: time-ramped window, B: blocksize,
   // H: hopsize
 
-  rsMatrix<T> tr;
+  rsMatrixNew<T> tr;
 
   // use the complexSpectrogram function to compute a spectrogram with the ramped window and then
   // apply the time reassignment formula using the original spectrogram s and the "ramped"
@@ -246,13 +246,13 @@ rsMatrix<T> rsSpectrogram<T>::timeReassignment(T *x, int N,
 }
 
 template<class T>
-rsMatrix<T> rsSpectrogram<T>::frequencyReassignment(T *x, int N,
-  const rsMatrix<std::complex<T>> &s, T *wd, int B, int H)
+rsMatrixNew<T> rsSpectrogram<T>::frequencyReassignment(T *x, int N,
+  const rsMatrixNew<std::complex<T>> &s, T *wd, int B, int H)
 {
   // x: signal, N: number of samples, s: complex spectrogram, wd: window derivative, B: blocksize,
   // H: hopsize
 
-  rsMatrix<T> fr;
+  rsMatrixNew<T> fr;
 
   // use the complexSpectrogram function to compute a spectrogram with the derivative window and 
   // then apply the frequency reassignment formula using the original spectrogram s and the 
@@ -263,7 +263,7 @@ rsMatrix<T> rsSpectrogram<T>::frequencyReassignment(T *x, int N,
 }
 
 template<class T>
-std::vector<T> rsSpectrogram<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &s)
+std::vector<T> rsSpectrogram<T>::synthesizeRaw(const rsMatrixNew<std::complex<T>> &s)
 {
   // s: complex spectrogram
 

@@ -147,12 +147,12 @@ public:
 
   /** Analyzes the given spectrogram and return the sinusoidal model for it */
   RAPT::rsSinusoidalModel<T> analyzeSpectrogram(
-    const RAPT::rsMatrix<std::complex<T>>& spectrogram, T sampleRate);
+    const RAPT::rsMatrixNew<std::complex<T>>& spectrogram, T sampleRate);
 
   /** Creates and returns a complex spectrogram from the given sample data. Used internally by 
   analyze, so client code needs to call this directly only if it wants to see/plot/investigate the 
   underlying spectrogram analysis result. */
-  RAPT::rsMatrix<std::complex<T>> getComplexSpectrogram(T* sampleData, int numSamples);
+  RAPT::rsMatrixNew<std::complex<T>> getComplexSpectrogram(T* sampleData, int numSamples);
 
   /** Returns an array of indices of peaks in the given array x of length N. A peak at index i is 
   defined by the condition x[i-1] < x[i] < x[i+1]. You can also pass a relative threshold (with 

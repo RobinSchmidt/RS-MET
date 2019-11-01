@@ -799,23 +799,22 @@ RS_INLINE rsMatrix<T> outerProduct(const rsVector<T> &a, const rsVector<T> &b)
 
 
 template<class T>
-rsMatrix<T> matrixMagnitudes(const rsMatrix<std::complex<T>>& A)
+rsMatrixNew<T> matrixMagnitudes(const rsMatrixNew<std::complex<T>>& A)
 {
   int N = A.getNumRows();
   int M = A.getNumColumns();
-  rsMatrix<T> mags(N, M);
+  rsMatrixNew<T> mags(N, M);
   for(int i = 0; i < N; i++)
     for(int j = 0; j < M; j++)
       mags(i, j) = abs(A(i, j));
   return mags;
 }
-
 template<class T>
-rsMatrix<T> matrixPhases(const rsMatrix<std::complex<T>>& A)
+rsMatrixNew<T> matrixPhases(const rsMatrixNew<std::complex<T>>& A)
 {
   int N = A.getNumRows();
   int M = A.getNumColumns();
-  rsMatrix<T> phases(N, M);
+  rsMatrixNew<T> phases(N, M);
   for(int i = 0; i < N; i++)
     for(int j = 0; j < M; j++)
       phases(i, j) = arg(A(i, j));

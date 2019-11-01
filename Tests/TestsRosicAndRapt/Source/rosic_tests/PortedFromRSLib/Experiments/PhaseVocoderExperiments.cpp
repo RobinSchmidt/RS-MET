@@ -264,7 +264,7 @@ void spectrogramSine()
   sp.setAnalysisWindowType(W);
   sp.setSynthesisWindowType(W); 
   //sp.setOutputDemodulation(false); // with appropriate settings, demodulation should be superfluous
-  rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(x, N);
+  rsMatrixNew<rsComplexDbl> s = sp.complexSpectrogram(x, N);
   int F = s.getNumRows();    // number of frames
 
   // compute (magnitude) spectrogram and phasogram:
@@ -335,7 +335,7 @@ void spectrogramFilter()
   sp.setAnalysisWindowType(W);
   sp.setSynthesisWindowType(W); 
   //sp.setOutputDemodulation(false); // with appropriate settings, demodulation should be superfluous
-  typedef rsMatrix<rsComplexDbl> Mat;
+  typedef rsMatrixNew<rsComplexDbl> Mat;
   Mat s = sp.complexSpectrogram(&x[0], N);
 
 
@@ -346,11 +346,15 @@ void spectrogramFilter()
   // due to a bug or design flaw, this doesn't work - the matrix assignment operator doesn't 
   // create a deep copy - todo: make a new, better matrix class in rapt
 
-  // workaround to create the deep copies
+
+  //// workaround to create the deep copies
   int numFrames = s.getNumRows();
   int numBins   = sp.getNumNonRedundantBins();  // == s.getNumColumns()
-  Mat sl(numFrames, numBins); sl.copyDataFrom(s);
-  Mat sh(numFrames, numBins); sh.copyDataFrom(s);
+  //Mat sl(numFrames, numBins); sl.copyDataFrom(s);
+  //Mat sh(numFrames, numBins); sh.copyDataFrom(s);
+  Mat sl = s;  // new
+  Mat sh = s;
+
 
   int splitBin = (int) round(sp.frequencyToBinIndex(splitFreq, sampleRate));
   rsSpectrogramD::lowpass( sl, splitBin);
