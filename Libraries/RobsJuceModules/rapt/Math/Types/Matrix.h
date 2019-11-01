@@ -238,6 +238,8 @@ public:
 
   bool isColumnVector() const { return numCols == 1; }
 
+  bool isVector() const { return isRowVector() || isColumnVector(); }
+
   bool isSquare() const { return numRows == numCols; }
 
 
@@ -494,16 +496,15 @@ public:
   /** Negates all values of the matrix, i.e. inverts their sign. */
   void negate() { rsArray::negate(&data[0], &data[0], getSize()); }
 
+  /** Transposes this matrix, i.e. the rows become columns and vice versa. Avoids reallocation in 
+  case of square-matrices and row- and column vectors. */
   void transpose()
   {
-    // todo: handle special cases numRows==numCols, numRows==1, numCols==1 without reallocation
-
-
     // handle square matrices:
     if(isSquare()) { rsMatrixView<T>::transposeSquare(this); return; }
 
     // handle row- and column vectors:
-    if(isRowVector() || isColumnVector()) { rsSwap(numRows, numCols); return; }
+    if(isVector()) { rsSwap(numRows, numCols); return; }
 
     // handle general case (needs reallocation):
     std::vector<T> v(getSize());
@@ -513,7 +514,8 @@ public:
     rsSwap(numRows, numCols);
     data = v;
   }
-  // needs test
+  // maybe move to cpp file
+
 
   //void conjugate
 

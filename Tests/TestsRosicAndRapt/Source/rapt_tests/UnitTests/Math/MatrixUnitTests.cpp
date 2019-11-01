@@ -264,7 +264,7 @@ bool testMatrixArithmetic(std::string &reportString)
 bool testMatrixView()
 {
   std::string testName = "MatrixView";
-  bool r = true;  // est result
+  bool r = true;  // test result
 
   typedef rsMatrixView<double> MatrixView;
 
@@ -284,18 +284,11 @@ bool testMatrixView()
   r &= m(1,0) == 3; r &= m(1,1) == 4;
   r &= m(2,0) == 5; r &= m(2,1) == 6; 
 
-
-
-  typedef rsMatrix<double> Matrix;
-  //Matrix A(
-
-
   return r;
 }
 
 
-
-bool testMatrixNew() // rename to testMatrixAllocationAndArithmetic
+bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
 {
   std::string testName = "MatrixNew";
   bool testResult = true;
@@ -476,7 +469,6 @@ bool testMatrixNew() // rename to testMatrixAllocationAndArithmetic
   testResult &= E == Matrix(3, 2, {1,4, 2,5, 3,6});  // doesn't work yet
   testResult &= allocs == 32;
 
-
   Matrix S4(4, 4, {1,2,3,4, 5,6,7,8, 9,10,11,12, 13,14,15,16});
   testResult &= allocs == 33;
   S4.transpose();
@@ -484,12 +476,17 @@ bool testMatrixNew() // rename to testMatrixAllocationAndArithmetic
   testResult &= S4 == Matrix(4, 4, {1,5,9,13, 2,6,10,14, 3,7,11,15, 4,8,12,16});
   testResult &= allocs == 34;
 
+  Matrix V3(3, 1, {1,2,3});     // a 3D column-vector...
+  testResult &= allocs == 35;
+  V3.transpose();               // ...becomes a 3D row-vector
+  testResult &= allocs == 35;
+  testResult &= V3 == Matrix(1, 3, {1,2,3});
+  testResult &= allocs == 36;
+
 
   // todo:
-  // -implement and test transposition - should handle special cases M=N, M=1, N=1 without
-  //  reallocation
+  // -implement factory functions
   // -try matrix/vector products
-  // -try isRowVector, isColumnVector
 
   // -maybe add/subtract scalars (in-place and out-of-place)....but maybe not: mathematically, the
   //  space of MxN matrices is a vector space and addition of a scalar and a vector is not a thing
@@ -497,6 +494,8 @@ bool testMatrixNew() // rename to testMatrixAllocationAndArithmetic
 
   return testResult;
 }
+
+
 
 bool testTransformMatrices()
 {
