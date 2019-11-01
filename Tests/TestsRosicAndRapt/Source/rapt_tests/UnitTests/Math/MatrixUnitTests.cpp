@@ -470,8 +470,16 @@ bool testMatrixNew() // rename to testMatrixAllocationAndArithmetic
 
 
 
-  //E = A;
-  //E.transpose();
+  E = A;
+  testResult &= allocs == 30;
+  testResult &= E.getNumRows() == 2 && E.getNumColumns() == 3;
+  E.transpose();
+  testResult &= allocs == 31;
+  testResult &= E == Matrix(3, 2, {1,4, 2,5, 3,6});  // doesn't work yet
+  testResult &= allocs == 32;
+
+
+
 
 
   // todo:
