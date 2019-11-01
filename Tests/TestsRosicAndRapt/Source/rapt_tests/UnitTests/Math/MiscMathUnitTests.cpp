@@ -406,7 +406,8 @@ bool testMultiLayerPerceptron(std::string &reportString)
 
 bool testMiscMath()
 {
-  std::string dummy;
+  std::string dummy;    // get rid
+
   bool testResult = true;
 
   testResult &= testExponentialCurveFitting(  dummy);
@@ -414,8 +415,6 @@ bool testMiscMath()
   testResult &= testGradientBasedOptimization(dummy);
   testResult &= testMinSqrDifFixSum(          dummy);
   testResult &= testPhaseUnwrapStuff(         dummy);
-  testResult &= testTransformMatrices();
-
   //testResult &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
   //testResult &= testMultiLayerPerceptron(     dummy); // maybe move to experiments
 

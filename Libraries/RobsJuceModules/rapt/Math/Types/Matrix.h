@@ -458,14 +458,20 @@ public:
   }
 
 
-  /** Computes the Kronecker product between matrices A and B. For a 3x2 matrix A, it looks like
-  that:
+  /** Computes the Kronecker product between matrices A and B. For a 3x2 matrix A, it looks like:
+
               |a11*B a12*B|
   A (x) B  =  |a21*B a22*B|
               |a31*B a32*B|
 
-  Where each entry aij*B is a submatrix of dimensions of B with the entries of B scaled by an
-  appropriate element from A. */
+  Where each entry aij*B is a submatrix of dimensions of B with the entries of B scaled by the
+  respective element from A. This product is also sometimes called tensor product, but i think, 
+  Kronecker product is more appropriate, as it explicitly deals with matrices rather than vector
+  spaces. Also, in the context of tensor algebra, the tensor product of two rank-2 tensors 
+  (i.e. matrices) would give a rank-4 tensor (with 4 indicies), whereas this product here still has
+  just 2 indices - it is again a matrix and not some 4-dimensional "block". See here:
+  https://en.wikipedia.org/wiki/Kronecker_product
+  https://en.wikipedia.org/wiki/Tensor_product     */
   static rsMatrixNew<T> kroneckerProduct(const rsMatrixNew<T>& A, const rsMatrixNew<T>& B)
   {
     rsMatrixNew<T> C(A.numRows*B.numRows, A.numCols*B.numCols);
@@ -483,7 +489,9 @@ public:
 
     return C;
   }
-  // maybe rename to tensorProduct
+  // maybe rename to tensorProduct - or maybe not, i think, Kronecker product is more appropriate:
+
+
   // see https://rosettacode.org/wiki/Kronecker_product#C
 
 

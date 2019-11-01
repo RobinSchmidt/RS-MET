@@ -495,15 +495,31 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
   return testResult;
 }
 
-
-
-bool testTransformMatrices()
+bool testMatrixNew2()  // rename to testMatrixTensorProduct
 {
-  bool testResult = true;
+  bool res = true;
+  typedef rsMatrixNew<double> Matrix;
+
+
+  int& allocs  = Matrix::numHeapAllocations;  // to count allocations
+  allocs = 0;
+
+
+  Matrix A(2, 3, {1,2,3,4,5,6});
+  res &= allocs == 1;
+  Matrix B(4, 5, {1,2,3,4,5, 6,7,8,9,10, 11,12,13,14,15, 16,17,18,19,20});
+  res &= allocs == 2;
+
+
+  Matrix C = Matrix::kroneckerProduct(A, B);
+  res &= allocs == 3;
+  res &= C.getNumRows() == 8 && C.getNumColumns() == 15;
+  // todo: check, if result is correct
+  // maybe try with 1x2 and 4x3 matrix (all dimensions different)
 
 
 
-  return testResult;
+  return res;
 }
 
 bool testMatrix()
@@ -515,13 +531,16 @@ bool testMatrix()
   //A = A + 2.0;
 
 
-  testResult &= testMatrixArithmetic(dummy);
+  testResult &= testMatrixArithmetic(dummy);  // obsolete - tests the old matrix class
   //...
 
 
   testResult &= testMatrixView();
-  testResult &= testMatrixNew();
-  testResult &= testTransformMatrices();
+  testResult &= testMatrixNew1();
+  testResult &= testMatrixNew2();
+
+
+  //testResult &= testTransformMatrices();
 
   return testResult;
 }
