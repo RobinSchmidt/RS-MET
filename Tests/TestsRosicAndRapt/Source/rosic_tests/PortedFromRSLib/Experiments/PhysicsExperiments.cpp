@@ -501,32 +501,32 @@ bool quantumSpinMeasurement()
   // (1) pg 138 says that any spin operator can be written a linear combination of the 3 Pauli
   // matrices and the identity matrix
 
-  e1 = pauliZ.eigenvalue1();  pass &= e1 == -1.0;
-  e2 = pauliZ.eigenvalue2();  pass &= e2 == +1.0;
-  E1 = pauliZ.eigenvector1(); pass &= isCloseTo(E1, d, tol); // "down"
-  E2 = pauliZ.eigenvector2(); pass &= isCloseTo(E2, u, tol); // "up"
+  e1 = pauliZ.getEigenvalue1();  pass &= e1 == -1.0;
+  e2 = pauliZ.getEigenvalue2();  pass &= e2 == +1.0;
+  E1 = pauliZ.getEigenvector1(); pass &= isCloseTo(E1, d, tol); // "down"
+  E2 = pauliZ.getEigenvector2(); pass &= isCloseTo(E2, u, tol); // "up"
   // E1 ane E2 are swapped - why?  ...not true anymore?
 
-  e1 = pauliX.eigenvalue1();  pass &= e1 == -1.0;
-  e2 = pauliX.eigenvalue2();  pass &= e2 == +1.0;
-  E1 = pauliX.eigenvector1(); pass &= isCloseTo(E1, l, tol); // "left" - wrong - not normalized
-  E2 = pauliX.eigenvector2(); pass &= isCloseTo(E2, r, tol); // "right"
+  e1 = pauliX.getEigenvalue1();  pass &= e1 == -1.0;
+  e2 = pauliX.getEigenvalue2();  pass &= e2 == +1.0;
+  E1 = pauliX.getEigenvector1(); pass &= isCloseTo(E1, l, tol); // "left" - wrong - not normalized
+  E2 = pauliX.getEigenvector2(); pass &= isCloseTo(E2, r, tol); // "right"
 
-  e1 = pauliY.eigenvalue1();  pass &= e1 == -1.0;
-  e2 = pauliY.eigenvalue2();  pass &= e2 == +1.0;
-  E1 = pauliY.eigenvector1(); pass &= isCloseTo(E1, o, tol); // "out"
-  E2 = pauliY.eigenvector2(); pass &= isCloseTo(E2, i, tol); // "in"
+  e1 = pauliY.getEigenvalue1();  pass &= e1 == -1.0;
+  e2 = pauliY.getEigenvalue2();  pass &= e2 == +1.0;
+  E1 = pauliY.getEigenvector1(); pass &= isCloseTo(E1, o, tol); // "out"
+  E2 = pauliY.getEigenvector2(); pass &= isCloseTo(E2, i, tol); // "in"
 
   // test eigenvalue and eigenvector compuation:
   Mat op;
   op.setValues(one, two, two, one);
-  e1 = op.eigenvalue1(); pass &= e1 == -1.0;
-  e2 = op.eigenvalue2(); pass &= e2 == +3.0;
+  e1 = op.getEigenvalue1(); pass &= e1 == -1.0;
+  e2 = op.getEigenvalue2(); pass &= e2 == +3.0;
 
-  //E1 = op.eigenvector1(); // (1, 0)     -> wrong result
-  //E2 = op.eigenvector2(); // (1,-1) * s
-  //E1 = pauliZ.eigenvector1(); 
-  //E2 = pauliZ.eigenvector2();
+  //E1 = op.getEigenvector1(); // (1, 0)     -> wrong result
+  //E2 = op.getEigenvector2(); // (1,-1) * s
+  //E1 = pauliZ.getEigenvector1(); 
+  //E2 = pauliZ.getEigenvector2();
 
 
   // test spin measurements via Pauli matrices:
@@ -655,10 +655,10 @@ bool quantumSpinMeasurement()
   QS::randomizeState(A, &prng);
   //QS::normalizeState(A); // not necessarry
   M  = QS::projector(A);
-  e1 = M.eigenvalue1();   // 0
-  e2 = M.eigenvalue2();   // 1
-  E1 = M.eigenvector1();  // 
-  E2 = M.eigenvector2();  // is this = k * A for some (complex) constant k
+  e1 = M.getEigenvalue1();   // 0
+  e2 = M.getEigenvalue2();   // 1
+  E1 = M.getEigenvector1();  // 
+  E2 = M.getEigenvector2();  // is this = k * A for some (complex) constant k
   Complex c1, c2;         // move decalaration to top
   c1 = E2.x / A.x;
   c2 = E2.y / A.y;
@@ -1125,10 +1125,10 @@ bool quantumSpinEvolution()
 
   // Solve the time dependent Schrödinger equation analytically using the "Recipe for a 
   // Schrödinger Ket" in (1):
-  Vec E1 = H.eigenvector1();
-  Vec E2 = H.eigenvector2();
-  Complex e1  = H.eigenvalue1();
-  Complex e2  = H.eigenvalue2();
+  Vec E1 = H.getEigenvector1();
+  Vec E2 = H.getEigenvector2();
+  Complex e1  = H.getEigenvalue1();
+  Complex e2  = H.getEigenvalue2();
   Complex a10 = QS::bracket(E1, Psi0);   // initial multiplier for E1, (1) Eq 4.31
   Complex a20 = QS::bracket(E2, Psi0);   // initial multiplier for E2, (1) Eq 4.31
   std::vector<Vec> stateTrajectory2(N);

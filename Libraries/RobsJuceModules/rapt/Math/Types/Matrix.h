@@ -50,17 +50,17 @@ public:
   T getTrace() const { return a+d; }
 
   /** Returns the first eigenvalue of this matrix. */
-  T eigenvalue1() const { return rsLinearAlgebra::eigenvalue2x2_1(a, b, c, d); }
+  T getEigenvalue1() const { return rsLinearAlgebra::eigenvalue2x2_1(a, b, c, d); }
 
   /** Returns the second eigenvalue of this matrix. */
-  T eigenvalue2() const { return rsLinearAlgebra::eigenvalue2x2_2(a, b, c, d); }
+  T getEigenvalue2() const { return rsLinearAlgebra::eigenvalue2x2_2(a, b, c, d); }
 
   /** Returns the first eigenvector of this matrix. */
-  rsVector2D<T> eigenvector1() const
+  rsVector2D<T> getEigenvector1() const
   { rsVector2D<T> v; rsLinearAlgebra::eigenvector2x2_1(a, b, c, d, &v.x, &v.y, true); return v; }
 
   /** Returns the second eigenvector of this matrix. */
-  rsVector2D<T> eigenvector2() const
+  rsVector2D<T> getEigenvector2() const
   { rsVector2D<T> v; rsLinearAlgebra::eigenvector2x2_2(a, b, c, d, &v.x, &v.y, true); return v; }
 
   /** Returns the inverse of this matrix. */

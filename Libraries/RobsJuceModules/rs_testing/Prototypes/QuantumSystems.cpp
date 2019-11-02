@@ -101,18 +101,18 @@ T rsQuantumSpin<T>::getUncertaintyProduct(const Mat& M, const Mat& L, const Vec&
 template<class T>
 T rsQuantumSpin<T>::measureObservable(Vec& A, const Mat& M, rsNoiseGenerator<T>* prng)
 {
-  Vec E1 = M.eigenvector1();
+  Vec E1 = M.getEigenvector1();
   T P1 = getStateProbability(A, E1);
   T rnd = prng->getSample();
   if(rnd <= P1) { // should it be <= or < ? 
     //T P2 = getStateProbability(A, M.getEigenvector2()); // should be 1-P1
     A = E1;                        // collapse the state into eigenstate 1
-    return M.eigenvalue1().real(); // return eigenvalue 1, (it's real if M is Hermitian)
+    return M.getEigenvalue1().real(); // return eigenvalue 1, (it's real if M is Hermitian)
   }
   else {
     //Vec E2 = M.eigenvector2();
-    A = M.eigenvector2();          // collapse into eigenstate 2
-    return M.eigenvalue2().real(); // return eigenvalue 2
+    A = M.getEigenvector2();          // collapse into eigenstate 2
+    return M.getEigenvalue2().real(); // return eigenvalue 2
   }
 }
 // in general, we'll have an NxN matrix and the probability to be in state k is given by
