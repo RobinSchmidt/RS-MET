@@ -42,7 +42,7 @@ defined" linker errors. */
 //template double RAPT::rsLinToLin(double x, double inMin, double inMax, double outMin, double outMax);
 
 template class RAPT::rsMatrixView<double>;
-template class RAPT::rsMatrix<double>;
+template class RAPT::rsMatrixOld<double>;
 template class RAPT::rsNodeBasedFunction<double>;
 template class RAPT::rsParametricBellFunction<double>;
 template class RAPT::rsPositiveBellFunctions<double>;

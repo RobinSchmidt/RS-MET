@@ -40,7 +40,7 @@ protected:
   std::vector<std::string> stateOutputs;
   //std::vector<char> alphabet;        // input alphabet
   //std::vector<int> acceptingStates;  // if running through a word ends up in one of these, the word is accepted
-  //rsMatrix<int> transitions;
+  //rsMatrixOld<int> transitions;
   int numStates = 0;
   int numSymbols = 0;
 

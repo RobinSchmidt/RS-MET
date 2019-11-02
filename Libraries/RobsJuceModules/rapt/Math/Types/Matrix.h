@@ -434,7 +434,7 @@ public:
 
   /** Creates matrix from an unnamed/temporary/rvalue std::vector - convenient to initialize 
   elements. You can initialize matrices like this:
-    rsMatrix<double> A(2, 3, {1.,2.,3., 4.,5.,6.});   */
+    rsMatrixOld<double> A(2, 3, {1.,2.,3., 4.,5.,6.});   */
   rsMatrixNew(int numRows, int numColumns, std::vector<T>&& newData) : data(std::move(newData))
   {
     numHeapAllocations++;             // we count the allocation that took place in the caller
@@ -751,7 +751,7 @@ rsMatrixNew<TOut> matrixFunction(const rsMatrixNew<TIn>& A, F func)
 //  -maybe the numHeapAllocations variable can also be used only in debug builds? i guess we may 
 //   need to define some function incrementAllocationCounter that reduces to no-op in release 
 //   builds
-//  -in expressions like rsMatrix<float> C = B*(A + B) + B; we want to avoid copying the data
+//  -in expressions like rsMatrixOld<float> C = B*(A + B) + B; we want to avoid copying the data
 //   unnecessarily - i.e. avoid that the temporaries that occur inside this expression use heap
 //   allocation only when absolutely necessarry
 //   ...this especially means, we need to pass the return values of the arithmetic operators by
@@ -772,7 +772,7 @@ rsMatrixNew<TOut> matrixFunction(const rsMatrixNew<TIn>& A, F func)
 //   compile time ...maybe the std::vector vs std::dynarrray distinction can determined by passing
 //   the storage container as template argument like so:
 //   template<class ElemType, class ContainerType>
-//   class rsMatrix { ContainerType<ElemType> data; };
+//   class rsMatrixOld { ContainerType<ElemType> data; };
 //  -maybe make subclasses rsRowVector, rsColumnVector with a simplified element access operator 
 //   that takes only one index
 

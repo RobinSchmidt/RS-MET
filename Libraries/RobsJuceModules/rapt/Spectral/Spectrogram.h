@@ -9,7 +9,7 @@
 -i think, i have implemented analysis and (re)synthesis in a single class rather than two separate
  classes (like with the sinusoidal model) in order to allow for identity resynthesis with arbitrary
  windows (the demodulation procedure needs to know both windows - analysis and synthesis)
--implement move contructors for rsArray and rsMatrix  */
+-implement move contructors for rsArray and rsMatrixOld  */
 
 template<class T>
 class rsSpectrogram
@@ -148,7 +148,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  //rsMatrix<std::complex<T>> complexSpectrogram(const T *signal, int numSamples);
+  //rsMatrixOld<std::complex<T>> complexSpectrogram(const T *signal, int numSamples);
 
   /** Computes the complex spectrogram of the given signal x of the given length in samples. */
   rsMatrixNew<std::complex<T>> complexSpectrogram(const T* signal, int numSamples);

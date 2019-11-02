@@ -180,7 +180,7 @@ template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, const 
 
 
 
-template class RAPT::rsMatrix<double>;
+template class RAPT::rsMatrixOld<double>;
 
 template class RAPT::rsPolynomial<float>;
 template class RAPT::rsPolynomial<double>;

@@ -593,7 +593,7 @@ public:
   // ...do stuff with matrix A
   rsDeAllocateSquareArray2D(A, N);  */
   static T** vandermondeMatrix(const T *x, int N);
-    // move to rsMatrix
+    // move to rsMatrixOld
 
   /** Computes coefficients a[0],..., a[N-1] for a polynomial of degree N-1 that goes through the N
   data points (x[0], y[0]),...,(x[N-1], y[N-1]). */
