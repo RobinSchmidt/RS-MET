@@ -1,6 +1,8 @@
 #ifndef RAPT_VECTOR_H_INCLUDED
 #define RAPT_VECTOR_H_INCLUDED
 
+// get rid of this - use the new implementation of rsMatrix
+
 /** This is a class for representing n-dimensional vectors and doing mathematical operations with
 them. To make the class fast, no consistency checking is done in the mathematical operators. You
 must ensure yourself that the input arguments are compatible - for example don't try to add two

@@ -140,8 +140,8 @@ bool testMatrix2x2(std::string& reportString)
   C = A*B; testResult &= C == Mat( 19, 22, 43, 50);
   C = B*A; testResult &= C == Mat( 23, 34, 31, 46);
   C = Mat::commutator(A,B); testResult &= C == Mat( -4, -12, 12, 4); // A*B - B*A
-  d = A.determinant(); testResult &= d == -2;
-  d = B.determinant(); testResult &= d == -2;
+  d = A.getDeterminant(); testResult &= d == -2;
+  d = B.getDeterminant(); testResult &= d == -2;
   C = A.inverse(); testResult &= C == Mat(-2, 1, 3./2, -1./2);
   C = B.inverse(); testResult &= C == Mat(-4, 3, 7./2, -5./2);
   C = A/B; testResult &= C == Mat( 3, -2, 2, -1);

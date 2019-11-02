@@ -668,12 +668,12 @@ bool quantumSpinMeasurement()
   M2 = M*M;
   pass &= isCloseTo(M, M2, tol);    // M should be equal to its square
   c1 = QS::sandwich(A, pauliZ, A); // todo: use some more general observable instead of pauliZ
-  c2 = (M*pauliZ).trace();
+  c2 = (M*pauliZ).getTrace();
   pass &= isCloseTo(c1, c2, tol);  // should be equal (for any observable) by (1) Eq 7.12
   QS::randomizeState(B, &prng);
   L = QS::projector(B);            // since projectors are Hermitian, L is an observable (right?)
   c1 = QS::sandwich(A, L, A);
-  c2 = (M*L).trace();
+  c2 = (M*L).getTrace();
   pass &= isCloseTo(c1, c2, tol);  // should be equal (for any observable) by (1) Eq 7.12
 
 
@@ -698,9 +698,9 @@ bool quantumSpinMeasurement()
   L  = pauliZ;
   Complex EA, EB, EL;
   Mat rho = QS::densityMatrix(std::vector<double>({ 0.75, 0.25 }), std::vector<Vec>({ A, B }));
-  EA = QS::sandwich(A,L,A); pass &= EA == (PA*L).trace();  // 7.12
-  EB = QS::sandwich(B,L,B); pass &= EB == (PB*L).trace();  // 7.12
-  EL = (rho * L).trace();   pass &= isCloseTo(EL, 0.75*EA + 0.25*EB, tol);
+  EA = QS::sandwich(A,L,A); pass &= EA == (PA*L).getTrace();  // 7.12
+  EB = QS::sandwich(B,L,B); pass &= EB == (PB*L).getTrace();  // 7.12
+  EL = (rho * L).getTrace();   pass &= isCloseTo(EL, 0.75*EA + 0.25*EB, tol);
 
 
 

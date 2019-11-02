@@ -44,10 +44,10 @@ public:
   // todo: prepend get
 
   /** Returns the determinant of this matrix. */
-  T determinant() const { return a*d - b*c; }
+  T getDeterminant() const { return a*d - b*c; }
 
   /** Returns the trace (sum of diagonal elements) of this matrix.  */
-  T trace() const { return a+d; }
+  T getTrace() const { return a+d; }
 
   /** Returns the first eigenvalue of this matrix. */
   T eigenvalue1() const { return rsLinearAlgebra::eigenvalue2x2_1(a, b, c, d); }
@@ -65,7 +65,7 @@ public:
 
   /** Returns the inverse of this matrix. */
   rsMatrix2x2<T> inverse() const
-  { T D = determinant(); T s = T(1) / D; return rsMatrix2x2<T>(s*d, -s*b, -s*c, s*a); }
+  { T D = getDeterminant(); T s = T(1) / D; return rsMatrix2x2<T>(s*d, -s*b, -s*c, s*a); }
 
   // maybe these functions should be named getDeterminant, etc. - more consistent with other
   // classes and states more explicitly what they do
