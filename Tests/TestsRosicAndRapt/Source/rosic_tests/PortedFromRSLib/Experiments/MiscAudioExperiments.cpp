@@ -793,7 +793,7 @@ void windowedSinc()
 
 
 template<class T>
-void plotMatrix(RAPT::rsMatrixNew<T>& z, std::vector<T>& x, std::vector<T>& y)
+void plotMatrix(RAPT::rsMatrix<T>& z, std::vector<T>& x, std::vector<T>& y)
 {
   double** z2;
   RAPT::MatrixTools::rsAllocateMatrix(z2, z.getNumRows(), z.getNumColumns());
@@ -826,7 +826,7 @@ void waveMorph()
 
   std::vector<double> x(Nx), y(Ny);
 
-  RAPT::rsMatrixNew<double> z(Nx, Ny);
+  RAPT::rsMatrix<double> z(Nx, Ny);
 
 
   rsNoiseGenerator<double> ng;
@@ -912,7 +912,7 @@ void waveMorph()
   for(int k = 0; k < 100; k++)
   {
     //plotMatrix(z, x, y);
-    RAPT::rsMatrixNew<double> t = z;  // temporary
+    RAPT::rsMatrix<double> t = z;  // temporary
     for(i = 1; i < Nx-1; i++)
     {
       for(j = 1; j < Ny-1; j++) 

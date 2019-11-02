@@ -726,7 +726,7 @@ bool quantumSpinMeasurement()
 /** Checks, if the vector v is an eigenvector of the matrix A by verifying if A*v equals some 
 multiple of v within a given tolerance. */
 template<class TElem, class TTol>
-bool isEigenVector(const rsMatrixNew<TElem>& A, const rsMatrixNew<TElem>& v, TTol tol)
+bool isEigenVector(const rsMatrix<TElem>& A, const rsMatrix<TElem>& v, TTol tol)
 {
   rsAssert(v.isColumnVector());
 
@@ -746,7 +746,7 @@ bool isEigenVector(const rsMatrixNew<TElem>& A, const rsMatrixNew<TElem>& v, TTo
   // vector product w = A*v and the ratio of w[n]/v[n] - if v is an eigenvector, this ratio should
   // be the corresponding eigenvalue (we call it lambda) and all elements w[i] should be in the 
   // same ratio, i.e. w[i] should be lambda*v[i] for all i:
-  rsMatrixNew<TElem> w = A*v;
+  rsMatrix<TElem> w = A*v;
   TElem lambda = w.at(n,0) / v.at(n,0);
   for(n = 0; n < N; n++) {
     if(rsAbs(lambda*v.at(n,0) - w.at(n,0)) > tol)
@@ -763,7 +763,7 @@ bool quantumSpinEntanglement()
   bool pass = true;  // move to unit tests
 
   typedef std::complex<double> Complex;
-  typedef rsMatrixNew<Complex> Mat;
+  typedef rsMatrix<Complex> Mat;
   typedef std::vector<Complex> Vec;
   typedef rsQuantumState<double> QS;
 
@@ -1251,7 +1251,7 @@ void quantum3StateSystem()
   // http://folk.uio.no/jaakko/FYS3110/Griffiths_3.38.pdf
 
   typedef complex<double> Complex;
-  typedef rsMatrixNew<Complex> Mat;
+  typedef rsMatrix<Complex> Mat;
   typedef vector<Complex> Vec;
 
   Mat H(3, 3, Vec({1,0,0, 0,2,0, 0,0,2}));

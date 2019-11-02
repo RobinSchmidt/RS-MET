@@ -175,7 +175,7 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
   //sp.setBlockSize(B);
   sp.setBlockAndTrafoSize(B, M);
   sp.setHopSize(H);
-  rsMatrixNew<rsComplexDbl> s = sp.complexSpectrogram(&x[0], N);
+  rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(&x[0], N);
   int numFrames = s.getNumRows();  
   // todo: let the function take an FFT-size parameter instead of a zero-padding factor (maybe)
   // facilitates having an FFT size independent from the block-size

@@ -151,7 +151,7 @@ public:
   //rsMatrixOld<std::complex<T>> complexSpectrogram(const T *signal, int numSamples);
 
   /** Computes the complex spectrogram of the given signal x of the given length in samples. */
-  rsMatrixNew<std::complex<T>> complexSpectrogram(const T* signal, int numSamples);
+  rsMatrix<std::complex<T>> complexSpectrogram(const T* signal, int numSamples);
 
 
   /** Computes a short-time FFT spectrum ... */
@@ -191,15 +191,15 @@ public:
   // moved to rsWindowFunction
 
   /** Zeroes out all bins above "highestBinToKeep" (in all frames) */
-  static void lowpass(rsMatrixNew<std::complex<T>>& spectrogram, int highestBinToKeep);
+  static void lowpass(rsMatrix<std::complex<T>>& spectrogram, int highestBinToKeep);
 
   /** Zeroes out all bins below "lowestBinToKeep" (in all frames) */
-  static void highpass(rsMatrixNew<std::complex<T>>& spectrogram, int lowestBinToKeep);
+  static void highpass(rsMatrix<std::complex<T>>& spectrogram, int lowestBinToKeep);
 
   /** Zeroes out all bin-values values except those in the range lowBin <= bin <= highBin. If 
   lowBin == 0 or highBin == numBins-1, you can also get lowpass- and highpass-filters, 
   respectively. */
-  static void bandpass(rsMatrixNew<std::complex<T>>& spectrogram, int lowBin, int highBin);
+  static void bandpass(rsMatrix<std::complex<T>>& spectrogram, int lowBin, int highBin);
 
   /** Given a complex spectrogram, this function synthesizes a signal using given synthesis
   window, blockSize and hopSize. You must also pass the analysis window that was used - this is
@@ -208,21 +208,21 @@ public:
   window w of length B (which is the blocksize) with hopsize H. The number of equals the number
   of columns in the matrix s - each row is one short-time spectrum (of positive frequencies only
   due to symmetry). */
-  std::vector<T> synthesize(const rsMatrixNew<std::complex<T>>& spectrogram);
+  std::vector<T> synthesize(const rsMatrix<std::complex<T>>& spectrogram);
 
   /** Given a signal and its complex spectrogram, this function computes the matrix of time
   reassignments for each time/frequency value. The rampedWindow array should be a time-ramped
   version of the window that was used in the sepctrogram analysis. */
-  static rsMatrixNew<T> timeReassignment(T *signal, int numSamples,
-    const rsMatrixNew<std::complex<T>> &spectrogram, T *rampedWindow, int blockSize,
+  static rsMatrix<T> timeReassignment(T *signal, int numSamples,
+    const rsMatrix<std::complex<T>> &spectrogram, T *rampedWindow, int blockSize,
     int hopSize);
   // not yet implemented - probably needs to be made non-static
 
   /** Given a signal and its complex spectrogram, this function computes the matrix of frequency
   reassignments for each time/frequency value. The derivativeWindow array should be the derivative
   of the window that was used in the sepctrogram analysis. */
-  static rsMatrixNew<T> frequencyReassignment(T *signal, int numSamples,
-    const rsMatrixNew<std::complex<T>> &spectrogram, T *derivativeWindow, int blockSize,
+  static rsMatrix<T> frequencyReassignment(T *signal, int numSamples,
+    const rsMatrix<std::complex<T>> &spectrogram, T *derivativeWindow, int blockSize,
     int hopSize);
   // not yet implemented - probably needs to be made non-static
 
@@ -232,7 +232,7 @@ public:
   analysis and synthesis windows and hop-size and block-size, the demodulation step can be 
   legitimately skipped because the overlapped windows add up to unity - but this is not the case
   in general. */
-  std::vector<T> synthesizeRaw(const rsMatrixNew<std::complex<T>> &spectrogram);
+  std::vector<T> synthesizeRaw(const rsMatrix<std::complex<T>> &spectrogram);
 
 
 

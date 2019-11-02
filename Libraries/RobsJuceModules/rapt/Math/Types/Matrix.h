@@ -335,7 +335,7 @@ public:
 
   /** Computes the Kronecker product between matrices A and B and stores the result in C. Assumes, 
   that C has the right dimensions. For more info, see the documentation of 
-  rsMatrixNew::kroneckerProduct. */
+  rsMatrix::kroneckerProduct. */
   static void kroneckerProduct(
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
@@ -401,7 +401,7 @@ and move constructors and -assignment operators have been implemented in order t
 unnecessary heap allocations in arithmetic expressions with matrices. */
 
 template<class T>
-class rsMatrixNew : public rsMatrixView<T>
+class rsMatrix : public rsMatrixView<T>
 {
 
 public:
@@ -410,20 +410,20 @@ public:
   /** \name Construction/Assignment/Destruction */
 
   /** Standard constructor. You must pass the initial number of rows and columns */
-  rsMatrixNew(int numRows = 0, int numColumns = 0)
+  rsMatrix(int numRows = 0, int numColumns = 0)
   {
     setSize(numRows, numColumns);
     // todo: optionally init with zeros
   }
 
   /** Destructor. */
-  ~rsMatrixNew()
+  ~rsMatrix()
   {
     int dummy = 0; // to figure out, when it gets called for debugging
   }
 
   /** Creates matrix from a std::vector.  */
-  rsMatrixNew(int numRows, int numColumns, const std::vector<T>& newData) : data(newData)
+  rsMatrix(int numRows, int numColumns, const std::vector<T>& newData) : data(newData)
   {
     numHeapAllocations++;   // data(newData) allocates
     rsAssert(numRows*numColumns == newData.size());
@@ -435,7 +435,7 @@ public:
   /** Creates matrix from an unnamed/temporary/rvalue std::vector - convenient to initialize 
   elements. You can initialize matrices like this:
     rsMatrixOld<double> A(2, 3, {1.,2.,3., 4.,5.,6.});   */
-  rsMatrixNew(int numRows, int numColumns, std::vector<T>&& newData) : data(std::move(newData))
+  rsMatrix(int numRows, int numColumns, std::vector<T>&& newData) : data(std::move(newData))
   {
     numHeapAllocations++;             // we count the allocation that took place in the caller
     rsAssert(newData.size() == 0);
@@ -446,14 +446,14 @@ public:
   }
 
   /** Copy constructor. Copies data from B into this object.  */
-  rsMatrixNew(const rsMatrixNew& B)
+  rsMatrix(const rsMatrix& B)
   {
     setSize(B.numRows, B.numCols);
     rsArray::copy(B.dataPointer, this->dataPointer, this->getSize());
   }
 
   /** Move constructor. Takes over ownership of the data stored in B. */
-  rsMatrixNew(rsMatrixNew&& B) : data(std::move(B.data))
+  rsMatrix(rsMatrix&& B) : data(std::move(B.data))
   {
     rsAssert(B.data.size() == 0); // B's data has now become our data
     this->numRows = B.numRows;
@@ -463,7 +463,7 @@ public:
   }
 
   /** Copy assignment operator. Copies data from rhs into this object. */
-  rsMatrixNew<T>& operator=(const rsMatrixNew<T>& rhs)
+  rsMatrix<T>& operator=(const rsMatrix<T>& rhs)
   {
     if (this != &rhs) { // self-assignment check expected
       setSize(rhs.numRows, rhs.numCols);
@@ -473,7 +473,7 @@ public:
   }
 
   /** Move assignment operator. Takes over ownership of the data stored in rhs. */
-  rsMatrixNew<T>& operator=(rsMatrixNew<T>&& rhs)
+  rsMatrix<T>& operator=(rsMatrix<T>&& rhs)
   {
     data = std::move(rhs.data);
     rsAssert(rhs.data.size() == 0);
@@ -485,12 +485,12 @@ public:
   }
 
   /** Creates a zero matrix with given number of rows and columns. */
-  static rsMatrixNew<T> zero(int numRows, int numColumns) 
-  { rsMatrixNew<T> Z(numRows, numColumns); Z.setToZero(); return Z; }
+  static rsMatrix<T> zero(int numRows, int numColumns) 
+  { rsMatrix<T> Z(numRows, numColumns); Z.setToZero(); return Z; }
 
   /** Creates an identity matrix of given size. */
-  static rsMatrixNew<T> identity(int size) 
-  { rsMatrixNew<T> E(size, size); E.setToIdentity(); return E; }
+  static rsMatrix<T> identity(int size) 
+  { rsMatrix<T> E(size, size); E.setToIdentity(); return E; }
 
   // todo: diag(int size, T* data), diag(int size, T value)
 
@@ -527,9 +527,9 @@ public:
   just 2 indices - it is again a matrix and not some 4-dimensional "block". See here:
   https://en.wikipedia.org/wiki/Kronecker_product
   https://en.wikipedia.org/wiki/Tensor_product     */
-  static rsMatrixNew<T> getKroneckerProduct(const rsMatrixNew<T>& A, const rsMatrixNew<T>& B)
+  static rsMatrix<T> getKroneckerProduct(const rsMatrix<T>& A, const rsMatrix<T>& B)
   {
-    rsMatrixNew<T> C(A.numRows*B.numRows, A.numCols*B.numCols);
+    rsMatrix<T> C(A.numRows*B.numRows, A.numCols*B.numCols);
     rsMatrixView<T>::kroneckerProduct(A, B, &C);
     return C;
   }
@@ -584,7 +584,7 @@ public:
   /** \name Operators */
 
   /** Compares matrices for equality */
-  bool operator==(const rsMatrixNew<T>& rhs) const
+  bool operator==(const rsMatrix<T>& rhs) const
   {
     if(this->numRows != rhs.numRows || this->numCols != rhs.numCols)
       return false;
@@ -593,31 +593,31 @@ public:
   // maybe move to rsMatrixView, if possible
 
   /** Compares matrices for inequality */
-  bool operator!=(const rsMatrixNew<T>& rhs) const { return !(*this == rhs); }
+  bool operator!=(const rsMatrix<T>& rhs) const { return !(*this == rhs); }
 
   /** Returns the negative of this matrix. */
-  rsMatrixNew<T> operator-()
+  rsMatrix<T> operator-()
   {
-    rsMatrixNew<T> C(this->numRows, this->numCols);
+    rsMatrix<T> C(this->numRows, this->numCols);
     for(int i = 0; i < this->getSize(); i++)
       C.dataPointer[i] = -this->dataPointer[i]; // maybe factor out into "neg" function in baseclass
     return C;
   }
 
   /** Adds two matrices: C = A + B. */
-  rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
-  { rsMatrixNew<T> C(this->numRows, this->numCols); this->add(*this, B, &C); return C; }
+  rsMatrix<T> operator+(const rsMatrix<T>& B) const
+  { rsMatrix<T> C(this->numRows, this->numCols); this->add(*this, B, &C); return C; }
 
   /** Subtracts two matrices: C = A - B. */
-  rsMatrixNew<T> operator-(const rsMatrixNew<T>& B) const
-  { rsMatrixNew<T> C(this->numRows, this->numCols); this->sub(*this, B, &C); return C; }
+  rsMatrix<T> operator-(const rsMatrix<T>& B) const
+  { rsMatrix<T> C(this->numRows, this->numCols); this->sub(*this, B, &C); return C; }
 
   /** Multiplies two matrices: C = A * B. */
-  rsMatrixNew<T> operator*(const rsMatrixNew<T>& B) const
+  rsMatrix<T> operator*(const rsMatrix<T>& B) const
   { 
     //if(!areMultiplicable(*this, B))
-    //  return rsMatrixNew<T>(0, 0); // return empty matrix when attempting to multiply incompatible matrices
-    rsMatrixNew<T> C(this->numRows, B.numCols); 
+    //  return rsMatrix<T>(0, 0); // return empty matrix when attempting to multiply incompatible matrices
+    rsMatrix<T> C(this->numRows, B.numCols); 
     this->mul(*this, B, &C); 
     return C; 
   }
@@ -626,29 +626,29 @@ public:
 
 
   /** Adds another matrix to this matrix and returns the result. */
-  rsMatrixNew<T>& operator+=(const rsMatrixNew<T>& B)
+  rsMatrix<T>& operator+=(const rsMatrix<T>& B)
   { this->add(*this, B, this); return *this; }
 
   /** Subtracts another matrix from this matrix and returns the result. */
-  rsMatrixNew<T>& operator-=(const rsMatrixNew<T>& B)
+  rsMatrix<T>& operator-=(const rsMatrix<T>& B)
   { this->sub(*this, B, this); return *this; }
 
   /** Multiplies this matrix by another and returns the result. This is not an in-place process, i.e. it 
   will allocate temporary heap-memory. */
-  rsMatrixNew<T>& operator*=(const rsMatrixNew<T>& B)
+  rsMatrix<T>& operator*=(const rsMatrix<T>& B)
   { *this = *this * B; return *this; } 
 
 
   /** Multiplies this matrix with a scalar s: B = A*s. The scalar is to the right of the matrix. */
-  rsMatrixNew<T> operator*(const T& s) const
-  { rsMatrixNew<T> B(*this); B.scale(s); return B; }
+  rsMatrix<T> operator*(const T& s) const
+  { rsMatrix<T> B(*this); B.scale(s); return B; }
 
   /** Multiplies this matrix by a scalar and returns the result. */
-  rsMatrixNew<T>& operator*=(const T& s)
+  rsMatrix<T>& operator*=(const T& s)
   { scale(s); return *this; }
 
   /** Divides this matrix by a scalar and returns the result. */
-  rsMatrixNew<T>& operator/=(const T& s)
+  rsMatrix<T>& operator/=(const T& s)
   { scale(T(1)/s); return *this; }
 
 
@@ -678,13 +678,13 @@ protected:
 
 };
 
-template<class T> int rsMatrixNew<T>::numHeapAllocations = 0;
+template<class T> int rsMatrix<T>::numHeapAllocations = 0;
 
 /** Multiplies a scalar and a matrix. */
 template<class T>
-inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
+inline rsMatrix<T> operator*(const T& s, const rsMatrix<T>& A)
 {
-  rsMatrixNew<T> B(A);
+  rsMatrix<T> B(A);
   B.scale(s);
   return B;
 }
@@ -695,11 +695,11 @@ inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
 
 
 template<class T>
-rsMatrixNew<T> matrixMagnitudes(const rsMatrixNew<std::complex<T>>& A)
+rsMatrix<T> matrixMagnitudes(const rsMatrix<std::complex<T>>& A)
 {
   int N = A.getNumRows();
   int M = A.getNumColumns();
-  rsMatrixNew<T> mags(N, M);
+  rsMatrix<T> mags(N, M);
   for(int i = 0; i < N; i++)
     for(int j = 0; j < M; j++)
       mags(i, j) = abs(A(i, j));
@@ -707,11 +707,11 @@ rsMatrixNew<T> matrixMagnitudes(const rsMatrixNew<std::complex<T>>& A)
 }
 
 template<class T>
-rsMatrixNew<T> matrixPhases(const rsMatrixNew<std::complex<T>>& A)
+rsMatrix<T> matrixPhases(const rsMatrix<std::complex<T>>& A)
 {
   int N = A.getNumRows();
   int M = A.getNumColumns();
-  rsMatrixNew<T> phases(N, M);
+  rsMatrix<T> phases(N, M);
   for(int i = 0; i < N; i++)
     for(int j = 0; j < M; j++)
       phases(i, j) = arg(A(i, j));
@@ -723,11 +723,11 @@ rsMatrixNew<T> matrixPhases(const rsMatrixNew<std::complex<T>>& A)
 
 /*
 template<class TIn, class TOut, class F>
-rsMatrixNew<TOut> matrixFunction(const rsMatrixNew<TIn>& A, F func)
+rsMatrix<TOut> matrixFunction(const rsMatrix<TIn>& A, F func)
 {
   int N = A.getNumRows();
   int M = A.getNumColumns();
-  rsMatrixNew<TOut> out(N, M);
+  rsMatrix<TOut> out(N, M);
   for(int i = 0; i < N; i++)
     for(int j = 0; j < M; j++)
       out(i, j) = func(A(i, j));
@@ -759,8 +759,8 @@ rsMatrixNew<TOut> matrixFunction(const rsMatrixNew<TIn>& A, F func)
 //  -ideally, i want to be able to use it in production code for realtime processing...but that
 //   may not be possible...but maybe with rsMatrixView, it is?
 //
-//    rsMatrixNew<T> operator+(const rsMatrixNew<T>& B) const
-//    { rsMatrixNew<T> C(this->numRows, this->numCols); this->add(this, &B, &C); return C; }
+//    rsMatrix<T> operator+(const rsMatrix<T>& B) const
+//    { rsMatrix<T> C(this->numRows, this->numCols); this->add(this, &B, &C); return C; }
 //
 //   we have one constructor call (-> heap allocation) to create C - but C is a local variable - to
 //   return it to the caller, there would be *another* (copy?)constructor call - ...right? and that

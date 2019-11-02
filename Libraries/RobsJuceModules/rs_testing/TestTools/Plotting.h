@@ -155,7 +155,7 @@ void plotSpectrogram(int numFrames, int numBins, double **decibels, double sampl
 // introduce parameters to control scaling of time- and frequency axis..
 
 /** Plots spectrogram magnitudes from a complex spectrogram. */
-void plotSpectrogram(int numFrames, int numBins, const rsMatrixNew<std::complex<double>>& spec,
+void plotSpectrogram(int numFrames, int numBins, const rsMatrix<std::complex<double>>& spec,
   double sampleRate, int hopSize, double dbMin = -100, double dbMax = +10);
 
 

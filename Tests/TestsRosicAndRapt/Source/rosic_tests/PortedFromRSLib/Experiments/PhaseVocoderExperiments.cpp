@@ -264,7 +264,7 @@ void spectrogramSine()
   sp.setAnalysisWindowType(W);
   sp.setSynthesisWindowType(W); 
   //sp.setOutputDemodulation(false); // with appropriate settings, demodulation should be superfluous
-  rsMatrixNew<rsComplexDbl> s = sp.complexSpectrogram(x, N);
+  rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(x, N);
   int F = s.getNumRows();    // number of frames
 
   // compute (magnitude) spectrogram and phasogram:
@@ -335,7 +335,7 @@ void spectrogramFilter()
   sp.setAnalysisWindowType(W);
   sp.setSynthesisWindowType(W); 
   //sp.setOutputDemodulation(false); // with appropriate settings, demodulation should be superfluous
-  typedef rsMatrixNew<rsComplexDbl> Mat;
+  typedef rsMatrix<rsComplexDbl> Mat;
   Mat s = sp.complexSpectrogram(&x[0], N);
 
   // create highpassed and lowpassed versions of the spectrogram:

@@ -293,14 +293,14 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
   std::string testName = "MatrixNew";
   bool testResult = true;
 
-  using Matrix = rsMatrixNew<double>;
+  using Matrix = rsMatrix<double>;
   int& allocs  = Matrix::numHeapAllocations;  // to count allocations
   allocs = 0;
 
 
   // A = |1 2 3|
   //     |4 5 6|
-  Matrix A(2, 3, {1.,2.,3., 4.,5.,6.}); // calls rsMatrixNew(int, int, std::vector<T>&&)
+  Matrix A(2, 3, {1.,2.,3., 4.,5.,6.}); // calls rsMatrix(int, int, std::vector<T>&&)
   testResult &= A(0,0) == 1 &&  A(0,1) == 2 && A(0,2) == 3;
   testResult &= A(1,0) == 4 &&  A(1,1) == 5 && A(1,2) == 6;
   testResult &= allocs == 1;
@@ -308,7 +308,7 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
   // B = |1 2| 
   //     |3 4|
   //     |5 6|
-  Matrix B(3, 2, {1.,2.,3., 4.,5.,6.}); // calls rsMatrixNew(int, int, std::vector<T>&&)
+  Matrix B(3, 2, {1.,2.,3., 4.,5.,6.}); // calls rsMatrix(int, int, std::vector<T>&&)
   testResult &= B(0,0) == 1 &&  B(0,1) == 2;
   testResult &= B(1,0) == 3 &&  B(1,1) == 4;
   testResult &= B(2,0) == 5 &&  B(2,1) == 6;
@@ -317,9 +317,9 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
   // multiplication:
   Matrix C = A*B; 
   // calls: 
-  //   operator*(const rsMatrixNew<T>&)
-  //     rsMatrixNew(int numRows, int numColumns)
-  //     rsMatrixNew(rsMatrixNew&& B)
+  //   operator*(const rsMatrix<T>&)
+  //     rsMatrix(int numRows, int numColumns)
+  //     rsMatrix(rsMatrix&& B)
   testResult &= allocs == 3;
   testResult &= C(0,0) == 22 &&  C(0,1) == 28;
   testResult &= C(1,0) == 49 &&  C(1,1) == 64;
@@ -509,7 +509,7 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
 bool testKroneckerProduct()
 {
   bool res = true;
-  typedef rsMatrixNew<double> Matrix;
+  typedef rsMatrix<double> Matrix;
 
   int& allocs  = Matrix::numHeapAllocations;  // to count allocations
   allocs = 0;

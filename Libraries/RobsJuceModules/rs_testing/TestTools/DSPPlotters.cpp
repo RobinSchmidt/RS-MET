@@ -513,7 +513,7 @@ std::string SinusoidalModelPlotter<T>::getPartialColor(
 
 // this is a kludge - get rid
 template<class T>
-T** createRowPointers(RAPT::rsMatrixNew<T>& M)
+T** createRowPointers(RAPT::rsMatrix<T>& M)
 {
   int N = M.getNumRows();
   T** rp = new T*[N];
@@ -522,7 +522,7 @@ T** createRowPointers(RAPT::rsMatrixNew<T>& M)
   return rp;
 }
 template<class T>
-void deleteRowPointers(T** rowPointers, const RAPT::rsMatrixNew<T>& M)
+void deleteRowPointers(T** rowPointers, const RAPT::rsMatrix<T>& M)
 {
   for(int i = 0; i < M.getNumRows(); i++)
     delete rowPointers[i];
@@ -541,12 +541,12 @@ void SinusoidalModelPlotter<T>::plotAnalysisResult(
   bool plotSpectrogram = false; // make member, let user set it
   if(plotSpectrogram == true)
   {
-    RAPT::rsMatrixNew<std::complex<T>> stft = sa.getComplexSpectrogram(x, N);
+    RAPT::rsMatrix<std::complex<T>> stft = sa.getComplexSpectrogram(x, N);
 
     int numBins   = stft.getNumRows();
     int numFrames = stft.getNumColumns();
 
-    RAPT::rsMatrixNew<T> dB(stft.getNumRows(), stft.getNumColumns());
+    RAPT::rsMatrix<T> dB(stft.getNumRows(), stft.getNumColumns());
     for(int i = 0; i < dB.getNumRows(); i++)
       for(int j = 0; j < dB.getNumColumns(); j++)
         dB(i, j) = rsAmpToDb(abs(stft(i, j)));
