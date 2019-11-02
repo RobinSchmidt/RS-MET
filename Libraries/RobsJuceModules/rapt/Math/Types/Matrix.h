@@ -689,6 +689,53 @@ inline rsMatrixNew<T> operator*(const T& s, const rsMatrixNew<T>& A)
   return B;
 }
 
+
+
+
+
+
+template<class T>
+rsMatrixNew<T> matrixMagnitudes(const rsMatrixNew<std::complex<T>>& A)
+{
+  int N = A.getNumRows();
+  int M = A.getNumColumns();
+  rsMatrixNew<T> mags(N, M);
+  for(int i = 0; i < N; i++)
+    for(int j = 0; j < M; j++)
+      mags(i, j) = abs(A(i, j));
+  return mags;
+}
+
+template<class T>
+rsMatrixNew<T> matrixPhases(const rsMatrixNew<std::complex<T>>& A)
+{
+  int N = A.getNumRows();
+  int M = A.getNumColumns();
+  rsMatrixNew<T> phases(N, M);
+  for(int i = 0; i < N; i++)
+    for(int j = 0; j < M; j++)
+      phases(i, j) = arg(A(i, j));
+  return phases;
+}
+
+// maybe factor out common code...maybe something like applyMatrixFunction with different
+// input and output types for the template parameter:
+
+/*
+template<class TIn, class TOut, class F>
+rsMatrixNew<TOut> matrixFunction(const rsMatrixNew<TIn>& A, F func)
+{
+  int N = A.getNumRows();
+  int M = A.getNumColumns();
+  rsMatrixNew<TOut> out(N, M);
+  for(int i = 0; i < N; i++)
+    for(int j = 0; j < M; j++)
+      out(i, j) = func(A(i, j));
+  return out;
+}
+*/
+
+
 //-------------------------------------------------------------------------------------------------
 // Notes:
 // -design goals:

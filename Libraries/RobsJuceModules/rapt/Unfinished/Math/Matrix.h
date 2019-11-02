@@ -796,8 +796,7 @@ RS_INLINE rsMatrix<T> outerProduct(const rsVector<T> &a, const rsVector<T> &b)
 }
     // not tested
 
-
-
+/*
 template<class T>
 rsMatrixNew<T> matrixMagnitudes(const rsMatrixNew<std::complex<T>>& A)
 {
@@ -822,7 +821,7 @@ rsMatrixNew<T> matrixPhases(const rsMatrixNew<std::complex<T>>& A)
 }
 // maybe factor out common code...maybe something like applyMatrixFunction with different
 // input and output types for the template parameter
-
+*/
 
 
 // typedefs for explicit instantiations:
