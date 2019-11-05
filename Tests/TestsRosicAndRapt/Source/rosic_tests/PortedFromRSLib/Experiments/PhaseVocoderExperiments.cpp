@@ -732,39 +732,42 @@ void sinusoidalSynthesisDC()
   // consistently with the sinusoids by representing negative DC components as a zero-frequency
   // cosine with a phase of pi.
 
-  int    N  = 5000;
-  double fs = 44100;
+  int numDataPoints = 40;
+  double fs = 2000;
 
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial1, partial2;
   RAPT::rsSinusoidalModel<double> model1, model2;
 
-  // a DC component, that switches between amplitude +1 and -1:
-  partial1.appendDataPoint(ISP(0.0, 0.0, +1.0, 0.0));
-  partial1.appendDataPoint(ISP(0.1, 0.0, -1.0, 0.0));
-  partial1.appendDataPoint(ISP(0.2, 0.0, +1.0, 0.0));
-  partial1.appendDataPoint(ISP(0.3, 0.0, -1.0, 0.0));
+  // generate random time instants and values for the DC component:
+  std::vector<double> t = randomSampleInstants(numDataPoints, 0.02, 0.08);
+  RAPT::rsNoiseGenerator<double> prng;
+  prng.setSeed(1);
+  for(int i = 0; i < numDataPoints; i++) {
+    double r = prng.getSample();
+    partial1.appendDataPoint(ISP(t[i], 0.0, r, 0.0));
+    if(r >= 0.0)
+      partial2.appendDataPoint(ISP(t[i], 0.0,  r, 0.0));
+    else
+      partial2.appendDataPoint(ISP(t[i], 0.0, -r, PI));
+  }
+
+  // add the partials to model objects and synthesize both DC components
   model1.addPartial(partial1);
-
-  // a DC component, that switches between phase 0 and pi:
-  partial2.appendDataPoint(ISP(0.0, 0.0, +1.0, 0.0));
-  partial2.appendDataPoint(ISP(0.1, 0.0, +1.0, PI));
-  partial2.appendDataPoint(ISP(0.2, 0.0, +1.0, 0.0));
-  partial2.appendDataPoint(ISP(0.3, 0.0, +1.0, PI));
   model2.addPartial(partial2);
-
   std::vector<double> dc1 = synthesizeSinusoidal(model1, fs);
   std::vector<double> dc2 = synthesizeSinusoidal(model2, fs);
-
-  // todo: use random switch instants and random levels - also, use more datapoints
-
   rsPlotVectors(dc1, dc2);
-
 
   // Observations:
   // -with positive and negative amplitudes, the DC component is interpolated via a line between
   //  the datapoints
-  // -with phases 0 and pi, the DC component is interpolated sinusoidally - that's actually nice
+  // -with phases 0 and pi, the DC component is interpolated sinusoidally - but it may have weird 
+  //  artifacts
+  // -tweakedFreqIntegral phase-interpolation may create artifacts even between datapoints that have 
+  //  the same sign, cubicHermite produces artifacts only between datapoints with opposite signs
+  // -todo: plot the interpolated (de-trended) phases ...or well - de-trending may not be necessary 
+  //  because with 0 frequency, there should be no linear trend
 }
 
 
