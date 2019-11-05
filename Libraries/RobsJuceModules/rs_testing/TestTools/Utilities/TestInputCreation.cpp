@@ -432,6 +432,28 @@ double getValue(const std::string& str, const std::string& key, double defaultVa
   return value;
 }
 
+std::vector<double> attackDecayEnvelope(int N, double attackSamples, double decaySamples)
+{
+  std::vector<double> env(N);
+  rsModalFilterWithAttack<double, double> flt;
+  flt.setModalParameters(0.0, 1.0, attackSamples, decaySamples, 90.0, 1.0);
+  env[0] = flt.getSample(1);
+  for(int n = 1; n < N; n++)
+    env[n] = flt.getSample(0);
+  return env;
+}
+
+std::vector<double> attackDecaySine(int N, double frequency, double amplitude, double attack, 
+  double decay, double startPhase, double sampleRate)
+{
+  std::vector<double> y(N);
+  rsModalFilterWithAttack<double, double> flt;
+  flt.setModalParameters(frequency, amplitude, attack, decay, startPhase, sampleRate);
+  y[0] = flt.getSample(1);
+  for(int n = 1; n < N; n++)
+    y[n] = flt.getSample(0);
+  return y;
+}
 
 std::vector<double> createNamedSound(const std::string& s, double fs, int N)
 {

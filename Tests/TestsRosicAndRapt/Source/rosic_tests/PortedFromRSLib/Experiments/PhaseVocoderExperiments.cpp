@@ -725,6 +725,49 @@ void sinusoidalSynthesis2()
 }
   // maybe try a single linear sweep
 
+void sinusoidalSynthesisDC()
+{
+  // Tests the synthesis of a DC component with rsSinusoidalSynthesizer in order to 
+  // figure out, how it is handled best: as special case that allows for a negative amplitude or 
+  // consistently with the sinusoids by representing negative DC components as a zero-frequency
+  // cosine with a phase of pi.
+
+  int    N  = 5000;
+  double fs = 44100;
+
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  RAPT::rsSinusoidalPartial<double> partial1, partial2;
+  RAPT::rsSinusoidalModel<double> model1, model2;
+
+  // a DC component, that switches between amplitude +1 and -1:
+  partial1.appendDataPoint(ISP(0.0, 0.0, +1.0, 0.0));
+  partial1.appendDataPoint(ISP(0.1, 0.0, -1.0, 0.0));
+  partial1.appendDataPoint(ISP(0.2, 0.0, +1.0, 0.0));
+  partial1.appendDataPoint(ISP(0.3, 0.0, -1.0, 0.0));
+  model1.addPartial(partial1);
+
+  // a DC component, that switches between phase 0 and pi:
+  partial2.appendDataPoint(ISP(0.0, 0.0, +1.0, 0.0));
+  partial2.appendDataPoint(ISP(0.1, 0.0, +1.0, PI));
+  partial2.appendDataPoint(ISP(0.2, 0.0, +1.0, 0.0));
+  partial2.appendDataPoint(ISP(0.3, 0.0, +1.0, PI));
+  model2.addPartial(partial2);
+
+  std::vector<double> dc1 = synthesizeSinusoidal(model1, fs);
+  std::vector<double> dc2 = synthesizeSinusoidal(model2, fs);
+
+  // todo: use random switch instants and random levels - also, use more datapoints
+
+  rsPlotVectors(dc1, dc2);
+
+
+  // Observations:
+  // -with positive and negative amplitudes, the DC component is interpolated via a line between
+  //  the datapoints
+  // -with phases 0 and pi, the DC component is interpolated sinusoidally - that's actually nice
+}
+
+
 
 // (move to test tools):
 std::vector<double> createSinusoid(size_t N, double frequency, double sampleRate,
@@ -1745,37 +1788,6 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   // into a convenience class
 
 // look at files decompositionSteelGuitar002.m, testHarmonicAnalysis.M
-}
-
-// move to TestInputCreation:
-std::vector<double> attackDecayEnvelope(int N, double attackSamples, double decaySamples)
-{
-  std::vector<double> env(N);
-  rsModalFilterWithAttack<double, double> flt;
-  flt.setModalParameters(0.0, 1.0, attackSamples, decaySamples, 90.0, 1.0);
-  env[0] = flt.getSample(1);
-  for(int n = 1; n < N; n++)
-    env[n] = flt.getSample(0);
-  return env;
-}
-
-std::vector<double> attackDecaySine(int N, double frequency, double amplitude, double attack, 
-  double decay, double startPhase, double sampleRate)
-{
-  std::vector<double> y(N);
-  rsModalFilterWithAttack<double, double> flt;
-  flt.setModalParameters(frequency, amplitude, attack, decay, startPhase, sampleRate);
-  y[0] = flt.getSample(1);
-  for(int n = 1; n < N; n++)
-    y[n] = flt.getSample(0);
-  return y;
-}
-
-std::vector<double> rsRangeLinear(double min, double max, int N)
-{
-  std::vector<double> r(N);
-  RAPT::rsArray::fillWithRangeLinear(&r[0], N, min, max);
-  return r;
 }
 
 void amplitudeDeBeating()

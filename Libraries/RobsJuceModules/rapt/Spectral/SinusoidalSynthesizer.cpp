@@ -85,7 +85,7 @@ void rsSinusoidalSynthesizer<T>::synthesizePartial(
 
   //rsPlotVector(a);
   //rsPlotVector(p);
-  rsPlotVectors(a, p);
+  //rsPlotVectors(a, p);
   //rsPlotVector(rsDifference(p));
 
   // synthesize the sinusoid and add it to what's already there:

@@ -16,6 +16,7 @@ void phaseInterpolation();
 
 void sinusoidalSynthesis1();
 void sinusoidalSynthesis2();  // tests partial with negative time-stamps
+void sinusoidalSynthesisDC();
 
 void sinusoidalAnalysis1();   // a single, static sinusoid
 void sinusoidalAnalysis2();   // two single, static sinusoids

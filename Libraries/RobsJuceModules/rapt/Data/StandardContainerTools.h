@@ -124,6 +124,14 @@ inline void rsPrepend(std::vector<T>& v, const T& newElement)
 }
 
 template<class T>
+std::vector<T> rsRangeLinear(T min, T max, int N)
+{
+  std::vector<T> r(N);
+  rsArray::fillWithRangeLinear(&r[0], N, min, max);
+  return r;
+}
+
+template<class T>
 inline void rsRemove(std::vector<T>& v, size_t index)
 {
   v.erase(v.begin() + index);
