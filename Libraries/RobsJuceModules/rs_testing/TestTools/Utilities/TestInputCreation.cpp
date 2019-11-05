@@ -441,7 +441,15 @@ std::vector<double> createNamedSound(const std::string& s, double fs, int N)
 
   // maybe always retrieve Freq and Amp and store in local variables for later use..
 
-  if( startsWith(s, "Sine") )       
+
+  if(startsWith(s, "SineAndDC")) {
+    double freq  = getValue(s, "Freq", 200);
+    double amp   = getValue(s, "Amp",  1);
+    double dc    = getValue(s, "DC",   1);
+    createSineWave(x, N, freq, amp, fs, 0.0);
+    RAPT::rsArray::add(x, dc, x, N); 
+  }
+  else if( startsWith(s, "Sine") )
     createSineWave(x, N, getValue(s, "Freq", 100), getValue(s, "Amp", 1), fs, 0.0);
   else if( startsWith(s, "Cosine") ) 
     createSineWave(x, N, getValue(s, "Freq", 100), getValue(s, "Amp", 1), fs, PI/2);

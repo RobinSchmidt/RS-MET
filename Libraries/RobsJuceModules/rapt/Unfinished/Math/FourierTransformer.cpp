@@ -198,25 +198,27 @@ void rsFourierTransformerRadix2<T>::transformRealSignal(T *signal, T *reAndIm)
 }
 
 template<class T>
-void rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases(T *signal,
-                                                                  T *magnitudes,
-                                                                  T *phases)
+void rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases(
+  T *signal, T *magnitudes, T *phases)
 {
   transformRealSignal(signal, tmpBuffer);
 
   // store the two purely real transform values at DC and Nyquist-frequency in the first fields of
   // the magnitude- and phase- arrays respectively:
   magnitudes[0] = tmpBuffer[0].real();
-  phases[0]     = tmpBuffer[0].real();
+  phases[0]     = tmpBuffer[0].real();  // wait - what? this seems wrong should this be tmpBuffer[N/2]
+                                        // or something?
+  // actually, magnitudes should always be a positive value - and taking the real part does not ensure 
+  // this - we should probably set the phase to pi, when tmpBuffer[0] is negative
 
   // fill the rest of the array with the magnitudes and phases of the regular bins:
   T* dBuffer = (T*) &tmpBuffer[0];
   T  re, im;
-  int     k;
+  int k;
   for(k=1; k<N/2; k++)
   {
-    re            = dBuffer[2*k];
-    im            = dBuffer[2*k+1];
+    re = dBuffer[2*k];
+    im = dBuffer[2*k+1];
     magnitudes[k] = rsSqrt(re*re + im*im);
     if( re == 0.0 && im == 0.0 )
       phases[k] = 0.0;

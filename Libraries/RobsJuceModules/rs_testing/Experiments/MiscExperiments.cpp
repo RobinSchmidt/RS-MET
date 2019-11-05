@@ -32,7 +32,7 @@ void setupHarmonicAnalyzerFor(RAPT::rsHarmonicAnalyzer<double>& analyzer,
   analyzer.setNumCyclesPerBlock(4);
   //analyzer.setWindowType(WT::hamming);
   analyzer.setWindowType(WT::blackman);
-  analyzer.setSpectralOversampling(8);  // zero padding
+  analyzer.setSpectralOversampling(8);  // zero padding - maybe use 4 - 8 seems a bit excessive
   analyzer.setAllowInharmonics(true);
   analyzer.setSpectralPeakSearchWidth(0.5);       // default: 1 - blackman needs a value less than 1
   analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
@@ -92,10 +92,12 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
   setupHarmonicAnalyzerFor(analyzer, name, fs, f0);
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(x, Nx);
 
+  rsAssert(mdl.isDataValid());
+
 
   // Manipulations:
 
-  mdl.removePartial(0);                      // remove DC
+  //mdl.removePartial(0);                      // remove DC
   mdl.removePartialsWithMeanFreqAbove(fs/2); // anti-alias
 
   //mdl.keepOnly({0, 9});  // for test with TwoSines_Freq1=200_Freq2=2025

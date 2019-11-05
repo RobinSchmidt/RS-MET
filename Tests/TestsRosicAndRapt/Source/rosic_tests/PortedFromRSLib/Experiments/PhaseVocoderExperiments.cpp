@@ -1538,7 +1538,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
 
   //testHarmonicResynthesis("TwoSines",   44100, 5000);
-  testHarmonicResynthesis("ModalPluck", 44100, 15000);
+  //testHarmonicResynthesis("ModalPluck", 44100, 15000);
   // convert all calls to include the frequency in the string (done), then get rid of the frequency 
   // parameter of the function
 
@@ -1546,6 +1546,16 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   //testHarmonicResynthesis("TwoSines_Freq1=500_Freq2=1000_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
   // good for testing if windows may spectrally resolve the harmonics
 
+  //testHarmonicResynthesis("TwoSines_Freq1=500_Freq2=1000_Amp1=1.0_Amp2=1.0", 44100, 5000, 500);
+
+  testHarmonicResynthesis("TwoSines_Freq1=500_Freq2=10_Amp1=1.0_Amp2=0.25", 44100, 8000, 500);
+    // sine plus "undulating DC"
+
+
+  //testHarmonicResynthesis("SineAndDC_Freq=500_Amp=1.0_DC=0.5", 44100, 5000, 500);
+  testHarmonicResynthesis("SineAndDC_Freq=500_Amp=1.0_DC=-0.5", 44100, 5000, 500);
+    // sine plus DC - the DC component is not resynthesized correctly - it's twice as loud in the 
+    // resynthesized signal - it's already wrong in the analysis data - the analyzer is to blame
 
   //testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6000_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
 

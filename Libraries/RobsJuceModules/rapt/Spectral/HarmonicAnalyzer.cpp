@@ -437,7 +437,12 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
     int kPeakOld = -1;                     // kPeak from previous iteration
     int w2 = getSpectralPeakSearchWidth(); // we look for a peak in the range: kHarm +- w2
     T freq, gain, phase, peakBin;
-    mdl.setData(0, dataIndex, time, T(0), T(2*zeroPad)*mag[0], phs[0]); // handle DC separately
+
+
+    //mdl.setData(0, dataIndex, time, T(0), T(2*zeroPad)*mag[0], phs[0]); // handle DC separately
+    mdl.setData(0, dataIndex, time, T(0), T(zeroPad)*mag[0], phs[0]); // handle DC separately
+      // the handling of DC is not yet good
+
     for(int h = 1; h < numPartials; h++) {
 
       kHarm = cyclesPerBlock*zeroPad*h;  // bin index where partial/harmonic is expected

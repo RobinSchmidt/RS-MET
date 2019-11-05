@@ -26,6 +26,11 @@ Interface:
  members or by providing getters ...the former seems better - simpler client-side 
  syntax and does the exact same  thing
 -use consistently int - not size_t or something (in the sinusoidal model)
+ ...or maybe size_t is better - but then we need a convention other than -1 to 
+ indicate things like "not found" in functions like findIndex - perhaps N would 
+ be the most obvious convention (N = length of array) - that would also be 
+ consistent with STL conventions
+ https://github.com/fish-shell/fish-shell/issues/3493
 -use get/set consistently bad: Matrix::eigenvalues, good: Matrix::getEigenvalues
  ...but only for non-static member functions - for static ones -> no get
 
