@@ -439,9 +439,16 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
     T freq, gain, phase, peakBin;
 
 
-    //mdl.setData(0, dataIndex, time, T(0), T(2*zeroPad)*mag[0], phs[0]); // handle DC separately
+    // handle DC separately:  
+    //mdl.setData(0, dataIndex, time, T(0), T(2*zeroPad)*mag[0], phs[0]); // this was wrong
+
+    // this is still unfinished!
     mdl.setData(0, dataIndex, time, T(0), T(zeroPad)*mag[0], phs[0]); // handle DC separately
-      // the handling of DC is not yet good
+    phs[0] = T(0); // is this correct? the FFT analyzer uses the convention to put the Nyquist-freq
+                   // analysis value there...is that actually correct? check that out!
+      // the handling of DC is not yet good - we may produce negative amplitudes here - but maybe, 
+      // we should allow negative amplitudes generally in the sinusoidal model?
+
 
     for(int h = 1; h < numPartials; h++) {
 

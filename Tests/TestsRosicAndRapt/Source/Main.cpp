@@ -383,15 +383,16 @@ int main(int argc, char* argv[])
   //phaseInterpolation();
   //sinusoidalSynthesis1();
   //sinusoidalSynthesis2();
-  sinusoidalSynthesisDC();
+  //sinusoidalSynthesisDC();
   //sinusoidalAnalysis1();
   //sinusoidalAnalysis2();  // something fails terribly here
   //sinusoidalAnalysis3();
   //phaseFreqConsistency();
+
   //harmonicDetection2Sines();
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
-  //harmonicAnalysis1();
+  harmonicAnalysis1();
 
   //amplitudeDeBeating();
   //amplitudeDeBeating2();

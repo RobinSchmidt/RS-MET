@@ -1,4 +1,4 @@
--figure out, why rsSinusoidalAnalyzer my produce negative values for the amplitude of the DC 
+-figure out, why rsSinusoidalAnalyzer may produce negative values for the amplitude of the DC 
  component (and fix it)
 -check, how the synthesis handles DC - i guess it creates just a cosine of 0 frequency? if so, we 
  should perhaps encode a negative DC by using a phase of pi
