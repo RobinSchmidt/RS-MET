@@ -662,7 +662,25 @@ RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPointsDC1(
   }
   return partial;
 }
-
+RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPointsDC2(
+  int numDataPoints = 40, double dtMin = 0.01, double dtMax = 0.08, int seed = 1)
+{
+  // Generates a DC partial with datapoints that have nonegative amplitudes and a phase of zero or
+  // pi, where pi encodes a negative DC component.
+  RAPT::rsSinusoidalPartial<double> partial;
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  std::vector<double> t = randomSampleInstants(numDataPoints, dtMin, dtMax);
+  RAPT::rsNoiseGenerator<double> prng;
+  prng.setSeed(seed);
+  for(int i = 0; i < numDataPoints; i++) {
+    double r = prng.getSample();
+    if(r >= 0.0)
+      partial.appendDataPoint(ISP(t[i], 0.0,  r, 0.0));
+    else
+      partial.appendDataPoint(ISP(t[i], 0.0, -r, PI));
+  }
+  return partial;
+}
 void sinusoidalSynthesisDC()
 {
   // Tests the synthesis of a DC component with rsSinusoidalSynthesizer in order to 
@@ -677,6 +695,10 @@ void sinusoidalSynthesisDC()
   RAPT::rsSinusoidalPartial<double> partial1, partial2;
   RAPT::rsSinusoidalModel<double> model1, model2;
 
+  partial1 = phaseInterpolationDataPointsDC1();
+  partial2 = phaseInterpolationDataPointsDC2();
+
+  /*
   // generate random time instants and values for the DC component:
   std::vector<double> t = randomSampleInstants(numDataPoints, 0.02, 0.08);
   RAPT::rsNoiseGenerator<double> prng;
@@ -689,6 +711,7 @@ void sinusoidalSynthesisDC()
     else
       partial2.appendDataPoint(ISP(t[i], 0.0, -r, PI));
   }
+  */
 
   // add the partials to model objects and synthesize both DC components
   model1.addPartial(partial1);
