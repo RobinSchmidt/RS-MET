@@ -15,9 +15,9 @@ std::vector<double> synthesizeSinusoidal(
 
   //synth.setCubicAmplitudeInterpolation(true);
 
-  synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
+  //synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
   //synth.setPhaseInterpolation(PIM::cubicHermite);
-  //synth.setPhaseInterpolation(PIM::quinticHermite);
+  synth.setPhaseInterpolation(PIM::quinticHermite);
 
   std::vector<double> x = synth.synthesize(model);
   if(fadeTime > 0.0)

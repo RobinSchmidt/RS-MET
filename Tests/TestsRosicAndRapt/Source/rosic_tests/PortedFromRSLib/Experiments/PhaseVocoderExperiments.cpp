@@ -544,11 +544,11 @@ RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPointsDC2(
   prng.setSeed(seed);
   for(int i = 0; i < numDataPoints; i++) {
     double r = prng.getSample();
-    double c = 0.9999; // < 1, to enforce phase interpolation direction
+    double c = 0.999; // < 1, to enforce phase interpolation direction
     if(r >= 0.0)
       partial.appendDataPoint(ISP(t[i], 0.0,  r, 0.0));
     else
-      partial.appendDataPoint(ISP(t[i], 0.0, -r, 0.999*PI));
+      partial.appendDataPoint(ISP(t[i], 0.0, -r, c*PI));
       //partial.appendDataPoint(ISP(t[i], 0.0, -r, PI));
   }
   return partial;
@@ -581,7 +581,7 @@ void sinusoidalSynthesisDC()
   int numDataPoints = 40;
   double fs = 2000;
 
-  int seed = 1;
+  int seed = 10;
 
   RAPT::rsSinusoidalPartial<double> partial1, partial2;
   RAPT::rsSinusoidalModel<double> model1, model2;
@@ -609,6 +609,9 @@ void sinusoidalSynthesisDC()
   //  the same sign, cubicHermite produces artifacts only between datapoints with opposite signs
   // -todo: plot the interpolated (de-trended) phases ...or well - de-trending may not be necessary 
   //  because with 0 frequency, there should be no linear trend
+  //  -plot output signal and interpolated phases in the same plot - there is some weird artifact 
+  //   in the output to which there seems no correlate in the interpolated phase - figure out, 
+  //   where the output artifact is coming from
 
   // -check rsSinusoidalProcessor<T>::unwrapPhase - it seems to sometimes produce jumps of 2pi or 
   //  3pi - maybe implement a unit test - activate the plotting code rsPlotVector(up); there and 

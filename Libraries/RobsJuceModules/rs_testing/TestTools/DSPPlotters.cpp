@@ -536,6 +536,7 @@ void SinusoidalModelPlotter<T>::plotInterpolatedPhases(
   const RAPT::rsSinusoidalPartial<T>& partial, T sampleRate)
 {
   typedef std::vector<T> Vec;
+  typedef rsSinusoidalSynthesizer<T>::PhaseInterpolationMethod PIM;
 
   // create and set up the synth and synthesize (and plot) the sound:
   rsSinusoidalModel<T>       model; model.addPartial(partial);
@@ -551,12 +552,23 @@ void SinusoidalModelPlotter<T>::plotInterpolatedPhases(
     t[n] = n / sampleRate;
 
   // let the synth generate the phases:
-  Vec pi = synth.phasesViaTweakedIntegral(partial, td, t); // i: integral
-  Vec pc = synth.phasesHermite(partial, td, t, false);     // c: cubic
-  Vec pq = synth.phasesHermite(partial, td, t, true);      // q: quintic (looks wrong)
-  RAPT::rsArray::unwrap(&pc[0], N, 2*PI);                  // ...seems like cubic and quintic need
-  RAPT::rsArray::unwrap(&pq[0], N, 2*PI);                  // unwrapping after interpolation - why?
+
+  // old:
+  //Vec pi = synth.phasesViaTweakedIntegral(partial, td, t); // i: integral
+  //Vec pc = synth.phasesHermite(partial, td, t, false);     // c: cubic
+  //Vec pq = synth.phasesHermite(partial, td, t, true);      // q: quintic (looks wrong)
+  //RAPT::rsArray::unwrap(&pc[0], N, 2*PI);                  // ...seems like cubic and quintic need
+  //RAPT::rsArray::unwrap(&pq[0], N, 2*PI);                  // unwrapping after interpolation - why?
   // maybe use synth.getInterpolatedPhases instead
+
+  // new:
+  synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
+  Vec pi = synth.getInterpolatedPhases(partial, td, t);
+  synth.setPhaseInterpolation(PIM::cubicHermite);
+  Vec pc = synth.getInterpolatedPhases(partial, td, t);
+  synth.setPhaseInterpolation(PIM::quinticHermite);
+  Vec pq = synth.getInterpolatedPhases(partial, td, t);
+
 
   // create array for plotting the phase datapoints:
   Vec pd = partial.getPhaseArray();
