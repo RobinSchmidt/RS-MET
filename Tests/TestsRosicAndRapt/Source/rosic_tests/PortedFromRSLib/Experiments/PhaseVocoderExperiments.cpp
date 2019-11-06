@@ -473,6 +473,28 @@ void sineParameterEstimation()
 }
 
 
+
+
+
+
+RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPoints2()
+{
+  RAPT::rsSinusoidalPartial<double> partial;
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  double ts = 0.01; // timescale
+
+  partial.prependDataPoint(ISP(  0*ts, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  1*ts, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  2*ts, 1100.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  3*ts, 1200.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  4*ts, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  5*ts, 1000.0, 1.0, 0.0));
+
+  return partial;
+}
+
+
+
 void phaseInterpolation() // rename to sineModelPhaseInterpolation
 {
   // Tests various phase interpolation methods of SinusoidalSynthesizer - we create a sinusoidal 
@@ -488,6 +510,9 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   // create data for some not too boring frequency trajectory:
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial;
+
+
+  // factor out into phaseInterpolationDataPoints1();
   //partial.prependDataPoint(ISP(  0*ts, 1000.0, 1.0, 0.0));
   //partial.appendDataPoint( ISP(  1*ts,  800.0, 1.0, 0.0));
   //partial.appendDataPoint( ISP(  2*ts, 1200.0, 1.0, 0.0));
@@ -500,12 +525,10 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   //partial.appendDataPoint( ISP(  9*ts,  900.0, 1.0, 0.0));
   //partial.appendDataPoint( ISP( 10*ts, 1000.0, 1.0, 0.0));
 
-  partial.prependDataPoint(ISP(  0*ts, 1000.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP(  1*ts, 1000.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP(  2*ts, 1100.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP(  3*ts, 1200.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP(  4*ts, 1000.0, 1.0, 0.0));
-  partial.appendDataPoint( ISP(  5*ts, 1000.0, 1.0, 0.0));
+
+  partial = phaseInterpolationDataPoints2();
+
+
 
   //partial.prependDataPoint(ISP( 0*ts, 1000.0, 1.0, 0.0));
   //partial.appendDataPoint( ISP( 5*ts, 1050.0, 1.0, 0.0));
@@ -768,6 +791,10 @@ void sinusoidalSynthesisDC()
   //  the same sign, cubicHermite produces artifacts only between datapoints with opposite signs
   // -todo: plot the interpolated (de-trended) phases ...or well - de-trending may not be necessary 
   //  because with 0 frequency, there should be no linear trend
+
+  // -check rsSinusoidalProcessor<T>::unwrapPhase - it seems to sometimes produce jumps of 2pi or 
+  //  3pi - maybe implement a unit test - activate the plotting code rsPlotVector(up); there and 
+  //  see the results for partial2
 }
 
 
