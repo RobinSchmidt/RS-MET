@@ -517,16 +517,24 @@ RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPoints3()
   return partial;
 }
 
-void plotInterpolatedPhases(const RAPT::rsSinusoidalPartial<double>& partial, double fs)
+void plotInterpolatedPhases(const RAPT::rsSinusoidalPartial<double>& partial, double sampleRate)
 {
   // maybe move to rs_testing module
+
+  // Plots results of various phase interpolation methods of rsSinusoidalSynthesizer for the given
+  // sinusoidal partial. We let a rsSinusoidalSynthesizer generate the interpolated phases as it 
+  // would do in the actual synthesis (verify, if this is really the same algo) and plot the 
+  // resulting interpolated phases for the given sample rate.
+
+  // todo: maybe optionally plot the (numeric) derivative of the phase arrays instead of the phase
+  // arrays theselves ...or plot de-trended phase arrays
 
 
   typedef std::vector<double> Vec;
 
   // create and set up the synth and synthesize (and plot) the sound:
   rsSinusoidalModel<double>       model; model.addPartial(partial);
-  rsSinusoidalSynthesizer<double> synth; synth.setSampleRate(fs);
+  rsSinusoidalSynthesizer<double> synth; synth.setSampleRate(sampleRate);
   Vec x = synth.synthesize(model);
   //plotVector(x);
 
@@ -535,7 +543,7 @@ void plotInterpolatedPhases(const RAPT::rsSinusoidalPartial<double>& partial, do
   Vec td = partial.getTimeArray();         // time axis at datapoint rate
   Vec t(N);                                // time axis at sample rate
   for(size_t n = 0; n < N; n++)  
-    t[n] = n / fs;
+    t[n] = n / sampleRate;
 
   // let the synth generate the phases:
   Vec pi = synth.phasesViaTweakedIntegral(partial, td, t); // i: integral
@@ -571,35 +579,21 @@ void plotInterpolatedPhases(const RAPT::rsSinusoidalPartial<double>& partial, do
 
 void phaseInterpolation() // rename to sineModelPhaseInterpolation
 {
-  // Tests various phase interpolation methods of SinusoidalSynthesizer - we create a sinusoidal 
-  // partial and let the synthesizer generate the phases and plot the results
-  // todo: maybe optionally plot the (numeric) derivative of the phase arrays instead of the phase
-  // arrays theselves)
 
   double fs = 10000;  // sample rate
-  //int N = 1000;       // number of samples
-
-  //double ts = 0.01; // timescale
-
-  // create data for some not too boring frequency trajectory:
-  //typedef RAPT::rsInstantaneousSineParams<double> ISP;
-
 
   // various example signals to phase-interpolate:
   RAPT::rsSinusoidalPartial<double> partial;
   //partial = phaseInterpolationDataPoints1();
-  //partial = phaseInterpolationDataPoints2();
-  partial = phaseInterpolationDataPoints3();
-
+  partial = phaseInterpolationDataPoints2();
+  //partial = phaseInterpolationDataPoints3();
 
   plotInterpolatedPhases(partial, fs);
-
 
   // Observations:
   // -the cubic hermite phase is 2pi behind the the integrated phase from datapoint 4 onwards
   // -the slope of the cubic phase at the datapoints is still wrong (close to 0 everywhere)
 }
-
 
 //-------------------------------------------------------------------------------------------------
 
