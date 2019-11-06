@@ -573,12 +573,12 @@ void SinusoidalModelPlotter<T>::plotInterpolatedPhases(
 
   // plot:
   GNUPlotter plt;
-  //plt.addDataArrays(M, &td[0], &pd[0]);  // datapoints
+  plt.addDataArrays(M, &td[0], &pd[0]);  // datapoints
   plt.addDataArrays(N, &t[0],  &pi[0]);    // integral
   plt.addDataArrays(N, &t[0],  &pc[0]);    // cubic
   plt.addDataArrays(N, &t[0],  &pq[0]);    // quintic
-  plt.addDataArrays(N, &t[0],  &dp[0]);    // ~(cubic-quintic)
-  //plt.setGraphStyles("points pt 7 ps 1.2", "lines", "lines");
+  //plt.addDataArrays(N, &t[0],  &dp[0]);    // ~(cubic-quintic)
+  plt.setGraphStyles("points pt 7 ps 0.8", "lines", "lines", "lines");
   plt.plot();
   // todo: plot the datapoints as marks
 }

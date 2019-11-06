@@ -9,7 +9,8 @@ std::vector<T> rsSinusoidalProcessor<T>::unwrapPhase(const std::vector<T>& t,
   std::vector<T> up(M);  // unwrapped phase
 
   // obtain preliminary uwrapped phase data points by numerically integrating the frequency:
-  rsNumericIntegral(&t[0], &f[0], &up[0], (int)M, wp[0]);
+  //rsNumericIntegral(&t[0], &f[0], &up[0], (int)M, wp[0]); // buggy? i think so
+  rsNumericIntegral(&t[0], &f[0], &up[0], (int)M, wp[0]/(2*PI)); //...seems better
   up = 2*PI*up; // convert from "number of cycles passed" to radians
 
   // incorporate the target phase values into the unwrapped phase:

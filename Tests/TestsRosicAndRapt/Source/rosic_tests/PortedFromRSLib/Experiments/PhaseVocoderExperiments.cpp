@@ -516,6 +516,43 @@ RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPoints3()
   partial.appendDataPoint( ISP(10*ts, 1100.0, 1.0, 0.0));
   return partial;
 }
+RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPointsDC1(
+  int numDataPoints = 40, int seed = 1, double dtMin = 0.01, double dtMax = 0.08)
+{
+  // Generates a DC partial with datapoints that have all zero phase and amplitudes that may be 
+  // positive or negative.
+  RAPT::rsSinusoidalPartial<double> partial;
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  std::vector<double> t = randomSampleInstants(numDataPoints, dtMin, dtMax);
+  RAPT::rsNoiseGenerator<double> prng;
+  prng.setSeed(seed);
+  for(int i = 0; i < numDataPoints; i++) {
+    double r = prng.getSample();
+    partial.appendDataPoint(ISP(t[i], 0.0, r, 0.0));
+  }
+  return partial;
+}
+RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPointsDC2(
+  int numDataPoints = 40, int seed = 1, double dtMin = 0.01, double dtMax = 0.08)
+{
+  // Generates a DC partial with datapoints that have nonegative amplitudes and a phase of zero or
+  // pi, where pi encodes a negative DC component.
+  RAPT::rsSinusoidalPartial<double> partial;
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  std::vector<double> t = randomSampleInstants(numDataPoints, dtMin, dtMax);
+  RAPT::rsNoiseGenerator<double> prng;
+  prng.setSeed(seed);
+  for(int i = 0; i < numDataPoints; i++) {
+    double r = prng.getSample();
+    double c = 0.9999; // < 1, to enforce phase interpolation direction
+    if(r >= 0.0)
+      partial.appendDataPoint(ISP(t[i], 0.0,  r, 0.0));
+    else
+      partial.appendDataPoint(ISP(t[i], 0.0, -r, 0.999*PI));
+      //partial.appendDataPoint(ISP(t[i], 0.0, -r, PI));
+  }
+  return partial;
+}
 
 void phaseInterpolation() // rename to sineModelPhaseInterpolation
 {
@@ -524,12 +561,58 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   //partial = phaseInterpolationDataPoints1();
   partial = phaseInterpolationDataPoints2();
   //partial = phaseInterpolationDataPoints3();
+  //partial = phaseInterpolationDataPointsDC1();
+  //partial = phaseInterpolationDataPointsDC2();
 
   SinusoidalModelPlotter<double>::plotInterpolatedPhases(partial, 10000);
 
   // Observations:
   // -the cubic hermite phase is 2pi behind the the integrated phase from datapoint 4 onwards
   // -the slope of the cubic phase at the datapoints is still wrong (close to 0 everywhere)
+}
+
+void sinusoidalSynthesisDC()
+{
+  // Tests the synthesis of a DC component with rsSinusoidalSynthesizer in order to 
+  // figure out, how it is handled best: as special case that allows for a negative amplitude or 
+  // consistently with the sinusoids by representing negative DC components as a zero-frequency
+  // cosine with a phase of pi.
+
+  int numDataPoints = 40;
+  double fs = 2000;
+
+  int seed = 1;
+
+  RAPT::rsSinusoidalPartial<double> partial1, partial2;
+  RAPT::rsSinusoidalModel<double> model1, model2;
+
+  partial1 = phaseInterpolationDataPointsDC1(numDataPoints, seed);
+  partial2 = phaseInterpolationDataPointsDC2(numDataPoints, seed);
+
+  // plot phase-interpolation results for the version with the phases of 0 and pi:
+  SinusoidalModelPlotter<double>::plotInterpolatedPhases(partial1, fs);
+  SinusoidalModelPlotter<double>::plotInterpolatedPhases(partial2, fs);
+
+  // add the partials to model objects and synthesize both DC components
+  model1.addPartial(partial1);
+  model2.addPartial(partial2);
+  std::vector<double> dc1 = synthesizeSinusoidal(model1, fs);
+  std::vector<double> dc2 = synthesizeSinusoidal(model2, fs);
+  rsPlotVectors(dc1, dc2);
+
+  // Observations:
+  // -with positive and negative amplitudes, the DC component is interpolated via a line between
+  //  the datapoints
+  // -with phases 0 and pi, the DC component is interpolated sinusoidally - but it may have weird 
+  //  artifacts
+  // -tweakedFreqIntegral phase-interpolation may create artifacts even between datapoints that have 
+  //  the same sign, cubicHermite produces artifacts only between datapoints with opposite signs
+  // -todo: plot the interpolated (de-trended) phases ...or well - de-trending may not be necessary 
+  //  because with 0 frequency, there should be no linear trend
+
+  // -check rsSinusoidalProcessor<T>::unwrapPhase - it seems to sometimes produce jumps of 2pi or 
+  //  3pi - maybe implement a unit test - activate the plotting code rsPlotVector(up); there and 
+  //  see the results for partial2
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -646,94 +729,7 @@ void sinusoidalSynthesis2()
 
 
 
-RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPointsDC1(
-  int numDataPoints = 40, double dtMin = 0.01, double dtMax = 0.08, int seed = 1)
-{
-  // Generates a DC partial with datapoints that have all zero phase and amplitudes that may be 
-  // positive or negative.
-  RAPT::rsSinusoidalPartial<double> partial;
-  typedef RAPT::rsInstantaneousSineParams<double> ISP;
-  std::vector<double> t = randomSampleInstants(numDataPoints, dtMin, dtMax);
-  RAPT::rsNoiseGenerator<double> prng;
-  prng.setSeed(seed);
-  for(int i = 0; i < numDataPoints; i++) {
-    double r = prng.getSample();
-    partial.appendDataPoint(ISP(t[i], 0.0, r, 0.0));
-  }
-  return partial;
-}
-RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPointsDC2(
-  int numDataPoints = 40, double dtMin = 0.01, double dtMax = 0.08, int seed = 1)
-{
-  // Generates a DC partial with datapoints that have nonegative amplitudes and a phase of zero or
-  // pi, where pi encodes a negative DC component.
-  RAPT::rsSinusoidalPartial<double> partial;
-  typedef RAPT::rsInstantaneousSineParams<double> ISP;
-  std::vector<double> t = randomSampleInstants(numDataPoints, dtMin, dtMax);
-  RAPT::rsNoiseGenerator<double> prng;
-  prng.setSeed(seed);
-  for(int i = 0; i < numDataPoints; i++) {
-    double r = prng.getSample();
-    if(r >= 0.0)
-      partial.appendDataPoint(ISP(t[i], 0.0,  r, 0.0));
-    else
-      partial.appendDataPoint(ISP(t[i], 0.0, -r, PI));
-  }
-  return partial;
-}
-void sinusoidalSynthesisDC()
-{
-  // Tests the synthesis of a DC component with rsSinusoidalSynthesizer in order to 
-  // figure out, how it is handled best: as special case that allows for a negative amplitude or 
-  // consistently with the sinusoids by representing negative DC components as a zero-frequency
-  // cosine with a phase of pi.
 
-  int numDataPoints = 40;
-  double fs = 2000;
-
-  typedef RAPT::rsInstantaneousSineParams<double> ISP;
-  RAPT::rsSinusoidalPartial<double> partial1, partial2;
-  RAPT::rsSinusoidalModel<double> model1, model2;
-
-  partial1 = phaseInterpolationDataPointsDC1();
-  partial2 = phaseInterpolationDataPointsDC2();
-
-  /*
-  // generate random time instants and values for the DC component:
-  std::vector<double> t = randomSampleInstants(numDataPoints, 0.02, 0.08);
-  RAPT::rsNoiseGenerator<double> prng;
-  prng.setSeed(1);
-  for(int i = 0; i < numDataPoints; i++) {
-    double r = prng.getSample();
-    partial1.appendDataPoint(ISP(t[i], 0.0, r, 0.0));
-    if(r >= 0.0)
-      partial2.appendDataPoint(ISP(t[i], 0.0,  r, 0.0));
-    else
-      partial2.appendDataPoint(ISP(t[i], 0.0, -r, PI));
-  }
-  */
-
-  // add the partials to model objects and synthesize both DC components
-  model1.addPartial(partial1);
-  model2.addPartial(partial2);
-  std::vector<double> dc1 = synthesizeSinusoidal(model1, fs);
-  std::vector<double> dc2 = synthesizeSinusoidal(model2, fs);
-  rsPlotVectors(dc1, dc2);
-
-  // Observations:
-  // -with positive and negative amplitudes, the DC component is interpolated via a line between
-  //  the datapoints
-  // -with phases 0 and pi, the DC component is interpolated sinusoidally - but it may have weird 
-  //  artifacts
-  // -tweakedFreqIntegral phase-interpolation may create artifacts even between datapoints that have 
-  //  the same sign, cubicHermite produces artifacts only between datapoints with opposite signs
-  // -todo: plot the interpolated (de-trended) phases ...or well - de-trending may not be necessary 
-  //  because with 0 frequency, there should be no linear trend
-
-  // -check rsSinusoidalProcessor<T>::unwrapPhase - it seems to sometimes produce jumps of 2pi or 
-  //  3pi - maybe implement a unit test - activate the plotting code rsPlotVector(up); there and 
-  //  see the results for partial2
-}
 
 
 

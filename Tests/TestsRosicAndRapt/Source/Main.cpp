@@ -380,10 +380,10 @@ int main(int argc, char* argv[])
   //spectrogramFilter();
   //sineParameterEstimation();
   //plotOverlappingWindowSum();
-  phaseInterpolation();
+  //phaseInterpolation();
+  sinusoidalSynthesisDC();
   //sinusoidalSynthesis1();
   //sinusoidalSynthesis2();
-  sinusoidalSynthesisDC();
   //sinusoidalAnalysis1();
   //sinusoidalAnalysis2();  // something fails terribly here
   //sinusoidalAnalysis3();
