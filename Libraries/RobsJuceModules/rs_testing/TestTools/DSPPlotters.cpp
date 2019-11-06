@@ -511,7 +511,8 @@ std::string SinusoidalModelPlotter<T>::getPartialColor(
 }
 
 
-// this is a kludge - get rid
+// this is a kludge - get rid - the best would be, if GNUPlotter would support to take the matrix
+// in flat storage format
 template<class T>
 T** createRowPointers(RAPT::rsMatrix<T>& M)
 {
@@ -526,6 +527,60 @@ void deleteRowPointers(T** rowPointers, const RAPT::rsMatrix<T>& M)
 {
   for(int i = 0; i < M.getNumRows(); i++)
     delete rowPointers[i];
+}
+// while we still need it, move it to rsMatrix
+
+
+template<class T>
+void SinusoidalModelPlotter<T>::plotInterpolatedPhases(
+  const RAPT::rsSinusoidalPartial<T>& partial, T sampleRate)
+{
+  typedef std::vector<T> Vec;
+
+  // create and set up the synth and synthesize (and plot) the sound:
+  rsSinusoidalModel<T>       model; model.addPartial(partial);
+  rsSinusoidalSynthesizer<T> synth; synth.setSampleRate(sampleRate);
+  Vec x = synth.synthesize(model); // actually not needed unless we plot it
+  //plotVector(x);
+
+  // create time axes (at datapoint-rate and sample-rate)
+  int N = (int) x.size();
+  Vec td = partial.getTimeArray();         // time axis at datapoint rate
+  Vec t(N);                                // time axis at sample rate
+  for(size_t n = 0; n < N; n++)  
+    t[n] = n / sampleRate;
+
+  // let the synth generate the phases:
+  Vec pi = synth.phasesViaTweakedIntegral(partial, td, t); // i: integral
+  Vec pc = synth.phasesHermite(partial, td, t, false);     // c: cubic
+  Vec pq = synth.phasesHermite(partial, td, t, true);      // q: quintic (looks wrong)
+  RAPT::rsArray::unwrap(&pc[0], N, 2*PI);                  // ...seems like cubic and quintic need
+  RAPT::rsArray::unwrap(&pq[0], N, 2*PI);                  // unwrapping after interpolation - why?
+  // maybe use synth.getInterpolatedPhases instead
+
+  // create array for plotting the phase datapoints:
+  Vec pd = partial.getPhaseArray();
+  Vec fd = partial.getFrequencyArray();
+  int M = (int) pd.size();
+  pd = rsSinusoidalProcessor<T>::unwrapPhase(td, fd, pd);
+  //pd = synth.unwrapPhase(td, fd, pd);
+  //RAPT::rsArray::unwrap(&pd[0], M, 2*PI);
+
+  Vec dp = (0.5/PI) * (pc-pq); 
+  // normalized difference between cubic and quinitc algorithms - at the datapoints, it must be an 
+  // integer corresponding to the k in the formula pu = p + k*2*PI
+
+
+  // plot:
+  GNUPlotter plt;
+  //plt.addDataArrays(M, &td[0], &pd[0]);  // datapoints
+  plt.addDataArrays(N, &t[0],  &pi[0]);    // integral
+  plt.addDataArrays(N, &t[0],  &pc[0]);    // cubic
+  plt.addDataArrays(N, &t[0],  &pq[0]);    // quintic
+  plt.addDataArrays(N, &t[0],  &dp[0]);    // ~(cubic-quintic)
+  //plt.setGraphStyles("points pt 7 ps 1.2", "lines", "lines");
+  plt.plot();
+  // todo: plot the datapoints as marks
 }
 
 

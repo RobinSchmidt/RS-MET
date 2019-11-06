@@ -517,78 +517,15 @@ RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPoints3()
   return partial;
 }
 
-void plotInterpolatedPhases(const RAPT::rsSinusoidalPartial<double>& partial, double sampleRate)
-{
-  // maybe move to rs_testing module
-
-  // Plots results of various phase interpolation methods of rsSinusoidalSynthesizer for the given
-  // sinusoidal partial. We let a rsSinusoidalSynthesizer generate the interpolated phases as it 
-  // would do in the actual synthesis (verify, if this is really the same algo) and plot the 
-  // resulting interpolated phases for the given sample rate.
-
-  // todo: maybe optionally plot the (numeric) derivative of the phase arrays instead of the phase
-  // arrays theselves ...or plot de-trended phase arrays
-
-
-  typedef std::vector<double> Vec;
-
-  // create and set up the synth and synthesize (and plot) the sound:
-  rsSinusoidalModel<double>       model; model.addPartial(partial);
-  rsSinusoidalSynthesizer<double> synth; synth.setSampleRate(sampleRate);
-  Vec x = synth.synthesize(model);
-  //plotVector(x);
-
-  // create time axes (at datapoint-rate and sample-rate)
-  int N = (int) x.size();
-  Vec td = partial.getTimeArray();         // time axis at datapoint rate
-  Vec t(N);                                // time axis at sample rate
-  for(size_t n = 0; n < N; n++)  
-    t[n] = n / sampleRate;
-
-  // let the synth generate the phases:
-  Vec pi = synth.phasesViaTweakedIntegral(partial, td, t); // i: integral
-  Vec pc = synth.phasesHermite(partial, td, t, false);     // c: cubic
-  Vec pq = synth.phasesHermite(partial, td, t, true);      // q: quintic (looks wrong)
-  RAPT::rsArray::unwrap(&pc[0], N, 2*PI);                  // ...seems like cubic and quintic need
-  RAPT::rsArray::unwrap(&pq[0], N, 2*PI);                  // unwrapping after interpolation - why?
-
-  // create array for plotting the phase datapoints:
-  Vec pd = partial.getPhaseArray();
-  Vec fd = partial.getFrequencyArray();
-  int M = (int) pd.size();
-  pd = rsSinusoidalProcessor<double>::unwrapPhase(td, fd, pd);
-  //pd = synth.unwrapPhase(td, fd, pd);
-  //RAPT::rsArray::unwrap(&pd[0], M, 2*PI);
-
-  Vec dp = (0.5/PI) * (pc-pq); 
-  // normalized difference between cubic and quinitc algorithms - at the datapoints, it must be an 
-  // integer corresponding to the k in the formula pu = p + k*2*PI
-
-
-  // plot:
-  GNUPlotter plt;
-  //plt.addDataArrays(M, &td[0], &pd[0]);  // datapoints
-  plt.addDataArrays(N, &t[0],  &pi[0]);    // integral
-  plt.addDataArrays(N, &t[0],  &pc[0]);    // cubic
-  plt.addDataArrays(N, &t[0],  &pq[0]);    // quintic
-  plt.addDataArrays(N, &t[0],  &dp[0]);    // ~(cubic-quintic)
-  //plt.setGraphStyles("points pt 7 ps 1.2", "lines", "lines");
-  plt.plot();
-  // todo: plot the datapoints as marks
-}
-
 void phaseInterpolation() // rename to sineModelPhaseInterpolation
 {
-
-  double fs = 10000;  // sample rate
-
   // various example signals to phase-interpolate:
   RAPT::rsSinusoidalPartial<double> partial;
   //partial = phaseInterpolationDataPoints1();
   partial = phaseInterpolationDataPoints2();
   //partial = phaseInterpolationDataPoints3();
 
-  plotInterpolatedPhases(partial, fs);
+  SinusoidalModelPlotter<double>::plotInterpolatedPhases(partial, 10000);
 
   // Observations:
   // -the cubic hermite phase is 2pi behind the the integrated phase from datapoint 4 onwards
