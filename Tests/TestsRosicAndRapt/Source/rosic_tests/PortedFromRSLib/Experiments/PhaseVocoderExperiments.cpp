@@ -642,7 +642,26 @@ void sinusoidalSynthesis2()
 
   plotVector(x);
 }
-  // maybe try a single linear sweep
+// maybe try a single linear sweep
+
+
+
+RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPointsDC1(
+  int numDataPoints = 40, double dtMin = 0.01, double dtMax = 0.08, int seed = 1)
+{
+  // Generates a DC partial with datapoints that have all zero phase and amplitudes that may be 
+  // positive or negative.
+  RAPT::rsSinusoidalPartial<double> partial;
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  std::vector<double> t = randomSampleInstants(numDataPoints, dtMin, dtMax);
+  RAPT::rsNoiseGenerator<double> prng;
+  prng.setSeed(seed);
+  for(int i = 0; i < numDataPoints; i++) {
+    double r = prng.getSample();
+    partial.appendDataPoint(ISP(t[i], 0.0, r, 0.0));
+  }
+  return partial;
+}
 
 void sinusoidalSynthesisDC()
 {

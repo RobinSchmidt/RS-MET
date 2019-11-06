@@ -373,7 +373,7 @@ int main(int argc, char* argv[])
   ////partialExtractionBell();  // crashes because sample not available
   ////partialExtractionSample();  // dito
 
-  // Phase Vocoder:
+  // Phase Vocoder (split into Spectrogram and SineModel):
   //phaseRepresentation();
   //grainRoundTrip();        // under construction
   //spectrogramSine();
