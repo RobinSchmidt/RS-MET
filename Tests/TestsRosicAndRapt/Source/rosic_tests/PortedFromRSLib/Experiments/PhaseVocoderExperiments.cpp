@@ -472,26 +472,58 @@ void sineParameterEstimation()
   GNUPlotter plt;
 }
 
+//-------------------------------------------------------------------------------------------------
+// phase interpolation for sinusoidal model:
 
-
-
-
-
+RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPoints1()
+{
+  RAPT::rsSinusoidalPartial<double> partial;
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  double ts = 0.01; // timescale
+  partial.prependDataPoint(ISP(  0*ts, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  1*ts,  800.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  2*ts, 1200.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  3*ts, 1100.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  4*ts,  700.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  5*ts,  500.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  6*ts,  500.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  7*ts,  600.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  8*ts,  800.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  9*ts,  900.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 10*ts, 1000.0, 1.0, 0.0));
+  return partial;
+}
 RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPoints2()
 {
   RAPT::rsSinusoidalPartial<double> partial;
   typedef RAPT::rsInstantaneousSineParams<double> ISP;
   double ts = 0.01; // timescale
-
   partial.prependDataPoint(ISP(  0*ts, 1000.0, 1.0, 0.0));
   partial.appendDataPoint( ISP(  1*ts, 1000.0, 1.0, 0.0));
   partial.appendDataPoint( ISP(  2*ts, 1100.0, 1.0, 0.0));
   partial.appendDataPoint( ISP(  3*ts, 1200.0, 1.0, 0.0));
   partial.appendDataPoint( ISP(  4*ts, 1000.0, 1.0, 0.0));
   partial.appendDataPoint( ISP(  5*ts, 1000.0, 1.0, 0.0));
-
   return partial;
 }
+RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPoints3()
+{
+  RAPT::rsSinusoidalPartial<double> partial;
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  double ts = 0.01; // timescale
+  partial.prependDataPoint(ISP( 0*ts, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 5*ts, 1050.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(10*ts, 1100.0, 1.0, 0.0));
+  return partial;
+}
+
+void plotPhaseInterpolation(const RAPT::rsSinusoidalPartial<double>& partial, double fs)
+{
+  // maybe move to rs_testing module
+
+}
+
+
 
 
 
@@ -505,35 +537,22 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   double fs = 10000;  // sample rate
   //int N = 1000;       // number of samples
 
-  double ts = 0.01; // timescale
+  //double ts = 0.01; // timescale
 
   // create data for some not too boring frequency trajectory:
-  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  //typedef RAPT::rsInstantaneousSineParams<double> ISP;
+
+
+  // various example signals to phase-interpolate:
   RAPT::rsSinusoidalPartial<double> partial;
-
-
-  // factor out into phaseInterpolationDataPoints1();
-  //partial.prependDataPoint(ISP(  0*ts, 1000.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  1*ts,  800.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  2*ts, 1200.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  3*ts, 1100.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  4*ts,  700.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  5*ts,  500.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  6*ts,  500.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  7*ts,  600.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  8*ts,  800.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  9*ts,  900.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP( 10*ts, 1000.0, 1.0, 0.0));
-
-
-  partial = phaseInterpolationDataPoints2();
+  //partial = phaseInterpolationDataPoints1();
+  //partial = phaseInterpolationDataPoints2();
+  partial = phaseInterpolationDataPoints3();
 
 
 
-  //partial.prependDataPoint(ISP( 0*ts, 1000.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP( 5*ts, 1050.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(10*ts, 1100.0, 1.0, 0.0));
 
+  // maybe factor out into plotInterpolatedPhases(partial, sampleRate)
 
   // create and set up the synth and create time-axis at sample-rate:
   rsSinusoidalSynthesizer<double> synth;
@@ -591,50 +610,7 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
 }
 
 
-
-/*
-
-// move to RAPT::rsArray, maybe make cubic versions
-template<class T>
-void applyFadeIn(T* x, int N, int numFadeSamples)
-{
-  int nf = rsMin(numFadeSamples, N);
-  for(int n = 0; n < nf; n++) {
-    T t = T(n) / T(nf);
-    x[n] *= t;
-  }
-}
-template<class T>
-void applyFadeOut(T* x, int N, int numFadeSamples)
-{
-  int nf = rsMin(numFadeSamples, N);
-  for(int n = 0; n < nf; n++) {
-    T t = T(n) / T(nf);
-    x[N-n-1] *= t;
-  }
-}
-template<class T>
-void applyFadeInAndOut(T* x, int N, int numFadeSamples)
-{
-  applyFadeIn( &x[0], N, numFadeSamples);
-  applyFadeOut(&x[0], N, numFadeSamples);
-}
-
-// convenience function - move to rs_testing:
-std::vector<double> synthesizeSinusoidal(
-  const RAPT::rsSinusoidalModel<double>& model, double sampleRate, double fadeTime = 0.0)
-{
-  rsSinusoidalSynthesizer<double> synth;
-  synth.setSampleRate(sampleRate);
-  //synth.setCubicAmplitudeInterpolation(true);
-  std::vector<double> x = synth.synthesize(model);
-  if(fadeTime > 0.0)
-    applyFadeInAndOut( &x[0], (int) x.size(), int (fadeTime*sampleRate));
-  return x;
-}
-*/
-
-
+//-------------------------------------------------------------------------------------------------
 
 void writeTwoSineModelOutputsToFile(
   const char* fileName,
@@ -655,8 +631,6 @@ void writeTwoSineModelOutputsToFile(
     // wave-writing function that take a std::string instead of const char*
   }
 }
-
-
 
 // rename to testSinusoidalSynthesis1
 void sinusoidalSynthesis1()
