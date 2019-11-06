@@ -517,15 +517,57 @@ RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPoints3()
   return partial;
 }
 
-void plotPhaseInterpolation(const RAPT::rsSinusoidalPartial<double>& partial, double fs)
+void plotInterpolatedPhases(const RAPT::rsSinusoidalPartial<double>& partial, double fs)
 {
   // maybe move to rs_testing module
 
+
+  typedef std::vector<double> Vec;
+
+  // create and set up the synth and synthesize (and plot) the sound:
+  rsSinusoidalModel<double>       model; model.addPartial(partial);
+  rsSinusoidalSynthesizer<double> synth; synth.setSampleRate(fs);
+  Vec x = synth.synthesize(model);
+  //plotVector(x);
+
+  // create time axes (at datapoint-rate and sample-rate)
+  int N = (int) x.size();
+  Vec td = partial.getTimeArray();         // time axis at datapoint rate
+  Vec t(N);                                // time axis at sample rate
+  for(size_t n = 0; n < N; n++)  
+    t[n] = n / fs;
+
+  // let the synth generate the phases:
+  Vec pi = synth.phasesViaTweakedIntegral(partial, td, t); // i: integral
+  Vec pc = synth.phasesHermite(partial, td, t, false);     // c: cubic
+  Vec pq = synth.phasesHermite(partial, td, t, true);      // q: quintic (looks wrong)
+  RAPT::rsArray::unwrap(&pc[0], N, 2*PI);                  // ...seems like cubic and quintic need
+  RAPT::rsArray::unwrap(&pq[0], N, 2*PI);                  // unwrapping after interpolation - why?
+
+  // create array for plotting the phase datapoints:
+  Vec pd = partial.getPhaseArray();
+  Vec fd = partial.getFrequencyArray();
+  int M = (int) pd.size();
+  pd = rsSinusoidalProcessor<double>::unwrapPhase(td, fd, pd);
+  //pd = synth.unwrapPhase(td, fd, pd);
+  //RAPT::rsArray::unwrap(&pd[0], M, 2*PI);
+
+  Vec dp = (0.5/PI) * (pc-pq); 
+  // normalized difference between cubic and quinitc algorithms - at the datapoints, it must be an 
+  // integer corresponding to the k in the formula pu = p + k*2*PI
+
+
+  // plot:
+  GNUPlotter plt;
+  //plt.addDataArrays(M, &td[0], &pd[0]);  // datapoints
+  plt.addDataArrays(N, &t[0],  &pi[0]);    // integral
+  plt.addDataArrays(N, &t[0],  &pc[0]);    // cubic
+  plt.addDataArrays(N, &t[0],  &pq[0]);    // quintic
+  plt.addDataArrays(N, &t[0],  &dp[0]);    // ~(cubic-quintic)
+  //plt.setGraphStyles("points pt 7 ps 1.2", "lines", "lines");
+  plt.plot();
+  // todo: plot the datapoints as marks
 }
-
-
-
-
 
 void phaseInterpolation() // rename to sineModelPhaseInterpolation
 {
@@ -550,59 +592,8 @@ void phaseInterpolation() // rename to sineModelPhaseInterpolation
   partial = phaseInterpolationDataPoints3();
 
 
+  plotInterpolatedPhases(partial, fs);
 
-
-  // maybe factor out into plotInterpolatedPhases(partial, sampleRate)
-
-  // create and set up the synth and create time-axis at sample-rate:
-  rsSinusoidalSynthesizer<double> synth;
-  synth.setSampleRate(fs);
-
-  // synthesize and plot the sound:
-  RAPT::rsSinusoidalModel<double> model;
-  model.addPartial(partial);
-  std::vector<double> x = synth.synthesize(model);
-  //plotVector(x);
-
-
-
-  int N = (int) x.size();
-  std::vector<double> td = partial.getTimeArray();
-  std::vector<double> t(N);
-  for(size_t n = 0; n < N; n++) 
-    t[n] = n / fs;// fill time-array
-
-
-
-  // let the synth generate the phases:
-  std::vector<double> pi = synth.phasesViaTweakedIntegral(partial, td, t);
-  std::vector<double> pc = synth.phasesHermite(partial, td, t, false); 
-  std::vector<double> pq = synth.phasesHermite(partial, td, t, true); // quintic looks wrong
-  RAPT::rsArray::unwrap(&pc[0], N, 2*PI);
-  RAPT::rsArray::unwrap(&pq[0], N, 2*PI);
-
-  // array for plotting the phase datapoints:
-  std::vector<double> pd = partial.getPhaseArray();
-  std::vector<double> fd = partial.getFrequencyArray();
-  int M = (int) pd.size();
-  pd = rsSinusoidalProcessor<double>::unwrapPhase(td, fd, pd);
-  //pd = synth.unwrapPhase(td, fd, pd);
-  //RAPT::rsArray::unwrap(&pd[0], M, 2*PI);
-
-  std::vector<double> dp = (0.5/PI) * (pc-pq); 
-  // normalized difference between the algorithms - at the datapoints, it must be an integer 
-  // corresponding to the k in the formula pu = p + k*2*PI
-
-
-  // plot:
-  GNUPlotter plt;
-  //plt.addDataArrays(M, &td[0], &pd[0]);
-  plt.addDataArrays(N, &t[0],  &pi[0]);
-  plt.addDataArrays(N, &t[0],  &pc[0]);
-  plt.addDataArrays(N, &t[0],  &pq[0]);
-  plt.addDataArrays(N, &t[0],  &dp[0]);
-  //plt.setGraphStyles("points pt 7 ps 1.2", "lines", "lines");
-  plt.plot();
 
   // Observations:
   // -the cubic hermite phase is 2pi behind the the integrated phase from datapoint 4 onwards
