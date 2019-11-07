@@ -417,8 +417,8 @@ bool rsSinusoidalModel<T>::isSampledSynchronously() const
 template<class T>
 bool rsSinusoidalModel<T>::isDataValid() const
 {
-  //for(size_t i = 1; i < partials.size(); i++) // old
-  for(size_t i = 0; i < partials.size(); i++) // DC may be < 0 from analysis -> fix this
+  for(size_t i = 1; i < partials.size(); i++) // old
+  //for(size_t i = 0; i < partials.size(); i++) // DC may be < 0 from analysis -> fix this
     if(!partials[i].isDataValid())
       return false;
   return true;
