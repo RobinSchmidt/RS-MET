@@ -494,9 +494,15 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
   testResult &= E == Matrix(3, 4, {0,0,0,0, 0,0,0,0, 0,0,0,0});
   testResult &= allocs == 40;
 
-  // swpping two matrices:
-  RAPT::rsSwapViaMove(A, E);
-  testResult &= allocs == 40;
+  // swapping two matrices:
+  RAPT::rsSwapNaive(A, B);
+  testResult &= allocs == 43;   // naive swapping causes 3 heap allocations...
+  RAPT::rsSwapViaMove(A, B);
+  testResult &= allocs == 43;   // ...whereas swapping via std::move causes none
+  RAPT::rsSwap(A, B);
+  testResult &= allocs == 43;   // rsSwap calls rsSwapViaMove
+
+
 
   // create diagonal matrix
 
