@@ -494,6 +494,10 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
   testResult &= E == Matrix(3, 4, {0,0,0,0, 0,0,0,0, 0,0,0,0});
   testResult &= allocs == 40;
 
+  // swpping two matrices:
+  RAPT::rsSwapViaMove(A, E);
+  testResult &= allocs == 40;
+
   // create diagonal matrix
 
 

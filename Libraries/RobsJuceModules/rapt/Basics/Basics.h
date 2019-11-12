@@ -21,6 +21,18 @@ inline void rsSwap(T& x, T& y)
   x = y;
   y = t;
 }
+// rename to rsSwapViaAssign - make a swap function that uses rsSwapViaMove
+
+template<class T>
+inline void rsSwapViaMove(T& x, T& y)
+{
+  T t(std::move(x));
+  x = std::move(y);
+  y = std::move(t);
+}
+
+
+
 
 template<class T> inline T rsUnityValue(T /*value*/) { return T(1);  }
 template<class T> inline T rsZeroValue( T /*value*/) { return T(0);  }
