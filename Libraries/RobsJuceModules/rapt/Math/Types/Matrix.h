@@ -180,6 +180,10 @@ public:
   /** Sets all elements in the matrix to the given value. */
   inline void setAllValues(T value) { rsArray::fillWithValue(dataPointer, getSize(), value); }
 
+  /** Initializes all elements with given value. */
+  void init(T value = T(0)) { RAPT::rsArray::fillWithValue(dataPointer, getSize(), value); }
+  // maybe remove - is redundant with setAllValues
+
   /** Sets all elements on the main diagonal to the given value. If the matrix is not square, only
   the top-left square submatrix will be affected. */
   inline void setDiagonalValues(T value)
@@ -219,9 +223,6 @@ public:
   bottom will be all zeros as well (-> verify this). */
   inline void setToIdentity() { setToZero(); setDiagonalValues(T(1)); }
   // needs test
-
-
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -272,15 +273,8 @@ public:
   // if we later support column-major storage, we should assert that the matrix in row-major
   // storage
 
-
   const T* getRowPointerConst(int rowIndex) const
   { return &dataPointer[rowIndex*numCols]; }
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Setup */
-
-  /** Initializes all elements with given value. */
-  void init(T value = T(0)) { RAPT::rsArray::fillWithValue(dataPointer, getSize(), value); }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -374,7 +368,7 @@ public:
     return numCols*i + j;
     // todo:
     //  -be more general: colStride*i + rowStride*j. goal: allow row-major and column-major storage
-    //   while the syntax of the operator is always row-major (as is conventional in math)
+    //   while the syntax of the () operator is always row-major (as is conventional in math)
     //   regardless whatever the internal storage format is - column major storage is required for
     //   compatibility with lapack
     // -maybe be even more general: colOffset + colStride*i + (rowOffset + rowStride)*j

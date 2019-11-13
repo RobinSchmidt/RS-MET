@@ -290,13 +290,10 @@ bool testMatrixView()
 
 bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
 {
-  std::string testName = "MatrixNew";
   bool testResult = true;
-
   using Matrix = rsMatrix<double>;
   int& allocs  = Matrix::numHeapAllocations;  // to count allocations
   allocs = 0;
-
 
   // A = |1 2 3|
   //     |4 5 6|
@@ -466,7 +463,7 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
   testResult &= E.getNumRows() == 2 && E.getNumColumns() == 3;
   E.transpose();
   testResult &= allocs == 31;
-  testResult &= E == Matrix(3, 2, {1,4, 2,5, 3,6});  // doesn't work yet
+  testResult &= E == Matrix(3, 2, {1,4, 2,5, 3,6});
   testResult &= allocs == 32;
 
   Matrix S4(4, 4, {1,2,3,4, 5,6,7,8, 9,10,11,12, 13,14,15,16});

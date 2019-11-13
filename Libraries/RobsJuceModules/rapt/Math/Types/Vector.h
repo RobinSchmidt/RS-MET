@@ -4,7 +4,7 @@
 /** Class for representing 2-dimensional vectors. */
 
 template<class T>
-class rsVector2D
+class rsVector2D  // maybe it should be a struct?
 {
 
 public:
