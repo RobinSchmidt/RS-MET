@@ -1031,10 +1031,10 @@ void rsArray::reverse(T *buffer, int length)
 template <class T>
 void rsArray::reverse(T* x, int N)
 {
-  rsAssert(N > 0, "Array length must be > 0");
   for(int i = 0; i < N/2; i++)
     rsSwap(x[i], x[N-i-1]);
 }
+
 
 template <class T>
 void rsArray::reverse(const T* x, T* y, int N)

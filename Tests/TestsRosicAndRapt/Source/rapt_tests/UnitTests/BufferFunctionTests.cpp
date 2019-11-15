@@ -128,7 +128,12 @@ bool testReverse()
   a = {1,2,3,4};   rev(a); r &= a == Vec({4,3,2,1});
   a = {1,2,3,4,5}; rev(a); r &= a == Vec({5,4,3,2,1});
 
-  // todo: test Arr::reverse with zero-sized array
+  // tests with array-sizes <= 0 - they should not touch the data at all:
+  Arr::reverse(&a[0],  0); r &= a == Vec({5,4,3,2,1});
+  Arr::reverse(&a[0], -1); r &= a == Vec({5,4,3,2,1});
+  Arr::reverse(&a[0], -2); r &= a == Vec({5,4,3,2,1});
+  Arr::reverse(&a[0], -3); r &= a == Vec({5,4,3,2,1});
+  Arr::reverse(&a[0], -4); r &= a == Vec({5,4,3,2,1});
 
   return r;
 }
