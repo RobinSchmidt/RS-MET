@@ -1011,6 +1011,8 @@ void rsArray::removeMean(T *buffer, int length)
     buffer[i] -= m;
 }
 
+/*
+// old:
 template <class T>
 void rsArray::reverse(T *buffer, int length)
 {
@@ -1023,16 +1025,16 @@ void rsArray::reverse(T *buffer, int length)
     buffer[i]              = tmp;
   }
 }
+*/
 
-/*
-// try this - unit-test with even and odd length input, also length 0, length 1
+// new:
 template <class T>
 void rsArray::reverse(T* x, int N)
 {
-  for(int i = 0; i <= N/2; i++)
+  rsAssert(N > 0, "Array length must be > 0");
+  for(int i = 0; i < N/2; i++)
     rsSwap(x[i], x[N-i-1]);
 }
-*/
 
 template <class T>
 void rsArray::reverse(const T* x, T* y, int N)
