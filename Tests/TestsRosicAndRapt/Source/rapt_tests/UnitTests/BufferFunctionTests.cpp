@@ -116,20 +116,19 @@ bool testCopySection()
 
 bool testReverse()
 {
-  bool r = true;  // result
-
+  bool  r   = true;                 // test result
   using Vec = std::vector<int>;
   using Arr = RAPT::rsArray;
-
-  // maybe make a lambda "rev" that takes a vector
+  auto  rev = [&](Vec& v) { Arr::reverse(&v[0], (int)rsSize(v)); }; // reversal function
 
   Vec a;
-  a = {1};         Arr::reverse(&a[0], rsSize(a)); r &= a == Vec({1});
-  a = {1,2};       Arr::reverse(&a[0], rsSize(a)); r &= a == Vec({2,1});
-  a = {1,2,3};     Arr::reverse(&a[0], rsSize(a)); r &= a == Vec({3,2,1});
-  a = {1,2,3,4};   Arr::reverse(&a[0], rsSize(a)); r &= a == Vec({4,3,2,1});
-  a = {1,2,3,4,5}; Arr::reverse(&a[0], rsSize(a)); r &= a == Vec({5,4,3,2,1});
-  // todo: test with zero-sized array
+  a = {1};         rev(a); r &= a == Vec({1});
+  a = {1,2};       rev(a); r &= a == Vec({2,1});
+  a = {1,2,3};     rev(a); r &= a == Vec({3,2,1});
+  a = {1,2,3,4};   rev(a); r &= a == Vec({4,3,2,1});
+  a = {1,2,3,4,5}; rev(a); r &= a == Vec({5,4,3,2,1});
+
+  // todo: test Arr::reverse with zero-sized array
 
   return r;
 }
