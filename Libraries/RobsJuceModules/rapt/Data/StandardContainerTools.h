@@ -37,6 +37,7 @@ inline size_t rsSize(const std::vector<T>& v)
 {
   return v.size();
 }
+// todo: return an int
 
 template<class T>
 inline void rsAppend(std::vector<T>& v, T newElement)

@@ -46,70 +46,94 @@ bool testCopySection()
   int b[Nb];
   int n;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, Na, b, 2, 3);
+  using AR = RAPT::rsArray;
+
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, Na, b, 2, 3);
   testResult &= b[0] == 3 && b[1] == 4 && b[2] == 5;
   for(n = 3; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, 2, 3);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, 2, 3);
   testResult &= b[0] == 3 && b[1] == 4 && b[2] == 5;
   for(n = 3; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, 2, 4);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, 2, 4);
   testResult &= b[0] == 3 && b[1] == 4 && b[2] == 5 && b[3] == 0;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, -2, 4);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, -2, 4);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 1 && b[3] == 2;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, -2, 7);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, -2, 7);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 1 && b[3] == 2 && b[4] == 3 && b[5] == 4 && 
                 b[6] == 5;
   for(n = 7; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, -2, 8);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, -2, 8);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 1 && b[3] == 2 && b[4] == 3 && b[5] == 4 && 
                 b[6] == 5 && b[7] == 0;
   for(n = 8; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, -4, 4);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, -4, 4);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 0 && b[3] == 0;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, -3, 4);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, -3, 4);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 0 && b[3] == 1;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, 4, 4);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, 4, 4);
   testResult &= b[0] == 5 && b[1] == 0 && b[2] == 0 && b[3] == 0;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, 5, 4);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, 5, 4);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 0 && b[3] == 0;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
   return testResult;
 }
+
+
+bool testReverse()
+{
+  bool r = true;  // result
+
+  using Vec = std::vector<int>;
+  using Arr = RAPT::rsArray;
+
+  // maybe make a lambda "rev" that takes a vector
+
+  Vec a;
+  a = {1};         Arr::reverse(&a[0], rsSize(a)); r &= a == Vec({1});
+  a = {1,2};       Arr::reverse(&a[0], rsSize(a)); r &= a == Vec({2,1});
+  a = {1,2,3};     Arr::reverse(&a[0], rsSize(a)); r &= a == Vec({3,2,1});
+  a = {1,2,3,4};   Arr::reverse(&a[0], rsSize(a)); r &= a == Vec({4,3,2,1});
+  a = {1,2,3,4,5}; Arr::reverse(&a[0], rsSize(a)); r &= a == Vec({5,4,3,2,1});
+  // todo: test with zero-sized array
+
+  return r;
+}
+
 
 // these two functions are apparently not yet complete:
 bool testMoveElements()
@@ -143,11 +167,15 @@ bool testRemoveElements()
 }
 
 
+
+
+
 bool testBufferFunctions()
 {
   bool testResult = true;
 
   testResult &= testCopySection();
+  testResult &= testReverse();
   testResult &= testRemoveElements();
   testResult &= testMoveElements();
 
