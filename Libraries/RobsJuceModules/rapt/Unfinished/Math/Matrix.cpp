@@ -81,9 +81,9 @@ rsMatrix<T>::rsMatrix(const rsMatrix<T>& other)
 template<class T>
 rsMatrix<T>::~rsMatrix()
 {
-  //data->numReferences -= 1;
-  //if( data->numReferences == 0 )
-  //  delete data;
+  data->numReferences -= 1;
+  if( data->numReferences == 0 )
+    delete data;
 }
 // untested
 
