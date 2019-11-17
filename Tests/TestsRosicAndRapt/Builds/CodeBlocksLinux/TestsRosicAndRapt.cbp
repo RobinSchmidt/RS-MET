@@ -19,7 +19,7 @@
           <Add option="-DDEBUG=1"/>
           <Add option="-D_DEBUG=1"/>
           <Add option="-DDONT_SET_USING_JUCE_NAMESPACE=1"/>
-          <Add option="-DRS_PLOTTING="/>
+          <Add option="-DRS_PLOTTING=1"/>
           <Add option="-DJUCE_DONT_DECLARE_PROJECTINFO=1"/>
           <Add option="-DJUCER_CODEBLOCKS_LINUX_191E0897=1"/>
           <Add option="-DJUCE_APP_VERSION=1.0.0"/>
@@ -57,7 +57,7 @@
           <Add option="-DLINUX=1"/>
           <Add option="-DNDEBUG=1"/>
           <Add option="-DDONT_SET_USING_JUCE_NAMESPACE=1"/>
-          <Add option="-DRS_PLOTTING="/>
+          <Add option="-DRS_PLOTTING=1"/>
           <Add option="-DJUCE_DONT_DECLARE_PROJECTINFO=1"/>
           <Add option="-DJUCER_CODEBLOCKS_LINUX_191E0897=1"/>
           <Add option="-DJUCE_APP_VERSION=1.0.0"/>

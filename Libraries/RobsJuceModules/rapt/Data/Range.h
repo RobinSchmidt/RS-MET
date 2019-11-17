@@ -69,22 +69,13 @@ public:
   /** \name Inquiry */
 
   /** Returns the minimum value of this range. */
-  T getMin() const
-  {
-    return min;
-  }
+  T getMin() const { return min; }
 
   /** Returns the maximum value of this range. */
-  T getMax() const
-  {
-    return max;
-  }
+  T getMax() const { return max; }
 
   /** Returns the size of this range (defined as difference between max and min). */
-  T getSize() const
-  {
-    return max-min;
-  }
+  T getSize() const { return max-min; }
 
 
   /** \name Operators */
@@ -92,24 +83,22 @@ public:
   /** Compares two ranges for equality. */
   bool operator==(const rsRange<T>& r2) const
   {
+    return r2.min == min && r2.max == max
+
+    /*
     if(r2.min == min && r2.max == max)
       return true;
     else
       return false;
+    */
   }
 
   /** Compares two ranges for inequality. */
-  bool operator!=(const rsRange<T>& r2) const
-  {
-    return !(*this == r2);
-  }
+  bool operator!=(const rsRange<T>& r2) const { return !(*this == r2); }
 
   /** Returns true, if the size (i.e. the difference between max and min) of the left operand is
   greater than the size of the right operand. */
-  bool operator>(const rsRange<T>& r2) const
-  {
-    return getSize() > r2.getSize();
-  }
+  bool operator>(const rsRange<T>& r2) const { return getSize() > r2.getSize(); }
 
 
 protected:
@@ -123,7 +112,7 @@ protected:
 
 //===============================================================================================
 
-/** This class is used to represent 2-dimenstional ranges, for example minimum and maximum values 
+/** This class is used to represent 2-dimensional ranges, for example minimum and maximum values 
 for x and y in a coordinate system. */
 
 template<class T>
@@ -136,11 +125,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  rsRangeXY(T minX, T maxX, T minY, T maxY)
-    : rangeX(minX, maxX), rangeY(minY, maxY)
-  {
-
-  }
+  rsRangeXY(T minX, T maxX, T minY, T maxY) : rangeX(minX, maxX), rangeY(minY, maxY) {}
 
 
   /** \name Setup */
@@ -182,10 +167,14 @@ public:
   /** Compares two ranges for equality. */
   bool operator==(const rsRangeXY<T>& r2) const
   {
+    return r2.rangeX == rangeX && r2.rangeY == rangeY;
+
+    /*
     if(r2.rangeX == rangeX && r2.rangeY == rangeY)
       return true;
     else
       return false;
+    */
   }
 
   /** Compares two ranges for inequality. */

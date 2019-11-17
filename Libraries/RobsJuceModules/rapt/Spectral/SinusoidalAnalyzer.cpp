@@ -274,7 +274,7 @@ RAPT::rsSinusoidalModel<T> rsSinusoidalAnalyzer<T>::analyzeSpectrogram(
     T time  = frameIndex * frameDelta;
     T* pMag = mag.getRowPointer(frameIndex);
     T* pPhs = phs.getRowPointer(frameIndex);
-    std::complex<T>* pCmp = stft.getRowPointer(frameIndex);  // pointer to complex short-time spectrum
+    const std::complex<T>* pCmp = stft.getRowPointerConst(frameIndex);  // pointer to complex short-time spectrum
 
 
     //plotData(numBins, pMag);

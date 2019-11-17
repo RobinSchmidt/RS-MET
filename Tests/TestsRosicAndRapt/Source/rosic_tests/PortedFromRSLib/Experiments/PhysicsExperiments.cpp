@@ -501,32 +501,32 @@ bool quantumSpinMeasurement()
   // (1) pg 138 says that any spin operator can be written a linear combination of the 3 Pauli
   // matrices and the identity matrix
 
-  e1 = pauliZ.eigenvalue1();  pass &= e1 == -1.0;
-  e2 = pauliZ.eigenvalue2();  pass &= e2 == +1.0;
-  E1 = pauliZ.eigenvector1(); pass &= isCloseTo(E1, d, tol); // "down"
-  E2 = pauliZ.eigenvector2(); pass &= isCloseTo(E2, u, tol); // "up"
+  e1 = pauliZ.getEigenvalue1();  pass &= e1 == -1.0;
+  e2 = pauliZ.getEigenvalue2();  pass &= e2 == +1.0;
+  E1 = pauliZ.getEigenvector1(); pass &= isCloseTo(E1, d, tol); // "down"
+  E2 = pauliZ.getEigenvector2(); pass &= isCloseTo(E2, u, tol); // "up"
   // E1 ane E2 are swapped - why?  ...not true anymore?
 
-  e1 = pauliX.eigenvalue1();  pass &= e1 == -1.0;
-  e2 = pauliX.eigenvalue2();  pass &= e2 == +1.0;
-  E1 = pauliX.eigenvector1(); pass &= isCloseTo(E1, l, tol); // "left" - wrong - not normalized
-  E2 = pauliX.eigenvector2(); pass &= isCloseTo(E2, r, tol); // "right"
+  e1 = pauliX.getEigenvalue1();  pass &= e1 == -1.0;
+  e2 = pauliX.getEigenvalue2();  pass &= e2 == +1.0;
+  E1 = pauliX.getEigenvector1(); pass &= isCloseTo(E1, l, tol); // "left" - wrong - not normalized
+  E2 = pauliX.getEigenvector2(); pass &= isCloseTo(E2, r, tol); // "right"
 
-  e1 = pauliY.eigenvalue1();  pass &= e1 == -1.0;
-  e2 = pauliY.eigenvalue2();  pass &= e2 == +1.0;
-  E1 = pauliY.eigenvector1(); pass &= isCloseTo(E1, o, tol); // "out"
-  E2 = pauliY.eigenvector2(); pass &= isCloseTo(E2, i, tol); // "in"
+  e1 = pauliY.getEigenvalue1();  pass &= e1 == -1.0;
+  e2 = pauliY.getEigenvalue2();  pass &= e2 == +1.0;
+  E1 = pauliY.getEigenvector1(); pass &= isCloseTo(E1, o, tol); // "out"
+  E2 = pauliY.getEigenvector2(); pass &= isCloseTo(E2, i, tol); // "in"
 
   // test eigenvalue and eigenvector compuation:
   Mat op;
   op.setValues(one, two, two, one);
-  e1 = op.eigenvalue1(); pass &= e1 == -1.0;
-  e2 = op.eigenvalue2(); pass &= e2 == +3.0;
+  e1 = op.getEigenvalue1(); pass &= e1 == -1.0;
+  e2 = op.getEigenvalue2(); pass &= e2 == +3.0;
 
-  //E1 = op.eigenvector1(); // (1, 0)     -> wrong result
-  //E2 = op.eigenvector2(); // (1,-1) * s
-  //E1 = pauliZ.eigenvector1(); 
-  //E2 = pauliZ.eigenvector2();
+  //E1 = op.getEigenvector1(); // (1, 0)     -> wrong result
+  //E2 = op.getEigenvector2(); // (1,-1) * s
+  //E1 = pauliZ.getEigenvector1(); 
+  //E2 = pauliZ.getEigenvector2();
 
 
   // test spin measurements via Pauli matrices:
@@ -655,10 +655,10 @@ bool quantumSpinMeasurement()
   QS::randomizeState(A, &prng);
   //QS::normalizeState(A); // not necessarry
   M  = QS::projector(A);
-  e1 = M.eigenvalue1();   // 0
-  e2 = M.eigenvalue2();   // 1
-  E1 = M.eigenvector1();  // 
-  E2 = M.eigenvector2();  // is this = k * A for some (complex) constant k
+  e1 = M.getEigenvalue1();   // 0
+  e2 = M.getEigenvalue2();   // 1
+  E1 = M.getEigenvector1();  // 
+  E2 = M.getEigenvector2();  // is this = k * A for some (complex) constant k
   Complex c1, c2;         // move decalaration to top
   c1 = E2.x / A.x;
   c2 = E2.y / A.y;
@@ -668,12 +668,12 @@ bool quantumSpinMeasurement()
   M2 = M*M;
   pass &= isCloseTo(M, M2, tol);    // M should be equal to its square
   c1 = QS::sandwich(A, pauliZ, A); // todo: use some more general observable instead of pauliZ
-  c2 = (M*pauliZ).trace();
+  c2 = (M*pauliZ).getTrace();
   pass &= isCloseTo(c1, c2, tol);  // should be equal (for any observable) by (1) Eq 7.12
   QS::randomizeState(B, &prng);
   L = QS::projector(B);            // since projectors are Hermitian, L is an observable (right?)
   c1 = QS::sandwich(A, L, A);
-  c2 = (M*L).trace();
+  c2 = (M*L).getTrace();
   pass &= isCloseTo(c1, c2, tol);  // should be equal (for any observable) by (1) Eq 7.12
 
 
@@ -698,9 +698,9 @@ bool quantumSpinMeasurement()
   L  = pauliZ;
   Complex EA, EB, EL;
   Mat rho = QS::densityMatrix(std::vector<double>({ 0.75, 0.25 }), std::vector<Vec>({ A, B }));
-  EA = QS::sandwich(A,L,A); pass &= EA == (PA*L).trace();  // 7.12
-  EB = QS::sandwich(B,L,B); pass &= EB == (PB*L).trace();  // 7.12
-  EL = (rho * L).trace();   pass &= isCloseTo(EL, 0.75*EA + 0.25*EB, tol);
+  EA = QS::sandwich(A,L,A); pass &= EA == (PA*L).getTrace();  // 7.12
+  EB = QS::sandwich(B,L,B); pass &= EB == (PB*L).getTrace();  // 7.12
+  EL = (rho * L).getTrace();   pass &= isCloseTo(EL, 0.75*EA + 0.25*EB, tol);
 
 
 
@@ -726,7 +726,7 @@ bool quantumSpinMeasurement()
 /** Checks, if the vector v is an eigenvector of the matrix A by verifying if A*v equals some 
 multiple of v within a given tolerance. */
 template<class TElem, class TTol>
-bool isEigenVector(const rsMatrixNew<TElem>& A, const rsMatrixNew<TElem>& v, TTol tol)
+bool isEigenVector(const rsMatrix<TElem>& A, const rsMatrix<TElem>& v, TTol tol)
 {
   rsAssert(v.isColumnVector());
 
@@ -746,7 +746,7 @@ bool isEigenVector(const rsMatrixNew<TElem>& A, const rsMatrixNew<TElem>& v, TTo
   // vector product w = A*v and the ratio of w[n]/v[n] - if v is an eigenvector, this ratio should
   // be the corresponding eigenvalue (we call it lambda) and all elements w[i] should be in the 
   // same ratio, i.e. w[i] should be lambda*v[i] for all i:
-  rsMatrixNew<TElem> w = A*v;
+  rsMatrix<TElem> w = A*v;
   TElem lambda = w.at(n,0) / v.at(n,0);
   for(n = 0; n < N; n++) {
     if(rsAbs(lambda*v.at(n,0) - w.at(n,0)) > tol)
@@ -763,7 +763,7 @@ bool quantumSpinEntanglement()
   bool pass = true;  // move to unit tests
 
   typedef std::complex<double> Complex;
-  typedef rsMatrixNew<Complex> Mat;
+  typedef rsMatrix<Complex> Mat;
   typedef std::vector<Complex> Vec;
   typedef rsQuantumState<double> QS;
 
@@ -789,30 +789,30 @@ bool quantumSpinEntanglement()
 
   // create base states |uu>, |ud>, |du>, |dd> of the cobined system of two spins (see pg 189):
   Complex one(1,0), zero(0,0), i(0,1);
-  Mat u(2, 1, Vec({ one, zero }));         // |u> - spin up
-  Mat d(2, 1, Vec({ zero, one }));         // |d> - spin down
-  Mat uu = Mat::kroneckerProduct(u, u);    // |uu> - up/up
-  Mat ud = Mat::kroneckerProduct(u, d);    // |ud> - up/down
-  Mat du = Mat::kroneckerProduct(d, u);    // |du> - down/up
-  Mat dd = Mat::kroneckerProduct(d, d);    // |dd> - down/down
+  Mat u(2, 1, Vec({ one, zero }));            // |u> - spin up
+  Mat d(2, 1, Vec({ zero, one }));            // |d> - spin down
+  Mat uu = Mat::getKroneckerProduct(u, u);    // |uu> - up/up
+  Mat ud = Mat::getKroneckerProduct(u, d);    // |ud> - up/down
+  Mat du = Mat::getKroneckerProduct(d, u);    // |du> - down/up
+  Mat dd = Mat::getKroneckerProduct(d, d);    // |dd> - down/down
 
   // create observables sz, tz (simga-z, tau-z) and the product observables (pg 190)
   Mat pauliZ(2, 2, Vec({ one,  zero, zero, -one  }));
   Mat pauliX(2, 2, Vec({ zero, one,  one,   zero }));
   Mat pauliY(2, 2, Vec({ zero, -i,   i,     zero }));
-  Mat id2x2( 2, 2, Vec({ one,  zero, zero,  one  }));  // 2x2 identity matrix
-  Mat sztx = Mat::kroneckerProduct(pauliZ, pauliX);    // sigma_z  (x) tau_x
-  Mat sxtz = Mat::kroneckerProduct(pauliX, pauliZ);    // sigma_x  (x) tau_z
-  Mat tzsz = Mat::kroneckerProduct(pauliZ, pauliZ);    // tau_z (x) sigma_z
-  Mat txsx = Mat::kroneckerProduct(pauliX, pauliX);    // tau_x (x) sigma_x
-  Mat tysy = Mat::kroneckerProduct(pauliY, pauliY);    // tau_y (x) sigma_y
-  Mat st   = txsx + tysy + tzsz;                       // sigma * tau, pg 180
-  Mat szI  = Mat::kroneckerProduct(pauliZ,  id2x2);    // sigma_z (x) identity, Eq 7.4, pg 187
+  Mat id2x2( 2, 2, Vec({ one,  zero, zero,  one  }));     // 2x2 identity matrix
+  Mat sztx = Mat::getKroneckerProduct(pauliZ, pauliX);    // sigma_z  (x) tau_x
+  Mat sxtz = Mat::getKroneckerProduct(pauliX, pauliZ);    // sigma_x  (x) tau_z
+  Mat tzsz = Mat::getKroneckerProduct(pauliZ, pauliZ);    // tau_z (x) sigma_z
+  Mat txsx = Mat::getKroneckerProduct(pauliX, pauliX);    // tau_x (x) sigma_x
+  Mat tysy = Mat::getKroneckerProduct(pauliY, pauliY);    // tau_y (x) sigma_y
+  Mat st   = txsx + tysy + tzsz;                          // sigma * tau, pg 180
+  Mat szI  = Mat::getKroneckerProduct(pauliZ,  id2x2);    // sigma_z (x) identity, Eq 7.4, pg 187
 
-  Mat sxI  = Mat::kroneckerProduct(pauliX,  id2x2);
-  Mat syI  = Mat::kroneckerProduct(pauliY,  id2x2);
+  Mat sxI  = Mat::getKroneckerProduct(pauliX,  id2x2);
+  Mat syI  = Mat::getKroneckerProduct(pauliY,  id2x2);
 
-  Mat Itx  = Mat::kroneckerProduct(id2x2,  pauliX);    // identity (x) tau_x
+  Mat Itx  = Mat::getKroneckerProduct(id2x2,  pauliX);    // identity (x) tau_x
     // see page 170 bottom "if we were being pedantic,..." - yes, we are!
 
   // check some of the relations on page 350 (relations that hold for the Alice- and 
@@ -1125,10 +1125,10 @@ bool quantumSpinEvolution()
 
   // Solve the time dependent Schrödinger equation analytically using the "Recipe for a 
   // Schrödinger Ket" in (1):
-  Vec E1 = H.eigenvector1();
-  Vec E2 = H.eigenvector2();
-  Complex e1  = H.eigenvalue1();
-  Complex e2  = H.eigenvalue2();
+  Vec E1 = H.getEigenvector1();
+  Vec E2 = H.getEigenvector2();
+  Complex e1  = H.getEigenvalue1();
+  Complex e2  = H.getEigenvalue2();
   Complex a10 = QS::bracket(E1, Psi0);   // initial multiplier for E1, (1) Eq 4.31
   Complex a20 = QS::bracket(E2, Psi0);   // initial multiplier for E2, (1) Eq 4.31
   std::vector<Vec> stateTrajectory2(N);
@@ -1251,7 +1251,7 @@ void quantum3StateSystem()
   // http://folk.uio.no/jaakko/FYS3110/Griffiths_3.38.pdf
 
   typedef complex<double> Complex;
-  typedef rsMatrixNew<Complex> Mat;
+  typedef rsMatrix<Complex> Mat;
   typedef vector<Complex> Vec;
 
   Mat H(3, 3, Vec({1,0,0, 0,2,0, 0,0,2}));

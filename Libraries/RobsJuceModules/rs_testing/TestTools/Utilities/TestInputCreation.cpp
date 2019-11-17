@@ -432,6 +432,28 @@ double getValue(const std::string& str, const std::string& key, double defaultVa
   return value;
 }
 
+std::vector<double> attackDecayEnvelope(int N, double attackSamples, double decaySamples)
+{
+  std::vector<double> env(N);
+  rsModalFilterWithAttack<double, double> flt;
+  flt.setModalParameters(0.0, 1.0, attackSamples, decaySamples, 90.0, 1.0);
+  env[0] = flt.getSample(1);
+  for(int n = 1; n < N; n++)
+    env[n] = flt.getSample(0);
+  return env;
+}
+
+std::vector<double> attackDecaySine(int N, double frequency, double amplitude, double attack, 
+  double decay, double startPhase, double sampleRate)
+{
+  std::vector<double> y(N);
+  rsModalFilterWithAttack<double, double> flt;
+  flt.setModalParameters(frequency, amplitude, attack, decay, startPhase, sampleRate);
+  y[0] = flt.getSample(1);
+  for(int n = 1; n < N; n++)
+    y[n] = flt.getSample(0);
+  return y;
+}
 
 std::vector<double> createNamedSound(const std::string& s, double fs, int N)
 {
@@ -441,7 +463,15 @@ std::vector<double> createNamedSound(const std::string& s, double fs, int N)
 
   // maybe always retrieve Freq and Amp and store in local variables for later use..
 
-  if( startsWith(s, "Sine") )       
+
+  if(startsWith(s, "SineAndDC")) {
+    double freq  = getValue(s, "Freq", 200);
+    double amp   = getValue(s, "Amp",  1);
+    double dc    = getValue(s, "DC",   1);
+    createSineWave(x, N, freq, amp, fs, 0.0);
+    RAPT::rsArray::add(x, dc, x, N); 
+  }
+  else if( startsWith(s, "Sine") )
     createSineWave(x, N, getValue(s, "Freq", 100), getValue(s, "Amp", 1), fs, 0.0);
   else if( startsWith(s, "Cosine") ) 
     createSineWave(x, N, getValue(s, "Freq", 100), getValue(s, "Amp", 1), fs, PI/2);

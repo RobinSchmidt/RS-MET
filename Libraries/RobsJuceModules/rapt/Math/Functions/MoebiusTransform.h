@@ -141,10 +141,13 @@ public:
   (non-zero) scaling of all coefficients. */
   bool operator==(const rsMoebiusTransform& t) const
   {
+    return a == t.a && b == t.b && c == t.c && d == t.d;
+    /*
     if(a == t.a && b == t.b && c == t.c && d == t.d)
       return true;
     else
       return false;
+      */
   }
 
   /** Compares two transformations for inequality. */
@@ -224,6 +227,8 @@ public:
 
   /** Applies the transform to the given complex number. */
   void applyTo(std::complex<T> &z) const;
+  // todo: return the value instead of manipulating the input argument, rename to apply - or just
+  // implement the () operator
 
   /** Applies the transform to the given complex number and returns the mapped number w. */
   std::complex<T> getMappedNumber(const std::complex<T> &z) const
@@ -232,6 +237,7 @@ public:
     applyTo(w);
     return w;
   }
+  // get rid
 
 protected:
 

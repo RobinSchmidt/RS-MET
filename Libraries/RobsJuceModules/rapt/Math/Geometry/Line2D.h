@@ -6,8 +6,6 @@
 
 \todo: 
 -drag over code from RSLib
--use pointers for output parameters
--use const, where applicable
 */
 
 template<class T>
@@ -38,7 +36,7 @@ public:
   static void reflectPointInLine(T x, T y, T A, T B, T C, T* xr, T* yr);
 
   /** Given left and right endpoint coordinates (xL,yL),(xR,yR), this function returns the zero
-  crossing of the line that goes trough these points, i.e. the x-value where y=0. */
+  crossing of the line that goes through these points, i.e. the x-value where y=0. */
   static inline T zeroCrossing(T xL, T yL, T xR, T yR) { return xL - yL*(xR-xL)/(yR-yL); }
     // does it work also, if xL,yR is actually the right endpoint - check, i think, so, if so,
     // rename parameters to x1,y1,x2,y2

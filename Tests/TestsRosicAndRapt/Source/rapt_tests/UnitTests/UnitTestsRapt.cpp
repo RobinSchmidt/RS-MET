@@ -36,7 +36,7 @@ bool runAllUnitTests()
   passed &= runUnitTest(&rootFinderUnitTest,             "rsRootFinder");
   passed &= runUnitTest(&correlationUnitTest,            "correlation");
   passed &= runUnitTest(&testVector,                     "rsVector");
-  passed &= runUnitTest(&testMatrix,                     "rsMatrix");
+  passed &= runUnitTest(&testMatrix,                     "rsMatrixOld");
   passed &= runUnitTest(&testMiscMath,                   "misc math");  // fails on linux ("illegal instruction") - encounters a singular matrix
   passed &= runUnitTest(&testLinearAlgebra,              "rsLinearAlgebra");  // fails on linux ("illegal instruction")
   passed &= runUnitTest(&testPolynomial,                 "rsPolynomial");
@@ -70,6 +70,8 @@ bool runAllUnitTests()
 
   passed &= runUnitTest(&spectrogramUnitTest,   "rsSpectrogram");
   passed &= runUnitTest(&sineModelingUnitTest,  "SineModeling");
+  // todo: test rsCycleMarkFinder: give it a sine-sweep as input and check, if mark-deltas are 
+  // within sane limits ...but maybe that's better for an experiment
 
 
 

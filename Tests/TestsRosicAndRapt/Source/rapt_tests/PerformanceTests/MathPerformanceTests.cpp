@@ -83,9 +83,9 @@ void matrixAdressingTest()
   // pointer-arithmetic:     12   2      2     2.3    3.4    14
 
   // Conclusion:
-  // Accessing matrix elements via pointer arithmetic is faster than using a pointer array 
+  // Accessing matrix elements via pointer arithmetic is faster than using a pointer array
   // (i.e. pointer-to-pointer). Add to that, that the pointer array needs additional storage
-  // space - the relative increase in storage-size is given by 
+  // space - the relative increase in storage-size is given by
   // sizeof(size_t) / (N*sizeof(ElementType)) - the conclusion is that using pointer arithmetic
   // is better - both, in terms of speed and storage space. The advantages seem greatest for
   // medium sized matrices (a couple of thousands of elements), but even for smaller and larger
@@ -93,7 +93,7 @@ void matrixAdressingTest()
 
   // Hmm...having done these measurements the other day again, i got different results - now the
   // pointer-to-pointer version performing better. What now? ...also, the numbers are ridiculously
-  // high anyway :-O ...whatever, i should use pointer arithmetic and flat storage for 
+  // high anyway :-O ...whatever, i should use pointer arithmetic and flat storage for
   // compatibility with lapack routines anyway
 
   //delete[] af, bf, a, b; // nope - gives memory leak - we need to delete them all separately
@@ -129,12 +129,13 @@ void simdPerformance(TScalar scl, TVector vec)
   TVector accuV = 0;
 
   ::ProcessorCycleCounter counter;
+  //PerformanceCounter counter;
   double cycles;
   double k = 1.0/(2*N);
   int n;
 
   // Print the number of cycles per scalar addition - in the case of vector types, we expect to see
-  // the number to be a factor 2 smaller than in the case of scalar types (because we get two 
+  // the number to be a factor 2 smaller than in the case of scalar types (because we get two
   // scalar additions for each vector addition):
 
   // scalar = scalar + scalar:
@@ -272,7 +273,7 @@ void simdPerformance(TScalar scl, TVector vec)
   // is this true also for scalar double?
   // rsClip: 1, rsSign: 3.5, rsAbs: 4
   // rsSqrt: 12.5, rsExp: 10, rsLog: 7, rsSin: 15, rsCos: 15, rsTan: 15
-  
+
   // rsFloat32x4:
 }
 template void simdPerformance(double, rsFloat64x2);
@@ -370,6 +371,6 @@ void sinCosPerformance()
   printPerformanceTestResult("rsSinCos1, double", cycles / N);
 
   // Conclusion:
-  // rsSinCos1 is slower than using std::sin/cos, and the table gives results that can't be real 
+  // rsSinCos1 is slower than using std::sin/cos, and the table gives results that can't be real
   // (i get values around 0.3 cycles per sin/cos pair). Something must be wrong with the test code.
 }

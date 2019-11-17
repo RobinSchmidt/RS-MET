@@ -23,19 +23,19 @@ inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
 
 //-------------------------------------------------------------------------------------------------
 
-template <class T>
-void rsArray::add(const T *buffer1, const T *buffer2, T *result, const int length)
-{
-  for(int i = 0; i < length; i++)
-    result[i] = buffer1[i] + buffer2[i];
-}
-
-template <class T>
-void rsArray::add(const T *buffer, const T valueToAdd, T *result, const int length)
-{
-  for(int i = 0; i < length; i++)
-    result[i] = buffer[i] + valueToAdd;
-}
+//template <class T>
+//void rsArray::add(const T *buffer1, const T *buffer2, T *result, const int length)
+//{
+//  for(int i = 0; i < length; i++)
+//    result[i] = buffer1[i] + buffer2[i];
+//}
+//
+//template <class T>
+//void rsArray::add(const T *buffer, const T valueToAdd, T *result, const int length)
+//{
+//  for(int i = 0; i < length; i++)
+//    result[i] = buffer[i] + valueToAdd;
+//}
 
 template <class T>
 void rsArray::addCircularShiftedCopy(
@@ -291,7 +291,7 @@ int rsArray::copyIfNotMatching(const T *sourceBuffer, T *targetBuffer, int sourc
 }
 
 template<class T1, class T2>
-void rsArray::copySection(const T1 *source, int sourceLength, T2 *destination, int copyStart, 
+void rsArray::copySection(const T1 *source, int sourceLength, T2 *destination, int copyStart,
   int copyLength)
 {
   int cl, pl1, pl2;  // actual copy-, pre-padding-, post-padding-lengths
@@ -850,7 +850,7 @@ int rsArray::maxDeviationIndex(const T *x, const T *y, int N)
 }
 
 template <class T>
-static T rsArray::maxDifference(const T* x, int N)
+T rsArray::maxDifference(const T* x, int N)
 {
   T x1   = T(0);
   T dMax = -RS_INF(T);
@@ -968,7 +968,7 @@ void rsArray::normalize(T *buffer, int length, T maximum, bool subtractMean)
 }
 
 template<class T>
-void rsArray::normalizeMean(T* x, int N, T newMean) 
+void rsArray::normalizeMean(T* x, int N, T newMean)
 {
   T m = mean(x, N);
   scale(x, N, newMean/m);
@@ -1011,6 +1011,8 @@ void rsArray::removeMean(T *buffer, int length)
     buffer[i] -= m;
 }
 
+/*
+// old:
 template <class T>
 void rsArray::reverse(T *buffer, int length)
 {
@@ -1023,6 +1025,16 @@ void rsArray::reverse(T *buffer, int length)
     buffer[i]              = tmp;
   }
 }
+*/
+
+// new:
+template <class T>
+void rsArray::reverse(T* x, int N)
+{
+  for(int i = 0; i < N/2; i++)
+    rsSwap(x[i], x[N-i-1]);
+}
+
 
 template <class T>
 void rsArray::reverse(const T* x, T* y, int N)
@@ -1092,7 +1104,7 @@ int rsArray::splitIndex(const T* A, int N, T key)
   int imin = 0;
   int imax = N-1;
   while( imin < imax ) {
-    int imid = imin/2 + imax/2; 
+    int imid = imin/2 + imax/2;
     //rsAssert(imid < imax); // only for debug
     if( A[imid] < key )
       imin = imid + 1;
@@ -1150,7 +1162,7 @@ T rsArray::sumOfAbsoluteDifferences(const T* x, const T* y, const int N)
   T s(0);
   for(int n = 0; n < N; n++)
     s += rsAbs(x[n] - y[n]);
-  return s; 
+  return s;
 }
 
 inline void rsArray::swapDataBuffers(void *buffer1, void *buffer2, void *bufferTmp, int sizeInBytes)

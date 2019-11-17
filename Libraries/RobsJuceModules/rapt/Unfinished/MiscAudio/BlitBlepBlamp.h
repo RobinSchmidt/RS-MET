@@ -215,7 +215,7 @@ public:
 
     // this is needed when not the blep-residual but the blep itself is tabulated:
     for(int i = 0; i < halfLength; i++)
-      this->corrector[wrap(this->bufIndex + i)] -= amplitude;
+      this->corrector[this->wrap(this->bufIndex + i)] -= amplitude;
 
 
     //rsAssert(rsMax(delayline) <= 0.7); // for debug
@@ -245,10 +245,10 @@ public:
   /** Produces one sample at a time. */
   inline TSig getSample(TSig in)
   {
-    delayline[wrap(this->bufIndex+halfLength)] = in + this->corrector[this->bufIndex];
+    delayline[this->wrap(this->bufIndex+halfLength)] = in + this->corrector[this->bufIndex];
     this->corrector[this->bufIndex] = TSig(0);  // corrector at this position has been consumed
     TSig y = delayline[this->bufIndex];
-    this->bufIndex = wrap(this->bufIndex + 1);
+    this->bufIndex = this->wrap(this->bufIndex + 1);
     return y;
   }
 
@@ -334,10 +334,10 @@ protected:
     int ic = halfLength;
 
     // apply correction to stored past samples:
-    for(i = 0; i < halfLength; i++) this->delayline[wrap(this->bufIndex + i)] += tempBuffer[i];
+    for(i = 0; i < halfLength; i++) this->delayline[this->wrap(this->bufIndex + i)] += tempBuffer[i];
 
     // update corrector to be applied to future samples:
-    for(i = 0; i < halfLength; i++) this->corrector[wrap(this->bufIndex + i)] += tempBuffer[ic+i];
+    for(i = 0; i < halfLength; i++) this->corrector[this->wrap(this->bufIndex + i)] += tempBuffer[ic+i];
 
     // ...may be done in a single loop
   }
@@ -445,7 +445,7 @@ public:
   {
     TSig out = in + this->corrector[this->bufIndex]; // our "read-and-delete head" consumes and...
     this->corrector[this->bufIndex] = TSig(0);       // ...then clears the correction signal at this position
-    this->bufIndex = wrap(this->bufIndex + 1);       // ...and then moves on in our circular correction buffer
+    this->bufIndex = this->wrap(this->bufIndex + 1); // ...and then moves on in our circular correction buffer
     return out;
   }
 
@@ -473,7 +473,7 @@ protected:
     TTim w1 = amplitude * f;                  // weight for right table entry (at i+1)
     for(int k = 0; k < this->blepLength; k++) {
       rsAssert(i+1 < (int) tbl.size());
-      this->corrector[wrap(this->bufIndex+k)] += w0 * tbl[i] + w1 * tbl[i+1];
+      this->corrector[this->wrap(this->bufIndex+k)] += w0 * tbl[i] + w1 * tbl[i+1];
       i += this->tablePrecision;
     }
     // todo: re-order the table such that instead of i += tablePrecision we can also do i++

@@ -330,8 +330,8 @@ template class FilterPlotter<double>;
 
 
 template <class T>
-void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const T *x1, 
-  const T *x2, const T *x3, const T *x4, const T *x5, const T *x6, const T *x7, const T *x8, 
+void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const T *x1,
+  const T *x2, const T *x3, const T *x4, const T *x5, const T *x6, const T *x7, const T *x8,
   const T *x9)
 {
   RAPT::rsAssert(signalLength <= fftSize);
@@ -396,7 +396,7 @@ std::vector<T> SpectrumPlotter<T>::getFreqAxis(int maxBin)
   case FU::hertz:      scaler = r*sampleRate; break;
   }
 
-  RAPT::rsArray::scale(&f[0], maxBin, scaler); 
+  RAPT::rsArray::scale(&f[0], maxBin, scaler);
 
   return f;
 }
@@ -409,7 +409,7 @@ template class SpectrumPlotter<double>;
 //=================================================================================================
 
 template <class T>
-void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int numBins, 
+void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int numBins,
   T **s, T fs, int H, T dbMin, T dbMax)
 {
   // fs: sample rate, H: hop size
@@ -457,7 +457,7 @@ void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int
 
 template <class T>
 void SinusoidalModelPlotter<T>::addModelToPlot(
-  const RAPT::rsSinusoidalModel<T>& model, GNUPlotter& plt,T sampleRate, 
+  const RAPT::rsSinusoidalModel<T>& model, GNUPlotter& plt,T sampleRate,
   const std::string& graphColor)
 {
   std::vector<float> t, f; // we plot frequency vs time
@@ -481,7 +481,7 @@ void SinusoidalModelPlotter<T>::addModelToPlot(
 
     graphIndex++;
   }
-  // maybe factor out an addPartialToPlot function - may become useful when we want to plot 
+  // maybe factor out an addPartialToPlot function - may become useful when we want to plot
   // partials seperately
 }
 
@@ -510,6 +510,92 @@ std::string SinusoidalModelPlotter<T>::getPartialColor(
   return "000000"; // preliminary
 }
 
+
+// this is a kludge - get rid - the best would be, if GNUPlotter would support to take the matrix
+// in flat storage format
+template<class T>
+T** createRowPointers(RAPT::rsMatrix<T>& M)
+{
+  int N = M.getNumRows();
+  T** rp = new T*[N];
+  for(int i = 0; i < N; i++)
+    rp[i] = M.getRowPointer(i);
+  return rp;
+}
+template<class T>
+void deleteRowPointers(T** rowPointers, const RAPT::rsMatrix<T>& M)
+{
+  for(int i = 0; i < M.getNumRows(); i++)
+    delete rowPointers[i];
+}
+// while we still need it, move it to rsMatrix
+
+
+template<class T>
+void SinusoidalModelPlotter<T>::plotInterpolatedPhases(
+  const RAPT::rsSinusoidalPartial<T>& partial, T sampleRate)
+{
+  typedef std::vector<T> Vec;
+  typedef rsSinusoidalSynthesizer<T>::PhaseInterpolationMethod PIM;
+
+  // create and set up the synth and synthesize (and plot) the sound:
+  rsSinusoidalModel<T>       model; model.addPartial(partial);
+  rsSinusoidalSynthesizer<T> synth; synth.setSampleRate(sampleRate);
+  Vec x = synth.synthesize(model); // actually not needed unless we plot it
+  //plotVector(x);
+
+  // create time axes (at datapoint-rate and sample-rate)
+  int N = (int) x.size();
+  Vec td = partial.getTimeArray();         // time axis at datapoint rate
+  Vec t(N);                                // time axis at sample rate
+  for(size_t n = 0; n < N; n++)  
+    t[n] = n / sampleRate;
+
+  // let the synth generate the phases:
+
+  // old:
+  //Vec pi = synth.phasesViaTweakedIntegral(partial, td, t); // i: integral
+  //Vec pc = synth.phasesHermite(partial, td, t, false);     // c: cubic
+  //Vec pq = synth.phasesHermite(partial, td, t, true);      // q: quintic (looks wrong)
+  //RAPT::rsArray::unwrap(&pc[0], N, 2*PI);                  // ...seems like cubic and quintic need
+  //RAPT::rsArray::unwrap(&pq[0], N, 2*PI);                  // unwrapping after interpolation - why?
+  // maybe use synth.getInterpolatedPhases instead
+
+  // new:
+  synth.setPhaseInterpolation(PIM::tweakedFreqIntegral);
+  Vec pi = synth.getInterpolatedPhases(partial, td, t);
+  synth.setPhaseInterpolation(PIM::cubicHermite);
+  Vec pc = synth.getInterpolatedPhases(partial, td, t);
+  synth.setPhaseInterpolation(PIM::quinticHermite);
+  Vec pq = synth.getInterpolatedPhases(partial, td, t);
+
+
+  // create array for plotting the phase datapoints:
+  Vec pd = partial.getPhaseArray();
+  Vec fd = partial.getFrequencyArray();
+  int M = (int) pd.size();
+  pd = rsSinusoidalProcessor<T>::unwrapPhase(td, fd, pd);
+  //pd = synth.unwrapPhase(td, fd, pd);
+  //RAPT::rsArray::unwrap(&pd[0], M, 2*PI);
+
+  Vec dp = (0.5/PI) * (pc-pq); 
+  // normalized difference between cubic and quinitc algorithms - at the datapoints, it must be an 
+  // integer corresponding to the k in the formula pu = p + k*2*PI
+
+
+  // plot:
+  GNUPlotter plt;
+  plt.addDataArrays(M, &td[0], &pd[0]);  // datapoints
+  plt.addDataArrays(N, &t[0],  &pi[0]);    // integral
+  plt.addDataArrays(N, &t[0],  &pc[0]);    // cubic
+  plt.addDataArrays(N, &t[0],  &pq[0]);    // quintic
+  //plt.addDataArrays(N, &t[0],  &dp[0]);    // ~(cubic-quintic)
+  plt.setGraphStyles("points pt 7 ps 0.8", "lines", "lines", "lines");
+  plt.plot();
+  // todo: plot the datapoints as marks
+}
+
+
 template <class T>
 void SinusoidalModelPlotter<T>::plotAnalysisResult(
   RAPT::rsSinusoidalAnalyzer<T>& sa, T* x, int N, T fs)
@@ -517,7 +603,7 @@ void SinusoidalModelPlotter<T>::plotAnalysisResult(
   GNUPlotter plt;
 
   // factor out an addSpectrogramToPlot or something
-  // todo: plot the spectrogram underneath the sine tracks - when doing so, the tracks are not 
+  // todo: plot the spectrogram underneath the sine tracks - when doing so, the tracks are not
   // plotted
   bool plotSpectrogram = false; // make member, let user set it
   if(plotSpectrogram == true)
@@ -534,8 +620,19 @@ void SinusoidalModelPlotter<T>::plotAnalysisResult(
 
     dB.transpose();
 
-    addSpectrogramData(plt, numFrames, numBins, dB.getDataPointer(), fs, sa.getHopSize(), 
-      minDb, maxDb);
+
+    T** rowPointers = createRowPointers(dB);
+    this->addSpectrogramData(
+      plt, numFrames, numBins, rowPointers, fs, sa.getHopSize(), this->minDb, this->maxDb);
+    deleteRowPointers(rowPointers, dB);
+
+
+    // old:
+    //this->addSpectrogramData(
+    //  plt, numFrames, numBins, dB.getDataPointerConst(),
+    //  fs, sa.getHopSize(), this->minDb, this->maxDb);
+
+
   }
 
   // create model and add it to the plot:

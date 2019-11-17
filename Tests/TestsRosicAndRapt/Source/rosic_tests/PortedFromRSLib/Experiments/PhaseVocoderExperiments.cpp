@@ -338,32 +338,18 @@ void spectrogramFilter()
   typedef rsMatrix<rsComplexDbl> Mat;
   Mat s = sp.complexSpectrogram(&x[0], N);
 
-
-
   // create highpassed and lowpassed versions of the spectrogram:
-
-  //Mat sl = s, sh = s;  // initialize with copies of the original
-  // due to a bug or design flaw, this doesn't work - the matrix assignment operator doesn't 
-  // create a deep copy - todo: make a new, better matrix class in rapt
-
-  // workaround to create the deep copies
-  int numFrames = s.getNumRows();
-  int numBins   = sp.getNumNonRedundantBins();  // == s.getNumColumns()
-  Mat sl(numFrames, numBins); sl.copyDataFrom(s);
-  Mat sh(numFrames, numBins); sh.copyDataFrom(s);
-
+  Mat sl = s, sh = s;  // initialize with copies of the original
   int splitBin = (int) round(sp.frequencyToBinIndex(splitFreq, sampleRate));
   rsSpectrogramD::lowpass( sl, splitBin);
   rsSpectrogramD::highpass(sh, splitBin+1);
 
   // plot original, lowpassed and highpassed spectrograms:
+  int numFrames = s.getNumRows();
+  int numBins   = s.getNumColumns();  // == sp.getNumNonRedundantBins()
   plotSpectrogram(numFrames, numBins, s,  sampleRate, hopSize);
   plotSpectrogram(numFrames, numBins, sl, sampleRate, hopSize);
   plotSpectrogram(numFrames, numBins, sh, sampleRate, hopSize);
-
-
-
-
 
   // resynthesize the lowpass and highpass part from the respective (partial) spectrograms:
   Vec xl = sp.synthesize(sl);
@@ -486,146 +472,153 @@ void sineParameterEstimation()
   GNUPlotter plt;
 }
 
+//-------------------------------------------------------------------------------------------------
+// phase interpolation for sinusoidal model:
 
-void phaseInterpolation() // rename to sineModelPhaseInterpolation
+RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPoints1()
 {
-  // Tests various phase interpolation methods of SinusoidalSynthesizer - we create a sinusoidal 
-  // partial and let the synthesizer generate the phases and plot the results
-  // todo: maybe optionally plot the (numeric) derivative of the phase arrays instead of the phase
-  // arrays theselves)
-
-  double fs = 10000;  // sample rate
-  //int N = 1000;       // number of samples
-
-  double ts = 0.01; // timescale
-
-  // create data for some not too boring frequency trajectory:
-  typedef RAPT::rsInstantaneousSineParams<double> ISP;
   RAPT::rsSinusoidalPartial<double> partial;
-  //partial.prependDataPoint(ISP(  0*ts, 1000.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  1*ts,  800.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  2*ts, 1200.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  3*ts, 1100.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  4*ts,  700.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  5*ts,  500.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  6*ts,  500.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  7*ts,  600.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  8*ts,  800.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(  9*ts,  900.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP( 10*ts, 1000.0, 1.0, 0.0));
-
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  double ts = 0.01; // timescale
+  partial.prependDataPoint(ISP(  0*ts, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  1*ts,  800.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  2*ts, 1200.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  3*ts, 1100.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  4*ts,  700.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  5*ts,  500.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  6*ts,  500.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  7*ts,  600.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  8*ts,  800.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(  9*ts,  900.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 10*ts, 1000.0, 1.0, 0.0));
+  return partial;
+}
+RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPoints2()
+{
+  RAPT::rsSinusoidalPartial<double> partial;
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  double ts = 0.01; // timescale
   partial.prependDataPoint(ISP(  0*ts, 1000.0, 1.0, 0.0));
   partial.appendDataPoint( ISP(  1*ts, 1000.0, 1.0, 0.0));
   partial.appendDataPoint( ISP(  2*ts, 1100.0, 1.0, 0.0));
   partial.appendDataPoint( ISP(  3*ts, 1200.0, 1.0, 0.0));
   partial.appendDataPoint( ISP(  4*ts, 1000.0, 1.0, 0.0));
   partial.appendDataPoint( ISP(  5*ts, 1000.0, 1.0, 0.0));
+  return partial;
+}
+RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPoints3()
+{
+  RAPT::rsSinusoidalPartial<double> partial;
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  double ts = 0.01; // timescale
+  partial.prependDataPoint(ISP( 0*ts, 1000.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP( 5*ts, 1050.0, 1.0, 0.0));
+  partial.appendDataPoint( ISP(10*ts, 1100.0, 1.0, 0.0));
+  return partial;
+}
+RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPointsDC1(
+  int numDataPoints = 40, int seed = 1, double dtMin = 0.01, double dtMax = 0.08)
+{
+  // Generates a DC partial with datapoints that have all zero phase and amplitudes that may be 
+  // positive or negative.
+  RAPT::rsSinusoidalPartial<double> partial;
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  std::vector<double> t = randomSampleInstants(numDataPoints, dtMin, dtMax);
+  RAPT::rsNoiseGenerator<double> prng;
+  prng.setSeed(seed);
+  for(int i = 0; i < numDataPoints; i++) {
+    double r = prng.getSample();
+    partial.appendDataPoint(ISP(t[i], 0.0, r, 0.0));
+  }
+  return partial;
+}
+RAPT::rsSinusoidalPartial<double> phaseInterpolationDataPointsDC2(
+  int numDataPoints = 40, int seed = 1, double dtMin = 0.01, double dtMax = 0.08)
+{
+  // Generates a DC partial with datapoints that have nonegative amplitudes and a phase of zero or
+  // pi, where pi encodes a negative DC component.
+  RAPT::rsSinusoidalPartial<double> partial;
+  typedef RAPT::rsInstantaneousSineParams<double> ISP;
+  std::vector<double> t = randomSampleInstants(numDataPoints, dtMin, dtMax);
+  RAPT::rsNoiseGenerator<double> prng;
+  prng.setSeed(seed);
+  for(int i = 0; i < numDataPoints; i++) {
+    double r = prng.getSample();
+    double c = 0.999; // < 1, to enforce phase interpolation direction
+    if(r >= 0.0)
+      partial.appendDataPoint(ISP(t[i], 0.0,  r, 0.0));
+    else
+      partial.appendDataPoint(ISP(t[i], 0.0, -r, c*PI));
+      //partial.appendDataPoint(ISP(t[i], 0.0, -r, PI));
+  }
+  return partial;
+}
 
-  //partial.prependDataPoint(ISP( 0*ts, 1000.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP( 5*ts, 1050.0, 1.0, 0.0));
-  //partial.appendDataPoint( ISP(10*ts, 1100.0, 1.0, 0.0));
+void phaseInterpolation() // rename to sineModelPhaseInterpolation
+{
+  // various example signals to phase-interpolate:
+  RAPT::rsSinusoidalPartial<double> partial;
+  //partial = phaseInterpolationDataPoints1();
+  partial = phaseInterpolationDataPoints2();
+  //partial = phaseInterpolationDataPoints3();
+  //partial = phaseInterpolationDataPointsDC1();
+  //partial = phaseInterpolationDataPointsDC2();
 
-
-  // create and set up the synth and create time-axis at sample-rate:
-  rsSinusoidalSynthesizer<double> synth;
-  synth.setSampleRate(fs);
-
-  // synthesize and plot the sound:
-  RAPT::rsSinusoidalModel<double> model;
-  model.addPartial(partial);
-  std::vector<double> x = synth.synthesize(model);
-  //plotVector(x);
-
-
-
-  int N = (int) x.size();
-  std::vector<double> td = partial.getTimeArray();
-  std::vector<double> t(N);
-  for(size_t n = 0; n < N; n++) 
-    t[n] = n / fs;// fill time-array
-
-
-
-  // let the synth generate the phases:
-  std::vector<double> pi = synth.phasesViaTweakedIntegral(partial, td, t);
-  std::vector<double> pc = synth.phasesHermite(partial, td, t, false); 
-  std::vector<double> pq = synth.phasesHermite(partial, td, t, true); // quintic looks wrong
-  RAPT::rsArray::unwrap(&pc[0], N, 2*PI);
-  RAPT::rsArray::unwrap(&pq[0], N, 2*PI);
-
-  // array for plotting the phase datapoints:
-  std::vector<double> pd = partial.getPhaseArray();
-  std::vector<double> fd = partial.getFrequencyArray();
-  int M = (int) pd.size();
-  pd = rsSinusoidalProcessor<double>::unwrapPhase(td, fd, pd);
-  //pd = synth.unwrapPhase(td, fd, pd);
-  //RAPT::rsArray::unwrap(&pd[0], M, 2*PI);
-
-  std::vector<double> dp = (0.5/PI) * (pc-pq); 
-  // normalized difference between the algorithms - at the datapoints, it must be an integer 
-  // corresponding to the k in the formula pu = p + k*2*PI
-
-
-  // plot:
-  GNUPlotter plt;
-  //plt.addDataArrays(M, &td[0], &pd[0]);
-  plt.addDataArrays(N, &t[0],  &pi[0]);
-  plt.addDataArrays(N, &t[0],  &pc[0]);
-  plt.addDataArrays(N, &t[0],  &pq[0]);
-  plt.addDataArrays(N, &t[0],  &dp[0]);
-  //plt.setGraphStyles("points pt 7 ps 1.2", "lines", "lines");
-  plt.plot();
+  SinusoidalModelPlotter<double>::plotInterpolatedPhases(partial, 10000);
 
   // Observations:
   // -the cubic hermite phase is 2pi behind the the integrated phase from datapoint 4 onwards
   // -the slope of the cubic phase at the datapoints is still wrong (close to 0 everywhere)
 }
 
-
-
-/*
-
-// move to RAPT::rsArray, maybe make cubic versions
-template<class T>
-void applyFadeIn(T* x, int N, int numFadeSamples)
+void sinusoidalSynthesisDC()
 {
-  int nf = rsMin(numFadeSamples, N);
-  for(int n = 0; n < nf; n++) {
-    T t = T(n) / T(nf);
-    x[n] *= t;
-  }
-}
-template<class T>
-void applyFadeOut(T* x, int N, int numFadeSamples)
-{
-  int nf = rsMin(numFadeSamples, N);
-  for(int n = 0; n < nf; n++) {
-    T t = T(n) / T(nf);
-    x[N-n-1] *= t;
-  }
-}
-template<class T>
-void applyFadeInAndOut(T* x, int N, int numFadeSamples)
-{
-  applyFadeIn( &x[0], N, numFadeSamples);
-  applyFadeOut(&x[0], N, numFadeSamples);
+  // Tests the synthesis of a DC component with rsSinusoidalSynthesizer in order to 
+  // figure out, how it is handled best: as special case that allows for a negative amplitude or 
+  // consistently with the sinusoids by representing negative DC components as a zero-frequency
+  // cosine with a phase of pi.
+
+  int numDataPoints = 40;
+  double fs = 2000;
+
+  int seed = 10;
+
+  RAPT::rsSinusoidalPartial<double> partial1, partial2;
+  RAPT::rsSinusoidalModel<double> model1, model2;
+
+  partial1 = phaseInterpolationDataPointsDC1(numDataPoints, seed);
+  partial2 = phaseInterpolationDataPointsDC2(numDataPoints, seed);
+
+  // plot phase-interpolation results for the version with the phases of 0 and pi:
+  SinusoidalModelPlotter<double>::plotInterpolatedPhases(partial1, fs);
+  SinusoidalModelPlotter<double>::plotInterpolatedPhases(partial2, fs);
+
+  // add the partials to model objects and synthesize both DC components
+  model1.addPartial(partial1);
+  model2.addPartial(partial2);
+  std::vector<double> dc1 = synthesizeSinusoidal(model1, fs);
+  std::vector<double> dc2 = synthesizeSinusoidal(model2, fs);
+  rsPlotVectors(dc1, dc2);
+
+  // Observations:
+  // -with positive and negative amplitudes, the DC component is interpolated via a line between
+  //  the datapoints
+  // -with phases 0 and pi, the DC component is interpolated sinusoidally - but it may have weird 
+  //  artifacts
+  // -tweakedFreqIntegral phase-interpolation may create artifacts even between datapoints that have 
+  //  the same sign, cubicHermite produces artifacts only between datapoints with opposite signs
+  // -todo: plot the interpolated (de-trended) phases ...or well - de-trending may not be necessary 
+  //  because with 0 frequency, there should be no linear trend
+  //  -plot output signal and interpolated phases in the same plot - there is some weird artifact 
+  //   in the output to which there seems no correlate in the interpolated phase - figure out, 
+  //   where the output artifact is coming from
+
+  // -check rsSinusoidalProcessor<T>::unwrapPhase - it seems to sometimes produce jumps of 2pi or 
+  //  3pi - maybe implement a unit test - activate the plotting code rsPlotVector(up); there and 
+  //  see the results for partial2
 }
 
-// convenience function - move to rs_testing:
-std::vector<double> synthesizeSinusoidal(
-  const RAPT::rsSinusoidalModel<double>& model, double sampleRate, double fadeTime = 0.0)
-{
-  rsSinusoidalSynthesizer<double> synth;
-  synth.setSampleRate(sampleRate);
-  //synth.setCubicAmplitudeInterpolation(true);
-  std::vector<double> x = synth.synthesize(model);
-  if(fadeTime > 0.0)
-    applyFadeInAndOut( &x[0], (int) x.size(), int (fadeTime*sampleRate));
-  return x;
-}
-*/
-
-
+//-------------------------------------------------------------------------------------------------
 
 void writeTwoSineModelOutputsToFile(
   const char* fileName,
@@ -646,8 +639,6 @@ void writeTwoSineModelOutputsToFile(
     // wave-writing function that take a std::string instead of const char*
   }
 }
-
-
 
 // rename to testSinusoidalSynthesis1
 void sinusoidalSynthesis1()
@@ -737,7 +728,12 @@ void sinusoidalSynthesis2()
 
   plotVector(x);
 }
-  // maybe try a single linear sweep
+// maybe try a single linear sweep
+
+
+
+
+
 
 
 // (move to test tools):
@@ -1552,7 +1548,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
 
   //testHarmonicResynthesis("TwoSines",   44100, 5000);
-  testHarmonicResynthesis("ModalPluck", 44100, 15000);
+  //testHarmonicResynthesis("ModalPluck", 44100, 15000);
   // convert all calls to include the frequency in the string (done), then get rid of the frequency 
   // parameter of the function
 
@@ -1560,6 +1556,16 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
   //testHarmonicResynthesis("TwoSines_Freq1=500_Freq2=1000_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
   // good for testing if windows may spectrally resolve the harmonics
 
+  //testHarmonicResynthesis("TwoSines_Freq1=500_Freq2=1000_Amp1=1.0_Amp2=1.0", 44100, 5000, 500);
+
+  testHarmonicResynthesis("TwoSines_Freq1=500_Freq2=10_Amp1=1.0_Amp2=0.25", 44100, 8000, 500);
+    // sine plus "undulating DC"
+
+
+  //testHarmonicResynthesis("SineAndDC_Freq=500_Amp=1.0_DC=0.5", 44100, 5000, 500);
+  testHarmonicResynthesis("SineAndDC_Freq=500_Amp=1.0_DC=-0.5", 44100, 5000, 500);
+    // sine plus DC - the DC component is not resynthesized correctly - it's twice as loud in the 
+    // resynthesized signal - it's already wrong in the analysis data - the analyzer is to blame
 
   //testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6000_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
 
@@ -1751,37 +1757,6 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 // look at files decompositionSteelGuitar002.m, testHarmonicAnalysis.M
 }
 
-// move to TestInputCreation:
-std::vector<double> attackDecayEnvelope(int N, double attackSamples, double decaySamples)
-{
-  std::vector<double> env(N);
-  rsModalFilterWithAttack<double, double> flt;
-  flt.setModalParameters(0.0, 1.0, attackSamples, decaySamples, 90.0, 1.0);
-  env[0] = flt.getSample(1);
-  for(int n = 1; n < N; n++)
-    env[n] = flt.getSample(0);
-  return env;
-}
-
-std::vector<double> attackDecaySine(int N, double frequency, double amplitude, double attack, 
-  double decay, double startPhase, double sampleRate)
-{
-  std::vector<double> y(N);
-  rsModalFilterWithAttack<double, double> flt;
-  flt.setModalParameters(frequency, amplitude, attack, decay, startPhase, sampleRate);
-  y[0] = flt.getSample(1);
-  for(int n = 1; n < N; n++)
-    y[n] = flt.getSample(0);
-  return y;
-}
-
-std::vector<double> rsRangeLinear(double min, double max, int N)
-{
-  std::vector<double> r(N);
-  RAPT::rsArray::fillWithRangeLinear(&r[0], N, min, max);
-  return r;
-}
-
 void amplitudeDeBeating()
 {
   // We create an attack/decay sine envelope superimposed with a decaying sine modulation/beating
@@ -1883,17 +1858,16 @@ void amplitudeDeBeating2()
   rsEnvelopeExtractor<double> envExtractor;
   envExtractor.setStartMode(EM::ZERO_END);  
   envExtractor.setEndMode(EM::ZERO_END);   // definitely better than extraploation but still not good enough
-  //envExtractor.setMaxSampleSpacing(0.25);
-  //envExtractor.setMaxSampleSpacing(0.2);    // should be >= beating period in seconds
   envExtractor.connectPeaks(&time[0], &env[0], &result[0], numFrames);
-  // to automatically set up the max-sample spacing, we whould use the maximum measured distance between
-  // any pair of peaks
+  // maybe the zero-ends strategy is not optimal - maybe use the actual envelope datapoints 
+  // instead?
 
 
 
   //rsPlotVectorsXY(time, ampEnv, beatEnv, sweep, beating);
   //rsPlotVectorsXY(time, ampEnv, env);
-  rsPlotVectorsXY(time, ampEnv, env, result);
+  //rsPlotVectorsXY(time, ampEnv, env, result);
+  rsPlotVectorsXY(time, env, result);
 }
 
 

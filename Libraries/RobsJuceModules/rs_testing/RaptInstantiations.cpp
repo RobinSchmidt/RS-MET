@@ -180,7 +180,7 @@ template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, const 
 
 
 
-template class RAPT::rsMatrix<double>;
+template class RAPT::rsMatrixOld<double>;
 
 template class RAPT::rsPolynomial<float>;
 template class RAPT::rsPolynomial<double>;
@@ -290,7 +290,7 @@ template class RAPT::rsSinCosTable<double>;
 template class RAPT::rsVector2D<float>;
 template class RAPT::rsVector3D<float>;
 
-template class RAPT::rsFourierTransformerRadix2<double>;
+//template class RAPT::rsFourierTransformerRadix2<double>;  // duplicate instantiation
 
 template void RAPT::rsStatistics::linearRegression(int N, const float* x, const float* y, float& a, float& b);
 template float RAPT::rsStatistics::proportionalRegression(int N, const float* x, const float* y);
@@ -352,6 +352,7 @@ template class RAPT::rsEnvelopeFollower2<double>;
 template class RAPT::rsImage<float>;
 template class RAPT::rsAlphaMask<float>;
 template class RAPT::rsImagePainter<float, float, float>;
+template class RAPT::rsImageDrawer<float, float, float>;
 template class RAPT::rsLineDrawer<float, float, float>;
 template class RAPT::rsPhaseScopeBuffer<float, float, double>;
 

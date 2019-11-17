@@ -1,8 +1,7 @@
 #ifndef rosic_Matrix_h
 #define rosic_Matrix_h
 
-//// rosic-includes:
-//#include "rosic_ElementaryFunctionsReal.h"
+// deprecated - get rid of this class - use RAPT::rsMatrix<double> instead
 
 namespace rosic
 {

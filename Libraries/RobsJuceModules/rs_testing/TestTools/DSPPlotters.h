@@ -228,8 +228,6 @@ protected:
 
 /** A class for plotting the analysis results of the sinusoidal model */
 
-//#include "../Prototypes/SinusoidalModeling.h" // should not be necessary - figure out why this is needed
-
 template<class T>
 class SinusoidalModelPlotter : public SpectrogramPlotter<T>
 {
@@ -238,9 +236,6 @@ public:
 
   //void plot(SinusoidalAnalyzer<T>& sa, T* sampleData, int N, T sampleRate);
 
-
-
-  //GNUPlotter plt;
 
   void addModelToPlot(const RAPT::rsSinusoidalModel<T>& model, GNUPlotter& plt, 
      T sampleRate, const std::string& graphColor);
@@ -257,8 +252,18 @@ public:
   // maybe have functions for plotting even more models - this can be useful to compare analysis
   // results with different parameter settings
 
+  /**Plots results of various phase interpolation methods of rsSinusoidalSynthesizer for the given
+  sinusoidal partial. We let a rsSinusoidalSynthesizer generate the interpolated phases as it would
+  do in the actual synthesis (verify, if this is really the same algo) and plot the resulting 
+  interpolated phases for the given sample rate. */
+  static void plotInterpolatedPhases(const RAPT::rsSinusoidalPartial<T>& partial, T sampleRate);
 
-  void plotAnalysisResult(RAPT::rsSinusoidalAnalyzer<T>& sa, T* sampleData, int N, T sampleRate);
+
+  /** Analyzes the given sampleData of length numSamples with the given rsSinusoidalAnalyzer object
+  and plots the analysis results. */
+  void plotAnalysisResult(RAPT::rsSinusoidalAnalyzer<T>& sa, 
+    T* sampleData, int numSamples, T sampleRate);
+  // can this be made static?
 
   // maybe have a setSampleRate function
 

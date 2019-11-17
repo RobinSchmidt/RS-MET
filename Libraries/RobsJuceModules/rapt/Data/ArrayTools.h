@@ -28,12 +28,12 @@ public:
   /** Adds the elements of 'buffer1' and 'buffer2' - type must define operator '+'. The 'result'
   buffer may be the same as 'buffer1' or 'buffer2'. */
   template <class T>
-  static void add(const T *buffer1, const T *buffer2, T *result, const int length);
+  static inline void add(const T *buffer1, const T *buffer2, T *result, const int length);
 
   /** Adds the scalar 'valueToAdd' to the elements of 'buffer' - the type must define
   operator '+'. The 'result' buffer may be the same as 'buffer'. */
   template <class T>
-  static void add(const T *buffer, const T valueToAdd, T *result, const int length);
+  static inline void add(const T *buffer, const T valueToAdd, T *result, const int length);
 
   /** Adds a weighted, circularly shifted copy of the buffer to itself - the shift-offest may be
   non-integer in which case linear interpolation will be used. 
@@ -683,6 +683,20 @@ public:
 
 //=================================================================================================
 // inlined implementations
+
+template <class T>
+inline void rsArray::add(const T *buffer1, const T *buffer2, T *result, const int length)
+{
+  for(int i = 0; i < length; i++)
+    result[i] = buffer1[i] + buffer2[i];
+}
+
+template <class T>
+inline void rsArray::add(const T *buffer, const T valueToAdd, T *result, const int length)
+{
+  for(int i = 0; i < length; i++)
+    result[i] = buffer[i] + valueToAdd;
+}
 
 template <class T>
 inline bool rsArray::almostEqual(const T *buffer1, const T *buffer2, 

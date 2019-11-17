@@ -26,14 +26,22 @@ class rsSinusoidalSynthesizer
 
 public:
 
-  /** Enumeration of the available phase interpolation methods. */
+  /** Enumeration of the available phase interpolation methods. cubicHermite is the standard 
+  method that is described in the literature - it uses the instantaneous phase data to fix the 
+  phase-values at the datapoints and the instantaneous frequency data to fix the phase derivative 
+  at the datapoints. tweakedFreqIntegral obtains preliminary (unwrapped) instantaneous phases at 
+  the datapoints by computing a numerical integral of the instantaneous frequencies (via the 
+  trapezoidal method) and then tweaks the results to make them consistent with the stored 
+  instantaneous phase values (chooses the closest phase value that is consistent with the stored 
+  value). Then, on this unwrapped phase data, it uses natural cubic spline interpolation.
+  quinticHermite is supposed to use quintic instead of cubic interpolation - but doesn't work 
+  yet */
   enum class PhaseInterpolationMethod
   {
-    cubicHermite = 0,
-    quinticHermite,
-    tweakedFreqIntegral
+    cubicHermite = 0,    // this is the default
+    tweakedFreqIntegral,  
+    quinticHermite       // does not seem to work yet 
   };
-  // the options need documentation
 
 
   /** \name Setup */

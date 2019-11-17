@@ -122,6 +122,8 @@ public:
     typename std::vector< rsKeyValuePair<KeyType, ValueType>*>::iterator iter;
       // see http://gcc.gnu.org/ml/gcc-help/2008-01/msg00137.html why this "typename" is needed
 
+    /*
+    // pre C++11:
     // insert into the sorted-by-key array at the right position:
     rsKeyValuePairPointerLessByKey<KeyType, ValueType> compareByKey;
     iter = lower_bound(entriesSortedByKey.begin(), entriesSortedByKey.end(), newEntry,
@@ -132,6 +134,18 @@ public:
     rsKeyValuePairPointerLessByValue<KeyType, ValueType> compareByValue;
     iter = lower_bound(entriesSortedByValue.begin(), entriesSortedByValue.end(), newEntry,
       compareByValue);
+    entriesSortedByValue.insert(iter, newEntry);
+    */
+
+
+    // insert into the sorted-by-key array at the right position:
+    iter = lower_bound(entriesSortedByKey.begin(), entriesSortedByKey.end(), newEntry,
+      keyValuePairPointerLessByKey);
+    entriesSortedByKey.insert(iter, newEntry);
+
+    // insert into the sorted-by-value array at the right position:
+    iter = lower_bound(entriesSortedByValue.begin(), entriesSortedByValue.end(), newEntry,
+      keyValuePairPointerLessByValue);
     entriesSortedByValue.insert(iter, newEntry);
   }
 
@@ -159,10 +173,17 @@ public:
     rsKeyValuePair<KeyType, ValueType>* dummyEntry = new rsKeyValuePair<KeyType, ValueType>;
     dummyEntry->key = key;
 
+    /*
+    // pre C++11:
     rsKeyValuePairPointerLessByKey<KeyType, ValueType> compareByKey;
     typename std::vector<rsKeyValuePair<KeyType, ValueType>*>::iterator iter;
     iter = lower_bound(entriesSortedByKey.begin(), entriesSortedByKey.end(), dummyEntry,
       compareByKey);
+    */
+
+    typename std::vector<rsKeyValuePair<KeyType, ValueType>*>::iterator iter;
+    iter = lower_bound(entriesSortedByKey.begin(), entriesSortedByKey.end(), dummyEntry,
+      keyValuePairPointerLessByKey);
 
     if(iter != entriesSortedByKey.end() && (*iter)->key == key)
     {
@@ -187,10 +208,17 @@ public:
     rsKeyValuePair<KeyType, ValueType>* dummyEntry = new rsKeyValuePair<KeyType, ValueType>;
     dummyEntry->value = value;
 
+    /*
+    // pre C++11:
     rsKeyValuePairPointerLessByValue<KeyType, ValueType> compareByValue;
     typename std::vector<rsKeyValuePair<KeyType, ValueType>*>::iterator iter;
     iter = lower_bound(entriesSortedByValue.begin(), entriesSortedByValue.end(), dummyEntry,
       compareByValue);
+    */
+
+    typename std::vector<rsKeyValuePair<KeyType, ValueType>*>::iterator iter;
+    iter = lower_bound(entriesSortedByValue.begin(), entriesSortedByValue.end(), dummyEntry,
+      keyValuePairPointerLessByValue);
 
     if(iter != entriesSortedByValue.end() && (*iter)->value == value)
     {
@@ -223,7 +251,7 @@ protected:
   std::vector<rsKeyValuePair<KeyType, ValueType>*> entriesSortedByValue;
     // \todo maybe switch to rsArray<KeyValuePair*> here later
 
-  // friend decalarations to facilitate testing (try to get rid of that - library code should not 
+  // friend decalarations to facilitate testing (try to get rid of that - library code should not
   // be cluttered with stuff like that):
   friend bool testKeyValueMapInsert(std::string& reportString);
 

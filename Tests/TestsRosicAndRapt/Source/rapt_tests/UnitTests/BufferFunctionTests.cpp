@@ -46,70 +46,98 @@ bool testCopySection()
   int b[Nb];
   int n;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, Na, b, 2, 3);
+  using AR = RAPT::rsArray;
+
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, Na, b, 2, 3);
   testResult &= b[0] == 3 && b[1] == 4 && b[2] == 5;
   for(n = 3; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, 2, 3);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, 2, 3);
   testResult &= b[0] == 3 && b[1] == 4 && b[2] == 5;
   for(n = 3; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, 2, 4);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, 2, 4);
   testResult &= b[0] == 3 && b[1] == 4 && b[2] == 5 && b[3] == 0;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, -2, 4);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, -2, 4);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 1 && b[3] == 2;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, -2, 7);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, -2, 7);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 1 && b[3] == 2 && b[4] == 3 && b[5] == 4 && 
                 b[6] == 5;
   for(n = 7; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, -2, 8);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, -2, 8);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 1 && b[3] == 2 && b[4] == 3 && b[5] == 4 && 
                 b[6] == 5 && b[7] == 0;
   for(n = 8; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, -4, 4);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, -4, 4);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 0 && b[3] == 0;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, -3, 4);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, -3, 4);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 0 && b[3] == 1;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, 4, 4);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, 4, 4);
   testResult &= b[0] == 5 && b[1] == 0 && b[2] == 0 && b[3] == 0;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
-  RAPT::rsArray::fillWithValue(b, Nb, -1);
-  RAPT::rsArray::copySection(a, 5, b, 5, 4);
+  AR::fillWithValue(b, Nb, -1);
+  AR::copySection(a, 5, b, 5, 4);
   testResult &= b[0] == 0 && b[1] == 0 && b[2] == 0 && b[3] == 0;
   for(n = 4; n < Nb; n++)
     testResult &= b[n] == -1;
 
   return testResult;
 }
+
+
+bool testReverse()
+{
+  bool  r   = true;                 // test result
+  using Vec = std::vector<int>;
+  using Arr = RAPT::rsArray;
+  auto  rev = [&](Vec& v) { Arr::reverse(&v[0], (int)rsSize(v)); }; // reversal function
+
+  Vec a;
+  a = {1};         rev(a); r &= a == Vec({1});
+  a = {1,2};       rev(a); r &= a == Vec({2,1});
+  a = {1,2,3};     rev(a); r &= a == Vec({3,2,1});
+  a = {1,2,3,4};   rev(a); r &= a == Vec({4,3,2,1});
+  a = {1,2,3,4,5}; rev(a); r &= a == Vec({5,4,3,2,1});
+
+  // tests with array-sizes <= 0 - they should not touch the data at all:
+  Arr::reverse(&a[0],  0); r &= a == Vec({5,4,3,2,1});
+  Arr::reverse(&a[0], -1); r &= a == Vec({5,4,3,2,1});
+  Arr::reverse(&a[0], -2); r &= a == Vec({5,4,3,2,1});
+  Arr::reverse(&a[0], -3); r &= a == Vec({5,4,3,2,1});
+  Arr::reverse(&a[0], -4); r &= a == Vec({5,4,3,2,1});
+
+  return r;
+}
+
 
 // these two functions are apparently not yet complete:
 bool testMoveElements()
@@ -143,11 +171,15 @@ bool testRemoveElements()
 }
 
 
+
+
+
 bool testBufferFunctions()
 {
   bool testResult = true;
 
   testResult &= testCopySection();
+  testResult &= testReverse();
   testResult &= testRemoveElements();
   testResult &= testMoveElements();
 

@@ -1,7 +1,7 @@
 #ifndef RAPT_STANDARDCONTAINER_H_INCLUDED
 #define RAPT_STANDARDCONTAINER_H_INCLUDED
 
-/** A collection of convenience functions for the container classes of the C++ standard template 
+/** A collection of convenience functions for the container classes of the C++ standard template
 library (STL), such as std::vector, std::map, etc. */
 
 //=================================================================================================
@@ -37,6 +37,7 @@ inline size_t rsSize(const std::vector<T>& v)
 {
   return v.size();
 }
+// todo: return an int
 
 template<class T>
 inline void rsAppend(std::vector<T>& v, T newElement)
@@ -48,11 +49,11 @@ inline void rsAppend(std::vector<T>& v, T newElement)
 template<class T>
 inline void rsAppend(std::vector<T>& v, const std::vector<T>& w)
 {
-  if(w.size() == 0) 
+  if(w.size() == 0)
     return;
   size_t nv = v.size();  // old size of v
-  size_t nw = w.size();  // 
-  v.resize(v.size() + w.size()); // if v and w are the same, this will also change the size of w, 
+  size_t nw = w.size();  //
+  v.resize(v.size() + w.size()); // if v and w are the same, this will also change the size of w,
   rsArray::copy(&w[0], &v[nv], (int)nw);  // ...that's why we needed to figure out nw before
 
   // another implementation - looks safer but the above works, too
@@ -124,12 +125,20 @@ inline void rsPrepend(std::vector<T>& v, const T& newElement)
 }
 
 template<class T>
+std::vector<T> rsRangeLinear(T min, T max, int N)
+{
+  std::vector<T> r(N);
+  rsArray::fillWithRangeLinear(&r[0], N, min, max);
+  return r;
+}
+
+template<class T>
 inline void rsRemove(std::vector<T>& v, size_t index)
 {
   v.erase(v.begin() + index);
 }
 
-/** Removes the range indexed from first to last, both ends inclusive! Attention: in 
+/** Removes the range indexed from first to last, both ends inclusive! Attention: in
 std::vector::erase, the "last" would be excluded - but that's really counter-intuitive and provokes
 off-by-one bugs, that's why i use a both-ends-inclusive convention. */
 template<class T>
@@ -222,7 +231,7 @@ inline T rsGetAndRemoveLast(std::vector<T>& v)
   return result;
 }
 
-/** Resizes the vector to the given new size and if this new size is greater than the old size, 
+/** Resizes the vector to the given new size and if this new size is greater than the old size,
 intializes all the new entries at the end with "value". */
 template<class T>
 inline void rsResizeWithInit(std::vector<double>& v, size_t newSize, T value)
@@ -233,13 +242,13 @@ inline void rsResizeWithInit(std::vector<double>& v, size_t newSize, T value)
     v[i] = value;
 }
 
-/** Prepends "amount" copies of "value" to the vector, i.e. increases the size of the vector by 
-"amount", shifts all values "amount" places to the right and inserts "amount" number of "value"s 
+/** Prepends "amount" copies of "value" to the vector, i.e. increases the size of the vector by
+"amount", shifts all values "amount" places to the right and inserts "amount" number of "value"s
 at the front. */
 template<class T>
 inline void rsPadLeft(std::vector<double>& v, size_t amount, T value)
 {
-  if(amount == 0) 
+  if(amount == 0)
     return;
   size_t oldSize = v.size();
   v.resize(oldSize+amount);
@@ -261,7 +270,7 @@ std::vector<T> rsDifference(const std::vector<T> x)
   return d;
 }
 
-/** Converts a vector of amplitudes to decibel values with a given floor decibel value to avoid 
+/** Converts a vector of amplitudes to decibel values with a given floor decibel value to avoid
 negative infinity for zero amplitudes. */
 template<class T>
 std::vector<T> rsAmpToDb(const std::vector<T>& a, T floorDb = -std::numeric_limits<T>::infinity())
@@ -290,23 +299,29 @@ std::vector<T> rsDecimateViaMean(const std::vector<T>& x, int factor)
   return y;
 }
 
+// these implementations cause compiler errors with gcc
+///** Iterator to minimum element. */
+//template<class T>
+////auto rsMinIter(const std::vector<T>& x) { return std::min_element(x.cbegin(), x.cend()); } // gcc complains about auto
+//std::vector<T>::const_iterator rsMinIter(const std::vector<T>& x)
+//{ return std::min_element(x.cbegin(), x.cend()); }
+//
+///** Minimum element. */
+//template<class T>
+//T rsMinValue(const std::vector<T>& x) { return *rsMinIter(x); }
+//
+//template<class T>
+//auto rsMaxIter(const std::vector<T>& x) { return std::max_element(x.cbegin(), x.cend()); }
+//
+//template<class T>
+//T rsMaxValue(const std::vector<T>& x) { return *rsMaxIter(x); }
 
-/** Iterator to minimum element. */
+
 template<class T>
-auto rsMinIter(const std::vector<T>& x) { return std::min_element(x.cbegin(), x.cend()); }
-
-// todo: write rsMinIndex - returns size_t (or int)
-
-/** Minimum element. */
-template<class T>
-T rsMinValue(const std::vector<T>& x) { return *rsMinIter(x); }
+T rsMinValue(const std::vector<T>& x) { return rsArray::minValue(&x[0], (int) x.size()); }
 
 template<class T>
-auto rsMaxIter(const std::vector<T>& x) { return std::max_element(x.cbegin(), x.cend()); }
-
-template<class T>
-T rsMaxValue(const std::vector<T>& x) { return *rsMaxIter(x); }
-
+T rsMaxValue(const std::vector<T>& x) { return rsArray::maxValue(&x[0], (int) x.size()); }
 
 
 
@@ -328,7 +343,7 @@ T rsMaxValue(const std::vector<T>& x) { return *rsMaxIter(x); }
 template<class T>
 T rsSum(const std::vector<T>& x)
 {
-  T sum = T(0); 
+  T sum = T(0);
   for(size_t i = 0; i < x.size(); i++)
     sum += x[i];
   return sum;

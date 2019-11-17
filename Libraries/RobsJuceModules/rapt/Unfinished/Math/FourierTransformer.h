@@ -95,6 +95,7 @@ public:
   magnitudes[0] is the (purely real) DC and phases[0] is the (purely real) coefficient for the
   Nyquist frequency. */
   void getRealSignalMagnitudesAndPhases(T *signal, T *magnitudes, T *phases);
+    // hmm...this is a somewhat odd convention
 
   /** Calculates the magnitudes only from a signal (useful for analyzer-stuff). */
   void getRealSignalMagnitudes(T *signal, T *magnitudes);

@@ -13,14 +13,31 @@ namespace RAPT
 
 // move to some other file (BasicFunctions or something):
 
-/** Swaps x and y. */
+/** Swaps x and y via copy assignment operator. */
 template<class T>
-inline void rsSwap(T& x, T& y)
+inline void rsSwapNaive(T& x, T& y)
 {
   T t = x;
   x = y;
   y = t;
 }
+
+/** Swaps x and y via std::move. */
+template<class T>
+inline void rsSwapViaMove(T& x, T& y)
+{
+  T t(std::move(x));
+  x = std::move(y);
+  y = std::move(t);
+}
+
+/** Swaps x and y. Uses move assignment, i.e. calls rsSwapViaMove. */
+template<class T>
+inline void rsSwap(T& x, T& y)
+{
+  rsSwapViaMove(x, y);
+}
+
 
 template<class T> inline T rsUnityValue(T /*value*/) { return T(1);  }
 template<class T> inline T rsZeroValue( T /*value*/) { return T(0);  }

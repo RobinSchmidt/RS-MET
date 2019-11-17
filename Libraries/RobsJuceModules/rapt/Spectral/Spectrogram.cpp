@@ -154,8 +154,8 @@ rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N
   int F = getNumFrames(N, H);                  // number of STFT frames
   int M = trafoSize;
   int K = M/2 + 1;                             // number of non-redundant bins
-  rsMatrix<std::complex<T>> s(F, K);           // spectrogram (only positive frequency bins)
-  //T a = 2 / rsArray::sum(w, B);                // amplitude scaler
+  rsMatrix<std::complex<T>> s(F, K);        // spectrogram (only positive frequency bins)
+  //T a = 2 / rsArray::sum(w, B);              // amplitude scaler
   T a = getAnalysisScaler();                   // amplitude scaler = 2 / rsArray::sum(w, B)
   int n = 0;                                   // sample, where current block is centered
   std::complex<T> *X = new std::complex<T>[M]; // short-time spectrum centered at sample n

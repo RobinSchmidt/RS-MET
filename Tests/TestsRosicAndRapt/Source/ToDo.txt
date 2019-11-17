@@ -1,1 +1,5 @@
-debug rsEnvelopeExtractor<T>::connectPeaks - it sometimes extrapolates
+-figure out, why rsSinusoidalAnalyzer may produce negative values for the amplitude of the DC 
+ component (and fix it)
+-check, how the synthesis handles DC - i guess it creates just a cosine of 0 frequency? if so, we 
+ should perhaps encode a negative DC by using a phase of pi
+-check rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases - there seems to be a bug

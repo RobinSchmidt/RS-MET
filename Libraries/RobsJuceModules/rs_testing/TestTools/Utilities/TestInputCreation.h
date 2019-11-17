@@ -120,6 +120,12 @@ void applyVibrato(double *x, int N, double freq, double sampleRate, double depth
 // depth is in semitones, introduces delay due to delayline
 
 
+std::vector<double> attackDecayEnvelope(int N, double attackSamples, double decaySamples);
+
+std::vector<double> attackDecaySine(int N, double frequency, double amplitude, double attack, 
+  double decay, double startPhase, double sampleRate);
+
+
 /** Creates one out of a collection of standard test sounds based on a name at a given sampleRate
 and with a given number of samples. You can also specify some parameters of the sound such as its 
 frequency, amplitude, etc. in the string. For example: "Sine_Freq=100_Amp=0.5" creates a 100 Hz 

@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="ht4IIg" name="TestsRosicAndRapt" projectType="consoleapp"
               version="1.0.0" bundleIdentifier="com.yourcompany.TestsRosicAndRapt"
-              includeBinaryInAppConfig="1" jucerVersion="5.4.3" defines="DONT_SET_USING_JUCE_NAMESPACE&#10;RS_PLOTTING"
+              includeBinaryInAppConfig="1" jucerVersion="5.4.3" defines="DONT_SET_USING_JUCE_NAMESPACE=1&#10;RS_PLOTTING=1"
               displaySplashScreen="1" reportAppUsage="1" splashScreenColour="Dark"
               cppLanguageStandard="11" companyCopyright="">
   <MAINGROUP id="faVDnE" name="TestsRosicAndRapt">
@@ -359,8 +359,7 @@
         <MODULEPATH id="rs_testing" path="../../Libraries/RobsJuceModules"/>
       </MODULEPATHS>
     </VS2015>
-    <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraDefs="" extraCompilerFlags="-std=c++0x"
-                        userNotes="maybe replace &#10;-std=c++0x &#10;by &#10;-std=c++11&#10;later, wehn new compiler is installed">
+    <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraDefs="" extraCompilerFlags="-march=pentium4">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestsRosicAndRapt"
                        windowsCodeBlocksArchitecture="-m64"/>

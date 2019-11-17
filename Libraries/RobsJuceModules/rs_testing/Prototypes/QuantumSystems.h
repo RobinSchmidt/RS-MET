@@ -294,7 +294,7 @@ class rsQuantumState
 public:
 
   typedef std::complex<T> Complex;
-  typedef rsMatrixNew<Complex> Mat;
+  typedef rsMatrix<Complex> Mat;
   //typedef rsNoiseGenerator<T> PRNG;
 
   // these functions area analogous to the corresponding functions in rsQuantumSpin, but work with

@@ -50,12 +50,18 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   // Find cycle marks and assign FFT blockSize:
   Vec cycleMarks = findCycleMarks(x, Nx);        // cycle marks
   //rsPlotSignalWithMarkers(x, Nx, &cycleMarks[0], (int) cycleMarks.size());
-  if(cycleMarks.size() < 2)
-    return false;                                // report failure
+
+  rsAssert(cycleMarks.size() >= 2);              // something went wrong in the cycel mark finder
+  if(cycleMarks.size() < 2) return false;        // report failure
+
   Vec cycleLengths = rsDifference(cycleMarks);   // cycle lengths
   T maxLength = rsMaxValue(cycleLengths);
   //maxLength   = rsMax(maxLength, cycleMarks[0]);             // delta between 0 and 1st mark
   //maxLength   = rsMax(maxLength, (Nx-1)-rsLast(cycleMarks)); // delta between end and last mark
+
+  rsAssert(maxLength >= 2);                      // at least 2 samples per cycle
+  if(maxLength < 2) return false;                // report failure
+
   cycleLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
   setCycleLength(cycleLength);  // does also some buffer-re-allocation
   //rsPlotVector(cycleLengths);
@@ -431,7 +437,19 @@ void rsHarmonicAnalyzer<T>::fillHarmonicData(
     int kPeakOld = -1;                     // kPeak from previous iteration
     int w2 = getSpectralPeakSearchWidth(); // we look for a peak in the range: kHarm +- w2
     T freq, gain, phase, peakBin;
-    mdl.setData(0, dataIndex, time, T(0), T(2*zeroPad)*mag[0], phs[0]); // handle DC separately
+
+
+    // handle DC separately:  
+    //mdl.setData(0, dataIndex, time, T(0), T(2*zeroPad)*mag[0], phs[0]); // this was wrong
+
+    // this is still unfinished!
+    mdl.setData(0, dataIndex, time, T(0), T(zeroPad)*mag[0], phs[0]); // handle DC separately
+    phs[0] = T(0); // is this correct? the FFT analyzer uses the convention to put the Nyquist-freq
+                   // analysis value there...is that actually correct? check that out!
+      // the handling of DC is not yet good - we may produce negative amplitudes here - but maybe, 
+      // we should allow negative amplitudes generally in the sinusoidal model?
+
+
     for(int h = 1; h < numPartials; h++) {
 
       kHarm = cyclesPerBlock*zeroPad*h;  // bin index where partial/harmonic is expected

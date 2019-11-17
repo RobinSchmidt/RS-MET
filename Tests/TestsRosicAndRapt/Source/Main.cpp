@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  //passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
+  passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
   //passed &= runUnitTestsRosic();
   //passed = passed;  // dummy
 
@@ -373,7 +373,7 @@ int main(int argc, char* argv[])
   ////partialExtractionBell();  // crashes because sample not available
   ////partialExtractionSample();  // dito
 
-  // Phase Vocoder:
+  // Phase Vocoder (split into Spectrogram and SineModel):
   //phaseRepresentation();
   //grainRoundTrip();        // under construction
   //spectrogramSine();
@@ -381,18 +381,21 @@ int main(int argc, char* argv[])
   //sineParameterEstimation();
   //plotOverlappingWindowSum();
   //phaseInterpolation();
+  sinusoidalSynthesisDC();
   //sinusoidalSynthesis1();
   //sinusoidalSynthesis2();
   //sinusoidalAnalysis1();
   //sinusoidalAnalysis2();  // something fails terribly here
   //sinusoidalAnalysis3();
   //phaseFreqConsistency();
+
   //harmonicDetection2Sines();
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
-  amplitudeDeBeating();
-  amplitudeDeBeating2();
+
+  //amplitudeDeBeating();
+  //amplitudeDeBeating2();
   //harmonicDeBeating1();
   //harmonicDeBeating2();
 
