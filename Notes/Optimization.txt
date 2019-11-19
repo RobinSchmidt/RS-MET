@@ -1,0 +1,18 @@
+
+
+small buffer optimization in std::string
+https://shaharmike.com/cpp/std-string/
+
+
+https://easyperf.net/blog/2016/11/25/Small_size_optimization
+https://github.com/dendibakh/prep/blob/master/SmallVector.cpp
+
+Small-Size Optimization in C
+https://nullprogram.com/blog/2016/10/07/
+
+
+https://akrzemi1.wordpress.com/2014/04/14/common-optimizations/
+
+
+CppCon 2016: Chandler Carruth “High Performance Code 201: Hybrid Data Structures"
+https://www.youtube.com/watch?v=vElZc6zSIXM
