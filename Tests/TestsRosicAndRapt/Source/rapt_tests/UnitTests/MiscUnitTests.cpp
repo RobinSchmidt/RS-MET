@@ -168,7 +168,7 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
 
   // compute the complex spectrogram of a sequence of random numbers:
   std::vector<double> x = rsRandomVector(N, -1, +1);
-  RAPT::rsSpectrogram<double> sp;  // spectrogram processor
+  RAPT::rsSpectrogramProcessor<double> sp;  // spectrogram processor
   sp.setAnalysisWindowType(windowType);
   sp.setSynthesisWindowType(windowType);
   //sp.setTrafoSize(M);
@@ -202,8 +202,8 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
   return r;
 }
 
-// a subclass of rsSpectrogram, so we can access protected variables from test code
-class rsSpectrogramUnitTest : public RAPT::rsSpectrogram<double>
+// a subclass of rsSpectrogramProcessor, so we can access protected variables from test code
+class rsSpectrogramUnitTest : public RAPT::rsSpectrogramProcessor<double>
 {
 
 public:

@@ -247,6 +247,6 @@ protected:
   bool forceFreqPhaseConsistency = false;
 
 
-  RAPT::rsSpectrogram<T> sp;   // spectrogram processor
+  RAPT::rsSpectrogramProcessor<T> sp;   // spectrogram processor
 
 };

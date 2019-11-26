@@ -68,7 +68,7 @@ bool runAllUnitTests()
   passed &= runUnitTest(&blepUnitTest,  "Blit/Blep/Blamp");  // move to generator unit tests
   passed &= runUnitTest(&syncUnitTest,  "Osc Sync");         // dito
 
-  passed &= runUnitTest(&spectrogramUnitTest,   "rsSpectrogram");
+  passed &= runUnitTest(&spectrogramUnitTest,   "rsSpectrogramProcessor");
   passed &= runUnitTest(&sineModelingUnitTest,  "SineModeling");
   // todo: test rsCycleMarkFinder: give it a sine-sweep as input and check, if mark-deltas are 
   // within sane limits ...but maybe that's better for an experiment

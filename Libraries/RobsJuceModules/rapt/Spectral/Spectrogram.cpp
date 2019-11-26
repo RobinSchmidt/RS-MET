@@ -1,7 +1,7 @@
 // Construction/Destruction:
 
 template<class T>
-rsSpectrogram<T>::rsSpectrogram()
+rsSpectrogramProcessor<T>::rsSpectrogramProcessor()
 {
   //transformer.setNormalizationMode(rsFourierTransformerRadix2<T>::NEVER_NORMALIZE);
   // this is, how it should work
@@ -18,7 +18,7 @@ rsSpectrogram<T>::rsSpectrogram()
 }
 
 template<class T>
-rsSpectrogram<T>::~rsSpectrogram()
+rsSpectrogramProcessor<T>::~rsSpectrogramProcessor()
 {
 
 }
@@ -26,19 +26,19 @@ rsSpectrogram<T>::~rsSpectrogram()
 // Setup:
 
 template<class T>
-void rsSpectrogram<T>::setBlockSize(int newSize) 
+void rsSpectrogramProcessor<T>::setBlockSize(int newSize) 
 { 
   setBlockAndTrafoSize(newSize, trafoSize);
 }
 
 template<class T>
-void rsSpectrogram<T>::setTrafoSize(int newSize) 
+void rsSpectrogramProcessor<T>::setTrafoSize(int newSize) 
 { 
   setBlockAndTrafoSize(blockSize, newSize);
 }
 
 template<class T>
-void rsSpectrogram<T>::setBlockAndTrafoSize(int newBlockSize, int newTrafoSize)
+void rsSpectrogramProcessor<T>::setBlockAndTrafoSize(int newBlockSize, int newTrafoSize)
 {
   rsAssert(newTrafoSize >= newBlockSize, "FFT size should be >= block size");
   if(newBlockSize != blockSize) {
@@ -55,7 +55,7 @@ void rsSpectrogram<T>::setBlockAndTrafoSize(int newBlockSize, int newTrafoSize)
 // Inquiry:
 
 template<class T>
-int rsSpectrogram<T>::getNumFrames(int N, int H)
+int rsSpectrogramProcessor<T>::getNumFrames(int N, int H)
 {
   int tmp = N+H-1;
   int F = tmp/H;   // integer division gives floor(tmp/H)
@@ -65,7 +65,7 @@ int rsSpectrogram<T>::getNumFrames(int N, int H)
 }
 
 template<class T>
-T rsSpectrogram<T>::getWindowSum(T *wa, T *ws, int B, int H)
+T rsSpectrogramProcessor<T>::getWindowSum(T *wa, T *ws, int B, int H)
 {
   T s = 0;
   for(int n = 0; n < B; n += H)
@@ -74,7 +74,7 @@ T rsSpectrogram<T>::getWindowSum(T *wa, T *ws, int B, int H)
 }
 
 template<class T>
-std::vector<T> rsSpectrogram<T>::getRoundTripModulation(int F)
+std::vector<T> rsSpectrogramProcessor<T>::getRoundTripModulation(int F)
 {
   //  F: number of frames
 
@@ -97,7 +97,7 @@ std::vector<T> rsSpectrogram<T>::getRoundTripModulation(int F)
 
 // x: signal, N: number of samples, n: block center sample, X: complex short-time spectrum (output)
 template<class T>
-void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, std::complex<T> *X)
+void rsSpectrogramProcessor<T>::shortTimeSpectrum(const T* x, int N, int n, std::complex<T> *X)
 {
   prepareTrafoBuffer(x, N, n, X);
   fft(X, trafoSize);
@@ -105,7 +105,7 @@ void rsSpectrogram<T>::shortTimeSpectrum(const T* x, int N, int n, std::complex<
 
 // B: blockSize, M: trafoSize, L: amount of left-padding, R: amount of right-padding
 template<class T>
-void rsSpectrogram<T>::getLeftRightPaddingAmount(int B, int M, int* L, int* R)
+void rsSpectrogramProcessor<T>::getLeftRightPaddingAmount(int B, int M, int* L, int* R)
 {
   int P = M-B;        // total amount of padding
   if(rsIsEven(B)) {
@@ -117,7 +117,7 @@ void rsSpectrogram<T>::getLeftRightPaddingAmount(int B, int M, int* L, int* R)
 }
 
 template<class T>
-void rsSpectrogram<T>::prepareTrafoBuffer(const T* x, int N, int n, std::complex<T> *X)
+void rsSpectrogramProcessor<T>::prepareTrafoBuffer(const T* x, int N, int n, std::complex<T> *X)
 {
   T*  w = &analysisWindow[0];
   int B = blockSize;
@@ -144,7 +144,7 @@ void rsSpectrogram<T>::prepareTrafoBuffer(const T* x, int N, int n, std::complex
 }
 
 template<class T>
-rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N)
+rsMatrix<std::complex<T>> rsSpectrogramProcessor<T>::complexSpectrogram(const T* x, int N)
 {
   // x: signal, N: number of samples
 
@@ -177,7 +177,7 @@ rsMatrix<std::complex<T>> rsSpectrogram<T>::complexSpectrogram(const T* x, int N
 }
 
 template<class T>
-void rsSpectrogram<T>::lowpass(rsMatrix<std::complex<T>>& s, int hi)
+void rsSpectrogramProcessor<T>::lowpass(rsMatrix<std::complex<T>>& s, int hi)
 {
   int numFrames = s.getNumRows();
   int numBins   = s.getNumColumns();
@@ -190,7 +190,7 @@ void rsSpectrogram<T>::lowpass(rsMatrix<std::complex<T>>& s, int hi)
 }
 
 template<class T>
-void rsSpectrogram<T>::highpass(rsMatrix<std::complex<T>>& s, int lo)
+void rsSpectrogramProcessor<T>::highpass(rsMatrix<std::complex<T>>& s, int lo)
 {
   int numFrames = s.getNumRows();
   int numBins   = s.getNumColumns();
@@ -200,14 +200,14 @@ void rsSpectrogram<T>::highpass(rsMatrix<std::complex<T>>& s, int lo)
 }
 
 template<class T>
-void rsSpectrogram<T>::bandpass(rsMatrix<std::complex<T>>& s, int lo, int hi)
+void rsSpectrogramProcessor<T>::bandpass(rsMatrix<std::complex<T>>& s, int lo, int hi)
 {
   lowpass( s, hi);
   highpass(s, lo);
 }
 
 template<class T>
-std::vector<T> rsSpectrogram<T>::synthesize(const rsMatrix<std::complex<T>> &s)
+std::vector<T> rsSpectrogramProcessor<T>::synthesize(const rsMatrix<std::complex<T>> &s)
 {
   // s: spectrogram
   int B = blockSize;
@@ -229,7 +229,7 @@ std::vector<T> rsSpectrogram<T>::synthesize(const rsMatrix<std::complex<T>> &s)
 }
 
 template<class T>
-rsMatrix<T> rsSpectrogram<T>::timeReassignment(T *x, int N,
+rsMatrix<T> rsSpectrogramProcessor<T>::timeReassignment(T *x, int N,
   const rsMatrix<std::complex<T>> &s, T *wr, int B, int H)
 {
   // x: signal, N: number of samples, s: complex spectrogram, wr: time-ramped window, B: blocksize,
@@ -246,7 +246,7 @@ rsMatrix<T> rsSpectrogram<T>::timeReassignment(T *x, int N,
 }
 
 template<class T>
-rsMatrix<T> rsSpectrogram<T>::frequencyReassignment(T *x, int N,
+rsMatrix<T> rsSpectrogramProcessor<T>::frequencyReassignment(T *x, int N,
   const rsMatrix<std::complex<T>> &s, T *wd, int B, int H)
 {
   // x: signal, N: number of samples, s: complex spectrogram, wd: window derivative, B: blocksize,
@@ -263,7 +263,7 @@ rsMatrix<T> rsSpectrogram<T>::frequencyReassignment(T *x, int N,
 }
 
 template<class T>
-std::vector<T> rsSpectrogram<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &s)
+std::vector<T> rsSpectrogramProcessor<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &s)
 {
   // s: complex spectrogram
 
@@ -309,7 +309,7 @@ std::vector<T> rsSpectrogram<T>::synthesizeRaw(const rsMatrix<std::complex<T>> &
 // Misc:
 
 template<class T>
-void rsSpectrogram<T>::updateAnalysisWindow()
+void rsSpectrogramProcessor<T>::updateAnalysisWindow()
 {
   analysisWindow.resize(blockSize); // later: analysisBlockSize
   fillWindowArray(&analysisWindow[0], blockSize, analysisWindowType);
@@ -318,14 +318,14 @@ void rsSpectrogram<T>::updateAnalysisWindow()
 }
 
 template<class T>
-void rsSpectrogram<T>::updateSynthesisWindow()
+void rsSpectrogramProcessor<T>::updateSynthesisWindow()
 {
   synthesisWindow.resize(blockSize); // later: synthesisBlockSize
   fillWindowArray(&synthesisWindow[0], blockSize, synthesisWindowType);
 }
 
 template<class T>
-void rsSpectrogram<T>::fillWindowArray(T* w, int length, rsWindowFunction::WindowType type)
+void rsSpectrogramProcessor<T>::fillWindowArray(T* w, int length, rsWindowFunction::WindowType type)
 {
   rsWindowFunction::createWindow(w, length, type, false); 
   // ...actually, this function is obsolete now...but maybe not when we later create derivative and
@@ -333,7 +333,7 @@ void rsSpectrogram<T>::fillWindowArray(T* w, int length, rsWindowFunction::Windo
 }
 
 template<class T>
-void rsSpectrogram<T>::swapForZeroPhase(std::complex<T>* X, int L)
+void rsSpectrogramProcessor<T>::swapForZeroPhase(std::complex<T>* X, int L)
 {
   if(timeOriginAtWindowCenter)
     rsArray::circularShift(X, L, -L/2);  
@@ -341,7 +341,7 @@ void rsSpectrogram<T>::swapForZeroPhase(std::complex<T>* X, int L)
 }
 
 template<class T>
-void rsSpectrogram<T>::fft(std::complex<T> *X, int M)
+void rsSpectrogramProcessor<T>::fft(std::complex<T> *X, int M)
 {
   transformer.setDirection(rsFourierTransformerRadix2<T>::FORWARD);
   transformer.setBlockSize(M);
@@ -351,7 +351,7 @@ void rsSpectrogram<T>::fft(std::complex<T> *X, int M)
 }
 
 template<class T>
-void rsSpectrogram<T>::ifft(std::complex<T> *X, int M)
+void rsSpectrogramProcessor<T>::ifft(std::complex<T> *X, int M)
 {
   transformer.setDirection(rsFourierTransformerRadix2<T>::INVERSE);
   transformer.setBlockSize(M);

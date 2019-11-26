@@ -983,7 +983,7 @@ void sinusoidalAnalysis2()
   //  -something like 
   //   if(n <= blockSize/2)  // or <?
   //     a *= getLeftBoundaryCompensation(n)
-  //  -maybe have functions in rsSpectrogram setEdgeCompensation
+  //  -maybe have functions in rsSpectrogramProcessor setEdgeCompensation
   // ...or actually this error occurs only because in the synthesis of the sinusoid we cut it off
   // abruptly - this is not supposed to happen in natural signals - here, the sample values outside
   // the range 0..N-1 actually *are* zero, so this edge-compensation would make sense only for 

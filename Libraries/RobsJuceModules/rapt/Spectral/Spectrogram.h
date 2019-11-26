@@ -6,7 +6,7 @@
 -maybe rename to rsSpectrogramProcessor - a spectrogram itself is actually just a matrix of 
  complex values...or magnitude/phase values....but what about re-assignment? there may be 
  re-assigned spectrograms
--maybe let rsSpectrogram be a private subclass of rsMatrix, implement the () operator as simple
+-maybe let rsSpectrogramProcessor be a private subclass of rsMatrix, implement the () operator as simple
  delegation and replace getNumRows/getNumColumns with getNumFrames/getNumBins
 -i think, i have implemented analysis and (re)synthesis in a single class rather than two separate
  classes (like with the sinusoidal model) in order to allow for identity resynthesis with arbitrary
@@ -14,7 +14,7 @@
 -implement move contructors for rsArray and rsMatrixOld  */
 
 template<class T>
-class rsSpectrogram
+class rsSpectrogramProcessor
 {
 
 public:
@@ -23,10 +23,10 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  rsSpectrogram();
+  rsSpectrogramProcessor();
 
   /** Destructor. */
-  ~rsSpectrogram();
+  ~rsSpectrogramProcessor();
 
 
   //-----------------------------------------------------------------------------------------------

@@ -251,7 +251,7 @@ template class RAPT::rsInstantaneousFundamentalEstimator<double>; // rename
 template class RAPT::rsZeroCrossingPitchDetector<double>;
 template class RAPT::rsAutoCorrelationPitchDetector<double>;
 
-template class RAPT::rsSpectrogram<double>;
+template class RAPT::rsSpectrogramProcessor<double>;
 
 template class RAPT::rsDoublePendulum<double, double>;
 
