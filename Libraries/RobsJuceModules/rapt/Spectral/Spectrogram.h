@@ -1,6 +1,100 @@
 #ifndef RAPT_SPECTROGRAM_H
 #define RAPT_SPECTROGRAM_H
 
+//=================================================================================================
+
+/** A class for representing complex spectrograms. These are 2-dimensional arrays of complex values
+where each value represents the short time Fourier transform at a particular time-instant and 
+frequency. The data is accessed via the regular matrix(i, j) syntax of matrices. The first index 
+i is the frame-index and the second index j is the bin index within FFT frame i. 
+
+class is not yet used - shall be used for the return type of 
+rsSpectrogramPocessor::getComplexSpectrogram */
+
+template<class T>
+class rsComplexSpectrogram
+{
+
+public:
+
+
+  /** Constructor. Allocates memory for the given number of frames and bins */
+  rsComplexSpectrogram(int numFrames, int numBins) : stftData(numFrames, numBins) {}
+
+
+  rsComplexSpectrogram(rsMatrix<std::complex<T>>&& newData) : stftData(std::move(newData));
+  // should be invoked in arithmetic operators +,-,etc. when client code writes:
+  // rsComplexSpectrogram<double> specSum = spec1 + spec1;
+  // -> test this
+
+
+
+  inline void setNumFramesAndBins(int numFrames, int numBins)
+  { stftData->setSize(numFrames, numBins); }
+
+
+
+
+  /** Returns the number of STFT frames in this spectrogram. */
+  inline int getNumFrames() const { return stftData->getNumRows(); }
+
+  /** Retruns the number of FFT bins in this spectrogram. */
+  inline int getNumBins() const { return stftData->getNumColumns(); }
+
+  /** Read and write access to STFT value at the given frame- and bin-index. */
+  inline T& operator()(const int frameIndex, const int binIndex) 
+  { return stftData(frameIndex, binIndex); }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Operators
+
+  bool operator==(const rsComplexSpectrogram<T>& rhs) const 
+  { return this->stftData == rhs.stftData; }
+
+  bool operator!=(const rsComplexSpectrogram<T>& rhs) const 
+  { return this->stftData != rhs.stftData; }
+
+  rsComplexSpectrogram<T> operator+(const rsComplexSpectrogram<T>& rightOperand) const
+  { return rsComplexSpectrogram<T>(stftData + rightOperand.stftData); }
+
+  rsComplexSpectrogram<T> operator-(const rsComplexSpectrogram<T>& rightOperand) const
+  { return rsComplexSpectrogram<T>(stftData - rightOperand.stftData); }
+
+
+  /** Multiplies two spectrograms element-wise. */
+  rsComplexSpectrogram<T> operator*(const rsComplexSpectrogram<T>& rightOperand) const
+  {  return rsComplexSpectrogram<T>(stftData.getElementwiseProduct(rightOperand.stftData)); }
+  // having the multiplication operator do element-wise multiplication is one of the reasons why
+  // we don't just inherit from rsMatrix and instead use a matrix as member variable - matrix 
+  // multiplication would make no sense for spectrograms
+
+  //rsComplexSpectrogram<T> operator/(const rsComplexSpectrogram<T>& rightOperand) const
+  //{  return rsComplexSpectrogram<T>(stftData.getElementwiseQuotient(rightOperand.stftData)); }
+
+
+
+  // implement +=,-=,*=,/= operators
+
+
+
+protected:
+
+  rsMatrix<std::complex<T>> stftData;
+
+  // maybe this should also have additional data-members for hopSize, blockSize, sampleRate - these
+  // values are needed in order to correctly interpret the data - but maybe not - it would not be 
+  // clear from which of the two object the result of +,-,.. etc. would get their values and we 
+  // don't want to be restricted to add,subtract,... spectrograms with matching block/hopSizes
+  // ...or do we? it may most likely be an error trying to combine spectrograms with non-matched
+  // values - maybe be a bit too restrictive - we may always relax restrictions later but not 
+  // tighten them when client code already relies on certain things
+  // hmm - i think hopSize and blockSize should be members but sampleRate probably not
+
+};
+
+//=================================================================================================
+
 /** This is .... under construction ...
 
 -maybe rename to rsSpectrogramProcessor - a spectrogram itself is actually just a matrix of 

@@ -36,6 +36,9 @@ Interface:
 -avoid heap allocations for temporary arrays - use workspace parameters instead
  but keep the functions that do heap allocations for convenience - but document 
  all heap-allocations, i.e. write a warning
+-use nouns like "getProduct" when the function returns an object (numbers qualify 
+ as well) but a verb like "multiply" when the function performs some action on 
+ passed inputs like multiplying array element-wise
 
 Implementation:
 -whether algo parameters are updated directly in setCutoff, setResonance, etc.
