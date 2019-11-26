@@ -168,14 +168,14 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
 
   // compute the complex spectrogram of a sequence of random numbers:
   std::vector<double> x = rsRandomVector(N, -1, +1);
-  RAPT::rsSpectrogram<double> sp;  // spectrogram processor
+  RAPT::rsSpectrogramProcessor<double> sp;  // spectrogram processor
   sp.setAnalysisWindowType(windowType);
   sp.setSynthesisWindowType(windowType);
   //sp.setTrafoSize(M);
   //sp.setBlockSize(B);
   sp.setBlockAndTrafoSize(B, M);
   sp.setHopSize(H);
-  rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(&x[0], N);
+  rsMatrix<rsComplexDbl> s = sp.getComplexSpectrogram(&x[0], N);
   int numFrames = s.getNumRows();  
   // todo: let the function take an FFT-size parameter instead of a zero-padding factor (maybe)
   // facilitates having an FFT size independent from the block-size
@@ -202,8 +202,8 @@ bool testSpectrogramResynthesis(int blockSize, int hopSize, int signalLength, in
   return r;
 }
 
-// a subclass of rsSpectrogram, so we can access protected variables from test code
-class rsSpectrogramUnitTest : public RAPT::rsSpectrogram<double>
+// a subclass of rsSpectrogramProcessor, so we can access protected variables from test code
+class rsSpectrogramUnitTest : public RAPT::rsSpectrogramProcessor<double>
 {
 
 public:
@@ -294,7 +294,7 @@ bool spectrogramUnitTest()
   // let the spectrogram class have a direct setFftSize function, let it use an 
   // rsFourierTransformer object, allow arbitrary FFT sizes
 
-  // why do we need to scale the output of the ifft? in complexSpectrogram, there is already a 
+  // why do we need to scale the output of the ifft? in getComplexSpectrogram, there is already a 
   // scaling by 2 / rsArray::sum(w, B); ...aahh - but it's applied to the STFT matrix *after* the
   // STFT has been computed - so, we should probably use no nromalziation
 

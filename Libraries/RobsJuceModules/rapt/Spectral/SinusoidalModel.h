@@ -21,7 +21,7 @@ reconstruct the k heuristically - but that ususally works and as a plus, as said
 proper target values for phase derivatives for interpolation. */
 
 template<class T>
-class rsInstantaneousSineParams // maybe make it a struct
+class rsInstantaneousSineParams // maybe make it a struct, it's actually just a data record
 {
 
 public:
@@ -71,9 +71,12 @@ public:
 /** Data structure to hold and edit the information about one single sinusoidal partial. This is 
 effectively an array of rsInstantaneousSineParams objects ordered by time-stamp. 
 
-todo: maybe try to convert into a representation consisting of parallel arrays - more convenient 
-for certain purposes (interpolation) but less for others (analysis) -> benchmark
-*/
+todo: Currently, a sinusoidal model is laid out as array-of-structures  (see
+https://en.wikipedia.org/wiki/AoS_and_SoA). This is more convenient for the analysis algorithms but
+less convenient for modification or resynthesis (because resynthesis need to interpolate the 
+arrays, for which we need the array structure anyway). Maybe try to convert into an 
+structure-of-arrays representation - or: maybe allow for both and provide conversions between the
+formats -> then benchmark both! */
 
 template<class T>
 class rsSinusoidalPartial  // maybe rename to rsSinusoidalTrack

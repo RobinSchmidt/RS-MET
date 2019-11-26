@@ -264,7 +264,7 @@ void spectrogramSine()
   sp.setAnalysisWindowType(W);
   sp.setSynthesisWindowType(W); 
   //sp.setOutputDemodulation(false); // with appropriate settings, demodulation should be superfluous
-  rsMatrix<rsComplexDbl> s = sp.complexSpectrogram(x, N);
+  rsMatrix<rsComplexDbl> s = sp.getComplexSpectrogram(x, N);
   int F = s.getNumRows();    // number of frames
 
   // compute (magnitude) spectrogram and phasogram:
@@ -336,18 +336,27 @@ void spectrogramFilter()
   sp.setSynthesisWindowType(W); 
   //sp.setOutputDemodulation(false); // with appropriate settings, demodulation should be superfluous
   typedef rsMatrix<rsComplexDbl> Mat;
-  Mat s = sp.complexSpectrogram(&x[0], N);
+  Mat s = sp.getComplexSpectrogram(&x[0], N);
 
   // create highpassed and lowpassed versions of the spectrogram:
   Mat sl = s, sh = s;  // initialize with copies of the original
-  int splitBin = (int) round(sp.frequencyToBinIndex(splitFreq, sampleRate));
-  rsSpectrogramD::lowpass( sl, splitBin);
-  rsSpectrogramD::highpass(sh, splitBin+1);
+
+
+  //double splitBin = sp.frequencyToBinIndex(splitFreq, sampleRate); // 11.6
+  //rsSpectrogramD::lowpass( sl, splitBin);
+  //rsSpectrogramD::highpass(sh, splitBin);
+
+  //int splitBinInt = (int) round(sp.frequencyToBinIndex(splitFreq, sampleRate));
+  int splitBinInt = (int) floor(sp.frequencyToBinIndex(splitFreq, sampleRate));
+  rsSpectrogramD::lowpass( sl, splitBinInt);
+  rsSpectrogramD::highpass(sh, splitBinInt+1);
+
+
 
   // plot original, lowpassed and highpassed spectrograms:
   int numFrames = s.getNumRows();
   int numBins   = s.getNumColumns();  // == sp.getNumNonRedundantBins()
-  plotSpectrogram(numFrames, numBins, s,  sampleRate, hopSize);
+  //plotSpectrogram(numFrames, numBins, s,  sampleRate, hopSize);
   plotSpectrogram(numFrames, numBins, sl, sampleRate, hopSize);
   plotSpectrogram(numFrames, numBins, sh, sampleRate, hopSize);
 
@@ -363,7 +372,7 @@ void spectrogramFilter()
 
 
   Vec mod = sp.getRoundTripModulation(numFrames);
-  plotVector(mod);  // sums to 1.5 and there are fade-in/out artifacts -> fix this!
+  //plotVector(mod);  // sums to 1.5 and there are fade-in/out artifacts -> fix this!
 }
 
 void sineParameterEstimation()
@@ -983,7 +992,7 @@ void sinusoidalAnalysis2()
   //  -something like 
   //   if(n <= blockSize/2)  // or <?
   //     a *= getLeftBoundaryCompensation(n)
-  //  -maybe have functions in rsSpectrogram setEdgeCompensation
+  //  -maybe have functions in rsSpectrogramProcessor setEdgeCompensation
   // ...or actually this error occurs only because in the synthesis of the sinusoid we cut it off
   // abruptly - this is not supposed to happen in natural signals - here, the sample values outside
   // the range 0..N-1 actually *are* zero, so this edge-compensation would make sense only for 

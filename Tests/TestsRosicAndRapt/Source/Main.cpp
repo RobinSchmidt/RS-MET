@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
   // todo: 
   // -with the increasing number of tests and experiments, it gets increasingly hard to find a 
   //  particular one - we need some better organization and order
-  // -get rid of the distinction between testing classes form rapt and rosic - that makes it 
+  // -get rid of the distinction between testing classes from rapt and rosic - that makes it 
   //  confusing and hard to find a particular test -> merge the tests
   // -maybe make even just a single include file for all rapt tests
 
@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
+  //passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
   //passed &= runUnitTestsRosic();
   //passed = passed;  // dummy
 
@@ -377,11 +377,11 @@ int main(int argc, char* argv[])
   //phaseRepresentation();
   //grainRoundTrip();        // under construction
   //spectrogramSine();
-  //spectrogramFilter();
+  spectrogramFilter();
   //sineParameterEstimation();
   //plotOverlappingWindowSum();
   //phaseInterpolation();
-  sinusoidalSynthesisDC();
+  //sinusoidalSynthesisDC();
   //sinusoidalSynthesis1();
   //sinusoidalSynthesis2();
   //sinusoidalAnalysis1();

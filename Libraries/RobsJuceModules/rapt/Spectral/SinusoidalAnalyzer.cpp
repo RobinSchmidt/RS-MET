@@ -230,7 +230,7 @@ template<class T>
 rsMatrix<std::complex<T>> rsSinusoidalAnalyzer<T>::getComplexSpectrogram(
   T* sampleData, int numSamples)
 {
-  return sp.complexSpectrogram(sampleData, numSamples);
+  return sp.getComplexSpectrogram(sampleData, numSamples);
 }
 
 template<class T>

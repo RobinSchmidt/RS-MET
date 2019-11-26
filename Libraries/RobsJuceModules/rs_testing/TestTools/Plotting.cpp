@@ -289,6 +289,7 @@ void plotSineModelAmplitudes(
     plt.addDataArrays((int)t.size(), &t[0], &a[0]);
   }
 
+  plt.setPixelSize(1200, 300);
   plt.plot();
 }
 

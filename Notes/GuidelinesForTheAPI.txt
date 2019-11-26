@@ -33,6 +33,12 @@ Interface:
  https://github.com/fish-shell/fish-shell/issues/3493
 -use get/set consistently bad: Matrix::eigenvalues, good: Matrix::getEigenvalues
  ...but only for non-static member functions - for static ones -> no get
+-avoid heap allocations for temporary arrays - use workspace parameters instead
+ but keep the functions that do heap allocations for convenience - but document 
+ all heap-allocations, i.e. write a warning
+-use nouns like "getProduct" when the function returns an object (numbers qualify 
+ as well) but a verb like "multiply" when the function performs some action on 
+ passed inputs like multiplying array element-wise
 
 Implementation:
 -whether algo parameters are updated directly in setCutoff, setResonance, etc.
@@ -62,7 +68,7 @@ https://stackoverflow.com/questions/1143936/pragma-once-vs-include-guards
 
 this talk has interesting stuff about API design:
 https://www.youtube.com/watch?v=5tg1ONG18H8
-one thing: avoid adjacent aparmeters of the same type to minimize the chance of the caller getting
+one thing: avoid adjacent parameters of the same type to minimize the chance of the caller getting
 the order wrong
 
 here are the guidelines recommended by the c++ commitee:
@@ -76,3 +82,17 @@ https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md
  
 -check use of std::list<> in rosic::PolymorphicIntrumentVoice
 
+---------------------------------------------------------------------------------------------------
+general guidelines:
+a good api should be:
+-easy to learn an memorize
+-lead to readable client code 
+ -library code readability should be sacrificed, if it leads to more readable client code
+-hard to use incorrectly
+-easy to extend
+-complete
+
+specific things to pay attention to
+-edge cases:
+ -sometimes they are handled automatically correct -> implement the general case first and test
+  (and reason about) what that implementation will do in the edge case

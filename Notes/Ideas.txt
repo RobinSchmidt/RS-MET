@@ -1,3 +1,18 @@
+
+-------------------------------------------------------------------------------
+make a class rsChoices where a 64-bit integer is used to represent a couple of
+choice (i.e enum) parameters, for example, the lowes 3 bits could be used for
+a parameter that has at most 8 values, the next 4 bits for a parameter with up
+to 16 values etc. use a similar idea as for the rsFlags class in RSLib - with
+bit-shifting and masking. that can be used for very economically storing a 
+bunch of choices, when optimization memory occupation is desired. the class
+could be a variadic template, using as template parameters the number of bits
+for each choice parameter - for example rsChoices<3, 4, 2, 1> would encode 4 
+choice parameters with 3,4,2,1 bits respectively (the latter being a boolean, 
+i.e. choice between two values). the numbers passed as template parameters 
+should add up to a value <= 64 (check that at compile-time)
+
+
 -------------------------------------------------------------------------------
 -maybe, at the lower "number crunching" level of rapt, we should take a more 
  data-oriented-design approach - see here

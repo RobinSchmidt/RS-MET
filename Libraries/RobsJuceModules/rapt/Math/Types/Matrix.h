@@ -224,6 +224,21 @@ public:
   inline void setToIdentity() { setToZero(); setDiagonalValues(T(1)); }
   // needs test
 
+  /** Scales the row with given index by the given scale factor. */
+  inline void scaleRow(int rowIndex, T scaler)
+  {
+    rsAssert(rowIndex >= 0 && rowIndex < numRows, "row index out of range");
+    for(int j = 0; j < numCols; ++j)
+      (*this)(rowIndex, j) *= scaler;
+  }
+
+  inline void scaleColumn(int columnIndex, T scaler)
+  {
+    rsAssert(columnIndex >= 0 && columnIndex < numCols, "column index out of range");
+    for(int i = 0; i < numCols; ++i)
+      (*this)(i, columnIndex) *= scaler;
+  }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -293,6 +308,25 @@ public:
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
     rsArray::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
+  // rename to subtract
+
+  /** Multiplies the two matrices element-wise. */
+  static void elementwiseMultiply(
+    const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
+  {
+    rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
+    rsArray::multiply(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+  }
+
+  /** Divides the two matrices element-wise. */
+  static void elementwiseDivide(
+    const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
+  {
+    rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
+    rsArray::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+  }
+
+
 
   /** Computes the matrix product C = A*B. */
   static void mul(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
@@ -306,6 +340,12 @@ public:
         for(int k = 0; k < A.numCols; k++)
           (*C)(i,j) += A.at(i,k) * B.at(k,j); }}
   }
+  // rename to matrixMultiply
+
+
+
+
+
 
   /** Fills the matrix B with the transpose of matrix A. Assumes that A and B have compatible 
   shapes. */
@@ -507,27 +547,8 @@ public:
     // optionally initialize with zeros
   }
 
-  /** Computes the Kronecker product between matrices A and B. For a 3x2 matrix A, it looks like:
 
-              |a11*B a12*B|
-  A (x) B  =  |a21*B a22*B|
-              |a31*B a32*B|
 
-  Where each entry aij*B is a submatrix of dimensions of B with the entries of B scaled by the
-  respective element from A. This product is also sometimes called tensor product, but i think, 
-  Kronecker product is more appropriate, as it explicitly deals with matrices rather than vector
-  spaces. Also, in the context of tensor algebra, the tensor product of two rank-2 tensors 
-  (i.e. matrices) would give a rank-4 tensor (with 4 indicies), whereas this product here still has
-  just 2 indices - it is again a matrix and not some 4-dimensional "block". See here:
-  https://en.wikipedia.org/wiki/Kronecker_product
-  https://en.wikipedia.org/wiki/Tensor_product     */
-  static rsMatrix<T> getKroneckerProduct(const rsMatrix<T>& A, const rsMatrix<T>& B)
-  {
-    rsMatrix<T> C(A.numRows*B.numRows, A.numCols*B.numCols);
-    rsMatrixView<T>::kroneckerProduct(A, B, &C);
-    return C;
-  }
-  // move to Computations - there, we should also define getInverse, getTranspose, 
 
 
   //-----------------------------------------------------------------------------------------------
@@ -566,6 +587,44 @@ public:
 
   // todo: getDeterminant, getInverse, getFrobeniusNorm, get[Other]Norm, isPositiveDefinite, 
   // getEigenvalues, getTrace, isUpperLeftTriangular, getTransposed, getConjugateTransposed
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Computations */
+
+  /** Computes the Kronecker product between matrices A and B. For a 3x2 matrix A, it looks like:
+
+  |a11*B a12*B|
+  A (x) B  =  |a21*B a22*B|
+  |a31*B a32*B|
+
+  Where each entry aij*B is a submatrix of dimensions of B with the entries of B scaled by the
+  respective element from A. This product is also sometimes called tensor product, but i think, 
+  Kronecker product is more appropriate, as it explicitly deals with matrices rather than vector
+  spaces. Also, in the context of tensor algebra, the tensor product of two rank-2 tensors 
+  (i.e. matrices) would give a rank-4 tensor (with 4 indicies), whereas this product here still has
+  just 2 indices - it is again a matrix and not some 4-dimensional "block". See here:
+  https://en.wikipedia.org/wiki/Kronecker_product
+  https://en.wikipedia.org/wiki/Tensor_product     */
+  static rsMatrix<T> getKroneckerProduct(const rsMatrix<T>& A, const rsMatrix<T>& B) 
+  {
+    rsMatrix<T> C(A.numRows*B.numRows, A.numCols*B.numCols);
+    rsMatrixView<T>::kroneckerProduct(A, B, &C);
+    return C;
+  }
+
+  /** Returns a matrix that is the element-wise product of this matrix an the right operand. */
+  rsMatrix<T> getElementwiseProduct(const rsMatrixView<T>& rightOperand) const
+  {
+    rsMatrix<T> result(numRows, numCols);
+    rsMatrixView<T>::elementwiseMultiply(this, &rightOperand, &result);
+    return result;
+  }
+  // it's intentional that the rsMatrixView method is called multiply and this here is called 
+  // product - the view method just does something (-> use a verb), the method here returns an
+  // objcet (-> use a noun)
+
+  // todo: getInverse, getTranspose
 
 
   //-----------------------------------------------------------------------------------------------
@@ -652,6 +711,7 @@ public:
   static int numHeapAllocations;
     // instrumentation for unit-testing - it's actually the number of *potential* heap-allocations,
     // namely, the number of calls to data.resize() which may or may not re-allocate memory
+    // maybe get rid of this and implement the allocation test using a custom allocator
 
 protected:
 
