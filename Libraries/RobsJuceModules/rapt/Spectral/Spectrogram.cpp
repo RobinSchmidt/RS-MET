@@ -144,7 +144,7 @@ void rsSpectrogramProcessor<T>::prepareTrafoBuffer(const T* x, int N, int n, std
 }
 
 template<class T>
-rsMatrix<std::complex<T>> rsSpectrogramProcessor<T>::complexSpectrogram(const T* x, int N)
+rsMatrix<std::complex<T>> rsSpectrogramProcessor<T>::getComplexSpectrogram(const T* x, int N)
 {
   // x: signal, N: number of samples
 
@@ -184,10 +184,24 @@ void rsSpectrogramProcessor<T>::lowpass(rsMatrix<std::complex<T>>& s, int hi)
   for(int i = 0; i < numFrames; i++)
     for(int k = hi+1; k < numBins; k++)
       s(i, k) = T(0);
-
   // todo: maybe allow for a floating point cutoff value - the amplitude of the last bin would then
   // be something between 0 and 1
 }
+
+/*
+// still buggy
+template<class T>
+void rsSpectrogramProcessor<T>::lowpass(rsMatrix<std::complex<T>>& s, T cutoffBin)
+{
+  int hi = (int) floor(cutoffBin);
+  lowpass(s, hi);
+
+  int numBins   = s.getNumColumns();
+  if(hi+1 >= numBins) // do we actually need to check that edge case?
+    return;
+  scaleBin(s, hi + 1, cutoffBin - hi);
+}
+*/
 
 template<class T>
 void rsSpectrogramProcessor<T>::highpass(rsMatrix<std::complex<T>>& s, int lo)
@@ -198,6 +212,21 @@ void rsSpectrogramProcessor<T>::highpass(rsMatrix<std::complex<T>>& s, int lo)
     for(int k = 0; k < lo; k++)
       s(i, k) = T(0);
 }
+
+/*
+// still buggy
+template<class T>
+void rsSpectrogramProcessor<T>::highpass(rsMatrix<std::complex<T>>& s, T cutoffBin)
+{
+  int lo = (int) ceil(cutoffBin);
+  highpass(s, lo);
+
+  int numBins = s.getNumColumns();
+  if(lo-1 < 0)  // do we actually need to check that edge case?
+    return;
+  scaleBin(s, lo, lo - cutoffBin);  // verify formula for scale factor
+}
+*/
 
 template<class T>
 void rsSpectrogramProcessor<T>::bandpass(rsMatrix<std::complex<T>>& s, int lo, int hi)
@@ -237,7 +266,7 @@ rsMatrix<T> rsSpectrogramProcessor<T>::timeReassignment(T *x, int N,
 
   rsMatrix<T> tr;
 
-  // use the complexSpectrogram function to compute a spectrogram with the ramped window and then
+  // use the getComplexSpectrogram function to compute a spectrogram with the ramped window and then
   // apply the time reassignment formula using the original spectrogram s and the "ramped"
   // spectrogram to compute corresponding value of the time reassignment matrix tr
   // ...
@@ -254,7 +283,7 @@ rsMatrix<T> rsSpectrogramProcessor<T>::frequencyReassignment(T *x, int N,
 
   rsMatrix<T> fr;
 
-  // use the complexSpectrogram function to compute a spectrogram with the derivative window and 
+  // use the getComplexSpectrogram function to compute a spectrogram with the derivative window and 
   // then apply the frequency reassignment formula using the original spectrogram s and the 
   // "derivative" spectrogram to compute corresponding value of the frequency reassignment matrix 
   // fr

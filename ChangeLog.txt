@@ -4,6 +4,7 @@ that break client code.
 
 Client-Code-Breaking Changes:
 
+2019/11/26: renamed rsSpectrogram to rsSpectrogramProcessor
 2019/10/20: rsLine2D: changed output parameters from references to pointers
 2019/10/11: rapt::rsArray: renamed areBuffersApproximatelyEqual to almostEqual
                                    areBuffersEqual              to equal

@@ -6,8 +6,8 @@
 -maybe rename to rsSpectrogramProcessor - a spectrogram itself is actually just a matrix of 
  complex values...or magnitude/phase values....but what about re-assignment? there may be 
  re-assigned spectrograms
--maybe let rsSpectrogramProcessor be a private subclass of rsMatrix, implement the () operator as simple
- delegation and replace getNumRows/getNumColumns with getNumFrames/getNumBins
+-maybe let rsComplexSpectrogram be a private subclass of rsMatrix<double<T>>, implement the () 
+ operator as simple delegation and replace getNumRows/getNumColumns with getNumFrames/getNumBins
 -i think, i have implemented analysis and (re)synthesis in a single class rather than two separate
  classes (like with the sinusoidal model) in order to allow for identity resynthesis with arbitrary
  windows (the demodulation procedure needs to know both windows - analysis and synthesis)
@@ -144,16 +144,14 @@ public:
 
 
 
-
-
-
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  //rsMatrixOld<std::complex<T>> complexSpectrogram(const T *signal, int numSamples);
+  //rsMatrixOld<std::complex<T>> getComplexSpectrogram(const T *signal, int numSamples);
 
   /** Computes the complex spectrogram of the given signal x of the given length in samples. */
-  rsMatrix<std::complex<T>> complexSpectrogram(const T* signal, int numSamples);
+  rsMatrix<std::complex<T>> getComplexSpectrogram(const T* signal, int numSamples);
+  // rename to signalToComplexSpectrogram
 
 
   /** Computes a short-time FFT spectrum ... */
@@ -192,16 +190,43 @@ public:
   // maybe have a version NZ, ZZ, NN
   // moved to rsWindowFunction
 
+  /** Scales the values in all frames at the given binIndex in the given spectrogram. */
+  inline static void scaleBin(rsMatrix<std::complex<T>>& spectrogram, int binIndex, T scaleFactor)
+  {
+    // get rid of these - use getNumBins/getNumFrames:
+    int numFrames = spectrogram.getNumRows();
+    int numBins   = spectrogram.getNumColumns();
+
+    rsAssert(binIndex >= 0 && binIndex < numBins);
+    for(int i = 0; i < numFrames; i++)
+      spectrogram(i, binIndex) *= scaleFactor;
+  }
+  // todo: make a complex version - but the version using a real scaleFactor should not call the 
+  // complex version because that would needlessly invoke more expensive full complex 
+  // multiplications, where a real-times-complex multiplication would do
+
+
   /** Zeroes out all bins above "highestBinToKeep" (in all frames) */
   static void lowpass(rsMatrix<std::complex<T>>& spectrogram, int highestBinToKeep);
+  // todo: take as argument rsComplexSpectrogram instead of rsMatrix
+
+  //static void lowpass(rsMatrix<std::complex<T>>& spectrogram, T cutoffBin);
+  // not yet tested
+
 
   /** Zeroes out all bins below "lowestBinToKeep" (in all frames) */
   static void highpass(rsMatrix<std::complex<T>>& spectrogram, int lowestBinToKeep);
+
+  //static void highpass(rsMatrix<std::complex<T>>& spectrogram, T cutoffBin);
 
   /** Zeroes out all bin-values values except those in the range lowBin <= bin <= highBin. If 
   lowBin == 0 or highBin == numBins-1, you can also get lowpass- and highpass-filters, 
   respectively. */
   static void bandpass(rsMatrix<std::complex<T>>& spectrogram, int lowBin, int highBin);
+
+
+
+
 
   /** Given a complex spectrogram, this function synthesizes a signal using given synthesis
   window, blockSize and hopSize. You must also pass the analysis window that was used - this is
@@ -211,6 +236,7 @@ public:
   of columns in the matrix s - each row is one short-time spectrum (of positive frequencies only
   due to symmetry). */
   std::vector<T> synthesize(const rsMatrix<std::complex<T>>& spectrogram);
+  // rename to spectrogramToSignal
 
   /** Given a signal and its complex spectrogram, this function computes the matrix of time
   reassignments for each time/frequency value. The rampedWindow array should be a time-ramped

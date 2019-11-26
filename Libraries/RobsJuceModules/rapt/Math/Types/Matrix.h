@@ -224,6 +224,21 @@ public:
   inline void setToIdentity() { setToZero(); setDiagonalValues(T(1)); }
   // needs test
 
+  /** Scales the row with given index by the given scale factor. */
+  inline void scaleRow(int rowIndex, T scaler)
+  {
+    rsAssert(rowIndex >= 0 && rowIndex < numRows, "row index out of range");
+    for(int j = 0; j < numCols; ++j)
+      (*this)(rowIndex, j) *= scaler;
+  }
+
+  inline void scaleColumn(int columnIndex, T scaler)
+  {
+    rsAssert(columnIndex >= 0 && columnIndex < numCols, "column index out of range");
+    for(int i = 0; i < numCols; ++i)
+      (*this)(i, columnIndex) *= scaler;
+  }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
