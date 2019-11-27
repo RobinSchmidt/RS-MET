@@ -594,9 +594,9 @@ public:
 
   /** Computes the Kronecker product between matrices A and B. For a 3x2 matrix A, it looks like:
 
-  |a11*B a12*B|
+              |a11*B a12*B|
   A (x) B  =  |a21*B a22*B|
-  |a31*B a32*B|
+              |a31*B a32*B|
 
   Where each entry aij*B is a submatrix of dimensions of B with the entries of B scaled by the
   respective element from A. This product is also sometimes called tensor product, but i think, 
@@ -617,7 +617,7 @@ public:
   rsMatrix<T> getElementwiseProduct(const rsMatrixView<T>& rightOperand) const
   {
     rsMatrix<T> result(numRows, numCols);
-    rsMatrixView<T>::elementwiseMultiply(this, &rightOperand, &result);
+    rsMatrixView<T>::elementwiseMultiply(*this, rightOperand, &result);
     return result;
   }
   // it's intentional that the rsMatrixView method is called multiply and this here is called 
