@@ -27,13 +27,16 @@ public:
   // rsComplexSpectrogram<double> specSum = spec1 + spec1;
   // -> test this
 
-
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
 
   inline void setNumFramesAndBins(int numFrames, int numBins)
   { stftData->setSize(numFrames, numBins); }
 
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
 
   /** Returns the number of STFT frames in this spectrogram. */
   inline int getNumFrames() const { return stftData->getNumRows(); }
@@ -73,8 +76,7 @@ public:
   //{  return rsComplexSpectrogram<T>(stftData.getElementwiseQuotient(rightOperand.stftData)); }
 
 
-
-  // implement +=,-=,*=,/= operators
+  // todo: implement +=,-=,*=,/= operators
 
 
 
@@ -298,6 +300,8 @@ public:
   // todo: make a complex version - but the version using a real scaleFactor should not call the 
   // complex version because that would needlessly invoke more expensive full complex 
   // multiplications, where a real-times-complex multiplication would do
+
+  // move to rsSpectrogram
 
 
   /** Zeroes out all bins above "highestBinToKeep" (in all frames) */
