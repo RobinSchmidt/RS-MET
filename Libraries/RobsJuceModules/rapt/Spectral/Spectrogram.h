@@ -34,7 +34,6 @@ public:
   { stftData->setSize(numFrames, numBins); }
 
 
-
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
@@ -47,6 +46,24 @@ public:
   /** Read and write access to STFT value at the given frame- and bin-index. */
   inline T& operator()(const int frameIndex, const int binIndex) 
   { return stftData(frameIndex, binIndex); }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Manipulation
+
+  /** Scales the data at given binIndex by the given scaleFactor in all frames. The type for the 
+  scale factor should either be T or std::complex<T>. */
+  template<class TScaler>
+  void scaleBin(int binIndex, TScaler scaleFactor)
+  {
+    rsAssert(binIndex >= 0 && binIndex < getNumBins());
+    for(int i = 0; i < getNumFrames(); i++)
+      stftData(i, binIndex) *= scaleFactor;
+  }
+
+
+  // maybe make a scaleFrame function as well - could be useful for applying amplitude envelopes
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -285,23 +302,6 @@ public:
   //static void hanningWindowZN(T *w, int N);
   // maybe have a version NZ, ZZ, NN
   // moved to rsWindowFunction
-
-  /** Scales the values in all frames at the given binIndex in the given spectrogram. */
-  inline static void scaleBin(rsMatrix<std::complex<T>>& spectrogram, int binIndex, T scaleFactor)
-  {
-    // get rid of these - use getNumBins/getNumFrames:
-    int numFrames = spectrogram.getNumRows();
-    int numBins   = spectrogram.getNumColumns();
-
-    rsAssert(binIndex >= 0 && binIndex < numBins);
-    for(int i = 0; i < numFrames; i++)
-      spectrogram(i, binIndex) *= scaleFactor;
-  }
-  // todo: make a complex version - but the version using a real scaleFactor should not call the 
-  // complex version because that would needlessly invoke more expensive full complex 
-  // multiplications, where a real-times-complex multiplication would do
-
-  // move to rsSpectrogram
 
 
   /** Zeroes out all bins above "highestBinToKeep" (in all frames) */
