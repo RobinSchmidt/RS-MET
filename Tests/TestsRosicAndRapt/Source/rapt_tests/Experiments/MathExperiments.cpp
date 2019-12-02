@@ -85,20 +85,13 @@ void finiteDifferenceStencilCoeffs()
   int d = 4;               // derivative order
   int N = (int) s.size();  // stencil length
 
-
   // establish matrix:
   double** A;  // matrix
   MatrixTools::rsAllocateMatrix(A, N, N);
   for(int i = 0; i < N; i++)
-  {
     for(int j = 0; j < N; j++)
-    {
-      A[i][j] = pow(s[j], i);  // verify this!
-    }
-  }
-
-  // for debug:
-  rsMatrix<double> A_dbg(N, N, A);
+      A[i][j] = pow(s[j], i);
+  //rsMatrix<double> A_dbg(N, N, A);  // for debug
 
   // establish right-hand-side vector:
   Vec rhs(N);
@@ -110,13 +103,21 @@ void finiteDifferenceStencilCoeffs()
   rsLinearAlgebra::rsSolveLinearSystem(A, &c[0], &rhs[0], N);
 
   // todo: 
+  // -move to library
+  // -add unit test
   // -try the example with the 4-th order derivative and 5-point stencil that is presented
   //  on the website
   // -try different examples and compare results with results from the website - use also
   //  asymmetrical and/or non-equidistant stencils
   // -if it all works, maybe implement it also in sage to get rid of roundoff errors
-  // -maybe we should round the final coeffs? are they supposed to be integer?
+  // -maybe we should round the final coeffs? are they supposed to be integer? ...maybe only, if
+  //  the stencil offsets are all integers?
 
+  // stencil = -2,-1,0,1,2, d = 4:
+
+
+  // stencil = -2,-1,0,3,4, d = 3:
+  // f_xxx = (-6*f[i-2]+15*f[i-1]-10*f[i+0]+1*f[i+3]+0*f[i+4])/(10*1.0*h**3)
 
 
   MatrixTools::rsDeAllocateMatrix(A, N, N);
