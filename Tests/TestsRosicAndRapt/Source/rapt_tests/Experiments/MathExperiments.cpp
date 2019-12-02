@@ -80,13 +80,12 @@ void finiteDifferenceStencilCoeffs()
   // http://web.media.mit.edu/~crtaylor/calculator.html
 
   typedef std::vector<double> Vec;
-
-  Vec s = {-2, -1, 0, 1, 2};
-  int d = 4;               // derivative order
-  int N = (int) s.size();  // stencil length
+  Vec s = {-2, -1, 0, 1, 2};         // normalized stencil offsets
+  int d = 4;                         // order of derivative to be approximated
 
   // establish matrix:
-  double** A;  // matrix
+  int N = (int) s.size();    // stencil length
+  double** A;                // matrix data
   MatrixTools::rsAllocateMatrix(A, N, N);
   for(int i = 0; i < N; i++)
     for(int j = 0; j < N; j++)
@@ -101,6 +100,10 @@ void finiteDifferenceStencilCoeffs()
   // compute coeffs by solving the linear system:
   Vec c(N);
   rsLinearAlgebra::rsSolveLinearSystem(A, &c[0], &rhs[0], N);
+  // In practice, the resulting coefficients have to be divided by h^d where h is the step-size and
+  // d is the order of the derivative to be approximated. The stencil values in s are actually 
+  // multipliers for some basic step-size h, i.e. a stencil -2,-1,0,1,2 means that we use values
+  // f(x-2h),f(x-h),f(x),f(x+h),f(x+2h) to approximate the d-th derivative of f(x) at x=0
 
   // todo: 
   // -move to library
