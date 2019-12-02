@@ -73,6 +73,7 @@ void pixelCoverage();
 // Math Experiements:
 
 void ellipseLineIntersections();
+void finiteDifferenceStencilCoeffs();
 void interpolatingFunction();
 void linearRegression();
 void polynomialPrediction();

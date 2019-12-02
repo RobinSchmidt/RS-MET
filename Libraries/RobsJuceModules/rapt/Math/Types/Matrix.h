@@ -478,6 +478,16 @@ public:
     // todo: optionally init with zeros
   }
 
+  /** Constructor to create a matrix from an array-of-arrays - mostly for conveniently converting
+  matrices in the old representation into the one. */
+  rsMatrix(int numRows, int numColumns, T** data)
+  {
+    setSize(numRows, numColumns);
+    for(int i = 0; i < numRows; i++)
+      for(int j = 0; j < numColumns; j++)
+        (*this)(i,j) = data[i][j];
+  }
+
   /** Destructor. */
   ~rsMatrix()
   {

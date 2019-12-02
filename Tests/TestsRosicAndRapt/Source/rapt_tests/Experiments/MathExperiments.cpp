@@ -74,6 +74,53 @@ void ellipseLineIntersections()
   plt.plot();
 }
 
+void finiteDifferenceStencilCoeffs()
+{
+  // Computation of coefficients for arbitrary finite difference stencils, see:
+  // http://web.media.mit.edu/~crtaylor/calculator.html
+
+  typedef std::vector<double> Vec;
+
+  Vec s = {-2, -1, 0, 1, 2};
+  int d = 4;               // derivative order
+  int N = (int) s.size();  // stencil length
+
+
+  // establish matrix:
+  double** A;  // matrix
+  MatrixTools::rsAllocateMatrix(A, N, N);
+  for(int i = 0; i < N; i++)
+  {
+    for(int j = 0; j < N; j++)
+    {
+      A[i][j] = pow(s[j], i);  // verify this!
+    }
+  }
+
+  // for debug:
+  rsMatrix<double> A_dbg(N, N, A);
+
+  // establish right-hand-side vector:
+  Vec rhs(N);
+  rsFill(rhs, 0.0);
+  rhs[d] = rsFactorial(d);
+
+  // compute coeffs by solving the linear system:
+  Vec c(N);
+  rsLinearAlgebra::rsSolveLinearSystem(A, &c[0], &rhs[0], N);
+
+  // todo: 
+  // -try the example with the 4-th order derivative and 5-point stencil that is presented
+  //  on the website
+  // -try different examples and compare results with results from the website - use also
+  //  asymmetrical and/or non-equidistant stencils
+  // -if it all works, maybe implement it also in sage to get rid of roundoff errors
+  // -maybe we should round the final coeffs? are they supposed to be integer?
+
+
+
+  MatrixTools::rsDeAllocateMatrix(A, N, N);
+}
 
 void interpolatingFunction()
 {

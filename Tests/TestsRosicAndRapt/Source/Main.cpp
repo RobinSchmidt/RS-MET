@@ -91,6 +91,7 @@ int main(int argc, char* argv[])
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
+  finiteDifferenceStencilCoeffs();
   //interpolatingFunction();
   //linearRegression();
   //polynomialPrediction();  // not yet implemented

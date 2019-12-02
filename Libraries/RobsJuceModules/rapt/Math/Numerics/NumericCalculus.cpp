@@ -52,7 +52,7 @@ void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapola
 
 // see also:
 // http://web.media.mit.edu/~crtaylor/calculator.html
-// results form there (the Python code):
+// results from there (the Python code):
 
 // 3-point stencil -1,0,1:
 // f_x = (-1*f[i-1]+0*f[i+0]+1*f[i+1])/(2*1.0*h**1)
@@ -74,6 +74,7 @@ void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapola
 
 // if we use an N-point stencil, we can obtain approximations of derivatives up to order N-1
 // the app there can also compute numerical derivatives for non-equidistant sample data
+// -> try to program something similar in sage or sympy
 
 
 
