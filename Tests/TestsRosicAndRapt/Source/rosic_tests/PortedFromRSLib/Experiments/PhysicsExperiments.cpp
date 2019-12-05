@@ -174,14 +174,14 @@ void waveEquation1D()
   int numTimeSteps  = 200;
   int width         = 10;    // width of initial impulse/excursion
 
+  double timeStep   = 1.0 / (numGridPoints-1);  
+  // optimum value - makes numerical solution exact, when waveSpeed is set to unity, if it's less,
+  // we see numerical dispersion, if it's higher, the scheme becomes unstable
 
-  //double timeStep = 1;
-  double timeStep = 1.0 / (numGridPoints-1);  // optimum value - makes numerical solution exact
-
-  // create and set upr wave-equation solver object:
+  // create and set up wave-equation solver object:
   rsWaveEquation1D<double> wvEq;
   wvEq.setNumGridPoints(numGridPoints);
-
+  wvEq.setWaveSpeed(1.0);
 
   // create arrays for string state and set up initial conditions for the solver:
   int Ng = numGridPoints;  // for convenience
@@ -191,8 +191,6 @@ void waveEquation1D()
   rsWindowFunction::hanning(&u[Ng/2-width/2], width);
   RAPT::rsArray::fillWithZeros(&v[0], Ng);
   wvEq.initPositionsAndVelocities(&u[0], &v[0], Ng, timeStep);
-
-
 
   // go through a couple of rounds of updates:
   double** plotMatrix;
@@ -204,8 +202,7 @@ void waveEquation1D()
     wvEq.updateState(timeStep);
   }
 
-
-
+  // plot results:
   GNUPlotter plt;
   std::vector<double> t(numTimeSteps), x(numGridPoints);
   RAPT::rsArray::fillWithIndex(&t[0], numTimeSteps);
@@ -224,14 +221,13 @@ void waveEquation1D()
 
   MatrixTools::rsDeAllocateMatrix(plotMatrix, numTimeSteps, numGridPoints);
 
-
   // Observations:
   // -using a hanning window of width 10, it looks good - the impulses move to the boundary and get 
   //  reflected (with sign inversion), 
   // -using a single impulse-spike, the point where the spike was set oscillates at the Nyquist 
   //  freq (it alternates betwen +1 and -1) and a wave at the spatial Nyquist freq spreads out
-  // -width=4 gives a pixelated appearance
-
+  // -width = 4 gives a pixelated appearance
+  // -waveSpeed = 0.5 shows numerical dispersion
 }
 
 
