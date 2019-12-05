@@ -127,7 +127,7 @@ int main(int argc, char* argv[])
   // Physics:
   //doublePendulum(); // takes long
   //heatEquation1D();
-  //waveEquation1D();  // not yet implemented
+  waveEquation1D();  // not yet implemented
   //particleForceDistanceLaw();
   //particleSystem();
   //quantumSpinMeasurement();  // move to unit tests

@@ -170,6 +170,14 @@ void heatEquation1D()
 
 void waveEquation1D()
 {
+  int numGridPoints = 20;
+
+  rsWaveEquation1D<double> wvEq;
+  wvEq.setNumGridPoints(numGridPoints);
+
+
+
+
 
   GNUPlotter plt;
 }

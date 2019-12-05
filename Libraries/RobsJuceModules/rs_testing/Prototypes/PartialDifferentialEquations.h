@@ -1,5 +1,6 @@
 #pragma once
 
+//=================================================================================================
 
 /** A class to generate sounds based on the heat equation. We consider a one-dimensional medium 
 (like a thin rod) that has some initial heat distribution which evolves over time according to the
@@ -8,7 +9,10 @@ it as a cycle of a waveform. At each time-step of the PDE solver, we will get an
 shape of the cycle than we had the previous cycle - so time-steps of the PDE solver occur after 
 each cycle. The time evolution of the heat equation is such that the distribution becomes simpler 
 and simpler over time and eventually settles to a uniform distribution at the mean value of the
-intial distribution (which we may conveniently choose to be zero). */
+intial distribution (which we may conveniently choose to be zero). 
+
+the code follows roughly 3blue1brown's explanations here:
+Solving the heat equation | DE3  https://www.youtube.com/watch?v=ToIXSwZ1pJU  */
 
 template<class T>
 class rsHeatEquation1D
@@ -157,6 +161,74 @@ protected:
   T *rodIn, *rodOut;
   // Pointers that alternately point to the beginning of rodArray1[0] and rodArray2[0] - used for
   // computing the new heat-distribution from the old
+
+};
+
+//=================================================================================================
+
+/** Implements a numercial solution of the 1D wave equation. This may serve as a model for a string
+or tube.
+
+References:
+  (1) Numerical Sound Synthesis (Stefan Bilbao)  */
+
+template<class T>
+class rsWaveEquation1D
+{
+
+public:
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets the number of grid points, i.e. the number of spatial samples along the unit interval
+  [0,1]. If this number is N, the spatial sampling interval h will be 1/(N+1). */
+  void setNumGridPoints(int newNumGridPoints)
+  {
+    rsAssert(newNumGridPoints >= 3, "needs at leat 3 grid points (and even that is degenerate)");
+    u0.resize(newNumGridPoints);
+    u1.resize(newNumGridPoints);
+    tmp.resize(newNumGridPoints);
+  }
+
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  int getNumGridPoints() { return (int) u0.size(); }
+
+  /** Writes the current state of the string into "state" which is supposed to be "length" long. 
+  This "length" is actually supposed to be equal to what was set via setNumGridPoints. */
+  void getState(T* state, int length)
+  {
+    rsAssert(length == getNumGridPoints(), "array length should match number of grid points");
+    rsArray::copy(&u0[0], length);
+  }
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  void initPositionsAndVelocities(T* newPositions, T* newVelocities, int length);
+  // length is supposed to be equal to u0.size - but client code should pass it in for verification
+  // reasons
+
+  void updateState();
+
+
+protected:
+
+  std::vector<T> u0, u1, tmp; // current state, state one sample ago, temporary buffer
+
+  //int numGridPoints;
+  //T gridSpacing;
+  //T timeStep;
 
 
 };
