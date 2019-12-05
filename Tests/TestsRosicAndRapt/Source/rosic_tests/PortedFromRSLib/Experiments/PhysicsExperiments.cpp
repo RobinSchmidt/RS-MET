@@ -170,10 +170,14 @@ void heatEquation1D()
 
 void waveEquation1D()
 {
-  int numGridPoints = 20;
+  int numGridPoints = 5;
+  double timeStep = 1;
 
   rsWaveEquation1D<double> wvEq;
   wvEq.setNumGridPoints(numGridPoints);
+
+
+  wvEq.updateState(timeStep);  // just for debug
 
 
 

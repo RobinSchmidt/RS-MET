@@ -192,6 +192,11 @@ public:
     tmp.resize(newNumGridPoints);
   }
 
+  void setWaveSpeed(T newSpeed)
+  {
+    waveSpeed = newSpeed;
+  }
+
 
 
 
@@ -199,6 +204,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+  /** Returns the number of spatial grid points. */
   int getNumGridPoints() { return (int) u0.size(); }
 
   /** Writes the current state of the string into "state" which is supposed to be "length" long. 
@@ -219,12 +225,37 @@ public:
   // length is supposed to be equal to u0.size - but client code should pass it in for verification
   // reasons
 
-  void updateState();
+  void updateState(T timeStep)
+  {
+    // We implement the scheme in (1), Eq. 6.34: u_tt = g^2 * u_xx where u_tt and u_xx are central 
+    // difference approximations to the second temporal and spatial derivative respectively. g is a 
+    // constant (gamma).
+
+    // these intermediate variables are mostly for clarity and consistency with the mathematical 
+    // notation in (1) - production code may get away without them ...or maybe the compiler 
+    // optimizes them away anyway:
+    int N = getNumGridPoints();
+    T   c = waveSpeed;     // what unit?
+    T   L = T(1);          // we use the unit interval [0,1], so the spatial length is 1
+    T   g = c / L;         // "gamma" - (1), Eq. 6.5
+    T   k = timeStep;      // temporal sampling interval
+    T   h = L / (N-1);     // spatial sampling interval (verify...
+
+
+
+
+    int dummy = 0;
+  }
+  // it's a bit surprising (in a good way), that a central difference in time leads to an explicit 
+  // rather than implicit recursion
+  // -> figure out, why -> derive the recursion from the operators
 
 
 protected:
 
   std::vector<T> u0, u1, tmp; // current state, state one sample ago, temporary buffer
+
+  T waveSpeed = T(1);
 
   //int numGridPoints;
   //T gridSpacing;
