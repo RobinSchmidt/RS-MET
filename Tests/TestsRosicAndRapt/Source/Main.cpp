@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
-  finiteDifferenceStencilCoeffs();
+  //finiteDifferenceStencilCoeffs();
   //interpolatingFunction();
   //linearRegression();
   //polynomialPrediction();  // not yet implemented
@@ -378,7 +378,7 @@ int main(int argc, char* argv[])
   //phaseRepresentation();
   //grainRoundTrip();        // under construction
   //spectrogramSine();
-  spectrogramFilter();
+  //spectrogramFilter();
   //sineParameterEstimation();
   //plotOverlappingWindowSum();
   //phaseInterpolation();

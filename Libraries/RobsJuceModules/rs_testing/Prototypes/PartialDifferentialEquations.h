@@ -260,7 +260,7 @@ public:
       tmp[l] = 2*(1-l2)*u[l] + l2*(u[l-1]+u[l+1]) - u1[l];  // (1), Eq 6.35
 
     // compute updated solution at endpoints:
-    tmp[0] = tmp[N-1] = T(0); // endpoints fixed at zero - "Dirichlet" conditions
+    tmp[0] = tmp[N] = T(0); // endpoints fixed at zero - "Dirichlet" conditions
     // todo: allow to let client code choose from various boundary conditions (Dirichlet, Neumann, 
     // mixed, etc.)
 

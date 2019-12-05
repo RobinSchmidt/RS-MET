@@ -170,8 +170,10 @@ void heatEquation1D()
 
 void waveEquation1D()
 {
-  int numGridPoints = 33;   // 2^k + 1 are "nice"
-  int numTimeSteps  = 100;
+  int numGridPoints = 65;   // 2^k + 1 are "nice"
+  int numTimeSteps  = 200;
+  int width         = 10;    // width of initial impulse/excursion
+
 
   //double timeStep = 1;
   double timeStep = 1.0 / (numGridPoints-1);  // optimum value - makes numerical solution exact
@@ -186,7 +188,7 @@ void waveEquation1D()
   std::vector<double> u(Ng), v(Ng);
   RAPT::rsArray::fillWithZeros(&u[0], Ng);
   //u[Ng/2] = 1.0;
-  int width = 10; rsWindowFunction::hanning(&u[Ng/2-width/2], width);
+  rsWindowFunction::hanning(&u[Ng/2-width/2], width);
   RAPT::rsArray::fillWithZeros(&v[0], Ng);
   wvEq.initPositionsAndVelocities(&u[0], &v[0], Ng, timeStep);
 
@@ -203,13 +205,6 @@ void waveEquation1D()
   }
 
 
-  // -using a hanning window of width 10, it looks good - the impulses move to the boundary and get 
-  //  reflected (with sign inversion), 
-  // -using a single impulse-spike, the point where the spike was set oscillates at the Nyquist 
-  //  freq (it alternates betwen +1 and -1) and a wave at the spatial Nyquist freq spreads out
-
-  // todo: record the states in batch - maybe use a 3D plot, plotting one state after another
-
 
   GNUPlotter plt;
   std::vector<double> t(numTimeSteps), x(numGridPoints);
@@ -217,11 +212,26 @@ void waveEquation1D()
   RAPT::rsArray::fillWithIndex(&x[0], numGridPoints);
   plt.addDataMatrix(numTimeSteps, numGridPoints, &t[0],  &x[0],plotMatrix);
   // make convenience-function addDataMatrix that doesn't require x,y axes to be passed
-  plt.plot3D();
+
+  plt.addGraph("i 0 nonuniform matrix w image notitle");   
+  plt.addCommand("set palette gray");                   // maximum is white
+  plt.plot();
+  // we need a bipolar palette for this
+
+  //plt.addCommand("set hidden3d");
+  //plt.plot3D();
   // todo: set hidden 3D and/or plot as heatmap
 
-
   MatrixTools::rsDeAllocateMatrix(plotMatrix, numTimeSteps, numGridPoints);
+
+
+  // Observations:
+  // -using a hanning window of width 10, it looks good - the impulses move to the boundary and get 
+  //  reflected (with sign inversion), 
+  // -using a single impulse-spike, the point where the spike was set oscillates at the Nyquist 
+  //  freq (it alternates betwen +1 and -1) and a wave at the spatial Nyquist freq spreads out
+  // -width=4 gives a pixelated appearance
+
 }
 
 
