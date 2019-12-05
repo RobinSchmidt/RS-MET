@@ -170,18 +170,38 @@ void heatEquation1D()
 
 void waveEquation1D()
 {
-  int numGridPoints = 65; // 2^k + 1 are "nice"
+  int numGridPoints = 33; // 2^k + 1 are "nice"
   //double timeStep = 1;
   double timeStep = 1.0 / (numGridPoints-1);  // optimum value - makes numerical solution exact
 
+  // create and set upr wave-equation solver object:
   rsWaveEquation1D<double> wvEq;
   wvEq.setNumGridPoints(numGridPoints);
 
 
-  wvEq.updateState(timeStep);  // just for debug
+  // create arrays for string state and set up initial conditions for the solver:
+  int Ng = numGridPoints;  // for convenience
+  std::vector<double> u(Ng), v(Ng);
+  RAPT::rsArray::fillWithZeros(&u[0], Ng);
+  u[Ng/2] = 1.0;
+  //int width = 10; rsWindowFunction::hanning(&u[Ng/2-width/2], width);
+  RAPT::rsArray::fillWithZeros(&v[0], Ng);
+  wvEq.initPositionsAndVelocities(&u[0], &v[0], Ng, timeStep);
 
 
+  // go through a couple of rounds of updates:
+  int numUpdates = 200;
+  for(int n = 0; n < numUpdates; n++) {
+    wvEq.getState(&u[0], Ng);
+    rsPlotVector(u);
+    wvEq.updateState(timeStep);
+  }
+  // -using a hanning window of width 10, it looks good - the impulsesmove to the boundary and get 
+  //  reflected (with sign inversion), 
+  // -using a single impulse-spike, the point where the spike was set oscillates at the Nyquist 
+  //  freq (it alternates betwen +1 and -1) and a wave at the spatial Nyquist freq spreads out
 
+  // todo: record the states in batch - maybe use a 3D plot, plotting one state after another
 
 
   GNUPlotter plt;

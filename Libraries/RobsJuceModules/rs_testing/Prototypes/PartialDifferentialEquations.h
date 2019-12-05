@@ -221,8 +221,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  void initPositionsAndVelocities(T* newPositions, T* newVelocities, int length);
-  // length is supposed to be equal to u0.size - but client code should pass it in for verification
+  /** Sets the initial positions and velocities. */
+  void initPositionsAndVelocities(T* newPositions, T* newVelocities, int length, T timeStep)
+  {
+    rsAssert(length == getNumGridPoints(), "array length should match number of grid points");
+    T k = timeStep;
+    for(int l = 0; l < length; l++) {
+      u[l]  = newPositions[l];
+      u1[l] = u[l] + k*newVelocities[l];  // (1), Eq 6.36
+    }
+  }
+  // length is supposed to be equal to u.size - but client code should pass it in for verification
   // reasons
 
   void updateState(T timeStep)
@@ -234,12 +243,12 @@ public:
     // these intermediate variables are mostly for clarity and consistency with the mathematical 
     // notation in (1) - production code may get away without them ...or maybe the compiler 
     // optimizes them away anyway:
-    int N = getNumGridPoints();
+    int N = getNumGridPoints()-1; // see (1), section 5.2.8
     T c   = waveSpeed;     // what unit?
     T L   = T(1);          // we use the unit interval [0,1], so the spatial length is 1
     T gam = c / L;         // "gamma" - (1), Eq. 6.5
     T k   = timeStep;      // temporal sampling interval
-    T h   = L / (N-1);     // spatial sampling interval
+    T h   = L / N;         // spatial sampling interval
     T lam = gam*k / h;     // "lambda", the Courant number
     rsAssert(lam <= T(1), "scheme unstable with these settings!"); // (1), Eq. 6.40
     // actually lamda == 1 is most desirable - in this special case, the numerical solution becomes 
@@ -247,7 +256,7 @@ public:
 
     // compute updated solution at interior points:
     T l2 = lam*lam;  // lambda-squared
-    for(int l = 1; l < N-1; l++)
+    for(int l = 1; l <= N-1; l++)                           // (1), section 5.2.8
       tmp[l] = 2*(1-l2)*u[l] + l2*(u[l-1]+u[l+1]) - u1[l];  // (1), Eq 6.35
 
     // compute updated solution at endpoints:
