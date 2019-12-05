@@ -170,8 +170,9 @@ void heatEquation1D()
 
 void waveEquation1D()
 {
-  int numGridPoints = 5;
-  double timeStep = 1;
+  int numGridPoints = 65; // 2^k + 1 are "nice"
+  //double timeStep = 1;
+  double timeStep = 1.0 / (numGridPoints-1);  // optimum value - makes numerical solution exact
 
   rsWaveEquation1D<double> wvEq;
   wvEq.setNumGridPoints(numGridPoints);

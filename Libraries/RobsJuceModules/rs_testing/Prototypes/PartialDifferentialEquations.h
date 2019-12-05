@@ -187,7 +187,7 @@ public:
   void setNumGridPoints(int newNumGridPoints)
   {
     rsAssert(newNumGridPoints >= 3, "needs at leat 3 grid points (and even that is degenerate)");
-    u0.resize(newNumGridPoints);
+    u.resize(newNumGridPoints);
     u1.resize(newNumGridPoints);
     tmp.resize(newNumGridPoints);
   }
@@ -205,14 +205,14 @@ public:
   /** \name Inquiry */
 
   /** Returns the number of spatial grid points. */
-  int getNumGridPoints() { return (int) u0.size(); }
+  int getNumGridPoints() { return (int) u.size(); }
 
   /** Writes the current state of the string into "state" which is supposed to be "length" long. 
   This "length" is actually supposed to be equal to what was set via setNumGridPoints. */
   void getState(T* state, int length)
   {
     rsAssert(length == getNumGridPoints(), "array length should match number of grid points");
-    rsArray::copy(&u0[0], length);
+    RAPT::rsArray::copy(&u[0], state, length);
   }
 
 
@@ -235,15 +235,29 @@ public:
     // notation in (1) - production code may get away without them ...or maybe the compiler 
     // optimizes them away anyway:
     int N = getNumGridPoints();
-    T   c = waveSpeed;     // what unit?
-    T   L = T(1);          // we use the unit interval [0,1], so the spatial length is 1
-    T   g = c / L;         // "gamma" - (1), Eq. 6.5
-    T   k = timeStep;      // temporal sampling interval
-    T   h = L / (N-1);     // spatial sampling interval (verify...
+    T c   = waveSpeed;     // what unit?
+    T L   = T(1);          // we use the unit interval [0,1], so the spatial length is 1
+    T gam = c / L;         // "gamma" - (1), Eq. 6.5
+    T k   = timeStep;      // temporal sampling interval
+    T h   = L / (N-1);     // spatial sampling interval
+    T lam = gam*k / h;     // "lambda", the Courant number
+    rsAssert(lam <= T(1), "scheme unstable with these settings!"); // (1), Eq. 6.40
+    // actually lamda == 1 is most desirable - in this special case, the numerical solution becomes 
+    // exact
 
+    // compute updated solution at interior points:
+    T l2 = lam*lam;  // lambda-squared
+    for(int l = 1; l < N-1; l++)
+      tmp[l] = 2*(1-l2)*u[l] + l2*(u[l-1]+u[l+1]) - u1[l];  // (1), Eq 6.35
 
+    // compute updated solution at endpoints:
+    tmp[0] = tmp[N-1] = T(0); // endpoints fixed at zero - "Dirichlet" conditions
+    // todo: allow to let client code choose from various boundary conditions (Dirichlet, Neumann, 
+    // mixed, etc.)
 
-
+    // update state arrays:
+    RAPT::rsArray::copy(&u[0],   &u1[0], N);  // u goes into u1
+    RAPT::rsArray::copy(&tmp[0], &u[0],  N);  // tmp goes into u
     int dummy = 0;
   }
   // it's a bit surprising (in a good way), that a central difference in time leads to an explicit 
@@ -253,7 +267,7 @@ public:
 
 protected:
 
-  std::vector<T> u0, u1, tmp; // current state, state one sample ago, temporary buffer
+  std::vector<T> u, u1, tmp; // current state, state one sample ago, temporary buffer
 
   T waveSpeed = T(1);
 
