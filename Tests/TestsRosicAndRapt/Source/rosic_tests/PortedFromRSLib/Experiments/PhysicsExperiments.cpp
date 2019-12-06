@@ -246,8 +246,8 @@ void rectangularMembrane()
   int numGridPoints = 65;
   int numTimeSteps  = 200;
   int width         = 10;    // width of initial impulse/excursion
-  int xPos          = 15;    // x-coordinate of initial displacement
-  int yPos          = 20;    // y-coordinate of initial displacement
+  int xPos          = 35;    // x-coordinate of initial displacement
+  int yPos          = 25;    // y-coordinate of initial displacement
 
 
   double timeStep   = 1.0 / (numGridPoints-1);  
@@ -271,8 +271,12 @@ void rectangularMembrane()
       double dx = xPos - i;
       double dy = yPos - j;
       double r  = sqrt(dx*dx + dy*dy);
-      u(i, j)   = 1 + cos(2*PI*r/width);  // check this
-      //u(i,j) = 1;  // preliminary
+
+      u(i, j)   = 1 + cos(2*PI*r/width);  
+      // check this ...seems wrong - factor out into exciteWithRaisedCosine(strength, width, x, y) 
+      // or addRaisedCosine, addBellInput, addBellExcitation...maybe we should initialize with all
+      // zeros and use a sort of addExcitation function - this can be used during realtime 
+      // operation as well...addBellExcitation, addTriangularExcitation, addSpikeExcitation, etc
     }
   }
   membrane.setInitialConditions(u, v);
