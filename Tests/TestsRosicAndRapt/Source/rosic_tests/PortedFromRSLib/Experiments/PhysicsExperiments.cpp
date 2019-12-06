@@ -236,8 +236,37 @@ void rectangularMembrane()
   int numGridPoints = 65;
   int numTimeSteps  = 200;
   int width         = 10;    // width of initial impulse/excursion
-  double xPos       = 15;    // x-coordinate of initial displacement
-  double yPos       = 20;    // y-coordinate of initial displacement
+  int xPos          = 15;    // x-coordinate of initial displacement
+  int yPos          = 20;    // y-coordinate of initial displacement
+
+
+  double timeStep   = 1.0 / (numGridPoints-1);  
+  // is this still the best choice in 2D? ...maybe not
+
+  // set up PDE solver:
+  rsRectangularMembrane<double> membrane;
+  membrane.setGridDimensions(numGridPoints, numGridPoints);
+  membrane.setWaveSpeed(1.0);
+  membrane.setTimeStep(timeStep);
+
+
+  int Ng = numGridPoints;
+  rsMatrix<double> u(Ng, Ng), v(Ng, Ng);
+  u.setAllValues(0);
+  v.setAllValues(0);
+  for(int i = xPos-width/2; i < xPos+width/2; i++)
+  {
+    for(int j = yPos-width/2; j < yPos+width/2; j++)
+    {
+      double dx = xPos - i;
+      double dy = yPos - j;
+      double r  = sqrt(dx*dx + dy*dy);
+      u(i, j)   = 1 + cos(2*PI*r/width);  // check this
+      //u(i,j) = 1;  // preliminary
+    }
+  }
+  membrane.setInitialConditions(u, v);
+
 
 
   GNUPlotter plt;

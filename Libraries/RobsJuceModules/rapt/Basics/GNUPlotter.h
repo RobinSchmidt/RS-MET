@@ -39,6 +39,7 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   /** \name Construction/Destruction */
+  // move down
 
   /** Constructor.*/
   GNUPlotter();
@@ -51,7 +52,7 @@ public:
   void initialize();
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Convenience functions 
+  /** \name Static convenience functions 
   These functions can be called simply like GNUPlotter::plot... without creating a GNUPlotter 
   object and are meant for some quick and dirty plots with default look. */
 
@@ -67,6 +68,7 @@ public:
     plt.plot();
   }
   // maybe de-inline
+
 
   /** Plots real and imaginary parts of the complex array z agains the x-axis given by x. */
   template<class T>
@@ -110,23 +112,15 @@ public:
   static void plotComplexVectorField(const std::function<std::complex<T>(std::complex<T>)>& f,
     int Nr, T rMin, T rMax, int Ni, T iMin, T iMax, bool conjugate = true);
 
-
   // todo: plotFunction, plotBivariateFunction ...this would be the same as plotScalarField2D
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Plotting */
-
-  /** After the data has been set up and possibly a couple of formatting functions have been
-  called, calling this function will actually invoke GNUPlot for plotting the data according to the
-  desired settings. Used internally, but can be also called, if you set up the data manually. */
-  void plot();
-
-  /** Like plot, but is used for 3D plots (invoking GNUPlot's "splot" command instead of "plot"). 
-  It is supposed that the appropriate data-setup functions have been called before, such that the 
-  datasets may meaningfully be interpreted as 3D datasets.  Used internally, but can be also called, 
-  if you set up the data manually.*/
-  void plot3D();
+  /** \name Convenience functions 
+  These functions can be called by creating a plotter object and then calling the respective 
+  function on that object. In between, you may call further setup functions on the plotter object 
+  to customize the appearance. They are a little bit less convenient than the static ones (require 
+  two lines of code instead of one), but allow for a lot more flexibility. */
 
   /** Plots the function values in the arrays y1, y2, ... against an abscissa given by the array x. */
   template <class T>
@@ -173,8 +167,16 @@ public:
    // let these functions take multiple functions, use internally a function
    // addBivariateFunctionData
 
+  // ToDo: 
+  // -for those functions which receive a function pointer, use std::function instead - this 
+  //   will allow use with lambda-functions, functors *and* function-pointers -> more flexible
+  // -make a version of plotSurface that accepts a matrix in flat storage (row- or column-major)
   // provide more functions for specialized plots
   // plotFunctionFamily, plotVectorField, plotHistogram, bodePlot, scatterPlot, plotComplexMapping
+
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Style Setup */
@@ -264,6 +266,7 @@ public:
   a string of formatting options, for example "center" for centered text (see the set label 
   documentation in the GNUPlot manual). */
   void addAnnotation(double x, double y, CSR text, CSR options = "");
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data setup */
@@ -384,6 +387,11 @@ public:
   template <class T>
   void addDataMatrix(int Nx, int Ny, T *x, T *y, T **z);
 
+  // todo addDataMatrix(int Nx, int Ny, T *x, T *y, T *z); that accepts a matrix in flat storage
+  // format - maybe have a bool for columnMajor storage (false by default)
+
+
+
   /** Adds a data set representing parametric curve on a 2-dimensional plane. The optional 
   writeParameters argument decides, whether or not the t-values shall be written into the 
   datafile - if so, they will be written into the first column. */
@@ -453,7 +461,6 @@ public:
     T x0, T y0, T stepSize, int numPoints, int oversampling = 1);
 
 
-
   /** Adds a graph to the plot. You must pass a string that describes how the data (from the 
   previously created datafile) should be used to produce one of the graphs in the plot. This is a 
   string that appears in the actual "plot" or "splot" command that will be created for GNUPlot 
@@ -469,10 +476,8 @@ public:
   flexibility and generality in the use of this plotter class. */
   void addGraph(CSR descriptor);
 
-
   //-----------------------------------------------------------------------------------------------
   /** \name Combined addData + addGraph functions */
-
 
   template<class T>
   void addVectorField2D(const std::function<T(T, T)>& fx, const std::function<T(T, T)>& fy,
@@ -483,8 +488,43 @@ public:
     T x0, T y0, T stepSize, int numPoints, int oversampling = 1);
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Drawing.
+  These functions are meant for directly drawing geometric shapes, text, etc. onto the canvas. They
+  do not add anything to the datafile. Instead, they add commands like a "set object circle..." to
+  the commandfile. These drawing commands appear before the plot commands, so the graphs (if any) 
+  will be drawn on top the shapes, unless they specify "front" in their attributes string. 
+  (...hmm - does this have to be the case?).  */
+
+  /** The x,y-coordinates specify the center-left of the text. A typical attribute string could 
+  look like: .... */
+  void drawText(const std::string& attributes, const std::string& text, double x, double y);
+
+  void drawLine(const std::string& attributes, double x1, double y1, double x2, double y2);
+
+  void drawArrow(const std::string& attributes, double x1, double y1, double x2, double y2);
+
+  void drawPolyLine(const std::string& attributes, 
+    const std::vector<double>& x, const std::vector<double>& y);
 
 
+
+
+  void drawPolygon(const std::string& attributes, const std::vector<double>& x, 
+    const std::vector<double>& y);
+
+  void drawCircle(const std::string& attributes, double centerX = 0, double centerY = 0, 
+    double radius = 1);
+
+  void drawEllipse(const std::string& attributes, double centerX = 0, double centerY = 0, 
+    double width = 2, double height = 2, double angle = 0);  // angle is in degrees
+
+
+
+  // maybe add drawRectangle, drawTriangle, drawRegularPolygon
+
+  // maybe have additional functions that accept raw arrays insetad of std::vector for drawPolygon
+  // and drawPolyLine
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -511,6 +551,43 @@ public:
   static void decimate(T* x, int Nx, T* y, int factor);
 
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Preparing and invoking gnuplot */
+
+  /** After the data has been set up and possibly a couple of formatting functions have been
+  called, calling this function will actually invoke GNUPlot for plotting the data according to the
+  desired settings. Used internally, but can be also called, if you set up the data manually. */
+  void plot();
+
+  /** Like plot, but is used for 3D plots (invoking GNUPlot's "splot" command instead of "plot"). 
+  It is supposed that the appropriate data-setup functions have been called before, such that the 
+  datasets may meaningfully be interpreted as 3D datasets.  Used internally, but can be also called, 
+  if you set up the data manually.*/
+  void plot3D();
+
+  /** Function to create a homogenous multiplot with the given number of rows and columns (starting
+  at top left and going rightward and down). Homogenous means, that each subplot is of the same 
+  kind, i.e. has the same way of interpreting data from the datafile and the same plotting style. 
+  The data should be prepared such there are numRows*numCols datasets in the datafile and each 
+  dataset is for one of the subplots. The "howTo" string determines, how the datasets are to be 
+  interpreted and also sets up some style options of the plots. The default value would interpret 
+  the first columns of each dataset as x-coordinates and the second columns as y-coordinates and 
+  draw a curve using lines. */
+  void showMultiPlot(int numRows, int numCols, 
+    const std::string& howTo = "u 1:2 w lines lw 1.5 notitle");
+  // todo: 
+  // -allow for 3D multiplots
+  // -maybe rename to homogenousMultiPlot
+
+  /** Used internally by showMultiPlot. Client code probably does not need to deal with it 
+  directly, unless it wants the subplots to be heterogenous, like using different plotting styles 
+  or options for data-interpretation for each subplot. ...hmm - that could actually be a quite 
+  common use case...  */
+  void addSubPlot(double x, double y, double w, double h, int datasetIndex, 
+    const std::string& howTo);
+
+
   /** Initializes the command file. May be called by client code, if it wants to start with an 
   empty command file, i.e. a file that doesn't contain the default commands. */
   void clearCommandFile();
@@ -518,8 +595,15 @@ public:
   /** Executes GNUPlot with the appropriate commandline parameter to read the command file. */
   void invokeGNUPlot();
 
+
+
+
+
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Handling variable argument lists */
+  // should be protected or private
 
   template<class T> 
   static T nullValue(T);
@@ -544,6 +628,16 @@ public:
     CSR s5, CSR s6, CSR s7, CSR s8, CSR s9);
 
 
+
+
+
+  // conversion of numbers to strings:
+  std::string s(unsigned int x);   // conversion of unsigned integers for command file
+  std::string s(double x);         // conversion of doubles for command file
+  std::string sd(double x);        // conversion of doubles for data file
+  std::string sd(int x);           // conversion of integers for data file
+  // todo: add one for floats, rename these...mabye toDataStr, toCmdStr
+
 protected:
 
   /** Creates an initial empty file with the given path. */
@@ -567,6 +661,8 @@ protected:
   /** Calls the operating system to execute the command given by callString. */
   void systemCall(const std::string &callString);
 
+  void assert(bool condition, const char* errorMessage = nullptr);
+
   /** Adds the command for actually plotting the data to the commandfile. */
   void addPlotCommand(bool splot = false);
 
@@ -585,13 +681,7 @@ protected:
 
 
 
-  // conversion of numbers to strings:
-  std::string s(unsigned int x);   // conversion of unsigned integers for command file
-  std::string s(double x);         // conversion of doubles for command file
 
-  std::string sd(double x);        // conversion of doubles for data file
-  // add one for floats
-  std::string sd(int x);           // conversion of integers for data file
 
 
 

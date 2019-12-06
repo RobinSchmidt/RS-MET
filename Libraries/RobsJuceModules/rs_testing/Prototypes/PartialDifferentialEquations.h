@@ -321,7 +321,7 @@ public:
 
   void setGridDimensions(int numPointsX, int numPointsY)
   {
-    rsAssert(numPointsX == numPointsY, "separate spacings for x- and y not yet supported")
+    rsAssert(numPointsX == numPointsY, "separate spacings for x- and y not yet supported");
     u.setSize(numPointsX, numPointsY);
     u1.setSize(numPointsX, numPointsY);
     tmp.setSize(numPointsX, numPointsY);

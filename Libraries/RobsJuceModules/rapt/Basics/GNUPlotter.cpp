@@ -12,9 +12,8 @@ GNUPlotter::GNUPlotter()
   graphStyles[0] = std::string("lines");    // standard lines, width 1 - maybe change to 1.5 or 2
 
   // installation path of the GNUPlot executable:
-  //gnuplotPath = "C:/Program Files/gnuplot/bin/gnuplot.exe";
+  gnuplotPath = "C:/Program Files/gnuplot/bin/gnuplot.exe";
   //gnuplotPath = "C:/Program Files/gnuplot/bin/wgnuplot.exe";
-  gnuplotPath = "C:/Octave/Octave-5.1.0.0/mingw64/bin/gnuplot.exe";
 
   // paths for data file and command batchfile:
   dataPath    = "E:/Temp/gnuplotData.dat";
@@ -125,34 +124,7 @@ template void GNUPlotter::plotComplexVectorField(const function<complex<float>(c
 template void GNUPlotter::plotComplexVectorField(const function<complex<double>(complex<double>)>& f, int Nr, double rMin, double rMax, int Ni, double iMin, double iMax, bool conj);
 
 
-
-// plotting:
-
-
-/*
-template <class T>
-static void GNUPlotter::plot(int N, T *x, T *y1, T *y2, T *y3, T *y4, T *y5, T *y6, T *y7, T *y8,
-  T *y9)
-{
-  GNUPlotter plt;
-  plt.addDataArrays(N, x, y1, y2, y3, y4, y5, y6, y7, y8, y9);
-  plt.plot();
-}
-template void GNUPlotter::plot(int N, double *y1, double *y2, double *y3, double *y4,
-  double *y5, double *y6, double *y7, double *y8, double *y9);
-*/
-
-void GNUPlotter::plot()
-{
-  addPlotCommand(false);
-  invokeGNUPlot();
-}
-
-void GNUPlotter::plot3D()
-{
-  addPlotCommand(true);
-  invokeGNUPlot();
-}
+//-------------------------------------------------------------------------------------------------
 
 template <class T>
 void GNUPlotter::plotFunctionTables(int N, const T *x, const T *y1, const T *y2, const T *y3, 
@@ -226,20 +198,6 @@ void GNUPlotter::plotBivariateFunction(int Nx, int Ny, T *x, T *y, T (*f)(T, T))
 {
   addDataBivariateFunction(Nx, Ny, x, y, f);
   plot3D();
-
-  //int i, j;
-  //T **z = new T*[Nx];
-  //for(i = 0; i < Nx; i++)
-  //  z[i] = new T[Ny];
-  //for(i = 0; i < Nx; i++)
-  //{
-  //  for(j = 0; j < Ny; j++)
-  //    z[i][j] = f(x[i], y[j]);
-  //}
-  //plotSurface(Nx, Ny, x, y, z);
-  //for(i = 0; i < Nx; i++)
-  //  delete[] z[i];
-  //delete[] z;
 }
 
 template <class T>
@@ -248,14 +206,6 @@ void GNUPlotter::plotBivariateFunction(int Nx, T xMin, T xMax, int Ny, T yMin, T
 {
   addDataBivariateFunction(Nx, xMin, xMax, Ny, yMin, yMax, f);
   plot3D();
-
-  //T *x = new T[Nx];
-  //T *y = new T[Ny];
-  //GNUPlotter::rangeLinear(x, Nx, xMin, xMax);
-  //GNUPlotter::rangeLinear(y, Ny, yMin, yMax);
-  //plotBivariateFunction(Nx, Ny, x, y, f);
-  //delete[] x;
-  //delete[] y;
 }
 template void GNUPlotter::plotBivariateFunction(int Nx, double xMin, double xMax, int Ny,
   double yMin, double yMax, double (*f)(double, double));
@@ -264,6 +214,9 @@ template void GNUPlotter::plotBivariateFunction(int Nx, float xMin, float xMax, 
 template void GNUPlotter::plotBivariateFunction(int Nx, int xMin, int xMax, int Ny, int yMin,
   int yMax, int (*f)(int, int));
 
+
+
+//-------------------------------------------------------------------------------------------------
 // style setup:
 
 void GNUPlotter::addCommand(string command)
@@ -619,7 +572,9 @@ void GNUPlotter::addDataCurve2D(const std::function<T(T)>& fx, const std::functi
   else       addDataArrays(Nt,        &x[0], &y[0]); // ...or don't
 
   // the t values may be useful for using color to indicate the t-value along the 
-  // curve? or maybe use tick-marks along the curve - for example, if t in in 0..1 ste markers
+  // curve? see: http://www.gnuplotting.org/using-a-palette-as-line-color/
+  // here for colormaps: https://github.com/Gnuplotting/gnuplot-palettes
+  // ..or maybe use tick-marks along the curve - for example, if t in in 0..1 set markers
   // at 0.1, 0.2, 0.9, 1.0 - maybe these markers could be little arrows to also convey the 
   // orientation of the curve? in any case, the markers should not appear on each t - that would
   // be far too dense - maybe every 20th sample or so would be appropriate
@@ -664,11 +619,9 @@ void GNUPlotter::addDataBivariateFunction(int Nx, int Ny, T *x, T *y,
   T **z = new T*[Nx];
   for(i = 0; i < Nx; i++)
     z[i] = new T[Ny];
-  for(i = 0; i < Nx; i++)
-  {
+  for(i = 0; i < Nx; i++) {
     for(j = 0; j < Ny; j++)
-      z[i][j] = f(x[i], y[j]);
-  }
+      z[i][j] = f(x[i], y[j]); }
   addDataMatrix(Nx, Ny, x, y, z);
   for(i = 0; i < Nx; i++)
     delete[] z[i];
@@ -785,6 +738,74 @@ void GNUPlotter::addFieldLine2D(const std::function<T(T, T)>& fx, const std::fun
 template void GNUPlotter::addFieldLine2D(const std::function<float(float, float)>& fx, const std::function<float(float, float)>& fy, float x0, float y0, float stepSize, int numPoints, int oversampling);
 template void GNUPlotter::addFieldLine2D(const std::function<double(double, double)>& fx, const std::function<double(double, double)>& fy, double x0, double y0, double stepSize, int numPoints, int oversampling);
 
+
+//-------------------------------------------------------------------------------------------------
+// Drawing:
+
+void GNUPlotter::drawText(const std::string& attr,
+  const std::string& text, double x, double y)
+{
+  addCommand("set label \"" + text + "\" at " + s(x) + "," + s(y) + " " + attr);
+}
+// https://stackoverflow.com/questions/16820963/how-to-add-text-to-an-arrow-in-gnuplot
+// http://www.manpagez.com/info/gnuplot/gnuplot-4.4.3/gnuplot_259.php
+
+void GNUPlotter::drawLine(const std::string& attributes,
+  double x1, double y1, double x2, double y2)
+{
+  drawArrow("nohead " + attributes, x1, y1, x2, y2);
+  // A line is just drawn as an arrow without head, i.e. the nohead attribute is added to the 
+  // attributes that are already given.
+}
+
+void GNUPlotter::drawArrow(const std::string& attr,
+  double x1, double y1, double x2, double y2)
+{
+  addCommand("set arrow from " + s(x1) + "," + s(y1) + " to "
+    + s(x2) + "," + s(y2) + " " + attr);
+}
+
+void GNUPlotter::drawPolyLine(const std::string& attributes, 
+  const std::vector<double>& x, const std::vector<double>& y)
+{
+  assert(x.size() == y.size(), "x and y must have the same size");
+  for(int i = 0; i < (int)x.size() - 1; i++)
+    drawLine(attributes, x[i], y[i], x[i+1], y[i+1]);
+  // It's awkward that we have to draw a polyline as a bunch of lines which in turn are just arrows
+  // without a head, but gnuplot doesn't provide line or polyline primitives. ...how weird is that?
+}
+
+void GNUPlotter::drawPolygon(const std::string& attributes,
+  const std::vector<double>& x, const std::vector<double>& y)
+{
+  assert(x.size() == y.size(), "x and y must have the same size");
+  if(x.size() < 3) return; // we don't draw degenerate polygons
+  std::string cmd = "set object polygon from ";
+  for(size_t i = 0; i < x.size(); i++)
+    cmd += s(x[i]) + "," + s(y[i]) + " to ";
+  cmd += s(x[0]) + "," + s(y[0]) + " " + attributes;
+  addCommand(cmd);
+  // The syntax for polygons, circles, ellipses, etc. is different than for arrows and (text) 
+  // labels. It doesn't includes "object" - that's a bit inconsistent.
+}
+
+void GNUPlotter::drawCircle(const std::string& attr, double x, double y, double r)
+{
+  addCommand("set object circle at " + s(x) + "," + s(y) + " size " + s(r) + " " + attr);
+}
+
+void GNUPlotter::drawEllipse(const std::string& attr, 
+  double x, double y, double w, double h, double a)  // angle is in degrees
+{
+  addCommand("set object ellipse center " + s(x) + "," + s(y) + " size " 
+              + s(w) + "," + s(h) + " angle " + s(a) + " " + attr);
+}
+// http://gnuplot.sourceforge.net/demo/ellipse.html
+
+// see here for what types of objects are supported:
+// http://soc.if.usp.br/manual/gnuplot-doc/htmldocs/set_002dshow.html#set_002dshow
+
+//-------------------------------------------------------------------------------------------------
 // inquiry:
 
 string GNUPlotter::getDataPath()
@@ -820,6 +841,46 @@ void GNUPlotter::decimate(T* x, int Nx, T* y, int factor)
     y[i] = x[i*factor];
 }
 
+//-------------------------------------------------------------------------------------------------
+// plotting:
+
+void GNUPlotter::plot()
+{
+  addPlotCommand(false);
+  invokeGNUPlot();
+}
+
+void GNUPlotter::plot3D()
+{
+  addPlotCommand(true);
+  invokeGNUPlot();
+}
+
+void GNUPlotter::showMultiPlot(int numRows, int numCols, const std::string& how)
+{
+  addCommand("set multiplot");                             // init multiplot
+
+  double h = 1.0 / numRows;                                // relative height of subplots
+  double w = 1.0 / numCols;                                // relative width of subplots
+  for(int i = 0; i < numRows; i++)                         // loop over the plot-rows
+    for(int j = 0; j < numCols; j++)                       // loop over the plot-columns
+      addSubPlot(j*w, 1-i*h-h, w, h, numCols*i+j, how);
+
+  addCommand("unset multiplot");
+  invokeGNUPlot();
+}
+// factor out initMultiPlot/finishMultiPlot...or maybe use show instead of finish
+
+void GNUPlotter::addSubPlot(double x, double y, double w, double h, int datasetIndex, 
+  const std::string& how)
+{
+  addCommand("set origin " + s(x) + "," + s(y));    // bottom-left corner of this subplot
+  addCommand("set size "   + s(w) + "," + s(h));    // size of this subplot
+  addCommand("plot '" + getDataPath() + "' i " + s((unsigned int)datasetIndex) + " " + how);
+}
+// todo: this should also allow to use splot instead of plot - have a boolean splot or plot3D 
+// parameter
+
 void GNUPlotter::clearCommandFile()
 {
   initFile(commandPath);
@@ -844,6 +905,7 @@ void GNUPlotter::invokeGNUPlot()
   int dummy = 0;
 }
 
+//-------------------------------------------------------------------------------------------------
 // internal functions:
 
 void GNUPlotter::initFile(const std::string &path)
@@ -867,6 +929,13 @@ void GNUPlotter::systemCall(const std::string &callString)
   char *cString = toZeroTerminatedString(callString);
   system(cString);
   delete[] cString;
+}
+
+void GNUPlotter::assert(bool condition, const char* errorMessage)
+{
+  if(!condition) {
+    std::cout << errorMessage;
+    std::terminate(); }
 }
 
 std::string GNUPlotter::getStyleString(unsigned int i)
@@ -933,6 +1002,24 @@ std::string GNUPlotter::sd(int x)
 
 void GNUPlotter::addPlotCommand(bool splot)
 {
+  // If dataInfo is empty (i.e. no data was added to the datafile by client code), we generate some
+  // dummy data. This is needed, if the user just wants to draw geometric figures on an empty 
+  // canvas. If there is no data at all, the code below crashes and even modifying it to avoid the 
+  // crash doesn't work - then it doesn't crash GNUPlot doesn't open - so, we need at least one 
+  // dummy dataset to plot:
+  if(dataInfo.empty()) {
+    double dummy = 0; addDataArrays(1, &dummy, &dummy, &dummy); } // may work for 2D and 3D
+
+  // hmm - maybe in case of an empty dataset, we should just call replot?:
+  // http://soc.if.usp.br/manual/gnuplot-doc/htmldocs/set_002dshow.html#set_002dshow
+
+
+
+  // Auto-generate graph-descriptors, if user has not set them up manually:
+  if(graphDescriptors.empty())
+    generateGraphDescriptors(splot);
+
+  // Initialize the plot command:
   int i;
   string pc;
   addCommand("\n# Plotting:");
@@ -940,8 +1027,8 @@ void GNUPlotter::addPlotCommand(bool splot)
     pc = "splot \\\n";  // 3D plots
   else
     pc = "plot \\\n";   // 2D plots
-  if(graphDescriptors.empty())
-    generateGraphDescriptors(splot);
+
+  // Add the graph-descriptors to the plot command:
   for(i = 0; i < (int)graphDescriptors.size()-1; i++)
     pc += "'" + dataPath + "' " + graphDescriptors[i] + ",\\\n";
   pc += "'" + dataPath + "' " + graphDescriptors[i];
@@ -953,78 +1040,27 @@ void GNUPlotter::generateGraphDescriptors(bool splot)
   unsigned int i, j, k;
   if(splot == false) {
     k = 0;
-    for(i = 0; i < dataInfo.size(); i++)
-    {
-      if(dataInfo[i].type == "matrix")
-      {
+    for(i = 0; i < dataInfo.size(); i++) {
+      if(dataInfo[i].type == "matrix") {
         addGraph("i " + s(i) + " nonuniform matrix" + getStyleString(k));
-        k++;
-      }
-      else
-      {
-        if(dataInfo[i].numColumns == 1)  // this is new -> test...
-        {
+        k++; }
+      else {
+        if(dataInfo[i].numColumns == 1) { // this is new -> test...
           //addGraph("i " + s(i) + " u 1:1" + getStyleString(k));
           addGraph("i " + s(i) + getStyleString(k));
-          k++;
-        }
+          k++; }
         // entered only, if condition above is false:
-        for(j = 0; j < (unsigned int)dataInfo[i].numColumns-1; j++)
-        {
+        for(j = 0; j < (unsigned int)dataInfo[i].numColumns-1; j++) {
           addGraph("i " + s(i) + " u 1:" + s(j+2) + getStyleString(k));
-          k++;
-        }
-      }
-    }
-  }
-  else
-  {
-    for(i = 0; i < dataInfo.size(); i++)
-    {
+          k++;  }}}}
+  else {
+    for(i = 0; i < dataInfo.size(); i++) {
       if(dataInfo[i].type == "matrix")
         addGraph("i " + s(i) + " nonuniform matrix" + getStyleString(i));
       else
-        addGraph("i " + s(i) + getStyleString(i));
-    }
-  }
+        addGraph("i " + s(i) + getStyleString(i)); }}
 }
-
-// // old:
-//void GNUPlotter::generateGraphDescriptors(bool splot)
-//{
-//  unsigned int i, j, k;
-//  if(splot == false) {
-//    k = 0;
-//    for(i = 0; i < dataInfo.size(); i++)
-//    {
-//      if(dataInfo[i].type == "matrix")
-//      {
-//        addGraph("i " + s(i) + " nonuniform matrix" + getStyleString(k));
-//        k++;
-//      }
-//      else
-//      {
-//        for(j = 0; j < (unsigned int)dataInfo[i].numColumns-1; j++)
-//        {
-//          addGraph("i " + s(i) + " u 1:" + s(j+2) + getStyleString(k));
-//          k++;
-//        }
-//      }
-//    }
-//  }
-//  else
-//  {
-//    for(i = 0; i < dataInfo.size(); i++)
-//    {
-//      if(dataInfo[i].type == "matrix")
-//        addGraph("i " + s(i) + " nonuniform matrix" + getStyleString(i));
-//      else
-//        addGraph("i " + s(i) + getStyleString(i));
-//    }
-//  }
-//}
-
-
+// refactor this - split out two functions generateGraphDescriptors2D/3D
 
 
 // argument handling
