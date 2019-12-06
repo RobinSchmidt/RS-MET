@@ -226,13 +226,27 @@ public:
   void updateState(T timeStep);
   // todo: maybe allow different interpretations of the state such as positions and velocities - 
   // that would be more physical
+  // maybe rename to advanceSolution
 
 
 protected:
 
-  std::vector<T> u, u1, tmp; // current state, state one sample ago, temporary buffer
+  /** Called from updateState. Computes updated values for interior points and stored them in 
+  tmp. */
+  void computeInteriorPoints(T timeStep);
 
-  T waveSpeed = T(1);
+  /** Called from updateState. Computes updated values for boundary points and stored them in 
+  tmp. */
+  void computeBoundaryPoints(T timeStep);
+
+  /** Moves "u" into "u1" and then "tmp" into "u". */
+  void updateStateArrays();
+
+
+  std::vector<T> u, u1; // current state, state one sample ago
+  std::vector<T> tmp;   // temporary buffer used in state updates
+
+  T waveSpeed = T(1);   // which unit? spatial-steps per time-step? -> figure out!
 
   //int numGridPoints;
   //T gridSpacing;
