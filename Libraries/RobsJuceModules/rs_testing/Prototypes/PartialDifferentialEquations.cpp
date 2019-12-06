@@ -99,7 +99,7 @@ void rsWaveEquation1D<T>::setInitialConditions(T* newPositions, T* newVelocities
   T k = timeStep;
   for(int l = 0; l < length; l++) {
     u[l]  = newPositions[l];
-    u1[l] = u[l] + k*newVelocities[l];  // (1), Eq 6.36
+    u1[l] = u[l] + k*newVelocities[l];  // (1), Eq 6.36 ...why + not -?
   }
 }
 
@@ -173,3 +173,13 @@ void rsWaveEquation1D<T>::updateStateArrays()
 
 // see:
 // https://en.wikipedia.org/wiki/Courant%E2%80%93Friedrichs%E2%80%93Lewy_condition
+
+
+
+//=================================================================================================
+
+template<class T>
+void rsRectangularMembrane<T>::updateState()
+{
+
+}

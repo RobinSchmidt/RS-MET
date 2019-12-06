@@ -319,15 +319,39 @@ class rsRectangularMembrane
 public:
 
 
+  void setGridDimensions(int numPointsX, int numPointsY)
+  {
+    u.setSize(numPointsX, numPointsY);
+    u1.setSize(numPointsX, numPointsY);
+    tmp.setSize(numPointsX, numPointsY);
+  }
+
+  void setWaveSpeed(T newSpeed) { waveSpeed = newSpeed; }
+
+  void setTimeStep(T newStep) { timeStep = newStep; }
+
+
   void getState(rsMatrix<T>& state) const { state = u; }
   // check, if this allocates memory (it shouldn't)
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  void setInitialConditions(rsMatrix<T>& displacements, rsMatrix<T>& velocities)
+  {
+    u  = displacements;
+    u1 = u + timeStep * velocities; // why + not -?
+  }
+
+  void updateState();
 
 protected:
 
   rsMatrix<T> u, u1, tmp; // just like in the 1D case
 
   T waveSpeed = T(1);
+  T timeStep  = T(1);
 
   // hx = hy = h is natural for isotropic problmes ((1), pg. 292)
   // todo: generalize to use separate spatial spacing variables hx, hy
