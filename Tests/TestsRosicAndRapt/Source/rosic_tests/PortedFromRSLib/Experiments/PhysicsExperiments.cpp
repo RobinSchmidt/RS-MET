@@ -191,7 +191,7 @@ void waveEquation1D()
   //u[Ng/2] = 1.0;
   rsWindowFunction::hanning(&u[Ng/2-width/2], width);
   RAPT::rsArray::fillWithZeros(&v[0], Ng);
-  wvEq.initPositionsAndVelocities(&u[0], &v[0], Ng, timeStep);
+  wvEq.setInitialConditions(&u[0], &v[0], Ng, timeStep);
 
   // go through a couple of rounds of updates:
   double** plotMatrix;

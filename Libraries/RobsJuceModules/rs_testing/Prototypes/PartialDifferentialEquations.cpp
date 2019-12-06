@@ -92,7 +92,7 @@ T rsWaveEquation1D<T>::getOmegaForWaveNumber(T waveNumber, T timeStep) const
 }
 
 template<class T>
-void rsWaveEquation1D<T>::initPositionsAndVelocities(T* newPositions, T* newVelocities,
+void rsWaveEquation1D<T>::setInitialConditions(T* newPositions, T* newVelocities,
   int length, T timeStep)
 {
   rsAssert(length == getNumGridPoints(), "array length should match number of grid points");

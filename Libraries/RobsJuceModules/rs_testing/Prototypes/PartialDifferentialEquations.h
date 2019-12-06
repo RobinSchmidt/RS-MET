@@ -226,6 +226,11 @@ public:
   T getOmegaForWaveNumber(T waveNumber, T timeStep) const;
   // implements (1), 6.43 - needs test!
 
+  //void rootsOfCharacteristicEquation(T timeStep, T* r1, T* r2);
+  // implements (1), Eq. 6.38
+
+  // getKineticEnergy, getPotentialEnergy, getEnergy
+
   // we need getters for: lambda: Courant number, beta: wavelength, gamma: (normalized) wave-speed
   // h: grid-spacing, k: time-step
   // ...maybe have members for all these variables
@@ -250,7 +255,8 @@ public:
   /** Sets the initial positions and velocities. "length" is supposed to be equal to u.size - but 
   client code should pass it in for verification reasons (that's bad API design -> come up with 
   something better) */
-  void initPositionsAndVelocities(T* newPositions, T* newVelocities, int length, T timeStep);
+  void setInitialConditions(T* newPositions, T* newVelocities, int length, T timeStep);
+  // maybe rename to setInitialConditions
 
   /** Updates the stae of the PDE solver which consists of the current values for the positions and 
   the values one time-step before. */
@@ -294,5 +300,39 @@ protected:
 
   // i'm not yet sure, what the most convenient parametrization is
 
+};
+
+//=================================================================================================
+
+/** Implements numerical solution of the 2D wave-equation 
+
+References:
+(1) Numerical Sound Synthesis (Stefan Bilbao) 
+
+*/
+
+template<class T>
+class rsRectangularMembrane
+{
+
+
+public:
+
+
+  void getState(rsMatrix<T>& state) const { state = u; }
+  // check, if this allocates memory (it shouldn't)
+
+
+protected:
+
+  rsMatrix<T> u, u1, tmp; // just like in the 1D case
+
+  T waveSpeed = T(1);
+
+  // hx = hy = h is natural for isotropic problmes ((1), pg. 292)
+  // todo: generalize to use separate spatial spacing variables hx, hy
 
 };
+
+
+// todo: make class rsCircularMembrane
