@@ -198,80 +198,34 @@ public:
   }
 
 
-
-
-
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the number of spatial grid points. */
-  int getNumGridPoints() { return (int) u.size(); }
+  int getNumGridPoints() const { return (int) u.size(); }
 
   /** Writes the current state of the string into "state" which is supposed to be "length" long. 
   This "length" is actually supposed to be equal to what was set via setNumGridPoints. */
-  void getState(T* state, int length)
+  void getState(T* state, int length) const
   {
     rsAssert(length == getNumGridPoints(), "array length should match number of grid points");
     RAPT::rsArray::copy(&u[0], state, length);
   }
 
 
-
-
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  /** Sets the initial positions and velocities. */
-  void initPositionsAndVelocities(T* newPositions, T* newVelocities, int length, T timeStep)
-  {
-    rsAssert(length == getNumGridPoints(), "array length should match number of grid points");
-    T k = timeStep;
-    for(int l = 0; l < length; l++) {
-      u[l]  = newPositions[l];
-      u1[l] = u[l] + k*newVelocities[l];  // (1), Eq 6.36
-    }
-  }
-  // length is supposed to be equal to u.size - but client code should pass it in for verification
-  // reasons
+  /** Sets the initial positions and velocities. "length" is supposed to be equal to u.size - but 
+  client code should pass it in for verification reasons (that's bad API design -> come up with 
+  something better) */
+  void initPositionsAndVelocities(T* newPositions, T* newVelocities, int length, T timeStep);
 
-  void updateState(T timeStep)
-  {
-    // We implement the scheme in (1), Eq. 6.34: u_tt = g^2 * u_xx where u_tt and u_xx are central 
-    // difference approximations to the second temporal and spatial derivative respectively. g is a 
-    // constant (gamma).
-
-    // these intermediate variables are mostly for clarity and consistency with the mathematical 
-    // notation in (1) - production code may get away without them ...or maybe the compiler 
-    // optimizes them away anyway:
-    int N = getNumGridPoints()-1; // see (1), section 5.2.8
-    T c   = waveSpeed;     // what unit?
-    T L   = T(1);          // we use the unit interval [0,1], so the spatial length is 1
-    T gam = c / L;         // "gamma" - (1), Eq. 6.5
-    T k   = timeStep;      // temporal sampling interval
-    T h   = L / N;         // spatial sampling interval
-    T lam = gam*k / h;     // "lambda", the Courant number
-    rsAssert(lam <= T(1), "scheme unstable with these settings!"); // (1), Eq. 6.40
-    // actually lamda == 1 is most desirable - in this special case, the numerical solution becomes 
-    // exact
-
-    // compute updated solution at interior points:
-    T l2 = lam*lam;  // lambda-squared
-    for(int l = 1; l <= N-1; l++)                           // (1), section 5.2.8
-      tmp[l] = 2*(1-l2)*u[l] + l2*(u[l-1]+u[l+1]) - u1[l];  // (1), Eq 6.35
-
-    // compute updated solution at endpoints:
-    tmp[0] = tmp[N] = T(0); // endpoints fixed at zero - "Dirichlet" conditions
-    // todo: allow to let client code choose from various boundary conditions (Dirichlet, Neumann, 
-    // mixed, etc.)
-
-    // update state arrays:
-    RAPT::rsArray::copy(&u[0],   &u1[0], N);  // u goes into u1
-    RAPT::rsArray::copy(&tmp[0], &u[0],  N);  // tmp goes into u
-    int dummy = 0;
-  }
-  // it's a bit surprising (in a good way), that a central difference in time leads to an explicit 
-  // rather than implicit recursion
-  // -> figure out, why -> derive the recursion from the operators
+  /** Updates the stae of the PDE solver which consists of the current values for the positions and 
+  the values one time-step before. */
+  void updateState(T timeStep);
+  // todo: maybe allow different interpretations of the state such as positions and velocities - 
+  // that would be more physical
 
 
 protected:
@@ -283,6 +237,8 @@ protected:
   //int numGridPoints;
   //T gridSpacing;
   //T timeStep;
+
+  // i'm not yet sure, what the most convenient parametrization is
 
 
 };
