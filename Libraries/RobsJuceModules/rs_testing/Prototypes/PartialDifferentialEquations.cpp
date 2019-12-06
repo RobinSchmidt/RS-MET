@@ -81,6 +81,7 @@ template<class T>
 void rsWaveEquation1D<T>::updateState(T timeStep)
 {
   computeInteriorPoints(timeStep);
+  //computeInteriorPointsSimple();      // simplified formula for Courant number == 1
   computeBoundaryPoints(timeStep);
   updateStateArrays();
 }
@@ -105,6 +106,7 @@ void rsWaveEquation1D<T>::computeInteriorPoints(T timeStep)
   rsAssert(lam <= T(1), "scheme unstable with these settings!"); // (1), Eq. 6.40
   // actually lamda == 1 is most desirable - in this special case, the numerical solution becomes 
   // exact
+  // maybe factor out into getLamda() or getCourantNumber(timeStep)
 
   // compute updated solution at interior points (factor out to allow switching between schemes):
   T l2 = lam*lam;  // lambda-squared
@@ -116,12 +118,18 @@ void rsWaveEquation1D<T>::computeInteriorPoints(T timeStep)
 // rather than implicit recursion
 // -> figure out, why -> derive the recursion from the operators
 
+template<class T>
+void rsWaveEquation1D<T>::computeInteriorPointsSimple()
+{
+  for(size_t l = 1; l < u.size()-1; l++) 
+    tmp[l] = u[l+1] + u[l-1] - u1[l];    // (1), Eq. 6.54
+}
 
 template<class T>
 void rsWaveEquation1D<T>::computeBoundaryPoints(T timeStep)
 {
-  // compute updated solution at endpoints:
-  tmp[0] = tmp[N] = T(0); // endpoints fixed at zero - "Dirichlet" conditions
+  int N  = getNumGridPoints()-1; // see (1), section 5.2.8
+  tmp[0] = tmp[N] = T(0);        // endpoints fixed at zero - "Dirichlet" conditions
   // todo: allow to let client code choose from various boundary conditions (Dirichlet, Neumann, 
   // mixed, etc.)
 }
@@ -129,6 +137,13 @@ void rsWaveEquation1D<T>::computeBoundaryPoints(T timeStep)
 template<class T>
 void rsWaveEquation1D<T>::updateStateArrays()
 {
+  int N = getNumGridPoints()-1;             // see (1), section 5.2.8
   RAPT::rsArray::copy(&u[0],   &u1[0], N);  // u goes into u1
   RAPT::rsArray::copy(&tmp[0], &u[0],  N);  // tmp goes into u
 }
+
+// todo: implement 6.38, 6.43, 6.45, 6.54, 146: bottom, 149: u_l^{n+1} =..., 6.59, 
+// 151: implicit scheme, 6.62, 6.66: recursion
+
+// see:
+// https://en.wikipedia.org/wiki/Courant%E2%80%93Friedrichs%E2%80%93Lewy_condition

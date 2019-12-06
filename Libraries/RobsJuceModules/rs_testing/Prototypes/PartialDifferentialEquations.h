@@ -234,6 +234,14 @@ protected:
   /** Called from updateState. Computes updated values for interior points and stored them in 
   tmp. */
   void computeInteriorPoints(T timeStep);
+  // give it a name that says which scheme is being used
+
+
+  void computeInteriorPointsSimple();
+  // uses Eq. 6.54 which is the scheme 6.34 for the special case lambda = 1. in this special case,
+  // the recursion formula becomes much simpler
+
+
 
   /** Called from updateState. Computes updated values for boundary points and stored them in 
   tmp. */
