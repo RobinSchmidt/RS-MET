@@ -128,7 +128,7 @@ void rsWaveEquation1D<T>::computeInteriorPoints(T timeStep)
   T gam = c / L;         // "gamma" - (1), Eq. 6.5
   T k   = timeStep;      // temporal sampling interval
   T h   = L / N;         // spatial sampling interval
-  T lam = gam*k / h;     // "lambda", the Courant number
+  T lam = gam*k / h;     // "lambda", the Courant number  use getCourantNumber
   rsAssert(lam <= T(1), "scheme unstable with these settings!"); // (1), Eq. 6.40
   // actually lamda == 1 is most desirable - in this special case, the numerical solution becomes 
   // exact
@@ -191,7 +191,20 @@ void rsRectangularMembrane<T>::updateState()
 template<class T>
 void rsRectangularMembrane<T>::computeInteriorPoints()
 {
+  int N    = u.getNumRows()-1; // later have separate Nx, Ny
+  T h      = T(1)/N;           // later have separate hx, hy
+  T k      = timeStep;
+  T gamma  = waveSpeed;        // verify that
+  T lambda = k*gamma/h;        // same as in 1D case, (1), pg 310 
+  // todo: implement simplified scheme for special case lambda = 1/sqrt(2) - Eq. 11.12
 
+  // compute new displacements via (1), Eq. 11.10:
+  T l2 = lambda*lambda;
+  for(int l = 1; l <= N-1; l++)
+    for(int m = 1; m <= N-1; m++)
+      tmp(l,m) = l2*(u(l+1,m) + u(l-1,m) + u(l,m+1) + u(l,m-1)) + 2*(1-2*l2)*u(l,m) - u1(l,m);
+
+  // how are we supposed to incorporate the aspect-ratio "epsilon"?
 }
 
 template<class T>
