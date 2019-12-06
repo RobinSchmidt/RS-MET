@@ -559,6 +559,30 @@ void GNUPlotter::addDataMatrix(int Nx, int Ny, T *x, T *y, T **z)
 // that is compatible with LaPack (flat, column-major)
 
 template <class T>
+void GNUPlotter::addDataMatrixFlat(int Nx, int Ny, T* x, T* y, T* z)
+{
+  T** rowPointers = new T*[Nx]; // int **array = new int*[10];
+  for(int i = 0; i < Nx; i++)
+    rowPointers[i] = (T*) &z[i*Ny]; // eww - casting away const? that's dirty!
+  addDataMatrix(Nx, Ny, x, y, rowPointers);
+  delete[] rowPointers;
+}
+// not yet tested
+
+template <class T>
+void GNUPlotter::addDataMatrixFlat(int Nx, int Ny, T* z)
+{
+  T* x = new T[Nx]; for(int i = 0; i < Nx; i++) x[i] = T(i);
+  T* y = new T[Ny]; for(int i = 0; i < Ny; i++) y[i] = T(i);
+  addDataMatrixFlat(Nx, Ny, x, y, z);
+  delete[] x;
+  delete[] y;
+}
+template void GNUPlotter::addDataMatrixFlat(int Nx, int Ny, int* z);
+template void GNUPlotter::addDataMatrixFlat(int Nx, int Ny, float* z);
+template void GNUPlotter::addDataMatrixFlat(int Nx, int Ny, double* z);
+
+template <class T>
 void GNUPlotter::addDataCurve2D(const std::function<T(T)>& fx, const std::function<T(T)>& fy,
   int Nt, T tMin, T tMax, bool writeT)
 {

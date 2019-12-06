@@ -231,6 +231,16 @@ void waveEquation1D()
   // -waveSpeed = 0.5 shows numerical dispersion
 }
 
+
+void plotMatrix(rsMatrix<double>& A)  // use const
+{
+  GNUPlotter plt;
+  //plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getDataPointerConst());
+  plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getRowPointer(0));
+  plt.plot3D();
+}
+// move to rs_testing, maybe have an option to plot it as image/heatmap
+
 void rectangularMembrane()
 {
   int numGridPoints = 65;
@@ -266,6 +276,8 @@ void rectangularMembrane()
     }
   }
   membrane.setInitialConditions(u, v);
+
+  plotMatrix(u);
 
 
 

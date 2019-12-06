@@ -386,6 +386,17 @@ public:
   matrix format. */
   template <class T>
   void addDataMatrix(int Nx, int Ny, T *x, T *y, T **z);
+  // todo: pass z first and make x,y optional - or make another function 
+  // addDataMatrix(int Nx, int Ny, T **z);
+  // make arry parameters const
+
+
+  template <class T>
+  void addDataMatrixFlat(int Nx, int Ny, T *x, T *y, T* z);
+  // not yet finished
+
+  template <class T>
+  void addDataMatrixFlat(int Nx, int Ny, T *z);
 
   // todo addDataMatrix(int Nx, int Ny, T *x, T *y, T *z); that accepts a matrix in flat storage
   // format - maybe have a bool for columnMajor storage (false by default)
