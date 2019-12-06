@@ -172,7 +172,7 @@ void waveEquation1D()
 {
   int numGridPoints = 65;   // 2^k + 1 are "nice"
   int numTimeSteps  = 200;
-  int width         = 10;    // width of initial impulse/excursion
+  int width         = 10;    // width of initial impulse/displacement
 
   double timeStep   = 1.0 / (numGridPoints-1);  
   // optimum value - makes numerical solution exact, when waveSpeed is set to unity, if it's less,
@@ -229,6 +229,18 @@ void waveEquation1D()
   //  freq (it alternates betwen +1 and -1) and a wave at the spatial Nyquist freq spreads out
   // -width = 4 gives a pixelated appearance
   // -waveSpeed = 0.5 shows numerical dispersion
+}
+
+void rectangularMembrane()
+{
+  int numGridPoints = 65;
+  int numTimeSteps  = 200;
+  int width         = 10;    // width of initial impulse/excursion
+  double xPos       = 15;    // x-coordinate of initial displacement
+  double yPos       = 20;    // y-coordinate of initial displacement
+
+
+  GNUPlotter plt;
 }
 
 
