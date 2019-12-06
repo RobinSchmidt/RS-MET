@@ -180,7 +180,8 @@ void waveEquation1D()
 
   // create and set up wave-equation solver object:
   rsWaveEquation1D<double> wvEq;
-  wvEq.setNumGridPoints(numGridPoints);
+  wvEq.setNumGridPoints(numGridPoints);  // grid spacing is 1 / (numGridPoints-1)
+
   wvEq.setWaveSpeed(1.0);
 
   // create arrays for string state and set up initial conditions for the solver:

@@ -66,6 +66,32 @@ void rsHeatEquation1D<T>::normalizeHeatDistribution(T targetMean, T targetVarian
 //=================================================================================================
 
 template<class T>
+T rsWaveEquation1D<T>::getCourantNumber(T timeStep) const
+{
+  int N = getNumGridPoints()-1; // see (1), section 5.2.8
+  T c   = waveSpeed;            // what unit?
+  T L   = T(1);                 // we use the unit interval [0,1], so the spatial length is 1
+  T gam = c / L;                // "gamma" - (1), Eq. 6.5
+  T k   = timeStep;             // temporal sampling interval
+  T h   = L / N;                // spatial sampling interval
+  return gam*k / h;             // "lambda", the Courant number
+}
+// see:
+// https://en.wikipedia.org/wiki/Courant%E2%80%93Friedrichs%E2%80%93Lewy_condition
+
+template<class T>
+T rsWaveEquation1D<T>::getOmegaForWaveNumber(T waveNumber, T timeStep) const
+{
+  T beta   = waveNumber;
+  T k      = timeStep;
+  T h      = getGridSpacing();
+  T lambda = getCourantNumber(timeStep);
+  return (T(2)/k) * asin(lambda * sin(beta*h/2)); // (1), Eq. 6.43
+  // does this depend on the scheme? ...probably - we may need different formulas for different 
+  // schemes
+}
+
+template<class T>
 void rsWaveEquation1D<T>::initPositionsAndVelocities(T* newPositions, T* newVelocities,
   int length, T timeStep)
 {
@@ -142,7 +168,7 @@ void rsWaveEquation1D<T>::updateStateArrays()
   RAPT::rsArray::copy(&tmp[0], &u[0],  N);  // tmp goes into u
 }
 
-// todo: implement 6.38, 6.43, 6.45, 6.54, 146: bottom, 149: u_l^{n+1} =..., 6.59, 
+// todo: implement 6.38, 6.45, 146: bottom, 149: u_l^{n+1} =..., 6.59, 
 // 151: implicit scheme, 6.62, 6.66: recursion
 
 // see:

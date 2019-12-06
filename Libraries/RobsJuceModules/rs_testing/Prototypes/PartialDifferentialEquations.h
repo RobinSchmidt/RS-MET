@@ -167,7 +167,7 @@ protected:
 //=================================================================================================
 
 /** Implements a numercial solution of the 1D wave equation. This may serve as a model for a string
-or tube.
+or tube. 
 
 References:
   (1) Numerical Sound Synthesis (Stefan Bilbao)  */
@@ -192,6 +192,7 @@ public:
     tmp.resize(newNumGridPoints);
   }
 
+  /** Sets the speed by which waves travel along the string/tube. */
   void setWaveSpeed(T newSpeed)
   {
     waveSpeed = newSpeed;
@@ -204,6 +205,33 @@ public:
   /** Returns the number of spatial grid points. */
   int getNumGridPoints() const { return (int) u.size(); }
 
+  int getMaxGridIndex() const { return getNumGridPoints()-1; }
+  // "N" in (1), see section 5.2.8
+
+  /** Returns the spatial sampling interval.  */
+  T getGridSpacing() const { return T(1) / getMaxGridIndex(); }
+  // "h" in (1)
+
+  /** Returns the shortest wavelength that can be represented with the current grid settings. */
+  T getMinWaveLength() const { return PI / getGridSpacing(); }
+  // wavelength is dentoed by "beta" in (1)
+
+  /** Returns the Courant number for the given time-step and our current seetings of number of 
+  grid points and wave speed. This number is important for stability analysis of numeric solution 
+  schemes for PDEs. */
+  T getCourantNumber(T timeStep) const;
+  // https://en.wikipedia.org/wiki/Courant%E2%80%93Friedrichs%E2%80%93Lewy_condition
+
+  /** Retruns the (normalized radian?) frequency for a given wave-number and time-step. */
+  T getOmegaForWaveNumber(T waveNumber, T timeStep) const;
+  // implements (1), 6.43 - needs test!
+
+  // we need getters for: lambda: Courant number, beta: wavelength, gamma: (normalized) wave-speed
+  // h: grid-spacing, k: time-step
+  // ...maybe have members for all these variables
+
+
+
   /** Writes the current state of the string into "state" which is supposed to be "length" long. 
   This "length" is actually supposed to be equal to what was set via setNumGridPoints. */
   void getState(T* state, int length) const
@@ -212,6 +240,9 @@ public:
     RAPT::rsArray::copy(&u[0], state, length);
   }
 
+  // it's a bit annoying that we have to pass the time-step to so many fucntions - maybe we should
+  // have it as member variable. but this would disallow non-uniform sampling of the solution in 
+  // time - which might be convenient thing to have
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -255,6 +286,7 @@ protected:
   std::vector<T> tmp;   // temporary buffer used in state updates
 
   T waveSpeed = T(1);   // which unit? spatial-steps per time-step? -> figure out!
+                        // proportional to frequency of oscillation of single grid point
 
   //int numGridPoints;
   //T gridSpacing;
