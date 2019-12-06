@@ -143,6 +143,8 @@ void rsWaveEquation1D<T>::computeInteriorPoints(T timeStep)
 // it's a bit surprising (in a good way), that a central difference in time leads to an explicit 
 // rather than implicit recursion
 // -> figure out, why -> derive the recursion from the operators
+// other schemes are perhaps only of academic interest because this scheme is actually the best
+// in various respects (see (1))
 
 template<class T>
 void rsWaveEquation1D<T>::computeInteriorPointsSimple()
@@ -181,5 +183,33 @@ void rsWaveEquation1D<T>::updateStateArrays()
 template<class T>
 void rsRectangularMembrane<T>::updateState()
 {
+  computeInteriorPoints();
+  computeBoundaryPoints();
+  updateStateMatrices();
+}
 
+template<class T>
+void rsRectangularMembrane<T>::computeInteriorPoints()
+{
+
+}
+
+template<class T>
+void rsRectangularMembrane<T>::computeBoundaryPoints()
+{
+  // fix ends to zero (factor out and let user switch boundary conditions): 
+  int M = tmp.getNumRows();
+  int N = tmp.getNumColumns();
+  int m, n;
+  for(m = 0; m < M; m++) tmp(m,   0  ) = T(0);
+  for(m = 0; m < M; m++) tmp(m,   N-1) = T(0);
+  for(n = 0; n < N; n++) tmp(0,   n  ) = T(0);
+  for(n = 0; n < N; n++) tmp(M-1, n  ) = T(0);
+}
+
+template<class T>
+void rsRectangularMembrane<T>::updateStateMatrices()
+{
+  u1 = u;
+  u  = tmp;
 }

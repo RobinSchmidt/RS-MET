@@ -348,6 +348,10 @@ public:
 
 protected:
 
+  void computeInteriorPoints();
+  void computeBoundaryPoints();
+  void updateStateMatrices();
+
   rsMatrix<T> u, u1, tmp; // just like in the 1D case
 
   T waveSpeed = T(1);
