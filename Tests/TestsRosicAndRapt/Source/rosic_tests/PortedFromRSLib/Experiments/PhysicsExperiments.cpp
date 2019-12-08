@@ -285,11 +285,14 @@ void rectangularMembrane()
   }
   membrane.setInitialConditions(u, v);
 
-  //plotMatrix(u, false);
-  plotMatrix(u, true);
 
-  // todo: 
-  // -implement time evolution and plot at each step
+  for(int n = 0; n < numTimeSteps; n++) {
+    membrane.getState(u); // maybe getState should return a matrix - but no - that would enforce allocs
+    plotMatrix(u, false);
+    membrane.updateState();
+  }
+  // this is still wrong - solution explodes! check updateState and stability conditions
+
 
   GNUPlotter plt;
 }
