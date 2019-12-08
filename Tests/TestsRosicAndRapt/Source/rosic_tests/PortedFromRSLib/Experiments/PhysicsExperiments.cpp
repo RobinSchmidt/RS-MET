@@ -241,6 +241,7 @@ void plotMatrix(rsMatrix<double>& A, bool asHeatMap)  // use const
     plt.addCommand("set size square");  // make optional
     plt.addGraph("i 0 nonuniform matrix w image notitle");   
     plt.addCommand("set palette gray");
+    //plt.setRange(0, A.getNumRows()-1, 0, A.getNumColumns()-1, -1.0, +1.0); // doesn't work
     plt.plot();
   }
   else
@@ -250,9 +251,28 @@ void plotMatrix(rsMatrix<double>& A, bool asHeatMap)  // use const
 // factor out a function that takes a plotter reference as argument, so we can do some setup calls
 // before plotting - such as setting plotting ranges
 
+void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
+{
+  if(frames.size() == 0)
+    return;
+
+  // under construction
+  int numRows = frames[0].getNumRows();
+  int numCols = frames[0].getNumColumns();
+  for(size_t i = 0; i < frames.size(); i++)
+  {
+    rsAssert(frames[0].getNumRows() == numRows && frames[0].getNumColumns() == numCols, 
+      "all matrices must have the same dimensions");
+
+  }
+}
+// move to GNUPlotter
+
+
+
 void rectangularMembrane()
 {
-  int numGridPoints = 33;    // using powers of two for timeStep also an (inverse)-power-of-2 / (numGridPoints-1)
+  int numGridPoints = 65;    // using powers of two for timeStep also an (inverse)-power-of-2 / (numGridPoints-1)
   int numTimeSteps  = 200;
   int width         = 6;     // width of initial impulse/excursion
   int xPos          = 15;    // x-coordinate of initial displacement
@@ -260,7 +280,8 @@ void rectangularMembrane()
 
 
   double timeStep   = 1.0 / (numGridPoints-1);  
-  timeStep /= sqrt(2.0);  // C = 1/sqrt(2) is the stability limit
+  //timeStep /= sqrt(2.0);  // C = 1/sqrt(2) is the stability limit
+  timeStep /= 2;
 
   // set up PDE solver:
   rsRectangularMembrane<double> membrane;
@@ -278,7 +299,7 @@ void rectangularMembrane()
       double dx = xPos - i;
       double dy = yPos - j;
       double r  = sqrt(dx*dx + dy*dy);
-      u(i, j)   = 1 + cos(2*PI*r/width);  
+      u(i, j)   = 0.5 * (1 + cos(2*PI*r/width));  
       // factor out into exciteWithRaisedCosine(strength, width, x, y) 
       // or addRaisedCosine, addBellInput, addBellExcitation...maybe we should initialize with all
       // zeros and use a sort of addExcitation function - this can be used during realtime 
@@ -297,6 +318,11 @@ void rectangularMembrane()
   // -ok - we have lambda=1 but the stability limit is 1/sqrt(2)
   // -maybe try the simplified scheme for special case lambda = 1/sqrt(2) - Eq. 11.12 and then
   //  compare with general case for a setting that would allow for simplified computations
+
+  // try to animate the plot - see here:
+  // http://www.gnuplotting.org/tag/animation/
+  // http://gnuplot-surprising.blogspot.com/2011/09/creating-gif-animation-using-gnuplot.html
+  // https://stackoverflow.com/questions/22898971/gif-animation-in-gnuplot
 
 
   GNUPlotter plt;
