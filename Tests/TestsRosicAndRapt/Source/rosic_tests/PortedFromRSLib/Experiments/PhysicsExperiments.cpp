@@ -259,10 +259,14 @@ void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
   int numCols = frames[0].getNumColumns();
   GNUPlotter plt;;
 
+  // todo: figure out how to set the z-range once and for all - it should not change from frame to
+  // frame
+
   // under construction - not yet working - we want to make an animation of the 2D wave propagation 
   // on the rectangular membrane
 
   // write matrices into the datafile:
+  plt.setDataPrecision(2);
   for(size_t i = 0; i < frames.size(); i++) {
     rsAssert(frames[i].getNumRows() == numRows && frames[i].getNumColumns() == numCols, 
       "all matrices must have the same dimensions");
@@ -272,31 +276,30 @@ void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
 
   // set up gnuplot for creating animated gif:
   std::string datafile = plt.getDataPath();
-  plt.addCommand("set terminal gif animate delay 30 optimize");  // choose smaller delay later
+  plt.addCommand("set palette gray");
+  plt.addCommand("set terminal gif animate delay 5 optimize");  // choose smaller delay later
   plt.addCommand("set output 'gnuplotOutput.gif'"); 
-  plt.addCommand("stats '" + datafile + "' nooutput"); 
+  plt.addCommand("stats '" + datafile + "' nooutput");
+
 
   // let gnuplot loop over the frames:
   plt.addCommand("do for [i=1:int(STATS_blocks-1)] {"); 
-
-  //plt.addCommand("  plot '" + datafile + "' index (i-1) u 1:2 with circles notitle");
-  // this is wrong! needs to be replaced with something like:
-  // plot 'E:/Temp/gnuplotData.dat' i 0 nonuniform matrix w image notitle
-
   plt.addCommand("  plot '" + datafile + "' index (i-1) nonuniform matrix w image notitle");
-
   plt.addCommand("}");
-
-
   plt.invokeGNUPlot();
 }
 // datafiles tend to get large - maybe we can reduce the precision - 5 significant digits should be 
 // enough for line plots, for color-coded images, 3 is actually already enough
+// with 200 frames, gnuplot takes a *really* long time to produce the gif - and yes, it's really 
+// gnuplot, not our code here
+// can we just write the images into .ppm files and use some other tool to create the animated gif 
+// from them? ...maybe even a commandline tool, so we can automate it?
+// ...try how long it takes without optimization turned on
 
 void rectangularMembrane()
 {
   int numGridPoints = 65;    // using powers of two for timeStep also an (inverse)-power-of-2 / (numGridPoints-1)
-  int numTimeSteps  = 20;
+  int numTimeSteps  = 200;
   int width         = 6;     // width of initial impulse/excursion
   int xPos          = 15;    // x-coordinate of initial displacement
   int yPos          = 10;    // y-coordinate of initial displacement
@@ -340,16 +343,11 @@ void rectangularMembrane()
     frames.push_back(u);
     membrane.updateState();
   }
-
   plotMatricesAnimated(frames);  // does nothing yet - is under construction
 
   // -maybe try the simplified scheme for special case lambda = 1/sqrt(2) - Eq. 11.12 and then
   //  compare with general case for a setting that would allow for simplified computations
 
-
-
-
-  GNUPlotter plt;
 }
 
 
