@@ -276,8 +276,17 @@ void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
 
   // set up gnuplot for creating animated gif:
   std::string datafile = plt.getDataPath();
-  plt.addCommand("set palette gray");
-  plt.addCommand("set terminal gif animate delay 5 optimize");  // choose smaller delay later
+
+  //plt.addCommand("set palette gray");
+
+  plt.addCommand("set palette defined(-1 'green', 0 'black', 1 'red')");
+  // we need a better palette - maybe something with nonlinear saturation  - the range around zero
+  // needs to expanded, the ends may be compressed
+
+  plt.addCommand("set cbrange [-1:1]");
+
+  plt.addCommand("set terminal gif animate delay 5 optimize");
+  //plt.addCommand("set terminal gif animate delay 5");
   plt.addCommand("set output 'gnuplotOutput.gif'"); 
   plt.addCommand("stats '" + datafile + "' nooutput");
 
@@ -288,18 +297,21 @@ void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
   plt.addCommand("}");
   plt.invokeGNUPlot();
 }
-// datafiles tend to get large - maybe we can reduce the precision - 5 significant digits should be 
-// enough for line plots, for color-coded images, 3 is actually already enough
-// with 200 frames, gnuplot takes a *really* long time to produce the gif - and yes, it's really 
-// gnuplot, not our code here
-// can we just write the images into .ppm files and use some other tool to create the animated gif 
-// from them? ...maybe even a commandline tool, so we can automate it?
-// ...try how long it takes without optimization turned on
+// -datafiles tend to get large - maybe we can reduce the precision - 5 significant digits should be 
+//  enough for line plots, for color-coded images, 3 is actually already enough
+// -with 200 frames, gnuplot takes a *really* long time to produce the gif - and yes, it's really 
+//  gnuplot, not our code here
+// -can we just write the images into .ppm files and use some other tool to create the animated gif 
+//  from them? ...maybe even a commandline tool, so we can automate it?
+// -try how long it takes without optimization turned on - doesn't seem to help very much - it 
+//  still takes ages - it even seems as if the time increases superlinearly with the number of 
+//  frames - WTF?
+// -can we also produce mp4 files?
 
 void rectangularMembrane()
 {
   int numGridPoints = 65;    // using powers of two for timeStep also an (inverse)-power-of-2 / (numGridPoints-1)
-  int numTimeSteps  = 200;
+  int numTimeSteps  = 20;
   int width         = 6;     // width of initial impulse/excursion
   int xPos          = 15;    // x-coordinate of initial displacement
   int yPos          = 10;    // y-coordinate of initial displacement
