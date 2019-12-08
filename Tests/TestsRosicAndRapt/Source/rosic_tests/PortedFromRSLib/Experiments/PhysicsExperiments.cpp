@@ -255,19 +255,43 @@ void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
 {
   if(frames.size() == 0)
     return;
+  int numRows = frames[0].getNumRows();
+  int numCols = frames[0].getNumColumns();
+  GNUPlotter plt;;
 
   // under construction - not yet working - we want to make an animation of the 2D wave propagation 
   // on the rectangular membrane
 
-  int numRows = frames[0].getNumRows();
-  int numCols = frames[0].getNumColumns();
-  for(size_t i = 0; i < frames.size(); i++)
-  {
-    rsAssert(frames[0].getNumRows() == numRows && frames[0].getNumColumns() == numCols, 
+  // write matrices into the datafile:
+  for(size_t i = 0; i < frames.size(); i++) {
+    rsAssert(frames[i].getNumRows() == numRows && frames[i].getNumColumns() == numCols, 
       "all matrices must have the same dimensions");
-
+    plt.addDataMatrixFlat(
+      frames[i].getNumRows(), frames[i].getNumColumns(), frames[i].getRowPointer(0));
   }
+
+  // set up gnuplot for creating animated gif:
+  std::string datafile = plt.getDataPath();
+  plt.addCommand("set terminal gif animate delay 30 optimize");  // choose smaller delay later
+  plt.addCommand("set output 'gnuplotOutput.gif'"); 
+  plt.addCommand("stats '" + datafile + "' nooutput"); 
+
+  // let gnuplot loop over the frames:
+  plt.addCommand("do for [i=1:int(STATS_blocks-1)] {"); 
+
+  //plt.addCommand("  plot '" + datafile + "' index (i-1) u 1:2 with circles notitle");
+  // this is wrong! needs to be replaced with something like:
+  // plot 'E:/Temp/gnuplotData.dat' i 0 nonuniform matrix w image notitle
+
+  plt.addCommand("  plot '" + datafile + "' index (i-1) nonuniform matrix w image notitle");
+
+  plt.addCommand("}");
+
+
+  plt.invokeGNUPlot();
 }
+// datafiles tend to get large - maybe we can reduce the precision - 5 significant digits should be 
+// enough for line plots, for color-coded images, 3 is actually already enough
 
 void rectangularMembrane()
 {
@@ -312,7 +336,7 @@ void rectangularMembrane()
   std::vector<rsMatrix<double>> frames;
   for(int n = 0; n < numTimeSteps; n++) {
     membrane.getState(u); // maybe getState should return a matrix - but no - that would enforce allocs
-    plotMatrix(u, true);
+    //plotMatrix(u, true);
     frames.push_back(u);
     membrane.updateState();
   }
