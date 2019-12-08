@@ -266,12 +266,70 @@ void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
 
   }
 }
+// see here:
+// http://www.gnuplotting.org/tag/animation/
+// http://gnuplot-surprising.blogspot.com/2011/09/creating-gif-animation-using-gnuplot.html
+// https://stackoverflow.com/questions/22898971/gif-animation-in-gnuplot
+
+void testAnimatedPlot()
+{
+  // code from here:
+  // https://stackoverflow.com/questions/22898971/gif-animation-in-gnuplot
+
+  GNUPlotter plt;
+
+  // create datafile:
+  static const int N = 3;
+  double x[N] = { 0,2,4 }, y[N] = { 1,3,5 };
+  //plt.addDataArrays(N, x, y); // wrong!
+  for(int i = 0; i < N; i++)
+    plt.addDataArrays(1, &x[i], &y[i]);  // right!
+
+
+
+  // animate:
+  plt.addCommand("set terminal gif animate delay 100");
+  plt.addCommand("set output 'foobar.gif'");  // in which directory will this end up?
+  plt.addCommand("stats 'gnuplotData.dat' nooutput");
+  plt.addCommand("set xrange [-0.5:1.5]");
+  plt.addCommand("set yrange [-0.5:5.5]");
+  plt.addCommand("do for [i=1:int(STATS_blocks)] { plot 'gnuplotData.dat' index (i-1) u 1:2 with circles }");
+
+  plt.invokeGNUPlot();
+
+  // this produces a gif file in the project direcory, iff we have a copy of the datafile in the 
+  // project directory - but it still produces an error message.
+  // todo:
+  // -change the commands such that gnuplot takes the datafile from the usual location
+  // -fix the error message
+
+
+  int dummy = 0;
+}
+
+
+/*
+set terminal gif animate delay 100
+set output 'foobar.gif'
+stats 'datafile' nooutput
+set xrange [-0.5:1.5]
+set yrange [-0.5:5.5]
+
+do for [i=1:int(STATS_blocks)] { plot 'datafile' index (i-1) with circles }
+*/
+
+
+// https://stackoverflow.com/questions/27430479/gnuplot-from-data-file-for-assignment-in-do-for-loop-for-an-animation
+
 // move to GNUPlotter
 
 
 
 void rectangularMembrane()
 {
+  testAnimatedPlot(); // temporary!
+
+
   int numGridPoints = 65;    // using powers of two for timeStep also an (inverse)-power-of-2 / (numGridPoints-1)
   int numTimeSteps  = 200;
   int width         = 6;     // width of initial impulse/excursion
@@ -319,10 +377,7 @@ void rectangularMembrane()
   // -maybe try the simplified scheme for special case lambda = 1/sqrt(2) - Eq. 11.12 and then
   //  compare with general case for a setting that would allow for simplified computations
 
-  // try to animate the plot - see here:
-  // http://www.gnuplotting.org/tag/animation/
-  // http://gnuplot-surprising.blogspot.com/2011/09/creating-gif-animation-using-gnuplot.html
-  // https://stackoverflow.com/questions/22898971/gif-animation-in-gnuplot
+
 
 
   GNUPlotter plt;
