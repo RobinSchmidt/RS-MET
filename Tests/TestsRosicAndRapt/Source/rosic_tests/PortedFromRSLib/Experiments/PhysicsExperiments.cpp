@@ -256,7 +256,9 @@ void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
   if(frames.size() == 0)
     return;
 
-  // under construction
+  // under construction - not yet working - we want to make an animation of the 2D wave propagation 
+  // on the rectangular membrane
+
   int numRows = frames[0].getNumRows();
   int numCols = frames[0].getNumColumns();
   for(size_t i = 0; i < frames.size(); i++)
@@ -266,62 +268,11 @@ void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
 
   }
 }
-// see here:
-// http://www.gnuplotting.org/tag/animation/
-// http://gnuplot-surprising.blogspot.com/2011/09/creating-gif-animation-using-gnuplot.html
-// https://stackoverflow.com/questions/22898971/gif-animation-in-gnuplot
-
-void testAnimatedPlot()
-{
-  // code from here:
-  // https://stackoverflow.com/questions/22898971/gif-animation-in-gnuplot
-
-  GNUPlotter plt;
-
-  // create datafile:
-  static const int N = 3;
-  double x[N] = { 0,2,4 }, y[N] = { 1,3,5 };
-  for(int i = 0; i < N; i++)
-    plt.addDataArrays(1, &x[i], &y[i]);  // right!
-
-
-  std::string datafile = plt.getDataPath();
-
-  // animate:
-  plt.addCommand("set terminal gif animate delay 30");
-  plt.addCommand("set output 'gnuplotOutput.gif'");  
-    // file ends up in the project directory, i.e. the current working directory
-    // todo: let gnuplot put it into the temp directory where also the data- and commandfiles are
-  plt.addCommand("stats '" + datafile + "' nooutput");
-  plt.addCommand("set xrange [-1:6]");
-  plt.addCommand("set yrange [-1:6]");
-  plt.addCommand("do for [i=1:int(STATS_blocks)] { plot '" 
-    + datafile + "' index (i-1) u 1:2 with circles notitle }");
-  plt.invokeGNUPlot();
-
-  // -the first plot has a grid, the others do not - apparently our default settings only apply to 
-  //  the first plot - to have them always, we probably need to drag the commands into the loop?
-  // -what is the unit of the delay? milliseconds? it seems a bit too long for milliseconds - it 
-  //  feels more like centiseconds but that would be unusual
-  // -there's a warning message about skipping invalid data - why? try to fix it!
-
-  int dummy = 0;
-}
-
-// see also here:
-// https://stackoverflow.com/questions/27430479/gnuplot-from-data-file-for-assignment-in-do-for-loop-for-an-animation
-// 
-// move to GNUPlotter
-
-
 
 void rectangularMembrane()
 {
-  testAnimatedPlot(); // temporary!
-
-
   int numGridPoints = 65;    // using powers of two for timeStep also an (inverse)-power-of-2 / (numGridPoints-1)
-  int numTimeSteps  = 200;
+  int numTimeSteps  = 20;
   int width         = 6;     // width of initial impulse/excursion
   int xPos          = 15;    // x-coordinate of initial displacement
   int yPos          = 10;    // y-coordinate of initial displacement
@@ -357,13 +308,17 @@ void rectangularMembrane()
   membrane.setInitialConditions(u, v);
 
 
+
+  std::vector<rsMatrix<double>> frames;
   for(int n = 0; n < numTimeSteps; n++) {
     membrane.getState(u); // maybe getState should return a matrix - but no - that would enforce allocs
     plotMatrix(u, true);
+    frames.push_back(u);
     membrane.updateState();
   }
-  // this is still wrong - solution explodes! check updateState and stability conditions
-  // -ok - we have lambda=1 but the stability limit is 1/sqrt(2)
+
+  plotMatricesAnimated(frames);  // does nothing yet - is under construction
+
   // -maybe try the simplified scheme for special case lambda = 1/sqrt(2) - Eq. 11.12 and then
   //  compare with general case for a setting that would allow for simplified computations
 
