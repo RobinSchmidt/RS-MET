@@ -286,22 +286,35 @@ void testAnimatedPlot()
     plt.addDataArrays(1, &x[i], &y[i]);  // right!
 
 
+  std::string datafile = plt.getDataPath();
 
   // animate:
-  plt.addCommand("set terminal gif animate delay 100");
-  plt.addCommand("set output 'foobar.gif'");  // in which directory will this end up?
-  plt.addCommand("stats 'gnuplotData.dat' nooutput");
+  plt.addCommand("set terminal gif animate delay 30");
+
+  plt.addCommand("set output 'gnuplotOutput.gif'");  
+  // in which directory will this end up? ..in the project directory, i.e. the current working directory
+  // maybe let gnuplot put it into the temp directory where also the data- and commandfiles are
+
+
+  //plt.addCommand("stats 'gnuplotData.dat' nooutput");
+  plt.addCommand("stats '" + datafile + "' nooutput");
+
+
   plt.addCommand("set xrange [-0.5:1.5]");
   plt.addCommand("set yrange [-0.5:5.5]");
-  plt.addCommand("do for [i=1:int(STATS_blocks)] { plot 'gnuplotData.dat' index (i-1) u 1:2 with circles }");
+
+  //plt.addCommand("do for [i=1:int(STATS_blocks)] { plot 'gnuplotData.dat' index (i-1) u 1:2 with circles }");
+  plt.addCommand("do for [i=1:int(STATS_blocks)] { plot '" 
+    + datafile + "' index (i-1) u 1:2 with circles }");
+
 
   plt.invokeGNUPlot();
 
   // this produces a gif file in the project direcory, iff we have a copy of the datafile in the 
-  // project directory - but it still produces an error message.
+  // project directory - but it still produces a warning message
   // todo:
-  // -change the commands such that gnuplot takes the datafile from the usual location
-  // -fix the error message
+  // -change the commands such that gnuplot takes the datafile from the usual location - done
+  // -fix the warning message
 
 
   int dummy = 0;
