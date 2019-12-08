@@ -234,6 +234,9 @@ public:
   /** Returns a const pointer to the data for read access as a flat array. */
   const T* getDataPointerConst() const { return dataPointer; }
 
+  /** Returns a pointer to the data for read and write access as a flat array. */
+  T* getDataPointer() { return dataPointer; }
+
   /** Returns a pointer to the stored data. When using this, be sure that you know exactly what
   you are doing.... */
   //T* getData() { return dataPointer; }

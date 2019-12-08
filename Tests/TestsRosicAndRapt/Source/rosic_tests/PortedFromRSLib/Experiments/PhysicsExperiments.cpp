@@ -232,6 +232,11 @@ void waveEquation1D()
 }
 
 
+
+
+
+// move all this plotting stuff into rs_testing module
+
 void plotMatrix(rsMatrix<double>& A, bool asHeatMap)  // use const
 {
   GNUPlotter plt;
@@ -251,6 +256,13 @@ void plotMatrix(rsMatrix<double>& A, bool asHeatMap)  // use const
 // factor out a function that takes a plotter reference as argument, so we can do some setup calls
 // before plotting - such as setting plotting ranges
 
+void normalizeMatrix(rsMatrix<double>& A, bool removeMean)
+{
+  double *a = A.getDataPointer();
+  int N = A.getSize();
+  RAPT::rsArray::normalize(a, N, 1.0, removeMean); // allow values other than 1
+}
+
 void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
 {
   if(frames.size() == 0)
@@ -259,37 +271,45 @@ void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
   int numCols = frames[0].getNumColumns();
   GNUPlotter plt;;
 
-  // todo: figure out how to set the z-range once and for all - it should not change from frame to
-  // frame
-
-  // under construction - not yet working - we want to make an animation of the 2D wave propagation 
-  // on the rectangular membrane
-
   // write matrices into the datafile:
+  bool normalize = true; // make parameter
   plt.setDataPrecision(2);
   for(size_t i = 0; i < frames.size(); i++) {
     rsAssert(frames[i].getNumRows() == numRows && frames[i].getNumColumns() == numCols, 
       "all matrices must have the same dimensions");
-    plt.addDataMatrixFlat(
-      frames[i].getNumRows(), frames[i].getNumColumns(), frames[i].getRowPointer(0));
+    if(!normalize)
+      plt.addDataMatrixFlat(
+        frames[i].getNumRows(), frames[i].getNumColumns(), frames[i].getRowPointer(0));
+    else {
+      rsMatrix<double> A = frames[i];
+      normalizeMatrix(A, true);
+      plt.addDataMatrixFlat(A.getNumRows(), A.getNumColumns(), A.getRowPointer(0));
+    }
   }
 
   // set up gnuplot for creating animated gif:
   std::string datafile = plt.getDataPath();
 
-  //plt.addCommand("set palette gray");
+  plt.addCommand("set palette gray");
 
-  plt.addCommand("set palette defined(-1 'green', 0 'black', 1 'red')");
+  //plt.addCommand("set palette defined(-1 'green', 0 'black', 1 'red')");
   // we need a better palette - maybe something with nonlinear saturation  - the range around zero
   // needs to expanded, the ends may be compressed
+  // or: optionally normalize the matrices for each frame - that would use the full contrast range
+  // at the expense of giving false values
 
-  plt.addCommand("set cbrange [-1:1]");
+  // see here for suitable color maps:
+  // https://www.kennethmoreland.com/color-maps/
 
-  plt.addCommand("set terminal gif animate delay 5 optimize");
+  // try to get rid of the coordinate axes, color-bar, etc - just show the pure content
+
+  plt.addCommand("set cbrange [-1:1]"); // should be set by caller - make parameters
+
+  plt.addCommand("set terminal gif animate delay 4 optimize");
+  //plt.addCommand("set terminal gif animate delay 20 optimize");
   //plt.addCommand("set terminal gif animate delay 5");
   plt.addCommand("set output 'gnuplotOutput.gif'"); 
   plt.addCommand("stats '" + datafile + "' nooutput");
-
 
   // let gnuplot loop over the frames:
   plt.addCommand("do for [i=1:int(STATS_blocks-1)] {"); 
@@ -303,6 +323,7 @@ void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
 //  gnuplot, not our code here
 // -can we just write the images into .ppm files and use some other tool to create the animated gif 
 //  from them? ...maybe even a commandline tool, so we can automate it?
+//  maybe this: http://www.imagemagick.org/script/command-line-processing.php
 // -try how long it takes without optimization turned on - doesn't seem to help very much - it 
 //  still takes ages - it even seems as if the time increases superlinearly with the number of 
 //  frames - WTF?
@@ -311,15 +332,14 @@ void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
 void rectangularMembrane()
 {
   int numGridPoints = 65;    // using powers of two for timeStep also an (inverse)-power-of-2 / (numGridPoints-1)
-  int numTimeSteps  = 20;
+  int numTimeSteps  = 200;   // with more than 200, it takes ridiculously long :-(
   int width         = 6;     // width of initial impulse/excursion
-  int xPos          = 15;    // x-coordinate of initial displacement
-  int yPos          = 10;    // y-coordinate of initial displacement
-
+  int xPos          = 32;    // x-coordinate of initial displacement
+  int yPos          = 32;    // y-coordinate of initial displacement
 
   double timeStep   = 1.0 / (numGridPoints-1);  
-  //timeStep /= sqrt(2.0);  // C = 1/sqrt(2) is the stability limit
-  timeStep /= 2;
+  timeStep /= sqrt(2.0);  // C = 1/sqrt(2) is the stability limit
+  //timeStep /= 2;
 
   // set up PDE solver:
   rsRectangularMembrane<double> membrane;
@@ -359,6 +379,17 @@ void rectangularMembrane()
 
   // -maybe try the simplified scheme for special case lambda = 1/sqrt(2) - Eq. 11.12 and then
   //  compare with general case for a setting that would allow for simplified computations
+
+  // -it can actually generate nice patterns when we place the initial bump at the center 
+  //  -> experiment with other symmetric initial conditions - maybe make a .js version with p5.js
+  //  no need to wait ages for the gif to be rendered
+  //  should we use an even or odd number of datapoints for that? 
+  //  -> odd (tried with 16/8/8 vs 17/8/8) - so 65/32/32 is nice
+  // 
+
+  // when rendering the gif, gnuplot constantly has disk i/o and its memory usage may be less than 
+  // the size of the datafile - is this a hint that it doesn't actually read in larger datafiles at
+  // once and keeps the data in ram? maybe we can set a cache-size somewhere
 
 }
 

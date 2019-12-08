@@ -221,8 +221,13 @@ void rsRectangularMembrane<T>::computeInteriorPoints()
 template<class T>
 void rsRectangularMembrane<T>::computeInteriorPointsSimple()
 {
-  // implement the simplified scheme for special case lambda = 1/sqrt(2) - Eq. 11.12 
+  // implements the simplified scheme for special case lambda = 1/sqrt(2) - Eq. 11.12 
+  int N = u.getNumRows()-1;
+  for(int l = 1; l <= N-1; l++)
+    for(int m = 1; m <= N-1; m++)
+      tmp(l,m) = 0.5*(u(l+1,m) + u(l-1,m) + u(l,m+1) + u(l,m-1)) - u1(l,m);
 }
+// not yet tested
 
 template<class T>
 void rsRectangularMembrane<T>::computeBoundaryPoints()
@@ -247,3 +252,14 @@ void rsRectangularMembrane<T>::updateStateMatrices()
 
 // sort of pre-print of (1):
 // https://ccrma.stanford.edu/~bilbao/nssold/booktoplast
+// it has some extra chapters that are not in the book - about finite element and spectral methods
+
+// https://www2.ph.ed.ac.uk/~sbilbao/matlabpage.html
+// https://www2.ph.ed.ac.uk/~sbilbao/nsstop.html
+
+// http://dafx09.como.polimi.it/proceedings/papers/paper_68.pdf
+// https://www2.ph.ed.ac.uk/~sbilbao/CFApaper.pdf
+
+// https://hplgit.github.io/fdm-book/doc/pub/book/sphinx/index.html
+// https://hplgit.github.io/fdm-book/doc/pub/book/sphinx/._book008.html
+// http://hplgit.github.io/num-methods-for-PDEs/doc/pub/wave/sphinx/._main_wave005.html
