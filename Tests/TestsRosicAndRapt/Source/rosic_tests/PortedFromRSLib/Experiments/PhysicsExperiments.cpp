@@ -243,11 +243,11 @@ void plotMatrix(rsMatrix<double>& A)  // use const
 
 void rectangularMembrane()
 {
-  int numGridPoints = 65;
+  int numGridPoints = 33;
   int numTimeSteps  = 200;
-  int width         = 10;    // width of initial impulse/excursion
-  int xPos          = 35;    // x-coordinate of initial displacement
-  int yPos          = 25;    // y-coordinate of initial displacement
+  int width         = 6;    // width of initial impulse/excursion
+  int xPos          = 15;    // x-coordinate of initial displacement
+  int yPos          = 10;    // y-coordinate of initial displacement
 
 
   double timeStep   = 1.0 / (numGridPoints-1);  
@@ -264,14 +264,11 @@ void rectangularMembrane()
   rsMatrix<double> u(Ng, Ng), v(Ng, Ng);
   u.setAllValues(0);
   v.setAllValues(0);
-  for(int i = xPos-width/2; i < xPos+width/2; i++)
-  {
-    for(int j = yPos-width/2; j < yPos+width/2; j++)
-    {
+  for(int i = xPos-width/2+1; i < xPos+width/2; i++) {    // why "+1" for start-index?
+    for(int j = yPos-width/2+1; j < yPos+width/2; j++) {
       double dx = xPos - i;
       double dy = yPos - j;
       double r  = sqrt(dx*dx + dy*dy);
-
       u(i, j)   = 1 + cos(2*PI*r/width);  
       // check this ...seems wrong - factor out into exciteWithRaisedCosine(strength, width, x, y) 
       // or addRaisedCosine, addBellInput, addBellExcitation...maybe we should initialize with all
@@ -282,6 +279,11 @@ void rectangularMembrane()
   membrane.setInitialConditions(u, v);
 
   plotMatrix(u);
+
+
+  // todo: 
+  // -plot displacement as heatmap
+  // -implement time evolution and plot at each step
 
 
 

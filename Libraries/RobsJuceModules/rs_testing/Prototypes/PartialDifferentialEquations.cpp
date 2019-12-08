@@ -226,3 +226,7 @@ void rsRectangularMembrane<T>::updateStateMatrices()
   u1 = u;
   u  = tmp;
 }
+
+
+// sort of pre-print of (1):
+// https://ccrma.stanford.edu/~bilbao/nssold/booktoplast
