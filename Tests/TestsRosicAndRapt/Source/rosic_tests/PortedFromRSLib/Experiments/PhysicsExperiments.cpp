@@ -281,7 +281,6 @@ void testAnimatedPlot()
   // create datafile:
   static const int N = 3;
   double x[N] = { 0,2,4 }, y[N] = { 1,3,5 };
-  //plt.addDataArrays(N, x, y); // wrong!
   for(int i = 0; i < N; i++)
     plt.addDataArrays(1, &x[i], &y[i]);  // right!
 
@@ -290,50 +289,28 @@ void testAnimatedPlot()
 
   // animate:
   plt.addCommand("set terminal gif animate delay 30");
-
   plt.addCommand("set output 'gnuplotOutput.gif'");  
-  // in which directory will this end up? ..in the project directory, i.e. the current working directory
-  // maybe let gnuplot put it into the temp directory where also the data- and commandfiles are
-
-
-  //plt.addCommand("stats 'gnuplotData.dat' nooutput");
+    // file ends up in the project directory, i.e. the current working directory
+    // todo: let gnuplot put it into the temp directory where also the data- and commandfiles are
   plt.addCommand("stats '" + datafile + "' nooutput");
-
-
-  plt.addCommand("set xrange [-0.5:1.5]");
-  plt.addCommand("set yrange [-0.5:5.5]");
-
-  //plt.addCommand("do for [i=1:int(STATS_blocks)] { plot 'gnuplotData.dat' index (i-1) u 1:2 with circles }");
+  plt.addCommand("set xrange [-1:6]");
+  plt.addCommand("set yrange [-1:6]");
   plt.addCommand("do for [i=1:int(STATS_blocks)] { plot '" 
-    + datafile + "' index (i-1) u 1:2 with circles }");
-
-
+    + datafile + "' index (i-1) u 1:2 with circles notitle }");
   plt.invokeGNUPlot();
 
-  // this produces a gif file in the project direcory, iff we have a copy of the datafile in the 
-  // project directory - but it still produces a warning message
-  // todo:
-  // -change the commands such that gnuplot takes the datafile from the usual location - done
-  // -fix the warning message
-
+  // -the first plot has a grid, the others do not - apparently our default settings only apply to 
+  //  the first plot - to have them always, we probably need to drag the commands into the loop?
+  // -what is the unit of the delay? milliseconds? it seems a bit too long for milliseconds - it 
+  //  feels more like centiseconds but that would be unusual
+  // -there's a warning message about skipping invalid data - why? try to fix it!
 
   int dummy = 0;
 }
 
-
-/*
-set terminal gif animate delay 100
-set output 'foobar.gif'
-stats 'datafile' nooutput
-set xrange [-0.5:1.5]
-set yrange [-0.5:5.5]
-
-do for [i=1:int(STATS_blocks)] { plot 'datafile' index (i-1) with circles }
-*/
-
-
+// see also here:
 // https://stackoverflow.com/questions/27430479/gnuplot-from-data-file-for-assignment-in-do-for-loop-for-an-animation
-
+// 
 // move to GNUPlotter
 
 

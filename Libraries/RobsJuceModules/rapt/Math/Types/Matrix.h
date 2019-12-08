@@ -423,7 +423,7 @@ public:
     return dataPointer[flatIndex(i, j)];
   }
 
-  /** Read only accees - used mainly internally with const reference arguments (for example,
+  /** Read only access - used mainly internally with const reference arguments (for example,
   in add). */
   const T& at(const int i, const int j) const { return dataPointer[flatIndex(i, j)]; }
   // maybe rename to get - do we actually need this? - if not, get rid!
@@ -836,7 +836,7 @@ rsMatrix<TOut> matrixFunction(const rsMatrix<TIn>& A, F func)
 //  -maybe the numHeapAllocations variable can also be used only in debug builds? i guess we may 
 //   need to define some function incrementAllocationCounter that reduces to no-op in release 
 //   builds
-//  -in expressions like rsMatrixOld<float> C = B*(A + B) + B; we want to avoid copying the data
+//  -in expressions like rsMatrix<float> C = B*(A + B) + B; we want to avoid copying the data
 //   unnecessarily - i.e. avoid that the temporaries that occur inside this expression use heap
 //   allocation only when absolutely necessarry
 //   ...this especially means, we need to pass the return values of the arithmetic operators by
@@ -857,7 +857,7 @@ rsMatrix<TOut> matrixFunction(const rsMatrix<TIn>& A, F func)
 //   compile time ...maybe the std::vector vs std::dynarrray distinction can determined by passing
 //   the storage container as template argument like so:
 //   template<class ElemType, class ContainerType>
-//   class rsMatrixOld { ContainerType<ElemType> data; };
+//   class rsMatrix { ContainerType<ElemType> data; };
 //  -maybe make subclasses rsRowVector, rsColumnVector with a simplified element access operator 
 //   that takes only one index
 
