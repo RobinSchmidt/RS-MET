@@ -181,6 +181,18 @@ void rsWaveEquation1D<T>::updateStateArrays()
 //=================================================================================================
 
 template<class T>
+T rsRectangularMembrane<T>::getCourantNumber() const
+{
+  int N    = u.getNumRows()-1; // later have separate Nx, Ny
+  T h      = T(1)/N;           // later have separate hx, hy
+  T k      = timeStep;
+  T gamma  = waveSpeed;        // gamma = waveSpeed/length and length is normalized to unity
+  T lambda = k*gamma/h;        // same as in 1D case, (1), pg 310 
+  return lambda;
+}
+
+
+template<class T>
 void rsRectangularMembrane<T>::updateState()
 {
   computeInteriorPoints();
@@ -191,12 +203,20 @@ void rsRectangularMembrane<T>::updateState()
 template<class T>
 void rsRectangularMembrane<T>::computeInteriorPoints()
 {
+  /*
   int N    = u.getNumRows()-1; // later have separate Nx, Ny
   T h      = T(1)/N;           // later have separate hx, hy
   T k      = timeStep;
-  T gamma  = waveSpeed;        // verify that
+  T gamma  = waveSpeed;        // gamma = waveSpeed/length and length is normalized to unity
   T lambda = k*gamma/h;        // same as in 1D case, (1), pg 310 
   // todo: implement simplified scheme for special case lambda = 1/sqrt(2) - Eq. 11.12
+  */
+
+
+  int N    = u.getNumRows()-1; // later have separate Nx, Ny
+  T lambda = getCourantNumber();
+
+  // stability limit: lambda = 1/sqrt(2)
 
   // compute new displacements via (1), Eq. 11.10:
   T l2 = lambda*lambda;
@@ -208,9 +228,15 @@ void rsRectangularMembrane<T>::computeInteriorPoints()
 }
 
 template<class T>
+void rsRectangularMembrane<T>::computeInteriorPointsSimple()
+{
+
+}
+
+template<class T>
 void rsRectangularMembrane<T>::computeBoundaryPoints()
 {
-  // fix ends to zero (factor out and let user switch boundary conditions): 
+  // fix ends to zero (todo: let user switch between different boundary conditions): 
   int M = tmp.getNumRows();
   int N = tmp.getNumColumns();
   int m, n;

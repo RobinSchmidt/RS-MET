@@ -218,7 +218,12 @@ public:
 
   /** Returns the Courant number for the given time-step and our current seetings of number of 
   grid points and wave speed. This number is important for stability analysis of numeric solution 
-  schemes for PDEs. */
+  schemes for PDEs. If the Courant number is C, then the stability condtion is C <= 1. For the 
+  special case of C == 1, the finite difference scheme actually produces an exact solution. This is
+  only the case for the 1D wave equation and the basis for digital waveguide models. For Courant 
+  numbers less than 1, the numerical scheme will produce "numerical dispersion" - waves will 
+  propagate with dispersion even though the underlying continuous PDE leads to non-dispersive 
+  waves. */
   T getCourantNumber(T timeStep) const;
   // https://en.wikipedia.org/wiki/Courant%E2%80%93Friedrichs%E2%80%93Lewy_condition
 
@@ -319,6 +324,9 @@ class rsRectangularMembrane
 public:
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
   void setGridDimensions(int numPointsX, int numPointsY)
   {
     rsAssert(numPointsX == numPointsY, "separate spacings for x- and y not yet supported");
@@ -330,6 +338,18 @@ public:
   void setWaveSpeed(T newSpeed) { waveSpeed = newSpeed; }
 
   void setTimeStep(T newStep) { timeStep = newStep; }
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+
+  /** Returns the Courant number for our current seetings of the time-step, grid dimensions and 
+  wave speed. As opposed to the 1D case, the stability limit is C <= 1/sqrt(2) and there is no 
+  special setting for which the numerical scheme produces an exact solution. However, 
+  for C == 1/sqrt(2), numerical dispersion in minimized (verify that). */
+  T getCourantNumber() const;
 
 
   void getState(rsMatrix<T>& state) const { state = u; }
@@ -352,6 +372,10 @@ protected:
   void computeInteriorPoints();
   void computeBoundaryPoints();
   void updateStateMatrices();
+
+  void computeInteriorPointsSimple();
+  // implements the simplified scheme (1), Eq. 11.12 for special case lambda = 1/sqrt(2)
+  // maybe rename to computeInteriorPointsForSpecialCase
 
   rsMatrix<T> u, u1, tmp; // just like in the 1D case
 

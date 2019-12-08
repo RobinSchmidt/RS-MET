@@ -170,7 +170,7 @@ void heatEquation1D()
 
 void waveEquation1D()
 {
-  int numGridPoints = 65;   // 2^k + 1 are "nice"
+  int numGridPoints = 65;    // 2^k + 1 are "nice" because factors are exactly representable
   int numTimeSteps  = 200;
   int width         = 10;    // width of initial impulse/displacement
 
@@ -247,18 +247,20 @@ void plotMatrix(rsMatrix<double>& A, bool asHeatMap)  // use const
     plt.plot3D();
 }
 // move to rs_testing, maybe have an option to plot it as image/heatmap
+// factor out a function that takes a plotter reference as argument, so we can do some setup calls
+// before plotting - such as setting plotting ranges
 
 void rectangularMembrane()
 {
-  int numGridPoints = 33;
+  int numGridPoints = 33;    // using powers of two for timeStep also an (inverse)-power-of-2 / (numGridPoints-1)
   int numTimeSteps  = 200;
-  int width         = 6;    // width of initial impulse/excursion
+  int width         = 6;     // width of initial impulse/excursion
   int xPos          = 15;    // x-coordinate of initial displacement
   int yPos          = 10;    // y-coordinate of initial displacement
 
 
   double timeStep   = 1.0 / (numGridPoints-1);  
-  // is this still the best choice in 2D? ...maybe not
+  timeStep /= sqrt(2.0);  // C = 1/sqrt(2) is the stability limit
 
   // set up PDE solver:
   rsRectangularMembrane<double> membrane;
@@ -277,7 +279,7 @@ void rectangularMembrane()
       double dy = yPos - j;
       double r  = sqrt(dx*dx + dy*dy);
       u(i, j)   = 1 + cos(2*PI*r/width);  
-      // check this ...seems wrong - factor out into exciteWithRaisedCosine(strength, width, x, y) 
+      // factor out into exciteWithRaisedCosine(strength, width, x, y) 
       // or addRaisedCosine, addBellInput, addBellExcitation...maybe we should initialize with all
       // zeros and use a sort of addExcitation function - this can be used during realtime 
       // operation as well...addBellExcitation, addTriangularExcitation, addSpikeExcitation, etc
@@ -288,10 +290,13 @@ void rectangularMembrane()
 
   for(int n = 0; n < numTimeSteps; n++) {
     membrane.getState(u); // maybe getState should return a matrix - but no - that would enforce allocs
-    plotMatrix(u, false);
+    plotMatrix(u, true);
     membrane.updateState();
   }
   // this is still wrong - solution explodes! check updateState and stability conditions
+  // -ok - we have lambda=1 but the stability limit is 1/sqrt(2)
+  // -maybe try the simplified scheme for special case lambda = 1/sqrt(2) - Eq. 11.12 and then
+  //  compare with general case for a setting that would allow for simplified computations
 
 
   GNUPlotter plt;
