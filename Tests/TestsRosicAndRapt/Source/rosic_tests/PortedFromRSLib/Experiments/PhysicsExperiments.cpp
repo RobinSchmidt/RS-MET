@@ -232,12 +232,19 @@ void waveEquation1D()
 }
 
 
-void plotMatrix(rsMatrix<double>& A)  // use const
+void plotMatrix(rsMatrix<double>& A, bool asHeatMap)  // use const
 {
   GNUPlotter plt;
   //plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getDataPointerConst());
   plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getRowPointer(0));
-  plt.plot3D();
+  if(asHeatMap) {
+    plt.addCommand("set size square");  // make optional
+    plt.addGraph("i 0 nonuniform matrix w image notitle");   
+    plt.addCommand("set palette gray");
+    plt.plot();
+  }
+  else
+    plt.plot3D();
 }
 // move to rs_testing, maybe have an option to plot it as image/heatmap
 
@@ -278,14 +285,11 @@ void rectangularMembrane()
   }
   membrane.setInitialConditions(u, v);
 
-  plotMatrix(u);
-
+  //plotMatrix(u, false);
+  plotMatrix(u, true);
 
   // todo: 
-  // -plot displacement as heatmap
   // -implement time evolution and plot at each step
-
-
 
   GNUPlotter plt;
 }
