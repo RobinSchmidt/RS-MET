@@ -305,7 +305,7 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], N);
   rsAssert(mdl.isDataValid());
   //plotSineModel(mdl, fs);
-  plotSineModelAmplitudes(mdl, {1,2,3,4,5,6});
+  //plotSineModelAmplitudes(mdl, {1,2,3,4,5,6});
   //std::cout << "Resynthesizing...\n";
   std::vector<double> y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutputUnmodified.wav", &y[0], (int)y.size(), (int)fs);
@@ -316,9 +316,51 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   rsPartialBeatingRemover<double> deBeater;
   deBeater.setPhaseSmoothingParameters(5.0, 1, 4); // cutoff = 10 leaves a vibrato
 
+
+  //---------------------------------------------------------------------------------------
+  // experimental - set up the minimum distance between de-beated amplitude envelope peaks
   // 10 is ad hoc - at least one sample per 10 cycles:
   if(f0 == 0) 
     f0 = mdl.getPartial(1).getMeanFreq();
+
+  // only during development - look only at a single partial - comments relate to the sample
+  // Rhodes_F3_Medium.wav in the test repo
+
+  // partial 1 exposes the problem of not de-beating at all
+  //mdl.keepOnly({1});  // the fundamental exposes the not-debeating-at-all problem
+  //deBeater.envExtractor.setMaxSpacingMultiplier(1.0);
+  // maxSpacing = 0.32 when the multiplier is 1 - maybe we also need a min-spacing 
+  // -the problem is that the valleys in between the relevant maxima show tiny local maxima so the
+  //  envelope gets sampled at these irrelevant local maxima, too 
+  //  -to fix it, maybe we need a stricter criterion for what is considered a relevant maximum 
+  //   and/or we look for maxima not in the envelope itself but in a smoothed version of it
+
+  // partial 2 exposes the "straight-line" problem
+  //mdl.keepOnly({2});
+  // ...maybe the max-spacing is too large? figure out what fillSparseAreas does in this case
+  // -yep: maxSapcing is 4.74 seconds - faaar too large 
+  // -there is some hardly visible shallow maximum toward the end of the envelope which is picked 
+  //  up by the peak-finder
+  // -in both cases, it is the presence of spurious maxima, that peak finder should ignore but 
+  //  doesn't
+  // -how can we prevent the peak-picker from picking up these peaks undesired peaks?
+  // -we need additional criteria - but which ones? 
+  //  -maybe, we should use smoothing before the peak-picker?
+  //  -maybe, we should accept a peak only, if it's greater than two neighbours left and right?
+  //   -maybe that should be a user-option: accept maxima only, if the are larger than N_l 
+  //    neighbours to the left and N_r neighbours to the right with default setting: 2,2
+  //    or maybe 3,2 - i think, to the left, we should include more samples
+  //  -maybe make a class rsPeakPicker that let's the user set up various criteria for considering
+  //   a peak relevant ...maybe there should also be some threshold by which it must be above a 
+  //   local average - and the size of that average can be set by the user
+
+
+  // maybe, we should give the user the option to manually set a maximum spacing that is used in
+  // addition to the computed one (the algo should use the minimum of both values)
+
+  mdl.keepOnly({2});
+
+
   //deBeater.setMaxEnvelopeSampleSpacing(16.0/f0);     // works reasonably
   //deBeater.setMaxEnvelopeSampleSpacing(1.0/f0);    // hangs
   //deBeater.setMaxEnvelopeSampleSpacing(2.0/f0);    // works but doesn't actually de-beat
@@ -329,6 +371,16 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   // frame-rate ...or - wait - is that actually true
 
   //deBeater.removeAmplitudeBeating(mdl.getModifiablePartialRef(5)); //for debugging
+
+  // Ideas:
+  // -maybe we should have a minimum allowed disatance (to avoid the straight-lines problem) and
+  //  a maximum distance (to ensure that it does some de-beating at all)
+  // -the minimum allowed distance should
+
+  // end of exp experimental code to set up minimum distance of amp-env samples
+  //-------------------------------------------------------------------------------------
+
+
 
   //mdl.removePartial(0);  // test - remove DC - the DC component crashes with Rhodes Tuned F3 V12TX -16.4 10-17-16 short
   std::cout << "De-Beating...\n";

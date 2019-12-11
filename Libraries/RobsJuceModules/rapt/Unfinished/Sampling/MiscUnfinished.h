@@ -874,6 +874,51 @@ protected:
 
 //=================================================================================================
 
+/** A class for identifying relevant peak values in an array of data. In the simplest possible 
+scenario, a peak is just a value that is greater than its left and right neighbor - but in many 
+applications, that criterion alone may sift out a lot of spurious peaks that are actually 
+irrelevant and not desired to be included. Therefore, more sophisticated decision criteria may be 
+employed to decide what is and what isn't a relevant peak. This is what this class is made for. */
+
+template<class T>
+class rsPeakPicker
+{
+
+public:
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets the number of left neighbors which must be smaller than a peak value (default: 1). */
+  void setNumLeftNeighbors(int newNumber) { numLeftNeighbors = newNumber; }
+
+  /** Sets the number of right neighbors which must be smaller than a peak value (default: 1). */
+  void setNumRightNeighbors(int newNumber) { numRightNeighbors = newNumber; }
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  //void getPeaks(const T *x, const T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
+
+  //std::vector<int> getPeakIndices(const T *y, int N);
+
+protected:
+
+  int numLeftNeighbors = 1;
+  int numRightNeighbors = 1;
+
+  // bool includePlateaus; // switches between usage of < and <= in comparisons
+
+
+};
+
+
+//=================================================================================================
+
 /** A class for non-realtime envelope extraction. You can feed it some input signal, and the
 rsEnvelopeExtractor object will return an extracted envelope signal of the same length at the same
 sample rate. */

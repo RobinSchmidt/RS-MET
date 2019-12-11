@@ -812,6 +812,32 @@ void setupHarmonicAnalyzerForModal(RAPT::rsHarmonicAnalyzer<double>& analyzer, d
   analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
 }
 
+void modalDecayFit()
+{
+  int N  = 2000;
+  double fs = 10000;
+
+
+
+  typedef std::vector<double> Vec;
+  Vec t(N), x(N);
+  RAPT::rsArray::fillWithIndex(&t[0], N);
+  t = (1.0/fs) * t;
+
+
+  // todo: compute A and tau from (t1,a1),(t2,a2)
+  double A   = 1.0;
+  double tau = 0.1;
+
+
+  for(int n = 0; n < N; n++)
+    x[n] = A * exp(-t[n]/tau);
+
+
+
+  rsPlotVectorsXY(t, x);
+}
+
 void modalAnalysis1()
 {
   //double f   = 1000;
@@ -846,9 +872,6 @@ void modalAnalysis1()
   rsModalFilterParameters<double> p2 = modeAnalyzer.getModalModel(sineModel.getPartial(0));
 
   Vec ym = synthesizeModal(p2, fs, N);
-
-
-
 
 
 
