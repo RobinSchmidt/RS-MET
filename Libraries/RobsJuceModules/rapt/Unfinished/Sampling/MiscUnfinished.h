@@ -1261,8 +1261,9 @@ That amounts to a decimation factor equal to the number of samples in a cycle.  
 template<class T>
 T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, const int decimation);
 
-/** Computes the A,tau values for an exponential decay function f(t) = A * exp(-t/tau) given two
-time instants t1,t2 and associated amplitudes a1,a2. */
+/** Computes the A,tau parameters for an exponential decay function f(t) = A * exp(-t/tau) given 
+two time instants t1,t2 and associated amplitudes a1,a2 such that f(t) passes through the points
+(t1,a1), (t2,a2). */
 template<class T>
 void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau)
 {
