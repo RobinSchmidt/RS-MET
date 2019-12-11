@@ -816,6 +816,11 @@ void modalDecayFit()
 {
   int N  = 2000;
   double fs = 10000;
+  double t1 = 0.04;
+  double a1 = 0.7;
+  double t2 = 0.14;
+  double a2 = 0.3;
+
 
 
 
@@ -825,16 +830,16 @@ void modalDecayFit()
   t = (1.0/fs) * t;
 
 
-  // todo: compute A and tau from (t1,a1),(t2,a2)
-  double A   = 1.0;
-  double tau = 0.1;
 
+  // compute parameters for exponential:
+  double dt  = t2-t1;               // time-difference
+  double ra  = a2/a1;               // amplitude ratio
+  double tau = -dt / log(ra);       // time-constant of exponential decay
+  double A   =  a1 / exp(-t1/tau);  // amplitude multiplier
 
+  // create and plot exponential decay:
   for(int n = 0; n < N; n++)
     x[n] = A * exp(-t[n]/tau);
-
-
-
   rsPlotVectorsXY(t, x);
 }
 
