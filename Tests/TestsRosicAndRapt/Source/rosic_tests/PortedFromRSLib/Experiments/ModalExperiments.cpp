@@ -814,22 +814,16 @@ void setupHarmonicAnalyzerForModal(RAPT::rsHarmonicAnalyzer<double>& analyzer, d
 
 void modalDecayFit()
 {
-  int N  = 2000;
-  double fs = 10000;
-  double t1 = 0.04;
-  double a1 = 0.7;
-  double t2 = 0.14;
-  double a2 = 0.3;
+  // Computes the A,tau values for an exponential decay function f(t) = A * exp(-t/tau) given two
+  // time instants t1,t2 and associated amplitudes a1,a2. Then it creates the actual decay function
+  // and plots it.
 
-
-
-
-  typedef std::vector<double> Vec;
-  Vec t(N), x(N);
-  RAPT::rsArray::fillWithIndex(&t[0], N);
-  t = (1.0/fs) * t;
-
-
+  int    N  = 2000;    // number of samples
+  double fs = 10000;   // sample rate
+  double t1 = 0.04;    // first time instant
+  double a1 = 0.7;     // first amplitude value
+  double t2 = 0.14;    // second time instant
+  double a2 = 0.3;     // second amplitude value
 
   // compute parameters for exponential:
   double dt  = t2-t1;               // time-difference
@@ -838,9 +832,13 @@ void modalDecayFit()
   double A   =  a1 / exp(-t1/tau);  // amplitude multiplier
 
   // create and plot exponential decay:
+  typedef std::vector<double> Vec;
+  Vec t(N), x(N);
+  RAPT::rsArray::fillWithIndex(&t[0], N);
+  t = (1.0/fs) * t;
   for(int n = 0; n < N; n++)
     x[n] = A * exp(-t[n]/tau);
-  rsPlotVectorsXY(t, x);
+  rsPlotVectorsXY(t, x);  // OK - looks good
 }
 
 void modalAnalysis1()
