@@ -334,8 +334,8 @@ void rectangularMembrane()
   int numGridPoints = 65;    // using powers of two for timeStep also an (inverse)-power-of-2 / (numGridPoints-1)
   int numTimeSteps  = 200;   // with more than 200, it takes ridiculously long :-(
   int width         = 6;     // width of initial impulse/excursion
-  int xPos          = 32;    // x-coordinate of initial displacement
-  int yPos          = 32;    // y-coordinate of initial displacement
+  int xPos          = 15;    // x-coordinate of initial displacement
+  int yPos          = 25;    // y-coordinate of initial displacement
 
   double timeStep   = 1.0 / (numGridPoints-1);  
   timeStep /= sqrt(2.0);  // C = 1/sqrt(2) is the stability limit
@@ -390,6 +390,9 @@ void rectangularMembrane()
   // when rendering the gif, gnuplot constantly has disk i/o and its memory usage may be less than 
   // the size of the datafile - is this a hint that it doesn't actually read in larger datafiles at
   // once and keeps the data in ram? maybe we can set a cache-size somewhere
+
+  // maybe we can use python to produce the video - include the PDE solver into the rsPy python 
+  // module, call it from there and do visualization in python
 
 }
 

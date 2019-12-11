@@ -234,7 +234,8 @@ public:
   //void rootsOfCharacteristicEquation(T timeStep, T* r1, T* r2);
   // implements (1), Eq. 6.38
 
-  // getKineticEnergy, getPotentialEnergy, getEnergy
+  // getKineticEnergy, getPotentialEnergy, getEnergy - mostly for testing energy 
+  // conservation/dissipation properties -> plot energies as function of discrete time
 
   // we need getters for: lambda: Courant number, beta: wavelength, gamma: (normalized) wave-speed
   // h: grid-spacing, k: time-step
@@ -364,13 +365,14 @@ public:
     u  = displacements;
     u1 = u + timeStep * velocities; // why + not -?
   }
+  // maybe rename to setInitialValues
 
   void updateState();
 
 protected:
 
-  void computeInteriorPoints();
-  void computeBoundaryPoints();
+  void computeInteriorPoints();  // maybe rename to computeInteriorValues
+  void computeBoundaryPoints();  // maybe rename to computeBoundaryValues
   void updateStateMatrices();
 
   void computeInteriorPointsSimple();

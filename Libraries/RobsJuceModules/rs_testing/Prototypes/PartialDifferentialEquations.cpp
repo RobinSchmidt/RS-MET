@@ -217,6 +217,13 @@ void rsRectangularMembrane<T>::computeInteriorPoints()
 
   // how are we supposed to incorporate the aspect-ratio "epsilon"?
 }
+// -maybe rename to computeInteriorPointsExplicit - indicating that this uses the explicit scheme, 
+//  then also implement implicit scheme(s)
+// -maybe also implement different explicit schemes that use different approximations to the 
+//  Laplacian operator - this scheme here uses a 5-point stencil using direct neighbours, there's
+//  also a scheme that uses diagonal neighbours and one that uses a mix of both - compare the 
+//  schemes in terms of numerical dispersion and (an)isotropy of wave-propagation
+
 
 template<class T>
 void rsRectangularMembrane<T>::computeInteriorPointsSimple()
@@ -229,6 +236,9 @@ void rsRectangularMembrane<T>::computeInteriorPointsSimple()
 }
 // not yet tested
 
+// todo: implement schemes 11.16, 11.18 (implicit)
+// make a class for circular membranes and implement schemes 11.25, 11.27
+
 template<class T>
 void rsRectangularMembrane<T>::computeBoundaryPoints()
 {
@@ -240,7 +250,24 @@ void rsRectangularMembrane<T>::computeBoundaryPoints()
   for(m = 0; m < M; m++) tmp(m,   N-1) = T(0);
   for(n = 0; n < N; n++) tmp(0,   n  ) = T(0);
   for(n = 0; n < N; n++) tmp(M-1, n  ) = T(0);
+  // ...well...actually, if the points are initialized to zero, wo don't really need to do anything
+  // here as they are not modified in computeInteriorPoints - but for other boundary conditions, 
+  // the situation may be different
+
+
+  // test: place an "obastacle" into the membrane:
+  tmp(20, 30) = 0;
+  tmp(20, 31) = 0;
+  tmp(20, 32) = 0;
+  tmp(20, 33) = 0;
+  tmp(21, 31) = 0;
+  tmp(22, 31) = 0;
 }
+// todo: maybe introduce "obstacles" - set the displacement to zero at some arbitrary points inside
+// the interior region - maybe this can be realized using a "mask" - a matrix with multipliers that 
+// scale the displacements at every grid point - values of 1 do nothing, values of 0 fix the 
+// displacements at these points and values in between do something in between - a user could even
+// "draw" such a mask
 
 template<class T>
 void rsRectangularMembrane<T>::updateStateMatrices()
@@ -249,17 +276,52 @@ void rsRectangularMembrane<T>::updateStateMatrices()
   u  = tmp;
 }
 
+/*
+ Background:
 
-// sort of pre-print of (1):
-// https://ccrma.stanford.edu/~bilbao/nssold/booktoplast
-// it has some extra chapters that are not in the book - about finite element and spectral methods
 
-// https://www2.ph.ed.ac.uk/~sbilbao/matlabpage.html
-// https://www2.ph.ed.ac.uk/~sbilbao/nsstop.html
 
-// http://dafx09.como.polimi.it/proceedings/papers/paper_68.pdf
-// https://www2.ph.ed.ac.uk/~sbilbao/CFApaper.pdf
+ questions:
+ -the so called dispersion-relations seem to always relate frequency and wavelength (right?) - and 
+  frequency and wavelength in turn are related via wavelength * frequency = wavespeed, see here:
+  https://en.wikipedia.org/wiki/Wavelength#Sinusoidal_waves
+  ...so should we think of the dispersion relation as a function that assigns a wave-propagation 
+  speed to each frequency? and for non-dispersive wave-propagation that wave-speed is constant 
+  (seen as function of frequency)
 
-// https://hplgit.github.io/fdm-book/doc/pub/book/sphinx/index.html
-// https://hplgit.github.io/fdm-book/doc/pub/book/sphinx/._book008.html
-// http://hplgit.github.io/num-methods-for-PDEs/doc/pub/wave/sphinx/._main_wave005.html
+ideas:
+-maybe instead of using past values of the displacement u itself with a temporal stencil, 
+ explicitly compute and use things like u_xx, u_t, u_tt, etc. (for u_xxxx also use the notation 
+ u_4x) that is more readily interpretable and mor intuitive for research purposes - only at the 
+ very end, when everything has settled, convert to a scheme using u1, u2 for delayed displacement 
+ ..or maybe use notation u_d, u_dd, u_3d, u_4d, etc. - subscript d meaning delayed
+-with this representation, it is also intuitively obvious, how to include driving forces - they are
+ just added to the acceleration (with a proportionality factor) - coupling forces between multiple
+ systems can also be represented in a straightforward manner
+-re-derive the schemes from (1) using that notation with finite difference approximations like:
+ u_t ~= (u - u_d) / k for the forward-difference approximation, u_t ~= (u_f - u_d) / 2k (where u_f 
+ is a future value) for the central difference, etc.
+-maybe we can derive stability criteria for the representation via u, u_t, u_tt - maybe consider 
+ the total energy = sum(u^2)/2 + sum(u_t^2)/2 = E_pot + E_kin - for a stable scheme, the derivative of 
+ this energy should be strictly nonpositive - for a conservative scheme, the derivative should be 
+ zero
+-to (very crudely) simulate a rattling element on a string or membrane, hardclip the displacements
+ at the position(s) of the rattling element - to refine it, maybe use smoother functions or model 
+ it as forces (against the displacement) that acts only when the displacement is above some 
+ threshold
+
+
+sort of pre-print of (1):
+https://ccrma.stanford.edu/~bilbao/nssold/booktoplast
+it has some extra chapters that are not in the book - about finite element and spectral methods
+
+https://www2.ph.ed.ac.uk/~sbilbao/matlabpage.html
+https://www2.ph.ed.ac.uk/~sbilbao/nsstop.html
+
+http://dafx09.como.polimi.it/proceedings/papers/paper_68.pdf
+https://www2.ph.ed.ac.uk/~sbilbao/CFApaper.pdf
+
+https://hplgit.github.io/fdm-book/doc/pub/book/sphinx/index.html
+https://hplgit.github.io/fdm-book/doc/pub/book/sphinx/._book008.html
+http://hplgit.github.io/num-methods-for-PDEs/doc/pub/wave/sphinx/._main_wave005.html
+*/

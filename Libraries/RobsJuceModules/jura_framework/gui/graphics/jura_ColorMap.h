@@ -16,6 +16,11 @@ References:
 http://www.research.ibm.com/people/l/lloydt/color/color.HTM
 https://www.mathworks.com/tagteam/81137_92238v00_RainbowColorMap_57312.pdf
 http://davidjohnstone.net/pages/lch-lab-colour-gradient-picker
+
+todo: include the colormaps desribed here:
+https://bids.github.io/colormap/
+especially parula, magma, viridis, inferno are attractive
+
 */
 
 class JUCE_API ColorMap : public ChangeBroadcaster

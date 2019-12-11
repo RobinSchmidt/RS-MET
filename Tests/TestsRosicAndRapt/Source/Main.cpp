@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
   //doublePendulum(); // takes long
   //heatEquation1D();
   //waveEquation1D();
-  rectangularMembrane();
+  //rectangularMembrane();
   //particleForceDistanceLaw();
   //particleSystem();
   //quantumSpinMeasurement();  // move to unit tests
@@ -398,8 +398,8 @@ int main(int argc, char* argv[])
 
   //amplitudeDeBeating();
   //amplitudeDeBeating2();
-  //harmonicDeBeating1();
-  //harmonicDeBeating2();
+  harmonicDeBeating1();
+  harmonicDeBeating2();
 
 
   // Resampling:
