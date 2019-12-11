@@ -826,10 +826,8 @@ void modalDecayFit()
   double a2 = 0.3;     // second amplitude value
 
   // compute parameters for exponential:
-  double dt  = t2-t1;               // time-difference
-  double ra  = a2/a1;               // amplitude ratio
-  double tau = -dt / log(ra);       // time-constant of exponential decay
-  double A   =  a1 / exp(-t1/tau);  // amplitude multiplier
+  double A, tau;
+  rsExpDecayParameters(t1, a1, t2, a2, &A, &tau);
 
   // create and plot exponential decay:
   typedef std::vector<double> Vec;
