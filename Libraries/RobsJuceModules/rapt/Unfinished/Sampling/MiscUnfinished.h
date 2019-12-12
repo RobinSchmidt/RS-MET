@@ -1261,13 +1261,27 @@ That amounts to a decimation factor equal to the number of samples in a cycle.  
 template<class T>
 T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, const int decimation);
 
+
+
+// maybe these should be moved into class rsModalAnalyzer (as static functions) ...there, it
+// seems to fit best:
+
 /** Computes the A,tau parameters for an exponential decay function f(t) = A * exp(-t/tau) given 
 two time instants t1,t2 and associated amplitudes a1,a2 such that f(t) passes through the points
 (t1,a1), (t2,a2). */
 template<class T>
 void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau);
 
+template<class T>
+void rsExpDecayParameters(const std::vector<T>& t, const std::vector<T>& a, 
+  int spliceIndex, double* A, double* tau);
+// rename the spliceIndex to decayMeasurementPoint
 
+template<class T>
+std::vector<T> rsExpDecayTail(const std::vector<T>& timeArray, const std::vector<T>& ampArray, 
+  int spliceIndex, T sampleRate, T freq, T phase);
+
+// maybe we should take (int N, const T* timeArray, const T* ampArray, ...) instead of std::vector
 
 
 

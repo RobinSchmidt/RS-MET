@@ -12,6 +12,7 @@ namespace RAPT
 #include "SinusoidalSynthesizer.h"
 #include "SinusoidalAnalyzer.h"
 #include "HarmonicAnalyzer.h"
+#include "MiscSpectral.h"
 
 }
 

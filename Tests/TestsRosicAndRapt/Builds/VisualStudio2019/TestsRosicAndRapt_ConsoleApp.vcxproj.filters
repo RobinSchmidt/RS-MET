@@ -916,6 +916,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\HarmonicAnalyzer.cpp">
       <Filter>JUCE Modules\rapt\Spectral</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\MiscSpectral.cpp">
+      <Filter>JUCE Modules\rapt\Spectral</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\SinusoidalAnalyzer.cpp">
       <Filter>JUCE Modules\rapt\Spectral</Filter>
     </ClCompile>
@@ -3091,6 +3094,9 @@
       <Filter>JUCE Modules\rapt\Physics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\HarmonicAnalyzer.h">
+      <Filter>JUCE Modules\rapt\Spectral</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\MiscSpectral.h">
       <Filter>JUCE Modules\rapt\Spectral</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\SinusoidalAnalyzer.h">

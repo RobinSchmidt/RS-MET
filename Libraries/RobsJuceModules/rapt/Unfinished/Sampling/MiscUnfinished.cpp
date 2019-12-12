@@ -2151,6 +2151,11 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, cons
 //  setAlgorithm(absoluteDifference, squaredDifference, correlation, linearRegression, ...)
 //  setDecimation, setInterpolation
 
+
+
+
+
+
 template<class T>
 void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau)
 {
@@ -2160,3 +2165,57 @@ void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau)
   *A   =  a1 / exp(-t1 / *tau);  // amplitude multiplier
 }
 // can we get rid of the call to exp? 
+
+template<class T>
+void rsExpDecayParameters(const std::vector<T>& t, const std::vector<T>& a,
+  int spliceIndex, double* A, double* tau)
+{
+  rsAssert(t.size() == a.size());
+  int N = (int) t.size();
+  int maxIndex = RAPT::rsArray::maxIndex(&a[0], N);
+
+  // The second point for the exp-decay match is user provided (this is the splice-point at which
+  // the exp-decay may be glued to the original sample and the first is given by the global maximum 
+  // of the envelope.
+
+  double t1 = t[maxIndex];
+  double a1 = a[maxIndex];
+  double t2 = t[spliceIndex];
+  double a2 = a[spliceIndex];
+
+  RAPT::rsExpDecayParameters(t1, a1, t2, a2, A, tau);
+}
+
+// maybe find a better name:
+template<class T>
+std::vector<T> rsExpDecayTail(const std::vector<T>& timeArray, const std::vector<T>& ampArray, 
+  int spliceIndex, T sampleRate, T freq, T phase)
+{
+  rsAssert(timeArray.size() == ampArray.size());
+  rsAssert(spliceIndex < (int)timeArray.size());
+  typedef std::vector<T> Vec;
+  int numFrames  = (int) timeArray.size();
+  int numSamples = (int) ceil(timeArray[numFrames-1] * sampleRate);
+
+  // estimate exponential decay parameters:
+  double A, tau;
+  rsExpDecayParameters(timeArray, ampArray, spliceIndex, &A, &tau);
+
+  // generate exponentially enveloped sinusoid:
+  Vec x(numSamples);
+  T ts = timeArray[spliceIndex];  // time-instant for splicing
+  T p0 = phase - 2*PI*freq*ts;    // start-phase
+  T w  = 2*PI*freq/sampleRate;
+  for(int n = 0; n < numSamples; n++)
+  {
+    T tn  = n/sampleRate;
+    x[n]  = A * exp(-tn / tau);
+    x[n] *= cos(w*n + p0);
+  }
+
+  // todo: optimize: use the exponential-decay filter instead of calling exp/cos explicitly
+
+  return x;
+}
+
+

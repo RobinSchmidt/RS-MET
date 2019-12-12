@@ -407,6 +407,8 @@ template double RAPT::rsEnvelopeMatchOffset(const double* x, int Nx, const doubl
 template void RAPT::rsExpDecayParameters(double t1, double a1, double t2, double a2, 
   double* A, double* tau); // may be removed when we later instantiate functions that call this
 
+template std::vector<double> RAPT::rsExpDecayTail(const RAPT::rsSinusoidalPartial<double>& partial, 
+  int spliceIndex, double sampleRate);
 
 // move to rsFilterAnalyzer:
 template double RAPT::analogBiquadMagnitudeSquaredAt(double B0, double B1, double B2, double A0,

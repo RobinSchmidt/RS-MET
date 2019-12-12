@@ -681,6 +681,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\HarmonicAnalyzer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\MiscSpectral.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\SinusoidalAnalyzer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2529,6 +2532,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Physics\ParticleSystem.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Physics\Physics.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\HarmonicAnalyzer.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\MiscSpectral.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\SinusoidalAnalyzer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\SinusoidalModel.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\SinusoidalProcessor.h"/>

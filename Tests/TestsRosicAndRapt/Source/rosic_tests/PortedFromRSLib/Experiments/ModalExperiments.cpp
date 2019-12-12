@@ -935,76 +935,6 @@ void modalAnalysisPluck()
 }
 
 
-
-
-
-
-void rsExpDecayParameters(const std::vector<double>& t, const std::vector<double>& a, 
-  int spliceIndex, double* A, double* tau)
-{
-  rsAssert(t.size() == a.size());
-  int N = (int) t.size();
-  int maxIndex = RAPT::rsArray::maxIndex(&a[0], N);
-
-  // The second point for the exp-decay match is user provided (this is the splice-point at which
-  // the exp-decay may be glued to the original sample and the first is given by the global maximum 
-  // of the envelope.
-
-  double t1 = t[maxIndex];
-  double a1 = a[maxIndex];
-  double t2 = t[spliceIndex];
-  double a2 = a[spliceIndex];
-
-  RAPT::rsExpDecayParameters(t1, a1, t2, a2, A, tau);
-}
-
-
-
-
-// maybe find a better name:
-std::vector<double> expDecayTail(const std::vector<double>& timeArray,
-  const std::vector<double>& ampArray, int spliceIndex, double sampleRate, 
-  double freq, double phase)
-{
-  rsAssert(timeArray.size() == ampArray.size());
-  rsAssert(spliceIndex < (int)timeArray.size());
-  typedef std::vector<double> Vec;
-  int numFrames  = (int) timeArray.size();
-  int numSamples = (int) ceil(timeArray[numFrames-1] * sampleRate);
-
-  // estimate exponential decay parameters:
-  double A, tau;
-  rsExpDecayParameters(timeArray, ampArray, spliceIndex, &A, &tau);
-
-  // generate exponentially enveloped sinusoid:
-  Vec x(numSamples);
-  double ts = timeArray[spliceIndex];  // time-instant for splicing
-  double p0 = phase - 2*PI*freq*ts;    // start-phase
-  double w  = 2*PI*freq/sampleRate;
-  for(int n = 0; n < numSamples; n++)
-  {
-    double tn = n/sampleRate;
-    x[n]  = A * exp(-tn / tau);
-    x[n] *= cos(w*n + p0);
-  }
-
-
-  // todo: optimize: use the exponential-decay filter
-
-  return x;
-}
-
-std::vector<double> expDecayTail(const RAPT::rsSinusoidalPartial<double>& partial, int spliceIndex,
-  double sampleRate)
-{
-  return expDecayTail(partial.getTimeArray(), partial.getAmplitudeArray(), spliceIndex, sampleRate, 
-    partial.getFreq(spliceIndex), partial.getPhase(spliceIndex));
-  // maybe instead of using the instantaneous frequency at the splice index, we should use the 
-  // average frequency ...hmm....well...that seems suitable for modal modeling of the whole partial
-  // but maybe not so much for Elan's tail-splicing use case - maybe we should have both versions
-}
-
-
 // maybe move this before modalAnalysisPluck - it's sort of a preliminary - it analyzes only a 
 // single partial
 void modalPartialResynthesis() // maybe rename to exponentialTailModeling
@@ -1018,11 +948,9 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
   // user parameters:
   double key = 65;
   double sampleRate = 44100;
-  //double sampleRate = 10000;
   int N = 44100;              // length in samples
   int partialIndex = 2;       // partial index on which the analysis/resynthesis is tested
   int spliceIndex  = 200;     // frame index, at which we want to match amplitude and phase:
-
 
   // create the input signal:
   typedef std::vector<double> Vec;
@@ -1032,7 +960,6 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
   RAPT::rsHarmonicAnalyzer<double> sineAnalyzer;
   setupHarmonicAnalyzerForModal(sineAnalyzer, sampleRate);
   RAPT::rsSinusoidalModel<double> sineModel = sineAnalyzer.analyze(&x[0], N);
-
 
   // pick the partial with which we do our experiments and extract envelopes:
   RAPT::rsSinusoidalPartial<double> partial = sineModel.getPartial(partialIndex);
@@ -1059,7 +986,7 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
   // influence of the attack exponential has decayed away and doesn't disturb the exponential decay
   // anymore)
 
-  Vec tail = expDecayTail(partial, spliceIndex, sampleRate);
+  Vec tail = rsExpDecayTail(partial, spliceIndex, sampleRate);
   //rsPlotVector(tail);
 
   // generate the partial from the sinusoidal model and write both into a stereo wavefile for 
