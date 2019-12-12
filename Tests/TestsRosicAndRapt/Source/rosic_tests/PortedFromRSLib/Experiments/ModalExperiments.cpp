@@ -935,46 +935,99 @@ void modalAnalysisPluck()
 }
 
 
+
+void rsExpDecayParameters(const std::vector<double>& t, const std::vector<double>& a, 
+  int spliceIndex, double* A, double* tau)
+{
+  rsAssert(t.size() == a.size());
+  int N = (int) t.size();
+  int maxIndex = RAPT::rsArray::maxIndex(&a[0], N);
+
+  // The second point for the exp-decay match is user provided (this is the splice-point at which
+  // the exp-decay may be glued to the original sample and the first is given by the global maximum 
+  // of the envelope.
+
+  double t1 = t[maxIndex];
+  double a1 = a[maxIndex];
+  double t2 = t[spliceIndex];
+  double a2 = a[spliceIndex];
+
+  RAPT::rsExpDecayParameters(t1, a1, t2, a2, A, tau);
+}
+
 // maybe move this before modalAnalysisPluck - it's sort of a preliminary - it analyzes only a 
 // single partial
-void modalPartialResynthesis() 
+void modalPartialResynthesis() // maybe rename to exponentialTailModeling
 {
   // Tries to resynthesize a partial via an exponentially decaying sinusoid. The difference to the
-  // function above is that we use the original phase of the analyzed partials
+  // function above is that we use the original phase of the analyzed partials. This is mostly for 
+  // Elan to splice an exponential decay to some sample where the  initial section is taken from
+  // the original - maybe that means, we should match amplitude and phase exactly at the 
+  // splice-point, which the user can select
 
   // user parameters:
   double key = 65;
   double sampleRate = 44100;
-  int length  = 44100;
-  int partialIndex = 1;  // the partial number on which the analysis/resynthesis is tested
+  int N = 2*44100;              // length in samples
+  int partialIndex = 1;       // partial index on which the analysis/resynthesis is tested
+  int spliceIndex  = 250;     // frame index, at which we want to match amplitude and phase:
+
 
   // create the input signal:
   typedef std::vector<double> Vec;
-  Vec x = createModalPluck(key, sampleRate, length);
+  Vec x = createModalPluck(key, sampleRate, N);
 
   // create the sinusoidal model:
   RAPT::rsHarmonicAnalyzer<double> sineAnalyzer;
   setupHarmonicAnalyzerForModal(sineAnalyzer, sampleRate);
-  RAPT::rsSinusoidalModel<double> sineModel = sineAnalyzer.analyze(&x[0], length);
+  RAPT::rsSinusoidalModel<double> sineModel = sineAnalyzer.analyze(&x[0], N);
 
 
   // pick the partial with which we do our experiments and extract envelopes:
   RAPT::rsSinusoidalPartial<double> partial = sineModel.getPartial(partialIndex);
-  Vec t = partial.getTimeArray();
-  Vec a = partial.getAmplitudeArray();
-  Vec f = partial.getFrequencyArray();
-  Vec p = partial.getPhaseArray();
-  rsPlotVectorsXY(t, a);    // plot amplitude envelope
+  Vec timeArray  = partial.getTimeArray();
+  Vec ampArray   = partial.getAmplitudeArray();
+  Vec freqArray  = partial.getFrequencyArray();
+  Vec phaseArray = partial.getPhaseArray();
+  //rsPlotVectorsXY(timeArray, ampArray);    // plot amplitude envelope
+
+  // estimate decay time and amplitude of an exponential decay that fits the amp-env:
+  double A, tau;
+  rsExpDecayParameters(timeArray, ampArray, spliceIndex, &A, &tau);
+
+  // create an exponential decay with given A,tau - the time axis is obtained the analysis frames:
+  int numFrames = (int) timeArray.size();
+  Vec a2(numFrames);
+  for(int k = 0; k < numFrames; k++)
+    a2[k] = A * exp(-timeArray[k] / tau);
+
+  // plot actual amplitude envelope and the exponential decay that is supposed to fit it:
+  rsPlotVectorsXY(timeArray, ampArray, a2);
+  // ok - this looks ok - maybe it could be tweaked to match the original envelope even better by
+  // choosing the first match point not exactly at the peak but some time later (because later, the
+  // influence of the attack exponential has decayed away and doesn't disturb the exponential decay
+  // anymore)
+
+
+  int dummy = 0;
 
 
   // todo: estimate attack, decay, amplitude from (t,a)
 
-  rsModalAnalyzer
+  // create a modal model of the partial:
+  //rsModalAnalyzer<double> modeAnalyzer;
+  //rsModalFilterParameters<double> modalParams = modeAnalyzer.getModalModel(partial);
+  // params are frequency, phase, amplitude, attack, decay - in this context, only 
+  // amplitude, attack, decay are relevant - actually only amplitude and decay because the portion,
+  // before but it's nicer to include the attack - hmm - maybe for the splicing of an exponential 
+  // decay, this is not what we need....maybe just work with the t,a,f,p arrays here directly
+ 
 
-
-
-
-
+  /*
+  std::vector<rsModalFilterParameters<double>> modeModel
+    = modeAnalyzer.getModalModel(sineModel);
+  Vec ym = synthesizeModal(modeModel, sampleRate, length);
+  */
 
   //rosic::writeToMonoWaveFile("ModalPluckOriginal.wav", &x[0],  length, (int)sampleRate);
 }
