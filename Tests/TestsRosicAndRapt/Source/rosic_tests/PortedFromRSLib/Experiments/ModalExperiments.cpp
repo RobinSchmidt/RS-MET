@@ -963,20 +963,37 @@ void rsExpDecayParameters(const std::vector<double>& t, const std::vector<double
 
 // maybe find a better name:
 std::vector<double> expDecayTail(const std::vector<double>& timeArray,
-  const std::vector<double>& ampArray, int spliceIndex, double sampleRate)
+  const std::vector<double>& ampArray, int spliceIndex, double sampleRate, 
+  double freq, double phase)
 {
+  rsAssert(timeArray.size() == ampArray.size());
   typedef std::vector<double> Vec;
+  int numFrames  = (int) timeArray.size();
+  int numSamples = (int) ceil(timeArray[numFrames-1] * sampleRate);
 
+  // estimate exponential decay parameters:
+  double A, tau;
+  rsExpDecayParameters(timeArray, ampArray, spliceIndex, &A, &tau);
 
+  // generate exponentially enveloped sinusoid:
+  Vec x(numSamples);
+  double w = 2*PI*freq/sampleRate;
+  for(int n = 0; n < numSamples; n++)
+  {
+    double tn = n/sampleRate;
+    x[n]  = A * exp(-tn / tau);
+    x[n] *= sin(w*n);   // preliminary - should later include the phase
+  }
+  // todo: use the exponential-decay filter - more efficient
 
-  return Vec();  // preliminary
+  return x;
 }
 
 std::vector<double> expDecayTail(const RAPT::rsSinusoidalPartial<double>& partial, int spliceIndex,
   double sampleRate)
 {
-  return expDecayTail(
-    partial.getTimeArray(), partial.getAmplitudeArray(), spliceIndex, sampleRate);
+  return expDecayTail(partial.getTimeArray(), partial.getAmplitudeArray(), spliceIndex, sampleRate, 
+    partial.getFreq(spliceIndex), partial.getPhase(spliceIndex));
 }
 
 
@@ -993,9 +1010,10 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
   // user parameters:
   double key = 65;
   double sampleRate = 44100;
-  int N = 2*44100;              // length in samples
+  //double sampleRate = 10000;
+  int N = 44100;              // length in samples
   int partialIndex = 1;       // partial index on which the analysis/resynthesis is tested
-  int spliceIndex  = 250;     // frame index, at which we want to match amplitude and phase:
+  int spliceIndex  = 200;     // frame index, at which we want to match amplitude and phase:
 
 
   // create the input signal:
@@ -1027,16 +1045,14 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
     a2[k] = A * exp(-timeArray[k] / tau);
 
   // plot actual amplitude envelope and the exponential decay that is supposed to fit it:
-  rsPlotVectorsXY(timeArray, ampArray, a2);
+  //rsPlotVectorsXY(timeArray, ampArray, a2);
   // ok - this looks ok - maybe it could be tweaked to match the original envelope even better by
   // choosing the first match point not exactly at the peak but some time later (because later, the
   // influence of the attack exponential has decayed away and doesn't disturb the exponential decay
   // anymore)
 
-
   Vec tail = expDecayTail(partial, spliceIndex, sampleRate);
-
-
+  //rsPlotVector(tail);
   int dummy = 0;
 
   // todo: make a function that takes a reference to a partial and returns the expontial-decay 
