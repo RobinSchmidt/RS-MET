@@ -1,8 +1,6 @@
 #ifndef RAPT_WINDOWFUNCTIONS_H
 #define RAPT_WINDOWFUNCTIONS_H
 
-// maybe move to AudioBasics ..maybe rename to SignalBasics
-
 /** A class to create various window functions that are useful for spectral analysis and FIR filter
 design. Some functions fill an array with values of the window function, other functions allow to 
 evaluate the continuous time window function to be evaluated at arbitrary inputs. The functions are 
@@ -15,7 +13,7 @@ References:
       a comprehensive list of window functions and some new flat-top windows"  */
 
 // i think, i need to double all values of the mainlobe width - because the lobe is two-sided and 
-// here, i only considered the right half...done?
+// here, i only considered the right half...done? -> check this
 
 class rsWindowFunction
 {

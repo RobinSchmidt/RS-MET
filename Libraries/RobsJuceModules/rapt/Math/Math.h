@@ -43,7 +43,11 @@ namespace RAPT
 #include "Numerics/Optimization.h"
 // todo: Optimizer, CurveFitter, Interpolator, Differentiator, InitialValueSolver, 
 
+#include "Functions/WindowFunctions.h"   // may use FFT stuff for Dolph/Chebychev window later
+
 #include "Functions/FunctionOperators.h" // may use stuff from NumericCalculus later - move it down, then
+                                         // perhaps this should not yet be in the library
+
 
 }
 

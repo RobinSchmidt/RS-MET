@@ -57,8 +57,14 @@
 //#include "Effects/Effects.h"           // reverb, distortion, dynamics, chorus, etc.
 //#include "Framework/Framework.h"       // parameter handling, save/recall, threading, polyphony, etc.
 //#include "Instruments/Instruments.h"   // full blown instruments with polyphony, state-recall, etc.
-#include "Unfinished/Unfinished.h"       // code under construction
+
+
+#include "Unfinished/Unfinished.h"       // code under construction - should go to the bottom!
+
 #include "Spectral/Spectral.h"           // move up, when cycle-mark finder was moved to analysis folder
+
+
+
 
 // ...the ordering above should roughly reflect the dependencies (a module later in the chain may
 // depend on one or more modules that come before it but not vice versa - well, we'll see if that's

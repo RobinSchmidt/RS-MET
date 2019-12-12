@@ -37,7 +37,6 @@ namespace RAPT
 #include "MiscAudio/DelayLine.h"
 #include "MiscAudio/MiscAudio.h"  // may have to be included later (needs higher level stuff)
 #include "MiscAudio/Saturator.h"
-#include "MiscAudio/WindowFunctions.h"
 #include "MiscAudio/AudioFunctions.h" // merge with other AudioFunctions.h file
 #include "MiscAudio/BandwidthConverter.h"
 #include "MiscAudio/DoublePendulum.h" // will go to Physics

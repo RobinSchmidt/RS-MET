@@ -42,6 +42,7 @@ namespace RAPT
 #include "Numerics/Interpolation.cpp"
 #include "Numerics/Optimization.cpp"
 
+#include "Functions/WindowFunctions.cpp"
 #include "Functions/FunctionOperators.cpp" 
 
 }
