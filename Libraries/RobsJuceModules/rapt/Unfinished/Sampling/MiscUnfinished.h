@@ -1272,18 +1272,17 @@ two time instants t1,t2 and associated amplitudes a1,a2 such that f(t) passes th
 template<class T>
 void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau);
 
+
+
 template<class T>
-void rsExpDecayParameters(const std::vector<T>& t, const std::vector<T>& a, 
-  int spliceIndex, double* A, double* tau);
+void rsExpDecayParameters(int N, const T* timeArray, const T* ampArray, 
+  int spliceIndex, T* A, T* tau);
 // rename the spliceIndex to decayMeasurementPoint
 
 template<class T>
-std::vector<T> rsExpDecayTail(const std::vector<T>& timeArray, const std::vector<T>& ampArray, 
+std::vector<T> rsExpDecayTail(int N, const T* timeArray, const T* ampArray, 
   int spliceIndex, T sampleRate, T freq, T phase);
-
-// maybe we should take (int N, const T* timeArray, const T* ampArray, ...) instead of std::vector
-
-
+// maybe find a better name:
 
 
 #endif

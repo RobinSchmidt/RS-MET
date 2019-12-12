@@ -967,14 +967,18 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
   Vec ampArray   = partial.getAmplitudeArray();
   Vec freqArray  = partial.getFrequencyArray();
   Vec phaseArray = partial.getPhaseArray();
+  int numFrames  = (int) timeArray.size();
   //rsPlotVectorsXY(timeArray, ampArray);    // plot amplitude envelope
+
+
+
 
   // estimate decay time and amplitude of an exponential decay that fits the amp-env:
   double A, tau;
-  rsExpDecayParameters(timeArray, ampArray, spliceIndex, &A, &tau);
+  rsExpDecayParameters(numFrames, &timeArray[0], &ampArray[0], spliceIndex, &A, &tau);
 
   // create an exponential decay with given A,tau - the time axis is obtained the analysis frames:
-  int numFrames = (int) timeArray.size();
+
   Vec a2(numFrames);
   for(int k = 0; k < numFrames; k++)
     a2[k] = A * exp(-timeArray[k] / tau);

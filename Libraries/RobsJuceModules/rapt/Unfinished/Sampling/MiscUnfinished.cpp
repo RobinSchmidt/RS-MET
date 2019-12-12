@@ -2167,39 +2167,32 @@ void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau)
 // can we get rid of the call to exp? 
 
 template<class T>
-void rsExpDecayParameters(const std::vector<T>& t, const std::vector<T>& a,
-  int spliceIndex, double* A, double* tau)
+void rsExpDecayParameters(int N, const T* t, const T* a,
+  int spliceIndex, T* A, T* tau)
 {
-  rsAssert(t.size() == a.size());
-  int N = (int) t.size();
-  int maxIndex = RAPT::rsArray::maxIndex(&a[0], N);
-
-  // The second point for the exp-decay match is user provided (this is the splice-point at which
-  // the exp-decay may be glued to the original sample and the first is given by the global maximum 
-  // of the envelope.
-
-  double t1 = t[maxIndex];
-  double a1 = a[maxIndex];
-  double t2 = t[spliceIndex];
-  double a2 = a[spliceIndex];
-
+  int maxIndex = RAPT::rsArray::maxIndex(a, N);
+  T t1 = t[maxIndex];
+  T a1 = a[maxIndex];
+  T t2 = t[spliceIndex];
+  T a2 = a[spliceIndex];
   RAPT::rsExpDecayParameters(t1, a1, t2, a2, A, tau);
 }
+// The second point for the exp-decay match is user provided (this is the splice-point at which
+// the exp-decay may be glued to the original sample and the first is given by the global maximum 
+// of the envelope.
 
-// maybe find a better name:
+
 template<class T>
-std::vector<T> rsExpDecayTail(const std::vector<T>& timeArray, const std::vector<T>& ampArray, 
+std::vector<T> rsExpDecayTail(int numFrames, const T* timeArray, const T* ampArray, 
   int spliceIndex, T sampleRate, T freq, T phase)
 {
-  rsAssert(timeArray.size() == ampArray.size());
-  rsAssert(spliceIndex < (int)timeArray.size());
+  rsAssert(spliceIndex < numFrames);
   typedef std::vector<T> Vec;
-  int numFrames  = (int) timeArray.size();
   int numSamples = (int) ceil(timeArray[numFrames-1] * sampleRate);
 
   // estimate exponential decay parameters:
   double A, tau;
-  rsExpDecayParameters(timeArray, ampArray, spliceIndex, &A, &tau);
+  rsExpDecayParameters(numFrames, timeArray, ampArray, spliceIndex, &A, &tau);
 
   // generate exponentially enveloped sinusoid:
   Vec x(numSamples);
@@ -2212,10 +2205,11 @@ std::vector<T> rsExpDecayTail(const std::vector<T>& timeArray, const std::vector
     x[n]  = A * exp(-tn / tau);
     x[n] *= cos(w*n + p0);
   }
+  // we use the convention here the the phase is with respect to a cosine wave - this is consistent
+  // with the sinusoidal modeling framework....but the modal synthesis stuff uses a sine...hmmm...
+  // this should probably be treated consistently...
 
   // todo: optimize: use the exponential-decay filter instead of calling exp/cos explicitly
 
   return x;
 }
-
-
