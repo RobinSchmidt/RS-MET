@@ -2167,58 +2167,26 @@ void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau)
 // can we get rid of the call to exp? 
 
 template<class T>
-void rsExpDecayParameters(int N, const T* t, const T* a, // actually, we don't even need N
-  int matchIndex1, int matchIndex2, T* A, T* tau)
-{
-  rsAssert(matchIndex2 < N);   // may don't pass N int this function
-  rsAssert(matchIndex1 < matchIndex2);
-  T t1 = t[matchIndex1];
-  T a1 = a[matchIndex1];
-  T t2 = t[matchIndex2];
-  T a2 = a[matchIndex2];
-  RAPT::rsExpDecayParameters(t1, a1, t2, a2, A, tau);
-}
-// The second point for the exp-decay match is user provided (this is the splice-point at which
-// the exp-decay may be glued to the original sample and the first is given by the global maximum 
-// of the envelope.
-// actually, the whole function is kinda superfluous - get rid of it and do the bsuiness directly 
-// in the caller
-
-
-template<class T>
 std::vector<T> rsExpDecayTail(int numFrames, const T* timeArray, const T* ampArray, 
-  int matchIndex1, int matchIndex2, T sampleRate, T freq, T phase)
+  int matchIndex1, int matchIndex2, T sampleRate, T freq, T phase, int phaseMatchIndex)
 {
   rsAssert(matchIndex2 < numFrames);
   rsAssert(matchIndex1 < matchIndex2);
 
-  typedef std::vector<T> Vec;
-  int numSamples = (int) ceil(timeArray[numFrames-1] * sampleRate);
-
   // estimate exponential decay parameters:
-  double A, tau;
-  rsExpDecayParameters(numFrames, timeArray, ampArray, matchIndex1, matchIndex2, &A, &tau);
+  T A, tau;
+  rsExpDecayParameters(timeArray[matchIndex1], ampArray[matchIndex1], 
+    timeArray[matchIndex2], ampArray[matchIndex2], &A, &tau);
 
   // generate exponentially enveloped sinusoid:
+  typedef std::vector<T> Vec;
+  int numSamples = (int) ceil(timeArray[numFrames-1] * sampleRate);
   Vec x(numSamples);
-
-
-
-  T ts = timeArray[matchIndex2];  // time-instant for splicing
-  // in this context, it's somewhat unnatural to use matchIndex2 for the phase-match index - maybe
-  // we should take another parameter phaseMatchIndex - matching the phase at matchIndex2 is 
-  // suitable for tail-splicing - but this function may be used in other contexts as well
-
-
-
-  T p0 = phase - 2*PI*freq*ts;    // start-phase
-  T w  = 2*PI*freq/sampleRate;
+  T ts = timeArray[phaseMatchIndex];  // time-instant for splicing
+  T p0 = phase - 2*PI*freq*ts;        // start-phase
+  T w  = 2*PI*freq/sampleRate;        // normalized radian frequency
   for(int n = 0; n < numSamples; n++)
-  {
-    T tn  = n/sampleRate;
-    x[n]  = A * exp(-tn / tau);
-    x[n] *= cos(w*n + p0);
-  }
+    x[n]  = A * exp(-(n/sampleRate) / tau) * cos(w*n + p0);
   // we use the convention here the the phase is with respect to a cosine wave - this is consistent
   // with the sinusoidal modeling framework....but the modal synthesis stuff uses a sine...hmmm...
   // this should probably be treated consistently...

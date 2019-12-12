@@ -975,7 +975,10 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
 
   // estimate decay time and amplitude of an exponential decay that fits the amp-env:
   double A, tau;
-  rsExpDecayParameters(numFrames, &timeArray[0], &ampArray[0], maxIndex, spliceIndex, &A, &tau);
+  //rsExpDecayParameters(numFrames, &timeArray[0], &ampArray[0], maxIndex, spliceIndex, &A, &tau);
+  rsExpDecayParameters(timeArray[maxIndex], ampArray[maxIndex], 
+    timeArray[spliceIndex], ampArray[spliceIndex], &A, &tau); // verify, if called correctly
+
 
   // create an exponential decay with given A,tau - the time axis is obtained the analysis frames:
 
