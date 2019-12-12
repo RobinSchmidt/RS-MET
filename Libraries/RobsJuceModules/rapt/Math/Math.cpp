@@ -12,6 +12,7 @@ namespace RAPT
 #include "LinearAlgebra/BandDiagonalSolver.cpp"
 #include "LinearAlgebra/LinearAlgebra.cpp"
 
+#include "Misc/FourierTransformer.cpp"
 #include "Misc/Statistics.cpp"
 #include "Misc/CurveFitting.cpp"
 #include "Misc/RatioGenerator.cpp"

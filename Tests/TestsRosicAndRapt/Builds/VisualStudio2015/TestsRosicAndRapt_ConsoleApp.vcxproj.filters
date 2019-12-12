@@ -116,6 +116,9 @@
     <Filter Include="JUCE Modules\rapt\Math\LinearAlgebra">
       <UniqueIdentifier>{62269221-6ABA-2556-9AAC-CC8C506393A8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\rapt\Math\Misc\OouraFFT">
+      <UniqueIdentifier>{3D77AB67-539C-935C-1853-D138200C305F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\rapt\Math\Misc">
       <UniqueIdentifier>{E8BF3724-0D83-62CB-1A7A-BC8F85460C94}</UniqueIdentifier>
     </Filter>
@@ -148,9 +151,6 @@
     </Filter>
     <Filter Include="JUCE Modules\rapt\Unfinished\Filters">
       <UniqueIdentifier>{9BCF82CD-C55D-F048-5070-8937BD14B2F0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="JUCE Modules\rapt\Unfinished\Math\OouraFFT">
-      <UniqueIdentifier>{AE7171D3-DA12-A428-8A49-45432958CEE2}</UniqueIdentifier>
     </Filter>
     <Filter Include="JUCE Modules\rapt\Unfinished\Math">
       <UniqueIdentifier>{F4FC4518-2174-1691-6CEF-BB6B86DDEE65}</UniqueIdentifier>
@@ -862,7 +862,13 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LinearAlgebra.cpp">
       <Filter>JUCE Modules\rapt\Math\LinearAlgebra</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\OouraFFT\fft4g.cpp">
+      <Filter>JUCE Modules\rapt\Math\Misc\OouraFFT</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\CurveFitting.cpp">
+      <Filter>JUCE Modules\rapt\Math\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\FourierTransformer.cpp">
       <Filter>JUCE Modules\rapt\Math\Misc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\RatioGenerator.cpp">
@@ -978,12 +984,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\PhonoFilter.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\OouraFFT\fft4g.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Math\OouraFFT</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\FourierTransformer.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\FunctionObjects.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
@@ -3045,6 +3045,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\CurveFitting.h">
       <Filter>JUCE Modules\rapt\Math\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\FourierTransformer.h">
+      <Filter>JUCE Modules\rapt\Math\Misc</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\RatioGenerator.h">
       <Filter>JUCE Modules\rapt\Math\Misc</Filter>
     </ClInclude>
@@ -3163,9 +3166,6 @@
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\DifferentialEquationSystem.h">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\FourierTransformer.h">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\FunctionObjects.h">
