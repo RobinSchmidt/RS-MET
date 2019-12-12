@@ -967,6 +967,7 @@ std::vector<double> expDecayTail(const std::vector<double>& timeArray,
   double freq, double phase)
 {
   rsAssert(timeArray.size() == ampArray.size());
+  rsAssert(spliceIndex < (int)timeArray.size());
   typedef std::vector<double> Vec;
   int numFrames  = (int) timeArray.size();
   int numSamples = (int) ceil(timeArray[numFrames-1] * sampleRate);
@@ -977,14 +978,17 @@ std::vector<double> expDecayTail(const std::vector<double>& timeArray,
 
   // generate exponentially enveloped sinusoid:
   Vec x(numSamples);
-  double w = 2*PI*freq/sampleRate;
+  double ts = timeArray[spliceIndex];  // time-instant for splicing
+  double p0 = phase - 2*PI*freq*ts;    // start-phase
+  double w  = 2*PI*freq/sampleRate;
   for(int n = 0; n < numSamples; n++)
   {
     double tn = n/sampleRate;
     x[n]  = A * exp(-tn / tau);
-    x[n] *= sin(w*n);   // preliminary - should later include the phase
+    x[n] *= cos(w*n + p0);
   }
-  // todo: use the exponential-decay filter - more efficient
+
+  // todo: optimize: use the exponential-decay filter
 
   return x;
 }
@@ -1055,8 +1059,22 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
   //rsPlotVector(tail);
   int dummy = 0;
 
-  // todo: make a function that takes a reference to a partial and returns the expontial-decay 
-  // modeled version of it
+  // generate the partial from the sinusoidal model and write both into a stereo wavefile for 
+  // comparison:
+  sineModel.keepOnly({ (size_t)partialIndex });
+  Vec ys = synthesizeSinusoidal(sineModel, sampleRate);
+
+  double spliceTime = timeArray[spliceIndex];
+  // the phase does not yet match at the splice-point - wait - maybe we should use a cosine, not
+  // a sine?
+
+
+  rosic::writeToMonoWaveFile("PartialResynth.wav", &ys[0],   (int)ys.size(),   (int)sampleRate);
+  rosic::writeToMonoWaveFile("PartialExpTail.wav", &tail[0], (int)tail.size(), (int)sampleRate);
+
+
+
+
 
 
   // todo: estimate attack, decay, amplitude from (t,a)
