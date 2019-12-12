@@ -936,6 +936,9 @@ void modalAnalysisPluck()
 
 
 
+
+
+
 void rsExpDecayParameters(const std::vector<double>& t, const std::vector<double>& a, 
   int spliceIndex, double* A, double* tau)
 {
@@ -954,6 +957,17 @@ void rsExpDecayParameters(const std::vector<double>& t, const std::vector<double
 
   RAPT::rsExpDecayParameters(t1, a1, t2, a2, A, tau);
 }
+
+// maybe find a better name:
+std::vector<double> expDecayTail(const RAPT::rsSinusoidalPartial<double>& partial, int spliceIndex,
+  double sampleRate)
+{
+  typedef std::vector<double> Vec;
+
+
+  return Vec();  // preliminary
+}
+
 
 // maybe move this before modalAnalysisPluck - it's sort of a preliminary - it analyzes only a 
 // single partial
@@ -1010,6 +1024,9 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
 
 
   int dummy = 0;
+
+  // todo: make a function that takes a reference to a partial and returns the expontial-decay 
+  // modeled version of it
 
 
   // todo: estimate attack, decay, amplitude from (t,a)
