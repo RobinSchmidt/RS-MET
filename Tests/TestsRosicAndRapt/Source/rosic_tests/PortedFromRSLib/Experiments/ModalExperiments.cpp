@@ -958,14 +958,25 @@ void rsExpDecayParameters(const std::vector<double>& t, const std::vector<double
   RAPT::rsExpDecayParameters(t1, a1, t2, a2, A, tau);
 }
 
+
+
+
 // maybe find a better name:
-std::vector<double> expDecayTail(const RAPT::rsSinusoidalPartial<double>& partial, int spliceIndex,
-  double sampleRate)
+std::vector<double> expDecayTail(const std::vector<double>& timeArray,
+  const std::vector<double>& ampArray, int spliceIndex, double sampleRate)
 {
   typedef std::vector<double> Vec;
 
 
+
   return Vec();  // preliminary
+}
+
+std::vector<double> expDecayTail(const RAPT::rsSinusoidalPartial<double>& partial, int spliceIndex,
+  double sampleRate)
+{
+  return expDecayTail(
+    partial.getTimeArray(), partial.getAmplitudeArray(), spliceIndex, sampleRate);
 }
 
 
@@ -1021,6 +1032,9 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
   // choosing the first match point not exactly at the peak but some time later (because later, the
   // influence of the attack exponential has decayed away and doesn't disturb the exponential decay
   // anymore)
+
+
+  Vec tail = expDecayTail(partial, spliceIndex, sampleRate);
 
 
   int dummy = 0;
