@@ -402,11 +402,6 @@ template void RAPT::rsRecreateSineWithPhaseCatch(double *x, double *y, int N, do
 template double RAPT::rsSineShiftAmount(double *x, int N, int n0, double p0, double w);
 template double RAPT::rsSineShiftAmount(double *x, int N, int n0, double p0);
 template double RAPT::rsEnvelopeMatchOffset(const double* x, int Nx, const double* y, int Ny, int D);
-
-
-template void RAPT::rsExpDecayParameters(double t1, double a1, double t2, double a2, 
-  double* A, double* tau); // may be removed when we later instantiate functions that call this
-
 template std::vector<double> RAPT::rsExpDecayTail(const RAPT::rsSinusoidalPartial<double>& partial, 
   int spliceIndex, double sampleRate);
 
