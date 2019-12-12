@@ -2167,36 +2167,50 @@ void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau)
 // can we get rid of the call to exp? 
 
 template<class T>
-void rsExpDecayParameters(int N, const T* t, const T* a,
-  int spliceIndex, T* A, T* tau)
+void rsExpDecayParameters(int N, const T* t, const T* a, // actually, we don't even need N
+  int matchIndex1, int matchIndex2, T* A, T* tau)
 {
-  int maxIndex = RAPT::rsArray::maxIndex(a, N);
-  T t1 = t[maxIndex];
-  T a1 = a[maxIndex];
-  T t2 = t[spliceIndex];
-  T a2 = a[spliceIndex];
+  rsAssert(matchIndex2 < N);   // may don't pass N int this function
+  rsAssert(matchIndex1 < matchIndex2);
+  T t1 = t[matchIndex1];
+  T a1 = a[matchIndex1];
+  T t2 = t[matchIndex2];
+  T a2 = a[matchIndex2];
   RAPT::rsExpDecayParameters(t1, a1, t2, a2, A, tau);
 }
 // The second point for the exp-decay match is user provided (this is the splice-point at which
 // the exp-decay may be glued to the original sample and the first is given by the global maximum 
 // of the envelope.
+// actually, the whole function is kinda superfluous - get rid of it and do the bsuiness directly 
+// in the caller
 
 
 template<class T>
 std::vector<T> rsExpDecayTail(int numFrames, const T* timeArray, const T* ampArray, 
-  int spliceIndex, T sampleRate, T freq, T phase)
+  int matchIndex1, int matchIndex2, T sampleRate, T freq, T phase)
 {
-  rsAssert(spliceIndex < numFrames);
+  rsAssert(matchIndex2 < numFrames);
+  rsAssert(matchIndex1 < matchIndex2);
+
   typedef std::vector<T> Vec;
   int numSamples = (int) ceil(timeArray[numFrames-1] * sampleRate);
 
   // estimate exponential decay parameters:
   double A, tau;
-  rsExpDecayParameters(numFrames, timeArray, ampArray, spliceIndex, &A, &tau);
+  rsExpDecayParameters(numFrames, timeArray, ampArray, matchIndex1, matchIndex2, &A, &tau);
 
   // generate exponentially enveloped sinusoid:
   Vec x(numSamples);
-  T ts = timeArray[spliceIndex];  // time-instant for splicing
+
+
+
+  T ts = timeArray[matchIndex2];  // time-instant for splicing
+  // in this context, it's somewhat unnatural to use matchIndex2 for the phase-match index - maybe
+  // we should take another parameter phaseMatchIndex - matching the phase at matchIndex2 is 
+  // suitable for tail-splicing - but this function may be used in other contexts as well
+
+
+
   T p0 = phase - 2*PI*freq*ts;    // start-phase
   T w  = 2*PI*freq/sampleRate;
   for(int n = 0; n < numSamples; n++)

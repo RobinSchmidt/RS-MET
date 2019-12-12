@@ -1276,13 +1276,13 @@ void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau);
 
 template<class T>
 void rsExpDecayParameters(int N, const T* timeArray, const T* ampArray, 
-  int spliceIndex, T* A, T* tau);
+  int matchIndex1, int matchIndex2, T* A, T* tau);
 // rename the spliceIndex to decayMeasurementPoint - no - let the user pass two indices - that's 
 // more generally useful
 
 template<class T>
 std::vector<T> rsExpDecayTail(int N, const T* timeArray, const T* ampArray, 
-  int spliceIndex, T sampleRate, T freq, T phase);
+  int matchIndex1, int matchIndex2, T sampleRate, T freq, T phase);
 // maybe find a better name:
 // it's probably a better idea to pass two indices instead of the "spliceIndex" - because that's
 // too specific for the splicing use-case

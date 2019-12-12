@@ -971,11 +971,11 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
   //rsPlotVectorsXY(timeArray, ampArray);    // plot amplitude envelope
 
 
-
+  int maxIndex  = RAPT::rsArray::maxIndex(&ampArray[0], numFrames);
 
   // estimate decay time and amplitude of an exponential decay that fits the amp-env:
   double A, tau;
-  rsExpDecayParameters(numFrames, &timeArray[0], &ampArray[0], spliceIndex, &A, &tau);
+  rsExpDecayParameters(numFrames, &timeArray[0], &ampArray[0], maxIndex, spliceIndex, &A, &tau);
 
   // create an exponential decay with given A,tau - the time axis is obtained the analysis frames:
 
