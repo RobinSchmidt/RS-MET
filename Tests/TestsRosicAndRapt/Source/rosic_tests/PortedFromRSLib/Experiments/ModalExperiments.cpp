@@ -998,6 +998,9 @@ std::vector<double> expDecayTail(const RAPT::rsSinusoidalPartial<double>& partia
 {
   return expDecayTail(partial.getTimeArray(), partial.getAmplitudeArray(), spliceIndex, sampleRate, 
     partial.getFreq(spliceIndex), partial.getPhase(spliceIndex));
+  // maybe instead of using the instantaneous frequency at the splice index, we should use the 
+  // average frequency ...hmm....well...that seems suitable for modal modeling of the whole partial
+  // but maybe not so much for Elan's tail-splicing use case - maybe we should have both versions
 }
 
 
@@ -1016,7 +1019,7 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
   double sampleRate = 44100;
   //double sampleRate = 10000;
   int N = 44100;              // length in samples
-  int partialIndex = 1;       // partial index on which the analysis/resynthesis is tested
+  int partialIndex = 2;       // partial index on which the analysis/resynthesis is tested
   int spliceIndex  = 200;     // frame index, at which we want to match amplitude and phase:
 
 
@@ -1057,23 +1060,26 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
 
   Vec tail = expDecayTail(partial, spliceIndex, sampleRate);
   //rsPlotVector(tail);
-  int dummy = 0;
 
   // generate the partial from the sinusoidal model and write both into a stereo wavefile for 
   // comparison:
   sineModel.keepOnly({ (size_t)partialIndex });
   Vec ys = synthesizeSinusoidal(sineModel, sampleRate);
 
-  double spliceTime = timeArray[spliceIndex];
-  // the phase does not yet match at the splice-point - wait - maybe we should use a cosine, not
-  // a sine?
 
+  double spliceTime = timeArray[spliceIndex];
+    // this is the time-instant (in seconds) at which instantaneous phase and amplitude of the 
+    // exponentially decaying sinusoid will match the values from the sine-model - for splicing
+    // together original and tail, it's best to use a crossfade centered at that instant
 
   rosic::writeToMonoWaveFile("PartialResynth.wav", &ys[0],   (int)ys.size(),   (int)sampleRate);
   rosic::writeToMonoWaveFile("PartialExpTail.wav", &tail[0], (int)tail.size(), (int)sampleRate);
+    // in the audiofiles, zoom in to the spliceTime to verify that both signals indeed do match
+    // phase- and amplitude-wise at that instant
 
 
-
+  // todo: in addition to estimate decay and amplitude, also estimate attack....actually, attack is 
+  // the only thing that is missing to make a full modal model of the partial
 
 
 
