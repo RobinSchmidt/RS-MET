@@ -18,9 +18,11 @@ void modalWithFancyEnv();
 
 void modalSynthSpectra();
 
+// stuff for modal analysis/resynthesis:
 void modalDecayFit();
 void modalAnalysis1();
 void modalAnalysisPluck();
+void modalPartialResynthesis();
 
 
 

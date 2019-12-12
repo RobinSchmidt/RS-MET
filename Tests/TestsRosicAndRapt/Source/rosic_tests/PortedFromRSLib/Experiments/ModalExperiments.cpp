@@ -883,19 +883,26 @@ void modalAnalysis1()
 
 void modalAnalysisPluck()
 {
-  double key = 64;
+  // We create a plucked type of sound using modal synthesis, then analyze that sound via the 
+  // sinusoidal analysis framework and then further analyze the output of the sinusoidal analysis
+  // in terms of modal parameters. The goal is to recover the original modal parameters as
+  // accurately as possible. If we are able to correctly recover modal parameters, we may also
+  // apply the same analysis algorithm to natural sounds.
+
+  // user parameters:
+  double key = 65;
   double sampleRate = 44100;
   int length = 44100;
 
+  // create the input signal:
   typedef std::vector<double> Vec;
-
   Vec x = createModalPluck(key, sampleRate, length);
 
   // create a sinusoidal model and resynthesize sinusoidally:
   RAPT::rsHarmonicAnalyzer<double> sineAnalyzer;
   setupHarmonicAnalyzerForModal(sineAnalyzer, sampleRate);
   RAPT::rsSinusoidalModel<double> sineModel = sineAnalyzer.analyze(&x[0], length);
-  sineModel.removePartialsAbove(66);  // model shows partials up to 40 kHz - why?
+  sineModel.removePartialsAbove(66);  // model for key=64 shows partials up to 40 kHz - see below
   sineModel.removePartial(0);         // DC confuses modal model
   //plotSineModel(sineModel, sampleRate);
   Vec ys = synthesizeSinusoidal(sineModel, sampleRate);
@@ -914,7 +921,64 @@ void modalAnalysisPluck()
   rosic::writeToMonoWaveFile("ModalPluckOriginal.wav", &x[0],  length, (int)sampleRate);
   rosic::writeToMonoWaveFile("ModalPluckSinusoidal.wav", &ys[0], (int)ys.size(), (int)sampleRate);
   rosic::writeToMonoWaveFile("ModalPluckModal.wav", &ym[0], (int)ym.size(), (int)sampleRate);
+
+  // Observations:
+  // -with key=64, the model contains partials with frequencies up to 40kHz - this is because the 
+  //  maximum measured cycle-length is around 135 and the pitch-flattening step stretches this out 
+  //  to the next power of two which is 256 - so the cycle-lenth that goes into the analysis is 
+  //  almost twice the original cycle length, leading to a nomial doubling of the bandwidth - the 
+  //  amplitudes of the partials above fs/2 are numerically close to zero, though
+  //  -maybe the analyzer should restrict itself to analyze only frequencies that fall into the
+  //   range up to the original fs/2, not to the upsampled fs/2
+  // -with key=65, the maximum measured cycle-length is 127.73 and the pitch-flattener selects 128
+  //  as its target length
 }
+
+
+// maybe move this before modalAnalysisPluck - it's sort of a preliminary - it analyzes only a 
+// single partial
+void modalPartialResynthesis() 
+{
+  // Tries to resynthesize a partial via an exponentially decaying sinusoid. The difference to the
+  // function above is that we use the original phase of the analyzed partials
+
+  // user parameters:
+  double key = 65;
+  double sampleRate = 44100;
+  int length  = 44100;
+  int partialIndex = 1;  // the partial number on which the analysis/resynthesis is tested
+
+  // create the input signal:
+  typedef std::vector<double> Vec;
+  Vec x = createModalPluck(key, sampleRate, length);
+
+  // create the sinusoidal model:
+  RAPT::rsHarmonicAnalyzer<double> sineAnalyzer;
+  setupHarmonicAnalyzerForModal(sineAnalyzer, sampleRate);
+  RAPT::rsSinusoidalModel<double> sineModel = sineAnalyzer.analyze(&x[0], length);
+
+
+  // pick the partial with which we do our experiments and extract envelopes:
+  RAPT::rsSinusoidalPartial<double> partial = sineModel.getPartial(partialIndex);
+  Vec t = partial.getTimeArray();
+  Vec a = partial.getAmplitudeArray();
+  Vec f = partial.getFrequencyArray();
+  Vec p = partial.getPhaseArray();
+  rsPlotVectorsXY(t, a);    // plot amplitude envelope
+
+
+  // todo: estimate attack, decay, amplitude from (t,a)
+
+  rsModalAnalyzer
+
+
+
+
+
+
+  //rosic::writeToMonoWaveFile("ModalPluckOriginal.wav", &x[0],  length, (int)sampleRate);
+}
+
 
 /*
 Ideas:
