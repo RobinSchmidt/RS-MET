@@ -1272,7 +1272,13 @@ two time instants t1,t2 and associated amplitudes a1,a2 such that f(t) passes th
 template<class T>
 void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau);
 
-
+/** Given two length-N arrays of time-stamps (in seconds) and associated amplitude envelope values 
+(for example, coming from a sinusoidal analysis), this function creates an exponentially decaying 
+sinusoid that matches the amplitude envelope at two chosen match-indices. You may also set the 
+frequency of the sinusoid and its phase, where the phase will be matched at a time instant 
+corresponding to phaseMatchIndex (i.e. the timeArray value at that index). This can be used for 
+splicing an exponentially decaying tail to a partial (in which case it makes sense to match the 
+phase at the splicing point - which is typically given by matchIndex2). */
 template<class T>
 std::vector<T> rsExpDecayTail(int N, const T* timeArray, const T* ampArray, 
   int matchIndex1, int matchIndex2, T sampleRate, T freq, T phase, int phaseMatchIndex);
