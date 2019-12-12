@@ -403,6 +403,11 @@ template double RAPT::rsSineShiftAmount(double *x, int N, int n0, double p0, dou
 template double RAPT::rsSineShiftAmount(double *x, int N, int n0, double p0);
 template double RAPT::rsEnvelopeMatchOffset(const double* x, int Nx, const double* y, int Ny, int D);
 
+
+template void RAPT::rsExpDecayParameters(double t1, double a1, double t2, double a2, 
+  double* A, double* tau); // may be removed when we later instantiate functions that call this
+
+
 // move to rsFilterAnalyzer:
 template double RAPT::analogBiquadMagnitudeSquaredAt(double B0, double B1, double B2, double A0,
   double A1, double A2, double w);

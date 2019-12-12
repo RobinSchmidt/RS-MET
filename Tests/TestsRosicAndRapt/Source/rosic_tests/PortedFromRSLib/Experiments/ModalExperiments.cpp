@@ -988,6 +988,7 @@ std::vector<double> expDecayTail(const std::vector<double>& timeArray,
     x[n] *= cos(w*n + p0);
   }
 
+
   // todo: optimize: use the exponential-decay filter
 
   return x;
@@ -1077,6 +1078,10 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
     // in the audiofiles, zoom in to the spliceTime to verify that both signals indeed do match
     // phase- and amplitude-wise at that instant
 
+
+  // todo: maybe instead of reading out the amplitude at two selected points, estimate A,tau from
+  // the energy-decay-relief - see section 2.2.5 here:
+  // https://www2.ak.tu-berlin.de/~akgroup/ak_pub/abschlussarbeiten/2014/KaapPascal_MasA.pdf
 
   // todo: in addition to estimate decay and amplitude, also estimate attack....actually, attack is 
   // the only thing that is missing to make a full modal model of the partial

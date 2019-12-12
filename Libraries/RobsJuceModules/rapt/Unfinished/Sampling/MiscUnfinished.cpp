@@ -2150,3 +2150,13 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, cons
 // may also use its ingnore-facilities - needs functions 
 //  setAlgorithm(absoluteDifference, squaredDifference, correlation, linearRegression, ...)
 //  setDecimation, setInterpolation
+
+template<class T>
+void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau)
+{
+  T dt =  t2 - t1;               // time-difference
+  T ra =  a2 / a1;               // amplitude ratio
+  *tau = -dt / log(ra);          // time-constant of exponential decay
+  *A   =  a1 / exp(-t1 / *tau);  // amplitude multiplier
+}
+// can we get rid of the call to exp? 
