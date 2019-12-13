@@ -1571,34 +1571,17 @@ bool rsPeakPicker<T>::isRelevantPeak(int index, const T* x, int N) const
     if(x[index] < x[i])
       return false;
   return true;
+  // maybe factor out into rsArray::isPeakOrPlateau(...)
+  // or into member isPeak the do multiple checks here 
+  // (1) isPeak
+  // (2) isAboveGlobalThreshold()
+  // (3) isAboveLocalThreshold()
+  // (4) ...
+  // maybe use short-circuiting in a statement:
+  // return isPeak(..) && isAboveLocalThreshold(...) && isAboveGlobalThreshold && ...
 
 
-  /*
-  int i, iStart;
 
-  // loop over left neighbors:
-  iStart = rsMax(0, index-numLeftNeighbors);
-  for(i = iStart; i < index; i++)
-    if(x[index] < x[i])
-      return false;
-
-  // loop over right neighbors:
-  iStart = rsMin(N-1, index+numRightNeighbors);
-  for(i = iStart; i > index; i--)
-    if(x[index] < x[i])
-      return false;
-
-  // if we don't use <= but <, we may actually use one single loop
-
-  return true;
-  */
-
-  // not true anymore:
-  // Note that in the loop over the right neighbours, we compare via >= whereas in the loop over 
-  // the left neighbours, we use >. This affects, how plateaus are treated. Doing it this way will
-  // pick the first value in a plateau as "the" peak. Doing it the other way around, would pick the
-  // last, using >= in both loops would ick all plateau values as peaks and using > in both would 
-  // pick none.
 
   // ...hmmm...maybe returning all plateau-values as peak-values by default would make more sense.
   // Client code may throw away undesired data later but it can't guess additional data

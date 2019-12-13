@@ -890,14 +890,19 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  /** Sets the number of left neighbors which must be smaller than a peak value (default: 1). */
+  /** Sets the number of left neighbors which must be less or equal than a peak value 
+  (default: 1). */
   void setNumLeftNeighbors(int newNumber) { numLeftNeighbors = newNumber; }
 
-  /** Sets the number of right neighbors which must be smaller than a peak value (default: 1). */
+  /** Sets the number of right neighbors which must be less or equal than a peak value 
+  (default: 1). */
   void setNumRightNeighbors(int newNumber) { numRightNeighbors = newNumber; }
 
   /** Convenience function to set the number of left and right neighbors at once. */
   void setNumNeighbors(int newNumber) { numLeftNeighbors = numRightNeighbors = newNumber; }
+
+  // maybe just have a single function setNumNeighbours which takes two parameters for left and 
+  // right neighbors
 
 
   //-----------------------------------------------------------------------------------------------

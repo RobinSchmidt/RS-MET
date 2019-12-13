@@ -1187,7 +1187,6 @@ bool testPeakPicker()  // move to unit tests
   typedef std::vector<int>    VecI;
 
   rsPeakPicker<double> pp;
-
   VecD x;
   VecI p;
 
@@ -1211,6 +1210,8 @@ bool testPeakPicker()  // move to unit tests
   x = { 1,2,3,4,3,5,1 }; p = pp.getPeakIndices(x); result &= p == VecI({5});
   x = { 1,4,3,4,3,5,1 }; p = pp.getPeakIndices(x); result &= p == VecI({1,5});
   x = { 1,4,3,4,3,4,1 }; p = pp.getPeakIndices(x); result &= p == VecI({1,3,5});
+
+  // todo: test with an asymmetric setting like 1 left, two right neighbors
 
   // how should we handle plateaus? maybe for a plateau, consider the start of the plateau as peak?
   // ...or maybe the center....but then what about plateaus of even length? maybe the idices should
@@ -1249,6 +1250,37 @@ void peakPicker()
   // -check, if plot looks as expected
   // -do that with various seeds - if for some settings something strange happens, note dow the
   //  settings
+
+
+
+  // for amp-envelopes, it may make senseto use as additional criterion (in addition to be greater
+  // or equal to its neighbors), that the smoothed versions of the envelope have a peak there, too
+  // (maybe not exactly at the same index but very closely nearby)
+  // here:
+  // https://books.google.de/books?id=8h-ZDgAAQBAJ&pg=PT788&lpg=PT788&dq=finding+relevant+peaks&source=bl&ots=ZmIkfb9Zl6&sig=ACfU3U1vLoeM7mPahOTov618ijcnCDTh1w&hl=en&sa=X&ved=2ahUKEwja5Myu2bPmAhViQUEAHZjiAqQQ6AEwB3oECAkQAQ#v=onepage&q=finding%20relevant%20peaks&f=false
+  // it says something about real peaks should be visible on multiple scales
+
+
+
+  // for ideas, see:
+  // https://stackoverflow.com/questions/5672095/finding-relevant-peaks-in-messy-ffts
+  // https://se.mathworks.com/help/signal/ref/findpeaks.html#bufbbs1-MinPeakProminence
+  // https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.peak_prominences.html
+  // http://matlab.izmiran.ru/help/toolbox/images/morph13.html
+
+
+  // maybe we could do some post-processing on a preliminary peak-array by which we discard some 
+  // of the preliminary peaks - for example based on minimum desired distance between peaks
+  // or - based on peak-prominence:
+  // https://en.wikipedia.org/wiki/Topographic_prominence
+  // maybe write a function getPeakProminences that takes an array of values and an array of peak
+  // indices and return an array of peak prominences
+
+  // maybe the shape of the signal around the peak should be generally curved downward...so maybe 
+  // we should look at the 2nd derivative...maybe of a smoothed signal?
+
+  // in the thread on stackoverflow, somehwat suggest to smooth the data with this:
+  // https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
 
 
 
