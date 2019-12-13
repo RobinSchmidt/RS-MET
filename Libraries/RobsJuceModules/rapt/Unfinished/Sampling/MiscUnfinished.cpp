@@ -1563,12 +1563,45 @@ std::vector<int> rsPeakPicker<T>::getPeakIndices(const T* x, int N) const
 }
 
 template<class T>
-bool rsPeakPicker<T>::isRelevantPeak(int i, const T* x, int N) const
+bool rsPeakPicker<T>::isRelevantPeak(int index, const T* x, int N) const
 {
-  return false;  // preliminary
+  int i, iStart;
+
+  // loop over left neighbors:
+  iStart = rsMax(0, index-numLeftNeighbors);
+  for(i = iStart; i < index; i++)
+    if(!(x[index] > x[i]))
+      return false;
+
+  // loop over right neighbors:
+  iStart = rsMin(N-1, index+numRightNeighbors);
+  for(i = iStart; i > index; i--)
+    if(!(x[index] >= x[i]))
+      return false;
+
+  return true;
+
+
+  // Note that in the loop over the right neighbours, we compare via >= whereas in the loop over 
+  // the left neighbours, we use >. This affects, how plateaus are treated. Doing it this way will
+  // pick the first value in a plateau as "the" peak. Doing it the other way around, would pick the
+  // last, using >= in both loops would ick all plateau values as peaks and using > in both would 
+  // pick none.
+
+  // ...hmmm...maybe returning all plateau-values as peak-values by default would make more sense.
+  // Client code may throw away undesired data later but it can't guess additional data
+  // for the amplitude envelope estimation problem, including plateaus in the peak data wouldn't
+  // hurt - to the contrary - it seems to be more reasonable - the same is true for spectral
+  // envelopes
+  // maybe, we should just do "if(x[index] < x[i]) return false" in both loops
+
 
   // this function is supposed to check all the criteria that must be met for a relevant peak
+  // ....add additional checks later
 }
+
+
+
 
 //=================================================================================================
 

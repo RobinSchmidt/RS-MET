@@ -934,6 +934,8 @@ protected:
 };
 // todo: maybe apply an optional (gaussian?) smoothing filter before looking for peaks - maybe use
 // a cascade of bidirectional first order filters
+// maybe have a function-pointer to the "less-than" comparison function, defaulting to regular
+// less than - but the user may also use less-or-equal, greater, greater-or-equal, etc.
 
 
 //=================================================================================================

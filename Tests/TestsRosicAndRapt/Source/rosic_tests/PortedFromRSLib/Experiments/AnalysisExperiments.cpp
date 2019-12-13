@@ -1196,6 +1196,23 @@ bool testPeakPicker()  // move to unit tests
   VecI p = pp.getPeakIndices(x); 
 
 
+  // how should we handle plateaus? maybe for a plateau, consider the start of the plateau as peak?
+  // ...or maybe the center....but then what about plateaus of even length? maybe the idices should
+  // be real numbers, then we could just use some x.5 value for the peak in case of even-length 
+  // plateaus
+
+  // maybe use two different comparator for functions for left and right neighbours, like > for 
+  // left and >= for right - with this, we could control how plateaus are treated: using
+  // >,>= would pick the 1st value of the plateau as peak, >=,> would pick the last, >,> would pick
+  // none and >=,>= would pick all - maybe if one wants the center of a plateau, we should 
+  // preliminarily pick all and the post-process
+
+  // how should we treat the boundaries? maybe in the same way as interior points but the loop ove
+  // the left neighbours is shortened at the left boundary
+
+  // the peak-picker could also be useful for spectral envelope estimation...maybe is this case, 
+  // the smoothing width whould be a function of frequency - like proportional to frequency?
+
 
 
   return result;
