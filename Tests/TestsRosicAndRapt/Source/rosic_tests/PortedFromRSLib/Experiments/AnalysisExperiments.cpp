@@ -1191,11 +1191,22 @@ bool testPeakPicker()  // move to unit tests
   VecD x;
   VecI p;
 
+  // check against one neighbor to each side (that's the default setting):
   x = { 1,2,3,4,3,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({3});
   x = { 1,2,4,4,3,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({2,3});
   x = { 1,2,4,4,4,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({2,3,4});
   x = { 4,2,4,4,4,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({0,2,3,4});
   x = { 4,2,4,4,4,2,4 }; p = pp.getPeakIndices(x); result &= p == VecI({0,2,3,4,6});
+  x = { 4,4,4,4,4,4,4 }; p = pp.getPeakIndices(x); result &= p == VecI({0,1,2,3,4,5,6});
+
+  // check against two neighbours to each side:
+  pp.setNumNeighbors(2);
+  x = { 1,2,3,4,3,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({3});
+  x = { 1,2,4,4,3,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({2,3});
+  x = { 1,2,4,4,4,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({2,3,4});
+  x = { 4,2,4,4,4,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({0,2,3,4});
+  x = { 4,2,4,4,4,2,4 }; p = pp.getPeakIndices(x); result &= p == VecI({0,2,3,4,6});
+  x = { 4,4,4,4,4,4,4 }; p = pp.getPeakIndices(x); result &= p == VecI({0,1,2,3,4,5,6});
 
 
   // how should we handle plateaus? maybe for a plateau, consider the start of the plateau as peak?
@@ -1212,10 +1223,12 @@ bool testPeakPicker()  // move to unit tests
   // how should we treat the boundaries? maybe in the same way as interior points but the loop ove
   // the left neighbours is shortened at the left boundary
 
+  // I think, the best is to treat plateau-values *all* as peak values and to include values at the 
+  // borders, when they are greater than their existing neighbors. This is what we want for 
+  // amplitude envelopes and also spectral envelopes.
+
   // the peak-picker could also be useful for spectral envelope estimation...maybe is this case, 
   // the smoothing width whould be a function of frequency - like proportional to frequency?
-
-
 
   return result;
 }
