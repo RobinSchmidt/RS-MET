@@ -896,7 +896,8 @@ public:
   /** Sets the number of right neighbors which must be smaller than a peak value (default: 1). */
   void setNumRightNeighbors(int newNumber) { numRightNeighbors = newNumber; }
 
-
+  /** Convenience function to set the number of left and right neighbors at once. */
+  void setNumNeighbors(int newNumber) { numLeftNeighbors = numRightNeighbors = newNumber; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -904,17 +905,35 @@ public:
 
   //void getPeaks(const T *x, const T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
 
-  //std::vector<int> getPeakIndices(const T *y, int N);
+  std::vector<int> getPeakIndices(const T *x, int N) const;
+
+
+  /** Convenience function that atkes a std::vector instead of a raw array as input. */
+  std::vector<int> getPeakIndices(const std::vector<T>& x) const 
+  { return getPeakIndices(&x[0], (int) x.size()); }
+
+
+  /** Returns true, iff data[index] is considered a relevant peak according to our settings. */
+  bool isRelevantPeak(int index, const T* data, int length) const;
+
 
 protected:
+
+
+
 
   int numLeftNeighbors = 1;
   int numRightNeighbors = 1;
 
   // bool includePlateaus; // switches between usage of < and <= in comparisons
 
+  // bool includeLeftBorder;
+  // bool includeRightBorder;
+
 
 };
+// todo: maybe apply an optional (gaussian?) smoothing filter before looking for peaks - maybe use
+// a cascade of bidirectional first order filters
 
 
 //=================================================================================================
@@ -1076,6 +1095,12 @@ protected:
   // ...explain this better - in which unit is this measured - how does it relate to the time-unit
   // stored in the rsSinusoidalModel? ...i think, it should just be the same unit, whatever that 
   // unit is (it's seconds but we may later alos allow it to be in samples)
+
+
+  //rsPeakPicker<T> peakPicker; 
+    // not yet used - to be used later inside getPeaks() instead of the simple function 
+    // findPeakIndices which is not sophisticated enough for this purpose because it finds a lot of
+    // irrelevant local peaks
 
 
   //T interpolationTension = T(0);
@@ -1275,11 +1300,13 @@ void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau);
 /** Given two length-N arrays of time-stamps (in seconds) and associated amplitude envelope values 
 (for example, coming from a sinusoidal analysis), this function creates an exponentially decaying 
 sinusoid that matches the amplitude envelope at two chosen match-indices. You may also set the 
-frequency of the sinusoid and its phase, where the phase will be matched at a time instant 
-corresponding to phaseMatchIndex (i.e. the timeArray value at that index). This can be used for 
-splicing an exponentially decaying tail to a partial (in which case it makes sense to match the 
-phase at the splicing point - which is typically given by matchIndex2). The user may optionally set 
-the number of samples to be generated - by default, this number will be determined by the final 
+frequency of the sinusoid and its phase. The phase value that you pass there is the phase at the 
+time instant that corresponds to phaseMatchIndex (i.e. the timeArray value at that index). Note 
+that it is the phase for a cosine wave, not a sine wave (consistently with the phase convention 
+used in the sinusoidal modeling framework). The generated signal can be used for splicing an 
+exponentially decaying tail to a partial. In this case, it makes sense to match the phase at the 
+splicing point, so phaseMatchIndex should be equal to matchIndex2. The user may optionally set the 
+number of samples to be generated - by default, this number will be determined by the final 
 time-stamp, but you may want more samples to use it for tail-extension. */
 template<class T>
 std::vector<T> rsExpDecayTail(int N, const T* timeArray, const T* ampArray, 

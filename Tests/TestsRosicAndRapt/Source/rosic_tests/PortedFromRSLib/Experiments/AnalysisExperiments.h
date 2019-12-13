@@ -30,6 +30,8 @@ void cycleMarkErrors();
 void zeroCrossingPitchDetector();
 void zeroCrossingPitchDetectorTwoTones();
 
+void peakPicker();
+
 
 
 

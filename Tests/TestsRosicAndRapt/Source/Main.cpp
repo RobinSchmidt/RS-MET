@@ -260,6 +260,7 @@ int main(int argc, char* argv[])
   //cycleMarkErrors();
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
+  peakPicker();
 
 
   // Delay:
@@ -333,7 +334,7 @@ int main(int argc, char* argv[])
   //modalDecayFit();
   //modalAnalysis1();
   //modalAnalysisPluck();
-  modalPartialResynthesis();
+  //modalPartialResynthesis();
 
   // Misc Audio:
   //centroid();

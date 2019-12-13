@@ -919,3 +919,6 @@ rsBigFloat RSLib::rsAGM(const rsBigFloat& a, const rsBigFloat& b)
 
 // implement fmod function fmod(x, m): k = floor(x/m); return x - k*m;
 // test with examples, like fmod(7.5, 2.3) = 0.6
+
+// for example code for arbitrary precision math, see:
+// http://www.mathematik.uni-muenchen.de/~forster/sw/aribas.html

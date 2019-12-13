@@ -1546,6 +1546,30 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
   return f;
 }
 
+
+
+//=================================================================================================
+
+template<class T>
+std::vector<int> rsPeakPicker<T>::getPeakIndices(const T* x, int N) const
+{
+  // todo: if smoothing is selected, create a pre-smoothed copy of x and operate on that
+
+  std::vector<int> peaks;
+  for(int i = 0; i < N; i++)
+    if(isRelevantPeak(i, x, N))
+      peaks.push_back(i);
+  return peaks;
+}
+
+template<class T>
+bool rsPeakPicker<T>::isRelevantPeak(int i, const T* x, int N) const
+{
+  return false;  // preliminary
+
+  // this function is supposed to check all the criteria that must be met for a relevant peak
+}
+
 //=================================================================================================
 
 //template<class T>

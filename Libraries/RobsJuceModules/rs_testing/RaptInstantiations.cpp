@@ -366,6 +366,7 @@ template class RAPT::rsResampler<double, double>;
 template class RAPT::rsTwoBandSplitter<float, float>;
 template class RAPT::rsMultiBandSplitter<float, float>;
 template class RAPT::rsExponentialEnvelopeMatcher<double>;
+template class RAPT::rsPeakPicker<double>;
 template class RAPT::rsEnvelopeExtractor<double>;
 
 

@@ -1177,3 +1177,46 @@ void zeroCrossingPitchDetectorTwoTones()
 
   int dummy = 0;
 }
+
+
+bool testPeakPicker()  // move to unit tests
+{
+  bool result = true;
+
+  typedef std::vector<double> VecD;
+  typedef std::vector<int>    VecI;
+
+  rsPeakPicker<double> pp;
+
+
+  VecD x = { 1,2,3,4,3,2,1 };
+
+  //VecI p = pp.getPeakIndices(&x[0], (int) x.size()); // maybe have a conveni
+
+  VecI p = pp.getPeakIndices(x); 
+
+
+
+
+  return result;
+}
+
+void peakPicker()
+{
+  bool peakPickerWorks = testPeakPicker();  // unit test
+
+  // tests the class rsPeakPicker
+  // todo: 
+  // -create an array of random numbers
+  // -maybe smooth it (with adjustable settings)
+  // -find peaks using rsPeakPicker with different settings
+  // -plot the array with marks at the found peaks
+  // -check, if plot looks as expected
+  // -do that with various seeds - if for some settings something strange happens, note dow the
+  //  settings
+
+
+
+
+  int dummy = 0;
+}
