@@ -1612,8 +1612,6 @@ bool rsPeakPicker<T>::isRelevantPeak(int index, const T* x, int N) const
 }
 
 
-
-
 //=================================================================================================
 
 //template<class T>

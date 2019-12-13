@@ -1188,14 +1188,14 @@ bool testPeakPicker()  // move to unit tests
 
   rsPeakPicker<double> pp;
 
+  VecD x;
+  VecI p;
 
-  VecD x = { 1,2,3,4,3,2,1 };
-
-  //VecI p = pp.getPeakIndices(&x[0], (int) x.size()); // maybe have a conveni
-
-  VecI p = pp.getPeakIndices(x);
-
-  result &= p == VecI({3});
+  x = { 1,2,3,4,3,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({3});
+  x = { 1,2,4,4,3,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({2,3});
+  x = { 1,2,4,4,4,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({2,3,4});
+  x = { 4,2,4,4,4,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({0,2,3,4});
+  x = { 4,2,4,4,4,2,4 }; p = pp.getPeakIndices(x); result &= p == VecI({0,2,3,4,6});
 
 
   // how should we handle plateaus? maybe for a plateau, consider the start of the plateau as peak?
