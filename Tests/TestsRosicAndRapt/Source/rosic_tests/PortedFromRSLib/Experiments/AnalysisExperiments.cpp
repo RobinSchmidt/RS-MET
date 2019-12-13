@@ -1193,7 +1193,9 @@ bool testPeakPicker()  // move to unit tests
 
   //VecI p = pp.getPeakIndices(&x[0], (int) x.size()); // maybe have a conveni
 
-  VecI p = pp.getPeakIndices(x); 
+  VecI p = pp.getPeakIndices(x);
+
+  result &= p == VecI({3});
 
 
   // how should we handle plateaus? maybe for a plateau, consider the start of the plateau as peak?
