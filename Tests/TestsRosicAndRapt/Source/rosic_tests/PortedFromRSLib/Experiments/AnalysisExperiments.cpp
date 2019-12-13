@@ -1207,7 +1207,10 @@ bool testPeakPicker()  // move to unit tests
   x = { 4,2,4,4,4,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({0,2,3,4});
   x = { 4,2,4,4,4,2,4 }; p = pp.getPeakIndices(x); result &= p == VecI({0,2,3,4,6});
   x = { 4,4,4,4,4,4,4 }; p = pp.getPeakIndices(x); result &= p == VecI({0,1,2,3,4,5,6});
-
+  x = { 1,2,3,4,3,4,1 }; p = pp.getPeakIndices(x); result &= p == VecI({3,5});
+  x = { 1,2,3,4,3,5,1 }; p = pp.getPeakIndices(x); result &= p == VecI({5});
+  x = { 1,4,3,4,3,5,1 }; p = pp.getPeakIndices(x); result &= p == VecI({1,5});
+  x = { 1,4,3,4,3,4,1 }; p = pp.getPeakIndices(x); result &= p == VecI({1,3,5});
 
   // how should we handle plateaus? maybe for a plateau, consider the start of the plateau as peak?
   // ...or maybe the center....but then what about plateaus of even length? maybe the idices should
@@ -1220,8 +1223,8 @@ bool testPeakPicker()  // move to unit tests
   // none and >=,>= would pick all - maybe if one wants the center of a plateau, we should 
   // preliminarily pick all and the post-process
 
-  // how should we treat the boundaries? maybe in the same way as interior points but the loop ove
-  // the left neighbours is shortened at the left boundary
+  // how should we treat the boundaries/edge-cases? maybe in the same way as interior points but 
+  // the loop over the left neighbours is shortened at the left boundary
 
   // I think, the best is to treat plateau-values *all* as peak values and to include values at the 
   // borders, when they are greater than their existing neighbors. This is what we want for 
