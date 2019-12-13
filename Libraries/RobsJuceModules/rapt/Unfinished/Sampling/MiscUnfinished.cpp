@@ -2159,7 +2159,7 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, cons
 template<class T>
 void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau)
 {
-  T dt =  t2 - t1;               // time-difference
+  T dt =  t2 - t1;               // time difference
   T ra =  a2 / a1;               // amplitude ratio
   *tau = -dt / log(ra);          // time-constant of exponential decay
   *A   =  a1 / exp(-t1 / *tau);  // amplitude multiplier
@@ -2168,7 +2168,8 @@ void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau)
 
 template<class T>
 std::vector<T> rsExpDecayTail(int numFrames, const T* timeArray, const T* ampArray, 
-  int matchIndex1, int matchIndex2, T sampleRate, T freq, T phase, int phaseMatchIndex)
+  int matchIndex1, int matchIndex2, T sampleRate, T freq, T phase, int phaseMatchIndex, 
+  int numSamples)
 {
   rsAssert(matchIndex2 < numFrames);
   rsAssert(matchIndex1 < matchIndex2);
@@ -2179,9 +2180,9 @@ std::vector<T> rsExpDecayTail(int numFrames, const T* timeArray, const T* ampArr
     timeArray[matchIndex2], ampArray[matchIndex2], &A, &tau);
 
   // generate exponentially enveloped sinusoid:
-  typedef std::vector<T> Vec;
-  int numSamples = (int) ceil(timeArray[numFrames-1] * sampleRate);
-  Vec x(numSamples);
+  if(numSamples == -1) // use default length when user passes no desired length
+    numSamples = (int) ceil(timeArray[numFrames-1] * sampleRate); 
+  std::vector<T> x(numSamples);
   T ts = timeArray[phaseMatchIndex];  // time-instant for splicing
   T p0 = phase - 2*PI*freq*ts;        // start-phase
   T w  = 2*PI*freq/sampleRate;        // normalized radian frequency

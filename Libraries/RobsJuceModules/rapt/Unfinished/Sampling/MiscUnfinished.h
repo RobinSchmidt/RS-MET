@@ -1278,11 +1278,15 @@ sinusoid that matches the amplitude envelope at two chosen match-indices. You ma
 frequency of the sinusoid and its phase, where the phase will be matched at a time instant 
 corresponding to phaseMatchIndex (i.e. the timeArray value at that index). This can be used for 
 splicing an exponentially decaying tail to a partial (in which case it makes sense to match the 
-phase at the splicing point - which is typically given by matchIndex2). */
+phase at the splicing point - which is typically given by matchIndex2). The user may optionally set 
+the number of samples to be generated - by default, this number will be determined by the final 
+time-stamp, but you may want more samples to use it for tail-extension. */
 template<class T>
 std::vector<T> rsExpDecayTail(int N, const T* timeArray, const T* ampArray, 
-  int matchIndex1, int matchIndex2, T sampleRate, T freq, T phase, int phaseMatchIndex);
-// needs documentation...
+  int matchIndex1, int matchIndex2, T sampleRate, T freq, T phase, int phaseMatchIndex, 
+  int numSamples = -1);
+// maybe let the user select the length of the tail to be generated - it may be longer that the 
+// analysis data to be used as tail-extender
 
 
 #endif

@@ -1,3 +1,8 @@
 -classes like SliderListener have been replaced with Slider::Listener
 -the subcomoponents may now be direct members instead of pointers, so we don't
  need to call deleteAllChildren in the destructor of components 
+ 
+ this fork of juce is supposed to have LV2 support:
+ https://github.com/DISTRHO/juce
+ at leats, this thread says so:
+ https://github.com/jatinchowdhury18/AnalogTapeModel/issues/7
