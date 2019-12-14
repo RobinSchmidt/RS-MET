@@ -1594,6 +1594,12 @@ bool rsPeakPicker<T>::isRelevantPeak(int index, const T* x, int N) const
   // ....add additional checks later
 }
 
+template<class T>
+void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const int* peakIndices,
+  int numPeaks, T* peakProminences)
+{
+
+}
 
 //=================================================================================================
 

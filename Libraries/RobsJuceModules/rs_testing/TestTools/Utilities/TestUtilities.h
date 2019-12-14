@@ -178,4 +178,30 @@ bool areNumbersEqual(double x, double y, double relativeTolerance);
 RAPT::rsWindowFunction::WindowType stringToWindowType(const std::string& wt);
 
 
+
+/** Experimental - goal: resemble numpy/scipy/matplotlib functionality, so we may easily port such 
+code to C++. */
+
+template<class T>
+class rsNumPy
+{
+public:
+
+  std::vector<T> linspace(T min, T max, int N) { return RAPT::rsRangeLinear(T(min), T(max), N); }
+
+  std::vector<T> sin(const std::vector<T>& x)
+  {
+    std::vector<T> y(x.size());
+    RAPT::rsArray::applyFunction(&x[0], &y[0], (int)x.size(), &::sin);
+    return y;
+  }
+
+  T pi = PI;
+
+};
+
+
+
+
+
 #endif

@@ -920,26 +920,31 @@ public:
 
   /** Returns true, iff data[index] is considered a relevant peak according to our settings. */
   bool isRelevantPeak(int index, const T* data, int length) const;
+  // rename to isPeakCandidate
     // maybe change order of parameters: data, length, index - that would be more consistent with 
     // functions in rsArray
 
+  /** Given an array of datapoints and an array of peak-indices, this function computes the 
+  prominences of the peaks at the given indices. ...tbc... */
+  static void peakProminences(const T *data, int numDataPoints, const int *peakIndices, 
+    int numPeaks, T *peakProminences);
 
+
+  /** Convenience function for use with std::vector. */
+  static std::vector<T> peakProminences(
+    const std::vector<T>& data, const std::vector<int>& peakIndices)
+  {
+    std::vector<T> proms(peakIndices.size());
+    peakProminences(
+      &data[0], (int)data.size(), &peakIndices[0], (int)peakIndices.size(), &proms[0]);
+    return proms;
+  }
 
 
 protected:
 
-
-
-
-
   int numLeftNeighbors = 1;
   int numRightNeighbors = 1;
-
-  // bool includePlateaus; // switches between usage of < and <= in comparisons
-
-  // bool includeLeftBorder;
-  // bool includeRightBorder;
-
 
 };
 // todo: maybe apply an optional (gaussian?) smoothing filter before looking for peaks - maybe use

@@ -1213,6 +1213,33 @@ bool testPeakPicker()  // move to unit tests
 
   // todo: test with an asymmetric setting like 1 left, two right neighbors
 
+  // test the peak-prominence algorithm with examples given here:
+  // https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.peak_prominences.html
+  // it would be totally cool, if we could just copy-and-paste the python-code form there and run
+  // it in C++ - we need classes rsNumPy, rsSciPy, rsPyPlot
+
+
+  pp.setNumNeighbors(1);
+
+  rsNumPy<double> np;  // this replaces pythons "import numpy as np"
+
+  x = np.linspace(0, 6 * np.pi, 1000);
+  x = np.sin(x) + 0.6 * np.sin(2.6 * x);
+  p = pp.getPeakIndices(x);  // rename to getPeakCandidates or factor out such a function
+
+  VecD proms = pp.peakProminences(x, p);
+
+  // todo: compute prominences...
+
+  rsPlotVector(x);
+
+
+
+
+  int dummy = 0;
+
+
+
   // how should we handle plateaus? maybe for a plateau, consider the start of the plateau as peak?
   // ...or maybe the center....but then what about plateaus of even length? maybe the idices should
   // be real numbers, then we could just use some x.5 value for the peak in case of even-length 
@@ -1253,7 +1280,7 @@ void peakPicker()
 
 
 
-  // for amp-envelopes, it may make senseto use as additional criterion (in addition to be greater
+  // for amp-envelopes, it may make sense to use as additional criterion (in addition to be greater
   // or equal to its neighbors), that the smoothed versions of the envelope have a peak there, too
   // (maybe not exactly at the same index but very closely nearby)
   // here:
@@ -1275,6 +1302,8 @@ void peakPicker()
   // https://en.wikipedia.org/wiki/Topographic_prominence
   // maybe write a function getPeakProminences that takes an array of values and an array of peak
   // indices and return an array of peak prominences
+  // the wikipedia articla also links to this:
+  // https://en.wikipedia.org/wiki/Morse_theory
 
   // maybe the shape of the signal around the peak should be generally curved downward...so maybe 
   // we should look at the 2nd derivative...maybe of a smoothed signal?
@@ -1287,15 +1316,16 @@ void peakPicker()
   //  -consider a peak in a landscape
   //  -loop over all possible directions (north, north-east, east, ...)
   //   -for chosen direction, walk until you find an elevation that is higher (or equal?) than the 
-  //    peak elevation
+  //    elevation of the peak under consideration
   //   -along that line, note down the minimum elevation
   //  -among those noted minimum elevations, take the maximum
   //  -the difference between the peak-height and the maximum-minimum-elevation is the 
   //   peak-prominence
   //  -if the data is one-dimensional, there are only two directions to scan: left and right, in 2D
   //   there are actually uncountably infinitely many - but we don't have to deal with that case
-  // -maybe define the relative peak-prominence as the peak-prominence divied by the peak-height
+  // -maybe define the relative peak-prominence as the peak-prominence divided by the peak-height
   //  ...maybe that's a more useful measure for peak relevance
+  // -and/or try peak-prominence divided by height of global maximum
   // 
   // -another idea is to consider scale-invariance of a peak:
   //  -a relevant peak typically remains a peak even when the data is smoothed
@@ -1307,6 +1337,12 @@ void peakPicker()
   //  -maybe use y[n] = (1/3.) * (x[n-1] + x[n] + x[n+1]) in each smoothing pass (at the endpoints,
   //   use y[0] = (1/2.) * (x[0] + x[1]), y[N-1] = (1/2.) * (x[N-1] + x[N-2])
   //   -implement that smoothing filter, operating in-place
+  //  -maybe that averaging/smoothing can be combined with decimation in each smoothing stage - to
+  //   save cpu-time and maybe it may even give better results?
+
+  // -evaluate the implemented algorithms in terms of false positives (spurious peaks) and false 
+  //  negatives (missed peaks) ...maybe use artifical spectral data of sinusoids embedded in noise
+  //  and try to find the sinusoidal peak in the noise?
 
 
   int dummy = 0;

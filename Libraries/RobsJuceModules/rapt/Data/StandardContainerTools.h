@@ -131,6 +131,7 @@ std::vector<T> rsRangeLinear(T min, T max, int N)
   rsArray::fillWithRangeLinear(&r[0], N, min, max);
   return r;
 }
+// maybe rename to rsLinSpace - consistent with numpy
 
 template<class T>
 inline void rsRemove(std::vector<T>& v, size_t index)
