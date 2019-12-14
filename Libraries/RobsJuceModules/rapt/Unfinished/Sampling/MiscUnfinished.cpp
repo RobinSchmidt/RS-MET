@@ -1603,30 +1603,37 @@ void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const in
     int peakIndex  = peakIndices[i];
     T   peakHeight = data[peakIndex];
 
+    int j, k;
 
-
-    // scan right:
-    T rightBase = peakHeight;
-    for(int j = peakIndex+1; j < numDataPoints && data[j] <= peakHeight; j++)
-      if(data[j] < rightBase)
-        rightBase = data[j]; 
-
-    // scan left:
     T leftBase = peakHeight;
-    for(int j = peakIndex-1; j >= 0 && data[j] <= peakHeight; j--)
+    for(j = peakIndex-1; j >= 0 && data[j] <= peakHeight; j--)               // scan left
       if(data[j] < leftBase)
         leftBase = data[j];
 
-    // actually, we don't need separate right and left bases
+    T rightBase = peakHeight;
+    for(k = peakIndex+1; k < numDataPoints && data[k] <= peakHeight; k++)    // scan right
+      if(data[k] < rightBase)
+        rightBase = data[k]; 
 
-    T base = rsMax(leftBase, rightBase);
-    peakProminences[i] = peakHeight - base;
+
+    // We take the maximum of the bases only when both loops did not hit the boundary of the data
+    // array...because...figure out if that makes sense
+    T base;
+    if(j == -1 || k == numDataPoints)
+      base = rsMin(leftBase, rightBase);
+    else
+      base = rsMax(leftBase, rightBase);
+    peakProminences[i] = peakHeight - base;  // take maximum of the bases/minima
   }
+
+  // maybe we should use the maximum of both bases only in the case when the loops both didn't hit
+  // the boundary of the data array and otherwise use the minimum
 
   // try to change order of these checks - what difference does it make? may make difference in 
   // the edge-case, when the function is applied to non-peaks? in this case, we want the 
   // prominence to be zero
 }
+// make unit tests...
 
 //=================================================================================================
 

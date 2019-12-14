@@ -1229,9 +1229,18 @@ bool testPeakPicker()  // move to unit tests
 
   VecD proms = pp.peakProminences(x, p);
 
-  // todo: compute prominences...
+  // python has 8 peaks with prominences:
+  // 1.24159486, 0.47840168, 0.28470524, 3.10716793, 0.284603, 0.47822491, 2.48340261, 0.47822491
+  // we have 9 peaks and the last prominence is 0 - why? ...because a peak at the edge will always 
+  // get zero prominence with the current implementation - it would be desirable to have a 
+  // meaningful prominence for edge-peaks, too
+
+  // figure out, how we should handle the edge cases, when one or both of the loops hit the 
+  // data-boundary - what would be the most desirable result then?
 
   rsPlotVector(x);
+
+  // plot the prominences also...
 
 
 
