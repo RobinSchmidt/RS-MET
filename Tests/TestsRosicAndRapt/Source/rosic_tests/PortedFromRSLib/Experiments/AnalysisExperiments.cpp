@@ -1213,39 +1213,7 @@ bool testPeakPicker()  // move to unit tests
 
   // todo: test with an asymmetric setting like 1 left, two right neighbors
 
-  // test the peak-prominence algorithm with examples given here:
-  // https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.peak_prominences.html
-  // it would be totally cool, if we could just copy-and-paste the python-code form there and run
-  // it in C++ - we need classes rsNumPy, rsSciPy, rsPyPlot
 
-
-  pp.setNumNeighbors(1);
-
-  rsNumPy<double> np;  // this replaces pythons "import numpy as np"
-
-  x = np.linspace(0, 6 * np.pi, 1000);
-  x = np.sin(x) + 0.6 * np.sin(2.6 * x);
-  p = pp.getPeakIndices(x);  // rename to getPeakCandidates or factor out such a function
-
-  VecD proms = pp.peakProminences(x, p);
-
-  // python has 8 peaks with prominences:
-  // 1.24159486, 0.47840168, 0.28470524, 3.10716793, 0.284603, 0.47822491, 2.48340261, 0.47822491
-  // we have 9 peaks and the last prominence is 0 - why? ...because a peak at the edge will always 
-  // get zero prominence with the current implementation - it would be desirable to have a 
-  // meaningful prominence for edge-peaks, too
-
-  // figure out, how we should handle the edge cases, when one or both of the loops hit the 
-  // data-boundary - what would be the most desirable result then?
-
-  rsPlotVector(x);
-
-  // plot the prominences also...
-
-
-
-
-  int dummy = 0;
 
 
 
@@ -1276,6 +1244,43 @@ bool testPeakPicker()  // move to unit tests
 void peakPicker()
 {
   bool peakPickerWorks = testPeakPicker();  // unit test
+
+  typedef std::vector<double> VecD;
+  typedef std::vector<int>    VecI;
+
+  rsPeakPicker<double> picker;
+  VecD x;
+  VecI p;
+
+  // test the peak-prominence algorithm with examples given here:
+  // https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.peak_prominences.html
+  // it would be totally cool, if we could just copy-and-paste the python-code form there and run
+  // it in C++ - we need classes rsNumPy, rsSciPy, rsPyPlot
+
+
+  rsNumPy<double> np;  // this replaces pythons "import numpy as np"
+  x = np.linspace(0, 6 * np.pi, 1000);
+  x = np.sin(x) + 0.6 * np.sin(2.6 * x);
+  p = picker.getPeakIndices(x);  // rename to getPeakCandidates or factor out such a function
+  VecD proms = picker.peakProminences(x, p);
+
+  // python has 8 peaks with prominences:
+  // 1.24159486, 0.47840168, 0.28470524, 3.10716793, 0.284603, 0.47822491, 2.48340261, 0.47822491
+  // we have 9 peaks and the last prominence is 0 - why? ...because a peak at the edge will always 
+  // get zero prominence with the current implementation - it would be desirable to have a 
+  // meaningful prominence for edge-peaks, too
+
+  // figure out, how we should handle the edge cases, when one or both of the loops hit the 
+  // data-boundary - what would be the most desirable result then?
+
+  rsPlotVector(x);
+
+  // plot the peak-marks and the prominences also...
+
+  // try monotonic arrays
+
+
+  int dummy = 0;
 
   // tests the class rsPeakPicker
   // todo: 
@@ -1353,6 +1358,4 @@ void peakPicker()
   //  negatives (missed peaks) ...maybe use artifical spectral data of sinusoids embedded in noise
   //  and try to find the sinusoidal peak in the noise?
 
-
-  int dummy = 0;
 }

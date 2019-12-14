@@ -1600,10 +1600,9 @@ void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const in
 {
   for(int i = 0; i < numPeaks; i++)
   {
+    int j, k;
     int peakIndex  = peakIndices[i];
     T   peakHeight = data[peakIndex];
-
-    int j, k;
 
     T leftBase = peakHeight;
     for(j = peakIndex-1; j >= 0 && data[j] <= peakHeight; j--)               // scan left
@@ -1615,9 +1614,6 @@ void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const in
       if(data[k] < rightBase)
         rightBase = data[k]; 
 
-
-    // We take the maximum of the bases only when both loops did not hit the boundary of the data
-    // array...because...figure out if that makes sense
     T base;
     if(j == -1 || k == numDataPoints)
       base = rsMin(leftBase, rightBase);
@@ -1626,12 +1622,18 @@ void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const in
     peakProminences[i] = peakHeight - base;  // take maximum of the bases/minima
   }
 
-  // maybe we should use the maximum of both bases only in the case when the loops both didn't hit
-  // the boundary of the data array and otherwise use the minimum
-
-  // try to change order of these checks - what difference does it make? may make difference in 
-  // the edge-case, when the function is applied to non-peaks? in this case, we want the 
-  // prominence to be zero
+  // Note:
+  // This is a slight variation of the prominences algorithm: we take the maximum of the bases 
+  // only when both loops did not hit the boundary of the data - the regular algo would take the 
+  // maximum regardless. The reasoning is that when the loop hits the data boundary, it might be 
+  // conceivable that beyond this boundray, an even lower valley may occur before a higher peak is
+  // encountered - the regular algo says: nope, this doesn't happen. It basically considers the 
+  // non-existent data values beyond the data boundaries as inifinitely high peaks. This variation
+  // here considers the non-existent data as infinitely deep valley. I have a gut feeling that this
+  // is the better behavior in edge cases. The regular algo would also always return a zero 
+  // prominence for a peak directly at the boundary. This seems undesirable because boundary 
+  // peaks would always be discarded - but we may want boundary peaks. 
+  // ...maybe make the type of behavior user adjustable
 }
 // make unit tests...
 
