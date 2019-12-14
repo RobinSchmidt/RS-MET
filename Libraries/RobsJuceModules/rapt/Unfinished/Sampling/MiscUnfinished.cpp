@@ -1598,7 +1598,34 @@ template<class T>
 void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const int* peakIndices,
   int numPeaks, T* peakProminences)
 {
+  for(int i = 0; i < numPeaks; i++)
+  {
+    int peakIndex  = peakIndices[i];
+    T   peakHeight = data[peakIndex];
 
+
+
+    // scan right:
+    T rightBase = peakHeight;
+    for(int j = peakIndex+1; j < numDataPoints && data[j] <= peakHeight; j++)
+      if(data[j] < rightBase)
+        rightBase = data[j]; 
+
+    // scan left:
+    T leftBase = peakHeight;
+    for(int j = peakIndex-1; j >= 0 && data[j] <= peakHeight; j--)
+      if(data[j] < leftBase)
+        leftBase = data[j];
+
+    // actually, we don't need separate right and left bases
+
+    T base = rsMax(leftBase, rightBase);
+    peakProminences[i] = peakHeight - base;
+  }
+
+  // try to change order of these checks - what difference does it make? may make difference in 
+  // the edge-case, when the function is applied to non-peaks? in this case, we want the 
+  // prominence to be zero
 }
 
 //=================================================================================================
