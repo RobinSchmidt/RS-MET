@@ -920,9 +920,14 @@ public:
 
   /** Returns true, iff data[index] is considered a relevant peak according to our settings. */
   bool isRelevantPeak(int index, const T* data, int length) const;
+    // maybe change order of parameters: data, length, index - that would be more consistent with 
+    // functions in rsArray
+
+
 
 
 protected:
+
 
 
 

@@ -1282,7 +1282,31 @@ void peakPicker()
   // in the thread on stackoverflow, somehwat suggest to smooth the data with this:
   // https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
 
-
+  // Ideas for peak-picking:
+  // -compute peak prominences:
+  //  -consider a peak in a landscape
+  //  -loop over all possible directions (north, north-east, east, ...)
+  //   -for chosen direction, walk until you find an elevation that is higher (or equal?) than the 
+  //    peak elevation
+  //   -along that line, note down the minimum elevation
+  //  -among those noted minimum elevations, take the maximum
+  //  -the difference between the peak-height and the maximum-minimum-elevation is the 
+  //   peak-prominence
+  //  -if the data is one-dimensional, there are only two directions to scan: left and right, in 2D
+  //   there are actually uncountably infinitely many - but we don't have to deal with that case
+  // -maybe define the relative peak-prominence as the peak-prominence divied by the peak-height
+  //  ...maybe that's a more useful measure for peak relevance
+  // 
+  // -another idea is to consider scale-invariance of a peak:
+  //  -a relevant peak typically remains a peak even when the data is smoothed
+  //  -maybe progressively smooth the data and note, how many such smoothing passes the peak 
+  //   "survives" and take that as an indicator of peak relevance
+  //  -during smoothing, the exact location/index may change a little - maybe allow the peak index 
+  //   to be off by one with respect to the previous smoothing iteratiom in order to consider the 
+  //   peak having survived the smoothing iteration
+  //  -maybe use y[n] = (1/3.) * (x[n-1] + x[n] + x[n+1]) in each smoothing pass (at the endpoints,
+  //   use y[0] = (1/2.) * (x[0] + x[1]), y[N-1] = (1/2.) * (x[N-1] + x[N-2])
+  //   -implement that smoothing filter, operating in-place
 
 
   int dummy = 0;

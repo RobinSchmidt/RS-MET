@@ -1571,7 +1571,7 @@ bool rsPeakPicker<T>::isRelevantPeak(int index, const T* x, int N) const
     if(x[index] < x[i])
       return false;
   return true;
-  // maybe factor out into rsArray::isPeakOrPlateau(...)
+  // maybe factor out into rsArray::isPeakOrPlateau(...) or isPeakCandidate
   // or into member isPeak the do multiple checks here 
   // (1) isPeak
   // (2) isAboveGlobalThreshold()
