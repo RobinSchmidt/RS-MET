@@ -1633,6 +1633,9 @@ void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const in
   // is the better behavior in edge cases. The regular algo would also always return a zero 
   // prominence for a peak directly at the boundary. This seems undesirable because boundary 
   // peaks would always be discarded - but we may want boundary peaks. 
+
+  // In a 2D setting, one would perhaps take the maximum but only over those directions, where the
+  // boundary was not hit
   // ...maybe make the type of behavior user adjustable
 }
 // make unit tests...

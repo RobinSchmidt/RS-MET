@@ -1214,9 +1214,6 @@ bool testPeakPicker()  // move to unit tests
   // todo: test with an asymmetric setting like 1 left, two right neighbors
 
 
-
-
-
   // how should we handle plateaus? maybe for a plateau, consider the start of the plateau as peak?
   // ...or maybe the center....but then what about plateaus of even length? maybe the idices should
   // be real numbers, then we could just use some x.5 value for the peak in case of even-length 
@@ -1240,6 +1237,22 @@ bool testPeakPicker()  // move to unit tests
 
   return result;
 }
+
+// 3-point moving average, handles edges by taking 2-point average there - to be applied 
+// iteratively to figure out, how many iterations of smoothing a peak survives and use that as 
+// measure for the peak's relevance
+template<class T>
+void rsSmooth(T* x, int N, T* y)
+{
+  rsAssert(x != y, "algorithm not suitable for in-place processing");
+  y[0]   = (1/2.) * (x[0]   + x[1]);
+  y[N-1] = (1/2.) * (x[N-2] + x[N-1]);
+  for(int n = 1; n < N-1; n++)
+    y[n] = (1/3.) * (x[n-1] + x[n] + x[n+1]);
+}
+// does this function preserve the mean? if not, implement a version that subtracts the difference
+// between the means before and after
+// todo: implement a version that may operate in-place
 
 void peakPicker()
 {
@@ -1273,14 +1286,32 @@ void peakPicker()
   // figure out, how we should handle the edge cases, when one or both of the loops hit the 
   // data-boundary - what would be the most desirable result then?
 
-  rsPlotVector(x);
+  //rsPlotVector(x);
 
   // plot the peak-marks and the prominences also...
 
-  // try monotonic arrays
+  // try monotonic arrays, an unimodal distribution, bimodal, trimodal, try peaks near and at 
+  // boundaries
 
+  // {5,4,3,2,1} should have a peak at 0 with prominence 4, {1,2,3,4,5} should have a peak at 4
+  // with prominence 4, {1,2,3,4,3,2} should have a peak at 3 with prominence 3, ....
 
+  int N = 100;
+  x = rsRandomVector(N, -1.0, +1.0, 3);
+  //rsPlotVector(x);
+  VecD y1(N), y2(N), y3(N), y4(N), y5(N);
+  rsSmooth(&x[0],  N, &y1[0]);
+  rsSmooth(&y1[0], N, &y2[0]);
+  rsSmooth(&y2[0], N, &y3[0]);
+  rsSmooth(&y3[0], N, &y4[0]);
+  rsSmooth(&y4[0], N, &y5[0]);
+  rsPlotVectors(x, y1, y2, y3, y4, y5);
   int dummy = 0;
+  // maybe mark the peaks and print their prominences and smoothing-robustnesses above....what 
+  // could be a good name for this insensitivity-under-smoothing porperty? maybe something like 
+  // robustness/resilience? keeping with analogy of landscapes, we may consider these smoothing 
+  // operations as a sort of abrasion due to wind or water - we may think of the measure as a 
+  // sort of abrasion-resilience...maybe durability?
 
   // tests the class rsPeakPicker
   // todo: 
@@ -1353,6 +1384,9 @@ void peakPicker()
   //   -implement that smoothing filter, operating in-place
   //  -maybe that averaging/smoothing can be combined with decimation in each smoothing stage - to
   //   save cpu-time and maybe it may even give better results?
+  //  -make sure that after each smoothing pass, the mean is the same as before - check that and it 
+  //   it's not the case, compute the mean before and after and add the difference to the smoothing
+  //   output to reconstruct the old mean
 
   // -evaluate the implemented algorithms in terms of false positives (spurious peaks) and false 
   //  negatives (missed peaks) ...maybe use artifical spectral data of sinusoids embedded in noise
