@@ -1250,8 +1250,8 @@ void rsSmooth(T* x, int N, T* y)
   for(int n = 1; n < N-1; n++)
     y[n] = (1/3.) * (x[n-1] + x[n] + x[n+1]);
 }
-// does this function preserve the mean? if not, implement a version that subtracts the difference
-// between the means before and after
+// does this function preserve the mean? -> nope! -> implement a version that subtracts the 
+// difference between the means before and after
 // todo: implement a version that may operate in-place
 
 void peakPicker()
@@ -1296,9 +1296,12 @@ void peakPicker()
   // {5,4,3,2,1} should have a peak at 0 with prominence 4, {1,2,3,4,5} should have a peak at 4
   // with prominence 4, {1,2,3,4,3,2} should have a peak at 3 with prominence 3, ....
 
-  int N = 100;
-  x = rsRandomVector(N, -1.0, +1.0, 3);
-  //rsPlotVector(x);
+
+  //x = rsRandomVector(100, -1.0, +1.0, 3);
+  //x = VecD({0,0,0,8,4,4,2,2,2,2,1,1,1,1,1,1,1,1,0,0,0});
+  x = VecD({0,0,0,10,9,9,8,8,8,7,7,7,7,6,6,6,6,6,0,0,0});  // illustrates peak wandering
+
+  int N = (int) x.size();
   VecD y1(N), y2(N), y3(N), y4(N), y5(N);
   rsSmooth(&x[0],  N, &y1[0]);
   rsSmooth(&y1[0], N, &y2[0]);
@@ -1387,6 +1390,21 @@ void peakPicker()
   //  -make sure that after each smoothing pass, the mean is the same as before - check that and it 
   //   it's not the case, compute the mean before and after and add the difference to the smoothing
   //   output to reconstruct the old mean
+  //  -during the algorithm, we need to track, how the peak's index wanders from one smoothing 
+  //   iteration to the next (it may wander one index left or right in each iteration)...so maybe 
+  //   for each peak, we need to record its path...maybe this could also be used as a relevance 
+  //   measure? relevant peaks should not wander very much? ...but maybe that doesn't make sense
+  //   -also, one peak may "split" into two - if we have a peak at index n in iteration i, we may
+  //    find two peaks at n-1,n+1 in iteration i+1 - which one would then be considered the 
+  //    offspring? maybe the higher one, but what if both have the same height? ..maybe we need to 
+  //    track both offsprings?
+  //   -or maybe in each iteration i we should allow an index deviation of i positions with respect
+  //    to the peak's original index
+  //  -note that during the process, initially distinct peaks may merge into a single peak (due to 
+  //   tolerating peak wandering) and both peaks would be considered to have "survived"
+  //
+  // -maybe combine both ideas: track how the peak-prominences change during smoothing - a peak 
+  //  whose prominence does not decrease much during smoothing is more relevant
 
   // -evaluate the implemented algorithms in terms of false positives (spurious peaks) and false 
   //  negatives (missed peaks) ...maybe use artifical spectral data of sinusoids embedded in noise
