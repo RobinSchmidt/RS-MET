@@ -1551,19 +1551,20 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
 //=================================================================================================
 
 template<class T>
-std::vector<int> rsPeakPicker<T>::getPeakIndices(const T* x, int N) const
+std::vector<int> rsPeakPicker<T>::getPeakCandidates(const T* x, int N) const
 {
   // todo: if smoothing is selected, create a pre-smoothed copy of x and operate on that
+  // and/or apply a feq iterations of the ropeway algo as pre-processing step
 
   std::vector<int> peaks;
   for(int i = 0; i < N; i++)
-    if(isRelevantPeak(i, x, N))
+    if(isPeakCandidate(i, x, N))
       peaks.push_back(i);
   return peaks;
 }
 
 template<class T>
-bool rsPeakPicker<T>::isRelevantPeak(int index, const T* x, int N) const
+bool rsPeakPicker<T>::isPeakCandidate(int index, const T* x, int N) const
 {
   int iStart = rsMax(0,   index-numLeftNeighbors);
   int iEnd   = rsMin(N-1, index+numRightNeighbors);
@@ -1572,26 +1573,9 @@ bool rsPeakPicker<T>::isRelevantPeak(int index, const T* x, int N) const
       return false;
   return true;
   // maybe factor out into rsArray::isPeakOrPlateau(...) or isPeakCandidate
-  // or into member isPeak the do multiple checks here 
-  // (1) isPeak
-  // (2) isAboveGlobalThreshold()
-  // (3) isAboveLocalThreshold()
-  // (4) ...
-  // maybe use short-circuiting in a statement:
-  // return isPeak(..) && isAboveLocalThreshold(...) && isAboveGlobalThreshold && ...
 
-
-
-
-  // ...hmmm...maybe returning all plateau-values as peak-values by default would make more sense.
-  // Client code may throw away undesired data later but it can't guess additional data
-  // for the amplitude envelope estimation problem, including plateaus in the peak data wouldn't
-  // hurt - to the contrary - it seems to be more reasonable - the same is true for spectral
-  // envelopes
-  // maybe, we should just do "if(x[index] < x[i]) return false" in both loops
-
-  // this function is supposed to check all the criteria that must be met for a relevant peak
-  // ....add additional checks later
+  // this function returns all values within a plateau as peaks - maybe, it should only return the
+  // first and last - that would be sufficient for meaningful linear interpolation
 }
 
 template<class T>

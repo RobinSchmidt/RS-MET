@@ -910,19 +910,21 @@ public:
 
   //void getPeaks(const T *x, const T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
 
-  std::vector<int> getPeakIndices(const T *x, int N) const;
+  std::vector<int> getPeakCandidates(const T *x, int N) const;
 
 
   /** Convenience function that atkes a std::vector instead of a raw array as input. */
-  std::vector<int> getPeakIndices(const std::vector<T>& x) const 
-  { return getPeakIndices(&x[0], (int) x.size()); }
+  std::vector<int> getPeakCandidates(const std::vector<T>& x) const 
+  { return getPeakCandidates(&x[0], (int) x.size()); }
 
 
-  /** Returns true, iff data[index] is considered a relevant peak according to our settings. */
-  bool isRelevantPeak(int index, const T* data, int length) const;
-  // rename to isPeakCandidate
+  /** Returns true, iff data[index] is a peak candidate, i.e. >= some number of neighbors left and 
+  right. */
+  bool isPeakCandidate(int index, const T* data, int length) const;
     // maybe change order of parameters: data, length, index - that would be more consistent with 
     // functions in rsArray
+
+
 
   /** Given an array of datapoints and an array of peak-indices, this function computes the 
   prominences of the peaks at the given indices. ...tbc... */
@@ -945,8 +947,24 @@ public:
 
 protected:
 
-  int numLeftNeighbors = 1;
+  // pre-processing parameters:
+  //int ropewayPasses = 0;      // number of passes through ropeway algo before searching candidates
+
+  // distance based criteria:
+  int numLeftNeighbors  = 1;  // this is something similar to a min-distance criterion...
   int numRightNeighbors = 1;
+
+  // prominence based criteria:
+  //T promThresh         = 0;    // absolute prominence threshold
+  //T promToHeightThresh = 0;    // threshold for prominence / peakHeight
+  //T promToMaxThresh    = 0;    // threshold for prominence / max(peakHeights)
+
+  // smoothing based criteria:
+  //int resThresh = 0;           // smoothing resilience threshold
+
+  // post-processing parameters:
+  //bool noStickOut = true; // make sure that no peak sticks out of the linear interpolant going
+                          // through the found peaks
 
 };
 // todo: maybe apply an optional (gaussian?) smoothing filter before looking for peaks - maybe use

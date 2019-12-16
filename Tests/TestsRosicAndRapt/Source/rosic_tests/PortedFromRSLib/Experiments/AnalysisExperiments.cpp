@@ -1191,25 +1191,25 @@ bool testPeakPicker()  // move to unit tests
   VecI p;
 
   // check against one neighbor to each side (that's the default setting):
-  x = { 1,2,3,4,3,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({3});
-  x = { 1,2,4,4,3,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({2,3});
-  x = { 1,2,4,4,4,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({2,3,4});
-  x = { 4,2,4,4,4,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({0,2,3,4});
-  x = { 4,2,4,4,4,2,4 }; p = pp.getPeakIndices(x); result &= p == VecI({0,2,3,4,6});
-  x = { 4,4,4,4,4,4,4 }; p = pp.getPeakIndices(x); result &= p == VecI({0,1,2,3,4,5,6});
+  x = { 1,2,3,4,3,2,1 }; p = pp.getPeakCandidates(x); result &= p == VecI({3});
+  x = { 1,2,4,4,3,2,1 }; p = pp.getPeakCandidates(x); result &= p == VecI({2,3});
+  x = { 1,2,4,4,4,2,1 }; p = pp.getPeakCandidates(x); result &= p == VecI({2,3,4});
+  x = { 4,2,4,4,4,2,1 }; p = pp.getPeakCandidates(x); result &= p == VecI({0,2,3,4});
+  x = { 4,2,4,4,4,2,4 }; p = pp.getPeakCandidates(x); result &= p == VecI({0,2,3,4,6});
+  x = { 4,4,4,4,4,4,4 }; p = pp.getPeakCandidates(x); result &= p == VecI({0,1,2,3,4,5,6});
 
   // check against two neighbours to each side:
   pp.setNumNeighbors(2);
-  x = { 1,2,3,4,3,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({3});
-  x = { 1,2,4,4,3,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({2,3});
-  x = { 1,2,4,4,4,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({2,3,4});
-  x = { 4,2,4,4,4,2,1 }; p = pp.getPeakIndices(x); result &= p == VecI({0,2,3,4});
-  x = { 4,2,4,4,4,2,4 }; p = pp.getPeakIndices(x); result &= p == VecI({0,2,3,4,6});
-  x = { 4,4,4,4,4,4,4 }; p = pp.getPeakIndices(x); result &= p == VecI({0,1,2,3,4,5,6});
-  x = { 1,2,3,4,3,4,1 }; p = pp.getPeakIndices(x); result &= p == VecI({3,5});
-  x = { 1,2,3,4,3,5,1 }; p = pp.getPeakIndices(x); result &= p == VecI({5});
-  x = { 1,4,3,4,3,5,1 }; p = pp.getPeakIndices(x); result &= p == VecI({1,5});
-  x = { 1,4,3,4,3,4,1 }; p = pp.getPeakIndices(x); result &= p == VecI({1,3,5});
+  x = { 1,2,3,4,3,2,1 }; p = pp.getPeakCandidates(x); result &= p == VecI({3});
+  x = { 1,2,4,4,3,2,1 }; p = pp.getPeakCandidates(x); result &= p == VecI({2,3});
+  x = { 1,2,4,4,4,2,1 }; p = pp.getPeakCandidates(x); result &= p == VecI({2,3,4});
+  x = { 4,2,4,4,4,2,1 }; p = pp.getPeakCandidates(x); result &= p == VecI({0,2,3,4});
+  x = { 4,2,4,4,4,2,4 }; p = pp.getPeakCandidates(x); result &= p == VecI({0,2,3,4,6});
+  x = { 4,4,4,4,4,4,4 }; p = pp.getPeakCandidates(x); result &= p == VecI({0,1,2,3,4,5,6});
+  x = { 1,2,3,4,3,4,1 }; p = pp.getPeakCandidates(x); result &= p == VecI({3,5});
+  x = { 1,2,3,4,3,5,1 }; p = pp.getPeakCandidates(x); result &= p == VecI({5});
+  x = { 1,4,3,4,3,5,1 }; p = pp.getPeakCandidates(x); result &= p == VecI({1,5});
+  x = { 1,4,3,4,3,4,1 }; p = pp.getPeakCandidates(x); result &= p == VecI({1,3,5});
 
   // todo: test with an asymmetric setting like 1 left, two right neighbors
 
@@ -1352,14 +1352,15 @@ void peakPicker()
   rsNumPy<double> np;  // this replaces pythons "import numpy as np"
   x = np.linspace(0, 6 * np.pi, 1000);
   x = np.sin(x) + 0.6 * np.sin(2.6 * x);
-  p = picker.getPeakIndices(x);  // rename to getPeakCandidates or factor out such a function
+  p = picker.getPeakCandidates(x);  // rename to getPeakCandidates or factor out such a function
   VecD proms = picker.peakProminences(x, p);
 
   // python has 8 peaks with prominences:
   // 1.24159486, 0.47840168, 0.28470524, 3.10716793, 0.284603, 0.47822491, 2.48340261, 0.47822491
   // we have 9 peaks and the last prominence is 0 - why? ...because a peak at the edge will always 
   // get zero prominence with the current implementation - it would be desirable to have a 
-  // meaningful prominence for edge-peaks, too
+  // meaningful prominence for edge-peaks, too - not true anymore - that was the case with the
+  // standard algo - we now have a variation
 
   // figure out, how we should handle the edge cases, when one or both of the loops hit the 
   // data-boundary - what would be the most desirable result then?
@@ -1546,6 +1547,9 @@ void peakPicker()
   //  -a sufficient (but not necessary) condition for a peak to be relevant is to be also a peak
   //   of the envelope
   //  -an envelope can be estimated by connecting the found peaks
+
+  // -i think, the numNeighbours stuf is actually the same as the minDistance parameter found in
+  //  some peak-picking algos - minDistance = numNeighbours+1?
 
   // Strange observation: look at random walks with seeds 6 and 9 - they have a very different 
   // quality - with 9, there are far less medium-scale wiggles
