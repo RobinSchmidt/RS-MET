@@ -928,6 +928,8 @@ public:
   prominences of the peaks at the given indices. ...tbc... */
   static void peakProminences(const T *data, int numDataPoints, const int *peakIndices, 
     int numPeaks, T *peakProminences);
+  // todo: add an optional window-length parameter as in SciPy:
+  // https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.peak_prominences.html
 
 
   /** Convenience function for use with std::vector. */

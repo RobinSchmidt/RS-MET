@@ -1238,21 +1238,91 @@ bool testPeakPicker()  // move to unit tests
   return result;
 }
 
-// 3-point moving average, handles edges by taking 2-point average there - to be applied 
+// 3-point moving average, handles edges by taking one-sided 2-point average there - to be applied 
 // iteratively to figure out, how many iterations of smoothing a peak survives and use that as 
 // measure for the peak's relevance
 template<class T>
-void rsSmooth(T* x, int N, T* y)
+void rsSmooth(const T* x, int N, T* y)
 {
   rsAssert(x != y, "algorithm not suitable for in-place processing");
-  y[0]   = (1/2.) * (x[0]   + x[1]);
-  y[N-1] = (1/2.) * (x[N-2] + x[N-1]);
+  // maybe make an even stronger assertio that x and y do not overlap - implement a function
+  // int rsArray::getOverlap(T* x, T* y, int N) that returns the number of overlapping elements
+  // and/or a function bool rsArray::areOverlapping(T* x, T* y, int N)
+
+  y[0]   = T(1/2.) * (x[0]   + x[1]);
+  y[N-1] = T(1/2.) * (x[N-2] + x[N-1]);
+
+  //// test - leave edge values untouched:
+  //y[0]   = x[0];
+  //y[N-1] = x[N-1];
+
   for(int n = 1; n < N-1; n++)
-    y[n] = (1/3.) * (x[n-1] + x[n] + x[n+1]);
+    y[n] = T(1/3.) * (x[n-1] + x[n] + x[n+1]);
+
+  bool preserveMean = false;  // make parameter
+  typedef RAPT::rsArray AR;
+  if(preserveMean)
+    AR::add(y, AR::mean(x, N) - AR::mean(y, N), y, N);
 }
 // does this function preserve the mean? -> nope! -> implement a version that subtracts the 
 // difference between the means before and after
+// -what, if we just leave the edge-values untouched?
 // todo: implement a version that may operate in-place
+// -maybe make a class with options for different handling of the ends, optional mean-preservation,
+//  etc.
+// -maybe the mean is not the only thing that may be useful to preserve - what about energy, for 
+//  example?
+
+// maybe implement savitzky-golay filters:
+// https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
+// for equidistant data, use convolution
+// https://en.wikipedia.org/wiki/Local_regression
+
+
+// convenience function:
+template<class T>
+std::vector<T> rsSmooth(const std::vector<T>& x)
+{
+  std::vector<T> y(x.size());
+  rsSmooth(&x[0], (int) x.size(), &y[0]);
+  return y;
+}
+
+template<class T>
+std::vector<T> rsMax(const std::vector<T>& x, const std::vector<T>& y)
+{
+  rsAssert(x.size() == y.size());
+  std::vector<T> z(x.size());
+  for(size_t i = 0; i < x.size(); i++)
+    z[i] = rsMax(x[i], y[i]);
+  return z;
+}
+
+// quick and dirty (and inefficient) implementation of an idea to find the envelope:
+std::vector<double> testEnvelope(const std::vector<double>& x)
+{
+  std::vector<double> t1 = x, t2 = x;
+  int maxIt = 1000;
+  for(int i = 1; i <= maxIt; i++)
+  {
+    t2 = rsSmooth(t1);
+
+    if(i % 10 == 0)
+      rsPlotVectors(x, t1);
+
+    //t1 = rsMax(t1, t2);
+    t1 = rsMax(x, t2);
+
+
+    //if(t1 == t2) // triggers in the 1st iteration - why?
+    //  break;
+  }
+  return t1;
+}
+// this algorithm creates an envelope that looks like a ropeway connecting the peaks - more 
+// iterations tend to use less peaks and increase the tension of the rope - is should call it 
+// ropeway algorithm :-)
+// -maybe it makes sense to run a few ropeway iterations before searching for peaks
 
 void peakPicker()
 {
@@ -1297,18 +1367,33 @@ void peakPicker()
   // with prominence 4, {1,2,3,4,3,2} should have a peak at 3 with prominence 3, ....
 
 
-  //x = rsRandomVector(100, -1.0, +1.0, 3);
+  x = rsRandomVector(200, -1.0, +1.0, 6);  // nice seeds: 4,6,7,8 - strange: 9
+  RAPT::rsArray::cumulativeSum(&x[0], &x[0], (int)x.size());
+  //RAPT::rsArray::cumulativeSum(&x[0], &x[0], (int)x.size());
+
   //x = VecD({0,0,0,8,4,4,2,2,2,2,1,1,1,1,1,1,1,1,0,0,0});
-  x = VecD({0,0,0,10,9,9,8,8,8,7,7,7,7,6,6,6,6,6,0,0,0});  // illustrates peak wandering
+  //x = VecD({0,0,0,10,9,9,8,8,8,7,7,7,7,6,6,6,6,6,0,0,5});  // illustrates peak wandering/drift
+  //x = VecD(20); for(int i=4; i<20; i++) x[i] = 1./i;
+  //x = VecD(20); for(int i=4; i<20; i++) x[i] = exp(-0.25*i);
+  //x = VecD(20); x[8] = 10; x[12] = 20;
+  //x = VecD(20); x[8] = 10; x[12] = 10; x[13] = 15;
+
+  VecD yEnv = testEnvelope(x);
+
 
   int N = (int) x.size();
-  VecD y1(N), y2(N), y3(N), y4(N), y5(N);
+  VecD y1(N), y2(N), y3(N), y4(N), y5(N), y6(N), y7(N), y8(N);
   rsSmooth(&x[0],  N, &y1[0]);
   rsSmooth(&y1[0], N, &y2[0]);
   rsSmooth(&y2[0], N, &y3[0]);
   rsSmooth(&y3[0], N, &y4[0]);
   rsSmooth(&y4[0], N, &y5[0]);
-  rsPlotVectors(x, y1, y2, y3, y4, y5);
+  rsSmooth(&y5[0], N, &y6[0]);
+  rsSmooth(&y6[0], N, &y7[0]);
+  rsSmooth(&y7[0], N, &y8[0]);
+  //rsPlotVectors(x, y1, y2, y3, y4, y5);
+  rsPlotVectors(x, y1, y2, y4, y8);
+  //rsPlotVectors(x, y8);
   int dummy = 0;
   // maybe mark the peaks and print their prominences and smoothing-robustnesses above....what 
   // could be a good name for this insensitivity-under-smoothing porperty? maybe something like 
@@ -1344,10 +1429,19 @@ void peakPicker()
   // http://matlab.izmiran.ru/help/toolbox/images/morph13.html
 
 
+  // thread: "I'd like to add a peak finding function to scipy.signal"
+  // https://github.com/scipy/scipy/issues/8211
+
+
+  // https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.find_peaks_cwt.html
+
+  // https://blog.ytotech.com/2015/11/01/findpeaks-in-python/
+
   // maybe we could do some post-processing on a preliminary peak-array by which we discard some 
   // of the preliminary peaks - for example based on minimum desired distance between peaks
   // or - based on peak-prominence:
   // https://en.wikipedia.org/wiki/Topographic_prominence
+  // https://listsofjohn.com/PeakStats/glossary.html#Rise
   // maybe write a function getPeakProminences that takes an array of values and an array of peak
   // indices and return an array of peak prominences
   // the wikipedia articla also links to this:
@@ -1399,15 +1493,48 @@ void peakPicker()
   //    offspring? maybe the higher one, but what if both have the same height? ..maybe we need to 
   //    track both offsprings?
   //   -or maybe in each iteration i we should allow an index deviation of i positions with respect
-  //    to the peak's original index
+  //    to the peak's original index ...or maybe we just need sqrt(i) - try to figure out, by how 
+  //    much the peak may drift after i iterations in the worst case - but what is the worst case?
+  //    it should probably be a one-sided distribution - but what exact shape? i guess that depends
+  //    on the filter kernel(s) used as well
   //  -note that during the process, initially distinct peaks may merge into a single peak (due to 
   //   tolerating peak wandering) and both peaks would be considered to have "survived"
   //
   // -maybe combine both ideas: track how the peak-prominences change during smoothing - a peak 
   //  whose prominence does not decrease much during smoothing is more relevant
+  //
+  // -as a totally different idea: in the signals considered here, peaks often occur in patterns, 
+  //  for example, at regular intervals (tremolo in amp-envs) - a human observer would probably 
+  //  (subconsciously) also apply some sort of pattern matching to identify the relevant peaks
+  //  so maybe more sophisticated peak-picking algos should also include pattern-matching - to be
+  //  used only in cases when there is a pattern...which may itself be determined by 
+  //  autocorrelation? ...however, these are just some wild ideas that are overkill here - i'm
+  //  just trying to contemplate, what humans probably would do subconsciously
+  //
+  // -additional idea: if, after finding the peaks, it happens that a dismissed peak stands out 
+  //  above the linear interpolant of the kept peaks, re-include it - the envelope through the 
+  //  peaks should not allow any original peak to stick out of the envelope
+  //  -such a post-processing seems especially important, if some sort of minimum-peak distance
+  //   is used 
+
+  // -other algo: start with highest peak, successively add the next highest peak, iff it is 
+  //  outside the min-peak-distance - wehn no other such peaks can be found, add those peaks that
+  //  violate the no-stick-out condition
+
+  // -this: http://billauer.co.il/peakdet.html searches alternatingly for minima and maxima and 
+  //  accepts them only when they are some threshold ("delta") below/above the previous one
+  //  ...is this similar to prominence thresholding?
 
   // -evaluate the implemented algorithms in terms of false positives (spurious peaks) and false 
   //  negatives (missed peaks) ...maybe use artifical spectral data of sinusoids embedded in noise
   //  and try to find the sinusoidal peak in the noise?
+
+  // -for the amp-env problem in the debeater, i tend to think that we should consider peaks 
+  //  relevant, if they survive 2 rounds of smoothing...or maybe 3? this should help against 
+  //  spurios local peaks within minima....but for the little peaks on the tail, probably a 
+  //  prominence based threshold is better? -> use both
+
+  // Strange observation: look at random walks with seeds 6 and 9 - they have a very different 
+  // quality - with 9, there are far less medium-scale wiggles
 
 }
