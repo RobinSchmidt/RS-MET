@@ -1288,6 +1288,7 @@ std::vector<T> rsSmooth(const std::vector<T>& x)
   return y;
 }
 
+// elementwise maximum of two vectors:
 template<class T>
 std::vector<T> rsMax(const std::vector<T>& x, const std::vector<T>& y)
 {
@@ -1310,6 +1311,7 @@ std::vector<double> testEnvelope(const std::vector<double>& x)
     if(i % 10 == 0)
       rsPlotVectors(x, t1);
 
+    // two variants - figure out, which is better - or if there's any difference at all:
     //t1 = rsMax(t1, t2);
     t1 = rsMax(x, t2);
 
@@ -1322,7 +1324,13 @@ std::vector<double> testEnvelope(const std::vector<double>& x)
 // this algorithm creates an envelope that looks like a ropeway connecting the peaks - more 
 // iterations tend to use less peaks and increase the tension of the rope - is should call it 
 // ropeway algorithm :-)
-// -maybe it makes sense to run a few ropeway iterations before searching for peaks
+// -maybe it makes sense to run a few ropeway iterations before searching for peaks - maybe that
+//  number of required iterations can be reduced by using a longer filter kernel - maybe even IIR
+//  ->try it with the rhodes sample envelope
+// -and/or maybe we should run an attack/release envelope follower with zero attack, 
+//  bidirectionally - in this case - does it make a difference, which direction we run first? if so,
+//  it may make sense to use an average of forward-first and backward-first application to make the 
+//  algorithm invariant with respect to mirroring the data (this invariance seems desirable)
 
 void peakPicker()
 {
@@ -1367,7 +1375,7 @@ void peakPicker()
   // with prominence 4, {1,2,3,4,3,2} should have a peak at 3 with prominence 3, ....
 
 
-  x = rsRandomVector(200, -1.0, +1.0, 6);  // nice seeds: 4,6,7,8 - strange: 9
+  x = rsRandomVector(200, -1.0, +1.0, 4);  // nice seeds: 4,6,7,8 - strange: 9
   RAPT::rsArray::cumulativeSum(&x[0], &x[0], (int)x.size());
   //RAPT::rsArray::cumulativeSum(&x[0], &x[0], (int)x.size());
 
@@ -1533,6 +1541,11 @@ void peakPicker()
   //  relevant, if they survive 2 rounds of smoothing...or maybe 3? this should help against 
   //  spurios local peaks within minima....but for the little peaks on the tail, probably a 
   //  prominence based threshold is better? -> use both
+
+  // -relationships between peak-picking and envelope-estimation:
+  //  -a sufficient (but not necessary) condition for a peak to be relevant is to be also a peak
+  //   of the envelope
+  //  -an envelope can be estimated by connecting the found peaks
 
   // Strange observation: look at random walks with seeds 6 and 9 - they have a very different 
   // quality - with 9, there are far less medium-scale wiggles
