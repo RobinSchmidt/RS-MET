@@ -947,19 +947,28 @@ T rsArray::median(const T *buffer, int length)
 // https://www.youtube.com/watch?v=sWgDk-o-6ZE 33:25
 
 template <class T>
-void rsArray::movingAverage3pt(const T* x, int N, T* y)
+void rsArray::movingAverage3pt(const T* x, int N, T* y, bool endsFixed)
 {
   rsAssert(N >= 0);
   if(N == 0) return;
   if(N == 1) { y[0] = x[0]; return; }
   T t1 = x[0];
   T t2 = x[1];
-  y[0] = T(1/2.) * (t1 + t2);
+
+  if(endsFixed) 
+    y[0] = t1;
+  else
+    y[0] = T(1/2.) * (t1 + t2);
+
   for(int n = 2; n < N; n++) {
     y[n-1] = T(1/3.) * (t1 + t2 + y[n]);
     t1 = t2;
     t2 = y[n]; }
-  y[N-1] = T(1/2.) * (t1 + t2);
+
+  if(endsFixed)
+    y[N-1] = t2;
+  else
+    y[N-1] = T(1/2.) * (t1 + t2);
 }
 
 template <class T1, class T2, class TR>

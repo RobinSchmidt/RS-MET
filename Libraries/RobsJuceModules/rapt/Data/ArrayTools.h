@@ -498,12 +498,20 @@ public:
   // Allocates heap memory - todo: pass a workspace.
 
   /** Applies a 3-point moving average filter to the length-N array x and stores the result in y, 
-  which may point to the same memory location, i.e. the filter may be used in place. The ends are 
-  handled using a 1-sided 2-point average. This function is useful for smoothing - especially, 
-  when it's applied iteratively multiple times (although, it may be more efficient and give similar
-  results to use a bidirectional IIR filter with a Gaussian impulse response in this case). */
+  which may point to the same memory location, i.e. the filter may be used in place. The endpoints
+  are either held fixed or handled using a 1-sided 2-point average, depending on the optional 
+  endsFixed parameter (default: true, because fixed ends may be the more typical use-case - for 
+  example, when a parameter trajectory should be smoothed). For smoothing, it may be useful to 
+  apply the function iteratively multiple times (although, it may be more efficient and give 
+  similar results to use a bidirectional IIR filter with a Gaussian impulse response in this 
+  case). */
   template<class T>
-  static void movingAverage3pt(const T* x, int N, T* y);
+  static void movingAverage3pt(const T* x, int N, T* y, bool endsFixed = true);
+  // todo: maybe make a version that preserves the mean (calculate mean before and after and add
+  // the difference
+  // maybe have a version that leaves the endpoints alone - rationale: the array may represent a
+  // trajectory that should be smoothed, but the start- and enpoints should not change - maybe
+  // have a boolean parameter "fixEnds"
 
   /** Multiplies the elements of 'buffer1' and 'buffer2' - type must define operator '*'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */

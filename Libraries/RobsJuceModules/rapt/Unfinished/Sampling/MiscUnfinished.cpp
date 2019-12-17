@@ -1554,7 +1554,7 @@ template<class T>
 std::vector<int> rsPeakPicker<T>::getPeakCandidates(const T* x, int N) const
 {
   // todo: if smoothing is selected, create a pre-smoothed copy of x and operate on that
-  // and/or apply a feq iterations of the ropeway algo as pre-processing step
+  // and/or apply a few iterations of the ropeway algo as pre-processing step
 
   std::vector<int> peaks;
   for(int i = 0; i < N; i++)
@@ -1577,6 +1577,18 @@ bool rsPeakPicker<T>::isPeakCandidate(int index, const T* x, int N) const
   // this function returns all values within a plateau as peaks - maybe, it should only return the
   // first and last - that would be sufficient for meaningful linear interpolation
 }
+// maybe make thios static, too - numLeft/RightNeighbors should be passed as parameters
+
+template<class T>
+void rsPeakPicker<T>::ropeway(const T* x, int N, T* y, int numPasses)
+{
+  rsArray::copy(x, y, N);
+  for(int i = 0; i < numPasses; i++) {
+    rsArray::movingAverage3pt(y, N, &y[0]);
+    rsArray::maxElementWise(x, &y[0], N, &y[0]);
+  }
+}
+// maybe move to rsArray ...if it turns out to be useful in other applications
 
 template<class T>
 void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const int* peakIndices,
@@ -1623,18 +1635,6 @@ void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const in
   // ...maybe make the type of behavior user adjustable
 }
 // make unit tests...
-
-
-template<class T>
-void ropeway(const T* x, int N, T* y, int numPasses)
-{
-  rsArray::copy(x, y, N);
-  for(int i = 0; i < numPasses; i++) {
-    rsArray::movingAverage3pt(y, N, &y[0]);
-    rsArray::maxElementWise(x, &y[0], N, &y[0]);
-  }
-}
-// maybe move to rsArray
 
 template<class T>
 std::vector<T> rsPeakPicker<T>::preProcess(const T* x, int N) const

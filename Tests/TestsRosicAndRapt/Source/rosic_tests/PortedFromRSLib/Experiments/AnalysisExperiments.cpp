@@ -1238,6 +1238,9 @@ bool testPeakPicker()  // move to unit tests
   return result;
 }
 
+
+
+
 // 3-point moving average, handles edges by taking one-sided 2-point average there - to be applied 
 // iteratively to figure out, how many iterations of smoothing a peak survives and use that as 
 // measure for the peak's relevance
@@ -1272,21 +1275,6 @@ void rsSmooth(const T* x, int N, T* y)
 //  etc.
 // -maybe the mean is not the only thing that may be useful to preserve - what about energy, for 
 //  example?
-
-// in-place version - move to rsArray:
-template<class T>
-void movingAverage3pt(const T* x, int N, T* y)
-{
-  T t1 = x[0];
-  T t2 = x[1];
-  y[0] = T(1/2.) * (t1 + t2);
-  for(int n = 1; n < N-1; n++) {
-    y[n] = T(1/3.) * (t1 + t2 + y[n+1]);
-    t1 = t2;
-    t2 = y[n+1]; }
-  y[N-1] = T(1/2.) * (t1 + t2);
-}
-// make performance comparision with out-of-place implementation - and unit test
 
 
 
@@ -1350,6 +1338,18 @@ std::vector<double> testEnvelope(const std::vector<double>& x)
 //  bidirectionally - in this case - does it make a difference, which direction we run first? if so,
 //  it may make sense to use an average of forward-first and backward-first application to make the 
 //  algorithm invariant with respect to mirroring the data (this invariance seems desirable)
+
+template<class T>
+std::vector<T> peakSmoothabilities(
+  const std::vector<T>& data, const std::vector<int>& peakIndices)
+{
+  std::vector<T> s(data.size());
+
+  // should compute the number of smoothing iterations, each peak survives
+
+
+  return s;
+}
 
 void peakPicker()
 {
@@ -1569,6 +1569,12 @@ void peakPicker()
 
   // -i think, the numNeighbours stuf is actually the same as the minDistance parameter found in
   //  some peak-picking algos - minDistance = numNeighbours+1?
+
+  // -for envelope estimation: how about finding also the most relevant valleys and place 
+  //  datapoints the, too (the rsPeakFinder class can be used by just sign-inverting the input)
+
+  // -maye have a function erodePlateaus that keeps only the left and right endpoint of a plateau
+  //  in a peak-array - data economization...maybe economizePlateaus would be a better name
 
   // Strange observation: look at random walks with seeds 6 and 9 - they have a very different 
   // quality - with 9, there are far less medium-scale wiggles

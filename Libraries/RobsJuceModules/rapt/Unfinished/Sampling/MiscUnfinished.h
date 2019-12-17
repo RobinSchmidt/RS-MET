@@ -908,6 +908,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
+
   //void getPeaks(const T *x, const T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
 
   std::vector<int> getPeakCandidates(const T *x, int N) const;
@@ -926,12 +927,28 @@ public:
 
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Internal Algorithms */
+
+  /** Alternatingly smoothes and takes the elementwise maximum with the original data. When the 
+  input array looks like a mountain landscape then the output array will resemble ropeway cables 
+  connecting the peaks. The number of passes determines, how many peaks survive as peaks (more 
+  passes -> less peaks). It's used as a pre-processing step before searching for peak candidates.
+  The idea of alternating between smoothing and taking an elementwise maximum was inspired by
+  the "true-envelope-algorithm" for spectral enevlopes. */
+  static void ropeway(const T* x, int N, T* y, int numPasses);
+
   /** Given an array of datapoints and an array of peak-indices, this function computes the 
   prominences of the peaks at the given indices. ...tbc... */
   static void peakProminences(const T *data, int numDataPoints, const int *peakIndices, 
     int numPeaks, T *peakProminences);
-  // todo: add an optional window-length parameter as in SciPy:
+  // todo: rename to prominences, add an optional window-length parameter as in SciPy:
   // https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.peak_prominences.html
+
+  /** Returns the number of smoothing iterations, a peak survives while still preserving its 
+  peak property (of being >= its left and right neighbor). */
+  //static void peakSmoothabilities(const T *data, int numDataPoints, const int *peakIndices, 
+  //  int numPeaks, T *smoothabilities);
 
 
   /** Convenience function for use with std::vector. */
