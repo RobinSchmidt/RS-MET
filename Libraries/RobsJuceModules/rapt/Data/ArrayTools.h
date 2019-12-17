@@ -497,7 +497,11 @@ public:
   static T median(const T *buffer, int length);
   // Allocates heap memory - todo: pass a workspace.
 
-
+  /** Applies a 3-point moving average filter to the length-N array x and stores the result in y, 
+  which may point to the same memory location, i.e. the filter may be used in place. The ends are 
+  handled using a 1-sided 2-point average. This function is useful for smoothing - especially, 
+  when it's applied iteratively multiple times (although, it may be more efficient and give similar
+  results to use a bidirectional IIR filter with a Gaussian impulse response in this case). */
   template<class T>
   static void movingAverage3pt(const T* x, int N, T* y);
 
