@@ -955,10 +955,10 @@ void rsArray::movingAverage3pt(const T* x, int N, T* y)
   T t1 = x[0];
   T t2 = x[1];
   y[0] = T(1/2.) * (t1 + t2);
-  for(int n = 1; n < N-1; n++) {
-    y[n] = T(1/3.) * (t1 + t2 + y[n+1]);
+  for(int n = 2; n < N; n++) {
+    y[n-1] = T(1/3.) * (t1 + t2 + y[n]);
     t1 = t2;
-    t2 = y[n+1]; }
+    t2 = y[n]; }
   y[N-1] = T(1/2.) * (t1 + t2);
 }
 
