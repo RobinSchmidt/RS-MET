@@ -1624,6 +1624,26 @@ void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const in
 }
 // make unit tests...
 
+
+template<class T>
+void ropeway(const T* x, int N, T* y, int numPasses)
+{
+  rsArray::copy(x, y, N);
+  for(int i = 0; i < numPasses; i++) {
+    rsArray::movingAverage3pt(y, N, &y[0]);
+    rsArray::maxElementWise(x, &y[0], N, &y[0]);
+  }
+}
+// maybe move to rsArray
+
+template<class T>
+std::vector<T> rsPeakPicker<T>::preProcess(const T* x, int N) const
+{
+  std::vector<T> y(N);
+  ropeway(x, N, &y[0], numRopewayPasses);
+  return y;
+}
+
 //=================================================================================================
 
 //template<class T>

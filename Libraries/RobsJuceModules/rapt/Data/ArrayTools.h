@@ -432,6 +432,11 @@ public:
   template <class T>
   static T limitToRange(T value, T min, T max);
 
+  /** Fills the length-N array maxXY with the element-wise maximum of the arrays x and y. */
+  template <class T>
+  static void maxElementWise(const T *x, const T* y, const int N, T* maxXY);
+  // todo: make a similar function for min
+
   /** Finds and returns the maximum absolute value of the buffer. */
   template <class T>
   static T maxAbs(const T *buffer, int length);
@@ -492,6 +497,9 @@ public:
   static T median(const T *buffer, int length);
   // Allocates heap memory - todo: pass a workspace.
 
+
+  template<class T>
+  static void movingAverage3pt(const T* x, int N, T* y);
 
   /** Multiplies the elements of 'buffer1' and 'buffer2' - type must define operator '*'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */

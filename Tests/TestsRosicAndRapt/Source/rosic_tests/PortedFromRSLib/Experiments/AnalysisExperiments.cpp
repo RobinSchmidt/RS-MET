@@ -1273,6 +1273,23 @@ void rsSmooth(const T* x, int N, T* y)
 // -maybe the mean is not the only thing that may be useful to preserve - what about energy, for 
 //  example?
 
+// in-place version - move to rsArray:
+template<class T>
+void movingAverage3pt(const T* x, int N, T* y)
+{
+  T t1 = x[0];
+  T t2 = x[1];
+  y[0] = T(1/2.) * (t1 + t2);
+  for(int n = 1; n < N-1; n++) {
+    y[n] = T(1/3.) * (t1 + t2 + y[n+1]);
+    t1 = t2;
+    t2 = y[n+1]; }
+  y[N-1] = T(1/2.) * (t1 + t2);
+}
+// make performance comparision with out-of-place implementation - and unit test
+
+
+
 // maybe implement savitzky-golay filters:
 // https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
 // for equidistant data, use convolution
@@ -1308,7 +1325,7 @@ std::vector<double> testEnvelope(const std::vector<double>& x)
   {
     t2 = rsSmooth(t1);
 
-    if(i % 10 == 0)
+    if(i % 2 == 0)
       rsPlotVectors(x, t1);
 
     // two variants - figure out, which is better - or if there's any difference at all:
@@ -1326,6 +1343,8 @@ std::vector<double> testEnvelope(const std::vector<double>& x)
 // ropeway algorithm :-)
 // -maybe it makes sense to run a few ropeway iterations before searching for peaks - maybe that
 //  number of required iterations can be reduced by using a longer filter kernel - maybe even IIR
+//  -maybe instead of doing several iteration, we should do just one but let the user choose the 
+//   length of the smoothing filter kernel - maybe a Gaussian IIR filter would be suitable
 //  ->try it with the rhodes sample envelope
 // -and/or maybe we should run an attack/release envelope follower with zero attack, 
 //  bidirectionally - in this case - does it make a difference, which direction we run first? if so,

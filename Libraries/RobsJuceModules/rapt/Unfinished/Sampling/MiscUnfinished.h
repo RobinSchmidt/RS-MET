@@ -947,8 +947,10 @@ public:
 
 protected:
 
+  std::vector<T> preProcess(const T *x, int N) const;
+
   // pre-processing parameters:
-  //int ropewayPasses = 0;      // number of passes through ropeway algo before searching candidates
+  int numRopewayPasses = 0;      // number of passes through ropeway algo before searching candidates
 
   // distance based criteria:
   int numLeftNeighbors  = 1;  // this is something similar to a min-distance criterion...

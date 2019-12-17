@@ -12,6 +12,19 @@ using namespace RAPT;
 //  return accu;
 //}
 
+bool testArrayFiltering()
+{
+  bool r = true;      // test result
+  typedef std::vector<double> Vec;
+  typedef RAPT::rsArray AR;
+
+  Vec x = Vec({1,3,2,-2,3,5,1});
+  AR::movingAverage3pt(&x[0], (int)x.size(), &x[0]);
+  r &= x == Vec({2,2,1,1,2,3,3});
+
+  return r;
+}
+
 bool arrayUnitTest()
 {
   bool r = true;      // test result
@@ -30,6 +43,8 @@ bool arrayUnitTest()
   rsRemoveRange(a, 4, 7);
   r &= a == Vec({ 0,1,2,3, 8,9 });
 
+
+  r &= testArrayFiltering();
 
 
   return r;

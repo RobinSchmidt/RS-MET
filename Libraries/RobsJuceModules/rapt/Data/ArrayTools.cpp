@@ -802,6 +802,13 @@ T rsArray::limitToRange(T value, T min, T max)
 }
 
 template <class T>
+void rsArray::maxElementWise(const T* x, const T* y, const int N, T* maxXY)
+{
+  for(int n = 0; n < N; n++)
+    maxXY[n] = rsMax(x[n], y[n]);
+}
+
+template <class T>
 T rsArray::maxAbs(const T *buffer, int length)
 {
   T max = T(0);
@@ -938,6 +945,19 @@ T rsArray::median(const T *buffer, int length)
 }
 // maybe use std::n_thelement, see here:
 // https://www.youtube.com/watch?v=sWgDk-o-6ZE 33:25
+
+template <class T>
+void rsArray::movingAverage3pt(const T* x, int N, T* y)
+{
+  T t1 = x[0];
+  T t2 = x[1];
+  y[0] = T(1/2.) * (t1 + t2);
+  for(int n = 1; n < N-1; n++) {
+    y[n] = T(1/3.) * (t1 + t2 + y[n+1]);
+    t1 = t2;
+    t2 = y[n+1]; }
+  y[N-1] = T(1/2.) * (t1 + t2);
+}
 
 template <class T1, class T2, class TR>
 void rsArray::multiply(const T1 *buffer1, const T2 *buffer2, TR *result, int length)
