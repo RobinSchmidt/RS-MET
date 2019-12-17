@@ -949,6 +949,9 @@ T rsArray::median(const T *buffer, int length)
 template <class T>
 void rsArray::movingAverage3pt(const T* x, int N, T* y)
 {
+  rsAssert(N >= 0);
+  if(N == 0) return;
+  if(N == 1) { y[0] = x[0]; return; }
   T t1 = x[0];
   T t2 = x[1];
   y[0] = T(1/2.) * (t1 + t2);
