@@ -1180,8 +1180,12 @@ void zeroCrossingPitchDetectorTwoTones()
 
 
 
+
+
+
+/*
 template<class T>
-class rsPeakTrailer // or rsPeakTrailDragger
+class rsPeakTrailer // or rsPeakTrailDragger or just rsTrailDragger
 {
 
 public:
@@ -1202,6 +1206,17 @@ public:
     return y;
   }
 
+
+  T getSample2(T x)  
+  {
+    T out = y;
+    if(x > y)
+      y = x;
+    y *= c;
+    return out;
+  }
+  // with artificial delay for trying to avoid having two overlapping trails exactly at the spikes
+
   // T getSample(T x, T dt) ...for usage with non-equidistant data
 
   void reset() { y = T(0); }
@@ -1214,20 +1229,26 @@ protected:
 };
 // this is kinda nice - each peak carries an exponentially decaying trail of influence - minor 
 // peaks below this trail will be dismissed as irrelevant
+*/
 
 
 template<class T>
 void ropeway(const T* x, int N, T halfTime, T* y, T* w) // w is workspace
 {
-  rsPeakTrailer<T> pt;
+  //rsPeakTrailer<T> pt;
+  RAPT::rsPeakTrailDragger<T> pt;
   pt.setDecaySamples(halfTime, T(0.5));
   int n;
   for(n = 0;   n <  N;  n++) w[n] = pt.getSample(x[n]);  pt.reset();   // forward pass
   for(n = N-1; n >= 0;  n--) y[n] = pt.getSample(x[n]);                // backward pass
   //rsPlotArrays(N, x, w, y);
-  for(n = 0;   n <  N;  n++) y[n] = rsMax(w[n], y[n]);                 // maximum of both passes
 
-  //for(n = 0;   n <  N;  n++) y[n] = T(0.5) * (w[n]+y[n]);              // average
+  for(n = 0;   n <  N;  n++) y[n] = rsMax(w[n], y[n]);               // maximum of both passes - sorta works
+  //for(n = 0;   n <  N;  n++) y[n] = T(0.5) * (w[n]+y[n]);            // average - nope!
+  //for(n = 0;   n <  N;  n++) y[n] = w[n]+y[n]-x[n];                  // nope
+  //for(n = 0;   n <  N;  n++) y[n] = w[n]+y[n];
+  //for(n = 0;   n <  N;  n++) y[n] = rsMax(x[n],T(0.5) * (w[n]+y[n]));
+  //for(n = 0;   n <  N;  n++) y[n] = rsMax(x[n],w[n]+y[n]);
 
   // average doesn't work, max sort of works but is not smooth between spikes - try bidirational
   // serial passes with averaging between forward-first and backward first
@@ -1237,8 +1258,48 @@ void ropeway(const T* x, int N, T halfTime, T* y, T* w) // w is workspace
   // ...but maybe average between forward-first and backward-first pass - due to the nonlinearity,
   // the results of both may not be the same...or are they? -> figure out!
 }
+
+// averaging does not work because we multiply by 0.5 - the sum would be more more appropriate, 
+// except at positions of the spikes themselves
+// what if the traildragger had a 1-sample delay to respond to the spikes and at the end, we take
+// the maximum of sum and original signal?
+
+// i'd really like to have an algorithm that produces proper catenary shaped trails, but averaging 
+// forward/backward exponetial trails doesn't really work and taking the max of forward/backward 
+// gives non-smooth junctions between the peaks - however, for a peak-picker, we do not care about
+// this - so max of forward and backward pass is perhaps most reasonable
+
 // this works only correctly, if x[n] >= 0 for all n - maybe we should fix that byusing an offset
 // before and after....
+
+
+template<class T>
+void ropeway2(const T* x, int N, T halfTime, T* y, T* w) // w is workspace
+{
+  //rsPeakTrailer<T> pt;
+  RAPT::rsPeakTrailDragger<T> pt;
+  pt.setDecaySamples(halfTime, T(0.5));
+  int n;
+
+  // forward first:
+  for(n = 0;   n <  N;  n++) w[n] = pt.getSample(x[n]);   // forward pass
+  for(n = N-1; n >= 0;  n--) w[n] = pt.getSample(w[n]);   // backward pass
+
+  // backward first:
+  pt.reset();
+  for(n = N-1; n >= 0;  n--) y[n] = pt.getSample(x[n]);   // backward pass
+  for(n = 0;   n <  N;  n++) y[n] = pt.getSample(y[n]);   // forward pass
+
+  //rsPlotArrays(N, x, w, y);
+
+  // average of forward-first and backward-first:
+
+  for(n = 0;   n <  N;  n++) y[n] = T(0.5) * (w[n]+y[n]);
+  //rsPlotArrays(N, x, y);
+}
+// result look the same like the other version
+
+
 
 template<class T>
 std::vector<T> ropeway(const std::vector<T>& x, T halfTime)
@@ -1246,6 +1307,7 @@ std::vector<T> ropeway(const std::vector<T>& x, T halfTime)
   int N = (int) x.size();
   std::vector<T> y(N), w(N);
   ropeway(&x[0], N, halfTime, &y[0], &w[0]);
+  //ropeway2(&x[0], N, halfTime, &y[0], &w[0]);
   return y;
 }
 
@@ -1257,7 +1319,8 @@ void ropewayAlgo()
 
   Vec x(101);
   //x[50] = 1;
-  x[30] = x[70] = 1;
+  x[30] = x[70] = 1; 
+  x[40] = 0.2; x[60] = 0.6;
   Vec y = ropeway(x, halfTime);
 
   rsPlotVectors(x, y);

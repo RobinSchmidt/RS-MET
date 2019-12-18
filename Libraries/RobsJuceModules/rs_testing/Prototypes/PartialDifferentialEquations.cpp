@@ -159,7 +159,8 @@ void rsWaveEquation1D<T>::computeBoundaryPoints(T timeStep)
   int N  = getNumGridPoints()-1; // see (1), section 5.2.8
   tmp[0] = tmp[N] = T(0);        // endpoints fixed at zero - "Dirichlet" conditions
   // todo: allow to let client code choose from various boundary conditions (Dirichlet, Neumann, 
-  // mixed, etc.)
+  // mixed, etc.) ..maybe also allow for circular/wrap-around conditions - that's no-physical but
+  // may be interesting
 }
 
 template<class T>
@@ -254,6 +255,12 @@ void rsRectangularMembrane<T>::computeBoundaryPoints()
   // here as they are not modified in computeInteriorPoints - but for other boundary conditions, 
   // the situation may be different
 
+  // if we would use circular/wrap boundary conditions for x,y, we would get a toroidal topology,
+  // i.e. the membrane would model the surface of a torus - how abut modeling the surface of a 
+  // sphere - maybe use wrap-around in spherical coordinates? hmm...that seems appropriate for the 
+  // meridians but not the elevation (or whatever it is called)...maybe the poles have to be 
+  // treated in a special way
+
 
   // test: place an "obastacle" into the membrane:
   tmp(20, 30) = 0;
@@ -275,6 +282,7 @@ void rsRectangularMembrane<T>::updateStateMatrices()
   u1 = u;
   u  = tmp;
 }
+// can be optimized - use class rsMatrix
 
 /*
  Background:
