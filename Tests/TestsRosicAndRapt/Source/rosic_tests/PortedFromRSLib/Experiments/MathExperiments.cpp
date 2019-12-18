@@ -860,8 +860,6 @@ void naturalCubicSpline2()
   RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni, 1.0); // Natural
   //RAPT::rsInterpolateSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni, 1);   // Hermite
 
-
-
   // maybe factor out (it's the same as above):
   GNUPlotter plt;
   plt.addDataArrays(Ni, &xi[0], &yi[0]);
@@ -869,6 +867,16 @@ void naturalCubicSpline2()
   plt.addDataArrays(N, &x[0], &y[0]);
   plt.addGraph("index 1 using 1:2 with points pt 7 ps 1.2 lc rgb \"#000000\" notitle");
   plt.plot();
+
+  // ToDo:
+  // -maybe plot a cubic Hermite spline interpolant for comparison
+  //  -Hermite is only 1st order smooth and prescribes *values* for the derivatives at the 
+  //   junctions (which we derive from a numerical derivative) whereas the natural spline just
+  //   demands that those values must match but doesn't care what the values should be - that 
+  //   "gives back" a degree of freedom per datapoint which can be used to match the 2nd derivative
+  //   in the same way
+  //  -Hermite splines are local: changing the value of a single datapoint affects only the 
+  //   segments that go directly into and out of it and its immediate neighbours
 }
 
 void cubicInterpolationNonEquidistant() // turn into unit-test
@@ -934,7 +942,7 @@ void cubicInterpolationNonEquidistant() // turn into unit-test
   double error = fabs(y-yp);
   testResult &= fabs(y-yp) < 1.e-10;
 
-  // now, use the function from RSLib:
+  // now, use the function from RAPT:
   double yq = rsInterpolateCubicHermite(x1, x2, x3, x4, y1, y2, y3, y4, x);
   error = fabs(y-yq);
   testResult &= fabs(y-yq) < 1.e-10;

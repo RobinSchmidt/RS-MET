@@ -36,12 +36,12 @@ void movingAverage5pt(const T* x, int N, T* y)
   y[N-2] = T(1/4.) * (t1 + t2 + t3 + t4);
   y[N-1] = T(1/3.) * (     t2 + t3 + t4);
 }
+// this is still under construction
 // maybe make a fixed-ends version of that using: y[0] = x[0], y[1] = (x[0]+x[1]+x[2])/3 - so
 // the first output equals the first input and the second output uses a symmetric 3-point average
 // ...i think, that scheme generalizes more nicely to M-point smoothers without introducing 
 // asymmetric averaging at the endpoints - also, fixed endpoints may themselves be a desirable
 // feature - for example when smoothing parameter trajectories
-
 
 // a function movingAverage that does not run in place and supports arbitrary odd order - useful
 // for producing target output for unit tests

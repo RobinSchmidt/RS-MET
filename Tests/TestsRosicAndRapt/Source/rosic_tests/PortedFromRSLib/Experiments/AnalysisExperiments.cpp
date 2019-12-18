@@ -1179,6 +1179,92 @@ void zeroCrossingPitchDetectorTwoTones()
 }
 
 
+
+template<class T>
+class rsPeakTrailer // or rsPeakTrailDragger
+{
+
+public:
+
+
+  void setDecaySamples(T d, T r = 0.5) // or maybe default value for r should be 1/e
+  {
+    c = pow(r, T(1)/d);
+    // d-th root of r -> after d successive multiplications, we reach r, if we init with 1
+  }
+
+
+  T getSample(T x)
+  {
+    y *= c;    // or maybe try y = (1-c)*x + c*y; 
+    if(x > y)
+      y = x;
+    return y;
+  }
+
+  // T getSample(T x, T dt) ...for usage with non-equidistant data
+
+  void reset() { y = T(0); }
+
+protected:
+
+  T c = T(0);
+  T y = T(0);
+
+};
+// this is kinda nice - each peak carries an exponentially decaying trail of influence - minor 
+// peaks below this trail will be dismissed as irrelevant
+
+
+template<class T>
+void ropeway(const T* x, int N, T halfTime, T* y, T* w) // w is workspace
+{
+  rsPeakTrailer<T> pt;
+  pt.setDecaySamples(halfTime, T(0.5));
+  int n;
+  for(n = 0;   n <  N;  n++) w[n] = pt.getSample(x[n]);  pt.reset();   // forward pass
+  for(n = N-1; n >= 0;  n--) y[n] = pt.getSample(x[n]);                // backward pass
+  //rsPlotArrays(N, x, w, y);
+  for(n = 0;   n <  N;  n++) y[n] = rsMax(w[n], y[n]);                 // maximum of both passes
+
+  //for(n = 0;   n <  N;  n++) y[n] = T(0.5) * (w[n]+y[n]);              // average
+
+  // average doesn't work, max sort of works but is not smooth between spikes - try bidirational
+  // serial passes with averaging between forward-first and backward first
+
+
+  // bidirectional parallel - todo: maybe try a serial bidirectional application of the filter
+  // ...but maybe average between forward-first and backward-first pass - due to the nonlinearity,
+  // the results of both may not be the same...or are they? -> figure out!
+}
+// this works only correctly, if x[n] >= 0 for all n - maybe we should fix that byusing an offset
+// before and after....
+
+template<class T>
+std::vector<T> ropeway(const std::vector<T>& x, T halfTime)
+{
+  int N = (int) x.size();
+  std::vector<T> y(N), w(N);
+  ropeway(&x[0], N, halfTime, &y[0], &w[0]);
+  return y;
+}
+
+void ropewayAlgo()
+{
+  typedef std::vector<double> Vec;
+
+  double halfTime = 5;
+
+  Vec x(101);
+  //x[50] = 1;
+  x[30] = x[70] = 1;
+  Vec y = ropeway(x, halfTime);
+
+  rsPlotVectors(x, y);
+}
+
+
+
 bool testPeakPicker()  // move to unit tests
 {
   bool result = true;
@@ -1403,10 +1489,20 @@ void peakPicker()
   //x = VecD({0,0,0,10,9,9,8,8,8,7,7,7,7,6,6,6,6,6,0,0,5});  // illustrates peak wandering/drift
   //x = VecD(20); for(int i=4; i<20; i++) x[i] = 1./i;
   //x = VecD(20); for(int i=4; i<20; i++) x[i] = exp(-0.25*i);
-  //x = VecD(20); x[8] = 10; x[12] = 20;
+  //x = VecD(20); x[8] = 10; x[12] = 20;  // shows split (1st iteration) and merge (2nd and 3rd)
   //x = VecD(20); x[8] = 10; x[12] = 10; x[13] = 15;
 
-  VecD yEnv = testEnvelope(x);
+  x = VecD(31); x[15] = 10; 
+
+
+  // create datasets that illustrate peak-merging and peak-splitting
+
+  // this shows plots of the various iterations of the "ropeway" algorithm - todo: show many of them in
+  // a single plot:
+  //VecD yEnv = testEnvelope(x);
+  // ...actually, using an attack-decay envelope follower, we'll see exponential decays and if it's
+  // used bidirectionally (serially and/or in parallel), we may indeed get something like a cosh
+  // shape - with this algo, it looks more like parabolas
 
 
   int N = (int) x.size();
@@ -1427,7 +1523,8 @@ void peakPicker()
   // could be a good name for this insensitivity-under-smoothing porperty? maybe something like 
   // robustness/resilience? keeping with analogy of landscapes, we may consider these smoothing 
   // operations as a sort of abrasion due to wind or water - we may think of the measure as a 
-  // sort of abrasion-resilience...maybe durability?
+  // sort of abrasion-resilience...maybe durability? smoothability? whetherproofness, 
+  // wheather-resistance, or just resistance...i think, perhaps durability is the best term
 
   // tests the class rsPeakPicker
   // todo: 
@@ -1525,8 +1622,14 @@ void peakPicker()
   //    much the peak may drift after i iterations in the worst case - but what is the worst case?
   //    it should probably be a one-sided distribution - but what exact shape? i guess that depends
   //    on the filter kernel(s) used as well
+  //    -i think, the scope/width in which we search for a corresponding peak should be 
+  //     proportional to the width of the (convolutively) accumulated filter kernel, so sqrt
+  //     seems reasonable - maybe to incrase the width by one, we should look at results after
+  //     1,2,4,9,16,25,36,49...N^2 iterations
   //  -note that during the process, initially distinct peaks may merge into a single peak (due to 
   //   tolerating peak wandering) and both peaks would be considered to have "survived"
+  //   -i think, that in each iteration, each peak may have up to two parents and up to two 
+  //    children
   //
   // -maybe combine both ideas: track how the peak-prominences change during smoothing - a peak 
   //  whose prominence does not decrease much during smoothing is more relevant

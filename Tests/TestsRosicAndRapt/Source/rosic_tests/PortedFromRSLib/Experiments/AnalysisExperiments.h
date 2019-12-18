@@ -30,6 +30,7 @@ void cycleMarkErrors();
 void zeroCrossingPitchDetector();
 void zeroCrossingPitchDetectorTwoTones();
 
+void ropewayAlgo();
 void peakPicker();
 
 
