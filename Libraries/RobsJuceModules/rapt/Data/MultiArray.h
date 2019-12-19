@@ -1,6 +1,8 @@
 #ifndef RAPT_MULTIARRAY_H
 #define RAPT_MULTIARRAY_H
 
+// this is not yet finished
+
 //=================================================================================================
 
 /** This is a class for treating raw C-arrays as multidimensional arrays. It does not store/own the
@@ -11,7 +13,7 @@ for as many indices as needed. Example code could look like:
 float data[24];                             // flat C-array of data
 rsMultiArrayView<float> A({2,4,3}, data);   // we want to interpret the data as 2x4x3 3D array
 A(0,0,0) = 111.f;                           // set element at position 0,0,0 (the first one)
-A(1,3,2) = 243.f;                           // set element at position 1,3,2 (the last one)     
+A(1,3,2) = 243.f;                           // set element at position 1,3,2 (the last one)
 
 Note that the constructor has to perform two heap allocations (for two std::vectors), so wrapping
 an array like this is not a free operation. 
@@ -104,12 +106,44 @@ public:
   /** \name Arithmetic */
 
   /** Adds elements of A to corresponding elements in B and stores results in C. */
-  static void add(const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, 
-    rsMultiArrayView<T>* C)
+  static void add(
+    const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, rsMultiArrayView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
     rsArray::add(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
+  // hmm...these functions add, subtrac, etc. are copy/pasted more or less exactly from rsMatrix - 
+  // maybe we can factor out a common baseclass? maybe rsArrayView? it should contain the 
+  // dataPointer and the size - then rsMatrix would also use a cached size - set up unit tests and 
+  // then try it - maybe it could also handle application of functions in a uniform way
+  // but wait - no - the implementation of areSameShape is different - on the other hand, that
+  // function is only used in the assertion
+
+  /** Subtracts elements of B from corresponding elements A in and stores results in C. */
+  static void subtract(
+    const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, rsMultiArrayView<T>* C)
+  {
+    rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
+    rsArray::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+  }
+
+  /** Multiplies the two multiarrays element-wise. */
+  static void multiply(
+    const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, rsMultiArrayView<T>* C)
+  {
+    rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
+    rsArray::multiply(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+  }
+
+  /** Divide the two multiarrays element-wise. */
+  static void divide(
+    const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, rsMultiArrayView<T>* C)
+  {
+    rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
+    rsArray::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+  }
+
+
 
 
 
@@ -208,13 +242,24 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
-  /** Adds two arrays: C = A + B. */
+  /** Adds two multiarrays element-wise. */
   rsMultiArray<T> operator+(const rsMultiArray<T>& B) const
   { rsMultiArray<T> C(this->shape); this->add(*this, B, &C); return C; }
 
-  // todo: -,*,/,==,!=
+  /** Subtracts two multiarrays element-wise */
+  rsMultiArray<T> operator-(const rsMultiArray<T>& B) const
+  { rsMultiArray<T> C(this->shape); this->subtract(*this, B, &C); return C; }
+
+  /** Multiplies two multiarrays element-wise. */
+  rsMultiArray<T> operator*(const rsMultiArray<T>& B) const
+  { rsMultiArray<T> C(this->shape); this->multiply(*this, B, &C); return C; }
+
+  /** Divides two multiarrays element-wise. */
+  rsMultiArray<T> operator/(const rsMultiArray<T>& B) const
+  { rsMultiArray<T> C(this->shape); this->divide(*this, B, &C); return C; }
 
 
+  // todo: ==,!=
 
 
 protected:
@@ -232,83 +277,5 @@ protected:
   std::vector<T> data;
 
 };
-
-
-
-/*
-// move to unit tests:
-void testMultiArray()
-{
-  typedef std::vector<int> VecI;
-  typedef std::vector<float> VecF;
-  typedef rsMultiArray<float> MA;
-
-  // 3D vector:
-  MA a1 = MA(VecI{3});     
-  a1(0) = 1;
-  a1(1) = 2;
-  a1(2) = 3;
-
-  //a1 = a1 + a1;
-
-
-  // 3x2 matrix:
-  MA a2 = MA(VecI{3,2});  
-  a2(0,0) = 11;
-  a2(0,1) = 12;
-
-  a2(1,0) = 21;
-  a2(1,1) = 22;
-
-  a2(2,0) = 31;
-  a2(2,1) = 32;
-
-
-  // 2x4x3 block/cuboid:
-  MA a3 = MA(VecI{2,4,3}); 
-  a3(0,0,0) = 111;
-  a3(0,0,1) = 112;
-  a3(0,0,2) = 113;
-
-  a3(0,1,0) = 121;
-  a3(0,1,1) = 122;
-  a3(0,1,2) = 123;
-
-  a3(0,2,0) = 131;
-  a3(0,2,1) = 132;
-  a3(0,2,2) = 133;
-
-  a3(0,3,0) = 141;
-  a3(0,3,1) = 142;
-  a3(0,3,2) = 143;
-
-
-  a3(1,0,0) = 211;
-  a3(1,0,1) = 212;
-  a3(1,0,2) = 213;
-
-  a3(1,1,0) = 221;
-  a3(1,1,1) = 222;
-  a3(1,1,2) = 223;
-
-  a3(1,2,0) = 231;
-  a3(1,2,1) = 232;
-  a3(1,2,2) = 233;
-
-  a3(1,3,0) = 241;
-  a3(1,3,1) = 242;
-  a3(1,3,2) = 243;
-
-  // move code over to RAPT and turn this into a unit test
-  // ->retrieve the flat data pointer and check, if the data is inserted in the desired layout
-
-
-
-  // allow the user to specify an allocator so we can unit-test the memory allocation avoidance
-
-
-  int dummy = 0;
-}
-*/
 
 #endif

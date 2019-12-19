@@ -345,7 +345,6 @@ public:
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
     rsArray::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
-  // rename to subtract
 
   /** Multiplies the two matrices element-wise. */
   static void elementwiseMultiply(

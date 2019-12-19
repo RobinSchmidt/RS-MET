@@ -195,16 +195,101 @@ bool testMultiArrayContraction(std::string &reportString)
   return testResult;
 }
 
+
+bool testMultiArray1()
+{
+  // maybe split the function int 1D,2D,3D tests
+
+  bool r = true;
+
+
+  typedef std::vector<int> VecI;
+  typedef std::vector<float> VecF;
+  typedef rsMultiArray<float> MA;
+
+  // 3D vector:
+  MA a1 = MA(VecI{3});
+  a1(0) = 1;
+  a1(1) = 2;
+  a1(2) = 3;
+
+  //a1 = a1 + a1;
+
+
+  // 3x2 matrix:
+  MA a2 = MA(VecI{3,2});  
+  a2(0,0) = 11;
+  a2(0,1) = 12;
+
+  a2(1,0) = 21;
+  a2(1,1) = 22;
+
+  a2(2,0) = 31;
+  a2(2,1) = 32;
+
+
+  // 2x4x3 block/cuboid:
+  MA a3 = MA(VecI{2,4,3}); 
+  a3(0,0,0) = 111;
+  a3(0,0,1) = 112;
+  a3(0,0,2) = 113;
+
+  a3(0,1,0) = 121;
+  a3(0,1,1) = 122;
+  a3(0,1,2) = 123;
+
+  a3(0,2,0) = 131;
+  a3(0,2,1) = 132;
+  a3(0,2,2) = 133;
+
+  a3(0,3,0) = 141;
+  a3(0,3,1) = 142;
+  a3(0,3,2) = 143;
+
+
+  a3(1,0,0) = 211;
+  a3(1,0,1) = 212;
+  a3(1,0,2) = 213;
+
+  a3(1,1,0) = 221;
+  a3(1,1,1) = 222;
+  a3(1,1,2) = 223;
+
+  a3(1,2,0) = 231;
+  a3(1,2,1) = 232;
+  a3(1,2,2) = 233;
+
+  a3(1,3,0) = 241;
+  a3(1,3,1) = 242;
+  a3(1,3,2) = 243;
+
+  // move code over to RAPT and turn this into a unit test
+  // ->retrieve the flat data pointer and check, if the data is inserted in the desired layout
+
+
+
+  // allow the user to specify an allocator so we can unit-test the memory allocation avoidance
+
+
+  return r;
+}
+
 bool testMultiArray()
 {
-  std::string testName = "rsMultiArrayOld";
+  std::string testName = "rsMultiArray (old and new)";
   std::string dummy;
   bool testResult = true;
 
+  // these are the tests that work on the odl implementation -> adapt them!
   testResult &= testMultiArrayInit(dummy);
   testResult &= testMultiArrayOffsetComputation(dummy);
   testResult &= testMultiArrayOuterProduct(dummy);
   testResult &= testMultiArrayContraction(dummy);
+
+  // tests with the new class:
+  testResult &= testMultiArray1();
+
+
 
   //appendTestResultToReport(reportString, testName, testResult);
   return testResult;

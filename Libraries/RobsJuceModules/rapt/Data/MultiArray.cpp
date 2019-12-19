@@ -57,6 +57,8 @@ the probelm is rotationally symmetric, so a 2D model (in r,z) should suffice, ph
 - the dependence on r is probably weak as well - but just for proof of concept
 -implement functions that approximate the Laplacian numerically in cartesian and cyclindrical
 coordinates...how about 4D arrays for spacetime simulations?
+-acoustic simulations involve a scalar field in 3D - what about vector-fields, matrix-fields,
+ tensor fields? maybe to numerically simulate elastic body dynamics...
 
 
 */
