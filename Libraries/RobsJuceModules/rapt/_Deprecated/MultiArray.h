@@ -1,6 +1,9 @@
 #ifndef RAPT_MULTIARRAY_OLD_H
 #define RAPT_MULTIARRAY_OLD_H
 
+// this implementation is obsolete - there's a new implementation in the Data folder which uses 
+// more modern programming techniques
+
 /** This is a class for representing and manipulating multi-dimensional arrays. An 1D array may be
 seen as a vector, a 2D array as a matrix, a 3D array as an array of matrices sliced one after
 another in a 3rd dimension (constituting a 3D block), a 4D array as a set of such blocks, etc.

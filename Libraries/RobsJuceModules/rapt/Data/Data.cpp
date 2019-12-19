@@ -7,5 +7,6 @@ namespace RAPT
 #include "MatrixTools.cpp"
 #include "StandardContainerTools.cpp"
 #include "Buffers.cpp"
+#include "MultiArray.cpp"
 
 }
