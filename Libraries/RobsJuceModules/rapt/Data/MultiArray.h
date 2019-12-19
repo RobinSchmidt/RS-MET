@@ -11,7 +11,10 @@ for as many indices as needed. Example code could look like:
 float data[24];                             // flat C-array of data
 rsMultiArrayView<float> A({2,4,3}, data);   // we want to interpret the data as 2x4x3 3D array
 A(0,0,0) = 111.f;                           // set element at position 0,0,0 (the first one)
-A(1,3,2) = 243.f;                           // set element at position 1,3,2 (the last one)     */
+A(1,3,2) = 243.f;                           // set element at position 1,3,2 (the last one)     
+
+Note that the constructor has to perform two heap allocations (for two std::vectors), so wrapping
+an array like this is not a free operation. */
 
 template<class T>
 class rsMultiArrayView
