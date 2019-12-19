@@ -1,7 +1,17 @@
 #ifndef RAPT_MULTIARRAY_H
 #define RAPT_MULTIARRAY_H
 
+//=================================================================================================
 
+/** This is a class for treating raw C-arrays as multidimensional arrays. It does not store/own the
+actual data. It just acts as wrapper around an existing array for conveniently accessing and 
+manipulating array elements via multiple indexes using the () operator, which has been overloaded
+for as many indices as needed. Example code could look like:
+
+float data[24];                             // flat C-array of data
+rsMultiArrayView<float> A({2,4,3}, data);   // we want to interpret the data as 2x4x3 3D array
+A(0,0,0) = 111.f;                           // set element at position 0,0,0 (the first one)
+A(1,3,2) = 243.f;                           // set element at position 1,3,2 (the last one)     */
 
 template<class T>
 class rsMultiArrayView
@@ -43,11 +53,15 @@ public:
 
   /** Returns the number of array dimensions, i.e. the number of indices. */
   int getNumDimensions() const { return (int) shape.size(); }
+  // maybe rename to getNumIndices - "dimension" is a bit ambiguous here - for example a vector in
+  // 3D space is considered to be 3-dimensional, but has only one index
 
   /** Returns a const reference to the shape array of the multidimensional array. The shape is 
   defined by the number of  values that each index may run over. For example, a 2x3 matrix has a 
   shape array of [2,3]. */
   const std::vector<int>& getShape() const { return shape; }
+
+  //
 
   // maybe have functions that return a pointer to a particular "row" - but the function should be 
   // a template, taking an arbitrary number of indices - for example A.getRowPointer(2, 3) would
@@ -63,6 +77,7 @@ public:
   T& operator()(int i, Rest... rest) { return dataPointer[flatIndex(0, i, rest...)]; }
   // insert rsAssert flatIndex(...) < size, maybe also >= 0 - maybe have a function 
   // isFlatIndexValid(i) ...see rsMatrix, maybe add it there, too
+  // maybe use const int as was doen in rsMatrix
 
 
 
@@ -80,9 +95,11 @@ protected:
 
   /** Base case for the variadic template. this version will be instatiated when, in addition to 
   the recursion depth, only one index is passed. */
-  int flatIndex(int depth, int index) { return index * strides[depth]; }
-  // this is perhaps the best case to check, if an idex is valid, we should have:
-  // 0 <= index < shape[depth] ...right? not sure
+  int flatIndex(int depth, int index) 
+  { 
+    rsAssert(index >= 0 && index < shape[depth], "invalid index"); // verify this!
+    return index * strides[depth]; 
+  }
 
   /** Converts a C-array (assumed to be of length getNumDimensions()) of indices to a flat 
   index. */
@@ -136,8 +153,9 @@ protected:
 
 //=================================================================================================
 
-/** Implements an n-dimensional array. Elements of an array A can be conveniently accessed via the 
-syntax: 1D: A(i), 2D: A(i,j), 3D: A(i,j,k), etc. The data is stored in a std::vector. */
+/** Implements a  multidimensional array. Elements of an array A can be conveniently accessed via 
+the natural syntax: 1D: A(i), 2D: A(i,j), 3D: A(i,j,k), etc. The data is stored in a std::vector. 
+The implementation follows the same pattern as rsMatrix (which is in the Math folder). */
 
 template<class T>
 class rsMultiArray : public rsMultiArrayView<T>
@@ -152,6 +170,8 @@ public:
     updateDataPointer();
   }
 
+  // todo: implement all the necessarry constructors and assignment operators to facilitate
+  // copy elision for return values of functions and arithmetic operators
 
 
   // arithmetic operators *,/ should work element-wise like numpy does - the different 
@@ -159,7 +179,10 @@ public:
   // realized a named functions
 
 
-  /** Adds two matrices: C = A + B. */
+
+
+
+  /** Adds two arrays: C = A + B. */
   rsMultiArray<T> operator+(const rsMultiArray<T>& B) const
   { 
     rsMultiArray<T> C(this->shape); 

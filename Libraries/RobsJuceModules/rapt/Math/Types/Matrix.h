@@ -468,7 +468,8 @@ protected:
 /** This is a class for representing matrices and doing mathematical operations with them. It's 
 implemented as subclass of rsMatrixView and stores the actual matrix data in a std::vector. Copy- 
 and move constructors and -assignment operators have been implemented in order to avoid 
-unnecessary heap allocations in arithmetic expressions with matrices. */
+unnecessary heap allocations in arithmetic expressions with matrices (return value copy 
+elision). */
 
 template<class T>
 class rsMatrix : public rsMatrixView<T>
