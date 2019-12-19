@@ -46,7 +46,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  // setShape, fill, 
+  /** Sets up a new shape. The product of the extents (i.e. the total size) may be different from
+  our former shape to facilitate using the same C-array with various sizes and shapes. */
+  void setShape(const std::vector<int>& newShape) 
+  { shape = newShape; updateStrides(); updateSize(); }
+
 
 
   //-----------------------------------------------------------------------------------------------

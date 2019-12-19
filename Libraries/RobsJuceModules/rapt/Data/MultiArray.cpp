@@ -40,7 +40,10 @@ that be useful here too? ...but it also implements the ==,!= operators this way,
 actually like them to return a single boolean...we'll see
 
 todo: implement all the necessarry constructors and assignment operators to facilitate
-copy elision for return values of functions and arithmetic operators
+copy elision for return values of functions and arithmetic operators - maybe to test this use a 
+custom allocator that keeps track of the allocations
+
+https://www.geeksforgeeks.org/stdallocator-in-cpp-with-examples/
 
 
 arithmetic operators *,/ should work element-wise like numpy does - the different 

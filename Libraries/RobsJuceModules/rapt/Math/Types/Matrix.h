@@ -183,7 +183,7 @@ public:
   /** Re-interprets the arrangement of the underlying array as having the new given numbers of rows
   and columns. Their product must remain the same, though. For example, you can reshape a 3x4 
   matrix into 4x3, 2x6, 6x2, 1x12, 12x1 but nothing else. ..todo: maybe lift that restriction? */
-  void reshape(int newNumRows, int newNumColumns)
+  void setShape(int newNumRows, int newNumColumns)
   {
     rsAssert(newNumRows*newNumColumns == numRows*numCols);
     numRows = newNumRows;

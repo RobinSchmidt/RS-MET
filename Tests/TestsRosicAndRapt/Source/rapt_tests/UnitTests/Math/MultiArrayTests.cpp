@@ -229,7 +229,10 @@ bool testMultiArray1()
   p = a2.getDataPointer();
   r &= p[0] == 11 && p[1] == 12 && p[2] == 21 && p[3] == 22 && p[4] == 31 && p[5] == 32;
 
-  // maybe try reshaping into 2x3
+  // reshape into 2x3 matrix:
+  a2.setShape(VecI({2,3}));
+  r &= a2(0,0) == 11; r &= a2(0,1) == 12; r &= a2(0,2) == 21; 
+  r &= a2(1,0) == 22; r &= a2(1,1) == 31; r &= a2(1,2) == 32;
 
 
   // 2x4x3 block/cuboid:
@@ -252,13 +255,8 @@ bool testMultiArray1()
 
 
 
-
-  // move code over to RAPT and turn this into a unit test
-  // ->retrieve the flat data pointer and check, if the data is inserted in the desired layout
-
-
-
   // allow the user to specify an allocator so we can unit-test the memory allocation avoidance
+  // (copy elision for return values, for example)
 
 
   return r;
