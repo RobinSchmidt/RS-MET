@@ -77,6 +77,9 @@
     <Filter Include="TestsRosicAndRapt">
       <UniqueIdentifier>{818EBC8E-8C09-B6A9-4E30-82F26C841105}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\rapt\_Deprecated">
+      <UniqueIdentifier>{86824DA4-C6FC-A54A-EB04-2CE89FAAFE0F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\rapt\Analysis">
       <UniqueIdentifier>{34544FA4-CEEB-3549-61FB-C970DF721282}</UniqueIdentifier>
     </Filter>
@@ -655,6 +658,9 @@
     <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>TestsRosicAndRapt\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.cpp">
+      <Filter>JUCE Modules\rapt\_Deprecated</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.cpp">
       <Filter>JUCE Modules\rapt\Analysis</Filter>
     </ClCompile>
@@ -958,9 +964,6 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\Flags.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Data</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\MultiArray.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Data</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\BandSplitter.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClCompile>
@@ -1059,9 +1062,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\Saturator.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Sampling\MiscUnfinished - Copy.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Sampling</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Sampling\MiscUnfinished.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Sampling</Filter>
@@ -2823,6 +2823,9 @@
     <ClInclude Include="..\..\Source\rosic_tests\UnitTestsRosic.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.h">
+      <Filter>JUCE Modules\rapt\_Deprecated</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h">
       <Filter>JUCE Modules\rapt\Analysis</Filter>
     </ClInclude>
@@ -3138,9 +3141,6 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\Flags.h">
       <Filter>JUCE Modules\rapt\Unfinished\Data</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\MultiArray.h">
-      <Filter>JUCE Modules\rapt\Unfinished\Data</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\BandSplitter.h">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClInclude>
@@ -3260,9 +3260,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\Saturator.h">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Sampling\MiscUnfinished - Copy.h">
-      <Filter>JUCE Modules\rapt\Unfinished\Sampling</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Sampling\MiscUnfinished.h">
       <Filter>JUCE Modules\rapt\Unfinished\Sampling</Filter>

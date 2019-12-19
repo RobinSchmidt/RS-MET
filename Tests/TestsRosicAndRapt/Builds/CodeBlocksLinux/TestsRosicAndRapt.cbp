@@ -1084,6 +1084,18 @@
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
     </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/_Deprecated/MultiArray.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/_Deprecated/MultiArray.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Analysis/Analysis.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
@@ -2338,18 +2350,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Unfinished/Data/MultiArray.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Unfinished/Data/MultiArray.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Unfinished/Filters/BandSplitter.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
@@ -2783,18 +2783,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Unfinished/MiscAudio/Saturator.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Unfinished/Sampling/MiscUnfinished - Copy.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Unfinished/Sampling/MiscUnfinished - Copy.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>

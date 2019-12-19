@@ -420,6 +420,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp"/>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -723,9 +726,6 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\Flags.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\MultiArray.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\BandSplitter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -823,9 +823,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\Saturator.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Sampling\MiscUnfinished - Copy.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Sampling\MiscUnfinished.cpp">
@@ -2441,6 +2438,7 @@
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\ModalExamples.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\SampleMapGenerator.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\UnitTestsRosic.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiter.h"/>
@@ -2546,7 +2544,6 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\ResponseGetters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\ZeroCrossingPitchDetector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\Flags.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\MultiArray.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\BandSplitter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\Biquad.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\FakeResonanceFilter.h"/>
@@ -2587,7 +2584,6 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\Polyphony.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\ResponseGetters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\Saturator.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Sampling\MiscUnfinished - Copy.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Sampling\MiscUnfinished.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Sampling\SampleManipulation.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Unfinished.h"/>

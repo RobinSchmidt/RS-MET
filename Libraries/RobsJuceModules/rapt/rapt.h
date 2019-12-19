@@ -42,8 +42,8 @@
 
 #include "Basics/Plotting.h"             // included by itself (not via Basics.h) to avoid wrapping into namespace
 #include "Basics/Basics.h"               // type definitions, constants, functions, etc.
-#include "Data/Data.h"                   // data structures like arrays, lists, files, etc.
-#include "Math/Math.h"                   // interpolation, transforms, linear algebra, numerical analysis
+#include "Data/Data.h"                   // data structures like arrays, lists, etc.
+#include "Math/Math.h"                   // interpolation, transforms, linear algebra, numerical analysis, ...
 #include "AudioBasics/AudioBasics.h"
 //#include "Music/Music.h"               // scales (pitchToFreq, ..), time signatures, sequences, patterns, notes, MIDI, etc.
 #include "Filters/Filters.h"             // butterworth, ladder, biquad, elliptic, SVF, etc.
@@ -61,8 +61,10 @@
 #include "Unfinished/Unfinished.h"       // code under construction - should go to the bottom!
 #include "Spectral/Spectral.h"           // move up, when cycle-mark finder was moved to analysis folder
 
-
-
+namespace RAPT
+{
+#include "_Deprecated/MultiArray.h"      // remove when unit tests have been updated to use new
+}
 
 
 

@@ -3,7 +3,7 @@
 namespace RAPT
 {
 
-#include "Data/MultiArray.cpp"
+//#include "Data/MultiArray.cpp"    // deprecated version, new version in Data folder
 
 #include "Math/Matrix.cpp"
 #include "Math/FunctionObjects.cpp"

@@ -5,7 +5,7 @@ actually are compiled into rapt.obj are in rapt.cpp. You should make sure, that 
 instantiation gets compiled onlyinto one compilation unit, otherwise you may get "symbol already 
 defined" linker errors. */
 
-// todo: maybe move this file inot a subdirectory - otherwise the projucer compiles it - apparently
+// todo: maybe move this file into a subdirectory - otherwise the projucer compiles it - apparently
 // it compiles all top-level .cpp files for a module?
 
 #include "rapt.h"
@@ -28,6 +28,11 @@ defined" linker errors. */
 //#include "Instruments/Instruments.cpp"
 #include "Unfinished/Unfinished.cpp" 
 #include "Spectral/Spectral.cpp"
+
+namespace RAPT
+{
+#include "_Deprecated/MultiArray.cpp"  // remove when not needed for tests anymore
+}
 
 
 //void fixLinkerWarningDummyFunction() {} // dummy function to fix linker warning (duh!)

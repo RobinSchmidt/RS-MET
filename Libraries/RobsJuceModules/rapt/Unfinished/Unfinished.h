@@ -8,10 +8,10 @@ namespace RAPT
 {
 
 #include "Data/Flags.h"
-#include "Data/MultiArray.h"
+//#include "Data/MultiArray.h"     // obsolete - moved to _Deprecated folder
 
 #include "Math/Vector.h"
-#include "Math/Matrix.h"
+#include "Math/Matrix.h"              // this is deprecated
 //#include "Math/MatrixUnOptimized.h" // simpler, can perhaps be optimized via move-constructor
 #include "Math/FunctionObjects.h"
 #include "Math/GradientBasedMinimizer.h"
