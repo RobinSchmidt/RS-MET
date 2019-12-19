@@ -1,7 +1,7 @@
 // construction/destruction:
 
 template<class ElementType>
-rsMultiArray<ElementType>::rsMultiArray()
+rsMultiArrayOld<ElementType>::rsMultiArrayOld()
 {
   numIndices  = 0;
   indexRanges = NULL;
@@ -9,7 +9,7 @@ rsMultiArray<ElementType>::rsMultiArray()
 }
 
 template<class ElementType>
-rsMultiArray<ElementType>::rsMultiArray(const rsUint32 numIndices,
+rsMultiArrayOld<ElementType>::rsMultiArrayOld(const rsUint32 numIndices,
                                         const rsUint32 indexRanges[],
                                         bool initWithZeros)
 {
@@ -19,7 +19,7 @@ rsMultiArray<ElementType>::rsMultiArray(const rsUint32 numIndices,
 }
 
 template<class ElementType>
-rsMultiArray<ElementType>::rsMultiArray(const rsMultiArray& other)
+rsMultiArrayOld<ElementType>::rsMultiArrayOld(const rsMultiArrayOld& other)
 {
   allocateAndInitIndexArray(other.numIndices, other.indexRanges);
   allocateDataArray(false);
@@ -27,7 +27,7 @@ rsMultiArray<ElementType>::rsMultiArray(const rsMultiArray& other)
 }
 
 template<class ElementType>
-rsMultiArray<ElementType>::~rsMultiArray()
+rsMultiArrayOld<ElementType>::~rsMultiArrayOld()
 {
   delete[] indexRanges;
   delete[] data;
@@ -36,7 +36,7 @@ rsMultiArray<ElementType>::~rsMultiArray()
 // operators:
 
 template<class ElementType>
-bool rsMultiArray<ElementType>::operator==(const rsMultiArray<ElementType> &other) const
+bool rsMultiArrayOld<ElementType>::operator==(const rsMultiArrayOld<ElementType> &other) const
 {
   if( !this->isOfSameTypeAs(other) )
     return false;
@@ -45,7 +45,7 @@ bool rsMultiArray<ElementType>::operator==(const rsMultiArray<ElementType> &othe
 }
 
 template<class ElementType>
-bool rsMultiArray<ElementType>::operator!=(const rsMultiArray<ElementType> &other) const
+bool rsMultiArrayOld<ElementType>::operator!=(const rsMultiArrayOld<ElementType> &other) const
 {
   return !(*this == other);
 }
@@ -89,7 +89,7 @@ RS_INLINE rsMultiArray<ElementType> operator*(const ElementType &x, const rsMult
 // manipulations:
 
 template<class ElementType>
-void rsMultiArray<ElementType>::setSize(const rsUint32 newNumIndices, const rsUint32 newIndexRanges[])
+void rsMultiArrayOld<ElementType>::setSize(const rsUint32 newNumIndices, const rsUint32 newIndexRanges[])
 {
   if( getNumElements() != rsArray::product(newIndexRanges, newNumIndices) )
   {
@@ -106,27 +106,27 @@ void rsMultiArray<ElementType>::setSize(const rsUint32 newNumIndices, const rsUi
 }
 
 template<class ElementType>
-void rsMultiArray<ElementType>::applyFunction(ElementType (*f) (ElementType))
+void rsMultiArrayOld<ElementType>::applyFunction(ElementType (*f) (ElementType))
 {
   for(rsUint32 i = 0; i < getNumElements(); i++)
     data[i] = f(data[i]);
 }
 
 template<class ElementType>
-void rsMultiArray<ElementType>::fillWithValue(const ElementType &value)
+void rsMultiArrayOld<ElementType>::fillWithValue(const ElementType &value)
 {
   for(rsUint32 i = 0; i < getNumElements(); i++)
     data[i] = value;
 }
 
 template<class ElementType>
-void rsMultiArray<ElementType>::setElement(const rsUint32 indices[], const ElementType &value)
+void rsMultiArrayOld<ElementType>::setElement(const rsUint32 indices[], const ElementType &value)
 {
   data[offsetFromIndices(indices)] = value;
 }
 
 template<class ElementType>
-void rsMultiArray<ElementType>::setDataFromFlatArray(const ElementType flatArray[])
+void rsMultiArrayOld<ElementType>::setDataFromFlatArray(const ElementType flatArray[])
 {
   memcpy(data, flatArray, getNumElements()*sizeof(ElementType));
 }
@@ -134,7 +134,7 @@ void rsMultiArray<ElementType>::setDataFromFlatArray(const ElementType flatArray
 // inquiry:
 
 template<class ElementType>
-rsUint32 rsMultiArray<ElementType>::offsetFromIndices(const rsUint32 indices[]) const
+rsUint32 rsMultiArrayOld<ElementType>::offsetFromIndices(const rsUint32 indices[]) const
 {
   rsUint32 offset = 0;
   rsUint32 scaler = 1;
@@ -147,7 +147,7 @@ rsUint32 rsMultiArray<ElementType>::offsetFromIndices(const rsUint32 indices[]) 
 }
 
 template<class ElementType>
-void rsMultiArray<ElementType>::indicesFromOffset(rsUint32 offset, rsUint32 indices[]) const
+void rsMultiArrayOld<ElementType>::indicesFromOffset(rsUint32 offset, rsUint32 indices[]) const
 {
   rsUint32 divider = getNumElements();
   for(rsUint32 k = 0; k < numIndices; k++)
@@ -161,25 +161,25 @@ void rsMultiArray<ElementType>::indicesFromOffset(rsUint32 offset, rsUint32 indi
 }
 
 template<class ElementType>
-ElementType rsMultiArray<ElementType>::getElement(const rsUint32 indices[]) const
+ElementType rsMultiArrayOld<ElementType>::getElement(const rsUint32 indices[]) const
 {
   return data[offsetFromIndices(indices)];
 }
 
 template<class ElementType>
-rsUint32 rsMultiArray<ElementType>::getNumElements() const
+rsUint32 rsMultiArrayOld<ElementType>::getNumElements() const
 {
   return rsArray::product(indexRanges, numIndices);
 }
 
 template<class ElementType>
-void rsMultiArray<ElementType>::getDataAsFlatArray(ElementType flatArray[]) const
+void rsMultiArrayOld<ElementType>::getDataAsFlatArray(ElementType flatArray[]) const
 {
   memcpy(flatArray, data, getNumElements()*sizeof(ElementType));
 }
 
 template<class ElementType>
-bool rsMultiArray<ElementType>::isOfSameTypeAs(const rsMultiArray<ElementType> &other) const
+bool rsMultiArrayOld<ElementType>::isOfSameTypeAs(const rsMultiArrayOld<ElementType> &other) const
 {
   if( numIndices != other.numIndices )
     return false;
@@ -190,7 +190,7 @@ bool rsMultiArray<ElementType>::isOfSameTypeAs(const rsMultiArray<ElementType> &
 // internal functions:
 
 template<class ElementType>
-void rsMultiArray<ElementType>::allocateAndInitIndexArray(const rsUint32 newNumIndices,
+void rsMultiArrayOld<ElementType>::allocateAndInitIndexArray(const rsUint32 newNumIndices,
                                                           const rsUint32 newIndexRanges[])
 {
   numIndices = newNumIndices;
@@ -202,7 +202,7 @@ void rsMultiArray<ElementType>::allocateAndInitIndexArray(const rsUint32 newNumI
 }
 
 template<class ElementType>
-void rsMultiArray<ElementType>::allocateDataArray(bool initWithZeros)
+void rsMultiArrayOld<ElementType>::allocateDataArray(bool initWithZeros)
 {
   data = new ElementType[getNumElements()];
   if( initWithZeros )
@@ -210,7 +210,7 @@ void rsMultiArray<ElementType>::allocateDataArray(bool initWithZeros)
 }
 
 template<class ElementType>
-void rsMultiArray<ElementType>::freeIndexArray()
+void rsMultiArrayOld<ElementType>::freeIndexArray()
 {
   delete[] indexRanges;
   indexRanges = NULL;
@@ -218,16 +218,16 @@ void rsMultiArray<ElementType>::freeIndexArray()
 }
 
 template<class ElementType>
-void rsMultiArray<ElementType>::freeDataArray()
+void rsMultiArrayOld<ElementType>::freeDataArray()
 {
   delete[] data;
   data = NULL;
 }
 
 template<class ElementType>
-void rsMultiArray<ElementType>::add(const rsMultiArray<ElementType> &left,
-                                    const rsMultiArray<ElementType> &right,
-                                    rsMultiArray<ElementType> &result)
+void rsMultiArrayOld<ElementType>::add(const rsMultiArrayOld<ElementType> &left,
+                                    const rsMultiArrayOld<ElementType> &right,
+                                    rsMultiArrayOld<ElementType> &result)
 {
   rsAssert(left.isOfSameTypeAs(right));
   result.setSize(left.numIndices, left.indexRanges);
@@ -235,9 +235,9 @@ void rsMultiArray<ElementType>::add(const rsMultiArray<ElementType> &left,
 }
 
 template<class ElementType>
-void rsMultiArray<ElementType>::subtract(const rsMultiArray<ElementType> &left,
-                                         const rsMultiArray<ElementType> &right,
-                                         rsMultiArray<ElementType> &result)
+void rsMultiArrayOld<ElementType>::subtract(const rsMultiArrayOld<ElementType> &left,
+                                         const rsMultiArrayOld<ElementType> &right,
+                                         rsMultiArrayOld<ElementType> &result)
 {
   rsAssert(left.isOfSameTypeAs(right));
   result.setSize(left.numIndices, left.indexRanges);
@@ -245,9 +245,9 @@ void rsMultiArray<ElementType>::subtract(const rsMultiArray<ElementType> &left,
 }
 
 template<class ElementType>
-void rsMultiArray<ElementType>::outerProduct(const rsMultiArray<ElementType> &left,
-                                             const rsMultiArray<ElementType> &right,
-                                             rsMultiArray<ElementType> &result)
+void rsMultiArrayOld<ElementType>::outerProduct(const rsMultiArrayOld<ElementType> &left,
+                                             const rsMultiArrayOld<ElementType> &right,
+                                             rsMultiArrayOld<ElementType> &result)
 {
   rsUint32 *resultIndices = new rsUint32[left.numIndices + right.numIndices];
   memcpy( resultIndices,                  left.indexRanges,  left.numIndices*sizeof(rsUint32));
@@ -265,9 +265,9 @@ void rsMultiArray<ElementType>::outerProduct(const rsMultiArray<ElementType> &le
 }
 
 template<class ElementType>
-void rsMultiArray<ElementType>::leftFactor(const rsMultiArray<ElementType> &outerProduct,
-                                           const rsMultiArray<ElementType> &rightFactor,
-                                           rsMultiArray<ElementType> &result)
+void rsMultiArrayOld<ElementType>::leftFactor(const rsMultiArrayOld<ElementType> &outerProduct,
+                                           const rsMultiArrayOld<ElementType> &rightFactor,
+                                           rsMultiArrayOld<ElementType> &result)
 {
   rsUint32 numResultIndices = outerProduct.numIndices-rightFactor.numIndices;
   rsUint32 *resultIndices   = new rsUint32[numResultIndices];
@@ -296,9 +296,9 @@ void rsMultiArray<ElementType>::leftFactor(const rsMultiArray<ElementType> &oute
 }
 
 template<class ElementType>
-void rsMultiArray<ElementType>::rightFactor(const rsMultiArray<ElementType> &outerProduct,
-                                            const rsMultiArray<ElementType> &leftFactor,
-                                            rsMultiArray<ElementType> &result)
+void rsMultiArrayOld<ElementType>::rightFactor(const rsMultiArrayOld<ElementType> &outerProduct,
+                                            const rsMultiArrayOld<ElementType> &leftFactor,
+                                            rsMultiArrayOld<ElementType> &result)
 {
   rsUint32 numResultIndices = outerProduct.numIndices-leftFactor.numIndices;
   rsUint32 *resultIndices   = new rsUint32[numResultIndices];
@@ -322,8 +322,8 @@ void rsMultiArray<ElementType>::rightFactor(const rsMultiArray<ElementType> &out
 }
 
 template<class ElementType>
-rsMultiArray<ElementType> rsMultiArray<ElementType>::contract(
-  const rsMultiArray<ElementType> &subject, rsUint32 index1, rsUint32 index2)
+rsMultiArrayOld<ElementType> rsMultiArrayOld<ElementType>::contract(
+  const rsMultiArrayOld<ElementType> &subject, rsUint32 index1, rsUint32 index2)
 {
   rsUint32 i, j, k;
 
@@ -338,7 +338,7 @@ rsMultiArray<ElementType> rsMultiArray<ElementType>::contract(
     //rsSwap(&index1, &index2);
 
   // allocate and init object for the result:
-  rsMultiArray<ElementType> result;
+  rsMultiArrayOld<ElementType> result;
   rsUint32 numResultIndices = subject.numIndices-2;
   rsUint32 *resultIndices = new rsUint32[numResultIndices];
   j = 0;

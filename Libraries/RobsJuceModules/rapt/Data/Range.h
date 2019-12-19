@@ -1,7 +1,7 @@
 #pragma once
 
 /** This class can be used to represent ranges that begin at some min-value and end at some
-max-value. The template class must define an appropriate '-' operator (subtraction) as well as 
+max-value. The template type must define an appropriate '-' operator (subtraction) as well as 
 comparison operators.
 
 \todo: express all comparisons internally in terms of the "<=" operator, such that the

@@ -297,7 +297,8 @@ template float RAPT::rsStatistics::proportionalRegression(int N, const float* x,
 template void RAPT::rsRemoveCorrelationBias(double x[], int N, double r[]);
 
 
-template class RAPT::rsMultiArray<float>;
+template class RAPT::rsMultiArrayOld<float>;
+
 
 template double RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(double fl, double fu);
 template double RAPT::rsBandwidthConverter::bandedgesToAbsoluteBandwidth(double fl, double fu);

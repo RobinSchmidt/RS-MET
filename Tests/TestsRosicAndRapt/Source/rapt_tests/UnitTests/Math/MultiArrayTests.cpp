@@ -11,7 +11,7 @@ bool testMultiArrayInit(std::string &reportString)
   rsArray::fillWithRangeLinear(data, 10, 1.f, 10.f);
 
   // create array with 0 indices (a scalar) and see, if it initializes correctly:
-  rsMultiArray<float> a0;
+  rsMultiArrayOld<float> a0;
   testResult &= a0.getNumElements()    == 1;
   testResult &= a0.getElement(indices) == 0.f;
   a0.setDataFromFlatArray(&data[5]);
@@ -32,7 +32,7 @@ bool testMultiArrayOffsetComputation(std::string &reportString)
   indices[0] = 7;
   indices[1] = 11;
   indices[2] = 5;
-  rsMultiArray<float> a3(3, indices);
+  rsMultiArrayOld<float> a3(3, indices);
   testResult &= a3.getNumElements() == 385;
 
   // test offset/index conversion with this array:
@@ -88,13 +88,13 @@ bool testMultiArrayOuterProduct(std::string &reportString)
   data[23] = 32; // these 2 values will be used in the divisions, so we want powers of 2 to make
   data[29] = 64; // numerically exact division possible (for easier comparison witn target results)
 
-  rsMultiArray<float> a(3, indices1);
-  rsMultiArray<float> b(2, indices2);
-  rsMultiArray<float> c;
+  rsMultiArrayOld<float> a(3, indices1);
+  rsMultiArrayOld<float> b(2, indices2);
+  rsMultiArrayOld<float> c;
   a.setDataFromFlatArray(data);
   b.setDataFromFlatArray(data);
 
-  rsMultiArray<float>::outerProduct(a, b, c);
+  rsMultiArrayOld<float>::outerProduct(a, b, c);
 
   int i, j, k, p, q;
   for(i = 0; i < 4; i++)
@@ -129,15 +129,15 @@ bool testMultiArrayOuterProduct(std::string &reportString)
   indices1[0] = 4;
   indices1[1] = 2;
   indices1[2] = 3;
-  rsMultiArray<float> a2(3, indices1);
-  rsMultiArray<float>::leftFactor(c, b, a2);
+  rsMultiArrayOld<float> a2(3, indices1);
+  rsMultiArrayOld<float>::leftFactor(c, b, a2);
   testResult &= (a == a2);
 
   // test head-division (retrieve the right factor):
   indices2[0] = 6;
   indices2[1] = 5;
-  rsMultiArray<float> b2(2, indices2);
-  rsMultiArray<float>::rightFactor(c, a, b2);
+  rsMultiArrayOld<float> b2(2, indices2);
+  rsMultiArrayOld<float>::rightFactor(c, a, b2);
   testResult &= (b == b2);
 
   // write tests to verify that division-compatibility check works
@@ -162,11 +162,11 @@ bool testMultiArrayContraction(std::string &reportString)
   float data[360];
   rsArray::fillWithRangeLinear(data, 360, 1.f, 360.f);
 
-  rsMultiArray<float> a(5, subjectIndices);
+  rsMultiArrayOld<float> a(5, subjectIndices);
   a.setDataFromFlatArray(data);
 
   // check contraction with respect to index-pair (1, 3):
-  rsMultiArray<float> a13 = rsMultiArray<float>::contract(a, 1, 3);
+  rsMultiArrayOld<float> a13 = rsMultiArrayOld<float>::contract(a, 1, 3);
   rsUint32 resultIndices[3];
   for(int i = 0; i < 2; i++)
   {
@@ -197,7 +197,7 @@ bool testMultiArrayContraction(std::string &reportString)
 
 bool testMultiArray()
 {
-  std::string testName = "rsMultiArray";
+  std::string testName = "rsMultiArrayOld";
   std::string dummy;
   bool testResult = true;
 
