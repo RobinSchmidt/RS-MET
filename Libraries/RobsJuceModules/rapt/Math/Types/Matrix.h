@@ -340,7 +340,7 @@ public:
   }
 
   /** Subtracts elements of B from corresponding elements A in and stores results in C. */
-  static void sub(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
+  static void subtract(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
     rsArray::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
@@ -364,7 +364,8 @@ public:
   }
 
   /** Computes the matrix product C = A*B. */
-  static void mul(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
+  static void matrixMultiply(
+    const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(A.numCols  == B.numRows);
     rsAssert(C->numCols == B.numCols);
@@ -704,7 +705,7 @@ public:
 
   /** Subtracts two matrices: C = A - B. */
   rsMatrix<T> operator-(const rsMatrix<T>& B) const
-  { rsMatrix<T> C(this->numRows, this->numCols); this->sub(*this, B, &C); return C; }
+  { rsMatrix<T> C(this->numRows, this->numCols); this->subtract(*this, B, &C); return C; }
 
   /** Multiplies two matrices: C = A * B. */
   rsMatrix<T> operator*(const rsMatrix<T>& B) const
@@ -712,7 +713,7 @@ public:
     //if(!areMultiplicable(*this, B))
     //  return rsMatrix<T>(0, 0); // return empty matrix when attempting to multiply incompatible matrices
     rsMatrix<T> C(this->numRows, B.numCols); 
-    this->mul(*this, B, &C); 
+    this->matrixMultiply(*this, B, &C); 
     return C; 
   }
   // maybe it should return an empty matrix, when attempting to multiply incompatible matrices
@@ -725,7 +726,7 @@ public:
 
   /** Subtracts another matrix from this matrix and returns the result. */
   rsMatrix<T>& operator-=(const rsMatrix<T>& B)
-  { this->sub(*this, B, this); return *this; }
+  { this->subtract(*this, B, this); return *this; }
 
   /** Multiplies this matrix by another and returns the result. This is not an in-place process, i.e. it 
   will allocate temporary heap-memory. */

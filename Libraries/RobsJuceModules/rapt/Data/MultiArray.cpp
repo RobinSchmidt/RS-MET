@@ -32,12 +32,20 @@ maybe a tuple of ints,a c-array of indices - so the class should support various
 indexing elements - we will then need various versions of the flatIndex() function as well
 
 add some of the functions ffrom the old, deprecated implementation (contraction and stuff) and 
-adapt unit tests such that they test the new implementation
+adapt unit tests such that they test the new implementation, we also want the math-functions
+sin,cos,exp etc. work with multiarrays ...or maybe rsSin, rsCos, rsExp, etc...
 
 NumPy implements the operators <,<=,etc. such that they return an array of booleans - could 
 that be useful here too? ...but it also implements the ==,!= operators this way, but i 
 actually like them to return a single boolean...we'll see
 
+todo: implement all the necessarry constructors and assignment operators to facilitate
+copy elision for return values of functions and arithmetic operators
+
+
+arithmetic operators *,/ should work element-wise like numpy does - the different 
+kinds of special products (matrix-product, outer-product, inner-product, etc.) should be 
+realized a named functions
 
 
 operations: outer-product (tensor-product?), inner product, contraction (with respect to a pair

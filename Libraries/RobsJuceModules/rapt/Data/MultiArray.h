@@ -58,14 +58,31 @@ public:
   int getSize() const { return size; }
 
   /** Returns the number of array dimensions, i.e. the number of indices. */
-  int getNumDimensions() const { return (int) shape.size(); }
+  int getNumIndices() const { return (int) shape.size(); }
   // maybe rename to getNumIndices - "dimension" is a bit ambiguous here - for example a vector in
   // 3D space is considered to be 3-dimensional, but has only one index
+  // maybe cache that values - the conversion form size_t to int may be expensive, if this is done
+  // often -> benchmark!
+
+  /** Returns the one plus the maximum value that given index may assume */
+  int getExtent(int index) const 
+  { 
+    rsAssert(index < getNumIndices());
+    return shape[index]; 
+  }
+  // alternative names: getIndexRange, getIndexExtent, getIndexLimit
 
   /** Returns a const reference to the shape array of the multidimensional array. The shape is 
   defined by the number of  values that each index may run over. For example, a 2x3 matrix has a 
   shape array of [2,3]. */
-  const std::vector<int>& getShape() const { return shape; }
+  //const std::vector<int>& getShape() const { return shape; }
+  // we may not store the shape as vector<int> in an optimzed version, so i'm not sure, if i can 
+  // provide that interface - maybe instead provide a function getIndexRange(int whichIndex) 
+  // or getExtent(int index)
+
+  // bool isSymmetricIn(const int i const int j);
+  // returns true, iff array is symmetric with respect to the given pair of indices
+  // maybe rename to isSymmetricRegarding(i, j)
 
   //
 
@@ -185,13 +202,6 @@ public:
     updateDataPointer();
   }
 
-  // todo: implement all the necessarry constructors and assignment operators to facilitate
-  // copy elision for return values of functions and arithmetic operators
-
-
-  // arithmetic operators *,/ should work element-wise like numpy does - the different 
-  // kinds of special products (matrix-product, outer-product, inner-product, etc.) should be 
-  // realized a named functions
 
 
 
