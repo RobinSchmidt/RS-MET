@@ -198,7 +198,12 @@ public:
 
   T pi = PI;
 
+
+
+
 };
+// move this into the research repo
+// https://docs.scipy.org/doc/numpy-1.11.0/numpy-ref-1.11.0.pdf
 
 
 

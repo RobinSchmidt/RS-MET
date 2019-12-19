@@ -1319,8 +1319,14 @@ void ropewayAlgo()
 
   Vec x(101);
   //x[50] = 1;
-  x[30] = x[70] = 1; 
-  x[40] = 0.2; x[60] = 0.6;
+  x[20] = 0.5;
+  x[30] = 1.0;
+  x[40] = 0.2; 
+  x[50] = 0.2;
+  x[60] = 0.6;
+  x[70] = 1.0; 
+  x[80] = 0.4;
+  x[90] = 0.1;
   Vec y = ropeway(x, halfTime);
 
   rsPlotVectors(x, y);
@@ -1442,7 +1448,7 @@ std::vector<T> rsSmooth(const std::vector<T>& x)
   return y;
 }
 
-// elementwise maximum of two vectors:
+// elementwise maximum of two vectors - maybe move to RAPT:
 template<class T>
 std::vector<T> rsMax(const std::vector<T>& x, const std::vector<T>& y)
 {
@@ -1468,10 +1474,6 @@ std::vector<double> testEnvelope(const std::vector<double>& x)
     // two variants - figure out, which is better - or if there's any difference at all:
     //t1 = rsMax(t1, t2);
     t1 = rsMax(x, t2);
-
-
-    //if(t1 == t2) // triggers in the 1st iteration - why?
-    //  break;
   }
   return t1;
 }
@@ -1499,6 +1501,7 @@ std::vector<T> peakSmoothabilities(
 
   return s;
 }
+// maybe rename to peakScaleRanges
 
 void peakPicker()
 {
@@ -1588,6 +1591,14 @@ void peakPicker()
   // operations as a sort of abrasion due to wind or water - we may think of the measure as a 
   // sort of abrasion-resilience...maybe durability? smoothability? whetherproofness, 
   // wheather-resistance, or just resistance...i think, perhaps durability is the best term
+  // or ScaleRange?
+  // maybe do not use number of iterations of MA smoothing, but decay-time for 
+  // rsPeakTrailDragger - maybe compute such a value with taking the full input into account and
+  // with taking only the peaks themselves into account, i.e. (0,0,4,4,4,5,4,4,4,0,0) vs
+  // (0,0,0,0,0,5,0,0,0,0,0) where the latter can be implemented using the non-uniform getSample
+  // function only feeding the peaks (not the zeros in between) - gives two different measures,
+  // one which considers only peak-height and one which takes peak-width also into accout
+
 
   // tests the class rsPeakPicker
   // todo: 

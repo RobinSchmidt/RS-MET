@@ -4,7 +4,8 @@
 
 /** A class for representing 2x2 matrices. They are treated as a special case because a lot of
 things which are impractical in the general case can be done for the 2x2 case. For example, it's
-possible to compute eigenvalues and eigenvectors via closed form formulas. */
+possible to compute eigenvalues and eigenvectors via closed form formulas where in the general 
+case numerical algorithms are needed. */
 
 template<class T>
 class rsMatrix2x2
@@ -135,6 +136,8 @@ public:
   {
     return A*B - B*A;
   }
+  // see: https://en.wikipedia.org/wiki/Commutator#Ring_theory
+  // maybe implement also the anticommutatior defined there as: {A,B} = A*B + B*A
 
 };
 
@@ -186,6 +189,8 @@ public:
     numRows = newNumRows;
     numCols = newNumColumns;
   }
+  // maybe rename to setShape for consistency with the rest of the library...otoh, reshape is 
+  // consistent with NumPy
 
   /** Resets the number of rows and columns to zero and the dataPointer to nullptr. Should be called 
   whenever you need to invalidate our pointer member. */
@@ -482,7 +487,7 @@ public:
   }
 
   /** Constructor to create a matrix from an array-of-arrays - mostly for conveniently converting
-  matrices in the old representation into the one. */
+  matrices in the old representation into the new one. */
   rsMatrix(int numRows, int numColumns, T** data)
   {
     setSize(numRows, numColumns);
@@ -494,7 +499,7 @@ public:
   /** Destructor. */
   ~rsMatrix()
   {
-    int dummy = 0; // to figure out, when it gets called for debugging
+    //int dummy = 0; // to figure out, when it gets called for debugging
   }
 
   /** Creates matrix from a std::vector.  */
@@ -509,7 +514,7 @@ public:
 
   /** Creates matrix from an unnamed/temporary/rvalue std::vector - convenient to initialize 
   elements. You can initialize matrices like this:
-    rsMatrixOld<double> A(2, 3, {1.,2.,3., 4.,5.,6.});   */
+    rsMatrix<double> A(2, 3, {1.,2.,3., 4.,5.,6.});   */
   rsMatrix(int numRows, int numColumns, std::vector<T>&& newData) : data(std::move(newData))
   {
     numHeapAllocations++;             // we count the allocation that took place in the caller
@@ -608,6 +613,7 @@ public:
     rsMatrixView<T>::transpose(*this, &B);
     rsSwap(numRows, numCols);
     data = v;
+    // don't we have to call updateDataPointer()? -> check, if there's a unit test
   }
   // maybe move to cpp file
 

@@ -173,6 +173,9 @@ public:
   /** Divides this vector by scalar s. */
   rsVector3D<T>& operator/=(T s) { s = 1/s; x *= s; y *= s; z *= s; return *this; }
 
+
+  // implement dot- and
+
 };
 
 /** Adds two vectors and returns result as new vector. */
@@ -231,14 +234,13 @@ rsVector3D<T> cross(const rsVector3D<T>& a, const rsVector3D<T>& b)
 
 /** Returns the triple product of the 3 vectors a,b,c, defined as: 
 V = (a x b) * c = a * (b x c) = (b x c) * a = (c x a) * b
-Its a scalar that gives the volume V of parallelepiped spanned by the 3 vectors. */
+Its a scalar that gives the volume V of the parallelepiped spanned by the 3 vectors. */
 // not yet tested
 template<class T>
 rsVector3D<T> triple(const rsVector3D<T>& a, const rsVector3D<T>& b, const rsVector3D<T>& c)
 {
   dot(cross(a, b), c); 
 }
-
 
 /** Returns the determinant of the matrix that results from writing the 3 given vectors as columns
 into a 3x3 matrix. If this determinant is 0, the 3 vectors are linearly dependent, i.e. one can be 
@@ -271,8 +273,13 @@ b = (1/a^2) * (ab)a + (1/a^2) (a x b) x a = parallel + normal component of b wit
 //=================================================================================================
 
 /*
-// maybe, we don't really need a an rsVector class - we may represent vectors as column matrices
-// ...or: maybe have rsRowVector, rsColumnVector classes as subclasses (special cases) of rsMatrix
+// maybe, we don't really need a general n-dimensional rsVector class - we may represent vectors as 
+column matrices ...or: maybe have rsRowVector, rsColumnVector classes as subclasses (special cases) 
+of rsMatrix - on the other hand, it may be convenient to have a vector class for doing 
+matrix-vector computations...but then we need a lot of multiplication operators: 
+matrix * columnVector = columnVector, rowVector * matrix = rowVector, 
+rowVector * columnVector = scalar, columnVector * rowVector = matrix - and these are actually all 
+already subsumed under a general matrix * matrix = matrix multiplication as special cases..hmmm...
 // ...or maybe call the rsRowMatrix, rsColumnMatrix
 template<class T>
 class rsVectorView  // rename to rsVector and the current rsVector class to rsVectorOld

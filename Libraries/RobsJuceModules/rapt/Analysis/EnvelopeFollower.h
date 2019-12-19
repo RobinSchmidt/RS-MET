@@ -36,6 +36,16 @@ public:
   // the element-wise maximum in case of SIMD vector types for the signal
   // maybe implement a getSample with additional dt parameter for use with non-equidistant input
 
+  // function for non-equidistant data - not yet tested:
+  T getSample(T x, T dt)
+  {
+    y *= pow(c, dt);  // is this correct? verify!
+    if(x > y)
+      y = x;
+    return y;
+  }
+
+
   /** Resets the internal state. */
   void reset() { y = T(0); }
 
@@ -45,6 +55,9 @@ protected:
   T y = T(0);
 
 };
+// maybe make a version with hold - could be useful for limiters
+// maybe make a version with linear instead of exponential decay - maybe the slope should be 
+// adapted in the "if" according to x (be proportional) ...hmm...maybe not
 
 
 //=================================================================================================
