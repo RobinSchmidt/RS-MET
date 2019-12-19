@@ -14,7 +14,10 @@ A(0,0,0) = 111.f;                           // set element at position 0,0,0 (th
 A(1,3,2) = 243.f;                           // set element at position 1,3,2 (the last one)     
 
 Note that the constructor has to perform two heap allocations (for two std::vectors), so wrapping
-an array like this is not a free operation. */
+an array like this is not a free operation. 
+
+todo: maybe reduce that to one allocation by using a single array for both shape and strides 
+- maybe an array of struct DimInfo which has fields size, stride - ...as optimization later */
 
 template<class T>
 class rsMultiArrayView
@@ -78,9 +81,18 @@ public:
   elements is: A(i, j, k) = .... */
   template<typename... Rest>
   T& operator()(int i, Rest... rest) { return dataPointer[flatIndex(0, i, rest...)]; }
-  // insert rsAssert flatIndex(...) < size, maybe also >= 0 - maybe have a function 
-  // isFlatIndexValid(i) ...see rsMatrix, maybe add it there, too
   // maybe use const int as was doen in rsMatrix
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Arithmetic */
+
+  /** Adds elements of A to corresponding elements in B and stores results in C. */
+  static void add(const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, 
+    rsMultiArrayView<T>* C)
+  {
+    rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
+    rsArray::add(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+  }
 
 
 
@@ -156,7 +168,7 @@ protected:
 
 //=================================================================================================
 
-/** Implements a  multidimensional array. Elements of an array A can be conveniently accessed via 
+/** Implements a multidimensional array. Elements of an array A can be conveniently accessed via 
 the natural syntax: 1D: A(i), 2D: A(i,j), 3D: A(i,j,k), etc. The data is stored in a std::vector. 
 The implementation follows the same pattern as rsMatrix (which is in the Math folder). */
 
@@ -183,15 +195,16 @@ public:
 
 
 
-
+  //-----------------------------------------------------------------------------------------------
+  /** \name Operators */
 
   /** Adds two arrays: C = A + B. */
   rsMultiArray<T> operator+(const rsMultiArray<T>& B) const
-  { 
-    rsMultiArray<T> C(this->shape); 
-    //this->add(*this, B, &C); //     
-    return C; 
-  }
+  { rsMultiArray<T> C(this->shape); this->add(*this, B, &C); return C; }
+
+  // todo: -,*,/,==,!=
+
+
 
 
 protected:
@@ -213,6 +226,7 @@ protected:
 
 
 /*
+// move to unit tests:
 void testMultiArray()
 {
   typedef std::vector<int> VecI;

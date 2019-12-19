@@ -3,6 +3,9 @@
 
 
 /*
+
+Notes and Ideas:
+
 Maybe, we make the storage layout user adjustable? Modifications that would be necessarry in order
 to let the first index have a stride of 1 instead of the last (resulting in column-major storage in
 case of 2D arrays): 
@@ -30,6 +33,11 @@ indexing elements - we will then need various versions of the flatIndex() functi
 
 add some of the functions ffrom the old, deprecated implementation (contraction and stuff) and 
 adapt unit tests such that they test the new implementation
+
+NumPy implements the operators <,<=,etc. such that they return an array of booleans - could 
+that be useful here too? ...but it also implements the ==,!= operators this way, but i 
+actually like them to return a single boolean...we'll see
+
 
 
 operations: outer-product (tensor-product?), inner product, contraction (with respect to a pair
