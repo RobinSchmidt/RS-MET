@@ -93,6 +93,13 @@ public:
   // return the 4th row in the 3rd slice ...or the other way around...i think so
 
 
+  /** Returns a const pointer to the data for read access as a flat array. */
+  const T* getDataPointerConst() const { return dataPointer; }
+
+  /** Returns a pointer to the data for read and write access as a flat array. */
+  T* getDataPointer() { return dataPointer; }
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Element Access */
 

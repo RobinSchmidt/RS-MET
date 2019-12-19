@@ -207,11 +207,16 @@ bool testMultiArray1()
   typedef std::vector<float> VecF;
   typedef rsMultiArray<float> MA;
 
+  float* p;  // pointer to the data 
+
   // 3D vector:
   MA a1 = MA(VecI{3});
   a1(0) = 1;
   a1(1) = 2;
   a1(2) = 3;
+
+  p = a1.getDataPointer();
+  r &= p[0] == 1 && p[1] == 2 && p[2] == 3;
 
   //a1 = a1 + a1;
 
@@ -226,6 +231,11 @@ bool testMultiArray1()
 
   a2(2,0) = 31;
   a2(2,1) = 32;
+
+  p = a2.getDataPointer();
+  r &= p[0] == 11 && p[1] == 12 && p[2] == 21 && p[3] == 22 && p[4] == 31 && p[5] == 32;
+
+  // maybe try reshaping into 2x3
 
 
   // 2x4x3 block/cuboid:
