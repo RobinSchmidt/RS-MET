@@ -333,7 +333,6 @@ void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiA
   T cy = 1 / (hy*hy);
   T cz = 1 / (hz*hz);
 
-  /*
   // compute Laplacian for interior points:
   for(int i = 1; i < Nx-1; i++) {
     for(int j = 0; j < Ny-1; j++) {
@@ -343,12 +342,12 @@ void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiA
         T u_zz   = cz * (u(i,j,k-1) - 2*u(i,j,k) + u(i,j,k+1));
         L(i,j,k) = u_xx + u_yy + u_zz; }}}
 
-        */
+       
   // todo: compute Laplacian for boundary points....but how? ...maybe using a one-sided 
   // approximation? or maybe using linear extrapolation from the interior points?
-
-
-
+  // maybe for fixed boundary conditions, we don't need it...hmm..but what actually are appropriate
+  // boundary conditions for the pressure at the room walls? intuitively, the sound-velocity must 
+  // go zero at the boundary...does that mean, the pressure gradient must go to zero?
 }
 // see (1), 5.2 for 1D and 10.2 for 2D difference operators
 // todo: 

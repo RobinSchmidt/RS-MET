@@ -114,8 +114,21 @@ public:
   /** Read and write access to array elements. The syntax for accessing, for example, 3D array 
   elements is: A(i, j, k) = .... */
   template<typename... Rest>
-  T& operator()(int i, Rest... rest) { return dataPointer[flatIndex(0, i, rest...)]; }
+  T& operator()(const int i, Rest... rest) { return dataPointer[flatIndex(0, i, rest...)]; }
   // maybe use const int as was doen in rsMatrix
+
+  /** Read-only access to array elements. */
+  template<typename... Rest>
+  const T& operator()(const int i, Rest... rest) const 
+  { return dataPointer[flatIndex(0, i, rest...)]; }
+
+
+  /*
+  const T& operator()(const int i, const int j) const
+  {
+    return dataPointer[flatIndex(i, j)];
+  }
+  */
 
   //-----------------------------------------------------------------------------------------------
   /** \name Arithmetic */
@@ -171,12 +184,12 @@ protected:
   /** Used for implementing the variadic template for the () operator. Takes a recursion depth (for
   recursive template instantiation) and a variable number of indices .... */
   template<typename... Rest>
-  int flatIndex(int depth, int i, Rest... rest) 
+  int flatIndex(const int depth, const int i, Rest... rest) const
   { return flatIndex(depth, i) + flatIndex(depth+1, rest...); }
 
   /** Base case for the variadic template. this version will be instatiated when, in addition to 
   the recursion depth, only one index is passed. */
-  int flatIndex(int depth, int index) 
+  int flatIndex(const int depth, const int index) const
   { 
     rsAssert(index >= 0 && index < shape[depth], "invalid index"); // verify this!
     return index * strides[depth]; 
@@ -184,7 +197,7 @@ protected:
 
   /** Converts a C-array (assumed to be of length getNumDimensions()) of indices to a flat 
   index. */
-  int flatIndex(const int* indices)
+  int flatIndex(const int* indices) const
   {
     int fltIdx = 0;
     for(size_t i = 0; i < strides.size(); i++)
