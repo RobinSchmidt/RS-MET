@@ -55,6 +55,16 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
+  /** \name Manipulation */
+
+  /** Sets all matrix elements to zero. */
+  void setToZero() { rsArray::fillWithZeros(dataPointer, getSize()); }
+    // same as in rsMatrixView...i think both classes really should have a common baseclass 
+    // rsArrayView where we consolidate all these common functions - it needs to have the 
+    // dataPointer and the size...which seems totally appropriate for an ArrayView class
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns true, iff the two arrays A and B have the same shape. */

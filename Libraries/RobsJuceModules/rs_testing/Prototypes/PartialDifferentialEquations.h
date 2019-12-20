@@ -444,7 +444,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  //void updateState();
+  /** Updates the state, i.e. the distribution of pressure in the room. */
+  void updateState();
+
+  /** Sets the state and all temporary arrays to zero. */
+  void reset();
 
 protected:
 

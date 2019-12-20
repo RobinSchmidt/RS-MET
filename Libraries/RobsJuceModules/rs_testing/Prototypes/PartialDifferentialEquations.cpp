@@ -309,6 +309,30 @@ void rsRectangularRoom<T>::setGridDimensions(int _Nx, int _Ny, int _Nz)
   // u.setShape(Nx,Ny,Nz); ...needs to be a variadic template
 }
 
+template<class T>
+void rsRectangularRoom<T>::updateState()
+{
+  T k = T(0.01);  // temporal grid spacing, 1/sampleRate - make user variable later
+
+  computeLaplacian3D(u, u_tt);
+
+  // add a fraction of u_tt to u...maybe factor out into rsArray:
+  int N = u.getSize();
+  const T*  x = u.getDataPointerConst();
+  const T*  d = u_tt.getDataPointerConst();
+  T*        y = u.getDataPointer();
+  T         a = k;  // fraction of u_tt to add to u
+  for(int n = 0; n < N; n++)
+    y[n] = x[n] + a * d[n];    // maybe use xy[n] += a*d[n] - may be more efficient
+}
+
+template<class T>
+void rsRectangularRoom<T>::reset()
+{
+  u.setToZero();
+  u_t.setToZero();
+  u_tt.setToZero();
+}
 
 template<class T>
 void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiArray<T>& L)
