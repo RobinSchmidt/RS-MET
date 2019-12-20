@@ -452,6 +452,15 @@ public:
     // is this formula correct?
   }
 
+
+  T getSecondDerivativeEnergy() const
+  {
+    return T(0.5) * RAPT::rsArray::sumOfSquares(u_tt.getDataPointerConst(), u_tt.getSize());
+    // ad hoc - i don't know, if this as any physical interpretation
+
+    // is this formula correct?
+  }
+
   /** Returns the instantaneous pressure at grid sample location i,j,k. Useful for recording
   output signals. */
   T getPressureAt(int i, int j, int k) const { return u(i,j,k); }

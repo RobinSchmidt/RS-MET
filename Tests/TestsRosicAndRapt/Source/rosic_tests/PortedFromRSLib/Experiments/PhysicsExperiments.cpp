@@ -427,7 +427,7 @@ void rectangularRoom()
   //  room
   // -to make it more realistic, add damping...maybe frequency dependent damping... how?
 
-  int Nt = 8000; // number of time-steps
+  int Nt = 2000; // number of time-steps
 
   // indices where to put the initial impulse and to read out the signal:
   int ix = 5;
@@ -436,7 +436,7 @@ void rectangularRoom()
 
 
 
-  std::vector<float> E_kin(Nt), E_pot(Nt);
+  std::vector<float> E_kin(Nt), E_pot(Nt), E_sec(Nt);
   std::vector<float> h(Nt);    // impulse response at location of excitation
 
 
@@ -446,6 +446,10 @@ void rectangularRoom()
   {
     E_kin[n] = room.getKineticEnergy();
     E_pot[n] = room.getPotentialEnergy() * 600;
+
+    E_sec[n] = room.getSecondDerivativeEnergy();
+
+
     h[n]     = room.getPressureAt(ix, iy, iz);
 
 
@@ -462,8 +466,8 @@ void rectangularRoom()
 
   // todo: write the impulse response to a wave file
 
-
-  rsPlotVectors(h);
+  //rsPlotVectors(h);
+  //rsPlotVectors(E_pot, E_kin, E_pot+E_kin, E_sec);
   rsPlotVectors(E_pot, E_kin, E_pot+E_kin);
   // E_pot and E_kin seem to be on a vastly different scale - figure out the scale factors from 
   // physical considerations - i think, we need to take into account the spatial and temporal
@@ -484,6 +488,31 @@ void rectangularRoom()
   // -with dt=0.0025, Nx=Ny=Nz=11, Lx=Ly=Lz=1
   //  -increasing Nx to 21 scales E_pot by factor 2 (likewise for Ny,Nz)
   //  -increasing Lx to 4 reduces E_pot's mean from 150 to 100
+  //  -increasing Nx to 21 and Lx to 2 seems to reduce the amplitude of the wiggle
+  //  -increasing Nx,Ny,Nz all to 21 let's the computation take a really long time
+  // -the energy in the 2nd derivative is on the order of 100000 ...maybe it scales with 1/h^2 where
+  //  the 1st-derivative energy scales only with 1/h
+
+  // from Möser, page 31 - the energy density of a sound field:
+  // E = (1/2) * ( p^2/(rho_0 * c^2) + rho*v^2)
+  // p is the pressure, rho_0 the air-density(?), v the speed
+  // rho the sound-density(
+
+  // the 3D wave equation for the sound pressure p = p(x,y,z,t) is:
+  // p_tt = c^2 * L(p) = c^2 * (p_xx + p_yy + p_zz) where L(p) is defined as the Laplacian of p
+  // and c is the speed of sound
+  // the Laplacian measures, by how much a value at a particular position differs from the average
+  // of its neighborhood - so it makes intuively sense that p changes this way...or well, maybe one
+  // could also expce p_t and not p_tt to be proportional to the Laplacian? ...but that's not how 
+  // it works
+
+  // -check out, how numerical energy is computed in Bilbao's book - but he uses schemes instead of
+  //  physical variables
+
+  // i guess, we get a lot of cache-misses when the sizes grow larger...we should use 
+  // Nx <= Ny <= Nz for best cache locality...maybe with more complex data-layout using a 
+  // Hilbert curve, cache locality could be improved - but that would be really complicated!
+ 
 
 
   int dummy = 0;
