@@ -296,7 +296,6 @@ rsRectangularRoom<T>::rsRectangularRoom(int Nx, int Ny, int Nz)
   u.setShape(shape);
   u_t.setShape(shape);
   u_tt.setShape(shape);
-  // the data isn't allocated - i think setShape needs to override the inherited method from the view
 
   // maybe we should have function template that can be called like:
   // u.setShape(Nx,Ny,Nz); ...needs to be a variadic template

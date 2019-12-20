@@ -399,9 +399,14 @@ void rectangularRoom()
   // Simulates propagation of waves in a rectangular room....
 
   // grid resolutions along the 3 coordinates:
-  int Nx = 10;
-  int Ny = 10;
-  int Nz = 10;
+  int Nx = 13;
+  int Ny = 17;
+  int Nz = 11;  
+
+  // room lengths in the 3 coordiniates (length, width, height)
+  float Lx = 20;
+  float Ly = 25;
+  float Lz = 10;
 
   rsRectangularRoom<float> room(Nx, Ny, Nz);
 

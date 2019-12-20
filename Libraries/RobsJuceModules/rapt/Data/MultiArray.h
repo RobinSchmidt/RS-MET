@@ -50,6 +50,7 @@ public:
   our former shape to facilitate using the same C-array with various sizes and shapes. */
   void setShape(const std::vector<int>& newShape) 
   { shape = newShape; updateStrides(); updateSize(); }
+  // maybe rename to setExtents...but maybe not - shape seems to be common for that
 
 
 
@@ -224,7 +225,7 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  std::vector<int> shape;
+  std::vector<int> shape;    // maybe rename to extents
   std::vector<int> strides;
   T* dataPointer = nullptr;
   int size = 0;
@@ -256,6 +257,17 @@ public:
     updateDataPointer();
   }
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets up a new shape. */
+  void setShape(const std::vector<int>& newShape) 
+  { 
+    rsMultiArrayView<T>::setShape(newShape); // updates extents, strides, size
+    data.resize(this->size);
+    updateDataPointer();
+  }
 
 
 
