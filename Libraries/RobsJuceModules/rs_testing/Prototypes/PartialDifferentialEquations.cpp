@@ -286,12 +286,20 @@ void rsRectangularMembrane<T>::updateStateMatrices()
 
 
 //=================================================================================================
-
+/*
 template<class T>
 rsRectangularRoom<T>::rsRectangularRoom(int Nx, int Ny, int Nz)
 {
   // maybe factor out into function setGridResolution:
+}
+*/
 
+template<class T>
+void rsRectangularRoom<T>::setGridDimensions(int _Nx, int _Ny, int _Nz)
+{
+  Nx = _Nx;
+  Ny = _Ny;
+  Nz = _Nz;
   std::vector<int> shape({ Nx, Ny, Nz });
   u.setShape(shape);
   u_t.setShape(shape);
@@ -302,6 +310,58 @@ rsRectangularRoom<T>::rsRectangularRoom(int Nx, int Ny, int Nz)
 }
 
 
+template<class T>
+void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiArray<T>& L)
+{
+  // In 1D, a 2nd order accurate approximation to the 2nd spatial derivative of a function u(x,t) 
+  // is given by:
+  //   u_xx ~= (u(x-h) - 2*u(x) + u(x+h)) / h^2
+  // where h is the grid spacing. See (1), Eq. 5.12a. Here in 3D, we use the same formula for all
+  // 3 dimensions to get approximations to the 2nd partial derivatives along the 3 spatial 
+  // directions and add them all up to get an approximation of the Laplacian.
+
+  // todo: there are other ways to approximate the Laplacian - this here is the simplest - maybe 
+  // implement various variants...
+
+  // spatial sampling intervals:
+  T hx = Lx / (Nx-1);
+  T hy = Ly / (Ny-1);
+  T hz = Lz / (Nz-1);
+
+  // scaling coeffs used in the finite difference approximations:
+  T cx = 1 / (hx*hx);
+  T cy = 1 / (hy*hy);
+  T cz = 1 / (hz*hz);
+
+  /*
+  // compute Laplacian for interior points:
+  for(int i = 1; i < Nx-1; i++) {
+    for(int j = 0; j < Ny-1; j++) {
+      for(int k = 1; k < Nz-1; k++) {
+        T u_xx   = cx * (u(i-1,j,k) - 2*u(i,j,k) + u(i+1,j,k));
+        T u_yy   = cy * (u(i,j-1,k) - 2*u(i,j,k) + u(i,j+1,k));
+        T u_zz   = cz * (u(i,j,k-1) - 2*u(i,j,k) + u(i,j,k+1));
+        L(i,j,k) = u_xx + u_yy + u_zz; }}}
+
+        */
+  // todo: compute Laplacian for boundary points....but how? ...maybe using a one-sided 
+  // approximation? or maybe using linear extrapolation from the interior points?
+
+
+
+}
+// see (1), 5.2 for 1D and 10.2 for 2D difference operators
+// todo: 
+// -implement bi-laplacian (aka biharmonic)...but is this actually a thing in 3D? in 1D and 2D
+//  it's used for modeling stiffness...but in 3D? hmm...
+// -implement Laplacian for cylidrical and spherical coordinates
+// -maybe rename this function to reflect that we a doing a 7 point approximation in cartesian 
+//  coordinates - there are so many other possibilities...
+
+
+
+
+//=================================================================================================
 
 /*
  Background:

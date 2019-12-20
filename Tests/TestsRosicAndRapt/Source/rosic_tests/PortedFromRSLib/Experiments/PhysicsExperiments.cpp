@@ -408,7 +408,12 @@ void rectangularRoom()
   float Ly = 25;
   float Lz = 10;
 
-  rsRectangularRoom<float> room(Nx, Ny, Nz);
+  rsRectangularRoom<float> room;
+  room.setGridDimensions(Nx, Ny, Nz);
+  //room.setDimensions(Lx, Ly, Lz); // maybe setShape, setSizes
+
+  // maybe for a user of a room-reverb, it's better to parametrize it via size, xy-ratio, xz-ratio
+  // because size is a more intuitive parameter
 
 
   int dummy = 0;

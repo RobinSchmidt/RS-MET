@@ -336,6 +336,7 @@ public:
     u1.setSize(numPointsX, numPointsY);
     tmp.setSize(numPointsX, numPointsY);
   }
+  // maybe rename to setGridResolution
 
   void setWaveSpeed(T newSpeed) { waveSpeed = newSpeed; }
 
@@ -397,7 +398,12 @@ protected:
 //=================================================================================================
 
 /** Implements numerical solution of the 3D wave-equation in cartesian coordinates for a 
-rectangular room. */
+rectangular room. 
+
+References:
+(1) Numerical Sound Synthesis (Stefan Bilbao) 
+
+*/
 
 template<class T>  // maybe use TSig, TPar - TSig is used for the pressure
 class rsRectangularRoom
@@ -406,17 +412,62 @@ class rsRectangularRoom
 
 public:
 
-  rsRectangularRoom(int numSamplesX, int numSamplesY, int numSamplesZ);
+  //rsRectangularRoom(int numSamplesX, int numSamplesY, int numSamplesZ);
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setGridDimensions(int numSamplesX, int numSamplesY, int numSamplesZ);
+  // alternative names setGrid.. Resolution (bad because resokution may be seen as 
+  // numSamplesX/lengthX rather than numSamplesX itself
+
+  void setRoomDimensions(T sizeX, T sizeY, T sizeZ)
+  {
+    Lx = sizeX;
+    Ly = sizeY;
+    Lz = sizeZ;
+    // updateCoeffs()
+  }
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
 
   /** Returns a const-reference to the current pressure distribution in the room as a 3D array. */
   const rsMultiArray<T> getState() const { return u; }
 
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  //void updateState();
+
 protected:
+
+
+  void computeLaplacian3D(const rsMultiArray<T>& gridFunction, rsMultiArray<T>& gridLaplacian);
+  // maybe factor out - a 3D Laplacian may be useful in many other applications - it may have to
+  // take hx,hy,hz variables as parameters ...or maybe 1/hx^2, 1/hy^2, 1/hz^2
+
+
+  // void updatePressuerAccelerations();
+  // void updatePressureVelocities();  // not to be confused with flow of the air (it's a scalar!)
+  // void updatePressures;
+
+  int Nx, Ny, Nz;  // redundant but convenient - maybe get rid later
+  T   Lx, Ly, Lz;  // room lengths int the coordinate directions
 
   rsMultiArray<T> u, u_t, u_tt; // pressure, (temporal) pressure-change and change-of-change
 
   // maybe switch to "scheme"-variables u, u1 later - u1 is the one-sample-delayed pressure - but 
   // for physical intuition, it's easier to represent the temporal derivatives explicitly
+  // or maybe use more generic variables like u,t1,t2 where t1,t2 are temporary variables that may
+  // be interpreted either as velocity and acceleration or delayed-by-1, delayed-by-2 pressures 
+  // the interpretation is up to the solver scheme
 
 };
 
