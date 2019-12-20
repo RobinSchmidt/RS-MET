@@ -402,6 +402,7 @@ void rectangularRoom()
   int Nx = 11;
   int Ny = 11;
   int Nz = 11;
+  float dt = 0.0025;  // time-step between two samples
 
   // room lengths in the 3 coordiniates (length, width, height)
   float Lx = 1.f;
@@ -413,6 +414,7 @@ void rectangularRoom()
   rsRectangularRoom<float> room;
   room.setGridDimensions(Nx, Ny, Nz);
   room.setRoomDimensions(Lx, Ly, Lz); // maybe setShape, setSizes
+  room.setTimeStep(dt);
 
   // maybe for a user of a room-reverb, it's better to parametrize it via size, xy-ratio, xz-ratio
   // because size is a more intuitive parameter
@@ -425,7 +427,7 @@ void rectangularRoom()
   //  room
   // -to make it more realistic, add damping...maybe frequency dependent damping... how?
 
-  int Nt = 1000; // number of time-steps
+  int Nt = 8000; // number of time-steps
 
   // indices where to put the initial impulse and to read out the signal:
   int ix = 5;
@@ -435,13 +437,17 @@ void rectangularRoom()
 
 
   std::vector<float> E_kin(Nt), E_pot(Nt);
+  std::vector<float> h(Nt);    // impulse response at location of excitation
+
 
   room.reset();
   room.injectPressureAt(ix, iy, iz, 1.f);
   for(int n = 0; n < Nt; n++)
   {
     E_kin[n] = room.getKineticEnergy();
-    E_pot[n] = room.getPotentialEnergy();
+    E_pot[n] = room.getPotentialEnergy() * 600;
+    h[n]     = room.getPressureAt(ix, iy, iz);
+
 
     room.updateState();
     //const rsMultiArray<float>& u = room.getState();
@@ -454,14 +460,30 @@ void rectangularRoom()
     int dummy = 0;
   }
 
-  rsPlotVectors(E_pot, E_kin);
+  // todo: write the impulse response to a wave file
+
+
+  rsPlotVectors(h);
+  rsPlotVectors(E_pot, E_kin, E_pot+E_kin);
   // E_pot and E_kin seem to be on a vastly different scale - figure out the scale factors from 
   // physical considerations - i think, we need to take into account the spatial and temporal
   // sampling intervals ...maybe E_kin should be multiplied by the temporal interval?
   // E_kin wiggles around 150, E_pot around 0.5 - try to figure out, how these averages behave
   // as functions of spatial and temporal sampling interval
 
-
+  // Observations
+  // -increasing the timeStep makes the wiggles in the energies faster (as expected) and also 
+  //  increases the mean of the kinectic energy - it also seems to decrease the mean of the
+  //  potential energy ..well, at least the increase from 0.01 to 0.02 increased the mean
+  //  between 0.005 and 0.01, the seems to be no such increase
+  //  -dt = 0.0025 gives good temporral resolution when Nx=Ny=Nz=11 and Lx=Ly=Lz=1
+  //  -scaling E_pot by 600 makes both averages equal in this case - figure out where that factor
+  //   comes from...maybe that factor is not yet exact - the sum of the energies still wiggles
+  //  -the stability limit (for 11,11,11; 1,1,1) seems to be somewhere between dt = 0.05 and 0.06
+  //   ->try to figure out Courant numbers
+  // -with dt=0.0025, Nx=Ny=Nz=11, Lx=Ly=Lz=1
+  //  -increasing Nx to 21 scales E_pot by factor 2 (likewise for Ny,Nz)
+  //  -increasing Lx to 4 reduces E_pot's mean from 150 to 100
 
 
   int dummy = 0;

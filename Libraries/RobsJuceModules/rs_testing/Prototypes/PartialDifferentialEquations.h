@@ -430,7 +430,7 @@ public:
     // updateCoeffs()
   }
 
-
+  void setTimeStep(T newStep) { timeStep = newStep; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -452,11 +452,15 @@ public:
     // is this formula correct?
   }
 
-
+  /** Returns the instantaneous pressure at grid sample location i,j,k. Useful for recording
+  output signals. */
+  T getPressureAt(int i, int j, int k) const { return u(i,j,k); }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
+  /** Increases the instantaneous pressure at grid sample location i,j,k by the given amount. 
+  Useful injecting input signals. */
   void injectPressureAt(int i, int j, int k, T amount) { u(i,j,k) += amount; }
   // maybe assert i,j,k are in valid range...maybe make a function that takes a floating point 
   // position and spreads/de-interpolates the pressure
@@ -481,6 +485,8 @@ protected:
 
   int Nx, Ny, Nz;  // redundant but convenient - maybe get rid later
   T   Lx, Ly, Lz;  // room lengths int the coordinate directions
+
+  T timeStep = 1;  // temporal sampling interval
 
   rsMultiArray<T> u, u_t, u_tt; // pressure, (temporal) pressure-change and change-of-change
 
