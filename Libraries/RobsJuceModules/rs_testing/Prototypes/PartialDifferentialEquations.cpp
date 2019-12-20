@@ -332,4 +332,39 @@ https://www2.ph.ed.ac.uk/~sbilbao/CFApaper.pdf
 https://hplgit.github.io/fdm-book/doc/pub/book/sphinx/index.html
 https://hplgit.github.io/fdm-book/doc/pub/book/sphinx/._book008.html
 http://hplgit.github.io/num-methods-for-PDEs/doc/pub/wave/sphinx/._main_wave005.html
+
+
+Ideas:
+-imagine two strings that cross each other at a common point, maybe one goes along the x-direction 
+ and the other along the y-direction, so the physical configuration could look like this:
+
+     |
+     |
+  ---+------------
+     |
+
+-now consider displacing the upper string in the z-direction (out of the screen) and letting it go, 
+ let's assume, the upper string is one in the x-direction
+-until the strings collide, it behaves the same as if the other string wasn't there
+-let's call u the z-displacement of the upper string and v the z-displacement of the lower string
+-the condition that u is above v means that u >= v at the contact point, if u < v, there should be
+ suddenly a very strong force pushing u up and v down - that's the model of the collision - perhaps
+ some function with a threshold and a very steep buildup beyond the threshold...maybe it should also
+ act in some neighbourhood of the contact point (due to stiffness)...maybe some sort of bell-shape
+-in a refined model, we could also consider displacement in the x and y directions - a traverse 
+ displacement in the y direction of the horizontal string would couple to longitudinal motion in the
+ vertical string and vice versa, when the strings are in contact
+-we could consider different angles at which the strings cross - but for modeling only the z 
+ displacement, that angle should be irrelevant
+-we would have two 1D PDEs coupled by a nonlinear mechanism, so it's a nice starting point for 
+ studying the relevant modling techniques
+-we could actually make the coupling linear as well, by letting the force just be proportional and 
+ opposite to the displacement-difference at the contact point - this would correspond to a 
+ bi-directional Hooke-spring with equilibirium when it's squeezed into zero space and the strings 
+ would be allowed to pass through each other - certainly a very non-physical situation but maybe
+ interesting anyway
+-to make it more realistic, the strings could also couple to a soundboard at their ends
+-i would expect to see interesting musical effects when the lengths (or tensions) of the string are
+ tuned to harmonic ratios
+
 */
