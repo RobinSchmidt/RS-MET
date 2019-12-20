@@ -284,6 +284,26 @@ void rsRectangularMembrane<T>::updateStateMatrices()
 }
 // can be optimized - use class rsMatrix
 
+
+//=================================================================================================
+
+template<class T>
+rsRectangularRoom<T>::rsRectangularRoom(int Nx, int Ny, int Nz)
+{
+  // maybe factor out into function setGridResolution:
+
+  std::vector<int> shape({ Nx, Ny, Nz });
+  u.setShape(shape);
+  u_t.setShape(shape);
+  u_tt.setShape(shape);
+  // the data isn't allocated - i think setShape needs to override the inherited method from the view
+
+  // maybe we should have function template that can be called like:
+  // u.setShape(Nx,Ny,Nz); ...needs to be a variadic template
+}
+
+
+
 /*
  Background:
 
@@ -297,7 +317,35 @@ void rsRectangularMembrane<T>::updateStateMatrices()
   speed to each frequency? and for non-dispersive wave-propagation that wave-speed is constant 
   (seen as function of frequency)
 
-ideas:
+
+Schemes:
+-a "scheme" for solving a PDE for some function u(x,t) = F(u,u_x,u_t,u_xx,u_tt,...) numerically 
+ involves using sampled values of the function u(x,t-k),u(x,x-2k),u(x-h,t-k),...
+-intuitively, when we have a PDE like u_tt = c*u_xx, we may express it as:
+ u(x,t) = integral_0^s v(x,s) ds, v(x,t) = integral_0^t a(x,s) ds for acceleration and velocity
+ and our PDE (in this case, the wave-equation) may say: a(x,t) = c*u_xx(x,t) which we may calculate 
+ directly unsing finite differences in space, then we may update the velocity v by adding k*a, then 
+ update the displacement u by adding k*v - this would amount to forward Euler integration in time
+-all of the intermediate variables a(x,t), v(x,t) can also be numerically approximated by finite 
+ differences in time, for example v(x,t) ~= u(x,t) - u(x,t-k), a(x,t) ~= v(x,t) - v(x,t-k), so in 
+ the end, we may express everything in terms of delayed values of u(x,t) itself without resorting
+ to intermediates like v and a. This expression in terms of u(x,t) and its delayed and shifted 
+ values is a "scheme"
+-todo: figure out what the scheme for this simple, intuitive (any maybe naive) 
+ twice-forward-Euler-in-time strategy would look like and compare it to other schemes that are in 
+ common use - how can these other schemes be "translated back" into the language of velocities and 
+ accelerations?
+-in some schemes, the values to be computed (typically, u(x,t+k)) along the grid 
+ ...x-2h,x-h,x,x+h,... may not be isolated on the left hand side and it may not be possible to do so 
+ -in this case, the scheme is implicit
+ -in implicit schemes, we may have to solve a system of equations for all values u(x+m*h,t+k) at 
+  once where index m runs over the spatial samples along the grid
+  -it may make sense to further subdivide implicit schemes depending on whether the system of 
+   equations to be solved is linear or nonlinear
+  -in the linear case, we typically deal with sparse (often band-diagonal) matrices
+ -implicit schemes are sometimes easier to analyze in terms of numerical stability and they also to
+  tend to *be* more stable
+
 -maybe instead of using past values of the displacement u itself with a temporal stencil, 
  explicitly compute and use things like u_xx, u_t, u_tt, etc. (for u_xxxx also use the notation 
  u_4x) that is more readily interpretable and mor intuitive for research purposes - only at the 
@@ -334,7 +382,13 @@ https://hplgit.github.io/fdm-book/doc/pub/book/sphinx/._book008.html
 http://hplgit.github.io/num-methods-for-PDEs/doc/pub/wave/sphinx/._main_wave005.html
 
 
+
+
 Ideas:
+
+
+
+
 -imagine two strings that cross each other at a common point, maybe one goes along the x-direction 
  and the other along the y-direction, so the physical configuration could look like this:
 

@@ -6,6 +6,7 @@ void doublePendulum();
 void heatEquation1D();
 void waveEquation1D();
 void rectangularMembrane();
+void rectangularRoom();
 //void schrödingerEquation1D();
 void particleForceDistanceLaw();
 void particleSystem();

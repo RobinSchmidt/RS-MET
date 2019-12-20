@@ -310,7 +310,8 @@ protected:
 
 //=================================================================================================
 
-/** Implements numerical solution of the 2D wave-equation 
+/** Implements numerical solution of the 2D wave-equation in cartesian coordinates for a 
+rectangular membrane.
 
 References:
 (1) Numerical Sound Synthesis (Stefan Bilbao) 
@@ -355,6 +356,7 @@ public:
 
   void getState(rsMatrix<T>& state) const { state = u; }
   // check, if this allocates memory (it shouldn't)
+  // or maybe return a const reference to our internal state varaiable
 
 
   //-----------------------------------------------------------------------------------------------
@@ -389,5 +391,34 @@ protected:
 
 };
 
-
 // todo: make class rsCircularMembrane
+
+
+//=================================================================================================
+
+/** Implements numerical solution of the 3D wave-equation in cartesian coordinates for a 
+rectangular room. */
+
+template<class T>  // maybe use TSig, TPar - TSig is used for the pressure
+class rsRectangularRoom
+{
+
+
+public:
+
+  rsRectangularRoom(int numSamplesX, int numSamplesY, int numSamplesZ);
+
+  /** Returns a const-reference to the current pressure distribution in the room as a 3D array. */
+  const rsMultiArray<T> getState() const { return u; }
+
+protected:
+
+  rsMultiArray<T> u, u_t, u_tt; // pressure, (temporal) pressure-change and change-of-change
+
+  // maybe switch to "scheme"-variables u, u1 later - u1 is the one-sample-delayed pressure - but 
+  // for physical intuition, it's easier to represent the temporal derivatives explicitly
+
+};
+
+// how about using spatial pressure gradients and sound-velocities, i.e. vector-fields instead of
+// a (scalar) pressure field?

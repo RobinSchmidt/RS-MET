@@ -76,7 +76,10 @@ public:
     rsAssert(index < getNumIndices());
     return shape[index]; 
   }
-  // alternative names: getIndexRange, getIndexExtent, getIndexLimit
+  // alternative names: getIndexRange, getIndexExtent, getIndexLimit ..."limit" is a bit bad because
+  // it suggests that the limiting value itself is included, "range" is bad because it suggests to
+  // consist of two values (lower and upper bound) where only the upper bound is meant...how about
+  // getLengthAlong(int dimension)
 
   /** Returns a const reference to the shape array of the multidimensional array. The shape is 
   defined by the number of  values that each index may run over. For example, a 2x3 matrix has a 
@@ -232,13 +235,19 @@ protected:
 
 /** Implements a multidimensional array. Elements of an array A can be conveniently accessed via 
 the natural syntax: 1D: A(i), 2D: A(i,j), 3D: A(i,j,k), etc. The data is stored in a std::vector. 
-The implementation follows the same pattern as rsMatrix (which is in the Math folder). */
+The implementation follows the same pattern as rsMatrix (which is in the Math folder). 
+
+Note: This is still incomplete - all the required copy/move-constructors and -assignement operators
+still need to be implemented. The class works already, but it's not yet return-value-optimized */
 
 template<class T>
 class rsMultiArray : public rsMultiArrayView<T>
 {
 
 public:
+
+
+  rsMultiArray() {}
 
 
   rsMultiArray(const std::vector<int>& initialShape) : rsMultiArrayView<T>(initialShape, nullptr)

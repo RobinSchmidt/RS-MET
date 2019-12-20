@@ -366,8 +366,6 @@ void rectangularMembrane()
   }
   membrane.setInitialConditions(u, v);
 
-
-
   std::vector<rsMatrix<double>> frames;
   for(int n = 0; n < numTimeSteps; n++) {
     membrane.getState(u); // maybe getState should return a matrix - but no - that would enforce allocs
@@ -393,8 +391,25 @@ void rectangularMembrane()
 
   // maybe we can use python to produce the video - include the PDE solver into the rsPy python 
   // module, call it from there and do visualization in python
-
 }
+
+
+void rectangularRoom()
+{
+  // Simulates propagation of waves in a rectangular room....
+
+  // grid resolutions along the 3 coordinates:
+  int Nx = 10;
+  int Ny = 10;
+  int Nz = 10;
+
+  rsRectangularRoom<float> room(Nx, Ny, Nz);
+
+
+  int dummy = 0;
+}
+
+
 
 
 // maybe to really challenge the blep/blamp class, try to hardsync a sinewave and try to anti-alias

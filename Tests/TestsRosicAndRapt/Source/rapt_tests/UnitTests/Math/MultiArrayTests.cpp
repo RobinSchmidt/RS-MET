@@ -202,13 +202,23 @@ bool testMultiArray1()
 
   bool r = true;
 
-
   typedef std::vector<int> VecI;
   typedef std::vector<float> VecF;
   typedef rsMultiArray<float> MA;
 
 
-  // test memory layout
+  // let's see, if the example code in the documentation of rsMultiArrayView works:
+  float data[24];                             // flat C-array of data
+  rsMultiArrayView<float> A({2,4,3}, data);   // we want to interpret the data as 2x4x3 3D array
+  A(0,0,0) = 111.f;                           // set element at position 0,0,0 (the first one)
+  A(1,3,2) = 243.f;                           // set element at position 1,3,2 (the last one)
+  // ...yep - it does :-)
+
+
+
+
+
+  // test memory layout:
 
   float* p;  // pointer to the data 
 
@@ -234,7 +244,6 @@ bool testMultiArray1()
   r &= a2(0,0) == 11; r &= a2(0,1) == 12; r &= a2(0,2) == 21; 
   r &= a2(1,0) == 22; r &= a2(1,1) == 31; r &= a2(1,2) == 32;
 
-
   // 2x4x3 block/cuboid:
   MA a3 = MA(VecI{2,4,3}); 
   p = a3.getDataPointer();
@@ -252,12 +261,9 @@ bool testMultiArray1()
 
 
 
-
-
-
   // allow the user to specify an allocator so we can unit-test the memory allocation avoidance
-  // (copy elision for return values, for example)
-
+  // (copy elision for return values, for example) - explorin allocators should be done the research 
+  // repo
 
   return r;
 }

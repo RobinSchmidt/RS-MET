@@ -49,6 +49,9 @@ int main(int argc, char* argv[])
   // -get rid of the distinction between testing classes from rapt and rosic - that makes it 
   //  confusing and hard to find a particular test -> merge the tests
   // -maybe make even just a single include file for all rapt tests
+  // -maybe split this into Demos and Research - the demos shall remain in the main RS-MET 
+  //  codebase, the research stuff should go into the research repo, eventually, 
+  //  research-experiments may be propagated up into main repo
 
   //===============================================================================================
   // RAPT tests:
@@ -56,7 +59,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
+  //passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
   //passed &= runUnitTestsRosic();
   //passed = passed;  // dummy
 
@@ -129,6 +132,7 @@ int main(int argc, char* argv[])
   //heatEquation1D();
   //waveEquation1D();
   //rectangularMembrane();
+  rectangularRoom();
   //particleForceDistanceLaw();
   //particleSystem();
   //quantumSpinMeasurement();  // move to unit tests
