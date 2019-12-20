@@ -399,21 +399,69 @@ void rectangularRoom()
   // Simulates propagation of waves in a rectangular room....
 
   // grid resolutions along the 3 coordinates:
-  int Nx = 13;
-  int Ny = 17;
-  int Nz = 11;  
+  int Nx = 11;
+  int Ny = 11;
+  int Nz = 11;
 
   // room lengths in the 3 coordiniates (length, width, height)
-  float Lx = 20;
-  float Ly = 25;
-  float Lz = 10;
+  float Lx = 1.f;
+  float Ly = 1.f;
+  float Lz = 1.f;
+
+
 
   rsRectangularRoom<float> room;
   room.setGridDimensions(Nx, Ny, Nz);
-  //room.setDimensions(Lx, Ly, Lz); // maybe setShape, setSizes
+  room.setRoomDimensions(Lx, Ly, Lz); // maybe setShape, setSizes
 
   // maybe for a user of a room-reverb, it's better to parametrize it via size, xy-ratio, xz-ratio
   // because size is a more intuitive parameter
+
+  // todo: 
+  // -initialize the room with a pressure impulse somewhere...do we need to init the u_t and 
+  //  u_tt arrays, too or can they be zero
+  // -run an update loop and record the pressure over time at various points of interest and plot
+  //  the time series ..i hope to see something that resembles a stylized impulse response of a 
+  //  room
+  // -to make it more realistic, add damping...maybe frequency dependent damping... how?
+
+  int Nt = 1000; // number of time-steps
+
+  // indices where to put the initial impulse and to read out the signal:
+  int ix = 5;
+  int iy = 5;
+  int iz = 5;
+
+
+
+  std::vector<float> E_kin(Nt), E_pot(Nt);
+
+  room.reset();
+  room.injectPressureAt(ix, iy, iz, 1.f);
+  for(int n = 0; n < Nt; n++)
+  {
+    E_kin[n] = room.getKineticEnergy();
+    E_pot[n] = room.getPotentialEnergy();
+
+    room.updateState();
+    //const rsMultiArray<float>& u = room.getState();
+
+    // somehow visuallize the state...maybe we could plot Nz surfaces
+    // maybe plot the total energy in the room (sum-of-squares of u plus sum-of-squares
+    // of u_t = potential + kinetic)?
+    // plot potential and kinetic energies and total energy
+
+    int dummy = 0;
+  }
+
+  rsPlotVectors(E_pot, E_kin);
+  // E_pot and E_kin seem to be on a vastly different scale - figure out the scale factors from 
+  // physical considerations - i think, we need to take into account the spatial and temporal
+  // sampling intervals ...maybe E_kin should be multiplied by the temporal interval?
+  // E_kin wiggles around 150, E_pot around 0.5 - try to figure out, how these averages behave
+  // as functions of spatial and temporal sampling interval
+
+
 
 
   int dummy = 0;

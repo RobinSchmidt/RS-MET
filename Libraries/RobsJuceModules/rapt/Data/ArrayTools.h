@@ -53,6 +53,12 @@ public:
   template<class T>
   static void addInto(T *x, const int N, const T *y, int L, int n = 0);
 
+  /** Adds the bufferToAdd, multiplied by some weight, into the inputAndResult. This is useful for
+  implementing update rules of the form: x_new = x_old + weight * delta_x - but actually x_new and 
+  x_old are the same array and it's more like x += w * delta_x. */
+  template<class T>
+  static void addWithWeight(T* inputAndResult, int N, T* bufferToAdd, T weight);
+
   /** Applies the affine transformation y = a*x + b to all array elements. */
   template<class T>
   static void affineTrafo(const T* x, T* y, const int N, const T a, const T b);
@@ -701,7 +707,8 @@ public:
 
   /** Forms a weighted sum of the two buffers. */
   template <class T>
-  static  void weightedSum(const T *buffer1, const T *buffer2, T *result, int length, T weight1, T weight2);
+  static  void weightedSum(const T *buffer1, const T *buffer2, T *result, 
+    int length, T weight1, T weight2);
 
 };
 
@@ -720,6 +727,13 @@ inline void rsArray::add(const T *buffer, const T valueToAdd, T *result, const i
 {
   for(int i = 0; i < length; i++)
     result[i] = buffer[i] + valueToAdd;
+}
+
+template<class T>
+void rsArray::addWithWeight(T* xy, int N, T* d, T w)
+{
+  for(int n = 0; n < N; n++)
+    xy[n] += w * d[n];
 }
 
 template <class T>

@@ -437,12 +437,29 @@ public:
   /** \name Inquiry */
 
   /** Returns a const-reference to the current pressure distribution in the room as a 3D array. */
-  const rsMultiArray<T> getState() const { return u; }
+  const rsMultiArray<T>& getState() const { return u; }
+  // it's a bit
+
+  T getPotentialEnergy() const
+  {
+    return T(0.5) * RAPT::rsArray::sumOfSquares(u.getDataPointerConst(), u.getSize());
+    // is this formula correct?
+  }
+
+  T getKineticEnergy() const
+  {
+    return T(0.5) * RAPT::rsArray::sumOfSquares(u_t.getDataPointerConst(), u_t.getSize());
+    // is this formula correct?
+  }
 
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
+
+  void injectPressureAt(int i, int j, int k, T amount) { u(i,j,k) += amount; }
+  // maybe assert i,j,k are in valid range...maybe make a function that takes a floating point 
+  // position and spreads/de-interpolates the pressure
 
   /** Updates the state, i.e. the distribution of pressure in the room. */
   void updateState();

@@ -309,6 +309,7 @@ void rsRectangularRoom<T>::setGridDimensions(int _Nx, int _Ny, int _Nz)
   // u.setShape(Nx,Ny,Nz); ...needs to be a variadic template
 }
 
+
 template<class T>
 void rsRectangularRoom<T>::updateState()
 {
@@ -316,14 +317,26 @@ void rsRectangularRoom<T>::updateState()
 
   computeLaplacian3D(u, u_tt);
 
+  /*
   // add a fraction of u_tt to u...maybe factor out into rsArray:
   int N = u.getSize();
   const T*  x = u.getDataPointerConst();
   const T*  d = u_tt.getDataPointerConst();
   T*        y = u.getDataPointer();
-  T         a = k;  // fraction of u_tt to add to u
+  T         a = k;  // fraction of u_tt to add to u_t
   for(int n = 0; n < N; n++)
     y[n] = x[n] + a * d[n];    // maybe use xy[n] += a*d[n] - may be more efficient
+    */
+
+  // update the "velocities" by adding a fraction of the Laplacian (which is proportional to
+  // the "acceleration"):
+  int N = u.getSize();
+  rsArray::addWithWeight(u_t.getDataPointer(), N, u_tt.getDataPointer(), k); // is k the right scaler?
+
+  // update the pressures by adding a fraction of the "velocities":
+  rsArray::addWithWeight(u.getDataPointer(), N, u_t.getDataPointer(), k); // is k the right scaler?
+
+  int dummy = 0;
 }
 
 template<class T>
@@ -359,7 +372,7 @@ void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiA
 
   // compute Laplacian for interior points:
   for(int i = 1; i < Nx-1; i++) {
-    for(int j = 0; j < Ny-1; j++) {
+    for(int j = 1; j < Ny-1; j++) {
       for(int k = 1; k < Nz-1; k++) {
         T u_xx   = cx * (u(i-1,j,k) - 2*u(i,j,k) + u(i+1,j,k));
         T u_yy   = cy * (u(i,j-1,k) - 2*u(i,j,k) + u(i,j+1,k));
