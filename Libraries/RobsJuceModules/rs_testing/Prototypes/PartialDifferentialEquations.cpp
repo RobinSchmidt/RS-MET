@@ -369,9 +369,10 @@ void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiA
   for(int i = 1; i < Nx-1; i++) {
     for(int j = 1; j < Ny-1; j++) {
       for(int k = 1; k < Nz-1; k++) {
-        T u_xx   = cx * (u(i-1,j,k) - 2*u(i,j,k) + u(i+1,j,k));
-        T u_yy   = cy * (u(i,j-1,k) - 2*u(i,j,k) + u(i,j+1,k));
-        T u_zz   = cz * (u(i,j,k-1) - 2*u(i,j,k) + u(i,j,k+1));
+        T u2     = 2*u(i,j,k);
+        T u_xx   = cx * (u(i-1,j,k) - u2 + u(i+1,j,k));
+        T u_yy   = cy * (u(i,j-1,k) - u2 + u(i,j+1,k));
+        T u_zz   = cz * (u(i,j,k-1) - u2 + u(i,j,k+1));
         L(i,j,k) = u_xx + u_yy + u_zz; }}}
 
        
@@ -473,14 +474,57 @@ http://hplgit.github.io/num-methods-for-PDEs/doc/pub/wave/sphinx/._main_wave005.
 
 
 
+Notes from Numerical Sound Synthesis:
+Chapter 5:
+-a general PDE in 1D for a function u(x,t) can be expressed as F(x,t,u,u_x,u_t,u_xx,u_tt,...) = 0
+-if F does not explicitly depend on x, it is shift-invariant. shift-invariance models uniform 
+ material properties
+-if F does not explicitly depend on t, it is time-invariant. time-invariance models static 
+ operating (playing) conditions
+-in the book, that function F is expressed as an operator P = P(d/dt,d/dx,d^2/dt^2,d^2/dx^2,...) 
+ acting on u(x,t): P u = 0 (Eq. 5.1)...but i think, that notation is a bit obscure...
+-linear time-invariant and linear shift-invariant systems are abbreviated as LTI and LSI
+-in addition to the PDE, boundary conditions and initial conditions must be supplied
+-PDEs in musical acoustics usually: 
+ -are 2nd order in time (i.e. u_t and u_tt appears but no higher time-derivatives)
+ -involve even order spatial derivatives such as u_xx, u_xxxx which reflects direction independence
+ -are of the hyperbolic type
+-the wave-equation in 1D is: u_tt = g^2 * u_xx, where g^2 (in the book: gamma-squared) is the 
+ square of the wave-velocity (or its reciprocal? -> figure out!)
+ -the wave equation is linear, iff g does not depend on u
+ -if g depends on x, the system is not LSI
+ -if g depends on t, the system is not LTI
+-von Neumann analysis (an extension of the z-transform to distributed systems) is only applicable 
+ to LTI/LSI systems
+-LTI but non-LSI systems still allow analysis in terms of modes and frequencies but there's no 
+ global wave-velocity
+-for analyzing PDEs, one may apply the Laplace transform in the time domain:
+   û(x,s)  = integral u(x,t) * exp(-s*t) dt     Eq. 5.2
+ or the Fourier transform in the spatial domain:
+   u'(b,t) = integral u(x,t) * exp(-j*b*x) dx   Eq. 5.3
+ where the integrals both run from -inf to inf. For problems over a finite spatial domain, Fourier 
+ series  may be used. The derivative operators transform to multiplications to corresponding powers
+ of s or j*b, for example: u_tt -> s^2 * û, u_xx -> (j*b)^2 * u'
+-one may also plug the ansatz: u(x,t) = exp(s*t + j*b*x) into the PDE in order to analyze, under 
+ which conditions such a special function (representing a wave of frequency s and and wavenumber b)
+ is a solution of the PDE. ...doing this will lead to constraints for how frequencies and 
+ wavenumbers must be related? or what? -> try it!
+
+todo: energy-analysis, dispersion relations, von Neumann analysis, 
+  numerical schemes/energy/dispersion/boundary-conditions
+
+
+
+
 Notes on the 3D wave equation
 
 in Ingenieurakustik, it's derived in an interesting way:
   rho * v_t = -p_x           Eq. 1.1
   rho * v_x = -p_t / c^2     Eq. 1.8
-so, it's expressed as a system of two first order PDEs. rho is the density (i think), p is the 
-pressure and v is the velocity. From this system of two first order PDEs, we get a second order PDE
-for p by differentiating the 1st equation with respect to x and the 2nd with respect to t:
+so, it's expressed as a system of two first order PDEs (where does *that* derive from?). rho is the 
+density (i think), p is the pressure and v is the velocity. From this system of two first order 
+PDEs, we get a second order PDE for p by differentiating the 1st equation with respect to x and the 
+2nd with respect to t:
   p_xx = p_tt / c^2          Eq. 1.9
 We may also get a 2nd order PDE for v by differentiating (1.1) with respect to t and (1.8) with 
 respect to x:
@@ -529,7 +573,7 @@ Ideas:
 -we could consider different angles at which the strings cross - but for modeling only the z 
  displacement, that angle should be irrelevant
 -we would have two 1D PDEs coupled by a nonlinear mechanism, so it's a nice starting point for 
- studying the relevant modling techniques
+ studying the relevant modeling techniques
 -we could actually make the coupling linear as well, by letting the force just be proportional and 
  opposite to the displacement-difference at the contact point - this would correspond to a 
  bi-directional Hooke-spring with equilibirium when it's squeezed into zero space and the strings 
