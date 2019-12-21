@@ -19,7 +19,14 @@ Note that the constructor has to perform two heap allocations (for two std::vect
 an array like this is not a free operation. 
 
 todo: maybe reduce that to one allocation by using a single array for both shape and strides 
-- maybe an array of struct DimInfo which has fields size, stride - ...as optimization later */
+- maybe an array of struct DimInfo which has fields size, stride - ...as optimization later 
+
+...or we should not own the shape and strides array - client code must allocate both and give 
+pointers to this class - yes this will also allow the view to be used when the array has another
+memory layout - we don't decide the memory layout in the view
+
+
+*/
 
 template<class T>
 class rsMultiArrayView
@@ -252,6 +259,12 @@ protected:
   std::vector<int> strides;
   T* dataPointer = nullptr;
   int size = 0;
+
+  // todo: get rid of strides, let shape be a non-owned pointer to int, store size of the shapes 
+  // array - we want to avoid memory allocations when creating such a view object - creating a view
+  // should be cheap! ...actually, we would only need two pointers: data and strides - to support 
+  // the () syntax for accessing elements - but then we couldn't check for out-of-range indexes - 
+  // for that, we need also the shape
 
 };
 

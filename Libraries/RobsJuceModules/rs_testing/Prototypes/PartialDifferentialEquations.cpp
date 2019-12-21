@@ -470,6 +470,34 @@ http://hplgit.github.io/num-methods-for-PDEs/doc/pub/wave/sphinx/._main_wave005.
 
 
 
+Notes on the 3D wave equation
+
+in Ingenieurakustik, it's derived in an interesting way:
+  rho * v_t = -p_x           Eq. 1.1
+  rho * v_x = -p_t / c^2     Eq. 1.8
+so, it's expressed as a system of two first order PDEs. rho is the density (i think), p is the 
+pressure and v is the velocity. From this system of two first order PDEs, we get a second order PDE
+for p by differentiating the 1st equation with respect to x and the 2nd with respect to t:
+  p_xx = p_tt / c^2          Eq. 1.9
+We may also get a 2nd order PDE for v by differentiating (1.1) with respect to t and (1.8) with 
+respect to x:
+  v_xx = v_tt / c^2          Eq. 1.10
+So far, this applies to the 1D wave-equation - the generalization to 3D is:
+  rho   v_t    = -grad(p)       Eq. 1.14
+  rho * div(v) = -p_t / c^2     Eq. 1.15
+where v is now a vector field, div(v) is its divergence (= vx_x + vy_y + vz_z where vx_x means the 
+x-derivative of the x-component of the velocity, etc.) and grad(p) is the gradient (p_x, p_y, p_z) 
+of the scalar pressure field p. They also introduce a velocity potential phi (i call it V) which is 
+a scalar field with the property grad(V) = v - the vector v is the gradient of the scalar V. The 
+system of two 1st order PDEs can again be written as a single 2nd order PDE either in the pressure 
+p or the velocity potential V:
+  Lap(p) = p_tt / c^2    Eq. 1.17
+  Lap(V) = V_tt / c^2    Eq. 1.16
+where Lap(...) means the Laplacian operator: Lap(p) = p_xx + p_yy + p_zz
+  
+  
+by
+
 
 Ideas:
 

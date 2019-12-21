@@ -215,6 +215,11 @@ bool testMultiArray1()
   // ...yep - it does :-)
 
 
+  // todo: 
+  // -implement multi-index to flat-index conversion a static member function in 
+  //  rsMultiArrayView with and without using a strides-array and test it
+  //  -maybe make performance tests with and without precomputed strides
+  // -t
 
 
 
