@@ -465,6 +465,10 @@ public:
   output signals. */
   T getPressureAt(int i, int j, int k) const { return u(i,j,k); }
 
+  T getPressureDerivativeAt(int i, int j, int k) const { return u_t(i,j,k); }
+
+  T getPressureSecondDerivativeAt(int i, int j, int k) const { return u_tt(i,j,k); }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 

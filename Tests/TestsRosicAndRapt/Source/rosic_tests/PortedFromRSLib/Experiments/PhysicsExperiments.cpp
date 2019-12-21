@@ -406,8 +406,8 @@ void rectangularRoom()
 
   // room lengths in the 3 coordiniates (length, width, height)
   float Lx = 1.f;
-  float Ly = 1.f;
-  float Lz = 1.f;
+  float Ly = 1.0f;
+  float Lz = 1.0f;
 
 
 
@@ -427,17 +427,17 @@ void rectangularRoom()
   //  room
   // -to make it more realistic, add damping...maybe frequency dependent damping... how?
 
-  int Nt = 2000; // number of time-steps
+  int Nt = 5000; // number of time-steps
 
   // indices where to put the initial impulse and to read out the signal:
-  int ix = 5;
-  int iy = 5;
-  int iz = 5;
+  int ix = 2;
+  int iy = 3;
+  int iz = 4;
 
 
 
   std::vector<float> E_kin(Nt), E_pot(Nt), E_sec(Nt);
-  std::vector<float> h(Nt);    // impulse response at location of excitation
+  std::vector<float> h(Nt), h1(Nt), h2(Nt);    // impulse response at location of excitation
 
 
   room.reset();
@@ -451,6 +451,8 @@ void rectangularRoom()
 
 
     h[n]     = room.getPressureAt(ix, iy, iz);
+    h1[n]    = room.getPressureDerivativeAt(ix, iy, iz) * dt;
+    h2[n]    = room.getPressureSecondDerivativeAt(ix, iy, iz) * (dt*dt);
 
 
     room.updateState();
@@ -466,7 +468,7 @@ void rectangularRoom()
 
   // todo: write the impulse response to a wave file
 
-  //rsPlotVectors(h);
+  rsPlotVectors(h, h1, h2);
   //rsPlotVectors(E_pot, E_kin, E_pot+E_kin, E_sec);
   rsPlotVectors(E_pot, E_kin, E_pot+E_kin);
   // E_pot and E_kin seem to be on a vastly different scale - figure out the scale factors from 
@@ -508,6 +510,8 @@ void rectangularRoom()
 
   // -check out, how numerical energy is computed in Bilbao's book - but he uses schemes instead of
   //  physical variables
+
+  // https://en.wikipedia.org/wiki/Sound_power
 
   // i guess, we get a lot of cache-misses when the sizes grow larger...we should use 
   // Nx <= Ny <= Nz for best cache locality...maybe with more complex data-layout using a 

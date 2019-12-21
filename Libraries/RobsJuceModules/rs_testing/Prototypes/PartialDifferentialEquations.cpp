@@ -325,6 +325,9 @@ void rsRectangularRoom<T>::updateState()
   int N = u.getSize();
   rsArray::addWithWeight(u_t.getDataPointer(), N, u_tt.getDataPointer(), k); // is k the right scaler?
 
+  // maybe we should set the velocities to zero at the boundary...currently they already are 
+  // because the lapalcian is only computed at inetrior points
+
   // update the pressures by adding a fraction of the "velocities":
   rsArray::addWithWeight(u.getDataPointer(), N, u_t.getDataPointer(), k); // is k the right scaler?
 
