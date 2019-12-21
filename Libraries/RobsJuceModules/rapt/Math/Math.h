@@ -10,6 +10,7 @@ namespace RAPT
 #include "LinearAlgebra/BandDiagonalSolver.hpp"
 #include "LinearAlgebra/LinearAlgebra.h"
 
+#include "Misc/FourierTransformer.h"
 #include "Misc/Statistics.h"
 #include "Misc/CurveFitting.h"
 #include "Misc/RatioGenerator.h"
@@ -43,7 +44,11 @@ namespace RAPT
 #include "Numerics/Optimization.h"
 // todo: Optimizer, CurveFitter, Interpolator, Differentiator, InitialValueSolver, 
 
+#include "Functions/WindowFunctions.h"   // may use FFT stuff for Dolph/Chebychev window later
+
 #include "Functions/FunctionOperators.h" // may use stuff from NumericCalculus later - move it down, then
+                                         // perhaps this should not yet be in the library
+
 
 }
 

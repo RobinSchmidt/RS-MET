@@ -1,5 +1,8 @@
-#ifndef RAPT_MULTIARRAY_H
-#define RAPT_MULTIARRAY_H
+#ifndef RAPT_MULTIARRAY_OLD_H
+#define RAPT_MULTIARRAY_OLD_H
+
+// this implementation is obsolete - there's a new implementation in the Data folder which uses 
+// more modern programming techniques
 
 /** This is a class for representing and manipulating multi-dimensional arrays. An 1D array may be
 seen as a vector, a 2D array as a matrix, a 3D array as an array of matrices sliced one after
@@ -13,7 +16,7 @@ kind of hyper-cubic array (square-matrix in 2D case, cube in 3D case, etc.), the
 be used to represent tensors.  */
 
 template<class ElementType>
-class rsMultiArray
+class rsMultiArrayOld
 {
 
 public:
@@ -24,26 +27,26 @@ public:
   initializes this scalar to zero.
   \todo: make this initialization optional
   */
-  rsMultiArray();
+  rsMultiArrayOld();
 
   /** Constructor for constructing a multiarray of the desired dimensions with
   optional initialization of the elements with zero. */
-  rsMultiArray(const rsUint32 numIndices, const rsUint32 indexRanges[], bool initWithZeros = true);
+  rsMultiArrayOld(const rsUint32 numIndices, const rsUint32 indexRanges[], bool initWithZeros = true);
 
   /** Copy constructor. */
-  rsMultiArray(const rsMultiArray& other);
+  rsMultiArrayOld(const rsMultiArrayOld& other);
 
 
   /** Destructor. */
-  ~rsMultiArray();
+  ~rsMultiArrayOld();
 
 
   /** \name Operators */
 
   //rsMultiArray& operator=(const rsMultiArray& a);
 
-  bool operator==(const rsMultiArray& a) const;
-  bool operator!=(const rsMultiArray& a) const;
+  bool operator==(const rsMultiArrayOld& a) const;
+  bool operator!=(const rsMultiArrayOld& a) const;
 
   /*
   rsMultiArray operator-();
@@ -115,7 +118,7 @@ public:
 
   /** Returns true if this MultiArray has the same number of indices and the same index-ranges
   as the passed parameter. */
-  bool isOfSameTypeAs(const rsMultiArray<ElementType> &other) const;
+  bool isOfSameTypeAs(const rsMultiArrayOld<ElementType> &other) const;
 
   // getMin, getMax, getNormL1, getNormL2, etc.
 
@@ -123,12 +126,12 @@ public:
   /** \name Algebraic Operations */
 
   /** Adds two multi-arrays (assumed to be of the same type) element-wise. */
-  static void add(const rsMultiArray<ElementType> &left,
-    const rsMultiArray<ElementType> &right, rsMultiArray<ElementType> &result);
+  static void add(const rsMultiArrayOld<ElementType> &left,
+    const rsMultiArrayOld<ElementType> &right, rsMultiArrayOld<ElementType> &result);
 
   /** Subtracts two multi-arrays (assumed to be of the same type) element-wise. */
-  static void subtract(const rsMultiArray<ElementType> &left,
-    const rsMultiArray<ElementType> &right, rsMultiArray<ElementType> &result);
+  static void subtract(const rsMultiArrayOld<ElementType> &left,
+    const rsMultiArrayOld<ElementType> &right, rsMultiArrayOld<ElementType> &result);
 
   /** Forms an outer product of the two given multiarrays. As an example, let A be an array with
   3 indices, B be an array with 2 indices. The outer product array C = A*B is an array with
@@ -138,20 +141,20 @@ public:
   C_pqijk = B_pq  * A_ijk
   from which we see that the outer product is not commutative. A*B and B*A have the same elements
   but in a different order. */
-  static void outerProduct(const rsMultiArray<ElementType> &left,
-    const rsMultiArray<ElementType> &right, rsMultiArray<ElementType> &result);
+  static void outerProduct(const rsMultiArrayOld<ElementType> &left,
+    const rsMultiArrayOld<ElementType> &right, rsMultiArrayOld<ElementType> &result);
 
   /** Given a multi-array B ("rightFactor") and a multi-array C ("outerProduct") that is assumed
   to be is an outer product of A and B, such that C = A * B, this function retrieves the left
   factor A ("result"). */
-  static void leftFactor(const rsMultiArray<ElementType> &outerProduct,
-    const rsMultiArray<ElementType> &rightFactor, rsMultiArray<ElementType> &result);
+  static void leftFactor(const rsMultiArrayOld<ElementType> &outerProduct,
+    const rsMultiArrayOld<ElementType> &rightFactor, rsMultiArrayOld<ElementType> &result);
 
   /** Given a multi-array A ("leftFactor") and a multi-array C ("outerProduct") that is assumed
   to be is an outer product of A and B, such that C = A*B, this function retrieves the right
   factor B ("result"). */
-  static void rightFactor(const rsMultiArray<ElementType> &outerProduct,
-    const rsMultiArray<ElementType> &leftFactor, rsMultiArray<ElementType> &result);
+  static void rightFactor(const rsMultiArrayOld<ElementType> &outerProduct,
+    const rsMultiArrayOld<ElementType> &leftFactor, rsMultiArrayOld<ElementType> &result);
 
   /** Performs a contraction with respect to a pair of indices.
 
@@ -159,7 +162,7 @@ public:
 
   B_ijk = sum_p A_ipjpk
   */
-  static rsMultiArray<ElementType> contract(const rsMultiArray<ElementType> &subject,
+  static rsMultiArrayOld<ElementType> contract(const rsMultiArrayOld<ElementType> &subject,
     rsUint32 index1, rsUint32 index2);
 
 protected:

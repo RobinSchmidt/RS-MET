@@ -812,6 +812,33 @@ void setupHarmonicAnalyzerForModal(RAPT::rsHarmonicAnalyzer<double>& analyzer, d
   analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
 }
 
+void modalDecayFit()
+{
+  // Computes the A,tau values for an exponential decay function f(t) = A * exp(-t/tau) given two
+  // time instants t1,t2 and associated amplitudes a1,a2. Then it creates the actual decay function
+  // and plots it.
+
+  int    N  = 2000;    // number of samples
+  double fs = 10000;   // sample rate
+  double t1 = 0.04;    // first time instant
+  double a1 = 0.7;     // first amplitude value
+  double t2 = 0.14;    // second time instant
+  double a2 = 0.3;     // second amplitude value
+
+  // compute parameters for exponential:
+  double A, tau;
+  rsExpDecayParameters(t1, a1, t2, a2, &A, &tau);
+
+  // create and plot exponential decay:
+  typedef std::vector<double> Vec;
+  Vec t(N), x(N);
+  RAPT::rsArray::fillWithIndex(&t[0], N);
+  t = (1.0/fs) * t;
+  for(int n = 0; n < N; n++)
+    x[n] = A * exp(-t[n]/tau);
+  rsPlotVectorsXY(t, x);  // OK - looks good
+}
+
 void modalAnalysis1()
 {
   //double f   = 1000;
@@ -849,9 +876,6 @@ void modalAnalysis1()
 
 
 
-
-
-
   //rsPlotVector(x);
   rsPlotVectors(x, ys, ym);
   //rosic::writeToMonoWaveFile("ModalOriginal.wav", &x[0], N, fs);
@@ -859,19 +883,26 @@ void modalAnalysis1()
 
 void modalAnalysisPluck()
 {
-  double key = 64;
+  // We create a plucked type of sound using modal synthesis, then analyze that sound via the 
+  // sinusoidal analysis framework and then further analyze the output of the sinusoidal analysis
+  // in terms of modal parameters. The goal is to recover the original modal parameters as
+  // accurately as possible. If we are able to correctly recover modal parameters, we may also
+  // apply the same analysis algorithm to natural sounds.
+
+  // user parameters:
+  double key = 65;
   double sampleRate = 44100;
   int length = 44100;
 
+  // create the input signal:
   typedef std::vector<double> Vec;
-
   Vec x = createModalPluck(key, sampleRate, length);
 
   // create a sinusoidal model and resynthesize sinusoidally:
   RAPT::rsHarmonicAnalyzer<double> sineAnalyzer;
   setupHarmonicAnalyzerForModal(sineAnalyzer, sampleRate);
   RAPT::rsSinusoidalModel<double> sineModel = sineAnalyzer.analyze(&x[0], length);
-  sineModel.removePartialsAbove(66);  // model shows partials up to 40 kHz - why?
+  sineModel.removePartialsAbove(66);  // model for key=64 shows partials up to 40 kHz - see below
   sineModel.removePartial(0);         // DC confuses modal model
   //plotSineModel(sineModel, sampleRate);
   Vec ys = synthesizeSinusoidal(sineModel, sampleRate);
@@ -890,7 +921,127 @@ void modalAnalysisPluck()
   rosic::writeToMonoWaveFile("ModalPluckOriginal.wav", &x[0],  length, (int)sampleRate);
   rosic::writeToMonoWaveFile("ModalPluckSinusoidal.wav", &ys[0], (int)ys.size(), (int)sampleRate);
   rosic::writeToMonoWaveFile("ModalPluckModal.wav", &ym[0], (int)ym.size(), (int)sampleRate);
+
+  // Observations:
+  // -with key=64, the model contains partials with frequencies up to 40kHz - this is because the 
+  //  maximum measured cycle-length is around 135 and the pitch-flattening step stretches this out 
+  //  to the next power of two which is 256 - so the cycle-lenth that goes into the analysis is 
+  //  almost twice the original cycle length, leading to a nomial doubling of the bandwidth - the 
+  //  amplitudes of the partials above fs/2 are numerically close to zero, though
+  //  -maybe the analyzer should restrict itself to analyze only frequencies that fall into the
+  //   range up to the original fs/2, not to the upsampled fs/2
+  // -with key=65, the maximum measured cycle-length is 127.73 and the pitch-flattener selects 128
+  //  as its target length
 }
+
+
+// maybe move this before modalAnalysisPluck - it's sort of a preliminary - it analyzes only a 
+// single partial
+void modalPartialResynthesis() // maybe rename to exponentialTailModeling
+{
+  // Tries to resynthesize a partial via an exponentially decaying sinusoid. The difference to the
+  // function above is that we use the original phase of the analyzed partials. This is mostly for 
+  // Elan to splice an exponential decay to some sample where the  initial section is taken from
+  // the original - maybe that means, we should match amplitude and phase exactly at the 
+  // splice-point, which the user can select
+
+  // user parameters:
+  double key = 65;
+  double sampleRate = 44100;
+  int N = 44100;              // length in samples
+  int partialIndex = 2;       // partial index on which the analysis/resynthesis is tested
+  int spliceIndex  = 200;     // frame index, at which we want to match amplitude and phase:
+
+  // create the input signal:
+  typedef std::vector<double> Vec;
+  Vec x = createModalPluck(key, sampleRate, N);
+
+  // create the sinusoidal model:
+  RAPT::rsHarmonicAnalyzer<double> sineAnalyzer;
+  setupHarmonicAnalyzerForModal(sineAnalyzer, sampleRate);
+  RAPT::rsSinusoidalModel<double> sineModel = sineAnalyzer.analyze(&x[0], N);
+
+  // pick the partial with which we do our experiments and extract envelopes:
+  RAPT::rsSinusoidalPartial<double> partial = sineModel.getPartial(partialIndex);
+  Vec timeArray  = partial.getTimeArray();
+  Vec ampArray   = partial.getAmplitudeArray();
+  Vec freqArray  = partial.getFrequencyArray();
+  Vec phaseArray = partial.getPhaseArray();
+  int numFrames  = (int) timeArray.size();
+  //rsPlotVectorsXY(timeArray, ampArray);    // plot amplitude envelope
+
+
+  int maxIndex  = RAPT::rsArray::maxIndex(&ampArray[0], numFrames);
+
+  // estimate decay time and amplitude of an exponential decay that fits the amp-env:
+  double A, tau;
+  //rsExpDecayParameters(numFrames, &timeArray[0], &ampArray[0], maxIndex, spliceIndex, &A, &tau);
+  rsExpDecayParameters(timeArray[maxIndex], ampArray[maxIndex], 
+    timeArray[spliceIndex], ampArray[spliceIndex], &A, &tau); // verify, if called correctly
+
+
+  // create an exponential decay with given A,tau - the time axis is obtained the analysis frames:
+
+  Vec a2(numFrames);
+  for(int k = 0; k < numFrames; k++)
+    a2[k] = A * exp(-timeArray[k] / tau);
+
+  // plot actual amplitude envelope and the exponential decay that is supposed to fit it:
+  //rsPlotVectorsXY(timeArray, ampArray, a2);
+  // ok - this looks ok - maybe it could be tweaked to match the original envelope even better by
+  // choosing the first match point not exactly at the peak but some time later (because later, the
+  // influence of the attack exponential has decayed away and doesn't disturb the exponential decay
+  // anymore)
+
+  Vec tail = rsExpDecayTail(partial, spliceIndex, sampleRate);
+  //rsPlotVector(tail);
+
+  // generate the partial from the sinusoidal model and write both into a stereo wavefile for 
+  // comparison:
+  sineModel.keepOnly({ (size_t)partialIndex });
+  Vec ys = synthesizeSinusoidal(sineModel, sampleRate);
+
+
+  double spliceTime = timeArray[spliceIndex];
+    // this is the time-instant (in seconds) at which instantaneous phase and amplitude of the 
+    // exponentially decaying sinusoid will match the values from the sine-model - for splicing
+    // together original and tail, it's best to use a crossfade centered at that instant
+
+  rosic::writeToMonoWaveFile("PartialResynth.wav", &ys[0],   (int)ys.size(),   (int)sampleRate);
+  rosic::writeToMonoWaveFile("PartialExpTail.wav", &tail[0], (int)tail.size(), (int)sampleRate);
+    // in the audiofiles, zoom in to the spliceTime to verify that both signals indeed do match
+    // phase- and amplitude-wise at that instant
+
+
+  // todo: maybe instead of reading out the amplitude at two selected points, estimate A,tau from
+  // the energy-decay-relief - see section 2.2.5 here:
+  // https://www2.ak.tu-berlin.de/~akgroup/ak_pub/abschlussarbeiten/2014/KaapPascal_MasA.pdf
+
+  // todo: in addition to estimate decay and amplitude, also estimate attack....actually, attack is 
+  // the only thing that is missing to make a full modal model of the partial
+
+
+
+  // todo: estimate attack, decay, amplitude from (t,a)
+
+  // create a modal model of the partial:
+  //rsModalAnalyzer<double> modeAnalyzer;
+  //rsModalFilterParameters<double> modalParams = modeAnalyzer.getModalModel(partial);
+  // params are frequency, phase, amplitude, attack, decay - in this context, only 
+  // amplitude, attack, decay are relevant - actually only amplitude and decay because the portion,
+  // before but it's nicer to include the attack - hmm - maybe for the splicing of an exponential 
+  // decay, this is not what we need....maybe just work with the t,a,f,p arrays here directly
+ 
+
+  /*
+  std::vector<rsModalFilterParameters<double>> modeModel
+    = modeAnalyzer.getModalModel(sineModel);
+  Vec ym = synthesizeModal(modeModel, sampleRate, length);
+  */
+
+  //rosic::writeToMonoWaveFile("ModalPluckOriginal.wav", &x[0],  length, (int)sampleRate);
+}
+
 
 /*
 Ideas:

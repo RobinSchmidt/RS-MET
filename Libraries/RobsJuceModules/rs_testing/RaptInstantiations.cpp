@@ -297,7 +297,8 @@ template float RAPT::rsStatistics::proportionalRegression(int N, const float* x,
 template void RAPT::rsRemoveCorrelationBias(double x[], int N, double r[]);
 
 
-template class RAPT::rsMultiArray<float>;
+template class RAPT::rsMultiArrayOld<float>;
+
 
 template double RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(double fl, double fu);
 template double RAPT::rsBandwidthConverter::bandedgesToAbsoluteBandwidth(double fl, double fu);
@@ -366,6 +367,7 @@ template class RAPT::rsResampler<double, double>;
 template class RAPT::rsTwoBandSplitter<float, float>;
 template class RAPT::rsMultiBandSplitter<float, float>;
 template class RAPT::rsExponentialEnvelopeMatcher<double>;
+template class RAPT::rsPeakPicker<double>;
 template class RAPT::rsEnvelopeExtractor<double>;
 
 
@@ -402,6 +404,8 @@ template void RAPT::rsRecreateSineWithPhaseCatch(double *x, double *y, int N, do
 template double RAPT::rsSineShiftAmount(double *x, int N, int n0, double p0, double w);
 template double RAPT::rsSineShiftAmount(double *x, int N, int n0, double p0);
 template double RAPT::rsEnvelopeMatchOffset(const double* x, int Nx, const double* y, int Ny, int D);
+template std::vector<double> RAPT::rsExpDecayTail(const RAPT::rsSinusoidalPartial<double>& partial, 
+  int spliceIndex, double sampleRate);
 
 // move to rsFilterAnalyzer:
 template double RAPT::analogBiquadMagnitudeSquaredAt(double B0, double B1, double B2, double A0,

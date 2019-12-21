@@ -3,13 +3,12 @@
 namespace RAPT
 {
 
-#include "Data/MultiArray.cpp"
+//#include "Data/MultiArray.cpp"    // deprecated version, new version in Data folder
 
 #include "Math/Matrix.cpp"
 #include "Math/FunctionObjects.cpp"
 #include "Math/GradientBasedMinimizer.cpp"
 #include "Math/MultiLayerPerceptron.cpp"
-#include "Math/FourierTransformer.cpp"
 #include "Math/NumberTheory.cpp"
 #include "Math/Transforms.cpp"
 #include "Math/Statistics.cpp"
@@ -22,7 +21,6 @@ namespace RAPT
 #include "MiscAudio/DelayLine.cpp"
 #include "MiscAudio/MiscAudio.cpp"  // may have to be included later (needs higher level stuff)
 #include "MiscAudio/Saturator.cpp"
-#include "MiscAudio/WindowFunctions.cpp"
 #include "MiscAudio/AudioFunctions.cpp"
 #include "MiscAudio/BandwidthConverter.cpp"
 #include "MiscAudio/DoublePendulum.cpp"

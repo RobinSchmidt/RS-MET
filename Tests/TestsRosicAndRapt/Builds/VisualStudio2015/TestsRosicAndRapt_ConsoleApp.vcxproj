@@ -420,6 +420,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp"/>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -447,6 +450,12 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterNew.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterOld.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\Plotting.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -463,6 +472,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\MatrixTools.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\MultiArray.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\StandardContainerTools.cpp">
@@ -579,6 +591,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\SinCosTable.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\WindowFunctions.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Geometry\ConicSection.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -618,7 +633,13 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LinearAlgebra.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\OouraFFT\fft4g.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\CurveFitting.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\FourierTransformer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\RatioGenerator.cpp">
@@ -666,6 +687,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\HarmonicAnalyzer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\MiscSpectral.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\SinusoidalAnalyzer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -705,9 +729,6 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\Flags.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\MultiArray.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\BandSplitter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -733,12 +754,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\PhonoFilter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\OouraFFT\fft4g.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\FourierTransformer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\FunctionObjects.cpp">
@@ -811,9 +826,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\Saturator.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\WindowFunctions.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Sampling\MiscUnfinished.cpp">
@@ -2429,6 +2441,7 @@
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\ModalExamples.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\SampleMapGenerator.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\UnitTestsRosic.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiter.h"/>
@@ -2439,6 +2452,8 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\Constants.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\DebugTools.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotter.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterNew.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterOld.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\MacroDefinitions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\Plotting.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\SortAndSearch.h"/>
@@ -2447,6 +2462,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Buffers.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Data.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\MatrixTools.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\MultiArray.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Range.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\StandardContainerTools.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\MovingWindowFilters.h"/>
@@ -2489,6 +2505,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\RealFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\Sigmoids.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\SinCosTable.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\WindowFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Geometry\ConicSection.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Geometry\Ellipse.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Geometry\GeometricTransformations.h"/>
@@ -2501,6 +2518,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\BandDiagonalSolver.hpp"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LinearAlgebra.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\CurveFitting.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\FourierTransformer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\RatioGenerator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\Statistics.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\Interpolation.h"/>
@@ -2516,6 +2534,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Physics\ParticleSystem.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Physics\Physics.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\HarmonicAnalyzer.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\MiscSpectral.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\SinusoidalAnalyzer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\SinusoidalModel.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\SinusoidalProcessor.h"/>
@@ -2529,7 +2548,6 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\ResponseGetters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Analysis\ZeroCrossingPitchDetector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\Flags.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\MultiArray.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\BandSplitter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\Biquad.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\FakeResonanceFilter.h"/>
@@ -2541,7 +2559,6 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\PhonoFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\AffineTransform2D.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\DifferentialEquationSystem.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\FourierTransformer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\FunctionObjects.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\GeometricFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\GradientBasedMinimizer.h"/>
@@ -2571,7 +2588,6 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\Polyphony.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\ResponseGetters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\Saturator.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\WindowFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Sampling\MiscUnfinished.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Sampling\SampleManipulation.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Unfinished.h"/>

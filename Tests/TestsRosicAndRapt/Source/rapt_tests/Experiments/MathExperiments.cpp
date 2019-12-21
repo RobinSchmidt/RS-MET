@@ -74,6 +74,62 @@ void ellipseLineIntersections()
   plt.plot();
 }
 
+void finiteDifferenceStencilCoeffs()
+{
+  // Computation of coefficients for arbitrary finite difference stencils, see:
+  // http://web.media.mit.edu/~crtaylor/calculator.html
+
+  typedef std::vector<double> Vec;
+  Vec s = {-2, -1, 0, 1, 2};         // normalized stencil offsets
+  int d = 4;                         // order of derivative to be approximated
+
+  // establish matrix:
+  int N = (int) s.size();    // stencil length
+  double** A;                // matrix data
+  MatrixTools::rsAllocateMatrix(A, N, N);
+  for(int i = 0; i < N; i++)
+    for(int j = 0; j < N; j++)
+      A[i][j] = pow(s[j], i);
+  //rsMatrix<double> A_dbg(N, N, A);  // for debug
+
+  // establish right-hand-side vector:
+  Vec rhs(N);
+  rsFill(rhs, 0.0);
+  rhs[d] = rsFactorial(d);
+
+  // compute coeffs by solving the linear system:
+  Vec c(N);
+  rsLinearAlgebra::rsSolveLinearSystem(A, &c[0], &rhs[0], N);
+  // In practice, the resulting coefficients have to be divided by h^d where h is the step-size and
+  // d is the order of the derivative to be approximated. The stencil values in s are actually 
+  // multipliers for some basic step-size h, i.e. a stencil -2,-1,0,1,2 means that we use values
+  // f(x-2h),f(x-h),f(x),f(x+h),f(x+2h) to approximate the d-th derivative of f(x) at x=0
+
+  // todo: 
+  // -move to library
+  // -add unit test
+  // -try the example with the 4-th order derivative and 5-point stencil that is presented
+  //  on the website
+  // -try different examples and compare results with results from the website - use also
+  //  asymmetrical and/or non-equidistant stencils
+  // -if it all works, maybe implement it also in sage to get rid of roundoff errors
+  // -maybe we should round the final coeffs? are they supposed to be integer? ...maybe only, if
+  //  the stencil offsets are all integers?
+
+  // stencil = -2,-1,0,1,2, d = 4:
+
+  // stencil = -2,-1,0,3,4, d = 3:
+  // f_xxx = (-6*f[i-2]+15*f[i-1]-10*f[i+0]+1*f[i+3]+0*f[i+4])/(10*1.0*h**3)
+
+  // -2,-1,0,0.5,2, d=3
+  // f_xxx = (-27*f[i-2]+40*f[i-1]+90*f[i+0]-128*f[i+0.5]+25*f[i+2])/(60*1.0*h**3)
+
+  // -2,-1,0,0.5:
+  // f_xx = (-1*f[i-2]+10*f[i-1]-25*f[i+0]+16*f[i+0.5])/(5*1.0*h**2)
+  // f_xxx = (-6*f[i-2]+20*f[i-1]-30*f[i+0]+16*f[i+0.5])/(5*1.0*h**3)
+
+  MatrixTools::rsDeAllocateMatrix(A, N, N);
+}
 
 void interpolatingFunction()
 {

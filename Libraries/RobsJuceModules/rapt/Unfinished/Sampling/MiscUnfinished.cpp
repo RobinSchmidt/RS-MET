@@ -1546,6 +1546,104 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
   return f;
 }
 
+
+
+//=================================================================================================
+
+template<class T>
+std::vector<int> rsPeakPicker<T>::getPeakCandidates(const T* x, int N) const
+{
+  // todo: if smoothing is selected, create a pre-smoothed copy of x and operate on that
+  // and/or apply a few iterations of the ropeway algo as pre-processing step
+
+  std::vector<int> peaks;
+  for(int i = 0; i < N; i++)
+    if(isPeakCandidate(i, x, N))
+      peaks.push_back(i);
+  return peaks;
+}
+
+template<class T>
+bool rsPeakPicker<T>::isPeakCandidate(int index, const T* x, int N) const
+{
+  int iStart = rsMax(0,   index-numLeftNeighbors);
+  int iEnd   = rsMin(N-1, index+numRightNeighbors);
+  for(int i = iStart; i <= iEnd; i++)
+    if(x[index] < x[i])
+      return false;
+  return true;
+  // maybe factor out into rsArray::isPeakOrPlateau(...) or isPeakCandidate
+
+  // this function returns all values within a plateau as peaks - maybe, it should only return the
+  // first and last - that would be sufficient for meaningful linear interpolation
+}
+// maybe make thios static, too - numLeft/RightNeighbors should be passed as parameters
+
+template<class T>
+void rsPeakPicker<T>::ropeway(const T* x, int N, T* y, int numPasses)
+{
+  rsArray::copy(x, y, N);
+  for(int i = 0; i < numPasses; i++) {
+    rsArray::movingAverage3pt(y, N, &y[0]);
+    rsArray::maxElementWise(x, &y[0], N, &y[0]);
+  }
+}
+// maybe move to rsArray ...if it turns out to be useful in other applications
+
+template<class T>
+void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const int* peakIndices,
+  int numPeaks, T* peakProminences)
+{
+  for(int i = 0; i < numPeaks; i++)
+  {
+    int j, k;
+    int peakIndex  = peakIndices[i];
+    T   peakHeight = data[peakIndex];
+
+    T leftBase = peakHeight;
+    for(j = peakIndex-1; j >= 0 && data[j] <= peakHeight; j--)               // scan left
+      if(data[j] < leftBase)
+        leftBase = data[j];
+
+    T rightBase = peakHeight;
+    for(k = peakIndex+1; k < numDataPoints && data[k] <= peakHeight; k++)    // scan right
+      if(data[k] < rightBase)
+        rightBase = data[k]; 
+
+    T base;
+    if(j == -1 || k == numDataPoints)
+      base = rsMin(leftBase, rightBase);
+    else
+      base = rsMax(leftBase, rightBase);
+    peakProminences[i] = peakHeight - base;  // take maximum of the bases/minima
+  }
+
+  // Note:
+  // This is a slight variation of the prominences algorithm: we take the maximum of the bases 
+  // only when both loops did not hit the boundary of the data - the regular algo would take the 
+  // maximum regardless. The reasoning is that when the loop hits the data boundary, it might be 
+  // conceivable that beyond this boundray, an even lower valley may occur before a higher peak is
+  // encountered - the regular algo says: nope, this doesn't happen. It basically considers the 
+  // non-existent data values beyond the data boundaries as inifinitely high peaks. This variation
+  // here considers the non-existent data as infinitely deep valley. I have a gut feeling that this
+  // is the better behavior in edge cases. The regular algo would also always return a zero 
+  // prominence for a peak directly at the boundary. This seems undesirable because boundary 
+  // peaks would always be discarded - but we may want boundary peaks. 
+
+  // In a 2D setting, one would perhaps take the maximum but only over those directions, where the
+  // boundary was not hit
+  // ...maybe make the type of behavior user adjustable
+}
+// make unit tests...
+
+template<class T>
+std::vector<T> rsPeakPicker<T>::preProcess(const T* x, int N) const
+{
+  std::vector<T> y(N);
+  ropeway(x, N, &y[0], numRopewayPasses);
+  return y;
+}
+
 //=================================================================================================
 
 //template<class T>
@@ -1808,10 +1906,8 @@ template<class T>
 void rsEnvelopeExtractor<T>::getPeaks(const T *x, const T *y, int N,
   std::vector<T>& peaksX, std::vector<T>& peaksY)
 {
-  //std::vector<size_t> peakIndices = findPeakIndices(y, N, true, true);
-
   std::vector<size_t> peakIndices = findPeakIndices(y, N, false, false);
-    // false, false because, we don't want to include the end-values, because they will be set
+    // false because, we don't want to include the end-values, because they will be set
     // setupEndValues in getMetaEnvelope
 
   size_t M = peakIndices.size();
@@ -2152,3 +2248,49 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, cons
 // may also use its ingnore-facilities - needs functions 
 //  setAlgorithm(absoluteDifference, squaredDifference, correlation, linearRegression, ...)
 //  setDecimation, setInterpolation
+
+
+
+
+
+
+template<class T>
+void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau)
+{
+  T dt =  t2 - t1;               // time difference
+  T ra =  a2 / a1;               // amplitude ratio
+  *tau = -dt / log(ra);          // time-constant of exponential decay
+  *A   =  a1 / exp(-t1 / *tau);  // amplitude multiplier
+}
+// can we get rid of the call to exp? 
+
+template<class T>
+std::vector<T> rsExpDecayTail(int numFrames, const T* timeArray, const T* ampArray, 
+  int matchIndex1, int matchIndex2, T sampleRate, T freq, T phase, int phaseMatchIndex, 
+  int numSamples)
+{
+  rsAssert(matchIndex2 < numFrames);
+  rsAssert(matchIndex1 < matchIndex2);
+
+  // estimate exponential decay parameters:
+  T A, tau;
+  rsExpDecayParameters(timeArray[matchIndex1], ampArray[matchIndex1], 
+    timeArray[matchIndex2], ampArray[matchIndex2], &A, &tau);
+
+  // generate exponentially enveloped sinusoid:
+  if(numSamples == -1) // use default length when user passes no desired length
+    numSamples = (int) ceil(timeArray[numFrames-1] * sampleRate); 
+  std::vector<T> x(numSamples);
+  T ts = timeArray[phaseMatchIndex];  // time-instant for splicing
+  T p0 = phase - 2*PI*freq*ts;        // start-phase
+  T w  = 2*PI*freq/sampleRate;        // normalized radian frequency
+  for(int n = 0; n < numSamples; n++)
+    x[n]  = A * exp(-(n/sampleRate) / tau) * cos(w*n + p0);
+  // we use the convention here the the phase is with respect to a cosine wave - this is consistent
+  // with the sinusoidal modeling framework....but the modal synthesis stuff uses a sine...hmmm...
+  // this should probably be treated consistently...
+
+  // todo: optimize: use the exponential-decay filter instead of calling exp/cos explicitly
+
+  return x;
+}

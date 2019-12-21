@@ -170,9 +170,359 @@ void heatEquation1D()
 
 void waveEquation1D()
 {
+  int numGridPoints = 65;    // 2^k + 1 are "nice" because factors are exactly representable
+  int numTimeSteps  = 200;
+  int width         = 10;    // width of initial impulse/displacement
 
+  double timeStep   = 1.0 / (numGridPoints-1);  
+  // optimum value - makes numerical solution exact, when waveSpeed is set to unity, if it's less,
+  // we see numerical dispersion, if it's higher, the scheme becomes unstable
+
+  // create and set up wave-equation solver object:
+  rsWaveEquation1D<double> wvEq;
+  wvEq.setNumGridPoints(numGridPoints);  // grid spacing is 1 / (numGridPoints-1)
+
+  wvEq.setWaveSpeed(1.0);
+
+  // create arrays for string state and set up initial conditions for the solver:
+  int Ng = numGridPoints;  // for convenience
+  std::vector<double> u(Ng), v(Ng);
+  RAPT::rsArray::fillWithZeros(&u[0], Ng);
+  //u[Ng/2] = 1.0;
+  rsWindowFunction::hanning(&u[Ng/2-width/2], width);
+  RAPT::rsArray::fillWithZeros(&v[0], Ng);
+  wvEq.setInitialConditions(&u[0], &v[0], Ng, timeStep);
+
+  // go through a couple of rounds of updates:
+  double** plotMatrix;
+  MatrixTools::rsAllocateMatrix(plotMatrix, numTimeSteps, numGridPoints);
+  for(int n = 0; n < numTimeSteps; n++) {
+    wvEq.getState(&u[0], Ng);
+    wvEq.getState(plotMatrix[n], Ng);
+    //rsPlotVector(u);
+    wvEq.updateState(timeStep);
+  }
+
+  // plot results:
   GNUPlotter plt;
+  std::vector<double> t(numTimeSteps), x(numGridPoints);
+  RAPT::rsArray::fillWithIndex(&t[0], numTimeSteps);
+  RAPT::rsArray::fillWithIndex(&x[0], numGridPoints);
+  plt.addDataMatrix(numTimeSteps, numGridPoints, &t[0],  &x[0],plotMatrix);
+  // make convenience-function addDataMatrix that doesn't require x,y axes to be passed
+
+  plt.addGraph("i 0 nonuniform matrix w image notitle");   
+  plt.addCommand("set palette gray");                   // maximum is white
+  plt.plot();
+  // we need a bipolar palette for this
+
+  //plt.addCommand("set hidden3d");
+  //plt.plot3D();
+  // todo: set hidden 3D and/or plot as heatmap
+
+  MatrixTools::rsDeAllocateMatrix(plotMatrix, numTimeSteps, numGridPoints);
+
+  // Observations:
+  // -using a hanning window of width 10, it looks good - the impulses move to the boundary and get 
+  //  reflected (with sign inversion), 
+  // -using a single impulse-spike, the point where the spike was set oscillates at the Nyquist 
+  //  freq (it alternates betwen +1 and -1) and a wave at the spatial Nyquist freq spreads out
+  // -width = 4 gives a pixelated appearance
+  // -waveSpeed = 0.5 shows numerical dispersion
 }
+
+
+
+
+
+// move all this plotting stuff into rs_testing module
+
+void plotMatrix(rsMatrix<double>& A, bool asHeatMap)  // use const
+{
+  GNUPlotter plt;
+  //plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getDataPointerConst());
+  plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getRowPointer(0));
+  if(asHeatMap) {
+    plt.addCommand("set size square");  // make optional
+    plt.addGraph("i 0 nonuniform matrix w image notitle");   
+    plt.addCommand("set palette gray");
+    //plt.setRange(0, A.getNumRows()-1, 0, A.getNumColumns()-1, -1.0, +1.0); // doesn't work
+    plt.plot();
+  }
+  else
+    plt.plot3D();
+}
+// move to rs_testing, maybe have an option to plot it as image/heatmap
+// factor out a function that takes a plotter reference as argument, so we can do some setup calls
+// before plotting - such as setting plotting ranges
+
+void normalizeMatrix(rsMatrix<double>& A, bool removeMean)
+{
+  double *a = A.getDataPointer();
+  int N = A.getSize();
+  RAPT::rsArray::normalize(a, N, 1.0, removeMean); // allow values other than 1
+}
+
+void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
+{
+  if(frames.size() == 0)
+    return;
+  int numRows = frames[0].getNumRows();
+  int numCols = frames[0].getNumColumns();
+  GNUPlotter plt;;
+
+  // write matrices into the datafile:
+  bool normalize = true; // make parameter
+  plt.setDataPrecision(2);
+  for(size_t i = 0; i < frames.size(); i++) {
+    rsAssert(frames[i].getNumRows() == numRows && frames[i].getNumColumns() == numCols, 
+      "all matrices must have the same dimensions");
+    if(!normalize)
+      plt.addDataMatrixFlat(
+        frames[i].getNumRows(), frames[i].getNumColumns(), frames[i].getRowPointer(0));
+    else {
+      rsMatrix<double> A = frames[i];
+      normalizeMatrix(A, true);
+      plt.addDataMatrixFlat(A.getNumRows(), A.getNumColumns(), A.getRowPointer(0));
+    }
+  }
+
+  // set up gnuplot for creating animated gif:
+  std::string datafile = plt.getDataPath();
+
+  plt.addCommand("set palette gray");
+
+  //plt.addCommand("set palette defined(-1 'green', 0 'black', 1 'red')");
+  // we need a better palette - maybe something with nonlinear saturation  - the range around zero
+  // needs to expanded, the ends may be compressed
+  // or: optionally normalize the matrices for each frame - that would use the full contrast range
+  // at the expense of giving false values
+
+  // see here for suitable color maps:
+  // https://www.kennethmoreland.com/color-maps/
+
+  // try to get rid of the coordinate axes, color-bar, etc - just show the pure content
+
+  plt.addCommand("set cbrange [-1:1]"); // should be set by caller - make parameters
+
+  plt.addCommand("set terminal gif animate delay 4 optimize");
+  //plt.addCommand("set terminal gif animate delay 20 optimize");
+  //plt.addCommand("set terminal gif animate delay 5");
+  plt.addCommand("set output 'gnuplotOutput.gif'"); 
+  plt.addCommand("stats '" + datafile + "' nooutput");
+
+  // let gnuplot loop over the frames:
+  plt.addCommand("do for [i=1:int(STATS_blocks-1)] {"); 
+  plt.addCommand("  plot '" + datafile + "' index (i-1) nonuniform matrix w image notitle");
+  plt.addCommand("}");
+  plt.invokeGNUPlot();
+}
+// -datafiles tend to get large - maybe we can reduce the precision - 5 significant digits should be 
+//  enough for line plots, for color-coded images, 3 is actually already enough
+// -with 200 frames, gnuplot takes a *really* long time to produce the gif - and yes, it's really 
+//  gnuplot, not our code here
+// -can we just write the images into .ppm files and use some other tool to create the animated gif 
+//  from them? ...maybe even a commandline tool, so we can automate it?
+//  maybe this: http://www.imagemagick.org/script/command-line-processing.php
+// -try how long it takes without optimization turned on - doesn't seem to help very much - it 
+//  still takes ages - it even seems as if the time increases superlinearly with the number of 
+//  frames - WTF?
+// -can we also produce mp4 files?
+
+void rectangularMembrane()
+{
+  int numGridPoints = 65;    // using powers of two for timeStep also an (inverse)-power-of-2 / (numGridPoints-1)
+  int numTimeSteps  = 200;   // with more than 200, it takes ridiculously long :-(
+  int width         = 6;     // width of initial impulse/excursion
+  int xPos          = 15;    // x-coordinate of initial displacement
+  int yPos          = 25;    // y-coordinate of initial displacement
+
+  double timeStep   = 1.0 / (numGridPoints-1);  
+  timeStep /= sqrt(2.0);  // C = 1/sqrt(2) is the stability limit
+  //timeStep /= 2;
+
+  // set up PDE solver:
+  rsRectangularMembrane<double> membrane;
+  membrane.setGridDimensions(numGridPoints, numGridPoints);
+  membrane.setWaveSpeed(1.0);
+  membrane.setTimeStep(timeStep);
+
+
+  int Ng = numGridPoints;
+  rsMatrix<double> u(Ng, Ng), v(Ng, Ng);
+  u.setAllValues(0);
+  v.setAllValues(0);
+  for(int i = xPos-width/2+1; i < xPos+width/2; i++) {    // why "+1" for start-index?
+    for(int j = yPos-width/2+1; j < yPos+width/2; j++) {
+      double dx = xPos - i;
+      double dy = yPos - j;
+      double r  = sqrt(dx*dx + dy*dy);
+      u(i, j)   = 0.5 * (1 + cos(2*PI*r/width));  
+      // factor out into exciteWithRaisedCosine(strength, width, x, y) 
+      // or addRaisedCosine, addBellInput, addBellExcitation...maybe we should initialize with all
+      // zeros and use a sort of addExcitation function - this can be used during realtime 
+      // operation as well...addBellExcitation, addTriangularExcitation, addSpikeExcitation, etc
+    }
+  }
+  membrane.setInitialConditions(u, v);
+
+  std::vector<rsMatrix<double>> frames;
+  for(int n = 0; n < numTimeSteps; n++) {
+    membrane.getState(u); // maybe getState should return a matrix - but no - that would enforce allocs
+    //plotMatrix(u, true);
+    frames.push_back(u);
+    membrane.updateState();
+  }
+  plotMatricesAnimated(frames);  // does nothing yet - is under construction
+
+  // -maybe try the simplified scheme for special case lambda = 1/sqrt(2) - Eq. 11.12 and then
+  //  compare with general case for a setting that would allow for simplified computations
+
+  // -it can actually generate nice patterns when we place the initial bump at the center 
+  //  -> experiment with other symmetric initial conditions - maybe make a .js version with p5.js
+  //  no need to wait ages for the gif to be rendered
+  //  should we use an even or odd number of datapoints for that? 
+  //  -> odd (tried with 16/8/8 vs 17/8/8) - so 65/32/32 is nice
+  // 
+
+  // when rendering the gif, gnuplot constantly has disk i/o and its memory usage may be less than 
+  // the size of the datafile - is this a hint that it doesn't actually read in larger datafiles at
+  // once and keeps the data in ram? maybe we can set a cache-size somewhere
+
+  // maybe we can use python to produce the video - include the PDE solver into the rsPy python 
+  // module, call it from there and do visualization in python
+}
+
+
+void rectangularRoom()
+{
+  // Simulates propagation of waves in a rectangular room....
+
+  // grid resolutions along the 3 coordinates:
+  int Nx = 11;
+  int Ny = 11;
+  int Nz = 11;
+  float dt = 0.0025;  // time-step between two samples
+
+  // room lengths in the 3 coordiniates (length, width, height)
+  float Lx = 1.f;
+  float Ly = 1.0f;
+  float Lz = 1.0f;
+
+
+
+  rsRectangularRoom<float> room;
+  room.setGridDimensions(Nx, Ny, Nz);
+  room.setRoomDimensions(Lx, Ly, Lz); // maybe setShape, setSizes
+  room.setTimeStep(dt);
+
+  // maybe for a user of a room-reverb, it's better to parametrize it via size, xy-ratio, xz-ratio
+  // because size is a more intuitive parameter
+
+  // todo: 
+  // -initialize the room with a pressure impulse somewhere...do we need to init the u_t and 
+  //  u_tt arrays, too or can they be zero
+  // -run an update loop and record the pressure over time at various points of interest and plot
+  //  the time series ..i hope to see something that resembles a stylized impulse response of a 
+  //  room
+  // -to make it more realistic, add damping...maybe frequency dependent damping... how?
+
+  int Nt = 5000; // number of time-steps
+
+  // indices where to put the initial impulse and to read out the signal:
+  int ix = 2;
+  int iy = 3;
+  int iz = 4;
+
+
+
+  std::vector<float> E_kin(Nt), E_pot(Nt), E_sec(Nt);
+  std::vector<float> h(Nt), h1(Nt), h2(Nt);    // impulse response at location of excitation
+
+
+  room.reset();
+  room.injectPressureAt(ix, iy, iz, 1.f);
+  for(int n = 0; n < Nt; n++)
+  {
+    E_kin[n] = room.getKineticEnergy();
+    E_pot[n] = room.getPotentialEnergy() * 600;
+
+    E_sec[n] = room.getSecondDerivativeEnergy();
+
+
+    h[n]     = room.getPressureAt(ix, iy, iz);
+    h1[n]    = room.getPressureDerivativeAt(ix, iy, iz) * dt;
+    h2[n]    = room.getPressureSecondDerivativeAt(ix, iy, iz) * (dt*dt);
+
+
+    room.updateState();
+    //const rsMultiArray<float>& u = room.getState();
+
+    // somehow visuallize the state...maybe we could plot Nz surfaces
+    // maybe plot the total energy in the room (sum-of-squares of u plus sum-of-squares
+    // of u_t = potential + kinetic)?
+    // plot potential and kinetic energies and total energy
+
+    int dummy = 0;
+  }
+
+  // todo: write the impulse response to a wave file
+
+  rsPlotVectors(h, h1, h2);
+  //rsPlotVectors(E_pot, E_kin, E_pot+E_kin, E_sec);
+  rsPlotVectors(E_pot, E_kin, E_pot+E_kin);
+  // E_pot and E_kin seem to be on a vastly different scale - figure out the scale factors from 
+  // physical considerations - i think, we need to take into account the spatial and temporal
+  // sampling intervals ...maybe E_kin should be multiplied by the temporal interval?
+  // E_kin wiggles around 150, E_pot around 0.5 - try to figure out, how these averages behave
+  // as functions of spatial and temporal sampling interval
+
+  // Observations
+  // -increasing the timeStep makes the wiggles in the energies faster (as expected) and also 
+  //  increases the mean of the kinectic energy - it also seems to decrease the mean of the
+  //  potential energy ..well, at least the increase from 0.01 to 0.02 increased the mean
+  //  between 0.005 and 0.01, the seems to be no such increase
+  //  -dt = 0.0025 gives good temporral resolution when Nx=Ny=Nz=11 and Lx=Ly=Lz=1
+  //  -scaling E_pot by 600 makes both averages equal in this case - figure out where that factor
+  //   comes from...maybe that factor is not yet exact - the sum of the energies still wiggles
+  //  -the stability limit (for 11,11,11; 1,1,1) seems to be somewhere between dt = 0.05 and 0.06
+  //   ->try to figure out Courant numbers
+  // -with dt=0.0025, Nx=Ny=Nz=11, Lx=Ly=Lz=1
+  //  -increasing Nx to 21 scales E_pot by factor 2 (likewise for Ny,Nz)
+  //  -increasing Lx to 4 reduces E_pot's mean from 150 to 100
+  //  -increasing Nx to 21 and Lx to 2 seems to reduce the amplitude of the wiggle
+  //  -increasing Nx,Ny,Nz all to 21 let's the computation take a really long time
+  // -the energy in the 2nd derivative is on the order of 100000 ...maybe it scales with 1/h^2 where
+  //  the 1st-derivative energy scales only with 1/h
+
+  // from Möser, page 31 - the energy density of a sound field:
+  // E = (1/2) * ( p^2/(rho_0 * c^2) + rho*v^2)
+  // p is the pressure, rho_0 the air-density(?), v the speed
+  // rho the sound-density(
+
+  // the 3D wave equation for the sound pressure p = p(x,y,z,t) is:
+  // p_tt = c^2 * L(p) = c^2 * (p_xx + p_yy + p_zz) where L(p) is defined as the Laplacian of p
+  // and c is the speed of sound
+  // the Laplacian measures, by how much a value at a particular position differs from the average
+  // of its neighborhood - so it makes intuively sense that p changes this way...or well, maybe one
+  // could also expce p_t and not p_tt to be proportional to the Laplacian? ...but that's not how 
+  // it works
+
+  // -check out, how numerical energy is computed in Bilbao's book - but he uses schemes instead of
+  //  physical variables
+
+  // https://en.wikipedia.org/wiki/Sound_power
+
+  // i guess, we get a lot of cache-misses when the sizes grow larger...we should use 
+  // Nx <= Ny <= Nz for best cache locality...maybe with more complex data-layout using a 
+  // Hilbert curve, cache locality could be improved - but that would be really complicated!
+ 
+
+
+  int dummy = 0;
+}
+
+
 
 
 // maybe to really challenge the blep/blamp class, try to hardsync a sinewave and try to anti-alias

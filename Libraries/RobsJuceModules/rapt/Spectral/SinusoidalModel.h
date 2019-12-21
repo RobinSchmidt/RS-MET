@@ -418,9 +418,11 @@ public:
 
 
   /** Removes the partials above given index from the model. */
-  void removePartialsAbove(size_t maxIndexToRetain) 
-  { 
-    rsRemoveRange(partials, maxIndexToRetain+1, partials.size()-1); 
+  void removePartialsAbove(size_t maxIndexToKeep) 
+  {
+    if(maxIndexToKeep >= partials.size())
+      return;
+    rsRemoveRange(partials, maxIndexToKeep+1, partials.size()-1); 
   }
 
   /** Removes all partials that have a mean frequency greater than the given threshold. */

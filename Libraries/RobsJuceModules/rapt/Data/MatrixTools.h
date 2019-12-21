@@ -3,7 +3,14 @@
 
 /** A collection of functions for basic handling 2-dimensional arrays (i.e. matrices). Fancy linear 
 algebra stuff is not included here - this is part of the math module. */
-// rename to rsMatrixTools ..and get rid of the rs prefixes in the function names
+
+// note that this code is mostly only here for legacy reasons - the now preferred approach to 
+// handle matrices ins embodied in clas rsMatrix (using flat arrays instead of an array-of-arrays)
+// but some older code still does it the old way, so we still need to keep it around
+// todo: move to legacy folder
+// todo: rename to rsMatrixTools ..and get rid of the rs prefixes in the function names
+
+
 
 class MatrixTools
 {

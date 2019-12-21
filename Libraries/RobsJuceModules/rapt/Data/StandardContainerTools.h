@@ -131,6 +131,7 @@ std::vector<T> rsRangeLinear(T min, T max, int N)
   rsArray::fillWithRangeLinear(&r[0], N, min, max);
   return r;
 }
+// maybe rename to rsLinSpace - consistent with numpy
 
 template<class T>
 inline void rsRemove(std::vector<T>& v, size_t index)
@@ -365,13 +366,23 @@ void rsScale(std::vector<T>& x, T scaler)
 
 /** Converts C-array to std::vector. */
 template<class T>
-inline std::vector<T> toVector(T* theArray, size_t size) // rename to rsToVector
+inline std::vector<T> toVector(const T* theArray, const size_t size) // rename to rsToVector
 {
   std::vector<T> v(size);
   for(size_t i = 0; i < size; i++)
     v[i] = theArray[i];
   return v;
 }
+
+template<class T>
+inline std::vector<T> rsToVector(const T* theArray, const int size) 
+{
+  std::vector<T> v(size);
+  for(int i = 0; i < size; i++)
+    v[i] = theArray[i];
+  return v;
+}
+
 
 /** Copies data from existing C-array into an existing std::vector */
 template<class T>

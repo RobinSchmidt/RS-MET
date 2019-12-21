@@ -1,5 +1,6 @@
 #pragma once
 
+//=================================================================================================
 
 /** A class to generate sounds based on the heat equation. We consider a one-dimensional medium 
 (like a thin rod) that has some initial heat distribution which evolves over time according to the
@@ -8,7 +9,10 @@ it as a cycle of a waveform. At each time-step of the PDE solver, we will get an
 shape of the cycle than we had the previous cycle - so time-steps of the PDE solver occur after 
 each cycle. The time evolution of the heat equation is such that the distribution becomes simpler 
 and simpler over time and eventually settles to a uniform distribution at the mean value of the
-intial distribution (which we may conveniently choose to be zero). */
+intial distribution (which we may conveniently choose to be zero). 
+
+the code follows roughly 3blue1brown's explanations here:
+Solving the heat equation | DE3  https://www.youtube.com/watch?v=ToIXSwZ1pJU  */
 
 template<class T>
 class rsHeatEquation1D
@@ -158,5 +162,354 @@ protected:
   // Pointers that alternately point to the beginning of rodArray1[0] and rodArray2[0] - used for
   // computing the new heat-distribution from the old
 
+};
+
+//=================================================================================================
+
+/** Implements a numercial solution of the 1D wave equation. This may serve as a model for a string
+or tube. 
+
+References:
+  (1) Numerical Sound Synthesis (Stefan Bilbao)  */
+
+template<class T>
+class rsWaveEquation1D
+{
+
+public:
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets the number of grid points, i.e. the number of spatial samples along the unit interval
+  [0,1]. If this number is N, the spatial sampling interval h will be 1/(N+1). */
+  void setNumGridPoints(int newNumGridPoints)
+  {
+    rsAssert(newNumGridPoints >= 3, "needs at leat 3 grid points (and even that is degenerate)");
+    u.resize(newNumGridPoints);
+    u1.resize(newNumGridPoints);
+    tmp.resize(newNumGridPoints);
+  }
+
+  /** Sets the speed by which waves travel along the string/tube. */
+  void setWaveSpeed(T newSpeed)
+  {
+    waveSpeed = newSpeed;
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Returns the number of spatial grid points. */
+  int getNumGridPoints() const { return (int) u.size(); }
+
+  int getMaxGridIndex() const { return getNumGridPoints()-1; }
+  // "N" in (1), see section 5.2.8
+
+  /** Returns the spatial sampling interval.  */
+  T getGridSpacing() const { return T(1) / getMaxGridIndex(); }
+  // "h" in (1)
+
+  /** Returns the shortest wavelength that can be represented with the current grid settings. */
+  T getMinWaveLength() const { return PI / getGridSpacing(); }
+  // wavelength is dentoed by "beta" in (1)
+
+  /** Returns the Courant number for the given time-step and our current seetings of number of 
+  grid points and wave speed. This number is important for stability analysis of numeric solution 
+  schemes for PDEs. If the Courant number is C, then the stability condtion is C <= 1. For the 
+  special case of C == 1, the finite difference scheme actually produces an exact solution. This is
+  only the case for the 1D wave equation and the basis for digital waveguide models. For Courant 
+  numbers less than 1, the numerical scheme will produce "numerical dispersion" - waves will 
+  propagate with dispersion even though the underlying continuous PDE leads to non-dispersive 
+  waves. */
+  T getCourantNumber(T timeStep) const;
+  // https://en.wikipedia.org/wiki/Courant%E2%80%93Friedrichs%E2%80%93Lewy_condition
+
+  /** Retruns the (normalized radian?) frequency for a given wave-number and time-step. */
+  T getOmegaForWaveNumber(T waveNumber, T timeStep) const;
+  // implements (1), 6.43 - needs test!
+
+  //void rootsOfCharacteristicEquation(T timeStep, T* r1, T* r2);
+  // implements (1), Eq. 6.38
+
+  // getKineticEnergy, getPotentialEnergy, getEnergy - mostly for testing energy 
+  // conservation/dissipation properties -> plot energies as function of discrete time
+
+  // we need getters for: lambda: Courant number, beta: wavelength, gamma: (normalized) wave-speed
+  // h: grid-spacing, k: time-step
+  // ...maybe have members for all these variables
+
+
+
+  /** Writes the current state of the string into "state" which is supposed to be "length" long. 
+  This "length" is actually supposed to be equal to what was set via setNumGridPoints. */
+  void getState(T* state, int length) const
+  {
+    rsAssert(length == getNumGridPoints(), "array length should match number of grid points");
+    RAPT::rsArray::copy(&u[0], state, length);
+  }
+
+  // it's a bit annoying that we have to pass the time-step to so many fucntions - maybe we should
+  // have it as member variable. but this would disallow non-uniform sampling of the solution in 
+  // time - which might be convenient thing to have
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  /** Sets the initial positions and velocities. "length" is supposed to be equal to u.size - but 
+  client code should pass it in for verification reasons (that's bad API design -> come up with 
+  something better) */
+  void setInitialConditions(T* newPositions, T* newVelocities, int length, T timeStep);
+  // maybe rename to setInitialConditions
+
+  /** Updates the stae of the PDE solver which consists of the current values for the positions and 
+  the values one time-step before. */
+  void updateState(T timeStep);
+  // todo: maybe allow different interpretations of the state such as positions and velocities - 
+  // that would be more physical
+  // maybe rename to advanceSolution
+
+
+protected:
+
+  /** Called from updateState. Computes updated values for interior points and stored them in 
+  tmp. */
+  void computeInteriorPoints(T timeStep);
+  // give it a name that says which scheme is being used
+
+
+  void computeInteriorPointsSimple();
+  // uses Eq. 6.54 which is the scheme 6.34 for the special case lambda = 1. in this special case,
+  // the recursion formula becomes much simpler
+
+
+
+  /** Called from updateState. Computes updated values for boundary points and stored them in 
+  tmp. */
+  void computeBoundaryPoints(T timeStep);
+
+  /** Moves "u" into "u1" and then "tmp" into "u". */
+  void updateStateArrays();
+
+
+  std::vector<T> u, u1; // current state, state one sample ago
+  std::vector<T> tmp;   // temporary buffer used in state updates
+
+  T waveSpeed = T(1);   // which unit? spatial-steps per time-step? -> figure out!
+                        // proportional to frequency of oscillation of single grid point
+
+  //int numGridPoints;
+  //T gridSpacing;
+  //T timeStep;
+
+  // i'm not yet sure, what the most convenient parametrization is
 
 };
+
+//=================================================================================================
+
+/** Implements numerical solution of the 2D wave-equation in cartesian coordinates for a 
+rectangular membrane.
+
+References:
+(1) Numerical Sound Synthesis (Stefan Bilbao) 
+
+*/
+
+template<class T>
+class rsRectangularMembrane
+{
+
+
+public:
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setGridDimensions(int numPointsX, int numPointsY)
+  {
+    rsAssert(numPointsX == numPointsY, "separate spacings for x- and y not yet supported");
+    u.setSize(numPointsX, numPointsY);
+    u1.setSize(numPointsX, numPointsY);
+    tmp.setSize(numPointsX, numPointsY);
+  }
+  // maybe rename to setGridResolution
+
+  void setWaveSpeed(T newSpeed) { waveSpeed = newSpeed; }
+
+  void setTimeStep(T newStep) { timeStep = newStep; }
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+
+  /** Returns the Courant number for our current seetings of the time-step, grid dimensions and 
+  wave speed. As opposed to the 1D case, the stability limit is C <= 1/sqrt(2) and there is no 
+  special setting for which the numerical scheme produces an exact solution. However, 
+  for C == 1/sqrt(2), numerical dispersion in minimized (verify that). */
+  T getCourantNumber() const;
+
+
+  void getState(rsMatrix<T>& state) const { state = u; }
+  // check, if this allocates memory (it shouldn't)
+  // or maybe return a const reference to our internal state varaiable
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  void setInitialConditions(rsMatrix<T>& displacements, rsMatrix<T>& velocities)
+  {
+    u  = displacements;
+    u1 = u + timeStep * velocities; // why + not -?
+  }
+  // maybe rename to setInitialValues
+
+  void updateState();
+
+protected:
+
+  void computeInteriorPoints();  // maybe rename to computeInteriorValues
+  void computeBoundaryPoints();  // maybe rename to computeBoundaryValues
+  void updateStateMatrices();
+
+  void computeInteriorPointsSimple();
+  // implements the simplified scheme (1), Eq. 11.12 for special case lambda = 1/sqrt(2)
+  // maybe rename to computeInteriorPointsForSpecialCase
+
+  rsMatrix<T> u, u1, tmp; // just like in the 1D case
+
+  T waveSpeed = T(1);
+  T timeStep  = T(1);
+
+  // hx = hy = h is natural for isotropic problmes ((1), pg. 292)
+  // todo: generalize to use separate spatial spacing variables hx, hy
+
+};
+
+// todo: make class rsCircularMembrane
+
+
+//=================================================================================================
+
+/** Implements numerical solution of the 3D wave-equation in cartesian coordinates for a 
+rectangular room. 
+
+References:
+(1) Numerical Sound Synthesis (Stefan Bilbao) 
+
+*/
+
+template<class T>  // maybe use TSig, TPar - TSig is used for the pressure
+class rsRectangularRoom
+{
+
+
+public:
+
+  //rsRectangularRoom(int numSamplesX, int numSamplesY, int numSamplesZ);
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setGridDimensions(int numSamplesX, int numSamplesY, int numSamplesZ);
+  // alternative names setGrid.. Resolution (bad because resokution may be seen as 
+  // numSamplesX/lengthX rather than numSamplesX itself
+
+  void setRoomDimensions(T sizeX, T sizeY, T sizeZ)
+  {
+    Lx = sizeX;
+    Ly = sizeY;
+    Lz = sizeZ;
+    // updateCoeffs()
+  }
+
+  void setTimeStep(T newStep) { timeStep = newStep; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Returns a const-reference to the current pressure distribution in the room as a 3D array. */
+  const rsMultiArray<T>& getState() const { return u; }
+  // it's a bit
+
+  T getPotentialEnergy() const
+  {
+    return T(0.5) * RAPT::rsArray::sumOfSquares(u.getDataPointerConst(), u.getSize());
+    // is this formula correct?
+  }
+
+  T getKineticEnergy() const
+  {
+    return T(0.5) * RAPT::rsArray::sumOfSquares(u_t.getDataPointerConst(), u_t.getSize());
+    // is this formula correct?
+  }
+
+
+  T getSecondDerivativeEnergy() const
+  {
+    return T(0.5) * RAPT::rsArray::sumOfSquares(u_tt.getDataPointerConst(), u_tt.getSize());
+    // ad hoc - i don't know, if this as any physical interpretation
+
+    // is this formula correct?
+  }
+
+  /** Returns the instantaneous pressure at grid sample location i,j,k. Useful for recording
+  output signals. */
+  T getPressureAt(int i, int j, int k) const { return u(i,j,k); }
+
+  T getPressureDerivativeAt(int i, int j, int k) const { return u_t(i,j,k); }
+
+  T getPressureSecondDerivativeAt(int i, int j, int k) const { return u_tt(i,j,k); }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  /** Increases the instantaneous pressure at grid sample location i,j,k by the given amount. 
+  Useful injecting input signals. */
+  void injectPressureAt(int i, int j, int k, T amount) { u(i,j,k) += amount; }
+  // maybe assert i,j,k are in valid range...maybe make a function that takes a floating point 
+  // position and spreads/de-interpolates the pressure
+
+  /** Updates the state, i.e. the distribution of pressure in the room. */
+  void updateState();
+
+  /** Sets the state and all temporary arrays to zero. */
+  void reset();
+
+protected:
+
+
+  void computeLaplacian3D(const rsMultiArray<T>& gridFunction, rsMultiArray<T>& gridLaplacian);
+  // maybe factor out - a 3D Laplacian may be useful in many other applications - it may have to
+  // take hx,hy,hz variables as parameters ...or maybe 1/hx^2, 1/hy^2, 1/hz^2
+
+
+  // void updatePressuerAccelerations();
+  // void updatePressureVelocities();  // not to be confused with flow of the air (it's a scalar!)
+  // void updatePressures;
+
+  int Nx, Ny, Nz;  // redundant but convenient - maybe get rid later
+  T   Lx, Ly, Lz;  // room lengths int the coordinate directions
+
+  T timeStep = 1;  // temporal sampling interval
+
+  rsMultiArray<T> u, u_t, u_tt; // pressure, (temporal) pressure-change and change-of-change
+
+  // maybe switch to "scheme"-variables u, u1 later - u1 is the one-sample-delayed pressure - but 
+  // for physical intuition, it's easier to represent the temporal derivatives explicitly
+  // or maybe use more generic variables like u,t1,t2 where t1,t2 are temporary variables that may
+  // be interpreted either as velocity and acceleration or delayed-by-1, delayed-by-2 pressures 
+  // the interpretation is up to the solver scheme
+
+};
+
+// how about using spatial pressure gradients and sound-velocities, i.e. vector-fields instead of
+// a (scalar) pressure field?

@@ -874,6 +874,126 @@ protected:
 
 //=================================================================================================
 
+/** A class for identifying relevant peak values in an array of data. In the simplest possible 
+scenario, a peak is just a value that is greater than its left and right neighbor - but in many 
+applications, that criterion alone may sift out a lot of spurious peaks that are actually 
+irrelevant and not desired to be included. Therefore, more sophisticated decision criteria may be 
+employed to decide what is and what isn't a relevant peak. This is what this class is made for. */
+
+template<class T>
+class rsPeakPicker
+{
+
+public:
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets the number of left neighbors which must be less or equal than a peak value 
+  (default: 1). */
+  void setNumLeftNeighbors(int newNumber) { numLeftNeighbors = newNumber; }
+
+  /** Sets the number of right neighbors which must be less or equal than a peak value 
+  (default: 1). */
+  void setNumRightNeighbors(int newNumber) { numRightNeighbors = newNumber; }
+
+  /** Convenience function to set the number of left and right neighbors at once. */
+  void setNumNeighbors(int newNumber) { numLeftNeighbors = numRightNeighbors = newNumber; }
+
+  // maybe just have a single function setNumNeighbours which takes two parameters for left and 
+  // right neighbors
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+
+  //void getPeaks(const T *x, const T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
+
+  std::vector<int> getPeakCandidates(const T *x, int N) const;
+
+
+  /** Convenience function that atkes a std::vector instead of a raw array as input. */
+  std::vector<int> getPeakCandidates(const std::vector<T>& x) const 
+  { return getPeakCandidates(&x[0], (int) x.size()); }
+
+
+  /** Returns true, iff data[index] is a peak candidate, i.e. >= some number of neighbors left and 
+  right. */
+  bool isPeakCandidate(int index, const T* data, int length) const;
+    // maybe change order of parameters: data, length, index - that would be more consistent with 
+    // functions in rsArray
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Internal Algorithms */
+
+  /** Alternatingly smoothes and takes the elementwise maximum with the original data. When the 
+  input array looks like a mountain landscape then the output array will resemble ropeway cables 
+  connecting the peaks. The number of passes determines, how many peaks survive as peaks (more 
+  passes -> less peaks). It's used as a pre-processing step before searching for peak candidates.
+  The idea of alternating between smoothing and taking an elementwise maximum was inspired by
+  the "true-envelope-algorithm" for spectral enevlopes. */
+  static void ropeway(const T* x, int N, T* y, int numPasses);
+
+  /** Given an array of datapoints and an array of peak-indices, this function computes the 
+  prominences of the peaks at the given indices. ...tbc... */
+  static void peakProminences(const T *data, int numDataPoints, const int *peakIndices, 
+    int numPeaks, T *peakProminences);
+  // todo: rename to prominences, add an optional window-length parameter as in SciPy:
+  // https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.peak_prominences.html
+
+  /** Returns the number of smoothing iterations, a peak survives while still preserving its 
+  peak property (of being >= its left and right neighbor). */
+  //static void peakSmoothabilities(const T *data, int numDataPoints, const int *peakIndices, 
+  //  int numPeaks, T *smoothabilities);
+
+
+  /** Convenience function for use with std::vector. */
+  static std::vector<T> peakProminences(
+    const std::vector<T>& data, const std::vector<int>& peakIndices)
+  {
+    std::vector<T> proms(peakIndices.size());
+    peakProminences(
+      &data[0], (int)data.size(), &peakIndices[0], (int)peakIndices.size(), &proms[0]);
+    return proms;
+  }
+
+
+protected:
+
+  std::vector<T> preProcess(const T *x, int N) const;
+
+  // pre-processing parameters:
+  int numRopewayPasses = 0;      // number of passes through ropeway algo before searching candidates
+
+  // distance based criteria:
+  int numLeftNeighbors  = 1;  // this is something similar to a min-distance criterion...
+  int numRightNeighbors = 1;
+
+  // prominence based criteria:
+  //T promThresh         = 0;    // absolute prominence threshold
+  //T promToHeightThresh = 0;    // threshold for prominence / peakHeight
+  //T promToMaxThresh    = 0;    // threshold for prominence / max(peakHeights)
+
+  // smoothing based criteria:
+  //int resThresh = 0;           // smoothing resilience threshold
+
+  // post-processing parameters:
+  //bool noStickOut = true; // make sure that no peak sticks out of the linear interpolant going
+                          // through the found peaks
+
+};
+// todo: maybe apply an optional (gaussian?) smoothing filter before looking for peaks - maybe use
+// a cascade of bidirectional first order filters
+// maybe have a function-pointer to the "less-than" comparison function, defaulting to regular
+// less than - but the user may also use less-or-equal, greater, greater-or-equal, etc.
+
+
+//=================================================================================================
+
 /** A class for non-realtime envelope extraction. You can feed it some input signal, and the
 rsEnvelopeExtractor object will return an extracted envelope signal of the same length at the same
 sample rate. */
@@ -1031,6 +1151,12 @@ protected:
   // ...explain this better - in which unit is this measured - how does it relate to the time-unit
   // stored in the rsSinusoidalModel? ...i think, it should just be the same unit, whatever that 
   // unit is (it's seconds but we may later alos allow it to be in samples)
+
+
+  //rsPeakPicker<T> peakPicker; 
+    // not yet used - to be used later inside getPeaks() instead of the simple function 
+    // findPeakIndices which is not sophisticated enough for this purpose because it finds a lot of
+    // irrelevant local peaks
 
 
   //T interpolationTension = T(0);
@@ -1218,6 +1344,32 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, cons
 
 
 
+// maybe these should be moved into class rsModalAnalyzer (as static functions) ...there, it
+// seems to fit best:
+
+/** Computes the A,tau parameters for an exponential decay function f(t) = A * exp(-t/tau) given 
+two time instants t1,t2 and associated amplitudes a1,a2 such that f(t) passes through the points
+(t1,a1), (t2,a2). */
+template<class T>
+void rsExpDecayParameters(T t1, T a1, T t2, T a2, T* A, T* tau);
+
+/** Given two length-N arrays of time-stamps (in seconds) and associated amplitude envelope values 
+(for example, coming from a sinusoidal analysis), this function creates an exponentially decaying 
+sinusoid that matches the amplitude envelope at two chosen match-indices. You may also set the 
+frequency of the sinusoid and its phase. The phase value that you pass there is the phase at the 
+time instant that corresponds to phaseMatchIndex (i.e. the timeArray value at that index). Note 
+that it is the phase for a cosine wave, not a sine wave (consistently with the phase convention 
+used in the sinusoidal modeling framework). The generated signal can be used for splicing an 
+exponentially decaying tail to a partial. In this case, it makes sense to match the phase at the 
+splicing point, so phaseMatchIndex should be equal to matchIndex2. The user may optionally set the 
+number of samples to be generated - by default, this number will be determined by the final 
+time-stamp, but you may want more samples to use it for tail-extension. */
+template<class T>
+std::vector<T> rsExpDecayTail(int N, const T* timeArray, const T* ampArray, 
+  int matchIndex1, int matchIndex2, T sampleRate, T freq, T phase, int phaseMatchIndex, 
+  int numSamples = -1);
+// maybe let the user select the length of the tail to be generated - it may be longer that the 
+// analysis data to be used as tail-extender
 
 
 #endif

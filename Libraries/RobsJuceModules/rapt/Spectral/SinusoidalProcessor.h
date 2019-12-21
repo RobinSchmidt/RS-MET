@@ -170,7 +170,7 @@ public:
   /** De-beats the amplitude envelope of the given partial. */
   virtual void removeAmplitudeBeating(rsSinusoidalPartial<T>& partial);
 
-  /** De-beats the phase trajectory of the givne partial. */
+  /** De-beats the phase trajectory of the given partial. */
   virtual void removePhaseBeating(rsSinusoidalPartial<T>& partial);
 
   /** Smoothes the given phase-array... */

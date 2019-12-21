@@ -77,6 +77,9 @@
     <Filter Include="TestsRosicAndRapt">
       <UniqueIdentifier>{818EBC8E-8C09-B6A9-4E30-82F26C841105}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\rapt\_Deprecated">
+      <UniqueIdentifier>{86824DA4-C6FC-A54A-EB04-2CE89FAAFE0F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\rapt\Analysis">
       <UniqueIdentifier>{34544FA4-CEEB-3549-61FB-C970DF721282}</UniqueIdentifier>
     </Filter>
@@ -116,6 +119,9 @@
     <Filter Include="JUCE Modules\rapt\Math\LinearAlgebra">
       <UniqueIdentifier>{62269221-6ABA-2556-9AAC-CC8C506393A8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\rapt\Math\Misc\OouraFFT">
+      <UniqueIdentifier>{3D77AB67-539C-935C-1853-D138200C305F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\rapt\Math\Misc">
       <UniqueIdentifier>{E8BF3724-0D83-62CB-1A7A-BC8F85460C94}</UniqueIdentifier>
     </Filter>
@@ -148,9 +154,6 @@
     </Filter>
     <Filter Include="JUCE Modules\rapt\Unfinished\Filters">
       <UniqueIdentifier>{9BCF82CD-C55D-F048-5070-8937BD14B2F0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="JUCE Modules\rapt\Unfinished\Math\OouraFFT">
-      <UniqueIdentifier>{AE7171D3-DA12-A428-8A49-45432958CEE2}</UniqueIdentifier>
     </Filter>
     <Filter Include="JUCE Modules\rapt\Unfinished\Math">
       <UniqueIdentifier>{F4FC4518-2174-1691-6CEF-BB6B86DDEE65}</UniqueIdentifier>
@@ -655,6 +658,9 @@
     <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>TestsRosicAndRapt\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.cpp">
+      <Filter>JUCE Modules\rapt\_Deprecated</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.cpp">
       <Filter>JUCE Modules\rapt\Analysis</Filter>
     </ClCompile>
@@ -682,6 +688,12 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotter.cpp">
       <Filter>JUCE Modules\rapt\Basics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterNew.cpp">
+      <Filter>JUCE Modules\rapt\Basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterOld.cpp">
+      <Filter>JUCE Modules\rapt\Basics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\Plotting.cpp">
       <Filter>JUCE Modules\rapt\Basics</Filter>
     </ClCompile>
@@ -698,6 +710,9 @@
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\MatrixTools.cpp">
+      <Filter>JUCE Modules\rapt\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\MultiArray.cpp">
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\StandardContainerTools.cpp">
@@ -814,6 +829,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\SinCosTable.cpp">
       <Filter>JUCE Modules\rapt\Math\Functions</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\WindowFunctions.cpp">
+      <Filter>JUCE Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Geometry\ConicSection.cpp">
       <Filter>JUCE Modules\rapt\Math\Geometry</Filter>
     </ClCompile>
@@ -853,7 +871,13 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LinearAlgebra.cpp">
       <Filter>JUCE Modules\rapt\Math\LinearAlgebra</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\OouraFFT\fft4g.cpp">
+      <Filter>JUCE Modules\rapt\Math\Misc\OouraFFT</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\CurveFitting.cpp">
+      <Filter>JUCE Modules\rapt\Math\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\FourierTransformer.cpp">
       <Filter>JUCE Modules\rapt\Math\Misc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\RatioGenerator.cpp">
@@ -901,6 +925,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\HarmonicAnalyzer.cpp">
       <Filter>JUCE Modules\rapt\Spectral</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\MiscSpectral.cpp">
+      <Filter>JUCE Modules\rapt\Spectral</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\SinusoidalAnalyzer.cpp">
       <Filter>JUCE Modules\rapt\Spectral</Filter>
     </ClCompile>
@@ -940,9 +967,6 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\Flags.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Data</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\MultiArray.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Data</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\BandSplitter.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClCompile>
@@ -969,12 +993,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\PhonoFilter.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\OouraFFT\fft4g.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Math\OouraFFT</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\FourierTransformer.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\FunctionObjects.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
@@ -1046,9 +1064,6 @@
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\Saturator.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\WindowFunctions.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Sampling\MiscUnfinished.cpp">
@@ -2811,6 +2826,9 @@
     <ClInclude Include="..\..\Source\rosic_tests\UnitTestsRosic.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.h">
+      <Filter>JUCE Modules\rapt\_Deprecated</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h">
       <Filter>JUCE Modules\rapt\Analysis</Filter>
     </ClInclude>
@@ -2841,6 +2859,12 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotter.h">
       <Filter>JUCE Modules\rapt\Basics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterNew.h">
+      <Filter>JUCE Modules\rapt\Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterOld.h">
+      <Filter>JUCE Modules\rapt\Basics</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\MacroDefinitions.h">
       <Filter>JUCE Modules\rapt\Basics</Filter>
     </ClInclude>
@@ -2863,6 +2887,9 @@
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\MatrixTools.h">
+      <Filter>JUCE Modules\rapt\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\MultiArray.h">
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Range.h">
@@ -2991,6 +3018,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\SinCosTable.h">
       <Filter>JUCE Modules\rapt\Math\Functions</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\WindowFunctions.h">
+      <Filter>JUCE Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Geometry\ConicSection.h">
       <Filter>JUCE Modules\rapt\Math\Geometry</Filter>
     </ClInclude>
@@ -3025,6 +3055,9 @@
       <Filter>JUCE Modules\rapt\Math\LinearAlgebra</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\CurveFitting.h">
+      <Filter>JUCE Modules\rapt\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\FourierTransformer.h">
       <Filter>JUCE Modules\rapt\Math\Misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\RatioGenerator.h">
@@ -3072,6 +3105,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\HarmonicAnalyzer.h">
       <Filter>JUCE Modules\rapt\Spectral</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\MiscSpectral.h">
+      <Filter>JUCE Modules\rapt\Spectral</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Spectral\SinusoidalAnalyzer.h">
       <Filter>JUCE Modules\rapt\Spectral</Filter>
     </ClInclude>
@@ -3111,9 +3147,6 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\Flags.h">
       <Filter>JUCE Modules\rapt\Unfinished\Data</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Data\MultiArray.h">
-      <Filter>JUCE Modules\rapt\Unfinished\Data</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\BandSplitter.h">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClInclude>
@@ -3145,9 +3178,6 @@
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\DifferentialEquationSystem.h">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\FourierTransformer.h">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\FunctionObjects.h">
@@ -3235,9 +3265,6 @@
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\Saturator.h">
-      <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\MiscAudio\WindowFunctions.h">
       <Filter>JUCE Modules\rapt\Unfinished\MiscAudio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Sampling\MiscUnfinished.h">

@@ -49,6 +49,9 @@ int main(int argc, char* argv[])
   // -get rid of the distinction between testing classes from rapt and rosic - that makes it 
   //  confusing and hard to find a particular test -> merge the tests
   // -maybe make even just a single include file for all rapt tests
+  // -maybe split this into Demos and Research - the demos shall remain in the main RS-MET 
+  //  codebase, the research stuff should go into the research repo, eventually, 
+  //  research-experiments may be propagated up into main repo
 
   //===============================================================================================
   // RAPT tests:
@@ -91,6 +94,7 @@ int main(int argc, char* argv[])
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
+  //finiteDifferenceStencilCoeffs();
   //interpolatingFunction();
   //linearRegression();
   //polynomialPrediction();  // not yet implemented
@@ -126,7 +130,9 @@ int main(int argc, char* argv[])
   // Physics:
   //doublePendulum(); // takes long
   //heatEquation1D();
-  //waveEquation1D();  // not yet implemented
+  //waveEquation1D();
+  //rectangularMembrane();
+  rectangularRoom();
   //particleForceDistanceLaw();
   //particleSystem();
   //quantumSpinMeasurement();  // move to unit tests
@@ -258,6 +264,8 @@ int main(int argc, char* argv[])
   //cycleMarkErrors();
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
+//  ropewayAlgo();
+  //peakPicker();
 
 
   // Delay:
@@ -328,8 +336,10 @@ int main(int argc, char* argv[])
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
   //modalWithFancyEnv();
   //modalSynthSpectra();
+  //modalDecayFit();
   //modalAnalysis1();
   //modalAnalysisPluck();
+  //modalPartialResynthesis();
 
   // Misc Audio:
   //centroid();
@@ -377,7 +387,7 @@ int main(int argc, char* argv[])
   //phaseRepresentation();
   //grainRoundTrip();        // under construction
   //spectrogramSine();
-  spectrogramFilter();
+  //spectrogramFilter();
   //sineParameterEstimation();
   //plotOverlappingWindowSum();
   //phaseInterpolation();

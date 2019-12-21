@@ -10,6 +10,10 @@ todo:
  the same interface as std::vector - having my own implementation might be more efficient since
  std::vector initializes the memory - say this blog-post, at least
  https://lemire.me/blog/2012/06/20/do-not-waste-time-with-stl-vectors/
+-actually, rsArray could serve as dual purpose class - a collection of static functions operating
+ on raw arrays and a dynamically allocated array
+-we could make a baseclass rsArrayView which could also be used as baseclass for rsMatrix and 
+ rsMultiArray
 -make everything const that is possible (also by-value parameters, local variables, etc. - and use
  constexpr for compile-time constants)
  ->done up to copy
@@ -48,6 +52,12 @@ public:
   beyond the limits of y and writing beyond the limits of x */
   template<class T>
   static void addInto(T *x, const int N, const T *y, int L, int n = 0);
+
+  /** Adds the bufferToAdd, multiplied by some weight, into the inputAndResult. This is useful for
+  implementing update rules of the form: x_new = x_old + weight * delta_x - but actually x_new and 
+  x_old are the same array and it's more like x += w * delta_x. */
+  template<class T>
+  static void addWithWeight(T* inputAndResult, int N, T* bufferToAdd, T weight);
 
   /** Applies the affine transformation y = a*x + b to all array elements. */
   template<class T>
@@ -432,6 +442,11 @@ public:
   template <class T>
   static T limitToRange(T value, T min, T max);
 
+  /** Fills the length-N array maxXY with the element-wise maximum of the arrays x and y. */
+  template <class T>
+  static void maxElementWise(const T *x, const T* y, const int N, T* maxXY);
+  // todo: make a similar function for min
+
   /** Finds and returns the maximum absolute value of the buffer. */
   template <class T>
   static T maxAbs(const T *buffer, int length);
@@ -492,6 +507,21 @@ public:
   static T median(const T *buffer, int length);
   // Allocates heap memory - todo: pass a workspace.
 
+  /** Applies a 3-point moving average filter to the length-N array x and stores the result in y, 
+  which may point to the same memory location, i.e. the filter may be used in place. The endpoints
+  are either held fixed or handled using a 1-sided 2-point average, depending on the optional 
+  endsFixed parameter (default: true, because fixed ends may be the more typical use-case - for 
+  example, when a parameter trajectory should be smoothed). For smoothing, it may be useful to 
+  apply the function iteratively multiple times (although, it may be more efficient and give 
+  similar results to use a bidirectional IIR filter with a Gaussian impulse response in this 
+  case). */
+  template<class T>
+  static void movingAverage3pt(const T* x, int N, T* y, bool endsFixed = true);
+  // todo: maybe make a version that preserves the mean (calculate mean before and after and add
+  // the difference
+  // maybe have a version that leaves the endpoints alone - rationale: the array may represent a
+  // trajectory that should be smoothed, but the start- and enpoints should not change - maybe
+  // have a boolean parameter "fixEnds"
 
   /** Multiplies the elements of 'buffer1' and 'buffer2' - type must define operator '*'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
@@ -677,7 +707,8 @@ public:
 
   /** Forms a weighted sum of the two buffers. */
   template <class T>
-  static  void weightedSum(const T *buffer1, const T *buffer2, T *result, int length, T weight1, T weight2);
+  static  void weightedSum(const T *buffer1, const T *buffer2, T *result, 
+    int length, T weight1, T weight2);
 
 };
 
@@ -696,6 +727,13 @@ inline void rsArray::add(const T *buffer, const T valueToAdd, T *result, const i
 {
   for(int i = 0; i < length; i++)
     result[i] = buffer[i] + valueToAdd;
+}
+
+template<class T>
+void rsArray::addWithWeight(T* xy, int N, T* d, T w)
+{
+  for(int n = 0; n < N; n++)
+    xy[n] += w * d[n];
 }
 
 template <class T>

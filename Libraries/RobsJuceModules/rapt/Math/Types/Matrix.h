@@ -4,7 +4,8 @@
 
 /** A class for representing 2x2 matrices. They are treated as a special case because a lot of
 things which are impractical in the general case can be done for the 2x2 case. For example, it's
-possible to compute eigenvalues and eigenvectors via closed form formulas. */
+possible to compute eigenvalues and eigenvectors via closed form formulas where in the general 
+case numerical algorithms are needed. */
 
 template<class T>
 class rsMatrix2x2
@@ -135,6 +136,8 @@ public:
   {
     return A*B - B*A;
   }
+  // see: https://en.wikipedia.org/wiki/Commutator#Ring_theory
+  // maybe implement also the anticommutatior defined there as: {A,B} = A*B + B*A
 
 };
 
@@ -177,68 +180,26 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  /** Sets all elements in the matrix to the given value. */
-  inline void setAllValues(T value) { rsArray::fillWithValue(dataPointer, getSize(), value); }
-
-  /** Initializes all elements with given value. */
-  void init(T value = T(0)) { RAPT::rsArray::fillWithValue(dataPointer, getSize(), value); }
-  // maybe remove - is redundant with setAllValues
-
-  /** Sets all elements on the main diagonal to the given value. If the matrix is not square, only
-  the top-left square submatrix will be affected. */
-  inline void setDiagonalValues(T value)
-  {
-    for(int i = 0; i < rsMin(numRows, numCols); i++)
-      dataPointer[i*numCols + i] = value;
-  }
-  // needs test
-
-  /** Scales all elements in the matrix by a given factor. */
-  inline void scale(T factor) { rsArray::scale(dataPointer, getSize(), factor); }
-
   /** Re-interprets the arrangement of the underlying array as having the new given numbers of rows
   and columns. Their product must remain the same, though. For example, you can reshape a 3x4 
   matrix into 4x3, 2x6, 6x2, 1x12, 12x1 but nothing else. ..todo: maybe lift that restriction? */
-  inline void reshape(int newNumRows, int newNumColumns)
+  void setShape(int newNumRows, int newNumColumns)
   {
     rsAssert(newNumRows*newNumColumns == numRows*numCols);
     numRows = newNumRows;
     numCols = newNumColumns;
   }
+  // maybe rename to setShape for consistency with the rest of the library...otoh, reshape is 
+  // consistent with NumPy
 
   /** Resets the number of rows and columns to zero and the dataPointer to nullptr. Should be called 
   whenever you need to invalidate our pointer member. */
-  inline void reset()
+  void reset()
   {
     numRows = 0;
     numCols = 0;
     dataPointer = nullptr;
   }
-
-  /** Sets all matrix elements to zero. */
-  inline void setToZero() { rsArray::fillWithZeros(dataPointer, getSize()); }
-
-  /** Sets the matrix elements to the identity matrix, i.e. fills the main diagonal with ones and 
-  the rest with zeros. If the matrix is not square, then the overhanging portion to the right or 
-  bottom will be all zeros as well (-> verify this). */
-  inline void setToIdentity() { setToZero(); setDiagonalValues(T(1)); }
-  // needs test
-
-  /** Scales the row with given index by the given scale factor. */
-  inline void scaleRow(int rowIndex, T scaler)
-  {
-    rsAssert(rowIndex >= 0 && rowIndex < numRows, "row index out of range");
-    for(int j = 0; j < numCols; ++j)
-      (*this)(rowIndex, j) *= scaler;
-  }
-
-  inline void scaleColumn(int columnIndex, T scaler)
-  {
-    rsAssert(columnIndex >= 0 && columnIndex < numCols, "column index out of range");
-    for(int i = 0; i < numCols; ++i)
-      (*this)(i, columnIndex) *= scaler;
-  }
-
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -278,18 +239,94 @@ public:
   /** Returns a const pointer to the data for read access as a flat array. */
   const T* getDataPointerConst() const { return dataPointer; }
 
+  /** Returns a pointer to the data for read and write access as a flat array. */
+  T* getDataPointer() { return dataPointer; }
+
   /** Returns a pointer to the stored data. When using this, be sure that you know exactly what
   you are doing.... */
   //T* getData() { return dataPointer; }
 
   /** Returns a pointer to a given row. */
-  T* getRowPointer(int rowIndex) 
-  { return &dataPointer[rowIndex*numCols]; }
+  T* getRowPointer(int rowIndex)  { return &dataPointer[rowIndex*numCols]; }
   // if we later support column-major storage, we should assert that the matrix in row-major
   // storage
 
-  const T* getRowPointerConst(int rowIndex) const
-  { return &dataPointer[rowIndex*numCols]; }
+  /** Returns a const pointer to a given row. */
+  const T* getRowPointerConst(int rowIndex) const { return &dataPointer[rowIndex*numCols]; }
+
+  /** Return the number of data entries that overlap in matrix-views A and B. For many 
+  computations, it is required, that A and B have non-overlapping data, so this function can be 
+  used to check, if those operations can be done on two particular matrices. */
+  /*
+  static size_t getDataOverlap(const rsMatrixView<T>& A, const rsMatrixView<T>& B)
+  {
+    if(B.dataPointer < A.dataPointer)  // A's data must start before or at the same memory 
+      return getDataOverlap(B, A);     // location as B's data - otherwise use swapped arguments
+
+    size_t safeStartForB = A.dataPointer + A.getSize(); // 1 position after A's last slot
+    if(B.dataPointer >= safeStartForB)
+      return 0;  // no overlap
+    else
+      return rsMin(safeStartForB - B.dataPointer, B.getSize());
+  }
+  */
+  // actually, we should move this to rsArray::getOverlap(T* x, size_t Nx, T*y, size_t Ny)
+  // needs unit test
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Manipulation */
+
+  /** Sets all matrix elements to zero. */
+  void setToZero() { rsArray::fillWithZeros(dataPointer, getSize()); }
+
+  /** Sets the matrix elements to the identity matrix, i.e. fills the main diagonal with ones and 
+  the rest with zeros. If the matrix is not square, then the overhanging portion to the right or 
+  bottom will be all zeros as well (-> verify this). */
+  void setToIdentity() { setToZero(); setDiagonalValues(T(1)); }
+  // needs test
+
+  /** Sets all elements in the matrix to the given value. */
+  void setAllValues(T value) { rsArray::fillWithValue(dataPointer, getSize(), value); }
+
+  /** Initializes all elements with given value. */
+  //void init(T value = T(0)) { RAPT::rsArray::fillWithValue(dataPointer, getSize(), value); }
+  // maybe remove - is redundant with setAllValues
+
+  /** Sets all elements on the main diagonal to the given value. If the matrix is not square, only
+  the top- or left square submatrix will be affected. */
+  void setDiagonalValues(T value)
+  {
+    for(int i = 0; i < rsMin(numRows, numCols); i++)
+      dataPointer[i*numCols + i] = value;
+  }
+  // needs test
+
+  /** Scales all elements in the matrix by a given factor. */
+  void scale(T factor) { rsArray::scale(dataPointer, getSize(), factor); }
+
+  /** Negates all values of the matrix, i.e. inverts their sign. */
+  void negate() { rsArray::negate(dataPointer, dataPointer, getSize()); }
+
+  // todo: conjugate
+
+
+  /** Scales the row with given index by the given scale factor. */
+  void scaleRow(int rowIndex, T scaler)
+  {
+    rsAssert(rowIndex >= 0 && rowIndex < numRows, "row index out of range");
+    for(int j = 0; j < numCols; ++j)
+      (*this)(rowIndex, j) *= scaler;
+  }
+  // needs test
+
+  /** Scales the row with given index by the given scale factor. */
+  void scaleColumn(int columnIndex, T scaler)
+  {
+    rsAssert(columnIndex >= 0 && columnIndex < numCols, "column index out of range");
+    for(int i = 0; i < numCols; ++i)
+      (*this)(i, columnIndex) *= scaler;
+  }
+  // needs test
 
 
   //-----------------------------------------------------------------------------------------------
@@ -303,12 +340,11 @@ public:
   }
 
   /** Subtracts elements of B from corresponding elements A in and stores results in C. */
-  static void sub(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
+  static void subtract(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
     rsArray::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
-  // rename to subtract
 
   /** Multiplies the two matrices element-wise. */
   static void elementwiseMultiply(
@@ -326,10 +362,9 @@ public:
     rsArray::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
-
-
   /** Computes the matrix product C = A*B. */
-  static void mul(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
+  static void matrixMultiply(
+    const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(A.numCols  == B.numRows);
     rsAssert(C->numCols == B.numCols);
@@ -340,23 +375,23 @@ public:
         for(int k = 0; k < A.numCols; k++)
           (*C)(i,j) += A.at(i,k) * B.at(k,j); }}
   }
-  // rename to matrixMultiply
-
-
-
-
+  // rename to matrixMultiply maybe implement matrixDivide: A/B := A * inverse(B) 
 
 
   /** Fills the matrix B with the transpose of matrix A. Assumes that A and B have compatible 
-  shapes. */
+  shapes. Matrix A and B must point to non-overlapping arrays */
   static void transpose(const rsMatrixView<T>& A, rsMatrixView<T>* B)
   {
+    //rsAssert(A.dataPointer != B->dataPointer, "can't be used in place"); 
+    //rsAssert(getDataOverlap(A, *B) == 0, "can't be used with overlapping matrices"); 
     rsAssert(A.numRows == B->numCols);
     rsAssert(A.numCols == B->numRows);
     for(int i = 0; i < A.numRows; i++)
       for(int j = 0; j < A.numCols; j++)
         (*B)(j,i) = A.at(i,j);
   }
+  // B is a pointer and not a reference because it's an output - adopt that idiom generally:
+  // output variables are always passed as pointers, never as references
 
   /** Transposes the square matrix A in place. */
   static void transposeSquare(rsMatrixView<T>* A)
@@ -388,22 +423,23 @@ public:
   /** \name Accessors */
 
   /** Read and write access to matrix elements with row-index i and column-index j. */
-  inline T& operator()(const int i, const int j) { return dataPointer[flatIndex(i, j)]; }
+  T& operator()(const int i, const int j) { return dataPointer[flatIndex(i, j)]; }
 
-  inline const T& operator()(const int i, const int j) const
+  /** Read only access to matrix elements with row-index i and column-index j. */
+  const T& operator()(const int i, const int j) const
   {
     return dataPointer[flatIndex(i, j)];
   }
 
-  /** Read only accees - used mainly internally with const reference arguments (for example,
+  /** Read only access - used mainly internally with const reference arguments (for example,
   in add). */
-  inline const T& at(const int i, const int j) const { return dataPointer[flatIndex(i, j)]; }
-  // maybe rename to get
+  const T& at(const int i, const int j) const { return dataPointer[flatIndex(i, j)]; }
+  // maybe rename to get - do we actually need this? - if not, get rid!
 
   // void set(i, j, val) ...to make it compatible with old implementation
 
   /** Converts a row index i and a column index j to a flat array index. */
-  inline int flatIndex(const int i, const int j) const
+  int flatIndex(const int i, const int j) const
   {
     return numCols*i + j;
     // todo:
@@ -432,7 +468,8 @@ protected:
 /** This is a class for representing matrices and doing mathematical operations with them. It's 
 implemented as subclass of rsMatrixView and stores the actual matrix data in a std::vector. Copy- 
 and move constructors and -assignment operators have been implemented in order to avoid 
-unnecessary heap allocations in arithmetic expressions with matrices. */
+unnecessary heap allocations in arithmetic expressions with matrices (return value copy 
+elision). */
 
 template<class T>
 class rsMatrix : public rsMatrixView<T>
@@ -450,10 +487,20 @@ public:
     // todo: optionally init with zeros
   }
 
+  /** Constructor to create a matrix from an array-of-arrays - mostly for conveniently converting
+  matrices in the old representation into the new one. */
+  rsMatrix(int numRows, int numColumns, T** data)
+  {
+    setSize(numRows, numColumns);
+    for(int i = 0; i < numRows; i++)
+      for(int j = 0; j < numColumns; j++)
+        (*this)(i,j) = data[i][j];
+  }
+
   /** Destructor. */
   ~rsMatrix()
   {
-    int dummy = 0; // to figure out, when it gets called for debugging
+    //int dummy = 0; // to figure out, when it gets called for debugging
   }
 
   /** Creates matrix from a std::vector.  */
@@ -468,7 +515,7 @@ public:
 
   /** Creates matrix from an unnamed/temporary/rvalue std::vector - convenient to initialize 
   elements. You can initialize matrices like this:
-    rsMatrixOld<double> A(2, 3, {1.,2.,3., 4.,5.,6.});   */
+    rsMatrix<double> A(2, 3, {1.,2.,3., 4.,5.,6.});   */
   rsMatrix(int numRows, int numColumns, std::vector<T>&& newData) : data(std::move(newData))
   {
     numHeapAllocations++;             // we count the allocation that took place in the caller
@@ -548,36 +595,30 @@ public:
   }
 
 
-
-
-
   //-----------------------------------------------------------------------------------------------
   /** \name Manipulations */
 
-  /** Negates all values of the matrix, i.e. inverts their sign. */
-  void negate() { rsArray::negate(&data[0], &data[0], getSize()); }
+
+
 
   /** Transposes this matrix, i.e. the rows become columns and vice versa. Avoids reallocation in 
   case of square-matrices and row- and column vectors. */
   void transpose()
   {
-    // handle square matrices:
     if(isSquare()) { rsMatrixView<T>::transposeSquare(this); return; }
+    if(isVector()) { rsSwap(numRows, numCols); return; } 
 
-    // handle row- and column vectors:
-    if(isVector()) { rsSwap(numRows, numCols); return; }
-
-    // handle general case (needs reallocation):
-    std::vector<T> v(getSize());
+    std::vector<T> v(getSize());    // the general case needs reallocation...
     numHeapAllocations++;
     rsMatrixView<T> B(numCols, numRows, &v[0]);
     rsMatrixView<T>::transpose(*this, &B);
     rsSwap(numRows, numCols);
     data = v;
+    // don't we have to call updateDataPointer()? -> check, if there's a unit test
   }
   // maybe move to cpp file
 
-  // todo: conjugate
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -594,9 +635,9 @@ public:
 
   /** Computes the Kronecker product between matrices A and B. For a 3x2 matrix A, it looks like:
 
-  |a11*B a12*B|
+              |a11*B a12*B|
   A (x) B  =  |a21*B a22*B|
-  |a31*B a32*B|
+              |a31*B a32*B|
 
   Where each entry aij*B is a submatrix of dimensions of B with the entries of B scaled by the
   respective element from A. This product is also sometimes called tensor product, but i think, 
@@ -617,7 +658,7 @@ public:
   rsMatrix<T> getElementwiseProduct(const rsMatrixView<T>& rightOperand) const
   {
     rsMatrix<T> result(numRows, numCols);
-    rsMatrixView<T>::elementwiseMultiply(this, &rightOperand, &result);
+    rsMatrixView<T>::elementwiseMultiply(*this, rightOperand, &result);
     return result;
   }
   // it's intentional that the rsMatrixView method is called multiply and this here is called 
@@ -663,7 +704,7 @@ public:
 
   /** Subtracts two matrices: C = A - B. */
   rsMatrix<T> operator-(const rsMatrix<T>& B) const
-  { rsMatrix<T> C(this->numRows, this->numCols); this->sub(*this, B, &C); return C; }
+  { rsMatrix<T> C(this->numRows, this->numCols); this->subtract(*this, B, &C); return C; }
 
   /** Multiplies two matrices: C = A * B. */
   rsMatrix<T> operator*(const rsMatrix<T>& B) const
@@ -671,7 +712,7 @@ public:
     //if(!areMultiplicable(*this, B))
     //  return rsMatrix<T>(0, 0); // return empty matrix when attempting to multiply incompatible matrices
     rsMatrix<T> C(this->numRows, B.numCols); 
-    this->mul(*this, B, &C); 
+    this->matrixMultiply(*this, B, &C); 
     return C; 
   }
   // maybe it should return an empty matrix, when attempting to multiply incompatible matrices
@@ -684,7 +725,7 @@ public:
 
   /** Subtracts another matrix from this matrix and returns the result. */
   rsMatrix<T>& operator-=(const rsMatrix<T>& B)
-  { this->sub(*this, B, this); return *this; }
+  { this->subtract(*this, B, this); return *this; }
 
   /** Multiplies this matrix by another and returns the result. This is not an in-place process, i.e. it 
   will allocate temporary heap-memory. */
@@ -805,7 +846,7 @@ rsMatrix<TOut> matrixFunction(const rsMatrix<TIn>& A, F func)
 //  -maybe the numHeapAllocations variable can also be used only in debug builds? i guess we may 
 //   need to define some function incrementAllocationCounter that reduces to no-op in release 
 //   builds
-//  -in expressions like rsMatrixOld<float> C = B*(A + B) + B; we want to avoid copying the data
+//  -in expressions like rsMatrix<float> C = B*(A + B) + B; we want to avoid copying the data
 //   unnecessarily - i.e. avoid that the temporaries that occur inside this expression use heap
 //   allocation only when absolutely necessarry
 //   ...this especially means, we need to pass the return values of the arithmetic operators by
@@ -826,7 +867,7 @@ rsMatrix<TOut> matrixFunction(const rsMatrix<TIn>& A, F func)
 //   compile time ...maybe the std::vector vs std::dynarrray distinction can determined by passing
 //   the storage container as template argument like so:
 //   template<class ElemType, class ContainerType>
-//   class rsMatrixOld { ContainerType<ElemType> data; };
+//   class rsMatrix { ContainerType<ElemType> data; };
 //  -maybe make subclasses rsRowVector, rsColumnVector with a simplified element access operator 
 //   that takes only one index
 

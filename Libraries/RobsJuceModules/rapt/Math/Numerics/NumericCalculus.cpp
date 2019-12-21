@@ -50,6 +50,34 @@ void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapola
 //  integration
 //  -it may return a value - the integration constant to be used
 
+// see also:
+// http://web.media.mit.edu/~crtaylor/calculator.html
+// results from there (the Python code):
+
+// 3-point stencil -1,0,1:
+// f_x = (-1*f[i-1]+0*f[i+0]+1*f[i+1])/(2*1.0*h**1)
+// f_xx = (1*f[i-1]-2*f[i+0]+1*f[i+1])/(1*1.0*h**2)
+
+// 5-point stencil -2,-1,0,1,2:
+// f_x = (1*f[i-2]-8*f[i-1]+0*f[i+0]+8*f[i+1]-1*f[i+2])/(12*1.0*h**1)
+// f_xx = (-1*f[i-2]+16*f[i-1]-30*f[i+0]+16*f[i+1]-1*f[i+2])/(12*1.0*h**2)
+// f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
+// f_xxxx = (1*f[i-2]-4*f[i-1]+6*f[i+0]-4*f[i+1]+1*f[i+2])/(1*1.0*h**4)
+
+// 7-point stencil -3,-2,-1,0,1,2,3:
+// f_x = (-1*f[i-3]+9*f[i-2]-45*f[i-1]+0*f[i+0]+45*f[i+1]-9*f[i+2]+1*f[i+3])/(60*1.0*h**1)
+// f_xx = (2*f[i-3]-27*f[i-2]+270*f[i-1]-490*f[i+0]+270*f[i+1]-27*f[i+2]+2*f[i+3])/(180*1.0*h**2)
+// f_xxx = (1*f[i-3]-8*f[i-2]+13*f[i-1]+0*f[i+0]-13*f[i+1]+8*f[i+2]-1*f[i+3])/(8*1.0*h**3)
+// f_xxxx = (-1*f[i-3]+12*f[i-2]-39*f[i-1]+56*f[i+0]-39*f[i+1]+12*f[i+2]-1*f[i+3])/(6*1.0*h**4)
+// f_xxxxx = (-1*f[i-3]+4*f[i-2]-5*f[i-1]+0*f[i+0]+5*f[i+1]-4*f[i+2]+1*f[i+3])/(2*1.0*h**5)
+// f_xxxxxx = (1*f[i-3]-6*f[i-2]+15*f[i-1]-20*f[i+0]+15*f[i+1]-6*f[i+2]+1*f[i+3])/(1*1.0*h**6)
+
+// if we use an N-point stencil, we can obtain approximations of derivatives up to order N-1
+// the app there can also compute numerical derivatives for non-equidistant sample data
+// -> try to program something similar in sage or sympy
+
+
+
 
 
 template<class Tx, class Ty>

@@ -8,16 +8,15 @@ namespace RAPT
 {
 
 #include "Data/Flags.h"
-#include "Data/MultiArray.h"
+//#include "Data/MultiArray.h"     // obsolete - moved to _Deprecated folder
 
 #include "Math/Vector.h"
-#include "Math/Matrix.h"
+#include "Math/Matrix.h"              // this is deprecated
 //#include "Math/MatrixUnOptimized.h" // simpler, can perhaps be optimized via move-constructor
 #include "Math/FunctionObjects.h"
 #include "Math/GradientBasedMinimizer.h"
 #include "Math/MultiLayerPerceptron.h"
 #include "Math/DifferentialEquationSystem.h"
-#include "Math/FourierTransformer.h"
 #include "Math/NumberTheory.h"
 #include "Math/Transforms.h"
 #include "Math/Statistics.h"  // merge with the Statistics.h aleady present in the not "Unfinished" Math folder
@@ -37,7 +36,6 @@ namespace RAPT
 #include "MiscAudio/DelayLine.h"
 #include "MiscAudio/MiscAudio.h"  // may have to be included later (needs higher level stuff)
 #include "MiscAudio/Saturator.h"
-#include "MiscAudio/WindowFunctions.h"
 #include "MiscAudio/AudioFunctions.h" // merge with other AudioFunctions.h file
 #include "MiscAudio/BandwidthConverter.h"
 #include "MiscAudio/DoublePendulum.h" // will go to Physics

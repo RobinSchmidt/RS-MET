@@ -1,6 +1,67 @@
 #ifndef RAPT_ENVELOPEFOLLOWER_H
 #define RAPT_ENVELOPEFOLLOWER_H
 
+
+/** A class that detects peaks and then decays exponentially. This can be seen as a simplified
+version of an envelope follower with zero attack time. So, in effect, it responds immediately to 
+any peaks and then drags an exponentially decaying trail from that peak. If additional smaller 
+peaks occur under teh umbrella of that trail, they will not be seen separately, they will be 
+subsumed/shadowed by the larger peak. This class can be useful for distinguishing major/relevant
+peaks for the minor irrelevant ones. */
+
+template<class T>
+class rsPeakTrailDragger  // maybe rename to rsPeakFollower/rsPeakMeter
+{
+
+public:
+
+  /** Sets the number of samples it takes, to decay to a specified value after having seen a unit
+  impulse. If r is this ratio and d is the number of samples, our multiplier needs to be the
+  d-th root of r such that after d successive multiplications, we reach r, if we init with 1. The 
+  default value for the ratio is 0.5, in which case d would give the time to decay to 1/2. Another 
+  common value is 1/e ...maybe we should use that as default? */
+  void setDecaySamples(T numSamples, T targetRatio = 0.5)
+  { c = pow(targetRatio, T(1)/numSamples); }
+
+
+  /** Computes one output sample at a time. */
+  T getSample(T x)
+  {
+    y *= c;
+    if(x > y)
+      y = x;
+    return y;
+  }
+  // maybe have TSig/TPar template parameters and use rsMax instead of the "if" which should take
+  // the element-wise maximum in case of SIMD vector types for the signal
+  // maybe implement a getSample with additional dt parameter for use with non-equidistant input
+
+  // function for non-equidistant data - not yet tested:
+  T getSample(T x, T dt)
+  {
+    y *= pow(c, dt);  // is this correct? verify!
+    if(x > y)
+      y = x;
+    return y;
+  }
+
+
+  /** Resets the internal state. */
+  void reset() { y = T(0); }
+
+protected:
+
+  T c = T(0);
+  T y = T(0);
+
+};
+// maybe make a version with hold - could be useful for limiters
+// maybe make a version with linear instead of exponential decay - maybe the slope should be 
+// adapted in the "if" according to x (be proportional) ...hmm...maybe not
+
+
+//=================================================================================================
+
 /** This is an envelope follower with user adjustable attack and release time constants. It squares
 the incoming signal or takes the absolute value, smoothes this signal via an attack-release (AR)
 averager and (possibly) extracts the square-root. So the output value represents the

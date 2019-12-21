@@ -57,6 +57,9 @@ template class rsDualBlepOsc<double, rsTableMinBlep<double, double>>;
 
 
 template class rsHeatEquation1D<double>;
+template class rsWaveEquation1D<double>;
+template class rsRectangularMembrane<double>;
+template class rsRectangularRoom<float>;
 
 template class rsQuantumSpin<double>;     // todo: use float...
 template class rsQuantumComputer<double>; // ...because this guy here can use a lot of memory

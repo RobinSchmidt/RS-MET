@@ -12,6 +12,85 @@ using namespace RAPT;
 //  return accu;
 //}
 
+template <class T>
+void movingAverage5pt(const T* x, int N, T* y)
+{
+  rsAssert(N >= 4);  // todo: handle other cases separately
+
+  //rsAssert(N >= 0);
+  //if(N == 0) return;
+  //if(N == 1) { y[0] = x[0]; return; }
+
+  T t1 = x[0];
+  T t2 = x[1];
+  T t3 = x[2];
+  T t4 = x[3];
+  y[0] = T(1/3.) * (t1 + t2 + t3);
+  y[1] = T(1/4.) * (t1 + t2 + t3 + t4);
+  for(int n = 2; n < N-2; n++) {
+    y[n] = T(1/5.) * (t1 + t2 + t3 + t4 + y[n+2]);
+    t1 = t2;
+    t2 = t3;
+    t3 = t4;
+    t4 = y[n+2]; }
+  y[N-2] = T(1/4.) * (t1 + t2 + t3 + t4);
+  y[N-1] = T(1/3.) * (     t2 + t3 + t4);
+}
+// this is still under construction
+// maybe make a fixed-ends version of that using: y[0] = x[0], y[1] = (x[0]+x[1]+x[2])/3 - so
+// the first output equals the first input and the second output uses a symmetric 3-point average
+// ...i think, that scheme generalizes more nicely to M-point smoothers without introducing 
+// asymmetric averaging at the endpoints - also, fixed endpoints may themselves be a desirable
+// feature - for example when smoothing parameter trajectories
+
+// a function movingAverage that does not run in place and supports arbitrary odd order - useful
+// for producing target output for unit tests
+template <class T>
+void movingAverage(const T* x, int N, T* y, int order)
+{
+  rsAssert(N >= 0);
+  int M = order/2;
+  int n, m;
+  //T s = T(0);  // accumulator
+
+  // initial section:
+
+  // middle section:
+  for(int n = M; n < N-M; n++)
+  {
+    y[n] = T(0);
+    for(m = -M; m <= M; m++)
+      y[n] += x[n+m];
+    y[n] *= T(1.0/order);
+  }
+
+  // last section:
+
+}
+// under construction...
+
+bool testArrayFiltering()
+{
+  bool r = true;      // test result
+  typedef std::vector<double> Vec;
+  typedef RAPT::rsArray AR;
+  Vec x,y;
+
+  x = Vec({1,3,2,-2,3,5,1});
+  AR::movingAverage3pt(&x[0], (int)x.size(), &x[0], false);
+  r &= x == Vec({2,2,1,1,2,3,3});
+  // todo: test edge cases (arrays of length 0,1,2), test with endsFixed condition true
+
+  x = Vec({60,120,-60,180,120,-120,60,240,120});
+  y = x;
+  movingAverage5pt(&y[0], (int)y.size(), &y[0]);
+  r &= y == Vec({40,75,84,48,36,96,84,75,140});
+
+
+
+  return r;
+}
+
 bool arrayUnitTest()
 {
   bool r = true;      // test result
@@ -30,6 +109,8 @@ bool arrayUnitTest()
   rsRemoveRange(a, 4, 7);
   r &= a == Vec({ 0,1,2,3, 8,9 });
 
+
+  r &= testArrayFiltering();
 
 
   return r;
