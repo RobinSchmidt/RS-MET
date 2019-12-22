@@ -143,9 +143,9 @@ template int rsArrayTools::maxIndex(const rsRange<double>*, int length);
 
 
 
-template void rsMatrixTools::rsInitMatrix(double** A, int N, int M, double value);
-template void rsMatrixTools::rsCopyMatrix(double** source, double **destination, int N, int M);
-template bool rsMatrixTools::rsAreMatricesApproximatelyEqual(double **A, double **B, int N, int M, double tol);
+template void rsMatrixTools::initMatrix(double** A, int N, int M, double value);
+template void rsMatrixTools::copyMatrix(double** source, double **destination, int N, int M);
+template bool rsMatrixTools::areMatricesApproximatelyEqual(double **A, double **B, int N, int M, double tol);
 
 template void rsMatrixTools::rsMatrixMultiply(double **A, double **B, double **C, int N, int M, int P);
 template void rsMatrixTools::rsMatrixMultiplyFirstTransposed(double **A, double **B, double **C, int N, int M, int P);

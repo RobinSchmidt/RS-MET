@@ -67,7 +67,7 @@ public:
   static rsMatrixOld scalarMatrix(T scalarValue, int dimension)
   {
     rsMatrixOld result(dimension, dimension);
-    for(int r=0; r<dimension; r++)  // use rsInitMatrix instead
+    for(int r=0; r<dimension; r++)  // use initMatrix instead
     {
       for(int c=0; c<dimension; c++)
         result(r,c) = 0.0;
@@ -167,7 +167,7 @@ public:
   }
 
   /** Initializes all elements with zero values. */
-  // \todo use rsInitMatrix
+  // \todo use initMatrix
   void initWithZeros()
   {
     if(data->numReferences > 1)

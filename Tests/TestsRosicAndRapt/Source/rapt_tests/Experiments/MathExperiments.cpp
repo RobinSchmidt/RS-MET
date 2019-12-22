@@ -86,7 +86,7 @@ void finiteDifferenceStencilCoeffs()
   // establish matrix:
   int N = (int) s.size();    // stencil length
   double** A;                // matrix data
-  rsMatrixTools::rsAllocateMatrix(A, N, N);
+  rsMatrixTools::allocateMatrix(A, N, N);
   for(int i = 0; i < N; i++)
     for(int j = 0; j < N; j++)
       A[i][j] = pow(s[j], i);
@@ -128,7 +128,7 @@ void finiteDifferenceStencilCoeffs()
   // f_xx = (-1*f[i-2]+10*f[i-1]-25*f[i+0]+16*f[i+0.5])/(5*1.0*h**2)
   // f_xxx = (-6*f[i-2]+20*f[i-1]-30*f[i+0]+16*f[i+0.5])/(5*1.0*h**3)
 
-  rsMatrixTools::rsDeAllocateMatrix(A, N, N);
+  rsMatrixTools::deallocateMatrix(A, N, N);
 }
 
 void interpolatingFunction()
@@ -661,7 +661,7 @@ void ratioGenerator()
   std::vector<double> r(numRatios);  // rename to tmp
   rsArrayTools::fillWithRangeLinear(&p[0], numParams, 0.0, 1.0);
   double** y; // rename to r(atios)
-  rsMatrixTools::rsAllocateMatrix(y, numRatios, numParams);
+  rsMatrixTools::allocateMatrix(y, numRatios, numParams);
 
   for(int i = 0; i < numParams; i++) {
     ratGen.setParameter1(p[i]);
@@ -679,7 +679,7 @@ void ratioGenerator()
   plt.plot();
 
 
-  rsMatrixTools::rsDeAllocateMatrix(y, numRatios, numParams);
+  rsMatrixTools::deallocateMatrix(y, numRatios, numParams);
 
   // primePowerDiff has graphs that cross each other - that means that there are values for the
   // parameter for which not all ratios are distinct - but we want them to be distict
@@ -732,7 +732,7 @@ void ratiosLargeLcm()
   std::vector<double> axes(N);
   RAPT::rsArrayTools::fillWithRangeLinear(&axes[0], N, double(nMin), double(nMax));
   double** lcmMatrix;
-  RAPT::rsMatrixTools::rsAllocateMatrix(lcmMatrix, N, N);
+  RAPT::rsMatrixTools::allocateMatrix(lcmMatrix, N, N);
   for(unsigned int i = 0; i < N; i++)
     for(unsigned int j = 0; j < N; j++)
       lcmMatrix[i][j] = (double) RAPT::rsLcm(nMin+i, nMin+j);
@@ -753,7 +753,7 @@ void ratiosLargeLcm()
   plt.plot();
   //plt.plot3D();
 
-  RAPT::rsMatrixTools::rsDeAllocateMatrix(lcmMatrix, N, N);
+  RAPT::rsMatrixTools::deallocateMatrix(lcmMatrix, N, N);
 }
 
 void ratiosMetallic()

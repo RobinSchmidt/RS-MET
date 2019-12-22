@@ -7,19 +7,19 @@ namespace RSLib
   // algebra stuff is not included here - this is part of the math module.
 
   template<class T>
-  void rsAllocateMatrix(T**& A, int N, int M);
+  void allocateMatrix(T**& A, int N, int M);
 
   template<class T>
-  void rsDeAllocateMatrix(T**& A, int N, int M);
+  void deallocateMatrix(T**& A, int N, int M);
 
   template<class T>
-  void rsInitMatrix(T** A, int N, int M, T value = T(0));
+  void initMatrix(T** A, int N, int M, T value = T(0));
 
   template<class T>
-  void rsCopyMatrix(T** source, T **destination, int N, int M);
+  void copyMatrix(T** source, T **destination, int N, int M);
 
   template<class T>
-  bool rsAreMatricesApproximatelyEqual(T **A, T **B, int N, int M, T tol);
+  bool areMatricesApproximatelyEqual(T **A, T **B, int N, int M, T tol);
 
   /* Pre-multiplies the M-dimensional vector x by NxM matrix A and stores the resulting 
   N-dimensional vector in y, such that y = A * x. */

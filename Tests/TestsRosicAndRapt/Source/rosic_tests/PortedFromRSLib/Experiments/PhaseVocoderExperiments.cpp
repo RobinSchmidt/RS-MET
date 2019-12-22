@@ -269,9 +269,9 @@ void spectrogramSine()
 
   // compute (magnitude) spectrogram and phasogram:
   double **mag, **phs, **dB;
-  rsMatrixTools::rsAllocateMatrix(mag, F, K);
-  rsMatrixTools::rsAllocateMatrix(phs, F, K);
-  rsMatrixTools::rsAllocateMatrix(dB,  F, K);
+  rsMatrixTools::allocateMatrix(mag, F, K);
+  rsMatrixTools::allocateMatrix(phs, F, K);
+  rsMatrixTools::allocateMatrix(dB,  F, K);
   for(int i = 0; i < F; i++) {
     for(int  j = 0; j < K; j++) {
       mag[i][j] = abs(s(i, j));
@@ -307,9 +307,9 @@ void spectrogramSine()
 
 
   // free dynamically memory:
-  rsMatrixTools::rsDeAllocateMatrix(mag, F, K);
-  rsMatrixTools::rsDeAllocateMatrix(phs, F, K);
-  rsMatrixTools::rsDeAllocateMatrix(dB,  F, K);
+  rsMatrixTools::deallocateMatrix(mag, F, K);
+  rsMatrixTools::deallocateMatrix(phs, F, K);
+  rsMatrixTools::deallocateMatrix(dB,  F, K);
 }
 
 void spectrogramFilter()

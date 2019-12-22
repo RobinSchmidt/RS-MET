@@ -796,7 +796,7 @@ template<class T>
 void plotMatrix(RAPT::rsMatrix<T>& z, std::vector<T>& x, std::vector<T>& y)
 {
   double** z2;
-  RAPT::rsMatrixTools::rsAllocateMatrix(z2, z.getNumRows(), z.getNumColumns());
+  RAPT::rsMatrixTools::allocateMatrix(z2, z.getNumRows(), z.getNumColumns());
 
   for(int i = 0; i < z.getNumRows(); i++)
     for(int j = 0; j < z.getNumColumns(); j++)
@@ -805,7 +805,7 @@ void plotMatrix(RAPT::rsMatrix<T>& z, std::vector<T>& x, std::vector<T>& y)
   GNUPlotter plt;
   plt.plotSurface((int)x.size(), (int)y.size(), &x[0], &y[0], z2);
 
-  RAPT::rsMatrixTools::rsDeAllocateMatrix(z2, z.getNumRows(), z.getNumColumns());
+  RAPT::rsMatrixTools::deallocateMatrix(z2, z.getNumRows(), z.getNumColumns());
 }
 
 void waveMorph()
@@ -972,7 +972,7 @@ void waveMorph2()
 
   double* ut = new double[n];
   double** u;
-  RAPT::rsMatrixTools::rsAllocateMatrix(u, m, n); 
+  RAPT::rsMatrixTools::allocateMatrix(u, m, n); 
   // 1st index i time index, 2nd index space index
 
 
@@ -1008,5 +1008,5 @@ void waveMorph2()
 
  
   delete[] ut;
-  RAPT::rsMatrixTools::rsDeAllocateMatrix(u, m, n);
+  RAPT::rsMatrixTools::deallocateMatrix(u, m, n);
 }

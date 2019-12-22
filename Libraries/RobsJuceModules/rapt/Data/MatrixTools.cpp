@@ -1,5 +1,5 @@
 template<class T>
-void rsMatrixTools::rsAllocateMatrix(T**& A, int N, int M)
+void rsMatrixTools::allocateMatrix(T**& A, int N, int M)
 {
   A = new T*[N];
   for(int i = 0; i < N; i++)
@@ -18,7 +18,7 @@ void rsMatrixTools::rsAllocateMatrix(T**& A, int N, int M)
 }
 
 template<class T>
-void rsMatrixTools::rsDeAllocateMatrix(T**& A, int N, int M)
+void rsMatrixTools::deallocateMatrix(T**& A, int N, int M)
 {
   for(int i = 0; i < N; i++)
     delete[] A[i];
@@ -26,7 +26,7 @@ void rsMatrixTools::rsDeAllocateMatrix(T**& A, int N, int M)
 }
 
 template<class T>
-void rsMatrixTools::rsInitMatrix(T** A, int N, int M, T value)
+void rsMatrixTools::initMatrix(T** A, int N, int M, T value)
 {
   for(int i = 0; i < N; i++)
   {
@@ -36,7 +36,7 @@ void rsMatrixTools::rsInitMatrix(T** A, int N, int M, T value)
 }
 
 template<class T>
-void rsMatrixTools::rsCopyMatrix(T** source, T **destination, int N, int M)
+void rsMatrixTools::copyMatrix(T** source, T **destination, int N, int M)
 {
   for(int i = 0; i < N; i++)
   {
@@ -46,7 +46,7 @@ void rsMatrixTools::rsCopyMatrix(T** source, T **destination, int N, int M)
 }
 
 template<class T>
-bool rsMatrixTools::rsAreMatricesApproximatelyEqual(T **A, T **B, int N, int M, T tol)
+bool rsMatrixTools::areMatricesApproximatelyEqual(T **A, T **B, int N, int M, T tol)
 {
   for(int i = 0; i < N; i++)
   {

@@ -463,11 +463,11 @@ template<class T>
 bool rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(T **A, T **B, T **C, int N)
 {
   T **Bi;
-  rsMatrixTools::rsAllocateMatrix(Bi, N, N);
-  rsMatrixTools::rsCopyMatrix(B, Bi, N, N);
+  rsMatrixTools::allocateMatrix(Bi, N, N);
+  rsMatrixTools::copyMatrix(B, Bi, N, N);
   bool result = rsInvertMatrix(Bi, N);  // Bi = B^-1
   rsMatrixTools::rsMatrixMultiply(Bi, A, C, N, N, N);  // C  = B^-1 * A
-  rsMatrixTools::rsDeAllocateMatrix(Bi, N, N);
+  rsMatrixTools::deallocateMatrix(Bi, N, N);
   return result;
 }
 
@@ -475,11 +475,11 @@ template<class T>
 bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(T **A, T **B, T **C, int N)
 {
   T **Bi;
-  rsMatrixTools::rsAllocateMatrix(Bi, N, N);
+  rsMatrixTools::allocateMatrix(Bi, N, N);
   rsArrayTools::transposeSquareArray(B, Bi, N);
   bool result = rsInvertMatrix(Bi, N);                 // Bi = B^-T
   rsMatrixTools::rsMatrixMultiplySecondTransposed(Bi, A, C, N, N, N); // C  = B^-T * A^T
-  rsMatrixTools::rsDeAllocateMatrix(Bi, N, N);
+  rsMatrixTools::deallocateMatrix(Bi, N, N);
   return result;
 
   // alternative algorithm:

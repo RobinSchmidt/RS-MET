@@ -5,7 +5,7 @@ namespace RSLib
 {
 
   template<class T>
-  void rsAllocateMatrix(T**& A, int N, int M)
+  void allocateMatrix(T**& A, int N, int M)
   {
     A = new T*[N];
     for(int i = 0; i < N; i++)
@@ -24,7 +24,7 @@ namespace RSLib
   }
 
   template<class T>
-  void rsDeAllocateMatrix(T**& A, int N, int M)
+  void deallocateMatrix(T**& A, int N, int M)
   {
     for(int i = 0; i < N; i++)
       delete[] A[i];
@@ -32,7 +32,7 @@ namespace RSLib
   }
 
   template<class T>
-  void rsInitMatrix(T** A, int N, int M, T value)
+  void initMatrix(T** A, int N, int M, T value)
   {
     for(int i = 0; i < N; i++)
     {
@@ -42,7 +42,7 @@ namespace RSLib
   }
 
   template<class T>
-  void rsCopyMatrix(T** source, T **destination, int N, int M)
+  void copyMatrix(T** source, T **destination, int N, int M)
   {
     for(int i = 0; i < N; i++)
     {
@@ -52,7 +52,7 @@ namespace RSLib
   }
 
   template<class T>
-  bool rsAreMatricesApproximatelyEqual(T **A, T **B, int N, int M, T tol)
+  bool areMatricesApproximatelyEqual(T **A, T **B, int N, int M, T tol)
   {
     for(int i = 0; i < N; i++)
     {

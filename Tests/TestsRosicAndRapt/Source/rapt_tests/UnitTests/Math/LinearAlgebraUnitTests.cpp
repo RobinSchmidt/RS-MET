@@ -464,7 +464,7 @@ bool testMatrixMultiply3x3()
   // |1 2 3| * |9 8| = |30 24|
   // |4 5 6|   |6 5|   |84 69|
   //           |3 2|
-  rsMatrixTools::rsInitMatrix(pC, 3, 3, -1.0);
+  rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::rsMatrixMultiply(pA, pB, pC, 2, 3, 2);
   testResult &= C[0][0] == 30 && C[0][1] == 24 && C[0][2] == -1;
   testResult &= C[1][0] == 84 && C[1][1] == 69 && C[1][2] == -1;
@@ -474,7 +474,7 @@ bool testMatrixMultiply3x3()
   // |1 2| * |9 8 7| = | 21 18 15|
   // |4 5|   |6 5 4|   | 66 57 48|
   // |7 8|             |111 96 81|
-  rsMatrixTools::rsInitMatrix(pC, 3, 3, -1.0);
+  rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::rsMatrixMultiply(pA, pB, pC, 3, 2, 3);
   testResult &= C[0][0] ==  21 && C[0][1] == 18 && C[0][2] == 15;
   testResult &= C[1][0] ==  66 && C[1][1] == 57 && C[1][2] == 48;
@@ -484,7 +484,7 @@ bool testMatrixMultiply3x3()
   // |1 2|^T * |9 8| = |1 4 7| * |9 8| = |54 42|
   // |4 5|     |6 5|   |2 5 8|   |6 5|   |72 57|
   // |7 8|     |3 2|             |3 2|
-  rsMatrixTools::rsInitMatrix(pC, 3, 3, -1.0);
+  rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::rsMatrixMultiplyFirstTransposed(pA, pB, pC, 3, 2, 2);
   testResult &= C[0][0] == 54 && C[0][1] == 42 && C[0][2] == -1;
   testResult &= C[1][0] == 72 && C[1][1] == 57 && C[1][2] == -1;
@@ -494,7 +494,7 @@ bool testMatrixMultiply3x3()
   // |1 2 3|^T * |9 8 7| = |1 4| * |9 8 7| = |33 28 23|
   // |4 5 6|     |6 5 4|   |2 5|   |6 5 4|   |48 41 34|
   //                       |3 6|             |63 54 45|
-  rsMatrixTools::rsInitMatrix(pC, 3, 3, -1.0);
+  rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::rsMatrixMultiplyFirstTransposed(pA, pB, pC, 2, 3, 3);
   testResult &= C[0][0] == 33 && C[0][1] == 28 && C[0][2] == 23;
   testResult &= C[1][0] == 48 && C[1][1] == 41 && C[1][2] == 34;
@@ -504,7 +504,7 @@ bool testMatrixMultiply3x3()
   // |1 2 3| * |9 8 7|^T = |1 2 3| * |9 6| = | 46 28|
   // |4 5 6|   |6 5 4|     |4 5 6|   |8 5|   |118 73|
   //                                 |7 4|
-  rsMatrixTools::rsInitMatrix(pC, 3, 3, -1.0);
+  rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::rsMatrixMultiplySecondTransposed(pA, pB, pC, 2, 3, 2);
   testResult &= C[0][0] ==  46 && C[0][1] == 28 && C[0][2] == -1;
   testResult &= C[1][0] == 118 && C[1][1] == 73 && C[1][2] == -1;
@@ -514,7 +514,7 @@ bool testMatrixMultiply3x3()
   // |1 2| * |9 8|^T = |1 2| * |9 6 3| = | 25 16  7|
   // |4 5|   |6 5|     |4 5|   |8 5 2|   | 76 49 22|
   // |7 8|   |3 2|     |7 8|             |127 82 37|
-  rsMatrixTools::rsInitMatrix(pC, 3, 3, -1.0);
+  rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::rsMatrixMultiplySecondTransposed(pA, pB, pC, 3, 2, 3);
   testResult &= C[0][0] ==  25 && C[0][1] == 16 && C[0][2] ==  7;
   testResult &= C[1][0] ==  76 && C[1][1] == 49 && C[1][2] == 22;
@@ -524,7 +524,7 @@ bool testMatrixMultiply3x3()
   // |1 2 3|^T * |9 8|^T = |1 4| * |9 6 3| = |41 26 11|
   // |4 5 6|     |6 5|     |2 5|   |8 5 2|   |58 37 16|
   //             |3 2|     |3 6|             |75 48 21|
-  rsMatrixTools::rsInitMatrix(pC, 3, 3, -1.0);
+  rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::rsMatrixMultiplyBothTransposed(pA, pB, pC, 2, 3, 3);
   testResult &= C[0][0] == 41 && C[0][1] == 26 && C[0][2] == 11;
   testResult &= C[1][0] == 58 && C[1][1] == 37 && C[1][2] == 16;
@@ -534,7 +534,7 @@ bool testMatrixMultiply3x3()
   // |1 2|^T * |9 8 7|^T = |1 4 7| * |9 6| = | 90 54|
   // |4 5|     |6 5 4|     |2 5 8|   |8 5|   |114 69|
   // |7 8|                           |7 4|
-  rsMatrixTools::rsInitMatrix(pC, 3, 3, -1.0);
+  rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::rsMatrixMultiplyBothTransposed(pA, pB, pC, 3, 2, 2);
   testResult &= C[0][0] ==  90 && C[0][1] == 54 && C[0][2] == -1;
   testResult &= C[1][0] == 114 && C[1][1] == 69 && C[1][2] == -1;
@@ -544,7 +544,7 @@ bool testMatrixMultiply3x3()
   // |1 2 3| * |9 8 7| = | 30  24 18|
   // |4 5 6|   |6 5 4|   | 84  69 54|
   // |7 8 9|   |3 2 1|   |138 114 90|
-  rsMatrixTools::rsCopyMatrix(pA, pC, 3, 3);
+  rsMatrixTools::copyMatrix(pA, pC, 3, 3);
   rsMatrixTools::rsMatrixInPlaceMultiply(pC, pB, 3, 3);
   testResult &= C[0][0] ==  30 && C[0][1] ==  24 && C[0][2] == 18;
   testResult &= C[1][0] ==  84 && C[1][1] ==  69 && C[1][2] == 54;
@@ -554,8 +554,8 @@ bool testMatrixMultiply3x3()
   // |1 2 3| * |9 8 7| = | 30  24 18|
   // |4 5 6|   |6 5 4|   | 84  69 54|
   //           |3 2 1|
-  rsMatrixTools::rsInitMatrix(pC, 3, 3, -1.0);
-  rsMatrixTools::rsCopyMatrix(pA, pC, 2, 3);
+  rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
+  rsMatrixTools::copyMatrix(pA, pC, 2, 3);
   rsMatrixTools::rsMatrixInPlaceMultiply(pC, pB, 2, 3);
   testResult &= C[0][0] ==  30 && C[0][1] ==  24 && C[0][2] == 18;
   testResult &= C[1][0] ==  84 && C[1][1] ==  69 && C[1][2] == 54;
@@ -590,7 +590,7 @@ bool testMatrixMultiply(std::string &reportString)
   // | 2  3  5| * |59  61  67  71| = | 822  864  898  944|
   // |11 13 17|   |73  79  83  89|   |3247 3415 3567 3757|
   //              |97 101 103 107|
-  rsMatrixTools::rsInitMatrix(pC, 4, 4, -1.0);
+  rsMatrixTools::initMatrix(pC, 4, 4, -1.0);
   rsMatrixTools::rsMatrixMultiply(pA, pB, pC, 2, 3, 4);
   testResult &= C[0][0] ==  822 && C[0][1] ==  864 && C[0][2] ==  898 && C[0][3] ==  944;
   testResult &= C[1][0] == 3247 && C[1][1] == 3415 && C[1][2] == 3567 && C[1][3] == 3757;
@@ -602,7 +602,7 @@ bool testMatrixMultiply(std::string &reportString)
   // |11 13 17|   | 73  79  83|     |2581 3241 4131 4827|
   //              | 97 101 103|
   //              |109 113 127|
-  rsMatrixTools::rsInitMatrix(pC, 4, 4, -1.0);
+  rsMatrixTools::initMatrix(pC, 4, 4, -1.0);
   rsMatrixTools::rsMatrixMultiplySecondTransposed(pA, pB, pC, 2, 3, 4);
   testResult &= C[0][0] ==  636 && C[0][1] ==  798 && C[0][2] == 1012 && C[0][3] == 1192;
   testResult &= C[1][0] == 2581 && C[1][1] == 3241 && C[1][2] == 4131 && C[1][3] == 4827;
@@ -613,7 +613,7 @@ bool testMatrixMultiply(std::string &reportString)
   // | 2  3|^T * |59  61  67  71| = |3152 3314 3416 3582|
   // |11 13|     |73  79  83  89|   |3939 4139 4267 4473|
   // |23 29|     |97 101 103 107|
-  rsMatrixTools::rsInitMatrix(pC, 4, 4, -1.0);
+  rsMatrixTools::initMatrix(pC, 4, 4, -1.0);
   rsMatrixTools::rsMatrixMultiplyFirstTransposed(pA, pB, pC, 3, 2, 4);
   testResult &= C[0][0] == 3152 && C[0][1] == 3314 && C[0][2] == 3416 && C[0][3] == 3582;
   testResult &= C[1][0] == 3939 && C[1][1] == 4139 && C[1][2] == 4267 && C[1][3] == 4473;
@@ -625,7 +625,7 @@ bool testMatrixMultiply(std::string &reportString)
   // |11 13|     | 73  79  83|     |2913 3653 4691 5479|
   // |23 29|     | 97 101 103|
   //             |109 113 127|
-  rsMatrixTools::rsInitMatrix(pC, 4, 4, -1.0);
+  rsMatrixTools::initMatrix(pC, 4, 4, -1.0);
   rsMatrixTools::rsMatrixMultiplyBothTransposed(pA, pB, pC, 3, 2, 4);
   testResult &= C[0][0] == 2330 && C[0][1] == 2924 && C[0][2] == 3674 && C[0][3] == 4382;
   testResult &= C[1][0] == 2913 && C[1][1] == 3653 && C[1][2] == 4591 && C[1][3] == 5479;
@@ -697,7 +697,7 @@ bool testChangeOfBasis(std::string &reportString)
   rsMatrixTools::rsMatrixVectorMultiply(pCT, va, vb2, 3, 3);
   testResult &= rsArrayTools::almostEqual(vb, vb2, 3, 1.e-14);
 
-  testResult &= rsMatrixTools::rsAreMatricesApproximatelyEqual(pC, pCT, 3, 3, 1.e-14);
+  testResult &= rsMatrixTools::areMatricesApproximatelyEqual(pC, pCT, 3, 3, 1.e-14);
    // the change-of-base matrix doesn't care about, how the base-vectors are represented in some 
    // matrix-representation, so it should be the same in both cases 
 

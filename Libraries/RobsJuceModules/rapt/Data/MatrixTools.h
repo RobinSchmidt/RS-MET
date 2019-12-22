@@ -18,20 +18,20 @@ class rsMatrixTools
 public:
 
   template<class T>
-  static void rsAllocateMatrix(T**& A, int N, int M);
+  static void allocateMatrix(T**& A, int N, int M);
 
   template<class T>
-  static void rsDeAllocateMatrix(T**& A, int N, int M); 
+  static void deallocateMatrix(T**& A, int N, int M); 
   // rename to freeMatrix - ..and why is the M needed?
 
   template<class T>
-  static void rsInitMatrix(T** A, int N, int M, T value = T(0));
+  static void initMatrix(T** A, int N, int M, T value = T(0));
 
   template<class T>
-  static void rsCopyMatrix(T** source, T **destination, int N, int M);
+  static void copyMatrix(T** source, T **destination, int N, int M);
 
   template<class T>
-  static bool rsAreMatricesApproximatelyEqual(T **A, T **B, int N, int M, T tol);
+  static bool areMatricesApproximatelyEqual(T **A, T **B, int N, int M, T tol);
 
   /* Pre-multiplies the M-dimensional vector x by NxM matrix A and stores the resulting 
   N-dimensional vector in y, such that y = A * x. */
