@@ -61,7 +61,7 @@ bool rsMatrixTools::areMatricesApproximatelyEqual(T **A, T **B, int N, int M, T 
 }
 
 template<class T>
-void rsMatrixTools::rsMatrixVectorMultiply(T **A, T *x, T *y, int N, int M)
+void rsMatrixTools::matrixVectorMultiply(T **A, T *x, T *y, int N, int M)
 {
   for(int i = 0; i < N; i++)
   {
@@ -72,7 +72,7 @@ void rsMatrixTools::rsMatrixVectorMultiply(T **A, T *x, T *y, int N, int M)
 }
 
 template<class T>
-void rsMatrixTools::rsTransposedMatrixVectorMultiply(T **A, T *x, T *y, int N, int M)
+void rsMatrixTools::transposedMatrixVectorMultiply(T **A, T *x, T *y, int N, int M)
 {
   for(int i = 0; i < M; i++)
   {
@@ -83,7 +83,7 @@ void rsMatrixTools::rsTransposedMatrixVectorMultiply(T **A, T *x, T *y, int N, i
 }
 
 template<class T>
-void rsMatrixTools::rsMatrixMultiply(T **A, T **B, T **C, int N, int M, int P)
+void rsMatrixTools::matrixMultiply(T **A, T **B, T **C, int N, int M, int P)
 {
   for(int i = 0; i < N; i++)
   {
@@ -97,7 +97,7 @@ void rsMatrixTools::rsMatrixMultiply(T **A, T **B, T **C, int N, int M, int P)
 }
 
 template<class T>
-void rsMatrixTools::rsMatrixMultiplyFirstTransposed(T **A, T **B, T **C, int N, int M, int P)
+void rsMatrixTools::matrixMultiplyFirstTransposed(T **A, T **B, T **C, int N, int M, int P)
 {
   for(int i = 0; i < M; i++)
   {
@@ -111,7 +111,7 @@ void rsMatrixTools::rsMatrixMultiplyFirstTransposed(T **A, T **B, T **C, int N, 
 }
 
 template<class T>
-void rsMatrixTools::rsMatrixMultiplySecondTransposed(T **A, T **B, T **C, int N, int M, int P)
+void rsMatrixTools::matrixMultiplySecondTransposed(T **A, T **B, T **C, int N, int M, int P)
 {
   for(int i = 0; i < N; i++)
   {
@@ -125,7 +125,7 @@ void rsMatrixTools::rsMatrixMultiplySecondTransposed(T **A, T **B, T **C, int N,
 }
 
 template<class T>
-void rsMatrixTools::rsMatrixMultiplyBothTransposed(T **A, T **B, T **C, int N, int M, int P)
+void rsMatrixTools::matrixMultiplyBothTransposed(T **A, T **B, T **C, int N, int M, int P)
 {
   for(int i = 0; i < M; i++)
   {
@@ -139,7 +139,7 @@ void rsMatrixTools::rsMatrixMultiplyBothTransposed(T **A, T **B, T **C, int N, i
 }
 
 template<class T>
-void rsMatrixTools::rsMatrixInPlaceMultiply(T **A, T **B, int N, int M)
+void rsMatrixTools::matrixInPlaceMultiply(T **A, T **B, int N, int M)
 {
   T *Ai = new T[M];  // i-th row of A (for temporary storage)
   for(int i = 0; i < N; i++)

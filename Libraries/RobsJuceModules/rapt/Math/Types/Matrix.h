@@ -441,6 +441,8 @@ public:
   /** Converts a row index i and a column index j to a flat array index. */
   int flatIndex(const int i, const int j) const
   {
+    rsAssert(i >= 0 && i < numRows, "invalid row index");
+    rsAssert(j >= 0 && i < numCols, "invalid column index");
     return numCols*i + j;
     // todo:
     //  -be more general: colStride*i + rowStride*j. goal: allow row-major and column-major storage

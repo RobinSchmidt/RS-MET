@@ -147,11 +147,11 @@ template void rsMatrixTools::initMatrix(double** A, int N, int M, double value);
 template void rsMatrixTools::copyMatrix(double** source, double **destination, int N, int M);
 template bool rsMatrixTools::areMatricesApproximatelyEqual(double **A, double **B, int N, int M, double tol);
 
-template void rsMatrixTools::rsMatrixMultiply(double **A, double **B, double **C, int N, int M, int P);
-template void rsMatrixTools::rsMatrixMultiplyFirstTransposed(double **A, double **B, double **C, int N, int M, int P);
-template void rsMatrixTools::rsMatrixMultiplySecondTransposed(double **A, double **B, double **C, int N, int M, int P);
-template void rsMatrixTools::rsMatrixMultiplyBothTransposed(double **A, double **B, double **C, int N, int M, int P);
-template void rsMatrixTools::rsMatrixInPlaceMultiply(double **A, double **B, int N, int M);
+template void rsMatrixTools::matrixMultiply(double **A, double **B, double **C, int N, int M, int P);
+template void rsMatrixTools::matrixMultiplyFirstTransposed(double **A, double **B, double **C, int N, int M, int P);
+template void rsMatrixTools::matrixMultiplySecondTransposed(double **A, double **B, double **C, int N, int M, int P);
+template void rsMatrixTools::matrixMultiplyBothTransposed(double **A, double **B, double **C, int N, int M, int P);
+template void rsMatrixTools::matrixInPlaceMultiply(double **A, double **B, int N, int M);
 
 
 

@@ -386,12 +386,12 @@ public:
     rsAssert(data->numColumns == m2.data->numRows);  // matrices incompatible
 
     if(m2.isSquare() && data->numReferences == 1)
-      rsMatrixTools::rsMatrixInPlaceMultiply(data->m, m2.data->m, data->numRows, data->numColumns);
+      rsMatrixTools::matrixInPlaceMultiply(data->m, m2.data->m, data->numRows, data->numColumns);
     else
     {
       rsMatrixData<T> *newData = new rsMatrixData<T>(getNumRows(), m2.getNumColumns());
 
-      rsMatrixTools::rsMatrixMultiply(data->m, m2.data->m, newData->m,
+      rsMatrixTools::matrixMultiply(data->m, m2.data->m, newData->m,
         data->numRows, data->numColumns, m2.data->numColumns);
 
       updateDataPointer(newData);
@@ -484,7 +484,7 @@ public:
         for(int k = 0; k < data->numColumns; k++)
           result.data->m[r][c] += data->m[r][k] * m2.data->m[k][c];
       }
-    } // use rsMatrixMultiply
+    } // use matrixMultiply
     return result;
   }
 

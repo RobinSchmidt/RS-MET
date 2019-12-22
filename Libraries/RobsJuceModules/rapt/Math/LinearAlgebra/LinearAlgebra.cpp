@@ -438,7 +438,7 @@ bool rsLinearAlgebra::rsChangeOfBasisColumnWise(T **A, T **B, T *va, T *vb, int 
 {
   // coordinates of v in canonical basis:
   T *ve = new T[N];
-  rsMatrixTools::rsMatrixVectorMultiply(A, va, ve, N, N);
+  rsMatrixTools::matrixVectorMultiply(A, va, ve, N, N);
 
   // coordinates of v in basis B: A * va = ve = B * vb
   bool result = rsSolveLinearSystem(B, vb, ve, N);
@@ -451,7 +451,7 @@ template<class T>
 bool rsLinearAlgebra::rsChangeOfBasisRowWise(T **A, T **B, T *va, T *vb, int N)
 {
   T *ve = new T[N];
-  rsMatrixTools::rsTransposedMatrixVectorMultiply(A, va, ve, N, N);
+  rsMatrixTools::transposedMatrixVectorMultiply(A, va, ve, N, N);
   rsArrayTools::transposeSquareArray(B, N);
   bool result = rsSolveLinearSystem(B, vb, ve, N);
   rsArrayTools::transposeSquareArray(B, N);
@@ -466,7 +466,7 @@ bool rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(T **A, T **B, T **C, int N
   rsMatrixTools::allocateMatrix(Bi, N, N);
   rsMatrixTools::copyMatrix(B, Bi, N, N);
   bool result = rsInvertMatrix(Bi, N);  // Bi = B^-1
-  rsMatrixTools::rsMatrixMultiply(Bi, A, C, N, N, N);  // C  = B^-1 * A
+  rsMatrixTools::matrixMultiply(Bi, A, C, N, N, N);  // C  = B^-1 * A
   rsMatrixTools::deallocateMatrix(Bi, N, N);
   return result;
 }
@@ -478,7 +478,7 @@ bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(T **A, T **B, T **C, int N)
   rsMatrixTools::allocateMatrix(Bi, N, N);
   rsArrayTools::transposeSquareArray(B, Bi, N);
   bool result = rsInvertMatrix(Bi, N);                 // Bi = B^-T
-  rsMatrixTools::rsMatrixMultiplySecondTransposed(Bi, A, C, N, N, N); // C  = B^-T * A^T
+  rsMatrixTools::matrixMultiplySecondTransposed(Bi, A, C, N, N, N); // C  = B^-T * A^T
   rsMatrixTools::deallocateMatrix(Bi, N, N);
   return result;
 
