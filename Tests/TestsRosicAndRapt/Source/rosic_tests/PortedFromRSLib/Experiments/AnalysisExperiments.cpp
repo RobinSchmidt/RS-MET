@@ -32,7 +32,7 @@ void autoCorrelation()
 
   double t[bufferSize];
   //createTimeAxis(bufferSize, t, sampleRate);
-  RAPT::rsArray::fillWithIndex(t, bufferSize);
+  RAPT::rsArrayTools::fillWithIndex(t, bufferSize);
   double buffer[bufferSize];
   int n;
   for(n = 0; n < bufferSize; n++)
@@ -41,7 +41,7 @@ void autoCorrelation()
   // obtain sample autocorrelation function (ACF):
   double acf[bufferSize];
   rsAutoCorrelationFFT(buffer, bufferSize, acf);
-  RAPT::rsArray::scale(acf, bufferSize, 1.0/acf[0]);
+  RAPT::rsArrayTools::scale(acf, bufferSize, 1.0/acf[0]);
 
   // obtain unbiased ACF:
   double uacf[bufferSize];
@@ -72,7 +72,7 @@ void autoCorrelation()
   // avoids octave errors when a sinusoid of f = fs/(k+1/2) (k integer) is applied. Later we will
   // need to take accout of this by moving the exact location of the maximum by -0.5:
   double sacf[bufferSize];
-  RAPT::rsArray::copy(acf, sacf, bufferSize);
+  RAPT::rsArrayTools::copy(acf, sacf, bufferSize);
   /*
   sacf[0] = 2*acf[0];
   for(int n = 1; n < bufferSize; n++)
@@ -121,7 +121,7 @@ void autocorrelationPeakVariation()
   static const int kRange = kMax-kMin;
 
   double t[N];
-  RAPT::rsArray::fillWithIndex(t, N);
+  RAPT::rsArrayTools::fillWithIndex(t, N);
   double x1[N];
   double x2[N];
 
@@ -148,11 +148,11 @@ void autocorrelationPeakVariation()
     double acf1[N];
     rsAutoCorrelationFFT(x1, N, acf1);
     rsRemoveCorrelationBias(acf1, N, acf1);
-    RAPT::rsArray::scale(acf1, N, 1.0/acf1[0]);
+    RAPT::rsArrayTools::scale(acf1, N, 1.0/acf1[0]);
     double acf2[N];
     rsAutoCorrelationFFT(x2, N, acf2);
     rsRemoveCorrelationBias(acf2, N, acf2);
-    RAPT::rsArray::scale(acf2, N, 1.0/acf2[0]);
+    RAPT::rsArrayTools::scale(acf2, N, 1.0/acf2[0]);
 
     d[k-kMin] = acf1[k]-acf2[k]; // difference
     r[k-kMin] = acf1[k]/acf2[k]; // ratio
@@ -163,7 +163,7 @@ void autocorrelationPeakVariation()
 
   // plot the difference and ratio as function of k:
   double kValues[kRange+1];
-  RAPT::rsArray::fillWithRangeLinear(kValues, kRange+1, (double)kMin, (double)kMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(kValues, kRange+1, (double)kMin, (double)kMax);
   //Plotter::plotData(kRange, kValues, d, rLog);
   //Plotter::plotData(kRange, kValues, r);
   //Plotter::plotData(kRange, kValues, rLog);
@@ -234,8 +234,8 @@ void autoCorrelationPitchDetector()
   double fe[numBlocks]; // estimated frequency
   double fm[numBlocks]; // running mean of estimated frequency
   double fs[numBlocks]; // exponentially smoothed estimate
-  RAPT::rsArray::fillWithIndex(t,  numBlocks);
-  RAPT::rsArray::fillWithValue(ft, numBlocks, frequency);
+  RAPT::rsArrayTools::fillWithIndex(t,  numBlocks);
+  RAPT::rsArrayTools::fillWithValue(ft, numBlocks, frequency);
 
   double w    = 2*PI*frequency/sampleRate;
   double fSum = 0.0;
@@ -260,8 +260,8 @@ void autoCorrelationPitchDetector()
 
   // get the maximum error between true and estimated frequency:
   //double maxError = maxDeviation(ft, fe, numBlocks);
-  double maxError = RAPT::rsArray::maxDeviation(&ft[10], &fe[10], numBlocks-10);
-  double bias     = RAPT::rsArray::mean(&fs[100], numBlocks-100) - ft[0];
+  double maxError = RAPT::rsArrayTools::maxDeviation(&ft[10], &fe[10], numBlocks-10);
+  double bias     = RAPT::rsArrayTools::mean(&fs[100], numBlocks-100) - ft[0];
 
   // plot the true frequency, the instantaneous estimate and the running mean of the current
   // estimate:
@@ -292,13 +292,13 @@ void autoCorrelationPitchDetectorOffline()
   double *fm = new double[N]; // measured instantaneous frequency
 
   // create the array with instantaneous frequencies of input signal:
-  RAPT::rsArray::fillWithRangeLinear(f, N, f1, f2);
+  RAPT::rsArrayTools::fillWithRangeLinear(f, N, f1, f2);
 
   // create input signal:
   createSineWave(x, N, f, a, fs);
 
   // measure the instantaneous frequency (preliminary):
-  RAPT::rsArray::fillWithZeros(fm, N);
+  RAPT::rsArrayTools::fillWithZeros(fm, N);
   int hopSize = 1;
   int n;
   for(n = 0; n < N; n += hopSize)
@@ -378,13 +378,13 @@ void combineFFTs()
   }
 
   // compute an N-point FFT:
-  RAPT::rsArray::copy(x, X, N);
+  RAPT::rsArrayTools::copy(x, X, N);
   rsFFT(X, N);
 
   // compute two N/2-point FFTs (of the 1st and 2nd half of the buffer):
-  RAPT::rsArray::copy(x, X1, N/2);
+  RAPT::rsArrayTools::copy(x, X1, N/2);
   rsFFT(X1, N/2);
-  RAPT::rsArray::copy(&x[N/2], X2, N/2);
+  RAPT::rsArrayTools::copy(&x[N/2], X2, N/2);
   rsFFT(X2, N/2);
 
   // combine the two N/2 point FFTs into one N-point FFT:
@@ -443,8 +443,8 @@ void envelopeFollower()
 
   int smoothingLength = (int) ceil(fs/f);  // one cycle - todo: inquire from ef2 object
   int shiftAmount = 3*smoothingLength/2;   // factor 3/2 ad hoc
-  RAPT::rsArray::leftShift(&y3[0], N, shiftAmount);
-  RAPT::rsArray::leftShift(&y4[0], N, shiftAmount+5);
+  RAPT::rsArrayTools::leftShift(&y3[0], N, shiftAmount);
+  RAPT::rsArrayTools::leftShift(&y4[0], N, shiftAmount+5);
   // todo: figure out, if these shifts are generally applicable or specific to the settings and/or
   // input signal
 
@@ -505,7 +505,7 @@ void instantaneousFrequency()
   double x[N];                 // signal
 
   // create frequency array and signal:
-  RAPT::rsArray::fillWithRangeLinear(f, N, f1, f2);
+  RAPT::rsArrayTools::fillWithRangeLinear(f, N, f1, f2);
   createSineWave(x, N, f, a, fs);
 
   // measure instantaneous frequency and obtain error:
@@ -524,12 +524,12 @@ void instantaneousFrequency()
     e3[n]  = (f[n] - fm3[n]) / f[n];
   }
 
-  double maxError = RAPT::rsArray::maxAbs(e3, N);
+  double maxError = RAPT::rsArrayTools::maxAbs(e3, N);
     // c = 0.76: 3.6285047484070877e-005
     // c = 0.75: 3.4832150523579422e-005
     // c = 0.72: 3.0473459643206141e-005
 
-  double meanError = RAPT::rsArray::mean(e3, N);
+  double meanError = RAPT::rsArrayTools::mean(e3, N);
     // c = 0.66: -1.2387131128786400e-006
     // c = 0.666: -2.4751832800983252e-007
 
@@ -586,10 +586,10 @@ void instantaneousPhase()
 
   // fill arrays with true instantaneous (normalized radian) frequencies, phases and amplitudes:
   int n;
-  RAPT::rsArray::fillWithRangeLinear(w, N, f1, f2);
+  RAPT::rsArrayTools::fillWithRangeLinear(w, N, f1, f2);
   for(n = 0; n < N; n++)
     w[n] *= 2*PI/fs;
-  RAPT::rsArray::fillWithRangeLinear(a, N, a1, a2);
+  RAPT::rsArrayTools::fillWithRangeLinear(a, N, a1, a2);
   p[0] = p0;
   for(n = 1; n < N; n++)
     p[n] = rsWrapToInterval(p[n-1] + w[n], -PI, PI);
@@ -638,7 +638,7 @@ void arrayRMS()
 {
   int N = 100000;
   std::vector<double> x = createSineWave(N, 1000.0, 48000.0);
-  double rms = RAPT::rsArray::rootMeanSquare(&x[0], N); // 48 samples = 1 cycle, rms = 1/sqrt(2)
+  double rms = RAPT::rsArrayTools::rootMeanSquare(&x[0], N); // 48 samples = 1 cycle, rms = 1/sqrt(2)
   int dummy = 0;
 }
 
@@ -723,16 +723,16 @@ void zeroCrossingFinder()
   double *e1 = new double[Nz]; // error for precision 1 (cubic)
   double *e2 = new double[Nz]; // error for precision 2 (quintic)
   double *e3 = new double[Nz]; // error for precision 3 (heptic)
-  RAPT::rsArray::subtract(z0, zt, e0, Nz);
-  RAPT::rsArray::subtract(z1, zt, e1, Nz);
-  RAPT::rsArray::subtract(z2, zt, e2, Nz);
-  RAPT::rsArray::subtract(z3, zt, e3, Nz);
+  RAPT::rsArrayTools::subtract(z0, zt, e0, Nz);
+  RAPT::rsArrayTools::subtract(z1, zt, e1, Nz);
+  RAPT::rsArrayTools::subtract(z2, zt, e2, Nz);
+  RAPT::rsArrayTools::subtract(z3, zt, e3, Nz);
 
   // find maximum errors:
-  double eMax0 = RAPT::rsArray::maxAbs(e0, Nz);
-  double eMax1 = RAPT::rsArray::maxAbs(e1, Nz);
-  double eMax2 = RAPT::rsArray::maxAbs(e2, Nz);
-  double eMax3 = RAPT::rsArray::maxAbs(e3, Nz);
+  double eMax0 = RAPT::rsArrayTools::maxAbs(e0, Nz);
+  double eMax1 = RAPT::rsArrayTools::maxAbs(e1, Nz);
+  double eMax2 = RAPT::rsArrayTools::maxAbs(e2, Nz);
+  double eMax3 = RAPT::rsArrayTools::maxAbs(e3, Nz);
 
   // compute error ratios - these are the precision improvement factors by which choosing a higher
   // precision value actually affects the precision
@@ -782,8 +782,8 @@ void zeroCrossingFinder2()
 
   static const int N = 10;
   double x[N];
-  RAPT::rsArray::fillWithValue(x,       N/2, +1.0);
-  RAPT::rsArray::fillWithValue(&x[N/2], N/2, -1.0);
+  RAPT::rsArrayTools::fillWithValue(x,       N/2, +1.0);
+  RAPT::rsArrayTools::fillWithValue(&x[N/2], N/2, -1.0);
   x[0]   = -1.0;
   x[N-1] = +1.0;
 
@@ -881,13 +881,13 @@ void cycleMarkFinder()
   cm2 = cmf.findCycleMarks(&x[0], N);
 
   vector<double> deltas(cm1.size());
-  //RAPT::rsArray::subtract(&cm1[0], &cm2[0], &deltas[0], (int)cm1.size());
+  //RAPT::rsArrayTools::subtract(&cm1[0], &cm2[0], &deltas[0], (int)cm1.size());
 
   // compute average distances between the cycle-marks - the correct value would be fs/f for a
   // periodic input
   double dAvg1, dAvg2;
-  dAvg1 = RAPT::rsArray::meanDifference(&cm1[0], (int)cm1.size());
-  dAvg2 = RAPT::rsArray::meanDifference(&cm2[0], (int)cm2.size());
+  dAvg1 = RAPT::rsArrayTools::meanDifference(&cm1[0], (int)cm1.size());
+  dAvg2 = RAPT::rsArrayTools::meanDifference(&cm2[0], (int)cm2.size());
   // maybe compute the variance of the difference, too - maybe with a steady inharmonic input, this
   // value may say something about the stability of the pitch estimate over time in the presence
   // of inharmonicity - maybe a good cycle-mark finder should give a low variance?
@@ -1050,7 +1050,7 @@ void zeroCrossingPitchDetector()
   //synthesizePulseWave(x, N, f, 0.5, fs, 0.0, true);
   applyBellFilter(x, x, N,  750, fs, 0.2, 15);
   applyBellFilter(x, x, N, 1500, fs, 0.2, 15);
-  RAPT::rsArray::scale(x, N, 0.25);
+  RAPT::rsArrayTools::scale(x, N, 0.25);
   //writeToMonoWaveFile("PitchDetectorInput.wav",  x, N, (int) fs, 16);
 
   // get initial estimate of fundamental by using an autocorrelation based algorithm at the center
@@ -1081,7 +1081,7 @@ void zeroCrossingPitchDetector()
 
 
   double *ft = new double[N];  // target value
-  RAPT::rsArray::fillWithValue(ft, N, f);
+  RAPT::rsArrayTools::fillWithValue(ft, N, f);
   //plotData(N, 0, 1/fs, x); // plot original signal
   //plotData(N, 0, 1/fs, y); // plot filtered signal
   //plotData(N, 0, 1/fs, x, y); // plot original and filtered signal
@@ -1404,8 +1404,8 @@ void rsSmooth(const T* x, int N, T* y)
 {
   rsAssert(x != y, "algorithm not suitable for in-place processing");
   // maybe make an even stronger assertio that x and y do not overlap - implement a function
-  // int rsArray::getOverlap(T* x, T* y, int N) that returns the number of overlapping elements
-  // and/or a function bool rsArray::areOverlapping(T* x, T* y, int N)
+  // int rsArrayTools::getOverlap(T* x, T* y, int N) that returns the number of overlapping elements
+  // and/or a function bool rsArrayTools::areOverlapping(T* x, T* y, int N)
 
   y[0]   = T(1/2.) * (x[0]   + x[1]);
   y[N-1] = T(1/2.) * (x[N-2] + x[N-1]);
@@ -1418,7 +1418,7 @@ void rsSmooth(const T* x, int N, T* y)
     y[n] = T(1/3.) * (x[n-1] + x[n] + x[n+1]);
 
   bool preserveMean = false;  // make parameter
-  typedef RAPT::rsArray AR;
+  typedef RAPT::rsArrayTools AR;
   if(preserveMean)
     AR::add(y, AR::mean(x, N) - AR::mean(y, N), y, N);
 }
@@ -1548,8 +1548,8 @@ void peakPicker()
 
 
   x = rsRandomVector(200, -1.0, +1.0, 4);  // nice seeds: 4,6,7,8 - strange: 9
-  RAPT::rsArray::cumulativeSum(&x[0], &x[0], (int)x.size());
-  //RAPT::rsArray::cumulativeSum(&x[0], &x[0], (int)x.size());
+  RAPT::rsArrayTools::cumulativeSum(&x[0], &x[0], (int)x.size());
+  //RAPT::rsArrayTools::cumulativeSum(&x[0], &x[0], (int)x.size());
 
   //x = VecD({0,0,0,8,4,4,2,2,2,2,1,1,1,1,1,1,1,1,0,0,0});
   //x = VecD({0,0,0,10,9,9,8,8,8,7,7,7,7,6,6,6,6,6,0,0,5});  // illustrates peak wandering/drift

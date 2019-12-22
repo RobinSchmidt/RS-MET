@@ -122,27 +122,27 @@ void Plotter::plotData(int numValues, double *x, double *y1, double *y2, double 
   strcat(commands, "set grid\n");
 
   // create commands for setting up the range for the y-axis:
-  double yMax    = RAPT::rsArray::maxValue(y1, numValues);
-  double yMin    = RAPT::rsArray::minValue(y1, numValues);
+  double yMax    = RAPT::rsArrayTools::maxValue(y1, numValues);
+  double yMin    = RAPT::rsArrayTools::minValue(y1, numValues);
   if( y2 != NULL ) 
   {
-    yMax = RAPT::rsMax( yMax, RAPT::rsArray::maxValue(y2, numValues) );
-    yMin = RAPT::rsMin( yMin, RAPT::rsArray::minValue(y2, numValues) );
+    yMax = RAPT::rsMax( yMax, RAPT::rsArrayTools::maxValue(y2, numValues) );
+    yMin = RAPT::rsMin( yMin, RAPT::rsArrayTools::minValue(y2, numValues) );
   }
   if( y3 != NULL ) 
   {
-    yMax = RAPT::rsMax( yMax, RAPT::rsArray::maxValue(y3, numValues) );
-    yMin = RAPT::rsMin( yMin, RAPT::rsArray::minValue(y3, numValues) );
+    yMax = RAPT::rsMax( yMax, RAPT::rsArrayTools::maxValue(y3, numValues) );
+    yMin = RAPT::rsMin( yMin, RAPT::rsArrayTools::minValue(y3, numValues) );
   }
   if( y4 != NULL ) 
   {
-    yMax = RAPT::rsMax( yMax, RAPT::rsArray::maxValue(y4, numValues) );
-    yMin = RAPT::rsMin( yMin, RAPT::rsArray::minValue(y4, numValues) );
+    yMax = RAPT::rsMax( yMax, RAPT::rsArrayTools::maxValue(y4, numValues) );
+    yMin = RAPT::rsMin( yMin, RAPT::rsArrayTools::minValue(y4, numValues) );
   }
   if( y5 != NULL ) 
   {
-    yMax = RAPT::rsMax( yMax, RAPT::rsArray::maxValue(y5, numValues) );
-    yMin = RAPT::rsMin( yMin, RAPT::rsArray::minValue(y5, numValues) );
+    yMax = RAPT::rsMax( yMax, RAPT::rsArrayTools::maxValue(y5, numValues) );
+    yMin = RAPT::rsMin( yMin, RAPT::rsArrayTools::minValue(y5, numValues) );
   }
   double yRange = yMax-yMin;
   if( yRange < 1.e-8 )
@@ -386,8 +386,8 @@ void Plotter::plotImage(double *data, int pixelWidth, int pixelHeight, double *x
   strcpy(commands, "");
 
 
-  double xMax    = RAPT::rsArray::maxValue(xAxis, pixelWidth);
-  double xMin    = RAPT::rsArray::minValue(xAxis, pixelWidth);
+  double xMax    = RAPT::rsArrayTools::maxValue(xAxis, pixelWidth);
+  double xMin    = RAPT::rsArrayTools::minValue(xAxis, pixelWidth);
   double xRange  = xMax-xMin;
   double xMargin = 0.05*xRange;
   xMax += xMargin;
@@ -396,8 +396,8 @@ void Plotter::plotImage(double *data, int pixelWidth, int pixelHeight, double *x
   sprintf(tmpString, "%s %.8f %s %.8f %s", "set xrange [", xMin, ":", xMax, "]\n");
   strcat(commands, tmpString);
 
-  double yMax    = RAPT::rsArray::maxValue(yAxis, pixelHeight);
-  double yMin    = RAPT::rsArray::minValue(yAxis, pixelHeight);
+  double yMax    = RAPT::rsArrayTools::maxValue(yAxis, pixelHeight);
+  double yMin    = RAPT::rsArrayTools::minValue(yAxis, pixelHeight);
   double yRange  = yMax-yMin;
   double yMargin = 0.05*yRange;
   yMax += yMargin;
@@ -407,8 +407,8 @@ void Plotter::plotImage(double *data, int pixelWidth, int pixelHeight, double *x
   strcat(commands, tmpString);
 
 
-  double zMax    = RAPT::rsArray::maxValue(data, pixelWidth*pixelHeight);
-  double zMin    = RAPT::rsArray::minValue(data, pixelWidth*pixelHeight);
+  double zMax    = RAPT::rsArrayTools::maxValue(data, pixelWidth*pixelHeight);
+  double zMin    = RAPT::rsArrayTools::minValue(data, pixelWidth*pixelHeight);
   double zRange  = zMax-zMin;
   double zMargin = 0.05*zRange;
   zMax += zMargin;
@@ -449,7 +449,7 @@ void Plotter::plotAnalogMagnitudeResponse(Complex *z, Complex *p, double k, int 
 {
   double *w = new double[resolution];
   double *m = new double[resolution];
-  RAPT::rsArray::fillWithRangeLinear(w, resolution, wl, wu);
+  RAPT::rsArrayTools::fillWithRangeLinear(w, resolution, wl, wu);
   rosic::rsFilterAnalyzerD::getAnalogMagnitudeResponse(
     rsCastPointer(z), rsCastPointer(p), k, N, w, m, resolution);
   Plotter::plotData(resolution, w, m);
@@ -461,7 +461,7 @@ void Plotter::plotAnalogPhaseResponse(Complex *z, Complex *p, double k, int N, d
 {
   double *w = new double[resolution];
   double *m = new double[resolution];
-  RAPT::rsArray::fillWithRangeLinear(w, resolution, wl, wu);
+  RAPT::rsArrayTools::fillWithRangeLinear(w, resolution, wl, wu);
   rosic::rsFilterAnalyzerD::getAnalogPhaseResponse(
     rsCastPointer(z), rsCastPointer(p), k, N, w, m, resolution);
   Plotter::plotData(resolution, w, m);

@@ -537,7 +537,7 @@ void MultiModeFreqResponseEditor::updatePlot()
   // fill the magnitude array with the magnitudes:
   filterToEdit->setFrequencyInstantaneous(filterToEdit->getFrequencyNominal(), true);
   filterToEdit->getMagnitudeResponse(frequencies, magnitudes, numBins, true, false);
-  RAPT::rsArray::clip(magnitudes, numBins, -120.0, 120.0);
+  RAPT::rsArrayTools::clip(magnitudes, numBins, -120.0, 120.0);
 
   // overwrite the magnitude value at the bin closest to the cutoff-frequency with the magnitude at 
   // the exact cutoff frequency:

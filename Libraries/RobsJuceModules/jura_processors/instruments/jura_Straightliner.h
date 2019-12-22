@@ -56,8 +56,8 @@ public:
   {
     if(wrappedStraightliner->isSilent())
     {
-      RAPT::rsArray::fillWithZeros(inOutBuffer[0], numSamples);
-      RAPT::rsArray::fillWithZeros(inOutBuffer[1], numSamples);
+      RAPT::rsArrayTools::fillWithZeros(inOutBuffer[0], numSamples);
+      RAPT::rsArrayTools::fillWithZeros(inOutBuffer[1], numSamples);
     }
     else
     {

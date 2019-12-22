@@ -317,7 +317,7 @@ bool rsSinusoidalPartial<T>::isDataValid() const
   std::vector<T> p = getPhaseArray();
 
   bool valid = true;
-  valid &= rsArray::isSortedStrictlyAscending(&t[0], (int) t.size());       // time increases
+  valid &= rsArrayTools::isSortedStrictlyAscending(&t[0], (int) t.size());       // time increases
   valid &= rsAllOf(f,  [=](T x){ return rsIsFiniteNonNegativeNumber(x); }); // freqs nonnegative
   valid &= rsAllOf(a,  [=](T x){ return rsIsFiniteNonNegativeNumber(x); }); // amps nonnegative
   valid &= rsNoneOf(p, [=](T x){ return x < -PI || x > PI; });              // phases in -pi..pi

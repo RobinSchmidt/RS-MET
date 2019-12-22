@@ -38,8 +38,8 @@ int rsRealTimeSpline<TCor, TWgt>::updateDotBuffers(TCor inX, TCor inY)
 template<class TCor, class TWgt>
 void rsRealTimeSpline<TCor, TWgt>::updatePointBuffers(TCor newX, TCor newY)
 {
-  rsArray::pushFrontPopBack4(newX, x);
-  rsArray::pushFrontPopBack4(newY, y);
+  rsArrayTools::pushFrontPopBack4(newX, x);
+  rsArrayTools::pushFrontPopBack4(newY, y);
 }
 
 template<class TCor, class TWgt>
@@ -54,8 +54,8 @@ void rsRealTimeSpline<TCor, TWgt>::shiftPointBuffers(TCor shiftX, TCor shiftY)
 template<class TCor, class TWgt>
 void rsRealTimeSpline<TCor, TWgt>::reset(TCor x_, TCor y_)
 {
-  rsArray::fillWithValue(x, 4, x_);
-  rsArray::fillWithValue(y, 4, y_);
+  rsArrayTools::fillWithValue(x, 4, x_);
+  rsArrayTools::fillWithValue(y, 4, y_);
   wOld = TWgt(0);
 }
 
@@ -162,7 +162,7 @@ int rsRealTimeSpline<TCor, TWgt>::prepareParameterArray()
     static const int N = 17; // make this user-adjustable (setDensityCompensationPrecision)
     r.resize(N);  // move into setDensityCompensationPrecision
     s.resize(N);
-    rsArray::fillWithRangeLinear(&r[0], N, TCor(0), TCor(1));
+    rsArrayTools::fillWithRangeLinear(&r[0], N, TCor(0), TCor(1));
     cubicSplineArcLength2D(a, b, &r[0], &s[0], N);
     splineLength = s[N-1]; // last value in s is total length: s(t=1)
     numDots = numDotsForSegment(splineLength);

@@ -65,7 +65,7 @@ public:
   /** \name Manipulation */
 
   /** Sets all matrix elements to zero. */
-  void setToZero() { rsArray::fillWithZeros(dataPointer, getSize()); }
+  void setToZero() { rsArrayTools::fillWithZeros(dataPointer, getSize()); }
     // same as in rsMatrixView...i think both classes really should have a common baseclass 
     // rsArrayView where we consolidate all these common functions - it needs to have the 
     // dataPointer and the size...which seems totally appropriate for an ArrayView class
@@ -155,7 +155,7 @@ public:
     const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, rsMultiArrayView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::add(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::add(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
   // hmm...these functions add, subtrac, etc. are copy/pasted more or less exactly from rsMatrix - 
   // maybe we can factor out a common baseclass? maybe rsArrayView? it should contain the 
@@ -169,7 +169,7 @@ public:
     const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, rsMultiArrayView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
   /** Multiplies the two multiarrays element-wise. */
@@ -177,7 +177,7 @@ public:
     const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, rsMultiArrayView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::multiply(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::multiply(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
   /** Divide the two multiarrays element-wise. */
@@ -185,7 +185,7 @@ public:
     const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, rsMultiArrayView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
 

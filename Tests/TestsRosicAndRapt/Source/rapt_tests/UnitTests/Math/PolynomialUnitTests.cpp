@@ -91,25 +91,25 @@ bool testConvolution(std::string &reportString)
   double y[yN];                                             // output sequence
 
   // test algorithm when all pointers are distinct:
-  rsArray::convolve(x, xN, h, hN, y);
-  testResult &= rsArray::equal(y, yt, yN);
+  rsArrayTools::convolve(x, xN, h, hN, y);
+  testResult &= rsArrayTools::equal(y, yt, yN);
 
   // test in-place convolution where x == y:
-  rsArray::fillWithZeros(y, yN);
-  rsArray::copy(x, y, xN);
-  rsArray::convolve(y, xN, h, hN, y);
-  testResult &= rsArray::equal(y, yt, yN);
+  rsArrayTools::fillWithZeros(y, yN);
+  rsArrayTools::copy(x, y, xN);
+  rsArrayTools::convolve(y, xN, h, hN, y);
+  testResult &= rsArrayTools::equal(y, yt, yN);
 
   // test in-place convolution where h == y:
-  rsArray::fillWithZeros(y, yN);
-  rsArray::copy(h, y, hN);
-  rsArray::convolve(x, xN, y, hN, y);
-  testResult &= rsArray::equal(y, yt, yN);
+  rsArrayTools::fillWithZeros(y, yN);
+  rsArrayTools::copy(h, y, hN);
+  rsArrayTools::convolve(x, xN, y, hN, y);
+  testResult &= rsArrayTools::equal(y, yt, yN);
 
   // test in-place convolution where x == h == y:
-  rsArray::fillWithZeros(y, yN);
-  rsArray::copy(h, y, hN);
-  rsArray::convolve(y, xN, y, hN, y);
+  rsArrayTools::fillWithZeros(y, yN);
+  rsArrayTools::copy(h, y, hN);
+  rsArrayTools::convolve(y, xN, y, hN, y);
   testResult &= y[0]  ==   4;
   testResult &= y[1]  == -12;
   testResult &= y[2]  ==  13;
@@ -126,43 +126,43 @@ bool testConvolution(std::string &reportString)
   testResult &= y[13] ==   0;
 
   // test deconvolution - recover the signal x:
-  rsArray::convolve(x, xN, h, hN, y);
+  rsArrayTools::convolve(x, xN, h, hN, y);
   double xx[xN];
-  rsArray::deConvolve(y, yN, h, hN, xx);
-  testResult &= rsArray::almostEqual(x, xx, xN, 1.e-13);
+  rsArrayTools::deConvolve(y, yN, h, hN, xx);
+  testResult &= rsArrayTools::almostEqual(x, xx, xN, 1.e-13);
 
   // convolve and deconvolve with an impulse response with leading zeros:
   h[0] = 0.0;
   h[1] = 0.0;
-  rsArray::convolve(x, xN, h, hN, y);
-  rsArray::deConvolve(y, yN, h, hN, xx);
-  testResult &= rsArray::almostEqual(x, xx, xN, 1.e-13);
+  rsArrayTools::convolve(x, xN, h, hN, y);
+  rsArrayTools::deConvolve(y, yN, h, hN, xx);
+  testResult &= rsArrayTools::almostEqual(x, xx, xN, 1.e-13);
 
   // recover the impulse response h:
   double hh[hN];
-  rsArray::deConvolve(y, yN, x, xN, hh);
-  testResult &= rsArray::almostEqual(h, hh, hN, 1.e-13);
+  rsArrayTools::deConvolve(y, yN, x, xN, hh);
+  testResult &= rsArrayTools::almostEqual(h, hh, hN, 1.e-13);
 
   // test (de)convolution with all-zero impulse response:
-  rsArray::fillWithZeros(h, hN);
-  rsArray::convolve(x, xN, h, hN, y);
-  rsArray::deConvolve(y, yN, h, hN, xx);
-  testResult &= rsArray::isAllZeros(xx, xN);
+  rsArrayTools::fillWithZeros(h, hN);
+  rsArrayTools::convolve(x, xN, h, hN, y);
+  rsArrayTools::deConvolve(y, yN, h, hN, xx);
+  testResult &= rsArrayTools::isAllZeros(xx, xN);
 
   // test "square-root" of a sequence - convolve h with itself and recover h from the convolved
   // sequence:
   h[0]=2; h[1]=-3; h[2]=1; h[3]=2; h[4]=-1; // because we messed with it
-  rsArray::convolve(h, hN, h, hN, y);       // h convolved with itself ("h^2")
+  rsArrayTools::convolve(h, hN, h, hN, y);       // h convolved with itself ("h^2")
   int h2N = 2*hN-1;                         // length of h^2
-  rsArray::fillWithZeros(hh, hN);
-  rsArray::sequenceSqrt(y, h2N, hh);
-  testResult &= rsArray::almostEqual(h, hh, hN, 1.e-13);
+  rsArrayTools::fillWithZeros(hh, hN);
+  rsArrayTools::sequenceSqrt(y, h2N, hh);
+  testResult &= rsArrayTools::almostEqual(h, hh, hN, 1.e-13);
 
   // test sequence square-root, when the sequence has leading zeros:
   h[0]=0; h[1]=0; h[2]=4; h[3]=-8; h[4]=2;
-  rsArray::convolve(h, hN, h, hN, y);
-  rsArray::sequenceSqrt(y, h2N, hh);
-  testResult &= rsArray::almostEqual(h, hh, hN, 1.e-13);
+  rsArrayTools::convolve(h, hN, h, hN, y);
+  rsArrayTools::sequenceSqrt(y, h2N, hh);
+  testResult &= rsArrayTools::almostEqual(h, hh, hN, 1.e-13);
 
   // if we try to take the square-root x of an arbitrary sequence y (which was not constructed
   // by squaring some given sequence), and convolve the computed square-root with itself again,
@@ -171,10 +171,10 @@ bool testConvolution(std::string &reportString)
   // sequence, we will not use any y[k] for k > n:
   y[0]=+0.2; y[1]=-0.3; y[2]=-0.1; y[3]=+0.4; y[4]=+0.2;
   y[5]=-0.3; y[6]=-0.2; y[7]=-0.4; y[8]=-0.2; y[9]=+0.3; y[10]=0.2;
-  rsArray::sequenceSqrt(y, 11, x);
+  rsArrayTools::sequenceSqrt(y, 11, x);
   double yy[11];
-  rsArray::convolve(x, 6, x, 6, yy);
-  testResult &= rsArray::almostEqual(y, yy, 6, 1.e-13);
+  rsArrayTools::convolve(x, 6, x, 6, yy);
+  testResult &= rsArrayTools::almostEqual(y, yy, 6, 1.e-13);
 
   return testResult;
 }
@@ -311,8 +311,8 @@ bool testPolynomialDivision(std::string &reportString)
 
   // p(x)/d(x) = q(x) + r(x)/d(x)
 
-  testResult &= rsArray::equal(q, qq, 4);
-  testResult &= rsArray::equal(r, rr, 5);
+  testResult &= rsArrayTools::equal(q, qq, 4);
+  testResult &= rsArrayTools::equal(r, rr, 5);
 
   return testResult;
 }
@@ -443,13 +443,13 @@ bool testPolynomialFiniteDifference(std::string &reportString)
   rsPolynomial<double>::finiteDifference(a, ad, order, 1, h);
   for(n = 0; n < numValues; n++)
     yfc[n] = rsPolynomial<double>::evaluate(x[n], ad, order-1);
-  testResult &= rsArray::equal(yf, yfc, numValues-1);
+  testResult &= rsArrayTools::equal(yf, yfc, numValues-1);
 
   // check backward difference:
   rsPolynomial<double>::finiteDifference(a, ad, order, -1, h);
   for(n = 0; n < numValues; n++)
     ybc[n] = rsPolynomial<double>::evaluate(x[n], ad, order-1);
-  testResult &= rsArray::equal(&yb[1], &ybc[1], numValues-1);
+  testResult &= rsArrayTools::equal(&yb[1], &ybc[1], numValues-1);
 
   return testResult;
 }
@@ -511,7 +511,7 @@ bool testPolynomialWeightedSum(std::string &reportString)
   testResult &= (r[5] ==   4);
 
   // use a truncated polynomial for p (such that p and q are of the same order):
-  rsArray::fillWithZeros(r, rN+1);
+  rsArrayTools::fillWithZeros(r, rN+1);
   rsPolynomial<double>::weightedSum(p, qN, 2.0, q, qN, 3.0, r);
   testResult &= (r[0] ==  12);
   testResult &= (r[1] == -11);
@@ -765,8 +765,8 @@ bool testPolynomialBaseChange(std::string &reportString)
   bool testResult = true;
 
   static const int N = 7; // polynomial order
-  double **Q; rsArray::allocateSquareArray2D(Q, N+1);
-  double **R; rsArray::allocateSquareArray2D(R, N+1);
+  double **Q; rsArrayTools::allocateSquareArray2D(Q, N+1);
+  double **R; rsArrayTools::allocateSquareArray2D(R, N+1);
   double  *a = new double[N+1];
   double  *b = new double[N+1];
 
@@ -802,8 +802,8 @@ bool testPolynomialBaseChange(std::string &reportString)
 
   testResult &= rsIsCloseTo(yQ, yR, 1.e-11);
 
-  rsArray::deAllocateSquareArray2D(Q, N+1);
-  rsArray::deAllocateSquareArray2D(R, N+1);
+  rsArrayTools::deAllocateSquareArray2D(Q, N+1);
+  rsArrayTools::deAllocateSquareArray2D(R, N+1);
   delete[] a;
   delete[] b;
 
@@ -812,7 +812,7 @@ bool testPolynomialBaseChange(std::string &reportString)
 
 void rsPowersToChebychev(double *a, double *b, int N)
 {
-  rsArray::fillWithZeros(b, N+1);
+  rsArrayTools::fillWithZeros(b, N+1);
   double tmp, tmp2;         // temporary values
   int k, i;                 // loop indices
   int s = 0;                // recursion stage
@@ -842,7 +842,7 @@ void rsChebychevToPowers(double *b, double *a, int N)
 {
   double tmp, tmp2;
   double *bb = new double[N+1]; // use a tmp-buffer, because it will be modified
-  rsArray::copy(b, bb, N+1);
+  rsArrayTools::copy(b, bb, N+1);
   int k, i;
 
   // this is basically rsPowersToChebychev run backwards:
@@ -952,7 +952,7 @@ bool testPowersChebychevExpansionConversion(std::string &reportString)
     B[s][i] = 0.5*B[s-1][i-1];  // i == s+1 here
     */
   }
-  rsArray::copy(B[N-1], b, N+1);
+  rsArrayTools::copy(B[N-1], b, N+1);
   // looks plausible and seems to work in this case
 
 
@@ -1061,15 +1061,15 @@ bool testPolynomialRecursion(std::string &reportString)
 
   // in-place application - 1st input is reused as output:
   double t1[5], t2[5];
-  rsArray::copy(a[2], t2, 5);
-  rsArray::copy(a[3], t1, 5);
+  rsArrayTools::copy(a[2], t2, 5);
+  rsArrayTools::copy(a[3], t1, 5);
   rsPolynomial<double>::threeTermRecursion(t1, w0, 4, t1, w1, w1x, t2, w2);
-  testResult &= rsArray::equal(a[4], t1, 5);
+  testResult &= rsArrayTools::equal(a[4], t1, 5);
 
   // in-place application - 2nd input is reused as output:
-  rsArray::copy(a[3], t1, 5);
+  rsArrayTools::copy(a[3], t1, 5);
   rsPolynomial<double>::threeTermRecursion(t2, w0, 4, t1, w1, w1x, t2, w2);
-  testResult &= rsArray::equal(a[4], t2, 5);
+  testResult &= rsArrayTools::equal(a[4], t2, 5);
 
   return testResult;
 }

@@ -50,27 +50,27 @@ bool correlationUnitTest()
 
   double x[N], y[N], xr[N], yr[N];  // inputs and reversed versions
   double c1[M], c2[M], c3[M];       // correlation sequences (results)
-  rsArray::fillWithRandomValues(x, N, -1, +1, 0);
-  rsArray::fillWithRandomValues(y, N, -1, +1, 1);
-  rsArray::reverse(x, xr, N);
-  rsArray::reverse(y, yr, N);
+  rsArrayTools::fillWithRandomValues(x, N, -1, +1, 0);
+  rsArrayTools::fillWithRandomValues(y, N, -1, +1, 1);
+  rsArrayTools::reverse(x, xr, N);
+  rsArrayTools::reverse(y, yr, N);
 
   // obtain cross-correlation sequences via various algorithms:
   rsCrossCorrelationDirect(x, y, N, c1);
   rsCrossCorrelationFFT(   x, y, N, c2);
-  rsArray::convolve(       x, N, yr, N, c3);
+  rsArrayTools::convolve(       x, N, yr, N, c3);
 
   // results should all be the same up to roundoff:
 
   // c3 is completely different - wtf? ...oh - it seems, the rsCrossCorrelation functions only
   // return the 2nd half of the array - well, yeah, the results are only of length N whereas
-  // rsArray::convolve produces a result of length 2*N-1
+  // rsArrayTools::convolve produces a result of length 2*N-1
 
 
   // try de-biasing a convolution result:
-  rsArray::fillWithValue(x, N, 1.0);
-  rsArray::fillWithValue(y, N, 1.0);
-  rsArray::convolve(x, N, y, N, c3);
+  rsArrayTools::fillWithValue(x, N, 1.0);
+  rsArrayTools::fillWithValue(y, N, 1.0);
+  rsArrayTools::convolve(x, N, y, N, c3);
   for(int n = 0; n < N; n++)
   {
     double scale = double(N)/double(N-n);
@@ -91,7 +91,7 @@ void fitOddRatFunc4(double *x, double* y, double *coeffs)
   // establish matrix and rhs vector:
   double** A;
   double b[4];
-  RAPT::rsArray::allocateSquareArray2D(A, 4);
+  RAPT::rsArrayTools::allocateSquareArray2D(A, 4);
   for(int i = 0; i < 4; i++) {
     double xi2 = x[i]*x[i];     //  xi^2
     A[i][0] = x[i];             //  xi
@@ -103,7 +103,7 @@ void fitOddRatFunc4(double *x, double* y, double *coeffs)
 
   // solve linear system and clean up:
   RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(A, coeffs, b, 4);
-  RAPT::rsArray::deAllocateSquareArray2D(A, 4);
+  RAPT::rsArrayTools::deAllocateSquareArray2D(A, 4);
 }
 double oddRatFunc4(double x, double *c) // evaluates (c0*x + c1*x^3) / (1 + c2*x^2 + c3*x^4)
 {

@@ -16,7 +16,7 @@ void powRatioParametricSigmoid()
   //double test = rsNormalizedSigmoids::powRatio(-1000, 1000);
 
   double x[N], y[N];
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
   GNUPlotter plt;
   for(int i = 0; i < numCurves; i++)
   {
@@ -37,7 +37,7 @@ void parametricSigmoid()
   double xMin = -3.0;
   double xMax =  3.0;
   double x[N], y[N];
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
   GNUPlotter plt;
 
   double f1 = 0.5;                  // desired value at x=1 for 1st curve
@@ -64,7 +64,7 @@ void parametricSigmoid2()
   double xMin = 0.0;
   double xMax = 3.0;
   double x[N], y[N];
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
   GNUPlotter plt;
 
   rsParametricSigmoidD sig;
@@ -179,7 +179,7 @@ void quinticParametricSigmoid()
   //double a3, a4, a5;         // polynomial coefficients
 
   double x[N], y[N];
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
   GNUPlotter plt;
   for(int n = 0; n < N; n++)
     y[n] = rsQuinticParametricSigmoid(x[n], s);
@@ -253,7 +253,7 @@ void septicParametricSigmoid()
   double s = 3.0;            // the saturation level
 
   double x[N], y[N];
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
   GNUPlotter plt;
   for(int n = 0; n < N; n++)
     y[n] = rsSepticParametricSigmoid(x[n], s);
@@ -280,7 +280,7 @@ void saturator()
 
   int n;
   vector<double> x(N);
-  RAPT::rsArray::fillWithRangeLinear(&x[0], N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(&x[0], N, xMin, xMax);
 
   // hyperbolic tangent:
   vector<double> yTanh(N);
@@ -365,7 +365,7 @@ void sigmoidScaleAndShift()
   rsRangeConversionCoefficients(-1.0, +1.0,   lo,   hi, &sy, &ty);
 
   // fill the arrays:
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
   double t;  // temporary
   for(int n = 0; n < N; n++)
   {
@@ -437,7 +437,7 @@ void quarticMonotonic()
   double xMin = 0.0;
   double xMax = 4.0;
   double x[N], y[N];
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
   GNUPlotter plt;
   double k  = 1.5;    // saturation level goes from 1.5 to...
   int numCurves = 6;  // ...4 (increment is 0.5)
@@ -483,7 +483,7 @@ void sigmoidPrototypes()
   double t    = 0.5;    // threshold below which the function is linear (for the softclipper)
 
   double x[N];
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
 
   int n;
   double yHard[N], yCubic[N], yQuartic[N], yHexic[N], ySoft[N], yTanh[N];
@@ -625,7 +625,7 @@ void sixticPositive()
   double xMax = 3.0/k;
 
   double x[N], y[N];
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
   for(int n = 0; n < N; n++)
   {
     y[n] = sixticValue(x[n], k);

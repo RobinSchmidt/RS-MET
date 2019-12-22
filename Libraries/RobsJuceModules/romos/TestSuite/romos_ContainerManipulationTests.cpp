@@ -229,7 +229,7 @@ ContainerizationAddedConstantsTest::ContainerizationAddedConstantsTest()
 }
 void ContainerizationAddedConstantsTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  RAPT::rsArray::fillWithValue(desiredOutputs[0][0], numFramesToProcess, 136.0);
+  RAPT::rsArrayTools::fillWithValue(desiredOutputs[0][0], numFramesToProcess, 136.0);
 }
 bool ContainerizationAddedConstantsTest::runTest()
 {
@@ -239,19 +239,19 @@ bool ContainerizationAddedConstantsTest::runTest()
 
   moduleToTest->resetStateForAllVoices();   
   processModuleInFrames();
-  if( !RAPT::rsArray::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
+  if( !RAPT::rsArrayTools::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
     return false;
 
   containerizeSum();
   moduleToTest->resetStateForAllVoices();   
   processModuleInFrames();
-  if( !RAPT::rsArray::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
+  if( !RAPT::rsArrayTools::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
     return false;
 
   unContainerizeSum();
   moduleToTest->resetStateForAllVoices();   
   processModuleInFrames();
-  if( !RAPT::rsArray::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
+  if( !RAPT::rsArrayTools::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
     return false;
 
   static const int numIterations = 50;
@@ -264,7 +264,7 @@ bool ContainerizationAddedConstantsTest::runTest()
 
     //printModuleStructure(moduleToTest, 0);
 
-    if( !RAPT::rsArray::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
+    if( !RAPT::rsArrayTools::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
     {
       printModuleStructure(moduleToTest, 0);
       RAPT::rsAssert(false, "plotting code needs update");
@@ -329,9 +329,9 @@ PinSortingTest::PinSortingTest()
 void PinSortingTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   processModuleInFrames();
-  RAPT::rsArray::copy(outputs[0][0], desiredOutputs[0][0], numFramesToProcess);
-  RAPT::rsArray::copy(outputs[0][1], desiredOutputs[0][1], numFramesToProcess);
-  RAPT::rsArray::copy(outputs[0][2], desiredOutputs[0][2], numFramesToProcess);
+  RAPT::rsArrayTools::copy(outputs[0][0], desiredOutputs[0][0], numFramesToProcess);
+  RAPT::rsArrayTools::copy(outputs[0][1], desiredOutputs[0][1], numFramesToProcess);
+  RAPT::rsArrayTools::copy(outputs[0][2], desiredOutputs[0][2], numFramesToProcess);
 }
 bool PinSortingTest::runTest()
 {

@@ -61,7 +61,7 @@ template<class T>
 void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, bool antiAlias)
 {
   T w = (T)(2*PI*frequency/sampleRate);
-  RAPT::rsArray::fillWithZeros(x, N);
+  RAPT::rsArrayTools::fillWithZeros(x, N);
   switch( shape )
   {
   case 0:
@@ -147,7 +147,7 @@ void createPulseWave(double *x, int N, double frequency, double dutyCycle,
   double sampleRate, double phase, bool antiAlias)
 {
   double w = 2*PI*frequency/sampleRate;
-  RAPT::rsArray::fillWithZeros(x, N);
+  RAPT::rsArrayTools::fillWithZeros(x, N);
   if( antiAlias == false )
   {
     for(int n=0; n<N; n++)
@@ -199,7 +199,7 @@ void createSumOfSines(double* x, int numSamples, int numSines, double fs,
 {
   double s = 2*PI/fs;  // frequency scaler
   double phi;          // instantaneous phase;
-  RAPT::rsArray::fillWithZeros(x, numSamples);
+  RAPT::rsArrayTools::fillWithZeros(x, numSamples);
   for(int k = 0; k < numSines; k++)
   {
     if(p != nullptr)
@@ -234,8 +234,8 @@ std::vector<T> randomSampleInstants(int N, T dtMin, T dtMax, int seed)
 {
   std::vector<T> t(N);
   t[0] = 0;
-  RAPT::rsArray::fillWithRandomValues(&t[1], N-1, dtMin, dtMax, seed);
-  RAPT::rsArray::cumulativeSum(&t[0], &t[0], N);
+  RAPT::rsArrayTools::fillWithRandomValues(&t[1], N-1, dtMin, dtMax, seed);
+  RAPT::rsArrayTools::cumulativeSum(&t[0], &t[0], N);
   return t;
 }
 template std::vector<double> randomSampleInstants(int, double, double, int);
@@ -396,13 +396,13 @@ bool startsWith(const std::string& str, const std::string& pattern)
   return false;
 }
 
-// move to rsArray:
+// move to rsArrayTools:
 template <class T>
 int firstNonMatchElement(
   const T *buffer, int bufferLength, const T *elementsToFind, int numElements)
 {
   for(int i = 0; i < bufferLength; i++)
-    if(!RAPT::rsArray::contains(elementsToFind, numElements, buffer[i]))
+    if(!RAPT::rsArrayTools::contains(elementsToFind, numElements, buffer[i]))
       return i;
   return -1; // all elements matched any one of the elements to find
 }
@@ -425,7 +425,7 @@ double getValue(const std::string& str, const std::string& key, double defaultVa
 
   // extract number substring as c-string and convert to double:
   char* numStr = new char[length+1];
-  RAPT::rsArray::copy(&str[index], numStr, length);
+  RAPT::rsArrayTools::copy(&str[index], numStr, length);
   numStr[length] = '\0';
   double value = atof(numStr);
   delete[] numStr;
@@ -469,7 +469,7 @@ std::vector<double> createNamedSound(const std::string& s, double fs, int N)
     double amp   = getValue(s, "Amp",  1);
     double dc    = getValue(s, "DC",   1);
     createSineWave(x, N, freq, amp, fs, 0.0);
-    RAPT::rsArray::add(x, dc, x, N); 
+    RAPT::rsArrayTools::add(x, dc, x, N); 
   }
   else if( startsWith(s, "Sine") )
     createSineWave(x, N, getValue(s, "Freq", 100), getValue(s, "Amp", 1), fs, 0.0);
@@ -509,7 +509,7 @@ std::vector<double> createNamedSound(const std::string& s, double fs, int N)
     double rate  = getValue(s, "Rate",  10);
     double depth = getValue(s, "Depth", 10) * freq * 0.01; // 0.01 because input is in percent
     createSineWave(x, N, rate, depth, fs, 0.0);            // write sine LFO output into x
-    RAPT::rsArray::add(x, freq, x, N);                     // add the center freq
+    RAPT::rsArrayTools::add(x, freq, x, N);                     // add the center freq
     createSineWave(x, N, x, 0.5, fs);                      // overwrite x by vibratoed sinewave
   }
   else if(startsWith(s, "TremoloSine")) { 
@@ -519,8 +519,8 @@ std::vector<double> createNamedSound(const std::string& s, double fs, int N)
     std::vector<double> a(N);                              // vector for instantaneous amplitude
     createSineWave(&a[0], N, rate, depth, fs, 0.0);        // write sine LFO output into a
     createSineWave(x, N, freq, 0.5, fs);                   // write non-modulated sine into x
-    RAPT::rsArray::add(&a[0], 1.0, &a[0], N);              // add one to mod-signal
-    RAPT::rsArray::multiply(x, &a[0], x, N);               // apply amp-modulation to x
+    RAPT::rsArrayTools::add(&a[0], 1.0, &a[0], N);              // add one to mod-signal
+    RAPT::rsArrayTools::multiply(x, &a[0], x, N);               // apply amp-modulation to x
   }
   else if(startsWith(s, "ModalPluck")) {
     double key = rsFreqToPitch(getValue(s, "Freq", 200));

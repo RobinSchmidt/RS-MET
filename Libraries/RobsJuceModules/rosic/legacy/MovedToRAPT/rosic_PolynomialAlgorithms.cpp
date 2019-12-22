@@ -104,7 +104,7 @@ void rosic::findPolynomialRoots(Complex *a, int order, Complex *roots)
   // allocate memory for the coefficients of the deflated polynomial and initialize it as 
   // non-deflated polynomial:
   Complex *ad = new Complex[order+1];
-  RAPT::rsArray::copy(a, ad, order+1);
+  RAPT::rsArrayTools::copy(a, ad, order+1);
 
   // loop over the roots:
   for(int j = order; j >= 1; j--) 
@@ -138,14 +138,14 @@ void rosic::findPolynomialRoots(Complex *a, int order, Complex *roots)
 void rosic::findPolynomialRoots(double *a, int order, Complex *roots)
 {
   Complex *ac = new Complex[order+1];
-  RAPT::rsArray::convertBuffer(a, ac, order+1);
+  RAPT::rsArrayTools::convertBuffer(a, ac, order+1);
   findPolynomialRoots(ac, order, roots);
   delete[] ac;
 }
 
-rsArray<Complex> rosic::getPolynomialCoefficientsFromRoots(rsArray<Complex> roots)
+rsArrayTools<Complex> rosic::getPolynomialCoefficientsFromRoots(rsArrayTools<Complex> roots)
 {
-  rsArray<Complex> coeffs;
+  rsArrayTools<Complex> coeffs;
 
   coeffs.ensureAllocatedSize(roots.getNumElements()+1);
   coeffs.appendElement(1.0);
@@ -171,7 +171,7 @@ void rosic::rootsToCoeffs(Complex *r, Complex *a, int N)
   Complex *rF = new Complex[N]; 
   int nF = copyFiniteValues(r, rF, N);
 
-  RAPT::rsArray::fillWithZeros(a, N+1);
+  RAPT::rsArrayTools::fillWithZeros(a, N+1);
   if( nF == 0 )
     a[0] = 1.0;
   else
@@ -211,17 +211,17 @@ double rosic::getRootOfLinearEquation(double a, double b)
     return -b/a;
 }
 
-rsArray<Complex> rosic::getRootsOfQuadraticEquation(double a, double b, double c)
+rsArrayTools<Complex> rosic::getRootsOfQuadraticEquation(double a, double b, double c)
 {
   // catch degenerate cases where the leading coefficient is zero:
   if( a == 0.0 )
   {
-    rsArray<Complex> roots(1);
+    rsArrayTools<Complex> roots(1);
     roots[0] = getRootOfLinearEquation(b, c);
     return roots;
   }
 
-  rsArray<Complex> roots(2);
+  rsArrayTools<Complex> roots(2);
 
   double D      = b*b - 4.0*a*c; // the discriminant
   double factor = 1.0 / (2.0*a); // a common factor that appears everywhere
@@ -250,14 +250,14 @@ rsArray<Complex> rosic::getRootsOfQuadraticEquation(double a, double b, double c
   return roots;
 }
 
-rsArray<Complex> rosic::getRootsOfCubicEquation(double a, double b, double c, double d)
+rsArrayTools<Complex> rosic::getRootsOfCubicEquation(double a, double b, double c, double d)
 {
   // catch degenerate cases where the leading coefficient is zero:
   if( a == 0.0 )
     return getRootsOfQuadraticEquation(b, c, d);
 
-  rsArray<Complex> y(3);
-  rsArray<Complex> roots(3);
+  rsArrayTools<Complex> y(3);
+  rsArrayTools<Complex> roots(3);
 
   // compute p,q as in the Bronstein page 40, Eq. 1.154c and the offset for the substitution
   // y = x + b/(3*a):

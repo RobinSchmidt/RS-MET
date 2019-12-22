@@ -351,13 +351,13 @@ namespace RSLib
     }
 
     /** Converts this list into an Array and returns it. */
-    rsArray<ElementType> getAsArray()
+    rsArrayTools<ElementType> getAsArray()
     {
       if( isEmpty() )
-        return rsArray<ElementType>(); // default constructor of Array constructs an empty array
+        return rsArrayTools<ElementType>(); // default constructor of Array constructs an empty array
       else
       {
-        rsArray<ElementType> listAsArray;
+        rsArrayTools<ElementType> listAsArray;
         listAsArray.ensureAllocatedSize(getNumberOfItems());
         rsListItem<ElementType>* currentItem = firstItem;
         listAsArray.appendElement(currentItem->getItemDataByValue());

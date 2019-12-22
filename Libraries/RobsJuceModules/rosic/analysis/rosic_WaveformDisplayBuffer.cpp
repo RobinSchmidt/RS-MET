@@ -76,8 +76,8 @@ double* WaveformDisplayBuffer::getDisplayBuffer()
 
 void WaveformDisplayBuffer::updateDisplayBuffer()
 {
-  RAPT::rsArray::copy(inputBuffer, displayBuffer, displayBufferLength);
-  RAPT::rsArray::circularShift(displayBuffer, displayBufferLength, -w);
+  RAPT::rsArrayTools::copy(inputBuffer, displayBuffer, displayBufferLength);
+  RAPT::rsArrayTools::circularShift(displayBuffer, displayBufferLength, -w);
     // shifts the most recently added min/max pair to the end of the linear buffer
 }
 
@@ -87,7 +87,7 @@ void WaveformDisplayBuffer::updateTimeVariables()
   inc = displayBufferLength / numSamplesShown;
 
 
-  RAPT::rsArray::fillWithRangeLinear(timeAxisValues, displayBufferLength, 0.0, (numSamplesShown)/(sampleRate));
+  RAPT::rsArrayTools::fillWithRangeLinear(timeAxisValues, displayBufferLength, 0.0, (numSamplesShown)/(sampleRate));
   //fillWithRangeLinear(timeAxisValues, displayBufferLength, 0.0, (2*numSamplesShown-1)/(2*sampleRate));
   //fillWithRangeLinear(timeAxisValues, displayBufferLength, 0.0, (numSamplesShown-1)/(sampleRate));
 
@@ -102,8 +102,8 @@ void WaveformDisplayBuffer::updateTimeVariables()
 
 void WaveformDisplayBuffer::clearBuffers()
 {
-  RAPT::rsArray::fillWithZeros(inputBuffer,   displayBufferLength);
-  RAPT::rsArray::fillWithZeros(displayBuffer, displayBufferLength);
+  RAPT::rsArrayTools::fillWithZeros(inputBuffer,   displayBufferLength);
+  RAPT::rsArrayTools::fillWithZeros(displayBuffer, displayBufferLength);
 }
 
 void WaveformDisplayBuffer::allocateBuffers()
@@ -291,7 +291,7 @@ void SyncedWaveformDisplayBuffer::feedInputSampleWithSync(double x, double y)
 
       WaveformDisplayBuffer::feedInputSample(y);
       wd = w = displayBufferLength; // counteract wraparound in feedInputSample
-      RAPT::rsArray::copy(inputBuffer, displayBuffer, displayBufferLength);
+      RAPT::rsArrayTools::copy(inputBuffer, displayBuffer, displayBufferLength);
 
       displayBuffer[0] = b0;
       displayBuffer[1] = b1;

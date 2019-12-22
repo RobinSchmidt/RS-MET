@@ -15,7 +15,7 @@ std::vector<double> synthesizeModal(
   const std::vector<rsModalFilterParameters<double>>& p, double fs, int N)
 {
   std::vector<double> x(N);
-  rsArray::fillWithZeros(&x[0], N);
+  rsArrayTools::fillWithZeros(&x[0], N);
   rosic::rsModalFilterWithAttackDD flt;
   for(size_t i = 0; i < p.size(); i++) {
     flt.setModalParameters(p[i].freq, p[i].amp, p[i].att, p[i].dec, p[i].phase, fs);

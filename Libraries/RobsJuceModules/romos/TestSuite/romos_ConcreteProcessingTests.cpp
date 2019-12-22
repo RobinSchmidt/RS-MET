@@ -21,7 +21,7 @@ IdentityTest::IdentityTest()
 void IdentityTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++) 
-    RAPT::rsArray::copy(inputs[v][0], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArrayTools::copy(inputs[v][0], desiredOutputs[v][0], numFramesToProcess);
 }
 
 
@@ -34,7 +34,7 @@ AdderTest::AdderTest()
 void AdderTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++) 
-    RAPT::rsArray::add(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArrayTools::add(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
 }
 
 
@@ -95,7 +95,7 @@ WrappedAdderTest::WrappedAdderTest()
 void WrappedAdderTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++) 
-    RAPT::rsArray::add(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArrayTools::add(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
 }
 
 
@@ -108,7 +108,7 @@ SubtractorTest::SubtractorTest()
 void SubtractorTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++) 
-    RAPT::rsArray::subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArrayTools::subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
 }
 
 
@@ -149,9 +149,9 @@ void SumDiffProdTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++) 
   {
-    RAPT::rsArray::add(     inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
-    RAPT::rsArray::subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][1], numFramesToProcess);
-    RAPT::rsArray::multiply(inputs[v][0], inputs[v][1], desiredOutputs[v][2], numFramesToProcess);
+    RAPT::rsArrayTools::add(     inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArrayTools::subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][1], numFramesToProcess);
+    RAPT::rsArrayTools::multiply(inputs[v][0], inputs[v][1], desiredOutputs[v][2], numFramesToProcess);
   }
 }
 
@@ -165,9 +165,9 @@ void WrappedSumDiffProdTest::fillDesiredOutputSignalArrays(bool testModuleIsPoly
 {
   for(int v = 0; v < numVoicesToUse; v++) 
   {
-    RAPT::rsArray::add(     inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
-    RAPT::rsArray::subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][1], numFramesToProcess);
-    RAPT::rsArray::multiply(inputs[v][0], inputs[v][1], desiredOutputs[v][2], numFramesToProcess);
+    RAPT::rsArrayTools::add(     inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArrayTools::subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][1], numFramesToProcess);
+    RAPT::rsArrayTools::multiply(inputs[v][0], inputs[v][1], desiredOutputs[v][2], numFramesToProcess);
   }
 }
 
@@ -181,8 +181,8 @@ void WrappedAdderNTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphoni
 {
   for(int v = 0; v < numVoicesToUse; v++) 
   {
-    RAPT::rsArray::copy(inputs[v][0],  desiredOutputs[v][0], numFramesToProcess);
-    RAPT::rsArray::scale(desiredOutputs[v][0], desiredOutputs[v][0], numFramesToProcess, (double) getAdderNumConnectedInputPins());
+    RAPT::rsArrayTools::copy(inputs[v][0],  desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArrayTools::scale(desiredOutputs[v][0], desiredOutputs[v][0], numFramesToProcess, (double) getAdderNumConnectedInputPins());
   }
 }  
 bool WrappedAdderNTest::runTest()
@@ -473,7 +473,7 @@ MonoToPolyTest::MonoToPolyTest()
 void MonoToPolyTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++) 
-    RAPT::rsArray::fillWithValue(desiredOutputs[v][0], numFramesToProcess, -1.0);
+    RAPT::rsArrayTools::fillWithValue(desiredOutputs[v][0], numFramesToProcess, -1.0);
 }
 
 
@@ -490,14 +490,14 @@ void VoiceCombinerTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphoni
     // 0-th voice output contains the sum ( == numvoicesToUse), other voices are referred to the same value (because our output
     // is monophonic) - so all voices contain numVoicesToUse in this case:
     for(int v = 0; v < numVoicesToUse; v++) 
-      RAPT::rsArray::fillWithValue(desiredOutputs[v][0], numFramesToProcess, (double) numVoicesToUse);
+      RAPT::rsArrayTools::fillWithValue(desiredOutputs[v][0], numFramesToProcess, (double) numVoicesToUse);
   }
   else
   {
     // 0-th voice output contains the passed through 0-th voice (unity), other voices are referred to the same value (because our output
     // is monophonic) - so all voices contaim unity in this case:
     for(int v = 0; v < numVoicesToUse; v++) 
-      RAPT::rsArray::fillWithValue(desiredOutputs[v][0], numFramesToProcess, 1.0);
+      RAPT::rsArrayTools::fillWithValue(desiredOutputs[v][0], numFramesToProcess, 1.0);
   }
 }
 

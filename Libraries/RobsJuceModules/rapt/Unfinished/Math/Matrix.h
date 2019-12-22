@@ -349,7 +349,7 @@ public:
   {
     rsAssert(data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns); // matrices incompatible
     makeDeepCopyIfNecessary();
-    rsArray::subtract(data->mFlat, m2.data->mFlat, data->mFlat, getNumElements());
+    rsArrayTools::subtract(data->mFlat, m2.data->mFlat, data->mFlat, getNumElements());
     return *this;
 
     /*
@@ -413,7 +413,7 @@ public:
   rsMatrixOld& operator*=(const T &x)
   {
     makeDeepCopyIfNecessary();
-    rsArray::scale(data->mFlat, getNumElements(), x);
+    rsArrayTools::scale(data->mFlat, getNumElements(), x);
     return *this;
   }
 
@@ -421,7 +421,7 @@ public:
   rsMatrixOld& operator/=(const T &x)
   {
     makeDeepCopyIfNecessary();
-    rsArray::scale(data->mFlat, getNumElements(), T(1)/x);
+    rsArrayTools::scale(data->mFlat, getNumElements(), T(1)/x);
     return *this;
   }
 
@@ -430,7 +430,7 @@ public:
   {
     rsAssert(data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns); // matrices incompatible
     rsMatrixOld result(data->numRows, data->numColumns);
-    rsArray::add(data->mFlat, m2.data->mFlat, result.data->mFlat, getNumElements());
+    rsArrayTools::add(data->mFlat, m2.data->mFlat, result.data->mFlat, getNumElements());
     return result;
   }
 
@@ -438,7 +438,7 @@ public:
   rsMatrixOld operator+(const T &x)
   {
     rsMatrixOld result(data->numRows, data->numColumns);
-    rsArray::add(data->mFlat, x, result.data->mFlat, getNumElements());
+    rsArrayTools::add(data->mFlat, x, result.data->mFlat, getNumElements());
     return result;
   }
 
@@ -447,7 +447,7 @@ public:
   {
     rsAssert(data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns); // matrices incompatible
     rsMatrixOld result(data->numRows, data->numColumns);
-    rsArray::subtract(data->mFlat, m2.data->mFlat, result.data->mFlat, getNumElements());
+    rsArrayTools::subtract(data->mFlat, m2.data->mFlat, result.data->mFlat, getNumElements());
     return result;
   }
 
@@ -467,7 +467,7 @@ public:
   rsMatrixOld operator*(const T &x)
   {
     rsMatrixOld result(data->numRows, data->numColumns);
-    rsArray::scale(data->mFlat, result.data->mFlat, getNumElements(), x);
+    rsArrayTools::scale(data->mFlat, result.data->mFlat, getNumElements(), x);
     return result;
   }
 

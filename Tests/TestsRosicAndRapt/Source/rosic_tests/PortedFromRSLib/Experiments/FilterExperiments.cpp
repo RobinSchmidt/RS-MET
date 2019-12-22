@@ -161,7 +161,7 @@ void bandwidthScaling()
   // internal variables:
   double B0, B1, B2, A0, A1, A2; // analog biquad coeffs
   double w[N], p[5][N];
-  RAPT::rsArray::fillWithRangeLinear(w, N, 0.0, wMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(w, N, 0.0, wMax);
 
   // compute and plot magnitude-squared responses:
   double Q;
@@ -297,7 +297,7 @@ void stateVariableFilter()
   rsMagnitudeAndPhase(yPK, N, mPK);
   rsMagnitudeAndPhase(yLS, N, mLS);
   rsMagnitudeAndPhase(yHS, N, mHS);
-  rsMagnitudeAndPhase(yAP, N, mAP, pAP); RAPT::rsArray::scale(pAP, N/2, 180.0/PI);
+  rsMagnitudeAndPhase(yAP, N, mAP, pAP); RAPT::rsArrayTools::scale(pAP, N/2, 180.0/PI);
   rsMagnitudeAndPhase(yBR, N, mBR);
   rsMagnitudeAndPhase(yBPCP, N, mBPCP);
 
@@ -492,7 +492,7 @@ void transistorLadder()
   double *x = new double[N];
   createTimeAxis(N, t, fs);
 
-  RAPT::rsArray::fillWithRandomValues(x, N, -0.01, +0.01, 1);
+  RAPT::rsArrayTools::fillWithRandomValues(x, N, -0.01, +0.01, 1);
   //fillWithZeros(x, N);
   //x[0] = 1.0;
 
@@ -514,7 +514,7 @@ void transistorLadder()
   // todo: compare against the non-ZDF ladder, try multimode    
   plotData(N, t, x);
 
-  RAPT::rsArray::normalize(x, N, 1.0);
+  RAPT::rsArrayTools::normalize(x, N, 1.0);
   writeToMonoWaveFile("d:\\TmpData\\MystranLadderZap.wav", x, N, (int)fs, 16);
 
   delete[] t;
@@ -633,8 +633,8 @@ void phonoFilterSimulation()
   getImpulseResponse(deEmphasisFilter, hd, N);
   rsMagnitudeAndPhase(hp, N, mp);
   rsMagnitudeAndPhase(hd, N, md);
-  RAPT::rsArray::applyFunction(mp, mp, N/2, &rsAmp2dB);
-  RAPT::rsArray::applyFunction(md, md, N/2, &rsAmp2dB);
+  RAPT::rsArrayTools::applyFunction(mp, mp, N/2, &rsAmp2dB);
+  RAPT::rsArrayTools::applyFunction(md, md, N/2, &rsAmp2dB);
 
   plotDataLogX(N/2, f, mp, md);
 }
@@ -667,7 +667,7 @@ void serialParallelBlend()
 
   // obtain impulse-response:
   double x[numSamples], y[numSamples];
-  RAPT::rsArray::fillWithZeros(x, numSamples);
+  RAPT::rsArrayTools::fillWithZeros(x, numSamples);
   x[0] = 1;
   double w, z;
   double accu;
@@ -690,7 +690,7 @@ void serialParallelBlend()
   for(int k = 0; k < numSamples/2; k++)
     frq[k] = k*fs/numSamples;
   rsMagnitudeAndPhase(y, numSamples, mag);
-  RAPT::rsArray::applyFunction(mag, dB, numSamples/2, &rsAmp2dB);
+  RAPT::rsArrayTools::applyFunction(mag, dB, numSamples/2, &rsAmp2dB);
   plotDataLogX(numSamples/2, frq, dB);
 
 }
@@ -715,8 +715,8 @@ void averager()
 
   double t[N], y1[N], y2[N], y3[N], ySum[N];
 
-  RAPT::rsArray::fillWithRangeLinear(t, N, 0.0, (double)(N-1));
-  RAPT::rsArray::fillWithZeros(ySum, N);
+  RAPT::rsArrayTools::fillWithRangeLinear(t, N, 0.0, (double)(N-1));
+  RAPT::rsArrayTools::fillWithZeros(ySum, N);
 
   // accumulate the decay functions
   int n;
@@ -751,7 +751,7 @@ void movingAverage()
   static const int N = 2*L;
 
   double t[N], h[N];
-  RAPT::rsArray::fillWithIndex(t, N);
+  RAPT::rsArrayTools::fillWithIndex(t, N);
   rsMovingAverageDD ma;
   //ma.setLengthInSamples(L);
   ma.setLengthInSeconds(0.02);
@@ -763,7 +763,7 @@ void movingAverage()
 
   getImpulseResponse(ma, h, N);
   plotData(N, t, h);
-  double sum = RAPT::rsArray::sum(h, L);
+  double sum = RAPT::rsArrayTools::sum(h, L);
 }
 
 void trapezAverager()
@@ -773,7 +773,7 @@ void trapezAverager()
   static const int N = L1+L2+10;
 
   double t[N], h[N];
-  RAPT::rsArray::fillWithIndex(t, N);
+  RAPT::rsArrayTools::fillWithIndex(t, N);
   rsMovingAverageDD ma1, ma2;
   ma1.setLengthInSamples(L1);
   ma2.setLengthInSamples(L2);
@@ -819,7 +819,7 @@ void compareApproximationMethods()
   double mBes[N], mBut[N], mCheb1[N], mCheb2[N], mEll[N], mPap[N], mHalp[N], mGaus[N];  // magnitude responses
   double f[N];
   //rsFillWithRangeLinear(f, N, 0.0, fs/2);
-  RAPT::rsArray::fillWithRangeExponential(f, N, 1.0, fs/2);
+  RAPT::rsArrayTools::fillWithRangeExponential(f, N, 1.0, fs/2);
 
   flt.setApproximationMethod(PTD::BESSEL);
   getImpulseResponse(flt, hBes, N);
@@ -891,12 +891,12 @@ void compareApproximationMethods()
   // normalize impulse repsonses and write to wavefiles (maybe remove)
   double s = 1.0;
   //s = 1.0 / rsMaxAbs(hBut, N); // Butterworth impulse response has highest peak
-  RAPT::rsArray::scale(hBes, N, s);
-  RAPT::rsArray::scale(hBut, N, s);
-  RAPT::rsArray::scale(hCheb1, N, s);
-  RAPT::rsArray::scale(hCheb2, N, s);
-  RAPT::rsArray::scale(hEll, N, s);
-  RAPT::rsArray::scale(hPap, N, s);
+  RAPT::rsArrayTools::scale(hBes, N, s);
+  RAPT::rsArrayTools::scale(hBut, N, s);
+  RAPT::rsArrayTools::scale(hCheb1, N, s);
+  RAPT::rsArrayTools::scale(hCheb2, N, s);
+  RAPT::rsArrayTools::scale(hEll, N, s);
+  RAPT::rsArrayTools::scale(hPap, N, s);
   writeToMonoWaveFile("Bessel.wav", hBes, N, (int)fs, 16);
   writeToMonoWaveFile("Butterworth.wav", hBut, N, (int)fs, 16);
   writeToMonoWaveFile("Chebychev1.wav", hCheb1, N, (int)fs, 16);
@@ -1038,8 +1038,8 @@ void ringingTime()
   static const int N = 1000;    // number of samples
   double h[N];
   getImpulseResponse(flt, h, N);
-  double s = 1.0 / RAPT::rsArray::maxAbs(h, N);
-  RAPT::rsArray::scale(h, N, s);
+  double s = 1.0 / RAPT::rsArrayTools::maxAbs(h, N);
+  RAPT::rsArrayTools::scale(h, N, s);
 
   // plot:
   plotData(N, 0, 1, h);
@@ -1065,7 +1065,7 @@ void butterworthSquaredLowHighSum()
   double H2H[P];    // |H(w)|^2 for the highpass
   double H2S[P];    // |H(w)|^2 for the sum of low- and highpass
 
-  RAPT::rsArray::fillWithRangeExponential(w, P, wMin, wMax);
+  RAPT::rsArrayTools::fillWithRangeExponential(w, P, wMin, wMax);
   for(int i = 0; i < P; i++)
   {
     H2L[i] = pow(1.0 / (1.0 + eps*pow(w[i]*w[i], N)), M);
@@ -1099,7 +1099,7 @@ void gaussianPrototype()
   double wMin = 0.0;
   double wMax = 3.0;
   double w[numBins], m[numBins], mt[numBins];
-  RAPT::rsArray::fillWithRangeLinear(w, numBins, wMin, wMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(w, numBins, wMin, wMax);
   for(int i = 0; i < numBins; i++)
   {
     m[i]  = 1.0 / (RAPT::rsPolynomial<double>::evaluate(w[i], c, 2*N));
@@ -1139,7 +1139,7 @@ void halpernPrototype()
   double wMax = 100;
   static const int numBins = 1000;
   double w[numBins], mH[numBins], mP[numBins];
-  RAPT::rsArray::fillWithRangeExponential(w, numBins, wMin, wMax);
+  RAPT::rsArrayTools::fillWithRangeExponential(w, numBins, wMin, wMax);
   for(int i = 0; i < numBins; i++)
   {
     mH[i] = 1.0 / (1.0 + eps*eps * RAPT::rsPolynomial<double>::evaluate(w[i], aH, 2*N));
@@ -1167,7 +1167,7 @@ void plotMaxSteepResponse(double *p, int M, double *q, int N, double k)
   double wMax = 100;
   static const int numBins = 1000;
   double w[numBins], r[numBins], rB[numBins];
-  RAPT::rsArray::fillWithRangeExponential(w, numBins, wMin, wMax);
+  RAPT::rsArrayTools::fillWithRangeExponential(w, numBins, wMin, wMax);
   int n;
   double num, den, x;
   for(n = 0; n < numBins; n++)
@@ -1321,28 +1321,28 @@ void maxFlatMaxSteepPrototypeM2N2()
 void envelopeFilter1(double *x, double *yEnv, double *yMod, int N, double fc, double fs,
   int numPasses = 8)
 {
-  double mean = RAPT::rsArray::mean(x, N);     // compute mean
-  RAPT::rsArray::add(x, -mean, yEnv, N);       // subtract it from x
+  double mean = RAPT::rsArrayTools::mean(x, N);     // compute mean
+  RAPT::rsArrayTools::add(x, -mean, yEnv, N);       // subtract it from x
   rsBiDirectionalFilter::applyButterworthLowpass(yEnv, yEnv, N, fc, fs, 1, numPasses);
-  RAPT::rsArray::add(yEnv, mean, yEnv, N);     // undo mean subtraction
-  RAPT::rsArray::subtract(x, yEnv, yMod, N);   // compute residual
+  RAPT::rsArrayTools::add(yEnv, mean, yEnv, N);     // undo mean subtraction
+  RAPT::rsArrayTools::subtract(x, yEnv, yMod, N);   // compute residual
 }
 
 void envelopeFilter2(double *x, double *yEnv, double *yMod, int N, double fc, double fs,
   int numPasses = 8)
 {
-  double mean = RAPT::rsArray::mean(x, N);      // compute mean
-  RAPT::rsArray::add(x, -mean, yEnv, N);        // subtract it from x
-  RAPT::rsArray::difference(yEnv, N);           // take difference signal
+  double mean = RAPT::rsArrayTools::mean(x, N);      // compute mean
+  RAPT::rsArrayTools::add(x, -mean, yEnv, N);        // subtract it from x
+  RAPT::rsArrayTools::difference(yEnv, N);           // take difference signal
   rsBiDirectionalFilter::applyButterworthLowpass(yEnv, yEnv, N, fc, fs, 1, numPasses);
-  RAPT::rsArray::cumulativeSum(yEnv, yEnv, N);  // undo difference
-  RAPT::rsArray::add(yEnv, mean, yEnv, N);      // undo mean subtraction
-  RAPT::rsArray::subtract(x, yEnv, yMod, N);    // compute residual
+  RAPT::rsArrayTools::cumulativeSum(yEnv, yEnv, N);  // undo difference
+  RAPT::rsArrayTools::add(yEnv, mean, yEnv, N);      // undo mean subtraction
+  RAPT::rsArrayTools::subtract(x, yEnv, yMod, N);    // compute residual
 
   // transfer mean of residual signal into envelope signal:
-  mean = RAPT::rsArray::mean(yMod, N);
-  RAPT::rsArray::add(yEnv, +mean, yEnv, N);
-  RAPT::rsArray::add(yMod, -mean, yMod, N);
+  mean = RAPT::rsArrayTools::mean(yMod, N);
+  RAPT::rsArrayTools::add(yEnv, +mean, yEnv, N);
+  RAPT::rsArrayTools::add(yMod, -mean, yMod, N);
 }
 
 void envelopeFilter3(double *x, double *yEnv, double *yMod, int N, double fc, double fs,
@@ -1353,10 +1353,10 @@ void envelopeFilter3(double *x, double *yEnv, double *yMod, int N, double fc, do
   envelopeFilter2(x, tmp, yMod, N, fc, fs, numPasses);
 
   // use the filter on the reversed signal (then undo reversal):
-  RAPT::rsArray::reverse(x, N);
+  RAPT::rsArrayTools::reverse(x, N);
   envelopeFilter2(x, yEnv, yMod, N, fc, fs, numPasses);
-  RAPT::rsArray::reverse(x, N);
-  RAPT::rsArray::reverse(yEnv, N);
+  RAPT::rsArrayTools::reverse(x, N);
+  RAPT::rsArrayTools::reverse(yEnv, N);
 
   // crossfade:
   for(int n = 0; n < N; n++)
@@ -1365,7 +1365,7 @@ void envelopeFilter3(double *x, double *yEnv, double *yMod, int N, double fc, do
     yEnv[n] = k*tmp[n] + (1-k)*yEnv[n];
   }
 
-  RAPT::rsArray::subtract(x, yEnv, yMod, N);    // compute residual
+  RAPT::rsArrayTools::subtract(x, yEnv, yMod, N);    // compute residual
   delete[] tmp;
 }
 
@@ -1391,7 +1391,7 @@ void splitLowFreqFromDC()
 
   // create the input signal:
   createSineWave(x, N, f, a, fs);
-  RAPT::rsArray::fillWithRangeLinear(yl, N, 1.0, 1.5);
+  RAPT::rsArrayTools::fillWithRangeLinear(yl, N, 1.0, 1.5);
   for(int n = 0; n < N; n++)
     x[n] += yl[n];
 
@@ -1437,7 +1437,7 @@ void ladderResonanceModeling()
 
   // create filter's step response:
   vector<double> x(N), yr(N);
-  RAPT::rsArray::fillWithValue(&x[0], N, 1.0);
+  RAPT::rsArrayTools::fillWithValue(&x[0], N, 1.0);
   double dummy;
   for(int n = 0; n < N; n++)
     ldr.getSignalParts(x[n], &dummy, &yr[n]);
@@ -1455,7 +1455,7 @@ void ladderResonanceModeling()
   // obtain the error-signal which is the desired impulse response of the transient correction
   // filter:
   vector<double> err(N);
-  RAPT::rsArray::subtract(&yr[0], &ym[0], &err[0], N);
+  RAPT::rsArrayTools::subtract(&yr[0], &ym[0], &err[0], N);
 
   // plot:
   GNUPlotter plt;
@@ -1689,8 +1689,8 @@ void ladderFeedbackSaturation()
   vector<double> x(N);
   vector<double> a(N); // amplitude 
   createWaveform(&x[0], N, 1, fIn, fs, 0., false);
-  RAPT::rsArray::fillWithRangeLinear(&a[0], N, aMin, aMax);
-  RAPT::rsArray::multiply(&x[0], &a[0], &x[0], N);
+  RAPT::rsArrayTools::fillWithRangeLinear(&a[0], N, aMin, aMax);
+  RAPT::rsArrayTools::multiply(&x[0], &a[0], &x[0], N);
 
   // compute ladder coeffs:
   double a1, b0, k, g;
@@ -1763,8 +1763,8 @@ void ladderFeedbackSaturation2()
   vector<double> a(N);       // amplitude 
   createWaveform(&x[0], N, 1, fIn, fs, 0., false);
   //createWaveform(&x[0], N, 1, fIn, fs, 0, true); // with anti-aliasing
-  RAPT::rsArray::fillWithRangeLinear(&a[0], N, aMin, aMax);
-  RAPT::rsArray::multiply(&x[0], &a[0], &x[0], N);
+  RAPT::rsArrayTools::fillWithRangeLinear(&a[0], N, aMin, aMax);
+  RAPT::rsArrayTools::multiply(&x[0], &a[0], &x[0], N);
 
   // create the filter object and set up its parameters:
   rsLadderFeedbackSaturatedDD flt;
@@ -1833,11 +1833,11 @@ void ladderFeedbackSaturation3()
   // create input sawtooth:
   vector<double> x(N);
   createWaveform(&x[0], N, 1, fIn, fs, 0., false);
-  RAPT::rsArray::scale(&x[0], N, aIn);
+  RAPT::rsArrayTools::scale(&x[0], N, aIn);
 
   // create cutoff frequency sweep:
   vector<double> fc(N);
-  RAPT::rsArray::fillWithRangeExponential(&fc[0], N, fc1, fc2);
+  RAPT::rsArrayTools::fillWithRangeExponential(&fc[0], N, fc1, fc2);
 
   // create and set up filter:
   rsLadderFeedbackSaturatedDD flt;
@@ -1889,7 +1889,7 @@ void ladderFeedbackSatDCGain()
 
   // create DC input signal:
   vector<double> x(N);
-  RAPT::rsArray::fillWithValue(&x[0], N, inGain);
+  RAPT::rsArrayTools::fillWithValue(&x[0], N, inGain);
 
   // compute filter output signal:
   vector<double> y(N);
@@ -1961,7 +1961,7 @@ void ladderFeedbackSatReso()
   // create input sawtooth:
   vector<double> x(N);
   createWaveform(&x[0], N, 1, fIn, fs, 0., false);
-  RAPT::rsArray::scale(&x[0], N, aIn);
+  RAPT::rsArrayTools::scale(&x[0], N, aIn);
 
   // create output signals of the individual filter stages:
   double y[5];
@@ -2019,7 +2019,7 @@ void ladderFeedbackSatGrowl()
   // create input sawtooth:
   vector<double> x(N);
   createWaveform(&x[0], N, 1, fIn, fs, 0., false);
-  RAPT::rsArray::scale(&x[0], N, aIn);
+  RAPT::rsArrayTools::scale(&x[0], N, aIn);
 
   // create filter output:
   vector<double> yf(N), yr(N), y(N);
@@ -2089,7 +2089,7 @@ void ladderFeedbackSatGrowl2()
   // create input sawtooth:
   vector<double> x(N);
   createWaveform(&x[0], N, 1, fIn, fs, 0., false);
-  RAPT::rsArray::scale(&x[0], N, aIn);
+  RAPT::rsArrayTools::scale(&x[0], N, aIn);
 
   // create filter output:
   vector<double> y(N);
@@ -2163,13 +2163,13 @@ void ladderZDF()
 
   // create input signal:
   vector<double> x(N);
-  RAPT::rsArray::fillWithZeros(&x[0], N);
+  RAPT::rsArrayTools::fillWithZeros(&x[0], N);
   x[0] = 1;
 
   // compute output:
   vector<double> output(N);
   double y[5];    // filter state
-  RAPT::rsArray::fillWithZeros(y, 5);
+  RAPT::rsArrayTools::fillWithZeros(y, 5);
   //double tmp;
   for(int n = 0; n < N; n++)
   {
@@ -2227,7 +2227,7 @@ void ladderZDFvsUDF()
   // create input sawtooth:
   vector<double> x(N);
   createWaveform(&x[0], N, 1, fIn, fs, 0., true);
-  RAPT::rsArray::scale(&x[0], N, aIn);
+  RAPT::rsArrayTools::scale(&x[0], N, aIn);
 
   // create modulation signal:
   vector<double> m(N);
@@ -2313,8 +2313,8 @@ void resoShapeFeedbackSat()
   vector<double> x(N);
   vector<double> a(N);       // amplitude 
   createWaveform(&x[0], N, 1, fIn, fs, 0., false);
-  RAPT::rsArray::fillWithRangeLinear(&a[0], N, aMin, aMax);
-  RAPT::rsArray::multiply(&x[0], &a[0], &x[0], N);
+  RAPT::rsArrayTools::fillWithRangeLinear(&a[0], N, aMin, aMax);
+  RAPT::rsArrayTools::multiply(&x[0], &a[0], &x[0], N);
 
   // compute output signals:
   vector<double> y(N), yr(N), yf(N);  // full, resonant and nonresonant-filtered output
@@ -2480,7 +2480,7 @@ void resoShapeGate()
   // create input sawtooth:
   vector<double> x(N);
   createWaveform(&x[0], N, 1, fIn, fs, 0., false);
-  RAPT::rsArray::scale(&x[0], N, aIn);
+  RAPT::rsArrayTools::scale(&x[0], N, aIn);
 
   // create output signals (filtered, resonance, complete)
   vector<double> y(N), yr(N), yf(N);
@@ -2563,11 +2563,11 @@ void resoShapePseudoSync()
   // create input sawtooth:
   vector<double> x(N);
   createWaveform(&x[0], N, 1, fIn, fs, 0., false);
-  RAPT::rsArray::scale(&x[0], N, aIn);
+  RAPT::rsArrayTools::scale(&x[0], N, aIn);
 
   // create cutoff sweep:
   vector<double> fc(N);
-  RAPT::rsArray::fillWithRangeExponential(&fc[0], N, fc1, fc2);
+  RAPT::rsArrayTools::fillWithRangeExponential(&fc[0], N, fc1, fc2);
 
   // get filter output:
   vector<double> y(N);
@@ -2578,7 +2578,7 @@ void resoShapePseudoSync()
   }
 
   // normalize filter output and write to wavefile:
-  RAPT::rsArray::normalize(&y[0], N, 1.0, true);
+  RAPT::rsArrayTools::normalize(&y[0], N, 1.0, true);
   writeToMonoWaveFile("ResoShapePseudoSync.wav", &y[0], N, (int)fs, 16);
 }
 
@@ -2629,7 +2629,7 @@ void resoSeparationNonlinear()
   // create input sawtooth:
   vector<double> x(N);
   createWaveform(&x[0], N, 1, fIn, fs, 0., false);
-  RAPT::rsArray::scale(&x[0], N, aIn);
+  RAPT::rsArrayTools::scale(&x[0], N, aIn);
 
   // create output signals (filtered, resonance, complete)
   vector<double> y(N), yr(N), yf(N);
@@ -2740,7 +2740,7 @@ void resoReplacePhaseBumping()
   // create input sawtooth:
   vector<double> x(N);
   createWaveform(&x[0], N, 1, fIn, fs, 0., false);
-  RAPT::rsArray::scale(&x[0], N, aIn);
+  RAPT::rsArrayTools::scale(&x[0], N, aIn);
 
   // get filter output:
   vector<double> y(N), yr(N), yf(N);
@@ -2811,11 +2811,11 @@ void resoReplaceScream()
   // create input sawtooth:
   vector<double> x(N);
   createWaveform(&x[0], N, 1, fIn, fs, 0., false);
-  RAPT::rsArray::scale(&x[0], N, aIn);
+  RAPT::rsArrayTools::scale(&x[0], N, aIn);
 
   // create frequency sweep:
   vector<double> f(N);
-  RAPT::rsArray::fillWithRangeExponential(&f[0], N, fc1, fc2);
+  RAPT::rsArrayTools::fillWithRangeExponential(&f[0], N, fc1, fc2);
 
   // compute output:
   vector<double> y(N);
@@ -2917,7 +2917,7 @@ void fakeResoLowpassResponse()
   h[0] = flt.getLowpassOutput(1.0);
   for(int n = 1; n < N; n++)
     h[n] = flt.getLowpassOutput(0.0);
-  RAPT::rsArray::normalize(&h[0], N, 1.0);
+  RAPT::rsArrayTools::normalize(&h[0], N, 1.0);
 
   flt.reset();
   for(int n = 0; n < N; n++)

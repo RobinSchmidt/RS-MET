@@ -244,7 +244,7 @@ std::vector<double> stiffStringRatios(double frequency, double sampleRate, doubl
 
   //rsVectorDbl v(numPartials, tmp);
   std::vector<double> v(numPartials);
-  RAPT::rsArray::copy(tmp, &v[0], numPartials);
+  RAPT::rsArrayTools::copy(tmp, &v[0], numPartials);
 
   return v;
 }
@@ -477,7 +477,7 @@ void rsModalParameterGenerator<T>::getFrequencies(std::vector<T>& f)
   }
 
   f.resize(numPartials);
-  RAPT::rsArray::copy(&tmp[0], &f[0], numPartials);
+  RAPT::rsArrayTools::copy(&tmp[0], &f[0], numPartials);
 }
 
 template<class T>

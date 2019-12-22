@@ -270,7 +270,7 @@ void biDirectionalFilter()
   // create input signal with centered impulse and filter it (with different values for the number
   // of passes):
   double x[N], y1[N], y2[N], y4[N], y8[N], y16[N];
-  RAPT::rsArray::fillWithZeros(x, N);
+  RAPT::rsArrayTools::fillWithZeros(x, N);
   x[N/2] = 1.0;
   //x[0] = 1.0;  // for padding test
 
@@ -329,19 +329,19 @@ void biDirectionalFilter()
 
 
   double freqs[N];
-  RAPT::rsArray::fillWithRangeLinear(freqs, N, 0.0, fs);
+  RAPT::rsArrayTools::fillWithRangeLinear(freqs, N, 0.0, fs);
   //plotDataLogX(N/2, freqs, m1, m2, m4, m8, m16);
   //plotData(N/2, 0.0, fs/N, m1, m2, m4, m8, m16); // magnitude responses
   plotData(N/16, 0.0, fs/N, m1, m2, m4, m8, m16); // magnitude responses - shouldn't it be
                                                   // fs/(N+1)?
 
   // normalize and write output files:
-  double s = 1 / RAPT::rsArray::maxAbs(y1, N);
-  RAPT::rsArray::scale(y1,  N, s);
-  RAPT::rsArray::scale(y2,  N, s);
-  RAPT::rsArray::scale(y4,  N, s);
-  RAPT::rsArray::scale(y8,  N, s);
-  RAPT::rsArray::scale(y16, N, s);
+  double s = 1 / RAPT::rsArrayTools::maxAbs(y1, N);
+  RAPT::rsArrayTools::scale(y1,  N, s);
+  RAPT::rsArrayTools::scale(y2,  N, s);
+  RAPT::rsArrayTools::scale(y4,  N, s);
+  RAPT::rsArrayTools::scale(y8,  N, s);
+  RAPT::rsArrayTools::scale(y16, N, s);
   writeToMonoWaveFile("BiDirectionalFilterPasses1.wav",    y1, N, (int) fs, 16);
   writeToMonoWaveFile("BiDirectionalFilterPasses2.wav",    y2, N, (int) fs, 16);
   writeToMonoWaveFile("BiDirectionalFilterPasses4.wav",    y4, N, (int) fs, 16);
@@ -393,7 +393,7 @@ void beatingSines()
 
   // synthesize signals:
   std::vector<double> t(N), s1(N), s2(N), sc(N), sm(N), sum(N), prod(N); // sc,sm: carrier,modulator
-  RAPT::rsArray::fillWithRangeLinear(&t[0], N, tMin, tMax);     // time axis
+  RAPT::rsArrayTools::fillWithRangeLinear(&t[0], N, tMin, tMax);     // time axis
   for(int n = 0; n < N; n++) {
     //s1[n]  = amp1 * sin(w1*t[n] + p1);  // i couldn't find formulas for re-expressing the sum of 
     //s2[n]  = amp2 * sin(w2*t[n] + p2);  // sines as product for arbitrary amplitudes - so use 1
@@ -687,8 +687,8 @@ void sineWithPhaseCatchUp()
   double a[N], x[N];            // amplitude envelope and signals
 
   // create amplitude envelope (and copy to x):
-  RAPT::rsArray::fillWithRangeLinear(a, N, as, ae);
-  RAPT::rsArray::copy(a, x, N);
+  RAPT::rsArrayTools::fillWithRangeLinear(a, N, as, ae);
+  RAPT::rsArrayTools::copy(a, x, N);
 
   // create the sine with envelope - we pass x as envelope to see if it also works when x and a
   // point to the same array:
@@ -766,8 +766,8 @@ void partialExtractionTriple()
   getImpulseResponse(mf, xM, N);
   mf.setModalParameters(fU, aU, atU, dcU, pU, fs);
   getImpulseResponse(mf, xU, N);
-  RAPT::rsArray::add(xL, xM, x, N);
-  RAPT::rsArray::add(x,  xU, x, N);
+  RAPT::rsArrayTools::add(xL, xM, x, N);
+  RAPT::rsArrayTools::add(x,  xU, x, N);
 
   // retrieve the middle partial via multipass bidirectional bandpassing
   rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, yM, N, fM, bw, fs, np, gp);
@@ -785,7 +785,7 @@ void partialExtractionTriple()
 
   // get peak location and height of envelope (later, maybe use quadratic interpolation to find it 
   // with subsample precision - this is actually overkill, but however)
-  int    nPeak = RAPT::rsArray::maxIndex(ye, N);
+  int    nPeak = RAPT::rsArrayTools::maxIndex(ye, N);
   double tPeak = nPeak / fs;
   double aPeak = ye[nPeak];
 
@@ -846,7 +846,7 @@ void partialExtractionBell()
   double **sampleData = readFromWaveFile(samplePath, numChannels, N, fs);
 
   // allocate internal buffers:
-  double *x  = new double[N]; RAPT::rsArray::copy(sampleData[0], x, N); // input signal
+  double *x  = new double[N]; RAPT::rsArrayTools::copy(sampleData[0], x, N); // input signal
   double *t  = new double[N]; createTimeAxis(N, t, fs);          // time axis for plot
   double *yr = new double[N];                                    // real part of filtered signal
   double *yi = new double[N];                                    // imaginary part
@@ -1015,20 +1015,20 @@ double isolatePartialWithBiquad(double *x, double *y, int N, double fL, double f
   Np = 0;          // for test
   int M  = N+2*Np; // length with pre- and post-padding
   double *tmp = new double[M];
-  RAPT::rsArray::fillWithZeros(tmp, Np);
-  RAPT::rsArray::copy(x, &tmp[Np], N);
-  RAPT::rsArray::fillWithZeros(&tmp[Np+N], Np);
+  RAPT::rsArrayTools::fillWithZeros(tmp, Np);
+  RAPT::rsArrayTools::copy(x, &tmp[Np], N);
+  RAPT::rsArrayTools::fillWithZeros(&tmp[Np+N], Np);
   double a[3], b[3]; // filter coeffs
   rsBiquadDesigner::calculateCookbookBandpassConstSkirtCoeffsViaQ
     (b[0], b[1], b[2], a[1], a[2], 1.0/fs, fM, Q);
-  RAPT::rsArray::negate(a, a, 3);
+  RAPT::rsArrayTools::negate(a, a, 3);
   a[0] = 1.0;
   for(int i = 0; i < np; i++)
   {
     //filterBiDirectional(tmp, M, tmp, M, b, 2, a, 2);
-    RAPT::rsArray::filterBiDirectional(tmp, M, tmp, M, b, 2, a, 2);
+    RAPT::rsArrayTools::filterBiDirectional(tmp, M, tmp, M, b, 2, a, 2);
   }
-  RAPT::rsArray::copy(&tmp[Np], y, N);
+  RAPT::rsArrayTools::copy(&tmp[Np], y, N);
   delete[] tmp;
 
   /*
@@ -1061,7 +1061,7 @@ double isolatePartialWithBiquad(double *x, double *y, int N, double fL, double f
   double w = 2*PI*fM/fs;
   double g = biquadMagnitudeAt(b[0], b[1], b[2], a[1], a[2], 2*PI*fM/fs);
   g = pow(g, 2*np);  // bidirectional: g^2, multipass: g^np -> g^(2*np)
-  RAPT::rsArray::scale(y, N, 1.0/g);
+  RAPT::rsArrayTools::scale(y, N, 1.0/g);
     // we are getting HUUUUGE gain factors here, maybe, we should design a constant peak-gain 
     // bandpass instead of constant skirt gain to avoid this
 
@@ -1135,7 +1135,7 @@ void plotModalEnvelope(const char *samplePath, double fL, double fM, double fU, 
   double **sampleData = readFromWaveFile(samplePath, numChannels, N, fs);
 
   // allocate internal buffers:
-  double *x  = new double[N]; RAPT::rsArray::copy(sampleData[0], x, N); // input signal
+  double *x  = new double[N]; RAPT::rsArrayTools::copy(sampleData[0], x, N); // input signal
   double *y  = new double[N];                                    // filtered signal
   double *ye = new double[N];                                    // envelope
   double *yn = new double[N];                                    // negated envelope
@@ -1145,7 +1145,7 @@ void plotModalEnvelope(const char *samplePath, double fL, double fM, double fU, 
   rsSineEnvelopeViaQuadrature(y, ye, N, fM, (double)fs, 4.0);
 
   // plot the extracted mode with its envelope:
-  RAPT::rsArray::negate(ye, yn, N);
+  RAPT::rsArrayTools::negate(ye, yn, N);
   numSamplesToPlot = rsMin(N, numSamplesToPlot);
   plotSignals(numSamplesToPlot, fs, y, ye, yn);
 
@@ -1209,8 +1209,8 @@ void partialExtractionViaBiquadTriple()
   getImpulseResponse(mf, xM, N);
   mf.setModalParameters(fU, aU, atU, dcU, pU, fs);
   getImpulseResponse(mf, xU, N);
-  RAPT::rsArray::add(xL, xM, x, N);
-  RAPT::rsArray::add(x,  xU, x, N);
+  RAPT::rsArrayTools::add(xL, xM, x, N);
+  RAPT::rsArrayTools::add(x,  xU, x, N);
 
 
   // just for inspecting the impulse-reponse during development - replace our x-signal with a 
@@ -1253,7 +1253,7 @@ void partialExtractionViaBiquadTriple()
 
   // get peak location and height of envelope (later, maybe use quadratic interpolation to find it 
   // with subsample precision - this is actually overkill, but however)
-  int    nPeak = RAPT::rsArray::maxIndex(ye, N);
+  int    nPeak = RAPT::rsArrayTools::maxIndex(ye, N);
   double tPeak = nPeak / fs;
   double aPeak = ye[nPeak];
 

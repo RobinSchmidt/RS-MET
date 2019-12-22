@@ -88,7 +88,7 @@ std::vector<T> rsSpectrogramProcessor<T>::getRoundTripModulation(int F)
   for(int n = 0; n < B; n++)
     w[n] = wa[n] * ws[n];
   for(int i = 0; i < F; i++)
-    rsArray::addInto(y.data(), N, w, B, i*H-B/2);
+    rsArrayTools::addInto(y.data(), N, w, B, i*H-B/2);
   delete[] w;
   return y;
 }
@@ -124,10 +124,10 @@ void rsSpectrogramProcessor<T>::prepareTrafoBuffer(const T* x, int N, int n, std
   int M = trafoSize;
   int L, R;
   getLeftRightPaddingAmount(B, M, &L, &R);
-  rsArray::fillWithZeros( X,      L);       // left zero padding
-  rsArray::fillWithZeros(&X[M-R], R);       // right zero padding
+  rsArrayTools::fillWithZeros( X,      L);       // left zero padding
+  rsArrayTools::fillWithZeros(&X[M-R], R);       // right zero padding
   std::complex<T> *Xs = &X[L];              // pointer, from which we write into the X-array
-  rsArray::copySection(x, N, Xs, n-B/2, B); // copy signal section into FFT buffer
+  rsArrayTools::copySection(x, N, Xs, n-B/2, B); // copy signal section into FFT buffer
   for(int i = 0; i < B; i++)                // apply window
     Xs[i] *= w[i];
   swapForZeroPhase(X, M);
@@ -155,8 +155,8 @@ rsMatrix<std::complex<T>> rsSpectrogramProcessor<T>::getComplexSpectrogram(const
   int M = trafoSize;
   int K = M/2 + 1;                             // number of non-redundant bins
   rsMatrix<std::complex<T>> s(F, K);        // spectrogram (only positive frequency bins)
-  //T a = 2 / rsArray::sum(w, B);              // amplitude scaler
-  T a = getAnalysisScaler();                   // amplitude scaler = 2 / rsArray::sum(w, B)
+  //T a = 2 / rsArrayTools::sum(w, B);              // amplitude scaler
+  T a = getAnalysisScaler();                   // amplitude scaler = 2 / rsArrayTools::sum(w, B)
   int n = 0;                                   // sample, where current block is centered
   std::complex<T> *X = new std::complex<T>[M]; // short-time spectrum centered at sample n
   for(int i = 0; i < F; i++)                   // loop over frames
@@ -244,7 +244,7 @@ std::vector<T> rsSpectrogramProcessor<T>::synthesize(const rsMatrix<std::complex
   T*  wa = &analysisWindow[0];
   T*  ws = &synthesisWindow[0];
   std::vector<T> y = synthesizeRaw(s);
-  T a = rsArray::sum(wa, B) / 2;  // might this be the additional scaling because of which we
+  T a = rsArrayTools::sum(wa, B) / 2;  // might this be the additional scaling because of which we
                                   // need to set NORMALIZE_ON_INVERSE_TRAFO?
   if(demodulateOutput == true) {
     std::vector<T> m = getRoundTripModulation(s.getNumRows());
@@ -253,7 +253,7 @@ std::vector<T> rsSpectrogramProcessor<T>::synthesize(const rsMatrix<std::complex
     //rsPlotVector(m);
   }
   else
-    rsArray::scale(&y[0], (int) y.size(), a);
+    rsArrayTools::scale(&y[0], (int) y.size(), a);
   return y;
 }
 
@@ -326,7 +326,7 @@ std::vector<T> rsSpectrogramProcessor<T>::synthesizeRaw(const rsMatrix<std::comp
       g[k] = Y[k0+k].real() * w[k];  // k0 != 0, if zero-padding was used
 
     // overlap/add into output signal:
-    rsArray::addInto(y.data(), N, g.data(), B, i*H-B/2);
+    rsArrayTools::addInto(y.data(), N, g.data(), B, i*H-B/2);
   }
 
   delete[] Y;
@@ -365,7 +365,7 @@ template<class T>
 void rsSpectrogramProcessor<T>::swapForZeroPhase(std::complex<T>* X, int L)
 {
   if(timeOriginAtWindowCenter)
-    rsArray::circularShift(X, L, -L/2);  
+    rsArrayTools::circularShift(X, L, -L/2);  
     // optimize: pass tmpBuffer as workspace to avoid temporary memory allocation
 }
 

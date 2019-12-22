@@ -55,7 +55,7 @@ std::vector<T> rsSinusoidalSynthesizer<T>::synthesize(const rsSinusoidalModel<T>
 {
   int N = model.getLengthInSamples(sampleRate);
   std::vector<T> x(N);
-  RAPT::rsArray::fillWithZeros(&x[0], N);
+  RAPT::rsArrayTools::fillWithZeros(&x[0], N);
   for(size_t i = 0; i < model.getNumPartials(); i++)
     synthesizePartial(model.getPartial(i), &x[0], N, -model.getStartTime()); 
   return x;

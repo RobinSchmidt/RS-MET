@@ -192,7 +192,7 @@ public:
   std::vector<T> sin(const std::vector<T>& x)
   {
     std::vector<T> y(x.size());
-    RAPT::rsArray::applyFunction(&x[0], &y[0], (int)x.size(), &::sin);
+    RAPT::rsArrayTools::applyFunction(&x[0], &y[0], (int)x.size(), &::sin);
     return y;
   }
 

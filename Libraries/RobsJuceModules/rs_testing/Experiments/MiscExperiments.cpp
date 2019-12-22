@@ -166,7 +166,7 @@ void testHarmonicResynthesis(const std::string& name, std::vector<double>& input
 
     std::vector<double> marks = analyzer.getOriginalTimeStamps();
     std::vector<double> zeros(marks.size());    // y values for plotting (all zero)
-    RAPT::rsArray::fillWithZeros(&zeros[0], (int) marks.size());
+    RAPT::rsArrayTools::fillWithZeros(&zeros[0], (int) marks.size());
     plt.addDataArrays((int) marks.size(), &marks[0], &zeros[0]);
 
     plt.setGraphStyles("lines", "lines", "lines", "points");
@@ -211,7 +211,7 @@ void testMakeHarmonic(const std::string& name, std::vector<double>& input,
 
   // due to new phase-relationships, the maximum output amplitude may be different from the 
   // original sound - renormalize:
-  rsArray::normalize(&output[0], (int) output.size(), 1.0);
+  rsArrayTools::normalize(&output[0], (int) output.size(), 1.0);
 
 
   std::string name2 = name + "_F=" + std::to_string((int)f0Out) + "Hz";

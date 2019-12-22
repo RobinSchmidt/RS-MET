@@ -282,7 +282,7 @@ void rsPrototypeDesigner::magSquaredNumAndDen(double *b, double *a, double *b2, 
 void rsPrototypeDesigner::shelvingMagSqrNumFromLowpassMagSqr(double *b2, double *a2, double k, 
   int N, double G0, double G, double *bShelf)
 {
-  RAPT::rsArray::weightedSum(b2, a2, bShelf, 2*N+1, k*k*(G*G-G0*G0), G0*G0);
+  RAPT::rsArrayTools::weightedSum(b2, a2, bShelf, 2*N+1, k*k*(G*G-G0*G0), G0*G0);
 }
 
 // factor out shelvingMagSqrNumeratorFromLowpassMagSqr:
@@ -325,11 +325,11 @@ void rsPrototypeDesigner::getInverseFilter(Complex* z, Complex* p, double* k,
   //                // and gain zeros into zNew, pNew, kNew
 
   Complex *zTmp = new Complex[N]; // to make it work, when the new arrays are equal to the old ones
-  RAPT::rsArray::copy(z,    zTmp, N);
+  RAPT::rsArrayTools::copy(z,    zTmp, N);
   //copy(p,    z,    N);  // yes, this was wrong
   //copy(zTmp, p,    N);
-  RAPT::rsArray::copy(p,    zNew,    N);
-  RAPT::rsArray::copy(zTmp, pNew,    N);
+  RAPT::rsArrayTools::copy(p,    zNew,    N);
+  RAPT::rsArrayTools::copy(zTmp, pNew,    N);
   *kNew = 1.0 / *k;
   delete[] zTmp;
 }
@@ -350,13 +350,13 @@ void rsPrototypeDesigner::getBesselLowpassZerosPolesAndGain(Complex *z, Complex 
   int N)
 {
   // zeros are at infinity:
-  RAPT::rsArray::fillWithValue(z, N, Complex(INF, 0.0));
+  RAPT::rsArrayTools::fillWithValue(z, N, Complex(INF, 0.0));
 
   // find poles:
   double *a = new double[N+1];        // Bessel-Polynomial coefficients
   //double a[20];
   RAPT::rsPolynomial<double>::besselPolynomial(a, N);
-  RAPT::rsArray::reverse(a, N+1);     // we actually use a reverse Bessel polynomial
+  RAPT::rsArrayTools::reverse(a, N+1);     // we actually use a reverse Bessel polynomial
 
   findPolynomialRoots(a, N, p);
 
@@ -403,7 +403,7 @@ void rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(Complex *z, Complex
   // construct lowpass denominator:
   double *a  = new double[N+1];
   RAPT::rsPolynomial<double>::besselPolynomial(a, N);
-  RAPT::rsArray::reverse(a, N+1);   // leaving this out leads to a modified Bessel filter response 
+  RAPT::rsArrayTools::reverse(a, N+1);   // leaving this out leads to a modified Bessel filter response 
                                     // maybe experiment a bit, response looks good
 
   // find poles of the shelving filter:
@@ -411,7 +411,7 @@ void rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(Complex *z, Complex
 
   // construct lowpass numerator:
   double *b = new double[N+1];
-  RAPT::rsArray::fillWithZeros(b, N+1);
+  RAPT::rsArrayTools::fillWithZeros(b, N+1);
   b[0] = a[0];
 
   // obtain magnitude-squared numerator polynomial for shelving filter:
@@ -444,7 +444,7 @@ void rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(Complex *z, Complex
 void rsPrototypeDesigner::papoulisMagnitudeSquaredDenominator(double *a, int N)
 {
   int n;
-  RAPT::rsArray::fillWithZeros(a, 2*N+1);  // do we need this?
+  RAPT::rsArrayTools::fillWithZeros(a, 2*N+1);  // do we need this?
 
   // construct the polynomial L_N(w^2):
   RAPT::rsPolynomial<double>::maximumSlopeMonotonicPolynomial(a, N);  // does the same same as lopt(a, N); from C.R.Bond
@@ -472,7 +472,7 @@ void rsPrototypeDesigner::getPapoulisLowpassZerosPolesAndGain(Complex *z, Comple
   getLeftHalfPlaneRoots(a2, p, 2*N);
 
   // zeros are at infinity:
-  RAPT::rsArray::fillWithValue(z, N, Complex(INF, 0.0));
+  RAPT::rsArrayTools::fillWithValue(z, N, Complex(INF, 0.0));
 
   // set gain at DC to unity:
   *k = sqrt(1.0/fabs(a2[2*N]));
@@ -522,7 +522,7 @@ void rsPrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(Complex *z, Compl
 
   // construct lowpass numerator:
   double *b2 = new double[2*N+1];
-  RAPT::rsArray::fillWithZeros(b2, 2*N+1);
+  RAPT::rsArrayTools::fillWithZeros(b2, 2*N+1);
   b2[0] = 1.0;
 
   // end of "factor out" ...in general, we need to scale the b2-polynomial also by dividing through 
@@ -1125,8 +1125,8 @@ void rsPrototypeDesigner::makeEllipticLowShelv()
 
 void rsPrototypeDesigner::makeBesselLowShelv(double G, double G0)
 {
-  RAPT::rsArray::fillWithZeros(p, maxNumNonRedundantPoles);
-  RAPT::rsArray::fillWithZeros(z, maxNumNonRedundantPoles);
+  RAPT::rsArrayTools::fillWithZeros(p, maxNumNonRedundantPoles);
+  RAPT::rsArrayTools::fillWithZeros(z, maxNumNonRedundantPoles);
   numFinitePoles = N;
   if( G0 == 0.0 )
     numFiniteZeros = 0;
@@ -1148,8 +1148,8 @@ void rsPrototypeDesigner::makeBesselLowShelv(double G, double G0)
 
 void rsPrototypeDesigner::makePapoulisLowShelv(double G, double G0)
 {
-  RAPT::rsArray::fillWithZeros(p, maxNumNonRedundantPoles);
-  RAPT::rsArray::fillWithZeros(z, maxNumNonRedundantPoles);
+  RAPT::rsArrayTools::fillWithZeros(p, maxNumNonRedundantPoles);
+  RAPT::rsArrayTools::fillWithZeros(z, maxNumNonRedundantPoles);
   numFinitePoles = N;
   if( G0 == 0.0 )
     numFiniteZeros = 0;
@@ -1176,11 +1176,11 @@ void rsPrototypeDesigner::pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *
   zeroNegligibleImaginaryParts(zTmp, N, 1.e-11);
   onlyUpperHalfPlane(pTmp, pTmp, N);
   onlyUpperHalfPlane(zTmp, zTmp, N);
-  RAPT::rsArray::copy(pTmp, p, L+r);
-  RAPT::rsArray::copy(zTmp, z, L+r);
+  RAPT::rsArrayTools::copy(pTmp, p, L+r);
+  RAPT::rsArrayTools::copy(zTmp, z, L+r);
 
   // the caller is supposed to ensure that the real zero/pole, if present, is in zTmp[0], pTmp[0] - 
   // but we need it in the last positions z[L+r], p[L+r], so we reverse the arrays:
-  RAPT::rsArray::reverse(p, L+r);
-  RAPT::rsArray::reverse(z, L+r);
+  RAPT::rsArrayTools::reverse(p, L+r);
+  RAPT::rsArrayTools::reverse(z, L+r);
 }

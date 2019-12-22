@@ -156,7 +156,7 @@ namespace RSLib
 
     ElementType                     nodeData;    // the data/value at this node
     rsTree<ElementType>             *parentNode; // pointer to the parent node (NULL in case of root node)
-    rsArray< rsTree<ElementType>* > childNodes;  // pointers to the child-nodes (empty in case of leaf node)
+    rsArrayTools< rsTree<ElementType>* > childNodes;  // pointers to the child-nodes (empty in case of leaf node)
 
     // \todo: maybe factor out a subclass PointerTree where the data is just a pointer to void 
     // (maybe with an additional byteSize field) - the PointerTree class does then not need to be 

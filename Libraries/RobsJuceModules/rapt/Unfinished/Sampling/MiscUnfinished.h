@@ -488,7 +488,7 @@ will occur (i.e. the output signal is to quiet)...maybe we can compensate this e
 \todo: make the signal type a template parameter such that the class can be used for multichannel
 signals
 
-maybe, it would be more convenient, if these functions would deal with std::vector or rsArray, so
+maybe, it would be more convenient, if these functions would deal with std::vector or rsArrayTools, so
 client code doesn't have to bother with signal lengths
 
 reorganize the RSAudio part of the library to have folders Processes, Realtime and Tools where
@@ -923,7 +923,7 @@ public:
   right. */
   bool isPeakCandidate(int index, const T* data, int length) const;
     // maybe change order of parameters: data, length, index - that would be more consistent with 
-    // functions in rsArray
+    // functions in rsArrayTools
 
 
 
@@ -1095,7 +1095,7 @@ public:
   and/or x[N-1] >= x[N-2] respectively.  */
   static std::vector<size_t> findPeakIndices(const T* x, int N, bool includeFirst = false,
     bool includeLast = false);
-  // maybe move to rsArray, maybe return a vector of int, rename to findPeaksAndPlateauIndices or
+  // maybe move to rsArrayTools, maybe return a vector of int, rename to findPeaksAndPlateauIndices or
   // maybe have another boolean option includePlateaus
 
   /** Given a signal x of length N, this function fills the sampleTime array with the

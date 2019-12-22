@@ -32,7 +32,7 @@ void rotes::testOscillatorStereo()
   // obtain the data for the plot:
   static const int plotLength = 160;
   double plotIndices[plotLength];
-  RAPT::rsArray::fillWithIndex(plotIndices, plotLength);
+  RAPT::rsArrayTools::fillWithIndex(plotIndices, plotLength);
 
   double plotDataFlat1[2*plotLength];
   double *plotData1[2];
@@ -68,7 +68,7 @@ void rotes::testLorentzSystem()
     lorentzSystem.getState(&x[n], &y[n], &z[n]);
   }
 
-  RAPT::rsArray::fillWithIndex(t, N);
+  RAPT::rsArrayTools::fillWithIndex(t, N);
   plotData(N, t, x, y, z);
 }
 

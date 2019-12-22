@@ -585,9 +585,9 @@ void WaveTableModuleEditorPopUp::resized()
   yValuesL = new double[numSamplesInPlot];
   yValuesR = new double[numSamplesInPlot];
 
-  RAPT::rsArray::fillWithIndex(xValues,  numSamplesInPlot);
-  RAPT::rsArray::fillWithZeros(yValuesL, numSamplesInPlot);
-  RAPT::rsArray::fillWithZeros(yValuesR, numSamplesInPlot);
+  RAPT::rsArrayTools::fillWithIndex(xValues,  numSamplesInPlot);
+  RAPT::rsArrayTools::fillWithZeros(yValuesL, numSamplesInPlot);
+  RAPT::rsArrayTools::fillWithZeros(yValuesR, numSamplesInPlot);
   waveformDisplay->setMaximumRange(0.0, numSamplesInPlot, -1.1, 1.1);
   waveformDisplay->setCurrentRange(waveformDisplay->getMaximumRange());
   updatePlot();
@@ -765,9 +765,9 @@ void WaveTableModuleEditorCompact::resized()
   yValuesL = new double[numSamplesInPlot];
   yValuesR = new double[numSamplesInPlot];
 
-  RAPT::rsArray::fillWithIndex(xValues,  numSamplesInPlot);
-  RAPT::rsArray::fillWithZeros(yValuesL, numSamplesInPlot);
-  RAPT::rsArray::fillWithZeros(yValuesR, numSamplesInPlot);
+  RAPT::rsArrayTools::fillWithIndex(xValues,  numSamplesInPlot);
+  RAPT::rsArrayTools::fillWithZeros(yValuesL, numSamplesInPlot);
+  RAPT::rsArrayTools::fillWithZeros(yValuesR, numSamplesInPlot);
   waveformDisplay->setMaximumRange(0.0, numSamplesInPlot, -1.1, 1.1);
   waveformDisplay->setCurrentRange(waveformDisplay->getMaximumRange());
   updatePlot();

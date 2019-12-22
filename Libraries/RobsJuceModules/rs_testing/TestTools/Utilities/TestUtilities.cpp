@@ -28,21 +28,21 @@ bool detectMemoryLeaks()
 std::vector<double> rsLinearRangeVector(int N, double min, double max)
 {
   std::vector<double> v(N);
-  RAPT::rsArray::fillWithRangeLinear(&v[0], N, min, max);
+  RAPT::rsArrayTools::fillWithRangeLinear(&v[0], N, min, max);
   return v;
 }
 
 std::vector<double> rsExponentialRangeVector(int N, double min, double max)
 {
   std::vector<double> v(N);
-  RAPT::rsArray::fillWithRangeExponential(&v[0], N, min, max);
+  RAPT::rsArrayTools::fillWithRangeExponential(&v[0], N, min, max);
   return v;
 }
 
 std::vector<double> rsRandomVector(int N, double min, double max, int seed)
 {
   std::vector<double> v(N);
-  RAPT::rsArray::fillWithRandomValues(&v[0], N, min, max, seed);
+  RAPT::rsArrayTools::fillWithRandomValues(&v[0], N, min, max, seed);
   return v;
 }
 

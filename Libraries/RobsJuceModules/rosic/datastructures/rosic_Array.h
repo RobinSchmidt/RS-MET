@@ -6,7 +6,7 @@ namespace rosic
 
 /** This class implements a simple array which can dynamically grow and shrink as needed.  */
 
-// rename to rsDynamicArray to avoid name-clash with RAPT::rsArray - and maybe move to rapt
+// rename to rsDynamicArray to avoid name-clash with RAPT::rsArrayTools - and maybe move to rapt
 
 template<class ElementType>
 class rsDynamicArray

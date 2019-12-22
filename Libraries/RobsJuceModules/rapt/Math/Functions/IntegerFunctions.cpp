@@ -96,7 +96,7 @@ template<class TUInt>
 TUInt rsMultinomialCoefficientUpTo12(TUInt *k, TUInt kSize)
 {
   // naive algorithm based directly on the definition:
-  TUInt n      = rsArray::sum(k, kSize);
+  TUInt n      = rsArrayTools::sum(k, kSize);
   TUInt result = rsFactorial(n); // maybe let rsFactorial return an rsUint64, so we may have a
                                     // larger range until overflow occurs
   rsAssert(n <= 12);   // can only be used for n <= 12, otherwise internal overflow occurs
@@ -123,7 +123,7 @@ void rsCreatePascalTriangle(TUInt *pt, TUInt numLines)
 template<class TUInt>
 void rsGetLineOfPascalTriangle(TUInt *c, TUInt n)
 {
-  rsArray::fillWithZeros(c, n+1);
+  rsArrayTools::fillWithZeros(c, n+1);
   c[0] = 1;
   for(TUInt i = 0; i <= n; i++)
   {

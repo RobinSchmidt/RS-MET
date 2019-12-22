@@ -73,7 +73,7 @@ bool testArrayFiltering()
 {
   bool r = true;      // test result
   typedef std::vector<double> Vec;
-  typedef RAPT::rsArray AR;
+  typedef RAPT::rsArrayTools AR;
   Vec x,y;
 
   x = Vec({1,3,2,-2,3,5,1});

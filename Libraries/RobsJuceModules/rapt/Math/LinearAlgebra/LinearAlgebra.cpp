@@ -452,9 +452,9 @@ bool rsLinearAlgebra::rsChangeOfBasisRowWise(T **A, T **B, T *va, T *vb, int N)
 {
   T *ve = new T[N];
   MatrixTools::rsTransposedMatrixVectorMultiply(A, va, ve, N, N);
-  rsArray::transposeSquareArray(B, N);
+  rsArrayTools::transposeSquareArray(B, N);
   bool result = rsSolveLinearSystem(B, vb, ve, N);
-  rsArray::transposeSquareArray(B, N);
+  rsArrayTools::transposeSquareArray(B, N);
   delete[] ve;
   return result;
 }
@@ -476,7 +476,7 @@ bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(T **A, T **B, T **C, int N)
 {
   T **Bi;
   MatrixTools::rsAllocateMatrix(Bi, N, N);
-  rsArray::transposeSquareArray(B, Bi, N);
+  rsArrayTools::transposeSquareArray(B, Bi, N);
   bool result = rsInvertMatrix(Bi, N);                 // Bi = B^-T
   MatrixTools::rsMatrixMultiplySecondTransposed(Bi, A, C, N, N, N); // C  = B^-T * A^T
   MatrixTools::rsDeAllocateMatrix(Bi, N, N);

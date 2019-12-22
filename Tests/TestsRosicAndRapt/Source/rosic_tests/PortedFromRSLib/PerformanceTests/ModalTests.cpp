@@ -11,7 +11,7 @@ double getCyclesPerSample(TMod &module, int numSamples = 1000, int numTests = 5,
 
   // create noise to be used as input signal:
   TSig *x = new TSig[numSamples];
-  RAPT::rsArray::fillWithRandomValues(x, numSamples, -1.0, 1.0, 0);
+  RAPT::rsArrayTools::fillWithRandomValues(x, numSamples, -1.0, 1.0, 0);
 
   // do the test numTests times, use the minimum as result:
   TSig y; 
@@ -42,7 +42,7 @@ double getCyclesPerSampleBlockWise(T &module,
 
   double *x = new double[numSamples];
   double *y = new double[numSamples];
-  RAPT::rsArray::fillWithRandomValues(x, numSamples, -1.0, 1.0, 0);
+  RAPT::rsArrayTools::fillWithRandomValues(x, numSamples, -1.0, 1.0, 0);
 
   double cycles, minCycles;
   minCycles = RS_INF(double);

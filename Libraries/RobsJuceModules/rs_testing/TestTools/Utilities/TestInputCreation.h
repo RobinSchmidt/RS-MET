@@ -14,7 +14,7 @@ inline std::vector<double> createSilence(int numSamples)
 {
   std::vector<double> v;
   v.resize(numSamples);
-  RAPT::rsArray::fillWithZeros(&v[0], numSamples);
+  RAPT::rsArrayTools::fillWithZeros(&v[0], numSamples);
   return v;
 }
 

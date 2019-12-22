@@ -98,7 +98,7 @@ void FiniteImpulseResponseDesigner::getImpulseResponse(double *impulseResponse, 
   case HILBERT:    
     getHilbertTransformerResponse(impulseResponse, length, windowType);       
     break;
-  default: RAPT::rsArray::fillWithZeros(impulseResponse, length);
+  default: RAPT::rsArrayTools::fillWithZeros(impulseResponse, length);
   }
 }
 

@@ -21,11 +21,11 @@ RS_INLINE T rsDB2amp(T x);
 
 /** Computes the centroid of the length N array x. */
 template<class T>
-T rsCentroid(T *x, int N); // maybe move to rsArray
+T rsCentroid(T *x, int N); // maybe move to rsArrayTools
 
 /** Computes the centroid of energy the length N array x. */
 template<class T>
-T rsCentroidOfEnergy(T *x, int N); // maybe move to rsArray
+T rsCentroidOfEnergy(T *x, int N); // maybe move to rsArrayTools
 
 /** Given 2 successive sample value of a sinusoidal function with known (normalized radian)
 frequency w, such that:

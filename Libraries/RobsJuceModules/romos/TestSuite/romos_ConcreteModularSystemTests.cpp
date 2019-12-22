@@ -17,8 +17,8 @@ void BypassTest::createAndConnectTestChildModules()
 }
 void BypassTest::fillDesiredOutputSignalArrays()
 {
-  RAPT::rsArray::copy(inputs[0], desiredOutputs[0], signalLength);
-  RAPT::rsArray::copy(inputs[1], desiredOutputs[1], signalLength);
+  RAPT::rsArrayTools::copy(inputs[0], desiredOutputs[0], signalLength);
+  RAPT::rsArrayTools::copy(inputs[1], desiredOutputs[1], signalLength);
 }
 
 
@@ -92,7 +92,7 @@ void NoiseFluteTest::fillDesiredOutputSignalArrays()
                                                   coeffs[4], desiredOutputs[0]);
   GenerateDesiredOutput::forBiquadWithFixedCoeffs(signalLength, desiredOutputs[1], coeffs[0],  coeffs[1],  coeffs[2],  coeffs[3],  
                                                   coeffs[4], desiredOutputs[1]);
-  RAPT::rsArray::scale(desiredOutputs[0], desiredOutputs[0], signalLength, 0.125);
-  RAPT::rsArray::scale(desiredOutputs[1], desiredOutputs[1], signalLength, 0.125);
+  RAPT::rsArrayTools::scale(desiredOutputs[0], desiredOutputs[0], signalLength, 0.125);
+  RAPT::rsArrayTools::scale(desiredOutputs[1], desiredOutputs[1], signalLength, 0.125);
 }
 

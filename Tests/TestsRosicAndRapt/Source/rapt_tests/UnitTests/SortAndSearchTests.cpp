@@ -9,14 +9,14 @@ bool testHeapSort()
   int testArray[length];
   for(int i=0; i<numTests; i++)
   {
-    RAPT::rsArray::fillWithRandomValues(testArray, length, -100, +100, 1);
+    RAPT::rsArrayTools::fillWithRandomValues(testArray, length, -100, +100, 1);
     rsHeapSort(testArray, length);
-    testResult &= rsArray::isSortedAscending(testArray, length);
+    testResult &= rsArrayTools::isSortedAscending(testArray, length);
 
     // check odd lengths by just sorting the subarray up to length-1:
-    RAPT::rsArray::fillWithRandomValues(testArray, length, -100, +100, 1);
+    RAPT::rsArrayTools::fillWithRandomValues(testArray, length, -100, +100, 1);
     rsHeapSort(testArray, length-1);
-    testResult &= rsArray::isSortedAscending(testArray, length-1);
+    testResult &= rsArrayTools::isSortedAscending(testArray, length-1);
   }
 
   return testResult;
@@ -53,7 +53,7 @@ bool testSplitIndex(int* array, int length, F1 indexToValue, F2 valueToIndex)
     for(int index = 0; index < subLength; index++) 
     {
       int searchedValue = indexToValue(index);
-      int foundIndex = RAPT::rsArray::splitIndex(array, subLength, searchedValue);
+      int foundIndex = RAPT::rsArrayTools::splitIndex(array, subLength, searchedValue);
       testResult &= foundIndex == valueToIndex(searchedValue);
     }
   }
@@ -67,7 +67,7 @@ bool testSplitIndex()
 
   int a[length] = {0,1,2,3,4,5,6,7,8,9};
 
-  using AR = RAPT::rsArray;
+  using AR = RAPT::rsArrayTools;
 
   auto identity = [](int i){ return i; };  // converts indices to values via the identity function...
   //rsAssert(isInverseFunction(identity, identity, 0, length-1, 1));

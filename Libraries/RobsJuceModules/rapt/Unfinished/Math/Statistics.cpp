@@ -19,8 +19,8 @@ void rsCrossCorrelationFFT(T x[], T y[], int N, T r[])
   int Np = 2*rsNextPowerOfTwo(N);
   std::complex<T> *X = new std::complex<T>[Np];
   std::complex<T> *Y = new std::complex<T>[Np];
-  rsArray::convertBuffer(x, X, N);
-  rsArray::convertBuffer(y, Y, N);
+  rsArrayTools::convertBuffer(x, X, N);
+  rsArrayTools::convertBuffer(y, Y, N);
   rsFFT(X, Np);
   rsFFT(Y, Np);
 
@@ -56,7 +56,7 @@ void rsAutoCorrelationFFT(T x[], int N, T r[])
 {
   int Np = 2*rsNextPowerOfTwo(N);
   std::complex<T> *X = new std::complex<T>[Np];
-  rsArray::convertBuffer(x, X, N);
+  rsArrayTools::convertBuffer(x, X, N);
   rsFFT(X, Np);
   int n;
   X[0] = X[0] * X[0];
@@ -80,9 +80,9 @@ void rsRemoveCorrelationBias(T x[], int N, T r[])
 template<class T>
 T rsCrossCorrelation(T *x, int Nx, T *y, int Ny)
 {
-  T xx = rsArray::sumOfSquares(x, Nx);
-  T yy = rsArray::sumOfSquares(y, Ny);
-  T xy = rsArray::sumOfProducts(x, y, rsMin(Nx, Ny));
+  T xx = rsArrayTools::sumOfSquares(x, Nx);
+  T yy = rsArrayTools::sumOfSquares(y, Ny);
+  T xy = rsArrayTools::sumOfProducts(x, y, rsMin(Nx, Ny));
   if(xx == 0 || yy == 0)
     return 0;
   return xy / sqrt(xx*yy);
@@ -109,7 +109,7 @@ T rsStretchedCrossCorrelation(T *x, int Nx, T *y, int Ny)
   for(nx = 0; nx < Nx; nx++)
   {
     xn  = x[nx];
-    yn  = rsArray::interpolatedValueAt(y, Ny, a*nx);
+    yn  = rsArrayTools::interpolatedValueAt(y, Ny, a*nx);
     xx += xn*xn;
     yy += yn*yn;
     xy += xn*yn;

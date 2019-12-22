@@ -18,8 +18,8 @@ bool runAllUnitTests()
   bool passed = true;  // test result
 
   // Data:
-  passed &= runUnitTest(&arrayUnitTest,            "rsArray and std::vector stuff");
-  passed &= runUnitTest(&testBufferFunctions,      "BufferFunctions");  // merge with rsArray tests
+  passed &= runUnitTest(&arrayUnitTest,            "rsArrayTools and std::vector stuff");
+  passed &= runUnitTest(&testBufferFunctions,      "BufferFunctions");  // merge with rsArrayTools tests
   passed &= runUnitTest(&testSortAndSearch,        "SortAndSearch");
   passed &= runUnitTest(&doubleEndedQueueUnitTest, "rsDoubleEndedQueue");   // fails! -> fix that!
   passed &= runUnitTest(&float64x2UnitTest,        "rsFloat64x2");

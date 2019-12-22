@@ -59,9 +59,9 @@ void rsLinkwitzRileyCrossOver<TSig, TPar>::getLowpassMagnitudeResponse(TPar* fre
   if( accumulate == false )
   {
     if( inDecibels == true )
-      rsArray::fillWithValue(magnitudes, numBins, TPar(0));
+      rsArrayTools::fillWithValue(magnitudes, numBins, TPar(0));
     else
-      rsArray::fillWithValue(magnitudes, numBins, TPar(1));
+      rsArrayTools::fillWithValue(magnitudes, numBins, TPar(1));
   }
   lowpass1.getMagnitudeResponse(frequencies, sampleRate, magnitudes, numBins, true, true);
   lowpass2.getMagnitudeResponse(frequencies, sampleRate, magnitudes, numBins, true, true);
@@ -72,11 +72,11 @@ void rsLinkwitzRileyCrossOver<TSig, TPar>::getLowpassFrequencyResponse(TPar* fre
   Complex* H, int numBins, bool accumulate)
 {
   if( accumulate == false )  
-    rsArray::fillWithValue(H, numBins, Complex(1.0));
+    rsArrayTools::fillWithValue(H, numBins, Complex(1.0));
 
   TPar* w = new TPar[numBins];
-  rsArray::copy(frequencies, w, numBins);
-  rsArray::scale(w, w, numBins, TPar(2*PI)/sampleRate);
+  rsArrayTools::copy(frequencies, w, numBins);
+  rsArrayTools::scale(w, w, numBins, TPar(2*PI)/sampleRate);
 
   lowpass1.getFrequencyResponse(w, H, numBins, rsFilterAnalyzer<TPar>::MULTIPLICATIVE_ACCUMULATION);
   lowpass2.getFrequencyResponse(w, H, numBins, rsFilterAnalyzer<TPar>::MULTIPLICATIVE_ACCUMULATION);
@@ -112,8 +112,8 @@ void rsLinkwitzRileyCrossOver<TSig, TPar>::getHighpassFrequencyResponse(TPar* fr
   Complex* H, int numBins, bool accumulate)
 {
   TPar* w = new TPar[numBins];
-  rsArray::copy(frequencies, w, numBins);
-  rsArray::scale(w, w, numBins, TPar(2*PI)/sampleRate);
+  rsArrayTools::copy(frequencies, w, numBins);
+  rsArrayTools::scale(w, w, numBins, TPar(2*PI)/sampleRate);
 
   Complex *tmpLowpass = new Complex[numBins];
   getLowpassFrequencyResponse(frequencies, tmpLowpass, numBins, false);
@@ -122,11 +122,11 @@ void rsLinkwitzRileyCrossOver<TSig, TPar>::getHighpassFrequencyResponse(TPar* fr
   sumAllpass.getFrequencyResponse(w, tmpAllpass, numBins);
 
   if( accumulate == false ) 
-    rsArray::subtract(tmpAllpass, tmpLowpass, H, numBins);
+    rsArrayTools::subtract(tmpAllpass, tmpLowpass, H, numBins);
   else
   {
-    rsArray::subtract(tmpAllpass, tmpLowpass, tmpAllpass, numBins); // tmpAllpass is now the highpass-response
-    rsArray::multiply(H, tmpAllpass, H, numBins);
+    rsArrayTools::subtract(tmpAllpass, tmpLowpass, tmpAllpass, numBins); // tmpAllpass is now the highpass-response
+    rsArrayTools::multiply(H, tmpAllpass, H, numBins);
   }
 
   delete[] tmpLowpass;

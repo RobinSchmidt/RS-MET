@@ -11,9 +11,9 @@ void rsApplyBiDirectionally(
   // processor/filter to ring out at the ends:
   int M = N+2*P;
   TSig *tmp = new TSig[M];
-  rsArray::fillWithZeros(tmp, P);
-  rsArray::copy(x, &tmp[P], N);
-  rsArray::fillWithZeros(&tmp[P+N], P);
+  rsArrayTools::fillWithZeros(tmp, P);
+  rsArrayTools::copy(x, &tmp[P], N);
+  rsArrayTools::fillWithZeros(&tmp[P+N], P);
 
   // apply processor (multipass, bidirectionally):
   int p, n;
@@ -23,7 +23,7 @@ void rsApplyBiDirectionally(
   }
 
   // copy result to output and clean up:
-  rsArray::copy(&tmp[P], y, N);
+  rsArrayTools::copy(&tmp[P], y, N);
   delete[] tmp;
 
   // todo: Actually, we don't really need pre- and post padding. Using just post padding and
@@ -40,9 +40,9 @@ std::vector<T> getPaddedSignal(const T* x, int N, int P)
 {
   int M = N+2*P;
   std::vector<T> xp(M);
-  rsArray::fillWithZeros(&xp[0], P);    // pre-padding
-  rsArray::copy(x, &xp[P], N);    // actual signal
-  rsArray::fillWithZeros(&xp[P+N], P);  // post-padding
+  rsArrayTools::fillWithZeros(&xp[0], P);    // pre-padding
+  rsArrayTools::copy(x, &xp[P], N);    // actual signal
+  rsArrayTools::fillWithZeros(&xp[P+N], P);  // post-padding
   return xp;
 }
 // todo: use this function also for the function above - gets rid of code duplication
@@ -76,7 +76,7 @@ void rsApplyBiDirectionally(
   }
 
   // copy result to output:
-  rsArray::copy(&tmp[P], y, N);
+  rsArrayTools::copy(&tmp[P], y, N);
 }
 
 template<class T>
@@ -155,7 +155,7 @@ void rsBiDirectionalFilter::applyButterworthHighpass(const TSig *x, TSig *y, int
   TPar fs, int order, int numPasses, TPar gc)
 {
   applyButterworthLowpass(x, y, N, fc, fs, order, numPasses, gc);
-  rsArray::subtract(x, y, y, N); // works because we use a bidirectional (zero-phase) filter
+  rsArrayTools::subtract(x, y, y, N); // works because we use a bidirectional (zero-phase) filter
   // but is this really equivalent to a proper bidirectional Butterworth highpass? i think so, but
   // this should to be verified....
 
@@ -343,12 +343,12 @@ std::vector<T> rsZeroCrossingFinder::bandpassedUpwardCrossings(T *x, int N, T fc
 
 //=================================================================================================
 
-// move to rsArray, maybe get rid of using rsPolynomial<T>::fitQuadratic (formula simplifies
+// move to rsArrayTools, maybe get rid of using rsPolynomial<T>::fitQuadratic (formula simplifies
 // because x-values are simple)
 template<class T>
 T rsMaxPosition(T* buffer, int N)
 {
-  int i = rsArray::maxIndex(buffer, N);
+  int i = rsArrayTools::maxIndex(buffer, N);
 
   if(i < 1 || i >= N-1)
     return i;
@@ -383,7 +383,7 @@ void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(T *x, int N, std::vecto
   if(correlationHighpass > 0)
     rsBiDirectionalFilter::applyButterworthHighpass(x, y, N, f0*correlationHighpass, fs, 4, 1);
   else
-    rsArray::copy(x, y, N);
+    rsArrayTools::copy(x, y, N);
 
   // bug: i cannot refine the cycle marks in place inside the passed array because the refined mark
   // may overrun the unrefined, leading to a negative length in the process
@@ -405,13 +405,13 @@ void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(T *x, int N, std::vecto
     cl.resize(length); // maybe use raw arrays instead of vectors, avoid memory re-allocations
     cr.resize(length);
     corr.resize(2*length-1);
-    rsArray::copySection(y, N, &cl[0],  left-halfLength, length);
-    rsArray::copySection(y, N, &cr[0], right-halfLength, length);
+    rsArrayTools::copySection(y, N, &cl[0],  left-halfLength, length);
+    rsArrayTools::copySection(y, N, &cr[0], right-halfLength, length);
 
     // use a matched filter to do the correlation,
     // see here: https://en.wikipedia.org/wiki/Matched_filter
-    rsArray::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
-    rsArray::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
+    rsArrayTools::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
+    rsArrayTools::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
     T delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.5; // is +1.5 correct? was found by trial and error
     //delta = rsMaxPosition(&corr[0], 2*length-1) - length + 1.0; // test
 
@@ -473,7 +473,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
     rsBiDirectionalFilter::applyButterworthHighpass(
       x, &y[0], N, f0*correlationHighpass, fs, 4, 1);
   else
-    rsArray::copy(x, &y[0], N);
+    rsArrayTools::copy(x, &y[0], N);
   // rename correlationHighpass to refinementHighpass
 
   // nCenter serves as the initial cycle mark - from there, find the next one to the left by
@@ -499,7 +499,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
     if(left <= 0)
       break;
   }
-  rsArray::reverse(&z[0], (int) z.size()); // bring marks in 1st half into ascending order
+  rsArrayTools::reverse(&z[0], (int) z.size()); // bring marks in 1st half into ascending order
 
   // find cycle-marks to the right of nCenter (which is currently the last element in z):
   left  = z[z.size()-1];
@@ -557,7 +557,7 @@ rsCycleMarkFinder<T>::getErrorMeasures(const std::vector<T>& cycleMarks, T perio
 {
   int N = (int) cycleMarks.size();
   ErrorMeasures errors;
-  errors.mean   = period - rsArray::meanDifference(&cycleMarks[0], N);
+  errors.mean   = period - rsArrayTools::meanDifference(&cycleMarks[0], N);
   errors.min    = T(0);
   errors.max    = T(0);
   errors.maxAbs = T(0);
@@ -614,16 +614,16 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
   cl.resize(length);
   cr.resize(length);
   corr.resize(2*length-1);
-  rsArray::copySection(x, N, &cl[0],  left-halfLength, length);
-  rsArray::copySection(x, N, &cr[0], right-halfLength, length);
+  rsArrayTools::copySection(x, N, &cl[0],  left-halfLength, length);
+  rsArrayTools::copySection(x, N, &cr[0], right-halfLength, length);
   applyWindow(&cl[0], length);
   applyWindow(&cr[0], length);
 
   // use a matched filter to get the cross-correlation sequence,
   // see here: https://en.wikipedia.org/wiki/Matched_filter
   // old:
-  rsArray::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
-  rsArray::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
+  rsArrayTools::reverse(&cl[0], length);                            // reversed left cycle is used as "impulse response"
+  rsArrayTools::convolve(&cr[0], length, &cl[0], length, &corr[0]); // OPTIMIZE: use FFT convolution
   //deBiasConvolutionResult(&corr[0], length);   // test
 
   // new:
@@ -634,8 +634,8 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int righ
 #ifdef RS_DEBUG_PLOTTING
   // plot the signal chunks and correlation sequence:
   GNUPlotter plt; // #define DEBUG_PLOTTING in rapt.h to make it work
-  rsArray::reverse(&cl[0], length);                     // reverse again for better visual match
-  rsArray::scale(&corr[0], 2*length-1, 1./halfLength);  // to make the same scale as inputs
+  rsArrayTools::reverse(&cl[0], length);                     // reverse again for better visual match
+  rsArrayTools::scale(&corr[0], 2*length-1, 1./halfLength);  // to make the same scale as inputs
   plt.addDataArrays(length, &cl[0]);
   plt.addDataArrays(length, &cr[0]);
   plt.addDataArrays(2*length-1, &corr[0]);
@@ -991,7 +991,7 @@ void rsResampler<TSig, TPos>::transposeLinear(TSig *x, int xN, TSig *y, int yN, 
     y[nw] = (1.0-nrf)*x[nri] + nrf*x[nri+1];
     nr += factor;
   }
-  rsArray::fillWithZeros(&y[nw], yN-nw); // fill tail with zeros
+  rsArrayTools::fillWithZeros(&y[nw], yN-nw); // fill tail with zeros
 }
 
 template<class TSig, class TPos>
@@ -1009,7 +1009,7 @@ void rsResampler<TSig, TPos>::transposeSinc(TSig *x, int xN, TSig *y, int yN, TP
     y[nw] = signalValueViaSincAt(x, xN, nr, sincLength, stretch);
     nr += factor;
   }
-  rsArray::fillWithZeros(&y[nw], yN-nw);
+  rsArrayTools::fillWithZeros(&y[nw], yN-nw);
 }
 
 template<class TSig, class TPos>
@@ -1019,7 +1019,7 @@ void rsResampler<TSig, TPos>::shiftSinc(TSig *x, TSig *y, int N, TPos amount, TP
   {
     TSig *tmp = new TSig[N];
     shiftSinc(x, tmp, N, amount, sincLength);
-    rsArray::copy(tmp, y, N);
+    rsArrayTools::copy(tmp, y, N);
     delete[] tmp;
   }
   else
@@ -1160,13 +1160,13 @@ void rsVariableSpeedPlayer<TSig, TPos>::setInputAndSpeed(TSig *input, TPos *r, i
 template<class TSig, class TPos>
 TPos rsVariableSpeedPlayer<TSig, TPos>::warpTime(TPos tx)
 {
-  return rsArray::interpolateClamped(wi, Nx, tx);
+  return rsArrayTools::interpolateClamped(wi, Nx, tx);
 }
 
 template<class TSig, class TPos>
 TPos rsVariableSpeedPlayer<TSig, TPos>::unwarpTime(TPos ty)
 {
-  return rsArray::interpolateClamped(w, Ny, ty);
+  return rsArrayTools::interpolateClamped(w, Ny, ty);
 }
 
 template<class TSig, class TPos>
@@ -1189,7 +1189,7 @@ template<class TSig, class TPos>
 std::vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::getTimeWarpMapXY()
 {
   std::vector<TPos> map(Nx);
-  rsArray::copy(wi, &map[0], Nx);
+  rsArrayTools::copy(wi, &map[0], Nx);
   return map;
 }
 
@@ -1197,7 +1197,7 @@ template<class TSig, class TPos>
 std::vector<TPos> rsVariableSpeedPlayer<TSig, TPos>::getTimeWarpMapYX()
 {
   std::vector<TPos> map(Ny);
-  rsArray::copy(w, &map[0], Ny);
+  rsArrayTools::copy(w, &map[0], Ny);
   return map;
 }
 
@@ -1248,7 +1248,7 @@ void rsPitchFlattener<TSig, TPos>::setInput(TSig *x, TPos *f, int N, TPos ft)
 
   // set default target frequency, if 0 is passed:
   if(ft == 0.0)
-    ft = rsArray::mean(f, N);
+    ft = rsArrayTools::mean(f, N);
 
   // create temporary read-speed array:
   TPos *r = new TPos[N];
@@ -1271,7 +1271,7 @@ void rsPhaseLockedCrossfader<TSig, TPos>::setInputs(TSig *in1, TPos *f1, int len
   N1 = len1;
   N2 = len2;
   if(ft == 0.0)
-    ft = 0.5 * (rsArray::mean(f1, N1) + rsArray::mean(f2, N2));
+    ft = 0.5 * (rsArrayTools::mean(f1, N1) + rsArrayTools::mean(f2, N2));
   pf1.setInput(x1, f1, N1, ft);
   pf2.setInput(x2, f2, N2, ft);
 }
@@ -1450,13 +1450,13 @@ void rsInstantaneousFundamentalEstimator<T>::estimateReliability(T *x, int N,
 
     //c  = rsCrossCorrelation(&x[sl], el-sl+1, &x[sr], er-sr+1);
     c  = rsStretchedCrossCorrelation(&x[sl], el-sl+1, &x[sr], er-sr+1);
-    rsArray::fillWithValue(&r[sl], el-sl+1, c);
+    rsArrayTools::fillWithValue(&r[sl], el-sl+1, c);
   }
 
   // extend first and last reliability value to the start and end of the r-array:
-  rsArray::fillWithValue(&r[el], N-el, c);
+  rsArrayTools::fillWithValue(&r[el], N-el, c);
   sl = rsCeilInt(z[0]);
-  rsArray::fillWithValue(r, sl, r[sl]);
+  rsArrayTools::fillWithValue(r, sl, r[sl]);
 }
 
 template<class T>
@@ -1485,7 +1485,7 @@ void rsInstantaneousFundamentalEstimator<T>::measureInstantaneousFundamental(T *
 
   // Interpolate period measurements up to samplerate and convert to frequencies
   T *tn = new T[N];
-  rsArray::fillWithIndex(tn, N);
+  rsArrayTools::fillWithIndex(tn, N);
   rsInterpolateSpline(tp, p, Nz-1, tn, f, N, 1);
   for(n = 0; n < N; n++)
     f[n] = fs/f[n];
@@ -1534,7 +1534,7 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
   // (conceptually):
   T *y = new T[L];                      // chunk from input signal
   int ns = rsMin(rsMax(0, n-L/2), N-L); // start of the chunk
-  rsArray::copySection(x, N, y, ns, L);
+  rsArrayTools::copySection(x, N, y, ns, L);
   //rsPlotArray(y, L);
 
   // measure frequency:
@@ -1572,7 +1572,7 @@ bool rsPeakPicker<T>::isPeakCandidate(int index, const T* x, int N) const
     if(x[index] < x[i])
       return false;
   return true;
-  // maybe factor out into rsArray::isPeakOrPlateau(...) or isPeakCandidate
+  // maybe factor out into rsArrayTools::isPeakOrPlateau(...) or isPeakCandidate
 
   // this function returns all values within a plateau as peaks - maybe, it should only return the
   // first and last - that would be sufficient for meaningful linear interpolation
@@ -1582,13 +1582,13 @@ bool rsPeakPicker<T>::isPeakCandidate(int index, const T* x, int N) const
 template<class T>
 void rsPeakPicker<T>::ropeway(const T* x, int N, T* y, int numPasses)
 {
-  rsArray::copy(x, y, N);
+  rsArrayTools::copy(x, y, N);
   for(int i = 0; i < numPasses; i++) {
-    rsArray::movingAverage3pt(y, N, &y[0]);
-    rsArray::maxElementWise(x, &y[0], N, &y[0]);
+    rsArrayTools::movingAverage3pt(y, N, &y[0]);
+    rsArrayTools::maxElementWise(x, &y[0], N, &y[0]);
   }
 }
-// maybe move to rsArray ...if it turns out to be useful in other applications
+// maybe move to rsArrayTools ...if it turns out to be useful in other applications
 
 template<class T>
 void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const int* peakIndices,
@@ -1667,7 +1667,7 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
 
   // get envelope-of-envelope as audio signal by interpolation:
   Vec t(N);
-  rsArray::fillWithRangeLinear(&t[0], N, 0.0, N-1.0);
+  rsArrayTools::fillWithRangeLinear(&t[0], N, 0.0, N-1.0);
   interpolateEnvelope(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(),
     &t[0], env, (int)t.size());
 
@@ -1691,21 +1691,21 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime)
 {
   getPeaks(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
-  //rsAssert(rsArray::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
+  //rsAssert(rsArrayTools::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
   //GNUPlotter plt;
   //plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
 
   T maxSpacing =   // this must be computed *before* calling setupEndValues!
-    maxSpacingMultiplier * rsArray::maxDifference(&metaEnvTime[0], (int)metaEnvTime.size());
+    maxSpacingMultiplier * rsArrayTools::maxDifference(&metaEnvTime[0], (int)metaEnvTime.size());
 
 
   setupEndValues(metaEnvTime, metaEnvValue, endTime);
-  //rsAssert(rsArray::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
+  //rsAssert(rsArrayTools::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
   fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue, maxSpacing);
-  //rsAssert(rsArray::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
+  //rsAssert(rsArrayTools::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
   //metaEnvValue = metaEnvValue; // little offset for visibility
@@ -1730,7 +1730,7 @@ template<class T>
 void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* peakValues,
   int length)
 {
-  rsAssert(rsArray::isSortedStrictlyAscending(&envTimes[0], length));
+  rsAssert(rsArrayTools::isSortedStrictlyAscending(&envTimes[0], length));
   std::vector<T> metaEnvTime, metaEnvValue;
   getMetaEnvelope(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
   interpolateEnvelope(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(),
@@ -1777,7 +1777,7 @@ void rsEnvelopeExtractor<T>::setupEndValues(
     rsAppend(envTimes, endTime);
   }
 
-  rsAssert(rsArray::isSortedStrictlyAscending(&envTimes[0], (int)envTimes.size()));
+  rsAssert(rsArrayTools::isSortedStrictlyAscending(&envTimes[0], (int)envTimes.size()));
   // rsAssert(rsLast(envTimes) == endTime); // no - in free-end mode, it may be different
 }
 
@@ -1816,7 +1816,7 @@ void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEn
       tmpValue.resize(numExtraPoints);
       for(int j = 0; j < numExtraPoints; j++) {
         T t = t0 + (j+1) * (dt/(numExtraPoints+1));  // verify this formula
-        int idx = rsArray::splitIndexClosest(rawEnvTime, rawEnvLength, t);
+        int idx = rsArrayTools::splitIndexClosest(rawEnvTime, rawEnvLength, t);
         tmpTime[j]  = rawEnvTime[idx];
         tmpValue[j] = rawEnvValue[idx];
       }
@@ -1855,11 +1855,11 @@ std::vector<size_t> rsEnvelopeExtractor<T>::findPeakIndices(const T* x, int N,
 
   if(includePlateaus) {
     for(int n = 1; n < N-1; n++) {
-      if(RAPT::rsArray::isPeakOrPlateau(x, n))
+      if(RAPT::rsArrayTools::isPeakOrPlateau(x, n))
         peaks.push_back(n); }}
   else {
     for(int n = 1; n < N-1; n++) {
-      if(RAPT::rsArray::isPeak(x, n))
+      if(RAPT::rsArrayTools::isPeak(x, n))
         peaks.push_back(n); }}
 
   if(includeLast){
@@ -1887,7 +1887,7 @@ void rsEnvelopeExtractor<T>::getAmpEnvelope(const T* x, int N,
   std::vector<T>& sampleTime, std::vector<T>& envValue)
 {
   std::vector<T> xAbs(N);
-  rsArray::applyFunction(&x[0], &xAbs[0], N, fabs);                  // absolute value
+  rsArrayTools::applyFunction(&x[0], &xAbs[0], N, fabs);                  // absolute value
   std::vector<size_t> peakIndices = findPeakIndices(&xAbs[0], N, true, true); // peak indices
 
   // peak coordinates:
@@ -2007,12 +2007,12 @@ void rsSmoothSineEnvelope(T *y, int N, T f, T fs, T s)
   {
     rsBiquadDesigner::calculateFirstOrderLowpassCoeffs(
       b[0], b[1], b[2], a[1], a[2], T(1.0/fs), f/s);
-    rsArray::negate(a, a, 3);
+    rsArrayTools::negate(a, a, 3);
     a[0] = 1.0;
-    rsArray::filter(y, N, y, N, b, 1, a, 1);
-    rsArray::reverse(y, N);
-    rsArray::filter(y, N, y, N, b, 1, a, 1);
-    rsArray::reverse(y, N);
+    rsArrayTools::filter(y, N, y, N, b, 1, a, 1);
+    rsArrayTools::reverse(y, N);
+    rsArrayTools::filter(y, N, y, N, b, 1, a, 1);
+    rsArrayTools::reverse(y, N);
      // do this with a 1st order filter as well, maybe use rsBiDirectionalFilter (lowpass version)
   }
 }
@@ -2110,7 +2110,7 @@ void rsEnvelopedPhaseCatchSweep(T *y, int k, T p0, T pk, T wk, T *a, int sweepDi
 template<class T>
 void rsPhaseCatchSweep(T *y, int k, T p0, T pk, T wk, int sweepDirection)
 {
-  rsArray::fillWithValue(y, k, 1.0);
+  rsArrayTools::fillWithValue(y, k, 1.0);
   rsEnvelopedPhaseCatchSweep(y, k, p0, pk, wk, y, sweepDirection);
 }
 
@@ -2180,7 +2180,7 @@ T getMaxShortTimeRMS(T* x, int N, int averagingLength)
 template<class T>
 T extremumViaLineIntersect(const T* x, const int N, const int k)  
 {
-  // make a similar function extremumViaParabola, move to rsArray
+  // make a similar function extremumViaParabola, move to rsArrayTools
 
   // check, if our minimum point has two neighbours to each side:
   if(k < 2 || k > N-3) return k;  // can we do something better?
@@ -2205,11 +2205,11 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny)
 {
   std::vector<T> s(Nx);
   for(int k = 0; k < Nx; k++)
-    s[k] = rsArray::meanOfAbsoluteDifferences(&x[k], &y[0], rsMin(Nx-k, Ny));
+    s[k] = rsArrayTools::meanOfAbsoluteDifferences(&x[k], &y[0], rsMin(Nx-k, Ny));
 
   //rsPlotVector(s);
 
-  const int k = RAPT::rsArray::minIndex(&s[0], Nx); // index of minimum...
+  const int k = RAPT::rsArrayTools::minIndex(&s[0], Nx); // index of minimum...
   return extremumViaLineIntersect(&s[0], Nx, k);    // ...refined to subsample precision
 }
 
@@ -2223,11 +2223,11 @@ T rsEnvelopeMatchOffset(const T* x, const int Nx, const T* y, const int Ny, cons
     const int NyD = Ny/D;
     std::vector<T> xd(NxD), yd(NyD);
 
-    RAPT::rsArray::decimateViaMean(&x[0], Nx, &xd[0], D); 
-    RAPT::rsArray::decimateViaMean(&y[0], Ny, &yd[0], D);
+    RAPT::rsArrayTools::decimateViaMean(&x[0], Nx, &xd[0], D); 
+    RAPT::rsArrayTools::decimateViaMean(&y[0], Ny, &yd[0], D);
 
-    //RAPT::rsArray::decimate(&x[0], Nx, &xd[0], D);  // use decimateViaMean
-    //RAPT::rsArray::decimate(&y[0], Ny, &yd[0], D);
+    //RAPT::rsArrayTools::decimate(&x[0], Nx, &xd[0], D);  // use decimateViaMean
+    //RAPT::rsArrayTools::decimate(&y[0], Ny, &yd[0], D);
 
     //// debug:
     //T dbg = rsEnvelopeMatchOffset(&xd[0], NxD, &yd[0], NyD);

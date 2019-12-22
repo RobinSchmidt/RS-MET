@@ -248,7 +248,7 @@ public:
   void getState(T* state, int length) const
   {
     rsAssert(length == getNumGridPoints(), "array length should match number of grid points");
-    RAPT::rsArray::copy(&u[0], state, length);
+    RAPT::rsArrayTools::copy(&u[0], state, length);
   }
 
   // it's a bit annoying that we have to pass the time-step to so many fucntions - maybe we should
@@ -442,20 +442,20 @@ public:
 
   T getPotentialEnergy() const
   {
-    return T(0.5) * RAPT::rsArray::sumOfSquares(u.getDataPointerConst(), u.getSize());
+    return T(0.5) * RAPT::rsArrayTools::sumOfSquares(u.getDataPointerConst(), u.getSize());
     // is this formula correct?
   }
 
   T getKineticEnergy() const
   {
-    return T(0.5) * RAPT::rsArray::sumOfSquares(u_t.getDataPointerConst(), u_t.getSize());
+    return T(0.5) * RAPT::rsArrayTools::sumOfSquares(u_t.getDataPointerConst(), u_t.getSize());
     // is this formula correct?
   }
 
 
   T getSecondDerivativeEnergy() const
   {
-    return T(0.5) * RAPT::rsArray::sumOfSquares(u_tt.getDataPointerConst(), u_tt.getSize());
+    return T(0.5) * RAPT::rsArrayTools::sumOfSquares(u_tt.getDataPointerConst(), u_tt.getSize());
     // ad hoc - i don't know, if this as any physical interpretation
 
     // is this formula correct?

@@ -13,7 +13,7 @@ rsBuffer<T>::rsBuffer(size_t capacity)
 template<class T>
 void rsBuffer<T>::initBufferValues(T value)
 {
-  RAPT::rsArray::fillWithValue(&data[0], (int)data.size(), value);
+  RAPT::rsArrayTools::fillWithValue(&data[0], (int)data.size(), value);
 }
 
 

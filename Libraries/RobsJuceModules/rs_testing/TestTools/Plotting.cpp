@@ -387,7 +387,7 @@ void plotModeVsSineAmpEnv(
 
   double fs = N / (ts[N-1] - ts[0]); // average sample rate
   std::vector<double> tm(N), am(N);
-  rsArray::fillWithRangeLinear(&tm[0], N, 0.0, ts[N-1]);
+  rsArrayTools::fillWithRangeLinear(&tm[0], N, 0.0, ts[N-1]);
 
   // factor out (synthesizeModalPartial or something)
   RAPT::rsModalFilterWithAttack<double, double> flt;

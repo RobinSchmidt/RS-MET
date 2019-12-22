@@ -156,12 +156,12 @@ void interpolatingFunction()
   double yi[M];
   float  xiMin = 0;
   float  xiMax = 10;
-  RAPT::rsArray::fillWithRangeLinear(xi, M, xiMin, xiMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(xi, M, xiMin, xiMax);
   intFunc.interpolate(x, y, N, xi, yi, M);
 
   // convert xi to double for plotter and plot:
   double xid[M];
-  RAPT::rsArray::convertBuffer(xi, xid, M);
+  RAPT::rsArrayTools::convertBuffer(xi, xid, M);
   GNUPlotter plt;
   plt.addDataArrays(M, xid, yi);
   plt.setRange(xiMin, xiMax, 0.0, 4.0);
@@ -312,7 +312,7 @@ double biquadraticPrediction(double x0, double x1, double x2, double x3, double 
 // maybe move to RAPT into the Statistics section
 double variance(double *x, int N)
 {
-  double mx  = RAPT::rsArray::mean(x, N); // mean of x
+  double mx  = RAPT::rsArrayTools::mean(x, N); // mean of x
   double sum = 0;
   for(int n = 0; n < N; n++) {
     double d = x[n] - mx;
@@ -327,8 +327,8 @@ double standardDeviation(double *x, int N)
 }
 double covariance(double *x, double *y, int N)
 {
-  double mx = RAPT::rsArray::mean(x, N); // mean of x
-  double my = RAPT::rsArray::mean(y, N); // mean of y
+  double mx = RAPT::rsArrayTools::mean(x, N); // mean of x
+  double my = RAPT::rsArrayTools::mean(y, N); // mean of y
   double sum = 0;
   for(int n = 0; n < N; n++)
     sum += (x[n]-mx) * (y[n]-my);
@@ -413,13 +413,13 @@ void probabilityLogic()
   }
 
   // compute relative frequencies of events A and B (should approximate their probabilities):
-  //double fA = RAPT::rsArray::sum(&A[0], N) / N;
-  //double fB = RAPT::rsArray::sum(&B[0], N) / N;
+  //double fA = RAPT::rsArrayTools::sum(&A[0], N) / N;
+  //double fB = RAPT::rsArrayTools::sum(&B[0], N) / N;
   // are actually the mean values
 
   // compute sample mean values for event A and B:
-  double mA = RAPT::rsArray::mean(&A[0], N);
-  double mB = RAPT::rsArray::mean(&B[0], N);
+  double mA = RAPT::rsArrayTools::mean(&A[0], N);
+  double mB = RAPT::rsArrayTools::mean(&B[0], N);
 
   // compute sample variances:
   double vA = variance(&A[0], N);
@@ -430,8 +430,8 @@ void probabilityLogic()
   double cor = correlation(&A[0], &B[0], N);
 
   // compute empirical probabilities (by relative frequencies):
-  double pa  = RAPT::rsArray::sum(&A[0], N) / N;        // P(A), empirical prob of event A
-  double pb  = RAPT::rsArray::sum(&B[0], N) / N;        // P(B), empricial prob of event B
+  double pa  = RAPT::rsArrayTools::sum(&A[0], N) / N;        // P(A), empirical prob of event A
+  double pb  = RAPT::rsArrayTools::sum(&B[0], N) / N;        // P(B), empricial prob of event B
   double cab = conditionalProbability(&A[0], &B[0], N); // P(A|B), empirical prob of A given B
   double cba = conditionalProbability(&B[0], &A[0], N); // P(B|A), empirical prob of B given A
   double jab = jointProbability(      &A[0], &B[0], N); // P(A,B), empirical prob of A and B
@@ -524,7 +524,7 @@ void productLogPlot()
 
   // evaluate function:
   vector<float> x(N), y(N);
-  rsArray::fillWithRangeLinear(&x[0], N, xMin, xMax);
+  rsArrayTools::fillWithRangeLinear(&x[0], N, xMin, xMax);
   for(int n = 0; n < N; n++)
     y[n] = (float) productLog(x[n]);
 
@@ -599,7 +599,7 @@ std::vector<double> intervalSplittingProto(int numSegments, double midpoint, int
   int n = 1;                // current number of intervals
   while(n < N) 
   {
-    int k = rsArray::maxIndex(&s[0], n);    // index of largest range in the current set
+    int k = rsArrayTools::maxIndex(&s[0], n);    // index of largest range in the current set
 
     // split s[k] into two ranges:
     Range rl, ru;
@@ -659,14 +659,14 @@ void ratioGenerator()
 
   std::vector<double> p(numParams);  // rename to params
   std::vector<double> r(numRatios);  // rename to tmp
-  rsArray::fillWithRangeLinear(&p[0], numParams, 0.0, 1.0);
+  rsArrayTools::fillWithRangeLinear(&p[0], numParams, 0.0, 1.0);
   double** y; // rename to r(atios)
   MatrixTools::rsAllocateMatrix(y, numRatios, numParams);
 
   for(int i = 0; i < numParams; i++) {
     ratGen.setParameter1(p[i]);
     ratGen.fillRatioTable(&r[0], numRatios);
-    rsArray::transformRange(&r[0], &r[0], numRatios, 1., 2.);  // ratios in 1...2
+    rsArrayTools::transformRange(&r[0], &r[0], numRatios, 1., 2.);  // ratios in 1...2
     for(int j = 0; j < numRatios; j++)
       y[j][i] = r[j];
   }
@@ -730,7 +730,7 @@ void ratiosLargeLcm()
 
   // fill LCM matrix:
   std::vector<double> axes(N);
-  RAPT::rsArray::fillWithRangeLinear(&axes[0], N, double(nMin), double(nMax));
+  RAPT::rsArrayTools::fillWithRangeLinear(&axes[0], N, double(nMin), double(nMax));
   double** lcmMatrix;
   RAPT::MatrixTools::rsAllocateMatrix(lcmMatrix, N, N);
   for(unsigned int i = 0; i < N; i++)
@@ -780,7 +780,7 @@ void sinCosTable()
   //float xMin =   0.0;
   float xMax = +15.0;
   vector<float> x(N), ySin(N), yCos(N), ySinTbl(N), yCosTbl(N);
-  rsArray::fillWithRangeLinear(&x[0], N, xMin, xMax);
+  rsArrayTools::fillWithRangeLinear(&x[0], N, xMin, xMax);
   for(int n = 0; n < N; n++)
   {
     ySin[n] = sin(x[n]);
@@ -874,7 +874,7 @@ void expGaussBell()
 
          // evaluate function:
   vector<float> x(N), y(N);
-  rsArray::fillWithRangeLinear(&x[0], N, xMin, xMax);
+  rsArrayTools::fillWithRangeLinear(&x[0], N, xMin, xMax);
   for(int n = 0; n < N; n++)
   {
     double t = x[n]; // temporary
@@ -1175,7 +1175,7 @@ void primeAlternatingSums()
   int N = 200; // number of primes
 
   //typedef std::vector<int> IntVec;
-  typedef RAPT::rsArray AR;
+  typedef RAPT::rsArrayTools AR;
 
   // create array of primes:
   //std::vector<int> primes(N);

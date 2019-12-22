@@ -69,22 +69,22 @@ bool testMultinomialCoefficients(std::string &reportString)
     for(rsUint32 k2 = 0; k2 <= nMax; k2++)
     {
       k[1] = k2;
-      if( rsArray::sum(k, 2) <= nMax )
+      if( rsArrayTools::sum(k, 2) <= nMax )
         testResult &= rsMultinomialCoefficient(k, (rsUint32)2) == rsMultinomialCoefficientUpTo12(k, (rsUint32)2);
       for(rsUint32 k3 = 0; k3 <= nMax; k3++)
       {
         k[2] = k3;
-        if( rsArray::sum(k, 3) <= nMax )
+        if( rsArrayTools::sum(k, 3) <= nMax )
           testResult &= rsMultinomialCoefficient(k, (rsUint32)3) == rsMultinomialCoefficientUpTo12(k, (rsUint32)3);
         for(rsUint32 k4 = 0; k4 <= nMax; k4++)
         {
           k[3] = k4;
-          if( rsArray::sum(k, 4) <= nMax )
+          if( rsArrayTools::sum(k, 4) <= nMax )
             testResult &= rsMultinomialCoefficient(k, (rsUint32)4) == rsMultinomialCoefficientUpTo12(k, (rsUint32)4);
           for(rsUint32 k5 = 0; k5 <= nMax; k5++)
           {
             k[4] = k5;
-            if( rsArray::sum(k, 5) <= nMax )
+            if( rsArrayTools::sum(k, 5) <= nMax )
               testResult &= rsMultinomialCoefficient(k, (rsUint32)5) == rsMultinomialCoefficientUpTo12(k, (rsUint32)5);
           }
         }
@@ -107,7 +107,7 @@ bool testMultinomialFormula(std::string &reportString)
   rsInt32 x[m] = {5, -1, 3, -2};
   //rsUint32 n   = 6;
   rsInt32 n   = 6;
-  int t = rsPowInt(rsArray::sum(x, m), n); // target value: (5 - 1 + 3 - 2)^6
+  int t = rsPowInt(rsArrayTools::sum(x, m), n); // target value: (5 - 1 + 3 - 2)^6
   int sum = 0;                             // accumulator for the terms
 
   // accumulate the 4-fold sum:
@@ -181,7 +181,7 @@ bool testLeviCivita(std::string &reportString)
   // indices at a time and checking if the result of the functions changes the sign with each of
   // these swaps:
   int i20[20];
-  rsArray::fillWithRangeLinear(i20, 20, 1, 20);
+  rsArrayTools::fillWithRangeLinear(i20, 20, 1, 20);
   int target = 1;
   rsRandomUniform(1.0, 20.0, 1);
   for(int i = 1; i <= 100; i++)

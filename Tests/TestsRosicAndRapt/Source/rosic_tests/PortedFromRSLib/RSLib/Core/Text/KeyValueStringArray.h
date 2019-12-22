@@ -89,7 +89,7 @@ namespace RSLib
 
     /** \name Data */
 
-    rsArray<rsKeyValueStringPair> keyValuePairs;
+    rsArrayTools<rsKeyValueStringPair> keyValuePairs;
 
   };
 

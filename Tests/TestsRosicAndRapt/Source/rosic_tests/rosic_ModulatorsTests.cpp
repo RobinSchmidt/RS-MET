@@ -12,7 +12,7 @@ void rotes::testConsecutiveExponentialDecay()
   double indices[numSamples];
   double impulseResponse[numSamples];
   double stepResponse[numSamples];
-  RAPT::rsArray::fillWithIndex(indices, numSamples);
+  RAPT::rsArrayTools::fillWithIndex(indices, numSamples);
 
 
 
@@ -27,14 +27,14 @@ void rotes::testConsecutiveExponentialDecay()
 
 
 
-  //RAPT::rsArray::copy(impulseResponse, stepResponse, numSamples);
-  //RAPT::rsArray::cumulativeSum(stepResponse, numSamples, 1);
+  //RAPT::rsArrayTools::copy(impulseResponse, stepResponse, numSamples);
+  //RAPT::rsArrayTools::cumulativeSum(stepResponse, numSamples, 1);
 
-  RAPT::rsArray::cumulativeSum(impulseResponse, stepResponse, numSamples, 1);
+  RAPT::rsArrayTools::cumulativeSum(impulseResponse, stepResponse, numSamples, 1);
 
 
-  double scaler = 1.0 / RAPT::rsArray::maxValue(stepResponse, numSamples);
-  RAPT::rsArray::scale(stepResponse, stepResponse, numSamples, scaler);
+  double scaler = 1.0 / RAPT::rsArrayTools::maxValue(stepResponse, numSamples);
+  RAPT::rsArrayTools::scale(stepResponse, stepResponse, numSamples, scaler);
   //ste
 
 

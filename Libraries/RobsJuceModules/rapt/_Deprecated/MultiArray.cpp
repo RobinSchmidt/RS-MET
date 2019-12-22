@@ -41,7 +41,7 @@ bool rsMultiArrayOld<ElementType>::operator==(const rsMultiArrayOld<ElementType>
   if( !this->isOfSameTypeAs(other) )
     return false;
   else
-    return rsArray::equal(data, other.data, getNumElements());
+    return rsArrayTools::equal(data, other.data, getNumElements());
 }
 
 template<class ElementType>
@@ -91,7 +91,7 @@ RS_INLINE rsMultiArray<ElementType> operator*(const ElementType &x, const rsMult
 template<class ElementType>
 void rsMultiArrayOld<ElementType>::setSize(const rsUint32 newNumIndices, const rsUint32 newIndexRanges[])
 {
-  if( getNumElements() != rsArray::product(newIndexRanges, newNumIndices) )
+  if( getNumElements() != rsArrayTools::product(newIndexRanges, newNumIndices) )
   {
     freeIndexArray();
     freeDataArray();
@@ -169,7 +169,7 @@ ElementType rsMultiArrayOld<ElementType>::getElement(const rsUint32 indices[]) c
 template<class ElementType>
 rsUint32 rsMultiArrayOld<ElementType>::getNumElements() const
 {
-  return rsArray::product(indexRanges, numIndices);
+  return rsArrayTools::product(indexRanges, numIndices);
 }
 
 template<class ElementType>
@@ -184,7 +184,7 @@ bool rsMultiArrayOld<ElementType>::isOfSameTypeAs(const rsMultiArrayOld<ElementT
   if( numIndices != other.numIndices )
     return false;
   else
-    return rsArray::equal(indexRanges, other.indexRanges, numIndices);
+    return rsArrayTools::equal(indexRanges, other.indexRanges, numIndices);
 }
 
 // internal functions:
@@ -231,7 +231,7 @@ void rsMultiArrayOld<ElementType>::add(const rsMultiArrayOld<ElementType> &left,
 {
   rsAssert(left.isOfSameTypeAs(right));
   result.setSize(left.numIndices, left.indexRanges);
-  rsArray::add(left.data, right.data, result.data, left.getNumElements());
+  rsArrayTools::add(left.data, right.data, result.data, left.getNumElements());
 }
 
 template<class ElementType>
@@ -241,7 +241,7 @@ void rsMultiArrayOld<ElementType>::subtract(const rsMultiArrayOld<ElementType> &
 {
   rsAssert(left.isOfSameTypeAs(right));
   result.setSize(left.numIndices, left.indexRanges);
-  rsArray::subtract(left.data, right.data, result.data, left.getNumElements());
+  rsArrayTools::subtract(left.data, right.data, result.data, left.getNumElements());
 }
 
 template<class ElementType>
@@ -272,7 +272,7 @@ void rsMultiArrayOld<ElementType>::leftFactor(const rsMultiArrayOld<ElementType>
   rsUint32 numResultIndices = outerProduct.numIndices-rightFactor.numIndices;
   rsUint32 *resultIndices   = new rsUint32[numResultIndices];
 
-  rsAssert(rsArray::equal(&outerProduct.indexRanges[numResultIndices],
+  rsAssert(rsArrayTools::equal(&outerProduct.indexRanges[numResultIndices],
     rightFactor.indexRanges, rightFactor.numIndices)); // multiarrays incompatible
 
   memcpy(resultIndices, outerProduct.indexRanges, numResultIndices*sizeof(rsUint32));
@@ -283,7 +283,7 @@ void rsMultiArrayOld<ElementType>::leftFactor(const rsMultiArrayOld<ElementType>
   // most precise result - for the time being, we pick the element with maximum absolute
   // value (maybe write function getBestDivisorIndex):
   rsUint32      stepSize = rightFactor.getNumElements();
-  rsUint32      offset   = (rsUint32) rsArray::maxAbsIndex(rightFactor.data, (int) stepSize);
+  rsUint32      offset   = (rsUint32) rsArrayTools::maxAbsIndex(rightFactor.data, (int) stepSize);
   ElementType scaler   = ElementType(1) / rightFactor.data[offset];
 
   for(rsUint32 i = 0; i < result.getNumElements(); i++)
@@ -303,14 +303,14 @@ void rsMultiArrayOld<ElementType>::rightFactor(const rsMultiArrayOld<ElementType
   rsUint32 numResultIndices = outerProduct.numIndices-leftFactor.numIndices;
   rsUint32 *resultIndices   = new rsUint32[numResultIndices];
 
-  rsAssert(rsArray::equal(outerProduct.indexRanges,
+  rsAssert(rsArrayTools::equal(outerProduct.indexRanges,
     leftFactor.indexRanges, leftFactor.numIndices)); // multiarrays incompatible for this operation
 
   memcpy(resultIndices, &outerProduct.indexRanges[leftFactor.numIndices],
          numResultIndices*sizeof(rsUint32));
   result.setSize(numResultIndices, resultIndices);
 
-  rsUint32      offset  = (rsUint32) rsArray::maxAbsIndex(leftFactor.data,
+  rsUint32      offset  = (rsUint32) rsArrayTools::maxAbsIndex(leftFactor.data,
                                                    (int) leftFactor.getNumElements());
   ElementType scaler  = ElementType(1) / leftFactor.data[offset];
   offset             *= result.getNumElements();

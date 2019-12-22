@@ -20,7 +20,7 @@ void shuffleBuffer(T *buffer, int length)
     s = s0;
     while( s < length )
     {
-      RAPT::rsArray::reverse(&buffer[s], k/2);
+      RAPT::rsArrayTools::reverse(&buffer[s], k/2);
       s += k;
     }
     s0 /= 2;
@@ -35,15 +35,15 @@ FeedbackDelayNetwork::FeedbackDelayNetwork()
 {
   // some test code for development:
   int buf8[8];
-  RAPT::rsArray::fillWithIndex(buf8, 8);
+  RAPT::rsArrayTools::fillWithIndex(buf8, 8);
   shuffleBuffer(buf8, 8);
 
   int buf16[16];
-  RAPT::rsArray::fillWithIndex(buf16, 16);
+  RAPT::rsArrayTools::fillWithIndex(buf16, 16);
   shuffleBuffer(buf16, 16);
 
   int buf32[32];
-  RAPT::rsArray::fillWithIndex(buf32, 32);
+  RAPT::rsArrayTools::fillWithIndex(buf32, 32);
   shuffleBuffer(buf32, 32);
 
 

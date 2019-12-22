@@ -66,7 +66,7 @@ bool rsIsSortedStrictlyAscending(T *buffer, int length)
   return true;
 }
 */
-// moved to rsArray
+// moved to rsArrayTools
 
 template <class T>
 std::vector<int> rsFindAllOccurencesOf(T* buffer, int bufferLength,
@@ -116,7 +116,7 @@ int rsFindFirstOccurrenceOf(const T *buffer, const int length, const T *patternT
 {
   for(int shift = searchStart; shift <= length-patternLength; shift++)
   {
-    if(rsArray::equal(&buffer[shift], patternToMatch, patternLength))
+    if(rsArrayTools::equal(&buffer[shift], patternToMatch, patternLength))
       return shift;
   }
   return -1;

@@ -124,7 +124,7 @@ protected:
 -i think, i have implemented analysis and (re)synthesis in a single class rather than two separate
  classes (like with the sinusoidal model) in order to allow for identity resynthesis with arbitrary
  windows (the demodulation procedure needs to know both windows - analysis and synthesis)
--implement move contructors for rsArray and rsMatrixOld  */
+-implement move contructors for rsArrayTools and rsMatrixOld  */
 
 template<class T>
 class rsSpectrogramProcessor
@@ -233,7 +233,7 @@ public:
   /** Returns the amplitude scale factor by which the outputs of shortTimeSpectrum() has to be 
   scaled to obtain the actual amplitude of a real sinusoid. This is used internally but made 
   available mostly for testing purposes. */
-  T getAnalysisScaler() const { return 2. / rsArray::sum(&analysisWindow[0], blockSize); }
+  T getAnalysisScaler() const { return 2. / rsArrayTools::sum(&analysisWindow[0], blockSize); }
     // the factor two comes from the fact that two complex sinusoids sum up to one real sinusoid 
     // and we count only one of the two symmetric magnitude values
 

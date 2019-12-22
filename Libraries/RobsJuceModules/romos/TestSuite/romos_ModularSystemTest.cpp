@@ -66,8 +66,8 @@ bool ModularSystemTest::doOutputsMatchDesiredOutputs()
   double maxError = 0.0;
   for(int channelIndex = 0; channelIndex < numOutputChannels; channelIndex++)
   {
-    RAPT::rsArray::subtract(outputs[channelIndex], desiredOutputs[channelIndex], outputErrors[channelIndex], signalLength);
-    double maxErrorInChannel = RAPT::rsArray::maxAbs(outputErrors[channelIndex], signalLength);
+    RAPT::rsArrayTools::subtract(outputs[channelIndex], desiredOutputs[channelIndex], outputErrors[channelIndex], signalLength);
+    double maxErrorInChannel = RAPT::rsArrayTools::maxAbs(outputErrors[channelIndex], signalLength);
     if( maxErrorInChannel > maxError )
       maxError = maxErrorInChannel;
   }
@@ -97,8 +97,8 @@ void ModularSystemTest::fillInputSignalArraysRandomly(int seed)
       inputs[channelIndex][frameIndex] = RAPT::rsRandomUniform(-1.0, 1.0); 
   }
 
-  RAPT::rsArray::convertBuffer(inputs[0], inputsFloat[0], signalLength);
-  RAPT::rsArray::convertBuffer(inputs[1], inputsFloat[1], signalLength);
+  RAPT::rsArrayTools::convertBuffer(inputs[0], inputsFloat[0], signalLength);
+  RAPT::rsArrayTools::convertBuffer(inputs[1], inputsFloat[1], signalLength);
 }
 
 void ModularSystemTest::clearInputSignalArrays()
@@ -143,10 +143,10 @@ void ModularSystemTest::fillDesiredOutputSignalArrays()
 
 void ModularSystemTest::processOutputSignal(bool useSinglePrecision)
 {
-  RAPT::rsArray::copy(inputs[0],      outputs[0],      signalLength);
-  RAPT::rsArray::copy(inputs[1],      outputs[1],      signalLength);
-  RAPT::rsArray::copy(inputsFloat[0], outputsFloat[0], signalLength);
-  RAPT::rsArray::copy(inputsFloat[1], outputsFloat[1], signalLength);
+  RAPT::rsArrayTools::copy(inputs[0],      outputs[0],      signalLength);
+  RAPT::rsArrayTools::copy(inputs[1],      outputs[1],      signalLength);
+  RAPT::rsArrayTools::copy(inputsFloat[0], outputsFloat[0], signalLength);
+  RAPT::rsArrayTools::copy(inputsFloat[1], outputsFloat[1], signalLength);
 
   int blockStart      = 0;
   int remainingFrames = signalLength;
@@ -181,8 +181,8 @@ void ModularSystemTest::processOutputSignal(bool useSinglePrecision)
 
   if( useSinglePrecision == true )
   {
-    RAPT::rsArray::convertBuffer(outputsFloat[0], outputs[0], signalLength);
-    RAPT::rsArray::convertBuffer(outputsFloat[1], outputs[1], signalLength);
+    RAPT::rsArrayTools::convertBuffer(outputsFloat[0], outputs[0], signalLength);
+    RAPT::rsArrayTools::convertBuffer(outputsFloat[1], outputs[1], signalLength);
   }
 }
 

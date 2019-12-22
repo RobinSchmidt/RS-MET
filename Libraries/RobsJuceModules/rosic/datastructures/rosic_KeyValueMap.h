@@ -237,7 +237,7 @@ public:
   //--------------------------------------------------------------------------------------------------------------------------------------
   // operators:
 
-  // \todo see rsArray and implement some operators...
+  // \todo see rsArrayTools and implement some operators...
 
   //=====================================================================================================================================
 
@@ -245,7 +245,7 @@ protected:
 
   std::vector<KeyValuePair<KeyType, ValueType>*> entriesSortedByKey;
   std::vector<KeyValuePair<KeyType, ValueType>*> entriesSortedByValue;
-    // \todo maybe switch to rsArray<KeyValuePair*> here later
+    // \todo maybe switch to rsArrayTools<KeyValuePair*> here later
 
   // friend decalarations to facilitate testing:
   friend bool testKeyValueMapInsert(std::string& reportString);

@@ -22,7 +22,7 @@ std::vector<double> createPluckedString(int numSamples, double frequency, double
   std::vector<double> d(numModes);  // relative decay times
   std::vector<double> p(numModes);  // start-phases
 
-  RAPT::rsArray::fillWithRangeLinear(&f[0], numModes, 1.0, double(numModes));
+  RAPT::rsArrayTools::fillWithRangeLinear(&f[0], numModes, 1.0, double(numModes));
   double amp = 0.1;
   double c = 0.4;
   for(int k = 0; k < numModes; k++) g[k] = amp / pow(k+1.0, c);  // amplitudes follow 1/k^c rule

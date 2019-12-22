@@ -58,9 +58,9 @@ void rsLinkwitzRileyCrossOver::getLowpassMagnitudeResponse(double* frequencies, 
   if( accumulate == false )
   {
     if( inDecibels == true )
-      RAPT::rsArray::fillWithValue(magnitudes, numBins, 0.0);
+      RAPT::rsArrayTools::fillWithValue(magnitudes, numBins, 0.0);
     else
-      RAPT::rsArray::fillWithValue(magnitudes, numBins, 1.0);
+      RAPT::rsArrayTools::fillWithValue(magnitudes, numBins, 1.0);
   }
   lowpass1.getMagnitudeResponse(frequencies, sampleRate, magnitudes, numBins, true, true);
   lowpass2.getMagnitudeResponse(frequencies, sampleRate, magnitudes, numBins, true, true);
@@ -70,11 +70,11 @@ void rsLinkwitzRileyCrossOver::getLowpassFrequencyResponse(double* frequencies, 
   int numBins, bool accumulate)
 {
   if( accumulate == false )  
-    RAPT::rsArray::fillWithValue(H, numBins, Complex(1.0));
+    RAPT::rsArrayTools::fillWithValue(H, numBins, Complex(1.0));
 
   double *w = new double[numBins];
-  RAPT::rsArray::copy(frequencies, w, numBins);
-  RAPT::rsArray::scale(w, w, numBins, 2*PI/sampleRate);
+  RAPT::rsArrayTools::copy(frequencies, w, numBins);
+  RAPT::rsArrayTools::scale(w, w, numBins, 2*PI/sampleRate);
 
   lowpass1.getFrequencyResponse(w, H, numBins, rsFilterAnalyzerD::MULTIPLICATIVE_ACCUMULATION);
   lowpass2.getFrequencyResponse(w, H, numBins, rsFilterAnalyzerD::MULTIPLICATIVE_ACCUMULATION);
@@ -122,8 +122,8 @@ void rsLinkwitzRileyCrossOver::getHighpassFrequencyResponse(double* frequencies,
   int numBins, bool accumulate)
 {
   double *w = new double[numBins];
-  RAPT::rsArray::copy(frequencies, w, numBins);
-  RAPT::rsArray::scale(w, w, numBins, 2*PI/sampleRate);
+  RAPT::rsArrayTools::copy(frequencies, w, numBins);
+  RAPT::rsArrayTools::scale(w, w, numBins, 2*PI/sampleRate);
 
   Complex *tmpLowpass = new Complex[numBins];
   getLowpassFrequencyResponse(frequencies, tmpLowpass, numBins, false);
@@ -132,11 +132,11 @@ void rsLinkwitzRileyCrossOver::getHighpassFrequencyResponse(double* frequencies,
   sumAllpass.getFrequencyResponse(w, tmpAllpass, numBins);
 
   if( accumulate == false ) 
-    RAPT::rsArray::subtract(tmpAllpass, tmpLowpass, H, numBins);
+    RAPT::rsArrayTools::subtract(tmpAllpass, tmpLowpass, H, numBins);
   else
   {
-    RAPT::rsArray::subtract(tmpAllpass, tmpLowpass, tmpAllpass, numBins); // tmpAllpass is now the highpass-response
-    RAPT::rsArray::multiply(H, tmpAllpass, H, numBins);
+    RAPT::rsArrayTools::subtract(tmpAllpass, tmpLowpass, tmpAllpass, numBins); // tmpAllpass is now the highpass-response
+    RAPT::rsArrayTools::multiply(H, tmpAllpass, H, numBins);
   }
 
   delete[] tmpLowpass;

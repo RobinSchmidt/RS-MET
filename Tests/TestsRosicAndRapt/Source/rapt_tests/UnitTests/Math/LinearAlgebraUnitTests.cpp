@@ -50,9 +50,9 @@ bool testBandDiagonalSolver(std::string &reportString)
   solver.solve(xGbsvxx, b, 1);
 
   // compute maximum errors in the 3 solutions and check if it is below some thresholds:
-  double errGbsv   = rsArray::maxDeviation(x, xGbsv, N);   // rename to maxDistance
-  double errGbsvx  = rsArray::maxDeviation(x, xGbsvx, N);
-  double errGbsvxx = rsArray::maxDeviation(x, xGbsvxx, N);
+  double errGbsv   = rsArrayTools::maxDeviation(x, xGbsv, N);   // rename to maxDistance
+  double errGbsvx  = rsArrayTools::maxDeviation(x, xGbsvx, N);
+  double errGbsvxx = rsArrayTools::maxDeviation(x, xGbsvxx, N);
   testResult &= errGbsv    < 2e-9;
   testResult &= errGbsvx   < 3e-10;
   testResult &= errGbsvxx == 0.0;
@@ -343,7 +343,7 @@ bool testSquareMatrixTranspose(std::string &reportString)
     pA[i] = &A[i][0];
 
 
-  rsArray::transposeSquareArray(pA, 5);
+  rsArrayTools::transposeSquareArray(pA, 5);
 
   for(int i = 0; i < 5; i++)
   {
@@ -378,7 +378,7 @@ bool testMatrixVectorMultiply(std::string &reportString)
   // |1 2 3| * |1| = |14|
   // |4 5 6|   |2|   |32|
   // |7 8 9|   |3|   |50|
-  rsArray::fillWithValue(y, 3, -1.0);
+  rsArrayTools::fillWithValue(y, 3, -1.0);
   MatrixTools::rsMatrixVectorMultiply(pA, x, y, 3, 3);
   testResult &= y[0] == 14;
   testResult &= y[1] == 32;
@@ -388,7 +388,7 @@ bool testMatrixVectorMultiply(std::string &reportString)
   // |1 2 3|^T * |1| = |1 4 7| * |1| = |30|
   // |4 5 6|     |2|   |2 5 8|   |2|   |36|
   // |7 8 9|     |3|   |3 6 9|   |3|   |42|
-  rsArray::fillWithValue(y, 3, -1.0);
+  rsArrayTools::fillWithValue(y, 3, -1.0);
   MatrixTools::rsTransposedMatrixVectorMultiply(pA, x, y, 3, 3);
   testResult &= y[0] == 30;
   testResult &= y[1] == 36;
@@ -398,7 +398,7 @@ bool testMatrixVectorMultiply(std::string &reportString)
   // |1 2| * |1| = | 5|
   // |4 5|   |2|   |14|
   // |7 8|         |23|
-  rsArray::fillWithValue(y, 3, -1.0);
+  rsArrayTools::fillWithValue(y, 3, -1.0);
   MatrixTools::rsMatrixVectorMultiply(pA, x, y, 3, 2);
   testResult &= y[0] == 5;
   testResult &= y[1] == 14;
@@ -408,7 +408,7 @@ bool testMatrixVectorMultiply(std::string &reportString)
   // |1 2 3|^T * |1| = |1 4| * |1| = | 9|
   // |4 5 6|     |2|   |2 5|   |2|   |12|
   //                   |3 6|         |15|
-  rsArray::fillWithValue(y, 3, -1.0);
+  rsArrayTools::fillWithValue(y, 3, -1.0);
   MatrixTools::rsTransposedMatrixVectorMultiply(pA, x, y, 2, 3);
   testResult &= y[0] == 9;
   testResult &= y[1] == 12;
@@ -418,7 +418,7 @@ bool testMatrixVectorMultiply(std::string &reportString)
   // |1 2 3| * |1| = |14|
   // |4 5 6|   |2|   |32|
   //           |3|
-  rsArray::fillWithValue(y, 3, -1.0);
+  rsArrayTools::fillWithValue(y, 3, -1.0);
   MatrixTools::rsMatrixVectorMultiply(pA, x, y, 2, 3);
   testResult &= y[0] == 14;
   testResult &= y[1] == 32;
@@ -428,7 +428,7 @@ bool testMatrixVectorMultiply(std::string &reportString)
   // |1 2|^T * |1| = |1 4 7| * |1| = |30|
   // |4 5|     |2|   |2 5 8|   |2|   |36|
   // |7 8|     |3|             |3|
-  rsArray::fillWithValue(y, 3, -1.0);
+  rsArrayTools::fillWithValue(y, 3, -1.0);
   MatrixTools::rsTransposedMatrixVectorMultiply(pA, x, y, 3, 2);
   testResult &= y[0] == 30;
   testResult &= y[1] == 36;
@@ -664,8 +664,8 @@ bool testChangeOfBasis(std::string &reportString)
   }
 
   // obtain the row-wise bases:
-  rsArray::transposeSquareArray(pA, pAT, 3);
-  rsArray::transposeSquareArray(pB, pBT, 3);
+  rsArrayTools::transposeSquareArray(pA, pAT, 3);
+  rsArrayTools::transposeSquareArray(pB, pBT, 3);
 
   // coordinates of vector v in basis A:
   double va[3] = {1, -2, 3};
@@ -678,7 +678,7 @@ bool testChangeOfBasis(std::string &reportString)
   double vea[3], veb[3];
   MatrixTools::rsMatrixVectorMultiply(pA, va, vea, 3, 3);
   MatrixTools::rsMatrixVectorMultiply(pB, vb, veb, 3, 3);
-  testResult &= rsArray::equal(vea, veb, 3);
+  testResult &= rsArrayTools::equal(vea, veb, 3);
 
   // compute change-of-base matrix to go from basis A to B:
   rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(pA, pB, pC, 3);
@@ -687,15 +687,15 @@ bool testChangeOfBasis(std::string &reportString)
   // previously computed coordinates:
   double vb2[3];
   MatrixTools::rsMatrixVectorMultiply(pC, va, vb2, 3, 3);
-  testResult &= rsArray::almostEqual(vb, vb2, 3, 1.e-14);
+  testResult &= rsArrayTools::almostEqual(vb, vb2, 3, 1.e-14);
 
   // tests for row-based representations of bases A and B:
   rsLinearAlgebra::rsChangeOfBasisRowWise(pAT, pBT, va, vb, 3);
-  testResult &= rsArray::almostEqual(vb, vb2, 3, 1.e-14);
+  testResult &= rsArrayTools::almostEqual(vb, vb2, 3, 1.e-14);
 
   rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(pAT, pBT, pCT, 3);
   MatrixTools::rsMatrixVectorMultiply(pCT, va, vb2, 3, 3);
-  testResult &= rsArray::almostEqual(vb, vb2, 3, 1.e-14);
+  testResult &= rsArrayTools::almostEqual(vb, vb2, 3, 1.e-14);
 
   testResult &= MatrixTools::rsAreMatricesApproximatelyEqual(pC, pCT, 3, 3, 1.e-14);
    // the change-of-base matrix doesn't care about, how the base-vectors are represented in some 

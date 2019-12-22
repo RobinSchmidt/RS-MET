@@ -21,7 +21,7 @@ void StandardWaveformRenderer::renderWaveform(double *targetBuffer, int length)
   case SAW:      renderSawWaveform(     targetBuffer, length);  break;
   case SQUARE:   renderSquareWaveform(  targetBuffer, length);  break;
   case TRIANGLE: renderTriangleWaveform(targetBuffer, length);  break;
-  default:       RAPT::rsArray::fillWithZeros(targetBuffer, length);
+  default:       RAPT::rsArrayTools::fillWithZeros(targetBuffer, length);
   }
 }
 

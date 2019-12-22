@@ -6,11 +6,11 @@
 add to the documentation, to which std::algorithm a function corresponds, if applicable
 
 todo: 
--maybe rename to rsArrayTools, class rsArray should be an actual dynamically allocated array with
+-maybe rename to rsArrayTools, class rsArrayTools should be an actual dynamically allocated array with
  the same interface as std::vector - having my own implementation might be more efficient since
  std::vector initializes the memory - say this blog-post, at least
  https://lemire.me/blog/2012/06/20/do-not-waste-time-with-stl-vectors/
--actually, rsArray could serve as dual purpose class - a collection of static functions operating
+-actually, rsArrayTools could serve as dual purpose class - a collection of static functions operating
  on raw arrays and a dynamically allocated array
 -we could make a baseclass rsArrayView which could also be used as baseclass for rsMatrix and 
  rsMultiArray
@@ -24,7 +24,7 @@ todo:
 
 */
 
-class rsArray  // 
+class rsArrayTools  // 
 {
 
 public:
@@ -716,28 +716,28 @@ public:
 // inlined implementations
 
 template <class T>
-inline void rsArray::add(const T *buffer1, const T *buffer2, T *result, const int length)
+inline void rsArrayTools::add(const T *buffer1, const T *buffer2, T *result, const int length)
 {
   for(int i = 0; i < length; i++)
     result[i] = buffer1[i] + buffer2[i];
 }
 
 template <class T>
-inline void rsArray::add(const T *buffer, const T valueToAdd, T *result, const int length)
+inline void rsArrayTools::add(const T *buffer, const T valueToAdd, T *result, const int length)
 {
   for(int i = 0; i < length; i++)
     result[i] = buffer[i] + valueToAdd;
 }
 
 template<class T>
-void rsArray::addWithWeight(T* xy, int N, T* d, T w)
+void rsArrayTools::addWithWeight(T* xy, int N, T* d, T w)
 {
   for(int n = 0; n < N; n++)
     xy[n] += w * d[n];
 }
 
 template <class T>
-inline bool rsArray::almostEqual(const T *buffer1, const T *buffer2, 
+inline bool rsArrayTools::almostEqual(const T *buffer1, const T *buffer2, 
   const int length, const T tolerance)
 {
   for(int i = 0; i < length; i++)
@@ -749,7 +749,7 @@ inline bool rsArray::almostEqual(const T *buffer1, const T *buffer2,
 }
 
 template <class T1, class T2>
-inline void rsArray::copy(const T1 *source, T2 *destination, const int length)
+inline void rsArrayTools::copy(const T1 *source, T2 *destination, const int length)
 {
   for(int i = 0; i < length; i++)
     destination[i] = (T2)source[i];
@@ -763,7 +763,7 @@ inline void rsArray::copy(const T1 *source, T2 *destination, const int length)
 
 
 template <class T1, class T2>
-inline void rsArray::convertBuffer(const T1 *source, T2 *destination, const int length)
+inline void rsArrayTools::convertBuffer(const T1 *source, T2 *destination, const int length)
 {
   for(int i = 0; i < length; i++)
     destination[i] = (T2)source[i];
@@ -771,7 +771,7 @@ inline void rsArray::convertBuffer(const T1 *source, T2 *destination, const int 
 // rename to convert
 
 template <class T>
-inline void rsArray::convolveWithTwoElems(const T* x, const int xLength, const T* h, T* y)
+inline void rsArrayTools::convolveWithTwoElems(const T* x, const int xLength, const T* h, T* y)
 {
   y[xLength] = x[xLength-1]*h[1];
   for(int n = xLength-1; n > 0; n--)
@@ -780,7 +780,7 @@ inline void rsArray::convolveWithTwoElems(const T* x, const int xLength, const T
 }
 
 template <class T>
-inline void rsArray::convolveWithTwoElems(
+inline void rsArrayTools::convolveWithTwoElems(
   const T* x, const int xLength, const T h0, const T h1, T* y) 
 {
   y[xLength] = x[xLength-1]*h1;
@@ -790,14 +790,14 @@ inline void rsArray::convolveWithTwoElems(
 }
 
 template <class T>
-inline void rsArray::decimate(const T* x, const int N, T* y, const int D)
+inline void rsArrayTools::decimate(const T* x, const int N, T* y, const int D)
 {
   for(int i = 0; i < N/D; i++)
     y[i] = x[i*D];
 }
 
 template <class T>
-inline void rsArray::decimateViaMean(const T* x, const int N, T* y, const int D)
+inline void rsArrayTools::decimateViaMean(const T* x, const int N, T* y, const int D)
 {
   const T s = T(1) / T(D);       // scaler
   for(int i = 0; i < N/D; i++)
@@ -805,7 +805,7 @@ inline void rsArray::decimateViaMean(const T* x, const int N, T* y, const int D)
 }
 
 template <class T>
-inline bool rsArray::equal(const T *buffer1, const T *buffer2, const int length)
+inline bool rsArrayTools::equal(const T *buffer1, const T *buffer2, const int length)
 {
   for(int i = 0; i < length; i++)
   {
@@ -816,28 +816,28 @@ inline bool rsArray::equal(const T *buffer1, const T *buffer2, const int length)
 }
 
 template<class T, class F>
-inline void rsArray::fill(T* a, int N, F indexToValueFunction)
+inline void rsArrayTools::fill(T* a, int N, F indexToValueFunction)
 {
   for(int i = 0; i < N; i++)
     a[i] = indexToValueFunction(i);
 }
 
 template <class T>
-inline void rsArray::fillWithImpulse(T *buffer, int length)
+inline void rsArrayTools::fillWithImpulse(T *buffer, int length)
 {
   fillWithZeros(buffer, length);
   buffer[0] = T(1);
 }
 
 template <class T>
-inline void rsArray::fillWithNaN(T* x, int N)
+inline void rsArrayTools::fillWithNaN(T* x, int N)
 {
   for(int i = 0; i < N; i++) 
     x[i] = RS_SIGNALING_NAN(T); // or maybe it should be the quiet nan?
 }
 
 template <class T>
-inline int rsArray::findIndexOf(const T *buffer, T elementToFind, int length)
+inline int rsArrayTools::findIndexOf(const T *buffer, T elementToFind, int length)
 {
   for(int i = 0; i < length; i++)
   {
@@ -848,7 +848,7 @@ inline int rsArray::findIndexOf(const T *buffer, T elementToFind, int length)
 }
 
 template <class T>
-inline int rsArray::findMaxAbs(const T *buffer, int length)
+inline int rsArrayTools::findMaxAbs(const T *buffer, int length)
 {
   int maxIndex = 0;
   T maxValue   = T(0);
@@ -864,13 +864,13 @@ inline int rsArray::findMaxAbs(const T *buffer, int length)
 }
 
 template <class T>
-inline bool rsArray::isAllZeros(const T *buffer, int length)
+inline bool rsArrayTools::isAllZeros(const T *buffer, int length)
 {
   return isFilledWithValue(buffer, length, T(0));
 }
 
 template <class T>
-inline bool rsArray::isFilledWithValue(const T *buffer, int length, T value)
+inline bool rsArrayTools::isFilledWithValue(const T *buffer, int length, T value)
 {
   for(int n = 0; n < length; n++)
   {
@@ -881,7 +881,7 @@ inline bool rsArray::isFilledWithValue(const T *buffer, int length, T value)
 }
 
 template<class T>
-bool rsArray::isPeakOrPlateau(const T *x, int n)
+bool rsArrayTools::isPeakOrPlateau(const T *x, int n)
 {
   if(x[n] >= x[n-1] && x[n] >= x[n+1])
     return true;
@@ -889,7 +889,7 @@ bool rsArray::isPeakOrPlateau(const T *x, int n)
 }
 
 template<class T>
-inline void rsArray::pushFrontPopBack4(T x, T* a)
+inline void rsArrayTools::pushFrontPopBack4(T x, T* a)
 {
   a[3] = a[2];  // old a[3] is discarded
   a[2] = a[1];  // values in between..

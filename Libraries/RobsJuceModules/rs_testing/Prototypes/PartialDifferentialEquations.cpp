@@ -3,8 +3,8 @@ void rsHeatEquation1D<T>::setMaxCycleLength(int newLength)
 { 
   rodArray1.resize(newLength);
   rodArray2.resize(newLength);
-  rsArray::fillWithZeros(&rodArray1[0], newLength);
-  rsArray::fillWithZeros(&rodArray2[0], newLength);
+  rsArrayTools::fillWithZeros(&rodArray1[0], newLength);
+  rsArrayTools::fillWithZeros(&rodArray2[0], newLength);
   reset(); // possibly re-adjust pointers
 }
 
@@ -53,7 +53,7 @@ void rsHeatEquation1D<T>::normalizeHeatDistribution(T targetMean, T targetVarian
   // set mean to desired target value (maybe factor out):
   //int N = (int) rodArray1.size();
   int N = (int) rodLength;
-  typedef rsArray AR;
+  typedef rsArrayTools AR;
   T mean = AR::mean(rodIn, N);
   AR::add(rodIn, -mean, rodIn, N); 
   // ...hmm..this actually just set the mean to zero...which is the most reasonable target value
@@ -167,8 +167,8 @@ template<class T>
 void rsWaveEquation1D<T>::updateStateArrays()
 {
   int N = getNumGridPoints()-1;             // see (1), section 5.2.8
-  RAPT::rsArray::copy(&u[0],   &u1[0], N);  // u goes into u1
-  RAPT::rsArray::copy(&tmp[0], &u[0],  N);  // tmp goes into u
+  RAPT::rsArrayTools::copy(&u[0],   &u1[0], N);  // u goes into u1
+  RAPT::rsArrayTools::copy(&tmp[0], &u[0],  N);  // tmp goes into u
 }
 
 // todo: implement 6.38, 6.45, 146: bottom, 149: u_l^{n+1} =..., 6.59, 
@@ -323,13 +323,13 @@ void rsRectangularRoom<T>::updateState()
   // update the "velocities" by adding a fraction of the Laplacian (which is proportional to
   // the "acceleration"):
   int N = u.getSize();
-  rsArray::addWithWeight(u_t.getDataPointer(), N, u_tt.getDataPointer(), k); // is k the right scaler?
+  rsArrayTools::addWithWeight(u_t.getDataPointer(), N, u_tt.getDataPointer(), k); // is k the right scaler?
 
   // maybe we should set the velocities to zero at the boundary...currently they already are 
   // because the lapalcian is only computed at inetrior points
 
   // update the pressures by adding a fraction of the "velocities":
-  rsArray::addWithWeight(u.getDataPointer(), N, u_t.getDataPointer(), k); // is k the right scaler?
+  rsArrayTools::addWithWeight(u.getDataPointer(), N, u_t.getDataPointer(), k); // is k the right scaler?
 
   int dummy = 0;
 }

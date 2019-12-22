@@ -270,14 +270,14 @@ public:
       return rsMin(safeStartForB - B.dataPointer, B.getSize());
   }
   */
-  // actually, we should move this to rsArray::getOverlap(T* x, size_t Nx, T*y, size_t Ny)
+  // actually, we should move this to rsArrayTools::getOverlap(T* x, size_t Nx, T*y, size_t Ny)
   // needs unit test
 
   //-----------------------------------------------------------------------------------------------
   /** \name Manipulation */
 
   /** Sets all matrix elements to zero. */
-  void setToZero() { rsArray::fillWithZeros(dataPointer, getSize()); }
+  void setToZero() { rsArrayTools::fillWithZeros(dataPointer, getSize()); }
 
   /** Sets the matrix elements to the identity matrix, i.e. fills the main diagonal with ones and 
   the rest with zeros. If the matrix is not square, then the overhanging portion to the right or 
@@ -286,10 +286,10 @@ public:
   // needs test
 
   /** Sets all elements in the matrix to the given value. */
-  void setAllValues(T value) { rsArray::fillWithValue(dataPointer, getSize(), value); }
+  void setAllValues(T value) { rsArrayTools::fillWithValue(dataPointer, getSize(), value); }
 
   /** Initializes all elements with given value. */
-  //void init(T value = T(0)) { RAPT::rsArray::fillWithValue(dataPointer, getSize(), value); }
+  //void init(T value = T(0)) { RAPT::rsArrayTools::fillWithValue(dataPointer, getSize(), value); }
   // maybe remove - is redundant with setAllValues
 
   /** Sets all elements on the main diagonal to the given value. If the matrix is not square, only
@@ -302,10 +302,10 @@ public:
   // needs test
 
   /** Scales all elements in the matrix by a given factor. */
-  void scale(T factor) { rsArray::scale(dataPointer, getSize(), factor); }
+  void scale(T factor) { rsArrayTools::scale(dataPointer, getSize(), factor); }
 
   /** Negates all values of the matrix, i.e. inverts their sign. */
-  void negate() { rsArray::negate(dataPointer, dataPointer, getSize()); }
+  void negate() { rsArrayTools::negate(dataPointer, dataPointer, getSize()); }
 
   // todo: conjugate
 
@@ -336,14 +336,14 @@ public:
   static void add(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::add(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::add(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
   /** Subtracts elements of B from corresponding elements A in and stores results in C. */
   static void subtract(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
   /** Multiplies the two matrices element-wise. */
@@ -351,7 +351,7 @@ public:
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::multiply(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::multiply(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
   /** Divides the two matrices element-wise. */
@@ -359,7 +359,7 @@ public:
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
   /** Computes the matrix product C = A*B. */
@@ -530,7 +530,7 @@ public:
   rsMatrix(const rsMatrix& B)
   {
     setSize(B.numRows, B.numCols);
-    rsArray::copy(B.dataPointer, this->dataPointer, this->getSize());
+    rsArrayTools::copy(B.dataPointer, this->dataPointer, this->getSize());
   }
 
   /** Move constructor. Takes over ownership of the data stored in B. */
@@ -548,7 +548,7 @@ public:
   {
     if (this != &rhs) { // self-assignment check expected
       setSize(rhs.numRows, rhs.numCols);
-      rsArray::copy(rhs.dataPointer, this->dataPointer, this->getSize());
+      rsArrayTools::copy(rhs.dataPointer, this->dataPointer, this->getSize());
     }
     return *this;
   }
@@ -682,7 +682,7 @@ public:
   {
     if(this->numRows != rhs.numRows || this->numCols != rhs.numCols)
       return false;
-    return rsArray::equal(this->dataPointer, rhs.dataPointer, this->getSize());
+    return rsArrayTools::equal(this->dataPointer, rhs.dataPointer, this->getSize());
   }
   // maybe move to rsMatrixView, if possible
 

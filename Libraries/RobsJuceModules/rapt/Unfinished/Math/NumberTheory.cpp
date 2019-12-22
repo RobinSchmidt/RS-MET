@@ -264,7 +264,7 @@ template <class T>
 T rsChineseRemainderWeights(T* m, T* w, rsUint32 count)
 {
   //T M = rsProduct(m, count);
-  T M = rsArray::product(m, count);
+  T M = rsArrayTools::product(m, count);
   T Mi;
   for(rsUint32 i = 0; i < count; i++)
   {
@@ -277,7 +277,7 @@ T rsChineseRemainderWeights(T* m, T* w, rsUint32 count)
 template <class T>
 T rsApplyChineseRemainderTheorem(T* r, T* w, T M, rsUint32 count)
 {
-  return rsArray::weightedSum(w, r, count) % M;
+  return rsArrayTools::weightedSum(w, r, count) % M;
 }
 
 template <class T>

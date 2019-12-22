@@ -11,11 +11,11 @@ bool testFilterPolynomials()
   {
     halpernT2(at, n);
     rsPrototypeDesignerD::halpernPolynomial(a, n);
-    testResult &= RAPT::rsArray::equal(a, at, 2*n+1);
+    testResult &= RAPT::rsArrayTools::equal(a, at, 2*n+1);
 
     papoulisL2(at, n);
     rsPrototypeDesignerD::papoulisPolynomial(a, n);
-    testResult &= RAPT::rsArray::equal(a, at, 2*n+1);
+    testResult &= RAPT::rsArrayTools::equal(a, at, 2*n+1);
   }
 
   return testResult;

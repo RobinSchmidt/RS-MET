@@ -6,12 +6,12 @@ namespace RSLib
 
   /**
 
-  This is a class for representing strings. It is implemented as specialization of rs::rsArray for 
+  This is a class for representing strings. It is implemented as specialization of rs::rsArrayTools for 
   type char.
 
   */
 
-  class RSLib_API rsString : public rsArray<char>
+  class RSLib_API rsString : public rsArrayTools<char>
   {
 
   public:
@@ -29,8 +29,8 @@ namespace RSLib
     rsString(const std::string &initialString);
 
     /** Constructor. Creates a string from an array of characters. Although String is subclass of 
-    rsArray<char>, we still need to implement this. */
-    rsString(const rsArray<char> &stringAsCharsArray);
+    rsArrayTools<char>, we still need to implement this. */
+    rsString(const rsArrayTools<char> &stringAsCharsArray);
 
     /** Copy constructor. Creates a (deep) copy of another string. */
     rsString(const rsString &other);
@@ -97,7 +97,7 @@ namespace RSLib
 
     /** Finds all occurences of 'stringToFind' inside this string within 'searchStart' and 
     'searchEnd'. If 'searchEnd' is -1 (default) the string will be scanned until its end. */
-    rsArray<int> findAllOccurrencesOf(const rsString& stringToFind, const int searchStart = 0,                          
+    rsArrayTools<int> findAllOccurrencesOf(const rsString& stringToFind, const int searchStart = 0,                          
                                       int searchEnd = -1) const
     {
       if( searchEnd < 0 )
@@ -105,7 +105,7 @@ namespace RSLib
       int searchLength = searchEnd-searchStart+1;
       std::vector<int> matches = RSLib::rsFindAllOccurencesOf(&elements[searchStart],              
         searchLength, stringToFind.elements, stringToFind.getLength());
-      return rsArray<int>(matches);
+      return rsArrayTools<int>(matches);
     }
 
     /** Returns true, if this string contains non-printable characters according to the isprint 
@@ -150,14 +150,14 @@ namespace RSLib
 
     /** Repeats this string the given number of times. You may also pass zero in which case the 
     result will be an empty string. */
-    void repeat(const int numberOfTimes) { rsArray<char>::repeat(numberOfTimes); }
+    void repeat(const int numberOfTimes) { rsArrayTools<char>::repeat(numberOfTimes); }
 
 
     /** \name Substring Extraction */
 
     /** Returns the substring from startIndex to endIndex (inclusive). */
     rsString getSubString(const int startIndex, const int endIndex) const
-    { return rsArray<char>::getSubArray(startIndex, endIndex); }
+    { return rsArrayTools<char>::getSubArray(startIndex, endIndex); }
 
     /** Returns the substring starting at 'startIndex' and ending just before the first occurrence 
     of 'endString'. */

@@ -88,7 +88,7 @@ template<class TSig, class TPar>
 void rsCrossOver4Way<TSig, TPar>::getMagnitudeResponse(TPar* frequencies, TPar* magnitudes, 
   int numBins, int outputChannel, bool inDecibels)
 {
-  rsArray::fillWithValue(magnitudes, numBins, TPar(-100));
+  rsArrayTools::fillWithValue(magnitudes, numBins, TPar(-100));
 
   if( !stage2[0].isActive() && !stage2[1].isActive() ) 
   {
@@ -157,7 +157,7 @@ void rsCrossOver4Way<TSig, TPar>::getMagnitudeResponse(TPar* frequencies, TPar* 
 
   rsFilterAnalyzer<TPar>::clampValuesAboveNyquist(frequencies, magnitudes, numBins, 
     stage1.getSampleRate(), -100.0);
-  rsArray::clip(magnitudes, numBins, TPar(-150), TPar(10));
+  rsArrayTools::clip(magnitudes, numBins, TPar(-150), TPar(10));
 }
 
 // audio-processing:

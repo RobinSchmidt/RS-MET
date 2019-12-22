@@ -111,7 +111,7 @@ int findIndexOfMatchingNoteOff(const std::vector<NoteEvent> &events, NoteEvent n
 
 void initializeInputSequences()
 {
-  RAPT::rsArray::fillWithIndex(t, maxNumFrames);
+  RAPT::rsArrayTools::fillWithIndex(t, maxNumFrames);
 
   int v, c, n;
 
@@ -271,9 +271,9 @@ void getDesiredOutputForTestFilter1(int N, double *x, double *b0, double *b1, do
   double *dLeakInt = new double[N];
   getDesiredOutputForMovingAverage(  N, x, b0, b1, dMovAv);
   getDesiredOutputForLeakyIntegrator(N, x, c,      dLeakInt);
-  RAPT::rsArray::add(     dMovAv, dLeakInt, dSum,  N);
-  RAPT::rsArray::subtract(dMovAv, dLeakInt, dDiff, N);
-  RAPT::rsArray::multiply(dMovAv, dLeakInt, dProd, N);
+  RAPT::rsArrayTools::add(     dMovAv, dLeakInt, dSum,  N);
+  RAPT::rsArrayTools::subtract(dMovAv, dLeakInt, dDiff, N);
+  RAPT::rsArrayTools::multiply(dMovAv, dLeakInt, dProd, N);
   delete[] dLeakInt;
   delete[] dMovAv;
 }
@@ -293,11 +293,11 @@ void getDesiredOutputForFilterBlip(int N, double frequency, double q, double *de
   double coeffs[5];  romos::biquadBandpassConstSkirtCoeffs(coeffs, frequency, q);
 
   double *x  = new double[N];  generateImpulse(N, x);
-  double *b0 = new double[N];  RAPT::rsArray::fillWithValue(b0, N, coeffs[0]);
-  double *b1 = new double[N];  RAPT::rsArray::fillWithValue(b1, N, coeffs[1]);
-  double *b2 = new double[N];  RAPT::rsArray::fillWithValue(b2, N, coeffs[2]);
-  double *a1 = new double[N];  RAPT::rsArray::fillWithValue(a1, N, coeffs[3]);
-  double *a2 = new double[N];  RAPT::rsArray::fillWithValue(a2, N, coeffs[4]);
+  double *b0 = new double[N];  RAPT::rsArrayTools::fillWithValue(b0, N, coeffs[0]);
+  double *b1 = new double[N];  RAPT::rsArrayTools::fillWithValue(b1, N, coeffs[1]);
+  double *b2 = new double[N];  RAPT::rsArrayTools::fillWithValue(b2, N, coeffs[2]);
+  double *a1 = new double[N];  RAPT::rsArrayTools::fillWithValue(a1, N, coeffs[3]);
+  double *a2 = new double[N];  RAPT::rsArrayTools::fillWithValue(a2, N, coeffs[4]);
 
   getDesiredOutputForBiquad(N, x, b0, b1, b2, a1, a2, desiredOutput);
 
@@ -328,7 +328,7 @@ bool checkResult(double **y, double **d, int numChannels, int numFrames, double 
 {
   bool result = true;
   for(int c = 0; c < numChannels; c++)
-    result &= RAPT::rsArray::almostEqual(y[c], d[c], numFrames, tolerance);
+    result &= RAPT::rsArrayTools::almostEqual(y[c], d[c], numFrames, tolerance);
   return result;
 }
 
@@ -399,11 +399,11 @@ bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFra
                                                double tolerance, char *testName, std::vector<NoteEvent> *events)
 {
   module->resetStateForAllVoices();
-  RAPT::rsArray::fillWithZeros(y[0][0], numFrames);
+  RAPT::rsArrayTools::fillWithZeros(y[0][0], numFrames);
 
   processModuleInFrames(module, numFrames, x, y, events, false);
 
-  bool result = RAPT::rsArray::equal(d[0][0], y[0][0], numFrames);
+  bool result = RAPT::rsArrayTools::equal(d[0][0], y[0][0], numFrames);
 
   //Plotter::plotData(numFrames, t, d[0][0], y[0][0]);
 
@@ -418,11 +418,11 @@ bool checkProcessingInBlocksMonoAndPrintResult(romos::Module *module, int numFra
                                                double tolerance, char *testName, std::vector<NoteEvent> *events)
 {
   module->resetStateForAllVoices();
-  RAPT::rsArray::fillWithZeros(y[0][0], numFrames);
+  RAPT::rsArrayTools::fillWithZeros(y[0][0], numFrames);
 
   processModuleInBlocks(module, numFrames, x, y, events, false);
 
-  bool result = RAPT::rsArray::equal(d[0][0], y[0][0], numFrames);
+  bool result = RAPT::rsArrayTools::equal(d[0][0], y[0][0], numFrames);
 
   //Plotter::plotData(100, t, d[0][0], y[0][0]);
 
@@ -441,13 +441,13 @@ bool checkProcessingInFramesPolyAndPrintResult(romos::Module *module, int numVoi
   int v;
 
   for(v = 0; v < numVoicesToCheck; v++)
-    RAPT::rsArray::fillWithZeros(y[v][0], numFrames);
+    RAPT::rsArrayTools::fillWithZeros(y[v][0], numFrames);
 
   processModuleInFrames(module, numFrames, x, y, events, true);
 
   bool result = true;
   for(v = 0; v < numVoicesToCheck; v++)
-    result &= RAPT::rsArray::equal(d[v][0], y[v][0], numFrames);
+    result &= RAPT::rsArrayTools::equal(d[v][0], y[v][0], numFrames);
 
   //Plotter::plotData(50, t, d[0][0], y[0][0]);
 
@@ -466,13 +466,13 @@ bool checkProcessingInBlocksPolyAndPrintResult(romos::Module *module, int numVoi
   int v;
 
   for(v = 0; v < numVoicesToCheck; v++)
-    RAPT::rsArray::fillWithZeros(y[v][0], numFrames);
+    RAPT::rsArrayTools::fillWithZeros(y[v][0], numFrames);
 
   processModuleInBlocks(module, numFrames, x, y, events, true);
 
   bool result = true;
   for(v = 0; v < numVoicesToCheck; v++)
-    result &= RAPT::rsArray::equal(d[v][0], y[v][0], numFrames);
+    result &= RAPT::rsArrayTools::equal(d[v][0], y[v][0], numFrames);
 
   //Plotter::plotData(numFrames, t, d[1][0], y[1][0]);
   //Plotter::plotData(50, t, &d[0][0][950], &y[0][0][950]);

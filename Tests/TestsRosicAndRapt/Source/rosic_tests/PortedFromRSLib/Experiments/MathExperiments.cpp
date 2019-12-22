@@ -531,7 +531,7 @@ void minSqrdCurvForFixSums()
 
   // try a sequence of random sums - see if in this case also both error functions produce the same
   // result:
-  RAPT::rsArray::fillWithRandomValues(&s[0], (int) s.size(), 10.0, 20.0, 0);
+  RAPT::rsArrayTools::fillWithRandomValues(&s[0], (int) s.size(), 10.0, 20.0, 0);
   v = rsMinSqrCrvFixSum(s);
   u = rsMinSqrDifFixSum(s);
   c = sqrdCurvSum(v);
@@ -724,7 +724,7 @@ void bandLimitedStep()
   static const int N = 5000;
   double t[N];
   double y[N];
-  RAPT::rsArray::fillWithRangeLinear(t, N, tMin, tMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(t, N, tMin, tMax);
   for(int n = 0; n < N; n++)
     y[n] = rsWindowedBandLimitedStep(t[n], T);
   plotData(N, t, y);
@@ -824,9 +824,9 @@ void naturalCubicSpline()
 
   int Ni = 501;
   std::vector<double> xi(Ni), yi(Ni);
-  RAPT::rsArray::fillWithRangeLinear(&xi[0], Ni, -6.0, 6.0);
+  RAPT::rsArrayTools::fillWithRangeLinear(&xi[0], Ni, -6.0, 6.0);
 
-  //RAPT::rsArray::fillWithZeros(&yi[0], Ni);  // preliminary
+  //RAPT::rsArrayTools::fillWithZeros(&yi[0], Ni);  // preliminary
   RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni);
 
   GNUPlotter plt;
@@ -855,7 +855,7 @@ void naturalCubicSpline2()
 
   int Ni = 1001;
   std::vector<double> xi(Ni), yi(Ni);
-  RAPT::rsArray::fillWithRangeLinear(&xi[0], Ni, x[0], x[N-1]);
+  RAPT::rsArrayTools::fillWithRangeLinear(&xi[0], Ni, x[0], x[N-1]);
 
   RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni, 1.0); // Natural
   //RAPT::rsInterpolateSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni, 1);   // Hermite
@@ -968,7 +968,7 @@ void splineInterpolationNonEquidistant()
   //rsInterpolateSpline(xn, yn, N, xi, yiSp3, M, 10);
 
   // interpolate and plot interpolated data:
-  RAPT::rsArray::fillWithRangeLinear(xi, M, xiMin, xiMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(xi, M, xiMin, xiMax);
   rsInterpolateSpline(xn, yn, N, xi, yiSp0, M, 0);
   rsInterpolateSpline(xn, yn, N, xi, yiSp1, M, 1);
   rsInterpolateSpline(xn, yn, N, xi, yiSp2, M, 2);
@@ -1181,7 +1181,7 @@ void splineInterpolationAreaNormalized()
   // create linear, cubic, quartic and quintic interpolant:
   static const int N = 1000;
   double x[N], yl[N], yc[N], yr1[N], yr2[N];
-  RAPT::rsArray::fillWithRangeLinear(x, N, 0.0, 1.0);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, 0.0, 1.0);
   for(int n = 0; n < N; n++)
   {
     yl[n]  = rsInterpolateLinear(0.0, 1.0, y0[0], y1[0], x[n]);
@@ -1192,14 +1192,14 @@ void splineInterpolationAreaNormalized()
 
   // create the running sums of the interpolants (which are approximations to integrals times N):
   double sl1[N], sl2[N], sc1[N], sc2[N], sr11[N], sr12[N], sr21[N], sr22[N];
-  RAPT::rsArray::cumulativeSum(yl,  sl1,  N);     // 1st order cumulative sum of linear interpolant
-  RAPT::rsArray::cumulativeSum(yl,  sl2,  N, 2);  // 2nd order cumulative sum of linear interpolant
-  RAPT::rsArray::cumulativeSum(yc,  sc1,  N);     // 1st order cumulative sum of cubic interpolant
-  RAPT::rsArray::cumulativeSum(yc,  sc2,  N, 2);  // 2nd order cumulative sum of cubic interpolant
-  RAPT::rsArray::cumulativeSum(yr1, sr11, N);     // 1st order cumulative sum of quartic interpolant
-  RAPT::rsArray::cumulativeSum(yr1, sr12, N, 2);  // 2nd order cumulative sum of quartic interpolant
-  RAPT::rsArray::cumulativeSum(yr2, sr21, N);     // 1st order cumulative sum of quintic interpolant
-  RAPT::rsArray::cumulativeSum(yr2, sr22, N, 2);  // 2nd order cumulative sum of quintic interpolant
+  RAPT::rsArrayTools::cumulativeSum(yl,  sl1,  N);     // 1st order cumulative sum of linear interpolant
+  RAPT::rsArrayTools::cumulativeSum(yl,  sl2,  N, 2);  // 2nd order cumulative sum of linear interpolant
+  RAPT::rsArrayTools::cumulativeSum(yc,  sc1,  N);     // 1st order cumulative sum of cubic interpolant
+  RAPT::rsArrayTools::cumulativeSum(yc,  sc2,  N, 2);  // 2nd order cumulative sum of cubic interpolant
+  RAPT::rsArrayTools::cumulativeSum(yr1, sr11, N);     // 1st order cumulative sum of quartic interpolant
+  RAPT::rsArrayTools::cumulativeSum(yr1, sr12, N, 2);  // 2nd order cumulative sum of quartic interpolant
+  RAPT::rsArrayTools::cumulativeSum(yr2, sr21, N);     // 1st order cumulative sum of quintic interpolant
+  RAPT::rsArrayTools::cumulativeSum(yr2, sr22, N, 2);  // 2nd order cumulative sum of quintic interpolant
 
   // plot:
   //plotData(N, x, yl,  yc,  yr1);   // linear, cubic and quartic interpolant
@@ -1377,10 +1377,10 @@ void numericDiffAndInt()
   double       yi[N], yin[N]; // true and numeric integral
 
   // create x-axis:
-  RAPT::rsArray::fillWithRandomValues(x, N, 0.1, 1.5, 0);
-  RAPT::rsArray::cumulativeSum(x, x, N);
+  RAPT::rsArrayTools::fillWithRandomValues(x, N, 0.1, 1.5, 0);
+  RAPT::rsArrayTools::cumulativeSum(x, x, N);
   double scaler = xMax/x[N-1];
-  RAPT::rsArray::scale(x, N, scaler);
+  RAPT::rsArrayTools::scale(x, N, scaler);
 
   // compute sine and derivative at the samples:
   int n;
@@ -1453,7 +1453,7 @@ void shiftPolynomial()
   double xMax = +1.0;
   static const int N = 1000;
   double x[N];
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
   double y[N], ys[N], yst[N];   // y, stretched version of y, target for stretched version
   int n;
   for(n = 0; n < N; n++)
@@ -1569,10 +1569,10 @@ void monotonicPolynomials()
 void rsPolyWithDerivativeValues(double *a, int N, double *x, double *yp, double shift = 0)
 {
   double **A = RAPT::rsPolynomial<double>::vandermondeMatrix(x, N);
-  RAPT::rsArray::fillWithZeros(A[N-1], N-1);
+  RAPT::rsArrayTools::fillWithZeros(A[N-1], N-1);
   A[N-1][N-1] = 1;
   RAPT::rsLinearAlgebra::rsSolveLinearSystem(A, a, yp, N);
-  RAPT::rsArray::deAllocateSquareArray2D(A, N);  
+  RAPT::rsArrayTools::deAllocateSquareArray2D(A, N);  
   RAPT::rsPolynomial<double>::integral(a, a, N-1, shift);
 }
 void monotonicPolynomials()
@@ -1602,7 +1602,7 @@ void monotonicPolynomials()
                           // in the derivative polynomial
 
   //rsFillWithRangeLinear(x, N-1, double(-(N-1)/2), double((N-1)-1-(N-1)/2)); // simplify
-  RAPT::rsArray::fillWithRangeLinear(x, N-1, 0.0, double(N-2));
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N-1, 0.0, double(N-2));
 
   // try to hand select values for x
   /*
@@ -1617,7 +1617,7 @@ void monotonicPolynomials()
   x[1] = 2;
 
 
-  RAPT::rsArray::fillWithValue(yp, N-1, 0.0);
+  RAPT::rsArrayTools::fillWithValue(yp, N-1, 0.0);
   yp[N-1] = scale;
   rsPolyWithDerivativeValues(a, N, x, yp, shift);
 
@@ -1633,11 +1633,11 @@ void monotonicPolynomials()
   // plot:
   static const int Np = 1000;
   double xPlt[Np], yPlt[Np];
-  double xMin = RAPT::rsArray::minValue(x, N-1);
-  double xMax = RAPT::rsArray::maxValue(x, N-1);
+  double xMin = RAPT::rsArrayTools::minValue(x, N-1);
+  double xMax = RAPT::rsArrayTools::maxValue(x, N-1);
 
   xMax = 3;
-  RAPT::rsArray::fillWithRangeLinear(xPlt, Np, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(xPlt, Np, xMin, xMax);
   for(int n = 0; n < Np; n++)
     yPlt[n] = RAPT::rsPolynomial<double>::evaluate(xPlt[n], a, N);
   plotData(Np, xPlt, yPlt);
@@ -1675,7 +1675,7 @@ void parametricBell()
   double xMin =  center - 1.2 * width/2;
   double xMax =  center + 1.2 * width/2;
   double x[N];
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
   double yl[N], yc[N], yq[N], yh[N], yb[N]; // linear, cubic, quintic, heptic, bump
   int n;
 
@@ -1719,7 +1719,7 @@ void partialFractionExpansion()
 
   typedef RAPT::rsPolynomial<double> Poly;
   typedef std::complex<double> Complex;
-  typedef RAPT::rsArray Array;
+  typedef RAPT::rsArrayTools Array;
 
   // probably, we have to divide the numerator coefficients by the leading coefficient of the 
   // denominator - in our example, it's unity, so it doesn't matter:
@@ -2469,7 +2469,7 @@ void dampedSineEnergy()
   static const int N = 1000;
   double tMax = 10*tau;
   double tAxis[N];
-  RAPT::rsArray::fillWithRangeLinear(tAxis, N, 0.0, tMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(tAxis, N, 0.0, tMax);
   double y[N], ySq[N], yI[N];
   int n;
   for(n = 0; n < N; n++)
@@ -2504,7 +2504,7 @@ void sineIntegral()
   static const int N = 1000;
   double t[N];
   double y[N];
-  RAPT::rsArray::fillWithRangeLinear(t, N, tMin, tMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(t, N, tMin, tMax);
   for(int n = 0; n < N; n++)
     y[n] = rsSineIntegral(t[n]);
   plotData(N, t, y);
@@ -2527,8 +2527,8 @@ void logarithmQuotient()
   static const int N = 1000;
   double x[N];
   double y[N];
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
-  RAPT::rsArray::applyFunction(x, y, N, &lq);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::applyFunction(x, y, N, &lq);
 
   GNUPlotter p;
   p.plotFunctions(N, xMin, xMax, &lq);
@@ -2542,14 +2542,14 @@ void stirlingNumbers()
   int s[nMax+1][nMax+1];   // Stirling numbers
 
   int **tmp;
-  RAPT::rsArray::allocateSquareArray2D(tmp, nMax+1);
+  RAPT::rsArrayTools::allocateSquareArray2D(tmp, nMax+1);
   rsStirlingNumbersFirstKind(tmp, nMax);
   for(n = 0; n <= nMax; n++)
   {
     for(k = 0; k<= nMax; k++)
       s[n][k] = tmp[n][k];
   }
-  RAPT::rsArray::deAllocateSquareArray2D(tmp, nMax+1);
+  RAPT::rsArrayTools::deAllocateSquareArray2D(tmp, nMax+1);
 }
 
 
@@ -2608,31 +2608,31 @@ void sequenceSquareRoot()
   // the "square-sequences": and its sum:
   double A[2*N+1];
   double B[2*N+1];
-  RAPT::rsArray::convolve(a, N+1, a, N+1, A);
-  RAPT::rsArray::convolve(b, N+1, b, N+1, B);
+  RAPT::rsArrayTools::convolve(a, N+1, a, N+1, A);
+  RAPT::rsArrayTools::convolve(b, N+1, b, N+1, B);
 
   // sum of the two square-sequences: 
   double C[2*N+1];
-  RAPT::rsArray::add(A, B, C, 2*N+1);
+  RAPT::rsArrayTools::add(A, B, C, 2*N+1);
 
   // retrieve a sequence q that, when convolved with itself, gives a sequence in which the first
   // N values agree with C:
   double q[N+1];
-  RAPT::rsArray::sequenceSqrt(C, 2*N+1, q);
+  RAPT::rsArrayTools::sequenceSqrt(C, 2*N+1, q);
 
   // get Q, the full square sequence of q - it should agree with C up to index N:
   double Q[2*N+1];
-  RAPT::rsArray::convolve(q, N+1, q, N+1, Q);
+  RAPT::rsArrayTools::convolve(q, N+1, q, N+1, Q);
 
   // get the difference D between C and Q:
   double D[2*N+1];
-  RAPT::rsArray::subtract(C, Q, D, 2*N+1);
+  RAPT::rsArrayTools::subtract(C, Q, D, 2*N+1);
 
   // find a sequence r that, when squared, gives D
   double r[N+1];
   int m = (N+1)/2;        // number of leading zeros in r
-  RAPT::rsArray::fillWithZeros(r, m);
-  RAPT::rsArray::sequenceSqrt(&D[2*m], N, &r[m]); 
+  RAPT::rsArrayTools::fillWithZeros(r, m);
+  RAPT::rsArrayTools::sequenceSqrt(&D[2*m], N, &r[m]); 
 
   /*
   double Ds[2*N+1]; // D, shifted and zero padded
@@ -2642,7 +2642,7 @@ void sequenceSquareRoot()
   */
 
   double R[2*N+1];
-  RAPT::rsArray::convolve(r, N+1, r, N+1, R);  // R should match D
+  RAPT::rsArrayTools::convolve(r, N+1, r, N+1, R);  // R should match D
                                   // ...yes but only the 1st 3 values - which makes sense because
                                   // r has only 3 degrees of freedom - hmmm.....
   int dummy = 0;
@@ -2776,7 +2776,7 @@ void conicSystem()
   complex<double> xt, yt;   // target solution (found with wolfram alpha)
 
   // test rsSolveDoubleSqrtEquation:
-  RAPT::rsArray::fillWithValue(p, 10, 1.0);
+  RAPT::rsArrayTools::fillWithValue(p, 10, 1.0);
   p[1] =  4;
   p[6] =  2;
   xt   = -1;
@@ -2790,8 +2790,8 @@ void conicSystem()
   // test rsSolveConicSystem:
   complex<double> j(0.0, 1.0);   // imaginary unit
   double a[6], b[6];             // parameters
-  RAPT::rsArray::fillWithValue(a, 6, 1.0);
-  RAPT::rsArray::fillWithValue(b, 6, 1.0);
+  RAPT::rsArrayTools::fillWithValue(a, 6, 1.0);
+  RAPT::rsArrayTools::fillWithValue(b, 6, 1.0);
   b[4] = 2;
 
   rsSolveConicSystem(a, b, &x, &y, 4, complex<double>(0.1));
@@ -3135,7 +3135,7 @@ void primeRecursion()
 
   // init first few primes, d and Pd:
   rsUint32 np = 11;
-  RAPT::rsArray::copy(tp, p, np);
+  RAPT::rsArrayTools::copy(tp, p, np);
   rsUint32 d  = 7;
   rsUint32 Pd = 2*3*5*7;
   while( np < N )
@@ -3228,7 +3228,7 @@ void primeSieveSchmidt1()
   rsUint32 a[N+1];
   rsUint32 p[168];      // there are 168 primes up to N=100
 
-  RAPT::rsArray::fillWithRangeLinear(a, N+1, rsUint32(0), rsUint32(N));
+  RAPT::rsArrayTools::fillWithRangeLinear(a, N+1, rsUint32(0), rsUint32(N));
 
   rsUint32 i, j, k, k5, np, np1, pk, pk1;  
   int dummy;
@@ -3378,7 +3378,7 @@ void primeSieveSchmidt2()
   rsUint32 a[N+1];
   rsUint32 p[168];      // there are 168 primes up to N=100
 
-  RAPT::rsArray::fillWithRangeLinear(a, N+1, rsUint32(0), rsUint32(N));
+  RAPT::rsArrayTools::fillWithRangeLinear(a, N+1, rsUint32(0), rsUint32(N));
 
   rsUint32 i, j, k, k5, np, np1, pk, pk1, q, r;  
   int dummy;
@@ -3559,7 +3559,7 @@ void primeSieve()
       b[ib]  = 0;
       ib    += s;
     }
-    ip   = RAPT::rsArray::firstIndexWithNonZeroValue(&b[ip+1], N-ip-1) + ip + 1; 
+    ip   = RAPT::rsArrayTools::firstIndexWithNonZeroValue(&b[ip+1], N-ip-1) + ip + 1; 
     dMax = bMax / pi;
   }
   test = true;
@@ -3605,7 +3605,7 @@ void primeSieve()
   np   = 2;
   while( true )
   {
-    ip    = RAPT::rsArray::firstIndexWithNonZeroValue(&c[ip+1], N-ip-1) + ip + 1; 
+    ip    = RAPT::rsArrayTools::firstIndexWithNonZeroValue(&c[ip+1], N-ip-1) + ip + 1; 
     pi    = c[ip];
     p[np] = pi;
     np    = np+1;
@@ -3623,7 +3623,7 @@ void primeSieve()
   }
 
 
-  test = RAPT::rsArray::equal(b, c, N);
+  test = RAPT::rsArrayTools::equal(b, c, N);
 
 
   // idea: when (mutiples of) 2 were already sieved out, we can use and increment of 2p for all 
@@ -3650,10 +3650,10 @@ void primeSieve()
 
     ib = pi * c[ip+1] + 2;
 
-    ip   = RAPT::rsArray::firstIndexWithNonZeroValue(&c[ip+1], N-ip-1) + ip + 1; 
+    ip   = RAPT::rsArrayTools::firstIndexWithNonZeroValue(&c[ip+1], N-ip-1) + ip + 1; 
     dMax = bMax / pi;
   }
-  test = RAPT::rsArray::equal(b, c, N);
+  test = RAPT::rsArrayTools::equal(b, c, N);
 
 
 
@@ -3933,8 +3933,8 @@ void numberTheoreticTransform()
   rsUint32 roots[M], inverseRoots[M], orders[M], inverseOrders[M];
     // we don't expect to find M roots in general, but it's an upper bound
 
-  RAPT::rsArray::fillWithZeros(roots,  M); // so it doesn't have undefined values when we search through it
-  RAPT::rsArray::fillWithZeros(orders, M);
+  RAPT::rsArrayTools::fillWithZeros(roots,  M); // so it doesn't have undefined values when we search through it
+  RAPT::rsArrayTools::fillWithZeros(orders, M);
 
   // find the roots of unity and their orders by brute force:
   rsUint32 i, j, k = 0; 
@@ -3943,7 +3943,7 @@ void numberTheoreticTransform()
     for(j = 2; j < M; j++) // loop over potential orders
     {
       bool isRoot      = powModular(i, j, M) % M == 1;
-      bool isPrimitive = !RAPT::rsArray::contains(roots, M, i);
+      bool isPrimitive = !RAPT::rsArrayTools::contains(roots, M, i);
       if( isRoot && isPrimitive )
       {
         roots[k]  = i;
@@ -3955,7 +3955,7 @@ void numberTheoreticTransform()
   rsUint32 numRoots = k;
 
   // find inverse elements of roots and orders by the powering algorithm:
-  rsUint32 maxOrder = RAPT::rsArray::maxValue(orders, M);  // all other orders divide this value
+  rsUint32 maxOrder = RAPT::rsArrayTools::maxValue(orders, M);  // all other orders divide this value
   for(k = 0; k < numRoots; k++)
   {
     inverseRoots[k]  = powModular(roots[k],  maxOrder-1, M);

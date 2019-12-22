@@ -283,8 +283,8 @@ void rsAutoCorrelationPitchDetector<T>::reset()
   sampleCounter     = 0;
   frequencyEstimate = 1000.0;
   reliability       = 0.0;
-  rsArray::fillWithZeros(circularBuffer, bufferSize);
-  rsArray::fillWithZeros(linearBuffer, bufferSize);
+  rsArrayTools::fillWithZeros(circularBuffer, bufferSize);
+  rsArrayTools::fillWithZeros(linearBuffer, bufferSize);
 }
 
 // Internal Functions;

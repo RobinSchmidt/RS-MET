@@ -42,8 +42,8 @@ void phaseRepresentation()
     
   // obtain the difference between the two signals - it represents the error:
   double d[N];
-  RAPT::rsArray::subtract(x2, x1, d, N);
-  double e = RAPT::rsArray::maxAbs(d, N);
+  RAPT::rsArrayTools::subtract(x2, x1, d, N);
+  double e = RAPT::rsArrayTools::maxAbs(d, N);
   int dummy = 0;
 
   // Observations:
@@ -92,7 +92,7 @@ void grainRoundTrip()
 
   // create the test signal:
   double x[N];
-  RAPT::rsArray::fillWithValue(x, N, 1.0);
+  RAPT::rsArrayTools::fillWithValue(x, N, 1.0);
 
   // obtain short-time spectrum:
   rsComplexDbl X[M];
@@ -177,12 +177,12 @@ void plotOverlappingWindowSum()
   rsWindowFunction::blackman(wa, B);
   rsWindowFunction::blackman(ws, B);
 
-  RAPT::rsArray::multiply(wa, ws, w, B);
+  RAPT::rsArrayTools::multiply(wa, ws, w, B);
 
   // todo: try different window functions: Hmaming, Blackman, versions with both ends nonzero
 
   double yw[N];             // sum of windows
-  RAPT::rsArray::fillWithZeros(yw, N);
+  RAPT::rsArrayTools::fillWithZeros(yw, N);
   double t[B];              // time indices for current window
 
   GNUPlotter plt;
@@ -195,13 +195,13 @@ void plotOverlappingWindowSum()
   int n = 0;
   for(j = 0; j < J; j++)
   {
-    RAPT::rsArray::fillWithRangeLinear(t, B, n-B/2., n+B/2.-1);
+    RAPT::rsArrayTools::fillWithRangeLinear(t, B, n-B/2., n+B/2.-1);
     plt.addDataArrays(B, t, w);
-    RAPT::rsArray::addInto(yw, N, w, B, n-B/2);
+    RAPT::rsArrayTools::addInto(yw, N, w, B, n-B/2);
     n += H;
   }
   double s = rsSpectrogramD::getWindowSum(wa, ws, B, H);
-  RAPT::rsArray::scale(yw, N, 1/s);
+  RAPT::rsArrayTools::scale(yw, N, 1/s);
   plt.addDataArrays(N, yw);
 
   //int n0; 
@@ -255,7 +255,7 @@ void spectrogramSine()
   // create the test signal:
   double x[N];
   createSineWave(x, N, f, 1.0, fs);
-  RAPT::rsArray::scale(x, N/2, 0.1);   // amplitude switch in the middle of the signal
+  RAPT::rsArrayTools::scale(x, N/2, 0.1);   // amplitude switch in the middle of the signal
 
   // compute the complex spectrogram:
   rsSpectrogramD sp;
@@ -456,7 +456,7 @@ void sineParameterEstimation()
   freqEstimate  = peakPos*sampleRate/sp.getFftSize(); // maybe we should have a function sp.getBinFrequency(peakBin)
 
   //phaseEstimate = phases[peakIndex]; // maybe use interpolation later
-  phaseEstimate = RAPT::rsArray::interpolatedValueAt(&phases[0], (int) phases.size(), peakPos);
+  phaseEstimate = RAPT::rsArrayTools::interpolatedValueAt(&phases[0], (int) phases.size(), peakPos);
 
   // compute errors with respect to true values:
   double targetPhase = startPhase + 2*PI*frequency*anaTime; // actual phase of cosine at anaTime
@@ -1829,7 +1829,7 @@ void amplitudeDeBeating()
 std::vector<double> createLinearSineSweep(int N, double f1, double f2, double fs, double a = 1)
 {
   std::vector<double> x(N), f(N);
-  RAPT::rsArray::fillWithRangeLinear(&f[0], N, f1, f2);  // maybe make a function for exponential sweeps
+  RAPT::rsArrayTools::fillWithRangeLinear(&f[0], N, f1, f2);  // maybe make a function for exponential sweeps
   createSineWave(&x[0], N, &f[0], a, fs);
   return x;
 }

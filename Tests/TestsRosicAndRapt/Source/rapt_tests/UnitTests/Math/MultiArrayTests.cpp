@@ -8,7 +8,7 @@ bool testMultiArrayInit(std::string &reportString)
   rsUint32 indices[1];
   indices[0] = 3;    // that value should be irrelevant
   float data[10];
-  rsArray::fillWithRangeLinear(data, 10, 1.f, 10.f);
+  rsArrayTools::fillWithRangeLinear(data, 10, 1.f, 10.f);
 
   // create array with 0 indices (a scalar) and see, if it initializes correctly:
   rsMultiArrayOld<float> a0;
@@ -84,7 +84,7 @@ bool testMultiArrayOuterProduct(std::string &reportString)
   rsUint32 indicesResult[5];
 
   float data[30];
-  rsArray::fillWithRangeLinear(data, 30, 1.f, 30.f);
+  rsArrayTools::fillWithRangeLinear(data, 30, 1.f, 30.f);
   data[23] = 32; // these 2 values will be used in the divisions, so we want powers of 2 to make
   data[29] = 64; // numerically exact division possible (for easier comparison witn target results)
 
@@ -160,7 +160,7 @@ bool testMultiArrayContraction(std::string &reportString)
   subjectIndices[4] = 5;
 
   float data[360];
-  rsArray::fillWithRangeLinear(data, 360, 1.f, 360.f);
+  rsArrayTools::fillWithRangeLinear(data, 360, 1.f, 360.f);
 
   rsMultiArrayOld<float> a(5, subjectIndices);
   a.setDataFromFlatArray(data);

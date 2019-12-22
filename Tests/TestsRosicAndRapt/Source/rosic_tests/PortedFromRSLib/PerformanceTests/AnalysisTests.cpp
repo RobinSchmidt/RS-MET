@@ -9,7 +9,7 @@ void testFourierTransformer(std::string &reportString)
 
   rsComplexDbl x[bufferSize];
   rsComplexDbl X[bufferSize];
-  RAPT::rsArray::fillWithRandomValues(x, bufferSize, -1.0, +1.0, 1);
+  RAPT::rsArrayTools::fillWithRandomValues(x, bufferSize, -1.0, +1.0, 1);
 
   rsFourierTransformerRadix2D ft;
   ft.setBlockSize(bufferSize);
@@ -25,7 +25,7 @@ void testFourierTransformer(std::string &reportString)
   counter.init();
   for(b = 0; b < numBuffers; b++)
   {
-    RAPT::rsArray::copy(x, X, bufferSize);
+    RAPT::rsArrayTools::copy(x, X, bufferSize);
     rsFFT(X, bufferSize);
   }
   cycles = (double) counter.getNumCyclesSinceInit();

@@ -6,7 +6,7 @@ std::vector<T> rsExpDecayTail(const rsSinusoidalPartial<T>& partial, int spliceI
   std::vector<T> t = partial.getTimeArray();
   std::vector<T> a = partial.getAmplitudeArray();
   int numFrames = (int) partial.getNumDataPoints();
-  int maxIndex  = RAPT::rsArray::maxIndex(&a[0], numFrames);
+  int maxIndex  = RAPT::rsArrayTools::maxIndex(&a[0], numFrames);
 
   rsAssert(maxIndex < spliceIndex);
   // splicing point is supposed to be somewhere in the decaying section after the global maximum

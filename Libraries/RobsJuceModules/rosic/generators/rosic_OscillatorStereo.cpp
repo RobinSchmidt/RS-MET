@@ -481,8 +481,8 @@ void OscillatorStereo::getWaveformForDisplay(double **targetBuffer, int numSampl
     }
 
     // extract min/max from the chunk and write into the target buffer:
-    int minIndex = RAPT::rsArray::minIndex(tmpArrayL, readLength);
-    int maxIndex = RAPT::rsArray::maxIndex(tmpArrayL, readLength);
+    int minIndex = RAPT::rsArrayTools::minIndex(tmpArrayL, readLength);
+    int maxIndex = RAPT::rsArrayTools::maxIndex(tmpArrayL, readLength);
 
 
     // debug:
@@ -500,8 +500,8 @@ void OscillatorStereo::getWaveformForDisplay(double **targetBuffer, int numSampl
       targetBuffer[0][writeIndex+1] = tmpArrayL[minIndex];
     }
 
-    minIndex = RAPT::rsArray::minIndex(tmpArrayR, tmpArrayLength);
-    maxIndex = RAPT::rsArray::maxIndex(tmpArrayR, tmpArrayLength);
+    minIndex = RAPT::rsArrayTools::minIndex(tmpArrayR, tmpArrayLength);
+    maxIndex = RAPT::rsArrayTools::maxIndex(tmpArrayR, tmpArrayLength);
     if( minIndex < maxIndex )
     {
       targetBuffer[1][writeIndex]   = tmpArrayR[minIndex];

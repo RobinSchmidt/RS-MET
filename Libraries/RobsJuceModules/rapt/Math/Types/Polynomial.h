@@ -310,7 +310,7 @@ public:
   Can work in place, i.e. result may point to the same array as a and/or b.   */
   static void multiply(const T *a, int aDegree, const T *b, int bDegree, T *result)
   {
-    rsArray::convolve(a, aDegree+1, b, bDegree+1, result);
+    rsArrayTools::convolve(a, aDegree+1, b, bDegree+1, result);
   }
 
   /** Divides the polynomials represented by the coefficient arrays 'dividend' and 'divisor' and

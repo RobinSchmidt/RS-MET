@@ -3,7 +3,7 @@
 
 void rosic::getLineOfPascalTriangle(unsigned int *c, unsigned int n)
 {
-  RAPT::rsArray::fillWithZeros(c, n+1);  
+  RAPT::rsArrayTools::fillWithZeros(c, n+1);  
   c[0] = 1;
   for(unsigned int i = 0; i <= n; i++)
   {

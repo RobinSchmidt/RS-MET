@@ -5,7 +5,7 @@ template<class T>
 void rsStemPlot(std::vector<T> v)
 {
   std::vector<T> x(v.size());
-  RAPT::rsArray::fillWithIndex(&x[0], (int) x.size());
+  RAPT::rsArrayTools::fillWithIndex(&x[0], (int) x.size());
   rsStemPlot((int) x.size(), &x[0], &v[0]);
 }
 template void rsStemPlot(std::vector<double> v);
@@ -14,7 +14,7 @@ template<class T>
 void rsPlotMarkers(T* markers, int numMarkers)
 {
   std::vector<T> zeros(numMarkers);    // y values for plotting (all zero)
-  RAPT::rsArray::fillWithZeros(&zeros[0], numMarkers);
+  RAPT::rsArrayTools::fillWithZeros(&zeros[0], numMarkers);
   GNUPlotter plt;
   plt.addDataArrays(numMarkers,   markers, &zeros[0]);
   plt.setGraphStyles("points");
@@ -26,7 +26,7 @@ template<class T>
 void rsPlotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers)
 {
   std::vector<T> zeros(numMarkers);    // y values for plotting (all zero)
-  RAPT::rsArray::fillWithZeros(&zeros[0], numMarkers);
+  RAPT::rsArrayTools::fillWithZeros(&zeros[0], numMarkers);
   GNUPlotter plt;
   plt.addDataArrays(signalLength, signal);
   plt.addDataArrays(numMarkers,   markers, &zeros[0]);

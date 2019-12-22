@@ -162,7 +162,7 @@ void NoiseGenerator::createNoiseSequence()
   transformer.setDirection(FourierTransformerRadix2::INVERSE);
   transformer.getRealSignalFromMagnitudesAndPhases(magnitudes, phases, buffer);
 
-  RAPT::rsArray::normalize(buffer, length, 1.0);
+  RAPT::rsArrayTools::normalize(buffer, length, 1.0);
 
   mutex.unlock();
 }

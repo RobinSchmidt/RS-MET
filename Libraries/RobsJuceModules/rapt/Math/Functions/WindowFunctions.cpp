@@ -24,8 +24,8 @@ void rsWindowFunction::createWindow(T* w, int N, WindowType type, bool normalize
   }
 
   if(normalizeMean) {
-    T m = rsArray::mean(w, N);
-    rsArray::scale(w, N, T(1)/m);
+    T m = rsArrayTools::mean(w, N);
+    rsArrayTools::scale(w, N, T(1)/m);
   }
 }
 
@@ -94,8 +94,8 @@ void rsWindowFunction::cosineSum(T* w, int N, T* c, int K, bool normalizeMean)
       w[n] += c[k] * cos(k*z);  // (2), Eq. 123
   }
   if(normalizeMean) {
-    T m = rsArray::mean(w, N);
-    rsArray::scale(w, N, T(1)/m);
+    T m = rsArrayTools::mean(w, N);
+    rsArrayTools::scale(w, N, T(1)/m);
   }
 }
 

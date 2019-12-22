@@ -8,7 +8,7 @@ void rosic::synthesizeWaveform(double *x, int N, int shape, double frequency, do
                                double phase, bool antiAlias)
 {
   double w = 2*PI*frequency/sampleRate;
-  RAPT::rsArray::fillWithZeros(x, N);
+  RAPT::rsArrayTools::fillWithZeros(x, N);
   switch( shape )
   {
   case SINE:
@@ -89,7 +89,7 @@ void rosic::synthesizePulseWave(double *x, int N, double frequency, double dutyC
                                 double sampleRate, double phase, bool antiAlias)
 {
   double w = 2*PI*frequency/sampleRate;
-  RAPT::rsArray::fillWithZeros(x, N);
+  RAPT::rsArrayTools::fillWithZeros(x, N);
   if( antiAlias == false )
   {
     for(int n=0; n<N; n++)
@@ -139,7 +139,7 @@ void rosic::synthesizeModal(double *x, int N, Vector frequencies, Vector amplitu
   x[0] = synth.getSample(1.0);
   for(int n=1; n<N; n++)
     x[n] = synth.getSample(0.0);
-  RAPT::rsArray::normalize(x, N, 1.0);
+  RAPT::rsArrayTools::normalize(x, N, 1.0);
   */
 }
 
@@ -301,7 +301,7 @@ void rosic::upsampleHermiteAsymmetricM(double *in, int inLength, double *out,
   {
     if( n < M+2 )
     {
-      RAPT::rsArray::fillWithZeros(tmpBuffer, M+2);
+      RAPT::rsArrayTools::fillWithZeros(tmpBuffer, M+2);
       for(i = 0; i <= n; i++)
         tmpBuffer[M+1-i] = in[n-i];
       tmpPointer = &tmpBuffer[M+1];
@@ -317,7 +317,7 @@ void rosic::upsampleHermiteAsymmetricM(double *in, int inLength, double *out,
   }
 
   // tail:
-  RAPT::rsArray::fillWithZeros(tmpBuffer, M+2);
+  RAPT::rsArrayTools::fillWithZeros(tmpBuffer, M+2);
   for(i = 1; i <= RAPT::rsMin(M+1, inLength); i++)
     tmpBuffer[M+1-i] = in[inLength-i];
   tmpBuffer[M+1] = 0.0;

@@ -693,7 +693,7 @@ void romos::retrieveModuleState(void *moduleAsVoid)
   memcpy(dbg1, pointer, 12*sizeof(double));
 
   double timeAxis[maxNumFrames];
-  RAPT::rsArray::fillWithIndex(timeAxis, maxNumFrames);
+  RAPT::rsArrayTools::fillWithIndex(timeAxis, maxNumFrames);
   //Plotter::plotData(numFrames, timeAxis, outs[0][0]);
   int dummy = 0;
 }
