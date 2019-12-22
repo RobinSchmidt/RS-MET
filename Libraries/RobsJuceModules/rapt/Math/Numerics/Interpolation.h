@@ -338,7 +338,7 @@ void rsInterpolateSpline(const Tx *x, const Ty *y, int N, const Tx *xi, Ty *yi, 
   Ty **yd = nullptr;
   if(M > 0)
   {
-    MatrixTools::rsAllocateMatrix(yd, M, N);
+    rsMatrixTools::rsAllocateMatrix(yd, M, N);
     rsNumericDerivative(x, y, yd[0], N);
     for(int m = 1; m < M; m++)
       rsNumericDerivative(x, yd[m-1], yd[m], N);
@@ -347,7 +347,7 @@ void rsInterpolateSpline(const Tx *x, const Ty *y, int N, const Tx *xi, Ty *yi, 
   // interpolate with these numeric derivatives and cleanup:
   rsInterpolateSpline(x, y, yd, N, M, xi, yi, Ni);
   if(M > 0)
-    MatrixTools::rsDeAllocateMatrix(yd, M, N);
+    rsMatrixTools::rsDeAllocateMatrix(yd, M, N);
 }
 
 #endif

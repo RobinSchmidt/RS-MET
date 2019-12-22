@@ -198,12 +198,12 @@ void plotSpectrogram(int numFrames, int numBins, const rsMatrix<std::complex<dou
   double sampleRate, int hopSize, double dbMin, double dbMax)
 {
   double **dB;
-  MatrixTools::rsAllocateMatrix(dB, numFrames, numBins);
+  rsMatrixTools::rsAllocateMatrix(dB, numFrames, numBins);
   for(int i = 0; i < numFrames; i++)
     for(int  j = 0; j < numBins; j++)
       dB[i][j]  = rsMax( rsAmp2dB(abs(spec(i,j))) , dbMin);
   plotSpectrogram(numFrames, numBins, dB, sampleRate, hopSize, dbMin, dbMax);
-  MatrixTools::rsDeAllocateMatrix(dB, numFrames, numBins);
+  rsMatrixTools::rsDeAllocateMatrix(dB, numFrames, numBins);
 }
 
 

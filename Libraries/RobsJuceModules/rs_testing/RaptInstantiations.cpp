@@ -143,15 +143,15 @@ template int rsArrayTools::maxIndex(const rsRange<double>*, int length);
 
 
 
-template void MatrixTools::rsInitMatrix(double** A, int N, int M, double value);
-template void MatrixTools::rsCopyMatrix(double** source, double **destination, int N, int M);
-template bool MatrixTools::rsAreMatricesApproximatelyEqual(double **A, double **B, int N, int M, double tol);
+template void rsMatrixTools::rsInitMatrix(double** A, int N, int M, double value);
+template void rsMatrixTools::rsCopyMatrix(double** source, double **destination, int N, int M);
+template bool rsMatrixTools::rsAreMatricesApproximatelyEqual(double **A, double **B, int N, int M, double tol);
 
-template void MatrixTools::rsMatrixMultiply(double **A, double **B, double **C, int N, int M, int P);
-template void MatrixTools::rsMatrixMultiplyFirstTransposed(double **A, double **B, double **C, int N, int M, int P);
-template void MatrixTools::rsMatrixMultiplySecondTransposed(double **A, double **B, double **C, int N, int M, int P);
-template void MatrixTools::rsMatrixMultiplyBothTransposed(double **A, double **B, double **C, int N, int M, int P);
-template void MatrixTools::rsMatrixInPlaceMultiply(double **A, double **B, int N, int M);
+template void rsMatrixTools::rsMatrixMultiply(double **A, double **B, double **C, int N, int M, int P);
+template void rsMatrixTools::rsMatrixMultiplyFirstTransposed(double **A, double **B, double **C, int N, int M, int P);
+template void rsMatrixTools::rsMatrixMultiplySecondTransposed(double **A, double **B, double **C, int N, int M, int P);
+template void rsMatrixTools::rsMatrixMultiplyBothTransposed(double **A, double **B, double **C, int N, int M, int P);
+template void rsMatrixTools::rsMatrixInPlaceMultiply(double **A, double **B, int N, int M);
 
 
 

@@ -12,7 +12,7 @@ algebra stuff is not included here - this is part of the math module. */
 
 
 
-class MatrixTools
+class rsMatrixTools
 {
 
 public:
@@ -69,6 +69,7 @@ public:
     // rename to rsMatrixInPlacePostMultiply - a similar function can be written when the first
     // factor is a square matrix - then the result can replace the 2nd matrix and it could be 
     // called in-place-pre-multiply
+    // allocates heap-memory - maybe make a version that takes a workspace parameter
 };
 
 

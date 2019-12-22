@@ -438,7 +438,7 @@ bool rsLinearAlgebra::rsChangeOfBasisColumnWise(T **A, T **B, T *va, T *vb, int 
 {
   // coordinates of v in canonical basis:
   T *ve = new T[N];
-  MatrixTools::rsMatrixVectorMultiply(A, va, ve, N, N);
+  rsMatrixTools::rsMatrixVectorMultiply(A, va, ve, N, N);
 
   // coordinates of v in basis B: A * va = ve = B * vb
   bool result = rsSolveLinearSystem(B, vb, ve, N);
@@ -451,7 +451,7 @@ template<class T>
 bool rsLinearAlgebra::rsChangeOfBasisRowWise(T **A, T **B, T *va, T *vb, int N)
 {
   T *ve = new T[N];
-  MatrixTools::rsTransposedMatrixVectorMultiply(A, va, ve, N, N);
+  rsMatrixTools::rsTransposedMatrixVectorMultiply(A, va, ve, N, N);
   rsArrayTools::transposeSquareArray(B, N);
   bool result = rsSolveLinearSystem(B, vb, ve, N);
   rsArrayTools::transposeSquareArray(B, N);
@@ -463,11 +463,11 @@ template<class T>
 bool rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(T **A, T **B, T **C, int N)
 {
   T **Bi;
-  MatrixTools::rsAllocateMatrix(Bi, N, N);
-  MatrixTools::rsCopyMatrix(B, Bi, N, N);
+  rsMatrixTools::rsAllocateMatrix(Bi, N, N);
+  rsMatrixTools::rsCopyMatrix(B, Bi, N, N);
   bool result = rsInvertMatrix(Bi, N);  // Bi = B^-1
-  MatrixTools::rsMatrixMultiply(Bi, A, C, N, N, N);  // C  = B^-1 * A
-  MatrixTools::rsDeAllocateMatrix(Bi, N, N);
+  rsMatrixTools::rsMatrixMultiply(Bi, A, C, N, N, N);  // C  = B^-1 * A
+  rsMatrixTools::rsDeAllocateMatrix(Bi, N, N);
   return result;
 }
 
@@ -475,11 +475,11 @@ template<class T>
 bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(T **A, T **B, T **C, int N)
 {
   T **Bi;
-  MatrixTools::rsAllocateMatrix(Bi, N, N);
+  rsMatrixTools::rsAllocateMatrix(Bi, N, N);
   rsArrayTools::transposeSquareArray(B, Bi, N);
   bool result = rsInvertMatrix(Bi, N);                 // Bi = B^-T
-  MatrixTools::rsMatrixMultiplySecondTransposed(Bi, A, C, N, N, N); // C  = B^-T * A^T
-  MatrixTools::rsDeAllocateMatrix(Bi, N, N);
+  rsMatrixTools::rsMatrixMultiplySecondTransposed(Bi, A, C, N, N, N); // C  = B^-T * A^T
+  rsMatrixTools::rsDeAllocateMatrix(Bi, N, N);
   return result;
 
   // alternative algorithm:

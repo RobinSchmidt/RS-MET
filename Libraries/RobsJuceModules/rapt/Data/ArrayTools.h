@@ -232,7 +232,7 @@ public:
   /** Frees memory allocated previously via rsAllocateSquareArray2D. */
   template<class T>
   static void deAllocateSquareArray2D(T**& theArray, int size);
-  // move to MatrixTools
+  // move to rsMatrixTools
 
   /** Decimates the array x of length N by the given factor and writes the result into y, which
   must be of length N/factor (floor-division). This is a naive decimation without any 

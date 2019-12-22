@@ -195,7 +195,7 @@ void waveEquation1D()
 
   // go through a couple of rounds of updates:
   double** plotMatrix;
-  MatrixTools::rsAllocateMatrix(plotMatrix, numTimeSteps, numGridPoints);
+  rsMatrixTools::rsAllocateMatrix(plotMatrix, numTimeSteps, numGridPoints);
   for(int n = 0; n < numTimeSteps; n++) {
     wvEq.getState(&u[0], Ng);
     wvEq.getState(plotMatrix[n], Ng);
@@ -220,7 +220,7 @@ void waveEquation1D()
   //plt.plot3D();
   // todo: set hidden 3D and/or plot as heatmap
 
-  MatrixTools::rsDeAllocateMatrix(plotMatrix, numTimeSteps, numGridPoints);
+  rsMatrixTools::rsDeAllocateMatrix(plotMatrix, numTimeSteps, numGridPoints);
 
   // Observations:
   // -using a hanning window of width 10, it looks good - the impulses move to the boundary and get 
