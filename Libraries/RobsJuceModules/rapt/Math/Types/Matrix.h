@@ -81,19 +81,15 @@ public:
 
   /** Adds two matrices: C = A + B. */
   rsMatrix2x2<T> operator+(const rsMatrix2x2<T>& B) const
-  { rsMatrix2x2<T> C; C.a = a + B.a; C.b = b + B.b; C.c = c + B.c; C.d = d + B.d; return C; }
-  // can't we just do:
-  // return rsMatrix2x2<T>(a + B.a, b + B.b, c + B.c, d + B.d);
-  // and likewise for the other operators
+  { return rsMatrix2x2<T>(a + B.a, b + B.b, c + B.c, d + B.d); }
 
   /** Subtracts two matrices: C = A - B. */
   rsMatrix2x2<T> operator-(const rsMatrix2x2<T>& B) const
-  { rsMatrix2x2<T> C; C.a = a - B.a; C.b = b - B.b; C.c = c - B.c; C.d = d - B.d; return C; }
+  { return rsMatrix2x2<T>(a - B.a, b - B.b, c - B.c, d - B.d); }
 
   /** Multiplies two matrices: C = A * B. */
   rsMatrix2x2<T> operator*(const rsMatrix2x2<T>& B) const
-  { rsMatrix2x2<T> C; C.a = a*B.a + b*B.c; C.b = a*B.b + b*B.d;
-    C.c = c*B.a + d*B.c; C.d = c*B.b + d*B.d; return C; }
+  { return rsMatrix2x2<T>(a*B.a + b*B.c, a*B.b + b*B.d, c*B.a + d*B.c, c*B.b + d*B.d); }
 
   /** Multiplies the left matrix operand with the inverse of the right matrix operand. */
   rsMatrix2x2<T> operator/(const rsMatrix2x2<T>& B) const { return *this * B.getInverse(); }
