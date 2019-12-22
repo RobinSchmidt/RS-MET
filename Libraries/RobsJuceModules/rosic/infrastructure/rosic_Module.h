@@ -75,7 +75,7 @@ namespace rosic
 
   protected:
 
-    rsArray<ModulatableParameter> modulatableParameters;
+    rsDynamicArray<ModulatableParameter> modulatableParameters;
 
   };
 

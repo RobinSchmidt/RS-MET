@@ -9,7 +9,7 @@ namespace rosic
 // rename to rsDynamicArray to avoid name-clash with RAPT::rsArray - and maybe move to rapt
 
 template<class ElementType>
-class rsArray
+class rsDynamicArray
 {
 
 public:
@@ -20,7 +20,7 @@ public:
   /** Constructor. If initialSize is nonzero, memory will be reserved to hold just that number of
   elements and the array will filled with default elements as they are constructed by the default
   constructor of the element class. */
-  rsArray(const int initialSize = 0)
+  rsDynamicArray(const int initialSize = 0)
   {
     elements     = NULL;
     numUsed      = 0;
@@ -35,7 +35,7 @@ public:
   }
 
   /** Copy-constructor - creates a deep copy of the other array. */
-  rsArray(const rsArray<ElementType>& other)
+  rsDynamicArray(const rsDynamicArray<ElementType>& other)
   {
     elements     = new ElementType[other.numUsed];
     numUsed      = other.numUsed;
@@ -46,7 +46,7 @@ public:
   }
 
   /** Destructor. */
-  ~rsArray()
+  ~rsDynamicArray()
   {
     if(elements != NULL)
       delete[] elements;
@@ -91,7 +91,7 @@ public:
   }
 
   /** Appends another array to this one. */
-  void appendArray(const rsArray<ElementType> &arrayToAppend)
+  void appendArray(const rsDynamicArray<ElementType> &arrayToAppend)
   {
     ensureAllocatedSize(numUsed + arrayToAppend.numUsed);
     for(int i=0; i<arrayToAppend.numUsed; i++)
@@ -215,7 +215,7 @@ public:
   // const_reference operator[]( size_type pos ) const;
 
   /** Assignment operator - creates a deep copy of this array and returns it. */
-  rsArray& operator= (const rsArray& other)
+  rsDynamicArray& operator= (const rsDynamicArray& other)
   {
     // catch self-assignment:
     if(this == &other)

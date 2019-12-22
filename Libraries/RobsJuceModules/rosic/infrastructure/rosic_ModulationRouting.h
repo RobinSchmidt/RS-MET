@@ -237,7 +237,7 @@ namespace rosic
     MutexLock mutex;
 
     //std::vector<ModulationConnection> connections;
-    rsArray<ModulationConnection> connections;
+    rsDynamicArray<ModulationConnection> connections;
 
   };
 
