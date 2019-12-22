@@ -42,8 +42,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  // todo: prepend get
-
   /** Returns the determinant of this matrix. */
   T getDeterminant() const { return a*d - b*c; }
 
@@ -65,11 +63,8 @@ public:
   { rsVector2D<T> v; rsLinearAlgebra::eigenvector2x2_2(a, b, c, d, &v.x, &v.y, true); return v; }
 
   /** Returns the inverse of this matrix. */
-  rsMatrix2x2<T> inverse() const
+  rsMatrix2x2<T> getInverse() const
   { T D = getDeterminant(); T s = T(1) / D; return rsMatrix2x2<T>(s*d, -s*b, -s*c, s*a); }
-
-  // maybe these functions should be named getDeterminant, etc. - more consistent with other
-  // classes and states more explicitly what they do
 
   /** Tests, if another matrix B is close to this matrix within a given tolerance (all components
   of the difference must be <= tolerance). */
@@ -101,7 +96,7 @@ public:
     C.c = c*B.a + d*B.c; C.d = c*B.b + d*B.d; return C; }
 
   /** Multiplies the left matrix operand with the inverse of the right matrix operand. */
-  rsMatrix2x2<T> operator/(const rsMatrix2x2<T>& B) const { return *this * B.inverse(); }
+  rsMatrix2x2<T> operator/(const rsMatrix2x2<T>& B) const { return *this * B.getInverse(); }
 
   /** Compares matrices for equality */
   bool operator==(const rsMatrix2x2<T>& B) const
@@ -442,7 +437,7 @@ public:
   int flatIndex(const int i, const int j) const
   {
     rsAssert(i >= 0 && i < numRows, "invalid row index");
-    rsAssert(j >= 0 && i < numCols, "invalid column index");
+    rsAssert(j >= 0 && j < numCols, "invalid column index");
     return numCols*i + j;
     // todo:
     //  -be more general: colStride*i + rowStride*j. goal: allow row-major and column-major storage
