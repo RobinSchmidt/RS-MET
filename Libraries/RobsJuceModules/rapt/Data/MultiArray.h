@@ -265,6 +265,11 @@ protected:
   // should be cheap! ...actually, we would only need two pointers: data and strides - to support 
   // the () syntax for accessing elements - but then we couldn't check for out-of-range indexes - 
   // for that, we need also the shape
+  // or maybe make the number of indices a compile-time parameter, own strides and shape array (as
+  // fixed arrays)...implement a constructor that takes an initializer list and copy its content 
+  // into our members...but that implies that for each dimensionality, a template will be 
+  // instantiated - so that makes 3 instantiations for 1D,2D,3D - whereas otherwise there would 
+  // just be one instantiation...hmmm
 
 };
 

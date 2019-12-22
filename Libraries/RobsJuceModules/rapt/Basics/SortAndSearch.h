@@ -1,7 +1,7 @@
 #ifndef RAPT_SORTANDSEARCH_H_INCLUDED
 #define RAPT_SORTANDSEARCH_H_INCLUDED
 
-// move to the "Data" folder
+// move to the "Data" folder ...or maybe int rsArray
 // this file contains functions for sorting arrays, finding elements and related stuff
 // maybe wrap into a class or two classes rsSort, rsSearch
 // todo: rename lessThan, defaultLess, etc to "before" - because x may come before y even if x > y 
@@ -10,7 +10,8 @@
 // rsLessOrEqual, rsGreaterOrEqual (or maybe derive the less-or-equal condition from:
 // equal(a, b) = !less(a,b) && !less(b,a); lessOrEqual(a,b) = less(a,b) || equal(a,b)
 // (the logic can be optimized/simplified)
-// add binary search functions (there's an implementation elsewhere in the library)
+// add binary search functions (there's an implementation elsewhere in the library - where? - 
+// there's one in MathExperiments.cpp but that's outside the library
 
 
 // maybe implement https://en.wikipedia.org/wiki/Smoothsort see also 

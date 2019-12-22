@@ -186,7 +186,7 @@ public:
   [0,1]. If this number is N, the spatial sampling interval h will be 1/(N+1). */
   void setNumGridPoints(int newNumGridPoints)
   {
-    rsAssert(newNumGridPoints >= 3, "needs at leat 3 grid points (and even that is degenerate)");
+    rsAssert(newNumGridPoints >= 3, "needs at least 3 grid points (and even that is degenerate)");
     u.resize(newNumGridPoints);
     u1.resize(newNumGridPoints);
     tmp.resize(newNumGridPoints);
@@ -218,7 +218,7 @@ public:
 
   /** Returns the Courant number for the given time-step and our current seetings of number of 
   grid points and wave speed. This number is important for stability analysis of numeric solution 
-  schemes for PDEs. If the Courant number is C, then the stability condtion is C <= 1. For the 
+  schemes for PDEs. If the Courant number is C, then the stability condition is C <= 1. For the 
   special case of C == 1, the finite difference scheme actually produces an exact solution. This is
   only the case for the 1D wave equation and the basis for digital waveguide models. For Courant 
   numbers less than 1, the numerical scheme will produce "numerical dispersion" - waves will 
@@ -227,7 +227,7 @@ public:
   T getCourantNumber(T timeStep) const;
   // https://en.wikipedia.org/wiki/Courant%E2%80%93Friedrichs%E2%80%93Lewy_condition
 
-  /** Retruns the (normalized radian?) frequency for a given wave-number and time-step. */
+  /** Returns the (normalized radian?) frequency for a given wave-number and time-step. */
   T getOmegaForWaveNumber(T waveNumber, T timeStep) const;
   // implements (1), 6.43 - needs test!
 
@@ -310,7 +310,7 @@ protected:
 
 //=================================================================================================
 
-/** Implements numerical solution of the 2D wave-equation in cartesian coordinates for a 
+/** Implements a numerical solution of the 2D wave-equation in cartesian coordinates for a 
 rectangular membrane.
 
 References:
@@ -348,7 +348,7 @@ public:
   /** \name Inquiry */
 
 
-  /** Returns the Courant number for our current seetings of the time-step, grid dimensions and 
+  /** Returns the Courant number for our current settings of the time-step, grid dimensions and 
   wave speed. As opposed to the 1D case, the stability limit is C <= 1/sqrt(2) and there is no 
   special setting for which the numerical scheme produces an exact solution. However, 
   for C == 1/sqrt(2), numerical dispersion in minimized (verify that). */
