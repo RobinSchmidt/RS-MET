@@ -122,10 +122,20 @@ T findFloatPosition(const T* a, const int N, const T v)
 {
   int i = RAPT::rsArrayTools::findSplitIndex(a, N, v);
 
+
+  // If there is a run of same values v following the found index, we need to take the middle of
+  // that run - find upper index of such a run:
+  if(a[i] == v)
+  {
+    int iu = i;
+    while(iu < N-1 && a[iu+1] == v)
+      iu++;
+    return T(0.5) * T(i+iu);
+  }
+
   T iFlt = T(i);  // preliminary
 
-  // if there is a run of same values v following the found index, we need to take the middle of
-  // that run....
+
 
 
   return iFlt;
@@ -142,10 +152,14 @@ bool testFindFloatPosition()
 
 
   // a = {1,2,3,4,5,5,7,8,9}
-  a[5] = 5.0;                         
+  a[5] = 5.0;
   p = findFloatPosition(a, 9, 5.0); 
-  //r &= p == 4.5;  // does not yet work
+  r &= p == 4.5;
 
+  // a = {1,2,3,4,5,5,5,8,9}
+  a[6] = 5.0;
+  p = findFloatPosition(a, 9, 5.0); 
+  r &= p == 5.0;
 
   return r;
 }
