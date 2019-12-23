@@ -161,7 +161,7 @@ void interpolatingFunction()
 
   // convert xi to double for plotter and plot:
   double xid[M];
-  RAPT::rsArrayTools::convertBuffer(xi, xid, M);
+  RAPT::rsArrayTools::convert(xi, xid, M);
   GNUPlotter plt;
   plt.addDataArrays(M, xid, yi);
   plt.setRange(xiMin, xiMax, 0.0, 4.0);

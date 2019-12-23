@@ -1751,7 +1751,7 @@ void partialFractionExpansion()
   // which is the case here:
   Complex rc[M];  // roots as complex numbers (as required by the evaluation routine)
   Complex xc[3];
-  Array::convertBuffer(r, rc, M);
+  Array::convert(r, rc, M);
   Complex num, den;
   for(i = 0; i < M; i++) {
     num = Poly::evaluate(r[i], p, N);

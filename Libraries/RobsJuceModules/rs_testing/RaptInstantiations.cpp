@@ -73,7 +73,7 @@ template int RAPT::rsFindHighestPeakIndex(double *buffer, int length); // move t
 template void rsArrayTools::fillWithValue(char* buffer, int length, char value);
 
 // rsArrayTools<int>
-template int rsArrayTools::splitIndex(const int* A, int N, int key);
+template int rsArrayTools::findSplitIndex(const int* A, int N, int key);
 template int rsArrayTools::copyIfMatching(const int *, int *, int, const int *, int);
 template int rsArrayTools::copyIfNotMatching(const int *, int *, int, const int *, int);
 template void rsArrayTools::copySection(const int *source, int sourceLength, int *destination, int copyStart, int copyLength);
@@ -129,7 +129,7 @@ template void rsArrayTools::transposeSquareArray(double **in, double **out, int 
 template void rsArrayTools::unwrap(double* a, int N, double p);
 
 // rsArrayTools<complex<double>>
-template void rsArrayTools::convertBuffer(const std::complex<double> *source, std::complex<double> *destination, int length);
+template void rsArrayTools::convert(const std::complex<double> *source, std::complex<double> *destination, int length);
 template void rsArrayTools::fillWithRandomValues(std::complex<double>* x, int N, double min, double max, int seed);
 //template int rsArrayTools::maxAbsIndex(const std::complex<double>* const buffer, int length);
 

@@ -1816,7 +1816,7 @@ void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEn
       tmpValue.resize(numExtraPoints);
       for(int j = 0; j < numExtraPoints; j++) {
         T t = t0 + (j+1) * (dt/(numExtraPoints+1));  // verify this formula
-        int idx = rsArrayTools::splitIndexClosest(rawEnvTime, rawEnvLength, t);
+        int idx = rsArrayTools::findSplitIndexClosest(rawEnvTime, rawEnvLength, t);
         tmpTime[j]  = rawEnvTime[idx];
         tmpValue[j] = rawEnvValue[idx];
       }

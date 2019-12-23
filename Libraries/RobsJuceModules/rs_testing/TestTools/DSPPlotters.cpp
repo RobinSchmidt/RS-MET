@@ -357,7 +357,7 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const
   std::vector<T> dB(N);
   //std::vector<T> phs(N);
   for(size_t i = 0; i < inputArrays.size(); i++) {
-    RAPT::rsArrayTools::convertBuffer(inputArrays[i], &tmp[0], signalLength);
+    RAPT::rsArrayTools::convert(inputArrays[i], &tmp[0], signalLength);
     RAPT::rsArrayTools::fillWithZeros(&tmp[signalLength], N-signalLength);
     transformer.transformComplexBufferInPlace(&tmp[0]);
 

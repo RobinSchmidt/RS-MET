@@ -19,8 +19,8 @@ void rsCrossCorrelationFFT(T x[], T y[], int N, T r[])
   int Np = 2*rsNextPowerOfTwo(N);
   std::complex<T> *X = new std::complex<T>[Np];
   std::complex<T> *Y = new std::complex<T>[Np];
-  rsArrayTools::convertBuffer(x, X, N);
-  rsArrayTools::convertBuffer(y, Y, N);
+  rsArrayTools::convert(x, X, N);
+  rsArrayTools::convert(y, Y, N);
   rsFFT(X, Np);
   rsFFT(Y, Np);
 
@@ -56,7 +56,7 @@ void rsAutoCorrelationFFT(T x[], int N, T r[])
 {
   int Np = 2*rsNextPowerOfTwo(N);
   std::complex<T> *X = new std::complex<T>[Np];
-  rsArrayTools::convertBuffer(x, X, N);
+  rsArrayTools::convert(x, X, N);
   rsFFT(X, Np);
   int n;
   X[0] = X[0] * X[0];

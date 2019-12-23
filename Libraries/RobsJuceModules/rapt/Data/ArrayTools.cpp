@@ -210,6 +210,8 @@ void rsArrayTools::convolve(const T *x, const int xLength, const T *h, const int
     y[n] = s;
   }
 }
+// maybe optimize by getting rid of calling rsMin/rsMax in the head of the inner loop by splitting
+// the outer loop into 3 partial loops....maybe
 
 //template <class T1, class T2>
 //void rsArrayTools::copy(const T1 *source, T2 *destination, const int length)
@@ -299,7 +301,7 @@ void rsArrayTools::copySection(const T1 *source, int sourceLength, T2 *destinati
   {
     // copying:
     cl = rsMin(copyLength, sourceLength-copyStart);
-    copy(&source[copyStart], destination, cl);
+    convert(&source[copyStart], destination, cl);
 
     // post-padding:
     pl2 = copyLength-cl;
@@ -313,7 +315,7 @@ void rsArrayTools::copySection(const T1 *source, int sourceLength, T2 *destinati
 
     // copying:
     cl = rsMin(copyLength-pl1, sourceLength);
-    copy(source, &destination[pl1], cl);
+    convert(source, &destination[pl1], cl);
 
     // post-padding:
     pl2 = copyLength-cl-pl1;
@@ -765,6 +767,34 @@ int rsArrayTools::findPeakOrValleyLeft(const T *x, int N, int n0)
   return nL;
 }
 
+template<class T>
+int rsArrayTools::findSplitIndex(const T* A, int N, T key)
+{
+  int imin = 0;
+  int imax = N-1;
+  while( imin < imax ) {
+    int imid = imin/2 + imax/2;
+    //rsAssert(imid < imax); // only for debug
+    if( A[imid] < key )
+      imin = imid + 1;
+    else
+      imax = imid;
+  }
+  return imin;
+}
+// compare to this: https://en.wikipedia.org/wiki/Binary_search_algorithm
+// what about RSLib? look, if we have something like hat there already
+
+template<class T>
+int rsArrayTools::findSplitIndexClosest(const T* a, const int N, const T val)
+{
+  int i = findSplitIndex(a, N, val);
+  if(i > 0 && rsAbs(a[i]-val) > rsAbs(a[i-1]-val))
+    i--;
+  return i;
+}
+
+
 template <class T>
 bool rsArrayTools::isSortedAscending(const T *buffer, int length)
 {
@@ -1128,33 +1158,6 @@ void rsArrayTools::shift(T *buffer, int length, int numPlaces)
     rightShift(buffer, length, numPlaces);
   else
     leftShift(buffer, length, -numPlaces);
-}
-
-template<class T>
-int rsArrayTools::splitIndex(const T* A, int N, T key)
-{
-  int imin = 0;
-  int imax = N-1;
-  while( imin < imax ) {
-    int imid = imin/2 + imax/2;
-    //rsAssert(imid < imax); // only for debug
-    if( A[imid] < key )
-      imin = imid + 1;
-    else
-      imax = imid;
-  }
-  return imin;
-}
-// compare to this: https://en.wikipedia.org/wiki/Binary_search_algorithm
-// what about RSLib? look, if we have something like hat there already
-
-template<class T>
-int rsArrayTools::splitIndexClosest(const T* a, const int N, const T val)
-{
-  int i = splitIndex(a, N, val);
-  if(i > 0 && rsAbs(a[i]-val) > rsAbs(a[i-1]-val))
-    i--;
-  return i;
 }
 
 template <class T>

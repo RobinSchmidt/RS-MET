@@ -159,7 +159,7 @@ bool testFourierTransformerRadix2(std::string &reportString)
   }
 
   // create target spectrum (we assume here that rsFFT computes a correct result):
-  rsArrayTools::convertBuffer(x, T, N);
+  rsArrayTools::convert(x, T, N);
   rsFFT(T, N);
 
   // create the rsFourierTransformerRadix2 object, set it up and let it compute the spectrum:

@@ -110,8 +110,8 @@ void WaveTable::updateBuffers()
   double  *phsR      = new double[tableLength/2];
 
   // obtain magnitude and phase:
-  RAPT::rsArrayTools::convertBuffer(tmpL, spectrumL, tableLength);
-  RAPT::rsArrayTools::convertBuffer(tmpR, spectrumR, tableLength);
+  RAPT::rsArrayTools::convert(tmpL, spectrumL, tableLength);
+  RAPT::rsArrayTools::convert(tmpR, spectrumR, tableLength);
   fourierTransformer.setDirection(FourierTransformerRadix2::FORWARD);
   fourierTransformer.transformComplexBufferInPlace(spectrumL);
   fourierTransformer.transformComplexBufferInPlace(spectrumR);

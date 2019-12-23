@@ -457,7 +457,7 @@ template<class T>
 void rsPolynomial<T>::roots(const T* a, int degree, std::complex<T>* r)
 {
   std::complex<T>* ac = new std::complex<T>[degree+1];
-  rsArrayTools::convertBuffer(a, ac, degree+1);
+  rsArrayTools::convert(a, ac, degree+1);
   roots(ac, degree, r);
   delete[] ac;
 }

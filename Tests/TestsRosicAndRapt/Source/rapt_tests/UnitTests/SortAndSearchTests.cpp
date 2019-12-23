@@ -53,7 +53,7 @@ bool testSplitIndex(int* array, int length, F1 indexToValue, F2 valueToIndex)
     for(int index = 0; index < subLength; index++) 
     {
       int searchedValue = indexToValue(index);
-      int foundIndex = RAPT::rsArrayTools::splitIndex(array, subLength, searchedValue);
+      int foundIndex = RAPT::rsArrayTools::findSplitIndex(array, subLength, searchedValue);
       testResult &= foundIndex == valueToIndex(searchedValue);
     }
   }
@@ -88,30 +88,30 @@ bool testSplitIndex()
 
   int foundIndex;
   std::vector<int> b = {1,2,2,2,4,4,4,4,5,6};
-  foundIndex  = AR::splitIndex(&b[0], (int)b.size(), 4);
+  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 4);
   testResult &= foundIndex == 4;
-  foundIndex  = AR::splitIndex(&b[0], (int)b.size(), 3);
+  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 3);
   testResult &= foundIndex == 4;
-  foundIndex  = AR::splitIndex(&b[0], (int)b.size(), 2);
+  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 2);
   testResult &= foundIndex == 1;
 
   std::vector<double> c = {1.,2.,2.,2.,4.,4.,4.,4.,5.,6.};
-  foundIndex  = AR::splitIndex(&c[0], (int)c.size(), 3.9);
+  foundIndex  = AR::findSplitIndex(&c[0], (int)c.size(), 3.9);
   testResult &= foundIndex == 4;
-  foundIndex  = AR::splitIndex(&c[0], (int)c.size(), 4.0);
+  foundIndex  = AR::findSplitIndex(&c[0], (int)c.size(), 4.0);
   testResult &= foundIndex == 4;
-  foundIndex  = AR::splitIndex(&c[0], (int)c.size(), 4.1);
+  foundIndex  = AR::findSplitIndex(&c[0], (int)c.size(), 4.1);
   testResult &= foundIndex == 8;
-  foundIndex  = AR::splitIndex(&c[0], (int)c.size(), 2.1);
+  foundIndex  = AR::findSplitIndex(&c[0], (int)c.size(), 2.1);
   testResult &= foundIndex == 4;
-  foundIndex  = AR::splitIndexClosest(&c[0], (int)c.size(), 3.9);
+  foundIndex  = AR::findSplitIndexClosest(&c[0], (int)c.size(), 3.9);
   testResult &= foundIndex == 4;
-  foundIndex  = AR::splitIndexClosest(&c[0], (int)c.size(), 2.1);
+  foundIndex  = AR::findSplitIndexClosest(&c[0], (int)c.size(), 2.1);
   testResult &= foundIndex == 3;
 
   // the rsAssert(isInverseFunction...) are commented out because they were only needed for 
   // verifying *once*, that the index-to-value and value-to-index functions actually are inverses 
-  // of each other as intended. they are not part of the unit test for the search-algo -c they are
+  // of each other as intended. they are not part of the unit test for the search-algo - they are
   // used to test, that we actually generate proper test-inputs
 
   return testResult;

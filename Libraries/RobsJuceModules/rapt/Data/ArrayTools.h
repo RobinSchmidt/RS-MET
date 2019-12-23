@@ -91,7 +91,7 @@ public:
   template<class T>
   static void circularShift(T *buffer, const int length, const int numPositions);
   // allocates temporary heap memory - todo: make a version that doesn't and uses a workspace
-  // that is passed inot the function - but keep the one without workspace as convenience function
+  // that is passed into the function - but keep the one without workspace as convenience function
 
   /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward
   shifts use negative values for numPositions. The function behaves analogous to
@@ -105,6 +105,7 @@ public:
   operators '<' and '>'. */
   template <class T>
   static void clip(T *buffer, const int length, const T min, const T max);
+  // todo: maybe let it use only '<' -> less requirements on the type -> more generally applicable
 
   /** Returns -1 if a < b, 0 if a == b, +1 if a > b. The elements are compared succesively starting
   at index 0 and when an unequal element is encountered, the buffer with the greater element is
@@ -126,12 +127,12 @@ public:
   static bool contains(const T *buffer, const int length, const T elementToFind);
 
   /** Convolves an array x (seen as input signal) with another array h (seen as impulse response)
-  and stores the result in the array y. The type must define the operators: *, += and a constructor
-  that takes an int and initializes to zero when 0 is passed. The y array must have a length equal 
-  to xLength+hLength-1. The pointer to the y array does not have to be distinct from the x and/or h
-  pointer - i.e. the function can be used for in-place convolution, for example for overwriting a
-  sequence with the convolution product of the sequence with some other sequence or even with
-  itself (such as when squaring polynomials). */
+  and stores the result in the array y. The type T must define the operators: *, += and a 
+  constructor that takes an int and initializes to zero when 0 is passed. The y array must have a 
+  length equal to xLength+hLength-1. The pointer to the y array does not have to be distinct from 
+  the x and/or h pointer - i.e. the function can be used for in-place convolution, for example for 
+  overwriting a sequence with the convolution product of the sequence with some other sequence or 
+  even with itself (such as when squaring polynomials). */
   template <class T>
   static void convolve(const T *x, const int xLength, const T *h, const int hLength, T *y);
 
@@ -150,10 +151,9 @@ public:
 
   /** Copies the data of one array into another one and converts the type if necessary. */
   template <class T1, class T2>
-  static inline void convertBuffer(const T1 *source, T2 *destination, const int length);
-  // rename to convert
+  static inline void convert(const T1 *source, T2 *destination, const int length);
 
-  /** Convolves x with h and stored the result in x. The xLength parameter denotes the number of
+  /** Convolves x with h and stores the result in x. The xLength parameter denotes the number of
   values in the x-array that will be considered as input signal. The actual array must be longer
   than that (namely xLength+hLength-1) to store the appended values. */
   template <class T>
@@ -162,9 +162,8 @@ public:
   // ...but maybe keep it as convenience function
 
   /** Copies the data of one array into another one, converting the datatype, if necessarry. */
-  template <class T1, class T2>
-  static inline void copy(const T1 *source, T2 *destination, const int length);
-  // rename to copy
+  template <class T>
+  static inline void copy(const T *source, T *destination, const int length);
 
   // old version:
   /** Copies the data of one array into another one. */
@@ -208,6 +207,7 @@ public:
   template<class T1, class T2>
   static void copySection(const T1 *source, int sourceLength, T2 *destination, 
     int copyStart, int copyLength);
+  // rename to convertSection
 
   // old - without type conversion
   //template<class T>
@@ -357,6 +357,22 @@ public:
   template<class T>
   static int findPeakOrValleyLeft(const T *x, int N, int n0);
 
+  /** Returns the first index in the ascendingly sorted array "a", where the value is greater 
+  than or equal to splitValue, or - put another way - one plus the last index, for which all 
+  elements are strictly less than "key". If 0 is returned, and the 0th element does not equal 
+  splitValue, then all values in the array are either less or all are greater than key -> check this */
+  template<class T>
+  static int findSplitIndex(const T* a, int N, T splitValue);
+  // T should be Ordered -> use concept Ordered/Sortable in c++20
+  // maybe make a function findPositionOfValue that returns a floating point position, i.e. a 
+  // fractional index, using linear interpolation (and extrapolation)
+
+  /** Like splitIndex, but instead of just returning the first index i, where a[i] >= splitValue, 
+  it checks, if a[i-1] is closer to the splitValue than a[i]. If it is, then it returns i-1
+  instead of i. */
+  template<class T>
+  static int findSplitIndexClosest(const T* a, const int N, const T splitValue);
+
   /** Given a buffer of values, this function returns the first index where there's a nonzero value
   in the buffer. If there's no nonzero element at all, it returns -1.
 
@@ -366,6 +382,8 @@ public:
   */
   template <class T>
   static int firstIndexWithNonZeroValue(const T *buffer, int length);
+
+
 
   /** Scales and offsets the passed buffer such that the minimum value hits 'min' and the
   maximum value hits 'max'. */
@@ -631,20 +649,6 @@ public:
   template <class T>
   static void shift(T *buffer, int length, int numPlaces);
 
-  /** Returns the first index in the ascendingly sorted array "a", where the value is greater 
-  than or equal to splitValue, or - put another way - one plus the last index, for which all 
-  elements are strictly less than "key". If 0 is returned, and the 0th element does not equal 
-  splitValue, then all values in the array are either less or all are greater than key -> check this */
-  template<class T>
-  static int splitIndex(const T* a, int N, T splitValue);
-  // T should be Ordered -> use concept Ordered/Sortable in c++20
-
-  /** Like splitIndex, but instead of just returning the first index i, where a[i] >= splitValue, 
-  it checks, if a[i-1] is closer to the splitValue than a[i]. If it is, then it returns i-1
-  instead of i. */
-  template<class T>
-  static int splitIndexClosest(const T* a, const int N, const T splitValue);
-
   /** Subtracts the elements of 'buffer2' from 'buffer1' - type must define operator '-'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
   template <class T>
@@ -748,11 +752,11 @@ inline bool rsArrayTools::almostEqual(const T *buffer1, const T *buffer2,
   return true;
 }
 
-template <class T1, class T2>
-inline void rsArrayTools::copy(const T1 *source, T2 *destination, const int length)
+template <class T>
+inline void rsArrayTools::copy(const T *source, T *destination, const int length)
 {
   for(int i = 0; i < length; i++)
-    destination[i] = (T2)source[i];
+    destination[i] = source[i];
 }
 // todo: switch at compile time between using memcopy for trivially copyable types and using the 
 // assignment operator in a loop (such as now) otherwise - see:
@@ -760,17 +764,13 @@ inline void rsArrayTools::copy(const T1 *source, T2 *destination, const int leng
 // ...but maybe for short arrays, the overhead of calling memcpy may outweigh its efficiency, so 
 // for very small arrays, the loop is actually faster? -> do benchmarks
 // see here, around 50min:  https://www.youtube.com/watch?v=ZeU6OPaGxwM
-// ..oh wait: we use this for copying and for copy-conversion - maybe have a separate 
-// convert-function - oh - i already have one...
-
 
 template <class T1, class T2>
-inline void rsArrayTools::convertBuffer(const T1 *source, T2 *destination, const int length)
+inline void rsArrayTools::convert(const T1 *source, T2 *destination, const int length)
 {
   for(int i = 0; i < length; i++)
     destination[i] = (T2)source[i];
 }
-// rename to convert
 
 template <class T>
 inline void rsArrayTools::convolveWithTwoElems(const T* x, const int xLength, const T* h, T* y)
@@ -900,6 +900,7 @@ inline void rsArrayTools::pushFrontPopBack4(T x, T* a)
 }
 // todo: make versions for 1,2,3,N (using a loop or memmove) -> make performance tests, 
 // which version is fastest for what range of lengths maybe rename to updateFifoBuffer4
+// maybe make a version that returns the (old) a[3] element
 
 
 #endif

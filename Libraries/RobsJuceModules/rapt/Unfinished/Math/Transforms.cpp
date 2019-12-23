@@ -110,7 +110,7 @@ void rsMagnitudeAndPhase(T *signal, int N, T *magnitudes, T *phases)
 {
   std::complex<T> *tmp = new std::complex<T>[N];
 
-  rsArrayTools::convertBuffer(signal, tmp, N);
+  rsArrayTools::convert(signal, tmp, N);
   rsFFT(tmp, N);
 
   int k;
