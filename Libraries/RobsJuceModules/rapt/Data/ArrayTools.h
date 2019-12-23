@@ -358,11 +358,11 @@ public:
   static int findPeakOrValleyLeft(const T *x, int N, int n0);
 
   /** Returns the first index in the ascendingly sorted array "a", where the value is greater 
-  than or equal to splitValue, or - put another way - one plus the last index, for which all 
-  elements are strictly less than "key". If 0 is returned, and the 0th element does not equal 
-  splitValue, then all values in the array are either less or all are greater than key -> 
-  check this -> actually it would make more sense that if 0 is returned, all are greater and if
-  all are less, we should return N-1 */
+  than or equal to "splitValue". The idea is that you may split the array at that index i into
+  two subarrays where in the left subarray a[0...i-1], all values are less than splitValue and in 
+  the right subarray a[i...N-1], all values are greater-or-equal to splitValue. Note that if all 
+  values in the array are actually less that the splitValue, N will be returned which is an index 
+  after the last valid index - don't dereference it in this case! */
   template<class T>
   static int findSplitIndex(const T* a, int N, T splitValue);
   // T should be Ordered -> use concept Ordered/Sortable in c++20
@@ -371,9 +371,11 @@ public:
 
   /** Like splitIndex, but instead of just returning the first index i, where a[i] >= splitValue, 
   it checks, if a[i-1] is closer to the splitValue than a[i]. If it is, then it returns i-1
-  instead of i. */
+  instead of i. Also, if all entries are less than splitValue, it will return N-1 instead of N, so
+  it will always return a valid index. */
   template<class T>
   static int findSplitIndexClosest(const T* a, const int N, const T splitValue);
+  // used in rsEnvelopeExtractor<T>::fillSparseAreas
 
   /** Given a buffer of values, this function returns the first index where there's a nonzero value
   in the buffer. If there's no nonzero element at all, it returns -1.

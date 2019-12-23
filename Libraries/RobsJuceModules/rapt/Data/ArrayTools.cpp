@@ -770,8 +770,13 @@ int rsArrayTools::findPeakOrValleyLeft(const T *x, int N, int n0)
 template<class T>
 int rsArrayTools::findSplitIndex(const T* A, int N, T key)
 {
+  rsAssert(isSortedAscending(A, N), "array must be sorted");
   int imin = 0;
   int imax = N-1;
+
+  if(A[imax] < key) // new - needs tests
+    return N;
+
   while( imin < imax ) {
     int imid = imin/2 + imax/2;
     //rsAssert(imid < imax); // only for debug
@@ -789,6 +794,10 @@ template<class T>
 int rsArrayTools::findSplitIndexClosest(const T* a, const int N, const T val)
 {
   int i = findSplitIndex(a, N, val);
+
+  if(i == N)     // new - needs tests
+    return N-1;
+
   if(i > 0 && rsAbs(a[i]-val) > rsAbs(a[i-1]-val))
     i--;
   return i;

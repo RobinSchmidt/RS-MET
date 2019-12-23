@@ -61,7 +61,7 @@ bool testFindSplitIndex(int* array, int length, F1 indexToValue, F2 valueToIndex
 }
 bool testFindSplitIndex()
 {
-  bool testResult = true;
+  bool r = true;   // test result
 
   static const int length = 10;  // length of example array
 
@@ -72,64 +72,50 @@ bool testFindSplitIndex()
   auto identity = [](int i){ return i; };  // converts indices to values via the identity function...
   //rsAssert(isInverseFunction(identity, identity, 0, length-1, 1));
   AR::fill(a, length, identity);
-  testResult &= testFindSplitIndex(a, length, identity, identity);
+  r &= testFindSplitIndex(a, length, identity, identity);
 
   auto timesTwo = [](int i){ return 2*i; };
   auto divByTwo = [](int i){ return i/2; };
   //rsAssert(isInverseFunction(timesTwo, divByTwo, 0, length-1, 1));
   AR::fill(a, length, timesTwo);
-  testResult &= testFindSplitIndex(a, length, timesTwo, divByTwo);
+  r &= testFindSplitIndex(a, length, timesTwo, divByTwo);
 
   auto times3plus1 = [](int i){ return 3*i+1; }; 
   auto minus1divBy3 = [](int i){ return (i-1)/3; };
   //rsAssert(isInverseFunction(times3plus1, minus1divBy3, 0, length-1, 1));
   AR::fill(a, length, times3plus1);
-  testResult &= testFindSplitIndex(a, length, times3plus1, minus1divBy3);
+  r &= testFindSplitIndex(a, length, times3plus1, minus1divBy3);
 
-  int foundIndex;
+  int i;
   std::vector<int> b = {1,2,2,2,4,4,4,4,5,6};
-  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 0);
-  testResult &= foundIndex == 0;
-  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 1);
-  testResult &= foundIndex == 0;
-  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 2);
-  testResult &= foundIndex == 1;
-  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 3);
-  testResult &= foundIndex == 4;
-  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 4);
-  testResult &= foundIndex == 4;
-  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 5);
-  testResult &= foundIndex == 8;
-  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 6);
-  testResult &= foundIndex == 9;
-  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 7);
-  testResult &= foundIndex == 9;
+  i = AR::findSplitIndex(&b[0], (int)b.size(), 0); r &= i == 0;
+  i = AR::findSplitIndex(&b[0], (int)b.size(), 1); r &= i == 0;
+  i = AR::findSplitIndex(&b[0], (int)b.size(), 2); r &= i == 1;
+  i = AR::findSplitIndex(&b[0], (int)b.size(), 3); r &= i == 4;
+  i = AR::findSplitIndex(&b[0], (int)b.size(), 4); r &= i == 4;
+  i = AR::findSplitIndex(&b[0], (int)b.size(), 5); r &= i == 8;
+  i = AR::findSplitIndex(&b[0], (int)b.size(), 6); r &= i == 9;
+  i = AR::findSplitIndex(&b[0], (int)b.size(), 7); r &= i == 10;
 
-  // todo: search for the index of split-index 0 and 7 (should be 0 and N-1 = 9)
-  // -> ok - works - but then the documentation is wrong - update it!
-
-
-
+  // test with floating point numbers:
   std::vector<double> c = {1.,2.,2.,2.,4.,4.,4.,4.,5.,6.};
-  foundIndex  = AR::findSplitIndex(&c[0], (int)c.size(), 3.9);
-  testResult &= foundIndex == 4;
-  foundIndex  = AR::findSplitIndex(&c[0], (int)c.size(), 4.0);
-  testResult &= foundIndex == 4;
-  foundIndex  = AR::findSplitIndex(&c[0], (int)c.size(), 4.1);
-  testResult &= foundIndex == 8;
-  foundIndex  = AR::findSplitIndex(&c[0], (int)c.size(), 2.1);
-  testResult &= foundIndex == 4;
-  foundIndex  = AR::findSplitIndexClosest(&c[0], (int)c.size(), 3.9);
-  testResult &= foundIndex == 4;
-  foundIndex  = AR::findSplitIndexClosest(&c[0], (int)c.size(), 2.1);
-  testResult &= foundIndex == 3;
+  i = AR::findSplitIndex(&c[0], (int)c.size(), 3.9); r &= i == 4;
+  i = AR::findSplitIndex(&c[0], (int)c.size(), 4.0); r &= i == 4;
+  i = AR::findSplitIndex(&c[0], (int)c.size(), 4.1); r &= i == 8;
+  i = AR::findSplitIndex(&c[0], (int)c.size(), 2.1); r &= i == 4;
+  i = AR::findSplitIndexClosest(&c[0], (int)c.size(), 3.9); r &= i == 4;
+  i = AR::findSplitIndexClosest(&c[0], (int)c.size(), 2.1); r &= i == 3;
+  i = AR::findSplitIndexClosest(&c[0], (int)c.size(), 6.0); r &= i == 9;
+  i = AR::findSplitIndexClosest(&c[0], (int)c.size(), 7.0); r &= i == 9; //
+
+
 
   // the rsAssert(isInverseFunction...) are commented out because they were only needed for 
   // verifying *once*, that the index-to-value and value-to-index functions actually are inverses 
   // of each other as intended. they are not part of the unit test for the search-algo - they are
   // used to test, that we actually generate proper test-inputs
 
-  return testResult;
+  return r;
 }
 
 template<class T>
