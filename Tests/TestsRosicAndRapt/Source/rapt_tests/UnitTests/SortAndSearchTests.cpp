@@ -45,7 +45,7 @@ bool testKnuthMorrisPrattSearch()
 
 
 template<class F1, class F2>
-bool testSplitIndex(int* array, int length, F1 indexToValue, F2 valueToIndex)
+bool testFindSplitIndex(int* array, int length, F1 indexToValue, F2 valueToIndex)
 {
   bool testResult = true;
   for(int subLength = 0; subLength <= length; subLength++) 
@@ -59,7 +59,7 @@ bool testSplitIndex(int* array, int length, F1 indexToValue, F2 valueToIndex)
   }
   return testResult;
 }
-bool testSplitIndex()
+bool testFindSplitIndex()
 {
   bool testResult = true;
 
@@ -72,19 +72,19 @@ bool testSplitIndex()
   auto identity = [](int i){ return i; };  // converts indices to values via the identity function...
   //rsAssert(isInverseFunction(identity, identity, 0, length-1, 1));
   AR::fill(a, length, identity);
-  testResult &= testSplitIndex(a, length, identity, identity);
+  testResult &= testFindSplitIndex(a, length, identity, identity);
 
   auto timesTwo = [](int i){ return 2*i; };
   auto divByTwo = [](int i){ return i/2; };
   //rsAssert(isInverseFunction(timesTwo, divByTwo, 0, length-1, 1));
   AR::fill(a, length, timesTwo);
-  testResult &= testSplitIndex(a, length, timesTwo, divByTwo);
+  testResult &= testFindSplitIndex(a, length, timesTwo, divByTwo);
 
   auto times3plus1 = [](int i){ return 3*i+1; }; 
   auto minus1divBy3 = [](int i){ return (i-1)/3; };
   //rsAssert(isInverseFunction(times3plus1, minus1divBy3, 0, length-1, 1));
   AR::fill(a, length, times3plus1);
-  testResult &= testSplitIndex(a, length, times3plus1, minus1divBy3);
+  testResult &= testFindSplitIndex(a, length, times3plus1, minus1divBy3);
 
   int foundIndex;
   std::vector<int> b = {1,2,2,2,4,4,4,4,5,6};
@@ -117,13 +117,48 @@ bool testSplitIndex()
   return testResult;
 }
 
+template<class T>
+T findFloatPosition(const T* a, const int N, const T v)
+{
+  int i = RAPT::rsArrayTools::findSplitIndex(a, N, v);
+
+  T iFlt = T(i);  // preliminary
+
+  // if there is a run of same values v following the found index, we need to take the middle of
+  // that run....
+
+
+  return iFlt;
+}
+
+bool testFindFloatPosition()
+{
+  bool r = true;   // test result
+
+  double a[9] = {1,2,3,4,5,6,7,8,9};  // array
+  double p;                           // position of value
+
+  p = findFloatPosition(a, 9, 5.0); r &= p == 4.0;
+
+
+  // a = {1,2,3,4,5,5,7,8,9}
+  a[5] = 5.0;                         
+  p = findFloatPosition(a, 9, 5.0); 
+  //r &= p == 4.5;  // does not yet work
+
+
+  return r;
+}
+
+
 bool testSortAndSearch()
 {
   bool testResult = true;
 
   testResult &= testHeapSort();
   testResult &= testKnuthMorrisPrattSearch();
-  testResult &= testSplitIndex();
+  testResult &= testFindSplitIndex();
+  testResult &= testFindFloatPosition();
 
   return testResult;
 }
