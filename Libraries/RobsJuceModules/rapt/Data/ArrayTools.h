@@ -3,15 +3,15 @@
 
 /** A collection of functions that operate on 1-dimensional arrays. 
 
-add to the documentation, to which std::algorithm a function corresponds, if applicable
 
 todo: 
--maybe rename to rsArrayTools, class rsArrayTools should be an actual dynamically allocated array with
- the same interface as std::vector - having my own implementation might be more efficient since
- std::vector initializes the memory - say this blog-post, at least
+-sort the functions in the header by purpose (fill, search, sort, arithmetic/combine (add,
+ subtract,...), aggregation (sum, mean, product,...), filtering, etc.)
+-add to the documentation, to which std::algorithm a function corresponds, if applicable
+-maybe rename to rsArrayTools (done), class rsArray should be an actual dynamically allocated array
+ with the same interface as std::vector - having my own implementation might be more efficient since
+ std::vector initializes the memory - says this blog-post, at least
  https://lemire.me/blog/2012/06/20/do-not-waste-time-with-stl-vectors/
--actually, rsArrayTools could serve as dual purpose class - a collection of static functions operating
- on raw arrays and a dynamically allocated array
 -we could make a baseclass rsArrayView which could also be used as baseclass for rsMatrix and 
  rsMultiArray
 -make everything const that is possible (also by-value parameters, local variables, etc. - and use
@@ -19,8 +19,8 @@ todo:
  ->done up to copy
  ...maybe change the const by-value parameters to by-reference parameters
 -inline, where it makes sense (trivial functions like copy/convert)
--maybe turn into an actual class (with members) implementing a dynamically sized array
--use workspace pointers instead of heap allocation
+-use workspace pointers instead of heap allocation, where applicable, keep the functions with 
+ heap-allocations as convenience functions (create workspace -> call worker -> delete workspace)
 
 */
 
@@ -57,7 +57,7 @@ public:
   implementing update rules of the form: x_new = x_old + weight * delta_x - but actually x_new and 
   x_old are the same array and it's more like x += w * delta_x. */
   template<class T>
-  static void addWithWeight(T* inputAndResult, int N, T* bufferToAdd, T weight);
+  static void addWithWeight(T* inputAndResult, const int N, const T* bufferToAdd, const T weight);
 
   /** Applies the affine transformation y = a*x + b to all array elements. */
   template<class T>
@@ -307,7 +307,7 @@ public:
   \todo: rename min/max into start/end  */
   template <class T>
   static void fillWithRangeLinear(T *buffer, int length, T min, T max);
-  // corresponds to std::iota?
+  // corresponds to std::iota? and/or NimPy's linspace
 
   /** Fills the passed array with one value at all indices. */
   template <class T>
@@ -730,7 +730,7 @@ inline void rsArrayTools::add(const T *buffer, const T valueToAdd, T *result, co
 }
 
 template<class T>
-void rsArrayTools::addWithWeight(T* xy, int N, T* d, T w)
+void rsArrayTools::addWithWeight(T* xy, const int N, const T* d, const T w)
 {
   for(int n = 0; n < N; n++)
     xy[n] += w * d[n];
@@ -759,7 +759,9 @@ inline void rsArrayTools::copy(const T1 *source, T2 *destination, const int leng
 // https://en.cppreference.com/w/cpp/types/is_trivially_copyable
 // ...but maybe for short arrays, the overhead of calling memcpy may outweigh its efficiency, so 
 // for very small arrays, the loop is actually faster? -> do benchmarks
-// see her, around 50min:  https://www.youtube.com/watch?v=ZeU6OPaGxwM
+// see here, around 50min:  https://www.youtube.com/watch?v=ZeU6OPaGxwM
+// ..oh wait: we use this for copying and for copy-conversion - maybe have a separate 
+// convert-function - oh - i already have one...
 
 
 template <class T1, class T2>

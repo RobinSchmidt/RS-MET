@@ -3815,8 +3815,7 @@ rsUint32 rsBinarySearch(T A[], T key, rsUint32 imin, rsUint32 imax)
   else
     return imin-1;
 }
-// remove - use function from rapt
-
+// remove - use function from rapt rsArrayTools::splitIndex
 
 double rsLogIntegral(double x)
 {

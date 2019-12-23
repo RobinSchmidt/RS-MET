@@ -100,12 +100,8 @@ public:
 
   /** Multiplies matrix by a vector: w = A*v */
   rsVector2D<T> operator*(const rsVector2D<T>& v) const
-  {
-    rsVector2D<T> w;
-    w.x = a * v.x  +  b * v.y;
-    w.y = c * v.x  +  d * v.y;
-    return w;
-  }
+  { return rsVector2D<T>(a*v.x + b*v.y, c*v.x + d*v.y); }
+
   // todo: left multiplication w = v^H * A
 
   // todo: operators that take a scalar as left or right argument
