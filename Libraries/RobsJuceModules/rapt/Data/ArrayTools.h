@@ -360,7 +360,9 @@ public:
   /** Returns the first index in the ascendingly sorted array "a", where the value is greater 
   than or equal to splitValue, or - put another way - one plus the last index, for which all 
   elements are strictly less than "key". If 0 is returned, and the 0th element does not equal 
-  splitValue, then all values in the array are either less or all are greater than key -> check this */
+  splitValue, then all values in the array are either less or all are greater than key -> 
+  check this -> actually it would make more sense that if 0 is returned, all are greater and if
+  all are less, we should return N-1 */
   template<class T>
   static int findSplitIndex(const T* a, int N, T splitValue);
   // T should be Ordered -> use concept Ordered/Sortable in c++20

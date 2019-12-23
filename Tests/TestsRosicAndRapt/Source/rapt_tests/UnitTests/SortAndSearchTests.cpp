@@ -88,12 +88,27 @@ bool testFindSplitIndex()
 
   int foundIndex;
   std::vector<int> b = {1,2,2,2,4,4,4,4,5,6};
-  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 4);
-  testResult &= foundIndex == 4;
-  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 3);
-  testResult &= foundIndex == 4;
+  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 0);
+  testResult &= foundIndex == 0;
+  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 1);
+  testResult &= foundIndex == 0;
   foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 2);
   testResult &= foundIndex == 1;
+  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 3);
+  testResult &= foundIndex == 4;
+  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 4);
+  testResult &= foundIndex == 4;
+  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 5);
+  testResult &= foundIndex == 8;
+  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 6);
+  testResult &= foundIndex == 9;
+  foundIndex  = AR::findSplitIndex(&b[0], (int)b.size(), 7);
+  testResult &= foundIndex == 9;
+
+  // todo: search for the index of split-index 0 and 7 (should be 0 and N-1 = 9)
+  // -> ok - works - but then the documentation is wrong - update it!
+
+
 
   std::vector<double> c = {1.,2.,2.,2.,4.,4.,4.,4.,5.,6.};
   foundIndex  = AR::findSplitIndex(&c[0], (int)c.size(), 3.9);
@@ -133,6 +148,12 @@ T findFloatPosition(const T* a, const int N, const T v)
     return T(0.5) * T(i+iu);
   }
 
+  // If a[i] < v, we need to interpolate the position
+  // ...
+
+  // If 0 is returned
+
+
   T iFlt = T(i);  // preliminary
 
 
@@ -152,14 +173,10 @@ bool testFindFloatPosition()
 
 
   // a = {1,2,3,4,5,5,7,8,9}
-  a[5] = 5.0;
-  p = findFloatPosition(a, 9, 5.0); 
-  r &= p == 4.5;
+  a[5] = 5.0; p = findFloatPosition(a, 9, 5.0);  r &= p == 4.5;
 
   // a = {1,2,3,4,5,5,5,8,9}
-  a[6] = 5.0;
-  p = findFloatPosition(a, 9, 5.0); 
-  r &= p == 5.0;
+  a[6] = 5.0; p = findFloatPosition(a, 9, 5.0);  r &= p == 5.0;
 
   return r;
 }
