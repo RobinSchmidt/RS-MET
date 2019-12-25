@@ -264,7 +264,7 @@ void rsNonUniformFilterIIR<T>::updateCoeffs()
 
   // do the partial fraction expansion:
   rsRationalFunction<T>::partialFractionExpansion(num, nz, den, order, p, muls, order, r, fir);
-  rsArray::scale(fir, rsMax(nz-order+1, 0), k);  // FIR part needs to be scaled by k, too
+  rsArrayTools::scale(fir, rsMax(nz-order+1, 0), k);  // FIR part needs to be scaled by k, too
                                                  // ...check, if nz-order+1 is correct
 
 

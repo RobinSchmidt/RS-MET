@@ -28,7 +28,7 @@ void rsRatioGenerator<T>::rangeSplits(T* splitPoints, int numSplitPoints, T rati
   int n = 1;                // current number of ranges in the set
   while(n < N) 
   {
-    int k = rsArray::maxIndex(&s[0], n);    // index of largest range in the current set
+    int k = rsArrayTools::maxIndex(&s[0], n);    // index of largest range in the current set
 
     // split s[k] into two ranges:
     Range rl, ru;
@@ -122,7 +122,7 @@ apply nonlinear function to contract toward the middle or spread toward the outs
 skew - maybe like this: pre-skew -> contract -> post-skew (maybe figure out a formula that does it 
 all at once - maybe some things simplify)
 
-//rsArray::transformRange(&incs[0], &incs[0], numOscs, T(0), T(1));  // ratios in 0...1
+//rsArrayTools::transformRange(&incs[0], &incs[0], numOscs, T(0), T(1));  // ratios in 0...1
 
 
 
@@ -162,7 +162,7 @@ all at once - maybe some things simplify)
     prng.setRange(minInc, maxInc);
     for(int i = 0; i < numOscs; i++)
       incs[i] = prng.getSample();
-    rsArray::cumulativeSum(&incs[0], &incs[0], numOscs);
+    rsArrayTools::cumulativeSum(&incs[0], &incs[0], numOscs);
     // can give okayish results
 
 todo: other options: linear progression of frequencies (increment reciprocals), geometric

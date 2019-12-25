@@ -25,11 +25,11 @@ void rotes::testSlewRateLimiterLinear()
   double x[N];  // input signal
   double y[N];  // output signal
 
-  RAPT::rsArray::fillWithIndex(t, N);
-  RAPT::rsArray::scale(t, t, N, 1.0/fs);
+  RAPT::rsArrayTools::fillWithIndex(t, N);
+  RAPT::rsArrayTools::scale(t, t, N, 1.0/fs);
 
-  RAPT::rsArray::fillWithZeros(x, N);
-  RAPT::rsArray::fillWithZeros(y, N);
+  RAPT::rsArrayTools::fillWithZeros(x, N);
+  RAPT::rsArrayTools::fillWithZeros(y, N);
 
   int n;
   for(n = N/3; n < 2*N/3; n++)

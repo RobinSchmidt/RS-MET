@@ -357,8 +357,8 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const
   std::vector<T> dB(N);
   //std::vector<T> phs(N);
   for(size_t i = 0; i < inputArrays.size(); i++) {
-    RAPT::rsArray::convertBuffer(inputArrays[i], &tmp[0], signalLength);
-    RAPT::rsArray::fillWithZeros(&tmp[signalLength], N-signalLength);
+    RAPT::rsArrayTools::convert(inputArrays[i], &tmp[0], signalLength);
+    RAPT::rsArrayTools::fillWithZeros(&tmp[signalLength], N-signalLength);
     transformer.transformComplexBufferInPlace(&tmp[0]);
 
     // this may be not quite correct at DC (i think, because we need to incorporate the value
@@ -396,7 +396,7 @@ std::vector<T> SpectrumPlotter<T>::getFreqAxis(int maxBin)
   case FU::hertz:      scaler = r*sampleRate; break;
   }
 
-  RAPT::rsArray::scale(&f[0], maxBin, scaler);
+  RAPT::rsArrayTools::scale(&f[0], maxBin, scaler);
 
   return f;
 }
@@ -557,8 +557,8 @@ void SinusoidalModelPlotter<T>::plotInterpolatedPhases(
   //Vec pi = synth.phasesViaTweakedIntegral(partial, td, t); // i: integral
   //Vec pc = synth.phasesHermite(partial, td, t, false);     // c: cubic
   //Vec pq = synth.phasesHermite(partial, td, t, true);      // q: quintic (looks wrong)
-  //RAPT::rsArray::unwrap(&pc[0], N, 2*PI);                  // ...seems like cubic and quintic need
-  //RAPT::rsArray::unwrap(&pq[0], N, 2*PI);                  // unwrapping after interpolation - why?
+  //RAPT::rsArrayTools::unwrap(&pc[0], N, 2*PI);                  // ...seems like cubic and quintic need
+  //RAPT::rsArrayTools::unwrap(&pq[0], N, 2*PI);                  // unwrapping after interpolation - why?
   // maybe use synth.getInterpolatedPhases instead
 
   // new:
@@ -576,7 +576,7 @@ void SinusoidalModelPlotter<T>::plotInterpolatedPhases(
   int M = (int) pd.size();
   pd = rsSinusoidalProcessor<T>::unwrapPhase(td, fd, pd);
   //pd = synth.unwrapPhase(td, fd, pd);
-  //RAPT::rsArray::unwrap(&pd[0], M, 2*PI);
+  //RAPT::rsArrayTools::unwrap(&pd[0], M, 2*PI);
 
   Vec dp = (0.5/PI) * (pc-pq); 
   // normalized difference between cubic and quinitc algorithms - at the datapoints, it must be an 

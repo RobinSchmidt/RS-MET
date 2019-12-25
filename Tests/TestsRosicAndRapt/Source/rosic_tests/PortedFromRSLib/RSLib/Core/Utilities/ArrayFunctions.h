@@ -37,7 +37,7 @@ namespace RSLib
 
   /** Allocates memory for a 2-dimensional array (i.e. a matrix) with equal dimensions in both
   directions. 
-  \todo: remove - redundant with rsAllocateMatrix  */
+  \todo: remove - redundant with allocateMatrix  */
   template<class T>
   void rsAllocateSquareArray2D(T**& theArray, int size);
 

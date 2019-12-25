@@ -145,7 +145,7 @@ bool ProcessingTest::doOutputsMatchDesiredOutputs(bool polyphonic)
   for(int voiceIndex = 0; voiceIndex <= highestVoiceIndexToCheck; voiceIndex++)
   {
     for(unsigned int pinIndex = 0; pinIndex < moduleToTest->getNumOutputPins(); pinIndex++)
-      outputsMatch &= RAPT::rsArray::almostEqual(outputs[voiceIndex][pinIndex], desiredOutputs[voiceIndex][pinIndex], 
+      outputsMatch &= RAPT::rsArrayTools::almostEqual(outputs[voiceIndex][pinIndex], desiredOutputs[voiceIndex][pinIndex], 
       numFramesToProcess, tolerance);
   }
 

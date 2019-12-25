@@ -105,8 +105,11 @@ returns the y-value corresponding to x by linearly interpolating between x1, x2.
 the range of x1, x2, the function will extrapolate. */
 template<class Tx, class Ty>
 Ty rsInterpolateLinear(Tx x1, Tx x2, Ty y1, Ty y2, Tx x);
-// maybe change interface to x1, y1, x2, y2 to make it consistent with other functions
+// maybe change interface to x1, y1, x2, y2 to make it consistent with other functions for example
+// in rsLine2D
 // but this is a change that would silently break client code
+// ...maybe deprecate these free functions and replace them by a class rsInterpolator with a new 
+// API
 // hmm...but then rsInterpolateCubicHermite would also have to be changed
 
 /** !!! NOT YET TESTED !!!
@@ -338,7 +341,7 @@ void rsInterpolateSpline(const Tx *x, const Ty *y, int N, const Tx *xi, Ty *yi, 
   Ty **yd = nullptr;
   if(M > 0)
   {
-    MatrixTools::rsAllocateMatrix(yd, M, N);
+    rsMatrixTools::allocateMatrix(yd, M, N);
     rsNumericDerivative(x, y, yd[0], N);
     for(int m = 1; m < M; m++)
       rsNumericDerivative(x, yd[m-1], yd[m], N);
@@ -347,7 +350,7 @@ void rsInterpolateSpline(const Tx *x, const Ty *y, int N, const Tx *xi, Ty *yi, 
   // interpolate with these numeric derivatives and cleanup:
   rsInterpolateSpline(x, y, yd, N, M, xi, yi, Ni);
   if(M > 0)
-    MatrixTools::rsDeAllocateMatrix(yd, M, N);
+    rsMatrixTools::deallocateMatrix(yd, M, N);
 }
 
 #endif

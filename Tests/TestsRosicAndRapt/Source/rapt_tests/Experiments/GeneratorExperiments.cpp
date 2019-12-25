@@ -82,8 +82,8 @@ void blit()
 
 
   // compensate delay for easier comparison:
-  rsArray::shift(&ylt[0], N, -linTableBlit.getDelay());
-  rsArray::shift(&ymt[0], N, -minTableBlit.getDelay());
+  rsArrayTools::shift(&ylt[0], N, -linTableBlit.getDelay());
+  rsArrayTools::shift(&ymt[0], N, -minTableBlit.getDelay());
 
   //rsPlotVector(x);
   rsPlotVectors(x, ylt, ymt);
@@ -259,10 +259,10 @@ void blep()
   r = 0.5 * r;
 
   // delay compensation:
-  rsArray::shift(&ylt[0], N, -linTableBlep.getDelay()); // linBlep has about 5-times the delay of 
-  rsArray::shift(&ymt[0], N, -minTableBlep.getDelay()); // minBlep
-  rsArray::shift(&yp1[0], N, -polyBlep1.getDelay());
-  rsArray::shift(&yp2[0], N, -polyBlep2.getDelay());
+  rsArrayTools::shift(&ylt[0], N, -linTableBlep.getDelay()); // linBlep has about 5-times the delay of 
+  rsArrayTools::shift(&ymt[0], N, -minTableBlep.getDelay()); // minBlep
+  rsArrayTools::shift(&yp1[0], N, -polyBlep1.getDelay());
+  rsArrayTools::shift(&yp2[0], N, -polyBlep2.getDelay());
 
   //rosic::writeToMonoWaveFile("BlepTestNoAA.wav",   &x[0],   N, int(fs));
   //rosic::writeToMonoWaveFile("BlepTestLinTbl.wav", &ylt[0], N, int(fs));
@@ -455,7 +455,7 @@ void polyBlep()
   // Evaluate the blit/blep/blamp piecewise polynomials between -2 and +2 for plotting:
   int N = 400;
   std::vector<double> x(N), yBlit(N), yBlep(N), yBlamp(N);
-  RAPT::rsArray::fillWithRangeLinear(&x[0], N, -2.0, 2.0);
+  RAPT::rsArrayTools::fillWithRangeLinear(&x[0], N, -2.0, 2.0);
   typedef RAPT::rsPolynomial<double> PL;
   int i = 0;
   while(x[i] <= -1.0) {
@@ -537,7 +537,7 @@ void superBlep()
   // getSampleFrameStereo - with stereoSpread=0, the result should be the same - the even numbered
   // samples use the mono function, the odd numbered samples use the stereo function - if something
   // is wrong, we'll see the amplitude alternating between even and odd samples
-  rsArray::fillWithZeros(&x[0], N);
+  rsArrayTools::fillWithZeros(&x[0], N);
   for(int n = 0; n < N; n += 2) {
     double dummy = 0;
     x[n] = osc.getSample();
@@ -547,7 +547,7 @@ void superBlep()
 
 
 
-  rsArray::normalize(&x[0], N);
+  rsArrayTools::normalize(&x[0], N);
 
 
   // plot:
@@ -671,8 +671,8 @@ void superSawStereo()
 
   // produce stereo signals and ontain mid/side signals from them:
   osc.reset();
-  rsArray::fillWithZeros(&xLeft[0],  N);
-  rsArray::fillWithZeros(&xRight[0], N);
+  rsArrayTools::fillWithZeros(&xLeft[0],  N);
+  rsArrayTools::fillWithZeros(&xRight[0], N);
   for(int n = 0; n < N; n++)
     osc.getSampleFrameStereo(&xLeft[n], &xRight[n]);
   xMid  = 0.5 * (xLeft + xRight);
@@ -1075,7 +1075,7 @@ void syncPhasor()
     xBlep[n]  *= a;
   }
 
-  rsArray::shift(&xBlep[0], N, -sp.getBlep().getDelay());
+  rsArrayTools::shift(&xBlep[0], N, -sp.getBlep().getDelay());
 
   rsPlotVectors(xNaive, xBlep);
   rosic::writeToMonoWaveFile(  "SyncPhasorNaive.wav", &xNaive[0],            N, (int) fs);
@@ -1115,7 +1115,7 @@ void plotSyncOutput(TOsc& osc, int numSamples)
 {
   std::vector<double> yNaive = createSyncOutputNaive(osc, numSamples);
   std::vector<double> yBlep  = createSyncOutputBlep( osc, numSamples);
-  RAPT::rsArray::shift(&yBlep[0], numSamples, -osc.getBlep().getDelay());
+  RAPT::rsArrayTools::shift(&yBlep[0], numSamples, -osc.getBlep().getDelay());
   rsPlotVectors(yNaive, yBlep);
 }
 template<class TOsc>
@@ -1134,7 +1134,7 @@ void writeSyncOutput(TOsc& osc, int numSamples, double masterInc, double slaveIn
   osc.setSlaveIncrement( slaveInc);
   std::vector<double> yNaive = createSyncOutputNaive(osc, N);
   std::vector<double> yBlep  = createSyncOutputBlep( osc, N);
-  RAPT::rsArray::shift(&yBlep[0], N, -osc.getBlep().getDelay());
+  RAPT::rsArrayTools::shift(&yBlep[0], N, -osc.getBlep().getDelay());
 
   yNaive = yNaive - 0.5;
   yBlep  = yBlep  - 0.5;
@@ -1259,7 +1259,7 @@ void syncOsc()
   }
 
 
-  rsArray::shift(&xBlep[0], N, -osc.blep.getDelay());
+  rsArrayTools::shift(&xBlep[0], N, -osc.blep.getDelay());
 
   //rsPlotVectors(xNaive, xBlep);
   rosic::writeToMonoWaveFile(  "SyncNaive.wav", &xNaive[0],            N, (int) fs);
@@ -1893,7 +1893,7 @@ void triSawOscAntiAlias()
   int N = (int) ceil(length*fs);
 
   std::vector<double> f(N), x(N), xa(N);
-  RAPT::rsArray::fillWithRangeExponential(&f[0], N, fL, fU);
+  RAPT::rsArrayTools::fillWithRangeExponential(&f[0], N, fL, fU);
 
   RAPT::rsTriSawOscillator<double> osc;
   osc.setAsymmetry(asym);

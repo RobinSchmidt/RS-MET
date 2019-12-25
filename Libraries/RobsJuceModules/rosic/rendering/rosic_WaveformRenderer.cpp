@@ -27,18 +27,18 @@ void WaveformRenderer::renderWaveForm(double *targetBuffer, int length)
   case AUDIO_FILE:        waveBuffer.getWaveform(             targetBuffer, length); break;
   case ALGORITHM:         algorithmicRenderer.renderWaveform( targetBuffer, length); break;
   case MULTI_SEGMENT:     multiSegmentRenderer.renderWaveform(targetBuffer, length); break;
-  default:                RAPT::rsArray::fillWithZeros(                      targetBuffer, length);
+  default:                RAPT::rsArrayTools::fillWithZeros(                      targetBuffer, length);
   }
 
   // some optional post processing steps:
   if( fitToUnitRange == true )
-    RAPT::rsArray::fitIntoRange(targetBuffer, length, -1.0, 1.0);
+    RAPT::rsArrayTools::fitIntoRange(targetBuffer, length, -1.0, 1.0);
   else
   {
     if( dcRemove == true )
-      RAPT::rsArray::removeMean(targetBuffer, length);
+      RAPT::rsArrayTools::removeMean(targetBuffer, length);
     if( normalize == true )
-      RAPT::rsArray::normalize(targetBuffer, length, 1.0);
+      RAPT::rsArrayTools::normalize(targetBuffer, length, 1.0);
   }
 }
     

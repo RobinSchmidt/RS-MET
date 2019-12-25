@@ -36,7 +36,7 @@ void AcidPattern::randomize()
 
 void AcidPattern::circularShift(int numStepsToShift)
 {
-  RAPT::rsArray::circularShift(notes, maxNumSteps, numStepsToShift);
+  RAPT::rsArrayTools::circularShift(notes, maxNumSteps, numStepsToShift);
 }
 
 //-------------------------------------------------------------------------------------------------   

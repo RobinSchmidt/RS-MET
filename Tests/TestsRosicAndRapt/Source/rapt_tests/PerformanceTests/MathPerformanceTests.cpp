@@ -56,7 +56,7 @@ void matrixAdressingTest()
     a[i] = &af[i*M];
     b[i] = &bf[i*M];
   }
-  rsArray::fillWithRandomValues(af, int(N*M), -1.0, +1.0, 0);
+  rsArrayTools::fillWithRandomValues(af, int(N*M), -1.0, +1.0, 0);
 
   // measure copying a into b via pointer-to-pointer access:
   PerformanceCounterTSC counter;
@@ -316,7 +316,7 @@ void sinCosPerformance()
   float xMax = float(2*PI);
 
   float x[N], ySin[N], yCos[N];
-  rsArray::fillWithRandomValues(x, N, xMin, xMax, 0);
+  rsArrayTools::fillWithRandomValues(x, N, xMin, xMax, 0);
   PerformanceCounterQPC counter;
   int n;
 
@@ -356,7 +356,7 @@ void sinCosPerformance()
 
   // measure cost of rsSinCosTable<double> using linear interpolation:
   double xD[N], ySinD[N], yCosD[N];
-  rsArray::fillWithRandomValues(xD, N, xMin, xMax, 0);
+  rsArrayTools::fillWithRandomValues(xD, N, xMin, xMax, 0);
   counter.init();
   for(n = 0; n < N; n++)
     tableD.getValuesLinear(xD[n], &ySinD[n], &yCosD[n]);

@@ -161,7 +161,7 @@ public:
   zero, it effectively turns the thresholding off. */
   static std::vector<int> peakIndices(T* x, int N, T threshToMax = T(0));
   // todo: that function seems to be more generally useful - maybe move out of the class (and maybe 
-  // into rsArray)
+  // into rsArrayTools)
 
   /** Given an array of spectral magnitude values x and a peak-index k such that 
   x[k-1] < x[k] < x[k+1], this function computes the exact location of the peak 

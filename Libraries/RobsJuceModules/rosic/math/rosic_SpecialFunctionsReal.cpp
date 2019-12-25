@@ -26,7 +26,7 @@ double rosic::besselI0(double x)
     tmp[k] *= tmp[k];
   }
 
-  double result = 1.0 + RAPT::rsArray::sum(tmp, RAPT::rsNumInverseFactorials);
+  double result = 1.0 + RAPT::rsArrayTools::sum(tmp, RAPT::rsNumInverseFactorials);
 
   return result;
 }
@@ -84,7 +84,7 @@ void rosic::ellipticIntegral(double k, double *K, double *Kprime, int M)
     landen(k, M, v);
     for(n=0; n<M; n++)
       v[n] += 1.0;
-    *K = RAPT::rsArray::product(v, M) * 0.5*PI;
+    *K = RAPT::rsArrayTools::product(v, M) * 0.5*PI;
   }
 
   if( k == 0.0 )
@@ -100,7 +100,7 @@ void rosic::ellipticIntegral(double k, double *K, double *Kprime, int M)
     landen(kp, M, vp);
     for(n=0; n<M; n++)
       vp[n] += 1.0;
-    *Kprime = RAPT::rsArray::product(vp, M) * 0.5*PI;
+    *Kprime = RAPT::rsArrayTools::product(vp, M) * 0.5*PI;
   }
 
   delete[] v;

@@ -61,13 +61,13 @@ void rsLadderFilter2<TSig, TPar>::setMode(int newMode)
 template<class TSig, class TPar>
 void rsLadderFilter2<TSig, TPar>::getState(TSig *state)
 {
-  rsArray::copy(y, state, 5);
+  rsArrayTools::copy(y, state, 5);
 }
 
 template<class TSig, class TPar>
 void rsLadderFilter2<TSig, TPar>::reset()
 {
-  rsArray::fillWithZeros(y, 5);
+  rsArrayTools::fillWithZeros(y, 5);
 }
 
 template<class TSig, class TPar>
@@ -861,6 +861,6 @@ rsLadderMystran<TSig, TPar>::rsLadderMystran()
 template<class TSig, class TPar>
 void rsLadderMystran<TSig, TPar>::reset()
 {
-  rsArray::fillWithZeros(s, 4);
+  rsArrayTools::fillWithZeros(s, 4);
   zi = 0.0;
 }

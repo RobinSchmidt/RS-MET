@@ -543,7 +543,7 @@ void nonUniformOnePole1()
   //    actual oversampled data
 
   std::vector<double> x(N), yu(N), yn(N);                       // input- and output signals
-  RAPT::rsArray::fillWithRandomValues(&x[0], N, -1.0, 1.0, 1);  // fill input signal array
+  RAPT::rsArrayTools::fillWithRandomValues(&x[0], N, -1.0, 1.0, 1);  // fill input signal array
 
   // apply uniform filter:
   rsOnePoleFilter<double, double> fltUni;
@@ -602,7 +602,7 @@ void nonUniformOnePole2()
   std::vector<double> tc(Nc), yc(Nc);  // times axis and values for pseudo-continuous response
 
   // create time-stamp array for non-uniform sampling:
-  typedef RAPT::rsArray AR;
+  typedef RAPT::rsArrayTools AR;
   tf = randomSampleInstants(Nf, dtMin, dtMax, 0);
 
     // compute non-uniform filter output
@@ -705,7 +705,7 @@ void nonUniformComplexOnePole()
 
 
   // create uniformly sampled impulse-response:
-  typedef RAPT::rsArray AR;
+  typedef RAPT::rsArrayTools AR;
   double a[3], b[2];
   a[0] = 1.0;
   rsDampedSineFilterCoeffs(2*PI*freq, amplitude, decay, rsDegreeToRadiant(phase),
@@ -916,7 +916,7 @@ void nonUniformBiDirectional()
   Vec tn = randomSampleInstants(N, dtMin, dtMax, 0);
   Vec tu = rsLinearRangeVector( N, 0.0, (N-1)/fs);
   // tn should also end at N-1 to avoid artifact at right boundary:
-  RAPT::rsArray::scale(&tn[0], N, tu[N-1]/tn[N-1]);
+  RAPT::rsArrayTools::scale(&tn[0], N, tu[N-1]/tn[N-1]);
   for(int n = 0; n < N; n++) {
     xn1[n] = sin(2*PI*f1*tn[n]);
     xn2[n] = sin(2*PI*f2*tn[n]);

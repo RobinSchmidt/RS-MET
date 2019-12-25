@@ -527,7 +527,7 @@ void cubicSplineArcLength2D(T *a, T *b, T *t, T* s, int N)
   PL::derivative(b, d, 3);            // d is dy/dt (b is y(t))
   PL::multiply(c, 2, c, 2, c);        // c is (dx/dt)^2
   PL::multiply(d, 2, d, 2, d);        // d is (dy/dt)^2
-  rsArray::add(c, d, c, 5);           // c is (dx/dt)^2 + (dy/dt)^2
+  rsArrayTools::add(c, d, c, 5);           // c is (dx/dt)^2 + (dy/dt)^2
   // The coeffs of our desired quartic are now in our c-array.
 
   // Evaluate the integrand at the given t-values and perform numeric integration:

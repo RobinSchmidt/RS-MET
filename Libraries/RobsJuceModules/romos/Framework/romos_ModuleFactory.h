@@ -153,7 +153,7 @@ protected:
     bool polyphonic) const;
 
   //std::vector<ModuleTypeInfo*> typeInfos;          // causes false memleak error triggers
-  //rosic::rsArray<ModuleTypeInfo*> typeInfos;       // dito
+  //rosic::rsArrayTools<ModuleTypeInfo*> typeInfos;       // dito
   std::vector<ModuleTypeInfo*>* typeInfos = nullptr; // using a pointer-to vector avoids this
 
 };

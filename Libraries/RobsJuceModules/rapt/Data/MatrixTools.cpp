@@ -1,5 +1,5 @@
 template<class T>
-void MatrixTools::rsAllocateMatrix(T**& A, int N, int M)
+void rsMatrixTools::allocateMatrix(T**& A, int N, int M)
 {
   A = new T*[N];
   for(int i = 0; i < N; i++)
@@ -18,7 +18,7 @@ void MatrixTools::rsAllocateMatrix(T**& A, int N, int M)
 }
 
 template<class T>
-void MatrixTools::rsDeAllocateMatrix(T**& A, int N, int M)
+void rsMatrixTools::deallocateMatrix(T**& A, int N, int M)
 {
   for(int i = 0; i < N; i++)
     delete[] A[i];
@@ -26,7 +26,7 @@ void MatrixTools::rsDeAllocateMatrix(T**& A, int N, int M)
 }
 
 template<class T>
-void MatrixTools::rsInitMatrix(T** A, int N, int M, T value)
+void rsMatrixTools::initMatrix(T** A, int N, int M, T value)
 {
   for(int i = 0; i < N; i++)
   {
@@ -36,7 +36,7 @@ void MatrixTools::rsInitMatrix(T** A, int N, int M, T value)
 }
 
 template<class T>
-void MatrixTools::rsCopyMatrix(T** source, T **destination, int N, int M)
+void rsMatrixTools::copyMatrix(T** source, T **destination, int N, int M)
 {
   for(int i = 0; i < N; i++)
   {
@@ -46,7 +46,7 @@ void MatrixTools::rsCopyMatrix(T** source, T **destination, int N, int M)
 }
 
 template<class T>
-bool MatrixTools::rsAreMatricesApproximatelyEqual(T **A, T **B, int N, int M, T tol)
+bool rsMatrixTools::areMatricesApproximatelyEqual(T **A, T **B, int N, int M, T tol)
 {
   for(int i = 0; i < N; i++)
   {
@@ -61,7 +61,7 @@ bool MatrixTools::rsAreMatricesApproximatelyEqual(T **A, T **B, int N, int M, T 
 }
 
 template<class T>
-void MatrixTools::rsMatrixVectorMultiply(T **A, T *x, T *y, int N, int M)
+void rsMatrixTools::matrixVectorMultiply(T **A, T *x, T *y, int N, int M)
 {
   for(int i = 0; i < N; i++)
   {
@@ -72,7 +72,7 @@ void MatrixTools::rsMatrixVectorMultiply(T **A, T *x, T *y, int N, int M)
 }
 
 template<class T>
-void MatrixTools::rsTransposedMatrixVectorMultiply(T **A, T *x, T *y, int N, int M)
+void rsMatrixTools::transposedMatrixVectorMultiply(T **A, T *x, T *y, int N, int M)
 {
   for(int i = 0; i < M; i++)
   {
@@ -83,7 +83,7 @@ void MatrixTools::rsTransposedMatrixVectorMultiply(T **A, T *x, T *y, int N, int
 }
 
 template<class T>
-void MatrixTools::rsMatrixMultiply(T **A, T **B, T **C, int N, int M, int P)
+void rsMatrixTools::matrixMultiply(T **A, T **B, T **C, int N, int M, int P)
 {
   for(int i = 0; i < N; i++)
   {
@@ -97,7 +97,7 @@ void MatrixTools::rsMatrixMultiply(T **A, T **B, T **C, int N, int M, int P)
 }
 
 template<class T>
-void MatrixTools::rsMatrixMultiplyFirstTransposed(T **A, T **B, T **C, int N, int M, int P)
+void rsMatrixTools::matrixMultiplyFirstTransposed(T **A, T **B, T **C, int N, int M, int P)
 {
   for(int i = 0; i < M; i++)
   {
@@ -111,7 +111,7 @@ void MatrixTools::rsMatrixMultiplyFirstTransposed(T **A, T **B, T **C, int N, in
 }
 
 template<class T>
-void MatrixTools::rsMatrixMultiplySecondTransposed(T **A, T **B, T **C, int N, int M, int P)
+void rsMatrixTools::matrixMultiplySecondTransposed(T **A, T **B, T **C, int N, int M, int P)
 {
   for(int i = 0; i < N; i++)
   {
@@ -125,7 +125,7 @@ void MatrixTools::rsMatrixMultiplySecondTransposed(T **A, T **B, T **C, int N, i
 }
 
 template<class T>
-void MatrixTools::rsMatrixMultiplyBothTransposed(T **A, T **B, T **C, int N, int M, int P)
+void rsMatrixTools::matrixMultiplyBothTransposed(T **A, T **B, T **C, int N, int M, int P)
 {
   for(int i = 0; i < M; i++)
   {
@@ -139,12 +139,12 @@ void MatrixTools::rsMatrixMultiplyBothTransposed(T **A, T **B, T **C, int N, int
 }
 
 template<class T>
-void MatrixTools::rsMatrixInPlaceMultiply(T **A, T **B, int N, int M)
+void rsMatrixTools::matrixInPlaceMultiply(T **A, T **B, int N, int M)
 {
   T *Ai = new T[M];  // i-th row of A (for temporary storage)
   for(int i = 0; i < N; i++)
   {
-    rsArray::copy(A[i], Ai, M);
+    rsArrayTools::copy(A[i], Ai, M);
     for(int j = 0; j < M; j++)
     {
       A[i][j] = T(0);

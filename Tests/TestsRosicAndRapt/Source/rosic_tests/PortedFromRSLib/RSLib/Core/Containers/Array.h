@@ -20,7 +20,7 @@ namespace RSLib
   */
 
   template<class ElementType>
-  class rsArray
+  class rsArrayTools
   {
 
   public:
@@ -29,7 +29,7 @@ namespace RSLib
 
     /** Constructor. If sizeToAllocate is nonzero, memory will be reserved to hold the given
     number of elements but the array will still be considered empty. */
-    rsArray(const int sizeToAllocate = 0)
+    rsArrayTools(const int sizeToAllocate = 0)
     {
       initMembers();
       if( sizeToAllocate > 0 )
@@ -39,8 +39,8 @@ namespace RSLib
       }
     }
 
-    /** Constructor. Creates an rsArray from the given c-array of elements. */
-    rsArray(const ElementType *initialElements, const int numberOfInitialElements)
+    /** Constructor. Creates an rsArrayTools from the given c-array of elements. */
+    rsArrayTools(const ElementType *initialElements, const int numberOfInitialElements)
     {
       initMembers();
       if( numberOfInitialElements > 0 )
@@ -53,15 +53,15 @@ namespace RSLib
     }
 
     /** Copy-constructor - creates a deep copy of the other array. */
-    rsArray(const rsArray<ElementType>& other)
+    rsArrayTools(const rsArrayTools<ElementType>& other)
     {
       initMembers();
       copyDataFrom(other);
     }
 
-    /** Conversion constructor. Converts a std::vector of the given type into an rsArray of the
+    /** Conversion constructor. Converts a std::vector of the given type into an rsArrayTools of the
     same type. */
-    rsArray(const std::vector<ElementType> stdVector)
+    rsArrayTools(const std::vector<ElementType> stdVector)
     {
       initMembers();
       ensureAllocatedSize((int)stdVector.size());
@@ -70,7 +70,7 @@ namespace RSLib
     }
 
     /** Destructor. */
-    ~rsArray()
+    ~rsArrayTools()
     {
       delete[] elements;
     }
@@ -114,7 +114,7 @@ namespace RSLib
     }
 
     /** Appends another array to the end of this one. */
-    void appendArray(const rsArray<ElementType>& other)
+    void appendArray(const rsArrayTools<ElementType>& other)
     {
       ensureAllocatedSize(numUsed+other.numUsed);
       for(int i = 0; i < other.numUsed; i++)
@@ -163,7 +163,7 @@ namespace RSLib
     (via the '==' operator of ElementType).
     \todo maybe return the number of elements removed == numUsed (old) - numUsed (new)
     */
-    void removeMatchingElements(const rsArray& elementsToMatch)
+    void removeMatchingElements(const rsArrayTools& elementsToMatch)
     {
       numUsed = rsCopyIfNotMatching(elements, elements, numUsed, elementsToMatch.elements,
         elementsToMatch.numUsed);
@@ -172,7 +172,7 @@ namespace RSLib
 
     /** Removes all elements from the array that do not match one of the elements in the parameter
     array (via the '==' operator of ElementType). */
-    void keepOnlyMatchingElements(const rsArray elementsToMatch)
+    void keepOnlyMatchingElements(const rsArrayTools elementsToMatch)
     {
       numUsed = rsCopyIfMatching(elements, elements, numUsed, elementsToMatch.elements,
         elementsToMatch.numUsed);
@@ -197,7 +197,7 @@ namespace RSLib
     result will be an empty array. */
     void repeat(const int numberOfTimes)
     {
-      rsArray tmp = *this;
+      rsArrayTools tmp = *this;
       clear();
       ensureAllocatedSize(numberOfTimes*numUsed);
       for(int i = 0; i < numberOfTimes; i++)
@@ -284,7 +284,7 @@ namespace RSLib
     -1 if the searched sub-array is not found in this array. The optional searchStart parameter can
     be used to skip an initial section in the search.
     \todo: switch to a more efficient algorithm (Knuth/Morris/Pratt) */
-    int findFirstOccurrenceOf(const rsArray<ElementType>& subArrayToFind,
+    int findFirstOccurrenceOf(const rsArrayTools<ElementType>& subArrayToFind,
                               const int searchStart = 0) const
     {
       return RSLib::rsFindFirstOccurrenceOf(elements, numUsed, subArrayToFind.elements,
@@ -296,12 +296,12 @@ namespace RSLib
     ElementType getElement(const int index) const { return elements[index]; }
 
     /** Returns the sub-array between (and including) startIndex and endIndex.  */
-    rsArray<ElementType> getSubArray(const int startIndex, const int endIndex) const
+    rsArrayTools<ElementType> getSubArray(const int startIndex, const int endIndex) const
     {
       rsAssert( startIndex >= 0 && startIndex < numUsed );
       rsAssert( endIndex   >= 0 && endIndex   < numUsed );
       rsAssert( endIndex   >= startIndex );
-      rsArray<ElementType> result;
+      rsArrayTools<ElementType> result;
       int resultLength = endIndex-startIndex+1;
       result.ensureAllocatedSize(resultLength);
       for(int i = 0; i < resultLength; i++)
@@ -333,7 +333,7 @@ namespace RSLib
     }
 
     /** Assignment operator - creates a deep copy of this array and returns it. */
-    rsArray<ElementType>& operator= (const rsArray<ElementType>& other)
+    rsArrayTools<ElementType>& operator= (const rsArrayTools<ElementType>& other)
     {
       if( this != &other )   // nothing to do in case of self-assignment
         copyDataFrom(other);
@@ -343,7 +343,7 @@ namespace RSLib
     /** Compares two arrays for equality. Two arrays are considered equal, if they have the same
     length and match element by element. The reserved memory size is irrelevant for this
     comparison.  */
-    bool operator==(const rsArray& other) const
+    bool operator==(const rsArrayTools& other) const
     {
       if( numUsed != other.numUsed )
         return false;
@@ -352,7 +352,7 @@ namespace RSLib
     }
 
     /** Compares two arrays for inequality. */
-    bool operator!=(const rsArray& other) const
+    bool operator!=(const rsArrayTools& other) const
     {
       return !(*this == other);
     }
@@ -404,7 +404,7 @@ namespace RSLib
     }
 
     /** Copies the data from another array into this one. */
-    void copyDataFrom(const rsArray& sourceArray)
+    void copyDataFrom(const rsArrayTools& sourceArray)
     {
       ensureAllocatedSize(sourceArray.numUsed);
       numUsed = sourceArray.numUsed;

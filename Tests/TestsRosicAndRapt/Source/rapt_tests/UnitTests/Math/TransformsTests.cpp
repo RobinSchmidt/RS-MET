@@ -4,7 +4,7 @@ typedef std::complex<double> rsComplexDbl;
 template<class T>
 void interleaveWithZeros(T *x, T *y, int xLength, int factor)
 {
-  RAPT::rsArray::fillWithZeros(y, factor*xLength);
+  RAPT::rsArrayTools::fillWithZeros(y, factor*xLength);
   for(int i = 0; i < xLength; i++)
     y[factor*i] = x[i];
 }
@@ -63,7 +63,7 @@ bool testSmbFFT(std::string &reportString)
   // run FFT, calculate numerical error and check if below some margin:
   interleaveWithZeros(x, X, N, 2);
   smbFft(X, N, -1);
-  double error = rsArray::maxDeviation(X, T, 2*N);
+  double error = rsArrayTools::maxDeviation(X, T, 2*N);
   testResult &= (error < 1.e-6);  // a rather large margin is required
 
   appendTestResultToReport(reportString, testName, testResult);
@@ -108,7 +108,7 @@ bool testRsFFT(std::string &reportString)
   T[15] = rsComplexDbl( 0.578246697705605, 2.112908873015884);
 
   // compute spectrum via FFT:
-  rsArray::copy(x, X, N);
+  rsArrayTools::copy(x, X, N);
   rsFFT(X, N);
 
   // check maximum deviation between target- and computed spectrum:
@@ -118,7 +118,7 @@ bool testRsFFT(std::string &reportString)
   testResult &= (error < 1.e-15);
 
   // compute and check spectrum via DFT:
-  rsArray::copy(x, X, N);
+  rsArrayTools::copy(x, X, N);
   rsDFT(X, N);
   error = 0.0;
   for(n = 0; n < N; n++)
@@ -126,7 +126,7 @@ bool testRsFFT(std::string &reportString)
   testResult &= (error < 1.e-14); // needs more tolerance than FFT
 
   // check a forward/inverse turnaround cycle:
-  rsArray::copy(x, y, N);
+  rsArrayTools::copy(x, y, N);
   rsFFT( y, N);
   rsIFFT(y, N);
   error = 0.0;
@@ -159,7 +159,7 @@ bool testFourierTransformerRadix2(std::string &reportString)
   }
 
   // create target spectrum (we assume here that rsFFT computes a correct result):
-  rsArray::convertBuffer(x, T, N);
+  rsArrayTools::convert(x, T, N);
   rsFFT(T, N);
 
   // create the rsFourierTransformerRadix2 object, set it up and let it compute the spectrum:
@@ -183,7 +183,7 @@ bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRad
 {
   bool r = true;
   double tol = 1.e-13; // 1.e-13 works up to N=32
-  typedef RAPT::rsArray AR;
+  typedef RAPT::rsArrayTools AR;
   typedef RAPT::rsFourierTransformerRadix2<double> FT;
   std::vector<complex<double>> x(N), X(N);  // signal and spectrum
   std::vector<complex<double>> t(N), T(N);  // target signal and target spectrum
@@ -226,7 +226,7 @@ bool testFourierTrafoArbitrary(int N)
 {
   bool r = true;
   double tol = 1.e-13; // 1.e-13 works up to N=32
-  typedef RAPT::rsArray AR;
+  typedef RAPT::rsArrayTools AR;
   typedef RAPT::rsFourierTransformerRadix2<double> FTR2;
   typedef RAPT::rsFourierTransformerBluestein<double> FTB;
   std::vector<complex<double>> x(N), X(N);  // signal and spectrum

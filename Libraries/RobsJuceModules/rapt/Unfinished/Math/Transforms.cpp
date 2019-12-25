@@ -75,7 +75,7 @@ void rsDFT(std::complex<T> *x, int N) // maybe have a boolean "inverse" paramete
     for(int n = 0; n < N; n++)
       X[k] += x[n]*exp(std::complex<T>(T(0), T(-2.0*PI*n*k/N)));
   }
-  rsArray::copy(X, x, N);
+  rsArrayTools::copy(X, x, N);
   delete[] X;
 }
 
@@ -98,7 +98,7 @@ void rsIFFT(std::complex<T> *a, int N)
   rsConjugate(a, N);
   rsFFT(a, N);
   rsConjugate(a, N);
-  rsArray::scale(a, N, T(1)/N);
+  rsArrayTools::scale(a, N, T(1)/N);
   // \todo check, if this works for arbitrary (non power-of-two) N
   // shouldn't it be possible to just use a "sign" in the core FFT routine that just switches the
   // exponent of the twiddle factor to be positive or negative (->more efficient, we don't need to
@@ -110,7 +110,7 @@ void rsMagnitudeAndPhase(T *signal, int N, T *magnitudes, T *phases)
 {
   std::complex<T> *tmp = new std::complex<T>[N];
 
-  rsArray::convertBuffer(signal, tmp, N);
+  rsArrayTools::convert(signal, tmp, N);
   rsFFT(tmp, N);
 
   int k;
@@ -168,7 +168,7 @@ void rsRadix2FFT(std::complex<T> *a, int N)
     wm *= wm; // twiddle factor rotates twice as fast in next stage
   }
 
-  rsArray::orderBitReversed(a, N, (int)(rsLog2(N)+0.5)); // descramble outputs
+  rsArrayTools::orderBitReversed(a, N, (int)(rsLog2(N)+0.5)); // descramble outputs
 }
 
 /*

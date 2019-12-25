@@ -115,7 +115,7 @@ bool testSincInterpolation()
   // read noise signal at random time-instants with random stretch factors
   int numTests = 100; // number of samples to be read
   L = 64;
-  RAPT::rsArray::fillWithRandomValues(x, N, -1.0, +1.0, 0); // create noise input signal
+  RAPT::rsArrayTools::fillWithRandomValues(x, N, -1.0, +1.0, 0); // create noise input signal
   for(int i = 1; i <= numTests; i++)
   {
     t  = rsRandomUniform(0.0, N);

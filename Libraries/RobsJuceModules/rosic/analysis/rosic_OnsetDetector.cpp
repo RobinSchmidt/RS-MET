@@ -140,7 +140,7 @@ void OnsetDetector::feedSignalBlock(float *sampleData, int numSamples)
       computeMagnitudes(complexSpectrum, magnitudes, blockSize);
       rms.push_back(  computeBlockRms(linearBuffer) );
       flux.push_back( computeSpectralFluxValue(magnitudes, magnitudesOld, weights) );
-      RAPT::rsArray::copy(magnitudes, magnitudesOld, blockSize/2);
+      RAPT::rsArrayTools::copy(magnitudes, magnitudesOld, blockSize/2);
 
       // set the mark for the next completed block:
       nextBlockEnd += hopSize;
@@ -286,7 +286,7 @@ void OnsetDetector::computeSpectralFlux()
   blockIndex += 1;
   blockStart += hopSize;
   blockEnd    = blockStart + blockSize - 1;
-  RAPT::rsArray::copy(magnitudes, magnitudesOld, blockSize/2);
+  RAPT::rsArrayTools::copy(magnitudes, magnitudesOld, blockSize/2);
 
   // loop over the blocks:
   while( blockEnd < length )
@@ -305,7 +305,7 @@ void OnsetDetector::computeSpectralFlux()
     blockIndex += 1;
     blockStart += hopSize;
     blockEnd    = blockStart + blockSize - 1;
-    RAPT::rsArray::copy(magnitudes, magnitudesOld, blockSize/2);
+    RAPT::rsArrayTools::copy(magnitudes, magnitudesOld, blockSize/2);
   }
 }
 
@@ -326,8 +326,8 @@ void OnsetDetector::findOnsetsFromFluxMaxima()
   {
     int   n         = blockIndex-w;                              // block under investigation
     float value     = flux[n];                                   // flux of the block
-    float localMean = RAPT::rsArray::mean(    &flux[n-m*w], k);  // mean of the block's neighborhood
-    float localMax  = RAPT::rsArray::maxValue(&flux[n-m*w], k);  // maximum in the block's neighborhood
+    float localMean = RAPT::rsArrayTools::mean(    &flux[n-m*w], k);  // mean of the block's neighborhood
+    float localMax  = RAPT::rsArrayTools::maxValue(&flux[n-m*w], k);  // maximum in the block's neighborhood
 
     // onset decision function - an onset must the local maximum of the chunk and some threshold
     // above the local mean (modified with respect to Dixon so as to use a relative threshold):

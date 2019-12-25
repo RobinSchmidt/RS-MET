@@ -35,16 +35,16 @@ void rsOscArray<T>::updateIncrements()
     bool invertRatios = false; // make user parameter
     if(invertRatios)
     {
-      rsArray::transformRange(&incs[0], &incs[0], numOscs, T(1), T(2));  // ratios in 1...2
+      rsArrayTools::transformRange(&incs[0], &incs[0], numOscs, T(1), T(2));  // ratios in 1...2
       for(int i = 0; i < numOscs; i++)
         incs[i] = T(1) / incs[i];                                        // ratios in 0.5...1
-      rsArray::reverse(&incs[0], numOscs);
+      rsArrayTools::reverse(&incs[0], numOscs);
     }
 
     // transform the   increments to their actual target range:
     T minRatio = T(1) - T(0.5) * detune;
     T maxRatio = T(1) + T(0.5) * detune;
-    rsArray::transformRange(&incs[0], &incs[0], numOscs, minRatio, maxRatio);
+    rsArrayTools::transformRange(&incs[0], &incs[0], numOscs, minRatio, maxRatio);
   }
 
   // whith numOscs==1, we get -inf in incs[0] - we may have to treat that as special case

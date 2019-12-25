@@ -384,9 +384,9 @@ bool SpectrumAnalyzerDisplay::getRepresentingBins(double lowFreq, double highFre
   else
   {
     int length = highBin-lowBin+1;
-    offset = RAPT::rsArray::minIndex(&(familyValuesY[k][lowBin]), length);
+    offset = RAPT::rsArrayTools::minIndex(&(familyValuesY[k][lowBin]), length);
     minBin = lowBin + offset;
-    offset = RAPT::rsArray::maxIndex(&(familyValuesY[k][lowBin]), length);
+    offset = RAPT::rsArrayTools::maxIndex(&(familyValuesY[k][lowBin]), length);
     maxBin = lowBin + offset;
     return true;
   }

@@ -54,7 +54,7 @@ inline void rsAppend(std::vector<T>& v, const std::vector<T>& w)
   size_t nv = v.size();  // old size of v
   size_t nw = w.size();  //
   v.resize(v.size() + w.size()); // if v and w are the same, this will also change the size of w,
-  rsArray::copy(&w[0], &v[nv], (int)nw);  // ...that's why we needed to figure out nw before
+  rsArrayTools::copy(&w[0], &v[nv], (int)nw);  // ...that's why we needed to figure out nw before
 
   // another implementation - looks safer but the above works, too
   //if(&v[0] == &w[0]) {       // appending a vector to itself, we need a temporary...
@@ -64,7 +64,7 @@ inline void rsAppend(std::vector<T>& v, const std::vector<T>& w)
   //else {
   //  size_t nv = v.size();    // old size of v
   //  v.resize(v.size() + w.size());
-  //  rsArray::copy(&w[0], &v[nv], (int)w.size());
+  //  rsArrayTools::copy(&w[0], &v[nv], (int)w.size());
   //}
 }
 
@@ -128,7 +128,7 @@ template<class T>
 std::vector<T> rsRangeLinear(T min, T max, int N)
 {
   std::vector<T> r(N);
-  rsArray::fillWithRangeLinear(&r[0], N, min, max);
+  rsArrayTools::fillWithRangeLinear(&r[0], N, min, max);
   return r;
 }
 // maybe rename to rsLinSpace - consistent with numpy
@@ -192,7 +192,7 @@ inline bool rsRemoveFirstOccurrence(std::vector<T>& v, T elementToRemove)
 template<class T>
 inline void rsReverse(std::vector<T>& v)
 {
-  rsArray::reverse(&v[0], (int) v.size());
+  rsArrayTools::reverse(&v[0], (int) v.size());
 }
 
 template<class T>
@@ -287,7 +287,7 @@ std::vector<T> rsDecimate(const std::vector<T>& x, int factor)
 {
   int Ny = (int) x.size() / factor;
   std::vector<T> y(Ny);
-  RAPT::rsArray::decimate(&x[0], (int)x.size(), &y[0], factor);
+  RAPT::rsArrayTools::decimate(&x[0], (int)x.size(), &y[0], factor);
   return y;
 }
 
@@ -296,7 +296,7 @@ std::vector<T> rsDecimateViaMean(const std::vector<T>& x, int factor)
 {
   int Ny = (int) x.size() / factor;
   std::vector<T> y(Ny);
-  RAPT::rsArray::decimateViaMean(&x[0], (int)x.size(), &y[0], factor);
+  RAPT::rsArrayTools::decimateViaMean(&x[0], (int)x.size(), &y[0], factor);
   return y;
 }
 
@@ -319,10 +319,10 @@ std::vector<T> rsDecimateViaMean(const std::vector<T>& x, int factor)
 
 
 template<class T>
-T rsMinValue(const std::vector<T>& x) { return rsArray::minValue(&x[0], (int) x.size()); }
+T rsMinValue(const std::vector<T>& x) { return rsArrayTools::minValue(&x[0], (int) x.size()); }
 
 template<class T>
-T rsMaxValue(const std::vector<T>& x) { return rsArray::maxValue(&x[0], (int) x.size()); }
+T rsMaxValue(const std::vector<T>& x) { return rsArrayTools::maxValue(&x[0], (int) x.size()); }
 
 
 

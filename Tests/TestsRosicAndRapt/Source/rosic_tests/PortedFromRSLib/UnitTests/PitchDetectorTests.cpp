@@ -19,7 +19,7 @@ bool testAutoCorrelationPitchDetector()
   //static const int bufferSize = 16;
   //double buffer[bufferSize];
   double signal[1000];
-  RAPT::rsArray::fillWithIndex(signal, 1000);
+  RAPT::rsArrayTools::fillWithIndex(signal, 1000);
 
   rsAutoCorrelationPitchDetectorD pd;
   pd.setBufferSize(16);

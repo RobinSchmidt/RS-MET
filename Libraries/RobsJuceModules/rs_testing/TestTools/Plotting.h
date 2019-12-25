@@ -96,10 +96,10 @@ inline void plotFrequencyResponse(TFlt &filter, int N, TSig fMin, TSig fMax, TSi
   // create w array (normalized radian frequencies):
   std::vector<TSig> w(N);
   if(logFreq)
-    RAPT::rsArray::fillWithRangeExponential(&w[0], N, fMin, fMax);
+    RAPT::rsArrayTools::fillWithRangeExponential(&w[0], N, fMin, fMax);
   else
-    RAPT::rsArray::fillWithRangeLinear(&w[0], N, fMin, fMax);
-  RAPT::rsArray::scale(&w[0], N, 2*PI/fs);
+    RAPT::rsArrayTools::fillWithRangeLinear(&w[0], N, fMin, fMax);
+  RAPT::rsArrayTools::scale(&w[0], N, 2*PI/fs);
 
   // compute magnitude and phase response:
   std::vector<std::complex<TSig>> H = getFrequencyResponse(filter, w);
@@ -110,14 +110,14 @@ inline void plotFrequencyResponse(TFlt &filter, int N, TSig fMin, TSig fMax, TSi
   }
 
   // unwrap phase, convert to degrees:
-  RAPT::rsArray::unwrap(&phs[0], N, 2*PI);
+  RAPT::rsArrayTools::unwrap(&phs[0], N, 2*PI);
   for(int k = 0; k < N; k++)
     phs[k] *= 180.0/PI;
 
   // maybe move the two steps above into rapt, too
 
   // convert w back to Hz and plot:
-  RAPT::rsArray::scale(&w[0], N, fs/(2*PI));
+  RAPT::rsArrayTools::scale(&w[0], N, fs/(2*PI));
   plotFrequencyResponse(w, dB, phs, logFreq);
 }
 

@@ -262,7 +262,7 @@ double signalValueViaSincAt(double *x, int N, double t, double sincLength, doubl
 
 void halpernU(double *a, int K)
 {
-  RAPT::rsArray::fillWithZeros(a, K+1);
+  RAPT::rsArrayTools::fillWithZeros(a, K+1);
   int k, m;
   int f1, f2, f3, f4; // factorials
   if( rsIsEven(K) )
@@ -305,23 +305,23 @@ void halpernT2(double *c, int N)
   halpernU(u, N-1);
 
   // square it:
-  RAPT::rsArray::convolve(u, N, u, N, s);
+  RAPT::rsArrayTools::convolve(u, N, u, N, s);
 
   // apply squared scale factors:
   int k;
   if( rsIsEven(N) )
   {
     k = (N-2)/2;
-    RAPT::rsArray::scale(s, 2*N-1, 4*(k+1));
+    RAPT::rsArrayTools::scale(s, 2*N-1, 4*(k+1));
   }
   else
   {
     k = (N-1)/2;
-    RAPT::rsArray::scale(s, 2*N-1, 4*k+2);
+    RAPT::rsArrayTools::scale(s, 2*N-1, 4*k+2);
   }
 
   // multiply it by x:
-  RAPT::rsArray::rightShift(s, 2*N, 1);
+  RAPT::rsArrayTools::rightShift(s, 2*N, 1);
 
   // integrate it from 0 to w:
   double a[1] = { 0 };    // lower integration limit (as polynomial)
@@ -330,7 +330,7 @@ void halpernT2(double *c, int N)
     // this is actually the same as just taking the antiderivative of s
 
   // copy to output:
-  RAPT::rsArray::copy(t, c, 2*N+1);
+  RAPT::rsArrayTools::copy(t, c, 2*N+1);
 }
 
 void papoulisL2(double *v, int N)
@@ -340,7 +340,7 @@ void papoulisL2(double *v, int N)
   if( rsIsOdd(N) )
   {
     k = (N-1)/2;
-    RAPT::rsArray::fillWithZeros(v, k+1);
+    RAPT::rsArrayTools::fillWithZeros(v, k+1);
     for(int r = 0; r <= k; r++)
     {
       // add the weighted Legendre polynomial of order r to our v polynomial:
@@ -349,10 +349,10 @@ void papoulisL2(double *v, int N)
     }
 
     // square it:
-    RAPT::rsArray::convolve(v, k+1, v, k+1, v);
+    RAPT::rsArrayTools::convolve(v, k+1, v, k+1, v);
 
     // account for leaving out the division by (k+1)*sqrt(2) in the weights in the accumulation:
-    RAPT::rsArray::scale(v, 2*k+1, 1.0/(2*(k+1)*(k+1)));
+    RAPT::rsArrayTools::scale(v, 2*k+1, 1.0/(2*(k+1)*(k+1)));
 
     // integrate from -1 to 2*w^2-1
     double a[1] = { -1 };
@@ -370,11 +370,11 @@ void papoulisL2(double *v, int N)
     rsPolynomial<double>::derivative(P, v, k+1);  // v has order k, length k+1
 
     // square it:
-    RAPT::rsArray::convolve(v, k+1, v, k+1, v);   // has order 2*k, length 2*k+1
+    RAPT::rsArrayTools::convolve(v, k+1, v, k+1, v);   // has order 2*k, length 2*k+1
 
     // multiply by (x+1):
     double xp1[2] = { 1, 1};
-    RAPT::rsArray::convolve(v, 2*k+1, xp1, 2, v); // has order 2*k+1, length 2*k+2=N
+    RAPT::rsArrayTools::convolve(v, 2*k+1, xp1, 2, v); // has order 2*k+1, length 2*k+2=N
 
     // integrate from -1 to 2*w^2-1
     double a[1] = { -1 };
@@ -383,7 +383,7 @@ void papoulisL2(double *v, int N)
 
     // scale, such that L^2(1) = 1:
     double K = 1.0 / rsPolynomial<double>::evaluate(1.0, v, 2*N);
-    RAPT::rsArray::scale(v, 2*N+1, K); 
+    RAPT::rsArrayTools::scale(v, 2*N+1, K); 
   }
 }
 
@@ -468,7 +468,7 @@ void cheby_win(double *out, int N, double atten)
     //if(out[nn]>max)max=out[nn];
   }
   //for(nn=0; nn<N; nn++) out[nn] /= max; // normalise everything
-  RAPT::rsArray::normalizeMean(out, N);
+  RAPT::rsArrayTools::normalizeMean(out, N);
   return;
 }
 

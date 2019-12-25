@@ -46,7 +46,7 @@ bool testCopySection()
   int b[Nb];
   int n;
 
-  using AR = RAPT::rsArray;
+  using AR = RAPT::rsArrayTools;
 
   AR::fillWithValue(b, Nb, -1);
   AR::copySection(a, Na, b, 2, 3);
@@ -118,7 +118,7 @@ bool testReverse()
 {
   bool  r   = true;                 // test result
   using Vec = std::vector<int>;
-  using Arr = RAPT::rsArray;
+  using Arr = RAPT::rsArrayTools;
   auto  rev = [&](Vec& v) { Arr::reverse(&v[0], (int)rsSize(v)); }; // reversal function
 
   Vec a;
@@ -147,7 +147,7 @@ bool testMoveElements()
   static const int length = 10;
   int b[length] = {1,6,7,1,4,5,7,6,1,2};
 
-  RAPT::rsArray::rightShift(b, length, 2);
+  RAPT::rsArrayTools::rightShift(b, length, 2);
 
   return testResult;
 }
@@ -155,7 +155,7 @@ bool testRemoveElements()
 {
   bool testResult = true;
 
-  typedef RAPT::rsArray AR;
+  typedef RAPT::rsArrayTools AR;
   static const int length = 10;
   int testBuffer1[length] = {1,6,7,1,4,5,7,6,1,2};
   int testBuffer2[length] = {0,0,0,0,0,0,0,0,0,0};

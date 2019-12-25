@@ -91,7 +91,7 @@ int rsCrossOver4Way::getSlope(int treeLevel, int indexInLevel) const
 void rsCrossOver4Way::getMagnitudeResponse(double* frequencies, double* magnitudes, int numBins, 
   int outputChannel, bool inDecibels)
 {
-  RAPT::rsArray::fillWithValue(magnitudes, numBins, -100.0);
+  RAPT::rsArrayTools::fillWithValue(magnitudes, numBins, -100.0);
 
   if( !stage2[0].isActive() && !stage2[1].isActive() ) 
   {
@@ -160,7 +160,7 @@ void rsCrossOver4Way::getMagnitudeResponse(double* frequencies, double* magnitud
 
   rsFilterAnalyzerD::clampValuesAboveNyquist(frequencies, magnitudes, numBins, 
     stage1.getSampleRate(), -100.0);
-  RAPT::rsArray::clipBuffer(magnitudes, numBins, -150.0, 10.0);
+  RAPT::rsArrayTools::clipBuffer(magnitudes, numBins, -150.0, 10.0);
 }
 
 // audio-processing:

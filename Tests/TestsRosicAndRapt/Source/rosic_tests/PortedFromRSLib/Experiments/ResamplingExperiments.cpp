@@ -7,8 +7,8 @@ void fadeOut()
   static const int N = 500;  // number of samples to plot
   double t[N], x[N], y[N];
   createTimeAxis(N, t, 1.0);
-  RAPT::rsArray::fillWithValue( x, N, 1.0);
-  RAPT::rsArray::copy(x, y, N);
+  RAPT::rsArrayTools::fillWithValue( x, N, 1.0);
+  RAPT::rsArrayTools::copy(x, y, N);
   rsFadeOut(y, 100, 300);
   plotData(N, t, x, y);
 
@@ -32,7 +32,7 @@ void resampler()
 
   // create the test signal and write it into a wavefile:
   synthesizePulseWave(x, xN, f, d, fs, 0.0, true);
-  RAPT::rsArray::scale(x, xN, A);
+  RAPT::rsArrayTools::scale(x, xN, A);
   writeToMonoWaveFile("ResamplingInput.wav",  x, xN, (int) fs, 16);
 
   // resample it with various settings and write the results into wavefiles:
@@ -57,7 +57,16 @@ void resampler()
   rsResamplerDD::transposeSinc(x, xN, y, yN, r, 512, true);
   writeToMonoWaveFile("ResamplingOutputSinc512.wav",  y, yN, (int) fs, 16);
 
-  // actually, the simple cosin (non-squared) window seems to giev better results than
+  // use the convenience function:
+  std::vector<double> vx = toVector(x, xN);
+  std::vector<double> vy = rsResamplerDD::transposeSinc(vx, r, 64);
+
+  int dummy = 0;
+
+  // maybe make a convenience function that takes a std::vector as input and returns a std::vector:
+  // std::vector<T> resample(const std::vector<T>&x, T ratio, int sincLength = 64)
+
+  // actually, the simple cosine (non-squared) window seems to give better results than
   // squared - do the comparison with a longer signal, so we can see the spectrum at higher 
   // resolution
 
@@ -105,14 +114,14 @@ void sincResamplerAliasing()
 
   // create the input signal and write it into a wavefile:
   synthesizeWaveform(x, xN, RAPT::SINE, f, fs, 0.0, true);
-  RAPT::rsArray::scale(x, xN, A);
+  RAPT::rsArrayTools::scale(x, xN, A);
   //writeToMonoWaveFile("SincResamplerAliasingInput.wav",  x, xN, (int) fs, 16);
 
   // create warping map for linear frequency sweep:
   double rL = 1.0;             // lower transposition ratio (at start)
   double rU = 5.0;             // upper transposition ratio (at end)
-  RAPT::rsArray::fillWithRangeLinear(w, yN, rL, rU);
-  RAPT::rsArray::cumulativeSum(w, w, yN); 
+  RAPT::rsArrayTools::fillWithRangeLinear(w, yN, rL, rU);
+  RAPT::rsArrayTools::cumulativeSum(w, w, yN); 
 
 
 
@@ -121,7 +130,7 @@ void sincResamplerAliasing()
   //writeToMonoWaveFile("SincResamplerAliasing64.wav",  y, yN, (int) fs, 16);
 
   // recover frequency sweep data from time-warp map (as x-axis for plot)
-  RAPT::rsArray::difference(w, yN);
+  RAPT::rsArrayTools::difference(w, yN);
 
 
   //plotData(yN, w, y);
@@ -158,8 +167,8 @@ void sincResamplerModulation()
   int n;
   double xDC[N];                // DC input signal 
   double yDC[N];                // resampled DC output signal
-  RAPT::rsArray::fillWithValue(xDC, N, 1.0);
-  RAPT::rsArray::fillWithZeros(yDC, N);
+  RAPT::rsArrayTools::fillWithValue(xDC, N, 1.0);
+  RAPT::rsArrayTools::fillWithZeros(yDC, N);
   double tr = 0.0;
   for(n = 0; n < N; n++)
   {
@@ -224,7 +233,7 @@ void sincResamplerPassbandRipple()
   double w[N];
   double pMax = 20;  // maximum period for sweep
   double pMin = 5;   // minimum period for sweep
-  RAPT::rsArray::fillWithRangeLinear(w, N, 1/pMax, 1/pMin); // sweep 
+  RAPT::rsArrayTools::fillWithRangeLinear(w, N, 1/pMax, 1/pMin); // sweep 
   int n;
   for(n = 0; n < N; n++)
     x[n] = sin(w[n]*n);
@@ -306,7 +315,7 @@ void sincResamplerSumOfTapWeights()
   // array of stretch factors and resulting weight sums for different sinc lengths 
   // (8, 16, ...)
   double s[N], ws8[N], ws16[N], ws32[N], ws64[N], ws128[N];
-  RAPT::rsArray::fillWithRangeLinear(s, N, 1.0, sMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(s, N, 1.0, sMax);
   for(int i = 0; i < N; i++)
   {
     ws8[i]   = windowedSincWeightSum( 8,  s[i], tf, wnd, wp); // works up to s=2.38
@@ -325,11 +334,11 @@ void sincResamplerSumOfTapWeights()
   // weight-sum saturates at the half of the sinc-length. 
   
   // plot the ratio of the weight-sum over the stretch-factor: ws[i]/s[i]
-  RAPT::rsArray::divide(ws8,   s, ws8,   N);
-  RAPT::rsArray::divide(ws16,  s, ws16,  N);
-  RAPT::rsArray::divide(ws32,  s, ws32,  N);
-  RAPT::rsArray::divide(ws64,  s, ws64,  N);
-  RAPT::rsArray::divide(ws128, s, ws128, N);
+  RAPT::rsArrayTools::divide(ws8,   s, ws8,   N);
+  RAPT::rsArrayTools::divide(ws16,  s, ws16,  N);
+  RAPT::rsArrayTools::divide(ws32,  s, ws32,  N);
+  RAPT::rsArrayTools::divide(ws64,  s, ws64,  N);
+  RAPT::rsArrayTools::divide(ws128, s, ws128, N);
   plotData(N, s, ws8, ws16, ws32, ws64, ws128);
   // Observations:
   // As expected, the ratio first wiggles around unity until some cutoff point beyond which it 
@@ -345,7 +354,7 @@ void sincResamplerSumOfTapWeights()
   // used with slightly longer lengths (about 25% longer)
   
   // we measure the maximum of the wiggles of the 64-sample long sinc and express it in dB:
-  double d64 = rsAmpToDb(RAPT::rsArray::maxValue(ws64, N));
+  double d64 = rsAmpToDb(RAPT::rsArrayTools::maxValue(ws64, N));
     // rect: 1.43, Hann: 0.11, Hamming: 0.034, Blackman: 0.0029829146655588447,
     // exact Blackman: 0.00084361968017353120 -> that's what we should use for the interpolator
 
@@ -367,14 +376,14 @@ void timeWarp()
 
   // create the input signal and write it into a wavefile:
   synthesizePulseWave(x, xN, f, d, fs, 0.0, true);
-  RAPT::rsArray::scale(x, xN, A);
+  RAPT::rsArrayTools::scale(x, xN, A);
   writeToMonoWaveFile("TimeWarpInput.wav",  x, xN, (int) fs, 16);
 
   // create warping map for linear frequency sweep:
   double fMin = 0.25;  // transposition minimum
   double fMax = 8.0;   // transposition maximum
-  RAPT::rsArray::fillWithRangeLinear(w, yN, fMin, fMax);
-  RAPT::rsArray::cumulativeSum(w, w, yN); 
+  RAPT::rsArrayTools::fillWithRangeLinear(w, yN, fMin, fMax);
+  RAPT::rsArrayTools::cumulativeSum(w, w, yN); 
     // make this function take an output buffer as second argument (which may or may not be equal
     // to the input buffer), write a function that does the inverse (first difference)
    
@@ -471,7 +480,7 @@ void pitchDemodulation()
 
 
   // create the array with instantaneous frequencies of input signal:
-  RAPT::rsArray::fillWithRangeLinear(f, xN, f1, f2);
+  RAPT::rsArrayTools::fillWithRangeLinear(f, xN, f1, f2);
   int n;
   for(n = 0; n < xN; n++)
     f[n] += 0.5 * vd * sin((2*PI*vf/fs)*n);
@@ -1128,7 +1137,7 @@ T rsSimilarity1(const T* x, int Nx, const T* y, int Ny)
 template<class T>
 T rsSimilarity3(const T* x, int Nx, const T* y, int Ny) // SumAbsDiff
 {
-  T s = RAPT::rsArray::sumOfAbsoluteDifferences(x, y, rsMin(Nx, Ny));
+  T s = RAPT::rsArrayTools::sumOfAbsoluteDifferences(x, y, rsMin(Nx, Ny));
 
   int N = rsMin(Nx, Ny);
   T a(0);
@@ -1176,7 +1185,7 @@ int getBestMatchOffset(const T* x, int Nx, const T* y, int Ny)
     s[k] = rsSimilarityMeanAbsDiff(&x[k], Nx-k, &y[0], Ny);
 
   // find and return minimum:
-  return RAPT::rsArray::minIndex(&s[0], M);
+  return RAPT::rsArrayTools::minIndex(&s[0], M);
 
   // todo: maybe use zero-padding at the front and back and decimation - caller should specify 
   // decimation factor
@@ -1232,17 +1241,17 @@ void amplitudeMatch2()
   //rosic::crossCorrelation(&x1[0], N1, &x2[0], N2, &s1[0]); 
   // doesn't work - compare to the similar functions in rapt - get rid of redundancies
 
-  typedef RAPT::rsArray AR;
+  typedef RAPT::rsArrayTools AR;
 
   for(int k = 0; k < M; k++)
   {
     //s1[k] = RAPT::rsCrossCorrelation(&x1[k], N1-k, &x2[0], N2);
-    s1[k] = rsSimilarity1(&x1[k], N1-k, &x2[0], N2);  // is this the same as rsArray::sumOfProducts?
+    s1[k] = rsSimilarity1(&x1[k], N1-k, &x2[0], N2);  // is this the same as rsArrayTools::sumOfProducts?
 
     s2[k] = AR::meanOfAbsoluteDifferences(&x1[k], &x2[0], rsMin(N1-k, N2));
     s3[k] = AR::sumOfAbsoluteDifferences( &x1[k], &x2[0], rsMin(N1-k, N2));
 
-    s4[k] = rsSimilarity4(&x1[k], N1-k, &x2[0], N2);  // move to rsArray, too
+    s4[k] = rsSimilarity4(&x1[k], N1-k, &x2[0], N2);  // move to rsArrayTools, too
     s5[k] = rsSimilarity5(&x1[k], N1-k, &x2[0], N2);
   }
 
@@ -1287,12 +1296,12 @@ void sineShift()
 
   // create shifted signal using a rounded integer shift value:
   double yi[N];
-  RAPT::rsArray::copy(x, yi, N);
-  RAPT::rsArray::shift(yi, N, (int) rsRound(dn));
+  RAPT::rsArrayTools::copy(x, yi, N);
+  RAPT::rsArrayTools::shift(yi, N, (int) rsRound(dn));
 
   // create shifted signal using the exact shift value and sinc-interpolation:
   double y[N];
-  RAPT::rsArray::copy(x, y, N);
+  RAPT::rsArrayTools::copy(x, y, N);
 
   rsResamplerDD::shiftSinc(y, y, N, dn, 64.0);
 
@@ -1348,12 +1357,12 @@ void sineShift2()
 
   // mix the (original and shifted) harmonics together and write the results into wavefiles:
   double xMix[numSamples], yMix[numSamples];
-  RAPT::rsArray::fillWithZeros(xMix, numSamples);
-  RAPT::rsArray::fillWithZeros(yMix, numSamples);
+  RAPT::rsArrayTools::fillWithZeros(xMix, numSamples);
+  RAPT::rsArrayTools::fillWithZeros(yMix, numSamples);
   for(h = 0; h < numHarmonics; h++)
   {
-    RAPT::rsArray::add(xMix, x[h], xMix, numSamples);
-    RAPT::rsArray::add(yMix, y[h], yMix, numSamples);
+    RAPT::rsArrayTools::add(xMix, x[h], xMix, numSamples);
+    RAPT::rsArrayTools::add(yMix, y[h], yMix, numSamples);
   }
   writeToMonoWaveFile("SineShiftInputMix.wav",  xMix, numSamples, (int) fs, 16);
   writeToMonoWaveFile("SineShiftOutputMix.wav", yMix, numSamples, (int) fs, 16);
@@ -1390,14 +1399,14 @@ void rsHarmonicPhaseAdjust(double *x, double *y, int N, double f0, double bw, do
   double *tmp = new double[N];    // memory for one harmonic
 
   // extract, shift and accumulate one harmonic at a time:
-  RAPT::rsArray::fillWithZeros(y, N);
+  RAPT::rsArrayTools::fillWithZeros(y, N);
   for(int h = 0; h < nh; h++)
   {
     f = (h+1)*f0;
     rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(x, tmp, N, f, bw, fs, 10);
     shift = rsSineShiftAmount(tmp, N, n0, tp, 2*PI*f/fs);
     rsResamplerDD::shiftSinc(tmp, tmp, N, shift, 64);
-    RAPT::rsArray::add(y, tmp, y, N);
+    RAPT::rsArrayTools::add(y, tmp, y, N);
   }
 
   delete[] tmp;
@@ -1437,9 +1446,9 @@ void phaseLockSaxophone()
 
   double **px = readFromWaveFile(path, numChannels, N, fs);
   double *x = new double[N];
-  RAPT::rsArray::copy(px[0], x, N);
+  RAPT::rsArrayTools::copy(px[0], x, N);
 
-  n0 = RAPT::rsArray::maxAbsIndex(x, N); // corresponds to sAlignPos = FindHighestAmplitudeInSignal(data[0]);
+  n0 = RAPT::rsArrayTools::maxAbsIndex(x, N); // corresponds to sAlignPos = FindHighestAmplitudeInSignal(data[0]);
                                          // it finds n0 = 1872
   f0 = rsPitchToFreq(51);   // frequency for D#3 (MIDI-key 51)
   bw = 0.7*f0;
@@ -1481,9 +1490,9 @@ void phaseLockSaxophone2()
 
   double **px = readFromWaveFile(path, numChannels, N, fs);
   double *x = new double[N];
-  RAPT::rsArray::copy(px[0], x, N);
+  RAPT::rsArrayTools::copy(px[0], x, N);
 
-  n0 = RAPT::rsArray::maxAbsIndex(x, N); // corresponds to sAlignPos = FindHighestAmplitudeInSignal(data[0]);
+  n0 = RAPT::rsArrayTools::maxAbsIndex(x, N); // corresponds to sAlignPos = FindHighestAmplitudeInSignal(data[0]);
                                          // it finds n0 = 1872
   f0 = rsPitchToFreq(51);   // frequency for D#3 (MIDI-key 51)
   bw = 0.7*f0;
@@ -1520,7 +1529,7 @@ void autoTuneHorn()
   int fs;
   double **px = readFromWaveFile(path, numChannels, N, fs);
   double *x = new double[N];
-  RAPT::rsArray::copy(px[0], x, N);
+  RAPT::rsArrayTools::copy(px[0], x, N);
 
   double f0 = 87.0; // target frequency
   int i, n;
@@ -1574,7 +1583,7 @@ void autoTuneHorn2()
   // read full horn sample:
   double **px = readFromWaveFile("../../TestInputs/Horn_F1.wav", numChannels, N, fs);
   double *xFull = new double[N];
-  RAPT::rsArray::copy(px[0], xFull, N);
+  RAPT::rsArrayTools::copy(px[0], xFull, N);
   for(n = 0; n < numChannels; n++)
     delete px[n];
   delete[] px;
@@ -1582,7 +1591,7 @@ void autoTuneHorn2()
   // read chunk of 1st harmonic of horn sample:
   px = readFromWaveFile("../../TestInputs/Horn_F1_H1_Chunk.wav", numChannels, N, fs);
   double *xH1 = new double[N];
-  RAPT::rsArray::copy(px[0], xH1, N);
+  RAPT::rsArrayTools::copy(px[0], xH1, N);
   for(n = 0; n < numChannels; n++)
     delete px[n];
   delete[] px;

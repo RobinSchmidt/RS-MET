@@ -169,7 +169,7 @@ namespace rosic
   the proper sign where buffer2 is subtracted from buffer1). */
   //template <class T>
   //INLINE T maxError(T *buffer1, T *buffer2, int length);
-  // replaced by RAPT::rsArray::maxDeviation
+  // replaced by RAPT::rsArrayTools::maxDeviation
 
   //template <class T>
   //INLINE int maxErrorIndex(T* x, T* y, int N);
@@ -775,8 +775,8 @@ namespace rosic
       return; // avoid divide-by-zero
     T scaleFactor  = range/currentRange;
     T offset       = min - scaleFactor*currentMin;
-    RAPT::rsArray::scale(buffer, buffer, length, scaleFactor);
-    RAPT::rsArray::add(buffer, offset, buffer, length);
+    RAPT::rsArrayTools::scale(buffer, buffer, length, scaleFactor);
+    RAPT::rsArrayTools::add(buffer, offset, buffer, length);
   }
 
   template <class T>
@@ -894,7 +894,7 @@ namespace rosic
   T median(T *buffer, int length)
   {
     T* tmpBuffer = new T[length];
-    RAPT::rsArray::copy(buffer, tmpBuffer, length);
+    RAPT::rsArrayTools::copy(buffer, tmpBuffer, length);
 
     std::sort(tmpBuffer, &tmpBuffer[length]);
     T med;
@@ -917,7 +917,7 @@ namespace rosic
   template <class T>
   void normalize(T *buffer, int length, T maximum)
   {
-    T max   = RAPT::rsArray::maxAbs(buffer, length);;
+    T max   = RAPT::rsArrayTools::maxAbs(buffer, length);;
     T scale = maximum / max;
     for(int i=0; i<length; i++)
       buffer[i] *= scale;
@@ -943,7 +943,7 @@ namespace rosic
   template <class T>
   void removeMean(T *buffer, int length)
   {
-    T m = RAPT::rsArray::mean(buffer, length);
+    T m = RAPT::rsArrayTools::mean(buffer, length);
     for(int i=0; i<length; i++)
       buffer[i] -= m;
   }

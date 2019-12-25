@@ -285,34 +285,26 @@ public:
 
   /** Returns a copy of the data point at given index. */
   inline rsInstantaneousSineParams<T> getDataPoint(size_t index) const 
-  { 
-    return instParams[index]; 
-  }
+  { return instParams[index]; }
 
   /** Returns a reference to the data point at given index. */
   inline rsInstantaneousSineParams<T>& getDataPointRef(size_t index)
-  { 
-    return instParams[index]; 
-  }
+  { return instParams[index]; }
 
   /** Returns the first data point. */
   inline rsInstantaneousSineParams<T> getFirstDataPoint() const 
-  { 
-    return instParams[0]; 
-  }
+  { return instParams[0]; }
 
   /** Returns the last data point. */
   inline rsInstantaneousSineParams<T> getLastDataPoint() const 
-  { 
-    return instParams[instParams.size()-1]; 
-  }
+  { return instParams[instParams.size()-1]; }
 
   /** Fills the 4 given vectors with the data from our data points - useful for plotting and 
   creating interpolated data arrays. */
   void getDataArrays(std::vector<T>& time, std::vector<T>& freq, std::vector<T>& gain, 
     std::vector<T>& phase) const;
 
-
+  /** Returns an array with all the time-stamps. */
   std::vector<T> getTimeArray() const;
 
   std::vector<T> getFrequencyArray() const;

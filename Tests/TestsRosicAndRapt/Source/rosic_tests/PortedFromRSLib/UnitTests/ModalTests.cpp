@@ -33,7 +33,7 @@ bool testModalFilter2()
   // check impulse-response:
   double x1[N];
   getImpulseResponse(mf, x1, N);
-  double err = RAPT::rsArray::maxDeviation(xt, x1, N);
+  double err = RAPT::rsArrayTools::maxDeviation(xt, x1, N);
   testResult &= err < 1.e-11;
 
 
@@ -42,7 +42,7 @@ bool testModalFilter2()
   nmf.setModalParameters(f, A, td, phs, fs);
   double x2[N];
   getImpulseResponse(nmf, x2, N);
-  err = RAPT::rsArray::maxDeviation(xt, x2, N);
+  err = RAPT::rsArrayTools::maxDeviation(xt, x2, N);
   testResult &= err < 1.e-13;  // rsNonlinearModalFilter has less error than rsModalFilter
 
 
@@ -61,14 +61,14 @@ bool testModalFilter2()
   for(n = 0; n < N; n++)
     xt[n] = A * scaler * (exp(-a*n)-exp(-a2*n)) * sin(w*n + p);
   getImpulseResponse(mfa, x1, N);
-  err = RAPT::rsArray::maxDeviation(xt, x1, N);
+  err = RAPT::rsArrayTools::maxDeviation(xt, x1, N);
   testResult &= err < 1.e-11;
 
   // check class rsModalFilterWithAttack2:
   rsModalFilterWithAttack2DD mfa2;
   mfa2.setModalParameters(f, A, ta, td, phs, fs);
   getImpulseResponse(mfa2, x1, N);
-  err = RAPT::rsArray::maxDeviation(xt, x1, N);
+  err = RAPT::rsArrayTools::maxDeviation(xt, x1, N);
   testResult &= err < 1.e-7;
     // 4 orders of magnitude less precise than rsModalFilterWithAttack (with GCC)
 
@@ -78,7 +78,7 @@ bool testModalFilter2()
   mf_f32x4.setParametersTwoEnvs(w, scaledA, p, td2*fs, td2*fs, 0.0, td*fs, td*fs, 0.0);
   getImpulseResponse(mf_f32x4, x1, N);
   //plotData(N, 0, 1/fs, xt, x1); 
-  err = RAPT::rsArray::maxDeviation(xt, x1, N);
+  err = RAPT::rsArrayTools::maxDeviation(xt, x1, N);
   testResult &= err < 0.002;
 
   return testResult;

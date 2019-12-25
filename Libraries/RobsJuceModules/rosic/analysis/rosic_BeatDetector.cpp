@@ -158,7 +158,7 @@ void BeatDetector::estimateTempi()
     // find median:
     for(unsigned int o=0; o<numOnsets; o++)
       tempoTrack[o] = tempoEstimates[o][t];
-    medianTempi[t] = RAPT::rsArray::median(tempoTrack, numOnsets);
+    medianTempi[t] = RAPT::rsArrayTools::median(tempoTrack, numOnsets);
   }
   delete[] tempoTrack;
 
@@ -239,7 +239,7 @@ void BeatDetector::computeBeatProbabilities()
   // outer loop over the number of passes
   for(int pass=1; pass<=numPasses; pass++)
   {
-    RAPT::rsArray::copy(beatProbabilities, beatProbabilitiesTmp, numOnsets);
+    RAPT::rsArrayTools::copy(beatProbabilities, beatProbabilitiesTmp, numOnsets);
     for(int o=0; o<numOnsets; o++)
     {
       int   t  = onsets[o].timeInSamples;         // onset time in samples

@@ -37,7 +37,7 @@ void testSincInterpolator(std::string &reportString)
   double *y = new double[yN];   // output signal
 
   // create random noise as input signal:
-  RAPT::rsArray::fillWithRandomValues(x, xN, -1.0, +1.0, 0);
+  RAPT::rsArrayTools::fillWithRandomValues(x, xN, -1.0, +1.0, 0);
 
   // measure different interpolation effiencies:
   ::ProcessorCycleCounter counter;

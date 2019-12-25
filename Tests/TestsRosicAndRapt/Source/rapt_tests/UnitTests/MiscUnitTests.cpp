@@ -219,7 +219,7 @@ public:
   bool testInverseTrafo(int N, double tol)
   {
     std::vector<std::complex<double>> y, x = rsComplexRandomVector(N, -1.0, +1.0); y = x;
-    //ifft(  &y[0], N); RAPT::rsArray::scale(&y[0], N, 1.0/N); // actual
+    //ifft(  &y[0], N); RAPT::rsArrayTools::scale(&y[0], N, 1.0/N); // actual
     ifft(  &y[0], N);  // actual
     rsIFFT(&x[0], N);  // target
     return rsAlmostEqual(x, y, tol);
@@ -295,7 +295,7 @@ bool spectrogramUnitTest()
   // rsFourierTransformer object, allow arbitrary FFT sizes
 
   // why do we need to scale the output of the ifft? in getComplexSpectrogram, there is already a 
-  // scaling by 2 / rsArray::sum(w, B); ...aahh - but it's applied to the STFT matrix *after* the
+  // scaling by 2 / rsArrayTools::sum(w, B); ...aahh - but it's applied to the STFT matrix *after* the
   // STFT has been computed - so, we should probably use no nromalziation
 
   // how it should work:
@@ -326,21 +326,21 @@ bool sineModelingUnitTest()
 
   // test with zero-padding factor = 4:
   Vec buf(32);
-  RAPT::rsArray::fillWithNaN(&buf[0], (int) buf.size());
+  RAPT::rsArrayTools::fillWithNaN(&buf[0], (int) buf.size());
   rsHarmonicAnalyzer<double>::prepareBuffer(sig, buf);
   Vec target = { 5,6,7,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,3,4 };
   r &= buf == target;
 
   // test with zero-padding factor = 2:
   buf.resize(16);
-  RAPT::rsArray::fillWithNaN(&buf[0], (int) buf.size());
+  RAPT::rsArrayTools::fillWithNaN(&buf[0], (int) buf.size());
   rsHarmonicAnalyzer<double>::prepareBuffer(sig, buf);
   target = { 5,6,7,8,0,0,0,0,0,0,0,0,1,2,3,4 };
   r &= buf == target;
 
   // test with zero-padding factor = 1:
   buf.resize(8);
-  RAPT::rsArray::fillWithNaN(&buf[0], (int) buf.size());
+  RAPT::rsArrayTools::fillWithNaN(&buf[0], (int) buf.size());
   rsHarmonicAnalyzer<double>::prepareBuffer(sig, buf);
   target = { 5,6,7,8,1,2,3,4 };
   r &= buf == target;

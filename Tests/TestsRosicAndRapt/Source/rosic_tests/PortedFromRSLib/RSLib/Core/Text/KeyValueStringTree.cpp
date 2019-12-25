@@ -154,7 +154,7 @@ int rsKeyValueStringTree::findMatchingEndTag(const rsString& document, const int
 
   // endTagIndex so found must be interpreted as a first candidate - if there are alike opening 
   // start-tags before this end-tag we must continue our search for correspondingly later end-tags:
-  rsArray<int> otherOccurrencesOfStartTag = document.findAllOccurrencesOf(startTag, searchStart, 
+  rsArrayTools<int> otherOccurrencesOfStartTag = document.findAllOccurrencesOf(startTag, searchStart, 
                                                                           endTagIndex);
   int nestingLevel = otherOccurrencesOfStartTag.getNumElements();
   for(int i=0; i<nestingLevel; i++)

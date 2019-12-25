@@ -44,7 +44,7 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
 template<class T>
 bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
 {
-  typedef RAPT::rsArray AR;
+  typedef RAPT::rsArrayTools AR;
   typedef std::vector<T> Vec;
 
   // Find cycle marks and assign FFT blockSize:
@@ -119,7 +119,7 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
   int K  = blockSize;      // this is now potentially different from cycle-length...we need to upadate code below
   int L  = (int) tOut[1];              // length of initial partial cycle
   rsAssert(L >= 0 && L <= K);
-  typedef RAPT::rsArray AR;
+  typedef RAPT::rsArrayTools AR;
   AR::fillWithZeros(&sig[0], K-L);
   if(L > 0)
     AR::copy(&y[n0], &sig[K-L], L);
@@ -160,7 +160,7 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics2(RAPT::rsSinusoidalModel<T>& mdl)
   // Initialize the model (create all datapoints, to filled with actual data later):
   mdl.init(getNumHarmonics(), getNumDataPoints());
 
-  typedef RAPT::rsArray AR;
+  typedef RAPT::rsArrayTools AR;
 
   //int numFrames = getNumFrames();  //
   int over = (blockSize - cycleLength) / 2; // amount of overhanging of block with respect to cycle
@@ -511,7 +511,7 @@ std::vector<int> rsHarmonicAnalyzer<T>::findPartialBins(const std::vector<T> mag
 }
 */
 
-// move to rsArray:
+// move to rsArrayTools:
 template<class T>
 int numPeaks(T* x, int N)
 {
@@ -562,7 +562,7 @@ int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int kCenter, int w
   // maybe make enforcing this unimodality condition optional
 
 
-  int kMax = rsArray::maxIndex(&v[kLeft], length) + kLeft;  // index of maximum
+  int kMax = rsArrayTools::maxIndex(&v[kLeft], length) + kLeft;  // index of maximum
   //return kMax; // test - crashes bcs parabolic peak interpolation returns out-of range value
   if(kMax == kLeft || kMax == kRight) // *not* ensured already by nPeaks == 1: there could be a
     return -1;                        // bump in the middle but the side could still be higher

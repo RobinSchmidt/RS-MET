@@ -488,7 +488,7 @@ will occur (i.e. the output signal is to quiet)...maybe we can compensate this e
 \todo: make the signal type a template parameter such that the class can be used for multichannel
 signals
 
-maybe, it would be more convenient, if these functions would deal with std::vector or rsArray, so
+maybe, it would be more convenient, if these functions would deal with std::vector or rsArrayTools, so
 client code doesn't have to bother with signal lengths
 
 reorganize the RSAudio part of the library to have folders Processes, Realtime and Tools where
@@ -519,13 +519,13 @@ public:
   interpolation.
 
   \todo move suitable parts of the comments for transposeSinc to here.  */
-  static TSig signalValueViaSincAt(TSig *x, int N, TPos t, TPos sincLength, TPos stretch);
+  static TSig signalValueViaSincAt(const TSig *x, int N, TPos t, TPos sincLength, TPos stretch);
 
   /** Transposes a signal x of length xN by the given factor using linear interpolation and
   stores the result in y which is assumed to an array of length yN. When the end of the input
   signal x is reached before the end of the output signal y, the tail of y will be filled with
   zeros. */
-  static void transposeLinear(TSig *x, int xN, TSig *y, int yN, TPos factor);
+  static void transposeLinear(const TSig *x, int xN, TSig *y, int yN, TPos factor);
 
   /** Like transposeLinear, but uses windowed sinc interpolation. You may pass the length of the
   sinc filter kernel to be used. This length is of type "double" because its interpretation is
@@ -539,13 +539,21 @@ public:
 
   The actual number of samples M used for interpolation is given by:
   M = 2 * ( ((int)floor(sincLength)) / 2) + 1  [verify this formula] */
-  static void transposeSinc(TSig *x, int xN, TSig *y, int yN, TPos factor,
+  static void transposeSinc(const TSig *x, int xN, TSig *y, int yN, TPos factor,
     TPos sincLength = 64.0, bool antiAlias = true);
+
+  /** Convenience function that works with std::vector */
+  static std::vector<TSig> transposeSinc(const std::vector<TSig>&x, TPos factor, 
+    TPos sincLength = 64.0, bool antiAlias = true);
+
 
   /** Shifts an input signal x of length N by an arbitrary (noninteger) amount of samples using
   sinc-interpolation and stores the result in y (also of length N). x and y may point to the same
   array in which case a temporary buffer will be used internally. */
   static void shiftSinc(TSig *x, TSig *y, int N, TPos amount, TPos sincLength = 64.0);
+
+
+
 
 };
 
@@ -923,7 +931,7 @@ public:
   right. */
   bool isPeakCandidate(int index, const T* data, int length) const;
     // maybe change order of parameters: data, length, index - that would be more consistent with 
-    // functions in rsArray
+    // functions in rsArrayTools
 
 
 
@@ -1095,7 +1103,7 @@ public:
   and/or x[N-1] >= x[N-2] respectively.  */
   static std::vector<size_t> findPeakIndices(const T* x, int N, bool includeFirst = false,
     bool includeLast = false);
-  // maybe move to rsArray, maybe return a vector of int, rename to findPeaksAndPlateauIndices or
+  // maybe move to rsArrayTools, maybe return a vector of int, rename to findPeaksAndPlateauIndices or
   // maybe have another boolean option includePlateaus
 
   /** Given a signal x of length N, this function fills the sampleTime array with the

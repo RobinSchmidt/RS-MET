@@ -50,7 +50,7 @@ void testDeBeating(const std::string& name, std::vector<double>& input,
 void testEnvelopeMatching(std::vector<double>& input1, std::vector<double>& input2);
 void testEnvelopeMatching2(std::vector<double>& input1, std::vector<double>& input2);
 
-// move to RAPT::rsArray
+// move to RAPT::rsArrayTools
 template<class T>
 void applyFadeIn(T* x, int N, int numFadeSamples)
 {

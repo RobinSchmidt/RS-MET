@@ -488,7 +488,7 @@ void crossCorrelation(T *x, int xLength, T *y, int yLength, T *result)
 template<class T>
 T rsMaxCorrelationLag(T *r, int N)
 {
-  int nMax = rsArray::maxIndex(r, N);
+  int nMax = rsArrayTools::maxIndex(r, N);
   if( nMax == 0 || nMax == N-1 )
     return nMax; // no subsample precision possible at ends of the array
 

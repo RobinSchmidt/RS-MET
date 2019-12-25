@@ -356,11 +356,11 @@ int rsString::removeGarbageFromDoubleString(char *s, int length)
   //int dummy;
 
   // leave scientifically notated strings as is:
-  if( RAPT::rsArray::findIndexOf(s, 'e', length) != -1 || RAPT::rsArray::findIndexOf(s, 'E', length) != -1 )
+  if( RAPT::rsArrayTools::findIndexOf(s, 'e', length) != -1 || RAPT::rsArrayTools::findIndexOf(s, 'E', length) != -1 )
     return length;
 
   // leave integer notated strings (without point) as is:
-  int dotIndex = RAPT::rsArray::findIndexOf(s, '.', length);
+  int dotIndex = RAPT::rsArrayTools::findIndexOf(s, '.', length);
   if( dotIndex == -1 )
     return length;
 
@@ -414,7 +414,7 @@ int rsString::removeGarbageFromDoubleString(char *s, int length)
 //=================================================================================================
 // functions for std::string:
 
-// use function from RAPT::rsArray - but needs adaption of parameter types (constness)
+// use function from RAPT::rsArrayTools - but needs adaption of parameter types (constness)
 inline int findIndexOf(const char* buffer, char elementToFind, int length)
 {
   for(int i = 0; i < length; i++) {

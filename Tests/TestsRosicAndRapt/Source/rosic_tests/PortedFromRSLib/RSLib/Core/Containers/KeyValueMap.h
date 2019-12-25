@@ -241,7 +241,7 @@ public:
   bool isEmpty() const { return getNumEntries() == 0; }
 
 
-  // \todo see rsArray and implement some operators...
+  // \todo see rsArrayTools and implement some operators...
 
 protected:
 
@@ -249,7 +249,7 @@ protected:
 
   std::vector<rsKeyValuePair<KeyType, ValueType>*> entriesSortedByKey;
   std::vector<rsKeyValuePair<KeyType, ValueType>*> entriesSortedByValue;
-    // \todo maybe switch to rsArray<KeyValuePair*> here later
+    // \todo maybe switch to rsArrayTools<KeyValuePair*> here later
 
   // friend decalarations to facilitate testing (try to get rid of that - library code should not
   // be cluttered with stuff like that):

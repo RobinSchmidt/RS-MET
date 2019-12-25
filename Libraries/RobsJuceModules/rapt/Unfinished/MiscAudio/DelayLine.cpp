@@ -27,7 +27,7 @@ void rsBasicDelayLine<T>::setMaximumDelayInSamples(int newMaxDelay)
     delete[] delayLine;
     maxDelay  = rsNextPowerOfTwo(newMaxDelay + 1) - 1;
     delayLine = new T[maxDelay+1];
-    rsArray::fillWithZeros(delayLine, maxDelay+1);
+    rsArrayTools::fillWithZeros(delayLine, maxDelay+1);
   }
 }
 

@@ -3,8 +3,8 @@ void rsHeatEquation1D<T>::setMaxCycleLength(int newLength)
 { 
   rodArray1.resize(newLength);
   rodArray2.resize(newLength);
-  rsArray::fillWithZeros(&rodArray1[0], newLength);
-  rsArray::fillWithZeros(&rodArray2[0], newLength);
+  rsArrayTools::fillWithZeros(&rodArray1[0], newLength);
+  rsArrayTools::fillWithZeros(&rodArray2[0], newLength);
   reset(); // possibly re-adjust pointers
 }
 
@@ -53,7 +53,7 @@ void rsHeatEquation1D<T>::normalizeHeatDistribution(T targetMean, T targetVarian
   // set mean to desired target value (maybe factor out):
   //int N = (int) rodArray1.size();
   int N = (int) rodLength;
-  typedef rsArray AR;
+  typedef rsArrayTools AR;
   T mean = AR::mean(rodIn, N);
   AR::add(rodIn, -mean, rodIn, N); 
   // ...hmm..this actually just set the mean to zero...which is the most reasonable target value
@@ -159,16 +159,19 @@ void rsWaveEquation1D<T>::computeBoundaryPoints(T timeStep)
   int N  = getNumGridPoints()-1; // see (1), section 5.2.8
   tmp[0] = tmp[N] = T(0);        // endpoints fixed at zero - "Dirichlet" conditions
   // todo: allow to let client code choose from various boundary conditions (Dirichlet, Neumann, 
-  // mixed, etc.) ..maybe also allow for circular/wrap-around conditions - that's no-physical but
-  // may be interesting
+  // mixed, etc.) ..maybe also allow for circular/wrap-around conditions - that's non-physical but
+  // may be interesting - it would sort of model a circular string - maybe like strung around a 
+  // cyclinder
+
+  // on page 138, (1) says something about "at l=0, scheme 6.35 may be modified to..." - try that
 }
 
 template<class T>
 void rsWaveEquation1D<T>::updateStateArrays()
 {
   int N = getNumGridPoints()-1;             // see (1), section 5.2.8
-  RAPT::rsArray::copy(&u[0],   &u1[0], N);  // u goes into u1
-  RAPT::rsArray::copy(&tmp[0], &u[0],  N);  // tmp goes into u
+  RAPT::rsArrayTools::copy(&u[0],   &u1[0], N);  // u goes into u1
+  RAPT::rsArrayTools::copy(&tmp[0], &u[0],  N);  // tmp goes into u
 }
 
 // todo: implement 6.38, 6.45, 146: bottom, 149: u_l^{n+1} =..., 6.59, 
@@ -323,13 +326,13 @@ void rsRectangularRoom<T>::updateState()
   // update the "velocities" by adding a fraction of the Laplacian (which is proportional to
   // the "acceleration"):
   int N = u.getSize();
-  rsArray::addWithWeight(u_t.getDataPointer(), N, u_tt.getDataPointer(), k); // is k the right scaler?
+  rsArrayTools::addWithWeight(u_t.getDataPointer(), N, u_tt.getDataPointer(), k); // is k the right scaler?
 
   // maybe we should set the velocities to zero at the boundary...currently they already are 
   // because the lapalcian is only computed at inetrior points
 
   // update the pressures by adding a fraction of the "velocities":
-  rsArray::addWithWeight(u.getDataPointer(), N, u_t.getDataPointer(), k); // is k the right scaler?
+  rsArrayTools::addWithWeight(u.getDataPointer(), N, u_t.getDataPointer(), k); // is k the right scaler?
 
   int dummy = 0;
 }
@@ -386,7 +389,7 @@ void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiA
 // todo: 
 // -implement bi-laplacian (aka biharmonic)...but is this actually a thing in 3D? in 1D and 2D
 //  it's used for modeling stiffness...but in 3D? hmm...
-// -implement Laplacian for cylidrical and spherical coordinates
+// -implement Laplacian for cylindrical and spherical coordinates
 // -maybe rename this function to reflect that we a doing a 7 point approximation in cartesian 
 //  coordinates - there are so many other possibilities...
 
@@ -436,6 +439,13 @@ Schemes:
   -in the linear case, we typically deal with sparse (often band-diagonal) matrices
  -implicit schemes are sometimes easier to analyze in terms of numerical stability and they also to
   tend to *be* more stable
+ -hmm...i actually think, it's more like the grid values at the next time-step are all 
+  interdependent and it's not possible to solve for a single grid-value explicitly in terms of 
+  known values
+-i think, the difference between using a scheme with delayed values and explicit representations of 
+ deriviatives is somewhat similar to consolidating two first order (integrator) filters into a 
+ single second order (biquad) filter - the biquad may produce the same output but one loses 
+ physical interpretability of its internal state variables
 
 -maybe instead of using past values of the displacement u itself with a temporal stencil, 
  explicitly compute and use things like u_xx, u_t, u_tt, etc. (for u_xxxx also use the notation 
@@ -484,11 +494,13 @@ Chapter 5:
 -in the book, that function F is expressed as an operator P = P(d/dt,d/dx,d^2/dt^2,d^2/dx^2,...) 
  acting on u(x,t): P u = 0 (Eq. 5.1)...but i think, that notation is a bit obscure...
 -linear time-invariant and linear shift-invariant systems are abbreviated as LTI and LSI
--in addition to the PDE, boundary conditions and initial conditions must be supplied
+-in addition to the PDE, boundary conditions and initial conditions must be supplied. The PDE 
+ itself determines an infinite set of possible solutions, the initial- and boundary conditions pick
+ one solution from that set
 -PDEs in musical acoustics usually: 
  -are 2nd order in time (i.e. u_t and u_tt appears but no higher time-derivatives)
  -involve even order spatial derivatives such as u_xx, u_xxxx which reflects direction independence
- -are of the hyperbolic type
+ -are of the hyperbolic type (what does that mean?)
 -the wave-equation in 1D is: u_tt = g^2 * u_xx, where g^2 (in the book: gamma-squared) is the 
  square of the wave-velocity (or its reciprocal? -> figure out!)
  -the wave equation is linear, iff g does not depend on u
@@ -501,16 +513,38 @@ Chapter 5:
 -for analyzing PDEs, one may apply the Laplace transform in the time domain:
    û(x,s)  = integral u(x,t) * exp(-s*t) dt     Eq. 5.2
  or the Fourier transform in the spatial domain:
-   u'(b,t) = integral u(x,t) * exp(-j*b*x) dx   Eq. 5.3
- where the integrals both run from -inf to inf. For problems over a finite spatial domain, Fourier 
- series  may be used. The derivative operators transform to multiplications to corresponding powers
- of s or j*b, for example: u_tt -> s^2 * û, u_xx -> (j*b)^2 * u'
--one may also plug the ansatz: u(x,t) = exp(s*t + j*b*x) into the PDE in order to analyze, under 
- which conditions such a special function (representing a wave of frequency s and and wavenumber b)
+   u'(b,t) = integral u(x,t) * exp(-j*b*x) dx   Eq. 5.3, b is used for beta
+ or both, where the integrals both run from -inf to inf. For problems over a finite spatial domain, 
+ Fourier series  may be used. The derivative operators transform to multiplications to 
+ corresponding powers of s or j*b, for example: u_tt L-> s^2 * û, u_xx F-> (j*b)^2 * u', where 
+ L-> means Laplace-transforms-to, likewise for F->
+-one may also plug the ansatz: u(x,t) = exp(s*t + j*b*x) into the PDE and analyze, under which 
+ conditions such a special function (representing a wave of frequency s and and wavenumber b)
  is a solution of the PDE. ...doing this will lead to constraints for how frequencies and 
  wavenumbers must be related? or what? -> try it!
+-If the PDE is LSI, both Laplace and Fourier transform may be used:
+   P u = 0  L,F->  ^P' û' = 0  (the "hat" should actually appear above P like it does for u)
+ where ^P' = ^P'(s, j*b) is a bivariate polynomial in s and j*b and often called the "symbol" of 
+ the PDE. The condition that ^P' û' = 0 means that a nontrivial solution must satisfy ^P' = 0 (why? 
+ because otherwise û' would have to be identically zero?), so we are looking for zeros of the 
+ bivariate polynomial ^P'(s, j*b)
+ -solutions/zeros will be of the form s_p = s_p(j*b) and we will get M such solutions, where M is 
+  the highest temporal derivative - whih is typically 2, so the solutions are often written as 
+  s+, s-. These two solution correspond to waves travelling left and right
+ -these solutions (solution curves?) are called dispersion relations
+ -in lossless systems, the solutions are typically of the form: s_p(j*b) = j*w_p(j*b), so one may 
+  write w_p = w_p(b), i.e. the temporal frequency w can be written as a function of the spatial 
+  frequency b. In this case, phase velocity v_p and group velocity v_g are defined as v_p = w/b and
+  v_g = dw/db
+-Energy analysis is based on spatial inner products, i.e. integrals over a product of two functions
+ f and g of the form <f,g> = integral f*g dx where the integral runs over some finite or infinite 
+ domain. The integration over space removes spatial dependence - the energies become functions of 
+ time alone. If f and g are vector valued functions (as is the case for non-planar 
+ string-vibration), the product f*g inside the integral must be  replaced by a scalar product aka 
+ dot-product. [todo: find examples for kinetic and potential energies expressed this way]
 
-todo: energy-analysis, dispersion relations, von Neumann analysis, 
+
+todo: von Neumann analysis, 
   numerical schemes/energy/dispersion/boundary-conditions
 
 

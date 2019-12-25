@@ -182,7 +182,7 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::applyPixelDecay()
 {
-  rsArray::scale(image.getPixelPointer(0, 0), image.getNumPixels(), decayFactor);
+  rsArrayTools::scale(image.getPixelPointer(0, 0), image.getNumPixels(), decayFactor);
 }
 
 template<class TSig, class TPix, class TPar>
@@ -338,10 +338,10 @@ void rsPhaseScopeBuffer2<TSig, TPix, TPar>::applyPixelDecay()
   if(decayByAverage != 0)
   {
     // apply additional decay that depends on the global average value
-    TPix mean = rsArray::mean(p, N);
+    TPix mean = rsArrayTools::mean(p, N);
     //TPix scaler = 1 / (1 + decayByAverage*mean); // maybe try a formula with exp
     TPix scaler =  (TPix) (1-exp(-1 / (decayByAverage*mean)));
-    rsArray::scale(p, N, scaler);
+    rsArrayTools::scale(p, N, scaler);
   }
 }
 

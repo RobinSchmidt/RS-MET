@@ -1,7 +1,7 @@
 #ifndef RAPT_SORTANDSEARCH_H_INCLUDED
 #define RAPT_SORTANDSEARCH_H_INCLUDED
 
-// move to the "Data" folder
+// move to the "Data" folder ...or maybe int rsArrayTools
 // this file contains functions for sorting arrays, finding elements and related stuff
 // maybe wrap into a class or two classes rsSort, rsSearch
 // todo: rename lessThan, defaultLess, etc to "before" - because x may come before y even if x > y 
@@ -10,7 +10,8 @@
 // rsLessOrEqual, rsGreaterOrEqual (or maybe derive the less-or-equal condition from:
 // equal(a, b) = !less(a,b) && !less(b,a); lessOrEqual(a,b) = less(a,b) || equal(a,b)
 // (the logic can be optimized/simplified)
-// add binary search functions (there's an implementation elsewhere in the library)
+// add binary search functions (there's an implementation elsewhere in the library - where? - 
+// there's one in MathExperiments.cpp but that's outside the library
 
 
 // maybe implement https://en.wikipedia.org/wiki/Smoothsort see also 
@@ -59,13 +60,13 @@ void rsHeapSort(T *buffer, int length,
 all i. */
 //template <class T>
 //bool rsIsSortedAscending(T *buffer, int length);
-// moved to rsArray
+// moved to rsArrayTools
 
 /** Checks whether the buffer is sorted in ascending order, that is buffer[i] < buffer[i+1] for
 all i. */
 //template <class T>
 //bool rsIsSortedStrictlyAscending(T *buffer, int length);
-// moved to rsArray
+// moved to rsArrayTools
 
 /** Finds all occurrences of the given pattern in the buffer and returns the start-indices for
 the pattern inside the buffer as a std::vector which is in ascending order. The function uses the
@@ -94,7 +95,7 @@ stretch of equal maximum values, it will return the index of the first of them. 
 value inside the buffer that satifies the above condition, 0 will be returned. */
 template<class T>
 int rsFindHighestPeakIndex(T *buffer, int length);
- // move to rsArray ...actually redundant with rsArray::maxIndex? ..check this - the logic is 
+ // move to rsArrayTools ...actually redundant with rsArrayTools::maxIndex? ..check this - the logic is 
  // actually more complicated, but perhaps unnecessarily so
 
 /** Returns the last occurrence of an element in the passed buffer and its index, -1 if the

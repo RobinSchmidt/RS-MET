@@ -632,7 +632,7 @@ void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline2(TCor *a, TCor *b, TPix 
   static const int N = 17; // make this user-adjustable (setDensityCompensationPrecision)
   r.resize(N);
   s.resize(N);
-  rsArray::fillWithRangeLinear(&r[0], N, TCor(0), TCor(1));
+  rsArrayTools::fillWithRangeLinear(&r[0], N, TCor(0), TCor(1));
   cubicSplineArcLength2D(a, b, &r[0], &s[0], N);
 
 #ifdef RS_DEBUG_PLOTTING

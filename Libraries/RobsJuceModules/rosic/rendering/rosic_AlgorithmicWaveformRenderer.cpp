@@ -82,6 +82,6 @@ void AlgorithmicWaveformRenderer::renderWaveform(double *targetBuffer, int lengt
   case RING_MODULATION:     
     ringModulationRenderer.renderWaveform(     targetBuffer, length); break;
   default: 
-    RAPT::rsArray::fillWithZeros(targetBuffer, length);
+    RAPT::rsArrayTools::fillWithZeros(targetBuffer, length);
   }
 }

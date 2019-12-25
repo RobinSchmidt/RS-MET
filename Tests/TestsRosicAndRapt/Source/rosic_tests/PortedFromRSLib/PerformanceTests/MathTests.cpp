@@ -18,7 +18,7 @@ void testAbsAndSign2(std::string &reportString)
   static const int N = 10000;   // number of tests
   double x[N];
   double y[N];
-  RAPT::rsArray::fillWithRandomValues(x, N, -N, N, 0);
+  RAPT::rsArrayTools::fillWithRandomValues(x, N, -N, N, 0);
   int n;
 
   ::PerformanceCounterTSC counter;
@@ -65,22 +65,22 @@ void testMultinomialCoefficients2(std::string &reportString)
     for(rsUint32 k2 = 0; k2 <= nMax; k2++)
     {
       k[1] = k2;
-      if( RAPT::rsArray::sum(k, 2) <= nMax )
+      if( RAPT::rsArrayTools::sum(k, 2) <= nMax )
         result = rsMultinomialCoefficient(k, (rsUint32)2);
       for(rsUint32 k3 = 0; k3 <= nMax; k3++)
       {
         k[2] = k3;
-        if( RAPT::rsArray::sum(k, 3) <= nMax )
+        if( RAPT::rsArrayTools::sum(k, 3) <= nMax )
           result = rsMultinomialCoefficient(k, (rsUint32)3);
         for(rsUint32 k4 = 0; k4 <= nMax; k4++)
         {
           k[3] = k4;
-          if( RAPT::rsArray::sum(k, 4) <= nMax )
+          if( RAPT::rsArrayTools::sum(k, 4) <= nMax )
             result = rsMultinomialCoefficient(k, (rsUint32)4);
           for(rsUint32 k5 = 0; k5 <= nMax; k5++)
           {
             k[4] = k5;
-            if( RAPT::rsArray::sum(k, 5) <= nMax )
+            if( RAPT::rsArrayTools::sum(k, 5) <= nMax )
               result = rsMultinomialCoefficient(k, (rsUint32)5);
           }
         }
@@ -167,7 +167,7 @@ void testPrimeSieves(std::string &reportString)
   ::PerformanceCounterTSC counter;
   double cyclesPerNumber;
 
-  //rsArray<rsUint64> pa;
+  //rsArrayTools<rsUint64> pa;
   std::vector<rsUint64> pa;
   counter.init();
   rsFindPrimesUpTo(pa, maxPrime);
@@ -261,7 +261,7 @@ void testMatrixAddressing(std::string &reportString)
   for(i = 0; i < N; i++){
     a[i] = &af[i*M];
     b[i] = &bf[i*M];
-    RAPT::rsArray::fillWithRandomValues(af, N*M, 1.0, 2.0, 0);
+    RAPT::rsArrayTools::fillWithRandomValues(af, N*M, 1.0, 2.0, 0);
   }
 
   // measure copying a into b via pointer-to-pointer access:

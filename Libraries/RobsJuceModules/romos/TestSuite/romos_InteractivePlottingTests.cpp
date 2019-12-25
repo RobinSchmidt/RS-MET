@@ -64,13 +64,13 @@ void BandlimitedImpulseTrainPlotTest::plotResult()
 
 void BandlimitedImpulseTrainPlotTest::initForConstantFreq(double freq)
 {
-  RAPT::rsArray::fillWithValue(inputs[0][0], numFramesToProcess, freq);
-  RAPT::rsArray::fillWithValue(inputs[0][1], numFramesToProcess, 0.0);
+  RAPT::rsArrayTools::fillWithValue(inputs[0][0], numFramesToProcess, freq);
+  RAPT::rsArrayTools::fillWithValue(inputs[0][1], numFramesToProcess, 0.0);
 }
 void BandlimitedImpulseTrainPlotTest::initForLinearFreqSweep(double minFreq, double maxFreq)
 {
-  RAPT::rsArray::fillWithRangeLinear(inputs[0][0], numFramesToProcess, minFreq, maxFreq);
-  RAPT::rsArray::fillWithValue(      inputs[0][1], numFramesToProcess, 0.0);
+  RAPT::rsArrayTools::fillWithRangeLinear(inputs[0][0], numFramesToProcess, minFreq, maxFreq);
+  RAPT::rsArrayTools::fillWithValue(      inputs[0][1], numFramesToProcess, 0.0);
 }
 
 
@@ -238,7 +238,7 @@ void SawOscillatorPlotTest::fillInputSignalArraysWithTestSignal()
 }
 void SawOscillatorPlotTest::plotResult()
 {
-  double dc = RAPT::rsArray::mean(outputs[0][0], 50);
+  double dc = RAPT::rsArrayTools::mean(outputs[0][0], 50);
 
   RAPT::rsAssert(false, "plotting code needs update");
   //Plotter::plotData(numFramesToProcess, xAxis, outputs[0][0]);
@@ -246,26 +246,26 @@ void SawOscillatorPlotTest::plotResult()
 
 void SawOscillatorPlotTest::initForConstantFreq(double freq, double phase)
 {
-  RAPT::rsArray::fillWithValue(inputs[0][0], numFramesToProcess, freq);
-  RAPT::rsArray::fillWithValue(inputs[0][1], numFramesToProcess, phase);
+  RAPT::rsArrayTools::fillWithValue(inputs[0][0], numFramesToProcess, freq);
+  RAPT::rsArrayTools::fillWithValue(inputs[0][1], numFramesToProcess, phase);
 
-  RAPT::rsArray::fillWithValue(inputs[0][2], numFramesToProcess,  0.5);
-  RAPT::rsArray::fillWithValue(inputs[0][3], numFramesToProcess, -1.0);
+  RAPT::rsArrayTools::fillWithValue(inputs[0][2], numFramesToProcess,  0.5);
+  RAPT::rsArrayTools::fillWithValue(inputs[0][3], numFramesToProcess, -1.0);
 
 }
 void SawOscillatorPlotTest::initForLinearFreqSweep(double minFreq, double maxFreq)
 {
-  RAPT::rsArray::fillWithRangeLinear(inputs[0][0], numFramesToProcess, minFreq, maxFreq);
-  RAPT::rsArray::fillWithValue(      inputs[0][1], numFramesToProcess, 0.0);
+  RAPT::rsArrayTools::fillWithRangeLinear(inputs[0][0], numFramesToProcess, minFreq, maxFreq);
+  RAPT::rsArrayTools::fillWithValue(      inputs[0][1], numFramesToProcess, 0.0);
 }
 void SawOscillatorPlotTest::initForFreqSwitch(double freq1, double freq2, int switchTimeInSamples)
 {
   int length1 = switchTimeInSamples;
   int length2 = numFramesToProcess - length1;
 
-  RAPT::rsArray::fillWithValue( inputs[0][0],          length1, freq1);
-  RAPT::rsArray::fillWithValue(&inputs[0][0][length1], length2, freq2);
-  RAPT::rsArray::fillWithValue(inputs[0][1], numFramesToProcess, 0.0);
+  RAPT::rsArrayTools::fillWithValue( inputs[0][0],          length1, freq1);
+  RAPT::rsArrayTools::fillWithValue(&inputs[0][0][length1], length2, freq2);
+  RAPT::rsArrayTools::fillWithValue(inputs[0][1], numFramesToProcess, 0.0);
 }
 
 
@@ -322,13 +322,13 @@ void EnvelopeADSRPlotTest::fillInputSignalArraysWithTestSignal()
   //initEventsForEarlyRelease3();
 
   // create the signals for the envelope's input pins:
-  RAPT::rsArray::fillWithValue(inputs[0][0], numFramesToProcess, attackSeconds);  
-  RAPT::rsArray::fillWithValue(inputs[0][1], numFramesToProcess, attackShape); 
-  RAPT::rsArray::fillWithValue(inputs[0][2], numFramesToProcess, decaySeconds);  
-  RAPT::rsArray::fillWithValue(inputs[0][3], numFramesToProcess, decayShape); 
-  RAPT::rsArray::fillWithValue(inputs[0][4], numFramesToProcess, sustainValue);  
-  RAPT::rsArray::fillWithValue(inputs[0][5], numFramesToProcess, releaseSeconds);  
-  RAPT::rsArray::fillWithValue(inputs[0][6], numFramesToProcess, releaseShape); 
+  RAPT::rsArrayTools::fillWithValue(inputs[0][0], numFramesToProcess, attackSeconds);  
+  RAPT::rsArrayTools::fillWithValue(inputs[0][1], numFramesToProcess, attackShape); 
+  RAPT::rsArrayTools::fillWithValue(inputs[0][2], numFramesToProcess, decaySeconds);  
+  RAPT::rsArrayTools::fillWithValue(inputs[0][3], numFramesToProcess, decayShape); 
+  RAPT::rsArrayTools::fillWithValue(inputs[0][4], numFramesToProcess, sustainValue);  
+  RAPT::rsArrayTools::fillWithValue(inputs[0][5], numFramesToProcess, releaseSeconds);  
+  RAPT::rsArrayTools::fillWithValue(inputs[0][6], numFramesToProcess, releaseShape); 
 
   //rosic::fillWithValue(inputs[0][4], numFramesToProcess, timeScale); 
   xAxis = timeAxis;
@@ -501,71 +501,71 @@ void BiquadDesignerPlotTest::plotResult()
 void BiquadDesignerPlotTest::initForFreqSweepLowpassBilinear6()
 {
   ((romos::BiquadDesigner*) moduleToTest)->setParameter("Mode", "Lowpass, 6 dB/oct, BLT");
-  RAPT::rsArray::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);
   xAxis = inputs[0][0];
 }
 void BiquadDesignerPlotTest::initForFreqSweepHighpassBilinear6()
 {
   ((romos::BiquadDesigner*) moduleToTest)->setParameter("Mode", "Highpass, 6 dB/oct, BLT");
-  RAPT::rsArray::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);
   xAxis = inputs[0][0];
 }
 void BiquadDesignerPlotTest::initForFreqSweepLowpassBilinear12(double q)
 {
   ((romos::BiquadDesigner*) moduleToTest)->setParameter("Mode", "Lowpass, 12 dB/oct, BLT");
-  RAPT::rsArray::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);  
-  RAPT::rsArray::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
+  RAPT::rsArrayTools::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);  
+  RAPT::rsArrayTools::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
   xAxis = inputs[0][0];
 }
 void BiquadDesignerPlotTest::initForFreqSweepHighpassBilinear12(double q)
 {
   ((romos::BiquadDesigner*) moduleToTest)->setParameter("Mode", "Highpass, 12 dB/oct, BLT");
-  RAPT::rsArray::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);  
-  RAPT::rsArray::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
+  RAPT::rsArrayTools::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);  
+  RAPT::rsArrayTools::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
   xAxis = inputs[0][0];
 }
 void BiquadDesignerPlotTest::initForFreqSweepBandpassConstSkirtBilinear(double q)
 {
   ((romos::BiquadDesigner*) moduleToTest)->setParameter("Mode", "Bandpass, const. skirt, BLT");
-  RAPT::rsArray::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);
-  RAPT::rsArray::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
+  RAPT::rsArrayTools::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);
+  RAPT::rsArrayTools::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
   xAxis = inputs[0][0];
 }
 void BiquadDesignerPlotTest::initForFreqSweepBandrejectBilinear(double q)
 {
   ((romos::BiquadDesigner*) moduleToTest)->setParameter("Mode", "Bandreject, BLT");
-  RAPT::rsArray::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);
-  RAPT::rsArray::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
+  RAPT::rsArrayTools::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);
+  RAPT::rsArrayTools::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
   xAxis = inputs[0][0];
 }
 void BiquadDesignerPlotTest::initForFreqSweepPeakBilinear(double q, double g)
 {
   ((romos::BiquadDesigner*) moduleToTest)->setParameter("Mode", "Peak, BLT");
-  RAPT::rsArray::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);
-  RAPT::rsArray::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
-  RAPT::rsArray::fillWithValue(      inputs[0][2], numFramesToProcess, g);  
+  RAPT::rsArrayTools::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);
+  RAPT::rsArrayTools::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
+  RAPT::rsArrayTools::fillWithValue(      inputs[0][2], numFramesToProcess, g);  
   xAxis = inputs[0][0];
 }
 void BiquadDesignerPlotTest::initForFreqSweepLowShelfBilinear2(double q, double g)
 {
   ((romos::BiquadDesigner*) moduleToTest)->setParameter("Mode", "Low Shelf, 2nd order, BLT");
-  RAPT::rsArray::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);
-  RAPT::rsArray::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
-  RAPT::rsArray::fillWithValue(      inputs[0][2], numFramesToProcess, g);  
+  RAPT::rsArrayTools::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);
+  RAPT::rsArrayTools::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
+  RAPT::rsArrayTools::fillWithValue(      inputs[0][2], numFramesToProcess, g);  
   xAxis = inputs[0][0];
 }
 void BiquadDesignerPlotTest::initForFreqSweepHighShelfBilinear2(double q, double g)
 {
   ((romos::BiquadDesigner*) moduleToTest)->setParameter("Mode", "High Shelf, 2nd order, BLT");
-  RAPT::rsArray::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);
-  RAPT::rsArray::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
-  RAPT::rsArray::fillWithValue(      inputs[0][2], numFramesToProcess, g);  
+  RAPT::rsArrayTools::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);
+  RAPT::rsArrayTools::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
+  RAPT::rsArrayTools::fillWithValue(      inputs[0][2], numFramesToProcess, g);  
   xAxis = inputs[0][0];
 }
 void BiquadDesignerPlotTest::initForFreqSweepAllpassBilinear2(double q)
 {
   ((romos::BiquadDesigner*) moduleToTest)->setParameter("Mode", "Allpass, 2nd order, BLT");
-  RAPT::rsArray::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);  
-  RAPT::rsArray::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
+  RAPT::rsArrayTools::fillWithRangeLinear(inputs[0][0], numFramesToProcess, fMin, fMax);  
+  RAPT::rsArrayTools::fillWithValue(      inputs[0][1], numFramesToProcess, q);  
   xAxis = inputs[0][0];
 }

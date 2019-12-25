@@ -51,7 +51,7 @@ void decimate()
 
   std::vector<double> t(N), td(N/D), x(N), xd(ND), xa(ND);
 
-  typedef RAPT::rsArray AR;
+  typedef RAPT::rsArrayTools AR;
 
   // time axis (original and decimated):
   AR::fillWithIndex(&t[0], N);
@@ -291,7 +291,7 @@ void ringModNoise()
   // we have a DC offset of..
 
   // normalize and write to file:
-  RAPT::rsArray::normalize(x, N, 1.0, true);
+  RAPT::rsArrayTools::normalize(x, N, 1.0, true);
   writeToMonoWaveFile("RingModNoise.wav",  x, N, (int) fs, 16);
 
   // plot signal:
@@ -327,11 +327,11 @@ void slewRateLimiterLinear()
   double x[N];  // input signal
   double y[N];  // output signal
 
-  RAPT::rsArray::fillWithIndex(t, N);
-  RAPT::rsArray::scale(t, N, 1.0/fs);
+  RAPT::rsArrayTools::fillWithIndex(t, N);
+  RAPT::rsArrayTools::scale(t, N, 1.0/fs);
 
-  RAPT::rsArray::fillWithZeros(x, N);
-  RAPT::rsArray::fillWithZeros(y, N);
+  RAPT::rsArrayTools::fillWithZeros(x, N);
+  RAPT::rsArrayTools::fillWithZeros(y, N);
 
   int n;
   for(n = N/3; n < 2*N/3; n++)
@@ -391,7 +391,7 @@ void taperedFourierSeries()
   double xF[numSamples];      // signal with Fejer tapering
   double f[numHarmonics+1];   // normalized frequencies for plot
 
-  RAPT::rsArray::fillWithRangeLinear(f, numHarmonics+1, 0.0, (double) numHarmonics);
+  RAPT::rsArrayTools::fillWithRangeLinear(f, numHarmonics+1, 0.0, (double) numHarmonics);
 
   int n, k;
   a[0]  = 0.0;
@@ -411,7 +411,7 @@ void taperedFourierSeries()
   //p[2] = 0.25*PI;
 
 
-  RAPT::rsArray::fillWithRangeLinear(t, numSamples, tMin, tMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(t, numSamples, tMin, tMax);
   double tmp;
   for(n = 0; n < numSamples; n++)
   {
@@ -427,7 +427,7 @@ void taperedFourierSeries()
     }
   }
 
-  double peak = RAPT::rsArray::maxAbs(x, numSamples);
+  double peak = RAPT::rsArrayTools::maxAbs(x, numSamples);
 
   //plotData(numHarmonics+1, f, aL, aF);
   plotData(numSamples, t, x, xL, xF);
@@ -438,7 +438,7 @@ void directFormImpulseResponse(double *a, int Na, double *b, int Nb, double *h, 
 {
   double x0 = 1.0;
   //rsFilter(&x0, 1, h, Nh, b, Nb, a, Na);
-  RAPT::rsArray::filter(&x0, 1, h, Nh, b, Nb, a, Na);
+  RAPT::rsArrayTools::filter(&x0, 1, h, Nh, b, Nb, a, Na);
 }
 
 void transientModeling()
@@ -512,7 +512,7 @@ void windowFunctionsContinuous()
   double wExactBlackman[N];    // "exact" Blackman window values
 
   // generate the window functions:
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
   for(int n = 0; n < N; n++)
   {
     wHann[n]          = rsWindowFunction::raisedCosine( x[n], length, 0.0);
@@ -528,8 +528,8 @@ void windowFunctionsContinuous()
 template<class T>
 void normalizeMean(T* x, int N) 
 {
-  T m = RAPT::rsArray::mean(x, N);
-  RAPT::rsArray::scale(x, N, T(1)/m);
+  T m = RAPT::rsArrayTools::mean(x, N);
+  RAPT::rsArrayTools::scale(x, N, T(1)/m);
 }
 */
 
@@ -542,7 +542,7 @@ void cosSumWindow2(double* w, int N) // 2 term
     double t = RAPT::rsLinToLin(double(n), 0.0, double(N), -1.0, +1.0);      // ZN - good for comparison with rectangular
     w[n] = a0 + a1*cos(PI*t);
   }
-  RAPT::rsArray::normalizeMean(w, N);
+  RAPT::rsArrayTools::normalizeMean(w, N);
   // with the ZN mapping (first sample 0, last nonzero), the zeros are exactly at every other zero 
   // of the rectangular window - best for comparing to rectangular - but for spectral analysis or 
   // filter design NN is better (the zeros are a bit more narrowly spaced), the ZZ mapping is not 
@@ -555,7 +555,7 @@ void cosSumWindow3(double* w, int N) // 3 term
     double t = RAPT::rsLinToLin(double(n), 0.0, double(N), -1.0, +1.0); 
     w[n] = a0 + a1*cos(PI*t) + a2*cos(2*PI*t) ;
   }
-  RAPT::rsArray::normalizeMean(w, N);
+  RAPT::rsArrayTools::normalizeMean(w, N);
 }
 void cosSumWindow4(double* w, int N) // 4 term
 {
@@ -564,7 +564,7 @@ void cosSumWindow4(double* w, int N) // 4 term
     double t = RAPT::rsLinToLin(double(n), 0.0, double(N), -1.0, +1.0); 
     w[n] = a0 + a1*cos(PI*t) + a2*cos(2*PI*t) + a3*cos(3*PI*t);
   }
-  RAPT::rsArray::normalizeMean(w, N);
+  RAPT::rsArrayTools::normalizeMean(w, N);
 }
 void cosSumWindow5(double* w, int N) // 5 term
 {
@@ -573,7 +573,7 @@ void cosSumWindow5(double* w, int N) // 5 term
     double t = RAPT::rsLinToLin(double(n), 0.0, double(N), -1.0, +1.0); 
     w[n] = a0 + a1*cos(PI*t) + a2*cos(2*PI*t) + a3*cos(3*PI*t) + a4*cos(4*PI*t);
   }
-  RAPT::rsArray::normalizeMean(w, N);
+  RAPT::rsArrayTools::normalizeMean(w, N);
 }
 // these windows are probably nice for filter design because the provide a sidelobe rolloff with 
 // increasing steepness
@@ -780,7 +780,7 @@ void windowedSinc()
   double s[N];                 // normalized sinc values
   double w[N];                 // window values
   double y[N];                 // windowed sinc values
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
   for(int n = 0; n < N; n++)
   {
     s[n] = rsNormalizedSinc(x[n]/stretch);
@@ -796,7 +796,7 @@ template<class T>
 void plotMatrix(RAPT::rsMatrix<T>& z, std::vector<T>& x, std::vector<T>& y)
 {
   double** z2;
-  RAPT::MatrixTools::rsAllocateMatrix(z2, z.getNumRows(), z.getNumColumns());
+  RAPT::rsMatrixTools::allocateMatrix(z2, z.getNumRows(), z.getNumColumns());
 
   for(int i = 0; i < z.getNumRows(); i++)
     for(int j = 0; j < z.getNumColumns(); j++)
@@ -805,7 +805,7 @@ void plotMatrix(RAPT::rsMatrix<T>& z, std::vector<T>& x, std::vector<T>& y)
   GNUPlotter plt;
   plt.plotSurface((int)x.size(), (int)y.size(), &x[0], &y[0], z2);
 
-  RAPT::MatrixTools::rsDeAllocateMatrix(z2, z.getNumRows(), z.getNumColumns());
+  RAPT::rsMatrixTools::deallocateMatrix(z2, z.getNumRows(), z.getNumColumns());
 }
 
 void waveMorph()
@@ -972,7 +972,7 @@ void waveMorph2()
 
   double* ut = new double[n];
   double** u;
-  RAPT::MatrixTools::rsAllocateMatrix(u, m, n); 
+  RAPT::rsMatrixTools::allocateMatrix(u, m, n); 
   // 1st index i time index, 2nd index space index
 
 
@@ -986,7 +986,7 @@ void waveMorph2()
   wr.renderWaveform(u[0], n);            // initial string shape
   wr.setModulatorRelativeFrequency(3);
   wr.renderWaveform(u[m-1], n);          // final string shape
-  RAPT::rsArray::fillWithZeros(ut, n);   // initial string velocity
+  RAPT::rsArrayTools::fillWithZeros(ut, n);   // initial string velocity
 
 
 
@@ -1008,5 +1008,5 @@ void waveMorph2()
 
  
   delete[] ut;
-  RAPT::MatrixTools::rsDeAllocateMatrix(u, m, n);
+  RAPT::rsMatrixTools::deallocateMatrix(u, m, n);
 }

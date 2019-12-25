@@ -12,7 +12,7 @@ bool rsCurveFitter::fitExponentialSum(T* y, int numValues, T* A, T* a, int numEx
   bool result = true;
   T *C   = new T[k+1];                  // characteristic polynomial coefficients
   T *rhs = new T[k];                    // right hand sides
-  T **M; rsArray::allocateSquareArray2D(M, k); // matrices
+  T **M; rsArrayTools::allocateSquareArray2D(M, k); // matrices
 
   // find coefficients and roots of the characteristic polynomial:
   int i, j;
@@ -47,7 +47,7 @@ bool rsCurveFitter::fitExponentialSum(T* y, int numValues, T* A, T* a, int numEx
   // clean up and return result:
   delete[] C;
   delete[] rhs;
-  rsArray::deAllocateSquareArray2D(M, k);
+  rsArrayTools::deAllocateSquareArray2D(M, k);
   delete[] roots;
   return result;
 

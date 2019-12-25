@@ -147,17 +147,17 @@ T rsSineFrequencyAt(T *x, int N, int n0, bool refine)
   // find indices of maxima/minima before and after the sample-index in question, taking into
   // account cases where our index n0 is not surrounded by peaks/valley in which case we take the
   // two to the left or right to n0 and use these for extrapolation
-  int nL = rsArray::findPeakOrValleyLeft( x, N, n0);
-  int nR = rsArray::findPeakOrValleyRight(x, N, n0);
+  int nL = rsArrayTools::findPeakOrValleyLeft( x, N, n0);
+  int nR = rsArrayTools::findPeakOrValleyRight(x, N, n0);
   if( nL == -1 )
   {
     nL = nR;
-    nR = rsArray::findPeakOrValleyRight(x, N, nL+1);
+    nR = rsArrayTools::findPeakOrValleyRight(x, N, nL+1);
   }
   if( nR == -1 )
   {
     nR = nL;
-    nL = rsArray::findPeakOrValleyLeft(x, N, nR-1);
+    nL = rsArrayTools::findPeakOrValleyLeft(x, N, nR-1);
   }
 
   //if( nL == nR )

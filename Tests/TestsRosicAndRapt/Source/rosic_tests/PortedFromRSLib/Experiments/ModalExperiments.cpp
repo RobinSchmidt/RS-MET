@@ -252,7 +252,7 @@ void dampedSineFilterImpResp()
   int N = 100;
 
   // create pseudo-continuous impulse response:
-  typedef RAPT::rsArray AR;
+  typedef RAPT::rsArrayTools AR;
   int Nc = N * 20;  // 20 times the sample-rate
   std::vector<double> tc(Nc), yc(Nc);
   AR::fillWithRangeLinear(&tc[0], Nc, 0.0, N-1.0);
@@ -342,9 +342,9 @@ void biquadImpulseResponseDesign()
   // generate time-axis and impulse-response:
   double t[N], x[N];
   createTimeAxis(N, t, fs);
-  RAPT::rsArray::fillWithZeros(x, N);
+  RAPT::rsArrayTools::fillWithZeros(x, N);
   x[0] = 1;
-  RAPT::rsArray::filter(x, N, x, N, b, 2, a, 2);
+  RAPT::rsArrayTools::filter(x, N, x, N, b, 2, a, 2);
 
   // plot the impulse-response (versus the time-axis):
   plotData(N, t, x);
@@ -404,7 +404,7 @@ void modalBankTransient()
   x[0] = mfb.getSample(1);
   for(int n = 1; n < N; n++)
     x[n] = mfb.getSample(0);
-  RAPT::rsArray::normalize(&x[0], N, 1.0, true);
+  RAPT::rsArrayTools::normalize(&x[0], N, 1.0, true);
 
   // plot and/or write to wavefile:
   //plotImpulseResponse(mfb, 5000, 1.0);
@@ -574,7 +574,7 @@ void fourExponentials()
   double tMin = 0, tMax = 30;
   static const int N = 500;
   double t[N], env[N], env2[N], energy[N]; // energy is accumulated energy up to t
-  RAPT::rsArray::fillWithRangeLinear(t, N, tMin, tMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(t, N, tMin, tMax);
   for(int n = 0; n < N; n++) {
     env[n]  = A*exp(a*t[n]) + B*exp(b*t[n]) - C*exp(c*t[n]) - D*exp(d*t[n]);
     env[n] *= normalizer; // energy normalization
@@ -699,7 +699,7 @@ void modalWithFancyEnv()
   // the error is also in the shape of a sinewave with amplitude of order 0.01
 
   // maybe normalize the error for writing to wavefile:
-  RAPT::rsArray::normalize(&err[0], numSamples, 1.0);
+  RAPT::rsArrayTools::normalize(&err[0], numSamples, 1.0);
   // absolute error is greatest when signals are loudest ...roughly - maybe consider relative
   // error...at least, the error doesn't seem to get much worse over time maybe try frequency
   // that is "more irrational" ...however, all in all, it looks good - single precision seems
@@ -832,7 +832,7 @@ void modalDecayFit()
   // create and plot exponential decay:
   typedef std::vector<double> Vec;
   Vec t(N), x(N);
-  RAPT::rsArray::fillWithIndex(&t[0], N);
+  RAPT::rsArrayTools::fillWithIndex(&t[0], N);
   t = (1.0/fs) * t;
   for(int n = 0; n < N; n++)
     x[n] = A * exp(-t[n]/tau);
@@ -971,7 +971,7 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
   //rsPlotVectorsXY(timeArray, ampArray);    // plot amplitude envelope
 
 
-  int maxIndex  = RAPT::rsArray::maxIndex(&ampArray[0], numFrames);
+  int maxIndex  = RAPT::rsArrayTools::maxIndex(&ampArray[0], numFrames);
 
   // estimate decay time and amplitude of an exponential decay that fits the amp-env:
   double A, tau;

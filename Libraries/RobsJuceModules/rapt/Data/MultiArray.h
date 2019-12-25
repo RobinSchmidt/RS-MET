@@ -65,7 +65,7 @@ public:
   /** \name Manipulation */
 
   /** Sets all matrix elements to zero. */
-  void setToZero() { rsArray::fillWithZeros(dataPointer, getSize()); }
+  void setToZero() { rsArrayTools::fillWithZeros(dataPointer, getSize()); }
     // same as in rsMatrixView...i think both classes really should have a common baseclass 
     // rsArrayView where we consolidate all these common functions - it needs to have the 
     // dataPointer and the size...which seems totally appropriate for an ArrayView class
@@ -85,7 +85,7 @@ public:
   int getNumIndices() const { return (int) shape.size(); }
   // maybe rename to getNumIndices - "dimension" is a bit ambiguous here - for example a vector in
   // 3D space is considered to be 3-dimensional, but has only one index
-  // maybe cache that values - the conversion form size_t to int may be expensive, if this is done
+  // maybe cache that values - the conversion from size_t to int may be expensive, if this is done
   // often -> benchmark!
 
   /** Returns the one plus the maximum value that given index may assume */
@@ -132,7 +132,6 @@ public:
   elements is: A(i, j, k) = .... */
   template<typename... Rest>
   T& operator()(const int i, Rest... rest) { return dataPointer[flatIndex(0, i, rest...)]; }
-  // maybe use const int as was doen in rsMatrix
 
   /** Read-only access to array elements. */
   template<typename... Rest>
@@ -155,7 +154,7 @@ public:
     const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, rsMultiArrayView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::add(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::add(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
   // hmm...these functions add, subtrac, etc. are copy/pasted more or less exactly from rsMatrix - 
   // maybe we can factor out a common baseclass? maybe rsArrayView? it should contain the 
@@ -169,7 +168,7 @@ public:
     const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, rsMultiArrayView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
   /** Multiplies the two multiarrays element-wise. */
@@ -177,7 +176,7 @@ public:
     const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, rsMultiArrayView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::multiply(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::multiply(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
   /** Divide the two multiarrays element-wise. */
@@ -185,7 +184,7 @@ public:
     const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, rsMultiArrayView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
 
@@ -265,6 +264,11 @@ protected:
   // should be cheap! ...actually, we would only need two pointers: data and strides - to support 
   // the () syntax for accessing elements - but then we couldn't check for out-of-range indexes - 
   // for that, we need also the shape
+  // or maybe make the number of indices a compile-time parameter, own strides and shape array (as
+  // fixed arrays)...implement a constructor that takes an initializer list and copy its content 
+  // into our members...but that implies that for each dimensionality, a template will be 
+  // instantiated - so that makes 3 instantiations for 1D,2D,3D - whereas otherwise there would 
+  // just be one instantiation...hmmm
 
 };
 

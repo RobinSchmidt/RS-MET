@@ -45,13 +45,13 @@ void doublePendulum()
 
 
   // normalize observables and write into wavefiles:
-  RAPT::rsArray::normalize(&m1[0], N, 1.0, true);
+  RAPT::rsArrayTools::normalize(&m1[0], N, 1.0, true);
   writeToMonoWaveFile("DoublePendulumM1.wav", &m1[0], N, fs, 16);
-  RAPT::rsArray::normalize(&m2[0], N, 1.0, true);
+  RAPT::rsArrayTools::normalize(&m2[0], N, 1.0, true);
   writeToMonoWaveFile("DoublePendulumM2.wav", &m2[0], N, fs, 16);
-  RAPT::rsArray::normalize(&x1[0], N, 1.0, true);
+  RAPT::rsArrayTools::normalize(&x1[0], N, 1.0, true);
   writeToMonoWaveFile("DoublePendulumX1.wav", &x1[0], N, fs, 16);
-  RAPT::rsArray::normalize(&x2[0], N, 1.0, true);
+  RAPT::rsArrayTools::normalize(&x2[0], N, 1.0, true);
   writeToMonoWaveFile("DoublePendulumX2.wav", &x2[0], N, fs, 16);
 
   // Observations:
@@ -137,7 +137,7 @@ void heatEquation1D()
 
   //rsPlotVector(y);
 
-  RAPT::rsArray::normalize(&y[0], N, 1.0, true);
+  RAPT::rsArrayTools::normalize(&y[0], N, 1.0, true);
   rosic::writeToMonoWaveFile("HeatEquation1D.wav", &y[0], N, fs);
 
   // todo: plot it as a 3D plot - each cycle is shown in its own plane in the (inward) 
@@ -187,15 +187,15 @@ void waveEquation1D()
   // create arrays for string state and set up initial conditions for the solver:
   int Ng = numGridPoints;  // for convenience
   std::vector<double> u(Ng), v(Ng);
-  RAPT::rsArray::fillWithZeros(&u[0], Ng);
+  RAPT::rsArrayTools::fillWithZeros(&u[0], Ng);
   //u[Ng/2] = 1.0;
   rsWindowFunction::hanning(&u[Ng/2-width/2], width);
-  RAPT::rsArray::fillWithZeros(&v[0], Ng);
+  RAPT::rsArrayTools::fillWithZeros(&v[0], Ng);
   wvEq.setInitialConditions(&u[0], &v[0], Ng, timeStep);
 
   // go through a couple of rounds of updates:
   double** plotMatrix;
-  MatrixTools::rsAllocateMatrix(plotMatrix, numTimeSteps, numGridPoints);
+  rsMatrixTools::allocateMatrix(plotMatrix, numTimeSteps, numGridPoints);
   for(int n = 0; n < numTimeSteps; n++) {
     wvEq.getState(&u[0], Ng);
     wvEq.getState(plotMatrix[n], Ng);
@@ -206,8 +206,8 @@ void waveEquation1D()
   // plot results:
   GNUPlotter plt;
   std::vector<double> t(numTimeSteps), x(numGridPoints);
-  RAPT::rsArray::fillWithIndex(&t[0], numTimeSteps);
-  RAPT::rsArray::fillWithIndex(&x[0], numGridPoints);
+  RAPT::rsArrayTools::fillWithIndex(&t[0], numTimeSteps);
+  RAPT::rsArrayTools::fillWithIndex(&x[0], numGridPoints);
   plt.addDataMatrix(numTimeSteps, numGridPoints, &t[0],  &x[0],plotMatrix);
   // make convenience-function addDataMatrix that doesn't require x,y axes to be passed
 
@@ -220,7 +220,7 @@ void waveEquation1D()
   //plt.plot3D();
   // todo: set hidden 3D and/or plot as heatmap
 
-  MatrixTools::rsDeAllocateMatrix(plotMatrix, numTimeSteps, numGridPoints);
+  rsMatrixTools::deallocateMatrix(plotMatrix, numTimeSteps, numGridPoints);
 
   // Observations:
   // -using a hanning window of width 10, it looks good - the impulses move to the boundary and get 
@@ -260,7 +260,7 @@ void normalizeMatrix(rsMatrix<double>& A, bool removeMean)
 {
   double *a = A.getDataPointer();
   int N = A.getSize();
-  RAPT::rsArray::normalize(a, N, 1.0, removeMean); // allow values other than 1
+  RAPT::rsArrayTools::normalize(a, N, 1.0, removeMean); // allow values other than 1
 }
 
 void plotMatricesAnimated(std::vector<rsMatrix<double>>& frames)
@@ -408,6 +408,8 @@ void rectangularRoom()
   float Lx = 1.f;
   float Ly = 1.0f;
   float Lz = 1.0f;
+  // NSS (pg.292) says that for isotropic problems, it's best to choose Lx,Nx etc. such that 
+  // hx=hy for 2D, so in 3D isotropic, we should probably use hx=hy=hz
 
 
 
@@ -549,7 +551,7 @@ void particleForceDistanceLaw()
   float dMax = 2;
   float d[N];
   float f[numExponents][N];
-  RAPT::rsArray::fillWithRangeLinear(d, N, dMin, dMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(d, N, dMin, dMax);
   for(int p = 0; p < numExponents; p++)
   {
     ps.setForceLawExponent(exponents[p]);
@@ -1648,7 +1650,7 @@ void testHermitePoly()
   GNUPlotter plt;
   int N = 501;
   std::vector<double> x(N), y(N);
-  RAPT::rsArray::fillWithRangeLinear(&x[0], N, -2.0, +2.0);
+  RAPT::rsArrayTools::fillWithRangeLinear(&x[0], N, -2.0, +2.0);
   double tmp1, tmp2;
   tmp1 = hermitePolynomial( 5.0, 2);
   tmp2 = hermitePolynomial2(5.0, 2);
@@ -1710,7 +1712,7 @@ void quantumParticle()
   double f = 0;
   std::vector<double>  x(Nx);
   std::vector<Complex> Psi_0(Nx);
-  RAPT::rsArray::fillWithRangeLinear(&x[0], Nx, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(&x[0], Nx, xMin, xMax);
   for(int k = 0; k < Nx; k++)  {
     double gauss = exp(-0.5 * w * x[k]*x[k]);  // Eq 10.15
     Psi_0[k] = gauss;

@@ -20,12 +20,12 @@ namespace RAPT {
 //-------------------------------------------------------------------------------------------------
 // Data:
 
-//template void RAPT::rsArray::convolve(const std::complex<double>* x, int Nx, 
+//template void RAPT::rsArrayTools::convolve(const std::complex<double>* x, int Nx, 
 //  const std::complex<double>* h, int Nh, std::complex<double> *y);
 
-//template int RAPT::rsArray::binarySearch(const double* A, double key, int imin, int imax);
-template void RAPT::rsArray::fillWithRandomValues(rsFloat32x4* x, int N, double min, double max, int seed);
-template double RAPT::rsArray::meanSquare(const double *x, int N);
+//template int RAPT::rsArrayTools::binarySearch(const double* A, double key, int imin, int imax);
+template void RAPT::rsArrayTools::fillWithRandomValues(rsFloat32x4* x, int N, double min, double max, int seed);
+template double RAPT::rsArrayTools::meanSquare(const double *x, int N);
 
 //-------------------------------------------------------------------------------------------------
 // Math:

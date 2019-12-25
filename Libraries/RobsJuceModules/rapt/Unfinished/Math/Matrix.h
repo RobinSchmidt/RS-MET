@@ -67,7 +67,7 @@ public:
   static rsMatrixOld scalarMatrix(T scalarValue, int dimension)
   {
     rsMatrixOld result(dimension, dimension);
-    for(int r=0; r<dimension; r++)  // use rsInitMatrix instead
+    for(int r=0; r<dimension; r++)  // use initMatrix instead
     {
       for(int c=0; c<dimension; c++)
         result(r,c) = 0.0;
@@ -167,7 +167,7 @@ public:
   }
 
   /** Initializes all elements with zero values. */
-  // \todo use rsInitMatrix
+  // \todo use initMatrix
   void initWithZeros()
   {
     if(data->numReferences > 1)
@@ -349,7 +349,7 @@ public:
   {
     rsAssert(data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns); // matrices incompatible
     makeDeepCopyIfNecessary();
-    rsArray::subtract(data->mFlat, m2.data->mFlat, data->mFlat, getNumElements());
+    rsArrayTools::subtract(data->mFlat, m2.data->mFlat, data->mFlat, getNumElements());
     return *this;
 
     /*
@@ -386,12 +386,12 @@ public:
     rsAssert(data->numColumns == m2.data->numRows);  // matrices incompatible
 
     if(m2.isSquare() && data->numReferences == 1)
-      MatrixTools::rsMatrixInPlaceMultiply(data->m, m2.data->m, data->numRows, data->numColumns);
+      rsMatrixTools::matrixInPlaceMultiply(data->m, m2.data->m, data->numRows, data->numColumns);
     else
     {
       rsMatrixData<T> *newData = new rsMatrixData<T>(getNumRows(), m2.getNumColumns());
 
-      MatrixTools::rsMatrixMultiply(data->m, m2.data->m, newData->m,
+      rsMatrixTools::matrixMultiply(data->m, m2.data->m, newData->m,
         data->numRows, data->numColumns, m2.data->numColumns);
 
       updateDataPointer(newData);
@@ -413,7 +413,7 @@ public:
   rsMatrixOld& operator*=(const T &x)
   {
     makeDeepCopyIfNecessary();
-    rsArray::scale(data->mFlat, getNumElements(), x);
+    rsArrayTools::scale(data->mFlat, getNumElements(), x);
     return *this;
   }
 
@@ -421,7 +421,7 @@ public:
   rsMatrixOld& operator/=(const T &x)
   {
     makeDeepCopyIfNecessary();
-    rsArray::scale(data->mFlat, getNumElements(), T(1)/x);
+    rsArrayTools::scale(data->mFlat, getNumElements(), T(1)/x);
     return *this;
   }
 
@@ -430,7 +430,7 @@ public:
   {
     rsAssert(data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns); // matrices incompatible
     rsMatrixOld result(data->numRows, data->numColumns);
-    rsArray::add(data->mFlat, m2.data->mFlat, result.data->mFlat, getNumElements());
+    rsArrayTools::add(data->mFlat, m2.data->mFlat, result.data->mFlat, getNumElements());
     return result;
   }
 
@@ -438,7 +438,7 @@ public:
   rsMatrixOld operator+(const T &x)
   {
     rsMatrixOld result(data->numRows, data->numColumns);
-    rsArray::add(data->mFlat, x, result.data->mFlat, getNumElements());
+    rsArrayTools::add(data->mFlat, x, result.data->mFlat, getNumElements());
     return result;
   }
 
@@ -447,7 +447,7 @@ public:
   {
     rsAssert(data->numRows == m2.data->numRows && data->numColumns == m2.data->numColumns); // matrices incompatible
     rsMatrixOld result(data->numRows, data->numColumns);
-    rsArray::subtract(data->mFlat, m2.data->mFlat, result.data->mFlat, getNumElements());
+    rsArrayTools::subtract(data->mFlat, m2.data->mFlat, result.data->mFlat, getNumElements());
     return result;
   }
 
@@ -467,7 +467,7 @@ public:
   rsMatrixOld operator*(const T &x)
   {
     rsMatrixOld result(data->numRows, data->numColumns);
-    rsArray::scale(data->mFlat, result.data->mFlat, getNumElements(), x);
+    rsArrayTools::scale(data->mFlat, result.data->mFlat, getNumElements(), x);
     return result;
   }
 
@@ -484,7 +484,7 @@ public:
         for(int k = 0; k < data->numColumns; k++)
           result.data->m[r][c] += data->m[r][k] * m2.data->m[k][c];
       }
-    } // use rsMatrixMultiply
+    } // use matrixMultiply
     return result;
   }
 

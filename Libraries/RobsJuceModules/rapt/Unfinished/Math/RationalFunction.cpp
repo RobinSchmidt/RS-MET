@@ -46,11 +46,11 @@ void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
   std::complex<T>* pfeCoeffs)
 {
   // establish coefficient matrix:
-  std::complex<T> **A; rsArray::allocateSquareArray2D(A, denDeg);
+  std::complex<T> **A; rsArrayTools::allocateSquareArray2D(A, denDeg);
   std::complex<T> *tmp = new std::complex<T>[denDeg+1]; // deflated denominator
   std::complex<T> remainder;                            // always zero
   for(int i = 0, k = 0; i < numDistinctPoles; i++) {
-    rsArray::copy(den, tmp, denDeg+1);
+    rsArrayTools::copy(den, tmp, denDeg+1);
     for(int m = 0; m < multiplicities[i]; m++) {
       rsPolynomial<T>::divideByMonomialInPlace(tmp, denDeg-m, poles[i], &remainder);
       for(int j = 0; j < denDeg; j++)
@@ -60,12 +60,12 @@ void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
   }
 
   // solve the linear system using an appropriately zero-padded numerator as RHS:
-  rsArray::copy(num, tmp, numDeg+1);
-  rsArray::fillWithZeros(&tmp[numDeg+1], denDeg-(numDeg+1));
+  rsArrayTools::copy(num, tmp, numDeg+1);
+  rsArrayTools::fillWithZeros(&tmp[numDeg+1], denDeg-(numDeg+1));
   rsLinearAlgebra::rsSolveLinearSystem(A, pfeCoeffs, tmp, denDeg);
 
   // clean up:
-  rsArray::deAllocateSquareArray2D(A, denDeg);
+  rsArrayTools::deAllocateSquareArray2D(A, denDeg);
   delete[] tmp;
 }
 // todo: try to figure out an extended version of the cover-up method that is used for distinct 
@@ -80,8 +80,8 @@ void rsRationalFunction<T>::partialFractionExpansion(
 {
   // make denominator monic:
   std::complex<T> s = T(1)/den[denDeg];
-  rsArray::scale(num, numDeg+1, s);
-  rsArray::scale(den, denDeg+1, s);
+  rsArrayTools::scale(num, numDeg+1, s);
+  rsArrayTools::scale(den, denDeg+1, s);
 
   // obtain polynomial ("FIR") part by polynomial division (maybe factor out):
   T tol = 1.e-12; // ad hoc - use something based on numeric_limits::epsilon
@@ -92,11 +92,11 @@ void rsRationalFunction<T>::partialFractionExpansion(
     // todo: maybe zero out the higher coeffs that are close to zero totally
   }
   else if(polyCoeffs != nullptr)
-    rsArray::fillWithZeros(polyCoeffs, denDeg+1);  // or should it be numDeg+1, does it matter?
+    rsArrayTools::fillWithZeros(polyCoeffs, denDeg+1);  // or should it be numDeg+1, does it matter?
 
   // sanity checks:
   rsAssert(numDeg < denDeg);
-  rsAssert(rsArray::sum(multiplicities, numDistinctPoles) == denDeg);
+  rsAssert(rsArrayTools::sum(multiplicities, numDistinctPoles) == denDeg);
 
   // dispatch between all-poles-distinct or poles-with-multiplicities algorithm: 
   if(denDeg == numDistinctPoles)

@@ -42,8 +42,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  // todo: prepend get
-
   /** Returns the determinant of this matrix. */
   T getDeterminant() const { return a*d - b*c; }
 
@@ -65,11 +63,8 @@ public:
   { rsVector2D<T> v; rsLinearAlgebra::eigenvector2x2_2(a, b, c, d, &v.x, &v.y, true); return v; }
 
   /** Returns the inverse of this matrix. */
-  rsMatrix2x2<T> inverse() const
+  rsMatrix2x2<T> getInverse() const
   { T D = getDeterminant(); T s = T(1) / D; return rsMatrix2x2<T>(s*d, -s*b, -s*c, s*a); }
-
-  // maybe these functions should be named getDeterminant, etc. - more consistent with other
-  // classes and states more explicitly what they do
 
   /** Tests, if another matrix B is close to this matrix within a given tolerance (all components
   of the difference must be <= tolerance). */
@@ -86,22 +81,18 @@ public:
 
   /** Adds two matrices: C = A + B. */
   rsMatrix2x2<T> operator+(const rsMatrix2x2<T>& B) const
-  { rsMatrix2x2<T> C; C.a = a + B.a; C.b = b + B.b; C.c = c + B.c; C.d = d + B.d; return C; }
-  // can't we just do:
-  // return rsMatrix2x2<T>(a + B.a, b + B.b, c + B.c, d + B.d);
-  // and likewise for the other operators
+  { return rsMatrix2x2<T>(a + B.a, b + B.b, c + B.c, d + B.d); }
 
   /** Subtracts two matrices: C = A - B. */
   rsMatrix2x2<T> operator-(const rsMatrix2x2<T>& B) const
-  { rsMatrix2x2<T> C; C.a = a - B.a; C.b = b - B.b; C.c = c - B.c; C.d = d - B.d; return C; }
+  { return rsMatrix2x2<T>(a - B.a, b - B.b, c - B.c, d - B.d); }
 
   /** Multiplies two matrices: C = A * B. */
   rsMatrix2x2<T> operator*(const rsMatrix2x2<T>& B) const
-  { rsMatrix2x2<T> C; C.a = a*B.a + b*B.c; C.b = a*B.b + b*B.d;
-    C.c = c*B.a + d*B.c; C.d = c*B.b + d*B.d; return C; }
+  { return rsMatrix2x2<T>(a*B.a + b*B.c, a*B.b + b*B.d, c*B.a + d*B.c, c*B.b + d*B.d); }
 
   /** Multiplies the left matrix operand with the inverse of the right matrix operand. */
-  rsMatrix2x2<T> operator/(const rsMatrix2x2<T>& B) const { return *this * B.inverse(); }
+  rsMatrix2x2<T> operator/(const rsMatrix2x2<T>& B) const { return *this * B.getInverse(); }
 
   /** Compares matrices for equality */
   bool operator==(const rsMatrix2x2<T>& B) const
@@ -109,12 +100,8 @@ public:
 
   /** Multiplies matrix by a vector: w = A*v */
   rsVector2D<T> operator*(const rsVector2D<T>& v) const
-  {
-    rsVector2D<T> w;
-    w.x = a * v.x  +  b * v.y;
-    w.y = c * v.x  +  d * v.y;
-    return w;
-  }
+  { return rsVector2D<T>(a*v.x + b*v.y, c*v.x + d*v.y); }
+
   // todo: left multiplication w = v^H * A
 
   // todo: operators that take a scalar as left or right argument
@@ -270,14 +257,14 @@ public:
       return rsMin(safeStartForB - B.dataPointer, B.getSize());
   }
   */
-  // actually, we should move this to rsArray::getOverlap(T* x, size_t Nx, T*y, size_t Ny)
+  // actually, we should move this to rsArrayTools::getOverlap(T* x, size_t Nx, T*y, size_t Ny)
   // needs unit test
 
   //-----------------------------------------------------------------------------------------------
   /** \name Manipulation */
 
   /** Sets all matrix elements to zero. */
-  void setToZero() { rsArray::fillWithZeros(dataPointer, getSize()); }
+  void setToZero() { rsArrayTools::fillWithZeros(dataPointer, getSize()); }
 
   /** Sets the matrix elements to the identity matrix, i.e. fills the main diagonal with ones and 
   the rest with zeros. If the matrix is not square, then the overhanging portion to the right or 
@@ -286,10 +273,10 @@ public:
   // needs test
 
   /** Sets all elements in the matrix to the given value. */
-  void setAllValues(T value) { rsArray::fillWithValue(dataPointer, getSize(), value); }
+  void setAllValues(T value) { rsArrayTools::fillWithValue(dataPointer, getSize(), value); }
 
   /** Initializes all elements with given value. */
-  //void init(T value = T(0)) { RAPT::rsArray::fillWithValue(dataPointer, getSize(), value); }
+  //void init(T value = T(0)) { RAPT::rsArrayTools::fillWithValue(dataPointer, getSize(), value); }
   // maybe remove - is redundant with setAllValues
 
   /** Sets all elements on the main diagonal to the given value. If the matrix is not square, only
@@ -302,10 +289,10 @@ public:
   // needs test
 
   /** Scales all elements in the matrix by a given factor. */
-  void scale(T factor) { rsArray::scale(dataPointer, getSize(), factor); }
+  void scale(T factor) { rsArrayTools::scale(dataPointer, getSize(), factor); }
 
   /** Negates all values of the matrix, i.e. inverts their sign. */
-  void negate() { rsArray::negate(dataPointer, dataPointer, getSize()); }
+  void negate() { rsArrayTools::negate(dataPointer, dataPointer, getSize()); }
 
   // todo: conjugate
 
@@ -336,14 +323,14 @@ public:
   static void add(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::add(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::add(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
   /** Subtracts elements of B from corresponding elements A in and stores results in C. */
   static void subtract(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
   /** Multiplies the two matrices element-wise. */
@@ -351,7 +338,7 @@ public:
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::multiply(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::multiply(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
   /** Divides the two matrices element-wise. */
@@ -359,7 +346,7 @@ public:
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsArray::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
+    rsArrayTools::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
   /** Computes the matrix product C = A*B. */
@@ -441,6 +428,8 @@ public:
   /** Converts a row index i and a column index j to a flat array index. */
   int flatIndex(const int i, const int j) const
   {
+    rsAssert(i >= 0 && i < numRows, "invalid row index");
+    rsAssert(j >= 0 && j < numCols, "invalid column index");
     return numCols*i + j;
     // todo:
     //  -be more general: colStride*i + rowStride*j. goal: allow row-major and column-major storage
@@ -530,7 +519,7 @@ public:
   rsMatrix(const rsMatrix& B)
   {
     setSize(B.numRows, B.numCols);
-    rsArray::copy(B.dataPointer, this->dataPointer, this->getSize());
+    rsArrayTools::copy(B.dataPointer, this->dataPointer, this->getSize());
   }
 
   /** Move constructor. Takes over ownership of the data stored in B. */
@@ -548,7 +537,7 @@ public:
   {
     if (this != &rhs) { // self-assignment check expected
       setSize(rhs.numRows, rhs.numCols);
-      rsArray::copy(rhs.dataPointer, this->dataPointer, this->getSize());
+      rsArrayTools::copy(rhs.dataPointer, this->dataPointer, this->getSize());
     }
     return *this;
   }
@@ -682,7 +671,7 @@ public:
   {
     if(this->numRows != rhs.numRows || this->numCols != rhs.numCols)
       return false;
-    return rsArray::equal(this->dataPointer, rhs.dataPointer, this->getSize());
+    return rsArrayTools::equal(this->dataPointer, rhs.dataPointer, this->getSize());
   }
   // maybe move to rsMatrixView, if possible
 

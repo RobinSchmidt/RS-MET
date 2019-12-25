@@ -144,18 +144,18 @@ void LindenmayerRenderer::normalizeXY(std::vector<double>& x, std::vector<double
   bool loop = true;  // make member
   if(loop == true) { // we need to ignore last element in mean computation
     double m;        // because it just repeats the first and is irrelevant
-    m = RAPT::rsArray::mean(&x[0], N-1); RAPT::rsArray::add(&x[0], -m, &x[0], N);
-    m = RAPT::rsArray::mean(&y[0], N-1); RAPT::rsArray::add(&y[0], -m, &y[0], N); }
+    m = RAPT::rsArrayTools::mean(&x[0], N-1); RAPT::rsArrayTools::add(&x[0], -m, &x[0], N);
+    m = RAPT::rsArrayTools::mean(&y[0], N-1); RAPT::rsArrayTools::add(&y[0], -m, &y[0], N); }
   else {
-    RAPT::rsArray::removeMean(&x[0], N);
-    RAPT::rsArray::removeMean(&y[0], N); }
+    RAPT::rsArrayTools::removeMean(&x[0], N);
+    RAPT::rsArrayTools::removeMean(&y[0], N); }
 
   // adjust maximum:
-  double maxX = RAPT::rsArray::maxAbs(&x[0], N);
-  double maxY = RAPT::rsArray::maxAbs(&y[0], N);
+  double maxX = RAPT::rsArrayTools::maxAbs(&x[0], N);
+  double maxY = RAPT::rsArrayTools::maxAbs(&y[0], N);
   double scl = 1.0 / max(maxX, maxY);
-  RAPT::rsArray::scale(&x[0], &x[0], N, scl);
-  RAPT::rsArray::scale(&y[0], &y[0], N, scl);
+  RAPT::rsArrayTools::scale(&x[0], &x[0], N, scl);
+  RAPT::rsArrayTools::scale(&y[0], &y[0], N, scl);
 }
 
 // other closed curves that can be generated:

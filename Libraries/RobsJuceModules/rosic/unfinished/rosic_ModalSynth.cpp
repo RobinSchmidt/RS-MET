@@ -309,7 +309,7 @@ void rsModalSynth::fillFreqRatios(double* ratios, double *logRatios, int profile
 
   default: MFG::allHarmonics(ratios, N);
   };
-  RAPT::rsArray::applyFunction(ratios, logRatios, maxNumModes, &log);
+  RAPT::rsArrayTools::applyFunction(ratios, logRatios, maxNumModes, &log);
   updateFreqRatios();
 }
 

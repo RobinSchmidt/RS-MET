@@ -136,7 +136,7 @@ void SpectrumAnalyzer::makeWindow()
   // todo: use flat top window - better for ampltude estimation
 
   /*
-  // normalize the window to unit mean (maybe move this to RAPT::rsWindowFunction or RAPT::rsArray):
+  // normalize the window to unit mean (maybe move this to RAPT::rsWindowFunction or RAPT::rsArrayTools):
   double sum          = 0.0;
   for(n=0; n<blockSize; n++)
     sum        += windowBuffer[n];

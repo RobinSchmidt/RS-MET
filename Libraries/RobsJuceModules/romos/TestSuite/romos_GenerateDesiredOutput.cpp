@@ -70,9 +70,9 @@ void GenerateDesiredOutput::forTestFilter1(int N, double *x, double *b0, double 
   double *dLeakInt = new double[N];
   GenerateDesiredOutput::forMovingAverage(  N, x, b0, b1, dMovAv);
   GenerateDesiredOutput::forLeakyIntegrator(N, x, c,      dLeakInt);
-  RAPT::rsArray::add(     dMovAv, dLeakInt, dSum,  N);
-  RAPT::rsArray::subtract(dMovAv, dLeakInt, dDiff, N);
-  RAPT::rsArray::multiply(dMovAv, dLeakInt, dProd, N);
+  RAPT::rsArrayTools::add(     dMovAv, dLeakInt, dSum,  N);
+  RAPT::rsArrayTools::subtract(dMovAv, dLeakInt, dDiff, N);
+  RAPT::rsArrayTools::multiply(dMovAv, dLeakInt, dProd, N);
   delete[] dLeakInt;
   delete[] dMovAv;
 }
@@ -107,11 +107,11 @@ void GenerateDesiredOutput::forBiquad(int N, double *x, double *b0, double *b1, 
 void GenerateDesiredOutput::forBiquadWithFixedCoeffs(int N, double  *x, double  b0, double  b1, 
   double  b2, double  a1, double  a2, double *d)
 {
-  double *b0a = new double[N];  RAPT::rsArray::fillWithValue(b0a, N, b0);
-  double *b1a = new double[N];  RAPT::rsArray::fillWithValue(b1a, N, b1);
-  double *b2a = new double[N];  RAPT::rsArray::fillWithValue(b2a, N, b2);
-  double *a1a = new double[N];  RAPT::rsArray::fillWithValue(a1a, N, a1);
-  double *a2a = new double[N];  RAPT::rsArray::fillWithValue(a2a, N, a2);
+  double *b0a = new double[N];  RAPT::rsArrayTools::fillWithValue(b0a, N, b0);
+  double *b1a = new double[N];  RAPT::rsArrayTools::fillWithValue(b1a, N, b1);
+  double *b2a = new double[N];  RAPT::rsArrayTools::fillWithValue(b2a, N, b2);
+  double *a1a = new double[N];  RAPT::rsArrayTools::fillWithValue(a1a, N, a1);
+  double *a2a = new double[N];  RAPT::rsArrayTools::fillWithValue(a2a, N, a2);
 
   GenerateDesiredOutput::forBiquad(N, x, b0a, b1a, b2a, a1a, a2a, d); 
 

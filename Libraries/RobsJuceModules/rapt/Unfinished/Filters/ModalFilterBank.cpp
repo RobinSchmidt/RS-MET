@@ -563,7 +563,7 @@ std::vector<TPar> rsModalFilterBank<TSig, TPar>::randomModePhases(
       p[n]   = asin((k-a[n+1]*sin(p[n+1]))/a[n]);      
     }
   }
-  rsArray::scale(&p[0], (int)p.size(), 360.0/(2*PI));
+  rsArrayTools::scale(&p[0], (int)p.size(), 360.0/(2*PI));
   return p;
 }
 

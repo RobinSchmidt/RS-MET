@@ -297,7 +297,7 @@ RAPT::rsSinusoidalModel<T> rsSinusoidalAnalyzer<T>::analyzeSpectrogram(
       // linear and maybe others (maybe interpolate in the complex domain and then extract phase):
       T peakPhase = pPhs[peaks[i]];      // maybe use interpolation later
 
-      //T peakPhase = RAPT::rsArray::interpolatedValueAt(pPhs, numBins, peakBin);
+      //T peakPhase = RAPT::rsArrayTools::interpolatedValueAt(pPhs, numBins, peakBin);
       // simple linear interpolation is wrong here - it returns a totally wrong value when the 
       // phases of the bins are close to -pi and pi or vice versa - we need wrapped interpolation
       // ...but really unit-test the wrapped interpolation first
@@ -368,7 +368,7 @@ RAPT::rsSinusoidalModel<T> rsSinusoidalAnalyzer<T>::analyzeSpectrogram(
 template<class T>
 std::vector<int> rsSinusoidalAnalyzer<T>::peakIndices(T* x, int N, T threshToMax)
 {
-  T max = RAPT::rsArray::maxValue(x, N);
+  T max = RAPT::rsArrayTools::maxValue(x, N);
   std::vector<int> peaks;
   for(int i = 1; i < N-1; i++)
   {

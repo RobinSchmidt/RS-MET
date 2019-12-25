@@ -27,13 +27,13 @@ rsString::rsString(const std::string &initialString)
   setFromStdString(initialString);
 }
 
-rsString::rsString(const rsString &other) : rsArray<char>(0)
+rsString::rsString(const rsString &other) : rsArrayTools<char>(0)
 {
   initMembers();
   copyDataFrom(other);
 }
 
-rsString::rsString(const rsArray<char> &stringAsCharrsArray)
+rsString::rsString(const rsArrayTools<char> &stringAsCharrsArray)
 {
   initMembers();
   copyDataFrom(stringAsCharrsArray);

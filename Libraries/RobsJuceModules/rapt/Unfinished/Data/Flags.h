@@ -18,7 +18,7 @@ rsFlagArray::isFlagTrue(int index)
 {
   return flagArray[index/8].isFlagTrue[index%8];
 }
-where the flagArray member is of type rsArray<rsFlags8>. to optimize, one could perhaps use
+where the flagArray member is of type rsArrayTools<rsFlags8>. to optimize, one could perhaps use
 flagArray[index>>3].isFlagTrue[index - index>>3]; -> verify this
 maybe call this class rsBitArray */
 

@@ -101,7 +101,7 @@ std::vector<double> impulseResponse(const RAPT::rsFilterSpecificationBA<double>&
   // comput impulse response by filtering a unit impulse:
   Vec x = createImpulse(N);
   Vec y = createSilence(N);  // direct filter output
-  RAPT::rsArray::filter(&x[0], N, &y[0], N, &b[0], (int)b.size()-1, &a[0], (int)a.size()-1);
+  RAPT::rsArrayTools::filter(&x[0], N, &y[0], N, &b[0], (int)b.size()-1, &a[0], (int)a.size()-1);
   return y;
 } // move somewhere else
 

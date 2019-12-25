@@ -5,7 +5,7 @@ namespace RSLib
 {
 
   template<class T>
-  void rsAllocateMatrix(T**& A, int N, int M)
+  void allocateMatrix(T**& A, int N, int M)
   {
     A = new T*[N];
     for(int i = 0; i < N; i++)
@@ -24,7 +24,7 @@ namespace RSLib
   }
 
   template<class T>
-  void rsDeAllocateMatrix(T**& A, int N, int M)
+  void deallocateMatrix(T**& A, int N, int M)
   {
     for(int i = 0; i < N; i++)
       delete[] A[i];
@@ -32,7 +32,7 @@ namespace RSLib
   }
 
   template<class T>
-  void rsInitMatrix(T** A, int N, int M, T value)
+  void initMatrix(T** A, int N, int M, T value)
   {
     for(int i = 0; i < N; i++)
     {
@@ -42,7 +42,7 @@ namespace RSLib
   }
 
   template<class T>
-  void rsCopyMatrix(T** source, T **destination, int N, int M)
+  void copyMatrix(T** source, T **destination, int N, int M)
   {
     for(int i = 0; i < N; i++)
     {
@@ -52,7 +52,7 @@ namespace RSLib
   }
 
   template<class T>
-  bool rsAreMatricesApproximatelyEqual(T **A, T **B, int N, int M, T tol)
+  bool areMatricesApproximatelyEqual(T **A, T **B, int N, int M, T tol)
   {
     for(int i = 0; i < N; i++)
     {
@@ -67,7 +67,7 @@ namespace RSLib
   }
 
   template<class T>
-  void rsMatrixVectorMultiply(T **A, T *x, T *y, int N, int M)
+  void matrixVectorMultiply(T **A, T *x, T *y, int N, int M)
   {
     for(int i = 0; i < N; i++)
     {
@@ -78,7 +78,7 @@ namespace RSLib
   }
 
   template<class T>
-  void rsTransposedMatrixVectorMultiply(T **A, T *x, T *y, int N, int M)
+  void transposedMatrixVectorMultiply(T **A, T *x, T *y, int N, int M)
   {
     for(int i = 0; i < M; i++)
     {
@@ -89,7 +89,7 @@ namespace RSLib
   }
 
   template<class T>
-  void rsMatrixMultiply(T **A, T **B, T **C, int N, int M, int P)
+  void matrixMultiply(T **A, T **B, T **C, int N, int M, int P)
   {
     for(int i = 0; i < N; i++)
     {
@@ -103,7 +103,7 @@ namespace RSLib
   }
 
   template<class T>
-  void rsMatrixMultiplyFirstTransposed(T **A, T **B, T **C, int N, int M, int P)
+  void matrixMultiplyFirstTransposed(T **A, T **B, T **C, int N, int M, int P)
   {
     for(int i = 0; i < M; i++)
     {
@@ -117,7 +117,7 @@ namespace RSLib
   }
 
   template<class T>
-  void rsMatrixMultiplySecondTransposed(T **A, T **B, T **C, int N, int M, int P)
+  void matrixMultiplySecondTransposed(T **A, T **B, T **C, int N, int M, int P)
   {
     for(int i = 0; i < N; i++)
     {
@@ -131,7 +131,7 @@ namespace RSLib
   }
 
   template<class T>
-  void rsMatrixMultiplyBothTransposed(T **A, T **B, T **C, int N, int M, int P)
+  void matrixMultiplyBothTransposed(T **A, T **B, T **C, int N, int M, int P)
   {
     for(int i = 0; i < M; i++)
     {
@@ -145,7 +145,7 @@ namespace RSLib
   }
 
   template<class T>
-  void rsMatrixInPlaceMultiply(T **A, T **B, int N, int M)
+  void matrixInPlaceMultiply(T **A, T **B, int N, int M)
   {
     T *Ai = new T[M];  // i-th row of A (for temporary storage)
     for(int i = 0; i < N; i++)

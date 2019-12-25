@@ -69,8 +69,8 @@ void rsTableLinBlep<TSig, TTim>::updateTables()
 
   // scale it such that the last sample is exactly 1 (the first sample is already exactly zero by
   // construction):
-  //rsArray::scale(&blepTbl[0], &blepTbl[0], L, TTim(1)/rsLast(blepTbl));*
-  rsArray::scale(&this->blepTbl[0], &this->blepTbl[0], L, TTim(1)/this->blepTbl[L-1]);
+  //rsArrayTools::scale(&blepTbl[0], &blepTbl[0], L, TTim(1)/rsLast(blepTbl));*
+  rsArrayTools::scale(&this->blepTbl[0], &this->blepTbl[0], L, TTim(1)/this->blepTbl[L-1]);
 
   // integrate blep to get blamp:
   rsNumericIntegral(&timeTbl[0], &this->blepTbl[0], &this->blampTbl[0], L, TTim(0));

@@ -22,9 +22,9 @@ rosic::rsString ModuleBuildCodeGenerator::getCodeForModule(romos::Module *module
   rosic::rsString tmp, padding, padding2;
 
   // get variable names maximum name lengths (for alingment):
-  rosic::rsArray<rosic::rsString> variableNames  = createVariableNames(container);
-  rosic::rsArray<rosic::rsString> moduleNames    = createModuleNames(container);
-  rosic::rsArray<rosic::rsString> typeRetrievals = createTypeRetrievalStrings(container);
+  rosic::rsDynamicArray<rosic::rsString> variableNames  = createVariableNames(container);
+  rosic::rsDynamicArray<rosic::rsString> moduleNames    = createModuleNames(container);
+  rosic::rsDynamicArray<rosic::rsString> typeRetrievals = createTypeRetrievalStrings(container);
   int maxAtomicVariableNameLength, maxAtomicModuleNameLength, maxContainerVariableNameLength, maxContainerModuleNameLength, 
     maxVariableNameLength;
   getMaxNameLengths(variableNames, container, maxAtomicVariableNameLength, maxContainerVariableNameLength);
@@ -168,17 +168,17 @@ int ModuleBuildCodeGenerator::getNumOfSameModulesBefore(romos::Module *module)
   }
 }
 
-rosic::rsArray<rosic::rsString> ModuleBuildCodeGenerator::createVariableNames(romos::ContainerModule *container)
+rosic::rsDynamicArray<rosic::rsString> ModuleBuildCodeGenerator::createVariableNames(romos::ContainerModule *container)
 {
-  rosic::rsArray<rosic::rsString> varNames;
+  rosic::rsDynamicArray<rosic::rsString> varNames;
   for(unsigned int i = 0; i < container->getNumChildModules(); i++)
     varNames.appendElement(makeModuleVariableName(container->getChildModule(i)));
   return varNames;
 }
 
-rosic::rsArray<rosic::rsString> ModuleBuildCodeGenerator::createModuleNames(romos::ContainerModule *container)
+rosic::rsDynamicArray<rosic::rsString> ModuleBuildCodeGenerator::createModuleNames(romos::ContainerModule *container)
 {
-  rosic::rsArray<rosic::rsString> names;
+  rosic::rsDynamicArray<rosic::rsString> names;
   rosic::rsString name;
   for(unsigned int i = 0; i < container->getNumChildModules(); i++)
   {
@@ -188,9 +188,9 @@ rosic::rsArray<rosic::rsString> ModuleBuildCodeGenerator::createModuleNames(romo
   return names;
 }
    
-rosic::rsArray<rosic::rsString> ModuleBuildCodeGenerator::createTypeRetrievalStrings(romos::ContainerModule *container)
+rosic::rsDynamicArray<rosic::rsString> ModuleBuildCodeGenerator::createTypeRetrievalStrings(romos::ContainerModule *container)
 {
-  rosic::rsArray<rosic::rsString> typeRetrievalStrings;
+  rosic::rsDynamicArray<rosic::rsString> typeRetrievalStrings;
   for(unsigned int i = 0; i < container->getNumChildModules(); i++)
   {
     romos::Module *child = container->getChildModule(i);
@@ -205,7 +205,7 @@ rosic::rsArray<rosic::rsString> ModuleBuildCodeGenerator::createTypeRetrievalStr
   return typeRetrievalStrings;
 }
 
-void ModuleBuildCodeGenerator::padShortStringsWithSpace(rosic::rsArray<rosic::rsString> &stringsToPad)
+void ModuleBuildCodeGenerator::padShortStringsWithSpace(rosic::rsDynamicArray<rosic::rsString> &stringsToPad)
 {
   int maxLength = 0;
 
@@ -222,7 +222,7 @@ void ModuleBuildCodeGenerator::padShortStringsWithSpace(rosic::rsArray<rosic::rs
   }
 }
   
-void ModuleBuildCodeGenerator::getMaxNameLengths(rosic::rsArray<rosic::rsString> &names, romos::ContainerModule *container, 
+void ModuleBuildCodeGenerator::getMaxNameLengths(rosic::rsDynamicArray<rosic::rsString> &names, romos::ContainerModule *container, 
                        int &maxAtomicNameLength, int &maxContainerNameLength)
 {
   maxAtomicNameLength    = 0;

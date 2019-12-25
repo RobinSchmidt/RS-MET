@@ -20,7 +20,7 @@ void rsHalpernU(T *a, int K)
 {
   // Computes coefficients of the U-polynomials given in "Design and Analysis of Analog Filters", 
   // page 256-257 except for the scale factor in front.
-  rsArray::fillWithZeros(a, K+1);
+  rsArrayTools::fillWithZeros(a, K+1);
   rsUint64 k, m;
   if( rsIsEven(K) )
   {
@@ -373,7 +373,7 @@ template<class T>
 void rsPrototypeDesigner<T>::shelvingMagSqrNumFromLowpassMagSqr(T* b2, T* a2, T k, 
   int N, T G0, T G, T* bShelf)
 {
-  rsArray::weightedSum(b2, a2, bShelf, 2*N+1, k*k*(G*G-G0*G0), G0*G0);
+  rsArrayTools::weightedSum(b2, a2, bShelf, 2*N+1, k*k*(G*G-G0*G0), G0*G0);
 }
 
 // factor out shelvingMagSqrNumeratorFromLowpassMagSqr:
@@ -419,9 +419,9 @@ void rsPrototypeDesigner<T>::getInverseFilter(Complex* z, Complex* p, T* k, Comp
   //                // and gain zeros into zNew, pNew, kNew
 
   Complex *zTmp = new Complex[N]; // to make it work, when the new arrays are equal to the old ones
-  rsArray::copy(z,    zTmp, N);
-  rsArray::copy(p,    zNew, N);
-  rsArray::copy(zTmp, pNew, N);
+  rsArrayTools::copy(z,    zTmp, N);
+  rsArrayTools::copy(p,    zNew, N);
+  rsArrayTools::copy(zTmp, pNew, N);
   *kNew = T(1) / *k;
   delete[] zTmp;
 }
@@ -441,7 +441,7 @@ template<class T>
 void rsPrototypeDesigner<T>::besselDenominator(T* a, int N)
 {
   rsPolynomial<T>::besselPolynomial(a, N);
-  rsArray::reverse(a, N+1);  // leaving this out leads to a modified Bessel filter response - maybe 
+  rsArrayTools::reverse(a, N+1);  // leaving this out leads to a modified Bessel filter response - maybe 
                              // experiment a bit, response looks good
 }
 
@@ -464,19 +464,19 @@ void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
   int k, r;
   if( rsIsOdd(N) ) {
     k = (N-1)/2;
-    rsArray::fillWithZeros(v, k+1);
+    rsArrayTools::fillWithZeros(v, k+1);
     for(r = 0; r <= k; r++) {                  // create weighted sum of ...
       updateLegendrePolynomial(&P, P1, P2, r); // ... Legendre polynomials in v
       rsPolynomial<T>::weightedSum(v, r, T(1), P, r, 2*r+T(1), v); 
     }
-    rsArray::convolve(v, k+1, v, k+1, v);      // square it
+    rsArrayTools::convolve(v, k+1, v, k+1, v);      // square it
   }
   else {
     k = (N-2)/2;
     for(r = 0; r <= k+1; r++)
       updateLegendrePolynomial(&P, P1, P2, r);  // generate Legendre polynomial of order k+1 in P
     rsPolynomial<T>::derivative(P, v, k+1);     // take the derivative, store in v
-    rsArray::convolve(v, k+1, v, k+1, v);       // square it
+    rsArrayTools::convolve(v, k+1, v, k+1, v);       // square it
     v[2*k+1] = 0;                               // multiply ...
     for(r = 2*k+1; r >= 1; r--)                 // ... by (x+1)
       v[r] += v[r-1];
@@ -486,7 +486,7 @@ void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
   T a[1] = { -1 };  
   T b[3] = { -1, 0, 2};
   rsPolynomial<T>::integrateWithPolynomialLimits(v, N-1, a, 0, b, 2, v);  
-  rsArray::scale(v, 2*N+1, 1.0 / rsArray::sum(v, 2*N+1));  // scale, such that L^2(1) = 1
+  rsArrayTools::scale(v, 2*N+1, 1.0 / rsArrayTools::sum(v, 2*N+1));  // scale, such that L^2(1) = 1
 
   // clean up:
   delete[] P1;
@@ -541,8 +541,8 @@ void rsPrototypeDesigner<T>::halpernPolynomial(T *a, int N)
   a[0] = 0;
   T *a1 = &a[1];                           // index shift of one for multiplication by x in Eq. 8.19 
   rsHalpernU(a1, N-1);                     // create U-polynomial
-  rsArray::convolve(a1, N, a1, N, a1);     // square U-polynomial
-  rsArray::scale(a1, 2*N-1, 2*N);          // apply squared scale factor
+  rsArrayTools::convolve(a1, N, a1, N, a1);     // square U-polynomial
+  rsArrayTools::scale(a1, 2*N-1, 2*N);          // apply squared scale factor
   rsPolynomial<T>::integral(a, a, 2*N-1);  // compute integral from 0 to w
 }
 
@@ -556,7 +556,7 @@ void rsPrototypeDesigner<T>::halpernDenominator(T *a, int N)
 template<class T>
 void rsPrototypeDesigner<T>::gaussianPolynomial(T *a, int N, T wc)
 { 
-  rsArray::fillWithZeros(a, 2*N+1);
+  rsArrayTools::fillWithZeros(a, 2*N+1);
   T g = log(T(2)) / (wc*wc);    // gamma, (3), page 236
   T s = 1;                      // scaler/coeff in denominator in (3), Eq. 8.7
   for(int k = 0; k <= N; k++) {
@@ -595,10 +595,10 @@ void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLP(Complex* z, Complex* p, T
   void (*denomCoeffsFunc)(T* a, int N), bool matchButterworth)
 {
   T a[maxCoeffs];
-  //rsArray::fillWithValue(a, maxCoeffs, RS_INF(T)); // for debug
+  //rsArrayTools::fillWithValue(a, maxCoeffs, RS_INF(T)); // for debug
   denomCoeffsFunc(a, N);                // coeffs of magnitude-squared polynomial D(s)*D(-s)
   getLeftHalfPlaneRoots(a, p, 2*N);                       // find stable poles of D(s)*D(-s)
-  rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));  // zeros are at infinity
+  rsArrayTools::fillWithValue(z, N, Complex(RS_INF(T), 0.0));  // zeros are at infinity
   if(matchButterworth) {
     T scaler = pow(fabs(a[2*N]), T(0.5)/N);  // yes! this formula seems to work!
     for(int i = 0; i < N; i++)
@@ -642,7 +642,7 @@ void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLS(Complex* z, Complex* p, T
 
   // construct lowpass numerator:
   T b[maxCoeffs];
-  rsArray::fillWithZeros(b, 2*N+1);
+  rsArrayTools::fillWithZeros(b, 2*N+1);
   b[0] = 1.0;
 
 
@@ -697,7 +697,7 @@ void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLP(Complex* z, Complex* p, T* 
   void (*denominatorCoeffsFunction)(T* a, int N), bool matchButterworth)
 {
   // zeros are at infinity:
-  rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));
+  rsArrayTools::fillWithValue(z, N, Complex(RS_INF(T), 0.0));
 
   // find poles:
   T* a = new T[N+1];
@@ -750,7 +750,7 @@ void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLS(Complex* z, Complex* p, T* 
 
   // construct lowpass numerator:
   T* b = new T[N+1];
-  rsArray::fillWithZeros(b, N+1);
+  rsArrayTools::fillWithZeros(b, N+1);
   b[0] = a[0];
 
   // obtain magnitude-squared numerator polynomial for shelving filter:
@@ -1374,8 +1374,8 @@ template<class T>
 void rsPrototypeDesigner<T>::makeLowShelfFromZPK(  
   void (*zpkFunc)(Complex* z, Complex* p, T* k, int N, T G, T G0), T G, T G0)
 {
-  rsArray::fillWithZeros(p, maxBiquads);
-  rsArray::fillWithZeros(z, maxBiquads);
+  rsArrayTools::fillWithZeros(p, maxBiquads);
+  rsArrayTools::fillWithZeros(z, maxBiquads);
   numFinitePoles = N;
   if( G0 == 0.0 )
     numFiniteZeros = 0; // works only because it's currently used only for allpole lowpass designs
@@ -1395,8 +1395,8 @@ void rsPrototypeDesigner<T>::makeLowShelfFromZPK(
   // then reverse it, so the new code is:
   rsHeapSort(zTmp, N, rsComplexLessByImRe<T>);
   rsHeapSort(pTmp, N, rsComplexLessByImRe<T>);
-  rsArray::copy(zTmp, z, L+r);  // select first half (lower halfplane) roots
-  rsArray::copy(pTmp, p, L+r);
+  rsArrayTools::copy(zTmp, z, L+r);  // select first half (lower halfplane) roots
+  rsArrayTools::copy(pTmp, p, L+r);
   rsConjugate(z, L+r);                // convert to corresponding upper halfplane roots
   rsConjugate(p, L+r);                
   // last pole/zero is the real one, if present (they are now sorted by descending imaginary part
@@ -1417,12 +1417,12 @@ void rsPrototypeDesigner<T>::pickNonRedundantPolesAndZeros(Complex *zTmp, Comple
   rsZeroNegligibleImaginaryParts(zTmp, N, thresh);
   rsOnlyUpperHalfPlane(pTmp, pTmp, N);
   rsOnlyUpperHalfPlane(zTmp, zTmp, N);
-  rsArray::copy(pTmp, p, L+r);
-  rsArray::copy(zTmp, z, L+r);
+  rsArrayTools::copy(pTmp, p, L+r);
+  rsArrayTools::copy(zTmp, z, L+r);
 
   // the caller is supposed to ensure that the real zero/pole, if present, is in zTmp[0], pTmp[0] - 
   // but we need it in the last positions z[L+r], p[L+r], so we reverse the arrays:
-  rsArray::reverse(p, L+r);
-  rsArray::reverse(z, L+r);
+  rsArrayTools::reverse(p, L+r);
+  rsArrayTools::reverse(z, L+r);
 }
 */

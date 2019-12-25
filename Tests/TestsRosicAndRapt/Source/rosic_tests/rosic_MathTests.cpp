@@ -150,7 +150,7 @@ bool rotes::testPolynomialWeightedSum()
   result &= (r[5] ==   4);
 
   // use a truncated polynomial for p (such that p and q are of the same order):
-  RAPT::rsArray::fillWithZeros(r, rN+1);
+  RAPT::rsArrayTools::fillWithZeros(r, rN+1);
   RAPT::rsPolynomial<double>::weightedSum(p, qN, 2.0, q, qN, 3.0, r);
   result &= (r[0] ==  12);
   result &= (r[1] == -11);
@@ -278,7 +278,7 @@ void rotes::testLinLogEquationSolver()
 
 
   // y as function of x:
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
   for(n = 0; n < N; n++)
   {
     yLin[n] = a*x[n] + b;         // linear part
@@ -292,7 +292,7 @@ void rotes::testLinLogEquationSolver()
 
 
   // x as function of y:
-  RAPT::rsArray::fillWithRangeLinear(y, N, yMin, yMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(y, N, yMin, yMax);
   for(n = 0; n < N; n++)
   {
     x[n] = rosic::solveLinLogEquation(a, b, -y[n]);
@@ -330,7 +330,7 @@ void rotes::testLinLogEquationSolverOld()
   double x[N], y[N], yLin[N], yLog[N];
 
   // y as function of x:
-  RAPT::rsArray::fillWithRangeLinear(x, N, xMin, xMax);
+  RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
   for(n = 0; n < N; n++)
   {
     yLin[n] = c*x[n];          // linear part

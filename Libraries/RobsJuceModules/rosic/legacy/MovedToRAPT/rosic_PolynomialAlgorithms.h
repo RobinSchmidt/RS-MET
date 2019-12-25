@@ -140,7 +140,7 @@ namespace rosic
 
   /** Computes polynomial coefficients from the roots. \todo: get rid of that - replace by function 
   below */
-  rsArray<Complex> getPolynomialCoefficientsFromRoots(rsArray<Complex> roots);
+  rsArrayTools<Complex> getPolynomialCoefficientsFromRoots(rsArrayTools<Complex> roots);
 
 
   /** Computes polynomial coefficients from the roots. The roots should be passed in the array "r" 
@@ -163,13 +163,13 @@ namespace rosic
   given by: \f[ x_{1,2} = \frac{-b \pm \sqrt{b^2-4ac}}{2a} \f] and stores the result in two-element 
   array which is returned. When the qudratic is degenerate (i.e, a == 0), it will fall back to the 
   getRootsOfLinearEquation() function, and return a one-element array.  */
-  rsArray<Complex> getRootsOfQuadraticEquation(double a, double b, double c);
+  rsArrayTools<Complex> getRootsOfQuadraticEquation(double a, double b, double c);
 
   /** Computes the three roots of the cubic equation: \f[ a x^3 + b x^2 + c x + d = 0 \f] and 
   stores the result in the three-element array which is returned. When the cubic is degenerate 
   (i.e, a == 0), it will fall back to the getRootsOfQuadraticEquation() function, and return a 
   two-element array (or a one-element array, when b is also zero). */
-  rsArray<Complex> getRootsOfCubicEquation(double a, double b, double c, double d);
+  rsArrayTools<Complex> getRootsOfCubicEquation(double a, double b, double c, double d);
 
 #endif
 

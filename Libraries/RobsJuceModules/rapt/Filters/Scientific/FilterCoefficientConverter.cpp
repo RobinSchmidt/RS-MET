@@ -209,10 +209,10 @@ void rsFilterCoefficientConverter<T>::biquadCascadeToDirectForm(int numBiquads, 
     bQuad[2] = b2[i];
 
     // convolve the current quadratic factor with the result of the previous convolution:
-    rsArray::copy(aAccu, tmp, N);
-    rsArray::convolve(tmp, N-2, aQuad, 3, aAccu);
-    rsArray::copy(bAccu, tmp, N);
-    rsArray::convolve(tmp, N-2, bQuad, 3, bAccu);
+    rsArrayTools::copy(aAccu, tmp, N);
+    rsArrayTools::convolve(tmp, N-2, aQuad, 3, aAccu);
+    rsArrayTools::copy(bAccu, tmp, N);
+    rsArrayTools::convolve(tmp, N-2, bQuad, 3, bAccu);
       // this can be optimized .... xLength does not need always be N-2 (can be shorter in early 
       // iterations)
   }

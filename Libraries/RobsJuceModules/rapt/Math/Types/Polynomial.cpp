@@ -6,7 +6,7 @@ rsPolynomial<T>::rsPolynomial(int degree, bool initWithZeros)
 {
   coeffs.resize(degree+1);
   if(initWithZeros)
-    rsArray::fillWithZeros(&coeffs[0], degree+1);
+    rsArrayTools::fillWithZeros(&coeffs[0], degree+1);
 }
 
 
@@ -30,7 +30,7 @@ template<class T>
 void rsPolynomial<T>::setCoeffs(const T* newCoeffs, int newDegree)
 {
   coeffs.resize(newDegree+1);
-  rsArray::copy(newCoeffs, &coeffs[0], newDegree+1);
+  rsArrayTools::copy(newCoeffs, &coeffs[0], newDegree+1);
 }
 
 template<class T>
@@ -136,14 +136,14 @@ void rsPolynomial<T>::evaluateWithDerivatives(const T& x, const T *a, int degree
 {
   rsAssert(numDerivatives < 32, "numDerivatives must be < 32"); // rsFactorials has 32 entries
   results[0] = a[degree];
-  rsArray::fillWithZeros(&results[1], numDerivatives);
+  rsArrayTools::fillWithZeros(&results[1], numDerivatives);
   for(int i = degree-1; i >= 0; i--) {
     int n = rsMin(numDerivatives, degree-1);
     for(int j = n; j >= 1; j--)
       results[j] = results[j]*x + results[j-1];
     results[0] = results[0]*x + a[i];
   }
-  rsArray::multiply(&results[2], &rsFactorials[2], &results[2], numDerivatives-1);
+  rsArrayTools::multiply(&results[2], &rsFactorials[2], &results[2], numDerivatives-1);
   // todo: maybe lift the restriction to < 32 derivatives by computing the factorials on the fly
 }
 
@@ -219,14 +219,14 @@ void rsPolynomial<T>::weightedSum(
 template <class T>
 void rsPolynomial<T>::divide(const T *p, int pDegree, const T *d, int dDegree, T *q, T *r)
 {
-  rsArray::copy(p, r, pDegree+1); // init remainder with p
-  rsArray::fillWithZeros(q, pDegree+1); // init quotient with zeros
+  rsArrayTools::copy(p, r, pDegree+1); // init remainder with p
+  rsArrayTools::fillWithZeros(q, pDegree+1); // init quotient with zeros
   for(int k = pDegree-dDegree; k >= 0; k--) {
     q[k] = r[dDegree+k] / d[dDegree];
     for(int j = dDegree+k-1; j >= k; j--)
       r[j] -= q[k] * d[j-k];
   }
-  rsArray::fillWithZeros(&r[dDegree], pDegree-dDegree+1);
+  rsArrayTools::fillWithZeros(&r[dDegree], pDegree-dDegree+1);
   // maybe return the degree of the quotient, the degree of the remainder is then 
   // pDegree-qDegree - ...what if dDegree > pDegree? the most sensibe thing in this case would be,
   // if the remainder is equal to p ...and the quotient should be 0 ...i think, the model is:
@@ -277,9 +277,9 @@ void rsPolynomial<T>::powers(const T* a, int N, T** aPowers, int highestPower)
   aPowers[0][0] = 1;
   if(highestPower < 1)
     return;
-  rsArray::copy(a, aPowers[1], N+1);
+  rsArrayTools::copy(a, aPowers[1], N+1);
   for(int k = 2; k <= highestPower; k++)
-    rsArray::convolve(aPowers[k-1], (k-1)*N+1, a, N+1, aPowers[k]);
+    rsArrayTools::convolve(aPowers[k-1], (k-1)*N+1, a, N+1, aPowers[k]);
 }
 
 template <class T>
@@ -290,12 +290,12 @@ void rsPolynomial<T>::compose(const T* a, int aN, const T* b, int bN, T* c)
   an[0]  = T(1);         // initialize to a[]^0
 
                          // accumulation:
-  rsArray::fillWithZeros(c, cN+1);
+  rsArrayTools::fillWithZeros(c, cN+1);
   c[0] = b[0];
   int K = 1;
   for(int n = 1; n <= bN; n++)
   {
-    rsArray::convolveInPlace(an, K, a, aN+1);
+    rsArrayTools::convolveInPlace(an, K, a, aN+1);
     K += aN;
     for(int k = 0; k < K; k++)
       c[k] += b[n] * an[k];
@@ -393,14 +393,14 @@ void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, 
   rsCreatePascalTriangle(binomCoeffs, numCoeffs);
 
   // actual coefficient computation for ad:
-  rsArray::fillWithZeros(ad, N);
+  rsArrayTools::fillWithZeros(ad, N);
   for(unsigned int n = 0; n <= (rsUint32)N; n++)
   {
     for(unsigned int k = 1; k <= n; k++)
       ad[n-k] += a[n] * rsPascalTriangle(binomCoeffs, n, k) * hk[k];
   }
   if(direction == -1)
-    rsArray::scale(ad, N, -1);
+    rsArrayTools::scale(ad, N, -1);
 
   delete[] hk;
   delete[] binomCoeffs;
@@ -423,7 +423,7 @@ void rsPolynomial<T>::roots(const std::complex<T>* a, int degree, std::complex<T
   // allocate memory for the coefficients of the deflated polynomial and initialize it as
   // non-deflated polynomial:
   std::complex<T>* ad = new std::complex<T>[degree+1];
-  rsArray::copy(a, ad, degree+1);
+  rsArrayTools::copy(a, ad, degree+1);
 
   // loop over the roots:
   for(int j = degree; j >= 1; j--)
@@ -457,7 +457,7 @@ template<class T>
 void rsPolynomial<T>::roots(const T* a, int degree, std::complex<T>* r)
 {
   std::complex<T>* ac = new std::complex<T>[degree+1];
-  rsArray::convertBuffer(a, ac, degree+1);
+  rsArrayTools::convert(a, ac, degree+1);
   roots(ac, degree, r);
   delete[] ac;
 }
@@ -820,7 +820,7 @@ void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, std::complex<T>* a
 {
   std::complex<T>* rF = new std::complex<T>[N]; // only the finite roots
   int nF = rsCopyFiniteValues(r, rF, N);
-  rsArray::fillWithZeros(a, N+1);
+  rsArrayTools::fillWithZeros(a, N+1);
   if(nF == 0)
     a[0] = 1.0;
   else {
@@ -852,10 +852,10 @@ void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, T* a, int N)
 template<class T>
 void rsPolynomial<T>::rootsToCoeffs(const T* r, T* a, int N, T scaler)
 {
-  rsArray::fillWithZeros(a, N+1);
+  rsArrayTools::fillWithZeros(a, N+1);
   a[0] = scaler;
   for(int n = 1; n <= N; n++)
-    rsArray::convolveWithTwoElems(a, n, -r[n-1], T(1), a);
+    rsArrayTools::convolveWithTwoElems(a, n, -r[n-1], T(1), a);
 }
 
 
@@ -904,7 +904,7 @@ void rsPolynomial<T>::cubicCoeffsFourPoints(T *a, const T *y)
 template<class T>
 T** rsPolynomial<T>::vandermondeMatrix(const T *x, int N)
 {
-  T **A; rsArray::allocateSquareArray2D(A, N);
+  T **A; rsArrayTools::allocateSquareArray2D(A, N);
   for(int i = 0; i < N; i++) {
     T xi  = x[i];
     T xij = 1.0;  // xi^j
@@ -919,7 +919,7 @@ void rsPolynomial<T>::interpolant(T *a, const T *x, const T *y, int N)
 {
   T **A = vandermondeMatrix(x, N);
   rsLinearAlgebra::rsSolveLinearSystem(A, a, y, N); // use rsSolveLinearSystemInPlace
-  rsArray::deAllocateSquareArray2D(A, N);
+  rsArrayTools::deAllocateSquareArray2D(A, N);
 
   // For higher degree polynomials, this simple and direct approach may become numerically ill
   // conditioned. In this case, we could first normalize the data, such than xMin = yMin = -1 and
@@ -1307,19 +1307,19 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
 {
   // sanity check for inputs:
   rsAssert(numeratorDegree < denominatorDegree);
-  rsAssert(rsArray::sum(multiplicities, numDistinctPoles) == denominatorDegree);
+  rsAssert(rsArrayTools::sum(multiplicities, numDistinctPoles) == denominatorDegree);
 
   // make denominator monic:
-  rsArray::scale(numerator,   numeratorDegree+1,   T(1)/denominator[denominatorDegree]);
-  rsArray::scale(denominator, denominatorDegree+1, T(1)/denominator[denominatorDegree]);
+  rsArrayTools::scale(numerator,   numeratorDegree+1,   T(1)/denominator[denominatorDegree]);
+  rsArrayTools::scale(denominator, denominatorDegree+1, T(1)/denominator[denominatorDegree]);
 
   // establish coefficient matrix:
-  std::complex<T> **A; rsArray::allocateSquareArray2D(A, denominatorDegree);
+  std::complex<T> **A; rsArrayTools::allocateSquareArray2D(A, denominatorDegree);
   std::complex<T> *tmp = new std::complex<T>[denominatorDegree+1]; // deflated denominator
   std::complex<T> remainder;                                   // always zero
   for(int i = 0, k = 0; i < numDistinctPoles; i++)
   {
-    rsArray::copy(denominator, tmp, denominatorDegree+1);
+    rsArrayTools::copy(denominator, tmp, denominatorDegree+1);
     for(int m = 0; m < multiplicities[i]; m++)
     {
       divideByMonomialInPlace(tmp, denominatorDegree-m, poles[i], &remainder);
@@ -1330,12 +1330,12 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   }
 
   // solve the linear system using an appropriately zero-padded numerator as RHS:
-  rsArray::copy(numerator, tmp, numeratorDegree+1);
-  rsArray::fillWithZeros(&tmp[numeratorDegree+1], denominatorDegree-(numeratorDegree+1));
+  rsArrayTools::copy(numerator, tmp, numeratorDegree+1);
+  rsArrayTools::fillWithZeros(&tmp[numeratorDegree+1], denominatorDegree-(numeratorDegree+1));
   rsLinearAlgebra::rsSolveLinearSystem(A, pfeCoeffs, tmp, denominatorDegree);
 
   // clean up:
-  rsArray::deAllocateSquareArray2D(A, denominatorDegree);
+  rsArrayTools::deAllocateSquareArray2D(A, denominatorDegree);
   delete[] tmp;
 }
 
