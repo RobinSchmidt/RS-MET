@@ -1012,6 +1012,18 @@ void rsResampler<TSig, TPos>::transposeSinc(TSig *x, int xN, TSig *y, int yN, TP
   rsArrayTools::fillWithZeros(&y[nw], yN-nw);
 }
 
+/*
+template<class TSig, class TPos>
+std::vector<TSig> rsResampler<TSig, TPos>::transposeSinc(const std::vector<TSig>& x, TPos factor,
+  TPos sincLength, bool antiAlias)
+{
+  int Ny = (int) ceil(x.size() / factor);
+  std::vector<TSig> y(Ny);
+  transposeSinc(&x[0], (int) x.size(), &y[0], Ny, factor, sincLength, antiAlias);
+  return y;
+}
+*/
+
 template<class TSig, class TPos>
 void rsResampler<TSig, TPos>::shiftSinc(TSig *x, TSig *y, int N, TPos amount, TPos sincLength)
 {

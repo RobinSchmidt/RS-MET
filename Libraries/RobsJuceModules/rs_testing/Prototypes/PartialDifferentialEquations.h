@@ -387,7 +387,7 @@ protected:
   T waveSpeed = T(1);
   T timeStep  = T(1);
 
-  // hx = hy = h is natural for isotropic problmes ((1), pg. 292)
+  // hx = hy = h is natural for isotropic problems ((1), pg. 292)
   // todo: generalize to use separate spatial spacing variables hx, hy
 
 };
@@ -419,7 +419,7 @@ public:
   /** \name Setup */
 
   void setGridDimensions(int numSamplesX, int numSamplesY, int numSamplesZ);
-  // alternative names setGrid.. Resolution (bad because resokution may be seen as 
+  // alternative names setGrid.. Resolution (bad because resolution may be seen as 
   // numSamplesX/lengthX rather than numSamplesX itself
 
   void setRoomDimensions(T sizeX, T sizeY, T sizeZ)
@@ -438,18 +438,31 @@ public:
 
   /** Returns a const-reference to the current pressure distribution in the room as a 3D array. */
   const rsMultiArray<T>& getState() const { return u; }
-  // it's a bit
+
 
   T getPotentialEnergy() const
   {
     return T(0.5) * RAPT::rsArrayTools::sumOfSquares(u.getDataPointerConst(), u.getSize());
-    // is this formula correct?
+    // is this formula correct? we should probably divide by hx*hy*hz in order to approximate the
+    // continuous energy integral by a Riemann sum - or maybe use a trapezoidal approximation, 
+    // see (1), Eq. 5.20, 5.23, pg.295 bottom
+
+    // what about other inner products like the one used in (1), section 6.2.5 - they use an inner 
+    // product of a centered 1st and 2nd time-difference ...what does the "taking the inner product
+    // of scheme (6.34) with delta_t. u" mean? is this the way, we arrive at suitable inner 
+    // products? taking an inner product of the scheme-equation with some grid-function-difference?
+
+    // implement 5.20 for the 1D case and experiment with it (plot potential/kinetic/total energies
+    // over time) - try to generalize from there to 2D and 3D, 
+    // try to define other inner products that are closer to physical intuition and plot those 
+    // over time, too
+
   }
 
   T getKineticEnergy() const
   {
     return T(0.5) * RAPT::rsArrayTools::sumOfSquares(u_t.getDataPointerConst(), u_t.getSize());
-    // is this formula correct?
+    // is this formula correct? ...should also include hx,hy,hz ...maybe also the timeStep?
   }
 
 
@@ -497,7 +510,7 @@ protected:
   // void updatePressures;
 
   int Nx, Ny, Nz;  // redundant but convenient - maybe get rid later
-  T   Lx, Ly, Lz;  // room lengths int the coordinate directions
+  T   Lx, Ly, Lz;  // room lengths in the coordinate directions
 
   T timeStep = 1;  // temporal sampling interval
 

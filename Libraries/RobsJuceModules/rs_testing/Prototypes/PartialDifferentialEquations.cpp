@@ -159,8 +159,11 @@ void rsWaveEquation1D<T>::computeBoundaryPoints(T timeStep)
   int N  = getNumGridPoints()-1; // see (1), section 5.2.8
   tmp[0] = tmp[N] = T(0);        // endpoints fixed at zero - "Dirichlet" conditions
   // todo: allow to let client code choose from various boundary conditions (Dirichlet, Neumann, 
-  // mixed, etc.) ..maybe also allow for circular/wrap-around conditions - that's no-physical but
-  // may be interesting
+  // mixed, etc.) ..maybe also allow for circular/wrap-around conditions - that's non-physical but
+  // may be interesting - it would sort of model a circular string - maybe like strung around a 
+  // cyclinder
+
+  // on page 138, (1) says something about "at l=0, scheme 6.35 may be modified to..." - try that
 }
 
 template<class T>
@@ -386,7 +389,7 @@ void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiA
 // todo: 
 // -implement bi-laplacian (aka biharmonic)...but is this actually a thing in 3D? in 1D and 2D
 //  it's used for modeling stiffness...but in 3D? hmm...
-// -implement Laplacian for cylidrical and spherical coordinates
+// -implement Laplacian for cylindrical and spherical coordinates
 // -maybe rename this function to reflect that we a doing a 7 point approximation in cartesian 
 //  coordinates - there are so many other possibilities...
 

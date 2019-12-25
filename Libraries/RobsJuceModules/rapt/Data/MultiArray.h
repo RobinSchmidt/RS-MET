@@ -85,7 +85,7 @@ public:
   int getNumIndices() const { return (int) shape.size(); }
   // maybe rename to getNumIndices - "dimension" is a bit ambiguous here - for example a vector in
   // 3D space is considered to be 3-dimensional, but has only one index
-  // maybe cache that values - the conversion form size_t to int may be expensive, if this is done
+  // maybe cache that values - the conversion from size_t to int may be expensive, if this is done
   // often -> benchmark!
 
   /** Returns the one plus the maximum value that given index may assume */
@@ -132,7 +132,6 @@ public:
   elements is: A(i, j, k) = .... */
   template<typename... Rest>
   T& operator()(const int i, Rest... rest) { return dataPointer[flatIndex(0, i, rest...)]; }
-  // maybe use const int as was doen in rsMatrix
 
   /** Read-only access to array elements. */
   template<typename... Rest>

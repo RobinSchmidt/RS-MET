@@ -542,10 +542,18 @@ public:
   static void transposeSinc(TSig *x, int xN, TSig *y, int yN, TPos factor,
     TPos sincLength = 64.0, bool antiAlias = true);
 
+  /** Convenience function that works with std::vector */
+  //static std::vector<TSig> transposeSinc(const std::vector<TSig>&x, TPos factor, 
+  //  TPos sincLength = 64.0, bool antiAlias = true);
+
+
   /** Shifts an input signal x of length N by an arbitrary (noninteger) amount of samples using
   sinc-interpolation and stores the result in y (also of length N). x and y may point to the same
   array in which case a temporary buffer will be used internally. */
   static void shiftSinc(TSig *x, TSig *y, int N, TPos amount, TPos sincLength = 64.0);
+
+
+
 
 };
 

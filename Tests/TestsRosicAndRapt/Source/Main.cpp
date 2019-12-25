@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
+  //passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
   //passed &= runUnitTestsRosic();
   //passed = passed;  // dummy
 
@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
   //heatEquation1D();
   //waveEquation1D();
   //rectangularMembrane();
-  rectangularRoom();
+//  rectangularRoom();
   //particleForceDistanceLaw();
   //particleSystem();
   //quantumSpinMeasurement();  // move to unit tests
@@ -412,11 +412,11 @@ int main(int argc, char* argv[])
 
   // Resampling:
   //fadeOut();  // move to a new file SampleEditingExperiments
-  //resampler();
-  //sincResamplerAliasing();
-  //sincResamplerModulation();
-  //sincResamplerPassbandRipple();
-  //sincResamplerSumOfTapWeights();
+  resampler();
+  sincResamplerAliasing();
+  sincResamplerModulation();
+  sincResamplerPassbandRipple();
+  sincResamplerSumOfTapWeights();
   //timeWarp();
   //pitchDemodulation();
   //phaseLockedCrossfade();

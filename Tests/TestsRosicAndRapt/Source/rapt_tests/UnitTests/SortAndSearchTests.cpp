@@ -154,7 +154,7 @@ T findFloatPosition(const T* a, const int N, const T v)
   if(a[i] > v)
   {
     // we can assume here that i > 0 because i==0 && a[i] > v was handled above
-
+    return rsInterpolateLinear(a[i-1], a[i], T(i-1), T(i), v); 
   }
 
 
@@ -178,15 +178,17 @@ bool testFindFloatPosition()
   double a[9] = {1,2,3,4,5,6,7,8,9};  // array
   double p;                           // position of value
 
-  p = findFloatPosition(a, 9, -1.0); r &= p == -2.0;
-  p = findFloatPosition(a, 9,  0.0); r &= p == -1.0;
-  p = findFloatPosition(a, 9,  1.0); r &= p ==  0.0;
-  p = findFloatPosition(a, 9,  2.0); r &= p ==  1.0;
-  p = findFloatPosition(a, 9,  5.0); r &= p ==  4.0;
-  p = findFloatPosition(a, 9,  8.0); r &= p ==  7.0;
-  p = findFloatPosition(a, 9,  9.0); r &= p ==  8.0;
-  p = findFloatPosition(a, 9, 10.0); r &= p ==  9.0;
-  p = findFloatPosition(a, 9, 11.0); r &= p == 10.0;
+  p = findFloatPosition(a, 9, -1.0);  r &= p == -2.0;
+  p = findFloatPosition(a, 9,  0.0);  r &= p == -1.0;
+  p = findFloatPosition(a, 9,  1.0);  r &= p ==  0.0;
+  p = findFloatPosition(a, 9,  2.0);  r &= p ==  1.0;
+  p = findFloatPosition(a, 9,  5.0);  r &= p ==  4.0;
+  p = findFloatPosition(a, 9,  8.0);  r &= p ==  7.0;
+  p = findFloatPosition(a, 9,  9.0);  r &= p ==  8.0;
+  p = findFloatPosition(a, 9, 10.0);  r &= p ==  9.0;
+  p = findFloatPosition(a, 9, 11.0);  r &= p == 10.0;
+  p = findFloatPosition(a, 9,  5.25); r &= p ==  4.25;
+
 
   // a = {1,2,3,4,5,5,7,8,9}
   a[5] = 5.0; p = findFloatPosition(a, 9, 5.0);  r &= p == 4.5;
@@ -194,7 +196,7 @@ bool testFindFloatPosition()
   // a = {1,2,3,4,5,5,5,8,9}
   a[6] = 5.0; p = findFloatPosition(a, 9, 5.0);  r &= p == 5.0;
 
-
+  // maybe use 0,2,4,5,6,8
 
 
 

@@ -408,6 +408,8 @@ void rectangularRoom()
   float Lx = 1.f;
   float Ly = 1.0f;
   float Lz = 1.0f;
+  // NSS (pg.292) says that for isotropic problems, it's best to choose Lx,Nx etc. such that 
+  // hx=hy for 2D, so in 3D isotropic, we should probably use hx=hy=hz
 
 
 

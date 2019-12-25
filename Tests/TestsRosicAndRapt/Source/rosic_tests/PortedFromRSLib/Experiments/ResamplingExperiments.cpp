@@ -57,7 +57,16 @@ void resampler()
   rsResamplerDD::transposeSinc(x, xN, y, yN, r, 512, true);
   writeToMonoWaveFile("ResamplingOutputSinc512.wav",  y, yN, (int) fs, 16);
 
-  // actually, the simple cosin (non-squared) window seems to giev better results than
+  // use the convenience function:
+  std::vector<double> vx = toVector(x, xN);
+  //std::vector<double> vy = rsResamplerDD::transposeSinc(vx, r, 64);
+
+  int dummy = 0;
+
+  // maybe make a convenience function that takes a std::vector as input and returns a std::vector:
+  // std::vector<T> resample(const std::vector<T>&x, T ratio, int sincLength = 64)
+
+  // actually, the simple cosine (non-squared) window seems to give better results than
   // squared - do the comparison with a longer signal, so we can see the spectrum at higher 
   // resolution
 
