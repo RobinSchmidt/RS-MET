@@ -1000,7 +1000,7 @@ void rsResampler<TSig, TPos>::transposeSinc(const TSig *x, int xN, TSig *y, int 
 {
   TPos stretch = 1.0;
   if( antiAlias == true )
-    stretch = rsMax(1.0, factor);
+    stretch = rsMax(TSig(1.0), TPos(factor));
 
   int  nw;         // write position
   TPos nr = 0.0;   // read position
