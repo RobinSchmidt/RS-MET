@@ -519,13 +519,13 @@ public:
   interpolation.
 
   \todo move suitable parts of the comments for transposeSinc to here.  */
-  static TSig signalValueViaSincAt(TSig *x, int N, TPos t, TPos sincLength, TPos stretch);
+  static TSig signalValueViaSincAt(const TSig *x, int N, TPos t, TPos sincLength, TPos stretch);
 
   /** Transposes a signal x of length xN by the given factor using linear interpolation and
   stores the result in y which is assumed to an array of length yN. When the end of the input
   signal x is reached before the end of the output signal y, the tail of y will be filled with
   zeros. */
-  static void transposeLinear(TSig *x, int xN, TSig *y, int yN, TPos factor);
+  static void transposeLinear(const TSig *x, int xN, TSig *y, int yN, TPos factor);
 
   /** Like transposeLinear, but uses windowed sinc interpolation. You may pass the length of the
   sinc filter kernel to be used. This length is of type "double" because its interpretation is
@@ -539,12 +539,12 @@ public:
 
   The actual number of samples M used for interpolation is given by:
   M = 2 * ( ((int)floor(sincLength)) / 2) + 1  [verify this formula] */
-  static void transposeSinc(TSig *x, int xN, TSig *y, int yN, TPos factor,
+  static void transposeSinc(const TSig *x, int xN, TSig *y, int yN, TPos factor,
     TPos sincLength = 64.0, bool antiAlias = true);
 
   /** Convenience function that works with std::vector */
-  //static std::vector<TSig> transposeSinc(const std::vector<TSig>&x, TPos factor, 
-  //  TPos sincLength = 64.0, bool antiAlias = true);
+  static std::vector<TSig> transposeSinc(const std::vector<TSig>&x, TPos factor, 
+    TPos sincLength = 64.0, bool antiAlias = true);
 
 
   /** Shifts an input signal x of length N by an arbitrary (noninteger) amount of samples using

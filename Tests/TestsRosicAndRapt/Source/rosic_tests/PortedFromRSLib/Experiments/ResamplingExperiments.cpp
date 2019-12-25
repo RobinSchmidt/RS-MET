@@ -59,7 +59,7 @@ void resampler()
 
   // use the convenience function:
   std::vector<double> vx = toVector(x, xN);
-  //std::vector<double> vy = rsResamplerDD::transposeSinc(vx, r, 64);
+  std::vector<double> vy = rsResamplerDD::transposeSinc(vx, r, 64);
 
   int dummy = 0;
 

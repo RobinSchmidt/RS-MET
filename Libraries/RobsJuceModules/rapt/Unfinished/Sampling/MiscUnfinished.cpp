@@ -890,7 +890,7 @@ RS_INLINE T cosineToWindow(T c)
 
 template<class TSig, class TPos>
 RS_INLINE void sincInterpolatorLoop(int mMin, int mMax, TPos &tf, rsSineIterator<TPos> &sinIt,
-  rsSineIterator<TPos> &wndIt, TSig &y, TSig *&x, int &ti, TPos &ws)
+  rsSineIterator<TPos> &wndIt, TSig &y, const TSig *&x, int &ti, TPos &ws)
 {
   TPos w;
   for(int m = mMin; m <= mMax; m++)
@@ -903,7 +903,7 @@ RS_INLINE void sincInterpolatorLoop(int mMin, int mMax, TPos &tf, rsSineIterator
 
 template<class TSig, class TPos>
 RS_INLINE void sincInterpolatorLoopNoStretch(int mMin, int mMax, TPos &tf, TPos &s,
-  rsSineIterator<TPos> &wndIt, TSig &y, TSig *&x, int &ti, TPos &ws)
+  rsSineIterator<TPos> &wndIt, TSig &y, const TSig *&x, int &ti, TPos &ws)
 {
   TPos w;
   for(int m = mMin; m <= mMax; m++)
@@ -918,7 +918,7 @@ RS_INLINE void sincInterpolatorLoopNoStretch(int mMin, int mMax, TPos &tf, TPos 
 
 
 template<class TSig, class TPos>
-TSig rsResampler<TSig, TPos>::signalValueViaSincAt(TSig *x, int N, TPos t, TPos sincLength, TPos stretch)
+TSig rsResampler<TSig, TPos>::signalValueViaSincAt(const TSig *x, int N, TPos t, TPos sincLength, TPos stretch)
 {
   int L  = (int) floor(sincLength);
   int ti = (int) floor(t);         // integer part of t
@@ -973,7 +973,7 @@ TSig rsResampler<TSig, TPos>::signalValueViaSincAt(TSig *x, int N, TPos t, TPos 
 // sample-playback (for example, in a sampler) or for wavetable-oscillators
 
 template<class TSig, class TPos>
-void rsResampler<TSig, TPos>::transposeLinear(TSig *x, int xN, TSig *y, int yN, TPos factor)
+void rsResampler<TSig, TPos>::transposeLinear(const TSig *x, int xN, TSig *y, int yN, TPos factor)
 {
   int  nw;         // write position
   TPos nr = 0.0;   // read position
@@ -995,7 +995,7 @@ void rsResampler<TSig, TPos>::transposeLinear(TSig *x, int xN, TSig *y, int yN, 
 }
 
 template<class TSig, class TPos>
-void rsResampler<TSig, TPos>::transposeSinc(TSig *x, int xN, TSig *y, int yN, TPos factor,
+void rsResampler<TSig, TPos>::transposeSinc(const TSig *x, int xN, TSig *y, int yN, TPos factor,
   TPos sincLength, bool antiAlias)
 {
   TPos stretch = 1.0;
@@ -1012,7 +1012,6 @@ void rsResampler<TSig, TPos>::transposeSinc(TSig *x, int xN, TSig *y, int yN, TP
   rsArrayTools::fillWithZeros(&y[nw], yN-nw);
 }
 
-/*
 template<class TSig, class TPos>
 std::vector<TSig> rsResampler<TSig, TPos>::transposeSinc(const std::vector<TSig>& x, TPos factor,
   TPos sincLength, bool antiAlias)
@@ -1022,7 +1021,6 @@ std::vector<TSig> rsResampler<TSig, TPos>::transposeSinc(const std::vector<TSig>
   transposeSinc(&x[0], (int) x.size(), &y[0], Ny, factor, sincLength, antiAlias);
   return y;
 }
-*/
 
 template<class TSig, class TPos>
 void rsResampler<TSig, TPos>::shiftSinc(TSig *x, TSig *y, int N, TPos amount, TPos sincLength)
