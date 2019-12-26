@@ -415,7 +415,7 @@ void rectangularRoom()
 
   rsRectangularRoom<float> room;
   room.setGridDimensions(Nx, Ny, Nz);
-  room.setRoomDimensions(Lx, Ly, Lz); // maybe setShape, setSizes
+  room.setRoomDimensions(Lx, Ly, Lz); // maybe rename to setShape, setSizes
   room.setTimeStep(dt);
 
   // maybe for a user of a room-reverb, it's better to parametrize it via size, xy-ratio, xz-ratio
@@ -483,7 +483,7 @@ void rectangularRoom()
   // -increasing the timeStep makes the wiggles in the energies faster (as expected) and also 
   //  increases the mean of the kinectic energy - it also seems to decrease the mean of the
   //  potential energy ..well, at least the increase from 0.01 to 0.02 increased the mean
-  //  between 0.005 and 0.01, the seems to be no such increase
+  //  between 0.005 and 0.01, there seems to be no such increase
   //  -dt = 0.0025 gives good temporral resolution when Nx=Ny=Nz=11 and Lx=Ly=Lz=1
   //  -scaling E_pot by 600 makes both averages equal in this case - figure out where that factor
   //   comes from...maybe that factor is not yet exact - the sum of the energies still wiggles
