@@ -91,11 +91,11 @@ void resamplerDelay()
   rsArrayTools::fillWithZeros(&x[0], N);
   x[50] = 1;
 
-  std::vector<double> y = rsResamplerDD::transposeSinc(x, ratio, 64);
-  //std::vector<double> y = rsResamplerDD::transposeLinear(x, ratio);
+  //std::vector<double> y = rsResamplerDD::transposeSinc(x, ratio, 64);
+  std::vector<double> y = rsResamplerDD::transposeLinear(x, ratio);
 
   rsPlotVectors(x, y); // i've added a workaround, so x and y are in sync now 
-  // todo: figure out a real solution
+  // todo: figure out a real solution, figure out, if linear interpolations also has this delay
 }
 
 void sincResamplerAliasing()

@@ -981,6 +981,7 @@ void rsResampler<TSig, TPos>::transposeLinear(const TSig *x, int xN, TSig *y, in
   TPos nrf;        // fractional part of nr
   for(nw = 0; nw < yN; nw++)
   {
+    nr  = nw*factor;
     nri = (int) floor(nr);
 
     if( nri+1 >= xN )
@@ -989,9 +990,18 @@ void rsResampler<TSig, TPos>::transposeLinear(const TSig *x, int xN, TSig *y, in
 
     nrf = nr - nri;
     y[nw] = (1.0-nrf)*x[nri] + nrf*x[nri+1];
-    nr += factor;
   }
   rsArrayTools::fillWithZeros(&y[nw], yN-nw); // fill tail with zeros
+}
+
+//std::vector<TSig> transposeLinear(const std::vector<TSig>&x, TPos factor);
+template<class TSig, class TPos>
+std::vector<TSig> rsResampler<TSig, TPos>::transposeLinear(const std::vector<TSig>&x, TPos factor)
+{
+  int Ny = (int) ceil(x.size() / factor);
+  std::vector<TSig> y(Ny);
+  transposeLinear(&x[0], (int) x.size(), &y[0], Ny, factor);
+  return y;
 }
 
 template<class TSig, class TPos>
@@ -1006,12 +1016,15 @@ void rsResampler<TSig, TPos>::transposeSinc(const TSig *x, int xN, TSig *y, int 
   TPos nr = 0.0;   // read position
   for(nw = 0; nw < yN; nw++)
   {
+    nr = nw*factor;  // ...this is more expensive but fixes the drift problem
     y[nw] = signalValueViaSincAt(x, xN, nr, sincLength, stretch);
-    //nr += factor;  // roundoff error accumulation may cause drift? especially with TPos=float?
-    nr = nw*factor;  // more expensive but fixes drift?
   }
   rsArrayTools::fillWithZeros(&y[nw], yN-nw);
-  rsArrayTools::shift(y, yN, -1);  // workaround to fix one sample delay - todo: fix it properly!
+
+  // we really need to compute nr = nw*factor and not accumulate it like nr += factor because that
+  // causes drift, especially when TPos = float
+  // ...but maybe we can avoid the int -> float conversion for each sample by using a float 
+  // accumulator that accumulates 1 in each iteration - in this case, results are exact
 }
 
 template<class TSig, class TPos>
