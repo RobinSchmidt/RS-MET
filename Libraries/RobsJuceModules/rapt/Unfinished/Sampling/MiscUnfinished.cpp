@@ -1007,7 +1007,7 @@ void rsResampler<TSig, TPos>::transposeSinc(const TSig *x, int xN, TSig *y, int 
   for(nw = 0; nw < yN; nw++)
   {
     y[nw] = signalValueViaSincAt(x, xN, nr, sincLength, stretch);
-    //nr += factor;  // may cause drift?
+    //nr += factor;  // roundoff error accumulation may cause drift? especially with TPos=float?
     nr = nw*factor;  // more expensive but fixes drift?
   }
   rsArrayTools::fillWithZeros(&y[nw], yN-nw);

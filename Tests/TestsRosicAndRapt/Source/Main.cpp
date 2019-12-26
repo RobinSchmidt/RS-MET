@@ -412,11 +412,12 @@ int main(int argc, char* argv[])
 
   // Resampling:
   //fadeOut();  // move to a new file SampleEditingExperiments
-  resampler();
-  sincResamplerAliasing();
-  sincResamplerModulation();
-  sincResamplerPassbandRipple();
-  sincResamplerSumOfTapWeights();
+  //resampler();
+  resamplerDelay();
+  //sincResamplerAliasing();
+  //sincResamplerModulation();
+  //sincResamplerPassbandRipple();
+  //sincResamplerSumOfTapWeights();
   //timeWarp();
   //pitchDemodulation();
   //phaseLockedCrossfade();

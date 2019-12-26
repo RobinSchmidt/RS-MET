@@ -60,11 +60,11 @@ void resampler()
   // use the convenience function:
   std::vector<double> vx = toVector(x, xN);
   std::vector<double> vy = rsResamplerDD::transposeSinc(vx, r, 64);
-  rsPlotVectors(vx, vy);
+  //rsPlotVectors(vx, vy);
 
 
-  // maybe make a convenience function that takes a std::vector as input and returns a std::vector:
-  // std::vector<T> resample(const std::vector<T>&x, T ratio, int sincLength = 64)
+
+
 
   // actually, the simple cosine (non-squared) window seems to give better results than
   // squared - do the comparison with a longer signal, so we can see the spectrum at higher 
@@ -78,6 +78,25 @@ void resampler()
   */
 }
 
+void resamplerDelay()
+{
+  // The resampler produces a delay of one sample - this experiment exposes this behavior by just
+  // setting the resampling ratio to 1.0 which should give an identity operation.
+
+  int N = 100;
+
+  double ratio = 1.0;
+
+  std::vector<double> x(N);
+  rsArrayTools::fillWithZeros(&x[0], N);
+  x[50] = 1;
+
+  std::vector<double> y = rsResamplerDD::transposeSinc(x, ratio, 64);
+  //std::vector<double> y = rsResamplerDD::transposeLinear(x, ratio);
+
+
+  rsPlotVectors(x, y); // yep - y is delayed
+}
 
 void sincResamplerAliasing()
 {
@@ -133,7 +152,7 @@ void sincResamplerAliasing()
   RAPT::rsArrayTools::difference(w, yN);
 
 
-  //plotData(yN, w, y);
+  plotData(yN, w, y);
 
 
   delete[] x;
