@@ -998,16 +998,17 @@ template<class TSig, class TPos>
 void rsResampler<TSig, TPos>::transposeSinc(const TSig *x, int xN, TSig *y, int yN, TPos factor,
   TPos sincLength, bool antiAlias)
 {
-  TPos stretch = 1.0;
+  TPos stretch = TPos(1);
   if( antiAlias == true )
-    stretch = rsMax(TSig(1.0), TPos(factor));
+    stretch = rsMax(TPos(1), TPos(factor));
 
   int  nw;         // write position
   TPos nr = 0.0;   // read position
   for(nw = 0; nw < yN; nw++)
   {
     y[nw] = signalValueViaSincAt(x, xN, nr, sincLength, stretch);
-    nr += factor;
+    //nr += factor;  // may cause drift?
+    nr = nw*factor;  // more expensive but fixes drift?
   }
   rsArrayTools::fillWithZeros(&y[nw], yN-nw);
 }

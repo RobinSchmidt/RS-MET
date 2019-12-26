@@ -46,7 +46,7 @@ public:
   void normalizeHeatDistribution(T targetMean = T(0), T targetVariance = T(1));
   // not yet complete
 
-  /** Sets the coefficient by which the heat diffusses. The higher the value, the faster the 
+  /** Sets the coefficient by which the heat diffusss. The higher the value, the faster the 
   initial heat distributions evens out over the length of the rod - hence, the faster the 
   complexity and amplitude of the waveform decays. */
   void setDiffusionCoefficient(T newCoeff) { diffusionCoeff = newCoeff; }
@@ -166,7 +166,7 @@ protected:
 
 //=================================================================================================
 
-/** Implements a numercial solution of the 1D wave equation. This may serve as a model for a string
+/** Implements a numerical solution of the 1D wave equation. This may serve as a model for a string
 or tube. 
 
 References:

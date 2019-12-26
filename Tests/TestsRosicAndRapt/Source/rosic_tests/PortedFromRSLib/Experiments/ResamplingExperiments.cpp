@@ -60,8 +60,8 @@ void resampler()
   // use the convenience function:
   std::vector<double> vx = toVector(x, xN);
   std::vector<double> vy = rsResamplerDD::transposeSinc(vx, r, 64);
+  rsPlotVectors(vx, vy);
 
-  int dummy = 0;
 
   // maybe make a convenience function that takes a std::vector as input and returns a std::vector:
   // std::vector<T> resample(const std::vector<T>&x, T ratio, int sincLength = 64)
@@ -191,7 +191,7 @@ void sincResamplerModulation()
   //plotData(N, t, xDC, yDC);
   plotData(N, t, xDC, yDC, xSin, ySin);
   // Observations:
-  // When "demodulate" is set to false, the output shwos a modulation, the period of which 
+  // When "demodulate" is set to false, the output shows a modulation, the period of which 
   // (measured in samples) is given by 1/min(f, 1-f) where f is the fractional part of the 
   // resampling ratio [verify this formula]. This modulation artifact is most pronounced for the 
   // rectangular window, it gets better with Hann and Hamming window and still better with the 
