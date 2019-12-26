@@ -5,6 +5,7 @@
 void fadeOut();  // move to a new file SampleEditingExperiments
 
 void resampler();
+void resamplerDelay();
 void sincResamplerAliasing();
 void sincResamplerModulation();
 void sincResamplerPassbandRipple();

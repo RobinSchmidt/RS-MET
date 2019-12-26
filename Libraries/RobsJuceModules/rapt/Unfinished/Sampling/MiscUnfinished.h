@@ -527,6 +527,9 @@ public:
   zeros. */
   static void transposeLinear(const TSig *x, int xN, TSig *y, int yN, TPos factor);
 
+  /** Convenience function that works with std::vector */
+  static std::vector<TSig> transposeLinear(const std::vector<TSig>&x, TPos factor);
+
   /** Like transposeLinear, but uses windowed sinc interpolation. You may pass the length of the
   sinc filter kernel to be used. This length may be non-integer because its interpretation is
   not the number of samples used but rather the domain on the continuous time-axis for which the
