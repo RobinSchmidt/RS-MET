@@ -94,8 +94,8 @@ void resamplerDelay()
   std::vector<double> y = rsResamplerDD::transposeSinc(x, ratio, 64);
   //std::vector<double> y = rsResamplerDD::transposeLinear(x, ratio);
 
-
-  rsPlotVectors(x, y); // yep - y is delayed
+  rsPlotVectors(x, y); // i've added a workaround, so x and y are in sync now 
+  // todo: figure out a real solution
 }
 
 void sincResamplerAliasing()

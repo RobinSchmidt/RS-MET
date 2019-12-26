@@ -1011,6 +1011,7 @@ void rsResampler<TSig, TPos>::transposeSinc(const TSig *x, int xN, TSig *y, int 
     nr = nw*factor;  // more expensive but fixes drift?
   }
   rsArrayTools::fillWithZeros(&y[nw], yN-nw);
+  rsArrayTools::shift(y, yN, -1);  // workaround to fix one sample delay - todo: fix it properly!
 }
 
 template<class TSig, class TPos>
