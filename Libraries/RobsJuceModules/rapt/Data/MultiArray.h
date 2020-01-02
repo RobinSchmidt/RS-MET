@@ -188,6 +188,21 @@ public:
   }
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Misc */
+
+  /** Computes the strides for a given shape. The arrays shape and strides muts both be numIndices 
+  long. */
+  static void computeStrides(int numIndices, int* shape, int* strides)
+  {
+    int i = numIndices-1;         // last index has stride 1 -> row-major matrix storage
+    int s = 1;
+    while(i >= 0) {
+      strides[i] = s;
+      s *= shape[i];
+      --i;
+    }
+  }
 
 
 
@@ -230,6 +245,9 @@ protected:
   {
     int rank = (int) shape.size();
     strides.resize(rank);
+
+    // call computeStrides instead of stuff below:
+
     int i = rank-1;         // last index has stride 1 -> row-major matrix storage
     int s = 1;
     while(i >= 0) {
@@ -238,7 +256,10 @@ protected:
       --i;
     }
   }
-  // maybe move to cpp file
+  // maybe move to cpp file, maybe have a static member function
+  //   void computeStrides(int rank, int* shape, int* strides)
+  // so we may defer the allocation of shape/strides arrays to client code - clent code may then 
+  // call the stride-computation
 
   /** Updates our size variable according to the values in the shape array. The total size is 
   (redundantly) cached in a member variable because it's used frequently. */

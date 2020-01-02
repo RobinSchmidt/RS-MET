@@ -1011,17 +1011,12 @@ void rsResampler<TSig, TPos>::transposeSinc(const TSig *x, int xN, TSig *y, int 
   TPos stretch = TPos(1);
   if( antiAlias == true )
     stretch = rsMax(TPos(1), TPos(factor));
-
-  int  nw;         // write position
-  TPos nr = 0.0;   // read position
+  int nw;
   for(nw = 0; nw < yN; nw++)
-  {
-    nr = nw*factor;  // ...this is more expensive but fixes the drift problem
-    y[nw] = signalValueViaSincAt(x, xN, nr, sincLength, stretch);
-  }
+    y[nw] = signalValueViaSincAt(x, xN, TPos(nw)*factor, sincLength, stretch);
   rsArrayTools::fillWithZeros(&y[nw], yN-nw);
 
-  // we really need to compute nr = nw*factor and not accumulate it like nr += factor because that
+  // We really need to compute TPos(nw)*factor and not accumulate it like nr += factor because that
   // causes drift, especially when TPos = float
   // ...but maybe we can avoid the int -> float conversion for each sample by using a float 
   // accumulator that accumulates 1 in each iteration - in this case, results are exact
