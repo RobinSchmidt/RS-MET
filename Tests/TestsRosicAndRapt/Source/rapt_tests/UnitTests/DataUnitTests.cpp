@@ -69,6 +69,24 @@ void movingAverage(const T* x, int N, T* y, int order)
 }
 // under construction...
 
+
+// this code here: 
+// https://stackoverflow.com/questions/21128981/finding-gcd-of-array-code-c-language
+// uses a signature like: int gcd_a(int n, int a[n])
+// ...that's actually pretty nice - perhaps i should use this for array functions as well. does the n
+// have to come before the a? ...hmm - well - it doesn't actually compile :-(
+/*
+template <class T>
+T sum(int N, T a[N])
+{
+  T s = T(0);
+  for(int n = 0; n < N; n++)
+    s += a[n];
+  return s;
+}
+*/
+
+
 bool testArrayFiltering()
 {
   bool r = true;      // test result
@@ -85,8 +103,6 @@ bool testArrayFiltering()
   y = x;
   movingAverage5pt(&y[0], (int)y.size(), &y[0]);
   r &= y == Vec({40,75,84,48,36,96,84,75,140});
-
-
 
   return r;
 }
@@ -111,6 +127,8 @@ bool arrayUnitTest()
 
 
   r &= testArrayFiltering();
+
+  // int s = sum(3, &u[0]); // sum function doesn't compile
 
 
   return r;

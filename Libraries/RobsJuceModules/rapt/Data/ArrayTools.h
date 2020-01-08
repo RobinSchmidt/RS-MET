@@ -22,6 +22,8 @@ todo:
 -use workspace pointers instead of heap allocation, where applicable, keep the functions with 
  heap-allocations as convenience functions (create workspace -> call worker -> delete workspace)
 
+
+
 */
 
 class rsArrayTools  // 
