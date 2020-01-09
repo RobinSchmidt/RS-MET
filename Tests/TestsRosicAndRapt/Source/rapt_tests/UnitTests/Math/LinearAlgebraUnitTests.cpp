@@ -735,7 +735,7 @@ bool solveLinearSystem(
     int p = i; T maxAbs = 0.0;
     for(int j = i; j < N; j++) {       // search pivot row
       if(rsAbs(A(j, i)) > maxAbs) { 
-        maxAbs = rsAbs(A(j,i)); p = j; }}
+        maxAbs = rsAbs(A(j, i)); p = j; }}
     if(rsIsCloseTo(maxAbs, 0.0, tooSmall)) {
       rsError("Matrix (numerically) singular");
       return false; }
@@ -743,7 +743,7 @@ bool solveLinearSystem(
       A.swapRows(i, p); 
       B.swapRows(i, p); p = i; }  
     for(int j = i+1; j < N; j++) {     // pivot row subtraction
-      T s = A(j,i) / A(p,i);           // scaler
+      T s = A(j, i) / A(p, i);         // scaler
       A.addWeightedRowToOther(p, j, -s);
       B.addWeightedRowToOther(p, j, -s); }}
 
@@ -753,11 +753,12 @@ bool solveLinearSystem(
       T tmp = T(0);
       for(int j = i+1; j < N; j++)
         tmp += A(i, j) * X(j,k);
-      X(i,k) = (B(i,k) - tmp) / A(i, i); }}
+      X(i, k) = (B(i, k) - tmp) / A(i, i); }}
 
   return true;
 }
 // todo: move to library and use this to compute inverse matrices
+// is it actually possible that X and B share the same memory? -> seems to be the case
 
 // convenience function:
 template<class T>
@@ -775,12 +776,19 @@ std::vector<T> solveLinearSystem(RAPT::rsMatrix<T>& A, std::vector<T>& b)
 template<class T>
 RAPT::rsMatrix<T> inverse(const RAPT::rsMatrix<T>& A)
 {
-  rsAssert(A.isSquare()); // relax later - compute pseudoinverse
+  rsAssert(A.isSquare()); // relax later - compute pseudoinverse in non-square case
   int N = A.getNumRows();
   RAPT::rsMatrix<T> tmp = A, E(N, N), Ai(N, N);
   E.setToIdentity();
-  solveLinearSystem(tmp, E, Ai);
-  return Ai;
+
+  solveLinearSystem(tmp, E, E);
+  return E; 
+  // this seems to work, too - solver can be used in-place - i think, the backsubstitution step is 
+  // superfluous in case of the identity matrix, so maybe factor it out and to compute an inverse,
+  // leave it out
+
+  //solveLinearSystem(tmp, Ai, E);
+  //return Ai;
 }
 // this is not the optimal way - using Gauss-Jordan, we may use less memory and maybe also save
 // operations and hence improve precision?
@@ -800,10 +808,12 @@ bool testLinearSystemViaGauss2()
   Vector b  = A * x;                       //       A * x = b
   Vector x2 = solveLinearSystem(tmp, b);   // solve A * x = b for x
   r &= RAPT::rsAreVectorsEqual(x, x2, 1.e-14);
+  tmp = A, b = A*x;                        // restore destroyed tmp and b
 
-  // tmp and b contain garbage now
 
-  Matrix Ai = inverse(A); // does not work yet
+
+
+  Matrix Ai = inverse(A);
 
   // try it with 3x2 solution matrix
 
