@@ -286,6 +286,49 @@ void multipleRegression()
 // in advance - can these be estimated too? ...for exponential decays, there's code somewhere but 
 // what about sine frequencies? maybe the exponential can be made complex? -> figure out
 
+template<class T>
+RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
+{
+  typedef RAPT::rsArrayTools AT;
+  //typedef RAPT::rsMatrixTools MT;
+
+
+  // create MxN data matrix:
+  int M = degree+1;       // # rows
+  int N = numDataPoints;  // # cols
+  rsMatrix<T> X(M, N);
+  AT::fillWithValue(X.getRowPointer(0), N, 1.0);   // 1st row is all ones
+  for(int i = 1; i < M; i++)                       // i-th row is (i-1)th row times x
+    AT::multiply(X.getRowPointer(i-1), x, X.getRowPointer(i), N);
+
+
+
+  RAPT::rsPolynomial<T> p(degree);
+
+
+
+
+  /*
+  T** X;
+  MT::allocateMatrix(X, M, N);
+  AT::fillWithValue(X[0], N, 1.0);      // 1st row is all ones
+  for(int i = 1; i < M; i++)
+    AT::multiply(X[i-1], x, X[i], N);   // i-th row is (i-1)th row times x
+    */
+
+
+
+
+
+  //...
+
+  //MT::deallocateMatrix(X, M, N);
+  return p;
+}
+// todo: use the new matrix stuff - we should adapt the Gaussian elimination algorithm so it may
+// work with a matrix given in flat storage format...or maybe it should get a pointer to a 
+// MatrixView
+
 void polynomialRegression()
 {
   // not yet finished
@@ -320,7 +363,8 @@ void polynomialRegression()
 
   // estimate polynomial - make a convenience function that takes the data as input and returns
   // an rsPolynomial object:
-  // Poly q = fitPolynomial(N, &x[0], &y[0], modelDegree)
+  Poly qc = fitPolynomial(N, &x[0], &yc[0], modelDegree); // fit to the clean data
+
 
 
   // plot:

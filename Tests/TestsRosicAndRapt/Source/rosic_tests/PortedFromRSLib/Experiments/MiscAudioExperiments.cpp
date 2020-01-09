@@ -792,22 +792,6 @@ void windowedSinc()
 }
 
 
-template<class T>
-void plotMatrix(RAPT::rsMatrix<T>& z, std::vector<T>& x, std::vector<T>& y)
-{
-  double** z2;
-  RAPT::rsMatrixTools::allocateMatrix(z2, z.getNumRows(), z.getNumColumns());
-
-  for(int i = 0; i < z.getNumRows(); i++)
-    for(int j = 0; j < z.getNumColumns(); j++)
-      z2[i][j] = z(i,j);
-
-  GNUPlotter plt;
-  plt.plotSurface((int)x.size(), (int)y.size(), &x[0], &y[0], z2);
-
-  RAPT::rsMatrixTools::deallocateMatrix(z2, z.getNumRows(), z.getNumColumns());
-}
-
 void waveMorph()
 {
   // We consider the unit square and prescribe function values z = f(x,y) along the boundary. We 
