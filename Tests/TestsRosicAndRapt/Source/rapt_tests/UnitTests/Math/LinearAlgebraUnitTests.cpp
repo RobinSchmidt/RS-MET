@@ -769,6 +769,21 @@ std::vector<T> solveLinearSystem(RAPT::rsMatrix<T>& A, std::vector<T>& b)
   solveLinearSystem(A, vx, vb);
   return x;
 }
+// make a version that operates on raw arrays
+
+
+template<class T>
+RAPT::rsMatrix<T> inverse(const RAPT::rsMatrix<T>& A)
+{
+  rsAssert(A.isSquare()); // relax later - compute pseudoinverse
+  int N = A.getNumRows();
+  RAPT::rsMatrix<T> tmp = A, E(N, N), Ai(N, N);
+  E.setToIdentity();
+  solveLinearSystem(tmp, E, Ai);
+  return Ai;
+}
+// this is not the optimal way - using Gauss-Jordan, we may use less memory and maybe also save
+// operations and hence improve precision?
 
 // tests the new implementation
 bool testLinearSystemViaGauss2()
@@ -776,13 +791,22 @@ bool testLinearSystemViaGauss2()
   bool r = true;
 
   using Vector = std::vector<double>;
+  using Matrix = rsMatrix<double>;
 
   //rsMatrix<double> A(3, 3, { 1,2,3, 4,5,6, 7,8,9 }); // this matrix is singular
-  rsMatrix<double> A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
+  Matrix A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
+  Matrix tmp = A;                          // because algo destroys the original A
   Vector x({1,2,3});
-  Vector b  = A * x;                     //       A * x = b
-  Vector x2 = solveLinearSystem(A, b);   // solve A * x = b for x
+  Vector b  = A * x;                       //       A * x = b
+  Vector x2 = solveLinearSystem(tmp, b);   // solve A * x = b for x
   r &= RAPT::rsAreVectorsEqual(x, x2, 1.e-14);
+
+  // tmp and b contain garbage now
+
+  Matrix Ai = inverse(A); // does not work yet
+
+  // try it with 3x2 solution matrix
+
 
   return r;
 }
