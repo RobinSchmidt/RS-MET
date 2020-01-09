@@ -141,6 +141,8 @@ inline rsMatrix2x2<T> operator*(const T& s, const rsMatrix2x2<T>& A)
 /** This is a class for treating raw C-arrays as matrices. It does not store/own the actual matrix
 data. It just acts as wrapper around an existing array for conveniently accessing and manipulating 
 matrix elements via row/column indicies using the () operator with two integers. */
+// todo: 
+// -create benchmarks for and optimize elementary row- and column operations
 
 template<class T>
 class rsMatrixView
@@ -310,7 +312,7 @@ public:
     for(int j = 0; j < numCols; ++j)
       (*this)(rowIndex, j) *= scaler;
   }
-  // needs test, maybe use rsArrayTools::scale
+  // maybe use rsArrayTools::scale
 
   /** Swaps the two rows with given row indices i1 and i2. */
   void swapRows(int i1, int i2)
@@ -319,7 +321,7 @@ public:
     for(int j = 0; j < numCols; ++j)
       rsSwap((*this)(i1, j), (*this)(i2, j));
   }
-  // needs test, may be optimized by using fixed base-pointers to each row and loop increment 1
+  // may be optimized by using fixed base-pointers to each row and loop increment 1
 
   /** Adds a multiple of the row with index iSrc to the row with index iDst. The multiplier is 
   given by weight. */
@@ -329,7 +331,7 @@ public:
     for(int j = 0; j < numCols; ++j)
       (*this)(iDst, j) += weight * (*this)(iSrc, j);
   }
-  // needs test, optimize using base-pointers
+  // optimize using base-pointers
 
 
 
@@ -337,16 +339,29 @@ public:
   void scaleColumn(int columnIndex, T scaler)
   {
     rsAssert(isValidColumnIndex(columnIndex), "column index out of range");
-    for(int i = 0; i < numCols; ++i)
+    for(int i = 0; i < numRows; ++i)
       (*this)(i, columnIndex) *= scaler;
   }
   // needs test, maybe use rsArrayTools::scale (needs to be generalized to accept an optional 
   // stride parameter that defaults to 1 - but generalizing like that may slow it down for the 
   // common case -> benchmark)
 
-  // todo:
-  //void swapColumns(int j1, int j2)
-  //void addWeightedColumnToOther(int jSrc, int jDst, T w)
+  /** Swaps the two columns with given indices j1 and j2. */
+  void swapColumns(int j1, int j2)
+  {
+    rsAssert(isValidColumnIndex(j1) && isValidColumnIndex(j1), "column index out of range");
+    for(int i = 0; i < numRows; ++i)
+      rsSwap((*this)(i, j1), (*this)(i, j2));
+  }
+
+  /** Adds a multiple of the column with index jSrc to the column with index jDst. The multiplier
+  is given by weight. */
+  void addWeightedColumnToOther(int jSrc, int jDst, T weight)
+  {
+    rsAssert(isValidColumnIndex(jSrc) && isValidColumnIndex(jDst), "column index out of range");
+    for(int i = 0; i < numRows; ++i)
+      (*this)(i, jDst) += weight * (*this)(i, jSrc);
+  }
 
   // optimize at least the elementary row-operations because these occur frequently in matrix 
   // algorithms like Gaussian elimination
