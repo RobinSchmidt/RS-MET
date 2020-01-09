@@ -770,14 +770,15 @@ bool testLinearSystemViaGauss2()
 
   using Vector = std::vector<double>;
 
-  rsMatrix<double> A(3, 3, { 1,2,3, 4,5,6, 7,8,9 });
+  //rsMatrix<double> A(3, 3, { 1,2,3, 4,5,6, 7,8,9 });
+  rsMatrix<double> A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
   Vector x({1,2,3});
   Vector b = A * x;
 
   // solve linear system  A * x = b for x
 
   Vector x2 = solveLinearSystem(A, b);
-  //r = x == x2;  // maybe allow numerical error
+  //r = x == x2;  // allow numerical error
 
 
   return r;
