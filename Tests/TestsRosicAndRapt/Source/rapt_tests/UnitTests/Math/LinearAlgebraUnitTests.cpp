@@ -714,49 +714,45 @@ bool testChangeOfBasis(std::string &reportString)
 template<class T>
 std::vector<T> solveLinearSystem(RAPT::rsMatrix<T>& A, std::vector<T>& b)
 {
-
   int N = (int) b.size();
-
+  
   T tooSmall = 1.e-12;  // if pivot is less than that, the matrix is singular
+  // use RS_EPS(T)
 
-  // row reduction:
-  for(int i = 0; i < N; i++) {
+  // factor out:
+  for(int i = 0; i < N; i++) {         // row reduction loop
+    int p = i; T maxAbs = 0.0;
+    for(int j = i; j < N; j++) {       // search pivot row
+      if(rsAbs(A(j, i)) > maxAbs) { 
+        maxAbs = rsAbs(A(j,i)); p = j; }}
 
-    // search pivot row:
-    int p = i;
-    T   biggest = 0.0;
-    for(int j = i; j < N; j++) {
-      if(rsAbs(A(j, i)) > biggest) {
-        biggest = rsAbs(A(j,i));
-        p = j; }}
-    if(rsIsCloseTo(biggest, 0.0, tooSmall))
-      rsError("Matrix singular (or numerically close to)");
+    if(rsIsCloseTo(maxAbs, 0.0, tooSmall)) 
+      rsError("Matrix (numerically) singular");
 
-    // swap current row with pivot row:
-    if(p != i) {
-      A.swapRows(i, p);
-      rsSwap(b[i], b[p]);
-      p = i; }
+    if(p != i) {                       // swap current row with pivot row, if necessarry
+      A.swapRows(i, p); rsSwap(b[i], b[p]); p = i; }  
 
-    // subtract a scaled version of the pivot-row from all rows below it:
-    for(int j = i+1; j < N; j++) {
-      T multiplier = A(j,i) / A(p,i);
-      b[j] -= multiplier * b[p];
-      A.addWeightedRowToOther(p, j, -multiplier);
-    }
-    int dummy = 0;
+    for(int j = i+1; j < N; j++) {     // pivot row subtraction
+      T s = A(j,i) / A(p,i);           // scaler
+      b[j] -= s * b[p];
+      A.addWeightedRowToOther(p, j, -s); }
   }
-  // hmm - the assert gets triggered - compare to original code - check, if this also triggers with
-  // the same input - or maybe the matrix is singular indeed? -> try other matrix
 
-  // backsubstitution:
   std::vector<T> x(N);
-  x[N-1] = b[N-1] / A(N-1, N-1); // why outside the loop?
-  for(int i = N-2; i >= 0; i--) {
-    T tmpSum = T(0);
+
+  // factor out:
+  for(int i = N-1; i >= 0; i--) {      // backsubstitution loop
+    T tmp = T(0);
     for(int j = i+1; j < N; j++)
-      tmpSum += A(i,j) * x[j];
-    x[i] = (b[i] - tmpSum) / A(i,i); }
+      tmp += A(i,j) * x[j];
+    x[i] = (b[i] - tmp) / A(i,i); }
+
+  // maybe wrap into outer loop over k to support computing multiple solutions at once - then x and 
+  // b should be rsMatrixView and x[j],x[i],b[i] must be replaced by x(k,j),x(k,i),b(k,i) ..i think
+  // can then be used to easily compute inverse matrices
+  // -the inner worker routine should have a signature:
+  //  bool solveLinearSystem(RAPT::rsMatrix<T>& A, RAPT::rsMatrix<T>& X, RAPT::rsMatrix<T>& B)
+  //  and return whether the matrix was regular
 
   return x;
 }
