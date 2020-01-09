@@ -706,7 +706,15 @@ public:
   // product - the view method just does something (-> use a verb), the method here returns an
   // objcet (-> use a noun)
 
-  // todo: getInverse, getTranspose
+  // todo: getInverse, getTranspose, getConjugate, getConjugateTranspose
+
+  /** Returns a transposed version of this matrix. */
+  rsMatrix<T> getTranspose()
+  {
+    rsMatrix<T> t(numCols, numRows);
+    rsMatrixView<T>::transpose(*this, &t);
+    return t;
+  }
 
 
   //-----------------------------------------------------------------------------------------------

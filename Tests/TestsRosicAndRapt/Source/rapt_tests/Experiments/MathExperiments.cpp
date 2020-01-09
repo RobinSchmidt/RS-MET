@@ -293,7 +293,7 @@ RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
   //typedef RAPT::rsMatrixTools MT;
 
 
-  // create MxN data matrix:
+  // create MxN data matrix X:
   int M = degree+1;       // # rows
   int N = numDataPoints;  // # cols
   rsMatrix<T> X(M, N);
@@ -301,11 +301,25 @@ RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
   for(int i = 1; i < M; i++)                       // i-th row is (i-1)th row times x
     AT::multiply(X.getRowPointer(i-1), x, X.getRowPointer(i), N);
 
+  //plotMatrixRows(X); // ok - looks good
 
-  plotMatrixRows(X);
+  // compute M-vector Y
+
+  // compute MxM matrix X * X^T that appears in the system (X * X^T) * b = X * Y:
+
+  rsMatrix<T> XX = X * X.getTranspose();
+  // optimize: the product of X * X^T can be allocated and filled without explicitly
+  // creating the transposed matrix as temporary object
+
+
+  // compute target vector Y = X*y
+
+  // Compute right hand side for linear equation system (X * X^T) * b = X * Y:
 
 
   RAPT::rsPolynomial<T> p(degree);
+  //T* coeffs = p.coeffs(); // private - but we are a friend - friend stuff doesn't compile
+  T* coeffs = p.getCoeffPointer();  // temporary solution - getCoeffPointer should not exist!
 
 
 

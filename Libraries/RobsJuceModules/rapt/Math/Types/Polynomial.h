@@ -75,6 +75,11 @@ public:
   T getLeadingCoeff() const { return rsLast(coeffs); }
   // what if we have trailing zeros in the coeff array?
 
+  /** Returns a pointer to our coefficient array - breaks encapsulation - use with care! */
+  T* getCoeffPointer() { return &coeffs[0]; }
+  // nope! when we really need low-level access to the coeff-array, we declare the 
+  // functions/classes that need it as friends. comment this out later
+
   /** Returns true, iff this polynomial is monic, i.e. the coefficient for the highest power (the
   leading coefficient) is unity. Monic polynomials are important because they arise when 
   multiplying out the product form. */
@@ -93,8 +98,9 @@ public:
   // given order will be evaluated (setting integration constants to zero))
 
 
-
   //T definiteIntegral(const T& lowerLimit, const T& upperLimit);
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
@@ -712,7 +718,13 @@ protected:
 
   std::vector<T> coeffs;   // array of coefficients - index correpsonds to power of x
 
-  template<class U> friend class rsRationalFunction; // needs access to coeffs array
+  // Some functions and classes need low-level access to the coefficient array. These are 
+  // declared as friends here. The friends should all themselves be part of the library. We don't
+  // want external friends (except maybe during development):
+  template<class U> friend class rsRationalFunction;
+  
+  //friend rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree);
+  //template<class U> friend rsPolynomial<U> ::fitPolynomial(int numDataPoints, U* x, U* y, int degree);
 
 };
 
