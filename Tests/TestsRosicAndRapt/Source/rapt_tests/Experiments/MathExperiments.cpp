@@ -303,18 +303,28 @@ RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
 
   //plotMatrixRows(X); // ok - looks good
 
-  // compute M-vector Y
-
   // compute MxM matrix X * X^T that appears in the system (X * X^T) * b = X * Y:
-
   rsMatrix<T> XX = X * X.getTranspose();
   // optimize: the product of X * X^T can be allocated and filled without explicitly
   // creating the transposed matrix as temporary object
 
 
+  // Compute right hand side for linear equation system (X * X^T) * b = X * y:
+  std::vector<T> rhs(M);
+  for(int i = 0; i < M; i++)
+  {
+    rhs[i] = 0.0;
+    for(int j = 0; j < N; j++)
+      rhs[i] += X(i, j) * y[j];
+  }
+  // can this be factored out into some meaningful function? it multiplies an rsMatrix by a raw 
+  // array to yield a std::vector - maybe some function that takes an rsMatrixView together with 
+  // raw array and fills another raw array?
+
+
   // compute target vector Y = X*y
 
-  // Compute right hand side for linear equation system (X * X^T) * b = X * Y:
+
 
 
   RAPT::rsPolynomial<T> p(degree);
