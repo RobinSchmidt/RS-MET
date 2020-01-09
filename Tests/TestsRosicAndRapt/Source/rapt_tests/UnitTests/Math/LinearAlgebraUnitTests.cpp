@@ -742,8 +742,7 @@ std::vector<T> solveLinearSystem(RAPT::rsMatrix<T>& A, std::vector<T>& b)
     for(int j = i+1; j < N; j++) {
       T multiplier = A(j,i) / A(p,i);
       b[j] -= multiplier * b[p];
-      //A.addWeightedRowToOther(j, p, -multiplier);  // check order of p,j
-      A.addWeightedRowToOther(p, j, -multiplier);  // check order of p,j
+      A.addWeightedRowToOther(p, j, -multiplier);
     }
     int dummy = 0;
   }
@@ -770,16 +769,12 @@ bool testLinearSystemViaGauss2()
 
   using Vector = std::vector<double>;
 
-  //rsMatrix<double> A(3, 3, { 1,2,3, 4,5,6, 7,8,9 });
+  //rsMatrix<double> A(3, 3, { 1,2,3, 4,5,6, 7,8,9 }); // this matrix is singular
   rsMatrix<double> A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
   Vector x({1,2,3});
-  Vector b = A * x;
-
-  // solve linear system  A * x = b for x
-
-  Vector x2 = solveLinearSystem(A, b);
-  //r = x == x2;  // allow numerical error
-
+  Vector b  = A * x;                     //       A * x = b
+  Vector x2 = solveLinearSystem(A, b);   // solve A * x = b for x
+  r &= RAPT::rsAreVectorsEqual(x, x2, 1.e-14);
 
   return r;
 }
