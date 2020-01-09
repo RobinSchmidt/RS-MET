@@ -76,6 +76,7 @@ void ellipseLineIntersections();
 void finiteDifferenceStencilCoeffs();
 void interpolatingFunction();
 void linearRegression();
+void multipleRegression();
 void polynomialPrediction();
 void probabilityLogic();
 void productLogPlot();

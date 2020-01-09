@@ -209,8 +209,33 @@ void linearRegression()
   plt.plot();
 }
 
+void multipleRegression()
+{
+  // under construction - we use this example:
+  // https://www.youtube.com/watch?v=vvay3t19HU8&list=PLb0zKSynM2PCmp5J5LWM3PcZXBaCoQkXj&index=40
+  // The price of pizza is assumed to have a linear relationship with the diameter and the number
+  // of extra ingredients, so the model is y = b0 + b1*x1 + b2*x2 + noise.
+
+  static const int N = 7;                                   // number of datapoints (pizza orders)
+  double x0[N] = {   1,   1,   1,    1,    1,    1,    1 }; // 1st regressor: constant term 
+  double x1[N] = {  24,  25,  28,   30,   40,   36,   32 }; // 2nd regressor: pizza diameters
+  double x2[N] = {   0,   1,   0,    1,    2,    1,    3 }; // 3rd regressor: number of extras
+  double y[N]  = { 5.5, 8.9, 7.4, 10.9, 19.4, 13.8, 14.0 }; // regressand:    pizza prices
+
+  // create input data matrix:
+  double* X[3];
+  X[0] = x0;
+  X[1] = x1;
+  X[2] = x2;
 
 
+
+  // plot:
+  GNUPlotter plt;
+}
+
+// https://en.wikipedia.org/wiki/Linear_regression#Least-squares_estimation_and_related_techniques
+// https://en.wikipedia.org/wiki/Weighted_least_squares
 
 
 
