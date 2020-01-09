@@ -717,8 +717,8 @@ bool solveLinearSystem(
   RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& X, RAPT::rsMatrixView<T>& B)
 {
   // check, if everything makes sense:
-  rsAssert(X.getNumRows()    == A.getNumRows());
-  rsAssert(B.getNumRows()    == A.getNumRows());
+  rsAssert(X.getNumRows()    == A.getNumColumns());
+  rsAssert(B.getNumRows()    == A.getNumColumns());
   rsAssert(X.getNumColumns() == B.getNumColumns());
   rsAssert(A.isSquare()); 
   // relax last requirement later - if not square compute approximate solution in overdetermined 
@@ -727,59 +727,48 @@ bool solveLinearSystem(
   int M = X.getNumColumns();  // number of required solution vectors
   int N = A.getNumRows();     // number of elements in each solution vector
 
-
-  // more to do...
-
-
-  return true;
-}
-
-template<class T>
-std::vector<T> solveLinearSystem(RAPT::rsMatrix<T>& A, std::vector<T>& b)
-{
-  int N = (int) b.size();
-  
   T tooSmall = 1.e-12;  // if pivot is less than that, the matrix is singular
   // use RS_EPS(T)
 
-  // factor out:
-  for(int i = 0; i < N; i++) {         // row reduction loop
+  // row reduction:
+  for(int i = 0; i < N; i++) {
     int p = i; T maxAbs = 0.0;
     for(int j = i; j < N; j++) {       // search pivot row
       if(rsAbs(A(j, i)) > maxAbs) { 
         maxAbs = rsAbs(A(j,i)); p = j; }}
-
-    if(rsIsCloseTo(maxAbs, 0.0, tooSmall)) 
+    if(rsIsCloseTo(maxAbs, 0.0, tooSmall)) {
       rsError("Matrix (numerically) singular");
-
-    if(p != i) {                       // swap current row with pivot row, if necessarry
-      A.swapRows(i, p); rsSwap(b[i], b[p]); p = i; }  
-
+      return false; }
+    if(p != i) {                       // turn pivot row into current row
+      A.swapRows(i, p); 
+      B.swapRows(i, p); p = i; }  
     for(int j = i+1; j < N; j++) {     // pivot row subtraction
       T s = A(j,i) / A(p,i);           // scaler
-      b[j] -= s * b[p];
-      A.addWeightedRowToOther(p, j, -s); }
-  }
+      A.addWeightedRowToOther(p, j, -s);
+      B.addWeightedRowToOther(p, j, -s); }}
 
+  // backsubstitution:
+  for(int k = 0; k < M; k++) {
+    for(int i = N-1; i >= 0; i--) {
+      T tmp = T(0);
+      for(int j = i+1; j < N; j++)
+        tmp += A(i, j) * X(j,k);
+      X(i,k) = (B(i,k) - tmp) / A(i, i); }}
+
+  return true;
+}
+// todo: move to library and use this to compute inverse matrices
+
+// convenience function:
+template<class T>
+std::vector<T> solveLinearSystem(RAPT::rsMatrix<T>& A, std::vector<T>& b)
+{
+  int N = (int) b.size();
   std::vector<T> x(N);
-
-  // factor out:
-  for(int i = N-1; i >= 0; i--) {      // backsubstitution loop
-    T tmp = T(0);
-    for(int j = i+1; j < N; j++)
-      tmp += A(i,j) * x[j];
-    x[i] = (b[i] - tmp) / A(i,i); }
-
-  // maybe wrap into outer loop over k to support computing multiple solutions at once - then x and 
-  // b should be rsMatrixView and x[j],x[i],b[i] must be replaced by x(k,j),x(k,i),b(k,i) ..i think
-  // can then be used to easily compute inverse matrices
-  // -the inner worker routine should have a signature:
-  //  bool solveLinearSystem(RAPT::rsMatrix<T>& A, RAPT::rsMatrix<T>& X, RAPT::rsMatrix<T>& B)
-  //  and return whether the matrix was regular
-
+  rsMatrixView<T> vx(N, 1, &x[0]), vb(N, 1, &b[0]);
+  solveLinearSystem(A, vx, vb);
   return x;
 }
-
 
 // tests the new implementation
 bool testLinearSystemViaGauss2()
