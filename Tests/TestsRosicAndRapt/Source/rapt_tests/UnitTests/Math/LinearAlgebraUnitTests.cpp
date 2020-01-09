@@ -711,6 +711,29 @@ bool testChangeOfBasis(std::string &reportString)
 
 // prototype:
 // code and adpated from rsLinearAlgebra::rsSolveLinearSystemInPlace
+
+template<class T>
+bool solveLinearSystem(
+  RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& X, RAPT::rsMatrixView<T>& B)
+{
+  // check, if everything makes sense:
+  rsAssert(X.getNumRows()    == A.getNumRows());
+  rsAssert(B.getNumRows()    == A.getNumRows());
+  rsAssert(X.getNumColumns() == B.getNumColumns());
+  rsAssert(A.isSquare()); 
+  // relax last requirement later - if not square compute approximate solution in overdetermined 
+  // cases and minimum-norm solution in underdetermined cases
+
+  int M = X.getNumColumns();  // number of required solution vectors
+  int N = A.getNumRows();     // number of elements in each solution vector
+
+
+  // more to do...
+
+
+  return true;
+}
+
 template<class T>
 std::vector<T> solveLinearSystem(RAPT::rsMatrix<T>& A, std::vector<T>& b)
 {
