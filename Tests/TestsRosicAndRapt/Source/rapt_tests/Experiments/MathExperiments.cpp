@@ -228,10 +228,47 @@ void multipleRegression()
   X[1] = x1;
   X[2] = x2;
 
+  // Compute right hand side for linear equation system (X^T * X) * b = X^T * Y:
+  double Y[3];
+
+  //RAPT::rsMatrixTools::transposedMatrixVectorMultiply(X, y, Y, N, 3);
+  // something is wrong - maybe we don't need the transposed version bcs our X matrix is defined 
+  // differently? - yes - we have the regressors in the rows, wikipedia has them in the columns
+
+  //RAPT::rsMatrixTools::matrixVectorMultiply(X, y, Y, N, 3); // access violation
+  RAPT::rsMatrixTools::matrixVectorMultiply(X, y, Y, 3, N);   // works but shouldn't according to doc
+
+  // establish matrix on left-hand-side:
+  double flatXX[9];     // flat storage array
+  double* XX[3];        // array of pointers to rows
+  XX[0] = &flatXX[0];
+  XX[1] = &flatXX[3];
+  XX[2] = &flatXX[6];
+  RAPT::rsMatrixTools::matrixMultiplySecondTransposed(X, X, XX, 3, 7, 3); // is this correct?
+
+
+  // estimate parameter vector by solving the linear system:
+  double b[3];  
+  RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(XX, b, Y, 3); // get rid of rs prefix
+  // verify, if the result is correct!
+
+  // compute predictions at the datapoints via the model, the compute absolute and relative 
+  // prediction errors:
+  double yp[N], ea[N], er[N];
+  for(int n = 0; n < N; n++)
+  {
+    yp[n] = b[0]*x0[n] + b[1]*x1[n] + b[2]*x2[n];
+    ea[n] = y[n]  - yp[n];
+    er[n] = ea[n] / y[n];
+  }
+  // that doesn't look too bad actually :-) ...but verify and clean up
 
 
   // plot:
   GNUPlotter plt;
+  plt.addDataArrays(N, x1, x2, y);  // the triplets should be interpreted as 3D points
+  plt.setGraphStyles("points");  // maybe select style - or use better default
+  plt.plot3D(); 
 }
 
 // https://en.wikipedia.org/wiki/Linear_regression#Least-squares_estimation_and_related_techniques
