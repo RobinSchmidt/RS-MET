@@ -286,6 +286,30 @@ void multipleRegression()
 // in advance - can these be estimated too? ...for exponential decays, there's code somewhere but 
 // what about sine frequencies? maybe the exponential can be made complex? -> figure out
 
+
+
+// prototype:
+template<class T>
+std::vector<T> solveLinearSystem(rsMatrix<T> A, std::vector<T> b)
+{
+  std::vector<T> x(b.size());
+
+  // this is a temporary solution using the old Gaussian elimination code - todo: adapt that code 
+  // for the new matrix class - use the new elementary row-operations - try to use a little extra 
+  // memory as possible - and if some is needed, use workspace parameters
+
+  int M = A.getNumRows();
+  int N = A.getNumColumns();
+  T** B;
+  B = new T*[M];
+  for(int i = 0; i < M; i++)
+    B[i] = A.getRowPointer(i);
+  RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(B, &x[0], &b[0], N);
+  delete[] B;
+  return x;
+}
+// returns the solution vector b for the linear system A*x = b where A is a matrix and x is a vector
+
 template<class T>
 RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
 {
@@ -311,8 +335,7 @@ RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
 
   // Compute right hand side for linear equation system (X * X^T) * b = X * y:
   std::vector<T> rhs(M);
-  for(int i = 0; i < M; i++)
-  {
+  for(int i = 0; i < M; i++) {
     rhs[i] = 0.0;
     for(int j = 0; j < N; j++)
       rhs[i] += X(i, j) * y[j];
@@ -322,38 +345,26 @@ RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
   // raw array and fills another raw array?
 
 
-  // compute target vector Y = X*y
+  // Create the polynomial:
+  //RAPT::rsPolynomial<T> p(degree);
+  //T* b = p.coeffs(); // private - but we are a friend - friend stuff doesn't compile
+  //T* b = p.getCoeffPointer();  // temporary solution - getCoeffPointer should not exist!
+  //return p;
+
+  // the polynomial coeffs are more generally regression coeffs...
 
 
-
-
-  RAPT::rsPolynomial<T> p(degree);
-  //T* coeffs = p.coeffs(); // private - but we are a friend - friend stuff doesn't compile
-  T* coeffs = p.getCoeffPointer();  // temporary solution - getCoeffPointer should not exist!
-
-
-
-
-  /*
-  T** X;
-  MT::allocateMatrix(X, M, N);
-  AT::fillWithValue(X[0], N, 1.0);      // 1st row is all ones
-  for(int i = 1; i < M; i++)
-    AT::multiply(X[i-1], x, X[i], N);   // i-th row is (i-1)th row times x
-    */
-
-
-
-
-
-  //...
-
-  //MT::deallocateMatrix(X, M, N);
-  return p;
+  // ..now we must solve the linear system of equations XX * b = rhs
+  std::vector<T> c = solveLinearSystem(XX, rhs);
+  return RAPT::rsPolynomial<T>(c);
 }
 // todo: use the new matrix stuff - we should adapt the Gaussian elimination algorithm so it may
 // work with a matrix given in flat storage format...or maybe it should get a pointer to a 
 // MatrixView
+// this should be refactored in such a way that we get a general function for multiple linear 
+// regression that takes an array of regressors (pointer-to-pointer), an array of y-values and 
+// fills an array of regression coefficients - this general multiple-regression function can then 
+// be used for polynomial, sinusoidal or whatever regression
 
 void polynomialRegression()
 {
@@ -390,8 +401,11 @@ void polynomialRegression()
   // estimate polynomial - make a convenience function that takes the data as input and returns
   // an rsPolynomial object:
   Poly qc = fitPolynomial(N, &x[0], &yc[0], modelDegree); // fit to the clean data
+  Poly qn = fitPolynomial(N, &x[0], &yn[0], modelDegree); // fit to the noisy data
 
+  // coeffs are in reversed order but otherwise correct - although numerically not very precise
 
+  // todo: plot also the predictions form the two models obtained from the clean and noisy data
 
   // plot:
   rsPlotVectorsXY(x, yc, yn);
