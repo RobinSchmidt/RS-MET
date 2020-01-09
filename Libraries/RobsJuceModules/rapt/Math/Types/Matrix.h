@@ -317,7 +317,7 @@ public:
   {
     rsAssert(isValidRowIndex(i1) && isValidRowIndex(i1), "row index out of range");
     for(int j = 0; j < numCols; ++j)
-      rsSwap((*this)(i1, j), (*this)(i2, j))
+      rsSwap((*this)(i1, j), (*this)(i2, j));
   }
   // needs test, may be optimized by using fixed base-pointers to each row and loop increment 1
 

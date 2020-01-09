@@ -261,12 +261,24 @@ bool testMatrixArithmetic(std::string &reportString)
   return testResult;
 }
 
+
+// compares data in the given matrix view to that in the given vector and return true, if they are
+// equal
+template<class T>
+bool hasData(const rsMatrixView<T>& m, const std::vector<T>& v)
+{
+  if(m.getSize() != (int) v.size())
+    return false;
+  return RAPT::rsArrayTools::equal(m.getDataPointerConst(), &v[0], m.getSize());
+}
+
 bool testMatrixView()
 {
   std::string testName = "MatrixView";
   bool r = true;  // test result
 
   typedef rsMatrixView<double> MatrixView;
+  typedef std::vector<double> Vec;
 
   double A6[6] = { 1,2,3,4,5,6 }; // array of 6 elements
 
@@ -283,6 +295,24 @@ bool testMatrixView()
   r &= m(0,0) == 1; r &= m(0,1) == 2; 
   r &= m(1,0) == 3; r &= m(1,1) == 4;
   r &= m(2,0) == 5; r &= m(2,1) == 6; 
+
+  // test elementary row operations:
+
+  // Create 4x3 matrix:
+  // 11 12 13
+  // 21 22 23
+  // 31 32 33
+  // 41 42 43
+  double A12[12] = { 11,12,13, 21,22,23, 31,32,33, 41,42,43 };
+  MatrixView m43(4, 3, A12);
+  r &= hasData(m43, Vec({ 11,12,13, 21,22,23, 31,32,33, 41,42,43 }));
+  m43.swapRows(1, 2);
+  r &= hasData(m43, Vec({ 11,12,13, 31,32,33, 21,22,23, 41,42,43 }));
+  m43.addWeightedRowToOther(2, 1, 2.0);
+  r &= hasData(m43, Vec({ 11,12,13, 73,76,79, 21,22,23, 41,42,43 }));
+  m43.scaleRow(2, 2.0);
+  r &= hasData(m43, Vec({ 11,12,13, 73,76,79, 42,44,46, 41,42,43 }));
+
 
   return r;
 }
