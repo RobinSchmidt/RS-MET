@@ -228,8 +228,12 @@ void multipleRegression()
   X[1] = x1;
   X[2] = x2;
 
-  // Compute right hand side for linear equation system (X^T * X) * b = X^T * Y:
+  // Compute right hand side for linear equation system (X * X^T) * b = X * Y:
   double Y[3];
+
+  // on wikipedia, the formula reads (X^T * X) * b = X^T * Y because there, the data arrays with 
+  // the independent variables are stored in the columns of the X-matrix whereas we store them in 
+  // the rows
 
   //RAPT::rsMatrixTools::transposedMatrixVectorMultiply(X, y, Y, N, 3);
   // something is wrong - maybe we don't need the transposed version bcs our X matrix is defined 
@@ -252,14 +256,12 @@ void multipleRegression()
   RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(XX, b, Y, 3); // get rid of rs prefix
   // verify, if the result is correct!
 
-  // compute predictions at the datapoints via the model, the compute absolute and relative 
-  // prediction errors:
+  // Use the model to predict the pizza prices from their diameters and extras:
   double yp[N], ea[N], er[N];
-  for(int n = 0; n < N; n++)
-  {
-    yp[n] = b[0]*x0[n] + b[1]*x1[n] + b[2]*x2[n];
-    ea[n] = y[n]  - yp[n];
-    er[n] = ea[n] / y[n];
+  for(int n = 0; n < N; n++) {
+    yp[n] = b[0]*x0[n] + b[1]*x1[n] + b[2]*x2[n]; // predicted price
+    ea[n] = y[n]  - yp[n];                        // absolute error
+    er[n] = ea[n] / y[n];                         // relative error
   }
   // that doesn't look too bad actually :-) ...but verify and clean up
 
@@ -274,7 +276,14 @@ void multipleRegression()
 // https://en.wikipedia.org/wiki/Linear_regression#Least-squares_estimation_and_related_techniques
 // https://en.wikipedia.org/wiki/Weighted_least_squares
 
-
+// ToDo: generalize and factor out the code for multiple regression and move it to rapt, then 
+// implement polynomial regression on top of that (use 1,x,x^2,x^3,... as regressors for a given
+// x-array) - this may e generalized to use a set of arbitrary functions of x - the model is a 
+// weighted sum of these functions of x - for example, we could model a signal with sines/cosines
+// of given frequencies - maybe create experiments for that (polynomialRegression, 
+// sinusoidalRegression, exponentialRegression) - problem: the frequnecies and decays must be known
+// in advance - can these be estimated too? ...for exponential decays, there's code somewhere but 
+// what about sine frequencies? maybe the exponential can be made complex? -> figure out
 
 /*
 Idea: we model the signal x(t) by a polynomial such that:

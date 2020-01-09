@@ -223,6 +223,12 @@ public:
   columns. */
   bool isSquare() const { return numRows == numCols; }
 
+  /** Returns true, iff given index i is a valid row index. */
+  bool isValidRowIndex(int i) const { return i >= 0 && i < numRows; }
+
+  /** Returns true, iff given index i is a valid column index. */
+  bool isValidColumnIndex(int j) const { return j >= 0 && j < numCols; }
+
   /** Returns a const pointer to the data for read access as a flat array. */
   const T* getDataPointerConst() const { return dataPointer; }
 
@@ -300,20 +306,50 @@ public:
   /** Scales the row with given index by the given scale factor. */
   void scaleRow(int rowIndex, T scaler)
   {
-    rsAssert(rowIndex >= 0 && rowIndex < numRows, "row index out of range");
+    rsAssert(isValidRowIndex(rowIndex), "row index out of range");
     for(int j = 0; j < numCols; ++j)
       (*this)(rowIndex, j) *= scaler;
   }
-  // needs test
+  // needs test, maybe use rsArrayTools::scale
+
+  /** Swaps the two rows with given row indices i1 and i2. */
+  void swapRows(int i1, int i2)
+  {
+    rsAssert(isValidRowIndex(i1) && isValidRowIndex(i1), "row index out of range");
+    for(int j = 0; j < numCols; ++j)
+      rsSwap((*this)(i1, j), (*this)(i2, j))
+  }
+  // needs test, may be optimized by using fixed base-pointers to each row and loop increment 1
+
+  /** Adds a multiple of the row with index iSrc to the row with index iDst. The multiplier is 
+  given by weight. */
+  void addWeightedRowToOther(int iSrc, int iDst, T weight)
+  {
+    rsAssert(isValidRowIndex(iSrc) && isValidRowIndex(iDst), "row index out of range");
+    for(int j = 0; j < numCols; ++j)
+      (*this)(iDst, j) += weight * (*this)(iSrc, j);
+  }
+  // needs test, optimize using base-pointers
+
+
 
   /** Scales the row with given index by the given scale factor. */
   void scaleColumn(int columnIndex, T scaler)
   {
-    rsAssert(columnIndex >= 0 && columnIndex < numCols, "column index out of range");
+    rsAssert(isValidColumnIndex(columnIndex), "column index out of range");
     for(int i = 0; i < numCols; ++i)
       (*this)(i, columnIndex) *= scaler;
   }
-  // needs test
+  // needs test, maybe use rsArrayTools::scale (needs to be generalized to accept an optional 
+  // stride parameter that defaults to 1 - but generalizing like that may slow it down for the 
+  // common case -> benchmark)
+
+  // todo:
+  //void swapColumns(int j1, int j2)
+  //void addWeightedColumnToOther(int jSrc, int jDst, T w)
+
+  // optimize at least the elementary row-operations because these occur frequently in matrix 
+  // algorithms like Gaussian elimination
 
 
   //-----------------------------------------------------------------------------------------------
@@ -405,6 +441,7 @@ public:
           for(int jb = 0; jb < B.numCols; jb++) {
             (*C)(startRow+ib, startCol+jb) = A.at(ia,ja) * B.at(ib, jb); }}}}
   }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Accessors */
