@@ -302,6 +302,8 @@ RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
     AT::multiply(X.getRowPointer(i-1), x, X.getRowPointer(i), N);
 
 
+  plotMatrixRows(X);
+
 
   RAPT::rsPolynomial<T> p(degree);
 

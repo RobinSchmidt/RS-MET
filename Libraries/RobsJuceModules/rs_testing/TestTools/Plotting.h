@@ -147,7 +147,11 @@ void plotVector(std::vector<double> v);  // replace by RAPT::rsPlotVector
 void plotComplexVectorReIm(std::vector<std::complex<double>> v);
 
 
+/** Plots the matrix entries as surface above a coordinate system given by x,y 
+todo: check/assert that the dimensions of the matrix z fit together with the lengths of x,y 
+// try to make inputs const */
 template<class T>
+//void plotMatrix(const RAPT::rsMatrix<T>& z, const std::vector<T>& x, const std::vector<T>& y)
 void plotMatrix(RAPT::rsMatrix<T>& z, std::vector<T>& x, std::vector<T>& y)
 {
   double** z2;
@@ -163,6 +167,17 @@ void plotMatrix(RAPT::rsMatrix<T>& z, std::vector<T>& x, std::vector<T>& y)
   RAPT::rsMatrixTools::deallocateMatrix(z2, z.getNumRows(), z.getNumColumns());
 }
 
+/** Plots the rows of the matrix against the column-index, i.e. the rows are interpreted as 
+several functions of x where x is the column index. */
+template<class T>
+void plotMatrixRows(const RAPT::rsMatrix<T>& A)
+{
+
+  GNUPlotter plt;
+  for(int i = 0; i < A.getNumRows(); i++)
+    plt.addDataArrays(A.getNumColumns(), A.getRowPointerConst(i));
+  plt.plot();
+}
 
 
 /** Plots the magnitude spectrogram given in s against time axis t (of length numFrames) and
