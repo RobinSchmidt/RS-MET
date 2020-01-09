@@ -295,7 +295,7 @@ std::vector<T> solveLinearSystem(rsMatrix<T> A, std::vector<T> b)
   std::vector<T> x(b.size());
 
   // this is a temporary solution using the old Gaussian elimination code - todo: adapt that code 
-  // for the new matrix class - use the new elementary row-operations - try to use a little extra 
+  // for the new matrix class - use the new elementary row-operations - try to use as little extra 
   // memory as possible - and if some is needed, use workspace parameters
 
   int M = A.getNumRows();
@@ -378,7 +378,7 @@ void polynomialRegression()
   // User parameters:
   double noise         = 2.0;   // amount of noise
   int    numDataPoints = 100;   // number of data points
-  int    modelDegree   = 5;     // degree of our model polynomial
+  int    modelDegree   = 4;     // degree of our model polynomial
   double xMin          = -1.0;
   double xMax          = +2.0;
 

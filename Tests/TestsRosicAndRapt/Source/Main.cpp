@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  //passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
+  passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
   //passed &= runUnitTestsRosic();
   //passed = passed;  // dummy
 
@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
   //interpolatingFunction();
   //linearRegression();
   //multipleRegression();
-  polynomialRegression();
+  //polynomialRegression();
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();

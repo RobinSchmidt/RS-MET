@@ -23,4 +23,4 @@ T rsStatistics::proportionalRegression(int N, const T* x, const T* y)
 //  linearRegression(int numInputs, int numDataPoints, const T** x, const T* y, T* a, T* b)
 //  x is numInputs x numDataPoints matrix
 // -based on that, implement univariate polynomial regression - it uses, 1,x,x^2,x^3,... as the 
-//  x-arrays in multiple linear regression
+//  x-arrays in multiple linear regression - but that should go to CurveFitting.h/cpp

@@ -52,7 +52,8 @@ bool rsCurveFitter::fitExponentialSum(T* y, int numValues, T* A, T* a, int numEx
   return result;
 
   // Can the algorithm be generalized to fit complex exponentials to complex datapoints? Or maybe
-  // it already can do this when being instantiated with a complex datatype?
+  // it already can do this when being instantiated with a complex datatype? If yes, does that mean
+  // we can estimate frequencies of sinusoids with it?
 
   // see Numerical Methods for Scientists and Engineers (Hamming), Ch.39, page 617f
 }

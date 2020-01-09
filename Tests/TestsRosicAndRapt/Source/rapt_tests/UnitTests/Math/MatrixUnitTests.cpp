@@ -330,6 +330,7 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
 {
   bool testResult = true;
   using Matrix = rsMatrix<double>;
+  using Vector = std::vector<double>;
   int& allocs  = Matrix::numHeapAllocations;  // to count allocations
   allocs = 0;
 
@@ -349,7 +350,12 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
   testResult &= B(2,0) == 5 &&  B(2,1) == 6;
   testResult &= allocs == 2;
 
-  // multiplication:
+  // matrix-vector multiplication:
+  Vector x({1,2,3});
+  Vector y = A * x;
+  testResult &= y == Vector({14,32});
+
+  // matrix multiplication:
   Matrix C = A*B; 
   // calls: 
   //   operator*(const rsMatrix<T>&)
@@ -547,6 +553,9 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
   // -maybe add/subtract scalars (in-place and out-of-place)....but maybe not: mathematically, the
   //  space of MxN matrices is a vector space and addition of a scalar and a vector is not a thing
   //  in vector spaces
+
+
+
 
   return testResult;
 }

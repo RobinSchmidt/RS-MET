@@ -709,7 +709,79 @@ bool testChangeOfBasis(std::string &reportString)
 // the solving for x and y respectively and defining C as conversion matrix from x to y and C-^1
 // the inverse conversion, can also be verified by E = C * C^-1 = A^-1 * B * B^-1 * A
 
+// prototype:
+// code and adpated from rsLinearAlgebra::rsSolveLinearSystemInPlace
+template<class T>
+std::vector<T> solveLinearSystem(RAPT::rsMatrix<T>& A, std::vector<T>& b)
+{
 
+  int N = (int) b.size();
+
+  T tooSmall = 1.e-12;  // if pivot is less than that, the matrix is singular
+
+  // row reduction:
+  for(int i = 0; i < N; i++) {
+
+    // search pivot row:
+    int p = i;
+    T   biggest = 0.0;
+    for(int j = i; j < N; j++) {
+      if(rsAbs(A(j, i)) > biggest) {
+        biggest = rsAbs(A(j,i));
+        p = j; }}
+    if(rsIsCloseTo(biggest, 0.0, tooSmall))
+      rsError("Matrix singular (or numerically close to)");
+
+    // swap current row with pivot row:
+    if(p != i) {
+      A.swapRows(i, p);
+      rsSwap(b[i], b[p]);
+      p = i; }
+
+    // subtract a scaled version of the pivot-row from all rows below it:
+    for(int j = i+1; j < N; j++) {
+      T multiplier = A(j,i) / A(p,i);
+      b[j] -= multiplier * b[p];
+      //A.addWeightedRowToOther(j, p, -multiplier);  // check order of p,j
+      A.addWeightedRowToOther(p, j, -multiplier);  // check order of p,j
+    }
+    int dummy = 0;
+  }
+  // hmm - the assert gets triggered - compare to original code - check, if this also triggers with
+  // the same input - or maybe the matrix is singular indeed? -> try other matrix
+
+  // backsubstitution:
+  std::vector<T> x(N);
+  x[N-1] = b[N-1] / A(N-1, N-1); // why outside the loop?
+  for(int i = N-2; i >= 0; i--) {
+    T tmpSum = T(0);
+    for(int j = i+1; j < N; j++)
+      tmpSum += A(i,j) * x[j];
+    x[i] = (b[i] - tmpSum) / A(i,i); }
+
+  return x;
+}
+
+
+// tests the new implementation
+bool testLinearSystemViaGauss2()
+{
+  bool r = true;
+
+  using Vector = std::vector<double>;
+
+  rsMatrix<double> A(3, 3, { 1,2,3, 4,5,6, 7,8,9 });
+  Vector x({1,2,3});
+  Vector b = A * x;
+
+  // solve linear system  A * x = b for x
+
+  Vector x2 = solveLinearSystem(A, b);
+  //r = x == x2;  // maybe allow numerical error
+
+
+  return r;
+}
 
 //bool testLinearAlgebra(std::string &reportString)
 bool testLinearAlgebra()
@@ -728,6 +800,11 @@ bool testLinearAlgebra()
   testResult &= testMatrixVectorMultiply( reportString);
   testResult &= testMatrixMultiply(       reportString);
   testResult &= testChangeOfBasis(        reportString);
+
+
+
+  testResult &= testLinearSystemViaGauss2();
+
 
   return testResult;
 }

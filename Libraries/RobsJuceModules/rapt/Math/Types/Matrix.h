@@ -781,7 +781,6 @@ public:
   rsMatrix<T>& operator*=(const rsMatrix<T>& B)
   { *this = *this * B; return *this; } 
 
-
   /** Multiplies this matrix with a scalar s: B = A*s. The scalar is to the right of the matrix. */
   rsMatrix<T> operator*(const T& s) const
   { rsMatrix<T> B(*this); B.scale(s); return B; }
@@ -793,6 +792,21 @@ public:
   /** Divides this matrix by a scalar and returns the result. */
   rsMatrix<T>& operator/=(const T& s)
   { scale(T(1)/s); return *this; }
+
+
+
+  /** Multiplies a matrix with a std::vector to give another vector: y = A * x. */
+  std::vector<T> operator*(const std::vector<T>& x) const
+  { 
+    rsAssert((int) x.size() == numCols, "vector incompatible for left multiply by matrix");
+    std::vector<T> y(numRows);
+    for(int i = 0; i < numRows; i++) {
+      y[i] = T(0);
+      for(int j = 0; j < numCols; j++)
+        y[i] += this->at(i, j) * x[j]; }
+    return y;
+  }
+  // needs test - maybe optimize inner loop by avoiding re-computation of row base index
 
 
   //-----------------------------------------------------------------------------------------------
