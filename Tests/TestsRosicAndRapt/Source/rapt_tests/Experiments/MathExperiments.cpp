@@ -250,7 +250,6 @@ void multipleRegression()
   XX[2] = &flatXX[6];
   RAPT::rsMatrixTools::matrixMultiplySecondTransposed(X, X, XX, 3, 7, 3); // is this correct?
 
-
   // estimate parameter vector by solving the linear system:
   double b[3];  
   RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(XX, b, Y, 3); // get rid of rs prefix
@@ -263,20 +262,22 @@ void multipleRegression()
     ea[n] = y[n]  - yp[n];                        // absolute error
     er[n] = ea[n] / y[n];                         // relative error
   }
-  // that doesn't look too bad actually :-) ...but verify and clean up
 
-
-  // plot:
+  // plot - draw true datapoints and prdicted ones:
   GNUPlotter plt;
   plt.addDataArrays(N, x1, x2, y);  // the triplets should be interpreted as 3D points
-  plt.setGraphStyles("points");  // maybe select style - or use better default
+  plt.addDataArrays(N, x1, x2, yp);
+  plt.setGraphStyles("points", "points");  // maybe select style - or use better default
   plt.plot3D(); 
+  // that doesn't look too bad actually :-) ...but verify and clean up
+  // todo: plot the plane (semitransparently?) that is defined by our model
 }
 
 // https://en.wikipedia.org/wiki/Linear_regression#Least-squares_estimation_and_related_techniques
 // https://en.wikipedia.org/wiki/Weighted_least_squares
 
-// ToDo: generalize and factor out the code for multiple regression and move it to rapt, then 
+// ToDo: generalize and factor out the code for multiple regression and move it to rapt 
+// (Numerics/DataFitting.h/cpp), then 
 // implement polynomial regression on top of that (use 1,x,x^2,x^3,... as regressors for a given
 // x-array) - this may e generalized to use a set of arbitrary functions of x - the model is a 
 // weighted sum of these functions of x - for example, we could model a signal with sines/cosines
@@ -284,6 +285,51 @@ void multipleRegression()
 // sinusoidalRegression, exponentialRegression) - problem: the frequnecies and decays must be known
 // in advance - can these be estimated too? ...for exponential decays, there's code somewhere but 
 // what about sine frequencies? maybe the exponential can be made complex? -> figure out
+
+void polynomialRegression()
+{
+  // not yet finished
+
+  // We create data from a polynomial function with added noise and try to estimate the polynomial
+  // coefficients from the data.
+
+  // User parameters:
+  double noise         = 1.0;   // amount of noise
+  int    numDataPoints = 100;   // number of data points
+  int    modelDegree   = 5;     // degree of our model polynomial
+  double xMin          = -1.0;
+  double xMax          = +2.0;
+
+
+  typedef std::vector<double> Vec;
+  typedef RAPT::rsPolynomial<double> Poly;
+  typedef RAPT::rsArrayTools AT;
+
+  // The polynomial to generate our data is 1 - 2x + 3x^2 - 4x^3 + 5x^4:
+  Poly p(Vec({ 5,-4,3,-2,1 }));  // todo: have a constructor that takes an inititalizer list
+
+  // Generate data:
+  int N = numDataPoints;
+  Vec x(N), yc(N), yn(N);  // x-values, clean and noisy y-values
+  AT::fillWithRangeLinear(&x[0], N, xMin, xMax);
+  RAPT::rsNoiseGenerator<double> prng;
+  for(int n = 0; n < N; n++) {
+    yc[n] = p(x[n]);
+    yn[n] = yc[n] + noise * prng.getSample();
+  }
+
+  // estimate polynomial - make a convenience function that takes the data as input and returns
+  // an rsPolynomial object:
+  // Poly q = fitPolynomial(N, &x[0], &y[0], modelDegree)
+
+
+  // plot:
+  rsPlotVectorsXY(x, yc, yn);
+  //GNUPlotter plt;
+}
+
+// todo: make a similar function for sinusoidalRegression
+
 
 /*
 Idea: we model the signal x(t) by a polynomial such that:

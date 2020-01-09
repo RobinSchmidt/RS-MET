@@ -77,6 +77,7 @@ void finiteDifferenceStencilCoeffs();
 void interpolatingFunction();
 void linearRegression();
 void multipleRegression();
+void polynomialRegression();
 void polynomialPrediction();
 void probabilityLogic();
 void productLogPlot();
