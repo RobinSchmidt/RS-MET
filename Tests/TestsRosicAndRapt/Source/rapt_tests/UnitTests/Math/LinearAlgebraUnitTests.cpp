@@ -744,56 +744,10 @@ bool testLinearSystemViaGauss2()
   // the same (it works when inverting - but this is the special case where B is the identity - in 
   // general, it probably won't work)
 
-
   // check matrix inversion:
   Matrix At(3, 3, {-0.5,1.9,-3.7, 0.0,-0.2,0.6, 0.5,-0.9,1.7 }); // target matrix
   Matrix Ai = LA::inverse(A);
   r &= Ai.equals(At, tol);
-
-
-  /*
-  // should go to experiment:
-  // check diagonalization:
-  //A = Matrix(3, 3, { 6,1,9, 0,3,6, 0,0,2 });
-  A = Matrix(3, 3, { -15,17,-3, 17,24,-14, -3,-14,48 });
-  Matrix E(3, 3); E.setToIdentity();
-  LA::makeSystemDiagonal(A, E);
-  // after that E contains the inverse of A with its rows scaled by the diagonal elements that are
-  // still in A - that doesn't seem to be useful - remove from library - move to experiments
-
-  solveDiagonalSystem(A, E, E);
-
-  // is this actually true diagonalization? nope doesn't seem to be - the results that are now in A
-  // and E seem to have nothing to do with the eigenvectors and eigenvalues - but what have we done
-  // what does the result represent? is it the inverse with rows scaled by the diagonal elements
-  // of the resulting A?
-
-  // Sage code:
-  // D  = matrix([[2,0,0],[0,3,0],[0,0,-5]])
-  // M  = matrix([[-1,1,-5],[1,3,-1],[2,-1,1]])
-  // MT = M.transpose()
-  // A  = MT*D*M
-  // Ai = A.inverse()
-  // MT,D,M,A,Ai
-
-  // figure out how to diagonalize a matrix using the Gaussian elemination - maybe we can figure 
-  // out the coeffs of the characteristic polynomial by making it triangular (in which case the 
-  // determinant is the product of the diagonal elements) - but each elementary transformation
-  // modifies the determinant in some way - we need to keep track of these changes - maybe the
-  // Gaussian elimination can be extended in a suitable way? -nope we are fine: swapping rows
-  // inverts the sign, multiplying a row by a factor multiplies the determinant by the same factor
-  // and adding a row to another doesn't change the determinant - in the end, all it does is to
-  // scale our characteristic polynomial by a factor which is irrelevant for finding the roots
-  // algorithm: make matrix diagonal - then we can compute the polynomial coeffs from the diagonal
-  // elements...wait - oculd it be that the diagonal elements are already the roots of the
-  // characteristic polynomial? after calling makeSystemDiagonal? i think so - figure it out!
-  // ...hmm - it probably doesn't work because the "lambda" in det(A-lambda*E) = 0 is actually 
-  // introduced before the elimination starts, so in every step, terms involving lambda get mangled
-  // in - we can't just introduce the lambda after the elimination...i think - but maybe it's 
-  // possible to keep track of all the mangling and arrive at an algo for finding the 
-  // characteristic polynomial anyway....
-  */
-
 
   return r;
 }

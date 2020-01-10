@@ -5,11 +5,77 @@ void characteristicPolynomial()
 {
   // We try to figure out how to compute the coeffs (or better: roots) of the characteristic 
   // polynomial of a matrix via Gaussian elimination by creating a matrix of rational functions and
-  // see what happens when we unleash the elimination algorithm on it....
+  // see what happens when we unleash the elimination algorithm on it.
+
+  // The characteristic polynomial p(x) of a matrix A is given by p(x) = det(A - x*I) where I is 
+  // the identity matrix. The roots of p are the eigenvalues of A. The elimination algorithm does 
+  // not change these roots because the elementary row operations can at most multiply the 
+  // determinant by a nonzero factor (in case of a regular matrix). But we cannot just run the 
+  // elimination algo on a matrix of numbers and then do p(x) = det(A' - x*I) where A' is the 
+  // result of the elimination because during the process, the x would have to get mangled into 
+  // the matrix itself - we can't introduce it after the elimination. So, what we do instead is to
+  // consider a full-blown matrix of rsRationalFunction objects....
+
+  using RatFunc = RAPT::rsRationalFunction<double>;
+  using Matrix  = RAPT::rsMatrix<RatFunc>;
+
+  // Create matrix:
+  // A = |-4-x  6  |
+  //     |-3    5-x|
+  RatFunc a11({-4, -1}, {1});
+  RatFunc a12({ 6    }, {1});
+  RatFunc a21({-3    }, {1});
+  RatFunc a22({ 5, -1}, {1});
+  Matrix A(2, 2, {a11,a12, a21,a22});
+  // hmm - actually our A here is the A-x*I above - maybe use a different name...
 
 
 
   int dummy = 0;
+
+  /*
+  // copied - maybe delete later:
+  // should go to experiment:
+  // check diagonalization:
+  //A = Matrix(3, 3, { 6,1,9, 0,3,6, 0,0,2 });
+  A = Matrix(3, 3, { -15,17,-3, 17,24,-14, -3,-14,48 });
+  Matrix E(3, 3); E.setToIdentity();
+  LA::makeSystemDiagonal(A, E);
+  // after that E contains the inverse of A with its rows scaled by the diagonal elements that are
+  // still in A - that doesn't seem to be useful - remove from library - move to experiments
+
+  solveDiagonalSystem(A, E, E);
+
+  // is this actually true diagonalization? nope doesn't seem to be - the results that are now in A
+  // and E seem to have nothing to do with the eigenvectors and eigenvalues - but what have we done
+  // what does the result represent? is it the inverse with rows scaled by the diagonal elements
+  // of the resulting A?
+
+  // Sage code:
+  // D  = matrix([[2,0,0],[0,3,0],[0,0,-5]])
+  // M  = matrix([[-1,1,-5],[1,3,-1],[2,-1,1]])
+  // MT = M.transpose()
+  // A  = MT*D*M
+  // Ai = A.inverse()
+  // MT,D,M,A,Ai
+
+  // figure out how to diagonalize a matrix using the Gaussian elemination - maybe we can figure 
+  // out the coeffs of the characteristic polynomial by making it triangular (in which case the 
+  // determinant is the product of the diagonal elements) - but each elementary transformation
+  // modifies the determinant in some way - we need to keep track of these changes - maybe the
+  // Gaussian elimination can be extended in a suitable way? -nope we are fine: swapping rows
+  // inverts the sign, multiplying a row by a factor multiplies the determinant by the same factor
+  // and adding a row to another doesn't change the determinant - in the end, all it does is to
+  // scale our characteristic polynomial by a factor which is irrelevant for finding the roots
+  // algorithm: make matrix diagonal - then we can compute the polynomial coeffs from the diagonal
+  // elements...wait - oculd it be that the diagonal elements are already the roots of the
+  // characteristic polynomial? after calling makeSystemDiagonal? i think so - figure it out!
+  // ...hmm - it probably doesn't work because the "lambda" in det(A-lambda*E) = 0 is actually 
+  // introduced before the elimination starts, so in every step, terms involving lambda get mangled
+  // in - we can't just introduce the lambda after the elimination...i think - but maybe it's 
+  // possible to keep track of all the mangling and arrive at an algo for finding the 
+  // characteristic polynomial anyway....
+  */
 }
 
 void ellipseLineIntersections()
