@@ -8,6 +8,8 @@ namespace RAPT
 
 //#include "LinearAlgebra/LaPackCPP/LaPack.hpp"
 #include "LinearAlgebra/BandDiagonalSolver.hpp"
+#include "Types/Vector.h"  // move to LinearAlgebra
+#include "Types/Matrix.h"
 #include "LinearAlgebra/LinearAlgebra.h"
 
 #include "Misc/FourierTransformer.h"
@@ -29,9 +31,7 @@ namespace RAPT
 #include "Functions/Sigmoids.h"
 #include "Functions/SinCosTable.h"
 
-#include "Types/Vector.h"
-#include "Types/Matrix.h"
-#include "Types/Polynomial.h"
+#include "Types/Polynomial.h"  // maybe move to Functions
 
 #include "Geometry/Line2D.h"
 #include "Geometry/ConicSection.h"

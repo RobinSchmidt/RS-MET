@@ -402,7 +402,7 @@ void rectangularRoom()
   int Nx = 11;
   int Ny = 11;
   int Nz = 11;
-  float dt = 0.0025;  // time-step between two samples
+  float dt = 0.0025f;  // time-step between two samples
 
   // room lengths in the 3 coordiniates (length, width, height)
   float Lx = 1.f;

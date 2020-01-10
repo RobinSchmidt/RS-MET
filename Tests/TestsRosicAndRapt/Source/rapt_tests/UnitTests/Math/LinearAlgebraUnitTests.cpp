@@ -712,7 +712,7 @@ bool testChangeOfBasis(std::string &reportString)
 // prototype:
 // code and adpated from rsLinearAlgebra::rsSolveLinearSystemInPlace
 
-
+/*
 template<class T>
 bool makeSystemUpperTriangular(RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& B)
 {
@@ -772,6 +772,7 @@ bool solveLinearSystem(
 // todo: move to library and use this to compute inverse matrices
 // is it actually possible that X and B share the same memory? -> seems to be the case
 
+
 // convenience function:
 template<class T>
 std::vector<T> solveLinearSystem(RAPT::rsMatrix<T>& A, std::vector<T>& b)
@@ -779,9 +780,10 @@ std::vector<T> solveLinearSystem(RAPT::rsMatrix<T>& A, std::vector<T>& b)
   int N = (int) b.size();
   std::vector<T> x(N);
   rsMatrixView<T> vx(N, 1, &x[0]), vb(N, 1, &b[0]);
-  solveLinearSystem(A, vx, vb);
+  RAPT::rsLinearAlgebra::solveLinearSystem(A, vx, vb);
   return x;
 }
+
 // make a version that operates on raw arrays
 
 template<class T>
@@ -791,9 +793,10 @@ RAPT::rsMatrix<T> inverse(const RAPT::rsMatrix<T>& A)
   int N = A.getNumRows();
   RAPT::rsMatrix<T> tmp = A, E(N, N);
   E.setToIdentity();
-  solveLinearSystem(tmp, E, E);
+  RAPT::rsLinearAlgebra::solveLinearSystem(tmp, E, E);
   return E; 
 }
+*/
 
 // tests the new implementation
 bool testLinearSystemViaGauss2()
@@ -802,18 +805,19 @@ bool testLinearSystemViaGauss2()
 
   using Vector = std::vector<double>;
   using Matrix = rsMatrix<double>;
+  using LA     = rsLinearAlgebra;
 
   //rsMatrix<double> A(3, 3, { 1,2,3, 4,5,6, 7,8,9 }); // this matrix is singular
   Matrix A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
   Matrix tmp = A;                          // because algo destroys the original A
   Vector x({1,2,3});
-  Vector b  = A * x;                       //       A * x = b
-  Vector x2 = solveLinearSystem(tmp, b);   // solve A * x = b for x
+  Vector b  = A * x;                           //       A * x = b
+  Vector x2 = LA::solveLinearSystem(tmp, b);   // solve A * x = b for x
   r &= RAPT::rsAreVectorsEqual(x, x2, 1.e-14);
-  tmp = A, b = A*x;                        // restore destroyed tmp and b
+  tmp = A, b = A*x;                            // restore destroyed tmp and b
 
 
-  Matrix Ai = inverse(A);
+  Matrix Ai = LA::inverse(A);
 
   // try it with 3x2 solution matrix
 

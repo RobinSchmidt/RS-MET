@@ -58,6 +58,14 @@ template void RAPT::dfst(int, double *, double *, int *, double *);
 template class RAPT::rsMatrixView<double>;
 template class RAPT::rsMatrix<double>;
 
+template std::vector<double> RAPT::rsLinearAlgebra::solveLinearSystem(
+  rsMatrixView<double>& A, std::vector<double>& B);
+
+//std::vector<T> solveLinearSystem(rsMatrixView<T>& A, std::vector<T>& b);
+
+template RAPT::rsMatrix<double> RAPT::rsLinearAlgebra::inverse(const RAPT::rsMatrixView<double>& A);
+
+
 template class RAPT::rsNodeBasedFunction<double>;
 template class RAPT::rsParametricBellFunction<double>;
 template class RAPT::rsPositiveBellFunctions<double>;

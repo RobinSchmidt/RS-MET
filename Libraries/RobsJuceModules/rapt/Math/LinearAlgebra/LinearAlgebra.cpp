@@ -370,6 +370,88 @@ bool rsLinearAlgebra::rsInvertMatrix(T **A, int N)
   return !matrixIsSingular;
 }
 
+
+template<class T>
+bool rsLinearAlgebra::makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
+{
+  T tooSmall = 1.e-12;  // if pivot is less than that, the matrix is singular
+                        // use RS_EPS(T)
+  int N = A.getNumRows();
+  for(int i = 0; i < N; i++) {
+    int p = i; T maxAbs = 0.0;
+    for(int j = i; j < N; j++) {       // search pivot row
+      if(rsAbs(A(j, i)) > maxAbs) { 
+        maxAbs = rsAbs(A(j, i)); p = j; }}
+    if(rsIsCloseTo(maxAbs, 0.0, tooSmall)) {
+      rsError("Matrix (numerically) singular");
+      return false; }
+    if(p != i) {                       // turn pivot row into current row
+      A.swapRows(i, p); 
+      B.swapRows(i, p); p = i; }  
+    for(int j = i+1; j < N; j++) {     // pivot row subtraction
+      T s = -A(j, i) / A(p, i);        // scaler
+      A.addWeightedRowToOther(p, j, s);
+      B.addWeightedRowToOther(p, j, s); }}
+}
+
+template<class T>
+void rsLinearAlgebra::solveUpperTriangularSystem(
+  rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
+{
+  int M = X.getNumColumns();  // number of required solution vectors
+  int N = A.getNumRows();     // number of elements in each solution vector
+  for(int k = 0; k < M; k++) {
+    for(int i = N-1; i >= 0; i--) {
+      T tmp = T(0);
+      for(int j = i+1; j < N; j++)
+        tmp += A(i, j) * X(j, k);
+      X(i, k) = (B(i, k) - tmp) / A(i, i); }}
+}
+
+template<class T>
+bool rsLinearAlgebra::solveLinearSystem(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
+{
+  // check, if everything makes sense:
+  rsAssert(X.getNumRows()    == A.getNumColumns());
+  rsAssert(B.getNumRows()    == A.getNumColumns());
+  rsAssert(X.getNumColumns() == B.getNumColumns());
+  rsAssert(A.isSquare()); 
+  // relax last requirement later - if not square compute approximate solution in overdetermined 
+  // cases and minimum-norm solution in underdetermined cases
+
+  bool invertible = makeSystemUpperTriangular(A, B);
+  if(!invertible)
+    return false;  // matrix was found to be singular
+  solveUpperTriangularSystem(A, X, B);
+  return true; 
+}
+
+template<class T>
+std::vector<T> rsLinearAlgebra::solveLinearSystem(RAPT::rsMatrixView<T>& A, std::vector<T>& b)
+{
+  int N = (int) b.size();
+  std::vector<T> x(N);
+  rsMatrixView<T> vx(N, 1, &x[0]), vb(N, 1, &b[0]);
+  solveLinearSystem(A, vx, vb);
+  return x;
+}
+// make a version that operates on raw arrays
+
+template<class T>
+RAPT::rsMatrix<T> rsLinearAlgebra::inverse(const RAPT::rsMatrixView<T>& A)
+{
+  rsAssert(A.isSquare()); // relax later - compute pseudoinverse in non-square case
+  int N = A.getNumRows();
+  //RAPT::rsMatrix<T> tmp = A, E(N, N);
+  RAPT::rsMatrix<T> tmp(N, N, A.getDataPointerConst()), E(N, N);
+  //tmp.copyDataFrom(A);
+  E.setToIdentity();
+  solveLinearSystem(tmp, E, E);
+  return E; 
+}
+
+
+
 template<class T>
 bool rsLinearAlgebra::rsSolveTridiagonalSystem(T *lower, T *main, T *upper, T *rhs, T *solution, int N)
 {

@@ -528,6 +528,13 @@ public:
     // todo: optionally init with zeros
   }
 
+  /** Constructor to create a matrix from a flat raw array. */
+  rsMatrix(int numRows, int numColumns, const T* data)
+  {
+    setSize(numRows, numColumns);
+    rsArrayTools::copy(data, getDataPointer(), getSize());
+  }
+
   /** Constructor to create a matrix from an array-of-arrays - mostly for conveniently converting
   matrices in the old representation into the new one. */
   rsMatrix(int numRows, int numColumns, T** data)
