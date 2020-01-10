@@ -210,6 +210,8 @@ public:
   // todo: have an overloaded operator() that takes a polynomial as input and returns another 
   // polynomial -> implement nesting/composition
 
+  /** Read and write access to i-th coefficient (breaks encapsulation - use with care). */
+  T& operator[](int i) { return coeffs[i]; }
 
   //===============================================================================================
   /** \name Computations on raw coefficient arrays */

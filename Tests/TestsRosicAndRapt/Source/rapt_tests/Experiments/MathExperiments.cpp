@@ -1,7 +1,6 @@
 using namespace RAPT;
 using namespace std;
 
-
 // we replicate the function from rsLinearAlgebraNew  here but taking full rsMatrix objects instead
 // of views, so we can expand the content
 template<class T>
@@ -63,17 +62,15 @@ void characteristicPolynomial()
 
   // This call will apply the Gaussian elimination - after that, B will be an upper triangular 
   // matrix (a.k.a. "row echelon form"): 
-  //LA::makeSystemUpperTriangularNoPivot(B, I); 
-  makeSystemUpperTriangularNoPivot(B, I); 
+  LA::makeSystemUpperTriangularNoPivot(B, I); 
+  //makeSystemUpperTriangularNoPivot(B, I); 
   // maybe make it diagonal instead of triangular - this would be the *reduced* row echelon form
 
-  //RatFunc q = B.getDiagonalProduct(); // does the product of diagonal elements have a name
-  RatFunc q = B(0,0) * B(1,1);
-  //rsAssert(q.getDenominatorDegree() == 1);
-  //Poly p = q.getNumerator();
-  // the denominator should be just a constant, the numerator is our characteristic polynomial
-
-
+  RatFunc d = B(0,0) * B(1,1);                       // determinant is product of diagonal elements
+  rsAssert(d.getDenominatorDegree() == 0);           // denominator should be just a constant
+  Poly p = d.getNumerator() / d.getDenominator()[0]; // this is our characteristic polynomial
+  // OK - the so found characteristic polynomial p(x) = x^2 - x - 2 agrees with what sage finds
+  // it has roots...
 
   int dummy = 0;
 
@@ -102,26 +99,6 @@ void characteristicPolynomial()
   // something extra?
   // actually, after we have finsihed the elimination and multiply the diagonal elements together, 
   // we get the correct polynomial, i think
-
-  /* For stepping through:
-
-  a11 = -4-x
-  a12 =  6
-  a21 = -3 
-  a22 = 5-x
-
-  s   = a21/a11
-  b21 = a21 - s*a11
-  b22 = a22 - s*a12
-
-  s,b21,b22
-
-  produces:
-  (3/(x + 4), 0, -x - 18/(x + 4) + 5)
-  */
-
-  // B *= B(1,1).getDenominator(); // do this!
-
 
   /*
   // copied - maybe delete later:

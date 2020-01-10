@@ -48,6 +48,15 @@ public:
   bool reduce(T tol);
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  rsPolynomial<T> getNumerator()   const { return num; }
+  rsPolynomial<T> getDenominator() const { return den; }
+
+  int getNumeratorDegree()   const { return num.getDegree(); }
+  int getDenominatorDegree() const { return den.getDegree(); }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
