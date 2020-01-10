@@ -25,6 +25,8 @@ class rsRationalFunction
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Construction/Destruction */
 
   rsRationalFunction() {}
 
@@ -34,6 +36,9 @@ public:
   {
 
   }
+
+  rsRationalFunction(const T& number) : num(number), den(T(1)) { }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */

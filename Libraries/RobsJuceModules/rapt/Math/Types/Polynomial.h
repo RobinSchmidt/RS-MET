@@ -35,6 +35,10 @@ public:
     setCoeffs(coefficients);
   }
 
+  /** Promotes a number to a 0th degree polynomial. */
+  rsPolynomial(const T& number)
+  { coeffs.resize(1); coeffs[0] = number; }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -174,7 +178,8 @@ public:
   confusing - maybe write a "pow" function instead. */
   rsPolynomial<T> operator^(int k) const 
   {
-    // todo: make this more efficient - only one memory allocation is needed
+    // optimize: allocate once and repeatedly convolve the coeff-array of r with the coeff array 
+    // of this (in place)
     rsPolynomial<T> r(std::vector<T>({T(1)}));
     for(int i = 1; i <= k; i++)
       r = r * (*this);

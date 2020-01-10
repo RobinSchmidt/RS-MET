@@ -100,6 +100,9 @@ void characteristicPolynomial()
   // characteristic polynomial anyway....
   */
 }
+// todo: try some crazy stuff: use a matrix of rational functions of (maybe complex) rational 
+// numbers made of big integers - maybe for this, it makes sense to use my own rsComplex class 
+// again
 
 void ellipseLineIntersections()
 {
