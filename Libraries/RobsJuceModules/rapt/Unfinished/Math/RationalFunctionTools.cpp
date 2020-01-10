@@ -15,7 +15,8 @@ template<class T>
 void polyTrunc(std::vector<T>& p, T tol)
 {
   int i = (int)p.size();
-  while(i > 0) {
+  while(i > 1) {
+  //while(i > 0) {  // old - this is a bug: a polynomial should have at least 1 coeff
     if(fabs(p[i-1]) > tol)
       break;
     i -= 1; }

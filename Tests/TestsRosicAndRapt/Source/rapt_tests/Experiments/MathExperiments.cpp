@@ -1,6 +1,25 @@
 using namespace RAPT;
 using namespace std;
 
+
+// we replicate the function from rsLinearAlgebraNew  here but taking full rsMatrix objects instead
+// of views, so we can expand the content
+template<class T>
+bool makeSystemUpperTriangularNoPivot(rsMatrix<T>& A, rsMatrix<T>& B)
+{
+  rsAssert(A.isSquare()); // can we relax this?
+  int N = A.getNumRows();
+  for(int i = 0; i < N; i++) {
+    if(A(i, i) == T(0)) { 
+      rsError("This matrix needs pivoting"); return false; }
+    for(int j = i+1; j < N; j++) {
+      T s = -A(j, i) / A(i, i);
+      A.addWeightedRowToOther(i, j, s, i, A.getNumColumns()-1); // start at i: avoid adding zeros
+      B.addWeightedRowToOther(i, j, s); }}
+  return true;
+}
+
+
 void characteristicPolynomial()
 {
   // We try to figure out how to compute the coeffs (or better: roots) of the characteristic 
@@ -44,7 +63,8 @@ void characteristicPolynomial()
 
   // This call will apply the Gaussian elimination - after that, B will be an upper triangular 
   // matrix (a.k.a. "row echelon form"): 
-  LA::makeSystemUpperTriangularNoPivot(B, I); 
+  //LA::makeSystemUpperTriangularNoPivot(B, I); 
+  makeSystemUpperTriangularNoPivot(B, I); 
   // maybe make it diagonal instead of triangular - this would be the *reduced* row echelon form
 
   int dummy = 0;
@@ -68,7 +88,9 @@ void characteristicPolynomial()
   // our B matrix seems to agree up to a factor of -4 - 4x - maybe we must multiply the whole matrix 
   // by that function (which acts as a scalar in this context)? ..then we need to also scale the I 
   // matrix - wait - no: the -4-x term is in the numerator of B(0,0) and in the denominator of B(1,1)
-  // ...also B(1,0) has a zero-sized numerator!
+  // ...also B(1,0) has a zero-sized numerator! follow the procedure step-by-step, also do the
+  // elimination by hand
+  // the B(1,0) size issue seems to be fixed - but actually B(0,1) is also wrong
 
   // B *= B(1,1).getDenominator(); // do this!
 

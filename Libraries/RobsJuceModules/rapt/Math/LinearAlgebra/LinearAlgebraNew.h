@@ -63,6 +63,7 @@ public:
   template<class T>
   static bool makeSystemUpperTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B);
 
+
   template<class T>
   static void solveUpperTriangularSystem(
     rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
