@@ -1123,20 +1123,6 @@ void rsArrayTools::rightShift(T *buffer, int length, int numPlaces)
   fillWithZeros(buffer, numPlaces);
 }
 
-template <class T1, class T2>
-void rsArrayTools::scale(T1 *buffer, int length, T2 scaleFactor)
-{
-  for(int n = 0; n < length; n++)
-    buffer[n] *= (T1)scaleFactor;
-}
-
-template <class T1, class T2>
-void rsArrayTools::scale(const T1 *src, T1 *dst, int length, T2 scaleFactor)
-{
-  for(int n = 0; n < length; n++)
-    dst[n] = scaleFactor * src[n];
-}
-
 template <class T>
 void rsArrayTools::sequenceSqrt(const T *y, int yLength, T *x)
 {
@@ -1167,13 +1153,6 @@ void rsArrayTools::shift(T *buffer, int length, int numPlaces)
     rightShift(buffer, length, numPlaces);
   else
     leftShift(buffer, length, -numPlaces);
-}
-
-template <class T>
-void rsArrayTools::subtract(const T *buffer1, const T *buffer2, T *result, int length)
-{
-  for(int i = 0; i < length; i++)
-    result[i] = buffer1[i] - buffer2[i];
 }
 
 template <class T>

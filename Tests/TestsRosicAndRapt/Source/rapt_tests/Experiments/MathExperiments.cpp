@@ -20,25 +20,50 @@ void characteristicPolynomial()
   using Matrix  = RAPT::rsMatrix<RatFunc>;
   using LA      = RAPT::rsLinearAlgebraNew;
 
-  // Create matrix:
-  // A = |-4-x  6  |
-  //     |-3    5-x|
 
-  RatFunc a11({-4, -1}, {1});
-  RatFunc a12({ 6    }, {1});
-  RatFunc a21({-3    }, {1});
-  RatFunc a22({ 5, -1}, {1});
+  // Create matrix:
+  // A = |-4  6|
+  //     |-3  5|
+  RatFunc a11({-4}, {1});
+  RatFunc a12({ 6}, {1});
+  RatFunc a21({-3}, {1});
+  RatFunc a22({ 5}, {1});
   Matrix A(2, 2, {a11,a12, a21,a22});
-  // hmm - actually our A here is the A-x*I above - maybe use a different name...
+
+  // Create matrix:
+  // B = |-4-x  6  |
+  //     |-3    5-x|
+  RatFunc b11({-4, -1}, {1});
+  RatFunc b12({ 6    }, {1});
+  RatFunc b21({-3    }, {1});
+  RatFunc b22({ 5, -1}, {1});
+  //Matrix B(2, 2, {b11,b12, b21,b22});
+
+  // Create identity matrix:
+  // I = |1  0|
+  //     |0  1|
+  RatFunc zero({0}, {1});  // the constant 0 promoted to a rational function object
+  RatFunc one( {1}, {1});  // same for 1
+  Matrix I(2, 2, {one,zero, zero,one});
+
+  // maybe use a statement like Matrix B = A - x * I where x is a rational function
+  RatFunc x({0, 1}, {1});  // x = (0 + 1x) / 1
+
+  Matrix B;
+  B = A - x*I; // this should lead to the same B
+
+
+
+
 
   // Create a dummy right hand side - it's perhaps not needed but let's use the identity matrix as 
   // rhs and see, if something interesting comes out at the end:
-  RatFunc zero({0}, {1});  // the constant 0 promoted to a rational function object
-  RatFunc one( {1}, {1});  // same for 1
-  Matrix B(2, 2, {one,zero, zero,one});
+
+
+
 
   // Making it triangular applies the Gaussian elimination:
-  LA::makeSystemUpperTriangularNoPivot(A, B); // maybe make it diagonal
+  LA::makeSystemUpperTriangularNoPivot(B, I); // maybe make it diagonal
   // doesn't link - we need an instantiation - we need a conversion constructor from a double
   // and an rsAbs function that returns something that is comparable by >,<
   // also the += operator, unary -, rsIsCloseTo must work, so we need a binary - operator that 

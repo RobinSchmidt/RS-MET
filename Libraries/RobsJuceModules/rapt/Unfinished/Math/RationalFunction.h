@@ -99,9 +99,15 @@ public:
   { 
     ratAdd(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, num.coeffs, den.coeffs);
     return *this;
-    // does this work=
-    //*this = *this + S; return *this; 
-  }  // can this be optimized?
+  }
+
+  /** Multiplies this rational function by another one. */
+  rsRationalFunction<T>& operator*=(const rsRationalFunction<T>& q)
+  { 
+    ratMul(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, num.coeffs, den.coeffs);
+    return *this;
+  }
+
 
 
   /** Returns the rational function that results from nesting/composing the given inner rational 

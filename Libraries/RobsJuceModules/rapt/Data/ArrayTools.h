@@ -627,11 +627,11 @@ public:
 
   /** Scales the buffer by a constant factor. */
   template <class T1, class T2>
-  static void scale(T1 *buffer, int length, T2 scaleFactor);
+  static inline void scale(T1 *buffer, int length, T2 scaleFactor);
 
   /** Scales the "src" buffer by a constant factor and writes the result into the "dst" buffer. */
   template <class T1, class T2>
-  static void scale(const T1 *src, T1 *dst, int length, T2 scaleFactor);
+  static inline void scale(const T1 *src, T1 *dst, int length, T2 scaleFactor);
 
   /** Given the sequence y of length yLength, this function returns a sequence x which, when
   convolved with itself, gives y. yLength is assumed to be odd, the index of first nonzero value
@@ -661,7 +661,7 @@ public:
   /** Subtracts the elements of 'buffer2' from 'buffer1' - type must define operator '-'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
   template <class T>
-  static void subtract(const T *buffer1, const T *buffer2, T *result, int length);
+  static inline void subtract(const T *buffer1, const T *buffer2, T *result, int length);
 
   /** Returns the sum of the elements in the buffer for types which define the
   addition operator (the += version thereof) and a constructor which can take an int
@@ -909,5 +909,25 @@ inline void rsArrayTools::pushFrontPopBack4(T x, T* a)
 // which version is fastest for what range of lengths maybe rename to updateFifoBuffer4
 // maybe make a version that returns the (old) a[3] element
 
+template <class T1, class T2>
+inline void rsArrayTools::scale(T1 *buffer, int length, T2 scaleFactor)
+{
+  for(int n = 0; n < length; n++)
+    buffer[n] *= (T1)scaleFactor;
+}
+
+template <class T1, class T2>
+inline void rsArrayTools::scale(const T1 *src, T1 *dst, int length, T2 scaleFactor)
+{
+  for(int n = 0; n < length; n++)
+    dst[n] = scaleFactor * src[n];
+}
+
+template <class T>
+inline void rsArrayTools::subtract(const T *buffer1, const T *buffer2, T *result, int length)
+{
+  for(int i = 0; i < length; i++)
+    result[i] = buffer1[i] - buffer2[i];
+}
 
 #endif
