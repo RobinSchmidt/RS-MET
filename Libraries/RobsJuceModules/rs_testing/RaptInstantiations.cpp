@@ -194,10 +194,13 @@ template class RAPT::rsMatrix<double>;
 template std::vector<double> RAPT::rsLinearAlgebraNew::solveLinearSystem(
   rsMatrixView<double>& A, std::vector<double>& B);
 
-/*
-template std::vector<RAPT::rsRationalFunction<double>> RAPT::rsLinearAlgebraNew::solveLinearSystem(
-  rsMatrixView<RAPT::rsRationalFunction<double>>& A, std::vector<RAPT::rsRationalFunction<double>>& B);
- */
+// these instantiations need some more operations defined on rsRationalFunction
+//template std::vector<RAPT::rsRationalFunction<double>> RAPT::rsLinearAlgebraNew::solveLinearSystem(
+//  rsMatrixView<RAPT::rsRationalFunction<double>>& A, std::vector<RAPT::rsRationalFunction<double>>& B);
+
+//template bool RAPT::rsLinearAlgebraNew::makeSystemUpperTriangularNoPivot(
+//  rsMatrixView<RAPT::rsRationalFunction<double>>& A, 
+//  rsMatrixView<RAPT::rsRationalFunction<double>>& B);
 
 template RAPT::rsMatrix<double> RAPT::rsLinearAlgebraNew::inverse(
   const RAPT::rsMatrixView<double>& A);

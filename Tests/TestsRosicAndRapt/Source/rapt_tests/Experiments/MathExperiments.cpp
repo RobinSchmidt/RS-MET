@@ -48,6 +48,8 @@ void characteristicPolynomial()
   // should be divided by the corresponding denominator term?
   // but maybe we should not use pivoting for rational functions at all? all this stuff is only
   // used for pivoting but rational functions are always divisible unless the diviso is zero
+  // ..but no: it may still have to exchange rows if it encounters a row with a zero - but maybe
+  // we can get away without pivoting in this case...
 
 
 

@@ -102,6 +102,25 @@ bool rsLinearAlgebraNew::makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixV
 // A.addWeightedRowToOther(i, j, s, i, N-1), B.add..
 
 
+//bool makeSystemUpperTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B);
+
+template<class T>
+bool rsLinearAlgebraNew::makeSystemUpperTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B)
+{
+  rsAssert(A.isSquare()); // can we relax this?
+  int N = A.getNumRows();
+  for(int i = 0; i < N; i++) {
+    if(A(i, i) == T(0)) { 
+      rsError("This matrix needs pivoting"); return false; }
+    for(int j = i+1; j < N; j++) {
+      T s = -A(j, i) / A(i, i);
+      A.addWeightedRowToOther(i, j, s, i, A.getNumColumns()-1); // start at i: avoid adding zeros
+      B.addWeightedRowToOther(i, j, s); }}
+  return true;
+}
+
+
+
 template<class T>
 void rsLinearAlgebraNew::solveUpperTriangularSystem(
   rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
