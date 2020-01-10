@@ -7,6 +7,7 @@ library (STL), such as std::vector, std::map, etc. */
 //=================================================================================================
 // functions for std::vector
 
+// maybe wrap into a class rsVectorTools
 
 /** Wraps iterator syntax to simplify calls to std::all_of. */
 template<class T, class UnaryPredicate >

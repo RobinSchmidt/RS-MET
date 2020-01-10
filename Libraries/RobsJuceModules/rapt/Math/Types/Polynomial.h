@@ -55,6 +55,10 @@ public:
 
   void truncateTrailingZeros(const T& threshold = T(0));
 
+  void negate()
+  { rsArrayTools::negate(&coeffs[0], &coeffs[0], (int) coeffs.size()); }
+  // the conversion to int may be avoided
+
 
 
   //-----------------------------------------------------------------------------------------------

@@ -52,6 +52,14 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
+  /** Returns a new rational function that is the negative of this one. */
+  rsRationalFunction<T> operator-() const 
+  {
+    rsRationalFunction<T> r = *this;
+    r.num.negate();
+    return r;
+  }
+
   /** Adds two rational functions. */
   rsRationalFunction<T> operator+(const rsRationalFunction<T>& q) const
   {
