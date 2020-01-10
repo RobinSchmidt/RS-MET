@@ -198,9 +198,9 @@ template std::vector<double> RAPT::rsLinearAlgebraNew::solveLinearSystem(
 //template std::vector<RAPT::rsRationalFunction<double>> RAPT::rsLinearAlgebraNew::solveLinearSystem(
 //  rsMatrixView<RAPT::rsRationalFunction<double>>& A, std::vector<RAPT::rsRationalFunction<double>>& B);
 
-//template bool RAPT::rsLinearAlgebraNew::makeSystemUpperTriangularNoPivot(
-//  rsMatrixView<RAPT::rsRationalFunction<double>>& A, 
-//  rsMatrixView<RAPT::rsRationalFunction<double>>& B);
+template bool RAPT::rsLinearAlgebraNew::makeSystemUpperTriangularNoPivot(
+  rsMatrixView<RAPT::rsRationalFunction<double>>& A, 
+  rsMatrixView<RAPT::rsRationalFunction<double>>& B);
 
 template RAPT::rsMatrix<double> RAPT::rsLinearAlgebraNew::inverse(
   const RAPT::rsMatrixView<double>& A);

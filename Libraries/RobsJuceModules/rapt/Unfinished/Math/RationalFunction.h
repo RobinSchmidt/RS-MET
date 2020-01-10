@@ -94,6 +94,16 @@ public:
     // implement conversion operator in rsPolynomial to get rid of accessing coeffs
   }
 
+  /** Adds another rational function to this one. */
+  rsRationalFunction<T>& operator+=(const rsRationalFunction<T>& q)
+  { 
+    ratAdd(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, num.coeffs, den.coeffs);
+    return *this;
+    // does this work=
+    //*this = *this + S; return *this; 
+  }  // can this be optimized?
+
+
   /** Returns the rational function that results from nesting/composing the given inner rational 
   function with this function as outer function. You can use it like h = f(g) where h,f,g are all 
   rsRationalFunction objects. */

@@ -38,7 +38,7 @@ void characteristicPolynomial()
   Matrix B(2, 2, {one,zero, zero,one});
 
   // Making it triangular applies the Gaussian elimination:
-  //LA::makeSystemUpperTriangular(A, B); // maybe make it diagonal
+  LA::makeSystemUpperTriangularNoPivot(A, B); // maybe make it diagonal
   // doesn't link - we need an instantiation - we need a conversion constructor from a double
   // and an rsAbs function that returns something that is comparable by >,<
   // also the += operator, unary -, rsIsCloseTo must work, so we need a binary - operator that 
