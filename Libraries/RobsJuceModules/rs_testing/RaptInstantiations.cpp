@@ -177,9 +177,6 @@ template bool rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(double **A, doubl
 template bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(   double **A, double **B, double **C, int N);
 template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, const cmplxD *b, int N);
 
-
-
-
 template class RAPT::rsMatrixOld<double>;
 
 template class RAPT::rsPolynomial<float>;
@@ -190,6 +187,23 @@ template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, 
 template void RAPT::rsPolynomial<std::complex<double>>::subtract(
   const std::complex<double>* p, int pN, const std::complex<double>* q, int qN,
   std::complex<double>* r);
+
+template class RAPT::rsMatrixView<double>;
+template class RAPT::rsMatrix<double>;
+
+template std::vector<double> RAPT::rsLinearAlgebraNew::solveLinearSystem(
+  rsMatrixView<double>& A, std::vector<double>& B);
+
+/*
+template std::vector<RAPT::rsRationalFunction<double>> RAPT::rsLinearAlgebraNew::solveLinearSystem(
+  rsMatrixView<RAPT::rsRationalFunction<double>>& A, std::vector<RAPT::rsRationalFunction<double>>& B);
+ */
+
+template RAPT::rsMatrix<double> RAPT::rsLinearAlgebraNew::inverse(
+  const RAPT::rsMatrixView<double>& A);
+
+template bool RAPT::rsLinearAlgebraNew::makeSystemDiagonal(
+  RAPT::rsMatrixView<double>& A, RAPT::rsMatrixView<double>& B);
 
 
 // should go into an "Interpolation" class...or maybe CurveFitter

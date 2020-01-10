@@ -341,6 +341,16 @@ public:
   // optimize using base-pointers
 
 
+  void addWeightedRowToOther(int iSrc, int iDst, T weight, int minCol, int maxCol)
+  {
+    rsAssert(isValidRowIndex(iSrc) && isValidRowIndex(iDst), "row index out of range");
+    rsAssert(isValidColumnIndex(minCol) && isValidColumnIndex(maxCol), "column index out of range");
+
+    for(int j = minCol; j <= maxCol; ++j)
+      (*this)(iDst, j) += weight * (*this)(iSrc, j);
+  }
+  // optimize using base-pointers
+
 
   /** Scales the row with given index by the given scale factor. */
   void scaleColumn(int columnIndex, T scaler)

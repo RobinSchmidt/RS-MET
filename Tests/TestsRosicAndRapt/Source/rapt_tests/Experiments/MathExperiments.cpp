@@ -39,7 +39,16 @@ void characteristicPolynomial()
 
   // Making it triangular applies the Gaussian elimination:
   //LA::makeSystemUpperTriangular(A, B); // maybe make it diagonal
-  // doesn't link - we need an instantiation
+  // doesn't link - we need an instantiation - we need a conversion constructor from a double
+  // and an rsAbs function that returns something that is comparable by >,<
+  // also the += operator, unary -, rsIsCloseTo must work, so we need a binary - operator that 
+  // takes a RatFunc and a number (maybe the conversion constructor can take care of this)
+  // i think, for a polynomial rsAbs should return the absolute value of the constant term in this
+  // context - or maybe the absolute value of the leading coeff? and for rational functions that 
+  // should be divided by the corresponding denominator term?
+  // but maybe we should not use pivoting for rational functions at all? all this stuff is only
+  // used for pivoting but rational functions are always divisible unless the diviso is zero
+
 
 
 
