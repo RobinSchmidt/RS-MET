@@ -774,7 +774,17 @@ bool testLinearSystemViaGauss2()
   // Ai = A.inverse()
   // MT,D,M,A,Ai
 
-  // figure out how to diagonalize a matrix using the Gaussian elemination
+  // figure out how to diagonalize a matrix using the Gaussian elemination - maybe we can figure 
+  // out the coeffs of the characteristic polynomial by making it triangular (in which case the 
+  // determinant is the product of the diagonal elements) - but each elementary transformation
+  // modifies the determinant in some way - we need to keep track of these changes - maybe the
+  // Gaussian elimination can be extended in a suitable way? -nope we are fine: swapping rows
+  // inverts the sign, multiplying a row by a factor multiplies the determinant by the same factor
+  // and adding a row to another doesn't change the determinant - in the end, all it does is to
+  // scale our characteristic polynomial by a factor which is irrelevant for finding the roots
+  // algorithm: make matrix diagonal - then we can compute the polynomial coeffs from the diagonal
+  // elements...wait - oculd it be that the diagonal elements are already the roots of the
+  // characteristic polynomial? after calling makeSystemDiagonal? i think so - figure it out!
 
 
   return r;
