@@ -19,7 +19,6 @@ bool makeSystemUpperTriangularNoPivot(rsMatrix<T>& A, rsMatrix<T>& B)
   return true;
 }
 
-
 void characteristicPolynomial()
 {
   // We try to figure out how to compute the coeffs (or better: roots) of the characteristic 
@@ -35,6 +34,7 @@ void characteristicPolynomial()
   // the matrix itself - we can't introduce it after the elimination. So, what we do instead is to
   // consider a full-blown matrix of rsRationalFunction objects....
 
+  using Poly    = RAPT::rsPolynomial<double>;
   using RatFunc = RAPT::rsRationalFunction<double>;
   using Matrix  = RAPT::rsMatrix<RatFunc>;
   using LA      = RAPT::rsLinearAlgebraNew;
@@ -67,6 +67,14 @@ void characteristicPolynomial()
   makeSystemUpperTriangularNoPivot(B, I); 
   // maybe make it diagonal instead of triangular - this would be the *reduced* row echelon form
 
+  //RatFunc q = B.getDiagonalProduct(); // does the product of diagonal elements have a name
+  RatFunc q = B(0,0) * B(1,1);
+  //rsAssert(q.getDenominatorDegree() == 1);
+  //Poly p = q.getNumerator();
+  // the denominator should be just a constant, the numerator is our characteristic polynomial
+
+
+
   int dummy = 0;
 
   // This Sage code:
@@ -90,7 +98,27 @@ void characteristicPolynomial()
   // matrix - wait - no: the -4-x term is in the numerator of B(0,0) and in the denominator of B(1,1)
   // ...also B(1,0) has a zero-sized numerator! follow the procedure step-by-step, also do the
   // elimination by hand
-  // the B(1,0) size issue seems to be fixed - but actually B(0,1) is also wrong
+  // the B(1,0) size issue seems to be fixed - but actually B(0,1) is also wrong - maybe sage does 
+  // something extra?
+  // actually, after we have finsihed the elimination and multiply the diagonal elements together, 
+  // we get the correct polynomial, i think
+
+  /* For stepping through:
+
+  a11 = -4-x
+  a12 =  6
+  a21 = -3 
+  a22 = 5-x
+
+  s   = a21/a11
+  b21 = a21 - s*a11
+  b22 = a22 - s*a12
+
+  s,b21,b22
+
+  produces:
+  (3/(x + 4), 0, -x - 18/(x + 4) + 5)
+  */
 
   // B *= B(1,1).getDenominator(); // do this!
 
