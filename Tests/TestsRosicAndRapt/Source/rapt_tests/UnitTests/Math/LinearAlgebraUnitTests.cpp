@@ -717,7 +717,7 @@ bool testLinearSystemViaGauss2()
 
   using Vector = std::vector<double>;
   using Matrix = rsMatrix<double>;
-  using LA     = rsLinearAlgebra;
+  using LA     = rsLinearAlgebraNew;
 
   //rsMatrix<double> A(3, 3, { 1,2,3, 4,5,6, 7,8,9 }); // this matrix is singular
   Matrix A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
