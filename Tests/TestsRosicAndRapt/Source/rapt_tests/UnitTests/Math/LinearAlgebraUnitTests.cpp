@@ -709,94 +709,6 @@ bool testChangeOfBasis(std::string &reportString)
 // the solving for x and y respectively and defining C as conversion matrix from x to y and C-^1
 // the inverse conversion, can also be verified by E = C * C^-1 = A^-1 * B * B^-1 * A
 
-// prototype:
-// code and adpated from rsLinearAlgebra::rsSolveLinearSystemInPlace
-
-/*
-template<class T>
-bool makeSystemUpperTriangular(RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& B)
-{
-  T tooSmall = 1.e-12;  // if pivot is less than that, the matrix is singular
-                        // use RS_EPS(T)
-  int N = A.getNumRows();
-  for(int i = 0; i < N; i++) {
-    int p = i; T maxAbs = 0.0;
-    for(int j = i; j < N; j++) {       // search pivot row
-      if(rsAbs(A(j, i)) > maxAbs) { 
-        maxAbs = rsAbs(A(j, i)); p = j; }}
-    if(rsIsCloseTo(maxAbs, 0.0, tooSmall)) {
-      rsError("Matrix (numerically) singular");
-      return false; }
-    if(p != i) {                       // turn pivot row into current row
-      A.swapRows(i, p); 
-      B.swapRows(i, p); p = i; }  
-    for(int j = i+1; j < N; j++) {     // pivot row subtraction
-      T s = -A(j, i) / A(p, i);        // scaler
-      A.addWeightedRowToOther(p, j, s);
-      B.addWeightedRowToOther(p, j, s); }}
-}
-// maybe rename to makeSystemUpperTriangular
-
-template<class T>
-void solveUpperTriangularSystem(
-  RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& X, RAPT::rsMatrixView<T>& B)
-{
-  int M = X.getNumColumns();  // number of required solution vectors
-  int N = A.getNumRows();     // number of elements in each solution vector
-  for(int k = 0; k < M; k++) {
-    for(int i = N-1; i >= 0; i--) {
-      T tmp = T(0);
-      for(int j = i+1; j < N; j++)
-        tmp += A(i, j) * X(j, k);
-      X(i, k) = (B(i, k) - tmp) / A(i, i); }}
-}
-
-template<class T>
-bool solveLinearSystem(
-  RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& X, RAPT::rsMatrixView<T>& B)
-{
-  // check, if everything makes sense:
-  rsAssert(X.getNumRows()    == A.getNumColumns());
-  rsAssert(B.getNumRows()    == A.getNumColumns());
-  rsAssert(X.getNumColumns() == B.getNumColumns());
-  rsAssert(A.isSquare()); 
-  // relax last requirement later - if not square compute approximate solution in overdetermined 
-  // cases and minimum-norm solution in underdetermined cases
-
-  bool invertible = makeSystemUpperTriangular(A, B);
-  if(!invertible)
-    return false;  // matrix was found to be singular
-  solveUpperTriangularSystem(A, X, B);
-  return true; 
-}
-// todo: move to library and use this to compute inverse matrices
-// is it actually possible that X and B share the same memory? -> seems to be the case
-
-
-// convenience function:
-template<class T>
-std::vector<T> solveLinearSystem(RAPT::rsMatrix<T>& A, std::vector<T>& b)
-{
-  int N = (int) b.size();
-  std::vector<T> x(N);
-  rsMatrixView<T> vx(N, 1, &x[0]), vb(N, 1, &b[0]);
-  RAPT::rsLinearAlgebra::solveLinearSystem(A, vx, vb);
-  return x;
-}
-
-// make a version that operates on raw arrays
-
-template<class T>
-RAPT::rsMatrix<T> inverse(const RAPT::rsMatrix<T>& A)
-{
-  rsAssert(A.isSquare()); // relax later - compute pseudoinverse in non-square case
-  int N = A.getNumRows();
-  RAPT::rsMatrix<T> tmp = A, E(N, N);
-  E.setToIdentity();
-  RAPT::rsLinearAlgebra::solveLinearSystem(tmp, E, E);
-  return E; 
-}
-*/
 
 // tests the new implementation
 bool testLinearSystemViaGauss2()
@@ -809,17 +721,19 @@ bool testLinearSystemViaGauss2()
 
   //rsMatrix<double> A(3, 3, { 1,2,3, 4,5,6, 7,8,9 }); // this matrix is singular
   Matrix A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
-  Matrix tmp = A;                          // because algo destroys the original A
+  Matrix tmp = A;                               // because algo destroys the original A
   Vector x({1,2,3});
-  Vector b  = A * x;                           //       A * x = b
-  Vector x2 = LA::solveLinearSystem(tmp, b);   // solve A * x = b for x
+  Vector b  = A * x;                            //       A * x = b
+  Vector x2 = LA::solveLinearSystem(tmp, b);    // solve A * x = b for x
   r &= RAPT::rsAreVectorsEqual(x, x2, 1.e-14);
-  tmp = A, b = A*x;                            // restore destroyed tmp and b
-
+  tmp = A, b = A*x;                             // restore destroyed tmp and b
 
   Matrix Ai = LA::inverse(A);
+  // todo: check result (see old implementation - there is the result)
 
-  // try it with 3x2 solution matrix
+  // try it with 3x2 solution matrix - figure out if the X,B rhs matrices/vectors may in general be 
+  // the same (it works when inverting - but this is the special case where B is the identity - in 
+  // general, it probably won't work)
 
   return r;
 }

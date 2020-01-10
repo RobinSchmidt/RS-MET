@@ -105,7 +105,8 @@ public:
   // deprecate!
 
 
-  // newer versions using rsMatrixView:
+  // newer versions using rsMatrixView - document them (use documentation from above - keep the old 
+  // functions as deprecated legacy functions around as long as they are still needed)
 
   template<class T>
   static bool makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B);

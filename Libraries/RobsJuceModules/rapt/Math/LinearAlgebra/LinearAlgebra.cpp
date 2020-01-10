@@ -375,23 +375,27 @@ template<class T>
 bool rsLinearAlgebra::makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
   T tooSmall = 1.e-12;  // if pivot is less than that, the matrix is singular
-                        // use RS_EPS(T)
+                        // todo: use something based on RS_EPS(T)
   int N = A.getNumRows();
   for(int i = 0; i < N; i++) {
-    int p = i; T maxAbs = 0.0;
+    int p = i; 
+    T maxAbs = 0.0;
     for(int j = i; j < N; j++) {       // search pivot row
       if(rsAbs(A(j, i)) > maxAbs) { 
-        maxAbs = rsAbs(A(j, i)); p = j; }}
+        maxAbs = rsAbs(A(j, i)); 
+        p = j; }}
     if(rsIsCloseTo(maxAbs, 0.0, tooSmall)) {
       rsError("Matrix (numerically) singular");
       return false; }
     if(p != i) {                       // turn pivot row into current row
       A.swapRows(i, p); 
-      B.swapRows(i, p); p = i; }  
+      B.swapRows(i, p); 
+      p = i; }  // superfluous - we may use i directly below in place of p
     for(int j = i+1; j < N; j++) {     // pivot row subtraction
       T s = -A(j, i) / A(p, i);        // scaler
       A.addWeightedRowToOther(p, j, s);
       B.addWeightedRowToOther(p, j, s); }}
+  return true;
 }
 
 template<class T>
@@ -442,14 +446,11 @@ RAPT::rsMatrix<T> rsLinearAlgebra::inverse(const RAPT::rsMatrixView<T>& A)
 {
   rsAssert(A.isSquare()); // relax later - compute pseudoinverse in non-square case
   int N = A.getNumRows();
-  //RAPT::rsMatrix<T> tmp = A, E(N, N);
   RAPT::rsMatrix<T> tmp(N, N, A.getDataPointerConst()), E(N, N);
-  //tmp.copyDataFrom(A);
   E.setToIdentity();
-  solveLinearSystem(tmp, E, E);
+  solveLinearSystem(tmp, E, E); // why does it work to use E for both - because E is the identity?
   return E; 
 }
-
 
 
 template<class T>
