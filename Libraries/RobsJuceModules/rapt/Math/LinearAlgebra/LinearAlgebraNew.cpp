@@ -69,6 +69,8 @@ bool rsLinearAlgebraNew::makeSystemDiagonal(rsMatrixView<T>& A, rsMatrixView<T>&
 template<class T>
 bool rsLinearAlgebraNew::makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
+  rsAssert(A.isSquare()); // can we relax this?
+
   T tooSmall = 1.e-12;  // if pivot is less than that, the matrix is singular
                         // todo: use something based on RS_EPS(T)
   int N = A.getNumRows();
@@ -87,8 +89,8 @@ bool rsLinearAlgebraNew::makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixV
       B.swapRows(i, p); } 
     for(int j = i+1; j < N; j++) {     // pivot row subtraction
       T s = -A(j, i) / A(i, i);        // scaler
-      A.addWeightedRowToOther(i, j, s, 0, A.getNumColumns()-1);
-      B.addWeightedRowToOther(i, j, s, 0, B.getNumColumns()-1); }}
+      A.addWeightedRowToOther(i, j, s, i, A.getNumColumns()-1); // start at i: avoid adding zeros
+      B.addWeightedRowToOther(i, j, s); }}
   return true;
 }
 // why is it that the algo doesn't need to keep track of the swaps - or is this just accidentally 
@@ -98,6 +100,7 @@ bool rsLinearAlgebraNew::makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixV
 // to subtract zeros from zeros in the columns that are already zero from a previous step - see old
 // code - the k-loop starts at i, not at 0 - we should pass i and N-1:
 // A.addWeightedRowToOther(i, j, s, i, N-1), B.add..
+
 
 template<class T>
 void rsLinearAlgebraNew::solveUpperTriangularSystem(

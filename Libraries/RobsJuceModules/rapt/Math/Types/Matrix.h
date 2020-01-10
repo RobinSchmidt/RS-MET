@@ -346,6 +346,10 @@ public:
     rsAssert(isValidRowIndex(iSrc) && isValidRowIndex(iDst), "row index out of range");
     rsAssert(isValidColumnIndex(minCol) && isValidColumnIndex(maxCol), "column index out of range");
 
+    //rsAssert(minCol >= 0 && maxCol < numCols, "column index out of range");
+    // minCol > numCols is allowed - in this case, the loop is not entered (Gaussian elimination 
+    // may produce such values)
+
     for(int j = minCol; j <= maxCol; ++j)
       (*this)(iDst, j) += weight * (*this)(iSrc, j);
   }
