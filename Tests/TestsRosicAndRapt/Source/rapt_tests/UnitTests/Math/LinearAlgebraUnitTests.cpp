@@ -729,24 +729,37 @@ bool testLinearSystemViaGauss2()
   r &= RAPT::rsAreVectorsEqual(x, x2, tol);
   tmp = A, b = A*x;                             // restore destroyed tmp and b
 
+  // try it with 3x2 solution matrix - figure out if the X,B rhs matrices/vectors may in general be 
+  // the same (it works when inverting - but this is the special case where B is the identity - in 
+  // general, it probably won't work)
+
 
   // check matrix inversion:
   Matrix At(3, 3, {-0.5,1.9,-3.7, 0.0,-0.2,0.6, 0.5,-0.9,1.7 }); // target matrix
   Matrix Ai = LA::inverse(A);
   r &= Ai.equals(At, tol);
 
+
   // check diagonalization:
-  A = Matrix(3, 3, { 6,1,9, 0,3,6, 0,0,2 });
+  //A = Matrix(3, 3, { 6,1,9, 0,3,6, 0,0,2 });
+  A = Matrix(3, 3, { -15,17,-3, 17,24,-14, -3,-14,48 });
   Matrix E(3, 3); E.setToIdentity();
   LA::makeSystemDiagonal(A, E);
 
+  // is this actually true diagonalization? nope doesn't seem to be - the results that are now in A
+  // and E seem to have nothing to do with the eigenvectors and eigenvalues - but what have we done
+  // what does the result represent? todo: solve a linear system with this make-diagonal approach
+
+  // Sage code:
+  // D  = matrix([[2,0,0],[0,3,0],[0,0,-5]])
+  // M  = matrix([[-1,1,-5],[1,3,-1],[2,-1,1]])
+  // MT = M.transpose()
+  // A  = MT*D*M
+  // MT,D,M,A
 
 
-  // todo: check result (see old implementation - there is the result)
 
-  // try it with 3x2 solution matrix - figure out if the X,B rhs matrices/vectors may in general be 
-  // the same (it works when inverting - but this is the special case where B is the identity - in 
-  // general, it probably won't work)
+
 
   return r;
 }
