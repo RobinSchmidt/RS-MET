@@ -785,6 +785,11 @@ bool testLinearSystemViaGauss2()
   // algorithm: make matrix diagonal - then we can compute the polynomial coeffs from the diagonal
   // elements...wait - oculd it be that the diagonal elements are already the roots of the
   // characteristic polynomial? after calling makeSystemDiagonal? i think so - figure it out!
+  // ...hmm - it probably doesn't work because the "lambda" in det(A-lambda*E) = 0 is actually 
+  // introduced before the elimination starts, so in every step, terms involving lambda get mangled
+  // in - we can't just introduce the lambda after the elimination...i think - but maybe it's 
+  // possible to keep track of all the mangling and arrive at an algo for finding the 
+  // characteristic polynomial anyway....
 
 
   return r;

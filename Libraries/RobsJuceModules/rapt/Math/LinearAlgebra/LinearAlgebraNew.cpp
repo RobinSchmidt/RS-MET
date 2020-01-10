@@ -73,7 +73,7 @@ bool rsLinearAlgebraNew::makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixV
   int N = A.getNumRows();
   for(int i = 0; i < N; i++) {
     int p = i; 
-    T maxAbs = 0.0;
+    T maxAbs = T(0);
     for(int j = i; j < N; j++) {       // search pivot row
       if(rsAbs(A(j, i)) > maxAbs) { 
         maxAbs = rsAbs(A(j, i)); 
@@ -83,12 +83,11 @@ bool rsLinearAlgebraNew::makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixV
       return false; }
     if(p != i) {                       // turn pivot row into current row
       A.swapRows(i, p); 
-      B.swapRows(i, p); 
-      p = i; }  // superfluous - we may use i directly below in place of p
+      B.swapRows(i, p); } 
     for(int j = i+1; j < N; j++) {     // pivot row subtraction
-      T s = -A(j, i) / A(p, i);        // scaler
-      A.addWeightedRowToOther(p, j, s);
-      B.addWeightedRowToOther(p, j, s); }}
+      T s = -A(j, i) / A(i, i);        // scaler
+      A.addWeightedRowToOther(i, j, s);
+      B.addWeightedRowToOther(i, j, s); }}
   return true;
 }
 // why is it that the algo doesn't need to keep track of the swaps - or is this just accidentally 
