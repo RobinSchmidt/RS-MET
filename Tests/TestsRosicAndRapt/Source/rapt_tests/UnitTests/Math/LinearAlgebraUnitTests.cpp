@@ -712,25 +712,14 @@ bool testChangeOfBasis(std::string &reportString)
 // prototype:
 // code and adpated from rsLinearAlgebra::rsSolveLinearSystemInPlace
 
+
 template<class T>
-bool solveLinearSystem(
+bool makeSystemTriangular(
   RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& X, RAPT::rsMatrixView<T>& B)
 {
-  // check, if everything makes sense:
-  rsAssert(X.getNumRows()    == A.getNumColumns());
-  rsAssert(B.getNumRows()    == A.getNumColumns());
-  rsAssert(X.getNumColumns() == B.getNumColumns());
-  rsAssert(A.isSquare()); 
-  // relax last requirement later - if not square compute approximate solution in overdetermined 
-  // cases and minimum-norm solution in underdetermined cases
-
-  int M = X.getNumColumns();  // number of required solution vectors
-  int N = A.getNumRows();     // number of elements in each solution vector
-
   T tooSmall = 1.e-12;  // if pivot is less than that, the matrix is singular
-  // use RS_EPS(T)
-
-  // row reduction:
+                        // use RS_EPS(T)
+  int N = A.getNumRows();
   for(int i = 0; i < N; i++) {
     int p = i; T maxAbs = 0.0;
     for(int j = i; j < N; j++) {       // search pivot row
@@ -743,19 +732,41 @@ bool solveLinearSystem(
       A.swapRows(i, p); 
       B.swapRows(i, p); p = i; }  
     for(int j = i+1; j < N; j++) {     // pivot row subtraction
-      T s = A(j, i) / A(p, i);         // scaler
-      A.addWeightedRowToOther(p, j, -s);
-      B.addWeightedRowToOther(p, j, -s); }}
+      T s = -A(j, i) / A(p, i);        // scaler
+      A.addWeightedRowToOther(p, j, s);
+      B.addWeightedRowToOther(p, j, s); }}
+}
 
-  // backsubstitution:
+template<class T>
+void solveTriangularSystem(
+  RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& X, RAPT::rsMatrixView<T>& B)
+{
+  int M = X.getNumColumns();  // number of required solution vectors
+  int N = A.getNumRows();     // number of elements in each solution vector
   for(int k = 0; k < M; k++) {
     for(int i = N-1; i >= 0; i--) {
       T tmp = T(0);
       for(int j = i+1; j < N; j++)
-        tmp += A(i, j) * X(j,k);
+        tmp += A(i, j) * X(j, k);
       X(i, k) = (B(i, k) - tmp) / A(i, i); }}
+}
 
-  return true;
+
+template<class T>
+bool solveLinearSystem(
+  RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& X, RAPT::rsMatrixView<T>& B)
+{
+  // check, if everything makes sense:
+  rsAssert(X.getNumRows()    == A.getNumColumns());
+  rsAssert(B.getNumRows()    == A.getNumColumns());
+  rsAssert(X.getNumColumns() == B.getNumColumns());
+  rsAssert(A.isSquare()); 
+  // relax last requirement later - if not square compute approximate solution in overdetermined 
+  // cases and minimum-norm solution in underdetermined cases
+
+  bool result = makeSystemTriangular(A, X, B);
+  solveTriangularSystem(A, X, B); // maybe skip ... when result is false
+  return result; 
 }
 // todo: move to library and use this to compute inverse matrices
 // is it actually possible that X and B share the same memory? -> seems to be the case
