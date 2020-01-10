@@ -18,16 +18,28 @@ void characteristicPolynomial()
 
   using RatFunc = RAPT::rsRationalFunction<double>;
   using Matrix  = RAPT::rsMatrix<RatFunc>;
+  using LA      = RAPT::rsLinearAlgebraNew;
 
   // Create matrix:
   // A = |-4-x  6  |
   //     |-3    5-x|
+
   RatFunc a11({-4, -1}, {1});
   RatFunc a12({ 6    }, {1});
   RatFunc a21({-3    }, {1});
   RatFunc a22({ 5, -1}, {1});
   Matrix A(2, 2, {a11,a12, a21,a22});
   // hmm - actually our A here is the A-x*I above - maybe use a different name...
+
+  // Create a dummy right hand side - it's perhaps not needed but let's use the identity matrix as 
+  // rhs and see, if something interesting comes out at the end:
+  RatFunc zero({0}, {1});  // the constant 0 promoted to a rational function object
+  RatFunc one( {1}, {1});  // same for 1
+  Matrix B(2, 2, {one,zero, zero,one});
+
+  // Making it triangular applies the Gaussian elimination:
+  //LA::makeSystemUpperTriangular(A, B); // maybe make it diagonal
+  // doesn't link - we need an instantiation
 
 
 
