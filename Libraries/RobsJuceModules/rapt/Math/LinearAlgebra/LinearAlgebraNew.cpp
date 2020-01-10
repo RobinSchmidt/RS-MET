@@ -60,7 +60,8 @@ bool rsLinearAlgebraNew::makeSystemDiagonal(rsMatrixView<T>& A, rsMatrixView<T>&
       A.addWeightedRowToOther(i, j, s);
       B.addWeightedRowToOther(i, j, s); }
   } 
-  // here, also restrict the column-range (see makeSystemUpperTriangular)
+  // here, also restrict the column-range as optimization (see makeSystemUpperTriangular)
+  // A.addWeightedRowToOther(i, j, s, i, N-1)? or (i, j, s, j, N-1)? or (i, j, s, j+1, N-1)?
 
   return true;
 }
@@ -95,7 +96,8 @@ bool rsLinearAlgebraNew::makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixV
 
 // addWeightedRowToOther should allow to specify minimum and maximum column-index - we don't need
 // to subtract zeros from zeros in the columns that are already zero from a previous step - see old
-// code - the k-loop starts at i, not at 0 - we should pass i and N-1
+// code - the k-loop starts at i, not at 0 - we should pass i and N-1:
+// A.addWeightedRowToOther(i, j, s, i, N-1), B.add..
 
 template<class T>
 void rsLinearAlgebraNew::solveUpperTriangularSystem(

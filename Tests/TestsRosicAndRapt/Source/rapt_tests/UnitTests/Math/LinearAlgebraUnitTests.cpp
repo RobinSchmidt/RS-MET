@@ -751,6 +751,8 @@ bool testLinearSystemViaGauss2()
   r &= Ai.equals(At, tol);
 
 
+  /*
+  // should go to experiment:
   // check diagonalization:
   //A = Matrix(3, 3, { 6,1,9, 0,3,6, 0,0,2 });
   A = Matrix(3, 3, { -15,17,-3, 17,24,-14, -3,-14,48 });
@@ -790,6 +792,7 @@ bool testLinearSystemViaGauss2()
   // in - we can't just introduce the lambda after the elimination...i think - but maybe it's 
   // possible to keep track of all the mangling and arrive at an algo for finding the 
   // characteristic polynomial anyway....
+  */
 
 
   return r;

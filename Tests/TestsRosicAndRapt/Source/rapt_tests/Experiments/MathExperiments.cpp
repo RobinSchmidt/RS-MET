@@ -1,6 +1,17 @@
 using namespace RAPT;
 using namespace std;
 
+void characteristicPolynomial()
+{
+  // We try to figure out how to compute the coeffs (or better: roots) of the characteristic 
+  // polynomial of a matrix via Gaussian elimination by creating a matrix of rational functions and
+  // see what happens when we unleash the elimination algorithm on it....
+
+
+
+  int dummy = 0;
+}
+
 void ellipseLineIntersections()
 {
   // create and set up ellipse:

@@ -72,6 +72,7 @@ void pixelCoverage();
 
 // Math Experiements:
 
+void characteristicPolynomial();
 void ellipseLineIntersections();
 void finiteDifferenceStencilCoeffs();
 void interpolatingFunction();
