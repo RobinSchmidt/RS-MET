@@ -714,7 +714,7 @@ bool testChangeOfBasis(std::string &reportString)
 
 
 template<class T>
-bool makeSystemTriangular(RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& B)
+bool makeSystemUpperTriangular(RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& B)
 {
   T tooSmall = 1.e-12;  // if pivot is less than that, the matrix is singular
                         // use RS_EPS(T)
@@ -735,9 +735,10 @@ bool makeSystemTriangular(RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& B)
       A.addWeightedRowToOther(p, j, s);
       B.addWeightedRowToOther(p, j, s); }}
 }
+// maybe rename to makeSystemUpperTriangular
 
 template<class T>
-void solveTriangularSystem(
+void solveUpperTriangularSystem(
   RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& X, RAPT::rsMatrixView<T>& B)
 {
   int M = X.getNumColumns();  // number of required solution vectors
@@ -749,7 +750,6 @@ void solveTriangularSystem(
         tmp += A(i, j) * X(j, k);
       X(i, k) = (B(i, k) - tmp) / A(i, i); }}
 }
-
 
 template<class T>
 bool solveLinearSystem(
@@ -763,10 +763,10 @@ bool solveLinearSystem(
   // relax last requirement later - if not square compute approximate solution in overdetermined 
   // cases and minimum-norm solution in underdetermined cases
 
-  bool invertible = makeSystemTriangular(A, B);
+  bool invertible = makeSystemUpperTriangular(A, B);
   if(!invertible)
     return false;  // matrix was found to be singular
-  solveTriangularSystem(A, X, B);
+  solveUpperTriangularSystem(A, X, B);
   return true; 
 }
 // todo: move to library and use this to compute inverse matrices
@@ -784,26 +784,16 @@ std::vector<T> solveLinearSystem(RAPT::rsMatrix<T>& A, std::vector<T>& b)
 }
 // make a version that operates on raw arrays
 
-
 template<class T>
 RAPT::rsMatrix<T> inverse(const RAPT::rsMatrix<T>& A)
 {
   rsAssert(A.isSquare()); // relax later - compute pseudoinverse in non-square case
   int N = A.getNumRows();
-  RAPT::rsMatrix<T> tmp = A, E(N, N), Ai(N, N);
+  RAPT::rsMatrix<T> tmp = A, E(N, N);
   E.setToIdentity();
-
   solveLinearSystem(tmp, E, E);
   return E; 
-  // this seems to work, too - solver can be used in-place - i think, the backsubstitution step is 
-  // superfluous in case of the identity matrix, so maybe factor it out and to compute an inverse,
-  // leave it out
-
-  //solveLinearSystem(tmp, Ai, E);
-  //return Ai;
 }
-// this is not the optimal way - using Gauss-Jordan, we may use less memory and maybe also save
-// operations and hence improve precision?
 
 // tests the new implementation
 bool testLinearSystemViaGauss2()
@@ -823,12 +813,9 @@ bool testLinearSystemViaGauss2()
   tmp = A, b = A*x;                        // restore destroyed tmp and b
 
 
-
-
   Matrix Ai = inverse(A);
 
   // try it with 3x2 solution matrix
-
 
   return r;
 }
