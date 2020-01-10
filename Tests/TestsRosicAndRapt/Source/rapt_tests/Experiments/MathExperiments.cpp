@@ -20,8 +20,7 @@ void characteristicPolynomial()
   using Matrix  = RAPT::rsMatrix<RatFunc>;
   using LA      = RAPT::rsLinearAlgebraNew;
 
-
-  // Create matrix:
+  // Create matrix A:
   // A = |-4  6|
   //     |-3  5|
   RatFunc a11({-4}, {1});
@@ -30,15 +29,6 @@ void characteristicPolynomial()
   RatFunc a22({ 5}, {1});
   Matrix A(2, 2, {a11,a12, a21,a22});
 
-  // Create matrix:
-  // B = |-4-x  6  |
-  //     |-3    5-x|
-  RatFunc b11({-4, -1}, {1});
-  RatFunc b12({ 6    }, {1});
-  RatFunc b21({-3    }, {1});
-  RatFunc b22({ 5, -1}, {1});
-  //Matrix B(2, 2, {b11,b12, b21,b22});
-
   // Create identity matrix:
   // I = |1  0|
   //     |0  1|
@@ -46,40 +36,42 @@ void characteristicPolynomial()
   RatFunc one( {1}, {1});  // same for 1
   Matrix I(2, 2, {one,zero, zero,one});
 
-  // maybe use a statement like Matrix B = A - x * I where x is a rational function
+  // Create matrix B = A - x*I:
+  // B = |-4-x  6  |
+  //     |-3    5-x|
   RatFunc x({0, 1}, {1});  // x = (0 + 1x) / 1
+  Matrix B = A - x*I; // this should lead to the same B
 
-  Matrix B;
-  B = A - x*I; // this should lead to the same B
-
-
-
-
-
-  // Create a dummy right hand side - it's perhaps not needed but let's use the identity matrix as 
-  // rhs and see, if something interesting comes out at the end:
-
-
-
-
-  // Making it triangular applies the Gaussian elimination:
-  LA::makeSystemUpperTriangularNoPivot(B, I); // maybe make it diagonal
-  // doesn't link - we need an instantiation - we need a conversion constructor from a double
-  // and an rsAbs function that returns something that is comparable by >,<
-  // also the += operator, unary -, rsIsCloseTo must work, so we need a binary - operator that 
-  // takes a RatFunc and a number (maybe the conversion constructor can take care of this)
-  // i think, for a polynomial rsAbs should return the absolute value of the constant term in this
-  // context - or maybe the absolute value of the leading coeff? and for rational functions that 
-  // should be divided by the corresponding denominator term?
-  // but maybe we should not use pivoting for rational functions at all? all this stuff is only
-  // used for pivoting but rational functions are always divisible unless the diviso is zero
-  // ..but no: it may still have to exchange rows if it encounters a row with a zero - but maybe
-  // we can get away without pivoting in this case...
-
-
-
+  // This call will apply the Gaussian elimination - after that, B will be an upper triangular 
+  // matrix (a.k.a. "row echelon form"): 
+  LA::makeSystemUpperTriangularNoPivot(B, I); 
+  // maybe make it diagonal instead of triangular - this would be the *reduced* row echelon form
 
   int dummy = 0;
+
+  // This Sage code:
+  // A = matrix([[-4,6],[-3,5]])
+  // E = matrix([[ 1,0],[ 0,1]])
+  // R.<x>=QQ[]   # to prevent x from vanshing
+  // B = A - x*E  # for computing eigenvalues x of A
+  // R = B.echelon_form()
+  // A,E,B,R
+  //
+  // produces:
+  // 1  1/(3x) - 5/3
+  // 0  x^2 - x - 2
+  //
+  // see here, why the R.<x>=QQ[] is needed:
+  // https://ask.sagemath.org/question/8386/row-echelon-form-of-a-matrix-containing-symbolic-expresssions/
+  // http://www.cfm.brown.edu/people/dobrush/am34/sage/echelon.html
+
+  // our B matrix seems to agree up to a factor of -4 - 4x - maybe we must multiply the whole matrix 
+  // by that function (which acts as a scalar in this context)? ..then we need to also scale the I 
+  // matrix - wait - no: the -4-x term is in the numerator of B(0,0) and in the denominator of B(1,1)
+  // ...also B(1,0) has a zero-sized numerator!
+
+  // B *= B(1,1).getDenominator(); // do this!
+
 
   /*
   // copied - maybe delete later:
