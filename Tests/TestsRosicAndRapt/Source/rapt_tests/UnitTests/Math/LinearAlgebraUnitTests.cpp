@@ -714,8 +714,7 @@ bool testChangeOfBasis(std::string &reportString)
 
 
 template<class T>
-bool makeSystemTriangular(
-  RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& X, RAPT::rsMatrixView<T>& B)
+bool makeSystemTriangular(RAPT::rsMatrixView<T>& A, RAPT::rsMatrixView<T>& B)
 {
   T tooSmall = 1.e-12;  // if pivot is less than that, the matrix is singular
                         // use RS_EPS(T)
@@ -764,9 +763,11 @@ bool solveLinearSystem(
   // relax last requirement later - if not square compute approximate solution in overdetermined 
   // cases and minimum-norm solution in underdetermined cases
 
-  bool result = makeSystemTriangular(A, X, B);
-  solveTriangularSystem(A, X, B); // maybe skip ... when result is false
-  return result; 
+  bool invertible = makeSystemTriangular(A, B);
+  if(!invertible)
+    return false;  // matrix was found to be singular
+  solveTriangularSystem(A, X, B);
+  return true; 
 }
 // todo: move to library and use this to compute inverse matrices
 // is it actually possible that X and B share the same memory? -> seems to be the case
