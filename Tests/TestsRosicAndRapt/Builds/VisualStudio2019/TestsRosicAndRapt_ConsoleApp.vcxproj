@@ -450,12 +450,6 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterNew.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterOld.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\Plotting.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -631,6 +625,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LinearAlgebra.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LinearAlgebraNew.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\OouraFFT\fft4g.cpp">
@@ -2452,8 +2449,6 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\Constants.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\DebugTools.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotter.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterNew.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterOld.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\MacroDefinitions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\Plotting.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\SortAndSearch.h"/>
@@ -2517,6 +2512,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\XBlas.hpp"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\BandDiagonalSolver.hpp"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LinearAlgebra.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LinearAlgebraNew.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\CurveFitting.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\FourierTransformer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\RatioGenerator.h"/>

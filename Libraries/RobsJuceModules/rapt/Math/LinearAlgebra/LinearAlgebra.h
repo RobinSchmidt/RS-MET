@@ -110,22 +110,27 @@ public:
 
   template<class T>
   static bool makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B);
+  // doesn't allocate
 
   template<class T>
   static void solveUpperTriangularSystem(
     rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
+  // doesn't allocate
 
   template<class T>
   static bool solveLinearSystem(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
+  // doesn't alloctae
 
 
   // convenience function:
   template<class T>
   static std::vector<T> solveLinearSystem(rsMatrixView<T>& A, std::vector<T>& b);
+  // allocates
   // make inputs const
 
   template<class T>
   static rsMatrix<T> inverse(const RAPT::rsMatrixView<T>& A);
+  // allocates
 
 
 

@@ -11,6 +11,7 @@ namespace RAPT
 #include "Types/Vector.h"  // move to LinearAlgebra
 #include "Types/Matrix.h"
 #include "LinearAlgebra/LinearAlgebra.h"
+#include "LinearAlgebra/LinearAlgebraNew.h"
 
 #include "Misc/FourierTransformer.h"
 #include "Misc/Statistics.h"

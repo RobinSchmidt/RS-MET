@@ -397,6 +397,8 @@ bool rsLinearAlgebra::makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixView
       B.addWeightedRowToOther(p, j, s); }}
   return true;
 }
+// why is it that the algo doesn't need to keep track of the swaps - or is this just accidentally 
+// the with out particular test examples? -> make unit tests with random matrices and vectors
 
 template<class T>
 void rsLinearAlgebra::solveUpperTriangularSystem(
