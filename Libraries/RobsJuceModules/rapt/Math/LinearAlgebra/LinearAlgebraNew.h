@@ -48,7 +48,7 @@ public:
 
   template<class T>
   static bool makeSystemDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B);
-  // needs test, doesn't allocate
+  // needs test, doesn't allocate, maybe remove from library - doesn't seem to be useful
 
 
 

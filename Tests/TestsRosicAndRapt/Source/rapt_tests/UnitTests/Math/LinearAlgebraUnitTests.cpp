@@ -709,6 +709,17 @@ bool testChangeOfBasis(std::string &reportString)
 // the solving for x and y respectively and defining C as conversion matrix from x to y and C-^1
 // the inverse conversion, can also be verified by E = C * C^-1 = A^-1 * B * B^-1 * A
 
+template<class T>
+void solveDiagonalSystem(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
+{
+  int M = X.getNumColumns();  // number of required solution vectors
+  int N = A.getNumRows();     // number of elements in each solution vector
+  for(int k = 0; k < M; k++) 
+    for(int i = N-1; i >= 0; i--) 
+      X(i, k) = B(i, k) / A(i, i);
+}
+// adapted from solveUpperDiagonalSystem
+
 
 // tests the new implementation
 bool testLinearSystemViaGauss2()
@@ -745,20 +756,25 @@ bool testLinearSystemViaGauss2()
   A = Matrix(3, 3, { -15,17,-3, 17,24,-14, -3,-14,48 });
   Matrix E(3, 3); E.setToIdentity();
   LA::makeSystemDiagonal(A, E);
+  // after that E contains the inverse of A with its rows scaled by the diagonal elements that are
+  // still in A - that doesn't seem to be useful - remove from library - move to experiments
+
+  solveDiagonalSystem(A, E, E);
 
   // is this actually true diagonalization? nope doesn't seem to be - the results that are now in A
   // and E seem to have nothing to do with the eigenvectors and eigenvalues - but what have we done
-  // what does the result represent? todo: solve a linear system with this make-diagonal approach
+  // what does the result represent? is it the inverse with rows scaled by the diagonal elements
+  // of the resulting A?
 
   // Sage code:
   // D  = matrix([[2,0,0],[0,3,0],[0,0,-5]])
   // M  = matrix([[-1,1,-5],[1,3,-1],[2,-1,1]])
   // MT = M.transpose()
   // A  = MT*D*M
-  // MT,D,M,A
+  // Ai = A.inverse()
+  // MT,D,M,A,Ai
 
-
-
+  // figure out how to diagonalize a matrix using the Gaussian elemination
 
 
   return r;
