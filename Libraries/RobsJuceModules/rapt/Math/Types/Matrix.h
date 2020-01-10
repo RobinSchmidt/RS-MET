@@ -203,6 +203,13 @@ public:
   static bool areMultiplicable(const rsMatrixView<T>& A, const rsMatrixView<T>& B)
   { return A.numCols == B.numRows; }
 
+  /** Returns true, iff the rhs matrix is equal to this matrix with an optional tolerance. */
+  bool equals(const rsMatrixView<T>& rhs, T tolerance = T(0)) const
+  {
+    return areSameShape(*this, rhs) 
+      && rsArrayTools::almostEqual(dataPointer, rhs.dataPointer, getSize(), tolerance);
+  }
+
   /** Returns the number of rows. */
   int getNumRows()    const { return numRows; }
 

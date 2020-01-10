@@ -77,7 +77,10 @@ public:
   static void applyFunction(const T* inBuffer, T* outBuffer, const int length, T (*f) (T));
   // why can't we make the function-pointer const? ...rosic doesn't compile when trying
 
-  /** Checks, if the two buffers are elementwise approximately equal within the given tolerance. */
+  /** Checks, if the two buffers are elementwise approximately equal within the given tolerance. To 
+  be considered within the tolerance, the absolute value of the difference must not be greater 
+  than the given tolerance. In the case of perfect equality, it is considered to be within the 
+  tolerance to make it work correctly also for zero tolerance. */
   template <class T>
   static inline bool almostEqual(const T *buffer1, const T *buffer2, 
     const int length, const T tolerance);
@@ -750,11 +753,9 @@ template <class T>
 inline bool rsArrayTools::almostEqual(const T *buffer1, const T *buffer2, 
   const int length, const T tolerance)
 {
-  for(int i = 0; i < length; i++)
-  {
+  for(int i = 0; i < length; i++) {
     if(rsAbs(buffer1[i]-buffer2[i]) > tolerance)
-      return false;
-  }
+      return false; }
   return true;
 }
 

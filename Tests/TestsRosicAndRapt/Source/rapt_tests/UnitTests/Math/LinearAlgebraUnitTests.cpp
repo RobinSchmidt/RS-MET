@@ -718,6 +718,7 @@ bool testLinearSystemViaGauss2()
   using Vector = std::vector<double>;
   using Matrix = rsMatrix<double>;
   using LA     = rsLinearAlgebraNew;
+  double tol   = 1.e-14;
 
   //rsMatrix<double> A(3, 3, { 1,2,3, 4,5,6, 7,8,9 }); // this matrix is singular
   Matrix A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
@@ -725,10 +726,15 @@ bool testLinearSystemViaGauss2()
   Vector x({1,2,3});
   Vector b  = A * x;                            //       A * x = b
   Vector x2 = LA::solveLinearSystem(tmp, b);    // solve A * x = b for x
-  r &= RAPT::rsAreVectorsEqual(x, x2, 1.e-14);
+  r &= RAPT::rsAreVectorsEqual(x, x2, tol);
   tmp = A, b = A*x;                             // restore destroyed tmp and b
 
+
+  // check matrix inversion:
+  Matrix At(3, 3, {-0.5,1.9,-3.7, 0.0,-0.2,0.6, 0.5,-0.9,1.7 }); // target matrix
   Matrix Ai = LA::inverse(A);
+  r &= Ai.equals(At, tol);
+
   // todo: check result (see old implementation - there is the result)
 
   // try it with 3x2 solution matrix - figure out if the X,B rhs matrices/vectors may in general be 

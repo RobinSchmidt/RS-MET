@@ -102,5 +102,6 @@ ToDo:
  the diagonalizer - this can be used for diagonalization later
 -functions that ares still valid in the new framework (the band-diagonal and 2x2 stuff) shall
   eventually be moved over to here
+-Gram-Schmidt orthogonalization of a set of basis vectors
 
 */
