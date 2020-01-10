@@ -48,17 +48,22 @@ bool rsLinearAlgebraNew::solveLinearSystem(
 template<class T>
 bool rsLinearAlgebraNew::makeSystemDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
-  rsError("not yet implemented");
+  //rsError("not yet implemented");
+  bool success = makeSystemUpperTriangular(A, B);
+  if(!success)
+    return false;
 
-  // todo: call makeUpperTriangular, subtract rows from bottom to top
+  int N = A.getNumRows();
+  for(int i = N-1; i >= 0; i--) {
+    for(int j = i-1; j >= 0; j--) {
+      T s = -A(j, i) / A(i, i);
+      A.addWeightedRowToOther(i, j, s);
+      B.addWeightedRowToOther(i, j, s); }
+  } 
+  // here, also restrict the column-range (see makeSystemUpperTriangular)
 
+  return true;
 }
-
-
-
-
-
-
 
 template<class T>
 bool rsLinearAlgebraNew::makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)

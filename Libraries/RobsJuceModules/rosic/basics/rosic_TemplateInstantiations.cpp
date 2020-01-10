@@ -55,12 +55,19 @@ template void RAPT::dfst(int, double *, double *, int *, double *);
 // ...try what happens now, if we delete these instantiations again (and maybe revert fft4g to its
 // old state - maybe it was using the rapt version in rosic that made the difference...)
 
+// actually, this stuff is not yet used in rosic - maybe move instantiations to rs_testing
 template class RAPT::rsMatrixView<double>;
 template class RAPT::rsMatrix<double>;
-
 template std::vector<double> RAPT::rsLinearAlgebraNew::solveLinearSystem(
   rsMatrixView<double>& A, std::vector<double>& B);
-template RAPT::rsMatrix<double> RAPT::rsLinearAlgebraNew::inverse(const RAPT::rsMatrixView<double>& A);
+template RAPT::rsMatrix<double> RAPT::rsLinearAlgebraNew::inverse(
+  const RAPT::rsMatrixView<double>& A);
+
+template bool RAPT::rsLinearAlgebraNew::makeSystemDiagonal(
+  RAPT::rsMatrixView<double>& A, RAPT::rsMatrixView<double>& B);
+
+
+
 
 
 template class RAPT::rsNodeBasedFunction<double>;

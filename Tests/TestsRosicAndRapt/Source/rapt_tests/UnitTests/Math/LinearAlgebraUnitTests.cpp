@@ -735,6 +735,13 @@ bool testLinearSystemViaGauss2()
   Matrix Ai = LA::inverse(A);
   r &= Ai.equals(At, tol);
 
+  // check diagonalization:
+  A = Matrix(3, 3, { 6,1,9, 0,3,6, 0,0,2 });
+  Matrix E(3, 3); E.setToIdentity();
+  LA::makeSystemDiagonal(A, E);
+
+
+
   // todo: check result (see old implementation - there is the result)
 
   // try it with 3x2 solution matrix - figure out if the X,B rhs matrices/vectors may in general be 
