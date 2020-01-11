@@ -191,21 +191,21 @@ template void RAPT::rsPolynomial<std::complex<double>>::subtract(
 template class RAPT::rsMatrixView<double>;
 template class RAPT::rsMatrix<double>;
 
-template std::vector<double> RAPT::rsLinearAlgebraNew::solveLinearSystem(
+template std::vector<double> RAPT::rsLinearAlgebraNew::solve(
   rsMatrixView<double>& A, std::vector<double>& B);
 
 // these instantiations need some more operations defined on rsRationalFunction
 //template std::vector<RAPT::rsRationalFunction<double>> RAPT::rsLinearAlgebraNew::solveLinearSystem(
 //  rsMatrixView<RAPT::rsRationalFunction<double>>& A, std::vector<RAPT::rsRationalFunction<double>>& B);
 
-template bool RAPT::rsLinearAlgebraNew::makeSystemUpperTriangularNoPivot(
+template void RAPT::rsLinearAlgebraNew::makeTriangularNoPivot(
   rsMatrixView<RAPT::rsRationalFunction<double>>& A, 
   rsMatrixView<RAPT::rsRationalFunction<double>>& B);
 
 template RAPT::rsMatrix<double> RAPT::rsLinearAlgebraNew::inverse(
   const RAPT::rsMatrixView<double>& A);
 
-template bool RAPT::rsLinearAlgebraNew::makeSystemDiagonal(
+template bool RAPT::rsLinearAlgebraNew::makeDiagonal(
   RAPT::rsMatrixView<double>& A, RAPT::rsMatrixView<double>& B);
 
 

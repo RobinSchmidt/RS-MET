@@ -66,12 +66,12 @@ void characteristicPolynomial()
   // This call will apply the Gaussian elimination - after that, B will be an upper triangular 
   // matrix (a.k.a. "row echelon form"): 
   Matrix R = I;  // rhs for solver
-  LA::makeSystemUpperTriangularNoPivot(B, R); 
+  LA::makeTriangularNoPivot(B, R); 
   //makeSystemUpperTriangularNoPivot(B, I); 
   // maybe make it diagonal instead of triangular - this would be the *reduced* row echelon form
 
   // ToDo: call solveUpperTriangularSystem in order to compute the inverse matrix of B
-  LA::solveUpperTriangularSystem(B, R, R);  // is this correct?
+  //LA::solve(B, R, R);  // is this correct? we need to instantiate it!
 
   // R should now contain the inverse of B - is this something interesting?
 

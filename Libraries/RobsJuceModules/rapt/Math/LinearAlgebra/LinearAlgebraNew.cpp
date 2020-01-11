@@ -1,11 +1,11 @@
 
 template<class T>
-std::vector<T> rsLinearAlgebraNew::solveLinearSystem(RAPT::rsMatrixView<T>& A, std::vector<T>& b)
+std::vector<T> rsLinearAlgebraNew::solve(RAPT::rsMatrixView<T>& A, std::vector<T>& b)
 {
   int N = (int) b.size();
   std::vector<T> x(N);
   rsMatrixView<T> vx(N, 1, &x[0]), vb(N, 1, &b[0]);
-  solveLinearSystem(A, vx, vb);
+  solve(A, vx, vb);
   return x;
 }
 // make a version that operates on raw arrays
@@ -17,18 +17,26 @@ RAPT::rsMatrix<T> rsLinearAlgebraNew::inverse(const RAPT::rsMatrixView<T>& A)
   int N = A.getNumRows();
   RAPT::rsMatrix<T> tmp(N, N, A.getDataPointerConst()), E(N, N);
   E.setToIdentity();
-  solveLinearSystem(tmp, E, E); // why does it work to use E for both - because E is the identity?
+  solve(tmp, E, E);      // why does it work to use E for both - because E is the identity?
   return E; 
 }
-// maybe make a member function of rsMatrixView...hmm - but maybe not - this introduces too much
-// circular dependencies between rsMatrixView/rsMatrix/rsLinearAlgebraNew - at the moment, the
-// dependency is rsMatrixView < rsMatrix and rsMatrixView < rsLinearAlgebraNew (where < means
-// "right depends on left")
+// figure out and document the conditions under which we may use "solve" in place, i.e. the 3rd
+// argument may equal the 2nd (E,E here) - i think, E must be upper triangular such that during the
+// elimination only zeros get subtracted - but the algo may swap rows - so perhaps it works only if
+// E is diagonal? in this case, whatever gets swapped, we will only ever add zeros to the rows
+
+// maybe make a member function getInverse of rsMatrixView...hmm - but maybe not - this introduces 
+// too much circular dependencies between rsMatrixView/rsMatrix/rsLinearAlgebraNew - at the moment, 
+// the dependency is rsMatrixView < rsMatrix and rsMatrixView < rsLinearAlgebraNew (where < means
+// "right depends on left"). I actually want rsMatrix to remain independent of rsLinearAlgebraNew
+// because linear algebra is something *on top* of matrices...or maybe move basic, *simple* LA 
+// algorithms into the class rsMatrixView and use this class here only for more sophisticated stuff
+// ...hmm - but no - i think, rsMatrix/View should be responsibel only for basic arithmetic, otoh
+// matrix "division" is an arithmetic operation - we'll see
 
 
 template<class T>
-bool rsLinearAlgebraNew::solveLinearSystem(
-  rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
+bool rsLinearAlgebraNew::solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
 {
   // check, if everything makes sense:
   rsAssert(X.getNumRows()    == A.getNumColumns());
@@ -38,18 +46,18 @@ bool rsLinearAlgebraNew::solveLinearSystem(
   // relax last requirement later - if not square compute approximate solution in overdetermined 
   // cases and minimum-norm solution in underdetermined cases
 
-  bool invertible = makeSystemUpperTriangular(A, B);
+  bool invertible = makeTriangular(A, B);
   if(!invertible)
     return false;  // matrix was found to be singular
-  solveUpperTriangularSystem(A, X, B);
+  solveTriangular(A, X, B);
   return true; 
 }
 
 template<class T>
-bool rsLinearAlgebraNew::makeSystemDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
+bool rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
   //rsError("not yet implemented");
-  bool success = makeSystemUpperTriangular(A, B);
+  bool success = makeTriangular(A, B);
   if(!success)
     return false;
 
@@ -67,7 +75,7 @@ bool rsLinearAlgebraNew::makeSystemDiagonal(rsMatrixView<T>& A, rsMatrixView<T>&
 }
 
 template<class T>
-bool rsLinearAlgebraNew::makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
+bool rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
   rsAssert(A.isSquare()); // can we relax this?
 
@@ -105,18 +113,15 @@ bool rsLinearAlgebraNew::makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixV
 //bool makeSystemUpperTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B);
 
 template<class T>
-bool rsLinearAlgebraNew::makeSystemUpperTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B)
+void rsLinearAlgebraNew::makeTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
   rsAssert(A.isSquare()); // can we relax this?
-  int N = A.getNumRows();
-  for(int i = 0; i < N; i++) {
-    if(A(i, i) == T(0)) { 
-      rsError("This matrix needs pivoting"); return false; }
-    for(int j = i+1; j < N; j++) {
+  for(int i = 0; i < A.getNumRows(); i++) {  
+    rsAssert(!(A(i, i) == T(0)), "This matrix needs pivoting");
+    for(int j = i+1; j < A.getNumRows(); j++) {
       T s = -A(j, i) / A(i, i);
       A.addWeightedRowToOther(i, j, s, i, A.getNumColumns()-1); // start at i: avoid adding zeros
       B.addWeightedRowToOther(i, j, s); }}
-  return true;
 }
 // maybe we should have a version that swaps when encountering a zero, maybe make an even simpler
 // version without the test for zero - if client code knows that the matrix is in a form such that
@@ -125,7 +130,7 @@ bool rsLinearAlgebraNew::makeSystemUpperTriangularNoPivot(rsMatrixView<T>& A, rs
 
 
 template<class T>
-void rsLinearAlgebraNew::solveUpperTriangularSystem(
+void rsLinearAlgebraNew::solveTriangular(
   rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
 {
   int M = X.getNumColumns();  // number of required solution vectors

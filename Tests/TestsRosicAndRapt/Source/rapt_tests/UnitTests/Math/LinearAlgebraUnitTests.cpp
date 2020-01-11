@@ -736,7 +736,7 @@ bool testLinearSystemViaGauss2()
   Matrix tmp = A;                               // because algo destroys the original A
   Vector x({1,2,3});
   Vector b  = A * x;                            //       A * x = b
-  Vector x2 = LA::solveLinearSystem(tmp, b);    // solve A * x = b for x
+  Vector x2 = LA::solve(tmp, b);                // solve A * x = b for x
   r &= RAPT::rsAreVectorsEqual(x, x2, tol);
   tmp = A, b = A*x;                             // restore destroyed tmp and b
 

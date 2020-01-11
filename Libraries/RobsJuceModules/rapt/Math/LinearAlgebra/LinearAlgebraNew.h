@@ -30,7 +30,7 @@ public:
   allocate memory) */
 
   template<class T>
-  static std::vector<T> solveLinearSystem(rsMatrixView<T>& A, std::vector<T>& b);
+  static std::vector<T> solve(rsMatrixView<T>& A, std::vector<T>& b);
   // allocates
   // make inputs const
   // rename to solve
@@ -43,7 +43,7 @@ public:
   /** \name Solvers */
 
   template<class T>
-  static bool solveLinearSystem(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
+  static bool solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
   // doesn't allocate, destroys A,B
   // rename to solve
 
@@ -60,16 +60,18 @@ public:
   contain several right hand side vectors and the matrix X should contain just as many solutions. 
   The process used is Gaussian elimination with partial pivoting. */
   template<class T>
-  static bool makeSystemUpperTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B);
+  static bool makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B);
   // doesn't allocate
   // rename to makeUpperTriangular or makeTriangular or rowEchelon
 
   /** Simplified version that doesn't use pivoting - this may fail even for non-singular 
-  matrices, so it's not recommended for general use. It has less requirements on the datatype T 
-  (doesn't require comparison operators <,> or an rsAbs function defined for it - it does, 
-  however, require an == operator). */
+  matrices, so it's not recommended for general use but if you know that the elimination will never
+  encounter a zero diagonal element, you may use this version for optimization purposes. It also 
+  has less requirements on the datatype T, so it may be used in cases where the datatype doesn't 
+  meet all reuqirements needed for pivoting. It doesn't require comparison operators <,> or an 
+  rsAbs function defined for it - it does, however, require an == operator. */
   template<class T>
-  static bool makeSystemUpperTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B);
+  static void makeTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B);
   // doesn't allocate
 
   /** This produces the so called *reduced* row echelon form of a linear system of equations. In 
@@ -80,13 +82,13 @@ public:
   D is a diagonal matrix with the eigenvalues on the main diagonal - this is NOT what this function 
   does). */
   template<class T>
-  static bool makeSystemDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B);
+  static bool makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B);
   // needs test, doesn't allocate, maybe remove from library - doesn't seem to be useful
   // rename to makeDiagonal or reducedRowEchelon
 
 
   template<class T>
-  static void solveUpperTriangularSystem(
+  static void solveTriangular(
     rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
   // doesn't allocate, rename to solveTriangular - document, if it can be used in place, i.e. X==B
 
