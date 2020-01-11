@@ -71,12 +71,12 @@ bool rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
   int N = A.getNumRows();
   for(int i = 0; i < N; i++) {
     int p = i; 
-    T maxAbs = T(0);
+    T biggest = T(0);
     for(int j = i; j < N; j++) {                                // search pivot row
-      if(rsAbs(A(j, i)) > maxAbs) { 
-        maxAbs = rsAbs(A(j, i)); 
+      if( rsGreaterAbs(A(j, i), biggest) ){ 
+        biggest = A(j, i); 
         p = j; }}
-    if(rsIsCloseTo(maxAbs, 0.0, tooSmall)) {
+    if(rsIsCloseTo(biggest, T(0), tooSmall)) {
       rsError("Matrix (numerically) singular");
       return false; }
     if(p != i) {                                                // turn pivot row into current row

@@ -104,7 +104,7 @@ vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
 
   for(int i = 0; i < N; i++) {
     B(i, i) = A(i, i) - eigenValues[i];         // shift diagonal element
-    //eigenVectors[i] = LA::solve(B, zeroVector); // solve A - x_i * I == 0
+    eigenVectors[i] = LA::solve(B, zeroVector); // solve A - x_i * I == 0
     B(i, i) = A(i, i);                          // restore diagonal element
   }
 
@@ -150,6 +150,7 @@ void characteristicPolynomial()
   //vector<complex<double>> eigenvalues2 = getEigenvalues(A);
 
   vector<vector<complex<double>>> eigenVectors = getEigenvectors(A);
+  // they are both computed as zero - can that be? -> ask sage!
 
 
   // What is actually the set of matrices that gives zero when plugged into the polynomial? Are

@@ -856,6 +856,19 @@ T rsArrayTools::maxAbs(const T *buffer, int length)
       max = rsAbs(buffer[i]); }
   return max;
 }
+// maybe optimize such that rsAbs is called only once
+
+template <class T>
+static T rsArrayTools::maxAbs(const std::complex<T>* buffer, int length)
+{
+  T maxSquared = T(0);
+  for(int i = 0; i < length; ++i) {
+    T absSquared = rsAbsSquared(buffer[i]);
+    if(absSquared > maxSquared)
+      maxSquared = absSquared; }
+  return sqrt(maxSquared);
+}
+
 
 template <class T>
 int rsArrayTools::maxAbsIndex(const T* const buffer, int length)

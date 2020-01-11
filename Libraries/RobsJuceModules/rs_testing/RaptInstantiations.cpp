@@ -136,6 +136,9 @@ template void rsArrayTools::fillWithRandomValues(std::complex<double>* x, int N,
 // rsArrayTools<rsRange>
 template int rsArrayTools::maxIndex(const rsRange<double>*, int length);
 
+template double rsArrayTools::maxAbs(const std::complex<double> *buffer, int length);
+
+
 // rsArrayTools<rosic::rsFloat32x4>
 //template void rsArrayTools::fillWithRandomValues(rosic::rsFloat32x4* x, int N, double min, double max, int seed);
 
@@ -195,11 +198,11 @@ template std::vector<double> RAPT::rsLinearAlgebraNew::solve(
   const rsMatrixView<double>& A, const std::vector<double>& B);
 
 
-/*
+
 template std::vector<std::complex<double>> RAPT::rsLinearAlgebraNew::solve(
   const rsMatrixView<std::complex<double>>& A, 
   const std::vector<std::complex<double>>& B);
-*/
+
 // doesn't compile because the > comparison in the pivoting doesn't work with complex numbers
 // possible solution: implement a > operator for std::complex numbers - compare real parts first,
 // then imag

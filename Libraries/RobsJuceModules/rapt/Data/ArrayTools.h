@@ -478,6 +478,10 @@ public:
   template <class T>
   static T maxAbs(const T *buffer, int length);
 
+  template <class T>
+  static T maxAbs(const std::complex<T> *buffer, int length);
+
+
   /** Finds and returns the index with the maximum absolute value of the buffer. */
   template <class T>
   static int maxAbsIndex(const T* const buffer, int length);
