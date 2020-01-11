@@ -279,6 +279,11 @@ public:
   // actually, we should move this to rsArrayTools::getOverlap(T* x, size_t Nx, T*y, size_t Ny)
   // needs unit test
 
+  /** Returns the maximum absolute value of all elements in the matrix. */
+  T getAbsoluteMaximum() const { return rsArrayTools::maxAbs(dataPointer, getSize()); }
+
+  // todo: getTrace(), getDiagonalProduct()
+
   //-----------------------------------------------------------------------------------------------
   /** \name Manipulation */
 

@@ -58,8 +58,13 @@ bool rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
   rsAssert(A.isSquare()); // can we relax this?
 
-  T tooSmall = 1.e-12;  // if pivot is less than that, the matrix is singular
-                        // todo: use something based on RS_EPS(T)
+  //T tooSmall = 1.e-12;  // if pivot is less than that, the matrix is singular
+  // todo: use something based on RS_EPS(T) - but actually, the absolute value is perhaps not 
+  // relevant - use something base on eps times the largest absolute element of the matrix?
+  // RS_EPS(T) * A.getMaximum();
+
+  T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum(); // ad hoc -> todo: research
+
   int N = A.getNumRows();
   for(int i = 0; i < N; i++) {
     int p = i; 
