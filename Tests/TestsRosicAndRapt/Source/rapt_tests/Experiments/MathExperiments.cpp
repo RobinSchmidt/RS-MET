@@ -71,59 +71,21 @@ void characteristicPolynomial()
   // the matrix itself - we can't introduce it after the elimination. So, what we do instead is to
   // consider a full-blown matrix of rsRationalFunction objects....
 
+  
   using Poly    = RAPT::rsPolynomial<double>;
-  using RatFunc = RAPT::rsRationalFunction<double>;
-  using Matrix  = RAPT::rsMatrix<RatFunc>;
-  using LA      = RAPT::rsLinearAlgebraNew;
+  using Matrix  = RAPT::rsMatrix<double>;
 
   // Create matrix A:
   // A = |-4  6|
   //     |-3  5|
-  RatFunc a11({-4}, {1});
-  RatFunc a12({ 6}, {1});
-  RatFunc a21({-3}, {1});
-  RatFunc a22({ 5}, {1});
-  Matrix A(2, 2, {a11,a12, a21,a22});
-
-  // Create identity matrix:
-  // I = |1  0|
-  //     |0  1|
-  RatFunc zero({0}, {1});  // the constant 0 promoted to a rational function object
-  RatFunc one( {1}, {1});  // same for 1
-  Matrix I(2, 2, {one,zero, zero,one});
-
-  // Create matrix B = A - x*I:
-  // B = |-4-x  6  |
-  //     |-3    5-x|
-  RatFunc x({0, 1}, {1});  // x = (0 + 1x) / 1
-  Matrix B = A - x*I;
-
-  // This call will apply the Gaussian elimination - after that, B will be an upper triangular 
-  // matrix (a.k.a. "row echelon form"): 
-  Matrix R = I;  // rhs for solver
-  LA::makeTriangularNoPivot(B, R); 
-  //makeSystemUpperTriangularNoPivot(B, I); 
-  // maybe make it diagonal instead of triangular - this would be the *reduced* row echelon form
-
-  // ToDo: call solveUpperTriangularSystem in order to compute the inverse matrix of B
-  //LA::solve(B, R, R);  // is this correct? we need to instantiate it!
-
-  // R should now contain the inverse of B - is this something interesting?
-
-  RatFunc d = B(0,0) * B(1,1);                       // determinant is product of diagonal elements
-  rsAssert(d.getDenominatorDegree() == 0);           // denominator should be just a constant
-  Poly p = d.getNumerator() / d.getDenominator()[0]; // this is our characteristic polynomial
-  // OK - the so found characteristic polynomial p(x) = x^2 - x - 2 = (x-1) * (x-2) agrees with 
-  // what sage finds. 
+  Matrix A(2, 2, {-4,6, -3,5});
+  Poly p = getCharacteristicPolynomial(A);
 
   // The matrix plugged into its characteristic polynomial as argument should yield the zero 
   // matrix. Matrices are "roots" of their own characteristic polynomials:
-  Matrix pA = (one*p[0])*I + (one*p[1])*A + (one*p[2]) * A*A; 
-  // simplify - get rid of the "one" - needs some more operators in RatFunc/Poly/Matrix - we want
-  // to write pA = p[0] * I + p[1] * A + p[2] * A*A; 
-
-  //bool test = pA == zero; // can't compare Matrix with RatFunc
-  // manual inspection of pA reveals that it is the zero matrix indeed
+  Matrix I(2, 2, {1,0, 0,1});      // 2x2 identity matrix
+  Matrix pA = p[0]*I + p[1]*A + p[2] * A*A;
+  //bool test = pA.isZero();
 
   // What is actually the set of matrices that gives zero when plugged into the polynomial? Are
   // these the matrices that are "similar" to A? I think, they have all the same eigenvalues 
@@ -131,9 +93,6 @@ void characteristicPolynomial()
   // What about the eigenvectors - can they be different? What about the "companion matrix" - it 
   // should also be a member of the set - is this in some way a "special" member? Maybe another
   // special member is the one whose eigenvectors are the canoncial basis vectors.
-
-
-
 
   int dummy = 0;
 

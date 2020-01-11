@@ -78,6 +78,20 @@ bool rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
       B.addWeightedRowToOther(i, j, w); }}
   return true;
 }
+// Maybe allow the function to be called without an rhs B. It may make sense to use it with a 
+// single input in order to compute determinants - when the function returns, the determinant is
+// the product of diagonal elements - up to a sign flip, which occurs when we had an odd number of
+// row-swaps. Maybe keep track of whether the number of swaps was even or odd by doing
+// oddSwaps *= -1 in if(p !=i) and return +1 or -1 - or better: return the determinant! if we
+// run into the error branch, immediately return zero - but no - often, we don't need the 
+// determinant, so this extra computation should be avoided - but maybe return the rank which is
+// the iteration number i - callers may
+// instead of actually writing the zeros into the rows below, write the weights w - 
+// addWeightedRow should then start at i+1 instead of at i - doing it this way produces the LU
+// decomposition of a permutation of A ...but in order to be useful for later solving other 
+// systems with ethe same matrix but other right-hand-sides, we would need to keep track of the
+// permutations - here it is no problem, because we immediately apply the swaps to the RHS as well
+
 
 template<class T>
 void rsLinearAlgebraNew::makeTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B)
