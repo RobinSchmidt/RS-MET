@@ -17,6 +17,9 @@ bool makeSystemUpperTriangularNoPivot(rsMatrix<T>& A, rsMatrix<T>& B)
       B.addWeightedRowToOther(i, j, s); }}
   return true;
 }
+// when using rational numbers or functions, maybe the pivoting could based on which element is the 
+// simplest (lowest degree or smallest) nonzero element - because then, there may be less complex
+// computations
 
 void characteristicPolynomial()
 {
@@ -58,19 +61,42 @@ void characteristicPolynomial()
   // B = |-4-x  6  |
   //     |-3    5-x|
   RatFunc x({0, 1}, {1});  // x = (0 + 1x) / 1
-  Matrix B = A - x*I; // this should lead to the same B
+  Matrix B = A - x*I;
 
   // This call will apply the Gaussian elimination - after that, B will be an upper triangular 
   // matrix (a.k.a. "row echelon form"): 
-  LA::makeSystemUpperTriangularNoPivot(B, I); 
+  Matrix R = I;  // rhs for solver
+  LA::makeSystemUpperTriangularNoPivot(B, R); 
   //makeSystemUpperTriangularNoPivot(B, I); 
   // maybe make it diagonal instead of triangular - this would be the *reduced* row echelon form
+
+  // ToDo: call solveUpperTriangularSystem in order to compute the inverse matrix of B
+  LA::solveUpperTriangularSystem(B, R, R);  // is this correct?
+
+  // R should now contain the inverse of B - is this something interesting?
 
   RatFunc d = B(0,0) * B(1,1);                       // determinant is product of diagonal elements
   rsAssert(d.getDenominatorDegree() == 0);           // denominator should be just a constant
   Poly p = d.getNumerator() / d.getDenominator()[0]; // this is our characteristic polynomial
-  // OK - the so found characteristic polynomial p(x) = x^2 - x - 2 agrees with what sage finds
-  // it has roots...
+  // OK - the so found characteristic polynomial p(x) = x^2 - x - 2 = (x-1) * (x-2) agrees with 
+  // what sage finds. 
+
+  // The matrix plugged into its characteristic polynomial as argument should yield the zero 
+  // matrix. Matrices are "roots" of their own characteristic polynomials:
+  Matrix pA = (one*p[0])*I + (one*p[1])*A + (one*p[2]) * A*A; 
+  // simplify - get rid of the "one" - needs some more operators in RatFunc/Poly/Matrix - we want
+  // to write pA = p[0] * I + p[1] * A + p[2] * A*A; 
+
+  //bool test = pA == zero; // can't compare Matrix with RatFunc
+  // manual inspection of pA reveals that it is the zero matrix indeed
+
+  // What is actually the set of matrices that gives zero when plugged into the polynomial? Are
+  // these the matrices that are "similar" to A? I think, they have all the same eigenvalues 
+  // because they must have the same characteristic polynomial (and the eigenvalues are its roots).
+  // What about the eigenvectors - can they be different? What about the "companion matrix" - it 
+  // should also be a member of the set - is this in some way a "special" member? Maybe another
+  // special member is the one whose eigenvectors are the canoncial basis vectors.
+
 
   int dummy = 0;
 
@@ -90,15 +116,21 @@ void characteristicPolynomial()
   // https://ask.sagemath.org/question/8386/row-echelon-form-of-a-matrix-containing-symbolic-expresssions/
   // http://www.cfm.brown.edu/people/dobrush/am34/sage/echelon.html
 
-  // our B matrix seems to agree up to a factor of -4 - 4x - maybe we must multiply the whole matrix 
-  // by that function (which acts as a scalar in this context)? ..then we need to also scale the I 
-  // matrix - wait - no: the -4-x term is in the numerator of B(0,0) and in the denominator of B(1,1)
-  // ...also B(1,0) has a zero-sized numerator! follow the procedure step-by-step, also do the
-  // elimination by hand
-  // the B(1,0) size issue seems to be fixed - but actually B(0,1) is also wrong - maybe sage does 
-  // something extra?
-  // actually, after we have finsihed the elimination and multiply the diagonal elements together, 
-  // we get the correct polynomial, i think
+  // Conclusion:
+  // There seems to be no practical way to compute the characteristic polynomial via Gaussian 
+  // elimination for a matrix of numbers. One really has to work with a matrix of rational 
+  // functions in order to keep track of the mangling of the x-variable in the course of the 
+  // elimination process. One cannot introduce the x-variable after the elimination :-(
+  // Or is there some other way?
+
+  // Maybe try this with a larger matrix - 3x3 or 4x4
+
+  // Soo - how do we diagonalize a matrix, i.e. find eigenvalues and -vectors? I think, this may be 
+  // possible only numerically because the eigenvalues are in general irrational (algebraic?) 
+  // numbers. This is in contrast to finding an inverse or solving a linear system - in this case,
+  // the solution can be computed exactly - if the matrix elements are rational numbers, the 
+  // inverse matrix elements are also rational because they can be computed via Gauss elimination.
+  // But what about the eigenvectors? Can't they be rational anyway? Probably not but maybe?
 
   /*
   // copied - maybe delete later:
@@ -116,7 +148,9 @@ void characteristicPolynomial()
   // is this actually true diagonalization? nope doesn't seem to be - the results that are now in A
   // and E seem to have nothing to do with the eigenvectors and eigenvalues - but what have we done
   // what does the result represent? is it the inverse with rows scaled by the diagonal elements
-  // of the resulting A?
+  // of the resulting A? -> it's the reduced row echelon form. its determinant is the same (up to a 
+  // factor) to that of the original matrix - but the characteristic polynomial has nothing to do
+  // with that of the original matrix-
 
   // Sage code:
   // D  = matrix([[2,0,0],[0,3,0],[0,0,-5]])
@@ -146,7 +180,9 @@ void characteristicPolynomial()
 }
 // todo: try some crazy stuff: use a matrix of rational functions of (maybe complex) rational 
 // numbers made of big integers - maybe for this, it makes sense to use my own rsComplex class 
-// again
+// again. Nest the different math types in variuos ways: complexes of matrices, matrices of 
+// complexes, matrices of ratfuncs, ratfuncs of matrices, polynomials, vectors of matrices,
+// matrices of vectors - maybe out this into a unit test
 
 void ellipseLineIntersections()
 {

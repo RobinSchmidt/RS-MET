@@ -118,7 +118,10 @@ bool rsLinearAlgebraNew::makeSystemUpperTriangularNoPivot(rsMatrixView<T>& A, rs
       B.addWeightedRowToOther(i, j, s); }}
   return true;
 }
-
+// maybe we should have a version that swaps when encountering a zero, maybe make an even simpler
+// version without the test for zero - if client code knows that the matrix is in a form such that
+// a zero pivot is never encountered, it may use this version (for optimization purposes)
+// ...or replace the test by an assertion and make the function void
 
 
 template<class T>

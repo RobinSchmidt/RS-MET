@@ -118,6 +118,11 @@ public:
   }
 
 
+  rsRationalFunction<T> operator*(const T& a) const
+  { return rsRationalFunction<T>(num*a, den); } // write a*num
+
+
+
 
   /** Returns the rational function that results from nesting/composing the given inner rational 
   function with this function as outer function. You can use it like h = f(g) where h,f,g are all 
