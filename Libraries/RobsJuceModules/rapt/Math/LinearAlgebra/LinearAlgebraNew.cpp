@@ -1,4 +1,3 @@
-
 template<class T>
 std::vector<T> rsLinearAlgebraNew::solve(const RAPT::rsMatrixView<T>& A_, const std::vector<T>& b_)
 {
@@ -9,50 +8,37 @@ std::vector<T> rsLinearAlgebraNew::solve(const RAPT::rsMatrixView<T>& A_, const 
   solve(A, vx, vb);
   return x;
 }
-// make a version that operates on raw arrays
 
 template<class T>
 RAPT::rsMatrix<T> rsLinearAlgebraNew::inverse(const RAPT::rsMatrixView<T>& A)
 {
-  rsAssert(A.isSquare()); // relax later - compute pseudoinverse in non-square case
+  rsAssert(A.isSquare());
   int N = A.getNumRows();
   RAPT::rsMatrix<T> tmp(N, N, A.getDataPointerConst()), E(N, N);
   E.setToIdentity();
-  solve(tmp, E, E);      // why does it work to use E for both - because E is the identity?
+  solve(tmp, E, E);
   return E; 
 }
-// figure out and document the conditions under which we may use "solve" in place, i.e. the 3rd
-// argument may equal the 2nd (E,E here) - i think, E must be upper triangular such that during the
-// elimination only zeros get subtracted - but the algo may swap rows - so perhaps it works only if
-// E is diagonal? in this case, whatever gets swapped, we will only ever add zeros to the rows
-
 
 template<class T>
 bool rsLinearAlgebraNew::solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
 {
-  // check, if everything makes sense:
-  rsAssert(X.getNumRows()    == A.getNumColumns());
-  rsAssert(B.getNumRows()    == A.getNumColumns());
-  rsAssert(X.getNumColumns() == B.getNumColumns());
+  rsAssert(A.getNumColumns() == X.getNumRows()); // A*X = B or A*x = b must make sense
+  rsAssert(X.hasSameShapeAs(B));                 // num of solutions == num of rhs-vectors
   rsAssert(A.isSquare()); 
-  // relax last requirement later - if not square compute approximate solution in overdetermined 
-  // cases and minimum-norm solution in underdetermined cases
-
   bool invertible = makeTriangular(A, B);
   if(!invertible)
-    return false;  // matrix was found to be singular
+    return false;                                // matrix was found to be singular
   solveTriangular(A, X, B);
-  return true; 
+  return true;                                   // matrix was regular -> success!
 }
 
 template<class T>
 bool rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
-  //rsError("not yet implemented");
   bool success = makeTriangular(A, B);
   if(!success)
     return false;
-
   int N = A.getNumRows();
   for(int i = N-1; i >= 0; i--) {
     for(int j = i-1; j >= 0; j--) {
@@ -62,6 +48,7 @@ bool rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
   } 
   // here, also restrict the column-range as optimization (see makeSystemUpperTriangular)
   // A.addWeightedRowToOther(i, j, s, i, N-1)? or (i, j, s, j, N-1)? or (i, j, s, j+1, N-1)?
+  // implement unit test and figure out
 
   return true;
 }
@@ -93,16 +80,6 @@ bool rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
       B.addWeightedRowToOther(i, j, s); }}
   return true;
 }
-// why is it that the algo doesn't need to keep track of the swaps - or is this just accidentally 
-// the with out particular test examples? -> make unit tests with random matrices and vectors
-
-// addWeightedRowToOther should allow to specify minimum and maximum column-index - we don't need
-// to subtract zeros from zeros in the columns that are already zero from a previous step - see old
-// code - the k-loop starts at i, not at 0 - we should pass i and N-1:
-// A.addWeightedRowToOther(i, j, s, i, N-1), B.add..
-
-
-//bool makeSystemUpperTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B);
 
 template<class T>
 void rsLinearAlgebraNew::makeTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B)
@@ -147,8 +124,18 @@ ToDo:
  further reduce the triangular system to a diagonal one - if possible, this should also produce
  the diagonalizer - this can be used for diagonalization later
 -functions that ares still valid in the new framework (the band-diagonal and 2x2 stuff) shall
-  eventually be moved over to here
--Gram-Schmidt orthogonalization of a set of basis vectors
+ eventually be moved over to here
+-implement Gram-Schmidt orthogonalization of a set of basis vectors
+-figure out and document the conditions under which we may use "solve" in place, i.e. the 3rd
+ argument may equal the 2nd (E,E here) - i think, E must be upper triangular such that during the
+ elimination only zeros get subtracted - but the algo may swap rows - so perhaps it works only if
+ E is diagonal? in this case, whatever gets swapped, we will only ever add zeros to the rows
+
+
+ -why is it that Gaussian elimination doesn't need to keep track of the swaps - or is this just 
+  accidentally he with out particular test examples? -> make unit tests with random matrices and 
+  vectors. i think, it's because when you swap rows of the coefficient matrix and do the same
+  swap in the rhs vector, we don't need to swap anything in the x-vector
 
 maybe make a member function getInverse of rsMatrixView...hmm - but maybe not - this introduces 
 too much circular dependencies between rsMatrixView/rsMatrix/rsLinearAlgebraNew - at the moment, 

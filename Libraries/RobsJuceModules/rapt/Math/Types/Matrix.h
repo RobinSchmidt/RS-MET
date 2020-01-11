@@ -210,6 +210,10 @@ public:
       && rsArrayTools::almostEqual(dataPointer, rhs.dataPointer, getSize(), tolerance);
   }
 
+  /** Returns true, iff B has the same shape as this matrix. */
+  bool hasSameShapeAs(const rsMatrixView<T>& B) const
+  { return areSameShape(*this, B); }
+
   /** Returns the number of rows. */
   int getNumRows()    const { return numRows; }
 

@@ -39,10 +39,10 @@ public:
   works also for matrices X,B - this means, the system A * x = b is solved simultaneously for a 
   bunch of right-hand-side vectors b collected into a matrix whose columns are the desired solution
   vectors. A and B are the inputs, X is the output. X and B must have the same shape and both must 
-  have the same number of rows as A. The function works in place, i.e. it does not allocate any 
-  extra memory. The process destroys the contents of A and B. In general X and B must be distinct 
-  but in certain cases, one may use it in place, i.e. X == B. I'm not sure yet, but i think, 
-  it works, iff B is diagonal -> figure out.  */
+  have a number of rows equal to the size A, which assumed to be square. The function works in 
+  place, i.e. it does not allocate any extra memory. The process destroys the contents of A and B. 
+  In general, X and B must be distinct but in certain cases, one may use it in place, i.e. X == B. 
+  I'm not sure yet, but i think, it works, iff B is diagonal -> figure out.  */
   template<class T>
   static bool solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
   // doesn't allocate, todo: document, when this may be used in place
