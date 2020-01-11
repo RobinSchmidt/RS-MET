@@ -325,8 +325,21 @@ bool testMatrixView()
   return r;
 }
 
+bool testMatrixOperators()
+{
+  bool r = true;  // test result
+  using Matrix = rsMatrix<double>;
+  using Vector = std::vector<double>;
 
-bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
+  Matrix A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
+  Matrix X(3, 2, {1,4, 2,5, 3,6});
+  Matrix B = A * X;
+  r &= B == Matrix(3, 2, {16,37, 32,80, 14,35});
+  
+  return r;
+}
+
+bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
 {
   bool testResult = true;
   using Matrix = rsMatrix<double>;
@@ -545,6 +558,9 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
 
 
 
+
+
+
   // create diagonal matrix
 
 
@@ -612,7 +628,10 @@ bool testMatrix()
 
 
   testResult &= testMatrixView();
-  testResult &= testMatrixNew1();
+  testResult &= testMatrixOperators();
+  testResult &= testMatrixAlloc();
+
+
   testResult &= testKroneckerProduct();
 
 

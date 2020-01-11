@@ -46,6 +46,8 @@ public:
   template<class T>
   static bool solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
   // doesn't allocate, todo: document, when this may be used in place
+  // maybe pass arguments as A,B,X - outputs should come last - check, how the old versions does 
+  // it
 
 
   //-----------------------------------------------------------------------------------------------
@@ -61,11 +63,11 @@ public:
   // doesn't allocate
 
   /** Simplified version that doesn't use pivoting - this may fail even for non-singular 
-  matrices, so it's not recommended for general use but if you know that the elimination will never
-  encounter a zero diagonal element, you may use this version for optimization purposes. It also 
-  has less requirements on the datatype T, so it may be used in cases where the datatype doesn't 
-  meet all reuqirements needed for pivoting. It doesn't require comparison operators <,> or an 
-  rsAbs function defined for it - it does, however, require an == operator. */
+  matrices, so it's not recommended for general use, but if you know that the elimination will 
+  never encounter a zero diagonal element, you may use this version for optimization purposes. It 
+  also has less requirements on the datatype T, so it may be used in cases where the datatype 
+  doesn't meet all reuqirements needed for pivoting. It doesn't require comparison operators <,>
+  or an rsAbs function defined for it - it does, however, require an == operator. */
   template<class T>
   static void makeTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B);
   // doesn't allocate

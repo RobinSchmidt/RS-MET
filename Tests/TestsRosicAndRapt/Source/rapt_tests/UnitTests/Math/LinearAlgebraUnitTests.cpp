@@ -722,7 +722,7 @@ void solveDiagonalSystem(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>
 
 
 // tests the new implementation
-bool testLinearSystemViaGauss2()
+bool testLinearSystemViaGauss2() 
 {
   bool r = true;
 
@@ -733,12 +733,12 @@ bool testLinearSystemViaGauss2()
 
   //rsMatrix<double> A(3, 3, { 1,2,3, 4,5,6, 7,8,9 }); // this matrix is singular
   Matrix A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
-  Matrix tmp = A;                               // because algo destroys the original A
+  Matrix tmpA = A;                               // because algo destroys the original A
   Vector x({1,2,3});
   Vector b  = A * x;                            //       A * x = b
-  Vector x2 = LA::solve(tmp, b);                // solve A * x = b for x
+  Vector x2 = LA::solve(tmpA, b);               // solve A * x = b for x
   r &= RAPT::rsAreVectorsEqual(x, x2, tol);
-  tmp = A, b = A*x;                             // restore destroyed tmp and b
+  tmpA = A, b = A*x;                             // restore destroyed tmp and b
 
   // try it with 3x2 solution matrix - figure out if the X,B rhs matrices/vectors may in general be 
   // the same (it works when inverting - but this is the special case where B is the identity - in 
@@ -748,6 +748,30 @@ bool testLinearSystemViaGauss2()
   Matrix At(3, 3, {-0.5,1.9,-3.7, 0.0,-0.2,0.6, 0.5,-0.9,1.7 }); // target matrix
   Matrix Ai = LA::inverse(A);
   r &= Ai.equals(At, tol);
+
+  // solve some systems with 3x3 matrix and 3x2 solution vector:
+  Matrix X(3, 2, {1,4, 2,5, 3,6});
+  Matrix B = A * X;
+  r &= B == Matrix(3, 2, {16,37, 32,80, 14,35});
+  tmpA = A;
+  Matrix tmpB = B;
+  Matrix X2(3,2);
+  LA::solve(tmpA, X2, tmpB);  // destroys tmpA and tempB
+  r &= X2.equals(X, tol);
+
+  // Sage:
+  // A = matrix([[2,1,4],[3,10,3],[1,5,1]])
+  // X = matrix([[1,4],[2,5],[3,6]])
+  // A, X, A*X
+  //
+  // gives:
+  // [ 2  1  4]  [1 4]  [16 37]
+  // [ 3 10  3]  [2 5]  [32 80]
+  // [ 1  5  1], [3 6], [14 35]
+
+
+  
+  // figure out, when it can be used in place
 
   return r;
 }

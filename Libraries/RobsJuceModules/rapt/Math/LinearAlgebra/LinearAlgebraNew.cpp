@@ -75,9 +75,9 @@ bool rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
       A.swapRows(i, p); 
       B.swapRows(i, p); } 
     for(int j = i+1; j < N; j++) {     // pivot row subtraction
-      T s = -A(j, i) / A(i, i);        // scaler
-      A.addWeightedRowToOther(i, j, s, i, A.getNumColumns()-1); // start at i: avoid adding zeros
-      B.addWeightedRowToOther(i, j, s); }}
+      T w = -A(j, i) / A(i, i);        // weight
+      A.addWeightedRowToOther(i, j, w, i, A.getNumColumns()-1); // start at i: avoid adding zeros
+      B.addWeightedRowToOther(i, j, w); }}
   return true;
 }
 
@@ -88,9 +88,9 @@ void rsLinearAlgebraNew::makeTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<
   for(int i = 0; i < A.getNumRows(); i++) {  
     rsAssert(!(A(i, i) == T(0)), "This matrix needs pivoting");
     for(int j = i+1; j < A.getNumRows(); j++) {
-      T s = -A(j, i) / A(i, i);
-      A.addWeightedRowToOther(i, j, s, i, A.getNumColumns()-1); // start at i: avoid adding zeros
-      B.addWeightedRowToOther(i, j, s); }}
+      T w = -A(j, i) / A(i, i);
+      A.addWeightedRowToOther(i, j, w, i, A.getNumColumns()-1); // start at i: avoid adding zeros
+      B.addWeightedRowToOther(i, j, w); }}
 }
 // maybe we should have a version that swaps when encountering a zero, maybe make an even simpler
 // version without the test for zero - if client code knows that the matrix is in a form such that

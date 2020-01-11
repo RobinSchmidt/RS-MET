@@ -77,10 +77,13 @@ inline double rsExpToLinWithOffset(double in, double inMin, double inMax, double
 
 inline bool rsIsCloseTo(double x, double targetValue, double tolerance)
 {
+  return rsAbs(x - targetValue) <= tolerance;
+  /*
   if(fabs(x - targetValue) <= tolerance)
     return true;
   else
     return false;
+    */
 }
 /*
 template<class T>

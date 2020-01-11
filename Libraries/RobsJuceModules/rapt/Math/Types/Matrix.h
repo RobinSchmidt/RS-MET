@@ -436,7 +436,7 @@ public:
       for(int j = 0; j < C->numCols; j++) {
         (*C)(i,j) = T(0);
         for(int k = 0; k < A.numCols; k++)
-          (*C)(i,j) += A.at(i,k) * B.at(k,j); }}
+          (*C)(i, j) += A.at(i, k) * B.at(k, j); }}
   }
   // rename to matrixMultiply maybe implement matrixDivide: A/B := A * inverse(B) 
 
