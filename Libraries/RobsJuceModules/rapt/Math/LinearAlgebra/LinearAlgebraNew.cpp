@@ -53,6 +53,16 @@ bool rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
   return true;
 }
 
+/*
+template<class T>
+inline bool operator>(const std::complex<T>& L, const std::complex<T>& R)
+{
+  if(L.real() > R.real()) return true;
+  if(L.imag() > R.imag()) return true;
+  return false;
+}
+*/
+
 template<class T>
 bool rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {

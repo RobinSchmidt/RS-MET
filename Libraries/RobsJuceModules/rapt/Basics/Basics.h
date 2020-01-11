@@ -116,6 +116,13 @@ T rsAbsSquared(const std::complex<T>& z)
   return z.real()*z.real() + z.imag()*z.imag(); // == conj(z) * z
 }
 
+/*
+template <class T>
+bool rsGreater(const T& left, const T& right)
+{
+  return left > right;
+}
+*/
 
 
 

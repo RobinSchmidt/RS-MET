@@ -194,6 +194,24 @@ template class RAPT::rsMatrix<double>;
 template std::vector<double> RAPT::rsLinearAlgebraNew::solve(
   const rsMatrixView<double>& A, const std::vector<double>& B);
 
+
+/*
+template std::vector<std::complex<double>> RAPT::rsLinearAlgebraNew::solve(
+  const rsMatrixView<std::complex<double>>& A, 
+  const std::vector<std::complex<double>>& B);
+*/
+// doesn't compile because the > comparison in the pivoting doesn't work with complex numbers
+// possible solution: implement a > operator for std::complex numbers - compare real parts first,
+// then imag
+// or replace 
+//  if(rsAbs(A(j, i)) > maxAbs) 
+// with
+//  if(rsAbs(A(j, i)) > rsAbs(maxAbs)) 
+// or use comparison function rsGreater with an explicit specialization for complex<double>
+// or use rsGreaterAbs
+
+// figure out!
+
 // these instantiations need some more operations defined on rsRationalFunction
 //template std::vector<RAPT::rsRationalFunction<double>> RAPT::rsLinearAlgebraNew::solveLinearSystem(
 //  rsMatrixView<RAPT::rsRationalFunction<double>>& A, std::vector<RAPT::rsRationalFunction<double>>& B);

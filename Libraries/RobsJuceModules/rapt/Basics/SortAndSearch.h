@@ -21,6 +21,7 @@
 type T and returns true if left < right, false otherwise. */
 template <class T>
 bool defaultLess(const T& left, const T& right);
+// move to basics, rename to rsLess
 
 /** Re-orders the elements in the array such that they fullfill the max-heap property. A max-heap
 is a binary tree which is completely filled on all levels except possibly the lowest which is

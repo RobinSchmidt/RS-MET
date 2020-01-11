@@ -97,11 +97,11 @@ vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
 
   vector<complex<T>> eigenValues = getEigenvalues(A);
   rsAssert((int)eigenValues.size() == N);
-  vector<vector<complex<T>>> eigenVectors(N), zeroVector(N);
+  vector<complex<T>> zeroVector(N);
   rsMatrix<complex<T>> I(N, N), B(N, N);
   B.copyDataFrom(A);
+  vector<vector<complex<T>>> eigenVectors(N); 
 
-  
   for(int i = 0; i < N; i++) {
     B(i, i) = A(i, i) - eigenValues[i];         // shift diagonal element
     //eigenVectors[i] = LA::solve(B, zeroVector); // solve A - x_i * I == 0
