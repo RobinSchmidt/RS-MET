@@ -192,7 +192,7 @@ template class RAPT::rsMatrixView<double>;
 template class RAPT::rsMatrix<double>;
 
 template std::vector<double> RAPT::rsLinearAlgebraNew::solve(
-  rsMatrixView<double>& A, std::vector<double>& B);
+  const rsMatrixView<double>& A, const std::vector<double>& B);
 
 // these instantiations need some more operations defined on rsRationalFunction
 //template std::vector<RAPT::rsRationalFunction<double>> RAPT::rsLinearAlgebraNew::solveLinearSystem(

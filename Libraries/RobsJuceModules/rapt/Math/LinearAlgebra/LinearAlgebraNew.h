@@ -1,7 +1,6 @@
 #ifndef RAPT_LINEARALGEBRA_NEW_H_INCLUDED
 #define RAPT_LINEARALGEBRA_NEW_H_INCLUDED
 
-
 /** Collection of functions for linear algebra such as solving systems of linear equations, matrix 
 inversion, etc. 
 
@@ -10,48 +9,46 @@ operation. If a parameter like a pointer to an array or a reference to an rsMatr
 non-const, client code should always assume that the argument will contain either a desired result 
 or garbage when the function returns. If you need to keep the inputs, pass a copy. */
 
-// these implementations are based on the new class rsMatrixView which works with matrices in flat
-// (row major) storage format - eventually, they should replace the old implementations (which 
-// represent matrices as array-of-array/pointer-to-pointer) and the old ones shall be deprecated
-
 class rsLinearAlgebraNew
 {
 
 public:
 
-
-  // newer versions using rsMatrixView - document them (use documentation from old implementations, 
-  // keep the old functions as deprecated legacy functions around as long as they are still needed)
-
-  // maybe provide an API that takes the flat arrays of the matrices directly as inputs
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Convenience functions 
-  These functions are convenient to use but probably not recommendable for realtime code (they
-  allocate memory) */
+  These functions are convenient to use but not recommendable for production code - especially, 
+  when that code should be run in realtime (they allocate memory). But for prototyping, they are 
+  fine. */
 
+  /** Returns the vector x that solves the linear system of equations A * x = b. */
   template<class T>
-  static std::vector<T> solve(rsMatrixView<T>& A, std::vector<T>& b);
+  static std::vector<T> solve(const rsMatrixView<T>& A, const std::vector<T>& b);
   // allocates
-  // make inputs const
-  // rename to solve
 
+  /** Returns the inverse of the given matrix A which is assumed to be a square matrix. */
   template<class T>
   static rsMatrix<T> inverse(const RAPT::rsMatrixView<T>& A);
-  // allocates
+  // allocates, todo: pseudoInverse
 
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Solvers */
 
+  /** Solves the system(s) of linear equations A * X = B. Often X and B are vectors, i.e. Nx1 
+  matrices in which case lowercase letters are typically used: A * x = b. However, the function 
+  works also for matrices X,B - this means, the system A * x = b is solved simultaneously for a 
+  bunch of right-hand-side vectors b collected into a matrix whose columns are the desired solution
+  vectors. A and B are the inputs, X is the output. X and B must have the same shape and both must 
+  have the same number of rows as A. The function works in place, i.e. it does not allocate any 
+  extra memory. The process destroys the contents of A and B. In general X and B must be distinct 
+  but in certain cases, one may use it in place, i.e. X == B. I'm not sure yet, but i think, 
+  it works, iff B is diagonal -> figure out.  */
   template<class T>
   static bool solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
-  // doesn't allocate, destroys A,B
-  // rename to solve
+  // doesn't allocate, todo: document, when this may be used in place
 
 
-
-
-
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Subroutines */
 
   /** Transforms the augmented coefficient matrix A|B for a set of linear systems of equations of 
@@ -62,7 +59,6 @@ public:
   template<class T>
   static bool makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B);
   // doesn't allocate
-  // rename to makeUpperTriangular or makeTriangular or rowEchelon
 
   /** Simplified version that doesn't use pivoting - this may fail even for non-singular 
   matrices, so it's not recommended for general use but if you know that the elimination will never
@@ -75,25 +71,22 @@ public:
   // doesn't allocate
 
   /** This produces the so called *reduced* row echelon form of a linear system of equations. In 
-  this form, the matrix is diagonal, so it's trivial to solve
-  Note that this has *nothing* to do 
-  with "diagonalization" (which refers to finding the eigenvalues and -vectors and expressing that 
-  matrix as product: A = inv(M) * D * M where M is a matrix whose columns are the eigenvectors and 
-  D is a diagonal matrix with the eigenvalues on the main diagonal - this is NOT what this function 
-  does). */
+  this form, the coefficient matrix is diagonal and it is the simplemost representation of a 
+  linear system of equations. In this form, the system is trivial to solve. Note that this has 
+  *nothing* to do with another common process called "diagonalization". The latter refers to 
+  finding the eigenvalues and -vectors and representing the coefficient matrix as product: 
+  A = inv(M) * D * M where M is a matrix whose columns are the eigenvectors and D is a diagonal 
+  matrix with the eigenvalues on the main diagonal - this is *NOT* what this function does. */
   template<class T>
   static bool makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B);
-  // needs test, doesn't allocate, maybe remove from library - doesn't seem to be useful
-  // rename to makeDiagonal or reducedRowEchelon
+  // doesn't allocate, todo: needs test
 
-
+  /** Solves the system(s) of linear equations A * X = B for the special case where A is an upper
+  triangular matrix. */
   template<class T>
-  static void solveTriangular(
-    rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
-  // doesn't allocate, rename to solveTriangular - document, if it can be used in place, i.e. X==B
+  static void solveTriangular(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
+  // doesn't allocate, todo: document, when this may be used in place
 
 };
-
-
 
 #endif

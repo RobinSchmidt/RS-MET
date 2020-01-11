@@ -1,9 +1,10 @@
 
 template<class T>
-std::vector<T> rsLinearAlgebraNew::solve(RAPT::rsMatrixView<T>& A, std::vector<T>& b)
+std::vector<T> rsLinearAlgebraNew::solve(const RAPT::rsMatrixView<T>& A_, const std::vector<T>& b_)
 {
-  int N = (int) b.size();
-  std::vector<T> x(N);
+  int N = (int) b_.size();
+  std::vector<T> x(N), b = b_; // temporaries
+  rsMatrix<T> A(N, N, A_.getDataPointerConst());
   rsMatrixView<T> vx(N, 1, &x[0]), vb(N, 1, &b[0]);
   solve(A, vx, vb);
   return x;
@@ -24,15 +25,6 @@ RAPT::rsMatrix<T> rsLinearAlgebraNew::inverse(const RAPT::rsMatrixView<T>& A)
 // argument may equal the 2nd (E,E here) - i think, E must be upper triangular such that during the
 // elimination only zeros get subtracted - but the algo may swap rows - so perhaps it works only if
 // E is diagonal? in this case, whatever gets swapped, we will only ever add zeros to the rows
-
-// maybe make a member function getInverse of rsMatrixView...hmm - but maybe not - this introduces 
-// too much circular dependencies between rsMatrixView/rsMatrix/rsLinearAlgebraNew - at the moment, 
-// the dependency is rsMatrixView < rsMatrix and rsMatrixView < rsLinearAlgebraNew (where < means
-// "right depends on left"). I actually want rsMatrix to remain independent of rsLinearAlgebraNew
-// because linear algebra is something *on top* of matrices...or maybe move basic, *simple* LA 
-// algorithms into the class rsMatrixView and use this class here only for more sophisticated stuff
-// ...hmm - but no - i think, rsMatrix/View should be responsibel only for basic arithmetic, otoh
-// matrix "division" is an arithmetic operation - we'll see
 
 
 template<class T>
@@ -144,12 +136,10 @@ void rsLinearAlgebraNew::solveTriangular(
 }
 
 
-
-
-
 /*
 
 ToDo:
+-maybe provide an API that takes the flat arrays of the matrices directly as inputs
 -implement solveOver/UnderDeterminedSystem: compute a least-squares solution or minimum-norm 
  solution respectively
  -based on that, implement pseudoInverse
@@ -159,5 +149,18 @@ ToDo:
 -functions that ares still valid in the new framework (the band-diagonal and 2x2 stuff) shall
   eventually be moved over to here
 -Gram-Schmidt orthogonalization of a set of basis vectors
+
+maybe make a member function getInverse of rsMatrixView...hmm - but maybe not - this introduces 
+too much circular dependencies between rsMatrixView/rsMatrix/rsLinearAlgebraNew - at the moment, 
+the dependency is rsMatrixView < rsMatrix and rsMatrixView < rsLinearAlgebraNew (where < means
+"right depends on left"). I actually want rsMatrix to remain independent of rsLinearAlgebraNew
+because linear algebra is something *on top* of matrices...or maybe move basic, *simple* LA 
+algorithms into the class rsMatrixView and use this class here only for more sophisticated stuff
+...hmm - but no - i think, rsMatrix/View should be responsibel only for basic arithmetic, otoh
+matrix "division" is an arithmetic operation - we'll see
+...oh - actually LA depends on rsMatrix - not only the view - because we use it for temporaries
+-to decouple it, we may use new/delete to allocate temporary memory and wrap rsMatrixView around
+ the arrays - oh - but inverse returns a matrix and we really want it to be that way because 
+ it's the most convenient way - so the dependency is perhaps inavoidable
 
 */
