@@ -56,6 +56,34 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
   return p;
 }
 
+template<class T> 
+vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<T>& p)
+{
+  vector<complex<T>> roots(p.getDegree());
+  RAPT::rsPolynomial<T>::roots(p.getCoeffPointerConst(), p.getDegree(), &roots[0]);
+  return roots;
+}
+// maybe make member getRoots - that would be convenient - but the problem is that even for real 
+// polynomials, the roots may be complex - so i don't know if it should return a vector<T> or a 
+// vector<complex<T>> - if the polynomial is itself complex, the former would be the way to go,
+// if it's real, the latter ...maybe make two functions getRootsReal, getRootsComplex
+
+template<class T> 
+vector<complex<T>> getEigenvalues(const rsMatrixView<T>& A)
+{
+  RAPT::rsPolynomial<T> p = getCharacteristicPolynomial(A);
+  return getPolynomialRoots(p);
+}
+
+// todo: 
+/*
+template<class T>
+rsMatrix<T> getEigenvectors(const rsMatrixView<T>& A)
+{
+
+}
+*/
+
 void characteristicPolynomial()
 {
   // We try to figure out how to compute the coeffs (or better: roots) of the characteristic 
@@ -71,9 +99,8 @@ void characteristicPolynomial()
   // the matrix itself - we can't introduce it after the elimination. So, what we do instead is to
   // consider a full-blown matrix of rsRationalFunction objects....
 
-  
-  using Poly    = RAPT::rsPolynomial<double>;
-  using Matrix  = RAPT::rsMatrix<double>;
+  using Poly   = RAPT::rsPolynomial<double>;
+  using Matrix = RAPT::rsMatrix<double>;
 
   // Create matrix A:
   // A = |-4  6|
@@ -86,6 +113,10 @@ void characteristicPolynomial()
   Matrix I(2, 2, {1,0, 0,1});      // 2x2 identity matrix
   Matrix pA = p[0]*I + p[1]*A + p[2] * A*A;
   //bool test = pA.isZero();
+
+  vector<complex<double>> eigenvalues1 = getPolynomialRoots(p);
+  //vector<complex<double>> eigenvalues2 = getEigenvalues(A);
+
 
   // What is actually the set of matrices that gives zero when plugged into the polynomial? Are
   // these the matrices that are "similar" to A? I think, they have all the same eigenvalues 

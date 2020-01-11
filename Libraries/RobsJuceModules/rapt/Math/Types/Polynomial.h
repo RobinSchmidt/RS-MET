@@ -88,6 +88,8 @@ public:
   // nope! when we really need low-level access to the coeff-array, we declare the 
   // functions/classes that need it as friends. comment this out later
 
+  const T* getCoeffPointerConst() const { return &coeffs[0]; }
+
   /** Returns true, iff this polynomial is monic, i.e. the coefficient for the highest power (the
   leading coefficient) is unity. Monic polynomials are important because they arise when 
   multiplying out the product form. */
@@ -444,7 +446,7 @@ public:
   static void roots(const std::complex<T>* a, int degree, std::complex<T>* roots);
   // allocates heap memory
 
-  static void roots(const T *a, int order, std::complex<T> *roots);
+  static void roots(const T *a, int degree, std::complex<T> *roots);
   // allocates heap memory
 
   /** Converges to a complex root of a polynomial by means of Laguerre's method using the
