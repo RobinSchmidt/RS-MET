@@ -29,11 +29,14 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
   using Matrix  = RAPT::rsMatrix<RatFunc>;
   using LA      = RAPT::rsLinearAlgebraNew;
 
-  // promote matrix of numbers to matrix of rational functions (factor out):
+  // Create matrix B = A - x*I as matrix of rational functions:
   Matrix B(A.getNumRows(), A.getNumColumns());
   for(int i = 0; i < B.getNumRows(); ++i)
     for(int j = 0; j < B.getNumColumns(); ++j)
-      B(i, j) = RatFunc({A(i, j)}, {1});
+      if(i == j)
+        B(i, j) = RatFunc({A(i, j), -1}, {1});
+      else
+        B(i, j) = RatFunc({A(i, j)},     {1});
 
   // create a dummy right-hand-side (todo: allow funtion to be called without rhs)
   Matrix R(A.getNumRows(), 1);
@@ -45,7 +48,7 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
 
   // Compute determinant. For a triangular matrix, this is the product of the diagonal elements. 
   // The computed determinant is still a rational function but it should come out as a polynomial, 
-  // i.e. the denominator should have degree 0 (be a constant) - i think, it should always be +1 or
+  // i.e. the denominator should have degree 0 (be a constant). I think, it should always be +1 or
   // -1 because the elementary row operations can only flip the determinant.
   RatFunc d = B.getDiagonalProduct();
   rsAssert(d.getDenominatorDegree() == 0);
