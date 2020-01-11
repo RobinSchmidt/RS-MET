@@ -38,7 +38,9 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
       else
         B(i, j) = RatFunc({A(i, j)},     {1});
 
-  // create a dummy right-hand-side (todo: allow funtion to be called without rhs)
+  // create a dummy right-hand-side (todo: allow function to be called without rhs) - maybe
+  // make an LU decomposition function that fills an array of swaps at each index, the number says
+  // with which row this row has to be swapped
   Matrix R(A.getNumRows(), 1);
   for(int i = 0; i < R.getNumRows(); ++i)
     R(i, 0) = RatFunc({ 1 }, { 1 });
@@ -76,15 +78,45 @@ vector<complex<T>> getEigenvalues(const rsMatrixView<T>& A)
 }
 
 // todo: 
-/*
+
+
 template<class T>
-rsMatrix<T> getEigenvectors(const rsMatrixView<T>& A)
+vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
 {
+  // for each eigenvalue x, we must form the matrix A - x*I and solve the system
+  // A - x*I = 0 where 0 is the zero vector in this case - is that correct?
+  // ...but the eigenvalues are complex - does that mean the eigenvectors may also be complex?
+  // probably
 
+
+  rsAssert(A.isSquare());
+
+  using LA = RAPT::rsLinearAlgebraNew;
+  int N = A.getNumRows();
+
+
+  vector<complex<T>> eigenValues = getEigenvalues(A);
+  rsAssert((int)eigenValues.size() == N);
+  vector<vector<complex<T>>> eigenVectors(N), zeroVector(N);
+  rsMatrix<complex<T>> I(N, N), B(N, N);
+  B.copyDataFrom(A);
+
+  
+  for(int i = 0; i < N; i++) {
+    B(i, i) = A(i, i) - eigenValues[i];         // shift diagonal element
+    //eigenVectors[i] = LA::solve(B, zeroVector); // solve A - x_i * I == 0
+    B(i, i) = A(i, i);                          // restore diagonal element
+  }
+
+
+  // std::vector<T> solve(const rsMatrixView<T>& A, const std::vector<T>& b);
+
+  return eigenVectors;
 }
-*/
 
-void characteristicPolynomial()
+
+// maybe do eigenvalue and eigenvector stuff here and rename the function accordingly
+void characteristicPolynomial() 
 {
   // We try to figure out how to compute the coeffs (or better: roots) of the characteristic 
   // polynomial of a matrix via Gaussian elimination by creating a matrix of rational functions and
@@ -116,6 +148,8 @@ void characteristicPolynomial()
 
   vector<complex<double>> eigenvalues1 = getPolynomialRoots(p);
   //vector<complex<double>> eigenvalues2 = getEigenvalues(A);
+
+  vector<vector<complex<double>>> eigenVectors = getEigenvectors(A);
 
 
   // What is actually the set of matrices that gives zero when plugged into the polynomial? Are

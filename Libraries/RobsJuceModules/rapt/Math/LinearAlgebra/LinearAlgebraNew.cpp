@@ -85,7 +85,8 @@ bool rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 // oddSwaps *= -1 in if(p !=i) and return +1 or -1 - or better: return the determinant! if we
 // run into the error branch, immediately return zero - but no - often, we don't need the 
 // determinant, so this extra computation should be avoided - but maybe return the rank which is
-// the iteration number i - callers may
+// the iteration number i - callers may look at it and if it's less than N, they conclude that
+// the matrix was singular
 // instead of actually writing the zeros into the rows below, write the weights w - 
 // addWeightedRow should then start at i+1 instead of at i - doing it this way produces the LU
 // decomposition of a permutation of A ...but in order to be useful for later solving other 

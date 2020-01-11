@@ -720,7 +720,15 @@ public:
     updateDataPointer();
     // optionally initialize with zeros
   }
+  // rename to setShape - shall override inherited setShape
 
+
+  template<class T2>
+  void copyDataFrom(const rsMatrixView<T2>& A)
+  {
+    setSize(A.getNumRows(), A.getNumColumns());
+    rsArrayTools::convert(A.getDataPointerConst(), dataPointer, getSize());
+  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Manipulations */
