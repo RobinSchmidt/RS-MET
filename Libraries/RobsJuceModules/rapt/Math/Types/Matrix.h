@@ -282,6 +282,15 @@ public:
   /** Returns the maximum absolute value of all elements in the matrix. */
   T getAbsoluteMaximum() const { return rsArrayTools::maxAbs(dataPointer, getSize()); }
 
+  T getDiagonalProduct() const
+  {
+    T p = T(1);
+    for(int i = 0; i < rsMin(numRows, numCols); ++i)
+      p = p * this->at(i, i);
+    return p;
+  }
+  // todo: use *= - (needs implementation of that operator in rsRationlaFunction)
+
   // todo: getTrace(), getDiagonalProduct()
 
   //-----------------------------------------------------------------------------------------------
@@ -312,6 +321,16 @@ public:
   }
   // needs test
 
+  /** Sets the elements on the main diagonal to the values in the given array which must be of 
+  length min(numRows, numColumns). */
+  void setDiagonalValues(T* values)
+  {
+    for(int i = 0; i < rsMin(numRows, numCols); i++)
+      dataPointer[i*numCols + i] = values[i];
+  }
+  // needs test
+
+
   /** Scales all elements in the matrix by a given factor. */
   void scale(T factor) { rsArrayTools::scale(dataPointer, getSize(), factor); }
 
@@ -337,7 +356,9 @@ public:
     for(int j = 0; j < numCols; ++j)
       rsSwap((*this)(i1, j), (*this)(i2, j));
   }
-  // may be optimized by using fixed base-pointers to each row and loop increment 1
+  // may be optimized by using fixed base-pointers to each row and loop increment 1 - no 
+  // recompuation of the row-start in te iterations - the (i,j) operator always does a
+  // multiplication
 
   /** Adds a multiple of the row with index iSrc to the row with index iDst. The multiplier is 
   given by weight. */
@@ -392,6 +413,12 @@ public:
     for(int i = 0; i < numRows; ++i)
       (*this)(i, jDst) += weight * (*this)(i, jSrc);
   }
+  // can also be optimized with something like: 
+  // T* s = flatIndex(0, jSrc);
+  // T* d = flatIndex(0, jDst);
+  // int stride = numCols
+  // for(int i = 0; i < numRows; ++i) {
+  //   *d += weight * *s; s += stride; d += stride; }
 
   // optimize at least the elementary row-operations because these occur frequently in matrix 
   // algorithms like Gaussian elimination
@@ -430,7 +457,7 @@ public:
     rsArrayTools::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
-  /** Computes the matrix product C = A*B. */
+  /** Computes the matrix product C = A * B. */
   static void matrixMultiply(
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
@@ -439,11 +466,33 @@ public:
     rsAssert(C->numRows == A.numRows);
     for(int i = 0; i < C->numRows; i++) {
       for(int j = 0; j < C->numCols; j++) {
-        (*C)(i,j) = T(0);
+        (*C)(i, j) = T(0);
         for(int k = 0; k < A.numCols; k++)
           (*C)(i, j) += A.at(i, k) * B.at(k, j); }}
   }
-  // rename to matrixMultiply maybe implement matrixDivide: A/B := A * inverse(B) 
+  // maybe implement matrixDivide: A/B := A * inverse(B) 
+
+
+  /** Computes the matrix product C = A^T * B. */
+  static void matrixMultiplyFirstTransposed(
+    const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
+  {
+    // get rid, add assertions
+    int N = A.numRows;
+    int M = A.numCols;
+    int P = B.numCols;
+    for(int i = 0; i < M; i++) {
+      for(int j = 0; j < P; j++) {
+        (*C)(i, j) = T(0);
+        for(int k = 0; k < N; k++)
+          (*C)(i, j) += A.at(k, i) * B.at(k, j); }}
+  }
+  // needs test
+
+  // implement functions that compute A^T * A and A * A^T, a "sandwich" X^T A X, X A X^T
+  // but maybe more generally A^T B where A and B may or may not be the same
+  // matrixMultiplyFirstTransposed, matrixMultiplySecondTransposed matrixmultiplyBothTransposed,
+  // adapt code from rsMatrixTools
 
 
   /** Fills the matrix B with the transpose of matrix A. Assumes that A and B have compatible 

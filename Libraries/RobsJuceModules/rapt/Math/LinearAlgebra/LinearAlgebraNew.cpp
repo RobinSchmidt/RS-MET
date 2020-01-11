@@ -56,31 +56,24 @@ bool rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
 template<class T>
 bool rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
-  rsAssert(A.isSquare()); // can we relax this?
-
-  //T tooSmall = 1.e-12;  // if pivot is less than that, the matrix is singular
-  // todo: use something based on RS_EPS(T) - but actually, the absolute value is perhaps not 
-  // relevant - use something base on eps times the largest absolute element of the matrix?
-  // RS_EPS(T) * A.getMaximum();
-
-  T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum(); // ad hoc -> todo: research
-
+  rsAssert(A.isSquare());                                       // can we relax this?
+  T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
   int N = A.getNumRows();
   for(int i = 0; i < N; i++) {
     int p = i; 
     T maxAbs = T(0);
-    for(int j = i; j < N; j++) {       // search pivot row
+    for(int j = i; j < N; j++) {                                // search pivot row
       if(rsAbs(A(j, i)) > maxAbs) { 
         maxAbs = rsAbs(A(j, i)); 
         p = j; }}
     if(rsIsCloseTo(maxAbs, 0.0, tooSmall)) {
       rsError("Matrix (numerically) singular");
       return false; }
-    if(p != i) {                       // turn pivot row into current row
+    if(p != i) {                                                // turn pivot row into current row
       A.swapRows(i, p); 
       B.swapRows(i, p); } 
-    for(int j = i+1; j < N; j++) {     // pivot row subtraction
-      T w = -A(j, i) / A(i, i);        // weight
+    for(int j = i+1; j < N; j++) {                              // pivot row subtraction
+      T w = -A(j, i) / A(i, i);                                 // weight
       A.addWeightedRowToOther(i, j, w, i, A.getNumColumns()-1); // start at i: avoid adding zeros
       B.addWeightedRowToOther(i, j, w); }}
   return true;

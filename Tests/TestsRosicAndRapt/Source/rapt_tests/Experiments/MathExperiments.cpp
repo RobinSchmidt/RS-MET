@@ -21,6 +21,38 @@ bool makeSystemUpperTriangularNoPivot(rsMatrix<T>& A, rsMatrix<T>& B)
 // simplest (lowest degree or smallest) nonzero element - because then, there may be less complex
 // computations
 
+template<class T>
+RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
+{
+  using Poly    = RAPT::rsPolynomial<double>;
+  using RatFunc = RAPT::rsRationalFunction<double>;
+  using Matrix  = RAPT::rsMatrix<RatFunc>;
+  using LA      = RAPT::rsLinearAlgebraNew;
+
+  // promote matrix of numbers to matrix of rational functions (factor out):
+  Matrix B(A.getNumRows(), A.getNumColumns());
+  for(int i = 0; i < B.getNumRows(); ++i)
+    for(int j = 0; j < B.getNumColumns(); ++j)
+      B(i, j) = RatFunc({A(i, j)}, {1});
+
+  // create a dummy right-hand-side (todo: allow funtion to be called without rhs)
+  Matrix R(A.getNumRows(), 1);
+  for(int i = 0; i < R.getNumRows(); ++i)
+    R(i, 0) = RatFunc({ 1 }, { 1 });
+
+  // compute row echelon form of B:
+  LA::makeTriangularNoPivot(B, R);
+
+  // Compute determinant. For a triangular matrix, this is the product of the diagonal elements. 
+  // The computed determinant is still a rational function but it should come out as a polynomial, 
+  // i.e. the denominator should have degree 0 (be a constant) - i think, it should always be +1 or
+  // -1 because the elementary row operations can only flip the determinant.
+  RatFunc d = B.getDiagonalProduct();
+  rsAssert(d.getDenominatorDegree() == 0);
+  Poly p = d.getNumerator() / d.getDenominator()[0]; 
+  return p;
+}
+
 void characteristicPolynomial()
 {
   // We try to figure out how to compute the coeffs (or better: roots) of the characteristic 
@@ -96,6 +128,8 @@ void characteristicPolynomial()
   // What about the eigenvectors - can they be different? What about the "companion matrix" - it 
   // should also be a member of the set - is this in some way a "special" member? Maybe another
   // special member is the one whose eigenvectors are the canoncial basis vectors.
+
+
 
 
   int dummy = 0;
