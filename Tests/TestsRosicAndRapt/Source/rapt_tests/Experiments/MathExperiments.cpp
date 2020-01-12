@@ -148,6 +148,9 @@ vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
 }
 // http://doc.sagemath.org/html/en/constructions/linear_algebra.html
 
+
+
+
 // maybe do eigenvalue and eigenvector stuff here and rename the function accordingly
 void characteristicPolynomial() 
 {
@@ -286,6 +289,70 @@ void characteristicPolynomial()
 // again. Nest the different math types in variuos ways: complexes of matrices, matrices of 
 // complexes, matrices of ratfuncs, ratfuncs of matrices, polynomials, vectors of matrices,
 // matrices of vectors - maybe out this into a unit test
+
+
+
+
+
+
+/** Represents the root of a real polynomial, so the "real" refers to the polynomial coeffs - the 
+root itself may still be complex (-> find better name!). */
+template<class T>
+struct rsPolynomialRootReal
+{
+  std::complex<T> value; 
+  int multiplicity;
+};
+
+/** Represents the eigenspace of a matrix with real coefficients. Each eigenspace consists of an 
+eigenvalue and an associated set of eigenvectors. */
+template<class T>
+struct rsEigenSpaceReal
+{
+
+  int getAlgebraicMultiplicity() const { return eigenvalue.multiplicity; }
+
+  int getGeometricMultiplicity() const { return (int) eigenspace.size(); }
+
+  rsPolynomialRootReal<T> eigenvalue;
+  std::vector<std::vector<std::complex<T>>> eigenspace;
+};
+
+/** Represents the set of eigenspaces of a matrix with real coefficients. This set 
+consists of a set 
+of (in general complex) eigenvalues, each with an algebraic multiplicity which is the order of the
+polynomial root. Associated with each eigenvalue is a set of eigenvectors...  */
+template<class T>
+class rsEigenStuffReal
+{
+
+public:
+
+protected:
+
+  rsPolynomial<T> characteristicPolynomial;
+
+  std::vector<rsEigenSpaceReal<T>> eigenspaces;
+
+};
+// todo: make a version datastructure where the matrix may have complex coefficients - in this case, we 
+// don't
+
+void eigenstuff()
+{
+  // create a matrix and find its eigenvalues and eigenvectors
+
+
+  int dummy = 0;
+};
+
+
+
+
+
+
+
+
 
 void ellipseLineIntersections()
 {
