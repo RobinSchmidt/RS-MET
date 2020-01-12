@@ -219,9 +219,11 @@ template std::vector<std::complex<double>> RAPT::rsLinearAlgebraNew::solve(
 //template std::vector<RAPT::rsRationalFunction<double>> RAPT::rsLinearAlgebraNew::solveLinearSystem(
 //  rsMatrixView<RAPT::rsRationalFunction<double>>& A, std::vector<RAPT::rsRationalFunction<double>>& B);
 
+/*
 template void RAPT::rsLinearAlgebraNew::makeTriangularNoPivot(
   rsMatrixView<RAPT::rsRationalFunction<double>>& A, 
   rsMatrixView<RAPT::rsRationalFunction<double>>& B);
+  */
 
 template RAPT::rsMatrix<double> RAPT::rsLinearAlgebraNew::inverse(
   const RAPT::rsMatrixView<double>& A);

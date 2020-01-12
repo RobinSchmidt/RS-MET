@@ -66,7 +66,7 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
   T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
   int i, N = A.getNumRows();
   for(i = 0; i < N; i++) {
-    //rsMatrix<T> dbg; dbg.copyDataFrom(A);                     // uncomment for debugging
+    //rsMatrix<T> dbg; dbg.copyDataFrom(A);  // uncomment for debugging
     int p = i; 
     T biggest = T(0);
     for(int j = i; j < N; j++) {                                // search pivot row
@@ -107,7 +107,7 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 // at all but it may still have full rank -  i think, the rank is given by the greatest index i for
 // which A(i,i) is nonzero after the function returns
 
-
+/*
 template<class T>
 void rsLinearAlgebraNew::makeTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
@@ -119,6 +119,7 @@ void rsLinearAlgebraNew::makeTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<
       A.addWeightedRowToOther(i, j, w, i, A.getNumColumns()-1); // start at i: avoid adding zeros
       B.addWeightedRowToOther(i, j, w); }}
 }
+*/
 // maybe we should have a version that swaps when encountering a zero, maybe make an even simpler
 // version without the test for zero - if client code knows that the matrix is in a form such that
 // a zero pivot is never encountered, it may use this version (for optimization purposes)

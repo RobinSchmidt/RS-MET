@@ -4,7 +4,7 @@ using namespace std;
 // we replicate the function from rsLinearAlgebraNew  here but taking full rsMatrix objects instead
 // of views, so we can expand the content
 template<class T>
-bool makeSystemUpperTriangularNoPivot(rsMatrix<T>& A, rsMatrix<T>& B)
+bool makeTriangularNoPivot(rsMatrix<T>& A, rsMatrix<T>& B)
 {
   rsAssert(A.isSquare()); // can we relax this?
   int N = A.getNumRows();
@@ -47,7 +47,13 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
     R(i, 0) = RatFunc({ 1 }, { 1 });
 
   // compute row echelon form of B:
-  RAPT::rsLinearAlgebraNew::makeTriangularNoPivot(B, R);
+  //RAPT::rsLinearAlgebraNew::makeTriangularNoPivot(B, R);
+  makeTriangularNoPivot(B, R);
+  // i think, we really need pivoting for this here too - we may encounter the zero-function - but 
+  // maybe we should swap only when the zero-function is encountered - i.e. we don't search for the
+  // largest element - instead, we check against zero and if we encounter a zero, we search for the 
+  // next nonzero element to swap with - the current code should not go into the library - it's
+  // useless for production
 
   // Compute determinant. For a triangular matrix, this is the product of the diagonal elements. 
   // The computed determinant is still a rational function but it should come out as a polynomial, 
@@ -295,6 +301,13 @@ void characteristicPolynomial()
 // complexes, matrices of ratfuncs, ratfuncs of matrices, polynomials, vectors of matrices,
 // matrices of vectors - maybe out this into a unit test
 
+
+
+void nullspace()
+{
+
+  int dummy = 0;
+}
 
 
 

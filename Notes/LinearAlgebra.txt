@@ -1,0 +1,69 @@
+
+
+Nullspace:
+
+computing the nullspace of an NxN matrix A works as follows:
+-compute the row-echelon form of matrix A - let's call it B
+
+-the number k of nonzero lines of B is called the rank
+-the number of zero-lines N-k of B gives the dimensionality of the 
+ nullspace
+-to find a basis for the nullspace we may proceed as follows:
+
+let's imagine, a 5x5 matrix B in row echelon form looks like this:
+
+  1 2 3 4 5
+  0 6 7 8 9
+  0 0 1 2 3
+  0 0 0 0 0
+  0 0 0 0 0
+
+We have 2 zero rows, so the dimensionality of the nullspace is 2 and 
+the rank of b is 3. To find a basis for the nullspace, we must solve the 
+linear system B * x = 0 - but this system has infinitely many solutions. To 
+find them, we must solve a 3x3 system 2 times, for two different right-hand 
+sides. We obtain the coefficient matrix for this 3x3 system and the 
+corresponding right hand sides as follows - write B * x = 0 as:
+
+  1 2 3 4 5   x1   0
+  0 6 7 8 9   x2   0
+  0 0 1 2 3 * x3 = 0
+  0 0 0 0 0   x4   0
+  0 0 0 0 0   x5   0
+  
+Because the last two rows are all zeros, it doesn't matter what we choose for 
+x4 and x5 - we may treat them as our free parameters. We choose 2 different
+assignments, like x4=1, x5=0 and x4=0, x5=1 (in general, in each assignment 
+we choose all values to be zero except one, which we set to 1 - we set each of
+our free parameters to in turn). so this gives two systems:
+
+  1 2 3 4 5   x1 x1 = 0 0
+  0 6 7 8 9   x2 x2 = 0 0
+  0 0 1 2 3 * x3 x3 = 0 0
+  0 0 0 0 0    1  0 = 0 0
+  0 0 0 0 0    0  1 = 0 0
+  
+we rewrite this as:
+
+  1 2 3   x1 x1    0  0
+  0 6 7 * x2 x2 = -4  0
+  0 0 1   x3 x3    0 -9
+
+These are two 3x3 linear systems which are already in triangular form, so we 
+just need to throw the backsubstitution algo at it
+
+
+
+
+
+
+Eigenvalues:
+
+
+Eigenspace:
+
+The eigenspace of a matrix A to an eigenvalue x_i is the nullspace of the 
+matrix A - x_i * I where I is the identity matrix. For each eigenvalue x_i, 
+the dimensionality of the eigenspace is called the geometric multiplicity of 
+x_i and this is less or equal to its algebraic multiplicity. The vectors that 
+span the eigenspace of x_i are called the

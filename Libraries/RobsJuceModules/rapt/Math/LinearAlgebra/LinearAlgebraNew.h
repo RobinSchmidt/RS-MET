@@ -63,7 +63,7 @@ public:
   The process used is Gaussian elimination with partial pivoting. */
   template<class T>
   static int makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B);
-  // doesn't allocate
+  // doesn't allocate, maybe rename to rowElimination or rowEchelonForm
 
   /** Simplified version that doesn't use pivoting - this may fail even for non-singular 
   matrices, so it's not recommended for general use, but if you know that the elimination will 
@@ -71,9 +71,9 @@ public:
   also has less requirements on the datatype T, so it may be used in cases where the datatype 
   doesn't meet all reuqirements needed for pivoting. It doesn't require comparison operators <,>
   or an rsAbs function defined for it - it does, however, require an == operator. */
-  template<class T>
-  static void makeTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B);
-  // doesn't allocate
+  //template<class T>
+  //static void makeTriangularNoPivot(rsMatrixView<T>& A, rsMatrixView<T>& B);
+  // doesn't allocate - commented because it's useless for production code
 
   /** This produces the so called *reduced* row echelon form of a linear system of equations. In 
   this form, the coefficient matrix is diagonal and it is the simplemost representation of a 
