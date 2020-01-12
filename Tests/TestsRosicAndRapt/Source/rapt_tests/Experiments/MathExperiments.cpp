@@ -329,7 +329,9 @@ rsMatrix<T> getSubMatrix(
 }
 // make member of rsMatrix
 
-
+/** Returns a matrix whose columns are a basis of the nullspace (a.k.a. kernel) of the matrix A.
+The basis is not orthogonal or normalized. If the nullspace contains only the zero vector, an 
+empty matrix is returned. */
 template<class T>
 rsMatrix<T> getNullSpace(rsMatrix<T> A)
 {
@@ -341,82 +343,86 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A)
   int rank    = LA::makeTriangular(A, z);  // rank
   int nullity = N - rank;                  // dimensionality of nullspace
 
-  // extract 3x3 system with two rhs vectors
+  // extract rank x rank system with nullity rhs vectors
   Matrix S = getSubMatrix(A, 0, 0, rank, rank);
   Matrix R = Matrix(rank, nullity);
   for(int j = 0; j < nullity; ++j)   // loop over the rhs
     for(int i = 0; i < rank; ++i)    // loop over rows in current rhs
       R(i, j) = -A(i, rank+j);
 
-  // compute first k elements of basis vectors:
+  // compute first nullity elements of basis vectors:
   Matrix b = Matrix(rank, nullity);
   LA::solveTriangular(S, b, R);
 
-  // Computes filled up basis vectors:
+  // Compute filled up basis vectors:
   Matrix B = Matrix(N, nullity);
   B.setToZero();
-  for(int j = 0; j < nullity; ++j)
-  {
+  for(int j = 0; j < nullity; ++j) {
     for(int i = 0; i < rank; i++)
       B(i, j) = b(i, j);
-    B(rank+j, j) = 1;   // is this correct?
-  }
+    B(rank+j, j) = 1; }
 
   return B;
 }
-// needs test
 
 void nullspace()
 {
+  // turn into unit-test
 
   using Matrix = RAPT::rsMatrix<double>;
   using LA     = RAPT::rsLinearAlgebraNew;
+
+  // Examples from Höhere Mathematik in Rezepten (3.Aufl.), page 142 - our found nullspace basis 
+  // vectors aggree with the results there only up to multiplying the basis vectors by a factor. 
+  // That's ok - the basis of a vector space is not unique - we apparently have sometimes made
+  // different choices for the free parameters.
 
   // Create matrix A and zero veczor z:
   //     |1 2 3|      |0|
   // A = |4 5 6|, z = |0|
   //     |7 8 9|      |0|
   Matrix A(3, 3, {1,2,3, 4,5,6, 7,8,9});
-  Matrix z(3, 1, {0,     0,     0    });
-  int N       = A.getNumRows();
-  int rank    = LA::makeDiagonal(A, z);    // == 2
-  int nullity = N - rank;                  // == 1, dimensionality of nullspace
-  cleanUpIntegers(A.getDataPointer(), A.getSize(), 1.e-13); // for aesthetic reasons
+  Matrix B = getNullSpace(A); // B = {(1,-2,1)}
+  Matrix null = A*B;  // should be the zero matrix - yes - seems to work!
+  Matrix BB = B.getTranspose() * B; // should give unit, iff B is orthonormal
 
-  // a basis for the 1D nullspace of this matrix is the single vector (1,-2,1)
+  A = Matrix(3, 3, {-1,-1,2, 1,2,3, -1,0,7});
+  B = getNullSpace(A); // B = {(7,-5,1)}
+  null = A*B; 
+  BB = B.getTranspose() * B;
+
+  A = Matrix(4, 4, {1,2,3,4, 2,4,6,8, 3,6,9,12, 4,8,12,16});
+  B = getNullSpace(A); // B = {(2,-1,0,0), (3,0,-1,0), (4,0,0,-1)} // sign is different
+  null = A*B; 
+  BB = B.getTranspose() * B;
+
+  A = Matrix(3, 3, {4,2,2, 2,1,1, 2,1,1});
+  B = getNullSpace(A); // B = {(0,-1,1),(1,-2,0)}
+  null = A*B; 
+  BB = B.getTranspose() * B;
+
+  A = Matrix(3, 3, {-2,2,2, 2,-5,1, 2,1,-5});
+  B = getNullSpace(A); // B = {(2,1,1)}
+  null = A*B; 
+  BB = B.getTranspose() * B;
 
 
-  // this 5x5 matrix is already in row echelon form (but not yet reduced - but maybe reducing
-  // doesn't really help for the algorithm)
+  // This matrix has full rank - it's nullspace should be only the zero vector:
+  A = Matrix(3, 3, {1,0,0, 0,2,0, 0,0,3});
+  B = getNullSpace(A); 
+  null = A*B; 
+  BB = B.getTranspose() * B;
+
+  // This 5x5 matrix is already in row echelon form:
   //     |1 2 3 4 5|      |0|
   //     |0 1 6 7 8|      |0|
   // A = |0 0 1 9 1|, z = |0|
   //     |0 0 0 0 0|      |0|
   //     |0 0 0 0 0|      |0|
   A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
-  Matrix B = getNullSpace(A);
-
-  // make a function getNullSpace that returns a matrix with the same number of rows as the input
-  // matrix and a number of columns equal to the dimensionality of the nullspace
-
-
-  // create RHS Matrix of format N x (N-k)
-
-
-
-
-  // If the rank = K and numRows = N, to find the nullspace, we must solve the system of equations
-  // that results from the top-left KxK submatrix N-K times, where each time, another element of 
-  // the rhs vector is 1 while all others are zero - so we solve B * x = -I where B is the top-left
-  // KxK submatrix and I is the KxK identity matrix. This results in the first K elements of the 
-  // Kth basis vector - the remaining N-K elements are filled up with zeros execpt for one position
-  // where we set it to 1
-
-  // no - the rhs matrix is not simply -I - we must construct it from our A matrix and our choices
-  // for the free parameters
-
-
-  int dummy = 0;
+  B = getNullSpace(A);
+  null = A*B; 
+  BB = B.getTranspose() * B;
 }
 
 
@@ -443,8 +449,11 @@ struct rsEigenSpace
 
   int getGeometricMultiplicity() const { return (int) eigenspace.size(); }
 
+  //void orthonormalize();
+
   rsPolynomialRoot<T> eigenvalue;
-  std::vector<std::vector<T>> eigenspace;
+  rsMatrix<T> eigenspace;  // basis of nullspace of A - eigenvalue * I
+  //std::vector<std::vector<T>> eigenspace;
 };
 
 /** Represents the set of eigenspaces of a matrix with complex coefficients. This set consists of a
