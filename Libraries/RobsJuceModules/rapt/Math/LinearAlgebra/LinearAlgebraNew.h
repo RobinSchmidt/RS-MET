@@ -48,6 +48,9 @@ public:
   // doesn't allocate, todo: document, when this may be used in place
   // maybe pass arguments as A,B,X - outputs should come last - check, how the old versions does 
   // it
+  // document return value: it returns true, iff the linear system has a unique solution - it will
+  // fail whenever there are no solutions or a continuum of solutions
+  // maybe it should also return the rank?
 
 
   //-----------------------------------------------------------------------------------------------

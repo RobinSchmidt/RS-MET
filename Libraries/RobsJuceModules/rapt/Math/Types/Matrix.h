@@ -680,6 +680,21 @@ public:
     return *this;
   }
 
+
+  /** Needs test! */
+  /*
+  rsMatrix<T>& operator=(const rsMatrixView<T>& rhs)
+  {
+    if (this != &rhs) { // self-assignment check expected
+      setSize(rhs.getNumRows(), rhs.getNumColumns());
+      rsArrayTools::copy(rhs.getDataPointerConst(), this->dataPointer, this->getSize());
+    }
+    return *this;
+  }
+  */
+
+
+
   /** Move assignment operator. Takes over ownership of the data stored in rhs. */
   rsMatrix<T>& operator=(rsMatrix<T>&& rhs)
   {
@@ -722,7 +737,7 @@ public:
   }
   // rename to setShape - shall override inherited setShape
 
-
+  /** Copies the data from another matrix into this one, converting the datatype, if necessarry. */
   template<class T2>
   void copyDataFrom(const rsMatrixView<T2>& A)
   {

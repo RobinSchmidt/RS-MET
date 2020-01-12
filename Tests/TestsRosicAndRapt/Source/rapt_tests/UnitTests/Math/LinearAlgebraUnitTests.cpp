@@ -720,6 +720,37 @@ void solveDiagonalSystem(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>
 }
 // adapted from solveUpperDiagonalSystem
 
+bool testNullSpace()
+{
+  bool r = true;
+
+  using Matrix = rsMatrix<double>;
+  using LA     = rsLinearAlgebraNew;
+  double tol   = 1.e-14;
+
+  // maybe it makes sense to work with rational numbers rather than floating point
+
+  Matrix I, A, z;
+  int rank = 0;
+
+  // Karpf. pg 142:
+  z = Matrix(3, 1, { 0,0,0 });
+  A = Matrix(3, 3, {1,2,3, 4,5,6, 7,8,9});
+  //A = Matrix(3, 3, {7,8,9, 1,2,3, 4,5,6});    // reorder rows to avoid swapping
+  rank = LA::makeTriangular(A, z);
+  //LA::makeTriangularNoPivot(A, B);
+  r &= rank == 2;
+
+  // Karpf. pg 141:
+  I = Matrix(3, 3, {1,0,0, 0,1,0, 0,0,1});
+  A = Matrix(3, 3, {1,1,1, 1,2,4, 2,3,5});
+  rank = LA::makeTriangular(A, z);
+  r &= rank == 2;
+
+  // see Karpf pg 77,80,129,142,411
+
+  return r;
+}
 
 // tests the new implementation
 bool testLinearSystemViaGauss2() 
@@ -772,11 +803,14 @@ bool testLinearSystemViaGauss2()
   // test behavior of makeTriangular in case of singular matrices
 
 
+
   
   // figure out, when it can be used in place, i.e. X == B
 
   return r;
 }
+
+
 
 //bool testLinearAlgebra(std::string &reportString)
 bool testLinearAlgebra()
@@ -797,7 +831,7 @@ bool testLinearAlgebra()
   testResult &= testChangeOfBasis(        reportString);
 
 
-
+  testResult &= testNullSpace();
   testResult &= testLinearSystemViaGauss2();
 
 

@@ -26,21 +26,15 @@ bool rsLinearAlgebraNew::solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixV
   rsAssert(A.getNumColumns() == X.getNumRows()); // A*X = B or A*x = b must make sense
   rsAssert(X.hasSameShapeAs(B));                 // num of solutions == num of rhs-vectors
   rsAssert(A.isSquare()); 
-  bool invertible = makeTriangular(A, B) == A.getNumRows();
-  if(!invertible)
-    return false;                                // matrix was found to be singular
+  if(makeTriangular(A, B) != A.getNumRows())
+    return false;                                // matrix A was singular -> report failure
   solveTriangular(A, X, B);
-  return true;                                   // matrix was regular -> success!
+  return true;                                   // matrix A was regular -> report success
 }
 
 template<class T>
 void rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
-  //bool success = makeTriangular(A, B);
-  //if(!success)
-  //  return false;
-  //int N = A.getNumRows();
-
   int N = makeTriangular(A, B);
   for(int i = N-1; i >= 0; i--) {
     for(int j = i-1; j >= 0; j--) {
@@ -51,13 +45,8 @@ void rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
   // here, also restrict the column-range as optimization (see makeSystemUpperTriangular)
   // A.addWeightedRowToOther(i, j, s, i, N-1)? or (i, j, s, j, N-1)? or (i, j, s, j+1, N-1)?
   // implement unit test and figure out
-  // what about pivoting? what if A(i,i) == 0 - maybe the only case where this can happen is when
-  // there are zero rows? makeTriangular already makes sure that there are nonzero diagonal 
-  // elements down to the row, where it stopped - maybe it should return the row where it stopped
-  // and we should use the here as our upper loop limit:
-  // int N = makeTriangular(A, B);
-
-  //return true;
+  // what about pivoting? what if A(i,i) == 0? makeTriangular already makes sure that there are 
+  // nonzero diagonal elements down to the row N-1, where it stopped
 }
 
 /*
@@ -75,9 +64,9 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
   rsAssert(A.isSquare());                                       // can we relax this?
   T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
-  int N = A.getNumRows();
-  int i;
+  int i, N = A.getNumRows();
   for(i = 0; i < N; i++) {
+    //rsMatrix<T> dbg; dbg.copyDataFrom(A);                     // uncomment for debugging
     int p = i; 
     T biggest = T(0);
     for(int j = i; j < N; j++) {                                // search pivot row
