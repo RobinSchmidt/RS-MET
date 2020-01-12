@@ -329,6 +329,43 @@ rsMatrix<T> getSubMatrix(
 }
 // make member of rsMatrix
 
+
+template<class T>
+rsMatrix<T> getNullSpace(rsMatrix<T> A)
+{
+  using Matrix = RAPT::rsMatrix<T>;
+  using LA     = RAPT::rsLinearAlgebraNew;
+
+  Matrix z(A.getNumRows(), 1);             // dummy
+  int N       = A.getNumRows();            // dimensionality of input space
+  int rank    = LA::makeTriangular(A, z);  // rank
+  int nullity = N - rank;                  // dimensionality of nullspace
+
+  // extract 3x3 system with two rhs vectors
+  Matrix S = getSubMatrix(A, 0, 0, rank, rank);
+  Matrix R = Matrix(rank, nullity);
+  for(int j = 0; j < nullity; ++j)   // loop over the rhs
+    for(int i = 0; i < rank; ++i)    // loop over rows in current rhs
+      R(i, j) = -A(i, rank+j);
+
+  // compute first k elements of basis vectors:
+  Matrix b = Matrix(rank, nullity);
+  LA::solveTriangular(S, b, R);
+
+  // Computes filled up basis vectors:
+  Matrix B = Matrix(N, nullity);
+  B.setToZero();
+  for(int j = 0; j < nullity; ++j)
+  {
+    for(int i = 0; i < rank; i++)
+      B(i, j) = b(i, j);
+    B(rank+j, j) = 1;   // is this correct?
+  }
+
+  return B;
+}
+// needs test
+
 void nullspace()
 {
 
@@ -357,33 +394,10 @@ void nullspace()
   //     |0 0 0 0 0|      |0|
   //     |0 0 0 0 0|      |0|
   A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
-  z = Matrix(5, 1, {0,         0,         0,         0,         0});
-  N       = A.getNumRows();
-  rank    = LA::makeTriangular(A, z);  // == 3
-  nullity = N - rank;                  // == 2, dimensionality of nullspace
+  Matrix B = getNullSpace(A);
 
-  // extract 3x3 system with two rhs vectors
-  Matrix S = getSubMatrix(A, 0, 0, rank, rank);
-  Matrix R = Matrix(rank, nullity);
-  for(int j = 0; j < nullity; ++j)   // loop over the rhs
-    for(int i = 0; i < rank; ++i)    // loop over rows in current rhs
-      R(i, j) = -A(i, rank+j);
-
-  // compute first k elements of basis vectors:
-  Matrix b = Matrix(rank, nullity);
-  LA::solveTriangular(S, b, R);
-
-  // Computes filled up basis vectors:
-  Matrix B = Matrix(N, nullity);
-  B.setToZero();
-  for(int j = 0; j < nullity; ++j)
-  {
-    for(int i = 0; i < rank; i++)
-      B(i, j) = b(i, j);
-    B(rank+j, j) = 1;   // is this correct?
-  }
-
-
+  // make a function getNullSpace that returns a matrix with the same number of rows as the input
+  // matrix and a number of columns equal to the dimensionality of the nullspace
 
 
   // create RHS Matrix of format N x (N-k)
