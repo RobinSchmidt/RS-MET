@@ -37,8 +37,11 @@ int rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
   int N = makeTriangular(A, B);
   for(int i = N-1; i >= 0; i--) {
+    T s = T(1) / A(i, i);
+    A.scaleRow(i, s);
+    B.scaleRow(i, s);
     for(int j = i-1; j >= 0; j--) {
-      T s = -A(j, i) / A(i, i);
+      s = -A(j, i);
       A.addWeightedRowToOther(i, j, s);
       B.addWeightedRowToOther(i, j, s); }} 
   return N;

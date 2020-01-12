@@ -84,7 +84,7 @@ public:
   matrix with the eigenvalues on the main diagonal - this is *NOT* what this function does. */
   template<class T>
   static int makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B);
-  // doesn't allocate, todo: needs test
+  // doesn't allocate, todo: needs test, maybe renmae to reducedRowEchelonForm
 
   /** Solves the system(s) of linear equations A * X = B for the special case where A is an upper
   triangular matrix. */

@@ -306,6 +306,28 @@ void characteristicPolynomial()
 // matrices of vectors - maybe out this into a unit test
 
 
+template<class T>
+void cleanUpIntegers(T* a, int N, T tol)
+{
+  for(int i = 0; i < N; ++i) {
+    T rounded = round(a[i]);
+    if( rsAbs(a[i] - rounded) <= tol )
+      a[i] = rounded; }
+}
+
+template<class T>
+rsMatrix<T> getSubMatrix(
+  const rsMatrix<T>& A, int startRow, int startCol, int numRows, int numCols)
+{
+  // assert that it all makes sense
+
+  rsMatrix<T> S(numRows, numCols);
+  for(int i = 0; i < numRows; ++i)
+    for(int j = 0; j < numCols; ++j)
+      S(i, j) = A(startRow+i, startCol+j);
+  return S;
+}
+// make member of rsMatrix
 
 void nullspace()
 {
@@ -319,8 +341,24 @@ void nullspace()
   //     |7 8 9|      |0|
   Matrix A(3, 3, {1,2,3, 4,5,6, 7,8,9});
   Matrix z(3, 1, {0,     0,     0    });
+  int rank = LA::makeDiagonal(A, z);    // == 2
+  int nullity = A.getNumRows() - rank;  // == 1, dimensionality of nullspace
+  cleanUpIntegers(A.getDataPointer(), A.getSize(), 1.e-13); // for aesthetic reasons
 
-  int rank = LA::makeDiagonal(A, z);
+  // a basis for the 1D nullspace of this matrix is the single vector (1,-2,1)
+
+  Matrix B = getSubMatrix(A, 0, 0, rank, rank);
+
+  // If the rank = K and numRows = N, to find the nullspace, we must solve the system of equations
+  // that results from the top-left KxK submatrix N-K times, where each time, another element of 
+  // the rhs vector is 1 while all others are zero - so we solve B * x = -I where B is the top-left
+  // KxK submatrix and I is the KxK identity matrix. This results in the first K elements of the 
+  // Kth basis vector - the remaining N-K elements are filled up with zeros execpt for one position
+  // where we set it to 1
+
+  // no - the rhs matrix is not simply -I - we must construct it from our A matrix and our choices
+  // for the free parameters
+
 
   int dummy = 0;
 }
