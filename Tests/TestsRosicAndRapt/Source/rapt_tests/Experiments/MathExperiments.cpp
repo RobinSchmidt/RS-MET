@@ -341,13 +341,55 @@ void nullspace()
   //     |7 8 9|      |0|
   Matrix A(3, 3, {1,2,3, 4,5,6, 7,8,9});
   Matrix z(3, 1, {0,     0,     0    });
-  int rank = LA::makeDiagonal(A, z);    // == 2
-  int nullity = A.getNumRows() - rank;  // == 1, dimensionality of nullspace
+  int N       = A.getNumRows();
+  int rank    = LA::makeDiagonal(A, z);    // == 2
+  int nullity = N - rank;                  // == 1, dimensionality of nullspace
   cleanUpIntegers(A.getDataPointer(), A.getSize(), 1.e-13); // for aesthetic reasons
 
   // a basis for the 1D nullspace of this matrix is the single vector (1,-2,1)
 
-  Matrix B = getSubMatrix(A, 0, 0, rank, rank);
+
+  // this 5x5 matrix is already in row echelon form (but not yet reduced - but maybe reducing
+  // doesn't really help for the algorithm)
+  //     |1 2 3 4 5|      |0|
+  //     |0 1 6 7 8|      |0|
+  // A = |0 0 1 9 1|, z = |0|
+  //     |0 0 0 0 0|      |0|
+  //     |0 0 0 0 0|      |0|
+  A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
+  z = Matrix(5, 1, {0,         0,         0,         0,         0});
+  N       = A.getNumRows();
+  rank    = LA::makeTriangular(A, z);  // == 3
+  nullity = N - rank;                  // == 2, dimensionality of nullspace
+
+  // extract 3x3 system with two rhs vectors
+  Matrix S = getSubMatrix(A, 0, 0, rank, rank);
+  Matrix R = Matrix(rank, nullity);
+  for(int j = 0; j < nullity; ++j)   // loop over the rhs
+    for(int i = 0; i < rank; ++i)    // loop over rows in current rhs
+      R(i, j) = -A(i, rank+j);
+
+  // compute first k elements of basis vectors:
+  Matrix b = Matrix(rank, nullity);
+  LA::solveTriangular(S, b, R);
+
+  // Computes filled up basis vectors:
+  Matrix B = Matrix(N, nullity);
+  B.setToZero();
+  for(int j = 0; j < nullity; ++j)
+  {
+    for(int i = 0; i < rank; i++)
+      B(i, j) = b(i, j);
+    B(rank+j, j) = 1;   // is this correct?
+  }
+
+
+
+
+  // create RHS Matrix of format N x (N-k)
+
+
+
 
   // If the rank = K and numRows = N, to find the nullspace, we must solve the system of equations
   // that results from the top-left KxK submatrix N-K times, where each time, another element of 
