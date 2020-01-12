@@ -26,7 +26,7 @@ bool rsLinearAlgebraNew::solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixV
   rsAssert(A.getNumColumns() == X.getNumRows()); // A*X = B or A*x = b must make sense
   rsAssert(X.hasSameShapeAs(B));                 // num of solutions == num of rhs-vectors
   rsAssert(A.isSquare()); 
-  bool invertible = makeTriangular(A, B);
+  bool invertible = makeTriangular(A, B) == A.getNumRows();
   if(!invertible)
     return false;                                // matrix was found to be singular
   solveTriangular(A, X, B);
@@ -34,12 +34,14 @@ bool rsLinearAlgebraNew::solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixV
 }
 
 template<class T>
-bool rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
+void rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
-  bool success = makeTriangular(A, B);
-  if(!success)
-    return false;
-  int N = A.getNumRows();
+  //bool success = makeTriangular(A, B);
+  //if(!success)
+  //  return false;
+  //int N = A.getNumRows();
+
+  int N = makeTriangular(A, B);
   for(int i = N-1; i >= 0; i--) {
     for(int j = i-1; j >= 0; j--) {
       T s = -A(j, i) / A(i, i);
@@ -55,7 +57,7 @@ bool rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
   // and we should use the here as our upper loop limit:
   // int N = makeTriangular(A, B);
 
-  return true;
+  //return true;
 }
 
 /*
@@ -69,21 +71,21 @@ inline bool operator>(const std::complex<T>& L, const std::complex<T>& R)
 */
 
 template<class T>
-bool rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
+int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
   rsAssert(A.isSquare());                                       // can we relax this?
   T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
   int N = A.getNumRows();
-  for(int i = 0; i < N; i++) {
+  int i;
+  for(i = 0; i < N; i++) {
     int p = i; 
     T biggest = T(0);
     for(int j = i; j < N; j++) {                                // search pivot row
       if( rsGreaterAbs(A(j, i), biggest) ){ 
         biggest = A(j, i); 
         p = j; }}
-    if(rsIsCloseTo(biggest, T(0), tooSmall)) {
-      rsError("Matrix (numerically) singular");
-      return false; }
+    if(rsIsCloseTo(biggest, T(0), tooSmall))                    // no pivot found - return early
+      return i;
     if(p != i) {                                                // turn pivot row into current row
       A.swapRows(i, p); 
       B.swapRows(i, p); } 
@@ -91,7 +93,7 @@ bool rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
       T w = -A(j, i) / A(i, i);                                 // weight
       A.addWeightedRowToOther(i, j, w, i, A.getNumColumns()-1); // start at i: avoid adding zeros
       B.addWeightedRowToOther(i, j, w); }}
-  return true;
+  return i;
 }
 // Maybe allow the function to be called without an rhs B. It may make sense to use it with a 
 // single input in order to compute determinants - when the function returns, the determinant is

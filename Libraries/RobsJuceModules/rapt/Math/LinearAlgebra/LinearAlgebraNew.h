@@ -59,7 +59,7 @@ public:
   contain several right hand side vectors and the matrix X should contain just as many solutions. 
   The process used is Gaussian elimination with partial pivoting. */
   template<class T>
-  static bool makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B);
+  static int makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B);
   // doesn't allocate
 
   /** Simplified version that doesn't use pivoting - this may fail even for non-singular 
@@ -80,7 +80,7 @@ public:
   A = inv(M) * D * M where M is a matrix whose columns are the eigenvectors and D is a diagonal 
   matrix with the eigenvalues on the main diagonal - this is *NOT* what this function does. */
   template<class T>
-  static bool makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B);
+  static void makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B);
   // doesn't allocate, todo: needs test
 
   /** Solves the system(s) of linear equations A * X = B for the special case where A is an upper
