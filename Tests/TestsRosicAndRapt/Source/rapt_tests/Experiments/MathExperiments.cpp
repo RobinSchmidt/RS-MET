@@ -88,12 +88,10 @@ vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
   // ...but the eigenvalues are complex - does that mean the eigenvectors may also be complex?
   // probably
 
-
   rsAssert(A.isSquare());
 
   using LA = RAPT::rsLinearAlgebraNew;
   int N = A.getNumRows();
-
 
   vector<complex<T>> eigenValues = getEigenvalues(A);
   rsAssert((int)eigenValues.size() == N);
@@ -103,17 +101,17 @@ vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
   vector<vector<complex<T>>> eigenVectors(N); 
 
   for(int i = 0; i < N; i++) {
-    B(i, i) = A(i, i) - eigenValues[i];         // shift diagonal element
-    eigenVectors[i] = LA::solve(B, zeroVector); // solve A - x_i * I == 0
-    B(i, i) = A(i, i);                          // restore diagonal element
+    for(int j = 0; j < N; j++)
+      B(j, j) = A(j, j) - eigenValues[i];       // set diagonal elements of B = (A - x_i * I)
+    eigenVectors[i] = LA::solve(B, zeroVector); // solve B * x == 0
   }
 
-
-  // std::vector<T> solve(const rsMatrixView<T>& A, const std::vector<T>& b);
+  // triggers assertion that matrix is singular -> try elimination by hand and compare to what
+  // the algo does
 
   return eigenVectors;
 }
-
+// http://doc.sagemath.org/html/en/constructions/linear_algebra.html
 
 // maybe do eigenvalue and eigenvector stuff here and rename the function accordingly
 void characteristicPolynomial() 
@@ -151,6 +149,9 @@ void characteristicPolynomial()
 
   vector<vector<complex<double>>> eigenVectors = getEigenvectors(A);
   // they are both computed as zero - can that be? -> ask sage!
+  // well, the zero-vector actually is a solution - seems we compute the trivial solution
+  // -> how do we compute the nontrivial solution? maybe, we need a different right-hand side?
+  // correct eigenvectors are (1,1) and (1,1/2)
 
 
   // What is actually the set of matrices that gives zero when plugged into the polynomial? Are
