@@ -33,21 +33,24 @@ bool rsLinearAlgebraNew::solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixV
 }
 
 template<class T>
-void rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
+int rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
   int N = makeTriangular(A, B);
   for(int i = N-1; i >= 0; i--) {
     for(int j = i-1; j >= 0; j--) {
       T s = -A(j, i) / A(i, i);
       A.addWeightedRowToOther(i, j, s);
-      B.addWeightedRowToOther(i, j, s); }
-  } 
+      B.addWeightedRowToOther(i, j, s); }} 
+  return N;
   // here, also restrict the column-range as optimization (see makeSystemUpperTriangular)
   // A.addWeightedRowToOther(i, j, s, i, N-1)? or (i, j, s, j, N-1)? or (i, j, s, j+1, N-1)?
   // implement unit test and figure out
   // what about pivoting? what if A(i,i) == 0? makeTriangular already makes sure that there are 
   // nonzero diagonal elements down to the row N-1, where it stopped
 }
+// the reduced row echelon form is unique:
+// https://en.wikipedia.org/wiki/Row_echelon_form
+// todo: scale the rows by their leading coeff
 
 /*
 template<class T>

@@ -3,6 +3,7 @@
 
 
 void characteristicPolynomial();
+void nullspace();
 void eigenstuff();
 
 void bandMatrix();

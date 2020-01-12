@@ -83,7 +83,7 @@ public:
   A = inv(M) * D * M where M is a matrix whose columns are the eigenvectors and D is a diagonal 
   matrix with the eigenvalues on the main diagonal - this is *NOT* what this function does. */
   template<class T>
-  static void makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B);
+  static int makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B);
   // doesn't allocate, todo: needs test
 
   /** Solves the system(s) of linear equations A * X = B for the special case where A is an upper

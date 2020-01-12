@@ -53,7 +53,7 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
   // maybe we should swap only when the zero-function is encountered - i.e. we don't search for the
   // largest element - instead, we check against zero and if we encounter a zero, we search for the 
   // next nonzero element to swap with - the current code should not go into the library - it's
-  // useless for production
+  // useless for production - see weitz book pg 310
 
   // Compute determinant. For a triangular matrix, this is the product of the diagonal elements. 
   // The computed determinant is still a rational function but it should come out as a polynomial, 
@@ -115,11 +115,14 @@ vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
   // singular system of equations when solving (A - x_i * I) * x = 0, so our regular Gaussian
   // elimination procedure is not suitable - but what else?
 
+  // i think, this is wrong:
   for(int i = 0; i < N; i++) {
     for(int j = 0; j < N; j++)
       B(j, j) = A(j, j) - eigenValues[i];   // set diagonal elements of B = (A - x_i * I)
     eigenVectors[i] = LA::solve(B, rhs);    // solve B * x == 0
   }
+  // the system we are trying to solve is singular and actually the rhs is zero anyway - what we
+  // need instead is to find the nullspace of A - x_i * I = B_i for each i
 
   // triggers assertion that matrix is singular -> try elimination by hand and compare to what
   // the algo does
@@ -146,7 +149,8 @@ vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
   // eigenvectors of the eigenvalue x_j - i've adapted the notation a bit - but note that the i
   // runs over the *distinct* eigenvalues, not just over all eigenvalues ..soo, it seems to find 
   // the eigenspace to an eigenvalue x_i, we must do repeated matrix multiplication rather than
-  // solving a linear system - or is there a better way?
+  // solving a linear system - or is there a better way? ...solving a linear system is actually 
+  // wrong - we need to find a nullspace
 
   // see also:
   // https://lpsa.swarthmore.edu/MtrxVibe/EigMat/MatrixEigen.html
@@ -305,6 +309,18 @@ void characteristicPolynomial()
 
 void nullspace()
 {
+
+  using Matrix = RAPT::rsMatrix<double>;
+  using LA     = RAPT::rsLinearAlgebraNew;
+
+  // Create matrix A and zero veczor z:
+  //     |1 2 3|      |0|
+  // A = |4 5 6|, z = |0|
+  //     |7 8 9|      |0|
+  Matrix A(3, 3, {1,2,3, 4,5,6, 7,8,9});
+  Matrix z(3, 1, {0,     0,     0    });
+
+  int rank = LA::makeDiagonal(A, z);
 
   int dummy = 0;
 }

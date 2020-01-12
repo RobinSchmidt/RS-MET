@@ -228,7 +228,7 @@ template void RAPT::rsLinearAlgebraNew::makeTriangularNoPivot(
 template RAPT::rsMatrix<double> RAPT::rsLinearAlgebraNew::inverse(
   const RAPT::rsMatrixView<double>& A);
 
-template void RAPT::rsLinearAlgebraNew::makeDiagonal(
+template int RAPT::rsLinearAlgebraNew::makeDiagonal(
   RAPT::rsMatrixView<double>& A, RAPT::rsMatrixView<double>& B);
 
 
