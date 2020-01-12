@@ -21,13 +21,14 @@ bool makeSystemUpperTriangularNoPivot(rsMatrix<T>& A, rsMatrix<T>& B)
 // simplest (lowest degree or smallest) nonzero element - because then, there may be less complex
 // computations
 
+
 template<class T>
 RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
 {
-  using Poly    = RAPT::rsPolynomial<double>;
-  using RatFunc = RAPT::rsRationalFunction<double>;
+  //using Poly    = RAPT::rsPolynomial<T>;
+  using RatFunc = RAPT::rsRationalFunction<T>;
   using Matrix  = RAPT::rsMatrix<RatFunc>;
-  using LA      = RAPT::rsLinearAlgebraNew;
+  //using LA      = RAPT::rsLinearAlgebraNew;
 
   // Create matrix B = A - x*I as matrix of rational functions:
   Matrix B(A.getNumRows(), A.getNumColumns());
@@ -38,7 +39,7 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
       else
         B(i, j) = RatFunc({A(i, j)},     {1});
 
-  // create a dummy right-hand-side (todo: allow function to be called without rhs) - maybe
+  // Create a dummy right-hand-side (todo: allow function to be called without rhs) - maybe
   // make an LU decomposition function that fills an array of swaps at each index, the number says
   // with which row this row has to be swapped
   Matrix R(A.getNumRows(), 1);
@@ -46,7 +47,7 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
     R(i, 0) = RatFunc({ 1 }, { 1 });
 
   // compute row echelon form of B:
-  LA::makeTriangularNoPivot(B, R);
+  RAPT::rsLinearAlgebraNew::makeTriangularNoPivot(B, R);
 
   // Compute determinant. For a triangular matrix, this is the product of the diagonal elements. 
   // The computed determinant is still a rational function but it should come out as a polynomial, 
@@ -54,8 +55,11 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
   // -1 because the elementary row operations can only flip the determinant.
   RatFunc d = B.getDiagonalProduct();
   rsAssert(d.getDenominatorDegree() == 0);
-  Poly p = d.getNumerator() / d.getDenominator()[0]; 
-  return p;
+  return d.getNumerator() / d.getDenominator()[0]; 
+
+
+  //RAPT::rsPolynomial<T>::Poly p = d.getNumerator() / d.getDenominator()[0]; 
+  //return p;
 }
 
 template<class T> 
@@ -79,7 +83,7 @@ vector<complex<T>> getEigenvalues(const rsMatrixView<T>& A)
 
 // todo: 
 
-
+// i think, this is wrong:
 template<class T>
 vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
 {
@@ -190,7 +194,8 @@ void characteristicPolynomial()
   vector<complex<double>> eigenvalues1 = getPolynomialRoots(p);
   //vector<complex<double>> eigenvalues2 = getEigenvalues(A);
 
-  vector<vector<complex<double>>> eigenVectors = getEigenvectors(A);
+  // this is wrong:
+  //vector<vector<complex<double>>> eigenVectors = getEigenvectors(A);
   // they are both computed as zero - can that be? -> ask sage!
   // well, the zero-vector actually is a solution - seems we compute the trivial solution
   // -> how do we compute the nontrivial solution? maybe, we need a different right-hand side?
@@ -295,35 +300,35 @@ void characteristicPolynomial()
 
 
 
-/** Represents the root of a real polynomial, so the "real" refers to the polynomial coeffs - the 
-root itself may still be complex (-> find better name!). */
+
+/** Represents the root of a polynomial along with its multiplicity. The datatype of the 
+coefficients is assumed to be a complex number type. */
 template<class T>
-struct rsPolynomialRootReal
+struct rsPolynomialRoot
 {
-  std::complex<T> value; 
+  T value;   // T is assumed to be a complex type
   int multiplicity;
 };
 
-/** Represents the eigenspace of a matrix with real coefficients. Each eigenspace consists of an 
-eigenvalue and an associated set of eigenvectors. */
+/** Represents the eigenspace of a matrix with complex coefficients. Each eigenspace consists of 
+an eigenvalue and an associated set of eigenvectors. */
 template<class T>
-struct rsEigenSpaceReal
+struct rsEigenSpace
 {
 
   int getAlgebraicMultiplicity() const { return eigenvalue.multiplicity; }
 
   int getGeometricMultiplicity() const { return (int) eigenspace.size(); }
 
-  rsPolynomialRootReal<T> eigenvalue;
-  std::vector<std::vector<std::complex<T>>> eigenspace;
+  rsPolynomialRoot<T> eigenvalue;
+  std::vector<std::vector<T>> eigenspace;
 };
 
-/** Represents the set of eigenspaces of a matrix with real coefficients. This set 
-consists of a set 
-of (in general complex) eigenvalues, each with an algebraic multiplicity which is the order of the
+/** Represents the set of eigenspaces of a matrix with complex coefficients. This set consists of a
+set of (igenvalues, each with an algebraic multiplicity which is the order of the
 polynomial root. Associated with each eigenvalue is a set of eigenvectors...  */
-template<class T>
-class rsEigenStuffReal
+template<class T>  // T should be a complex type
+class rsEigenStuff
 {
 
 public:
@@ -331,12 +336,19 @@ public:
 protected:
 
   rsPolynomial<T> characteristicPolynomial;
-
-  std::vector<rsEigenSpaceReal<T>> eigenspaces;
+  std::vector<rsEigenSpace<T>> eigenspaces;
 
 };
-// todo: make a version datastructure where the matrix may have complex coefficients - in this case, we 
-// don't
+
+// for matrices with real coefficients, we must promote them to complex numbers because even real
+// matrices may have complex eigenvalues and eigenvectors
+template<class T>
+class rsEigenStuffReal : public rsEigenStuff<std::complex<T>>
+{
+
+
+
+};
 
 void eigenstuff()
 {

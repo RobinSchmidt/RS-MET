@@ -769,9 +769,11 @@ bool testLinearSystemViaGauss2()
   // [ 3 10  3]  [2 5]  [32 80]
   // [ 1  5  1], [3 6], [14 35]
 
+  // test behavior of makeTriangular in case of singular matrices
+
 
   
-  // figure out, when it can be used in place
+  // figure out, when it can be used in place, i.e. X == B
 
   return r;
 }

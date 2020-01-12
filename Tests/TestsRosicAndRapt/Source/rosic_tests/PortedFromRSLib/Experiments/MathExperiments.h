@@ -2,6 +2,9 @@
 #define RS_MATHEXPERIMENTS_H
 
 
+void characteristicPolynomial();
+void eigenstuff();
+
 void bandMatrix();
 void pentaDiagnonalMatrix();
 void pentaDiagnonalMatrix2();

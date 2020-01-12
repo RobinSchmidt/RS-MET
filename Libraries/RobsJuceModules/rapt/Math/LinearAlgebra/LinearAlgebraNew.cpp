@@ -49,6 +49,11 @@ bool rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
   // here, also restrict the column-range as optimization (see makeSystemUpperTriangular)
   // A.addWeightedRowToOther(i, j, s, i, N-1)? or (i, j, s, j, N-1)? or (i, j, s, j+1, N-1)?
   // implement unit test and figure out
+  // what about pivoting? what if A(i,i) == 0 - maybe the only case where this can happen is when
+  // there are zero rows? makeTriangular already makes sure that there are nonzero diagonal 
+  // elements down to the row, where it stopped - maybe it should return the row where it stopped
+  // and we should use the here as our upper loop limit:
+  // int N = makeTriangular(A, B);
 
   return true;
 }
@@ -102,6 +107,14 @@ bool rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 // decomposition of a permutation of A ...but in order to be useful for later solving other 
 // systems with ethe same matrix but other right-hand-sides, we would need to keep track of the
 // permutations - here it is no problem, because we immediately apply the swaps to the RHS as well
+
+// i think, this function is useful also for singular matrices - in this case, it should stop as
+// soon as it encounters a situation where there are only zeros in th i-th column below the 
+// diagonla element A(i,i) such that no pivot can be found - ith should then return i - it should
+// always return the number of successful elimination steps - how does this number relate to the 
+// rank - it can't be the rank itself because when the matix already is triangular, we take no step
+// at all but it may still have full rank -  i think, the rank is given by the greatest index i for
+// which A(i,i) is nonzero after the function returns
 
 
 template<class T>

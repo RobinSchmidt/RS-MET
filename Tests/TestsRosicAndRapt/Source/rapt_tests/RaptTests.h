@@ -70,9 +70,9 @@ void triangles();
 void pixelCoverage();
 
 
-// Math Experiements:
+// Math Experiments:
+// wait - what about the file MathExperiments.h - shouldn't they be declared there?
 
-void characteristicPolynomial();
 void ellipseLineIntersections();
 void finiteDifferenceStencilCoeffs();
 void interpolatingFunction();

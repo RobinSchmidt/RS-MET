@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  //passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
+  passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
   //passed &= runUnitTestsRosic();
   //passed = passed;  // dummy
 
@@ -92,6 +92,7 @@ int main(int argc, char* argv[])
 
   // Math:
   characteristicPolynomial();
+  eigenstuff();
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
