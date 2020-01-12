@@ -95,19 +95,54 @@ vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
 
   vector<complex<T>> eigenValues = getEigenvalues(A);
   rsAssert((int)eigenValues.size() == N);
-  vector<complex<T>> zeroVector(N);
+  vector<complex<T>> rhs(N);
   rsMatrix<complex<T>> I(N, N), B(N, N);
   B.copyDataFrom(A);
   vector<vector<complex<T>>> eigenVectors(N); 
 
+  //rhs[0] = 1;
+  // i think, we can make a choice - or maybe even several choices - we are trying to solve a
+  // singular system of equations when solving (A - x_i * I) * x = 0, so our regular Gaussian
+  // elimination procedure is not suitable - but what else?
+
   for(int i = 0; i < N; i++) {
     for(int j = 0; j < N; j++)
-      B(j, j) = A(j, j) - eigenValues[i];       // set diagonal elements of B = (A - x_i * I)
-    eigenVectors[i] = LA::solve(B, zeroVector); // solve B * x == 0
+      B(j, j) = A(j, j) - eigenValues[i];   // set diagonal elements of B = (A - x_i * I)
+    eigenVectors[i] = LA::solve(B, rhs);    // solve B * x == 0
   }
 
   // triggers assertion that matrix is singular -> try elimination by hand and compare to what
   // the algo does
+  // let B_i be given by A - x_i * I, then B_0 = [[-3,6],[-3,6]], B_1 = [[-6,6],[-3,3]]
+  // so yes, the shifted matrix is indeed singular - seems we can't solve for the eigenvectors by 
+  // regular linear system solving...hmmm - how else can we find them? maybe we need to find 
+  // coefficients for which the linear-combination of the rows gives the zero-row?
+
+  // also - in general, there is no one-to-one correspondence between eigenvalues and eigenvectors
+  // there may be zero or multiple eigenvectors to any given eigenvalue - the set of eigenvectors
+  // belonging to eigenvalue x_i is the eigenspace of x_i and the dimensionality of this space
+  // is the geometric multiplicity of x_i
+
+  // ah - i think the problem is that an eigenvector represents infinitely many solutions to a 
+  // linear system because we can scale it by an arbitrary factor and still have a solution - so we
+  // have a situation where there's a parametric continuum of solutions - the number of free 
+  // parameters is the dimenstion of the eigenspace? and that value is probably related to
+  // rank(A - x_i * I)
+
+  // It seems, we may not have to solve any system of equations as all - here it says:
+  // https://en.wikipedia.org/wiki/Eigenvalue_algorithm
+  // 
+  // the columns of the matrix prod_{i != j} (A - x_i * I)^m_i must be either 0 or generalized 
+  // eigenvectors of the eigenvalue x_j - i've adapted the notation a bit - but note that the i
+  // runs over the *distinct* eigenvalues, not just over all eigenvalues ..soo, it seems to find 
+  // the eigenspace to an eigenvalue x_i, we must do repeated matrix multiplication rather than
+  // solving a linear system - or is there a better way?
+
+  // see also:
+  // https://lpsa.swarthmore.edu/MtrxVibe/EigMat/MatrixEigen.html
+  // https://www.scss.tcd.ie/Rozenn.Dahyot/CS1BA1/SolutionEigen.pdf
+  // http://www.sosmath.com/matrix/eigen2/eigen2.html
+  // http://wwwf.imperial.ac.uk/metric/metric_public/matrices/eigenvalues_and_eigenvectors/eigenvalues2.html
 
   return eigenVectors;
 }
@@ -137,12 +172,17 @@ void characteristicPolynomial()
   //     |-3  5|
   Matrix A(2, 2, {-4,6, -3,5});
   Poly p = getCharacteristicPolynomial(A);
+  // this is example 39.1 in Karpfinger
 
   // The matrix plugged into its characteristic polynomial as argument should yield the zero 
-  // matrix. Matrices are "roots" of their own characteristic polynomials:
+  // matrix. Matrices are "roots" of their own characteristic polynomials, see
+  // https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem
   Matrix I(2, 2, {1,0, 0,1});      // 2x2 identity matrix
   Matrix pA = p[0]*I + p[1]*A + p[2] * A*A;
+
   //bool test = pA.isZero();
+
+  // the sum of the eigenvalues should equal the trace of the matrix (Karpf. pg 412)
 
   vector<complex<double>> eigenvalues1 = getPolynomialRoots(p);
   //vector<complex<double>> eigenvalues2 = getEigenvalues(A);
@@ -151,7 +191,7 @@ void characteristicPolynomial()
   // they are both computed as zero - can that be? -> ask sage!
   // well, the zero-vector actually is a solution - seems we compute the trivial solution
   // -> how do we compute the nontrivial solution? maybe, we need a different right-hand side?
-  // correct eigenvectors are (1,1) and (1,1/2)
+  // correct eigenvectors are (1,1) and (1,1/2) ~= (2,1)
 
 
   // What is actually the set of matrices that gives zero when plugged into the polynomial? Are

@@ -63,6 +63,8 @@ inline void normalizeLength(T* vx, T* vy)
 
 // move elsewhere:
 
+
+// move to Basics.h:
 template<class T> 
 inline bool rsLess(const std::complex<T>& x, const std::complex<T>& y) // maybe have a tolerance
 {
@@ -152,6 +154,9 @@ void rsLinearAlgebra::eigenvector2x2_2(T a, T b, T c, T d, T* vx, T* vy, bool no
 // and give it a name? maybe eigenSqrt2x2 ...or has it to do with the determinant? i think, it's a 
 // sort of discriminant that discriminates the cases of real and complex eigenvalues (when the 
 // coeffs are real)
+// see also here:
+// https://en.wikipedia.org/wiki/Eigenvalue_algorithm#2%C3%972_matrices
+// maybe compute the gap - maybe this is the square root above?
 
 // the general formula can be found with the following sage code:
 // var("a b c d")
