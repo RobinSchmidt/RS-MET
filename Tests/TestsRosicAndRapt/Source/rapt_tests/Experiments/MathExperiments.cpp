@@ -705,13 +705,27 @@ void eigenstuff()
   using Matrix  = RAPT::rsMatrix<double>;
   using MatrixC = RAPT::rsMatrix<complex<double>>;
 
+  Matrix A;
+
+  // Examples from Ahrens,pg.658:
+  A = Matrix(2,2, {3,-1, 1,1});
+  findEigenSpacesReal(A);
+  // [2,(1,1)], [2,(1,1)] -> correct
+
+  A = Matrix(3,3, {1,2,2, 2,-2,1, 2,1,-2});
+  findEigenSpacesReal(A);
+  // [3,(2,1,1)],[-3,(-1,0,2),(-1,2,0)] - (2,1,1) is found correctly, the other eigenspaces are 
+  // empty - numerical issues?
+
   // Example from Ahrens,pg.659 - has a single eigenvalue of -2 (with multiplicity 5) with a 2D 
   // eigenspace spanned by {(1,1,1,1,1),(0,0,1,0,0)}:
-  Matrix A(5,5, {-3,1,0,0,0, -1,-1,0,0,0, -3,1,-2,1,1, -2,1,0,-2,1, -1,1,0,0,-2});
+  A = Matrix(5,5, {-3,1,0,0,0, -1,-1,0,0,0, -3,1,-2,1,1, -2,1,0,-2,1, -1,1,0,0,-2});
   findEigenSpacesReal(A);
   // we get the 3D space: {(0,0,1,0,0),(.5,.5,0,1,0),(.5,.5,0,0,1)} - is this due to numerical 
   // error? - maybe try a different singularity/rank threshold? increasing the factor to 100000 
   // didn't help
+
+
 
   int dummy = 0;
 
