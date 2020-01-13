@@ -678,6 +678,24 @@ RAPT::rsMatrix<complex<T>> complexify(const RAPT::rsMatrix<T>& A)
 }
 // needed for technical reasons
 
+// meant to be used from the debugger:
+template<class T>
+void findEigenSpacesReal(const RAPT::rsMatrix<T>& A) // for real matrices - included complexification
+{
+  rsAssert(A.isSquare());  // try to relax later
+  using Matrix  = RAPT::rsMatrix<T>;
+  using MatrixC = RAPT::rsMatrix<complex<T>>;
+  vector<complex<T>> eigenvalues = getEigenvalues(A);
+  int N = A.getNumRows();
+  MatrixC Ac = complexify(A);
+  MatrixC I(N,N); I.setToIdentity();
+  vector<MatrixC> eigenspaces(N);
+  for(int i = 0; i < N; i++) {
+    eigenspaces[i] = getNullSpace(Ac - eigenvalues[i] * I);
+    eigenspaces[i] = eigenspaces[i].getTranspose(); // for convenient inspection in the debugger
+  }                                                 // todo: have a function that transpose in place
+  int dummy = 0;
+}
 
 
 void eigenstuff()
@@ -686,25 +704,16 @@ void eigenstuff()
 
   using Matrix  = RAPT::rsMatrix<double>;
   using MatrixC = RAPT::rsMatrix<complex<double>>;
-  using LinAlg  = RAPT::rsLinearAlgebraNew;
 
   // Example from Ahrens,pg.659 - has a single eigenvalue of -2 (with multiplicity 5) with a 2D 
   // eigenspace spanned by {(1,1,1,1,1),(0,0,1,0,0)}:
   Matrix A(5,5, {-3,1,0,0,0, -1,-1,0,0,0, -3,1,-2,1,1, -2,1,0,-2,1, -1,1,0,0,-2});
-  vector<complex<double>> eigenvalues = getEigenvalues(A);
-  MatrixC Ac = complexify(A);
-  MatrixC I(5,5); I.setToIdentity();
-  MatrixC eigenspace0 = getNullSpace(Ac - eigenvalues[0] * I);
-  eigenspace0 = eigenspace0.getTranspose();  // todo: have a function that transpose in place
-  // for more convenient readout in the debugger
+  findEigenSpacesReal(A);
   // we get the 3D space: {(0,0,1,0,0),(.5,.5,0,1,0),(.5,.5,0,0,1)} - is this due to numerical 
-  // error? - maybe try a different singularity/rank threshold?
-
-
-
+  // error? - maybe try a different singularity/rank threshold? increasing the factor to 100000 
+  // didn't help
 
   int dummy = 0;
-
 
   // Some Notes
   // -x_i is an eigenvalue of matrix A, iff (A - x_i * I) * v = 0 has solutions v different from 
