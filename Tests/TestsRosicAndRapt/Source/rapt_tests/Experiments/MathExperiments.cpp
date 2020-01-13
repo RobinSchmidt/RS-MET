@@ -466,12 +466,15 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A)
   LA::solveTriangular(S, b, R);
 
   // Compute filled up basis vectors:
-  Matrix B = Matrix(N, nullity);
+  //Matrix B = Matrix(N, nullity);  // maybe instead of N, we should use A.getNumColumns?
+  Matrix B = Matrix(A.getNumColumns(), nullity);
   B.setToZero();
   for(int j = 0; j < nullity; ++j) {
     for(int i = 0; i < rank; i++)
       B(i, j) = b(i, j);
     B(rank+j, j) = 1; }
+
+
 
   return B;
 }
@@ -583,10 +586,17 @@ void linearIndependence()
   Matrix A(3, 3, {1,3,-2, 2,1,1, 1,2,-1});
   Matrix nullspace = getNullSpace(A);
   // A basis for the nullspace is {(-1,1,1)} - that means: -1*a1 + 1*a2 + a3 = 0 which can be 
-  // simplified to a3 = a1-a2
+  // simplified to a3 = a1-a2 - our free parameter is a3 - we may choose a1,a2 in any way that 
+  // satifies this equation ...i think
 
-  // what if A is 2x3? can the function be used then, too?
-  // ...try some more examples...
+  // A = |1 2 1|
+  //     |0 0 1|
+  A = Matrix(2, 3, {1,2,1, 0,0,1});
+  nullspace = getNullSpace(A);  
+  // Returns (-2,1,0) - that means: -2*a1 + 1*a2 + 0*a3 = 0 - we can choose a3 freely, the 
+  // equation is always satisfied. 
+
+
 
   int dummy = 0;
 }

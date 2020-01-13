@@ -68,7 +68,7 @@ inline bool operator>(const std::complex<T>& L, const std::complex<T>& R)
 template<class T>
 int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
-  rsAssert(A.isSquare());                                       // can we relax this?
+  //rsAssert(A.isSquare());                                       // can we relax this?
   T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
   int i, N = A.getNumRows();
   for(i = 0; i < N; i++) {
