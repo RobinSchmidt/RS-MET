@@ -372,38 +372,28 @@ rsMatrix<T> getSubMatrix(
 // make member of rsMatrix
 
 /** If A is an MxN matrix, this function returns the (M-1)x(N-1) matrix that results from removing
-th i-th row and j-th column. */
+th i-th row and j-th column. See: 
+https://en.wikipedia.org/wiki/Adjugate_matrix  */
 template<class T>
-rsMatrix<T> getAdjoint(const rsMatrix<T>& A, int i, int j)
+rsMatrix<T> getAdjugate(const rsMatrix<T>& A, int i, int j)
 {
   // assert that it all makes sense
-
   int M = A.getNumRows();
   int N = A.getNumColumns();
-
   rsMatrix<T> Aij(M-1, N-1);
-
-  int ii, jj;  // indices into A matrix - indices into Aij must be adapted
-
-  // top rows from 0 up to to i-1:
-  for(ii = 0; ii < i; ++ii)
-  {
-    for(jj = 0;   jj < j; ++jj)  Aij(ii, jj)   = A(ii, jj);
-    for(jj = j+1; jj < N; ++jj)  Aij(ii, jj-1) = A(ii, jj);
-  }
-
-  // bottom rows:
-  for(ii = i+1; ii < N; ++ii)
-  {
-    for(jj = 0;   jj < j; ++jj)  Aij(ii-1, jj)   = A(ii, jj);
-    for(jj = j+1; jj < N; ++jj)  Aij(ii-1, jj-1) = A(ii, jj);
-  }
-
+  int ii, jj;                                                    // indices into A matrix
+  for(ii = 0; ii < i; ++ii) {                                    // loop over top rows
+    for(jj = 0;   jj < j; ++jj)  Aij(ii,   jj  ) = A(ii, jj);    //   loop over left columns
+    for(jj = j+1; jj < N; ++jj)  Aij(ii,   jj-1) = A(ii, jj); }  //   loop over right columns
+  for(ii = i+1; ii < N; ++ii) {                                  // loop over bottom rows
+    for(jj = 0;   jj < j; ++jj)  Aij(ii-1, jj  ) = A(ii, jj);    //   loop over left columns
+    for(jj = j+1; jj < N; ++jj)  Aij(ii-1, jj-1) = A(ii, jj); }  //   loop over right columns
   return Aij;
 }
-// needs test, make member
+// make member of rsMatrix
 
-/** Develops the determinant column-wise after the j-th column. This is the textbook method and has
+
+/** Expands the determinant column-wise along the j-th column. This is the textbook method and has
 extremely bad scaling of the complexity. The function calls itself recursively in a loop (!!!). I 
 think, the complexity may scale with the factorial function (todo: verify) - which would be 
 super-exponential - so it's definitely not meant for use in production code. For production, use
@@ -417,20 +407,24 @@ T getDeterminantColumnWise(const rsMatrix<T>& A, int j = 0)
   int N = A.getNumRows();
   if(N == 1)
     return A(0, 0);
-
-  // todo: implement special rules also for 2x2 and 1x1 matrices (as optimization)
-
-  // see Ahrens, pg 605
-
-
   T det = T(0);
   for(int i = 0; i < N; i++) {
-    rsMatrix<T> Aij = getAdjoint(A, i, j);
+    rsMatrix<T> Aij = getAdjugate(A, i, j);
     det += pow(-1, i+j) * A(i, j) * getDeterminantColumnWise(Aij, 0); }
-  // in the inner call we always use the 0-th column to make it work also in the base-case 
-  // which we will eventually reach
-
   return det;
+
+  // Notes: 
+  // -in the recursive call we always use the 0-th column to make it work also in the base-case 
+  //  which we will eventually reach
+  // -the function could be optimized by implementing special rules for 2x2 and 3x3 matrices:
+  //  https://en.wikipedia.org/wiki/Determinant#2_%C3%97_2_matrices to avoid the lowest level of 
+  //  recursion - this was not done because it's not meant for production use anyway - it's 
+  //  insanely inefficient anyway
+  // -the formulas can be found for example here
+  //  https://en.wikipedia.org/wiki/Determinant#Laplace's_formula_and_the_adjugate_matrix
+  // -the function could be used to find the characteristic polynomial without resorting to 
+  //  rational functions - only class rsPolynomial itself is needed. For this, we must promote the
+  //  given matrix of numbers to a matrix of polynomials instead of rational functions.
 }
 
 template<class T>
@@ -441,7 +435,7 @@ T getDeterminantRowWise(const rsMatrix<T>& A, int i = 0)
   if(N == 1) return A(0, 0);
   T det = T(0);
   for(int j = 0; j < N; j++) {
-    rsMatrix<T> Aij = getAdjoint(A, i, j);
+    rsMatrix<T> Aij = getAdjugate(A, i, j);
     det += pow(-1, i+j) * A(i, j) * getDeterminantRowWise(Aij, 0); }
   return det;
 }
