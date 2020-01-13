@@ -451,6 +451,27 @@ T getDeterminantRowWise(const rsMatrix<T>& A, int i = 0)
   return det;
 }
 
+/** Returns rank of a matrix assumed to be in row echelon form */
+template<class T>
+int getRowEchelonRank(const rsMatrix<T>& A, T tol)
+{
+  int i, j;
+  for(i = 0; i < A.getNumRows(); i++){
+    bool isZero = true;
+    for(j = i; i < A.getNumColumns(); j++) {
+      //if(rsIsCloseTo(A(i, j), tol)) 
+      if(A(i, j) == T(0)) 
+      {
+        isZero = false;
+        break;   
+      }}
+    if(isZero)
+      break; }
+  return i-1;
+}
+// verify, if this is correct - maybe make unit test with weird matrices
+// this does not yet work
+
 /** Returns a matrix whose columns are a basis of the nullspace (a.k.a. kernel) of the matrix A.
 The basis is not orthogonal or normalized. If the nullspace contains only the zero vector, an 
 empty matrix is returned. */
@@ -463,7 +484,12 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A)
   Matrix z(A.getNumRows(), 1);             // dummy
   int N       = A.getNumRows();            // dimensionality of input space
   int rank    = LA::makeTriangular(A, z);  // rank
+  //rank = getRowEchelonRank(A, T(0));  // with this - we get nans when computing eigenspaces
   int nullity = N - rank;                  // dimensionality of nullspace
+
+  // i think, the rank is not always the number of iterations in makeTriangular
+
+
 
   // extract rank x rank system with nullity rhs vectors
   Matrix S = getSubMatrix(A, 0, 0, rank, rank);
@@ -680,7 +706,7 @@ RAPT::rsMatrix<complex<T>> complexify(const RAPT::rsMatrix<T>& A)
 
 // meant to be used from the debugger:
 template<class T>
-void findEigenSpacesReal(const RAPT::rsMatrix<T>& A) // for real matrices - included complexification
+void findEigenSpacesReal(const RAPT::rsMatrix<T>& A) // for real matrices - includes complexification
 {
   rsAssert(A.isSquare());  // try to relax later
   using Matrix  = RAPT::rsMatrix<T>;
@@ -691,7 +717,16 @@ void findEigenSpacesReal(const RAPT::rsMatrix<T>& A) // for real matrices - incl
   MatrixC I(N,N); I.setToIdentity();
   vector<MatrixC> eigenspaces(N);
   for(int i = 0; i < N; i++) {
-    eigenspaces[i] = getNullSpace(Ac - eigenvalues[i] * I);
+    MatrixC Ai = Ac - eigenvalues[i] * I;
+    eigenspaces[i] = getNullSpace(Ai);
+
+    // test, if A * v = eigenvalue * v for v in the eigenspace at once
+    MatrixC test1 = Ac * eigenspaces[i];
+    MatrixC test2 = eigenvalues[i] * eigenspaces[i];
+    MatrixC error = test1 - test2;
+    //rsAssert(error.isZero(tol));
+
+
     eigenspaces[i] = eigenspaces[i].getTranspose(); // for convenient inspection in the debugger
   }                                                 // todo: have a function that transpose in place
   int dummy = 0;
@@ -705,16 +740,37 @@ void eigenstuff()
   using Matrix  = RAPT::rsMatrix<double>;
   using MatrixC = RAPT::rsMatrix<complex<double>>;
 
-  Matrix A;
+  Matrix A, z;
+
+  A = Matrix(2,2, {0,1, 0,0});
+  Matrix nullspace = getNullSpace(A);
+  // returns |1 0| - the canonical basis of R^2 - but this is wrong (i think)
+  //         |0 1|
+  // maybe it fails because the rank is not computed correctly
+
+  z = Matrix(2, 1); // dummy
+  int rank = RAPT::rsLinearAlgebraNew::makeTriangular(A, z);
+  // yup - rank is returned as 0 - but actual rank is 1 - the number of steps taken is actually not
+  // the rank in all cases - often it is, but not always - try this with various matrices with 
+  // leading zeros in the rows - these make problems - the actual rank is the numer of nonzero rows
+  // in row echelon form - after i steps, we have zeroed out i columns - but what does this tell us 
+  // about the rows? not so much - hmm - here:
+  // https://en.wikipedia.org/wiki/Rank_(linear_algebra)
+  // it says: "Once in row echelon form, the rank is clearly the same for both row rank and column 
+  // rank, and equals the number of pivots" ...hmm - maybe it's because we use partial pivoting?
 
   // exmaples from https://www.youtube.com/watch?v=lyXwcXjJdYM
+
+  A = Matrix(2,2, {1,1, 0,1});
+  findEigenSpacesReal(A);
+  // correct [1,(1,0)] - or maybe weitz didn't compute the other?, found: [1,{(1,0),(0,1)}] twice
+  // we can actually check, if an eigenvector v is indeed eigenvector - just compute 
+  // A * v and x_i * v
+
   A = Matrix(2,2, {1,1, 1,1});
   findEigenSpacesReal(A);
   // found: [0,(-1,1)],[2,(1,1)] -> correct
 
-  A = Matrix(2,2, {1,1, 0,1});
-  findEigenSpacesReal(A);
-  // correct [1,(1,0)], found: [1,{(1,0),(0,1)}] twice
 
   A = Matrix(2,2, {0,-1, 1,0});
   findEigenSpacesReal(A);
@@ -739,9 +795,11 @@ void eigenstuff()
   // didn't help
 
   // it sometimes seems to find extra eigenvectors at other times, it fails to find eigenvectors
-  // ...it probably has to do with the rank detection threshold - figure out!
+  // ...it probably has to do with the rank detection threshold - figure out! try to find a simple
+  // example, where it fails and compare algorithm to hand-computation
 
-  // todo: try some more examples with sage
+  // todo: try some more examples with sage, clean up the eigenvalues - use a function like
+  // cleanUpIntegers that does it for real and imaginary parts
 
 
   int dummy = 0;

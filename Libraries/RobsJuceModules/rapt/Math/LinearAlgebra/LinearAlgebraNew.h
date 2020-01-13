@@ -64,6 +64,7 @@ public:
   template<class T>
   static int makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B);
   // doesn't allocate, maybe rename to rowElimination or rowEchelonForm
+  // return value is the number of iterations taken unti no pivto could be found
 
   /** Simplified version that doesn't use pivoting - this may fail even for non-singular 
   matrices, so it's not recommended for general use, but if you know that the elimination will 
