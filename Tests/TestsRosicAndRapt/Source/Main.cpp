@@ -91,11 +91,12 @@ int main(int argc, char* argv[])
   //particleBouncerExperiment();
 
   // Math:
-  determinant();
+  //determinant();
   //characteristicPolynomial();
   //nullspace();
+  linearIndependence();
   //eigenstuff();
-  linearSolverPrecision();
+  //linearSolverPrecision();
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();

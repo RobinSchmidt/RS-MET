@@ -4,6 +4,7 @@
 void determinant();
 void characteristicPolynomial();
 void nullspace();
+void linearIndependence();
 void eigenstuff();
 void linearSolverPrecision();
 

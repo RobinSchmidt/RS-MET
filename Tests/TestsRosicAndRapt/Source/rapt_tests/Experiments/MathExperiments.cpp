@@ -476,6 +476,7 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A)
   return B;
 }
 // move into library (rsLinearAlgebraNew)
+// todo: can we also compute a basis for the image in a similar way?
 
 void determinant()
 {
@@ -564,7 +565,31 @@ void nullspace()
   BB = B.getTranspose() * B;
 }
 
+void linearIndependence()
+{
+  // Tests, whether a set of vectors (given as columns of a matrix) is linearly independent. A set
+  // of vectors a1,a2,..,aN is linearly independent, if k1*a1 + k2*a2 + ... + kN*aN = 0 implies 
+  // that k1 = k2 = ... = kN = 0. That means, we have to find the nullspace of the matrix 
+  // A = (a1 a2 ... aN), where the ai are the columns. The vectors are independent if that 
+  // nullspace is trivial (i.e. contains only the zero vector).
 
+  using Matrix = RAPT::rsMatrix<double>;
+  using LA     = RAPT::rsLinearAlgebraNew;
+
+  //      a1 a2 a3     we have a3 = a1-a2, so the columns are not linearly independent
+  //     |1  3  -2|
+  // A = |2  1   1|
+  //     |1  2  -1|
+  Matrix A(3, 3, {1,3,-2, 2,1,1, 1,2,-1});
+  Matrix nullspace = getNullSpace(A);
+  // A basis for the nullspace is {(-1,1,1)} - that means: -1*a1 + 1*a2 + a3 = 0 which can be 
+  // simplified to a3 = a1-a2
+
+  // what if A is 2x3? can the function be used then, too?
+  // ...try some more examples...
+
+  int dummy = 0;
+}
 
 
 
