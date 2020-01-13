@@ -458,7 +458,7 @@ int getRowEchelonRank(const rsMatrix<T>& A, T tol)
   int i, j;
   for(i = 0; i < A.getNumRows(); i++){
     bool isZero = true;
-    for(j = i; i < A.getNumColumns(); j++) {
+    for(j = i; j < A.getNumColumns(); j++) {
       //if(rsIsCloseTo(A(i, j), tol)) 
       if(A(i, j) == T(0)) 
       {
@@ -546,6 +546,7 @@ void determinant()
 void nullspace()
 {
   // turn into unit-test
+  bool r = true;
 
   using Matrix = RAPT::rsMatrix<double>;
   using LA     = RAPT::rsLinearAlgebraNew;
@@ -564,31 +565,38 @@ void nullspace()
   Matrix null = A*B;  // should be the zero matrix - yes - seems to work!
   Matrix BB = B.getTranspose() * B; // should give unit, iff B is orthonormal
 
+
+  A = Matrix(2, 2, {0,1, 0,0});
+  B = getNullSpace(A); 
+  null = A*B; r &= null.isZero();
+  // fails for this matrix has probably to to with wrong rank computation
+
+
   A = Matrix(3, 3, {-1,-1,2, 1,2,3, -1,0,7});
   B = getNullSpace(A); // B = {(7,-5,1)}
-  null = A*B; 
+  null = A*B; r &= null.isZero();
   BB = B.getTranspose() * B;
 
   A = Matrix(4, 4, {1,2,3,4, 2,4,6,8, 3,6,9,12, 4,8,12,16});
   B = getNullSpace(A); // B = {(2,-1,0,0), (3,0,-1,0), (4,0,0,-1)} // sign is different
-  null = A*B; 
+  null = A*B; r &= null.isZero();
   BB = B.getTranspose() * B;
 
   A = Matrix(3, 3, {4,2,2, 2,1,1, 2,1,1});
   B = getNullSpace(A); // B = {(0,-1,1),(1,-2,0)}
-  null = A*B; 
+  null = A*B; r &= null.isZero();
   BB = B.getTranspose() * B;
 
   A = Matrix(3, 3, {-2,2,2, 2,-5,1, 2,1,-5});
   B = getNullSpace(A); // B = {(2,1,1)}
-  null = A*B; 
+  null = A*B; r &= null.isZero();
   BB = B.getTranspose() * B;
 
 
   // This matrix has full rank - it's nullspace should be only the zero vector:
   A = Matrix(3, 3, {1,0,0, 0,2,0, 0,0,3});
   B = getNullSpace(A); 
-  null = A*B; 
+  null = A*B; r &= null.isZero();
   BB = B.getTranspose() * B;
 
   // This 5x5 matrix is already in row echelon form:
@@ -599,7 +607,7 @@ void nullspace()
   //     |0 0 0 0 0|      |0|
   A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
   B = getNullSpace(A);
-  null = A*B; 
+  null = A*B; r &= null.isZero();
   BB = B.getTranspose() * B;
 }
 
@@ -750,6 +758,7 @@ void eigenstuff()
 
   z = Matrix(2, 1); // dummy
   int rank = RAPT::rsLinearAlgebraNew::makeTriangular(A, z);
+  rank = getRowEchelonRank(A, 0.0);
   // yup - rank is returned as 0 - but actual rank is 1 - the number of steps taken is actually not
   // the rank in all cases - often it is, but not always - try this with various matrices with 
   // leading zeros in the rows - these make problems - the actual rank is the numer of nonzero rows

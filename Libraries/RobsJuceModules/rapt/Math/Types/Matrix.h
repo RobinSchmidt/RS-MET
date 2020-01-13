@@ -242,6 +242,10 @@ public:
   /** Returns true, iff given index i is a valid column index. */
   bool isValidColumnIndex(int j) const { return j >= 0 && j < numCols; }
 
+  /** Returns true, iff all elements are zero. */
+  bool isZero() const { return rsArrayTools::isAllZeros(dataPointer, getSize()); }
+  // todo: allow for a tolerance ..or maybe have a function isAlmostZero for that
+
   /** Returns a const pointer to the data for read access as a flat array. */
   const T* getDataPointerConst() const { return dataPointer; }
 
