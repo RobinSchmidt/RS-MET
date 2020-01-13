@@ -453,24 +453,40 @@ T getDeterminantRowWise(const rsMatrix<T>& A, int i = 0)
 
 /** Returns rank of a matrix assumed to be in row echelon form */
 template<class T>
-int getRowEchelonRank(const rsMatrix<T>& A, T tol)
+int getRowEchelonRank(const rsMatrix<T>& A)
 {
+  int i = 0; 
+  while(i < A.getNumRows()) {
+    bool nonZeroElemFound = false;
+    int j = i;
+    while(j < A.getNumColumns()) {
+      if(A(i, j) != T(0))  {
+        nonZeroElemFound = true;
+        break; } // i-th row is not all-zeros
+      j++; }
+    if(!nonZeroElemFound)
+      return i;  // no non-zero element was found - i-th row is all zeros
+    i++; }
+  return i;
+
+  /*
   int i, j;
   for(i = 0; i < A.getNumRows(); i++){
     bool isZero = true;
     for(j = i; j < A.getNumColumns(); j++) {
       //if(rsIsCloseTo(A(i, j), tol)) 
-      if(A(i, j) == T(0)) 
+      if(A(i, j) != T(0)) 
       {
         isZero = false;
         break;   
       }}
     if(isZero)
       break; }
-  return i-1;
+  return i;
+  */
 }
 // verify, if this is correct - maybe make unit test with weird matrices
-// this does not yet work
+// this does not yet work - sometimes returns -1
 
 /** Returns a matrix whose columns are a basis of the nullspace (a.k.a. kernel) of the matrix A.
 The basis is not orthogonal or normalized. If the nullspace contains only the zero vector, an 
@@ -484,7 +500,7 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A)
   Matrix z(A.getNumRows(), 1);             // dummy
   int N       = A.getNumRows();            // dimensionality of input space
   int rank    = LA::makeTriangular(A, z);  // rank
-  //rank = getRowEchelonRank(A, T(0));  // with this - we get nans when computing eigenspaces
+  //rank = getRowEchelonRank(A);  // with this - we get nans when computing eigenspaces
   int nullity = N - rank;                  // dimensionality of nullspace
 
   // i think, the rank is not always the number of iterations in makeTriangular
@@ -543,7 +559,7 @@ void determinant()
   int dummy = 0;
 }
 
-void nullspace()
+bool nullspace()
 {
   // turn into unit-test
   bool r = true;
@@ -562,42 +578,66 @@ void nullspace()
   //     |7 8 9|      |0|
   Matrix A(3, 3, {1,2,3, 4,5,6, 7,8,9});
   Matrix B = getNullSpace(A); // B = {(1,-2,1)}
-  Matrix null = A*B;  // should be the zero matrix - yes - seems to work!
-  Matrix BB = B.getTranspose() * B; // should give unit, iff B is orthonormal
+  Matrix null = A*B;  r &= null.isZero(); 
+  Matrix BB = B.getTranspose() * B;   // should give unit matrix, iff B is orthonormal
+  int rank;
 
+  A = Matrix(3, 3, {0,0,0, 0,0,0, 0,0,0});
+  rank = getRowEchelonRank(A); r &= rank == 0;
+
+  A = Matrix(3, 3, {1,0,0, 0,0,0, 0,0,0});
+  rank = getRowEchelonRank(A); r &= rank == 1;
+
+  A = Matrix(3, 3, {0,1,0, 0,0,0, 0,0,0});
+  rank = getRowEchelonRank(A); r &= rank == 1;
+
+  A = Matrix(3, 3, {0,0,1, 0,0,0, 0,0,0});
+  rank = getRowEchelonRank(A); r &= rank == 1;
+
+  A = Matrix(3, 3, {1,0,0, 0,1,0, 0,0,0});
+  rank = getRowEchelonRank(A); r &= rank == 2;
+
+  A = Matrix(3, 3, {0,1,0, 0,0,1, 0,0,0});
+  rank = getRowEchelonRank(A); r &= rank == 2;
+
+  A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,0});   // can this occur when producing the ref?
+  rank = getRowEchelonRank(A); r &= rank == 2;
+
+  A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,2});   // can this occur when producing the ref?
+  rank = getRowEchelonRank(A); r &= rank == 3;
+
+  A = Matrix(2, 2, {1,0, 0,1});
+  B = getNullSpace(A); null = A*B; r &= null.isZero();
+
+  A = Matrix(2, 2, {0,1, -1,0});
+  B = getNullSpace(A); null = A*B; r &= null.isZero();
 
   A = Matrix(2, 2, {0,1, 0,0});
-  B = getNullSpace(A); 
-  null = A*B; r &= null.isZero();
+  B = getNullSpace(A); null = A*B; r &= null.isZero();
   // fails for this matrix has probably to to with wrong rank computation
 
 
   A = Matrix(3, 3, {-1,-1,2, 1,2,3, -1,0,7});
   B = getNullSpace(A); // B = {(7,-5,1)}
   null = A*B; r &= null.isZero();
-  BB = B.getTranspose() * B;
 
   A = Matrix(4, 4, {1,2,3,4, 2,4,6,8, 3,6,9,12, 4,8,12,16});
   B = getNullSpace(A); // B = {(2,-1,0,0), (3,0,-1,0), (4,0,0,-1)} // sign is different
   null = A*B; r &= null.isZero();
-  BB = B.getTranspose() * B;
 
   A = Matrix(3, 3, {4,2,2, 2,1,1, 2,1,1});
   B = getNullSpace(A); // B = {(0,-1,1),(1,-2,0)}
   null = A*B; r &= null.isZero();
-  BB = B.getTranspose() * B;
 
   A = Matrix(3, 3, {-2,2,2, 2,-5,1, 2,1,-5});
   B = getNullSpace(A); // B = {(2,1,1)}
   null = A*B; r &= null.isZero();
-  BB = B.getTranspose() * B;
 
 
   // This matrix has full rank - it's nullspace should be only the zero vector:
   A = Matrix(3, 3, {1,0,0, 0,2,0, 0,0,3});
   B = getNullSpace(A); 
   null = A*B; r &= null.isZero();
-  BB = B.getTranspose() * B;
 
   // This 5x5 matrix is already in row echelon form:
   //     |1 2 3 4 5|      |0|
@@ -608,7 +648,8 @@ void nullspace()
   A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
   B = getNullSpace(A);
   null = A*B; r &= null.isZero();
-  BB = B.getTranspose() * B;
+
+  return r;
 }
 
 void linearIndependence()
@@ -758,7 +799,7 @@ void eigenstuff()
 
   z = Matrix(2, 1); // dummy
   int rank = RAPT::rsLinearAlgebraNew::makeTriangular(A, z);
-  rank = getRowEchelonRank(A, 0.0);
+  rank = getRowEchelonRank(A);
   // yup - rank is returned as 0 - but actual rank is 1 - the number of steps taken is actually not
   // the rank in all cases - often it is, but not always - try this with various matrices with 
   // leading zeros in the rows - these make problems - the actual rank is the numer of nonzero rows
