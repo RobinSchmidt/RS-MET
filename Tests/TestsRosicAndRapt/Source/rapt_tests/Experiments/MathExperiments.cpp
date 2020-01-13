@@ -707,6 +707,19 @@ void eigenstuff()
 
   Matrix A;
 
+  // exmaples from https://www.youtube.com/watch?v=lyXwcXjJdYM
+  A = Matrix(2,2, {1,1, 1,1});
+  findEigenSpacesReal(A);
+  // found: [0,(-1,1)],[2,(1,1)] -> correct
+
+  A = Matrix(2,2, {1,1, 0,1});
+  findEigenSpacesReal(A);
+  // correct [1,(1,0)], found: [1,{(1,0),(0,1)}] twice
+
+  A = Matrix(2,2, {0,-1, 1,0});
+  findEigenSpacesReal(A);
+  // found: [-i,{(-i,1)}],[i,{(i,1)}] - todo: check this manually
+
   // Examples from Ahrens,pg.658:
   A = Matrix(2,2, {3,-1, 1,1});
   findEigenSpacesReal(A);
@@ -725,6 +738,10 @@ void eigenstuff()
   // error? - maybe try a different singularity/rank threshold? increasing the factor to 100000 
   // didn't help
 
+  // it sometimes seems to find extra eigenvectors at other times, it fails to find eigenvectors
+  // ...it probably has to do with the rank detection threshold - figure out!
+
+  // todo: try some more examples with sage
 
 
   int dummy = 0;
