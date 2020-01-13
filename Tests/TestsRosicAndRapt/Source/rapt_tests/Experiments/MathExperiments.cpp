@@ -403,6 +403,38 @@ rsMatrix<T> getAdjoint(const rsMatrix<T>& A, int i, int j)
 }
 // needs test, make member
 
+/** Develops the determinant column-wise after the j-th column. This is the textbook method and has
+extremely bad scaling of the complexity. The function calls itself recursively in a loop (!!!). I 
+think, the complexity may scale with the factorial function (todo: verify) - which would be 
+super-exponential - so it's definitely not meant for use in production code. For production, use
+Gaussian elimination (we need to keep track of whether we have an odd or even number of swaps - in 
+the former case det = -1 * product(diagonal-elements of upper triangular form), in the later case
+det = +1 * product(...) */
+template<class T>
+T getDeterminantColumnWise(const rsMatrix<T>& A, int j = 0)
+{
+  rsAssert(A.isSquare());
+  int N = A.getNumRows();
+  if(N == 1)
+    return A(0, 0);
+
+  // todo: implement special rules also for 2x2 and 1x1 matrices (as optimization)
+
+  // see Ahrens, pg 605
+
+
+  T det = T(0);
+  for(int i = 0; i < N; i++) {
+    rsMatrix<T> Aij = getAdjoint(A, i, j);
+    det += pow(-1, i+j) * A(i,j) * getDeterminantColumnWise(Aij, 0); }
+  // in the inner call we always use the 0-th column to make it work also in the base-case 
+  // which we will eventually reach
+
+  return det;
+}
+// todo: implement row-wise development
+
+
 /** Returns a matrix whose columns are a basis of the nullspace (a.k.a. kernel) of the matrix A.
 The basis is not orthogonal or normalized. If the nullspace contains only the zero vector, an 
 empty matrix is returned. */
@@ -447,6 +479,7 @@ void determinant()
 
   using Matrix = RAPT::rsMatrix<double>;
 
+  /*
   Matrix A(3, 3, { 1,2,3, 4,5,6, 7,8,9});
 
   Matrix A_00 = getAdjoint(A, 0, 0);
@@ -460,6 +493,9 @@ void determinant()
   Matrix A_20 = getAdjoint(A, 2, 0);
   Matrix A_21 = getAdjoint(A, 2, 1);
   Matrix A_22 = getAdjoint(A, 2, 2);
+  */
+
+
 
   // OK these look good - now create a function to compute the determinat based on the adjoints
   // for 2x2 and 3x3 matrices, it's calculated directly, for larger matrices, it calls itself 
@@ -469,6 +505,13 @@ void determinant()
   // ...but such a functon can also be used to finde the charcteristic polynomial without resorting
   // to rational functions - only class rsPolynomial itself is needed -> compare both ways of 
   // finding the CP
+
+  Matrix A(4, 4, { 1,0,2,0, 1,0,3,0, -1,2,3,4, 2,0,5,1});
+  double det;  // returns -2 - works
+  det = getDeterminantColumnWise(A, 0);
+  det = getDeterminantColumnWise(A, 1);
+  det = getDeterminantColumnWise(A, 2);
+  det = getDeterminantColumnWise(A, 3);
 
 
   int dummy = 0;
