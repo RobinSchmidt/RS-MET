@@ -91,6 +91,7 @@ int main(int argc, char* argv[])
   //particleBouncerExperiment();
 
   // Math:
+  determinant();
   //characteristicPolynomial();
   //nullspace();
   //eigenstuff();

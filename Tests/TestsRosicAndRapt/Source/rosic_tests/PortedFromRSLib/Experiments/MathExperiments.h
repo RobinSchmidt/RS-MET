@@ -1,7 +1,7 @@
 #ifndef RS_MATHEXPERIMENTS_H
 #define RS_MATHEXPERIMENTS_H
 
-
+void determinant();
 void characteristicPolynomial();
 void nullspace();
 void eigenstuff();

@@ -371,6 +371,38 @@ rsMatrix<T> getSubMatrix(
 }
 // make member of rsMatrix
 
+/** If A is an MxN matrix, this function returns the (M-1)x(N-1) matrix that results from removing
+th i-th row and j-th column. */
+template<class T>
+rsMatrix<T> getAdjoint(const rsMatrix<T>& A, int i, int j)
+{
+  // assert that it all makes sense
+
+  int M = A.getNumRows();
+  int N = A.getNumColumns();
+
+  rsMatrix<T> Aij(M-1, N-1);
+
+  int ii, jj;  // indices into A matrix - indices into Aij must be adapted
+
+  // top rows from 0 up to to i-1:
+  for(ii = 0; ii < i; ++ii)
+  {
+    for(jj = 0;   jj < j; ++jj)  Aij(ii, jj)   = A(ii, jj);
+    for(jj = j+1; jj < N; ++jj)  Aij(ii, jj-1) = A(ii, jj);
+  }
+
+  // bottom rows:
+  for(ii = i+1; ii < N; ++ii)
+  {
+    for(jj = 0;   jj < j; ++jj)  Aij(ii-1, jj)   = A(ii, jj);
+    for(jj = j+1; jj < N; ++jj)  Aij(ii-1, jj-1) = A(ii, jj);
+  }
+
+  return Aij;
+}
+// needs test, make member
+
 /** Returns a matrix whose columns are a basis of the nullspace (a.k.a. kernel) of the matrix A.
 The basis is not orthogonal or normalized. If the nullspace contains only the zero vector, an 
 empty matrix is returned. */
@@ -407,6 +439,40 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A)
   return B;
 }
 // move into library (rsLinearAlgebraNew)
+
+void determinant()
+{
+  // Computation of determinant by the (totaly inefficient) textbook method.
+
+
+  using Matrix = RAPT::rsMatrix<double>;
+
+  Matrix A(3, 3, { 1,2,3, 4,5,6, 7,8,9});
+
+  Matrix A_00 = getAdjoint(A, 0, 0);
+  Matrix A_01 = getAdjoint(A, 0, 1);
+  Matrix A_02 = getAdjoint(A, 0, 2);
+
+  Matrix A_10 = getAdjoint(A, 1, 0);
+  Matrix A_11 = getAdjoint(A, 1, 1);
+  Matrix A_12 = getAdjoint(A, 1, 2);
+
+  Matrix A_20 = getAdjoint(A, 2, 0);
+  Matrix A_21 = getAdjoint(A, 2, 1);
+  Matrix A_22 = getAdjoint(A, 2, 2);
+
+  // OK these look good - now create a function to compute the determinat based on the adjoints
+  // for 2x2 and 3x3 matrices, it's calculated directly, for larger matrices, it calls itself 
+  // recursively in a loop (!!! this is extreeeemely expensive - i think, the complexity is the 
+  // factorial function or something (-> figure out) - that would render the complexity 
+  // super-exponential - so that's definitely not meant for use in production)
+  // ...but such a functon can also be used to finde the charcteristic polynomial without resorting
+  // to rational functions - only class rsPolynomial itself is needed -> compare both ways of 
+  // finding the CP
+
+
+  int dummy = 0;
+}
 
 void nullspace()
 {
