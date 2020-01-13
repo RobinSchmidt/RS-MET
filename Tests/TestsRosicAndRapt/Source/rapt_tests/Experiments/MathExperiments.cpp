@@ -67,6 +67,8 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
   //RAPT::rsPolynomial<T>::Poly p = d.getNumerator() / d.getDenominator()[0]; 
   //return p;
 }
+// todo: make a version that uses Laplace expansion of the determinant with a matrix of polynomials
+// ->should give the same result
 
 template<class T> 
 vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<T>& p)
@@ -78,7 +80,13 @@ vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<T>& p)
 // maybe make member getRoots - that would be convenient - but the problem is that even for real 
 // polynomials, the roots may be complex - so i don't know if it should return a vector<T> or a 
 // vector<complex<T>> - if the polynomial is itself complex, the former would be the way to go,
-// if it's real, the latter ...maybe make two functions getRootsReal, getRootsComplex
+// if it's real, the latter ...maybe make two functions getRootsReal, getRootsComplex - or maybe
+// in the case of real polynomials, it should return only the real roots unless one calls 
+// getComplexRoots - or maybe, if we implement it as template once for reals and once for 
+// complexes, the right one will be compiled into the class automatically? ..like
+// vector<complex<T>> getRoots(const RAPT::rsPolynomial<T>& p); // T is real type
+// vector<T> getRoots(const RAPT::rsPolynomial<complex<R>>& p); // T is complex, R is real
+//
 
 template<class T> 
 vector<complex<T>> getEigenvalues(const rsMatrixView<T>& A)
@@ -86,6 +94,9 @@ vector<complex<T>> getEigenvalues(const rsMatrixView<T>& A)
   RAPT::rsPolynomial<T> p = getCharacteristicPolynomial(A);
   return getPolynomialRoots(p);
 }
+
+
+
 
 // todo: 
 
@@ -474,8 +485,6 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A)
       B(i, j) = b(i, j);
     B(rank+j, j) = 1; }
 
-
-
   return B;
 }
 // move into library (rsLinearAlgebraNew)
@@ -594,7 +603,11 @@ void linearIndependence()
   A = Matrix(2, 3, {1,2,1, 0,0,1});
   nullspace = getNullSpace(A);  
   // Returns (-2,1,0) - that means: -2*a1 + 1*a2 + 0*a3 = 0 - we can choose a3 freely, the 
-  // equation is always satisfied. 
+  // equation is always satisfied. Or we can solve this equation - for example - for a1:
+  // -2*a1 = -1*a2 - 0*a3 -> a1 = (1/2)*a2 - 0*a3 - so we have expressed a1 as linear combination
+  // of the other two, so a1 is linearly dependent of a2,a3. However, it does not mean that every
+  // vector in the set is dependent on some others - a3 cannot be expressed as linear combination
+  // of a1,a2, for example ...is that because it has coefficient zero?
 
 
 
@@ -656,12 +669,49 @@ class rsEigenStuffReal : public rsEigenStuff<std::complex<T>>
 
 };
 
+template<class T> 
+RAPT::rsMatrix<complex<T>> complexify(const RAPT::rsMatrix<T>& A)
+{
+  RAPT::rsMatrix<complex<T>> Ac(A.getNumRows(), A.getNumColumns());
+  Ac.copyDataFrom(A);
+  return Ac;
+}
+// needed for technical reasons
+
+
+
 void eigenstuff()
 {
   // create a matrix and find its eigenvalues and eigenvectors
 
+  using Matrix  = RAPT::rsMatrix<double>;
+  using MatrixC = RAPT::rsMatrix<complex<double>>;
+  using LinAlg  = RAPT::rsLinearAlgebraNew;
+
+  // Example from Ahrens,pg.659 - has a single eigenvalue of -2 (with multiplicity 5) with a 2D 
+  // eigenspace spanned by {(1,1,1,1,1),(0,0,1,0,0)}:
+  Matrix A(5,5, {-3,1,0,0,0, -1,-1,0,0,0, -3,1,-2,1,1, -2,1,0,-2,1, -1,1,0,0,-2});
+  vector<complex<double>> eigenvalues = getEigenvalues(A);
+  MatrixC Ac = complexify(A);
+  MatrixC I(5,5); I.setToIdentity();
+  MatrixC eigenspace0 = getNullSpace(Ac - eigenvalues[0] * I);
+  eigenspace0 = eigenspace0.getTranspose();  // todo: have a function that transpose in place
+  // for more convenient readout in the debugger
+  // we get the 3D space: {(0,0,1,0,0),(.5,.5,0,1,0),(.5,.5,0,0,1)} - is this due to numerical 
+  // error? - maybe try a different singularity/rank threshold?
+
+
+
 
   int dummy = 0;
+
+
+  // Some Notes
+  // -x_i is an eigenvalue of matrix A, iff (A - x_i * I) * v = 0 has solutions v different from 
+  //  the zero vector, the equation can also be written as A * v = x_i * v
+  // -a matrix A is invertible, iff 0 is not an eigenvalue (Ahrens, 655)
+  // -the dimensionality of an eigenspace to an eigenvalue x_i has a dimensionality of at least
+  //  1 and at most the multiplicity (as root of the characteristic polynomial) of x_i
 };
 
 
