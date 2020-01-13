@@ -328,11 +328,13 @@ void shuffle(rsMatrix<T>& A, rsMatrix<T>& B, int range, int seed = 0)
 
   // downward sweep:
   for(i = 0; i < A.getNumRows()-1; ++i) {
-    //if(prng.getSample() >= T(0))
-    //  w = T(+1);
-    //else
-    //  w = T(-1);
-    w = round(range * prng.getSample());
+    //plotMatrix(A, true);
+
+    if(prng.getSample() >= T(0))
+      w = T(+1);
+    else
+      w = T(-1);
+    //w = round(range * prng.getSample());
     A.addWeightedRowToOther(i, i+1, w);
     B.addWeightedRowToOther(i, i+1, w);
   }
@@ -340,12 +342,14 @@ void shuffle(rsMatrix<T>& A, rsMatrix<T>& B, int range, int seed = 0)
   // upward sweep:
   for(i = A.getNumRows()-1; i > 0; --i)
   {
-    //if(prng.getSample() >= T(0))
-    //  w = T(+1);
-    //else
-    //  w = T(-1);
+    //plotMatrix(A, true);
+
+    if(prng.getSample() >= T(0))
+      w = T(+1);
+    else
+      w = T(-1);
     //w = prng.getSample();
-    w = round(range * prng.getSample());
+    //w = round(range * prng.getSample());
     A.addWeightedRowToOther(i, i-1, w);
     B.addWeightedRowToOther(i, i-1, w);
   }
@@ -538,12 +542,13 @@ void linearSolverPrecision()
   // (which we may ensure by scaling all matrix entries by pi, say), the solver will introduce 
   // roundoff error. We plot this error as function of the size. This may help to find sensible
   // values for the singularity detection threshold in the solver.
+  // This is not yet finished
 
 
   using Matrix = RAPT::rsMatrix<double>;
   using LA     = RAPT::rsLinearAlgebraNew;
 
-  int N = 10;  // size
+  int N = 100;  // size
 
   Matrix A(N, N), B(N, N), X(N, N);
   A.setToIdentity();   // coefficient matrix
@@ -552,11 +557,21 @@ void linearSolverPrecision()
   // ...in this case, the solution is expected to be the identity matrix
 
   shuffle(A, B, N, 1);
+  plotMatrix(A, true);
+  shuffle(A, B, N, 2);
+  plotMatrix(A, true);
+  shuffle(A, B, N, 3);
+  plotMatrix(A, true);
+  shuffle(A, B, N, 4);
+  plotMatrix(A, true);
+
+  // this doesn't look good - the shuffling algo is still bad
+  // the first pass of shuffling leads to L-shaped regions of similar values, the second pass to 
+  // blocks - why
+
   LA::solve(A, X, B);
 
-
-  //plotMatrix(A, true); // move to rsTesting
-
+  // ok - but we can see the numerical error increase with the size
 
   int dummy = 0;
 }

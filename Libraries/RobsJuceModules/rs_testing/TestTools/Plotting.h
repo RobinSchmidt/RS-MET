@@ -166,6 +166,25 @@ void plotMatrix(RAPT::rsMatrix<T>& z, std::vector<T>& x, std::vector<T>& y)
 
   RAPT::rsMatrixTools::deallocateMatrix(z2, z.getNumRows(), z.getNumColumns());
 }
+// get rid of that - use function below instead - maybe it should take optional x,y arguments
+
+inline void plotMatrix(rsMatrix<double>& A, bool asHeatMap)  // use const
+{
+  GNUPlotter plt;
+  //plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getDataPointerConst());
+  plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getRowPointer(0));
+  if(asHeatMap) {
+    plt.addCommand("set size square");  // make optional
+    plt.addGraph("i 0 nonuniform matrix w image notitle");
+    plt.addCommand("set palette gray");
+    //plt.setRange(0, A.getNumRows()-1, 0, A.getNumColumns()-1, -1.0, +1.0); // doesn't work
+    plt.plot();
+  }
+  else
+    plt.plot3D();
+}
+// un-inline
+
 
 /** Plots the rows of the matrix against the column-index, i.e. the rows are interpreted as 
 several functions of x where x is the column index. */

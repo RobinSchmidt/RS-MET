@@ -236,7 +236,7 @@ void waveEquation1D()
 
 
 // move all this plotting stuff into rs_testing module
-
+/*
 void plotMatrix(rsMatrix<double>& A, bool asHeatMap)  // use const
 {
   GNUPlotter plt;
@@ -252,6 +252,7 @@ void plotMatrix(rsMatrix<double>& A, bool asHeatMap)  // use const
   else
     plt.plot3D();
 }
+*/
 // move to rs_testing, maybe have an option to plot it as image/heatmap
 // factor out a function that takes a plotter reference as argument, so we can do some setup calls
 // before plotting - such as setting plotting ranges
