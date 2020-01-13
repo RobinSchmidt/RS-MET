@@ -426,14 +426,25 @@ T getDeterminantColumnWise(const rsMatrix<T>& A, int j = 0)
   T det = T(0);
   for(int i = 0; i < N; i++) {
     rsMatrix<T> Aij = getAdjoint(A, i, j);
-    det += pow(-1, i+j) * A(i,j) * getDeterminantColumnWise(Aij, 0); }
+    det += pow(-1, i+j) * A(i, j) * getDeterminantColumnWise(Aij, 0); }
   // in the inner call we always use the 0-th column to make it work also in the base-case 
   // which we will eventually reach
 
   return det;
 }
-// todo: implement row-wise development
 
+template<class T>
+T getDeterminantRowWise(const rsMatrix<T>& A, int i = 0)
+{
+  rsAssert(A.isSquare());
+  int N = A.getNumRows();
+  if(N == 1) return A(0, 0);
+  T det = T(0);
+  for(int j = 0; j < N; j++) {
+    rsMatrix<T> Aij = getAdjoint(A, i, j);
+    det += pow(-1, i+j) * A(i, j) * getDeterminantRowWise(Aij, 0); }
+  return det;
+}
 
 /** Returns a matrix whose columns are a basis of the nullspace (a.k.a. kernel) of the matrix A.
 The basis is not orthogonal or normalized. If the nullspace contains only the zero vector, an 
@@ -476,43 +487,25 @@ void determinant()
 {
   // Computation of determinant by the (totaly inefficient) textbook method.
 
-
   using Matrix = RAPT::rsMatrix<double>;
 
-  /*
-  Matrix A(3, 3, { 1,2,3, 4,5,6, 7,8,9});
-
-  Matrix A_00 = getAdjoint(A, 0, 0);
-  Matrix A_01 = getAdjoint(A, 0, 1);
-  Matrix A_02 = getAdjoint(A, 0, 2);
-
-  Matrix A_10 = getAdjoint(A, 1, 0);
-  Matrix A_11 = getAdjoint(A, 1, 1);
-  Matrix A_12 = getAdjoint(A, 1, 2);
-
-  Matrix A_20 = getAdjoint(A, 2, 0);
-  Matrix A_21 = getAdjoint(A, 2, 1);
-  Matrix A_22 = getAdjoint(A, 2, 2);
-  */
-
-
-
-  // OK these look good - now create a function to compute the determinat based on the adjoints
-  // for 2x2 and 3x3 matrices, it's calculated directly, for larger matrices, it calls itself 
-  // recursively in a loop (!!! this is extreeeemely expensive - i think, the complexity is the 
-  // factorial function or something (-> figure out) - that would render the complexity 
-  // super-exponential - so that's definitely not meant for use in production)
-  // ...but such a functon can also be used to finde the charcteristic polynomial without resorting
-  // to rational functions - only class rsPolynomial itself is needed -> compare both ways of 
-  // finding the CP
+  // todo: turn into unit test...
+  bool r = true;
 
   Matrix A(4, 4, { 1,0,2,0, 1,0,3,0, -1,2,3,4, 2,0,5,1});
-  double det;  // returns -2 - works
-  det = getDeterminantColumnWise(A, 0);
-  det = getDeterminantColumnWise(A, 1);
-  det = getDeterminantColumnWise(A, 2);
-  det = getDeterminantColumnWise(A, 3);
+  double det;
+  det = getDeterminantColumnWise(A, 0); r &= det == -2;
+  det = getDeterminantColumnWise(A, 1); r &= det == -2;
+  det = getDeterminantColumnWise(A, 2); r &= det == -2;
+  det = getDeterminantColumnWise(A, 3); r &= det == -2;
+  det = getDeterminantRowWise(   A, 0); r &= det == -2;
+  det = getDeterminantRowWise(   A, 1); r &= det == -2;
+  det = getDeterminantRowWise(   A, 2); r &= det == -2;
+  det = getDeterminantRowWise(   A, 3); r &= det == -2;
 
+  // ...use such a function to find the characteristic polynomial without resorting to rational 
+  // functions - only class rsPolynomial itself is needed -> compare both ways. For this way, we 
+  // must promote the matrix to a matrix of polynomials instead of rational functions.
 
   int dummy = 0;
 }
