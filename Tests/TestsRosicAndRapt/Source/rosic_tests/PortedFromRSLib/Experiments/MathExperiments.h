@@ -5,6 +5,7 @@
 void characteristicPolynomial();
 void nullspace();
 void eigenstuff();
+void linearSolverPrecision();
 
 void bandMatrix();
 void pentaDiagnonalMatrix();

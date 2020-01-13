@@ -92,8 +92,9 @@ int main(int argc, char* argv[])
 
   // Math:
   //characteristicPolynomial();
-  nullspace();
+  //nullspace();
   //eigenstuff();
+  linearSolverPrecision();
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();

@@ -1,22 +1,20 @@
-
-Dependencies of the algebra classes (an arrow means: "depends on")
+Dependencies of the algebra classes (an arrow A <--- B means: "B depends on A"),
+shortcuts: Poly: rsPolynomial, RatFunc: rsRationalFunction, ...
 
                   +--- Poly <--+
-                  |            |
                   |            |
                   V            |
 MatrixView <--- Matrix ---> RatFunc
                  |  ^   
-                 |  |
                  V  |
                 LinAlg
 
-                
+
 dependency       why (example)        dependant
-       
+
+Poly       <---------num,den--------- RatFunc
 MatrixView <--------baseclass-------- Matrix
 Matrix     <----getCompanionMatrix--- Poly
-Poly       <---------num,den--------- RatFunc
 RatFunc    <--getCharacteristicPoly-- Matrix
 LinAlg     <--------getInverse------- Matrix
 Matrix     <----------solve---------- LinAlg

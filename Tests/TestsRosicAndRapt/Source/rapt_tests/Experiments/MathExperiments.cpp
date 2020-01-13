@@ -315,6 +315,44 @@ void cleanUpIntegers(T* a, int N, T tol)
       a[i] = rounded; }
 }
 
+/** This changes the matrices A,B in random ways but without changing the solution set to 
+ A * X = B. Can be used for investigations on numerical precision issues in matrix 
+computations. We can construct a matrix from a diagonal matrix by shuffling - for the diagonal 
+matrix, the exact solutions are easy to compute..... */
+template<class T>
+void shuffle(rsMatrix<T>& A, rsMatrix<T>& B, int range, int seed = 0)
+{
+  rsNoiseGenerator<T> prng;
+
+  T w; int i;
+
+  // downward sweep:
+  for(i = 0; i < A.getNumRows()-1; ++i) {
+    //if(prng.getSample() >= T(0))
+    //  w = T(+1);
+    //else
+    //  w = T(-1);
+    w = round(range * prng.getSample());
+    A.addWeightedRowToOther(i, i+1, w);
+    B.addWeightedRowToOther(i, i+1, w);
+  }
+
+  // upward sweep:
+  for(i = A.getNumRows()-1; i > 0; --i)
+  {
+    //if(prng.getSample() >= T(0))
+    //  w = T(+1);
+    //else
+    //  w = T(-1);
+    //w = prng.getSample();
+    w = round(range * prng.getSample());
+    A.addWeightedRowToOther(i, i-1, w);
+    B.addWeightedRowToOther(i, i-1, w);
+  }
+
+  // maybe make also a rightward and leftwar sweep
+}
+
 template<class T>
 rsMatrix<T> getSubMatrix(
   const rsMatrix<T>& A, int startRow, int startCol, int numRows, int numCols)
@@ -364,6 +402,7 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A)
 
   return B;
 }
+// move into library (rsLinearAlgebraNew)
 
 void nullspace()
 {
@@ -491,7 +530,36 @@ void eigenstuff()
 };
 
 
+void linearSolverPrecision()
+{
+  // We construct matrices of different sizes by shuffling diagonal matrices for which we know
+  // the exact solution. Then we compare the exact solution to the computed solution and find the
+  // maximum error. When the numbers that occur in the computation cannot be represented exactly 
+  // (which we may ensure by scaling all matrix entries by pi, say), the solver will introduce 
+  // roundoff error. We plot this error as function of the size. This may help to find sensible
+  // values for the singularity detection threshold in the solver.
 
+
+  using Matrix = RAPT::rsMatrix<double>;
+  using LA     = RAPT::rsLinearAlgebraNew;
+
+  int N = 10;  // size
+
+  Matrix A(N, N), B(N, N), X(N, N);
+  A.setToIdentity();   // coefficient matrix
+  B.setToIdentity();   // solution matrix
+
+  // ...in this case, the solution is expected to be the identity matrix
+
+  shuffle(A, B, N, 1);
+  LA::solve(A, X, B);
+
+
+  //plotMatrix(A, true); // move to rsTesting
+
+
+  int dummy = 0;
+}
 
 
 
