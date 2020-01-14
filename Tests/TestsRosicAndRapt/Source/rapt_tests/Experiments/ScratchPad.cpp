@@ -623,8 +623,7 @@ template<class T>
 std::vector<int> getPivots(const rsMatrix<T>& A, T tol)
 {
   rsAssert(isRowEchelon(A, tol), "makes sense only for row echelon matrices");
-  std::vector<int> pivots;
-  bool done = false;
+  std::vector<int> pivots; // maybe pre-allocate - the number is known before
   int row = 0;
   while(true) {
     if( row >= A.getNumRows() )
@@ -636,6 +635,24 @@ std::vector<int> getPivots(const rsMatrix<T>& A, T tol)
     row++; }
   return pivots;
 }
+// needs more tests
+
+template<class T>
+std::vector<int> getNonPivots(const rsMatrix<T>& A, T tol)
+{
+  rsAssert(isRowEchelon(A, tol), "makes sense only for row echelon matrices");
+  std::vector<int> nonPivots;
+  int i = 0, j = 0;
+  while(i < A.getNumRows()) {
+    while(j < A.getNumColumns() && !rsGreaterAbs(A(i, j), tol)) {
+      nonPivots.push_back(j);
+      j++;  }
+    i++;
+    j++; }
+  return nonPivots;
+}
+// needs more tests
+
 
 template<class T>
 rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
@@ -643,7 +660,10 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
   using Matrix = RAPT::rsMatrix<T>;
   using LA     = RAPT::rsLinearAlgebraNew;
 
-  std::vector<int> pivots = getPivots(A, tol);
+  std::vector<int> pivots = getPivots(   A, tol);
+  std::vector<int> params = getNonPivots(A, tol);  // free parameters
+
+
 
 
   return rsMatrix<T>();  // preliminary
