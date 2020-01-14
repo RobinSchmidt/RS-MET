@@ -307,8 +307,14 @@ bool nullspace()
 
 
   A = Matrix(5, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0, 0,0,0,0});
-  B = getNullSpace3(A, tol); null = A*B;
+  B = getNullSpace3(A, tol);
   // ...
+
+  // from here https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
+  A = Matrix(3, 5, {1,-2,0,-1,3, 0,0,1,2,-2, 0,0,0,0,0});
+  B = getNullSpace3(A, tol); 
+
+
 
   // now the same with the first column all zeros:
   A = Matrix(5, 5, {0,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});

@@ -648,10 +648,10 @@ std::vector<int> getNonPivots(const rsMatrix<T>& A, T tol)
       nonPivots.push_back(j);
       j++;  }
     i++;
-    if(j >= A.getNumColumns())
-      nonPivots.push_back(j);
+    //if(j >= A.getNumColumns())
+    //  nonPivots.push_back(j);
     j++; }
-  nonPivots.pop_back(); // we push one too much - that's unelegant!
+  //nonPivots.pop_back(); // we push one too much - that's unelegant!
   return nonPivots;
 }
 // needs more tests
@@ -666,7 +666,15 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
   std::vector<int> pivots = getPivots(   A, tol);  // dependent variables
   std::vector<int> params = getNonPivots(A, tol);  // free parameters
 
-  rsAssert(pivots.size() + params.size() == (size_t) A.getNumRows()); // for debug
+  rsAssert(pivots.size() + params.size() == (size_t) A.getNumColumns()); // for debug
+
+  // if N is the number of dependent variables and K is the number of free parameters, 
+  // we need to set up and NxN linear system solve it for K different right hand sides
+  // corresponding to K different choices for assigning the free parameters. The most natural 
+  // choice is to set one to 1 and all others to zero in each assignement and select a different
+  // one to set to 1 in each of the K cases. Thes solution of the linear system gives us
+  // N elements of the basis vectors. The remaining K elements must the be filled up according
+  // to our parameters assignments
 
 
   return rsMatrix<T>();  // preliminary
