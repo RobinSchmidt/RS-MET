@@ -306,6 +306,9 @@ bool nullspace()
   r &= isZero = null.isZero();
 
 
+  A = Matrix(5, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0, 0,0,0,0});
+  B = getNullSpace3(A, tol); null = A*B;
+  // ...
 
   // now the same with the first column all zeros:
   A = Matrix(5, 5, {0,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});

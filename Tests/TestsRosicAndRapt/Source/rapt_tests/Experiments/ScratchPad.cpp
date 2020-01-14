@@ -648,7 +648,10 @@ std::vector<int> getNonPivots(const rsMatrix<T>& A, T tol)
       nonPivots.push_back(j);
       j++;  }
     i++;
+    if(j >= A.getNumColumns())
+      nonPivots.push_back(j);
     j++; }
+  nonPivots.pop_back(); // we push one too much - that's unelegant!
   return nonPivots;
 }
 // needs more tests
@@ -660,10 +663,10 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
   using Matrix = RAPT::rsMatrix<T>;
   using LA     = RAPT::rsLinearAlgebraNew;
 
-  std::vector<int> pivots = getPivots(   A, tol);
+  std::vector<int> pivots = getPivots(   A, tol);  // dependent variables
   std::vector<int> params = getNonPivots(A, tol);  // free parameters
 
-
+  rsAssert(pivots.size() + params.size() == (size_t) A.getNumRows()); // for debug
 
 
   return rsMatrix<T>();  // preliminary
