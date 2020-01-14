@@ -21,14 +21,11 @@ bool makeTriangularNoPivot(rsMatrix<T>& A, rsMatrix<T>& B)
 // simplest (lowest degree or smallest) nonzero element - because then, there may be less complex
 // computations
 
-
 template<class T>
 RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
 {
-  //using Poly    = RAPT::rsPolynomial<T>;
   using RatFunc = RAPT::rsRationalFunction<T>;
   using Matrix  = RAPT::rsMatrix<RatFunc>;
-  //using LA      = RAPT::rsLinearAlgebraNew;
 
   // Create matrix B = A - x*I as matrix of rational functions:
   Matrix B(A.getNumRows(), A.getNumColumns());
@@ -62,13 +59,9 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
   RatFunc d = B.getDiagonalProduct();
   rsAssert(d.getDenominatorDegree() == 0);
   return d.getNumerator() / d.getDenominator()[0]; 
-
-
-  //RAPT::rsPolynomial<T>::Poly p = d.getNumerator() / d.getDenominator()[0]; 
-  //return p;
 }
 // todo: make a version that uses Laplace expansion of the determinant with a matrix of polynomials
-// ->should give the same result
+// -> should give the same result 
 
 template<class T> 
 vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<T>& p)
@@ -95,12 +88,7 @@ vector<complex<T>> getEigenvalues(const rsMatrixView<T>& A)
   return getPolynomialRoots(p);
 }
 
-
-
-
-// todo: 
-
-// i think, this is wrong:
+// i think, this is still very wrong:
 template<class T>
 vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
 {
@@ -172,8 +160,6 @@ vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
   return eigenVectors;
 }
 // http://doc.sagemath.org/html/en/constructions/linear_algebra.html
-
-
 
 
 // maybe do eigenvalue and eigenvector stuff here and rename the function accordingly
@@ -325,6 +311,7 @@ void cleanUpIntegers(T* a, int N, T tol)
     if( rsAbs(a[i] - rounded) <= tol )
       a[i] = rounded; }
 }
+// move to rsArray
 
 /** This changes the matrices A,B in random ways but without changing the solution set to 
  A * X = B. Can be used for investigations on numerical precision issues in matrix 
@@ -403,6 +390,10 @@ rsMatrix<T> getAdjugate(const rsMatrix<T>& A, int i, int j)
 }
 // make member of rsMatrix
 
+// for computing nullspaces, we will need a function that removes zero columns - it sould take an
+// array of th indices of the column to remove
+// rsMatrix<T> getWithRemovedColumns(const rsMatrix<T>& A, const std::vector<int>& colIndices)
+
 
 /** Expands the determinant column-wise along the j-th column. This is the textbook method and has
 extremely bad scaling of the complexity. The function calls itself recursively in a loop (!!!). I 
@@ -451,16 +442,44 @@ T getDeterminantRowWise(const rsMatrix<T>& A, int i = 0)
   return det;
 }
 
+void determinant()
+{
+  // Computation of determinant by the (totaly inefficient) textbook method.
+
+  using Matrix = RAPT::rsMatrix<double>;
+
+  // todo: turn into unit test...
+  bool r = true;
+
+  Matrix A(4, 4, { 1,0,2,0, 1,0,3,0, -1,2,3,4, 2,0,5,1});
+  double det;
+  det = getDeterminantColumnWise(A, 0); r &= det == -2;
+  det = getDeterminantColumnWise(A, 1); r &= det == -2;
+  det = getDeterminantColumnWise(A, 2); r &= det == -2;
+  det = getDeterminantColumnWise(A, 3); r &= det == -2;
+  det = getDeterminantRowWise(   A, 0); r &= det == -2;
+  det = getDeterminantRowWise(   A, 1); r &= det == -2;
+  det = getDeterminantRowWise(   A, 2); r &= det == -2;
+  det = getDeterminantRowWise(   A, 3); r &= det == -2;
+
+  // ...use such a function to find the characteristic polynomial without resorting to rational 
+  // functions - only class rsPolynomial itself is needed -> compare both ways. For this way, we 
+  // must promote the matrix to a matrix of polynomials instead of rational functions.
+
+  int dummy = 0;
+}
+
+
 /** Returns rank of a matrix assumed to be in row echelon form */
 template<class T>
-int getRowEchelonRank(const rsMatrix<T>& A)
+int getRowEchelonRank(const rsMatrix<T>& A, T tol)
 {
   int i = 0; 
   while(i < A.getNumRows()) {
     bool nonZeroElemFound = false;
     int j = i;
     while(j < A.getNumColumns()) {
-      if(A(i, j) != T(0))  {
+      if( rsGreaterAbs(A(i, j), tol) )  {  // we need a tolerance
         nonZeroElemFound = true;
         break; } // i-th row is not all-zeros
       j++; }
@@ -468,29 +487,38 @@ int getRowEchelonRank(const rsMatrix<T>& A)
       return i;  // no non-zero element was found - i-th row is all zeros
     i++; }
   return i;
-
-  /*
-  int i, j;
-  for(i = 0; i < A.getNumRows(); i++){
-    bool isZero = true;
-    for(j = i; j < A.getNumColumns(); j++) {
-      //if(rsIsCloseTo(A(i, j), tol)) 
-      if(A(i, j) != T(0)) 
-      {
-        isZero = false;
-        break;   
-      }}
-    if(isZero)
-      break; }
-  return i;
-  */
 }
 // verify, if this is correct - maybe make unit test with weird matrices
-// this does not yet work - sometimes returns -1
+
+template<class T>
+rsMatrix<T> getWithoutBottomZeroRows(const rsMatrix<T>& A, T tol)
+{
+  int rank = getRowEchelonRank(A, tol); // A is assumed to be in row-echelon form
+  return getSubMatrix(A, 0, 0, rank, A.getNumColumns());
+}
+
+/** Returns the space spanned by the rows of matrix A... see Karpf. pg 140 */
+template<class T>
+rsMatrix<T> getRowSpace(rsMatrix<T> A, T tol)
+{
+  rsMatrix<T> z(A.getNumRows(), 1);    // dummy
+  RAPT::rsLinearAlgebraNew::makeTriangular(A, z);
+  return getWithoutBottomZeroRows(A, tol);
+}
+// needs more tests - doesn't seem to work yet
+
+template<class T>
+rsMatrix<T> getColumnSpace(rsMatrix<T> A, T tol)
+{
+  return getRowSpace(A.getTranspose(), tol).getTranspose();
+}
+
 
 /** Returns a matrix whose columns are a basis of the nullspace (a.k.a. kernel) of the matrix A.
 The basis is not orthogonal or normalized. If the nullspace contains only the zero vector, an 
-empty matrix is returned. */
+empty matrix is returned. This function returns wrong results when there are leading columns of 
+zeros in the rwo-echelon form of A - this can be tested with matrices that are already in this 
+form (in which case LA::makeTriangularLA::makeTriangular will do nothing and return 0) */
 template<class T>
 rsMatrix<T> getNullSpace(rsMatrix<T> A)
 {
@@ -500,8 +528,10 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A)
   Matrix z(A.getNumRows(), 1);             // dummy
   int N       = A.getNumRows();            // dimensionality of input space
   int rank    = LA::makeTriangular(A, z);  // rank
-  //rank = getRowEchelonRank(A);  // with this - we get nans when computing eigenspaces
+  rank = getRowEchelonRank(A, T(1.e-12));  // 
   int nullity = N - rank;                  // dimensionality of nullspace
+
+  // actually, the nullity is rank - numColumns (see karpf. 142)
 
   // i think, the rank is not always the number of iterations in makeTriangular
 
@@ -531,33 +561,9 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A)
 }
 // move into library (rsLinearAlgebraNew)
 // todo: can we also compute a basis for the image in a similar way?
+// If N is numRows and K is the rank, in order to find the nullspace, we have solve a KxK system
+// fo (N-K)x(N-K) different right-hand sides. This gives
 
-void determinant()
-{
-  // Computation of determinant by the (totaly inefficient) textbook method.
-
-  using Matrix = RAPT::rsMatrix<double>;
-
-  // todo: turn into unit test...
-  bool r = true;
-
-  Matrix A(4, 4, { 1,0,2,0, 1,0,3,0, -1,2,3,4, 2,0,5,1});
-  double det;
-  det = getDeterminantColumnWise(A, 0); r &= det == -2;
-  det = getDeterminantColumnWise(A, 1); r &= det == -2;
-  det = getDeterminantColumnWise(A, 2); r &= det == -2;
-  det = getDeterminantColumnWise(A, 3); r &= det == -2;
-  det = getDeterminantRowWise(   A, 0); r &= det == -2;
-  det = getDeterminantRowWise(   A, 1); r &= det == -2;
-  det = getDeterminantRowWise(   A, 2); r &= det == -2;
-  det = getDeterminantRowWise(   A, 3); r &= det == -2;
-
-  // ...use such a function to find the characteristic polynomial without resorting to rational 
-  // functions - only class rsPolynomial itself is needed -> compare both ways. For this way, we 
-  // must promote the matrix to a matrix of polynomials instead of rational functions.
-
-  int dummy = 0;
-}
 
 bool nullspace()
 {
@@ -572,39 +578,86 @@ bool nullspace()
   // That's ok - the basis of a vector space is not unique - we apparently have sometimes made
   // different choices for the free parameters.
 
+  Matrix A, B, null, BB, z, x;
+  int rank;
+  double tol = 1.e-12;
+
+  //A = Matrix(3, 3, {1,1,1, 1,2,4, 2,3,5});
+  A = Matrix(3, 3, {1,1,1, 0,1,3, 0,0,0});   // row echelon form of A above
+  B = getRowSpace(A, tol);  
+  // when we don't manually put it in row-echelon-form, our result is different from the book - but
+  // that doesn't mean it's wrong - perhaps it's just a different base for the same space that has 
+  // been choosen due to differnet row swaps? the book says: <(1,1,1),(0,1,3)>, we get 
+  // <(2,3,5),(0,0.5,1.5)> - the second is actually half of what the book has for the second - 
+  // maybe we need a function that figures out, if two bases span the same space? we can do this by 
+  // trying to find a transformation from one basis to the other - or use this:
+  // https://www.mathbootcamps.com/determine-vector-linear-combination-vectors/
+  // https://math.stackexchange.com/questions/851766/determining-whether-or-not-a-vector-is-a-linear-combination-of-a-given-matrix
+  // -> use the set of vectors as coeff matrix, put the vector(s) in question into the augment and 
+  // row-reduce - if there are zero-rows in the coeff-mtarix with no corresponding zero-rows in
+  // the augment, the vector is not a linear combination, otherwise, it is
+
+  A = Matrix(3, 3, {1,1,1, 1,2,4, 2,3,5});
+  //A = Matrix(3, 3, {1,1,2, 0,1,1, 0,0,0});
+  //A = Matrix(3, 3, {1,0,0, 1,1,0, 2,1,0});
+  B = getColumnSpace(A, tol);
+
+
+  A = Matrix(2, 2, {0,1, 0,0});
+  rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
+  B = getNullSpace(A); null = A*B; // r &= null.isZero();
+   // basis nullspace is {(1,0)} - 
+  z = Matrix(2, 1, {1,0});  // this is the correct nullspace - function finds {(-inf,1)}
+  null = A*z;
+  z = Matrix(2, 1, {0,0}); x = Matrix(2, 1); 
+  LA::solveTriangular(A, x, z);  // not suppsoed to work - A is singular
+  // fails for this matrix has probably to to with wrong rank computation
+  // i think, the rank computaion has been fixed, but the eigenspace basis still fails
+  // the result is (-nan,-nan) - verify what the algorithm does - it is supposed to create and
+  // the solve and 1x1 "system" - here
+  //  Matrix S = getSubMatrix(A, 0, 0, rank, rank);
+  //  Matrix R = Matrix(rank, nullity);
+  // we get a 1x1 submatrix with 0 as its only element - we probably need to take a different 
+  // submatrix when we have leading zero columns? i think, what happens when we have leading zero 
+  // columns that the sub-system S*b = R is itself singular - we get additional degrees of freedom
+  // because the variables x1,x2, ... up to the first nonzero column do not appear in any of the 
+  // equations - we get to choose them, too and obtain an even smaller system with the submatrix 
+  // starting at the first nonzero column
+
+
   // Create matrix A and zero veczor z:
   //     |1 2 3|      |0|
   // A = |4 5 6|, z = |0|
   //     |7 8 9|      |0|
-  Matrix A(3, 3, {1,2,3, 4,5,6, 7,8,9});
-  Matrix B = getNullSpace(A); // B = {(1,-2,1)}
-  Matrix null = A*B;  r &= null.isZero(); 
-  Matrix BB = B.getTranspose() * B;   // should give unit matrix, iff B is orthonormal
-  int rank;
+  A = Matrix(3, 3, {1,2,3, 4,5,6, 7,8,9});
+  B = getNullSpace(A); // B = {(1,-2,1)}
+  null = A*B;  r &= null.isZero(); 
+  BB = B.getTranspose() * B;   // should give unit matrix, iff B is orthonormal
+
 
   A = Matrix(3, 3, {0,0,0, 0,0,0, 0,0,0});
-  rank = getRowEchelonRank(A); r &= rank == 0;
+  rank = getRowEchelonRank(A, 0.0); r &= rank == 0;
 
   A = Matrix(3, 3, {1,0,0, 0,0,0, 0,0,0});
-  rank = getRowEchelonRank(A); r &= rank == 1;
+  rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
 
   A = Matrix(3, 3, {0,1,0, 0,0,0, 0,0,0});
-  rank = getRowEchelonRank(A); r &= rank == 1;
+  rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
 
   A = Matrix(3, 3, {0,0,1, 0,0,0, 0,0,0});
-  rank = getRowEchelonRank(A); r &= rank == 1;
+  rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
 
   A = Matrix(3, 3, {1,0,0, 0,1,0, 0,0,0});
-  rank = getRowEchelonRank(A); r &= rank == 2;
+  rank = getRowEchelonRank(A, 0.0); r &= rank == 2;
 
   A = Matrix(3, 3, {0,1,0, 0,0,1, 0,0,0});
-  rank = getRowEchelonRank(A); r &= rank == 2;
+  rank = getRowEchelonRank(A, 0.0); r &= rank == 2;
 
   A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,0});   // can this occur when producing the ref?
-  rank = getRowEchelonRank(A); r &= rank == 2;
+  rank = getRowEchelonRank(A, 0.0); r &= rank == 2;
 
   A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,2});   // can this occur when producing the ref?
-  rank = getRowEchelonRank(A); r &= rank == 3;
+  rank = getRowEchelonRank(A, 0.0); r &= rank == 3;
 
   A = Matrix(2, 2, {1,0, 0,1});
   B = getNullSpace(A); null = A*B; r &= null.isZero();
@@ -612,9 +665,7 @@ bool nullspace()
   A = Matrix(2, 2, {0,1, -1,0});
   B = getNullSpace(A); null = A*B; r &= null.isZero();
 
-  A = Matrix(2, 2, {0,1, 0,0});
-  B = getNullSpace(A); null = A*B; r &= null.isZero();
-  // fails for this matrix has probably to to with wrong rank computation
+
 
 
   A = Matrix(3, 3, {-1,-1,2, 1,2,3, -1,0,7});
@@ -645,9 +696,33 @@ bool nullspace()
   // A = |0 0 1 9 1|, z = |0|
   //     |0 0 0 0 0|      |0|
   //     |0 0 0 0 0|      |0|
+  bool isZero;
   A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
-  B = getNullSpace(A);
-  null = A*B; r &= null.isZero();
+  B = getNullSpace(A);  null = A*B; r &= isZero = null.isZero();
+
+  // now the same with the first column all zeros:
+  A = Matrix(5, 5, {0,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
+  B = getNullSpace(A); null = A*B; r &= isZero = null.isZero();
+  // this fails! in solveTriangular, we divide by A(i,i)
+
+  // now make also the 2nd column zero:
+  A = Matrix(5, 5, {0,0,3,4,5, 0,0,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
+  B = getNullSpace(A); null = A*B; r &= isZero = null.isZero();
+  // B has even more nans and infs
+
+  // apparently, we need to do something special in case of leading zero columns - this actually
+  // applies to any linear system - i think, i must choose variables which have zero-columns as 
+  // free parameters - try to make columns 4 and 5 zero - these are the variables that we 
+  // currently select as parameters:
+  A = Matrix(5, 5, {1,2,3,0,0, 0,1,6,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0});
+  B = getNullSpace(A);  null = A*B; r &= isZero = null.isZero();  
+  // this works - but the basis contains the zero-vector - that's useless as basis-vector!
+
+  // try to make column 3 zero:
+  A = Matrix(5, 5, {1,2,0,4,5, 0,1,0,7,8, 0,0,0,9,1, 0,0,0,0,0, 0,0,0,0,0});
+  B = getNullSpace(A);  null = A*B; r &= isZero = null.isZero();
+  // also leads to error
+
 
   return r;
 }
@@ -799,7 +874,7 @@ void eigenstuff()
 
   z = Matrix(2, 1); // dummy
   int rank = RAPT::rsLinearAlgebraNew::makeTriangular(A, z);
-  rank = getRowEchelonRank(A);
+  rank = getRowEchelonRank(A, 0.0);
   // yup - rank is returned as 0 - but actual rank is 1 - the number of steps taken is actually not
   // the rank in all cases - often it is, but not always - try this with various matrices with 
   // leading zeros in the rows - these make problems - the actual rank is the numer of nonzero rows
