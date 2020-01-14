@@ -725,6 +725,43 @@ bool nullspace()
   return r;
 }
 
+
+template<class T>
+bool isRowZero(const rsMatrix<T> x, int rowIndex, T tol)
+{
+  for(int j = 0; j < x.getNumColumns(); ++j)
+    if( rsAbs(x(rowIndex, j)) > tol )
+      return false;
+  return true;
+}
+template<class T>
+bool areRowsZero(const rsMatrix<T> x, int startRow, int endRow, T tol)
+{
+  for(int i = startRow; i <= endRow; ++i)
+    if(!isRowZero(x, i, tol))
+      return false;
+  return true;
+}
+// make members of rsMatrixView
+
+/** Returns true, if the space spanned by the columns of x is within the span of the columns of B.
+That means each column of x can be expressed as some linear combination of the columns of B. */
+template<class T>
+bool isInSpanOf(rsMatrix<T> B, rsMatrix<T> x, T tol)
+{
+  RAPT::rsLinearAlgebraNew::makeTriangular(B, x);
+  int rankB = getRowEchelonRank(B, tol);
+  return areRowsZero(x, rankB, x.getNumRows()-1, tol);
+}
+
+template<class T>
+bool spanSameSpace(const rsMatrix<T>& A, const rsMatrix<T>& B, T tol)
+{
+  return isInSpanOf(A, B) && isInSpanOf(B, A);
+}
+// needs test
+
+
 void linearCombinations()
 {
   // We figure out, if a given vector is a linear combination of a set of given vectors, see:
@@ -736,6 +773,8 @@ void linearCombinations()
   using LA     = RAPT::rsLinearAlgebraNew;
 
   Matrix B, x;
+  bool linComb;
+  double tol = 1.e-13;
 
   //      b1 b2
   //     |2  7|                    |25|
@@ -746,7 +785,8 @@ void linearCombinations()
   // our basis vectors (2,5,3),(7,3,5) spanning a 2D space within R^3, as colums of matrix B, x is
   // a linear combination of b1,b2 with coeffs 2,3
 
-  LA::makeTriangular(B, x);
+  linComb = isInSpanOf(B, x, tol);
+  //LA::makeTriangular(B, x);
   // x is a linear combination of the columns of B, if this results in no nonzero line in x for 
   // which there is a zero line in B - or the other way around: whereever B has a zero line, x must
   // also have a zero entry. I think, this means the rank(B|x) <= rank(B)
@@ -754,12 +794,20 @@ void linearCombinations()
   // try the same procedure now with some other vector x:
   B = Matrix(3, 2, {2,7, 5,3, 3,5});  // bcs the elimination has destryed it
   x = Matrix(3, 1, {20,15,-10});
-  LA::makeTriangular(B, x);
+  linComb = isInSpanOf(B, x, tol);
+  //LA::makeTriangular(B, x);
   // this is not e linear combination of b1,b2
 
-  // make a function isLinearCombinationOf(Matrix B, Matrix x)
-  // if x it itself a matrix - it should return true when all columns of x are linear combinations
-  // of columns of B
+  // make some more linear combinations and random vectors
+  B = Matrix(3, 2, {2,7, 5,3, 3,5});
+  x = Matrix(3, 4, {25,20,20,3, 19,21,15,4, 21,19,-10,1});
+  // the 2nd is 3*b1 + 2*b2, the first as above and 3,4 are random vectors
+  linComb = isInSpanOf(B, x, tol);
+
+
+  // how can we find the coefficients of the linear combinations - that must also be a linear 
+  // system -> figure out, how to set it up
+
 
   int dummy = 0;
 }
