@@ -484,7 +484,7 @@ rsMatrix<T> getColumnSpace(rsMatrix<T> A, T tol)
 /** Returns a matrix whose columns are a basis of the nullspace (a.k.a. kernel) of the matrix A.
 The basis is not orthogonal or normalized. If the nullspace contains only the zero vector, an 
 empty matrix is returned. This function returns wrong results when there are leading columns of 
-zeros in the rwo-echelon form of A - this can be tested with matrices that are already in this 
+zeros in the row-echelon form of A - this can be tested with matrices that are already in this 
 form (in which case LA::makeTriangularLA::makeTriangular will do nothing and return 0) */
 template<class T>
 rsMatrix<T> getNullSpace(rsMatrix<T> A)
@@ -522,10 +522,8 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A)
 
   return B;
 }
-// maybe we need to use a submatrix that starts at the first column with nonzero entry in row 1?
-// like:
-// int offset = getFirstNonZeroIndexInRow(A, 0, tol)
-// 
+
+
 
 // move into library (rsLinearAlgebraNew)
 // todo: can we also compute a basis for the image in a similar way?
@@ -536,14 +534,6 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A)
 
 // see:
 
-// https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
-// it says:
-// the pivots - the leading coefficients - rest in columns 1 and 3. That means that x1,x3 have
-// their identifying equations. The result is that x2,x4,x5 are all free variables. - we cannot 
-// just freely choose, which of the variables we use as free parameters
-
-// http://www.eng.fsu.edu/~dommelen/aim/style_a/GEspc.html
-// https://yutsumura.com/how-to-find-a-basis-for-the-nullspace-row-space-and-range-of-a-matrix/
 
 // https://en.wikipedia.org/wiki/Row_and_column_spaces
 // says: the null space of A is the orthogonal complement to the row space - so maybe it's easier
@@ -598,6 +588,69 @@ rsMatrix<T> getNullSpace2(rsMatrix<T> A)
 }
 // http://www.cfm.brown.edu/people/dobrush/am34/sage/kernel.html
 
+
+template<class T>
+bool isRowEchelon(const rsMatrix<T>& A, T tol)
+{
+  int col = -1; 
+  for(int i = 0; i < A.getNumRows(); i++) {
+    int j = getFirstNonZeroIndexInRow(A, i, tol);
+    if(j <= col && j < A.getNumColumns()) // there was no right-step in this row, the 2nd condition
+      return false;                       // is needed for dealing with zero-rows at the bottom
+    col = j;
+  }
+  return true;
+}
+// for each step down, we must make at least one step right and we never make steps back left
+// not yet tested
+
+
+
+// https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
+// it says:
+// the pivots - the leading coefficients - rest in columns 1 and 3. That means that x1,x3 have
+// their identifying equations. The result is that x2,x4,x5 are all free variables. 
+// -> we cannot just freely choose, which of the variables we use as free parameters - that seems
+// to be the key: make a first pass to identify the pivots - these are the columns of the leading
+// coefficients - the free parameters are then all the other variables - set up a system for these
+// other variables in terms of the free ones and solve the system as many times as there are free
+// variables
+// http://www.eng.fsu.edu/~dommelen/aim/style_a/GEspc.html
+// https://yutsumura.com/how-to-find-a-basis-for-the-nullspace-row-space-and-range-of-a-matrix/
+
+// assumes A to be in row echelon form - maybe write a function that checks that and make an assert
+template<class T>
+std::vector<int> getPivots(const rsMatrix<T>& A, T tol)
+{
+  rsAssert(isRowEchelon(A, tol), "makes sense only for row echelon matrices");
+  std::vector<int> pivots;
+  bool done = false;
+  int row = 0;
+  while(true) {
+    if( row >= A.getNumRows() )
+      break;
+    int leadCoeffIndex = getFirstNonZeroIndexInRow(A, row, tol); // rename to getLeadingIndex
+    if( leadCoeffIndex >= A.getNumColumns() )
+      break;
+    pivots.push_back(leadCoeffIndex);
+    row++; }
+  return pivots;
+}
+
+template<class T>
+rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
+{
+  using Matrix = RAPT::rsMatrix<T>;
+  using LA     = RAPT::rsLinearAlgebraNew;
+
+  std::vector<int> pivots = getPivots(A, tol);
+
+
+  return rsMatrix<T>();  // preliminary
+}
+
+
+
 /*
 sage:
 A = matrix(QQ, [[ 1,  4,  0, -1,  0,   7, -9],
@@ -627,10 +680,9 @@ rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A)
   return rsMatrix<T>();  // preliminary
 }
 
-
 /** Another attempt to computing the nullspace based on the orthogonal complement. */
 template<class T>
-rsMatrix<T> getNullSpace3(rsMatrix<T> A)
+rsMatrix<T> getNullSpace4(rsMatrix<T> A)
 {
   using Matrix = RAPT::rsMatrix<T>;
   using LA     = RAPT::rsLinearAlgebraNew;

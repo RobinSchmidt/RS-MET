@@ -302,6 +302,7 @@ bool nullspace()
   A = Matrix(3, 3, {0,1,2, 0,0,4, 0,0,0});
   B = getNullSpace(A);   null = A*B; 
   B = getNullSpace2(A);  null = A*B;   // experimental new version
+  B = getNullSpace3(A, tol);
   r &= isZero = null.isZero();
 
 
