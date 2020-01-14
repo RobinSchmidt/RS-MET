@@ -1,166 +1,6 @@
 using namespace RAPT;
 using namespace std;
 
-// we replicate the function from rsLinearAlgebraNew  here but taking full rsMatrix objects instead
-// of views, so we can expand the content
-template<class T>
-bool makeTriangularNoPivot(rsMatrix<T>& A, rsMatrix<T>& B)
-{
-  rsAssert(A.isSquare()); // can we relax this?
-  int N = A.getNumRows();
-  for(int i = 0; i < N; i++) {
-    if(A(i, i) == T(0)) { 
-      rsError("This matrix needs pivoting"); return false; }
-    for(int j = i+1; j < N; j++) {
-      T s = -A(j, i) / A(i, i);
-      A.addWeightedRowToOther(i, j, s, i, A.getNumColumns()-1); // start at i: avoid adding zeros
-      B.addWeightedRowToOther(i, j, s); }}
-  return true;
-}
-// when using rational numbers or functions, maybe the pivoting could based on which element is the 
-// simplest (lowest degree or smallest) nonzero element - because then, there may be less complex
-// computations
-
-template<class T>
-RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
-{
-  using RatFunc = RAPT::rsRationalFunction<T>;
-  using Matrix  = RAPT::rsMatrix<RatFunc>;
-
-  // Create matrix B = A - x*I as matrix of rational functions:
-  Matrix B(A.getNumRows(), A.getNumColumns());
-  for(int i = 0; i < B.getNumRows(); ++i)
-    for(int j = 0; j < B.getNumColumns(); ++j)
-      if(i == j)
-        B(i, j) = RatFunc({A(i, j), -1}, {1});
-      else
-        B(i, j) = RatFunc({A(i, j)},     {1});
-
-  // Create a dummy right-hand-side (todo: allow function to be called without rhs) - maybe
-  // make an LU decomposition function that fills an array of swaps at each index, the number says
-  // with which row this row has to be swapped
-  Matrix R(A.getNumRows(), 1);
-  for(int i = 0; i < R.getNumRows(); ++i)
-    R(i, 0) = RatFunc({ 1 }, { 1 });
-
-  // compute row echelon form of B:
-  //RAPT::rsLinearAlgebraNew::makeTriangularNoPivot(B, R);
-  makeTriangularNoPivot(B, R);
-  // i think, we really need pivoting for this here too - we may encounter the zero-function - but 
-  // maybe we should swap only when the zero-function is encountered - i.e. we don't search for the
-  // largest element - instead, we check against zero and if we encounter a zero, we search for the 
-  // next nonzero element to swap with - the current code should not go into the library - it's
-  // useless for production - see weitz book pg 310
-
-  // Compute determinant. For a triangular matrix, this is the product of the diagonal elements. 
-  // The computed determinant is still a rational function but it should come out as a polynomial, 
-  // i.e. the denominator should have degree 0 (be a constant). I think, it should always be +1 or
-  // -1 because the elementary row operations can only flip the determinant.
-  RatFunc d = B.getDiagonalProduct();
-  rsAssert(d.getDenominatorDegree() == 0);
-  return d.getNumerator() / d.getDenominator()[0]; 
-}
-// todo: make a version that uses Laplace expansion of the determinant with a matrix of polynomials
-// -> should give the same result 
-
-template<class T> 
-vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<T>& p)
-{
-  vector<complex<T>> roots(p.getDegree());
-  RAPT::rsPolynomial<T>::roots(p.getCoeffPointerConst(), p.getDegree(), &roots[0]);
-  return roots;
-}
-// maybe make member getRoots - that would be convenient - but the problem is that even for real 
-// polynomials, the roots may be complex - so i don't know if it should return a vector<T> or a 
-// vector<complex<T>> - if the polynomial is itself complex, the former would be the way to go,
-// if it's real, the latter ...maybe make two functions getRootsReal, getRootsComplex - or maybe
-// in the case of real polynomials, it should return only the real roots unless one calls 
-// getComplexRoots - or maybe, if we implement it as template once for reals and once for 
-// complexes, the right one will be compiled into the class automatically? ..like
-// vector<complex<T>> getRoots(const RAPT::rsPolynomial<T>& p); // T is real type
-// vector<T> getRoots(const RAPT::rsPolynomial<complex<R>>& p); // T is complex, R is real
-//
-
-template<class T> 
-vector<complex<T>> getEigenvalues(const rsMatrixView<T>& A)
-{
-  RAPT::rsPolynomial<T> p = getCharacteristicPolynomial(A);
-  return getPolynomialRoots(p);
-}
-
-// i think, this is still very wrong:
-template<class T>
-vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
-{
-  // for each eigenvalue x, we must form the matrix A - x*I and solve the system
-  // A - x*I = 0 where 0 is the zero vector in this case - is that correct?
-  // ...but the eigenvalues are complex - does that mean the eigenvectors may also be complex?
-  // probably
-
-  rsAssert(A.isSquare());
-
-  using LA = RAPT::rsLinearAlgebraNew;
-  int N = A.getNumRows();
-
-  vector<complex<T>> eigenValues = getEigenvalues(A);
-  rsAssert((int)eigenValues.size() == N);
-  vector<complex<T>> rhs(N);
-  rsMatrix<complex<T>> I(N, N), B(N, N);
-  B.copyDataFrom(A);
-  vector<vector<complex<T>>> eigenVectors(N); 
-
-  //rhs[0] = 1;
-  // i think, we can make a choice - or maybe even several choices - we are trying to solve a
-  // singular system of equations when solving (A - x_i * I) * x = 0, so our regular Gaussian
-  // elimination procedure is not suitable - but what else?
-
-  // i think, this is wrong:
-  for(int i = 0; i < N; i++) {
-    for(int j = 0; j < N; j++)
-      B(j, j) = A(j, j) - eigenValues[i];   // set diagonal elements of B = (A - x_i * I)
-    eigenVectors[i] = LA::solve(B, rhs);    // solve B * x == 0
-  }
-  // the system we are trying to solve is singular and actually the rhs is zero anyway - what we
-  // need instead is to find the nullspace of A - x_i * I = B_i for each i
-
-  // triggers assertion that matrix is singular -> try elimination by hand and compare to what
-  // the algo does
-  // let B_i be given by A - x_i * I, then B_0 = [[-3,6],[-3,6]], B_1 = [[-6,6],[-3,3]]
-  // so yes, the shifted matrix is indeed singular - seems we can't solve for the eigenvectors by 
-  // regular linear system solving...hmmm - how else can we find them? maybe we need to find 
-  // coefficients for which the linear-combination of the rows gives the zero-row?
-
-  // also - in general, there is no one-to-one correspondence between eigenvalues and eigenvectors
-  // there may be zero or multiple eigenvectors to any given eigenvalue - the set of eigenvectors
-  // belonging to eigenvalue x_i is the eigenspace of x_i and the dimensionality of this space
-  // is the geometric multiplicity of x_i
-
-  // ah - i think the problem is that an eigenvector represents infinitely many solutions to a 
-  // linear system because we can scale it by an arbitrary factor and still have a solution - so we
-  // have a situation where there's a parametric continuum of solutions - the number of free 
-  // parameters is the dimenstion of the eigenspace? and that value is probably related to
-  // rank(A - x_i * I)
-
-  // It seems, we may not have to solve any system of equations as all - here it says:
-  // https://en.wikipedia.org/wiki/Eigenvalue_algorithm
-  // 
-  // the columns of the matrix prod_{i != j} (A - x_i * I)^m_i must be either 0 or generalized 
-  // eigenvectors of the eigenvalue x_j - i've adapted the notation a bit - but note that the i
-  // runs over the *distinct* eigenvalues, not just over all eigenvalues ..soo, it seems to find 
-  // the eigenspace to an eigenvalue x_i, we must do repeated matrix multiplication rather than
-  // solving a linear system - or is there a better way? ...solving a linear system is actually 
-  // wrong - we need to find a nullspace
-
-  // see also:
-  // https://lpsa.swarthmore.edu/MtrxVibe/EigMat/MatrixEigen.html
-  // https://www.scss.tcd.ie/Rozenn.Dahyot/CS1BA1/SolutionEigen.pdf
-  // http://www.sosmath.com/matrix/eigen2/eigen2.html
-  // http://wwwf.imperial.ac.uk/metric/metric_public/matrices/eigenvalues_and_eigenvectors/eigenvalues2.html
-
-  return eigenVectors;
-}
-// http://doc.sagemath.org/html/en/constructions/linear_algebra.html
-
 
 // maybe do eigenvalue and eigenvector stuff here and rename the function accordingly
 void characteristicPolynomial() 
@@ -302,146 +142,6 @@ void characteristicPolynomial()
 // complexes, matrices of ratfuncs, ratfuncs of matrices, polynomials, vectors of matrices,
 // matrices of vectors - maybe out this into a unit test
 
-
-template<class T>
-void cleanUpIntegers(T* a, int N, T tol)
-{
-  for(int i = 0; i < N; ++i) {
-    T rounded = round(a[i]);
-    if( rsAbs(a[i] - rounded) <= tol )
-      a[i] = rounded; }
-}
-// move to rsArray
-
-/** This changes the matrices A,B in random ways but without changing the solution set to 
- A * X = B. Can be used for investigations on numerical precision issues in matrix 
-computations. We can construct a matrix from a diagonal matrix by shuffling - for the diagonal 
-matrix, the exact solutions are easy to compute..... */
-template<class T>
-void shuffle(rsMatrix<T>& A, rsMatrix<T>& B, int range, int seed = 0)
-{
-  rsNoiseGenerator<T> prng;
-
-  T w; int i;
-
-  // downward sweep:
-  for(i = 0; i < A.getNumRows()-1; ++i) {
-    //plotMatrix(A, true);
-
-    if(prng.getSample() >= T(0))
-      w = T(+1);
-    else
-      w = T(-1);
-    //w = round(range * prng.getSample());
-    A.addWeightedRowToOther(i, i+1, w);
-    B.addWeightedRowToOther(i, i+1, w);
-  }
-
-  // upward sweep:
-  for(i = A.getNumRows()-1; i > 0; --i)
-  {
-    //plotMatrix(A, true);
-
-    if(prng.getSample() >= T(0))
-      w = T(+1);
-    else
-      w = T(-1);
-    //w = prng.getSample();
-    //w = round(range * prng.getSample());
-    A.addWeightedRowToOther(i, i-1, w);
-    B.addWeightedRowToOther(i, i-1, w);
-  }
-
-  // maybe make also a rightward and leftwar sweep
-}
-
-template<class T>
-rsMatrix<T> getSubMatrix(
-  const rsMatrix<T>& A, int startRow, int startCol, int numRows, int numCols)
-{
-  // assert that it all makes sense
-
-  rsMatrix<T> S(numRows, numCols);
-  for(int i = 0; i < numRows; ++i)
-    for(int j = 0; j < numCols; ++j)
-      S(i, j) = A(startRow+i, startCol+j);
-  return S;
-}
-// make member of rsMatrix
-
-/** If A is an MxN matrix, this function returns the (M-1)x(N-1) matrix that results from removing
-th i-th row and j-th column. See: 
-https://en.wikipedia.org/wiki/Adjugate_matrix  */
-template<class T>
-rsMatrix<T> getAdjugate(const rsMatrix<T>& A, int i, int j)
-{
-  // assert that it all makes sense
-  int M = A.getNumRows();
-  int N = A.getNumColumns();
-  rsMatrix<T> Aij(M-1, N-1);
-  int ii, jj;                                                    // indices into A matrix
-  for(ii = 0; ii < i; ++ii) {                                    // loop over top rows
-    for(jj = 0;   jj < j; ++jj)  Aij(ii,   jj  ) = A(ii, jj);    //   loop over left columns
-    for(jj = j+1; jj < N; ++jj)  Aij(ii,   jj-1) = A(ii, jj); }  //   loop over right columns
-  for(ii = i+1; ii < N; ++ii) {                                  // loop over bottom rows
-    for(jj = 0;   jj < j; ++jj)  Aij(ii-1, jj  ) = A(ii, jj);    //   loop over left columns
-    for(jj = j+1; jj < N; ++jj)  Aij(ii-1, jj-1) = A(ii, jj); }  //   loop over right columns
-  return Aij;
-}
-// make member of rsMatrix
-
-// for computing nullspaces, we will need a function that removes zero columns - it sould take an
-// array of th indices of the column to remove
-// rsMatrix<T> getWithRemovedColumns(const rsMatrix<T>& A, const std::vector<int>& colIndices)
-
-
-/** Expands the determinant column-wise along the j-th column. This is the textbook method and has
-extremely bad scaling of the complexity. The function calls itself recursively in a loop (!!!). I 
-think, the complexity may scale with the factorial function (todo: verify) - which would be 
-super-exponential - so it's definitely not meant for use in production code. For production, use
-Gaussian elimination (we need to keep track of whether we have an odd or even number of swaps - in 
-the former case det = -1 * product(diagonal-elements of upper triangular form), in the later case
-det = +1 * product(...) */
-template<class T>
-T getDeterminantColumnWise(const rsMatrix<T>& A, int j = 0)
-{
-  rsAssert(A.isSquare());
-  int N = A.getNumRows();
-  if(N == 1)
-    return A(0, 0);
-  T det = T(0);
-  for(int i = 0; i < N; i++) {
-    rsMatrix<T> Aij = getAdjugate(A, i, j);
-    det += pow(-1, i+j) * A(i, j) * getDeterminantColumnWise(Aij, 0); }
-  return det;
-
-  // Notes: 
-  // -in the recursive call we always use the 0-th column to make it work also in the base-case 
-  //  which we will eventually reach
-  // -the function could be optimized by implementing special rules for 2x2 and 3x3 matrices:
-  //  https://en.wikipedia.org/wiki/Determinant#2_%C3%97_2_matrices to avoid the lowest level of 
-  //  recursion - this was not done because it's not meant for production use anyway - it's 
-  //  insanely inefficient anyway
-  // -the formulas can be found for example here
-  //  https://en.wikipedia.org/wiki/Determinant#Laplace's_formula_and_the_adjugate_matrix
-  // -the function could be used to find the characteristic polynomial without resorting to 
-  //  rational functions - only class rsPolynomial itself is needed. For this, we must promote the
-  //  given matrix of numbers to a matrix of polynomials instead of rational functions.
-}
-
-template<class T>
-T getDeterminantRowWise(const rsMatrix<T>& A, int i = 0)
-{
-  rsAssert(A.isSquare());
-  int N = A.getNumRows();
-  if(N == 1) return A(0, 0);
-  T det = T(0);
-  for(int j = 0; j < N; j++) {
-    rsMatrix<T> Aij = getAdjugate(A, i, j);
-    det += pow(-1, i+j) * A(i, j) * getDeterminantRowWise(Aij, 0); }
-  return det;
-}
-
 void determinant()
 {
   // Computation of determinant by the (totaly inefficient) textbook method.
@@ -469,102 +169,6 @@ void determinant()
   int dummy = 0;
 }
 
-
-/** Returns rank of a matrix assumed to be in row echelon form */
-template<class T>
-int getRowEchelonRank(const rsMatrix<T>& A, T tol)
-{
-  int i = 0; 
-  while(i < A.getNumRows()) {
-    bool nonZeroElemFound = false;
-    int j = i;
-    while(j < A.getNumColumns()) {
-      if( rsGreaterAbs(A(i, j), tol) )  {  // we need a tolerance
-        nonZeroElemFound = true;
-        break; } // i-th row is not all-zeros
-      j++; }
-    if(!nonZeroElemFound)
-      return i;  // no non-zero element was found - i-th row is all zeros
-    i++; }
-  return i;
-}
-// verify, if this is correct - maybe make unit test with weird matrices
-
-template<class T>
-rsMatrix<T> getWithoutBottomZeroRows(const rsMatrix<T>& A, T tol)
-{
-  int rank = getRowEchelonRank(A, tol); // A is assumed to be in row-echelon form
-  return getSubMatrix(A, 0, 0, rank, A.getNumColumns());
-}
-
-/** Returns the space spanned by the rows of matrix A... see Karpf. pg 140 */
-template<class T>
-rsMatrix<T> getRowSpace(rsMatrix<T> A, T tol)
-{
-  rsMatrix<T> z(A.getNumRows(), 1);    // dummy
-  RAPT::rsLinearAlgebraNew::makeTriangular(A, z);
-  return getWithoutBottomZeroRows(A, tol);
-}
-// needs more tests - doesn't seem to work yet
-
-template<class T>
-rsMatrix<T> getColumnSpace(rsMatrix<T> A, T tol)
-{
-  return getRowSpace(A.getTranspose(), tol).getTranspose();
-}
-
-
-/** Returns a matrix whose columns are a basis of the nullspace (a.k.a. kernel) of the matrix A.
-The basis is not orthogonal or normalized. If the nullspace contains only the zero vector, an 
-empty matrix is returned. This function returns wrong results when there are leading columns of 
-zeros in the rwo-echelon form of A - this can be tested with matrices that are already in this 
-form (in which case LA::makeTriangularLA::makeTriangular will do nothing and return 0) */
-template<class T>
-rsMatrix<T> getNullSpace(rsMatrix<T> A)
-{
-  using Matrix = RAPT::rsMatrix<T>;
-  using LA     = RAPT::rsLinearAlgebraNew;
-
-  Matrix z(A.getNumRows(), 1);             // dummy
-  int N       = A.getNumRows();            // dimensionality of input space
-  int rank    = LA::makeTriangular(A, z);  // rank
-  rank = getRowEchelonRank(A, T(1.e-12));  // 
-  int nullity = N - rank;                  // dimensionality of nullspace
-
-  // actually, the nullity is rank - numColumns (see karpf. 142)
-
-  // i think, the rank is not always the number of iterations in makeTriangular
-
-
-
-  // extract rank x rank system with nullity rhs vectors
-  Matrix S = getSubMatrix(A, 0, 0, rank, rank);
-  Matrix R = Matrix(rank, nullity);
-  for(int j = 0; j < nullity; ++j)   // loop over the rhs
-    for(int i = 0; i < rank; ++i)    // loop over rows in current rhs
-      R(i, j) = -A(i, rank+j);
-
-  // compute first nullity elements of basis vectors:
-  Matrix b = Matrix(rank, nullity);
-  LA::solveTriangular(S, b, R);
-
-  // Compute filled up basis vectors:
-  //Matrix B = Matrix(N, nullity);  // maybe instead of N, we should use A.getNumColumns?
-  Matrix B = Matrix(A.getNumColumns(), nullity);
-  B.setToZero();
-  for(int j = 0; j < nullity; ++j) {
-    for(int i = 0; i < rank; i++)
-      B(i, j) = b(i, j);
-    B(rank+j, j) = 1; }
-
-  return B;
-}
-// move into library (rsLinearAlgebraNew)
-// todo: can we also compute a basis for the image in a similar way?
-// If N is numRows and K is the rank, in order to find the nullspace, we have solve a KxK system
-// fo (N-K)x(N-K) different right-hand sides. This gives
-
-
 bool nullspace()
 {
   // turn into unit-test
@@ -578,32 +182,39 @@ bool nullspace()
   // That's ok - the basis of a vector space is not unique - we apparently have sometimes made
   // different choices for the free parameters.
 
-  Matrix A, B, null, BB, z, x;
+  Matrix A, A2, B, B2, null, BB, z, x;
   int rank;
   double tol = 1.e-12;
+  bool test;
 
-  //A = Matrix(3, 3, {1,1,1, 1,2,4, 2,3,5});
-  A = Matrix(3, 3, {1,1,1, 0,1,3, 0,0,0});   // row echelon form of A above
-  B = getRowSpace(A, tol);  
-  // when we don't manually put it in row-echelon-form, our result is different from the book - but
-  // that doesn't mean it's wrong - perhaps it's just a different base for the same space that has 
-  // been choosen due to differnet row swaps? the book says: <(1,1,1),(0,1,3)>, we get 
-  // <(2,3,5),(0,0.5,1.5)> - the second is actually half of what the book has for the second - 
-  // maybe we need a function that figures out, if two bases span the same space? we can do this by 
-  // trying to find a transformation from one basis to the other - 
-  // -> use the set of vectors as coeff matrix, put the vector(s) in question into the augment and 
-  // row-reduce - if there are zero-rows in the coeff-mtarix with no corresponding zero-rows in
-  // the augment, the vector is not a linear combination, otherwise, it is
+  // Example 15.4 in Karpfinger, pg 141. When we don't manually put it in row-echelon-form, our 
+  // result is different from the book - but that doesn't mean it's wrong. Apparently, in the book,
+  // different swaps were performed in the row elimination process.
+  A  = Matrix(3, 3, {1,1,1, 1,2,4, 2,3,5});   // original matrix
+  A2 = Matrix(3, 3, {1,1,1, 0,1,3, 0,0,0});   // row echelon form of A
+  B  = getRowSpace(A,  tol);                  // returns <(2,3,5),(0,0.5,1.5)>
+  B2 = getRowSpace(A2, tol);                  // returns <(1,1,1),(0,1,3)> -  as in the book
+  test = spanSameSpace(B, B2, tol);
+  test = spanSameSpace(B.getTranspose(), B2.getTranspose(), tol);
+  // Both tests evaluate to true - that's interesting - i expected only the test with the transpose
+  // to return true -> figure out, how row-space and column-space are related - they have the same 
+  // dimension but are they the same space?
 
-  A = Matrix(3, 3, {1,1,1, 1,2,4, 2,3,5});
-  //A = Matrix(3, 3, {1,1,2, 0,1,1, 0,0,0});
-  //A = Matrix(3, 3, {1,0,0, 1,1,0, 2,1,0});
-  B = getColumnSpace(A, tol);
+  A  = Matrix(3, 3, {1,1,1, 1,2,4, 2,3,5});   // book says, col-space is <(1,1,2),(0,1,1)>
+  A2 = Matrix(3, 3, {1,0,0, 1,1,0, 2,1,0});   // again, A in row echelon form
+  B  = getColumnSpace(A,  tol);
+  B2 = getColumnSpace(A2, tol);
+  test = spanSameSpace(B, B2, tol);
+  test = spanSameSpace(B.getTranspose(), B2.getTranspose(), tol);
+  // Thes tests also both evaluate to true
+  //test = 
 
 
   A = Matrix(2, 2, {0,1, 0,0});
   rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
-  B = getNullSpace(A); null = A*B; // r &= null.isZero();
+  B = getNullSpace(A);  null = A*B; // r &= null.isZero();
+  B = getNullSpace2(A); // wrong! returns (-1,1) - should be (1,0)
+  null = A*B; // r &= null.isZero();
    // basis nullspace is {(1,0)} - 
   z = Matrix(2, 1, {1,0});  // this is the correct nullspace - function finds {(-inf,1)}
   null = A*z;
@@ -633,29 +244,17 @@ bool nullspace()
   BB = B.getTranspose() * B;   // should give unit matrix, iff B is orthonormal
 
 
-  A = Matrix(3, 3, {0,0,0, 0,0,0, 0,0,0});
-  rank = getRowEchelonRank(A, 0.0); r &= rank == 0;
+  // check rank computation:
+  A = Matrix(3, 3, {0,0,0, 0,0,0, 0,0,0}); rank = getRowEchelonRank(A, 0.0); r &= rank == 0;
+  A = Matrix(3, 3, {1,0,0, 0,0,0, 0,0,0}); rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
+  A = Matrix(3, 3, {0,1,0, 0,0,0, 0,0,0}); rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
+  A = Matrix(3, 3, {0,0,1, 0,0,0, 0,0,0}); rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
+  A = Matrix(3, 3, {1,0,0, 0,1,0, 0,0,0}); rank = getRowEchelonRank(A, 0.0); r &= rank == 2;
+  A = Matrix(3, 3, {0,1,0, 0,0,1, 0,0,0}); rank = getRowEchelonRank(A, 0.0); r &= rank == 2;
+  A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,0}); rank = getRowEchelonRank(A, 0.0); r &= rank == 2;// can this occur when producing the ref?
+  A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,2}); rank = getRowEchelonRank(A, 0.0); r &= rank == 3;
 
-  A = Matrix(3, 3, {1,0,0, 0,0,0, 0,0,0});
-  rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
 
-  A = Matrix(3, 3, {0,1,0, 0,0,0, 0,0,0});
-  rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
-
-  A = Matrix(3, 3, {0,0,1, 0,0,0, 0,0,0});
-  rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
-
-  A = Matrix(3, 3, {1,0,0, 0,1,0, 0,0,0});
-  rank = getRowEchelonRank(A, 0.0); r &= rank == 2;
-
-  A = Matrix(3, 3, {0,1,0, 0,0,1, 0,0,0});
-  rank = getRowEchelonRank(A, 0.0); r &= rank == 2;
-
-  A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,0});   // can this occur when producing the ref?
-  rank = getRowEchelonRank(A, 0.0); r &= rank == 2;
-
-  A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,2});   // can this occur when producing the ref?
-  rank = getRowEchelonRank(A, 0.0); r &= rank == 3;
 
   A = Matrix(2, 2, {1,0, 0,1});
   B = getNullSpace(A); null = A*B; r &= null.isZero();
@@ -698,6 +297,15 @@ bool nullspace()
   A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
   B = getNullSpace(A);  null = A*B; r &= isZero = null.isZero();
 
+
+  // fails due to zero column
+  A = Matrix(3, 3, {0,1,2, 0,0,4, 0,0,0});
+  B = getNullSpace(A);   null = A*B; 
+  B = getNullSpace2(A);  null = A*B;   // experimental new version
+  r &= isZero = null.isZero();
+
+
+
   // now the same with the first column all zeros:
   A = Matrix(5, 5, {0,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
   B = getNullSpace(A); null = A*B; r &= isZero = null.isZero();
@@ -724,9 +332,6 @@ bool nullspace()
 
   return r;
 }
-
-
-
 
 void linearCombinations()
 {
@@ -774,9 +379,9 @@ void linearCombinations()
   // how can we find the coefficients of the linear combinations - that must also be a linear 
   // system -> figure out, how to set it up
 
-
   int dummy = 0;
 }
+
 void linearIndependence()
 {
   // Tests, whether a set of vectors (given as columns of a matrix) is linearly independent. A set
@@ -812,102 +417,13 @@ void linearIndependence()
   // vector in the set is dependent on some others - a3 cannot be expressed as linear combination
   // of a1,a2, for example ...is that because it has coefficient zero?
 
-
-
   int dummy = 0;
 }
 
 
 
 
-/** Represents the root of a polynomial along with its multiplicity. The datatype of the 
-coefficients is assumed to be a complex number type. */
-template<class T>
-struct rsPolynomialRoot
-{
-  T value;   // T is assumed to be a complex type
-  int multiplicity;
-};
 
-/** Represents the eigenspace of a matrix with complex coefficients. Each eigenspace consists of 
-an eigenvalue and an associated set of eigenvectors. */
-template<class T>
-struct rsEigenSpace
-{
-
-  int getAlgebraicMultiplicity() const { return eigenvalue.multiplicity; }
-
-  int getGeometricMultiplicity() const { return (int) eigenspace.size(); }
-
-  //void orthonormalize();
-
-  rsPolynomialRoot<T> eigenvalue;
-  rsMatrix<T> eigenspace;  // basis of nullspace of A - eigenvalue * I
-  //std::vector<std::vector<T>> eigenspace;
-};
-
-/** Represents the set of eigenspaces of a matrix with complex coefficients. This set consists of a
-set of (igenvalues, each with an algebraic multiplicity which is the order of the
-polynomial root. Associated with each eigenvalue is a set of eigenvectors...  */
-template<class T>  // T should be a complex type
-class rsEigenStuff
-{
-
-public:
-
-protected:
-
-  rsPolynomial<T> characteristicPolynomial;
-  std::vector<rsEigenSpace<T>> eigenspaces;
-
-};
-
-// for matrices with real coefficients, we must promote them to complex numbers because even real
-// matrices may have complex eigenvalues and eigenvectors
-template<class T>
-class rsEigenStuffReal : public rsEigenStuff<std::complex<T>>
-{
-
-
-
-};
-
-template<class T> 
-RAPT::rsMatrix<complex<T>> complexify(const RAPT::rsMatrix<T>& A)
-{
-  RAPT::rsMatrix<complex<T>> Ac(A.getNumRows(), A.getNumColumns());
-  Ac.copyDataFrom(A);
-  return Ac;
-}
-// needed for technical reasons
-
-// meant to be used from the debugger:
-template<class T>
-void findEigenSpacesReal(const RAPT::rsMatrix<T>& A) // for real matrices - includes complexification
-{
-  rsAssert(A.isSquare());  // try to relax later
-  using Matrix  = RAPT::rsMatrix<T>;
-  using MatrixC = RAPT::rsMatrix<complex<T>>;
-  vector<complex<T>> eigenvalues = getEigenvalues(A);
-  int N = A.getNumRows();
-  MatrixC Ac = complexify(A);
-  MatrixC I(N,N); I.setToIdentity();
-  vector<MatrixC> eigenspaces(N);
-  for(int i = 0; i < N; i++) {
-    MatrixC Ai = Ac - eigenvalues[i] * I;
-    eigenspaces[i] = getNullSpace(Ai);
-
-    // test, if A * v = eigenvalue * v for v in the eigenspace at once
-    MatrixC test1 = Ac * eigenspaces[i];
-    MatrixC test2 = eigenvalues[i] * eigenspaces[i];
-    MatrixC error = test1 - test2;
-    //rsAssert(error.isZero(tol));
-
-
-    eigenspaces[i] = eigenspaces[i].getTranspose(); // for convenient inspection in the debugger
-  }                                                 // todo: have a function that transpose in place
-  int dummy = 0;
-}
 
 
 void eigenstuff()
