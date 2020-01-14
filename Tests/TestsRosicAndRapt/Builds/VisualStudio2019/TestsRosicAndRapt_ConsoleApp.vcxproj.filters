@@ -469,6 +469,9 @@
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\ModulatorExperiments.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\ScratchPad.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp">
       <Filter>TestsRosicAndRapt\Source\Experiments</Filter>
     </ClCompile>

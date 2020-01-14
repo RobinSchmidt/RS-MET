@@ -95,6 +95,7 @@
                 file="Source/rapt_tests/Experiments/MathExperiments.cpp"/>
           <FILE id="P5GhjY" name="ModulatorExperiments.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/ModulatorExperiments.cpp"/>
+          <FILE id="lmG5sg" name="ScratchPad.cpp" compile="0" resource="0" file="Source/rapt_tests/Experiments/ScratchPad.cpp"/>
         </GROUP>
       </GROUP>
       <GROUP id="{CDBDEF1D-BB8A-7D2D-D038-9B74B068C290}" name="Experiments">

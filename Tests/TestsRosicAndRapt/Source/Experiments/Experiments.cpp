@@ -1,5 +1,6 @@
 #include "Experiments.h"
 
+#include "../rapt_tests/Experiments/ScratchPad.cpp"
 #include "../rapt_tests/Experiments/MathExperiments.cpp"
 #include "../rapt_tests/Experiments/FilterExperiments.cpp"
 #include "../rapt_tests/Experiments/GeneratorExperiments.cpp"

@@ -237,6 +237,9 @@
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\ModulatorExperiments.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\ScratchPad.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\PortedFromRSLib\UnUsedTestsRSLib.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
