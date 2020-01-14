@@ -590,9 +590,7 @@ bool nullspace()
   // been choosen due to differnet row swaps? the book says: <(1,1,1),(0,1,3)>, we get 
   // <(2,3,5),(0,0.5,1.5)> - the second is actually half of what the book has for the second - 
   // maybe we need a function that figures out, if two bases span the same space? we can do this by 
-  // trying to find a transformation from one basis to the other - or use this:
-  // https://www.mathbootcamps.com/determine-vector-linear-combination-vectors/
-  // https://math.stackexchange.com/questions/851766/determining-whether-or-not-a-vector-is-a-linear-combination-of-a-given-matrix
+  // trying to find a transformation from one basis to the other - 
   // -> use the set of vectors as coeff matrix, put the vector(s) in question into the augment and 
   // row-reduce - if there are zero-rows in the coeff-mtarix with no corresponding zero-rows in
   // the augment, the vector is not a linear combination, otherwise, it is
@@ -727,6 +725,44 @@ bool nullspace()
   return r;
 }
 
+void linearCombinations()
+{
+  // We figure out, if a given vector is a linear combination of a set of given vectors, see:
+  // https://www.mathbootcamps.com/determine-vector-linear-combination-vectors/
+  // https://math.stackexchange.com/questions/851766/determining-whether-or-not-a-vector-is-a-linear-combination-of-a-given-matrix
+
+
+  using Matrix = RAPT::rsMatrix<double>;
+  using LA     = RAPT::rsLinearAlgebraNew;
+
+  Matrix B, x;
+
+  //      b1 b2
+  //     |2  7|                    |25|
+  // B = |5  3|, x = 2*b1 + 3*b2 = |19|
+  //     |3  5|                    |15|
+  B = Matrix(3, 2, {2,7, 5,3, 3,5});  
+  x = Matrix(3, 1, {25,19,21});
+  // our basis vectors (2,5,3),(7,3,5) spanning a 2D space within R^3, as colums of matrix B, x is
+  // a linear combination of b1,b2 with coeffs 2,3
+
+  LA::makeTriangular(B, x);
+  // x is a linear combination of the columns of B, if this results in no nonzero line in x for 
+  // which there is a zero line in B - or the other way around: whereever B has a zero line, x must
+  // also have a zero entry. I think, this means the rank(B|x) <= rank(B)
+
+  // try the same procedure now with some other vector x:
+  B = Matrix(3, 2, {2,7, 5,3, 3,5});  // bcs the elimination has destryed it
+  x = Matrix(3, 1, {20,15,-10});
+  LA::makeTriangular(B, x);
+  // this is not e linear combination of b1,b2
+
+  // make a function isLinearCombinationOf(Matrix B, Matrix x)
+  // if x it itself a matrix - it should return true when all columns of x are linear combinations
+  // of columns of B
+
+  int dummy = 0;
+}
 void linearIndependence()
 {
   // Tests, whether a set of vectors (given as columns of a matrix) is linearly independent. A set
@@ -734,6 +770,9 @@ void linearIndependence()
   // that k1 = k2 = ... = kN = 0. That means, we have to find the nullspace of the matrix 
   // A = (a1 a2 ... aN), where the ai are the columns. The vectors are independent if that 
   // nullspace is trivial (i.e. contains only the zero vector).
+
+
+  linearCombinations();
 
   using Matrix = RAPT::rsMatrix<double>;
   using LA     = RAPT::rsLinearAlgebraNew;

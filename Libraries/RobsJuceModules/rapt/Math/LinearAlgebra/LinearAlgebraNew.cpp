@@ -68,14 +68,14 @@ inline bool operator>(const std::complex<T>& L, const std::complex<T>& R)
 template<class T>
 int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
-  //rsAssert(A.isSquare());                                       // can we relax this?
+  rsAssert(A.getNumRows() == B.getNumRows());
   T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
-  int i, N = A.getNumRows();
-  for(i = 0; i < N; i++) {
+  int i, numRows = A.getNumRows();
+  for(i = 0; i < rsMin(numRows, A.getNumColumns()); i++) {
     //rsMatrix<T> dbg; dbg.copyDataFrom(A);  // uncomment for debugging
     int p = i; 
     T biggest = T(0);
-    for(int j = i; j < N; j++) {                                // search pivot row
+    for(int j = i; j < numRows; j++) {                          // search pivot row
       if( rsGreaterAbs(A(j, i), biggest) ){ 
         biggest = A(j, i); 
         p = j; }}
@@ -84,7 +84,7 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
     if(p != i) {                                                // turn pivot row into current row
       A.swapRows(i, p); 
       B.swapRows(i, p); } 
-    for(int j = i+1; j < N; j++) {                              // pivot row subtraction
+    for(int j = i+1; j < numRows; j++) {                        // pivot row subtraction
       T w = -A(j, i) / A(i, i);                                 // weight
       A.addWeightedRowToOther(i, j, w, i, A.getNumColumns()-1); // start at i: avoid adding zeros
       B.addWeightedRowToOther(i, j, w); }}
