@@ -212,8 +212,8 @@ bool nullspace()
 
   A = Matrix(2, 2, {0,1, 0,0});
   rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
-  B = getNullSpace(A);  null = A*B; // r &= null.isZero();
-  B = getNullSpace2(A); // wrong! returns (-1,1) - should be (1,0)
+  B = getNullSpaceTailParams(A, tol);  null = A*B; // r &= null.isZero();
+  //B = getNullSpace2(A); // wrong! returns (-1,1) - should be (1,0)
   null = A*B; // r &= null.isZero();
    // basis nullspace is {(1,0)} - 
   z = Matrix(2, 1, {1,0});  // this is the correct nullspace - function finds {(-inf,1)}
@@ -239,7 +239,7 @@ bool nullspace()
   // A = |4 5 6|, z = |0|
   //     |7 8 9|      |0|
   A = Matrix(3, 3, {1,2,3, 4,5,6, 7,8,9});
-  B = getNullSpace(A); // B = {(1,-2,1)}
+  B = getNullSpaceTailParams(A, tol); // B = {(1,-2,1)}
   null = A*B;  r &= null.isZero(); 
   BB = B.getTranspose() * B;   // should give unit matrix, iff B is orthonormal
 
@@ -257,34 +257,34 @@ bool nullspace()
 
 
   A = Matrix(2, 2, {1,0, 0,1});
-  B = getNullSpace(A); null = A*B; r &= null.isZero();
+  B = getNullSpaceTailParams(A, tol); null = A*B; r &= null.isZero();
 
   A = Matrix(2, 2, {0,1, -1,0});
-  B = getNullSpace(A); null = A*B; r &= null.isZero();
+  B = getNullSpaceTailParams(A, tol); null = A*B; r &= null.isZero();
 
 
 
 
   A = Matrix(3, 3, {-1,-1,2, 1,2,3, -1,0,7});
-  B = getNullSpace(A); // B = {(7,-5,1)}
+  B = getNullSpaceTailParams(A, tol); // B = {(7,-5,1)}
   null = A*B; r &= null.isZero();
 
   A = Matrix(4, 4, {1,2,3,4, 2,4,6,8, 3,6,9,12, 4,8,12,16});
-  B = getNullSpace(A); // B = {(2,-1,0,0), (3,0,-1,0), (4,0,0,-1)} // sign is different
+  B = getNullSpaceTailParams(A, tol); // B = {(2,-1,0,0), (3,0,-1,0), (4,0,0,-1)} // sign is different
   null = A*B; r &= null.isZero();
 
   A = Matrix(3, 3, {4,2,2, 2,1,1, 2,1,1});
-  B = getNullSpace(A); // B = {(0,-1,1),(1,-2,0)}
+  B = getNullSpaceTailParams(A, tol); // B = {(0,-1,1),(1,-2,0)}
   null = A*B; r &= null.isZero();
 
   A = Matrix(3, 3, {-2,2,2, 2,-5,1, 2,1,-5});
-  B = getNullSpace(A); // B = {(2,1,1)}
+  B = getNullSpaceTailParams(A, tol); // B = {(2,1,1)}
   null = A*B; r &= null.isZero();
 
 
   // This matrix has full rank - it's nullspace should be only the zero vector:
   A = Matrix(3, 3, {1,0,0, 0,2,0, 0,0,3});
-  B = getNullSpace(A); 
+  B = getNullSpaceTailParams(A, tol); 
   null = A*B; r &= null.isZero();
 
   // This 5x5 matrix is already in row echelon form:
@@ -295,7 +295,7 @@ bool nullspace()
   //     |0 0 0 0 0|      |0|
   bool isZero;
   A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
-  B = getNullSpace(A);       null = A*B; r &= null.isZero();
+  B = getNullSpaceTailParams(A, tol);       null = A*B; r &= null.isZero();
   B = getNullSpace3(A, tol); null = A*B; r &= null.isZero();
 
 
@@ -306,8 +306,8 @@ bool nullspace()
 
   // fails due to zero column
   A = Matrix(3, 3, {0,1,2, 0,0,4, 0,0,0});
-  B = getNullSpace(A);   null = A*B; 
-  B = getNullSpace2(A);  null = A*B;   // experimental new version
+  B = getNullSpaceTailParams(A, tol);   null = A*B; 
+  //B = getNullSpace2(A);  null = A*B;   // experimental new version
   B = getNullSpace3(A, tol);
   r &= isZero = null.isZero();
 
@@ -322,12 +322,12 @@ bool nullspace()
 
   // now the same with the first column all zeros:
   A = Matrix(5, 5, {0,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
-  B = getNullSpace(A); null = A*B; r &= isZero = null.isZero();
+  B = getNullSpaceTailParams(A, tol); null = A*B; r &= isZero = null.isZero();
   // this fails! in solveTriangular, we divide by A(i,i)
 
   // now make also the 2nd column zero:
   A = Matrix(5, 5, {0,0,3,4,5, 0,0,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
-  B = getNullSpace(A); null = A*B; r &= isZero = null.isZero();
+  B = getNullSpaceTailParams(A, tol); null = A*B; r &= isZero = null.isZero();
   // B has even more nans and infs
 
   // apparently, we need to do something special in case of leading zero columns - this actually
@@ -335,12 +335,12 @@ bool nullspace()
   // free parameters - try to make columns 4 and 5 zero - these are the variables that we 
   // currently select as parameters:
   A = Matrix(5, 5, {1,2,3,0,0, 0,1,6,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0});
-  B = getNullSpace(A);  null = A*B; r &= isZero = null.isZero();  
+  B = getNullSpaceTailParams(A, tol);  null = A*B; r &= isZero = null.isZero();  
   // this works - but the basis contains the zero-vector - that's useless as basis-vector!
 
   // try to make column 3 zero:
   A = Matrix(5, 5, {1,2,0,4,5, 0,1,0,7,8, 0,0,0,9,1, 0,0,0,0,0, 0,0,0,0,0});
-  B = getNullSpace(A);  null = A*B; r &= isZero = null.isZero();
+  B = getNullSpaceTailParams(A, tol);  null = A*B; r &= isZero = null.isZero();
   // also leads to error
 
 
@@ -410,12 +410,14 @@ void linearIndependence()
   using Matrix = RAPT::rsMatrix<double>;
   using LA     = RAPT::rsLinearAlgebraNew;
 
+  double tol = 1.e-12;
+
   //      a1 a2 a3     we have a3 = a1-a2, so the columns are not linearly independent
   //     |1  3  -2|
   // A = |2  1   1|
   //     |1  2  -1|
   Matrix A(3, 3, {1,3,-2, 2,1,1, 1,2,-1});
-  Matrix nullspace = getNullSpace(A);
+  Matrix nullspace = getNullSpaceTailParams(A, tol);
   // A basis for the nullspace is {(-1,1,1)} - that means: -1*a1 + 1*a2 + a3 = 0 which can be 
   // simplified to a3 = a1-a2 - our free parameter is a3 - we may choose a1,a2 in any way that 
   // satifies this equation ...i think
@@ -423,7 +425,7 @@ void linearIndependence()
   // A = |1 2 1|
   //     |0 0 1|
   A = Matrix(2, 3, {1,2,1, 0,0,1});
-  nullspace = getNullSpace(A);  
+  nullspace = getNullSpaceTailParams(A, tol);  
   // Returns (-2,1,0) - that means: -2*a1 + 1*a2 + 0*a3 = 0 - we can choose a3 freely, the 
   // equation is always satisfied. Or we can solve this equation - for example - for a1:
   // -2*a1 = -1*a2 - 0*a3 -> a1 = (1/2)*a2 - 0*a3 - so we have expressed a1 as linear combination
@@ -447,10 +449,12 @@ void eigenstuff()
   using Matrix  = RAPT::rsMatrix<double>;
   using MatrixC = RAPT::rsMatrix<complex<double>>;
 
+  double tol = 1.e-12;
+
   Matrix A, z;
 
   A = Matrix(2,2, {0,1, 0,0});
-  Matrix nullspace = getNullSpace(A);
+  Matrix nullspace = getNullSpaceTailParams(A, tol);
   // returns |1 0| - the canonical basis of R^2 - but this is wrong (i think)
   //         |0 1|
   // maybe it fails because the rank is not computed correctly

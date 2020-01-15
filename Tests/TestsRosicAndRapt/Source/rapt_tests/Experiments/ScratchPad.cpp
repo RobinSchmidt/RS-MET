@@ -177,6 +177,9 @@ RAPT::rsMatrix<complex<T>> complexify(const RAPT::rsMatrix<T>& A)
 template<class T>
 void findEigenSpacesReal(const RAPT::rsMatrix<T>& A) // for real matrices - includes complexification
 {
+  //double tol = 1.e-12;  // make parameter
+  complex<T> tol = 1.e-12;  // make parameter
+
   rsAssert(A.isSquare());  // try to relax later
   using Matrix  = RAPT::rsMatrix<T>;
   using MatrixC = RAPT::rsMatrix<complex<T>>;
@@ -187,7 +190,7 @@ void findEigenSpacesReal(const RAPT::rsMatrix<T>& A) // for real matrices - incl
   vector<MatrixC> eigenspaces(N);
   for(int i = 0; i < N; i++) {
     MatrixC Ai = Ac - eigenvalues[i] * I;
-    eigenspaces[i] = getNullSpace(Ai);
+    eigenspaces[i] = getNullSpaceTailParams(Ai, tol);
 
     // test, if A * v = eigenvalue * v for v in the eigenspace at once
     MatrixC test1 = Ac * eigenspaces[i];
@@ -487,9 +490,9 @@ empty matrix is returned. This function returns wrong results when there are lea
 zeros in the row-echelon form of A - this can be tested with matrices that are already in this 
 form (in which case LA::makeTriangularLA::makeTriangular will do nothing and return 0) */
 template<class T>
-rsMatrix<T> getNullSpace(rsMatrix<T> A)
+rsMatrix<T> getNullSpaceTailParams(rsMatrix<T> A, T tol)
 {
-  T tol = T(1.e-12);  // make parameter
+  //T tol = T(1.e-12);  // make parameter
 
   using Matrix = RAPT::rsMatrix<T>;
   using LA     = RAPT::rsLinearAlgebraNew;
@@ -545,7 +548,7 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A)
 // https://textbooks.math.gatech.edu/ila/orthogonal-complements.html
 
 
-
+/*
 template<class T>
 rsMatrix<T> getNullSpace2(rsMatrix<T> A)
 {
@@ -586,6 +589,9 @@ rsMatrix<T> getNullSpace2(rsMatrix<T> A)
 
   return B;
 }
+*/
+
+
 // http://www.cfm.brown.edu/people/dobrush/am34/sage/kernel.html
 
 
