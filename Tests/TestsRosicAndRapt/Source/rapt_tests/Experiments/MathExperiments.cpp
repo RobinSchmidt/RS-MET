@@ -213,12 +213,8 @@ bool nullspace()
   double tol = 1.e-12;
   bool test;
 
-  // fails due to zero column
-  A = Matrix(3, 3, {0,1,2, 0,0,4, 0,0,0});
-  B = getNullSpace(A, tol);  null = A*B;
-  r &= testNullSpace(A); 
-  rsAssert(r);
-  // when we use the new code in solve2, this test here fails - the old code works
+
+
 
 
   A = Matrix(4, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0});
@@ -268,22 +264,16 @@ bool nullspace()
   test = spanSameSpace(B.getTranspose(), B2.getTranspose(), tol);
   // These tests also both evaluate to true
 
-  A = Matrix(2, 2, {0,1, 0,0});
-  rank = getRankRowEchelon(A, 0.0); r &= rank == 1;
-  r &= testNullSpace(A);
 
-  // Create matrix A and zero vector z:
-  //     |1 2 3|      |0|
-  // A = |4 5 6|, z = |0|
-  //     |7 8 9|      |0|
-  A = Matrix(3, 3, {1,2,3, 4,5,6, 7,8,9}); // B = {(1,-2,1)}
-  r &= testNullSpaceBoth(A);
 
-  //BB = B.getTranspose() * B;   
-  // should give unit matrix, iff B is orthonormal - maybe make such testt later when we have
-  // Gram-Schmidt orthogonalizations
 
-  // check rank computation:
+
+
+
+
+
+
+  // test rank computation:
   A = Matrix(3, 3, {0,0,0, 0,0,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 0;
   A = Matrix(3, 3, {1,0,0, 0,0,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 1;
   A = Matrix(3, 3, {0,1,0, 0,0,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 1;
@@ -293,27 +283,34 @@ bool nullspace()
   A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 2;// can this occur when producing the ref?
   A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,2}); rank = getRankRowEchelon(A, 0.0); r &= rank == 3;
 
-
   // test nullspace computation:
-  A = Matrix(2, 2, {1,0, 0,1});  r &= testNullSpaceBoth(A);
+  A = Matrix(2, 2, {1,0,  0,1}); r &= testNullSpaceBoth(A);
   A = Matrix(2, 2, {0,1, -1,0}); r &= testNullSpaceBoth(A);
-  A = Matrix(3, 3, {-1,-1,2, 1,2,3, -1,0, 7}); r &= testNullSpaceBoth(A);// B = {(7,-5,1)}
-  A = Matrix(3, 3, { 4, 2,2, 2,1,1,  2,1, 1}); r &= testNullSpaceBoth(A);
-  A = Matrix(3, 3, {-2, 2,2, 2,-5,1, 2,1,-5}); r &= testNullSpaceBoth(A);
-  A = Matrix(4, 4, {1,2,3,4, 2,4,6,8, 3,6,9,12, 4,8,12,16});
-  r &= testNullSpaceBoth(A);// B = {(2,-1,0,0), (3,0,-1,0), (4,0,0,-1)} // sign is different
+  A = Matrix(2, 2, {0,1,  0,0}); r &= testNullSpace(A);
 
+  A = Matrix(3, 3, {-1,-1,2, 1, 2,3, -1,0, 7}); r &= testNullSpaceBoth(A); // B = {(7,-5,1)}
+  A = Matrix(3, 3, { 4, 2,2, 2, 1,1,  2,1, 1}); r &= testNullSpaceBoth(A);
+  A = Matrix(3, 3, {-2, 2,2, 2,-5,1,  2,1,-5}); r &= testNullSpaceBoth(A);
+  A = Matrix(3, 3, { 1, 2,3, 4, 5,6,  7,8, 9}); r &= testNullSpaceBoth(A); // B = {(1,-2,1)}
+  A = Matrix(3, 3, { 1, 0,0, 0, 2,0,  0,0, 3}); r &= testNullSpaceBoth(A); // B = empty
+  A = Matrix(3, 3, { 0, 1,2, 0, 0,4,  0,0, 0}); r &= testNullSpace(A); 
+
+  A = Matrix(4, 4, {1,2,3,4, 2,4,6,8, 3,6,9,12, 4,8,12,16}); r &= testNullSpaceBoth(A); // B = {(2,-1,0,0), (3,0,-1,0), (4,0,0,-1)} // sign is different
+
+
+  // todo:
   // try various MxN matrices - maybe with random elements ...although, for random matrices, the 
   // nullspaces will probably always come out as the whole embedding space - it's unlikely that
   // random matrices are singular - maybe programmatically construct singular matrices (use a set
   // of random vectors and produce random linear combinations of them)
+  // how can we check that we actually get the whole nullspace and not just a subspace thereof?
+  // maybe the only way is to use matrices with knowm nullspaces - again we can construct matrices
+  // randomly from a known set of basis vectors - if we write some random basis vectors into the 
+  // rows and construct the other rows as linear combinations of the them, we have a known 
+  // nullspace - we can check with spanSameSpace if we got the full nullspace
 
 
-  // This matrix has full rank - it's nullspace should be only the zero vector:
-  A = Matrix(3, 3, {1,0,0, 0,2,0, 0,0,3});
-  //B = getNullSpaceTailParams(A, tol); 
-  //null = A*B; r &= null.isZero();
-  r &= testNullSpaceBoth(A);
+
 
   // This 5x5 matrix is already in row echelon form:
   //     |1 2 3 4 5|      |0|
@@ -368,6 +365,10 @@ bool nullspace()
   A = Matrix(5, 5, {1,2,0,4,5, 0,1,0,7,8, 0,0,0,9,1, 0,0,0,0,0, 0,0,0,0,0});
   //B = getNullSpaceTailParams(A, tol);  null = A*B; r &= isZero = null.isZero();
   // also leads to error
+
+  // todo: orthogonalize the obtained nullspace bases and compute BB = B.getTranspose() * B; 
+  // this should give the identity matrix, iff B is orthonormal - maybe make such testt later when we have
+  // Gram-Schmidt orthogonalizations
 
   std::cout << "nullspace works";
   rsAssert(r);
