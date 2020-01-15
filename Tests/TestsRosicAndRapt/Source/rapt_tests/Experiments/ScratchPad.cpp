@@ -688,9 +688,10 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
   for(i = 0; i < nEqn; i++)
     for(j = 0; j < nRhs; j++)
       B(pivots[i], j) = b(i, j);
+  for(i = 0; i < nRhs; i++)
+    for(j = 0; j < nRhs; j++)
+      B(params[i], i) = 1;
 
-  // fill up with ones:
-  // ....
 
 
 
