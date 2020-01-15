@@ -110,6 +110,7 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 // maybe in if(rsIsCloseTo... we should not return early, if at the same time A(i,i) is zero - in 
 // this case the i-th column is already zero from i downward - this is ok - or wait - no - this
 // check is already includes in the for(int j=i ...loop
+// pass a tol
 
 // Maybe allow the function to be called without an rhs B. It may make sense to use it with a 
 // single input in order to compute determinants - when the function returns, the determinant is
@@ -161,9 +162,9 @@ void rsLinearAlgebraNew::solveTriangular(
   int N = A.getNumRows();     // number of elements in each solution vector
   for(int k = 0; k < M; k++) {
     for(int i = N-1; i >= 0; i--) {
-      //if(A(i, i) == T(0)) {      // experimental
-      //  X(i, k) = T(0);
-      //  continue;      }
+      if(A(i, i) == T(0)) {      // experimental
+        X(i, k) = T(0);        // needs tolerance
+        continue;      }
       T tmp = T(0);
       for(int j = i+1; j < N; j++)
         tmp += A(i, j) * X(j, k);

@@ -213,6 +213,14 @@ bool nullspace()
   double tol = 1.e-12;
   bool test;
 
+  // fails due to zero column
+  A = Matrix(3, 3, {0,1,2, 0,0,4, 0,0,0});
+  B = getNullSpace(A, tol);  null = A*B;
+  r &= testNullSpace(A); 
+  rsAssert(r);
+  // when we use the new code in solve2, this test here fails - the old code works
+
+
   A = Matrix(4, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0});
   //B = getNullSpace(A, tol);  
   //r &= testNullSpace(A); 
@@ -322,14 +330,7 @@ bool nullspace()
   B = getNullSpace(A, tol); 
 
 
-  // fails due to zero column
-  A = Matrix(3, 3, {0,1,2, 0,0,4, 0,0,0});
-  //B = getNullSpaceTailParams(A, tol); null = A*B;  // this fails
-  //B = getNullSpace2(A);  null = A*B;   // experimental new version
-  //B = getNullSpace(A, tol);  null = A*B;
-  //r &= isZero = null.isZero();
-  r &= testNullSpace(A); rsAssert(r);
-  // when we use the new code in solve2, this test here fails - the old code works
+
 
 
 

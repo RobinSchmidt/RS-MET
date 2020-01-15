@@ -900,19 +900,9 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
       M(i, j) =  A(pivots[i], pivots[j]);
     for(j = 0; j < nRhs; j++)  
       R(i, j) = -A(pivots[i], params[j]); }
-  //solve2(M, b, R);  // deals with singular systems also
+  solve2(M, b, R);  // deals with singular systems also
+  //bool regular = RAPT::rsLinearAlgebraNew::solve(M, b, R);
 
-  bool regular = RAPT::rsLinearAlgebraNew::solve(M, b, R);
-
-  /*
-
-  //rsAssert(regular, "does not yet work when M * b = R is underdetermined");
-  if(!regular)
-  {
-    // M * b = R is an underdetermined system - we get to pick more free variables - perhaps
-    // just select the bottom variables to be zero
-  }
-  */
 
   // seems to currently only work when M is non-singular? when it's singular and consistent, it 
   // will have infinitely many solutions - so we get to pick some free variables again - maybe we
