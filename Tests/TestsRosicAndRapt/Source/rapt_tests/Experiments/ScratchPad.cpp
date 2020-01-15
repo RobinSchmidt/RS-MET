@@ -683,14 +683,14 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
       R(i, j) = -A(pivots[i], params[j]); }
   LA::solve(M, b, R); 
 
-  // collect solutions and fill up with ones (this is still wrong!):
+  // collect solutions and fill up with ones:
   Matrix B(A.getNumColumns(), nRhs);
   for(i = 0; i < nEqn; i++)
     for(j = 0; j < nRhs; j++)
-      B(pivots[i], params[j]) = b(i, j); 
-      //B(pivots[i], params[j]) = b(i, j); 
-  //for(i = 0; i < rsMin(nEqn, nRhs); i++)
-    //B(pivots[i], params[j]) = T(1);       // is that correct?
+      B(pivots[i], j) = b(i, j);
+
+  // fill up with ones:
+  // ....
 
 
 
