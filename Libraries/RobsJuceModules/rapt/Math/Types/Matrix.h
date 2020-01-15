@@ -246,6 +246,23 @@ public:
   bool isZero() const { return rsArrayTools::isAllZeros(dataPointer, getSize()); }
   // todo: allow for a tolerance ..or maybe have a function isAlmostZero for that
 
+  bool isRowZero(int rowIndex, T tol) const
+  {
+    for(int j = 0; j < getNumColumns(); ++j)
+      if( rsAbs(at(rowIndex, j)) > tol )
+        return false;
+    return true;
+  }
+
+  template<class T>
+  bool areRowsZero(int startRow, int endRow, T tol) const
+  {
+    for(int i = startRow; i <= endRow; ++i)
+      if(!isRowZero(i, tol))
+        return false;
+    return true;
+  }
+
   /** Returns a const pointer to the data for read access as a flat array. */
   const T* getDataPointerConst() const { return dataPointer; }
 

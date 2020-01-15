@@ -16,6 +16,7 @@ void cleanUpIntegers(T* a, int N, T tol)
 //-------------------------------------------------------------------------------------------------
 // Linear Algebra stuff:
 
+/*
 template<class T>
 bool isRowZero(const rsMatrix<T> x, int rowIndex, T tol)
 {
@@ -33,6 +34,7 @@ bool areRowsZero(const rsMatrix<T> x, int startRow, int endRow, T tol)
       return false;
   return true;
 }
+*/
 // make members of rsMatrixView
 
 /** Returns true, if the space spanned by the columns of x is within the span of the columns of B.
@@ -42,7 +44,7 @@ bool isInSpanOf(rsMatrix<T> B, rsMatrix<T> x, T tol)
 {
   RAPT::rsLinearAlgebraNew::makeTriangular(B, x);
   int rankB = getRankRowEchelon(B, tol);
-  return areRowsZero(x, rankB, x.getNumRows()-1, tol);
+  return x.areRowsZero(rankB, x.getNumRows()-1, tol);
 }
 
 template<class T>
