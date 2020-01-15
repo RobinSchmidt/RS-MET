@@ -266,7 +266,7 @@ bool nullspace()
 
   A = Matrix(2, 2, {1,0, 0,1});
   B = getNullSpaceTailParams(A, tol); null = A*B; r &= null.isZero();
-  //B = getNullSpace(          A, tol); null = A*B; r &= null.isZero(); // crashes!
+  B = getNullSpace(          A, tol); null = A*B; r &= null.isZero(); // crashes!
 
   A = Matrix(2, 2, {0,1, -1,0});
   B = getNullSpaceTailParams(A, tol); null = A*B; r &= null.isZero();

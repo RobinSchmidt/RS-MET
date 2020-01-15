@@ -695,6 +695,17 @@ bool containsOnce(const T* A, int N, T x)
   return found;
 }
 
+/** Returns true, if each of the indices form 0 to numIndices-1 (both inclusive) are contained 
+exactly once in the idices array. That means the array is a permutation of the numbers from
+0 to numIndices-1. */
+bool isIndexPermutation(const int* indices, int numIndices)
+{
+  for(int i = 0; i < numIndices; ++i)
+    if( !containsOnce(indices, numIndices, i) )
+      return false;
+  return true;
+}
+
 /** Returns true, iff every number between 0 and N-1 (both included) is contained exactly once in
 either subset1 or subset2. This means the two subsets split the set of indices from 0 to N-1 into
 two disjoint sets that together combine to the whole set. */
@@ -711,6 +722,20 @@ bool isIndexSplit(int numIndices, const int* subset1, int size1, const int* subs
 // split of arbitrary things - it would have to take another array for the full set as parameter
 // and we would have to do containsOnce(subset1, size1, fullSet[i]), etc. - maybe call it isSplit 
 // or isDisjointSplit
+
+bool isIndexSplit(int numIndices, const std::vector<int> subset1, const std::vector<int> subset2)
+{
+  if(subset1.size() == 0)
+    return isIndexPermutation(&subset2[0], numIndices);
+  if(subset2.size() == 0)
+    return isIndexPermutation(&subset1[0], numIndices);
+  return isIndexSplit(numIndices, 
+    &subset1[0], (int)subset1.size(), 
+    &subset2[0], (int)subset2.size());
+}
+
+
+
 
 /** Computes the set of vectors v which solve the homogenous linear system of equations A * v = 0 
 where v is some vector and 0 is the zero vector. We assume v to be M-dimensional, so the matrix A 
@@ -760,7 +785,8 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
   int nRhs = (int) params.size();                  // number of right-hand sides N (#parameters)
 
   // sanity checks for debug:
-  rsAssert(isIndexSplit(A.getNumColumns(), &pivots[0], nEqn, &params[0], nRhs));
+  //rsAssert(isIndexSplit(A.getNumColumns(), &pivots[0], nEqn, &params[0], nRhs));
+  rsAssert(isIndexSplit(A.getNumColumns(), pivots, params));
   rsAssert(getRankRowEchelon(A, tol) == (int) pivots.size());
 
   // set up the linear system ("gather") and solve it:
