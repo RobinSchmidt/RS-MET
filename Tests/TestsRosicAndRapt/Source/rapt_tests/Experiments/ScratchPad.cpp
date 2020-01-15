@@ -663,10 +663,41 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
   using Matrix = RAPT::rsMatrix<T>;
   using LA     = RAPT::rsLinearAlgebraNew;
 
+  Matrix z(A.getNumRows(), 1);                            // dummy - needed by function
+  LA::makeTriangular(A, z); 
+  // maybe factor out a function that takes a traingular matrix
+
+
   std::vector<int> pivots = getPivots(   A, tol);  // dependent variables
   std::vector<int> params = getNonPivots(A, tol);  // free parameters
+  int nEqn = (int) pivots.size();                  // number of equations
+  int nRhs = (int) params.size();                  // number of right-hand sides
+  rsAssert(nEqn + nRhs == A.getNumColumns());      // for debug
 
-  rsAssert(pivots.size() + params.size() == (size_t) A.getNumColumns()); // for debug
+  // set up and solve the linear system:
+  int i, j;
+  Matrix M(nEqn, nEqn);
+  Matrix R(nEqn, nRhs);
+  Matrix b(nEqn, nRhs);  // partial solution
+  for(i = 0; i < nEqn; i++) {
+    for(j = 0; j < nEqn; j++)
+      M(i, j) =  A(pivots[i], pivots[j]);
+    for(j = 0; j < nRhs; j++)
+      R(i, j) = -A(pivots[i], params[j]); }
+  LA::solve(M, b, R); 
+
+  
+ 
+  // collect solutions and fill up with ones:
+  // ....
+
+
+
+  // todo: 
+  // -set up linear system (gather)
+  // -solve it
+  // -collect the results (scatter)
+  // -in each of the results, set 1 of the param coeffs to 1
 
   // if N is the number of dependent variables and K is the number of free parameters, 
   // we need to set up and NxN linear system solve it for K different right hand sides
@@ -674,8 +705,8 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
   // choice is to set one to 1 and all others to zero in each assignement and select a different
   // one to set to 1 in each of the K cases. Thes solution of the linear system gives us
   // N elements of the basis vectors. The remaining K elements must the be filled up according
-  // to our parameters assignments
-
+  // to our parameters assignments. To set up the system and to combine the solution, we may need
+  // use our pivots and params arrays to gather and scatter the numbers
 
   return rsMatrix<T>();  // preliminary
 }

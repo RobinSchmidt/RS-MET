@@ -296,6 +296,12 @@ bool nullspace()
   bool isZero;
   A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
   B = getNullSpace(A);  null = A*B; r &= isZero = null.isZero();
+  B = getNullSpace3(A, tol);
+
+
+  // from here https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
+  A = Matrix(3, 5, {1,-2,0,-1,3, 0,0,1,2,-2, 0,0,0,0,0});
+  B = getNullSpace3(A, tol); 
 
 
   // fails due to zero column
@@ -310,9 +316,7 @@ bool nullspace()
   B = getNullSpace3(A, tol);
   // ...
 
-  // from here https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
-  A = Matrix(3, 5, {1,-2,0,-1,3, 0,0,1,2,-2, 0,0,0,0,0});
-  B = getNullSpace3(A, tol); 
+
 
 
 
