@@ -41,7 +41,7 @@ template<class T>
 bool isInSpanOf(rsMatrix<T> B, rsMatrix<T> x, T tol)
 {
   RAPT::rsLinearAlgebraNew::makeTriangular(B, x);
-  int rankB = getRowEchelonRank(B, tol);
+  int rankB = getRankRowEchelon(B, tol);
   return areRowsZero(x, rankB, x.getNumRows()-1, tol);
 }
 
@@ -441,10 +441,12 @@ int getFirstNonZeroIndexInRow(const rsMatrix<T>& A, int row, T tol)
 
 
 
-/** Returns rank of a matrix assumed to be in row echelon form */
+/** Returns rank of a matrix assumed to be in row echelon form. This is the number of nonzero 
+rows. */
 template<class T>
-int getRowEchelonRank(const rsMatrix<T>& A, T tol)
+int getRankRowEchelon(const rsMatrix<T>& A, T tol)
 {
+  // rsAssert(isRowEchelon(A));
   int i = 0; 
   while(i < A.getNumRows()) {
     bool nonZeroElemFound = false;
@@ -459,12 +461,13 @@ int getRowEchelonRank(const rsMatrix<T>& A, T tol)
     i++; }
   return i;
 }
+// 
 // verify, if this is correct - maybe make unit test with weird matrices
 
 template<class T>
 rsMatrix<T> getWithoutBottomZeroRows(const rsMatrix<T>& A, T tol)
 {
-  int rank = getRowEchelonRank(A, tol); // A is assumed to be in row-echelon form
+  int rank = getRankRowEchelon(A, tol); // A is assumed to be in row-echelon form
   return getSubMatrix(A, 0, 0, rank, A.getNumColumns());
 }
 
@@ -501,7 +504,7 @@ rsMatrix<T> getNullSpaceTailParams(rsMatrix<T> A, T tol)
   int numCols  = A.getNumColumns();       // dimensionality of output space
   Matrix z(numRows, 1);                   // dummy - needed by function
   LA::makeTriangular(A, z);               // reduces A to row echelon form
-  int rank = getRowEchelonRank(A, tol);   // rank, dimensionality of image
+  int rank = getRankRowEchelon(A, tol);   // rank, dimensionality of image
   int nullity = numCols - rank;           // dimensionality of nullspace (see karpf. 142)
 
   // extract rank x rank system with nullity rhs vectors
@@ -690,20 +693,40 @@ bool isIndexSplit(int numIndices, const int* subset1, int size1, const int* subs
 // and we would have to do containsOnce(subset1, size1, fullSet[i]), etc. - maybe call it isSplit 
 // or isDisjointSplit
 
+/** Computes the set of vectors v which solve the homogenous linear system of equations A * v = 0 
+where v is some vector and 0 is the zero vector. We assume v to be M-dimensional, so the matrix A 
+must have M columns. The set of vectors v that solve this equation will in general span a subspace
+of R^M. This subspace is called the nullspace of the matrix A. This function returns a basis for 
+this subspace represented as matrix. The columns of the matrix are the basis vectors. Note that 
+this may be the empty matrix which indicates that the nullspace of A consists only of the 
+zero-vector (todo: maybe we should return the Mx1 zero vector in this case? ...decide later by 
+which convention is more convenient when dealing with eigenspaces */
 
 template<class T>
-rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
+rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
 {
-  // If N is the number of dependent variables and K is the number of free parameters, 
-  // we need to set up and NxN linear system solve it for K different right hand sides
-  // corresponding to K different choices for assigning the free parameters. The most natural 
+  // Algorithm:
+  // We bring the matrix into row-echelon form and figure out its rank and nullity. The nullity
+  // gives the number of basis vectors that we must produce. Then we split (conceptually, not 
+  // literally) the M columns of A into those which correspond to our free parameters and those 
+  // which correspond to the dependent variables (they depend on the choice we make for our free 
+  // parameters). The number of dependent variables is equal to the rank R of the matrix and the
+  // number of free parameters N gives the dimensionality of the nullspace - this is also called
+  // the nullity of the matrix. By the rank-nullity theorem, they must sum up to M: M = R + N, 
+  // which says that the dimensionality of the embedding R^M vector space equals the dimensionality
+  // of the A's nullspace plus the dimensionality of A's column space (or is it the row-space? the
+  // space spanned by the rows makes more sense because the rows live in R^M while the columns may 
+  // not -> figure out). We set up and RxR linear system solve it for N different right hand sides
+  // corresponding to N different choices for assigning the free parameters. The most natural 
   // choice is to set one to 1 and all others to 0 in each assignment and select a different
-  // one to set to 1 in each of the K cases. The solution of the linear system gives us
-  // N elements for each of the K basis vectors. The remaining K elements must the be filled up 
-  // with ones according to our parameter assignments. To set up the system and to combine the 
-  // solution, we use our pivots and params arrays to gather and scatter the numbers. See:
+  // one to set to 1 in each of the N cases. The solution of the linear system gives us
+  // R elements for each of the N basis vectors. The remaining N elements must the be filled up 
+  // with ones and zeros according to our choices for the parameter assignments. To set up the 
+  // system and to combine the solution, we use our pivots and params arrays to gather and scatter
+  // the numbers. See:
   // https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
   // http://www.eng.fsu.edu/~dommelen/aim/style_a/GEspc.html
+  // https://en.wikipedia.org/wiki/Rank%E2%80%93nullity_theorem
 
   using Matrix = RAPT::rsMatrix<T>;
   Matrix z(A.getNumRows(), 1);                     // dummy - needed by function
@@ -711,13 +734,14 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
   // maybe factor out a function that takes a triangular matrix getNullSpaceEchelon(Matrix&)
 
   // find out which dimensions are free and which dependent:
-  std::vector<int> pivots = getPivots(   A, tol);  // dependent variables
-  std::vector<int> params = getNonPivots(A, tol);  // free parameters
-  int nEqn = (int) pivots.size();                  // number of equations (# of dependents)
-  int nRhs = (int) params.size();                  // number of right-hand sides (# of parameters)
-  rsAssert(isIndexSplit(A.getNumColumns(),
-                        &pivots[0], nEqn,          // sanity check for debug
-                        &params[0], nRhs));
+  std::vector<int> pivots = getPivots(   A, tol);  // indices of dependent variables
+  std::vector<int> params = getNonPivots(A, tol);  // indices of free variables (parameters)
+  int nEqn = (int) pivots.size();                  // number of equations R (#dependents, rank)
+  int nRhs = (int) params.size();                  // number of right-hand sides N (#parameters)
+
+  // sanity checks for debug:
+  rsAssert(isIndexSplit(A.getNumColumns(), &pivots[0], nEqn, &params[0], nRhs));
+  rsAssert(getRankRowEchelon(A, tol) == (int) pivots.size());
 
   // set up the linear system ("gather") and solve it:
   Matrix M(nEqn, nEqn);                            // coefficient matrix of the NxN system
@@ -731,8 +755,9 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
       R(i, j) = -A(pivots[i], params[j]); }
   RAPT::rsLinearAlgebraNew::solve(M, b, R); 
 
-  // collect solutions ("scatter") and fill up with ones:
+  // write solutions into output ("scatter") and fill up with ones:
   Matrix B(A.getNumColumns(), nRhs);               // final result
+  B.setToZero();
   for(i = 0; i < nEqn; i++)
     for(j = 0; j < nRhs; j++)
       B(pivots[i], j) = b(i, j);
@@ -742,13 +767,6 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
 
   return B;
 }
-// todo: rename this function to getNullSpace - this should replace our old implementation - maybe
-// rename that into getNullSpaceTailParams - the qualification indicates that it only works in the
-// special case where all the free parameters are in the tail of the basis vectors (i.e. in the 
-// last elements) - this can still be useful because this is a common occurence and i think, the 
-// algo is perhaps more efiicient - but for the general case, this function here shall be used
-
-
 
 
 /*
@@ -780,17 +798,8 @@ rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A)
   return rsMatrix<T>();  // preliminary
 }
 
-/** Another attempt to computing the nullspace based on the orthogonal complement. */
-template<class T>
-rsMatrix<T> getNullSpace4(rsMatrix<T> A)
-{
-  using Matrix = RAPT::rsMatrix<T>;
-  using LA     = RAPT::rsLinearAlgebraNew;
 
 
 
-
-  return rsMatrix<T>();  // preliminary
-}
 // https://www.youtube.com/watch?v=Kpc5ELrOt5E
 

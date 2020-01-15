@@ -211,7 +211,7 @@ bool nullspace()
 
 
   A = Matrix(2, 2, {0,1, 0,0});
-  rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
+  rank = getRankRowEchelon(A, 0.0); r &= rank == 1;
   B = getNullSpaceTailParams(A, tol);  null = A*B; // r &= null.isZero();
   //B = getNullSpace2(A); // wrong! returns (-1,1) - should be (1,0)
   null = A*B; // r &= null.isZero();
@@ -245,14 +245,14 @@ bool nullspace()
 
 
   // check rank computation:
-  A = Matrix(3, 3, {0,0,0, 0,0,0, 0,0,0}); rank = getRowEchelonRank(A, 0.0); r &= rank == 0;
-  A = Matrix(3, 3, {1,0,0, 0,0,0, 0,0,0}); rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
-  A = Matrix(3, 3, {0,1,0, 0,0,0, 0,0,0}); rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
-  A = Matrix(3, 3, {0,0,1, 0,0,0, 0,0,0}); rank = getRowEchelonRank(A, 0.0); r &= rank == 1;
-  A = Matrix(3, 3, {1,0,0, 0,1,0, 0,0,0}); rank = getRowEchelonRank(A, 0.0); r &= rank == 2;
-  A = Matrix(3, 3, {0,1,0, 0,0,1, 0,0,0}); rank = getRowEchelonRank(A, 0.0); r &= rank == 2;
-  A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,0}); rank = getRowEchelonRank(A, 0.0); r &= rank == 2;// can this occur when producing the ref?
-  A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,2}); rank = getRowEchelonRank(A, 0.0); r &= rank == 3;
+  A = Matrix(3, 3, {0,0,0, 0,0,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 0;
+  A = Matrix(3, 3, {1,0,0, 0,0,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 1;
+  A = Matrix(3, 3, {0,1,0, 0,0,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 1;
+  A = Matrix(3, 3, {0,0,1, 0,0,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 1;
+  A = Matrix(3, 3, {1,0,0, 0,1,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 2;
+  A = Matrix(3, 3, {0,1,0, 0,0,1, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 2;
+  A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 2;// can this occur when producing the ref?
+  A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,2}); rank = getRankRowEchelon(A, 0.0); r &= rank == 3;
 
 
 
@@ -296,24 +296,24 @@ bool nullspace()
   bool isZero;
   A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
   B = getNullSpaceTailParams(A, tol);       null = A*B; r &= null.isZero();
-  B = getNullSpace3(A, tol); null = A*B; r &= null.isZero();
+  B = getNullSpace(A, tol); null = A*B; r &= null.isZero();
 
 
   // from here https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
   A = Matrix(3, 5, {1,-2,0,-1,3, 0,0,1,2,-2, 0,0,0,0,0});
-  B = getNullSpace3(A, tol); 
+  B = getNullSpace(A, tol); 
 
 
   // fails due to zero column
   A = Matrix(3, 3, {0,1,2, 0,0,4, 0,0,0});
   B = getNullSpaceTailParams(A, tol);   null = A*B; 
   //B = getNullSpace2(A);  null = A*B;   // experimental new version
-  B = getNullSpace3(A, tol);
+  B = getNullSpace(A, tol);
   r &= isZero = null.isZero();
 
 
   A = Matrix(5, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0, 0,0,0,0});
-  B = getNullSpace3(A, tol);
+  B = getNullSpace(A, tol);
   // ...
 
 
@@ -461,7 +461,7 @@ void eigenstuff()
 
   z = Matrix(2, 1); // dummy
   int rank = RAPT::rsLinearAlgebraNew::makeTriangular(A, z);
-  rank = getRowEchelonRank(A, 0.0);
+  rank = getRankRowEchelon(A, 0.0);
   // yup - rank is returned as 0 - but actual rank is 1 - the number of steps taken is actually not
   // the rank in all cases - often it is, but not always - try this with various matrices with 
   // leading zeros in the rows - these make problems - the actual rank is the numer of nonzero rows
