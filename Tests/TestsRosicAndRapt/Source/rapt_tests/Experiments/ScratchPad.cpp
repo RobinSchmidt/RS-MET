@@ -813,8 +813,6 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
   // https://en.wikipedia.org/wiki/Rank%E2%80%93nullity_theorem
 
   using Matrix = RAPT::rsMatrix<T>;
-  //Matrix z(A.getNumRows(), 1);                     // dummy - needed by function
-  //RAPT::rsLinearAlgebraNew::makeTriangular(A, z); 
   rowEchelon(A);
   // maybe factor out a function that takes a triangular matrix getNullSpaceEchelon(Matrix&)
 
@@ -825,7 +823,6 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
   int nRhs = (int) params.size();                  // number of right-hand sides N (#parameters)
 
   // sanity checks for debug:
-  //rsAssert(isIndexSplit(A.getNumColumns(), &pivots[0], nEqn, &params[0], nRhs));
   rsAssert(isIndexSplit(A.getNumColumns(), pivots, params));
   rsAssert(getRankRowEchelon(A, tol) == (int) pivots.size());
 
@@ -836,32 +833,10 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
   int i, j;
   for(i = 0; i < nEqn; i++) {
     for(j = 0; j < nEqn; j++)
-    {
-
-      //M(i, j) =  A(pivots[i], pivots[j]);    // old
-      M(i, j) =  A(i, pivots[j]);   // new - experimental
-
-      //M(i, j) =  A(pivots[j], pivots[i]);
-
-    }
+      M(i, j) =  A(i, pivots[j]);                  // copy relevant coeffs
     for(j = 0; j < nRhs; j++)
-    {
-      //R(i, j) = -A(pivots[i], params[j]);   // old
-      R(i, j) = -A(i, params[j]);   // new - experimental
-    }
-
-      // or does it have to be (i, params[j])?
-      // pivots[i], params[i] may be invalid as row index   
-  
-  }  
-
-
-  // debug:
-  //T A12 = A(1,2);
-  //T M11 = M(1,1);
-
-
-  bool success = solve2(M, b, R);  // deals with singular systems also
+      R(i, j) = -A(i, params[j]); }                // resulting rhs from setting j-th param to 1
+  bool success = solve2(M, b, R);
   rsAssert(success);
 
   // write solutions into output ("scatter") and fill up with ones:

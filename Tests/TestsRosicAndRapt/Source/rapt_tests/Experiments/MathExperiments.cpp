@@ -235,11 +235,8 @@ bool nullspace()
   // These tests also both evaluate to true
 
 
-  A = Matrix(3, 5, {1,-2,0,-1,3, 0,0,1,2,-2, 0,0,0,0,0}); 
-  r &= testNullSpace(A);  
+  A = Matrix(3, 5, {1,-2,0,-1,3, 0,0,1,2,-2, 0,0,0,0,0}); r &= testNullSpace(A);  
   B = getNullSpace(A, tol); 
-  // fails! -> try to give rsLinearAlgebraNew::solveTriangular a tolerance - done - doesn't help
-  // this nullspace has the zero-vector in it
   // https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
 
   // test rank computation:
@@ -304,7 +301,17 @@ bool nullspace()
 
 
   // now the same with the first column all zeros:
-  A = Matrix(5, 5, {0,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
+  A = Matrix(5, 5, {0,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); 
+  r &= testNullSpace(A);
+  // fails because matrix is not brought into row-echelon form - but why
+  rowEchelon(A);  
+  // fails to make 2nd column all zeros - when we ancounter an all-zeros column, we have to 
+  // produce a stairstep also in the next nonzero column right to it - row echelon form requires
+  // that the leading coeff in each row is somewhere right to the leading coeff in the previous
+  // row - row echelon form is more restrictive than just being upper triangular we need to use
+  // getLeadCoeffIndex for the column idex instead of just the loop counter
+
+
   //B = getNullSpaceTailParams(A, tol); null = A*B; r &= null.isZero(); // fails (predictably)
   //B = getNullSpace(A, tol); // triggers assert - is not in row-echelon form after makeTriangular
   //null = A*B; r &= isZero = null.isZero(); 
@@ -318,7 +325,7 @@ bool nullspace()
   // of the dummy augments in nullSpace, etc.
 
   // now make also the 2nd column zero:
-  A = Matrix(5, 5, {0,0,3,4,5, 0,0,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
+  A = Matrix(5, 5, {0,0,3,4,5, 0,0,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);  
   //B = getNullSpaceTailParams(A, tol); null = A*B; r &= isZero = null.isZero();
   // B has even more nans and infs
 
@@ -326,12 +333,12 @@ bool nullspace()
   // applies to any linear system - i think, i must choose variables which have zero-columns as 
   // free parameters - try to make columns 4 and 5 zero - these are the variables that we 
   // currently select as parameters:
-  A = Matrix(5, 5, {1,2,3,0,0, 0,1,6,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0});
+  A = Matrix(5, 5, {1,2,3,0,0, 0,1,6,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);  
   B = getNullSpaceTailParams(A, tol);  null = A*B; r &= null.isZero();  
   // this works - but the basis contains the zero-vector - that's useless as basis-vector!
 
   // try to make column 3 zero:
-  A = Matrix(5, 5, {1,2,0,4,5, 0,1,0,7,8, 0,0,0,9,1, 0,0,0,0,0, 0,0,0,0,0});
+  A = Matrix(5, 5, {1,2,0,4,5, 0,1,0,7,8, 0,0,0,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);  
   //B = getNullSpaceTailParams(A, tol);  null = A*B; r &= isZero = null.isZero();
   // also leads to error
 
