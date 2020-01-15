@@ -213,36 +213,6 @@ bool nullspace()
   double tol = 1.e-12;
   bool test;
 
-
-
-
-
-  A = Matrix(4, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0});
-  //B = getNullSpace(A, tol);  
-  //r &= testNullSpace(A); 
-  A = Matrix(5, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0, 0,0,0,0});
-  B = getNullSpace(A, tol);  
-  //r &= testNullSpace(A); 
-  // this test fails - why? function returns a nullspace of <(0,0,1,0)> -> compute the nullspace
-  // with sage and compare
-  // it doesn't help to delete the bottom row and use a 4x4 matrix
-
-  // A = matrix(QQ, [[ 1, 5, 6, 7],
-  //                 [ 0, 1, 2, 3],
-  //                 [ 0, 0, 0, 4],
-  //                 [ 0, 0, 0, 0]])
-  // A.right_kernel()
-  //
-  // ->  [1  -1/2  1/4    0]
-  // 
-  // the matrix M in getNullSpace is singular! we need to treat that case especially. the algorithm 
-  // encounters the augmented coeff matrix for M*R = b:
-  //    1 5 7|-6              0               0
-  //    0 1 3|-2   solve: b = 0  scatter: B = 0
-  //    0 0 0| 0              0               1
-  //                                          0
-  // ...try this by hand!
-
   // Example 15.4 in Karpfinger, pg 141. When we don't manually put it in row-echelon-form, our 
   // result is different from the book - but that doesn't mean it's wrong. Apparently, in the book,
   // different swaps were performed in the row elimination process.
@@ -265,13 +235,12 @@ bool nullspace()
   // These tests also both evaluate to true
 
 
-
-
-
-
-
-
-
+  A = Matrix(3, 5, {1,-2,0,-1,3, 0,0,1,2,-2, 0,0,0,0,0}); 
+  r &= testNullSpace(A);  
+  B = getNullSpace(A, tol); 
+  // fails! -> try to give rsLinearAlgebraNew::solveTriangular a tolerance - done - doesn't help
+  // this nullspace has the zero-vector in it
+  // https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
 
   // test rank computation:
   A = Matrix(3, 3, {0,0,0, 0,0,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 0;
@@ -296,6 +265,14 @@ bool nullspace()
   A = Matrix(3, 3, { 0, 1,2, 0, 0,4,  0,0, 0}); r &= testNullSpace(A); 
 
   A = Matrix(4, 4, {1,2,3,4, 2,4,6,8, 3,6,9,12, 4,8,12,16}); r &= testNullSpaceBoth(A); // B = {(2,-1,0,0), (3,0,-1,0), (4,0,0,-1)} // sign is different
+  A = Matrix(4, 4, {1,5,6,7, 0,1,2,3, 0,0,0, 4, 0,0, 0, 0}); r &= testNullSpace(A); 
+ 
+  A = Matrix(5, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0, 0,0,0,0}); r &= testNullSpace(A); 
+ 
+
+  A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);
+
+
 
 
   // todo:
@@ -308,25 +285,17 @@ bool nullspace()
   // randomly from a known set of basis vectors - if we write some random basis vectors into the 
   // rows and construct the other rows as linear combinations of the them, we have a known 
   // nullspace - we can check with spanSameSpace if we got the full nullspace
+  // 
 
-
-
-
-  // This 5x5 matrix is already in row echelon form:
-  //     |1 2 3 4 5|      |0|
-  //     |0 1 6 7 8|      |0|
-  // A = |0 0 1 9 1|, z = |0|
-  //     |0 0 0 0 0|      |0|
-  //     |0 0 0 0 0|      |0|
-  bool isZero;
-  A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
-  r &= testNullSpaceBoth(A);
-
-  // from here https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
-  A = Matrix(3, 5, {1,-2,0,-1,3, 0,0,1,2,-2, 0,0,0,0,0});
-  B = getNullSpace(A, tol); 
-
-
+  // here:
+  // https://www.mathwizurd.com/linalg/2018/12/10/orthogonal-complement
+  // https://textbooks.math.gatech.edu/ila/orthogonal-complements.html
+  // are some relations bewtween row-spaces, column-spaces and nullspaces. Let's denote row-, 
+  // column- and nullspace as rsp,csp,nsp and the orthogonal complement as comp - then we have
+  // comp(rsp(A)) == nsp(A), csp(A) = rsp(A^T) = comp(nsp(A^T)), rsp(A) = comp(nsp(A)),
+  // comp(csp(A)) = nsp(A)
+  // checking equality for spaces means to check if the bases span the same space - so we could 
+  // write checks like r &= spanSameSpace(orthogonalComplement(rowSpace(A)), nullSpace(A)) etc.
 
 
 
@@ -358,7 +327,7 @@ bool nullspace()
   // free parameters - try to make columns 4 and 5 zero - these are the variables that we 
   // currently select as parameters:
   A = Matrix(5, 5, {1,2,3,0,0, 0,1,6,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0});
-  B = getNullSpaceTailParams(A, tol);  null = A*B; r &= isZero = null.isZero();  
+  B = getNullSpaceTailParams(A, tol);  null = A*B; r &= null.isZero();  
   // this works - but the basis contains the zero-vector - that's useless as basis-vector!
 
   // try to make column 3 zero:

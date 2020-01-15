@@ -158,12 +158,15 @@ template<class T>
 void rsLinearAlgebraNew::solveTriangular(
   rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
 {
+  //     if(rsIsCloseTo(biggest, T(0), tooSmall)) 
+  T tol = 1.e-12;
   int M = X.getNumColumns();  // number of required solution vectors
   int N = A.getNumRows();     // number of elements in each solution vector
   for(int k = 0; k < M; k++) {
     for(int i = N-1; i >= 0; i--) {
-      if(A(i, i) == T(0)) {      // experimental
-        X(i, k) = T(0);        // needs tolerance
+      //if(A(i, i) == T(0)) {   // needs tolerance
+      if( rsIsCloseTo(A(i,i), T(0), tol) ) {
+        X(i, k) = T(0);       
         continue;      }
       T tmp = T(0);
       for(int j = i+1; j < N; j++)

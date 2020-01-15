@@ -603,68 +603,7 @@ rsMatrix<T> getNullSpaceTailParams(rsMatrix<T> A, T tol)
 
 
 
-// move into library (rsLinearAlgebraNew)
-// todo: can we also compute a basis for the image in a similar way?
-// If N is numRows and K is the rank, in order to find the nullspace, we have solve a KxK system
-// fo (N-K)x(N-K) different right-hand sides. This gives
 
-// i think, the rank is not always the number of iterations in makeTriangular
-
-// see:
-
-
-// https://en.wikipedia.org/wiki/Row_and_column_spaces
-// says: the null space of A is the orthogonal complement to the row space - so maybe it's easier
-// to compute the row-space and from that its orthogonal complement?
-// https://en.wikipedia.org/wiki/Orthogonal_complement
-// https://www.mathwizurd.com/linalg/2018/12/10/orthogonal-complement
-
-// this has a nice worked through example:
-// https://textbooks.math.gatech.edu/ila/orthogonal-complements.html
-
-
-/*
-template<class T>
-rsMatrix<T> getNullSpace2(rsMatrix<T> A)
-{
-  T tol = T(1.e-12);  // make parameter
-
-  using Matrix = RAPT::rsMatrix<T>;
-  using LA     = RAPT::rsLinearAlgebraNew;
-
-  int numRows  = A.getNumRows();          // dimensionality of input space
-  int numCols  = A.getNumColumns();       // dimensionality of output space
-  Matrix z(numRows, 1);                   // dummy - needed by function
-  LA::makeTriangular(A, z);               // reduces A to row echelon form
-  int rank = getRowEchelonRank(A, tol);   // rank, dimensionality of image
-  int nullity = numCols - rank;           // dimensionality of nullspace (see karpf. 142)
-
-  // this offset stuff is experimental
-  int offset = getFirstNonZeroIndexInRow(A, 0, tol);
-
-
-  // extract rank x rank system with nullity rhs vectors
-  Matrix S = getSubMatrix(A, 0, offset, rank, rank);
-  Matrix R = Matrix(rank, nullity);
-  for(int j = 0; j < nullity; ++j)   // loop over the rhs
-    for(int i = 0; i < rank; ++i)    // loop over rows in current rhs
-      R(i, j) = -A(i, rank+j);
-
-  // compute first nullity elements of basis vectors:
-  Matrix b = Matrix(rank, nullity);
-  LA::solve(S, b, R);
-
-  // compute filled up basis vectors:
-  Matrix B = Matrix(A.getNumColumns(), nullity);
-  B.setToZero();
-  for(int j = 0; j < nullity; ++j) {
-    for(int i = 0; i < rank; i++)
-      B(i, j) = b(i, j);
-    B(rank+j, j) = 1; }
-
-  return B;
-}
-*/
 
 
 // http://www.cfm.brown.edu/people/dobrush/am34/sage/kernel.html
@@ -897,22 +836,33 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
   int i, j;
   for(i = 0; i < nEqn; i++) {
     for(j = 0; j < nEqn; j++)
-      M(i, j) =  A(pivots[i], pivots[j]);
-    for(j = 0; j < nRhs; j++)  
-      R(i, j) = -A(pivots[i], params[j]); }
-  solve2(M, b, R);  // deals with singular systems also
-  //bool regular = RAPT::rsLinearAlgebraNew::solve(M, b, R);
+    {
+
+      //M(i, j) =  A(pivots[i], pivots[j]);    // old
+      M(i, j) =  A(i, pivots[j]);   // new - experimental
+
+      //M(i, j) =  A(pivots[j], pivots[i]);
+
+    }
+    for(j = 0; j < nRhs; j++)
+    {
+      //R(i, j) = -A(pivots[i], params[j]);   // old
+      R(i, j) = -A(i, params[j]);   // new - experimental
+    }
+
+      // or does it have to be (i, params[j])?
+      // pivots[i], params[i] may be invalid as row index   
+  
+  }  
 
 
-  // seems to currently only work when M is non-singular? when it's singular and consistent, it 
-  // will have infinitely many solutions - so we get to pick some free variables again - maybe we
-  // again have to compute a nullspace - this time the one of M? maybe, we have to call ourselves
-  // recursively for this? or maybe solve should be able to correctly solve singular systems when
-  // they are consistent? to this end,solve itself would have to determine a nullspace and then 
-  // pick a solution from this space. can it happen that we encounter a system that is singular
-  // and inconsistent, i.e. has no solutions? that probabbly cannot happen...i guess
-  // calling getNullSpace in solve would amount to indirect recursion
+  // debug:
+  //T A12 = A(1,2);
+  //T M11 = M(1,1);
 
+
+  bool success = solve2(M, b, R);  // deals with singular systems also
+  rsAssert(success);
 
   // write solutions into output ("scatter") and fill up with ones:
   Matrix B(A.getNumColumns(), nRhs);               // final result
@@ -960,6 +910,23 @@ rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A)
 
   return rsMatrix<T>();  // preliminary
 }
+
+// todo: can we also compute a basis for the image in a similar way?
+// If N is numRows and K is the rank, in order to find the nullspace, we have solve a KxK system
+// fo (N-K)x(N-K) different right-hand sides. This gives
+
+
+// https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
+
+// https://en.wikipedia.org/wiki/Row_and_column_spaces
+// says: the null space of A is the orthogonal complement to the row space - so maybe it's easier
+// to compute the row-space and from that its orthogonal complement?
+// https://en.wikipedia.org/wiki/Orthogonal_complement
+// https://www.mathwizurd.com/linalg/2018/12/10/orthogonal-complement
+
+// this has a nice worked through example:
+// https://textbooks.math.gatech.edu/ila/orthogonal-complements.html
+
 
 
 
