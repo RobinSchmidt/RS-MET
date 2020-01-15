@@ -236,21 +236,18 @@ bool nullspace()
 
   A = Matrix(2, 2, {0,1, 0,0});
   rank = getRankRowEchelon(A, 0.0); r &= rank == 1;
-  //B = getNullSpace(A, tol); null = A*B; r &= null.isZero();
   r &= testNullSpace(A);
 
   // Create matrix A and zero vector z:
   //     |1 2 3|      |0|
   // A = |4 5 6|, z = |0|
   //     |7 8 9|      |0|
-  A = Matrix(3, 3, {1,2,3, 4,5,6, 7,8,9});
-  //B = getNullSpaceTailParams(A, tol); null = A*B; r &= null.isZero(); // B = {(1,-2,1)}
-  //B = getNullSpace(          A, tol); null = A*B; r &= null.isZero(); // B = {(1,-2,1)}
+  A = Matrix(3, 3, {1,2,3, 4,5,6, 7,8,9}); // B = {(1,-2,1)}
   r &= testNullSpaceBoth(A);
 
-
-  //BB = B.getTranspose() * B;   // should give unit matrix, iff B is orthonormal
-
+  //BB = B.getTranspose() * B;   
+  // should give unit matrix, iff B is orthonormal - maybe make such testt later when we have
+  // Gram-Schmidt orthogonalizations
 
   // check rank computation:
   A = Matrix(3, 3, {0,0,0, 0,0,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 0;
@@ -263,38 +260,26 @@ bool nullspace()
   A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,2}); rank = getRankRowEchelon(A, 0.0); r &= rank == 3;
 
 
-
-  A = Matrix(2, 2, {1,0, 0,1});
-  B = getNullSpaceTailParams(A, tol); null = A*B; r &= null.isZero();
-  B = getNullSpace(          A, tol); null = A*B; r &= null.isZero(); // crashes!
-
-  A = Matrix(2, 2, {0,1, -1,0});
-  B = getNullSpaceTailParams(A, tol); null = A*B; r &= null.isZero();
-
-
-
-
-  A = Matrix(3, 3, {-1,-1,2, 1,2,3, -1,0,7});
-  B = getNullSpaceTailParams(A, tol); // B = {(7,-5,1)}
-  null = A*B; r &= null.isZero();
-
+  // test nullspace computation:
+  A = Matrix(2, 2, {1,0, 0,1});  r &= testNullSpaceBoth(A);
+  A = Matrix(2, 2, {0,1, -1,0}); r &= testNullSpaceBoth(A);
+  A = Matrix(3, 3, {-1,-1,2, 1,2,3, -1,0, 7}); r &= testNullSpaceBoth(A);// B = {(7,-5,1)}
+  A = Matrix(3, 3, { 4, 2,2, 2,1,1,  2,1, 1}); r &= testNullSpaceBoth(A);
+  A = Matrix(3, 3, {-2, 2,2, 2,-5,1, 2,1,-5}); r &= testNullSpaceBoth(A);
   A = Matrix(4, 4, {1,2,3,4, 2,4,6,8, 3,6,9,12, 4,8,12,16});
-  B = getNullSpaceTailParams(A, tol); // B = {(2,-1,0,0), (3,0,-1,0), (4,0,0,-1)} // sign is different
-  null = A*B; r &= null.isZero();
+  r &= testNullSpaceBoth(A);// B = {(2,-1,0,0), (3,0,-1,0), (4,0,0,-1)} // sign is different
 
-  A = Matrix(3, 3, {4,2,2, 2,1,1, 2,1,1});
-  B = getNullSpaceTailParams(A, tol); // B = {(0,-1,1),(1,-2,0)}
-  null = A*B; r &= null.isZero();
-
-  A = Matrix(3, 3, {-2,2,2, 2,-5,1, 2,1,-5});
-  B = getNullSpaceTailParams(A, tol); // B = {(2,1,1)}
-  null = A*B; r &= null.isZero();
+  // try various MxN matrices - maybe with random elements ...although, for random matrices, the 
+  // nullspaces will probably always come out as the whole embedding space - it's unlikely that
+  // random matrices are singular - maybe programmatically construct singular matrices (use a set
+  // of random vectors and produce random linear combinations of them)
 
 
   // This matrix has full rank - it's nullspace should be only the zero vector:
   A = Matrix(3, 3, {1,0,0, 0,2,0, 0,0,3});
-  B = getNullSpaceTailParams(A, tol); 
-  null = A*B; r &= null.isZero();
+  //B = getNullSpaceTailParams(A, tol); 
+  //null = A*B; r &= null.isZero();
+  r &= testNullSpaceBoth(A);
 
   // This 5x5 matrix is already in row echelon form:
   //     |1 2 3 4 5|      |0|
@@ -304,9 +289,7 @@ bool nullspace()
   //     |0 0 0 0 0|      |0|
   bool isZero;
   A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
-  B = getNullSpaceTailParams(A, tol);       null = A*B; r &= null.isZero();
-  B = getNullSpace(A, tol); null = A*B; r &= null.isZero();
-
+  r &= testNullSpaceBoth(A);
 
   // from here https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
   A = Matrix(3, 5, {1,-2,0,-1,3, 0,0,1,2,-2, 0,0,0,0,0});
@@ -315,18 +298,15 @@ bool nullspace()
 
   // fails due to zero column
   A = Matrix(3, 3, {0,1,2, 0,0,4, 0,0,0});
-  B = getNullSpaceTailParams(A, tol); null = A*B;  // this fails
+  //B = getNullSpaceTailParams(A, tol); null = A*B;  // this fails
   //B = getNullSpace2(A);  null = A*B;   // experimental new version
-  B = getNullSpace(A, tol);  null = A*B;
-  r &= isZero = null.isZero();
-
+  //B = getNullSpace(A, tol);  null = A*B;
+  //r &= isZero = null.isZero();
+  r &= testNullSpace(A);  
 
   A = Matrix(5, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0, 0,0,0,0});
   B = getNullSpace(A, tol);
-  // ...
-
-
-
+  //r &= testNullSpace(A); // this test fails - why?
 
 
   // now the same with the first column all zeros:
