@@ -648,10 +648,7 @@ std::vector<int> getNonPivots(const rsMatrix<T>& A, T tol)
       nonPivots.push_back(j);
       j++;  }
     i++;
-    //if(j >= A.getNumColumns())
-    //  nonPivots.push_back(j);
     j++; }
-  //nonPivots.pop_back(); // we push one too much - that's unelegant!
   return nonPivots;
 }
 // needs more tests
@@ -665,7 +662,7 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
 
   Matrix z(A.getNumRows(), 1);                            // dummy - needed by function
   LA::makeTriangular(A, z); 
-  // maybe factor out a function that takes a traingular matrix
+  // maybe factor out a function that takes a triangular matrix getNullSpaceEchelon(Matrix&)
 
 
   std::vector<int> pivots = getPivots(   A, tol);  // dependent variables
@@ -675,10 +672,10 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
   rsAssert(nEqn + nRhs == A.getNumColumns());      // for debug
 
   // set up and solve the linear system:
-  int i, j;
   Matrix M(nEqn, nEqn);
   Matrix R(nEqn, nRhs);
   Matrix b(nEqn, nRhs);  // partial solution
+  int i, j;
   for(i = 0; i < nEqn; i++) {
     for(j = 0; j < nEqn; j++)
       M(i, j) =  A(pivots[i], pivots[j]);
@@ -686,10 +683,14 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
       R(i, j) = -A(pivots[i], params[j]); }
   LA::solve(M, b, R); 
 
-  
- 
-  // collect solutions and fill up with ones:
-  // ....
+  // collect solutions and fill up with ones (this is still wrong!):
+  Matrix B(A.getNumColumns(), nRhs);
+  for(i = 0; i < nEqn; i++)
+    for(j = 0; j < nRhs; j++)
+      B(pivots[i], params[j]) = b(i, j); 
+      //B(pivots[i], params[j]) = b(i, j); 
+  //for(i = 0; i < rsMin(nEqn, nRhs); i++)
+    //B(pivots[i], params[j]) = T(1);       // is that correct?
 
 
 
@@ -708,7 +709,9 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
   // to our parameters assignments. To set up the system and to combine the solution, we may need
   // use our pivots and params arrays to gather and scatter the numbers
 
-  return rsMatrix<T>();  // preliminary
+  return B;
+
+  //return rsMatrix<T>();  // preliminary
 }
 
 
