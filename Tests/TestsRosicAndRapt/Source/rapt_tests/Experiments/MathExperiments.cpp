@@ -213,6 +213,32 @@ bool nullspace()
   double tol = 1.e-12;
   bool test;
 
+  A = Matrix(4, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0});
+  //B = getNullSpace(A, tol);  
+  // r &= testNullSpace(A); 
+  A = Matrix(5, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0, 0,0,0,0});
+  //B = getNullSpace(A, tol);  
+  // r &= testNullSpace(A); 
+  // this test fails - why? function returns a nullspace of <(0,0,1,0)> -> compute the nullspace
+  // with sage and compare
+  // it doesn't help to delete the bottom row and use a 4x4 matrix
+
+  // A = matrix(QQ, [[ 1, 5, 6, 7],
+  //                 [ 0, 1, 2, 3],
+  //                 [ 0, 0, 0, 4],
+  //                 [ 0, 0, 0, 0]])
+  // A.right_kernel()
+  //
+  // ->  [1  -1/2  1/4    0]
+  // 
+  // the matrix M in getNullSpace is singular! we need to treat that case especially. the algorithm 
+  // encounters the augmented coeff matrix for M*R = b:
+  //    1 5 7|-6              0               0
+  //    0 1 3|-2   solve: b = 0  scatter: B = 0
+  //    0 0 0| 0              0               1
+  //                                          0
+  // ...try this by hand!
+
   // Example 15.4 in Karpfinger, pg 141. When we don't manually put it in row-echelon-form, our 
   // result is different from the book - but that doesn't mean it's wrong. Apparently, in the book,
   // different swaps were performed in the row elimination process.
@@ -304,9 +330,9 @@ bool nullspace()
   //r &= isZero = null.isZero();
   r &= testNullSpace(A);  
 
-  A = Matrix(5, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0, 0,0,0,0});
-  B = getNullSpace(A, tol);
-  //r &= testNullSpace(A); // this test fails - why?
+
+
+
 
 
   // now the same with the first column all zeros:

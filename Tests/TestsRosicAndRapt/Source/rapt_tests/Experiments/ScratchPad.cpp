@@ -58,11 +58,10 @@ bool makeTriangularNoPivot(rsMatrix<T>& A, rsMatrix<T>& B)
 template<class T>
 void rowEchelon(rsMatrixView<T>& A)
 {
-  int i;
   T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
   int numRows = A.getNumRows();
   int numCols = A.getNumColumns();
-  for(i = 0; i < rsMin(numRows, numCols); i++) {
+  for(int i = 0; i < rsMin(numRows, numCols); i++) {
     //rsMatrix<T> dbg; dbg.copyDataFrom(A);  // uncomment for debugging
     int p = i; 
 
@@ -734,7 +733,21 @@ bool isIndexSplit(int numIndices, const std::vector<int> subset1, const std::vec
     &subset2[0], (int)subset2.size());
 }
 
-
+template<class T>
+bool solve2(rsMatrix<T> A, rsMatrix<T> X, rsMatrix<T> B)
+{
+  rsAssert(A.getNumColumns() == X.getNumRows()); // A*X = B or A*x = b must make sense
+  rsAssert(X.hasSameShapeAs(B));                 // num of solutions == num of rhs-vectors
+  rsAssert(A.isSquare()); 
+  if(makeTriangular(A, B) != A.getNumRows())
+    return false;                                // matrix A was singular -> report failure
+  solveTriangular(A, X, B);
+  return true;                                   // matrix A was regular -> report success
+}
+// todo: should also return a valid result when the system is singular and consistent
+// maybe instead of makeTriangular, call rowEchelon(A, B), chek the number of zero bottom rows, 
+// fill those rows in the result also with zeros (that means, we pick the last variables as zero) 
+// and solve the top-left sub-system
 
 
 /** Computes the set of vectors v which solve the homogenous linear system of equations A * v = 0 
@@ -799,7 +812,23 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
       M(i, j) =  A(pivots[i], pivots[j]);
     for(j = 0; j < nRhs; j++)  
       R(i, j) = -A(pivots[i], params[j]); }
-  RAPT::rsLinearAlgebraNew::solve(M, b, R); 
+  bool regular = RAPT::rsLinearAlgebraNew::solve(M, b, R);
+  //rsAssert(regular, "does not yet work when M * b = R is underdetermined");
+  if(!regular)
+  {
+    // M * b = R is an underdetermined system - we get to pick more free variables - perhaps
+    // just select the bottom variables to be zero
+  }
+
+  // seems to currently only work when M is non-singular? when it's singular and consistent, it 
+  // will have infinitely many solutions - so we get to pick some free variables again - maybe we
+  // again have to compute a nullspace - this time the one of M? maybe, we have to call ourselves
+  // recursively for this? or maybe solve should be able to correctly solve singular systems when
+  // they are consistent? to this end,solve itself would have to determine a nullspace and then 
+  // pick a solution from this space. can it happen that we encounter a system that is singular
+  // and inconsistent, i.e. has no solutions? that probabbly cannot happen...i guess
+  // calling getNullSpace in solve would amount to indirect recursion
+
 
   // write solutions into output ("scatter") and fill up with ones:
   Matrix B(A.getNumColumns(), nRhs);               // final result
