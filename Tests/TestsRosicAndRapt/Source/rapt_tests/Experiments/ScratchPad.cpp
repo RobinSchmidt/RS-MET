@@ -657,34 +657,46 @@ std::vector<int> getNonPivots(const rsMatrix<T>& A, T tol)
 template<class T>
 rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
 {
-  using Matrix = RAPT::rsMatrix<T>;
-  using LA     = RAPT::rsLinearAlgebraNew;
+  // If N is the number of dependent variables and K is the number of free parameters, 
+  // we need to set up and NxN linear system solve it for K different right hand sides
+  // corresponding to K different choices for assigning the free parameters. The most natural 
+  // choice is to set one to 1 and all others to 0 in each assignment and select a different
+  // one to set to 1 in each of the K cases. The solution of the linear system gives us
+  // N elements for each of the K basis vectors. The remaining K elements must the be filled up 
+  // with ones according to our parameter assignments. To set up the system and to combine the 
+  // solution, we use our pivots and params arrays to gather and scatter the numbers. See:
+  // https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
+  // http://www.eng.fsu.edu/~dommelen/aim/style_a/GEspc.html
 
-  Matrix z(A.getNumRows(), 1);                            // dummy - needed by function
+  using Matrix = RAPT::rsMatrix<T>;
+  Matrix z(A.getNumRows(), 1);                     // dummy - needed by function
   LA::makeTriangular(A, z); 
   // maybe factor out a function that takes a triangular matrix getNullSpaceEchelon(Matrix&)
 
-
+  // find out which dimensions are free and which dependent:
   std::vector<int> pivots = getPivots(   A, tol);  // dependent variables
   std::vector<int> params = getNonPivots(A, tol);  // free parameters
-  int nEqn = (int) pivots.size();                  // number of equations
-  int nRhs = (int) params.size();                  // number of right-hand sides
+  int nEqn = (int) pivots.size();                  // number of equations (# of dependents)
+  int nRhs = (int) params.size();                  // number of right-hand sides (# of parameters)
   rsAssert(nEqn + nRhs == A.getNumColumns());      // for debug
+  // todo: write a function that ensures tha each number from 0 to A.numCol(?) is contained 
+  // exactly once in either pivots or params and make an assertion - maybe call it 
+  // isValidIndexSplit(indexSet1, indexSet2) - maybe make a function containsOnce for that
 
-  // set up and solve the linear system:
-  Matrix M(nEqn, nEqn);
-  Matrix R(nEqn, nRhs);
-  Matrix b(nEqn, nRhs);  // partial solution
+  // set up the linear system ("gather") and solve it:
+  Matrix M(nEqn, nEqn);                            // coefficient matrix of the NxN system
+  Matrix R(nEqn, nRhs);                            // right hand side matrix
+  Matrix b(nEqn, nRhs);                            // solution
   int i, j;
   for(i = 0; i < nEqn; i++) {
     for(j = 0; j < nEqn; j++)
       M(i, j) =  A(pivots[i], pivots[j]);
     for(j = 0; j < nRhs; j++)
       R(i, j) = -A(pivots[i], params[j]); }
-  LA::solve(M, b, R); 
+  RAPT::rsLinearAlgebraNew::solve(M, b, R); 
 
-  // collect solutions and fill up with ones:
-  Matrix B(A.getNumColumns(), nRhs);
+  // collect solutions ("scatter") and fill up with ones:
+  Matrix B(A.getNumColumns(), nRhs);               // final result
   for(i = 0; i < nEqn; i++)
     for(j = 0; j < nRhs; j++)
       B(pivots[i], j) = b(i, j);
@@ -692,27 +704,7 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
     for(j = 0; j < nRhs; j++)
       B(params[i], i) = 1;
 
-
-
-
-  // todo: 
-  // -set up linear system (gather)
-  // -solve it
-  // -collect the results (scatter)
-  // -in each of the results, set 1 of the param coeffs to 1
-
-  // if N is the number of dependent variables and K is the number of free parameters, 
-  // we need to set up and NxN linear system solve it for K different right hand sides
-  // corresponding to K different choices for assigning the free parameters. The most natural 
-  // choice is to set one to 1 and all others to zero in each assignement and select a different
-  // one to set to 1 in each of the K cases. Thes solution of the linear system gives us
-  // N elements of the basis vectors. The remaining K elements must the be filled up according
-  // to our parameters assignments. To set up the system and to combine the solution, we may need
-  // use our pivots and params arrays to gather and scatter the numbers
-
   return B;
-
-  //return rsMatrix<T>();  // preliminary
 }
 
 
