@@ -64,14 +64,14 @@ int getPivotRow(const rsMatrixView<T>& A, int row, int column)
   T biggest = T(0);
   int pivRow = row;
   for(int i = row; i < A.getNumRows(); i++)  {
-    if( rsGreaterAbs(A(column, i), biggest) ) { 
-      biggest = A(column, i); 
+    if( rsGreaterAbs(A(i, column), biggest) ) { 
+      biggest = A(i, column); 
       pivRow = i; }}
   return pivRow;
 }
 
 template<class T>
-int getLeadCoeffIndex(const rsMatrix<T>& A, int row, T tol, int startColumn = 0)
+int getLeadCoeffIndex(const rsMatrixView<T>& A, int row, T tol, int startColumn = 0)
 {
   int j;
   for(j = startColumn; j < A.getNumColumns(); j++)
@@ -85,38 +85,43 @@ int getLeadCoeffIndex(const rsMatrix<T>& A, int row, T tol, int startColumn = 0)
 
 // A is coefficient matrix, B is augment
 template<class T>
-void rowEchelon2(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)
+void rowEchelon2(rsMatrix<T>& A, rsMatrix<T>& B, T tol)  // change to matrixview for production
 {
   int i = 0;
   int j = 0;
-  while( i < A.getNumRows() )
+  while( i < A.getNumRows() && j < A.getNumColumns() )
   {
-    int pivRow = getPivotRow(i, j);
-    if(i != pivRow) {
-      A.swapRows(i, pivRow);
-      B.swapRows(i, pivRow); }
+    int p = getPivotRow(A, i, j);
+    if(i != p) {
+      A.swapRows(i, p);
+      B.swapRows(i, p); }                 
+    if(!rsGreaterAbs(A(i, j), tol)) {   // column of all zeros encountered...
+      j++; continue;    }               // ...try with next column but same row
 
     j = getLeadCoeffIndex(A, i, tol, j);
     if(j >= A.getNumColumns())
       break; // no pivot was found anymore - we are done
 
-   
-    // A(row, col) is now known to be nonzero
     // pivot row subtraction
-    for(int k = i+1; k < A.getNumColumns(); k++) {
-      T w = -A(k, i) / A(i, i); 
+    for(int k = i+1; k < A.getNumRows(); k++) {
+      T w = -A(k, j) / A(i, j);     // A(i, j) is now known to be nonzero - right?
       A.addWeightedRowToOther(i, k, w, j, A.getNumColumns()-1);
       B.addWeightedRowToOther(i, k, w);
     }
    
-
     i++;
   }
 
 }
 // we are finished when no pivots can found in the current row anymore
+// needs test
 
-
+template<class T>
+void rowEchelon2(rsMatrix<T>& A, T tol)
+{
+  rsMatrix<T> dummy(A.getNumRows(), 1);
+  rowEchelon2(A, dummy, tol);
+}
 
 
 template<class T>
@@ -866,7 +871,9 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
   // https://en.wikipedia.org/wiki/Rank%E2%80%93nullity_theorem
 
   using Matrix = RAPT::rsMatrix<T>;
-  rowEchelon(A);
+  //rowEchelon(A);  // old
+  rowEchelon2(A, tol);  // new
+
   // maybe factor out a function that takes a triangular matrix getNullSpaceEchelon(Matrix&)
 
   // find out which dimensions are free and which dependent:
