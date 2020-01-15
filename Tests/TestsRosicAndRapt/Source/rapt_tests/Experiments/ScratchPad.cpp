@@ -16,26 +16,7 @@ void cleanUpIntegers(T* a, int N, T tol)
 //-------------------------------------------------------------------------------------------------
 // Linear Algebra stuff:
 
-/*
-template<class T>
-bool isRowZero(const rsMatrix<T> x, int rowIndex, T tol)
-{
-  for(int j = 0; j < x.getNumColumns(); ++j)
-    if( rsAbs(x(rowIndex, j)) > tol )
-      return false;
-  return true;
-}
 
-template<class T>
-bool areRowsZero(const rsMatrix<T> x, int startRow, int endRow, T tol)
-{
-  for(int i = startRow; i <= endRow; ++i)
-    if(!isRowZero(x, i, tol))
-      return false;
-  return true;
-}
-*/
-// make members of rsMatrixView
 
 /** Returns true, if the space spanned by the columns of x is within the span of the columns of B.
 That means each column of x can be expressed as some linear combination of the columns of B. */
@@ -73,6 +54,40 @@ bool makeTriangularNoPivot(rsMatrix<T>& A, rsMatrix<T>& B)
 // when using rational numbers or functions, maybe the pivoting could based on which element is the 
 // simplest (lowest degree or smallest) nonzero element - because then, there may be less complex
 // computations
+
+template<class T>
+void rowEchelon(rsMatrixView<T>& A)
+{
+  int i;
+  T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
+  int numRows = A.getNumRows();
+  int numCols = A.getNumColumns();
+  for(i = 0; i < rsMin(numRows, numCols); i++) {
+    //rsMatrix<T> dbg; dbg.copyDataFrom(A);  // uncomment for debugging
+    int p = i; 
+
+    // search pivot row (maybe factor out int inte findPivot(int column)
+    T biggest = T(0);
+    for(int j = i; j < numRows; j++) {                          
+      if( rsGreaterAbs(A(j, i), biggest) ) { 
+        biggest = A(j, i); 
+        p = j; }}
+
+    if(p != i)  
+      A.swapRows(i, p); 
+
+    for(int j = i+1; j < numRows; j++) {              // pivot row subtraction
+      if( !rsGreaterAbs(A(i, i), tooSmall) )
+        break;  // this is an all-zeros column
+      T w = -A(j, i) / A(i, i);                       // weight
+      A.addWeightedRowToOther(i, j, w, i, numCols-1); // start at i: avoid adding zeros
+    }
+  }
+}
+// rowReduce
+
+
+
 
 template<class T>
 RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
@@ -732,8 +747,9 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
   // https://en.wikipedia.org/wiki/Rank%E2%80%93nullity_theorem
 
   using Matrix = RAPT::rsMatrix<T>;
-  Matrix z(A.getNumRows(), 1);                     // dummy - needed by function
-  RAPT::rsLinearAlgebraNew::makeTriangular(A, z); 
+  //Matrix z(A.getNumRows(), 1);                     // dummy - needed by function
+  //RAPT::rsLinearAlgebraNew::makeTriangular(A, z); 
+  rowEchelon(A);
   // maybe factor out a function that takes a triangular matrix getNullSpaceEchelon(Matrix&)
 
   // find out which dimensions are free and which dependent:

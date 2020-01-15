@@ -352,6 +352,7 @@ bool nullspace()
   //B = getNullSpaceTailParams(A, tol);  null = A*B; r &= isZero = null.isZero();
   // also leads to error
 
+  std::cout << "nullspace works";
   rsAssert(r);
   return r;
 }
