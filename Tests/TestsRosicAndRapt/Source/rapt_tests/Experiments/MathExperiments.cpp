@@ -169,6 +169,32 @@ void determinant()
   int dummy = 0;
 }
 
+
+// move this code to unit tests:
+template<class T>
+bool testNullSpace(RAPT::rsMatrix<T> A)
+{
+  T tol = T(1.e-12);
+  RAPT::rsMatrix<T> B = getNullSpace(A, tol); // B is basis for the nullspace
+  RAPT::rsMatrix<T> null = A*B; 
+  return null.isZero();
+}
+
+template<class T>
+bool testNullSpaceTailParams(RAPT::rsMatrix<T> A)
+{
+  T tol = T(1.e-12);  
+  RAPT::rsMatrix<T> B = getNullSpaceTailParams(A, tol); 
+  RAPT::rsMatrix<T> null = A*B; 
+  return null.isZero();
+}
+
+template<class T>
+bool testNullSpaceBoth(RAPT::rsMatrix<T> A)
+{
+  return testNullSpace(A) && testNullSpaceTailParams(A);
+}
+
 bool nullspace()
 {
   // todo: move the getNullSpace functions into the library and turn this into unit-test
@@ -206,42 +232,24 @@ bool nullspace()
   B2 = getColumnSpace(A2, tol);
   test = spanSameSpace(B, B2, tol);
   test = spanSameSpace(B.getTranspose(), B2.getTranspose(), tol);
-  // Thes tests also both evaluate to true
-  //test = 
-
+  // These tests also both evaluate to true
 
   A = Matrix(2, 2, {0,1, 0,0});
   rank = getRankRowEchelon(A, 0.0); r &= rank == 1;
-  B = getNullSpaceTailParams(A, tol);  null = A*B; // r &= null.isZero();
-  //B = getNullSpace2(A); // wrong! returns (-1,1) - should be (1,0)
-  null = A*B; // r &= null.isZero();
-   // basis nullspace is {(1,0)} - 
-  z = Matrix(2, 1, {1,0});  // this is the correct nullspace - function finds {(-inf,1)}
-  null = A*z;
-  z = Matrix(2, 1, {0,0}); x = Matrix(2, 1); 
-  LA::solveTriangular(A, x, z);  // not suppsoed to work - A is singular
-  // fails for this matrix has probably to to with wrong rank computation
-  // i think, the rank computaion has been fixed, but the eigenspace basis still fails
-  // the result is (-nan,-nan) - verify what the algorithm does - it is supposed to create and
-  // the solve and 1x1 "system" - here
-  //  Matrix S = getSubMatrix(A, 0, 0, rank, rank);
-  //  Matrix R = Matrix(rank, nullity);
-  // we get a 1x1 submatrix with 0 as its only element - we probably need to take a different 
-  // submatrix when we have leading zero columns? i think, what happens when we have leading zero 
-  // columns that the sub-system S*b = R is itself singular - we get additional degrees of freedom
-  // because the variables x1,x2, ... up to the first nonzero column do not appear in any of the 
-  // equations - we get to choose them, too and obtain an even smaller system with the submatrix 
-  // starting at the first nonzero column
+  //B = getNullSpace(A, tol); null = A*B; r &= null.isZero();
+  r &= testNullSpace(A);
 
-
-  // Create matrix A and zero veczor z:
+  // Create matrix A and zero vector z:
   //     |1 2 3|      |0|
   // A = |4 5 6|, z = |0|
   //     |7 8 9|      |0|
   A = Matrix(3, 3, {1,2,3, 4,5,6, 7,8,9});
-  B = getNullSpaceTailParams(A, tol); // B = {(1,-2,1)}
-  null = A*B;  r &= null.isZero(); 
-  BB = B.getTranspose() * B;   // should give unit matrix, iff B is orthonormal
+  //B = getNullSpaceTailParams(A, tol); null = A*B; r &= null.isZero(); // B = {(1,-2,1)}
+  //B = getNullSpace(          A, tol); null = A*B; r &= null.isZero(); // B = {(1,-2,1)}
+  r &= testNullSpaceBoth(A);
+
+
+  //BB = B.getTranspose() * B;   // should give unit matrix, iff B is orthonormal
 
 
   // check rank computation:
@@ -258,6 +266,7 @@ bool nullspace()
 
   A = Matrix(2, 2, {1,0, 0,1});
   B = getNullSpaceTailParams(A, tol); null = A*B; r &= null.isZero();
+  //B = getNullSpace(          A, tol); null = A*B; r &= null.isZero(); // crashes!
 
   A = Matrix(2, 2, {0,1, -1,0});
   B = getNullSpaceTailParams(A, tol); null = A*B; r &= null.isZero();

@@ -85,6 +85,7 @@ void rowEchelon(rsMatrixView<T>& A)
   }
 }
 // rowReduce
+// maybe also make a function reducedRowEchelon
 
 
 
@@ -787,6 +788,9 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
   return B;
 }
 // move to library, rename to nullSpace, also move rowSpace and columnSpace over
+
+
+
 
 
 /*
