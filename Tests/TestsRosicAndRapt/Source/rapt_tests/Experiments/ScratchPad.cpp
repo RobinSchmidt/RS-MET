@@ -58,6 +58,66 @@ bool makeTriangularNoPivot(rsMatrix<T>& A, rsMatrix<T>& B)
 
 
 
+template<class T>
+int getPivotRow(const rsMatrixView<T>& A, int row, int column)
+{
+  T biggest = T(0);
+  int pivRow = row;
+  for(int i = row; i < A.getNumRows(); i++)  {
+    if( rsGreaterAbs(A(column, i), biggest) ) { 
+      biggest = A(column, i); 
+      pivRow = i; }}
+  return pivRow;
+}
+
+template<class T>
+int getLeadCoeffIndex(const rsMatrix<T>& A, int row, T tol, int startColumn = 0)
+{
+  int j;
+  for(j = startColumn; j < A.getNumColumns(); j++)
+    if( rsGreaterAbs( A(row, j), tol ) )
+      return j;
+  return j;  // will return numCols (i.e. invalid index) when the row is all zeros
+}
+// rename to getLeadCoeffIndex
+
+
+
+// A is coefficient matrix, B is augment
+template<class T>
+void rowEchelon2(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)
+{
+  int i = 0;
+  int j = 0;
+  while( i < A.getNumRows() )
+  {
+    int pivRow = getPivotRow(i, j);
+    if(i != pivRow) {
+      A.swapRows(i, pivRow);
+      B.swapRows(i, pivRow); }
+
+    j = getLeadCoeffIndex(A, i, tol, j);
+    if(j >= A.getNumColumns())
+      break; // no pivot was found anymore - we are done
+
+   
+    // A(row, col) is now known to be nonzero
+    // pivot row subtraction
+    for(int k = i+1; k < A.getNumColumns(); k++) {
+      T w = -A(k, i) / A(i, i); 
+      A.addWeightedRowToOther(i, k, w, j, A.getNumColumns()-1);
+      B.addWeightedRowToOther(i, k, w);
+    }
+   
+
+    i++;
+  }
+
+}
+// we are finished when no pivots can found in the current row anymore
+
+
+
 
 template<class T>
 void rowEchelon(rsMatrixView<T>& A, rsMatrixView<T>& B)
@@ -67,7 +127,8 @@ void rowEchelon(rsMatrixView<T>& A, rsMatrixView<T>& B)
   int numCols = A.getNumColumns();
   for(int i = 0; i < rsMin(numRows, numCols); i++) {
     //rsMatrix<T> dbg; dbg.copyDataFrom(A);  // uncomment for debugging
-    int p = i; 
+
+    int p = i;
 
     // search pivot row (maybe factor out int inte findPivot(int column)
     T biggest = T(0);
@@ -468,15 +529,7 @@ T getDeterminantRowWise(const rsMatrix<T>& A, int i = 0)
 
 
 
-template<class T>
-int getFirstNonZeroIndexInRow(const rsMatrix<T>& A, int row, T tol)
-{
-  int j;
-  for(j = 0; j < A.getNumColumns(); j++)
-    if( rsGreaterAbs( A(row, j), tol ) )
-      return j;
-  return j;  // will return numCols (i.e. invalid index) when the row is all zeros
-}
+
 
 template<class T>
 int getNumNonZeroRows(const rsMatrixView<T>& A, T tol)
@@ -614,7 +667,7 @@ bool isRowEchelon(const rsMatrix<T>& A, T tol)
 {
   int col = -1; 
   for(int i = 0; i < A.getNumRows(); i++) {
-    int j = getFirstNonZeroIndexInRow(A, i, tol);
+    int j = getLeadCoeffIndex(A, i, tol);
     if(j <= col && j < A.getNumColumns()) // there was no right-step in this row, the 2nd condition
       return false;                       // is needed for dealing with zero-rows at the bottom
     col = j;
@@ -648,7 +701,7 @@ std::vector<int> getPivots(const rsMatrix<T>& A, T tol)
   while(true) {
     if( row >= A.getNumRows() )
       break;
-    int leadCoeffIndex = getFirstNonZeroIndexInRow(A, row, tol); // rename to getLeadingIndex
+    int leadCoeffIndex = getLeadCoeffIndex(A, row, tol);
     if( leadCoeffIndex >= A.getNumColumns() )
       break;
     pivots.push_back(leadCoeffIndex);
