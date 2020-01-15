@@ -32,6 +32,23 @@ bool rsLinearAlgebraNew::solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixV
   return true;                                   // matrix A was regular -> report success
 }
 
+// subspaces:
+
+/*
+template<class T>
+rsMatrix<T> rsLinearAlgebraNew::rowSpace(rsMatrix<T>, T tol)
+{
+  rsMatrix<T> z(A.getNumRows(), 1);    // dummy
+  RAPT::rsLinearAlgebraNew::makeTriangular(A, z);
+  return getWithoutBottomZeroRows(A, tol);
+}
+*/
+
+
+
+
+// subroutines:
+
 template<class T>
 int rsLinearAlgebraNew::makeDiagonal(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {

@@ -470,6 +470,7 @@ rsMatrix<T> getWithoutBottomZeroRows(const rsMatrix<T>& A, T tol)
   int rank = getRankRowEchelon(A, tol); // A is assumed to be in row-echelon form
   return getSubMatrix(A, 0, 0, rank, A.getNumColumns());
 }
+// make member of rsMatrix
 
 /** Returns the space spanned by the rows of matrix A... see Karpf. pg 140 */
 template<class T>
@@ -479,7 +480,7 @@ rsMatrix<T> getRowSpace(rsMatrix<T> A, T tol)
   RAPT::rsLinearAlgebraNew::makeTriangular(A, z);
   return getWithoutBottomZeroRows(A, tol);
 }
-// needs more tests - doesn't seem to work yet
+// needs more tests
 
 template<class T>
 rsMatrix<T> getColumnSpace(rsMatrix<T> A, T tol)
@@ -767,6 +768,7 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
 
   return B;
 }
+// move to library, rename to nullSpace, also move rowSpace and columnSpace over
 
 
 /*

@@ -52,6 +52,27 @@ public:
   // fail whenever there are no solutions or a continuum of solutions
   // maybe it should also return the rank?
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Subspaces */
+
+
+  template<class T>
+  static rsMatrix<T> rowSpace(rsMatrix<T> A, T tol);
+  // allocates, needs tests
+
+  /*
+  template<class T>
+  static rsMatrix<T> columnSpace(const RAPT::rsMatrixView<T>& A);
+
+  template<class T>
+  static rsMatrix<T> nullSpace(const RAPT::rsMatrixView<T>& A);
+
+  template<class T>
+  static rsMatrix<T> eigenSpace(const RAPT::rsMatrixView<T>& A, const T& eigenvalue);
+  */
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Subroutines */
