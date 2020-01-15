@@ -215,10 +215,10 @@ bool nullspace()
 
   A = Matrix(4, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0});
   //B = getNullSpace(A, tol);  
-  // r &= testNullSpace(A); 
+  //r &= testNullSpace(A); 
   A = Matrix(5, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0, 0,0,0,0});
-  //B = getNullSpace(A, tol);  
-  // r &= testNullSpace(A); 
+  B = getNullSpace(A, tol);  
+  //r &= testNullSpace(A); 
   // this test fails - why? function returns a nullspace of <(0,0,1,0)> -> compute the nullspace
   // with sage and compare
   // it doesn't help to delete the bottom row and use a 4x4 matrix
@@ -328,7 +328,8 @@ bool nullspace()
   //B = getNullSpace2(A);  null = A*B;   // experimental new version
   //B = getNullSpace(A, tol);  null = A*B;
   //r &= isZero = null.isZero();
-  r &= testNullSpace(A);  
+  r &= testNullSpace(A); rsAssert(r);
+  // when we use the new code in solve2, this test here fails - the old code works
 
 
 

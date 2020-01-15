@@ -55,8 +55,12 @@ bool makeTriangularNoPivot(rsMatrix<T>& A, rsMatrix<T>& B)
 // simplest (lowest degree or smallest) nonzero element - because then, there may be less complex
 // computations
 
+
+
+
+
 template<class T>
-void rowEchelon(rsMatrixView<T>& A)
+void rowEchelon(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
   T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
   int numRows = A.getNumRows();
@@ -72,19 +76,33 @@ void rowEchelon(rsMatrixView<T>& A)
         biggest = A(j, i); 
         p = j; }}
 
-    if(p != i)  
-      A.swapRows(i, p); 
+    if(p != i)
+    {
+      A.swapRows(i, p);
+      B.swapRows(i, p);
+
+    }
 
     for(int j = i+1; j < numRows; j++) {              // pivot row subtraction
       if( !rsGreaterAbs(A(i, i), tooSmall) )
         break;  // this is an all-zeros column
       T w = -A(j, i) / A(i, i);                       // weight
       A.addWeightedRowToOther(i, j, w, i, numCols-1); // start at i: avoid adding zeros
+      B.addWeightedRowToOther(i, j, w);
     }
   }
 }
 // rowReduce
 // maybe also make a function reducedRowEchelon
+
+template<class T>
+void rowEchelon(rsMatrixView<T>& A)
+{
+  rsMatrix<T> dummy(A.getNumRows(), 1);
+  rowEchelon(A, dummy);
+}
+// oudl perhaps be nicer to have a function that really only works on A but that would mean
+// code duplication...we'll see
 
 
 
@@ -362,7 +380,7 @@ void shuffle(rsMatrix<T>& A, rsMatrix<T>& B, int range, int seed = 0)
 
 template<class T>
 rsMatrix<T> getSubMatrix(
-  const rsMatrix<T>& A, int startRow, int startCol, int numRows, int numCols)
+  const rsMatrixView<T>& A, int startRow, int startCol, int numRows, int numCols)
 {
   // assert that it all makes sense
 
@@ -420,8 +438,8 @@ T getDeterminantColumnWise(const rsMatrix<T>& A, int j = 0)
   return det;
 
   // Notes: 
-  // -in the recursive call we always use the 0-th column to make it work also in the base-case 
-  //  which we will eventually reach
+  // -in the recursive call we always expand along the 0-th column to make it work also in the 
+  //  base-case which we will eventually reach
   // -the function could be optimized by implementing special rules for 2x2 and 3x3 matrices:
   //  https://en.wikipedia.org/wiki/Determinant#2_%C3%97_2_matrices to avoid the lowest level of 
   //  recursion - this was not done because it's not meant for production use anyway - it's 
@@ -432,6 +450,7 @@ T getDeterminantColumnWise(const rsMatrix<T>& A, int j = 0)
   //  rational functions - only class rsPolynomial itself is needed. For this, we must promote the
   //  given matrix of numbers to a matrix of polynomials instead of rational functions.
 }
+// rename to getDeterminantViaLaplaceExpansion
 
 template<class T>
 T getDeterminantRowWise(const rsMatrix<T>& A, int i = 0)
@@ -446,6 +465,9 @@ T getDeterminantRowWise(const rsMatrix<T>& A, int i = 0)
   return det;
 }
 
+
+
+
 template<class T>
 int getFirstNonZeroIndexInRow(const rsMatrix<T>& A, int row, T tol)
 {
@@ -456,12 +478,43 @@ int getFirstNonZeroIndexInRow(const rsMatrix<T>& A, int row, T tol)
   return j;  // will return numCols (i.e. invalid index) when the row is all zeros
 }
 
+template<class T>
+int getNumNonZeroRows(const rsMatrixView<T>& A, T tol)
+{
+  int i = A.getNumRows() - 1;
+  while(i > 0) {
+    if(!A.isRowZero(i, tol))
+      return i+1;
+    i--; }
+  return i;
+}
+// function assumes that zero rows can occur only at the bottom - the name should reflect that
+// maybe make a function getNumBottomZeroRows instead
 
+template<class T>
+int getNumBottomZeroRows(const rsMatrix<T>& A, T tol)
+{
+  for(int i = A.getNumRows()-1; i >= 0; i--)
+  {
+    if(!A.isRowZero(i, tol))
+      return A.getNumRows() - i;
+  }
+  return 0;
+
+  /*
+  int i = A.getNumRows() - 1;
+  while(i > 0) {
+    if(!A.isRowZero(i, tol))
+      return i+1;
+    i--; }
+  return i;
+  */
+}
 
 /** Returns rank of a matrix assumed to be in row echelon form. This is the number of nonzero 
 rows. */
 template<class T>
-int getRankRowEchelon(const rsMatrix<T>& A, T tol)
+int getRankRowEchelon(const rsMatrixView<T>& A, T tol)
 {
   // rsAssert(isRowEchelon(A));
   int i = 0; 
@@ -479,7 +532,8 @@ int getRankRowEchelon(const rsMatrix<T>& A, T tol)
   return i;
 }
 // 
-// verify, if this is correct - maybe make unit test with weird matrices
+// verify, if this is correct - maybe make unit test with weird matrices - actually this may be
+// overly complicated - we could just use getNumNonZeroRows
 
 template<class T>
 rsMatrix<T> getWithoutBottomZeroRows(const rsMatrix<T>& A, T tol)
@@ -734,15 +788,49 @@ bool isIndexSplit(int numIndices, const std::vector<int> subset1, const std::vec
 }
 
 template<class T>
-bool solve2(rsMatrix<T> A, rsMatrix<T> X, rsMatrix<T> B)
+bool solve2(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
 {
   rsAssert(A.getNumColumns() == X.getNumRows()); // A*X = B or A*x = b must make sense
   rsAssert(X.hasSameShapeAs(B));                 // num of solutions == num of rhs-vectors
   rsAssert(A.isSquare()); 
-  if(makeTriangular(A, B) != A.getNumRows())
-    return false;                                // matrix A was singular -> report failure
-  solveTriangular(A, X, B);
-  return true;                                   // matrix A was regular -> report success
+
+  T tol = 1.e-12;  // make parameter
+
+  rowEchelon(A, B);  // pass tol
+
+  int rankA  = getRankRowEchelon(A, tol); // number of nonzero rows
+  int rankAB = getNumNonZeroRows(B, tol);
+
+  // if A has zero rows at the bottom, the system is singular - if the augment B has also a zero
+  // row for each of the zero rows in A, the system is consistent and we get to choose the bottom
+  // elements of X (we'll choose them to be all zeros)
+
+  if(rankA == A.getNumColumns()) {
+    RAPT::rsLinearAlgebraNew::solveTriangular(A, X, B);      // system was regular -> unique solution
+    return true; }
+  else  {                          // system was singular...
+    if(rankAB > rankA)
+      return false;                // ...and inconsistent -> no solution possible
+    else
+    {
+      // Here, the singular system was consistent so there are infinitely many solutions. We pick 
+      // the solution that chooses the bottom elements in the solution vectors to be zero. This 
+      // amounts to solving the sub-system with the top-left section of the original matrix 
+      // (setting the bottom variables zero renders the right section of the matrix ineffective
+      // for other choices, we would have to adapt the right-hand side):
+
+      //int R = rsMin(rank, A.getNumRows()); // i think, rank <= A.getNumRows is guaranteed
+      rsMatrix<T> a = getSubMatrix(A, 0, 0, rankA, rankA);
+      rsMatrix<T> b = getSubMatrix(B, 0, 0, rankA, B.getNumColumns());
+      rsMatrix<T> x(b.getNumRows(), b.getNumColumns());
+      RAPT::rsLinearAlgebraNew::solveTriangular(a, x, b); // A is in echelon form - and so is a
+      X.setToZero();
+      for(int i = 0; i < x.getNumRows(); ++i)
+        for(int j = 0; j < x.getNumColumns(); ++j)
+          X(i, j) = x(i, j);
+      return true;
+    }
+  }
 }
 // todo: should also return a valid result when the system is singular and consistent
 // maybe instead of makeTriangular, call rowEchelon(A, B), chek the number of zero bottom rows, 
@@ -812,13 +900,19 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
       M(i, j) =  A(pivots[i], pivots[j]);
     for(j = 0; j < nRhs; j++)  
       R(i, j) = -A(pivots[i], params[j]); }
+  //solve2(M, b, R);  // deals with singular systems also
+
   bool regular = RAPT::rsLinearAlgebraNew::solve(M, b, R);
+
+  /*
+
   //rsAssert(regular, "does not yet work when M * b = R is underdetermined");
   if(!regular)
   {
     // M * b = R is an underdetermined system - we get to pick more free variables - perhaps
     // just select the bottom variables to be zero
   }
+  */
 
   // seems to currently only work when M is non-singular? when it's singular and consistent, it 
   // will have infinitely many solutions - so we get to pick some free variables again - maybe we
