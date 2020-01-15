@@ -654,6 +654,37 @@ std::vector<int> getNonPivots(const rsMatrix<T>& A, T tol)
 // needs more tests
 
 
+/** Returns true iff array A contains element x exactly once. */
+template<class T>
+bool containsOnce(const T* A, int N, T x)
+{
+  bool found = false;
+  for(int i = 0; i < N; ++i) {
+    if(found == true && A[i] == x)
+      return false;       // x was found twice
+    if(A[i] == x)
+      found = true; }
+  return found;
+}
+
+/** Returns true, iff every number between 0 and N-1 (both included) is contained exactly once in
+either subset1 or subset2. This means the two subsets split the set of indices from 0 to N-1 into
+two disjoint sets that together combine to the whole set. */
+bool isIndexSplit(int numIndices, const int* subset1, int size1, const int* subset2, int size2)
+{
+  if(size1 + size2 != numIndices)
+    return false;
+  for(int i = 0; i < numIndices; ++i)
+    if( !(containsOnce(subset1, size1, i) || containsOnce(subset2, size2, i)) )
+      return false;
+  return true;
+}
+// maybe make a more general function that instead of checking for a split of indices checks for a
+// split of arbitrary things - it would have to take another array for the full set as parameter
+// and we would have to do containsOnce(subset1, size1, fullSet[i]), etc. - maybe call it isSplit 
+// or isDisjointSplit
+
+
 template<class T>
 rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
 {
@@ -670,7 +701,7 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
 
   using Matrix = RAPT::rsMatrix<T>;
   Matrix z(A.getNumRows(), 1);                     // dummy - needed by function
-  LA::makeTriangular(A, z); 
+  RAPT::rsLinearAlgebraNew::makeTriangular(A, z); 
   // maybe factor out a function that takes a triangular matrix getNullSpaceEchelon(Matrix&)
 
   // find out which dimensions are free and which dependent:
@@ -678,10 +709,9 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
   std::vector<int> params = getNonPivots(A, tol);  // free parameters
   int nEqn = (int) pivots.size();                  // number of equations (# of dependents)
   int nRhs = (int) params.size();                  // number of right-hand sides (# of parameters)
-  rsAssert(nEqn + nRhs == A.getNumColumns());      // for debug
-  // todo: write a function that ensures tha each number from 0 to A.numCol(?) is contained 
-  // exactly once in either pivots or params and make an assertion - maybe call it 
-  // isValidIndexSplit(indexSet1, indexSet2) - maybe make a function containsOnce for that
+  rsAssert(isIndexSplit(A.getNumColumns(),
+                        &pivots[0], nEqn,          // sanity check for debug
+                        &params[0], nRhs));
 
   // set up the linear system ("gather") and solve it:
   Matrix M(nEqn, nEqn);                            // coefficient matrix of the NxN system
@@ -691,7 +721,7 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
   for(i = 0; i < nEqn; i++) {
     for(j = 0; j < nEqn; j++)
       M(i, j) =  A(pivots[i], pivots[j]);
-    for(j = 0; j < nRhs; j++)
+    for(j = 0; j < nRhs; j++)  
       R(i, j) = -A(pivots[i], params[j]); }
   RAPT::rsLinearAlgebraNew::solve(M, b, R); 
 
@@ -706,6 +736,12 @@ rsMatrix<T> getNullSpace3(rsMatrix<T> A, T tol)
 
   return B;
 }
+// todo: rename this function to getNullSpace - this should replace our old implementation - maybe
+// rename that into getNullSpaceTailParams - the qualification indicates that it only works in the
+// special case where all the free parameters are in the tail of the basis vectors (i.e. in the 
+// last elements) - this can still be useful because this is a common occurence and i think, the 
+// algo is perhaps more efiicient - but for the general case, this function here shall be used
+
 
 
 

@@ -171,7 +171,7 @@ void determinant()
 
 bool nullspace()
 {
-  // turn into unit-test
+  // todo: move the getNullSpace functions into the library and turn this into unit-test
   bool r = true;
 
   using Matrix = RAPT::rsMatrix<double>;
@@ -295,8 +295,8 @@ bool nullspace()
   //     |0 0 0 0 0|      |0|
   bool isZero;
   A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0});
-  B = getNullSpace(A);  null = A*B; r &= isZero = null.isZero();
-  B = getNullSpace3(A, tol);
+  B = getNullSpace(A);       null = A*B; r &= null.isZero();
+  B = getNullSpace3(A, tol); null = A*B; r &= null.isZero();
 
 
   // from here https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
