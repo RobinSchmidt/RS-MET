@@ -280,19 +280,27 @@ bool testSubSpaces()
   // Function that takes a matrix A and its nullspace and checks, if our nullspace computation 
   // function produces a result that agrees with the target nullspace
   using Vec = std::vector<double>;
-  auto checkNullSpace = [&](int M, int N, Vec vecA, Vec vecB)->bool // maybe pass matrices
+  auto checkNullSpace = [&](int M, int N, int R, Vec vecA, Vec vecB)->bool // maybe pass matrices
   { 
-    Matrix A(M, N, vecA);
-    Matrix T(M, N, vecB);      // target nullspace
+    Matrix A(M, N,   vecA);
+    Matrix T(M, N-R, vecB);      // target nullspace
     Matrix B = getNullSpace(A, tol);
+    //rsAssert(B == T);
     return B == T;  // use tolerance
   };
 
-  r &= checkNullSpace(3, 3, {0,0,0, 0,0,0, 0,0,0}, {1,0,0, 0,1,0, 0,0,1});
+  r &= checkNullSpace(3, 3, 1, {1,0,0, 0,0,0, 0,0,0}, {0,1,0, 0,0,1});        // rank 1 - fails!
+  r &= checkNullSpace(3, 3, 0, {0,0,0, 0,0,0, 0,0,0}, {1,0,0, 0,1,0, 0,0,1}); // rank 0
+  r &= checkNullSpace(3, 3, 2, {1,0,0, 0,1,0, 0,0,0}, {0,0,1});               // rank 2
+  r &= checkNullSpace(3, 3, 2, {1,0,0, 0,0,0, 0,1,0}, {0,1,0});               // rank 2
+  r &= checkNullSpace(3, 3, 3, {1,0,0, 0,1,0, 0,0,1}, {});                    // rank 3
 
-  A = Matrix(3, 3, {0,0,0, 0,0,0, 0,0,0});
-  B = getNullSpace(A, tol);
-  r &= B == Matrix(3, 3, {1,0,0, 0,1,0, 0,0,1});
+
+
+
+  //A = Matrix(3, 3, {0,0,0, 0,0,0, 0,0,0});
+  //B = getNullSpace(A, tol);
+  //r &= B == Matrix(3, 3, {1,0,0, 0,1,0, 0,0,1});
   // make a function that can be called like: 
   // checkNullSpace(3, 3, {0,0,0, 0,0,0, 0,0,0},{1,0,0, 0,1,0, 0,0,1}) - maybe make it a lambda, 
   // defined right here
