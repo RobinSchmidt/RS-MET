@@ -291,19 +291,16 @@ bool testSubSpaces()
     return C.isZero(tol) && null.isZero(tol);
   };
 
-
-
-  //r &= checkNullSpace(3, 3, 1, {1,0,0, 0,0,0, 0,0,0}, {0,0, 1,0, 0,1});       // rank 1 - fails
-  //r &= checkNullSpace(3, 3, 1, {0,1,0, 0,0,0, 0,0,0}, {0,0, 1,0, 0,1});       // rank 1
-
-
-
   r &= checkNullSpace(3, 3, 0, {0,0,0, 0,0,0, 0,0,0}, {1,0,0, 0,1,0, 0,0,1}); // rank 0
+  r &= checkNullSpace(3, 3, 1, {0,1,0, 0,0,0, 0,0,0}, {1,0, 0,0, 0,1});       // rank 1
+  r &= checkNullSpace(3, 3, 1, {1,0,0, 0,0,0, 0,0,0}, {0,0, 1,0, 0,1});       // rank 1
   r &= checkNullSpace(3, 3, 2, {1,0,0, 0,1,0, 0,0,0}, {0,0,1});               // rank 2
   r &= checkNullSpace(3, 3, 2, {1,0,0, 0,0,0, 0,1,0}, {0,0,1});               // rank 2
   r &= checkNullSpace(3, 3, 3, {1,0,0, 0,1,0, 0,0,1}, {});                    // rank 3
+  // create some more examples - also using 3x2 and 2x3 matrices
 
-
+  // ahh - wait - the nullspace is the space that is spanned by the rows! not by the columns that 
+  // wouldn't make any sense since it's the rows that live in the embedding space
 
 
 
