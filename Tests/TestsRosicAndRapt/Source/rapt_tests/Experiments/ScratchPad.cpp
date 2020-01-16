@@ -783,23 +783,17 @@ bool isIndexSplit(int numIndices, const std::vector<int> subset1, const std::vec
 }
 
 template<class T>
-bool solve2(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
+bool solve2(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B, T tol)
 {
   rsAssert(A.getNumColumns() == X.getNumRows()); // A*X = B or A*x = b must make sense
   rsAssert(X.hasSameShapeAs(B));                 // num of solutions == num of rhs-vectors
   rsAssert(A.isSquare()); 
 
-  T tol = 1.e-12;  // make parameter
+  //T tol = 1.e-12;  // make parameter
 
-  rowEchelon(A, B);  // pass tol
-
-  int rankA  = getRankRowEchelon(A, tol); // number of nonzero rows
-  int rankAB = getNumNonZeroRows(B, tol);
-
-  // if A has zero rows at the bottom, the system is singular - if the augment B has also a zero
-  // row for each of the zero rows in A, the system is consistent and we get to choose the bottom
-  // elements of X (we'll choose them to be all zeros)
-
+  rowEchelon(A, B);  // todo: pass tol
+  int rankA  = getRankRowEchelon(A, tol); // number of nonzero rows, rank of the coeff matrix
+  int rankAB = getNumNonZeroRows(B, tol); // same for the augmented coeff matrix A|B
   if(rankA == A.getNumColumns()) {
     RAPT::rsLinearAlgebraNew::solveTriangular(A, X, B);      // system was regular -> unique solution
     return true; }
@@ -808,13 +802,13 @@ bool solve2(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
       return false;                // ...and inconsistent -> no solution possible
     else
     {
-      // Here, the singular system was consistent so there are infinitely many solutions. We pick 
-      // the solution that chooses the bottom elements in the solution vectors to be zero. This 
-      // amounts to solving the sub-system with the top-left section of the original matrix 
-      // (setting the bottom variables zero renders the right section of the matrix ineffective
-      // for other choices, we would have to adapt the right-hand side):
-
-      //int R = rsMin(rank, A.getNumRows()); // i think, rank <= A.getNumRows is guaranteed
+      // The coefficient matrix A has zero rows at the bottom, so the system is singular. The 
+      // augment B has also a zero row for each of the zero rows in A, so the singular system is 
+      // consistent, so there are infinitely many solutions, so we get to choose some free 
+      // parameters. We make the choice that the bottom elements in the solution vectors in X 
+      // should be zero. This amounts to solving the sub-system with the top-left section of the 
+      // original matrix (setting the bottom variables zero renders the right section of the matrix
+      // ineffective for other choices, we would have to adapt the right-hand side):
       rsMatrix<T> a = getSubMatrix(A, 0, 0, rankA, rankA);
       rsMatrix<T> b = getSubMatrix(B, 0, 0, rankA, B.getNumColumns());
       rsMatrix<T> x(b.getNumRows(), b.getNumColumns());
@@ -827,10 +821,6 @@ bool solve2(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
     }
   }
 }
-// todo: should also return a valid result when the system is singular and consistent
-// maybe instead of makeTriangular, call rowEchelon(A, B), chek the number of zero bottom rows, 
-// fill those rows in the result also with zeros (that means, we pick the last variables as zero) 
-// and solve the top-left sub-system
 
 
 /** Computes the set of vectors v which solve the homogenous linear system of equations A * v = 0 
@@ -856,7 +846,7 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
   // which says that the dimensionality of the embedding R^M vector space equals the dimensionality
   // of the A's nullspace plus the dimensionality of A's column space (or is it the row-space? the
   // space spanned by the rows makes more sense because the rows live in R^M while the columns may 
-  // not -> figure out). We set up and RxR linear system solve it for N different right hand sides
+  // not -> FIGURE OUT). We set up an RxR linear system solve it for N different right hand sides
   // corresponding to N different choices for assigning the free parameters. The most natural 
   // choice is to set one to 1 and all others to 0 in each assignment and select a different
   // one to set to 1 in each of the N cases. The solution of the linear system gives us
@@ -894,10 +884,10 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
       M(i, j) =  A(i, pivots[j]);                  // copy relevant coeffs
     for(j = 0; j < nRhs; j++)
       R(i, j) = -A(i, params[j]); }                // resulting rhs from setting j-th param to 1
-  bool success = solve2(M, b, R);
+  bool success = solve2(M, b, R, tol);
   rsAssert(success);
 
-  // write solutions into output ("scatter") and fill up with ones:
+  // write solutions into output ("scatter") and fill up with ones and zeros:
   Matrix B(A.getNumColumns(), nRhs);               // final result
   B.setToZero();
   for(i = 0; i < nEqn; i++)
