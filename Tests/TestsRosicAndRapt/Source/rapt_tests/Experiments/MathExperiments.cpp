@@ -179,7 +179,6 @@ bool testNullSpace(RAPT::rsMatrix<T> A)
   T tol = T(1.e-12);
   RAPT::rsMatrix<T> B = getNullSpace(A, tol); // B is basis for the nullspace
   RAPT::rsMatrix<T> null = A*B; 
-  //return null.isZero(tol);
   return null.isZero(tol) && !B.containsZeroColumn(tol);
 }
 
@@ -189,7 +188,6 @@ bool testNullSpaceTailParams(RAPT::rsMatrix<T> A)
   T tol = T(1.e-12);  
   RAPT::rsMatrix<T> B = getNullSpaceTailParams(A, tol); 
   RAPT::rsMatrix<T> null = A*B; 
-  //return null.isZero(tol);
   return null.isZero(tol) && !B.containsZeroColumn(tol);
 }
 
@@ -229,8 +227,6 @@ bool nullspace()
   // Both tests evaluate to true - that's interesting - i expected only the test with the transpose
   // to return true -> figure out, how row-space and column-space are related - they have the same 
   // dimension but are they the same space?
-
-
 
 
   A  = Matrix(3, 3, {1,1,1, 1,2,4, 2,3,5});   // book says, col-space is <(1,1,2),(0,1,1)>
@@ -273,22 +269,46 @@ bool nullspace()
  
   A = Matrix(5, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0, 0,0,0,0}); r &= testNullSpace(A); 
  
-
   A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);
   A = Matrix(5, 5, {0,0,3,4,5, 0,0,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);  
   A = Matrix(5, 5, {1,2,3,0,0, 0,1,6,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);  
-  //B = getNullSpaceTailParams(A, tol);  null = A*B; r &= null.isZero();  
-  B = getNullSpace(A, tol);  null = A*B; r &= null.isZero();  
-  test = B.containsZeroColumn(tol);
-  // this works - but the basis contains the zero-vector - that's useless as basis-vector!
-  // sometimes, the basis of the nullspace contains the zero-vector that should not happen!
-  // nope - there is no zero vector - i misread the matrix entries
   A = Matrix(5, 5, {1,2,0,4,5, 0,1,0,7,8, 0,0,0,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);
   A = Matrix(5, 5, {0,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A); 
-  //rowEchelon2(A, tol);
-  //rowEchelon2(A, tol);  // to check, if function is idempotent
-  B = getNullSpace(A, tol); 
-  r &= testNullSpace(A); // fails - but works if we call rowEchelon2 before - WTF?
+
+
+  // check a couple of examples for which we have produced the correct nullspaces with sage via
+  // commands like:
+  // A = matrix(QQ, [[ 1,  4,  0, -1,  0,   7, -9],
+  //                 [ 2,  8, -1,  3,  9, -13,  7],
+  //                 [ 0,  0,  2, -3, -4,  12, -8],
+  //                 [-1, -4,  2,  4,  8, -31, 37]])
+  // A.right_kernel()
+  //
+  // which gives as answer:
+  //
+  // Vector space of degree 7 and dimension 4 over Rational Field
+  // Basis matrix:
+  // [    1     0     0     0  -3/7  -1/7     0]
+  // [    0     1     0     0 -12/7  -4/7     0]
+  // [    0     0     1     0  -3/7 -9/14  -1/2]
+  // [    0     0     0     1   1/7 13/28   1/4]
+  A = Matrix(4, 7, { 1,  4,  0, -1,  0,   7, -9,
+                     2,  8, -1,  3,  9, -13,  7,
+                     0,  0,  2, -3, -4,  12, -8,
+                    -1, -4,  2,  4,  8, -31, 37});
+  B  = getNullSpace(A, tol);
+  B2 = Matrix(4, 7, {1, 0, 0, 0,  -3./7, -1./7,  0,
+                     0, 1, 0, 0, -12./7, -4./7,  0,
+                     0, 0, 1, 0,  -3./7, -9./14,-1./2,
+                     0, 0, 0, 1,   1./7, 13./28, 1./4 }).getTranspose();
+  test = spanSameSpace(B, B2, tol);
+  // why do we need to transpose? what convention uses sage to return the nullspace? are the rows 
+  // shown there supposed to be columns? maybe we should also transpose our result to be consistent 
+  // with sage? ...figure out which convention is used in math for representing baes of nullspaces
+  // and adapt code, if necessarry
+
+
+
 
   // todo:
   // add a test that the returned matrix does not contain the zero vector - figure out, how it 
