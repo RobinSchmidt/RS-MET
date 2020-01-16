@@ -533,10 +533,6 @@ T getDeterminantRowWise(const rsMatrix<T>& A, int i = 0)
 }
 
 
-
-
-
-
 template<class T>
 int getNumNonZeroRows(const rsMatrixView<T>& A, T tol)
 {
@@ -942,15 +938,47 @@ A.right_kernel()
 */
 
 template<class T>
-rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A)
+rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A, T tol)
 {
-
-  return rsMatrix<T>();  // preliminary
+  return getNullSpace(A.getTranspose(), tol);  // verify if that's correct
+  //return rsMatrix<T>();  // preliminary
 }
+
+// make a class rsSubSpace that defines arithmetic operations:
+// -subspaces of a R^M are represented by MxN matrices whose columns define a basis of R^M
+// -equals(A, B): spanSameSpace(A, B), A,B must have the same embedding space, i.e. their number 
+//  of rows must match
+// -add(A, B): set union: throw A,B together, then remove linearly dependent vectors via
+//  transpose -> row-echelon -> remove bottom zero lines -> transpose
+// -mul(A, B): set intersection: use those vectors of A which are in the span of B
+// -negate(A): orthogonal complement of A
+// -sub(A,B): set difference remove those elements from A whichare in the span of B..or no - that
+//  doesn't seem right, maybe just use negate and add
+
+// Compute solution sets of inhomogeneous systems of linear equations - for example, consider the 
+// plane in R^3 defined by: 2*x + 3*y + 5*z = 7. This plane can be represented by the linear system
+//   2 3 5 | 7
+//   0 0 0 | 0
+//   0 0 0 | 0
+// we may mangle the system a bit by applying row transformations - it will still always define the 
+// same plane. To compute the solution set, we need to compute one particluar solution x_0 of the 
+// inhomogenous system and the nullspace of the matrix. The full solution is then given by
+// { x € R^3 : x = x_0 + a * v_1 + b * v_2 } where a,b are scalars and v_1,v_2 are the columns of
+// nullspace matrix (it should come out as a two column matrix). ...i think 
 
 // todo: can we also compute a basis for the image in a similar way?
 // If N is numRows and K is the rank, in order to find the nullspace, we have solve a KxK system
 // fo (N-K)x(N-K) different right-hand sides. This gives
+
+// here:
+// https://www.mathwizurd.com/linalg/2018/12/10/orthogonal-complement
+// https://textbooks.math.gatech.edu/ila/orthogonal-complements.html
+// are some relations bewtween row-spaces, column-spaces and nullspaces. Let's denote row-, 
+// column- and nullspace as rsp,csp,nsp and the orthogonal complement as comp - then we have
+// comp(rsp(A)) == nsp(A), csp(A) = rsp(A^T) = comp(nsp(A^T)), rsp(A) = comp(nsp(A)),
+// comp(csp(A)) = nsp(A) - do we also have comp(A) = nsp(A^T)?
+// checking equality for spaces means to check if the bases span the same space - so we could 
+// write checks like r &= spanSameSpace(orthogonalComplement(rowSpace(A)), nullSpace(A)) etc.
 
 
 // https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix

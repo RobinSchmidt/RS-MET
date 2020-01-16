@@ -268,6 +268,27 @@ public:
     return true;
   }
 
+  bool isColumnZero(int columnIndex, T tol) const
+  {
+    for(int i = 0; i < getNumRows(); ++i)
+      if( rsAbs(at(i, columnIndex)) > tol )
+        return false;
+    return true;
+  }
+
+
+  /** Returns true, iff one of the columns of the matrix consists of all zeros. */
+  template<class T>
+  bool containsZeroColumn(T tol) const
+  {
+    for(int j = 0; j < numCols; j++)
+      if( isColumnZero(j, tol) )
+        return true;
+    return false;
+  }
+  // needs test
+
+
   /** Returns a const pointer to the data for read access as a flat array. */
   const T* getDataPointerConst() const { return dataPointer; }
 

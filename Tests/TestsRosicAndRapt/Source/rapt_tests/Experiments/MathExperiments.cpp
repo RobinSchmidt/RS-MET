@@ -170,6 +170,8 @@ void determinant()
 }
 
 
+
+
 // move this code to unit tests:
 template<class T>
 bool testNullSpace(RAPT::rsMatrix<T> A)
@@ -177,7 +179,8 @@ bool testNullSpace(RAPT::rsMatrix<T> A)
   T tol = T(1.e-12);
   RAPT::rsMatrix<T> B = getNullSpace(A, tol); // B is basis for the nullspace
   RAPT::rsMatrix<T> null = A*B; 
-  return null.isZero(tol);
+  //return null.isZero(tol);
+  return null.isZero(tol) && !B.containsZeroColumn(tol);
 }
 
 template<class T>
@@ -186,7 +189,8 @@ bool testNullSpaceTailParams(RAPT::rsMatrix<T> A)
   T tol = T(1.e-12);  
   RAPT::rsMatrix<T> B = getNullSpaceTailParams(A, tol); 
   RAPT::rsMatrix<T> null = A*B; 
-  return null.isZero(tol);
+  //return null.isZero(tol);
+  return null.isZero(tol) && !B.containsZeroColumn(tol);
 }
 
 template<class T>
@@ -226,16 +230,7 @@ bool nullspace()
   // to return true -> figure out, how row-space and column-space are related - they have the same 
   // dimension but are they the same space?
 
-  // now the same with the first column all zeros:
-  A = Matrix(5, 5, {0,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); 
-  rowEchelon2(A, tol);
-  //rowEchelon2(A, tol);  // to check, if function is idempotent
-  //B = getNullSpace(A, tol); 
-  r &= testNullSpace(A); // fails - but works if we call rowEchelon2 before - WTF?
-  // OK - our test has a strict comparison and there's some nonzero value of the order of epsilon
-  // but why does this not happen if we call rowEchelon before? is there some slight numerical 
-  // difference? oh - it may have to do with the right-hand sides? if the matrix is in rref, 
-  // there's no change to the rhs during the elimination, otherwise, there is
+
 
 
   A  = Matrix(3, 3, {1,1,1, 1,2,4, 2,3,5});   // book says, col-space is <(1,1,2),(0,1,1)>
@@ -280,11 +275,24 @@ bool nullspace()
  
 
   A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);
-
-
-
+  A = Matrix(5, 5, {0,0,3,4,5, 0,0,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);  
+  A = Matrix(5, 5, {1,2,3,0,0, 0,1,6,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);  
+  //B = getNullSpaceTailParams(A, tol);  null = A*B; r &= null.isZero();  
+  B = getNullSpace(A, tol);  null = A*B; r &= null.isZero();  
+  test = B.containsZeroColumn(tol);
+  // this works - but the basis contains the zero-vector - that's useless as basis-vector!
+  // sometimes, the basis of the nullspace contains the zero-vector that should not happen!
+  // nope - there is no zero vector - i misread the matrix entries
+  A = Matrix(5, 5, {1,2,0,4,5, 0,1,0,7,8, 0,0,0,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);
+  A = Matrix(5, 5, {0,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A); 
+  //rowEchelon2(A, tol);
+  //rowEchelon2(A, tol);  // to check, if function is idempotent
+  B = getNullSpace(A, tol); 
+  r &= testNullSpace(A); // fails - but works if we call rowEchelon2 before - WTF?
 
   // todo:
+  // add a test that the returned matrix does not contain the zero vector - figure out, how it 
+  // comes about that the produced nullspaces sometimes contain it
   // try various MxN matrices - maybe with random elements ...although, for random matrices, the 
   // nullspaces will probably always come out as the whole embedding space - it's unlikely that
   // random matrices are singular - maybe programmatically construct singular matrices (use a set
@@ -294,66 +302,14 @@ bool nullspace()
   // randomly from a known set of basis vectors - if we write some random basis vectors into the 
   // rows and construct the other rows as linear combinations of the them, we have a known 
   // nullspace - we can check with spanSameSpace if we got the full nullspace
-  // 
-
-  // here:
-  // https://www.mathwizurd.com/linalg/2018/12/10/orthogonal-complement
-  // https://textbooks.math.gatech.edu/ila/orthogonal-complements.html
-  // are some relations bewtween row-spaces, column-spaces and nullspaces. Let's denote row-, 
-  // column- and nullspace as rsp,csp,nsp and the orthogonal complement as comp - then we have
-  // comp(rsp(A)) == nsp(A), csp(A) = rsp(A^T) = comp(nsp(A^T)), rsp(A) = comp(nsp(A)),
-  // comp(csp(A)) = nsp(A)
-  // checking equality for spaces means to check if the bases span the same space - so we could 
-  // write checks like r &= spanSameSpace(orthogonalComplement(rowSpace(A)), nullSpace(A)) etc.
-
-
-
-
- 
-  // fails to make 2nd column all zeros - when we ancounter an all-zeros column, we have to 
-  // produce a stairstep also in the next nonzero column right to it - row echelon form requires
-  // that the leading coeff in each row is somewhere right to the leading coeff in the previous
-  // row - row echelon form is more restrictive than just being upper triangular we need to use
-  // getLeadCoeffIndex for the column idex instead of just the loop counter
-
-
-  //B = getNullSpaceTailParams(A, tol); null = A*B; r &= null.isZero(); // fails (predictably)
-  //B = getNullSpace(A, tol); // triggers assert - is not in row-echelon form after makeTriangular
-  //null = A*B; r &= isZero = null.isZero(); 
-  // this fails! in solveTriangular, we divide by A(i,i)
-  // we need a function makeRowEchelon or something - calls makeTriangular..or wait -makeTriangular
-  // returns early when it encounters a zero column because then it determines that the matrix is
-  // singular - but we want to work with singular matrices! this function is good only for solving
-  // non-singular systems but not for general use! we really need a function that works with 
-  // singular matrices - when it encounters a zero-column, it should just go on with the next 
-  // column instead of returning early - also it may not need an augment, so we can get rid
-  // of the dummy augments in nullSpace, etc.
-
-  // now make also the 2nd column zero:
-  A = Matrix(5, 5, {0,0,3,4,5, 0,0,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);  
-  //B = getNullSpaceTailParams(A, tol); null = A*B; r &= isZero = null.isZero();
-  // B has even more nans and infs
-
-  // apparently, we need to do something special in case of leading zero columns - this actually
-  // applies to any linear system - i think, i must choose variables which have zero-columns as 
-  // free parameters - try to make columns 4 and 5 zero - these are the variables that we 
-  // currently select as parameters:
-  A = Matrix(5, 5, {1,2,3,0,0, 0,1,6,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);  
-  B = getNullSpaceTailParams(A, tol);  null = A*B; r &= null.isZero();  
-  B = getNullSpace(A, tol);  null = A*B; r &= null.isZero();  
-  // this works - but the basis contains the zero-vector - that's useless as basis-vector!
-  // sometimes, the basis of the nullspace contains the zero-vector that should not happen!
-
-  // try to make column 3 zero:
-  A = Matrix(5, 5, {1,2,0,4,5, 0,1,0,7,8, 0,0,0,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);  
-  //B = getNullSpaceTailParams(A, tol);  null = A*B; r &= isZero = null.isZero();
-  // also leads to error
+  // try various "mean" matrices (with zero columns in various places
 
   // todo: orthogonalize the obtained nullspace bases and compute BB = B.getTranspose() * B; 
   // this should give the identity matrix, iff B is orthonormal - maybe make such testt later when we have
   // Gram-Schmidt orthogonalizations
 
-  std::cout << "nullspace works";
+  if(r)
+    std::cout << "nullspace works";
   rsAssert(r);
   return r;
 }
