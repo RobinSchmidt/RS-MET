@@ -339,8 +339,10 @@ bool nullspace()
   // free parameters - try to make columns 4 and 5 zero - these are the variables that we 
   // currently select as parameters:
   A = Matrix(5, 5, {1,2,3,0,0, 0,1,6,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);  
-  //B = getNullSpaceTailParams(A, tol);  null = A*B; r &= null.isZero();  
+  B = getNullSpaceTailParams(A, tol);  null = A*B; r &= null.isZero();  
+  B = getNullSpace(A, tol);  null = A*B; r &= null.isZero();  
   // this works - but the basis contains the zero-vector - that's useless as basis-vector!
+  // sometimes, the basis of the nullspace contains the zero-vector that should not happen!
 
   // try to make column 3 zero:
   A = Matrix(5, 5, {1,2,0,4,5, 0,1,0,7,8, 0,0,0,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);  

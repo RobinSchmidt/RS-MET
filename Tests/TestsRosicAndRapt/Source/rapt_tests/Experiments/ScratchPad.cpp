@@ -82,8 +82,9 @@ int getLeadCoeffIndex(const rsMatrixView<T>& A, int row, T tol, int startColumn 
 // rename to getLeadCoeffIndex
 
 
-
-// A is coefficient matrix, B is augment
+/** Puts the augmented coefficient matrix A|B into row echelon form via Gaussian elimination. 
+In this form, each row has its leading coefficient at least one position further to the right than
+the previous row and rows of all zeros are at the bottom. */
 template<class T>
 void rowEchelon2(rsMatrix<T>& A, rsMatrix<T>& B, T tol)  // change to matrixview for production
 {
@@ -123,7 +124,7 @@ void rowEchelon2(rsMatrix<T>& A, T tol)
   rowEchelon2(A, dummy, tol);
 }
 
-
+// obsolete:
 template<class T>
 void rowEchelon(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
@@ -912,6 +913,7 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
   return B;
 }
 // move to library, rename to nullSpace, also move rowSpace and columnSpace over
+// it sometimes produces bases that contain the zero vector
 
 
 
