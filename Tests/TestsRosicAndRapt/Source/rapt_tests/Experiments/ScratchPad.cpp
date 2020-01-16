@@ -780,46 +780,46 @@ bool isIndexSplit(int numIndices, const std::vector<int> subset1, const std::vec
     &subset2[0], (int)subset2.size());
 }
 
+/** If the coefficient matrix A has zero rows at the bottom, so the system is singular. If the 
+augment B has also a zero row for each of the zero rows in A, so the singular system is consistent, 
+so there are infinitely many solutions, so we get to choose some free parameters. We assume that to 
+be the case here - the matrices A and B are assumed to both have rankA nonzero rows. We make the 
+choice that the bottom elements in the solution vectors in X should be zero. This amounts to 
+solving the sub-system with the top-left section of the original matrix (setting the bottom 
+variables zero renders the right section of the matrix ineffective for other choices, we would have
+to adapt the right-hand side).  */
+template<class T>
+bool solveUnderDeterminedRowEchelon(
+  rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B, int rankA, T tol)
+{
+  rsMatrix<T> a = getSubMatrix(A, 0, 0, rankA, rankA);
+  rsMatrix<T> b = getSubMatrix(B, 0, 0, rankA, B.getNumColumns());
+  rsMatrix<T> x(b.getNumRows(), b.getNumColumns());
+  RAPT::rsLinearAlgebraNew::solveTriangular(a, x, b); // A is in echelon form - and so is a
+  X.setToZero();
+  for(int i = 0; i < x.getNumRows(); ++i)
+    for(int j = 0; j < x.getNumColumns(); ++j)
+      X(i, j) = x(i, j);
+  return true;
+}
+
 template<class T>
 bool solve2(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B, T tol)
 {
   rsAssert(A.getNumColumns() == X.getNumRows()); // A*X = B or A*x = b must make sense
   rsAssert(X.hasSameShapeAs(B));                 // num of solutions == num of rhs-vectors
-  rsAssert(A.isSquare()); 
-
-  //T tol = 1.e-12;  // make parameter
-
-  //rowEchelon(A, B, tol);  // todo: pass tol
-  rowEchelon2(A, B, tol);  // todo: pass tol
-
+  rsAssert(A.isSquare());                        // do we really need this? maybe not!
+  rowEchelon2(A, B, tol);
   int rankA  = getRankRowEchelon(A, tol); // number of nonzero rows, rank of the coeff matrix
   int rankAB = getNumNonZeroRows(B, tol); // same for the augmented coeff matrix A|B
-  if(rankA == A.getNumColumns()) {
-    RAPT::rsLinearAlgebraNew::solveTriangular(A, X, B);      // system was regular -> unique solution
+  if(rankA == A.getNumColumns()) {                           // system was regular 
+    RAPT::rsLinearAlgebraNew::solveTriangular(A, X, B);      //   -> unique solution
     return true; }
-  else  {                          // system was singular...
-    if(rankAB > rankA)
-      return false;                // ...and inconsistent -> no solution possible
-    else
-    {
-      // The coefficient matrix A has zero rows at the bottom, so the system is singular. The 
-      // augment B has also a zero row for each of the zero rows in A, so the singular system is 
-      // consistent, so there are infinitely many solutions, so we get to choose some free 
-      // parameters. We make the choice that the bottom elements in the solution vectors in X 
-      // should be zero. This amounts to solving the sub-system with the top-left section of the 
-      // original matrix (setting the bottom variables zero renders the right section of the matrix
-      // ineffective for other choices, we would have to adapt the right-hand side):
-      rsMatrix<T> a = getSubMatrix(A, 0, 0, rankA, rankA);
-      rsMatrix<T> b = getSubMatrix(B, 0, 0, rankA, B.getNumColumns());
-      rsMatrix<T> x(b.getNumRows(), b.getNumColumns());
-      RAPT::rsLinearAlgebraNew::solveTriangular(a, x, b); // A is in echelon form - and so is a
-      X.setToZero();
-      for(int i = 0; i < x.getNumRows(); ++i)
-        for(int j = 0; j < x.getNumColumns(); ++j)
-          X(i, j) = x(i, j);
-      return true;
-    }
-  }
+  else  {                                                    // system was singular...
+    if(rankAB > rankA)                                       // ...and inconsistent/overdetermined
+      return false;                                          //          -> no solution possible
+    else                                                     // ...and consistent/underdetermined
+      solveUnderDeterminedRowEchelon(A, X, B, rankA, tol); } //          -> infinitely many solutions
 }
 
 
@@ -831,7 +831,6 @@ this subspace represented as matrix. The columns of the matrix are the basis vec
 this may be the empty matrix which indicates that the nullspace of A consists only of the 
 zero-vector (todo: maybe we should return the Mx1 zero vector in this case? ...decide later by 
 which convention is more convenient when dealing with eigenspaces */
-
 template<class T>
 rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
 {
