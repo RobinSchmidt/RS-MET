@@ -218,12 +218,14 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
 
 /** Represents the root of a polynomial along with its multiplicity. The datatype of the 
 coefficients is assumed to be a complex number type. */
+/*
 template<class T>
 struct rsPolynomialRoot
 {
   T value;   // T is assumed to be a complex type
   int multiplicity;
 };
+*/
 
 /** Represents the eigenspace of a matrix with complex coefficients. Each eigenspace consists of 
 an eigenvalue and an associated set of eigenvectors. */
@@ -231,37 +233,45 @@ template<class T>
 struct rsEigenSpace
 {
 
-  int getAlgebraicMultiplicity() const { return eigenvalue.multiplicity; }
+  //int getAlgebraicMultiplicity() const { return eigenvalue.multiplicity; }
+
+  int getAlgebraicMultiplicity() const { return algebraicMultiplicity; }
 
   int getGeometricMultiplicity() const { return (int) eigenspace.size(); }
 
   //void orthonormalize();
 
-  rsPolynomialRoot<T> eigenvalue;
+  //rsPolynomialRoot<T> eigenvalue;
+
+
+  complex<T> eigenvalue;
   rsMatrix<T> eigenspace;  // basis of nullspace of A - eigenvalue * I
                            //std::vector<std::vector<T>> eigenspace;
+  int algebraicMultiplicity; // not yet assigned
 };
 
 /** Represents the set of eigenspaces of a matrix with complex coefficients. This set consists of a
-set of (igenvalues, each with an algebraic multiplicity which is the order of the
+set of (eigenvalues, each with an algebraic multiplicity which is the order of the
 polynomial root. Associated with each eigenvalue is a set of eigenvectors...  */
 template<class T>  // T should be a complex type
-class rsEigenStuff
+class rsEigenSpaceSet
 {
 
 public:
 
-protected:
-
   rsPolynomial<T> characteristicPolynomial;
   std::vector<rsEigenSpace<T>> eigenspaces;
+
+protected:
+
+
 
 };
 
 // for matrices with real coefficients, we must promote them to complex numbers because even real
 // matrices may have complex eigenvalues and eigenvectors
 template<class T>
-class rsEigenStuffReal : public rsEigenStuff<std::complex<T>>
+class rsEigenStuffReal : public rsEigenSpaceSet<std::complex<T>>
 {
 
 };
@@ -550,20 +560,9 @@ template<class T>
 int getNumBottomZeroRows(const rsMatrix<T>& A, T tol)
 {
   for(int i = A.getNumRows()-1; i >= 0; i--)
-  {
     if(!A.isRowZero(i, tol))
       return A.getNumRows() - i;
-  }
   return 0;
-
-  /*
-  int i = A.getNumRows() - 1;
-  while(i > 0) {
-    if(!A.isRowZero(i, tol))
-      return i+1;
-    i--; }
-  return i;
-  */
 }
 
 /** Returns rank of a matrix assumed to be in row echelon form. This is the number of nonzero 
@@ -821,8 +820,11 @@ bool solve2(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B, T tol)
   else  {                                                    // system was singular...
     if(rankAB > rankA)                                       // ...and inconsistent/overdetermined
       return false;                                          //          -> no solution possible
-    else                                                     // ...and consistent/underdetermined
-      solveUnderDeterminedRowEchelon(A, X, B, rankA, tol); } //          -> infinitely many solutions
+    else {
+      solveUnderDeterminedRowEchelon(A, X, B, rankA, tol);   // ...and consistent/underdetermined
+      return true;
+    }
+  }                                     //          -> infinitely many solutions
 }
 
 
@@ -907,6 +909,59 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
 
 
 
+/*
+template<class T>
+rsEigenSpaceSet<complex<T>> getEigenSpaces(rsMatrix<T> A, T tol)
+{
+  rsAssert(A.isSquare());  // try to relax later
+
+  rsEigenSpaceSet<complex<T>> eigenSet;
+  using Matrix  = RAPT::rsMatrix<T>;
+  using MatrixC = RAPT::rsMatrix<complex<T>>;
+
+  // get characteristci polynomial and eigenvalues:
+  RAPT::rsPolynomial<T> p = getCharacteristicPolynomial(A);
+
+  //eigenSet.characteristicPolynomial = p; 
+  // still incomatible with respect to what is complex and what is real - perhaps is easiest to
+  // just make everything complex
+
+  vector<complex<T>> eigenvalues = getPolynomialRoots(p);
+
+  // convert roots array to an array that has unique roots with a multiplicity currently, we compute
+  // each eigenspace multiple times - once for each occurence of its eigenvalue - that's wasteful
+
+  // compute eigenspaces to each eigenvalue:
+  int N = A.getNumRows();              // or columns?
+  MatrixC Ac = complexify(A);
+  MatrixC I(N,N); I.setToIdentity();
+
+
+  for(int i = 0; i < N; i++) {
+    MatrixC Ai = Ac - eigenvalues[i] * I;        // (A - x_i * I) * v = 0
+
+    MatrixC eigenSpace = getNullSpace(Ai, complex<T>(tol));  //  get rid
+
+    rsEigenSpace<complex<T>> es;
+    es.eigenspace = eigenSpace;
+    es.eigenvalue = eigenvalues[i];
+    eigenSet.eigenspaces.push_back(es);
+
+    // test, if A * v = eigenvalue * v for v in the eigenspace at once
+    MatrixC test1 = Ac * eigenSpace;
+    MatrixC test2 = eigenvalues[i] * eigenSpace;
+    MatrixC error = test1 - test2;
+    rsAssert(error.isZero(tol));
+
+    //eigenspaces[i] = eigenspaces[i].getTranspose(); // for convenient inspection in the debugger
+  }           
+
+  return eigenSet;
+}
+// i get linker errors due to rsPolynomial<complex<double>>
+*/
+
+
 template<class T>
 rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A, T tol)
 {
@@ -914,6 +969,27 @@ rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A, T tol)
   //return rsMatrix<T>();  // preliminary
 }
 // needs test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // make a class rsSubSpace that defines arithmetic operations:
 // -subspaces of a R^M are represented by MxN matrices whose columns define a basis of R^M

@@ -254,7 +254,8 @@ public:
   bool isRowZero(int rowIndex, T tol) const
   {
     for(int j = 0; j < getNumColumns(); ++j)
-      if( rsAbs(at(rowIndex, j)) > tol )
+      //if( rsAbs(at(rowIndex, j)) > tol )
+      if( rsGreaterAbs(at(rowIndex, j), tol) )
         return false;
     return true;
   }

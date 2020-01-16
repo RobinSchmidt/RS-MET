@@ -354,7 +354,10 @@ bool testSubSpaces()
   // produced the whole embedding space - we may create the union of the nullspace and its
   // complement and check, if it spans the whole space
 
-
+  //rsEigenSpaceSet<complex<double>> eigen = getEigenSpaces(A, tol);
+  // we should notneed to wrap it into complex here - getEigenSpaces should automatically 
+  // complexify for eal matrices - or it should take complex matrices - yes - that would perhaps
+  // be the best
 
 
   // todo:
