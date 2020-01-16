@@ -276,6 +276,35 @@ bool testSubSpaces()
   A = Matrix(5, 5, {0,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A); 
 
 
+
+  // Function that takes a matrix A and its nullspace and checks, if our nullspace computation 
+  // function produces a result that agrees with the target nullspace
+  using Vec = std::vector<double>;
+  auto checkNullSpace = [&](int M, int N, Vec vecA, Vec vecB)->bool // maybe pass matrices
+  { 
+    Matrix A(M, N, vecA);
+    Matrix T(M, N, vecB);      // target nullspace
+    Matrix B = getNullSpace(A, tol);
+    return B == T;  // use tolerance
+  };
+
+  r &= checkNullSpace(3, 3, {0,0,0, 0,0,0, 0,0,0}, {1,0,0, 0,1,0, 0,0,1});
+
+  A = Matrix(3, 3, {0,0,0, 0,0,0, 0,0,0});
+  B = getNullSpace(A, tol);
+  r &= B == Matrix(3, 3, {1,0,0, 0,1,0, 0,0,1});
+  // make a function that can be called like: 
+  // checkNullSpace(3, 3, {0,0,0, 0,0,0, 0,0,0},{1,0,0, 0,1,0, 0,0,1}) - maybe make it a lambda, 
+  // defined right here
+
+
+
+
+
+
+
+
+
   // check a couple of examples for which we have produced the correct nullspaces with sage via
   // commands like:
   // A = matrix(QQ, [[ 1,  4,  0, -1,  0,   7, -9],
