@@ -345,6 +345,16 @@ bool testSubSpaces()
   // remove bottom zero lines -> transpose - that should get rid of supefluous vectors
 
 
+  Matrix rsp = getRowSpace( A, tol);
+  Matrix nsp = getNullSpace(A, tol);
+  Matrix cmp = getOrthogonalComplement(rsp.getTranspose(), tol); 
+  r &= spanSameSpace(cmp, nsp, tol);
+  // we need to transpose because a rowspace consists of rows - is that the common convention?
+  // figure out! probabyl we may use these relations to figure out if getNullSpace has actually 
+  // produced the whole embedding space - we may create the union of the nullspace and its
+  // complement and check, if it spans the whole space
+
+
 
 
   // todo:

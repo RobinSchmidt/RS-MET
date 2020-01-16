@@ -23,7 +23,8 @@ That means each column of x can be expressed as some linear combination of the c
 template<class T>
 bool isInSpanOf(rsMatrix<T> B, rsMatrix<T> x, T tol)
 {
-  rsAssert(B.hasSameShapeAs(x));
+  //rsAssert(B.hasSameShapeAs(x));
+  rsAssert(B.getNumRows() == x.getNumRows());
   RAPT::rsLinearAlgebraNew::makeTriangular(B, x);
   int rankB = getRankRowEchelon(B, tol);
   return x.areRowsZero(rankB, x.getNumRows()-1, tol);
