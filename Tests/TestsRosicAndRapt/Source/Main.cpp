@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
   // Math:
   //determinant();
   //characteristicPolynomial();
-  nullspace();
+  testSubSpaces();        // todo: move to unit tests
   //linearIndependence();
   //eigenstuff();
   //linearSolverPrecision();

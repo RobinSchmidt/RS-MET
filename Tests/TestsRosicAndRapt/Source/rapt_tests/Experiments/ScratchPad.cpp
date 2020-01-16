@@ -800,8 +800,10 @@ bool solveUnderDeterminedRowEchelon(
   for(int i = 0; i < x.getNumRows(); ++i)
     for(int j = 0; j < x.getNumColumns(); ++j)
       X(i, j) = x(i, j);
+  // maybe factor out into X.copySubMatrixFrom(x, 0, 0, rankA, X.getNumColumns())
   return true;
 }
+// todo: make another function that computes a minimum-norm solution
 
 template<class T>
 bool solve2(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B, T tol)
@@ -903,36 +905,13 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
 
 
 
-
-
-/*
-sage:
-A = matrix(QQ, [[ 1,  4,  0, -1,  0,   7, -9],
-                [ 2,  8, -1,  3,  9, -13,  7],
-                [ 0,  0,  2, -3, -4,  12, -8],
-                [-1, -4,  2,  4,  8, -31, 37]])
-A.right_kernel()
-
-sage:
-A = matrix(QQ, [[ 0,  1],
-                [ 0,  0]])
-A.right_kernel()
-
-Karpf. pg. 142
-A = matrix(QQ, [[ 1, 2,  3,  4],
-                [ 2, 4,  6,  8],
-                [ 3, 6,  9, 12],
-                [ 4, 8, 12, 16],])
-A.right_kernel()
-
-*/
-
 template<class T>
 rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A, T tol)
 {
   return getNullSpace(A.getTranspose(), tol);  // verify if that's correct
   //return rsMatrix<T>();  // preliminary
 }
+// needs test
 
 // make a class rsSubSpace that defines arithmetic operations:
 // -subspaces of a R^M are represented by MxN matrices whose columns define a basis of R^M

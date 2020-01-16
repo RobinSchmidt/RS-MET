@@ -197,7 +197,7 @@ bool testNullSpaceBoth(RAPT::rsMatrix<T> A)
   return testNullSpace(A) && testNullSpaceTailParams(A);
 }
 
-bool nullspace()
+bool testSubSpaces()
 {
   // todo: move the getNullSpace functions into the library and turn this into unit-test
   bool r = true;
@@ -210,7 +210,7 @@ bool nullspace()
   // That's ok - the basis of a vector space is not unique - we apparently have sometimes made
   // different choices for the free parameters.
 
-  Matrix A, A2, B, B2, null, BB, z, x;
+  Matrix A, A2, B, B2, C, null, BB, z, x;
   int rank;
   double tol = 1.e-12;
   bool test;
@@ -306,6 +306,15 @@ bool nullspace()
   // shown there supposed to be columns? maybe we should also transpose our result to be consistent 
   // with sage? ...figure out which convention is used in math for representing baes of nullspaces
   // and adapt code, if necessarry
+
+
+  B = getOrthogonalComplement(A.getTranspose(), tol);
+  C = A*B;
+  // C is zero - that's good - but A^T has 4 cols, B also - shouldn't B have only 3? the number of 
+  // dimensions of both bases should add up to the dimension of the embedding space. Or maybe A has
+  // one vector that is superfluous in it? maybe we should have a function 
+  // removeSuperfluousColumns ..or maybe take A^T -> turn into row-echelon -> 
+  // remove bottom zero lines -> transpose - that should get rid of supefluous vectors
 
 
 

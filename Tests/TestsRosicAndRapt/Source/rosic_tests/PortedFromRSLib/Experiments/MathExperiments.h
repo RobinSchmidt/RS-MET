@@ -3,7 +3,7 @@
 
 void determinant();
 void characteristicPolynomial();
-bool nullspace();
+bool testSubSpaces();
 void linearIndependence();
 void eigenstuff();
 void linearSolverPrecision();
