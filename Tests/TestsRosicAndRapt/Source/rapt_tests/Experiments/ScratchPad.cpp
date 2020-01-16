@@ -896,7 +896,8 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
       B(pivots[i], j) = b(i, j);
   for(i = 0; i < nRhs; i++)
     for(j = 0; j < nRhs; j++)
-      B(params[i], i) = 1;
+      //B(params[i], j) = 1;  
+      B(params[i], i) = 1;  // should it be params[i], j ?
 
   return B;
 }
