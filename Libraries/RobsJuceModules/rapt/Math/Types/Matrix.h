@@ -246,6 +246,11 @@ public:
   bool isZero() const { return rsArrayTools::isAllZeros(dataPointer, getSize()); }
   // todo: allow for a tolerance ..or maybe have a function isAlmostZero for that
 
+  bool isZero(T tol) const 
+  { 
+    return rsArrayTools::isAllZeros(dataPointer, getSize(), tol); 
+  }
+
   bool isRowZero(int rowIndex, T tol) const
   {
     for(int j = 0; j < getNumColumns(); ++j)

@@ -177,7 +177,7 @@ bool testNullSpace(RAPT::rsMatrix<T> A)
   T tol = T(1.e-12);
   RAPT::rsMatrix<T> B = getNullSpace(A, tol); // B is basis for the nullspace
   RAPT::rsMatrix<T> null = A*B; 
-  return null.isZero();
+  return null.isZero(tol);
 }
 
 template<class T>
@@ -186,7 +186,7 @@ bool testNullSpaceTailParams(RAPT::rsMatrix<T> A)
   T tol = T(1.e-12);  
   RAPT::rsMatrix<T> B = getNullSpaceTailParams(A, tol); 
   RAPT::rsMatrix<T> null = A*B; 
-  return null.isZero();
+  return null.isZero(tol);
 }
 
 template<class T>

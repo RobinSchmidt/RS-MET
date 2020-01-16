@@ -424,6 +424,9 @@ public:
   template <class T>
   static inline bool isAllZeros(const T *buffer, int length);
 
+  template <class T>
+  static inline bool isAllZeros(const T *buffer, int length, T tolerance);
+
   /** Returns true, if the passed buffer has values equal to the given value, false otherwise. */
   template <class T>
   static inline bool isFilledWithValue(const T *buffer, int length, T value);
@@ -880,6 +883,15 @@ template <class T>
 inline bool rsArrayTools::isAllZeros(const T *buffer, int length)
 {
   return isFilledWithValue(buffer, length, T(0));
+}
+
+template <class T>
+inline bool rsArrayTools::isAllZeros(const T* a, int N, T tol)
+{
+  for(int i = 0; i < N; i++)
+    if( rsGreaterAbs(a[i], tol) )
+      return false;
+  return true;
 }
 
 template <class T>
