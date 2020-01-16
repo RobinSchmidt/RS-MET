@@ -87,7 +87,7 @@ int getLeadCoeffIndex(const rsMatrixView<T>& A, int row, T tol, int startColumn 
 In this form, each row has its leading coefficient at least one position further to the right than
 the previous row and rows of all zeros are at the bottom. */
 template<class T>
-void rowEchelon2(rsMatrix<T>& A, rsMatrix<T>& B, T tol)  // change to matrixview for production
+void rowEchelon2(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)  // change to rsMatrixView for production
 {
   int i = 0;
   int j = 0;
@@ -119,7 +119,7 @@ void rowEchelon2(rsMatrix<T>& A, rsMatrix<T>& B, T tol)  // change to matrixview
 // needs test
 
 template<class T>
-void rowEchelon2(rsMatrix<T>& A, T tol)
+void rowEchelon2(rsMatrixView<T>& A, T tol)
 {
   rsMatrix<T> dummy(A.getNumRows(), 1);
   rowEchelon2(A, dummy, tol);
@@ -127,9 +127,10 @@ void rowEchelon2(rsMatrix<T>& A, T tol)
 
 // obsolete:
 template<class T>
-void rowEchelon(rsMatrixView<T>& A, rsMatrixView<T>& B)
+void rowEchelon(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)
 {
-  T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
+  //T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
+
   int numRows = A.getNumRows();
   int numCols = A.getNumColumns();
   for(int i = 0; i < rsMin(numRows, numCols); i++) {
@@ -144,15 +145,12 @@ void rowEchelon(rsMatrixView<T>& A, rsMatrixView<T>& B)
         biggest = A(j, i); 
         p = j; }}
 
-    if(p != i)
-    {
+    if(p != i) {
       A.swapRows(i, p);
-      B.swapRows(i, p);
-
-    }
+      B.swapRows(i, p); }
 
     for(int j = i+1; j < numRows; j++) {              // pivot row subtraction
-      if( !rsGreaterAbs(A(i, i), tooSmall) )
+      if( !rsGreaterAbs(A(i, i), tol) )
         break;  // this is an all-zeros column
       T w = -A(j, i) / A(i, i);                       // weight
       A.addWeightedRowToOther(i, j, w, i, numCols-1); // start at i: avoid adding zeros
@@ -164,7 +162,7 @@ void rowEchelon(rsMatrixView<T>& A, rsMatrixView<T>& B)
 // maybe also make a function reducedRowEchelon
 
 template<class T>
-void rowEchelon(rsMatrixView<T>& A)
+void rowEchelon(rsMatrixView<T>& A, T tol)
 {
   rsMatrix<T> dummy(A.getNumRows(), 1);
   rowEchelon(A, dummy);
@@ -791,7 +789,9 @@ bool solve2(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B, T tol)
 
   //T tol = 1.e-12;  // make parameter
 
-  rowEchelon(A, B);  // todo: pass tol
+  //rowEchelon(A, B, tol);  // todo: pass tol
+  rowEchelon2(A, B, tol);  // todo: pass tol
+
   int rankA  = getRankRowEchelon(A, tol); // number of nonzero rows, rank of the coeff matrix
   int rankAB = getNumNonZeroRows(B, tol); // same for the augmented coeff matrix A|B
   if(rankA == A.getNumColumns()) {
