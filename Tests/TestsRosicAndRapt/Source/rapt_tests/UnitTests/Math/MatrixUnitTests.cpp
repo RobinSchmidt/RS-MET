@@ -350,10 +350,11 @@ bool testMatrixView()
   MatrixView m79r(7, 9, A63);
   r &=  m79r.isStorageRowMajor();    // by default, we should get row-major storage
   r &= !m79r.isStorageColumnMajor();
+  r &= m79r.isStorageContiguous();
   int i, j;
   for(i = 0; i < 7; i++)
     for(j = 0; j < 9; j++)
-      m79r(i, j) = 10*(i+1) + j+1;   // fill the matrix
+      m79r(i, j) = 10*(i+1) + j+1;   
 
   // verify some random samples from the flat array:
   r &= A63[16] == 28 && A63[28] == 42 && A63[51] == 67;
@@ -362,12 +363,16 @@ bool testMatrixView()
 
 
   MatrixView m79c(7, 9, A63, false); // false should indicate "no row-major storage"
-  r &= !m79c.isStorageRowMajor();   
-  r &=  m79c.isStorageColumnMajor();  
+  r &= !m79c.isStorageRowMajor();
+  r &=  m79c.isStorageColumnMajor();
+  r &= m79r.isStorageContiguous();
 
+  // fill the matrix again - this time thd numbers got to different places
+  for(i = 0; i < 7; i++)
+    for(j = 0; j < 9; j++)
+      m79r(i, j) = 10*(i+1) + j+1;
+  //r &= A63[16] == 33 && A63[28] == 15 && A63[51] == 38;
 
-
-  // m79.setShape
 
 
   // have a function isStorageRowMajor() which determines if it is in row-major format from the 
@@ -449,7 +454,7 @@ bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
   testResult &= allocs == 7;
 
   C = B*A;  // calls move assignment operator
-  testResult &= allocs == 8;
+  testResult &= allocs == 8;   // fails here
   testResult &= C(0,0) ==  9 &&  C(0,1) == 12 && C(0,2) == 15;
   testResult &= C(1,0) == 19 &&  C(1,1) == 26 && C(1,2) == 33;
   testResult &= C(2,0) == 29 &&  C(2,1) == 40 && C(2,2) == 51;
