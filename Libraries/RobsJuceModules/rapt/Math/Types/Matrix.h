@@ -177,6 +177,10 @@ public:
     rsAssert(newNumRows*newNumColumns == numRows*numCols);
     numRows = newNumRows;
     numCols = newNumColumns;
+
+    // later switch between row-major and column-major storage - this is suitable for row-major
+    colStride = 1;
+    rowStride = numCols;
   }
   // maybe rename to setShape for consistency with the rest of the library...otoh, reshape is 
   // consistent with NumPy
@@ -610,6 +614,9 @@ public:
     rsAssert(i >= 0 && i < numRows, "invalid row index");
     rsAssert(j >= 0 && j < numCols, "invalid column index");
     return numCols*i + j;
+
+    // return i*rowStride + j*colStride;  // to be used later
+
     // todo:
     //  -be more general: colStride*i + rowStride*j. goal: allow row-major and column-major storage
     //   while the syntax of the () operator is always row-major (as is conventional in math)
@@ -618,6 +625,8 @@ public:
     // -maybe be even more general: colOffset + colStride*i + (rowOffset + rowStride)*j
     //  -> may allow to access sub-matrices with the same syntax (todo: verify formula)
     //  ...but maybe that should be done in a class rsSubMatrixView
+    // we don't even need these offsets for addressing submatrices - it's enough to use
+    // i * rowStride + j * colStride
   }
 
 
@@ -627,6 +636,8 @@ protected:
 
   int numRows = 0, numCols = 0;  // number of rows and columns
   T *dataPointer = nullptr;      // pointer to the actual data
+
+  int rowStride, colStride;  // experimental - not yet used
 
 };
 
