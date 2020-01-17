@@ -158,13 +158,12 @@ public:
 
   /** Creates a matrix view with the given number of rows and columns for the given raw array of 
   values in "data". The view will *not* take ownership over the data. */
-  rsMatrixView(int numRows, int numColumns, T* data, bool rowMajor = true)
+  rsMatrixView(int numRows, int numColumns, T* data)
   {
     rsAssert(numRows >= 1 && numColumns >= 1 && data != nullptr);
     this->numRows = numRows;
     this->numCols = numColumns;
     dataPointer = data;
-    setShape(numRows, numColumns, rowMajor); // to trigger computation of strides
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -173,17 +172,11 @@ public:
   /** Re-interprets the arrangement of the underlying array as having the new given numbers of rows
   and columns. Their product must remain the same, though. For example, you can reshape a 3x4 
   matrix into 4x3, 2x6, 6x2, 1x12, 12x1 but nothing else. ..todo: maybe lift that restriction? */
-  void setShape(int newNumRows, int newNumColumns, bool rowMajor = true)
+  void setShape(int newNumRows, int newNumColumns)
   {
     rsAssert(newNumRows*newNumColumns == numRows*numCols);
     numRows = newNumRows;
     numCols = newNumColumns;
-    if(rowMajor) {
-      colStride = 1;
-      rowStride = numCols; }
-    else {
-      colStride = numRows;
-      rowStride = 1; }
   }
   // maybe rename to setShape for consistency with the rest of the library...otoh, reshape is 
   // consistent with NumPy
@@ -194,8 +187,6 @@ public:
   {
     numRows = 0;
     numCols = 0;
-    rowStride = 0;
-    colStride = 0;
     dataPointer = nullptr;
   }
 
@@ -211,14 +202,6 @@ public:
   A*B can be formed. */
   static bool areMultiplicable(const rsMatrixView<T>& A, const rsMatrixView<T>& B)
   { return A.numCols == B.numRows; }
-
-  /** Returns true, iff matrices A and b have the same storage forat, i.e. are either both stored
-  as row-major or both as column-major. */
-  static bool haveSameStorageFormat(const rsMatrixView<T>& A, const rsMatrixView<T>& B)
-  {
-    return (A.isStorageRowMajor()    && B.isStorageRowMajor()) 
-        || (A.isStorageColumnMajor() && B.isStorageColumnMajor());
-  }
 
   /** Returns true, iff the rhs matrix is equal to this matrix with an optional tolerance. */
   bool equals(const rsMatrixView<T>& rhs, T tolerance = T(0)) const
@@ -307,20 +290,6 @@ public:
   // needs test
 
 
-  bool isStorageRowMajor() const { return colStride == 1; }
-
-  bool isStorageColumnMajor() const  { return rowStride == 1; }
-  // we infer the storage format from the strides so we don't need to store an extra variable for
-  // that - but note that by that definition, 1x1 matrices are stored row-major and column-major at
-  // the same time
-
-  bool isStorageContiguous() const 
-  { return (rowStride == numCols && colStride == 1) || (colStride == numRows && rowStride == 1); }
-  // needs test
-  // is this correct? contiguoucy is important, if we want to use functions from rsArryTools for 
-  // addition, etc. - but submatrix view are not contiguous - they may have to jump/skip over 
-  // initial rows and columns
-
   /** Returns a const pointer to the data for read access as a flat array. */
   const T* getDataPointerConst() const { return dataPointer; }
 
@@ -332,11 +301,7 @@ public:
   //T* getData() { return dataPointer; }
 
   /** Returns a pointer to a given row. */
-  T* getRowPointer(int rowIndex)  
-  { 
-    rsAssert(isStorageRowMajor() && colStride == 1, "row-pointers make no sense for this matrix" );
-    return &dataPointer[rowIndex*numCols]; 
-  }
+  T* getRowPointer(int rowIndex)  { return &dataPointer[rowIndex*numCols]; }
   // if we later support column-major storage, we should assert that the matrix in row-major
   // storage
 
@@ -400,8 +365,7 @@ public:
   void setDiagonalValues(T value)
   {
     for(int i = 0; i < rsMin(numRows, numCols); i++)
-      dataPointer[flatIndex(i, i)] = value;
-      //dataPointer[i*numCols + i] = value;
+      dataPointer[i*numCols + i] = value;
   }
   // needs test
 
@@ -410,8 +374,7 @@ public:
   void setDiagonalValues(T* values)
   {
     for(int i = 0; i < rsMin(numRows, numCols); i++)
-      dataPointer[flatIndex(i, i)] = values[i];
-      //dataPointer[i*numCols + i] = values[i];
+      dataPointer[i*numCols + i] = values[i];
   }
   // needs test
 
@@ -516,24 +479,13 @@ public:
   static void add(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsAssert(haveSameStorageFormat(A, B) && haveSameStorageFormat(A, *C), "formats incompatible");
-    rsAssert(A.isStorageContiguous() && B.isStorageContiguous() && C->isStorageContiguous(), 
-      "not yet implemented for submatrices");
-
     rsArrayTools::add(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
-  // maybe instead of an assertion, make an if-conditional - use rsArrayTools::add only if they
-  // all have the same storage format and storage is contiguous, otherwise use a slower double-loop
-  // and use the flat-index computation function - make a test fast
 
   /** Subtracts elements of B from corresponding elements A in and stores results in C. */
   static void subtract(const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsAssert(haveSameStorageFormat(A, B) && haveSameStorageFormat(A, *C), "formats incompatible");
-    rsAssert(A.isStorageContiguous() && B.isStorageContiguous() && C->isStorageContiguous(), 
-      "not yet implemented for submatrices");
-
     rsArrayTools::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
@@ -542,10 +494,6 @@ public:
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsAssert(haveSameStorageFormat(A, B) && haveSameStorageFormat(A, *C), "formats incompatible");
-    rsAssert(A.isStorageContiguous() && B.isStorageContiguous() && C->isStorageContiguous(), 
-      "not yet implemented for submatrices");
-
     rsArrayTools::multiply(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
@@ -554,10 +502,6 @@ public:
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
     rsAssert(areSameShape(A, B) && areSameShape(A, *C), "arguments incompatible");
-    rsAssert(haveSameStorageFormat(A, B) && haveSameStorageFormat(A, *C), "formats incompatible");
-    rsAssert(A.isStorageContiguous() && B.isStorageContiguous() && C->isStorageContiguous(), 
-      "not yet implemented for submatrices");
-
     rsArrayTools::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
@@ -565,8 +509,6 @@ public:
   static void matrixMultiply(
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
-    //rsAssert(haveSameStorageFormat(A, B) && haveSameStorageFormat(A, *C), "formats incompatible");
-    // actually no - this should work also when they have different formats
     rsAssert(A.numCols  == B.numRows);
     rsAssert(C->numCols == B.numCols);
     rsAssert(C->numRows == A.numRows);
@@ -668,9 +610,6 @@ public:
     rsAssert(i >= 0 && i < numRows, "invalid row index");
     rsAssert(j >= 0 && j < numCols, "invalid column index");
     return numCols*i + j;
-
-    // return i*rowStride + j*colStride;  // to be used later
-
     // todo:
     //  -be more general: colStride*i + rowStride*j. goal: allow row-major and column-major storage
     //   while the syntax of the () operator is always row-major (as is conventional in math)
@@ -679,8 +618,6 @@ public:
     // -maybe be even more general: colOffset + colStride*i + (rowOffset + rowStride)*j
     //  -> may allow to access sub-matrices with the same syntax (todo: verify formula)
     //  ...but maybe that should be done in a class rsSubMatrixView
-    // we don't even need these offsets for addressing submatrices - it's enough to use
-    // i * rowStride + j * colStride
   }
 
 
@@ -688,9 +625,8 @@ protected:
 
   /** \name Data */
 
-  T *dataPointer = nullptr;          // pointer to the actual data
-  int numRows   = 0, numCols   = 0;  // number of rows and columns
-  int rowStride = 0, colStride = 0;  // experimental - not yet used
+  int numRows = 0, numCols = 0;  // number of rows and columns
+  T *dataPointer = nullptr;      // pointer to the actual data
 
 };
 
@@ -716,6 +652,7 @@ public:
   rsMatrix(int numRows = 0, int numColumns = 0)
   {
     setSize(numRows, numColumns);
+    // todo: optionally init with zeros
   }
 
   /** Constructor to create a matrix from a flat raw array. */
@@ -744,14 +681,10 @@ public:
   /** Creates matrix from a std::vector.  */
   rsMatrix(int numRows, int numColumns, const std::vector<T>& newData) : data(newData)
   {
+    numHeapAllocations++;   // data(newData) allocates
     rsAssert(numRows*numColumns == newData.size());
-
-    //numHeapAllocations++;   // data(newData) allocates
-    setSize(numRows, numColumns);
-    //this->numRows = numRows;
-    //this->numCols = numColumns;
-
-
+    this->numRows = numRows;
+    this->numCols = numColumns;
     updateDataPointer();
   }
 
@@ -760,14 +693,11 @@ public:
     rsMatrix<double> A(2, 3, {1.,2.,3., 4.,5.,6.});   */
   rsMatrix(int numRows, int numColumns, std::vector<T>&& newData) : data(std::move(newData))
   {
+    numHeapAllocations++;             // we count the allocation that took place in the caller
     rsAssert(newData.size() == 0);
     rsAssert(numRows*numColumns == data.size());
-
-    //numHeapAllocations++;             // we count the allocation that took place in the caller
-    setSize(numRows, numColumns);
-    //this->numRows = numRows;
-    //this->numCols = numColumns;
-
+    this->numRows = numRows;
+    this->numCols = numColumns;
     updateDataPointer();
   }
 
@@ -782,13 +712,8 @@ public:
   rsMatrix(rsMatrix&& B) : data(std::move(B.data))
   {
     rsAssert(B.data.size() == 0); // B's data has now become our data
-
-    //setSize(B.numRows, B.numCols);
     this->numRows = B.numRows;
     this->numCols = B.numCols;
-    rsMatrixView::setShape(B.numRows, B.numCols, this->isStorageRowMajor());
-
-
     updateDataPointer();
     B.reset();                    // invalidates pointer in B
   }
@@ -823,12 +748,8 @@ public:
   {
     data = std::move(rhs.data);
     rsAssert(rhs.data.size() == 0);
-
-    //setSize(rhs.numRows, rhs.numCols);
     this->numRows = rhs.numRows;
     this->numCols = rhs.numCols;
-    rsMatrixView::setShape(rhs.numRows, rhs.numCols, this->isStorageRowMajor());
-
     updateDataPointer();
     rhs.reset();
     return *this;
@@ -854,9 +775,9 @@ public:
   {
     if(numRows == this->numRows && numColumns == this->numCols)
       return;  // nothing to do
+
     this->numRows = numRows;
     this->numCols = numColumns;
-    rsMatrixView::setShape(numRows, numColumns, this->isStorageRowMajor());
     data.resize(this->numRows * this->numCols);
     numHeapAllocations++;                        // data.resize() may have re-allocated heap memory
     updateDataPointer();

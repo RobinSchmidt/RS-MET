@@ -322,6 +322,10 @@ bool testMatrixView()
   r &= hasData(m43, Vec({ 11,1,12, 73,3,76, 42,2,44, 41,1,42 }));
 
 
+
+
+
+
   // Test row- and column major storage and submatrix addressing - we use this 7x9 matrix:
   //
   //  0  1  2  3  4  5  6  7  8
@@ -346,6 +350,10 @@ bool testMatrixView()
   // the top-row is the flat array index, the 2nd the stored numbers in row-major, the 3rd row the 
   // numbers in column-major format. 
 
+  // This code is inactive because it uses anohter version of rsMatrix - but i have reverted to the
+  // version that doesn't support switching between row-major and column major storage
+
+  /*
   double A63[63];                    // storage space for a 7x9 matrix
   MatrixView m79r(7, 9, A63);
   r &=  m79r.isStorageRowMajor();    // by default, we should get row-major storage
@@ -372,13 +380,50 @@ bool testMatrixView()
     for(j = 0; j < 9; j++)
       m79r(i, j) = 10*(i+1) + j+1;
   //r &= A63[16] == 33 && A63[28] == 15 && A63[51] == 38;
+  */
+
+  /* On addressing submatrices:
+  
+  Let's and try to address the 3x5 submatrix that starts at index-pair 2,3, i.e. at the number 34 
+  and ends at index-pair 4,7, i.e at number 58 in a row-major storage format:
+
+  row-major means: 
+  rowStride = numCols = 9
+  colStride = 1
+  start = 2*rowStride + 3*colStride = 2*9 + 3*1 = 21
+
+  and at flat index 21, we find the 34 - as it should be - this is A(0,0) in our 
+  submatrix. The number 46 is found at flat-index 32 and this is element A(1,2) in our 
+  submatrix.
+
+  let's take the formula:
+  index = start + 1*rowStride + 2*colStride = 21 + 1*9 + 2*1 = 32
+  ..yup - the formula works!
+
+  now let's do it in column-major addressing:
+  rowStride = 1
+  colStride = numRows = 7
+  start = 2*rowStride + 3*colStride = 2*1 + 3*7 = 23
+
+  and sure enough, at flat index 23, we find the number 34 in our column-major format. Addressing the
+  46 as A(1,2) again gives the falt index:
+
+  index = start + 1*rowStride + 2*colStride = 23 + 1*1 + 2*7 = 38
+
+  ...aaaand yes! at flat index 38, we find our 46. That means, if we address matrix entries by the 
+  formula: start + rowIndex*rowStride + colIndex*colStride, we area able to provide row -and 
+  column-major storage and convenient access to submatrices without having to copy any data! :-)
+  So, using the address computation i*rowStride + j*colStride allwas for row- and column-major
+  storage as well as addressing submatrices (we would have to use a different dataPointer - one
+  that points to the start of the submatrix. row- and column-stride will then be different from
+  numCols or numRows. But the disadvangtae is that for submatrices, the storage is not contiguous
+  anymore, so we cant use functions form rsArrayTools for things like addition, finding the 
+  maximum, etc - so i don't knwo, if it's worth it - that's why i have reverted the code to before
+  these things above were implemented. The modified version is in a commit from 
+  17th Jan 2020 - just in case, i decide to continue this route  */
 
 
 
-  // have a function isStorageRowMajor() which determines if it is in row-major format from the 
-  // strides - the only case where this is impossible is for 1x1 matrices - which are actually 
-  // row-major and column-major at the same time
-  // we can determine
 
 
 
