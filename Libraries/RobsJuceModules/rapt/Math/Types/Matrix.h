@@ -158,12 +158,13 @@ public:
 
   /** Creates a matrix view with the given number of rows and columns for the given raw array of 
   values in "data". The view will *not* take ownership over the data. */
-  rsMatrixView(int numRows, int numColumns, T* data)
+  rsMatrixView(int numRows, int numColumns, T* data, bool rowMajor = true)
   {
     rsAssert(numRows >= 1 && numColumns >= 1 && data != nullptr);
     this->numRows = numRows;
     this->numCols = numColumns;
     dataPointer = data;
+    setShape(numRows, numColumns, rowMajor); // to trigger computation of strides
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -172,15 +173,17 @@ public:
   /** Re-interprets the arrangement of the underlying array as having the new given numbers of rows
   and columns. Their product must remain the same, though. For example, you can reshape a 3x4 
   matrix into 4x3, 2x6, 6x2, 1x12, 12x1 but nothing else. ..todo: maybe lift that restriction? */
-  void setShape(int newNumRows, int newNumColumns)
+  void setShape(int newNumRows, int newNumColumns, bool rowMajor = true)
   {
     rsAssert(newNumRows*newNumColumns == numRows*numCols);
     numRows = newNumRows;
     numCols = newNumColumns;
-
-    // later switch between row-major and column-major storage - this is suitable for row-major
-    colStride = 1;
-    rowStride = numCols;
+    if(rowMajor) {
+      colStride = 1;
+      rowStride = numCols; }
+    else {
+      colStride = numRows;
+      rowStride = 1; }
   }
   // maybe rename to setShape for consistency with the rest of the library...otoh, reshape is 
   // consistent with NumPy
@@ -191,6 +194,8 @@ public:
   {
     numRows = 0;
     numCols = 0;
+    rowStride = 0;
+    colStride = 0;
     dataPointer = nullptr;
   }
 
@@ -293,6 +298,12 @@ public:
   }
   // needs test
 
+  bool isStorageRowMajor() const { return colStride == 1; }
+
+  bool isStorageColumnMajor() const  { return rowStride == 1; }
+  // we infer the storage format from the strides so we don't need to store an extra variable for
+  // that - but note that by that definition, 1x1 matrices are stored row-major and column-major at
+  // the same time
 
   /** Returns a const pointer to the data for read access as a flat array. */
   const T* getDataPointerConst() const { return dataPointer; }
@@ -634,10 +645,9 @@ protected:
 
   /** \name Data */
 
-  int numRows = 0, numCols = 0;  // number of rows and columns
-  T *dataPointer = nullptr;      // pointer to the actual data
-
-  int rowStride, colStride;  // experimental - not yet used
+  T *dataPointer = nullptr;          // pointer to the actual data
+  int numRows   = 0, numCols   = 0;  // number of rows and columns
+  int rowStride = 0, colStride = 0;  // experimental - not yet used
 
 };
 

@@ -780,14 +780,16 @@ bool isIndexSplit(int numIndices, const std::vector<int> subset1, const std::vec
     &subset2[0], (int)subset2.size());
 }
 
-/** If the coefficient matrix A has zero rows at the bottom, so the system is singular. If the 
-augment B has also a zero row for each of the zero rows in A, so the singular system is consistent, 
-so there are infinitely many solutions, so we get to choose some free parameters. We assume that to 
-be the case here - the matrices A and B are assumed to both have rankA nonzero rows. We make the 
-choice that the bottom elements in the solution vectors in X should be zero. This amounts to 
-solving the sub-system with the top-left section of the original matrix (setting the bottom 
-variables zero renders the right section of the matrix ineffective for other choices, we would have
-to adapt the right-hand side).  */
+/** If the coefficient matrix A has rows full of zeros at the bottom, the system is singular. If 
+the augment B has also a zero row for each of the zero rows in A, the singular system is 
+consistent, so there are infinitely many solutions, so we get to choose some free parameters. We 
+assume that to be the case here - the matrices A and B are assumed to both have rankA nonzero rows.
+We make the choice that the bottom elements in the solution vectors in X should be zero. This 
+amounts to solving the sub-system with the top-left section of the original matrix (setting the 
+bottom variables zero renders the right section of the matrix ineffective for other choices, we 
+would have to adapt the right-hand side). So, this function returns a particular solution from the
+infinietly many. The full set of solutions if given by that (or another) particular solution plus 
+any linear combination of the basis vectors of the matrix A's nullspace. */
 template<class T>
 bool solveUnderDeterminedRowEchelon(
   rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B, int rankA, T tol)
@@ -826,6 +828,7 @@ bool solve2(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B, T tol)
     }
   }                                     //          -> infinitely many solutions
 }
+
 
 
 /** Computes the set of vectors v which solve the homogenous linear system of equations A * v = 0 
@@ -999,8 +1002,23 @@ rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A, T tol)
 //  transpose -> row-echelon -> remove bottom zero lines -> transpose
 // -mul(A, B): set intersection: use those vectors of A which are in the span of B
 // -negate(A): orthogonal complement of A
-// -sub(A,B): set difference remove those elements from A whichare in the span of B..or no - that
+// -sub(A,B): set difference remove those elements from A which are in the span of B..or no - that
 //  doesn't seem right, maybe just use negate and add
+
+// -let V be a vector space, W a subspace and W^C it's orthogonal complement
+// -we want the set operations union and intersection and maybe difference
+// -union should be like addition, intersection like multiplication
+// -the full space V = W + W^C is the neutral element with respect to intersection/multiplication,
+//  W^C is the multiplicative inverse to W (right?)
+// -the zero vector 0 is the neutral element with respect to union/addition
+// -we can define subtraction W-U as keeping only those vectors in W which are not also in U
+//  ...is this any useful?
+// -there are no inverse elements with respect to addition - subtraction is a fundamentally 
+//  different operation (it can not be expressed as union with some sort of inverse element)
+// -what sort of algebraic structure do we get from this? is this a topological space?
+// -subspace intersection should probably work as follows: project the basis vectors
+//  of A onto those of B (by taking the scalar product and using the result as coefficient?)
+
 
 // Compute solution sets of inhomogeneous systems of linear equations - for example, consider the 
 // plane in R^3 defined by: 2*x + 3*y + 5*z = 7. This plane can be represented by the linear system

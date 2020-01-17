@@ -322,6 +322,62 @@ bool testMatrixView()
   r &= hasData(m43, Vec({ 11,1,12, 73,3,76, 42,2,44, 41,1,42 }));
 
 
+  // Test row- and column major storage and submatrix addressing - we use this 7x9 matrix:
+  //
+  //  0  1  2  3  4  5  6  7  8
+  //  0 11 12 13 14 15 16 17 18 19
+  //  1 21 22 23 24 25 26 27 28 29
+  //  2 31 32 33 34 35 36 37 38 39
+  //  3 41 42 43 44 45 46 47 48 49
+  //  4 51 52 53 54 55 56 57 58 59
+  //  5 61 62 63 64 65 66 67 68 69
+  //  6 71 72 73 74 75 76 77 78 79
+  //
+  // which is stored in memory like this:
+  //
+  // 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29... 
+  // 11 12 13 14 15 16 17 18 19 21 22 23 24 25 26 27 28 29 31 32 33 34 35 36 37 38 39 41 42 43...
+  // 11 21 31 41 51 61 71 12 22 32 42 52 62 72 13 23 33 43 53 63 73 14 24 34 44 54 64 74 15 25...
+  //
+  // 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62
+  // 44 45 46 47 48 49 51 52 53 54 55 56 57 58 59 61 62 63 64 65 66 67 68 69 71 72 73 74 75 76 77 78 79 
+  // 35 45 55 65 75 16 26 36 46 56 66 76 17 27 37 47 57 67 77 18 28 38 48 58 68 78 19 29 39 49 59 69 79
+  //
+  // the top-row is the flat array index, the 2nd the stored numbers in row-major, the 3rd row the 
+  // numbers in column-major format. 
+
+  double A63[63];                    // storage space for a 7x9 matrix
+  MatrixView m79r(7, 9, A63);
+  r &=  m79r.isStorageRowMajor();    // by default, we should get row-major storage
+  r &= !m79r.isStorageColumnMajor();
+  int i, j;
+  for(i = 0; i < 7; i++)
+    for(j = 0; j < 9; j++)
+      m79r(i, j) = 10*(i+1) + j+1;   // fill the matrix
+
+  // verify some random samples from the flat array:
+  r &= A63[16] == 28 && A63[28] == 42 && A63[51] == 67;
+
+  // test submatrixView - for row major-case
+
+
+  MatrixView m79c(7, 9, A63, false); // false should indicate "no row-major storage"
+  r &= !m79c.isStorageRowMajor();   
+  r &=  m79c.isStorageColumnMajor();  
+
+
+
+  // m79.setShape
+
+
+  // have a function isStorageRowMajor() which determines if it is in row-major format from the 
+  // strides - the only case where this is impossible is for 1x1 matrices - which are actually 
+  // row-major and column-major at the same time
+  // we can determine
+
+
+
+
   return r;
 }
 
@@ -623,15 +679,14 @@ bool testMatrix()
   //A = A + 2.0;
 
 
-  testResult &= testMatrixArithmetic(dummy);  // obsolete - tests the old matrix class
+  testResult &= testMatrixArithmetic(dummy);  
+  // obsolete - tests the old matrix class - todo: write similar tests for the new class
   //...
 
-
+  // tests for the nwe matrix class:
   testResult &= testMatrixView();
   testResult &= testMatrixOperators();
   testResult &= testMatrixAlloc();
-
-
   testResult &= testKroneckerProduct();
 
 
