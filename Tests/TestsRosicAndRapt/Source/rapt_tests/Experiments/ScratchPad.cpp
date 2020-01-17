@@ -90,6 +90,8 @@ the previous row and rows of all zeros are at the bottom. */
 template<class T>
 void rowEchelon2(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)  // change to rsMatrixView for production
 {
+  //bool reduced = false; // make parameter
+
   int i = 0;
   int j = 0;
   while( i < A.getNumRows() && j < A.getNumColumns() )
@@ -109,9 +111,17 @@ void rowEchelon2(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)  // change to rs
     for(int k = i+1; k < A.getNumRows(); k++) {
       T w = -A(k, j) / A(i, j);     // A(i, j) is now known to be nonzero - right?
       A.addWeightedRowToOther(i, k, w, j, A.getNumColumns()-1);
-      B.addWeightedRowToOther(i, k, w);
-    }
-   
+      B.addWeightedRowToOther(i, k, w); }
+
+    //// experimental - is that correct? - do tests!
+    //if(reduced)
+    //{
+    //  for(int k = i-1; k >= 0; k--) {
+    //    T w = -A(k, j) / A(i, j);
+    //    A.addWeightedRowToOther(i, k, w, 0, j);
+    //    B.addWeightedRowToOther(i, k, w); }
+    //}
+
     i++;
   }
 
@@ -126,9 +136,14 @@ void rowEchelon2(rsMatrixView<T>& A, T tol)
   rowEchelon2(A, dummy, tol);
 }
 
-// obsolete:
+// make a function reducedRowEchelon that also includes a backward/upward elimination pass - maybe 
+// that can be integrated as option into the function above - if reduced == true also eliminate 
+// upward - does that work
+
+/*
+// obsolete - doesn't work when matrix has columns of zeros - use rowEchelon2:
 template<class T>
-void rowEchelon(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)
+void rowEchelonOld(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)
 {
   //T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
 
@@ -159,17 +174,14 @@ void rowEchelon(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)
     }
   }
 }
-// rowReduce
-// maybe also make a function reducedRowEchelon
-
 template<class T>
-void rowEchelon(rsMatrixView<T>& A, T tol)
+void rowEchelonOld(rsMatrixView<T>& A, T tol)
 {
   rsMatrix<T> dummy(A.getNumRows(), 1);
   rowEchelon(A, dummy);
 }
-// oudl perhaps be nicer to have a function that really only works on A but that would mean
-// code duplication...we'll see
+*/
+
 
 
 
@@ -237,7 +249,7 @@ struct rsEigenSpace
 
   int getAlgebraicMultiplicity() const { return algebraicMultiplicity; }
 
-  int getGeometricMultiplicity() const { return (int) eigenspace.size(); }
+  //int getGeometricMultiplicity() const { return (int) eigenspace.getNumColumns(); }
 
   //void orthonormalize();
 
@@ -245,14 +257,18 @@ struct rsEigenSpace
 
 
   complex<T> eigenvalue;
-  rsMatrix<T> eigenspace;  // basis of nullspace of A - eigenvalue * I
-                           //std::vector<std::vector<T>> eigenspace;
+  rsMatrix<complex<T>> eigenspace; 
+  //rsMatrix<T> eigenspace;  // basis of nullspace of A - eigenvalue * I
+  // should be a complex matrix
+
+               
   int algebraicMultiplicity; // not yet assigned
 };
 
 /** Represents the set of eigenspaces of a matrix with complex coefficients. This set consists of a
 set of (eigenvalues, each with an algebraic multiplicity which is the order of the
 polynomial root. Associated with each eigenvalue is a set of eigenvectors...  */
+/*
 template<class T>  // T should be a complex type
 class rsEigenSpaceSet
 {
@@ -264,17 +280,19 @@ public:
 
 protected:
 
-
-
 };
+*/
 
 // for matrices with real coefficients, we must promote them to complex numbers because even real
 // matrices may have complex eigenvalues and eigenvectors
+/*
 template<class T>
 class rsEigenStuffReal : public rsEigenSpaceSet<std::complex<T>>
 {
 
 };
+// 
+*/
 
 template<class T> 
 RAPT::rsMatrix<complex<T>> complexify(const RAPT::rsMatrix<T>& A)
@@ -302,7 +320,9 @@ void findEigenSpacesReal(const RAPT::rsMatrix<T>& A) // for real matrices - incl
   vector<MatrixC> eigenspaces(N);
   for(int i = 0; i < N; i++) {
     MatrixC Ai = Ac - eigenvalues[i] * I;
-    eigenspaces[i] = getNullSpaceTailParams(Ai, tol);
+
+    eigenspaces[i] = getNullSpace(Ai, tol);
+    //eigenspaces[i] = getNullSpaceTailParams(Ai, tol);
 
     // test, if A * v = eigenvalue * v for v in the eigenspace at once
     MatrixC test1 = Ac * eigenspaces[i];
@@ -311,7 +331,16 @@ void findEigenSpacesReal(const RAPT::rsMatrix<T>& A) // for real matrices - incl
     //rsAssert(error.isZero(tol));
 
     eigenspaces[i] = eigenspaces[i].getTranspose(); // for convenient inspection in the debugger
+    int dummy = 0;
   }                                                 // todo: have a function that transpose in place
+
+  // maybe getEigenValues should return an array of root objects in which each root is unique and
+  // has a multiplicity - maybe we should have a functioon getUniqueRoots
+
+  // This function is currently only good for inspecting things in the debugger - but eventually
+  // it should return something - but what should the datastructure look like? and should we 
+  // perhaps take a complex matrix as input?
+
   int dummy = 0;
 }
 
@@ -331,7 +360,10 @@ vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<T>& p)
 // complexes, the right one will be compiled into the class automatically? ..like
 // vector<complex<T>> getRoots(const RAPT::rsPolynomial<T>& p); // T is real type
 // vector<T> getRoots(const RAPT::rsPolynomial<complex<R>>& p); // T is complex, R is real
-//
+
+// this function should probably take a complex polynomial as input, so we can use it with complex
+// matrices too
+
 
 template<class T> 
 vector<complex<T>> getEigenvalues(const rsMatrixView<T>& A)
@@ -340,6 +372,8 @@ vector<complex<T>> getEigenvalues(const rsMatrixView<T>& A)
   return getPolynomialRoots(p);
 }
 
+
+/*
 // i think, this is still very wrong:
 template<class T>
 vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
@@ -393,6 +427,7 @@ vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
   // parameters is the dimenstion of the eigenspace? and that value is probably related to
   // rank(A - x_i * I)
 
+  // ----INFO STILL RELEVANT - DON'T DELETE----:
   // It seems, we may not have to solve any system of equations as all - here it says:
   // https://en.wikipedia.org/wiki/Eigenvalue_algorithm
   // 
@@ -412,6 +447,8 @@ vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
   return eigenVectors;
 }
 // http://doc.sagemath.org/html/en/constructions/linear_algebra.html
+*/
+
 
 /** This changes the matrices A,B in random ways but without changing the solution set to 
 A * X = B. Can be used for investigations on numerical precision issues in matrix 
@@ -664,7 +701,7 @@ rsMatrix<T> getNullSpaceTailParams(rsMatrix<T> A, T tol)
 
 
 template<class T>
-bool isRowEchelon(const rsMatrix<T>& A, T tol)
+bool isRowEchelon(const rsMatrixView<T>& A, T tol)
 {
   int col = -1; 
   for(int i = 0; i < A.getNumRows(); i++) {
@@ -794,6 +831,7 @@ template<class T>
 bool solveUnderDeterminedRowEchelon(
   rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B, int rankA, T tol)
 {
+  rsAssert(isRowEchelon(A, tol), "A is assumed to be in row echelon form - but isn't");
   rsMatrix<T> a = getSubMatrix(A, 0, 0, rankA, rankA);
   rsMatrix<T> b = getSubMatrix(B, 0, 0, rankA, B.getNumColumns());
   rsMatrix<T> x(b.getNumRows(), b.getNumColumns());
@@ -821,12 +859,10 @@ bool solve2(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B, T tol)
     return true; }
   else  {                                                    // system was singular...
     if(rankAB > rankA)                                       // ...and inconsistent/overdetermined
-      return false;                                          //          -> no solution possible
+      return false;                                          //        -> no solution possible
     else {
       solveUnderDeterminedRowEchelon(A, X, B, rankA, tol);   // ...and consistent/underdetermined
-      return true;
-    }
-  }                                     //          -> infinitely many solutions
+      return true;  }}                                       //        -> infinitely many solutions
 }
 
 
@@ -903,7 +939,7 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
   for(i = 0; i < nRhs; i++)
     for(j = 0; j < nRhs; j++)
       //B(params[i], j) = 1;  
-      B(params[i], i) = 1;  // should it be params[i], j ?
+      B(params[i], i) = 1;  // should it be params[i], j ? ...no!
 
   return B;
 }
@@ -969,7 +1005,6 @@ template<class T>
 rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A, T tol)
 {
   return getNullSpace(A.getTranspose(), tol);  // verify if that's correct
-  //return rsMatrix<T>();  // preliminary
 }
 // needs test
 

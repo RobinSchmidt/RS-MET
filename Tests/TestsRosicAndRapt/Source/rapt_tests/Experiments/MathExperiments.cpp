@@ -200,6 +200,7 @@ bool testNullSpaceBoth(RAPT::rsMatrix<T> A)
 bool testSubSpaces()
 {
   // todo: move the getNullSpace functions into the library and turn this into unit-test
+  // maybe add tests for checking eigenspaces
   bool r = true;
 
   using Matrix = RAPT::rsMatrix<double>;
@@ -354,6 +355,11 @@ bool testSubSpaces()
   // produced the whole embedding space - we may create the union of the nullspace and its
   // complement and check, if it spans the whole space
 
+  // here:
+  // https://en.wikipedia.org/wiki/Row_and_column_spaces#Dimension it says:
+  // The dimension of the column space is called the rank of the matrix. 
+  // we may check that
+
   //rsEigenSpaceSet<complex<double>> eigen = getEigenSpaces(A, tol);
   // we should notneed to wrap it into complex here - getEigenSpaces should automatically 
   // complexify for eal matrices - or it should take complex matrices - yes - that would perhaps
@@ -491,7 +497,7 @@ void eigenstuff()
   Matrix A, z;
 
   A = Matrix(2,2, {0,1, 0,0});
-  Matrix nullspace = getNullSpaceTailParams(A, tol);
+  Matrix nullspace = getNullSpace(A, tol);
   // returns |1 0| - the canonical basis of R^2 - but this is wrong (i think)
   //         |0 1|
   // maybe it fails because the rank is not computed correctly
@@ -508,7 +514,7 @@ void eigenstuff()
   // it says: "Once in row echelon form, the rank is clearly the same for both row rank and column 
   // rank, and equals the number of pivots" ...hmm - maybe it's because we use partial pivoting?
 
-  // exmaples from https://www.youtube.com/watch?v=lyXwcXjJdYM
+  // examples from https://www.youtube.com/watch?v=lyXwcXjJdYM
 
   A = Matrix(2,2, {1,1, 0,1});
   findEigenSpacesReal(A);

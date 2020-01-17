@@ -605,12 +605,13 @@ bool testPolynomialRootFinder(std::string &reportString)
   std::string testName = "PolynomialRootFinder";
   bool testResult = true;
 
-  // we use the polynomial p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52 with roots at 2+3i, 2-3i, -1, 4 as test function
+  // we use the polynomial p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52 with roots at 2+3i, 2-3i, -1, 4 
+  // as test function:
   double a1[5] = {-52, -23, 21, -7, 1};
-  //rsComplexDbl r1[4];
   std::complex<double> r1[4];
   rsPolynomial<double>::roots(a1, 4, r1);
 
+  // now we 
   static const int maxN     = 20;
   static const int numTests = 1000;
   double range = 10.0;                // range for the real and imaginary parts of the roots
@@ -621,7 +622,7 @@ bool testPolynomialRootFinder(std::string &reportString)
   rsRandomUniform(-range, range, 0);  // set seed
   int i, j, k;
   for(i = 1; i <= numTests; i++) {
-    // polynomial order for this test:
+    // polynomial degree for this test:
     int N = (int) rsRandomUniform(1.0, maxN);
 
     // generate a bunch of random roots:
@@ -642,7 +643,20 @@ bool testPolynomialRootFinder(std::string &reportString)
         if( abs(rFound[j]-rTrue[k]) < tol ) {
           matchFound = true; break; }}
       rsAssert(matchFound);
-      testResult &= matchFound; }}
+      testResult &= matchFound; 
+    }
+  }
+
+
+  // todo: test it when the coeffs are complex:
+  //using ComplexPoly = rsPolynomial<complex<double>>;
+  //ComplexPoly p;
+
+
+  // we need a rtaher high tolerance - the precision of the root finding algorithm seems to be not 
+  // very good - can it be improved? Setting tol to 1.e-9 triggers the assert - and it
+  // maybe by performing one or two steps of newton iteration...but
+  // actually, the algo already does this "polishing" thing
 
   return testResult;
 }

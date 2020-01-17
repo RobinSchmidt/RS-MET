@@ -328,7 +328,7 @@ bool testMatrixView()
 
   // Test row- and column major storage and submatrix addressing - we use this 7x9 matrix:
   //
-  //  0  1  2  3  4  5  6  7  8
+  //    0  1  2  3  4  5  6  7  8  
   //  0 11 12 13 14 15 16 17 18 19
   //  1 21 22 23 24 25 26 27 28 29
   //  2 31 32 33 34 35 36 37 38 39
@@ -350,8 +350,8 @@ bool testMatrixView()
   // the top-row is the flat array index, the 2nd the stored numbers in row-major, the 3rd row the 
   // numbers in column-major format. 
 
-  // This code is inactive because it uses anohter version of rsMatrix - but i have reverted to the
-  // version that doesn't support switching between row-major and column major storage
+  // This code is inactive because it uses another version of rsMatrix - but i have reverted to the
+  // version that doesn't support switching between row-major and column major storage - see below
 
   /*
   double A63[63];                    // storage space for a 7x9 matrix
@@ -413,12 +413,12 @@ bool testMatrixView()
   ...aaaand yes! at flat index 38, we find our 46. That means, if we address matrix entries by the 
   formula: start + rowIndex*rowStride + colIndex*colStride, we area able to provide row -and 
   column-major storage and convenient access to submatrices without having to copy any data! :-)
-  So, using the address computation i*rowStride + j*colStride allwas for row- and column-major
+  So, using the address computation i*rowStride + j*colStride allows for row- and column-major
   storage as well as addressing submatrices (we would have to use a different dataPointer - one
   that points to the start of the submatrix. row- and column-stride will then be different from
   numCols or numRows. But the disadvangtae is that for submatrices, the storage is not contiguous
-  anymore, so we cant use functions form rsArrayTools for things like addition, finding the 
-  maximum, etc - so i don't knwo, if it's worth it - that's why i have reverted the code to before
+  anymore, so we cant use functions from rsArrayTools for things like addition, finding the 
+  maximum, etc. - so i don't know, if it's worth it - that's why i have reverted the code to before
   these things above were implemented. The modified version is in a commit from 
   17th Jan 2020 - just in case, i decide to continue this route  */
 
