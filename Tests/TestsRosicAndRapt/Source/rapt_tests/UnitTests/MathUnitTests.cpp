@@ -434,7 +434,7 @@ bool polynomialRootsUnitTest()
   float d; // discriminant
 
   // 6 - 9*x + 3*x^2 , roots: 1, 2
-  P::rootsQuadraticReal(6, -9, 3, &rr1, &rr2);
+  P::rootsQuadraticReal(6.f, -9.f, 3.f, &rr1, &rr2);
   r &= rr1 == 1.f;
   r &= rr2 == 2.f;
 
@@ -442,7 +442,7 @@ bool polynomialRootsUnitTest()
   P::rootsQuadraticComplex(15, -12, 3, &cr1, &cr2);
   r &= cr1 == C(2, -1);
   r &= cr2 == C(2, +1);
-  P::rootsQuadraticReal(15, -12, 3, &rr1, &rr2); // should give real parts
+  P::rootsQuadraticReal(15.f, -12.f, 3.f, &rr1, &rr2); // should give real parts
   r &= rr1 == 2;
   r &= rr2 == 2;
 

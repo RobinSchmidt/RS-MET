@@ -472,7 +472,8 @@ public:
   ascending order, i.e. r1 < r2. In case of a (real) double root, we'll have r1 == r2 and when the
   roots of the equation are actually complex, the outputs will also be equal and contain the real
   part of the complex conjugate pair. */
-  static void rootsQuadraticReal(const T& a0, const T& a1, const T& a2, T* r1, T* r2);
+  template<class R>
+  static void rootsQuadraticReal(const R& a0, const R& a1, const R& a2, R* r1, R* r2);
 
   static void rootsQuadraticComplex(
     const std::complex<T>& a0, const std::complex<T>& a1, const std::complex<T>& a2,

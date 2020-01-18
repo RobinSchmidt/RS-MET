@@ -577,13 +577,14 @@ std::vector<std::complex<T>> rsPolynomial<T>::rootsQuadratic(const T& a, const T
 }
 
 template<class T>
-void rsPolynomial<T>::rootsQuadraticReal(const T& c, const T& b, const T& a, T* x1, T* x2)
+template<class R>
+void rsPolynomial<T>::rootsQuadraticReal(const R& c, const R& b, const R& a, R* x1, R* x2)
 {
   // Equation:  a*x^2 + b*x + c = 0
   // Solutions: x1,x2 = (-b +- sqrt(b^2-4*a*c)) / (2*a):
-  T s = T(1) / (2*a);         // scaler
-  T d = b*b - 4*a*c;          // discriminant
-  d   = sqrt(rsMax(d, T(0))); // we return the real part of the complex conjugate pair in case...
+  R s = T(1) / (2*a);         // scaler
+  R d = b*b - 4*a*c;          // discriminant
+  d   = sqrt(rsMax(d, R(0))); // we return the real part of the complex conjugate pair in case...
   *x1 = (-b-d) * s;           // ...of a negative discriminant, we return the roots in ascending...
   *x2 = (-b+d) * s;           // order, so the one with minus in the formula comes first
 }
@@ -1299,8 +1300,9 @@ void rsPolynomial<T>::maxSlopeMonotonic(T *w, int n)
 /*
 ToDo:
 -for those static functions that explicitly expect real or complex parameters, use a different 
- template parameter - not T, but rather R for real and complex<R> for complex values
+ template parameter - not T - but rather R for real and complex<R> for complex values
  -this prepares the class to be instantiated for real and complex coefficient types
+ -see rootsQuadraticReal for how this works
 
 */
 
