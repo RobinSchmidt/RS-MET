@@ -1026,18 +1026,19 @@ void rsPolynomial<T>::fitQuarticWithDerivatives(T *a, const T *y, const T& s0, c
   a[4] = -(T(2)*y[2]-T( 4)*y[1]+T( 2)*y[0]-  s2  +s0)/T(4);
 }
 
-template<class T> // replace T by R
-bool rsPolynomial<T>::areRootsOnOrInsideUnitCircle(const T& a0, const T& a1, const T& a2)
+template<class T>
+template<class R>
+bool rsPolynomial<T>::areRootsOnOrInsideUnitCircle(const R& a0, const R& a1, const R& a2)
 {
   // p and q values for p-q formula
-  T p = a1/a2;
-  T q = a0/a2;
-  T d = p*p/T(4) - q; // value under the square-root
-  T rr, ri;
+  R p = a1/a2;
+  R q = a0/a2;
+  R d = p*p/R(4) - q; // value under the square-root
+  R rr, ri;
   if( d < 0 )
   {
     // complex conjugate roots
-    rr = -p/T(2);     // real part
+    rr = -p/R(2);     // real part
     ri = rsSqrt(-d); // imaginary part
     return rsSqrt(rr*rr + ri*ri) <= 1.0;
   }
@@ -1118,7 +1119,8 @@ void rsPolynomial<T>::besselPolynomial(T *a, int degree)
 }
 
 template<class T>
-void rsPolynomial<T>::legendrePolynomial(T *a, int degree)
+template<class R>
+void rsPolynomial<T>::legendrePolynomial(R *a, int degree)
 {
   if(degree == 0) { a[0] = 1.0;             return; }
   if(degree == 1) { a[0] = 0.0; a[1] = 1.0; return; }
@@ -1130,8 +1132,8 @@ void rsPolynomial<T>::legendrePolynomial(T *a, int degree)
     return;
 
   int i, j;
-  T *b1 = new T [degree+1];
-  T *b2 = new T [degree+1];
+  R *b1 = new R [degree+1];
+  R *b2 = new R [degree+1];
 
   for(i = 0; i <= degree; i++) {
     b1[i] = b2[i] = 0.0;
@@ -1158,11 +1160,11 @@ void rsPolynomial<T>::legendrePolynomial(T *a, int degree)
 template<class T>
 void rsPolynomial<T>::jacobiRecursionCoeffs(int n, T a, T b, T *w0, T *w1, T *w1x, T *w2)
 {
-  T k = 2*n+a+b;
-  *w0  = 2*n*(n+a+b)*(k-2);
-  *w1  = (k-1)*(a*a-b*b);
-  *w1x = k*(k-1)*(k-2);
-  *w2  = -2*k*(n+a-1)*(n+b-1);
+  T k  = T(2*n)+a+b;
+  *w0  = T(2*n)*(T(n)+a+b)*(k-T(2));
+  *w1  = (k-T(1))*(a*a-b*b);
+  *w1x = k*(k-T(1))*(k-T(2));
+  *w2  = -T(2)*k*(T(n)+a-T(1))*(T(n)+b-T(1));
   // from: https://en.wikipedia.org/wiki/Jacobi_polynomials#Recurrence_relation
 }
 
@@ -1175,7 +1177,7 @@ void rsPolynomial<T>::jacobiRecursion(T *c, int n, T *c1, T *c2, T a, T b)
     return; }
   if( n == 1 ) {
     c[0] = T(0.5)*(a-b);
-    c[1] = T(0.5)*(a+b+2);
+    c[1] = T(0.5)*(a+b+T(2));
     return; }
 
   // recursion:
@@ -1196,21 +1198,22 @@ void rsPolynomial<T>::legendreRecursion(T *a, int n, T *a1, T *a2)
 {
   if( n == 0 ) { a[0] = 1.0;             return; }
   if( n == 1 ) { a[0] = 0.0; a[1] = 1.0; return; }
-  threeTermRecursion(a, T(n), n, a1, 0.0, T(2)*n-T(1), a2, -(n-T(1)));
+  threeTermRecursion(a, T(n), n, a1, 0.0, T(2*n)-T(1), a2, -(T(n)-T(1))); // soem Ts can be moved out
   // Legendre polynomials are a special case of Jacobi polynomials, so this would also work:
   // jacobiRecursion(a, n, a1, a2, 0.0, 0.0);
 }
 
 template<class T>
-void rsPolynomial<T>::maxSlopeMonotonic(T *w, int n)
+template<class R>
+void rsPolynomial<T>::maxSlopeMonotonic(R *w, int n)
 {
-  T *a,*p,*s,*v,c0,c1;
+  R *a,*p,*s,*v,c0,c1;
   int i,j,k;
 
-  a = new T [n+1];
-  p = new T [2*n+1];
-  s = new T [2*n+1];
-  v = new T [2*n+4];
+  a = new R[n+1];
+  p = new R[2*n+1];
+  s = new R[2*n+1];
+  v = new R[2*n+4];
 
   k = (n-1)/2;
   //  n = 2k + 1 for odd 'n' and n = 2k + 2 for even 'n':
@@ -1223,7 +1226,7 @@ void rsPolynomial<T>::maxSlopeMonotonic(T *w, int n)
     for(i = 0; i <= k; i++)
     {
       //a[i] = (2.0*i+1.0)/(M_SQRT2*(k+1.0));
-      a[i] = T(2*i+1) / T(SQRT2*(k+1));
+      a[i] = R(2*i+1) / R(SQRT2*(k+1));
     }
   }                           // even
   else
@@ -1236,14 +1239,14 @@ void rsPolynomial<T>::maxSlopeMonotonic(T *w, int n)
     {
       for(i = 1; i <= k; i+=2)
       {
-        a[i] = (2*i+1)/sqrt((T) ((k+1)*(k+2)));
+        a[i] = (2*i+1)/sqrt((R) ((k+1)*(k+2)));
       }
     }
     else
     {
       for(i = 0; i <= k; i+=2)
       {
-        a[i] = (2*i+1)/sqrt((T) ((k+1)*(k+2)));
+        a[i] = (2*i+1)/sqrt((R) ((k+1)*(k+2)));
       }
     }
   }

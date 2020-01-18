@@ -15,7 +15,8 @@ operations), like gauss, log2, cheby, etc...  */
 between 0...31 (inclusive) - the values are tabulated and any value outside the range 0...31 will
 be an access violation. */
 static const int rsNumFactorials = 32;
-static long double rsFactorials[rsNumFactorials] =
+//static long double rsFactorials[rsNumFactorials] =
+static double rsFactorials[rsNumFactorials] =
 {
   1.0,
   1.0,
@@ -53,13 +54,16 @@ static long double rsFactorials[rsNumFactorials] =
 // hmm..."long double"? ...i guess that's just the same as double in a 64-bit build but 80 bit in a
 // 32-bit build - maybe we should make it consistent and just use double? maybe check the numerical
 // errors in both cases
+// the long double variant doesn't compile anymore when we instantiate rsPolynomial with 
+// std::complex<double>, so it has been changed to double
 
 /** A table of reciprocal values of the factorial of some integer number n, that is: 1/n!, where
 n should be between 0...31 (inclusive) - the values are tabulated and any value outside the range
 0...31 will be an access violation. These numbers are useful for making Taylor series
 approximations. */
 static const int rsNumInverseFactorials = 32;
-static long double rsInverseFactorials[rsNumInverseFactorials] =
+//static long double rsInverseFactorials[rsNumInverseFactorials] =
+static double rsInverseFactorials[rsNumInverseFactorials] =
 {
   1.0,
   1.0,

@@ -678,10 +678,11 @@ public:
   y'(0) = s0, y'(2) = s2 */
   static void fitQuarticWithDerivatives(T *a, const T *y, const T& s0, const T& s2);
 
-  /** Given coefficients of a polynomial a2*x^2 + a1*x + a0, this function determines whether its
-  roots are on or inside the unit circle.
+  /** Given coefficients of a polynomial a2*x^2 + a1*x + a0 with real coefficients, this function 
+  determines whether its roots are on or inside the unit circle.
    \todo: write and run a unit-test for this function. */
-  static bool areRootsOnOrInsideUnitCircle(const T& a0, const T& a1, const T& a2);
+  template<class R>
+  static bool areRootsOnOrInsideUnitCircle(const R& a0, const R& a1, const R& a2);
   // move to Evaluation
 
   // \todo fitPolynomial(T *a, int order, T *x, T *y, int numValues);
@@ -711,7 +712,8 @@ public:
 
   /** Fills the array with coefficients for a Legendre-polynomial (of the 1st kind) of given
   degree. */
-  static void legendrePolynomial(T *a, int degree);
+  template<class R>
+  static void legendrePolynomial(R *a, int degree);
   // allocates heap memory
     // todo: maybe use rsPolynomialRecursion - or maybe get rid of the function
     // (move to prototypes)
@@ -743,7 +745,8 @@ public:
   p(0) = 0, p(1) = 1, p'(x) >= 0 for all x (monotonically increasing), p'(1) = maximum possible
   when monotonicity is assumed. \todo: check if these properties are actually true. Such
   polynomials are used in Papoulis filters. */
-  static void maxSlopeMonotonic(T *a, int N);
+  template<class R>
+  static void maxSlopeMonotonic(R *a, int N);
   // allocates heap memory
 
   // \todo for Halpern filters:
