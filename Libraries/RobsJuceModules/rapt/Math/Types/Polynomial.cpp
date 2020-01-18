@@ -868,7 +868,7 @@ void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, std::complex<T>* a
 // ...maybe make a second version that checks the root against infinity
 
 template<class T>
-void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, T* a, int N)
+void rsPolynomial<T>::complexRootsToRealCoeffs(const std::complex<T>* r, T* a, int N)
 {
   std::complex<T>* ac = new std::complex<T>[N+1];
   rootsToCoeffs(r, ac, N);
