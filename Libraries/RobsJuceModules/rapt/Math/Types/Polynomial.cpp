@@ -815,6 +815,13 @@ template<class T>
 std::vector<std::complex<T>> rsPolynomial<T>::rootsToCoeffs(
   const std::vector<std::complex<T>>& roots)
 {
+  std::vector<std::complex<T>> coeffs(roots.size()+1);
+  if(roots.size() < 1)
+    return coeffs;
+  rootsToCoeffs(&roots[0], &coeffs[0], (int) roots.size());
+  return coeffs;
+  /*
+  // old:
   std::vector<std::complex<T>> coeffs;
   coeffs.reserve(roots.size()+1);
   coeffs.push_back(1.0); // init with one for convolutional accumulation - but in the special case
@@ -829,6 +836,7 @@ std::vector<std::complex<T>> rsPolynomial<T>::rootsToCoeffs(
     coeffs[0] = -z * coeffs[0];
   }
   return coeffs;
+  */
 }
 
 template<class T>
@@ -852,8 +860,12 @@ void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, std::complex<T>* a
   }
   delete[] rF;
   // todo: avoid memory allocation - check against infinity on the fly and skip the root, if it is
-  // infinite
+  // infinite, also - the function should not care whether the template type is real or complex - 
+  // the algo is the same in both cases
 }
+// why is this so complicated anyway? can'T we just use the version
+//   rootsToCoeffs(const T* r, T* a, int N, T scaler)
+// ...maybe make a second version that checks the root against infinity
 
 template<class T>
 void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, T* a, int N)
@@ -861,9 +873,16 @@ void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, T* a, int N)
   std::complex<T>* ac = new std::complex<T>[N+1];
   rootsToCoeffs(r, ac, N);
   for(int n = 0; n <= N; n++)
+  {
+    constexpr T tol = 1000 * RS_EPS(T);
+    rsAssert(rsIsCloseTo(ac[n].imag(), T(0), tol), 
+      "roots do not occur in complex conjugate pairs");
     a[n] = ac[n].real();
+  }
   delete[] ac;
 }
+// rename to complexRootsToRealCoeffs, assert that the imaginary parts are numerically close to 
+// zero
 
 template<class T>
 void rsPolynomial<T>::rootsToCoeffs(const T* r, T* a, int N, T scaler)
@@ -1314,6 +1333,8 @@ void rsPolynomial<T>::maxSlopeMonotonic(T *w, int n)
 
 /*
 ToDo:
+-check the rootsToCoeffs functions - these can (should!) be improved
+
 -for those static functions that explicitly expect real or complex parameters, use a different 
  template parameter - not T - but rather R for real and complex<R> for complex values
  -this prepares the class to be instantiated for real and complex coefficient types
