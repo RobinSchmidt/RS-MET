@@ -543,34 +543,35 @@ T rsPolynomial<T>::rootLinear(const T& a, const T& b)
 }
 
 template<class T>
-std::vector<std::complex<T>> rsPolynomial<T>::rootsQuadratic(const T& a, const T& b, const T& c)
+template<class R>
+std::vector<std::complex<R>> rsPolynomial<T>::rootsQuadratic(const R& a, const R& b, const R& c)
 {
   // catch degenerate case with zero leading coefficient:
   if(a == 0.0) {
-    std::vector<std::complex<T>> roots(1);
+    std::vector<std::complex<R>> roots(1);
     roots[0] = rootLinear(b, c);
     return roots;
   }
 
-  std::vector<std::complex<T>> roots(2); // array to be returned
-  T D      = b*b - T(4)*a*c;   // discriminant ...use discriminant-function
-  T factor = T(1) / (T(2)*a);  // common factor that appears everywhere
+  std::vector<std::complex<R>> roots(2); // array to be returned
+  R D      = b*b - R(4)*a*c;   // discriminant ...use discriminant-function
+  R factor = R(1) / (R(2)*a);  // common factor that appears everywhere
   if(D > 0.0) {
     // D > 0: two distinct real roots:
-    T rsSqrt_D = rsSqrt(D);
+    R rsSqrt_D = rsSqrt(D);
     roots[0]   = factor * (-b+rsSqrt_D);
     roots[1]   = factor * (-b-rsSqrt_D);
   }
   else if(D == 0.0) {
     // D == 0: a real root with multiplicity 2:
-    roots[1] = roots[0] = std::complex<T>(-b * factor);
+    roots[1] = roots[0] = std::complex<R>(-b * factor);
   }
   else {
     // D < 0: two complex conjugate roots:
-    T imag   = rsSqrt(-D) * factor;
-    T real   = -b       * factor;
-    roots[0] = std::complex<T>(real, imag);
-    roots[1] = std::complex<T>(real, -imag);
+    R imag   = rsSqrt(-D) * factor;
+    R real   = -b       * factor;
+    roots[0] = std::complex<R>(real, imag);
+    roots[1] = std::complex<R>(real, -imag);
   }
 
   return roots;
@@ -592,12 +593,13 @@ void rsPolynomial<T>::rootsQuadraticReal(const R& c, const R& b, const R& a, R* 
 // what about the degenerate case a=0?
 
 template<class T>
+template<class R>
 void rsPolynomial<T>::rootsQuadraticComplex(
-  const std::complex<T>& c, const std::complex<T>& b, const std::complex<T>& a, 
-  std::complex<T>* x1, std::complex<T>* x2)
+  const std::complex<R>& c, const std::complex<R>& b, const std::complex<R>& a, 
+  std::complex<R>* x1, std::complex<R>* x2)
 {
-  std::complex<T> s = T(1) / (T(2)*a);
-  std::complex<T> d = sqrt(b*b - T(4)*a*c); // sqrt of discriminant
+  std::complex<R> s = R(1) / (R(2)*a);
+  std::complex<R> d = sqrt(b*b - R(4)*a*c); // sqrt of discriminant
   *x1 = (-b-d) * s;
   *x2 = (-b+d) * s;
 }
@@ -1303,6 +1305,9 @@ ToDo:
  template parameter - not T - but rather R for real and complex<R> for complex values
  -this prepares the class to be instantiated for real and complex coefficient types
  -see rootsQuadraticReal for how this works
+ -...maybe it would be more elegant, if these functions are factored out into a separate class
+  like rsPolynomialAlgorithms which has only static functions - so we don't have carry along the
+  superfluous T template parameter
 
 */
 

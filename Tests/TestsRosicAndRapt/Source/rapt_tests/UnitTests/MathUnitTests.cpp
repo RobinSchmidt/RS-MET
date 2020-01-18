@@ -439,7 +439,7 @@ bool polynomialRootsUnitTest()
   r &= rr2 == 2.f;
 
   // 15 - 12*x + 3*x^2 , roots: 2-i, 2+i
-  P::rootsQuadraticComplex(15, -12, 3, &cr1, &cr2);
+  P::rootsQuadraticComplex(C(15.f), C(-12.f), C(3.f), &cr1, &cr2);
   r &= cr1 == C(2, -1);
   r &= cr2 == C(2, +1);
   P::rootsQuadraticReal(15.f, -12.f, 3.f, &rr1, &rr2); // should give real parts

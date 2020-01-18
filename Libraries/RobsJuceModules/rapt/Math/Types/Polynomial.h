@@ -1,7 +1,18 @@
 #ifndef RAPT_POLYNOMIAL_H
 #define RAPT_POLYNOMIAL_H
 
-/** A class for representing polynomials and doing computations with them. */
+/** A class for representing polynomials and doing computations with them. 
+
+There are some static functions that use their own template parameter types independent from the 
+"T" that is used to instantiate the class. That's the case, for example, for functions that expect 
+real inputs and produce complex outputs (like root-finders) which then use "R" for the real type
+and std::complex<R> for the complex type. This is done because this class template should be able
+to be instantiated for real and complex types "T", so using the same template parameter could lead
+to confusion like the compiler using a nested complex type which makes no sense
+....under construction....tbc...
+
+
+*/
 
 // todo: 
 
@@ -464,7 +475,8 @@ public:
   given by: \f[ x_{1,2} = \frac{-b \pm \sqrt{b^2-4ac}}{2a} \f] and stores the result in two-element
   array which is returned. When the qudratic is degenerate (i.e, a == 0), it will fall back to the
   rootsLinear() function, and return a one-element array.  */
-  static std::vector<std::complex<T>> rootsQuadratic(const T& a, const T& b, const T& c);
+  template<class R>
+  static std::vector<std::complex<R>> rootsQuadratic(const R& a, const R& b, const R& c);
   // rename inputs to a0,a1,a2 (change their order) ..or maybe deprecate this function
 
     /** Computes the two roots of the quadratic equation: \f[ a_0 + a_1 x + a_2 x^2 = 0 \f] and
@@ -475,9 +487,10 @@ public:
   template<class R>
   static void rootsQuadraticReal(const R& a0, const R& a1, const R& a2, R* r1, R* r2);
 
+  template<class R>
   static void rootsQuadraticComplex(
-    const std::complex<T>& a0, const std::complex<T>& a1, const std::complex<T>& a2,
-    std::complex<T>* x1, std::complex<T>* x2);
+    const std::complex<R>& a0, const std::complex<R>& a1, const std::complex<R>& a2,
+    std::complex<R>* x1, std::complex<R>* x2);
     // todo: make optimized version for real coefficients (but complex outputs)
 
   /** Computes the three roots of the cubic equation: \f[ a x^3 + b x^2 + c x + d = 0 \f] and

@@ -192,6 +192,9 @@ template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, 
 template void RAPT::rsPolynomial<std::complex<double>>::subtract(
   const std::complex<double>* p, int pN, const std::complex<double>* q, int qN,
   std::complex<double>* r);
+template void  RAPT::rsPolynomial<float>::rootsQuadraticComplex(
+  const std::complex<float>& a0, const std::complex<float>& a1, const std::complex<float>& a2,
+  std::complex<float>* x1, std::complex<float>* x2);
 
 template class RAPT::rsMatrixView<double>;
 template class RAPT::rsMatrix<double>;
