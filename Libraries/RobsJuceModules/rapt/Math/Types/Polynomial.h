@@ -596,7 +596,8 @@ public:
   coefficients, so the type of the coefficient-array is T instead of Complex. You should use
   this function only if you know in advance that the coefficients will indeed come out as purely
   real */
-  static void complexRootsToRealCoeffs(const std::complex<T> *r, T *a, int N);
+  template<class R>
+  static void complexRootsToRealCoeffs(const std::complex<R> *r, R *a, int N);
   // allocates heap memory
 
   static void rootsToCoeffs(const T* r, T* a, int N, T scaler = T(1));

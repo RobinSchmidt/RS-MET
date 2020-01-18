@@ -45,7 +45,8 @@ void rsPolynomial<T>::truncateTrailingZeros(const T& thresh)
 {
   int i = (int) coeffs.size()-1;
   while(i > 0) {
-    if( rsAbs(coeffs[i]) > thresh ) // must be strictly greater to work correctly with thresh == 0
+    //if( rsAbs(coeffs[i]) > thresh ) // must be strictly greater to work correctly with thresh == 0
+    if( rsGreaterAbs(coeffs[i], thresh) ) // must be strictly greater to work correctly with thresh == 0
       break;
     i--;
   }
@@ -111,9 +112,9 @@ T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N, int n)
   rsAssert(n >= 0, "derivative order must be non-negative");
   if(n > N) 
     return T(0); // avoid evaluating products including zero (starting at negative indices)
-  T y = rsProduct(N-n+1, N) * a[N];
+  T y = T(rsProduct(N-n+1, N)) * a[N];
   for(int i = N-1; i >= n; i--)
-    y = y*x + rsProduct(i-n+1, i) * a[i];
+    y = y*x + T(rsProduct(i-n+1, i)) * a[i];
   return y;
 }
 // runtime: (N-n)*n? ..the number of terms in each product is n, the i-loop runs N-n times
@@ -178,7 +179,7 @@ T rsPolynomial<T>::evaluateHermite(const T& x, int n)
   T h0 = T(1);
   T h1 = T(2)*x;
   for(int i = 1; i < n; i++) {
-    T tmp = T(2) * (x*h1 - i*h0); // H[n+1](x) = 2*x*H[n](x) - 2*n*H[n-1](x)
+    T tmp = T(2) * (x*h1 - T(i)*h0); // H[n+1](x) = 2*x*H[n](x) - 2*n*H[n-1](x)
     h0 = h1;
     h1 = tmp;
   }
@@ -337,7 +338,7 @@ void rsPolynomial<T>::coeffsForShiftedArgument(const T *a, T *as, int N, T x0)
   {
     as[n] = 0.0;
     for(rsUint32 k = n; k <= Nu; k++)
-      as[n] += rsPascalTriangle(pt, k, k-n) * x0n[k-n] * a[k];
+      as[n] += T(rsPascalTriangle(pt, k, k-n)) * x0n[k-n] * a[k];
   }
   delete[] pt;
   delete[] x0n;
@@ -350,14 +351,14 @@ template <class T>
 void rsPolynomial<T>::derivative(const T *a, T *ad, int N)
 {
   for(int n = 1; n <= N; n++)
-    ad[n-1] = n * a[n];
+    ad[n-1] = T(n) * a[n];
 }
 
 template <class T>
 void rsPolynomial<T>::integral(const T *a, T *ai, int N, T c)
 {
   for(int n = N+1; n >= 1; n--)
-    ai[n] = a[n-1] / n;
+    ai[n] = a[n-1] / T(n);
   ai[0] = c;
 }
 
@@ -384,7 +385,7 @@ void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, 
 {
   // (possibly alternating) powers of the stepsize h:
   T *hk = new T[N+1];
-  T hs  = direction*h;
+  T hs  = T(direction)*h;
   hk[0] = T(1);
   for(int k = 1; k <= N; k++)
     hk[k] = hk[k-1] * hs;
@@ -400,7 +401,7 @@ void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, 
   for(unsigned int n = 0; n <= (rsUint32)N; n++)
   {
     for(unsigned int k = 1; k <= n; k++)
-      ad[n-k] += a[n] * rsPascalTriangle(binomCoeffs, n, k) * hk[k];
+      ad[n-k] += a[n] * T(rsPascalTriangle(binomCoeffs, n, k)) * hk[k];
   }
   if(direction == -1)
     rsArrayTools::scale(ad, N, -1);
@@ -868,14 +869,15 @@ void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, std::complex<T>* a
 // ...maybe make a second version that checks the root against infinity
 
 template<class T>
-void rsPolynomial<T>::complexRootsToRealCoeffs(const std::complex<T>* r, T* a, int N)
+template<class R>
+void rsPolynomial<T>::complexRootsToRealCoeffs(const std::complex<R>* r, R* a, int N)
 {
-  std::complex<T>* ac = new std::complex<T>[N+1];
+  std::complex<R>* ac = new std::complex<R>[N+1];
   rootsToCoeffs(r, ac, N);
   for(int n = 0; n <= N; n++)
   {
-    constexpr T tol = 1000 * RS_EPS(T);
-    rsAssert(rsIsCloseTo(ac[n].imag(), T(0), tol), 
+    constexpr R tol = R(1000) * RS_EPS(R);
+    rsAssert(rsIsCloseTo(ac[n].imag(), R(0), tol), 
       "roots do not occur in complex conjugate pairs");
     a[n] = ac[n].real();
   }
@@ -905,17 +907,17 @@ void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *x, const
   T x0_3 = x0_2*x[0]; // x[0]^3
   T x1_2 = x[1]*x[1]; // x[1]^2
   T x1_3 = x1_2*x[1]; // x[1]^3
-  T k1   = 3*x[0]*x1_2;
-  T k2   = -3*x[1]*y[1];
+  T k1   = T(3)*x[0]*x1_2;
+  T k2   = -T(3)*x[1]*y[1];
   T k3   = dy[1]-dy[0];
-  T s    = 1/(-x1_3+k1-3*x0_2*x[1]+x0_3);  // scaler
+  T s    = T(1)/(-x1_3+k1-T(3)*x0_2*x[1]+x0_3);  // scaler
 
   a[0] =  s*(x0_2*(x1_2*k3+k2) + x0_3*(y[1]-x[1]*dy[1]) + x[0]*x1_3*dy[0] + y[0]*(-x1_3+k1));
-  a[1] = -s*(x[0]*(x1_2*(2*dy[1]+dy[0])-6*x[1]*y[1]) - x0_3*dy[1] + x0_2*x[1]*(-dy[1]-2*dy[0])
-             + x1_3*dy[0] + 6*x[0]*x[1]*y[0]);
-  a[2] =  s*(x[0]*(x[1]*k3-3*y[1]) + x1_2*(dy[1]+2*dy[0]) + x0_2*(-dy[0]-2*dy[1]) + k2
-             + y[0]*(3*x[1]+3*x[0]));
-  a[3] = -s*(x[1]*(dy[1]+dy[0]) + x[0]*(-dy[1]-dy[0]) - 2*y[1] + 2*y[0]);
+  a[1] = -s*(x[0]*(x1_2*(T(2)*dy[1]+dy[0])-T(6)*x[1]*y[1]) - x0_3*dy[1] 
+             + x0_2*x[1]*(-dy[1]-T(2)*dy[0]) + x1_3*dy[0] + T(6)*x[0]*x[1]*y[0]);
+  a[2] =  s*(x[0]*(x[1]*k3-T(3)*y[1]) + x1_2*(dy[1]+T(2)*dy[0]) + x0_2*(-dy[0]-T(2)*dy[1]) + k2
+             + y[0]*(T(3)*x[1]+T(3)*x[0]));
+  a[3] = -s*(x[1]*(dy[1]+dy[0]) + x[0]*(-dy[1]-dy[0]) - T(2)*y[1] + T(2)*y[0]);
 }
 
 template<class T>
@@ -923,17 +925,17 @@ void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *y, const
 {
   a[0] = y[0];
   a[1] = dy[0];
-  a[2] = 3*(y[1]-a[1]-a[0])-dy[1]+a[1];
-  a[3] = T(1.0/3.0)*(dy[1]-2*a[2]-a[1]);
+  a[2] = T(3)*(y[1]-a[1]-a[0])-dy[1]+a[1];
+  a[3] = T(1.0/3.0)*(dy[1]-T(2)*a[2]-a[1]);
 }
 
 template<class T>
 void rsPolynomial<T>::cubicCoeffsFourPoints(T *a, const T *y)
 {
   a[0] = y[0];
-  a[2] = T(0.5)*(y[-1]+y[1]-2*a[0]);
-  a[3] = T(1.0/6.0)*(y[2]-y[1]+y[-1]-a[0]-4*a[2]);
-  a[1] = T(0.5)*(y[1]-y[-1]-2*a[3]);
+  a[2] = T(0.5)*(y[-1]+y[1]-T(2)*a[0]);
+  a[3] = T(1.0/6.0)*(y[2]-y[1]+y[-1]-a[0]-T(4)*a[2]);
+  a[1] = T(0.5)*(y[1]-y[-1]-T(2)*a[3]);
 }
 
 template<class T>
@@ -973,7 +975,7 @@ void rsPolynomial<T>::interpolant(T *a, const T& x0, const T& dx, const T *y, in
 {
   T *x = new T[N];
   for(int n = 0; n < N; n++)
-    x[n] = x0 + n*dx;
+    x[n] = x0 + T(n)*dx;
   interpolant(a, x, y, N);
   delete[] x;
 }
@@ -1019,23 +1021,23 @@ void rsPolynomial<T>::fitQuarticWithDerivatives(T *a, const T *y, const T& s0, c
 {
   a[0] = y[0];
   a[1] = s0;
-  a[2] = -(5*y[2]-16*y[1]+11*y[0]-2*s2+8*s0)/4;
-  a[3] =  (7*y[2]-16*y[1]+ 9*y[0]-3*s2+5*s0)/4;
-  a[4] = -(2*y[2]- 4*y[1]+ 2*y[0]-  s2  +s0)/4;
+  a[2] = -(T(5)*y[2]-T(16)*y[1]+T(11)*y[0]-T(2)*s2+T(8)*s0)/T(4);
+  a[3] =  (T(7)*y[2]-T(16)*y[1]+T( 9)*y[0]-T(3)*s2+T(5)*s0)/T(4);
+  a[4] = -(T(2)*y[2]-T( 4)*y[1]+T( 2)*y[0]-  s2  +s0)/T(4);
 }
 
-template<class T>
+template<class T> // replace T by R
 bool rsPolynomial<T>::areRootsOnOrInsideUnitCircle(const T& a0, const T& a1, const T& a2)
 {
   // p and q values for p-q formula
   T p = a1/a2;
   T q = a0/a2;
-  T d = p*p/4 - q; // value under the square-root
+  T d = p*p/T(4) - q; // value under the square-root
   T rr, ri;
   if( d < 0 )
   {
     // complex conjugate roots
-    rr = -p/2;     // real part
+    rr = -p/T(2);     // real part
     ri = rsSqrt(-d); // imaginary part
     return rsSqrt(rr*rr + ri*ri) <= 1.0;
   }
