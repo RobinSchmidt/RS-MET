@@ -1297,6 +1297,15 @@ void rsPolynomial<T>::maxSlopeMonotonic(T *w, int n)
 }
 
 /*
+ToDo:
+-for those static functions that explicitly expect real or complex parameters, use a different 
+ template parameter - not T, but rather R for real and complex<R> for complex values
+ -this prepares the class to be instantiated for real and complex coefficient types
+
+*/
+
+
+/*
 // moved to rsRationalFunction:
 template<class T>
 void rsPolynomial<T>::rsPartialFractionExpansion(
