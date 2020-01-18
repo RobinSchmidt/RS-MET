@@ -86,6 +86,8 @@ std::complex<T> rsPolynomial<T>::evaluateFromRoots(const std::complex<T>& s,
   }
   return result;
 }
+// actually, the roots don't have to be complex - the function should work with real roots just
+// as well
 
 template<class T>
 std::complex<T> rsPolynomial<T>::evaluateFromRootsOneLeftOut(
@@ -148,12 +150,13 @@ void rsPolynomial<T>::evaluateWithDerivatives(const T& x, const T *a, int degree
 }
 
 template<class T>
-T rsPolynomial<T>::evaluateWithTwoDerivativesAndError(
-  const std::complex<T>* a, int degree, std::complex<T> z, std::complex<T>* P)
+template<class R>
+R rsPolynomial<T>::evaluateWithTwoDerivativesAndError(
+  const std::complex<R>* a, int degree, std::complex<R> z, std::complex<R>* P)
 {
   P[0] = a[degree];                  // P(z)
-  P[1] = std::complex<T>(0.0, 0.0);  // P'(z)
-  P[2] = std::complex<T>(0.0, 0.0);  // P''(z)
+  P[1] = std::complex<R>(0.0, 0.0);  // P'(z)
+  P[2] = std::complex<R>(0.0, 0.0);  // P''(z)
   T err = abs(P[0]);                 // estimated roundoff error in evaluation of the polynomial
   T zA  = abs(z);                    // absolute value of z
   for(int j = degree-1; j >= 0; j--)
@@ -416,20 +419,22 @@ void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, 
 // roots:
 
 template<class T>
-void rsPolynomial<T>::roots(const std::complex<T>* a, int degree, std::complex<T>* roots)
+template<class R>
+void rsPolynomial<T>::roots(const std::complex<R>* a, int degree, std::complex<R>* roots)
 {
-  const T eps = T(2.0e-14); // for float, it was 2.0e-6 - use template numeric_limit<T>
+  const R eps = R(2.0e-14); // for float, it was 2.0e-6 - use template numeric_limit<T>
+                            // maybe something like 100*epsilon?
 
   // allocate memory for the coefficients of the deflated polynomial and initialize it as
   // non-deflated polynomial:
-  std::complex<T>* ad = new std::complex<T>[degree+1];
+  std::complex<R>* ad = new std::complex<R>[degree+1];
   rsArrayTools::copy(a, ad, degree+1);
 
   // loop over the roots:
   for(int j = degree; j >= 1; j--)
   {
     // find a root of the deflated polynomial using the Laguerre-algorithm with 0 as initial guess:
-    std::complex<T> r = convergeToRootViaLaguerre(ad, j, std::complex<T>(0.0, 0.0));
+    std::complex<R> r = convergeToRootViaLaguerre(ad, j, std::complex<R>(0.0, 0.0));
 
     // polish the root by using the Laguerre method with the undeflated polynomial and the
     // non-polished root as initial guess:
@@ -445,8 +450,8 @@ void rsPolynomial<T>::roots(const std::complex<T>* a, int degree, std::complex<T
 
     // deflate the deflated polynomial again by the monomial that corresponds to our most recently
     // found root:
-    std::complex<T> rem = ad[j];  // remainder - not used, needed for passing a dummy pointer
-    rsPolynomial<std::complex<T>>::divideByMonomialInPlace(ad, j, r, &rem);
+    std::complex<R> rem = ad[j];  // remainder - not used, needed for passing a dummy pointer
+    rsPolynomial<std::complex<R>>::divideByMonomialInPlace(ad, j, r, &rem);
   }
 
   rsSortComplexArrayByReIm(roots, degree);  // maybe leave this to client code
@@ -454,19 +459,21 @@ void rsPolynomial<T>::roots(const std::complex<T>* a, int degree, std::complex<T
 }
 
 template<class T>
-void rsPolynomial<T>::roots(const T* a, int degree, std::complex<T>* r)
+template<class R>
+void rsPolynomial<T>::roots(const R* a, int degree, std::complex<R>* r)
 {
-  std::complex<T>* ac = new std::complex<T>[degree+1];
-  rsArrayTools::convert(a, ac, degree+1);
+  std::complex<R>* ac = new std::complex<R>[degree+1];
+  rsArrayTools::convert(a, ac, degree+1);               // complexify real coeffs
   roots(ac, degree, r);
   delete[] ac;
 }
 
 template<class T>
-std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T>* a, int degree,
-  std::complex<T> initialGuess)
+template<class R>
+std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<R>* a, int degree,
+  std::complex<R> initialGuess)
 {
-  const T eps = std::numeric_limits<T>::epsilon();
+  const R eps = std::numeric_limits<R>::epsilon();
 
   static const int numFractions = 8; // number of fractions minus 1 (for breaking limit cycles)
   static const int itsBeforeFracStep = 10;  // number of iterations after which a fractional step
@@ -474,14 +481,14 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T>
   static const int maxNumIterations = itsBeforeFracStep*numFractions;
 
   // fractions for taking fractional update steps to break a limit cycles:
-  static T fractions[numFractions+1] =
-    { T(0.0),  T(0.5),  T(0.25), T(0.75), T(0.13), T(0.38), T(0.62), T(0.88), T(1.0) };
+  static R fractions[numFractions+1] =
+    { R(0.0),  R(0.5),  R(0.25), R(0.75), R(0.13), R(0.38), R(0.62), R(0.88), R(1.0) };
 
-  std::complex<T> r = initialGuess; // the current estimate for the root
+  std::complex<R> r = initialGuess; // the current estimate for the root
   for(int i = 1; i <= maxNumIterations; i++)
   {
-    std::complex<T> P[3];    // holds P, P', P''
-    T  err = eps * evaluateWithTwoDerivativesAndError(a, degree, r, P);
+    std::complex<R> P[3];    // holds P, P', P''
+    R  err = eps * evaluateWithTwoDerivativesAndError(a, degree, r, P);
 
     if(abs(P[0]) <= err)
       return r;
@@ -490,16 +497,16 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T>
     // evaluatePolynomialAndDerivativesAt
 
   // Laguerre's formulas:
-    std::complex<T> G  = P[1]/P[0];       // Eq. 9.5.6
-    std::complex<T> H  = G*G - P[2]/P[0]; // Eq. 9.5.7
-    std::complex<T> sq = sqrt(T(degree-1)*(T(degree)*H-G*G)); // square-root Eq. 9.5.11
-    std::complex<T> Gp = G + sq;  // denominator in 9.5.11 with positive sign for square-root
-    std::complex<T> Gm = G - sq;  // denominator in 9.5.11 with negative sign for square-root
+    std::complex<R> G  = P[1]/P[0];       // Eq. 9.5.6
+    std::complex<R> H  = G*G - P[2]/P[0]; // Eq. 9.5.7
+    std::complex<R> sq = sqrt(R(degree-1)*(R(degree)*H-G*G)); // square-root Eq. 9.5.11
+    std::complex<R> Gp = G + sq;  // denominator in 9.5.11 with positive sign for square-root
+    std::complex<R> Gm = G - sq;  // denominator in 9.5.11 with negative sign for square-root
 
     // choose Gp or Gm according to which has larger magnitude (page 372, bottom), re-use Gp for
     // the result:
-    T GpA = abs(Gp);
-    T GmA = abs(Gm);
+    R GpA = abs(Gp);
+    R GmA = abs(Gm);
     if(GpA < GmA)
     {
       Gp  = Gm;
@@ -508,15 +515,15 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T>
 
     // compute difference between old and new estimate for the root r (the 'a' variable in
     // Eq. 9.5.8)
-    std::complex<T> dr;
+    std::complex<R> dr;
     if(GpA > 0.0)
-      dr = std::complex<T>(T(degree), 0.0) / Gp;  // Eq. 9.5.11
+      dr = std::complex<R>(R(degree), 0.0) / Gp;  // Eq. 9.5.11
     else
-      dr = exp(log(T(1)+abs(r))) * std::complex<T>(cos((T)i), sin((T)i));
+      dr = exp(log(R(1)+abs(r))) * std::complex<R>(cos((R)i), sin((R)i));
     // \todo use sinCos()
 
     // compute new estimate for the root:
-    std::complex<T> rNew = r - dr;
+    std::complex<R> rNew = r - dr;
     if(r == rNew)
       return r;  // converged
 
@@ -1308,6 +1315,8 @@ ToDo:
  -...maybe it would be more elegant, if these functions are factored out into a separate class
   like rsPolynomialAlgorithms which has only static functions - so we don't have carry along the
   superfluous T template parameter
+ -todo: evaluateFromRoots
+
 
 */
 

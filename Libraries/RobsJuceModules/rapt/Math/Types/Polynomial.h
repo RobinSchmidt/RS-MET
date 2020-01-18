@@ -279,8 +279,9 @@ public:
   /** Evaluates a complex polynomial with coeffs "a" and its first and second derivative at the 
   input "z", stores the results in P[0],P[1],P[2] and returns an error estimate for the evaluated
   P[0] (verify this). This is used in the Laguerre root-finding algorithm. */
-  static T evaluateWithTwoDerivativesAndError(const std::complex<T>* a, int degree,
-    std::complex<T> z, std::complex<T>* P);
+  template<class R>
+  static R evaluateWithTwoDerivativesAndError(const std::complex<R>* a, int degree,
+    std::complex<R> z, std::complex<R>* P);
   // rename "P" to "y" ...or "w2 as is common in complex functions
 
   /** Evaluates the cubic polynomial a[0] + a[1]*x + a[2]*x^2 + a[3]*x^3 at the given x. */
@@ -454,16 +455,20 @@ public:
   /** \name Roots */
 
   /** Finds all complex roots of a polynomial by Laguerre's method and returns them in "roots". */
-  static void roots(const std::complex<T>* a, int degree, std::complex<T>* roots);
+  template<class R>
+  static void roots(const std::complex<R>* a, int degree, std::complex<R>* roots);
   // allocates heap memory
 
-  static void roots(const T *a, int degree, std::complex<T> *roots);
+  /** Same, but for real coefficients */
+  template<class R>
+  static void roots(const R *a, int degree, std::complex<R> *roots);
   // allocates heap memory
 
   /** Converges to a complex root of a polynomial by means of Laguerre's method using the
   "initialGuess" as first estimate. */
-  static std::complex<T> convergeToRootViaLaguerre(const std::complex<T> *a, int degree,
-    std::complex<T> initialGuess = std::complex<T>(0.0, 0.0));
+  template<class R>
+  static std::complex<R> convergeToRootViaLaguerre(const std::complex<R> *a, int degree,
+    std::complex<R> initialGuess = std::complex<R>(0.0, 0.0));
   // allocates heap memory
 
     /** Computes the root of the linear equation: \f[ a x + b = 0 \f] which is simply given by
