@@ -1150,8 +1150,8 @@ bool testPolynomialOperators(std::string &reportString)
 
 
 
-  PL p({ 7,  5,  3,  2});
-  PL q({23, 19, 17, 13, 11});
+  PL p({ 7,  5,  3,  2    });   // p(x) =  7 +  5*x +  3*x^2 +  2*x^3
+  PL q({23, 19, 17, 13, 11});   // q(x) = 23 + 19*x + 17*x^2 + 13*x^3 + 11*x^4
 
 
   PL r, s;
@@ -1164,7 +1164,9 @@ bool testPolynomialOperators(std::string &reportString)
   // multiply both polynomials together:
   r = p * q;
   s = q * p;
-  testResult &= r == s && r == PL({ 576, 0, -820, 0, 273, 0, -30, 0, 1, 0 });
+  //testResult &= r == s && r == PL({ 576, 0, -820, 0, 273, 0, -30, 0, 1, 0 });
+  testResult &= r == s && r == PL({ 576, 0, -820, 0, 273, 0, -30, 0, 1});  
+  // trailing zero is automatically truncated in multiplication
 
   // not yet finished - these assigmenz do not work as expected:
   p = PL({ 1 });   // coeff array is wrong! [0, 0] instead of [1]
@@ -1298,6 +1300,7 @@ bool testPolynomial()
 
   // polynomial class:
   testResult &= testPolynomialOperators(                      reportString);
+    // fails!
 
   testResult &= testRationalFunction(reportString);
 

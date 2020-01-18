@@ -823,7 +823,7 @@ consistent, so there are infinitely many solutions, so we get to choose some fre
 assume that to be the case here - the matrices A and B are assumed to both have rankA nonzero rows.
 We make the choice that the bottom elements in the solution vectors in X should be zero. This 
 amounts to solving the sub-system with the top-left section of the original matrix (setting the 
-bottom variables zero renders the right section of the matrix ineffective for other choices, we 
+bottom variables zero renders the right section of the matrix ineffective - for other choices, we 
 would have to adapt the right-hand side). So, this function returns a particular solution from the
 infinietly many. The full set of solutions if given by that (or another) particular solution plus 
 any linear combination of the basis vectors of the matrix A's nullspace. */

@@ -184,8 +184,9 @@ template class RAPT::rsMatrixOld<double>;
 
 template class RAPT::rsPolynomial<float>;
 template class RAPT::rsPolynomial<double>;
-//template class RAPT::rsPolynomial<std::complex<double>>;
-//template  class RAPT::rsPolynomial<int>; // template doesn't compile with int
+//template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int
+//template class RAPT::rsPolynomial<std::complex<double>>; // ...or complex
+
 template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, double, double*);
   // needs separate instantiation because function itself has a (second) template parameter
 template void RAPT::rsPolynomial<std::complex<double>>::subtract(
