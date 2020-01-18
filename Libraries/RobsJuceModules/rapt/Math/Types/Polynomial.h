@@ -498,11 +498,12 @@ public:
     std::complex<R>* x1, std::complex<R>* x2);
     // todo: make optimized version for real coefficients (but complex outputs)
 
-  /** Computes the three roots of the cubic equation: \f[ a x^3 + b x^2 + c x + d = 0 \f] and
-  stores the result in the three-element array which is returned. When the cubic is degenerate
-  (i.e, a == 0), it will fall back to the getRootsOfQuadraticEquation() function, and return a
-  two-element array (or a one-element array, when b is also zero). */
-  static std::vector<std::complex<T>> rootsCubic(const T& a, const T& b, const T& c, const T& d);
+  /** Computes the three roots of the cubic equation: \f[ a x^3 + b x^2 + c x + d = 0 \f] with real
+  coefficients and stores the result in the three-element array which is returned. When the cubic 
+  is degenerate (i.e, a == 0), it will fall back to the getRootsOfQuadraticEquation() function, and 
+  return a two-element array (or a one-element array, when b is also zero). */
+  template<class R>
+  static std::vector<std::complex<R>> rootsCubic(const R& a, const R& b, const R& c, const R& d);
   // todo: make the order of the arguments consistent with evaluateCubic - but careful - this will
   // break client code! ...rename parameters to a0,a1,a2,a3 to make it clear, how it's meant
 

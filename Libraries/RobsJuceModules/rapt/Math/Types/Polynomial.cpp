@@ -612,22 +612,23 @@ void rsPolynomial<T>::rootsQuadraticComplex(
 }
 
 template<class T>
-std::vector<std::complex<T>> rsPolynomial<T>::rootsCubic(
-  const T& a, const T& b, const T& c, const T& d)
+template<class R>
+std::vector<std::complex<R>> rsPolynomial<T>::rootsCubic(
+  const R& a, const R& b, const R& c, const R& d)
 {
   // catch degenerate cases where the leading coefficient is zero:
   if(a == 0.0)
     return rootsQuadratic(b, c, d);
 
-  std::vector<std::complex<T>> y(3);
-  std::vector<std::complex<T>> roots(3);
+  std::vector<std::complex<R>> y(3);
+  std::vector<std::complex<R>> roots(3);
 
   // compute p,q as in the Bronstein page 40, Eq. 1.154c and the offset for the substitution
   // y = x + b/(3*a):
-  T p = (T(3)*a*c-b*b)/(T(9)*a*a);
-  T q = (b*b*b)/(T(27)*a*a*a) - (b*c)/(T(6)*a*a) + d/(T(2)*a);
+  R p = (R(3)*a*c-b*b)/(R(9)*a*a);
+  R q = (b*b*b)/(R(27)*a*a*a) - (b*c)/(R(6)*a*a) + d/(R(2)*a);
 
-  T u, r, D, phi, ch, sh, re, im, tmp;
+  R u, r, D, phi, ch, sh, re, im, tmp;
 
   if(p == 0.0 && q == 0.0)
   {
@@ -637,7 +638,7 @@ std::vector<std::complex<T>> rsPolynomial<T>::rootsCubic(
   else if(p != 0.0 && q == 0.0)
   {
     y[2] = 0.0;                       // a real root at y=0 and ...
-    u    = -T(3)*p;
+    u    = -R(3)*p;
     if(u > 0.0)
     {
       tmp  =  rsSqrt(u);
@@ -648,44 +649,44 @@ std::vector<std::complex<T>> rsPolynomial<T>::rootsCubic(
     else // u < 0.0
     {
       tmp  =  rsSqrt(-u);
-      y[0] =  std::complex<T>(0.0, tmp);
-      y[1] =  std::complex<T>(0.0, -tmp);     // ... two imaginary roots
+      y[0] =  std::complex<R>(0.0, tmp);
+      y[1] =  std::complex<R>(0.0, -tmp);     // ... two imaginary roots
       // checked with y = (x-4i)*(x+4i)*(x-0) = x^3+16*x
     }
   }
   else if(p == 0.0 && q != 0.0)
   {
-    u = -T(2)*q;
+    u = -R(2)*q;
     if(u > 0.0)
     {
-      tmp  = pow(u, T(1.0/3.0));
+      tmp  = pow(u, R(1.0/3.0));
       y[2] = tmp;                     // a real root at a positive y or ...
-      phi  = T((2.0/3.0)*PI);
+      phi  = R((2.0/3.0)*PI);
       // checked with x^3+3*x^2+3*x
     }
     else // u < 0.0
     {
-      tmp  = pow(-u, T(1.0/3.0));
+      tmp  = pow(-u, R(1.0/3.0));
       y[2] = -tmp;                    // ... a real root at a negative y and ...
-      phi  = T(PI/3.0);
+      phi  = R(PI/3.0);
       // checked with x^3+3*x^2+3*x+10
     }
     rsSinCos(phi, &im, &re);
     re  *= tmp;
     im  *= tmp;
-    y[0] = std::complex<T>(re, im);
-    y[1] = std::complex<T>(re, -im);           // ... two complex conjugate roots
+    y[0] = std::complex<R>(re, im);
+    y[1] = std::complex<R>(re, -im);           // ... two complex conjugate roots
   }
   else // both p and q are nonzero
   {
     r = rsSign(q) * rsSqrt(fabs(p));
     if(p > 0.0)
     {
-      phi = (T)rsAsinh(q/(r*r*r));
-      rsSinhCosh(phi/T(3), &sh, &ch);
-      y[0] = std::complex<T>(r*sh, rsSqrt(T(3))*r*ch);
-      y[1] = std::complex<T>(r*sh, -rsSqrt(T(3))*r*ch);
-      y[2] = -T(2)*r*sh;
+      phi = (R)rsAsinh(q/(r*r*r));
+      rsSinhCosh(phi/R(3), &sh, &ch);
+      y[0] = std::complex<R>(r*sh,  rsSqrt(R(3))*r*ch);
+      y[1] = std::complex<R>(r*sh, -rsSqrt(R(3))*r*ch);
+      y[2] = -R(2)*r*sh;
       // checked with y = (x-i)*(x+i)*(x-1) = x^3-x^2+x-1
     }
     else // p < 0.0
@@ -693,26 +694,26 @@ std::vector<std::complex<T>> rsPolynomial<T>::rootsCubic(
       D = q*q + p*p*p;
       if(D > 0.0)
       {
-        phi  = (T)rsAcosh(q/(r*r*r));
-        rsSinhCosh(phi/T(3), &sh, &ch);
-        y[0] = std::complex<T>(r*ch, rsSqrt(T(3))*r*sh);
-        y[1] = std::complex<T>(r*ch, -rsSqrt(T(3))*r*sh);
-        y[2] = -T(2)*r*ch;
+        phi  = (R)rsAcosh(q/(r*r*r));
+        rsSinhCosh(phi/R(3), &sh, &ch);
+        y[0] = std::complex<R>(r*ch,  rsSqrt(R(3))*r*sh);
+        y[1] = std::complex<R>(r*ch, -rsSqrt(R(3))*r*sh);
+        y[2] = -R(2)*r*ch;
         // checked with y = (x-i)*(x+i)*(x-3) = x^3-3*x^2+x-3
       }
       else // D <= 0.0
       {
         phi  = acos(q/(r*r*r));
-        y[0] =  T(2)*r*cos(T(PI/3.0 + phi/3.0));
-        y[1] =  T(2)*r*cos(T(PI/3.0 - phi/3.0));
-        y[2] = -T(2)*r*cos(T(phi/3.0));       // three distinct real roots
+        y[0] =  R(2)*r*cos(R(PI/3.0 + phi/3.0));
+        y[1] =  R(2)*r*cos(R(PI/3.0 - phi/3.0));
+        y[2] = -R(2)*r*cos(R(phi/3.0));       // three distinct real roots
         // checked
       }
     }
   }
 
   // obtain the results for the original equation (back-substitution):
-  T s = b/(T(3)*a);
+  R s = b/(R(3)*a);
   roots[0] = y[0]-s;
   roots[1] = y[1]-s;
   roots[2] = y[2]-s;
