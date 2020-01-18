@@ -538,8 +538,9 @@ public:
   the arguments min and max give upper and lower bounds for the root (which will be returned in
   cases where the iteration diverges, which the caller should avoid in the first place) and
   maxIterations gives the maximum number of iteration steps. */
-  static T cubicRootNear(T x, const T& a, const T& b, const T& c, const T& d, const T& min, 
-    const T& max, int maxIterations = 10);
+  template<class R>
+  static R cubicRootNear(R x, const R& a, const R& b, const R& c, const R& d, const R& min, 
+    const R& max, int maxIterations = 10);
   // todo: rename to rootCubicNear, change order of variables, maybe use bisection, if 
   // newton-iteration diverges
 
@@ -550,7 +551,8 @@ public:
   the arguments min and max give upper and lower bounds for the root (which will be returned in
   cases where the iteration diverges, which you should avoid in the first place) and maxIterations
   gives the maximum number of iteration steps. */
-  static T rootNear(T x, const T* a, int order, const T& min, const T& max, 
+  template<class R>
+  static R rootNear(R x, const R* a, int order, const R& min, const R& max, 
     int maxIterations = 32);
 
   /** Same as above but accepts real coefficients. */

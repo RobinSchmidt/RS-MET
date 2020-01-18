@@ -769,17 +769,18 @@ void rsPolynomial<T>::rootsCubicComplex(
 }
 
 template<class T>
-T rsPolynomial<T>::cubicRootNear(T x, const T& a, const T& b, const T& c, const T& d, 
-  const T& min, const T& max, int maxIterations)
+template<class R>
+R rsPolynomial<T>::cubicRootNear(R x, const R& a, const R& b, const R& c, const R& d, 
+  const R& min, const R& max, int maxIterations)
 {
-  T f    = ((a*x+b)*x+c)*x+d;
-  T df   = (T(3)*a*x+T(2)*b)*x+c;
-  T xNew = x - f/df;
+  R f    = ((a*x+b)*x+c)*x+d;
+  R df   = (R(3)*a*x+R(2)*b)*x+c;
+  R xNew = x - f/df;
   int i = 1;
   while(xNew != x && i < maxIterations) {
     x    = xNew;
     f    = ((a*x+b)*x+c)*x+d;
-    df   = (T(3)*a*x+T(2)*b)*x+c;
+    df   = (R(3)*a*x+R(2)*b)*x+c;
     xNew = x - f/df;
     i++;
   }
@@ -788,15 +789,16 @@ T rsPolynomial<T>::cubicRootNear(T x, const T& a, const T& b, const T& c, const 
 // todo: re-write the algorithm such that the formulas only appear once (reduce code size)
 
 template<class T>
-T rsPolynomial<T>::rootNear(T x, const T* a, int degree, const T& min, const T& max, 
+template<class R>
+R rsPolynomial<T>::rootNear(R x, const R* a, int degree, const R& min, const R& max, 
   int maxIterations)
 {
   // Newton/Raphson iteration:
-  T f, df, xNew;
+  R f, df, xNew;
   evaluateWithDerivative(x, a, degree, &f, &df);
   xNew  = x - f/df;
   int i = 1;
-  while(xNew != x && i < maxIterations) {
+  while(xNew != x && i < maxIterations) {  // maybe needs tolerance
     x    = xNew;
     evaluateWithDerivative(x, a, degree, &f, &df);
     xNew = x - f/df;
@@ -804,6 +806,7 @@ T rsPolynomial<T>::rootNear(T x, const T* a, int degree, const T& min, const T& 
   }
   return rsClip(xNew, min, max);
 }
+// drage the 1st iteration into the loop
 
 //-------------------------------------------------------------------------------------------------
 // conversions:
