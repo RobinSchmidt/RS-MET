@@ -195,6 +195,15 @@ template void RAPT::rsPolynomial<std::complex<double>>::subtract(
 template void  RAPT::rsPolynomial<float>::rootsQuadraticComplex(
   const std::complex<float>& a0, const std::complex<float>& a1, const std::complex<float>& a2,
   std::complex<float>* x1, std::complex<float>* x2);
+template float RAPT::rsPolynomial<float>::cubicDiscriminant(
+  const float& a0, const float& a1, const float& a2, const float& a3);
+
+template void RAPT::rsPolynomial<float>::rootsCubicComplex(
+  std::complex<float> a0, std::complex<float> a1, 
+  std::complex<float> a2, std::complex<float> a3, 
+  std::complex<float>* r1, std::complex<float>* r2, std::complex<float>* r3);
+
+
 
 template class RAPT::rsMatrixView<double>;
 template class RAPT::rsMatrix<double>;

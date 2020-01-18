@@ -510,16 +510,18 @@ public:
   /** Discriminant of cubic polynomial \f[ a_0 + a_1 x + a_2 x^2 + a_3 x^3 = 0 \f].
   D > 0: 3 distinct real roots, D == 0: 3 real roots, 2 or 3 of which may coincide,
   D < 0: 1 real root and 2 complex conjugate roots */
-  static T cubicDiscriminant(const T& a0, const T& a1, const T& a2, const T& a3);
+  template<class R>
+  static R cubicDiscriminant(const R& a0, const R& a1, const R& a2, const R& a3);
   // rename to discriminantCubic
 
   // todo: write function quadraticDiscriminant
 
   /** under construction - does not yet work */
+  template<class R>
   static void rootsCubicComplex(
-    std::complex<T> a0, std::complex<T> a1, 
-    std::complex<T> a2, std::complex<T> a3, 
-    std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3);
+    std::complex<R> a0, std::complex<R> a1, 
+    std::complex<R> a2, std::complex<R> a3, 
+    std::complex<R>* r1, std::complex<R>* r2, std::complex<R>* r3);
 
 
   // implement rootsQuadraticReal, rootsQuadraticComplex, rootsCubicReal, rootsCubicComplex

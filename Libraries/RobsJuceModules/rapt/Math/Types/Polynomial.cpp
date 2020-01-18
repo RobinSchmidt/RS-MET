@@ -726,9 +726,10 @@ std::vector<std::complex<R>> rsPolynomial<T>::rootsCubic(
 
 
 template<class T>
-T rsPolynomial<T>::cubicDiscriminant(const T& d, const T& c, const T& b, const T& a)
+template<class R>
+R rsPolynomial<T>::cubicDiscriminant(const R& d, const R& c, const R& b, const R& a)
 {
-  return b*b*c*c - T(4)*(a*c*c*c + b*b*b*d) - T(27)*a*a*d*d + T(18)*a*b*c*d;
+  return b*b*c*c - R(4)*(a*c*c*c + b*b*b*d) - R(27)*a*a*d*d + R(18)*a*b*c*d;
 }
 
 template<class T>
@@ -739,26 +740,27 @@ T rsCubeRoot(T x)
 }
 
 template<class T>
+template<class R>
 void rsPolynomial<T>::rootsCubicComplex(
-  std::complex<T> a0, std::complex<T> a1, 
-  std::complex<T> a2, std::complex<T> a3, 
-  std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3)
+  std::complex<R> a0, std::complex<R> a1, 
+  std::complex<R> a2, std::complex<R> a3, 
+  std::complex<R>* r1, std::complex<R>* r2, std::complex<R>* r3)
 {
   //rsAssert(false); // does not yet work - produces wrong results when roots are not real
   // formulas from http://mathworld.wolfram.com/CubicFormula.html
 
   // intermediate variables:
-  std::complex<T> q, r, d, s, t, u, v, w; // maybe can use less intermediate variables by re-using
-  q = T(1) / a3; a0 *= q; a1 *= q; a2 *= q;  // make monic (such that a3 == 1)
-  q = (T(3)*a1 - a2*a2) * T(1.0/9.0);
-  r = (T(9)*a2*a1 - T(27)*a0 - T(2)*a2*a2*a2) * T(1.0/54.0);
+  std::complex<R> q, r, d, s, t, u, v, w; // maybe can use less intermediate variables by re-using
+  q = R(1) / a3; a0 *= q; a1 *= q; a2 *= q;  // make monic (such that a3 == 1)
+  q = (R(3)*a1 - a2*a2) * R(1.0/9.0);
+  r = (R(9)*a2*a1 - R(27)*a0 - R(2)*a2*a2*a2) * R(1.0/54.0);
   d = q*q*q + r*r;     // discriminant
   d = sqrt(d);         // we actually need the square root of it
   s = rsCubeRoot(r+d);
   t = rsCubeRoot(r-d);
-  u = -a2*T(1.0/3.0);
-  v = (s+t) * T(0.5);
-  w = (s-t) * (T(0.5*sqrt(3.0)) * std::complex<T>(0, 1)); // factor is constant - optimize
+  u = -a2*R(1.0/3.0);
+  v = (s+t) * R(0.5);
+  w = (s-t) * (R(0.5*sqrt(3.0)) * std::complex<R>(0, 1)); // factor is constant - optimize
 
   // roots:
   *r1 = u - v + w;

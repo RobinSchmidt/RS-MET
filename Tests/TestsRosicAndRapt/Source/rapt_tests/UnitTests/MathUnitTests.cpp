@@ -447,8 +447,8 @@ bool polynomialRootsUnitTest()
   r &= rr2 == 2;
 
   // x^3 - x, roots: -1, 0, +1, d = 4
-  d = P::cubicDiscriminant(0,  -1, 0, 1);
-  P::rootsCubicComplex(0, -1, 0, 1, &cr1, &cr2, &cr3);
+  d = P::cubicDiscriminant(0.f,  -1.f, 0.f, 1.f);
+  P::rootsCubicComplex(C(0), C(-1), C(0), C(1), &cr1, &cr2, &cr3);
   r &= d   == 4;
   r &= cr1 == C(-1, 0);
   r &= cr2 == C( 0, 0);
@@ -456,8 +456,8 @@ bool polynomialRootsUnitTest()
   // has roundoff error, otherwise ok
 
   // x^3 + x, roots: 0, -i, +i, d = -4
-  d = P::cubicDiscriminant( 0, 1, 0, 1);
-  P::rootsCubicComplex(0, 1, 0, 1, &cr1, &cr2, &cr3);
+  d = P::cubicDiscriminant( 0.f, 1.f, 0.f, 1.f);
+  P::rootsCubicComplex(C(0), C(1), C(0), C(1), &cr1, &cr2, &cr3);
   r &= d   == -4;
   r &= cr1 == C(0,  0);
   r &= cr2 == C(0, -1);
@@ -473,24 +473,24 @@ bool polynomialRootsUnitTest()
 
 
   // -18 + 33*x - 18*x^2 + 3*x^3, roots: 1, 2, 3, d = 324
-  d = P::cubicDiscriminant( -18, 33, -18, 3);
-  P::rootsCubicComplex(-18, 33, -18, 3, &cr1, &cr2, &cr3);
+  d = P::cubicDiscriminant( -18.f, 33.f, -18.f, 3.f);
+  P::rootsCubicComplex(C(-18), C(33), C(-18), C(3), &cr1, &cr2, &cr3);
   r &= d   == 324;
   r &= cr1 == C(1, 0);
   r &= cr2 == C(2, 0);
   r &= cr3 == C(3, 0);
 
   // -6 + 15*x - 12*x^2 + 3*x^3, roots: 1, 1, 2, d = 0
-  d = P::cubicDiscriminant( -6, 15, -12, 3);
-  P::rootsCubicComplex(-6, 15, -12, 3, &cr1, &cr2, &cr3);
+  d = P::cubicDiscriminant( -6.f, 15.f, -12.f, 3.f);
+  P::rootsCubicComplex(C(-6), C(15), C(-12), C(3), &cr1, &cr2, &cr3);
   r &= d   == 0;
   r &= cr1 == C(1, 0);
   r &= cr2 == C(1, 0);
   r &= cr3 == C(2, 0);
 
   // -15 + 27*x - 15*x^2 + 3*x^3, roots: 1, 2-i, 2+i, d = -1296
-  d = P::cubicDiscriminant( -15, 27, -15, 3);
-  P::rootsCubicComplex(-15, 27, -15, 3, &cr1, &cr2, &cr3);
+  d = P::cubicDiscriminant( -15.f, 27.f, -15.f, 3.f);
+  P::rootsCubicComplex(C(-15), C(27), C(-15), C(3), &cr1, &cr2, &cr3);
   r &= d   == -1296;
   r &= cr1 == C(1,  0);
   r &= cr2 == C(2, -1);
