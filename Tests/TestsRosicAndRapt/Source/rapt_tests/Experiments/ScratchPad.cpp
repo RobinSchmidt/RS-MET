@@ -8,7 +8,7 @@ void cleanUpIntegers(T* a, int N, T tol)
 {
   for(int i = 0; i < N; ++i) {
     T rounded = round(a[i]);
-    if( rsAbs(a[i] - rounded) <= tol )
+    if( rsAbs(a[i] - rounded) < tol )
       a[i] = rounded; }
 }
 // move to rsArray
@@ -25,7 +25,7 @@ bool isInSpanOf(rsMatrix<T> B, rsMatrix<T> x, T tol)
 {
   //rsAssert(B.hasSameShapeAs(x));
   rsAssert(B.getNumRows() == x.getNumRows());
-  RAPT::rsLinearAlgebraNew::makeTriangular(B, x);
+  RAPT::rsLinearAlgebraNew::makeTriangular(B, x);  // use rowEchelon2
   int rankB = getRankRowEchelon(B, tol);
   return x.areRowsZero(rankB, x.getNumRows()-1, tol);
 }
@@ -81,14 +81,13 @@ int getLeadCoeffIndex(const rsMatrixView<T>& A, int row, T tol, int startColumn 
       return j;
   return j;  // will return numCols (i.e. invalid index) when the row is all zeros
 }
-// rename to getLeadCoeffIndex
 
 
 /** Puts the augmented coefficient matrix A|B into row echelon form via Gaussian elimination. 
 In this form, each row has its leading coefficient at least one position further to the right than
 the previous row and rows of all zeros are at the bottom. */
 template<class T>
-void rowEchelon2(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)  // change to rsMatrixView for production
+void rowEchelon2(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)
 {
   //bool reduced = false; // make parameter
 
@@ -135,6 +134,7 @@ void rowEchelon2(rsMatrixView<T>& A, T tol)
   rsMatrix<T> dummy(A.getNumRows(), 1);
   rowEchelon2(A, dummy, tol);
 }
+// allocates because of dummy - try to get rid of the allocation
 
 // make a function reducedRowEchelon that also includes a backward/upward elimination pass - maybe 
 // that can be integrated as option into the function above - if reduced == true also eliminate 
@@ -197,9 +197,9 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
   for(int i = 0; i < B.getNumRows(); ++i)
     for(int j = 0; j < B.getNumColumns(); ++j)
       if(i == j)
-        B(i, j) = RatFunc({A(i, j), -1}, {1});
+        B(i, j) = RatFunc({A(i, j), -1}, {1});  // function (A(i, j) - x) / 1 on the diagonal
       else
-        B(i, j) = RatFunc({A(i, j)},     {1});
+        B(i, j) = RatFunc({A(i, j)},     {1});  // constant function A(i,j) / 1 off the diagonal
 
   // Create a dummy right-hand-side (todo: allow function to be called without rhs) - maybe
   // make an LU decomposition function that fills an array of swaps at each index, the number says
@@ -226,7 +226,8 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
   return d.getNumerator() / d.getDenominator()[0]; 
 }
 // todo: make a version that uses Laplace expansion of the determinant with a matrix of polynomials
-// -> should give the same result 
+// -> avoids use of rsRationalFunction, needs only rsPolynomial -> should give the same result (but 
+// this is only for testing, not for production - Laplace expansion is ridiculously expensive)
 
 /** Represents the root of a polynomial along with its multiplicity. The datatype of the 
 coefficients is assumed to be a complex number type. */
@@ -265,34 +266,7 @@ struct rsEigenSpace
   int algebraicMultiplicity; // not yet assigned
 };
 
-/** Represents the set of eigenspaces of a matrix with complex coefficients. This set consists of a
-set of (eigenvalues, each with an algebraic multiplicity which is the order of the
-polynomial root. Associated with each eigenvalue is a set of eigenvectors...  */
-/*
-template<class T>  // T should be a complex type
-class rsEigenSpaceSet
-{
 
-public:
-
-  rsPolynomial<T> characteristicPolynomial;
-  std::vector<rsEigenSpace<T>> eigenspaces;
-
-protected:
-
-};
-*/
-
-// for matrices with real coefficients, we must promote them to complex numbers because even real
-// matrices may have complex eigenvalues and eigenvectors
-/*
-template<class T>
-class rsEigenStuffReal : public rsEigenSpaceSet<std::complex<T>>
-{
-
-};
-// 
-*/
 
 template<class T> 
 RAPT::rsMatrix<complex<T>> complexify(const RAPT::rsMatrix<T>& A)
@@ -531,13 +505,13 @@ rsMatrix<T> getAdjugate(const rsMatrix<T>& A, int i, int j)
 // array of th indices of the column to remove
 // rsMatrix<T> getWithRemovedColumns(const rsMatrix<T>& A, const std::vector<int>& colIndices)
 
-/** Expands the determinant column-wise along the j-th column. This is the textbook method and has
-extremely bad scaling of the complexity. The function calls itself recursively in a loop (!!!). I 
-think, the complexity may scale with the factorial function (todo: verify) - which would be 
-super-exponential - so it's definitely not meant for use in production code. For production, use
-Gaussian elimination (we need to keep track of whether we have an odd or even number of swaps - in 
-the former case det = -1 * product(diagonal-elements of upper triangular form), in the later case
-det = +1 * product(...) */
+/** Expands the determinant column-wise along the j-th column via the Laplace expansion method. 
+This method has extremely bad scaling of the complexity. The function calls itself recursively in a 
+loop (!!!). I think, the complexity may scale with the factorial function (todo: verify) - which 
+would be super-exponential - so it's definitely not meant for use in production code. For 
+production, use Gaussian elimination (we need to keep track of whether we have an odd or even 
+number of swaps - in the former case det = -1 * product(diagonal-elements of upper triangular 
+form), in the later case det = +1 * product(...) */
 template<class T>
 T getDeterminantColumnWise(const rsMatrix<T>& A, int j = 0)
 {
@@ -945,6 +919,40 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
 }
 // move to library, rename to nullSpace, also move rowSpace and columnSpace over
 // it sometimes produces bases that contain the zero vector
+
+
+
+
+
+
+template<class T>
+std::vector<rsEigenSpace<std::complex<T>>> getEigenSpaces(rsMatrix<std::complex<T>> A, T tol)
+{
+  using Complex = std::complex<T>;
+  //using Vector
+
+  std::vector<rsEigenSpace<Complex>> eigSpaces;
+   
+  rsPolynomial<Complex> p = getCharacteristicPolynomial(A);
+  //std::vector<Complex> eigValues = p.getRoots();
+  // maybe have a function getRootsWithMultiplicities
+ 
+
+
+  return eigSpaces;
+}
+
+
+
+// convenience function for matrices of real numbers:
+template<class T>
+std::vector<rsEigenSpace<std::complex<T>>> getEigenSpaces(rsMatrix<T> A, T tol)
+{
+  return getEigenSpaces(complexify(A), tol)
+}
+
+
+
 
 
 

@@ -180,12 +180,12 @@ template bool rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(double **A, doubl
 template bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(   double **A, double **B, double **C, int N);
 template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, const cmplxD *b, int N);
 
-template class RAPT::rsMatrixOld<double>;
+template class RAPT::rsMatrixOld<double>;  // try to get rid
 
 template class RAPT::rsPolynomial<float>;
 template class RAPT::rsPolynomial<double>;
+template class RAPT::rsPolynomial<std::complex<double>>;
 //template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int
-template class RAPT::rsPolynomial<std::complex<double>>; // ...or complex
 
 template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, double, double*);
   // needs separate instantiation because function itself has a (second) template parameter
@@ -203,6 +203,8 @@ template void RAPT::rsPolynomial<float>::rootsCubicComplex(
   std::complex<float> a2, std::complex<float> a3, 
   std::complex<float>* r1, std::complex<float>* r2, std::complex<float>* r3);
 
+
+//template class RAPT::rsRationalFunction<std::complex<double>>; // is implemented in header?
 
 
 template class RAPT::rsMatrixView<double>;
