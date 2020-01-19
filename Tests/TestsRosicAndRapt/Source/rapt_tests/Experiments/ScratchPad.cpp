@@ -920,8 +920,44 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
 // move to library, rename to nullSpace, also move rowSpace and columnSpace over
 // it sometimes produces bases that contain the zero vector
 
+/** Structure for representing the occurence of a value together with its multiplicity (i.e. number
+of times, it occurred). Useful, for example, for polynomial roots */
+template<class T>
+struct rsOccurence
+{
+  rsOccurence(T _value, T _multiplicity) : value(_value), multiplicity(_multiplicity) {}
+  T value;
+  int multiplicity;
+};
 
+template<class TItem, class TTol>
+int rsFind(const TItem* items, int numItems, const TItem& item, TTol tol)
+{
+  for(int i = 0; i < numItems; i++)
+    if( rsGreaterAbs(items[i] - item, TItem(tol)) )
+      return i;
+  return -1;
+}
 
+template<class TItem, class TTol>
+std::vector<rsOccurence<TItem>> collectOccurrences(const std::vector<TItem>& items, TTol tol)
+{
+  std::vector<rsOccurence<TItem>> occurrences;
+  for(size_t i = 0; i < items.size(); i++) {
+    int j = rsFind(&occurrences[0], (int) occurrences.size(), items[i], tol);
+    if(j != -1)
+      occurrences[j].multiplicity++;
+    else
+      occurrences.push_back(rsOccurence(items[i], 1)); }
+  return occurrences;
+}
+
+template<class T>
+std::vector<rsOccurence<std::complex<T>>> 
+getRootsWithMulltiplicities(const rsPolynomial<std::complex<T>> p, T tol)
+{
+  return collectOccurrences(getPolynomialRoots(p));
+}
 
 
 
