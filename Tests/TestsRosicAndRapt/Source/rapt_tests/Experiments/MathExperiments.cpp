@@ -38,7 +38,7 @@ void characteristicPolynomial()
 
   // the sum of the eigenvalues should equal the trace of the matrix (Karpf. pg 412)
 
-  vector<complex<double>> eigenvalues1 = getPolynomialRoots(p);
+  //vector<complex<double>> eigenvalues1 = getPolynomialRoots(p);
   //vector<complex<double>> eigenvalues2 = getEigenvalues(A);
 
   // this is wrong:
@@ -548,6 +548,9 @@ void eigenstuff()
   // we get the 3D space: {(0,0,1,0,0),(.5,.5,0,1,0),(.5,.5,0,0,1)} - is this due to numerical 
   // error? - maybe try a different singularity/rank threshold? increasing the factor to 100000 
   // didn't help
+
+  std::vector<rsEigenSpace<double>> eig;
+  //eig = getEigenSpaces(A, tol);  // doesn't compile/link yet
 
   // it sometimes seems to find extra eigenvectors at other times, it fails to find eigenvectors
   // ...it probably has to do with the rank detection threshold - figure out! try to find a simple

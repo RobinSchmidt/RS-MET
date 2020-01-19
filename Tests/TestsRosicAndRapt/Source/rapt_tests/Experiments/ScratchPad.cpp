@@ -257,13 +257,11 @@ struct rsEigenSpace
   //rsPolynomialRoot<T> eigenvalue;
 
 
-  complex<T> eigenvalue;
-  rsMatrix<complex<T>> eigenspace; 
+  complex<T> eigenValue;
+  int algebraicMultiplicity;
+  rsMatrix<complex<T>> eigenSpace; 
   //rsMatrix<T> eigenspace;  // basis of nullspace of A - eigenvalue * I
   // should be a complex matrix
-
-               
-  int algebraicMultiplicity; // not yet assigned
 };
 
 
@@ -318,25 +316,7 @@ void findEigenSpacesReal(const RAPT::rsMatrix<T>& A) // for real matrices - incl
   int dummy = 0;
 }
 
-template<class T> 
-vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<T>& p)
-{
-  vector<complex<T>> roots(p.getDegree());
-  RAPT::rsPolynomial<T>::roots(p.getCoeffPointerConst(), p.getDegree(), &roots[0]);
-  return roots;
-}
-// maybe make member getRoots - that would be convenient - but the problem is that even for real 
-// polynomials, the roots may be complex - so i don't know if it should return a vector<T> or a 
-// vector<complex<T>> - if the polynomial is itself complex, the former would be the way to go,
-// if it's real, the latter ...maybe make two functions getRootsReal, getRootsComplex - or maybe
-// in the case of real polynomials, it should return only the real roots unless one calls 
-// getComplexRoots - or maybe, if we implement it as template once for reals and once for 
-// complexes, the right one will be compiled into the class automatically? ..like
-// vector<complex<T>> getRoots(const RAPT::rsPolynomial<T>& p); // T is real type
-// vector<T> getRoots(const RAPT::rsPolynomial<complex<R>>& p); // T is complex, R is real
 
-// this function should probably take a complex polynomial as input, so we can use it with complex
-// matrices too
 
 
 template<class T> 
@@ -943,50 +923,81 @@ template<class TItem, class TTol>
 std::vector<rsOccurence<TItem>> collectOccurrences(const std::vector<TItem>& items, TTol tol)
 {
   std::vector<rsOccurence<TItem>> occurrences;
+  /* doesn'T compile:
   for(size_t i = 0; i < items.size(); i++) {
     int j = rsFind(&occurrences[0], (int) occurrences.size(), items[i], tol);
     if(j != -1)
       occurrences[j].multiplicity++;
     else
-      occurrences.push_back(rsOccurence(items[i], 1)); }
+      occurrences.push_back(rsOccurence<TItem>(items[i], 1)); }
+      */
   return occurrences;
 }
 
+// get rid of the duplication:
+template<class T> 
+vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<T>& p)
+{
+  vector<complex<T>> roots(p.getDegree());
+  RAPT::rsPolynomial<T>::roots(p.getCoeffPointerConst(), p.getDegree(), &roots[0]);
+  return roots;
+}
+
+template<class T> 
+vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<complex<T>>& p)
+{
+  vector<complex<T>> roots(p.getDegree());
+  RAPT::rsPolynomial<T>::roots(p.getCoeffPointerConst(), p.getDegree(), &roots[0]);
+  return roots;
+}
+// maybe make member getRoots - that would be convenient - but the problem is that even for real 
+// polynomials, the roots may be complex - so i don't know if it should return a vector<T> or a 
+// vector<complex<T>> - if the polynomial is itself complex, the former would be the way to go,
+// if it's real, the latter ...maybe make two functions getRootsReal, getRootsComplex - or maybe
+// in the case of real polynomials, it should return only the real roots unless one calls 
+// getComplexRoots - or maybe, if we implement it as template once for reals and once for 
+// complexes, the right one will be compiled into the class automatically? ..like
+// vector<complex<T>> getRoots(const RAPT::rsPolynomial<T>& p); // T is real type
+// vector<T> getRoots(const RAPT::rsPolynomial<complex<R>>& p); // T is complex, R is real
+
+// this function should probably take a complex polynomial as input, so we can use it with complex
+// matrices too
+
 template<class T>
 std::vector<rsOccurence<std::complex<T>>> 
-getRootsWithMulltiplicities(const rsPolynomial<std::complex<T>> p, T tol)
+//std::vector<rsOccurence<T>> 
+getRootsWithMultiplicities(const rsPolynomial<std::complex<T>> p, T tol)
 {
-  return collectOccurrences(getPolynomialRoots(p));
+  return collectOccurrences(getPolynomialRoots(p), tol);
 }
 
-
-
+/*
 template<class T>
-std::vector<rsEigenSpace<std::complex<T>>> getEigenSpaces(rsMatrix<std::complex<T>> A, T tol)
+std::vector<rsEigenSpace<T>> getEigenSpaces(rsMatrix<std::complex<T>> A, T tol)
 {
-  using Complex = std::complex<T>;
-  //using Vector
+  //using Complex = std::complex<T>;
+  rsPolynomial<complex<T>> p = getCharacteristicPolynomial(A);
+  std::vector<rsOccurence<complex<T>>> eigenValues = getRootsWithMultiplicities(p, tol);
+  int numRoots = (int) eigenValues.size();
+  std::vector<rsEigenSpace<T>> eigenSpaces(numRoots);
+  for(int i = 0; i < numRoots; i++)
+  {
+    eigenSpaces[i].eigenValue = eigenValues[i].value;
+    eigenSpaces[i].algebraicMultiplicity = eigenValues[i].multiplicity;
+    //eigenSpaces[i].eigenSpace = ...
+  }
 
-  std::vector<rsEigenSpace<Complex>> eigSpaces;
-   
-  rsPolynomial<Complex> p = getCharacteristicPolynomial(A);
-  //std::vector<Complex> eigValues = p.getRoots();
-  // maybe have a function getRootsWithMultiplicities
- 
-
-
-  return eigSpaces;
+  return eigenSpaces;
 }
-
-
 
 // convenience function for matrices of real numbers:
 template<class T>
-std::vector<rsEigenSpace<std::complex<T>>> getEigenSpaces(rsMatrix<T> A, T tol)
+std::vector<rsEigenSpace<T>> getEigenSpaces(rsMatrix<T> A, T tol)
 {
-  return getEigenSpaces(complexify(A), tol)
+  return getEigenSpaces(complexify(A), tol);
 }
 
+*/
 
 
 

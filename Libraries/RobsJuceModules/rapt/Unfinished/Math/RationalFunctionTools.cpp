@@ -79,8 +79,8 @@ void polyDivMod(std::vector<T> p, std::vector<T> d,
   std::vector<T>& q, std::vector<T>& r, T tol)
 { 
   q.resize(p.size());
-  r = p;                // init remainder with copy of product
-  rsFill(q, 0.0);       // init quotient to all zeros
+  r = p;                 // init remainder with copy of product
+  rsFill(q, T(0));       // init quotient to all zeros
   int k = (int)p.size() - (int)d.size();
   while(k >= 0) {
     q[k] = r[(int)d.size()-1+k] / d[(int)d.size()-1];
@@ -115,7 +115,8 @@ template<class T>
 bool isAllZeros(const std::vector<T>& v, T tol)
 {
   for(size_t i = 0; i < v.size(); i++)
-    if(fabs(v[i]) > tol)
+    //if(fabs(v[i]) > tol)
+    if( rsGreaterAbs(v[i], tol) )
       return false;
   return true;
 }
@@ -208,12 +209,12 @@ void ratPolyNest(
 {
   std::vector<T> nt;
   nr = { po[0] };   // numerator of result
-  dr = { 1.0 };     // denominator of result
+  dr = { T(1)  };   // denominator of result
   nt = ni;          // temporary numerator (for convolutive accumulation)
   for(int k = 1; k < po.size(); k++) {
     dr = polyMul(dr, di, tol);  
     nr = polyMul(nr, di, tol);
-    nr = polyAdd(nr, nt, tol, 1.0, po[k]);
+    nr = polyAdd(nr, nt, tol, T(1), po[k]);
     nt = polyMul(nt, ni, tol); }
 }
 

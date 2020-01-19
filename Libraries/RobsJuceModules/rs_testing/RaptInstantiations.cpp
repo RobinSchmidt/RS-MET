@@ -204,7 +204,7 @@ template void RAPT::rsPolynomial<float>::rootsCubicComplex(
   std::complex<float>* r1, std::complex<float>* r2, std::complex<float>* r3);
 
 
-//template class RAPT::rsRationalFunction<std::complex<double>>; // is implemented in header?
+//template class RAPT::rsRationalFunction<std::complex<double>>; // doesn't compile
 
 
 template class RAPT::rsMatrixView<double>;
