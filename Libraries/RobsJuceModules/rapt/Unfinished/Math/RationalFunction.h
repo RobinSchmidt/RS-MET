@@ -176,11 +176,12 @@ public:
   order to make the denominator monic and/or divide out the polynomial part from the numerator). 
   So, if you still need them in their original form after the function returns, you should create a
   local copy to pass into the function. */
+  template<class R>
   static void partialFractionExpansion(
-    std::complex<T>* numerator, int numeratorDegree,
-    std::complex<T>* denominator, int denominatorDegree,
-    const std::complex<T>* poles, const int* multiplicities, int numDistinctPoles,
-    std::complex<T>* pfeCoeffs, std::complex<T>* polyCoeffs = nullptr);
+    std::complex<R>* numerator, int numeratorDegree,
+    std::complex<R>* denominator, int denominatorDegree,
+    const std::complex<R>* poles, const int* multiplicities, int numDistinctPoles,
+    std::complex<R>* pfeCoeffs, std::complex<R>* polyCoeffs = nullptr);
   // -may allocate heap memory (in case of multiple poles)
   // ToDo:
   // -have a higher-level version of the function that doesn't require the poles to be known and
@@ -195,34 +196,38 @@ public:
   have multiplicities. This function implements the cover-up method, see:
   https://en.wikipedia.org/wiki/Heaviside_cover-up_method  
   called interbally by partialFractionExpansion  */
+  template<class R>
   static void partialFractionExpansionDistinctPoles(
-    std::complex<T> *num, int numDeg, std::complex<T> *den, int denDeg,
-    const std::complex<T> *poles, std::complex<T> *pfeCoeffs);
+    std::complex<R> *num, int numDeg, std::complex<R> *den, int denDeg,
+    const std::complex<R> *poles, std::complex<R> *pfeCoeffs);
 
   /** A routine to perform a partial fraction expansion of a strictly proper rational function when
   some poles may have mutliplicities. The algorithm implemented here solves the linear system
   of equations that results from equating the original rational function to a partial fraction
   expansion with undetermined coefficients, multiplying both sides by the denominator and equating
   coefficients of the polynomials on both sides. called interbally by partialFractionExpansion */
+  template<class R>
   static void partialFractionExpansionMultiplePoles(
-    const std::complex<T>* num, int numDeg, const std::complex<T>* den, int denDeg,
-    const std::complex<T>* poles, const int* multiplicities, int numDistinctPoles,
-    std::complex<T>* pfeCoeffs);
+    const std::complex<R>* num, int numDeg, const std::complex<R>* den, int denDeg,
+    const std::complex<R>* poles, const int* multiplicities, int numDistinctPoles,
+    std::complex<R>* pfeCoeffs);
   // allocates heap memory
 
 
   // convenience functions to work on std::vector (not recommended for production code due to 
   // extra memory allocations - mostly for making tests and experiments more convenient):
 
-  static std::vector<std::complex<T>> partialFractions(
-    const std::vector<std::complex<T>>& numerator,
-    const std::vector<std::complex<T>>& denominator,
-    const std::vector<std::complex<T>>& poles);
+  template<class R>
+  static std::vector<std::complex<R>> partialFractions(
+    const std::vector<std::complex<R>>& numerator,
+    const std::vector<std::complex<R>>& denominator,
+    const std::vector<std::complex<R>>& poles);
 
-  static std::vector<std::complex<T>> partialFractions(
-    const std::vector<std::complex<T>>& numerator,
-    const std::vector<std::complex<T>>& denominator,
-    const std::vector<std::complex<T>>& poles,
+  template<class R>
+  static std::vector<std::complex<R>> partialFractions(
+    const std::vector<std::complex<R>>& numerator,
+    const std::vector<std::complex<R>>& denominator,
+    const std::vector<std::complex<R>>& poles,
     const std::vector<int>& multiplicities);
   // maybe have another parameter later to switch between algorithms
 

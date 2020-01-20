@@ -204,6 +204,18 @@ template void RAPT::rsPolynomial<float>::rootsCubicComplex(
   std::complex<float>* r1, std::complex<float>* r2, std::complex<float>* r3);
 
 
+template std::vector<std::complex<double>> RAPT::rsRationalFunction<double>::partialFractions(
+  const std::vector<std::complex<double>>& numerator,
+  const std::vector<std::complex<double>>& denominator,
+  const std::vector<std::complex<double>>& poles);
+
+template std::vector<std::complex<double>> RAPT::rsRationalFunction<double>::partialFractions(
+  const std::vector<std::complex<double>>& numerator,
+  const std::vector<std::complex<double>>& denominator,
+  const std::vector<std::complex<double>>& poles,
+  const std::vector<int>& multiplicities);
+
+
 //template class RAPT::rsRationalFunction<std::complex<double>>; // doesn't compile
 
 
