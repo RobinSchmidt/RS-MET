@@ -543,12 +543,15 @@ void eigenstuff()
   // [2,(1,1)], [2,(1,1)] -> correct
 
   A = Matrix(3,3, {1,2,2, 2,-2,1, 2,1,-2});
-  eig = getEigenSpaces(A, tol);
+  eig = getEigenSpaces(A, tol);    // doesn't work - we need higher tolerance
+  eig = getEigenSpaces(A, 1.e-7);  // works
   findEigenSpacesReal(A);
   // [3,(2,1,1)],[-3,(-1,0,2),(-1,2,0)] - (2,1,1) is found correctly, the other eigenspaces are 
   // empty - numerical issues?, also, the -3 eigenvalue is found twice - once as -3.000...x and 
   // once as -2.999...x - in each case with an empty eigenspace - it smells like a precision issue
-
+  // ...with tol = 1.e-7, they are collapsed into one - with a 2D eigenspace - this seems correct
+  // but why are the eigenspaces empty in case of too small tolerance - shouldn't they just be 
+  // duplicated, too?
 
   // Example from Ahrens,pg.659 - has a single eigenvalue of -2 (with multiplicity 5) with a 2D 
   // eigenspace spanned by {(1,1,1,1,1),(0,0,1,0,0)}:
@@ -564,10 +567,8 @@ void eigenstuff()
   // wrong - they are just a different basis that spans the same space
 
 
-
   // todo: try some more examples with sage, clean up the eigenvalues - use a function like
   // cleanUpIntegers that does it for real and imaginary parts
-
 
   int dummy = 0;
 
