@@ -87,7 +87,7 @@ int getLeadCoeffIndex(const rsMatrixView<T>& A, int row, T tol, int startColumn 
 In this form, each row has its leading coefficient at least one position further to the right than
 the previous row and rows of all zeros are at the bottom. */
 template<class T>
-void rowEchelon2(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)
+void rowEchelon(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)
 {
   //bool reduced = false; // make parameter
 
@@ -129,10 +129,10 @@ void rowEchelon2(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)
 // needs test
 
 template<class T>
-void rowEchelon2(rsMatrixView<T>& A, T tol)
+void rowEchelon(rsMatrixView<T>& A, T tol)
 {
   rsMatrix<T> dummy(A.getNumRows(), 1);
-  rowEchelon2(A, dummy, tol);
+  rowEchelon(A, dummy, tol);
 }
 // allocates because of dummy - try to get rid of the allocation
 
@@ -838,10 +838,9 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)  // maybe to needs to be a separa
   // https://en.wikipedia.org/wiki/Rank%E2%80%93nullity_theorem
 
   using Matrix = RAPT::rsMatrix<T>;
-  //rowEchelon(A);  // old
-  rowEchelon2(A, tol);  // new
+  rowEchelon(A, tol);
 
-  // maybe factor out a function that takes a triangular matrix getNullSpaceEchelon(Matrix&)
+  // maybe factor out a function that takes a row-echelon matrix getNullSpaceEchelon(Matrix&)
 
   // find out which dimensions are free and which dependent:
   std::vector<int> pivots = getPivots(   A, tol);  // indices of dependent variables
@@ -900,7 +899,7 @@ int rsFindOccurrence(const rsOccurrence<TItem>* items, int numItems, const TItem
       return i;
   return -1;
 }
-// try this with tol == 0
+// try this with tol == 0 - done - seems to work
 
 template<class TItem, class TTol>
 int rsFindOccurrence(const std::vector<rsOccurrence<TItem>>& items, const TItem& item, TTol tol)
@@ -959,24 +958,25 @@ getRootsWithMultiplicities(const rsPolynomial<std::complex<T>> p, T tol)
   return collectOccurrences(getPolynomialRoots(p), tol);
 }
 
-
+/** Returns the eigenspaces of the matrix A as an array of rsEigenSpace objects. Each such object
+contains the eigenspace represented as matrix whose columns form a basis of the eigenspace. It also
+contains the associated eigenvalue together with its algebraic multiplicity. The geometric 
+multiplicity is given by the number of columns of the matrix of basis-vectors. */
 template<class T>
 std::vector<rsEigenSpace<T>> getEigenSpaces(rsMatrix<std::complex<T>> A, T tol)
 {
-  //using Complex = std::complex<T>;
-  rsPolynomial<complex<T>> p = getCharacteristicPolynomial(A);
-  std::vector<rsOccurrence<complex<T>>> eigenValues = getRootsWithMultiplicities(p, tol);
+  using Complex = std::complex<T>;
+  rsPolynomial<Complex> p = getCharacteristicPolynomial(A);
+  std::vector<rsOccurrence<Complex>> eigenValues = getRootsWithMultiplicities(p, tol);
   int numRoots = (int) eigenValues.size();
   std::vector<rsEigenSpace<T>> eigenSpaces(numRoots);
-  rsMatrix<std::complex<T>> Ai = A;
-  for(int i = 0; i < numRoots; i++)
-  {
+  rsMatrix<Complex> Ai = A;
+  for(int i = 0; i < numRoots; i++) {
     eigenSpaces[i].eigenValue = eigenValues[i].value;
     eigenSpaces[i].algebraicMultiplicity = eigenValues[i].multiplicity;
     for(int j = 0; j < rsMin(A.getNumRows(), A.getNumColumns()); j++)
-      Ai(j, j) = A(j, j) - eigenValues[i].value;  // Ai = A - eigenValue[i] * Identity
-    eigenSpaces[i].eigenSpace = getNullSpace(Ai, complex<T>(tol)); // complexifying tol is unelegant!
-    //eigenSpaces[i].eigenSpace = ... nullspace of A - eigenValue[i] * I
+      Ai(j, j) = A(j, j) - eigenValues[i].value;                // Ai = A - eigenValue[i] * Id
+    eigenSpaces[i].eigenSpace = getNullSpace(Ai, Complex(tol)); // complexifying tol is unelegant!
   }
   return eigenSpaces;
 }
@@ -987,64 +987,6 @@ std::vector<rsEigenSpace<T>> getEigenSpaces(rsMatrix<T> A, T tol)
 {
   return getEigenSpaces(complexify(A), tol);
 }
-
-
-
-
-
-
-/*
-template<class T>
-rsEigenSpaceSet<complex<T>> getEigenSpaces(rsMatrix<T> A, T tol)
-{
-  rsAssert(A.isSquare());  // try to relax later
-
-  rsEigenSpaceSet<complex<T>> eigenSet;
-  using Matrix  = RAPT::rsMatrix<T>;
-  using MatrixC = RAPT::rsMatrix<complex<T>>;
-
-  // get characteristci polynomial and eigenvalues:
-  RAPT::rsPolynomial<T> p = getCharacteristicPolynomial(A);
-
-  //eigenSet.characteristicPolynomial = p; 
-  // still incomatible with respect to what is complex and what is real - perhaps is easiest to
-  // just make everything complex
-
-  vector<complex<T>> eigenvalues = getPolynomialRoots(p);
-
-  // convert roots array to an array that has unique roots with a multiplicity currently, we compute
-  // each eigenspace multiple times - once for each occurence of its eigenvalue - that's wasteful
-
-  // compute eigenspaces to each eigenvalue:
-  int N = A.getNumRows();              // or columns?
-  MatrixC Ac = complexify(A);
-  MatrixC I(N,N); I.setToIdentity();
-
-
-  for(int i = 0; i < N; i++) {
-    MatrixC Ai = Ac - eigenvalues[i] * I;        // (A - x_i * I) * v = 0
-
-    MatrixC eigenSpace = getNullSpace(Ai, complex<T>(tol));  //  get rid
-
-    rsEigenSpace<complex<T>> es;
-    es.eigenspace = eigenSpace;
-    es.eigenvalue = eigenvalues[i];
-    eigenSet.eigenspaces.push_back(es);
-
-    // test, if A * v = eigenvalue * v for v in the eigenspace at once
-    MatrixC test1 = Ac * eigenSpace;
-    MatrixC test2 = eigenvalues[i] * eigenSpace;
-    MatrixC error = test1 - test2;
-    rsAssert(error.isZero(tol));
-
-    //eigenspaces[i] = eigenspaces[i].getTranspose(); // for convenient inspection in the debugger
-  }           
-
-  return eigenSet;
-}
-// i get linker errors due to rsPolynomial<complex<double>>
-*/
-
 
 template<class T>
 rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A, T tol)
