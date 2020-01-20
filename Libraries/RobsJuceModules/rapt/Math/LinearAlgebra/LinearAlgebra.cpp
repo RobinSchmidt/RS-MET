@@ -177,7 +177,8 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
 {
   bool   matrixIsSingular = false;
   int i, j, k, p;
-  double biggest; // actually, it should be T, but then the pivot search doesn't work for complex
+  //double biggest; // actually, it should be T, but then the pivot search doesn't work for complex
+  T biggest;
   T multiplier;   // matrices because rsAbs returns a real number for complex inputs and two
   T tmpSum;       // complex numbers can't be compared for size anyway -> figure out a solution
 
@@ -190,13 +191,14 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
     biggest = 0.0;
     for(j = i; j < N; j++)
     {
-      if(rsAbs(A[j][i]) > biggest)  // rsAbs because abs uses the integer version on linux and
+      if( rsGreaterAbs(A[j][i], biggest) )
+      //if(rsAbs(A[j][i]) > biggest)  // rsAbs because abs uses the integer version on linux and
       {                             // fabs is only for floats (can't take modular integers, for
         biggest = rsAbs(A[j][i]);   // example)
         p = j;
       }
     }
-    if(rsIsCloseTo(biggest, 0.0, 1.e-12))  // todo: use something based on std::numeric_limits<T>
+    if(rsIsCloseTo(biggest, T(0), T(1.e-12)))  // todo: use something based on std::numeric_limits<T>
     {                                      // and/or let the user pick a threshold..also, it should
       matrixIsSingular = true;             // probably be a relative value
       rsError("Matrix singular (or numerically close to)");

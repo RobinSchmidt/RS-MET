@@ -116,6 +116,14 @@ T rsAbsSquared(const std::complex<T>& z)
   return z.real()*z.real() + z.imag()*z.imag(); // == conj(z) * z
 }
 
+/*
+template<class T> 
+T rsAbsSquared(const T& x)
+{
+  return x*x;
+}
+*/
+
 /** Returns true, iff "left" has greater absolute value than "right" */
 template <class T>
 bool rsGreaterAbs(const T& left, const T& right)
@@ -141,15 +149,17 @@ bool rsGreaterAbs(const std::complex<T>& left, const T& right)
   return rsAbs(left) > rsAbs(right);
 }
 
-
-
 template <class T>
 bool rsLessAbs(const std::complex<T>& left, const std::complex<T>& right)
 {
   return rsAbsSquared(left) < rsAbsSquared(right);
 }
 
-
+template <class T>
+bool rsLessAbs(const std::complex<T>& left, const T& right)
+{
+  return rsAbsSquared(left) < right*right;
+}
 
 
 template <class T>

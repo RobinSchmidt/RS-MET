@@ -14,7 +14,7 @@ int actualDegree(std::complex<T>* p, int maxDegree, T tol)
 {
   int i = maxDegree;
   //while(rsAbs(p[i]) < tol && i > 0)
-  while( rsGreaterAbs(p[i], tol) && i > 0 )
+  while( rsLessAbs(p[i], tol) && i > 0 )
     i--;
   return i;
 }

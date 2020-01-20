@@ -186,6 +186,7 @@ public:
   // -have a higher-level version of the function that doesn't require the poles to be known and
   //  passed in by the caller (the function should find them itself via a root finder)
   // maybe rename to partialFractions
+  // maybe needs a separate template parameter R for real numbers
 
 
   /** A routine to perform a partial fraction expansion of a strictly proper rational function when
