@@ -216,6 +216,7 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
   // largest element - instead, we check against zero and if we encounter a zero, we search for the 
   // next nonzero element to swap with - the current code should not go into the library - it's
   // useless for production - see weitz book pg 310
+  // or use rowEchelon2
 
   // Compute determinant. For a triangular matrix, this is the product of the diagonal elements. 
   // The computed determinant is still a rational function but it should come out as a polynomial, 
@@ -229,39 +230,20 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
 // -> avoids use of rsRationalFunction, needs only rsPolynomial -> should give the same result (but 
 // this is only for testing, not for production - Laplace expansion is ridiculously expensive)
 
-/** Represents the root of a polynomial along with its multiplicity. The datatype of the 
-coefficients is assumed to be a complex number type. */
-/*
-template<class T>
-struct rsPolynomialRoot
-{
-  T value;   // T is assumed to be a complex type
-  int multiplicity;
-};
-*/
 
 /** Represents the eigenspace of a matrix with complex coefficients. Each eigenspace consists of 
-an eigenvalue and an associated set of eigenvectors. */
+an eigenvalue and an associated set of eigenvectors represented as columns of a matrix. The columns
+can be seen as basis vectors that span the eigenspace associated with the given eigenvalue. */
 template<class T>
 struct rsEigenSpace
 {
-
-  //int getAlgebraicMultiplicity() const { return eigenvalue.multiplicity; }
-
   int getAlgebraicMultiplicity() const { return algebraicMultiplicity; }
-
-  //int getGeometricMultiplicity() const { return (int) eigenspace.getNumColumns(); }
-
+  int getGeometricMultiplicity() const { return (int) eigenSpace.getNumColumns(); }
   //void orthonormalize();
-
-  //rsPolynomialRoot<T> eigenvalue;
-
 
   complex<T> eigenValue;
   int algebraicMultiplicity;
-  rsMatrix<complex<T>> eigenSpace; 
-  //rsMatrix<T> eigenspace;  // basis of nullspace of A - eigenvalue * I
-  // should be a complex matrix
+  rsMatrix<complex<T>> eigenSpace; // basis of nullspace of A - eigenvalue * I
 };
 
 

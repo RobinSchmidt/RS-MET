@@ -493,8 +493,10 @@ void eigenstuff()
   using MatrixC = RAPT::rsMatrix<complex<double>>;
 
   double tol = 1.e-12;
-
-  Matrix A, z;
+  bool r = true;
+  Matrix  A, z;                          // matrix and dummy vector (get rid of the dummy)
+  MatrixC B;                             // correct basis of the eigenspace (target)
+  std::vector<rsEigenSpace<double>> eig; // hold the computed eigenspaces
 
   A = Matrix(2,2, {0,1, 0,0});
   Matrix nullspace = getNullSpace(A, tol);
@@ -541,22 +543,21 @@ void eigenstuff()
   // [3,(2,1,1)],[-3,(-1,0,2),(-1,2,0)] - (2,1,1) is found correctly, the other eigenspaces are 
   // empty - numerical issues?
 
+
   // Example from Ahrens,pg.659 - has a single eigenvalue of -2 (with multiplicity 5) with a 2D 
   // eigenspace spanned by {(1,1,1,1,1),(0,0,1,0,0)}:
-  A = Matrix(5,5, {-3,1,0,0,0, -1,-1,0,0,0, -3,1,-2,1,1, -2,1,0,-2,1, -1,1,0,0,-2});
-  findEigenSpacesReal(A);
-  // we get the 3D space: {(0,0,1,0,0),(.5,.5,0,1,0),(.5,.5,0,0,1)} - is this due to numerical 
-  // error? - maybe try a different singularity/rank threshold? increasing the factor to 100000 
-  // didn't help
-
-  std::vector<rsEigenSpace<double>> eig;
+  A = Matrix( 5, 5, {-3,1,0,0,0, -1,-1,0,0,0, -3,1,-2,1,1, -2,1,0,-2,1, -1,1,0,0,-2});
+  B = MatrixC(5, 2, {1,0, 1,0, 1,1, 1,0, 1,0});  // correct basis for eigenspace
   eig = getEigenSpaces(A, tol);
-  // ok - we get a 2D eigenspace, but the basis vectors are different than aht the book says - 
-  // but that doesn't mean, they are wrong - check, if the span the same space
+  r &= eig.size() == 1;
+  r &= eig[0].eigenValue == -2.0;
+  r &= eig[0].getAlgebraicMultiplicity() == 5;
+  r &= eig[0].getGeometricMultiplicity() == 2;
+  r &= spanSameSpace(eig[0].eigenSpace, B, complex<double>(tol)); // get rid of complexification of tol
+  // we get different basis vectors from what the book says - but that doesn't mean, they are 
+  // wrong - they are just a different basis that spans the same space
 
-  // it sometimes seems to find extra eigenvectors at other times, it fails to find eigenvectors
-  // ...it probably has to do with the rank detection threshold - figure out! try to find a simple
-  // example, where it fails and compare algorithm to hand-computation
+
 
   // todo: try some more examples with sage, clean up the eigenvalues - use a function like
   // cleanUpIntegers that does it for real and imaginary parts
