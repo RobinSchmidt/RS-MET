@@ -11,12 +11,11 @@ void cleanUpIntegers(T* a, int N, T tol)
     if( rsAbs(a[i] - rounded) < tol )
       a[i] = rounded; }
 }
-// move to rsArray
+// move to rsArray, make a cersion for complex numbers that does the same thing for real and 
+// imaginary parts separately
 
 //-------------------------------------------------------------------------------------------------
 // Linear Algebra stuff:
-
-
 
 /** Returns true, if the space spanned by the columns of x is within the span of the columns of B.
 That means each column of x can be expressed as some linear combination of the columns of B. */
@@ -56,8 +55,6 @@ bool makeTriangularNoPivot(rsMatrix<T>& A, rsMatrix<T>& B)
 // when using rational numbers or functions, maybe the pivoting could based on which element is the 
 // simplest (lowest degree or smallest) nonzero element - because then, there may be less complex
 // computations
-
-
 
 
 template<class T>
@@ -140,50 +137,6 @@ void rowEchelon(rsMatrixView<T>& A, T tol)
 // that can be integrated as option into the function above - if reduced == true also eliminate 
 // upward - does that work
 
-/*
-// obsolete - doesn't work when matrix has columns of zeros - use rowEchelon2:
-template<class T>
-void rowEchelonOld(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)
-{
-  //T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
-
-  int numRows = A.getNumRows();
-  int numCols = A.getNumColumns();
-  for(int i = 0; i < rsMin(numRows, numCols); i++) {
-    //rsMatrix<T> dbg; dbg.copyDataFrom(A);  // uncomment for debugging
-
-    int p = i;
-
-    // search pivot row (maybe factor out int inte findPivot(int column)
-    T biggest = T(0);
-    for(int j = i; j < numRows; j++) {                          
-      if( rsGreaterAbs(A(j, i), biggest) ) { 
-        biggest = A(j, i); 
-        p = j; }}
-
-    if(p != i) {
-      A.swapRows(i, p);
-      B.swapRows(i, p); }
-
-    for(int j = i+1; j < numRows; j++) {              // pivot row subtraction
-      if( !rsGreaterAbs(A(i, i), tol) )
-        break;  // this is an all-zeros column
-      T w = -A(j, i) / A(i, i);                       // weight
-      A.addWeightedRowToOther(i, j, w, i, numCols-1); // start at i: avoid adding zeros
-      B.addWeightedRowToOther(i, j, w);
-    }
-  }
-}
-template<class T>
-void rowEchelonOld(rsMatrixView<T>& A, T tol)
-{
-  rsMatrix<T> dummy(A.getNumRows(), 1);
-  rowEchelon(A, dummy);
-}
-*/
-
-
-
 
 
 template<class T>
@@ -246,8 +199,10 @@ struct rsEigenSpace
   rsMatrix<complex<T>> eigenSpace; // basis of nullspace of A - eigenvalue * I
 };
 
-
-
+/** Takes a matrix of real numbers and turns the elements into complex numbers. Needed for technical 
+reasons in eigenvector computations - mainly because the eigenvalues of a real matrix may 
+nevertheless be complex, so we need to lift some computations on real matrices into the complex 
+domain. */
 template<class T> 
 RAPT::rsMatrix<complex<T>> complexify(const RAPT::rsMatrix<T>& A)
 {
@@ -255,7 +210,9 @@ RAPT::rsMatrix<complex<T>> complexify(const RAPT::rsMatrix<T>& A)
   Ac.copyDataFrom(A);
   return Ac;
 }
-// needed for technical reasons
+
+
+
 
 // meant to be used from the debugger:
 template<class T>
@@ -297,8 +254,7 @@ void findEigenSpacesReal(const RAPT::rsMatrix<T>& A) // for real matrices - incl
 
   int dummy = 0;
 }
-
-
+// move useful parts of the code eleswhere, then delete
 
 
 template<class T> 
@@ -309,70 +265,7 @@ vector<complex<T>> getEigenvalues(const rsMatrixView<T>& A)
 }
 
 
-/*
-// i think, this is still very wrong:
-template<class T>
-vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
-{
-  // for each eigenvalue x, we must form the matrix A - x*I and solve the system
-  // A - x*I = 0 where 0 is the zero vector in this case - is that correct?
-  // ...but the eigenvalues are complex - does that mean the eigenvectors may also be complex?
-  // probably
 
-  rsAssert(A.isSquare());
-
-  using LA = RAPT::rsLinearAlgebraNew;
-  int N = A.getNumRows();
-
-  vector<complex<T>> eigenValues = getEigenvalues(A);
-  rsAssert((int)eigenValues.size() == N);
-  vector<complex<T>> rhs(N);
-  rsMatrix<complex<T>> I(N, N), B(N, N);
-  B.copyDataFrom(A);
-  vector<vector<complex<T>>> eigenVectors(N); 
-
-  //rhs[0] = 1;
-  // i think, we can make a choice - or maybe even several choices - we are trying to solve a
-  // singular system of equations when solving (A - x_i * I) * x = 0, so our regular Gaussian
-  // elimination procedure is not suitable - but what else?
-
-  // i think, this is wrong:
-  for(int i = 0; i < N; i++) {
-    for(int j = 0; j < N; j++)
-      B(j, j) = A(j, j) - eigenValues[i];   // set diagonal elements of B = (A - x_i * I)
-    eigenVectors[i] = LA::solve(B, rhs);    // solve B * x == 0
-  }
-  // the system we are trying to solve is singular and actually the rhs is zero anyway - what we
-  // need instead is to find the nullspace of A - x_i * I = B_i for each i
-
-  // triggers assertion that matrix is singular -> try elimination by hand and compare to what
-  // the algo does
-  // let B_i be given by A - x_i * I, then B_0 = [[-3,6],[-3,6]], B_1 = [[-6,6],[-3,3]]
-  // so yes, the shifted matrix is indeed singular - seems we can't solve for the eigenvectors by 
-  // regular linear system solving...hmmm - how else can we find them? maybe we need to find 
-  // coefficients for which the linear-combination of the rows gives the zero-row?
-
-  // also - in general, there is no one-to-one correspondence between eigenvalues and eigenvectors
-  // there may be zero or multiple eigenvectors to any given eigenvalue - the set of eigenvectors
-  // belonging to eigenvalue x_i is the eigenspace of x_i and the dimensionality of this space
-  // is the geometric multiplicity of x_i
-
-  // ah - i think the problem is that an eigenvector represents infinitely many solutions to a 
-  // linear system because we can scale it by an arbitrary factor and still have a solution - so we
-  // have a situation where there's a parametric continuum of solutions - the number of free 
-  // parameters is the dimenstion of the eigenspace? and that value is probably related to
-  // rank(A - x_i * I)
-
-  // ----INFO STILL RELEVANT - DON'T DELETE----:
-  // It seems, we may not have to solve any system of equations as all - here it says:
-  // https://en.wikipedia.org/wiki/Eigenvalue_algorithm
-  // 
-  // the columns of the matrix prod_{i != j} (A - x_i * I)^m_i must be either 0 or generalized 
-  // eigenvectors of the eigenvalue x_j - i've adapted the notation a bit - but note that the i
-  // runs over the *distinct* eigenvalues, not just over all eigenvalues ..soo, it seems to find 
-  // the eigenspace to an eigenvalue x_i, we must do repeated matrix multiplication rather than
-  // solving a linear system - or is there a better way? ...solving a linear system is actually 
-  // wrong - we need to find a nullspace
 
   // see also:
   // https://lpsa.swarthmore.edu/MtrxVibe/EigMat/MatrixEigen.html
@@ -380,10 +273,7 @@ vector<vector<complex<T>>> getEigenvectors(const rsMatrixView<T>& A)
   // http://www.sosmath.com/matrix/eigen2/eigen2.html
   // http://wwwf.imperial.ac.uk/metric/metric_public/matrices/eigenvalues_and_eigenvectors/eigenvalues2.html
 
-  return eigenVectors;
-}
 // http://doc.sagemath.org/html/en/constructions/linear_algebra.html
-*/
 
 
 /** This changes the matrices A,B in random ways but without changing the solution set to 
@@ -461,7 +351,9 @@ rsMatrix<T> getAdjugate(const rsMatrix<T>& A, int i, int j)
     for(jj = j+1; jj < N; ++jj)  Aij(ii-1, jj-1) = A(ii, jj); }  //   loop over right columns
   return Aij;
 }
-// make member of rsMatrix
+// make member of rsMatrix, the ii,jj are ugly - replace with i,j - maybe renqame current i,j into
+// row, col
+
 
 // for computing nullspaces, we will need a function that removes zero columns - it sould take an
 // array of th indices of the column to remove
@@ -549,7 +441,7 @@ int getRankRowEchelon(const rsMatrixView<T>& A, T tol)
     bool nonZeroElemFound = false;
     int j = i;
     while(j < A.getNumColumns()) {
-      if( rsGreaterAbs(A(i, j), tol) )  {  // we need a tolerance
+      if( rsGreaterAbs(A(i, j), tol) )  {
         nonZeroElemFound = true;
         break; } // i-th row is not all-zeros
       j++; }
@@ -558,7 +450,6 @@ int getRankRowEchelon(const rsMatrixView<T>& A, T tol)
     i++; }
   return i;
 }
-// 
 // verify, if this is correct - maybe make unit test with weird matrices - actually this may be
 // overly complicated - we could just use getNumNonZeroRows
 
@@ -761,7 +652,7 @@ We make the choice that the bottom elements in the solution vectors in X should 
 amounts to solving the sub-system with the top-left section of the original matrix (setting the 
 bottom variables zero renders the right section of the matrix ineffective - for other choices, we 
 would have to adapt the right-hand side). So, this function returns a particular solution from the
-infinietly many. The full set of solutions if given by that (or another) particular solution plus 
+infinietly many. The full set of solutions is given by that (or another) particular solution plus 
 any linear combination of the basis vectors of the matrix A's nullspace. */
 template<class T>
 bool solveUnderDeterminedRowEchelon(
@@ -787,7 +678,7 @@ bool solve2(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B, T tol)
   rsAssert(A.getNumColumns() == X.getNumRows()); // A*X = B or A*x = b must make sense
   rsAssert(X.hasSameShapeAs(B));                 // num of solutions == num of rhs-vectors
   rsAssert(A.isSquare());                        // do we really need this? maybe not!
-  rowEchelon2(A, B, tol);
+  rowEchelon(A, B, tol);
   int rankA  = getRankRowEchelon(A, tol); // number of nonzero rows, rank of the coeff matrix
   int rankAB = getNumNonZeroRows(B, tol); // same for the augmented coeff matrix A|B
   if(rankA == A.getNumColumns()) {                           // system was regular 
@@ -800,6 +691,8 @@ bool solve2(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B, T tol)
       solveUnderDeterminedRowEchelon(A, X, B, rankA, tol);   // ...and consistent/underdetermined
       return true;  }}                                       //        -> infinitely many solutions
 }
+// -maybe return an int: 0: no solution, 1: unique solution, 2: many solutions
+// -maybe have a function getSolutionSet 
 
 
 
@@ -987,6 +880,16 @@ std::vector<rsEigenSpace<T>> getEigenSpaces(rsMatrix<T> A, T tol)
 {
   return getEigenSpaces(complexify(A), tol);
 }
+
+// Here: https://en.wikipedia.org/wiki/Eigenvalue_algorithm it says:
+// "...the columns of the matrix prod_{i != j} (A - x_i * I)^m_i must be either 0 or generalized 
+// eigenvectors of the eigenvalue x_j..." (i've adapted the notation a bit). The index i runs over
+// the distinct eigenvalues. So, as an alternative to finding nullspaces, we may do repeated matrix 
+// multiplication? It also says "generalized eigenvectors" - so maybe this algo works even if the 
+// matrix is not diagonalizable? ...or will we get the zero-columns case in this case?
+
+
+
 
 template<class T>
 rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A, T tol)

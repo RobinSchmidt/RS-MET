@@ -519,29 +519,35 @@ void eigenstuff()
   // examples from https://www.youtube.com/watch?v=lyXwcXjJdYM
 
   A = Matrix(2,2, {1,1, 0,1});
+  eig = getEigenSpaces(A, tol);
   findEigenSpacesReal(A);
   // correct [1,(1,0)] - or maybe weitz didn't compute the other?, found: [1,{(1,0),(0,1)}] twice
   // we can actually check, if an eigenvector v is indeed eigenvector - just compute 
   // A * v and x_i * v
 
   A = Matrix(2,2, {1,1, 1,1});
+  eig = getEigenSpaces(A, tol);
   findEigenSpacesReal(A);
   // found: [0,(-1,1)],[2,(1,1)] -> correct
 
 
   A = Matrix(2,2, {0,-1, 1,0});
+  eig = getEigenSpaces(A, tol);
   findEigenSpacesReal(A);
   // found: [-i,{(-i,1)}],[i,{(i,1)}] - todo: check this manually
 
   // Examples from Ahrens,pg.658:
   A = Matrix(2,2, {3,-1, 1,1});
+  eig = getEigenSpaces(A, tol);
   findEigenSpacesReal(A);
   // [2,(1,1)], [2,(1,1)] -> correct
 
   A = Matrix(3,3, {1,2,2, 2,-2,1, 2,1,-2});
+  eig = getEigenSpaces(A, tol);
   findEigenSpacesReal(A);
   // [3,(2,1,1)],[-3,(-1,0,2),(-1,2,0)] - (2,1,1) is found correctly, the other eigenspaces are 
-  // empty - numerical issues?
+  // empty - numerical issues?, also, the -3 eigenvalue is found twice - once as -3.000...x and 
+  // once as -2.999...x - in each case with an empty eigenspace - it smells like a precision issue
 
 
   // Example from Ahrens,pg.659 - has a single eigenvalue of -2 (with multiplicity 5) with a 2D 
