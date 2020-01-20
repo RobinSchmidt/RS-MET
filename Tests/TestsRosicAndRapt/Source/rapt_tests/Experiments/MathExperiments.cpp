@@ -551,6 +551,7 @@ void eigenstuff()
 
   std::vector<rsEigenSpace<double>> eig;
   eig = getEigenSpaces(A, tol);  // doesn't compile/link yet
+  eig = getEigenSpaces(A, 0.0);
 
   // it sometimes seems to find extra eigenvectors at other times, it fails to find eigenvectors
   // ...it probably has to do with the rank detection threshold - figure out! try to find a simple

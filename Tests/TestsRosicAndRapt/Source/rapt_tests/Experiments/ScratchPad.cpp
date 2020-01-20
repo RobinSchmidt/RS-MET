@@ -914,28 +914,26 @@ template<class TItem, class TTol>
 int rsFindOccurrence(const rsOccurrence<TItem>* items, int numItems, const TItem& item, TTol tol)
 {
   for(int i = 0; i < numItems; i++)
-    if( rsGreaterAbs(items[i].value - item, TItem(tol)) )
+    if( !rsGreaterAbs(items[i].value - item, TItem(tol)) )
       return i;
   return -1;
 }
+// try this with tol == 0
 
-/*
 template<class TItem, class TTol>
-int rsFind(const TItem* items, int numItems, const TItem& item, TTol tol)
+int rsFindOccurrence(const std::vector<rsOccurrence<TItem>>& items, const TItem& item, TTol tol)
 {
-  for(int i = 0; i < numItems; i++)
-    if( rsGreaterAbs(items[i] - item, TItem(tol)) )
-      return i;
-  return -1;
+  if(items.size() == 0)
+    return -1;
+  return rsFindOccurrence(&items[0], (int) items.size(), item, tol);
 }
-*/
 
 template<class TItem, class TTol>
 std::vector<rsOccurrence<TItem>> collectOccurrences(const std::vector<TItem>& items, TTol tol)
 {
   std::vector<rsOccurrence<TItem>> occurrences;
   for(size_t i = 0; i < items.size(); i++) {
-    int j = rsFindOccurrence(&occurrences[0], (int) occurrences.size(), items[i], tol);
+    int j = rsFindOccurrence(occurrences, items[i], tol);
     if(j != -1)
       occurrences[j].multiplicity++;
     else
