@@ -215,8 +215,7 @@ template std::vector<std::complex<double>> RAPT::rsRationalFunction<double>::par
   const std::vector<std::complex<double>>& poles,
   const std::vector<int>& multiplicities);
 
-
-template class RAPT::rsRationalFunction<std::complex<double>>; // doesn't compile
+template class RAPT::rsRationalFunction<std::complex<double>>;
 
 
 template class RAPT::rsMatrixView<double>;

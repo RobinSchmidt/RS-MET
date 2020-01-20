@@ -923,7 +923,9 @@ template<class TItem, class TTol>
 std::vector<rsOccurence<TItem>> collectOccurrences(const std::vector<TItem>& items, TTol tol)
 {
   std::vector<rsOccurence<TItem>> occurrences;
-  /* doesn'T compile:
+
+  /*
+  // doesn't compile:
   for(size_t i = 0; i < items.size(); i++) {
     int j = rsFind(&occurrences[0], (int) occurrences.size(), items[i], tol);
     if(j != -1)
@@ -931,6 +933,7 @@ std::vector<rsOccurence<TItem>> collectOccurrences(const std::vector<TItem>& ite
     else
       occurrences.push_back(rsOccurence<TItem>(items[i], 1)); }
       */
+     
   return occurrences;
 }
 
@@ -971,7 +974,7 @@ getRootsWithMultiplicities(const rsPolynomial<std::complex<T>> p, T tol)
   return collectOccurrences(getPolynomialRoots(p), tol);
 }
 
-/*
+
 template<class T>
 std::vector<rsEigenSpace<T>> getEigenSpaces(rsMatrix<std::complex<T>> A, T tol)
 {
@@ -997,7 +1000,6 @@ std::vector<rsEigenSpace<T>> getEigenSpaces(rsMatrix<T> A, T tol)
   return getEigenSpaces(complexify(A), tol);
 }
 
-*/
 
 
 
