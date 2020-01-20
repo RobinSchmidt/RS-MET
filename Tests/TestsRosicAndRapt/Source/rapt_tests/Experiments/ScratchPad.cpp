@@ -903,13 +903,23 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
 /** Structure for representing the occurence of a value together with its multiplicity (i.e. number
 of times, it occurred). Useful, for example, for polynomial roots */
 template<class T>
-struct rsOccurence
+struct rsOccurrence
 {
-  rsOccurence(T _value, T _multiplicity) : value(_value), multiplicity(_multiplicity) {}
+  rsOccurrence(T _value, int _multiplicity) : value(_value), multiplicity(_multiplicity) {}
   T value;
   int multiplicity;
 };
 
+template<class TItem, class TTol>
+int rsFindOccurrence(const rsOccurrence<TItem>* items, int numItems, const TItem& item, TTol tol)
+{
+  for(int i = 0; i < numItems; i++)
+    if( rsGreaterAbs(items[i].value - item, TItem(tol)) )
+      return i;
+  return -1;
+}
+
+/*
 template<class TItem, class TTol>
 int rsFind(const TItem* items, int numItems, const TItem& item, TTol tol)
 {
@@ -918,22 +928,18 @@ int rsFind(const TItem* items, int numItems, const TItem& item, TTol tol)
       return i;
   return -1;
 }
+*/
 
 template<class TItem, class TTol>
-std::vector<rsOccurence<TItem>> collectOccurrences(const std::vector<TItem>& items, TTol tol)
+std::vector<rsOccurrence<TItem>> collectOccurrences(const std::vector<TItem>& items, TTol tol)
 {
-  std::vector<rsOccurence<TItem>> occurrences;
-
-  /*
-  // doesn't compile:
+  std::vector<rsOccurrence<TItem>> occurrences;
   for(size_t i = 0; i < items.size(); i++) {
-    int j = rsFind(&occurrences[0], (int) occurrences.size(), items[i], tol);
+    int j = rsFindOccurrence(&occurrences[0], (int) occurrences.size(), items[i], tol);
     if(j != -1)
       occurrences[j].multiplicity++;
     else
-      occurrences.push_back(rsOccurence<TItem>(items[i], 1)); }
-      */
-     
+      occurrences.push_back(rsOccurrence<TItem>(items[i], 1)); }
   return occurrences;
 }
 
@@ -967,7 +973,7 @@ vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<complex<T>>& p)
 // matrices too
 
 template<class T>
-std::vector<rsOccurence<std::complex<T>>> 
+std::vector<rsOccurrence<std::complex<T>>> 
 //std::vector<rsOccurence<T>> 
 getRootsWithMultiplicities(const rsPolynomial<std::complex<T>> p, T tol)
 {
@@ -980,7 +986,7 @@ std::vector<rsEigenSpace<T>> getEigenSpaces(rsMatrix<std::complex<T>> A, T tol)
 {
   //using Complex = std::complex<T>;
   rsPolynomial<complex<T>> p = getCharacteristicPolynomial(A);
-  std::vector<rsOccurence<complex<T>>> eigenValues = getRootsWithMultiplicities(p, tol);
+  std::vector<rsOccurrence<complex<T>>> eigenValues = getRootsWithMultiplicities(p, tol);
   int numRoots = (int) eigenValues.size();
   std::vector<rsEigenSpace<T>> eigenSpaces(numRoots);
   for(int i = 0; i < numRoots; i++)
