@@ -830,7 +830,7 @@ this may be the empty matrix which indicates that the nullspace of A consists on
 zero-vector (todo: maybe we should return the Mx1 zero vector in this case? ...decide later by 
 which convention is more convenient when dealing with eigenspaces */
 template<class T>
-rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)
+rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)  // maybe to needs to be a separate type for complex matrices
 {
   // Algorithm:
   // We bring the matrix into row-echelon form and figure out its rank and nullity. The nullity
@@ -972,7 +972,6 @@ vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<complex<T>>& p)
 
 template<class T>
 std::vector<rsOccurrence<std::complex<T>>> 
-//std::vector<rsOccurence<T>> 
 getRootsWithMultiplicities(const rsPolynomial<std::complex<T>> p, T tol)
 {
   return collectOccurrences(getPolynomialRoots(p), tol);
@@ -987,13 +986,16 @@ std::vector<rsEigenSpace<T>> getEigenSpaces(rsMatrix<std::complex<T>> A, T tol)
   std::vector<rsOccurrence<complex<T>>> eigenValues = getRootsWithMultiplicities(p, tol);
   int numRoots = (int) eigenValues.size();
   std::vector<rsEigenSpace<T>> eigenSpaces(numRoots);
+  rsMatrix<std::complex<T>> Ai = A;
   for(int i = 0; i < numRoots; i++)
   {
     eigenSpaces[i].eigenValue = eigenValues[i].value;
     eigenSpaces[i].algebraicMultiplicity = eigenValues[i].multiplicity;
-    //eigenSpaces[i].eigenSpace = ...
+    for(int j = 0; j < rsMin(A.getNumRows(), A.getNumColumns()); j++)
+      Ai(j, j) = A(j, j) - eigenValues[i].value;  // Ai = A - eigenValue[i] * Identity
+    eigenSpaces[i].eigenSpace = getNullSpace(Ai, complex<T>(tol)); // complexifying tol is unelegant!
+    //eigenSpaces[i].eigenSpace = ... nullspace of A - eigenValue[i] * I
   }
-
   return eigenSpaces;
 }
 

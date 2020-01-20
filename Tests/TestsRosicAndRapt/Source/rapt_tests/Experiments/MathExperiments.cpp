@@ -550,8 +550,9 @@ void eigenstuff()
   // didn't help
 
   std::vector<rsEigenSpace<double>> eig;
-  eig = getEigenSpaces(A, tol);  // doesn't compile/link yet
-  eig = getEigenSpaces(A, 0.0);
+  eig = getEigenSpaces(A, tol);
+  // ok - we get a 2D eigenspace, but the basis vectors are different than aht the book says - 
+  // but that doesn't mean, they are wrong - check, if the span the same space
 
   // it sometimes seems to find extra eigenvectors at other times, it fails to find eigenvectors
   // ...it probably has to do with the rank detection threshold - figure out! try to find a simple
