@@ -647,16 +647,49 @@ bool testPolynomialRootFinder(std::string &reportString)
     }
   }
 
-
-  // todo: test it when the coeffs are complex:
-  //using ComplexPoly = rsPolynomial<complex<double>>;
-  //ComplexPoly p;
-
-
-  // we need a rtaher high tolerance - the precision of the root finding algorithm seems to be not 
+  // we need a rather high tolerance - the precision of the root finding algorithm seems to be not 
   // very good - can it be improved? Setting tol to 1.e-9 triggers the assert - and it
   // maybe by performing one or two steps of newton iteration...but
   // actually, the algo already does this "polishing" thing
+
+
+  // try with p(x) = 27 + 9*x - 3*x^2 - 1*x^3 = -(x+3)^2 * (x-3). this has simple root at +3 and a 
+  // double root at -3
+  a[0] = 27, a[1] = 9, a[2] = -3, a[3] = -1;
+  rsPolynomial<double>::roots(a, 3, rFound);
+  // the double-root at -3 is found as: -3.0000000215539959, -2.9999999784460041 - this seems like
+  // a very bad precision - can it be improved by more/better polishing? what happens, if we try
+  // Netwon iteration? it will probably not work, because this is a double-root:
+  // https://www.wolframalpha.com/input/?i=27+%2B+9*x+-+3*x%5E2+-+1*x%5E3
+  // maybe in case of double roots, we could polish by finding a root of the derivative? could it 
+  // be that multiple roots generally produce imprecise results? But in our random polynomials 
+  // above, we probably don't get any multiple roots - the results seem to be imprecise 
+  // nonetheless. Maybe, within the Newton-iteration, we should detect, whether we have a double 
+  // (or triple, whatever multiple) root and if this condition is detected - find the root of the 
+  // derivative. 
+  // using numpy (can be done in sagecell):
+  //
+  // import numpy as np
+  // r = np.roots([-1,-3,9,27])
+  // r, format(r[1], '.16g')
+  //
+  // we get results in which the real parts are more precise but which have some false imaginary
+  // part of the order of 1.e-8 (maybe we don't get any imaginary parts here because the flush it 
+  // to zero based on a threshold? -> figure out). the numpy doc 
+  // https://docs.scipy.org/doc/numpy/reference/generated/numpy.roots.html says:
+  // "The algorithm relies on computing the eigenvalues of the companion matrix" which could mean 
+  // that numpy uses the Jenkins/Traub algorithm (which seems to be the most popular polynomial
+  // root findning algorithm anyway). one possible improvement could be to post-polish all roots 
+  // via newton-iteration with multiple-root-detection and using the derivative in such a detected
+  // case. detection could be based on the absolute value of the derivative (or the ratio f/f')
+  // or maybe the ratio of the absolute value of the step-size and the absolute value of the 
+  // current estimate - steps are supposed to be not too large - but no - roots near zero do not
+  // seem to warrant smaller thresholds
+
+
+
+
+
 
   return testResult;
 }

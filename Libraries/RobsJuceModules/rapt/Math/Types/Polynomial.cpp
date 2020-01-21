@@ -471,8 +471,8 @@ void rsPolynomial<T>::roots(const R* a, int degree, std::complex<R>* r)
 
 template<class T>
 template<class R>
-std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<R>* a, int degree,
-  std::complex<R> initialGuess)
+std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(
+  const std::complex<R>* a, int degree, std::complex<R> initialGuess)
 {
   const R eps = std::numeric_limits<R>::epsilon();
 
@@ -521,7 +521,7 @@ std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<R>
       dr = std::complex<R>(R(degree), 0.0) / Gp;  // Eq. 9.5.11
     else
       dr = exp(log(R(1)+abs(r))) * std::complex<R>(cos((R)i), sin((R)i));
-    // \todo use sinCos()
+    // \todo use sinCos() or std::polar
 
     // compute new estimate for the root:
     std::complex<R> rNew = r - dr;

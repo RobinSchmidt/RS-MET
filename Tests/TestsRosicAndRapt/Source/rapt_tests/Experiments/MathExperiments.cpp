@@ -552,6 +552,10 @@ void eigenstuff()
   // ...with tol = 1.e-7, they are collapsed into one - with a 2D eigenspace - this seems correct
   // but why are the eigenspaces empty in case of too small tolerance - shouldn't they just be 
   // duplicated, too?
+  // maybe revisit the polynomial root-finder, maybe the root-polishing can be refined - maybe
+  // using Newton iteration? but what if it's a double (or multiple) root? - in this case, Newton
+  // iteration may not converge - maybe somehow work with deflated polynomials? the characteristic
+  // polynomial here is 27 + 9*x - 3*x^2 - 1*x^3, with a simple root at +3 and a double root at -3
 
   // Example from Ahrens,pg.659 - has a single eigenvalue of -2 (with multiplicity 5) with a 2D 
   // eigenspace spanned by {(1,1,1,1,1),(0,0,1,0,0)}:

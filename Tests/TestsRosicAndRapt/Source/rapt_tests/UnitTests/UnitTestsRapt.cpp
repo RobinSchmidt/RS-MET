@@ -40,7 +40,7 @@ bool runAllUnitTests()
   passed &= runUnitTest(&testMiscMath,                   "misc math");  // fails on linux ("illegal instruction") - encounters a singular matrix
   passed &= runUnitTest(&testLinearAlgebra,              "rsLinearAlgebra");  // fails on linux ("illegal instruction")
   passed &= runUnitTest(&testPolynomial,                 "rsPolynomial");
-  //passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); // absorb in rsPolynomial
+  //passed &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); // fails! ...absorb in rsPolynomial
   passed &= runUnitTest(&testDifferentialEquationSystem, "rsDifferentialEquationSystem");
   passed &= runUnitTest(&testIntegerFunctions,           "integer functions");
   passed &= runUnitTest(&testMoebiusTransform,           "rsMoebiusTransform");
