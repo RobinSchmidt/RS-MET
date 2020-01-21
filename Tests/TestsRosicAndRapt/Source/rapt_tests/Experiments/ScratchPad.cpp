@@ -854,16 +854,24 @@ getRootsWithMultiplicities(const rsPolynomial<std::complex<T>> p, T tol)
 template<class T>
 bool isValidEigenSpaceSet(const std::vector<rsEigenSpace<T>>& ess)
 {
+  int algMulSum = 0;
+
+  // for each eigenvalue, we must have: 1 <= geoMul <= algMul
   for(size_t i = 0; i < ess.size(); i++) {
     int algMul = ess[i].getAlgebraicMultiplicity();
     int geoMul = ess[i].getGeometricMultiplicity();
+    algMulSum += algMul;
     if(geoMul < 1 || geoMul > algMul)
       return false; }
+
+  // the sum of the algebraic multiplicities must equal he dimensionality of the embedding space:
+  for(size_t i = 0; i < ess.size(); i++)
+    if(ess[i].eigenSpace.getNumRows() != algMulSum)
+      return false;
+
   return true;
 }
-// 1 <= geoMul <= algMul for each eigenvalue
-// are there some other conditions for a sane result? ..i think, the sum of the algMuls must equal 
-// the number of rows/dimensions in the basis vectors
+// are there some other conditions for a sane result?
 
 /** Returns the eigenspaces of the matrix A as an array of rsEigenSpace objects. Each such object
 contains the eigenspace represented as matrix whose columns form a basis of the eigenspace. It also
