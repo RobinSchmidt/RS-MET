@@ -851,6 +851,20 @@ getRootsWithMultiplicities(const rsPolynomial<std::complex<T>> p, T tol)
   return collectOccurrences(getPolynomialRoots(p), tol);
 }
 
+template<class T>
+bool isValidEigenSpaceSet(const std::vector<rsEigenSpace<T>>& ess)
+{
+  for(size_t i = 0; i < ess.size(); i++) {
+    int algMul = ess[i].getAlgebraicMultiplicity();
+    int geoMul = ess[i].getGeometricMultiplicity();
+    if(geoMul < 1 || geoMul > algMul)
+      return false; }
+  return true;
+}
+// 1 <= geoMul <= algMul for each eigenvalue
+// are there some other conditions for a sane result? ..i think, the sum of the algMuls must equal 
+// the number of rows/dimensions in the basis vectors
+
 /** Returns the eigenspaces of the matrix A as an array of rsEigenSpace objects. Each such object
 contains the eigenspace represented as matrix whose columns form a basis of the eigenspace. It also
 contains the associated eigenvalue together with its algebraic multiplicity. The geometric 
@@ -871,6 +885,7 @@ std::vector<rsEigenSpace<T>> getEigenSpaces(rsMatrix<std::complex<T>> A, T tol)
       Ai(j, j) = A(j, j) - eigenValues[i].value;                // Ai = A - eigenValue[i] * Id
     eigenSpaces[i].eigenSpace = getNullSpace(Ai, Complex(tol)); // complexifying tol is unelegant!
   }
+  rsAssert(isValidEigenSpaceSet(eigenSpaces));  // sanity check
   return eigenSpaces;
 }
 
