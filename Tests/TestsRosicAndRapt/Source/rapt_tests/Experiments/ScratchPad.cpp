@@ -962,6 +962,14 @@ void normalizeColumn(rsMatrix<T>& A, int j)
   A.scaleColumn(j, T(1)/norm);
 }
 
+template<class T>
+void normalizeColumns(rsMatrix<T>& A)
+{
+  for(int j = 0; j < A.getNumColumns(); j++)
+    normalizeColumn(A, j);
+}
+
+
 /** Copies the j-th column of matrix A into vector v. */
 template<class T>
 void copyColumn(const rsMatrix<T>& A, int j, std::vector<T>& v)
@@ -997,6 +1005,23 @@ void orthonormalizeColumns1(rsMatrix<T>& A)
     pasteColumn(A, i, tmp);
     normalizeColumn(A, i); }
 }
+
+
+/** Implements orthonormalization of the columns of A via Gaussian eliminations. See:
+https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process#Via_Gaussian_elimination */
+template<class T>
+void orthonormalizeColumns2(rsMatrix<T>& A, T tol)
+{
+  A = A.getTranspose();
+  rsMatrix<T> A2 = A * A.getTranspose();
+  rowEchelon(A2, A, tol);
+  A = A.getTranspose();
+  normalizeColumns(A);
+}
+// try to get rid of some transpositions
+// ...how does this algorithm fare numerically? Gaussian elimination itself is supposed to be 
+// numerically well behvaed, right?
+
 
 // todo: implement numerically stabilized version, version based on Gaussian elimination and based
 // on Householder transformations - see:

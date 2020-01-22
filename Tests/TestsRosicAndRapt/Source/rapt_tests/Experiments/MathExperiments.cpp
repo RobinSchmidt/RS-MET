@@ -575,11 +575,17 @@ void eigenstuff()
   // cleanUpIntegers that does it for real and imaginary parts
 
 
-  // try orthonormalization:
+  // try orthonormalization - todo: make extra function for this
   A = Matrix( 3, 3, {1,1,1, 0,1,1, 0,0,1});       // Karpf. pg160
   orthonormalizeColumns1(A);
   r &= A == Matrix(3, 3, {1,0,0, 0,1,0, 0,0,1});  // should give the standard-basis
   r &= areColumnsOrthonormal(A, tol);
+
+  // other algorithm:
+  A = Matrix( 3, 3, {1,1,1, 0,1,1, 0,0,1}); 
+  orthonormalizeColumns2(A, tol);
+  r &= A == Matrix(3, 3, {1,0,0, 0,1,0, 0,0,1});
+
 
   // example from:
   // https://www.khanacademy.org/math/linear-algebra/alternate-bases/orthonormal-basis/v/linear-algebra-gram-schmidt-example-with-3-basis-vectors
