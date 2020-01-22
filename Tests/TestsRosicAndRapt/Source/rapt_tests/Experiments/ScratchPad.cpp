@@ -854,7 +854,7 @@ getRootsWithMultiplicities(const rsPolynomial<std::complex<T>> p, T tol)
 template<class T>
 bool isValidEigenSpaceSet(const std::vector<rsEigenSpace<T>>& ess)
 {
-  int algMulSum = 0;
+  int algMulSum = 0; // sum of algebraic multiplicities of eigenvalues
 
   // for each eigenvalue, we must have: 1 <= geoMul <= algMul
   for(size_t i = 0; i < ess.size(); i++) {
@@ -864,14 +864,20 @@ bool isValidEigenSpaceSet(const std::vector<rsEigenSpace<T>>& ess)
     if(geoMul < 1 || geoMul > algMul)
       return false; }
 
-  // the sum of the algebraic multiplicities must equal he dimensionality of the embedding space:
+  // sum of algebraic multiplicities must equal dimensionality of the embedding space:
   for(size_t i = 0; i < ess.size(); i++)
     if(ess[i].eigenSpace.getNumRows() != algMulSum)
       return false;
 
   return true;
 }
-// are there some other conditions for a sane result?
+// are there any more conditions for a sane result?
+// sum of eigenvalues equals the trace of the matrix A and the product of the eigenvalues equals 
+// the determinant (Karpf. pg 412). - each eigenvalue appears as often in the sum or product as
+// its multiplicity says - to check that, we would have to take the matrix A (and/or its 
+// row-echelon from) as additional inputs. however - the row-echelon form may have a determinant
+// with the sign swapped (if the number of swaps in gaussian elimination was odd) - maybe we should 
+// keep track of that in the elimination process...
 
 /** Returns the eigenspaces of the matrix A as an array of rsEigenSpace objects. Each such object
 contains the eigenspace represented as matrix whose columns form a basis of the eigenspace. It also
@@ -911,7 +917,9 @@ std::vector<rsEigenSpace<T>> getEigenSpaces(rsMatrix<T> A, T tol)
 // multiplication? It also says "generalized eigenvectors" - so maybe this algo works even if the 
 // matrix is not diagonalizable? ...or will we get the zero-columns case in this case?
 
-
+// todo:
+// -write a function to compute generalized eigenspaces and a Jordan normal form - see:
+// https://en.wikipedia.org/wiki/Generalized_eigenvector
 
 
 template<class T>
@@ -920,6 +928,79 @@ rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A, T tol)
   return getNullSpace(A.getTranspose(), tol);  // verify if that's correct
 }
 // needs test
+
+/** Computes scalar product of columns i and j of matrix A. */
+template<class T>
+T getColumnScalarProduct(const rsMatrix<T>& A, int i, int j)
+{
+  T sum = T(0);
+  for(int k = 0; k < A.getNumRows(); k++)
+    sum += A(i, k) * A(j, k);
+  return sum;
+}
+// todo: maybe make a complex version - it should conjugate one of the inputs in the product 
+// (which?)
+
+template<class T>
+T getColumnSquaredNorm(const rsMatrix<T>& A, int j)
+{
+  return getColumnScalarProduct(A, j, j);
+}
+
+template<class T>
+T getColumnNorm(const rsMatrix<T>& A, int j)
+{
+  return sqrt(getColumnSquaredNorm(A, j));
+}
+
+/** Normalizes the Euclidean of column j in matrix A (seen as column-vector) to unity. */
+template<class T>
+void normalizeColumn(const rsMatrix<T>& A, int j)
+{
+  T norm = getColumnNorm(A, j);
+  A.scaleColumn(i, T(1)/norm);
+}
+
+/** Copies the j-th column of matrix A into vector v. */
+template<class T>
+void copyColumn(const rsMatrix<T>& A, int j, std::vector<T>& v)
+{
+  v.resize(A.getNumRows());
+  for(int i = 0; i < A.getNumRows(); i++)
+    v[i] = A(i, j);
+}
+
+template<class T>
+void pasteColumn(rsMatrix<T>& A, int j, const std::vector<T>& v)
+{
+  rsAssert(A.getNumRows() == (int) v.size());
+  for(int i = 0; i < A.getNumRows(); i++)
+    A(i, j) = v[i];
+}
+
+// make a simliar pasteColumn function
+
+/** Naive implementation of Gram-Schmidt orthonormalization of the columns of A. This algorithm is
+numerically very bad and not recommended for use in production. */
+template<class T>
+void orthonormalizeColumns1(rsMatrix<T>& A)
+{
+  normalizeColumn(A, 0);
+  std::vector<T> tmp(A.getNumRows());
+  for(int i = 1; i < A.getNumColumns(); i++) {
+    copyColumn(A, i, v);
+    for(int j = 0; j < i; j++) {
+      T w = getColumnScalarProduct(A, i, j);
+      for(int k = 0; k < A.getNumRows(); k++)
+        v[k] -= w * A(k, j); }
+    pasteColumn(A, i, v);
+    normalizeColumn(A, i); }
+}
+// needs test
+
+// todo: implement numerically stabilized version - see:
+// https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process#Numerical_stability
+// https://en.wikipedia.org/wiki/Householder_transformation
 
 
 
