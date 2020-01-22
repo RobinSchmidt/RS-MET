@@ -543,7 +543,7 @@ void eigenstuff()
   // [2,(1,1)], [2,(1,1)] -> correct
 
   A = Matrix(3,3, {1,2,2, 2,-2,1, 2,1,-2});
-  eig = getEigenSpaces(A, tol);    // doesn't work - we need higher tolerance
+  //eig = getEigenSpaces(A, tol);    // doesn't work - we need higher tolerance
   eig = getEigenSpaces(A, 1.e-7);  // works
   findEigenSpacesReal(A);
   // [3,(2,1,1)],[-3,(-1,0,2),(-1,2,0)] - (2,1,1) is found correctly, the other eigenspaces are 
@@ -573,6 +573,13 @@ void eigenstuff()
 
   // todo: try some more examples with sage, clean up the eigenvalues - use a function like
   // cleanUpIntegers that does it for real and imaginary parts
+
+
+  // try orthonormalization:
+
+  A = Matrix( 3, 3, {1,1,1, 0,1,1, 0,0,1});       // Karpf. pg160
+  orthonormalizeColumns1(A);
+  r &= A == Matrix(3, 3, {1,0,0, 0,1,0, 0,0,1});  // should give the standard-basis
 
   int dummy = 0;
 

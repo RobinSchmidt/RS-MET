@@ -935,7 +935,8 @@ T getColumnScalarProduct(const rsMatrix<T>& A, int i, int j)
 {
   T sum = T(0);
   for(int k = 0; k < A.getNumRows(); k++)
-    sum += A(i, k) * A(j, k);
+    sum += A(k, i) * A(k, j);
+    //sum += A(i, k) * A(j, k);
   return sum;
 }
 // todo: maybe make a complex version - it should conjugate one of the inputs in the product 
@@ -955,10 +956,10 @@ T getColumnNorm(const rsMatrix<T>& A, int j)
 
 /** Normalizes the Euclidean of column j in matrix A (seen as column-vector) to unity. */
 template<class T>
-void normalizeColumn(const rsMatrix<T>& A, int j)
+void normalizeColumn(rsMatrix<T>& A, int j)
 {
   T norm = getColumnNorm(A, j);
-  A.scaleColumn(i, T(1)/norm);
+  A.scaleColumn(j, T(1)/norm);
 }
 
 /** Copies the j-th column of matrix A into vector v. */
@@ -988,17 +989,18 @@ void orthonormalizeColumns1(rsMatrix<T>& A)
   normalizeColumn(A, 0);
   std::vector<T> tmp(A.getNumRows());
   for(int i = 1; i < A.getNumColumns(); i++) {
-    copyColumn(A, i, v);
+    copyColumn(A, i, tmp);
     for(int j = 0; j < i; j++) {
       T w = getColumnScalarProduct(A, i, j);
       for(int k = 0; k < A.getNumRows(); k++)
-        v[k] -= w * A(k, j); }
-    pasteColumn(A, i, v);
+        tmp[k] -= w * A(k, j); }
+    pasteColumn(A, i, tmp);
     normalizeColumn(A, i); }
 }
 // needs test
 
-// todo: implement numerically stabilized version - see:
+// todo: implement numerically stabilized version, version based on Gaussian elimination and based
+// on Householder transformations - see:
 // https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process#Numerical_stability
 // https://en.wikipedia.org/wiki/Householder_transformation
 
