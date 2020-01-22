@@ -494,7 +494,7 @@ void eigenstuff()
 
   double tol = 1.e-12;
   bool r = true;
-  Matrix  A, z;                          // matrix and dummy vector (get rid of the dummy)
+  Matrix  A, T, z;                       // matrix and dummy vector (get rid of the dummy)
   MatrixC B;                             // correct basis of the eigenspace (target)
   std::vector<rsEigenSpace<double>> eig; // hold the computed eigenspaces
 
@@ -576,10 +576,19 @@ void eigenstuff()
 
 
   // try orthonormalization:
-
   A = Matrix( 3, 3, {1,1,1, 0,1,1, 0,0,1});       // Karpf. pg160
   orthonormalizeColumns1(A);
   r &= A == Matrix(3, 3, {1,0,0, 0,1,0, 0,0,1});  // should give the standard-basis
+
+  // example from:
+  // https://www.khanacademy.org/math/linear-algebra/alternate-bases/orthonormal-basis/v/linear-algebra-gram-schmidt-example-with-3-basis-vectors
+  A = Matrix( 4, 3, {0,0,1, 0,1,1, 1,1,0, 1,0,0}); 
+  orthonormalizeColumns1(A);
+  double s1 = 1. / sqrt(2), s2 = sqrt(2./3.), s3 = 1./(2*sqrt(3.));
+  T = Matrix( 4, 3, {0,0,3*s3, 0,s2,s3, s1,0.5*s2,-1*s3, s1,-0.5*s2,s3});   // target
+  A = T - A;          // A is now the error (target - computed) - should be the zero-matrix
+  r &= A.isZero(tol);
+
 
   int dummy = 0;
 
