@@ -579,15 +579,21 @@ void eigenstuff()
   A = Matrix( 3, 3, {1,1,1, 0,1,1, 0,0,1});       // Karpf. pg160
   orthonormalizeColumns1(A);
   r &= A == Matrix(3, 3, {1,0,0, 0,1,0, 0,0,1});  // should give the standard-basis
+  r &= areColumnsOrthonormal(A, tol);
 
   // example from:
   // https://www.khanacademy.org/math/linear-algebra/alternate-bases/orthonormal-basis/v/linear-algebra-gram-schmidt-example-with-3-basis-vectors
-  A = Matrix( 4, 3, {0,0,1, 0,1,1, 1,1,0, 1,0,0}); 
+  A = Matrix( 4, 3, {0,0,1, 0,1,1, 1,1,0, 1,0,0});
+  T = A;
   orthonormalizeColumns1(A);
+  r &= areColumnsOrthonormal(A, tol);
+  r &= spanSameSpace(A, T, tol);
   double s1 = 1. / sqrt(2), s2 = sqrt(2./3.), s3 = 1./(2*sqrt(3.));
   T = Matrix( 4, 3, {0,0,3*s3, 0,s2,s3, s1,0.5*s2,-1*s3, s1,-0.5*s2,s3});   // target
   A = T - A;          // A is now the error (target - computed) - should be the zero-matrix
   r &= A.isZero(tol);
+  // we could also make tests base on spanSameSpace and areColumnsOrthonormal
+
 
 
   int dummy = 0;

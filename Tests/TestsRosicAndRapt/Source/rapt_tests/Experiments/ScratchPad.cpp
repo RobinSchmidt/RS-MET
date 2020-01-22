@@ -997,7 +997,6 @@ void orthonormalizeColumns1(rsMatrix<T>& A)
     pasteColumn(A, i, tmp);
     normalizeColumn(A, i); }
 }
-// needs test
 
 // todo: implement numerically stabilized version, version based on Gaussian elimination and based
 // on Householder transformations - see:
@@ -1005,10 +1004,31 @@ void orthonormalizeColumns1(rsMatrix<T>& A)
 // https://en.wikipedia.org/wiki/Householder_transformation
 
 
+template<class T>
+bool areColumnsNormalized(rsMatrix<T>& A, T tol)
+{
+  for(int i = 0; i < A.getNumColumns(); i++)
+    if(rsAbs(getColumnNorm(A, i) - T(1)) > tol)
+      return false;
+  return true;
+}
 
+template<class T>
+bool areColumnsOrthogonal(rsMatrix<T>& A, T tol)
+{
+  for(int i = 0; i < A.getNumColumns(); i++) {
+    for(int j = i+1; j < A.getNumColumns(); j++) {
+      T sp = getColumnScalarProduct(A, i, j);
+      if(rsAbs(sp) > tol)
+        return false; }}
+  return true;
+}
 
-
-
+template<class T>
+bool areColumnsOrthonormal(rsMatrix<T>& A, T tol)
+{
+  return areColumnsOrthogonal(A, tol) && areColumnsNormalized(A, tol);
+}
 
 
 
