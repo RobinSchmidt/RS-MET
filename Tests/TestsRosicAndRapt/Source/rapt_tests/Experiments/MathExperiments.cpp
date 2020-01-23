@@ -600,13 +600,17 @@ void eigenstuff()
   r &= A.isZero(tol);
   // we could also make tests base on spanSameSpace and areColumnsOrthonormal
 
-  // QR-decomposition:
-
+  // QR decomposition:
   A = Matrix(4, 3, {2,0,2, 1,0,0, 0,2,-1, 2,0,0}); // Karpf. pg.185
   Matrix Q, R;
-  decomposeQR(A, Q, R); // seems to work...
-  T = Q*R;              // should be equal to A
+  decomposeQR(A, Q, R); 
+  T = Q*R;                 // should be equal to A
   r &= (A-T).isZero(tol);
+
+  // singular value decomposition:
+  A = Matrix(2, 3, {-1,1,0, -1,-1,1}); // Karpf. pg.448
+  Matrix U, S, V;
+  decomposeUSV(A, U, S, V);  // under construction
 
 
 

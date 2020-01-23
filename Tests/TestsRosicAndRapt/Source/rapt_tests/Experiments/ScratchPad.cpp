@@ -1119,8 +1119,8 @@ void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
     R = H*R;  
   }
 }
-// QR-decomposition based on Householder reflections, see Karpf. pg. 184
-// prototype - can be streamlined/optimized - lot'S of copying and allocation can be avoided
+// QR-decomposition based on Householder reflections (see Karpf. pg. 184)
+// prototype - can be streamlined/optimized - lots of copying and allocation can be avoided
 // todo: implement recipies pg. 187,188 - using the QR decomposition to solve a linear system of
 // equations and an overdetermined system (needs reduced QR decomposition)
 // how would it be done when A is complex? will the transpositions in the Householder reflection be
@@ -1128,6 +1128,12 @@ void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
 
 
 
+template<class T>
+void decomposeUSV(const rsMatrix<T>& A, rsMatrix<T>& U, rsMatrix<T>& S, rsMatrix<T>& V)
+{
+
+}
+// singular value decomposition (see Karpf. pg 447)
 
 // implement recipies: Karpf., pg.138,140,153,154,159(done),166(done?),172,174,176,184,187,188
 // formulas: 156
