@@ -929,6 +929,10 @@ rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A, T tol)
 }
 // needs test
 
+// todo: getProjecttion(rsMatrix A, Vector v) - should project the vector v onto the basis spanned 
+// by the columns of A. this can be done by forming a linear combination of the columns of A with 
+// coeffs given by the scalar products of the repsective column with the target vector v -  i think
+
 /** Computes scalar product of columns i and j of matrix A. */
 template<class T>
 T getColumnScalarProduct(const rsMatrix<T>& A, int i, int j)
@@ -936,7 +940,6 @@ T getColumnScalarProduct(const rsMatrix<T>& A, int i, int j)
   T sum = T(0);
   for(int k = 0; k < A.getNumRows(); k++)
     sum += A(k, i) * A(k, j);
-    //sum += A(i, k) * A(j, k);
   return sum;
 }
 // todo: maybe make a complex version - it should conjugate one of the inputs in the product 
@@ -987,8 +990,6 @@ void pasteColumn(rsMatrix<T>& A, int j, const std::vector<T>& v)
     A(i, j) = v[i];
 }
 
-// make a simliar pasteColumn function
-
 /** Naive implementation of Gram-Schmidt orthonormalization of the columns of A. This algorithm is
 numerically very bad and not recommended for use in production. */
 template<class T>
@@ -1023,8 +1024,8 @@ void orthonormalizeColumns2(rsMatrix<T>& A, T tol)
 // numerically well behvaed, right?
 
 
-// todo: implement numerically stabilized version, version based on Gaussian elimination and based
-// on Householder transformations - see:
+// todo: implement numerically stabilized version, version based on Gaussian elimination (done) and
+// based on Householder transformations - see:
 // https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process#Numerical_stability
 // https://en.wikipedia.org/wiki/Householder_transformation
 
@@ -1038,6 +1039,14 @@ bool areColumnsNormalized(rsMatrix<T>& A, T tol)
   return true;
 }
 
+
+/** Returns true, iff all the columns of the matrix A (seen as vectors) are mutually orthogonal. 
+This means, the scalar product of any pair of distinct columns must be zero. Note that we do 
+not require, that the scalar product of a column with itself is unity. ...i think, this would be 
+the definition of an orthogonal matrix - math terminology seems a bit inconsistent here: a matrix
+being orthogonal seems a stronger requirement than its columns beings mutually orthogonal - the 
+columns must be orthoNORMal for the matrix being orthoGONal....-> look up
+See: https://en.wikipedia.org/wiki/Orthogonality  */
 template<class T>
 bool areColumnsOrthogonal(rsMatrix<T>& A, T tol)
 {
@@ -1054,19 +1063,42 @@ bool areColumnsOrthonormal(rsMatrix<T>& A, T tol)
 {
   return areColumnsOrthogonal(A, tol) && areColumnsNormalized(A, tol);
 }
+// This means that A^T * A = I where I is the identity matrix
+
+template<class T>
+bool isOrthogonal(rsMatrix<T>& A, T tol)
+{
+  return areColumnsOrthonormal(A, tol);
+}
+// It seems, math terminology is inconsistent here: for a matrix to count as orthoGONal, its 
+// columns must be orthoNORMal. the definition of matrix orthogonality is that the linear map
+// doesn't change the scalar product, i.e <x, y> = <A*x, A*y> which implies A^T * A = I
+
+
+template<class T>
+rsMatrix<T> getHouseholderReflection(rsMatrix<T>& a)
+{
+  rsAssert(a.isColumnVector());
+  T w = T(2) / getColumnSquaredNorm(a, 0);
+  return rsMatrix<T>::identity(a.getNumRows()) - w * a * a.getTranspose();
+}
+// needs test, maybe optimize
+// H_a = I - (2/(a^T * a)) * a * a^T - reflection along vector a (i think, this means reflection 
+// about a plane whose normal is a - figure out - see Karpf, pg 156)
+
+
+template<class T>
+void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
+{
+
+}
+// QR-decomposition based on Householder reflections, see Karpf. pg. 184
 
 
 
 
-
-
-
-
-
-
-
-
-
+// implement recipies: Karpf., pg.138,140,153,154,159(done),166(done?),172,174,176,184
+// formulas: 156
 
 
 

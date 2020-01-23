@@ -600,6 +600,11 @@ void eigenstuff()
   r &= A.isZero(tol);
   // we could also make tests base on spanSameSpace and areColumnsOrthonormal
 
+  // QR-decomposition:
+
+  A = Matrix(4, 3, {2,0,2, 1,0,0, 0,2,-1, 2,0,0}); // Karpf. pg.185
+  Matrix Q, R;
+  decomposeQR(A, Q, R); // under construction
 
 
   int dummy = 0;
