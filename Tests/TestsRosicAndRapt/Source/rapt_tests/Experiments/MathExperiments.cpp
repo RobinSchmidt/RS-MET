@@ -604,7 +604,7 @@ void eigenstuff()
 
   A = Matrix(4, 3, {2,0,2, 1,0,0, 0,2,-1, 2,0,0}); // Karpf. pg.185
   Matrix Q, R;
-  decomposeQR(A, Q, R); // under construction
+  decomposeQR(A, Q, R); // under construction - result still wrong
 
 
   int dummy = 0;

@@ -1090,14 +1090,41 @@ rsMatrix<T> getHouseholderReflection(rsMatrix<T>& a)
 template<class T>
 void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
 {
+  int n = A.getNumRows();
+  int r = A.getNumColumns();
+  rsAssert(n >= r);    // Karpf. pg.181
+  Q.setSize(n, n);
+  Q.setToIdentity();
+  R = A;
+  rsMatrix<T> s(n, 1), a(n, 1), H(n, n);
+  for(int j = 0; j < r; j++)
+  {
+    // copy column j into s, but with zeros up to j-1:
+    int k;
+    for(k = 0; k < j; k++) s(k, 0) = T(0);
+    for(k = j; k < n; k++) s(k, 0) = R(k, j);
 
+    // compute weight alpha:
+    T sNorm = getColumnNorm(s, 0);
+    T alpha = s(j, 0) < T(0) ? sNorm : -sNorm;
+
+    // compute reflection vector a = s - alpha * e_j:
+    a = s; s(j, 0) -= alpha;  // can be streamlined - copy can be avoided
+
+    // compute Householder reflection matrix H_a about vector a:
+    H = getHouseholderReflection(a);
+
+    // update Q and R:
+    Q = Q*H;   // check, if the order is correct
+    R = H*R;  
+  }
 }
 // QR-decomposition based on Householder reflections, see Karpf. pg. 184
 
 
 
 
-// implement recipies: Karpf., pg.138,140,153,154,159(done),166(done?),172,174,176,184
+// implement recipies: Karpf., pg.138,140,153,154,159(done),166(done?),172,174,176,184,187,188
 // formulas: 156
 
 
