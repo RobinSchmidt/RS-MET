@@ -604,7 +604,10 @@ void eigenstuff()
 
   A = Matrix(4, 3, {2,0,2, 1,0,0, 0,2,-1, 2,0,0}); // Karpf. pg.185
   Matrix Q, R;
-  decomposeQR(A, Q, R); // under construction - result still wrong
+  decomposeQR(A, Q, R); // seems to work...
+  T = Q*R;              // should be equal to A
+  r &= (A-T).isZero(tol);
+
 
 
   int dummy = 0;
