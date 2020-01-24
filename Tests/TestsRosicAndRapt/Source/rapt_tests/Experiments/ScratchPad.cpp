@@ -1203,12 +1203,9 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   // todo: avoid taking square-roots of zero - just loop up to i < rsMin(m, r)
 
 
-  // todo:
-  // -construct matrix U = (u_1,...,u_m) where u_1,..,u_r are computed from the nonzero singular 
-  //  values sigma_i and corrsponding basis-vectors v_i as: u_i = (1/sigma_i) * A * v_i and the 
-  //  remaining u_{r+1},...,u_m are a basis of the orthogoanl complement of u_1,..,u_r
-
-
+  // Construct matrix U = (u_1,...,u_m) where u_1,..,u_r are computed from the nonzero singular 
+  // values sigma_i and corresponding basis-vectors v_i as: u_i = (1/sigma_i) * A * v_i and the 
+  // remaining u_{r+1},...,u_m are a basis of the orthogoanl complement of u_1,..,u_r
   U.setSize(m, m);
   U.setToZero();
   for(i = 0; i < r; i++)    // column index into U
@@ -1223,7 +1220,7 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   }
   if(r < m)
   {
-    rsError("not yet implemented"); 
+   // rsError("not yet implemented"); 
     // U now contains only r basis vectors for R^m - we need to fill it up with m-r more basis 
     // vectors (presumably taken from the orthogoanly complement of the r vectors that already 
     // are in U?)
@@ -1252,9 +1249,10 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   // we may factor out a function getEigenSpace(const rsMatrix<T>& A, T ev)
 }
 // singular value decomposition (see Karpf. pg 447)
-// if A is real, A^T * A is symmetric and this in turn implies that all eigenvalues are real and A
-// is diagonalizable - so we don't need to worry about having to consider complex eigenvalues 
-// and/or defective eigenspaces (wher the geometric multiplicity is less than the algebraic)
+// if A is real, A^T * A is symmetric and this in turn implies that all eigenvalues are real (and 
+// nonnegative) and A^T * A is diagonalizable - so we don't need to worry about having to consider 
+// complex eigenvalues and/or defective eigenspaces (wher the geometric multiplicity is less than 
+// the algebraic)
 // Karpf: pg 448: because A^T * A is positive semidefinite, it's eigenvalues are >= 0
 
 // https://math.stackexchange.com/questions/158219/is-a-matrix-multiplied-with-its-transpose-something-special

@@ -397,25 +397,33 @@ bool testSigularValueDecomp()
   double tol = 1.e-12;
   bool r = true;
 
-
   auto checkSVD = [&](int M, int N, Vec vecA)->bool
   { 
     Matrix A(M, N, vecA);
     Matrix U, S, V;
     decomposeRealUSV(A, U, S, V, tol);
     Matrix T = U * S * V.getTranspose();
-    return (A-T).isZero(tol);
+    bool result = (A-T).isZero(tol);
+    //result &= isOrthogonal(U, tol);  // makes the test return false
+    //result &= isOrthogonal(V, tol);  // makes the test return false
+    //result &= isDiagonal(  S, tol);
+    return result;
   };
-
 
   r &= checkSVD(2, 3, {-1,1,0, -1,-1, 1});              // pg. 448.
   r &= checkSVD(2, 3, { 1,1,3,  1, 1,-3});              // pg. 450, ex 42.3 (a)
-
+  r &= checkSVD(3, 1, { 2,2,1 });                       // (b)
   r &= checkSVD(3, 2, { 1,1, 1,1, 3,-3});               // (c)
-  // triggers assert - but the test returns true - maybe it doesn't actually matter, if we fill up
-  // U?
-
+  r &= checkSVD(1, 3, { 2,2,1 });                       // (d)
   r &= checkSVD(3, 4, {8,-4,0,0, -1,-7,0,0, 0,0,1,-1}); // (e)
+  r &= checkSVD(2, 3, { 2,1,2,  1,-2,1});               // (f) 
+
+  // for the matrices where the number of rows is larger than the number of columns, the assertion 
+  // triggers but the test returns true anyway - maybe it doesn't actually matter, if we fill up
+  // U?
+  // try more examples with m > n, m < n and different multiplicities for the eigenvalues of 
+  // A^T * A, i.e. cases where there is no one-to-one correspondence between eigenvalues and 
+  // eigenvectors
 
   return r;
 }
