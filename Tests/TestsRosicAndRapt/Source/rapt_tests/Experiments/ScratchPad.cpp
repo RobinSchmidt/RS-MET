@@ -1194,10 +1194,17 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   }
   normalizeColumns(V);
 
+  // Construct matrix S from the singular values sigma_i, which are the square-roots of the 
+  // eigenvalues lambda_i:
+  S.setSize(m, n);
+  S.setToZero();
+  for(i = 0; i < rsMin(m, n); i++)
+    S(i, i) = sqrt(lambda[i]);
+  // todo: avoid taking square-roots of zero - just loop up to i < rsMin(m, r)
+
 
   // todo:
-  // -construct matrix S from the singular values sigma_i, which are the square-roots of the 
-  //  eigenvalues lambda_i
+
   // -construct matrix U = (u_1,...,u_m) where u_1,..,u_r are computed from the nonzero singular 
   //  values sigma_i and corrsponding basis-vectors v_i as: u_i = (1/sigma_i) * A * v_i and the 
   //  remaining u_{r+1},...,u_m are a basis of the orthogoanl complement of u_1,..,u_r
