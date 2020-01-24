@@ -1160,22 +1160,22 @@ void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
 template<class R> // R is a real-number datatype
 void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMatrix<R>& V, R tol)
 {
+  // A is an m-by-n matrix:
   int m = A.getNumRows();
   int n = A.getNumColumns();
 
-
-  // Find eigenvalues of A^T * A and sort them in descending order:
+  // Find eigenvalues of A^T * A (they are all non-negative), sort them in descending order and 
+  // figure out r, the number of nonzero eigenvalues (which is also the rank of A):
   rsMatrix<R>    ATA    = A.getTranspose() * A;           // A^T * A is an n-by-n matrix
   std::vector<R> lambda = getEigenvaluesReal(ATA);        // eigenvalues of A^T * A, lambda_i >= 0
+  rsAssert((int) lambda.size() == n);
   rsHeapSort(&lambda[0], (int) lambda.size(), rsGreater); // sort descending
-
-  // Figure out r - the number of nonzero eigenvalues:
   int r = 0;
-  while(r < (int) lambda.size() && lambda[r] > tol)
+  while(r < (int) lambda.size() && lambda[r] > tol)       // figure out rank r of A
     r++;
 
-  // For each eigenvalue lambda_i, compute the eigenspace - from those eigenspaces, construct the 
-  // matrix V: (v_1,...,v_n) such that  (A^T * A) * v_i = lambda_i * v_i, the v_i are the columns 
+  // For each eigenvalue lambda_i, compute the eigenspace. From those eigenspaces, construct the 
+  // matrix V: (v_1,...,v_n) such that (A^T * A) * v_i = lambda_i * v_i. The v_i are the columns 
   // of V:
   int i = 0;
   V.setSize(n, n);
@@ -1194,8 +1194,8 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   }
   normalizeColumns(V);
 
-  // Construct matrix S from the singular values sigma_i, which are the square-roots of the 
-  // eigenvalues lambda_i:
+  // Construct the diagonal matrix S from the singular values sigma_i, which are the square-roots 
+  // of the eigenvalues lambda_i:
   S.setSize(m, n);
   S.setToZero();
   for(i = 0; i < rsMin(m, n); i++)
@@ -1204,10 +1204,31 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
 
 
   // todo:
-
   // -construct matrix U = (u_1,...,u_m) where u_1,..,u_r are computed from the nonzero singular 
   //  values sigma_i and corrsponding basis-vectors v_i as: u_i = (1/sigma_i) * A * v_i and the 
   //  remaining u_{r+1},...,u_m are a basis of the orthogoanl complement of u_1,..,u_r
+
+
+  U.setSize(m, m);
+  for(i = 0; i < r; i++)    // column index
+  {
+    for(j = 0; j < m; j++)  // row index
+    {
+      U(j, i) = R(0);
+      for(k = 0; k < n; k++)           // is n correct?
+        U(j, i) += A(j, k) * V(i, k);  // check indices - especially into V
+      U(j, i) /= S(i, i);
+    }
+  }
+  int dummy = 0;
+
+
+  /*
+  U = A * V;  // is that correct? the book says, we only obtain r vectors u_i this way
+  for(i = 0; i < n; i++)  // verify - book says, we only obtain r vectors u_i this way
+    for(j = 0; j < m; j++)
+      U(j, i) /= S(i, i);
+  */
 
 
   // maybe we should use:
@@ -1219,12 +1240,6 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   // detect this from the dimensionality of the eigenspace - it it's d, we increment our 
   // array-index into ev by d
   // we may factor out a function getEigenSpace(const rsMatrix<T>& A, T ev)
-
-
-
-
-
-  int dummy = 0;
 }
 // singular value decomposition (see Karpf. pg 447)
 // if A is real, A^T * A is symmetric and this in turn implies that all eigenvalues are real and A
