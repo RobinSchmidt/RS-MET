@@ -617,6 +617,14 @@ void eigenstuff()
   // todo: try examples, where r < m and/or eigenvalues have a multiplicity > 1, cases where
   // m < n, and m > n
 
+  // Karpf. pg.450 - excercises
+  A = Matrix(2, 3, {1,1,3, 1,1,-3});
+  decomposeRealUSV(A, U, S, V, tol);
+  T = U * S * V.getTranspose();;
+  r &= (A-T).isZero(tol);
+
+
+  // todo: make tests for svd like in testSubSpaces: r &= checkSVD(2, 3, {-1,1,0, -1,-1,1}), etc.
 
 
   int dummy = 0;

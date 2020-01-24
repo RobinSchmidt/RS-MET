@@ -1263,7 +1263,8 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
 // transpose aka conjugate transpose)
 // https://en.wikipedia.org/wiki/Hermitian_matrix
 
-// implement recipies: Karpf., pg.138,140,153,154,159(done),166(done?),172,174,176,184,187,188
+// implement recipies: Karpf., pg.138,140,153,154,159(done),166(done?),172,174,176,184,187,188,
+// 443
 // formulas: 156
 
 
