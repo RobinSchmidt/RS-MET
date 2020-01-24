@@ -56,6 +56,7 @@ Reference: Introduction to Algorithms, 2nd Ed, p. 136 */
 template <class T>
 void rsHeapSort(T *buffer, int length, 
   bool (*lessThen)(const T& left, const T& right) = defaultLess);
+// maybe rename parameter "lessThan" to the more general "comesBefore"
 
 /** Checks whether the buffer is sorted in ascending order, that is buffer[i] <= buffer[i+1] for
 all i. */

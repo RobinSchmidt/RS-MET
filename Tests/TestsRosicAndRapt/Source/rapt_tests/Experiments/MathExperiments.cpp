@@ -611,7 +611,7 @@ void eigenstuff()
   // singular value decomposition:
   A = Matrix(2, 3, {-1,1,0, -1,-1,1}); // Karpf. pg.448
   Matrix U, S, V;
-  decomposeRealUSV(A, U, S, V);  // under construction
+  decomposeRealUSV(A, U, S, V, tol);  // under construction
 
 
 

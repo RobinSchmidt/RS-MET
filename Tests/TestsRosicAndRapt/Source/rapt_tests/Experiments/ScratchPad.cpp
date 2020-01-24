@@ -1157,18 +1157,19 @@ void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
 // replaced with conjugate transposes?
 
 
-
 template<class R> // R is a real-number datatype
-void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMatrix<R>& V)
+void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMatrix<R>& V, R tol)
 {
   int m = A.getNumRows();
   int n = A.getNumColumns();
-  rsMatrix<R>    ATA    = A.getTranspose() * A;     // A^T * A
-  std::vector<R> lambda = getEigenvaluesReal(ATA);  // eigenvalues of A^T * A
+  rsMatrix<R>    ATA    = A.getTranspose() * A;           // A^T * A
+  std::vector<R> lambda = getEigenvaluesReal(ATA);        // eigenvalues of A^T * A, lambda_i >= 0
+  rsHeapSort(&lambda[0], (int) lambda.size(), rsGreater); // sort descending
+  int r = 0;                                              // figure out r - the number of...
+  while(r < (int) lambda.size() && lambda[r] > tol)       // ...nonzero eigenvalues
+    r++;
 
   // todo:
-  // -sort eigenvalue array descendingly
-  // -figure out r - the number of nonzero eigenvalues (we need a tolerance)
   // -figure out eigenspaces - from them, construct the matrix V: (v_1,...,v_n) such that 
   //  ATA * v_i * lambda_i * v_i, the v_i are the columns of V
   // -construct matrix S from the singular values sigma_i, which are the square-roots of the 
@@ -1176,6 +1177,19 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   // -construct matrix U = (u_1,...,u_m) where u_1,..,u_r are computed from the nonzero singular 
   //  values sigma_i and corrsponding basis-vectors v_i as: u_i = (1/sigma_i) * A * v_i and the 
   //  remaining u_{r+1},...,u_m are a basis of the orthogoanl complement of u_1,..,u_r
+
+
+  // maybe we should use:
+  //std::vector<rsEigenSpace<R>> es = getEigenSpaces(ATA, tol);
+  // ...and forget the stuff above...at least in a prototype - sorting the eigenspace involves more
+  // data moving that just sorting the eigenvalues ...but we should really use an array of 
+  // rsOccurence - we don't really want to compute the same eigenspace twice - but maybe we don't 
+  // have to - we may just skip an eigenvalue, if it already occurred before - we may actually also 
+  // detect this from the dimensionality of the eigenspace - it it's d, we increment our 
+  // array-index into ev by d
+  // we may factor out a function getEigenSpace(const rsMatrix<T>& A, T ev)
+
+
 
 
 
