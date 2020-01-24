@@ -753,7 +753,7 @@ must have M columns. The set of vectors v that solve this equation will in gener
 of R^M. This subspace is called the nullspace of the matrix A. This function returns a basis for 
 this subspace represented as matrix. The columns of the matrix are the basis vectors. Note that 
 this may be the empty matrix which indicates that the nullspace of A consists only of the 
-zero-vector (todo: maybe we should return the Mx1 zero vector in this case? ...decide later by 
+zero-vector (todo: maybe we should return the Mx1 zero-vector in this case? ...decide later by 
 which convention is more convenient when dealing with eigenspaces */
 template<class T>
 rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)  // maybe to needs to be a separate type for complex matrices
@@ -769,8 +769,8 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)  // maybe to needs to be a separa
   // which says that the dimensionality of the embedding R^M vector space equals the dimensionality
   // of the A's nullspace plus the dimensionality of A's column space (or is it the row-space? the
   // space spanned by the rows makes more sense because the rows live in R^M while the columns may 
-  // not -> FIGURE OUT). We set up an RxR linear system solve it for N different right hand sides
-  // corresponding to N different choices for assigning the free parameters. The most natural 
+  // not -> FIGURE OUT). We set up an RxR linear system and solve it for N different right hand 
+  // sides corresponding to N different choices for assigning the free parameters. The most natural 
   // choice is to set one to 1 and all others to 0 in each assignment and select a different
   // one to set to 1 in each of the N cases. The solution of the linear system gives us
   // R elements for each of the N basis vectors. The remaining N elements must the be filled up 
@@ -797,17 +797,17 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)  // maybe to needs to be a separa
   rsAssert(getRankRowEchelon(A, tol) == (int) pivots.size());
 
   // set up the linear system ("gather") and solve it:
-  Matrix M(nEqn, nEqn);                            // coefficient matrix of the NxN system
-  Matrix R(nEqn, nRhs);                            // right hand side matrix
-  Matrix b(nEqn, nRhs);                            // solution
+  Matrix M(nEqn, nEqn);                   // coefficient matrix of the NxN system
+  Matrix R(nEqn, nRhs);                   // right hand side matrix
+  Matrix b(nEqn, nRhs);                   // solution
   int i, j;
   for(i = 0; i < nEqn; i++) {
     for(j = 0; j < nEqn; j++)
-      M(i, j) =  A(i, pivots[j]);                  // copy relevant coeffs
+      M(i, j) =  A(i, pivots[j]);         // copy relevant coeffs
     for(j = 0; j < nRhs; j++)
-      R(i, j) = -A(i, params[j]); }                // resulting rhs from setting j-th param to 1
+      R(i, j) = -A(i, params[j]); }       // resulting rhs from setting j-th param to 1
   bool success = solve2(M, b, R, tol);
-  rsAssert(success);
+  rsAssert(success);                      // this should never fail - right?
 
   // write solutions into output ("scatter") and fill up with ones and zeros:
   Matrix B(A.getNumColumns(), nRhs);               // final result
@@ -1162,16 +1162,40 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
 {
   int m = A.getNumRows();
   int n = A.getNumColumns();
-  rsMatrix<R>    ATA    = A.getTranspose() * A;           // A^T * A
+
+
+  // Find eigenvalues of A^T * A and sort them in descending order:
+  rsMatrix<R>    ATA    = A.getTranspose() * A;           // A^T * A is an n-by-n matrix
   std::vector<R> lambda = getEigenvaluesReal(ATA);        // eigenvalues of A^T * A, lambda_i >= 0
   rsHeapSort(&lambda[0], (int) lambda.size(), rsGreater); // sort descending
-  int r = 0;                                              // figure out r - the number of...
-  while(r < (int) lambda.size() && lambda[r] > tol)       // ...nonzero eigenvalues
+
+  // Figure out r - the number of nonzero eigenvalues:
+  int r = 0;
+  while(r < (int) lambda.size() && lambda[r] > tol)
     r++;
 
+  // For each eigenvalue lambda_i, compute the eigenspace - from those eigenspaces, construct the 
+  // matrix V: (v_1,...,v_n) such that  (A^T * A) * v_i = lambda_i * v_i, the v_i are the columns 
+  // of V:
+  int i = 0;
+  V.setSize(n, n);
+  rsMatrix<R> v_i;
+  rsMatrix<R> tmp = ATA;
+  int j, k;
+  while(i < n) {
+    for(k = 0; k < n; k++) 
+      tmp(k, k) = ATA(k, k) - lambda[i];    // form matrix A^T * A - lambda_i * I
+    v_i = getNullSpace(tmp, tol);           // its nullspace is the eigenspace to lambda_i
+    int d_i = v_i.getNumColumns();          // dimensionality of i-th eigenspace
+    for(k = 0; k < d_i; k++)                // factor out into: V.pasteSubMatrix(v_i, 0, i);
+      for(j = 0; j < n; j++)
+        V(j, i+k) = v_i(j, k);
+    i += d_i;                               // we filled d_i columns of V in this iteration
+  }
+  normalizeColumns(V);
+
+
   // todo:
-  // -figure out eigenspaces - from them, construct the matrix V: (v_1,...,v_n) such that 
-  //  ATA * v_i * lambda_i * v_i, the v_i are the columns of V
   // -construct matrix S from the singular values sigma_i, which are the square-roots of the 
   //  eigenvalues lambda_i
   // -construct matrix U = (u_1,...,u_m) where u_1,..,u_r are computed from the nonzero singular 
