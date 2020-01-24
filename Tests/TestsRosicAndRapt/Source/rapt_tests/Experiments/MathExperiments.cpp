@@ -407,13 +407,15 @@ bool testSigularValueDecomp()
     return (A-T).isZero(tol);
   };
 
-  r &= checkSVD(2, 3, {-1,1,0, -1,-1, 1});
-  r &= checkSVD(2, 3, { 1,1,3,  1, 1,-3});
 
+  r &= checkSVD(2, 3, {-1,1,0, -1,-1, 1});              // pg. 448.
+  r &= checkSVD(2, 3, { 1,1,3,  1, 1,-3});              // pg. 450, ex 42.3 (a)
 
+  r &= checkSVD(3, 2, { 1,1, 1,1, 3,-3});               // (c)
+  // triggers assert - but the test returns true - maybe it doesn't actually matter, if we fill up
+  // U?
 
-  // todo: make tests for svd like in testSubSpaces: r &= checkSVD(2, 3, {-1,1,0, -1,-1,1}), etc.
-
+  r &= checkSVD(3, 4, {8,-4,0,0, -1,-7,0,0, 0,0,1,-1}); // (e)
 
   return r;
 }
