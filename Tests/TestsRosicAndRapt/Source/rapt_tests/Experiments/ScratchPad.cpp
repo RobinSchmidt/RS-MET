@@ -213,7 +213,7 @@ RAPT::rsMatrix<complex<T>> complexify(const RAPT::rsMatrix<T>& A)
 
 
 
-
+/*
 // meant to be used from the debugger:
 template<class T>
 void findEigenSpacesReal(const RAPT::rsMatrix<T>& A) // for real matrices - includes complexification
@@ -255,14 +255,65 @@ void findEigenSpacesReal(const RAPT::rsMatrix<T>& A) // for real matrices - incl
   int dummy = 0;
 }
 // move useful parts of the code eleswhere, then delete
+*/
 
+
+// get rid of the duplication:
+template<class T> 
+vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<T>& p)
+{
+  vector<complex<T>> roots(p.getDegree());
+  RAPT::rsPolynomial<T>::roots(p.getCoeffPointerConst(), p.getDegree(), &roots[0]);
+  return roots;
+}
 
 template<class T> 
-vector<complex<T>> getEigenvalues(const rsMatrixView<T>& A)
+vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<complex<T>>& p)
 {
-  RAPT::rsPolynomial<T> p = getCharacteristicPolynomial(A);
+  vector<complex<T>> roots(p.getDegree());
+  RAPT::rsPolynomial<T>::roots(p.getCoeffPointerConst(), p.getDegree(), &roots[0]);
+  return roots;
+}
+// maybe make member getRoots - that would be convenient - but the problem is that even for real 
+// polynomials, the roots may be complex - so i don't know if it should return a vector<T> or a 
+// vector<complex<T>> - if the polynomial is itself complex, the former would be the way to go,
+// if it's real, the latter ...maybe make two functions getRootsReal, getRootsComplex - or maybe
+// in the case of real polynomials, it should return only the real roots unless one calls 
+// getComplexRoots - or maybe, if we implement it as template once for reals and once for 
+// complexes, the right one will be compiled into the class automatically? ..like
+// vector<complex<T>> getRoots(const RAPT::rsPolynomial<T>& p); // T is real type
+// vector<T> getRoots(const RAPT::rsPolynomial<complex<R>>& p); // T is complex, R is real
+
+
+template<class R>   // R is a real-number datatype (float, double, etc.)
+vector<complex<R>> getEigenvalues(const rsMatrixView<R>& A)
+{
+  RAPT::rsPolynomial<R> p = getCharacteristicPolynomial(A);
   return getPolynomialRoots(p);
 }
+
+/** Takes a vector of complex numbers and returns a vector of their real parts. */
+template<class R>
+std::vector<R> getRealParts(const std::vector<std::complex<R>>& v)
+{
+  std::vector<R> r(v.size());
+  for(size_t i = 0; i < v.size(); i++)
+    r[i] = v[i].real();
+  return r;
+}
+
+/** Returns the real parts of the eigenvalues of matrix A. This function may make sense when you 
+know that the eigenvalues are real anyway, because - for example - A is symmetric. */
+template<class R>   // R is a real-number datatype (float, double, etc.)
+std::vector<R> getEigenvaluesReal(const rsMatrixView<R>& A)
+{
+  std::vector<std::complex<R>> evc = getEigenvalues(A); // complex eigenvalues
+  // maybe we should assert that the imainary parts of evc are all zero
+  return getRealParts(evc);
+}
+// todo: maybe a special algorithm to find real roots of a real polynomial can be used - avoid
+// the intermediate complexification of the roots (-> optimization)
+
 
 
 
@@ -815,31 +866,7 @@ std::vector<rsOccurrence<TItem>> collectOccurrences(const std::vector<TItem>& it
   return occurrences;
 }
 
-// get rid of the duplication:
-template<class T> 
-vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<T>& p)
-{
-  vector<complex<T>> roots(p.getDegree());
-  RAPT::rsPolynomial<T>::roots(p.getCoeffPointerConst(), p.getDegree(), &roots[0]);
-  return roots;
-}
 
-template<class T> 
-vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<complex<T>>& p)
-{
-  vector<complex<T>> roots(p.getDegree());
-  RAPT::rsPolynomial<T>::roots(p.getCoeffPointerConst(), p.getDegree(), &roots[0]);
-  return roots;
-}
-// maybe make member getRoots - that would be convenient - but the problem is that even for real 
-// polynomials, the roots may be complex - so i don't know if it should return a vector<T> or a 
-// vector<complex<T>> - if the polynomial is itself complex, the former would be the way to go,
-// if it's real, the latter ...maybe make two functions getRootsReal, getRootsComplex - or maybe
-// in the case of real polynomials, it should return only the real roots unless one calls 
-// getComplexRoots - or maybe, if we implement it as template once for reals and once for 
-// complexes, the right one will be compiled into the class automatically? ..like
-// vector<complex<T>> getRoots(const RAPT::rsPolynomial<T>& p); // T is real type
-// vector<T> getRoots(const RAPT::rsPolynomial<complex<R>>& p); // T is complex, R is real
 
 // this function should probably take a complex polynomial as input, so we can use it with complex
 // matrices too
@@ -1073,6 +1100,7 @@ bool isOrthogonal(rsMatrix<T>& A, T tol)
 // It seems, math terminology is inconsistent here: for a matrix to count as orthoGONal, its 
 // columns must be orthoNORMal. the definition of matrix orthogonality is that the linear map
 // doesn't change the scalar product, i.e <x, y> = <A*x, A*y> which implies A^T * A = I
+// if a matrix A is orthogonal, det(A) = +-1 (what if A is complex?)
 
 
 template<class T>
@@ -1121,6 +1149,8 @@ void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
 }
 // QR-decomposition based on Householder reflections (see Karpf. pg. 184)
 // prototype - can be streamlined/optimized - lots of copying and allocation can be avoided
+// the Householder reflection matrices may not have to be constructed explicitly - maybe they can 
+// be applied directly pre/postMultiplyByHoudeholderReflection(A, a)
 // todo: implement recipies pg. 187,188 - using the QR decomposition to solve a linear system of
 // equations and an overdetermined system (needs reduced QR decomposition)
 // how would it be done when A is complex? will the transpositions in the Householder reflection be
@@ -1128,12 +1158,40 @@ void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
 
 
 
-template<class T>
-void decomposeUSV(const rsMatrix<T>& A, rsMatrix<T>& U, rsMatrix<T>& S, rsMatrix<T>& V)
+template<class R> // R is a real-number datatype
+void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMatrix<R>& V)
 {
+  int m = A.getNumRows();
+  int n = A.getNumColumns();
+  rsMatrix<R>    ATA    = A.getTranspose() * A;     // A^T * A
+  std::vector<R> lambda = getEigenvaluesReal(ATA);  // eigenvalues of A^T * A
 
+  // todo:
+  // -sort eigenvalue array descendingly
+  // -figure out r - the number of nonzero eigenvalues (we need a tolerance)
+  // -figure out eigenspaces - from them, construct the matrix V: (v_1,...,v_n) such that 
+  //  ATA * v_i * lambda_i * v_i, the v_i are the columns of V
+  // -construct matrix S from the singular values sigma_i, which are the square-roots of the 
+  //  eigenvalues lambda_i
+  // -construct matrix U = (u_1,...,u_m) where u_1,..,u_r are computed from the nonzero singular 
+  //  values sigma_i and corrsponding basis-vectors v_i as: u_i = (1/sigma_i) * A * v_i and the 
+  //  remaining u_{r+1},...,u_m are a basis of the orthogoanl complement of u_1,..,u_r
+
+
+
+  int dummy = 0;
 }
 // singular value decomposition (see Karpf. pg 447)
+// if A is real, A^T * A is symmetric and this in turn implies that all eigenvalues are real and A
+// is diagonalizable - so we don't need to worry about having to consider complex eigenvalues 
+// and/or defective eigenspaces (wher the geometric multiplicity is less than the algebraic)
+// Karpf: pg 448: because A^T * A is positive semidefinite, it's eigenvalues are >= 0
+
+// https://math.stackexchange.com/questions/158219/is-a-matrix-multiplied-with-its-transpose-something-special
+// https://en.wikipedia.org/wiki/Spectral_theorem
+// how does it generalize to the complex case? would we form A^H * A isntead of A^T * A? (A^H means Hermitian 
+// transpose aka conjugate transpose)
+// https://en.wikipedia.org/wiki/Hermitian_matrix
 
 // implement recipies: Karpf., pg.138,140,153,154,159(done),166(done?),172,174,176,184,187,188
 // formulas: 156

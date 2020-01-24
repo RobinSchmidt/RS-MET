@@ -517,35 +517,36 @@ void eigenstuff()
   // rank, and equals the number of pivots" ...hmm - maybe it's because we use partial pivoting?
 
   // examples from https://www.youtube.com/watch?v=lyXwcXjJdYM
+  // todo: add checks (r &= ...)
 
   A = Matrix(2,2, {1,1, 0,1});
   eig = getEigenSpaces(A, tol);
-  findEigenSpacesReal(A);
+  //findEigenSpacesReal(A);
   // correct [1,(1,0)] - or maybe weitz didn't compute the other?, found: [1,{(1,0),(0,1)}] twice
   // we can actually check, if an eigenvector v is indeed eigenvector - just compute 
   // A * v and x_i * v
 
   A = Matrix(2,2, {1,1, 1,1});
   eig = getEigenSpaces(A, tol);
-  findEigenSpacesReal(A);
+  //findEigenSpacesReal(A);
   // found: [0,(-1,1)],[2,(1,1)] -> correct
 
 
   A = Matrix(2,2, {0,-1, 1,0});
   eig = getEigenSpaces(A, tol);
-  findEigenSpacesReal(A);
+  //findEigenSpacesReal(A);
   // found: [-i,{(-i,1)}],[i,{(i,1)}] - todo: check this manually
 
   // Examples from Ahrens,pg.658:
   A = Matrix(2,2, {3,-1, 1,1});
   eig = getEigenSpaces(A, tol);
-  findEigenSpacesReal(A);
+  //findEigenSpacesReal(A);
   // [2,(1,1)], [2,(1,1)] -> correct
 
   A = Matrix(3,3, {1,2,2, 2,-2,1, 2,1,-2});
   //eig = getEigenSpaces(A, tol);    // doesn't work - we need higher tolerance
   eig = getEigenSpaces(A, 1.e-7);  // works
-  findEigenSpacesReal(A);
+  //findEigenSpacesReal(A);
   // [3,(2,1,1)],[-3,(-1,0,2),(-1,2,0)] - (2,1,1) is found correctly, the other eigenspaces are 
   // empty - numerical issues?, also, the -3 eigenvalue is found twice - once as -3.000...x and 
   // once as -2.999...x - in each case with an empty eigenspace - it smells like a precision issue
@@ -610,7 +611,7 @@ void eigenstuff()
   // singular value decomposition:
   A = Matrix(2, 3, {-1,1,0, -1,-1,1}); // Karpf. pg.448
   Matrix U, S, V;
-  decomposeUSV(A, U, S, V);  // under construction
+  decomposeRealUSV(A, U, S, V);  // under construction
 
 
 

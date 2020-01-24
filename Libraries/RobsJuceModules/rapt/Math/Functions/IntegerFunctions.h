@@ -218,9 +218,11 @@ RS_INLINE TUInt rsPowInt(TUInt base, TUInt exponent)
   for(TUInt p = 1; p <= exponent; p++)
     result *= base;
   return result;
-  // in RSLib MathBasics.inl, there's a better algorithm for that
-}
 
+}
+// in RSLib MathBasics.inl, there's a better algorithm for that
+// see also here - binary exponentiation:
+// https://www.youtube.com/watch?v=5FJ7NJH_y74&list=PLb0zKSynM2PA4CaRRB5QBG8H-qUreEKyi&index=135
 
 template <class T>
 RS_INLINE T rsProduct(T min, T max)

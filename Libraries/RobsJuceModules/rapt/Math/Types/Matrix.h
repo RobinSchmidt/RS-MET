@@ -866,7 +866,7 @@ public:
   // todo: getInverse, getTranspose, getConjugate, getConjugateTranspose
 
   /** Returns a transposed version of this matrix. */
-  rsMatrix<T> getTranspose()
+  rsMatrix<T> getTranspose() const
   {
     rsMatrix<T> t(numCols, numRows);
     rsMatrixView<T>::transpose(*this, &t);
