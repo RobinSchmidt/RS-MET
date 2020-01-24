@@ -1210,16 +1210,26 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
 
 
   U.setSize(m, m);
-  for(i = 0; i < r; i++)    // column index
+  U.setToZero();
+  for(i = 0; i < r; i++)    // column index into U
   {
-    for(j = 0; j < m; j++)  // row index
+    for(j = 0; j < m; j++)  // row index into U
     {
-      U(j, i) = R(0);
+      // U(j, i) = R(0);  // is already zero
       for(k = 0; k < n; k++)           // is n correct?
-        U(j, i) += A(j, k) * V(i, k);  // check indices - especially into V
+        U(j, i) += A(j, k) * V(k, i);  // check indices
       U(j, i) /= S(i, i);
     }
   }
+  if(r < m)
+  {
+    rsError("not yet implemented"); 
+    // U now contains only r basis vectors for R^m - we need to fill it up with m-r more basis 
+    // vectors (presumably taken from the orthogoanly complement of the r vectors that already 
+    // are in U?)
+  }
+
+
   int dummy = 0;
 
 

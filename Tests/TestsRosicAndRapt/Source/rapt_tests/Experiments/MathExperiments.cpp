@@ -611,7 +611,9 @@ void eigenstuff()
   // singular value decomposition:
   A = Matrix(2, 3, {-1,1,0, -1,-1,1}); // Karpf. pg.448
   Matrix U, S, V;
-  decomposeRealUSV(A, U, S, V, tol);  // under construction - V,S correct, U wrong
+  decomposeRealUSV(A, U, S, V, tol);   // under construction - needs more tests
+  T = U * S * V.getTranspose();;
+  r &= (A-T).isZero(tol);
   // todo: try examples, where r < m and/or eigenvalues have a multiplicity > 1, cases where
   // m < n, and m > n
 
