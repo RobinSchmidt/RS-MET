@@ -4,6 +4,7 @@
 void determinant();
 void characteristicPolynomial();
 bool testSubSpaces();
+bool testSigularValueDecomp();
 void linearIndependence();
 void eigenstuff();
 void linearSolverPrecision();

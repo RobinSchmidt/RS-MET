@@ -390,6 +390,35 @@ bool testSubSpaces()
   return r;
 }
 
+bool testSigularValueDecomp()
+{
+  using Vec = std::vector<double>;
+  using Matrix = RAPT::rsMatrix<double>;
+  double tol = 1.e-12;
+  bool r = true;
+
+
+  auto checkSVD = [&](int M, int N, Vec vecA)->bool
+  { 
+    Matrix A(M, N, vecA);
+    Matrix U, S, V;
+    decomposeRealUSV(A, U, S, V, tol);
+    Matrix T = U * S * V.getTranspose();
+    return (A-T).isZero(tol);
+  };
+
+  r &= checkSVD(2, 3, {-1,1,0, -1,-1, 1});
+  r &= checkSVD(2, 3, { 1,1,3,  1, 1,-3});
+
+
+
+  // todo: make tests for svd like in testSubSpaces: r &= checkSVD(2, 3, {-1,1,0, -1,-1,1}), etc.
+
+
+  return r;
+}
+
+
 void linearCombinations()
 {
   // We figure out, if a given vector is a linear combination of a set of given vectors, see:
@@ -608,23 +637,6 @@ void eigenstuff()
   T = Q*R;                 // should be equal to A
   r &= (A-T).isZero(tol);
 
-  // singular value decomposition:
-  A = Matrix(2, 3, {-1,1,0, -1,-1,1}); // Karpf. pg.448
-  Matrix U, S, V;
-  decomposeRealUSV(A, U, S, V, tol);   // under construction - needs more tests
-  T = U * S * V.getTranspose();;
-  r &= (A-T).isZero(tol);
-  // todo: try examples, where r < m and/or eigenvalues have a multiplicity > 1, cases where
-  // m < n, and m > n
-
-  // Karpf. pg.450 - excercises
-  A = Matrix(2, 3, {1,1,3, 1,1,-3});
-  decomposeRealUSV(A, U, S, V, tol);
-  T = U * S * V.getTranspose();;
-  r &= (A-T).isZero(tol);
-
-
-  // todo: make tests for svd like in testSubSpaces: r &= checkSVD(2, 3, {-1,1,0, -1,-1,1}), etc.
 
 
   int dummy = 0;

@@ -94,8 +94,9 @@ int main(int argc, char* argv[])
   //determinant();
   //characteristicPolynomial();
   //testSubSpaces();        // todo: move to unit tests
+  testSigularValueDecomp();   // dito
   //linearIndependence();
-  eigenstuff();
+  //eigenstuff();
   //linearSolverPrecision();
   //ellipseLineIntersections();
   //expBipolar();
