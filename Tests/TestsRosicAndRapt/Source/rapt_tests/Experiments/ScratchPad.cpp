@@ -923,12 +923,15 @@ std::vector<rsEigenSpace<T>> getEigenSpaces(rsMatrix<std::complex<T>> A, T tol)
     eigenSpaces[i].eigenValue = eigenValues[i].value;
     eigenSpaces[i].algebraicMultiplicity = eigenValues[i].multiplicity;
     for(int j = 0; j < rsMin(A.getNumRows(), A.getNumColumns()); j++)
-      Ai(j, j) = A(j, j) - eigenValues[i].value;                // Ai = A - eigenValue[i] * Id
+      Ai(j, j) = A(j, j) - eigenValues[i].value;                // Ai = A - eigenValue[i] * I
     eigenSpaces[i].eigenSpace = getNullSpace(Ai, Complex(tol)); // complexifying tol is unelegant!
   }
   rsAssert(isValidEigenSpaceSet(eigenSpaces));  // sanity check
   return eigenSpaces;
 }
+// this is the textbook method - using the characteristic polynomial and finding its roots is not 
+// the right way to do it numerically - this function is for proof of concept and should not be 
+// used in production
 
 // convenience function for matrices of real numbers:
 template<class T>
@@ -1177,7 +1180,7 @@ void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
     H = getHouseholderReflection(a);
 
     // update Q and R:
-    Q = Q*H;   // check, if the order is correct
+    Q = Q*H;
     R = H*R;  
   }
 }
@@ -1191,7 +1194,7 @@ void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
 // replaced with conjugate transposes?
 
 
-/** Patses submatrix S into matrix A starting at row-index iStart and column-index jStart. */
+/** Pastes submatrix S into matrix A starting at row-index iStart and column-index jStart. */
 template<class T>
 void pasteSubMatrix(rsMatrixView<T>& A, const rsMatrixView<T>& S, int iStart, int jStart)
 {
@@ -1203,6 +1206,7 @@ void pasteSubMatrix(rsMatrixView<T>& A, const rsMatrixView<T>& S, int iStart, in
 }
 // make member function of rsMatrixView so it may be called like A.pasteSubMatrix(S,..)
 
+// todo: add documentation
 template<class R> // R is a real-number datatype
 void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMatrix<R>& V, R tol)
 {
@@ -1244,57 +1248,55 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   // doing it inside the loop is preferable (less work, less error-accumulation) - but we need to 
   // ensure that it is actually valid to do it like this! if not, call orthonormalizeColumns1(V)
   // after the loop and remove orthonormalizeColumns1(v_i) from the loop
+  // yes - this holds indeed true for symmetric matrices:
+  // https://www.mathelounge.de/607249/eigenvektoren-verschiedenen-eigenwerten-sind-orthogonal
+  // https://resources.mpi-inf.mpg.de/departments/d1/teaching/ss10/MFI2/kap46.pdf
+  // https://matheplanet.com/default3.html?call=viewtopic.php?topic=129218&ref=https%3A%2F%2Fwww.google.de%2F
+  // and A^T * A is symmetric, so we should be fine
 
   // Construct the diagonal matrix S from the singular values sigma_i, which are the square-roots 
   // of the eigenvalues lambda_i:
   S.setSize(m, n);
   S.setToZero();
-  for(i = 0; i < rsMin(m, n); i++)
+  //for(i = 0; i < rsMin(m, n); i++)
+  for(i = 0; i < rsMin(r, n); i++)    // for i >= r, sqrt(lambda[i]) == 0 - no need to compute it
     S(i, i) = sqrt(lambda[i]);
   // todo: avoid taking square-roots of zero - just loop up to i < rsMin(m, r)
 
 
   // Construct matrix U = (u_1,...,u_m) where u_1,..,u_r are computed from the nonzero singular 
   // values sigma_i and corresponding basis-vectors v_i as: u_i = (1/sigma_i) * A * v_i and the 
-  // remaining u_{r+1},...,u_m are a basis of the orthogoanl complement of u_1,..,u_r
+  // remaining u_{r+1},...,u_m (if any) are a basis of the orthogonal complement of u_1,..,u_r:
   U.setSize(m, m);
   U.setToZero();
-  for(i = 0; i < r; i++)    // column index into U
-  {
-    for(j = 0; j < m; j++)  // row index into U
-    {
-      for(k = 0; k < n; k++)           // is n correct?
+  for(i = 0; i < r; i++) {             // i: col-index into U
+    for(j = 0; j < m; j++) {           // j: row-index into U
+      for(k = 0; k < n; k++)           // k: col-index into A, row-index into V (...is n correct?)
         U(j, i) += A(j, k) * V(k, i);  // check indices
-      U(j, i) /= S(i, i);
-    }
-  }
-  if(r < m)
-  {
+      U(j, i) /= S(i, i); }}           // S(i, i) is sigma_i
+  if(r < m) {
     rsMatrix<R> Uo = getOrthogonalComplement(U, tol); // Uo is not necessarily orthonormal
-    orthonormalizeColumns1(Uo);  // uses naive Gram-Schmidt - use better algo later
-    pasteSubMatrix(U, Uo, 0, r);
-    //rsError("not yet implemented");
-    // U now contains only r basis vectors for R^m - we need to fill it up with m-r more basis 
-    // vectors (presumably taken from the orthogonal complement of the r vectors that already 
-    // are in U?)
-  }
+    orthonormalizeColumns1(Uo);                       // naive Gram-Schmidt - use better algo later
+    pasteSubMatrix(U, Uo, 0, r); }
+
 
   // in this video here, he says, that U can also be computed as the matrix of eigenvectors of 
   // A * A^T:
   // https://www.youtube.com/watch?v=mBcLRGuAFUk
   // maybe we should do that? and/or maybe compare to the results of the algo above? do the 
   // eigenvalues of this matrix also have any meaning? oh - he also says, it has the same 
-  // eigenvalues because A*B has the same eigenvalues as B*A
+  // eigenvalues because A*B has the same eigenvalues as B*A - maybe to compute the eigenvalues, we
+  // should select the smaller of the two matrices A^T * A, A * A^T -> less work, less error
+  // -> try it
 
-  int dummy = 0;
 
-
-  /*
-  U = A * V;  // is that correct? the book says, we only obtain r vectors u_i this way
-  for(i = 0; i < n; i++)  // verify - book says, we only obtain r vectors u_i this way
-    for(j = 0; j < m; j++)
-      U(j, i) /= S(i, i);
-  */
+  // what about computing the whole U matrix at once like:
+  // U = A * V;  // is that correct? the book says, we only obtain r vectors u_i this way
+  // for(i = 0; i < n; i++)  // verify - book says, we only obtain r vectors u_i this way
+  //   for(j = 0; j < m; j++)
+  //     U(j, i) /= S(i, i);
+  // will we get an m-by-m matrix this way? the book says, we only obtain r vectors u_i by 
+  // multiplying A with the columns v_i (and dividing by the i-th singular value)
 
 
   // maybe we should use:
