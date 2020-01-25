@@ -1135,6 +1135,7 @@ rsMatrix<T> getGivensRotation(int N, int i, int j, T c, T s)
   G(j, i) = -s;
   return G;
 }
+// needs test
 // c = cos(a), s = sin(a) - but we don't take the angle a as paremeter because the c,s values may
 // actually be computed by different formulas, for example using:
 // d = sqrt(xi^2 + xj^2), c = xi/d, s = xj/d
@@ -1313,6 +1314,24 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
 // 443
 // formulas: 156
 
+// Constraints for eigenvalues:
+// Gerschgorin circles:
+// -for an NxN matrix A over the complex numbers, all eigenvalues are within the union of the 
+//  circles with centers given by A(i, i) and radii given by sum_j(abs(A(i,j))) where j runs from 
+//  0 to N-1 but j=i is left out in the summation (Karpf. pg. 419)
+//  -not every one of these circles must contain an eigenvalue - but it must contain one if it's
+//   disjoint from all other circles
+//  -if none of the circles contains 0, A is invertible, because none of its eigenvalues can be 
+//   zero, so the determinant is nonzero (because it's the product of the eigenvalues)
+// -make a function vector<rsCircle<T>> getGerschgorinCircles(rsMatrix A) and use it to plot them
+// Also:
+// -for every matrix-norm that is induced by a vector-norm, we must have that the absolute value of
+//  each eigenvalue is <= norm(A), so we have
+//  |ev| <= max_i(sum_j(abs(A(i,j)))) and |ev| <= max_j(sum_i(abs(A(i,j)))) - Karpf. pg. 482
+//  where the first inequality comes from the L^inf norm and the 2nd from the L^1 norm (verify!),
+//  so we may use the smaller of these two norms as our limit (what about the L^2 norm? is it 
+//  always in between these two or can it be used to further constrain the eigenvalues? what about 
+//  yet other norms?)
 
 
 // make a class rsSubSpace that defines arithmetic operations:
