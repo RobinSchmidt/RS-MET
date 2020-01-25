@@ -1241,7 +1241,9 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
 
     i += d_i;                               // we filled d_i columns of V in this iteration
   }
-  normalizeColumns(V);
+  //normalizeColumns(V);                    // this is not enough!
+  orthonormalizeColumns1(V);                // ...we need this! (use better algo later!)
+  // maye it's enough to call orthonormalizeColumns1(vi) inside the loop? 
 
   // Construct the diagonal matrix S from the singular values sigma_i, which are the square-roots 
   // of the eigenvalues lambda_i:
