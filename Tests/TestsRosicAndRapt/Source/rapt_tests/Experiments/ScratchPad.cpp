@@ -1191,6 +1191,18 @@ void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
 // replaced with conjugate transposes?
 
 
+/** Patses submatrix S into matrix A starting at row-index iStart and column-index jStart. */
+template<class T>
+void pasteSubMatrix(rsMatrix<T>& A, const rsMatrix<T>& S, int iStart, int jStart)
+{
+  rsAssert(A.getNumRows()    >= S.getNumRows()    + iStart);
+  rsAssert(A.getNumColumns() >= S.getNumColumns() + jStart);
+  for(int i = 0; i < S.getNumRows(); i++)
+    for(int j = 0; j < S.getNumColumns(); j++)
+      A(iStart + i, jStart + j) = S(i, j);
+}
+
+
 template<class R> // R is a real-number datatype
 void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMatrix<R>& V, R tol)
 {
@@ -1221,9 +1233,12 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
       tmp(k, k) = ATA(k, k) - lambda[i];    // form matrix A^T * A - lambda_i * I
     v_i = getNullSpace(tmp, tol);           // its nullspace is the eigenspace to lambda_i
     int d_i = v_i.getNumColumns();          // dimensionality of i-th eigenspace
-    for(k = 0; k < d_i; k++)                // factor out into: V.pasteSubMatrix(v_i, 0, i);
-      for(j = 0; j < n; j++)                // ...or V.pasteColumns(v_i, i)
-        V(j, i+k) = v_i(j, k);
+
+    pasteSubMatrix(V, v_i, 0, i);
+    //for(k = 0; k < d_i; k++)                // factor out into: V.pasteSubMatrix(v_i, 0, i);
+    //  for(j = 0; j < n; j++)                // ...or V.pasteColumns(v_i, i)
+    //    V(j, i+k) = v_i(j, k);
+
     i += d_i;                               // we filled d_i columns of V in this iteration
   }
   normalizeColumns(V);
@@ -1257,7 +1272,7 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
     // U.pasteSubMatrix(Uo, 0, r); // or r+1?
 
 
-    rsError("not yet implemented");
+    //rsError("not yet implemented");
     // U now contains only r basis vectors for R^m - we need to fill it up with m-r more basis 
     // vectors (presumably taken from the orthogoanly complement of the r vectors that already 
     // are in U?)
