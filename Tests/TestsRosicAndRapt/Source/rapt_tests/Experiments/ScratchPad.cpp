@@ -1166,12 +1166,12 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
 
   // Find eigenvalues of A^T * A (they are all non-negative), sort them in descending order and 
   // figure out r, the number of nonzero eigenvalues (which is also the rank of A):
-  rsMatrix<R>    ATA    = A.getTranspose() * A;           // A^T * A is an n-by-n matrix
-  std::vector<R> lambda = getEigenvaluesReal(ATA);        // eigenvalues of A^T * A, lambda_i >= 0
+  rsMatrix<R>    ATA    = A.getTranspose() * A;     // A^T * A is an n-by-n matrix
+  std::vector<R> lambda = getEigenvaluesReal(ATA);  // eigenvalues of A^T * A, lambda_i >= 0
   rsAssert((int) lambda.size() == n);
-  rsHeapSort(&lambda[0], (int) lambda.size(), rsGreater); // sort descending
+  rsHeapSort(&lambda[0], n, rsGreater);             // sort descending
   int r = 0;
-  while(r < (int) lambda.size() && lambda[r] > tol)       // figure out rank r of A
+  while(r < n && lambda[r] > tol)                   // figure out rank r of A
     r++;
 
   // For each eigenvalue lambda_i, compute the eigenspace. From those eigenspaces, construct the 
@@ -1188,7 +1188,7 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
     v_i = getNullSpace(tmp, tol);           // its nullspace is the eigenspace to lambda_i
     int d_i = v_i.getNumColumns();          // dimensionality of i-th eigenspace
     for(k = 0; k < d_i; k++)                // factor out into: V.pasteSubMatrix(v_i, 0, i);
-      for(j = 0; j < n; j++)
+      for(j = 0; j < n; j++)                // ...or V.pasteColumns(v_i, i)
         V(j, i+k) = v_i(j, k);
     i += d_i;                               // we filled d_i columns of V in this iteration
   }
@@ -1212,7 +1212,6 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   {
     for(j = 0; j < m; j++)  // row index into U
     {
-      // U(j, i) = R(0);  // is already zero
       for(k = 0; k < n; k++)           // is n correct?
         U(j, i) += A(j, k) * V(k, i);  // check indices
       U(j, i) /= S(i, i);
@@ -1254,6 +1253,11 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
 // complex eigenvalues and/or defective eigenspaces (wher the geometric multiplicity is less than 
 // the algebraic)
 // Karpf: pg 448: because A^T * A is positive semidefinite, it's eigenvalues are >= 0
+
+// see also:
+// https://blog.statsbot.co/singular-value-decomposition-tutorial-52c695315254
+// https://machinelearningmastery.com/singular-value-decomposition-for-machine-learning/
+// https://towardsdatascience.com/singular-value-decomposition-example-in-python-dab2507d85a0
 
 // https://math.stackexchange.com/questions/158219/is-a-matrix-multiplied-with-its-transpose-something-special
 // https://en.wikipedia.org/wiki/Spectral_theorem

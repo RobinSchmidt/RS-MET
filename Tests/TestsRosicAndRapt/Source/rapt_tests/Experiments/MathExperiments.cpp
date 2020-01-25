@@ -395,6 +395,7 @@ bool testSigularValueDecomp()
   using Vec = std::vector<double>;
   using Matrix = RAPT::rsMatrix<double>;
   double tol = 1.e-12;
+  //double tol = 1.e-8;
   bool r = true;
 
   auto checkSVD = [&](int M, int N, Vec vecA)->bool
@@ -404,11 +405,16 @@ bool testSigularValueDecomp()
     decomposeRealUSV(A, U, S, V, tol);
     Matrix T = U * S * V.getTranspose();
     bool result = (A-T).isZero(tol);
-    //result &= isOrthogonal(U, tol);  // makes the test return false
-    //result &= isOrthogonal(V, tol);  // makes the test return false
+    //result &= isOrthogonal(U, tol);  // makes the test return false - (b),(c) are to blame
+    //result &= isOrthogonal(V, tol);  // makes the test return false - (d) is to blame
     //result &= isDiagonal(  S, tol);
     return result;
   };
+
+
+  r &= checkSVD(2, 4, {1,0,1,0, 0,1,0,1});
+  // https://mysite.science.uottawa.ca/phofstra/MAT2342/SVDproblems.pdf - has multiplicity
+  // ....also uses A * A^T ...why? how?
 
   r &= checkSVD(2, 3, {-1,1,0, -1,-1, 1});              // pg. 448.
   r &= checkSVD(2, 3, { 1,1,3,  1, 1,-3});              // pg. 450, ex 42.3 (a)
@@ -424,6 +430,17 @@ bool testSigularValueDecomp()
   // try more examples with m > n, m < n and different multiplicities for the eigenvalues of 
   // A^T * A, i.e. cases where there is no one-to-one correspondence between eigenvalues and 
   // eigenvectors
+
+  // see also:
+  // https://en.wikipedia.org/wiki/Singular_value_decomposition#Example
+  // https://web.mit.edu/be.400/www/SVD/Singular_Value_Decomposition.htm
+  // https://www.d.umn.edu/~mhampton/m4326svd_example.pdf
+
+
+
+
+
+
 
   return r;
 }
