@@ -412,24 +412,6 @@ bool testSigularValueDecomp()
   };
 
 
-  /*
-  Matrix A, U, S, V;
-
-  A = Matrix(1, 3, { 2,2,1 });        // excercise (d)
-  decomposeRealUSV(A, U, S, V, tol);
-  r &= isOrthogonal(U, tol);
-  r &= isOrthogonal(V, tol);   // fails! V is not orthogonal! why?
-
-  A = Matrix(3, 1, { 2,2,1 });        // excercise (b)
-  decomposeRealUSV(A, U, S, V, tol);
-  r &= isOrthogonal(U, tol);
-  */
-
-
-
-
-
-
   r &= checkSVD(2, 4, {1,0,1,0, 0,1,0,1});
   // https://mysite.science.uottawa.ca/phofstra/MAT2342/SVDproblems.pdf - has multiplicity
   // ....also uses A * A^T ...why? how?

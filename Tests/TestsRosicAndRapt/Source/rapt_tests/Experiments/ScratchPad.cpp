@@ -959,7 +959,7 @@ rsMatrix<T> getOrthogonalComplement(rsMatrix<T> A, T tol)
 }
 // needs test
 
-// todo: getProjecttion(rsMatrix A, Vector v) - should project the vector v onto the basis spanned 
+// todo: getProjection(rsMatrix A, Vector v) - should project the vector v onto the basis spanned 
 // by the columns of A. this can be done by forming a linear combination of the columns of A with 
 // coeffs given by the scalar products of the repsective column with the target vector v -  i think
 
@@ -1157,7 +1157,7 @@ void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
 {
   int n = A.getNumRows();
   int r = A.getNumColumns();
-  rsAssert(n >= r);    // Karpf. pg.181
+  rsAssert(n >= r);    // Karpf. pg.181 - do we need this?
   Q.setSize(n, n);
   Q.setToIdentity();
   R = A;
@@ -1192,6 +1192,7 @@ void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
 // equations and an overdetermined system (needs reduced QR decomposition)
 // how would it be done when A is complex? will the transpositions in the Householder reflection be
 // replaced with conjugate transposes?
+// maybe make another version based on Givens rotations
 
 
 /** Pastes submatrix S into matrix A starting at row-index iStart and column-index jStart. */
@@ -1206,10 +1207,38 @@ void pasteSubMatrix(rsMatrixView<T>& A, const rsMatrixView<T>& S, int iStart, in
 }
 // make member function of rsMatrixView so it may be called like A.pasteSubMatrix(S,..)
 
-// todo: add documentation
+
+/** Computes the singular value decomposition of a real-valued MxN matrix A. This expresses A as a
+product of 3 matrices: A = U * S * V^T where U is an MxM orthogonal matrix, V is an NxN orthogonal 
+matrix and S is and MxN diaogonal matrix (filled up with zeros at the bottom or right if M != N).
+If M = N = 2, such a decomposition can be visualized as breaking up any linear map into a 
+(possibly improper) rotation followed by a scaling along the coordinate axes followed by another 
+(possibly improper) rotation - where "improper" means that there could be a reflection involved as 
+well. ...write more about interpretation and applications */
 template<class R> // R is a real-number datatype
 void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMatrix<R>& V, R tol)
 {
+  // Algorithm:
+  // -Compute the eigenvalues of A^T * A and sort them in descencding order. Because A^T *A is a 
+  //  symmetric matrix, all of these eigenvalues are real and nonnegative.
+  //   -The square-roots of these eigenvalues are called the singular values of A.
+  //   -The number R of nonzero singular values equals the rank of A. We have R <= min(M,N). (verify!)
+  // -Construct an orthonormal basis for N-dimensional space from the eigenvectors of A^T * A. 
+  //  These basis vectors v_i are written as columns into the matrix V. This is always possible 
+  //  because symmetric matrices are always diagonalizable (verify!). We also have that 
+  //  eigenvectors to different eigenvalues are orthogonal. If an eigenvalue has an algebraic 
+  //  multiplicity > 1, it's geometric multiplicity will be the same (really? verify!) - so we get
+  //  indeed a full set of basis vectors
+  // -Construct the matrix S by writing the singular values sigma_i on its diagonal and zeros 
+  //  everywhere else: S(i,i) = sigma_i
+  // -Construct the matrix U by taking a column u_i as u_i = (1/sigma_i) * A * v_i for 
+  //  i = 0,...,R-1. If R < M, use for the remaining columns a basis for the orthogonal complement
+  //  of the vectors u_i constructed so far. 
+  //  -The u_i are also eigenvectors of A * A^T (verify) and A^T * A and A * A^T have the same 
+  //   eigenvalues (i think, more generally A*B has the same eigenvalues as B*A, if the dimensions
+  //   are such that the products make sense - verify!)
+
+
   // A is an m-by-n matrix:
   int m = A.getNumRows();      // m is dimensionality of output space
   int n = A.getNumColumns();   // n is dimensionality of input space
@@ -1225,21 +1254,20 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
     r++;
 
   // For each eigenvalue lambda_i, compute the eigenspace. From those eigenspaces, construct the 
-  // matrix V: (v_1,...,v_n) such that (A^T * A) * v_i = lambda_i * v_i. The v_i are the columns 
+  // matrix V: (v_1,...,v_n) such that (A^T * A) * v_i = lambda_i * v_i. The v_i become the columns 
   // of V:
-  int i = 0;
+  int i = 0, j, k;
   V.setSize(n, n);
   rsMatrix<R> v_i;
   rsMatrix<R> tmp = ATA;
-  int j, k;
   while(i < n) {
     for(k = 0; k < n; k++) 
-      tmp(k, k) = ATA(k, k) - lambda[i];    // form matrix A^T * A - lambda_i * I
-    v_i = getNullSpace(tmp, tol);           // its nullspace is the eigenspace to lambda_i
-    orthonormalizeColumns1(v_i);            // make basis an ONB (use better algo later)
-    int d_i = v_i.getNumColumns();          // dimensionality of i-th eigenspace
-    pasteSubMatrix(V, v_i, 0, i);
-    i += d_i;                               // we filled d_i columns of V in this iteration
+      tmp(k, k) = ATA(k, k) - lambda[i];  // form matrix A^T * A - lambda_i * I
+    v_i = getNullSpace(tmp, tol);         // its nullspace is the eigenspace to lambda_i
+    orthonormalizeColumns1(v_i);          // make basis an ONB (use better algo later)
+    int d_i = v_i.getNumColumns();        // dimensionality of i-th eigenspace
+    pasteSubMatrix(V, v_i, 0, i);         // paste d_i columns into V
+    i += d_i;                             // we filled d_i columns of V in this iteration
   }
   //orthonormalizeColumns1(V);                // ...we need this! (use better algo later!)
   // maye it's enough to call orthonormalizeColumns1(vi) inside the loop? this should be sufficient
