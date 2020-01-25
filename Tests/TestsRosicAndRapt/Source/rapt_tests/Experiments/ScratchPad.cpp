@@ -1161,16 +1161,16 @@ template<class R> // R is a real-number datatype
 void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMatrix<R>& V, R tol)
 {
   // A is an m-by-n matrix:
-  int m = A.getNumRows();
-  int n = A.getNumColumns();
+  int m = A.getNumRows();      // m is dimensionality of output space
+  int n = A.getNumColumns();   // n is dimensionality of input space
 
   // Find eigenvalues of A^T * A (they are all non-negative), sort them in descending order and 
   // figure out r, the number of nonzero eigenvalues (which is also the rank of A):
   rsMatrix<R>    ATA    = A.getTranspose() * A;     // A^T * A is an n-by-n matrix
   std::vector<R> lambda = getEigenvaluesReal(ATA);  // eigenvalues of A^T * A, lambda_i >= 0
-  rsAssert((int) lambda.size() == n);
+  rsAssert((int) lambda.size() == n);               // sanity check for debug
   rsHeapSort(&lambda[0], n, rsGreater);             // sort descending
-  int r = 0;
+  int r = 0;                                        // rank of A, dimensionality of image under A
   while(r < n && lambda[r] > tol)                   // figure out rank r of A
     r++;
 
@@ -1219,12 +1219,23 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   }
   if(r < m)
   {
-   // rsError("not yet implemented"); 
+    rsMatrix<R> Uo = getOrthogonalComplement(U, tol);
+    // U.pasteSubMatrix(Uo, 0, r); // or r+1?
+
+
+    rsError("not yet implemented");
     // U now contains only r basis vectors for R^m - we need to fill it up with m-r more basis 
     // vectors (presumably taken from the orthogoanly complement of the r vectors that already 
     // are in U?)
   }
 
+
+  // in this video here, he says, that U can also be computed as the matrix of eigenvectors of 
+  // A * A^T:
+  // https://www.youtube.com/watch?v=mBcLRGuAFUk
+  // maybe we should do that? and/or maybe compare to the results of the algo above? do the 
+  // eigenvalues of this matrix also have any meaning? oh - he also says, it has the same 
+  // eigenvalues because A*B has the same eigenvalues as B*A
 
   int dummy = 0;
 

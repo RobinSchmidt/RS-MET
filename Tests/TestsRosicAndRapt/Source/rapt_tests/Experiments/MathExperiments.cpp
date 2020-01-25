@@ -426,10 +426,16 @@ bool testSigularValueDecomp()
 
   // for the matrices where the number of rows is larger than the number of columns, the assertion 
   // triggers but the test returns true anyway - maybe it doesn't actually matter, if we fill up
-  // U?
+  // U? ...i think, whether we fill up U or not, the condition A = U * S * V^T will always hold - 
+  // but if we don't fill U up, it won't be orthogonal (not even invertible) - which may be 
+  // disadvantageous, if we want to do some manipulation, such as left-multiplying and equation by
+  // U^-1 (= U^T, iff U is orthogonal)
   // try more examples with m > n, m < n and different multiplicities for the eigenvalues of 
   // A^T * A, i.e. cases where there is no one-to-one correspondence between eigenvalues and 
   // eigenvectors
+  // n: dimensionality of input space
+  // m: dimensionality of output space
+  // r: dimensionality of image, rank of A, r <= m
 
   // see also:
   // https://en.wikipedia.org/wiki/Singular_value_decomposition#Example
@@ -437,7 +443,8 @@ bool testSigularValueDecomp()
   // https://www.d.umn.edu/~mhampton/m4326svd_example.pdf
 
 
-
+  // maybe construct examples by specifying U,S,V - when specifying S, make sure to cover cases 
+  // where we have singular values with multiplicities
 
 
 
