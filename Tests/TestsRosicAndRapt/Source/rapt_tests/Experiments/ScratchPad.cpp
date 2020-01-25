@@ -1268,12 +1268,12 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   }
   if(r < m)
   {
-    rsMatrix<R> Uo = getOrthogonalComplement(U, tol);
-    // todo: orthogonalize Uo
+    rsMatrix<R> Uo = getOrthogonalComplement(U, tol); // Uo is not necessarily orthonormal
+    orthonormalizeColumns1(Uo);  // uses naive Gram-Schmidt - use better algo later
     pasteSubMatrix(U, Uo, 0, r);
     //rsError("not yet implemented");
     // U now contains only r basis vectors for R^m - we need to fill it up with m-r more basis 
-    // vectors (presumably taken from the orthogoanly complement of the r vectors that already 
+    // vectors (presumably taken from the orthogonal complement of the r vectors that already 
     // are in U?)
   }
 
