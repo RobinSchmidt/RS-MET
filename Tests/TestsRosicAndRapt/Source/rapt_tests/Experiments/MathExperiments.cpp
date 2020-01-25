@@ -412,6 +412,21 @@ bool testSigularValueDecomp()
   };
 
 
+  Matrix A, U, S, V;
+  A = Matrix(3, 1, { 2,2,1 });        // excercise (b)
+  decomposeRealUSV(A, U, S, V, tol);
+  r &= isOrthogonal(U, tol);          
+  // fails - U is not orthogonal in this case - U comes out as: 
+  //        2/3  -1  -1/2
+  //    U = 2/3   1    0
+  //        1/3   0    1
+  // the 1st column comes from the svd algo, the 2nd and 3rd come from complementing the 1st
+  // i think it is because getOrthogonalComplement returns a basis for teh orthogonal complement 
+  // but this basis is not itself orthogonal itself - we need to orthogonalize Uo
+
+
+
+
   r &= checkSVD(2, 4, {1,0,1,0, 0,1,0,1});
   // https://mysite.science.uottawa.ca/phofstra/MAT2342/SVDproblems.pdf - has multiplicity
   // ....also uses A * A^T ...why? how?
