@@ -390,6 +390,22 @@ bool testSubSpaces()
   return r;
 }
 
+RAPT::rsMatrix<double> getRandomMatrix(int numRows, int numCols, int seed,
+  double min = -1, double max = +1)
+{
+  RAPT::rsMatrix<double> A(numRows, numCols);
+  RAPT::rsArrayTools::fillWithRandomValues(A.getDataPointer(), A.getSize(), min, max, seed);
+  return A;
+}
+
+RAPT::rsMatrix<double> getRandomOrthogonalMatrix(int size, int seed)
+{
+  RAPT::rsMatrix<double> A = getRandomMatrix(size, size, seed);
+  orthonormalizeColumns1(A); 
+  return A;
+}
+
+
 bool testSigularValueDecomp()
 {
   using Vec = std::vector<double>;
@@ -397,6 +413,41 @@ bool testSigularValueDecomp()
   double tol = 1.e-12;
   //double tol = 1.e-8;
   bool r = true;
+
+
+
+
+  /*
+  // this does not yet work:
+  Matrix A, U, S, V;  // the original matrices
+  Matrix a, u, s, v;  // the computed matrices
+
+  int M = 7;
+  int N = 5;
+  V = getRandomOrthogonalMatrix(N, 2);
+  U = getRandomOrthogonalMatrix(M, 1);
+  S.setSize(7, 5); S.setToZero();
+  S(0,0) = 5; S(1,1) = S(2,2) = S(3,3) = 3; S(4,4) = 2; // the middle sv mas multiplicity 3
+  A = U * S * V.getTranspose();
+  decomposeRealUSV(A, u, s, v, tol);
+  //decomposeRealUSV(A, u, s, v, 1.e-6); // higher tolerance doesn't help
+  a = u * s * v.getTranspose();
+  // doesn't work - characteristic polynomial computation fails - maybe we need higher tolerance?
+  // ...could be that the reduction of the rational functions doesn't work - increasing tol 
+  // doesn't seem to help - oh - wait the rsRationalFunction class doesn't get its tolerance from 
+  // here ...hmm rsRationalFunction<T>::reduce is not even called
+  // but ratReduce is called - with tol == 0 - the operators of RatFunc use ratMul, ratAdd, etc. - 
+  // they do not pass anything for the tolerance, so it defaults to zero - maybe RatFunc should
+  // have a member reductionTolerance
+  
+  // ..maybe try to use matrices with integer elements - but how to we produce
+  // orthogonal matrices with integer elements - if we use random values and Gram-Schmidt, the 
+  // elements will often be irrational due to the sqrt in the normalization
+  */
+
+
+
+
 
   auto checkSVD = [&](int M, int N, Vec vecA)->bool
   { 
@@ -411,11 +462,7 @@ bool testSigularValueDecomp()
     return result;
   };
 
-
-  r &= checkSVD(2, 4, {1,0,1,0, 0,1,0,1});
-  // https://mysite.science.uottawa.ca/phofstra/MAT2342/SVDproblems.pdf - has multiplicity
-  // ....also uses A * A^T ...why? how?
-
+  // examples/excercises from Karpfinger - Höhere Mathematik in Rezepten:
   r &= checkSVD(2, 3, {-1,1,0, -1,-1, 1});              // pg. 448.
   r &= checkSVD(2, 3, { 1,1,3,  1, 1,-3});              // pg. 450, ex 42.3 (a)
   r &= checkSVD(3, 1, { 2,2,1 });                       // (b)
@@ -423,6 +470,13 @@ bool testSigularValueDecomp()
   r &= checkSVD(1, 3, { 2,2,1 });                       // (d)
   r &= checkSVD(3, 4, {8,-4,0,0, -1,-7,0,0, 0,0,1,-1}); // (e)
   r &= checkSVD(2, 3, { 2,1,2,  1,-2,1});               // (f) 
+
+
+
+  r &= checkSVD(2, 4, {1,0,1,0, 0,1,0,1});
+  // https://mysite.science.uottawa.ca/phofstra/MAT2342/SVDproblems.pdf - has multiplicity
+  // ....also uses A * A^T ...why? how?
+
 
   // for the matrices where the number of rows is larger than the number of columns, the assertion 
   // triggers but the test returns true anyway - maybe it doesn't actually matter, if we fill up
@@ -436,6 +490,12 @@ bool testSigularValueDecomp()
   // n: dimensionality of input space
   // m: dimensionality of output space
   // r: dimensionality of image, rank of A, r <= m
+
+
+
+
+
+
 
   // see also:
   // https://en.wikipedia.org/wiki/Singular_value_decomposition#Example

@@ -176,6 +176,7 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
   // i.e. the denominator should have degree 0 (be a constant). I think, it should always be +1 or
   // -1 because the elementary row operations can only flip the determinant.
   RatFunc d = B.getDiagonalProduct();
+  //d.reduce(1.e-8);   // test - doesn't seem to help
   rsAssert(d.getDenominatorDegree() == 0);
   return d.getNumerator() / d.getDenominator()[0]; 
 }
@@ -1214,7 +1215,11 @@ matrix and S is and MxN diaogonal matrix (filled up with zeros at the bottom or 
 If M = N = 2, such a decomposition can be visualized as breaking up any linear map into a 
 (possibly improper) rotation followed by a scaling along the coordinate axes followed by another 
 (possibly improper) rotation - where "improper" means that there could be a reflection involved as 
-well. ...write more about interpretation and applications */
+well. N is the dimensionality of the input space, M is the dimensionality of the output space and 
+the rank R of A is the dimensionality of the image of A within the M-dimensional output space.
+
+
+...write more about interpretation and applications */
 template<class R> // R is a real-number datatype
 void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMatrix<R>& V, R tol)
 {
