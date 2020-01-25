@@ -1232,18 +1232,18 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
     for(k = 0; k < n; k++) 
       tmp(k, k) = ATA(k, k) - lambda[i];    // form matrix A^T * A - lambda_i * I
     v_i = getNullSpace(tmp, tol);           // its nullspace is the eigenspace to lambda_i
+    orthonormalizeColumns1(v_i);            // make basis an ONB (use better algo later)
     int d_i = v_i.getNumColumns();          // dimensionality of i-th eigenspace
-
     pasteSubMatrix(V, v_i, 0, i);
-    //for(k = 0; k < d_i; k++)                // factor out into: V.pasteSubMatrix(v_i, 0, i);
-    //  for(j = 0; j < n; j++)                // ...or V.pasteColumns(v_i, i)
-    //    V(j, i+k) = v_i(j, k);
-
     i += d_i;                               // we filled d_i columns of V in this iteration
   }
-  //normalizeColumns(V);                    // this is not enough!
-  orthonormalizeColumns1(V);                // ...we need this! (use better algo later!)
-  // maye it's enough to call orthonormalizeColumns1(vi) inside the loop? 
+  //orthonormalizeColumns1(V);                // ...we need this! (use better algo later!)
+  // maye it's enough to call orthonormalizeColumns1(vi) inside the loop? this should be sufficient
+  // iff the eigenspaces belonging to different eigenvalues are all mutually orthogonal - is this
+  // the case? ...at least, with our tests so far, it seems to be - make more tests and research - 
+  // doing it inside the loop is preferable (less work, less error-accumulation) - but we need to 
+  // ensure that it is actually valid to do it like this! if not, call orthonormalizeColumns1(V)
+  // after the loop and remove orthonormalizeColumns1(v_i) from the loop
 
   // Construct the diagonal matrix S from the singular values sigma_i, which are the square-roots 
   // of the eigenvalues lambda_i:
