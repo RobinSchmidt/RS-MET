@@ -1113,6 +1113,39 @@ rsMatrix<T> getHouseholderReflection(rsMatrix<T>& a)
 // needs test, maybe optimize
 // H_a = I - (2/(a^T * a)) * a * a^T - reflection along vector a (i think, this means reflection 
 // about a plane whose normal is a - figure out - see Karpf, pg 156)
+// if possible, make a function applyHousholderReflection(Matrix& A, const Matrix& a) to apply the 
+// reflection in place
+
+// make a function getGivensRotation
+// Householder reflections and Givens rotations are also called elementary orthogonal 
+// transformations -  they may be usd to produce zeros somewhere (see section 1.3 of:
+// https://www.researchgate.net/publication/277069471_Numerical_Linear_Algebra)
+
+
+template<class T>
+rsMatrix<T> getGivensRotation(int N, int i, int j, T c, T s)
+{
+  rsAssert(i >= 0 && i < N);
+  rsAssert(j >= 0 && j < N);
+  rsMatrix<T> G(N, N);
+  G.setToIdentity();
+  G(i, i) =  c;
+  G(j, j) =  c;
+  G(i, j) =  s;
+  G(j, i) = -s;
+  return G;
+}
+// c = cos(a), s = sin(a) - but we don't take the angle a as paremeter because the c,s values may
+// actually be computed by different formulas, for example using:
+// d = sqrt(xi^2 + xj^2), c = xi/d, s = xj/d
+// will transform a vector x = (...,xi,...,xj,...) with nonzero xi,xj into y = G*x where 
+// yk = xk for k != i,j and yi = c*xi + s*xj, yj = c*xj - s*xi, see pg. 7 of:
+// https://www.researchgate.net/publication/277069471_Numerical_Linear_Algebra
+// so we leave the computation of c,s to client code. what if xi == 0 or xj == 0 - will the formula
+// still work - just may be not as useful?
+// needs test - also, we need a function to apply a Givens rotation in place - in practice, it's 
+// silly to actually create the whole matrix - this is just for prototyping
+
 
 
 template<class T>
