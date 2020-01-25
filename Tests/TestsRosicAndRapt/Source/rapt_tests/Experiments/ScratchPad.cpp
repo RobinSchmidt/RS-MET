@@ -1193,7 +1193,7 @@ void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
 
 /** Patses submatrix S into matrix A starting at row-index iStart and column-index jStart. */
 template<class T>
-void pasteSubMatrix(rsMatrix<T>& A, const rsMatrix<T>& S, int iStart, int jStart)
+void pasteSubMatrix(rsMatrixView<T>& A, const rsMatrixView<T>& S, int iStart, int jStart)
 {
   rsAssert(A.getNumRows()    >= S.getNumRows()    + iStart);
   rsAssert(A.getNumColumns() >= S.getNumColumns() + jStart);
@@ -1201,7 +1201,7 @@ void pasteSubMatrix(rsMatrix<T>& A, const rsMatrix<T>& S, int iStart, int jStart
     for(int j = 0; j < S.getNumColumns(); j++)
       A(iStart + i, jStart + j) = S(i, j);
 }
-
+// make member function of rsMatrixView so it may be called like A.pasteSubMatrix(S,..)
 
 template<class R> // R is a real-number datatype
 void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMatrix<R>& V, R tol)
@@ -1269,15 +1269,12 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   if(r < m)
   {
     rsMatrix<R> Uo = getOrthogonalComplement(U, tol);
-    // U.pasteSubMatrix(Uo, 0, r); // or r+1?
-
-
+    pasteSubMatrix(U, Uo, 0, r); // or r+1? -> nope! triggers assert - r seems correct
     //rsError("not yet implemented");
     // U now contains only r basis vectors for R^m - we need to fill it up with m-r more basis 
     // vectors (presumably taken from the orthogoanly complement of the r vectors that already 
     // are in U?)
   }
-
 
   // in this video here, he says, that U can also be computed as the matrix of eigenvectors of 
   // A * A^T:
