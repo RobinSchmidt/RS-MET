@@ -31,13 +31,20 @@ public:
   rsRationalFunction() {}
 
   rsRationalFunction(
-    const std::vector<T>& numeratorCoeffs, const std::vector<T>& denominatorCoeffs)
-    : num(numeratorCoeffs), den(denominatorCoeffs)
+    const std::vector<T>& numeratorCoeffs, const std::vector<T>& denominatorCoeffs
+    //,const T& reductionTolerance = T(0) 
+  )
+    : num(numeratorCoeffs), den(denominatorCoeffs)//, tol(reductionTolerance)
   {
 
   }
 
-  rsRationalFunction(const T& number) : num(number), den(T(1)) { }
+  rsRationalFunction(const T& number/*, const T reductionTolerance = T(0)*/) 
+    : num(number), den(T(1))//, tol(reductionTolerance)
+  { 
+  
+  }
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -237,6 +244,7 @@ public:
 protected:
 
   rsPolynomial<T> num, den;  // numerator and denominator polynomials
+  T tol = T(0);              // tolerance for reduction in the arithmetic operators
 
 };
 

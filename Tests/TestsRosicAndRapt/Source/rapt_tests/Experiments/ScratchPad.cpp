@@ -533,7 +533,10 @@ rsMatrix<T> getColumnSpace(rsMatrix<T> A, T tol)
 The basis is not orthogonal or normalized. If the nullspace contains only the zero vector, an 
 empty matrix is returned. This function returns wrong results when there are leading columns of 
 zeros in the row-echelon form of A - this can be tested with matrices that are already in this 
-form (in which case LA::makeTriangularLA::makeTriangular will do nothing and return 0) */
+form (in which case LA::makeTriangularLA::makeTriangular will do nothing and return 0). 
+
+...soo i think, this means that this function can be used safely for regular matrices but for 
+singular ones, it may or may not fail? ...or will it always fail for singluar matrices? */
 template<class T>
 rsMatrix<T> getNullSpaceTailParams(rsMatrix<T> A, T tol)
 {
@@ -1118,7 +1121,9 @@ rsMatrix<T> getHouseholderReflection(rsMatrix<T>& a)
 // H_a = I - (2/(a^T * a)) * a * a^T - reflection along vector a (i think, this means reflection 
 // about a plane whose normal is a - figure out - see Karpf, pg 156)
 // if possible, make a function applyHousholderReflection(Matrix& A, const Matrix& a) to apply the 
-// reflection in place
+// reflection in place - maybe it should apply the reflection simultaneously to two matrices - in 
+// algorithms such as the QR-algo, we need to apply it to matrix R but also keep track of what we 
+// have done in matrix Q - matrix Q accumulates the steps taken
 
 // make a function getGivensRotation
 // Householder reflections and Givens rotations are also called elementary orthogonal 

@@ -169,6 +169,10 @@ public:
   /** Copies the data of one array into another one, converting the datatype, if necessarry. */
   template <class T>
   static inline void copy(const T *source, T *destination, const int length);
+  // todo: maybe make a function "move" that allows for overlap between src and dst - can be 
+  // implemented like: if(src < dst) copyBackward(src,dst,N) else copyForward(src,dst,N) where the
+  // two copy functions traverse the source array from front to back or the other way around
+
 
   // old version:
   /** Copies the data of one array into another one. */
