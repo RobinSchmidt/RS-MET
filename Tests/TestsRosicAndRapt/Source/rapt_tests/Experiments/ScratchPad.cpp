@@ -145,23 +145,24 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
   using RatFunc = RAPT::rsRationalFunction<T>;
   using Matrix  = RAPT::rsMatrix<RatFunc>;
 
-  T tol = 1.e-12;  // make parameter
+  //T tol = 1.e-12;  // make parameter
+  T tol = T(0);  // make parameter
 
   // Create matrix B = A - x*I as matrix of rational functions:
   Matrix B(A.getNumRows(), A.getNumColumns());
   for(int i = 0; i < B.getNumRows(); ++i)
     for(int j = 0; j < B.getNumColumns(); ++j)
       if(i == j)
-        B(i, j) = RatFunc({A(i, j), -1}, {1});  // function (A(i, j) - x) / 1 on the diagonal
+        B(i, j) = RatFunc({A(i, j), -1}, {1}, tol);  // function (A(i, j) - x) / 1 on the diagonal
       else
-        B(i, j) = RatFunc({A(i, j)},     {1});  // constant function A(i,j) / 1 off the diagonal
+        B(i, j) = RatFunc({A(i, j)},     {1}, tol);  // constant function A(i,j) / 1 off the diagonal
 
   // Create a dummy right-hand-side (todo: allow function to be called without rhs) - maybe
   // make an LU decomposition function that fills an array of swaps at each index, the number says
   // with which row this row has to be swapped
   Matrix R(A.getNumRows(), 1);
   for(int i = 0; i < R.getNumRows(); ++i)
-    R(i, 0) = RatFunc({ T(1) }, { T(1) });
+    R(i, 0) = RatFunc({ T(1) }, { T(1) }, tol);
 
   // compute row echelon form of B:
   //RAPT::rsLinearAlgebraNew::makeTriangularNoPivot(B, R);

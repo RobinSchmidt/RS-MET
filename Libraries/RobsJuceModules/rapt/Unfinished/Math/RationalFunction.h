@@ -39,11 +39,26 @@ public:
 
   }
 
+  rsRationalFunction(const T& number) : num(number), den(T(1))
+  { 
+
+  }
+
+
+  /*
   rsRationalFunction(const T& number, const T& reductionTolerance = T(0)) 
     : num(number), den(T(1)), tol(reductionTolerance)
   { 
 
   }
+  */
+  // get rid of this constructor - when calling it like
+  // r = rsRationalFunction<double>({1}, {1});  we don't get the constant "1" function but one with
+  // a tolerance of 1 - the pattern matching does not work as one might want or expect
+  // ...but damn - we need a constructor that takes an int - it gets called, for example, in 
+  // rsMatrix::getDiagonalProduct - but this construtor cannot take an optional tolerance - that
+  // messes up the pattern matching that decides which constructor is called (and which implicit 
+  // conversions are made)
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
