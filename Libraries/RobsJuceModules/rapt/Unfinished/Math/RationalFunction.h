@@ -31,21 +31,29 @@ public:
   rsRationalFunction() {}
 
   rsRationalFunction(
-    const std::vector<T>& numeratorCoeffs, const std::vector<T>& denominatorCoeffs
-    //,const T& reductionTolerance = T(0) 
-  )
-    : num(numeratorCoeffs), den(denominatorCoeffs)//, tol(reductionTolerance)
+    const std::vector<T>& numeratorCoeffs, 
+    const std::vector<T>& denominatorCoeffs,
+    const T& reductionTolerance = T(0) )
+    : num(numeratorCoeffs), den(denominatorCoeffs), tol(reductionTolerance)
   {
 
   }
 
-  rsRationalFunction(const T& number/*, const T reductionTolerance = T(0)*/) 
-    : num(number), den(T(1))//, tol(reductionTolerance)
+
+
+  rsRationalFunction(const T& number)
+    : num(number), den(T(1))
   { 
   
   }
 
+  /*
+  rsRationalFunction(const T& number, const T& reductionTolerance) 
+    : num(number), den(T(1)), tol(reductionTolerance)
+  { 
 
+  }
+  */
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
