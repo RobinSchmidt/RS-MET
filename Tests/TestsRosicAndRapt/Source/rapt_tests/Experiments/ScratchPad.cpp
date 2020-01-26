@@ -145,6 +145,8 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
   using RatFunc = RAPT::rsRationalFunction<T>;
   using Matrix  = RAPT::rsMatrix<RatFunc>;
 
+  T tol = 1.e-12;  // make parameter
+
   // Create matrix B = A - x*I as matrix of rational functions:
   Matrix B(A.getNumRows(), A.getNumColumns());
   for(int i = 0; i < B.getNumRows(); ++i)
@@ -159,7 +161,7 @@ RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
   // with which row this row has to be swapped
   Matrix R(A.getNumRows(), 1);
   for(int i = 0; i < R.getNumRows(); ++i)
-    R(i, 0) = RatFunc({ 1 }, { 1 });
+    R(i, 0) = RatFunc({ T(1) }, { T(1) });
 
   // compute row echelon form of B:
   //RAPT::rsLinearAlgebraNew::makeTriangularNoPivot(B, R);

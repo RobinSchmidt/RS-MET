@@ -39,21 +39,11 @@ public:
 
   }
 
-
-
-  rsRationalFunction(const T& number)
-    : num(number), den(T(1))
-  { 
-  
-  }
-
-  /*
-  rsRationalFunction(const T& number, const T& reductionTolerance) 
+  rsRationalFunction(const T& number, const T& reductionTolerance = T(0)) 
     : num(number), den(T(1)), tol(reductionTolerance)
   { 
 
   }
-  */
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
