@@ -124,6 +124,9 @@ T rsAbsSquared(const T& x)
 }
 */
 
+
+
+
 /** Returns true, iff "left" has greater absolute value than "right" */
 template <class T>
 bool rsGreaterAbs(const T& left, const T& right)
@@ -168,7 +171,17 @@ bool rsLessOrEqual(const T& left, const T& right)
   return left <= right;
 }
 
-
+/** Returns the biggest of the two values x and y where "biggest" means: has largest absolute 
+value. (...could also be called rsBigger, but "biggest" may generalized to more than two values 
+later and bigger may suggest something else) */
+template <class T>
+T rsBiggest(const T& x, const T& y)
+{
+  if( rsGreaterAbs(x, y) )
+    return x;
+  else
+    return y;
+}
 
 /*
 template <class T>

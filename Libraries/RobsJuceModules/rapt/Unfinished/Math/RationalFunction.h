@@ -93,7 +93,9 @@ public:
   rsRationalFunction<T> operator+(const rsRationalFunction<T>& q) const
   {
     rsRationalFunction<T> r;
-    ratAdd(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, r.num.coeffs, r.den.coeffs);
+    ratAdd(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, r.num.coeffs, r.den.coeffs, 
+      rsBiggest(tol, q.tol)); 
+    //ratAdd(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, r.num.coeffs, r.den.coeffs);
     return r;
   }
 
