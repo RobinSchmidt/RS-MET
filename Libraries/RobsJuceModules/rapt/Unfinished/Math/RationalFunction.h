@@ -104,7 +104,7 @@ public:
   {
     rsRationalFunction<T> r;
     ratAdd(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, r.num.coeffs, r.den.coeffs, 
-      T(0), T(1), T(-1));
+      rsBiggest(tol, q.tol), T(1), T(-1));
     return r;
   }
 
@@ -112,7 +112,8 @@ public:
   rsRationalFunction<T> operator*(const rsRationalFunction<T>& q) const
   {
     rsRationalFunction<T> r;
-    ratMul(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, r.num.coeffs, r.den.coeffs);
+    ratMul(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, r.num.coeffs, r.den.coeffs, 
+      rsBiggest(tol, q.tol));
     return r;
   }
 
@@ -120,7 +121,8 @@ public:
   rsRationalFunction<T> operator/(const rsRationalFunction<T>& q) const
   {
     rsRationalFunction<T> r;
-    ratDiv(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, r.num.coeffs, r.den.coeffs);
+    ratDiv(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, r.num.coeffs, r.den.coeffs, 
+      rsBiggest(tol, q.tol));
     return r;
     // implement conversion operator in rsPolynomial to get rid of accessing coeffs
   }
@@ -128,14 +130,16 @@ public:
   /** Adds another rational function to this one. */
   rsRationalFunction<T>& operator+=(const rsRationalFunction<T>& q)
   { 
-    ratAdd(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, num.coeffs, den.coeffs);
+    ratAdd(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, num.coeffs, den.coeffs, 
+      rsBiggest(tol, q.tol));
     return *this;
   }
 
   /** Multiplies this rational function by another one. */
   rsRationalFunction<T>& operator*=(const rsRationalFunction<T>& q)
   { 
-    ratMul(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, num.coeffs, den.coeffs);
+    ratMul(num.coeffs, den.coeffs, q.num.coeffs, q.den.coeffs, num.coeffs, den.coeffs, 
+      rsBiggest(tol, q.tol));
     return *this;
   }
 
@@ -153,7 +157,7 @@ public:
   {
     rsRationalFunction<T> r;
     ratNest(inner.num.coeffs, inner.den.coeffs, num.coeffs, den.coeffs, 
-      r.num.coeffs, r.den.coeffs);
+      r.num.coeffs, r.den.coeffs, rsBiggest(tol, inner.tol));
     return r;
   }
 

@@ -25,7 +25,7 @@ void characteristicPolynomial()
   // A = |-4  6|
   //     |-3  5|
   Matrix A(2, 2, {-4,6, -3,5});
-  Poly p = getCharacteristicPolynomial(A);
+  Poly p = getCharacteristicPolynomial(A, 0.0);
   // this is example 39.1 in Karpfinger
 
   // The matrix plugged into its characteristic polynomial as argument should yield the zero 
@@ -417,7 +417,7 @@ bool testSigularValueDecomp()
 
 
 
-  /*
+  
   // this does not yet work:
   Matrix A, U, S, V;  // the original matrices
   Matrix a, u, s, v;  // the computed matrices
@@ -443,7 +443,7 @@ bool testSigularValueDecomp()
   // ..maybe try to use matrices with integer elements - but how to we produce
   // orthogonal matrices with integer elements - if we use random values and Gram-Schmidt, the 
   // elements will often be irrational due to the sqrt in the normalization
-  */
+  
 
 
 

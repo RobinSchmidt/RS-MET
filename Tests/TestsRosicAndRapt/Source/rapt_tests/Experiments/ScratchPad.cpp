@@ -140,13 +140,14 @@ void rowEchelon(rsMatrixView<T>& A, T tol)
 
 
 template<class T>
-RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A)
+RAPT::rsPolynomial<T> getCharacteristicPolynomial(const rsMatrixView<T>& A, T tol)
 {
   using RatFunc = RAPT::rsRationalFunction<T>;
   using Matrix  = RAPT::rsMatrix<RatFunc>;
 
+  //T tol = 1.e-8;  // make parameter
   //T tol = 1.e-12;  // make parameter
-  T tol = T(0);  // make parameter
+  //T tol = T(0);  // make parameter
 
   // Create matrix B = A - x*I as matrix of rational functions:
   Matrix B(A.getNumRows(), A.getNumColumns());
@@ -290,9 +291,9 @@ vector<complex<T>> getPolynomialRoots(const RAPT::rsPolynomial<complex<T>>& p)
 
 
 template<class R>   // R is a real-number datatype (float, double, etc.)
-vector<complex<R>> getEigenvalues(const rsMatrixView<R>& A)
+vector<complex<R>> getEigenvalues(const rsMatrixView<R>& A, R tol)
 {
-  RAPT::rsPolynomial<R> p = getCharacteristicPolynomial(A);
+  RAPT::rsPolynomial<R> p = getCharacteristicPolynomial(A, tol);
   return getPolynomialRoots(p);
 }
 
@@ -309,9 +310,9 @@ std::vector<R> getRealParts(const std::vector<std::complex<R>>& v)
 /** Returns the real parts of the eigenvalues of matrix A. This function may make sense when you 
 know that the eigenvalues are real anyway, because - for example - A is symmetric. */
 template<class R>   // R is a real-number datatype (float, double, etc.)
-std::vector<R> getEigenvaluesReal(const rsMatrixView<R>& A)
+std::vector<R> getEigenvaluesReal(const rsMatrixView<R>& A, R tol)
 {
-  std::vector<std::complex<R>> evc = getEigenvalues(A); // complex eigenvalues
+  std::vector<std::complex<R>> evc = getEigenvalues(A, tol); // complex eigenvalues
   // maybe we should assert that the imainary parts of evc are all zero
   return getRealParts(evc);
 }
@@ -921,7 +922,7 @@ template<class T>
 std::vector<rsEigenSpace<T>> getEigenSpaces(rsMatrix<std::complex<T>> A, T tol)
 {
   using Complex = std::complex<T>;
-  rsPolynomial<Complex> p = getCharacteristicPolynomial(A);
+  rsPolynomial<Complex> p = getCharacteristicPolynomial(A, Complex(tol));
   std::vector<rsOccurrence<Complex>> eigenValues = getRootsWithMultiplicities(p, tol);
   int numRoots = (int) eigenValues.size();
   std::vector<rsEigenSpace<T>> eigenSpaces(numRoots);
@@ -1258,12 +1259,12 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
 
   // Find eigenvalues of A^T * A (they are all non-negative), sort them in descending order and 
   // figure out r, the number of nonzero eigenvalues (which is also the rank of A):
-  rsMatrix<R>    ATA    = A.getTranspose() * A;     // A^T * A is an n-by-n matrix
-  std::vector<R> lambda = getEigenvaluesReal(ATA);  // eigenvalues of A^T * A, lambda_i >= 0
-  rsAssert((int) lambda.size() == n);               // sanity check for debug
-  rsHeapSort(&lambda[0], n, rsGreater);             // sort descending
-  int r = 0;                                        // rank of A, dimensionality of image under A
-  while(r < n && lambda[r] > tol)                   // figure out rank r of A
+  rsMatrix<R>    ATA    = A.getTranspose() * A;          // A^T * A is an n-by-n matrix
+  std::vector<R> lambda = getEigenvaluesReal(ATA, tol);  // eigenvalues of A^T * A, lambda_i >= 0
+  rsAssert((int) lambda.size() == n);                    // sanity check for debug
+  rsHeapSort(&lambda[0], n, rsGreater);                  // sort descending
+  int r = 0;                                             // rank of A, dimensionality of image under A
+  while(r < n && lambda[r] > tol)                        // figure out rank r of A
     r++;
 
   // For each eigenvalue lambda_i, compute the eigenspace. From those eigenspaces, construct the 
