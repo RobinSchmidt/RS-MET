@@ -488,13 +488,34 @@ void pixelCoverage()
   int dummy = 0;
 }
 
+// idea for contour drawing:
+// -input: image the function values, array of levels
+// -output: image with the level lines / contours
+//
+
+rsImageF getCountours(const rsImageF& z, const std::vector<float> levels)
+{
+  rsImageF c(z.getWidth(), z.getHeight());
+
+  // loop through the pixels in z, for each pixel, 
+  // check if 
+  // compute:
+  // min = std::min( z(i,j), z(i,j+1), z(i+1,j), z(i+1,j+1) )
+  // max = std::max( z(i,j), z(i,j+1), z(i+1,j), z(i+1,j+1) )
+  // if(min < level <= max) -> draw pixel
+  // -for anti-alias, figure out location insidel the pixel where it goes through "level"
+
+
+  return c;
+}
+
 void contours()
 {
   // We plot the 2D function z = f(x,y) = x^2 - y^2 into an image where the height translates
   // to the pixel brightness
 
-  int w = 100;               // width in pixels
-  int h = 100;               // height in pixels
+  int w = 128;               // width in pixels
+  int h = 128;               // height in pixels
   float xMin = -5.f;
   float xMax = +5.f;
   float yMin = -5.f;
@@ -503,7 +524,26 @@ void contours()
 
 
   rsImageF imgFunc(w, h);    // image with function values
-  rsImageF imgCont(w, h);    // image with contours
+
+  //rsImageF imgCont(w, h);    // image with contours
+
+  for(int i = 0; i < w; i++)
+  {
+    for(int j = 0; j < h; j++)
+    {
+      float x = i * (xMax-xMin) / w;
+      float y = j * (yMax-yMin) / h;
+      float z = x*x - y*y; // make this more flexible - use a function
+
+      z /= 25;  // ad-hoc - later normalize as post-process
+
+      imgFunc.setPixelColor(i, j, z);
+    }
+  }
+
+  //imgFunc.normalize();
+
+  rsImageF imgCont = getCountours(imgFunc, {-1, 0, 1}); // image with contours
 
   // todo: 
   // -make a composited image with function values and contours
