@@ -148,6 +148,13 @@ public:
     return data[y*width+x];
   }
 
+
+  inline const TPix& operator()(int x, int y) const
+  {
+    return data[y*width+x];
+  }
+
+
 protected:
 
   /** \name Memory Management */

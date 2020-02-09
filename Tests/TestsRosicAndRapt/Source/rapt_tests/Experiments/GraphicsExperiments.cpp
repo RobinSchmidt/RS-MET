@@ -494,24 +494,44 @@ void pixelCoverage()
 //
 
 
+void drawContour(const rsImageF& z, float level, rsImageF& target)
+{
+  rsImagePainter<float, float, float> painter(&target);
+  // maybe pass this object from outside, also take a color - or maybe the color should be 
+  // part of the state of the painter
 
+  for(int i = 0; i < z.getWidth()-1; i++) {
+    for(int j = 0; j < z.getWidth()-1; j++) {
+      float z00 = z(i,   j  );
+      float z01 = z(i,   j+1);
+      float z10 = z(i+1, j  );
+      float z11 = z(i+1, j+1);
+      float min = rsMin(z00, z01, z10, z11);
+      float max = rsMax(z00, z01, z10, z11);
+      if(min < level && max >= level)
+      {
+        float x = float(i);  // preliminary - we need to figure out subpixel locations
+        float y = float(j);
+        painter.paintDot(x, y, 0.5f);
+      }
+    }
+  }
+
+  // todo: figure out subpixel location and draw anti-aliased
+  // -there's a contour segment that passes through this pixel 
+  // -we approximate it by a line segment
+  // -we draw the pixel a the center of the line segment
+  // ->figure out the line equation in parametric form
+  // ->figure out location for parameter t = 0.5
+}
 
 rsImageF getContours(const rsImageF& z, const std::vector<float> levels)
 {
   rsImageF c(z.getWidth(), z.getHeight());
-
-  // loop through the pixels in z, for each pixel, 
-  // check if 
-  // compute:
-  // min = std::min( z(i,j), z(i,j+1), z(i+1,j), z(i+1,j+1) )
-  // max = std::max( z(i,j), z(i,j+1), z(i+1,j), z(i+1,j+1) )
-  // if(min < level <= max) -> draw pixel
-  // -for anti-alias, figure out location insidel the pixel where it goes through "level"
-
-
+  for(size_t i = 0; i < levels.size(); i++)
+    drawContour(z, levels[i], c);
   return c;
 }
-
 
 void normalize(rsImageF& img)
 {
@@ -521,41 +541,59 @@ void normalize(rsImageF& img)
   float max = rsArrayTools::maxValue(p, N);
   float scl = 1.f / (max-min);
   for(int i = 0; i < N; i++)
-    p[i] = scl * (p[i] + min);
+    p[i] = scl * (p[i] - min);
 }
 // maybe make member
+
+// this *may* be better numerically (less prone to roundoff errors) - needs test
+void normalize2(rsImageF& img)
+{
+  float* p = img.getPixelPointer(0, 0);
+  int N = img.getNumPixels();
+  float min = rsArrayTools::minValue(p, N);
+  for(int i = 0; i < N; i++)
+    p[i] -= min;
+  float max = rsArrayTools::maxValue(p, N);
+  for(int i = 0; i < N; i++)
+    p[i] /= max;
+}
 
 void contours()
 {
   // We plot the 2D function z = f(x,y) = x^2 - y^2 into an image where the height translates
   // to the pixel brightness
 
-  int w = 128;               // width in pixels
-  int h = 128;               // height in pixels
-  float xMin = -5.f;
-  float xMax = +5.f;
-  float yMin = -5.f;
-  float yMax = +5.f;
+  int w = 129;               // width in pixels
+  int h = 129;               // height in pixels
 
+  //w = h = 513;
 
+  float r = 8;
+  float xMin = -r;
+  float xMax = +r;
+  float yMin = -r;
+  float yMax = +r;
 
-  rsImageF imgFunc(w, h);    // image with function values
+  // create image with function values:
+  rsImageF imgFunc(w, h);
+  for(int i = 0; i < w; i++) {
+    for(int j = 0; j < h; j++) {
+      float x = xMin + i * (xMax-xMin) / (w-1);
+      float y = yMin + j * (yMax-yMin) / (h-1);
+      //float z = x*x - y*y;            // make this more flexible - use a lambda function
+      //float z = x*x - y*y + 2*x*y;
 
-  //rsImageF imgCont(w, h);    // image with contours
+      float z = x*sin(y) + y*cos(x) + 0.1*x*y;
 
-  for(int i = 0; i < w; i++)
-  {
-    for(int j = 0; j < h; j++)
-    {
-      float x = xMin + i * (xMax-xMin) / w;  // or (w-1) ?
-      float y = yMin + j * (yMax-yMin) / h;
-      float z = x*x - y*y;            // make this more flexible - use a function
       imgFunc.setPixelColor(i, j, z);
     }
   }
+  normalize2(imgFunc);
 
-  normalize(imgFunc);
-  rsImageF imgCont = getContours(imgFunc, {-1, 0, 1}); // image with contours
+  // create image with contours:
+  std::vector<float> levels = rsRangeLinear(0.f, 1.f, 8);
+  rsImageF imgCont = getContours(imgFunc, levels); 
+
 
   // todo: 
   // -make a composited image with function values and contours
@@ -565,8 +603,9 @@ void contours()
 
   writeScaledImageToFilePPM(imgFunc, "Function.ppm", 3);
   writeScaledImageToFilePPM(imgCont, "Contours.ppm", 3);
-  // there's an artifact at the center-left - maybe it gets above 1 due to roundoff and when 
-  // converted to 0..255, it wraps around to 0?
+  // the right column and bottom row has no countour values - no surprise - the loop only goes up 
+  // to w-1,h-1
+  // maybe use powers of two +1 for the size and cut off bottom-row and right-column aftewards
 }
 
 
