@@ -493,7 +493,10 @@ void pixelCoverage()
 // -output: image with the level lines / contours
 //
 
-rsImageF getCountours(const rsImageF& z, const std::vector<float> levels)
+
+
+
+rsImageF getContours(const rsImageF& z, const std::vector<float> levels)
 {
   rsImageF c(z.getWidth(), z.getHeight());
 
@@ -508,6 +511,19 @@ rsImageF getCountours(const rsImageF& z, const std::vector<float> levels)
 
   return c;
 }
+
+
+void normalize(rsImageF& img)
+{
+  float* p = img.getPixelPointer(0, 0);
+  int N = img.getNumPixels();
+  float min = rsArrayTools::minValue(p, N);
+  float max = rsArrayTools::maxValue(p, N);
+  float scl = 1.f / (max-min);
+  for(int i = 0; i < N; i++)
+    p[i] = scl * (p[i] + min);
+}
+// maybe make member
 
 void contours()
 {
@@ -531,19 +547,15 @@ void contours()
   {
     for(int j = 0; j < h; j++)
     {
-      float x = i * (xMax-xMin) / w;
-      float y = j * (yMax-yMin) / h;
-      float z = x*x - y*y; // make this more flexible - use a function
-
-      z /= 25;  // ad-hoc - later normalize as post-process
-
+      float x = xMin + i * (xMax-xMin) / w;  // or (w-1) ?
+      float y = yMin + j * (yMax-yMin) / h;
+      float z = x*x - y*y;            // make this more flexible - use a function
       imgFunc.setPixelColor(i, j, z);
     }
   }
 
-  //imgFunc.normalize();
-
-  rsImageF imgCont = getCountours(imgFunc, {-1, 0, 1}); // image with contours
+  normalize(imgFunc);
+  rsImageF imgCont = getContours(imgFunc, {-1, 0, 1}); // image with contours
 
   // todo: 
   // -make a composited image with function values and contours
@@ -551,8 +563,10 @@ void contours()
   //  -plot complex functions - real -> red, imag -> green or blue
 
 
-  writeImageToFilePPM(imgFunc, "Function.ppm");
-  writeImageToFilePPM(imgCont, "Contours.ppm");
+  writeScaledImageToFilePPM(imgFunc, "Function.ppm", 3);
+  writeScaledImageToFilePPM(imgCont, "Contours.ppm", 3);
+  // there's an artifact at the center-left - maybe it gets above 1 due to roundoff and when 
+  // converted to 0..255, it wraps around to 0?
 }
 
 
