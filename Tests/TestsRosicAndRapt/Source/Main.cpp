@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
   //determinant();
   //characteristicPolynomial();
   //testSubSpaces();        // todo: move to unit tests
-  testSigularValueDecomp();   // dito
+  //testSigularValueDecomp();   // dito
   //linearIndependence();
   //eigenstuff();
   //linearSolverPrecision();
@@ -193,6 +193,7 @@ int main(int argc, char* argv[])
   //splineArc();
   //triangles();
   //pixelCoverage();
+  contours();
 
 
   // just for fun:

@@ -488,5 +488,33 @@ void pixelCoverage()
   int dummy = 0;
 }
 
+void contours()
+{
+  // We plot the 2D function z = f(x,y) = x^2 - y^2 into an image where the height translates
+  // to the pixel brightness
+
+  int w = 100;               // width in pixels
+  int h = 100;               // height in pixels
+  float xMin = -5.f;
+  float xMax = +5.f;
+  float yMin = -5.f;
+  float yMax = +5.f;
+
+
+
+  rsImageF imgFunc(w, h);    // image with function values
+  rsImageF imgCont(w, h);    // image with contours
+
+  // todo: 
+  // -make a composited image with function values and contours
+  // -maybe use the color-channels to plot more than one function 
+  //  -plot complex functions - real -> red, imag -> green or blue
+
+
+  writeImageToFilePPM(imgFunc, "Function.ppm");
+  writeImageToFilePPM(imgCont, "Contours.ppm");
+}
+
+
 // maybe make animations with
 // http://www.softpedia.com/get/Multimedia/Graphic/Graphic-Others/APNG-Anime-Maker.shtml
