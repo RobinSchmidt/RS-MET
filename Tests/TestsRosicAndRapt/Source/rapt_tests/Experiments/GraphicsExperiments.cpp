@@ -494,6 +494,22 @@ void pixelCoverage()
 //
 
 
+void getContourSubPixelPosition(float z00, float z01, float z10, float z11, float c,
+  float* x, float* y)
+{
+  // average value along pixel borders:
+  float L = (z00 + z01) * 0.5f;  // left
+  float R = (z10 + z11) * 0.5f;  // right
+  float T = (z00 + z10) * 0.5f;  // top
+  float B = (z01 + z11) * 0.5f;  // bottom
+
+  // x-offset is determined by where the level would fall between L and R:
+  *x = ((L+R) * 0.5 - c) / (R-L);  // is that correct? what about div-by-zero
+  // sometimes |x| > 1 - that should not happen - actually it should be always in the 
+  // range 0...1 - so that formula is not yet correct
+
+}
+
 void drawContour(const rsImageF& z, float level, rsImageF& target)
 {
   rsImagePainter<float, float, float> painter(&target);
@@ -508,14 +524,11 @@ void drawContour(const rsImageF& z, float level, rsImageF& target)
       float z11 = z(i+1, j+1);
       float min = rsMin(z00, z01, z10, z11);
       float max = rsMax(z00, z01, z10, z11);
-      if(min < level && max >= level)
-      {
-        float x = float(i);  // preliminary - we need to figure out subpixel locations
-        float y = float(j);
-        painter.paintDot(x, y, 0.5f);
-      }
-    }
-  }
+      if(min < level && max >= level) {
+        float x, y;
+        getContourSubPixelPosition(z00, z01, z10, z11, level, &x, &y); // not yet working
+        x = 0.f; y = 0.f; // preliminary
+        painter.paintDot(float(i) + x, float(j) + y, 0.5f); }}}
 
   // todo: figure out subpixel location and draw anti-aliased
   // -there's a contour segment that passes through this pixel 
@@ -523,6 +536,15 @@ void drawContour(const rsImageF& z, float level, rsImageF& target)
   // -we draw the pixel a the center of the line segment
   // ->figure out the line equation in parametric form
   // ->figure out location for parameter t = 0.5
+
+  // or simpler:
+  // -compute z0 = (z00 + z01) / 2, z1 = (z10 + z11) / 2
+  //  z0 is the average value on the left, z1 on the right
+  // -the x-value/offset is determined by how much this average is above/below the target
+  //  level
+  // -similar for y
+  // -or is it the other way around?
+  // -might be even better than the center of the line 
 }
 
 rsImageF getContours(const rsImageF& z, const std::vector<float> levels)
