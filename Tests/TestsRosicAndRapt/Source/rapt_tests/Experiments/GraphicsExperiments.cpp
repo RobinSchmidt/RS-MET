@@ -553,28 +553,33 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
   // oh - wait - no: z10 should be bottom - or not? no - the first index is the x-coordinate, so 
   // it's right
 
+  int branch = 0;  // for debug
+
   float x0, x1, y0, y1;
-  if((z00 < c && z01 >= c) || (z00 >= c && z01 < c))
+  if((z00 < c && z01 >= c) || (z00 >= c && z01 < c)) // check left border
   {
     // segment goes through left border - we put the first point (x0,y0) there:
     x0 = 0.f;
     y0 = rsLinToLin(c, z00, z01, 0.f, 1.f);
-    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) 
+    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) // check top border
     {
+      branch = 1;
       // segment goes through top border - we put the second point (x1,y1) there:
       x1 = rsLinToLin(c, z00, z10, 0.f, 1.f);
       y1 = 0.f;
     }
     else if((z01 < c && z11 >= c) || (z01 >= c && z11 < c))
     {
+      branch = 2;
       // segment goes through bottom border
       x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
       y1 = 0.f;
     }
     else
     {
+      branch = 3;
       // segment goes through right border (i.e. is horizontalish):
-      x1 = 0.f;
+      x1 = 1.f;
       y1 = rsLinToLin(c, z10, z11, 0.f, 1.f);
     }
   }
@@ -594,12 +599,14 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
 
       if((z10 < c && z11 >= c) || (z10 >= c && z11 < c))
       {
+        branch = 4;
         // segment goes through right border
         x1 = 1.f;
         y1 = rsLinToLin(c, z10, z11, 0.f, 1.f);
       }
       else
       {
+        branch = 5;
         // segment goes through bottom border (is verticalish)
         x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
         y1 = 1.f;
@@ -608,6 +615,7 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
     }
     else
     {
+      branch = 6;
       // segment does not go through top border - so it must go through the bottom and then right
       x0 = rsLinToLin(c, z01, z11, 0.f, 1.f);  // bottom
       y0 = 1.f;
@@ -616,11 +624,21 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
     }
   }
 
+  // test - invert:
+  //x0 = 1-x0; y0 = 1-y0; x1 = 1-x1; y1 = 1-y1; // nope!
+  // putting 1-rsLinToLin everywhere also does not help - it actually makes things worse
+
   // evaluate line equation at midpoint - this gives the center of the segment
   *x = x0 + 0.5f * x1;
   *y = y0 + 0.5f * y1;
+
+  // sanity check - this actually triggers - why?
+  //rsAssert(rsIsInRange(*x, 0.f, 1.f));
+  //rsAssert(rsIsInRange(*y, 0.f, 1.f));
+  // seems to trigger in braches 3..6 - i've not yet seen it in 1 or 2 but didn't check 
+  // exhaustively
 }
-// this is still wrong!
+// this is still wrong! it sometimes p
 
 // optimize the calls to rsLinToLin to get rid of divisions where possible - keep this code as 
 // prototype for unit testing the optimized code
@@ -646,12 +664,9 @@ void drawContour(const rsImageF& z, float level, rsImageF& target)
         //getContourSubPixelPosition1(z00, z01, z10, z11, level, &x, &y); // not yet working
         //getContourSubPixelPosition2(z00, z01, z10, z11, min, max, level, &x, &y);
 
-
         x = 0.f; y = 0.f; // preliminary
         if(antiAlias)
           getContourSubPixelPosition3(z00, z01, z10, z11, level, &x, &y);
-
-
 
         painter.paintDot(float(i) + x, float(j) + y, 0.5f); 
       }

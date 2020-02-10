@@ -121,6 +121,7 @@ inline bool rsIsPowerOfTwo(unsigned int x)
   return false;
 }
 
+/*
 template<class T>
 inline bool rsIsInRange(T x, T min, T max)
 {
@@ -129,6 +130,7 @@ inline bool rsIsInRange(T x, T min, T max)
   else
     return false;
 }
+*/
 
 inline int rsIntAndFracPart(double x, double &frac)
 {

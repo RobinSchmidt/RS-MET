@@ -262,6 +262,15 @@ inline bool rsIsCloseTo(std::complex<T> x, std::complex<T> targetValue, std::com
     return false;
 }
 
+template<class T>
+inline bool rsIsInRange(T x, T min, T max)
+{
+  if(x >= min && x <= max)
+    return true;
+  else
+    return false;
+}
+
 
 template<class T>
 inline T rsLinToExp(T in, T inMin, T inMax, T outMin, T outMax)
