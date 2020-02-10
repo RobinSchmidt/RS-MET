@@ -40,10 +40,14 @@ public:
   void setNeighbourWeightsForSimpleDot(TWgt straight, TWgt diagonal);
 
   /** Switches anti-aliasing on/off. */
-  void setAntiAlias(bool shouldAntiAlias);
+  void setAntiAlias(bool shouldAntiAlias) { antiAlias = shouldAntiAlias; }
+
+  /** Switches on/off the normalization of the norm of the a,b,c,d coeffs that are used for the 
+  bilinear spreading. */
+  void setNormalizeAntiAlias(bool shouldNormalize) { normalize = shouldNormalize; }
 
   /** Switches between using the alpha-mask and the simple dot algorithm. */
-  void setUseAlphaMask(bool shouldUseMask);
+  void setUseAlphaMask(bool shouldUseMask) { useMask = shouldUseMask; }
 
   // todo:
   //inline void setColor(TPix newColor)  { color = newColor;  }
@@ -184,7 +188,7 @@ protected:
   rsAlphaMask<TWgt> *mask; // rename to brush...hmm...or well, an actual brush should have its
                            // own colors - this mask here has only weights
 
-  bool antiAlias, useMask;
+  bool antiAlias = true, useMask = false, normalize = false;
   TWgt straightNeighbourWeight, diagonalNeighbourWeight;
 
 

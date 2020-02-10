@@ -689,6 +689,7 @@ void drawContour(const rsImage<TLvl>& z, TLvl level, rsImage<TPix>& target, TPix
   bool antiAlias)
 {
   rsImagePainter<TPix, TLvl, TLvl> painter(&target);
+  painter.setNormalizeAntiAlias(true);  // much less "screw" effect
   for(int i = 0; i < z.getWidth()-1; i++) {
     for(int j = 0; j < z.getWidth()-1; j++) {
       TLvl z00 = z(i,   j  );
@@ -706,13 +707,15 @@ void drawContour(const rsImage<TLvl>& z, TLvl level, rsImage<TPix>& target, TPix
 // if we do not anti-alias, we need not to call the expensive paintDot and can use the cheaper 
 // painter.plot instead ...i think
 
+// maybe don't loop over all pixels and follow the contours instead - but then there's no guarantee that 
+// nothing is missed
+
 
 template<class TPix, class TLvl>
 void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>& target,
-  TPix fillColor, bool antiAlias = false, TPix loColor = TPix(), TPix hiColor = TPix())
+  TPix fillColor, bool antiAlias = false)
 {
   rsImagePainter<TPix, TLvl, TLvl> painter(&target);
-
   for(int i = 0; i < z.getWidth()-1; i++) {
     for(int j = 0; j < z.getWidth()-1; j++) {
       TLvl z00 = z(i, j);
@@ -721,98 +724,39 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
       TLvl z11 = z(i+1, j+1);
       TLvl min = rsMin(z00, z01, z10, z11);
       TLvl max = rsMax(z00, z01, z10, z11);
-      //if(min > lo && max < hi)    // leaves extra pixels blank (test with circle)
-      //if(min >= lo && max <= hi)  // colors extra pixels in
-      //if(min > lo && max <= hi)   // no etra blank or colored pixels but ugly jaggies
       if(min >= lo && max < hi)     // this seems to be artifact-free
         painter.plot(i, j, fillColor);
-      else
-      {
+      else  {
         // we are either on the contour or totally outside the drawing area
-
-        if(!antiAlias)  // ok - this looks right
-        {
-          if(min < lo && max >= lo)       // on low contour
+        if(!antiAlias)  {                  // ok - this looks right
+          if(min < lo && max >= lo)                      // on low contour
             painter.plot(i, j, fillColor * TPix(0.5));
-          else if(min < hi && max >= hi)  // on hi contour
-            painter.plot(i, j, fillColor * TPix(0.5));
-        }
-        else
-        {
+          else if(min < hi && max >= hi)                 // on hi contour
+            painter.plot(i, j, fillColor * TPix(0.5)); }
+        else {
           TLvl c; // coverage
-          if(min < lo && max >= lo)
-          {
+          if(min < lo && max >= lo) {
             c = contourPixelCoverage(z00, z01, z10, z11, lo);
-            //painter.plot(i, j, TPix(c)*fillColor);
-            painter.plot(i, j, TPix(TLvl(1)-c)*fillColor);
-          }
-          else if(min < hi && max >= hi)
-          {
+            painter.plot(i, j, TPix(TLvl(1)-c)*fillColor); }
+          else if(min < hi && max >= hi) {
             c = contourPixelCoverage(z00, z01, z10, z11, hi);
-            painter.plot(i, j, TPix(c)*fillColor);
-            //painter.plot(i, j, TPix(TLvl(1)-c)*fillColor);  // hi-contours use inverted weights
-          }
-          // or do we need to use hiColor/lowColor?
-
-        }
-
-
-      }
-    }
-  }
-
-
-  /*
-  // this does not seem to work:
-  if(antiAlias) 
-  {
-    //drawContour(z, lo, target, loColor, true);
-    //drawContour(z, hi, target, hiColor, true); // they seem to be too dark
-
-    drawContour(z, hi, target, hiColor, true); // they seem to be too dark
-
-    //drawContour(z, lo, target, 0.5f * fillColor, true);
-    //drawContour(z, hi, target, 0.5f * fillColor, true);
-  }
-  else
-  {
-    drawContour(z, lo, target, 0.5f * fillColor, false);
-    drawContour(z, hi, target, 0.5f * fillColor, false);
-    // the factor 0.5 is appropriate because each contour is drawn twice - once as inner and once
-    // as outer contour
-  }
-  */
-  // maybe integrate this into the main loop - extend the if-statement, add else-if branches for 
-  // the cases: on inner contour, on outer contour
-  // maybe for anti-aliasing, the color of the pixel should be determined by the average value of
-  // the 4 z-values? maybe by how far away it is from the level ..or maybe by where the average 
-  // level falls in between lo and hi ...no: we have to compute the area of the pixel that is 
-  // covered by the contour segment!! maybe factor out the computation of the line-segment coeffs
-  // x0,y0,x1,y1
-
-  // maybe draw only the outer boundary
-
-  // but why only draw the low contour - maybe we should draw both with 0.5 times the 
-  // contourColor - no: we need two contour-colors - one for the low and one for the high 
-  // contour - try it with 3 grayscale values ...so we need loColor, hiColor
-
+            painter.plot(i, j, TPix(c)*fillColor);  }}}}}
 }
-// can we refactor to get rid of the duplication? maybe a function isOnContour(i, j) or 
-// getMinMax(i, j, min, max)
-// how to anti-alias this? maybe if we are on a contour, we should choose a color in between 0 
-// and color - determined again by position and length of the contour segment?
-// wait - no - being in not in between the two contours does not mean that it's on the contour! 
-// duh! it may be between two other contours! ..instead: if it's not *strictly* in between the two 
-// contours, we need to check if it's on one of the two contours - and if it is, draw the contour
-// but mayb we can re-use drawContour for this - draw all contours with a color given by the blend 
-// between two of the level colors
+// if instead of using:
+//   if(min >= lo && max < hi) 
+// we would use
+//   if(min > lo && max < hi)   -> leaves extra pixels blank (test with circle)
+//   if(min >= lo && max <= hi) -> colors extra pixels in
+//   if(min > lo && max <= hi)  -> no etra blank or colored pixels but ugly jaggies
+// so the chosen variant seems best. this can be tested using the circles (and maybe commenting)
+// out the code that handles the contour lines - i think it was set to somewhere around 11 or 12 
+// levels...not sure anymore
 
 template<class TPix, class TWgt>
 TPix blend(TPix c1, TPix c2, TWgt w)
 {
   return TPix((TWgt(1)-w))*c1 + TPix(w)*c2;
 }
-
 
 template<class TLvl, class TPix>
 rsImage<TPix> getContours(const rsImage<TPix>& z, const std::vector<TLvl>& levels, 
@@ -835,28 +779,12 @@ rsImage<TPix> getBinFills(
   bool antiAlias)
 {
   rsImageF imgBins(z.getWidth(), z.getHeight());  // fills
-
   size_t j = 0; // color index
   size_t nc = colors.size();
-  for(size_t i = 0; i < levels.size()-1; i++)
-  {
-    TPix cF = colors[ j       % nc];
-    TPix cL = colors[(j-1+nc) % nc];
-    TPix cH = colors[(j+1   ) % nc];
-
-    //TPix cC = 0.f;
-    //TPix cC = TPix(0.5) * (cF + colors[(j+1) % nc]);  // seems to dark
-    //TPix cC = (cF + colors[(j+1) % nc]);
-
-    //fillBetweenContours(z, levels[i], levels[i+1], imgBins, cF, antiAlias, .5f * cL, .5f * cH);
-    fillBetweenContours(z, levels[i], levels[i+1], imgBins, cF, antiAlias, cL, cH);
-    j++;
-  }
-
-
+  for(size_t i = 0; i < levels.size()-1; i++) {
+    fillBetweenContours(z, levels[i], levels[i+1], imgBins, colors[j % nc], antiAlias);
+    j++; }
   return imgBins;
-
-  int dummy = 0;
 }
 
 void normalize(rsImageF& img)
@@ -934,18 +862,14 @@ void contours()
   int w = 129;               // width in pixels
   int h = 129;               // height in pixels
 
-  //w = h = 513;
+  w = h = 513;
+  //w = h = 1025;
 
   rsAssert(testContourSubPixelStuff());
 
 
-
-
-  float r = 15;
-  int numLevels = 13;
-
-  //numLevels = 6;  // test numLevels == numFillColors-1
-  numLevels = 11;
+  float r = 18;
+  int numLevels = 20;
 
   float xMin = -r;
   float xMax = +r;
@@ -962,7 +886,8 @@ void contours()
       //float z = x*x - y*y + 2*x*y;
       //float z = x*sin(y) + y*cos(x) + 0.1*x*y; // complicated function - gets more complicated far from middle
       //float z = x*sin(y) + y*cos(x) + 0.1*x*y + 0.1*x*x - 0.1*y*y; 
-      float z = x*x + y*y;  // circles
+      float z = x*sin(y) + y*cos(x) + 0.1*x*y + 0.1*x*x - 0.1*x - 0.1*y*y + 0.1*y; 
+      //float z = x*x + y*y;  // circles
       imgFunc.setPixelColor(i, j, z);
     }
   }
@@ -981,13 +906,23 @@ void contours()
   //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, true, 
   //  {0.125f, 0.25f, 0.375f, 0.5f, 0.625, 0.75f, 0.875});
 
+  //rsImageF imgFills = getBinFills(imgFunc, 
+  //  levels,
+  //  //{ 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f },  // bin boundaries, levels
+  //  { 0.125f, 0.25f, 0.375f, 0.5f, 0.625f, 0.75f, 0.875f },               // colors
+  //  false);
+
+  size_t numColors = levels.size() + 1;
+
+  //numColors = 2;
+
+  std::vector<float> colors = rsRangeLinear(0.f, 1.f, numColors);
+
   rsImageF imgFills = getBinFills(imgFunc, 
-    levels,
-    //{ 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f },  // bin boundaries, levels
-    { 0.125f, 0.25f, 0.375f, 0.5f, 0.625f, 0.75f, 0.875f },               // colors
+    levels, 
+    colors,
+    //{ 0.25f, 0.5f, 0.75f },               // colors
     true);
-
-
 
   // with anti-aliasing, we need to use about twice as much brightness to get the same visual 
   // brightness
@@ -1006,9 +941,9 @@ void contours()
   //  very inefficient - can this be optimized into a reasonable implicit curve drawing algo?
 
 
-  writeScaledImageToFilePPM(imgFunc,  "Function.ppm", 4);
-  writeScaledImageToFilePPM(imgCont,  "Contours.ppm", 4);
-  writeScaledImageToFilePPM(imgFills, "BinFills.ppm", 4);
+  writeScaledImageToFilePPM(imgFunc,  "Function.ppm", 1);
+  writeScaledImageToFilePPM(imgCont,  "Contours.ppm", 1);
+  writeScaledImageToFilePPM(imgFills, "BinFills.ppm", 1);
   // the right column and bottom row has no countour values - no surprise - the loop only goes up 
   // to w-1,h-1
   // maybe use powers of two +1 for the size and cut off bottom-row and right-column aftewards

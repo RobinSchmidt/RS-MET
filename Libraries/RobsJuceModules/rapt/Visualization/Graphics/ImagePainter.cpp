@@ -1,10 +1,9 @@
 template<class TPix, class TWgt, class TCor>
 rsImagePainter<TPix, TWgt, TCor>::rsImagePainter(rsImage<TPix> *imageToPaintOn, rsAlphaMask<TWgt> *maskToUse)
 {
-  antiAlias = true;
-  useMask = false;
+  //antiAlias = true;
+  //useMask = false;
   setNeighbourWeightsForSimpleDot(0, 0);
-
   setImageToPaintOn(imageToPaintOn);
   setAlphaMaskForDot(maskToUse);
 }
@@ -40,6 +39,7 @@ void rsImagePainter<TPix, TWgt, TCor>::setNeighbourWeightsForSimpleDot(TWgt stra
   diagonalNeighbourWeight = diagonal;
 }
 
+/*
 template<class TPix, class TWgt, class TCor>
 void rsImagePainter<TPix, TWgt, TCor>::setAntiAlias(bool shouldAntiAlias)
 {
@@ -51,6 +51,7 @@ void rsImagePainter<TPix, TWgt, TCor>::setUseAlphaMask(bool shouldUseMask)
 {
   useMask = shouldUseMask;
 }
+*/
 
 // painting
 
@@ -131,20 +132,19 @@ void rsImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, T
   // formulas have been obtained by the condition that a+b+c+d = 1...right? but maybe their square 
   // should sum to unity? areas with larger spreading appear darker
 
-  // compute values to accumulate into the 4 pixels:
-  a *= color;  // (xi,   yi)
-  b *= color;  // (xi+1, yi)
-  c *= color;  // (xi,   yi+1)
-  d *= color;  // (xi+1, yi+1)
+  // optionally normalize make the sum of squares of a,b,c,d to a constant - the factor 0.5 makes 
+  // it visually similar to no normalization:
+  if(normalize) {
+    TPix s = TPix(0.5) / sqrt(a*a + b*b + c*c + d*d);
+    a *= s; b *= s; c *= s; d *= s; }
 
-  // accumulate values into the pixels:
-  if(xi >= 0 && xi < wi-1 && yi >= 0 && yi < hi-1)
-  {
+  // compute final coeffs and accumulate values into the 4 pixels:
+  a *= color; b *= color; c *= color; d *= color;
+  if(xi >= 0 && xi < wi-1 && yi >= 0 && yi < hi-1) {
     plot(xi,   yi,   a);
     plot(xi+1, yi,   b);
     plot(xi,   yi+1, c);
-    plot(xi+1, yi+1, d);
-  }
+    plot(xi+1, yi+1, d); }
 
   // apply thickness:
   if(weightStraight > 0.f && xi >= 1 && xi < wi-2 && yi >= 1 && yi < hi-2)
