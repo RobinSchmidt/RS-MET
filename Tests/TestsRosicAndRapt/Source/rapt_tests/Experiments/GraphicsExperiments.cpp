@@ -550,105 +550,72 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
   // z00--z10
   //  |    |
   // z01--z11
-  // oh - wait - no: z10 should be bottom - or not? no - the first index is the x-coordinate, so 
-  // it's right
-
-  int branch = 0;  // for debug
-
-  float min = 0.f;  // for some tests to switch between 0 and -1 - nope, 0 seem right
 
   float x0, x1, y0, y1;
-  if((z00 < c && z01 >= c) || (z00 >= c && z01 < c)) // check left border
-  {
+  if((z00 < c && z01 >= c) || (z00 >= c && z01 < c)) {  // check left border
     // segment goes through left border - we put the first point (x0,y0) there:
     x0 = 0.f;
-    y0 = rsLinToLin(c, z00, z01, min, 1.f);
-    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) // check top border
-    {
-      branch = 1;
-      // segment goes through top border - we put the second point (x1,y1) there:
-      x1 = rsLinToLin(c, z00, z10, min, 1.f);
-      y1 = 0.f;
-    }
-    else if((z01 < c && z11 >= c) || (z01 >= c && z11 < c))
-    {
-      branch = 2;
+    y0 = rsLinToLin(c, z00, z01, 0.f, 1.f);
+    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) { // check top border
+      // segment goes through top border - put the second point (x1,y1) there:
+      x1 = rsLinToLin(c, z00, z10, 0.f, 1.f);
+      y1 = 0.f; }
+    else if((z01 < c && z11 >= c) || (z01 >= c && z11 < c)) {
       // segment goes through bottom border
-      x1 = rsLinToLin(c, z01, z11, min, 1.f);
-      y1 = 1.f;
-    }
-    else
-    {
-      branch = 3;
+      x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
+      y1 = 1.f; }
+    else {
       // segment goes through right border (i.e. is horizontalish):
       x1 = 1.f;
-      y1 = rsLinToLin(c, z10, z11, min, 1.f);
-    }
+      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }
   }
   else
   {
-    // z00--z10
-    //  |    |
-    // z01--z11
-
     // segment does not go through left border - so it must start either at top or bottom border
-
     if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) // check top border
     {
       // segment goes through the top border
-      x0 = rsLinToLin(c, z00, z10, min, 1.f);
+      x0 = rsLinToLin(c, z00, z10, 0.f, 1.f);
       y0 = 0.f;
 
       if((z10 < c && z11 >= c) || (z10 >= c && z11 < c))
       {
-        branch = 4;
         // segment goes through right border
         x1 = 1.f;
-        y1 = rsLinToLin(c, z10, z11, min, 1.f);
+        y1 = rsLinToLin(c, z10, z11, 0.f, 1.f);
       }
       else
       {
-        branch = 5;
         // segment goes through bottom border (is verticalish)
-        x1 = rsLinToLin(c, z01, z11, min, 1.f);
+        x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
         y1 = 1.f;
       }
 
     }
     else
     {
-      branch = 6;
       // segment does not go through top border - so it must go through the bottom and then right
-      x0 = rsLinToLin(c, z01, z11, min, 1.f);  // bottom
+      x0 = rsLinToLin(c, z01, z11, 0.f, 1.f);  // bottom
       y0 = 1.f;
       x1 = 1.f;
-      y1 = rsLinToLin(c, z10, z11, min, 1.f);  // right
+      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f);  // right
     }
-
-    // test/debug:
-    //x0 = x1 = y0 = y1 = 0;
   }
-
-  // test - invert:
-  //x0 = 1-x0; y0 = 1-y0; x1 = 1-x1; y1 = 1-y1; // nope!
-  // putting 1-rsLinToLin everywhere also does not help - it actually makes things worse
 
   // evaluate line equation at midpoint - this gives the center of the segment
   float dx = (x1-x0);
   float dy = (y1-y0);
   *x = x0 + 0.5f * dx;
   *y = y0 + 0.5f * dy;
-
-
   if(weight != nullptr)
     *weight = sqrt(dx*dx + dy*dy) / sqrt(2.f);  // full weight only for diagonals
     // optimize
 
 
-  // sanity check - this actually triggers - why?
-  string err = to_string(branch);
-  rsAssert(rsIsInRange(*x, min, 1.f), err.c_str());
-  rsAssert(rsIsInRange(*y, min, 1.f), err.c_str());
+  //// sanity check - this actually triggers - why?
+  //string err = to_string(branch);
+  //rsAssert(rsIsInRange(*x, min, 1.f), err.c_str());
+  //rsAssert(rsIsInRange(*y, min, 1.f), err.c_str());
   // seems to trigger in braches 3..6 - i've not yet seen it in 1 or 2 but didn't check 
   // exhaustively
 }
@@ -660,13 +627,9 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
 void drawContour(const rsImageF& z, float level, rsImageF& target)
 {
   rsImagePainter<float, float, float> painter(&target);
-  //painter.setNeighbourWeightsForSimpleDot(
-  // maybe pass this object from outside, also take a color - or maybe the color should be 
-  // part of the state of the painter
 
   bool antiAlias = true; // make parameter
-
-  float color = 0.5;
+  float color = 0.5;    // dito
 
   for(int i = 0; i < z.getWidth()-1; i++) {
     for(int j = 0; j < z.getWidth()-1; j++) {
@@ -678,38 +641,9 @@ void drawContour(const rsImageF& z, float level, rsImageF& target)
       float max = rsMax(z00, z01, z10, z11);
       if(min < level && max >= level) {
         float x = 0.f, y = 0.f, w = 1.f; // x,y offsets and weight for color
-        //getContourSubPixelPosition1(z00, z01, z10, z11, level, &x, &y); // not yet working
-        //getContourSubPixelPosition2(z00, z01, z10, z11, min, max, level, &x, &y);
-
-        //x = 0.f; y = 0.f; // preliminary
-
-
         if(antiAlias)
           getContourSubPixelPosition3(z00, z01, z10, z11, level, &x, &y, &w);
-
-
-        //if(target(i,j) < color)  // this is an ad-hoc way to get rid of the artifacts
-        //if(target(i,j) == 0.f)
-          painter.paintDot(float(i) + x, float(j) + y, w * color); 
-
-
-
-
-        float p = target(i,j); // for a breakpoint condition like p > 0.5
-        int dummy = 0;
-        //rsAssert(target(i, j) <= 0.5f);
-      }
-    }
-  }
-
-  // make anti-aliasing optional
-
-  // todo: figure out subpixel location and draw anti-aliased
-  // -there's a contour segment that passes through this pixel 
-  // -we approximate it by a line segment
-  // -we draw the pixel a the center of the line segment
-  // ->figure out the line equation in parametric form
-  // ->figure out location for parameter t = 0.5
+        painter.paintDot(float(i) + x, float(j) + y, w * color); }}}
 
   // or simpler:
   // -compute z0 = (z00 + z01) / 2, z1 = (z10 + z11) / 2
@@ -762,14 +696,10 @@ void contours()
   int w = 129;               // width in pixels
   int h = 129;               // height in pixels
 
-  //w = h = 513;
+  w = h = 513;
 
   // test - turn into unit-test
   float x,y;
-  //getContourSubPixelPosition1(6.f, 2.f, 8.f, 4.f, 5.f, &x, &y); // 0.5, 0.5 - good!
-  //getContourSubPixelPosition1(6.f, 0.f, 8.f, 2.f, 5.f, &x, &y); // bad
-  // try 10,10,10,0  2
-
   getContourSubPixelPosition3(2.f, 8.f, 8.f, 8.f, 5.f, &x, &y); // 1, 0.25, 0.25
   getContourSubPixelPosition3(8.f, 2.f, 8.f, 8.f, 5.f, &x, &y); // 2, 0.25, 0.25
   getContourSubPixelPosition3(8.f, 8.f, 2.f, 8.f, 5.f, &x, &y); // 4, 0.75, 0.25
@@ -804,9 +734,9 @@ void contours()
       //float z = x*x - y*y;            // hyperbolas - make this more flexible - use a lambda function
       //float z = x*x - y*y + 2*x*y;
 
-      //float z = x*sin(y) + y*cos(x) + 0.1*x*y; // complicated function
+      float z = x*sin(y) + y*cos(x) + 0.1*x*y; // complicated function
 
-      float z = x*x + y*y;  // circles
+      //float z = x*x + y*y;  // circles
 
       imgFunc.setPixelColor(i, j, z);
     }
@@ -826,8 +756,8 @@ void contours()
   //  very inefficient - can this be optimized into a reasonable implicit curve drawing algo?
 
 
-  writeScaledImageToFilePPM(imgFunc, "Function.ppm", 4);
-  writeScaledImageToFilePPM(imgCont, "Contours.ppm", 4);
+  writeScaledImageToFilePPM(imgFunc, "Function.ppm", 1);
+  writeScaledImageToFilePPM(imgCont, "Contours.ppm", 1);
   // the right column and bottom row has no countour values - no surprise - the loop only goes up 
   // to w-1,h-1
   // maybe use powers of two +1 for the size and cut off bottom-row and right-column aftewards
