@@ -573,8 +573,8 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
       branch = 2;
       // segment goes through bottom border
       x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
-      y1 = 0.f; // should be wrong but doesn't trigger
-      //y1 = 1.f; // trigger but should be correct
+      //y1 = 0.f; // should be wrong but doesn't trigger
+      y1 = 1.f; // trigger but should be correct
     }
     else
     {
@@ -747,13 +747,14 @@ void contours()
   // try 10,10,10,0  2
 
 
-  getContourSubPixelPosition3(2.f, 8.f, 8.f, 8.f, 5.f, &x, &y); // 0.25, 0.25
-  getContourSubPixelPosition3(8.f, 2.f, 8.f, 8.f, 5.f, &x, &y); // 0.25, 0.25 - should be 0.25,0.75
-  getContourSubPixelPosition3(8.f, 8.f, 2.f, 8.f, 5.f, &x, &y); // 0.75, 0.25
-  getContourSubPixelPosition3(8.f, 8.f, 8.f, 2.f, 5.f, &x, &y); // 0.75, 0.75 
-  getContourSubPixelPosition3(2.f, 2.f, 8.f, 8.f, 5.f, &x, &y); // 0.5, 0.5 - should be 0.25,0.75
-  getContourSubPixelPosition3(2.f, 8.f, 2.f, 8.f, 5.f, &x, &y); // 0.5, 0.5 - should be 0.5,0.25
-
+  getContourSubPixelPosition3(2.f, 8.f, 8.f, 8.f, 5.f, &x, &y); // 1, 0.25, 0.25
+  getContourSubPixelPosition3(8.f, 2.f, 8.f, 8.f, 5.f, &x, &y); // 2, 0.25, 0.25
+  getContourSubPixelPosition3(8.f, 8.f, 2.f, 8.f, 5.f, &x, &y); // 4, 0.75, 0.25
+  getContourSubPixelPosition3(8.f, 8.f, 8.f, 2.f, 5.f, &x, &y); // 6, 0.75, 0.75 
+  getContourSubPixelPosition3(2.f, 2.f, 8.f, 8.f, 5.f, &x, &y); // 5, 0.5, 0.5 - should be 0.25,0.75
+  getContourSubPixelPosition3(2.f, 8.f, 2.f, 8.f, 5.f, &x, &y); // 3, 0.5, 0.5 - should be 0.5,0.25
+  // goes into barnaches 1,2,4,6,5,3 - that is correct?
+  // branches 5,3 seem buggy
 
   float r = 8;
   float xMin = -r;
