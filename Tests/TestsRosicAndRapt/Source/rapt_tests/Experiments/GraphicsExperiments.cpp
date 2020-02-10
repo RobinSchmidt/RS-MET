@@ -541,51 +541,58 @@ void getContourSubPixelPosition2(float z00, float z01, float z10, float z11, flo
 }
 // not yet tested
 
-
-void contourSegmentCoeffs(float z00, float z01, float z10, float z11, float c,
+/** Given values at a pixel z00 and its neigbours, this function computes the coeffs of a 
+parametric line equation x(t) = x0 + t*(x1-x0), y(t) = y0 + t*(y1-y0). The line is supposed to 
+approximate a segment of a contour of a function/image with level given by c. This is how the 
+function values are distributed over the pixels: z00 is the value at the pixel under investigation 
+and z01, z10, z11 are bottom, right and diagonal neighbours (in that order):
+   z00--z10
+    |    |
+   z01--z11  
+ so the first index refers to the x-coordinate, the second to the y-coordinate and y increases 
+ downward as is common in image processing. The function also returns an integer indicating which 
+ branch we ended up in: 0: top-left, 1: top-right, 2: bottom-left, 3: bottom-right, 
+ 4: horizontalish, 5: verticalish - where "top-left" etc. means that the segment "cuts off" the 
+ top-left corner of the pixel. */
+int contourSegmentCoeffs(float z00, float z01, float z10, float z11, float c,
   float& x0, float& y0, float& x1, float& y1)
 {
-  // This is how the function values are distributed over the pixels: z00 is the value at the pixel
-  // under investigation and z01, z10, z11 are bottom, right and diagonal neighbours (in that 
-  // order):
-  //          z00--z10
-  //           |    |
-  //          z01--z11
-
+  int branch;
   if((z00 < c && z01 >= c) || (z00 >= c && z01 < c)) {        // segment goes through left border
     x0 = 0.f;
     y0 = rsLinToLin(c, z00, z01, 0.f, 1.f);
     if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) {      // segment goes through top border
+      branch = 0;                                             //   -> top-left
       x1 = rsLinToLin(c, z00, z10, 0.f, 1.f);
       y1 = 0.f; }
     else if((z01 < c && z11 >= c) || (z01 >= c && z11 < c)) { // segment goes through bottom border
+      branch = 2;                                             //   -> bottom-left
       x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
       y1 = 1.f; }
-    else {                                                    // segment goes through right border,
-      x1 = 1.f;                                               // i.e. is horizontalish)
+    else {                                                    // segment goes through right border
+      branch = 4;                                             //   -> horizontalish
+      x1 = 1.f;                                               
       y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }}
-  else {
-    // segment does not go through left border - so it must start either at top or bottom border
-    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c))     // segment goes through the top border
-    {
+  else {                                                   // doesn't go through left border
+    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) {   // goes through top border
       x0 = rsLinToLin(c, z00, z10, 0.f, 1.f);
       y0 = 0.f;
-      if((z10 < c && z11 >= c) || (z10 >= c && z11 < c)) { // segment goes through right border
+      if((z10 < c && z11 >= c) || (z10 >= c && z11 < c)) { // goes through right border
+        branch = 1;                                        //   -> top-right
         x1 = 1.f;
         y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }
-      else  {                                              // segment goes through bottom border,
-        x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);            // i.e. is verticalish
+      else  {                                              // goes through bottom border
+        branch = 5;                                        //   -> verticalish
+        x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);            
         y1 = 1.f; }}
-    else  {
-      // segment does not go through top border - so it must go through the bottom and then right
-      x0 = rsLinToLin(c, z01, z11, 0.f, 1.f);    // bottom
+    else  {                                                // doesn't go through top border 
+      branch = 3;                                          //   -> bottom-right
+      x0 = rsLinToLin(c, z01, z11, 0.f, 1.f);
       y0 = 1.f;
       x1 = 1.f;
-      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }} // right
+      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }}
+  return branch;
 }
-// maybe return which branch we ended up in: 0: top-left, 1: top-right, 2: bottom-left, 
-// 3: bottom-right, 4: horizontalish, 5: verticalish
-
 // optimize the calls to rsLinToLin to get rid of divisions where possible - keep this code as 
 // prototype for unit testing the optimized code - i think, it's not possible, but we may get rid 
 // of some of the multiplications because outMax-outMin = 1 - make a function rsLinTo01, have a 
