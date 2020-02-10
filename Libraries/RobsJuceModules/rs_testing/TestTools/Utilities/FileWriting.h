@@ -8,6 +8,13 @@
 void writeImageToFilePPM(const RAPT::rsImage<float>& image, const char* path);
 // make version that takes an rsImageF4 (4 floats per pixel representing RGBA)
 
+/** Uses the 3 passed images (assumed to be of the same dimensions) as red, green and blue 
+channel. */
+void writeImageToFilePPM(const RAPT::rsImage<float>& red, const RAPT::rsImage<float>& green,
+  const RAPT::rsImage<float>& blue, const char* path);
+
+/** Writes a naively (by pixel duplication) scaled up version of the given image into a file. This 
+is useful for taking a close look at what the rendering algorithms do. */
 void writeScaledImageToFilePPM(RAPT::rsImage<float>& image, const char* path, int scale);
 
 void writeToMonoWaveFile(std::string path, float *signal, int numFrames, int sampleRate,

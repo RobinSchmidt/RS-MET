@@ -16,15 +16,39 @@ void writeImageToFilePPM(const rsImageF& img, const char* path)
       unsigned char gray = (unsigned char) (255 * img.getPixelColor(x, y));
       buf[i+0] = gray;
       buf[i+1] = gray;
-      buf[i+2] = gray;
-    }
-  }
+      buf[i+2] = gray; }}
 
+  // factor out:
   FILE* fd = fopen(path, "wb");  // "wb": write binary
   fprintf(fd, "P6\n%d %d\n255\n", w, h);
   fwrite(buf, 1, w*h*3, fd);
-
   fclose(fd);
+
+  delete[] buf;
+}
+
+void writeImageToFilePPM(const RAPT::rsImage<float>& R, const RAPT::rsImage<float>& G,
+  const RAPT::rsImage<float>& B, const char* path)
+{
+  int w = R.getWidth();
+  int h = R.getHeight();
+  rsAssert(G.getWidth() == w && G.getHeight() == h);
+  rsAssert(B.getWidth() == w && B.getHeight() == h);
+  unsigned char* buf = new unsigned char[w*h*3];
+
+  for(int y = 0; y < h; y++) {
+    for(int x = 0; x < w; x++) {
+      int i = y*w*3 + x*3;
+      buf[i+0] = (unsigned char) (255 * R.getPixelColor(x, y));
+      buf[i+1] = (unsigned char) (255 * G.getPixelColor(x, y));
+      buf[i+2] = (unsigned char) (255 * B.getPixelColor(x, y));  }}
+
+  // factor out:
+  FILE* fd = fopen(path, "wb");  // "wb": write binary
+  fprintf(fd, "P6\n%d %d\n255\n", w, h);
+  fwrite(buf, 1, w*h*3, fd);
+  fclose(fd);
+
   delete[] buf;
 }
 
