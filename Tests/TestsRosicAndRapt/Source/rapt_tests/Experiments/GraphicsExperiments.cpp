@@ -597,6 +597,7 @@ int contourSegmentCoeffs(float z00, float z01, float z10, float z11, float c,
 // prototype for unit testing the optimized code - i think, it's not possible, but we may get rid 
 // of some of the multiplications because outMax-outMin = 1 - make a function rsLinTo01, have a 
 // similar rs01ToLin
+// maybe change order in branch 3
 
 // maybe the logical statements can be simplified by checking things like 
 // if (z00-c)*(z01-c) < 0,  >= 0 instead of the complicated and-or statements - but keep this 
@@ -607,6 +608,7 @@ T triangleArea(T x1, T y1, T x2, T y2, T x3, T y3)
 {
   return T(0.5) * rsAbs(x1*y2 + x3*y1 + x2*y3 - x3*y2 - x1*y3 - x2*y1);
 }
+// needs test
 //         1    |x1 y1 1|
 // A = +- --- * |x2 y2 1|
 //         2    |x3 y3 1|
@@ -615,17 +617,27 @@ T triangleArea(T x1, T y1, T x2, T y2, T x3, T y3)
 // we also need a formula for the area of a quadrangle - i think, i have once implemented a general
 // polygon-area function - the quadrangle can be obtained as special case
 
-float contourPixelCoverage(float z00, float z01, float z10, float z11, float c)
+template<class T>
+T contourPixelCoverage(T z00, T z01, T z10, T z11, T c)
 {
-  float x0, x1, y0, y1;
-  float A = 0.f;  // covered area
+  T x0, x1, y0, y1;
+  T A = 0.f;  // covered area
+  T h(0.5);   // half
   int branch = contourSegmentCoeffs(z00, z01, z10, z11, c, x0, y0, x1, y1);
   switch(branch)
   {
-  case 0: { A = triangleArea(0.f, 0.f, x0, y0, x1, y1); } break; // top-left
-  case 1: { A = triangleArea(1.f, 0.f, x0, y0, x1, y1); } break; // top-right
-  case 2: { A = triangleArea(0.f, 1.f, x0, y0, x1, y1); } break; // bottom-left
-  case 3: { A = triangleArea(1.f, 1.f, x0, y0, x1, y1); } break; // bottom-right
+  // these simplified formulas work only because we know in which order contourSegmentCoeffs 
+  // returns the coeffs:
+  case 0: { A = h *       x1  * y0;        } break; // top-left
+  case 1: { A = h * (T(1)-x0) * y1;        } break; // top-right
+  case 2: { A = h *       x1  * (T(1)-y0)  } break; // bottom-left
+  case 3: { A = h * (T(1)-x0) * (T(1)-y1); } break; // bottom-right
+
+
+  //case 0: { A = triangleArea(0.f, 0.f, x0, y0, x1, y1); } break; // top-left
+  //case 1: { A = triangleArea(1.f, 0.f, x0, y0, x1, y1); } break; // top-right
+  //case 2: { A = triangleArea(0.f, 1.f, x0, y0, x1, y1); } break; // bottom-left
+  //case 3: { A = triangleArea(1.f, 1.f, x0, y0, x1, y1); } break; // bottom-right
 
 
 
