@@ -573,14 +573,15 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
       branch = 2;
       // segment goes through bottom border
       x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
-      y1 = 0.f;
+      y1 = 0.f; // should be wrong but doesn't trigger
+      //y1 = 1.f; // trigger but should be correct
     }
     else
     {
       branch = 3;
       // segment goes through right border (i.e. is horizontalish):
       x1 = 1.f;
-      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f);
+      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); // looks good but triggers
     }
   }
   else
@@ -591,7 +592,7 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
 
     // segment does not go through left border - so it must start either at top or bottom border
 
-    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) 
+    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) // check top border
     {
       // segment goes through the top border
       x0 = rsLinToLin(c, z00, z10, 0.f, 1.f);
@@ -622,6 +623,9 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
       x1 = 1.f;
       y1 = rsLinToLin(c, z10, z11, 0.f, 1.f);  // right
     }
+
+    // test/debug:
+    //x0 = x1 = y0 = y1 = 0;
   }
 
   // test - invert:
@@ -629,16 +633,17 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
   // putting 1-rsLinToLin everywhere also does not help - it actually makes things worse
 
   // evaluate line equation at midpoint - this gives the center of the segment
-  *x = x0 + 0.5f * x1;
-  *y = y0 + 0.5f * y1;
+  *x = x0 + 0.5f * (x1-x0);
+  *y = y0 + 0.5f * (y1-y0);
 
   // sanity check - this actually triggers - why?
-  //rsAssert(rsIsInRange(*x, 0.f, 1.f));
-  //rsAssert(rsIsInRange(*y, 0.f, 1.f));
+  string err = to_string(branch);
+  rsAssert(rsIsInRange(*x, 0.f, 1.f), err.c_str());
+  rsAssert(rsIsInRange(*y, 0.f, 1.f), err.c_str());
   // seems to trigger in braches 3..6 - i've not yet seen it in 1 or 2 but didn't check 
   // exhaustively
 }
-// this is still wrong! it sometimes p
+// this is still wrong! it sometimes produces values outside 0..1 - make tests
 
 // optimize the calls to rsLinToLin to get rid of divisions where possible - keep this code as 
 // prototype for unit testing the optimized code
@@ -740,6 +745,14 @@ void contours()
   getContourSubPixelPosition1(6.f, 2.f, 8.f, 4.f, 5.f, &x, &y); // 0.5, 0.5 - good!
   getContourSubPixelPosition1(6.f, 0.f, 8.f, 2.f, 5.f, &x, &y); // bad
   // try 10,10,10,0  2
+
+
+  getContourSubPixelPosition3(2.f, 8.f, 8.f, 8.f, 5.f, &x, &y); // 0.25, 0.25
+  getContourSubPixelPosition3(8.f, 2.f, 8.f, 8.f, 5.f, &x, &y); // 0.25, 0.25 - should be 0.25,0.75
+  getContourSubPixelPosition3(8.f, 8.f, 2.f, 8.f, 5.f, &x, &y); // 0.75, 0.25
+  getContourSubPixelPosition3(8.f, 8.f, 8.f, 2.f, 5.f, &x, &y); // 0.75, 0.75 
+  getContourSubPixelPosition3(2.f, 2.f, 8.f, 8.f, 5.f, &x, &y); // 0.5, 0.5 - should be 0.25,0.75
+  getContourSubPixelPosition3(2.f, 8.f, 2.f, 8.f, 5.f, &x, &y); // 0.5, 0.5 - should be 0.5,0.25
 
 
   float r = 8;
