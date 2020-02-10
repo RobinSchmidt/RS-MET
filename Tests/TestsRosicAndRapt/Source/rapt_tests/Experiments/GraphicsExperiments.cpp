@@ -599,11 +599,50 @@ int contourSegmentCoeffs(float z00, float z01, float z10, float z11, float c,
 // similar rs01ToLin
 
 // maybe the logical statements can be simplified by checking things like 
-// if (z00-c)*(z01-c) < 0,  >= 0 instead of the complicated and-or statements
+// if (z00-c)*(z01-c) < 0,  >= 0 instead of the complicated and-or statements - but keep this 
+// version for unit tests
 
-// factor out contourSegmentCoeffs - need also for fill-algo but in a different way
-void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, float c,
-  float* x, float* y, float* weight = nullptr)
+template<class T>
+T triangleArea(T x1, T y1, T x2, T y2, T x3, T y3)
+{
+  return T(0.5) * rsAbs(x1*y2 + x3*y1 + x2*y3 - x3*y2 - x1*y3 - x2*y1);
+}
+//         1    |x1 y1 1|
+// A = +- --- * |x2 y2 1|
+//         2    |x3 y3 1|
+// https://www.onlinemathlearning.com/area-triangle.html
+
+// we also need a formula for the area of a quadrangle - i think, i have once implemented a general
+// polygon-area function - the quadrangle can be obtained as special case
+
+float contourPixelCoverage(float z00, float z01, float z10, float z11, float c)
+{
+  float x0, x1, y0, y1;
+  float A = 0.f;  // covered area
+  int branch = contourSegmentCoeffs(z00, z01, z10, z11, c, x0, y0, x1, y1);
+  switch(branch)
+  {
+  case 0: { A = triangleArea(0.f, 0.f, x0, y0, x1, y1); } break; // top-left
+  case 1: { A = triangleArea(1.f, 0.f, x0, y0, x1, y1); } break; // top-right
+  case 2: { A = triangleArea(0.f, 1.f, x0, y0, x1, y1); } break; // bottom-left
+  case 3: { A = triangleArea(1.f, 1.f, x0, y0, x1, y1); } break; // bottom-right
+
+
+
+
+
+  }
+
+  return A;
+
+  //return 0.f; // preliminary
+}
+// actually, we can use much simpler formulas for the triangle using only the two sides that form 
+// a 90° angle - optimize!
+
+
+void contourSubPixelPosition(float z00, float z01, float z10, float z11, float c,
+  float* x, float* y, float* weight)
 {
   float x0, x1, y0, y1;
   contourSegmentCoeffs(z00, z01, z10, z11, c, x0, y0, x1, y1);
@@ -616,11 +655,13 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
   *x = x0 + 0.5f * dx;
   *y = y0 + 0.5f * dy;
 
-  if(weight != nullptr)
-    //*weight = max(dx, dy);  // nope - this looks worse - screw-effect stronger and there are holes
-    *weight = sqrt(dx*dx + dy*dy) / sqrt(2.f);  // full weight only for diagonals
+  //*weight = max(dx, dy);  // nope - this looks worse - screw-effect stronger and there are holes  
+  *weight = sqrt(dx*dx + dy*dy) / sqrt(2.f);  // full weight only for diagonals
     // optimize, maybe use max(dx, dy)
 }
+
+
+
 
 
 
@@ -650,7 +691,7 @@ void drawContour(const rsImage<TLvl>& z, TLvl level, rsImage<TPix>& target, TPix
       if(min < level && max >= level) {
         TLvl x(0), y(0), w(1); // x,y offsets and weight for color
         if(antiAlias)
-          getContourSubPixelPosition3(z00, z01, z10, z11, level, &x, &y, &w);
+          contourSubPixelPosition(z00, z01, z10, z11, level, &x, &y, &w);
         painter.paintDot(TLvl(i) + x, TLvl(j) + y, w * color); }}}
 }
 
@@ -806,15 +847,15 @@ void contours()
   //w = h = 513;
 
   // test - turn into unit-test
-  float x,y;
-  getContourSubPixelPosition3(2.f, 8.f, 8.f, 8.f, 5.f, &x, &y); // 1, 0.25, 0.25
-  getContourSubPixelPosition3(8.f, 2.f, 8.f, 8.f, 5.f, &x, &y); // 2, 0.25, 0.25
-  getContourSubPixelPosition3(8.f, 8.f, 2.f, 8.f, 5.f, &x, &y); // 4, 0.75, 0.25
-  getContourSubPixelPosition3(8.f, 8.f, 8.f, 2.f, 5.f, &x, &y); // 6, 0.75, 0.75 
-  getContourSubPixelPosition3(2.f, 2.f, 8.f, 8.f, 5.f, &x, &y); // 5, 0.5, 0.5
-  getContourSubPixelPosition3(2.f, 8.f, 2.f, 8.f, 5.f, &x, &y); // 3, 0.5, 0.5
-  getContourSubPixelPosition3(2.f, 4.f, 8.f, 8.f, 5.f, &x, &y); // 5, 0.375, 0.5
-  getContourSubPixelPosition3(2.f, 8.f, 4.f, 8.f, 5.f, &x, &y); // 3, 0.5, 0.375
+  float x, y, s;
+  contourSubPixelPosition(2.f, 8.f, 8.f, 8.f, 5.f, &x, &y, &s); // 1, 0.25, 0.25
+  contourSubPixelPosition(8.f, 2.f, 8.f, 8.f, 5.f, &x, &y, &s); // 2, 0.25, 0.25
+  contourSubPixelPosition(8.f, 8.f, 2.f, 8.f, 5.f, &x, &y, &s); // 4, 0.75, 0.25
+  contourSubPixelPosition(8.f, 8.f, 8.f, 2.f, 5.f, &x, &y, &s); // 6, 0.75, 0.75 
+  contourSubPixelPosition(2.f, 2.f, 8.f, 8.f, 5.f, &x, &y, &s); // 5, 0.5, 0.5
+  contourSubPixelPosition(2.f, 8.f, 2.f, 8.f, 5.f, &x, &y, &s); // 3, 0.5, 0.5
+  contourSubPixelPosition(2.f, 4.f, 8.f, 8.f, 5.f, &x, &y, &s); // 5, 0.375, 0.5
+  contourSubPixelPosition(2.f, 8.f, 4.f, 8.f, 5.f, &x, &y, &s); // 3, 0.5, 0.375
   // the numbers seem ok - but the plot still shows artifacts
   // could it be that pixels get drawn twice or even more often when more than 2 neighbouring 
   // pixels satisfy the condition to draw a pixel? can that happen? if so, how?
