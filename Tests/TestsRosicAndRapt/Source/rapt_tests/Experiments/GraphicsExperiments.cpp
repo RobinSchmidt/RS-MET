@@ -853,6 +853,24 @@ bool testContourSubPixelStuff()
 
   return r;
 }
+// move to unit tests
+
+
+template<class T>
+void generateFunctionImage(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMax,
+  rsImage<T>& img)
+{
+  int w = img.getWidth();
+  int h = img.getHeight();
+  rsImageF imgFunc(w, h);
+  for(int i = 0; i < w; i++) {
+    for(int j = 0; j < h; j++) {
+      float x = xMin + i * (xMax-xMin) / (w-1);
+      float y = yMin + j * (yMax-yMin) / (h-1);
+      float z = f(x, y);
+      img.setPixelColor(i, j, z); }}
+}
+
 
 void contours()
 {
@@ -878,6 +896,8 @@ void contours()
 
   // create image with function values:
   rsImageF imgFunc(w, h);
+
+  /*
   for(int i = 0; i < w; i++) {
     for(int j = 0; j < h; j++) {
       float x = xMin + i * (xMax-xMin) / (w-1);
@@ -891,6 +911,19 @@ void contours()
       imgFunc.setPixelColor(i, j, z);
     }
   }
+  */
+
+  std::function<float(float, float)> f;
+
+  // choose your function here:
+  //f = [&] (float x, float y) { return x*x + y*y; };
+  //f = [&] (float x, float y) { return x*x - y*y; };
+  //f = [&] (float x, float y) { return x*x - y*y + 2.f*x*y; };
+  f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y; };
+  //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*y*y; };
+  //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*x - 0.1f*y*y + 0.1f*y; };
+
+  generateFunctionImage(f, xMin, xMax, yMin, yMax, imgFunc);;
   normalize2(imgFunc);
 
  
@@ -969,6 +1002,38 @@ void contours()
 //   solutions (x0,y0),(x1,y2) and advancing y0,y1 in a loop and compute x0,x1 to get a span which
 //   can then be filled - but the boundaries of the span should be only partially colored for 
 //   anti-aliasing - that should give a reasonable anti-aliased ellipse-drawing algo
+
+
+
+
+
+void complexContours()
+{
+  // -make a function w = f(z) = z^2
+  // -plot real part into red channel and imaginary part into blue channel
+  //  -maybe plot the contour lines into green channel
+
+  int w = 129;               // width in pixels
+  int h = 129;               // height in pixels
+
+  w = h = 513;
+
+  float r = 5;
+  int numLevels = 20;
+
+  float xMin = -r;
+  float xMax = +r;
+  float yMin = -r;
+  float yMax = +r;
+
+  rsImageF imgFuncRe(w, h), imgFuncIm(w, h);
+
+  // ....
+
+
+  int dummy = 0;
+}
+
 
 // maybe make animations with
 // http://www.softpedia.com/get/Multimedia/Graphic/Graphic-Others/APNG-Anime-Maker.shtml

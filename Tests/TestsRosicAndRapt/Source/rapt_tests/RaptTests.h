@@ -69,6 +69,7 @@ void splineArc();
 void triangles();
 void pixelCoverage();
 void contours();
+void complexContours();
 
 // Math Experiments:
 // wait - what about the file MathExperiments.h - shouldn't they be declared there?

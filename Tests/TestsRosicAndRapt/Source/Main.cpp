@@ -194,6 +194,7 @@ int main(int argc, char* argv[])
   //triangles();
   //pixelCoverage();
   contours();
+  //complexContours();
 
 
   // just for fun:
