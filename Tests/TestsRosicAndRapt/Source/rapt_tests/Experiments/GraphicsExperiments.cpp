@@ -637,7 +637,7 @@ void drawContour(const rsImage<TLvl>& z, TLvl level, rsImage<TPix>& target, TPix
 
 template<class TPix, class TLvl>
 void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>& target,
-  TPix color, bool antiAlias)
+  TPix fillColor, bool antiAlias, TPix contourColor = TPix())
 {
   rsImagePainter<TPix, TLvl, TLvl> painter(&target);
   for(int i = 0; i < z.getWidth()-1; i++) {
@@ -648,14 +648,54 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
       TLvl z11 = z(i+1, j+1);
       TLvl min = rsMin(z00, z01, z10, z11);
       TLvl max = rsMax(z00, z01, z10, z11);
-      if(min > lo && max < hi)  // should we use >= ?
-        painter.plot(i, j, color); }}
+      if(min >= lo && max < hi)  // we need >, <, i think
+      {
+        // we are between the two contours - fill:
+        painter.plot(i, j, fillColor);
+        
+      }
+      else
+      {
+        // we are on a contour - use an intermediate brightness
+
+        
+        if(antiAlias)
+        {
+          TLvl x(0), y(0), w(1);
+          if(min >= lo)
+          {
+            getContourSubPixelPosition3(z00, z01, z10, z11, lo, &x, &y, &w);
+          }
+          else if(max < hi)
+          {
+            getContourSubPixelPosition3(z00, z01, z10, z11, hi, &x, &y, &w);
+          }
+          // maybe we need w = 1-w in one of the branches?
+
+          //painter.paintDot(TLvl(i) + x, TLvl(j) + y, w * contourColor);
+        }
+        else
+        {
+          //painter.plot(i, j, contourColor);
+          //int dummy = 0;
+          // paints everything white
+        }
+        
+
+      }
+    }
+  }
 }
 // can we refactor to get rid of the duplication? maybe a function isOnContour(i, j) or 
 // getMinMax(i, j, min, max)
 // how to anti-alias this? maybe if we are on a contour, we should choose a color in between 0 
 // and color - determined again by position and length of the contour segment?
 
+template<class TPix, class TWgt>
+TPix blend(TPix c1, TPix c2, TWgt w)
+{
+  return (1-w)*c1 + w*c2;
+}
 
 template<class TLvl, class TPix>
 rsImage<TPix> getContours(const rsImage<TPix>& z, const std::vector<TLvl>& levels, 
@@ -664,20 +704,22 @@ rsImage<TPix> getContours(const rsImage<TPix>& z, const std::vector<TLvl>& level
 {
   rsImageF c(z.getWidth(), z.getHeight());
 
-  for(size_t i = 0; i < levels.size(); i++)
-    drawContour(z, levels[i], c, colors[i % colors.size()], antiAlias);
+  //for(size_t i = 0; i < levels.size(); i++)
+  //  drawContour(z, levels[i], c, colors[i % colors.size()], antiAlias);
 
-  if(fillColors.size() > 0) 
+  const std::vector<TPix>& fc = fillColors; // shorthand
+  size_t nc = fc.size();
+  if(fc.size() > 1)  // we need at least 2 colors for anti-aliasing
   {
     fillBetweenContours(z, -RS_INF(TLvl), levels[0], c, 
-      fillColors[0], antiAlias); 
+      fc[0], antiAlias, blend(fc[0], fc[1], 0.5)); 
 
     for(size_t i = 0; i < levels.size()-1; i++)
       fillBetweenContours(z, levels[i], levels[i+1], c,
-        fillColors[i % fillColors.size()], antiAlias);
+        fc[i % nc], antiAlias, blend(fc[i % nc], fc[(i+1) % nc], 0.5));
   
     fillBetweenContours(z, levels[levels.size()-1], RS_INF(TLvl), c, 
-      fillColors[fillColors.size()-1], antiAlias); 
+      fc[nc-1], antiAlias, blend(fc[nc-2], fc[nc-1], 0.5)); 
   }
 
   return c;
@@ -766,8 +808,8 @@ void contours()
   std::vector<float> levels = rsRangeLinear(0.f, 1.f, numLevels);
   //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, false);
   //rsImageF imgCont = getContours(imgFunc, levels, { 1.0f }, true);
-
   rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, false, {0.25f, 0.75f});
+  //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, true, {0.25f, 0.75f});
 
   // with anti-aliasing, we need to use about twice as much brightness to get the same visual 
   // brightness
