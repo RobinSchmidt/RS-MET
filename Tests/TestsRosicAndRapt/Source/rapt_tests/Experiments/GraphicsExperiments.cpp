@@ -542,7 +542,7 @@ void getContourSubPixelPosition2(float z00, float z01, float z10, float z11, flo
 // not yet tested
 
 void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, float c,
-  float* x, float* y)
+  float* x, float* y, float* weight = nullptr)
 {
   // this is how the function values are distributed over the pixels: z00 is the value at the pixel
   // under investigation and z01, z10, z11 are bottom, right and diagonal neighbours (in that 
@@ -634,8 +634,16 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
   // putting 1-rsLinToLin everywhere also does not help - it actually makes things worse
 
   // evaluate line equation at midpoint - this gives the center of the segment
-  *x = x0 + 0.5f * (x1-x0);
-  *y = y0 + 0.5f * (y1-y0);
+  float dx = (x1-x0);
+  float dy = (y1-y0);
+  *x = x0 + 0.5f * dx;
+  *y = y0 + 0.5f * dy;
+
+
+  if(weight != nullptr)
+    *weight = sqrt(dx*dx + dy*dy) / sqrt(2.f);  // full weight only for diagonals
+    // optimize
+
 
   // sanity check - this actually triggers - why?
   string err = to_string(branch);
@@ -669,18 +677,20 @@ void drawContour(const rsImageF& z, float level, rsImageF& target)
       float min = rsMin(z00, z01, z10, z11);
       float max = rsMax(z00, z01, z10, z11);
       if(min < level && max >= level) {
-        float x, y;
+        float x = 0.f, y = 0.f, w = 1.f; // x,y offsets and weight for color
         //getContourSubPixelPosition1(z00, z01, z10, z11, level, &x, &y); // not yet working
         //getContourSubPixelPosition2(z00, z01, z10, z11, min, max, level, &x, &y);
 
-        x = 0.f; y = 0.f; // preliminary
+        //x = 0.f; y = 0.f; // preliminary
+
+
         if(antiAlias)
-          getContourSubPixelPosition3(z00, z01, z10, z11, level, &x, &y);
+          getContourSubPixelPosition3(z00, z01, z10, z11, level, &x, &y, &w);
 
 
         //if(target(i,j) < color)  // this is an ad-hoc way to get rid of the artifacts
         //if(target(i,j) == 0.f)
-          painter.paintDot(float(i) + x, float(j) + y, color); 
+          painter.paintDot(float(i) + x, float(j) + y, w * color); 
 
 
 
