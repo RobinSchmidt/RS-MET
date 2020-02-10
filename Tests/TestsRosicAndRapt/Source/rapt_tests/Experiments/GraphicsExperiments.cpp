@@ -637,7 +637,7 @@ void drawContour(const rsImage<TLvl>& z, TLvl level, rsImage<TPix>& target, TPix
 
 template<class TPix, class TLvl>
 void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>& target,
-  TPix fillColor, bool antiAlias, TPix contourColor = TPix())
+  TPix fillColor, bool antiAlias = false, TPix loColor = TPix(), TPix hiColor = TPix())
 {
   rsImagePainter<TPix, TLvl, TLvl> painter(&target);
   for(int i = 0; i < z.getWidth()-1; i++) {
@@ -648,52 +648,19 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
       TLvl z11 = z(i+1, j+1);
       TLvl min = rsMin(z00, z01, z10, z11);
       TLvl max = rsMax(z00, z01, z10, z11);
-      //if(min >= lo && max <= hi)  // we need >, <, i think
-      if(min > lo && max < hi) 
-      //if( !(min > hi || max < lo) ) // pixel value outside the range lo <= val <= hi
-      {
-        // we are between the two contours - fill:
-        painter.plot(i, j, fillColor);
-        int dummy = 0;
-        
-      }
-      /*
-      else
-      {
-        // we are on a contour - use an intermediate brightness
+      //if(min > lo && max < hi)    // leaves extra pixels blank (test with circle)
+      //if(min >= lo && max <= hi)  // colors extra pixels in
+      //if(min > lo && max <= hi)   // no etra blank or colored pixels but ugly jaggies
+      if(min >= lo && max < hi)     // this seems to be artifact-free
+        painter.plot(i, j, fillColor); }}
+  if(antiAlias) {
+    drawContour(z, lo, target, loColor, true);
+    drawContour(z, hi, target, hiColor, true); }
 
-        
-        if(antiAlias)
-        {
-          TLvl x(0), y(0), w(1);
-          if(min >= lo)
-          {
-            getContourSubPixelPosition3(z00, z01, z10, z11, lo, &x, &y, &w);
-          }
-          else if(max < hi)
-          {
-            getContourSubPixelPosition3(z00, z01, z10, z11, hi, &x, &y, &w);
-          }
-          // maybe we need w = 1-w in one of the branches?
+  // but why only draw the low contour - maybe we should draw both with 0.5 times the 
+  // contourColor - no: we need two contour-colors - one for the low and one for the high 
+  // contour - try it with 3 grayscale values ...so we need loColor, hiColor
 
-          //painter.paintDot(TLvl(i) + x, TLvl(j) + y, w * contourColor);
-        }
-        else
-        {
-          //painter.plot(i, j, 0.125f);
-          painter.plot(i, j, 0.05);
-          // it seems like it's done multiple times to each pixel - how can this be?
-
-          //painter.plot(i, j, contourColor);
-          //int dummy = 0;
-          // paints everything white
-        }
-      }
-      */
-
-      
-    }
-  }
 }
 // can we refactor to get rid of the duplication? maybe a function isOnContour(i, j) or 
 // getMinMax(i, j, min, max)
@@ -708,8 +675,10 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
 template<class TPix, class TWgt>
 TPix blend(TPix c1, TPix c2, TWgt w)
 {
-  return (1-w)*c1 + w*c2;
+  return TPix((TWgt(1)-w))*c1 + TPix(w)*c2;
 }
+
+//int wra
 
 template<class TLvl, class TPix>
 rsImage<TPix> getContours(const rsImage<TPix>& z, const std::vector<TLvl>& levels, 
@@ -725,15 +694,32 @@ rsImage<TPix> getContours(const rsImage<TPix>& z, const std::vector<TLvl>& level
   size_t nc = fc.size();
   if(fc.size() > 1)  // we need at least 2 colors for anti-aliasing
   {
+    TPix loColor = blend(0.f,   fc[0], 0.5f);
+    TPix hiColor = blend(fc[0], fc[1], 0.5f);
     fillBetweenContours(z, -RS_INF(TLvl), levels[0], c, 
-      fc[0], antiAlias, blend(fc[0], fc[1], 0.5)); 
+      fc[0], antiAlias, loColor, hiColor); 
 
+    
     for(size_t i = 0; i < levels.size()-1; i++)
+    {
+      //size_t i0 =  i    % nc;
+      //size_t i1 = (i+1) % nc;
+      //size_t i2 = (i+2) % nc;
+
+      size_t i0 = (i+nc) % nc;
+      size_t i1 =  i     % nc;
+      size_t i2 = (i+1)  % nc;
+
+
+      loColor = blend(fc[i0], fc[i1], 0.5f);
+      hiColor = blend(fc[i1], fc[i2], 0.5f);
       fillBetweenContours(z, levels[i], levels[i+1], c,
-        fc[i % nc], antiAlias, blend(fc[i % nc], fc[(i+1) % nc], 0.5));
+        fc[i % nc], antiAlias, loColor, hiColor);
+    }
   
     fillBetweenContours(z, levels[levels.size()-1], RS_INF(TLvl), c, 
       fc[nc-1], antiAlias, blend(fc[nc-2], fc[nc-1], 0.5)); 
+      
   }
 
   return c;
@@ -772,7 +758,7 @@ void contours()
   int w = 129;               // width in pixels
   int h = 129;               // height in pixels
 
-  w = h = 513;
+  //w = h = 513;
 
   // test - turn into unit-test
   float x,y;
@@ -811,8 +797,8 @@ void contours()
       //float z = x*x - y*y;            // hyperbolas - make this more flexible - use a lambda function
       //float z = x*x - y*y + 2*x*y;
       //float z = x*sin(y) + y*cos(x) + 0.1*x*y; // complicated function - gets more complicated far from middle
-      float z = x*sin(y) + y*cos(x) + 0.1*x*y + 0.1*x*x - 0.1*y*y; 
-      //float z = x*x + y*y;  // circles
+      //float z = x*sin(y) + y*cos(x) + 0.1*x*y + 0.1*x*x - 0.1*y*y; 
+      float z = x*x + y*y;  // circles
       imgFunc.setPixelColor(i, j, z);
     }
   }
@@ -842,8 +828,8 @@ void contours()
   //  very inefficient - can this be optimized into a reasonable implicit curve drawing algo?
 
 
-  writeScaledImageToFilePPM(imgFunc, "Function.ppm", 1);
-  writeScaledImageToFilePPM(imgCont, "Contours.ppm", 1);
+  writeScaledImageToFilePPM(imgFunc, "Function.ppm", 4);
+  writeScaledImageToFilePPM(imgCont, "Contours.ppm", 4);
   // the right column and bottom row has no countour values - no surprise - the loop only goes up 
   // to w-1,h-1
   // maybe use powers of two +1 for the size and cut off bottom-row and right-column aftewards
