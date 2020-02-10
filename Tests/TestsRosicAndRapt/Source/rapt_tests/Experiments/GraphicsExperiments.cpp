@@ -840,6 +840,29 @@ void normalize2(rsImageF& img)
     p[i] /= max;
 }
 
+bool testContourSubPixelStuff()
+{
+  bool r = true;
+
+  // test - turn into unit-test
+  //int b; // branch
+  float x, y, w;
+  contourSubPixelPosition(2.f, 8.f, 8.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.25f  && y == 0.25f;
+  contourSubPixelPosition(8.f, 2.f, 8.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.25f  && y == 0.75f;
+  contourSubPixelPosition(8.f, 8.f, 2.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.75f  && y == 0.25f;
+  contourSubPixelPosition(8.f, 8.f, 8.f, 2.f, 5.f, &x, &y, &w); r &= x == 0.75f  && y == 0.75f;
+  contourSubPixelPosition(2.f, 2.f, 8.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.5f   && y == 0.5f;
+  contourSubPixelPosition(2.f, 8.f, 2.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.5f   && y == 0.5f;
+  contourSubPixelPosition(2.f, 4.f, 8.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.375f && y == 0.5f;
+  contourSubPixelPosition(2.f, 8.f, 4.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.5f   && y == 0.375f;
+
+  // todo: test coverage compuation
+  float c;
+  c = contourPixelCoverage(2.f, 8.f, 8.f, 8.f, 5.f); // should be 1/8
+
+  return r;
+}
+
 void contours()
 {
   // We plot the 2D function z = f(x,y) = x^2 - y^2 into an image where the height translates
@@ -850,24 +873,9 @@ void contours()
 
   //w = h = 513;
 
-  // test - turn into unit-test
-  float x, y, s;
-  contourSubPixelPosition(2.f, 8.f, 8.f, 8.f, 5.f, &x, &y, &s); // 1, 0.25, 0.25
-  contourSubPixelPosition(8.f, 2.f, 8.f, 8.f, 5.f, &x, &y, &s); // 2, 0.25, 0.25
-  contourSubPixelPosition(8.f, 8.f, 2.f, 8.f, 5.f, &x, &y, &s); // 4, 0.75, 0.25
-  contourSubPixelPosition(8.f, 8.f, 8.f, 2.f, 5.f, &x, &y, &s); // 6, 0.75, 0.75 
-  contourSubPixelPosition(2.f, 2.f, 8.f, 8.f, 5.f, &x, &y, &s); // 5, 0.5, 0.5
-  contourSubPixelPosition(2.f, 8.f, 2.f, 8.f, 5.f, &x, &y, &s); // 3, 0.5, 0.5
-  contourSubPixelPosition(2.f, 4.f, 8.f, 8.f, 5.f, &x, &y, &s); // 5, 0.375, 0.5
-  contourSubPixelPosition(2.f, 8.f, 4.f, 8.f, 5.f, &x, &y, &s); // 3, 0.5, 0.375
-  // the numbers seem ok - but the plot still shows artifacts
-  // could it be that pixels get drawn twice or even more often when more than 2 neighbouring 
-  // pixels satisfy the condition to draw a pixel? can that happen? if so, how?
-  // ...but then we should also see it in non-anti-aliased mode
-  // oh! i think, the offset should not go from 0..1 but from -1..+1 the paint function spreads 
-  // into 9 pixels, not 2 - or no - this only happens when thickness is applied
-  // i think, we should scale the color according to the length of the segment in the pixel - only 
-  // if it's as long as possible (sqrt(2)) we apply the full color, otherwise it gets scaled down
+  testContourSubPixelStuff();
+
+
 
 
   float r = 15;
