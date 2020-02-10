@@ -623,32 +623,24 @@ T contourPixelCoverage(T z00, T z01, T z10, T z11, T c)
   T x0, x1, y0, y1;
   T A = 0.f;  // covered area
   T h(0.5);   // half
+  T I(1.0);   // one
   int branch = contourSegmentCoeffs(z00, z01, z10, z11, c, x0, y0, x1, y1);
   switch(branch)
   {
   // these simplified formulas work only because we know in which order contourSegmentCoeffs 
   // returns the coeffs:
-  case 0: { A = h *       x1  * y0;        } break; // top-left
-  case 1: { A = h * (T(1)-x0) * y1;        } break; // top-right
-  case 2: { A = h *       x1  * (T(1)-y0)  } break; // bottom-left
-  case 3: { A = h * (T(1)-x0) * (T(1)-y1); } break; // bottom-right
-
-
-  //case 0: { A = triangleArea(0.f, 0.f, x0, y0, x1, y1); } break; // top-left
-  //case 1: { A = triangleArea(1.f, 0.f, x0, y0, x1, y1); } break; // top-right
-  //case 2: { A = triangleArea(0.f, 1.f, x0, y0, x1, y1); } break; // bottom-left
-  //case 3: { A = triangleArea(1.f, 1.f, x0, y0, x1, y1); } break; // bottom-right
-
-
-
-
-
+  case 0: { A = h *    x1  * y0;     if(z00 < c) A = I-A; } break; // top-left
+  case 1: { A = h * (I-x0) * y1;     if(z01 < c) A = I-A; } break; // top-right
+  case 2: { A = h *    x1  * (I-y0); if(z10 < c) A = I-A; } break; // bottom-left
+  case 3: { A = h * (I-x0) * (I-y1); if(z11 < c) A = I-A; } break; // bottom-right
+  //case 4: { A = y0 + h * (y1-y0); if(z00 < c || z10 < c) A = I-A; } break; // horizontalish
   }
 
   return A;
-
-  //return 0.f; // preliminary
 }
+// actually, the coverage may be the computed area A or 1-A - we can distingusih the cases by 
+// looking at the value at the corners - whenever it's < c, keep value as is, and if it's >= c, 
+// use 1-A
 // actually, we can use much simpler formulas for the triangle using only the two sides that form 
 // a 90° angle - optimize!
 
