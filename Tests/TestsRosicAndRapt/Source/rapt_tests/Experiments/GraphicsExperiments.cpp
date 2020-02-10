@@ -643,7 +643,10 @@ T contourPixelCoverage(T z00, T z01, T z10, T z11, T c)
   return A;
 }
 // these simplified formulas work only because we know in which order contourSegmentCoeffs 
-// returns the coeffs:
+// returns the coeffs. maybe we should make it swappable whethr to use >= or < - sometimes we may 
+// want to invert the result - when drawing the bin-fills, we sometimes want to fill with the 
+// inverted weight ..i think - figure out - if so, maybe use a boolean and or let the user pass a 
+// comparison function cmp(z00, c), etc... or call it like inside(z00, c) or outside(z00, c)
 
 
 
@@ -700,6 +703,8 @@ void drawContour(const rsImage<TLvl>& z, TLvl level, rsImage<TPix>& target, TPix
           contourSubPixelPosition(z00, z01, z10, z11, level, &x, &y, &w);
         painter.paintDot(TLvl(i) + x, TLvl(j) + y, w * color); }}}
 }
+// if we do not anti-alias, we need not to call the expensive paintDot and can use the cheaper 
+// painter.plot instead ...i think
 
 
 template<class TPix, class TLvl>
@@ -720,8 +725,30 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
       //if(min >= lo && max <= hi)  // colors extra pixels in
       //if(min > lo && max <= hi)   // no etra blank or colored pixels but ugly jaggies
       if(min >= lo && max < hi)     // this seems to be artifact-free
-        painter.plot(i, j, fillColor); }}
+        painter.plot(i, j, fillColor);
+      else
+      {
+        // we are either on the contour or totally outside the drawing area
 
+        if(!antiAlias)  // ok - this looks right
+        {
+          if(min < lo && max >= lo)       // on low contour
+            painter.plot(i, j, fillColor * TPix(0.5));
+          else if(min < hi && max >= hi)  // on hi contour
+            painter.plot(i, j, fillColor * TPix(0.5));
+        }
+        else
+        {
+
+        }
+
+
+      }
+    }
+  }
+
+
+  /*
   // this does not seem to work:
   if(antiAlias) 
   {
@@ -740,6 +767,7 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
     // the factor 0.5 is appropriate because each contour is drawn twice - once as inner and once
     // as outer contour
   }
+  */
   // maybe integrate this into the main loop - extend the if-statement, add else-if branches for 
   // the cases: on inner contour, on outer contour
   // maybe for anti-aliasing, the color of the pixel should be determined by the average value of
@@ -894,7 +922,7 @@ void contours()
 
   //w = h = 513;
 
-  testContourSubPixelStuff();
+  rsAssert(testContourSubPixelStuff());
 
 
 
