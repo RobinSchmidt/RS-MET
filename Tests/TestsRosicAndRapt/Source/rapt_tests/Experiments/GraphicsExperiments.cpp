@@ -692,12 +692,14 @@ rsImage<TPix> getContours(const rsImage<TPix>& z, const std::vector<TLvl>& level
 
   const std::vector<TPix>& fc = fillColors; // shorthand
   size_t nc = fc.size();
+
+
   if(fc.size() > 1)  // we need at least 2 colors for anti-aliasing
   {
-    TPix loColor = blend(0.f,   fc[0], 0.5f);
-    TPix hiColor = blend(fc[0], fc[1], 0.5f);
-    fillBetweenContours(z, -RS_INF(TLvl), levels[0], c, 
-      fc[0], antiAlias, loColor, hiColor); 
+    TPix cF = fc[0];                     // fill color
+    TPix cL = blend(0.f,   fc[0], 0.5f); // low-level contour color
+    TPix cH = blend(fc[0], fc[1], 0.5f); // high-level contour color
+    fillBetweenContours(z, -RS_INF(TLvl), levels[0], c, cF, antiAlias, cL, cH); 
 
     
     for(size_t i = 0; i < levels.size()-1; i++)
@@ -706,15 +708,20 @@ rsImage<TPix> getContours(const rsImage<TPix>& z, const std::vector<TLvl>& level
       //size_t i1 = (i+1) % nc;
       //size_t i2 = (i+2) % nc;
 
-      size_t i0 = (i+nc) % nc;
-      size_t i1 =  i     % nc;
-      size_t i2 = (i+1)  % nc;
+      //size_t i0 = (i+nc) % nc;
+      //size_t i1 =  i     % nc;
+      //size_t i2 = (i+1)  % nc;
 
 
-      loColor = blend(fc[i0], fc[i1], 0.5f);
-      hiColor = blend(fc[i1], fc[i2], 0.5f);
-      fillBetweenContours(z, levels[i], levels[i+1], c,
-        fc[i % nc], antiAlias, loColor, hiColor);
+      size_t iL = (i-1 + nc) % nc;
+      size_t iF = (i       ) % nc;
+      size_t iH = (i+1     ) % nc;
+
+      cL = 0.5f * blend(fc[iL], fc[iF], 0.5f);
+      cH = 0.5f * blend(fc[iF], fc[iH], 0.5f);
+      cF = fc[iF];
+
+      fillBetweenContours(z, levels[i], levels[i+1], c, cF, antiAlias, cL, cH);
     }
   
     fillBetweenContours(z, levels[levels.size()-1], RS_INF(TLvl), c, 
@@ -808,8 +815,8 @@ void contours()
   std::vector<float> levels = rsRangeLinear(0.f, 1.f, numLevels);
   //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, false);
   //rsImageF imgCont = getContours(imgFunc, levels, { 1.0f }, true);
-  rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, false, {0.25f, 0.75f});
-  //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, true, {0.25f, 0.75f});
+  //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, false, {0.25f, 0.75f});
+  rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, true, {0.25f, 0.75f});
 
   // with anti-aliasing, we need to use about twice as much brightness to get the same visual 
   // brightness
