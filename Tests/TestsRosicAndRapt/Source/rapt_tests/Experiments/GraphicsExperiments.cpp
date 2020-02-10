@@ -541,9 +541,9 @@ void getContourSubPixelPosition2(float z00, float z01, float z10, float z11, flo
 }
 // not yet tested
 
-// factor out contourSegmentCoeffs - need also for fill-algo but in a different way
-void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, float c,
-  float* x, float* y, float* weight = nullptr)
+
+void contourSegmentCoeffs(float z00, float z01, float z10, float z11, float c,
+  float& x0, float& y0, float& x1, float& y1)
 {
   // This is how the function values are distributed over the pixels: z00 is the value at the pixel
   // under investigation and z01, z10, z11 are bottom, right and diagonal neighbours (in that 
@@ -552,7 +552,6 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
   //           |    |
   //          z01--z11
 
-  float x0, x1, y0, y1;
   if((z00 < c && z01 >= c) || (z00 >= c && z01 < c)) {        // segment goes through left border
     x0 = 0.f;
     y0 = rsLinToLin(c, z00, z01, 0.f, 1.f);
@@ -583,6 +582,24 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
       y0 = 1.f;
       x1 = 1.f;
       y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }} // right
+}
+// maybe return which branch we ended up in: 0: top-left, 1: top-right, 2: bottom-left, 
+// 3: bottom-right, 4: horizontalish, 5: verticalish
+
+// optimize the calls to rsLinToLin to get rid of divisions where possible - keep this code as 
+// prototype for unit testing the optimized code - i think, it's not possible, but we may get rid 
+// of some of the multiplications because outMax-outMin = 1 - make a function rsLinTo01, have a 
+// similar rs01ToLin
+
+// maybe the logical statements can be simplified by checking things like 
+// if (z00-c)*(z01-c) < 0,  >= 0 instead of the complicated and-or statements
+
+// factor out contourSegmentCoeffs - need also for fill-algo but in a different way
+void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, float c,
+  float* x, float* y, float* weight = nullptr)
+{
+  float x0, x1, y0, y1;
+  contourSegmentCoeffs(z00, z01, z10, z11, c, x0, y0, x1, y1);
 
   // We have our line equation - evaluate line equation at midpoint to get the center of the 
   // contour segment. The weight is given by the length divided by sqrt(2) such that diagonals get 
@@ -592,22 +609,12 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
   *x = x0 + 0.5f * dx;
   *y = y0 + 0.5f * dy;
 
-  //// test:
-  //*x = 1.f - *x;
-  //*y = 1.f - *y;
-
   if(weight != nullptr)
     //*weight = max(dx, dy);  // nope - this looks worse - screw-effect stronger and there are holes
     *weight = sqrt(dx*dx + dy*dy) / sqrt(2.f);  // full weight only for diagonals
     // optimize, maybe use max(dx, dy)
 }
-// optimize the calls to rsLinToLin to get rid of divisions where possible - keep this code as 
-// prototype for unit testing the optimized code - i think, it's not possible, but we may get rid 
-// of some of the multiplications because outMax-outMin = 1 - make a function rsLinTo01, have a 
-// similar rs01ToLin
 
-// maybe the logical statements can be simplified by checking things like 
-// if (z00-c)*(z01-c) < 0,  >= 0 instead of the complicated and-or statements
 
 
 
@@ -900,6 +907,10 @@ void contours()
 // -maybe fill the shape by coloring all pixels for which f(x,y) < c
 // -which should we increment or decrement and for which should we solve? x0 or y0? maybe that 
 //  should also be decided based on a condition
+//  -maybe y should be use a fixed increment - because we may later extend it to taking two 
+//   solutions (x0,y0),(x1,y2) and advancing y0,y1 in a loop and compute x0,x1 to get a span which
+//   can then be filled - but the boundaries of the span should be only partially colored for 
+//   anti-aliasing - that should give a reasonable anti-aliased ellipse-drawing algo
 
 // maybe make animations with
 // http://www.softpedia.com/get/Multimedia/Graphic/Graphic-Others/APNG-Anime-Maker.shtml
