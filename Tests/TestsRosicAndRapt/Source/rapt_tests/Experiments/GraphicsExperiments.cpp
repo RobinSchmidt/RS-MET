@@ -541,6 +541,7 @@ void getContourSubPixelPosition2(float z00, float z01, float z10, float z11, flo
 }
 // not yet tested
 
+// factor out contourSegmentCoeffs - need also for fill-algo but in a different way
 void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, float c,
   float* x, float* y, float* weight = nullptr)
 {
@@ -646,7 +647,6 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
 {
   rsImagePainter<TPix, TLvl, TLvl> painter(&target);
 
-  
   for(int i = 0; i < z.getWidth()-1; i++) {
     for(int j = 0; j < z.getWidth()-1; j++) {
       TLvl z00 = z(i, j);
@@ -661,18 +661,32 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
       if(min >= lo && max < hi)     // this seems to be artifact-free
         painter.plot(i, j, fillColor); }}
 
-
   // this does not seem to work:
   if(antiAlias) 
   {
     //drawContour(z, lo, target, loColor, true);
+    //drawContour(z, hi, target, hiColor, true); // they seem to be too dark
+
     drawContour(z, hi, target, hiColor, true); // they seem to be too dark
+
+    //drawContour(z, lo, target, 0.5f * fillColor, true);
+    //drawContour(z, hi, target, 0.5f * fillColor, true);
   }
   else
   {
     drawContour(z, lo, target, 0.5f * fillColor, false);
     drawContour(z, hi, target, 0.5f * fillColor, false);
+    // the factor 0.5 is appropriate because each contour is drawn twice - once as inner and once
+    // as outer contour
   }
+  // maybe integrate this into the main loop - extend the if-statement, add else-if branches for 
+  // the cases: on inner contour, on outer contour
+  // maybe for anti-aliasing, the color of the pixel should be determined by the average value of
+  // the 4 z-values? maybe by how far away it is from the level ..or maybe by where the average 
+  // level falls in between lo and hi ...no: we have to compute the area of the pixel that is 
+  // covered by the contour segment!! maybe factor out the computation of the line-segment coeffs
+  // x0,y0,x1,y1
+
   // maybe draw only the outer boundary
 
   // but why only draw the low contour - maybe we should draw both with 0.5 times the 
@@ -688,7 +702,7 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
 // duh! it may be between two other contours! ..instead: if it's not *strictly* in between the two 
 // contours, we need to check if it's on one of the two contours - and if it is, draw the contour
 // but mayb we can re-use drawContour for this - draw all contours with a color given by the blend 
-// between two of the level coolors
+// between two of the level colors
 
 template<class TPix, class TWgt>
 TPix blend(TPix c1, TPix c2, TWgt w)
@@ -722,16 +736,17 @@ rsImage<TPix> getBinFills(
   size_t j = 0; // color index
   size_t nc = colors.size();
   for(size_t i = 0; i < levels.size()-1; i++)
-  //for(size_t i = 0; i < 2; i++)  // test
   {
-    TPix cF = colors[j % nc];
+    TPix cF = colors[ j       % nc];
+    TPix cL = colors[(j-1+nc) % nc];
+    TPix cH = colors[(j+1   ) % nc];
 
-    TPix cC = 0.f;
-
+    //TPix cC = 0.f;
     //TPix cC = TPix(0.5) * (cF + colors[(j+1) % nc]);  // seems to dark
     //TPix cC = (cF + colors[(j+1) % nc]);
 
-    fillBetweenContours(z, levels[i], levels[i+1], imgBins, cF, antiAlias, cC, cC);
+    //fillBetweenContours(z, levels[i], levels[i+1], imgBins, cF, antiAlias, .5f * cL, .5f * cH);
+    fillBetweenContours(z, levels[i], levels[i+1], imgBins, cF, antiAlias, cL, cH);
     j++;
   }
 
@@ -840,7 +855,7 @@ void contours()
     levels,
     //{ 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f },  // bin boundaries, levels
     { 0.125f, 0.25f, 0.375f, 0.5f, 0.625f, 0.75f, 0.875f },               // colors
-    false);
+    true);
 
 
 
