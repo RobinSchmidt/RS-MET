@@ -648,12 +648,16 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
       TLvl z11 = z(i+1, j+1);
       TLvl min = rsMin(z00, z01, z10, z11);
       TLvl max = rsMax(z00, z01, z10, z11);
-      if(min >= lo && max < hi)  // we need >, <, i think
+      //if(min >= lo && max <= hi)  // we need >, <, i think
+      if(min > lo && max < hi) 
+      //if( !(min > hi || max < lo) ) // pixel value outside the range lo <= val <= hi
       {
         // we are between the two contours - fill:
         painter.plot(i, j, fillColor);
+        int dummy = 0;
         
       }
+      /*
       else
       {
         // we are on a contour - use an intermediate brightness
@@ -676,13 +680,18 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
         }
         else
         {
+          //painter.plot(i, j, 0.125f);
+          painter.plot(i, j, 0.05);
+          // it seems like it's done multiple times to each pixel - how can this be?
+
           //painter.plot(i, j, contourColor);
           //int dummy = 0;
           // paints everything white
         }
-        
-
       }
+      */
+
+      
     }
   }
 }
@@ -690,6 +699,11 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
 // getMinMax(i, j, min, max)
 // how to anti-alias this? maybe if we are on a contour, we should choose a color in between 0 
 // and color - determined again by position and length of the contour segment?
+// wait - no - being in not in between the two contours does not mean that it's on the contour! 
+// duh! it may be between two other contours! ..instead: if it's not *strictly* in between the two 
+// contours, we need to check if it's on one of the two contours - and if it is, draw the contour
+// but mayb we can re-use drawContour for this - draw all contours with a color given by the blend 
+// between two of the level coolors
 
 template<class TPix, class TWgt>
 TPix blend(TPix c1, TPix c2, TWgt w)
