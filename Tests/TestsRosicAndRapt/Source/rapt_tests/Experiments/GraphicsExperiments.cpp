@@ -634,6 +634,7 @@ void drawContour(const rsImage<TLvl>& z, TLvl level, rsImage<TPix>& target, TPix
         painter.paintDot(TLvl(i) + x, TLvl(j) + y, w * color); }}}
 }
 
+
 template<class TPix, class TLvl>
 void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>& target,
   TPix color, bool antiAlias)
@@ -652,6 +653,9 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
 }
 // can we refactor to get rid of the duplication? maybe a function isOnContour(i, j) or 
 // getMinMax(i, j, min, max)
+// how to anti-alias this? maybe if we are on a contour, we should choose a color in between 0 
+// and color - determined again by position and length of the contour segment?
+
 
 template<class TLvl, class TPix>
 rsImage<TPix> getContours(const rsImage<TPix>& z, const std::vector<TLvl>& levels, 
@@ -734,7 +738,7 @@ void contours()
   // if it's as long as possible (sqrt(2)) we apply the full color, otherwise it gets scaled down
 
 
-  float r = 12;
+  float r = 15;
   int numLevels = 13;
 
   float xMin = -r;
@@ -750,7 +754,7 @@ void contours()
       float y = yMin + j * (yMax-yMin) / (h-1);
       //float z = x*x - y*y;            // hyperbolas - make this more flexible - use a lambda function
       //float z = x*x - y*y + 2*x*y;
-      //float z = x*sin(y) + y*cos(x) + 0.1*x*y; // complicated function
+      //float z = x*sin(y) + y*cos(x) + 0.1*x*y; // complicated function - gets more complicated far from middle
       float z = x*sin(y) + y*cos(x) + 0.1*x*y + 0.1*x*x - 0.1*y*y; 
       //float z = x*x + y*y;  // circles
       imgFunc.setPixelColor(i, j, z);
@@ -763,7 +767,7 @@ void contours()
   //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, false);
   //rsImageF imgCont = getContours(imgFunc, levels, { 1.0f }, true);
 
-  rsImageF imgCont = getContours(imgFunc, levels, { 1.0f }, false, {0.25f, 0.75f});
+  rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, false, {0.25f, 0.75f});
 
   // with anti-aliasing, we need to use about twice as much brightness to get the same visual 
   // brightness
@@ -787,6 +791,9 @@ void contours()
   // the right column and bottom row has no countour values - no surprise - the loop only goes up 
   // to w-1,h-1
   // maybe use powers of two +1 for the size and cut off bottom-row and right-column aftewards
+
+  // maybe try to overlay images with multiple settings for the number/positions of the level-lines
+  // -could create intersting patterns
 }
 
 // implicit curve drawing algo: 
