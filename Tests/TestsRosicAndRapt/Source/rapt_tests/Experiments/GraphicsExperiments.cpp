@@ -629,23 +629,17 @@ T contourPixelCoverage(T z00, T z01, T z10, T z11, T c)
   {
   // these simplified formulas work only because we know in which order contourSegmentCoeffs 
   // returns the coeffs:
-  case 0: { 
-    A = h *    x1  * y0;
-    if(z00 >= c) 
-      A = I-A; } break; // top-left
-  case 1: { 
-    A = h * (I-x0) * y1;
-    if(z10 >= c) 
-      A = I-A; } break; // top-right
-  case 2: { 
-    A = h *    x1  * (I-y0); 
-    if(z01 >= c) 
-      A = I-A; } break; // bottom-left
-  case 3: { 
-    A = h * (I-x0) * (I-y1); 
-    if(z11 >= c) 
-      A = I-A; } break; // bottom-right
-  //case 4: { A = y0 + h * (y1-y0); if(z00 < c || z10 < c) A = I-A; } break; // horizontalish
+  case 0: { A = h *    x1  * y0;     if(z00 >= c) A = I-A; } break; // top-left
+  case 1: { A = h * (I-x0) * y1;     if(z10 >= c) A = I-A; } break; // top-right
+  case 2: { A = h *    x1  * (I-y0); if(z01 >= c) A = I-A; } break; // bottom-left
+  case 3: { A = h * (I-x0) * (I-y1); if(z11 >= c) A = I-A; } break; // bottom-right
+  case 4: {                   // horizontalish
+    if(y0 < y1)
+      A = y1 + h * (y0-y1);   //   upward
+    else
+      A = y0 + h * (y1-y0);   //   downward
+    if(z00 >= c || z10 >= c) 
+      A = I-A; } break;
   }
 
   return A;
@@ -874,6 +868,18 @@ bool testContourSubPixelStuff()
   c = contourPixelCoverage(8.f, 2.f, 8.f, 8.f, 5.f); r &= c == 0.125;
   c = contourPixelCoverage(8.f, 8.f, 2.f, 8.f, 5.f); r &= c == 0.125;
   c = contourPixelCoverage(8.f, 8.f, 8.f, 2.f, 5.f); r &= c == 0.125;
+
+  //c = contourPixelCoverage(2.f, 8.f, 2.f, 8.f, 5.f);
+  //c = contourPixelCoverage(2.f, 2.f, 8.f, 8.f, 5.f);
+
+  // horizontalish lines:
+  c = contourPixelCoverage(2.f, 8.f, 4.f, 8.f, 5.f); r &= c == 0.375;
+  c = contourPixelCoverage(4.f, 8.f, 2.f, 8.f, 5.f); r &= c == 0.375;
+  c = contourPixelCoverage(8.f, 2.f, 8.f, 4.f, 5.f); r &= c == 0.375;
+  c = contourPixelCoverage(8.f, 4.f, 8.f, 2.f, 5.f); r &= c == 0.375;
+
+  // verticalish lines:
+
 
 
   return r;
