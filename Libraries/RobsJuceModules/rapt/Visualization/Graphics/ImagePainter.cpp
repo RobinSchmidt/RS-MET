@@ -122,12 +122,14 @@ void rsImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, T
   x -= xi;                 // fractional part of x
   y -= yi;                 // fractional part of y
 
-  // compute weights for bilinear deinterpolation (maybe factor out):
+  // compute weights for bilinear deinterpolation/spreading (maybe factor out):
   TPix a, b, c, d;
   d = TPix(x*y);
   c = TPix(y)-d;
   b = TPix(x)-d;
   a = d+TPix(1-x-y);
+  // formulas have been obtained by the condition that a+b+c+d = 1...right? but maybe their square 
+  // should sum to unity? areas with larger spreading appear darker
 
   // compute values to accumulate into the 4 pixels:
   a *= color;  // (xi,   yi)

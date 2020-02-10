@@ -544,65 +544,48 @@ void getContourSubPixelPosition2(float z00, float z01, float z10, float z11, flo
 void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, float c,
   float* x, float* y, float* weight = nullptr)
 {
-  // this is how the function values are distributed over the pixels: z00 is the value at the pixel
+  // This is how the function values are distributed over the pixels: z00 is the value at the pixel
   // under investigation and z01, z10, z11 are bottom, right and diagonal neighbours (in that 
   // order):
-  // z00--z10
-  //  |    |
-  // z01--z11
+  //          z00--z10
+  //           |    |
+  //          z01--z11
 
   float x0, x1, y0, y1;
-  if((z00 < c && z01 >= c) || (z00 >= c && z01 < c)) {  // check left border
-    // segment goes through left border - we put the first point (x0,y0) there:
+  if((z00 < c && z01 >= c) || (z00 >= c && z01 < c)) {        // segment goes through left border
     x0 = 0.f;
     y0 = rsLinToLin(c, z00, z01, 0.f, 1.f);
-    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) { // check top border
-      // segment goes through top border - put the second point (x1,y1) there:
+    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) {      // segment goes through top border
       x1 = rsLinToLin(c, z00, z10, 0.f, 1.f);
       y1 = 0.f; }
-    else if((z01 < c && z11 >= c) || (z01 >= c && z11 < c)) {
-      // segment goes through bottom border
+    else if((z01 < c && z11 >= c) || (z01 >= c && z11 < c)) { // segment goes through bottom border
       x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
       y1 = 1.f; }
-    else {
-      // segment goes through right border (i.e. is horizontalish):
-      x1 = 1.f;
-      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }
-  }
-  else
-  {
+    else {                                                    // segment goes through right border,
+      x1 = 1.f;                                               // i.e. is horizontalish)
+      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }}
+  else {
     // segment does not go through left border - so it must start either at top or bottom border
-    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) // check top border
+    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c))     // segment goes through the top border
     {
-      // segment goes through the top border
       x0 = rsLinToLin(c, z00, z10, 0.f, 1.f);
       y0 = 0.f;
-
-      if((z10 < c && z11 >= c) || (z10 >= c && z11 < c))
-      {
-        // segment goes through right border
+      if((z10 < c && z11 >= c) || (z10 >= c && z11 < c)) { // segment goes through right border
         x1 = 1.f;
-        y1 = rsLinToLin(c, z10, z11, 0.f, 1.f);
-      }
-      else
-      {
-        // segment goes through bottom border (is verticalish)
-        x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
-        y1 = 1.f;
-      }
-
-    }
-    else
-    {
+        y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }
+      else  {                                              // segment goes through bottom border,
+        x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);            // i.e. is verticalish
+        y1 = 1.f; }}
+    else  {
       // segment does not go through top border - so it must go through the bottom and then right
-      x0 = rsLinToLin(c, z01, z11, 0.f, 1.f);  // bottom
+      x0 = rsLinToLin(c, z01, z11, 0.f, 1.f);    // bottom
       y0 = 1.f;
       x1 = 1.f;
-      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f);  // right
-    }
-  }
+      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }} // right
 
-  // evaluate line equation at midpoint - this gives the center of the segment
+  // We have our line equation - evaluate line equation at midpoint to get the center of the 
+  // contour segment. The weight is given by the length divided by sqrt(2) such that diagonals get 
+  // weight 1.0
   float dx = (x1-x0);
   float dy = (y1-y0);
   *x = x0 + 0.5f * dx;
@@ -610,27 +593,24 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
   if(weight != nullptr)
     *weight = sqrt(dx*dx + dy*dy) / sqrt(2.f);  // full weight only for diagonals
     // optimize
-
-
-  //// sanity check - this actually triggers - why?
-  //string err = to_string(branch);
-  //rsAssert(rsIsInRange(*x, min, 1.f), err.c_str());
-  //rsAssert(rsIsInRange(*y, min, 1.f), err.c_str());
-  // seems to trigger in braches 3..6 - i've not yet seen it in 1 or 2 but didn't check 
-  // exhaustively
 }
-// we should return also the length of the line segment which can be used to scale the color
-
 // optimize the calls to rsLinToLin to get rid of divisions where possible - keep this code as 
-// prototype for unit testing the optimized code
+// prototype for unit testing the optimized code - i think, it's not possible, but we may get rid 
+// of some of the multiplications because outMax-outMin = 1 - make a function rsLinTo01, have a 
+// similar rs01ToLin
 
-void drawContour(const rsImageF& z, float level, rsImageF& target)
+// simpler idea:
+// -compute z0 = (z00 + z01) / 2, z1 = (z10 + z11) / 2
+//  z0 is the average value on the left, z1 on the right
+// -the x-value/offset is determined by how much this average is above/below the target
+//  level
+// -similar for y
+// -or is it the other way around?
+// -might be even better than the center of the line 
+
+void drawContour(const rsImageF& z, float level, rsImageF& target, float color, bool antiAlias)
 {
   rsImagePainter<float, float, float> painter(&target);
-
-  bool antiAlias = true; // make parameter
-  float color = 0.5;    // dito
-
   for(int i = 0; i < z.getWidth()-1; i++) {
     for(int j = 0; j < z.getWidth()-1; j++) {
       float z00 = z(i,   j  );
@@ -644,22 +624,14 @@ void drawContour(const rsImageF& z, float level, rsImageF& target)
         if(antiAlias)
           getContourSubPixelPosition3(z00, z01, z10, z11, level, &x, &y, &w);
         painter.paintDot(float(i) + x, float(j) + y, w * color); }}}
-
-  // or simpler:
-  // -compute z0 = (z00 + z01) / 2, z1 = (z10 + z11) / 2
-  //  z0 is the average value on the left, z1 on the right
-  // -the x-value/offset is determined by how much this average is above/below the target
-  //  level
-  // -similar for y
-  // -or is it the other way around?
-  // -might be even better than the center of the line 
 }
 
-rsImageF getContours(const rsImageF& z, const std::vector<float> levels)
+rsImageF getContours(const rsImageF& z, const std::vector<float>& levels, 
+  const std::vector<float>& colors, bool antiAlias)
 {
   rsImageF c(z.getWidth(), z.getHeight());
   for(size_t i = 0; i < levels.size(); i++)
-    drawContour(z, levels[i], c);
+    drawContour(z, levels[i], c, colors[i % colors.size()] , antiAlias);
   return c;
 }
 
@@ -718,7 +690,9 @@ void contours()
   // if it's as long as possible (sqrt(2)) we apply the full color, otherwise it gets scaled down
 
 
-  float r = 8;
+  float r = 10;
+  int numLevels = 13;
+
   float xMin = -r;
   float xMax = +r;
   float yMin = -r;
@@ -730,26 +704,30 @@ void contours()
     for(int j = 0; j < h; j++) {
       float x = xMin + i * (xMax-xMin) / (w-1);
       float y = yMin + j * (yMax-yMin) / (h-1);
-
       //float z = x*x - y*y;            // hyperbolas - make this more flexible - use a lambda function
       //float z = x*x - y*y + 2*x*y;
-
       float z = x*sin(y) + y*cos(x) + 0.1*x*y; // complicated function
-
       //float z = x*x + y*y;  // circles
-
       imgFunc.setPixelColor(i, j, z);
     }
   }
   normalize2(imgFunc);
 
   // create image with contours:
-  std::vector<float> levels = rsRangeLinear(0.f, 1.f, 8);
-  rsImageF imgCont = getContours(imgFunc, levels); 
+  std::vector<float> levels = rsRangeLinear(0.f, 1.f, numLevels);
+  //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, false);
+  rsImageF imgCont = getContours(imgFunc, levels, { 1.0f }, true);
+  // with anti-aliasing, we need to use about twice as much brightness to get the same visual 
+  // brightness
+
+  // perhaps the bilinear spreading function can be improved by requiring the weights nto to add up 
+  // to 1 but their squares should add up to 1? prtions of the line where there's a lot of spreading 
+  // appear darker
 
 
   // todo: 
-  // -make a composited image with function values and contours
+  // -make a composited image with function values and contours - maybe have a compose function 
+  //  that takes a combiner-function for pixel values
   // -maybe use the color-channels to plot more than one function 
   //  -plot complex functions - real -> red, imag -> green or blue
   // -could this be used as a drawing primitive? it can draw circles, for example - but it's 
