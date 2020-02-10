@@ -723,6 +723,21 @@ rsImage<TPix> getContours(const rsImage<TPix>& z, const std::vector<TLvl>& level
   return c;
 }
 
+template<class TLvl, class TPix>
+rsImage<TPix> getBinFills(
+  const rsImage<TPix>& z, 
+  const std::vector<TLvl>& levels,
+  const std::vector<TPix>& colors, 
+  bool antiAlias)
+{
+  rsImageF f(z.getWidth(), z.getHeight());  // fills
+
+
+  return f;
+
+  int dummy = 0;
+}
+
 void normalize(rsImageF& img)
 {
   float* p = img.getPixelPointer(0, 0);
@@ -810,13 +825,21 @@ void contours()
   // create image with contours:
   std::vector<float> levels = rsRangeLinear(0.f, 1.f, numLevels);
   //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, false);
-  //rsImageF imgCont = getContours(imgFunc, levels, { 1.0f }, true);
+  rsImageF imgCont = getContours(imgFunc, levels, { 1.0f }, true);
   //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, false, {0.25f, 0.75f});
   //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, true, {0.25f, 0.75f});
 
 
-  rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, true, 
-    {0.125f, 0.25f, 0.375f, 0.5f, 0.625, 0.75f, 0.875});
+  //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, true, 
+  //  {0.125f, 0.25f, 0.375f, 0.5f, 0.625, 0.75f, 0.875});
+
+  rsImageF imgFills = getBinFills(imgFunc, 
+    levels,
+    //{ 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f },  // bin boundaries, levels
+    { 0.125f, 0.25f, 0.375f, 0.5f, 0.625f, 0.75f, 0.875f },               // colors
+    true);
+
+
 
   // with anti-aliasing, we need to use about twice as much brightness to get the same visual 
   // brightness
@@ -835,8 +858,9 @@ void contours()
   //  very inefficient - can this be optimized into a reasonable implicit curve drawing algo?
 
 
-  writeScaledImageToFilePPM(imgFunc, "Function.ppm", 4);
-  writeScaledImageToFilePPM(imgCont, "Contours.ppm", 4);
+  writeScaledImageToFilePPM(imgFunc,  "Function.ppm", 4);
+  writeScaledImageToFilePPM(imgCont,  "Contours.ppm", 4);
+  writeScaledImageToFilePPM(imgFills, "BinFills.ppm", 4);
   // the right column and bottom row has no countour values - no surprise - the loop only goes up 
   // to w-1,h-1
   // maybe use powers of two +1 for the size and cut off bottom-row and right-column aftewards
