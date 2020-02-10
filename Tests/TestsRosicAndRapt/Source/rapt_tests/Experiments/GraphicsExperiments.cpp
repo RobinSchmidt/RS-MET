@@ -739,6 +739,20 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
         }
         else
         {
+          TLvl c; // coverage
+          if(min < lo && max >= lo)
+          {
+            c = contourPixelCoverage(z00, z01, z10, z11, lo);
+            //painter.plot(i, j, TPix(c)*fillColor);
+            painter.plot(i, j, TPix(TLvl(1)-c)*fillColor);
+          }
+          else if(min < hi && max >= hi)
+          {
+            c = contourPixelCoverage(z00, z01, z10, z11, hi);
+            painter.plot(i, j, TPix(c)*fillColor);
+            //painter.plot(i, j, TPix(TLvl(1)-c)*fillColor);  // hi-contours use inverted weights
+          }
+          // or do we need to use hiColor/lowColor?
 
         }
 
