@@ -555,33 +555,34 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
 
   int branch = 0;  // for debug
 
+  float min = 0.f;  // for some tests to switch between 0 and -1 - nope, 0 seem right
+
   float x0, x1, y0, y1;
   if((z00 < c && z01 >= c) || (z00 >= c && z01 < c)) // check left border
   {
     // segment goes through left border - we put the first point (x0,y0) there:
     x0 = 0.f;
-    y0 = rsLinToLin(c, z00, z01, 0.f, 1.f);
+    y0 = rsLinToLin(c, z00, z01, min, 1.f);
     if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) // check top border
     {
       branch = 1;
       // segment goes through top border - we put the second point (x1,y1) there:
-      x1 = rsLinToLin(c, z00, z10, 0.f, 1.f);
+      x1 = rsLinToLin(c, z00, z10, min, 1.f);
       y1 = 0.f;
     }
     else if((z01 < c && z11 >= c) || (z01 >= c && z11 < c))
     {
       branch = 2;
       // segment goes through bottom border
-      x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
-      //y1 = 0.f; // should be wrong but doesn't trigger
-      y1 = 1.f; // trigger but should be correct
+      x1 = rsLinToLin(c, z01, z11, min, 1.f);
+      y1 = 1.f;
     }
     else
     {
       branch = 3;
       // segment goes through right border (i.e. is horizontalish):
       x1 = 1.f;
-      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); // looks good but triggers
+      y1 = rsLinToLin(c, z10, z11, min, 1.f);
     }
   }
   else
@@ -595,7 +596,7 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
     if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) // check top border
     {
       // segment goes through the top border
-      x0 = rsLinToLin(c, z00, z10, 0.f, 1.f);
+      x0 = rsLinToLin(c, z00, z10, min, 1.f);
       y0 = 0.f;
 
       if((z10 < c && z11 >= c) || (z10 >= c && z11 < c))
@@ -603,13 +604,13 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
         branch = 4;
         // segment goes through right border
         x1 = 1.f;
-        y1 = rsLinToLin(c, z10, z11, 0.f, 1.f);
+        y1 = rsLinToLin(c, z10, z11, min, 1.f);
       }
       else
       {
         branch = 5;
         // segment goes through bottom border (is verticalish)
-        x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
+        x1 = rsLinToLin(c, z01, z11, min, 1.f);
         y1 = 1.f;
       }
 
@@ -618,10 +619,10 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
     {
       branch = 6;
       // segment does not go through top border - so it must go through the bottom and then right
-      x0 = rsLinToLin(c, z01, z11, 0.f, 1.f);  // bottom
+      x0 = rsLinToLin(c, z01, z11, min, 1.f);  // bottom
       y0 = 1.f;
       x1 = 1.f;
-      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f);  // right
+      y1 = rsLinToLin(c, z10, z11, min, 1.f);  // right
     }
 
     // test/debug:
@@ -638,12 +639,12 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
 
   // sanity check - this actually triggers - why?
   string err = to_string(branch);
-  rsAssert(rsIsInRange(*x, 0.f, 1.f), err.c_str());
-  rsAssert(rsIsInRange(*y, 0.f, 1.f), err.c_str());
+  rsAssert(rsIsInRange(*x, min, 1.f), err.c_str());
+  rsAssert(rsIsInRange(*y, min, 1.f), err.c_str());
   // seems to trigger in braches 3..6 - i've not yet seen it in 1 or 2 but didn't check 
   // exhaustively
 }
-// this is still wrong! it sometimes produces values outside 0..1 - make tests
+// we should return also the length of the line segment which can be used to scale the color
 
 // optimize the calls to rsLinToLin to get rid of divisions where possible - keep this code as 
 // prototype for unit testing the optimized code
@@ -651,10 +652,13 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
 void drawContour(const rsImageF& z, float level, rsImageF& target)
 {
   rsImagePainter<float, float, float> painter(&target);
+  //painter.setNeighbourWeightsForSimpleDot(
   // maybe pass this object from outside, also take a color - or maybe the color should be 
   // part of the state of the painter
 
   bool antiAlias = true; // make parameter
+
+  float color = 0.5;
 
   for(int i = 0; i < z.getWidth()-1; i++) {
     for(int j = 0; j < z.getWidth()-1; j++) {
@@ -673,7 +677,17 @@ void drawContour(const rsImageF& z, float level, rsImageF& target)
         if(antiAlias)
           getContourSubPixelPosition3(z00, z01, z10, z11, level, &x, &y);
 
-        painter.paintDot(float(i) + x, float(j) + y, 0.5f); 
+
+        //if(target(i,j) < color)  // this is an ad-hoc way to get rid of the artifacts
+        //if(target(i,j) == 0.f)
+          painter.paintDot(float(i) + x, float(j) + y, color); 
+
+
+
+
+        float p = target(i,j); // for a breakpoint condition like p > 0.5
+        int dummy = 0;
+        //rsAssert(target(i, j) <= 0.5f);
       }
     }
   }
@@ -742,19 +756,27 @@ void contours()
 
   // test - turn into unit-test
   float x,y;
-  getContourSubPixelPosition1(6.f, 2.f, 8.f, 4.f, 5.f, &x, &y); // 0.5, 0.5 - good!
-  getContourSubPixelPosition1(6.f, 0.f, 8.f, 2.f, 5.f, &x, &y); // bad
+  //getContourSubPixelPosition1(6.f, 2.f, 8.f, 4.f, 5.f, &x, &y); // 0.5, 0.5 - good!
+  //getContourSubPixelPosition1(6.f, 0.f, 8.f, 2.f, 5.f, &x, &y); // bad
   // try 10,10,10,0  2
-
 
   getContourSubPixelPosition3(2.f, 8.f, 8.f, 8.f, 5.f, &x, &y); // 1, 0.25, 0.25
   getContourSubPixelPosition3(8.f, 2.f, 8.f, 8.f, 5.f, &x, &y); // 2, 0.25, 0.25
   getContourSubPixelPosition3(8.f, 8.f, 2.f, 8.f, 5.f, &x, &y); // 4, 0.75, 0.25
   getContourSubPixelPosition3(8.f, 8.f, 8.f, 2.f, 5.f, &x, &y); // 6, 0.75, 0.75 
-  getContourSubPixelPosition3(2.f, 2.f, 8.f, 8.f, 5.f, &x, &y); // 5, 0.5, 0.5 - should be 0.25,0.75
-  getContourSubPixelPosition3(2.f, 8.f, 2.f, 8.f, 5.f, &x, &y); // 3, 0.5, 0.5 - should be 0.5,0.25
-  // goes into barnaches 1,2,4,6,5,3 - that is correct?
-  // branches 5,3 seem buggy
+  getContourSubPixelPosition3(2.f, 2.f, 8.f, 8.f, 5.f, &x, &y); // 5, 0.5, 0.5
+  getContourSubPixelPosition3(2.f, 8.f, 2.f, 8.f, 5.f, &x, &y); // 3, 0.5, 0.5
+  getContourSubPixelPosition3(2.f, 4.f, 8.f, 8.f, 5.f, &x, &y); // 5, 0.375, 0.5
+  getContourSubPixelPosition3(2.f, 8.f, 4.f, 8.f, 5.f, &x, &y); // 3, 0.5, 0.375
+  // the numbers seem ok - but the plot still shows artifacts
+  // could it be that pixels get drawn twice or even more often when more than 2 neighbouring 
+  // pixels satisfy the condition to draw a pixel? can that happen? if so, how?
+  // ...but then we should also see it in non-anti-aliased mode
+  // oh! i think, the offset should not go from 0..1 but from -1..+1 the paint function spreads 
+  // into 9 pixels, not 2 - or no - this only happens when thickness is applied
+  // i think, we should scale the color according to the length of the segment in the pixel - only 
+  // if it's as long as possible (sqrt(2)) we apply the full color, otherwise it gets scaled down
+
 
   float r = 8;
   float xMin = -r;
@@ -768,12 +790,13 @@ void contours()
     for(int j = 0; j < h; j++) {
       float x = xMin + i * (xMax-xMin) / (w-1);
       float y = yMin + j * (yMax-yMin) / (h-1);
-      //float z = x*x - y*y;            // make this more flexible - use a lambda function
+
+      //float z = x*x - y*y;            // hyperbolas - make this more flexible - use a lambda function
       //float z = x*x - y*y + 2*x*y;
 
-      float z = x*sin(y) + y*cos(x) + 0.1*x*y;
+      //float z = x*sin(y) + y*cos(x) + 0.1*x*y; // complicated function
 
-      //float z = x*x + y*y;  // contours are circles
+      float z = x*x + y*y;  // circles
 
       imgFunc.setPixelColor(i, j, z);
     }
@@ -793,8 +816,8 @@ void contours()
   //  very inefficient - can this be optimized into a reasonable implicit curve drawing algo?
 
 
-  writeScaledImageToFilePPM(imgFunc, "Function.ppm", 2);
-  writeScaledImageToFilePPM(imgCont, "Contours.ppm", 2);
+  writeScaledImageToFilePPM(imgFunc, "Function.ppm", 4);
+  writeScaledImageToFilePPM(imgCont, "Contours.ppm", 4);
   // the right column and bottom row has no countour values - no surprise - the loop only goes up 
   // to w-1,h-1
   // maybe use powers of two +1 for the size and cut off bottom-row and right-column aftewards
