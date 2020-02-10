@@ -591,8 +591,9 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
   *x = x0 + 0.5f * dx;
   *y = y0 + 0.5f * dy;
   if(weight != nullptr)
+    //*weight = max(dx, dy);  // nope - this looks worse - screw-effect stronger and there are holes
     *weight = sqrt(dx*dx + dy*dy) / sqrt(2.f);  // full weight only for diagonals
-    // optimize
+    // optimize, maybe use max(dx, dy)
 }
 // optimize the calls to rsLinToLin to get rid of divisions where possible - keep this code as 
 // prototype for unit testing the optimized code - i think, it's not possible, but we may get rid 
@@ -613,7 +614,8 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
 // -or is it the other way around?
 // -might be even better than the center of the line 
 
-void drawContour(const rsImageF& z, float level, rsImageF& target, float color, bool antiAlias)
+void drawContour(const rsImageF& z, float level, rsImageF& target, float color, bool antiAlias,
+  bool fill = false, float fillColor = 0.f)
 {
   rsImagePainter<float, float, float> painter(&target);
   for(int i = 0; i < z.getWidth()-1; i++) {
@@ -628,15 +630,38 @@ void drawContour(const rsImageF& z, float level, rsImageF& target, float color, 
         float x = 0.f, y = 0.f, w = 1.f; // x,y offsets and weight for color
         if(antiAlias)
           getContourSubPixelPosition3(z00, z01, z10, z11, level, &x, &y, &w);
-        painter.paintDot(float(i) + x, float(j) + y, w * color); }}}
+        painter.paintDot(float(i) + x, float(j) + y, w * color); }
+      else
+      {
+        // pixel not on contour line - fill 
+        painter.plot(i, j, fillColor);
+        // but no - this is wrong - it will fill the same pixels multiple times - for each contour
+        // ..we need additional condition: if(max < level): inside, if max > level: outside ..but 
+        // still contours may not interact - we may need two arguments: fillInside/fillOutside - but 
+        // this still leads to overpainting - we need a function fillBetweenContours
+      }
+    }
+  }
 }
 
 rsImageF getContours(const rsImageF& z, const std::vector<float>& levels, 
-  const std::vector<float>& colors, bool antiAlias)
+  const std::vector<float>& colors, bool antiAlias,
+  const std::vector<float>& fillColors = std::vector<float>() )
 {
   rsImageF c(z.getWidth(), z.getHeight());
-  for(size_t i = 0; i < levels.size(); i++)
-    drawContour(z, levels[i], c, colors[i % colors.size()] , antiAlias);
+
+  bool fill = false;
+  if( fillColors.size() > 0 )
+    fill = true;
+
+  if(!fill) {
+    for(size_t i = 0; i < levels.size(); i++)
+      drawContour(z, levels[i], c, colors[i % colors.size()], antiAlias); }
+  else {
+    for(size_t i = 0; i < levels.size(); i++)
+      drawContour(z, levels[i], c, colors[i % colors.size()], 
+        true, fillColors[i % fillColors.size()]); }
+
   return c;
 }
 
@@ -695,7 +720,7 @@ void contours()
   // if it's as long as possible (sqrt(2)) we apply the full color, otherwise it gets scaled down
 
 
-  float r = 10;
+  float r = 12;
   int numLevels = 13;
 
   float xMin = -r;
@@ -711,7 +736,8 @@ void contours()
       float y = yMin + j * (yMax-yMin) / (h-1);
       //float z = x*x - y*y;            // hyperbolas - make this more flexible - use a lambda function
       //float z = x*x - y*y + 2*x*y;
-      float z = x*sin(y) + y*cos(x) + 0.1*x*y; // complicated function
+      //float z = x*sin(y) + y*cos(x) + 0.1*x*y; // complicated function
+      float z = x*sin(y) + y*cos(x) + 0.1*x*y + 0.1*x*x - 0.1*y*y; 
       //float z = x*x + y*y;  // circles
       imgFunc.setPixelColor(i, j, z);
     }

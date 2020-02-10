@@ -122,9 +122,6 @@ public:
   // obsolete soon
 
 
-
-
-
   /** Draws a 1-pixel wide line with the given color from (x0,y0) to (x1,y2) using Xiaolin Wu's 
   algorithm. See https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm */
   void drawLineWu(TCor x0, TCor y0, TCor x1, TCor y1, TPix color);
@@ -132,9 +129,11 @@ public:
   // todo:/ drag over from GraphicsExperiments.cpp:
   //void drawLineBresenham(int x0, int y0, int x1, int y1, TPix color);
 
-protected:
+
+
 
   /** Internal functions. */
+  // public because sometimes, it may be useful to call them directly in client code
 
   /** Accumulates the given value into the accumulator accu. We use a rather peculiar accumulation
   function here: newAccu = (oldAccu + value) / (1 + value). When accu starts out at zero and all 
@@ -167,11 +166,16 @@ protected:
     // todo: use blend modes here
   }
 
+
   /** Same as 4-argument blend() with weight = 1. */
   inline void plot(int x, int y, TPix color)
   {
     accumulate((*image)(x, y), color);
   }
+  // rename to paintPixel or plotPixel
+
+
+protected:
 
 
   // data members:
