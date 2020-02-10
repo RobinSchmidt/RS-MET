@@ -614,53 +614,67 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
 // -or is it the other way around?
 // -might be even better than the center of the line 
 
-void drawContour(const rsImageF& z, float level, rsImageF& target, float color, bool antiAlias,
-  bool fill = false, float fillColor = 0.f)
+template<class TPix, class TLvl>
+void drawContour(const rsImage<TLvl>& z, TLvl level, rsImage<TPix>& target, TPix color, 
+  bool antiAlias)
 {
-  rsImagePainter<float, float, float> painter(&target);
+  rsImagePainter<TPix, TLvl, TLvl> painter(&target);
   for(int i = 0; i < z.getWidth()-1; i++) {
     for(int j = 0; j < z.getWidth()-1; j++) {
-      float z00 = z(i,   j  );
-      float z01 = z(i,   j+1);
-      float z10 = z(i+1, j  );
-      float z11 = z(i+1, j+1);
-      float min = rsMin(z00, z01, z10, z11);
-      float max = rsMax(z00, z01, z10, z11);
+      TLvl z00 = z(i,   j  );
+      TLvl z01 = z(i,   j+1);
+      TLvl z10 = z(i+1, j  );
+      TLvl z11 = z(i+1, j+1);
+      TLvl min = rsMin(z00, z01, z10, z11);
+      TLvl max = rsMax(z00, z01, z10, z11);
       if(min < level && max >= level) {
-        float x = 0.f, y = 0.f, w = 1.f; // x,y offsets and weight for color
+        TLvl x(0), y(0), w(1); // x,y offsets and weight for color
         if(antiAlias)
           getContourSubPixelPosition3(z00, z01, z10, z11, level, &x, &y, &w);
-        painter.paintDot(float(i) + x, float(j) + y, w * color); }
-      else
-      {
-        // pixel not on contour line - fill 
-        painter.plot(i, j, fillColor);
-        // but no - this is wrong - it will fill the same pixels multiple times - for each contour
-        // ..we need additional condition: if(max < level): inside, if max > level: outside ..but 
-        // still contours may not interact - we may need two arguments: fillInside/fillOutside - but 
-        // this still leads to overpainting - we need a function fillBetweenContours
-      }
-    }
-  }
+        painter.paintDot(TLvl(i) + x, TLvl(j) + y, w * color); }}}
 }
 
-rsImageF getContours(const rsImageF& z, const std::vector<float>& levels, 
-  const std::vector<float>& colors, bool antiAlias,
-  const std::vector<float>& fillColors = std::vector<float>() )
+template<class TPix, class TLvl>
+void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>& target,
+  TPix color, bool antiAlias)
+{
+  rsImagePainter<TPix, TLvl, TLvl> painter(&target);
+  for(int i = 0; i < z.getWidth()-1; i++) {
+    for(int j = 0; j < z.getWidth()-1; j++) {
+      TLvl z00 = z(i, j);
+      TLvl z01 = z(i, j+1);
+      TLvl z10 = z(i+1, j);
+      TLvl z11 = z(i+1, j+1);
+      TLvl min = rsMin(z00, z01, z10, z11);
+      TLvl max = rsMax(z00, z01, z10, z11);
+      if(min > lo && max < hi)  // should we use >= ?
+        painter.plot(i, j, color); }}
+}
+// can we refactor to get rid of the duplication? maybe a function isOnContour(i, j) or 
+// getMinMax(i, j, min, max)
+
+template<class TLvl, class TPix>
+rsImage<TPix> getContours(const rsImage<TPix>& z, const std::vector<TLvl>& levels, 
+  const std::vector<TPix>& colors, bool antiAlias,
+  const std::vector<TPix>& fillColors = std::vector<TPix>() )
 {
   rsImageF c(z.getWidth(), z.getHeight());
 
-  bool fill = false;
-  if( fillColors.size() > 0 )
-    fill = true;
+  for(size_t i = 0; i < levels.size(); i++)
+    drawContour(z, levels[i], c, colors[i % colors.size()], antiAlias);
 
-  if(!fill) {
-    for(size_t i = 0; i < levels.size(); i++)
-      drawContour(z, levels[i], c, colors[i % colors.size()], antiAlias); }
-  else {
-    for(size_t i = 0; i < levels.size(); i++)
-      drawContour(z, levels[i], c, colors[i % colors.size()], 
-        true, fillColors[i % fillColors.size()]); }
+  if(fillColors.size() > 0) 
+  {
+    fillBetweenContours(z, -RS_INF(TLvl), levels[0], c, 
+      fillColors[0], antiAlias); 
+
+    for(size_t i = 0; i < levels.size()-1; i++)
+      fillBetweenContours(z, levels[i], levels[i+1], c,
+        fillColors[i % fillColors.size()], antiAlias);
+  
+    fillBetweenContours(z, levels[levels.size()-1], RS_INF(TLvl), c, 
+      fillColors[fillColors.size()-1], antiAlias); 
+  }
 
   return c;
 }
@@ -747,7 +761,10 @@ void contours()
   // create image with contours:
   std::vector<float> levels = rsRangeLinear(0.f, 1.f, numLevels);
   //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, false);
-  rsImageF imgCont = getContours(imgFunc, levels, { 1.0f }, true);
+  //rsImageF imgCont = getContours(imgFunc, levels, { 1.0f }, true);
+
+  rsImageF imgCont = getContours(imgFunc, levels, { 1.0f }, false, {0.25f, 0.75f});
+
   // with anti-aliasing, we need to use about twice as much brightness to get the same visual 
   // brightness
 
