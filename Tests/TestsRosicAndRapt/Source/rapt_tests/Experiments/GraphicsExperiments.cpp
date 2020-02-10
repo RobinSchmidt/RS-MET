@@ -599,6 +599,11 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
 // of some of the multiplications because outMax-outMin = 1 - make a function rsLinTo01, have a 
 // similar rs01ToLin
 
+// maybe the logical statements can be simplified by checking things like 
+// if (z00-c)*(z01-c) < 0,  >= 0 instead of the complicated and-or statements
+
+
+
 // simpler idea:
 // -compute z0 = (z00 + z01) / 2, z1 = (z10 + z11) / 2
 //  z0 is the average value on the left, z1 on the right
