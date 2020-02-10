@@ -494,7 +494,7 @@ void pixelCoverage()
 //
 
 
-void getContourSubPixelPosition(float z00, float z01, float z10, float z11, float c,
+void getContourSubPixelPosition1(float z00, float z01, float z10, float z11, float c,
   float* x, float* y)
 {
   // average value along pixel borders:
@@ -504,11 +504,87 @@ void getContourSubPixelPosition(float z00, float z01, float z10, float z11, floa
   float B = (z01 + z11) * 0.5f;  // bottom
 
   // x-offset is determined by where the level would fall between L and R:
-  *x = ((L+R) * 0.5 - c) / (R-L);  // is that correct? what about div-by-zero
+  //*x = ((L+R) * 0.5 - c) / (R-L);  // is that correct? what about div-by-zero
   // sometimes |x| > 1 - that should not happen - actually it should be always in the 
   // range 0...1 - so that formula is not yet correct
 
+  //if(L < R)
+  //  *x = rsLinToLin(c, L, R, 0.f, 1.f);
+  //else
+  //  *x = 1.f - rsLinToLin(c, R, L, 0.f, 1.f);  // is that correct?
+
+  *x = rsLinToLin(c, L, R, 0.f, 1.f);
+  *y = rsLinToLin(c, T, B, 0.f, 1.f); // top comes before bottom - y increases downward
+
+  // output may go negative - maybe we have to do cases if(L < R) .. else ...
 }
+// this doesn't work
+
+void getContourSubPixelPosition2(float z00, float z01, float z10, float z11, float c,
+  float min, float max, float* x, float* y)
+{
+  z00 -= c;
+  z01 -= c;
+  z10 -= c;
+  z11 -= c;
+
+  //float zAvg = 0.25f * (z00 + z01 + z10 + z11); 
+    // optimize: delete the -= and do zAvg = 0.25f * (z00 + z01 + z10 + z11 - 4*c);
+
+  float L = (z00 + z01) * 0.5f;  // left
+  float R = (z10 + z11) * 0.5f;  // right
+  float T = (z00 + z10) * 0.5f;  // top
+  float B = (z01 + z11) * 0.5f;  // bottom
+
+  *x = rsLinToLin(c, L, R, 0.f, 1.f);
+  *y = rsLinToLin(c, T, B, 0.f, 1.f);
+}
+// not yet tested
+
+void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, float c,
+  float* x, float* y)
+{
+  // z00--z10
+  //  |    |
+  // z01--z11
+
+  float x0, x1, y0, y1;
+  if((z00 < c && z01 >= c) || (z00 >= c && z01 < c))
+  {
+    // segment goes through the left border - we put the first point (x0,y0) there:
+    x0 = 0.f;
+    y0 = rsLinToLin(c, z00, z01, 0.f, 1.f);
+    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) 
+    {
+      // segment goes through the top border - we put the second point (x1,y1) there:
+      x1 = rsLinToLin(c, z00, z10, 0.f, 1.f);
+      y1 = 0.f;
+    }
+    else if((z01 < c && z11 >= c) || (z01 >= c && z11 < c))
+    {
+      // segment goes through the bottom border
+      x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
+      y1 = 0.f;
+    }
+    else
+    {
+      // segment goes through right border (i.e. is horizontalish):
+      x1 = 0.f;
+      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f);
+    }
+  }
+  else
+  {
+    // segment doe not go thorugh left border - so it must start either at top or bottom border
+
+    // ....
+  }
+
+  // evaluate line equation at midpoint - this gives the center of the segment
+  *x = x0 + 0.5f * x1;
+  *y = y0 + 0.5f * y1;
+}
+
 
 void drawContour(const rsImageF& z, float level, rsImageF& target)
 {
@@ -526,9 +602,15 @@ void drawContour(const rsImageF& z, float level, rsImageF& target)
       float max = rsMax(z00, z01, z10, z11);
       if(min < level && max >= level) {
         float x, y;
-        getContourSubPixelPosition(z00, z01, z10, z11, level, &x, &y); // not yet working
+        //getContourSubPixelPosition1(z00, z01, z10, z11, level, &x, &y); // not yet working
+        //getContourSubPixelPosition2(z00, z01, z10, z11, min, max, level, &x, &y);
         x = 0.f; y = 0.f; // preliminary
-        painter.paintDot(float(i) + x, float(j) + y, 0.5f); }}}
+        painter.paintDot(float(i) + x, float(j) + y, 0.5f); 
+      }
+    }
+  }
+
+  // make anti-aliasing optional
 
   // todo: figure out subpixel location and draw anti-aliased
   // -there's a contour segment that passes through this pixel 
@@ -590,6 +672,13 @@ void contours()
 
   //w = h = 513;
 
+  // test - turn into unit-test
+  float x,y;
+  getContourSubPixelPosition1(6.f, 2.f, 8.f, 4.f, 5.f, &x, &y); // 0.5, 0.5 - good!
+  getContourSubPixelPosition1(6.f, 0.f, 8.f, 2.f, 5.f, &x, &y); // bad
+  // try 10,10,10,0  2
+
+
   float r = 8;
   float xMin = -r;
   float xMax = +r;
@@ -607,6 +696,8 @@ void contours()
 
       float z = x*sin(y) + y*cos(x) + 0.1*x*y;
 
+      //float z = x*x + y*y;  // contours are circles
+
       imgFunc.setPixelColor(i, j, z);
     }
   }
@@ -621,15 +712,30 @@ void contours()
   // -make a composited image with function values and contours
   // -maybe use the color-channels to plot more than one function 
   //  -plot complex functions - real -> red, imag -> green or blue
+  // -could this be used as a drawing primitive? it can draw circles, for example - but it's 
+  //  very inefficient - can this be optimized into a reasonable implicit curve drawing algo?
 
 
-  writeScaledImageToFilePPM(imgFunc, "Function.ppm", 3);
-  writeScaledImageToFilePPM(imgCont, "Contours.ppm", 3);
+  writeScaledImageToFilePPM(imgFunc, "Function.ppm", 2);
+  writeScaledImageToFilePPM(imgCont, "Contours.ppm", 2);
   // the right column and bottom row has no countour values - no surprise - the loop only goes up 
   // to w-1,h-1
   // maybe use powers of two +1 for the size and cut off bottom-row and right-column aftewards
 }
 
+// implicit curve drawing algo: 
+// input: f(x,y) = c, f as functor, c as value, one solution x0,y0 that solves the equation
+//
+// (1) draw/paint pixel at x0,y0
+// (2) find neighbouring pixel to draw next among the 8 neighbours
+// (3) fix one coordinate and solve for the other by 1D root-finding
+// (3) check, if we are back at the same pixel where we started or reached the image boundary 
+//     -if yes: return - we are done with the curve
+// (4) back to 1
+//
+// -maybe fill the shape by coloring all pixels for which f(x,y) < c
+// -which should we increment or decrement and for which should we solve? x0 or y0? maybe that 
+//  should also be decided based on a condition
 
 // maybe make animations with
 // http://www.softpedia.com/get/Multimedia/Graphic/Graphic-Others/APNG-Anime-Maker.shtml
