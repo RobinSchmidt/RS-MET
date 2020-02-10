@@ -590,6 +590,11 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
   float dy = (y1-y0);
   *x = x0 + 0.5f * dx;
   *y = y0 + 0.5f * dy;
+
+  //// test:
+  //*x = 1.f - *x;
+  //*y = 1.f - *y;
+
   if(weight != nullptr)
     //*weight = max(dx, dy);  // nope - this looks worse - screw-effect stronger and there are holes
     *weight = sqrt(dx*dx + dy*dy) / sqrt(2.f);  // full weight only for diagonals
@@ -640,6 +645,8 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
   TPix fillColor, bool antiAlias = false, TPix loColor = TPix(), TPix hiColor = TPix())
 {
   rsImagePainter<TPix, TLvl, TLvl> painter(&target);
+
+  
   for(int i = 0; i < z.getWidth()-1; i++) {
     for(int j = 0; j < z.getWidth()-1; j++) {
       TLvl z00 = z(i, j);
@@ -653,9 +660,20 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
       //if(min > lo && max <= hi)   // no etra blank or colored pixels but ugly jaggies
       if(min >= lo && max < hi)     // this seems to be artifact-free
         painter.plot(i, j, fillColor); }}
-  if(antiAlias) {
-    drawContour(z, lo, target, loColor, true);
-    drawContour(z, hi, target, hiColor, true); }
+
+
+  // this does not seem to work:
+  if(antiAlias) 
+  {
+    //drawContour(z, lo, target, loColor, true);
+    drawContour(z, hi, target, hiColor, true); // they seem to be too dark
+  }
+  else
+  {
+    drawContour(z, lo, target, 0.5f * fillColor, false);
+    drawContour(z, hi, target, 0.5f * fillColor, false);
+  }
+  // maybe draw only the outer boundary
 
   // but why only draw the low contour - maybe we should draw both with 0.5 times the 
   // contourColor - no: we need two contour-colors - one for the low and one for the high 
@@ -686,39 +704,8 @@ rsImage<TPix> getContours(const rsImage<TPix>& z, const std::vector<TLvl>& level
 {
   rsImageF c(z.getWidth(), z.getHeight());
 
-  //for(size_t i = 0; i < levels.size(); i++)
-  //  drawContour(z, levels[i], c, colors[i % colors.size()], antiAlias);
-
-  const std::vector<TPix>& fc = fillColors; // shorthand
-  size_t nc = fc.size();
-
-
-  if(fc.size() > 1)  // we need at least 2 colors for anti-aliasing
-  {
-    TPix cF = fc[0];                     // fill color
-    TPix cL = blend(0.f,   fc[0], 0.5f); // low-level contour color
-    TPix cH = blend(fc[0], fc[1], 0.5f); // high-level contour color
-    fillBetweenContours(z, -RS_INF(TLvl), levels[0], c, cF, antiAlias, cL, cH); 
-
-    
-    for(size_t i = 1; i < levels.size()-1; i++)
-    {
-      size_t iL = (i-1) % nc;
-      size_t iF = (i  ) % nc;
-      size_t iH = (i+1) % nc;
-
-      cL = 0.5f * blend(fc[iL], fc[iF], 0.5f);
-      cH = 0.5f * blend(fc[iF], fc[iH], 0.5f);
-      cF = fc[iF];
-
-      fillBetweenContours(z, levels[i], levels[i+1], c, cF, antiAlias, cL, cH);
-    }
-    // maybe we need two indices i and j - i runs over the levels and j over the colors
-  
-    fillBetweenContours(z, levels[levels.size()-1], RS_INF(TLvl), c, 
-      fc[nc-1], antiAlias, blend(fc[nc-2], fc[nc-1], 0.5)); 
-      
-  }
+  for(size_t i = 0; i < levels.size(); i++)
+    drawContour(z, levels[i], c, colors[i % colors.size()], antiAlias);
 
   return c;
 }
@@ -730,10 +717,26 @@ rsImage<TPix> getBinFills(
   const std::vector<TPix>& colors, 
   bool antiAlias)
 {
-  rsImageF f(z.getWidth(), z.getHeight());  // fills
+  rsImageF imgBins(z.getWidth(), z.getHeight());  // fills
+
+  size_t j = 0; // color index
+  size_t nc = colors.size();
+  for(size_t i = 0; i < levels.size()-1; i++)
+  //for(size_t i = 0; i < 2; i++)  // test
+  {
+    TPix cF = colors[j % nc];
+
+    TPix cC = 0.f;
+
+    //TPix cC = TPix(0.5) * (cF + colors[(j+1) % nc]);  // seems to dark
+    //TPix cC = (cF + colors[(j+1) % nc]);
+
+    fillBetweenContours(z, levels[i], levels[i+1], imgBins, cF, antiAlias, cC, cC);
+    j++;
+  }
 
 
-  return f;
+  return imgBins;
 
   int dummy = 0;
 }
@@ -837,7 +840,7 @@ void contours()
     levels,
     //{ 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f },  // bin boundaries, levels
     { 0.125f, 0.25f, 0.375f, 0.5f, 0.625f, 0.75f, 0.875f },               // colors
-    true);
+    false);
 
 
 
