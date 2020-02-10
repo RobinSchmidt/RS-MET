@@ -630,16 +630,16 @@ T contourPixelCoverage(T z00, T z01, T z10, T z11, T c)
   // these simplified formulas work only because we know in which order contourSegmentCoeffs 
   // returns the coeffs:
   case 0: { 
-    A = h *    x1  * y0;     
+    A = h *    x1  * y0;
     if(z00 >= c) 
       A = I-A; } break; // top-left
   case 1: { 
-    A = h * (I-x0) * y1;     
-    if(z01 >= c) 
+    A = h * (I-x0) * y1;
+    if(z10 >= c) 
       A = I-A; } break; // top-right
   case 2: { 
     A = h *    x1  * (I-y0); 
-    if(z10 >= c) 
+    if(z01 >= c) 
       A = I-A; } break; // bottom-left
   case 3: { 
     A = h * (I-x0) * (I-y1); 
@@ -870,8 +870,11 @@ bool testContourSubPixelStuff()
 
   // todo: test coverage compuation
   float c;
-  c = contourPixelCoverage(2.f, 8.f, 8.f, 8.f, 5.f); // should be 1/8
-  c = contourPixelCoverage(8.f, 2.f, 8.f, 8.f, 5.f);
+  c = contourPixelCoverage(2.f, 8.f, 8.f, 8.f, 5.f); r &= c == 0.125;
+  c = contourPixelCoverage(8.f, 2.f, 8.f, 8.f, 5.f); r &= c == 0.125;
+  c = contourPixelCoverage(8.f, 8.f, 2.f, 8.f, 5.f); r &= c == 0.125;
+  c = contourPixelCoverage(8.f, 8.f, 8.f, 2.f, 5.f); r &= c == 0.125;
+
 
   return r;
 }
