@@ -544,25 +544,30 @@ void getContourSubPixelPosition2(float z00, float z01, float z10, float z11, flo
 void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, float c,
   float* x, float* y)
 {
+  // this is how the function values are distributed over the pixels: z00 is the value at the pixel
+  // under investigation and z01, z10, z11 are bottom, right and diagonal neighbours (in that 
+  // order):
   // z00--z10
   //  |    |
   // z01--z11
+  // oh - wait - no: z10 should be bottom - or not? no - the first index is the x-coordinate, so 
+  // it's right
 
   float x0, x1, y0, y1;
   if((z00 < c && z01 >= c) || (z00 >= c && z01 < c))
   {
-    // segment goes through the left border - we put the first point (x0,y0) there:
+    // segment goes through left border - we put the first point (x0,y0) there:
     x0 = 0.f;
     y0 = rsLinToLin(c, z00, z01, 0.f, 1.f);
     if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) 
     {
-      // segment goes through the top border - we put the second point (x1,y1) there:
+      // segment goes through top border - we put the second point (x1,y1) there:
       x1 = rsLinToLin(c, z00, z10, 0.f, 1.f);
       y1 = 0.f;
     }
     else if((z01 < c && z11 >= c) || (z01 >= c && z11 < c))
     {
-      // segment goes through the bottom border
+      // segment goes through bottom border
       x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
       y1 = 0.f;
     }
@@ -575,22 +580,58 @@ void getContourSubPixelPosition3(float z00, float z01, float z10, float z11, flo
   }
   else
   {
-    // segment doe not go thorugh left border - so it must start either at top or bottom border
+    // z00--z10
+    //  |    |
+    // z01--z11
 
-    // ....
+    // segment does not go through left border - so it must start either at top or bottom border
+
+    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) 
+    {
+      // segment goes through the top border
+      x0 = rsLinToLin(c, z00, z10, 0.f, 1.f);
+      y0 = 0.f;
+
+      if((z10 < c && z11 >= c) || (z10 >= c && z11 < c))
+      {
+        // segment goes through right border
+        x1 = 1.f;
+        y1 = rsLinToLin(c, z10, z11, 0.f, 1.f);
+      }
+      else
+      {
+        // segment goes through bottom border (is verticalish)
+        x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
+        y1 = 1.f;
+      }
+
+    }
+    else
+    {
+      // segment does not go through top border - so it must go through the bottom and then right
+      x0 = rsLinToLin(c, z01, z11, 0.f, 1.f);  // bottom
+      y0 = 1.f;
+      x1 = 1.f;
+      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f);  // right
+    }
   }
 
   // evaluate line equation at midpoint - this gives the center of the segment
   *x = x0 + 0.5f * x1;
   *y = y0 + 0.5f * y1;
 }
+// this is still wrong!
 
+// optimize the calls to rsLinToLin to get rid of divisions where possible - keep this code as 
+// prototype for unit testing the optimized code
 
 void drawContour(const rsImageF& z, float level, rsImageF& target)
 {
   rsImagePainter<float, float, float> painter(&target);
   // maybe pass this object from outside, also take a color - or maybe the color should be 
   // part of the state of the painter
+
+  bool antiAlias = true; // make parameter
 
   for(int i = 0; i < z.getWidth()-1; i++) {
     for(int j = 0; j < z.getWidth()-1; j++) {
@@ -604,7 +645,14 @@ void drawContour(const rsImageF& z, float level, rsImageF& target)
         float x, y;
         //getContourSubPixelPosition1(z00, z01, z10, z11, level, &x, &y); // not yet working
         //getContourSubPixelPosition2(z00, z01, z10, z11, min, max, level, &x, &y);
+
+
         x = 0.f; y = 0.f; // preliminary
+        if(antiAlias)
+          getContourSubPixelPosition3(z00, z01, z10, z11, level, &x, &y);
+
+
+
         painter.paintDot(float(i) + x, float(j) + y, 0.5f); 
       }
     }
