@@ -1122,8 +1122,49 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   T y  = y0;
   T px = rsLinToLin(x0, xMin, xMax, T(0), xMaxPixel); // x in pixel coordinates
   T py = rsLinToLin(y0, yMin, yMax, T(0), yMaxPixel);
-  int i = (int) round(px);
-  int j = (int) round(py);
+
+  int iterations = 0;
+  while(true)
+  {
+    painter.paintDot(px, py, color);
+
+    // figure out gradient...
+    T eps = 1.e-8;  // ad-hoc - make parameter
+    T dx  = (f(x+eps, y) - f(x-eps, y)) / (T(2)*eps);  // x-component of gradient
+    T dy  = (f(x, y+eps) - f(x, y-eps)) / (T(2)*eps);  // y-component of gradient
+    T rx  = -dy;  // (rx,ry) = (-dy,dx) - gradient, rotated by 90° counterclockwise..
+    T ry  =  dx;  // ..this is a direction along the contour (approximately)
+
+    // convert rx,ry to pixel coordinates and normalize to length 1:
+    rx = rsLinToLin(rx, xMin, xMax, T(0), xMaxPixel);
+    ry = rsLinToLin(ry, yMin, yMax, T(0), yMaxPixel);
+    T s  = T(1) / sqrt(rx*rx + ry*ry); rx *= s; ry *= s;
+
+    // go a step into the selected direction:
+    px += rx;
+    py += ry;
+
+    // update x,y:
+    x = rsLinToLin(px, T(0), xMaxPixel, xMin, xMax);
+    y = rsLinToLin(py, T(0), yMaxPixel, yMin, yMax);
+
+    // somehting is wrong - i think we need to swap the y direction in the conversion
+
+    // we somehow need to counteract drift due to error accumulation by root finding - maybe figure
+    // out, how far we are away from the desired level c and if too far, use a root-finder to 
+    // re-adjust one of the two coordinates (which?  ..may depend on the direction - the one that 
+    // changes less...)
+
+
+    iterations++;
+    if(iterations > 1000)  // preliminary
+      break;  // use condition later
+  }
+
+
+
+  //int i = (int) round(px);
+  //int j = (int) round(py);
 
 
 
