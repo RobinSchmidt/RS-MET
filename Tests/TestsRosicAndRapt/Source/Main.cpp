@@ -193,8 +193,8 @@ int main(int argc, char* argv[])
   //splineArc();
   //triangles();
   //pixelCoverage();
-  contours();
-  //complexContours();
+  //contours();
+  complexContours();
 
 
   // just for fun:

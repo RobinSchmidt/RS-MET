@@ -787,27 +787,30 @@ rsImage<TPix> getBinFills(
   return imgBins;
 }
 
-void normalize(rsImageF& img)
+
+template<class T>
+void normalize(rsImage<T>& img)
 {
-  float* p = img.getPixelPointer(0, 0);
+  T* p = img.getPixelPointer(0, 0);
   int N = img.getNumPixels();
-  float min = rsArrayTools::minValue(p, N);
-  float max = rsArrayTools::maxValue(p, N);
-  float scl = 1.f / (max-min);
+  T min = rsArrayTools::minValue(p, N);
+  T max = rsArrayTools::maxValue(p, N);
+  T scl = 1.f / (max-min);
   for(int i = 0; i < N; i++)
     p[i] = scl * (p[i] - min);
 }
 // maybe make member
 
 // this *may* be better numerically (less prone to roundoff errors) - needs test
-void normalize2(rsImageF& img)
+template<class T>
+void normalize2(rsImage<T>& img)
 {
-  float* p = img.getPixelPointer(0, 0);
+  T* p = img.getPixelPointer(0, 0);
   int N = img.getNumPixels();
-  float min = rsArrayTools::minValue(p, N);
+  T min = rsArrayTools::minValue(p, N);
   for(int i = 0; i < N; i++)
     p[i] -= min;
-  float max = rsArrayTools::maxValue(p, N);
+  T max = rsArrayTools::maxValue(p, N);
   for(int i = 0; i < N; i++)
     p[i] /= max;
 }
@@ -855,21 +858,37 @@ bool testContourSubPixelStuff()
 }
 // move to unit tests
 
-
-template<class T>
+/** Generates an image from a function by looping through the pixels, computing the pixel 
+coordinates by transforming pixel index pairs (i,j) to the ranges xMin..xMax, yMin..yMax and 
+evaluating the function f at the resulting (x,y) location. TPix is a separate type for the pixels, 
+so you may use functions operating on double and having float for the pixels, for example. */
+template<class T, class TPix> 
 void generateFunctionImage(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMax,
-  rsImage<T>& img)
+  rsImage<TPix>& img)
 {
-  int w = img.getWidth();
-  int h = img.getHeight();
-  rsImageF imgFunc(w, h);
-  for(int i = 0; i < w; i++) {
-    for(int j = 0; j < h; j++) {
-      float x = xMin + i * (xMax-xMin) / (w-1);
-      float y = yMin + j * (yMax-yMin) / (h-1);
-      float z = f(x, y);
+  for(int i = 0; i < img.getWidth(); i++) {
+    for(int j = 0; j < img.getHeight(); j++) {
+      T x = xMin + i * (xMax-xMin) / (img.getWidth()  - 1);
+      T y = yMin + j * (yMax-yMin) / (img.getHeight() - 1);
+      T z = TPix(f(x, y));
       img.setPixelColor(i, j, z); }}
 }
+// todo:
+// -maybe take two optional coordinate transformation functions c1(x,y), c2(x,y) where by default,
+//  c1(x,y) = x and c2(x,y) = y - for polar coordinates, we would use c1(x,y) = sqrt(x*x + y*y), 
+//  c2(x,y) = atan2(y,x)
+
+template<class T, class TPix> 
+void generateFunctionImageReIm(const function<complex<T>(complex<T>)>& f, 
+  T xMin, T xMax, T yMin, T yMax, rsImage<TPix>& imgRe, rsImage<TPix>& imgIm)
+{
+  function<T(T, T)> fr, fi;
+  fr = [=](T x, T y) { return f(complex<T>(x, y)).real(); };
+  fi = [=](T x, T y) { return f(complex<T>(x, y)).imag(); };
+  generateFunctionImage(fr, xMin, xMax, yMin, yMax, imgRe);
+  generateFunctionImage(fi, xMin, xMax, yMin, yMax, imgIm);
+}
+
 
 
 void contours()
@@ -877,41 +896,26 @@ void contours()
   // We plot the 2D function z = f(x,y) = x^2 - y^2 into an image where the height translates
   // to the pixel brightness
 
+  rsAssert(testContourSubPixelStuff());
+
+
+
   int w = 129;               // width in pixels
   int h = 129;               // height in pixels
 
   w = h = 513;
   //w = h = 1025;
 
-  rsAssert(testContourSubPixelStuff());
-
-
   float r = 18;
-  int numLevels = 20;
+  size_t numLevels = 20;
+  size_t numColors = numLevels + 1;
+
 
   float xMin = -r;
   float xMax = +r;
   float yMin = -r;
   float yMax = +r;
 
-  // create image with function values:
-  rsImageF imgFunc(w, h);
-
-  /*
-  for(int i = 0; i < w; i++) {
-    for(int j = 0; j < h; j++) {
-      float x = xMin + i * (xMax-xMin) / (w-1);
-      float y = yMin + j * (yMax-yMin) / (h-1);
-      //float z = x*x - y*y;            // hyperbolas - make this more flexible - use a lambda function
-      //float z = x*x - y*y + 2*x*y;
-      //float z = x*sin(y) + y*cos(x) + 0.1*x*y; // complicated function - gets more complicated far from middle
-      //float z = x*sin(y) + y*cos(x) + 0.1*x*y + 0.1*x*x - 0.1*y*y; 
-      float z = x*sin(y) + y*cos(x) + 0.1*x*y + 0.1*x*x - 0.1*x - 0.1*y*y + 0.1*y; 
-      //float z = x*x + y*y;  // circles
-      imgFunc.setPixelColor(i, j, z);
-    }
-  }
-  */
 
   std::function<float(float, float)> f;
 
@@ -919,67 +923,45 @@ void contours()
   //f = [&] (float x, float y) { return x*x + y*y; };
   //f = [&] (float x, float y) { return x*x - y*y; };
   //f = [&] (float x, float y) { return x*x - y*y + 2.f*x*y; };
-  f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y; };
+  //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y; };
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*y*y; };
-  //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*x - 0.1f*y*y + 0.1f*y; };
+  f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*x - 0.1f*y*y + 0.1f*y; };
 
+
+  // create image with function values:
+  rsImageF imgFunc(w, h);
   generateFunctionImage(f, xMin, xMax, yMin, yMax, imgFunc);;
   normalize2(imgFunc);
 
- 
-
-  // create image with contours:
+  // create images with contours:
   std::vector<float> levels = rsRangeLinear(0.f, 1.f, numLevels);
-  //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, false);
   rsImageF imgCont = getContours(imgFunc, levels, { 1.0f }, true);
-  //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, false, {0.25f, 0.75f});
-  //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, true, {0.25f, 0.75f});
-
-
-  //rsImageF imgCont = getContours(imgFunc, levels, { 0.5f }, true, 
-  //  {0.125f, 0.25f, 0.375f, 0.5f, 0.625, 0.75f, 0.875});
-
-  //rsImageF imgFills = getBinFills(imgFunc, 
-  //  levels,
-  //  //{ 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f },  // bin boundaries, levels
-  //  { 0.125f, 0.25f, 0.375f, 0.5f, 0.625f, 0.75f, 0.875f },               // colors
-  //  false);
-
-  size_t numColors = levels.size() + 1;
-
-  //numColors = 2;
-
-  std::vector<float> colors = rsRangeLinear(0.f, 1.f, numColors);
-
-  rsImageF imgFills = getBinFills(imgFunc, 
-    levels, 
-    colors,
-    //{ 0.25f, 0.5f, 0.75f },               // colors
-    true);
-
   // with anti-aliasing, we need to use about twice as much brightness to get the same visual 
   // brightness
 
-  // perhaps the bilinear spreading function can be improved by requiring the weights nto to add up 
-  // to 1 but their squares should add up to 1? prtions of the line where there's a lot of spreading 
-  // appear darker
+  // create images with bin-fills:
+  std::vector<float> colors = rsRangeLinear(0.f, 1.f, numColors);
+  rsImageF imgFills = getBinFills(imgFunc, levels, colors, true);
 
+  // write images to files:
+  writeScaledImageToFilePPM(imgFunc,  "Function.ppm", 1);
+  writeScaledImageToFilePPM(imgCont,  "Contours.ppm", 1);
+  writeScaledImageToFilePPM(imgFills, "BinFills.ppm", 1);
+
+
+  // the right column and bottom row has no countour values - no surprise - the loop only goes up 
+  // to w-1,h-1
+  // maybe use powers of two +1 for the size and cut off bottom-row and right-column aftewards
 
   // todo: 
   // -make a composited image with function values and contours - maybe have a compose function 
   //  that takes a combiner-function for pixel values
+  // -it could make sense to superimpose the contour lines on the original function - but how - 
+  //  just add? that might be bad in bright areas
   // -maybe use the color-channels to plot more than one function 
   //  -plot complex functions - real -> red, imag -> green or blue
   // -could this be used as a drawing primitive? it can draw circles, for example - but it's 
   //  very inefficient - can this be optimized into a reasonable implicit curve drawing algo?
-
-
-  writeScaledImageToFilePPM(imgFunc,  "Function.ppm", 1);
-  writeScaledImageToFilePPM(imgCont,  "Contours.ppm", 1);
-  writeScaledImageToFilePPM(imgFills, "BinFills.ppm", 1);
-  // the right column and bottom row has no countour values - no surprise - the loop only goes up 
-  // to w-1,h-1
-  // maybe use powers of two +1 for the size and cut off bottom-row and right-column aftewards
 
   // maybe try to overlay images with multiple settings for the number/positions of the level-lines
   // -could create intersting patterns
@@ -1018,21 +1000,44 @@ void complexContours()
 
   w = h = 513;
 
-  float r = 5;
+  double r = 5;
   int numLevels = 20;
 
-  float xMin = -r;
-  float xMax = +r;
-  float yMin = -r;
-  float yMax = +r;
+  double xMin = -r;
+  double xMax = +r;
+  double yMin = -r;
+  double yMax = +r;
 
-  rsImageF imgFuncRe(w, h), imgFuncIm(w, h);
+
+  using Complex = complex<double>;
+  function<Complex(Complex)> f;
+
+  // pick complex function to plot
+  f = [=](Complex z) { return z*z; };
+
+
+  // render images of function values for real and imaginary part:
+  rsImageF imgFuncRe(w, h), imgFuncIm(w, h), imgFuncEmpty(w, h);
+  generateFunctionImageReIm(f, xMin, xMax, yMin, yMax, imgFuncRe, imgFuncIm);
+  normalize2(imgFuncRe);
+  normalize2(imgFuncIm);
+  // todo: normalize jointly to preserve relation between re,im
+
+
+  writeImageToFilePPM(imgFuncRe, "ComplexFunctionRe.ppm");
+  writeImageToFilePPM(imgFuncIm, "ComplexFunctionIm.ppm");
+  writeImageToFilePPM(imgFuncRe, imgFuncIm, imgFuncEmpty, "ComplexFunctionRG.ppm");
+  writeImageToFilePPM(imgFuncRe, imgFuncEmpty, imgFuncIm, "ComplexFunctionRB.ppm");
+
 
   // ....
 
 
   int dummy = 0;
 }
+// maybe make a plotter in rosic
+// -have rendering options with presets draft (fastest), presentation (highest quality) and maybe 
+//  intermediate settings
 
 
 // maybe make animations with
