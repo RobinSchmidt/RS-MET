@@ -789,7 +789,7 @@ rsImage<TPix> getBinFills(
 
 
 template<class T>
-void normalize(rsImage<T>& img)
+void normalizeFast(rsImage<T>& img)
 {
   T* p = img.getPixelPointer(0, 0);
   int N = img.getNumPixels();
@@ -803,7 +803,7 @@ void normalize(rsImage<T>& img)
 
 // this *may* be better numerically (less prone to roundoff errors) - needs test
 template<class T>
-void normalize2(rsImage<T>& img)
+void normalize(rsImage<T>& img)
 {
   T* p = img.getPixelPointer(0, 0);
   int N = img.getNumPixels();
@@ -814,6 +814,30 @@ void normalize2(rsImage<T>& img)
   for(int i = 0; i < N; i++)
     p[i] /= max;
 }
+
+/** Joint normalization of two images */
+template<class T>
+void normalizeJointly(rsImage<T>& img1, rsImage<T>& img2)
+{
+  //rsAssert(img2.hasSameShapeAs(img1));  // activate later
+  using AT = rsArrayTools;
+  int N = img1.getNumPixels();
+  T* p1 = img1.getPixelPointer(0, 0);
+  T* p2 = img2.getPixelPointer(0, 0);
+  T min = rsMin(AT::minValue(p1, N), AT::minValue(p2, N));
+  for(int i = 0; i < N; i++) {
+    p1[i] -= min;
+    p2[i] -= min; }
+  T max = rsMax(AT::maxValue(p1, N), AT::maxValue(p2, N));
+  for(int i = 0; i < N; i++) {
+    p1[i] /= max;
+    p2[i] /= max;
+  }
+}
+// maybe have a version for three images as well - can this be generalized with variadic 
+// templates?
+
+
 
 bool testContourSubPixelStuff()
 {
@@ -870,8 +894,8 @@ void generateFunctionImage(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T
     for(int j = 0; j < img.getHeight(); j++) {
       T x = xMin + i * (xMax-xMin) / (img.getWidth()  - 1);
       T y = yMin + j * (yMax-yMin) / (img.getHeight() - 1);
-      T z = TPix(f(x, y));
-      img.setPixelColor(i, j, z); }}
+      T z = f(x, y);
+      img.setPixelColor(i, j, TPix(z)); }}
 }
 // todo:
 // -maybe take two optional coordinate transformation functions c1(x,y), c2(x,y) where by default,
@@ -907,8 +931,8 @@ void contours()
   //w = h = 1025;
 
   float r = 18;
-  size_t numLevels = 20;
-  size_t numColors = numLevels + 1;
+  int numLevels = 20;
+  int numColors = numLevels + 1;
 
 
   float xMin = -r;
@@ -931,7 +955,7 @@ void contours()
   // create image with function values:
   rsImageF imgFunc(w, h);
   generateFunctionImage(f, xMin, xMax, yMin, yMax, imgFunc);;
-  normalize2(imgFunc);
+  normalize(imgFunc);
 
   // create images with contours:
   std::vector<float> levels = rsRangeLinear(0.f, 1.f, numLevels);
@@ -1019,14 +1043,15 @@ void complexContours()
   // render images of function values for real and imaginary part:
   rsImageF imgFuncRe(w, h), imgFuncIm(w, h), imgFuncEmpty(w, h);
   generateFunctionImageReIm(f, xMin, xMax, yMin, yMax, imgFuncRe, imgFuncIm);
-  normalize2(imgFuncRe);
-  normalize2(imgFuncIm);
+  normalizeJointly(imgFuncRe, imgFuncIm);
+  //normalize(imgFuncRe);
+  //normalize(imgFuncIm);
   // todo: normalize jointly to preserve relation between re,im
 
 
   writeImageToFilePPM(imgFuncRe, "ComplexFunctionRe.ppm");
   writeImageToFilePPM(imgFuncIm, "ComplexFunctionIm.ppm");
-  writeImageToFilePPM(imgFuncRe, imgFuncIm, imgFuncEmpty, "ComplexFunctionRG.ppm");
+  //writeImageToFilePPM(imgFuncRe, imgFuncIm, imgFuncEmpty, "ComplexFunctionRG.ppm");
   writeImageToFilePPM(imgFuncRe, imgFuncEmpty, imgFuncIm, "ComplexFunctionRB.ppm");
 
 
