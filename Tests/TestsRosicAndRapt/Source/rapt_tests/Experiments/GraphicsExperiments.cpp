@@ -1135,6 +1135,9 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     T rx  = -dy;  // (rx,ry) = (-dy,dx) - gradient, rotated by 90° counterclockwise..
     T ry  =  dx;  // ..this is a direction along the contour (approximately)
 
+    //rx =  dy; ry = -dx; // test
+
+
     // convert rx,ry to pixel coordinates and normalize to length 1:
     rx = rsLinToLin(rx, xMin, xMax, T(0), xMaxPixel);
     ry = rsLinToLin(ry, yMin, yMax, T(0), yMaxPixel);
@@ -1150,42 +1153,29 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
     // somehting is wrong - i think we need to swap the y direction in the conversion
 
+    T fxy = f(x,y);  // should stay close to c - drifts away from it quite quite quickly - is at 
+                     // 3.5 after 1000 iterations
+
     // we somehow need to counteract drift due to error accumulation by root finding - maybe figure
     // out, how far we are away from the desired level c and if too far, use a root-finder to 
     // re-adjust one of the two coordinates (which?  ..may depend on the direction - the one that 
     // changes less...)
 
+    // we get spirals and the (pseudo)circles have wrong radius and center
+    // if we use rx = -dy, ry = rx, the circles are too large, if we use rx =  dy; ry = -dx they 
+    // are too small - i think we should exchange / rotate them *after conversion* - somehow, the 
+    // converted gradient is wrong
+
 
     iterations++;
-    if(iterations > 1000)  // preliminary
+    if(iterations > 500)  // preliminary
       break;  // use condition later
   }
-
-
 
   //int i = (int) round(px);
   //int j = (int) round(py);
 
-
-
   int dummy = 0;
-
-  /*
-  // draw downward from i,j:
-  while(j < img.getHeight())
-  {
-
-    x = rsLinToLin(T(i), T(0), xMaxPixel, xMin, xMax);
-    y = rsLinToLin(T(j), T(0), yMaxPixel, yMin, yMax);
-
-
-    // find x by root-finding...
-
-    painter.paintDot(px, py, color);
-
-    j++;
-  }
-  */
 
   // wait - no - this is wrong - we need to figure out x-and y-coordinate form the current 
   // location ..maybe go one pixel-unit into a direction that is perpendicular to the gradient of f
@@ -1201,10 +1191,10 @@ void implicitCurve()
   double width  = 101;
   double height = 101;
 
-  double xMin   = -1.2;
-  double xMax   = +1.2;
-  double yMin   = -1.2;
-  double yMax   = +1.2;
+  double xMin   = -2.0;
+  double xMax   = +2.0;
+  double yMin   = -2.0;
+  double yMax   = +2.0;
 
 
   function<double(double, double)> f;
@@ -1215,7 +1205,7 @@ void implicitCurve()
   drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
 
 
-  writeImageToFilePPM(imgCurve, "ImplicitCurve.ppm");
+  writeScaledImageToFilePPM(imgCurve, "ImplicitCurve.ppm", 4);
 }
 
 
