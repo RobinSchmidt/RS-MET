@@ -1123,7 +1123,7 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   //T px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel); // x in pixel coordinates
   //T py = rsLinToLin(y, yMin, yMax, T(0), yMaxPixel);
 
-  T sclX = (xMax-xMin) / xMaxPixel;
+  T sclX = (xMax-xMin) / xMaxPixel;  // converts from x-distance to pixel distance
   T sclY = (yMax-yMin) / yMaxPixel; 
 
   // is this correct? we want to go a distanc of one pixel in each iteration - what about the 
@@ -1139,11 +1139,11 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     painter.paintDot(px, py, color);
 
     // figure out gradient...
-    T eps = 1.e-8;  // ad-hoc - make parameter
-    T dx  = (f(x+eps, y) - f(x-eps, y)) / (T(2)*eps);  // x-component of gradient
-    T dy  = (f(x, y+eps) - f(x, y-eps)) / (T(2)*eps);  // y-component of gradient
-    T rx  = -dy;  // (rx,ry) = (-dy,dx) - gradient, rotated by 90° counterclockwise..
-    T ry  =  dx;  // ..this is a direction along the contour (approximately)
+    T h  = 1.e-8;  // ad-hoc - make parameter
+    T dx = (f(x+h, y) - f(x-h, y)) / (T(2)*h);  // x-component of gradient
+    T dy = (f(x, y+h) - f(x, y-h)) / (T(2)*h);  // y-component of gradient
+    T rx = -dy;  // (rx,ry) = (-dy,dx) - gradient, rotated by 90° counterclockwise..
+    T ry =  dx;  // ..this is a direction along the contour (approximately)
 
     // scale direction and go a step into the direction:
     T s = T(1) / sqrt(rx*rx + ry*ry); 
@@ -1155,8 +1155,30 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     ry *= s;
     x  += rx;
     y  += ry;
-    T fxy = f(x,y);  // should stay close to c
 
+    /*
+    // refine x or y such that we land on the contour again if our direction is horizontalish (i.e.
+    // rx*sclX > ry*sclY), we change y, otherwise, we change x - we do this by 1D Newton iteration
+    // using numeric derivatives (is this a good idea? what about convergence problems?)
+    T fxy = f(x,y);  // should stay close to c
+    T tol = 1.e-12;  // ad hoc
+    if(ry*sclY > rx*sclX) {               // y-step is larger (steep) -> refine x
+      while(rsAbs(fxy-c) > tol)  {
+        dx  = (f(x+h, y) - f(x-h, y)) / (T(2)*h);
+        x   = x - fxy / dx;
+        fxy = f(x,y);  } }
+    else {
+      while(rsAbs(fxy-c) > tol)  {
+        dy = (f(x, y+h) - f(x, y-h)) / (T(2)*h);
+        y   = y - fxy / dy;
+        fxy = f(x,y);  }}
+        */
+
+    // wrong - we don'T look for a zero but for a c - we need to  modify the newton-steps 
+    // accordingly - we search for a value x f(x,y) - c = 0
+    // try err = f(x,y) - c, while abs(err) >= tol
+
+    // todo: check, if the sclX,sclY business is correct or if should be the other way around
 
 
 
