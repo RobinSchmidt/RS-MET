@@ -1120,12 +1120,20 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   T yMaxPixel = T(img.getHeight() - 1);   // same for y-coordinate
   T x  = x0;
   T y  = y0;
-  T px = rsLinToLin(x0, xMin, xMax, T(0), xMaxPixel); // x in pixel coordinates
-  T py = rsLinToLin(y0, yMin, yMax, T(0), yMaxPixel);
+  //T px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel); // x in pixel coordinates
+  //T py = rsLinToLin(y, yMin, yMax, T(0), yMaxPixel);
+
+  T scl = (xMax-xMin) / xMaxPixel; 
+  // is this correct? we want to go a distanc of one pixel in each iteration - what about the 
+  // y-coordinate? maybe we need to figure out in each iteration, what the length of a step would
+  // be in pixels and use that to scale it
 
   int iterations = 0;
   while(true)
   {
+    // convert (x,y) to pixel coordinates and draw:
+    T px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
+    T py = rsLinToLin(y, yMin, yMax, T(0), yMaxPixel);
     painter.paintDot(px, py, color);
 
     // figure out gradient...
@@ -1135,9 +1143,20 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     T rx  = -dy;  // (rx,ry) = (-dy,dx) - gradient, rotated by 90° counterclockwise..
     T ry  =  dx;  // ..this is a direction along the contour (approximately)
 
+    // scale direction and go a step into the direction:
+    T s = scl / sqrt(rx*rx + ry*ry); rx *= s; ry *= s;
+    x  += rx;
+    y  += ry;
+    T fxy = f(x,y);  // should stay close to c
+
+
+
+
     //rx =  dy; ry = -dx; // test
 
 
+
+    /*
     // convert rx,ry to pixel coordinates and normalize to length 1:
     rx = rsLinToLin(rx, xMin, xMax, T(0), xMaxPixel);
     ry = rsLinToLin(ry, yMin, yMax, T(0), yMaxPixel);
@@ -1155,6 +1174,7 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
     T fxy = f(x,y);  // should stay close to c - drifts away from it quite quite quickly - is at 
                      // 3.5 after 1000 iterations
+     */
 
     // we somehow need to counteract drift due to error accumulation by root finding - maybe figure
     // out, how far we are away from the desired level c and if too far, use a root-finder to 
