@@ -764,12 +764,11 @@ rsImage<TPix> getContours(const rsImage<TPix>& z, const std::vector<TLvl>& level
   const std::vector<TPix>& fillColors = std::vector<TPix>() )
 {
   rsImageF c(z.getWidth(), z.getHeight());
-
   for(size_t i = 0; i < levels.size(); i++)
     drawContour(z, levels[i], c, colors[i % colors.size()], antiAlias);
-
   return c;
 }
+// get rid of fillColors - it's not used (i think - if it is, it shouldn't be)
 
 template<class TLvl, class TPix>
 rsImage<TPix> getBinFills(
@@ -1012,7 +1011,7 @@ void contours()
 
 
 
-
+// todo: make a class rsContourPlotter
 
 void complexContours()
 {
@@ -1020,25 +1019,29 @@ void complexContours()
   // -plot real part into red channel and imaginary part into blue channel
   //  -maybe plot the contour lines into green channel
 
-  int w = 129;               // width in pixels
-  int h = 129;               // height in pixels
-
-  w = h = 513;
-
-  double r = 5;
-  int numLevels = 20;
+  // setup:
+  int w           = 513;               // width in pixels
+  int h           = 513;               // height in pixels
+  int numLevels   = 20;                // number of contour levels
+  int numColors   = numLevels + 1;     // number of contour colors
+  double r        = 5;                 // range x = -r..+r, y = -r...+r
+  bool antiAlias  = true;              // switch anti-alias on/off
+  float levelPow  = 1.f;               // power/exponent for nonlinear spacing of contour levels
+                                       // ...not useful - we need to squish toward the center
 
   double xMin = -r;
   double xMax = +r;
   double yMin = -r;
   double yMax = +r;
 
+  //numColors = 10;
 
   using Complex = complex<double>;
   function<Complex(Complex)> f;
 
   // pick complex function to plot
   //f = [=](Complex z) { return z; };
+  //f = [=](Complex z) { return z + 0.5*z*z + (1./6)*z*z*z; };
   f = [=](Complex z) { return z*z; };
   //f = [=](Complex z) { return z*z*z; };
   //f = [=](Complex z) { return z*z*z*z; };
@@ -1046,21 +1049,62 @@ void complexContours()
 
 
   // render images of function values for real and imaginary part:
-  rsImageF imgFuncRe(w, h), imgFuncIm(w, h), imgFuncEmpty(w, h);
-  generateFunctionImageReIm(f, xMin, xMax, yMin, yMax, imgFuncRe, imgFuncIm);
-  normalizeJointly(imgFuncRe, imgFuncIm);
-  //normalize(imgFuncRe);
-  //normalize(imgFuncIm);
-  // todo: normalize jointly to preserve relation between re,im
+  rsImageF funcRe(w, h), funcIm(w, h), empty(w, h);
+  generateFunctionImageReIm(f, xMin, xMax, yMin, yMax, funcRe, funcIm);
+  normalizeJointly(funcRe, funcIm); // joint normalization preserves re,im relationship (right?)
+  //normalize(funcRe);
+  //normalize(funcIm);
+  // what about absolute value and phase? ca we do something useful with them, too?
+
+  // get contour lines:
+  std::vector<float> levels = rsRangeLinear(0.f, 1.f, numLevels);
+  for(int i = 0; i < numLevels; i++)
+    levels[i] = pow(levels[i], levelPow);
+  rsImageF contRe = getContours(funcRe, levels, { 1.0f }, antiAlias);
+  rsImageF contIm = getContours(funcIm, levels, { 1.0f }, antiAlias);
+  // rename to getContourLines
+
+  // get countour fills:
+  std::vector<float> colors = rsRangeLinear(0.f, 1.f, numColors);
+  rsImageF fillsRe = getBinFills(funcRe, levels, colors, antiAlias);
+  rsImageF fillsIm = getBinFills(funcIm, levels, colors, antiAlias);
+  // maybe rename to getContourFills, getCountourSteps
+
+  // -maybe try to mix the contourFills with the orignal function - should give some indication of 
+  //  lines but still smooth'ish progression
+  // -combine contour lines of re and im
+  // -overlay contour lines with func
+  // -try a nonlinear spacing of the contour levels - when the function is z^3, i think, the 
+  //  contour levels should also increase with x^3 (or x^(1/3) ?) - this effect can be realized by
+  //  raising the elements of the levels array to a power - this makes the contour levels roughly
+  //  equally spaced - for other functions, we may want an exponential relationship rather than
+  //  a power rule - can we somehow estimate a good spacing from teh image data? maybe by fitting
+  //  some sort of curve to the statistics of the data - if there are many low values, we want 
+  //  the line-spacing to be denser in the low range - we wnat that the different bins occupy 
+  //  roughly equal areas - maybe this should be done separately for real and imaginary part
+  //  -maybe take the cumulative distribution of height-values and select the levels according to
+  //   that
+  //  -oh - for functions with odd exponents, we actually want to squish the level line density
+  //   toward the center --or actually that applies to even exponents, too - just using an exponent
+  //   is not good enough!
+  // -maybe we need even more template types: double for the function, float for the heights and
+  //  pixel colors may be some RGBA type (rsFloat32x4)
 
 
-  writeImageToFilePPM(imgFuncRe, "ComplexFunctionRe.ppm");
-  writeImageToFilePPM(imgFuncIm, "ComplexFunctionIm.ppm");
-  //writeImageToFilePPM(imgFuncRe, imgFuncIm, imgFuncEmpty, "ComplexFunctionRG.ppm");
-  writeImageToFilePPM(imgFuncRe, imgFuncEmpty, imgFuncIm, "ComplexFunctionRB.ppm");
 
+  writeImageToFilePPM(funcRe, "FunctionRe.ppm");
+  writeImageToFilePPM(funcIm, "FunctionIm.ppm");
 
-  // ....
+  writeImageToFilePPM(contRe, "ContourLinesRe.ppm");
+  writeImageToFilePPM(contIm, "ContourLinesIm.ppm");
+
+  writeImageToFilePPM(fillsRe, "ContourFillsRe.ppm");
+  writeImageToFilePPM(fillsIm, "ContourFillsIm.ppm");
+
+  //writeImageToFilePPM(funcRe, funcIm, empty, "ComplexFunctionRG.ppm");
+  writeImageToFilePPM(funcRe,  empty, funcIm,  "FunctionRB.ppm");
+  writeImageToFilePPM(fillsRe, empty, fillsIm, "ContourFillsRB.ppm");
+  writeImageToFilePPM(fillsRe, fillsIm, empty, "ContourFillsRG.ppm");
 
 
   int dummy = 0;
