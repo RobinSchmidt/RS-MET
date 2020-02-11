@@ -1123,7 +1123,9 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   //T px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel); // x in pixel coordinates
   //T py = rsLinToLin(y, yMin, yMax, T(0), yMaxPixel);
 
-  T scl = (xMax-xMin) / xMaxPixel; 
+  T sclX = (xMax-xMin) / xMaxPixel;
+  T sclY = (yMax-yMin) / yMaxPixel; 
+
   // is this correct? we want to go a distanc of one pixel in each iteration - what about the 
   // y-coordinate? maybe we need to figure out in each iteration, what the length of a step would
   // be in pixels and use that to scale it
@@ -1144,7 +1146,13 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     T ry  =  dx;  // ..this is a direction along the contour (approximately)
 
     // scale direction and go a step into the direction:
-    T s = scl / sqrt(rx*rx + ry*ry); rx *= s; ry *= s;
+    T s = T(1) / sqrt(rx*rx + ry*ry); 
+    if(ry*sclY > rx*sclX)  // scale the step such that the larger step of x,y is one pixel
+      s *= sclY;           // ...verify, if this code does what it should...
+    else
+      s *= sclX;  
+    rx *= s; 
+    ry *= s;
     x  += rx;
     y  += ry;
     T fxy = f(x,y);  // should stay close to c
