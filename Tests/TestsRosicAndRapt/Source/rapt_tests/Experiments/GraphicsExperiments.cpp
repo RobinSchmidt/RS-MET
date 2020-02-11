@@ -1123,6 +1123,10 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
   T sx = xMaxPixel / (xMax-xMin);   // one x-pixel in world coordinates
   T sy = yMaxPixel / (yMax-yMin);
+
+  T sxi = (xMax-xMin) / xMaxPixel;
+  T syi = (yMax-yMin) / yMaxPixel;
+
   int iterations = 0;
   while(true)
   {
@@ -1182,10 +1186,17 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
           y += old / dy;
           break; }}}
 
+    if( rsAbs(x-x0) < sxi && rsAbs(y-y0) < syi ) // maybe && iterations >= 2 so we don't spuriously
+      break;                                   // break in the very first iteration?
+    // something is wrong about this
+
 
     iterations++;
     if(iterations > 70)  // preliminary
       break;  // use condition later
+    // possible stopping criteria: we are close to the starting point x0,y0 (within one pixel
+    // distance?) or outside the image boundaries - maybe we should also have a maximum number of
+    // iterations
   }
 
   //int i = (int) round(px);
