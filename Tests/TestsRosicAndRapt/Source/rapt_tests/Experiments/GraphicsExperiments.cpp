@@ -950,6 +950,7 @@ void contours()
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y; };
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*y*y; };
   f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*x - 0.1f*y*y + 0.1f*y; };
+    // try exchanging sin and cos an combining
 
 
   // create image with function values:
@@ -1037,7 +1038,11 @@ void complexContours()
   function<Complex(Complex)> f;
 
   // pick complex function to plot
+  //f = [=](Complex z) { return z; };
   f = [=](Complex z) { return z*z; };
+  //f = [=](Complex z) { return z*z*z; };
+  //f = [=](Complex z) { return z*z*z*z; };
+  //f = [=](Complex z) { return 1./(1. + z); };
 
 
   // render images of function values for real and imaginary part:
