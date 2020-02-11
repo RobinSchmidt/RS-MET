@@ -1156,24 +1156,34 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     x  += rx;
     y  += ry;
 
+    
     /*
     // refine x or y such that we land on the contour again if our direction is horizontalish (i.e.
     // rx*sclX > ry*sclY), we change y, otherwise, we change x - we do this by 1D Newton iteration
     // using numeric derivatives (is this a good idea? what about convergence problems?)
-    T fxy = f(x,y);  // should stay close to c
-    T tol = 1.e-12;  // ad hoc
+    // this does not yet work well - it seems to sometimes grind to a halt
+    T err = f(x,y) - c;
+    T tol = 1.e-12;
     if(ry*sclY > rx*sclX) {               // y-step is larger (steep) -> refine x
-      while(rsAbs(fxy-c) > tol)  {
-        dx  = (f(x+h, y) - f(x-h, y)) / (T(2)*h);
-        x   = x - fxy / dx;
-        fxy = f(x,y);  } }
+      while(rsAbs(err) > tol)  {
+        dx    = (f(x+h, y) - f(x-h, y)) / (T(2)*h);
+        x     = x - err / dx;
+        T old = err;
+        err   = f(x,y) - c;
+        if(rsAbs(old) <= rsAbs(err))  // maybe restore the old x with smaller error before breaking
+          break;   }}                 // -> x += old/dx
     else {
-      while(rsAbs(fxy-c) > tol)  {
+      while(rsAbs(err) > tol)  {
         dy = (f(x, y+h) - f(x, y-h)) / (T(2)*h);
-        y   = y - fxy / dy;
-        fxy = f(x,y);  }}
-        */
-
+        y   = y - err / dy;
+        T old = err;
+        err = f(x,y) - err;  
+        if(rsAbs(old) <= rsAbs(err))
+          break; }}
+    
+    // we run into limit cycles - can we avoid them by breaking out whenever the absolute error has
+    // increased
+    */
     // wrong - we don'T look for a zero but for a c - we need to  modify the newton-steps 
     // accordingly - we search for a value x f(x,y) - c = 0
     // try err = f(x,y) - c, while abs(err) >= tol
