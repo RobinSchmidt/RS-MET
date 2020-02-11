@@ -1120,68 +1120,44 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   T yMaxPixel = T(img.getHeight() - 1);   // same for y-coordinate
   T x  = x0;
   T y  = y0;
-  //T px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel); // x in pixel coordinates
-  //T py = rsLinToLin(y, yMin, yMax, T(0), yMaxPixel);
 
-
-
-  // is this correct? we want to go a distanc of one pixel in each iteration - what about the 
-  // y-coordinate? maybe we need to figure out in each iteration, what the length of a step would
-  // be in pixels and use that to scale it
-
+  T sx = xMaxPixel / (xMax-xMin);   // one x-pixel in world coordinates
+  T sy = yMaxPixel / (yMax-yMin);
   int iterations = 0;
   while(true)
   {
-    // convert (x,y) to pixel coordinates and draw:
+    // Convert (x,y) to pixel coordinates and draw:
     T px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
     T py = rsLinToLin(y, yMin, yMax, T(0), yMaxPixel);
     painter.paintDot(px, py, color);
 
-    // figure out gradient...
+    // Figure out gradient (dx,dy) and contour direction (rx,ry) which is perpendicular to the 
+    // gradient:
     T h  = 1.e-8;  // ad-hoc - make parameter
     T dx = (f(x+h, y) - f(x-h, y)) / (T(2)*h);  // x-component of gradient
     T dy = (f(x, y+h) - f(x, y-h)) / (T(2)*h);  // y-component of gradient
     T rx = -dy;  // (rx,ry) = (-dy,dx) - gradient, rotated by 90° counterclockwise..
     T ry =  dx;  // ..this is a direction along the contour (approximately)
 
-
-    T sx = xMaxPixel / (xMax-xMin);  // drag outside loop
-    T sy = yMaxPixel / (yMax-yMin);
-    bool flat = rsAbs(rx*sx) > rsAbs(ry*sy);// horizontalish
-    if(flat)  
-    {
+    // Check, if the current segment is horizontalish/flat or verticalish/steep. In the flat case, 
+    // advance x by one pixel and y by a distance derived from the direction vector - in the steep 
+    // case, the other way around:
+    bool flat = rsAbs(rx*sx) > rsAbs(ry*sy);   // curve sgement is horizontalish
+    if(flat) {
       dx = rsSign(rx) / sx;    // this step should translate to 1 pixel left or right -> check this!
-      dy = dx * ry/rx;         // the y-step is proportional to the x-step
-      x += dx;               // walk one pixel left or right
-      y += dy;
-      int dummy = 0;
-    }
+      dy = dx * ry/rx;         // the y-step is proportional to the x-step - is thsi formula the best we can do?
+      x += dx;                 // walk one pixel left or right
+      y += dy; }
     else {              // verticalish
       dy = rsSign(ry) / sy;
       dx = dy * rx/ry;
       x += dx;
-      y += dy;
-      int dummy = 0;
-    }
+      y += dy; }
 
-
-    /*
-    // scale direction and go a step into the direction:
-    T sclX = (xMax-xMin) / xMaxPixel;  // converts from x-distance to pixel distance
-    T sclY = (yMax-yMin) / yMaxPixel; 
-    T s = T(1) / sqrt(rx*rx + ry*ry); 
-    if(ry*sclY > rx*sclX)  // scale the step such that the larger step of x,y is one pixel
-      s *= sclY;           // ...verify, if this code does what it should...
-    else
-      s *= sclX;  
-    rx *= s; 
-    ry *= s;
-    x  += rx;
-    y  += ry;
-    */
-
-    
-    // refine x or y such that we land on the contour again if our direction is horizontalish (i.e.
+    // In the step just taken, we may have drifted off the contour line due to approximation 
+    // errors, so we fix this by refining x or y such that we land on the contour again. We use 1D 
+    // Netwon iteration with numeric derivatives
+    // if our direction is horizontalish (i.e.
     // rx*sclX > ry*sclY), we change y, otherwise, we change x - we do this by 1D Newton iteration
     // using numeric derivatives (is this a good idea? what about convergence problems?)
     // this does not yet work well - it seems to sometimes grind to a halt
@@ -1207,39 +1183,6 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
           break; }}}
 
 
-
-
-    /*
-    // convert rx,ry to pixel coordinates and normalize to length 1:
-    rx = rsLinToLin(rx, xMin, xMax, T(0), xMaxPixel);
-    ry = rsLinToLin(ry, yMin, yMax, T(0), yMaxPixel);
-    T s  = T(1) / sqrt(rx*rx + ry*ry); rx *= s; ry *= s;
-
-    // go a step into the selected direction:
-    px += rx;
-    py += ry;
-
-    // update x,y:
-    x = rsLinToLin(px, T(0), xMaxPixel, xMin, xMax);
-    y = rsLinToLin(py, T(0), yMaxPixel, yMin, yMax);
-
-    // somehting is wrong - i think we need to swap the y direction in the conversion
-
-    T fxy = f(x,y);  // should stay close to c - drifts away from it quite quite quickly - is at 
-                     // 3.5 after 1000 iterations
-     */
-
-    // we somehow need to counteract drift due to error accumulation by root finding - maybe figure
-    // out, how far we are away from the desired level c and if too far, use a root-finder to 
-    // re-adjust one of the two coordinates (which?  ..may depend on the direction - the one that 
-    // changes less...)
-
-    // we get spirals and the (pseudo)circles have wrong radius and center
-    // if we use rx = -dy, ry = rx, the circles are too large, if we use rx =  dy; ry = -dx they 
-    // are too small - i think we should exchange / rotate them *after conversion* - somehow, the 
-    // converted gradient is wrong
-
-
     iterations++;
     if(iterations > 70)  // preliminary
       break;  // use condition later
@@ -1249,14 +1192,6 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   //int j = (int) round(py);
 
   int dummy = 0;
-
-  // wait - no - this is wrong - we need to figure out x-and y-coordinate form the current 
-  // location ..maybe go one pixel-unit into a direction that is perpendicular to the gradient of f
-  // that should be the direction of the contour line - being there, refine the location so as to
-  // actually be exactly on the contour line again, then draw the pixel and repeat
-  // or: figure out, if the direction is steep or flat, increment y or x accordingly and solve 
-  // for the other coordinate
-
 }
 
 void implicitCurve()
