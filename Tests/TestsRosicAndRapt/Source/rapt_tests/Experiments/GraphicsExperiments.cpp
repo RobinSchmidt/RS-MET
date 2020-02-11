@@ -1165,7 +1165,6 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     }
 
 
-
     /*
     // scale direction and go a step into the direction:
     T sclX = (xMax-xMin) / xMaxPixel;  // converts from x-distance to pixel distance
@@ -1182,8 +1181,6 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     */
 
     
-
-    
     // refine x or y such that we land on the contour again if our direction is horizontalish (i.e.
     // rx*sclX > ry*sclY), we change y, otherwise, we change x - we do this by 1D Newton iteration
     // using numeric derivatives (is this a good idea? what about convergence problems?)
@@ -1196,29 +1193,19 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
         x     = x - err / dx;
         T old = err;
         err   = f(x,y) - c;
-        if(rsAbs(old) <= rsAbs(err))  // maybe restore the old x with smaller error before breaking
-          break;   }}                 // -> x += old/dx
+        if(rsAbs(old) <= rsAbs(err)) {
+          x += old / dx;  // restore old value bcs old error was better
+          break; }}}
     else {
       while(rsAbs(err) > tol)  {
         dy = (f(x, y+h) - f(x, y-h)) / (T(2)*h);
         y   = y - err / dy;
         T old = err;
-        err = f(x,y) - err;  
-        if(rsAbs(old) <= rsAbs(err))
-          break; }}
-    
-    // we run into limit cycles - can we avoid them by breaking out whenever the absolute error has
-    // increased
+        err = f(x,y) - c;  
+        if(rsAbs(old) <= rsAbs(err)) {
+          y += old / dy;
+          break; }}}
 
-    // wrong - we don'T look for a zero but for a c - we need to  modify the newton-steps 
-    // accordingly - we search for a value x f(x,y) - c = 0
-    // try err = f(x,y) - c, while abs(err) >= tol
-
-    // todo: check, if the sclX,sclY business is correct or if should be the other way around
-
-
-
-    //rx =  dy; ry = -dx; // test
 
 
 
@@ -1254,7 +1241,7 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
 
     iterations++;
-    if(iterations > 50)  // preliminary
+    if(iterations > 70)  // preliminary
       break;  // use condition later
   }
 
