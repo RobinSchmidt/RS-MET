@@ -689,7 +689,7 @@ void drawContour(const rsImage<TLvl>& z, TLvl level, rsImage<TPix>& target, TPix
   bool antiAlias)
 {
   rsImagePainter<TPix, TLvl, TLvl> painter(&target);
-  painter.setNormalizeAntiAlias(true);  // much less "screw" effect
+  painter.setDeTwist(true);  
   for(int i = 0; i < z.getWidth()-1; i++) {
     for(int j = 0; j < z.getWidth()-1; j++) {
       TLvl z00 = z(i,   j  );
@@ -912,16 +912,12 @@ void generateFunctionImageReIm(const function<complex<T>(complex<T>)>& f,
   generateFunctionImage(fi, xMin, xMax, yMin, yMax, imgIm);
 }
 
-
-
 void contours()
 {
   // We plot the 2D function z = f(x,y) = x^2 - y^2 into an image where the height translates
   // to the pixel brightness
 
   rsAssert(testContourSubPixelStuff());
-
-
 
   int w = 129;               // width in pixels
   int h = 129;               // height in pixels
@@ -972,7 +968,6 @@ void contours()
   writeScaledImageToFilePPM(imgCont,  "Contours.ppm", 1);
   writeScaledImageToFilePPM(imgFills, "BinFills.ppm", 1);
 
-
   // the right column and bottom row has no countour values - no surprise - the loop only goes up 
   // to w-1,h-1
   // maybe use powers of two +1 for the size and cut off bottom-row and right-column aftewards
@@ -990,28 +985,6 @@ void contours()
   // maybe try to overlay images with multiple settings for the number/positions of the level-lines
   // -could create intersting patterns
 }
-
-// implicit curve drawing algo: 
-// input: f(x,y) = c, f as functor, c as value, one solution x0,y0 that solves the equation
-//
-// (1) draw/paint pixel at x0,y0
-// (2) find neighbouring pixel to draw next among the 8 neighbours
-// (3) fix one coordinate and solve for the other by 1D root-finding
-// (3) check, if we are back at the same pixel where we started or reached the image boundary 
-//     -if yes: return - we are done with the curve
-// (4) back to 1
-//
-// -maybe fill the shape by coloring all pixels for which f(x,y) < c
-// -which should we increment or decrement and for which should we solve? x0 or y0? maybe that 
-//  should also be decided based on a condition
-//  -maybe y should be use a fixed increment - because we may later extend it to taking two 
-//   solutions (x0,y0),(x1,y2) and advancing y0,y1 in a loop and compute x0,x1 to get a span which
-//   can then be filled - but the boundaries of the span should be only partially colored for 
-//   anti-aliasing - that should give a reasonable anti-aliased ellipse-drawing algo
-
-
-
-// todo: make a class rsContourPlotter
 
 void complexContours()
 {
@@ -1089,8 +1062,9 @@ void complexContours()
   //   is not good enough!
   // -maybe we need even more template types: double for the function, float for the heights and
   //  pixel colors may be some RGBA type (rsFloat32x4)
-
-
+  // -make a class rsContourPlotter in rosic
+  //   -have rendering options with presets draft (fastest), presentation (highest quality) and 
+  //    maybe intermediate settings
 
   writeImageToFilePPM(funcRe, "FunctionRe.ppm");
   writeImageToFilePPM(funcIm, "FunctionIm.ppm");
@@ -1105,13 +1079,104 @@ void complexContours()
   writeImageToFilePPM(funcRe,  empty, funcIm,  "FunctionRB.ppm");
   writeImageToFilePPM(fillsRe, empty, fillsIm, "ContourFillsRB.ppm");
   writeImageToFilePPM(fillsRe, fillsIm, empty, "ContourFillsRG.ppm");
+}
+
+
+// implicit curve drawing algo: 
+// input: f(x,y) = c, f as functor, c as value, one solution x0,y0 that solves the equation
+//
+// (1) draw/paint pixel at x0,y0
+// (2) find neighbouring pixel to draw next among the 8 neighbours
+// (3) fix one coordinate and solve for the other by 1D root-finding
+// (3) check, if we are back at the same pixel where we started or reached the image boundary 
+//     -if yes: return - we are done with the curve
+// (4) back to 1
+//
+// -maybe fill the shape by coloring all pixels for which f(x,y) < c
+// -which should we increment or decrement and for which should we solve? x0 or y0? maybe that 
+//  should also be decided based on a condition
+//  -maybe y should be use a fixed increment - because we may later extend it to taking two 
+//   solutions (x0,y0),(x1,y2) and advancing y0,y1 in a loop and compute x0,x1 to get a span which
+//   can then be filled - but the boundaries of the span should be only partially colored for 
+//   anti-aliasing - that should give a reasonable anti-aliased ellipse-drawing algo
+// -maybe make these algos available for use in python with the image processing library
+
+/** Draws the curve defined by f(x,y) = c onto the image. It needs one solution x0,y0 for which
+f(x0,y0) = c holds as starting point. */
+template<class T, class TPix> 
+void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMax, T c, T x0, T y0,
+  rsImage<TPix>& img, TPix color)
+{
+  rsAssert(f(x0, y0) == c, "x0,y0 should solve f(x0,y0) = c" );  // todo: use tolerance
+
+  // maybe pass the painter object - this painte then also already should have the image assigned
+  // so we don't need to pass it as additional parameter - this is similar to juce's Graphics 
+  // object - we would need to have inquiry functions like getMaxPixelCoordinateX/Y
+  rsImagePainter<TPix, T, T> painter(&img);
+  painter.setDeTwist(true);
+
+  // figure out start pixel:
+  T xMaxPixel = T(img.getWidth()  - 1);   // maximum x-coordinate in pixel coordinates
+  T yMaxPixel = T(img.getHeight() - 1);   // same for y-coordinate
+  T x  = x0;
+  T y  = y0;
+  T px = rsLinToLin(x0, xMin, xMax, T(0), xMaxPixel); // x in pixel coordinates
+  T py = rsLinToLin(y0, yMin, yMax, T(0), yMaxPixel);
+  int i = (int) round(px);
+  int j = (int) round(py);
+
 
 
   int dummy = 0;
+
+  /*
+  // draw downward from i,j:
+  while(j < img.getHeight())
+  {
+
+    x = rsLinToLin(T(i), T(0), xMaxPixel, xMin, xMax);
+    y = rsLinToLin(T(j), T(0), yMaxPixel, yMin, yMax);
+
+
+    // find x by root-finding...
+
+    painter.paintDot(px, py, color);
+
+    j++;
+  }
+  */
+
+  // wait - no - this is wrong - we need to figure out x-and y-coordinate form the current 
+  // location ..maybe go one pixel-unit into a direction that is perpendicular to the gradient of f
+  // that should be the direction of the contour line - being there, refine the location so as to
+  // actually be exactly on the contour line again, then draw the pixel and repeat
+  // or: figure out, if the direction is steep or flat, increment y or x accordingly and solve 
+  // for the other coordinate
+
 }
-// maybe make a plotter in rosic
-// -have rendering options with presets draft (fastest), presentation (highest quality) and maybe 
-//  intermediate settings
+
+void implicitCurve()
+{
+  double width  = 101;
+  double height = 101;
+
+  double xMin   = -1.2;
+  double xMax   = +1.2;
+  double yMin   = -1.2;
+  double yMax   = +1.2;
+
+
+  function<double(double, double)> f;
+  f = [=](double x, double y) { return x*x + y*y; };  // unit circle
+
+
+  rsImageF imgCurve(width, height);
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
+
+
+  writeImageToFilePPM(imgCurve, "ImplicitCurve.ppm");
+}
+
 
 
 // maybe make animations with

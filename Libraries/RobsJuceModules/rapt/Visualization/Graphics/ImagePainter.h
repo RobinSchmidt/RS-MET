@@ -39,12 +39,20 @@ public:
   /** Sets the weights that are used in the simple (non alpha mask based) dot drawing mode. */
   void setNeighbourWeightsForSimpleDot(TWgt straight, TWgt diagonal);
 
-  /** Switches anti-aliasing on/off. */
+  /** Switches anti-aliasing on/off. Anti aliasing is based on spreading a dot, that should be 
+  drawn at some sub-pixel position, into 4 pixels. If the position is (x,y) and (i,j) are the 
+  integer components of (x,y), we spread the dot into pixels (i,j),(i,j+1),(i+1,j),(i+1,j+1) with 
+  some coeffs obtained from the fractional parts of x and y. I once called this "bilinear 
+  deinterpolation"...but "bilinear spreading" is probably a better term. */
   void setAntiAlias(bool shouldAntiAlias) { antiAlias = shouldAntiAlias; }
 
   /** Switches on/off the normalization of the norm of the a,b,c,d coeffs that are used for the 
-  bilinear spreading. */
-  void setNormalizeAntiAlias(bool shouldNormalize) { normalize = shouldNormalize; }
+  bilinear spreading in the anti-aliasing algo. Not doing so may lead to a sort of "twisted" look 
+  of lines and curves - as if something winds around. It seems, when the coeffs themselves sum up 
+  to 1 (which is the case when we don "de-twist"), dots with more spreading appear darker than 
+  those with less spreading. So, the visual results are usually better when this is active, but it
+  incurs additional processing cost.  */
+  void setDeTwist(bool shouldDeTwist) { deTwist = shouldDeTwist; }
 
   /** Switches between using the alpha-mask and the simple dot algorithm. */
   void setUseAlphaMask(bool shouldUseMask) { useMask = shouldUseMask; }
@@ -188,7 +196,7 @@ protected:
   rsAlphaMask<TWgt> *mask; // rename to brush...hmm...or well, an actual brush should have its
                            // own colors - this mask here has only weights
 
-  bool antiAlias = true, useMask = false, normalize = false;
+  bool antiAlias = true, useMask = false, deTwist = false;
   TWgt straightNeighbourWeight, diagonalNeighbourWeight;
 
 

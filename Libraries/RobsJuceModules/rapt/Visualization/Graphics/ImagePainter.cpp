@@ -134,7 +134,7 @@ void rsImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, T
 
   // optionally normalize make the sum of squares of a,b,c,d to a constant - the factor 0.5 makes 
   // it visually similar to no normalization:
-  if(normalize) {
+  if(deTwist) {
     TPix s = TPix(0.5) / sqrt(a*a + b*b + c*c + d*d);
     a *= s; b *= s; c *= s; d *= s; }
 
