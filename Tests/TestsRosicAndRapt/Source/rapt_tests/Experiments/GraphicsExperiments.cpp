@@ -1183,14 +1183,14 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
     
 
-    /*
+    
     // refine x or y such that we land on the contour again if our direction is horizontalish (i.e.
     // rx*sclX > ry*sclY), we change y, otherwise, we change x - we do this by 1D Newton iteration
     // using numeric derivatives (is this a good idea? what about convergence problems?)
     // this does not yet work well - it seems to sometimes grind to a halt
     T err = f(x,y) - c;
     T tol = 1.e-12;
-    if(rx*sx <= ry*sy) {               // y-step is larger (steep) -> refine x
+    if(!flat) {               // y-step is larger (steep) -> refine x
       while(rsAbs(err) > tol)  {
         dx    = (f(x+h, y) - f(x-h, y)) / (T(2)*h);
         x     = x - err / dx;
@@ -1206,7 +1206,6 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
         err = f(x,y) - err;  
         if(rsAbs(old) <= rsAbs(err))
           break; }}
-          */
     
     // we run into limit cycles - can we avoid them by breaking out whenever the absolute error has
     // increased
@@ -1255,7 +1254,7 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
 
     iterations++;
-    if(iterations > 100)  // preliminary
+    if(iterations > 50)  // preliminary
       break;  // use condition later
   }
 
