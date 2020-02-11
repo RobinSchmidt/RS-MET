@@ -1123,8 +1123,7 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   //T px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel); // x in pixel coordinates
   //T py = rsLinToLin(y, yMin, yMax, T(0), yMaxPixel);
 
-  T sclX = (xMax-xMin) / xMaxPixel;  // converts from x-distance to pixel distance
-  T sclY = (yMax-yMin) / yMaxPixel; 
+
 
   // is this correct? we want to go a distanc of one pixel in each iteration - what about the 
   // y-coordinate? maybe we need to figure out in each iteration, what the length of a step would
@@ -1145,7 +1144,32 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     T rx = -dy;  // (rx,ry) = (-dy,dx) - gradient, rotated by 90° counterclockwise..
     T ry =  dx;  // ..this is a direction along the contour (approximately)
 
+
+    T sx = xMaxPixel / (xMax-xMin);  // drag outside loop
+    T sy = yMaxPixel / (yMax-yMin);
+    bool flat = rsAbs(rx*sx) > rsAbs(ry*sy);// horizontalish
+    if(flat)  
+    {
+      dx = rsSign(rx) / sx;    // this step should translate to 1 pixel left or right -> check this!
+      dy = dx * ry/rx;         // the y-step is proportional to the x-step
+      x += dx;               // walk one pixel left or right
+      y += dy;
+      int dummy = 0;
+    }
+    else {              // verticalish
+      dy = rsSign(ry) / sy;
+      dx = dy * rx/ry;
+      x += dx;
+      y += dy;
+      int dummy = 0;
+    }
+
+
+
+    /*
     // scale direction and go a step into the direction:
+    T sclX = (xMax-xMin) / xMaxPixel;  // converts from x-distance to pixel distance
+    T sclY = (yMax-yMin) / yMaxPixel; 
     T s = T(1) / sqrt(rx*rx + ry*ry); 
     if(ry*sclY > rx*sclX)  // scale the step such that the larger step of x,y is one pixel
       s *= sclY;           // ...verify, if this code does what it should...
@@ -1155,8 +1179,10 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     ry *= s;
     x  += rx;
     y  += ry;
+    */
 
     
+
     /*
     // refine x or y such that we land on the contour again if our direction is horizontalish (i.e.
     // rx*sclX > ry*sclY), we change y, otherwise, we change x - we do this by 1D Newton iteration
@@ -1164,7 +1190,7 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     // this does not yet work well - it seems to sometimes grind to a halt
     T err = f(x,y) - c;
     T tol = 1.e-12;
-    if(ry*sclY > rx*sclX) {               // y-step is larger (steep) -> refine x
+    if(rx*sx <= ry*sy) {               // y-step is larger (steep) -> refine x
       while(rsAbs(err) > tol)  {
         dx    = (f(x+h, y) - f(x-h, y)) / (T(2)*h);
         x     = x - err / dx;
@@ -1180,10 +1206,11 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
         err = f(x,y) - err;  
         if(rsAbs(old) <= rsAbs(err))
           break; }}
+          */
     
     // we run into limit cycles - can we avoid them by breaking out whenever the absolute error has
     // increased
-    */
+
     // wrong - we don'T look for a zero but for a c - we need to  modify the newton-steps 
     // accordingly - we search for a value x f(x,y) - c = 0
     // try err = f(x,y) - c, while abs(err) >= tol
@@ -1228,7 +1255,7 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
 
     iterations++;
-    if(iterations > 500)  // preliminary
+    if(iterations > 100)  // preliminary
       break;  // use condition later
   }
 
@@ -1248,8 +1275,8 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
 void implicitCurve()
 {
-  double width  = 101;
-  double height = 101;
+  double width  = 33;
+  double height = 33;
 
   double xMin   = -2.0;
   double xMax   = +2.0;
@@ -1265,7 +1292,7 @@ void implicitCurve()
   drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
 
 
-  writeScaledImageToFilePPM(imgCurve, "ImplicitCurve.ppm", 4);
+  writeScaledImageToFilePPM(imgCurve, "ImplicitCurve.ppm", 8);
 }
 
 
