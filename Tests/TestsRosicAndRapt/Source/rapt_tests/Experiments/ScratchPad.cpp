@@ -1489,14 +1489,44 @@ T newton(const std::function<T(T)>& f, T x, T y = T(0))
 // do we loose the quadratic convergence when making such estimates - with the one-sided, most 
 // probably yes - but what about the two-sided?
 
+double distance(double x1, double y1, double x2, double y2)
+{
+  double dx = x2 - x1;
+  double dy = y2 - y1;
+  return sqrt(dx*dx + dy*dy);
+}
+// Euclidean distance
+
 double spiralRidge(double x, double y, double a = 1.0)
 {
   // under construction
 
 
+  function<double(double)> fx =  [=](double t) -> double { return exp(a*t)*cos(t); };
+  function<double(double)> fy =  [=](double t) -> double { return exp(a*t)*sin(t); };
+  //double t = 1.5;
+  //double x1 = fx(t);
+  //double y1 = fy(t);
+  //GNUPlotter plt;
+  //plt.plotCurve2D(fx, fy, 1000, 0.0, 50.0);
+
+  // try an input point (x,y) = (50,30)
+  //x = 50;
+  //y = 30;
+
+
+  //// test:
+  //x = fx(t);
+  //y = fy(t);
+
+
   // convert x,y to polar coordinates
   double r = sqrt(x*x + y*y);
-  double p = atan2(y, x);
+
+  if(rsAbs(r) < 0.00001)  // ad hoc
+    return 0;
+
+  double p = rsWrapToInterval(atan2(y, x), 0, 2*PI);
 
   // find a value for the that corresponds to the given radius r:
   double t0 = log(r) / a;
@@ -1504,8 +1534,50 @@ double spiralRidge(double x, double y, double a = 1.0)
   //  spiral that has the same radius as our given input point - but it will in general not have 
   //  the same angle p
   // -the task is now to find tL <= t0, tr >= t0 that give points *on* the spiral with the same p
+  //  tR = tL + 2*pi - so we just need to find tL
   // -then compute the distances of the input point x,y to both of these points on the spiral and
   //  select the smaller of them as our distance
+
+  // very crude algorithm to find tL
+  double tL = t0;;
+  double inc = 0.1;
+  int maxNumIterations =  (int) ceil(2*PI / inc);
+  int i = 0;
+  while(true)
+  {
+    double xL = exp(a*tL)*cos(tL);
+    double yL = exp(a*tL)*sin(tL);
+    double pL = rsWrapToInterval(atan2(yL, xL), 0, 2*PI);
+    if(pL < p || i > maxNumIterations)
+      break;
+    tL -= inc;
+    i++;
+  }
+  // infinite loop when (x,y) = (0.070312500000000000, 0), a = 0.1
+
+
+  double tR = tL + 2*PI;
+
+  double xL = fx(tL);
+  double yL = fy(tL);
+  double xR = fx(tR);
+  double yR = fy(tR);
+  double dL = distance(xL, yL, x, y);
+  double dR = distance(xR, yR, x, y);
+  double d  = rsMin(dL, dR);
+
+  return d;
+
+
+
+
+  /*
+  // find a point on the unit circle with the same angle as (x,y)
+  double xn = x / r;  // normalized x
+  double yn = y / r;  // normalized y
+
+  double ac = acos(xn);  // should be equal to asin(yn)?
+  */
 
 
   // estimate - try to come up with something better - maybe involving acos(x) and/or asin(y)?

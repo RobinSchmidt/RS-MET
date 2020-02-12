@@ -922,6 +922,7 @@ void contours()
   int w = 129;               // width in pixels
   int h = 129;               // height in pixels
 
+  //w = h = 100;
   w = h = 513;
   //w = h = 1025;
 
@@ -946,7 +947,7 @@ void contours()
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*y*y; };
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*x - 0.1f*y*y + 0.1f*y; };
     // try exchanging sin and cos an combining
-  f = [&] (float x, float y) { return (float) spiralRidge(x, y); };
+  f = [&] (float x, float y) { return (float) spiralRidge(x, y, 0.1); };
 
 
   // create image with function values:
