@@ -193,9 +193,9 @@ int main(int argc, char* argv[])
   //splineArc();
   //triangles();
   //pixelCoverage();
-  //contours();
+  contours();
   //complexContours();
-  implicitCurve();
+  //implicitCurve();
 
   // just for fun:
   //groupString();

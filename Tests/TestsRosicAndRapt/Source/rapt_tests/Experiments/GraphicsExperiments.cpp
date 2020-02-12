@@ -944,8 +944,9 @@ void contours()
   //f = [&] (float x, float y) { return x*x - y*y + 2.f*x*y; };
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y; };
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*y*y; };
-  f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*x - 0.1f*y*y + 0.1f*y; };
+  //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*x - 0.1f*y*y + 0.1f*y; };
     // try exchanging sin and cos an combining
+  f = [&] (float x, float y) { return (float) spiralRidge(x, y); };
 
 
   // create image with function values:
@@ -965,8 +966,8 @@ void contours()
 
   // write images to files:
   writeScaledImageToFilePPM(imgFunc,  "Function.ppm", 1);
-  writeScaledImageToFilePPM(imgCont,  "Contours.ppm", 1);
-  writeScaledImageToFilePPM(imgFills, "BinFills.ppm", 1);
+  //writeScaledImageToFilePPM(imgCont,  "Contours.ppm", 1);
+  //writeScaledImageToFilePPM(imgFills, "BinFills.ppm", 1);
 
   // the right column and bottom row has no countour values - no surprise - the loop only goes up 
   // to w-1,h-1
@@ -1187,12 +1188,13 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
           break; }}}
 
     if( rsAbs(x-x0) < sxi && rsAbs(y-y0) < syi ) // maybe && iterations >= 2 so we don't spuriously
-      break;                                   // break in the very first iteration?
-    // something is wrong about this
+      break;                                     // break in the very first iteration?
+    // there's a gap sometimes - the last pixel is not drawn -unit circle with -2..+2 and 129x129
+    // shows this
 
 
     iterations++;
-    if(iterations > 70)  // preliminary
+    if(iterations > 7000)  // preliminary
       break;  // use condition later
     // possible stopping criteria: we are close to the starting point x0,y0 (within one pixel
     // distance?) or outside the image boundaries - maybe we should also have a maximum number of
@@ -1207,8 +1209,8 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
 void implicitCurve()
 {
-  double width  = 33;
-  double height = 33;
+  double width  = 300;
+  double height = 300;
 
   double xMin   = -2.0;
   double xMax   = +2.0;
@@ -1219,12 +1221,14 @@ void implicitCurve()
   function<double(double, double)> f;
   f = [=](double x, double y) { return x*x + y*y; };  // unit circle
 
+  //f = [=](double x, double y) { return x*x + 1.5*y*y; }; 
+  // we need one starting point - maybe the function should figure it out itself
 
   rsImageF imgCurve(width, height);
   drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
 
 
-  writeScaledImageToFilePPM(imgCurve, "ImplicitCurve.ppm", 8);
+  writeScaledImageToFilePPM(imgCurve, "ImplicitCurve.ppm", 1);
 }
 
 

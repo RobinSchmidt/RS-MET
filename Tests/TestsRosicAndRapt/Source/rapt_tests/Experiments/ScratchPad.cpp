@@ -1456,9 +1456,130 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
 // this has a nice worked through example:
 // https://textbooks.math.gatech.edu/ila/orthogonal-complements.html
 
-
-
-
-
 // https://www.youtube.com/watch?v=Kpc5ELrOt5E
 
+//=================================================================================================
+
+// Newton iteration with numric derivatives - todo: make a version that takes a second function to 
+// compute the analytic derivative
+// x is initial etsimate, y is target value for y
+template<class T>
+T newton(const std::function<T(T)>& f, T x, T y = T(0))
+{
+  static const int maxNumIterations = 100;
+  T tol = std::numeric_limits<T>::epsilon();
+  T h   = 1.e-8;  // make parameter
+  for(int i = 1; i <= maxNumIterations; i++) {
+    T err = f(x) - y;                // current error
+    if(rsAbs(err) <= tol) break;     // converged
+    T fp = (f(x+h)-f(x-h)) / (2*h);  // estimate of f'(x) by central difference
+    x -= err/fp;                     // Newton update step
+  }
+  rsError("rsRootFinder::newton failed to converge");
+  return x;
+}
+// include a check, if the error decreased from one iteration to the next - if this happens, report
+// maybe use a while(true) loop - break if converged or error has increased
+// failure - it means that Newton iteration did not converge
+// move to rsRootFinder
+// maybe make a version that uses a one-sided etsimated for f'(x) - this avoids one function 
+// evaluation per iteration (-> 2 instead of 3) - maybe have 3 versions: newtonLeft, newtonRight, 
+// newtonCentral that uses left-sidedn, right-sided and central estimates - what about convergence?
+// the centered difference is 2nd order accurate while the one-sided is only 1st order accurate - 
+// do we loose the quadratic convergence when making such estimates - with the one-sided, most 
+// probably yes - but what about the two-sided?
+
+double spiralRidge(double x, double y, double a = 1.0)
+{
+  // under construction
+
+
+  // convert x,y to polar coordinates
+  double r = sqrt(x*x + y*y);
+  double p = atan2(y, x);
+
+  // find a value for the that corresponds to the given radius r:
+  double t0 = log(r) / a;
+  // -this value of t, when plugged into the parametric spiral equation, will lead a point on the 
+  //  spiral that has the same radius as our given input point - but it will in general not have 
+  //  the same angle p
+  // -the task is now to find tL <= t0, tr >= t0 that give points *on* the spiral with the same p
+  // -then compute the distances of the input point x,y to both of these points on the spiral and
+  //  select the smaller of them as our distance
+
+
+  // estimate - try to come up with something better - maybe involving acos(x) and/or asin(y)?
+
+
+  // -try 
+  // -to do so, compute
+
+
+
+  return 0; // preliminary
+
+
+
+
+
+  /*
+  // ...use newton iteration to refine t - we want to find a t such that
+  // u(t) :=   2*(a*cos(t)*e^(a*t) - e^(a*t)*sin(t))*(cos(t)*e^(a*t) - x) 
+  //        + 2*(a*e^(a*t)*sin(t) + cos(t)*e^(a*t))*(e^(a*t)*sin(t) - y) = 0
+
+  // simplify: s = sin(t), c = cos(t), r = e^(a*t)
+  // u(t) := 2*(a*c*r-r*s)*(c*r-x) + 2*(a*r*s+c*r)*(r*s-y) = 0
+
+  function<double(double)> u;
+  u = [=](double t)     // needs to capture "a"
+  { 
+    double s = sin(t);
+    double c = cos(t);
+    double r = exp(a*t);
+    return 2*(a*c*r-r*s)*(c*r-x) + 2*(a*r*s+c*r)*(r*s-y); 
+  };
+
+  t = newton(u, t);
+  */
+}
+// try to make a function f(x,y) that has exponential spirals as contour lines
+// the parametric equation for the exponential spiral is: 
+//   f(t) = exp(a*t)*cos(t), g(t) = exp(a*t)*sin(t)
+// define the function d(x,y) as the distance of the point (x,y) to the nearest point on the 
+// spiral:
+//   d(x,y) = min_t [ (x-f(t))^2 + (y-g(t))^2 ]
+// where min_t means, we need to find the minimum with respect to t of the term in the brackets, 
+// then plug that value of t into the parametric spiral equation and them compute the distance of 
+// the point x,y to the resulting point on the spiral. to find the minimum, we have to take the
+// derivative of the term in the brackets with respect to t:
+//  d/dt [ (x-exp(a*t)*cos(t))^2 + (y-exp(a*t)*sin(t)) ]
+//   = 2*(a*cos(t)*e^(a*t) - e^(a*t)*sin(t))*(cos(t)*e^(a*t) - x) + 2*(a*e^(a*t)*sin(t) + cos(t)*e^(a*t))*(e^(a*t)*sin(t) - y)
+
+// because the distances increase exponentially with the radius of (x,y), define weighted distance
+//   D(x,y) = d(x,y) / exp( sqrt(x^2 + y^2) ) 
+// the function R(x,y) = 1 / (1 + D^2) is a sort of ridge that has the shape of the exponential 
+// spiral, so we may use R(x,y) = c it as our implicit equation that should have exponential 
+// spirals as level lines
+//   ...(check, if this weighting is good) - we wnat something that goes exponentially to infinity
+//   as x^2+y^2 goes to zero and exponentially to zero as x^2 + y^2 goes to infinity maby
+//   exp(1 / (x^2+y^2))
+
+// sage:
+// var("x y a t")
+// f(t) = exp(a*t) * cos(t)
+// g(t) = exp(a*t) * sin(t)
+// d(t,x,y) = (x-f(t))^2 + (y-g(t))^2
+// d_dt = diff(d(t,x,y), t) 
+// solve(d_dt == 0, t)  
+//
+// leads to unwieldy expressions that are not explicitly solved for t (only for sin(t) and in the 
+// rhs t also appears in cos(t) terms - sooo, it seems we need to solve that equation numerically 
+// for t - Netwon iteration or something
+
+// strategy to find the distance:
+// -input: the point x,y
+// -find values xl < x, xr >= x such that f(t) = exp(a*t)*cos(t) = xl or xr
+// -find a vlaue for t such that exp(a*t)*cos(t) = x, or maybe two values - incre
+
+// or maybe use a simpler linear spiral:
+//   f(t) = t*cos(t), g(t) = t*sin(t)
