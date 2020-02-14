@@ -1122,7 +1122,9 @@ void complexContours()
 f(x0,y0) = c holds as starting point. */
 template<class T, class TPix> 
 void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMax, T c, T x0, T y0,
-  rsImage<TPix>& img, TPix color, bool clockwise = false)
+  rsImage<TPix>& img, TPix color, 
+  bool clockwise = false) // this last parameter should always be false in calls from client code
+                          // we use it to indicate the recursive call for drawing the 2nd arm
 {
   rsAssert(f(x0, y0) == c, "x0,y0 should solve f(x0,y0) = c" );  // todo: use tolerance
 
@@ -1146,19 +1148,15 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
   // Convert (x,y) to pixel coordinates and draw 1st point:
   T px, py;
-  if(!clockwise)
-  {
+  if(!clockwise) { // avoid drawing the starting point again in the recursive call
     px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
     py = rsLinToLin(y, yMin, yMax, yMaxPixel, T(0));
-    painter.paintDot(px, py, color);
-  }
+    painter.paintDot(px, py, color); }
 
 
   int iterations = 0;
   while(true)
   {
-
-
     // Figure out gradient (dx,dy) and contour direction (rx,ry) which is perpendicular to the 
     // gradient (i.e. 90° rotated):
     T h  = 1.e-8;  // ad-hoc - make parameter
@@ -1170,24 +1168,15 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
       ry = -dx; }
     else {
       rx = -dy;
-      ry =  dx;  }
-
-
-    // maybe have an option to use rx = dy; ry = -rx instead -> traverse the contour in the other 
-    // direction - this will be needed for non-closed contours like hyperbolas - this code here
-    // would just draw one arm - to draw both, wem need to to do it once with the countercolckwise
-    // rotation above and then again with the clockwise rotation - maybe we should check ourselves
-    // if the curve comes back to its starting point (is closed) - if so, nothing else need to be 
-    // done, but if not, we my call ourselves recursively but with the other direction - we may 
-    // have to take special care to not draw the starting point again in the recursive call
+      ry =  dx; }
 
     // Check, if the current segment is horizontalish/flat or verticalish/steep. In the flat case, 
     // advance x by one pixel and y by a distance derived from the direction vector - in the steep 
-    // case, the other way around:
+    // case, do it the other way around:
     bool flat = rsAbs(rx*sx) > rsAbs(ry*sy);   // curve sgement is horizontalish
     if(flat) {
       dx = rsSign(rx) / sx;    // this step should translate to 1 pixel left or right -> check this!
-      dy = dx * ry/rx;         // the y-step is proportional to the x-step - is thsi formula the best we can do?
+      dy = dx * ry/rx;         // the y-step is proportional to the x-step - is this formula the best we can do?
       x += dx;                 // walk one pixel left or right
       y += dy; }
     else {              // verticalish
@@ -1198,8 +1187,10 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
     // In the step just taken, we may have drifted off the contour line due to approximation 
     // errors, so we fix this by refining x or y such that we land on the contour again. We use 1D 
-    // Netwon iteration with numeric derivatives. if our direction is horizontalish, we change y, 
-    // otherwise, we change x - (what about convergence problems?)
+    // Netwon iteration with numeric derivatives. If our direction is horizontalish, we change y, 
+    // otherwise, we change x. To catch convergence problems, we verify that the error actually 
+    // went down in the iteration step - if it didn't, we restore old value from before the step 
+    // and break out of the loop.
     T err = f(x,y) - c;
     T tol = 1.e-12;
     if(!flat) {               // y-step is larger (steep) -> refine x
@@ -1222,9 +1213,18 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
           break; }}}
 
 
-
-    if( rsAbs(x-x0) < sxi && rsAbs(y-y0) < syi ) // maybe && iterations >= 2 so we don't spuriously
-      break;                                     // break in the very first iteration?
+    // The stopping criterion for closed curves is that we have come back to (or very close to) the 
+    // starting point again....
+    if(rsAbs(x-x0) < sxi && rsAbs(y-y0) < syi) // maybe && iterations >= 2 so we don't spuriously
+    {                                          // break in the very first iteration?
+      dx  = (x-x0)*sx;
+      dy  = (y-y0)*sy;
+      err = sqrt(dx*dx + dy*dy);
+      px  = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
+      py  = rsLinToLin(y, yMin, yMax, yMaxPixel, T(0));
+      painter.paintDot(px, py, TPix(err)*color);
+      break;
+    }
     // there's a gap sometimes - the last pixel is not drawn -unit circle with -2..+2 and 129x129
     // shows this - if we put this test after the paintDot code, it seems like the start/end point
     // is drawn twice...or more like 1.5 times or something - maybe we should paint it with a color
@@ -1233,24 +1233,22 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
 
 
-    // Convert (x,y) to pixel coordinates and draw:
+    // Convert point in world coordinates (x,y) to pixel coordinates (px,py) and paint it:
     px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
     py = rsLinToLin(y, yMin, yMax, yMaxPixel, T(0));
     painter.paintDot(px, py, color);
 
-
-    if(x < xMin || x > xMax || y < yMin || y > yMax)
-    {
-      // todo: make a recursive call with clockwise == true (but only if clockwise == false to 
-      // avoid infinite recursion) - to draw the 2nd arm
+    // The stopping criterion for open curves is that we reach the image boundary - in such cases, 
+    // we have just drawn one arm of the curve (think of a hyperbola, for example), so we call 
+    // ourselves recursively to draw the second arm as well. The recursive call is done onyl if 
+    // clockwise == false, which should always be the case when being called from client code:
+    if(x < xMin || x > xMax || y < yMin || y > yMax) {
       if(clockwise == false)
         drawImplicitCurve(f, xMin, xMax, yMin, yMax, c, x0, y0, img, color, true);
-      // we probably need some means to avoid drawing the very first point in the recursive call
-      break;
-    }
+      break; }
+
 
     iterations++;
-
     if(iterations > 7000)  // preliminary
       break;  // use condition later
     // possible stopping criteria: we are close to the starting point x0,y0 (within one pixel
