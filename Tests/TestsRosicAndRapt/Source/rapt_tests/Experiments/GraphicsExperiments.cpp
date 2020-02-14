@@ -1144,13 +1144,20 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   T sxi = (xMax-xMin) / xMaxPixel;
   T syi = (yMax-yMin) / yMaxPixel;
 
+  // Convert (x,y) to pixel coordinates and draw 1st point:
+  T px, py;
+  if(!clockwise)
+  {
+    px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
+    py = rsLinToLin(y, yMin, yMax, yMaxPixel, T(0));
+    painter.paintDot(px, py, color);
+  }
+
+
   int iterations = 0;
   while(true)
   {
-    // Convert (x,y) to pixel coordinates and draw:
-    T px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
-    T py = rsLinToLin(y, yMin, yMax, yMaxPixel, T(0));
-    painter.paintDot(px, py, color);
+
 
     // Figure out gradient (dx,dy) and contour direction (rx,ry) which is perpendicular to the 
     // gradient (i.e. 90° rotated):
@@ -1214,10 +1221,23 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
           y += old / dy;
           break; }}}
 
+
+
     if( rsAbs(x-x0) < sxi && rsAbs(y-y0) < syi ) // maybe && iterations >= 2 so we don't spuriously
       break;                                     // break in the very first iteration?
     // there's a gap sometimes - the last pixel is not drawn -unit circle with -2..+2 and 129x129
-    // shows this
+    // shows this - if we put this test after the paintDot code, it seems like the start/end point
+    // is drawn twice...or more like 1.5 times or something - maybe we should paint it with a color
+    // that uses w weight derived from the distance of this current point to the start-point - the 
+    // weight may be the pixel-distance
+
+
+
+    // Convert (x,y) to pixel coordinates and draw:
+    px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
+    py = rsLinToLin(y, yMin, yMax, yMaxPixel, T(0));
+    painter.paintDot(px, py, color);
+
 
     if(x < xMin || x > xMax || y < yMin || y > yMax)
     {
@@ -1237,9 +1257,6 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     // distance?) or outside the image boundaries - maybe we should also have a maximum number of
     // iterations
   }
-
-  //int i = (int) round(px);
-  //int j = (int) round(py);
 
   int dummy = 0;
 }
@@ -1267,17 +1284,17 @@ void implicitCurve()
   f = [=](double x, double y) { return x*x + y*y; };  // unit circle
   drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
 
-  f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to right
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
+  //f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to right
+  //drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
 
-  f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to left
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, -1.0, 0.0, imgCurve, 1.f);
+  //f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to left
+  //drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, -1.0, 0.0, imgCurve, 1.f);
 
-  f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to top
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 1.0, imgCurve, 1.f);
+  //f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to top
+  //drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 1.0, imgCurve, 1.f);
 
-  f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to bottom
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, -1.0, imgCurve, 1.f);
+  //f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to bottom
+  //drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, -1.0, imgCurve, 1.f);
 
 
 
