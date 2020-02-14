@@ -1532,11 +1532,45 @@ double spiralRidge2(double x, double y, double a = 1.0, double p = 0.0, double s
   double t0  = log(r) / a;
   double k   = floor(t0/(2*PI));
   double phi = rsWrapToInterval(atan2(y,x), 0, 2*PI);
+
   double tL  = phi + k*2*PI;
 
   // should not be needed (?):
   while( tL > t0       )  tL -= 2*PI;
   while( tL + 2*PI < t0)  tL += 2*PI;
+
+
+  // test:
+  tL = t0;
+  double inc = 0.1;
+  int maxNumIterations =  (int) ceil(2*PI / inc);
+  int i = 0;
+  while(true)
+  {
+    double xL = exp(a*tL)*cos(tL);
+    double yL = exp(a*tL)*sin(tL);
+    double pL = rsWrapToInterval(atan2(yL, xL), 0, 2*PI);
+
+    if(i > maxNumIterations)     break;
+
+    
+    if(y >= 0)  {
+      if(pL < p + 2*PI)
+        break; }
+    else {
+      break;  // test - i expect the whole y < 0 halfplane to be colored black - but it gets colored correctly - why?
+      if(pL < p)   
+        break;  
+    }
+    
+
+    tL -= inc;
+    i++;
+  }
+
+
+
+
 
   double tR = tL + 2*PI;
 
