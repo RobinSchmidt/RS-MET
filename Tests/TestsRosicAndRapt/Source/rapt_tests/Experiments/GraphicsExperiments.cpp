@@ -892,7 +892,8 @@ void generateFunctionImage(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T
   for(int i = 0; i < img.getWidth(); i++) {
     for(int j = 0; j < img.getHeight(); j++) {
       T x = xMin + i * (xMax-xMin) / (img.getWidth()  - 1);
-      T y = yMin + j * (yMax-yMin) / (img.getHeight() - 1);
+      //T y = yMin + j * (yMax-yMin) / (img.getHeight() - 1);  // wrong! we need to flip vertically
+      T y = yMax - j * (yMax-yMin) / (img.getHeight() - 1);
       T z = f(x, y);
       img.setPixelColor(i, j, TPix(z)); }}
 }
@@ -923,8 +924,9 @@ void contours()
   int h = 129;               // height in pixels
 
   //w = h = 100;
-  w = h = 513;
+  //w = h = 513;
   //w = h = 1025;
+  w = h = 800;
 
   float r = 18;
   int numLevels = 20;
@@ -947,7 +949,10 @@ void contours()
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*y*y; };
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*x - 0.1f*y*y + 0.1f*y; };
     // try exchanging sin and cos an combining
-  f = [&] (float x, float y) { return (float) spiralRidge(x, y, 0.1); };
+
+  f = [&] (float x, float y) { return (float) pow(spiralRidge1(x, y, 0.25), 3.0); };
+   // exponent 3 makes for good balance between black and white - but middle gray is 
+   // underrepresented - todo: apply expansion of middle gray and compression of black/white values
 
 
   // create image with function values:
@@ -967,12 +972,22 @@ void contours()
 
   // write images to files:
   writeScaledImageToFilePPM(imgFunc,  "Function.ppm", 1);
-  //writeScaledImageToFilePPM(imgCont,  "Contours.ppm", 1);
-  //writeScaledImageToFilePPM(imgFills, "BinFills.ppm", 1);
+  writeScaledImageToFilePPM(imgCont,  "Contours.ppm", 1);
+  writeScaledImageToFilePPM(imgFills, "BinFills.ppm", 1);
 
   // the right column and bottom row has no countour values - no surprise - the loop only goes up 
   // to w-1,h-1
   // maybe use powers of two +1 for the size and cut off bottom-row and right-column aftewards
+
+  // -with the spirals, we sometimes get spurios, short contour segments that are not connected to 
+  //  any contour that continues through the whole image...it must be that the pixels around the 
+  //  spurious segemnts happen to be wholly above or below the contour level...due to sampling the
+  //  continuous function - remedy: create an image of boolean values that just keep the info, if
+  //  there's a contour through the pixel or not and, as post processing, keep only those contour
+  //  pixels, whose neighbours are also on a contour - remove all  pixels form the contour for 
+  //  which none of the 8 neighbours is on a contour.. we need a function isValidContourPixel
+  //  that follows the contour using neighbour-contour info - return true, if the contour comes 
+  //  back to the start point or goes out of the image
 
   // todo: 
   // -make a composited image with function values and contours - maybe have a compose function 
@@ -1232,7 +1247,124 @@ void implicitCurve()
   writeScaledImageToFilePPM(imgCurve, "ImplicitCurve.ppm", 1);
 }
 
+template<class T>
+void logisticCompression(rsImage<T>& img, T k)
+{
+  T* p = img.getPixelPointer(0, 0);
+  for(int i = 0; i < img.getNumPixels(); i++)
+    p[i] = T(1) / (T(1) + exp(-k*(p[i]-0.5)));  // 0.5 put middle gray at the center of the sigmoid
+}
 
+void spirals()
+{
+  //int size = 1000;
+  int w = 1200;
+  int h = 800;
+
+  double phase    = 240.0;
+  double phaseInc = 0;     // 120 is a nice defailt
+  double density  = 0.15;  // smaller values -> denser arms
+  double densInc  = 0.2;   // relative density increment
+  double power    = 1.5;   // 3 lead to balance between black/white - lower value give mor white
+  double range    = 10.0;
+  double sign     = +1.0;
+  double alt      = +1;    // -1: alternate directions, +1: don't alternate
+
+
+
+  // convert user to algo params
+  densInc *= density;  // increment should be relative
+  phase = rsDegreeToRadiant(phase);
+  phaseInc = rsDegreeToRadiant(phaseInc);
+
+
+
+  std::function<double(double, double)> f;
+  f = [&](double x, double y) 
+  { 
+    double s = pow(spiralRidge1(x, y, density, phase, sign), power); 
+    return s;
+
+    // compression of black/white, expansion of gray:
+    //double k = 1.0;  // amount of compression
+    //s = 1 / (1 + exp(-k*s));
+    //return s;
+    // nope - compression needs to be applied *after* normalization
+  };
+
+
+  // create image with function values:
+  rsImageF red(w, h), green(w, h), blue(w, h);
+
+  generateFunctionImage(f, -range, range, -range, range, red);
+
+  phase += phaseInc;
+  sign *= alt;
+  density += densInc;
+  generateFunctionImage(f, -range, range, -range, range, green);
+
+  phase += phaseInc;
+  sign *= alt;
+  density += densInc;
+  generateFunctionImage(f, -range, range, -range, range, blue);
+
+  normalize(red);   
+  normalize(green); 
+  normalize(blue);  
+
+  //// test:
+  //float  comp = 4.0;
+  //logisticCompression(red,   comp);
+  //logisticCompression(green, comp);
+  //logisticCompression(blue,  comp);
+  //// hmm ..doesn't really look good - we need a different compression function
+
+  writeImageToFilePPM(red,   "SpiralsR.ppm");
+  writeImageToFilePPM(green, "SpiralsG.ppm");
+  writeImageToFilePPM(blue,  "SpiralsB.ppm");
+
+
+  writeImageToFilePPM(red,  green, blue, "Spirals.ppm");
+
+  // -when the parameter t in the parametric equation:
+  //    x(t) = exp(a*t)*cos(t), y(t) = exp(a*t)*sin(t)
+  //  increases by 2*pi, we make one full revolution around the spiral, but the radius will be 
+  //  multplied exp(a*2*pi)
+  // -this means that a pic that results by a given range r such that xMin=yMin=-r, xMax=yMax=r 
+  //  will give the same image as the range r * exp(a*2*pi)
+  // -this can be used for an infinite-zoom animation as follows:
+  // -set range1 = ..., range2 = range1 * exp(a*2*pi)
+  // -create images with ranges = rsLinToExp(rsRangeLinear(0,1), 0,1, range1, range2)
+  // -the last image will look the same as the first, so we may loop the animation between frame1
+  //  and last frame (but skip the duplicate frame!)
+  // -but this infinite zoom will work only when the 3 spirals all have the same density parameter
+  //  -if not, the periodicity will be larger (i think, it will be given by the gcd of ar,ag,ab 
+  //   which are the a-paremeters of r,g,b channels, maybe scaled up to become all integers) - so 
+  //   we need gcd(ar,ag,ab) revolutions instead of just one - i think
+
+
+  // -fun: let one of the colors rotate in the other direction
+  // -maybe combine it with a spiral that rotates in the other direction
+  // -try color-inversion (per channel)
+  // -nice: use densities: 0.25,0.30,0.35
+  // -move the whole algo into a function that takes a bunch of parameters and returns the image
+
+  // -maybe wrap this into a python function that we may use in jupyter - so we can qucikly vary 
+  //  the parameters with sliders
+  // -make animations with sweeping the phase from 0 to 360 - then loop
+
+  // todo: 
+
+  // -try a = log(2) - this should lead to a shrink/grow factor of 2 per revolution: 
+  //  t=0: (x,y)=(1,0), t=(2*pi): (x,y)=(.5,0), t=(4*pi): (x,y)=(.25,0), ...
+  // -plot distance as function of t to see how it oscillates - maybe with some sort of waveshaping
+  //  we can make this oscillation sinuosidal
+  //  ->try to use a rational mapping of the heights to expand the middle-gray range
+}
+
+
+// exponent 3 makes for good balance between black and white - but middle gray is 
+// underrepresented - todo: apply expansion of middle gray and compression of black/white values
 
 // maybe make animations with
 // http://www.softpedia.com/get/Multimedia/Graphic/Graphic-Others/APNG-Anime-Maker.shtml

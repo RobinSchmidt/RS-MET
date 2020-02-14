@@ -1497,10 +1497,44 @@ double distance(double x1, double y1, double x2, double y2)
 }
 // Euclidean distance
 
+// a simple algo for a spiral ridge that i discovered by accident when working on the algo based on 
+// the distance to the nearest spiral arm - this algo computes the distance of (x,y) to a point on 
+// the spiral that has the same radius as (x,y) (i think)
+double spiralRidge1(double x, double y, double a = 1.0, double p = 0.0, double sign = 1.0)
+{
+  double r = sqrt(x*x + y*y);
+  //if(rsAbs(r) < 0.00001)  // ad hoc
+  //  return 0;
+  if(r == 0.0) return 0.0;            // avoid log-of-zero
+  double t  = log(r) / a;
+  double xs = r*cos(sign * t + p);    // x on the spiral
+  double ys = r*sin(sign * t + p);  
+  double d  = distance(xs, ys, x, y);
+  return d / pow(r, 1.0);        // test - make parameter "distanceWeight", defaulting to 1
+  //return d / r;            // return weighted distance
+}
+// when we use d / r, the birghtness of the white ridges is independent for the distance to the 
+// center - using a power with exponent < 1, we get a darkening effect towrd the center - but mybe 
+// such an effect can be applied as post-processing: 
+// circularDarkening(img, x, y, amount)
+//   imh(i,j) /= pow(r, amount)
+
+// try tL = atan2(y,x) + 2*k*pi where k = floor(t0/(2*pi)), tR = tL + 2*pi, compute (xL,yL),(xR,yR)
+// by the parametric spiral equations, compute distances dL,dR and use minimum
+
+// -these are not the actual distances to the nearest points on the spiral but rather the distances 
+//  to two concentric circles that approximate the spiral at the given angle - but they can be used 
+//  as an initial estimate for computing the actual distance via netwon iteration - maybe this 
+//  refinement can be made optional, controlled by a boolean parameter
+// 
+
 double spiralRidge(double x, double y, double a = 1.0)
 {
   // under construction
 
+
+  //if(y < 0)
+  //  return 0;  // test
 
   function<double(double)> fx =  [=](double t) -> double { return exp(a*t)*cos(t); };
   function<double(double)> fy =  [=](double t) -> double { return exp(a*t)*sin(t); };
@@ -1539,21 +1573,55 @@ double spiralRidge(double x, double y, double a = 1.0)
   //  select the smaller of them as our distance
 
   // very crude algorithm to find tL
-  double tL = t0;;
+  double tL = t0;
   double inc = 0.1;
+
+  
   int maxNumIterations =  (int) ceil(2*PI / inc);
   int i = 0;
+  /*
   while(true)
   {
     double xL = exp(a*tL)*cos(tL);
     double yL = exp(a*tL)*sin(tL);
     double pL = rsWrapToInterval(atan2(yL, xL), 0, 2*PI);
-    if(pL < p || i > maxNumIterations)
-      break;
+
+    if(i > maxNumIterations)     break;
+
+    if(y >= 0)  {
+      if(pL < p)
+        break; }
+    else {
+      break;  // test - i expect the whole y < 0 halfplane to be colored black - but it gets colored correctly - why?
+      if(pL < p + 2*PI)   
+        break;  
+      // maybe this condition is alway true, so it doesn't make a difference - but it would mean, 
+      // that
+    }
+
+
+
+    //if(pL < p + 2*PI && y <  0)  break;
+
     tL -= inc;
     i++;
   }
-  // infinite loop when (x,y) = (0.070312500000000000, 0), a = 0.1
+  */
+  
+
+  /*
+  // other algo - but doesn't work:
+  tL = 2*PI * floor(t0 / (2*PI));  // tL is multiple of 2*PI and tL <= t0
+  while(true)
+  {
+    double xL = exp(a*tL)*cos(tL);
+    double yL = exp(a*tL)*sin(tL);
+    double pL = rsWrapToInterval(atan2(yL, xL), 0, 2*PI);
+    if(pL >= p)
+      break;
+    tL += inc;
+  }
+  */
 
 
   double tR = tL + 2*PI;
@@ -1566,7 +1634,30 @@ double spiralRidge(double x, double y, double a = 1.0)
   double dR = distance(xR, yR, x, y);
   double d  = rsMin(dL, dR);
 
+  //return dR;  // test
+
+  return dL/r;  // test
+
   return d;
+
+  // it works!!! but why?! it does not compute the distance i wanted - but the other distance that
+  // it actually computes makes a nice spiral-ridge function, too. we may need to pass the output
+  // through some nonlinare function that expands the center values - the extreme black and white 
+  // values are a bit overrepresented and the middle gray values underrepresented - maybe something
+  // based on the logistic function - or maybe one of these:
+  // https://en.wikipedia.org/wiki/Generalised_logistic_function
+  // https://en.wikipedia.org/wiki/Gompertz_function
+
+
+  // i think, when the point (x,y) is in the lower half-plane (i.e. the angle is > pi), it may not 
+  // work correctly because the the computed angles pL in the loop are *less* than p for points
+  // on the spiral further outside - i think, instead of comparing pL < p, we must compare 
+  // pL < p+2*pi when y < 0 
+  // ..we still seem to jump out of the loop early under certain conditions - figure out what the
+  // breaking conditions must be depending on the angle - we probably need different conditions
+  // for when (x,y) is in the 4 different quadrants - in the top-right quadrant, checking pL < p
+  // should be fine
+
 
 
 

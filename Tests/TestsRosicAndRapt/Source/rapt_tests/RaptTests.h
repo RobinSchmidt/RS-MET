@@ -71,6 +71,7 @@ void pixelCoverage();
 void contours();
 void complexContours();
 void implicitCurve();
+void spirals();   // move elsewhere Demos/Examples/Art/...
 
 // Math Experiments:
 // wait - what about the file MathExperiments.h - shouldn't they be declared there?

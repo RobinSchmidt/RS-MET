@@ -53,6 +53,14 @@ public:
   those with less spreading. So, the visual results are usually better when this is active, but it
   incurs additional processing cost.  */
   void setDeTwist(bool shouldDeTwist) { deTwist = shouldDeTwist; }
+  // maybe this artifact could be called "twisties" in analogy to the "jaggies" that occur, when no
+  // anti-aliasing is used - maybe the setAntiAlias could also be called setDeJag or 
+  // setRemoveJaggies/setRemoveTwisties. however, due to the normalization of the sum-of-squares, 
+  // the sum of the values itself is not unity anymore - maybe this can lead to twisties when using
+  // oversampling and them downsampling (by 2) by taking the average of 4 pixels - now, this 
+  // average will probably be higher in areas, where the fractional parts are large - try it: paint
+  // lines or curves with oversampling of 2 and then downsample and watch out for twisties in the 
+  // result - maybe de-twisting makes only sense in the non-oversampled case
 
   /** Switches between using the alpha-mask and the simple dot algorithm. */
   void setUseAlphaMask(bool shouldUseMask) { useMask = shouldUseMask; }
