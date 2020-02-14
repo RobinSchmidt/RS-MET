@@ -164,7 +164,7 @@ public:
     //rsAssert(value <= TPix(1));
     //rsAssert(value >= TPix(0));
 
-    //accu = (accu + value) / (TPix(1) + value);  // has nice saturating behavior
+    accu = (accu + value) / (TPix(1) + value);  // has nice saturating behavior
 
     // maybe try these - maybe they have a different saturating behavior?:
     // accu = (accu + value) / (1 + accu + value);
@@ -172,7 +172,7 @@ public:
 
 
     //accu = accu+value; // just for testing
-    accu = rsMin(TPix(1), accu+value);
+    //accu = rsMin(TPix(1), accu+value);
   }
   // rename to addAndSaturate or blend
 

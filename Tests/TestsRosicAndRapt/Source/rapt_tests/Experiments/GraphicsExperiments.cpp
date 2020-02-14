@@ -1134,8 +1134,8 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   // so we don't need to pass it as additional parameter - this is similar to juce's Graphics 
   // object - we would need to have inquiry functions like getMaxPixelCoordinateX/Y
   rsImagePainter<TPix, T, T> painter(&img);
-  painter.setDeTwist(true);
-  painter.setNeighbourWeightsForSimpleDot(0.5, 0.5*sqrt(0.5));
+  //painter.setDeTwist(true);  // should be only used for single pixel lines
+  painter.setNeighbourWeightsForSimpleDot(0.375, 0.375*sqrt(0.5));
 
   // figure out start pixel:
   T xMaxPixel = T(img.getWidth()  - 1);   // maximum x-coordinate in pixel coordinates
@@ -1324,7 +1324,8 @@ void implicitCurve()
   //f = [=](double x, double y) { return x*x + 1.5*y*y; }; 
   // we need one starting point - maybe the function should figure it out itself
 
-  float color = 0.5f;
+  float color = 0.375f;
+  // looks good with the saturating accumulation in rsImagePainter
 
 
   f = [=](double x, double y) { return x*x + y*y; };  // unit circle
@@ -1361,6 +1362,8 @@ void implicitCurve()
 
   f = [=](double x, double y) { return x + y*y; };  // unit parabola - opens to left
   drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
+
+  // maybe draw everything except the circle again but rotated by 45°
 
 
   // make higher level code: drawCircle(cx, cy, r), drawEllipse(cx, cy, width, height, rotation)
