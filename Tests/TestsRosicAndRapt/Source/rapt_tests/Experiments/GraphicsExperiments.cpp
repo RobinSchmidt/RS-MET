@@ -1122,7 +1122,7 @@ void complexContours()
 f(x0,y0) = c holds as starting point. */
 template<class T, class TPix> 
 void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMax, T c, T x0, T y0,
-  rsImage<TPix>& img, TPix color)
+  rsImage<TPix>& img, TPix color, bool clockwise = false)
 {
   rsAssert(f(x0, y0) == c, "x0,y0 should solve f(x0,y0) = c" );  // todo: use tolerance
 
@@ -1153,12 +1153,18 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     painter.paintDot(px, py, color);
 
     // Figure out gradient (dx,dy) and contour direction (rx,ry) which is perpendicular to the 
-    // gradient:
+    // gradient (i.e. 90° rotated):
     T h  = 1.e-8;  // ad-hoc - make parameter
     T dx = (f(x+h, y) - f(x-h, y)) / (T(2)*h);  // x-component of gradient
     T dy = (f(x, y+h) - f(x, y-h)) / (T(2)*h);  // y-component of gradient
-    T rx = -dy;  // (rx,ry) = (-dy,dx) - gradient, rotated by 90° counterclockwise..
-    T ry =  dx;  // ..this is a direction along the contour (approximately)
+    T rx, ry;
+    if(clockwise) {
+      rx =  dy;
+      ry = -dx; }
+    else {
+      rx = -dy;
+      ry =  dx;  }
+
 
     // maybe have an option to use rx = dy; ry = -rx instead -> traverse the contour in the other 
     // direction - this will be needed for non-closed contours like hyperbolas - this code here
@@ -1213,8 +1219,18 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     // there's a gap sometimes - the last pixel is not drawn -unit circle with -2..+2 and 129x129
     // shows this
 
+    if(x < xMin || x > xMax || y < yMin || y > yMax)
+    {
+      // todo: make a recursive call with clockwise == true (but only if clockwise == false to 
+      // avoid infinite recursion) - to draw the 2nd arm
+      if(clockwise == false)
+        drawImplicitCurve(f, xMin, xMax, yMin, yMax, c, x0, y0, img, color, true);
+      // we probably need some means to avoid drawing the very first point in the recursive call
+      break;
+    }
 
     iterations++;
+
     if(iterations > 7000)  // preliminary
       break;  // use condition later
     // possible stopping criteria: we are close to the starting point x0,y0 (within one pixel
@@ -1244,23 +1260,24 @@ void implicitCurve()
   function<double(double, double)> f;
 
 
-
   //f = [=](double x, double y) { return x*x + 1.5*y*y; }; 
   // we need one starting point - maybe the function should figure it out itself
-
 
 
   f = [=](double x, double y) { return x*x + y*y; };  // unit circle
   drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
 
-  f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - only upper arm is drawn
+  f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to right
   drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
 
-  f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - only lower arm is drawn
+  f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to left
   drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, -1.0, 0.0, imgCurve, 1.f);
 
-  // what about hyperbolas that open toward to or bottom - i guess their euqation is y*y - x*x = c
+  f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to top
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 1.0, imgCurve, 1.f);
 
+  f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to bottom
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, -1.0, imgCurve, 1.f);
 
 
 
