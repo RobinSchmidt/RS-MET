@@ -1126,7 +1126,9 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   bool clockwise = false) // this last parameter should always be false in calls from client code
                           // we use it to indicate the recursive call for drawing the 2nd arm
 {
-  rsAssert(f(x0, y0) == c, "x0,y0 should solve f(x0,y0) = c" );  // todo: use tolerance
+  rsAssert(f(x0, y0) == c, "x0,y0 should solve f(x0,y0) = c" );  
+  // todo: use tolerance - should maybe be some fraction of c? ..but that would mean that if c is 
+  // zero, we would have zero tolerance...maybe max(c*eps, eps)?
 
   // maybe pass the painter object - this painte then also already should have the image assigned
   // so we don't need to pass it as additional parameter - this is similar to juce's Graphics 
@@ -1138,23 +1140,22 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   // figure out start pixel:
   T xMaxPixel = T(img.getWidth()  - 1);   // maximum x-coordinate in pixel coordinates
   T yMaxPixel = T(img.getHeight() - 1);   // same for y-coordinate
-  T x  = x0;
-  T y  = y0;
-
-  T sx = xMaxPixel / (xMax-xMin);   // one x-pixel in world coordinates
-  T sy = yMaxPixel / (yMax-yMin);
-
+  T x   = x0;
+  T y   = y0;
+  T sx  = xMaxPixel   / (xMax-xMin);   // one x-pixel in world coordinates
+  T sy  = yMaxPixel   / (yMax-yMin);
   T sxi = (xMax-xMin) / xMaxPixel;
   T syi = (yMax-yMin) / yMaxPixel;
 
-  // Convert (x,y) to pixel coordinates and draw 1st point:
+  // Convert (x,y) to pixel coordinates and draw 1st point. In order to avoid double-drwing a point
+  // in the recursive call (for 2-armed curves), do it conditionally:
   T px, py;
   if(!clockwise) { // avoid drawing the starting point again in the recursive call
     px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
     py = rsLinToLin(y, yMin, yMax, yMaxPixel, T(0));
     painter.paintDot(px, py, color); }
 
-
+  // Main loop over the pixels on the curve:
   int iterations = 0;
   while(true)
   {
@@ -1233,13 +1234,6 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
       //painter.paintDot(px, py, TPix(pow(err, 1.25))*color);
       break;
     }
-    // there's a gap sometimes - the last pixel is not drawn -unit circle with -2..+2 and 129x129
-    // shows this - if we put this test after the paintDot code, it seems like the start/end point
-    // is drawn twice...or more like 1.5 times or something - maybe we should paint it with a color
-    // that uses w weight derived from the distance of this current point to the start-point - the 
-    // weight may be the pixel-distance
-
-
 
     // Convert point in world coordinates (x,y) to pixel coordinates (px,py) and paint it:
     px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
@@ -1248,23 +1242,21 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
     // The stopping criterion for open curves is that we reach the image boundary - in such cases, 
     // we have just drawn one arm of the curve (think of a hyperbola, for example), so we call 
-    // ourselves recursively to draw the second arm as well. The recursive call is done onyl if 
-    // clockwise == false, which should always be the case when being called from client code:
+    // ourselves recursively to draw the second arm as well. To avoid infinite recursion, the 
+    // recursive call is done only if clockwise == false, which should always be the case when 
+    // being called from client code but is *not* the case for a recursive call (we pass true 
+    // here):
     if(x < xMin || x > xMax || y < yMin || y > yMax) {
       if(clockwise == false)
         drawImplicitCurve(f, xMin, xMax, yMin, yMax, c, x0, y0, img, color, true);
       break; }
 
-
+    // Avoid infinite loops - this should not normally happen:
     iterations++;
-    if(iterations > 7000)  // preliminary
-      break;  // use condition later
-    // possible stopping criteria: we are close to the starting point x0,y0 (within one pixel
-    // distance?) or outside the image boundaries - maybe we should also have a maximum number of
-    // iterations
+    if(iterations > 100000) { // is that enough? may some curves have more pixels?
+      rsError("drawImplicitCurve ran into infinite loop");
+      break;  }
   }
-
-  int dummy = 0;
 }
 
 void implicitCurve()
@@ -1277,15 +1269,11 @@ void implicitCurve()
   double yMin   = -2.0;
   double yMax   = +2.0;
 
-
-
   rsImageF imgCurve(width, height);
   function<double(double, double)> f;
 
-
   //f = [=](double x, double y) { return x*x + 1.5*y*y; }; 
   // we need one starting point - maybe the function should figure it out itself
-
 
   f = [=](double x, double y) { return x*x + y*y; };  // unit circle
   drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
@@ -1302,7 +1290,14 @@ void implicitCurve()
   f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to bottom
   drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, -1.0, imgCurve, 1.f);
 
+  f = [=](double x, double y) { return (x*x)/4 + y*y; };  // ellipse with width 2 and height 1
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 2.0, 0.0, imgCurve, 1.f);
 
+  f = [=](double x, double y) { return x*x + (y*y)/4; };  // ellipse with width 1 and height 2
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 2.0, imgCurve, 1.f);
+
+  // make higher level code: drawCircle(cx, cy, r), drawEllipse(cx, cy, width, height, rotation)
+  // ...what about filling the inside of a curve, i.e points for which f(x,y) <= c
 
   writeScaledImageToFilePPM(imgCurve, "ImplicitCurve.ppm", 1);
 }
