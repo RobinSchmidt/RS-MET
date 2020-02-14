@@ -1508,9 +1508,12 @@ double spiralRidge1(double x, double y, double a = 1.0, double p = 0.0, double s
   double xs = r*cos(sign * t + p);    // x on the spiral
   double ys = r*sin(sign * t + p);  
   double d  = distance(xs, ys, x, y);
-  return d / pow(r, 1.0);        // test - make parameter "distanceWeight", defaulting to 1
+  return 0.5 * d / pow(r, 1.0);        // test - make parameter "distanceWeight", defaulting to 1
   //return d / r;            // return weighted distance
 }
+// maybe divide d by two, such that it oscillates between 0 and 1 - as it is, it oscialltes between 
+// 0 and 2
+
 // when we use d / r, the birghtness of the white ridges is independent for the distance to the 
 // center - using a power with exponent < 1, we get a darkening effect towrd the center - but mybe 
 // such an effect can be applied as post-processing: 
@@ -1524,6 +1527,10 @@ double spiralRidge1(double x, double y, double a = 1.0, double p = 0.0, double s
 //  to two concentric circles that approximate the spiral at the given angle - but they can be used 
 //  as an initial estimate for computing the actual distance via netwon iteration - maybe this 
 //  refinement can be made optional, controlled by a boolean parameter
+
+// see:
+// https://en.wikipedia.org/wiki/Logarithmic_spiral
+// https://en.wikipedia.org/wiki/Archimedean_spiral
 
 double spiralRidge2(double x, double y, double a = 1.0, double p = 0.0, double sign = 1.0)
 {

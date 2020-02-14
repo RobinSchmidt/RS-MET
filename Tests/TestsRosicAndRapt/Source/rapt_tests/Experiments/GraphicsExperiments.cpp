@@ -1375,6 +1375,13 @@ void implicitCurve()
 
   // -with range = 2.1, it fails! rnage = 2.0 or 1.5 works fine
 }
+// other curves to try:
+// https://en.wikipedia.org/wiki/Pedal_curve
+// https://en.wikipedia.org/wiki/Roulette_(curve)
+// https://en.wikipedia.org/wiki/Cyclocycloid
+// https://en.wikipedia.org/wiki/Epicycloid
+// https://en.wikipedia.org/wiki/Hypotrochoid
+// https://en.wikipedia.org/wiki/Epitrochoid
 
 template<class T>
 void logisticCompression(rsImage<T>& img, T k)
@@ -1384,8 +1391,58 @@ void logisticCompression(rsImage<T>& img, T k)
     p[i] = T(1) / (T(1) + exp(-k*(p[i]-0.5)));  // 0.5 put middle gray at the center of the sigmoid
 }
 
+
+
+void plotSpiralHeightProfile()
+{
+  // plots the height of the spiral function as function of the radius 
+  // todo: plot it for various different angles
+
+  int N = 500;  // number of samples
+
+  double rMin = 1./8;
+  double rMax = 8;
+  double shrink = 2;
+
+
+
+  std::vector<double> r(N), h(N), h2(N), h3(N);  // radius and height and mapped/shaped versions
+  rsArrayTools::fillWithRangeExponential(&r[0], N, rMin, rMax);
+
+  GNUPlotter plt;
+
+  double angle = 0;  // todo: loop over multiple angles
+  double a = log(shrink) / (2*PI); 
+  for(int i = 0; i < N; i++)
+  {
+    double x = r[i] * cos(angle);
+    double y = r[i] * sin(angle);
+    h[i]  = spiralRidge1(x, y, a);      // original
+    h2[i] = asin(h[i]) / (0.5*PI);      // triangular between 0..1
+    double tmp = rsLinToLin(h2[i], 0.0, 1.0, -PI/2, PI/2);
+    h3[i] = 0.5 * (sin(tmp) + 1);       // sinusoidal between 0 and 1
+  }
+
+
+  plt.addDataArrays(N, &r[0], &h[0], &h2[0], &h3[0]);
+
+
+  plt.setLogScale("x", 2.0);
+  plt.setRange(rMin, rMax, 0.0, 1.1);
+  plt.addCommand("set xtics (0.125,0.25,0.5,1.0,2.0,4.0,8.0)");
+  // wrap into function setTicsX(vector<double>)
+
+  plt.plot();
+
+  // looks like a rectified sine with peak at 2
+  // -to make it sinusoidal: scale by 0.5, take arcsin
+}
+
 void spirals()
 {
+
+  plotSpiralHeightProfile();
+
   //int size = 1000;
   int w = 1200;
   int h = 800;
@@ -1406,7 +1463,7 @@ void spirals()
   // and the algo parameter a = log(shrinkFactor) / (2*PI) - nad maybe instead of incrementing
   // a linearly, we should have a "spread" factor that's used like 
   // shrinkRed = shrink/shrinkSpread, shrinkGreen = shrink, shrinkBlue = shrink*shrinkSpread
-  // ..or maybe have scalers for the shrink-factors for R,G,B - default: 1
+  // or better: have shrinkR, shrinkG, shrinkB and maybe a global shrink that applies to all
   // maybe instead of 2, use the golden ratio
 
 
