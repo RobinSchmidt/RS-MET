@@ -1133,6 +1133,7 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   // object - we would need to have inquiry functions like getMaxPixelCoordinateX/Y
   rsImagePainter<TPix, T, T> painter(&img);
   painter.setDeTwist(true);
+  //painter.setNeighbourWeightsForSimpleDot(0.25, 0.25*sqrt(0.5));
 
   // figure out start pixel:
   T xMaxPixel = T(img.getWidth()  - 1);   // maximum x-coordinate in pixel coordinates
@@ -1159,7 +1160,7 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   {
     // Figure out gradient (dx,dy) and contour direction (rx,ry) which is perpendicular to the 
     // gradient (i.e. 90° rotated):
-    T h  = 1.e-8;  // ad-hoc - make parameter
+    T h  = 1.e-8;  // ad-hoc - make parameter, or maybe use sqrt(epsilon)
     T dx = (f(x+h, y) - f(x-h, y)) / (T(2)*h);  // x-component of gradient
     T dy = (f(x, y+h) - f(x, y-h)) / (T(2)*h);  // y-component of gradient
     T rx, ry;
@@ -1192,7 +1193,9 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     // went down in the iteration step - if it didn't, we restore old value from before the step 
     // and break out of the loop.
     T err = f(x,y) - c;
-    T tol = 1.e-12;
+    //T tol = 1.e-12;
+    T tol = 1.e-15;   // maybe use something like 10*epsilon
+    //tol = T(0);  // test
     if(!flat) {               // y-step is larger (steep) -> refine x
       while(rsAbs(err) > tol)  {
         dx    = (f(x+h, y) - f(x-h, y)) / (T(2)*h); // central difference as approximation to the
@@ -1214,7 +1217,9 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
 
     // The stopping criterion for closed curves is that we have come back to (or very close to) the 
-    // starting point again....
+    // starting point again. To close the curve, we paint one last pixel, whose brightness is 
+    // scaled by how far we are away from the starting point (...this is not yet perfect - it looks 
+    // like the start/end point is still drawn a bit brighter than the rest of the curve...)
     if(rsAbs(x-x0) < sxi && rsAbs(y-y0) < syi) // maybe && iterations >= 2 so we don't spuriously
     {                                          // break in the very first iteration?
       dx  = (x-x0)*sx;
@@ -1222,7 +1227,10 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
       err = sqrt(dx*dx + dy*dy);
       px  = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
       py  = rsLinToLin(y, yMin, yMax, yMaxPixel, T(0));
-      painter.paintDot(px, py, TPix(err)*color);
+      painter.paintDot(px, py, TPix(err)*color);          // last pixel too bright (really?)
+      //painter.paintDot(px, py, TPix(sqrt(err))*color);
+      //painter.paintDot(px, py, TPix(err*err)*color);        // last pixel too dark
+      //painter.paintDot(px, py, TPix(pow(err, 1.25))*color);
       break;
     }
     // there's a gap sometimes - the last pixel is not drawn -unit circle with -2..+2 and 129x129
@@ -1282,17 +1290,17 @@ void implicitCurve()
   f = [=](double x, double y) { return x*x + y*y; };  // unit circle
   drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
 
-  //f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to right
-  //drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
+  f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to right
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
 
-  //f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to left
-  //drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, -1.0, 0.0, imgCurve, 1.f);
+  f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to left
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, -1.0, 0.0, imgCurve, 1.f);
 
-  //f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to top
-  //drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 1.0, imgCurve, 1.f);
+  f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to top
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 1.0, imgCurve, 1.f);
 
-  //f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to bottom
-  //drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, -1.0, imgCurve, 1.f);
+  f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to bottom
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, -1.0, imgCurve, 1.f);
 
 
 
