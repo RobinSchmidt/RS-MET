@@ -1503,8 +1503,6 @@ double distance(double x1, double y1, double x2, double y2)
 double spiralRidge1(double x, double y, double a = 1.0, double p = 0.0, double sign = 1.0)
 {
   double r = sqrt(x*x + y*y);
-  //if(rsAbs(r) < 0.00001)  // ad hoc
-  //  return 0;
   if(r == 0.0) return 0.0;            // avoid log-of-zero
   double t  = log(r) / a;
   double xs = r*cos(sign * t + p);    // x on the spiral
@@ -1526,7 +1524,55 @@ double spiralRidge1(double x, double y, double a = 1.0, double p = 0.0, double s
 //  to two concentric circles that approximate the spiral at the given angle - but they can be used 
 //  as an initial estimate for computing the actual distance via netwon iteration - maybe this 
 //  refinement can be made optional, controlled by a boolean parameter
-// 
+
+double spiralRidge2(double x, double y, double a = 1.0, double p = 0.0, double sign = 1.0)
+{
+  double r = sqrt(x*x + y*y);
+  if(r == 0.0) return 0.0;            // avoid log-of-zero
+  double t0  = log(r) / a;
+  double k   = floor(t0/(2*PI));
+  double phi = rsWrapToInterval(atan2(y,x), 0, 2*PI);
+  double tL  = phi + k*2*PI;
+
+  // should not be needed (?):
+  while( tL > t0       )  tL -= 2*PI;
+  while( tL + 2*PI < t0)  tL += 2*PI;
+
+  double tR = tL + 2*PI;
+
+  rsAssert(tL <= t0 && tR > t0);
+  // sanity check - this does sometimes trigger - maybe the formula is imprecise? maybe we should 
+  // do: if(tL > t0) tL -= 2*PI
+
+  double xL = exp(a*tL) * cos(sign * tL + p);
+  double yL = exp(a*tL) * sin(sign * tL + p);
+  double xR = exp(a*tR) * cos(sign * tR + p);
+  double yR = exp(a*tR) * sin(sign * tR + p);
+  double dL = distance(xL, yL, x, y);
+  double dR = distance(xR, yR, x, y);
+
+  // test:
+  double phiL = rsWrapToInterval(atan2(yL,xL), 0, 2*PI); // should be equal to phi
+  double phiR = rsWrapToInterval(atan2(yR,xR), 0, 2*PI); // dito
+  double rL   = sqrt(xL*xL + yL*yL);                     // shold be <= r
+  double rR   = sqrt(xR*xR + yR*yR);                     // should be > r
+  // phiL and phiR are equal to each other but different from phi - maybe we indeed need the loop
+  // form the function below
+
+
+  double d  = rsMin(dL, dR);
+  //double d = (dL + dR) / 2;  // test
+
+  //return dL / r;
+
+  return d / r;  // use pow(r, distanceWeight)
+}
+// currently jumps discontinuously from black to white
+// todo: echk, if (xL,yL),(xR,yR) have the same angle as (x,y) - the idea is that these two points
+// should be *on* spiral arms at the same angle ats x,y and one should be on the inner and one on
+// the outer arm, with respect to point x,y - but apparently, this doesn't work yet
+// maybe instaed of L,R use I,O for inner/outer
+
 
 double spiralRidge(double x, double y, double a = 1.0)
 {

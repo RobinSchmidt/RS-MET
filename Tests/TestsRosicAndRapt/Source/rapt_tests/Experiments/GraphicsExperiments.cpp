@@ -1225,8 +1225,8 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
 void implicitCurve()
 {
-  double width  = 300;
-  double height = 300;
+  int width  = 300;
+  int height = 300;
 
   double xMin   = -2.0;
   double xMax   = +2.0;
@@ -1261,14 +1261,23 @@ void spirals()
   int w = 1200;
   int h = 800;
 
-  double phase    = 240.0;
-  double phaseInc = 0;     // 120 is a nice defailt
+  double phase    = 120.0;
+  double phaseInc = 120;   // 120 is a nice defailt
   double density  = 0.15;  // smaller values -> denser arms
-  double densInc  = 0.2;   // relative density increment
+  double densInc  = 0.0;   // relative density increment
   double power    = 1.5;   // 3 lead to balance between black/white - lower value give mor white
-  double range    = 10.0;
+  double range    = 1.2;
   double sign     = +1.0;
   double alt      = +1;    // -1: alternate directions, +1: don't alternate
+
+
+  // test:
+  //density = log(2) / (2*PI); 
+  // leads to shrinking of 1/2 per revolution - maybe the user parameter should be the shrink-factor
+  // and the algo parameter a = log(shrinkFactor) / (2*PI) - nad maybe instead of incrementing
+  // a linearly, we should have a "spread" factor that's used like 
+  // shrinkRed = shrink/shrinkSpread, shrinkGreen = shrink, shrinkBlue = shrink*shrinkSpread
+  // maybe instead of 2, use the golden ratio
 
 
 
@@ -1282,7 +1291,8 @@ void spirals()
   std::function<double(double, double)> f;
   f = [&](double x, double y) 
   { 
-    double s = pow(spiralRidge1(x, y, density, phase, sign), power); 
+    //double s = pow(spiralRidge1(x, y, density, phase, sign), power); 
+    double s = pow(spiralRidge2(x, y, density, phase, sign), power); 
     return s;
 
     // compression of black/white, expansion of gray:
@@ -1355,10 +1365,10 @@ void spirals()
 
   // todo: 
 
-  // -try a = log(2) - this should lead to a shrink/grow factor of 2 per revolution: 
-  //  t=0: (x,y)=(1,0), t=(2*pi): (x,y)=(.5,0), t=(4*pi): (x,y)=(.25,0), ...
-  // -plot distance as function of t to see how it oscillates - maybe with some sort of waveshaping
-  //  we can make this oscillation sinuosidal
+  // -try a = log(2) / (2*pi) (or something) - this should lead to a shrink/grow factor of 2 per 
+//    revolution:  t=0: (x,y)=(1,0), t=(2*pi): (x,y)=(.5,0), t=(4*pi): (x,y)=(.25,0), ...
+  // -plot distance as function of radius r for a given angle phi to see how it oscillates - maybe
+  //  with some sort of waveshaping we can make this oscillation sinuosidal
   //  ->try to use a rational mapping of the heights to expand the middle-gray range
 }
 
