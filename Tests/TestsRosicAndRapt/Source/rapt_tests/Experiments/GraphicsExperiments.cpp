@@ -1135,7 +1135,7 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   // object - we would need to have inquiry functions like getMaxPixelCoordinateX/Y
   rsImagePainter<TPix, T, T> painter(&img);
   painter.setDeTwist(true);
-  //painter.setNeighbourWeightsForSimpleDot(0.25, 0.25*sqrt(0.5));
+  painter.setNeighbourWeightsForSimpleDot(0.5, 0.5*sqrt(0.5));
 
   // figure out start pixel:
   T xMaxPixel = T(img.getWidth()  - 1);   // maximum x-coordinate in pixel coordinates
@@ -1220,9 +1220,10 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     // The stopping criterion for closed curves is that we have come back to (or very close to) the 
     // starting point again. To close the curve, we paint one last pixel, whose brightness is 
     // scaled by how far we are away from the starting point (...this is not yet perfect - it looks 
-    // like the start/end point is still drawn a bit brighter than the rest of the curve...)
-    if(rsAbs(x-x0) < sxi && rsAbs(y-y0) < syi) // maybe && iterations >= 2 so we don't spuriously
-    {                                          // break in the very first iteration?
+    // like the start/end point is still drawn a bit brighter than the rest of the curve...). The
+    // && iteration >= 1 is for avoiding spuriously breaking out of the loop in the very first 
+    // iteration due to roundoff errors.
+    if(rsAbs(x-x0) < sxi && rsAbs(y-y0) < syi && iterations >= 1) {
       dx  = (x-x0)*sx;
       dy  = (y-y0)*sy;
       err = sqrt(dx*dx + dy*dy);
@@ -1232,8 +1233,7 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
       //painter.paintDot(px, py, TPix(sqrt(err))*color);
       //painter.paintDot(px, py, TPix(err*err)*color);        // last pixel too dark
       //painter.paintDot(px, py, TPix(pow(err, 1.25))*color);
-      break;
-    }
+      break; }
 
     // Convert point in world coordinates (x,y) to pixel coordinates (px,py) and paint it:
     px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
@@ -1259,47 +1259,118 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   }
 }
 
+template<class T, class TPix> 
+void drawConicSection(T A, T B, T C, T D, T E, T F, T xMin, T xMax, T yMin, T yMax,
+  rsImage<TPix>& img, TPix color)
+{
+  // under construction
+
+  function<T(T, T)> f;
+  f = [=](T x, T y) { return A*x*x + B*x*y + C*y*y + D*x + E*y + F; };
+
+  // todo: figure out a point x0,y0 on the conic section - maybe set x = 0 and solve for y? or
+  // set x to some value between xMin..xMax...but if the resulting value for y is outside the range
+  // yMin..yMax, we need to choose a different x
+
+  // we should perhaps figure out, if the conic section is an ellipse - if so, it means it's closed
+  // and we need only draw one curve...except when the ellipse is too large to fit on the image - in 
+  // such a case, we may have to draw at most 4 separate segments
+
+  // actually, all the newton-iteration stuff is not needed - we can solve explicitly for y in terms
+  // of x or vice versa, so a drawConicsection function doe not need to be based on 
+  // drawImplicitCurve (but can be - but that's wasteful)
+
+  T x = 0.5*(xMax+xMin);
+  //T y0 = ;  
+  // todo: solve conic equation for y - we may get two solutions for the two hyperbolas
+
+  // find coeffs for the quadratic equation y = a0 + a1*y + a2*y^2 for that chosen x:
+  T a0 = A*x*x + D*x + F;
+  T a1 = B*x + E;
+  T a2 = C;
+
+  // solve quadratic equation:
+  //std::complex<T> y1, y2;
+  //rsPolynomial<T>::rootsQuadraticComplex(complex<T>(a0), complex<T>(a1), complex<T>(a2), &y1, &y2);
+  // todo: have a function that takes real coeffs and returns complex results
+
+ 
+  int dummy = 0;
+
+  //drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, x, y1, img, color);
+}
+// A*x^2 + B*x*y + C*y^2 + D*x + E*y + F = 0.
+
 void implicitCurve()
 {
-  int width  = 300;
-  int height = 300;
+  int width  = 800;
+  int height = 800;
 
-  double xMin   = -2.0;
-  double xMax   = +2.0;
-  double yMin   = -2.0;
-  double yMax   = +2.0;
+  double range = 2.1;
+
+  double xMin   = -range;
+  double xMax   = +range;
+  double yMin   = -range;
+  double yMax   = +range;
+
+
 
   rsImageF imgCurve(width, height);
   function<double(double, double)> f;
 
+  // test:
+  //drawConicSection(1.0, 0.0, 1.0, 0.0, 0.0, -1.0, xMin, xMax, yMin, yMax, imgCurve, 1.f);
+
   //f = [=](double x, double y) { return x*x + 1.5*y*y; }; 
   // we need one starting point - maybe the function should figure it out itself
 
+  float color = 0.5f;
+
+
   f = [=](double x, double y) { return x*x + y*y; };  // unit circle
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to right
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to left
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, -1.0, 0.0, imgCurve, 1.f);
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, -1.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to top
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 1.0, imgCurve, 1.f);
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 1.0, imgCurve, color);
 
   f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to bottom
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, -1.0, imgCurve, 1.f);
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, -1.0, imgCurve, color);
+
 
   f = [=](double x, double y) { return (x*x)/4 + y*y; };  // ellipse with width 2 and height 1
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 2.0, 0.0, imgCurve, 1.f);
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 2.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x*x + (y*y)/4; };  // ellipse with width 1 and height 2
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 2.0, imgCurve, 1.f);
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 2.0, imgCurve, color);
+
+
+  f = [=](double x, double y) { return y - x*x; };  // unit parabola - opens to top
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
+
+  f = [=](double x, double y) { return y + x*x; };  // unit parabola - opens to bottom
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
+
+  f = [=](double x, double y) { return x - y*y; };  // unit parabola - opens to right
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
+
+  f = [=](double x, double y) { return x + y*y; };  // unit parabola - opens to left
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
+
 
   // make higher level code: drawCircle(cx, cy, r), drawEllipse(cx, cy, width, height, rotation)
+  // drawConicSection(a,b,c,d,e,f)
   // ...what about filling the inside of a curve, i.e points for which f(x,y) <= c
 
-  writeScaledImageToFilePPM(imgCurve, "ImplicitCurve.ppm", 1);
+  normalize(imgCurve);
+  writeScaledImageToFilePPM(imgCurve, "ImplicitCurves.ppm", 1);
+
+  // -with range = 2.1, it fails! rnage = 2.0 or 1.5 works fine
 }
 
 template<class T>
