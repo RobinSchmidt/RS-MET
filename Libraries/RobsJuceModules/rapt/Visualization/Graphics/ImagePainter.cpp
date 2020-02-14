@@ -141,6 +141,7 @@ void rsImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, T
   // forsome "typical" curve and use that factor):
   if(deTwist) {
     TPix s = TPix(0.5) / sqrt(a*a + b*b + c*c + d*d);
+    //TPix s = TPix(0.5 + rsSquare(0.5-x) + rsSquare(0.5-y)) / sqrt(a*a + b*b + c*c + d*d); // test - not good!
     a *= s; b *= s; c *= s; d *= s; }
   // maybe try different formulas that normalize in a ways such that a^2+b^2 = y, c^2+d^2 = 1-y,
   // a^2+c^2 = 1-x, b^2+d^2 = x ...or something - but maybe that's not possible
@@ -155,6 +156,7 @@ void rsImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, T
   // ..but what is the behavior in between? maybe this formula defeats the purpose of de-twisting 
   // in the sense that the numerator undoes the desired nomrlaization -> experiment! maybe plot
   // s(x,y) in the unit-square
+  // ...ok - tried it the new formula brings back the twisties
 
   // compute final coeffs and accumulate values into the 4 pixels:
   a *= color; b *= color; c *= color; d *= color;

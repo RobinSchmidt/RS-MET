@@ -1149,7 +1149,7 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   {
     // Convert (x,y) to pixel coordinates and draw:
     T px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
-    T py = rsLinToLin(y, yMin, yMax, T(0), yMaxPixel);
+    T py = rsLinToLin(y, yMin, yMax, yMaxPixel, T(0));
     painter.paintDot(px, py, color);
 
     // Figure out gradient (dx,dy) and contour direction (rx,ry) which is perpendicular to the 
@@ -1159,6 +1159,14 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
     T dy = (f(x, y+h) - f(x, y-h)) / (T(2)*h);  // y-component of gradient
     T rx = -dy;  // (rx,ry) = (-dy,dx) - gradient, rotated by 90° counterclockwise..
     T ry =  dx;  // ..this is a direction along the contour (approximately)
+
+    // maybe have an option to use rx = dy; ry = -rx instead -> traverse the contour in the other 
+    // direction - this will be needed for non-closed contours like hyperbolas - this code here
+    // would just draw one arm - to draw both, wem need to to do it once with the countercolckwise
+    // rotation above and then again with the clockwise rotation - maybe we should check ourselves
+    // if the curve comes back to its starting point (is closed) - if so, nothing else need to be 
+    // done, but if not, we my call ourselves recursively but with the other direction - we may 
+    // have to take special care to not draw the starting point again in the recursive call
 
     // Check, if the current segment is horizontalish/flat or verticalish/steep. In the flat case, 
     // advance x by one pixel and y by a distance derived from the direction vector - in the steep 
@@ -1177,17 +1185,14 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
 
     // In the step just taken, we may have drifted off the contour line due to approximation 
     // errors, so we fix this by refining x or y such that we land on the contour again. We use 1D 
-    // Netwon iteration with numeric derivatives
-    // if our direction is horizontalish (i.e.
-    // rx*sclX > ry*sclY), we change y, otherwise, we change x - we do this by 1D Newton iteration
-    // using numeric derivatives (is this a good idea? what about convergence problems?)
-    // this does not yet work well - it seems to sometimes grind to a halt
+    // Netwon iteration with numeric derivatives. if our direction is horizontalish, we change y, 
+    // otherwise, we change x - (what about convergence problems?)
     T err = f(x,y) - c;
     T tol = 1.e-12;
     if(!flat) {               // y-step is larger (steep) -> refine x
       while(rsAbs(err) > tol)  {
-        dx    = (f(x+h, y) - f(x-h, y)) / (T(2)*h);
-        x     = x - err / dx;
+        dx    = (f(x+h, y) - f(x-h, y)) / (T(2)*h); // central difference as approximation to the
+        x     = x - err / dx;                       // partial derivative with respect to x
         T old = err;
         err   = f(x,y) - c;
         if(rsAbs(old) <= rsAbs(err)) {
@@ -1234,14 +1239,29 @@ void implicitCurve()
   double yMax   = +2.0;
 
 
+
+  rsImageF imgCurve(width, height);
   function<double(double, double)> f;
-  f = [=](double x, double y) { return x*x + y*y; };  // unit circle
+
+
 
   //f = [=](double x, double y) { return x*x + 1.5*y*y; }; 
   // we need one starting point - maybe the function should figure it out itself
 
-  rsImageF imgCurve(width, height);
+
+
+  f = [=](double x, double y) { return x*x + y*y; };  // unit circle
   drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
+
+  f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - only upper arm is drawn
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, 1.f);
+
+  f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - only lower arm is drawn
+  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, -1.0, 0.0, imgCurve, 1.f);
+
+  // what about hyperbolas that open toward to or bottom - i guess their euqation is y*y - x*x = c
+
+
 
 
   writeScaledImageToFilePPM(imgCurve, "ImplicitCurve.ppm", 1);
@@ -1277,6 +1297,7 @@ void spirals()
   // and the algo parameter a = log(shrinkFactor) / (2*PI) - nad maybe instead of incrementing
   // a linearly, we should have a "spread" factor that's used like 
   // shrinkRed = shrink/shrinkSpread, shrinkGreen = shrink, shrinkBlue = shrink*shrinkSpread
+  // ..or maybe have scalers for the shrink-factors for R,G,B - default: 1
   // maybe instead of 2, use the golden ratio
 
 

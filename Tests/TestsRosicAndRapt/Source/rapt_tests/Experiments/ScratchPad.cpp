@@ -1515,7 +1515,7 @@ double spiralRidge1(double x, double y, double a = 1.0, double p = 0.0, double s
 // center - using a power with exponent < 1, we get a darkening effect towrd the center - but mybe 
 // such an effect can be applied as post-processing: 
 // circularDarkening(img, x, y, amount)
-//   imh(i,j) /= pow(r, amount)
+//   img(i,j) /= pow(r, amount)
 
 // try tL = atan2(y,x) + 2*k*pi where k = floor(t0/(2*pi)), tR = tL + 2*pi, compute (xL,yL),(xR,yR)
 // by the parametric spiral equations, compute distances dL,dR and use minimum
