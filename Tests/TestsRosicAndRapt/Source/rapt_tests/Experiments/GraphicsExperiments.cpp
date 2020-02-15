@@ -950,7 +950,7 @@ void contours()
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*x - 0.1f*y*y + 0.1f*y; };
     // try exchanging sin and cos an combining
 
-  f = [&] (float x, float y) { return (float) pow(spiralRidge1(x, y, 0.25), 3.0); };
+  f = [&] (float x, float y) { return (float) pow(spiralRidge(x, y, 0.25), 3.0); };
    // exponent 3 makes for good balance between black and white - but middle gray is 
    // underrepresented - todo: apply expansion of middle gray and compression of black/white values
 
@@ -1408,23 +1408,28 @@ void plotSpiralHeightProfile()
   //shrink = sqrt(2);
 
 
-  std::vector<double> r(N), h(N), h2(N), h3(N);  // radius and height and mapped/shaped versions
+  std::vector<double> r(N), h0(N), h1(N), h2(N);  // radius and height and mapped/shaped versions
   rsArrayTools::fillWithRangeExponential(&r[0], N, rMin, rMax);
 
   GNUPlotter plt;
 
+  //int shape = 0;
   double angle = 0;  // todo: loop over multiple angles
   double a = log(shrink) / (2*PI); 
   for(int i = 0; i < N; i++)
   {
     double x = r[i] * cos(angle);
     double y = r[i] * sin(angle);
-    h[i]  = spiralRidge1(x, y, a);      // original - looks like a rectified sine
+    h0[i]  = spiralRidge(x, y, a, 0);      // original - looks like a rectified sine
+    h1[i]  = spiralRidge(x, y, a, 1);      // triangular wave
+    h2[i]  = spiralRidge(x, y, a, 2);      // smooth sinusoid
 
+    
     // derive some other height profiles by applying "wave-shaping"
-    h2[i] = asin(h[i]) / (0.5*PI);      // triangular between 0..1
-    double tmp = rsLinToLin(h2[i], 0.0, 1.0, -PI/2, PI/2);
-    h3[i] = 0.5 * (sin(tmp) + 1);       // sinusoidal between 0 and 1
+    h1[i] = asin(h0[i]) / (0.5*PI);      // triangular between 0..1
+    double tmp = rsLinToLin(h1[i], 0.0, 1.0, -PI/2, PI/2);
+    h2[i] = 0.5 * (sin(tmp) + 1);       // sinusoidal between 0 and 1
+    
 
     //double rLin = rsExpToLin(r[i], 1.0, 2.0,
 
@@ -1432,7 +1437,7 @@ void plotSpiralHeightProfile()
   // the shaping works only correctly, if the exponent in  0.5 * d / pow(r, 1.0) 
   // in spiralRidge1 is 1
 
-  plt.addDataArrays(N, &r[0], &h[0], &h2[0], &h3[0]);
+  plt.addDataArrays(N, &r[0], &h0[0], &h1[0], &h2[0]);
   //plt.addDataArrays(N, &r[0], &h3[0]);
 
   plt.setLogScale("x", 2.0);
@@ -1450,15 +1455,19 @@ void testSpiralHeightProfile()
 
   int N = 511;  // number of samples
 
-  std::vector<double> r(N), R(N), h(N), s(N);                 // radius and height and sine
-  double a = log(2.0) / (2*PI);                               // shrink/grow factor is 2
-  rsArrayTools::fillWithRangeExponential(&r[0], N, 1.0, 2.0); // interval 1...2, log-scaled
-  rsArrayTools::fillWithRangeLinear(     &R[0], N, 0.0, PI);  // interval 0..PI, lin-scaled
+  double g = 2.0; // growth factor
+
+
+
+  std::vector<double> r(N), R(N), h(N), s(N);                // radius and height and sine
+  double a = log(g) / (2*PI);                                // shrink/grow factor is 2
+  rsArrayTools::fillWithRangeExponential(&r[0], N, 1.0, g);  // interval 1...g, log-scaled
+  rsArrayTools::fillWithRangeLinear(     &R[0], N, 0.0, PI); // interval 0..PI, lin-scaled
   for(int i = 0; i < N; i++) {
-    h[i] = spiralRidge1(r[i], 0.0, a);  // x=r, y=0
+    h[i] = spiralRidge(r[i], 0, a);  // x=r, y=0
     s[i] = sin(R[i]); }
-  std::vector<double> err = s - h;      // is numerically zero
-  rsPlotVectorsXY(R, h, s, err);        // perfect match - error of the order of machine epsilon
+  std::vector<double> err = s - h;   // is numerically zero
+  rsPlotVectorsXY(R, h, s, err);     // error is of the order of machine epsilon
 
   // can we prove/derive that the height-profile is a rectified sine? idea:
   // -consider the case shrink = 2 and the look at the interval 1..2 on the x-axis (i.e. set y=0)
@@ -1475,8 +1484,8 @@ void testSpiralHeightProfile()
 
 void spirals()
 {
-  //plotSpiralHeightProfile();
-  testSpiralHeightProfile();
+  plotSpiralHeightProfile();
+  //testSpiralHeightProfile();
 
   //int size = 1000;
   int w = 1200;
@@ -1531,7 +1540,7 @@ void spirals()
   std::function<double(double, double)> f;
   f = [&](double x, double y) 
   { 
-    double s = pow(spiralRidge1(x, y, density, phase, sign), power); 
+    double s = pow(spiralRidge(x, y, density, phase, sign), power); 
     //double s = pow(spiralRidge2(x, y, density, phase, sign), power); 
     return s;
 
@@ -1623,3 +1632,18 @@ void spirals()
 
 // maybe make animations with
 // http://www.softpedia.com/get/Multimedia/Graphic/Graphic-Others/APNG-Anime-Maker.shtml
+
+// or:
+// https://www.codeproject.com/Articles/4169/A-simple-interface-to-the-Video-for-Windows-API-fo
+// https://www.learnopencv.com/read-write-and-display-a-video-using-opencv-cpp-python/
+
+
+// http://www.adp-gmbh.ch/win/programming/avi/index.html
+// http://www.adp-gmbh.ch/win/programming/avi/avi.html
+// http://www.adp-gmbh.ch/win/programming/graphic/bitmap.html#bitmap_h
+
+
+// see also:
+// https://en.wikipedia.org/wiki/Comparison_of_video_container_formats
+
+// https://www.quora.com/What-are-the-two-most-common-uncompressed-video-formats
