@@ -1499,20 +1499,31 @@ double distance(double x1, double y1, double x2, double y2)
 
 // a simple algo for a spiral ridge that i discovered by accident when working on the algo based on 
 // the distance to the nearest spiral arm - this algo computes the distance of (x,y) to a point on 
-// the spiral that has the same radius as (x,y) (i think)
+// the spiral that has the same radius as (x,y)
 double spiralRidge1(double x, double y, double a = 1.0, double p = 0.0, double sign = 1.0)
 {
   double r = sqrt(x*x + y*y);
-  if(r == 0.0) return 0.0;            // avoid log-of-zero
-  double t  = log(r) / a;
-  double xs = r*cos(sign * t + p);    // x on the spiral
-  double ys = r*sin(sign * t + p);  
-  double d  = distance(xs, ys, x, y);
-  return 0.5 * d / pow(r, 1.0);        // test - make parameter "distanceWeight", defaulting to 1
+  if(r == 0.0) return 0.0;             // avoid log-of-zero
+  double t  = log(r) / a;              // parameter t for point on the spiral with radius r
+  double xs = r * cos(sign * t + p);   // x on the spiral for the given t
+  double ys = r * sin(sign * t + p);   // y on the spiral for the given t
+  double d  = distance(xs, ys, x, y);  // distance of input point to point on the spiral
+  double h  = 0.5 * d / r;             // height - oscillates between 0..1 in a rectified sine 
+                                       // shape as the radius of (x,y) increases for a fixed angle
+
+  //h = asin(h) / (0.5*PI);   // shapes rectified sine into triangular
+  //double tmp = rsLinToLin(h, 0.0, 1.0, -PI/2, PI/2);
+  //h = 0.5 * (sin(h) + 1);  // shapes triangular into sinusoidal
+  // we could do the shaping here - but perhaps it's a better idea to leave that to a 
+  // post-processing stage that can arbitrarily "waveshape" the 3 channels separately
+
+  return h;
+
+  //return 0.5 * d / pow(r, 1.0);        // test - make parameter "distanceWeight", defaulting to 1
   //return d / r;            // return weighted distance
 }
 // maybe divide d by two, such that it oscillates between 0 and 1 - as it is, it oscialltes between 
-// 0 and 2
+// 0 and 2 - done
 
 // when we use d / r, the birghtness of the white ridges is independent for the distance to the 
 // center - using a power with exponent < 1, we get a darkening effect towrd the center - but mybe 

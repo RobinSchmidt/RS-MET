@@ -1398,12 +1398,14 @@ void plotSpiralHeightProfile()
   // plots the height of the spiral function as function of the radius 
   // todo: plot it for various different angles
 
-  int N = 500;  // number of samples
+  int N = 511;  // number of samples
+
 
   double rMin = 1./8;
   double rMax = 8;
-  double shrink = 2;
 
+  double shrink = 2;
+  //shrink = sqrt(2);
 
 
   std::vector<double> r(N), h(N), h2(N), h3(N);  // radius and height and mapped/shaped versions
@@ -1417,48 +1419,99 @@ void plotSpiralHeightProfile()
   {
     double x = r[i] * cos(angle);
     double y = r[i] * sin(angle);
-    h[i]  = spiralRidge1(x, y, a);      // original
+    h[i]  = spiralRidge1(x, y, a);      // original - looks like a rectified sine
+
+    // derive some other height profiles by applying "wave-shaping"
     h2[i] = asin(h[i]) / (0.5*PI);      // triangular between 0..1
     double tmp = rsLinToLin(h2[i], 0.0, 1.0, -PI/2, PI/2);
     h3[i] = 0.5 * (sin(tmp) + 1);       // sinusoidal between 0 and 1
-  }
 
+    //double rLin = rsExpToLin(r[i], 1.0, 2.0,
+
+  }
+  // the shaping works only correctly, if the exponent in  0.5 * d / pow(r, 1.0) 
+  // in spiralRidge1 is 1
 
   plt.addDataArrays(N, &r[0], &h[0], &h2[0], &h3[0]);
-
+  //plt.addDataArrays(N, &r[0], &h3[0]);
 
   plt.setLogScale("x", 2.0);
-  plt.setRange(rMin, rMax, 0.0, 1.1);
+  plt.setRange(rMin, rMax);
   plt.addCommand("set xtics (0.125,0.25,0.5,1.0,2.0,4.0,8.0)");
   // wrap into function setTicsX(vector<double>)
 
   plt.plot();
-
-  // looks like a rectified sine with peak at 2
-  // -to make it sinusoidal: scale by 0.5, take arcsin
 }
+
+void testSpiralHeightProfile()
+{
+  // Create the height profile (as function of radius) via the spiralRidge function and compare it 
+  // to a half-period of the sine wave - they do indeed match perfectly.
+
+  int N = 511;  // number of samples
+
+  std::vector<double> r(N), R(N), h(N), s(N);                 // radius and height and sine
+  double a = log(2.0) / (2*PI);                               // shrink/grow factor is 2
+  rsArrayTools::fillWithRangeExponential(&r[0], N, 1.0, 2.0); // interval 1...2, log-scaled
+  rsArrayTools::fillWithRangeLinear(     &R[0], N, 0.0, PI);  // interval 0..PI, lin-scaled
+  for(int i = 0; i < N; i++) {
+    h[i] = spiralRidge1(r[i], 0.0, a);  // x=r, y=0
+    s[i] = sin(R[i]); }
+  std::vector<double> err = s - h;      // is numerically zero
+  rsPlotVectorsXY(R, h, s, err);        // perfect match - error of the order of machine epsilon
+
+  // can we prove/derive that the height-profile is a rectified sine? idea:
+  // -consider the case shrink = 2 and the look at the interval 1..2 on the x-axis (i.e. set y=0)
+  // -plug x into height-function and simplify
+  // -the results generalize to arbitrary angles by taking a different interval for the exponential 
+  //  range - it widens from 1..2 to 2..4 during one revolution (i think, after 180° it's at 
+  //  sqrt(2)..2*sqrt(2) = 1.414..2.828 - verify)
+  // -they also generalize to different growth factors g by not taking 1..2 but 1..g as the basic 
+  //  interval on the x-axis
+}
+
+
+
 
 void spirals()
 {
-
-  plotSpiralHeightProfile();
+  //plotSpiralHeightProfile();
+  testSpiralHeightProfile();
 
   //int size = 1000;
   int w = 1200;
   int h = 800;
 
-  double phase    = 120.0;
-  double phaseInc = 120;   // 120 is a nice defailt
-  double density  = 0.15;  // smaller values -> denser arms
-  double densInc  = 0.0;   // relative density increment
-  double power    = 1.5;   // 3 lead to balance between black/white - lower value give mor white
   double range    = 1.2;
-  double sign     = +1.0;
-  double alt      = +1;    // -1: alternate directions, +1: don't alternate
+
+  //double phase    = 120.0;
+  //double phaseInc = 120;   // 120 is a nice defailt
+
+
+  double power    = 2.0;   // 3 lead to balance between black/white - lower value give mor white
+
+  double phaseR = 0;
+  double phaseG = 120;
+  double phaseB = 240;
+
+  //double density  = 0.15;  // smaller values -> denser arms
+  //double densInc  = 0.5;   // relative density increment
+
+  double shrinkR = 3 / 1.3;
+  double shrinkG = 3;
+  double shrinkB = 3 * 1.3;
+
+  double signR    = +1.0;
+  double signG    = -1.0;
+  double signB    = +1.0;
+
+
+  //double alt      = +1;    // -1: alternate directions, +1: don't alternate
 
 
   // test:
-  //density = log(2) / (2*PI); 
+  //double density = log(shrinkR) / (2*PI);   // rename;
+  double density, phase, sign;
   // leads to shrinking of 1/2 per revolution - maybe the user parameter should be the shrink-factor
   // and the algo parameter a = log(shrinkFactor) / (2*PI) - nad maybe instead of incrementing
   // a linearly, we should have a "spread" factor that's used like 
@@ -1468,18 +1521,18 @@ void spirals()
 
 
 
-  // convert user to algo params
-  densInc *= density;  // increment should be relative
-  phase = rsDegreeToRadiant(phase);
-  phaseInc = rsDegreeToRadiant(phaseInc);
+  //// convert user to algo params
+  //densInc *= density;  // increment should be relative
+  //phase = rsDegreeToRadiant(phase);
+  //phaseInc = rsDegreeToRadiant(phaseInc);
 
 
 
   std::function<double(double, double)> f;
   f = [&](double x, double y) 
   { 
-    //double s = pow(spiralRidge1(x, y, density, phase, sign), power); 
-    double s = pow(spiralRidge2(x, y, density, phase, sign), power); 
+    double s = pow(spiralRidge1(x, y, density, phase, sign), power); 
+    //double s = pow(spiralRidge2(x, y, density, phase, sign), power); 
     return s;
 
     // compression of black/white, expansion of gray:
@@ -1493,20 +1546,23 @@ void spirals()
   // create image with function values:
   rsImageF red(w, h), green(w, h), blue(w, h);
 
+
+  density = log(shrinkR) / (2*PI);
+  phase   = phaseR;
+  sign    = signR;
   generateFunctionImage(f, -range, range, -range, range, red);
+  normalize(red); 
 
-  phase += phaseInc;
-  sign *= alt;
-  density += densInc;
+  density = log(shrinkG) / (2*PI);
+  phase   = phaseG;
+  sign    = signG;
   generateFunctionImage(f, -range, range, -range, range, green);
-
-  phase += phaseInc;
-  sign *= alt;
-  density += densInc;
-  generateFunctionImage(f, -range, range, -range, range, blue);
-
-  normalize(red);   
   normalize(green); 
+
+  density = log(shrinkB) / (2*PI);
+  phase   = phaseB;
+  sign    = signB;
+  generateFunctionImage(f, -range, range, -range, range, blue);
   normalize(blue);  
 
   //// test:
@@ -1519,7 +1575,6 @@ void spirals()
   writeImageToFilePPM(red,   "SpiralsR.ppm");
   writeImageToFilePPM(green, "SpiralsG.ppm");
   writeImageToFilePPM(blue,  "SpiralsB.ppm");
-
 
   writeImageToFilePPM(red,  green, blue, "Spirals.ppm");
 
@@ -1545,6 +1600,9 @@ void spirals()
   // -try color-inversion (per channel)
   // -nice: use densities: 0.25,0.30,0.35
   // -move the whole algo into a function that takes a bunch of parameters and returns the image
+
+  // -try to interpret the color-channels not as r,g,b but as c,m,y where c=g+b, m=r+b, y=r+g
+  //  -> solve for r,g,b - make function rgb2cmy, cmy2rgb
 
   // -maybe wrap this into a python function that we may use in jupyter - so we can qucikly vary 
   //  the parameters with sliders
