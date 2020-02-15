@@ -1497,39 +1497,53 @@ double distance(double x1, double y1, double x2, double y2)
 }
 // Euclidean distance
 
-// a simple algo for a spiral ridge that i discovered by accident when working on the algo based on 
-// the distance to the nearest spiral arm - this algo computes the distance of (x,y) to a point on 
-// the spiral that has the same radius as (x,y)
+
+
+/** Given plane coordinates x,y, this function computes a height above the plane that has the shape
+of ridge (of height 1) that spirals around in a logarithmic spiral with the parametric equation:
+  x(t) = exp(a*t) * cos(sign * t + p); y(t) = exp(a*t) * sin(sign * t + p)
+For points that are on the spiral, the function will return zero and for points that are "halfway" 
+in between two "arcs", it will return 1. Halfway is to be understood in the logarithmic sense - for 
+example, if (1,0) and (2,0) are points on the spiral, the point (sqrt(2),0) would be considered 
+halfway between them. If the exponential growth parameter "a" is equal to log(2)/(2*pi), the spiral 
+will grow by a factor of 2 in each revolution. The "sign" parameter should be +1 or -1 and 
+determines the direction of the rotation. */
 double spiralRidge(double x, double y, double a = 1.0, double p = 0.0, double sign = 1.0, 
   int profile = 0)
 {
+  // sanity check inputs:
+  rsAssert(sign == +1 || sign == -1,     "sign must be +-1");
+  rsAssert(profile >= 0 && profile <= 3, "invalid profile");
+
+  // compute raw height:
   double r = sqrt(x*x + y*y);
   if(r == 0.0) return 0.0;             // avoid log-of-zero
   double t  = log(r) / a;              // parameter t for point on the spiral with radius r
   double xs = r * cos(sign * t + p);   // x on the spiral for the given t
   double ys = r * sin(sign * t + p);   // y on the spiral for the given t
   double d  = distance(xs, ys, x, y);  // distance of input point to point on the spiral
-  double h  = 0.5 * d / r;             // height - oscillates between 0..1 in a rectified sine 
-                                       // shape as the radius of (x,y) increases for a fixed angle
+  double h  = 0.5 * d / r;             // height
 
-  if(profile > 0)
-    h = asin(h) / (0.5*PI);   // shapes rectified sine into triangular
-
-  if(profile == 2)
-  {
-    double tmp = rsLinToLin(h, 0.0, 1.0, -PI/2, PI/2);  // simplify!
-    h = 0.5 * (sin(tmp) + 1);  // shapes triangular into sinusoidal
-    // we could do the shaping here - but perhaps it's a better idea to leave that to a 
-    // post-processing stage that can arbitrarily "waveshape" the 3 channels separately
-  }
-
-  // profile: 0: orginal, rectified sine, 1: linear/triangular, 2: smooth sinusoidal
-
-  return h;
-
-  //return 0.5 * d / pow(r, 1.0);        // test - make parameter "distanceWeight", defaulting to 1
-  //return d / r;            // return weighted distance
+  // apply shaping of the height profile:
+  if(profile == 2) return h;                        // 2: rectified sine (comes out by raw formula)
+  if(profile == 3) return 1-h;                      // 3: inverted rectified sine
+  h = asin(h) / (0.5*PI);                           // convert to triangular
+  if(profile == 0) return h;                        // 0: triangular
+  if(profile == 1) return 0.5*(sin(PI*(h-0.5))+1);  // 1: sinusoidal
+  return 0;                                         // unknown profile
 }
+
+// outMin + (outMax-outMin) * (in-inMin) / (inMax-inMin)
+
+// The algo computes the distance of (x,y) to a point on the spiral that has the same radius as 
+// (x,y). It happens that the height-profile (as function of radius for a given angle) comes out as
+// a rectified sine shape (when the radius is used a x-axis and the x-axis is logarithmically 
+// scaled)
+// what if sign is not +-1? what if we use different factors for x- and y: 
+//   xs = r * cos(wx * t + px); ys = r * sin(wy * t + py);
+// ..in this case, the profile computations will very likely become invalid because the raw profile 
+// is not a rectified sine anymore - yes - using, for example cos(2*..),sin(3*..) gives a nice 
+// effect - one should increase the shrink-factor accordingly because it get denser otherwise
 // for the original profile and the profile converted to a full sine, it makes visually not 
 // qualitative difference, when we invert all color channels - for the triangular profile, it does.
 // maybe to create audio-signals, we could use dx = (xs-x)/r; dy = (ys-y)/r; as left and right 

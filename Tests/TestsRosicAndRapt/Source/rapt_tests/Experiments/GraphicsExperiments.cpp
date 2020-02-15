@@ -1383,6 +1383,9 @@ void implicitCurve()
 // https://en.wikipedia.org/wiki/Hypotrochoid
 // https://en.wikipedia.org/wiki/Epitrochoid
 
+//-------------------------------------------------------------------------------------------------
+// image effects:
+
 template<class T>
 void logisticCompression(rsImage<T>& img, T k)
 {
@@ -1391,6 +1394,70 @@ void logisticCompression(rsImage<T>& img, T k)
     p[i] = T(1) / (T(1) + exp(-k*(p[i]-0.5)));  // 0.5 put middle gray at the center of the sigmoid
 }
 
+template<class T>
+void frameElliptic(rsImage<T>& img, T cx, T cy, T rx, T ry, T steepness = T(2),
+  bool invert = false)
+{
+  for(int j = 0; j < img.getHeight(); j++) {
+    for(int i = 0; i < img.getWidth(); i++) {
+      T x = T(i);
+      T y = T(j);
+      T dx = x - cx; 
+      T dy = y - cy;
+      dx /= rx;
+      dy /= ry;
+      T d = dx*dx + dy*dy;
+
+      T s = T(1) / (T(1) + pow(d, steepness)); // "Butterworth" function
+
+      // maybe use 
+      // s = (1-amount) + amount*s; - "low-shelf"/"lowpass" crossfade
+
+      if(invert)
+        s = T(1) - s;
+      img(i, j) *= s; }}
+}
+// a sort of  function
+// we loop over the lines in the outer loop to be more cache-friendly
+// maybe call it ellipticFrame and keep only the part in the ellipse - if "invert" is true, use 
+// 1-s
+// but: should we somehow also normalize the steepness with respect to the image size? ...such 
+// that an image with twice the size (using twice rx,, ry) when bein downsampled looks the same
+// as the image with normal size? ..make the algorithm invariant with respect to oversampling
+
+// maybe have also a rectangularFrame function (using d = min(dx,dy)?)
+// maybe continuously fade between ellipit and rectangular using a shape parameter?
+
+
+// todo: gammaCorrection, rationalMapUnipolar, rationalMapBipolar
+
+void testImageEffectFrame()
+{
+  int w = 500;
+  int h = 300;
+
+  // position and size:
+  float cx = 200.f;
+  float cy = 100.f;
+  float rx = 100.f;
+  float ry =  50.f;
+
+  // parameters:
+  float steepness = 1.f; // at 100, it looks like an anti-aliased filled ellipse
+  bool invert = true;
+  // float amount = 1.f;
+  // float shape = 1.f;
+
+  // apply framing effect to fully white image:
+  rsImageF img(w, h);
+  img.clear(1.f);      
+  frameElliptic(img, cx, cy, rx, ry, steepness, invert);
+  writeImageToFilePPM(img, "FrameTest.ppm");
+  int dummy = 0;
+}
+
+
+//-------------------------------------------------------------------------------------------------
 
 
 void plotSpiralHeightProfile()
@@ -1407,20 +1474,21 @@ void plotSpiralHeightProfile()
   double shrink = 2;    // maybe call it grow
 
   // Generate data:
-  std::vector<double> r(N), h0(N), h1(N), h2(N);  // radius and height and mapped/shaped versions
+  std::vector<double> r(N), h0(N), h1(N), h2(N), h3(N);  // radius and heights
   rsArrayTools::fillWithRangeExponential(&r[0], N, rMin, rMax);
   double a = log(shrink) / (2*PI); 
   for(int i = 0; i < N; i++) {
     double x = r[i] * cos(angle);
     double y = r[i] * sin(angle);
-    h0[i] = spiralRidge(x, y, a, p, 1, 0); // rectified sine (original)
-    h1[i] = spiralRidge(x, y, a, p, 1, 1); // triangular wave (shaped via asin from original)
-    h2[i] = spiralRidge(x, y, a, p, 1, 2); // smooth sinusoid (sin-shaped from triangular)
+    h0[i] = spiralRidge(x, y, a, p, 1, 0); // triangular wave (shaped via asin from original)
+    h1[i] = spiralRidge(x, y, a, p, 1, 1); // smooth sinusoid (sin-shaped from triangular)
+    h2[i] = spiralRidge(x, y, a, p, 1, 2); // rectified sine (original)
+    h3[i] = spiralRidge(x, y, a, p, 1, 3); // inverted rectified sine
   }
 
   // Plot results:
   GNUPlotter plt;
-  plt.addDataArrays(N, &r[0], &h0[0], &h1[0], &h2[0]);
+  plt.addDataArrays(N, &r[0], &h0[0], &h1[0], &h2[0], &h3[0]);
   plt.setLogScale("x", 2.0);
   plt.setRange(rMin, rMax);
   plt.addCommand("set xtics (0.125,0.25,0.5,1.0,2.0,4.0,8.0)"); // wrap into function setTicsX(vector<double>)
@@ -1433,17 +1501,13 @@ void testSpiralHeightProfile()
   // to a half-period of the sine wave - they do indeed match perfectly.
 
   int N = 511;  // number of samples
-
   double g = 2.0; // growth factor
-
-
-
   std::vector<double> r(N), R(N), h(N), s(N);                // radius and height and sine
   double a = log(g) / (2*PI);                                // shrink/grow factor is 2
   rsArrayTools::fillWithRangeExponential(&r[0], N, 1.0, g);  // interval 1...g, log-scaled
   rsArrayTools::fillWithRangeLinear(     &R[0], N, 0.0, PI); // interval 0..PI, lin-scaled
   for(int i = 0; i < N; i++) {
-    h[i] = spiralRidge(r[i], 0, a);  // x=r, y=0
+    h[i] = spiralRidge(r[i], 0, a, 0, 1, 2);  // x=r, y=0
     s[i] = sin(R[i]); }
   std::vector<double> err = s - h;   // is numerically zero
   rsPlotVectorsXY(R, h, s, err);     // error is of the order of machine epsilon
@@ -1458,25 +1522,24 @@ void testSpiralHeightProfile()
   //  interval on the x-axis
 }
 
-
-
-
 void spirals()
 {
-  plotSpiralHeightProfile();
+  //plotSpiralHeightProfile();
   //testSpiralHeightProfile();
+  testImageEffectFrame(); return;
 
   //int size = 1000;
   int w = 1200;
   int h = 800;
 
-  double range    = 1.2;
+  double range    = 1.5;
 
   //double phase    = 120.0;
   //double phaseInc = 120;   // 120 is a nice defailt
 
 
-  double power    = 2.0;   // 3 lead to balance between black/white - lower value give mor white
+  double power = 1.5;   // 3 lead to balance between black/white - lower value give mor white
+    // this seems to be 1/gamma - try gamma-correction with irfan view
 
   double phaseR = 0;
   double phaseG = 120;
@@ -1485,13 +1548,20 @@ void spirals()
   //double density  = 0.15;  // smaller values -> denser arms
   //double densInc  = 0.5;   // relative density increment
 
-  double shrinkR = 3 / 1.3;
+  double shrinkR = 3 / 1.4;
   double shrinkG = 3;
-  double shrinkB = 3 * 1.3;
+  double shrinkB = 3 * 1.4;
 
-  double signR    = +1.0;
-  double signG    = -1.0;
-  double signB    = +1.0;
+  double signR = +1.0;
+  double signG = -1.0;
+  double signB = +1.0;
+
+  int profileR = 0;
+  int profileG = 0;
+  int profileB = 0;
+
+  // maybe it would make sense to have a struct rsParamRGB { double r; double g; double b; }
+  // that can hold the 3 parameter values for the 3 channels
 
 
   //double alt      = +1;    // -1: alternate directions, +1: don't alternate
@@ -1499,7 +1569,7 @@ void spirals()
 
   // test:
   //double density = log(shrinkR) / (2*PI);   // rename;
-  double density, phase, sign;
+  double density, phase, sign, profile;
   // leads to shrinking of 1/2 per revolution - maybe the user parameter should be the shrink-factor
   // and the algo parameter a = log(shrinkFactor) / (2*PI) - nad maybe instead of incrementing
   // a linearly, we should have a "spread" factor that's used like 
@@ -1519,7 +1589,7 @@ void spirals()
   std::function<double(double, double)> f;
   f = [&](double x, double y) 
   { 
-    double s = pow(spiralRidge(x, y, density, phase, sign), power); 
+    double s = pow(spiralRidge(x, y, density, phase, sign, profile), power); 
     //double s = pow(spiralRidge2(x, y, density, phase, sign), power); 
     return s;
 
@@ -1538,18 +1608,21 @@ void spirals()
   density = log(shrinkR) / (2*PI);
   phase   = phaseR;
   sign    = signR;
+  profile = profileR;
   generateFunctionImage(f, -range, range, -range, range, red);
   normalize(red); 
 
   density = log(shrinkG) / (2*PI);
   phase   = phaseG;
   sign    = signG;
+  profile = profileG;
   generateFunctionImage(f, -range, range, -range, range, green);
   normalize(green); 
 
   density = log(shrinkB) / (2*PI);
   phase   = phaseB;
   sign    = signB;
+  profile = profileB;
   generateFunctionImage(f, -range, range, -range, range, blue);
   normalize(blue);  
 
@@ -1605,12 +1678,16 @@ void spirals()
   //  ->try to use a rational mapping of the heights to expand the middle-gray range
 }
 
-
 // exponent 3 makes for good balance between black and white - but middle gray is 
 // underrepresented - todo: apply expansion of middle gray and compression of black/white values
 
+
+
+
+
 // maybe make animations with
 // http://www.softpedia.com/get/Multimedia/Graphic/Graphic-Others/APNG-Anime-Maker.shtml
+// https://stackoverflow.com/questions/3191978/how-to-use-glut-opengl-to-render-to-a-file/14324292#14324292
 
 // or:
 // https://www.codeproject.com/Articles/4169/A-simple-interface-to-the-Video-for-Windows-API-fo
@@ -1626,3 +1703,18 @@ void spirals()
 // https://en.wikipedia.org/wiki/Comparison_of_video_container_formats
 
 // https://www.quora.com/What-are-the-two-most-common-uncompressed-video-formats
+
+
+// try this!
+// https://rosettacode.org/wiki/Mandelbrot_set#C
+// https://rosettacode.org/wiki/Dragon_curve#C
+// https://rosettacode.org/wiki/Sierpinski_carpet#C
+
+
+// https://rosettacode.org/wiki/Bitmap/B%C3%A9zier_curves/Quadratic#C
+// https://rosettacode.org/wiki/Bitmap/B%C3%A9zier_curves/Cubic#C
+
+
+// https://rosettacode.org/wiki/Window_creation#C
+
+// https://rosettacode.org/wiki/Conway%27s_Game_of_Life#C
