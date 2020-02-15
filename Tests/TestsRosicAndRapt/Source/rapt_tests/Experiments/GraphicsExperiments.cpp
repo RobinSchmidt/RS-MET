@@ -1395,56 +1395,35 @@ void logisticCompression(rsImage<T>& img, T k)
 
 void plotSpiralHeightProfile()
 {
-  // plots the height of the spiral function as function of the radius 
-  // todo: plot it for various different angles
+  // Plots the height of the spiralRidge function as function of the radius for a given angle using 
+  // a spiral with growth-factor 2.
 
-  int N = 511;  // number of samples
+  // Settings:
+  int    N      = 511;  // number of samples
+  double rMin   = 1./4; // minimum radius
+  double rMax   = 4;    // maximum radius
+  double angle  = 0.0;  // angle along which we walk when increasing the radius
+  double p      = 0.0;  // phase of the spiral
+  double shrink = 2;    // maybe call it grow
 
-
-  double rMin = 1./8;
-  double rMax = 8;
-
-  double shrink = 2;
-  //shrink = sqrt(2);
-
-
+  // Generate data:
   std::vector<double> r(N), h0(N), h1(N), h2(N);  // radius and height and mapped/shaped versions
   rsArrayTools::fillWithRangeExponential(&r[0], N, rMin, rMax);
-
-  GNUPlotter plt;
-
-  //int shape = 0;
-  double angle = 0;  // todo: loop over multiple angles
   double a = log(shrink) / (2*PI); 
-  for(int i = 0; i < N; i++)
-  {
+  for(int i = 0; i < N; i++) {
     double x = r[i] * cos(angle);
     double y = r[i] * sin(angle);
-    h0[i]  = spiralRidge(x, y, a, 0);      // original - looks like a rectified sine
-    h1[i]  = spiralRidge(x, y, a, 1);      // triangular wave
-    h2[i]  = spiralRidge(x, y, a, 2);      // smooth sinusoid
-
-    
-    // derive some other height profiles by applying "wave-shaping"
-    h1[i] = asin(h0[i]) / (0.5*PI);      // triangular between 0..1
-    double tmp = rsLinToLin(h1[i], 0.0, 1.0, -PI/2, PI/2);
-    h2[i] = 0.5 * (sin(tmp) + 1);       // sinusoidal between 0 and 1
-    
-
-    //double rLin = rsExpToLin(r[i], 1.0, 2.0,
-
+    h0[i] = spiralRidge(x, y, a, p, 1, 0); // rectified sine (original)
+    h1[i] = spiralRidge(x, y, a, p, 1, 1); // triangular wave (shaped via asin from original)
+    h2[i] = spiralRidge(x, y, a, p, 1, 2); // smooth sinusoid (sin-shaped from triangular)
   }
-  // the shaping works only correctly, if the exponent in  0.5 * d / pow(r, 1.0) 
-  // in spiralRidge1 is 1
 
+  // Plot results:
+  GNUPlotter plt;
   plt.addDataArrays(N, &r[0], &h0[0], &h1[0], &h2[0]);
-  //plt.addDataArrays(N, &r[0], &h3[0]);
-
   plt.setLogScale("x", 2.0);
   plt.setRange(rMin, rMax);
-  plt.addCommand("set xtics (0.125,0.25,0.5,1.0,2.0,4.0,8.0)");
-  // wrap into function setTicsX(vector<double>)
-
+  plt.addCommand("set xtics (0.125,0.25,0.5,1.0,2.0,4.0,8.0)"); // wrap into function setTicsX(vector<double>)
   plt.plot();
 }
 
