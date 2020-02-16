@@ -1394,42 +1394,53 @@ void logisticCompression(rsImage<T>& img, T k)
     p[i] = T(1) / (T(1) + exp(-k*(p[i]-0.5)));  // 0.5 put middle gray at the center of the sigmoid
 }
 
+
+/** Applies an elliptic frame to the image, i.e. darkens the parts of the image that are outside 
+the ellipse. The ellipse is centered at (cx,cy) and has x,y radii rx,ry. The "steepness" parameter 
+controls, how steep/sharp the transition between the unaffected area inside the ellipse and the 
+affected area outside the ellipse is, "shape" controls a sort of crossfade between rectangular and
+elliptic shape of the frame, "invert" may be used to switch the roles inside/outside, i.e. darken 
+the pixels inside the ellipse. */
 template<class T>
-void frameElliptic(rsImage<T>& img, T cx, T cy, T rx, T ry, T steepness = T(2),
-  bool invert = false)
+void frameElliptic(rsImage<T>& img, T cx, T cy, T rx, T ry, T steepness = T(1), T shape = T(1),
+  T amount = T(1), bool invert = false)
 {
   for(int j = 0; j < img.getHeight(); j++) {
     for(int i = 0; i < img.getWidth(); i++) {
-      T x = T(i);
-      T y = T(j);
-      T dx = x - cx; 
-      T dy = y - cy;
-      dx /= rx;
-      dy /= ry;
-      T d = dx*dx + dy*dy;
-
-      T s = T(1) / (T(1) + pow(d, steepness)); // "Butterworth" function
-
-      // maybe use 
-      // s = (1-amount) + amount*s; - "low-shelf"/"lowpass" crossfade
-
-      if(invert)
-        s = T(1) - s;
-      img(i, j) *= s; }}
+      T x = T(i); T dx = x - cx; dx /= rx;       // scaled x-distance
+      T y = T(j); T dy = y - cy; dy /= ry;       // scaled y-distance
+      T dE = dx*dx + dy*dy;                      // elliptic distance
+      T dR = rsMax(rsAbs(dx), rsAbs(dy));        // rectangular distance ..rsMin instead of max has also
+      T d  = (T(1)-shape) * dR  + shape * dE;    // rectangle vs ellipse
+      T s  = T(1) / (T(1) + pow(d, steepness));  // "Butterworth" function
+      s    = (1-amount) + amount*s;              // "low-shelf" vs "lowpass"
+      if(invert) s = T(1) - s;                   // keep only stuff outside the frame
+      img(i, j) *= s; }}                         // apply framing
 }
-// a sort of  function
+// maybe allow for a rotation (apply rotation matrix between subtracting the center and scaling
+//  ...maybe wrap into function weightedDistance(x, y, cx, cy, rx, ry, angle, &dx, &dy)
+// maybe raise s to a power (before applying amount) - "apply filter multiple times" - should make
+// the ellipse more gaussian - but also smaller - maybe compensate by scaling rx,ry
 // we loop over the lines in the outer loop to be more cache-friendly
 // maybe call it ellipticFrame and keep only the part in the ellipse - if "invert" is true, use 
 // 1-s
 // but: should we somehow also normalize the steepness with respect to the image size? ...such 
 // that an image with twice the size (using twice rx,, ry) when bein downsampled looks the same
 // as the image with normal size? ..make the algorithm invariant with respect to oversampling
+// steepness /= oversampling?
 
 // maybe have also a rectangularFrame function (using d = min(dx,dy)?)
-// maybe continuously fade between ellipit and rectangular using a shape parameter?
+// maybe continuously fade between elliptic and rectangular using a shape parameter?
+// ...i think, this is the wrong way to try to get a rectangular frame - for this, we should 
+// perhaps use one multiplier for the x-distance and another for the y-distance, like
+// s  = T(1) / (T(1) + pow(dx, steepnessX));
+// s *= T(1) / (T(1) + pow(dy, steepnessY));
+
+// maybe make a function that only keep stuff within an elliptic annulus: apply two frames, one
+// of them inverted
 
 
-// todo: gammaCorrection, rationalMapUnipolar, rationalMapBipolar
+// todo: gammaCorrection, rationalMapUnipolar, rationalMapBipolar, blur (bi-direction IIR filter)
 
 void testImageEffectFrame()
 {
@@ -1443,17 +1454,19 @@ void testImageEffectFrame()
   float ry =  50.f;
 
   // parameters:
-  float steepness = 1.f; // at 100, it looks like an anti-aliased filled ellipse
-  bool invert = true;
-  // float amount = 1.f;
-  // float shape = 1.f;
+  float steepness = 0.5f; // at 100, it looks like an anti-aliased filled ellipse
+  bool invert = false;
+  float amount = 1.0f;
+  float shape  = 1.0f;
 
   // apply framing effect to fully white image:
   rsImageF img(w, h);
   img.clear(1.f);      
-  frameElliptic(img, cx, cy, rx, ry, steepness, invert);
+  frameElliptic(img, cx, cy, rx, ry, steepness, shape, amount, invert);
   writeImageToFilePPM(img, "FrameTest.ppm");
   int dummy = 0;
+
+  // todo: try to plot a contour at level 0.5 - it should be independent from the steepness
 }
 
 
@@ -1526,7 +1539,7 @@ void spirals()
 {
   //plotSpiralHeightProfile();
   //testSpiralHeightProfile();
-  testImageEffectFrame(); return;
+  //testImageEffectFrame(); return;
 
   //int size = 1000;
   int w = 1200;
@@ -1637,7 +1650,14 @@ void spirals()
   writeImageToFilePPM(green, "SpiralsG.ppm");
   writeImageToFilePPM(blue,  "SpiralsB.ppm");
 
+
+
   writeImageToFilePPM(red,  green, blue, "Spirals.ppm");
+
+
+  rosic::writeToMonoWaveFile("Spirals.wav", red.getPixelPointer(0,0), red.getNumPixels(), 44100);
+  // todo: make stereo file from two of the channels
+  // -maybe make a funtion writeImageToFileWav (this should include the mapping 0..1 -> -1..+1)
 
   // -when the parameter t in the parametric equation:
   //    x(t) = exp(a*t)*cos(t), y(t) = exp(a*t)*sin(t)
