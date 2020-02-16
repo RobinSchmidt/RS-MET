@@ -1469,7 +1469,6 @@ void testImageEffectFrame()
   // todo: try to plot a contour at level 0.5 - it should be independent from the steepness
 }
 
-
 //-------------------------------------------------------------------------------------------------
 
 
@@ -1485,18 +1484,19 @@ void plotSpiralHeightProfile()
   double angle  = 0.0;  // angle along which we walk when increasing the radius
   double p      = 0.0;  // phase of the spiral
   double shrink = 2;    // maybe call it grow
+  double k      = 3;    // exponent
 
   // Generate data:
   std::vector<double> r(N), h0(N), h1(N), h2(N), h3(N);  // radius and heights
   rsArrayTools::fillWithRangeExponential(&r[0], N, rMin, rMax);
-  double a = log(shrink) / (2*PI); 
+  double a = log(shrink) / (2*PI);
   for(int i = 0; i < N; i++) {
     double x = r[i] * cos(angle);
-    double y = r[i] * sin(angle);
-    h0[i] = spiralRidge(x, y, a, p, 1, 0); // triangular wave (shaped via asin from original)
-    h1[i] = spiralRidge(x, y, a, p, 1, 1); // smooth sinusoid (sin-shaped from triangular)
-    h2[i] = spiralRidge(x, y, a, p, 1, 2); // rectified sine (original)
-    h3[i] = spiralRidge(x, y, a, p, 1, 3); // inverted rectified sine
+    double y = r[i] * sin(angle);             // when k == 1:
+    h0[i] = spiralRidge(x, y, a, p, 1, 0, k); // triangular wave (shaped via asin from original)
+    h1[i] = spiralRidge(x, y, a, p, 1, 1, k); // smooth sinusoid (sin-shaped from triangular)
+    h2[i] = spiralRidge(x, y, a, p, 1, 2, k); // rectified sine (original)
+    h3[i] = spiralRidge(x, y, a, p, 1, 3, k); // inverted rectified sine
   }
 
   // Plot results:
@@ -1535,9 +1535,27 @@ void testSpiralHeightProfile()
   //  interval on the x-axis
 }
 
+/** Structure to represent parameter for an image generation/processing algorithm which may have 
+different values for the 3 color channels. */
+template<class T>
+struct rsParamRGB
+{
+  rsParamRGB(T _r, T _g, T _b) : r(_r), g(_g), b(_b) {}
+  T r = 0, g = 0, b = 0;
+};
+
+/** Structure to represent paremeters for generating a spiral image. */
+struct rsSpiralParams
+{
+  rsParamRGB<double> phase, grow, sign, gamma;
+  rsParamRGB<int>    profile;
+};
+
+
+
 void spirals()
 {
-  //plotSpiralHeightProfile();
+  plotSpiralHeightProfile();
   //testSpiralHeightProfile();
   //testImageEffectFrame(); return;
 

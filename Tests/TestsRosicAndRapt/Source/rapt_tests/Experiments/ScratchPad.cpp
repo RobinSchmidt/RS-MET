@@ -1509,7 +1509,7 @@ halfway between them. If the exponential growth parameter "a" is equal to log(2)
 will grow by a factor of 2 in each revolution. The "sign" parameter should be +1 or -1 and 
 determines the direction of the rotation. */
 double spiralRidge(double x, double y, double a = 1.0, double p = 0.0, double sign = 1.0, 
-  int profile = 0)
+  int profile = 0, double exponent = 1.0)
 {
   // sanity check inputs:
   rsAssert(sign == +1 || sign == -1,     "sign must be +-1");
@@ -1522,7 +1522,7 @@ double spiralRidge(double x, double y, double a = 1.0, double p = 0.0, double si
   double xs = r * cos(sign * t + p);   // x on the spiral for the given t
   double ys = r * sin(sign * t + p);   // y on the spiral for the given t
   double d  = distance(xs, ys, x, y);  // distance of input point to point on the spiral
-  double h  = 0.5 * d / r;             // height
+  double h  = pow(0.5*d/r, exponent);  // height
 
   // apply shaping of the height profile:
   if(profile == 2) return h;                        // 2: rectified sine (comes out by raw formula)
