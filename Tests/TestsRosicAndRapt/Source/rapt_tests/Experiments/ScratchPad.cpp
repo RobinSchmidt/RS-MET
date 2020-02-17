@@ -1489,14 +1489,41 @@ T newton(const std::function<T(T)>& f, T x, T y = T(0))
 // do we loose the quadratic convergence when making such estimates - with the one-sided, most 
 // probably yes - but what about the two-sided?
 
-double distance(double x1, double y1, double x2, double y2)
+
+
+template<class T>
+T squaredDistance(T x1, T y1, T x2, T y2)
 {
-  double dx = x2 - x1;
-  double dy = y2 - y1;
-  return sqrt(dx*dx + dy*dy);
+  T dx = x2 - x1;
+  T dy = y2 - y1;
+  return dx*dx + dy*dy;
+}
+
+template<class T>
+T distance(T x1, T y1, T x2, T y2)
+{
+  return sqrt(squaredDistance(x1, y1, x2, y2));
 }
 // Euclidean distance
 
+/** Computes the minimum value of the squared distances from (x0,y0) to the points in the x,y 
+arrays. */
+template<class T>
+T minSquaredDistance(T x0, T y0, T* x, T* y, int N)
+{
+  T d2min = RS_INF(T);
+  for(int i = 0; i < N; i++) {
+    T d2 = squaredDistance(x0, y0, x[i], y[i]);
+    if(d2 < d2min)
+      d2min = d2; }
+  return d2;
+}
+
+template<class T>
+T minDistance(T x0, T y0, T* x, T* y, int N)
+{
+  return sqrt(minSquaredDistance(x0, y0, x, y, N));
+}
 
 
 /** Given plane coordinates x,y, this function computes a height above the plane that has the shape
@@ -1532,6 +1559,9 @@ double spiralRidge(double x, double y, double a = 1.0, double p = 0.0, double si
   if(profile == 1) return 0.5*(sin(PI*(h-0.5))+1);  // 1: sinusoidal
   return 0;                                         // unknown profile
 }
+
+// optimize: the sqrt in the distance computation can be avoided: compute the distance-squared and 
+// then use 0.5*exponent in the subsequent pow call
 
 // outMin + (outMax-outMin) * (in-inMin) / (inMax-inMin)
 

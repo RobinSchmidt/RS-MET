@@ -1471,6 +1471,30 @@ void testImageEffectFrame()
 
 //-------------------------------------------------------------------------------------------------
 
+/** Given an array of N points (x,y) (for example, representing a curve in the x,y-plane), this 
+function fills the image img with the minimum values of the distances between the point at the 
+pixel-coordinates and the points on the curve. */
+template<class T>
+T distanceMap(rsImage<T>& img, T* x, T* y, int N, T xMin, T xMax, T yMin, T yMax)
+{
+  rsCoordinateMapper2D<T> mapper;
+  mapper.setInputRange(T(0), T(img.getWidth()-1), T(img.getHeight()-1), T(0));
+  mapper.setOutputRange(xMin, xMax, yMin, yMax);
+  T xp, yp;  // coordinates of current pixel
+  T d;
+  for(int j = 0; j < img.getHeight(); j++) {
+    for(int i = 0; i < img.getWidth(); i++) {
+      xp = T(i); yp = T(j);
+      mapper.map(&xp, &yp);   // map pixel-coordinates to world-coordinates
+      d = minDistance(xp, yp, x, y, N);
+      img(i, j) = d2; }}
+}
+// note: this is expensive: scales like img.getWidth() * img.getHeight() * N
+// -needs test: create a Lissajous figure an draw its distance map - maybe also draw the figure
+//  itself (maybe into a different color-channel: red-distance, blue: curve)
+// -maybe get rid of the mapping - express everything in pixel-coordinates
+
+//-------------------------------------------------------------------------------------------------
 
 void plotSpiralHeightProfile()
 {
@@ -1484,7 +1508,7 @@ void plotSpiralHeightProfile()
   double angle  = 0.0;  // angle along which we walk when increasing the radius
   double p      = 0.0;  // phase of the spiral
   double shrink = 2;    // maybe call it grow
-  double k      = 3;    // exponent
+  double k      = 1;    // exponent - default: 1
 
   // Generate data:
   std::vector<double> r(N), h0(N), h1(N), h2(N), h3(N);  // radius and heights
@@ -1547,9 +1571,24 @@ struct rsParamRGB
 /** Structure to represent paremeters for generating a spiral image. */
 struct rsSpiralParams
 {
-  rsParamRGB<double> phase, grow, sign, gamma;
+  rsParamRGB<double> phase, grow, sign, gamma, exponent;
   rsParamRGB<int>    profile;
+  double range;
 };
+
+void generateSpiralImage(const rsSpiralParams& p, rsImageF& R, rsImageF& G, rsImageF& B)
+{
+
+  /*
+  std::function<double(double, double)> f;
+  f = [&](double x, double y) 
+  { 
+    double s = pow(spiralRidge(x, y, density, phase, sign, profile), power); 
+    return s;
+  };
+  */
+
+}
 
 
 
