@@ -1,5 +1,22 @@
 
 template<class T>
+void rsImageProcessor<T>::gammaCorrection(rsImage<T>& img, T gamma)
+{
+  T* p = img.getPixelPointer(0, 0);
+  for(int i = 0; i < img.getNumPixels(); i++)
+    p[i] = pow(p[i], gamma);
+}
+
+template<class T>
+void rsImageProcessor<T>::invert(rsImage<T>& img)
+{
+  T* p = img.getPixelPointer(0, 0);
+  for(int i = 0; i < img.getNumPixels(); i++)
+    p[i] = T(1) - p[i];
+}
+
+
+template<class T>
 void rsImageProcessor<T>::normalize(rsImage<T>& img)
 {
   T* p = img.getPixelPointer(0, 0);
@@ -60,3 +77,13 @@ rsImage<T> rsImageProcessor<T>::scaleUp(const rsImage<T>& img, int scl)
 // todo:
 // -allow different scaling factors for x and y
 // -let the outer loop run over y and the inner over x
+
+
+
+template<class T>
+void rsImageProcessor<T>::sineShape(rsImage<T>& img)
+{
+  T* p = img.getPixelPointer(0, 0);
+  for(int i = 0; i < img.getNumPixels(); i++)
+    p[i] = T(0.5)*(sin(T(PI)*(p[i]-T(0.5)))+T(1));
+}

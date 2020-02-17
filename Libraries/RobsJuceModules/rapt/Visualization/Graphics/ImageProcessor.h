@@ -10,6 +10,12 @@ class rsImageProcessor
 public:
 
 
+  static void gammaCorrection(rsImage<T>& img, T gamma);
+
+  /** Inverts the brightness values of all pixels in the given image */
+  static void invert(rsImage<T>& img);
+
+
 
   static void normalize(rsImage<T>& img);
 
@@ -24,8 +30,13 @@ public:
 
 
 
+
   /** Scales the image up by the given factor by simply repeating pixel values */
   static rsImage<T> scaleUp(const rsImage<T>& img, int scl);
+
+
+  /** Shapes a ramp for 0 to 1 into a smooth sine curve. */
+  static void sineShape(rsImage<T>& img);
 
   // move code from GraphicsExperiments to here
 

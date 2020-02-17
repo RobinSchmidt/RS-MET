@@ -786,84 +786,6 @@ rsImage<TPix> getBinFills(
   return imgBins;
 }
 
-/*
-template<class T>
-void normalizeFast(rsImage<T>& img)
-{
-  T* p = img.getPixelPointer(0, 0);
-  int N = img.getNumPixels();
-  T min = rsArrayTools::minValue(p, N);
-  T max = rsArrayTools::maxValue(p, N);
-  T scl = 1.f / (max-min);
-  for(int i = 0; i < N; i++)
-    p[i] = scl * (p[i] - min);
-}
-
-template<class T>
-void normalize(rsImage<T>& img)
-{
-  T* p = img.getPixelPointer(0, 0);
-  int N = img.getNumPixels();
-  T min = rsArrayTools::minValue(p, N);
-  for(int i = 0; i < N; i++)
-    p[i] -= min;
-  T max = rsArrayTools::maxValue(p, N);
-  for(int i = 0; i < N; i++)
-    p[i] /= max;
-}
-
-template<class T>
-void normalizeJointly(rsImage<T>& img1, rsImage<T>& img2)
-{
-  //rsAssert(img2.hasSameShapeAs(img1));  // activate later
-  using AT = rsArrayTools;
-  int N = img1.getNumPixels();
-  T* p1 = img1.getPixelPointer(0, 0);
-  T* p2 = img2.getPixelPointer(0, 0);
-  T min = rsMin(AT::minValue(p1, N), AT::minValue(p2, N));
-  for(int i = 0; i < N; i++) {
-    p1[i] -= min;
-    p2[i] -= min; }
-  T max = rsMax(AT::maxValue(p1, N), AT::maxValue(p2, N));
-  for(int i = 0; i < N; i++) {
-    p1[i] /= max;
-    p2[i] /= max;
-  }
-}
-// maybe have a version for three images as well - can this be generalized with variadic 
-// templates?
-*/
-
-/** Inverts the brightness values of all pixels in the given image */
-template<class T>
-void invert(rsImage<T>& img)
-{
-  T* p = img.getPixelPointer(0, 0);
-  for(int i = 0; i < img.getNumPixels(); i++)
-    p[i] = T(1) - p[i];
-}
-
-// move these to image effects
-
-template<class T>
-void gammaCorrection(rsImage<T>& img, T gamma)
-{
-  T* p = img.getPixelPointer(0, 0);
-  for(int i = 0; i < img.getNumPixels(); i++)
-    p[i] = pow(p[i], gamma);
-}
-
-/** Shapes a ramp for 0 to 1 into a smooth sine curve. */
-template<class T>
-void sineShape(rsImage<T>& img)
-{
-  T* p = img.getPixelPointer(0, 0);
-  for(int i = 0; i < img.getNumPixels(); i++)
-    p[i] = T(0.5)*(sin(T(PI)*(p[i]-T(0.5)))+T(1));
-}
-
-
-
 
 bool testContourSubPixelStuff()
 {
@@ -1562,9 +1484,9 @@ void testDistanceMap()
 
   distanceMap(imgDist, &x[0], &y[0], N);
   IP::normalize(imgDist);
-  invert(imgDist);
-  sineShape(imgDist);
-  gammaCorrection(imgDist, 16.f);
+  IP::invert(imgDist);
+  IP::sineShape(imgDist);
+  IP::gammaCorrection(imgDist, 16.f);
 
 
 
