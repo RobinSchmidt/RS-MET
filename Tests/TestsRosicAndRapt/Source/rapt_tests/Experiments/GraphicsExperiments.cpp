@@ -786,7 +786,7 @@ rsImage<TPix> getBinFills(
   return imgBins;
 }
 
-
+/*
 template<class T>
 void normalizeFast(rsImage<T>& img)
 {
@@ -798,9 +798,7 @@ void normalizeFast(rsImage<T>& img)
   for(int i = 0; i < N; i++)
     p[i] = scl * (p[i] - min);
 }
-// maybe make member
 
-// this *may* be better numerically (less prone to roundoff errors) - needs test
 template<class T>
 void normalize(rsImage<T>& img)
 {
@@ -814,7 +812,6 @@ void normalize(rsImage<T>& img)
     p[i] /= max;
 }
 
-/** Joint normalization of two images */
 template<class T>
 void normalizeJointly(rsImage<T>& img1, rsImage<T>& img2)
 {
@@ -835,6 +832,7 @@ void normalizeJointly(rsImage<T>& img1, rsImage<T>& img2)
 }
 // maybe have a version for three images as well - can this be generalized with variadic 
 // templates?
+*/
 
 /** Inverts the brightness values of all pixels in the given image */
 template<class T>
@@ -861,7 +859,7 @@ void sineShape(rsImage<T>& img)
 {
   T* p = img.getPixelPointer(0, 0);
   for(int i = 0; i < img.getNumPixels(); i++)
-    p[i] = 0.5*(sin(PI*(p[i]-0.5))+1);
+    p[i] = T(0.5)*(sin(T(PI)*(p[i]-T(0.5)))+T(1));
 }
 
 
@@ -984,10 +982,12 @@ void contours()
    // underrepresented - todo: apply expansion of middle gray and compression of black/white values
 
 
+  using IP = rsImageProcessor<float>;
+
   // create image with function values:
   rsImageF imgFunc(w, h);
   generateFunctionImage(f, xMin, xMax, yMin, yMax, imgFunc);;
-  normalize(imgFunc);
+  IP::normalize(imgFunc);
 
   // create images with contours:
   std::vector<float> levels = rsRangeLinear(0.f, 1.f, numLevels);
@@ -1068,9 +1068,10 @@ void complexContours()
 
 
   // render images of function values for real and imaginary part:
+  using IP = rsImageProcessor<float>;
   rsImageF funcRe(w, h), funcIm(w, h), empty(w, h);
   generateFunctionImageReIm(f, xMin, xMax, yMin, yMax, funcRe, funcIm);
-  normalizeJointly(funcRe, funcIm); // joint normalization preserves re,im relationship (right?)
+  IP::normalizeJointly(funcRe, funcIm); // joint normalization preserves re,im relationship (right?)
   //normalize(funcRe);
   //normalize(funcIm);
   // what about absolute value and phase? ca we do something useful with them, too?
@@ -1343,7 +1344,7 @@ void implicitCurve()
   double yMax   = +range;
 
 
-
+  using IP = rsImageProcessor<float>;
   rsImageF imgCurve(width, height);
   function<double(double, double)> f;
 
@@ -1399,7 +1400,7 @@ void implicitCurve()
   // drawConicSection(a,b,c,d,e,f)
   // ...what about filling the inside of a curve, i.e points for which f(x,y) <= c
 
-  normalize(imgCurve);
+  IP::normalize(imgCurve);
   writeScaledImageToFilePPM(imgCurve, "ImplicitCurves.ppm", 1);
 
   // -with range = 2.1, it fails! rnage = 2.0 or 1.5 works fine
@@ -1542,7 +1543,7 @@ void testDistanceMap()
   std::vector<float> x(N), y(N);
   for(int n = 0; n < N; n++)
   {
-    float t = 2*PI*n / N;  // div by N gives more symmetry than N-1
+    float t = float(2*PI*n) / float(N);  // div by N gives more symmetry than N-1
     x[n] = cos(a*t - 0.5f*p);
     y[n] = sin(b*t + 0.5f*p);
 
@@ -1556,8 +1557,11 @@ void testDistanceMap()
   rsImageF imgDist(w, h), imgCurve(w, h);
 
 
+  using IP = rsImageProcessor<float>;
+
+
   distanceMap(imgDist, &x[0], &y[0], N);
-  normalize(imgDist);
+  IP::normalize(imgDist);
   invert(imgDist);
   sineShape(imgDist);
   gammaCorrection(imgDist, 16.f);
@@ -1729,7 +1733,8 @@ void spirals()
 
   // test:
   //double density = log(shrinkR) / (2*PI);   // rename;
-  double density, phase, sign, profile;
+  double density, phase, sign; 
+  int profile;
   // leads to shrinking of 1/2 per revolution - maybe the user parameter should be the shrink-factor
   // and the algo parameter a = log(shrinkFactor) / (2*PI) - nad maybe instead of incrementing
   // a linearly, we should have a "spread" factor that's used like 
@@ -1761,7 +1766,10 @@ void spirals()
   };
 
 
+
+
   // create image with function values:
+  using IP = rsImageProcessor<float>;
   rsImageF red(w, h), green(w, h), blue(w, h);
 
 
@@ -1770,21 +1778,21 @@ void spirals()
   sign    = signR;
   profile = profileR;
   generateFunctionImage(f, -range, range, -range, range, red);
-  normalize(red); 
+  IP::normalize(red); 
 
   density = log(shrinkG) / (2*PI);
   phase   = phaseG;
   sign    = signG;
   profile = profileG;
   generateFunctionImage(f, -range, range, -range, range, green);
-  normalize(green); 
+  IP::normalize(green); 
 
   density = log(shrinkB) / (2*PI);
   phase   = phaseB;
   sign    = signB;
   profile = profileB;
   generateFunctionImage(f, -range, range, -range, range, blue);
-  normalize(blue);  
+  IP::normalize(blue);  
 
   //// test:
   //float  comp = 4.0;
