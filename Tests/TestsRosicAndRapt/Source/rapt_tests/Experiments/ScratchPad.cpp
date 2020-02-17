@@ -1516,7 +1516,7 @@ T minSquaredDistance(T x0, T y0, T* x, T* y, int N)
     T d2 = squaredDistance(x0, y0, x[i], y[i]);
     if(d2 < d2min)
       d2min = d2; }
-  return d2;
+  return d2min;
 }
 
 template<class T>

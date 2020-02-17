@@ -836,6 +836,24 @@ void normalizeJointly(rsImage<T>& img1, rsImage<T>& img2)
 // maybe have a version for three images as well - can this be generalized with variadic 
 // templates?
 
+/** Inverts the brightness values of all pixels in the given image */
+template<class T>
+void invert(rsImage<T>& img)
+{
+  T* p = img.getPixelPointer(0, 0);
+  for(int i = 0; i < img.getNumPixels(); i++)
+    p[i] = T(1) - p[i];
+}
+
+// move these to image effects
+
+template<class T>
+void gammaCorrection(rsImage<T>& img, T gamma)
+{
+  T* p = img.getPixelPointer(0, 0);
+  for(int i = 0; i < img.getNumPixels(); i++)
+    p[i] = pow(p[i], gamma);
+}
 
 
 bool testContourSubPixelStuff()
@@ -1471,28 +1489,82 @@ void testImageEffectFrame()
 
 //-------------------------------------------------------------------------------------------------
 
-/** Given an array of N points (x,y) (for example, representing a curve in the x,y-plane), this 
-function fills the image img with the minimum values of the distances between the point at the 
-pixel-coordinates and the points on the curve. */
+/** Given an array of N points (x,y) in pixel coordinates (for example, representing a curve in the
+x,y-plane), this function fills the image img with the minimum values of the distances between the 
+point at the pixel-coordinates and the points on the curve. */
 template<class T>
-T distanceMap(rsImage<T>& img, T* x, T* y, int N, T xMin, T xMax, T yMin, T yMax)
+void distanceMap(rsImage<T>& img, T* x, T* y, int N)
 {
-  rsCoordinateMapper2D<T> mapper;
-  mapper.setInputRange(T(0), T(img.getWidth()-1), T(img.getHeight()-1), T(0));
-  mapper.setOutputRange(xMin, xMax, yMin, yMax);
-  T xp, yp;  // coordinates of current pixel
-  T d;
   for(int j = 0; j < img.getHeight(); j++) {
     for(int i = 0; i < img.getWidth(); i++) {
-      xp = T(i); yp = T(j);
-      mapper.map(&xp, &yp);   // map pixel-coordinates to world-coordinates
-      d = minDistance(xp, yp, x, y, N);
-      img(i, j) = d2; }}
+      T xp = T(i); 
+      T yp = T(j);
+      T d  = minDistance(xp, yp, x, y, N);
+      img(i, j) = d; }}
 }
 // note: this is expensive: scales like img.getWidth() * img.getHeight() * N
 // -needs test: create a Lissajous figure an draw its distance map - maybe also draw the figure
 //  itself (maybe into a different color-channel: red-distance, blue: curve)
+// -what about using max-distance instead of min-distance?
+
 // -maybe get rid of the mapping - express everything in pixel-coordinates
+
+
+
+void testDistanceMap()
+{
+  int w = 500;   // image witdh
+  int h = 500;   // image height
+  int N = 30;   // number of sample points on the curve
+
+  // Liassajou curve parameters
+  float a = 2.0;
+  float b = 3.0;
+  float p = float(PI);
+
+  float xMin = -2.0;
+  float xMax = +2.0;
+  float yMin = -2.0;
+  float yMax = +2.0;
+
+  // create curve:
+  std::vector<float> x(N), y(N);
+  for(int n = 0; n < N; n++)
+  {
+    float t = 2*PI*n / N;  // div by N gives more symmetry than N-1
+    x[n] = cos(a*t - 0.5f*p);
+    y[n] = sin(b*t + 0.5f*p);
+
+    // convet to pixel coordinates:
+    x[n] = rsLinToLin(x[n], xMin, xMax, 0.f, float(w-1));
+    y[n] = rsLinToLin(y[n], yMin, yMax, float(h-1), 0.f);
+  }
+
+
+  // craete images for curve and distance map:
+  rsImageF imgDist(w, h), imgCurve(w, h);
+
+
+  distanceMap(imgDist, &x[0], &y[0], N);
+  normalize(imgDist);
+  invert(imgDist);
+  gammaCorrection(imgDist, 10.f);
+
+  //gammaCorrection(imgDist);
+
+  // maybe apply an exponent/gamma and/or rational mapping or sinusoidal mapping
+
+  writeImageToFilePPM(imgDist, "DistanceMap.ppm");
+
+  // -when using too small N, there are artifacts that show up like plotting the curve dotted 
+  //  -with N = 2000, w=h=500, these disappear - but the computation takes long
+
+  // -try using different N for the 3 color channels - should be small'ish like 20..50 such that 
+  //  the points are clearly visible
+  // -llok a bit like a voronoi tesselation - which makes sense
+  // -a=3,b=5,N=100 gives a square
+
+}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -1594,9 +1666,10 @@ void generateSpiralImage(const rsSpiralParams& p, rsImageF& R, rsImageF& G, rsIm
 
 void spirals()
 {
-  plotSpiralHeightProfile();
+  //plotSpiralHeightProfile();
   //testSpiralHeightProfile();
   //testImageEffectFrame(); return;
+  testDistanceMap(); return;
 
   //int size = 1000;
   int w = 1200;
