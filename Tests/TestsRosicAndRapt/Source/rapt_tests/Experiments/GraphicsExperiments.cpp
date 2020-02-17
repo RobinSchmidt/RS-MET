@@ -855,6 +855,17 @@ void gammaCorrection(rsImage<T>& img, T gamma)
     p[i] = pow(p[i], gamma);
 }
 
+/** Shapes a ramp for 0 to 1 into a smooth sine curve. */
+template<class T>
+void sineShape(rsImage<T>& img)
+{
+  T* p = img.getPixelPointer(0, 0);
+  for(int i = 0; i < img.getNumPixels(); i++)
+    p[i] = 0.5*(sin(PI*(p[i]-0.5))+1);
+}
+
+
+
 
 bool testContourSubPixelStuff()
 {
@@ -1515,17 +1526,17 @@ void testDistanceMap()
 {
   int w = 500;   // image witdh
   int h = 500;   // image height
-  int N = 30;   // number of sample points on the curve
+  int N = 500;   // number of sample points on the curve
 
   // Liassajou curve parameters
   float a = 2.0;
   float b = 3.0;
   float p = float(PI);
 
-  float xMin = -2.0;
-  float xMax = +2.0;
-  float yMin = -2.0;
-  float yMax = +2.0;
+  float xMin = -1.5;
+  float xMax = +1.5;
+  float yMin = -1.5;
+  float yMax = +1.5;
 
   // create curve:
   std::vector<float> x(N), y(N);
@@ -1548,7 +1559,11 @@ void testDistanceMap()
   distanceMap(imgDist, &x[0], &y[0], N);
   normalize(imgDist);
   invert(imgDist);
-  gammaCorrection(imgDist, 10.f);
+  sineShape(imgDist);
+  gammaCorrection(imgDist, 16.f);
+
+
+
 
   //gammaCorrection(imgDist);
 
@@ -1564,6 +1579,7 @@ void testDistanceMap()
   // -llok a bit like a voronoi tesselation - which makes sense
   // -a=3,b=5,N=100 gives a square
 
+  // -maybe try different distance measures: euclidean, manhattan
 }
 
 //-------------------------------------------------------------------------------------------------

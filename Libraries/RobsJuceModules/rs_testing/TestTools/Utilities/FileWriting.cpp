@@ -6,19 +6,27 @@
 
 // see also: https://rosettacode.org/wiki/Bitmap/Write_a_PPM_file#C
 
-void writeImageToFilePPM(const char* path, unsigned char* buf, int w, int h)
+bool writeImageToFilePPM(const char* path, unsigned char* buf, int w, int h)
 {
   FILE* fd = fopen(path, "wb");  // "wb": write binary
-  fprintf(fd, "P6\n%d %d\n255\n", w, h);
-  fwrite(buf, 1, w*h*3, fd);
-  fclose(fd);
+  if(fd != NULL) {
+    fprintf(fd, "P6\n%d %d\n255\n", w, h);
+    fwrite(buf, 1, w*h*3, fd);
+    fclose(fd); 
+    return true; }
+  else {
+    rsError("Unable to open file");
+    return false; }
 }
 
-void writeImageToFilePPM(const rsImageF& img, const char* path)
+bool writeImageToFilePPM(const rsImageF& img, const char* path)
 {
   int w = img.getWidth();
   int h = img.getHeight();
   unsigned char* buf = new unsigned char[w*h*3];
+  if(buf == nullptr) {
+    rsError("Unable to allocate buffer"); 
+    return false; }
   for(int y = 0; y < h; y++) {
     for(int x = 0; x < w; x++) {
       int i = y*w*3 + x*3;
@@ -26,11 +34,13 @@ void writeImageToFilePPM(const rsImageF& img, const char* path)
       buf[i+0] = gray;
       buf[i+1] = gray;
       buf[i+2] = gray; }}
-  writeImageToFilePPM(path, buf, w, h);
+  bool success = writeImageToFilePPM(path, buf, w, h);
   delete[] buf;
+  return success;
 }
+// maybe add a check if(buf == NULL) { rsError("Unable to allocate buffer"); return false; }
 
-void writeImageToFilePPM(const rsImageF& R, const rsImageF& G, const rsImageF& B, 
+bool writeImageToFilePPM(const rsImageF& R, const rsImageF& G, const rsImageF& B, 
   const char* path)
 {
   int w = R.getWidth();
@@ -38,17 +48,21 @@ void writeImageToFilePPM(const rsImageF& R, const rsImageF& G, const rsImageF& B
   rsAssert(G.getWidth() == w && G.getHeight() == h);
   rsAssert(B.getWidth() == w && B.getHeight() == h);
   unsigned char* buf = new unsigned char[w*h*3];
+  if(buf == nullptr) {
+    rsError("Unable to allocate buffer"); 
+    return false; }
   for(int y = 0; y < h; y++) {
     for(int x = 0; x < w; x++) {
       int i = y*w*3 + x*3;
       buf[i+0] = (unsigned char) (255 * R(x, y));
       buf[i+1] = (unsigned char) (255 * G(x, y));
       buf[i+2] = (unsigned char) (255 * B(x, y));  }}
-  writeImageToFilePPM(path, buf, w, h);
+  bool success = writeImageToFilePPM(path, buf, w, h);
   delete[] buf;
+  return success;
 }
 
-void writeScaledImageToFilePPM(rsImageF& img, const char* path, int scl)
+bool writeScaledImageToFilePPM(rsImageF& img, const char* path, int scl)
 {
   // maybe factor out into a function magnify (or generally 
   // image.getResized(int newWidth, int newHeight, int interpolationMethod))
@@ -59,12 +73,8 @@ void writeScaledImageToFilePPM(rsImageF& img, const char* path, int scl)
     for(int y = 0; y < h; y++) {
       for(int i = 0; i < scl; i++) {
         for(int j = 0; j < scl; j++) {
-          tmp(scl*x+i, scl*y+j) = img(x, y);
-        }
-      }
-    }
-  }
-  writeImageToFilePPM(tmp, path);
+          tmp(scl*x+i, scl*y+j) = img(x, y); }}}}
+  return writeImageToFilePPM(tmp, path);
 }
 
 
