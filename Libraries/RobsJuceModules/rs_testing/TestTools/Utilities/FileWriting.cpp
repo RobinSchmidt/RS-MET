@@ -62,6 +62,7 @@ bool writeImageToFilePPM(const rsImageF& R, const rsImageF& G, const rsImageF& B
   return success;
 }
 
+/*
 rsImageF scaleUp(const rsImageF& img, int scl)
 {
   int w = img.getWidth();
@@ -74,15 +75,15 @@ rsImageF scaleUp(const rsImageF& img, int scl)
           result(scl*x+i, scl*y+j) = img(x, y); }}}}
   return result;
 }
+*/
 // -move to somewhere else
 // -allow different scaling factors for x and y
 // -let the outer loop run over y and the inner over x
 
 bool writeScaledImageToFilePPM(rsImageF& img, const char* path, int scl)
 {
-  return writeImageToFilePPM(scaleUp(img, scl), path);
+  return writeImageToFilePPM(rsImageProcessor<float>::scaleUp(img, scl), path);
 }
-// maybe factor out into a function magnify (or generally 
 // image.getResized(int newWidth, int newHeight, int interpolationMethod))
 
 

@@ -1427,7 +1427,7 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
 // we may mangle the system a bit by applying row transformations - it will still always define the 
 // same plane. To compute the solution set, we need to compute one particluar solution x_0 of the 
 // inhomogenous system and the nullspace of the matrix. The full solution is then given by
-// { x € R^3 : x = x_0 + a * v_1 + b * v_2 } where a,b are scalars and v_1,v_2 are the columns of
+// { x â‚¬ R^3 : x = x_0 + a * v_1 + b * v_2 } where a,b are scalars and v_1,v_2 are the columns of
 // nullspace matrix (it should come out as a two column matrix). ...i think 
 
 // todo: can we also compute a basis for the image in a similar way?
@@ -1488,6 +1488,9 @@ T newton(const std::function<T(T)>& f, T x, T y = T(0))
 // the centered difference is 2nd order accurate while the one-sided is only 1st order accurate - 
 // do we loose the quadratic convergence when making such estimates - with the one-sided, most 
 // probably yes - but what about the two-sided?
+// see the "damped-newton" method in "Python Hacking for Math Junkies", pg 306 -maybe it can be 
+// further improved by also taking an interval-halving step in cases of slow convergence, i.e.
+// when the error does decrease but not fast enough
 
 
 

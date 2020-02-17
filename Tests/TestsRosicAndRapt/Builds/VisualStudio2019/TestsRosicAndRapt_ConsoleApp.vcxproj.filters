@@ -80,6 +80,9 @@
     <Filter Include="JUCE Modules\rapt\_Deprecated">
       <UniqueIdentifier>{86824DA4-C6FC-A54A-EB04-2CE89FAAFE0F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\rapt\_Temp">
+      <UniqueIdentifier>{98AA25FF-13D4-25B4-D961-63307D5EE372}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\rapt\Analysis">
       <UniqueIdentifier>{34544FA4-CEEB-3549-61FB-C970DF721282}</UniqueIdentifier>
     </Filter>
@@ -901,6 +904,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial - Copy.cpp">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
@@ -1084,7 +1090,13 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageDrawer.cpp">
       <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageGenerator.cpp">
+      <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImagePainter.cpp">
+      <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageProcessor.cpp">
       <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\RealTimeSpline.cpp">
@@ -2829,6 +2841,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.h">
       <Filter>JUCE Modules\rapt\_Deprecated</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Temp\Matrix.h">
+      <Filter>JUCE Modules\rapt\_Temp</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h">
       <Filter>JUCE Modules\rapt\Analysis</Filter>
     </ClInclude>
@@ -3075,7 +3090,13 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\RootFinder.h">
       <Filter>JUCE Modules\rapt\Math\Numerics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix - Copy.h">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.h">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial - Copy.h">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h">
@@ -3282,7 +3303,13 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageDrawer.h">
       <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageGenerator.h">
+      <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImagePainter.h">
+      <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageProcessor.h">
       <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\RealTimeSpline.h">
@@ -4930,6 +4957,9 @@
     </None>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\ReadMe.txt">
       <Filter>JUCE Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </None>
+    <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\temp.txt">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </None>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Modulators\Ideas.txt">
       <Filter>JUCE Modules\rapt\Modulators</Filter>

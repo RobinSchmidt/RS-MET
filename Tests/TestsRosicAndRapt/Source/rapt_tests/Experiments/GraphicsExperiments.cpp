@@ -1570,7 +1570,7 @@ void testDistanceMap()
   // maybe apply an exponent/gamma and/or rational mapping or sinusoidal mapping
 
   writeImageToFilePPM(imgDist, "DistanceMap.ppm");
-  writeScaledImageToFilePPM(imgDist, "DistanceMapScaled.ppm", 4);
+  //writeScaledImageToFilePPM(imgDist, "DistanceMapScaled.ppm", 2);
 
   // -when using too small N, there are artifacts that show up like plotting the curve dotted 
   //  -with N = 2000, w=h=500, these disappear - but the computation takes long

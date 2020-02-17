@@ -663,6 +663,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial - Copy.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -846,7 +849,13 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageDrawer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageGenerator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImagePainter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageProcessor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\RealTimeSpline.cpp">
@@ -2442,6 +2451,7 @@
     <ClInclude Include="..\..\Source\rosic_tests\PortedFromRSLib\Examples\SampleMapGenerator.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\UnitTestsRosic.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Temp\Matrix.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiter.h"/>
@@ -2524,7 +2534,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\NumericCalculus.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\Optimization.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\RootFinder.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix - Copy.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial - Copy.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Vector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Math.h"/>
@@ -2593,7 +2605,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\AlphaMask.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\Image.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageDrawer.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageGenerator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImagePainter.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageProcessor.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\RealTimeSpline.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Misc\PhaseScopeBuffer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Misc\ScopeScreenScanner.h"/>
@@ -3144,6 +3158,7 @@
     <None Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ConicsURLs.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\License.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\ReadMe.txt"/>
+    <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\temp.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Modulators\Ideas.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\romos\TestSuite\InputSequences.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\romos\Documentation.txt"/>
