@@ -67,7 +67,7 @@ public:
     const std::vector<TPix>& colors, bool antiAlias);
 
 
-protected:
+//protected:
 
   // internal sub-routines (maybe make some of them public)
 

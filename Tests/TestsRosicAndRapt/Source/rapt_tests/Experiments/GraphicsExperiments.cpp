@@ -559,6 +559,7 @@ and z01, z10, z11 are bottom, right and diagonal neighbours (in that order):
  branch we ended up in: 0: top-left, 1: top-right, 2: bottom-left, 3: bottom-right, 
  4: horizontalish, 5: verticalish - where "top-left" etc. means that the segment "cuts off" the 
  top-left corner of the pixel. */
+/*
 template<class T>
 int contourSegmentCoeffs(T z00, T z01, T z10, T z11, T c, T& x0, T& y0, T& x1, T& y1)
 {
@@ -607,6 +608,7 @@ int contourSegmentCoeffs(T z00, T z01, T z10, T z11, T c, T& x0, T& y0, T& x1, T
 // maybe the logical statements can be simplified by checking things like 
 // if (z00-c)*(z01-c) < 0,  >= 0 instead of the complicated and-or statements - but keep this 
 // version for unit tests
+*/
 
 template<class T>
 T triangleArea(T x1, T y1, T x2, T y2, T x3, T y3)
@@ -630,6 +632,8 @@ T triangleArea(T x1, T y1, T x2, T y2, T x3, T y3)
 // we also need a formula for the area of a quadrangle - i think, i have once implemented a general
 // polygon-area function - the quadrangle can be obtained as special case
 
+
+/*
 template<class TVal>
 TVal contourPixelCoverage(TVal z00, TVal z01, TVal z10, TVal z11, TVal c)
 {
@@ -661,8 +665,9 @@ TVal contourPixelCoverage(TVal z00, TVal z01, TVal z10, TVal z11, TVal c)
 // bin-fills, we sometimes want to fill with the inverted weight ..i think - figure out - if so, 
 // maybe use a boolean and or let the user pass a comparison function cmp(z00, c), etc... or call 
 // it like inside(z00, c) or outside(z00, c)
+*/
 
-
+/*
 template<class TVal>
 void contourSubPixelPosition(TVal z00, TVal z01, TVal z10, TVal z11, TVal c, 
   TVal* x, TVal* y, TVal* weight)
@@ -687,7 +692,9 @@ void contourSubPixelPosition(TVal z00, TVal z01, TVal z10, TVal z11, TVal c,
 // -similar for y
 // -or is it the other way around?
 // -might be even better than the center of the line 
+*/
 
+/*
 template<class TPix, class TVal>
 void drawContour(const rsImage<TVal>& z, TVal level, rsImage<TPix>& target, TPix color, 
   bool antiAlias)
@@ -712,7 +719,9 @@ void drawContour(const rsImage<TVal>& z, TVal level, rsImage<TPix>& target, TPix
 // painter.plot instead ...i think
 // maybe don't loop over all pixels and follow the contours instead - but then there's no guarantee that 
 // nothing is missed
+*/
 
+/*
 template<class TPix, class TVal>
 void fillBetweenContours(const rsImage<TVal>& z, TVal lo, TVal hi, rsImage<TPix>& target,
   TPix fillColor, bool antiAlias = false)
@@ -753,7 +762,7 @@ void fillBetweenContours(const rsImage<TVal>& z, TVal lo, TVal hi, rsImage<TPix>
 // so the chosen variant seems best. this can be tested using the circles (and maybe commenting
 // out the code that handles the contour lines - i think it was set to somewhere around 11 or 12 
 // levels...not sure anymore)
-
+*/
 
 
 template<class TPix, class TWgt>
@@ -762,6 +771,7 @@ TPix blend(TPix c1, TPix c2, TWgt w)
   return TPix((TWgt(1)-w))*c1 + TPix(w)*c2;
 }
 
+/*
 template<class TVal, class TPix>
 rsImage<TPix> getContourLines(const rsImage<TPix>& z, const std::vector<TVal>& levels, 
   const std::vector<TPix>& colors, bool antiAlias)
@@ -784,6 +794,7 @@ rsImage<TPix> getContourFills(const rsImage<TPix>& z, const std::vector<TVal>& l
     j++; }
   return imgBins;
 }
+*/
 
 
 
@@ -792,38 +803,41 @@ bool testContourSubPixelStuff()
 {
   bool r = true;
 
+
+  rsImageContourPlotter<float, float> cp;
+
   // test - turn into unit-test
   //int b; // branch
   float x, y, w;
-  contourSubPixelPosition(2.f, 8.f, 8.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.25f  && y == 0.25f;
-  contourSubPixelPosition(8.f, 2.f, 8.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.25f  && y == 0.75f;
-  contourSubPixelPosition(8.f, 8.f, 2.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.75f  && y == 0.25f;
-  contourSubPixelPosition(8.f, 8.f, 8.f, 2.f, 5.f, &x, &y, &w); r &= x == 0.75f  && y == 0.75f;
-  contourSubPixelPosition(2.f, 2.f, 8.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.5f   && y == 0.5f;
-  contourSubPixelPosition(2.f, 8.f, 2.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.5f   && y == 0.5f;
-  contourSubPixelPosition(2.f, 4.f, 8.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.375f && y == 0.5f;
-  contourSubPixelPosition(2.f, 8.f, 4.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.5f   && y == 0.375f;
+  cp.contourSubPixelPosition(2.f, 8.f, 8.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.25f  && y == 0.25f;
+  cp.contourSubPixelPosition(8.f, 2.f, 8.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.25f  && y == 0.75f;
+  cp.contourSubPixelPosition(8.f, 8.f, 2.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.75f  && y == 0.25f;
+  cp.contourSubPixelPosition(8.f, 8.f, 8.f, 2.f, 5.f, &x, &y, &w); r &= x == 0.75f  && y == 0.75f;
+  cp.contourSubPixelPosition(2.f, 2.f, 8.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.5f   && y == 0.5f;
+  cp.contourSubPixelPosition(2.f, 8.f, 2.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.5f   && y == 0.5f;
+  cp.contourSubPixelPosition(2.f, 4.f, 8.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.375f && y == 0.5f;
+  cp.contourSubPixelPosition(2.f, 8.f, 4.f, 8.f, 5.f, &x, &y, &w); r &= x == 0.5f   && y == 0.375f;
 
   // todo: test coverage compuation
   float c;
-  c = contourPixelCoverage(2.f, 8.f, 8.f, 8.f, 5.f); r &= c == 0.125;
-  c = contourPixelCoverage(8.f, 2.f, 8.f, 8.f, 5.f); r &= c == 0.125;
-  c = contourPixelCoverage(8.f, 8.f, 2.f, 8.f, 5.f); r &= c == 0.125;
-  c = contourPixelCoverage(8.f, 8.f, 8.f, 2.f, 5.f); r &= c == 0.125;
+  c = cp.contourPixelCoverage(2.f, 8.f, 8.f, 8.f, 5.f); r &= c == 0.125;
+  c = cp.contourPixelCoverage(8.f, 2.f, 8.f, 8.f, 5.f); r &= c == 0.125;
+  c = cp.contourPixelCoverage(8.f, 8.f, 2.f, 8.f, 5.f); r &= c == 0.125;
+  c = cp.contourPixelCoverage(8.f, 8.f, 8.f, 2.f, 5.f); r &= c == 0.125;
 
   // horizontalish lines:
   //c = contourPixelCoverage(2.f, 8.f, 2.f, 8.f, 5.f);
   //c = contourPixelCoverage(2.f, 2.f, 8.f, 8.f, 5.f);
-  c = contourPixelCoverage(2.f, 8.f, 4.f, 8.f, 5.f); r &= c == 0.375;
-  c = contourPixelCoverage(4.f, 8.f, 2.f, 8.f, 5.f); r &= c == 0.375;
-  c = contourPixelCoverage(8.f, 2.f, 8.f, 4.f, 5.f); r &= c == 0.375;
-  c = contourPixelCoverage(8.f, 4.f, 8.f, 2.f, 5.f); r &= c == 0.375;
+  c = cp.contourPixelCoverage(2.f, 8.f, 4.f, 8.f, 5.f); r &= c == 0.375;
+  c = cp.contourPixelCoverage(4.f, 8.f, 2.f, 8.f, 5.f); r &= c == 0.375;
+  c = cp.contourPixelCoverage(8.f, 2.f, 8.f, 4.f, 5.f); r &= c == 0.375;
+  c = cp.contourPixelCoverage(8.f, 4.f, 8.f, 2.f, 5.f); r &= c == 0.375;
 
   // verticalish lines:
-  c = contourPixelCoverage(2.f, 4.f, 8.f, 8.f, 5.f); r &= c == 0.375;
-  c = contourPixelCoverage(4.f, 2.f, 8.f, 8.f, 5.f); r &= c == 0.375;
-  c = contourPixelCoverage(8.f, 8.f, 2.f, 4.f, 5.f); r &= c == 0.375;
-  c = contourPixelCoverage(8.f, 8.f, 4.f, 2.f, 5.f); r &= c == 0.375;
+  c = cp.contourPixelCoverage(2.f, 4.f, 8.f, 8.f, 5.f); r &= c == 0.375;
+  c = cp.contourPixelCoverage(4.f, 2.f, 8.f, 8.f, 5.f); r &= c == 0.375;
+  c = cp.contourPixelCoverage(8.f, 8.f, 2.f, 4.f, 5.f); r &= c == 0.375;
+  c = cp.contourPixelCoverage(8.f, 8.f, 4.f, 2.f, 5.f); r &= c == 0.375;
   // wait! shouldn't the latter two give 0.625? hmm..no - maybe try cases where the inversion
   // kicks in - oh - it actually does
 
@@ -906,6 +920,7 @@ void contours()
    // exponent 3 makes for good balance between black and white - but middle gray is 
    // underrepresented - todo: apply expansion of middle gray and compression of black/white values
 
+  rsImageContourPlotter<float, float> cp;
 
   using IP = rsImageProcessor<float>;
 
@@ -916,13 +931,13 @@ void contours()
 
   // create images with contours:
   std::vector<float> levels = rsRangeLinear(0.f, 1.f, numLevels);
-  rsImageF imgCont = getContourLines(imgFunc, levels, { 1.0f }, true);
+  rsImageF imgCont = cp.getContourLines(imgFunc, levels, { 1.0f }, true);
   // with anti-aliasing, we need to use about twice as much brightness to get the same visual 
   // brightness
 
   // create images with bin-fills:
   std::vector<float> colors = rsRangeLinear(0.f, 1.f, numColors);
-  rsImageF imgFills = getContourFills(imgFunc, levels, colors, true);
+  rsImageF imgFills = cp.getContourFills(imgFunc, levels, colors, true);
   // the highest levels are not white but gray - ah: it was because the painter used the saturating
   // mode - saturating mode should *NOT* be used for filling contours!!!
 
@@ -1004,16 +1019,17 @@ void complexContours()
   // what about absolute value and phase? ca we do something useful with them, too?
 
   // get contour lines:
+  rsImageContourPlotter<float, float> cp;
   std::vector<float> levels = rsRangeLinear(0.f, 1.f, numLevels);
   for(int i = 0; i < numLevels; i++)
     levels[i] = pow(levels[i], levelPow);
-  rsImageF contRe = getContourLines(funcRe, levels, { 1.0f }, antiAlias);
-  rsImageF contIm = getContourLines(funcIm, levels, { 1.0f }, antiAlias);
+  rsImageF contRe = cp.getContourLines(funcRe, levels, { 1.0f }, antiAlias);
+  rsImageF contIm = cp.getContourLines(funcIm, levels, { 1.0f }, antiAlias);
 
   // get countour fills:
   std::vector<float> colors = rsRangeLinear(0.f, 1.f, numColors);
-  rsImageF fillsRe = getContourFills(funcRe, levels, colors, antiAlias);
-  rsImageF fillsIm = getContourFills(funcIm, levels, colors, antiAlias);
+  rsImageF fillsRe = cp.getContourFills(funcRe, levels, colors, antiAlias);
+  rsImageF fillsIm = cp.getContourFills(funcIm, levels, colors, antiAlias);
   // maybe rename to getContourFills, getCountourSteps
 
   // -maybe try to mix the contourFills with the orignal function - should give some indication of 
