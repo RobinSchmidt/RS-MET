@@ -710,10 +710,8 @@ void drawContour(const rsImage<TVal>& z, TVal level, rsImage<TPix>& target, TPix
 }
 // if we do not anti-alias, we need not to call the expensive paintDot and can use the cheaper 
 // painter.plot instead ...i think
-
 // maybe don't loop over all pixels and follow the contours instead - but then there's no guarantee that 
 // nothing is missed
-
 
 template<class TPix, class TVal>
 void fillBetweenContours(const rsImage<TVal>& z, TVal lo, TVal hi, rsImage<TPix>& target,
@@ -755,6 +753,8 @@ void fillBetweenContours(const rsImage<TVal>& z, TVal lo, TVal hi, rsImage<TPix>
 // so the chosen variant seems best. this can be tested using the circles (and maybe commenting
 // out the code that handles the contour lines - i think it was set to somewhere around 11 or 12 
 // levels...not sure anymore)
+
+
 
 template<class TPix, class TWgt>
 TPix blend(TPix c1, TPix c2, TWgt w)
