@@ -827,6 +827,7 @@ bool testContourSubPixelStuff()
   // wait! shouldn't the latter two give 0.625? hmm..no - maybe try cases where the inversion
   // kicks in - oh - it actually does
 
+  rsAssert(r);
   return r;
 }
 // move to unit tests
@@ -875,14 +876,15 @@ void contours()
   int h = 129;               // height in pixels
 
   //w = h = 100;
-  //w = h = 513;
+  w = h = 513;
   //w = h = 1025;
-  w = h = 800;
+  //w = h = 800;
 
   float r = 18;
   int numLevels = 20;
   int numColors = numLevels + 1;
 
+  //numColors = 2;  // test
 
   float xMin = -r;
   float xMax = +r;
@@ -897,11 +899,10 @@ void contours()
   //f = [&] (float x, float y) { return x*x - y*y; };
   //f = [&] (float x, float y) { return x*x - y*y + 2.f*x*y; };
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y; };
-  //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*y*y; };
+  f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*y*y; };
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*x - 0.1f*y*y + 0.1f*y; };
     // try exchanging sin and cos an combining
-
-  f = [&] (float x, float y) { return (float) pow(spiralRidge(x, y, 0.25), 3.0); };
+  //f = [&] (float x, float y) { return (float) pow(spiralRidge(x, y, 0.25), 3.0); };
    // exponent 3 makes for good balance between black and white - but middle gray is 
    // underrepresented - todo: apply expansion of middle gray and compression of black/white values
 
@@ -922,11 +923,13 @@ void contours()
   // create images with bin-fills:
   std::vector<float> colors = rsRangeLinear(0.f, 1.f, numColors);
   rsImageF imgFills = getContourFills(imgFunc, levels, colors, true);
+  // the highest levels are not white but gray - ah: it was because the painter used the saturating
+  // mode - saturating mode should *NOT* be used for filling contours!!!
 
   // write images to files:
   writeScaledImageToFilePPM(imgFunc,  "Function.ppm", 1);
-  writeScaledImageToFilePPM(imgCont,  "Contours.ppm", 1);
-  writeScaledImageToFilePPM(imgFills, "BinFills.ppm", 1);
+  writeScaledImageToFilePPM(imgCont,  "ContourLines.ppm", 1);
+  writeScaledImageToFilePPM(imgFills, "ContourFills.ppm", 1);
 
   // the right column and bottom row has no countour values - no surprise - the loop only goes up 
   // to w-1,h-1

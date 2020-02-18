@@ -145,6 +145,7 @@ public:
   /** Draws a 1-pixel wide line with the given color from (x0,y0) to (x1,y2) using Xiaolin Wu's 
   algorithm. See https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm */
   void drawLineWu(TCor x0, TCor y0, TCor x1, TCor y1, TPix color);
+  // should perhaps go to rsImageDrawer
 
   // todo:/ drag over from GraphicsExperiments.cpp:
   //void drawLineBresenham(int x0, int y0, int x1, int y1, TPix color);
@@ -164,7 +165,7 @@ public:
     //rsAssert(value <= TPix(1));
     //rsAssert(value >= TPix(0));
 
-    accu = (accu + value) / (TPix(1) + value);  // has nice saturating behavior
+    //accu = (accu + value) / (TPix(1) + value);  // has nice saturating behavior
 
     // maybe try these - maybe they have a different saturating behavior?:
     // accu = (accu + value) / (1 + accu + value);
@@ -172,9 +173,10 @@ public:
 
 
     //accu = accu+value; // just for testing
-    //accu = rsMin(TPix(1), accu+value);
+    accu = rsMin(TPix(1), accu+value);
   }
-  // rename to addAndSaturate or blend
+  // rename to addAndSaturate or blend - use a switch statement to switch between various modes
+  // -> benchmark for how this compares without the switch
 
   /** Blends the pixel in the image at given coordinates with a new color according to some weight.
   If the weight is 0, the pixel's color is unchanged, if it's 1, the new color has the biggest 
