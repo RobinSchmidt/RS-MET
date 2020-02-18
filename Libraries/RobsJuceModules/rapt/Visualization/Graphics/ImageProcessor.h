@@ -53,17 +53,17 @@ public:
 /** A class for contour plotting from an input image. The input image represents height-levels and 
 the generated outputs are images with either the contour lines or contour fills. */
 
-template<class TPix, class TLvl>
+template<class TPix, class TVal>  // pixel and value types (for coordinates, heights, etc.)
 class rsImageContourPlotter
 {
 
 public:
 
 
-  rsImage<TPix> getContourLines(const rsImage<TPix>& z, const std::vector<TLvl>& levels, 
+  rsImage<TPix> getContourLines(const rsImage<TPix>& z, const std::vector<TVal>& levels, 
     const std::vector<TPix>& colors, bool antiAlias);
 
-  rsImage<TPix> getContourFills(const rsImage<TPix>& z, const std::vector<TLvl>& levels,
+  rsImage<TPix> getContourFills(const rsImage<TPix>& z, const std::vector<TVal>& levels,
     const std::vector<TPix>& colors, bool antiAlias);
 
 
@@ -73,28 +73,29 @@ protected:
 
 
 
-  static void drawContour(const rsImage<TLvl>& z, TLvl level, rsImage<TPix>& target, TPix color, 
+  static void drawContour(const rsImage<TVal>& z, TVal level, rsImage<TPix>& target, TPix color, 
     bool antiAlias);
 
-  static void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>& target,
+  static void fillBetweenContours(const rsImage<TVal>& z, TVal lo, TVal hi, rsImage<TPix>& target,
     TPix fillColor, bool antiAlias = false);
 
 
   /** Used in drawContour for anti-aliasing. */
-  static void contourSubPixelPosition(TLvl z00, TLvl z01, TLvl z10, TLvl z11, TLvl c,
-    TLvl* x, TLvl* y, TLvl* weight);
+  static void contourSubPixelPosition(TVal z00, TVal z01, TVal z10, TVal z11, TVal c,
+    TVal* x, TVal* y, TVal* weight);
   // x,y may actually be another type (coordinates), and weight may be yet another
+  // or maybe use som generic TVal for "value"
 
   /** Used in fillBetweenContours for anti-aliasing. */
-  static TLvl contourPixelCoverage(TLvl z00, TLvl z01, TLvl z10, TLvl z11, TLvl c);
+  static TVal contourPixelCoverage(TVal z00, TVal z01, TVal z10, TVal z11, TVal c);
 
   /** Used in contourSubPixelPosition and contourPixelCoverage. */
-  static int contourSegmentCoeffs(TLvl z00, TLvl z01, TLvl z10, TLvl z11, TLvl c,
-    TLvl& x0, TLvl& y0, TLvl& x1, TLvl& y1);
+  static int contourSegmentCoeffs(TVal z00, TVal z01, TVal z10, TVal z11, TVal c,
+    TVal& x0, TVal& y0, TVal& x1, TVal& y1);
 
 
 
-  //rsImagePainter<TPix, TLvl, TLvl> painter;
+  //rsImagePainter<TPix, TVal, TVal> painter;
 
 
 
