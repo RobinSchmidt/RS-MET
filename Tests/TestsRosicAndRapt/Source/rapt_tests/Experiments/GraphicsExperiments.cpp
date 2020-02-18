@@ -631,8 +631,8 @@ T contourPixelCoverage(T z00, T z01, T z10, T z11, T c)
   case 2: { A = h *    x1  * (I-y0); if(z01 >= c) A = I-A; } break; // bottom-left
   case 3: { A = h * (I-x0) * (I-y1); if(z11 >= c) A = I-A; } break; // bottom-right
   case 4: {                              // horizontalish
-    if(y0 < y1)  A = y1 + h * (y0-y1);   //   going up
-    else         A = y0 + h * (y1-y0);   //   going down
+    if(y0 < y1)  A = y1 + h * (y0-y1);   //   sloping up
+    else         A = y0 + h * (y1-y0);   //   sloping down
     if(z00 >= c || z10 >= c)  
       A = I-A; } break;
   case 5: {                              // verticalish
@@ -748,9 +748,9 @@ void fillBetweenContours(const rsImage<TLvl>& z, TLvl lo, TLvl hi, rsImage<TPix>
 //   if(min > lo && max < hi)   -> leaves extra pixels blank (test with circle)
 //   if(min >= lo && max <= hi) -> colors extra pixels in
 //   if(min > lo && max <= hi)  -> no etra blank or colored pixels but ugly jaggies
-// so the chosen variant seems best. this can be tested using the circles (and maybe commenting)
+// so the chosen variant seems best. this can be tested using the circles (and maybe commenting
 // out the code that handles the contour lines - i think it was set to somewhere around 11 or 12 
-// levels...not sure anymore
+// levels...not sure anymore)
 
 template<class TPix, class TWgt>
 TPix blend(TPix c1, TPix c2, TWgt w)
@@ -759,23 +759,18 @@ TPix blend(TPix c1, TPix c2, TWgt w)
 }
 
 template<class TLvl, class TPix>
-rsImage<TPix> getContours(const rsImage<TPix>& z, const std::vector<TLvl>& levels, 
-  const std::vector<TPix>& colors, bool antiAlias,
-  const std::vector<TPix>& fillColors = std::vector<TPix>() )
+rsImage<TPix> getContourLines(const rsImage<TPix>& z, const std::vector<TLvl>& levels, 
+  const std::vector<TPix>& colors, bool antiAlias)
 {
   rsImageF c(z.getWidth(), z.getHeight());
   for(size_t i = 0; i < levels.size(); i++)
     drawContour(z, levels[i], c, colors[i % colors.size()], antiAlias);
   return c;
 }
-// get rid of fillColors - it's not used (i think - if it is, it shouldn't be)
 
 template<class TLvl, class TPix>
-rsImage<TPix> getBinFills(
-  const rsImage<TPix>& z, 
-  const std::vector<TLvl>& levels,
-  const std::vector<TPix>& colors, 
-  bool antiAlias)
+rsImage<TPix> getContourFills(const rsImage<TPix>& z, const std::vector<TLvl>& levels,
+  const std::vector<TPix>& colors, bool antiAlias)
 {
   rsImageF imgBins(z.getWidth(), z.getHeight());  // fills
   size_t j = 0; // color index
@@ -785,6 +780,8 @@ rsImage<TPix> getBinFills(
     j++; }
   return imgBins;
 }
+
+
 
 
 bool testContourSubPixelStuff()
@@ -846,6 +843,7 @@ void generateFunctionImage(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T
       T z = f(x, y);
       img.setPixelColor(i, j, TPix(z)); }}
 }
+// move to rsImageGenerator
 // todo:
 // -maybe take two optional coordinate transformation functions c1(x,y), c2(x,y) where by default,
 //  c1(x,y) = x and c2(x,y) = y - for polar coordinates, we would use c1(x,y) = sqrt(x*x + y*y), 
@@ -913,13 +911,13 @@ void contours()
 
   // create images with contours:
   std::vector<float> levels = rsRangeLinear(0.f, 1.f, numLevels);
-  rsImageF imgCont = getContours(imgFunc, levels, { 1.0f }, true);
+  rsImageF imgCont = getContourLines(imgFunc, levels, { 1.0f }, true);
   // with anti-aliasing, we need to use about twice as much brightness to get the same visual 
   // brightness
 
   // create images with bin-fills:
   std::vector<float> colors = rsRangeLinear(0.f, 1.f, numColors);
-  rsImageF imgFills = getBinFills(imgFunc, levels, colors, true);
+  rsImageF imgFills = getContourFills(imgFunc, levels, colors, true);
 
   // write images to files:
   writeScaledImageToFilePPM(imgFunc,  "Function.ppm", 1);
@@ -1002,14 +1000,13 @@ void complexContours()
   std::vector<float> levels = rsRangeLinear(0.f, 1.f, numLevels);
   for(int i = 0; i < numLevels; i++)
     levels[i] = pow(levels[i], levelPow);
-  rsImageF contRe = getContours(funcRe, levels, { 1.0f }, antiAlias);
-  rsImageF contIm = getContours(funcIm, levels, { 1.0f }, antiAlias);
-  // rename to getContourLines
+  rsImageF contRe = getContourLines(funcRe, levels, { 1.0f }, antiAlias);
+  rsImageF contIm = getContourLines(funcIm, levels, { 1.0f }, antiAlias);
 
   // get countour fills:
   std::vector<float> colors = rsRangeLinear(0.f, 1.f, numColors);
-  rsImageF fillsRe = getBinFills(funcRe, levels, colors, antiAlias);
-  rsImageF fillsIm = getBinFills(funcIm, levels, colors, antiAlias);
+  rsImageF fillsRe = getContourFills(funcRe, levels, colors, antiAlias);
+  rsImageF fillsIm = getContourFills(funcIm, levels, colors, antiAlias);
   // maybe rename to getContourFills, getCountourSteps
 
   // -maybe try to mix the contourFills with the orignal function - should give some indication of 
@@ -1436,6 +1433,7 @@ void distanceMap(rsImage<T>& img, T* x, T* y, int N)
       T d  = minDistance(xp, yp, x, y, N);
       img(i, j) = d; }}
 }
+// move to rsImageGenerator
 // note: this is expensive: scales like img.getWidth() * img.getHeight() * N
 // -needs test: create a Lissajous figure an draw its distance map - maybe also draw the figure
 //  itself (maybe into a different color-channel: red-distance, blue: curve)

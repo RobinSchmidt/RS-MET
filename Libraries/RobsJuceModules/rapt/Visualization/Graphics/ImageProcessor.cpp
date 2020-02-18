@@ -1,4 +1,3 @@
-
 template<class T>
 void rsImageProcessor<T>::gammaCorrection(rsImage<T>& img, T gamma)
 {
@@ -14,7 +13,6 @@ void rsImageProcessor<T>::invert(rsImage<T>& img)
   for(int i = 0; i < img.getNumPixels(); i++)
     p[i] = T(1) - p[i];
 }
-
 
 template<class T>
 void rsImageProcessor<T>::normalize(rsImage<T>& img)
@@ -78,8 +76,6 @@ rsImage<T> rsImageProcessor<T>::scaleUp(const rsImage<T>& img, int scl)
 // -allow different scaling factors for x and y
 // -let the outer loop run over y and the inner over x
 
-
-
 template<class T>
 void rsImageProcessor<T>::sineShape(rsImage<T>& img)
 {
@@ -87,3 +83,6 @@ void rsImageProcessor<T>::sineShape(rsImage<T>& img)
   for(int i = 0; i < img.getNumPixels(); i++)
     p[i] = T(0.5)*(sin(T(PI)*(p[i]-T(0.5)))+T(1));
 }
+
+//=================================================================================================
+// rsImageContourPlotter

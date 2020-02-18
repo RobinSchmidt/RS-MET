@@ -1562,6 +1562,7 @@ double spiralRidge(double x, double y, double a = 1.0, double p = 0.0, double si
   if(profile == 1) return 0.5*(sin(PI*(h-0.5))+1);  // 1: sinusoidal
   return 0;                                         // unknown profile
 }
+// move to rsImageGenerator
 
 // optimize: the sqrt in the distance computation can be avoided: compute the distance-squared and 
 // then use 0.5*exponent in the subsequent pow call
