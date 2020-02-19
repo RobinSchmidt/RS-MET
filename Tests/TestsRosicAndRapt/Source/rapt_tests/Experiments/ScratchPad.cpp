@@ -1529,337 +1529,8 @@ T minDistance(T x0, T y0, T* x, T* y, int N)
 }
 
 
-/** Given plane coordinates x,y, this function computes a height above the plane that has the shape
-of ridge (of height 1) that spirals around in a logarithmic spiral with the parametric equation:
-  x(t) = exp(a*t) * cos(sign * t + p); y(t) = exp(a*t) * sin(sign * t + p)
-For points that are on the spiral, the function will return zero and for points that are "halfway" 
-in between two "arcs", it will return 1. Halfway is to be understood in the logarithmic sense - for 
-example, if (1,0) and (2,0) are points on the spiral, the point (sqrt(2),0) would be considered 
-halfway between them. If the exponential growth parameter "a" is equal to log(2)/(2*pi), the spiral 
-will grow by a factor of 2 in each revolution. The "sign" parameter should be +1 or -1 and 
-determines the direction of the rotation. */
-/*
-double spiralRidge(double x, double y, double a = 1.0, double p = 0.0, double sign = 1.0, 
-  int profile = 0, double exponent = 1.0)
-{
-  // sanity check inputs:
-  rsAssert(sign == +1 || sign == -1,     "sign must be +-1");
-  rsAssert(profile >= 0 && profile <= 3, "invalid profile");
 
-  // compute raw height:
-  double r = sqrt(x*x + y*y);
-  if(r == 0.0) return 0.0;             // avoid log-of-zero
-  double t  = log(r) / a;              // parameter t for point on the spiral with radius r
-  double xs = r * cos(sign * t + p);   // x on the spiral for the given t
-  double ys = r * sin(sign * t + p);   // y on the spiral for the given t
-  double d  = distance(xs, ys, x, y);  // distance of input point to point on the spiral
-  double h  = pow(0.5*d/r, exponent);  // height
-
-  // apply shaping of the height profile:
-  if(profile == 2) return h;                        // 2: rectified sine (comes out by raw formula)
-  if(profile == 3) return 1-h;                      // 3: inverted rectified sine
-  h = asin(h) / (0.5*PI);                           // convert to triangular
-  if(profile == 0) return h;                        // 0: triangular
-  if(profile == 1) return 0.5*(sin(PI*(h-0.5))+1);  // 1: sinusoidal
-  return 0;                                         // unknown profile
-}
-// moved to rsImageGenerator
-*/
-
-// optimize: the sqrt in the distance computation can be avoided: compute the distance-squared and 
-// then use 0.5*exponent in the subsequent pow call
 //
-// The algo computes the distance of (x,y) to a point on the spiral that has the same radius as 
-// (x,y). It happens that the height-profile (as function of radius for a given angle) comes out as
-// a rectified sine shape (when the radius is used a x-axis and the x-axis is logarithmically 
-// scaled)
-// what if sign is not +-1? what if we use different factors for x- and y: 
-//   xs = r * cos(wx * t + px); ys = r * sin(wy * t + py);
-// ..in this case, the profile computations will very likely become invalid because the raw profile 
-// is not a rectified sine anymore - yes - using, for example cos(2*..),sin(3*..) gives a nice 
-// effect - one should increase the shrink-factor accordingly because it get denser otherwise
-// for the original profile and the profile converted to a full sine, it makes visually not 
-// qualitative difference, when we invert all color channels - for the triangular profile, it does.
-// maybe to create audio-signals, we could use dx = (xs-x)/r; dy = (ys-y)/r; as left and right 
-// channel signal - but what should the input be? we don't have x,y pixel coordinates as inputs but
-// time instants
-// 
-// when we use d / r, the birghtness of the white ridges is independent for the distance to the 
-// center - using a power with exponent < 1, we get a darkening effect towrd the center - but mybe 
-// such an effect can be applied as post-processing: 
-// circularDarkening(img, x, y, amount)
-//   img(i,j) /= pow(r, amount)
-//
-// try tL = atan2(y,x) + 2*k*pi where k = floor(t0/(2*pi)), tR = tL + 2*pi, compute (xL,yL),(xR,yR)
-// by the parametric spiral equations, compute distances dL,dR and use minimum
-//
-// -these are not the actual distances to the nearest points on the spiral but rather the distances 
-//  to two concentric circles that approximate the spiral at the given angle - but they can be used 
-//  as an initial estimate for computing the actual distance via netwon iteration - maybe this 
-//  refinement can be made optional, controlled by a boolean parameter
-//
-// see:
-// https://en.wikipedia.org/wiki/Logarithmic_spiral
-// https://en.wikipedia.org/wiki/Archimedean_spiral
-
-
-
-// obsolete:
-double spiralRidge2(double x, double y, double a = 1.0, double p = 0.0, double sign = 1.0)
-{
-  double r = sqrt(x*x + y*y);
-  if(r == 0.0) return 0.0;            // avoid log-of-zero
-  double t0  = log(r) / a;
-  double k   = floor(t0/(2*PI));
-  double phi = rsWrapToInterval(atan2(y,x), 0, 2*PI);
-
-  double tL  = phi + k*2*PI;
-
-  // should not be needed (?):
-  while( tL > t0       )  tL -= 2*PI;
-  while( tL + 2*PI < t0)  tL += 2*PI;
-
-
-  // test:
-  tL = t0;
-  double inc = 0.1;
-  int maxNumIterations =  (int) ceil(2*PI / inc);
-  int i = 0;
-  while(true)
-  {
-    double xL = exp(a*tL)*cos(tL);
-    double yL = exp(a*tL)*sin(tL);
-    double pL = rsWrapToInterval(atan2(yL, xL), 0, 2*PI);
-
-    if(i > maxNumIterations)     break;
-
-    
-    if(y >= 0)  {
-      if(pL < p + 2*PI)
-        break; }
-    else {
-      break;  // test - i expect the whole y < 0 halfplane to be colored black - but it gets colored correctly - why?
-      if(pL < p)   
-        break;  
-    }
-    
-
-    tL -= inc;
-    i++;
-  }
-
-  double tR = tL + 2*PI;
-  rsAssert(tL <= t0 && tR > t0);
-  // sanity check - this does sometimes trigger - maybe the formula is imprecise? maybe we should 
-  // do: if(tL > t0) tL -= 2*PI
-
-  double xL = exp(a*tL) * cos(sign * tL + p);
-  double yL = exp(a*tL) * sin(sign * tL + p);
-  double xR = exp(a*tR) * cos(sign * tR + p);
-  double yR = exp(a*tR) * sin(sign * tR + p);
-  double dL = distance(xL, yL, x, y);
-  double dR = distance(xR, yR, x, y);
-
-  // test:
-  double phiL = rsWrapToInterval(atan2(yL,xL), 0, 2*PI); // should be equal to phi
-  double phiR = rsWrapToInterval(atan2(yR,xR), 0, 2*PI); // dito
-  double rL   = sqrt(xL*xL + yL*yL);                     // shold be <= r
-  double rR   = sqrt(xR*xR + yR*yR);                     // should be > r
-  // phiL and phiR are equal to each other but different from phi - maybe we indeed need the loop
-  // form the function below
-
-
-  double d  = rsMin(dL, dR);
-  //double d = (dL + dR) / 2;  // test
-
-  //return dL / r;
-
-  return d / r;  // use pow(r, distanceWeight)
-}
-// currently jumps discontinuously from black to white
-// todo: echk, if (xL,yL),(xR,yR) have the same angle as (x,y) - the idea is that these two points
-// should be *on* spiral arms at the same angle ats x,y and one should be on the inner and one on
-// the outer arm, with respect to point x,y - but apparently, this doesn't work yet
-// maybe instaed of L,R use I,O for inner/outer
-
-// obsolete:
-double spiralRidgeOld(double x, double y, double a = 1.0)
-{
-  // under construction
-
-
-  //if(y < 0)
-  //  return 0;  // test
-
-  function<double(double)> fx =  [=](double t) -> double { return exp(a*t)*cos(t); };
-  function<double(double)> fy =  [=](double t) -> double { return exp(a*t)*sin(t); };
-  //double t = 1.5;
-  //double x1 = fx(t);
-  //double y1 = fy(t);
-  //GNUPlotter plt;
-  //plt.plotCurve2D(fx, fy, 1000, 0.0, 50.0);
-
-  // try an input point (x,y) = (50,30)
-  //x = 50;
-  //y = 30;
-
-
-  //// test:
-  //x = fx(t);
-  //y = fy(t);
-
-
-  // convert x,y to polar coordinates
-  double r = sqrt(x*x + y*y);
-
-  if(rsAbs(r) < 0.00001)  // ad hoc
-    return 0;
-
-  double p = rsWrapToInterval(atan2(y, x), 0, 2*PI);
-
-  // find a value for the that corresponds to the given radius r:
-  double t0 = log(r) / a;
-  // -this value of t, when plugged into the parametric spiral equation, will lead a point on the 
-  //  spiral that has the same radius as our given input point - but it will in general not have 
-  //  the same angle p
-  // -the task is now to find tL <= t0, tr >= t0 that give points *on* the spiral with the same p
-  //  tR = tL + 2*pi - so we just need to find tL
-  // -then compute the distances of the input point x,y to both of these points on the spiral and
-  //  select the smaller of them as our distance
-
-  // very crude algorithm to find tL
-  double tL = t0;
-  double inc = 0.1;
-
-  
-  int maxNumIterations =  (int) ceil(2*PI / inc);
-  int i = 0;
-  /*
-  while(true)
-  {
-    double xL = exp(a*tL)*cos(tL);
-    double yL = exp(a*tL)*sin(tL);
-    double pL = rsWrapToInterval(atan2(yL, xL), 0, 2*PI);
-
-    if(i > maxNumIterations)     break;
-
-    if(y >= 0)  {
-      if(pL < p)
-        break; }
-    else {
-      break;  // test - i expect the whole y < 0 halfplane to be colored black - but it gets colored correctly - why?
-      if(pL < p + 2*PI)   
-        break;  
-      // maybe this condition is alway true, so it doesn't make a difference - but it would mean, 
-      // that
-    }
-
-
-
-    //if(pL < p + 2*PI && y <  0)  break;
-
-    tL -= inc;
-    i++;
-  }
-  */
-  
-
-  /*
-  // other algo - but doesn't work:
-  tL = 2*PI * floor(t0 / (2*PI));  // tL is multiple of 2*PI and tL <= t0
-  while(true)
-  {
-    double xL = exp(a*tL)*cos(tL);
-    double yL = exp(a*tL)*sin(tL);
-    double pL = rsWrapToInterval(atan2(yL, xL), 0, 2*PI);
-    if(pL >= p)
-      break;
-    tL += inc;
-  }
-  */
-
-
-  double tR = tL + 2*PI;
-
-  double xL = fx(tL);
-  double yL = fy(tL);
-  double xR = fx(tR);
-  double yR = fy(tR);
-  double dL = distance(xL, yL, x, y);
-  double dR = distance(xR, yR, x, y);
-  double d  = rsMin(dL, dR);
-
-  //return dR;  // test
-
-  return dL/r;  // test
-
-  return d;
-
-  // it works!!! but why?! it does not compute the distance i wanted - but the other distance that
-  // it actually computes makes a nice spiral-ridge function, too. we may need to pass the output
-  // through some nonlinare function that expands the center values - the extreme black and white 
-  // values are a bit overrepresented and the middle gray values underrepresented - maybe something
-  // based on the logistic function - or maybe one of these:
-  // https://en.wikipedia.org/wiki/Generalised_logistic_function
-  // https://en.wikipedia.org/wiki/Gompertz_function
-
-
-  // i think, when the point (x,y) is in the lower half-plane (i.e. the angle is > pi), it may not 
-  // work correctly because the the computed angles pL in the loop are *less* than p for points
-  // on the spiral further outside - i think, instead of comparing pL < p, we must compare 
-  // pL < p+2*pi when y < 0 
-  // ..we still seem to jump out of the loop early under certain conditions - figure out what the
-  // breaking conditions must be depending on the angle - we probably need different conditions
-  // for when (x,y) is in the 4 different quadrants - in the top-right quadrant, checking pL < p
-  // should be fine
-
-
-
-
-
-  /*
-  // find a point on the unit circle with the same angle as (x,y)
-  double xn = x / r;  // normalized x
-  double yn = y / r;  // normalized y
-
-  double ac = acos(xn);  // should be equal to asin(yn)?
-  */
-
-
-  // estimate - try to come up with something better - maybe involving acos(x) and/or asin(y)?
-
-
-  // -try 
-  // -to do so, compute
-
-
-
-  return 0; // preliminary
-
-
-
-
-
-  /*
-  // ...use newton iteration to refine t - we want to find a t such that
-  // u(t) :=   2*(a*cos(t)*e^(a*t) - e^(a*t)*sin(t))*(cos(t)*e^(a*t) - x) 
-  //        + 2*(a*e^(a*t)*sin(t) + cos(t)*e^(a*t))*(e^(a*t)*sin(t) - y) = 0
-
-  // simplify: s = sin(t), c = cos(t), r = e^(a*t)
-  // u(t) := 2*(a*c*r-r*s)*(c*r-x) + 2*(a*r*s+c*r)*(r*s-y) = 0
-
-  function<double(double)> u;
-  u = [=](double t)     // needs to capture "a"
-  { 
-    double s = sin(t);
-    double c = cos(t);
-    double r = exp(a*t);
-    return 2*(a*c*r-r*s)*(c*r-x) + 2*(a*r*s+c*r)*(r*s-y); 
-  };
-
-  t = newton(u, t);
-  */
-}
 // try to make a function f(x,y) that has exponential spirals as contour lines
 // the parametric equation for the exponential spiral is: 
 //   f(t) = exp(a*t)*cos(t), g(t) = exp(a*t)*sin(t)
@@ -1872,7 +1543,7 @@ double spiralRidgeOld(double x, double y, double a = 1.0)
 // derivative of the term in the brackets with respect to t:
 //  d/dt [ (x-exp(a*t)*cos(t))^2 + (y-exp(a*t)*sin(t)) ]
 //   = 2*(a*cos(t)*e^(a*t) - e^(a*t)*sin(t))*(cos(t)*e^(a*t) - x) + 2*(a*e^(a*t)*sin(t) + cos(t)*e^(a*t))*(e^(a*t)*sin(t) - y)
-
+//
 // because the distances increase exponentially with the radius of (x,y), define weighted distance
 //   D(x,y) = d(x,y) / exp( sqrt(x^2 + y^2) ) 
 // the function R(x,y) = 1 / (1 + D^2) is a sort of ridge that has the shape of the exponential 
@@ -1881,7 +1552,7 @@ double spiralRidgeOld(double x, double y, double a = 1.0)
 //   ...(check, if this weighting is good) - we wnat something that goes exponentially to infinity
 //   as x^2+y^2 goes to zero and exponentially to zero as x^2 + y^2 goes to infinity maby
 //   exp(1 / (x^2+y^2))
-
+//
 // sage:
 // var("x y a t")
 // f(t) = exp(a*t) * cos(t)
@@ -1893,11 +1564,16 @@ double spiralRidgeOld(double x, double y, double a = 1.0)
 // leads to unwieldy expressions that are not explicitly solved for t (only for sin(t) and in the 
 // rhs t also appears in cos(t) terms - sooo, it seems we need to solve that equation numerically 
 // for t - Netwon iteration or something
-
+//
 // strategy to find the distance:
 // -input: the point x,y
 // -find values xl < x, xr >= x such that f(t) = exp(a*t)*cos(t) = xl or xr
 // -find a vlaue for t such that exp(a*t)*cos(t) = x, or maybe two values - incre
+//
+// rsImageGenerator::spiralRidge does implement a different function - but it works for the 
+// intended purpose of drawing spiral ridges just as well (maybe even better) - but the ideas here
+// may be applicable to other, similar problems
+
 
 // or maybe use a simpler linear spiral:
 //   f(t) = t*cos(t), g(t) = t*sin(t)

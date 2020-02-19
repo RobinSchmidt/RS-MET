@@ -193,10 +193,10 @@ int main(int argc, char* argv[])
   //splineArc();
   //triangles();
   //pixelCoverage();
-  contours();
+  //contours();
   //complexContours();
-  //implicitCurve();
-  spirals();   // move to somewhere else...
+  implicitCurve();
+  //spirals();   // move to somewhere else...
 
   // just for fun:
   //groupString();

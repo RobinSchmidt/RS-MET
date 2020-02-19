@@ -3,7 +3,10 @@
 
 /** A class for generating images by various algorithms. In particular, it may generate images that
 visualize mathematical entities such as 2D functions z = f(x,y) or implicit or parameteric curves, 
-so the algorithms here may serve as building blocks for creating mathematical plots. */
+so the algorithms here may serve as building blocks for creating mathematical plots. 
+
+maybe rename to rsImagePlotter
+*/
 
 template<class TPix, class TVal>  // pixel and value types (for coordinates, heights, etc.)
 class rsImageGenerator
@@ -11,6 +14,22 @@ class rsImageGenerator
 
 public:
 
+
+
+
+  /** Draws the curve defined by f(x,y) = c onto the image. It needs one solution x0,y0 for which
+  f(x0,y0) = c holds as starting point. */
+  void drawImplicitCurve(const std::function<TVal(TVal, TVal)>& f, 
+    TVal xMin, TVal xMax, TVal yMin, TVal yMax, 
+    TVal c, TVal x0, TVal y0, rsImage<TPix>& img, TPix color, 
+    bool clockwise = false); 
+  // last parameter should always be false in calls from client code - we use it to indicate the 
+  // recursive call for drawing the 2nd arm - hide it from the API by having an internal function
+  // _drawImplicitCurve that is called by the function which is called from client code
+  // also remove xMin, ... - use member variables for these values
+
+
+  // todo: drawFunction (variants: y = f(x), z = f(x,y)), drawParametricCurve, drawCoordinateGrid
 
 
 
@@ -30,7 +49,13 @@ public:
   // move code for implicit function function plotting into this class
 
 
-protected:
+
+
+
+
+  //rsImagePainter<TPix, TVal, TVal> painter;
+  //TVal xMin, xMax, yMin, yMax;  // plotting range
+
 
 };
 

@@ -1,4 +1,152 @@
 
+template<class TPix, class TVal> 
+void rsImageGenerator<TPix, TVal>::drawImplicitCurve(const std::function<TVal(TVal, TVal)>& f, 
+  TVal xMin, TVal xMax, TVal yMin, TVal yMax, TVal c, TVal x0, TVal y0, rsImage<TPix>& img, 
+  TPix color, bool clockwise) 
+{
+  rsAssert(f(x0, y0) == c, "x0,y0 should solve f(x0,y0) = c" );  
+  // todo: use tolerance - should maybe be some fraction of c? ..but that would mean that if c is 
+  // zero, we would have zero tolerance...maybe max(c*eps, eps)?
+
+  // maybe pass the painter object - this painte then also already should have the image assigned
+  // so we don't need to pass it as additional parameter - this is similar to juce's Graphics 
+  // object - we would need to have inquiry functions like getMaxPixelCoordinateX/Y
+  rsImagePainter<TPix, TVal, TVal> painter(&img);
+  //painter.setDeTwist(true);  // should be only used for single pixel lines
+  painter.setNeighbourWeightsForSimpleDot(0.375, 0.375*sqrt(0.5));
+
+  // figure out start pixel:
+  TVal xMaxPixel = TVal(img.getWidth()  - 1);   // maximum x-coordinate in pixel coordinates
+  TVal yMaxPixel = TVal(img.getHeight() - 1);   // same for y-coordinate
+  TVal x   = x0;
+  TVal y   = y0;
+  TVal sx  = xMaxPixel   / (xMax-xMin);         // one x-pixel in world coordinates
+  TVal sy  = yMaxPixel   / (yMax-yMin);
+  TVal sxi = (xMax-xMin) / xMaxPixel;
+  TVal syi = (yMax-yMin) / yMaxPixel;
+
+  // Convert (x,y) to pixel coordinates and draw 1st point. In order to avoid double-drwing a point
+  // in the recursive call (for 2-armed curves), do it conditionally:
+  TVal px, py;
+  if(!clockwise) { // avoid drawing the starting point again in the recursive call
+    px = rsLinToLin(x, xMin, xMax, TVal(0), xMaxPixel);
+    py = rsLinToLin(y, yMin, yMax, yMaxPixel, TVal(0));
+    painter.paintDot(px, py, color); }
+
+  // Main loop over the pixels on the curve:
+  int iterations = 0;
+  while(true)
+  {
+    // Figure out gradient (dx,dy) and contour direction (rx,ry) which is perpendicular to the 
+    // gradient (i.e. 90° rotated):
+    TVal h  = 1.e-8;  // ad-hoc - make parameter, or maybe use sqrt(epsilon)
+    TVal dx = (f(x+h, y) - f(x-h, y)) / (TVal(2)*h);  // x-component of gradient
+    TVal dy = (f(x, y+h) - f(x, y-h)) / (TVal(2)*h);  // y-component of gradient
+    TVal rx, ry;
+    if(clockwise) {
+      rx =  dy;
+      ry = -dx; }
+    else {
+      rx = -dy;
+      ry =  dx; }
+
+    // Check, if the current segment is horizontalish/flat or verticalish/steep. In the flat case, 
+    // advance x by one pixel and y by a distance derived from the direction vector - in the steep 
+    // case, do it the other way around:
+    bool flat = rsAbs(rx*sx) > rsAbs(ry*sy);   // curve sgement is horizontalish
+    if(flat) {
+      dx = rsSign(rx) / sx;    // this step should translate to 1 pixel left or right -> check this!
+      dy = dx * ry/rx;         // the y-step is proportional to the x-step - is this formula the best we can do?
+      x += dx;                 // walk one pixel left or right
+      y += dy; }
+    else {              // verticalish
+      dy = rsSign(ry) / sy;
+      dx = dy * rx/ry;
+      x += dx;
+      y += dy; }
+
+    // In the step just taken, we may have drifted off the contour line due to approximation 
+    // errors, so we fix this by refining x or y such that we land on the contour again. We use 1D 
+    // Netwon iteration with numeric derivatives. If our direction is horizontalish, we change y, 
+    // otherwise, we change x. To catch convergence problems, we verify that the error actually 
+    // went down in the iteration step - if it didn't, we restore old value from before the step 
+    // and break out of the loop.
+    TVal err = f(x,y) - c;
+    //TVal tol = 1.e-12;
+    TVal tol = 1.e-15;   // maybe use something like 10*epsilon
+    //tol = T(0);  // test
+    if(!flat) {               // y-step is larger (steep) -> refine x
+      while(rsAbs(err) > tol)  {
+        dx    = (f(x+h, y) - f(x-h, y)) / (TVal(2)*h); // central difference as approximation to the
+        x     = x - err / dx;                       // partial derivative with respect to x
+        TVal old = err;
+        err   = f(x,y) - c;
+        if(rsAbs(old) <= rsAbs(err)) {
+          x += old / dx;  // restore old value bcs old error was better
+          break; }}}
+    else {
+      while(rsAbs(err) > tol)  {
+        dy = (f(x, y+h) - f(x, y-h)) / (TVal(2)*h);
+        y   = y - err / dy;
+        TVal old = err;
+        err = f(x,y) - c;  
+        if(rsAbs(old) <= rsAbs(err)) {
+          y += old / dy;
+          break; }}}
+    // factor out the loops in thes two branhces into two functions: newtonRefineX, newtonRefineY
+
+
+    // The stopping criterion for closed curves is that we have come back to (or very close to) the 
+    // starting point again. To close the curve, we paint one last pixel, whose brightness is 
+    // scaled by how far we are away from the starting point (...this is not yet perfect - it looks 
+    // like the start/end point is still drawn a bit brighter than the rest of the curve...). The
+    // && iteration >= 1 is for avoiding spuriously breaking out of the loop in the very first 
+    // iteration due to roundoff errors.
+    if(rsAbs(x-x0) < sxi && rsAbs(y-y0) < syi && iterations >= 1) {
+      dx  = (x-x0)*sx;
+      dy  = (y-y0)*sy;
+      err = sqrt(dx*dx + dy*dy);
+      px  = rsLinToLin(x, xMin, xMax, TVal(0), xMaxPixel);
+      py  = rsLinToLin(y, yMin, yMax, yMaxPixel, TVal(0));
+      painter.paintDot(px, py, TPix(err)*color);          // last pixel too bright (really?)
+      //painter.paintDot(px, py, TPix(sqrt(err))*color);
+      //painter.paintDot(px, py, TPix(err*err)*color);        // last pixel too dark
+      //painter.paintDot(px, py, TPix(pow(err, 1.25))*color);
+      break; }
+
+    // Convert point in world coordinates (x,y) to pixel coordinates (px,py) and paint it:
+    px = rsLinToLin(x, xMin, xMax, TVal(0), xMaxPixel);
+    py = rsLinToLin(y, yMin, yMax, yMaxPixel, TVal(0));
+    painter.paintDot(px, py, color);
+
+    // The stopping criterion for open curves is that we reach the image boundary - in such cases, 
+    // we have just drawn one arm of the curve (think of a hyperbola, for example), so we call 
+    // ourselves recursively to draw the second arm as well. To avoid infinite recursion, the 
+    // recursive call is done only if clockwise == false, which should always be the case when 
+    // being called from client code but is *not* the case for a recursive call (we pass true 
+    // here):
+    if(x < xMin || x > xMax || y < yMin || y > yMax) {
+      if(clockwise == false)
+        drawImplicitCurve(f, xMin, xMax, yMin, yMax, c, x0, y0, img, color, true);
+      break; }
+
+    // Avoid infinite loops - this should not normally happen:
+    iterations++;
+    if(iterations > 100000) { // is that enough? may some curves have more pixels?
+      rsError("drawImplicitCurve ran into infinite loop");
+      break;  }
+  }
+}
+
+
+
+
+
+
+
+
+
+
 template<class T>
 T squaredDistance(T x1, T y1, T x2, T y2)
 {
@@ -13,7 +161,6 @@ T distance(T x1, T y1, T x2, T y2)
   return sqrt(squaredDistance(x1, y1, x2, y2));
 }
 // move to somewhere else
-
 
 template<class TPix, class TVal> 
 TVal rsImageGenerator<TPix, TVal>::spiralRidge(TVal x, TVal y, TVal a, TVal p, TVal sign, 
@@ -72,6 +219,8 @@ TVal rsImageGenerator<TPix, TVal>::spiralRidge(TVal x, TVal y, TVal a, TVal p, T
 //  as an initial estimate for computing the actual distance via netwon iteration - maybe this 
 //  refinement can be made optional, controlled by a boolean parameter
 //
+// or maybe use a simpler linear spiral:
+//   f(t) = t*cos(t), g(t) = t*sin(t)
 // see:
 // https://en.wikipedia.org/wiki/Logarithmic_spiral
 // https://en.wikipedia.org/wiki/Archimedean_spiral

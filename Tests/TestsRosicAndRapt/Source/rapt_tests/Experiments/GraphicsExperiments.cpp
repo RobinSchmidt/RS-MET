@@ -839,6 +839,9 @@ void complexContours()
   writeImageToFilePPM(funcRe,  empty, funcIm,  "FunctionRB.ppm");
   writeImageToFilePPM(fillsRe, empty, fillsIm, "ContourFillsRB.ppm");
   writeImageToFilePPM(fillsRe, fillsIm, empty, "ContourFillsRG.ppm");
+
+  // todo: overlay the contour lines with the contour fills and/or the original function 
+  // separately for re and im
 }
 
 
@@ -1002,6 +1005,9 @@ void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMa
   }
 }
 
+
+
+
 template<class T, class TPix> 
 void drawConicSection(T A, T B, T C, T D, T E, T F, T xMin, T xMax, T yMin, T yMax,
   rsImage<TPix>& img, TPix color)
@@ -1061,6 +1067,9 @@ void implicitCurve()
   rsImageF imgCurve(width, height);
   function<double(double, double)> f;
 
+  rsImageGenerator<float, double> ig;
+
+
   // test:
   //drawConicSection(1.0, 0.0, 1.0, 0.0, 0.0, -1.0, xMin, xMax, yMin, yMax, imgCurve, 1.f);
 
@@ -1072,39 +1081,39 @@ void implicitCurve()
 
 
   f = [=](double x, double y) { return x*x + y*y; };  // unit circle
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to right
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to left
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, -1.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, -1.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to top
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 1.0, imgCurve, color);
+  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 1.0, imgCurve, color);
 
   f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to bottom
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, -1.0, imgCurve, color);
+  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, -1.0, imgCurve, color);
 
 
   f = [=](double x, double y) { return (x*x)/4 + y*y; };  // ellipse with width 2 and height 1
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 2.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 2.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x*x + (y*y)/4; };  // ellipse with width 1 and height 2
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 2.0, imgCurve, color);
+  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 2.0, imgCurve, color);
 
 
   f = [=](double x, double y) { return y - x*x; };  // unit parabola - opens to top
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return y + x*x; };  // unit parabola - opens to bottom
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x - y*y; };  // unit parabola - opens to right
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x + y*y; };  // unit parabola - opens to left
-  drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
 
   // maybe draw everything except the circle again but rotated by 45°
 
@@ -1136,8 +1145,10 @@ void logisticCompression(rsImage<T>& img, T k)
   for(int i = 0; i < img.getNumPixels(); i++)
     p[i] = T(1) / (T(1) + exp(-k*(p[i]-0.5)));  // 0.5 put middle gray at the center of the sigmoid
 }
+// move to rsImageProcessor, maybe generalize to:
 // https://en.wikipedia.org/wiki/Generalised_logistic_function
 // https://en.wikipedia.org/wiki/Gompertz_function
+// and/or let the center (the -0.5) be another paraneter
 
 /** Applies an elliptic frame to the image, i.e. darkens the parts of the image that are outside 
 the ellipse. The ellipse is centered at (cx,cy) and has x,y radii rx,ry. The "steepness" parameter 
