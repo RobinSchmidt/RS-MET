@@ -669,7 +669,7 @@ void contours()
   int numLevels = 20;
   int numColors = numLevels + 1;
 
-  numColors = 2;  // test
+  //numColors = 2;  // test
 
   float xMin = -r;
   float xMax = +r;
@@ -1136,7 +1136,8 @@ void logisticCompression(rsImage<T>& img, T k)
   for(int i = 0; i < img.getNumPixels(); i++)
     p[i] = T(1) / (T(1) + exp(-k*(p[i]-0.5)));  // 0.5 put middle gray at the center of the sigmoid
 }
-
+// https://en.wikipedia.org/wiki/Generalised_logistic_function
+// https://en.wikipedia.org/wiki/Gompertz_function
 
 /** Applies an elliptic frame to the image, i.e. darkens the parts of the image that are outside 
 the ellipse. The ellipse is centered at (cx,cy) and has x,y radii rx,ry. The "steepness" parameter 
@@ -1320,14 +1321,15 @@ void plotSpiralHeightProfile()
   // Generate data:
   std::vector<double> r(N), h0(N), h1(N), h2(N), h3(N);  // radius and heights
   rsArrayTools::fillWithRangeExponential(&r[0], N, rMin, rMax);
+  rsImageGenerator<float, double> ig;
   double a = log(shrink) / (2*PI);
   for(int i = 0; i < N; i++) {
     double x = r[i] * cos(angle);
     double y = r[i] * sin(angle);             // when k == 1:
-    h0[i] = spiralRidge(x, y, a, p, 1, 0, k); // triangular wave (shaped via asin from original)
-    h1[i] = spiralRidge(x, y, a, p, 1, 1, k); // smooth sinusoid (sin-shaped from triangular)
-    h2[i] = spiralRidge(x, y, a, p, 1, 2, k); // rectified sine (original)
-    h3[i] = spiralRidge(x, y, a, p, 1, 3, k); // inverted rectified sine
+    h0[i] = ig.spiralRidge(x, y, a, p, 1., 0, k); // triangular
+    h1[i] = ig.spiralRidge(x, y, a, p, 1., 1, k); // smooth sinusoid (sin-shaped from triangular)
+    h2[i] = ig.spiralRidge(x, y, a, p, 1., 2, k); // rectified sine (original)
+    h3[i] = ig.spiralRidge(x, y, a, p, 1., 3, k); // inverted rectified sine
   }
 
   // Plot results:
@@ -1350,8 +1352,9 @@ void testSpiralHeightProfile()
   double a = log(g) / (2*PI);                                // shrink/grow factor is 2
   rsArrayTools::fillWithRangeExponential(&r[0], N, 1.0, g);  // interval 1...g, log-scaled
   rsArrayTools::fillWithRangeLinear(     &R[0], N, 0.0, PI); // interval 0..PI, lin-scaled
+  rsImageGenerator<float, double> ig;
   for(int i = 0; i < N; i++) {
-    h[i] = spiralRidge(r[i], 0, a, 0, 1, 2);  // x=r, y=0
+    h[i] = ig.spiralRidge(r[i], 0, a, 0., 1., 2);  // x=r, y=0
     s[i] = sin(R[i]); }
   std::vector<double> err = s - h;   // is numerically zero
   rsPlotVectorsXY(R, h, s, err);     // error is of the order of machine epsilon
@@ -1404,7 +1407,7 @@ void spirals()
   //plotSpiralHeightProfile();
   //testSpiralHeightProfile();
   //testImageEffectFrame(); return;
-  testDistanceMap(); return;
+  //testDistanceMap(); return;
 
   //int size = 1000;
   int w = 1200;
@@ -1464,11 +1467,11 @@ void spirals()
   //phaseInc = rsDegreeToRadiant(phaseInc);
 
 
-
+  rsImageGenerator<float, double> ig;
   std::function<double(double, double)> f;
   f = [&](double x, double y) 
   { 
-    double s = pow(spiralRidge(x, y, density, phase, sign, profile), power); 
+    double s = pow(ig.spiralRidge(x, y, density, phase, sign, profile), power); 
     //double s = pow(spiralRidge2(x, y, density, phase, sign), power); 
     return s;
 

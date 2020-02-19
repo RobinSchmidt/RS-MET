@@ -1538,6 +1538,7 @@ example, if (1,0) and (2,0) are points on the spiral, the point (sqrt(2),0) woul
 halfway between them. If the exponential growth parameter "a" is equal to log(2)/(2*pi), the spiral 
 will grow by a factor of 2 in each revolution. The "sign" parameter should be +1 or -1 and 
 determines the direction of the rotation. */
+/*
 double spiralRidge(double x, double y, double a = 1.0, double p = 0.0, double sign = 1.0, 
   int profile = 0, double exponent = 1.0)
 {
@@ -1562,13 +1563,12 @@ double spiralRidge(double x, double y, double a = 1.0, double p = 0.0, double si
   if(profile == 1) return 0.5*(sin(PI*(h-0.5))+1);  // 1: sinusoidal
   return 0;                                         // unknown profile
 }
-// move to rsImageGenerator
+// moved to rsImageGenerator
+*/
 
 // optimize: the sqrt in the distance computation can be avoided: compute the distance-squared and 
 // then use 0.5*exponent in the subsequent pow call
-
-// outMin + (outMax-outMin) * (in-inMin) / (inMax-inMin)
-
+//
 // The algo computes the distance of (x,y) to a point on the spiral that has the same radius as 
 // (x,y). It happens that the height-profile (as function of radius for a given angle) comes out as
 // a rectified sine shape (when the radius is used a x-axis and the x-axis is logarithmically 
@@ -1584,26 +1584,27 @@ double spiralRidge(double x, double y, double a = 1.0, double p = 0.0, double si
 // channel signal - but what should the input be? we don't have x,y pixel coordinates as inputs but
 // time instants
 // 
-
-
 // when we use d / r, the birghtness of the white ridges is independent for the distance to the 
 // center - using a power with exponent < 1, we get a darkening effect towrd the center - but mybe 
 // such an effect can be applied as post-processing: 
 // circularDarkening(img, x, y, amount)
 //   img(i,j) /= pow(r, amount)
-
+//
 // try tL = atan2(y,x) + 2*k*pi where k = floor(t0/(2*pi)), tR = tL + 2*pi, compute (xL,yL),(xR,yR)
 // by the parametric spiral equations, compute distances dL,dR and use minimum
-
+//
 // -these are not the actual distances to the nearest points on the spiral but rather the distances 
 //  to two concentric circles that approximate the spiral at the given angle - but they can be used 
 //  as an initial estimate for computing the actual distance via netwon iteration - maybe this 
 //  refinement can be made optional, controlled by a boolean parameter
-
+//
 // see:
 // https://en.wikipedia.org/wiki/Logarithmic_spiral
 // https://en.wikipedia.org/wiki/Archimedean_spiral
 
+
+
+// obsolete:
 double spiralRidge2(double x, double y, double a = 1.0, double p = 0.0, double sign = 1.0)
 {
   double r = sqrt(x*x + y*y);
@@ -1647,12 +1648,7 @@ double spiralRidge2(double x, double y, double a = 1.0, double p = 0.0, double s
     i++;
   }
 
-
-
-
-
   double tR = tL + 2*PI;
-
   rsAssert(tL <= t0 && tR > t0);
   // sanity check - this does sometimes trigger - maybe the formula is imprecise? maybe we should 
   // do: if(tL > t0) tL -= 2*PI
@@ -1686,7 +1682,7 @@ double spiralRidge2(double x, double y, double a = 1.0, double p = 0.0, double s
 // the outer arm, with respect to point x,y - but apparently, this doesn't work yet
 // maybe instaed of L,R use I,O for inner/outer
 
-
+// obsolete:
 double spiralRidgeOld(double x, double y, double a = 1.0)
 {
   // under construction

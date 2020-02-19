@@ -196,7 +196,7 @@ int main(int argc, char* argv[])
   contours();
   //complexContours();
   //implicitCurve();
-  //spirals();   // move to somewhere else...
+  spirals();   // move to somewhere else...
 
   // just for fun:
   //groupString();
