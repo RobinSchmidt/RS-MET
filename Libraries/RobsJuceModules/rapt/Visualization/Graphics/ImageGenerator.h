@@ -20,12 +20,11 @@ public:
 
   /** Draws the curve defined by f(x,y) = c onto the image. It needs one solution x0,y0 for which
   f(x0,y0) = c holds as starting point. */
-  void drawImplicitCurve(const std::function<TVal(TVal, TVal)>& f, TVal c, TVal x0, TVal y0, 
-    rsImage<TPix>& img, TPix color, bool clockwise = false); 
-  // last parameter should always be false in calls from client code - we use it to indicate the 
-  // recursive call for drawing the 2nd arm - hide it from the API by having an internal function
-  // _drawImplicitCurve that is called by the function which is called from client code
-  // also remove xMin, ... - use member variables for these values
+  void drawImplicitCurve(const std::function<TVal(TVal, TVal)>& f, TVal c, TVal x0, TVal y0,
+    rsImage<TPix>& img, TPix color)
+  { _drawImplicitCurve(f, c, x0, y0, img, color, false); }
+
+
 
 
   // todo: drawFunction (variants: y = f(x), z = f(x,y)), drawParametricCurve, drawCoordinateGrid
@@ -56,6 +55,13 @@ public:
 
 
 protected:
+
+  /** Internal function called by drawImplicitCurve - we need it, because we don't want the 
+  "clockwise" parameter to be exposed to client code (it should be set to true only in the 
+  recursive call of _draw... to itself). */
+  void _drawImplicitCurve(const std::function<TVal(TVal, TVal)>& f, TVal c, TVal x0, TVal y0, 
+    rsImage<TPix>& img, TPix color, bool clockwise); 
+
 
   TVal xMin, xMax, yMin, yMax;  // plotting range
 

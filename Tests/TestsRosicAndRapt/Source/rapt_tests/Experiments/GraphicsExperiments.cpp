@@ -1075,12 +1075,6 @@ void distanceMap(rsImage<T>& img, T* x, T* y, int N)
 }
 // move to rsImageGenerator
 // note: this is expensive: scales like img.getWidth() * img.getHeight() * N
-// -needs test: create a Lissajous figure an draw its distance map - maybe also draw the figure
-//  itself (maybe into a different color-channel: red-distance, blue: curve)
-// -what about using max-distance instead of min-distance?
-
-// -maybe get rid of the mapping - express everything in pixel-coordinates
-
 
 
 void testDistanceMap()

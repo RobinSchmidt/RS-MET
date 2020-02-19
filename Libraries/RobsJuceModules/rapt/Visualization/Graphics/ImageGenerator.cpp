@@ -1,28 +1,26 @@
 
 template<class TPix, class TVal> 
-void rsImageGenerator<TPix, TVal>::drawImplicitCurve(const std::function<TVal(TVal, TVal)>& f, 
+void rsImageGenerator<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(TVal, TVal)>& f, 
   TVal c, TVal x0, TVal y0, rsImage<TPix>& img, TPix color, bool clockwise) 
 {
   rsAssert(f(x0, y0) == c, "x0,y0 should solve f(x0,y0) = c" );  
   // todo: use tolerance - should maybe be some fraction of c? ..but that would mean that if c is 
   // zero, we would have zero tolerance...maybe max(c*eps, eps)?
 
- 
-
   painter.setImageToPaintOn(&img);
 
   // figure out start pixel:
+  TVal x = x0;
+  TVal y = y0;
   TVal xMaxPixel = TVal(img.getWidth()  - 1);   // maximum x-coordinate in pixel coordinates
   TVal yMaxPixel = TVal(img.getHeight() - 1);   // same for y-coordinate
-  TVal x   = x0;
-  TVal y   = y0;
   TVal sx  = xMaxPixel   / (xMax-xMin);         // one x-pixel in world coordinates
   TVal sy  = yMaxPixel   / (yMax-yMin);
   TVal sxi = (xMax-xMin) / xMaxPixel;
   TVal syi = (yMax-yMin) / yMaxPixel;
 
-  // Convert (x,y) to pixel coordinates and draw 1st point. In order to avoid double-drwing a point
-  // in the recursive call (for 2-armed curves), do it conditionally:
+  // Convert (x,y) to pixel coordinates and draw 1st point. In order to avoid double-drawing a point
+  // in the potential recursive call (for 2-part curves), do it conditionally:
   TVal px, py;
   if(!clockwise) { // avoid drawing the starting point again in the recursive call
     px = rsLinToLin(x, xMin, xMax, TVal(0), xMaxPixel);
@@ -39,12 +37,8 @@ void rsImageGenerator<TPix, TVal>::drawImplicitCurve(const std::function<TVal(TV
     TVal dx = (f(x+h, y) - f(x-h, y)) / (TVal(2)*h);  // x-component of gradient
     TVal dy = (f(x, y+h) - f(x, y-h)) / (TVal(2)*h);  // y-component of gradient
     TVal rx, ry;
-    if(clockwise) {
-      rx =  dy;
-      ry = -dx; }
-    else {
-      rx = -dy;
-      ry =  dx; }
+    if(clockwise) { rx =  dy; ry = -dx; }
+    else          { rx = -dy; ry =  dx; }
 
     // Check, if the current segment is horizontalish/flat or verticalish/steep. In the flat case, 
     // advance x by one pixel and y by a distance derived from the direction vector - in the steep 
@@ -89,7 +83,7 @@ void rsImageGenerator<TPix, TVal>::drawImplicitCurve(const std::function<TVal(TV
         if(rsAbs(old) <= rsAbs(err)) {
           y += old / dy;
           break; }}}
-    // factor out the loops in thes two branhces into two functions: newtonRefineX, newtonRefineY
+    // factor out the loops in these two branhces into two functions: newtonRefineX, newtonRefineY
 
 
     // The stopping criterion for closed curves is that we have come back to (or very close to) the 
@@ -116,14 +110,14 @@ void rsImageGenerator<TPix, TVal>::drawImplicitCurve(const std::function<TVal(TV
     painter.paintDot(px, py, color);
 
     // The stopping criterion for open curves is that we reach the image boundary - in such cases, 
-    // we have just drawn one arm of the curve (think of a hyperbola, for example), so we call 
-    // ourselves recursively to draw the second arm as well. To avoid infinite recursion, the 
+    // we have just drawn one part of the curve (think of a hyperbola, for example), so we call 
+    // ourselves recursively to draw the second part as well. To avoid infinite recursion, the 
     // recursive call is done only if clockwise == false, which should always be the case when 
     // being called from client code but is *not* the case for a recursive call (we pass true 
     // here):
     if(x < xMin || x > xMax || y < yMin || y > yMax) {
       if(clockwise == false)
-        drawImplicitCurve(f, c, x0, y0, img, color, true);
+        _drawImplicitCurve(f, c, x0, y0, img, color, true);
       break; }
 
     // Avoid infinite loops - this should not normally happen:
