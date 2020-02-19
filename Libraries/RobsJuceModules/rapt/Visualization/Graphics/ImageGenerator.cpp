@@ -1,19 +1,15 @@
 
 template<class TPix, class TVal> 
 void rsImageGenerator<TPix, TVal>::drawImplicitCurve(const std::function<TVal(TVal, TVal)>& f, 
-  TVal xMin, TVal xMax, TVal yMin, TVal yMax, TVal c, TVal x0, TVal y0, rsImage<TPix>& img, 
-  TPix color, bool clockwise) 
+  TVal c, TVal x0, TVal y0, rsImage<TPix>& img, TPix color, bool clockwise) 
 {
   rsAssert(f(x0, y0) == c, "x0,y0 should solve f(x0,y0) = c" );  
   // todo: use tolerance - should maybe be some fraction of c? ..but that would mean that if c is 
   // zero, we would have zero tolerance...maybe max(c*eps, eps)?
 
-  // maybe pass the painter object - this painte then also already should have the image assigned
-  // so we don't need to pass it as additional parameter - this is similar to juce's Graphics 
-  // object - we would need to have inquiry functions like getMaxPixelCoordinateX/Y
-  rsImagePainter<TPix, TVal, TVal> painter(&img);
-  //painter.setDeTwist(true);  // should be only used for single pixel lines
-  painter.setNeighbourWeightsForSimpleDot(0.375, 0.375*sqrt(0.5));
+ 
+
+  painter.setImageToPaintOn(&img);
 
   // figure out start pixel:
   TVal xMaxPixel = TVal(img.getWidth()  - 1);   // maximum x-coordinate in pixel coordinates
@@ -127,7 +123,7 @@ void rsImageGenerator<TPix, TVal>::drawImplicitCurve(const std::function<TVal(TV
     // here):
     if(x < xMin || x > xMax || y < yMin || y > yMax) {
       if(clockwise == false)
-        drawImplicitCurve(f, xMin, xMax, yMin, yMax, c, x0, y0, img, color, true);
+        drawImplicitCurve(f, c, x0, y0, img, color, true);
       break; }
 
     // Avoid infinite loops - this should not normally happen:
@@ -137,7 +133,7 @@ void rsImageGenerator<TPix, TVal>::drawImplicitCurve(const std::function<TVal(TV
       break;  }
   }
 }
-
+// maybe fill the shape by coloring all pixels for which f(x,y) < c
 
 
 

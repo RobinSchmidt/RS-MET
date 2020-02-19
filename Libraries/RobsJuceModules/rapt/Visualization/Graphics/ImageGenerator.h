@@ -14,15 +14,14 @@ class rsImageGenerator
 
 public:
 
-
+  void setRange(TVal minX, TVal maxX, TVal minY, TVal maxY)
+  { xMin = minX; xMax = maxX; yMin = minY; yMax = maxY;  }
 
 
   /** Draws the curve defined by f(x,y) = c onto the image. It needs one solution x0,y0 for which
   f(x0,y0) = c holds as starting point. */
-  void drawImplicitCurve(const std::function<TVal(TVal, TVal)>& f, 
-    TVal xMin, TVal xMax, TVal yMin, TVal yMax, 
-    TVal c, TVal x0, TVal y0, rsImage<TPix>& img, TPix color, 
-    bool clockwise = false); 
+  void drawImplicitCurve(const std::function<TVal(TVal, TVal)>& f, TVal c, TVal x0, TVal y0, 
+    rsImage<TPix>& img, TPix color, bool clockwise = false); 
   // last parameter should always be false in calls from client code - we use it to indicate the 
   // recursive call for drawing the 2nd arm - hide it from the API by having an internal function
   // _drawImplicitCurve that is called by the function which is called from client code
@@ -53,8 +52,12 @@ public:
 
 
 
-  //rsImagePainter<TPix, TVal, TVal> painter;
-  //TVal xMin, xMax, yMin, yMax;  // plotting range
+  rsImagePainter<TPix, TVal, TVal> painter;
+
+
+protected:
+
+  TVal xMin, xMax, yMin, yMax;  // plotting range
 
 
 };

@@ -844,170 +844,6 @@ void complexContours()
   // separately for re and im
 }
 
-
-// implicit curve drawing algo: 
-// input: f(x,y) = c, f as functor, c as value, one solution x0,y0 that solves the equation
-//
-// (1) draw/paint pixel at x0,y0
-// (2) find neighbouring pixel to draw next among the 8 neighbours
-// (3) fix one coordinate and solve for the other by 1D root-finding
-// (3) check, if we are back at the same pixel where we started or reached the image boundary 
-//     -if yes: return - we are done with the curve
-// (4) back to 1
-//
-// -maybe fill the shape by coloring all pixels for which f(x,y) < c
-// -which should we increment or decrement and for which should we solve? x0 or y0? maybe that 
-//  should also be decided based on a condition
-//  -maybe y should be use a fixed increment - because we may later extend it to taking two 
-//   solutions (x0,y0),(x1,y2) and advancing y0,y1 in a loop and compute x0,x1 to get a span which
-//   can then be filled - but the boundaries of the span should be only partially colored for 
-//   anti-aliasing - that should give a reasonable anti-aliased ellipse-drawing algo
-// -maybe make these algos available for use in python with the image processing library
-
-/** Draws the curve defined by f(x,y) = c onto the image. It needs one solution x0,y0 for which
-f(x0,y0) = c holds as starting point. */
-template<class T, class TPix> 
-void drawImplicitCurve(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMax, T c, T x0, T y0,
-  rsImage<TPix>& img, TPix color, 
-  bool clockwise = false) // this last parameter should always be false in calls from client code
-                          // we use it to indicate the recursive call for drawing the 2nd arm
-{
-  rsAssert(f(x0, y0) == c, "x0,y0 should solve f(x0,y0) = c" );  
-  // todo: use tolerance - should maybe be some fraction of c? ..but that would mean that if c is 
-  // zero, we would have zero tolerance...maybe max(c*eps, eps)?
-
-  // maybe pass the painter object - this painte then also already should have the image assigned
-  // so we don't need to pass it as additional parameter - this is similar to juce's Graphics 
-  // object - we would need to have inquiry functions like getMaxPixelCoordinateX/Y
-  rsImagePainter<TPix, T, T> painter(&img);
-  //painter.setDeTwist(true);  // should be only used for single pixel lines
-  painter.setNeighbourWeightsForSimpleDot(0.375, 0.375*sqrt(0.5));
-
-  // figure out start pixel:
-  T xMaxPixel = T(img.getWidth()  - 1);   // maximum x-coordinate in pixel coordinates
-  T yMaxPixel = T(img.getHeight() - 1);   // same for y-coordinate
-  T x   = x0;
-  T y   = y0;
-  T sx  = xMaxPixel   / (xMax-xMin);   // one x-pixel in world coordinates
-  T sy  = yMaxPixel   / (yMax-yMin);
-  T sxi = (xMax-xMin) / xMaxPixel;
-  T syi = (yMax-yMin) / yMaxPixel;
-
-  // Convert (x,y) to pixel coordinates and draw 1st point. In order to avoid double-drwing a point
-  // in the recursive call (for 2-armed curves), do it conditionally:
-  T px, py;
-  if(!clockwise) { // avoid drawing the starting point again in the recursive call
-    px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
-    py = rsLinToLin(y, yMin, yMax, yMaxPixel, T(0));
-    painter.paintDot(px, py, color); }
-
-  // Main loop over the pixels on the curve:
-  int iterations = 0;
-  while(true)
-  {
-    // Figure out gradient (dx,dy) and contour direction (rx,ry) which is perpendicular to the 
-    // gradient (i.e. 90° rotated):
-    T h  = 1.e-8;  // ad-hoc - make parameter, or maybe use sqrt(epsilon)
-    T dx = (f(x+h, y) - f(x-h, y)) / (T(2)*h);  // x-component of gradient
-    T dy = (f(x, y+h) - f(x, y-h)) / (T(2)*h);  // y-component of gradient
-    T rx, ry;
-    if(clockwise) {
-      rx =  dy;
-      ry = -dx; }
-    else {
-      rx = -dy;
-      ry =  dx; }
-
-    // Check, if the current segment is horizontalish/flat or verticalish/steep. In the flat case, 
-    // advance x by one pixel and y by a distance derived from the direction vector - in the steep 
-    // case, do it the other way around:
-    bool flat = rsAbs(rx*sx) > rsAbs(ry*sy);   // curve sgement is horizontalish
-    if(flat) {
-      dx = rsSign(rx) / sx;    // this step should translate to 1 pixel left or right -> check this!
-      dy = dx * ry/rx;         // the y-step is proportional to the x-step - is this formula the best we can do?
-      x += dx;                 // walk one pixel left or right
-      y += dy; }
-    else {              // verticalish
-      dy = rsSign(ry) / sy;
-      dx = dy * rx/ry;
-      x += dx;
-      y += dy; }
-
-    // In the step just taken, we may have drifted off the contour line due to approximation 
-    // errors, so we fix this by refining x or y such that we land on the contour again. We use 1D 
-    // Netwon iteration with numeric derivatives. If our direction is horizontalish, we change y, 
-    // otherwise, we change x. To catch convergence problems, we verify that the error actually 
-    // went down in the iteration step - if it didn't, we restore old value from before the step 
-    // and break out of the loop.
-    T err = f(x,y) - c;
-    //T tol = 1.e-12;
-    T tol = 1.e-15;   // maybe use something like 10*epsilon
-    //tol = T(0);  // test
-    if(!flat) {               // y-step is larger (steep) -> refine x
-      while(rsAbs(err) > tol)  {
-        dx    = (f(x+h, y) - f(x-h, y)) / (T(2)*h); // central difference as approximation to the
-        x     = x - err / dx;                       // partial derivative with respect to x
-        T old = err;
-        err   = f(x,y) - c;
-        if(rsAbs(old) <= rsAbs(err)) {
-          x += old / dx;  // restore old value bcs old error was better
-          break; }}}
-    else {
-      while(rsAbs(err) > tol)  {
-        dy = (f(x, y+h) - f(x, y-h)) / (T(2)*h);
-        y   = y - err / dy;
-        T old = err;
-        err = f(x,y) - c;  
-        if(rsAbs(old) <= rsAbs(err)) {
-          y += old / dy;
-          break; }}}
-
-
-    // The stopping criterion for closed curves is that we have come back to (or very close to) the 
-    // starting point again. To close the curve, we paint one last pixel, whose brightness is 
-    // scaled by how far we are away from the starting point (...this is not yet perfect - it looks 
-    // like the start/end point is still drawn a bit brighter than the rest of the curve...). The
-    // && iteration >= 1 is for avoiding spuriously breaking out of the loop in the very first 
-    // iteration due to roundoff errors.
-    if(rsAbs(x-x0) < sxi && rsAbs(y-y0) < syi && iterations >= 1) {
-      dx  = (x-x0)*sx;
-      dy  = (y-y0)*sy;
-      err = sqrt(dx*dx + dy*dy);
-      px  = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
-      py  = rsLinToLin(y, yMin, yMax, yMaxPixel, T(0));
-      painter.paintDot(px, py, TPix(err)*color);          // last pixel too bright (really?)
-      //painter.paintDot(px, py, TPix(sqrt(err))*color);
-      //painter.paintDot(px, py, TPix(err*err)*color);        // last pixel too dark
-      //painter.paintDot(px, py, TPix(pow(err, 1.25))*color);
-      break; }
-
-    // Convert point in world coordinates (x,y) to pixel coordinates (px,py) and paint it:
-    px = rsLinToLin(x, xMin, xMax, T(0), xMaxPixel);
-    py = rsLinToLin(y, yMin, yMax, yMaxPixel, T(0));
-    painter.paintDot(px, py, color);
-
-    // The stopping criterion for open curves is that we reach the image boundary - in such cases, 
-    // we have just drawn one arm of the curve (think of a hyperbola, for example), so we call 
-    // ourselves recursively to draw the second arm as well. To avoid infinite recursion, the 
-    // recursive call is done only if clockwise == false, which should always be the case when 
-    // being called from client code but is *not* the case for a recursive call (we pass true 
-    // here):
-    if(x < xMin || x > xMax || y < yMin || y > yMax) {
-      if(clockwise == false)
-        drawImplicitCurve(f, xMin, xMax, yMin, yMax, c, x0, y0, img, color, true);
-      break; }
-
-    // Avoid infinite loops - this should not normally happen:
-    iterations++;
-    if(iterations > 100000) { // is that enough? may some curves have more pixels?
-      rsError("drawImplicitCurve ran into infinite loop");
-      break;  }
-  }
-}
-
-
-
-
 template<class T, class TPix> 
 void drawConicSection(T A, T B, T C, T D, T E, T F, T xMin, T xMax, T yMin, T yMax,
   rsImage<TPix>& img, TPix color)
@@ -1054,20 +890,18 @@ void implicitCurve()
 {
   int width  = 800;
   int height = 800;
-
   double range = 2.1;
-
-  double xMin   = -range;
-  double xMax   = +range;
-  double yMin   = -range;
-  double yMax   = +range;
 
 
   using IP = rsImageProcessor<float>;
   rsImageF imgCurve(width, height);
   function<double(double, double)> f;
 
+
   rsImageGenerator<float, double> ig;
+  ig.setRange(-range, range, -range, range);
+  ig.painter.setDeTwist(false);  // should be only used for single pixel lines
+  ig.painter.setNeighbourWeightsForSimpleDot(0.375, 0.375*sqrt(0.5));
 
 
   // test:
@@ -1081,39 +915,39 @@ void implicitCurve()
 
 
   f = [=](double x, double y) { return x*x + y*y; };  // unit circle
-  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, 1.0, 1.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to right
-  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 1.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, 1.0, 1.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to left
-  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, -1.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, 1.0, -1.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to top
-  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 1.0, imgCurve, color);
+  ig.drawImplicitCurve(f, 1.0, 0.0, 1.0, imgCurve, color);
 
   f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to bottom
-  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, -1.0, imgCurve, color);
+  ig.drawImplicitCurve(f, 1.0, 0.0, -1.0, imgCurve, color);
 
 
   f = [=](double x, double y) { return (x*x)/4 + y*y; };  // ellipse with width 2 and height 1
-  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 2.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, 1.0, 2.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x*x + (y*y)/4; };  // ellipse with width 1 and height 2
-  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 1.0, 0.0, 2.0, imgCurve, color);
+  ig.drawImplicitCurve(f, 1.0, 0.0, 2.0, imgCurve, color);
 
 
   f = [=](double x, double y) { return y - x*x; };  // unit parabola - opens to top
-  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, 0.0, 0.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return y + x*x; };  // unit parabola - opens to bottom
-  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, 0.0, 0.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x - y*y; };  // unit parabola - opens to right
-  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, 0.0, 0.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x + y*y; };  // unit parabola - opens to left
-  ig.drawImplicitCurve(f, xMin, xMax, yMin, yMax, 0.0, 0.0, 0.0, imgCurve, color);
+  ig.drawImplicitCurve(f, 0.0, 0.0, 0.0, imgCurve, color);
 
   // maybe draw everything except the circle again but rotated by 45°
 
