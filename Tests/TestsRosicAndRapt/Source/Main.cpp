@@ -195,8 +195,8 @@ int main(int argc, char* argv[])
   //pixelCoverage();
   //contours();
   //complexContours();
-  implicitCurve();
-  //spirals();   // move to somewhere else...
+  //implicitCurve();
+  spirals();   // move to somewhere else...
 
   // just for fun:
   //groupString();

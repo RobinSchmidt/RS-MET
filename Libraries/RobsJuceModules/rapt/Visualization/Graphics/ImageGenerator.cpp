@@ -152,6 +152,39 @@ T distance(T x1, T y1, T x2, T y2)
 }
 // move to somewhere else
 
+/** Computes the minimum value of the squared distances from (x0,y0) to the points in the x,y 
+arrays. */
+template<class T>
+T minSquaredDistance(T x0, T y0, T* x, T* y, int N)
+{
+  T d2min = RS_INF(T);
+  for(int i = 0; i < N; i++) {
+    T d2 = squaredDistance(x0, y0, x[i], y[i]);
+    if(d2 < d2min)
+      d2min = d2; }
+  return d2min;
+}
+
+template<class T>
+T minDistance(T x0, T y0, T* x, T* y, int N)
+{
+  return sqrt(minSquaredDistance(x0, y0, x, y, N));
+}
+
+
+
+template<class TPix, class TVal>
+void rsImageGenerator<TPix, TVal>::distanceMap(rsImage<TPix>& img, TVal* x, TVal* y, int N)
+{
+  for(int j = 0; j < img.getHeight(); j++) {
+    for(int i = 0; i < img.getWidth(); i++) {
+      TVal xp = TVal(i); 
+      TVal yp = TVal(j);
+      TVal d  = minDistance(xp, yp, x, y, N);
+      img(i, j) = TPix(d); }}
+}
+
+
 template<class TPix, class TVal> 
 TVal rsImageGenerator<TPix, TVal>::spiralRidge(TVal x, TVal y, TVal a, TVal p, TVal sign, 
   int profile, TVal exponent)

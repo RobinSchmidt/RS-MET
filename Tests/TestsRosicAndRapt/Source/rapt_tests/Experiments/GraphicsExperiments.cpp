@@ -1060,23 +1060,6 @@ void testImageEffectFrame()
 
 //-------------------------------------------------------------------------------------------------
 
-/** Given an array of N points (x,y) in pixel coordinates (for example, representing a curve in the
-x,y-plane), this function fills the image img with the minimum values of the distances between the 
-point at the pixel-coordinates and the points on the curve. */
-template<class T>
-void distanceMap(rsImage<T>& img, T* x, T* y, int N)
-{
-  for(int j = 0; j < img.getHeight(); j++) {
-    for(int i = 0; i < img.getWidth(); i++) {
-      T xp = T(i); 
-      T yp = T(j);
-      T d  = minDistance(xp, yp, x, y, N);
-      img(i, j) = d; }}
-}
-// move to rsImageGenerator
-// note: this is expensive: scales like img.getWidth() * img.getHeight() * N
-
-
 void testDistanceMap()
 {
   int w = 500;   // image witdh
@@ -1084,44 +1067,42 @@ void testDistanceMap()
   int N = 500;   // number of sample points on the curve
 
   // Liassajou curve parameters
-  float a = 2.0;
-  float b = 3.0;
-  float p = float(PI);
+  double a = 2.0;
+  double b = 3.0;
+  double p = PI;    // phase offset
 
-  float xMin = -1.5;
-  float xMax = +1.5;
-  float yMin = -1.5;
-  float yMax = +1.5;
+  double xMin = -1.5;
+  double xMax = +1.5;
+  double yMin = -1.5;
+  double yMax = +1.5;
 
   // create curve:
-  std::vector<float> x(N), y(N);
+  std::vector<double> x(N), y(N);
   for(int n = 0; n < N; n++)
   {
-    float t = float(2*PI*n) / float(N);  // div by N gives more symmetry than N-1
+    double t = double(2*PI*n) / double(N);  // div by N gives more symmetry than N-1
     x[n] = cos(a*t - 0.5f*p);
     y[n] = sin(b*t + 0.5f*p);
 
     // convet to pixel coordinates:
-    x[n] = rsLinToLin(x[n], xMin, xMax, 0.f, float(w-1));
-    y[n] = rsLinToLin(y[n], yMin, yMax, float(h-1), 0.f);
+    x[n] = rsLinToLin(x[n], xMin, xMax, 0.0, double(w-1));
+    y[n] = rsLinToLin(y[n], yMin, yMax, double(h-1), 0.0);
   }
-
 
   // craete images for curve and distance map:
   rsImageF imgDist(w, h), imgCurve(w, h);
 
-
   using IP = rsImageProcessor<float>;
 
+  rsImageGenerator<float, double> ig;
+  ig.setRange(xMin, xMax, yMin, yMax);
 
-  distanceMap(imgDist, &x[0], &y[0], N);
+
+  ig.distanceMap(imgDist, &x[0], &y[0], N);
   IP::normalize(imgDist);
   IP::invert(imgDist);
   IP::sineShape(imgDist);
   IP::gammaCorrection(imgDist, 16.f);
-
-
-
 
   //gammaCorrection(imgDist);
 
@@ -1246,7 +1227,7 @@ void spirals()
   //plotSpiralHeightProfile();
   //testSpiralHeightProfile();
   //testImageEffectFrame(); return;
-  //testDistanceMap(); return;
+  testDistanceMap(); return;
 
   //int size = 1000;
   int w = 1200;

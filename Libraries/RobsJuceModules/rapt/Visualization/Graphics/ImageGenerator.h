@@ -48,7 +48,13 @@ public:
 
 
 
-
+  /** Given an array of N points (x,y) in pixel coordinates (for example, representing a curve in the
+  x,y-plane), this function fills the image img with the minimum values of the distances between the 
+  point at the pixel-coordinates and the points on the curve. This is expensive: scales like 
+  img.getWidth() * img.getHeight() * N   */
+  void distanceMap(rsImage<TPix>& img, TVal* x, TVal* y, int N);
+  // todo: allow for different distance measurs (currently uses Euclidean distance)
+  // rename to drawDistanceMap
 
 
   rsImagePainter<TPix, TVal, TVal> painter;
@@ -63,7 +69,9 @@ protected:
     rsImage<TPix>& img, TPix color, bool clockwise); 
 
 
-  TVal xMin, xMax, yMin, yMax;  // plotting range
+  TVal xMin = TVal(-1), xMax = TVal(+1), yMin = TVal(-1), yMax = TVal(+1);  // plotting range
+
+  //TPix color;
 
 
 };

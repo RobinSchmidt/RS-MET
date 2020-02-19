@@ -1467,8 +1467,8 @@ template<class T>
 T newton(const std::function<T(T)>& f, T x, T y = T(0))
 {
   static const int maxNumIterations = 100;
-  T tol = std::numeric_limits<T>::epsilon();
-  T h   = 1.e-8;  // make parameter
+  T tol = std::numeric_limits<T>::epsilon(); // maybe that's too strict - maybe 10*epsilon is better
+  T h   = 1.e-8;  // make parameter - maybe take sqrt(epsilon)
   for(int i = 1; i <= maxNumIterations; i++) {
     T err = f(x) - y;                // current error
     if(rsAbs(err) <= tol) break;     // converged
@@ -1491,44 +1491,6 @@ T newton(const std::function<T(T)>& f, T x, T y = T(0))
 // see the "damped-newton" method in "Python Hacking for Math Junkies", pg 306 -maybe it can be 
 // further improved by also taking an interval-halving step in cases of slow convergence, i.e.
 // when the error does decrease but not fast enough
-
-
-
-template<class T>
-T squaredDistance(T x1, T y1, T x2, T y2)
-{
-  T dx = x2 - x1;
-  T dy = y2 - y1;
-  return dx*dx + dy*dy;
-}
-
-template<class T>
-T distance(T x1, T y1, T x2, T y2)
-{
-  return sqrt(squaredDistance(x1, y1, x2, y2));
-}
-// Euclidean distance
-
-/** Computes the minimum value of the squared distances from (x0,y0) to the points in the x,y 
-arrays. */
-template<class T>
-T minSquaredDistance(T x0, T y0, T* x, T* y, int N)
-{
-  T d2min = RS_INF(T);
-  for(int i = 0; i < N; i++) {
-    T d2 = squaredDistance(x0, y0, x[i], y[i]);
-    if(d2 < d2min)
-      d2min = d2; }
-  return d2min;
-}
-
-template<class T>
-T minDistance(T x0, T y0, T* x, T* y, int N)
-{
-  return sqrt(minSquaredDistance(x0, y0, x, y, N));
-}
-
-
 
 //
 // try to make a function f(x,y) that has exponential spirals as contour lines
