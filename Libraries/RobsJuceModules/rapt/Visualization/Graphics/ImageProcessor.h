@@ -60,32 +60,42 @@ class rsImageContourPlotter
 public:
 
 
+  rsImageContourPlotter();
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Contour Drawing
+
+  /** For a given input image that is interpreted as containing values of a height function 
+  z = f(x,y), this function returns an image that contains the contour lines for the given set of
+  contour levels. You may also give the lines different colors...  */
   rsImage<TPix> getContourLines(const rsImage<TPix>& z, const std::vector<TVal>& levels, 
     const std::vector<TPix>& colors, bool antiAlias);
 
+  /** Like getContourLines, but instead of drawing the contour-lines themselves, it fills the areas
+  between the contour lines with given colors. */
   rsImage<TPix> getContourFills(const rsImage<TPix>& z, const std::vector<TVal>& levels,
     const std::vector<TPix>& colors, bool antiAlias);
 
 
-//protected:
+  //-----------------------------------------------------------------------------------------------
+  // \name Internal Subroutines
 
-  // internal sub-routines (maybe make some of them public)
-
-  static void drawContour(const rsImage<TVal>& z, TVal level, rsImage<TPix>& target, TPix color, 
+  void drawContour(const rsImage<TVal>& z, TVal level, rsImage<TPix>& target, TPix color, 
     bool antiAlias = true);
 
-  static void fillBetweenContours(const rsImage<TVal>& z, TVal lo, TVal hi, rsImage<TPix>& target,
+  void fillBetweenContours(const rsImage<TVal>& z, TVal lo, TVal hi, rsImage<TPix>& target,
     TPix fillColor, bool antiAlias = true);
 
 
   /** Used in drawContour for anti-aliasing. */
-  static void contourSubPixelPosition(TVal z00, TVal z01, TVal z10, TVal z11, TVal c,
+  void contourSubPixelPosition(TVal z00, TVal z01, TVal z10, TVal z11, TVal c,
     TVal* x, TVal* y, TVal* weight);
   // x,y may actually be another type (coordinates), and weight may be yet another
   // or maybe use som generic TVal for "value"
 
   /** Used in fillBetweenContours for anti-aliasing. */
-  static TVal contourPixelCoverage(TVal z00, TVal z01, TVal z10, TVal z11, TVal c);
+  TVal contourPixelCoverage(TVal z00, TVal z01, TVal z10, TVal z11, TVal c);
 
   /** Used in contourSubPixelPosition and contourPixelCoverage.
   Given values at a pixel z00 and its neigbours, this function computes the coeffs of a 
@@ -101,11 +111,12 @@ public:
   branch we ended up in: 0: top-left, 1: top-right, 2: bottom-left, 3: bottom-right, 
   4: horizontalish, 5: verticalish - where "top-left" etc. means that the segment "cuts off" the 
   top-left corner of the pixel. */
-  static int contourSegmentCoeffs(TVal z00, TVal z01, TVal z10, TVal z11, TVal c,
+  int contourSegmentCoeffs(TVal z00, TVal z01, TVal z10, TVal z11, TVal c,
     TVal& x0, TVal& y0, TVal& x1, TVal& y1);
 
 
-  //rsImagePainter<TPix, TVal, TVal> painter;
+
+  rsImagePainter<TPix, TVal, TVal> painter;
 
 };
 

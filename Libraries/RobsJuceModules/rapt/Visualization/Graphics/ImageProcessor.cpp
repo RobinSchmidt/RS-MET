@@ -88,28 +88,33 @@ void rsImageProcessor<T>::sineShape(rsImage<T>& img)
 // rsImageContourPlotter
 
 template<class TPix, class TVal>
+rsImageContourPlotter<TPix, TVal>::rsImageContourPlotter()
+{
+  painter.setDeTwist(true);
+}
+
+template<class TPix, class TVal>
 rsImage<TPix> rsImageContourPlotter<TPix, TVal>::getContourLines(const rsImage<TPix>& z, 
   const std::vector<TVal>& levels,  const std::vector<TPix>& colors, bool antiAlias)
 {
-  rsImageF c(z.getWidth(), z.getHeight());
+  rsImage<TPix> img(z.getWidth(), z.getHeight());
   for(size_t i = 0; i < levels.size(); i++)
-    drawContour(z, levels[i], c, colors[i % colors.size()], antiAlias);
-  return c;
+    drawContour(z, levels[i], img, colors[i % colors.size()], antiAlias);
+  return img;
 }
 
 template<class TPix, class TVal>
 rsImage<TPix> rsImageContourPlotter<TPix, TVal>::getContourFills(const rsImage<TPix>& z, 
   const std::vector<TVal>& levels, const std::vector<TPix>& colors, bool antiAlias)
 {
-  rsImageF imgBins(z.getWidth(), z.getHeight());  // fills
+  rsImage<TPix> img(z.getWidth(), z.getHeight());
   size_t j = 0; // color index
   size_t nc = colors.size();
   for(size_t i = 0; i < levels.size()-1; i++) {
-    fillBetweenContours(z, levels[i], levels[i+1], imgBins, colors[j % nc], antiAlias);
+    fillBetweenContours(z, levels[i], levels[i+1], img, colors[j % nc], antiAlias);
     j++; }
-  return imgBins;
+  return img;
 }
-
 
 // internal subroutines:
 
@@ -117,8 +122,7 @@ template<class TPix, class TVal>
 void rsImageContourPlotter<TPix, TVal>::drawContour(
   const rsImage<TVal>& z, TVal level, rsImage<TPix>& target, TPix color, bool antiAlias)
 {
-  rsImagePainter<TPix, TVal, TVal> painter(&target);
-  painter.setDeTwist(true);  
+  painter.setImageToPaintOn(&target);
   for(int i = 0; i < z.getWidth()-1; i++) {
     for(int j = 0; j < z.getWidth()-1; j++) {
       TVal z00 = z(i,   j  );
@@ -142,20 +146,20 @@ template<class TPix, class TVal>
 void rsImageContourPlotter<TPix, TVal>::fillBetweenContours(const rsImage<TVal>& z, 
   TVal lo, TVal hi, rsImage<TPix>& target, TPix fillColor, bool antiAlias)
 {
-  rsImagePainter<TPix, TVal, TVal> painter(&target);
+  painter.setImageToPaintOn(&target);
   for(int i = 0; i < z.getWidth()-1; i++) {
     for(int j = 0; j < z.getWidth()-1; j++) {
-      TVal z00 = z(i, j);
-      TVal z01 = z(i, j+1);
-      TVal z10 = z(i+1, j);
+      TVal z00 = z(i,   j  );
+      TVal z01 = z(i,   j+1);
+      TVal z10 = z(i+1, j  );
       TVal z11 = z(i+1, j+1);
       TVal min = rsMin(z00, z01, z10, z11);
       TVal max = rsMax(z00, z01, z10, z11);
-      if(min >= lo && max < hi)     // this seems to be artifact-free
+      if(min >= lo && max < hi)
         painter.plot(i, j, fillColor);
       else  {
         // we are either on the contour or totally outside the drawing area
-        if(!antiAlias)  {                  // ok - this looks right
+        if(!antiAlias) {
           if(min < lo && max >= lo)                      // on low contour
             painter.plot(i, j, fillColor * TPix(0.5));
           else if(min < hi && max >= hi)                 // on hi contour
@@ -170,16 +174,16 @@ void rsImageContourPlotter<TPix, TVal>::fillBetweenContours(const rsImage<TVal>&
             painter.plot(i, j, TPix(c)*fillColor);  }}}}}
 }
 // if instead of using:
-//   if(min >= lo && max < hi) 
+//   if(min >= lo && max <  hi) 
 // we would use
-//   if(min > lo && max < hi)   -> leaves extra pixels blank (test with circle)
+//   if(min >  lo && max <  hi) -> leaves extra pixels blank (test with circle)
 //   if(min >= lo && max <= hi) -> colors extra pixels in
-//   if(min > lo && max <= hi)  -> no etra blank or colored pixels but ugly jaggies
+//   if(min >  lo && max <= hi) -> no etra blank or colored pixels but ugly jaggies
 // so the chosen variant seems best. this can be tested using the circles (and maybe commenting
 // out the code that handles the contour lines - i think it was set to somewhere around 11 or 12 
 // levels...not sure anymore)
 
-
+// can we refactor these two functions to avoid the duplicaztion?
 
 template<class TPix, class TVal>
 void rsImageContourPlotter<TPix, TVal>::contourSubPixelPosition(
@@ -195,7 +199,7 @@ void rsImageContourPlotter<TPix, TVal>::contourSubPixelPosition(
   *x = x0 + TVal(0.5) * dx;
   *y = y0 + TVal(0.5) * dy;
   *weight = sqrt(dx*dx + dy*dy) / sqrt(TVal(2));  // full weight only for diagonals
-                                                  //*weight = max(dx, dy);  // alternative - looks worse: screw-effect stronger and there are holes
+  //*weight = max(dx, dy);  // alternative - looks worse: screw-effect stronger and there are holes
 }
 // simpler idea:
 // -compute z0 = (z00 + z01) / 2, z1 = (z10 + z11) / 2
@@ -206,15 +210,14 @@ void rsImageContourPlotter<TPix, TVal>::contourSubPixelPosition(
 // -or is it the other way around?
 // -might be even better than the center of the line 
 
-
 template<class TPix, class TVal>
 TVal rsImageContourPlotter<TPix, TVal>::contourPixelCoverage(
   TVal z00, TVal z01, TVal z10, TVal z11, TVal c)
 {
   TVal x0, x1, y0, y1;
-  TVal A = 0.f;  // covered area
+  TVal A(0);     // covered area
   TVal h(0.5);   // half
-  TVal I(1.0);   // one
+  TVal I(1);     // one
   int branch = contourSegmentCoeffs(z00, z01, z10, z11, c, x0, y0, x1, y1);
   switch(branch) {
   case 0: { A = h *    x1  * y0;     if(z00 >= c) A = I-A; } break; // top-left
@@ -240,45 +243,44 @@ TVal rsImageContourPlotter<TPix, TVal>::contourPixelCoverage(
 // maybe use a boolean and or let the user pass a comparison function cmp(z00, c), etc... or call 
 // it like inside(z00, c) or outside(z00, c)
 
-
 template<class TPix, class TVal>
 int rsImageContourPlotter<TPix, TVal>::contourSegmentCoeffs(
   TVal z00, TVal z01, TVal z10, TVal z11, TVal c, TVal& x0, TVal& y0, TVal& x1, TVal& y1)
 {
   int branch;
   if((z00 < c && z01 >= c) || (z00 >= c && z01 < c)) {        // segment goes through left border
-    x0 = 0.f;
-    y0 = rsLinToLin(c, z00, z01, 0.f, 1.f);
+    x0 = TVal(0);
+    y0 = rsLinToLin(c, z00, z01, TVal(0), TVal(1));
     if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) {      // segment goes through top border
       branch = 0;                                             //   -> top-left
-      x1 = rsLinToLin(c, z00, z10, 0.f, 1.f);
-      y1 = 0.f; }
+      x1 = rsLinToLin(c, z00, z10, TVal(0), TVal(1));
+      y1 = TVal(0); }
     else if((z01 < c && z11 >= c) || (z01 >= c && z11 < c)) { // segment goes through bottom border
       branch = 2;                                             //   -> bottom-left
-      x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
-      y1 = 1.f; }
+      x1 = rsLinToLin(c, z01, z11, TVal(0), TVal(1));
+      y1 = TVal(1); }
     else {                                                    // segment goes through right border
       branch = 4;                                             //   -> horizontalish
-      x1 = 1.f;                                               
-      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }}
+      x1 = TVal(1);                                               
+      y1 = rsLinToLin(c, z10, z11, TVal(0), TVal(1)); }}
   else {                                                      // doesn't go through left border
     if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) {      // goes through top border
-      x0 = rsLinToLin(c, z00, z10, 0.f, 1.f);
-      y0 = 0.f;
+      x0 = rsLinToLin(c, z00, z10, TVal(0), TVal(1));
+      y0 = TVal(0);
       if((z10 < c && z11 >= c) || (z10 >= c && z11 < c)) {    // goes through right border
         branch = 1;                                           //   -> top-right
-        x1 = 1.f;
-        y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }
+        x1 = TVal(1);
+        y1 = rsLinToLin(c, z10, z11, TVal(0), TVal(1)); }
       else  {                                                 // goes through bottom border
         branch = 5;                                           //   -> verticalish
-        x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);            
-        y1 = 1.f; }}
+        x1 = rsLinToLin(c, z01, z11, TVal(0), TVal(1));            
+        y1 = TVal(1); }}
     else  {                                                   // doesn't go through top border 
       branch = 3;                                             //   -> bottom-right
-      x0 = rsLinToLin(c, z01, z11, 0.f, 1.f);
-      y0 = 1.f;
-      x1 = 1.f;
-      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }}
+      x0 = rsLinToLin(c, z01, z11, TVal(0), TVal(1));
+      y0 = TVal(1);
+      x1 = TVal(1);
+      y1 = rsLinToLin(c, z10, z11, TVal(0), TVal(1)); }}
   return branch;
 }
 // optimize the calls to rsLinToLin to get rid of divisions where possible - keep this code as 
@@ -286,7 +288,6 @@ int rsImageContourPlotter<TPix, TVal>::contourSegmentCoeffs(
 // of some of the multiplications because outMax-outMin = 1 - make a function rsLinTo01, have a 
 // similar rs01ToLin
 // note that the order of (x0,y0),(x1,y1) can't be changed without breaking contourPixelCoverage
-
 // maybe the logical statements can be simplified by checking things like 
 // if (z00-c)*(z01-c) < 0,  >= 0 instead of the complicated and-or statements - but keep this 
 // version for unit tests

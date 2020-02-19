@@ -488,13 +488,12 @@ void pixelCoverage()
   int dummy = 0;
 }
 
-// idea for contour drawing:
-// -input: image the function values, array of levels
-// -output: image with the level lines / contours
-//
 
 /*
-// obsolete:
+// these were other ideas for implementing rsImageContourPlotter::contourSubPixelPosition - they 
+// have been discarded - but maybe it's worth to keep the code, so we may later continue to 
+// experiment with these ideas:
+
 void getContourSubPixelPosition1(float z00, float z01, float z10, float z11, float c,
   float* x, float* y)
 {
@@ -520,10 +519,7 @@ void getContourSubPixelPosition1(float z00, float z01, float z10, float z11, flo
   // output may go negative - maybe we have to do cases if(L < R) .. else ...
 }
 // this doesn't work
-*/
 
-/*
-// obsolete:
 void getContourSubPixelPosition2(float z00, float z01, float z10, float z11, float c,
   float min, float max, float* x, float* y)
 {
@@ -546,69 +542,6 @@ void getContourSubPixelPosition2(float z00, float z01, float z10, float z11, flo
 // not yet tested
 */
 
-/** Given values at a pixel z00 and its neigbours, this function computes the coeffs of a 
-parametric line equation x(t) = x0 + t*(x1-x0), y(t) = y0 + t*(y1-y0). The line is supposed to 
-approximate a segment of a contour of a function/image with level given by c. This is how the 
-function values are distributed over the pixels: z00 is the value at the pixel under investigation 
-and z01, z10, z11 are bottom, right and diagonal neighbours (in that order):
-   z00--z10
-    |    |
-   z01--z11  
- so the first index refers to the x-coordinate, the second to the y-coordinate and y increases 
- downward as is common in image processing. The function also returns an integer indicating which 
- branch we ended up in: 0: top-left, 1: top-right, 2: bottom-left, 3: bottom-right, 
- 4: horizontalish, 5: verticalish - where "top-left" etc. means that the segment "cuts off" the 
- top-left corner of the pixel. */
-/*
-template<class T>
-int contourSegmentCoeffs(T z00, T z01, T z10, T z11, T c, T& x0, T& y0, T& x1, T& y1)
-{
-  int branch;
-  if((z00 < c && z01 >= c) || (z00 >= c && z01 < c)) {        // segment goes through left border
-    x0 = 0.f;
-    y0 = rsLinToLin(c, z00, z01, 0.f, 1.f);
-    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) {      // segment goes through top border
-      branch = 0;                                             //   -> top-left
-      x1 = rsLinToLin(c, z00, z10, 0.f, 1.f);
-      y1 = 0.f; }
-    else if((z01 < c && z11 >= c) || (z01 >= c && z11 < c)) { // segment goes through bottom border
-      branch = 2;                                             //   -> bottom-left
-      x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);
-      y1 = 1.f; }
-    else {                                                    // segment goes through right border
-      branch = 4;                                             //   -> horizontalish
-      x1 = 1.f;                                               
-      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }}
-  else {                                                      // doesn't go through left border
-    if((z00 < c && z10 >= c) || (z00 >= c && z10 < c)) {      // goes through top border
-      x0 = rsLinToLin(c, z00, z10, 0.f, 1.f);
-      y0 = 0.f;
-      if((z10 < c && z11 >= c) || (z10 >= c && z11 < c)) {    // goes through right border
-        branch = 1;                                           //   -> top-right
-        x1 = 1.f;
-        y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }
-      else  {                                                 // goes through bottom border
-        branch = 5;                                           //   -> verticalish
-        x1 = rsLinToLin(c, z01, z11, 0.f, 1.f);            
-        y1 = 1.f; }}
-    else  {                                                   // doesn't go through top border 
-      branch = 3;                                             //   -> bottom-right
-      x0 = rsLinToLin(c, z01, z11, 0.f, 1.f);
-      y0 = 1.f;
-      x1 = 1.f;
-      y1 = rsLinToLin(c, z10, z11, 0.f, 1.f); }}
-  return branch;
-}
-// optimize the calls to rsLinToLin to get rid of divisions where possible - keep this code as 
-// prototype for unit testing the optimized code - i think, it's not possible, but we may get rid 
-// of some of the multiplications because outMax-outMin = 1 - make a function rsLinTo01, have a 
-// similar rs01ToLin
-// note that the order of (x0,y0),(x1,y1) can't be changed without breaking contourPixelCoverage
-
-// maybe the logical statements can be simplified by checking things like 
-// if (z00-c)*(z01-c) < 0,  >= 0 instead of the complicated and-or statements - but keep this 
-// version for unit tests
-*/
 
 template<class T>
 T triangleArea(T x1, T y1, T x2, T y2, T x3, T y3)
@@ -621,183 +554,21 @@ T triangleArea(T x1, T y1, T x2, T y2, T x3, T y3)
 // -base b and height h: A = b*h/2
 // -three sides a,b,c: s = (a+b+c)/2; A = sqrt(s*(s-a)*(s-b)*(s-c))
 // -two sides a,b and enclosed angle p: A = a*b*sin(p) / 2
-// -equilateral: A = s^2 * sqrt(3) / 4
+// -equilateral with side-length s: A = s^2 * sqrt(3) / 4
 // -1 vertex, 2 vectors v,w: A = norm(cross(v,w)) / 2
 // -3 vertices:
 //            1    |x1 y1 1|
 //    A = +- --- * |x2 y2 1|
 //            2    |x3 y3 1|
 
-
 // we also need a formula for the area of a quadrangle - i think, i have once implemented a general
 // polygon-area function - the quadrangle can be obtained as special case
-
-
-/*
-template<class TVal>
-TVal contourPixelCoverage(TVal z00, TVal z01, TVal z10, TVal z11, TVal c)
-{
-  TVal x0, x1, y0, y1;
-  TVal A = 0.f;  // covered area
-  TVal h(0.5);   // half
-  TVal I(1.0);   // one
-  int branch = contourSegmentCoeffs(z00, z01, z10, z11, c, x0, y0, x1, y1);
-  switch(branch) {
-  case 0: { A = h *    x1  * y0;     if(z00 >= c) A = I-A; } break; // top-left
-  case 1: { A = h * (I-x0) * y1;     if(z10 >= c) A = I-A; } break; // top-right
-  case 2: { A = h *    x1  * (I-y0); if(z01 >= c) A = I-A; } break; // bottom-left
-  case 3: { A = h * (I-x0) * (I-y1); if(z11 >= c) A = I-A; } break; // bottom-right
-  case 4: {                              // horizontalish
-    if(y0 < y1)  A = y1 + h * (y0-y1);   //   sloping up
-    else         A = y0 + h * (y1-y0);   //   sloping down
-    if(z00 >= c || z10 >= c)  
-      A = I-A; } break;
-  case 5: {                              // verticalish
-    if(x0 < x1)  A = x1 + h * (x0-x1);   //   leaning left
-    else         A = x0 + h * (x1-x0);   //   leaning right
-    if(z00 >= c || z01 >= c) 
-      A = I-A; } break; }
-  return A;
-}
-// These simplified formulas (compared to the general formula for traingel areas) work only 
-// because we know in which order contourSegmentCoeffs returns the coeffs. Maybe we should make it
-// swappable whether to use >= or < - sometimes we may want to invert the result - when drawing the 
-// bin-fills, we sometimes want to fill with the inverted weight ..i think - figure out - if so, 
-// maybe use a boolean and or let the user pass a comparison function cmp(z00, c), etc... or call 
-// it like inside(z00, c) or outside(z00, c)
-*/
-
-/*
-template<class TVal>
-void contourSubPixelPosition(TVal z00, TVal z01, TVal z10, TVal z11, TVal c, 
-  TVal* x, TVal* y, TVal* weight)
-{
-  // Get line equation coeffs and evaluate the equation at midpoint to get the center of the 
-  // contour segment. The weight is given by the length divided by sqrt(2) such that diagonals get 
-  // weight 1.0:
-  TVal x0, x1, y0, y1;
-  contourSegmentCoeffs(z00, z01, z10, z11, c, x0, y0, x1, y1);
-  TVal dx = (x1-x0);
-  TVal dy = (y1-y0);
-  *x = x0 + TVal(0.5) * dx;
-  *y = y0 + TVal(0.5) * dy;
-  *weight = sqrt(dx*dx + dy*dy) / sqrt(TVal(2));  // full weight only for diagonals
-  //*weight = max(dx, dy);  // alternative - looks worse: screw-effect stronger and there are holes
-}
-// simpler idea:
-// -compute z0 = (z00 + z01) / 2, z1 = (z10 + z11) / 2
-//  z0 is the average value on the left, z1 on the right
-// -the x-value/offset is determined by how much this average is above/below the target
-//  level
-// -similar for y
-// -or is it the other way around?
-// -might be even better than the center of the line 
-*/
-
-/*
-template<class TPix, class TVal>
-void drawContour(const rsImage<TVal>& z, TVal level, rsImage<TPix>& target, TPix color, 
-  bool antiAlias)
-{
-  rsImagePainter<TPix, TVal, TVal> painter(&target);
-  painter.setDeTwist(true);  
-  for(int i = 0; i < z.getWidth()-1; i++) {
-    for(int j = 0; j < z.getWidth()-1; j++) {
-      TVal z00 = z(i,   j  );
-      TVal z01 = z(i,   j+1);
-      TVal z10 = z(i+1, j  );
-      TVal z11 = z(i+1, j+1);
-      TVal min = rsMin(z00, z01, z10, z11);
-      TVal max = rsMax(z00, z01, z10, z11);
-      if(min < level && max >= level) {
-        TVal x(0), y(0), w(1); // x,y offsets and weight for color
-        if(antiAlias)
-          contourSubPixelPosition(z00, z01, z10, z11, level, &x, &y, &w);
-        painter.paintDot(TVal(i) + x, TVal(j) + y, w * color); }}}
-}
-// if we do not anti-alias, we need not to call the expensive paintDot and can use the cheaper 
-// painter.plot instead ...i think
-// maybe don't loop over all pixels and follow the contours instead - but then there's no guarantee that 
-// nothing is missed
-*/
-
-/*
-template<class TPix, class TVal>
-void fillBetweenContours(const rsImage<TVal>& z, TVal lo, TVal hi, rsImage<TPix>& target,
-  TPix fillColor, bool antiAlias = false)
-{
-  rsImagePainter<TPix, TVal, TVal> painter(&target);
-  for(int i = 0; i < z.getWidth()-1; i++) {
-    for(int j = 0; j < z.getWidth()-1; j++) {
-      TVal z00 = z(i, j);
-      TVal z01 = z(i, j+1);
-      TVal z10 = z(i+1, j);
-      TVal z11 = z(i+1, j+1);
-      TVal min = rsMin(z00, z01, z10, z11);
-      TVal max = rsMax(z00, z01, z10, z11);
-      if(min >= lo && max < hi)     // this seems to be artifact-free
-        painter.plot(i, j, fillColor);
-      else  {
-        // we are either on the contour or totally outside the drawing area
-        if(!antiAlias)  {                  // ok - this looks right
-          if(min < lo && max >= lo)                      // on low contour
-            painter.plot(i, j, fillColor * TPix(0.5));
-          else if(min < hi && max >= hi)                 // on hi contour
-            painter.plot(i, j, fillColor * TPix(0.5)); }
-        else {
-          TVal c; // coverage
-          if(min < lo && max >= lo) {
-            c = contourPixelCoverage(z00, z01, z10, z11, lo);
-            painter.plot(i, j, TPix(TVal(1)-c)*fillColor); }
-          else if(min < hi && max >= hi) {
-            c = contourPixelCoverage(z00, z01, z10, z11, hi);
-            painter.plot(i, j, TPix(c)*fillColor);  }}}}}
-}
-// if instead of using:
-//   if(min >= lo && max < hi) 
-// we would use
-//   if(min > lo && max < hi)   -> leaves extra pixels blank (test with circle)
-//   if(min >= lo && max <= hi) -> colors extra pixels in
-//   if(min > lo && max <= hi)  -> no etra blank or colored pixels but ugly jaggies
-// so the chosen variant seems best. this can be tested using the circles (and maybe commenting
-// out the code that handles the contour lines - i think it was set to somewhere around 11 or 12 
-// levels...not sure anymore)
-*/
-
 
 template<class TPix, class TWgt>
 TPix blend(TPix c1, TPix c2, TWgt w)
 {
   return TPix((TWgt(1)-w))*c1 + TPix(w)*c2;
 }
-
-/*
-template<class TVal, class TPix>
-rsImage<TPix> getContourLines(const rsImage<TPix>& z, const std::vector<TVal>& levels, 
-  const std::vector<TPix>& colors, bool antiAlias)
-{
-  rsImageF c(z.getWidth(), z.getHeight());
-  for(size_t i = 0; i < levels.size(); i++)
-    drawContour(z, levels[i], c, colors[i % colors.size()], antiAlias);
-  return c;
-}
-
-template<class TVal, class TPix>
-rsImage<TPix> getContourFills(const rsImage<TPix>& z, const std::vector<TVal>& levels,
-  const std::vector<TPix>& colors, bool antiAlias)
-{
-  rsImageF imgBins(z.getWidth(), z.getHeight());  // fills
-  size_t j = 0; // color index
-  size_t nc = colors.size();
-  for(size_t i = 0; i < levels.size()-1; i++) {
-    fillBetweenContours(z, levels[i], levels[i+1], imgBins, colors[j % nc], antiAlias);
-    j++; }
-  return imgBins;
-}
-*/
-
-
-
 
 bool testContourSubPixelStuff()
 {
@@ -898,7 +669,7 @@ void contours()
   int numLevels = 20;
   int numColors = numLevels + 1;
 
-  //numColors = 2;  // test
+  numColors = 2;  // test
 
   float xMin = -r;
   float xMax = +r;
@@ -913,8 +684,8 @@ void contours()
   //f = [&] (float x, float y) { return x*x - y*y; };
   //f = [&] (float x, float y) { return x*x - y*y + 2.f*x*y; };
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y; };
-  f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*y*y; };
-  //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*x - 0.1f*y*y + 0.1f*y; };
+  //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*y*y; };
+  f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*x - 0.1f*y*y + 0.1f*y; };
     // try exchanging sin and cos an combining
   //f = [&] (float x, float y) { return (float) pow(spiralRidge(x, y, 0.25), 3.0); };
    // exponent 3 makes for good balance between black and white - but middle gray is 
@@ -946,7 +717,7 @@ void contours()
   writeScaledImageToFilePPM(imgCont,  "ContourLines.ppm", 1);
   writeScaledImageToFilePPM(imgFills, "ContourFills.ppm", 1);
 
-  // the right column and bottom row has no countour values - no surprise - the loop only goes up 
+  // the right column and bottom row has no contour values - no surprise - the loop only goes up 
   // to w-1,h-1
   // maybe use powers of two +1 for the size and cut off bottom-row and right-column aftewards
 
