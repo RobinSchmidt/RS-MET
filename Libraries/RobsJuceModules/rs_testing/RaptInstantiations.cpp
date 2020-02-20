@@ -424,7 +424,7 @@ template class RAPT::rsAlphaMask<float>;
 template class RAPT::rsImagePainter<float, float, float>;
 template class RAPT::rsImageDrawer<float, float, float>;
 template class RAPT::rsLineDrawer<float, float, float>;
-template class RAPT::rsImageGenerator<float, double>;
+template class RAPT::rsImagePlotter<float, double>;
 template class RAPT::rsImageProcessor<float>;
 template class RAPT::rsImageContourPlotter<float, float>;
 template class RAPT::rsPhaseScopeBuffer<float, float, double>;

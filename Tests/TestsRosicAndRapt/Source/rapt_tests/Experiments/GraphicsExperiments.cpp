@@ -898,7 +898,7 @@ void implicitCurve()
   function<double(double, double)> f;
 
 
-  rsImageGenerator<float, double> ig;
+  rsImagePlotter<float, double> ig;
   ig.setRange(-range, range, -range, range);
   ig.painter.setDeTwist(false);  // should be only used for single pixel lines
   ig.painter.setNeighbourWeightsForSimpleDot(0.375, 0.375*sqrt(0.5));
@@ -915,39 +915,39 @@ void implicitCurve()
 
 
   f = [=](double x, double y) { return x*x + y*y; };  // unit circle
-  ig.drawImplicitCurve(f, 1.0, 1.0, 0.0, imgCurve, color);
+  ig.plotImplicitCurve(f, 1.0, 1.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to right
-  ig.drawImplicitCurve(f, 1.0, 1.0, 0.0, imgCurve, color);
+  ig.plotImplicitCurve(f, 1.0, 1.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x*x - y*y; };  // unit hyperbola - opens to left
-  ig.drawImplicitCurve(f, 1.0, -1.0, 0.0, imgCurve, color);
+  ig.plotImplicitCurve(f, 1.0, -1.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to top
-  ig.drawImplicitCurve(f, 1.0, 0.0, 1.0, imgCurve, color);
+  ig.plotImplicitCurve(f, 1.0, 0.0, 1.0, imgCurve, color);
 
   f = [=](double x, double y) { return y*y - x*x; };  // unit hyperbola - opens to bottom
-  ig.drawImplicitCurve(f, 1.0, 0.0, -1.0, imgCurve, color);
+  ig.plotImplicitCurve(f, 1.0, 0.0, -1.0, imgCurve, color);
 
 
   f = [=](double x, double y) { return (x*x)/4 + y*y; };  // ellipse with width 2 and height 1
-  ig.drawImplicitCurve(f, 1.0, 2.0, 0.0, imgCurve, color);
+  ig.plotImplicitCurve(f, 1.0, 2.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x*x + (y*y)/4; };  // ellipse with width 1 and height 2
-  ig.drawImplicitCurve(f, 1.0, 0.0, 2.0, imgCurve, color);
+  ig.plotImplicitCurve(f, 1.0, 0.0, 2.0, imgCurve, color);
 
 
   f = [=](double x, double y) { return y - x*x; };  // unit parabola - opens to top
-  ig.drawImplicitCurve(f, 0.0, 0.0, 0.0, imgCurve, color);
+  ig.plotImplicitCurve(f, 0.0, 0.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return y + x*x; };  // unit parabola - opens to bottom
-  ig.drawImplicitCurve(f, 0.0, 0.0, 0.0, imgCurve, color);
+  ig.plotImplicitCurve(f, 0.0, 0.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x - y*y; };  // unit parabola - opens to right
-  ig.drawImplicitCurve(f, 0.0, 0.0, 0.0, imgCurve, color);
+  ig.plotImplicitCurve(f, 0.0, 0.0, 0.0, imgCurve, color);
 
   f = [=](double x, double y) { return x + y*y; };  // unit parabola - opens to left
-  ig.drawImplicitCurve(f, 0.0, 0.0, 0.0, imgCurve, color);
+  ig.plotImplicitCurve(f, 0.0, 0.0, 0.0, imgCurve, color);
 
   // maybe draw everything except the circle again but rotated by 45°
 
@@ -959,7 +959,11 @@ void implicitCurve()
   IP::normalize(imgCurve);
   writeScaledImageToFilePPM(imgCurve, "ImplicitCurves.ppm", 1);
 
-  // -with range = 2.1, it fails! rnage = 2.0 or 1.5 works fine
+  // -with step = 4 (parameter inside the function), the ellipses are drawn heavier than with 
+  //  step = 3 - why? with step = 5, they look as expected again, with 6 they get denser again
+  //  (but not as dense as with 4) and here, also the circles have denser dots
+  // -also, with step > larger than 1, we begin to see a doubl-drawing of the last pixel again
+  //  (maybe we need to scale the weight of the final pixel by 1/step)
 }
 // other curves to try:
 // https://en.wikipedia.org/wiki/Pedal_curve
@@ -1094,11 +1098,11 @@ void testDistanceMap()
 
   using IP = rsImageProcessor<float>;
 
-  rsImageGenerator<float, double> ig;
+  rsImagePlotter<float, double> ig;
   ig.setRange(xMin, xMax, yMin, yMax);
 
 
-  ig.distanceMap(imgDist, &x[0], &y[0], N);
+  ig.plotDistanceMap(imgDist, &x[0], &y[0], N);
   IP::normalize(imgDist);
   IP::invert(imgDist);
   IP::sineShape(imgDist);
@@ -1141,7 +1145,7 @@ void plotSpiralHeightProfile()
   // Generate data:
   std::vector<double> r(N), h0(N), h1(N), h2(N), h3(N);  // radius and heights
   rsArrayTools::fillWithRangeExponential(&r[0], N, rMin, rMax);
-  rsImageGenerator<float, double> ig;
+  rsImagePlotter<float, double> ig;
   double a = log(shrink) / (2*PI);
   for(int i = 0; i < N; i++) {
     double x = r[i] * cos(angle);
@@ -1172,7 +1176,7 @@ void testSpiralHeightProfile()
   double a = log(g) / (2*PI);                                // shrink/grow factor is 2
   rsArrayTools::fillWithRangeExponential(&r[0], N, 1.0, g);  // interval 1...g, log-scaled
   rsArrayTools::fillWithRangeLinear(     &R[0], N, 0.0, PI); // interval 0..PI, lin-scaled
-  rsImageGenerator<float, double> ig;
+  rsImagePlotter<float, double> ig;
   for(int i = 0; i < N; i++) {
     h[i] = ig.spiralRidge(r[i], 0, a, 0., 1., 2);  // x=r, y=0
     s[i] = sin(R[i]); }
@@ -1287,7 +1291,7 @@ void spirals()
   //phaseInc = rsDegreeToRadiant(phaseInc);
 
 
-  rsImageGenerator<float, double> ig;
+  rsImagePlotter<float, double> ig;
   std::function<double(double, double)> f;
   f = [&](double x, double y) 
   { 

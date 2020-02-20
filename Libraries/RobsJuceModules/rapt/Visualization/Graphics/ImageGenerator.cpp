@@ -1,6 +1,6 @@
 
 template<class TPix, class TVal> 
-void rsImageGenerator<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(TVal, TVal)>& f, 
+void rsImagePlotter<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(TVal, TVal)>& f, 
   TVal c, TVal x0, TVal y0, rsImage<TPix>& img, TPix color, bool clockwise) 
 {
   rsAssert(f(x0, y0) == c, "x0,y0 should solve f(x0,y0) = c" );  
@@ -18,6 +18,9 @@ void rsImageGenerator<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(T
   TVal sy  = yMaxPixel   / (yMax-yMin);
   TVal sxi = (xMax-xMin) / xMaxPixel;
   TVal syi = (yMax-yMin) / yMaxPixel;
+
+  // experimental - scale pixel steps:
+  TVal step = TVal(1);  // make user parameter - 1: increment x or y by one pixel
 
   // Convert (x,y) to pixel coordinates and draw 1st point. In order to avoid double-drawing a point
   // in the potential recursive call (for 2-part curves), do it conditionally:
@@ -47,13 +50,13 @@ void rsImageGenerator<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(T
     if(flat) {
       dx = rsSign(rx) / sx;    // this step should translate to 1 pixel left or right -> check this!
       dy = dx * ry/rx;         // the y-step is proportional to the x-step - is this formula the best we can do?
-      x += dx;                 // walk one pixel left or right
-      y += dy; }
+      x += step*dx;            // walk one pixel (or step) left or right
+      y += step*dy; }
     else {              // verticalish
       dy = rsSign(ry) / sy;
       dx = dy * rx/ry;
-      x += dx;
-      y += dy; }
+      x += step*dx;
+      y += step*dy; }
 
     // In the step just taken, we may have drifted off the contour line due to approximation 
     // errors, so we fix this by refining x or y such that we land on the contour again. We use 1D 
@@ -127,8 +130,14 @@ void rsImageGenerator<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(T
       break;  }
   }
 }
-// maybe fill the shape by coloring all pixels for which f(x,y) < c
-
+// -maybe fill the shape by coloring all pixels for which f(x,y) < c
+// -maybe break the function up into one the generates an array of (x,y)-pairs and one that 
+//  actually draws them - then this generator function could also be used with other drawing
+//  backends such as juce or OpenGL
+// -maybe have a scaler for the x- or y- pixel steps (currently, we go one pixel into x- or 
+//  y-direction) - this is especially useful in conjuction with the former idea because other
+//  backends will presumably connect the produced points with line-segmens in which case it may be
+//  overkill to generate one segment per pixel
 
 
 
@@ -174,7 +183,7 @@ T minDistance(T x0, T y0, T* x, T* y, int N)
 
 
 template<class TPix, class TVal>
-void rsImageGenerator<TPix, TVal>::distanceMap(rsImage<TPix>& img, TVal* x, TVal* y, int N)
+void rsImagePlotter<TPix, TVal>::plotDistanceMap(rsImage<TPix>& img, TVal* x, TVal* y, int N)
 {
   for(int j = 0; j < img.getHeight(); j++) {
     for(int i = 0; i < img.getWidth(); i++) {
@@ -186,7 +195,7 @@ void rsImageGenerator<TPix, TVal>::distanceMap(rsImage<TPix>& img, TVal* x, TVal
 
 
 template<class TPix, class TVal> 
-TVal rsImageGenerator<TPix, TVal>::spiralRidge(TVal x, TVal y, TVal a, TVal p, TVal sign, 
+TVal rsImagePlotter<TPix, TVal>::spiralRidge(TVal x, TVal y, TVal a, TVal p, TVal sign, 
   int profile, TVal exponent)
 {
   // sanity check inputs:

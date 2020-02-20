@@ -9,20 +9,29 @@ maybe rename to rsImagePlotter
 */
 
 template<class TPix, class TVal>  // pixel and value types (for coordinates, heights, etc.)
-class rsImageGenerator
+class rsImagePlotter
 {
 
 public:
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
 
   void setRange(TVal minX, TVal maxX, TVal minY, TVal maxY)
   { xMin = minX; xMax = maxX; yMin = minY; yMax = maxY;  }
 
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Plotting
+
   /** Draws the curve defined by f(x,y) = c onto the image. It needs one solution x0,y0 for which
   f(x0,y0) = c holds as starting point. */
-  void drawImplicitCurve(const std::function<TVal(TVal, TVal)>& f, TVal c, TVal x0, TVal y0,
+  void plotImplicitCurve(const std::function<TVal(TVal, TVal)>& f, TVal c, TVal x0, TVal y0,
     rsImage<TPix>& img, TPix color)
   { _drawImplicitCurve(f, c, x0, y0, img, color, false); }
+  // maybe have the color and img as members
 
 
 
@@ -30,6 +39,17 @@ public:
   // todo: drawFunction (variants: y = f(x), z = f(x,y)), drawParametricCurve, drawCoordinateGrid
 
 
+  /** Given an array of N points (x,y) in pixel coordinates (for example, representing a curve in the
+  x,y-plane), this function fills the image img with the minimum values of the distances between the 
+  point at the pixel-coordinates and the points on the curve. This is expensive: scales like 
+  img.getWidth() * img.getHeight() * N   */
+  void plotDistanceMap(rsImage<TPix>& img, TVal* x, TVal* y, int N);
+  // todo: allow for different distance measurs (currently uses Euclidean distance)
+  // maybe rename to fillDistanceMap
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Some interesting functions to plot (maybe move into other class)
 
   /** Given plane coordinates x,y, this function computes a height above the plane that has the 
   shape of ridge (of height 1) that spirals around in a logarithmic spiral with the parametric 
@@ -47,14 +67,6 @@ public:
   // move code for implicit function function plotting into this class
 
 
-
-  /** Given an array of N points (x,y) in pixel coordinates (for example, representing a curve in the
-  x,y-plane), this function fills the image img with the minimum values of the distances between the 
-  point at the pixel-coordinates and the points on the curve. This is expensive: scales like 
-  img.getWidth() * img.getHeight() * N   */
-  void distanceMap(rsImage<TPix>& img, TVal* x, TVal* y, int N);
-  // todo: allow for different distance measurs (currently uses Euclidean distance)
-  // rename to drawDistanceMap
 
 
   rsImagePainter<TPix, TVal, TVal> painter;
