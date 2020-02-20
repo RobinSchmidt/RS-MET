@@ -1,6 +1,8 @@
 #ifndef RAPT_IMAGEGENERATOR_H_INCLUDED
 #define RAPT_IMAGEGENERATOR_H_INCLUDED
 
+// maybe rename file to ImageGenerators (plural because we may include more classes here later)
+
 /** A class for generating images by various algorithms. In particular, it may generate images that
 visualize mathematical entities such as 2D functions z = f(x,y) or implicit or parameteric curves, 
 so the algorithms here may serve as building blocks for creating mathematical plots. 
@@ -21,7 +23,7 @@ public:
   void setRange(TVal minX, TVal maxX, TVal minY, TVal maxY)
   { xMin = minX; xMax = maxX; yMin = minY; yMax = maxY;  }
 
-
+  // void setPlotImage, setCurveColor
 
   //-----------------------------------------------------------------------------------------------
   // \name Plotting
@@ -83,7 +85,9 @@ protected:
 
   TVal xMin = TVal(-1), xMax = TVal(+1), yMin = TVal(-1), yMax = TVal(+1);  // plotting range
 
-  //TPix color;
+
+  //rsImage<TPix>* plotImage;
+  //TPix curveColor;
 
 
 };

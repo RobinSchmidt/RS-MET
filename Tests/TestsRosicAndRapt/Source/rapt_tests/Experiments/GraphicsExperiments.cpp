@@ -948,6 +948,11 @@ void implicitCurve()
 
   f = [=](double x, double y) { return x + y*y; };  // unit parabola - opens to left
   ig.plotImplicitCurve(f, 0.0, 0.0, 0.0, imgCurve, color);
+  // make the imgCurve and color members of the plotter object such that they don't have to be 
+  // passed over and over again - this has also other benefits such as being able to set up the
+  // world-to-pixel/pixel-to-world coordinate transformations once (in setPlotImage and 
+  // setRange) - use coordinate-transformer objects there and allow also for logarithmic scaling
+  // of the x- and/or y-axis
 
   // maybe draw everything except the circle again but rotated by 45°
 
@@ -972,6 +977,43 @@ void implicitCurve()
 // https://en.wikipedia.org/wiki/Epicycloid
 // https://en.wikipedia.org/wiki/Hypotrochoid
 // https://en.wikipedia.org/wiki/Epitrochoid
+
+
+<template class TPix, class TVal>
+void plotParametricCurve(const std::function<TVal(TVal)>& fx, const std::function<TVal(TVal)>& fy,
+  const std::vector<TVal>& t, rsImage<TPix>& img, TPix color)
+{
+  rsImagePainter<TPix, TVal, TVal> painter;
+  painter.setImageToPaintOn(&img);
+
+  for(size_t i = 0; i < t.size(); i++)
+  {
+    TVal x = fx(t[i]);
+    TVal y = fy(t[i]);
+
+    // ...todo: transform (x,y) to pixel coordinates...
+
+    painter.paintDot(x, y, color);
+  }
+
+
+  int dummy = 0;
+}
+
+
+void parametricCurve()
+{
+  int width    = 500;
+  int height   = 500;
+  int numDots  = 1000;
+  double range = 1.5;
+  bool natural = false;  // natural parametrization (by arc-length s)
+
+
+
+}
+
+
 
 //-------------------------------------------------------------------------------------------------
 // image effects:
