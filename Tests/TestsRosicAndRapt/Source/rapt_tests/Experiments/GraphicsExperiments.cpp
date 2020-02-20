@@ -1001,14 +1001,65 @@ void plotParametricCurve(const std::function<TVal(TVal)>& fx, const std::functio
   TVal t0, TVal t1, int N, rsImage<TPix>& img, TPix color,
   TVal xMin, TVal xMax, TVal yMin, TVal yMax)
 {
-  std::vector<TVal> t(N);
-  //rsArrayTools::fillWithRangeLinear(&t[0], N, t0, t1);
-  rsArrayTools::fillWithRangeLinear(&t[0], N, t0, t0 + TVal(N-1)*(t1-t0)/TVal(N)); // avoid double-drawing last dot
+  using Vec = std::vector<TVal>;
 
-  // todo: if natural parameterization is desired, warp t-array accordingly...
+  Vec t(N);  // array of time-stamps
+
+  // avoid painting the last point twice in case of closed curves:
+  bool avoidDoubleDraw = true;
+  if(avoidDoubleDraw)
+    t1 = t0 + TVal(N-1)*(t1-t0)/TVal(N);
+  rsArrayTools::fillWithRangeLinear(&t[0], N, t0, t1);
+
+  //rsArrayTools::fillWithRangeLinear(&t[0], N, t0, t0 + TVal(N-1)*(t1-t0)/TVal(N)); // avoid double-drawing last dot
+
+  // todo: if natural parameterization (i.e. parametrization by arc-length) is desired, warp 
+  // t-array accordingly:
+  bool natural = true;
+  if(natural)
+  {
+    Vec t2(N);       // new, modified array of time-stamps
+
+    // maybe factor out into arcLengthFunction:
+    Vec s(N);        // arc-length as function of t
+    TVal x0 = fx(t[0]);
+    TVal y0 = fy(t[0]);
+    s[0] = TVal(0);
+    for(int n = 1; n < N; n++) 
+    {
+      TVal x1 = fx(t[n]);
+      TVal y1 = fy(t[n]);
+      TVal dx = x1 - x0;
+      TVal dy = y1 - y0;
+      TVal ds = sqrt(dx*dx + dy*dy);
+      s[n] = s[n-1] + ds; 
+      x0 = x1;
+      y0 = y1;
+    }
+
+    // -todo: maybe compute an array of ds-values and use trapezoidal integration - the code above
+    //  computes a Riemann sum which is less accurate
 
 
-  plotParametricCurve(fx, fy, t, img, color, xMin, xMax, yMin, yMax);
+    // -todo: compute the new t-array as inverse of the arc-length function
+
+    TVal length = s[N-1];  // total length of the curve
+    Vec r(N);
+    rsArrayTools::fillWithRangeLinear(&r[0], N, TVal(0), length);
+
+    resampleNonUniformLinear(&s[0], &t[0], N, &r[0], &t2[0], N);
+    // chek this
+
+    //rsPlotVectorsXY(t, s);   // arc-length as function of raw parameter t
+    //rsPlotVectorsXY(r, t2);  // mapped parameter t as function of arc-length s
+
+
+
+
+    plotParametricCurve(fx, fy, t2, img, color, xMin, xMax, yMin, yMax);
+  }
+  else
+    plotParametricCurve(fx, fy, t, img, color, xMin, xMax, yMin, yMax);
 }
 
 
