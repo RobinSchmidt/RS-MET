@@ -996,68 +996,60 @@ void plotParametricCurve(const std::function<TVal(TVal)>& fx, const std::functio
     painter.paintDot(x, y, color); }
 }
 
+
+/** For parametric curve given by x(t) = fx(t), y(t) = fy(t) and a given set of (strictly 
+increasing) sample-points t, this function computes the arc-length function and stores the values
+in s. */
+template<class T>
+void arcLengthFunction(
+  const std::function<T(T)>& fx, const std::function<T(T)>& fy,
+  const std::vector<T>& t, std::vector<T>& s)
+{
+  rsAssert(s.size() == t.size()); // or maybe just resize s - or use raw arrays
+  T x0 = fx(t[0]);
+  T y0 = fy(t[0]);
+  s[0] = T(0);
+  for(size_t n = 1; n < t.size(); n++) {
+    T x1 = fx(t[n]); T y1 = fy(t[n]);
+    T dx = x1 - x0;  T dy = y1 - y0;
+    T ds = sqrt(dx*dx + dy*dy);
+    s[n] = s[n-1] + ds; 
+    x0 = x1; y0 = y1; }
+}
+// todo: maybe compute an array of ds-values and use trapezoidal integration - the code above
+// computes a Riemann sum which is less accurate
+
+
 template<class TPix, class TVal>
 void plotParametricCurve(const std::function<TVal(TVal)>& fx, const std::function<TVal(TVal)>& fy,
   TVal t0, TVal t1, int N, rsImage<TPix>& img, TPix color,
   TVal xMin, TVal xMax, TVal yMin, TVal yMax)
 {
   using Vec = std::vector<TVal>;
+  using AT  = rsArrayTools;
 
-  Vec t(N);  // array of time-stamps
-
-  // avoid painting the last point twice in case of closed curves:
-  bool avoidDoubleDraw = true;
+  // Avoid painting the last point twice in case of closed curves:
+  bool avoidDoubleDraw = true; // make user parameter
   if(avoidDoubleDraw)
-    t1 = t0 + TVal(N-1)*(t1-t0)/TVal(N);
-  rsArrayTools::fillWithRangeLinear(&t[0], N, t0, t1);
+    t1 = t0 + TVal(N-1)*(t1-t0) / TVal(N);
 
-  //rsArrayTools::fillWithRangeLinear(&t[0], N, t0, t0 + TVal(N-1)*(t1-t0)/TVal(N)); // avoid double-drawing last dot
+  // Create array of time-stamps:
+  Vec t(N);  
+  AT::fillWithRangeLinear(&t[0], N, t0, t1);
 
-  // todo: if natural parameterization (i.e. parametrization by arc-length) is desired, warp 
+  // If natural parameterization (i.e. parametrization by arc-length) is desired, warp 
   // t-array accordingly:
-  bool natural = true;
-  if(natural)
-  {
-    Vec t2(N);       // new, modified array of time-stamps
-
-    // maybe factor out into arcLengthFunction:
-    Vec s(N);        // arc-length as function of t
-    TVal x0 = fx(t[0]);
-    TVal y0 = fy(t[0]);
-    s[0] = TVal(0);
-    for(int n = 1; n < N; n++) 
-    {
-      TVal x1 = fx(t[n]);
-      TVal y1 = fy(t[n]);
-      TVal dx = x1 - x0;
-      TVal dy = y1 - y0;
-      TVal ds = sqrt(dx*dx + dy*dy);
-      s[n] = s[n-1] + ds; 
-      x0 = x1;
-      y0 = y1;
-    }
-
-    // -todo: maybe compute an array of ds-values and use trapezoidal integration - the code above
-    //  computes a Riemann sum which is less accurate
-
-
-    // -todo: compute the new t-array as inverse of the arc-length function
-
-    TVal length = s[N-1];  // total length of the curve
-    Vec r(N);
-    rsArrayTools::fillWithRangeLinear(&r[0], N, TVal(0), length);
-
+  bool natural = true;  // make user parameter
+  if(natural) {
+    Vec s(N);  // arc-length as function of raw parameter t
+    Vec r(N);  // equally spaced values from 0..arcLength
+    Vec t2(N); // new, modified array of time-stamps
+    arcLengthFunction(fx, fy, t, s);
+    AT::fillWithRangeLinear(&r[0], N, TVal(0), s[N-1]); // s[N-1] is total length of the curve
     resampleNonUniformLinear(&s[0], &t[0], N, &r[0], &t2[0], N);
-    // chek this
-
     //rsPlotVectorsXY(t, s);   // arc-length as function of raw parameter t
     //rsPlotVectorsXY(r, t2);  // mapped parameter t as function of arc-length s
-
-
-
-
-    plotParametricCurve(fx, fy, t2, img, color, xMin, xMax, yMin, yMax);
-  }
+    plotParametricCurve(fx, fy, t2, img, color, xMin, xMax, yMin, yMax); }
   else
     plotParametricCurve(fx, fy, t, img, color, xMin, xMax, yMin, yMax);
 }
