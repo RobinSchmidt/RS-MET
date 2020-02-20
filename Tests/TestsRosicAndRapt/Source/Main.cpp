@@ -197,7 +197,8 @@ int main(int argc, char* argv[])
   // Plotting:
   //contours();
   //complexContours();
-  implicitCurve();
+  //implicitCurve();
+  parametricCurve();
   //spirals();   // move to somewhere else...
 
   // just for fun:

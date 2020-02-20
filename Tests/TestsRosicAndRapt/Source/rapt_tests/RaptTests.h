@@ -71,6 +71,7 @@ void pixelCoverage();
 void contours();
 void complexContours();
 void implicitCurve();
+void parametricCurve();
 void spirals();   // move elsewhere Demos/Examples/Art/...
 
 // Math Experiments:

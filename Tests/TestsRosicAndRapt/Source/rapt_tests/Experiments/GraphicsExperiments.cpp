@@ -979,37 +979,71 @@ void implicitCurve()
 // https://en.wikipedia.org/wiki/Epitrochoid
 
 
-<template class TPix, class TVal>
+template<class TPix, class TVal>
 void plotParametricCurve(const std::function<TVal(TVal)>& fx, const std::function<TVal(TVal)>& fy,
-  const std::vector<TVal>& t, rsImage<TPix>& img, TPix color)
+  const std::vector<TVal>& t, rsImage<TPix>& img, TPix color, 
+  TVal xMin, TVal xMax, TVal yMin, TVal yMax)
 {
   rsImagePainter<TPix, TVal, TVal> painter;
   painter.setImageToPaintOn(&img);
+  painter.setDeTwist(true);
 
-  for(size_t i = 0; i < t.size(); i++)
-  {
+  for(size_t i = 0; i < t.size(); i++) {
     TVal x = fx(t[i]);
     TVal y = fy(t[i]);
+    x = rsLinToLin(x, xMin, xMax, TVal(0),  TVal(img.getWidth()-1));
+    y = rsLinToLin(y, yMin, yMax, TVal(img.getHeight()-1), TVal(0));
+    painter.paintDot(x, y, color); }
+}
 
-    // ...todo: transform (x,y) to pixel coordinates...
+template<class TPix, class TVal>
+void plotParametricCurve(const std::function<TVal(TVal)>& fx, const std::function<TVal(TVal)>& fy,
+  TVal t0, TVal t1, int N, rsImage<TPix>& img, TPix color,
+  TVal xMin, TVal xMax, TVal yMin, TVal yMax)
+{
+  std::vector<TVal> t(N);
+  //rsArrayTools::fillWithRangeLinear(&t[0], N, t0, t1);
+  rsArrayTools::fillWithRangeLinear(&t[0], N, t0, t0 + TVal(N-1)*(t1-t0)/TVal(N)); // avoid double-drawing last dot
 
-    painter.paintDot(x, y, color);
-  }
+  // todo: if natural parameterization is desired, warp t-array accordingly...
 
 
-  int dummy = 0;
+  plotParametricCurve(fx, fy, t, img, color, xMin, xMax, yMin, yMax);
 }
 
 
 void parametricCurve()
 {
+  // Plot parameters:
   int width    = 500;
   int height   = 500;
-  int numDots  = 1000;
+  int numDots  = 2500;
+  //int numDots  = 500;
   double range = 1.5;
   bool natural = false;  // natural parametrization (by arc-length s)
 
+  // Lissajous curve parameters:
+  double a  = 2.0;
+  double b  = 3.0;
+  double p  = PI;
+  double t0 = 0.0;
+  double t1 = 2*PI * 1.0;
 
+  // define functions x = fx(t), y = fy(t)
+  std::function<double(double)> fx, fy;
+  fx = [&](double t) { return cos(a*t - 0.5*p); };
+  fy = [&](double t) { return sin(b*t + 0.5*p); };
+
+  // plot curve:
+  rsImageF img(width, height);
+  float color = 0.375f;
+  plotParametricCurve(fx, fy, t0, t1, numDots, img, color, -range, range, -range, range);
+  rsImageProcessor<float>::normalize(img);
+  writeScaledImageToFilePPM(img, "ParametricCurve.ppm", 1);
+
+  // -when using numDots such that discrete dots become visible (like 500), those that land on a 
+  //  pixel appear brighter than those which don't
+  //  -> using de-twisting improves this
 
 }
 
