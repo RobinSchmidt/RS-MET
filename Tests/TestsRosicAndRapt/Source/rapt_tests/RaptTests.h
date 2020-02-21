@@ -73,6 +73,7 @@ void complexContours();
 void implicitCurve();
 void parametricCurve();
 void spirals();   // move elsewhere Demos/Examples/Art/...
+void fractal();
 
 // Math Experiments:
 // wait - what about the file MathExperiments.h - shouldn't they be declared there?

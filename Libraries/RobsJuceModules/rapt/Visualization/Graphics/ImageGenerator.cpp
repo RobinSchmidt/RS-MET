@@ -20,17 +20,18 @@ void rsImagePlotter<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(TVa
   TVal syi = (yMax-yMin) / yMaxPixel;
 
   // experimental - scale pixel steps:
-  TVal step = TVal(1);  // make user parameter - 1: increment x or y by one pixel
+  TVal step = TVal(1);  // todo: make user parameter - 1: increment x or y by one pixel
+                        // maybe make it a "density" or "resolution" member of the class
 
   // Convert (x,y) to pixel coordinates and draw 1st point. In order to avoid double-drawing a point
   // in the potential recursive call (for 2-part curves), do it conditionally:
   TVal px, py;
-  if(!clockwise) { // avoid drawing the starting point again in the recursive call
+  if(!clockwise) {
     px = rsLinToLin(x, xMin, xMax, TVal(0), xMaxPixel);
     py = rsLinToLin(y, yMin, yMax, yMaxPixel, TVal(0));
     painter.paintDot(px, py, color); }
 
-  // Main loop over the pixels on the curve:
+  // Main loop over the points on the curve:
   int iterations = 0;
   while(true)
   {
@@ -44,8 +45,8 @@ void rsImagePlotter<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(TVa
     else          { rx = -dy; ry =  dx; }
 
     // Check, if the current segment is horizontalish/flat or verticalish/steep. In the flat case, 
-    // advance x by one pixel and y by a distance derived from the direction vector - in the steep 
-    // case, do it the other way around:
+    // advance x by one pixel and y by a distance derived from the direction vector. In the steep 
+    // case, advance y by one pixel and compute corresponding x-step:
     bool flat = rsAbs(rx*sx) > rsAbs(ry*sy);   // curve sgement is horizontalish
     if(flat) {
       dx = rsSign(rx) / sx;    // this step should translate to 1 pixel left or right -> check this!
@@ -70,8 +71,8 @@ void rsImagePlotter<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(TVa
     //tol = T(0);  // test
     if(!flat) {               // y-step is larger (steep) -> refine x
       while(rsAbs(err) > tol)  {
-        dx    = (f(x+h, y) - f(x-h, y)) / (TVal(2)*h); // central difference as approximation to the
-        x     = x - err / dx;                       // partial derivative with respect to x
+        dx = (f(x+h, y) - f(x-h, y)) / (TVal(2)*h); // central difference as approximation to the..
+        x  = x - err / dx;                          // ..partial derivative with respect to x
         TVal old = err;
         err   = f(x,y) - c;
         if(rsAbs(old) <= rsAbs(err)) {
@@ -80,7 +81,7 @@ void rsImagePlotter<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(TVa
     else {
       while(rsAbs(err) > tol)  {
         dy = (f(x, y+h) - f(x, y-h)) / (TVal(2)*h);
-        y   = y - err / dy;
+        y  = y - err / dy;
         TVal old = err;
         err = f(x,y) - c;  
         if(rsAbs(old) <= rsAbs(err)) {
@@ -125,7 +126,7 @@ void rsImagePlotter<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(TVa
 
     // Avoid infinite loops - this should not normally happen:
     iterations++;
-    if(iterations > 100000) { // is that enough? may some curves have more pixels?
+    if(iterations > 1000000) { // 1 million dots should be enough for any reasonable curve
       rsError("drawImplicitCurve ran into infinite loop");
       break;  }
   }
@@ -134,10 +135,12 @@ void rsImagePlotter<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(TVa
 // -maybe break the function up into one the generates an array of (x,y)-pairs and one that 
 //  actually draws them - then this generator function could also be used with other drawing
 //  backends such as juce or OpenGL
+// -question: how does this "find gradient, then rotate by 90°" method to figure out the direction
+//  of the curve relate to implicit differentiation? it's probably equivalent?
 // -maybe have a scaler for the x- or y- pixel steps (currently, we go one pixel into x- or 
 //  y-direction) - this is especially useful in conjuction with the former idea because other
 //  backends will presumably connect the produced points with line-segmens in which case it may be
-//  overkill to generate one segment per pixel
+//  overkill to generate one segment per pixel - done, but not yet accessible by client code
 
 
 

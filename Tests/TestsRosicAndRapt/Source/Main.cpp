@@ -198,8 +198,9 @@ int main(int argc, char* argv[])
   //contours();
   //complexContours();
   //implicitCurve();
-  parametricCurve();
+  //parametricCurve();
   //spirals();   // move to somewhere else...
+  fractal();
 
   // just for fun:
   //groupString();

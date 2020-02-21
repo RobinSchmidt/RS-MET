@@ -661,7 +661,8 @@ void contours()
   int h = 129;               // height in pixels
 
   //w = h = 100;
-  w = h = 513;
+  //w = h = 513;
+  w = h = 500;
   //w = h = 1025;
   //w = h = 800;
 
@@ -669,7 +670,9 @@ void contours()
   int numLevels = 20;
   int numColors = numLevels + 1;
 
-  //numColors = 2;  // test
+  //numColors = 3;  // test
+
+  bool antiAlias = true;
 
   float xMin = -r;
   float xMax = +r;
@@ -702,13 +705,13 @@ void contours()
 
   // create images with contours:
   std::vector<float> levels = rsRangeLinear(0.f, 1.f, numLevels);
-  rsImageF imgCont = cp.getContourLines(imgFunc, levels, { 1.0f }, true);
+  rsImageF imgCont = cp.getContourLines(imgFunc, levels, { 1.0f }, antiAlias);
   // with anti-aliasing, we need to use about twice as much brightness to get the same visual 
   // brightness
 
   // create images with bin-fills:
   std::vector<float> colors = rsRangeLinear(0.f, 1.f, numColors);
-  rsImageF imgFills = cp.getContourFills(imgFunc, levels, colors, true);
+  rsImageF imgFills = cp.getContourFills(imgFunc, levels, colors, antiAlias);
   // the highest levels are not white but gray - ah: it was because the painter used the saturating
   // mode - saturating mode should *NOT* be used for filling contours!!!
 
@@ -752,8 +755,8 @@ void complexContours()
   //  -maybe plot the contour lines into green channel
 
   // setup:
-  int w           = 513;               // width in pixels
-  int h           = 513;               // height in pixels
+  int w           = 400;               // width in pixels
+  int h           = 400;               // height in pixels
   int numLevels   = 20;                // number of contour levels
   int numColors   = numLevels + 1;     // number of contour colors
   double r        = 5;                 // range x = -r..+r, y = -r...+r
@@ -774,8 +777,8 @@ void complexContours()
   // pick complex function to plot
   //f = [=](Complex z) { return z; };
   //f = [=](Complex z) { return z + 0.5*z*z + (1./6)*z*z*z; };
-  f = [=](Complex z) { return z*z; };
-  //f = [=](Complex z) { return z*z*z; };
+  //f = [=](Complex z) { return z*z; };
+  f = [=](Complex z) { return z*z*z; };
   //f = [=](Complex z) { return z*z*z*z; };
   //f = [=](Complex z) { return 1./(1. + z); };
 
@@ -1016,8 +1019,8 @@ void arcLengthFunction(
     s[n] = s[n-1] + ds; 
     x0 = x1; y0 = y1; }
 }
-// todo: maybe compute an array of ds-values and use trapezoidal integration - the code above
-// computes a Riemann sum which is less accurate
+// todo: maybe first fill the s-array with the ds-values and then call the trapezoidal integration
+// routine - the code above computes a Riemann sum which is less accurate
 
 
 template<class TPix, class TVal>
@@ -1054,7 +1057,6 @@ void plotParametricCurve(const std::function<TVal(TVal)>& fx, const std::functio
     plotParametricCurve(fx, fy, t, img, color, xMin, xMax, yMin, yMax);
 }
 
-
 void parametricCurve()
 {
   // Plot parameters:
@@ -1087,6 +1089,21 @@ void parametricCurve()
   // -when using numDots such that discrete dots become visible (like 500), those that land on a 
   //  pixel appear brighter than those which don't
   //  -> using de-twisting improves this
+}
+
+template<class TPix, class TVal>
+void plotFunction(const std::function<TVal(TVal)>& f, rsImage<TPix>& img, TPix color,
+  TVal xMin, TVal xMax, TVal yMin, TVal yMax)
+{
+  // loop over the x-coordinates, compute the next y-coordinate, compute length of segment,
+  // compute number of dots to use for this segment, draw the segment
+
+}
+
+
+void plotFunction()
+{
+  // test function plotting with some example functions
 
 }
 
@@ -1512,11 +1529,64 @@ void spirals()
   //  with some sort of waveshaping we can make this oscillation sinuosidal
   //  ->try to use a rational mapping of the heights to expand the middle-gray range
 }
-
 // exponent 3 makes for good balance between black and white - but middle gray is 
 // underrepresented - todo: apply expansion of middle gray and compression of black/white values
 
+template<class T>
+int numIterationsToDivergence(std::function<T(T, T)> fx, std::function<T(T, T)> fy, T x0, T y0,
+  T thresh, int maxNumIterations)
+{
+  T x = x0;
+  T y = y0;
+  for(int i = 0; i <= maxNumIterations; i++) {
+    T r2 = x*x + y*y;   // squared radius
+    if(r2 > thresh)     // should it be >? maybe - the threshold itself may be the stability limit
+      return i;
+    r2 = fx(x, y);      // r2 used as temporary for x
+    y  = fy(x, y);
+    x  = r2; }
+  return -1;  // -1 indicates that threshold was not exceeded in any iteration
+}
+// todo: maybe instead of returning just the number of iterations until divergence is assured, 
+// return some more elaborate information about the trajectory - for example: 
+// -the total (squared?) distance taken in all the steps
 
+void mandelbrot(rsImage<float>& img, int maxIterations, 
+  double xMin, double xMax, double yMin, double yMax)
+{
+  double cx, cy;
+  std::function<double(double, double)> fx, fy;
+  fx = [&](double x, double y) { return x*x - y*y + cx; };
+  fy = [&](double x, double y) { return 2*x*y     + cy; };
+  for(int j = 0; j < img.getHeight(); j++) {
+    for(int i = 0; i < img.getWidth(); i++) {
+      cx = rsLinToLin((double)i, 0.0,  double(img.getWidth()-1), xMin, xMax);
+      cy = rsLinToLin((double)j, double(img.getHeight()-1), 0.0, yMin, yMax);
+      int its = numIterationsToDivergence(fx, fy, 0.0, 0.0, 4.0, maxIterations);
+      img(i, j) = float(its); }}
+      // maybe do: if(its >= 0) -> black, else white
+}
+
+void fractal()
+{
+  int w = 400;
+  int h = 400;
+
+  int numIterations = 1000;
+
+  double xMin = -1.5;
+  double xMax = +0.5;
+  double yMin = -1.0;
+  double yMax = +1.0;
+
+  using IP = rsImageProcessor<float>;
+  rsImageF img(w, h);
+  mandelbrot(img, numIterations, xMin, xMax, yMin, yMax);
+  IP::normalize(img);
+  // maybe apply gamma, contrast, etc.
+
+  writeImageToFilePPM(img, "Mandelbrot.ppm");
+}
 
 
 

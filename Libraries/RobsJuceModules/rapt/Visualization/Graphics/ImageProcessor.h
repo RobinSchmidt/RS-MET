@@ -98,19 +98,19 @@ public:
   TVal contourPixelCoverage(TVal z00, TVal z01, TVal z10, TVal z11, TVal c);
 
   /** Used in contourSubPixelPosition and contourPixelCoverage.
-  Given values at a pixel z00 and its neigbours, this function computes the coeffs of a 
+  Given values at a pixel z00 and its neighbours, this function computes the coeffs of a 
   parametric line equation x(t) = x0 + t*(x1-x0), y(t) = y0 + t*(y1-y0). The line is supposed to 
   approximate a segment of a contour of a function/image with level given by c. This is how the 
-  function values are distributed over the pixels: z00 is the value at the pixel under investigation 
-  and z01, z10, z11 are bottom, right and diagonal neighbours (in that order):
+  function values are distributed over the pixels: z00 is the value at the pixel under 
+  investigation and z01, z10, z11 are bottom, right and diagonal neighbours (in that order):
      z00--z10
       |    |
      z01--z11  
   so the first index refers to the x-coordinate, the second to the y-coordinate and y increases 
-  downward as is common in image processing. The function also returns an integer indicating which 
-  branch we ended up in: 0: top-left, 1: top-right, 2: bottom-left, 3: bottom-right, 
-  4: horizontalish, 5: verticalish - where "top-left" etc. means that the segment "cuts off" the 
-  top-left corner of the pixel. */
+  downward as is common in image processing when coordinates are expressed in pixel-coordinates. 
+  The function also returns an integer indicating which branch we ended up in: 
+    0: top-left, 1: top-right, 2: bottom-left, 3: bottom-right, 4: horizontalish, 5: verticalish 
+  where "top-left" etc. means that the segment "cuts off" the top-left corner of the pixel. */
   int contourSegmentCoeffs(TVal z00, TVal z01, TVal z10, TVal z11, TVal c,
     TVal& x0, TVal& y0, TVal& x1, TVal& y1);
 
