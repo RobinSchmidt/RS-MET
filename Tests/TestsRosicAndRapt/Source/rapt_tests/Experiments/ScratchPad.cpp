@@ -1598,6 +1598,9 @@ public:
       {
         // closer to green, so g = max
 
+        *g = -B*(3*H - 2)/((3*(2*H - 1)*wb + (3*H - 2)*wr)*S - (3*H - 2)*wb - (3*H - 2)*wg - (3*H - 2)*wr);
+        *r = *g * (1-S);
+        *b = (B - wg * *g - wr * *r) / wb;
 
         int dummy = 0;
       }
@@ -1632,3 +1635,11 @@ protected:
 // b == -B*(3*H - 1)/((3*(2*H - 1)*wg + (3*H - 1)*wr)*S - (3*H - 1)*wb - (3*H - 1)*wg - (3*H - 1)*wr)
 //
 // -> use only formula for b, compute r,g via back-substitution when b is known
+// for the branch blue..green, closer to blue, the 1st equation is replaced with S == (g-r)/g, the
+// rest stays the same and we get:
+//
+// r == (B*(3*H - 2)*S - B*(3*H - 2))/((3*(2*H - 1)*wb + (3*H - 2)*wr)*S - (3*H - 2)*wb - (3*H - 2)*wg - (3*H - 2)*wr), 
+// g == -B*(3*H - 2)/((3*(2*H - 1)*wb + (3*H - 2)*wr)*S - (3*H - 2)*wb - (3*H - 2)*wg - (3*H - 2)*wr), 
+// b == (3*B*(2*H - 1)*S - B*(3*H - 2))/((3*(2*H - 1)*wb + (3*H - 2)*wr)*S - (3*H - 2)*wb - (3*H - 2)*wg - (3*H - 2)*wr)
+//
+// this time, we use the result for green, then compute red and blue by back-substitution
