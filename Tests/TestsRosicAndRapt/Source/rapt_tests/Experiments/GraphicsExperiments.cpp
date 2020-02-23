@@ -1532,6 +1532,11 @@ void spirals()
 // exponent 3 makes for good balance between black and white - but middle gray is 
 // underrepresented - todo: apply expansion of middle gray and compression of black/white values
 
+/** Returns the number of iterations it takes for the iterative application of:
+      (x,y) <- (fx(x,y), fy(x,y))
+to reach point at which r^2 := x^2 + y^2 > thresh, i.e. the point at which the squared length of 
+the vector (x,y) exceeds a given threshold. If the threshold is never exceeded within 
+maxNumIterations, -1 is returned. The iteration starts at the initial point (x0,y0). */
 template<class T>
 int numIterationsToDivergence(std::function<T(T, T)> fx, std::function<T(T, T)> fy, T x0, T y0,
   T thresh, int maxNumIterations)
@@ -1550,6 +1555,8 @@ int numIterationsToDivergence(std::function<T(T, T)> fx, std::function<T(T, T)> 
 // todo: maybe instead of returning just the number of iterations until divergence is assured, 
 // return some more elaborate information about the trajectory - for example: 
 // -the total (squared?) distance taken in all the steps
+// -the total x- and/or y-direction travelled
+// -this data could also be used to shade the inside
 
 void mandelbrot(rsImage<float>& img, int maxIterations, 
   double xMin, double xMax, double yMin, double yMax)
@@ -1558,36 +1565,69 @@ void mandelbrot(rsImage<float>& img, int maxIterations,
   std::function<double(double, double)> fx, fy;
   fx = [&](double x, double y) { return x*x - y*y + cx; };
   fy = [&](double x, double y) { return 2*x*y     + cy; };
+  float scl = 1.f / float(maxIterations);
   for(int j = 0; j < img.getHeight(); j++) {
     for(int i = 0; i < img.getWidth(); i++) {
       cx = rsLinToLin((double)i, 0.0,  double(img.getWidth()-1), xMin, xMax);
       cy = rsLinToLin((double)j, double(img.getHeight()-1), 0.0, yMin, yMax);
       int its = numIterationsToDivergence(fx, fy, 0.0, 0.0, 4.0, maxIterations);
-      img(i, j) = float(its); }}
+
+      // simple black/white:
+      //if(its >= 0) img(i, j) = 0.f; // iteration diverged -> pixel is outside the set
+      //else         img(i, j) = 1.f; // not diverged -> pixel is inside the set
+
+      // white inside, shaded outside:
+      //if(its >= 0) img(i, j) = scl * float(its);
+      //else         img(i, j) = 1.f;
+
+      // test:
+      img(i, j) = float(its);
+    }}
       // maybe do: if(its >= 0) -> black, else white
 }
+// todo: maybe do not use the numIterationsToDivergence function - directly implement all the 
+// formulas of the inner loop here - avoid overhead of using std::function...or maybe make an 
+// optimized function int mandelbrot(x, y, maxNumIts)
 
 void fractal()
 {
-  int w = 400;
-  int h = 400;
+  int w = 500;
+  int h = 500;
 
-  int numIterations = 1000;
+  int numIterations = 300;
+
 
   double xMin = -1.5;
   double xMax = +0.5;
   double yMin = -1.0;
   double yMax = +1.0;
 
+  //xMin = -2, xMax = +2, yMin = -2, yMax = +2; // wider range useful for low number of iterations
+
   using IP = rsImageProcessor<float>;
   rsImageF img(w, h);
   mandelbrot(img, numIterations, xMin, xMax, yMin, yMax);
   IP::normalize(img);
+  IP::gammaCorrection(img, 0.2f);
   // maybe apply gamma, contrast, etc.
 
   writeImageToFilePPM(img, "Mandelbrot.ppm");
-}
 
+  // Observations:
+  // -with a smaller number of iterations, some points that actually do not belong to the set are
+  //  falsely considered to be within the set - so increasing the number of iterations 
+  //  progressively removes spurious white* points (compare 100 vs 200 to see the effect) 
+  //  (* if we draw pointsinside the set white and points outside the set black)
+  // -when brightness is proportional to the number of iterations, points near the boundary of the
+  //  set ten to get colored brighter that points further outside the set
+
+  // -todo: implement color-maps (maybe move code from jura to rapt - at least partially)
+  //  a colormap should have two template-parameters: the input value and the pixel-color - for
+  //  example float and rsFloat32x2 - maybe use rsNodeBasedFunction 
+}
+// https://blogs.scientificamerican.com/roots-of-unity/a-few-of-my-favorite-spaces-the-mandelbrot-set/
+// https://math.stackexchange.com/questions/1099/mandelbrot-like-sets-for-functions-other-than-fz-z2c
+// https://math.stackexchange.com/questions/1398218/determine-coordinates-for-mandelbrot-set-zoom/1398356
 
 
 // maybe make animations with
@@ -1623,3 +1663,27 @@ void fractal()
 // https://rosettacode.org/wiki/Window_creation#C
 
 // https://rosettacode.org/wiki/Conway%27s_Game_of_Life#C
+
+
+// color spaces
+// https://en.wikipedia.org/wiki/HSL_and_HSV
+// https://en.wikipedia.org/wiki/HSL_and_HSV#Disadvantages
+
+// https://en.wikipedia.org/wiki/CIELAB_color_space
+// https://en.wikipedia.org/wiki/SRGB
+// https://stackoverflow.com/questions/7880264/convert-lab-color-to-rgb
+// http://ai.stanford.edu/~ruzon/software/rgblab.html
+
+// how about: 
+// saturation =  (max(r,g,b) - min(r,g,b)) / mean(r,g,b)
+//            or (max(r,g,b) - min(r,g,b)) / mid( r,g,b)
+//            or (max-min) / max
+// the last has the property, that saturation is 1 whenever min=0 - this seems to make sense.
+// brightness = wr*r + wg*g + wb*b where wr + wg + wb = 1
+// hue        = s = min(r,g,b), rs = r-s, gs = g-s, bs= b-s - shifted rgb values
+//              if(    bs == 0): between red and green
+//              elseif(gs == 0): between red and blue
+//              else(->rs == 0): betwen green and blue
+// ...is this invertible?
+// if hue between red,green -> blue=min etc. - the hue is used to reconstruct which of the r,g,b 
+// values are min, max

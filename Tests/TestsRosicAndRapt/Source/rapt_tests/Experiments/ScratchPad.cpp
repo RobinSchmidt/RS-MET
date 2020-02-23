@@ -1539,3 +1539,45 @@ T newton(const std::function<T(T)>& f, T x, T y = T(0))
 
 // or maybe use a simpler linear spiral:
 //   f(t) = t*cos(t), g(t) = t*sin(t)
+
+//=================================================================================================
+
+/** A new experimental colorspace that is similar to HSL or HSV but with a twist that hopefully
+overcomes the disadvantages of these... */
+
+template<class T>
+class rsColorBHS
+{
+
+  void rgb2bhs(T r, T g, T b, T* B, T* H, T* S)
+  {
+    *B = wr*r + wg*g + wb*b;
+
+    T max = rsMax(r, g, b);
+    T min = rsMin(r, g, b);
+
+    *S = (max-min) / max;
+
+    r -= min;
+    g -= min;
+    b -= min;
+
+    if(r == T(0))      *H = (g * T(1./3.) + b * T(2./3.)) / (g+b); // between green and blue
+    else if(g == T(0)) *H = (b * T(2./3.) + r * T(3./3.)) / (b+r); // between blue and red
+    else               *H = (r * T(0./3.) + g * T(1./3.)) / (r+g); // between red and gren, b == 0
+  }
+
+
+  void bhs2rgb(T B, T H, T S, T* r, T* g, T* b)
+  {
+
+  }
+
+protected:
+
+  // weights for the r,g,b components in the brightness formula (they should sum up to 1)
+  T wr = T(1)/T(3);
+  T wg = T(1)/T(3);
+  T wb = T(1)/T(3);
+
+};
