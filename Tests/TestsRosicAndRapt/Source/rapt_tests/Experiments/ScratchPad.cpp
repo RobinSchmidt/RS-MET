@@ -1588,7 +1588,7 @@ public:
       {
         // g = max
         //*g = -3*B*H/((3*H*wb + (6*H - 1)*wr)*S - 3*H*wb - 3*H*wg - 3*H*wr); // simplify!
-        *g = -3*B*H/((3*H*wb + (6*H - 1)*wr)*S - 3*H);
+        *g = -3*B*H/((3*H*wb + (6*H - 1)*wr)*S - 3*H); // maybe precompute H3 = 3*H - it appears 3 times
         *b = *g * (1-S);
         *r = (B - wb * *b - wg * *g) / wr;
       }
@@ -1614,14 +1614,31 @@ public:
         *g = -B*k/((3*(2*H - 1)*wb + k*wr)*S - k);
         *r = *g * (1-S);
         *b = (B - wg * *g - wr * *r) / wb;
-        int dummy = 0;
       }
 
     }
     else
     {
-
       // between blue and red, so g = min
+
+      if(T(1)-H < H - T(2./3.))
+      {
+        // r = max
+        *r = -B*(3*H - 2)/(((6*H - 5)*wb + (3*H - 2)*wg)*S - (3*H - 2)*wb - (3*H - 2)*wg - (3*H - 2)*wr);
+        *g = *r * (1-S);
+        *b = (B - wg * *g - wr * *r) / wb;
+        int dummy = 0;
+      }
+      else
+      {
+        // b = max
+
+
+
+        int dummy = 0;
+      }
+
+
 
     }
   }
@@ -1664,3 +1681,11 @@ protected:
 // r == (B*(6*H - 1)*S - 3*B*H)/((3*H*wb + (6*H - 1)*wr)*S - 3*H*wb - 3*H*wg - 3*H*wr), 
 // g == -3*B*H/((3*H*wb + (6*H - 1)*wr)*S - 3*H*wb - 3*H*wg - 3*H*wr), 
 // b == 3*(B*H*S - B*H)/((3*H*wb + (6*H - 1)*wr)*S - 3*H*wb - 3*H*wg - 3*H*wr)
+// between red and blue:
+// H == ((r-g)*(3/3) + (b-g)*(2/3)) / ((r-g)+(b-g)),  S == (r-g)/r
+// r == -B*(3*H - 2)/(((6*H - 5)*wb + (3*H - 2)*wg)*S - (3*H - 2)*wb - (3*H - 2)*wg - (3*H - 2)*wr), 
+// g == (B*(3*H - 2)*S - B*(3*H - 2))/(((6*H - 5)*wb + (3*H - 2)*wg)*S - (3*H - 2)*wb - (3*H - 2)*wg - (3*H - 2)*wr), 
+// b == (B*(6*H - 5)*S - B*(3*H - 2))/(((6*H - 5)*wb + (3*H - 2)*wg)*S - (3*H - 2)*wb - (3*H - 2)*wg - (3*H - 2)*wr)
+
+
+// or  S = (b-g)/b
