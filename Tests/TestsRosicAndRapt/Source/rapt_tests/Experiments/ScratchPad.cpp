@@ -1572,8 +1572,11 @@ public:
 
   void bhs2rgb(T B, T H, T S, T* r, T* g, T* b)
   {
-    if(H < T(1./3.))  // between red and green
+    T k;
+    if(H < T(1./3.))  
     {
+
+      // between red and green, so b = min
 
     }
     if(H < T(2./3.))  
@@ -1584,26 +1587,26 @@ public:
       if(T(2./3.) - H < H - T(1./3.))
       {
         // closer to blue, so b = max
-
-        //*b = 0.0;  // preliminary
-
-        *b = -B*(3*H - 1)/((3*(2*H - 1)*wg + (3*H - 1)*wr)*S - (3*H - 1)*wb - (3*H - 1)*wg - (3*H - 1)*wr);
-
-
-
+        k  = (3*H - 1);
+        //*b = -B*k / ( (3*(2*H - 1)*wg + k*wr)*S - k*(wb+wg+wr) ); // wb+wg+wr =1 -> simplify!
+        *b = -B*k / ((3*(2*H - 1)*wg + k*wr)*S - k);
         *r = *b * (1-S);
         *g = (B - wb * *b - wr * *r) / wg;
+        // this branch seems to work - now define the others similarly
+      }
+      else
+      {
+        // closer to green, so g = max
+
+
         int dummy = 0;
       }
 
-
-
-
-
-
     }
-    else              // between blue and red
+    else
     {
+
+      // between blue and red, so g = min
 
     }
   }
@@ -1627,3 +1630,5 @@ protected:
 // r == (B*(3*H - 1)*S - B*(3*H - 1))/((3*(2*H - 1)*wg + (3*H - 1)*wr)*S - (3*H - 1)*wb - (3*H - 1)*wg - (3*H - 1)*wr), 
 // g == (3*B*(2*H - 1)*S - B*(3*H - 1))/((3*(2*H - 1)*wg + (3*H - 1)*wr)*S - (3*H - 1)*wb - (3*H - 1)*wg - (3*H - 1)*wr), 
 // b == -B*(3*H - 1)/((3*(2*H - 1)*wg + (3*H - 1)*wr)*S - (3*H - 1)*wb - (3*H - 1)*wg - (3*H - 1)*wr)
+//
+// -> use only formula for b, compute r,g via back-substitution when b is known

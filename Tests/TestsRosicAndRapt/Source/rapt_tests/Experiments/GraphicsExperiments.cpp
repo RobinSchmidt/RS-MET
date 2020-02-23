@@ -1360,6 +1360,7 @@ void generateSpiralImage(const rsSpiralParams& p, rsImageF& R, rsImageF& G, rsIm
 
 }
 
+// turn into unit test
 void testColrBHS()
 {
   double r = 0.2, g = 0.3, b = 0.4;
@@ -1376,7 +1377,10 @@ void testColrBHS()
 
   cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
 
-
+  // between blue and green, more green:
+  r = 0.2, g = 0.4, b = 0.3;
+  cs.rgb2bhs(r, g, b, &B, &H, &S);
+  cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
 
 
 
