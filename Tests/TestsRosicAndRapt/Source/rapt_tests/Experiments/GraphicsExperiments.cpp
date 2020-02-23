@@ -1365,15 +1365,15 @@ void testColrBHS()
 {
   double r = 0.2, g = 0.3, b = 0.4;
   double B, H, S;
-
+  double r2, g2, b2;
 
   rsColorBHS<double> cs;
 
+  
   cs.rgb2bhs(r, g, b, &B, &H, &S);  // B=0.3, H=5/9=0.5555..., S=0.5
 
-  // try to reconstrucr r,g,b from B,H,S:
+  // try to reconstruct r,g,b from B,H,S:
 
-  double r2, g2, b2;
 
   cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
 
@@ -1381,7 +1381,14 @@ void testColrBHS()
   r = 0.2, g = 0.4, b = 0.3;
   cs.rgb2bhs(r, g, b, &B, &H, &S);
   cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
+  
 
+
+
+  // between red and green, more red:
+  r = 0.4, g = 0.3, b = 0.2;
+  cs.rgb2bhs(r, g, b, &B, &H, &S);
+  cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
 
 
 

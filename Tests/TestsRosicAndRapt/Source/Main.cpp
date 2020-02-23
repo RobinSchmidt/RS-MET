@@ -422,8 +422,8 @@ int main(int argc, char* argv[])
 
   //amplitudeDeBeating();
   //amplitudeDeBeating2();
-  harmonicDeBeating1();
-  harmonicDeBeating2();
+  //harmonicDeBeating1();
+  //harmonicDeBeating2();
 
 
   // Resampling:
