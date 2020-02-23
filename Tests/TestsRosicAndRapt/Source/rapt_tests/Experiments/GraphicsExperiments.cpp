@@ -1411,21 +1411,18 @@ bool testColrBHS()
   cs.rgb2bhs(r, g, b, &B, &H, &S);
   cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
   t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
-  // gives NaN!, H is NaN!
 
   // gray:
   r = 0.5, g = 0.5, b = 0.5;
   cs.rgb2bhs(r, g, b, &B, &H, &S);
   cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
   t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
-  // H is NaN - probably for any gray-value
 
   // black:
   r = 0.0, g = 0.0, b = 0.0;
   cs.rgb2bhs(r, g, b, &B, &H, &S);
   cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
   t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
-  // for black, H and S are NaN
 
 
 

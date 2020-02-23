@@ -1559,7 +1559,11 @@ public:
     // compute saturation:
     T max = rsMax(r, g, b);
     T min = rsMin(r, g, b);
-    *S = (max-min) / max;  // catch max == 0.0 (black)
+    if(min == max) { // a gray-level (including black and white)...maybe have a tolerance
+      *S = T(0);
+      *H = T(0);
+      return;   }
+    *S = (max-min) / max;
 
     // compute hue:
     r -= min; g -= min; b -= min;
