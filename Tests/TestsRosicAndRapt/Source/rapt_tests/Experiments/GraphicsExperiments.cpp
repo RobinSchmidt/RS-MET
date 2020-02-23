@@ -1383,13 +1383,15 @@ void testColrBHS()
   cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
   
 
-
-
   // between red and green, more red:
   r = 0.4, g = 0.3, b = 0.2;
   cs.rgb2bhs(r, g, b, &B, &H, &S);
   cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
 
+  // between red and green, more green:
+  r = 0.3, g = 0.4, b = 0.2;
+  cs.rgb2bhs(r, g, b, &B, &H, &S);
+  cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
 
 
   int dummy = 0;

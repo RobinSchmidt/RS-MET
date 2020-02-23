@@ -1579,20 +1579,19 @@ public:
 
       if(H < T(1./6.)) 
       {  // r = max
-       *r = -B*(3*H - 1)/(((3*H - 1)*wb + (6*H - 1)*wg)*S - (3*H - 1)*wb - (3*H - 1)*wg - (3*H - 1)*wr);
+       k  = (3*H - 1);
+       *r = -B*k/((k*wb + (6*H - 1)*wg)*S - k);
        *b = *r * (1-S);
        *g = (B - wb * *b - wr * *r) / wg;
       }
       else
       {
         // g = max
-
+        //*g = -3*B*H/((3*H*wb + (6*H - 1)*wr)*S - 3*H*wb - 3*H*wg - 3*H*wr); // simplify!
+        *g = -3*B*H/((3*H*wb + (6*H - 1)*wr)*S - 3*H);
+        *b = *g * (1-S);
+        *r = (B - wb * *b - wg * *g) / wr;
       }
-
-
-
-
-
     }
     else if(H < T(2./3.))
     {
@@ -1661,3 +1660,7 @@ protected:
 // r == -B*(3*H - 1)/(((3*H - 1)*wb + (6*H - 1)*wg)*S - (3*H - 1)*wb - (3*H - 1)*wg - (3*H - 1)*wr), 
 // g == (B*(6*H - 1)*S - B*(3*H - 1))/(((3*H - 1)*wb + (6*H - 1)*wg)*S - (3*H - 1)*wb - (3*H - 1)*wg - (3*H - 1)*wr), 
 // b == (B*(3*H - 1)*S - B*(3*H - 1))/(((3*H - 1)*wb + (6*H - 1)*wg)*S - (3*H - 1)*wb - (3*H - 1)*wg - (3*H - 1)*wr)
+// 2nd branch: use S == (g-b)/g, leave rest as is
+// r == (B*(6*H - 1)*S - 3*B*H)/((3*H*wb + (6*H - 1)*wr)*S - 3*H*wb - 3*H*wg - 3*H*wr), 
+// g == -3*B*H/((3*H*wb + (6*H - 1)*wr)*S - 3*H*wb - 3*H*wg - 3*H*wr), 
+// b == 3*(B*H*S - B*H)/((3*H*wb + (6*H - 1)*wr)*S - 3*H*wb - 3*H*wg - 3*H*wr)
