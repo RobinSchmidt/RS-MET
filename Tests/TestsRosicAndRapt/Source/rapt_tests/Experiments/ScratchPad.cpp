@@ -1569,76 +1569,41 @@ public:
     else               *H = (r * T(0./3.) + g * T(1./3.)) / (r+g); // between red and gren, b == 0
   }
 
-
   void bhs2rgb(T B, T H, T S, T* r, T* g, T* b)
   {
     T k;
-    if(H < T(1./3.))
-    {
-      // between red and green, so b = min
-
-      if(H < T(1./6.)) 
-      {  // r = max
-       k  = (3*H - 1);
-       *r = -B*k/((k*wb + (6*H - 1)*wg)*S - k);
-       *b = *r * (1-S);
-       *g = (B - wb * *b - wr * *r) / wg;
-      }
-      else
-      {
-        // g = max
-        //*g = -3*B*H/((3*H*wb + (6*H - 1)*wr)*S - 3*H*wb - 3*H*wg - 3*H*wr); // simplify!
-        *g = -3*B*H/((3*H*wb + (6*H - 1)*wr)*S - 3*H); // maybe precompute H3 = 3*H - it appears 3 times
-        *b = *g * (1-S);
-        *r = (B - wb * *b - wg * *g) / wr;
-      }
-    }
-    else if(H < T(2./3.))
-    {
-
-      // between green and blue, so r = min
-
-      if(T(2./3.) - H < H - T(1./3.))
-      {
-        // closer to blue, so b = max
+    if(H < T(1./3.)) {                                 // between red and green, so b = min
+      if(H < T(1./6.)) {                               //   r = max
         k  = (3*H - 1);
-        //*b = -B*k / ( (3*(2*H - 1)*wg + k*wr)*S - k*(wb+wg+wr) ); // wb+wg+wr =1 -> simplify!
+        *r = -B*k/((k*wb + (6*H - 1)*wg)*S - k);
+        *b = *r * (1-S);
+        *g = (B - wb * *b - wr * *r) / wg;  }
+      else {                                           //   g = max
+        *g = -3*B*H/((3*H*wb + (6*H - 1)*wr)*S - 3*H); // precompute k = 3*H - it appears 3 times
+        *b = *g * (1-S);
+        *r = (B - wb * *b - wg * *g) / wr; }}
+    else if(H < T(2./3.))  {                           // between green and blue, so r = min
+      if(T(2./3.) - H < H - T(1./3.)) {                //   b = max
+        k  = (3*H - 1);
         *b = -B*k / ((3*(2*H - 1)*wg + k*wr)*S - k);
         *r = *b * (1-S);
-        *g = (B - wb * *b - wr * *r) / wg;
-      }
-      else
-      {
-        // closer to green, so g = max
+        *g = (B - wb * *b - wr * *r) / wg;  }
+      else  {                                          //   g = max
         k  = (3*H - 2);
         *g = -B*k/((3*(2*H - 1)*wb + k*wr)*S - k);
         *r = *g * (1-S);
-        *b = (B - wg * *g - wr * *r) / wb;
-      }
-
-    }
-    else
-    {
-      // between blue and red, so g = min
-
-      if(T(1)-H < H - T(2./3.))
-      {
-        // r = max
-        *r = -B*(3*H - 2)/(((6*H - 5)*wb + (3*H - 2)*wg)*S - (3*H - 2)*wb - (3*H - 2)*wg - (3*H - 2)*wr);
+        *b = (B - wg * *g - wr * *r) / wb; }}
+    else {                                             // between blue and red, so g = min
+      if(T(1)-H < H - T(2./3.)) {                      //   r = max
+        k  = (3*H - 2);
+        *r = -B*k/(((6*H - 5)*wb + k*wg)*S - k);
         *g = *r * (1-S);
-        *b = (B - wg * *g - wr * *r) / wb;
-      }
-      else
-      {
-        // b = max
-        *b = -3*B*(H - 1)/((3*(H - 1)*wg + (6*H - 5)*wr)*S - 3*(H - 1)*wb - 3*(H - 1)*wg - 3*(H - 1)*wr);
+        *b = (B - wg * *g - wr * *r) / wb; }
+      else {                                           //   b = max
+        k  = 3*(H - 1);
+        *b = -B*k/((k*wg + (6*H - 5)*wr)*S - k);
         *g = *b * (1-S);
-        *r = (B - wb * *b - wg * *g) / wr;
-      }
-
-
-
-    }
+        *r = (B - wb * *b - wg * *g) / wr;  }}
   }
 
 protected:

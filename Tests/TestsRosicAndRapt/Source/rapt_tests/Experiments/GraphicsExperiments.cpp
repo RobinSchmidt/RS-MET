@@ -1360,54 +1360,60 @@ void generateSpiralImage(const rsSpiralParams& p, rsImageF& R, rsImageF& G, rsIm
 
 }
 
-// turn into unit test
-void testColrBHS()
+// move to unit tests:
+bool testColrBHS()
 {
   double r = 0.2, g = 0.3, b = 0.4;
   double B, H, S;
   double r2, g2, b2;
 
-  rsColorBHS<double> cs;
+  rsColorBHS<double> cs;  // colorspace
 
-  
-  cs.rgb2bhs(r, g, b, &B, &H, &S);  // B=0.3, H=5/9=0.5555..., S=0.5
+  double tol = 1.e-14;
 
-  // try to reconstruct r,g,b from B,H,S:
+  bool t = true;  // unit test result
 
-
-  cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
-
-  // between blue and green, more green:
-  r = 0.2, g = 0.4, b = 0.3;
-  cs.rgb2bhs(r, g, b, &B, &H, &S);
-  cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
-  
 
   // between red and green, more red:
   r = 0.4, g = 0.3, b = 0.2;
   cs.rgb2bhs(r, g, b, &B, &H, &S);
   cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
+  t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
 
   // between red and green, more green:
   r = 0.3, g = 0.4, b = 0.2;
   cs.rgb2bhs(r, g, b, &B, &H, &S);
   cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
+  t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
+
+  // between green and blue, more green:
+  r = 0.2, g = 0.4, b = 0.3;
+  cs.rgb2bhs(r, g, b, &B, &H, &S);
+  cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
+  t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
+
+  // between green and blue, more blue:
+  r = 0.2, g = 0.3, b = 0.4;
+  cs.rgb2bhs(r, g, b, &B, &H, &S);
+  cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
+  t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
 
   // between blue and red, more blue:
   r = 0.3, g = 0.2, b = 0.4;
   cs.rgb2bhs(r, g, b, &B, &H, &S);
   cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
+  t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
 
   // between blue and red, more red:
   r = 0.4, g = 0.2, b = 0.3;
   cs.rgb2bhs(r, g, b, &B, &H, &S);
   cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
+  t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
 
+  // todo: try some more random colors, change the weights wr,wg,wb and see, if it still works
 
-
-
-
-  int dummy = 0;
+  rsAssert(t);
+  return t;
 }
 
 void spirals()
