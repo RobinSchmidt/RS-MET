@@ -1549,6 +1549,8 @@ template<class T>
 class rsColorBHS
 {
 
+public:
+
   void rgb2bhs(T r, T g, T b, T* B, T* H, T* S)
   {
     *B = wr*r + wg*g + wb*b;
@@ -1570,7 +1572,40 @@ class rsColorBHS
 
   void bhs2rgb(T B, T H, T S, T* r, T* g, T* b)
   {
+    if(H < T(1./3.))  // between red and green
+    {
 
+    }
+    if(H < T(2./3.))  
+    {
+
+      // between green and blue, so r = min
+
+      if(T(2./3.) - H < H - T(1./3.))
+      {
+        // closer to blue, so b = max
+
+        //*b = 0.0;  // preliminary
+
+        *b = -B*(3*H - 1)/((3*(2*H - 1)*wg + (3*H - 1)*wr)*S - (3*H - 1)*wb - (3*H - 1)*wg - (3*H - 1)*wr);
+
+
+
+        *r = *b * (1-S);
+        *g = (B - wb * *b - wr * *r) / wg;
+        int dummy = 0;
+      }
+
+
+
+
+
+
+    }
+    else              // between blue and red
+    {
+
+    }
   }
 
 protected:
@@ -1581,3 +1616,14 @@ protected:
   T wb = T(1)/T(3);
 
 };
+
+// sage code for solving case blue..green closer to blue
+// var("r,g,b,wr,wg,wb,B,H,S")
+// eq1 = S == (b-r)/b
+// eq2 = B == wr*r + wg*g + wb*b
+// eq3 = H == ((g-r)*(1/3) + (b-r)*(2/3)) / ((g-r)+(b-r))
+// solve([eq1,eq2,eq3],[r,g,b])
+//
+// r == (B*(3*H - 1)*S - B*(3*H - 1))/((3*(2*H - 1)*wg + (3*H - 1)*wr)*S - (3*H - 1)*wb - (3*H - 1)*wg - (3*H - 1)*wr), 
+// g == (3*B*(2*H - 1)*S - B*(3*H - 1))/((3*(2*H - 1)*wg + (3*H - 1)*wr)*S - (3*H - 1)*wb - (3*H - 1)*wg - (3*H - 1)*wr), 
+// b == -B*(3*H - 1)/((3*(2*H - 1)*wg + (3*H - 1)*wr)*S - (3*H - 1)*wb - (3*H - 1)*wg - (3*H - 1)*wr)

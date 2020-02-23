@@ -1360,14 +1360,37 @@ void generateSpiralImage(const rsSpiralParams& p, rsImageF& R, rsImageF& G, rsIm
 
 }
 
+void testColrBHS()
+{
+  double r = 0.2, g = 0.3, b = 0.4;
+  double B, H, S;
 
+
+  rsColorBHS<double> cs;
+
+  cs.rgb2bhs(r, g, b, &B, &H, &S);  // B=0.3, H=5/9=0.5555..., S=0.5
+
+  // try to reconstrucr r,g,b from B,H,S:
+
+  double r2, g2, b2;
+
+  cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
+
+
+
+
+
+
+  int dummy = 0;
+}
 
 void spirals()
 {
   //plotSpiralHeightProfile();
   //testSpiralHeightProfile();
   //testImageEffectFrame(); return;
-  testDistanceMap(); return;
+  //testDistanceMap(); return;
+  testColrBHS(); return;
 
   //int size = 1000;
   int w = 1200;
