@@ -1363,16 +1363,12 @@ void generateSpiralImage(const rsSpiralParams& p, rsImageF& R, rsImageF& G, rsIm
 // move to unit tests:
 bool testColrBHS()
 {
-  double r = 0.2, g = 0.3, b = 0.4;
-  double B, H, S;
-  double r2, g2, b2;
+  bool t = true;          // unit test result
+  double r, g, b, B, H, S, r2, g2, b2;
 
   rsColorBHS<double> cs;  // colorspace
-
+  cs.setWeights(0.3, 0.5, 0.2);
   double tol = 1.e-14;
-
-  bool t = true;  // unit test result
-
 
   // between red and green, more red:
   r = 0.4, g = 0.3, b = 0.2;
@@ -1410,7 +1406,34 @@ bool testColrBHS()
   cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
   t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
 
-  // todo: try some more random colors, change the weights wr,wg,wb and see, if it still works
+  // white:
+  r = 1.0, g = 1.0, b = 1.0;
+  cs.rgb2bhs(r, g, b, &B, &H, &S);
+  cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
+  t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
+  // gives NaN!, H is NaN!
+
+  // gray:
+  r = 0.5, g = 0.5, b = 0.5;
+  cs.rgb2bhs(r, g, b, &B, &H, &S);
+  cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
+  t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
+  // H is NaN - probably for any gray-value
+
+  // black:
+  r = 0.0, g = 0.0, b = 0.0;
+  cs.rgb2bhs(r, g, b, &B, &H, &S);
+  cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
+  t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
+  // for black, H and S are NaN
+
+
+
+
+  // todo: try some more random colors, try colors that are exactly on the border of the 
+  // conditionals in bhs2rgb, test white, gray, black, pure red, green, blue, ..magenta,cyan,yellow
+
+
 
   rsAssert(t);
   return t;

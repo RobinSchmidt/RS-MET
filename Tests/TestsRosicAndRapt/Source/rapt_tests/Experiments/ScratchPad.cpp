@@ -1553,18 +1553,17 @@ public:
 
   void rgb2bhs(T r, T g, T b, T* B, T* H, T* S)
   {
+    // compute brightness:
     *B = wr*r + wg*g + wb*b;
 
+    // compute saturation:
     T max = rsMax(r, g, b);
     T min = rsMin(r, g, b);
+    *S = (max-min) / max;  // catch max == 0.0 (black)
 
-    *S = (max-min) / max;
-
-    r -= min;
-    g -= min;
-    b -= min;
-
-    if(r == T(0))      *H = (g * T(1./3.) + b * T(2./3.)) / (g+b); // between green and blue
+    // compute hue:
+    r -= min; g -= min; b -= min;
+    if(     r == T(0)) *H = (g * T(1./3.) + b * T(2./3.)) / (g+b); // between green and blue
     else if(g == T(0)) *H = (b * T(2./3.) + r * T(3./3.)) / (b+r); // between blue and red
     else               *H = (r * T(0./3.) + g * T(1./3.)) / (r+g); // between red and gren, b == 0
   }
@@ -1579,7 +1578,8 @@ public:
         *b = *r * (1-S);
         *g = (B - wb * *b - wr * *r) / wg;  }
       else {                                           //   g = max
-        *g = -3*B*H/((3*H*wb + (6*H - 1)*wr)*S - 3*H); // precompute k = 3*H - it appears 3 times
+        k  =  3*H;
+        *g = -B*k/((k*wb + (6*H - 1)*wr)*S - k);
         *b = *g * (1-S);
         *r = (B - wb * *b - wg * *g) / wr; }}
     else if(H < T(2./3.))  {                           // between green and blue, so r = min
@@ -1604,6 +1604,14 @@ public:
         *b = -B*k/((k*wg + (6*H - 5)*wr)*S - k);
         *g = *b * (1-S);
         *r = (B - wb * *b - wg * *g) / wr;  }}
+  }
+
+  void setWeights(T redWeight, T greenWeight, T blueWeight)
+  {
+    wr = redWeight;
+    wg = greenWeight;
+    wb = blueWeight;
+    // todo: assert that the weights sum up to 1
   }
 
 protected:
