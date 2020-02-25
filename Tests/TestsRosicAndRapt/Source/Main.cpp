@@ -199,7 +199,7 @@ int main(int argc, char* argv[])
   //complexContours();
   //implicitCurve();
   //parametricCurve();
-  spirals();   // move to somewhere else...
+  //spirals();   // move to somewhere else...
   //fractal();
 
   // just for fun:
@@ -280,8 +280,8 @@ int main(int argc, char* argv[])
   //cycleMarkErrors();
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
-//  ropewayAlgo();
-  //peakPicker();
+  //ropewayAlgo();
+  peakPicker();
 
 
   // Delay:

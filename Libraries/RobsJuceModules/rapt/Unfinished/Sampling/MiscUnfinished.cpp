@@ -1571,6 +1571,24 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
 //=================================================================================================
 
 template<class T>
+std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T *x, const T *y, int N)
+{
+  std::vector<int> pc = getPeakCandidates(y, N);  // peak candidates
+
+  // todo: apply algorithms based on prominence and/or smoothing-resilience to to filter out the 
+  // irrelevant cadidates
+  // -maybe instead of smoothing resilience, we should use rsPeakTrailDragger - use the 
+  // getSample(T x, T dt) function for non-equidistant data
+
+
+
+
+
+  return pc;
+}
+
+
+template<class T>
 std::vector<int> rsPeakPicker<T>::getPeakCandidates(const T* x, int N) const
 {
   // todo: if smoothing is selected, create a pre-smoothed copy of x and operate on that
@@ -1609,6 +1627,8 @@ void rsPeakPicker<T>::ropeway(const T* x, int N, T* y, int numPasses)
   }
 }
 // maybe move to rsArrayTools ...if it turns out to be useful in other applications
+// ...actually, we may not want it here when whe use peak-shadowing by class rsPeakTrailDragger - 
+// it seems to be redundant to do both
 
 template<class T>
 void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const int* peakIndices,

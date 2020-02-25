@@ -5,12 +5,12 @@
 /** A class that detects peaks and then decays exponentially. This can be seen as a simplified
 version of an envelope follower with zero attack time. So, in effect, it responds immediately to 
 any peaks and then drags an exponentially decaying trail from that peak. If additional smaller 
-peaks occur under teh umbrella of that trail, they will not be seen separately, they will be 
+peaks occur under the umbrella of that trail, they will not be seen separately, they will be 
 subsumed/shadowed by the larger peak. This class can be useful for distinguishing major/relevant
 peaks for the minor irrelevant ones. */
 
 template<class T>
-class rsPeakTrailDragger  // maybe rename to rsPeakFollower/rsPeakMeter
+class rsPeakTrailDragger  // maybe rename to rsPeakFollower/rsPeakMeter/rsPeakShadower
 {
 
 public:

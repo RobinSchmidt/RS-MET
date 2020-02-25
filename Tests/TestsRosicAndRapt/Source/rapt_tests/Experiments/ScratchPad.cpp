@@ -1551,6 +1551,7 @@ class rsColorBHS
 
 public:
 
+  /** Converts an (r,g,b) triple into a (B,H,S) triple. */
   void rgb2bhs(T r, T g, T b, T* B, T* H, T* S)
   {
     // compute brightness:
@@ -1572,6 +1573,7 @@ public:
     else               *H = (r * T(0./3.) + g * T(1./3.)) / (r+g); // between red and gren, b == 0
   }
 
+  /** Converts a (B,H,S) triple into an (r,g,b) triple. */
   void bhs2rgb(T B, T H, T S, T* r, T* g, T* b)
   {
     T k;
@@ -1610,6 +1612,11 @@ public:
         *r = (B - wb * *b - wg * *g) / wr;  }}
   }
 
+
+  /** Sets the weights for the 3 color channels in the brightness computation formula: 
+  brightness =  wr*r + wg*g + wb*b. The weights must sum up to unity. This weighting can be used to
+  account for different sensitivity of the red, green and blue receptors such that a green with a 
+  given strength conributes more to the computed brightness that a blue of the same strength.  */
   void setWeights(T redWeight, T greenWeight, T blueWeight)
   {
     wr = redWeight;

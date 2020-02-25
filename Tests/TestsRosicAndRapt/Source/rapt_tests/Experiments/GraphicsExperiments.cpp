@@ -1367,7 +1367,11 @@ bool testColrBHS()
   double r, g, b, B, H, S, r2, g2, b2;
 
   rsColorBHS<double> cs;  // colorspace
-  cs.setWeights(0.3, 0.5, 0.2);
+  //cs.setWeights(0.3, 0.5, 0.2);
+  //cs.setWeights(0.3, 0.55, 0.15);
+  //cs.setWeights(0.25, 0.6, 0.15);
+  //cs.setWeights(0.3, 0.6, 0.1);
+  cs.setWeights(0.3, 0.4, 0.3);
   double tol = 1.e-14;
 
   // between red and green, more red:
@@ -1424,11 +1428,56 @@ bool testColrBHS()
   cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
   t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
 
+  // 50% yellow:
+  r = 0.5, g = 0.5, b = 0.0;
+  cs.rgb2bhs(r, g, b, &B, &H, &S);
+  cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
+  t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
+  t &= rsIsCloseTo(S, 1.0,  tol);  // is considered fully saturated
+  t &= rsIsCloseTo(H, 1./6, tol);  // 0 is red 1/3 is green - yellow is halfway, so it must be 1/6
 
+  // 100% yellow:
+  r = 1.0, g = 1.0, b = 0.0;
+  cs.rgb2bhs(r, g, b, &B, &H, &S);
+  cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
+  t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
+  t &= rsIsCloseTo(S, 1.0,  tol);
+  t &= rsIsCloseTo(H, 1./6, tol);
+
+  // 100% magenta:
+  r = 1.0, g = 0.0, b = 1.0;
+  cs.rgb2bhs(r, g, b, &B, &H, &S);
+  cs.bhs2rgb(B, H, S, &r2, &g2, &b2);
+  t &= rsIsCloseTo(r, r2, tol) && rsIsCloseTo(g, g2, tol) && rsIsCloseTo(b, b2, tol);
+  t &= rsIsCloseTo(S, 1.0,  tol);
+  t &= rsIsCloseTo(H, 5./6, tol);
 
 
   // todo: try some more random colors, try colors that are exactly on the border of the 
   // conditionals in bhs2rgb, test white, gray, black, pure red, green, blue, ..magenta,cyan,yellow
+
+  // todo: fill an image with colors of a chosen brightness, hue goes into x-coordinate saturation 
+  // into the y coordinate:
+  B = 0.80;
+  int w = 400, h = 200;
+  rsImageF red(w, h), green(w, h), blue(w, h);
+  for(int j = 0; j < h; j++) {
+    for(int i = 0; i < w; i++) {
+      double x = rsLinToLin(double(i), 0.0, w-1.0, 0.0, 1.0);
+      double y = rsLinToLin(double(j), h-1.0, 0.0, 0.0, 1.0);
+      H = x;
+      S = y;
+      cs.bhs2rgb(B, H, S, &r, &g, &b);
+
+      //rsAssert(r <= 1 && g <= 1 && b <= 1); // this triggers: bhs2rgb does not ensure that r,g,b values are in 0..1
+      r = rsMin(r, 1.0);
+      g = rsMin(g, 1.0);
+      b = rsMin(b, 1.0);
+
+      red(  i, j) = float(r);
+      green(i, j) = float(g);
+      blue( i, j) = float(b); }}
+  writeImageToFilePPM(red, green, blue, "ColorsBHS.ppm");
 
 
 

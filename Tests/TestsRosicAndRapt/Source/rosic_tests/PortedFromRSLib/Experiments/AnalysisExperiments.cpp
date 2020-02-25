@@ -1183,6 +1183,9 @@ void zeroCrossingPitchDetectorTwoTones()
 
 
 
+
+
+
 /*
 template<class T>
 class rsPeakTrailer // or rsPeakTrailDragger or just rsTrailDragger
@@ -1229,8 +1232,8 @@ protected:
 };
 // this is kinda nice - each peak carries an exponentially decaying trail of influence - minor 
 // peaks below this trail will be dismissed as irrelevant
+// moved to class RAPT::rsPeakTrailDragger
 */
-
 
 template<class T>
 void ropeway(const T* x, int N, T halfTime, T* y, T* w) // w is workspace
@@ -1250,8 +1253,9 @@ void ropeway(const T* x, int N, T halfTime, T* y, T* w) // w is workspace
   //for(n = 0;   n <  N;  n++) y[n] = rsMax(x[n],T(0.5) * (w[n]+y[n]));
   //for(n = 0;   n <  N;  n++) y[n] = rsMax(x[n],w[n]+y[n]);
 
-  // average doesn't work, max sort of works but is not smooth between spikes - try bidirational
+  // average doesn't work, max sort of works but is not smooth between spikes - try bidiretional
   // serial passes with averaging between forward-first and backward first
+  // ...the non-smoothness is actually not a problem in peak-finding applications
 
 
   // bidirectional parallel - todo: maybe try a serial bidirectional application of the filter
@@ -1269,7 +1273,7 @@ void ropeway(const T* x, int N, T halfTime, T* y, T* w) // w is workspace
 // gives non-smooth junctions between the peaks - however, for a peak-picker, we do not care about
 // this - so max of forward and backward pass is perhaps most reasonable
 
-// this works only correctly, if x[n] >= 0 for all n - maybe we should fix that byusing an offset
+// this works only correctly, if x[n] >= 0 for all n - maybe we should fix that by using an offset
 // before and after....
 
 
@@ -1331,8 +1335,6 @@ void ropewayAlgo()
 
   rsPlotVectors(x, y);
 }
-
-
 
 bool testPeakPicker()  // move to unit tests
 {
@@ -1460,7 +1462,7 @@ std::vector<T> rsMax(const std::vector<T>& x, const std::vector<T>& y)
 }
 
 // quick and dirty (and inefficient) implementation of an idea to find the envelope:
-std::vector<double> testEnvelope(const std::vector<double>& x)
+std::vector<double> testEnvelope1(const std::vector<double>& x)
 {
   std::vector<double> t1 = x, t2 = x;
   int maxIt = 1000;
@@ -1489,6 +1491,18 @@ std::vector<double> testEnvelope(const std::vector<double>& x)
 //  bidirectionally - in this case - does it make a difference, which direction we run first? if so,
 //  it may make sense to use an average of forward-first and backward-first application to make the 
 //  algorithm invariant with respect to mirroring the data (this invariance seems desirable)
+
+std::vector<double> testEnvelope2(const std::vector<double>& x)
+{
+  // not yet implemented
+  // todo: use rsPeakTrailDragger and plot the results
+
+  std::vector<double> env(x.size());
+
+
+  return env;
+}
+
 
 template<class T>
 std::vector<T> peakSmoothabilities(
@@ -1565,12 +1579,19 @@ void peakPicker()
 
   // this shows plots of the various iterations of the "ropeway" algorithm - todo: show many of them in
   // a single plot:
-  //VecD yEnv = testEnvelope(x);
+  //VecD yEnv1 = testEnvelope1(x);  // uses iterative smoothing - inefficient!
+  VecD yEnv2 = testEnvelope2(x);  // uses recursive smotthing via rsPeakTrailDragger
+  rsPlotVectors(x, yEnv2);
+
+
+
   // ...actually, using an attack-decay envelope follower, we'll see exponential decays and if it's
   // used bidirectionally (serially and/or in parallel), we may indeed get something like a cosh
   // shape - with this algo, it looks more like parabolas
 
 
+  /*
+  // visualize effect of iterative smoothing
   int N = (int) x.size();
   VecD y1(N), y2(N), y3(N), y4(N), y5(N), y6(N), y7(N), y8(N);
   rsSmooth(&x[0],  N, &y1[0]);
@@ -1585,6 +1606,7 @@ void peakPicker()
   rsPlotVectors(x, y1, y2, y4, y8);
   //rsPlotVectors(x, y8);
   int dummy = 0;
+  */
   // maybe mark the peaks and print their prominences and smoothing-robustnesses above....what 
   // could be a good name for this insensitivity-under-smoothing porperty? maybe something like 
   // robustness/resilience? keeping with analogy of landscapes, we may consider these smoothing 

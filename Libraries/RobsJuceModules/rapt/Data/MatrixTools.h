@@ -17,10 +17,12 @@ public:
 
   template<class T>
   static void allocateMatrix(T**& A, int N, int M);
+  // maybe rename to allocate - the "Matrix" is redundant beacuse it appears in the class-name 
+  // already
 
   template<class T>
   static void deallocateMatrix(T**& A, int N, int M); 
-  // rename to freeMatrix - ..and why is the M needed?
+  // rename to freeMatrix or just free - ..and why is the M needed?
 
   template<class T>
   static void initMatrix(T** A, int N, int M, T value = T(0));

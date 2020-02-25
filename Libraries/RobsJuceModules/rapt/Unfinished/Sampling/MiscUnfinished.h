@@ -912,20 +912,32 @@ public:
   /** Convenience function to set the number of left and right neighbors at once. */
   void setNumNeighbors(int newNumber) { numLeftNeighbors = numRightNeighbors = newNumber; }
 
-  // maybe just have a single function setNumNeighbours which takes two parameters for left and 
-  // right neighbors
-
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-
   //void getPeaks(const T *x, const T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
 
+  /** ....Under construction.... not yet usable...
+  Returns an array of indices of the relevant peaks in the data.  */
+  std::vector<int> getRelevantPeaks(const T *x, const T *y, int N);
+
+
+
+
+
+
+  // move to internal algorithms:
+
+
+  /** Returns an array of indices where the datapoint x[i] is a candidate for a peak. A value is 
+  considered a peak candidate, if it is greater than some number of left and right neighbor 
+  datapoints. This can be considered as the first stage of filtering out the relevant peaks. It may
+  return candiates that should finally not be considered as relevant peaks - subsequent processing 
+  stages will remove some of the results returned by this function. */
   std::vector<int> getPeakCandidates(const T *x, int N) const;
 
-
-  /** Convenience function that atkes a std::vector instead of a raw array as input. */
+  /** Convenience function that takes a std::vector instead of a raw array as input. */
   std::vector<int> getPeakCandidates(const std::vector<T>& x) const 
   { return getPeakCandidates(&x[0], (int) x.size()); }
 
@@ -983,6 +995,11 @@ protected:
   // distance based criteria:
   int numLeftNeighbors  = 1;  // this is something similar to a min-distance criterion...
   int numRightNeighbors = 1;
+
+
+  T shadowWidth = T(0); 
+  // half-width of peak-shadowing. i.e. the amount of time, it takes for the exponential 
+  // shadow/trail to decay down to 1/2 - maybe use separate widths for left and right
 
   // prominence based criteria:
   //T promThresh         = 0;    // absolute prominence threshold

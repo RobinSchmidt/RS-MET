@@ -358,7 +358,7 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   // maybe, we should give the user the option to manually set a maximum spacing that is used in
   // addition to the computed one (the algo should use the minimum of both values)
 
-  mdl.keepOnly({2});
+  //mdl.keepOnly({2});
 
 
   //deBeater.setMaxEnvelopeSampleSpacing(16.0/f0);     // works reasonably
@@ -388,9 +388,26 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   rsAssert(mdl.isDataValid());
   std::vector<rsInstantaneousSineParams<double>> invalidDataPoints = mdl.getInvalidDataPoints();
   //plotSineModel(mdl, fs);
-  plotSineModelAmplitudes(mdl, {1,2,3,4,5,6});
+
+
+
+  // these partials with the Rhodes_F3_Medium sample...
+  //plotSineModelAmplitudes(mdl, {1,2,3,4,5,6});
+  plotSineModelAmplitudes(mdl, {1}); // ...shows problem with detecting min-peaks
+  plotSineModelAmplitudes(mdl, {2}); // ...shows problem with staright lines (to small peak-densisty)
+  //plotSineModelAmplitudes(mdl, {3}); // shows problem
+  plotSineModelAmplitudes(mdl, {4}); // ...shows problem with drop in/out
+
+
+
   y = synthesizeSinusoidal(mdl, fs);
   rosic::writeToMonoWaveFile(name + "DeBeatOutput.wav", &y[0], (int)y.size(), (int)fs);
+
+  // todo: the peak-picking algo in the amplitude de-beating is still not working as it should
+  // -sometimes, there is a too great distance between two peaks (we need more density)
+  //  -example: 2nd partial of Rhodes_F3_Medium
+  // -sometimes, it also detects small mini-peaks within valleys which should be ignored
+  //  -example: fundamental of Rhodes_F3_Medium
 }
 
 void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
