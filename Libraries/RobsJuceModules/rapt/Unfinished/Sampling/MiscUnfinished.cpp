@@ -1573,14 +1573,12 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
 template<class T>
 std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N)
 {
-  // maybe use a temporary array that hass the mini
-
+  // pre-process by "peak-shadowing" - smaller peaks near larger peaks are shadowed by falling 
+  // under trails coming from the larger peaks - they do not survive as separate peaks (todo:
+  // factor out this step - maybe optionally skip it, if shadowWidthL/R are bot zero):
   using AT = RAPT::rsArrayTools;
-
-
   std::vector<T> y(N), yL(N), yR(N), yM(N);  
   // temporary buffers - later we may re-use one of y for yM - no extra buffer needed
-
   // lift up, such that minimum is = 0 (we need it to ensure it's >= 0, but it's more convenient to
   // just always do it):
   T minVal =  AT::minValue(&x[0], N);
@@ -1599,19 +1597,18 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   //rsPlotArraysXY(N, t, x, &y[0], &yL[0], &yR[0], &yM[0]);  // for debug
 
 
+  // find peak condidates in the yM array (in which the minor sub-peaks are already shadowed):
+  std::vector<int> pc = getPeakCandidates(&yM[0], N), pp(N);  // peak candidates and prominences
 
 
 
 
+  // todo: compute peak-prominences and remove those that fall below a given threshold
+  //peakProminences(&yM[0], N, &pc[0], int(pc.size()), &pp[0]);
+    // should we really use the shadowed array yM or maybe the non-shadowed y here?
 
-  std::vector<int> pc = getPeakCandidates(&yM[0], N);  // peak candidates
-
-  // todo: apply algorithms based on prominence and/or smoothing-resilience to to filter out the 
-  // irrelevant cadidates
-  // -maybe instead of smoothing resilience, we should use rsPeakTrailDragger - use the 
-  // getSample(T x, T dt) function for non-equidistant data
-
-
+  //peakProminences(const T *data, int numDataPoints, const int *peakIndices, 
+  //  int numPeaks, T *peakProminences);
 
 
 
@@ -1693,7 +1690,7 @@ void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const in
   // This is a slight variation of the prominences algorithm: we take the maximum of the bases 
   // only when both loops did not hit the boundary of the data - the regular algo would take the 
   // maximum regardless. The reasoning is that when the loop hits the data boundary, it might be 
-  // conceivable that beyond this boundray, an even lower valley may occur before a higher peak is
+  // conceivable that beyond this boundary, an even lower valley may occur before a higher peak is
   // encountered - the regular algo says: nope, this doesn't happen. It basically considers the 
   // non-existent data values beyond the data boundaries as inifinitely high peaks. This variation
   // here considers the non-existent data as infinitely deep valley. I have a gut feeling that this
