@@ -901,6 +901,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  void setShadowWidths(T widthL, T widthR)
+  { shadowWidthL = widthL; shadowWidthR = widthR; }
+
   /** Sets the number of left neighbors which must be less or equal than a peak value 
   (default: 1). */
   void setNumLeftNeighbors(int newNumber) { numLeftNeighbors = newNumber; }

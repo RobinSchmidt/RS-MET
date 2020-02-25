@@ -1501,6 +1501,7 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   int N = (int) x.size();
   std::vector<double> t = rsRangeLinear(0.0, double(N-1), N);
   rsPeakPicker<double> pp;
+  pp.setShadowWidths(10, 20);
   std::vector<int> peakIndices = pp.getRelevantPeaks(&t[0], &x[0], N); 
 
 
