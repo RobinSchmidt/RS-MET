@@ -919,8 +919,10 @@ public:
   //void getPeaks(const T *x, const T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
 
   /** ....Under construction.... not yet usable...
-  Returns an array of indices of the relevant peaks in the data.  */
-  std::vector<int> getRelevantPeaks(const T *x, const T *y, int N);
+  Returns an array of indices of the relevant peaks in the data. The time-stamps should be given
+  in samples
+  */
+  std::vector<int> getRelevantPeaks(const T *t, const T *x, int N);
 
 
 
@@ -960,6 +962,8 @@ public:
   The idea of alternating between smoothing and taking an elementwise maximum was inspired by
   the "true-envelope-algorithm" for spectral enevlopes. */
   static void ropeway(const T* x, int N, T* y, int numPasses);
+  // todo: move this to rsArrayTools - maybe don't use it here - the effect is redundant with
+  // whta rsPeakTrailDragger does
 
   /** Given an array of datapoints and an array of peak-indices, this function computes the 
   prominences of the peaks at the given indices. ...tbc... */
@@ -988,16 +992,27 @@ public:
 protected:
 
   std::vector<T> preProcess(const T *x, int N) const;
+  // obsolete
+
+
+  //void preProcess(const T *x, T *y, int N);
+
 
   // pre-processing parameters:
   int numRopewayPasses = 0;      // number of passes through ropeway algo before searching candidates
+   // dont use that anymore
+
+  T shadowWidthL = T(0);
+  T shadowWidthR = T(0);
+
 
   // distance based criteria:
   int numLeftNeighbors  = 1;  // this is something similar to a min-distance criterion...
   int numRightNeighbors = 1;
 
 
-  T shadowWidth = T(0); 
+
+
   // half-width of peak-shadowing. i.e. the amount of time, it takes for the exponential 
   // shadow/trail to decay down to 1/2 - maybe use separate widths for left and right
 

@@ -1571,9 +1571,39 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
 //=================================================================================================
 
 template<class T>
-std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T *x, const T *y, int N)
+std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N)
 {
-  std::vector<int> pc = getPeakCandidates(y, N);  // peak candidates
+  // maybe use a temporary array that hass the mini
+
+  using AT = RAPT::rsArrayTools;
+
+
+  std::vector<T> y(N), yL(N), yR(N), yM(N);  
+  // temporary buffers - later we may re-use one of y for yM - no extra buffer needed
+
+  // lift up, such that minimum is = 0 (we need it to ensure it's >= 0, but it's more convenient to
+  // just always do it):
+  T minVal =  AT::minValue(&x[0], N);
+  AT::add(&x[0], -minVal, &y[0], N); // y is x lifted by -min(x)
+
+  // get a pre-processed signal yM from y in which smaller peaks that are near larger peaks are 
+  // shadowed (maybe factor out):
+  rsPeakTrailDragger<T> ps;                  // "peak-shadower"
+  ps.setDecaySamples(shadowWidthR);          // "R" is used in forward run
+  ps.applyForward(t, &y[0], &yR[0], N);
+  ps.setDecaySamples(shadowWidthL);          // "L" is used in forward run
+  ps.applyForward(t, &y[0], &yL[0], N);
+  rsArrayTools::maxElementWise(&yL[0], &yR[0], N, &yM[0]);
+
+  rsPlotArraysXY(N, t, x, &y[0], &yL[0], &yR[0], &yM[0]);  // for debug
+
+
+
+
+
+
+
+  std::vector<int> pc = getPeakCandidates(&yM[0], N);  // peak candidates
 
   // todo: apply algorithms based on prominence and/or smoothing-resilience to to filter out the 
   // irrelevant cadidates
@@ -1683,6 +1713,15 @@ std::vector<T> rsPeakPicker<T>::preProcess(const T* x, int N) const
   ropeway(x, N, &y[0], numRopewayPasses);
   return y;
 }
+
+/*
+template<class T>
+void preProcess(const T* x, T* y, int N)
+{
+
+
+}
+*/
 
 //=================================================================================================
 

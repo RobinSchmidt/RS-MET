@@ -1497,9 +1497,16 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   // not yet implemented
   // todo: use rsPeakTrailDragger and plot the results
 
+
+  int N = (int) x.size();
+  std::vector<double> t = rsRangeLinear(0.0, double(N-1), N);
+  rsPeakPicker<double> pp;
+  std::vector<int> peakIndices = pp.getRelevantPeaks(&t[0], &x[0], N); 
+
+
+
+
   std::vector<double> env(x.size());
-
-
   return env;
 }
 
@@ -1561,9 +1568,16 @@ void peakPicker()
   // with prominence 4, {1,2,3,4,3,2} should have a peak at 3 with prominence 3, ....
 
 
-  x = rsRandomVector(200, -1.0, +1.0, 4);  // nice seeds: 4,6,7,8 - strange: 9
-  RAPT::rsArrayTools::cumulativeSum(&x[0], &x[0], (int)x.size());
-  //RAPT::rsArrayTools::cumulativeSum(&x[0], &x[0], (int)x.size());
+  using AT = RAPT::rsArrayTools;
+
+  int N = 200;
+
+  x = rsRandomVector(N, -1.0, +1.0, 4);  // nice seeds: 4,6,7,8 - strange: 9
+  AT::cumulativeSum(&x[0], &x[0], N);
+  //AT::cumulativeSum(&x[0], &x[0], N);
+  //AT::add(&x[0], AT::minValue(&x[0], N), &x[0], N); // values hould be >= 0 for the shadower to work
+
+
 
   //x = VecD({0,0,0,8,4,4,2,2,2,2,1,1,1,1,1,1,1,1,0,0,0});
   //x = VecD({0,0,0,10,9,9,8,8,8,7,7,7,7,6,6,6,6,6,0,0,5});  // illustrates peak wandering/drift
@@ -1571,16 +1585,19 @@ void peakPicker()
   //x = VecD(20); for(int i=4; i<20; i++) x[i] = exp(-0.25*i);
   //x = VecD(20); x[8] = 10; x[12] = 20;  // shows split (1st iteration) and merge (2nd and 3rd)
   //x = VecD(20); x[8] = 10; x[12] = 10; x[13] = 15;
-
-  x = VecD(31); x[15] = 10; 
+  //x = VecD(31); x[15] = 10;
 
 
   // create datasets that illustrate peak-merging and peak-splitting
 
   // this shows plots of the various iterations of the "ropeway" algorithm - todo: show many of them in
   // a single plot:
-  //VecD yEnv1 = testEnvelope1(x);  // uses iterative smoothing - inefficient!
-  VecD yEnv2 = testEnvelope2(x);  // uses recursive smotthing via rsPeakTrailDragger
+  //VecD yEnv1 = testEnvelope1(x);  
+  // uses iterative smoothing - inefficient!
+
+  // shows result using recursive smoothing via rsPeakTrailDragger - this should be more efficient
+  // and not suffer from peak-wandering/drift
+  VecD yEnv2 = testEnvelope2(x);  // 
   rsPlotVectors(x, yEnv2);
 
 
