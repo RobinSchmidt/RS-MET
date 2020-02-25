@@ -974,6 +974,7 @@ public:
     int numPeaks, T *peakProminences);
   // todo: rename to prominences, add an optional window-length parameter as in SciPy:
   // https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.peak_prominences.html
+  // https://en.wikipedia.org/wiki/Topographic_prominence
 
   /** Returns the number of smoothing iterations, a peak survives while still preserving its 
   peak property (of being >= its left and right neighbor). */
@@ -1027,9 +1028,17 @@ protected:
   // shadow/trail to decay down to 1/2 - maybe use separate widths for left and right
 
   // prominence based criteria:
-  //T promThresh         = 0;    // absolute prominence threshold
-  //T promToHeightThresh = 0;    // threshold for prominence / peakHeight
-  //T promToMaxThresh    = 0;    // threshold for prominence / max(peakHeights)
+  T promThresh         = 0;    // absolute prominence threshold
+  T promToMaxThresh    = 0;    // threshold for prominence / max(peakHeights)
+  T promToHeightThresh = 0;    // threshold for prominence / peakHeight
+  // the order is in "increasing relativeness" 
+  // promToMax is invariant with respect to scaling the whole signal
+  // promToHeight is invariant with respect to...what? does it actually make sense to do that? maybe
+  // it should be relative to some highest peak in the neighbourhood?
+  
+  // the absolute threshold will make the algo select different peaks depending on overall scale
+  // of the signal - that seems undesirable.
+
 
   // smoothing based criteria:
   //int resThresh = 0;           // smoothing resilience threshold

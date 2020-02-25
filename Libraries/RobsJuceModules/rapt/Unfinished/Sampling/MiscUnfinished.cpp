@@ -1603,7 +1603,10 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   std::vector<T> pp(int(pc.size()));                  // peak prominences
   peakProminences(&yM[0], N, &pc[0], int(pc.size()), &pp[0]);
   return getProminentPeaks(pc, pp, &yM[0], N);
-    // should we really use the shadowed array yM or maybe the non-shadowed y here?
+  // should we really use the shadowed array yM or maybe the non-shadowed y here? maybe that should
+  // be user selectable? if we use yM, we compute the prominence with respect to the landscape that 
+  // results from shadowing - this will reduce the peaks prominence values with resepct to what 
+  // they would be when computed with respect to the original landscape
 
   //return pc;
 }
@@ -1707,11 +1710,23 @@ std::vector<T> rsPeakPicker<T>::preProcess(const T* x, int N) const
 
 template<class T>
 std::vector<int> rsPeakPicker<T>::getProminentPeaks(const std::vector<int>& peakCandidates,
-  const std::vector<T>& peakProminences, const T* inputData, int inputDataLength)
+  const std::vector<T>& proms, const T* heights, int numHeights)
 {
+  rsAssert(peakCandidates.size() == prom.size()); 
 
-
-  return peakCandidates; // preliminary
+  // filter out those peaks which hit or exceed all 3 thresholds:
+  int M = (int) peakCandidates.size();
+  std::vector<int> promPeaks;
+  promPeaks.reserve(M);
+  T maxHeight = rsArrayTools::maxValue(heights, numHeights);
+  for(int m = 0; m < M; m++) {
+    int n = peakCandidates[m];
+    T prom         = proms[m];
+    T promToHeight = prom / heights[n];
+    T promToMax    = prom / maxHeight;
+    if(prom >= promThresh && promToHeight >= promToHeightThresh && promToMax >= promToMaxThresh)
+      promPeaks.push_back(n);  }
+  return promPeaks;
 }
 
 /*
