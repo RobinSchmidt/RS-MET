@@ -1596,23 +1596,16 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   rsPlotArraysXY(N, t, &y[0], &yL[0], &yR[0], &yM[0]);  // for debug
   //rsPlotArraysXY(N, t, x, &y[0], &yL[0], &yR[0], &yM[0]);  // for debug
 
-
   // find peak condidates in the yM array (in which the minor sub-peaks are already shadowed):
-  std::vector<int> pc = getPeakCandidates(&yM[0], N), pp(N);  // peak candidates and prominences
-
-
-
+  std::vector<int> pc = getPeakCandidates(&yM[0], N); // peak candidates
 
   // todo: compute peak-prominences and remove those that fall below a given threshold
-  //peakProminences(&yM[0], N, &pc[0], int(pc.size()), &pp[0]);
+  std::vector<T> pp(int(pc.size()));                  // peak prominences
+  peakProminences(&yM[0], N, &pc[0], int(pc.size()), &pp[0]);
+  return getProminentPeaks(pc, pp, &yM[0], N);
     // should we really use the shadowed array yM or maybe the non-shadowed y here?
 
-  //peakProminences(const T *data, int numDataPoints, const int *peakIndices, 
-  //  int numPeaks, T *peakProminences);
-
-
-
-  return pc;
+  //return pc;
 }
 
 
@@ -1710,6 +1703,15 @@ std::vector<T> rsPeakPicker<T>::preProcess(const T* x, int N) const
   std::vector<T> y(N);
   ropeway(x, N, &y[0], numRopewayPasses);
   return y;
+}
+
+template<class T>
+std::vector<int> rsPeakPicker<T>::getProminentPeaks(const std::vector<int>& peakCandidates,
+  const std::vector<T>& peakProminences, const T* inputData, int inputDataLength)
+{
+
+
+  return peakCandidates; // preliminary
 }
 
 /*

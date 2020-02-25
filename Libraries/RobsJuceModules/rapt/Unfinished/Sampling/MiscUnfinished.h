@@ -997,13 +997,20 @@ protected:
   std::vector<T> preProcess(const T *x, int N) const;
   // obsolete
 
+  /** Under construction....
+  Given an array of peak-candidate indices and their accociated prominence values, this function 
+  filters out those peak indices which are above our absolute and relative prominence thresholds. 
+  In general, it will return a subset of the indices given in peakCandidates. */
+  std::vector<int> getProminentPeaks(const std::vector<int>& peakCandidates, 
+    const std::vector<T>& peakProminences, const T* inputData, int inputDataLength);
+
 
   //void preProcess(const T *x, T *y, int N);
 
 
   // pre-processing parameters:
   int numRopewayPasses = 0;      // number of passes through ropeway algo before searching candidates
-   // dont use that anymore
+   // obsolete - dont use that anymore
 
   T shadowWidthL = T(0);
   T shadowWidthR = T(0);

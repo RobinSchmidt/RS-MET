@@ -1504,6 +1504,26 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   pp.setShadowWidths(10, 20);
   std::vector<int> peakIndices = pp.getRelevantPeaks(&t[0], &x[0], N); 
 
+  // todo: create a function that connects the peaks, plot this function together with the original x
+
+  int M = int(peakIndices.size());
+  std::vector<double> tp(M), xp(M);
+  for(int m = 0; m < M; m++) 
+  {
+    int n = peakIndices[m];
+    tp[m] = t[n];
+    xp[m] = x[n]; 
+  }
+  //rsPlotVectorsXY(tp, xp);
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &t[0],  &x[0]);
+  plt.addDataArrays(M, &tp[0], &xp[0]);
+  plt.plot();
+
+
+
+
 
 
 
