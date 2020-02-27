@@ -1600,16 +1600,20 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   // find peak condidates in the yM array (in which the minor sub-peaks are already shadowed):
   std::vector<int> pc = getPeakCandidates(&yM[0], N); // peak candidates
 
-  // todo: compute peak-prominences and remove those that fall below a given threshold
-  std::vector<T> pp(int(pc.size()));                  // peak prominences
-  peakProminences(&yM[0], N, &pc[0], int(pc.size()), &pp[0]);
-  return getProminentPeaks(pc, pp, &yM[0], N);
-  // should we really use the shadowed array yM or maybe the non-shadowed y here? maybe that should
-  // be user selectable? if we use yM, we compute the prominence with respect to the landscape that 
-  // results from shadowing - this will reduce the peaks prominence values with resepct to what 
-  // they would be when computed with respect to the original landscape
+  // todo: optimize to avoid computing peak-trails when this function is not used, i.e. 
+  // shadowWidthL/R are bot zero
 
-  //return pc;
+  if(promThresh == T(0) && promToMaxThresh == T(0) && promToHeightThresh == T(0))
+    return pc;
+  else {
+    std::vector<T> pp(int(pc.size()));     // peak prominences
+    peakProminences(&yM[0], N, &pc[0], int(pc.size()), &pp[0]);
+    return getProminentPeaks(pc, pp, &yM[0], N); }
+    // should we really use the shadowed array yM or maybe the non-shadowed y here? maybe that 
+    // should be user selectable? if we use yM, we compute the prominence with respect to the 
+    // landscape that results from shadowing - this will reduce the peaks prominence values with 
+    // resepct to what they would be when computed with respect to the original landscape
+
 }
 
 
