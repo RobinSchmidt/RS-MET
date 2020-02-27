@@ -901,8 +901,35 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  /** Before finding peaks, an exponentially decaying envelope follower with zero attack is applied 
+  (one in the forward direction, another one in the backward direction - both in paralllel - and 
+  then the elemnt-wise maximum of both passes is taken). This function here sets the widths (in 
+  samples) within which these decaying trails decay down to their half-height. The idea behind this 
+  is that larger peaks will "shadow" smaller nearby peaks by letting them fall under their 
+  "trails". It's one of the meachanisms to filter out irrelevant peaks. */
   void setShadowWidths(T widthL, T widthR)
   { shadowWidthL = widthL; shadowWidthR = widthR; }
+
+
+  /** Sets an absolute threshold for the peak prominence. Peaks with prominences below this value
+  will be discarded as irrelevant. A value of zero will effectively switch this thresholding off. 
+  The prominence of a peak is defined as the minimum height that you have to climb *down* in order 
+  to reach terrain higher than the current peak. See:
+  https://en.wikipedia.org/wiki/Topographic_prominence  */
+  void setAbsoluteProminenceThreshold(T newThreshold)
+  { promThresh = newThreshold; }
+
+  /** A prominence threshold scaled by the height of the highest peak of the whole landscape. This 
+  scaling makes the thresholding invariant with respect to scaling the whole landscape by a 
+  constant factor. */
+  void setScaledProminenceThreshold(T newThreshold)
+  { promToMaxThresh = newThreshold; }
+  // i think, this is probably the most meaningful threshold among the 3
+
+  /** A prominence threshold scaled by the height of the currently considered peak. */
+  void setRelativeProminenceThreshold(T newThreshold)
+  { promToHeightThresh = newThreshold; }
+
 
   /** Sets the number of left neighbors which must be less or equal than a peak value 
   (default: 1). */

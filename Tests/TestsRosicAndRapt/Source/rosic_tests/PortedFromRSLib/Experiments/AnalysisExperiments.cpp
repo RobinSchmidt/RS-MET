@@ -1501,7 +1501,14 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   int N = (int) x.size();
   std::vector<double> t = rsRangeLinear(0.0, double(N-1), N);
   rsPeakPicker<double> pp;
-  pp.setShadowWidths(10, 20);
+
+  //pp.setShadowWidths(10, 10);
+  pp.setShadowWidths(20, 20);
+
+  //pp.setRelativeProminenceThreshold(0.25);
+  // maybe have separate thresholds for left and right
+
+
   std::vector<int> peakIndices = pp.getRelevantPeaks(&t[0], &x[0], N); 
 
   // todo: create a function that connects the peaks, plot this function together with the original x
@@ -1521,7 +1528,9 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   plt.addDataArrays(M, &tp[0], &xp[0]);
   plt.plot();
 
-
+  // todo: 
+  // -prepend/append first and last values if they are not already included
+  // -make sure, that the landscape never sticks out of the linearly connected peaks
 
 
 
@@ -1593,7 +1602,7 @@ void peakPicker()
 
   int N = 200;
 
-  x = rsRandomVector(N, -1.0, +1.0, 4);  // nice seeds: 4,6,7,8 - strange: 9
+  x = rsRandomVector(N, -1.0, +1.0, 8);  // nice seeds: 4,6,7,8 - strange: 9
   AT::cumulativeSum(&x[0], &x[0], N);
   //AT::cumulativeSum(&x[0], &x[0], N);
   //AT::add(&x[0], AT::minValue(&x[0], N), &x[0], N); // values hould be >= 0 for the shadower to work
