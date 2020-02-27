@@ -58,5 +58,13 @@ void DescribedComponent::repaintOnMessageThread()
   if(MessageManager::getInstance()->isThisTheMessageThread())
     repaint();
   else
-    MessageManager::callAsync( [this]{repaint();} );
+  {
+      /*
+       * Passing a safe ptr to avoid accidentally calling this while the editor is being
+       * destroyed during an automation move.
+       */
+      Component::SafePointer<DescribedComponent> ptr = { this };
+      MessageManager::callAsync([=] {if (ptr) ptr.getComponent()->repaint(); });
+  }
+    
 }
