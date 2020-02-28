@@ -1496,7 +1496,7 @@ std::vector<double> testEnvelope1(const std::vector<double>& x)
 /** Returns index of the value in the x,y array that sticks out most over the connecting line 
 between the points (x[n0],y[n0]) and (x[n1],y[n1]) or -1 if none of the values sticks out. */
 template<class T>
-int getMaxStickOut(T* x, T* y, int N, int n0, int n1)
+int getMaxStickOut(const T* x, const T* y, int N, int n0, int n1)
 {
   rsAssert(n0 >= 0 );
   rsAssert(n1 <  N );
@@ -1515,29 +1515,33 @@ int getMaxStickOut(T* x, T* y, int N, int n0, int n1)
     if(d > dMax) {
       dMax = d;
       nMax = n; }}
+
+  if(nMax == n0 || nMax == n1)
+    return -1;  // avoid stack overflow due to roundoff errors (happens with seed=8)
+
   return nMax;
 }
 
+template<typename T>
+typename std::vector<T>::iterator rsInsertSorted(std::vector<T>& v, T const& x)
+{
+  return v.insert(std::upper_bound(v.begin(), v.end(), x), x);
+}
+// see:
+// https://stackoverflow.com/questions/15843525/how-do-you-insert-the-value-in-a-sorted-vector
 
-/*
 // p: peak indices, x: x-data, y: y-data (both length N), n0: left index, n1: right index
 template<class T>
-void removeStickOuts(std::vector<int>& p, T* x, T* y, int N, int n0, int n1)
+void removeStickOuts(std::vector<int>& p, const T* x, const T* y, int N, int n0, int n1)
 {
-  // find the worst offender between L and R:
-  int si = -1;    // "stickout index": index of maximally sticking out value
-  T   sa = T(0);  // "stickout amount": amount by which y[si] sticks out above the line
-  int j  = 0;     // current peak index
-  int i  = 0;     // current index into x,y arrays
-
-
-  for(i = L; i <= R; i++)
+  int ns = getMaxStickOut(x, y, N, n0, n1); // index of maximally sticking out data point
+  if(ns > -1)
   {
-    T xL = x[j];
-    T yL =
+    rsInsertSorted(p, ns);                  // insert ns into the p-array (sorted)
+    removeStickOuts(p, x, y, N, n0, ns);    // recursive call for left  section n0..ns
+    removeStickOuts(p, x, y, N, ns, n1);    // recursive call for right section ns..n1
   }
 }
-*/
 
 std::vector<double> testEnvelope2(const std::vector<double>& x)
 {
@@ -1560,6 +1564,14 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   // prepend/append first and last values if they are not already included:
   if(pi[0]      != 0  ) rsPrepend(pi, 0);
   if(rsLast(pi) != N-1) rsAppend( pi, N-1);
+
+
+  // test: use stickout-removal algo *only*:
+  pi.clear();
+  pi.push_back(0);
+  pi.push_back(N-1);
+  removeStickOuts(pi, &t[0], &x[0], N, 0, N-1);
+
 
 
   // todo make sure, that the landscape never sticks out of the linearly connected peaks - i think,
@@ -1673,7 +1685,7 @@ void peakPicker()
 
   int N = 200;
 
-  x = rsRandomVector(N, -1.0, +1.0, 9);  // nice seeds: 4,6,7,8 - strange: 9
+  x = rsRandomVector(N, -1.0, +1.0, 8);  // nice seeds: 4,6,7,8 - strange: 9
   AT::cumulativeSum(&x[0], &x[0], N);
   //AT::cumulativeSum(&x[0], &x[0], N);
   //AT::add(&x[0], AT::minValue(&x[0], N), &x[0], N); // values hould be >= 0 for the shadower to work
