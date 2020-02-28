@@ -1492,6 +1492,53 @@ std::vector<double> testEnvelope1(const std::vector<double>& x)
 //  it may make sense to use an average of forward-first and backward-first application to make the 
 //  algorithm invariant with respect to mirroring the data (this invariance seems desirable)
 
+
+/** Returns index of the value in the x,y array that sticks out most over the connecting line 
+between the points (x[n0],y[n0]) and (x[n1],y[n1]) or -1 if none of the values sticks out. */
+template<class T>
+int getMaxStickOut(T* x, T* y, int N, int n0, int n1)
+{
+  rsAssert(n0 >= 0 );
+  rsAssert(n1 <  N );
+  rsAssert(n0 <  n1);
+  //T x0 = x[n0);
+  //T y0 = y[n0];
+  //T x1 = x[n1];
+  //T y1 = y[n1];
+  T a, b;
+  rsLine2D<T>::twoPointToExplicit(x[n0], y[n0], x[n1], y[n1], &a, &b);
+  T   dMax = T(0);
+  int nMax = -1;
+  for(int n = n0; n <= n1; n++) {
+    T yL = a * x[n] + b;   // y on the line
+    T d  = y[n] - yL;      // difference between y-value in array and y-value on the line
+    if(d > dMax) {
+      dMax = d;
+      nMax = n; }}
+  return nMax;
+}
+
+
+/*
+// p: peak indices, x: x-data, y: y-data (both length N), n0: left index, n1: right index
+template<class T>
+void removeStickOuts(std::vector<int>& p, T* x, T* y, int N, int n0, int n1)
+{
+  // find the worst offender between L and R:
+  int si = -1;    // "stickout index": index of maximally sticking out value
+  T   sa = T(0);  // "stickout amount": amount by which y[si] sticks out above the line
+  int j  = 0;     // current peak index
+  int i  = 0;     // current index into x,y arrays
+
+
+  for(i = L; i <= R; i++)
+  {
+    T xL = x[j];
+    T yL =
+  }
+}
+*/
+
 std::vector<double> testEnvelope2(const std::vector<double>& x)
 {
   // not yet implemented
@@ -1508,16 +1555,35 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   //pp.setRelativeProminenceThreshold(0.25);
   // maybe have separate thresholds for left and right
 
+  std::vector<int> pi = pp.getRelevantPeaks(&t[0], &x[0], N); // peak indices
 
-  std::vector<int> peakIndices = pp.getRelevantPeaks(&t[0], &x[0], N); 
+  // prepend/append first and last values if they are not already included:
+  if(pi[0]      != 0  ) rsPrepend(pi, 0);
+  if(rsLast(pi) != N-1) rsAppend( pi, N-1);
+
+
+  // todo make sure, that the landscape never sticks out of the linearly connected peaks - i think,
+  // this may happen only between the (just prepended) 0th peak and the 1st and/or the just 
+  // appended last and second-to-last
+  // i think, we should first figure out, which value sticks out most, i.e. the one with the 
+  // greatest difference between the value and the connecting line, and the add that value to the 
+  // peaks - and then repeat the procedure with the range left to that value and the range right 
+  // to that value - maybe a function 
+  // removeGreatestStickOut(Vec peakIndices, Vec xData, Vec yData, int left, int right)
+  // ->this function will call itself recursively ...maybe that algorithm could be used all by 
+  // itself to find relevant peaks
+
+
+
+
 
   // todo: create a function that connects the peaks, plot this function together with the original x
 
-  int M = int(peakIndices.size());
+  int M = int(pi.size());
   std::vector<double> tp(M), xp(M);
   for(int m = 0; m < M; m++) 
   {
-    int n = peakIndices[m];
+    int n = pi[m];
     tp[m] = t[n];
     xp[m] = x[n]; 
   }
@@ -1528,10 +1594,15 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   plt.addDataArrays(M, &tp[0], &xp[0]);
   plt.plot();
 
-  // todo: 
-  // -prepend/append first and last values if they are not already included
-  // -make sure, that the landscape never sticks out of the linearly connected peaks
 
+
+  // Notes:
+  // -Can it happen that there are 3 peaks p1 > p2 > p3 at time instants t1 < t2 < t3 such that the 
+  //  shadowing algorithm misses the intermediate peak p2 but p2 still sticks out from the line 
+  //  that connects p1 and p3? I don't think so, because if the algo catches p1 and p3, p3 will lie
+  //  below the expoential shadow/trail emanating from p1 and that shadow will lie wholly under the
+  //  line connecting p1 and p3 - so p2 must lie under the shadow (because it was missed) and 
+  //  therefore even more so must lie under the line.
 
 
 
@@ -1602,7 +1673,7 @@ void peakPicker()
 
   int N = 200;
 
-  x = rsRandomVector(N, -1.0, +1.0, 8);  // nice seeds: 4,6,7,8 - strange: 9
+  x = rsRandomVector(N, -1.0, +1.0, 9);  // nice seeds: 4,6,7,8 - strange: 9
   AT::cumulativeSum(&x[0], &x[0], N);
   //AT::cumulativeSum(&x[0], &x[0], N);
   //AT::add(&x[0], AT::minValue(&x[0], N), &x[0], N); // values hould be >= 0 for the shadower to work
@@ -1628,7 +1699,7 @@ void peakPicker()
   // shows result using recursive smoothing via rsPeakTrailDragger - this should be more efficient
   // and not suffer from peak-wandering/drift
   VecD yEnv2 = testEnvelope2(x);  // 
-  rsPlotVectors(x, yEnv2);
+  //rsPlotVectors(x, yEnv2);
 
 
 

@@ -1593,8 +1593,8 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   ps.applyBackward(t, &y[0], &yL[0], N);
   rsArrayTools::maxElementWise(&yL[0], &yR[0], N, &yM[0]);
 
-  rsPlotArraysXY(N, t, &y[0], &yL[0], &yR[0]);  // for debug
-  //rsPlotArraysXY(N, t, &y[0], &yL[0], &yR[0], &yM[0]);  // for debug
+  //rsPlotArraysXY(N, t, &y[0], &yL[0], &yR[0]);  // for debug
+  rsPlotArraysXY(N, t, &y[0], &yL[0], &yR[0], &yM[0]);  // for debug
   //rsPlotArraysXY(N, t, x, &y[0], &yL[0], &yR[0], &yM[0]);  // for debug
 
   // find peak condidates in the yM array (in which the minor sub-peaks are already shadowed):
