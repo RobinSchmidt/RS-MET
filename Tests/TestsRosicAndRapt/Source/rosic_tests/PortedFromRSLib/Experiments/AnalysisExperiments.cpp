@@ -1501,10 +1501,6 @@ int getMaxStickOut(const T* x, const T* y, int N, int n0, int n1)
   rsAssert(n0 >= 0 );
   rsAssert(n1 <  N );
   rsAssert(n0 <  n1);
-  //T x0 = x[n0);
-  //T y0 = y[n0];
-  //T x1 = x[n1];
-  //T y1 = y[n1];
   T a, b;
   rsLine2D<T>::twoPointToExplicit(x[n0], y[n0], x[n1], y[n1], &a, &b);
   T   dMax = T(0);
@@ -1515,10 +1511,8 @@ int getMaxStickOut(const T* x, const T* y, int N, int n0, int n1)
     if(d > dMax) {
       dMax = d;
       nMax = n; }}
-
   if(nMax == n0 || nMax == n1)
     return -1;  // avoid stack overflow due to roundoff errors (happens with seed=8)
-
   return nMax;
 }
 
@@ -1527,7 +1521,6 @@ typename std::vector<T>::iterator rsInsertSorted(std::vector<T>& v, T const& x)
 {
   return v.insert(std::upper_bound(v.begin(), v.end(), x), x);
 }
-// see:
 // https://stackoverflow.com/questions/15843525/how-do-you-insert-the-value-in-a-sorted-vector
 
 // p: peak indices, x: x-data, y: y-data (both length N), n0: left index, n1: right index
@@ -1535,12 +1528,10 @@ template<class T>
 void removeStickOuts(std::vector<int>& p, const T* x, const T* y, int N, int n0, int n1)
 {
   int ns = getMaxStickOut(x, y, N, n0, n1); // index of maximally sticking out data point
-  if(ns > -1)
-  {
+  if(ns > -1) {
     rsInsertSorted(p, ns);                  // insert ns into the p-array (sorted)
     removeStickOuts(p, x, y, N, n0, ns);    // recursive call for left  section n0..ns
-    removeStickOuts(p, x, y, N, ns, n1);    // recursive call for right section ns..n1
-  }
+    removeStickOuts(p, x, y, N, ns, n1); }  // recursive call for right section ns..n1
 }
 
 std::vector<double> testEnvelope2(const std::vector<double>& x)
@@ -1566,11 +1557,20 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   if(rsLast(pi) != N-1) rsAppend( pi, N-1);
 
 
+  // remove stickouts at end and start:
+  int M = int(pi.size());
+  removeStickOuts(pi, &t[0], &x[0], N, pi[M-2], pi[M-1]);
+  removeStickOuts(pi, &t[0], &x[0], N, pi[0],   pi[1]  );
+
+
+
+  /*
   // test: use stickout-removal algo *only*:
   pi.clear();
   pi.push_back(0);
   pi.push_back(N-1);
   removeStickOuts(pi, &t[0], &x[0], N, 0, N-1);
+  */
 
 
 
@@ -1584,14 +1584,12 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   // removeGreatestStickOut(Vec peakIndices, Vec xData, Vec yData, int left, int right)
   // ->this function will call itself recursively ...maybe that algorithm could be used all by 
   // itself to find relevant peaks
-
-
-
+  // -> done -> seems to work -> move code into rsPeakPicker
 
 
   // todo: create a function that connects the peaks, plot this function together with the original x
 
-  int M = int(pi.size());
+  M = int(pi.size());
   std::vector<double> tp(M), xp(M);
   for(int m = 0; m < M; m++) 
   {
@@ -1685,7 +1683,7 @@ void peakPicker()
 
   int N = 200;
 
-  x = rsRandomVector(N, -1.0, +1.0, 8);  // nice seeds: 4,6,7,8 - strange: 9
+  x = rsRandomVector(N, -1.0, +1.0, 7);  // nice seeds: 4,6,7,8 - strange: 9
   AT::cumulativeSum(&x[0], &x[0], N);
   //AT::cumulativeSum(&x[0], &x[0], N);
   //AT::add(&x[0], AT::minValue(&x[0], N), &x[0], N); // values hould be >= 0 for the shadower to work
