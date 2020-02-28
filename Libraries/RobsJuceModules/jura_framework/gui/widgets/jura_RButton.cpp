@@ -54,7 +54,7 @@ void RButton::setToggleState(const bool shouldBeOn, const bool sendChangeNotific
   if(shouldBeOn != isOn)
   {
     isOn = shouldBeOn;
-    repaint();
+    repaintOnMessageThread();
     if(sendChangeNotification)
       sendClickMessage();
   }
