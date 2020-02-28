@@ -1600,8 +1600,12 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   // find peak condidates in the yM array (in which the minor sub-peaks are already shadowed):
   std::vector<int> pc = getPeakCandidates(&yM[0], N); // peak candidates
 
-  // todo: optimize to avoid computing peak-trails when this function is not used, i.e. 
-  // shadowWidthL/R are bot zero
+
+  // todo: 
+  // -optimize to avoid computing peak-trails when this functionality is not used, i.e. 
+  //  shadowWidthL/R are both zero
+  // -integrate the edge handling code from testEnvelope2 inclduding the stick-out removal
+
 
   if(promThresh == T(0) && promToMaxThresh == T(0) && promToHeightThresh == T(0))
     return pc;
@@ -1702,6 +1706,11 @@ void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const in
   // In a 2D setting, one would perhaps take the maximum but only over those directions, where the
   // boundary was not hit
   // ...maybe make the type of behavior user adjustable
+
+  // Maybe it would make sense to return both values leftBase and rightBase or peakHeight-leftBase
+  // and peakHeight-rightBase, such that we may also use an asymmetric prominence thresholding. For
+  // amplitude envelopes, it may make sense to use a higher threshold for the leftward direction
+  // (at least, i think so -> elaborate).
 }
 // make unit tests...
 

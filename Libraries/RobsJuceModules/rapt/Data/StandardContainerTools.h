@@ -109,6 +109,14 @@ inline void rsInsert(std::vector<T>& v, const std::vector<T>& w, size_t index)
   v.insert(v.begin() + index, w.begin(), w.end());
 }
 
+/** Inserts value x into sorted vector v at its appropriate position. */
+template<typename T>
+typename std::vector<T>::iterator rsInsertSorted(std::vector<T>& v, T const& x)
+{
+  return v.insert(std::upper_bound(v.begin(), v.end(), x), x);
+}
+// https://stackoverflow.com/questions/15843525/how-do-you-insert-the-value-in-a-sorted-vector
+
 
 
 /** Wraps iterator syntax to simplify calls to std::none_of. */

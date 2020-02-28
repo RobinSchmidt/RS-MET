@@ -1516,13 +1516,6 @@ int getMaxStickOut(const T* x, const T* y, int N, int n0, int n1)
   return nMax;
 }
 
-template<typename T>
-typename std::vector<T>::iterator rsInsertSorted(std::vector<T>& v, T const& x)
-{
-  return v.insert(std::upper_bound(v.begin(), v.end(), x), x);
-}
-// https://stackoverflow.com/questions/15843525/how-do-you-insert-the-value-in-a-sorted-vector
-
 // p: peak indices, x: x-data, y: y-data (both length N), n0: left index, n1: right index
 template<class T>
 void removeStickOuts(std::vector<int>& p, const T* x, const T* y, int N, int n0, int n1)
