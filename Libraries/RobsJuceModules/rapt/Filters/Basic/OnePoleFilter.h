@@ -167,6 +167,7 @@ public:
     x1 = newX1;
     y1 = newY1;
   }
+  // rename to setState
 
   // todo:
   // void setup(int mode, TPar omega, TPar gain = TPar(1));

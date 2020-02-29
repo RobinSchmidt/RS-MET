@@ -189,6 +189,71 @@ void butterworthEnergy()
   int dummy = 0;
 }
 
+void biDirectionalStateInit()
+{
+  // Trying to figure out closed form formulas for the initial state of a bi-directional filter 
+  // immediately before starting the backward pass....
+
+  // Consider a 1st order filter with the difference equation:
+  //   y[n] = a*x[n] + b*y[n-1]
+  // and assume that it has been applied to some input signal in a forward pass. Before applying 
+  // the backward pass, we would conceptually have to keep running the filter for a very long time 
+  // feeding zeros (in practice, until the response tail has decayed away sufficiently), then run 
+  // the filter in the backward direction on the tail to "warm it up" and then, in warmed up state,
+  // run it in backward direction over our actual data. The goal is to replace the tail ring-out 
+  // and warm-up computations with directly setting initial state of the filter for the backward 
+  // pass from its known state after the forward pass and its coeffs.
+
+  // We compare the results from the direct setting of the stae and the ring-out/warm-up strategy.
+
+
+
+  // filter coeffs:
+  double a = 4.0;
+  double b = 0.5;
+
+  // input signal:
+  static const int N = 7;
+  double x[N] = { 1,2,3,4,5,4,3 };
+
+  // tail buffers:
+  static const int Nt = 200;  // tail buffer length
+  double tf[Nt], t[Nt];
+
+  // output after forward pass and after both passes:
+  double yf[N], y[N];
+
+  // create and set up filter object:
+  RAPT::rsOnePoleFilter<double, double> flt;
+  flt.setCoefficients(a, 0.0, b);  // we use different conventions here
+
+  // compute forward pass output:
+  int n;
+  for(n = 0; n < N; n++)
+    yf[n] = flt.getSample(x[n]);
+
+  // ring-out/warm-up, using tail buffers:
+  for(n = 0;    n <  Nt; n++) tf[n] = flt.getSample(0.0);   // fill forward tail buffer, ring out
+  for(n = Nt-1; n >= 0;  n--) t[n]  = flt.getSample(tf[n]); // fill backward tail buffer, warm up
+
+  // compute forward pass output:
+  for(n = N-1; n >= 0; n--)
+    y[n] = flt.getSample(yf[n]);
+
+
+
+  // plot results:
+  //rsPlotArrays(Nt, tf, t);   // tail buffers
+  rsPlotArrays(N, x, yf, y); // input and outputs
+
+
+
+
+
+
+  int dummy = 0;
+}
+
 void biquadModulation()
 {
   // Compares the responses of different biquad implementation structures (DF1, DF2, SVF, etc.) to

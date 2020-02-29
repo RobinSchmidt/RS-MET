@@ -1,3 +1,5 @@
+// todo: merge with the other FilterExperiments.cpp file
+
 using namespace RAPT;
 
 void bandSplittingTwoWay()
