@@ -189,6 +189,16 @@ void butterworthEnergy()
   int dummy = 0;
 }
 
+template<class T>
+T rsOnePoleInitialStateForBackwardPass(T a, T b, T y)
+{
+  T k = T(1) / b; 
+  T p = a*y  / (b*b-T(1));
+  T c = -p*k; 
+  return c - p*(b-k);
+}
+// move to rsOnePoleFilter
+
 void biDirectionalStateInit()
 {
   // Trying to figure out closed form formulas for the initial state of a bi-directional filter 
@@ -283,6 +293,8 @@ void biDirectionalStateInit()
   double p = a*yOld/(b*b-1); 
   double c = -p*k; 
   double yNew = c - p*(b-k);
+  yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld); // should not change the value
+
   // factor out into
   // T rsOnePoleInitialStateForBackwardPass(T a, T b, T y)
 
@@ -302,18 +314,48 @@ void biDirectionalStateInit()
   double ta[Nt];    // analytic tail
   for(n = 0; n < Nt; n++)
     ta[n] = c*pow((1/b), n-1)  -  (a * yOld * (pow(b,n) - pow((1/b),n))) / (b*b - 1);
-  // Looks good, if b is negative power of 2, otherwise numercial error messes up the
+  // Looks good, if b is negative power of 2, otherwise numerical error messes up the
   // analytic solution. Result ta is equal to t but one sample shifted - when plugging n=1 into the 
   // formula, we can compute our desired state variable yNew.
+
+
+
+  // Compare results from first doing a forward, then a backward pass and the other way around - 
+  // the results should be the same:
+
+  // compute output y by forward/backward filtering
+  double yfb[N]; // 
+  flt.setInternalState(0.0, 0.0);
+  for(n = 0; n < N; n++) 
+    yfb[n] = flt.getSample(x[n]);
+  yOld = yfb[N-1];
+  yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld);
+  flt.setInternalState(0.0, yNew);
+  for(n = N-1; n >= 0; n--) 
+    yfb[n] = flt.getSample(yfb[n]);
+
+  // compute output y by backward/forward filtering
+  double ybf[N];
+  flt.setInternalState(0.0, 0.0);
+  for(n = N-1; n >= 0; n--) 
+    ybf[n] = flt.getSample(x[n]);
+  yOld = ybf[0];
+  yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld);
+  flt.setInternalState(0.0, yNew);
+  for(n = 0; n < N; n++) 
+    ybf[n] = flt.getSample(ybf[n]);
+
+  // compute difference between forward-first and backward-first:
+  double diff[N]; 
+  rsArrayTools::subtract(yfb, ybf, diff, N);
+
 
   // plot results:
   //rsPlotArrays(Nt, t, ta);     // numerically and analytically computed tail
   //rsPlotArrays(Nt, tf, t);   // tail buffers
-  rsPlotArrays(N, x, yf, y); // input and outputs
+  //rsPlotArrays(N, x, yf, y); // input and outputs
+  rsPlotArrays(N, x, yfb, ybf, diff);  // compare forward-first vs backward-first
 
-  // todo:
-  // -compare results from first doing a forward, then a backward pass and the other way around - 
-  //  the results should be the same
 
   // solving recursions:
   // https://ask.sagemath.org/question/35626/how-to-solve-non_homogenous-recurrence-in-sage-using-rsolve-functions/
