@@ -192,10 +192,13 @@ void butterworthEnergy()
 template<class T>
 T rsOnePoleInitialStateForBackwardPass(T a, T b, T y)
 {
+  return (a*y*b) / (T(1)-b*b);
+  /*
   T k = T(1) / b; 
   T p = a*y  / (b*b-T(1));
   T c = -p*k; 
   return c - p*(b-k);
+  */
 }
 // move to rsOnePoleFilter
 
@@ -243,8 +246,11 @@ void biDirectionalStateInit()
   // before starting the backward pass is computed from the current recursion state yOld after the 
   // forward pass and the filter coeffs a,b as:
   //   k = 1/b; p = a*yOld/(b*b-1); c = -p*k; yNew = c - p*(b-k);
-  // Can this computation be simplified/optimized? Maybe we can get away with just one division 
-  // instead of two?
+  // This can be further simplifed into:
+  //   yNew = a*yOld*b / (1-b*b)
+  // using 1 div, 3 mul, 1 sub. Maybe make some experiments, which formula is numerically more 
+  // accurate - maybe it's not the most efficient/simplified one? Maybe try to avoid dividing by
+  // 1-b^2 because that denominator becomes inaccurate as |b| gets close to 1 (which is typical)
 
   // Why do we have to compute c manually from the boundary condition? Why does this code:
   //   RSolve[{s[n] - b*s[n+1] - a*y*b^n == 0, s[Infinity] == 0}, s[n], n] 
@@ -262,8 +268,8 @@ void biDirectionalStateInit()
   // We compare the results from the direct setting of the state and the ring-out/warm-up strategy.
 
   // filter coeffs:
-  double a = 4.0;
-  double b = 0.5;
+  double a = 5.0;
+  double b = 0.8;
 
   // input signal:
   static const int N = 7;
@@ -293,6 +299,8 @@ void biDirectionalStateInit()
   double p = a*yOld/(b*b-1); 
   double c = -p*k; 
   double yNew = c - p*(b-k);
+  //yNew = - (a*yOld*b) / (b*b-1);  // simplified
+  //yNew = (a*yOld*b) / (1-b*b);  // simplified
   yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld); // should not change the value
 
   // factor out into
@@ -304,7 +312,7 @@ void biDirectionalStateInit()
 
   // compare numerically and analytically computed state:
   double err = yNew - t[0]; // should be zero (up to roundoff)
-  rsAssert(rsAbs(err) < 1.e-13); 
+  rsAssert(rsAbs(err) < 1.e-12); 
 
   // compute backward pass output:
   for(n = N-1; n >= 0; n--)
