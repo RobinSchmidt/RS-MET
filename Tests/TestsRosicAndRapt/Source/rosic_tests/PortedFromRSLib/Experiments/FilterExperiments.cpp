@@ -225,8 +225,8 @@ void biDirectionalStateInit()
 
 
   // filter coeffs:
-  double a = 4.0;
-  double b = 0.9;
+  double a = 3.0;
+  double b = 0.8;
 
   // input signal:
   static const int N = 7;
@@ -273,11 +273,22 @@ void biDirectionalStateInit()
   // r: -0.5625  -3   -15    -63    -255
   // maybe r = - (2^(1/b) - 1)
   // or: let k = 1/b, use r = -(k^2 - 1)
-  double r2 = -( pow(1/b,2) - 1);  // equal to r? ...seems to be
+  double r2 = -(pow(1/b,2) - 1);  // equal to r? ...seems to be
+  s1 = -a*y0*(b-(1/b)) / (b*b-1) / r2;
+  // now s1, seems to be indeed equal to t[0] - but why this strange factor r2? wolfram alpha says
+  // nothing about that an i have found it only by luck (looking at the ratio of t[0] and s1 as 
+  // computed by wolfram's formula and spotting the pattern)
+
+  double err = s1 - t[0]; // should be zero up to roundoff
+
 
   // tests:
-  s1  = -a*y0*(b-(1/b)) / (b*(b*b-1)); // RSolve[s[n] - b*s[n+1] - a*y*b^(n-1) == 0, s[n], n]
-  s1  = -a*b*y0*(b-(1/b)) / (b*b-1);   // RSolve[s[n] - b*s[n+1] - a*y*b^(n+1) == 0, s[n], n]
+  //s1  = -a*y0*(b-(1/b)) / (b*(b*b-1)); // RSolve[s[n] - b*s[n+1] - a*y*b^(n-1) == 0, s[n], n]
+  //s1  = -a*b*y0*(b-(1/b)) / (b*b-1);   // RSolve[s[n] - b*s[n+1] - a*y*b^(n+1) == 0, s[n], n]
+  //s1  = -a*y0*(b-(1/b));  // without the division
+
+
+
 
   // compute forward pass output:
   for(n = N-1; n >= 0; n--)
