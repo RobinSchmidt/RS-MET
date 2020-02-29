@@ -201,9 +201,10 @@ void biDirectionalStateInit()
   // feeding zeros (in practice, until the response tail has decayed away sufficiently), then run 
   // the filter in the backward direction on the tail to "warm it up" and then, in warmed up state,
   // run it in backward direction over our actual data. The goal is to replace the tail ring-out 
-  // and warm-up computations with directly setting initial state of the filter for the backward 
-  // pass from its known state after the forward pass and its coeffs. Let's call the last output 
-  // state of our filter y, then the tail of the forward pass is given by the expression:
+  // and warm-up computations with directly setting initial state yNew of the filter for the 
+  // backward pass from its known final state yOld after the forward pass and its coeffs. Let's 
+  // call the last output state of our filter y (== yOld), then the tail of the forward pass is 
+  // given by the expression:
   //   t[n] = y * b^n
   // to that tail, we now apply the filter running in reverse direction - the result we call s[n].
   // We get the difference equation:
@@ -213,14 +214,33 @@ void biDirectionalStateInit()
   //   RSolve[s[n] - b*s[n+1] - a*y*b^n == 0, s[n], n]
   // which gives the result:
   //   s(n) = c (1/b)^(n - 1) - (a y (b^n - (1/b)^n))/(b^2 - 1) and c element Z
-  // it seems, we are free to choose an integer number c here. Because b < 1, we have (1/b) > 1, so
-  // the first term (which depends on c) will go to infinity as n goes to infinity. But we want 
-  // s[inf] = 0, so we must choose c = 0. To compute the state, we compute 
-  //   s(1) = -a*y*(b-(1/b)) / (b*b-1)
-  // ...unfortunately, that doesn't seem to work...why? also, the formula would produce s(0) = 0 
-  // because b^0 = (1/b)^0 = 1
+  // which is the general solution to our recursion equation and depends on a a parameter c which 
+  // we must select according to some boundary condition (it seems, we do not need to take the 
+  // restriction that c should be an integer seriously - it can be a real number - why does wolfram
+  // say it should be integer?). Our boundary condition is that s(inf) == 0. Defining 
+  //   k := 1/b and p := a*y/(b^2 - 1)
+  // we can rewrite s(n) more simply as:
+  //   s(n) = c*k^(n-1) - p*(b^n-k^n)
+  //        = c*k^(n-1) - p*b^n + p*k^n
+  //        = c*k^(n-1) + p*k^n - p*b^n
+  //        = c*k^(n-1) + p*k*k^(n-1) - p*b^n
+  //        = (c + p*k) * k^(n-1) - p*b^n
+  // We have |b| < 1, so |1/b| = |k| > 1, so as n -> inf, p*b^n -> 0, but (c+p*k) * k^(n-1) goes to
+  // infinity unless c+p*k = 0. So, in order to assure s(inf) = 0, we need c+p*k = 0 -> c = -p*k. 
+  // To get our desired filter state, we evaluate s(n) at n=1:
+  //   s(1) = c*k^(1-1) - p*(b^1-k^1) = c - p*(b-k)
+  // So, that's it. In summary, the new filter recursion state yNew which serves as initial state 
+  // before starting the backward pass is computed from the current recursion state yOld after the 
+  // forward pass and the filter coeffs a,b as:
+  //   k = 1/b; p = a*yOld/(b*b-1); c = -p*k; yNew = c - p*(b-k);
+  // Can this computation be simplified/optimized? Maybe we can get away with just one division 
+  // instead of two?
 
-  // We compare the results from the direct setting of the stae and the ring-out/warm-up strategy.
+  // Todo: derive formulas for more complicated filters such as 1st order filters with a nonzero
+  // coeff for x[n-1] as well as biquad filters - maybe even for a fully general direct form 
+  // filter?
+
+  // We compare the results from the direct setting of the state and the ring-out/warm-up strategy.
 
 
 
@@ -318,12 +338,17 @@ void biDirectionalStateInit()
   //rsPlotArrays(Nt, tf, t);   // tail buffers
   //rsPlotArrays(N, x, yf, y); // input and outputs
 
+  // todo:
+  // -clean up 
+  // -compare results from first doing a forward, then a backward pass and the other way around - 
+  //  the results should be the same
 
 
+
+  // solving recursions:
   // https://ask.sagemath.org/question/35626/how-to-solve-non_homogenous-recurrence-in-sage-using-rsolve-functions/
   // https://trac.sagemath.org/ticket/1291
   // https://groups.google.com/forum/#!topic/sage-support/pYvjN7da9LY
-
   // Computational Mathematics with SageMath, page 229
 
 
