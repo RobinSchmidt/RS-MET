@@ -202,7 +202,20 @@ void biDirectionalStateInit()
   // the filter in the backward direction on the tail to "warm it up" and then, in warmed up state,
   // run it in backward direction over our actual data. The goal is to replace the tail ring-out 
   // and warm-up computations with directly setting initial state of the filter for the backward 
-  // pass from its known state after the forward pass and its coeffs.
+  // pass from its known state after the forward pass and its coeffs. Let's call the last output 
+  // state of our filter y, then the tail of the forward pass is given by the expression:
+  //   t[n] = y * b^n
+  // to that tail, we now apply the filter running in reverse direction - the result we call s[n].
+  // We get the difference equation:
+  //   s[n] = a * t[n] + b * s[n+1] = a * y * b^n + b * s[n+1]
+  // the s[n+1] is used for the recursion rather than s[n-1] because we are coming from the right
+  // (future) direction. To get an expression for s[n], we can use wolfram alpha with the input:
+  //   RSolve[s[n] - b*s[n+1] - a*y*b^n == 0, s[n], n]
+  // which gives the result:
+  //   s(n) = c (1/b)^(n - 1) - (a y (b^n - (1/b)^n))/(b^2 - 1) and c element Z
+  // it seems, we are free to choose an integer number c here. Because b < 1, we have (1/b) > 1, so
+  // the first term (which depends on c) wil go to infinity as n goes to infinity. But we want 
+  // s[inf] = 0, so we must choose c = 0.
 
   // We compare the results from the direct setting of the stae and the ring-out/warm-up strategy.
 
@@ -214,7 +227,7 @@ void biDirectionalStateInit()
 
   // input signal:
   static const int N = 7;
-  double x[N] = { 1,2,3,4,5,4,3 };
+  double x[N] = { 1,2,3,4,7,4,3 };
 
   // tail buffers:
   static const int Nt = 200;  // tail buffer length
@@ -232,9 +245,23 @@ void biDirectionalStateInit()
   for(n = 0; n < N; n++)
     yf[n] = flt.getSample(x[n]);
 
+
+  // todo: compute filter state - the computed value should match t[0] (not yet computed) up to 
+  // roundoff (if Nt is too short, maybe worse):
+  double yL = yf[N-1];  // last output of filter, equals its y-state
+  double s1 = -a*yL*(b-(1/b)) / (b*b-1);
+  
+  s1 /= -3;  // ad-hoc, works for a = 4, b = 0.5
+  //s1 /= -x[N-1];  // ad-hoc
+
+
   // ring-out/warm-up, using tail buffers:
   for(n = 0;    n <  Nt; n++) tf[n] = flt.getSample(0.0);   // fill forward tail buffer, ring out
   for(n = Nt-1; n >= 0;  n--) t[n]  = flt.getSample(tf[n]); // fill backward tail buffer, warm up
+
+
+
+
 
   // compute forward pass output:
   for(n = N-1; n >= 0; n--)
@@ -248,7 +275,23 @@ void biDirectionalStateInit()
 
 
 
+  // https://ask.sagemath.org/question/35626/how-to-solve-non_homogenous-recurrence-in-sage-using-rsolve-functions/
+  // https://trac.sagemath.org/ticket/1291
+  // https://groups.google.com/forum/#!topic/sage-support/pYvjN7da9LY
 
+  // Computational Mathematics with SageMath, page 229
+
+
+  // wolfram:
+  // example:  RSolve[a[n + 1] - 2 a[n] == 1, a[n], n]
+  // our case: RSolve[s[n] - b*s[n+1] - a*y*b^n == 0, s[n], n]
+  // gives:
+  // s(n) = c (1/b)^(n - 1) - (a y (b^n - (1/b)^n))/(b^2 - 1) and c element Z
+
+
+  // with boundary condition:
+  // example: RSolve[{a[n + 1] - 2 a[n] == 1, a[0] == 1}, a[n], n]
+  // our case: RSolve[{s[n] - b*s[n+1] - a*y*b^n == 0, s[inf] == 0}, s[n], n]
 
 
   int dummy = 0;
