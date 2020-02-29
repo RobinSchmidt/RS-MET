@@ -225,8 +225,8 @@ void biDirectionalStateInit()
 
 
   // filter coeffs:
-  double a = 3.0;
-  double b = 0.8;
+  double a = 5.0;
+  double b = 0.7;
 
   // input signal:
   static const int N = 7;
@@ -256,30 +256,25 @@ void biDirectionalStateInit()
   double s1  = -a*y0*(b-(1/b)) / (b*b-1);  // s( 1)
   double sm1 = -a*y0*((1/b)-b) / (b*b-1);  // s(-1) is just -s1
 
-
-  //s1 /= -3;  
-  // ad-hoc, works for a = 4, b = 0.5 - also for other values of a - but not for other values of b
-  // something is wrong - maybe i have set up the recursion wrong - maybe t[n] = y * b^(n-1) instead of
-  // t[n] = y * b^n?
-
-
   // ring-out/warm-up, using tail buffers:
   for(n = 0;    n <  Nt; n++) tf[n] = flt.getSample(0.0);   // fill forward tail buffer, ring out
   for(n = Nt-1; n >= 0;  n--) t[n]  = flt.getSample(tf[n]); // fill backward tail buffer, warm up
 
-
   double r = s1 / t[0];  // assuming s1 has not yet been scaled
   // b:   0.8    0.5  0.25  0.125  0.0625
   // r: -0.5625  -3   -15    -63    -255
-  // maybe r = - (2^(1/b) - 1)
-  // or: let k = 1/b, use r = -(k^2 - 1)
+  // let k = 1/b, use r = -(k^2 - 1)
   double r2 = -(pow(1/b,2) - 1);  // equal to r? ...seems to be
   s1 = -a*y0*(b-(1/b)) / (b*b-1) / r2;
-  // now s1, seems to be indeed equal to t[0] - but why this strange factor r2? wolfram alpha says
-  // nothing about that an i have found it only by luck (looking at the ratio of t[0] and s1 as 
-  // computed by wolfram's formula and spotting the pattern)
+  // now s1, seems to be indeed equal to t[0] and therefore to the filter's y1 state - but why this 
+  // strange factor r2? wolfram alpha says nothing about that an i have found it only by luck 
+  // (looking at the ratio of t[0] and s1 as computed by wolfram's formula and spotting the 
+  // pattern)
 
-  double err = s1 - t[0]; // should be zero up to roundoff
+  // simplified formula:
+  double k = 1/b;
+  s1 = a*y0*(b-k) / ((b*b-1)*(k*k-1));
+  double err = s1 - t[0]; // should be zero (up to roundoff)
 
 
   // tests:
