@@ -200,9 +200,29 @@ T rsOnePoleInitialStateForBackwardPass(T a, T b, T y)
   return c - p*(b-k);
   */
 }
-// dividing by 1-b^2 may be numerically inaccurate, if |b| is close to 1, which is typical for 
-// filters - can the formula be rewritten in a numerically more accurate way?
-// move to rsOnePoleFilter
+// -rename a,b to b0,a1, maybe change sign convention for feedback coeff
+// -dividing by 1-b^2 may be numerically inaccurate, if |b| is close to 1, which is typical for 
+//  filters - can the formula be rewritten in a numerically more accurate way?
+
+
+template<class T>
+T rsOnePoleInitialStateForBackwardPass(T a, T b, T* y, T d, T* x)
+{
+  *x  = b * *y + d * *x;          // == t[1]
+  T k = T(1) / b;
+  T p = a * *x / (b*(b*b-T(1)));
+  T c = -p*k;
+  *y  = c - p*(b-k);              // == s[1]
+}
+// -try to simplify
+// -move to rsOnePoleFilter
+// -have a member prepareForBackwardPass that does that to the internal state variables
+// -rename a,b,d to b0,a1,b1
+//   k = 1/b; 
+//   p = a * (b*y + d*x) / (b*(b^2-1));
+//   c = -p*k;
+//   yNew = c - p*(b-k); // == s(1)
+//   xNew = t[1] = b*y + d*x
 
 void biDirectionalStateInit()
 {
@@ -247,7 +267,7 @@ void biDirectionalStateInit()
   // So, that's it. In summary, the new filter recursion state yNew which serves as initial state 
   // before starting the backward pass is computed from the current recursion state yOld after the 
   // forward pass and the filter coeffs a,b as:
-  //   k = 1/b; p = a*yOld/(b*b-1); c = -p*k; yNew = c - p*(b-k);
+  //   k = 1/b; p = a*yOld/(b*b-1); c = -p*k; s(1) = yNew = c - p*(b-k);
   // This can be further simplifed into:
   //   yNew = a*yOld*b / (1-b*b)
   // using 1 div, 3 mul, 1 sub. Maybe make some experiments, which formula is numerically more 
@@ -289,10 +309,17 @@ void biDirectionalStateInit()
   // we can rewrite s(n) again as:
   //   s(n) = c*k^(n-1) - p*(b^n-k^n)
   // and we again need to choose c = -p*k. With that selected c, we evaluate again s(n) at n=1 to
-  // compute our new state yNew - xNew will be set to 0...
+  // compute our new state: 
+  //   k = 1/b; 
+  //   p = a * (b*y + d*x) / (b*(b^2-1));
+  //   c = -p*k;
+  //   yNew = c - p*(b-k); // == s(1)
+  // xNew will be set to 0...or, no - maybe we need to set it to 
+  //   xNew = t[1] = b*y + d*x
 
-  // we should be able to use the same formula - the past x state is 0 in the tail - try it with a 
-  // filter that as a nonzero coeff for x[n-1] ..no - wait...
+  // For a biquad, we need to compute the states y[n-1], y[n-2], so we need to evaluate our 
+  // resulting formula at n=1 and n=2. The state values x[n-1], x[n-2] will be set to t[1],t[2]
+
 
   // We compare the results from the direct setting of the state and the ring-out/warm-up strategy.
 
