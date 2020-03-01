@@ -1,5 +1,7 @@
 Consider a 1st order filter with the difference equation:
+
   y[n] = a*x[n] + b*y[n-1]
+  
 and assume that it has been applied to some input signal in a forward pass. Before applying 
 the backward pass, we would conceptually have to keep running the filter for a very long time 
 feeding zeros (in practice, until the response tail has decayed away sufficiently), then run 
@@ -9,47 +11,71 @@ and warm-up computations with directly setting initial state yNew of the filter 
 backward pass from its known final state yOld after the forward pass and its coeffs. Let's 
 call the last output state of our filter y (== yOld), then the tail of the forward pass is 
 given by the expression:
+
   t[n] = y * b^n
+  
 to that tail, we now apply the filter running in reverse direction - the result we call s[n].
 We get the difference equation:
+
   s[n] = a * t[n] + b * s[n+1] = a * y * b^n + b * s[n+1]
+  
 the s[n+1] is used for the recursion rather than s[n-1] because we are coming from the right
 (future) direction. To get an expression for s[n], we can use wolfram alpha with the input:
+
   RSolve[s[n] - b*s[n+1] - a*y*b^n == 0, s[n], n]
+  
 which gives the result:
+
   s(n) = c (1/b)^(n - 1) - (a y (b^n - (1/b)^n))/(b^2 - 1) and c element Z
-which is the general solution to our recursion equation and depends on a a parameter c which 
+  
+which is the general solution to our recursion equation and depends on a parameter c which 
 we must select according to some boundary condition (it seems, we do not need to take the 
 restriction that c should be an integer seriously - it can be a real number - why does wolfram
 say it should be integer?). Our boundary condition is that s(inf) == 0. Defining 
+
   k := 1/b and p := a*y/(b^2 - 1)
+  
 we can rewrite s(n) more simply as:
+
   s(n) = c*k^(n-1) - p*(b^n-k^n)
        = c*k^(n-1) - p*b^n + p*k^n
        = c*k^(n-1) + p*k^n - p*b^n
        = c*k^(n-1) + p*k*k^(n-1) - p*b^n
        = (c + p*k) * k^(n-1) - p*b^n
+       
 We have |b| < 1, so |1/b| = |k| > 1, so as n -> inf, p*b^n -> 0, but (c+p*k) * k^(n-1) goes to
-infinity unless c+p*k = 0. So, in order to assure s(inf) = 0, we need c+p*k = 0 -> c = -p*k. 
+infinity unless c+p*k = 0. So, in order to assure s(inf) = 0, we need c+p*k = 0 which we solve for 
+c:
+
+  c = -p*k
+
 To get our desired filter state, we evaluate s(n) at n=1:
+
   s(1) = c*k^(1-1) - p*(b^1-k^1) = c - p*(b-k)
+  
 So, that's it. In summary, the new filter recursion state yNew which serves as initial state 
 before starting the backward pass is computed from the current recursion state yOld after the 
 forward pass and the filter coeffs a,b as:
+
   k = 1/b; p = a*yOld/(b*b-1); c = -p*k; s(1) = yNew = c - p*(b-k);
+  
 This can be further simplifed into:
+
   yNew = a*yOld*b / (1-b*b)
+  
 using 1 div, 3 mul, 1 sub. Maybe make some experiments, which formula is numerically more 
 accurate - maybe it's not the most efficient/simplified one? Maybe try to avoid dividing by
 1-b^2 because that denominator becomes inaccurate as |b| gets close to 1 (which is typical).
 We can transform it to (using y := yOld):
+
   yNew = a*y*b / (1-b*b) = a*y*b / (b*(1/b - b)) = ...
 
+  
 
 Why do we have to compute c manually from the boundary condition? Why does this code:
   RSolve[{s[n] - b*s[n+1] - a*y*b^n == 0, s[Infinity] == 0}, s[n], n] 
 not work? A working example for solving a recursion with boundary condition is:
- RSolve[{a[n + 1] - 2 a[n] == 1, a[0] == 1}, a[n], n]
+  RSolve[{a[n + 1] - 2 a[n] == 1, a[0] == 1}, a[n], n]
 
 Note that when using the explicit formula to compute the tail s(n), it works well only when b 
 is an (inverse) power of two because otherwise the numerical errors in the computations of c 
@@ -59,44 +85,69 @@ and p seem to mess up everything.
 
 Now let's consider the slightly more complicated case of a one-pole/one-zero filter with the
 difference equation:
+
   y[n] = a*x[n] + b*y[n-1] + d*x[n-1]
+  
 (we don't use c, because wolfram wants to use c for the free parameter in the solution - we want
 to avoid confusion). Let's call the final input and output sample x1 and y1 respectively, so:
+
   x1 := x[N-1], y1 := y[N-1] 
+  
 where N is the length of the input signal. Let's call the tail signal resulting from the forward
 pass again t[n] - we have:
+
   t[0] = y1
   t[1] = b*t[0] + d*x1 =      b*y1 + d*x1
   t[2] = b*t[1] + d*0  =   b*(b*y1 + d*x1)
   t[3] = b*t[2] + d*0  = b*b*(b*y1 + d*x1)
   t[n] = b^(n-1) * (b*y1 + d*x1)   for all n >= 1
+  
 defining
+
   q := b*y1 + d*x1
+  
 we can write this as:
+
   t[n] = b^(n-1) * q   for all n >= 1
+  
 The tail s[n] after both passes (forward/backward) satisfies the recurrence relation:
+
   s[n] = a*t[n] + b*s[n+1] + d*t[n+1]
        = a*q*b^(n-1) + b*s[n+1] + d*q*b^n
+       
 which we solve with wolfram alpha:
+
   RSolve[s[n] == a*q*b^(n-1) + b*s[n+1] + d*q*b^n , s[n], n]
+  
 which gives the result:
+
   s(n) = c (1/b)^(n - 1) - (q (b^n - (1/b)^n) (a + b d))/(b (b^2 - 1)) and c element Z
+  
 Defining:
+
   k := 1/b, p := q*(a+b*d) / (b*(b^2-1))
+  
 We can write this as:
+
   s(n) = c*k^(n-1) - p*(b^n-k^n)
        = (c+p*k) * k^(n-1) - p*b^n
+       
 which is the same formula as before in the one-pole/no-zero filter case. Our boundary condition is
 again s(inf) = 0, so we again get our constant c as:
-  c = -p*k
+
+  c = -p*k    as before
+  
 In summary, to set our state new variables in the filter, we may use: 
+
   q = b*y1 + d*x1
   p = q*(a+b*d) / (b*(b^2-1))
   k = 1/b
   c = -p*k
-  x[n-1] = t[1] = q
-  y[n-1] = s[1] = c - p*(b-k)
+  xNew = t[1] = q
+  yNew = s[1] = c - p*(b-k)
+  
 But this can be further simplified, for example by sage via:
+
   var("x y a b c d q p k y1")
   #q = b*y + d*x  # better not define q in terms of other - we need it for x1
   p = q*(a+b*d) / (b*(b^2-1))
@@ -104,18 +155,99 @@ But this can be further simplified, for example by sage via:
   c = -p*k
   y1 = c - p*(b-k)
   y1.simplify_full()
+  
 which results in:
+
   -(b*d + a)*q/(b^2 - 1)
+  
 eventually, given the x1,y1 values after the forward pass, we can compute the new, updated x1,y1
 states needed to run the backward pass via:
+
   x1 = b*y1 + d*x1               // update x1
   y1 = (b*d + a)*x1 / (1 - b^2)  // updating y1 uses the updated x1
 
 ---------------------------------------------------------------------------------------------------
 
+under construction:
+
+
 Now let's consider a biquad filter with the difference equation:
 
+  y[n] = u*x[n] + v*x[n-1] + w*x[n-2] + a*y[n-1] + b*y[n-2]
+  
+Let's call the final states after completing the formar pass x1 = x[N-1], x2 = x[N-2], 
+y1 = y[N-1], y2 = y[N-2] and our goal is once again to find a formula how to update them before 
+running the backward pass. The tail of the forward pass is:
+  
+  t0 = y1                         // 0th tail sample is last actual output sample y[N-1]
+  t1 = v*x1 + w*x2 + a*y1 + b*y2  // computed directly
+  t2 = w*x2 + a*t1 + b*t0         // computed directly
+  t3 = a*t2 + b*t1                // computed recursively
+  t4 = a*t3 + b*t2 = a*(a*t2 + b*t1) + b*t2
+  t5 = a*t4 + b*t3 = a*(a*(a*t2 + b*t1) + b*t2) + b*(a*t2 + b*t1)
+  t6 = a*t5 + b*t4 = a*(a*(a*(a*t2+b*t1)+b*t2)+b*(a*t2+b*t1)) + b*(a*(a*t2+b*t1)+b*t2)
+  
+  
+...for each tn we want a formula using only a,b,t1,t2...the terms blow up quickly
+it's difficult to find an explicit expression for tn - maybe use RSolve for this too:
 
+  RSolve[{t[n] == a*t[n-1] + b*t[n-2], t[1] == g, t[2] == h}, t[n], n]
+  
+where g = t1, h = t2. This gives an ugly result:
+
+t(n) = -(2^(-n - 1) (a^2 g (a - sqrt(a^2 + 4 b))^n + 2 b g (a - sqrt(a^2 + 4 b))^n + a g sqrt(a^2 + 4 b) (a - sqrt(a^2 + 4 b))^n - a^2 g (sqrt(a^2 + 4 b) + a)^n - 2 b g (sqrt(a^2 + 4 b) + a)^n + a g sqrt(a^2 + 4 b) (sqrt(a^2 + 4 b) + a)^n - a h (a - sqrt(a^2 + 4 b))^n - h sqrt(a^2 + 4 b) (a - sqrt(a^2 + 4 b))^n + a h (sqrt(a^2 + 4 b) + a)^n - h sqrt(a^2 + 4 b) (sqrt(a^2 + 4 b) + a)^n))/(b sqrt(a^2 + 4 b))
+
+but there are a lot of common subexpressions
+
+define S := sqrt(a^2 + 4 b) and replace all occurences:
+
+t(n) = -(2^(-n - 1) (a^2 g (a - S)^n + 2 b g (a - S)^n + a g S (a - S)^n - a^2 g (S + a)^n - 2 b g (S + a)^n + a g S (S + a)^n - a h (a - S)^n - h S (a - S)^n + a h (S + a)^n - h S (S + a)^n))/(b S)
+
+define T = (a - S), U = (S + a) and replace:
+
+t(n) = -(2^(-n-1) (a^2 g T^n + 2 b g T^n + a g S T^n - a^2 g U^n - 2 b g U^n + a g S U^n - a h T^n - h S T^n + a h U^n - h S U^n) )/(b S)
+
+t(n) = -(2^(-n-1) ((a^2 g + a g S - h S + 2 b g - a h) T^n - (a^2 g + a g S - h S - 2 b g + a h) U^n) )/(b S)
+
+define W = a^2 g + a g S - h S
+
+t(n) = -(2^(-n-1) ((W + 2 b g - a h) T^n - (W - 2 b g + a h) U^n) )/(b S)
+
+define X = 2 b g - a h
+
+t(n) = -( 2^(-n-1) ((W+X) T^n - (W-X) U^n) ) / (b S)
+
+t(n) = ( (W-X) U^n - (W+X) T^n )  / ( b S 2^(n+1) )
+
+...that looks much more managable already! perhaps we will need to use complex numbers for 
+computing the stated due to the sqrt in the computation of S. Try the formula numerically!
+
+
+---------------------------------------------------------------------------------------------------
+
+Now let's consider a biquad filter with the difference equation:
+
+  y[n] = b0*x[n] + b1*x[n-1] + b2*x[n-2] - a1*y[n-1] - a2*y[n-2]
+
+we have changed the notation for the coeffients here to be consistent with the majority of DSP 
+literature. Let's call the final states after completing the formar pass x1 = x[N-1], x2 = x[N-2], 
+y1 = y[N-1], y2 = y[N-2] and our goal is once again to find a formula how to update them before 
+running the backward pass. The tail of the forward pass is:
+
+  t[0] = y1   // 1st tail sample is defined as being the last actual output sample y[N-1]
+  t[1] = b1*x1 + b2*x2 - a1*y1 - a2*y2 =: t1
+  t[2] = b2*x2 - a1*t[1] - a2*t[0] = b2*x2 - a1*(b1*x1+b2*x2-a1*y1-a2*y2) - a2*(y1) =: t2
+  t[3] = -a1*t[2] - a2*t[1] = -a1*t2 - a2*t1
+  t[4] = -a1*t[3] - a2*t[2] = -a1*(-a1*t2 - a2*t1) - a2*t2
+  t[5] = -a1*t[4] - a2*t[3] = -a1*(-a1*(-a1*t2 - a2*t1) - a2*t2) - a2*(-a1*t2 - a2*t1)
+
+
+  
+
+var("a1 a2 t1 t2 t5")
+t5 = -a1*(-a1*(-a1*t2 - a2*t1) - a2*t2) - a2*(-a1*t2 - a2*t1)
+t5.simplify_full()
+  
 
 
 
