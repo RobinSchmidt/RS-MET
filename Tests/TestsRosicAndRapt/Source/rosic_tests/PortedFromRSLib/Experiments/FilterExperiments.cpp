@@ -206,13 +206,22 @@ T rsOnePoleInitialStateForBackwardPass(T a, T b, T y)
 
 
 template<class T>
-T rsOnePoleInitialStateForBackwardPass(T a, T b, T* y, T d, T* x)
+void rsOnePoleInitialStateForBackwardPass(T a, T b, T* y1, T d, T* x1)
 {
+  T q = b * *y1 + d * *x1;
+  T p = q*(a+b*d) / (b*(b*b-T(1)));
+  T k = T(1) / b;
+  T c = -p*k;
+  *x1 = q;            // == t[1]
+  *y1 = c - p*(b-k);  // == s[1]
+
+  /*
   *x  = b * *y + d * *x;          // == t[1]
   T k = T(1) / b;
   T p = a * *x / (b*(b*b-T(1)));
   T c = -p*k;
   *y  = c - p*(b-k);              // == s[1]
+  */
 }
 // this is still wrong!
 // -try to simplify
@@ -331,7 +340,7 @@ void biDirectionalStateInit()
   // filter coeffs:
   double a = 4.0;
   double b = 0.5;
-  double d = 0.0; // it currently works only, if d==0 - there's still something wrong
+  double d = -0.25; // it currently works only, if d==0 - there's still something wrong
 
   // input signal:
   static const int N = 7;
@@ -358,29 +367,35 @@ void biDirectionalStateInit()
   // desired inital state numerically:
   double xOld =  x[N-1];                 // last input into filter, equals its x[n-1] state
   double yOld = yf[N-1];                 // last output of filter, equals its y[n-1] state
-  double xNew = b * yOld + d * xOld;     // == t[1], first sample of forward tail - correct
-  double k    = 1 / b;                   // for convenience - correct
-  double p    = a * xNew / (b*(b*b-1));  // for convenience
-  double c    = -p*k;                    // constant determined by boundary condition s[inf] == 0
-  double yNew = c - p*(b-k);             // == s[1], first sample of bidirectional tail - incorrect
-  /*
-  double p = a*yOld/(b*b-1); 
-  double c = -p*k; 
-  double yNew = c - p*(b-k);
-  yNew = (a*yOld*b) / (1-b*b);  // simplified
-  yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld); // should not change the value
-  */
+  double q = b*yOld + d*xOld;
+  double p = q*(a+b*d) / (b*(b*b-1));
+  double k = 1 / b;
+  double c = -p*k;                       // constant determined by boundary condition s[inf] == 0
+  double xNew = q;                       // == t[1], first sample of forward tail
+  double yNew = c - p*(b-k);             // == s[1], first sample of bidirectional tail
 
-  // factor out into
-  // T rsOnePoleInitialStateForBackwardPass(T a, T b, T y)
+  // test, if the function computes the same:
+  double xTmp = xOld, yTmp = yOld; // should become equal to xNew, yNew:
+  rsOnePoleInitialStateForBackwardPass(a, b, &yTmp, d, &xTmp); // ok, looks good
+
+  // old - this is the code for the special case d==0:
+  //double p = a*yOld/(b*b-1); 
+  //double c = -p*k; 
+  //double yNew = c - p*(b-k);
+  //yNew = (a*yOld*b) / (1-b*b);  // simplified
+  //yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld); // should not change the value
+
 
   // ring-out/warm-up, using tail buffers:
   for(n = 0;    n <  Nt; n++) t[n] = flt.getSample(0.0);   // fill forward tail buffer, ring out
   for(n = Nt-1; n >= 0;  n--) s[n] = flt.getSample(t[n]); // fill backward tail buffer, warm up
 
-  // compare numerically and analytically computed state:
+  // compare numerically and analytically computed states:
   double err = yNew - s[0]; // should be zero (up to roundoff)
   rsAssert(rsAbs(err) < 1.e-12); 
+  err = xNew - t[0];
+  rsAssert(rsAbs(err) < 1.e-12); 
+
 
   // compute backward pass output:
   for(n = N-1; n >= 0; n--)
@@ -393,7 +408,7 @@ void biDirectionalStateInit()
     //sa[n] = c*pow(k, n-1) - (a * yOld * (pow(b, n) - pow(k, n))) / (b*b-1); // only correct if d==0
     sa[n] = c*pow(k, n-1) - (a * (b*yOld+d*xOld) * (pow(b, n) - pow(k, n))) / (b*(b*b-1));
   }
-  // Looks good, if b is negative power of 2, otherwise numerical error messes up the
+  // Looks good, if b is negative power of 2 and d==0, otherwise numerical error messes up the
   // analytic solution. Result ta is equal to t but one sample shifted - when plugging n=1 into the 
   // formula, we can compute our desired state variable yNew.
 
@@ -401,15 +416,19 @@ void biDirectionalStateInit()
 
   // Compare results from first doing a forward, then a backward pass and the other way around - 
   // the results should be the same:
+  // needs to be updated for the d != 0 case - call a function prepareForBackwardPass
 
   // compute output y by forward/backward filtering
   double yfb[N]; // 
   flt.setInternalState(0.0, 0.0);
   for(n = 0; n < N; n++) 
     yfb[n] = flt.getSample(x[n]);
+
+  // flt.prepareForBackwardPass();
   yOld = yfb[N-1];
   yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld);
   flt.setInternalState(0.0, yNew);
+
   for(n = N-1; n >= 0; n--) 
     yfb[n] = flt.getSample(yfb[n]);
 
@@ -418,9 +437,12 @@ void biDirectionalStateInit()
   flt.setInternalState(0.0, 0.0);
   for(n = N-1; n >= 0; n--) 
     ybf[n] = flt.getSample(x[n]);
+
+  // flt.prepareForBackwardPass();
   yOld = ybf[0];
   yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld);
   flt.setInternalState(0.0, yNew);
+
   for(n = 0; n < N; n++) 
     ybf[n] = flt.getSample(ybf[n]);
 
