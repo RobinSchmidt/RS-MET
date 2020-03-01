@@ -347,6 +347,9 @@ void biDirectionalStateInit()
 
 void biquadTail()
 {
+  // We check the explicit formula for a biquad tail against the tail computed by the actual 
+  // filter.
+
   // coeffs:
   double b0 =  8;
   double b1 =  4;
@@ -368,24 +371,44 @@ void biquadTail()
   double a = -a1, b = -a2;
 
   // compute intermediate variables (needs to be doen before computing the tail using the filter)
+  double t0 = y1;                         // 0th tail sample is last actual output sample y[N-1]
+  double t1 = v*x1 + w*x2 + a*y1 + b*y2;  // computed directly
+  double t2 = w*x1 + a*t1 + b*t0;         // computed directly
+  //double t3 = a*t2 + b*t1;                // computed recursively
+  //double t4 = a*t3 + b*t2;                // computed recursively
+  double g = t1, h = t2;
+  double S = sqrt(a*a + 4*b);             // may have to be complex later
+  double T = a - S, U = a + S;
+  double V = a*a*g + 2*b*g - a*h;
+  double W = a*g*S - h*S;
+  double A = W+V;
+  double B = W-V;
+  // g = -9, h = -10.5, a = 0.5, b = 0.25
+
+  // compute tail using the explicit formula:
+  //   t(n) = -(A*T^n + B*U^n) / (b*S*2^(n+1))
+  // which has been found by wolfram alpha using
+  //   RSolve[{t[n] == a*t[n-1] + b*t[n-2], t[1] == g, t[2] == h}, t[n], n]
+  // and doing a lot of simplification by hand
+  using Vec = std::vector<double>;
+  Vec tFrm(N);
+  for(int n = 0; n < N; n++)
+    tFrm[n] = -(A*pow(T,n) + B*pow(U,n)) / (b*S*pow(2,n+1));
 
   // compute tail using the filter:
-  using Vec = std::vector<double>;
-  Vec t(N);
+  Vec tFlt(N);
   for(int n = 0; n < N; n++)
   {
     double x0 = 0;
-    t[n] = u*x0 + v*x1 + w*x2 + a*y1 + b*y2;
+    tFlt[n] = u*x0 + v*x1 + w*x2 + a*y1 + b*y2;
     x2 = x1;
     x1 = x0;
     y2 = y1;
-    y1 = t[n];
+    y1 = tFlt[n];
   }
 
-  rsPlotVector(t);
-
-
-
+  //rsPlotVector(tFlt);
+  rsPlotVectors(tFlt, tFrm); // they agree up to a shift by one sample
   int dummy = 0;
 }
 

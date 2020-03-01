@@ -181,7 +181,7 @@ running the backward pass. The tail of the forward pass is:
   
   t0 = y1                         // 0th tail sample is last actual output sample y[N-1]
   t1 = v*x1 + w*x2 + a*y1 + b*y2  // computed directly
-  t2 = w*x2 + a*t1 + b*t0         // computed directly
+  t2 = w*x1 + a*t1 + b*t0         // computed directly
   t3 = a*t2 + b*t1                // computed recursively
   t4 = a*t3 + b*t2 = a*(a*t2 + b*t1) + b*t2
   t5 = a*t4 + b*t3 = a*(a*(a*t2 + b*t1) + b*t2) + b*(a*t2 + b*t1)
@@ -225,7 +225,16 @@ t(n) = (B U^n - A T^n) / ( b S 2^(n+1) )
 
 ...that looks much more managable already! perhaps we will need to use complex numbers for 
 computing the stated due to the sqrt in the computation of S. Try the formula numerically!
+...but it's wrong! correct is:
 
+S = sqrt(a*a + 4*b);
+T = a - S 
+U = a + S
+V = a^2*g + 2*b*g - a*h
+W = a*g*S - h*S
+A = W+V
+B = W-V
+t(n) = -(A*T^n + B*U^n) / (b*S*2^(n+1))
 
 
 
