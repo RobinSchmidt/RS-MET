@@ -149,7 +149,7 @@ In summary, to set our state new variables in the filter, we may use:
 But this can be further simplified, for example by sage via:
 
   var("x y a b c d q p k y1")
-  #q = b*y + d*x  # better not define q in terms of other - we need it for x1
+  #q = b*y + d*x  # better not define q in terms of other variables - we need it for x1
   p = q*(a+b*d) / (b*(b^2-1))
   k = 1/b
   c = -p*k
@@ -219,8 +219,18 @@ t(n) = -( 2^(-n-1) ((W+X) T^n - (W-X) U^n) ) / (b S)
 
 t(n) = ( (W-X) U^n - (W+X) T^n )  / ( b S 2^(n+1) )
 
+define A = W+X, B = W-X
+
+t(n) = (B U^n - A T^n) / ( b S 2^(n+1) )
+
 ...that looks much more managable already! perhaps we will need to use complex numbers for 
 computing the stated due to the sqrt in the computation of S. Try the formula numerically!
+
+
+
+
+For a biquad, we need to compute the states y[n-1], y[n-2], so we need to evaluate our 
+resulting formula at n=1 and n=2. The state values x[n-1], x[n-2] will be set to t[1],t[2]
 
 
 ---------------------------------------------------------------------------------------------------

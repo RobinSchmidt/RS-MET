@@ -209,11 +209,15 @@ public:
   {
     x1 = a1*y1 + b1*x1;
     y1 = (a1*b1 + b0)*x1 / (TPar(1) - a1*a1);
+    // For a one-pole filter without a zero, the simplified formula for the y1 state would be:
+    // y1 = (b0*y1*a1) / (1-a1*a1);
   }
 
   /** Applies the filter bidirectionally (once forward, once backward) to the input signal x and 
   stores the result in y. Both buffers are assumed to be of length N. Can be used in place, i.e. 
-  x and y may point to the same buffer. */
+  x and y may point to the same buffer. We apply the forward pass first, then the backward pass 
+  but it should make no difference, if it would be done the other way around (up to roundoff 
+  errors). */
   void applyBidirectionally(TSig* x, TSig* y, int N)
   {
     // forward pass:
@@ -225,9 +229,6 @@ public:
     prepareForBackwardPass();
     for(int n = N-1; n >= 0; n--)
       y[n] = getSample(y[n]);
-
-    // Note: It should make no difference, if the forward pass is applied first and then the 
-    // backward pass or the other way around.
   }
 
 

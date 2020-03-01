@@ -189,6 +189,8 @@ void butterworthEnergy()
   int dummy = 0;
 }
 
+
+// these tow are obsolete - the code has been moved into rsOnePoleFilter::prepareForBackwardPass
 template<class T>
 T rsOnePoleInitialStateForBackwardPass(T a, T b, T y)
 {
@@ -203,7 +205,6 @@ T rsOnePoleInitialStateForBackwardPass(T a, T b, T y)
 // -rename a,b to b0,a1, maybe change sign convention for feedback coeff
 // -dividing by 1-b^2 may be numerically inaccurate, if |b| is close to 1, which is typical for 
 //  filters - can the formula be rewritten in a numerically more accurate way?
-
 
 template<class T>
 void rsOnePoleInitialStateForBackwardPass(T a, T b, T* y1, T d, T* x1)
@@ -227,111 +228,15 @@ void rsOnePoleInitialStateForBackwardPass(T a, T b, T* y1, T d, T* x1)
 
 void biDirectionalStateInit()
 {
-  // Trying to figure out closed form formulas for the initial state of a bi-directional filter 
-  // immediately before starting the backward pass....
-
-  // Consider a 1st order filter with the difference equation:
-  //   y[n] = a*x[n] + b*y[n-1]
-  // and assume that it has been applied to some input signal in a forward pass. Before applying 
-  // the backward pass, we would conceptually have to keep running the filter for a very long time 
-  // feeding zeros (in practice, until the response tail has decayed away sufficiently), then run 
-  // the filter in the backward direction on the tail to "warm it up" and then, in warmed up state,
-  // run it in backward direction over our actual data. The goal is to replace the tail ring-out 
-  // and warm-up computations with directly setting initial state yNew of the filter for the 
-  // backward pass from its known final state yOld after the forward pass and its coeffs. Let's 
-  // call the last output state of our filter y (== yOld), then the tail of the forward pass is 
-  // given by the expression:
-  //   t[n] = y * b^n
-  // to that tail, we now apply the filter running in reverse direction - the result we call s[n].
-  // We get the difference equation:
-  //   s[n] = a * t[n] + b * s[n+1] = a * y * b^n + b * s[n+1]
-  // the s[n+1] is used for the recursion rather than s[n-1] because we are coming from the right
-  // (future) direction. To get an expression for s[n], we can use wolfram alpha with the input:
-  //   RSolve[s[n] - b*s[n+1] - a*y*b^n == 0, s[n], n]
-  // which gives the result:
-  //   s(n) = c (1/b)^(n - 1) - (a y (b^n - (1/b)^n))/(b^2 - 1) and c element Z
-  // which is the general solution to our recursion equation and depends on a a parameter c which 
-  // we must select according to some boundary condition (it seems, we do not need to take the 
-  // restriction that c should be an integer seriously - it can be a real number - why does wolfram
-  // say it should be integer?). Our boundary condition is that s(inf) == 0. Defining 
-  //   k := 1/b and p := a*y/(b^2 - 1)
-  // we can rewrite s(n) more simply as:
-  //   s(n) = c*k^(n-1) - p*(b^n-k^n)
-  //        = c*k^(n-1) - p*b^n + p*k^n
-  //        = c*k^(n-1) + p*k^n - p*b^n
-  //        = c*k^(n-1) + p*k*k^(n-1) - p*b^n
-  //        = (c + p*k) * k^(n-1) - p*b^n
-  // We have |b| < 1, so |1/b| = |k| > 1, so as n -> inf, p*b^n -> 0, but (c+p*k) * k^(n-1) goes to
-  // infinity unless c+p*k = 0. So, in order to assure s(inf) = 0, we need c+p*k = 0 -> c = -p*k. 
-  // To get our desired filter state, we evaluate s(n) at n=1:
-  //   s(1) = c*k^(1-1) - p*(b^1-k^1) = c - p*(b-k)
-  // So, that's it. In summary, the new filter recursion state yNew which serves as initial state 
-  // before starting the backward pass is computed from the current recursion state yOld after the 
-  // forward pass and the filter coeffs a,b as:
-  //   k = 1/b; p = a*yOld/(b*b-1); c = -p*k; s(1) = yNew = c - p*(b-k);
-  // This can be further simplifed into:
-  //   yNew = a*yOld*b / (1-b*b)
-  // using 1 div, 3 mul, 1 sub. Maybe make some experiments, which formula is numerically more 
-  // accurate - maybe it's not the most efficient/simplified one? Maybe try to avoid dividing by
-  // 1-b^2 because that denominator becomes inaccurate as |b| gets close to 1 (which is typical).
-  // We can transform it to (using y := yOld):
-  //   yNew = a*y*b / (1-b*b) = a*y*b / (b*(1/b - b)) = ...
-
-  // Why do we have to compute c manually from the boundary condition? Why does this code:
-  //   RSolve[{s[n] - b*s[n+1] - a*y*b^n == 0, s[Infinity] == 0}, s[n], n] 
-  // not work? A working example for solving a recursion with boundary condition is:
-  //   RSolve[{a[n + 1] - 2 a[n] == 1, a[0] == 1}, a[n], n]
-
-  // Note that when using the explicit formula to compute the tail s(n), it works well only when b 
-  // is an (inverse) power of two because otherwise the numerical errors in the computations of c 
-  // and p seem to mess up everything.
-
-  // Todo: derive formulas for more complicated filters such as 1st order filters with a nonzero
-  // coeff for x[n-1] as well as biquad filters - maybe even for a fully general direct form 
-  // filter? For the general 1st order filter with difference equation:
-  //   y[n] = a*x[n] + b*y[n-1] + d*x[n-1]
-  // a,b have the same meaning as before but we have an additional coeff d (we don't use c, because
-  // wolfram wants to use c for the free parameter in the solution - we want to avoid confusion).
-  // Let x,y be the last inputs and outputs of our filter after the forward pass. For the forward 
-  // tail, we will then have:
-  //   t[0] = y
-  //   t[1] = b*t[0] + d*x =      b*y + d*x
-  //   t[2] = b*t[1] + d*0 =   b*(b*y + d*x)
-  //   t[3] = b*t[2] + d*0 = b*b*(b*y + d*x)
-  //   t[n] = b^(n-1) * (b*y + d*x)
-  // and for the forward/backward tail:
-  //   s[n] = a * t[n] + b * s[n+1] = a * b^(n-1) * (b*y + d*x) + b * s[n+1]
-
-  //  ...WRONG! we need: s[n] = a * t[n] + b * s[n+1] + d * t[n+1]
-  // ...what follows is also wrong and must be adpated...
-
-  // using wolfram alpha:
-  //   RSolve[s[n] == a b^(n-1) (b y + d x) + b s[n+1] , s[n], n]
-  // we get:
-  //   s(n) = c (1/b)^(n - 1) - (a (b^n - (1/b)^n) (b y + d x))/(b (b^2 - 1)) and c element Z
-  // again, we need to determine c, such that s(inf) == 0. Defining:
-  //   k := 1/b, p = a * (b*y + d*x) / (b*(b^2-1))
-  // we can rewrite s(n) again as:
-  //   s(n) = c*k^(n-1) - p*(b^n-k^n)
-  // and we again need to choose c = -p*k. With that selected c, we evaluate again s(n) at n=1 to
-  // compute our new state: 
-  //   k = 1/b; 
-  //   p = a * (b*y + d*x) / (b*(b^2-1));
-  //   c = -p*k;
-  //   yNew = c - p*(b-k); // == s(1)
-  // xNew will be set to 0...or, no - maybe we need to set it to 
-  //   xNew = t[1] = b*y + d*x
-
-  // For a biquad, we need to compute the states y[n-1], y[n-2], so we need to evaluate our 
-  // resulting formula at n=1 and n=2. The state values x[n-1], x[n-2] will be set to t[1],t[2]
-
-
-  // We compare the results from the direct setting of the state and the ring-out/warm-up strategy.
+  // Implementation of and experiments with closed form expressions to set the internal state of a 
+  // 1st order bidirectional filter directly before the backward run. We compare the results from 
+  // the direct setting of the state and the ring-out/warm-up strategy.
+  // see BiDirectionalInitialStates.txt for more details
 
   // filter coeffs:
   double a = 4.0;
   double b = 0.5;
-  double d = -0.25; // it currently works only, if d==0 - there's still something wrong
+  double d = -0.25;
 
   // input signal:
   static const int N = 7;
@@ -438,6 +343,50 @@ void biDirectionalStateInit()
   // https://trac.sagemath.org/ticket/1291
   // https://groups.google.com/forum/#!topic/sage-support/pYvjN7da9LY
   // Computational Mathematics with SageMath, page 229
+}
+
+void biquadTail()
+{
+  // coeffs:
+  double b0 =  8;
+  double b1 =  4;
+  double b2 =  2;
+  double a1 = -0.5;
+  double a2 = -0.25;
+
+  // state variables:
+  double x1 = -4;
+  double x2 =  2;
+  double y1 =  8;
+  double y2 = -4;
+
+  int N = 20;  // number of samples
+
+  // Notation change to have single letter variables in the formulas:
+  //   y[n] = u*x[n] + v*x[n-1] + w*x[n-2] + a*y[n-1] + b*y[n-2]
+  double u = b0, v = b1, w = b2;
+  double a = -a1, b = -a2;
+
+  // compute intermediate variables (needs to be doen before computing the tail using the filter)
+
+  // compute tail using the filter:
+  using Vec = std::vector<double>;
+  Vec t(N);
+  for(int n = 0; n < N; n++)
+  {
+    double x0 = 0;
+    t[n] = u*x0 + v*x1 + w*x2 + a*y1 + b*y2;
+    x2 = x1;
+    x1 = x0;
+    y2 = y1;
+    y1 = t[n];
+  }
+
+  rsPlotVector(t);
+
+
+
+  int dummy = 0;
 }
 
 void biquadModulation()
