@@ -408,19 +408,9 @@ void biDirectionalStateInit()
   // Compare results from first doing a forward, then a backward pass and the other way around - 
   // the results should be the same:
 
-  // compute output y by forward/backward filtering
+  // compute output y by forward/backward filtering:
   double yfb[N];
-  /*
-  flt.reset();
-  for(n = 0; n < N; n++)   
-    yfb[n] = flt.getSample(x[n]);
-  flt.prepareForBackwardPass();
-  for(n = N-1; n >= 0; n--)  
-    yfb[n] = flt.getSample(yfb[n]);
-  */
-
   flt.applyBidirectionally(x, yfb, N);
-
 
   // compute output y by backward/forward filtering
   double ybf[N];
