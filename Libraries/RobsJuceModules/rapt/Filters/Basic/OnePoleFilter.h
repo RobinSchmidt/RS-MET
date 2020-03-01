@@ -207,12 +207,17 @@ public:
   states should be. */
   void prepareForBackwardPass()
   {
+    /*
     TSig q = a1 * y1 + b1 * x1;
     TSig p = q*(b0+a1*b1) / (a1*(a1*a1-TSig(1)));
     TSig k = TSig(1) / a1;
     TSig c = -p*k;
     x1  =  q;             // == t[1]
     y1  =  c - p*(a1-k);  // == s[1]
+    */
+    x1 = a1*y1 + b1*x1;
+    y1 = (a1*b1 + b0)*x1 / (TSig(1) - a1*a1); // -(b*d + a)*q/(b^2 - 1)
+    // a = b0, d = b1, b = a1, q = x1
   }
   // todo: simplify!
 
