@@ -267,7 +267,32 @@ void biDirectionalStateInit()
 
   // Todo: derive formulas for more complicated filters such as 1st order filters with a nonzero
   // coeff for x[n-1] as well as biquad filters - maybe even for a fully general direct form 
-  // filter?
+  // filter? For the general 1st order filter with difference equation:
+  //   y[n] = a*x[n] + b*y[n-1] + d*x[n-1]
+  // a,b have the same meaning as before but we have an additional coeff d (we don't use c, because
+  // wolfram wants to use c for the free parameter in the solution - we want to avoid confusion).
+  // Let x,y be the last inputs and outputs of our filter after the forward pass. For the forward 
+  // tail, we will then have:
+  //   t[0] = y
+  //   t[1] = b*t[0] + d*x = b*y + d*x
+  //   t[2] = b*t[1] + d*0 = b*(b*y + d*x)
+  //   t[3] = b*t[2] + d*0 = b*b*(b*y + d*x)
+  //   t[n] = b^(n-1) * (b*y + d*x)
+  // and for the forward/backward tail:
+  //   s[n] = a * t[n] + b * s[n+1] = a * b^(n-1) * (b*y + d*x) + b * s[n+1]
+  // using wolfram alpha:
+  //   RSolve[s[n] == a b^(n-1) (b y + d x) + b s[n+1] , s[n], n]
+  // we get:
+  //   s(n) = c (1/b)^(n - 1) - (a (b^n - (1/b)^n) (b y + d x))/(b (b^2 - 1)) and c element Z
+  // again, we need to determine c, such that s(inf) == 0. Defining:
+  //   k := 1/b, p = a * (b*y + d*x) / (b*(b^2-1))
+  // we can rewrite s(n) again as:
+  //   s(n) = c*k^(n-1) - p*(b^n-k^n)
+  // and we again need to choose c = -p*k. With that selected c, we evaluate again s(n) at n=1 to
+  // compute our new state yNew - xNew will be set to 0...
+
+  // we should be able to use the same formula - the past x state is 0 in the tail - try it with a 
+  // filter that as a nonzero coeff for x[n-1] ..no - wait...
 
   // We compare the results from the direct setting of the state and the ring-out/warm-up strategy.
 
