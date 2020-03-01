@@ -200,6 +200,22 @@ public:
     y1 = TSig(0);
   }
 
+  /** When this filter is used bidirectionally, you can call this function between the forward and 
+  the backward pass to set the internal states of the filter appropriately. It simulates running 
+  the filter for a ringout phase and then using the reversed ringout tail to warm up the filter for
+  the backward pass. It doesn't actually do this but instead uses closed form formulas for what the
+  states should be. */
+  void prepareForBackwardPass()
+  {
+    TSig q = a1 * y1 + b1 * x1;
+    TSig p = q*(b0+a1*b1) / (a1*(a1*a1-TSig(1)));
+    TSig k = TSig(1) / a1;
+    TSig c = -p*k;
+    x1  =  q;             // == t[1]
+    y1  =  c - p*(a1-k);  // == s[1]
+  }
+  // todo: simplify!
+
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 

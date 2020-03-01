@@ -214,16 +214,7 @@ void rsOnePoleInitialStateForBackwardPass(T a, T b, T* y1, T d, T* x1)
   T c = -p*k;
   *x1 = q;            // == t[1]
   *y1 = c - p*(b-k);  // == s[1]
-
-  /*
-  *x  = b * *y + d * *x;          // == t[1]
-  T k = T(1) / b;
-  T p = a * *x / (b*(b*b-T(1)));
-  T c = -p*k;
-  *y  = c - p*(b-k);              // == s[1]
-  */
 }
-// this is still wrong!
 // -try to simplify
 // -move to rsOnePoleFilter
 // -have a member prepareForBackwardPass that does that to the internal state variables
@@ -424,10 +415,10 @@ void biDirectionalStateInit()
   for(n = 0; n < N; n++) 
     yfb[n] = flt.getSample(x[n]);
 
-  // flt.prepareForBackwardPass();
-  yOld = yfb[N-1];
-  yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld);
-  flt.setInternalState(0.0, yNew);
+  flt.prepareForBackwardPass();
+  //yOld = yfb[N-1];
+  //yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld);
+  //flt.setInternalState(0.0, yNew);
 
   for(n = N-1; n >= 0; n--) 
     yfb[n] = flt.getSample(yfb[n]);
@@ -438,10 +429,10 @@ void biDirectionalStateInit()
   for(n = N-1; n >= 0; n--) 
     ybf[n] = flt.getSample(x[n]);
 
-  // flt.prepareForBackwardPass();
-  yOld = ybf[0];
-  yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld);
-  flt.setInternalState(0.0, yNew);
+  flt.prepareForBackwardPass();
+  //yOld = ybf[0];
+  //yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld);
+  //flt.setInternalState(0.0, yNew);
 
   for(n = 0; n < N; n++) 
     ybf[n] = flt.getSample(ybf[n]);
@@ -452,10 +443,10 @@ void biDirectionalStateInit()
 
 
   // plot results:
-  rsPlotArrays(Nt, s, sa);     // numerically and analytically computed tail
-  //rsPlotArrays(Nt, tf, t);   // tail buffers
+  //rsPlotArrays(Nt, s, sa);     // numerically and analytically computed tail
+  //rsPlotArrays(Nt, t, s);   // tail buffers
   //rsPlotArrays(N, x, yf, y); // input and outputs
-  //rsPlotArrays(N, x, yfb, ybf, diff);  // compare forward-first vs backward-first
+  rsPlotArrays(N, x, yfb, ybf, diff);  // compare forward-first vs backward-first
 
 
   // solving recursions:
