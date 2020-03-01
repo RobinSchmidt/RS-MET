@@ -200,6 +200,8 @@ T rsOnePoleInitialStateForBackwardPass(T a, T b, T y)
   return c - p*(b-k);
   */
 }
+// dividing by 1-b^2 may be numerically inaccurate, if |b| is close to 1, which is typical for 
+// filters - can the formula be rewritten in a numerically more accurate way?
 // move to rsOnePoleFilter
 
 void biDirectionalStateInit()
@@ -250,7 +252,9 @@ void biDirectionalStateInit()
   //   yNew = a*yOld*b / (1-b*b)
   // using 1 div, 3 mul, 1 sub. Maybe make some experiments, which formula is numerically more 
   // accurate - maybe it's not the most efficient/simplified one? Maybe try to avoid dividing by
-  // 1-b^2 because that denominator becomes inaccurate as |b| gets close to 1 (which is typical)
+  // 1-b^2 because that denominator becomes inaccurate as |b| gets close to 1 (which is typical).
+  // We can transform it to (using y := yOld):
+  //   yNew = a*y*b / (1-b*b) = a*y*b / (b*(1/b - b)) = ...
 
   // Why do we have to compute c manually from the boundary condition? Why does this code:
   //   RSolve[{s[n] - b*s[n+1] - a*y*b^n == 0, s[Infinity] == 0}, s[n], n] 
@@ -299,8 +303,7 @@ void biDirectionalStateInit()
   double p = a*yOld/(b*b-1); 
   double c = -p*k; 
   double yNew = c - p*(b-k);
-  //yNew = - (a*yOld*b) / (b*b-1);  // simplified
-  //yNew = (a*yOld*b) / (1-b*b);  // simplified
+  yNew = (a*yOld*b) / (1-b*b);  // simplified
   yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld); // should not change the value
 
   // factor out into
