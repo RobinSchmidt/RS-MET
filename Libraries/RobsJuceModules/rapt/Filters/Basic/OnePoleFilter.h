@@ -207,19 +207,29 @@ public:
   states should be. */
   void prepareForBackwardPass()
   {
-    /*
-    TSig q = a1 * y1 + b1 * x1;
-    TSig p = q*(b0+a1*b1) / (a1*(a1*a1-TSig(1)));
-    TSig k = TSig(1) / a1;
-    TSig c = -p*k;
-    x1  =  q;             // == t[1]
-    y1  =  c - p*(a1-k);  // == s[1]
-    */
     x1 = a1*y1 + b1*x1;
-    y1 = (a1*b1 + b0)*x1 / (TSig(1) - a1*a1); // -(b*d + a)*q/(b^2 - 1)
-    // a = b0, d = b1, b = a1, q = x1
+    y1 = (a1*b1 + b0)*x1 / (TPar(1) - a1*a1);
   }
-  // todo: simplify!
+
+  /** Applies the filter bidirectionally (once forward, once backward) to the input signal x and 
+  stores the result in y. Both buffers are assumed to be of length N. Can be used in place, i.e. 
+  x and y may point to the same buffer. */
+  void applyBidirectionally(TSig* x, TSig* y, int N)
+  {
+    // forward pass:
+    reset();
+    for(int n = 0; n < N; n++)
+      y[n] = getSample(x[n]);
+
+    // backward pass:
+    prepareForBackwardPass();
+    for(int n = N-1; n >= 0; n--)
+      y[n] = getSample(y[n]);
+
+    // Note: It should make no difference, if the forward pass is applied first and then the 
+    // backward pass or the other way around.
+  }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data */

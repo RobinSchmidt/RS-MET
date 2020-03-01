@@ -407,33 +407,27 @@ void biDirectionalStateInit()
 
   // Compare results from first doing a forward, then a backward pass and the other way around - 
   // the results should be the same:
-  // needs to be updated for the d != 0 case - call a function prepareForBackwardPass
 
   // compute output y by forward/backward filtering
-  double yfb[N]; // 
-  flt.setInternalState(0.0, 0.0);
-  for(n = 0; n < N; n++) 
+  double yfb[N];
+  /*
+  flt.reset();
+  for(n = 0; n < N; n++)   
     yfb[n] = flt.getSample(x[n]);
-
   flt.prepareForBackwardPass();
-  //yOld = yfb[N-1];
-  //yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld);
-  //flt.setInternalState(0.0, yNew);
-
-  for(n = N-1; n >= 0; n--) 
+  for(n = N-1; n >= 0; n--)  
     yfb[n] = flt.getSample(yfb[n]);
+  */
+
+  flt.applyBidirectionally(x, yfb, N);
+
 
   // compute output y by backward/forward filtering
   double ybf[N];
-  flt.setInternalState(0.0, 0.0);
+  flt.reset();
   for(n = N-1; n >= 0; n--) 
     ybf[n] = flt.getSample(x[n]);
-
   flt.prepareForBackwardPass();
-  //yOld = ybf[0];
-  //yNew = rsOnePoleInitialStateForBackwardPass(a, b, yOld);
-  //flt.setInternalState(0.0, yNew);
-
   for(n = 0; n < N; n++) 
     ybf[n] = flt.getSample(ybf[n]);
 
