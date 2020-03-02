@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
   //bandSplittingTreeAlgo();
   //bandSplitFreqResponses();
   //biDirectionalStateInit();
-  biquadTail();
+  //biquadTail();
   //complementaryFiltersIIR();
   //firstOrderFilters();
   //ladderResonanceManipulation();
@@ -203,6 +203,7 @@ int main(int argc, char* argv[])
   //parametricCurve();
   //spirals();   // move to somewhere else...
   //fractal();
+  differentialGeometry();
 
   // just for fun:
   //groupString();

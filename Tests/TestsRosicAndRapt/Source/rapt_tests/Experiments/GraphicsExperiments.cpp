@@ -1754,6 +1754,26 @@ void fractal()
 // https://math.stackexchange.com/questions/1398218/determine-coordinates-for-mandelbrot-set-zoom/1398356
 
 
+void differentialGeometry()
+{
+  rsCurve2D crv2;
+
+  std::function<double(double)> fx, fy;
+  fx = [&](double t) { return cos(2*PI*t); };
+  fy = [&](double t) { return sin(2*PI*t); };
+
+  double tx, ty;
+  crv2.velocity(fx, fy, 0.0,  &tx, &ty); // (0,    +2pi)
+  crv2.velocity(fx, fy, 0.25, &tx, &ty); // (-2pi,  0)
+  crv2.velocity(fx, fy, 0.5,  &tx, &ty); // (0,    -2pi)
+  crv2.velocity(fx, fy, 0.75, &tx, &ty); // (+2pi,  0)
+
+
+  int dummy = 0;
+}
+
+
+
 // maybe make animations with
 // http://www.softpedia.com/get/Multimedia/Graphic/Graphic-Others/APNG-Anime-Maker.shtml
 // https://stackoverflow.com/questions/3191978/how-to-use-glut-opengl-to-render-to-a-file/14324292#14324292

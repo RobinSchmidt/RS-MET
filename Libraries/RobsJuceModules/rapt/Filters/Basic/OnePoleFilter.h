@@ -211,6 +211,8 @@ public:
     y1 = (a1*b1 + b0)*x1 / (TPar(1) - a1*a1);
     // For a one-pole filter without a zero, the simplified formula for the y1 state would be:
     // y1 = (b0*y1*a1) / (1-a1*a1);
+    // If a1 is close to 1 (which is typical for lowpass filters), the denominator 1-a1^2 will
+    // suffer from precision loss due to cancellation - can this be avoided?
   }
 
   /** Applies the filter bidirectionally (once forward, once backward) to the input signal x and 
@@ -230,6 +232,8 @@ public:
     for(int n = N-1; n >= 0; n--)
       y[n] = getSample(y[n]);
   }
+  // maybe have a stride parameter which defaults to 1 - will be needed when this filter is used 
+  // on the columns in images (or more generally, on nD arrays)
 
 
   //-----------------------------------------------------------------------------------------------

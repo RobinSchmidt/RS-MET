@@ -1,3 +1,6 @@
+---------------------------------------------------------------------------------------------------
+One-Pole
+
 Consider a 1st order filter with the difference equation:
 
   y[n] = a*x[n] + b*y[n-1]
@@ -82,6 +85,7 @@ is an (inverse) power of two because otherwise the numerical errors in the compu
 and p seem to mess up everything.
 
 ---------------------------------------------------------------------------------------------------
+One-Pole/One-Zero
 
 Now let's consider the slightly more complicated case of a one-pole/one-zero filter with the
 difference equation:
@@ -166,10 +170,79 @@ states needed to run the backward pass via:
   x1 = b*y1 + d*x1               // update x1
   y1 = (b*d + a)*x1 / (1 - b^2)  // updating y1 uses the updated x1
 
----------------------------------------------------------------------------------------------------
+===================================================================================================
+
+
+
+
 
 under construction:
 
+---------------------------------------------------------------------------------------------------
+Two-Zero
+
+y[n] = u*x[n] + v*x[n-1] + w*x[n-2]
+
+t[0] = y[N-1]
+t[1] = v*x[N-1] + w*x[N-2] = v*x1 + w*x2
+t[2] = w*x[N-1] = w*x1
+t[3] = 0
+
+s[n] = u*t[n] + v*t[n+1] + w*t[n+2]
+
+Let x1, x2 be the final states, then:
+
+s[1] = u*t[1] + v*t[2] + w*t[3] = u*(v*x1 + w*x2) + v*w*x1
+s[2] = u*t[2] + v*t[3] + w*t[4] = u*w*x1
+
+...not yet tested
+
+
+
+
+
+---------------------------------------------------------------------------------------------------
+Two-Pole
+
+y[n] = x[n] + a*y[n-1] + b*y[n-2]
+
+Let y1, y2 be the final states, then:
+
+t0 = y1
+t1 = a*y1 + b*y2
+t2 = a*t1 + b*t0 = a*y1 + b*(a*y1 + b*y2)
+t3 = a*t2 + b*t1 = a*(a*y1 + b*(a*y1 + b*y2)) + b*(a*y1 + b*y2)
+
+
+RSolve[s[n] == a*s[n+1] + b*s[n+2] + t[n], s[n], n]
+
+s(n) = 2^(-n) ((-sqrt(a^2 + 4 b)/b - a/b)^n sum_(k_1 =0)^(n - 1)-(2^(-k_1 - 1) (sqrt(a^2 + 4 b) - a) t(k_1) ((sqrt(a^2 + 4 b) - a)/b)^(k_1) (1/(sqrt(a^2 + 4 b) + a))^(-k_1) (-(sqrt(a^2 + 4 b) + a)/b)^(-k_1))/sqrt(a^2 + 4 b) + (sqrt(a^2 + 4 b)/b - a/b)^n sum_(k_2 =0)^(n - 1)-(2^(-k_2 - 1) t(k_2) (1/(sqrt(a^2 + 4 b) + a))^(-k_2 - 1))/sqrt(a^2 + 4 b)) + c_1 2^(-n) (-sqrt(a^2 + 4 b)/b - a/b)^n + c_2 2^(-n) (sqrt(a^2 + 4 b)/b - a/b)^n and (c_1, c_2) element Z^2
+
+S := sqrt(a^2 + 4 b)
+s(n) = 2^(-n) ((-S/b - a/b)^n sum_(k_1 =0)^(n - 1)-(2^(-k_1 - 1) (S - a) t(k_1) ((S - a)/b)^(k_1) (1/(S + a))^(-k_1) (-(S + a)/b)^(-k_1))/S + (S/b - a/b)^n sum_(k_2 =0)^(n - 1)-(2^(-k_2 - 1) t(k_2) (1/(S + a))^(-k_2 - 1))/S) + c_1 2^(-n) (-S/b - a/b)^n + c_2 2^(-n) (S/b - a/b)^n
+
+maybe to fix the 2nd constant we need to apply as 2nd boundary condition ds(inf) = 0 where
+ds[n] = s[n+1] - s[n] 
+
+
+maybe for two-pole filters (and higher order) filters, we should express them as parallel 
+connection of complex one-pole filters and use our solution for one-pole-filters above. For image
+filters, we may approximate a Gaussian filter by using multiple first order lowpass filters in 
+series. Highpass is obtained by identity-minus-lowpass and bandpass and bandreject are obtained by 
+series and parallel connection of lowpass and highpass. And/or maybe use connections using allpass
+filters - maybe there's a type in which a1 is not close to 1 to avoid numerical problems in the 
+formula in prepareForBackwardPass
+
+---------------------------------------------------------------------------------------------------
+Two-Pole/One-Zero
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------
+Biquad
 
 Now let's consider a biquad filter with the difference equation:
 
@@ -187,55 +260,70 @@ running the backward pass. The tail of the forward pass is:
   t5 = a*t4 + b*t3 = a*(a*(a*t2 + b*t1) + b*t2) + b*(a*t2 + b*t1)
   t6 = a*t5 + b*t4 = a*(a*(a*(a*t2+b*t1)+b*t2)+b*(a*t2+b*t1)) + b*(a*(a*t2+b*t1)+b*t2)
   
-  
-...for each tn we want a formula using only a,b,t1,t2...the terms blow up quickly
-it's difficult to find an explicit expression for tn - maybe use RSolve for this too:
+...for each tn we want a formula using only a,b,t1,t2...the terms blow up quickly. It's difficult 
+to find an explicit expression for tn, so let's use Wolfram alpha for this. Define:
+
+  g = t1, h = t2
+
+and use RSolve with initial conditions::
 
   RSolve[{t[n] == a*t[n-1] + b*t[n-2], t[1] == g, t[2] == h}, t[n], n]
   
-where g = t1, h = t2. This gives an ugly result:
+This gives an ugly result:
 
 t(n) = -(2^(-n - 1) (a^2 g (a - sqrt(a^2 + 4 b))^n + 2 b g (a - sqrt(a^2 + 4 b))^n + a g sqrt(a^2 + 4 b) (a - sqrt(a^2 + 4 b))^n - a^2 g (sqrt(a^2 + 4 b) + a)^n - 2 b g (sqrt(a^2 + 4 b) + a)^n + a g sqrt(a^2 + 4 b) (sqrt(a^2 + 4 b) + a)^n - a h (a - sqrt(a^2 + 4 b))^n - h sqrt(a^2 + 4 b) (a - sqrt(a^2 + 4 b))^n + a h (sqrt(a^2 + 4 b) + a)^n - h sqrt(a^2 + 4 b) (sqrt(a^2 + 4 b) + a)^n))/(b sqrt(a^2 + 4 b))
 
-but there are a lot of common subexpressions
+but with some manual extraction of common subexpressions and simplfications, we can turn this into:
 
-define S := sqrt(a^2 + 4 b) and replace all occurences:
+  S = sqrt(a*a + 4*b)
+  T = a - S 
+  U = a + S
+  V = a^2*g + 2*b*g - a*h
+  W = a*g*S - h*S
+  A = W+V
+  B = W-V
+  t(n) = -(A*T^n + B*U^n) / (b*S*2^(n+1))
+  
+From now on, we only need the numbers A,B,S,T,U in addition to the variables, we already have. Note 
+that we may have to use complex numbers, when a*a + 4*b < 0. Now, let's write down the recurrence 
+relation for the tail with the biquad filter applied bidirectionally:
 
-t(n) = -(2^(-n - 1) (a^2 g (a - S)^n + 2 b g (a - S)^n + a g S (a - S)^n - a^2 g (S + a)^n - 2 b g (S + a)^n + a g S (S + a)^n - a h (a - S)^n - h S (a - S)^n + a h (S + a)^n - h S (S + a)^n))/(b S)
+  s[n] = u*t[n] + v*t[n+1] + w*t[n+2] + a*s[n+1] + b*s[n+2]
+  
+and insert our expression for t[n]:
 
-define T = (a - S), U = (S + a) and replace:
+  s[n] = a*s[n+1] + b*s[n+2]
+         - u * (A*T^n     + B*U^n)     / (b*S*2^(n+1))
+         - v * (A*T^(n+1) + B*U^(n+1)) / (b*S*2^(n+2))
+         - w * (A*T^(n+2) + B*U^(n+2)) / (b*S*2^(n+3))
 
-t(n) = -(2^(-n-1) (a^2 g T^n + 2 b g T^n + a g S T^n - a^2 g U^n - 2 b g U^n + a g S U^n - a h T^n - h S T^n + a h U^n - h S U^n) )/(b S)
+and throw that at RSolve:
+         
+  RSolve[s[n] == a*s[n+1] + b*s[n+2] - u*(A*T^n+B*U^n)/(b*S*2^(n+1)) - v*(A*T^(n+1)+B*U^(n+1))/(b*S*2^(n+2)) - w*(A*T^(n+2)+B*U^(n+2))/(b*S*2^(n+3)), s[n], n]
 
-t(n) = -(2^(-n-1) ((a^2 g + a g S - h S + 2 b g - a h) T^n - (a^2 g + a g S - h S - 2 b g + a h) U^n) )/(b S)
+...hmm...wolfram alpha says: "doesn't understand your query" -> try wolfram cloud and/or sage.
+wolfram cloud can do it but the result is a monster...
+But this:
 
-define W = a^2 g + a g S - h S
+  RSolve[s[n] == a*s[n+1] + b*s[n+2] - u*t[n] - v*t[n+1] - w*t[n+2], s[n], n]
+  
 
-t(n) = -(2^(-n-1) ((W + 2 b g - a h) T^n - (W - 2 b g + a h) U^n) )/(b S)
+  
+where we do not yet have inserted our expression for t[n] gives a managable result:
 
-define X = 2 b g - a h
+s(n) = 2^(-n) ((-sqrt(a^2 + 4 b)/b - a/b)^n ( sum_(k_1 =-2)^(n - 1) (2^(-k_1 - 1) (sqrt(a^2 + 4 b) - a) ((sqrt(a^2 + 4 b) - a)/b)^(k_1) (1/(sqrt(a^2 + 4 b) + a))^(-k_1) (-(sqrt(a^2 + 4 b) + a)/b)^(-k_1) (u t(k_1) + v t(k_1 + 1) + w t(k_1 + 2)))/sqrt(a^2 + 4 b)) + (sqrt(a^2 + 4 b)/b - a/b)^n sum_(k_2 =-2)^(n - 1) (2^(-k_2 - 1) (1/(sqrt(a^2 + 4 b) + a))^(-k_2 - 1) (u t(k_2) + v t(k_2 + 1) + w t(k_2 + 2)))/sqrt(a^2 + 4 b)) + c_1 2^(-n) (-sqrt(a^2 + 4 b)/b - a/b)^n + c_2 2^(-n) (sqrt(a^2 + 4 b)/b - a/b)^n and (c_1, c_2) element Z^2
 
-t(n) = -( 2^(-n-1) ((W+X) T^n - (W-X) U^n) ) / (b S)
+wait - that's wrong! we need plusses for the u,v,w terms:
+  
+  RSolve[s[n] == a*s[n+1] + b*s[n+2] + u*t[n] + v*t[n+1] + w*t[n+2], s[n], n]
 
-t(n) = ( (W-X) U^n - (W+X) T^n )  / ( b S 2^(n+1) )
+giving:
 
-define A = W+X, B = W-X
+s(n) = 2^(-n) ((-sqrt(a^2 + 4 b)/b - a/b)^n sum_(k_1 =-2)^(n - 1)-(2^(-k_1 - 1) (sqrt(a^2 + 4 b) - a) ((sqrt(a^2 + 4 b) - a)/b)^(k_1) (1/(sqrt(a^2 + 4 b) + a))^(-k_1) (-(sqrt(a^2 + 4 b) + a)/b)^(-k_1) (u t(k_1) + v t(k_1 + 1) + w t(k_1 + 2)))/sqrt(a^2 + 4 b) + (sqrt(a^2 + 4 b)/b - a/b)^n sum_(k_2 =-2)^(n - 1)-(2^(-k_2 - 1) (1/(sqrt(a^2 + 4 b) + a))^(-k_2 - 1) (u t(k_2) + v t(k_2 + 1) + w t(k_2 + 2)))/sqrt(a^2 + 4 b)) + c_1 2^(-n) (-sqrt(a^2 + 4 b)/b - a/b)^n + c_2 2^(-n) (sqrt(a^2 + 4 b)/b - a/b)^n and (c_1, c_2) element Z^2
 
-t(n) = (B U^n - A T^n) / ( b S 2^(n+1) )
 
-...that looks much more managable already! perhaps we will need to use complex numbers for 
-computing the stated due to the sqrt in the computation of S. Try the formula numerically!
-...but it's wrong! correct is:
 
-S = sqrt(a*a + 4*b);
-T = a - S 
-U = a + S
-V = a^2*g + 2*b*g - a*h
-W = a*g*S - h*S
-A = W+V
-B = W-V
-t(n) = -(A*T^n + B*U^n) / (b*S*2^(n+1))
-
+which we again may manually simplify to:
 
 
 For a biquad, we need to compute the states y[n-1], y[n-2], so we need to evaluate our 

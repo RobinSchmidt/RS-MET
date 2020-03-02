@@ -1541,6 +1541,34 @@ T newton(const std::function<T(T)>& f, T x, T y = T(0))
 //   f(t) = t*cos(t), g(t) = t*sin(t)
 
 //=================================================================================================
+// Differential Geometry
+
+class rsCurve2D
+{
+
+public:
+
+  /** Numerically computes the tangent vector to a 2D curve given by r(t) = (x(t),y(t)) at the given
+  parameter t. */
+  template<class T, class F>
+  static void velocity(F fx, F fy, T t, T* tx, T* ty)
+  {
+    T h = 1.e-8;  // use something better
+    *tx = (fx(t+h) - fx(t-h)) / (2*h);
+    *ty = (fy(t+h) - fy(t-h)) / (2*h);
+  }
+  // rename to derivative1 or velocity and define the tangent and normalized verison of it, also
+  // ahev acceleration, jerk
+
+
+  // todo: curvature / 2nd derivative, center of osculating circle, normal vector, same things for
+  // 3D curves - there also the binormal vector
+};
+
+// maybe make classes rsCurve2D, rsCurve3D, rsSurface
+
+
+//=================================================================================================
 
 /** A new experimental colorspace that is similar to HSL or HSV but with a twist that hopefully
 overcomes the disadvantages of these... */
