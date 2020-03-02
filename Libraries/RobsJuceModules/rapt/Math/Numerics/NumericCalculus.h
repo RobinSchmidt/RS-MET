@@ -55,25 +55,35 @@ void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
 
 //=================================================================================================
 
+/** A class for computing numerical approximations to derivatives of functions. In some cases, the
+functions are assumed to be given a function object, in other cases as an array of datapoints. 
+The meaning of the 3 template parameters is:
+  Tx: type of the input to the function (abscissa type)
+  Ty: type of the output of the function (ordinate type)
+  F:  type of the function object (if applicable)
+ For example, Tx could be "double", Ty could be "rsVector2D<double>" and F could be 
+ "std::function<rsVector2D<double>(double)>". This would apply to functions that take real scalars 
+ (double) as input and produce 2D vectors (of real numbers) as output. Such functions define the 
+ parametric equation of 2D curves. They depend on a scalar parameter t (which is interpreted as 
+ time) and produce a 2D vector as output for each t. In this case, the meaning of the first 
+ derivative would be the velocity vector and the  second derivative would be the acceleration 
+ vector. */
+
 template<class Tx, class Ty, class F>
 class rsNumericDifferentiator
 {
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Functor derivatives
+
   /** Numeric approximation of the first derivative of function f at the value x with approximation
-  step-size h. Uses a central difference and is 2nd order accurate in h. F is of type 
-  "function from Tx to Ty". For example, Tx could be double, Ty could be rsVector2D<double> and
-  F could be std::function<rsVector2D<double>(double)>. This would define a function that takes 
-  real scalars (double) as input and produces a 2D vector of real numbers as output (such functions
-  define 2D curves - the meaning of the derivative would be the velocity vector, in this case). */
-  //template<class Tx, class Ty, class F>
+  step-size h. Uses a central difference and is 2nd order accurate in h.  */
   static Ty derivative(F f, Tx x, Tx h)
   {
     return (f(x+h) - f(x-h)) / (Tx(2)*h);
   }
-  // how is the compiler supposed to infer Ty - from the return value of f? does that work?
-  // ...nope! apparently not - we could make the types template parameters of the class
 
   /** Numeric approximation of the second derivative. 2nd order accurate in h. */
   //template<class T, class F>
@@ -85,6 +95,12 @@ public:
     // totally appropriate.
   }
   // https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Data derivatives
+
+  // move the function rsNumericDerivative here
 
 };
 

@@ -1630,6 +1630,15 @@ public:
   }
 
 
+protected:
+
+  // F fx, fy;
+  // T h;
+
+  // maybe have the functions fx,fy as members and have functions like
+  // getPosition(T t, T* x, T* y), getVelocity(T t, T* vx, T* vy), 
+  // getAcceleration(T t, T* vx, T* vy), getCurvature, getOsculatingCircle, ...
+
 
   // todo: avoid code-duplication - factor out functions 
   // T firstDerivative(F f, T t, T h), T secondDerivative(F f, T t, T h), 
