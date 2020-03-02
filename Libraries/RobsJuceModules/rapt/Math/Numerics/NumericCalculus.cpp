@@ -113,6 +113,7 @@ void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c)
 //   function of N-1 variables (maybe using std::function)
 
 
+/*
 template<class Tx, class Ty>
 Ty rsNumericIntegrator<Tx, Ty>::integrate(const std::function<Ty(Tx)>& f, Tx a, Tx b)
 {
@@ -120,7 +121,7 @@ Ty rsNumericIntegrator<Tx, Ty>::integrate(const std::function<Ty(Tx)>& f, Tx a, 
 
   return Ty(0);
 }
-
+*/
 // Ideas: 
 // -let the user set the sample evaluation points by passing a pointer to an array of Tx
 // -alternatively, the user may set just a number and then the object auotmatically generates

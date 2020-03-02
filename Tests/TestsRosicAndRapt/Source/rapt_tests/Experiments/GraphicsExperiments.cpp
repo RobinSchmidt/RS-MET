@@ -1756,17 +1756,38 @@ void fractal()
 
 void differentialGeometry()
 {
-  rsCurve2D crv2;
+  // todo: turn into unit test
 
-  std::function<double(double)> fx, fy;
+  rsCurve2D crv2;
+  rsCurve3D crv3;
+
+  std::function<double(double)> fx, fy, fz;
   fx = [&](double t) { return cos(2*PI*t); };
   fy = [&](double t) { return sin(2*PI*t); };
+  fz = [&](double t) { return t; };
 
-  double tx, ty;
-  crv2.velocity(fx, fy, 0.0,  &tx, &ty); // (0,    +2pi)
-  crv2.velocity(fx, fy, 0.25, &tx, &ty); // (-2pi,  0)
-  crv2.velocity(fx, fy, 0.5,  &tx, &ty); // (0,    -2pi)
-  crv2.velocity(fx, fy, 0.75, &tx, &ty); // (+2pi,  0)
+  // test velocity computation:
+  double vx, vy, vz;
+  crv2.velocity(fx, fy, 0.0,  &vx, &vy); // (0,    +2pi)
+  crv2.velocity(fx, fy, 0.25, &vx, &vy); // (-2pi,  0)
+  crv2.velocity(fx, fy, 0.5,  &vx, &vy); // (0,    -2pi)
+  crv2.velocity(fx, fy, 0.75, &vx, &vy); // (+2pi,  0)
+
+  crv3.velocity(fx, fy, fz, 0.0, &vx, &vy, &vz); // (0, +2pi, 1)
+  crv3.velocity(fx, fy, fz, 0.5, &vx, &vy, &vz); // (0, -2pi, 1) - vz is imprecise - why? the 0.5 offset/asymmetry?
+
+  // test acceleration computation:
+  double ax, ay, az;
+  crv2.acceleration(fx, fy, 0.0,  &ax, &ay);
+  crv2.acceleration(fx, fy, 0.25, &ax, &ay);
+  crv2.acceleration(fx, fy, 0.5,  &ax, &ay);
+  crv2.acceleration(fx, fy, 0.75, &ax, &ay);
+  // todo: compare with analytic results
+
+
+
+
+  // as examples for 3D curves, draw helix, trefoil knot, 3D Lissaous
 
 
   int dummy = 0;

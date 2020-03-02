@@ -3,7 +3,7 @@
 
 // todo: wrap into class
 // -maybe rsNumCalc or rsNumericalCalculus - get rid of the then redundant "Numeric" in the 
-//  function names
+//  function names - and also of the rs-prefixes
 
 /** Cannot be used in-place yet: y and yd have to be distinct!
 Given an array of strictly monotonically increasing but not necessarily equidistant abscissa
@@ -26,6 +26,7 @@ N-1. In a test with a sine function, the extrapolation gave more accurate result
 endpoints compared to simple differences, so it's probably better to use extrapolation. */
 template<class Tx, class Ty>
 void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds = true);
+// move into class rsNumericDifferentiatior and rename to firstDerivative or just derivative
 
 // todo: make a numeric derivative routine that is the inverse of the trapezoidal integrator
 // rsDifferentiateTrapezoidal, rename this one to rsWeightedCentralDifference
@@ -41,6 +42,8 @@ template<class Tx, class Ty>
 void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
 // maybe rename to rsNumericIntegralTrapezoidal, or rsIntegrateTrapezoidal, use Tx, Ty for 
 // datatypes maybe rename parameters to x, f, F
+// move to rsNumericIntegrator and rename to integrateTrapezoidal or just trapezoidal, have a
+// simpler version riemannSum which uses the midpoint of each interval as evaluation point
 
 
 // Maybe rename to NumericAnalysis and include the interpolation stuff into this file as well 
@@ -71,7 +74,7 @@ public:
   // \name Integration
 
   /** Computes the definite integral of f in the interval from a to b. */
-  Ty integrate(const std::function<Ty(Tx)>& f, Tx a, Tx b);
+  //Ty integrate(const std::function<Ty(Tx)>& f, Tx a, Tx b);
 
 
 protected:

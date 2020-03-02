@@ -1543,6 +1543,32 @@ T newton(const std::function<T(T)>& f, T x, T y = T(0))
 //=================================================================================================
 // Differential Geometry
 
+
+/** Numeric approximation of the first derivative of function f at the value x with approximation
+step-size h. Uses a central difference and is 2nd order accurate in h. */
+template<class T, class F>
+T derivative(F f, T x, T h)
+{
+  return (f(x+h) - f(x-h)) / (T(2)*h);
+}
+
+/** Numeric approximation of the first derivative. 2nd order accurate in h. */
+template<class T, class F>
+T secondDerivative(F f, T x, T h)
+{
+  return (f(x-h) - T(2)*f(x) + f(x+h)) / (h*h);  // verify formula
+}
+// move these into rsNumericDifferentiator, make functions that compute all derivatives up to a 
+// given order - avoid re-evaluation of f(x+h) etc - evaluate them once and use different linear
+// combinations to form approximations of the derivatives
+
+// third derivative needs a 4-point-stencil at least
+
+// maybe make a function that computes derivatives up to order 3 with a 5-point stencil using 
+// x-2*h,x-h,x,x+h,x+2*h - this should be good enough for differential geometry for graphical 
+// purposes 
+
+
 class rsCurve2D
 {
 
@@ -1551,19 +1577,64 @@ public:
   /** Numerically computes the tangent vector to a 2D curve given by r(t) = (x(t),y(t)) at the given
   parameter t. */
   template<class T, class F>
-  static void velocity(F fx, F fy, T t, T* tx, T* ty)
+  static void velocity(F fx, F fy, T t, T* vx, T* vy)
   {
     T h = 1.e-8;  // use something better
-    *tx = (fx(t+h) - fx(t-h)) / (2*h);
-    *ty = (fy(t+h) - fy(t-h)) / (2*h);
+    *vx = derivative(fx, t, h);
+    *vy = derivative(fy, t, h);
+    //*vx = (fx(t+h) - fx(t-h)) / (2*h);
+    //*vy = (fy(t+h) - fy(t-h)) / (2*h);
   }
-  // rename to derivative1 or velocity and define the tangent and normalized verison of it, also
-  // ahev acceleration, jerk
 
+
+  template<class T, class F>
+  static void acceleration(F fx, F fy, T t, T* ax, T* ay)
+  {
+    T h = 1.e-8;  // use something better
+    *ax = secondDerivative(fx, t, h);
+    *ay = secondDerivative(fy, t, h);
+    //*ax = (fx(t-h) - T(2)*fx(t) + fx(t+h)) / (h*h);  // verify formula
+    //*ay = (fy(t-h) - T(2)*fy(t) + fy(t+h)) / (h*h);
+  }
+  // https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
+
+  // todo: avoid code-duplication - factor out functions 
+  // T firstDerivative(F f, T t, T h), T secondDerivative(F f, T t, T h), 
+  // may be part of rsNumericalCalculus
+
+  // todo: acceleration, jerk
+
+  // maybe have functions with higher accuracy, using stencils with more points to approximate the 
+  // derivatives
 
   // todo: curvature / 2nd derivative, center of osculating circle, normal vector, same things for
   // 3D curves - there also the binormal vector
+
+
 };
+
+class rsCurve3D
+{
+
+public:
+
+  template<class T, class F>
+  static void velocity(F fx, F fy, F fz, T t, T* vx, T* vy, T* vz)
+  {
+    T h = 1.e-8;  // use something better
+    *vx = derivative(fx, t, h);
+    *vy = derivative(fy, t, h);
+    *vz = derivative(fz, t, h);
+
+    //*vx = (fx(t+h) - fx(t-h)) / (2*h);
+    //*vy = (fy(t+h) - fy(t-h)) / (2*h);
+    //*vz = (fz(t+h) - fz(t-h)) / (2*h);
+  }
+
+  // todo acceleration, normal, binormal, frenetFrame/frenetTrihedron (begleitendes Dreibein)
+
+};
+
 
 // maybe make classes rsCurve2D, rsCurve3D, rsSurface
 
