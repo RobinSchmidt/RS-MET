@@ -1795,23 +1795,39 @@ void differentialGeometry()
   std::function<Vec2(double)> r2;  // function from scalars to 2D vectors
   r2 = [&](double t) { return Vec2(cos(2*PI*t), sin(2*PI*t)); }; // unit circle
 
-  double h = 1.e-10;
+  double h = 1.e-3;
 
   // velocities:
   Vec2 v2;
-  v2 = nd_1_2.derivative(r2, 0.0,  h);
-  v2 = nd_1_2.derivative(r2, 0.25, h);
-  v2 = nd_1_2.derivative(r2, 0.5,  h);
-  v2 = nd_1_2.derivative(r2, 0.75, h);
+  v2 = nd_1_2.derivative(r2, 0.0,  h);  // ( 0,     2*pi)
+  v2 = nd_1_2.derivative(r2, 0.25, h);  // (-2*pi,  0   )
+  v2 = nd_1_2.derivative(r2, 0.5,  h);  // ( 0,    -2*pi)
+  v2 = nd_1_2.derivative(r2, 0.75, h);  // ( 2*pi,  0   )
 
   // accelerations:
   Vec2 a2;
-  a2 = nd_1_2.secondDerivative(r2, 0.0,  h);
-  a2 = nd_1_2.secondDerivative(r2, 0.25, h);
-  a2 = nd_1_2.secondDerivative(r2, 0.5,  h);  // something is weird - y-component is nonzero
-  a2 = nd_1_2.secondDerivative(r2, 0.75, h);
+  h = 1.e-4;
+  a2 = nd_1_2.secondDerivative(r2, 0.0,  h);   // (-4*pi^2,  0     )
+  a2 = nd_1_2.secondDerivative(r2, 0.25, h);   // ( 0,      -4*pi^2)
+  a2 = nd_1_2.secondDerivative(r2, 0.5,  h);   // ( 4*pi^2,  0     )
+  a2 = nd_1_2.secondDerivative(r2, 0.75, h);   // ( 0,       4*pi^2)
+  // 4*p^2 = 39.4784176043574
+  // for the acceleration, we obtain the best numerical approximation of 7 correct decimal digits
+  // with = 1.e-4:
+  //   h = 1.e-N, N:   3  4  5  6  7
+  //   correct digits: 5  7  7  5  4
+  // with 1.e-5, we also get seven correct digits, but the error is a bit worse
+  // todo: figure out, if 1.e-4 is also the optimal value for computing the velocities - and how
+  // the optimal choice depends on the particular curve
 
-  // todo: compute derivatives analytically and compare results to the numeric derivatives
+  // sage code to compute velocities and accelerations analytically:
+  //  var("t")
+  //  r = vector((cos(2*pi*t), sin(2*pi*t))) # position as function of t
+  //  v = r.diff(t)                          # velocity
+  //  a = v.diff(t)                          # acceleration
+  //  v(0),v(1/4),v(1/2),v(3/4),\
+  //  a(0),a(1/4),a(1/2),a(3/4)              # print
+
 
 
   // as examples for 3D curves, draw helix, trefoil knot, 3D Lissaous
