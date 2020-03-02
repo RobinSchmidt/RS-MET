@@ -363,22 +363,23 @@ void biquadTail()
   double y1 =  8;
   double y2 = -4;
 
-  int N = 20;  // number of samples
+  // number of samples:
+  int N = 20;  
 
   // Notation change to have single letter variables in the formulas:
   //   y[n] = u*x[n] + v*x[n-1] + w*x[n-2] + a*y[n-1] + b*y[n-2]
   double u = b0, v = b1, w = b2;
   double a = -a1, b = -a2;
 
-  // compute intermediate variables (needs to be doen before computing the tail using the filter)
+  // compute intermediate variables (needs to be done before computing the tail using the filter)
   double t0 = y1;                         // 0th tail sample is last actual output sample y[N-1]
   double t1 = v*x1 + w*x2 + a*y1 + b*y2;  // computed directly
   double t2 = w*x1 + a*t1 + b*t0;         // computed directly
   //double t3 = a*t2 + b*t1;                // computed recursively
   //double t4 = a*t3 + b*t2;                // computed recursively
   double g = t1, h = t2;
-  double S = sqrt(a*a + 4*b);             // may have to be complex later
-  double T = a - S, U = a + S;
+  double S = sqrt(a*a + 4*b);             // may have to be complex when a*a + 4*b < 0
+  double T = a - S, U = a + S;            // ...then these all have to be complex as well
   double V = a*a*g + 2*b*g - a*h;
   double W = a*g*S - h*S;
   double A = W+V;
@@ -397,18 +398,18 @@ void biquadTail()
 
   // compute tail using the filter:
   Vec tFlt(N);
-  for(int n = 0; n < N; n++)
-  {
+  for(int n = 0; n < N; n++) {
     double x0 = 0;
     tFlt[n] = u*x0 + v*x1 + w*x2 + a*y1 + b*y2;
     x2 = x1;
     x1 = x0;
     y2 = y1;
-    y1 = tFlt[n];
+    y1 = tFlt[n]; 
   }
 
-  //rsPlotVector(tFlt);
-  rsPlotVectors(tFlt, tFrm); // they agree up to a shift by one sample
+  // plot both results:
+  rsPopFront(tFrm); // because they agree only up to a shift by one sample
+  rsPlotVectors(tFlt, tFrm); 
   int dummy = 0;
 }
 

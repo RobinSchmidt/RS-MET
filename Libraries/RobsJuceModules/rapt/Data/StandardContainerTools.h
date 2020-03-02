@@ -158,6 +158,12 @@ inline void rsRemoveRange(std::vector<T>& v, size_t first, size_t last)
 }
 
 template<class T>
+inline void rsPopFront(std::vector<T>& v)
+{
+  rsRemoveRange(v, 0, 0);
+}
+
+template<class T>
 inline std::vector<T> rsSelect(std::vector<T>& v, std::vector<size_t> indices)
 {
   std::vector<T> r(indices.size());
