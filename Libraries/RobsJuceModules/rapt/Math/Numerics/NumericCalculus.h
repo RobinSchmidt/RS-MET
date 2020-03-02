@@ -26,7 +26,7 @@ N-1. In a test with a sine function, the extrapolation gave more accurate result
 endpoints compared to simple differences, so it's probably better to use extrapolation. */
 template<class Tx, class Ty>
 void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds = true);
-// move into class rsNumericDifferentiatior and rename to firstDerivative or just derivative
+// move into class rsNumericDifferentiatior and rename to derivative
 
 // todo: make a numeric derivative routine that is the inverse of the trapezoidal integrator
 // rsDifferentiateTrapezoidal, rename this one to rsWeightedCentralDifference
@@ -51,6 +51,42 @@ void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
 // integration stuff may depend on interpolation and if we templatize the functions, we need to 
 // take care that everything is defined before it gets used.
 
+
+
+//=================================================================================================
+
+template<class Tx, class Ty, class F>
+class rsNumericDifferentiator
+{
+
+public:
+
+  /** Numeric approximation of the first derivative of function f at the value x with approximation
+  step-size h. Uses a central difference and is 2nd order accurate in h. F is of type 
+  "function from Tx to Ty". For example, Tx could be double, Ty could be rsVector2D<double> and
+  F could be std::function<rsVector2D<double>(double)>. This would define a function that takes 
+  real scalars (double) as input and produces a 2D vector of real numbers as output (such functions
+  define 2D curves - the meaning of the derivative would be the velocity vector, in this case). */
+  //template<class Tx, class Ty, class F>
+  static Ty derivative(F f, Tx x, Tx h)
+  {
+    return (f(x+h) - f(x-h)) / (Tx(2)*h);
+  }
+  // how is the compiler supposed to infer Ty - from the return value of f? does that work?
+  // ...nope! apparently not - we could make the types template parameters of the class
+
+  /** Numeric approximation of the second derivative. 2nd order accurate in h. */
+  //template<class T, class F>
+  static Ty secondDerivative(F f, Tx x, Tx h)
+  {
+    return (f(x-h) - Tx(2)*f(x) + f(x+h)) / (h*h);  // verify formula
+    // the Tx(2) may seem weird because it multiplies the result f(x) which is of type Ty, so one 
+    // might expect Ty(2) here. However, if Tx is a scalar type and Ty is a vector type, this is
+    // totally appropriate.
+  }
+  // https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
+
+};
 
 
 

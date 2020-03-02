@@ -1758,8 +1758,14 @@ void differentialGeometry()
 {
   // todo: turn into unit test
 
+  using Vec2     = rsVector2D<double>;            // 2D vectors
+  using Func_1_2 = std::function<Vec2(double)>;   // functions form 1D scalars to 2D vectors
+
   rsCurve2D crv2;
   rsCurve3D crv3;
+  //rsNumericDifferentiator nd;
+  rsNumericDifferentiator<double, Vec2, Func_1_2> nd_1_2;
+
 
   std::function<double(double)> fx, fy, fz;
   fx = [&](double t) { return cos(2*PI*t); };
@@ -1785,6 +1791,24 @@ void differentialGeometry()
   // todo: compare with analytic results
 
 
+  std::function<Vec2(double)> r2;  // function from scalars to 2D vectors
+  r2 = [&](double t) { return Vec2(cos(2*PI*t), sin(2*PI*t)); }; // unit circle
+
+  double h = 1.e-8;
+
+  // velocities:
+  Vec2 v2;
+  v2 = nd_1_2.derivative(r2, 0.0,  h);
+  v2 = nd_1_2.derivative(r2, 0.25, h);
+  v2 = nd_1_2.derivative(r2, 0.5,  h);
+  v2 = nd_1_2.derivative(r2, 0.75, h);
+
+  // accelerations:
+  Vec2 a2;
+  a2 = nd_1_2.secondDerivative(r2, 0.0,  h);
+  a2 = nd_1_2.secondDerivative(r2, 0.25, h);
+  a2 = nd_1_2.secondDerivative(r2, 0.5,  h);
+  a2 = nd_1_2.secondDerivative(r2, 0.75, h);
 
 
   // as examples for 3D curves, draw helix, trefoil knot, 3D Lissaous

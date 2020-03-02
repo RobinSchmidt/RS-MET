@@ -1558,9 +1558,46 @@ T secondDerivative(F f, T x, T h)
 {
   return (f(x-h) - T(2)*f(x) + f(x+h)) / (h*h);  // verify formula
 }
+// https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
+
+template<class T, class F>
+T thirdDerivative(F f, T x, T h)
+{
+  return (-f(x-2*h) + 2*f(x-h) - 2*f(x+h) + 1*f(x+2*h)) / (2*h*h*h);
+}
+// coeffs found by:
+// http://web.media.mit.edu/~crtaylor/calculator.html
+// f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
+
+// under construction:
+/** Computes derivatives 0..3 with a 5-point stencil. */
+template<class T, class F>
+void derivativesUpTo3(F f, T x, T h, T* f0, T* f1, T* f2, T* f3)
+{
+  // evaluate function at stencil points:
+  T fm2 = f(x-2*h);
+  T fm1 = f(x - h);
+  T fc  = f(x    );
+  T fp1 = f(x + h);
+  T fp2 = f(x+2*h);
+
+  // form linear combinations to approximate derivatives:
+  *f0 =                     fc;
+  *f1 = ( fm2 -  8*fm1         +  8*fp1 - fp2) / (12*h);
+  *f2 = (-fm2 + 16*fm1 - 30*fc + 16*fp1 - fp2) / (12*h*h);
+  *f3 = (-fm2 +  2*fm1         -  2*fp1 + fp2) / (2*h*h*h);
+}
+// needs tes
+// stencil: -2,-1,0,1,2
+// f_x = (1*f[i-2]-8*f[i-1]+0*f[i+0]+8*f[i+1]-1*f[i+2])/(12*1.0*h**1)
+// f_xx = (-1*f[i-2]+16*f[i-1]-30*f[i+0]+16*f[i+1]-1*f[i+2])/(12*1.0*h**2)
+// f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
+
+
 // move these into rsNumericDifferentiator, make functions that compute all derivatives up to a 
 // given order - avoid re-evaluation of f(x+h) etc - evaluate them once and use different linear
 // combinations to form approximations of the derivatives
+
 
 // third derivative needs a 4-point-stencil at least
 
@@ -1582,10 +1619,7 @@ public:
     T h = 1.e-8;  // use something better
     *vx = derivative(fx, t, h);
     *vy = derivative(fy, t, h);
-    //*vx = (fx(t+h) - fx(t-h)) / (2*h);
-    //*vy = (fy(t+h) - fy(t-h)) / (2*h);
   }
-
 
   template<class T, class F>
   static void acceleration(F fx, F fy, T t, T* ax, T* ay)
@@ -1593,10 +1627,9 @@ public:
     T h = 1.e-8;  // use something better
     *ax = secondDerivative(fx, t, h);
     *ay = secondDerivative(fy, t, h);
-    //*ax = (fx(t-h) - T(2)*fx(t) + fx(t+h)) / (h*h);  // verify formula
-    //*ay = (fy(t-h) - T(2)*fy(t) + fy(t+h)) / (h*h);
   }
-  // https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
+
+
 
   // todo: avoid code-duplication - factor out functions 
   // T firstDerivative(F f, T t, T h), T secondDerivative(F f, T t, T h), 
@@ -1625,11 +1658,13 @@ public:
     *vx = derivative(fx, t, h);
     *vy = derivative(fy, t, h);
     *vz = derivative(fz, t, h);
-
-    //*vx = (fx(t+h) - fx(t-h)) / (2*h);
-    //*vy = (fy(t+h) - fy(t-h)) / (2*h);
-    //*vz = (fz(t+h) - fz(t-h)) / (2*h);
   }
+
+
+
+
+
+
 
   // todo acceleration, normal, binormal, frenetFrame/frenetTrihedron (begleitendes Dreibein)
 
