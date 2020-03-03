@@ -56,8 +56,8 @@ void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
 //=================================================================================================
 
 /** A class for computing numerical approximations to derivatives of functions. In some cases, the
-functions are assumed to be given a function object, in other cases as an array of datapoints. 
-The meaning of the 3 template parameters is:
+functions are assumed to be given a function object (aka functor), in other cases as an array of 
+datapoints. The meaning of the 3 template parameters is:
   Tx: type of the input to the function (abscissa type)
   Ty: type of the output of the function (ordinate type)
   F:  type of the function object (if applicable)
@@ -66,7 +66,7 @@ The meaning of the 3 template parameters is:
  (double) as input and produce 2D vectors (of real numbers) as output. Such functions define the 
  parametric equation of 2D curves. They depend on a scalar parameter t (which is interpreted as 
  time) and produce a 2D vector as output for each t. In this case, the meaning of the first 
- derivative would be the velocity vector and the  second derivative would be the acceleration 
+ derivative would be the velocity vector and the second derivative would be the acceleration 
  vector. */
 
 template<class Tx, class Ty, class F>
@@ -80,14 +80,14 @@ public:
 
   /** Numeric approximation of the first derivative of function f at the value x with approximation
   step-size h. Uses a central difference and is 2nd order accurate in h.  */
-  static Ty derivative(F f, Tx x, Tx h)
+  static Ty derivative(const F& f, const Tx& x, const Tx& h)
   {
     return (f(x+h) - f(x-h)) / (Tx(2)*h);
   }
 
   /** Numeric approximation of the second derivative. 2nd order accurate in h. */
   //template<class T, class F>
-  static Ty secondDerivative(F f, Tx x, Tx h)
+  static Ty secondDerivative(const F& f, const Tx& x, const Tx& h)
   {
     return (f(x-h) - Tx(2)*f(x) + f(x+h)) / (h*h);
     // the Tx(2) may seem weird because it multiplies the result f(x) which is of type Ty, so one 

@@ -1633,7 +1633,49 @@ public:
   TVec getVelocity(TScl t, TScl h)     const { return NumDiff::derivative(f, t, h); }
   TVec getAcceleration(TScl t, TScl h) const { return NumDiff::secondDerivative(f, t, h); }
 
-  // todo: getJerk, functions to compute arc-length, reparametrization via arc-length
+  // todo: getJerk, functions to compute arc-length, reparametrization via arc-length (this should
+  // return an array (std::vector<TScl>) of mapping point (t, phi(t)) or (t, phi^-1(t))
+
+
+  /** Returns an array with values of the arc-lengths corresponding to the parameter values given 
+  in t. */
+  std::vector<TScl> getArcLengthFunction(const std::vector<TScl>& t)
+  {
+    // under construction - needs test
+
+    size_t N = t.size();
+    std::vector<TScl> s(N);
+
+    // fill s-array with values of length-elements ds:
+    s[0] = TScl(0);
+    TVec v0 = getPosition(t[0]);
+    for(size_t n = 1; n < N; n++) 
+    {
+      TVec v1 = getPosition(t[n]);
+      TVec dv = v1 - v0;
+      TScl ds = rsNorm(dv);
+      s[n] = ds;
+      v0 = v1;
+    }
+
+    // numerically integrate:
+    rsArrayTools::cumulativeSum(&s[0], &s[0], (int) N); // todo: use trapezoidal rule later
+    return s;
+  }
+  // maybe have a function that computes the arc-length for a particular value of t - but document
+  // that it should not be used in a loop to compute the arc-length function for multiple values of
+  // ascending t-values (because that would result in a "Shlemiel-the-painter" algo)
+  // this should use a generic integrate(Functor f, T a, T b, int numPoints) function
+
+
+  //std::vector<TScl> getArcLengthFunction(TScl t0, TScl t1, int numPoints);
+  //std::vector<TScl> getArcLengthParameterMapping(TScl t0, TScl t1, int numPoints);
+  // should use a generic rsNorm() function that returns the Euclidean norm of any vector - 
+  // implement it for rsVector2D, rsVector3D, std::vector
+
+  // see plotParametricCurve, arcLengthFunction - but there, we use a Riemann sum - use trapezoidal
+  // integration instead for better accurace - but the skeleton of the algo can be used
+
 
 
 protected:
@@ -1661,7 +1703,6 @@ References:
 
 */
 
-//template<class T>
 template<class T>
 class rsParametricCurve2D : public rsParametricCurve<T, rsVector2D<T>>
 {
@@ -1685,7 +1726,7 @@ public:
   {
     Vec2 v = getVelocity(t, h);
     Vec2 a = getAcceleration(t, h);
-    T d = det(v, a);
+    T d = rsDet(v, a);
     T s = v.getEuclideanNorm();  // speed
     return d / (s*s*s);          // (1), Eq. 4.2
   }
@@ -1727,6 +1768,19 @@ public:
   }
   // maybe rename to getEvolute
 
+  // todo: implement the angle function
+
+
+  // global features: total length (in an interval t = a..b) winding number around a given point
+  // (applied to closed curves, needs the angle function), isClosed() or isInjectiveOn(a, b) - 
+  // create a list of points and compute the minimum of all the mutual distances - if it is below
+  // a threshold, the points are considered the same and the curve is not injective...maybe call it
+  // isSelfIntersecting, or maybe better: getNumSelfIntersections(a, b, threshold, numPoints) - 
+  // maybe for this, it makes sense to have a natural parameterization - otherwise, values for
+  // t0,t1 close to each other may be below the threshold because the curve is very slow between 
+  // t0,t1
+  // getGlobalCurvature (Totalkrümmung), Umlaufzahl (what's the english term?), winding number
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1754,11 +1808,21 @@ protected:
 
 };
 
-class rsCurve3D
+
+template<class T>
+class rsParametricCurve3D : public rsParametricCurve<T, rsVector3D<T>>
 {
 
 public:
 
+
+  // todo getNormal, getBinormal, getFrenetFrame/FrenetTrihedron (begleitendes Dreibein)
+  // updateFrenetSerret(curvature, torsion, *x, *y, *z), getCurvature(t, h), getTorsion(t, h),
+
+
+
+
+  /*
   template<class T, class F>
   static void velocity(F fx, F fy, F fz, T t, T* vx, T* vy, T* vz)
   {
@@ -1767,20 +1831,24 @@ public:
     *vy = derivative(fy, t, h);
     *vz = derivative(fz, t, h);
   }
-
-
-  //  for 3D curves - there also the binormal vector
-
-
-
-
-  // todo getNormal, getBinormal, getFrenetFrame/FrenetTrihedron (begleitendes Dreibein)
-  // updateFrenetSerret(curvature, torsion, *x, *y, *z), getCurvature(t, h), getTorsion(t, h),
+  */
 
 };
 
 
-// maybe make classes rsCurve2D, rsCurve3D, rsSurface
+template<class T>
+class rsParametricSurface
+{
+
+public:
+
+  // todo: getPosition(T u, T v), 
+  // getCurveConstantU(T u), getCurveConstantV(T v)
+  // returns std::vector<rsVector3D<T>> and/or rsParametricCurve3D objects
+
+};
+
+
 
 
 //=================================================================================================

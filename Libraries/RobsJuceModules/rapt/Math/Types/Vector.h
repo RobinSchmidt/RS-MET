@@ -141,11 +141,27 @@ into a 2x2 matrix. If this determinant is 0, the 2 vectors are collinear, i.e. o
 multiple of the other, i.e. they are both on the same line through the origin. */
 // not yet tested
 template<class T>
-T det(const rsVector2D<T>& a, const rsVector2D<T>& b)
+T rsDet(const rsVector2D<T>& a, const rsVector2D<T>& b)
 {
   return a.x * b.y - a.y * b.x;  // verify formula
 }
 // maybe move as static function into class
+
+/** Returns the dot product of vectors a and b. */
+template<class T>
+T rsDot(const rsVector2D<T>& a, const rsVector2D<T>& b)
+{
+  return a.x * b.x + a.y * b.y;
+}
+
+/** Returns the Euclidean norm of vector a. */
+template<class T>
+T rsNorm(const rsVector2D<T>& a)
+{
+  return sqrt(rsDot(a, a));
+}
+
+
 
 // todo: dot, cross
 

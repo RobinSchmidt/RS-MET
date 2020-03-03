@@ -1759,6 +1759,7 @@ void differentialGeometry()
   // todo: turn into unit test
 
   // some shorthands:
+  using VecN     = std::vector<double>;          // nD vectors
   using Vec2     = rsVector2D<double>;           // 2D vectors
   using Func_1_2 = std::function<Vec2(double)>;  // functions from 1D scalars to 2D vectors
   using Curve2D  = rsParametricCurve2D<double>;  // class to represent 2D curves
@@ -1819,6 +1820,15 @@ void differentialGeometry()
   v = c.getOsculatingCircleCenter(0.5,  h);
   v = c.getOsculatingCircleCenter(0.75, h);
   // should always be 0 - seems to work
+
+  // test arc-length computation:
+
+  VecN t = rsRangeLinear(0.0, 1.0, 65);
+  VecN s = c.getArcLengthFunction(t);
+  // ok - works in principle, but we should improve accuracy by using trapezoidal integration - 
+  // do this in class rsNumericIntegrator - generally move the free functions for numeric calculus
+  // into these classes - maybe also drag in the ODE solver from the GNUPlotCPP repo
+
   
 
   // as examples for 3D curves, draw helix, trefoil knot, 3D Lissaous
