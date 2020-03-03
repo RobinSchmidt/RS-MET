@@ -199,6 +199,19 @@ public:
 
   // maybe just define "norm", "normSquared" functions outside the class (like dot, det, etc)
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Manipulations */
+
+  /** Normalizes this vector to unit length.  */
+  void normalize()
+  {
+    T s = T(1) / getEuclideanNorm();
+    x *= s;
+    y *= s;
+    z *= s;
+  }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
@@ -282,6 +295,11 @@ rsVector3D<T> triple(const rsVector3D<T>& a, const rsVector3D<T>& b, const rsVec
 {
   dot(cross(a, b), c); 
 }
+// rename to rsTripleProduct, maybe move into class - rule: those functions that make sense for 
+// n-dimenstional vectors are defined outside the class and those that make sense only for a 
+// particular dimenstionality are defined inside the class (as static functions). reason: those
+// that make sense for any vector can be used in generic code that doesn't care about the 
+// dimensionality such as in rsParametricCurve
 
 /** Returns the determinant of the matrix that results from writing the 3 given vectors as columns
 into a 3x3 matrix. If this determinant is 0, the 3 vectors are linearly dependent, i.e. one can be 

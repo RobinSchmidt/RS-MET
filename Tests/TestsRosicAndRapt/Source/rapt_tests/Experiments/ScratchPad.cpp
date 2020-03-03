@@ -1635,9 +1635,9 @@ public:
   TVec getPosition(TScl t) const { return f(t);  }
 
   /** Returns the velocity vector on the curve for the given value of the parameter t. The velocity
-  is given by the derivative of the position vector with respect to the parameter t. The velocity 
-  vector is tangent to the curve. This function uses a central difference approximation to compute 
-  the derivative. You need to specify the stepsize for this numerical approximation by h.  */
+  is given by the derivative of the position vector with respect to the time parameter t. The 
+  velocity vector is tangent to the curve. This function uses a central difference approximation 
+  with stepsize h to numerically compute the derivative.  */
   TVec getVelocity(TScl t, TScl h) const { return NumDiff::derivative(f, t, h); }
 
   /** Returns the acceleration vector at the given value of parameter t. This is the second 
@@ -1649,15 +1649,23 @@ public:
   TVec getAcceleration(TScl t, TScl h) const { return NumDiff::secondDerivative(f, t, h); }
 
 
+
+  TVec getJerk(TScl t, TScl h) const { return NumDiff::thirdDerivative(f, t, h); }
+  // not yet tested
+  // the 3rd derivative is used in some formulas for 3D curves - do we need any higher derivatives?
+  // do they have names, too? 
+  // yes 4th derivative is calle jounce or snap:
+  // https://en.wikipedia.org/wiki/Jounce/
+  // jerk is also called jolt:
+  // https://en.wikipedia.org/wiki/Jerk_(physics)
+  // after snap comes crackle and pop
+  // https://en.wikipedia.org/wiki/Crackle_(physics)
+  // https://en.wikipedia.org/wiki/Pop_(physics)
+
+  /** Joint computation of position, velocity and acceleration to save some function evaluations 
+  compared to evaluating them all separately (reduces the number of evaluations from 6 to 3). */
   void getPosVelAcc(TScl t, TScl h, TVec* p, TVec* v, TVec* a)
-  {
-    // todo: compute position, velocity and acceleration at the same time - this avoids 3 of 6
-    // evaluations of f compared to computing them separately (p: 1 eval, v: 2 evals, a: 3 evals)
-  }
-
-  // todo: getJerk, functions to compute arc-length, reparametrization via arc-length (this should
-  // return an array (std::vector<TScl>) of mapping point (t, phi(t)) or (t, phi^-1(t))
-
+  { NumDiff::derivativesUpTo2(f, t, h, f0, f1, f2); }
 
 
 
@@ -1665,27 +1673,29 @@ public:
   in t. */
   std::vector<TScl> getArcLengthFunction(const std::vector<TScl>& t)
   {
-    // under construction - needs test
-
+    // create and fill s-array with values of length-elements ds:
     size_t N = t.size();
     std::vector<TScl> s(N);
-
-    // fill s-array with values of length-elements ds:
     s[0] = TScl(0);
-    TVec v0 = getPosition(t[0]);
-    for(size_t n = 1; n < N; n++) 
-    {
-      TVec v1 = getPosition(t[n]);
-      TVec dv = v1 - v0;
-      TScl ds = rsNorm(dv);
-      s[n] = ds;
-      v0 = v1;
-    }
+    TVec v0 = getPosition(t[0]);     // tail of the current vector
+    for(size_t n = 1; n < N; n++) {  // loop over length elements
+      TVec v1 = getPosition(t[n]);   // tip of the current vector
+      TVec dv = v1 - v0;             // connection between tip and tail
+      s[n] = rsNorm(dv);             // distance ds between tip and tail (ds, integrand)
+      v0 = v1; }                     // old tip becomes new tail
 
-    // numerically integrate:
-    rsArrayTools::cumulativeSum(&s[0], &s[0], (int) N); // todo: use trapezoidal rule later
+    // numerically integrate the ds values to obtain s itself:
+    rsArrayTools::cumulativeSum(&s[0], &s[0], (int) N); 
+    // todo: use trapezoidal rule later - or maybe even better methods
+    // don't we need the t-array here?
+
     return s;
   }
+  // needs test
+  // -maybe to improve accuracy, we could approximate the lenght element ds not by a straight line
+  //  but by a cubic spline segment? for this, we would need (numeric approximations of) the 
+  //  derivative (dx/dt, dy/dt, ...) - then we could create Hermite spline segments or a natural
+  //  cubic spline through the points
   // maybe have a function that computes the arc-length for a particular value of t - but document
   // that it should not be used in a loop to compute the arc-length function for multiple values of
   // ascending t-values (because that would result in a "Shlemiel-the-painter" algo)
@@ -1704,7 +1714,23 @@ public:
     resampleNonUniformLinear(&s[0], &t[0], N, &r[0], &t2[0], N);
     return t2;
   }
+  // maybe rename to getNaturalParameterMap or getArcLengthToParamMap, getNaturalReParametrization
+  // getReparametrizationMap
   // needs test
+
+  /** Returns the total length of the curve between parameter values t0 and t1 (using stepsize h 
+  for the numeric approximation of the derivative and N sample points for the numeric approximation 
+  of the integral). */
+  TScl getTotalLength(TScl t0, TScl t1, TScl h, int N)
+  {
+    using Vec = std::vector<TScl>;
+    Vec t = rsRangeLinear(t0, t1, N);
+    Vec s = getArcLengthFunction(t);
+    return s[N-1];
+  }
+  // needs test
+  // todo: implement it in a way that doesn't need temporary arrays
+
 
   //std::vector<TScl> getArcLengthFunction(TScl t0, TScl t1, int numPoints);
   //std::vector<TScl> getArcLengthParameterMapping(TScl t0, TScl t1, int numPoints);
@@ -1755,7 +1781,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  // \name Local Fetaures
+  // \name Local Features
   // for all these functions, you need to pass a parameter value t and a numeric approximation 
   // stepsize h
 
@@ -1786,6 +1812,10 @@ public:
     Vec2 v = getVelocity(t, h);
     return Vec2(-v.y, v.x);
   }
+  // maybe getNormal should return a normalized vector already - it should be consistent with 
+  // getNormal of 3D curves and maybe even of surfaces (whether it's normalized or not and/or
+  // if there's an extra function for normalized ones)..maybe have a boolean parameter "normalized"
+  // that defaults to true
 
   /** Results the unit-length normal to the curve. */
   Vec2 getUnitNormal(T t, T h)
@@ -1810,6 +1840,16 @@ public:
   // maybe rename to getEvolute
 
   // todo: implement the angle function
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Global Features
+
+  /*
+  T getTotalCurvature(T t0, T t1, T h, int N)
+  {
+
+  }
+  */
 
 
   // global features: total length (in an interval t = a..b) winding number around a given point
@@ -1855,6 +1895,79 @@ class rsParametricCurve3D : public rsParametricCurve<T, rsVector3D<T>>
 {
 
 public:
+
+  using Vec3 = rsVector3D<T>;
+
+
+  /*
+  Vec3 getUnitTangent(T t, T h)
+  {
+    Vec3 v = getVelocity(t, h);
+    return v / v.getEuclideanNorm();
+  }
+  */
+
+  Vec3 getNormal(T t, T h, bool normalized = true)
+  {
+    Vec3 a = getAcceleration(t, h);
+    if(normalized)
+      return a / a.getEuclideanNorm();
+    else
+      return a;
+  }
+  // maybe rename to getNormal - does the non-normalized version have any significance? i mean, yes
+  // it's the acceleration, but geometrically?
+
+  Vec3 getBinormal(T t, T h)
+  {
+    Vec3 v = getVelocity(t, h);
+    Vec3 n = getNormal(t, h, true);
+    Vec3 b = cross(v, n);    // (1) pg. 96
+    return b;                // the binormal vector is not normalized because v is not normalized!
+  }
+
+
+  void getFrenetFrame(T t, T h, Vec3* v, Vec3* n, Vec3* b)
+  {
+    getPosVelAcc(t, h, b, v, n);  // b is used as dummy here, t is done - it's the velocity
+    n.normalize();                // n is normalized acceleration
+    b = cross(v, n);              // binormal is cross-product between tangent and normal
+  }
+  // maybe it's useful, if this function would also return the position p
+  // todo: figure out the usual conventions, which of these vectors are supposed to be normalized
+  // and which don't
+  // maybe we should not normalize anything - in an animation, it would perhaps make sense to have
+  // longer vectors for stronger "effects" like acceleration
+
+
+
+  T getCurvature(T t, T h)
+  {
+    Vec3 v = getVelocity(t, h);
+    Vec3 a = getAcceleration(t, h);
+    d = rsNorm(cross(v, a));          // in 2D, it's det(v, a) - is this the same?
+    T s = v.getEuclideanNorm();       // speed
+    return d / (s*s*s);               // (1), Eq. 8.5
+  }
+  // needs test
+  // check, how the norm of the cross-product relates to the determinant that is used in the 
+  // formula for 2D curves - if the norm of the cross-prodcut equals the 3x3 determinant (up to 
+  // sign), we may actually also define a signed curvature here, too via the determinant - would
+  // that make any sense?
+
+  T getTorsion(T t, T h)
+  {
+    // todo: compute them jointly:
+    Vec3 v  = getVelocity(t, h);
+    Vec3 a  = getAcceleration(t, h);
+    Vec3 j  = getJerk(t, h);
+    Vec3 va = cross(v, a); 
+    return dot(va, j) / va.getSquaredEuclideanNorm();  // (1), Eq. 8.5
+  }
+  // how does this relate to other formulas for the torsion like Eq 8.3
+  // tau = -dotProduct(timeDerivative(binormal), normal)
+
+  // todo: getTorsionAndCurvature - joint computation - avoid recomputations
 
 
   // todo getNormal, getBinormal, getFrenetFrame/FrenetTrihedron (begleitendes Dreibein)

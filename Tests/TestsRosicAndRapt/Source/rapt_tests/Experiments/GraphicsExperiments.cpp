@@ -1754,8 +1754,10 @@ void fractal()
 // https://math.stackexchange.com/questions/1398218/determine-coordinates-for-mandelbrot-set-zoom/1398356
 
 
-void differentialGeometry()
+void parametricCurve2D()
 {
+  
+
   // todo: turn into unit test
 
   // some shorthands:
@@ -1829,18 +1831,24 @@ void differentialGeometry()
   // do this in class rsNumericIntegrator - generally move the free functions for numeric calculus
   // into these classes - maybe also drag in the ODE solver from the GNUPlotCPP repo
 
-  
   VecN t2 = c.getArcLengthParametrization(0.0, 1.0, (int) t.size());
 
-  rsPlotVectorsXY(t, t2); // should be the identity - and indeed, it is! :-)
+  //rsPlotVectorsXY(t, t2); // should be the identity - and indeed, it is! :-)
   // try something where the curve is traversed by changing speed such as
   // cos(tau*t^2)
 
   // as examples for 3D curves, draw helix, trefoil knot, 3D Lissaous
-
+  // plot some curves and their evolutes
 
   int dummy = 0;
 }
+
+void differentialGeometry()
+{
+  parametricCurve2D();
+}
+
+
 
 
 
