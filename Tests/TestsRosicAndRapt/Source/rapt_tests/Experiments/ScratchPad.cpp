@@ -1603,6 +1603,9 @@ void derivativesUpTo3(F f, T x, T h, T* f0, T* f1, T* f2, T* f3)
 // x-2*h,x-h,x,x+h,x+2*h - this should be good enough for differential geometry for graphical 
 // purposes
 
+
+
+
 /** A class to represent n-dimensional parametric curves. */
 
 template<class TScl, class TVec>  // scalar (for the parameter) and vector (for output) types
@@ -1627,111 +1630,100 @@ public:
   // \name Inquiry
 
   TVec getPosition(TScl t)             const { return f(t);  }
-  TVec getVelocity(TScl t, TScl h)     const { return ND::derivative(f, t, h); }
-  TVec getAcceleration(TScl t, TScl h) const { return ND::secondDerivative(f, t, h); }
+  TVec getVelocity(TScl t, TScl h)     const { return NumDiff::derivative(f, t, h); }
+  TVec getAcceleration(TScl t, TScl h) const { return NumDiff::secondDerivative(f, t, h); }
 
   // todo: getJerk, functions to compute arc-length, reparametrization via arc-length
 
 
 protected:
 
-  using Func = std::function<TVec(TScl)>;
-  using ND   = rsNumericDifferentiator<TScl, TVec, Func>;
+  using Func    = std::function<TVec(TScl)>;
+  using NumDiff = rsNumericDifferentiator<TScl, TVec, Func>;
 
   Func f;
 
   // have optional members for (analytic computation of or specialized numerical algos) velocity, 
   // acceleration
+  // make it possible to pass functions for derivatives (velocity, acceleration) and fall back to 
+  // numeric derivatives only if nothing is passed
 
 };
 
 
 
+/** Partial specialization of rsParametricCurve for 2D curves. Still templatized on the scalar 
+type, i.e. the type to represent real numbers (the vector type is the chosen as just a vector of 
+the used scalar type). 
+
+References:
+  (1) Edmund Weitz: Elementare Differentialgeometrie (nicht nur) für Informatiker
+
+*/
+
+//template<class T>
 template<class T>
-class rsCurve2D
+class rsParametricCurve2D : public rsParametricCurve<T, rsVector2D<T>>
 {
 
 public:
 
   using Vec2 = rsVector2D<T>;
 
+
   //-----------------------------------------------------------------------------------------------
-  // \name Static functions (maybe get rid)
+  // \name Setup
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Local Fetaures
+  // for all these functions, you need to pass a parameter value t and a numeric approximation 
+  // stepsize h
+
+
+  /** Computes the curvature. */
+  T getCurvature(T t, T h)
+  {
+    Vec2 v = getVelocity(t, h);
+    Vec2 a = getAcceleration(t, h);
+    T d = det(v, a);
+    T s = v.getEuclideanNorm();  // speed
+    return d / (s*s*s);          // (1), Eq. 4.2
+  }
+
+  /** Computes the radius of curvature which is the reciprocal of the curvature itself. */
+  T getRadiusOfCurvature(T t, T h) // is this the correct name?
+  {
+    return T(1) / getCurvature(t, h);
+  }
+
+  // todo: getOsculatingCircle, getNormal,
+  // with getOsculatingCircle, we will be able to ocmpute evolutes (which are the trajectories of
+  // the center of the osculating circle)
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Static functions (maybe get rid - or maybe not - maybe for optimized code, it's better
+  // to directly operate on pointers rather than returning stack-created vector objects)
 
   /** Numerically computes the tangent vector to a 2D curve given by r(t) = (x(t),y(t)) at the given
   parameter t. */
   template<class F>
-  static void velocity(F fx, F fy, T t, T* vx, T* vy)
+  static void velocity(F fx, F fy, T t, T* vx, T* vy, T h)
   {
-    T h = 1.e-8;  // use something better
     *vx = derivative(fx, t, h);
     *vy = derivative(fy, t, h);
   }
 
   template<class F>
-  static void acceleration(F fx, F fy, T t, T* ax, T* ay)
+  static void acceleration(F fx, F fy, T t, T* ax, T* ay, T h)
   {
-    T h = 1.e-8;  // use something better
     *ax = secondDerivative(fx, t, h);
     *ay = secondDerivative(fy, t, h);
   }
 
-  //-----------------------------------------------------------------------------------------------
-  // \name Setup
-
-  template<class F>
-  void setFunction(const F& newFunc) { f = newFunc; }
-
-
-  //-----------------------------------------------------------------------------------------------
-  // \name Inquiry
-
-  Vec2 getPosition(T t)          const { return f(t);  }
-
-  Vec2 getVelocity(T t, T h)     const { return nd.derivative(f, t, h); }
-
-  Vec2 getAcceleration(T t, T h) const { return nd.secondDerivative(f, t, h); }
-
-
-  //Vec2 getJerk(T t, T h) const { return nd.thirdDerivative(f, t, h); }
-
 
 protected:
-
-  // maybe make a baseclas rsParametricCurve that factors out all functions that apply to 2D and 
-  // 3D curves, such as velocity - classes rsParametricCurve2D/3D have only additionla functions 
-  // that apply specifically to the respective type of curve - it may need to have the vector-type
-  // as template parameter
-
-
-  using nd = rsNumericDifferentiator<T, T, std::function<Vec2(T)>>;
-
-  std::function<Vec2(T)> f;
-  //T h;
-
-  // maybe make it possible to pass functions for derivatives and fall back to numeric derivatives
-  // only if nothing is passed
-
-  // F fx, fy;
-  // T h;
-
-  // maybe have the functions fx,fy as members and have functions like
-  // getPosition(T t, T* x, T* y), getVelocity(T t, T* vx, T* vy), 
-  // getAcceleration(T t, T* vx, T* vy), getCurvature, getOsculatingCircle, ...
-
-
-  // todo: avoid code-duplication - factor out functions 
-  // T firstDerivative(F f, T t, T h), T secondDerivative(F f, T t, T h), 
-  // may be part of rsNumericalCalculus
-
-  // todo: acceleration, jerk
-
-  // maybe have functions with higher accuracy, using stencils with more points to approximate the 
-  // derivatives
-
-  // todo: curvature / 2nd derivative, center of osculating circle, normal vector, same things for
-  // 3D curves - there also the binormal vector
-
 
 };
 
@@ -1750,12 +1742,13 @@ public:
   }
 
 
+  //  for 3D curves - there also the binormal vector
 
 
 
 
-
-  // todo acceleration, normal, binormal, frenetFrame/frenetTrihedron (begleitendes Dreibein)
+  // todo getNormal, getBinormal, getFrenetFrame/FrenetTrihedron (begleitendes Dreibein)
+  // updateFrenetSerret(curvature, torsion, *x, *y, *z), getCurvature(t, h), getTorsion(t, h),
 
 };
 

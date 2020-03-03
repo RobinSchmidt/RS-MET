@@ -124,6 +124,19 @@ inline rsVector2D<T> operator*(const T &r, const rsVector2D<T> &p)
   return tmp;
 }
 
+/** Returns the determinant of the matrix that results from writing the 2 given vectors as columns
+into a 2x2 matrix. If this determinant is 0, the 2 vectors are collinear, i.e. one is a scalar 
+multiple of the other, i.e. they are both on the same line through the origin. */
+// not yet tested
+template<class T>
+T det(const rsVector2D<T>& a, const rsVector2D<T>& b)
+{
+  return a.x * b.y - a.y * b.x;  // verify formula
+}
+// maybe move as static function into class
+
+// todo: dot, cross
+
 //=================================================================================================
 
 /** Class for representing 3-dimensional vectors. 

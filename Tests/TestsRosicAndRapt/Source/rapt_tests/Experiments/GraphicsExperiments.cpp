@@ -1758,92 +1758,36 @@ void differentialGeometry()
 {
   // todo: turn into unit test
 
-  using Vec2     = rsVector2D<double>;            // 2D vectors
-  using Func_1_2 = std::function<Vec2(double)>;   // functions from 1D scalars to 2D vectors
-  //rsNumericDifferentiator<double, Vec2, Func_1_2> nd_1_2; // not yet used here
+  // some shorthands:
+  using Vec2     = rsVector2D<double>;           // 2D vectors
+  using Func_1_2 = std::function<Vec2(double)>;  // functions from 1D scalars to 2D vectors
+  using Curve2D  = rsParametricCurve2D<double>;  // class to represent 2D curves
 
-  /*
+  // create and set up the curve object:
+  Curve2D c;
+  Func_1_2 r = [&](double t) { return Vec2(cos(2*PI*t), sin(2*PI*t)); }; 
+  c.setPositionFunction(r);
+    // The curve r(t) = (cos(2*pi*t), sin(2*pi*t)) defines a unit circle. This is not a natural 
+    // parametrization (a.k.a. parametrization by arc length): the circle is not traversed at unit 
+    // speed but at speed 2*pi, so it makes a full revolution, when the parameter t traverses an 
+    // interval of unit length, for example from 0 to 1.
 
-  rsCurve2D<double> crv2;
-  rsCurve3D crv3;
+  // compute velocities at t = 0, 0.25, 0.5, 0.75:
+  double h;   // approximation stepsize for numeric derivatives
+  Vec2 v;     // velocity
+  h = 1.e-4;  // not yet verified, if this value is best
+  v = c.getVelocity(0.0,  h);  // ( 0,     2*pi)
+  v = c.getVelocity(0.25, h);  // (-2*pi,  0   )
+  v = c.getVelocity(0.5,  h);  // ( 0,    -2*pi)
+  v = c.getVelocity(0.75, h);  // ( 2*pi,  0   )
 
-  // maybe it's inconvenient 
-  std::function<double(double)> fx, fy, fz;
-  fx = [&](double t) { return cos(2*PI*t); };
-  fy = [&](double t) { return sin(2*PI*t); };
-  fz = [&](double t) { return t; };
-
-  // test velocity computation:
-  double vx, vy, vz;
-  crv2.velocity(fx, fy, 0.0,  &vx, &vy); // (0,    +2pi)
-  crv2.velocity(fx, fy, 0.25, &vx, &vy); // (-2pi,  0)
-  crv2.velocity(fx, fy, 0.5,  &vx, &vy); // (0,    -2pi)
-  crv2.velocity(fx, fy, 0.75, &vx, &vy); // (+2pi,  0)
-
-  crv3.velocity(fx, fy, fz, 0.0, &vx, &vy, &vz); // (0, +2pi, 1)
-  crv3.velocity(fx, fy, fz, 0.5, &vx, &vy, &vz); // (0, -2pi, 1) - vz is imprecise - why? the 0.5 offset/asymmetry?
-
-  // test acceleration computation:
-  double ax, ay, az;
-  crv2.acceleration(fx, fy, 0.0,  &ax, &ay);
-  crv2.acceleration(fx, fy, 0.25, &ax, &ay);
-  crv2.acceleration(fx, fy, 0.5,  &ax, &ay);
-  crv2.acceleration(fx, fy, 0.75, &ax, &ay);
-  // todo: compare with analytic results
-  */
-
-
-
-
-  std::function<Vec2(double)> r2;  // function from scalars to 2D vectors
-  r2 = [&](double t) { return Vec2(cos(2*PI*t), sin(2*PI*t)); }; // unit circle
-
-  double h = 1.e-3;
-  Vec2 v2;
-  Vec2 a2;
-
-
-  /*
-  // obsolete:
-  // velocities:
-  v2 = nd_1_2.derivative(r2, 0.0,  h);  // ( 0,     2*pi)
-  v2 = nd_1_2.derivative(r2, 0.25, h);  // (-2*pi,  0   )
-  v2 = nd_1_2.derivative(r2, 0.5,  h);  // ( 0,    -2*pi)
-  v2 = nd_1_2.derivative(r2, 0.75, h);  // ( 2*pi,  0   )
-
-  // accelerations:
+  // compute accelerations:
+  Vec2 a;      // acceleration
   h = 1.e-4;
-  a2 = nd_1_2.secondDerivative(r2, 0.0,  h);   // (-4*pi^2,  0     )
-  a2 = nd_1_2.secondDerivative(r2, 0.25, h);   // ( 0,      -4*pi^2)
-  a2 = nd_1_2.secondDerivative(r2, 0.5,  h);   // ( 4*pi^2,  0     )
-  a2 = nd_1_2.secondDerivative(r2, 0.75, h);   // ( 0,       4*pi^2)
-  */
-
-
-
-
-
-
-  // now with the class (remove code above, if done):
-
-  using Curve2D = rsParametricCurve<double, Vec2>;
-
-  Curve2D c2;
-  c2.setPositionFunction(r2);
-
-  // velocities:
-  h  = 1.e-4; // not yet verified, if this value is best
-  v2 = c2.getVelocity(0.0,  h);  // ( 0,     2*pi)
-  v2 = c2.getVelocity(0.25, h);  // (-2*pi,  0   )
-  v2 = c2.getVelocity(0.5,  h);  // ( 0,    -2*pi)
-  v2 = c2.getVelocity(0.75, h);  // ( 2*pi,  0   )
-
-  // accelerations:
-  h  = 1.e-4;
-  a2 = c2.getAcceleration(0.0,  h);  // (-4*pi^2,  0     )
-  a2 = c2.getAcceleration(0.25, h);  // ( 0,      -4*pi^2)
-  a2 = c2.getAcceleration(0.5,  h);  // ( 4*pi^2,  0     )
-  a2 = c2.getAcceleration(0.75, h);  // ( 0,       4*pi^2)
+  a = c.getAcceleration(0.0,  h);  // (-4*pi^2,  0     )
+  a = c.getAcceleration(0.25, h);  // ( 0,      -4*pi^2)
+  a = c.getAcceleration(0.5,  h);  // ( 4*pi^2,  0     )
+  a = c.getAcceleration(0.75, h);  // ( 0,       4*pi^2)
   // 4*p^2 = 39.4784176043574
   // for the acceleration, we obtain the best numerical approximation of 7 correct decimal digits
   // with = 1.e-4:
@@ -1861,8 +1805,12 @@ void differentialGeometry()
   //  v(0),v(1/4),v(1/2),v(3/4),\
   //  a(0),a(1/4),a(1/2),a(3/4)              # print
 
-
-
+  double k;  // curvature "kappa"
+  k = c.getCurvature(0.0,  h);
+  k = c.getCurvature(0.25, h);
+  k = c.getCurvature(0.5,  h);
+  k = c.getCurvature(0.75, h);
+  // todo: figure out optimal value of h, such that the numerical error is minimal
 
 
   // as examples for 3D curves, draw helix, trefoil knot, 3D Lissaous
