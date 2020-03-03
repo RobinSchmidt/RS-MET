@@ -1759,12 +1759,12 @@ void differentialGeometry()
   // todo: turn into unit test
 
   using Vec2     = rsVector2D<double>;            // 2D vectors
-  using Func_1_2 = std::function<Vec2(double)>;   // functions form 1D scalars to 2D vectors
+  using Func_1_2 = std::function<Vec2(double)>;   // functions from 1D scalars to 2D vectors
+  //rsNumericDifferentiator<double, Vec2, Func_1_2> nd_1_2; // not yet used here
 
-  rsNumericDifferentiator<double, Vec2, Func_1_2> nd_1_2;
+  /*
 
-
-  rsCurve2D crv2;
+  rsCurve2D<double> crv2;
   rsCurve3D crv3;
 
   // maybe it's inconvenient 
@@ -1790,27 +1790,60 @@ void differentialGeometry()
   crv2.acceleration(fx, fy, 0.5,  &ax, &ay);
   crv2.acceleration(fx, fy, 0.75, &ax, &ay);
   // todo: compare with analytic results
+  */
+
+
 
 
   std::function<Vec2(double)> r2;  // function from scalars to 2D vectors
   r2 = [&](double t) { return Vec2(cos(2*PI*t), sin(2*PI*t)); }; // unit circle
 
   double h = 1.e-3;
-
-  // velocities:
   Vec2 v2;
+  Vec2 a2;
+
+
+  /*
+  // obsolete:
+  // velocities:
   v2 = nd_1_2.derivative(r2, 0.0,  h);  // ( 0,     2*pi)
   v2 = nd_1_2.derivative(r2, 0.25, h);  // (-2*pi,  0   )
   v2 = nd_1_2.derivative(r2, 0.5,  h);  // ( 0,    -2*pi)
   v2 = nd_1_2.derivative(r2, 0.75, h);  // ( 2*pi,  0   )
 
   // accelerations:
-  Vec2 a2;
   h = 1.e-4;
   a2 = nd_1_2.secondDerivative(r2, 0.0,  h);   // (-4*pi^2,  0     )
   a2 = nd_1_2.secondDerivative(r2, 0.25, h);   // ( 0,      -4*pi^2)
   a2 = nd_1_2.secondDerivative(r2, 0.5,  h);   // ( 4*pi^2,  0     )
   a2 = nd_1_2.secondDerivative(r2, 0.75, h);   // ( 0,       4*pi^2)
+  */
+
+
+
+
+
+
+  // now with the class (remove code above, if done):
+
+  using Curve2D = rsParametricCurve<double, Vec2>;
+
+  Curve2D c2;
+  c2.setPositionFunction(r2);
+
+  // velocities:
+  h  = 1.e-4; // not yet verified, if this value is best
+  v2 = c2.getVelocity(0.0,  h);  // ( 0,     2*pi)
+  v2 = c2.getVelocity(0.25, h);  // (-2*pi,  0   )
+  v2 = c2.getVelocity(0.5,  h);  // ( 0,    -2*pi)
+  v2 = c2.getVelocity(0.75, h);  // ( 2*pi,  0   )
+
+  // accelerations:
+  h  = 1.e-4;
+  a2 = c2.getAcceleration(0.0,  h);  // (-4*pi^2,  0     )
+  a2 = c2.getAcceleration(0.25, h);  // ( 0,      -4*pi^2)
+  a2 = c2.getAcceleration(0.5,  h);  // ( 4*pi^2,  0     )
+  a2 = c2.getAcceleration(0.75, h);  // ( 0,       4*pi^2)
   // 4*p^2 = 39.4784176043574
   // for the acceleration, we obtain the best numerical approximation of 7 correct decimal digits
   // with = 1.e-4:
@@ -1827,6 +1860,8 @@ void differentialGeometry()
   //  a = v.diff(t)                          # acceleration
   //  v(0),v(1/4),v(1/2),v(3/4),\
   //  a(0),a(1/4),a(1/2),a(3/4)              # print
+
+
 
 
 

@@ -1593,27 +1593,74 @@ void derivativesUpTo3(F f, T x, T h, T* f0, T* f1, T* f2, T* f3)
 // f_xx = (-1*f[i-2]+16*f[i-1]-30*f[i+0]+16*f[i+1]-1*f[i+2])/(12*1.0*h**2)
 // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
 
-
 // move these into rsNumericDifferentiator, make functions that compute all derivatives up to a 
 // given order - avoid re-evaluation of f(x+h) etc - evaluate them once and use different linear
 // combinations to form approximations of the derivatives
-
 
 // third derivative needs a 4-point-stencil at least
 
 // maybe make a function that computes derivatives up to order 3 with a 5-point stencil using 
 // x-2*h,x-h,x,x+h,x+2*h - this should be good enough for differential geometry for graphical 
-// purposes 
+// purposes
+
+/** A class to represent n-dimensional parametric curves. */
+
+template<class TScl, class TVec>  // scalar (for the parameter) and vector (for output) types
+class rsParametricCurve
+{
+
+public:
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  /** Sets the function that computes a position vector from a parameter value. You must pass a 
+  function object that takes a scalar of type TScl as input and returns a vector of type TVec. The
+  function object must be assignable to a std::function...(lambda-functions, function-pointers or 
+  std::function objects will work, i think) */
+  template<class F>
+  void setPositionFunction(const F& newFunc) { f = newFunc; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  TVec getPosition(TScl t)             const { return f(t);  }
+  TVec getVelocity(TScl t, TScl h)     const { return ND::derivative(f, t, h); }
+  TVec getAcceleration(TScl t, TScl h) const { return ND::secondDerivative(f, t, h); }
+
+  // todo: getJerk, functions to compute arc-length, reparametrization via arc-length
+
+
+protected:
+
+  using Func = std::function<TVec(TScl)>;
+  using ND   = rsNumericDifferentiator<TScl, TVec, Func>;
+
+  Func f;
+
+  // have optional members for (analytic computation of or specialized numerical algos) velocity, 
+  // acceleration
+
+};
+
+
+
+template<class T>
 class rsCurve2D
 {
 
 public:
 
+  using Vec2 = rsVector2D<T>;
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Static functions (maybe get rid)
+
   /** Numerically computes the tangent vector to a 2D curve given by r(t) = (x(t),y(t)) at the given
   parameter t. */
-  template<class T, class F>
+  template<class F>
   static void velocity(F fx, F fy, T t, T* vx, T* vy)
   {
     T h = 1.e-8;  // use something better
@@ -1621,7 +1668,7 @@ public:
     *vy = derivative(fy, t, h);
   }
 
-  template<class T, class F>
+  template<class F>
   static void acceleration(F fx, F fy, T t, T* ax, T* ay)
   {
     T h = 1.e-8;  // use something better
@@ -1629,8 +1676,41 @@ public:
     *ay = secondDerivative(fy, t, h);
   }
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  template<class F>
+  void setFunction(const F& newFunc) { f = newFunc; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  Vec2 getPosition(T t)          const { return f(t);  }
+
+  Vec2 getVelocity(T t, T h)     const { return nd.derivative(f, t, h); }
+
+  Vec2 getAcceleration(T t, T h) const { return nd.secondDerivative(f, t, h); }
+
+
+  //Vec2 getJerk(T t, T h) const { return nd.thirdDerivative(f, t, h); }
+
 
 protected:
+
+  // maybe make a baseclas rsParametricCurve that factors out all functions that apply to 2D and 
+  // 3D curves, such as velocity - classes rsParametricCurve2D/3D have only additionla functions 
+  // that apply specifically to the respective type of curve - it may need to have the vector-type
+  // as template parameter
+
+
+  using nd = rsNumericDifferentiator<T, T, std::function<Vec2(T)>>;
+
+  std::function<Vec2(T)> f;
+  //T h;
+
+  // maybe make it possible to pass functions for derivatives and fall back to numeric derivatives
+  // only if nothing is passed
 
   // F fx, fy;
   // T h;

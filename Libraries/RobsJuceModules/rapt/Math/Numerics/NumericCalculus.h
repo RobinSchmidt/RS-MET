@@ -89,7 +89,7 @@ public:
   //template<class T, class F>
   static Ty secondDerivative(F f, Tx x, Tx h)
   {
-    return (f(x-h) - Tx(2)*f(x) + f(x+h)) / (h*h);  // verify formula
+    return (f(x-h) - Tx(2)*f(x) + f(x+h)) / (h*h);
     // the Tx(2) may seem weird because it multiplies the result f(x) which is of type Ty, so one 
     // might expect Ty(2) here. However, if Tx is a scalar type and Ty is a vector type, this is
     // totally appropriate.
