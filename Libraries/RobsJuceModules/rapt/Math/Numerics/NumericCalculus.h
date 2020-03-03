@@ -67,7 +67,11 @@ datapoints. The meaning of the 3 template parameters is:
  parametric equation of 2D curves. They depend on a scalar parameter t (which is interpreted as 
  time) and produce a 2D vector as output for each t. In this case, the meaning of the first 
  derivative would be the velocity vector and the second derivative would be the acceleration 
- vector. */
+ vector. 
+ 
+ References:
+   https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
+   http://web.media.mit.edu/~crtaylor/calculator.html  */
 
 template<class Tx, class Ty, class F>
 class rsNumericDifferentiator
@@ -86,7 +90,6 @@ public:
   }
 
   /** Numeric approximation of the second derivative. 2nd order accurate in h. */
-  //template<class T, class F>
   static Ty secondDerivative(const F& f, const Tx& x, const Tx& h)
   {
     return (f(x-h) - Tx(2)*f(x) + f(x+h)) / (h*h);
@@ -94,7 +97,65 @@ public:
     // might expect Ty(2) here. However, if Tx is a scalar type and Ty is a vector type, this is
     // totally appropriate.
   }
-  // https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
+
+  /** Numeric approximation of the third derivative. 3rd order accurate in h (i think - verify). */
+  static Ty thirdDerivative(const F& f, const Tx& x, const Tx& h)
+  {
+    return (-f(x-Tx(2)*h) + Tx(2)*f(x-h) - Tx(2)*f(x+h) + f(x+Tx(2)*h)) / (Tx(2)*h*h*h);
+  }
+  // needs test
+  // coeffs found by:
+  // http://web.media.mit.edu/~crtaylor/calculator.html
+  // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
+
+
+
+  /** Computes 0th, 1st and 2nd derivative of f at x. This is more efficient than using the 
+  separate functions. It uses 3 function evaluations whereas you would need 6, if you would call
+  the function itself and derivative (2 evaluation) and secondDerivative (3 evaluations). */
+  static void derivativesUpTo2(const F& f, const Tx& x, const Tx& h, Ty* f0, Ty* f1, Ty* f2)
+  {
+    Ty fp = f(x+h);  // "plus"
+    Ty fm = f(x-h);  // "minus"
+    *f0 = f(x);
+    *f1 = (fp - fm) / (Tx(2)*h);
+    *f2 = (fm - Tx(2)*(*f0) + fp) / (h*h);
+  }
+  // needs test
+
+  /** Computes 0th, 1st and 2nd derivative of f at x. Uses a 5-point stencil: -2,-1,0,1,2 */
+  static void derivativesUpTo3(const F& f, const Tx& x, const Tx& h, 
+    Ty* f0, Ty* f1, Ty* f2, Ty* f3)
+  {
+    // evaluate function at stencil points:
+    Ty fm2 = f(x-2*h);  // "minus 2", etc...
+    Ty fm1 = f(x - h);
+    Ty fc  = f(x    );  // centered ..get rid - assign to *f0 directly
+    Ty fp1 = f(x + h);
+    Ty fp2 = f(x+2*h);
+
+    // form linear combinations to approximate derivatives:
+    *f0 =                     fc;
+    *f1 = ( fm2 -  8*fm1         +  8*fp1 - fp2) / (12*h);
+    *f2 = (-fm2 + 16*fm1 - 30*fc + 16*fp1 - fp2) / (12*h*h);
+    *f3 = (-fm2 +  2*fm1         -  2*fp1 + fp2) / (2*h*h*h);
+  }
+  // needs test
+  // stencil: -2,-1,0,1,2
+  // f_x = (1*f[i-2]-8*f[i-1]+0*f[i+0]+8*f[i+1]-1*f[i+2])/(12*1.0*h**1)
+  // f_xx = (-1*f[i-2]+16*f[i-1]-30*f[i+0]+16*f[i+1]-1*f[i+2])/(12*1.0*h**2)
+  // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
+
+
+  // make a similar function to compute up to 3rd derivative - uses 5 function evaluations
+  // (use stencil: -2,-1,0,+1,+2)
+
+  // maybe have more accurate formulas - formulas can be produced by
+  // http://web.media.mit.edu/~crtaylor/calculator.html
+  // ..but i have also implemented this stencil coeff computation myself somewhere in the 
+  // experiments - clean that code up and move it over here, too
+
+
 
 
   //-----------------------------------------------------------------------------------------------

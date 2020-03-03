@@ -1587,11 +1587,12 @@ void derivativesUpTo3(F f, T x, T h, T* f0, T* f1, T* f2, T* f3)
   *f2 = (-fm2 + 16*fm1 - 30*fc + 16*fp1 - fp2) / (12*h*h);
   *f3 = (-fm2 +  2*fm1         -  2*fp1 + fp2) / (2*h*h*h);
 }
-// needs tes
+// needs test
 // stencil: -2,-1,0,1,2
 // f_x = (1*f[i-2]-8*f[i-1]+0*f[i+0]+8*f[i+1]-1*f[i+2])/(12*1.0*h**1)
 // f_xx = (-1*f[i-2]+16*f[i-1]-30*f[i+0]+16*f[i+1]-1*f[i+2])/(12*1.0*h**2)
 // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
+
 
 // move these into rsNumericDifferentiator, make functions that compute all derivatives up to a 
 // given order - avoid re-evaluation of f(x+h) etc - evaluate them once and use different linear
@@ -1629,12 +1630,35 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  TVec getPosition(TScl t)             const { return f(t);  }
-  TVec getVelocity(TScl t, TScl h)     const { return NumDiff::derivative(f, t, h); }
+  /** Returns the position vector on the curve for the given value of the parameter t. The 
+  parameter may be interpreted as time. */
+  TVec getPosition(TScl t) const { return f(t);  }
+
+  /** Returns the velocity vector on the curve for the given value of the parameter t. The velocity
+  is given by the derivative of the position vector with respect to the parameter t. The velocity 
+  vector is tangent to the curve. This function uses a central difference approximation to compute 
+  the derivative. You need to specify the stepsize for this numerical approximation by h.  */
+  TVec getVelocity(TScl t, TScl h) const { return NumDiff::derivative(f, t, h); }
+
+  /** Returns the acceleration vector at the given value of parameter t. This is the second 
+  derivative of the position vector with respect to t. Iff the curve is parametrized by arc-length,
+  i.e. the speed is always unity, the acceleration vector will be orthogonal to the velocity 
+  vector. That means, the acceleration will only change the direction but not the speed of the 
+  imagined moving point. But this really only holds form parametrizations by arc-length, aka 
+  natural parametrizations. */
   TVec getAcceleration(TScl t, TScl h) const { return NumDiff::secondDerivative(f, t, h); }
+
+
+  void getPosVelAcc(TScl t, TScl h, TVec* p, TVec* v, TVec* a)
+  {
+    // todo: compute position, velocity and acceleration at the same time - this avoids 3 of 6
+    // evaluations of f compared to computing them separately (p: 1 eval, v: 2 evals, a: 3 evals)
+  }
 
   // todo: getJerk, functions to compute arc-length, reparametrization via arc-length (this should
   // return an array (std::vector<TScl>) of mapping point (t, phi(t)) or (t, phi^-1(t))
+
+
 
 
   /** Returns an array with values of the arc-lengths corresponding to the parameter values given 
@@ -1730,6 +1754,8 @@ public:
     T s = v.getEuclideanNorm();  // speed
     return d / (s*s*s);          // (1), Eq. 4.2
   }
+  // can be optimized: velocity and acceleration can be computed in a combined function - avoids
+  // 2 of otherwise 5 evaluations of f
 
   /** Computes the (signed) radius of curvature which is the reciprocal of the curvature itself. */
   T getRadiusOfCurvature(T t, T h) // is this the correct name?
@@ -1766,6 +1792,7 @@ public:
     T r = getRadiusOfCurvature(t, h);
     return p + r*n;  // is this correct?
   }
+  // can be optimized for production code
   // maybe rename to getEvolute
 
   // todo: implement the angle function
