@@ -37,6 +37,18 @@ public:
   }
 
   //-----------------------------------------------------------------------------------------------
+  /** \name Manipulations */
+
+  /** Normalizes this vector to unit length.  */
+  void normalize()
+  {
+    T s = T(1) / getEuclideanNorm();
+    x *= s;
+    y *= s;
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
   /** Adds two vectors. */

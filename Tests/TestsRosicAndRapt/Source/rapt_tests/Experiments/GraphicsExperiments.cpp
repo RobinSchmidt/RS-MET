@@ -1813,6 +1813,14 @@ void differentialGeometry()
   // todo: figure out optimal value of h, such that the numerical error is minimal
 
 
+  // re-use v for a generic vector - now we compute the center of the osculating circle
+  v = c.getOsculatingCircleCenter(0.0,  h);
+  v = c.getOsculatingCircleCenter(0.25, h);
+  v = c.getOsculatingCircleCenter(0.5,  h);
+  v = c.getOsculatingCircleCenter(0.75, h);
+  // should always be 0 - seems to work
+  
+
   // as examples for 3D curves, draw helix, trefoil knot, 3D Lissaous
 
 

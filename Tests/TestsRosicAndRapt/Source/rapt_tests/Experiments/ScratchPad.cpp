@@ -1680,8 +1680,7 @@ public:
   // for all these functions, you need to pass a parameter value t and a numeric approximation 
   // stepsize h
 
-
-  /** Computes the curvature. */
+  /** Computes the (signed) curvature. */
   T getCurvature(T t, T h)
   {
     Vec2 v = getVelocity(t, h);
@@ -1691,15 +1690,43 @@ public:
     return d / (s*s*s);          // (1), Eq. 4.2
   }
 
-  /** Computes the radius of curvature which is the reciprocal of the curvature itself. */
+  /** Computes the (signed) radius of curvature which is the reciprocal of the curvature itself. */
   T getRadiusOfCurvature(T t, T h) // is this the correct name?
   {
     return T(1) / getCurvature(t, h);
   }
 
-  // todo: getOsculatingCircle, getNormal,
-  // with getOsculatingCircle, we will be able to ocmpute evolutes (which are the trajectories of
-  // the center of the osculating circle)
+  /** Returns the normal to the curve. The normal is at right angle to the velocity vector and 
+  points to the left, as seen from a point that traverses the curve. The normal vector returned 
+  here is not normalized to unit length (it will have a length given by the instantaneous 
+  speed). */
+  Vec2 getNormal(T t, T h)
+  {
+    Vec2 v = getVelocity(t, h);
+    return Vec2(-v.y, v.x);
+  }
+
+  /** Results the unit-length normal to the curve. */
+  Vec2 getUnitNormal(T t, T h)
+  {
+    Vec2 n = getNormal(t, h);
+    n.normalize();
+    return n;
+  }
+
+  /** Computes the center of the osculating circle. This is the circle that best approximates the 
+  curve at any given point - it will be tangent to the curve at that point and have the same 
+  curvature. As a point traces out a curve, the center of the osculating circle traces out another
+  curve which is called the evolute to the curve. */
+  Vec2 getOsculatingCircleCenter(T t, T h)
+  {
+    Vec2 p = getPosition(t);
+    Vec2 n = getUnitNormal(t, h);
+    T r = getRadiusOfCurvature(t, h);
+    return p + r*n;  // is this correct?
+  }
+  // maybe rename to getEvolute
+
 
 
   //-----------------------------------------------------------------------------------------------
