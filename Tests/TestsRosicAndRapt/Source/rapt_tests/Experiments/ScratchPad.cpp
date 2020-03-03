@@ -1691,6 +1691,20 @@ public:
   // ascending t-values (because that would result in a "Shlemiel-the-painter" algo)
   // this should use a generic integrate(Functor f, T a, T b, int numPoints) function
 
+  /** Returns an array of values of t from t0 to t1, such that the arc-length between successive 
+  points of the curve for successive array-values of the parameter t is equal */
+  std::vector<TScl> getArcLengthParametrization(TScl t0, TScl t1, int N)
+  {
+    using Vec = std::vector<TScl>;
+    Vec  t = rsRangeLinear(t0, t1, N);      // equally spaced values of raw parameter t
+    Vec  s = getArcLengthFunction(t);       // arc-length as function of raw parameter t
+    TScl L = s[N-1];                        // total length of curve between t0 and t1
+    Vec  r = rsRangeLinear(TScl(0), L, N);  // equally spaced values from 0..L
+    Vec  t2(N);                             // new, modified array of time-stamps
+    resampleNonUniformLinear(&s[0], &t[0], N, &r[0], &t2[0], N);
+    return t2;
+  }
+  // needs test
 
   //std::vector<TScl> getArcLengthFunction(TScl t0, TScl t1, int numPoints);
   //std::vector<TScl> getArcLengthParameterMapping(TScl t0, TScl t1, int numPoints);

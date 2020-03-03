@@ -112,7 +112,8 @@ public:
 
   /** Computes 0th, 1st and 2nd derivative of f at x. This is more efficient than using the 
   separate functions. It uses 3 function evaluations whereas you would need 6, if you would call
-  the function itself and derivative (2 evaluation) and secondDerivative (3 evaluations). */
+  the function itself (1 evaluation) and derivative (2 evaluations) and secondDerivative (3 
+  evaluations). The result is exactly the same - it just avoids to compute all the values twice. */
   static void derivativesUpTo2(const F& f, const Tx& x, const Tx& h, Ty* f0, Ty* f1, Ty* f2)
   {
     Ty fp = f(x+h);  // "plus"
@@ -155,6 +156,10 @@ public:
   // ..but i have also implemented this stencil coeff computation myself somewhere in the 
   // experiments - clean that code up and move it over here, too
 
+  // todo: figure out the accuracy experimentally - maybe this can be done by testing, how high 
+  // degree a polynomial can be such that we still get perfect results - i think, a 5-point stencil
+  // should/ be perfect for polynomials up to 5th degree (it's based on an interpolating polynomial
+  // of degree 5)
 
 
 

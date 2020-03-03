@@ -1830,6 +1830,11 @@ void differentialGeometry()
   // into these classes - maybe also drag in the ODE solver from the GNUPlotCPP repo
 
   
+  VecN t2 = c.getArcLengthParametrization(0.0, 1.0, (int) t.size());
+
+  rsPlotVectorsXY(t, t2); // should be the identity - and indeed, it is! :-)
+  // try something where the curve is traversed by changing speed such as
+  // cos(tau*t^2)
 
   // as examples for 3D curves, draw helix, trefoil knot, 3D Lissaous
 
