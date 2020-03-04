@@ -9,7 +9,7 @@ class rsGeometricTransforms
 
 public:
 
-  /** Computes the perspective projection matrix in4D homogeneous coordinates. Corresponds to 
+  /** Computes the perspective projection matrix in 4D homogeneous coordinates. Corresponds to 
   vmath::frustum in OpenGL, but we use row-major indexing. see
   https://www.scratchapixel.com/lessons/3d-basic-rendering/perspective-and-orthographic-projection-matrix/opengl-perspective-projection-matrix 
   */

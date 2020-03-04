@@ -227,6 +227,9 @@ public:
   /** Divides this vector by scalar s. */
   rsVector3D<T>& operator/=(T s) { s = 1/s; x *= s; y *= s; z *= s; return *this; }
 
+  /** Compares two vectors for equality. */
+  bool operator==(const rsVector3D<T>& v) { return x == v.x && y == v.y && z == v.z; }
+
 
   // implement dot- and
 
@@ -270,11 +273,29 @@ rsVector3D<T> operator/(const rsVector3D<T>& v, T s)
   return rsVector3D<T>(v.x*s, v.y*s, v.z*s);
 }
 
+/** Multiplies a 3x3 matrix with a 3-vector and returns the result. */
+template<class T>
+rsVector3D<T> operator*(const T A[3][3], const rsVector3D<T>& v)
+{
+  rsVector3D<T> w;
+  w.x = A[0][0]*v.x + A[0][1]*v.y + A[0][2]*v.z;
+  w.y = A[1][0]*v.x + A[1][1]*v.y + A[1][2]*v.z;
+  w.z = A[2][0]*v.x + A[2][1]*v.y + A[2][2]*v.z;
+  return w;
+}
+
 /** Computes the dot-product between two 3D vectors a and b. */
 template<class T>
 T dot(const rsVector3D<T>& a, const rsVector3D<T>& b)
 {
   return a.x*b.x + a.y*b.y + a.z*b.z;
+}
+// rename to rsDot
+
+template<class T>
+T rsNorm(const rsVector3D<T>& a)
+{
+  return sqrt(dot(a, a));
 }
 
 /** Computes the cross-product between two 3D vectors a and b. Here, a is the left operand. That's 
