@@ -14,9 +14,11 @@ public:
   https://www.scratchapixel.com/lessons/3d-basic-rendering/perspective-and-orthographic-projection-matrix/opengl-perspective-projection-matrix 
   */
   static void perspectiveProjection(T A[4][4], T left, T right, T bottom, T top, T near, T far);
+  // rename to perspectiveFrustum - corresponds to OpenGL vmath::frustum
 
   /** Computes the orthographic projection matrix in 4D homogeneous coordinates.  */
   static void orthographicProjection(T A[4][4], T left, T right, T bottom, T top, T near, T far);
+  // rename to orthographicFrustum - corresponds to OpenGL vmath::ortho
 
   // todo: see also vmath::ortho in OpenGL - lets user specify the projection in terms of 3 vectors
   // eye, center, up
@@ -29,6 +31,8 @@ public:
 
 };
 // class needs tests
+// make the output matrix consistently the first or last argument - first might be better because 
+// it allows to have optional input parameters
 
 
 //=================================================================================================

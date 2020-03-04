@@ -26,8 +26,11 @@ void rsGeometricTransforms<T>::perspectiveProjection(T A[4][4], T l, T r, T b, T
   A[2][3] = -(2*f*n)/(f-n);
   A[3][3] = 0;
 }
-// formula from OpenGL Programming Guide, 9th Edition, page 853 (Appendix E), also for the 
-// function below:
+// not yet tested
+// formula from OpenGL Programming Guide, 9th Edition, page 853 (Appendix E), i think, it 
+// corresponds to vmath::frustum in OpenGL (see page 219)
+
+// also for the function below:
 
 template<class T>
 void rsGeometricTransforms<T>::orthographicProjection(T A[4][4], T l, T r, T b, T t, T n, T f)
@@ -52,6 +55,8 @@ void rsGeometricTransforms<T>::orthographicProjection(T A[4][4], T l, T r, T b, 
   A[2][3] = -(f+n)/(f-n);
   A[3][3] = 1;
 }
+// not yet tested
+// formula from OpenGL Programming Guide, 9th Edition, page 853 (Appendix E)
 
 template<class T>
 void rsGeometricTransforms<T>::rotationAroundAxis(T A[3][3], T a, T x, T y, T z)
@@ -99,6 +104,7 @@ void rsGeometricTransforms<T>::rotationAroundAxis(T A[3][3], T a, T x, T y, T z)
   A[2][1] = -c*y*z + s*x + y*z;
   A[2][2] = -(zz - 1)*c + zz;
 }
+// not yet tested
 
 /*
 formula derived from OpenGL Programming Guide, page 852 with the sage code:
@@ -134,10 +140,13 @@ void rsGeometricTransforms<T>::rotationMatrixFromTo(rsVector3D<T> u, rsVector3D<
   A[2][1] = a.y*a.z*c1 - s*a.x;
   A[2][2] = a.z*a.z*c1 + c; 
 }
+// has been tested to rotate every canonical basis vector (1,0,0),(0,1,0),(0,0,1) into every other
+// -> works as it should
 // Adapted from Weitz - Differentialgeometrie, page 103, but i had to change the argument order in 
 // the call to the cross-product with respect to Weitz's code - taking the code as is would have 
 // resulted in an opposite rotation - apparently some different conventions are in use (todo: 
-// figure out what exactly is going on)
+// figure out what exactly is going on - maybe it's a convention about how transformations work in 
+// applyMatrix in p5.js?)
 
 
 

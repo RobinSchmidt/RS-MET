@@ -1862,16 +1862,176 @@ bool testRotation3D()
   rsAssert(test);
   return test;
 }
-
 // todo: plot a 3D curve - we somehow need to apply a transformation to the 3D vector such that 
 // after the transformation, we can just discard the z-coordinate
 
 
+/*
+
+// y = A*x
+template<class T>
+void applyMatrix4D(const T A[4][4], const T x[4], T y[4])
+{
+  rsAssert(x != y, "Cannot be used in place" );
+  y[0] = A[0][0]*x[0] + A[0][1]*x[1] + A[0][2]*x[2] + A[0][3]*x[3];
+  y[1] = A[1][0]*x[0] + A[1][1]*x[1] + A[1][2]*x[2] + A[1][3]*x[3];
+  y[2] = A[2][0]*x[0] + A[2][1]*x[1] + A[2][2]*x[2] + A[2][3]*x[3];
+  y[3] = A[3][0]*x[0] + A[3][1]*x[1] + A[3][2]*x[2] + A[3][3]*x[3];
+}
+
+// C = A*B
+template<class T>
+void multiplyMatrices4D(const T A[4][4], const T B[4][4], T C[4][4])
+{
+  rsAssert(A != C && B != C, "Cannot be used in place" );
+  for(int i = 0; i < 4; i++) {
+    for(int j = 0; j < 4; j++) {
+      C[i][j] = T(0);
+      for(int k = 0; k < 4; k++)
+        C[i][j] += A[i][k] * B[k][j]; }}
+}
+
+template<class T>
+rsVector2D<T> project(const rsVector3D<T> v, const T A[4][4])
+{
+  T t1[4], t2[4];  // temporary homogeneous 4D vectors
+
+  // copy 3D input vector into homogeneous 4D vector:
+  t1[0] = v.x;   // x
+  t1[1] = v.y;   // y
+  t1[2] = v.z;   // z
+  t1[3] = T(1);  // w = 1
+
+  // apply homogeneous 4x4 matrix:
+  applyMatrix4D(A, t1, t2);
+
+  // extract x,y components and put into rsVector2D:
+  return rsVector2D<T>(t2[0], t2[1]);
+}
+// this is not optimized code!
+
+*/
+
+template<class TPix, class TVal>
+void plotParametricCurve3D(rsImage<TPix>& img, TPix color, 
+  const rsParametricCurve3D<TVal>& crv, const TVal A[4][4], TVal t0, TVal t1, int N)
+{
+  rsImagePainter<TPix, TVal, TVal> painter(&img);
+
+  TVal xMaxPixel = TVal(img.getWidth()  - 1);   // maximum x-coordinate in pixel coordinates
+  TVal yMaxPixel = TVal(img.getHeight() - 1);   // same for y-coordinate
+
+  std::vector<TVal> t = rsRangeLinear(t0, t1, N);
+    // todo: optionally re-map t to s to get an arc-length parametrization
+  for(int n = 0; n < N; n++) {
+    rsVector3D<TVal> v3 = crv.getPosition(t[n]);
+    rsVector2D<TVal> v2 = project(v3, A);
+
+    // todo: transform to pixel coordinates:
+    TVal px = rsLinToLin(v2.x, -1.0, +1.0, TVal(0), xMaxPixel);
+    TVal py = rsLinToLin(v2.y, -1.0, +1.0, yMaxPixel, TVal(0));
+    // -1..+1 comes from the OpenGL convention of "normalized device coordinates"
+    // https://learnopengl.com/Getting-started/Coordinate-Systems
+    // https://computergraphics.stackexchange.com/questions/1769/world-coordinates-normalised-device-coordinates-and-device-coordinates
+
+
+    painter.paintDot(px, py, color); }
+
+
+  /*
+  // this code would have to be used when we use a line-drawer:
+  // rename this function to plot..ViaDots, have a corresponding ...ViaLines function
+  rsVector3D<TVal> v3 = crv.getPosition(t[0]);
+  rsVector2D<TVal> start = project(v3, A), end;
+  for(int n = 1; n < N; n++)
+  {
+    v3    = crv.getPosition(t[n]);
+    end   = project(v3, A);
+    start = end;
+    drawer.drawLine(start, end);
+  }
+  */
+
+
+}
+// -maybe t0,t1 should be members of the rsParametricCurve class
+// -maybe have an option for re-parametrization by arc-length
+// -maybe optionally draw velocity and acceleration vectors...but not - that should be a separate
+//  function - and these vectors should be drawn only at some selected values of t
+
+#undef near // some silly header defines these as macros
+#undef far
+void plotCurve3D()
+{
+  // tests 3D curve plotting
+
+  // some shortcuts (maybe get rid, if they are used only once):
+  using Vec3     = rsVector3D<double>;           // 3D vectors
+  using Func_1_3 = std::function<Vec3(double)>;  // functions from 1D scalars to 3D vectors
+  using Curve3D  = rsParametricCurve3D<double>;  // class to represent 3D curves
+
+
+  // image parameters:
+  int w = 200;  // width
+  int h = 200;  // height
+
+  // drawing parameters:
+  float color = 1.f;  // brightness
+  int N = 1000;        // number of dots
+
+  // perspective parameters:
+  double left   = -2.0; 
+  double right  = +2.0; 
+  double bottom = -2.0; 
+  double top    = +2.0; 
+  double near   = -2.0; 
+  double far    = +2.0;
+  // how are they interpreted? can we find a more convenient parametrization? maybe via 3 vectors
+  // (eye, center, up) such as in OpenGL vmath::lookat, vmath::ortho (see OpenGL Prog. Guide, 
+  // pg 220)
+  // it seems, they do not contain any information
+  // see https://bartipan.net/vmath/doc/class_matrix4.html#a0b8035f3d1144444d6835cd60642009d
+  // https://bartipan.net/vmath/
+
+  // alternative perspective parameters (maybe make a boolean switch, which are used):
+  //Vec3 eye(   5, 5, 5);
+  //Vec3 center(0, 0, 0);
+  //Vec3 up(    0, 0, 1);
+
+
+  Vec3 eye(   0, 0, 2);
+  Vec3 center(0, 0, 0);
+  Vec3 up(    0, 1, 0);
+
+  // range of curve parameter t:
+  double t0 = 0.0;
+  double t1 = 0.9;
+
+
+
+  // create and set up the curve object:
+  Curve3D crv;
+  Func_1_3 r;
+  r = [&](double t) { return Vec3(cos(2*PI*t), sin(2*PI*t), t); }; // Helix
+  crv.setPositionFunction(r);
+
+  // create image and transformation matrix:
+  rsImageF img(w, h);
+  double A[4][4];
+  //rsGeometricTransforms<double>::orthographicProjection(A, left, right, bottom, top, near, far);
+  lookAtMatrix4D(A, eye, center, up); // maybe have an additional "zoom" parameter (scalar)
+  
+
+  // plot the curve and save result to image file:
+  plotParametricCurve3D(img, color, crv, A, t0, t1, N);
+  writeImageToFilePPM(img, "Curve3D.ppm");
+}
 
 void differentialGeometry()
 {
-  testRotation3D();
-  parametricCurve2D();
+  //testRotation3D();
+  //parametricCurve2D();
+  plotCurve3D();
 }
 
 

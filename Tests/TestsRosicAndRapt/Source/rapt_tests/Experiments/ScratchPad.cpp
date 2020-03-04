@@ -2005,6 +2005,160 @@ public:
 
 
 
+
+//=================================================================================================
+// coordinate transformations:
+
+// y = A*x
+template<class T>
+void applyMatrix4D(const T A[4][4], const T x[4], T y[4])
+{
+  rsAssert(x != y, "Cannot be used in place" );
+  y[0] = A[0][0]*x[0] + A[0][1]*x[1] + A[0][2]*x[2] + A[0][3]*x[3];
+  y[1] = A[1][0]*x[0] + A[1][1]*x[1] + A[1][2]*x[2] + A[1][3]*x[3];
+  y[2] = A[2][0]*x[0] + A[2][1]*x[1] + A[2][2]*x[2] + A[2][3]*x[3];
+  y[3] = A[3][0]*x[0] + A[3][1]*x[1] + A[3][2]*x[2] + A[3][3]*x[3];
+}
+
+// C = A*B
+template<class T>
+void multiplyMatrices4D(const T A[4][4], const T B[4][4], T C[4][4])
+{
+  rsAssert(A != C && B != C, "Cannot be used in place" );
+  for(int i = 0; i < 4; i++) {
+    for(int j = 0; j < 4; j++) {
+      C[i][j] = T(0);
+      for(int k = 0; k < 4; k++)
+        C[i][j] += A[i][k] * B[k][j]; }}
+}
+
+template<class T>
+void zeroMatrix4D(T A[4][4])
+{
+  for(int i = 0; i < 4; i++)
+    for(int j = 0; j < 4; j++)
+      A[j][i] = T(0);
+}
+
+template<class T>
+void identityMatrix4D(T A[4][4])
+{
+  zeroMatrix4D(A);
+  for(int i = 0; i < 4; i++)
+    A[i][i] = T(1);
+}
+
+// translation
+template<class T>
+void translationMatrix4D(T A[4][4], T dx, T dy, T dz)
+{
+  identityMatrix4D(A);
+  A[0][3] = dx;
+  A[1][3] = dy;
+  A[2][3] = dz;
+  // 4th column is used for translations (4th row is for perspective stuff)
+}
+
+// scaling
+template<class T>
+void scalingMatrix4D(T A[4][4], T sx, T sy, T sz)
+{
+  identityMatrix4D(A);
+  A[0][0] = sx;
+  A[1][1] = sy;
+  A[2][2] = sz;
+}
+
+// rotation
+template<class T>
+void rotationMatrix4D(T A[4][4], T rx, T ry, T rz)
+{
+  identityMatrix4D(A);
+
+  // sines/cosines:
+  T sx = sin(rx); T cx = cos(rx);
+  T sy = sin(ry); T cy = cos(ry);
+  T sz = sin(rz); T cz = cos(rz);
+
+  // rotation matrix coeffs:
+  A[0][0] =  cz*cy;
+  A[0][1] = -sz*cx + cz*sy*sx;
+  A[0][2] =  sz*sx + cz*sy*cx;
+  A[1][0] =  sz*cy;
+  A[1][1] =  cz*cx + sz*sy*sx;
+  A[1][2] = -cz*sx + sz*sy*cx;
+  A[2][0] = -sy;
+  A[2][1] =  cy*sx;
+  A[2][2] =  cy*cx;
+
+}
+// code copied from rsRotationXYZ<T>::updateCoeffs - dirty! don't copy - re-use
+
+template<class T>
+void lookAtMatrix4D(T A[4][4],
+  const rsVector3D<T>& eye, const rsVector3D<T>& center, const rsVector3D<T>& up)
+{
+  rsVector3D<T> forward, side, up2;
+
+  // forward: direction we look into
+  forward = center - eye;
+  forward.normalize();
+
+  // Side = forward x up
+  side = cross(forward, up);
+  side.normalize();
+
+  // Recompute up as: up = side x forward  (...why?)
+  up2 = cross(side, forward);
+
+
+  T m[4][4];
+  identityMatrix4D(m);
+
+  m[0][0] = side.x;
+  m[0][1] = side.y;
+  m[0][2] = side.z;
+
+  m[1][0] = up2.x;
+  m[1][1] = up2.y;
+  m[1][2] = up2.z;
+
+  m[2][0] = -forward.x;
+  m[2][1] = -forward.y;
+  m[2][2] = -forward.z;
+
+  T t[4][4];
+  translationMatrix4D(t, -eye.x, -eye.y, -eye.z);
+
+  multiplyMatrices4D(m, t , A);  // A = m*t
+  int dummy = 0;
+}
+// code adapted from vmath.h
+
+
+
+
+
+template<class T>
+rsVector2D<T> project(const rsVector3D<T> v, const T A[4][4])
+{
+  T t1[4], t2[4];  // temporary homogeneous 4D vectors
+
+  // copy 3D input vector into homogeneous 4D vector:
+  t1[0] = v.x;   // x
+  t1[1] = v.y;   // y
+  t1[2] = v.z;   // z
+  t1[3] = T(1);  // w = 1
+
+  // apply homogeneous 4x4 matrix:
+  applyMatrix4D(A, t1, t2);
+
+  // extract x,y components and put into rsVector2D:
+  return rsVector2D<T>(t2[0], t2[1]);
+}
+// this is not optimized code!
+
+
 //=================================================================================================
 
 /** A new experimental colorspace that is similar to HSL or HSV but with a twist that hopefully

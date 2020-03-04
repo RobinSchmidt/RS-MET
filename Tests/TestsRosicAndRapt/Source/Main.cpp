@@ -284,7 +284,7 @@ int main(int argc, char* argv[])
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
   //ropewayAlgo();
-  peakPicker();
+//  peakPicker();
 
 
   // Delay:
