@@ -1996,6 +1996,12 @@ void plotCurve3D()
   // see https://bartipan.net/vmath/doc/class_matrix4.html#a0b8035f3d1144444d6835cd60642009d
   // https://bartipan.net/vmath/
 
+  // maybe also look at this:
+  // http://glm.g-truc.net/0.9.5/index.html
+  // because here:
+  // https://stackoverflow.com/questions/17250146/what-and-where-is-vmath-h
+  // someone says, vmath.h is buggy
+
   // alternative perspective parameters (maybe make a boolean switch, which are used):
   Vec3 eye(   1, 1, 0.75);
   Vec3 center(0, 0, 0);
@@ -2006,6 +2012,9 @@ void plotCurve3D()
   //Vec3 eye(   0, 0, 1);
   //Vec3 center(0, 0, 0);
   //Vec3 up(    0, 1, 0);
+  // todo: figure out, if the function lookAtMatrix4D does what it's supposed to do - darw a simple
+  // object for which it is obvious, how it should look like form varius points and see, if it 
+  // looks as expected
 
   double zoom = 0.375;
 
@@ -2019,11 +2028,26 @@ void plotCurve3D()
   Curve3D crv;
   Func_1_3 r;
 
-  //t0 = -2, t1 = 2; r = [&](double t) { return Vec3(cos(2*PI*t), sin(2*PI*t), t); }; // Helix
+
+  // Helix:
+  zoom = 0.375; t0 = -2, t1 = 2; N = 2400;
+  r = [&](double t) { return Vec3(cos(2*PI*t), sin(2*PI*t), t); }; 
 
   // Lissajous:
-  zoom = 0.6; t0 = 0; t1 = 1; N = 3200;
-  r = [&](double t) { return Vec3(cos(2*2*PI*t), sin(3*2*PI*t), cos(5*2*PI*t)); };
+  //zoom = 0.6; t0 = 0; t1 = 1; N = 3200;
+  //r = [&](double t) { return Vec3(cos(2*2*PI*t), sin(3*2*PI*t), cos(5*2*PI*t)); };
+
+  // Trefoil knot:
+  //zoom = 0.25; t0 = 0, t1 = 2*PI; N = 2400;
+  //r = [&](double t) { return Vec3(sin(t)+2*sin(2*t), cos(t)-2*cos(2*t), -sin(3*t)); }; 
+  // need other perspective
+
+  // todo: define a Hilbert curve as rsCurve2D object
+  // rsVector2D<T> hilbertPolygon(T t, int order); 
+  // t goes from 0 to 1, function should return point on Hilbert polygon of given order for given t
+
+
+
   // i think, we should really use the saturating mode
 
   crv.setPositionFunction(r);

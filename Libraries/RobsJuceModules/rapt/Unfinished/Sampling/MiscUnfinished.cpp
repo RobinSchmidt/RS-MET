@@ -1571,7 +1571,8 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
 //=================================================================================================
 
 template<class T>
-std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N)
+std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N, 
+  bool includeEdges)
 {
   // pre-process by "peak-shadowing" - smaller peaks near larger peaks are shadowed by falling 
   // under trails coming from the larger peaks - they do not survive as separate peaks (todo:
@@ -1598,7 +1599,7 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   //rsPlotArraysXY(N, t, x, &y[0], &yL[0], &yR[0], &yM[0]);  // for debug
 
   // find peak condidates in the yM array (in which the minor sub-peaks are already shadowed):
-  std::vector<int> pc = getPeakCandidates(&yM[0], N); // peak candidates
+  std::vector<int> peaks = getPeakCandidates(&yM[0], N); // peak candidates
 
 
   // todo: 
@@ -1607,17 +1608,40 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   // -integrate the edge handling code from testEnvelope2 inclduding the stick-out removal
 
 
+  /*
   if(promThresh == T(0) && promToMaxThresh == T(0) && promToHeightThresh == T(0))
     return pc;
   else {
     std::vector<T> pp(int(pc.size()));     // peak prominences
     peakProminences(&yM[0], N, &pc[0], int(pc.size()), &pp[0]);
     return getProminentPeaks(pc, pp, &yM[0], N); }
+    */
+
+
+
+
+  // optional prominence thresholding - this may remove some peaks:
+  if(promThresh != T(0) && promToMaxThresh != T(0) && promToHeightThresh != T(0))
+  {
+    std::vector<T> pp(int(peaks.size()));     // peak prominences
+    peakProminences(&yM[0], N, &peaks[0], int(peaks.size()), &pp[0]);
+    peaks = getProminentPeaks(peaks, pp, &yM[0], N);
     // should we really use the shadowed array yM or maybe the non-shadowed y here? maybe that 
     // should be user selectable? if we use yM, we compute the prominence with respect to the 
     // landscape that results from shadowing - this will reduce the peaks prominence values with 
     // resepct to what they would be when computed with respect to the original landscape
+  }
 
+
+  // optional edge-handling - this will add the endpoints if they are not already there and then 
+  // remove any stickouts that may have resulted from doing so:
+  if(includeEdges)
+  {
+    // ...
+  }
+
+
+  return peaks;
 }
 
 

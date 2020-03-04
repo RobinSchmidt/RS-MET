@@ -203,7 +203,7 @@ int main(int argc, char* argv[])
   //parametricCurve();
   //spirals();   // move to somewhere else...
   //fractal();
-  differentialGeometry();
+  //differentialGeometry();
 
   // just for fun:
   //groupString();
@@ -284,7 +284,7 @@ int main(int argc, char* argv[])
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
   //ropewayAlgo();
-//  peakPicker();
+  peakPicker();
 
 
   // Delay:

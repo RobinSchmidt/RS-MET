@@ -952,7 +952,7 @@ public:
   Returns an array of indices of the relevant peaks in the data. The time-stamps should be given
   in samples
   */
-  std::vector<int> getRelevantPeaks(const T *t, const T *x, int N);
+  std::vector<int> getRelevantPeaks(const T *t, const T *x, int N, bool includeEdges = true);
 
 
 
