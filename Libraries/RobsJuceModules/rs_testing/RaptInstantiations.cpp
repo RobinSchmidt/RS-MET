@@ -337,6 +337,7 @@ template void RAPT::rsBinomialDistribution(double*, int, double);
 
 template class RAPT::rsConicSection<float>;
 template class RAPT::rsRotationXY<double>;
+template class RAPT::rsGeometricTransforms<double>;
 
 template class RAPT::rsCoordinateMapper<float>;
 template class RAPT::rsCoordinateMapper<double>;

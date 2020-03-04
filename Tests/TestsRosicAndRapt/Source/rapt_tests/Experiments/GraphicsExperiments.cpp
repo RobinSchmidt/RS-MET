@@ -1843,70 +1843,34 @@ void parametricCurve2D()
   int dummy = 0;
 }
 
-
-template<class T>
-void rotationMatrixFromTo(rsVector3D<T> u, rsVector3D<T> v, T A[3][3])
+bool testRotation3D()
 {
-  // siehe Weitz, Differentialgeometrie, Seite 103
+  using GT = rsGeometricTransforms<double>;
 
-  // u and v must be normalized:
-  u.normalize();
-  v.normalize();
-  rsVector3D<T> a = cross(v, u);   // exchanged arguments with respect to Weitz's code
-  //rsVector3D<T> a = cross(u, v);   // move into class, call like u.cross(v)
-  T c  = dot(u, v);    // cos(u,v)  rename to rsDot
-  T s  = rsNorm(a);      // sin(u,v)
-  T c1 = T(1)-c;       // 1-cos(u,v)
-  a.normalize();
+  double A[3][3];  // transformation matrix
+  rsVector3D<double> u, v, w;
+  bool test = true;
 
-  A[0][0] = a.x*a.x*c1 + c;
-  A[0][1] = a.x*a.y*c1 + s*a.z;
-  A[0][2] = a.x*a.z*c1 - s*a.y;
+  // test to rotate all 3 unit vectors into all others:
+  u.set(1,0,0); v.set(0,1,0); GT::rotationMatrixFromTo(u, v, A); w = A*u; test &= w == v;
+  u.set(1,0,0); v.set(0,0,1); GT::rotationMatrixFromTo(u, v, A); w = A*u; test &= w == v;
+  u.set(0,1,0); v.set(1,0,0); GT::rotationMatrixFromTo(u, v, A); w = A*u; test &= w == v;
+  u.set(0,1,0); v.set(0,0,1); GT::rotationMatrixFromTo(u, v, A); w = A*u; test &= w == v;
+  u.set(0,0,1); v.set(1,0,0); GT::rotationMatrixFromTo(u, v, A); w = A*u; test &= w == v;
+  u.set(0,0,1); v.set(0,1,0); GT::rotationMatrixFromTo(u, v, A); w = A*u; test &= w == v;
 
-  A[1][0] = a.x*a.y*c1 - s*a.z;
-  A[1][1] = a.y*a.y*c1 + c;
-  A[1][2] = a.y*a.z*c1 + s*a.x;
-
-  A[2][0] = a.x*a.z*c1 + s*a.y;
-  A[2][1] = a.y*a.z*c1 - s*a.x;
-  A[2][2] = a.z*a.z*c1 + c; 
+  rsAssert(test);
+  return test;
 }
-// I had to change the argument order in the call to cross with respect to Weitz's code - taking 
-// the code as is would have resulted in an opposite rotation - apparently some different 
-// conventions are in use (todo: figure out what exactly is going on)
-// move to rsGeometricTransforms
-// needs test
+
+// todo: plot a 3D curve - we somehow need to apply a transformation to the 3D vector such that 
+// after the transformation, we can just discard the z-coordinate
+
+
 
 void differentialGeometry()
 {
-  // test: factor out, turn into unit test
-  double A[3][3];
-
-  using Vec3 = rsVector3D<double>;
-
-  rsVector3D<double> u(1,0,0), v(0,1,0), w;
-  rotationMatrixFromTo(u, v, A);
-  w = A * u;  // should result in v
-  bool test = w == v;
-
-  // test to rotate all 3 unit vectors into all others:
-  u.set(1,0,0); v.set(0,1,0); rotationMatrixFromTo(u, v, A); w = A * u; test &= w == v;
-  u.set(1,0,0); v.set(0,0,1); rotationMatrixFromTo(u, v, A); w = A * u; test &= w == v;
-  u.set(0,1,0); v.set(1,0,0); rotationMatrixFromTo(u, v, A); w = A * u; test &= w == v;
-  u.set(0,1,0); v.set(0,0,1); rotationMatrixFromTo(u, v, A); w = A * u; test &= w == v;
-  u.set(0,0,1); v.set(1,0,0); rotationMatrixFromTo(u, v, A); w = A * u; test &= w == v;
-  u.set(0,0,1); v.set(0,1,0); rotationMatrixFromTo(u, v, A); w = A * u; test &= w == v;
-
-  // ...fixed by exchanging arguments to cross-product
-
-  //rotationMatrixFromTo(v, u, A);
-  //w = applyMatrix(u, A); 
-  // this works - the matrix works the other way around than i thought, i.e. rotates into the
-  // opposite direction - maybe to fix it, we need to just change the order of the arguments
-  // to the cross-product inside the function
-
-
-
+  testRotation3D();
   parametricCurve2D();
 }
 

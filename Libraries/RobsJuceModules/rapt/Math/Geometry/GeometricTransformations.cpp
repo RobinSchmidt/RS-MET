@@ -1,6 +1,6 @@
 
 template<class T>
-void rsGeometricTransforms<T>::perspectiveProjection(T* A[4][4], T l, T r, T b, T t, T n, T f)
+void rsGeometricTransforms<T>::perspectiveProjection(T A[4][4], T l, T r, T b, T t, T n, T f)
 {
   // todo: precompute 1/(r-l), 1/(t-b), 1/(f-n) -> replace 3 divisions by multiplications
 
@@ -30,7 +30,7 @@ void rsGeometricTransforms<T>::perspectiveProjection(T* A[4][4], T l, T r, T b, 
 // function below:
 
 template<class T>
-void rsGeometricTransforms<T>::orthographicProjection(T* A[4][4], T l, T r, T b, T t, T n, T f)
+void rsGeometricTransforms<T>::orthographicProjection(T A[4][4], T l, T r, T b, T t, T n, T f)
 {
   A[0][0] = 2/(r-l);
   A[1][0] = 0;
@@ -54,7 +54,7 @@ void rsGeometricTransforms<T>::orthographicProjection(T* A[4][4], T l, T r, T b,
 }
 
 template<class T>
-void rsGeometricTransforms<T>::rotationAroundAxis(T* A[3][3], T a, T x, T y, T z)
+void rsGeometricTransforms<T>::rotationAroundAxis(T A[3][3], T a, T x, T y, T z)
 {
   T xx, xy, xz, yy, yz, zz, k;
 
@@ -92,7 +92,7 @@ void rsGeometricTransforms<T>::rotationAroundAxis(T* A[3][3], T a, T x, T y, T z
   A[0][2] = -c*x*z + s*y + x*z;
 
   A[1][0] = -c*x*y + x*y + s*z;
-  A[1][1]  -(yy - 1)*c + yy;
+  A[1][1] = -(yy - 1)*c + yy;
   A[1][2] = -c*y*z - s*x + y*z;
 
   A[2][0] = -c*x*z - s*y + x*z;
@@ -110,6 +110,35 @@ I  = matrix.identity(3)
 M  = u2 + c*(I-u2) + s*S
 M
 */
+
+template<class T>
+void rsGeometricTransforms<T>::rotationMatrixFromTo(rsVector3D<T> u, rsVector3D<T> v, T A[3][3])
+{
+  u.normalize();
+  v.normalize();
+  rsVector3D<T> a = cross(v, u); // exchanged arguments with respect to Weitz's code
+  T c  = dot(u, v);              // cos(u,v)
+  T s  = rsNorm(a);              // sin(u,v)
+  T c1 = T(1)-c;                 // 1-cos(u,v)
+  a.normalize();
+
+  A[0][0] = a.x*a.x*c1 + c;
+  A[0][1] = a.x*a.y*c1 + s*a.z;
+  A[0][2] = a.x*a.z*c1 - s*a.y;
+
+  A[1][0] = a.x*a.y*c1 - s*a.z;
+  A[1][1] = a.y*a.y*c1 + c;
+  A[1][2] = a.y*a.z*c1 + s*a.x;
+
+  A[2][0] = a.x*a.z*c1 + s*a.y;
+  A[2][1] = a.y*a.z*c1 - s*a.x;
+  A[2][2] = a.z*a.z*c1 + c; 
+}
+// Adapted from Weitz - Differentialgeometrie, page 103, but i had to change the argument order in 
+// the call to the cross-product with respect to Weitz's code - taking the code as is would have 
+// resulted in an opposite rotation - apparently some different conventions are in use (todo: 
+// figure out what exactly is going on)
+
 
 
 //=================================================================================================
