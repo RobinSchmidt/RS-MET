@@ -1493,39 +1493,6 @@ std::vector<double> testEnvelope1(const std::vector<double>& x)
 //  algorithm invariant with respect to mirroring the data (this invariance seems desirable)
 
 
-/** Returns index of the value in the x,y array that sticks out most over the connecting line 
-between the points (x[n0],y[n0]) and (x[n1],y[n1]) or -1 if none of the values sticks out. */
-template<class T>
-int getMaxStickOut(const T* x, const T* y, int N, int n0, int n1)
-{
-  rsAssert(n0 >= 0 );
-  rsAssert(n1 <  N );
-  rsAssert(n0 <  n1);
-  T a, b;
-  rsLine2D<T>::twoPointToExplicit(x[n0], y[n0], x[n1], y[n1], &a, &b);
-  T   dMax = T(0);
-  int nMax = -1;
-  for(int n = n0; n <= n1; n++) {
-    T yL = a * x[n] + b;   // y on the line
-    T d  = y[n] - yL;      // difference between y-value in array and y-value on the line
-    if(d > dMax) {
-      dMax = d;
-      nMax = n; }}
-  if(nMax == n0 || nMax == n1)
-    return -1;  // avoid stack overflow due to roundoff errors (happens with seed=8)
-  return nMax;
-}
-
-// p: peak indices, x: x-data, y: y-data (both length N), n0: left index, n1: right index
-template<class T>
-void removeStickOuts(std::vector<int>& p, const T* x, const T* y, int N, int n0, int n1)
-{
-  int ns = getMaxStickOut(x, y, N, n0, n1); // index of maximally sticking out data point
-  if(ns > -1) {
-    rsInsertSorted(p, ns);                  // insert ns into the p-array (sorted)
-    removeStickOuts(p, x, y, N, n0, ns);    // recursive call for left  section n0..ns
-    removeStickOuts(p, x, y, N, ns, n1); }  // recursive call for right section ns..n1
-}
 
 std::vector<double> testEnvelope2(const std::vector<double>& x)
 {
@@ -1545,31 +1512,9 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
 
   std::vector<int> peaks = pp.getRelevantPeaks(&t[0], &x[0], N, true); // peak indices
 
-  int M;
-
-  /*
-  // prepend/append first and last values if they are not already included:
-  if(peaks[0]      != 0  ) rsPrepend(peaks, 0);
-  if(rsLast(peaks) != N-1) rsAppend( peaks, N-1);
-
-
-  // remove stickouts at end and start:
-  M = int(peaks.size());
-  removeStickOuts(peaks, &t[0], &x[0], N, peaks[M-2], peaks[M-1]);
-  removeStickOuts(peaks, &t[0], &x[0], N, peaks[0],   peaks[1]  );
-  */
-
-
-
-  /*
-  // test: use stickout-removal algo *only*:
-  pi.clear();
-  pi.push_back(0);
-  pi.push_back(N-1);
-  removeStickOuts(pi, &t[0], &x[0], N, 0, N-1);
-  */
-
-
+  // todo: experiment with using the no-stickout criterion *only* starting with 0 and N-1 as the
+  // initial array of peaks - this would give the coarsest possible peak-array that sastisfies the
+  // no-stickout criterion
 
   // todo make sure, that the landscape never sticks out of the linearly connected peaks - i think,
   // this may happen only between the (just prepended) 0th peak and the 1st and/or the just 
@@ -1583,10 +1528,9 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   // itself to find relevant peaks
   // -> done -> seems to work -> move code into rsPeakPicker
 
-
   // todo: create a function that connects the peaks, plot this function together with the original x
 
-  M = int(peaks.size());
+  int M = int(peaks.size());
   std::vector<double> tp(M), xp(M);
   for(int m = 0; m < M; m++) 
   {
@@ -1602,16 +1546,15 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   plt.plot();
 
 
-
   // Notes:
   // -Can it happen that there are 3 peaks p1 > p2 > p3 at time instants t1 < t2 < t3 such that the 
   //  shadowing algorithm misses the intermediate peak p2 but p2 still sticks out from the line 
   //  that connects p1 and p3? I don't think so, because if the algo catches p1 and p3, p3 will lie
-  //  below the expoential shadow/trail emanating from p1 and that shadow will lie wholly under the
+  //  below the exponetial shadow/trail emanating from p1 and that shadow will lie wholly under the
   //  line connecting p1 and p3 - so p2 must lie under the shadow (because it was missed) and 
-  //  therefore even more so must lie under the line.
-
-
+  //  therefore even more so must lie under the line. This is because the expontial shadows are 
+  //  always convex - the function segment between any two points always lies *under* the line 
+  //  that directly connects the points
 
 
   std::vector<double> env(x.size());
@@ -1680,7 +1623,7 @@ void peakPicker()
 
   int N = 200;
 
-  x = rsRandomVector(N, -1.0, +1.0, 7);  // nice seeds: 4,6,7,8 - strange: 9
+  x = rsRandomVector(N, -1.0, +1.0, 37);  // nice seeds: 4,6,7,8,37,41,65 - strange: 5,9
   AT::cumulativeSum(&x[0], &x[0], N);
   //AT::cumulativeSum(&x[0], &x[0], N);
   //AT::add(&x[0], AT::minValue(&x[0], N), &x[0], N); // values hould be >= 0 for the shadower to work

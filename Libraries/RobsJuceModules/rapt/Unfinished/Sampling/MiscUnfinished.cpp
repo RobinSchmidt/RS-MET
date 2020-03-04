@@ -1566,21 +1566,19 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
   return f;
 }
 
-
-
 //=================================================================================================
-
 
 template<class T>
 std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N, 
   bool includeEdges)
 {
   // pre-process by "peak-shadowing" - smaller peaks near larger peaks are shadowed by falling 
-  // under trails coming from the larger peaks - they do not survive as separate peaks (todo:
+  // under shadows emanating from the larger peaks - they do not survive as separate peaks (todo:
   // factor out this step - maybe optionally skip it, if shadowWidthL/R are bot zero):
   using AT = RAPT::rsArrayTools;
   std::vector<T> y(N), yL(N), yR(N), yM(N);  
   // temporary buffers - later we may re-use one of y for yM - no extra buffer needed
+
   // lift up, such that minimum is = 0 (we need it to ensure it's >= 0, but it's more convenient to
   // just always do it):
   T minVal =  AT::minValue(&x[0], N);
@@ -1604,21 +1602,8 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
 
 
   // todo: 
-  // -optimize to avoid computing peak-trails when this functionality is not used, i.e. 
+  // -optimize to avoid computing peak-shadows when this functionality is not used, i.e. 
   //  shadowWidthL/R are both zero
-  // -integrate the edge handling code from testEnvelope2 inclduding the stick-out removal
-
-
-  /*
-  if(promThresh == T(0) && promToMaxThresh == T(0) && promToHeightThresh == T(0))
-    return pc;
-  else {
-    std::vector<T> pp(int(pc.size()));     // peak prominences
-    peakProminences(&yM[0], N, &pc[0], int(pc.size()), &pp[0]);
-    return getProminentPeaks(pc, pp, &yM[0], N); }
-    */
-
-
 
 
   // optional prominence thresholding - this may remove some peaks:
@@ -1632,7 +1617,6 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
     // landscape that results from shadowing - this will reduce the peaks prominence values with 
     // resepct to what they would be when computed with respect to the original landscape
   }
-
 
   // optional edge-handling - this will add the endpoints if they are not already there and then 
   // remove any stickouts that may have resulted from doing so:
@@ -1650,10 +1634,8 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
     removeStickOuts(peaks, t, x, N, peaks[M-2], peaks[M-1]);
   }
 
-
   return peaks;
 }
-
 
 template<class T>
 std::vector<int> rsPeakPicker<T>::getPeakCandidates(const T* x, int N) const
@@ -1755,7 +1737,7 @@ std::vector<T> rsPeakPicker<T>::preProcess(const T* x, int N) const
   ropeway(x, N, &y[0], numRopewayPasses);
   return y;
 }
-// obsolete
+// obsolete - but delete only after the ropeway algo has foun it's way to some other place
 
 template<class T>
 std::vector<int> rsPeakPicker<T>::getProminentPeaks(const std::vector<int>& peakCandidates,

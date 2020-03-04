@@ -897,7 +897,6 @@ class rsPeakPicker
 
 public:
 
-
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
@@ -909,7 +908,6 @@ public:
   "trails". It's one of the meachanisms to filter out irrelevant peaks. */
   void setShadowWidths(T widthL, T widthR)
   { shadowWidthL = widthL; shadowWidthR = widthR; }
-
 
   /** Sets an absolute threshold for the peak prominence. Peaks with prominences below this value
   will be discarded as irrelevant. A value of zero will effectively switch this thresholding off. 
@@ -946,21 +944,15 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  //void getPeaks(const T *x, const T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
 
-  /** ....Under construction.... not yet usable...
-  Returns an array of indices of the relevant peaks in the data. The time-stamps should be given
-  in samples
-  */
+  /** Returns an array of indices of the relevant peaks in the data. The time-stamps should be given
+  in samples. */
   std::vector<int> getRelevantPeaks(const T *t, const T *x, int N, bool includeEdges = true);
+  // maybe includeEdges should be a member
 
 
-
-
-
-
-  // move to internal algorithms:
-
+  //-----------------------------------------------------------------------------------------------
+  /** \name Internal Algorithms */
 
   /** Returns an array of indices where the datapoint x[i] is a candidate for a peak. A value is 
   considered a peak candidate, if it is greater than some number of left and right neighbor 
@@ -973,17 +965,11 @@ public:
   std::vector<int> getPeakCandidates(const std::vector<T>& x) const 
   { return getPeakCandidates(&x[0], (int) x.size()); }
 
-
   /** Returns true, iff data[index] is a peak candidate, i.e. >= some number of neighbors left and 
   right. */
   bool isPeakCandidate(int index, const T* data, int length) const;
     // maybe change order of parameters: data, length, index - that would be more consistent with 
-    // functions in rsArrayTools
-
-
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Internal Algorithms */
+    // functions in rsArrayTools - maybe move the function to rsArrayTools
 
   /** Alternatingly smoothes and takes the elementwise maximum with the original data. When the 
   input array looks like a mountain landscape then the output array will resemble ropeway cables 
@@ -1008,7 +994,6 @@ public:
   //static void peakSmoothabilities(const T *data, int numDataPoints, const int *peakIndices, 
   //  int numPeaks, T *smoothabilities);
 
-
   /** Convenience function for use with std::vector. */
   static std::vector<T> peakProminences(
     const std::vector<T>& data, const std::vector<int>& peakIndices)
@@ -1031,8 +1016,20 @@ protected:
   In general, it will return a subset of the indices given in peakCandidates. */
   std::vector<int> getProminentPeaks(const std::vector<int>& peakCandidates, 
     const std::vector<T>& peakProminences, const T* inputData, int inputDataLength);
+    // maybe let it operate in place, i.e. instead of returning a new array, remove the 
+    // non-prominent peaks directly from the input array - avoid allocation of another array
 
-  /** Add documentation....
+  /** Given an array of ordinate values x and corresponding abscissa values y (both of length N) 
+  and a std::vector of peak-indices p, this function makes sure that between peak-indices n0 and n1
+  there's no missed peak that sticks out of the conneting line between the points 
+  (x[p[n0]], y[p[n0]]) and (x[p[n1]], y[p[n1]]). If there are peaks found that stick out of the 
+  connecting line, the one that sticks out most will be added to peaks array - and then the process 
+  is recursively called for the section to the left (n0..new) and to the right (new..n1) of the 
+  just added new peak. After the whole process, it is ensured that the whole function y(x) lies 
+  wholly under the the envelope that is given by linearly connecting the peaks. Such stickouts may
+  arise when we add the edge values inside getRelevantPeaks (in the shadowing algo, they may not 
+  arise). Note that peak that sticks out most is not necessarily the highest, but the one whose 
+  height-difference to the *slanted* straight line is maximal.
   p: peak indices, x: x-data, y: y-data (both length N), n0: left index, n1: right index */
   void removeStickOuts(std::vector<int>& p, const T* x, const T* y, int N, int n0, int n1);
   // this should perhaps be called addStickOuts - they are added to the array of peaks - but they 
@@ -1043,26 +1040,20 @@ protected:
   int getMaxStickOut(const T* x, const T* y, int N, int n0, int n1);
 
 
-  //void preProcess(const T *x, T *y, int N);
-
 
   // pre-processing parameters:
   int numRopewayPasses = 0;      // number of passes through ropeway algo before searching candidates
    // obsolete - dont use that anymore
 
+  // half-height widths (i.e. the amount of time, it takes for the exponential shadow/trail to 
+  // decay down to 1/2 of its initial height) of the peak-shadows for left and right side of the 
+  // peak:
   T shadowWidthL = T(0);
   T shadowWidthR = T(0);
-
 
   // distance based criteria:
   int numLeftNeighbors  = 1;  // this is something similar to a min-distance criterion...
   int numRightNeighbors = 1;
-
-
-
-
-  // half-width of peak-shadowing. i.e. the amount of time, it takes for the exponential 
-  // shadow/trail to decay down to 1/2 - maybe use separate widths for left and right
 
   // prominence based criteria:
   T promThresh         = 0;    // absolute prominence threshold
@@ -1075,14 +1066,6 @@ protected:
   
   // the absolute threshold will make the algo select different peaks depending on overall scale
   // of the signal - that seems undesirable.
-
-
-  // smoothing based criteria:
-  //int resThresh = 0;           // smoothing resilience threshold
-
-  // post-processing parameters:
-  //bool noStickOut = true; // make sure that no peak sticks out of the linear interpolant going
-                          // through the found peaks
 
 };
 // todo: maybe apply an optional (gaussian?) smoothing filter before looking for peaks - maybe use
