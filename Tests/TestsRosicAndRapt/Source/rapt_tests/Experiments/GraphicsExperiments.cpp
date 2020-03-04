@@ -1917,6 +1917,7 @@ void plotParametricCurve3D(rsImage<TPix>& img, TPix color,
   const rsParametricCurve3D<TVal>& crv, const TVal A[4][4], TVal t0, TVal t1, int N)
 {
   rsImagePainter<TPix, TVal, TVal> painter(&img);
+  painter.setDeTwist(true);
 
   TVal xMaxPixel = TVal(img.getWidth()  - 1);   // maximum x-coordinate in pixel coordinates
   TVal yMaxPixel = TVal(img.getHeight() - 1);   // same for y-coordinate
@@ -1933,6 +1934,8 @@ void plotParametricCurve3D(rsImage<TPix>& img, TPix color,
     // -1..+1 comes from the OpenGL convention of "normalized device coordinates"
     // https://learnopengl.com/Getting-started/Coordinate-Systems
     // https://computergraphics.stackexchange.com/questions/1769/world-coordinates-normalised-device-coordinates-and-device-coordinates
+
+    // maybe use z-coordinate to sclae thickness and/or brightness to give some sense of 3D depth
 
 
     painter.paintDot(px, py, color); }
@@ -1972,12 +1975,12 @@ void plotCurve3D()
 
 
   // image parameters:
-  int w = 200;  // width
-  int h = 200;  // height
+  int w = 400;  // width
+  int h = 400;  // height
 
   // drawing parameters:
   float color = 1.f;  // brightness
-  int N = 1000;        // number of dots
+  int N = 1600;        // number of dots
 
   // perspective parameters:
   double left   = -2.0; 
@@ -1994,34 +1997,43 @@ void plotCurve3D()
   // https://bartipan.net/vmath/
 
   // alternative perspective parameters (maybe make a boolean switch, which are used):
-  //Vec3 eye(   5, 5, 5);
-  //Vec3 center(0, 0, 0);
-  //Vec3 up(    0, 0, 1);
-
-
-  Vec3 eye(   0, 0, 2);
+  Vec3 eye(   1, 1, 0.75);
   Vec3 center(0, 0, 0);
-  Vec3 up(    0, 1, 0);
+  Vec3 up(    0, 0, 1);
+
+  // default perspective (i think) - look down on the xy plane from z=1 with y-axis being the up
+  // direction:
+  //Vec3 eye(   0, 0, 1);
+  //Vec3 center(0, 0, 0);
+  //Vec3 up(    0, 1, 0);
+
+  double zoom = 0.375;
 
   // range of curve parameter t:
-  double t0 = 0.0;
-  double t1 = 0.9;
+  double t0 = -2.0;
+  double t1 = +2.0;
 
 
 
   // create and set up the curve object:
   Curve3D crv;
   Func_1_3 r;
-  r = [&](double t) { return Vec3(cos(2*PI*t), sin(2*PI*t), t); }; // Helix
+
+  //t0 = -2, t1 = 2; r = [&](double t) { return Vec3(cos(2*PI*t), sin(2*PI*t), t); }; // Helix
+
+  // Lissajous:
+  zoom = 0.6; t0 = 0; t1 = 1; N = 3200;
+  r = [&](double t) { return Vec3(cos(2*2*PI*t), sin(3*2*PI*t), cos(5*2*PI*t)); };
+  // i think, we should really use the saturating mode
+
   crv.setPositionFunction(r);
 
   // create image and transformation matrix:
   rsImageF img(w, h);
   double A[4][4];
   //rsGeometricTransforms<double>::orthographicProjection(A, left, right, bottom, top, near, far);
-  lookAtMatrix4D(A, eye, center, up); // maybe have an additional "zoom" parameter (scalar)
+  lookAtMatrix4D(A, eye, center, up, zoom); // maybe have an additional "zoom" parameter (scalar)
   
-
   // plot the curve and save result to image file:
   plotParametricCurve3D(img, color, crv, A, t0, t1, N);
   writeImageToFilePPM(img, "Curve3D.ppm");

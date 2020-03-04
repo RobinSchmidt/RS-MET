@@ -2096,7 +2096,7 @@ void rotationMatrix4D(T A[4][4], T rx, T ry, T rz)
 
 template<class T>
 void lookAtMatrix4D(T A[4][4],
-  const rsVector3D<T>& eye, const rsVector3D<T>& center, const rsVector3D<T>& up)
+  const rsVector3D<T>& eye, const rsVector3D<T>& center, const rsVector3D<T>& up, T zoom = T(1))
 {
   rsVector3D<T> forward, side, up2;
 
@@ -2115,17 +2115,17 @@ void lookAtMatrix4D(T A[4][4],
   T m[4][4];
   identityMatrix4D(m);
 
-  m[0][0] = side.x;
-  m[0][1] = side.y;
-  m[0][2] = side.z;
+  m[0][0] = zoom*side.x;
+  m[0][1] = zoom*side.y;
+  m[0][2] = zoom*side.z;
 
-  m[1][0] = up2.x;
-  m[1][1] = up2.y;
-  m[1][2] = up2.z;
+  m[1][0] = zoom*up2.x;
+  m[1][1] = zoom*up2.y;
+  m[1][2] = zoom*up2.z;
 
-  m[2][0] = -forward.x;
-  m[2][1] = -forward.y;
-  m[2][2] = -forward.z;
+  m[2][0] = -zoom*forward.x;
+  m[2][1] = -zoom*forward.y;
+  m[2][2] = -zoom*forward.z;
 
   T t[4][4];
   translationMatrix4D(t, -eye.x, -eye.y, -eye.z);
@@ -2134,6 +2134,11 @@ void lookAtMatrix4D(T A[4][4],
   int dummy = 0;
 }
 // code adapted from vmath.h
+// -compare results to what OpenGL's vmath::lookAt produces
+// -why do we need the zoom - should the length of the forward vector, i.e. the distance between
+//  eye and center determine the "closeness" - eye = (0,0,1) or eye = (0,0,2) produces the exact 
+//  same result. without zoom, we'll always have the same size of the frustum and some objects are
+//  not visible unless we zoom out...
 
 
 
