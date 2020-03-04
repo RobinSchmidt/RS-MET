@@ -1879,14 +1879,23 @@ void rotationMatrixFromTo(rsVector3D<T> u, rsVector3D<T> v, T A[3][3])
 
 void differentialGeometry()
 {
-  // test: factor out
+  // test: factor out, turn into unit test
   double A[3][3];
+
+  using Vec3 = rsVector3D<double>;
+
   rsVector3D<double> u(1,0,0), v(0,1,0), w;
   rotationMatrixFromTo(u, v, A);
   w = A * u;  // should result in v
-
   bool test = w == v;
 
+  // test to rotate all 3 unit vectors into all others:
+  u.set(1,0,0); v.set(0,1,0); rotationMatrixFromTo(u, v, A); w = A * u; test &= w == v;
+  u.set(1,0,0); v.set(0,0,1); rotationMatrixFromTo(u, v, A); w = A * u; test &= w == v;
+  u.set(0,1,0); v.set(1,0,0); rotationMatrixFromTo(u, v, A); w = A * u; test &= w == v;
+  u.set(0,1,0); v.set(0,0,1); rotationMatrixFromTo(u, v, A); w = A * u; test &= w == v;
+  u.set(0,0,1); v.set(1,0,0); rotationMatrixFromTo(u, v, A); w = A * u; test &= w == v;
+  u.set(0,0,1); v.set(0,1,0); rotationMatrixFromTo(u, v, A); w = A * u; test &= w == v;
 
   // ...fixed by exchanging arguments to cross-product
 

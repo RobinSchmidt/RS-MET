@@ -212,6 +212,9 @@ public:
     z *= s;
   }
 
+  /** Sets the 3 coordinates to new values */
+  void set(T newX, T newY, T newZ) { x = newX; y = newY, z = newZ; }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
