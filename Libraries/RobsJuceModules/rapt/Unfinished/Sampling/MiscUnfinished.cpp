@@ -1570,6 +1570,7 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
 
 //=================================================================================================
 
+
 template<class T>
 std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N, 
   bool includeEdges)
@@ -1637,7 +1638,16 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   // remove any stickouts that may have resulted from doing so:
   if(includeEdges)
   {
-    // ...
+    // left edge:
+    if(peaks[0] != 0)
+      rsPrepend(peaks, 0);
+    removeStickOuts(peaks, t, x, N, peaks[0], peaks[1]);
+
+    // right edge:
+    if(rsLast(peaks) != N-1) 
+      rsAppend(peaks, N-1);
+    int M = int(peaks.size());
+    removeStickOuts(peaks, t, x, N, peaks[M-2], peaks[M-1]);
   }
 
 
@@ -1745,6 +1755,7 @@ std::vector<T> rsPeakPicker<T>::preProcess(const T* x, int N) const
   ropeway(x, N, &y[0], numRopewayPasses);
   return y;
 }
+// obsolete
 
 template<class T>
 std::vector<int> rsPeakPicker<T>::getProminentPeaks(const std::vector<int>& peakCandidates,
@@ -1767,14 +1778,38 @@ std::vector<int> rsPeakPicker<T>::getProminentPeaks(const std::vector<int>& peak
   return promPeaks;
 }
 
-/*
 template<class T>
-void preProcess(const T* x, T* y, int N)
+void rsPeakPicker<T>::removeStickOuts(std::vector<int>& p, const T* x, const T* y, 
+  int N, int n0, int n1)
 {
-
-
+  int ns = getMaxStickOut(x, y, N, n0, n1); // index of maximally sticking out data point
+  if(ns > -1) {
+    rsInsertSorted(p, ns);                  // insert ns into the p-array (sorted)
+    removeStickOuts(p, x, y, N, n0, ns);    // recursive call for left  section n0..ns
+    removeStickOuts(p, x, y, N, ns, n1); }  // recursive call for right section ns..n1
 }
-*/
+
+template<class T>
+int rsPeakPicker<T>::getMaxStickOut(const T* x, const T* y, int N, int n0, int n1)
+{
+  rsAssert(n0 >= 0 );
+  rsAssert(n1 <  N );
+  rsAssert(n0 <  n1);
+  T a, b;
+  rsLine2D<T>::twoPointToExplicit(x[n0], y[n0], x[n1], y[n1], &a, &b);
+  T   dMax = T(0);
+  int nMax = -1;
+  for(int n = n0; n <= n1; n++) {
+    T yL = a * x[n] + b;   // y on the line
+    T d  = y[n] - yL;      // difference between y-value in array and y-value on the line
+    if(d > dMax) {
+      dMax = d;
+      nMax = n; }}
+  if(nMax == n0 || nMax == n1)
+    return -1;  // avoid stack overflow due to roundoff errors (happens with seed=8)
+  return nMax;
+}
+
 
 //=================================================================================================
 

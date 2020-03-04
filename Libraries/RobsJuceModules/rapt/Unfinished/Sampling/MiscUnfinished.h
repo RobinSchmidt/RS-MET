@@ -1032,6 +1032,16 @@ protected:
   std::vector<int> getProminentPeaks(const std::vector<int>& peakCandidates, 
     const std::vector<T>& peakProminences, const T* inputData, int inputDataLength);
 
+  /** Add documentation....
+  p: peak indices, x: x-data, y: y-data (both length N), n0: left index, n1: right index */
+  void removeStickOuts(std::vector<int>& p, const T* x, const T* y, int N, int n0, int n1);
+  // this should perhaps be called addStickOuts - they are added to the array of peaks - but they 
+  // are removed in the sense that after the process, there are no stickouts anymore
+
+  /** Returns index of the value in the x,y array that sticks out most over the connecting line 
+  between the points (x[n0],y[n0]) and (x[n1],y[n1]) or -1 if none of the values sticks out. */
+  int getMaxStickOut(const T* x, const T* y, int N, int n0, int n1);
+
 
   //void preProcess(const T *x, T *y, int N);
 

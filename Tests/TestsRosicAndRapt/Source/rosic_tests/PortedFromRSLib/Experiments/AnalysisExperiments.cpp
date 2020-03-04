@@ -1543,17 +1543,21 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   //pp.setRelativeProminenceThreshold(0.25);
   // maybe have separate thresholds for left and right
 
-  std::vector<int> pi = pp.getRelevantPeaks(&t[0], &x[0], N); // peak indices
+  std::vector<int> peaks = pp.getRelevantPeaks(&t[0], &x[0], N, true); // peak indices
 
+  int M;
+
+  /*
   // prepend/append first and last values if they are not already included:
-  if(pi[0]      != 0  ) rsPrepend(pi, 0);
-  if(rsLast(pi) != N-1) rsAppend( pi, N-1);
+  if(peaks[0]      != 0  ) rsPrepend(peaks, 0);
+  if(rsLast(peaks) != N-1) rsAppend( peaks, N-1);
 
 
   // remove stickouts at end and start:
-  int M = int(pi.size());
-  removeStickOuts(pi, &t[0], &x[0], N, pi[M-2], pi[M-1]);
-  removeStickOuts(pi, &t[0], &x[0], N, pi[0],   pi[1]  );
+  M = int(peaks.size());
+  removeStickOuts(peaks, &t[0], &x[0], N, peaks[M-2], peaks[M-1]);
+  removeStickOuts(peaks, &t[0], &x[0], N, peaks[0],   peaks[1]  );
+  */
 
 
 
@@ -1582,11 +1586,11 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
 
   // todo: create a function that connects the peaks, plot this function together with the original x
 
-  M = int(pi.size());
+  M = int(peaks.size());
   std::vector<double> tp(M), xp(M);
   for(int m = 0; m < M; m++) 
   {
-    int n = pi[m];
+    int n = peaks[m];
     tp[m] = t[n];
     xp[m] = x[n]; 
   }
