@@ -1511,7 +1511,7 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   int N = (int) x.size();
   std::vector<double> t = rsRangeLinear(0.0, double(N-1), N);
   rsPeakPicker<double> pp;
-
+  pp.setIncludeEdges(true);
   //pp.setShadowWidths(10, 10);
   pp.setShadowWidths(20, 20);
 
@@ -1524,11 +1524,18 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   pp.shadowRight(&t[0], &y[0], &yR[0], N);
 
 
-  std::vector<int> peaks = pp.getRelevantPeaks(&t[0], &x[0], N, true); // peak indices
+  std::vector<int> peaks = pp.getRelevantPeaks(&t[0], &x[0], N); // peak indices
 
   // todo: experiment with using the no-stickout criterion *only* starting with 0 and N-1 as the
   // initial array of peaks - this would give the coarsest possible peak-array that sastisfies the
   // no-stickout criterion
+  // -maybe we could provide a higher-level "sensitivity" parameter 
+  //  -if it's zero, we only get the peaks according the stickout criterion - the coarsest possible
+  //   envelope
+  //  -if it's 1 (or 100%), we get all peaks - the finest possible envelope
+  //  -maybe this should somehow crossfade the shadowWidths from the minimum values that would 
+  //   give the same result as the no-stickout criterion only and the maximum values that would 
+  //   give all peaks (but how do we compute these values? this seem to be nontrivial)
 
   // todo make sure, that the landscape never sticks out of the linearly connected peaks - i think,
   // this may happen only between the (just prepended) 0th peak and the 1st and/or the just 

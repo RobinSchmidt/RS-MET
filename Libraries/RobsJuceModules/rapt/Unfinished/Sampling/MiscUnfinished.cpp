@@ -1569,42 +1569,23 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
 //=================================================================================================
 
 template<class T>
-std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N, 
-  bool includeEdges)
+std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N)
 {
-  // Pre-process by optional peak-shadowing - smaller peaks that are near larger peaks are shadowed 
-  // by falling under "shadows" (exponential trails) emanating from the larger peaks - they do not 
-  // survive as separate peaks. After that, tmp1 will contain our pre-processed (i.e. possibly 
-  // shifted and shadowed) data that will be passed to further processing steps (the shifting is 
-  // needed to make the shadowing work (it expects inputs >= 0) and will not have any effect on 
-  // subsequent steps int the algo)
-  // ...oh - i think, we should always shift because the prominence-thresholding will also be
-  //  affected - it divides by peak-heights
-  // maybe factor out into getPreProcessedData function:
-  using AT = RAPT::rsArrayTools;
-  std::vector<T> tmp1, tmp2;
-  if(shadowWidthL == T(0) && shadowWidthR == T(0))
-    tmp1 = toVector(x, (size_t)N);
-  else {  
-    // maybe factor out into tmp1 = getShadowedData(const T* t, const T* x, int N)
-    tmp1.resize(N); tmp2.resize(N);
-    AT::shiftToMakeMinimumZero(&x[0], N, &tmp1[0]);
-    shadowLeft( t, &tmp1[0], &tmp2[0], N);
-    shadowRight(t, &tmp1[0], &tmp1[0], N);
-    AT::maxElementWise(&tmp1[0], &tmp2[0], N, &tmp1[0]); }
-    
-
-  // Find peak candidates and apply optional prominence thresholding:
-  std::vector<int> peaks = getPeakCandidates(&tmp1[0], N);
+  // Pre-process, find peak candidates and apply optional prominence thresholding:
+  std::vector<T> tmp = getPreProcessedData(t, x, N);
+  std::vector<int> peaks = getPeakCandidates(&tmp[0], N);
   if(promThresh != T(0) && promToMaxThresh != T(0) && promToHeightThresh != T(0))
   {
     std::vector<T> proms(int(peaks.size()));     // peak prominences
-    peakProminences(&tmp1[0], N, &peaks[0], int(peaks.size()), &proms[0]);
-    peaks = getProminentPeaks(peaks, proms, &tmp1[0], N);
-    // should we really use the shadowed array tmp1 or maybe the non-shadowed x here? maybe that 
+    peakProminences(&tmp[0], N, &peaks[0], int(peaks.size()), &proms[0]);
+    peaks = getProminentPeaks(peaks, proms, &tmp[0], N);
+    // should we really use the pre-process array tmp1 or maybe the non-shadowed x here? maybe that 
     // should be user selectable? if we use tmp1, we compute the prominence with respect to the 
     // landscape that results from shadowing - this will reduce the peaks prominence values with 
     // resepct to what they would be when computed with respect to the original landscape
+    // ...yes! we should use the pre-processed array, because we want to work with the shifted 
+    // version in prominence thresholding..but we may want to use the shifted-but-not-shdowed 
+    // data
   }
 
   // Apply optional edge-handling - this will add the endpoints of the array to the peak-indices 
@@ -1626,6 +1607,35 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   }
 
   return peaks;
+}
+
+template<class T>
+std::vector<T> rsPeakPicker<T>::getPreProcessedData(const T* t, const T* x, int N)
+{
+  // Pre-process the data by adjusting it such the lowest level is zero and optionally apply peak
+  // shadowing - smaller peaks that are near larger peaks are shadowed by falling under "shadows" 
+  // (exponential trails) emanating from the larger peaks - they do not survive as separate peaks.
+  // The adjustment of the minimum to zero is necessary for two reasons: First: the shadowing 
+  // algorithm works correctly only for input data >= 0 and the prominence thresholding also 
+  // divides by peak-heights, so it will also work correctly only if data >= 0 and moreover, if 
+  // the data would be lifted up to an elevated base-level, the "relaviveness" would work 
+  // differently:
+  using AT = RAPT::rsArrayTools;
+  std::vector<T> tmp = toVector(x, (size_t)N);
+  AT::shiftToMakeMinimumZero(&x[0], N, &tmp[0]);
+  if(shadowWidthL > T(0) || shadowWidthR > T(0))
+  {
+    std::vector<T> tmp2(N);
+    shadowLeft( t, &tmp[0], &tmp2[0], N);
+    shadowRight(t, &tmp[0], &tmp[0],  N);
+    AT::maxElementWise(&tmp[0], &tmp2[0], N, &tmp[0]); 
+    // couldn't we just do:
+    // shadowLeft( t, &tmp[0], &tmp[0], N);
+    // shadowRight(t, &tmp[0], &tmp[0], N);
+    // instead? ...i think so - maybe try it with random data and compare the results (use 
+    // different shadow widths for elft and right) ...that would get rid the tmp2 array
+  }
+  return tmp;
 }
 
 template<class T>

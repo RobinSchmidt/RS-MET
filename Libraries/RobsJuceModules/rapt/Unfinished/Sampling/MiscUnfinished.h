@@ -902,7 +902,7 @@ public:
 
   /** Before finding peaks, an exponentially decaying envelope follower with zero attack is applied 
   (one in the forward direction, another one in the backward direction - both in paralllel - and 
-  then the elemnt-wise maximum of both passes is taken). This function here sets the widths (in 
+  then the element-wise maximum of both passes is taken). This function here sets the widths (in 
   samples) within which these decaying trails decay down to their half-height. The idea behind this 
   is that larger peaks will "shadow" smaller nearby peaks by letting them fall under their 
   "trails". It's one of the meachanisms to filter out irrelevant peaks. */
@@ -928,7 +928,6 @@ public:
   void setRelativeProminenceThreshold(T newThreshold)
   { promToHeightThresh = newThreshold; }
 
-
   /** Sets the number of left neighbors which must be less or equal than a peak value 
   (default: 1). */
   void setNumLeftNeighbors(int newNumber) { numLeftNeighbors = newNumber; }
@@ -940,19 +939,33 @@ public:
   /** Convenience function to set the number of left and right neighbors at once. */
   void setNumNeighbors(int newNumber) { numLeftNeighbors = numRightNeighbors = newNumber; }
 
+  /** Selects whether or not the edges of the input signal whould always included in the 
+  peak-index array returned by getRelevantPeaks. By default, this is turned off such that will 
+  really only get the actual peaks. But in some situations - for example, in envelope estimation, 
+  it may be desirabel to have the first and last datapoint always included. */
+  void setIncludeEdges(bool shouldInclude) { includeEdges = shouldInclude; }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-
   /** Returns an array of indices of the relevant peaks in the data. The time-stamps should be given
   in samples. */
-  std::vector<int> getRelevantPeaks(const T *t, const T *x, int N, bool includeEdges = true);
-  // maybe includeEdges should be a member
+  std::vector<int> getRelevantPeaks(const T *t, const T *x, int N);
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Internal Algorithms */
+
+  /** Pre-process the data by adjusting it such the lowest level is zero and applies peak 
+  shadowing: smaller peaks that are near larger peaks are shadowed by falling under "shadows" 
+  (exponential trails) emanating from the larger peaks - they do not survive as separate peaks.
+  The adjustment of the minimum to zero is necessary for two reasons: First: the shadowing 
+  algorithm works correctly only for input data >= 0 and second: the prominence thresholding also 
+  divides by peak-heights, so it will also work correctly only if data >= 0. Moreover, if 
+  the data would be lifted up to an elevated base-level, the "relaviveness" of the thresholds would
+  work differently. */
+  std::vector<T> getPreProcessedData(const T* t, const T* x, int N);
 
   /** Applies leftward peak shadowing to the input data x (with time-stamp data in t) and writes 
   the result to y. */
@@ -1063,12 +1076,9 @@ protected:
   //   be relative to some highest peak in the neighbourhood?
   // -maybe we could also have different thresholds for leftward and rightward directions
 
+  bool includeEdges = false;
 
 };
-// todo: maybe apply an optional (gaussian?) smoothing filter before looking for peaks - maybe use
-// a cascade of bidirectional first order filters
-// maybe have a function-pointer to the "less-than" comparison function, defaulting to regular
-// less than - but the user may also use less-or-equal, greater, greater-or-equal, etc.
 // -move to Analysis
 
 
