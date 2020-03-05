@@ -1518,6 +1518,12 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   //pp.setRelativeProminenceThreshold(0.25);
   // maybe have separate thresholds for left and right
 
+  std::vector<double> y(N), yL(N), yR(N);
+  rsArrayTools::shiftToMakeMinimumZero(&x[0], N, &y[0]);
+  pp.shadowLeft( &t[0], &y[0], &yL[0], N);
+  pp.shadowRight(&t[0], &y[0], &yR[0], N);
+
+
   std::vector<int> peaks = pp.getRelevantPeaks(&t[0], &x[0], N, true); // peak indices
 
   // todo: experiment with using the no-stickout criterion *only* starting with 0 and N-1 as the
@@ -1539,18 +1545,23 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   // todo: create a function that connects the peaks, plot this function together with the original x
 
   int M = int(peaks.size());
-  std::vector<double> tp(M), xp(M);
+  std::vector<double> tp(M), xp(M), yp(M);
   for(int m = 0; m < M; m++) 
   {
     int n = peaks[m];
     tp[m] = t[n];
-    xp[m] = x[n]; 
+    xp[m] = x[n];
+    yp[m] = y[n];
   }
   //rsPlotVectorsXY(tp, xp);
 
   GNUPlotter plt;
-  plt.addDataArrays(N, &t[0],  &x[0]);
-  plt.addDataArrays(M, &tp[0], &xp[0]);
+  //plt.addDataArrays(N, &t[0],  &x[0]);
+  //plt.addDataArrays(M, &tp[0], &xp[0]);
+
+  plt.addDataArrays(N, &t[0],  &y[0], &yL[0], &yR[0]);
+  plt.addDataArrays(M, &tp[0], &yp[0]);
+
   plt.plot();
 
 
