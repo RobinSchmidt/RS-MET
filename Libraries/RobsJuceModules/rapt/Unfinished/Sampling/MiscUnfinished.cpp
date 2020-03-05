@@ -1579,8 +1579,8 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
     std::vector<T> proms(int(peaks.size()));     // peak prominences
     peakProminences(&tmp[0], N, &peaks[0], int(peaks.size()), &proms[0]);
     peaks = getProminentPeaks(peaks, proms, &tmp[0], N);
-    // should we really use the pre-process array tmp1 or maybe the non-shadowed x here? maybe that 
-    // should be user selectable? if we use tmp1, we compute the prominence with respect to the 
+    // should we really use the pre-process array tmp or maybe the non-shadowed x here? maybe that 
+    // should be user selectable? if we use tmp, we compute the prominence with respect to the 
     // landscape that results from shadowing - this will reduce the peaks prominence values with 
     // resepct to what they would be when computed with respect to the original landscape
     // ...yes! we should use the pre-processed array, because we want to work with the shifted 
@@ -1605,21 +1605,42 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
     // perhaps only when the length of the input array N is < 2 - maybe, we need code to handle 
     // that degenerate case -> make unit tests with such degenerate cases
   }
+  // factor ut into post-process - we need to invoke that procedure also in getFinePeaks because it 
+  // doesn really ensure the no-stickout conditions - consider a peak and a value next to it that 
+  // is almost as high but not quite - like an almost-plateau - ...that probably means, we should 
+  // run removeStickOuts over the whole data in any case as final step
+
 
   return peaks;
 }
 
 template<class T>
+std::vector<int> rsPeakPicker<T>::getCoarsePeaks(const T* t, const T* x, int N)
+{
+  std::vector<int> peaks; 
+  peaks.push_back(0);
+  peaks.push_back(N-1);
+  removeStickOuts(peaks, t, x, N, 0, N-1);
+  return peaks;
+}
+
+template<class T>
+std::vector<int> rsPeakPicker<T>::getFinePeaks(const T* t, const T* x, int N)
+{
+  std::vector<int> peaks = getPeakCandidates(x, N);
+
+  // todo - remove stickouts - yes, they can occur even with the fine algo in case of 
+  // quasi-plateaus
+
+
+  return peaks;
+
+  //return getPeakCandidates(x, N);
+}
+
+template<class T>
 std::vector<T> rsPeakPicker<T>::getPreProcessedData(const T* t, const T* x, int N)
 {
-  // Pre-process the data by adjusting it such the lowest level is zero and optionally apply peak
-  // shadowing - smaller peaks that are near larger peaks are shadowed by falling under "shadows" 
-  // (exponential trails) emanating from the larger peaks - they do not survive as separate peaks.
-  // The adjustment of the minimum to zero is necessary for two reasons: First: the shadowing 
-  // algorithm works correctly only for input data >= 0 and the prominence thresholding also 
-  // divides by peak-heights, so it will also work correctly only if data >= 0 and moreover, if 
-  // the data would be lifted up to an elevated base-level, the "relaviveness" would work 
-  // differently:
   using AT = RAPT::rsArrayTools;
   std::vector<T> tmp = toVector(x, (size_t)N);
   AT::shiftToMakeMinimumZero(&x[0], N, &tmp[0]);
@@ -1633,7 +1654,7 @@ std::vector<T> rsPeakPicker<T>::getPreProcessedData(const T* t, const T* x, int 
     // shadowLeft( t, &tmp[0], &tmp[0], N);
     // shadowRight(t, &tmp[0], &tmp[0], N);
     // instead? ...i think so - maybe try it with random data and compare the results (use 
-    // different shadow widths for elft and right) ...that would get rid the tmp2 array
+    // different shadow widths for left and right) ...that would get rid the tmp2 array
   }
   return tmp;
 }
@@ -1839,7 +1860,7 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
   //plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
 
-  T maxSpacing =   // this must be computed *before* calling setupEndValues!
+  T maxSpacing =   // this must be computed *before* calling setupEndValues! ..why?
     maxSpacingMultiplier * rsArrayTools::maxDifference(&metaEnvTime[0], (int)metaEnvTime.size());
 
 
@@ -2030,7 +2051,10 @@ void rsEnvelopeExtractor<T>::getAmpEnvelope(const T* x, int N,
 {
   std::vector<T> xAbs(N);
   rsArrayTools::applyFunction(&x[0], &xAbs[0], N, fabs);                  // absolute value
+
   std::vector<size_t> peakIndices = findPeakIndices(&xAbs[0], N, true, true); // peak indices
+  // replace this call by peakPicker.getRelevantPeaks - or no - this is the raw amp-env -  maybe 
+  // the peak-picker should be used for finding the meta-envelope
 
   // peak coordinates:
   size_t M = peakIndices.size();
@@ -2049,8 +2073,11 @@ void rsEnvelopeExtractor<T>::getPeaks(const T *x, const T *y, int N,
   std::vector<T>& peaksX, std::vector<T>& peaksY)
 {
   std::vector<size_t> peakIndices = findPeakIndices(y, N, false, false);
-    // false because, we don't want to include the end-values, because they will be set
-    // setupEndValues in getMetaEnvelope
+  // false because, we don't want to include the end-values, because they will be set
+  // setupEndValues in getMetaEnvelope
+
+  // this needs to be replace by using the peak-picker - but maybe we should include the end-values
+  // in order to be safe from stickouts? would that mess up something?
 
   size_t M = peakIndices.size();
   peaksX.resize(M);

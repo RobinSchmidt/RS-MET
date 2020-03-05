@@ -1504,8 +1504,14 @@ std::vector<double> testEnvelope1(const std::vector<double>& x)
 
 std::vector<double> testEnvelope2(const std::vector<double>& x)
 {
-  // not yet implemented
-  // todo: use rsPeakTrailDragger and plot the results
+  // Algorithm parameters:
+
+
+  // Plotting parameters:
+
+
+
+
 
 
   int N = (int) x.size();
@@ -1513,18 +1519,78 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   rsPeakPicker<double> pp;
   pp.setIncludeEdges(true);
   //pp.setShadowWidths(10, 10);
+  //pp.setShadowWidths(18, 18);
   pp.setShadowWidths(20, 20);
 
   //pp.setRelativeProminenceThreshold(0.25);
   // maybe have separate thresholds for left and right
 
+  // these are for plotting some intermediate results (the shadowed data):
   std::vector<double> y(N), yL(N), yR(N);
   rsArrayTools::shiftToMakeMinimumZero(&x[0], N, &y[0]);
   pp.shadowLeft( &t[0], &y[0], &yL[0], N);
   pp.shadowRight(&t[0], &y[0], &yR[0], N);
 
 
-  std::vector<int> peaks = pp.getRelevantPeaks(&t[0], &x[0], N); // peak indices
+  // coarse, fine and relevant peaks:
+  std::vector<int> peaksC = pp.getCoarsePeaks(  &t[0], &x[0], N);
+  std::vector<int> peaksF = pp.getFinePeaks(    &t[0], &x[0], N);
+  std::vector<int> peaksR = pp.getRelevantPeaks(&t[0], &x[0], N);
+
+  // maybe have some booleans to decide what to plot (shadowedData, finePeaks, coarsePeaks, 
+  // relevantPeaks) - we want two kinds of plots:
+  //  -(1) shadowed data and relevant peaks
+  //  -(2) coarse, relevant and fine peaks
+
+
+
+
+  // create data arrays for plotting coarse, fine and relevant peaks
+  int M = int(peaksR.size());
+  std::vector<double> tpR(M), xpR(M), ypR(M);
+  int n, m;
+  for(m = 0; m < M; m++) {
+    n = peaksR[m];
+    tpR[m] = t[n];
+    xpR[m] = x[n];  // maybe get rid - plot only with the shifted data
+    ypR[m] = y[n]; }
+
+  M = int(peaksC.size());
+  std::vector<double> tpC(M), ypC(M);
+  for(m = 0; m < M; m++) {
+    n = peaksC[m]; tpC[m] = t[n]; ypC[m] = y[n]; }
+
+  M = int(peaksF.size());
+  std::vector<double> tpF(M), ypF(M);
+  for(m = 0; m < M; m++) {
+    n = peaksF[m]; tpF[m] = t[n]; ypF[m] = y[n]; }
+   
+
+
+
+
+
+  GNUPlotter plt;
+  //plt.addDataArrays(N, &t[0],  &x[0]);
+
+  plt.addDataArrays(N, &t[0], &y[0]);
+
+  //plt.addDataArrays(M, &tp[0], &xp[0]);
+
+  //plt.addDataArrays(N, &t[0],  &y[0], &yL[0], &yR[0]);
+  plt.addDataArrays((int)tpR.size(), &tpR[0], &ypR[0]);  // relevant peaks
+  plt.addDataArrays((int)tpC.size(), &tpC[0], &ypC[0]);  // coarse peaks
+  plt.addDataArrays((int)tpF.size(), &tpF[0], &ypF[0]);  // fine peaks
+
+
+  plt.setPixelSize(1200, 400);
+  plt.plot();
+
+  // -at n=26 (seed=65), the fine algo misses a stickout, seed 37: 149,150
+  // -with seed 37, at n=194,.. a few stickouts are missed with the relevance algo
+  //  -> we need to run the no-stickout algo on the fully data in any case
+  //  -> this probably makes it more meaningful to always include the edge-values
+  // -how would this compare to a regular bi-directionla envelope follower with zero-attack?
 
   // todo: experiment with using the no-stickout criterion *only* starting with 0 and N-1 as the
   // initial array of peaks - this would give the coarsest possible peak-array that sastisfies the
@@ -1537,40 +1603,6 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   //   give the same result as the no-stickout criterion only and the maximum values that would 
   //   give all peaks (but how do we compute these values? this seem to be nontrivial)
 
-  // todo make sure, that the landscape never sticks out of the linearly connected peaks - i think,
-  // this may happen only between the (just prepended) 0th peak and the 1st and/or the just 
-  // appended last and second-to-last
-  // i think, we should first figure out, which value sticks out most, i.e. the one with the 
-  // greatest difference between the value and the connecting line, and the add that value to the 
-  // peaks - and then repeat the procedure with the range left to that value and the range right 
-  // to that value - maybe a function 
-  // removeGreatestStickOut(Vec peakIndices, Vec xData, Vec yData, int left, int right)
-  // ->this function will call itself recursively ...maybe that algorithm could be used all by 
-  // itself to find relevant peaks
-  // -> done -> seems to work -> move code into rsPeakPicker
-
-  // todo: create a function that connects the peaks, plot this function together with the original x
-
-  int M = int(peaks.size());
-  std::vector<double> tp(M), xp(M), yp(M);
-  for(int m = 0; m < M; m++) 
-  {
-    int n = peaks[m];
-    tp[m] = t[n];
-    xp[m] = x[n];
-    yp[m] = y[n];
-  }
-  //rsPlotVectorsXY(tp, xp);
-
-  GNUPlotter plt;
-  //plt.addDataArrays(N, &t[0],  &x[0]);
-  //plt.addDataArrays(M, &tp[0], &xp[0]);
-
-  plt.addDataArrays(N, &t[0],  &y[0], &yL[0], &yR[0]);
-  plt.addDataArrays(M, &tp[0], &yp[0]);
-
-  plt.plot();
-
 
   // Notes:
   // -Can it happen that there are 3 peaks p1 > p2 > p3 at time instants t1 < t2 < t3 such that the 
@@ -1582,6 +1614,11 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   //  always convex - the function segment between any two points always lies *under* the line 
   //  that directly connects the points
 
+
+  // todo: 
+  // -create a function that connects the peaks, plot this function together with the 
+  //  original x
+  // -maybe connect the peaks with splines instead of lines
 
   std::vector<double> env(x.size());
   return env;
@@ -1649,7 +1686,7 @@ void peakPicker()
 
   int N = 200;
 
-  x = rsRandomVector(N, -1.0, +1.0, 37);  // nice seeds: 4,6,7,8,37,41,65 - strange: 5,9
+  x = rsRandomVector(N, -1.0, +1.0, 7);  // nice seeds: 4,6,7,8,37,41,65 - strange: 5,9
   AT::cumulativeSum(&x[0], &x[0], N);    // one pass seems good to create "landscapey" data
   //AT::cumulativeSum(&x[0], &x[0], N);  // two passes is too much
   //AT::add(&x[0], AT::minValue(&x[0], N), &x[0], N); // values hould be >= 0 for the shadower to work

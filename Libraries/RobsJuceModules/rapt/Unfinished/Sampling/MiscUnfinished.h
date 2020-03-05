@@ -954,6 +954,13 @@ public:
   std::vector<int> getRelevantPeaks(const T *t, const T *x, int N);
 
 
+  std::vector<int> getCoarsePeaks(const T *t, const T *x, int N);
+
+  std::vector<int> getFinePeaks(const T *t, const T *x, int N);
+
+
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Internal Algorithms */
 
@@ -1042,6 +1049,11 @@ public:
   void removeStickOuts(std::vector<int>& p, const T* x, const T* y, int N, int n0, int n1);
     // this should perhaps be called addStickOuts - they are added to the array of peaks - but they 
     // are removed in the sense that after the process, there are no stickouts anymore
+  // i think, this documentations is wrong - it should be
+  // ...this function makes sure that between peak-indices n0 and n1
+  //   there's no missed peak that sticks out of the conneting line between the points 
+  //  (x[n0], y[n0]) and (x[n1], y[n1])
+  // 
 
   /** Returns index of the value in the x,y array that sticks out most over the connecting line 
   between the points (x[n0],y[n0]) and (x[n1],y[n1]) or -1 if none of the values sticks out. */
