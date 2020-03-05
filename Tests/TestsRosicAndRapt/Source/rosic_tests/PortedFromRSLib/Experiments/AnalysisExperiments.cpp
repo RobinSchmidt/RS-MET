@@ -1643,10 +1643,20 @@ void peakPicker()
   int N = 200;
 
   x = rsRandomVector(N, -1.0, +1.0, 37);  // nice seeds: 4,6,7,8,37,41,65 - strange: 5,9
-  AT::cumulativeSum(&x[0], &x[0], N);
-  //AT::cumulativeSum(&x[0], &x[0], N);
+  AT::cumulativeSum(&x[0], &x[0], N);    // one pass seems good to create "landscapey" data
+  //AT::cumulativeSum(&x[0], &x[0], N);  // two passes is too much
   //AT::add(&x[0], AT::minValue(&x[0], N), &x[0], N); // values hould be >= 0 for the shadower to work
 
+
+  // todo: 
+  // -test with randomized t-data, too - i.e. with non-equidistant data, because that's 
+  //  actually the use-case in finding envelope peaks
+  // -maybe try filters with different slopes instead of the cumulative sum - maybe slopes between
+  //  0 and 9 dB/oct are reasonable (cumulative sum has 6 dB/oct) - with 12, the smooting is so 
+  //  strong that we don't really see much
+  // -and/or maybe use a 1-pole lowpass with some cutoff frequency - yes, cutoff and slope seem 
+  //  resonable parameters for the data creation (maybe even to create mountain terrain for 
+  //  graphics)?
 
 
   //x = VecD({0,0,0,8,4,4,2,2,2,2,1,1,1,1,1,1,1,1,0,0,0});

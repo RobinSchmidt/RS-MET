@@ -954,9 +954,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Internal Algorithms */
 
-
+  /** Applies leftward peak shadowing to the input data x (with time-stamp data in t) and writes 
+  the result to y. */
   void shadowLeft(const T* t, const T* x, T* y, int N);
 
+  /** Rightward peak shadowing, @see shadowLeft */
   void shadowRight(const T* t, const T* x, T* y, int N);
 
   /** Returns an array of indices where the datapoint x[i] is a candidate for a peak. A value is 
@@ -1035,6 +1037,8 @@ public:
 
 protected:
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data Members */
 
   // half-height widths (i.e. the amount of time, it takes for the exponential shadow/trail to 
   // decay down to 1/2 of its initial height) of the peak-shadows for left and right side of the 
@@ -1050,26 +1054,22 @@ protected:
   T promThresh         = 0;    // absolute prominence threshold
   T promToMaxThresh    = 0;    // threshold for prominence / max(peakHeights)
   T promToHeightThresh = 0;    // threshold for prominence / peakHeight
-  // the order is in "increasing relativeness" 
-  // promToMax is invariant with respect to scaling the whole signal
-  // promToHeight is invariant with respect to...what? does it actually make sense to do that? maybe
-  // it should be relative to some highest peak in the neighbourhood?
-  
-  // the absolute threshold will make the algo select different peaks depending on overall scale
-  // of the signal - that seems undesirable.
+  // -the order is in "increasing relativeness":
+  //  -the absolute threshold will make the algo select different peaks depending on overall scale
+  //   of the signal - that seems undesirable in many circumstances
+  //  -promToMax is invariant with respect to scaling the whole signal
+  //  -promToHeight is invariant with respect to...what? it divides the prominence by the height of
+  //   current peak under consideration - does it actually make sense to do that? maybe it should 
+  //   be relative to some highest peak in the neighbourhood?
+  // -maybe we could also have different thresholds for leftward and rightward directions
 
 
-
-  // obsolete:
-  //std::vector<T> preProcess(const T *x, int N) const;
-
-  // pre-processing parameters:
-  //int numRopewayPasses = 0;      // number of passes through ropeway algo before searching candidates
 };
 // todo: maybe apply an optional (gaussian?) smoothing filter before looking for peaks - maybe use
 // a cascade of bidirectional first order filters
 // maybe have a function-pointer to the "less-than" comparison function, defaulting to regular
 // less than - but the user may also use less-or-equal, greater, greater-or-equal, etc.
+// -move to Analysis
 
 
 //=================================================================================================

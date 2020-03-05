@@ -1569,6 +1569,66 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
 //=================================================================================================
 
 template<class T>
+std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N, 
+  bool includeEdges)
+{
+  // Pre-process by optional peak-shadowing - smaller peaks that are near larger peaks are shadowed 
+  // by falling under "shadows" (exponential trails) emanating from the larger peaks - they do not 
+  // survive as separate peaks. After that, tmp1 will contain our pre-processed (i.e. possibly 
+  // shifted and shadowed) data that will be passed to further processing steps (the shifting is 
+  // needed to make the shadowing work (it expects inputs >= 0) and will not have any effect on 
+  // subsequent steps int the algo)
+  // ...oh - i think, we should always shift because the prominence-thresholding will also be
+  //  affected - it divides by peak-heights
+  // maybe factor out into getPreProcessedData function:
+  using AT = RAPT::rsArrayTools;
+  std::vector<T> tmp1, tmp2;
+  if(shadowWidthL == T(0) && shadowWidthR == T(0))
+    tmp1 = toVector(x, (size_t)N);
+  else {  
+    // maybe factor out into tmp1 = getShadowedData(const T* t, const T* x, int N)
+    tmp1.resize(N); tmp2.resize(N);
+    AT::shiftToMakeMinimumZero(&x[0], N, &tmp1[0]);
+    shadowLeft( t, &tmp1[0], &tmp2[0], N);
+    shadowRight(t, &tmp1[0], &tmp1[0], N);
+    AT::maxElementWise(&tmp1[0], &tmp2[0], N, &tmp1[0]); }
+    
+
+  // Find peak candidates and apply optional prominence thresholding:
+  std::vector<int> peaks = getPeakCandidates(&tmp1[0], N);
+  if(promThresh != T(0) && promToMaxThresh != T(0) && promToHeightThresh != T(0))
+  {
+    std::vector<T> proms(int(peaks.size()));     // peak prominences
+    peakProminences(&tmp1[0], N, &peaks[0], int(peaks.size()), &proms[0]);
+    peaks = getProminentPeaks(peaks, proms, &tmp1[0], N);
+    // should we really use the shadowed array tmp1 or maybe the non-shadowed x here? maybe that 
+    // should be user selectable? if we use tmp1, we compute the prominence with respect to the 
+    // landscape that results from shadowing - this will reduce the peaks prominence values with 
+    // resepct to what they would be when computed with respect to the original landscape
+  }
+
+  // Apply optional edge-handling - this will add the endpoints of the array to the peak-indices 
+  // (if they are not already there) and then remove any stickouts that may have resulted from 
+  // doing so:
+  if(includeEdges)
+  {
+    // add edges:
+    if(peaks[0] != 0)        rsPrepend(peaks, 0);    // left edge
+    if(rsLast(peaks) != N-1) rsAppend(peaks, N-1);   // right edge
+
+    // remove stickouts (maybe it should be called addStickOuts):
+    int M = int(peaks.size());
+    removeStickOuts(peaks, t, x, N, peaks[0],   peaks[1]);
+    removeStickOuts(peaks, t, x, N, peaks[M-2], peaks[M-1]);
+    // can this fail? is it possible that the peaks array has less than two elements at this point? 
+    // perhaps only when the length of the input array N is < 2 - maybe, we need code to handle 
+    // that degenerate case -> make unit tests with such degenerate cases
+  }
+
+  return peaks;
+}
+
+template<class T>
 void rsPeakPicker<T>::shadowLeft(const T* t, const T* x, T* y, int N)
 {
   rsPeakTrailDragger<T> ps;
@@ -1582,65 +1642,6 @@ void rsPeakPicker<T>::shadowRight(const T* t, const T* x, T* y, int N)
   rsPeakTrailDragger<T> ps;
   ps.setDecaySamples(shadowWidthR);
   ps.applyForward(t, &x[0], &y[0], N);
-}
-
-
-template<class T>
-std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N, 
-  bool includeEdges)
-{
-  // pre-process by "peak-shadowing" - smaller peaks near larger peaks are shadowed by falling 
-  // under shadows emanating from the larger peaks - they do not survive as separate peaks (todo:
-  // factor out this step - maybe optionally skip it, if shadowWidthL/R are bot zero):
-  using AT = RAPT::rsArrayTools;
-  std::vector<T> y(N), yL(N), yR(N), yM(N);  
-  // temporary buffers - later we may re-use one of y for yM - no extra buffer needed
-  // we should get by by 2 temp-buffers instead of 4
-
-  AT::shiftToMakeMinimumZero(&x[0], N, &y[0]);
-  shadowLeft( t, &y[0], &yL[0], N);
-  shadowRight(t, &y[0], &yR[0], N);
-  rsArrayTools::maxElementWise(&yL[0], &yR[0], N, &yM[0]);
-
-  // find peak condidates in the yM array (in which the minor sub-peaks are already shadowed):
-  std::vector<int> peaks = getPeakCandidates(&yM[0], N); // peak candidates
-
-  // todo: 
-  // -factor out apply shadowingLeft, applyShadowingRight - so we can make plots of the shadowed
-  //  data from client code (i.e. in Experiments)
-  // -optimize to avoid computing peak-shadows when this functionality is not used, i.e. 
-  //  shadowWidthL/R are both zero
-
-
-  // optional prominence thresholding - this may remove some peaks:
-  if(promThresh != T(0) && promToMaxThresh != T(0) && promToHeightThresh != T(0))
-  {
-    std::vector<T> pp(int(peaks.size()));     // peak prominences
-    peakProminences(&yM[0], N, &peaks[0], int(peaks.size()), &pp[0]);
-    peaks = getProminentPeaks(peaks, pp, &yM[0], N);
-    // should we really use the shadowed array yM or maybe the non-shadowed y here? maybe that 
-    // should be user selectable? if we use yM, we compute the prominence with respect to the 
-    // landscape that results from shadowing - this will reduce the peaks prominence values with 
-    // resepct to what they would be when computed with respect to the original landscape
-  }
-
-  // optional edge-handling - this will add the endpoints if they are not already there and then 
-  // remove any stickouts that may have resulted from doing so:
-  if(includeEdges)
-  {
-    // left edge:
-    if(peaks[0] != 0)
-      rsPrepend(peaks, 0);
-    removeStickOuts(peaks, t, x, N, peaks[0], peaks[1]);
-
-    // right edge:
-    if(rsLast(peaks) != N-1) 
-      rsAppend(peaks, N-1);
-    int M = int(peaks.size());
-    removeStickOuts(peaks, t, x, N, peaks[M-2], peaks[M-1]);
-  }
-
-  return peaks;
 }
 
 template<class T>
@@ -1720,17 +1721,6 @@ void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const in
 }
 // make unit tests...
 
-/*
-template<class T>
-std::vector<T> rsPeakPicker<T>::preProcess(const T* x, int N) const
-{
-  std::vector<T> y(N);
-  ropeway(x, N, &y[0], numRopewayPasses);
-  return y;
-}
-// obsolete - but delete only after the ropeway algo has foun it's way to some other place
-*/
-
 template<class T>
 std::vector<int> rsPeakPicker<T>::getProminentPeaks(const std::vector<int>& peakCandidates,
   const std::vector<T>& proms, const T* heights, int numHeights)
@@ -1745,10 +1735,11 @@ std::vector<int> rsPeakPicker<T>::getProminentPeaks(const std::vector<int>& peak
   for(int m = 0; m < M; m++) {
     int n = peakCandidates[m];
     T prom         = proms[m];
-    T promToHeight = prom / heights[n];
     T promToMax    = prom / maxHeight;
+    T promToHeight = prom / heights[n];
     if(prom >= promThresh && promToHeight >= promToHeightThresh && promToMax >= promToMaxThresh)
       promPeaks.push_back(n);  }
+      // we use >= and not > in order to switch thresholding off when the threshold is set to 0
   return promPeaks;
 }
 
@@ -1780,10 +1771,10 @@ int rsPeakPicker<T>::getMaxStickOut(const T* x, const T* y, int N, int n0, int n
       dMax = d;
       nMax = n; }}
   if(nMax == n0 || nMax == n1)
-    return -1;  // avoid stack overflow due to roundoff errors (happens with seed=8)
+    return -1;  // avoid stack overflow due to roundoff errors (happens in peakPicker experiment 
+                // with seed=8 - maybe write a unit test that would expose it)
   return nMax;
 }
-
 
 //=================================================================================================
 
