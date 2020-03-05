@@ -974,6 +974,10 @@ public:
   work differently. */
   std::vector<T> getPreProcessedData(const T* t, const T* x, int N);
 
+  void postProcessPeaks(std::vector<int>& peaks, const T* x, const T* y, int N);
+
+
+
   /** Applies leftward peak shadowing to the input data x (with time-stamp data in t) and writes 
   the result to y. */
   void shadowLeft(const T* t, const T* x, T* y, int N);
@@ -1088,7 +1092,8 @@ protected:
   //   be relative to some highest peak in the neighbourhood?
   // -maybe we could also have different thresholds for leftward and rightward directions
 
-  bool includeEdges = false;
+  bool includeEdges = false; 
+  // maybe get rid - we should probably always include the endpoints
 
 };
 // -move to Analysis

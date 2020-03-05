@@ -1591,6 +1591,7 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   // Apply optional edge-handling - this will add the endpoints of the array to the peak-indices 
   // (if they are not already there) and then remove any stickouts that may have resulted from 
   // doing so:
+  /*
   if(includeEdges)
   {
     // add edges:
@@ -1605,10 +1606,14 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
     // perhaps only when the length of the input array N is < 2 - maybe, we need code to handle 
     // that degenerate case -> make unit tests with such degenerate cases
   }
+  */
   // factor ut into post-process - we need to invoke that procedure also in getFinePeaks because it 
   // doesn really ensure the no-stickout conditions - consider a peak and a value next to it that 
   // is almost as high but not quite - like an almost-plateau - ...that probably means, we should 
   // run removeStickOuts over the whole data in any case as final step
+
+  postProcessPeaks(peaks, t, x, N);
+    // should this maybe also use tmp instead of x? ...maybe that doesn't make a difference?
 
 
   return peaks;
@@ -1657,6 +1662,29 @@ std::vector<T> rsPeakPicker<T>::getPreProcessedData(const T* t, const T* x, int 
     // different shadow widths for left and right) ...that would get rid the tmp2 array
   }
   return tmp;
+}
+
+template<class T>
+void rsPeakPicker<T>::postProcessPeaks(std::vector<int>& peaks, const T* x, const T* y, int N)
+{
+  // Apply optional edge-handling - this will add the endpoints of the array to the peak-indices 
+  // (if they are not already there) and then remove any stickouts that may have resulted from 
+  // doing so:
+  if(includeEdges)
+  {
+    // add edges:
+    if(peaks[0] != 0)        rsPrepend(peaks, 0);    // left edge
+    if(rsLast(peaks) != N-1) rsAppend(peaks, N-1);   // right edge
+
+    // remove stickouts (maybe it should be called addStickOuts):
+    int M = int(peaks.size());
+    removeStickOuts(peaks, x, y, N, peaks[0],   peaks[1]);
+    removeStickOuts(peaks, x, y, N, peaks[M-2], peaks[M-1]);
+    // can this fail? is it possible that the peaks array has less than two elements at this point? 
+    // perhaps only when the length of the input array N is < 2 - maybe, we need code to handle 
+    // that degenerate case -> make unit tests with such degenerate cases
+    // maybe we should always call removeStickOuts for the full data
+  }
 }
 
 template<class T>

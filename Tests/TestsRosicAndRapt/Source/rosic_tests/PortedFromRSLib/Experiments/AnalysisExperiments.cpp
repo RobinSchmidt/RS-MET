@@ -1505,47 +1505,33 @@ std::vector<double> testEnvelope1(const std::vector<double>& x)
 std::vector<double> testEnvelope2(const std::vector<double>& x)
 {
   // Algorithm parameters:
-
+  double shadowWidth = 30.0;
 
   // Plotting parameters:
+  int plotType = 1;   // 0: shadowed-data and relevant peaks, 1: coarse,fine,relevant peaks
 
-
-
-
-
-
+  // create time axis (todo: maybe use randomized time-instants):
   int N = (int) x.size();
   std::vector<double> t = rsRangeLinear(0.0, double(N-1), N);
+
+  // Create and set up peak picker:
   rsPeakPicker<double> pp;
   pp.setIncludeEdges(true);
-  //pp.setShadowWidths(10, 10);
-  //pp.setShadowWidths(18, 18);
-  pp.setShadowWidths(20, 20);
+  pp.setShadowWidths(shadowWidth, shadowWidth);
+  //pp.setRelativeProminenceThreshold(0.25); // maybe have separate thresholds for left and right
 
-  //pp.setRelativeProminenceThreshold(0.25);
-  // maybe have separate thresholds for left and right
-
-  // these are for plotting some intermediate results (the shadowed data):
+  // Create shadowed data (for plotting):
   std::vector<double> y(N), yL(N), yR(N);
   rsArrayTools::shiftToMakeMinimumZero(&x[0], N, &y[0]);
   pp.shadowLeft( &t[0], &y[0], &yL[0], N);
   pp.shadowRight(&t[0], &y[0], &yR[0], N);
 
-
-  // coarse, fine and relevant peaks:
+  // Find coarse, fine and relevant peaks:
   std::vector<int> peaksC = pp.getCoarsePeaks(  &t[0], &x[0], N);
   std::vector<int> peaksF = pp.getFinePeaks(    &t[0], &x[0], N);
   std::vector<int> peaksR = pp.getRelevantPeaks(&t[0], &x[0], N);
 
-  // maybe have some booleans to decide what to plot (shadowedData, finePeaks, coarsePeaks, 
-  // relevantPeaks) - we want two kinds of plots:
-  //  -(1) shadowed data and relevant peaks
-  //  -(2) coarse, relevant and fine peaks
-
-
-
-
-  // create data arrays for plotting coarse, fine and relevant peaks
+  // Create data arrays for plotting coarse, fine and relevant peaks
   int M = int(peaksR.size());
   std::vector<double> tpR(M), xpR(M), ypR(M);
   int n, m;
@@ -1565,26 +1551,21 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   for(m = 0; m < M; m++) {
     n = peaksF[m]; tpF[m] = t[n]; ypF[m] = y[n]; }
    
-
-
-
-
-
+  // Plot results:
   GNUPlotter plt;
-  //plt.addDataArrays(N, &t[0],  &x[0]);
-
-  plt.addDataArrays(N, &t[0], &y[0]);
-
-  //plt.addDataArrays(M, &tp[0], &xp[0]);
-
-  //plt.addDataArrays(N, &t[0],  &y[0], &yL[0], &yR[0]);
-  plt.addDataArrays((int)tpR.size(), &tpR[0], &ypR[0]);  // relevant peaks
-  plt.addDataArrays((int)tpC.size(), &tpC[0], &ypC[0]);  // coarse peaks
-  plt.addDataArrays((int)tpF.size(), &tpF[0], &ypF[0]);  // fine peaks
-
-
   plt.setPixelSize(1200, 400);
+  plt.addDataArrays(N, &t[0], &y[0]);                       // shifted data
+  plt.addDataArrays((int)tpR.size(), &tpR[0], &ypR[0]);     // relevant peaks
+  if(plotType == 0)
+  {
+    //plt.addDataArrays(N, &t[0], &y[0], &yL[0], &yR[0]);    // shadowed data
+    plt.addDataArrays(N, &t[0], &yL[0], &yR[0]);    // shadowed data
+  }
+  else{
+    plt.addDataArrays((int)tpC.size(), &tpC[0], &ypC[0]);   // coarse peaks
+    plt.addDataArrays((int)tpF.size(), &tpF[0], &ypF[0]); } // fine peaks
   plt.plot();
+
 
   // -at n=26 (seed=65), the fine algo misses a stickout, seed 37: 149,150
   // -with seed 37, at n=194,.. a few stickouts are missed with the relevance algo
@@ -1619,6 +1600,15 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   // -create a function that connects the peaks, plot this function together with the 
   //  original x
   // -maybe connect the peaks with splines instead of lines
+
+  // maybe have some booleans to decide what to plot (shadowedData, finePeaks, coarsePeaks, 
+  // relevantPeaks) - we want two kinds of plots:
+  //  -(1) shadowed data and relevant peaks
+  //  -(2) coarse, relevant and fine peaks
+  // -maybe plot prominence related stuff - maybe plot the prominences themselves as
+  //  stems
+  // -maybe plot more envelopes with different settings for the shadow width for comparison
+  //  say: 10,20,30
 
   std::vector<double> env(x.size());
   return env;
