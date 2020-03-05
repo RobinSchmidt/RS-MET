@@ -1569,6 +1569,23 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
 //=================================================================================================
 
 template<class T>
+void rsPeakPicker<T>::shadowLeft(const T* t, const T* x, T* y, int N)
+{
+  rsPeakTrailDragger<T> ps;
+  ps.setDecaySamples(shadowWidthL);
+  ps.applyBackward(t, &x[0], &y[0], N);
+}
+
+template<class T>
+void rsPeakPicker<T>::shadowRight(const T* t, const T* x, T* y, int N)
+{
+  rsPeakTrailDragger<T> ps;
+  ps.setDecaySamples(shadowWidthR);
+  ps.applyForward(t, &x[0], &y[0], N);
+}
+
+
+template<class T>
 std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N, 
   bool includeEdges)
 {
@@ -1578,21 +1595,14 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   using AT = RAPT::rsArrayTools;
   std::vector<T> y(N), yL(N), yR(N), yM(N);  
   // temporary buffers - later we may re-use one of y for yM - no extra buffer needed
+  // we should get by by 2 temp-buffers instead of 4
 
-  // lift up, such that minimum is = 0 (we need it to ensure it's >= 0, but it's more convenient to
-  // just always do it):
-  T minVal =  AT::minValue(&x[0], N);
-  AT::add(&x[0], -minVal, &y[0], N); // y is x lifted by -min(x)
-
-  // get a pre-processed signal yM from y in which smaller peaks that are near larger peaks are 
-  // shadowed (maybe factor out):
-  rsPeakTrailDragger<T> ps;                  // "peak-shadower"
-  ps.setDecaySamples(shadowWidthR);          // "R" is used in forward run
-  ps.applyForward(t, &y[0], &yR[0], N);
-  ps.setDecaySamples(shadowWidthL);          // "L" is used in forward run
-  ps.applyBackward(t, &y[0], &yL[0], N);
+  AT::shiftToMakeMinimumZero(&x[0], N, &y[0]);
+  shadowLeft( t, &y[0], &yL[0], N);
+  shadowRight(t, &y[0], &yR[0], N);
   rsArrayTools::maxElementWise(&yL[0], &yR[0], N, &yM[0]);
 
+  // move plotting  to experiments:
   rsPlotArraysXY(N, t, &y[0], &yL[0], &yR[0]);  // for debug
   //rsPlotArraysXY(N, t, &y[0], &yL[0], &yR[0], &yM[0]);  // for debug
   //rsPlotArraysXY(N, t, x, &y[0], &yL[0], &yR[0], &yM[0]);  // for debug

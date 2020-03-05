@@ -1169,6 +1169,14 @@ void rsArrayTools::shift(T *buffer, int length, int numPlaces)
 }
 
 template <class T>
+static T rsArrayTools::shiftToMakeMinimumZero(const T* x, int N, T* y)
+{
+  T minVal = minValue(x, N);
+  add(x, -minVal, y, N);
+  return minVal;
+}
+
+template <class T>
 T rsArrayTools::sum(const T* buffer, int length)
 {
   T accu = T(0); // constructor call with 0 should initilizes to additive neutral element

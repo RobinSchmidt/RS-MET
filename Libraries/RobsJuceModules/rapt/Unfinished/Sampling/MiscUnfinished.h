@@ -954,6 +954,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Internal Algorithms */
 
+
+  void shadowLeft(const T* t, const T* x, T* y, int N);
+
+  void shadowRight(const T* t, const T* x, T* y, int N);
+
   /** Returns an array of indices where the datapoint x[i] is a candidate for a peak. A value is 
   considered a peak candidate, if it is greater than some number of left and right neighbor 
   datapoints. This can be considered as the first stage of filtering out the relevant peaks. It may

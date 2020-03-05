@@ -670,6 +670,14 @@ public:
   template <class T>
   static void shift(T *buffer, int length, int numPlaces);
 
+  /** Shifts the values in the array x up or down such that the new minimum off all values will 
+  become zero and writes the result to y. The return value is the minimum of the x-values - if you 
+  add that value to the resulting y-values, you should get your old x-array back (up to roundoff 
+  error). */ 
+  template <class T>
+  static T shiftToMakeMinimumZero(const T* x, int N, T* y);
+  // could also be called subtractMinimum - but the current name better reveals the intention
+
   /** Subtracts the elements of 'buffer2' from 'buffer1' - type must define operator '-'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
   template <class T>
