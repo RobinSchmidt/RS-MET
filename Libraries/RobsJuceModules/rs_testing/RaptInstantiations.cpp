@@ -120,6 +120,7 @@ template double rsArrayTools::maxValue(const double *x, int length);
 template double rsArrayTools::mean(const double *x, int length);
 template double rsArrayTools::maxDeviation(const double *buffer1, const double *buffer2, int length);
 template double rsArrayTools::minValue(const double *x, int length);
+template void rsArrayTools::movingAverage3pt(const double* x, int N, double* y, bool endsFixed);
 template void rsArrayTools::negate(const double *source, double *destination, int length);
 template void rsArrayTools::normalize(double *buffer, int length, double maximum, bool subtractMean);
 template void rsArrayTools::normalizeMean(double *x, int N, double newMean);

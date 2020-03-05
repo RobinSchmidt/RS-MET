@@ -1303,7 +1303,15 @@ void ropeway2(const T* x, int N, T halfTime, T* y, T* w) // w is workspace
 }
 // result look the same like the other version
 
-
+template<class T>
+void ropeway3(const T* x, int N, T* y, int numPasses)
+{
+  rsArrayTools::copy(x, y, N);
+  for(int i = 0; i < numPasses; i++) {
+    rsArrayTools::movingAverage3pt(y, N, &y[0]);
+    rsArrayTools::maxElementWise(x, &y[0], N, &y[0]);
+  }
+}
 
 template<class T>
 std::vector<T> ropeway(const std::vector<T>& x, T halfTime)

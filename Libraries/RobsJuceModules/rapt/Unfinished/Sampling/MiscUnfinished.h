@@ -977,7 +977,7 @@ public:
   passes -> less peaks). It's used as a pre-processing step before searching for peak candidates.
   The idea of alternating between smoothing and taking an elementwise maximum was inspired by
   the "true-envelope-algorithm" for spectral enevlopes. */
-  static void ropeway(const T* x, int N, T* y, int numPasses);
+  //static void ropeway(const T* x, int N, T* y, int numPasses);
   // todo: move this to rsArrayTools - maybe don't use it here - the effect is redundant with
   // whta rsPeakTrailDragger does
 
@@ -985,14 +985,9 @@ public:
   prominences of the peaks at the given indices. ...tbc... */
   static void peakProminences(const T *data, int numDataPoints, const int *peakIndices, 
     int numPeaks, T *peakProminences);
-  // todo: rename to prominences, add an optional window-length parameter as in SciPy:
-  // https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.peak_prominences.html
-  // https://en.wikipedia.org/wiki/Topographic_prominence
-
-  /** Returns the number of smoothing iterations, a peak survives while still preserving its 
-  peak property (of being >= its left and right neighbor). */
-  //static void peakSmoothabilities(const T *data, int numDataPoints, const int *peakIndices, 
-  //  int numPeaks, T *smoothabilities);
+    // todo: rename to prominences, add an optional window-length parameter as in SciPy:
+    // https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.peak_prominences.html
+    // https://en.wikipedia.org/wiki/Topographic_prominence
 
   /** Convenience function for use with std::vector. */
   static std::vector<T> peakProminences(
@@ -1004,16 +999,9 @@ public:
     return proms;
   }
 
-
-protected:
-
-  std::vector<T> preProcess(const T *x, int N) const;
-  // obsolete
-
-  /** Under construction....
-  Given an array of peak-candidate indices and their accociated prominence values, this function 
-  filters out those peak indices which are above our absolute and relative prominence thresholds. 
-  In general, it will return a subset of the indices given in peakCandidates. */
+  /** Given an array of peak-candidate indices and their accociated prominence values, this 
+  function filters out those peak indices which are above our absolute and relative prominence 
+  thresholds. In general, it will return a subset of the indices given in peakCandidates. */
   std::vector<int> getProminentPeaks(const std::vector<int>& peakCandidates, 
     const std::vector<T>& peakProminences, const T* inputData, int inputDataLength);
     // maybe let it operate in place, i.e. instead of returning a new array, remove the 
@@ -1032,18 +1020,16 @@ protected:
   height-difference to the *slanted* straight line is maximal.
   p: peak indices, x: x-data, y: y-data (both length N), n0: left index, n1: right index */
   void removeStickOuts(std::vector<int>& p, const T* x, const T* y, int N, int n0, int n1);
-  // this should perhaps be called addStickOuts - they are added to the array of peaks - but they 
-  // are removed in the sense that after the process, there are no stickouts anymore
+    // this should perhaps be called addStickOuts - they are added to the array of peaks - but they 
+    // are removed in the sense that after the process, there are no stickouts anymore
 
   /** Returns index of the value in the x,y array that sticks out most over the connecting line 
   between the points (x[n0],y[n0]) and (x[n1],y[n1]) or -1 if none of the values sticks out. */
   int getMaxStickOut(const T* x, const T* y, int N, int n0, int n1);
 
 
+protected:
 
-  // pre-processing parameters:
-  int numRopewayPasses = 0;      // number of passes through ropeway algo before searching candidates
-   // obsolete - dont use that anymore
 
   // half-height widths (i.e. the amount of time, it takes for the exponential shadow/trail to 
   // decay down to 1/2 of its initial height) of the peak-shadows for left and right side of the 
@@ -1067,6 +1053,13 @@ protected:
   // the absolute threshold will make the algo select different peaks depending on overall scale
   // of the signal - that seems undesirable.
 
+
+
+  // obsolete:
+  //std::vector<T> preProcess(const T *x, int N) const;
+
+  // pre-processing parameters:
+  //int numRopewayPasses = 0;      // number of passes through ropeway algo before searching candidates
 };
 // todo: maybe apply an optional (gaussian?) smoothing filter before looking for peaks - maybe use
 // a cascade of bidirectional first order filters

@@ -1593,7 +1593,7 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   ps.applyBackward(t, &y[0], &yL[0], N);
   rsArrayTools::maxElementWise(&yL[0], &yR[0], N, &yM[0]);
 
-  //rsPlotArraysXY(N, t, &y[0], &yL[0], &yR[0]);  // for debug
+  rsPlotArraysXY(N, t, &y[0], &yL[0], &yR[0]);  // for debug
   //rsPlotArraysXY(N, t, &y[0], &yL[0], &yR[0], &yM[0]);  // for debug
   //rsPlotArraysXY(N, t, x, &y[0], &yL[0], &yR[0], &yM[0]);  // for debug
 
@@ -1602,6 +1602,8 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
 
 
   // todo: 
+  // -factor out apply shadowingLeft, applyShadowingRight - so we can make plots of the shadowed
+  //  data from client code (i.e. in Experiments)
   // -optimize to avoid computing peak-shadows when this functionality is not used, i.e. 
   //  shadowWidthL/R are both zero
 
@@ -1640,9 +1642,6 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
 template<class T>
 std::vector<int> rsPeakPicker<T>::getPeakCandidates(const T* x, int N) const
 {
-  // todo: if smoothing is selected, create a pre-smoothed copy of x and operate on that
-  // and/or apply a few iterations of the ropeway algo as pre-processing step
-
   std::vector<int> peaks;
   for(int i = 0; i < N; i++)
     if(isPeakCandidate(i, x, N))
@@ -1664,20 +1663,7 @@ bool rsPeakPicker<T>::isPeakCandidate(int index, const T* x, int N) const
   // this function returns all values within a plateau as peaks - maybe, it should only return the
   // first and last - that would be sufficient for meaningful linear interpolation
 }
-// maybe make thios static, too - numLeft/RightNeighbors should be passed as parameters
-
-template<class T>
-void rsPeakPicker<T>::ropeway(const T* x, int N, T* y, int numPasses)
-{
-  rsArrayTools::copy(x, y, N);
-  for(int i = 0; i < numPasses; i++) {
-    rsArrayTools::movingAverage3pt(y, N, &y[0]);
-    rsArrayTools::maxElementWise(x, &y[0], N, &y[0]);
-  }
-}
-// maybe move to rsArrayTools ...if it turns out to be useful in other applications
-// ...actually, we may not want it here when whe use peak-shadowing by class rsPeakTrailDragger - 
-// it seems to be redundant to do both
+// maybe make this static, too - numLeft/RightNeighbors should be passed as parameters
 
 template<class T>
 void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const int* peakIndices,
@@ -1730,6 +1716,7 @@ void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const in
 }
 // make unit tests...
 
+/*
 template<class T>
 std::vector<T> rsPeakPicker<T>::preProcess(const T* x, int N) const
 {
@@ -1738,6 +1725,7 @@ std::vector<T> rsPeakPicker<T>::preProcess(const T* x, int N) const
   return y;
 }
 // obsolete - but delete only after the ropeway algo has foun it's way to some other place
+*/
 
 template<class T>
 std::vector<int> rsPeakPicker<T>::getProminentPeaks(const std::vector<int>& peakCandidates,

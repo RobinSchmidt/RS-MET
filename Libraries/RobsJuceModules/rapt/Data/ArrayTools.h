@@ -560,6 +560,7 @@ public:
   // maybe have a version that leaves the endpoints alone - rationale: the array may represent a
   // trajectory that should be smoothed, but the start- and enpoints should not change - maybe
   // have a boolean parameter "fixEnds"
+  // -maybe include a stride parameter - needed when this is used to filter nD arrays like images
 
   /** Multiplies the elements of 'buffer1' and 'buffer2' - type must define operator '*'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
