@@ -1500,6 +1500,7 @@ std::vector<double> testEnvelope1(const std::vector<double>& x)
 //  it may make sense to use an average of forward-first and backward-first application to make the 
 //  algorithm invariant with respect to mirroring the data (this invariance seems desirable)
 
+/*
 bool testStickOutRemoval()
 {
   using VecI = std::vector<int>;
@@ -1523,11 +1524,63 @@ bool testStickOutRemoval()
 
   return true;
 }
+*/
+
+void peakPickerShadows(const std::vector<double>& x, double shadowWidth)
+{
+  // Plots the intermediate signals with the shadows
+
+  // Create time axis:
+  int N = (int) x.size();
+  std::vector<double> t = rsRangeLinear(0.0, double(N-1), N);
+
+  // Create and set up peak picker:
+  rsPeakPicker<double> pp;
+  pp.setShadowWidths(shadowWidth, shadowWidth);
+
+  // Create shadowed data (for plotting):
+  std::vector<double> y(N), yL(N), yR(N);
+  rsArrayTools::shiftToMakeMinimumZero(&x[0], N, &y[0]);
+  pp.shadowLeft( &t[0], &y[0], &yL[0], N);
+  pp.shadowRight(&t[0], &y[0], &yR[0], N);
+
+  // Find relevant peaks:
+  std::vector<int> peaksR;
+  peaksR = pp.getRelevantPeaks(&t[0], &x[0], N);
+
+  // Create data arrays for plotting relevant peaks:
+  int M = int(peaksR.size());
+  std::vector<double> tpR(M), ypR(M);
+  int n, m;
+  for(m = 0; m < M; m++) {
+    n = peaksR[m];
+    tpR[m] = t[n];
+    ypR[m] = y[n]; }
+
+  // Plot results:
+  GNUPlotter plt;
+  plt.setPixelSize(1200, 400);
+  plt.addDataArrays(N, &t[0], &y[0]);                     // shifted data
+  plt.addDataArrays((int)tpR.size(), &tpR[0], &ypR[0]);   // relevant peaks
+  plt.addDataArrays(N, &t[0], &yL[0], &yR[0]);            // shadowed data
+  plt.plot();
+}
+
+void peakPickerShadowSettings(const std::vector<double>& x, const std::vector<double>& widths)
+{
+  // plots envelopes resulting from various settings for the shadow width
+
+
+
+}
 
 
 std::vector<double> testEnvelope2(const std::vector<double>& x)
 {
-  testStickOutRemoval(); 
+  peakPickerShadows(x, 20);
+
+
+  //testStickOutRemoval(); 
 
 
   // Algorithm parameters:
@@ -1588,12 +1641,14 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   plt.addDataArrays((int)tpR.size(), &tpR[0], &ypR[0]);     // relevant peaks
   if(plotType == 0)
   {
-    plt.addDataArrays(N, &t[0], &y[0], &yL[0], &yR[0]);    // shadowed data
+    //plt.addDataArrays(N, &t[0], &y[0], &yL[0], &yR[0]);    // shadowed data
     plt.addDataArrays(N, &t[0], &yL[0], &yR[0]);    // shadowed data
   }
   else{
+
     plt.addDataArrays((int)tpC.size(), &tpC[0], &ypC[0]);   // coarse peaks
     plt.addDataArrays((int)tpF.size(), &tpF[0], &ypF[0]); } // fine peaks
+
   plt.plot();
 
 
