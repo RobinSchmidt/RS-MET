@@ -1570,14 +1570,43 @@ void peakPickerShadowSettings(const std::vector<double>& x, const std::vector<do
 {
   // plots envelopes resulting from various settings for the shadow width
 
+  using VecD = std::vector<double>;
 
+  int N = (int) x.size();
+  VecD t = rsRangeLinear(0.0, double(N-1), N);
 
+  VecD y(N);
+  rsArrayTools::shiftToMakeMinimumZero(&x[0], N, &y[0]);
+
+  rsPeakPicker<double> pp;
+  std::vector<int> peaks;
+
+  // todo: add coarse and fine envelope
+
+  GNUPlotter plt;
+  plt.setPixelSize(1200, 400);
+  plt.addDataArrays(N, &t[0], &y[0]);                     // shifted data
+  for(size_t i = 0; i < widths.size(); i++)
+  {
+    pp.setShadowWidths(widths[i], widths[i]);
+    peaks = pp.getRelevantPeaks(&t[0], &x[0], N);
+    int M = int(peaks.size());
+    VecD tp(M), yp(M);
+    int n, m;
+    for(m = 0; m < M; m++) {
+      n = peaks[m]; tp[m] = t[n]; yp[m] = y[n]; }
+    plt.addDataArrays((int)tp.size(), &tp[0], &yp[0]);
+  }
+  plt.plot();
 }
 
 
 std::vector<double> testEnvelope2(const std::vector<double>& x)
 {
+  peakPickerShadowSettings(x, { 10, 20, 30 });
   peakPickerShadows(x, 20);
+
+
 
 
   //testStickOutRemoval(); 
