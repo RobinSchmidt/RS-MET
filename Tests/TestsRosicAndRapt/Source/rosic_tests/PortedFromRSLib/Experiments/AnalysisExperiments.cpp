@@ -1500,12 +1500,40 @@ std::vector<double> testEnvelope1(const std::vector<double>& x)
 //  it may make sense to use an average of forward-first and backward-first application to make the 
 //  algorithm invariant with respect to mirroring the data (this invariance seems desirable)
 
+bool testStickOutRemoval()
+{
+  using VecI = std::vector<int>;
+  using VecD = std::vector<double>;
+
+  VecD x, t; 
+  x = VecD{ 1,2,3.1,3.5,5,4,6.1,6,7, 5,5,5, 6, 4,4, 5, 4,4, 2 };
+  int N = rsSize(x);
+
+  t = rsLinearRangeVector(N, 0.0, N-1);
+
+
+  rsPeakPicker<double> picker;
+
+  //VecI peaks = VecI{ 0, 8 };
+  VecI peaks = VecI{ 0, 18 };
+
+
+  picker.removeStickOuts(peaks, &t[0], &x[0], N, peaks[0], rsLast(peaks));
+
+
+  return true;
+}
 
 
 std::vector<double> testEnvelope2(const std::vector<double>& x)
 {
+  testStickOutRemoval(); 
+
+
   // Algorithm parameters:
-  double shadowWidth = 30.0;
+  double shadowWidth = 10.0;  
+
+  // nice for plot: seed 7, width = 30
 
   // Plotting parameters:
   int plotType = 1;   // 0: shadowed-data and relevant peaks, 1: coarse,fine,relevant peaks
@@ -1516,7 +1544,7 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
 
   // Create and set up peak picker:
   rsPeakPicker<double> pp;
-  pp.setIncludeEdges(true);
+  //pp.setIncludeEdges(true);
   pp.setShadowWidths(shadowWidth, shadowWidth);
   //pp.setRelativeProminenceThreshold(0.25); // maybe have separate thresholds for left and right
 
@@ -1527,9 +1555,11 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   pp.shadowRight(&t[0], &y[0], &yR[0], N);
 
   // Find coarse, fine and relevant peaks:
-  std::vector<int> peaksC = pp.getCoarsePeaks(  &t[0], &x[0], N);
-  std::vector<int> peaksF = pp.getFinePeaks(    &t[0], &x[0], N);
-  std::vector<int> peaksR = pp.getRelevantPeaks(&t[0], &x[0], N);
+  std::vector<int> peaksC, peaksF, peaksR;
+  peaksF = pp.getFinePeaks(    &t[0], &x[0], N);
+  peaksR = pp.getRelevantPeaks(&t[0], &x[0], N);
+  peaksC = pp.getCoarsePeaks(  &t[0], &x[0], N);
+
 
   // Create data arrays for plotting coarse, fine and relevant peaks
   int M = int(peaksR.size());
@@ -1558,7 +1588,7 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   plt.addDataArrays((int)tpR.size(), &tpR[0], &ypR[0]);     // relevant peaks
   if(plotType == 0)
   {
-    //plt.addDataArrays(N, &t[0], &y[0], &yL[0], &yR[0]);    // shadowed data
+    plt.addDataArrays(N, &t[0], &y[0], &yL[0], &yR[0]);    // shadowed data
     plt.addDataArrays(N, &t[0], &yL[0], &yR[0]);    // shadowed data
   }
   else{
@@ -1568,7 +1598,7 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
 
 
   // -at n=26 (seed=65), the fine algo misses a stickout, seed 37: 149,150
-  // -with seed 37, at n=194,.. a few stickouts are missed with the relevance algo
+  // -with seed 37, at n=194, width = 20.. a few stickouts are missed with the relevance algo
   //  -> we need to run the no-stickout algo on the fully data in any case
   //  -> this probably makes it more meaningful to always include the edge-values
   // -how would this compare to a regular bi-directionla envelope follower with zero-attack?

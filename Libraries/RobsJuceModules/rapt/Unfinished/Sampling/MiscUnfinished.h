@@ -943,7 +943,9 @@ public:
   peak-index array returned by getRelevantPeaks. By default, this is turned off such that will 
   really only get the actual peaks. But in some situations - for example, in envelope estimation, 
   it may be desirabel to have the first and last datapoint always included. */
-  void setIncludeEdges(bool shouldInclude) { includeEdges = shouldInclude; }
+  //void setIncludeEdges(bool shouldInclude) { includeEdges = shouldInclude; }
+  // removed - we now always include the edges because the post-processing makes more sense that
+  // way
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1092,7 +1094,7 @@ protected:
   //   be relative to some highest peak in the neighbourhood?
   // -maybe we could also have different thresholds for leftward and rightward directions
 
-  bool includeEdges = false; 
+  //bool includeEdges = false; 
   // maybe get rid - we should probably always include the endpoints
 
 };

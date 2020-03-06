@@ -1613,7 +1613,9 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   // run removeStickOuts over the whole data in any case as final step
 
   postProcessPeaks(peaks, t, x, N);
+  //postProcessPeaks(peaks, t, &tmp[0], N);
     // should this maybe also use tmp instead of x? ...maybe that doesn't make a difference?
+    // nope - we need to use x - see edges in experiment with seed=7, width=20
 
 
   return peaks;
@@ -1632,11 +1634,16 @@ std::vector<int> rsPeakPicker<T>::getCoarsePeaks(const T* t, const T* x, int N)
 template<class T>
 std::vector<int> rsPeakPicker<T>::getFinePeaks(const T* t, const T* x, int N)
 {
+  // we also need to shift the minimum to zero here - or - wait - no
+
   std::vector<int> peaks = getPeakCandidates(x, N);
+
+
 
   // todo - remove stickouts - yes, they can occur even with the fine algo in case of 
   // quasi-plateaus
 
+  postProcessPeaks(peaks, t, x, N); // seems to not always work - why?
 
   return peaks;
 
@@ -1667,24 +1674,24 @@ std::vector<T> rsPeakPicker<T>::getPreProcessedData(const T* t, const T* x, int 
 template<class T>
 void rsPeakPicker<T>::postProcessPeaks(std::vector<int>& peaks, const T* x, const T* y, int N)
 {
-  // Apply optional edge-handling - this will add the endpoints of the array to the peak-indices 
-  // (if they are not already there) and then remove any stickouts that may have resulted from 
-  // doing so:
-  if(includeEdges)
-  {
-    // add edges:
-    if(peaks[0] != 0)        rsPrepend(peaks, 0);    // left edge
-    if(rsLast(peaks) != N-1) rsAppend(peaks, N-1);   // right edge
+  // Add the endpoints of the array to the peak-indices (if they are not already there) and then 
+  // remove any stickouts:
+  if(peaks[0] != 0)        rsPrepend(peaks, 0);    // left edge
+  if(rsLast(peaks) != N-1) rsAppend(peaks, N-1);   // right edge
 
-    // remove stickouts (maybe it should be called addStickOuts):
-    int M = int(peaks.size());
-    removeStickOuts(peaks, x, y, N, peaks[0],   peaks[1]);
-    removeStickOuts(peaks, x, y, N, peaks[M-2], peaks[M-1]);
-    // can this fail? is it possible that the peaks array has less than two elements at this point? 
-    // perhaps only when the length of the input array N is < 2 - maybe, we need code to handle 
-    // that degenerate case -> make unit tests with such degenerate cases
-    // maybe we should always call removeStickOuts for the full data
-  }
+
+
+
+
+  //removeStickOuts(peaks, x, y, N, 0, N-1);
+    // this is not enough - we need to call it for every pair of peak indices
+
+  
+  // ...like this:
+  std::vector<int> tmpPeaks = peaks;
+  for(size_t i = 0; i < tmpPeaks.size()-1; i++)
+    removeStickOuts(peaks, x, y, N, tmpPeaks[i], tmpPeaks[i+1]);
+  // ...yes - this seems to give good results!
 }
 
 template<class T>
@@ -1812,6 +1819,18 @@ void rsPeakPicker<T>::removeStickOuts(std::vector<int>& p, const T* x, const T* 
     removeStickOuts(p, x, y, N, n0, ns);    // recursive call for left  section n0..ns
     removeStickOuts(p, x, y, N, ns, n1); }  // recursive call for right section ns..n1
 }
+// i think, something is still wrong with this function
+// -i think, we somehow nee to use the p array in getMaxStickOut too
+// -when calling getMaxStickout, n0 and n1 should actually be neightbours in the sense that they 
+//  occur in p-array at subsequent positions
+// -removeStickOuts should actually not take array indices into x,y as arguments but array-indices
+//  into p- just as the (currently false) documentation says
+// -instead of getMaxStickOut returning a signle index, it should return an array of indices to be
+//  merged into p - this array should conatin the maxStickOut values (as they are computed now) for
+//  all index pairs in between n0, n1
+// -but this algo here may actually be useful in other contexts and the results are actually not
+//  too bad in env-detection either - maybe in the case of finding the coars envelope?
+
 
 template<class T>
 int rsPeakPicker<T>::getMaxStickOut(const T* x, const T* y, int N, int n0, int n1)
