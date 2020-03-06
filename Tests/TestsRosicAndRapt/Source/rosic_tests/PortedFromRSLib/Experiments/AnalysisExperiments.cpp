@@ -1566,6 +1566,19 @@ void peakPickerShadows(const std::vector<double>& x, double shadowWidth)
   plt.plot();
 }
 
+// adds partial data from x- and y-arrays - only those datapoints that are in indices
+// move to Plotting
+void addData(GNUPlotter& plt, const std::vector<double>& x, const std::vector<double>& y,
+  const std::vector<int> indices)
+{
+  rsAssert(x.size() == y.size());
+  int M = int(indices.size());
+  std::vector<double> xt(M), yt(M);
+  for(int m = 0; m < M; m++)  {
+    int n = indices[m]; xt[m] = x[n]; yt[m] = y[n]; }
+  plt.addDataArrays(M, &xt[0], &yt[0]);
+}
+
 void peakPickerShadowSettings(const std::vector<double>& x, const std::vector<double>& widths)
 {
   // plots envelopes resulting from various settings for the shadow width
@@ -1581,22 +1594,18 @@ void peakPickerShadowSettings(const std::vector<double>& x, const std::vector<do
   rsPeakPicker<double> pp;
   std::vector<int> peaks;
 
-  // todo: add coarse and fine envelope
 
   GNUPlotter plt;
   plt.setPixelSize(1200, 400);
   plt.addDataArrays(N, &t[0], &y[0]);                     // shifted data
-  for(size_t i = 0; i < widths.size(); i++)
-  {
+  peaks = pp.getFinePeaks(  &t[0], &x[0], N); 
+  addData(plt, t, y, peaks);
+  for(size_t i = 0; i < widths.size(); i++) {
     pp.setShadowWidths(widths[i], widths[i]);
     peaks = pp.getRelevantPeaks(&t[0], &x[0], N);
-    int M = int(peaks.size());
-    VecD tp(M), yp(M);
-    int n, m;
-    for(m = 0; m < M; m++) {
-      n = peaks[m]; tp[m] = t[n]; yp[m] = y[n]; }
-    plt.addDataArrays((int)tp.size(), &tp[0], &yp[0]);
-  }
+    addData(plt, t, y, peaks); }
+  peaks = pp.getCoarsePeaks(&t[0], &x[0], N); 
+  addData(plt, t, y, peaks);
   plt.plot();
 }
 
@@ -1604,7 +1613,7 @@ void peakPickerShadowSettings(const std::vector<double>& x, const std::vector<do
 std::vector<double> testEnvelope2(const std::vector<double>& x)
 {
   peakPickerShadowSettings(x, { 10, 20, 30 });
-  peakPickerShadows(x, 20);
+  //peakPickerShadows(x, 20);
 
 
 
