@@ -1812,12 +1812,29 @@ void amplitudeDeBeating()
   // remove the beating:
   typedef rsEnvelopeExtractor<double>::endPointModes EM;
   double beatPeriodInFrames = frameRate / beatFrq;  // 38.222...
-  Vec time = rsRangeLinear(0.0, double(numFrames-1), numFrames);  // time is measured in frames
+
+  Vec time = rsRangeLinear(0.0, double(numFrames-1), numFrames);  
+  // time is measured in frames - todo: measure it in seconds to be consistent with the sinusoidal model
+
+
   Vec result(numFrames);
   rsEnvelopeExtractor<double> envExtractor;
+
+  // not relevant anymore with the new peak-picker algo:
   envExtractor.setStartMode(EM::ZERO_END);  
   envExtractor.setEndMode(EM::ZERO_END);   // definitely better than extraploation but still not good enough
   //envExtractor.setMaxSampleSpacing(100);   // should be >= beating period in frames
+
+  // params for new peack picker algo:
+  //envExtractor.peakPicker.setShadowWidths(100.0);
+  envExtractor.peakPicker.setShadowWidths(10.0, 100.0); // 
+  // paramater is set in unit "number of frames" - we need quite high values here...todo: use a 
+  // high value for rightward and lower value for leftward shadows - 20, 100 seems good - the 
+  // leftward shadow is a bit like an "attack"...hmm...well...not quite
+  // -even with high settings, the enveloep is not undluy smoothed out - so higher settings are
+  //  not as problematic as i thought at first - the shadowed envelope seems to follow the original
+  //  envelope exactly in the decaying section
+  // ...results with asymmetric settings are quite good - maybe 
 
   envExtractor.connectPeaks(&time[0], &beatEnv[0], &result[0], numFrames);
   // this funtion needs more investigation - todo: place some minor maxima into the troughs and
@@ -1826,6 +1843,8 @@ void amplitudeDeBeating()
   //rsPlotVector(env);
   rsPlotVectors(ampEnv, beating, beatEnv, result);
   //rsPlotVectors(beatEnv, result);
+
+
 
   // Observations
   // -envExtractor.setMaxSampleSpacing should be >= beatPeriodInFrames (38.22), otherwise, the 
@@ -1841,9 +1860,37 @@ void amplitudeDeBeating()
   //  extrapolate
   //  ...this is fixed
 
+  // Observations for the peak-shadowing:
+  // -we seem to need quite high settings like setShadowWidths(10.0, 100.0), but these large'ish 
+  //  shadows do not seem to have much negative effect, so high shadow-widths not as problematic as
+  //  i expected first - the shadows envelope follows the original one exactly in the tail section
+  //  (to check, plot the envelope and its shadowed version...maybe later)
+  // -it really makes a lot of sense to use asymmetric sttings for the shadowing - rightward 
+  //  shadows should be a lot larger then leftward shadows - with a large leftward shadow, the 
+  //  first envelope peak would have been missed
+
   // todo: test other situations, where the beating occurs only in the middle, at the end, start 
   // and end, etc. - also use a beating that has a time-varying frequency - make another test for 
   // this
+
+  // Ideas:
+  // -to further improve the peak shadowing, the following things coudl be tried:
+  //  -pass the envelope through a nonlinear monotonic function (such as a power rule) - for 
+  //   example, using env^2 would amplify the differences between peaks and troughs (troughs would
+  //   be deepened, if the exponent is > 1
+  //  -in areas of high overall amplitude, even troughs that are quite deep in an absolute sense 
+  //   may have only a low relative depth. and - since the exponential shadows respond to relative 
+  //   depth - that may lead to the undesirable effect that the shadows are smaller than we would
+  //   like them to be in these areas. remedies:
+  //   -make the shadow-width adaptive and adapt it according to the overall level? 
+  //   -highpass the envelope before searching for the peaks (i.e. subtract a bidirectionally 
+  //    lowpassed version of the env). the cutof should be very low - in the subsonic range - even, 
+  //    in the sub-tremolo range - it should only remove "moving DC", tremolo should be retained 
+  //    because that'S what we want to detect and kill - we need the non-uniform filters for this
+  //   -try linear shadowing - i think, likear shadowing would be directly sensitive to the 
+  //    absolute depth rather that the relative. maybe other shapes besides linear and exponential 
+  //    may also make sense? what about exponential-squared, i.e. gaussian like? ...and how can 
+  //    that be implemented? maybe by pre-waveshaping the env?
 }
 
 std::vector<double> createLinearSineSweep(int N, double f1, double f2, double fs, double a = 1)

@@ -1944,24 +1944,7 @@ void rsEnvelopeExtractor<T>::getMetaEnvelopeNew(
   const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime)
 {
-  peakPicker.setShadowWidths(1.0); // test
-  // damn! we seem to need a very high setting (> 1) for the shadow-width for the rhodes sample in 
-  // order to avoid the minor peaks within the troughs of the tremolo - but such high settings may 
-  // make the overall envelope samplign too coarse...
-  // todo: 
-  // -plot the shadows for this case to see what's going on
-  // -idea: maybe try linear shadowing (maybe other shapes besides linear and exponential may also 
-  //  make sense? hwat about exponetia-squared? ...and how can that be implemeneted?)
-  // -maybe it's beause the troughs/shallow a small compared to the overall level?
-  //  -maybe we can deepen them artificially by using env^2 or env^3 instead of env itself
-  // -maybe we can pre-process by a median filter? or moving maximum?
-  // -how about making the width adaptive and adapt it according to the overall level? shrink the
-  //  width, if the overall level is high
-  // -maybe we can highpass/differentiate the envelope before the peak-picker in order to get rid 
-  //  of the overall level/offset - this should perhaps be done in the pre-procesing step in 
-  //  rsPeakPicker - the non-uniform filters could be used - maybe make an experiment in the main
-  //  codebase that creates an artificial envelope showing features typical for the rhodes samples
-
+  //peakPicker.setShadowWidths(1.0); // test
 
   std::vector<int> peaks = peakPicker.getRelevantPeaks(rawEnvTime, rawEnvValue, rawEnvLength);
   metaEnvTime  = rsSelect(rawEnvTime,  peaks);
@@ -1989,9 +1972,6 @@ void rsEnvelopeExtractor<T>::getMetaEnvelopeNew(
   //    horizontal drawn through the smaller of the two envelope points 
   //  -but hwo exactly should the densification proceed? - in the simplest case, we would just put
   //   the new datapoints equally spaced between n0,n1 but that might not be ideal
-
-
-
   // what should we do with endTime here?
 }
 
@@ -2015,8 +1995,8 @@ void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* pe
   std::vector<T> metaEnvTime, metaEnvValue;
 
   // experimentally switching between odl and new algorithm:
-  getMetaEnvelope(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
-  //getMetaEnvelopeNew(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
+  //getMetaEnvelope(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
+  getMetaEnvelopeNew(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
 
 
   interpolateEnvelope(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(),

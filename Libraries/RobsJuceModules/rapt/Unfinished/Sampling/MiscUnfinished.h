@@ -1226,6 +1226,13 @@ public:
   // maybe rename to envelopeTimesAndValues
 
 
+
+  rsPeakPicker<T> peakPicker; 
+  // not yet used - to be used later inside getPeaks() instead of the simple function 
+  // findPeakIndices which is not sophisticated enough for this purpose because it finds a lot of
+  // irrelevant local peaks
+
+
 protected:
 
   //-----------------------------------------------------------------------------------------------
@@ -1261,17 +1268,12 @@ protected:
 
 
   T maxSpacingMultiplier = T(1);
-
   //T maxSpacing = 0; // maximum allowed spacing between envelope datapoints/samples
   // ...explain this better - in which unit is this measured - how does it relate to the time-unit
   // stored in the rsSinusoidalModel? ...i think, it should just be the same unit, whatever that 
   // unit is (it's seconds but we may later alos allow it to be in samples)
 
 
-  rsPeakPicker<T> peakPicker; 
-    // not yet used - to be used later inside getPeaks() instead of the simple function 
-    // findPeakIndices which is not sophisticated enough for this purpose because it finds a lot of
-    // irrelevant local peaks
 
 
   //T interpolationTension = T(0);
