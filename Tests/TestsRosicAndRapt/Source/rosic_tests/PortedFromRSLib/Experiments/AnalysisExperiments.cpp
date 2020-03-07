@@ -1500,31 +1500,7 @@ std::vector<double> testEnvelope1(const std::vector<double>& x)
 //  it may make sense to use an average of forward-first and backward-first application to make the 
 //  algorithm invariant with respect to mirroring the data (this invariance seems desirable)
 
-/*
-bool testStickOutRemoval()
-{
-  using VecI = std::vector<int>;
-  using VecD = std::vector<double>;
 
-  VecD x, t; 
-  x = VecD{ 1,2,3.1,3.5,5,4,6.1,6,7, 5,5,5, 6, 4,4, 5, 4,4, 2 };
-  int N = rsSize(x);
-
-  t = rsLinearRangeVector(N, 0.0, N-1);
-
-
-  rsPeakPicker<double> picker;
-
-  //VecI peaks = VecI{ 0, 8 };
-  VecI peaks = VecI{ 0, 18 };
-
-
-  picker.removeStickOuts(peaks, &t[0], &x[0], N, peaks[0], rsLast(peaks));
-
-
-  return true;
-}
-*/
 
 void peakPickerShadows(const std::vector<double>& x, double shadowWidth)
 {
@@ -1548,35 +1524,13 @@ void peakPickerShadows(const std::vector<double>& x, double shadowWidth)
   std::vector<int> peaksR;
   peaksR = pp.getRelevantPeaks(&t[0], &x[0], N);
 
-  // Create data arrays for plotting relevant peaks:
-  int M = int(peaksR.size());
-  std::vector<double> tpR(M), ypR(M);
-  int n, m;
-  for(m = 0; m < M; m++) {
-    n = peaksR[m];
-    tpR[m] = t[n];
-    ypR[m] = y[n]; }
-
   // Plot results:
   GNUPlotter plt;
   plt.setPixelSize(1200, 400);
   plt.addDataArrays(N, &t[0], &y[0]);                     // shifted data
-  plt.addDataArrays((int)tpR.size(), &tpR[0], &ypR[0]);   // relevant peaks
   plt.addDataArrays(N, &t[0], &yL[0], &yR[0]);            // shadowed data
+  addDataPartially(plt, t, y, peaksR);                    // relevant peaks
   plt.plot();
-}
-
-// adds partial data from x- and y-arrays - only those datapoints that are in indices
-// move to Plotting
-void addData(GNUPlotter& plt, const std::vector<double>& x, const std::vector<double>& y,
-  const std::vector<int> indices)
-{
-  rsAssert(x.size() == y.size());
-  int M = int(indices.size());
-  std::vector<double> xt(M), yt(M);
-  for(int m = 0; m < M; m++)  {
-    int n = indices[m]; xt[m] = x[n]; yt[m] = y[n]; }
-  plt.addDataArrays(M, &xt[0], &yt[0]);
 }
 
 void peakPickerShadowSettings(const std::vector<double>& x, const std::vector<double>& widths)
@@ -1594,107 +1548,31 @@ void peakPickerShadowSettings(const std::vector<double>& x, const std::vector<do
   rsPeakPicker<double> pp;
   std::vector<int> peaks;
 
-
   GNUPlotter plt;
   plt.setPixelSize(1200, 400);
   plt.addDataArrays(N, &t[0], &y[0]);                     // shifted data
   peaks = pp.getFinePeaks(  &t[0], &x[0], N); 
-  addData(plt, t, y, peaks);
+  addDataPartially(plt, t, y, peaks);
   for(size_t i = 0; i < widths.size(); i++) {
     pp.setShadowWidths(widths[i], widths[i]);
     peaks = pp.getRelevantPeaks(&t[0], &x[0], N);
-    addData(plt, t, y, peaks); }
+    addDataPartially(plt, t, y, peaks); }
   peaks = pp.getCoarsePeaks(&t[0], &x[0], N); 
-  addData(plt, t, y, peaks);
+  addDataPartially(plt, t, y, peaks);
   plt.plot();
 }
 
-
-std::vector<double> testEnvelope2(const std::vector<double>& x)
+void showPeakPickerPlots(const std::vector<double>& x)
 {
+  peakPickerShadows(x, 20);
   peakPickerShadowSettings(x, { 10, 20, 30 });
-  //peakPickerShadows(x, 20);
-
-
-
-
-  //testStickOutRemoval(); 
-
-
-  // Algorithm parameters:
-  double shadowWidth = 10.0;  
-
-  // nice for plot: seed 7, width = 30
-
-  // Plotting parameters:
-  int plotType = 1;   // 0: shadowed-data and relevant peaks, 1: coarse,fine,relevant peaks
-
-  // create time axis (todo: maybe use randomized time-instants):
-  int N = (int) x.size();
-  std::vector<double> t = rsRangeLinear(0.0, double(N-1), N);
-
-  // Create and set up peak picker:
-  rsPeakPicker<double> pp;
-  //pp.setIncludeEdges(true);
-  pp.setShadowWidths(shadowWidth, shadowWidth);
-  //pp.setRelativeProminenceThreshold(0.25); // maybe have separate thresholds for left and right
-
-  // Create shadowed data (for plotting):
-  std::vector<double> y(N), yL(N), yR(N);
-  rsArrayTools::shiftToMakeMinimumZero(&x[0], N, &y[0]);
-  pp.shadowLeft( &t[0], &y[0], &yL[0], N);
-  pp.shadowRight(&t[0], &y[0], &yR[0], N);
-
-  // Find coarse, fine and relevant peaks:
-  std::vector<int> peaksC, peaksF, peaksR;
-  peaksF = pp.getFinePeaks(    &t[0], &x[0], N);
-  peaksR = pp.getRelevantPeaks(&t[0], &x[0], N);
-  peaksC = pp.getCoarsePeaks(  &t[0], &x[0], N);
-
-
-  // Create data arrays for plotting coarse, fine and relevant peaks
-  int M = int(peaksR.size());
-  std::vector<double> tpR(M), xpR(M), ypR(M);
-  int n, m;
-  for(m = 0; m < M; m++) {
-    n = peaksR[m];
-    tpR[m] = t[n];
-    xpR[m] = x[n];  // maybe get rid - plot only with the shifted data
-    ypR[m] = y[n]; }
-
-  M = int(peaksC.size());
-  std::vector<double> tpC(M), ypC(M);
-  for(m = 0; m < M; m++) {
-    n = peaksC[m]; tpC[m] = t[n]; ypC[m] = y[n]; }
-
-  M = int(peaksF.size());
-  std::vector<double> tpF(M), ypF(M);
-  for(m = 0; m < M; m++) {
-    n = peaksF[m]; tpF[m] = t[n]; ypF[m] = y[n]; }
-   
-  // Plot results:
-  GNUPlotter plt;
-  plt.setPixelSize(1200, 400);
-  plt.addDataArrays(N, &t[0], &y[0]);                       // shifted data
-  plt.addDataArrays((int)tpR.size(), &tpR[0], &ypR[0]);     // relevant peaks
-  if(plotType == 0)
-  {
-    //plt.addDataArrays(N, &t[0], &y[0], &yL[0], &yR[0]);    // shadowed data
-    plt.addDataArrays(N, &t[0], &yL[0], &yR[0]);    // shadowed data
-  }
-  else{
-
-    plt.addDataArrays((int)tpC.size(), &tpC[0], &ypC[0]);   // coarse peaks
-    plt.addDataArrays((int)tpF.size(), &tpF[0], &ypF[0]); } // fine peaks
-
-  plt.plot();
 
 
   // -at n=26 (seed=65), the fine algo misses a stickout, seed 37: 149,150
   // -with seed 37, at n=194, width = 20.. a few stickouts are missed with the relevance algo
   //  -> we need to run the no-stickout algo on the fully data in any case
   //  -> this probably makes it more meaningful to always include the edge-values
-  // -how would this compare to a regular bi-directionla envelope follower with zero-attack?
+  // -how would this compare to a regular bi-directional envelope follower with zero-attack?
 
   // todo: experiment with using the no-stickout criterion *only* starting with 0 and N-1 as the
   // initial array of peaks - this would give the coarsest possible peak-array that sastisfies the
@@ -1706,7 +1584,9 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   //  -maybe this should somehow crossfade the shadowWidths from the minimum values that would 
   //   give the same result as the no-stickout criterion only and the maximum values that would 
   //   give all peaks (but how do we compute these values? this seem to be nontrivial)
-
+  // -maybe connect the peaks with splines instead of lines
+  // -maybe plot prominence related stuff - maybe plot the prominences themselves as
+  //  stems
 
   // Notes:
   // -Can it happen that there are 3 peaks p1 > p2 > p3 at time instants t1 < t2 < t3 such that the 
@@ -1717,26 +1597,7 @@ std::vector<double> testEnvelope2(const std::vector<double>& x)
   //  therefore even more so must lie under the line. This is because the expontial shadows are 
   //  always convex - the function segment between any two points always lies *under* the line 
   //  that directly connects the points
-
-
-  // todo: 
-  // -create a function that connects the peaks, plot this function together with the 
-  //  original x
-  // -maybe connect the peaks with splines instead of lines
-
-  // maybe have some booleans to decide what to plot (shadowedData, finePeaks, coarsePeaks, 
-  // relevantPeaks) - we want two kinds of plots:
-  //  -(1) shadowed data and relevant peaks
-  //  -(2) coarse, relevant and fine peaks
-  // -maybe plot prominence related stuff - maybe plot the prominences themselves as
-  //  stems
-  // -maybe plot more envelopes with different settings for the shadow width for comparison
-  //  say: 10,20,30
-
-  std::vector<double> env(x.size());
-  return env;
 }
-
 
 template<class T>
 std::vector<T> peakSmoothabilities(
@@ -1834,7 +1695,7 @@ void peakPicker()
 
   // shows result using recursive smoothing via rsPeakTrailDragger - this should be more efficient
   // and not suffer from peak-wandering/drift
-  VecD yEnv2 = testEnvelope2(x);  // 
+  showPeakPickerPlots(x);  // maybe this should also take an (optional) array of time-stamps
   //rsPlotVectors(x, yEnv2);
 
 

@@ -1796,6 +1796,8 @@ public:
   }
   // can be optimized: velocity and acceleration can be computed in a combined function - avoids
   // 2 of otherwise 5 evaluations of f
+  // Note: for a curve of the form c(t) = (t,f(t)), i.e. a function, the curvature comes out as
+  // f'' / (1 + f' * f')^(3/2)
 
   /** Computes the (signed) radius of curvature which is the reciprocal of the curvature itself. */
   T getRadiusOfCurvature(T t, T h) // is this the correct name?

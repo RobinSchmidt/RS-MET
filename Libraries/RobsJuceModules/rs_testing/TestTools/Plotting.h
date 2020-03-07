@@ -274,6 +274,23 @@ model of a partial for comparison. */
 void plotModeVsSineAmpEnv(
   rsModalFilterParameters<double>& modal, RAPT::rsSinusoidalPartial<double>& sinusoidal);
 
+/** Adds partial data from x- and y-arrays - only those datapoints that are listed in indices 
+array. */
+inline void addDataPartially(GNUPlotter& plt, 
+  const std::vector<double>& x, const std::vector<double>& y, const std::vector<int> indices)
+{
+  rsAssert(x.size() == y.size());
+  int M = int(indices.size());
+  std::vector<double> xt(M), yt(M);           // temporary arrays to hold partial data
+  for(int m = 0; m < M; m++)  {
+    int n = indices[m];                       // index into x- and y-arrays
+    rsAssert(n >= 0 && n < (int) x.size());
+    xt[m] = x[n]; 
+    yt[m] = y[n]; }
+  plt.addDataArrays(M, &xt[0], &yt[0]);
+  // maybe use rsSelect - but that uses an array of type size_t for the indices - maybe make 
+  // another version that uses int
+}
 
 
 
