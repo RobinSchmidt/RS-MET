@@ -163,6 +163,32 @@ inline void rsPopFront(std::vector<T>& v)
   rsRemoveRange(v, 0, 0);
 }
 
+
+
+template<class TVal, class TIdx>
+inline std::vector<TVal> rsSelect(const TVal* x, const std::vector<TIdx>& indices)
+{
+  std::vector<TVal> r(indices.size());
+  for(TIdx i = 0; i < (TIdx) indices.size(); i++)
+    r[i] = x[indices[i]];
+  return r;
+}
+
+/** Returns a new vector that contains only those elements from the original vector v at the given
+indices. TVal is the type of the values in v and TIdx is the type of the index-values - for example 
+size_t or int. Note that it doesn't check, if the entries in the indicies array are actually valid
+indices for v-array - making that sure is the responsibility of the caller. */
+template<class TVal, class TIdx>
+inline std::vector<TVal> rsSelect(const std::vector<TVal>& v, const std::vector<TIdx>& indices)
+{
+  return rsSelect(&v[0], indices);
+  //std::vector<TVal> r(indices.size());
+  //for(TIdx i = 0; i < (TIdx) indices.size(); i++)
+  //  r[i] = v[indices[i]];
+  //return r;
+}
+
+/*
 template<class T>
 inline std::vector<T> rsSelect(std::vector<T>& v, std::vector<size_t> indices)
 {
@@ -171,6 +197,10 @@ inline std::vector<T> rsSelect(std::vector<T>& v, std::vector<size_t> indices)
     r[i] = v[indices[i]];
   return r;
 }
+*/
+
+
+
 
 template<class T>
 inline void rsFill(std::vector<T>& v, T value)

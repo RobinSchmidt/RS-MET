@@ -1180,6 +1180,10 @@ public:
     std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime);
   // documentation needed
 
+  void getMetaEnvelopeNew(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
+    std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime);
+
+
 
   void interpolateEnvelope(const T* envTimes, T* envValues, int envLength,
     const T* interpolatedTimes, T* interpolatedValues, int interpolatedLength);
@@ -1262,7 +1266,7 @@ protected:
   // unit is (it's seconds but we may later alos allow it to be in samples)
 
 
-  //rsPeakPicker<T> peakPicker; 
+  rsPeakPicker<T> peakPicker; 
     // not yet used - to be used later inside getPeaks() instead of the simple function 
     // findPeakIndices which is not sophisticated enough for this purpose because it finds a lot of
     // irrelevant local peaks

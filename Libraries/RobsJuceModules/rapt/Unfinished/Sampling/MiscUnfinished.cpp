@@ -1895,12 +1895,19 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
   // to pass through the actual peaks
 }
 
+
+
+// old version - maybe delete (or comment out), wehn the new one is functional
 template<class T>
 void rsEnvelopeExtractor<T>::getMetaEnvelope(
   const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime)
 {
   getPeaks(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
+    // this needs to be replace by the peakPicker - maybe the we will also have to remove the call
+    // to setupEndValues below because the peak picker catually returns an envelope with the neds 
+    // included
+
   //rsAssert(rsArrayTools::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
   //GNUPlotter plt;
@@ -1915,6 +1922,7 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
   //rsAssert(rsArrayTools::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
   fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue, maxSpacing);
+
   //rsAssert(rsArrayTools::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
@@ -1925,6 +1933,28 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
 // -maybe fillSparseAreas should be done before setupEndValues?
 // -maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
 //  skip the de-beating process
+
+
+// not yet used - this should replace the od version above:
+template<class T>
+void rsEnvelopeExtractor<T>::getMetaEnvelopeNew(
+  const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
+  std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime)
+{
+  std::vector<int> peaks = peakPicker.getRelevantPeaks(rawEnvTime, rawEnvValue, rawEnvLength);
+  metaEnvTime  = rsSelect(rawEnvTime,  peaks);
+  metaEnvValue = rsSelect(rawEnvValue, peaks);
+
+  T maxSpacing = 
+    maxSpacingMultiplier * rsArrayTools::maxDifference(&metaEnvTime[0], (int)metaEnvTime.size());
+    // what's the rationale behind this formula?
+
+  fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue, maxSpacing);
+
+    // what should we do with endTime here?
+}
+
+
 
 template<class T>
 void rsEnvelopeExtractor<T>::interpolateEnvelope(const T* envTimes, T* envValues, int envLength,
@@ -2133,7 +2163,7 @@ void rsEnvelopeExtractor<T>::getPeaks(const T *x, const T *y, int N,
     size_t n = peakIndices[m];
     peaksX[m] = x[n];
     peaksY[m] = y[n];
-    // todo: refine to subsample-precision
+    // todo: refine to subsample-precision, maybe use rsSelect
   }
 }
 
