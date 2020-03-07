@@ -145,6 +145,10 @@ void rsImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, T
     a *= s; b *= s; c *= s; d *= s; }
   // maybe try different formulas that normalize in a ways such that a^2+b^2 = y, c^2+d^2 = 1-y,
   // a^2+c^2 = 1-x, b^2+d^2 = x ...or something - but maybe that's not possible
+  // maybe try a sin/cos based constant power crossfade (does it actually make a difference in this 
+  // case, if we first de-interpolate horizontally and then vertically or the other way around?
+  // ...if this works well, use a polynomial approximation - this might be even less costly than
+  // renormalizing with the sqrt as we do now
 
   //sum = a+b+c+d;  // 1, when (x,y) = (0.5,0.5) and 0.5 when (x,y) = (0,0)
   // can we find a formula that returns 1 in "both" cases? what about 

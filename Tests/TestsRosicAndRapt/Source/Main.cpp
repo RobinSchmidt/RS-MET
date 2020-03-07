@@ -284,7 +284,7 @@ int main(int argc, char* argv[])
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
   //ropewayAlgo();
-  peakPicker();
+//  peakPicker();
 
 
   // Delay:
@@ -423,7 +423,7 @@ int main(int argc, char* argv[])
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
 
-  //amplitudeDeBeating();
+  amplitudeDeBeating();
   //amplitudeDeBeating2();
   //harmonicDeBeating1();
   //harmonicDeBeating2();

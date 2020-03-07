@@ -2023,12 +2023,14 @@ void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* pe
     envTimes, peakValues, length);
   rsAssert(rsLast(metaEnvTime) == envTimes[length-1]);
 
+  /*
   GNUPlotter plt;
   plt.addDataArrays(length, envTimes, envValues);
   plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
   plt.plot();
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
   ////rsPlotArraysXY(length, envTimes, envValues); // debug
+  */
 }
 
 template<class T>

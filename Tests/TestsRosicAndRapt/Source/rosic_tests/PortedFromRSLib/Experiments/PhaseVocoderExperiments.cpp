@@ -1766,6 +1766,17 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 // look at files decompositionSteelGuitar002.m, testHarmonicAnalysis.M
 }
 
+// returns indices of minima - move to library
+template<class T>
+std::vector<int> findTroughs(const T* x, int N)
+{
+  std::vector<int> t;
+  for(int i = 1; i < N-1; i++)
+    if(x[i] < x[i-1] && x[i] < x[i+1])
+      t.push_back(i);
+  return t;
+}
+
 void amplitudeDeBeating()
 {
   // We create an attack/decay sine envelope superimposed with a decaying sine modulation/beating
@@ -1792,6 +1803,12 @@ void amplitudeDeBeating()
   //rsReverse(beating); // test
   Vec beatEnv = ampEnv + beating;
 
+  // add little spikes into the troughs such that the bottoms of the troughs become minor local 
+  // maxima/peaks - we want the peak-picker to ignore them:
+  std::vector<int> troughs = findTroughs(&beatEnv[0], (int) beatEnv.size());
+  for(int i = 0; i < (int)troughs.size(); i++)
+    beatEnv[troughs[i]] += 0.05;
+
   // remove the beating:
   typedef rsEnvelopeExtractor<double>::endPointModes EM;
   double beatPeriodInFrames = frameRate / beatFrq;  // 38.222...
@@ -1801,7 +1818,10 @@ void amplitudeDeBeating()
   envExtractor.setStartMode(EM::ZERO_END);  
   envExtractor.setEndMode(EM::ZERO_END);   // definitely better than extraploation but still not good enough
   //envExtractor.setMaxSampleSpacing(100);   // should be >= beating period in frames
+
   envExtractor.connectPeaks(&time[0], &beatEnv[0], &result[0], numFrames);
+  // this funtion needs more investigation - todo: place some minor maxima into the troughs and
+  // try to get the beat-detector to ignore them - that's the current problem
 
   //rsPlotVector(env);
   rsPlotVectors(ampEnv, beating, beatEnv, result);
