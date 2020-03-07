@@ -1573,6 +1573,9 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
 {
   // Pre-process, find peak candidates and apply optional prominence thresholding:
   std::vector<T> tmp = getPreProcessedData(t, x, N);
+
+  rsPlotArraysXY(N, t, x, &tmp[0]); // for debug
+
   std::vector<int> peaks = getPeakCandidates(&tmp[0], N);
   if(promThresh != T(0) && promToMaxThresh != T(0) && promToHeightThresh != T(0))
   {
@@ -1935,23 +1938,61 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
 //  skip the de-beating process
 
 
-// not yet used - this should replace the od version above:
+// should replace the old version above:
 template<class T>
 void rsEnvelopeExtractor<T>::getMetaEnvelopeNew(
   const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime)
 {
+  peakPicker.setShadowWidths(1.0); // test
+  // damn! we seem to need a very high setting (> 1) for the shadow-width for the rhodes sample in 
+  // order to avoid the minor peaks within the troughs of the tremolo - but such high settings may 
+  // make the overall envelope samplign too coarse...
+  // todo: 
+  // -plot the shadows for this case to see what's going on
+  // -idea: maybe try linear shadowing (maybe other shapes besides linear and exponential may also 
+  //  make sense? hwat about exponetia-squared? ...and how can that be implemeneted?)
+  // -maybe it's beause the troughs/shallow a small compared to the overall level?
+  //  -maybe we can deepen them artificially by using env^2 or env^3 instead of env itself
+  // -maybe we can pre-process by a median filter? or moving maximum?
+  // -how about making the width adaptive and adapt it according to the overall level? shrink the
+  //  width, if the overall level is high
+  // -maybe we can highpass/differentiate the envelope before the peak-picker in order to get rid 
+  //  of the overall level/offset - this should perhaps be done in the pre-procesing step in 
+  //  rsPeakPicker - the non-uniform filters could be used - maybe make an experiment in the main
+  //  codebase that creates an artificial envelope showing features typical for the rhodes samples
+
+
   std::vector<int> peaks = peakPicker.getRelevantPeaks(rawEnvTime, rawEnvValue, rawEnvLength);
   metaEnvTime  = rsSelect(rawEnvTime,  peaks);
   metaEnvValue = rsSelect(rawEnvValue, peaks);
 
+
+  /*
   T maxSpacing = 
     maxSpacingMultiplier * rsArrayTools::maxDifference(&metaEnvTime[0], (int)metaEnvTime.size());
-    // what's the rationale behind this formula?
-
+    // what's the rationale behind this formula? ..it doesn't seem to make sense
+  maxSpacing = 0.2;  // test
   fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue, maxSpacing);
+  */
 
-    // what should we do with endTime here?
+  // maybe fillSparseAreas should work as follows:
+  // -the area between two datapoints at indices n0,n1 is filled/densified with more datapoints 
+  //  only when there is no trough n0..n1, where a trough is defined by the condition that the 
+  //  minimum between n0..n1 is less than the smaller of the two values at n0 and n1
+  // -the function should operate on the peaks array - i.e. get the peaks-array as input by 
+  //  reference together with the the rawEnvTime and rawEnvValue arrays and add indices to the
+  //  peaks array accoridng to the following condtions:
+  //  -if for any pait of indices n0,n1, the time delta t[n1]-t[n0] > density, then:
+  //   -densify the area with datapoints, if there's no minimum between n0..n1 that is lower than
+  //    min(n0,n1), i.e. only if the actual envelope between n0,n1 does not undershoot the 
+  //    horizontal drawn through the smaller of the two envelope points 
+  //  -but hwo exactly should the densification proceed? - in the simplest case, we would just put
+  //   the new datapoints equally spaced between n0,n1 but that might not be ideal
+
+
+
+  // what should we do with endTime here?
 }
 
 
@@ -1972,15 +2013,20 @@ void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* pe
 {
   rsAssert(rsArrayTools::isSortedStrictlyAscending(&envTimes[0], length));
   std::vector<T> metaEnvTime, metaEnvValue;
+
+  // experimentally switching between odl and new algorithm:
   getMetaEnvelope(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
+  //getMetaEnvelopeNew(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
+
+
   interpolateEnvelope(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(),
     envTimes, peakValues, length);
   rsAssert(rsLast(metaEnvTime) == envTimes[length-1]);
 
-  //GNUPlotter plt;
-  //plt.addDataArrays(length, envTimes, envValues);
-  //plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
-  //plt.plot();
+  GNUPlotter plt;
+  plt.addDataArrays(length, envTimes, envValues);
+  plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
+  plt.plot();
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
   ////rsPlotArraysXY(length, envTimes, envValues); // debug
 }

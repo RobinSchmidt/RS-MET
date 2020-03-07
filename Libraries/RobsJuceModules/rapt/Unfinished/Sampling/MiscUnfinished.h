@@ -906,8 +906,10 @@ public:
   samples) within which these decaying trails decay down to their half-height. The idea behind this 
   is that larger peaks will "shadow" smaller nearby peaks by letting them fall under their 
   "trails". It's one of the meachanisms to filter out irrelevant peaks. */
-  void setShadowWidths(T widthL, T widthR)
-  { shadowWidthL = widthL; shadowWidthR = widthR; }
+  void setShadowWidths(T widthL, T widthR) { shadowWidthL = widthL; shadowWidthR = widthR; }
+
+  /** Convenience function to set both shadow widths at the same time to the same value. */
+  void setShadowWidths(T widths) { setShadowWidths(widths, widths); }
 
   /** Sets an absolute threshold for the peak prominence. Peaks with prominences below this value
   will be discarded as irrelevant. A value of zero will effectively switch this thresholding off. 
