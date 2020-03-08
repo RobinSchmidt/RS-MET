@@ -1952,6 +1952,24 @@ void rsEnvelopeExtractor<T>::getMetaEnvelopeNew(
   // what should we do with endTime here? i don't think, we need it - get rid of the parameter
 }
 
+
+
+template <class T>
+T maxPeakSpacing(const std::vector<int>& peaks, const T* time, const T* env, int N)
+{
+  T dMax = T(0);
+  for(int k = 2; k < rsSize(peaks) - 1; k++)
+  {
+    int i0 = peaks[k-1];         // left peak index
+    int i1 = peaks[k];           // right peak index
+    T d = time[i1] - time[i0];   // time delta between peaks
+    if(d > dMax)
+      dMax = d;
+  }
+  return dMax;
+}
+
+
 template<class T>
 void rsEnvelopeExtractor<T>::fillSparseAreasNew(const T* rawEnvTime, const T* rawEnvValue, 
   int rawEnvLength, std::vector<int>& peaks)
@@ -1960,8 +1978,14 @@ void rsEnvelopeExtractor<T>::fillSparseAreasNew(const T* rawEnvTime, const T* ra
   // interpolation in exponentially decaying tails (add new indices to the peaks array at which the 
   // original envelope also should be sampled even though there's no peak at these locations)
 
-  T maxSpacing = 
-    maxSpacingMultiplier * rsArrayTools::maxDifference(&peaks[0], (int)peaks.size());
+  //T maxSpacing = 
+  //  maxSpacingMultiplier * rsArrayTools::maxDifference(&peaks[0], (int)peaks.size());
+
+  //T maxSpacing = 
+  //  maxSpacingMultiplier * rsArrayTools::maxDifference(&peaks[1], (int)peaks.size()-1);
+
+  T maxSpacing = maxPeakSpacing(peaks, rawEnvTime, rawEnvValue, rawEnvLength);
+
   // what's the rationale behind this formula? i think, the (maximum) time-difference between peaks
   // that we find in the envelope is the period of the tremolo - we don't want to sample the 
   // envelope any denser than (half?) the tremolo rate because then, we would again potentially 
@@ -1997,15 +2021,10 @@ void rsEnvelopeExtractor<T>::fillSparseAreasNew(const T* rawEnvTime, const T* ra
         T t = t0 + (j+1) * (dt/(numExtraPoints+1));  // verify this formula
         int idx = rsArrayTools::findSplitIndexClosest(rawEnvTime, rawEnvLength, t);
         tmp[j] = idx;
-        //tmpTime[j]  = rawEnvTime[idx];
-        //tmpValue[j] = rawEnvValue[idx];
       }
       rsInsert(peaks, tmp, i);
-      //rsInsert(metaEnvValue, tmpValue, i);
     }
   }
-
-
 
   int dummy = 0;
 
