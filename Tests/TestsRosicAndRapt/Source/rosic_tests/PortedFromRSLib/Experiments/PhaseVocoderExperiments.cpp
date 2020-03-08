@@ -1824,23 +1824,13 @@ void amplitudeDeBeating()
   //envExtractor.setMaxSampleSpacing(100);   // should be >= beating period in frames
 
   // params for new peack picker algo:
-  //envExtractor.peakPicker.setShadowWidths(100.0);
-  envExtractor.peakPicker.setShadowWidths(10.0, 100.0); // 
-  // paramater is set in unit "number of frames" - we need quite high values here...todo: use a 
-  // high value for rightward and lower value for leftward shadows - 20, 100 seems good - the 
-  // leftward shadow is a bit like an "attack"...hmm...well...not quite
-  // -even with high settings, the enveloep is not undluy smoothed out - so higher settings are
-  //  not as problematic as i thought at first - the shadowed envelope seems to follow the original
-  //  envelope exactly in the decaying section
-  // ...results with asymmetric settings are quite good - maybe 
-
+  envExtractor.peakPicker.setShadowWidths(10.0, 100.0);
   envExtractor.connectPeaks(&time[0], &beatEnv[0], &result[0], numFrames);
-  // this funtion needs more investigation - todo: place some minor maxima into the troughs and
-  // try to get the beat-detector to ignore them - that's the current problem
+
 
   //rsPlotVector(env);
-  rsPlotVectors(ampEnv, beating, beatEnv, result);
-  //rsPlotVectors(beatEnv, result);
+  //rsPlotVectors(ampEnv, beating, beatEnv, result);
+  rsPlotVectors(beatEnv, result);
 
 
 

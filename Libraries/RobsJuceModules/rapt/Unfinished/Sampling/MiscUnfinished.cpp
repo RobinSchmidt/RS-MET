@@ -1900,7 +1900,8 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
 
 
 
-// old version - maybe delete (or comment out), wehn the new one is functional
+// old version - maybe delete (or comment out), when the new one is functional
+//...yep - seems it's obsolete now - do a few more tests and delete when everything is fine
 template<class T>
 void rsEnvelopeExtractor<T>::getMetaEnvelope(
   const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
@@ -1942,17 +1943,13 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
 template<class T>
 void rsEnvelopeExtractor<T>::getMetaEnvelopeNew(
   const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
-  std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime)
+  std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue)
 {
   std::vector<int> peaks = peakPicker.getRelevantPeaks(rawEnvTime, rawEnvValue, rawEnvLength);
   fillSparseAreasNew(rawEnvTime, rawEnvValue, rawEnvLength, peaks);
   metaEnvTime  = rsSelect(rawEnvTime,  peaks);
   metaEnvValue = rsSelect(rawEnvValue, peaks);
-
-  // what should we do with endTime here? i don't think, we need it - get rid of the parameter
 }
-
-
 
 template <class T>
 T maxPeakSpacing(const std::vector<int>& peaks, const T* time, const T* env, int N)
@@ -1967,7 +1964,12 @@ T maxPeakSpacing(const std::vector<int>& peaks, const T* time, const T* env, int
       dMax = d;
   }
   return dMax;
+  // the loop runs only from 2 to to size-1 because we want to ignore the first and last 
+  // time-deltas because these datapoints correspond to the first and last envelope sample and are
+  // not actual peaks - they are in the peaks array for technical reasons...that may be a bit 
+  // inelegant..
 }
+// make protected member function
 
 
 template<class T>
@@ -1978,14 +1980,7 @@ void rsEnvelopeExtractor<T>::fillSparseAreasNew(const T* rawEnvTime, const T* ra
   // interpolation in exponentially decaying tails (add new indices to the peaks array at which the 
   // original envelope also should be sampled even though there's no peak at these locations)
 
-  //T maxSpacing = 
-  //  maxSpacingMultiplier * rsArrayTools::maxDifference(&peaks[0], (int)peaks.size());
-
-  //T maxSpacing = 
-  //  maxSpacingMultiplier * rsArrayTools::maxDifference(&peaks[1], (int)peaks.size()-1);
-
   T maxSpacing = maxPeakSpacing(peaks, rawEnvTime, rawEnvValue, rawEnvLength);
-
   // what's the rationale behind this formula? i think, the (maximum) time-difference between peaks
   // that we find in the envelope is the period of the tremolo - we don't want to sample the 
   // envelope any denser than (half?) the tremolo rate because then, we would again potentially 
@@ -2001,8 +1996,6 @@ void rsEnvelopeExtractor<T>::fillSparseAreasNew(const T* rawEnvTime, const T* ra
 
   if(maxSpacing == T(0))
     return;
-
-
 
   std::vector<int> tmp;   // buffer for extra peak-indices to be inserted
   for(size_t i = 1; i < peaks.size(); i++) {
@@ -2062,7 +2055,7 @@ void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* pe
 
   // experimentally switching between odl and new algorithm:
   //getMetaEnvelope(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
-  getMetaEnvelopeNew(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
+  getMetaEnvelopeNew(envTimes, envValues, length, metaEnvTime, metaEnvValue); // new - better!
 
 
   interpolateEnvelope(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(),
@@ -2079,6 +2072,7 @@ void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* pe
   */
 }
 
+// may be obsolete - but maybe not
 template<class T>
 void rsEnvelopeExtractor<T>::setupEndValues(
   std::vector<T>& envTimes, std::vector<T>& envValues, T endTime)
@@ -2115,6 +2109,8 @@ void rsEnvelopeExtractor<T>::setupEndValues(
   // rsAssert(rsLast(envTimes) == endTime); // no - in free-end mode, it may be different
 }
 
+
+// obsolete:
 template<class T>
 void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T maxSpacing)
@@ -2169,6 +2165,7 @@ void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEn
   */
 }
 
+// maybe move to rsArrayTools or make member function:
 template<class T>
 std::vector<size_t> rsEnvelopeExtractor<T>::findPeakIndices(const T* x, int N,
   bool includeFirst, bool includeLast)

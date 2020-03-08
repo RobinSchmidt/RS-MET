@@ -1184,7 +1184,7 @@ public:
   // documentation needed
 
   void getMetaEnvelopeNew(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
-    std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime);
+    std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue);
 
 
 
