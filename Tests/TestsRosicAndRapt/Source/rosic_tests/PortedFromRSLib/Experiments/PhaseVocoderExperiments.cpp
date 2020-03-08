@@ -1812,11 +1812,9 @@ void amplitudeDeBeating()
   // remove the beating:
   typedef rsEnvelopeExtractor<double>::endPointModes EM;
   double beatPeriodInFrames = frameRate / beatFrq;  // 38.222...
-
   Vec time = rsRangeLinear(0.0, double(numFrames-1), numFrames);  
-  // time is measured in frames - todo: measure it in seconds to be consistent with the sinusoidal model
-
-
+    // time is measured in frames - todo: measure it in seconds to be consistent with the 
+    // sinusoidal model
   Vec result(numFrames);
   rsEnvelopeExtractor<double> envExtractor;
 
@@ -1863,15 +1861,20 @@ void amplitudeDeBeating()
   // Observations for the peak-shadowing:
   // -we seem to need quite high settings like setShadowWidths(10.0, 100.0), but these large'ish 
   //  shadows do not seem to have much negative effect, so high shadow-widths not as problematic as
-  //  i expected first - the shadows envelope follows the original one exactly in the tail section
-  //  (to check, plot the envelope and its shadowed version...maybe later)
+  //  i expected first - the shadowed envelope follows the original one exactly in the tail section 
+  //  even with high settings such as 100 frames (to check, plot the envelope and its shadowed 
+  //  version - there's currently temporary plotting code in rsPeakPicker<T>::getRelevantPeaks...
+  //  maybe later write some non-temporary code here in the experiment)
   // -it really makes a lot of sense to use asymmetric sttings for the shadowing - rightward 
   //  shadows should be a lot larger then leftward shadows - with a large leftward shadow, the 
   //  first envelope peak would have been missed
 
-  // todo: test other situations, where the beating occurs only in the middle, at the end, start 
-  // and end, etc. - also use a beating that has a time-varying frequency - make another test for 
-  // this
+  // todo: 
+  // -test other situations, where the beating occurs only in the middle, at the end, start 
+  //  and end, etc. - also use a beating that has a time-varying frequency - make another test for 
+  //  this
+  // -fix the problem that the tail is linearyl interpolated - we need to get more envelope samples
+  //  in the tail, even if they are not peaks
 
   // Ideas:
   // -to further improve the peak shadowing, the following things coudl be tried:

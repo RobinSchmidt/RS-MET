@@ -1944,20 +1944,70 @@ void rsEnvelopeExtractor<T>::getMetaEnvelopeNew(
   const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime)
 {
-  //peakPicker.setShadowWidths(1.0); // test
-
   std::vector<int> peaks = peakPicker.getRelevantPeaks(rawEnvTime, rawEnvValue, rawEnvLength);
+  fillSparseAreasNew(rawEnvTime, rawEnvValue, rawEnvLength, peaks);
   metaEnvTime  = rsSelect(rawEnvTime,  peaks);
   metaEnvValue = rsSelect(rawEnvValue, peaks);
 
+  // what should we do with endTime here? i don't think, we need it - get rid of the parameter
+}
 
-  /*
+template<class T>
+void rsEnvelopeExtractor<T>::fillSparseAreasNew(const T* rawEnvTime, const T* rawEnvValue, 
+  int rawEnvLength, std::vector<int>& peaks)
+{
+  // todo: fill the sparsely sampled areas in order to not have this ugly straight-line 
+  // interpolation in exponentially decaying tails (add new indices to the peaks array at which the 
+  // original envelope also should be sampled even though there's no peak at these locations)
+
   T maxSpacing = 
-    maxSpacingMultiplier * rsArrayTools::maxDifference(&metaEnvTime[0], (int)metaEnvTime.size());
-    // what's the rationale behind this formula? ..it doesn't seem to make sense
-  maxSpacing = 0.2;  // test
-  fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue, maxSpacing);
-  */
+    maxSpacingMultiplier * rsArrayTools::maxDifference(&peaks[0], (int)peaks.size());
+  // what's the rationale behind this formula? i think, the (maximum) time-difference between peaks
+  // that we find in the envelope is the period of the tremolo - we don't want to sample the 
+  // envelope any denser than (half?) the tremolo rate because then, we would again potentially 
+  // sample the troughs of the tremolo
+  // maybe, we should have also an absolute maxDifference setting (can be 0 to turn it off) and use
+  // the maximum of the value above and the absolute maximum - enforces a minimum sampling rate for 
+  // the envelope
+  // ...ah - this formual doesn't work here becuase at this stage , the peaks array doen not only 
+  // contain the actual peaks but also 0 and N-1 - this is because in the old getMetaEnvelope, we
+  // had to call setupEndValues *after* calling setupEndValues - how can we fix this? a difference
+  // should count only, iff it's really the difference between two peaks - we need a special 
+  // function of the "maxDifferenceIf" sort...it's a bit inelegant...maybe...but welll...
+
+  if(maxSpacing == T(0))
+    return;
+
+
+
+  std::vector<int> tmp;   // buffer for extra peak-indices to be inserted
+  for(size_t i = 1; i < peaks.size(); i++) {
+
+    T t1 = rawEnvTime[peaks[i]];   // old: T t1 = metaEnvTime[i];
+    T t0 = rawEnvTime[peaks[i-1]];  // old T t0 = metaEnvTime[i-1];
+    T dt = t1 - t0;
+    if(dt > maxSpacing) { // we need to insert extra datapoints between i-1 and i
+
+      int numExtraPoints = (int) floor(dt/maxSpacing);  // verify floor ...maybe use ceil?
+      rsAssert(numExtraPoints >= 0);
+
+      // it seems, maxSpacing is zero? :-O
+      tmp.resize(numExtraPoints);
+      for(int j = 0; j < numExtraPoints; j++) {
+        T t = t0 + (j+1) * (dt/(numExtraPoints+1));  // verify this formula
+        int idx = rsArrayTools::findSplitIndexClosest(rawEnvTime, rawEnvLength, t);
+        tmp[j] = idx;
+        //tmpTime[j]  = rawEnvTime[idx];
+        //tmpValue[j] = rawEnvValue[idx];
+      }
+      rsInsert(peaks, tmp, i);
+      //rsInsert(metaEnvValue, tmpValue, i);
+    }
+  }
+
+
+
+  int dummy = 0;
 
   // maybe fillSparseAreas should work as follows:
   // -the area between two datapoints at indices n0,n1 is filled/densified with more datapoints 
@@ -1965,17 +2015,14 @@ void rsEnvelopeExtractor<T>::getMetaEnvelopeNew(
   //  minimum between n0..n1 is less than the smaller of the two values at n0 and n1
   // -the function should operate on the peaks array - i.e. get the peaks-array as input by 
   //  reference together with the the rawEnvTime and rawEnvValue arrays and add indices to the
-  //  peaks array accoridng to the following condtions:
+  //  peaks array accorindg to the following condtions:
   //  -if for any pait of indices n0,n1, the time delta t[n1]-t[n0] > density, then:
   //   -densify the area with datapoints, if there's no minimum between n0..n1 that is lower than
   //    min(n0,n1), i.e. only if the actual envelope between n0,n1 does not undershoot the 
   //    horizontal drawn through the smaller of the two envelope points 
   //  -but hwo exactly should the densification proceed? - in the simplest case, we would just put
   //   the new datapoints equally spaced between n0,n1 but that might not be ideal
-  // what should we do with endTime here?
 }
-
-
 
 template<class T>
 void rsEnvelopeExtractor<T>::interpolateEnvelope(const T* envTimes, T* envValues, int envLength,

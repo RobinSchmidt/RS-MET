@@ -1163,7 +1163,8 @@ public:
   { 
     maxSpacingMultiplier = newMultiplier;  
   }
-  // find better name
+  // find better name..well - maybe that deosn't have to be a user parameter anyway
+  // maybe setMinEnvSamplingDensity - but no - that's wrong
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -1249,6 +1250,10 @@ protected:
   // needs tests - maybe make public - maybe even move it into some other class - it could be more
   // generally useful
 
+  void fillSparseAreasNew(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
+    std::vector<int>& peaks);
+
+
   // void applySmoothing
 
   //int interpolationMode = rsInterpolatingFunction<T, T>::LINEAR;                // doesn't compile in gcc
@@ -1271,7 +1276,7 @@ protected:
   //T maxSpacing = 0; // maximum allowed spacing between envelope datapoints/samples
   // ...explain this better - in which unit is this measured - how does it relate to the time-unit
   // stored in the rsSinusoidalModel? ...i think, it should just be the same unit, whatever that 
-  // unit is (it's seconds but we may later alos allow it to be in samples)
+  // unit is (it's seconds but we may later also allow it to be in samples)
 
 
 
