@@ -1980,7 +1980,7 @@ void rsEnvelopeExtractor<T>::fillSparseAreasNew(const T* rawEnvTime, const T* ra
   // interpolation in exponentially decaying tails (add new indices to the peaks array at which the 
   // original envelope also should be sampled even though there's no peak at these locations)
 
-  T maxSpacing = maxPeakSpacing(peaks, rawEnvTime, rawEnvValue, rawEnvLength);
+  //T maxSpacing = maxPeakSpacing(peaks, rawEnvTime, rawEnvValue, rawEnvLength);
   // what's the rationale behind this formula? i think, the (maximum) time-difference between peaks
   // that we find in the envelope is the period of the tremolo - we don't want to sample the 
   // envelope any denser than (half?) the tremolo rate because then, we would again potentially 
@@ -1988,11 +1988,32 @@ void rsEnvelopeExtractor<T>::fillSparseAreasNew(const T* rawEnvTime, const T* ra
   // maybe, we should have also an absolute maxDifference setting (can be 0 to turn it off) and use
   // the maximum of the value above and the absolute maximum - enforces a minimum sampling rate for 
   // the envelope
-  // ...ah - this formual doesn't work here becuase at this stage , the peaks array doen not only 
+  // ...ah - this formula doesn't work here becuase at this stage , the peaks array doen not only 
   // contain the actual peaks but also 0 and N-1 - this is because in the old getMetaEnvelope, we
   // had to call setupEndValues *after* calling setupEndValues - how can we fix this? a difference
   // should count only, iff it's really the difference between two peaks - we need a special 
   // function of the "maxDifferenceIf" sort...it's a bit inelegant...maybe...but welll...
+
+  // -this does not work well with real-world signals - the maxPeakSpacing function assumes that 
+  //  the only two invalid/false peak-amrks are those at 0 and N-1 - but after the no-stickout algo
+  //  we get more - see the peak-marks for the 1st partial of the rhodes sample:
+  //  (1) they come in cluseter around the actual peaks
+  //  (2) at the fade-out at the end of the sample, there's another cluster
+  //  -> the distance between the last actual peak and that final cluster determines our maxSpacing 
+  //  here- and makes it wayy tooo large (> 4 seconds where it should be something around 0.3 
+  //  seconds)
+
+  // -would it help to figure out the maxSpacing before running the no-stickout algo, i.e. work 
+  //  with an intermediate set of data
+
+  // -temporarily, i mad the maxSpacing a member variable to be set up directly (in seconds) from
+  //  client code - automatically choosing a reasonable value required some more thought
+
+
+
+  // plot peaks before densification:
+  rsPlotArraysXYWithMarks(rawEnvTime, rawEnvValue, rawEnvLength, peaks);  // debug
+
 
   if(maxSpacing == T(0))
     return;
@@ -2018,6 +2039,10 @@ void rsEnvelopeExtractor<T>::fillSparseAreasNew(const T* rawEnvTime, const T* ra
       rsInsert(peaks, tmp, i);
     }
   }
+
+
+  // plot peaks after densification:
+  rsPlotArraysXYWithMarks(rawEnvTime, rawEnvValue, rawEnvLength, peaks);  // debug
 
   int dummy = 0;
 

@@ -1234,6 +1234,13 @@ public:
   // irrelevant local peaks
 
 
+  T maxSpacing = RS_INF(T);
+  // -maximum distance between two meta-envelope sample points
+  //  -temporarily made public to be set from client code directly as an absolute value in seconds
+  //  -later, this should be set automatically by an algorithm that selects this to be slightly 
+  //   more than the termolo/beating frequency
+
+
 protected:
 
   //-----------------------------------------------------------------------------------------------
@@ -1270,6 +1277,8 @@ protected:
   //int smoothingOrder = 0;
   //T sampleRate       = 44100;
   //T smoothingFreq    = 22050;
+
+
 
 
   T maxSpacingMultiplier = T(1);

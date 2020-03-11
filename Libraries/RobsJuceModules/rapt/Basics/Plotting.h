@@ -197,6 +197,12 @@ signal features such as zero-crossings) */
 template<class T>
 void rsPlotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers);
 
+/** Plots y against x and marks those values whose indices appea in marks */
+template<class T>
+void rsPlotArraysXYWithMarks(const T* x, const T* y, int N, const std::vector<int>& marks);
+
+
+
 // somewhat redundant with rsPlotSpectrum...
 template<class T>
 void rsPlotDecibels(int N, T* x, T *mag);

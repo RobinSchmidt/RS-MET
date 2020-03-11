@@ -1855,6 +1855,10 @@ void amplitudeDeBeating()
   //  even with high settings such as 100 frames (to check, plot the envelope and its shadowed 
   //  version - there's currently temporary plotting code in rsPeakPicker<T>::getRelevantPeaks...
   //  maybe later write some non-temporary code here in the experiment)
+  // -i think, as long as the deecay-rate of the shadow is faster that the decay-rate of the actual
+  //  envelope, everything is fine - only if it's slower, we'll get a too sluggish resonse - maybe
+  //  we can etsimate the overall decay rate from the signal and thereby obatin an upper limit
+  //  for a reasonable shadow-width
   // -it really makes a lot of sense to use asymmetric sttings for the shadowing - rightward 
   //  shadows should be a lot larger then leftward shadows - with a large leftward shadow, the 
   //  first envelope peak would have been missed

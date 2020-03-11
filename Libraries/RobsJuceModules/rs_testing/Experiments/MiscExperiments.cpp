@@ -316,6 +316,55 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   rsPartialBeatingRemover<double> deBeater;
   deBeater.setPhaseSmoothingParameters(5.0, 1, 4); // cutoff = 10 leaves a vibrato
 
+  // testing the new peak-picker:
+  deBeater.envExtractor.peakPicker.setShadowWidths(0.0, 2.7);
+  deBeater.envExtractor.maxSpacing = 0.5;  // temporary, during development
+  // -the optimal settings need to be figured out
+  // -i think, we may have to set it up per partial and not just use one set of settings for all 
+  //  partials
+  // -rhodes, 1st partial: 
+  //  -decay should be in the range 2.6 < width < 2.7 (note that this is the half-height width (in 
+  //   seconds) - may need to be converted to the 1/e width), with decay-width = 3.0, the 
+  //   sluggishness can be clearly seen
+  //  -the release shoud be less than that - could even be zero
+  // -rhodes, 2nd - 4th partial: 0.7 < width < 0.8
+  // -rhodes, 5th and 6th partial - something around 0.3
+  // -i think, the 6th partial is a good example to try the pre-filtering by DC-blocking idea
+  // -the 0th partial (DC) is again special - reasonable settings are hard to find here because it
+  //  doesn't really behave like an envelope - more like noise with a big spike at the beginning, 
+  //  the noise even going negative - but we may not have to waste too much time with it - in the 
+  //  end, we may not want to resynthesize it anyway
+  // -in order to not be too sluggish, i think, the decay-time constant for rightward shadows 
+  //  should be less that the decay time of the envelope - we may have to estimate that - maybe the
+  //  user parameter should be something like a scaler for the estimated decay time - or maybe let 
+  //  the user decide between and absolute, fixed setting or a setting based on estimated decay 
+  //  time - the fixed setting may include some factor by which the shadow widths decreases with
+  //  increasing partial frequency - maybe a power rule could be suitable (i.e. 
+  //  width = baseWidth * (freq/fundamental)^p where p is the adjustable power/exponent
+  // -maybe to estimate the decay of the envelope, we could use the code to fit the exponential 
+  //  envelope (where we still have to select the second estimation-point - maybe that could be 
+  //  automated as well)
+  // -the leaftwar shadow-widths may be set to some scale factor times the rightward shadow - in 
+  //  general, we want them to be smaller - even a factor of 0 could make sense
+  // -maybe we should indeed implement the idea of removing "undulating DC", i.e. apply a highpass
+  //  at sub-tremolo frequencies (maybe 0.5 Hz or something)
+  // -maybe try prominence thresholding, too (i've almost forgotten that we can do that, too)
+
+  // -why are the final estimated envelopes still bad? the densification does not seem to work yet
+  //  ...is it still commented out? when we use a too large setting for the widths, the beating 
+  //  re-appears - maybe it's some post-processing step (no-stickout something) that adds the peaks
+  //  from the original envelope - nope - it's the densification - apparently, it uses a very small
+  //  maxSpacing in these cases
+  // -maxSpacing = 4.43 in rsEnvelopeExtractor<T>::fillSparseAreasNew with the 1st partial - that
+  //  distance is far too large, if it's in seconds
+  // -so, sometimes the densification uses a too large value and sometimes a too small one
+  // -estimating the densification parameter maxSpacing does not yet work properly
+  // -maybe let the user choose a fixed maxSpacing (in seconds) for the moment, while trying to 
+  //  make it adaptive
+  // -maybe we somehow need to detect, if we are in a decaying section and densify only there
+  // -this could be done by checking, if the env is monotonic between two peaks
+
+
 
   //---------------------------------------------------------------------------------------
   // experimental - set up the minimum distance between de-beated amplitude envelope peaks
@@ -392,9 +441,10 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
 
 
   // these partials with the Rhodes_F3_Medium sample...
-  //plotSineModelAmplitudes(mdl, {1,2,3,4,5,6});
+  plotSineModelAmplitudes(mdl, {1,2,3,4,5,6});
+
   plotSineModelAmplitudes(mdl, {1}); // ...shows problem with detecting min-peaks
-  plotSineModelAmplitudes(mdl, {2}); // ...shows problem with staright lines (to small peak-densisty)
+  plotSineModelAmplitudes(mdl, {2}); // ...shows problem with straight lines (to small peak-densisty)
   //plotSineModelAmplitudes(mdl, {3}); // shows problem
   plotSineModelAmplitudes(mdl, {4}); // ...shows problem with drop in/out
 
