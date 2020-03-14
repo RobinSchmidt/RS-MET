@@ -849,11 +849,8 @@ void modalDecayFit2()
   // algorithm for automatic determination of optimal settings for the peak-shadowing algorithm...
 
   // user parameters:
-  int    N   = 1000;  // number of samples
-  //double att = 0.2;  // attack in seconds
-  //double dec = 0.5;  // decay in seconds
-
-  double length = 2.5;  // length of signal in seconds
+  int    N      = 1000; // number of samples
+  double length = 1.5;  // length of signal in seconds
   double att    = 0.1;  // attack in seconds
   double dec    = 0.5;  // decay in seconds
   double amp    = 1.5;  // peak amplitude
@@ -865,12 +862,14 @@ void modalDecayFit2()
   // also let the suer choose the total length (in seconds)
 
   // compute envelope:
-  typedef std::vector<double> Vec;
+  using Vec = std::vector<double>;
+  using AT  = RAPT::rsArrayTools;
   Vec t = randomSampleInstants(N, 0.2, 1.8, 0);  // maybe have a randomness parameter
   //Vec t = randomSampleInstants(N, 1.0, 1.0, 0);
-  RAPT::rsArrayTools::scale(&t[0], N, length/t[N-1]);
+  AT::scale(&t[0], N, length/t[N-1]);
   Vec x(N);
-  for(int n = 0; n < N; n++)
+  int n;
+  for(n = 0; n < N; n++)
     x[n] = amp * scl * (exp(-t[n]/tau1) - exp(-t[n]/tau2));
 
   // todo: 
@@ -879,9 +878,40 @@ void modalDecayFit2()
   //  -find area or energy - that fixes dec - maybe energy is better because it uses the squares 
   //   which makes the result less susceptible to cutting off the tail
 
+  int i = AT::maxIndex(&x[0], N);
+  double att2 = t[i];  // todo: refine by quadratic interpolation (maybe)
+  double amp2 = x[i];
+
+  // for estimating dec, there are several possibilities:
+  // -use the total area under the curve (from 0 to the end)
+  // -use the area only from the peak to the end
+  // -we could use the area-formula for the exponential decay or for an actual attack/decay curve
+  // -we could use the energy instead of the area under the curve (i.e. square the curve before
+  //  taking the integral)
+  // -maybe try them all and see, which approach gives the best results - maybe try them with real
+  //  world signals, too
+  // -test the decay formula also with the exact values of att and amp (not the recovered ones) to 
+  //  decouple the decay-error from the att/amp error in this experiment
+
+  // create the squared signal (for energy computation):
+  Vec x2(N);
+  for(n = 0; n < N; n++)
+    x2[n] = x[n] * x[n];
+
+  // Compute total and partial areas and energies by numerical integration:
+  double E_t, E_p, A_t, A_p;
+  Vec tmp(N);    
+  rsNumericIntegral(&t[0], &x[0],  &tmp[0], N);   A_t = tmp[N-1];
+  rsNumericIntegral(&t[i], &x[i],  &tmp[i], N-i); A_p = tmp[N-1];
+  rsNumericIntegral(&t[0], &x2[0], &tmp[0], N);   E_t = tmp[N-1]; // total energy (from 0 to the end)
+  rsNumericIntegral(&t[i], &x2[i], &tmp[i], N-i); E_p = tmp[N-1]; // partial energy (from i to the end)
+  // todo: get rid of the tmp array - write a numerical integration routine that just returns a 
+  // single value instead of filling an array - we only need the final value here
+
 
   // plot:
-  rsPlotVectorsXY(t, x);
+  //rsPlotVectorsXY(t, x);
+  rsPlotVectorsXY(t, x, x2);
 }
 
 void modalDecayFit()
