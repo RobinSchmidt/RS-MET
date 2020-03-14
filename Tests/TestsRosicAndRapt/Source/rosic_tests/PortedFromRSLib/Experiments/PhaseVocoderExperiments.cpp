@@ -1867,7 +1867,7 @@ void amplitudeDeBeating()
   // -test other situations, where the beating occurs only in the middle, at the end, start 
   //  and end, etc. - also use a beating that has a time-varying frequency - make another test for 
   //  this
-  // -fix the problem that the tail is linearyl interpolated - we need to get more envelope samples
+  // -fix the problem that the tail is linearly interpolated - we need to get more envelope samples
   //  in the tail, even if they are not peaks
 
   // Ideas:
@@ -1888,6 +1888,10 @@ void amplitudeDeBeating()
   //    absolute depth rather that the relative. maybe other shapes besides linear and exponential 
   //    may also make sense? what about exponential-squared, i.e. gaussian like? ...and how can 
   //    that be implemented? maybe by pre-waveshaping the env?
+
+  // Densification: do it in that order: find peaks -> densify -> post-process ...currently, we do 
+  // it like that: find peaks -> post process -> densify ...which does not work well
+  //
 }
 
 std::vector<double> createLinearSineSweep(int N, double f1, double f2, double fs, double a = 1)
