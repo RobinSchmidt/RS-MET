@@ -853,28 +853,35 @@ void modalDecayFit2()
   //double att = 0.2;  // attack in seconds
   //double dec = 0.5;  // decay in seconds
 
-  double att = 100;  // attack in seconds
-  double dec = 300;  // decay in seconds
-
-  double amp = 1.5;  // peak amplitude
+  double length = 2.5;  // length of signal in seconds
+  double att    = 0.1;  // attack in seconds
+  double dec    = 0.5;  // decay in seconds
+  double amp    = 1.5;  // peak amplitude
 
   // compute algo parameters
-  double tau1 = dec, tau2;
-  expDiffScalerAndTau2(tau1, att, &tau2, &amp);
+  double tau1 = dec, tau2, scl;
+  expDiffScalerAndTau2(tau1, att, &tau2, &scl);
   // amp scales the env such that the peak height is 1.0 - todo: use another scaler
   // also let the suer choose the total length (in seconds)
 
   // compute envelope:
   typedef std::vector<double> Vec;
-  //Vec t = randomSampleInstants(N, 0.2, 1.8, 0);
-  Vec t = randomSampleInstants(N, 1.0, 1.0, 0);
+  Vec t = randomSampleInstants(N, 0.2, 1.8, 0);  // maybe have a randomness parameter
+  //Vec t = randomSampleInstants(N, 1.0, 1.0, 0);
+  RAPT::rsArrayTools::scale(&t[0], N, length/t[N-1]);
   Vec x(N);
   for(int n = 0; n < N; n++)
-    x[n] = amp * (exp(-t[n]/tau1) - exp(-t[n]/tau2));
+    x[n] = amp * scl * (exp(-t[n]/tau1) - exp(-t[n]/tau2));
+
+  // todo: 
+  // -recover att, dec, amp from data in t,x
+  //  -find peak location - that fixes att and amp
+  //  -find area or energy - that fixes dec - maybe energy is better because it uses the squares 
+  //   which makes the result less susceptible to cutting off the tail
 
 
+  // plot:
   rsPlotVectorsXY(t, x);
-  int dummy = 0;
 }
 
 void modalDecayFit()
