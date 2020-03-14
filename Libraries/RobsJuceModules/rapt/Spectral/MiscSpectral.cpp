@@ -27,3 +27,7 @@ std::vector<T> rsExpDecayTail(const rsSinusoidalPartial<T>& partial, int spliceI
 // integration (from the time-instant where the maximum occurs to the end) -> experiment with both 
 // formulas (using area and energy) and see, which one gives the better fit
 // -this can then be used to find optimal settings for the peak-shadowing algorithm
+
+// maybe this idea can be refined to use the energy/area of an actualy attack/decay envelope - the 
+// attack time is known - it's the time-instant of the maximum - with that, we may be able to get 
+// more accurate values

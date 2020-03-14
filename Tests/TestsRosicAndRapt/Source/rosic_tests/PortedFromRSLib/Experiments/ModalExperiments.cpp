@@ -812,7 +812,7 @@ void setupHarmonicAnalyzerForModal(RAPT::rsHarmonicAnalyzer<double>& analyzer, d
   analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
 }
 
-void modalDecayFit()
+void modalDecayFit1()
 {
   // Computes the A,tau values for an exponential decay function f(t) = A * exp(-t/tau) given two
   // time instants t1,t2 and associated amplitudes a1,a2. Then it creates the actual decay function
@@ -836,8 +836,54 @@ void modalDecayFit()
   t = (1.0/fs) * t;
   for(int n = 0; n < N; n++)
     x[n] = A * exp(-t[n]/tau);
-  rsPlotVectorsXY(t, x);  // OK - looks good
+  rsPlotVectorsXY(t, x);  // OK - looks good - goes through (0.04, 0.7) and (0.14, 0.3)
 }
+
+void modalDecayFit2()
+{
+  // We create attack/decay envelope with non-equidistant sample instants and from that data, we 
+  // try to estimate/recover the parameters (attack, decay, amplitude). Attack and amplitude are
+  // obtained from the location and height of the peak, decay is obtained from the total energy 
+  // (or maybe total area - we'll see which gives better fits on real-world data - with this 
+  // artificial data, both variants should give the same result). The plan is to use this 
+  // algorithm for automatic determination of optimal settings for the peak-shadowing algorithm...
+
+  // user parameters:
+  int    N   = 1000;  // number of samples
+  //double att = 0.2;  // attack in seconds
+  //double dec = 0.5;  // decay in seconds
+
+  double att = 100;  // attack in seconds
+  double dec = 300;  // decay in seconds
+
+  double amp = 1.5;  // peak amplitude
+
+  // compute algo parameters
+  double tau1 = dec, tau2;
+  expDiffScalerAndTau2(tau1, att, &tau2, &amp);
+  // amp scales the env such that the peak height is 1.0 - todo: use another scaler
+  // also let the suer choose the total length (in seconds)
+
+  // compute envelope:
+  typedef std::vector<double> Vec;
+  //Vec t = randomSampleInstants(N, 0.2, 1.8, 0);
+  Vec t = randomSampleInstants(N, 1.0, 1.0, 0);
+  Vec x(N);
+  for(int n = 0; n < N; n++)
+    x[n] = amp * (exp(-t[n]/tau1) - exp(-t[n]/tau2));
+
+
+  rsPlotVectorsXY(t, x);
+  int dummy = 0;
+}
+
+void modalDecayFit()
+{
+  //modalDecayFit1();
+  modalDecayFit2();
+}
+
+
 
 void modalAnalysis1()
 {
