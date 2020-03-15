@@ -850,7 +850,7 @@ void modalDecayFit2()
 
   // user parameters:
   int    N      = 1000; // number of samples
-  double length = 1.5;  // length of signal in seconds
+  double length = 2.5;  // length of signal in seconds
   double att    = 0.1;  // attack in seconds
   double dec    = 0.5;  // decay in seconds
   double amp    = 1.5;  // peak amplitude
@@ -907,6 +907,38 @@ void modalDecayFit2()
   rsNumericIntegral(&t[i], &x2[i], &tmp[i], N-i); E_p = tmp[N-1]; // partial energy (from i to the end)
   // todo: get rid of the tmp array - write a numerical integration routine that just returns a 
   // single value instead of filling an array - we only need the final value here
+
+  double dec2_Ap = A_p / amp;
+  // not that bad! 0.5025... correct value is 0.5 - only 5% error
+
+  double dec2_At = A_t / amp;
+  // this is actually the wrong area formula - if we use the total energy, we should use a formula 
+  // that takes into account the nonzero attack - the result is far too big
+
+  double dec2_Ep = 2*E_p / (amp*amp);
+  // this is very wrong - check derivation - it should be better, i think
+
+  double dec2_Et = 2*E_t / (amp*amp);
+  // again, this is actually the wrong formula - use one that takes into account the attack - this
+  // result is even more off
+
+  // todo: figure out correct formulas that take attack into account - we may also have to estimate
+  // the "scl" - but that is coupled with the decay
+  // -figure out, how the error behaves when increasing the attack - it goes up, as expected
+
+  // Observations:
+  // -it's a bit surprising that dec2_Ep is less accurate than dec2_Ap - i would have expected that
+  //  the squaring in the energy computation makes the calculation more robust with respect to 
+  //  cutting off a portion from the tail 
+  // -when increasing the attack, the error in the decay estimate dec2_Ap goes up - which is 
+  //  totally what is expected because this formula is based on assuming a zero attack, decaying
+  //  exponential (starting at the peak-instant with peak amplitude). When attack is increased,
+  //  the shape becomes more rounded at the start, increasing the overall area and thereby the
+  //  decay estimate
+  //  -maybe it's possible to figure out a function, how to re-adjust the decay estimate in terms
+  //   of the attack estimate (plot relative error of decay estimate as function of attack, fit 
+  //   some function to it and use that for compensation)
+
 
 
   // plot:
