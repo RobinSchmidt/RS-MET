@@ -105,6 +105,18 @@ public:
   inline bool arePixelCoordinatesValid(int x, int y)
   { return rsIsInRange(x, 0, width-1) && rsIsInRange(y, 0, height-1); }
 
+  /** Returns true, iff this image as the given shape. */
+  inline bool hasShape(int width, int height) const
+  {
+    return this->width == width && this->height == height;
+  }
+
+  /** Returns true, iff this image has the same shape as the given other image. */
+  bool hasSameShapeAs(const rsImage<TPix>& other) const
+  {
+    return this->hasShape(other.width, other.height);
+  }
+
   /** Compares all pixel values of this image to those of another image and returns true, if they 
   are all equal up to some given tolerance. It assumes that the other image has the same width
   and height as this. */
