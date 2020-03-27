@@ -282,6 +282,10 @@ public:
   template <class T1, class T2, class TR>
   static void divide(const T1 *buffer1, const T2 *buffer2, TR *result, int length);
 
+
+  //template <class T>
+  //static bool equals(const T *x, const T *y, int length, T tolerance);
+
   /** Fills the array with values given by a function. For example, calling it like:
         fill(a, length, [](int i){ return 3*i+1; });
    gives each array element the value 3*i+1 where i is the array index. */
@@ -769,6 +773,7 @@ void rsArrayTools::addWithWeight(T* xy, const int N, const T* d, const T w)
     xy[n] += w * d[n];
 }
 
+/*
 template <class T>
 inline bool rsArrayTools::almostEqual(const T *buffer1, const T *buffer2, 
   const int length, const T tolerance)
@@ -776,6 +781,44 @@ inline bool rsArrayTools::almostEqual(const T *buffer1, const T *buffer2,
   for(int i = 0; i < length; i++) {
     if(rsAbs(buffer1[i]-buffer2[i]) > tolerance)
       return false; }
+  return true;
+}
+// make a version that does not rely on taking the difference and then using abs - this will work 
+// only for signed data types, unsigned types may wrap around to huge values
+*/
+
+/*
+template <class T>
+inline bool rsArrayTools::almostEqual(const T* x, const T* y, const int N, const T tol)
+{
+  for(int i = 0; i < N; i++) {
+    T d;
+    if(x[i] > y[i])
+      d = x[i] - y[i];
+    else
+      d = y[i] - x[i];
+    if(d > tol)
+      return false; }
+  return true;
+}
+// this is supposed to work without using an abs-function, so it may used with unsigned types
+// that's still not suitable for rsPixelRGB - we need a function rsAlmostEquals for single 
+// data-values and provide implementations for different types
+*/
+
+template <class T>
+inline bool rsAlmostEqual(const T& x, const T& y, const T& tol)
+{
+  return rsAbs(x-y) <= tol;
+}
+// suitable for float and double - move to somewhere else
+
+template <class T>
+inline bool rsArrayTools::almostEqual(const T* x, const T* y, const int N, const T tol)
+{
+  for(int i = 0; i < N; i++)
+    if(!rsAlmostEqual(x[i], y[i], tol))
+      return false;
   return true;
 }
 

@@ -21,20 +21,40 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. Allocates memory for the pixels. */
-  rsImage(int initialWidth = 1, int initialHeight = 1);
+  rsImage(int initialWidth = 1, int initialHeight = 1)
+  {
+    allocateMemory();
+  }
 
   /** Constructor. Allocates memory for the pixels and initializes pixel values. */
-  rsImage(int initialWidth, int initialHeight, const TPix &initialPixelColor);
+  rsImage(int initialWidth, int initialHeight, const TPix &initialPixelColor)
+  {
+    allocateMemory();
+    fillAll(initialPixelColor);
+  }
 
   /** Constructor. Initializes width and height and copies the image-data from initialData into
   our member data area. */
-  rsImage(int initialWidth, int initialHeight, const TPix *initialData);
+  rsImage(int initialWidth, int initialHeight, const TPix *initialData)
+  {
+    allocateMemory();
+    memcpy(data, initialData, getByteSize());
+  }
 
   /** Copy constructor. Creates a deep copy of the pixel data in this image. */
-  rsImage(const rsImage& other);
+  rsImage(const rsImage& other)
+  {
+    width  = other.width;
+    height = other.height;
+    allocateMemory();
+    memcpy(data, other.data, getByteSize());
+  }
 
   /** Destructor. Frees dynamically allocated memory. */
-  virtual ~rsImage();
+  virtual ~rsImage()
+  {
+    freeMemory();
+  }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -42,7 +62,16 @@ public:
 
   /** Sets a new size for the image. The contents of the old image is lost when doing this.
   \todo have an optional boolean parameter to retain the contents of the old image */
-  virtual void setSize(int newWidth, int newHeight);
+  virtual void setSize(int newWidth, int newHeight)
+  {
+    if(width != newWidth || height != newHeight)
+    {
+      width  = newWidth;
+      height = newHeight;
+      freeMemory();
+      allocateMemory();
+    }
+  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -79,13 +108,24 @@ public:
   /** Compares all pixel values of this image to those of another image and returns true, if they 
   are all equal up to some given tolerance. It assumes that the other image has the same width
   and height as this. */
-  inline bool areAllPixelsEqualTo(const rsImage<TPix>* otherImage, TPix tolerance = 0)
+  inline bool areAllPixelsEqualTo(const rsImage<TPix>* otherImage, TPix tolerance = TPix(0))
   {
     rsAssert(width  == otherImage->width);
     rsAssert(height == otherImage->height);
+    return rsArrayTools::almostEqual(data, otherImage->data, width*height, tolerance);
+
+    /*
+    // old:
     TPix err = rsArrayTools::maxDeviation(data, otherImage->data, width*height);
-    return abs(err) <= tolerance;
+    return rsAbs(err) <= tolerance;
+    //return abs(err) <= tolerance;
+    // this implementation is not suitable for TPix = rsPixelRGB (in private repo) - it's made for 
+    // (signed) floating point numbers as pixels
+    // maybe it has to be done in terms of an isCloseTo function that can be implemented also for 
+    // rsPixelRGB
+    */
   }
+
 
   /** Converts the image to a flat array of type std::vector. */
   std::vector<TPix> toStdVector() { return toVector(data, width*height); }
@@ -102,7 +142,15 @@ public:
   }
 
   /** Fills the whole picture with a solid color. */
-  void fillAll(const TPix &colorToFillWith);
+  void fillAll(const TPix &colorToFillWith)
+  {
+    for(int y = 0; y < getHeight(); y++)
+    {
+      for(int x = 0; x < getWidth(); x++)
+        setPixelColor(x, y, colorToFillWith);
+    }
+    // ...maybe optimize using memset
+  }
 
   /** Clears the image by setting all pixels to the given color. */
   inline void clear(TPix color = TPix(0)) { fillAll(color);}
