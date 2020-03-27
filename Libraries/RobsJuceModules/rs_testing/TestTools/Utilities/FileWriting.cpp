@@ -19,6 +19,27 @@ bool writeImageToFilePPM(const char* path, unsigned char* buf, int w, int h)
     return false; }
 }
 
+bool writeImageToFilePPM(const RAPT::rsImage<rsPixelRGB>& img, const char* path)
+{
+  int w = img.getWidth();
+  int h = img.getHeight();
+  unsigned char* buf = new unsigned char[w*h*3];
+  if(buf == nullptr) {
+    rsError("Unable to allocate buffer"); 
+    return false; }
+  for(int y = 0; y < h; y++) {
+    for(int x = 0; x < w; x++) {
+      int i = y*w*3 + x*3;
+      buf[i+0] = img(x,y).r;
+      buf[i+1] = img(x,y).g;
+      buf[i+2] = img(x,y).b; }}
+  bool success = writeImageToFilePPM(path, buf, w, h);
+  delete[] buf;
+  return success;
+}
+// todo: if sizeof(rsPixelRGB == 24), it means that the compiler has added no padding when 
+// compiling rsPixelRGB and we don't need the re-buffering - bypass it in this case
+
 bool writeImageToFilePPM(const rsImageF& img, const char* path)
 {
   int w = img.getWidth();

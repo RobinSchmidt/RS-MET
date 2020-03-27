@@ -1,8 +1,16 @@
-#ifndef RAPT_FILEWRITING_H
+#ifndef RAPT_FILEWRITING_H  // this is not a rapt class!!
 #define RAPT_FILEWRITING_H
 
 //#include "../RaptLibraryCode/RaptInstantiations.h"
 #include "rosic/rosic.h"
+
+
+
+bool writeImageToFilePPM(const char* path, unsigned char* buf, int w, int h);
+
+
+
+bool writeImageToFilePPM(const RAPT::rsImage<rsPixelRGB>& image, const char* path);
 
 /** Writes the passed monochrome image into a .ppm file */
 bool writeImageToFilePPM(const RAPT::rsImage<float>& image, const char* path);

@@ -21,13 +21,15 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. Allocates memory for the pixels. */
-  rsImage(int initialWidth = 1, int initialHeight = 1)
+  rsImage(int initialWidth = 1, int initialHeight = 1) 
+    : width(initialWidth), height(initialHeight)
   {
     allocateMemory();
   }
 
   /** Constructor. Allocates memory for the pixels and initializes pixel values. */
   rsImage(int initialWidth, int initialHeight, const TPix &initialPixelColor)
+    : width(initialWidth), height(initialHeight)
   {
     allocateMemory();
     fillAll(initialPixelColor);
@@ -36,6 +38,7 @@ public:
   /** Constructor. Initializes width and height and copies the image-data from initialData into
   our member data area. */
   rsImage(int initialWidth, int initialHeight, const TPix *initialData)
+    : width(initialWidth), height(initialHeight)
   {
     allocateMemory();
     memcpy(data, initialData, getByteSize());
