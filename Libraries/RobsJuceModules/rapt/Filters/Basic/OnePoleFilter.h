@@ -62,7 +62,7 @@ public:
   static inline void coeffsHighpassMZT(T w, T* b0, T* b1, T* a1)
   {
     *a1 = exp(-w);
-    *b0 =  0.5*(1 + *a1);
+    *b0 =  T(0.5)*(1 + *a1);
     *b1 = -(*b0);
     // w = 0:   a1 = 1, b0 = 1, b1 = -1 -> differentiate and integrate
     // w = pi:  
@@ -74,7 +74,7 @@ public:
   template<class T>
   static inline void coeffsAllpassBLT(T w, T* b0, T* b1, T* a1)
   {
-    T t = tan(0.5*w); // tan w/2
+    T t = tan(T(0.5)*w); // tan w/2
     *b0 = (t-1) / (t+1);
     *b1 = 1.0;
     *a1 = -(*b0);
@@ -91,7 +91,7 @@ public:
   template<class T>
   static inline void coeffsLowpassBLT(T w, T* b0, T* b1, T* a1)
   {
-    T t = tan(0.5*w);
+    T t = tan(T(0.5)*w);
 
     rsAssert(rsIsFiniteNumber(t));
     // hmmm...maybe we should allow t == inf and set a1 = -1 in this case (that's the limiting 
@@ -99,7 +99,7 @@ public:
 
 
     *a1 = (1-t) / (1+t);
-    *b0 = 0.5*(1 - *a1);
+    *b0 = T(0.5)*(1 - *a1);
     *b1 = *b0;
     // w = 0:  t = 0 -> a1 = 1, b0,b1 = 0
     // w = pi: t = inf -> a1,b0,b1 = NaN
@@ -109,9 +109,9 @@ public:
   template<class T>
   static inline void coeffsHighpassBLT(T w, T* b0, T* b1, T* a1)
   {
-    T t = tan(0.5*w);     // maybe re-use w
+    T t = tan(T(0.5)*w);     // maybe re-use w
     *a1 = (1-t) / (1+t);
-    *b0 = 0.5*(1 + *a1);
+    *b0 = T(0.5)*(1 + *a1);
     *b1 = -(*b0);
   }
 
@@ -119,9 +119,9 @@ public:
   template<class T>
   static inline void coeffsLowShelfBLT(T w, T g, T* b0, T* b1, T* a1)
   {
-    T t = tan(0.5*w);  // re-use w
-    t   = g >= 1.0 ? (t-1)/(t+1) : (t-g)/(t+g);
-    T c = 0.5*(g-1);   // re-use g
+    T t = tan(T(0.5)*w);  // re-use w
+    t   = g >= T(1.0) ? (t-1)/(t+1) : (t-g)/(t+g);
+    T c = T(0.5)*(g-1);   // re-use g
     c  += c*t;
     *b0 = 1 + c;
     *b1 = t + c;
@@ -131,14 +131,16 @@ public:
   template<class T>
   static inline void coeffsHighShelfBLT(T w, T g, T* b0, T* b1, T* a1)
   {
-    T t = tan(0.5*w);
-    t   = g >= 1.0 ? (t-1.0)/(t+1.0) : (g*t-1)/(g*t+1);
-    T c = 0.5*(g-1);
+    T t = tan(T(0.5)*w);
+    t   = g >= T(1.0) ? (t-T(1.0))/(t+T(1.0)) : (g*t-1)/(g*t+1);
+    T c = T(0.5)*(g-1);
     c  -= c*t;
     *b0 = 1 + c;
     *b1 = t - c;
     *a1 = -t;
   }
+  // maybe get rid of some of the T(1.0) - replace them by 1, if the compiler doesn't warn (but try
+  // with highest warnign level)
 
   //// todo - but these need the sample-rate as input - can we reformulate the equations such that
   //// we don't need the sample-rate...if w corresponds to some frequency in Hz then pi corresponds 
@@ -236,6 +238,22 @@ public:
   // on the columns in images (or more generally, on nD arrays)
 
 
+  void applyBidirectionally(TSig* x, TSig* y, int N, int stride)
+  {
+    // forward pass:
+    reset();
+    for(int n = 0; n < N; n++)
+      y[n*stride] = getSample(x[n*stride]);
+
+    // backward pass:
+    prepareForBackwardPass();
+    for(int n = N-1; n >= 0; n--)
+      y[n*stride] = getSample(y[n*stride]);
+  }
+  // optimize: use n += stride and n -= stride in loop headers and get rid of the multiplications 
+  // n*stride in loop bodies
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
@@ -305,7 +323,8 @@ public:
   /** This will set the time constant 'tau' for the case, when lowpass mode is chosen. This is
   the time, it takes for the impulse response to die away to 1/e = 0.368... or equivalently, the
   time it takes for the step response to raise to 1-1/e = 0.632... */
-  void setLowpassTimeConstant(TPar newTimeConstant) { setCutoff(1.0/(2*PI*newTimeConstant)); }
+  void setLowpassTimeConstant(TPar newTimeConstant) 
+  { setCutoff(TPar(1)/(TPar(2*PI)*newTimeConstant)); }
 
   /** Sets the gain factor for the shelving modes (this is not in decibels). */
   void setShelvingGain(TPar newGain);

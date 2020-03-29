@@ -951,4 +951,4 @@ rsImage<rsPixelRGB> rsConvertImage(
         img(i, j).b = (unsigned char)(255.f * B(i, j)); }}}
   return img;
 }
-template class rsImage<rsPixelRGB>; 
+//template class rsImage<rsPixelRGB>; 

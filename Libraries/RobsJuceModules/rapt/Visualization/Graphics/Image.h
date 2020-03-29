@@ -142,6 +142,8 @@ public:
   }
 
 
+
+
   /** Converts the image to a flat array of type std::vector. */
   std::vector<TPix> toStdVector() { return toVector(data, width*height); }
 
@@ -170,6 +172,15 @@ public:
   /** Clears the image by setting all pixels to the given color. */
   inline void clear(TPix color = TPix(0)) { fillAll(color);}
 
+  /** Copies the pixel data form the source image into this image. Assumes that the source has the 
+  same shape as this image. */
+  inline void copyPixelDataFrom(const rsImage<TPix>& source) 
+  { 
+    rsAssert(this->hasSameShapeAs(source));
+    rsArrayTools::copy(source.data, this->data, getNumPixels());
+  }
+  // todo: maybe if the source has a different shape, change the shape of this image
+
 
   /** Flips the image vertically such that top becomes bottom and vice versa. */
   //void flipTopForBottom();
@@ -189,9 +200,12 @@ public:
   inline const TPix& operator()(int x, int y) const { return data[y*width+x]; }
 
 
+
+
   /** Returns true, iff the two given images have the same shape. */
   static bool haveSameShape(const rsImage<TPix>& img1, const rsImage<TPix>& img2)
   { return img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight(); }
+  // obsolete: use img1.hasSameShapeAs(img2) instead
 
   /** Returns true, iff the three given images have the same shape. */
   static bool haveSameShape(

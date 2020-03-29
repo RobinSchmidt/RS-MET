@@ -15,7 +15,7 @@ template<class TSig, class TPar>
 void rsOnePoleFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   if(newSampleRate > 0.0)
-    freqToOmega = 2*PI/newSampleRate;
+    freqToOmega = TPar(2*PI)/newSampleRate;
   calcCoeffs();
   return;
 }
@@ -92,13 +92,13 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       // TPar g    = rsDB2amp(shelvingGain);
       //TPar g    = shelvingGain;
       //TPar wc   = 2*PI*cutoff*sampleRateRec;
-      TPar sampleRate = 2*PI/freqToOmega;
-      TPar wa   = 2*sampleRate*tan(w/2);
+      TPar sampleRate = TPar(2*PI)/freqToOmega;
+      TPar wa   = TPar(2)*sampleRate*tan(w/2);
       TPar gb   = rsSqrt(g);
       TPar beta = rsSqrt( (gb*gb-1)/(g*g-gb*gb) );
       TPar pa   = -beta*wa;
       TPar za   = -g*beta*wa;
-      TPar s    = 0.5/sampleRate;
+      TPar s    = TPar(0.5)/sampleRate;
       TPar p    = (1+s*pa)/(1-s*pa);
       TPar z    = (1+s*za)/(1-s*za);
       this->b1  = -z;
@@ -116,13 +116,13 @@ void rsOnePoleFilter<TSig, TPar>::calcCoeffs()
       //TPar g    = rsDB2amp(shelvingGain);  // wrong? shelvingGain is already linear
       //TPar g    = shelvingGain;
       //TPar wc   = 2*PI*cutoff*sampleRateRec; // redundant with w
-      TPar sampleRate = 2*PI/freqToOmega;
+      TPar sampleRate = TPar(2*PI)/freqToOmega;
       TPar wa   = 2*sampleRate*tan(w/2);
       TPar gb   = rsSqrt(g);
       TPar beta = rsSqrt( (gb*gb-1)/(g*g-gb*gb) );
       TPar pa   = -beta*wa;
       TPar za   = -g*beta*wa;
-      TPar s    = 0.5/sampleRate;
+      TPar s    = TPar(0.5)/sampleRate;
       TPar p    = (1+s*pa)/(1-s*pa);
       TPar z    = (1+s*za)/(1-s*za);
       this->b1  = -p;

@@ -375,6 +375,9 @@ template double RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(double fl
 template double RAPT::rsBandwidthConverter::bandedgesToAbsoluteBandwidth(double fl, double fu);
 template double RAPT::rsBandwidthConverter::absoluteBandwidthToQ(double fl, double fu);
 
+// Filters-Basic:
+template class RAPT::rsOnePoleFilter<float, float>;
+
 // Filters-Musical:
 template class RAPT::rsSmoothingFilter<float, float>;
 template class RAPT::rsLadderFilter<float, float>;
@@ -422,6 +425,7 @@ template class RAPT::rsEnvelopeFollower2<double>;
 
 // Visualization:
 template class RAPT::rsImage<float>;
+template class RAPT::rsImage<rsPixelRGB>; 
 template class RAPT::rsAlphaMask<float>;
 template class RAPT::rsImagePainter<float, float, float>;
 template class RAPT::rsImageDrawer<float, float, float>;
