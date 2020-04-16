@@ -744,7 +744,7 @@ public:
 
   /** Forms a weighted sum of the two buffers. */
   template <class T>
-  static  void weightedSum(const T *buffer1, const T *buffer2, T *result, 
+  static inline void weightedSum(const T *buffer1, const T *buffer2, T *result, 
     int length, T weight1, T weight2);
 
 };
@@ -1001,5 +1001,14 @@ inline void rsArrayTools::subtract(const T *buffer1, const T *buffer2, T *result
   for(int i = 0; i < length; i++)
     result[i] = buffer1[i] - buffer2[i];
 }
+
+template <class T>
+inline void rsArrayTools::weightedSum(const T *buffer1, const T *buffer2, T *result, int length, 
+  T weight1, T weight2)
+{
+  for(int n = 0; n < length; n++)
+    result[n] = weight1 * buffer1[n] + weight2 * buffer2[n];
+}
+
 
 #endif

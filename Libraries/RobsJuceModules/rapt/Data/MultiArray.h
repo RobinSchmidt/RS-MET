@@ -187,6 +187,12 @@ public:
     rsArrayTools::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
+  /** Scales all elements by a given factor. */
+  void scale(T factor) { rsArrayTools::scale(dataPointer, getSize(), factor); }
+
+  // maybe factor out common code with rsMatrixView into a class rsArrayView which serves as 
+  // baseclass for both - a general "view" class for any sort of array, i.e. homogeneous data 
+  // stored in a contiguous memory chunk. should have members dataPointer and size
 
   //-----------------------------------------------------------------------------------------------
   /** \name Misc */
@@ -205,6 +211,16 @@ public:
   }
 
 
+  /** Resets all data fields to default vaules, indicating an empty object. */
+  void reset()
+  {
+    shape.clear(); 
+    strides.clear();
+    dataPointer = nullptr;
+    size = 0;
+  }
+
+
 
 protected:
 
@@ -216,7 +232,10 @@ protected:
   recursive template instantiation) and a variable number of indices .... */
   template<typename... Rest>
   int flatIndex(const int depth, const int i, Rest... rest) const
-  { return flatIndex(depth, i) + flatIndex(depth+1, rest...); }
+  { 
+    int dbg = flatIndex(depth, i) + flatIndex(depth+1, rest...); // for debug
+    return flatIndex(depth, i) + flatIndex(depth+1, rest...); 
+  }
 
   /** Base case for the variadic template. this version will be instatiated when, in addition to 
   the recursion depth, only one index is passed. */
@@ -318,6 +337,54 @@ public:
     updateDataPointer();
   }
 
+  // Copy/move / construction/assignment copy/paste/edited from rsMatrix - needs some unit tests
+
+  /** Copy constructor. Copies data from B into this object.  */
+  rsMultiArray(const rsMultiArray& B)
+  {
+    setShape(B.shape); // allocates the memory
+    rsArrayTools::copy(B.dataPointer, this->dataPointer, this->getSize());
+  }
+
+  /** Move constructor. Takes over ownership of the data stored in B. */
+  rsMultiArray(rsMultiArray&& B)
+  {
+    this->size    = B.size;
+    this->data    = std::move(B.data);
+    this->shape   = std::move(B.shape);
+    this->strides = std::move(B.strides);
+    rsAssert(B.data.size() == 0);
+    rsAssert(B.shape.size() == 0);
+    rsAssert(B.strides.size() == 0);
+    updateDataPointer();
+    B.reset();                         // invalidates pointer in B
+  }
+
+  /** Copy assignment operator. Copies data from rhs into this object. */
+  rsMultiArray<T>& operator=(const rsMultiArray<T>& rhs)
+  {
+    if (this != &rhs) { // self-assignment check expected
+      setShape(rhs.shape);
+      rsArrayTools::copy(rhs.dataPointer, this->dataPointer, this->getSize());
+    }
+    return *this;
+  }
+
+  /** Move assignment operator. Takes over ownership of the data stored in rhs. */
+  rsMultiArray<T>& operator=(rsMultiArray<T>&& rhs)
+  {
+    this->size    = rhs.size;
+    this->data    = std::move(rhs.data);
+    this->shape   = std::move(rhs.shape);
+    this->strides = std::move(rhs.strides);
+    rsAssert(rhs.data.size() == 0);
+    rsAssert(rhs.shape.size() == 0);
+    rsAssert(rhs.strides.size() == 0);
+    updateDataPointer();
+    rhs.reset();
+    return *this;
+  }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -352,6 +419,9 @@ public:
   { rsMultiArray<T> C(this->shape); this->divide(*this, B, &C); return C; }
 
 
+
+
+
   // todo: ==,!=
 
 
@@ -370,5 +440,14 @@ protected:
   std::vector<T> data;
 
 };
+
+/** Multiplies a scalar and a multiarray. */
+template<class T>
+inline rsMultiArray<T> operator*(const T& s, const rsMultiArray<T>& A)
+{
+  rsMultiArray<T> B(A);
+  B.scale(s);
+  return B;
+}
 
 #endif

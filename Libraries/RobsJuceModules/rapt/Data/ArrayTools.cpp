@@ -1271,12 +1271,14 @@ T rsArrayTools::weightedSum(const T *w, const T *x, rsUint32 length) // use int
   return s;
 }
 
+/*
 template <class T>
 void rsArrayTools::weightedSum(const T *buffer1, const T *buffer2, T *result, int length, T weight1, T weight2)
 {
   for(int n = 0; n < length; n++)
     result[n] = weight1 * buffer1[n] + weight2 * buffer2[n];
 }
+*/
 
 
 /*

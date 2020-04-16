@@ -216,6 +216,8 @@ public:
     // If a1 is close to 1 (which is typical for lowpass filters), the denominator 1-a1^2 will
     // suffer from precision loss due to cancellation - can this be avoided?
   }
+  // maybe for image processing, it's better to assume that the missing pixels just repeat the last
+  // value instead of going down to zero?
 
   /** Applies the filter bidirectionally (once forward, once backward) to the input signal x and 
   stores the result in y. Both buffers are assumed to be of length N. Can be used in place, i.e. 

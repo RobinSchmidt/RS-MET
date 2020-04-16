@@ -133,3 +133,13 @@ Ty rsNumericIntegrator<Tx, Ty>::integrate(const std::function<Ty(Tx)>& f, Tx a, 
 //  can spit out arrays of polynomial coefficients like:
 //  void getCubicNaturalSplineCoeffs(Tx* x, int N, Ty* a, Ty* b, Ty* c, Ty* d);
 //  ...this may be also useful for rsInterpolatingFunction
+
+/*
+In the Princeton Companion to Applied Mathematics is a formula for approximating the derivative of
+analytic functions that produce real outputs for real inputs. It's
+  f'(x) ~= Im( f(x + i*h) ) / h
+It has an error of O(h^2) - opposed to O(h) when using f'(x) ~= f(x + i*h) / h. Why does this work?
+Is it because the imaginary part of f(x) is zero?
+
+
+*/

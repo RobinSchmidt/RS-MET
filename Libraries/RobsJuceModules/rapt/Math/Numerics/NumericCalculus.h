@@ -129,7 +129,7 @@ public:
     Ty* f0, Ty* f1, Ty* f2, Ty* f3)
   {
     // evaluate function at stencil points:
-    Ty fm2 = f(x-2*h);  // "minus 2", etc...
+    Ty fm2 = f(x-2*h);  // "minus 2h", etc...
     Ty fm1 = f(x - h);
     Ty fc  = f(x    );  // centered ..get rid - assign to *f0 directly
     Ty fp1 = f(x + h);
@@ -146,6 +146,21 @@ public:
   // f_x = (1*f[i-2]-8*f[i-1]+0*f[i+0]+8*f[i+1]-1*f[i+2])/(12*1.0*h**1)
   // f_xx = (-1*f[i-2]+16*f[i-1]-30*f[i+0]+16*f[i+1]-1*f[i+2])/(12*1.0*h**2)
   // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
+
+  // todo:
+  // -maybe it's better to not use x += h, x +- 2h, x +- 3h but instead 
+  //  x +- h/3, x +- 2h/3, x +- h such that the total width of the stencil stays the same, 
+  //  regardless of how many stencil-points we use. the goal is that the optimal choice of h 
+  //  depends only on the problem, not on the number of stencil-points
+  // -try stencils where the points are not distributed equidistantly but maybe exponentially, for
+  //  example: x +- h/4, x +- h/2, x +- h for a 5-point stencil
+  // -to avoid numerical error, it is desirable that the offsets (2, 2h, 3h, ..) are exactly 
+  //  representable - also the final divisors should be exactly representable - maybe (inverse)
+  //  powers of two are a good choice - at least, for the basic 3-point stencil x +- h, x +- 2h
+  //  where the divisor is 1/(2h)
+  // -test it with some standard functions like exp, log, sin, cos, tan, 1/x, 1/(1+x^2) - maybe 
+  //  polynomials (in which case we should get exact results, if the number of stencil points 
+  //  matches the degree)
 
 
   // make a similar function to compute up to 3rd derivative - uses 5 function evaluations

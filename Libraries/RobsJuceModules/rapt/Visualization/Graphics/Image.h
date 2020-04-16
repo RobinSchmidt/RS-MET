@@ -182,6 +182,14 @@ public:
   // todo: maybe if the source has a different shape, change the shape of this image
 
 
+  template<class TPix2>
+  inline void convertPixelDataFrom(const rsImage<TPix2>& source) 
+  { 
+    rsAssert(source.getWidth() == width && source.getHeight() == height);
+    rsArrayTools::convert(source.getPixelPointer(0,0), this->data, getNumPixels());
+  }
+
+
   /** Flips the image vertically such that top becomes bottom and vice versa. */
   //void flipTopForBottom();
 

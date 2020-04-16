@@ -210,6 +210,11 @@ public:
       && rsArrayTools::almostEqual(dataPointer, rhs.dataPointer, getSize(), tolerance);
   }
 
+
+  /** Returns true, iff this matrix has the given shape. */
+  bool hasShape(int numRows, int numCols) const
+  { return this->numRows == numRows && this->numCols == numCols; }
+
   /** Returns true, iff B has the same shape as this matrix. */
   bool hasSameShapeAs(const rsMatrixView<T>& B) const
   { return areSameShape(*this, B); }
@@ -330,6 +335,16 @@ public:
   /** Returns the maximum absolute value of all elements in the matrix. */
   T getAbsoluteMaximum() const { return rsArrayTools::maxAbs(dataPointer, getSize()); }
 
+  /** Computes the trace of the matrix which is the sum of the diagonal elements. */
+  T getTrace() const
+  {
+    T t = T(0);
+    for(int i = 0; i < rsMin(numRows, numCols); ++i)
+      t = t + this->at(i, i);   // use +=
+    return t;
+  }
+
+  /** Computes the product of the diagonal elements (does this also have a special name?) */
   T getDiagonalProduct() const
   {
     T p = T(1);
@@ -728,6 +743,18 @@ public:
     return *this;
   }
 
+  /** Move assignment operator. Takes over ownership of the data stored in rhs. */
+  rsMatrix<T>& operator=(rsMatrix<T>&& rhs)
+  {
+    data = std::move(rhs.data);
+    rsAssert(rhs.data.size() == 0);
+    this->numRows = rhs.numRows;
+    this->numCols = rhs.numCols;
+    updateDataPointer();
+    rhs.reset();
+    return *this;
+  }
+
 
   /** Needs test! */
   /*
@@ -743,17 +770,7 @@ public:
 
 
 
-  /** Move assignment operator. Takes over ownership of the data stored in rhs. */
-  rsMatrix<T>& operator=(rsMatrix<T>&& rhs)
-  {
-    data = std::move(rhs.data);
-    rsAssert(rhs.data.size() == 0);
-    this->numRows = rhs.numRows;
-    this->numCols = rhs.numCols;
-    updateDataPointer();
-    rhs.reset();
-    return *this;
-  }
+
 
   /** Creates a zero matrix with given number of rows and columns. */
   static rsMatrix<T> zero(int numRows, int numColumns) 
