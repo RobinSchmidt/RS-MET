@@ -927,6 +927,7 @@ void finiteDifferenceStencilCoeffs()
 }
 
 
+
 // move after void numericDiffAndInt();
 void iteratedNumDiff()
 {
@@ -961,8 +962,30 @@ void iteratedNumDiff()
   //double h1 = pow(2, -19);     // 3.e-11, noise with some modulation
   //double h1 = pow(2, -21); 
 
+                            // obtained using h1 = 2^-(-18):
+  double h2 = pow(2, -11);        // 6.0e-8, noisy sine
+  //double h2 = pow(2, -12);      // 6.0e-8, modulated noise
+  //double h2 = pow(2, -13);      // 1.0e-7, noise
+  //double h2 = pow(2, -14);      // 2.0e-7, noise
+  //double h2 = pow(2, -15);      // 3.5e-7, noise
+  //double h2 = pow(2, -16);      // 8.0e-7, noise
+  //double h2 = pow(2, -17);      // 1.5e-6, noise
+  //double h2 = pow(2, -18);      // 3.0e-6, noise
+  //double h2 = pow(2, -19);      // 4.0e-6, noise
 
-  double h2 = pow(2, -15);
+
+  //h1 = pow(2, -17); h2 = pow(2, -12);  // 3.0e-8
+  //h1 = pow(2, -16); h2 = pow(2, -12);  // 2.0e-8
+  //h1 = pow(2, -16); h2 = pow(2, -13);  // 2.0e-8
+  //h1 = pow(2, -15); h2 = pow(2, -12);    // 1.5e-8, noisy sine
+  //h1 = pow(2, -14); h2 = pow(2, -12);    // 1.2e-8, less noisy sine
+  h1 = pow(2, -13); h2 = pow(2, -12);     // 1.3e-8, even less noisy sine
+  //h1 = pow(2, -13); h2 = pow(2, -13);     // 8.0e-9
+  //h1 = pow(2, -12); h2 = pow(2, -13);   // 1.3e-8, same as using h1 = 2^(-13), h2 = 2^(-12) - 
+                                          // the swap makes no difference - is this generally true?
+
+
+
   double h3 = pow(2, -15);
   double h4 = pow(2, -15);
 
@@ -1014,7 +1037,9 @@ void iteratedNumDiff()
   //rsPlotArraysXY(N, x, y, t1, t2, t3);  // needs more inputs
 
 
-  rsPlotArraysXY(N, x, e1);
+  //rsPlotArraysXY(N, x, e1);
+
+  rsPlotArraysXY(N, x, e2);
 
   //rsPlotArraysXY(N, x, e1, e2);
 
@@ -1031,6 +1056,10 @@ void iteratedNumDiff()
   //   the maximum amplitude of the error also increases
   //  -using 2^(-17.5) actually further reduces the maximum error to 1.2e-11, 2^(-17.4) or 
   //   2^(-17.6) is really strange
+  // -if h1 is chosen to be h1 = 2^(-18), i.e. the optimal value, then the optimal choice for h2 
+  //  seems to be h2 = 2^(-12), giving a noisy error with a maximum around 6.e-8
+  // -using h1 = 2^(-13), h2 = 2^(-12) seems to give the same error as h1 = 2^(-12), h2 = 2^(-13) 
+  //  so swapping h1 and h2 seems to make no difference -> figure out, if this generally true
 
   // todo: 
   // -figure out the optimal stepsize for the 2nd derivative, given the one for the first has 
@@ -1039,7 +1068,19 @@ void iteratedNumDiff()
   //  computing the 1st derivative as such could be better, wehn the 1st derivative is computed 
   //  only as intermediate result for the 2nd derivative? (well - that would be strange, but who
   //  knows - floating point arithmetic sometimes works in mysterious ways)
+  //  -> plot the maximum error of the 2nd derivative as 2D function of h1 and h2
 }
+
+/*
+double getMax2ndDerivativeErrorSin(double h1, double h2,
+  double xMin = -10, double xMax = +10, int numSamples = 500)
+{
+
+  return 0;  // preliminary
+}
+*/
+
+
 
 void interpolatingFunction()
 {
