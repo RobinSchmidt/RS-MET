@@ -887,6 +887,15 @@ inline std::vector<T> operator/(const std::vector<T>& v, const T& x)
   return result;
 }
 
+// s: stencil offsets, d: derivative order, t: target coeffs, tol: tolerance
+bool testStencil(const std::vector<double>& s, int d, const std::vector<double>& t, 
+  double tol = 1.e-13)
+{
+  int N = s.size();
+  std::vector<double> c(N);
+  RAPT::getNumDiffStencilCoeffs(&s[0], N, d, &c[0]); 
+  return rsEquals(c, t, tol);
+}
 
 void finiteDifferenceStencilCoeffs()
 {
@@ -905,12 +914,8 @@ void finiteDifferenceStencilCoeffs()
   // f_x = (-1*f[i-1]+0*f[i+0]+1*f[i+1])/(2*1.0*h**1)
   // f_xx = (1*f[i-1]-2*f[i+0]+1*f[i+1])/(1*1.0*h**2)
   s = {-1, 0, 1}; // normalized stencil offsets
-  c.resize(3);
-  RAPT::getNumDiffStencilCoeffs(&s[0], 3, 1, &c[0]);
-  r &= c == Vec({-0.5, 0.0, +0.5});
-  RAPT::getNumDiffStencilCoeffs(&s[0], 3, 2, &c[0]);
-  r &= c == Vec({1.0, -2.0, 1.0});
-
+  r &= testStencil(s, 1, Vec({ -1.,   0.,  1}) / 2.);
+  r &= testStencil(s, 2, Vec({  1.,  -2.,  1}) / 1.);
 
   // symmetric, equidistant 5-point stencil -2,-1,0,+1,+2:
   // f_x = (1*f[i-2]-8*f[i-1]+0*f[i+0]+8*f[i+1]-1*f[i+2])/(12*1.0*h**1)
@@ -918,14 +923,10 @@ void finiteDifferenceStencilCoeffs()
   // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
   // f_xxxx = (1*f[i-2]-4*f[i-1]+6*f[i+0]-4*f[i+1]+1*f[i+2])/(1*1.0*h**4)
   s = {-2, -1, 0, 1, 2};
-  c.resize(5);
-  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 1, &c[0]); r &= rsEquals(c, Vec({ 1., -8.,   0.,  8., -1.}) / 12., tol);
-  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 2, &c[0]); r &= rsEquals(c, Vec({-1., 16., -30., 16., -1.}) / 12., tol);
-  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 3, &c[0]); r &= rsEquals(c, Vec({-1.,  2.,   0., -2.,  1.}) /  2., tol);
-  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 4, &c[0]); r &= rsEquals(c, Vec({ 1., -4.,   6., -4.,  1.}) /  1., tol);
-  // try to clean this code up - make a boolean function testStencil(s, d, targetVector)
-
-
+  r &= testStencil(s, 1, Vec({ 1., -8.,   0.,  8., -1.}) / 12.);
+  r &= testStencil(s, 2, Vec({-1., 16., -30., 16., -1.}) / 12.);
+  r &= testStencil(s, 3, Vec({-1.,  2.,   0., -2.,  1.}) /  2.);
+  r &= testStencil(s, 4, Vec({ 1., -4.,   6., -4.,  1.}) /  1.);
 
   // symmetric, equidistant 7-point stencil -3,-2,-1,0,+1,+2,+3:
   s = {-3, -2, -1, 0, 1, 2, 3};
