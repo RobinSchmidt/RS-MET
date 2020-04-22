@@ -76,7 +76,36 @@ void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapola
 // the app there can also compute numerical derivatives for non-equidistant sample data
 // -> try to program something similar in sage or sympy
 
+template<class T>
+void getNumDiffStencilCoeffs(const T* x, int N, int d, T* c)
+{
+  rsAssert(d < N, "Stencil width must be greater than derivative order.");
 
+  // establish matrix:
+  T** A;                // matrix data
+  rsMatrixTools::allocateMatrix(A, N, N);
+  for(int i = 0; i < N; i++)
+    for(int j = 0; j < N; j++)
+      A[i][j] = pow(x[j], i);
+  //rsMatrix<double> A_dbg(N, N, A);  // for debug
+
+  // establish right-hand-side vector:
+  std::vector<T> rhs(N);
+  rsFill(rhs, T(0));
+  rhs[d] = rsFactorial(d);
+
+  // compute coeffs by solving the linear system:
+  //std::vector<T> c(N);
+  rsLinearAlgebra::rsSolveLinearSystem(A, &c[0], &rhs[0], N);
+  // In practice, the resulting coefficients have to be divided by h^d where h is the step-size and
+  // d is the order of the derivative to be approximated. The stencil offsets in x are actually 
+  // multipliers for some basic step-size h, i.e. a stencil -2,-1,0,1,2 means that we use values
+  // f(x-2h),f(x-h),f(x),f(x+h),f(x+2h) to approximate the d-th derivative of f(x) at x=0
+
+  rsMatrixTools::deallocateMatrix(A, N, N);
+
+  // todo: use rsMatrix, write unit test
+}
 
 
 

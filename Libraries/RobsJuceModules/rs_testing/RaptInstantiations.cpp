@@ -370,6 +370,9 @@ template void RAPT::rsRemoveCorrelationBias(double x[], int N, double r[]);
 
 template class RAPT::rsMultiArrayOld<float>;
 
+// numeric calculus
+template void RAPT::getNumDiffStencilCoeffs(const double* x, int N, int d, double* c);
+
 
 template double RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(double fl, double fu);
 template double RAPT::rsBandwidthConverter::bandedgesToAbsoluteBandwidth(double fl, double fu);

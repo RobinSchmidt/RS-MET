@@ -31,6 +31,21 @@ void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapola
 // todo: make a numeric derivative routine that is the inverse of the trapezoidal integrator
 // rsDifferentiateTrapezoidal, rename this one to rsWeightedCentralDifference
 
+/** Computes the stencil coefficients for a finite difference approximation of a derivative 
+according to: http://web.media.mit.edu/~crtaylor/calculator.html (todo: explain this here)
+Inputs: 
+  x: array of normalized distances from the approximation point. "Normalized" means in this 
+     context, that the step-size h is not yet included. So, if the x-array is given by: 
+     x = [-2,-1,0,1,2], it means, we want to use the 5-point stencil: x-2h,x-h,x,x+h,x+2h.
+  N: length of x
+  d: derivative that should be approximated, e.g. d=2 for the 2nd derivative
+Output:
+  c: The normalized coefficients, by which the function values f(x + k*h) must be multiplied 
+     (k being one of the values from the x-array). Here, "normalized" means that the result must 
+     be divided by h^d. The length of this array must also be N.  */
+template<class T>
+void getNumDiffStencilCoeffs(const T* x, int N, int d, T* c);
+
 
 /** Computes the numerical integral of a function defined by data points, i.e. the function:
 \f[ F(x) = \int_c^x f(t) dt \f] where the lower integration limit c can be passed as a parameter 
@@ -50,6 +65,8 @@ void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
 // because some interpolation stuff depends on numeric derivatives but some numeric derivatives/
 // integration stuff may depend on interpolation and if we templatize the functions, we need to 
 // take care that everything is defined before it gets used.
+
+
 
 
 
@@ -166,8 +183,9 @@ public:
   // make a similar function to compute up to 3rd derivative - uses 5 function evaluations
   // (use stencil: -2,-1,0,+1,+2)
 
+
+
   // maybe have more accurate formulas - formulas can be produced by
-  // http://web.media.mit.edu/~crtaylor/calculator.html
   // ..but i have also implemented this stencil coeff computation myself somewhere in the 
   // experiments - clean that code up and move it over here, too
 

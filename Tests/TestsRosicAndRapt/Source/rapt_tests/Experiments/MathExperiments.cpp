@@ -866,12 +866,16 @@ void ellipseLineIntersections()
 
 void finiteDifferenceStencilCoeffs()
 {
+  // todo: turn into unit test and move to unit tests
+
   // Computation of coefficients for arbitrary finite difference stencils, see:
   // http://web.media.mit.edu/~crtaylor/calculator.html
+  // there's a copy of that in my private repo, just in case, the page disappears - the html has the 
+  // javascript code embedded
 
   typedef std::vector<double> Vec;
   Vec s = {-2, -1, 0, 1, 2};         // normalized stencil offsets
-  int d = 4;                         // order of derivative to be approximated
+  int d = 3;                         // order of derivative to be approximated
 
   // establish matrix:
   int N = (int) s.size();    // stencil length
@@ -906,7 +910,27 @@ void finiteDifferenceStencilCoeffs()
   // -maybe we should round the final coeffs? are they supposed to be integer? ...maybe only, if
   //  the stencil offsets are all integers?
 
-  // stencil = -2,-1,0,1,2, d = 4:
+
+  // symmetric 5-point stencil -2,-1,0,1,2:
+  RAPT::getNumDiffStencilCoeffs(&s[0], N, 1, &c[0]);
+  RAPT::getNumDiffStencilCoeffs(&s[0], N, 2, &c[0]);
+  RAPT::getNumDiffStencilCoeffs(&s[0], N, 3, &c[0]);
+  RAPT::getNumDiffStencilCoeffs(&s[0], N, 4, &c[0]);
+  // one suboptimal thing is that we may actually use rational numbers instead of floating point to
+  // get rid of rounding errors...maybe a later refinement can do that - at the end of the day, 
+  // this computation is probably done offline anyway to obtain coeffs that will be hardcoded in
+  // some specific numerical derivative approximator
+
+  //RAPT::getNumDiffStencilCoeffs(&s[0], N, 5, &c[0]);  // should not work with 5-point stencil
+
+  // stencil = -2,-1,0,1,2, d = 3: (-1,2,0,-2,-1)/(2*h^3)
+  // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
+
+  // stencil = -2,-1,0,1,2, d = 4: (1,-4,6,-4,1)/(h^4)
+  // f_xxxx = (1*f[i-2]-4*f[i-1]+6*f[i+0]-4*f[i+1]+1*f[i+2])/(1*1.0*h**4)
+
+
+
 
   // stencil = -2,-1,0,3,4, d = 3:
   // f_xxx = (-6*f[i-2]+15*f[i-1]-10*f[i+0]+1*f[i+3]+0*f[i+4])/(10*1.0*h**3)
