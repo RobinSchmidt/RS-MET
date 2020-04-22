@@ -864,6 +864,30 @@ void ellipseLineIntersections()
   plt.plot();
 }
 
+
+// move to rapt:
+template<class T>
+bool rsEquals(const std::vector<T>& x, const std::vector<T>& y, T tol = T(0))
+{
+  if( x.size() != y.size() )
+    return false;
+  for(size_t i = 0; i < x.size(); i++) {
+    if( rsAbs(x[i]-y[i]) > tol )
+      return false; }
+  return true;
+}
+
+/** Divides a vector by a scalar. */
+template<class T>
+inline std::vector<T> operator/(const std::vector<T>& v, const T& x)
+{
+  std::vector<T> result(v.size());
+  for(int i = 0; i < v.size(); i++)
+    result[i] = v[i] / x;
+  return result;
+}
+
+
 void finiteDifferenceStencilCoeffs()
 {
   // Computation of coefficients for arbitrary finite difference stencils, see:
@@ -874,20 +898,38 @@ void finiteDifferenceStencilCoeffs()
   typedef std::vector<double> Vec;
   Vec c(Nmax), s;
 
-  // symmetric, equidistant 3-point stencil -1,0,+1:
+  bool r = true;
+  double tol = 1.e-13;
+
+  // symmetric, equidistant 3-point stencil -1,0,1:
+  // f_x = (-1*f[i-1]+0*f[i+0]+1*f[i+1])/(2*1.0*h**1)
+  // f_xx = (1*f[i-1]-2*f[i+0]+1*f[i+1])/(1*1.0*h**2)
   s = {-1, 0, 1}; // normalized stencil offsets
+  c.resize(3);
   RAPT::getNumDiffStencilCoeffs(&s[0], 3, 1, &c[0]);
+  r &= c == Vec({-0.5, 0.0, +0.5});
   RAPT::getNumDiffStencilCoeffs(&s[0], 3, 2, &c[0]);
+  r &= c == Vec({1.0, -2.0, 1.0});
+
 
   // symmetric, equidistant 5-point stencil -2,-1,0,+1,+2:
+  // f_x = (1*f[i-2]-8*f[i-1]+0*f[i+0]+8*f[i+1]-1*f[i+2])/(12*1.0*h**1)
+  // f_xx = (-1*f[i-2]+16*f[i-1]-30*f[i+0]+16*f[i+1]-1*f[i+2])/(12*1.0*h**2)
+  // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
+  // f_xxxx = (1*f[i-2]-4*f[i-1]+6*f[i+0]-4*f[i+1]+1*f[i+2])/(1*1.0*h**4)
   s = {-2, -1, 0, 1, 2};
-  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 1, &c[0]);
-  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 2, &c[0]);
-  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 3, &c[0]);
-  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 4, &c[0]);
+  c.resize(5);
+  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 1, &c[0]); r &= rsEquals(c, Vec({ 1., -8.,   0.,  8., -1.}) / 12., tol);
+  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 2, &c[0]); r &= rsEquals(c, Vec({-1., 16., -30., 16., -1.}) / 12., tol);
+  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 3, &c[0]); r &= rsEquals(c, Vec({-1.,  2.,   0., -2.,  1.}) /  2., tol);
+  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 4, &c[0]); r &= rsEquals(c, Vec({ 1., -4.,   6., -4.,  1.}) /  1., tol);
+  // try to clean this code up - make a boolean function testStencil(s, d, targetVector)
+
+
 
   // symmetric, equidistant 7-point stencil -3,-2,-1,0,+1,+2,+3:
   s = {-3, -2, -1, 0, 1, 2, 3};
+  c.resize(7);
   RAPT::getNumDiffStencilCoeffs(&s[0], 7, 1, &c[0]);
   RAPT::getNumDiffStencilCoeffs(&s[0], 7, 2, &c[0]);
   RAPT::getNumDiffStencilCoeffs(&s[0], 7, 3, &c[0]);
@@ -924,6 +966,8 @@ void finiteDifferenceStencilCoeffs()
   // -2,-1,0,0.5:
   // f_xx = (-1*f[i-2]+10*f[i-1]-25*f[i+0]+16*f[i+0.5])/(5*1.0*h**2)
   // f_xxx = (-6*f[i-2]+20*f[i-1]-30*f[i+0]+16*f[i+0.5])/(5*1.0*h**3)
+
+  // return result:
 }
 
 
@@ -974,12 +1018,15 @@ void iteratedNumDiff()
   //double h2 = pow(2, -19);      // 4.0e-6, noise
 
 
-  //h1 = pow(2, -17); h2 = pow(2, -12);  // 3.0e-8
+  h1 = pow(2, -17); h2 = pow(2, -12);  // 3.0e-8
+  //h1 = pow(2, -12); h2 = pow(2, -17);  // 3.0e-8
+
+
   //h1 = pow(2, -16); h2 = pow(2, -12);  // 2.0e-8
   //h1 = pow(2, -16); h2 = pow(2, -13);  // 2.0e-8
   //h1 = pow(2, -15); h2 = pow(2, -12);    // 1.5e-8, noisy sine
   //h1 = pow(2, -14); h2 = pow(2, -12);    // 1.2e-8, less noisy sine
-  h1 = pow(2, -13); h2 = pow(2, -12);     // 1.3e-8, even less noisy sine
+  //h1 = pow(2, -13); h2 = pow(2, -12);     // 1.3e-8, even less noisy sine
   //h1 = pow(2, -13); h2 = pow(2, -13);     // 8.0e-9
   //h1 = pow(2, -12); h2 = pow(2, -13);   // 1.3e-8, same as using h1 = 2^(-13), h2 = 2^(-12) - 
                                           // the swap makes no difference - is this generally true?
@@ -1060,6 +1107,11 @@ void iteratedNumDiff()
   //  seems to be h2 = 2^(-12), giving a noisy error with a maximum around 6.e-8
   // -using h1 = 2^(-13), h2 = 2^(-12) seems to give the same error as h1 = 2^(-12), h2 = 2^(-13) 
   //  so swapping h1 and h2 seems to make no difference -> figure out, if this generally true
+  //  -> at least with -12 and -17, the swap also makes no difference - maybe derive the final
+  //  formula analytically and see, if it's symmetrical in h1 and h2
+
+
+
 
   // todo: 
   // -figure out the optimal stepsize for the 2nd derivative, given the one for the first has 
@@ -1069,6 +1121,11 @@ void iteratedNumDiff()
   //  only as intermediate result for the 2nd derivative? (well - that would be strange, but who
   //  knows - floating point arithmetic sometimes works in mysterious ways)
   //  -> plot the maximum error of the 2nd derivative as 2D function of h1 and h2
+
+  // f=f0: function, f1: 1st numeric derivative, f2: 2nd numeric derivative:
+  // f1(x) = (f0(x+h1) + f0(x-h1)) / (2*h1)
+  // f2(x) = (f1(x+h2) + f1(x-h2)) / (2*h2)
+
 }
 
 /*

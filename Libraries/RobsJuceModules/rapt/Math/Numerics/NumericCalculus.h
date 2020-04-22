@@ -141,7 +141,7 @@ public:
   }
   // needs test
 
-  /** Computes 0th, 1st and 2nd derivative of f at x. Uses a 5-point stencil: -2,-1,0,1,2 */
+  /** Computes 0th, 1st, 2nd and 3rd derivative of f at x. Uses a 5-point stencil: -2,-1,0,1,2 */
   static void derivativesUpTo3(const F& f, const Tx& x, const Tx& h, 
     Ty* f0, Ty* f1, Ty* f2, Ty* f3)
   {
@@ -164,6 +164,9 @@ public:
   // f_xx = (-1*f[i-2]+16*f[i-1]-30*f[i+0]+16*f[i+1]-1*f[i+2])/(12*1.0*h**2)
   // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
 
+  // todo: derivativesUpTo4 - this is as far as we may go with a 5-point stencil - for higher 
+  // derivatives, we need more than 5 evaluation points
+
   // todo:
   // -maybe it's better to not use x += h, x +- 2h, x +- 3h but instead 
   //  x +- h/3, x +- 2h/3, x +- h such that the total width of the stencil stays the same, 
@@ -180,26 +183,24 @@ public:
   //  matches the degree)
 
 
-  // make a similar function to compute up to 3rd derivative - uses 5 function evaluations
-  // (use stencil: -2,-1,0,+1,+2)
+  // maybe implement more accurate formulas - formulas can be produced by
+  // http://web.media.mit.edu/~crtaylor/calculator.html
+  // or getNumDiffStencilCoeffs which implements the algo from the website
 
-
-
-  // maybe have more accurate formulas - formulas can be produced by
-  // ..but i have also implemented this stencil coeff computation myself somewhere in the 
-  // experiments - clean that code up and move it over here, too
 
   // todo: figure out the accuracy experimentally - maybe this can be done by testing, how high 
   // degree a polynomial can be such that we still get perfect results - i think, a 5-point stencil
   // should/ be perfect for polynomials up to 5th degree (it's based on an interpolating polynomial
   // of degree 5)
 
-
-
   //-----------------------------------------------------------------------------------------------
   // \name Data derivatives
 
-  // move the function rsNumericDerivative here
+  // move the function rsNumericDerivative here - but maybe not because then ot would require an 
+  // instantiatio of this class which may be inconvenient due to all the template parameters, 
+  // especially F for the function type - or maybe make a class that doesn't require an 
+  // instantiation (by decalring the template parameters in front of the function rather than the 
+  // class)
 
 };
 
