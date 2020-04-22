@@ -945,11 +945,26 @@ void iteratedNumDiff()
   double x[N], y[N];
   double y1[N], y2[N], y3[N], y4[N];  // computed derivatives
   double t1[N], t2[N], t3[N], t4[N];  // target derivatives
-
+  double e1[N], e2[N], e3[N], e4[N];  // errors
 
   rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
 
-  //using Func = std::function<double(double)>;  // function from double to double
+
+  // Set up approximation stepsizes - in order to have the x+h, x+2h inputs to be machine numbers, 
+  // we use a stepsize h that is an (inverse) power of 2 - this should get rid of at least one 
+  // source of inaccuracy (right? ...verify conditions under which this makes sense)
+  //double h1 = pow(2, -15);      // 1.5 e-10, sine
+  //double h1 = pow(2, -16);    // 4.e-11, noisy sine
+  //double h1 = pow(2, -17);  // 1.5e-11, more noisy sine
+  //double h1 = pow(2, -17.5);  // 
+  double h1 = pow(2, -18);    // 1.5e-11, noise with a little bit of sine
+  //double h1 = pow(2, -19);     // 3.e-11, noise with some modulation
+  //double h1 = pow(2, -21); 
+
+
+  double h2 = pow(2, -15);
+  double h3 = pow(2, -15);
+  double h4 = pow(2, -15);
 
   //Func f0 = &sin;
 
@@ -960,23 +975,70 @@ void iteratedNumDiff()
   auto f4 = [=](double x)->double{ return  sin(x); };
 
 
+
+
+
+
+  using Func = std::function<double(double)>;  // function from double to double
+  Func g0 = [=](double x)->double{ return  sin(x); };
+  Func g1 = RAPT::rsDerivative(g0, h1);
+  Func g2 = RAPT::rsDerivative(g1, h2);
+  Func g3 = RAPT::rsDerivative(g2, h3);
+  Func g4 = RAPT::rsDerivative(g3, h4);
+
+
+
   for(int n = 0; n < N; n++)
   {
     y[n]  = f0(x[n]);
 
-
-
+    y1[n] = g1(x[n]);
+    y2[n] = g2(x[n]);
+    y3[n] = g3(x[n]);
+    y4[n] = g4(x[n]);
 
     t1[n] = f1(x[n]);
     t2[n] = f2(x[n]);
     t3[n] = f3(x[n]);
     t4[n] = f4(x[n]);
+
+    e1[n] = y1[n] - t1[n];
+    e2[n] = y2[n] - t2[n];
+    e3[n] = y3[n] - t3[n];
+    e4[n] = y4[n] - t4[n];
   }
 
   //using  Vec = std::vector<double>;
 
 
-  rsPlotArraysXY(N, x, y, t1, t2, t3);  // needs more inputs
+  //rsPlotArraysXY(N, x, y, t1, t2, t3);  // needs more inputs
+
+
+  rsPlotArraysXY(N, x, e1);
+
+  //rsPlotArraysXY(N, x, e1, e2);
+
+  //rsPlotArraysXY(N, x, e1, e2, e3, e4); // e4 is large
+
+  // Observations:
+  // -for the sine function, the optimal stepsize h for the first derivative seems to be 2^(-18)
+  //  -in this case, the error is noise-like with some sort of sinusoidal modulation with a maximum
+  //   error of around 1.5e-11
+  //  -going lower, e.g. h = 2^(-19), the character of the error stays modulated-noise-like but 
+  //   with higher amplitude
+  //  -going higher, e.g. h = 2^(-17), the error looks like a noisy sine-wave, where at 2^-(15), 
+  //   the sinusoidal shape clearly dominates - there's not much noise anymore at this setting and
+  //   the maximum amplitude of the error also increases
+  //  -using 2^(-17.5) actually further reduces the maximum error to 1.2e-11, 2^(-17.4) or 
+  //   2^(-17.6) is really strange
+
+  // todo: 
+  // -figure out the optimal stepsize for the 2nd derivative, given the one for the first has 
+  //  been chosen optimally, i.e h1 = 2^(-18)
+  // -try to tweak the stepsize for the 1st derivative - maybe values that are suboptimal for 
+  //  computing the 1st derivative as such could be better, wehn the 1st derivative is computed 
+  //  only as intermediate result for the 2nd derivative? (well - that would be strange, but who
+  //  knows - floating point arithmetic sometimes works in mysterious ways)
 }
 
 void interpolatingFunction()

@@ -356,7 +356,7 @@ int main(int argc, char* argv[])
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
   //modalWithFancyEnv();
   //modalSynthSpectra();
-  modalDecayFit();
+//  modalDecayFit();
   //modalAnalysis1();
   //modalAnalysisPluck();
   //modalPartialResynthesis();
@@ -424,7 +424,7 @@ int main(int argc, char* argv[])
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
 
-  amplitudeDeBeating();
+//  amplitudeDeBeating();
   //amplitudeDeBeating2();
   //harmonicDeBeating1();
   //harmonicDeBeating2();

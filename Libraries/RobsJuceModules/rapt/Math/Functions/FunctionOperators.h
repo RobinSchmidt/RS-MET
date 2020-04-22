@@ -24,8 +24,8 @@ inline std::function<T(T)> rsDerivative(const std::function<T(T)>& f, T h)
 // todo: 
 // -maybe make versions that take the forward and backward difference
 // -maybe let h be automatically selected - it sould be selected such that we get the best 
-//  numerical accuracy - using smaller h makes reduces the approximation error but increases the
-//  the cancellation error (subtracting similar numbers) - so there should be an optimal choice 
+//  numerical accuracy - using smaller h reduces the approximation error but increases the the 
+//  cancellation error (subtracting similar numbers) - so there should be an optimal choice 
 //  somewhere - maybe there's a formula for that optimal choice based on the machine epsilon and
 //  x and f(x)?
 // -advantage of forward/backward difference: only one evaluation of f, may be used at points where
