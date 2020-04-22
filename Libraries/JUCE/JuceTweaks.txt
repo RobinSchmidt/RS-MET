@@ -1,10 +1,13 @@
 To make it work, i had to tweak/hack the juce library a bit:
 
 -juce_Image.h: removed "final" declaration from class
+ Reason: I subclassed jura::ColourizableBitmap from juce::Image when it still 
+ was legal to do so. This class is used for the pixel-fonts. ..why did they 
+ make juce::Image final anyway? :-(
 
 
 
-to update to a new version of juce, the follwoing steps are necessarry:
+to update to a new version of juce, the following steps are necessarry:
 -download latest version of juce
 -create a new git branch and switch to it
 -replace content of the JUCE/modules folder (maybe keep the juce_VSTInterface.h)

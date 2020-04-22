@@ -1,13 +1,13 @@
 #ifndef jura_ColourizableBitmap_h
 #define jura_ColourizableBitmap_h
 
-/**
+/** This class ...needs to be documented
 
-This class ....
+\todo try to get rid of inheriting from juce::Image - newer versions of juce disallow this by 
+declaring the image class final. I had to hack the juce library and remove this final declaration 
+in my copy of the juce source tree - which is a dirty and hacky thing to do. */
 
-*/
-
-class JUCE_API ColourizableBitmap : public Image
+class JUCE_API ColourizableBitmap : public juce::Image
 {
 
 public:
