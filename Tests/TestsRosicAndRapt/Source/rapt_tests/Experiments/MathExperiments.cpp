@@ -929,14 +929,22 @@ void finiteDifferenceStencilCoeffs()
   r &= testStencil(s, 4, Vec({ 1., -4.,   6., -4.,  1.}) /  1.);
 
   // symmetric, equidistant 7-point stencil -3,-2,-1,0,+1,+2,+3:
+
+  // f_x = (-1*f[i-3]+9*f[i-2]-45*f[i-1]+0*f[i+0]+45*f[i+1]-9*f[i+2]+1*f[i+3])/(60*1.0*h**1)
+  // f_xx = (2*f[i-3]-27*f[i-2]+270*f[i-1]-490*f[i+0]+270*f[i+1]-27*f[i+2]+2*f[i+3])/(180*1.0*h**2)
+  // f_xxx = (1*f[i-3]-8*f[i-2]+13*f[i-1]+0*f[i+0]-13*f[i+1]+8*f[i+2]-1*f[i+3])/(8*1.0*h**3)
+  // f_xxxx = (-1*f[i-3]+12*f[i-2]-39*f[i-1]+56*f[i+0]-39*f[i+1]+12*f[i+2]-1*f[i+3])/(6*1.0*h**4)
+  // f_xxxxx = (-1*f[i-3]+4*f[i-2]-5*f[i-1]+0*f[i+0]+5*f[i+1]-4*f[i+2]+1*f[i+3])/(2*1.0*h**5)
+  // f_xxxxxx = (1*f[i-3]-6*f[i-2]+15*f[i-1]-20*f[i+0]+15*f[i+1]-6*f[i+2]+1*f[i+3])/(1*1.0*h**6)
+
   s = {-3, -2, -1, 0, 1, 2, 3};
-  c.resize(7);
-  RAPT::getNumDiffStencilCoeffs(&s[0], 7, 1, &c[0]);
-  RAPT::getNumDiffStencilCoeffs(&s[0], 7, 2, &c[0]);
-  RAPT::getNumDiffStencilCoeffs(&s[0], 7, 3, &c[0]);
-  RAPT::getNumDiffStencilCoeffs(&s[0], 7, 4, &c[0]);
-  RAPT::getNumDiffStencilCoeffs(&s[0], 7, 5, &c[0]);
-  RAPT::getNumDiffStencilCoeffs(&s[0], 7, 6, &c[0]);
+  r &= testStencil(s, 1, Vec({ -1.,   9., -45.,    0.,   45.,  -9.,  1.}) /  60.);
+  r &= testStencil(s, 2, Vec({  2., -27., 270., -490.,  270., -27.,  2.}) / 180.);
+  r &= testStencil(s, 3, Vec({  1.,  -8.,  13.,    0.,  -13.,   8., -1.}) /   8.);
+  r &= testStencil(s, 4, Vec({ -1.,  12., -39.,    56., -39.,  12., -1.}) /   6.);
+  r &= testStencil(s, 5, Vec({ -1.,   4.,  -5.,     0.,   5.,  -4.,  1.}) /   2.);
+  r &= testStencil(s, 6, Vec({  1.,  -6.,  15.,   -20.,  15.,  -6.,  1.}) /   1.);
+
 
   int dummy = 0;
 
