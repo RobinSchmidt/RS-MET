@@ -866,70 +866,53 @@ void ellipseLineIntersections()
 
 void finiteDifferenceStencilCoeffs()
 {
-  // todo: turn into unit test and move to unit tests
-
   // Computation of coefficients for arbitrary finite difference stencils, see:
   // http://web.media.mit.edu/~crtaylor/calculator.html
   // there's a copy of that in my private repo, just in case, the page disappears - the html has the 
   // javascript code embedded
-
+  int Nmax = 7;  // maximum stencil width
   typedef std::vector<double> Vec;
-  Vec s = {-2, -1, 0, 1, 2};         // normalized stencil offsets
-  int d = 3;                         // order of derivative to be approximated
+  Vec c(Nmax), s;
 
-  // establish matrix:
-  int N = (int) s.size();    // stencil length
-  double** A;                // matrix data
-  rsMatrixTools::allocateMatrix(A, N, N);
-  for(int i = 0; i < N; i++)
-    for(int j = 0; j < N; j++)
-      A[i][j] = pow(s[j], i);
-  //rsMatrix<double> A_dbg(N, N, A);  // for debug
+  // symmetric, equidistant 3-point stencil -1,0,+1:
+  s = {-1, 0, 1}; // normalized stencil offsets
+  RAPT::getNumDiffStencilCoeffs(&s[0], 3, 1, &c[0]);
+  RAPT::getNumDiffStencilCoeffs(&s[0], 3, 2, &c[0]);
 
-  // establish right-hand-side vector:
-  Vec rhs(N);
-  rsFill(rhs, 0.0);
-  rhs[d] = rsFactorial(d);
+  // symmetric, equidistant 5-point stencil -2,-1,0,+1,+2:
+  s = {-2, -1, 0, 1, 2};
+  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 1, &c[0]);
+  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 2, &c[0]);
+  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 3, &c[0]);
+  RAPT::getNumDiffStencilCoeffs(&s[0], 5, 4, &c[0]);
 
-  // compute coeffs by solving the linear system:
-  Vec c(N);
-  rsLinearAlgebra::rsSolveLinearSystem(A, &c[0], &rhs[0], N);
-  // In practice, the resulting coefficients have to be divided by h^d where h is the step-size and
-  // d is the order of the derivative to be approximated. The stencil values in s are actually 
-  // multipliers for some basic step-size h, i.e. a stencil -2,-1,0,1,2 means that we use values
-  // f(x-2h),f(x-h),f(x),f(x+h),f(x+2h) to approximate the d-th derivative of f(x) at x=0
+  // symmetric, equidistant 7-point stencil -3,-2,-1,0,+1,+2,+3:
+  s = {-3, -2, -1, 0, 1, 2, 3};
+  RAPT::getNumDiffStencilCoeffs(&s[0], 7, 1, &c[0]);
+  RAPT::getNumDiffStencilCoeffs(&s[0], 7, 2, &c[0]);
+  RAPT::getNumDiffStencilCoeffs(&s[0], 7, 3, &c[0]);
+  RAPT::getNumDiffStencilCoeffs(&s[0], 7, 4, &c[0]);
+  RAPT::getNumDiffStencilCoeffs(&s[0], 7, 5, &c[0]);
+  RAPT::getNumDiffStencilCoeffs(&s[0], 7, 6, &c[0]);
 
-  // todo: 
-  // -move to library
-  // -add unit test
-  // -try the example with the 4-th order derivative and 5-point stencil that is presented
-  //  on the website
-  // -try different examples and compare results with results from the website - use also
-  //  asymmetrical and/or non-equidistant stencils
-  // -if it all works, maybe implement it also in sage to get rid of roundoff errors
-  // -maybe we should round the final coeffs? are they supposed to be integer? ...maybe only, if
-  //  the stencil offsets are all integers?
+  int dummy = 0;
 
-
-  // symmetric 5-point stencil -2,-1,0,1,2:
-  RAPT::getNumDiffStencilCoeffs(&s[0], N, 1, &c[0]);
-  RAPT::getNumDiffStencilCoeffs(&s[0], N, 2, &c[0]);
-  RAPT::getNumDiffStencilCoeffs(&s[0], N, 3, &c[0]);
-  RAPT::getNumDiffStencilCoeffs(&s[0], N, 4, &c[0]);
   // one suboptimal thing is that we may actually use rational numbers instead of floating point to
   // get rid of rounding errors...maybe a later refinement can do that - at the end of the day, 
   // this computation is probably done offline anyway to obtain coeffs that will be hardcoded in
   // some specific numerical derivative approximator
 
-  //RAPT::getNumDiffStencilCoeffs(&s[0], N, 5, &c[0]);  // should not work with 5-point stencil
+  // todo: 
+  // -turn into unit test and move to unit tests (compare results with results from the website)
+  // -test some asymmetric and/or non-equidistant stencils
+  // -maybe implement it also in sage to get rid of roundoff errors
+
 
   // stencil = -2,-1,0,1,2, d = 3: (-1,2,0,-2,-1)/(2*h^3)
   // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
 
   // stencil = -2,-1,0,1,2, d = 4: (1,-4,6,-4,1)/(h^4)
   // f_xxxx = (1*f[i-2]-4*f[i-1]+6*f[i+0]-4*f[i+1]+1*f[i+2])/(1*1.0*h**4)
-
-
 
 
   // stencil = -2,-1,0,3,4, d = 3:
@@ -941,8 +924,59 @@ void finiteDifferenceStencilCoeffs()
   // -2,-1,0,0.5:
   // f_xx = (-1*f[i-2]+10*f[i-1]-25*f[i+0]+16*f[i+0.5])/(5*1.0*h**2)
   // f_xxx = (-6*f[i-2]+20*f[i-1]-30*f[i+0]+16*f[i+0.5])/(5*1.0*h**3)
+}
 
-  rsMatrixTools::deallocateMatrix(A, N, N);
+
+// move after void numericDiffAndInt();
+void iteratedNumDiff()
+{
+  // under construction
+
+  // todo: test taking numeric derivatives of numeric derivatives to get 2nd derivatives - maybe go 
+  // up to the 4th derivative. figure out, what choices of the stepsize gvie the most accurate 
+  // results - maybe the outer derivatives need smaller or larger stepsizes than the inner ones?
+  // plot error between numeric and analytic result in some range
+  // example functions: sin, exp, log, 1/x, x^a, 1/(1+x^2), 
+
+  static const int N = 500;
+  double xMin = -10;
+  double xMax = +10;
+
+  double x[N], y[N];
+  double y1[N], y2[N], y3[N], y4[N];  // computed derivatives
+  double t1[N], t2[N], t3[N], t4[N];  // target derivatives
+
+
+  rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
+
+  //using Func = std::function<double(double)>;  // function from double to double
+
+  //Func f0 = &sin;
+
+  auto f0 = [=](double x)->double{ return  sin(x); };
+  auto f1 = [=](double x)->double{ return  cos(x); };
+  auto f2 = [=](double x)->double{ return -sin(x); };
+  auto f3 = [=](double x)->double{ return -cos(x); };
+  auto f4 = [=](double x)->double{ return  sin(x); };
+
+
+  for(int n = 0; n < N; n++)
+  {
+    y[n]  = f0(x[n]);
+
+
+
+
+    t1[n] = f1(x[n]);
+    t2[n] = f2(x[n]);
+    t3[n] = f3(x[n]);
+    t4[n] = f4(x[n]);
+  }
+
+  //using  Vec = std::vector<double>;
+
+
+  rsPlotArraysXY(N, x, y, t1, t2, t3);  // needs more inputs
 }
 
 void interpolatingFunction()

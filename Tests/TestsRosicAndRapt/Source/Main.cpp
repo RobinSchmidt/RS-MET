@@ -101,7 +101,8 @@ int main(int argc, char* argv[])
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
-  finiteDifferenceStencilCoeffs();
+  //finiteDifferenceStencilCoeffs();
+  iteratedNumDiff();
   //interpolatingFunction();
   //linearRegression();
   //multipleRegression();

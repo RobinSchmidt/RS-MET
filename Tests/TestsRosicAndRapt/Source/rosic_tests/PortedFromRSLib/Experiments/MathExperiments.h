@@ -28,6 +28,7 @@ void rationalInterpolation();
 void splineInterpolationAreaNormalized();
 void numericIntegration();
 void numericDiffAndInt();  // 
+void iteratedNumDiff();
 
 
 void shiftPolynomial();
