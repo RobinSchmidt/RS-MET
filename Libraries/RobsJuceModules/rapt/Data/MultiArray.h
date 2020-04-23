@@ -60,6 +60,10 @@ public:
   // maybe rename to setExtents...but maybe not - shape seems to be common for that
 
 
+  void fillRandomly(T min = T(0), T max = T(1), int seed = 0)
+  {
+    rsArrayTools::fillWithRandomValues(dataPointer, getSize(), min, max, seed);
+  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Manipulation */
@@ -102,8 +106,8 @@ public:
   /** Returns a const reference to the shape array of the multidimensional array. The shape is 
   defined by the number of  values that each index may run over. For example, a 2x3 matrix has a 
   shape array of [2,3]. */
-  //const std::vector<int>& getShape() const { return shape; }
-  // we may not store the shape as vector<int> in an optimzed version, so i'm not sure, if i can 
+  const std::vector<int>& getShape() const { return shape; }
+  // we may not store the shape as vector<int> in an optimized version, so i'm not sure, if i can 
   // provide that interface - maybe instead provide a function getIndexRange(int whichIndex) 
   // or getExtent(int index)
 
@@ -253,6 +257,7 @@ protected:
       fltIdx += indices[i] * strides[i];
     return fltIdx;
   }
+  // has this been tested?
 
   /** Converts a flat index into an array of structured/hierarchical indices. */
   void structuredIndices(int flatIndex, int* indices)
