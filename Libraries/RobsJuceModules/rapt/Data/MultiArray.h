@@ -221,7 +221,6 @@ public:
   }
 
 
-
 protected:
 
   //-----------------------------------------------------------------------------------------------
@@ -233,7 +232,7 @@ protected:
   template<typename... Rest>
   int flatIndex(const int depth, const int i, Rest... rest) const
   { 
-    int dbg = flatIndex(depth, i) + flatIndex(depth+1, rest...); // for debug
+    //int dbg = flatIndex(depth, i) + flatIndex(depth+1, rest...); // for debug
     return flatIndex(depth, i) + flatIndex(depth+1, rest...); 
   }
 
@@ -254,7 +253,18 @@ protected:
       fltIdx += indices[i] * strides[i];
     return fltIdx;
   }
-  // needs test
+
+  /** Converts a flat index into an array of structured/hierarchical indices. */
+  void structuredIndices(int flatIndex, int* indices)
+  {
+    for(int i = 0; i < getNumIndices(); i++)
+    {
+      indices[i] = flatIndex / strides[i];
+      flatIndex -= indices[i] * strides[i]; // remainder of previous division
+      // maybe use divmod instead of div and mul
+    }
+    // there's a unit test in the research repo - maybe drag over into main repo
+  }
 
 
   //-----------------------------------------------------------------------------------------------

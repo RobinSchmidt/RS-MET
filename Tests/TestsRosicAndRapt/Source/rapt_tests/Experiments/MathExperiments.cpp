@@ -1000,9 +1000,38 @@ void iteratedNumDiff()
   // -using h1 = 2^(-13), h2 = 2^(-12) seems to give the same error as h1 = 2^(-12), h2 = 2^(-13) 
   //  so swapping h1 and h2 seems to make no difference -> figure out, if this generally true
   //  -> at least with -12 and -17, the swap also makes no difference - maybe derive the final
-  //  formula analytically and see, if it's symmetrical in h1 and h2
+  //  formula analytically and see, if it's symmetrical in h1 and h2 -> done (below): yes, it is
 
+  // f=f0: function, f1: 1st numeric derivative, f2: 2nd numeric derivative:
+  //   f1(x) = (f0(x+h1) + f0(x-h1)) / (2*h1)
+  //   f2(x) = (f1(x+h2) + f1(x-h2)) / (2*h2)
+  //         = (f(x+h2+h1) - f(x+h2-h1) - f(x-h2+h1) + f(x-h2-h1)) / (4*h1*h2)
+  // defining:
+  //   hs = h1+h2, hd = h1-h2  (sum and difference)
+  // i arrived at:
+  //   f2(x) = (f(x+hs) + f(x-hs) - f(x+hd) - f(x-hd)) / (4*h1*h2)
+  // this is a formula which is indeed symmetric in h1,h2. It's interesting to note that is uses 4
+  // evaluation points - the 2nd derivative via 5-point stencil would use 5 (and yes, the center 
+  // coeff would be nonzero in this case) - so chaining two 1st order central differences gives not
+  // the same formula as using a 2nd order central difference directly, even when h1==h2. The 2nd 
+  // order, 5-point formula is:
+  //   f''(x) ~= (-f(x-2h) + 16*f(x-h) - 30*f(x) + 16*f(x+h) -f(x+2h) ) / (12*h^2)
+  // with our chained 1st central differences, we get for h1==h2:
+  //   f''(x) ~= (f(x-2h) + f(x-2h) - 2*f(x)) / (4*h^2)
+  // which is actually just the 2nd order accurate 3-point stencil formula with stepsize 2h. This 
+  // means, when h1==h2, we get effectively only a 3-point formula, even though we do 4 function
+  // evaluations. What when h1 != h2? Do we get better accuracy in this case? This may be relevant
+  // for how we compute the higher order partial derivatives in rsManifold...but for partial 
+  // derivatives, it may be inconvenient to use direct 2nd order formulas - how would that work 
+  // anyway? Would the final division be replaced by a matrix inversion?
 
+  // when using this 4-point stencil: -2,-1,1,2 for the 2nd derivative here:
+  // http://web.media.mit.edu/~crtaylor/calculator.html
+  // we get this:
+  //   f''(x) ~= (f(x-2h) - f(x-h) - f(x+h) + f(x+2h)) / (3*h^2)
+  // which is yet another formula...but maybe it becomes the same when h2 = 1.5h, h1 = 0.5*h, yes:
+  //   f2(x) = (f(x+h2+h1) - f(x+h2-h1) - f(x-h2+h1) + f(x-h2-h1)) / (4*h1*h2)
+  //         = (f(x+2h)    - f(x+h)     - f(x-h)     + f(x-2h))    / (4*1.5*h*0.5*h)
 
 
   // todo: 
@@ -1014,9 +1043,14 @@ void iteratedNumDiff()
   //  knows - floating point arithmetic sometimes works in mysterious ways)
   //  -> plot the maximum error of the 2nd derivative as 2D function of h1 and h2
 
-  // f=f0: function, f1: 1st numeric derivative, f2: 2nd numeric derivative:
-  // f1(x) = (f0(x+h1) + f0(x-h1)) / (2*h1)
-  // f2(x) = (f1(x+h2) + f1(x-h2)) / (2*h2)
+
+  // (preliminary) conclusions:
+  // -for computing the 2nd derivative as central difference of first central differences, the 
+  //  optimal stepsize h1 in the inner approximation may be different from the optimal stepsize
+  //  h1 used for computing the 1st derivative itself. It seems weird, that we should use a 
+  //  suboptimal inner derivative computation - maybe inaccuracies in the two neighbouring 
+  //  1st derivatives somehow cancel in the computaion of the 2nd derivative?
+
 
 }
 
