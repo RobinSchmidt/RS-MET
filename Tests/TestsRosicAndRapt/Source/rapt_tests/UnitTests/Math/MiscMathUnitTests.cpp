@@ -230,8 +230,8 @@ bool testNumDiffStencils()
   // Tests the computation of coefficients for arbitrary finite difference stencils according to:
   // http://web.media.mit.edu/~crtaylor/calculator.html. We compare the results returned by
   // RAPT::getNumDiffStencilCoeffs to the results produced by that website. There's a copy of that 
-  // in my private repo, just in case, the page disappears - the html has the javascript code 
-  // embedded
+  // html file in my private repo, just in case, the page disappears - the html has the javascript 
+  // code embedded
 
   bool r = true;
   typedef std::vector<double> Vec;
@@ -239,8 +239,8 @@ bool testNumDiffStencils()
 
   // symmetric, equidistant 3-point stencil -1,0,1:
   s = {-1, 0, 1};
-  r &= testStencil(s, 1, Vec({ -1.,   0.,  1}) / 2.);
-  r &= testStencil(s, 2, Vec({  1.,  -2.,  1}) / 1.);
+  r &= testStencil(s, 1, Vec({-1.,   0.,  1}) / 2.);
+  r &= testStencil(s, 2, Vec({ 1.,  -2.,  1}) / 1.);
 
   // symmetric, equidistant 5-point stencil -2,-1,0,+1,+2:
   s = {-2, -1, 0, 1, 2};
@@ -251,12 +251,12 @@ bool testNumDiffStencils()
 
   // symmetric, equidistant 7-point stencil -3,-2,-1,0,+1,+2,+3:
   s = {-3, -2, -1, 0, 1, 2, 3};
-  r &= testStencil(s, 1, Vec({ -1.,   9., -45.,    0.,   45.,  -9.,  1.}) /  60.);
-  r &= testStencil(s, 2, Vec({  2., -27., 270., -490.,  270., -27.,  2.}) / 180.);
-  r &= testStencil(s, 3, Vec({  1.,  -8.,  13.,    0.,  -13.,   8., -1.}) /   8.);
-  r &= testStencil(s, 4, Vec({ -1.,  12., -39.,    56., -39.,  12., -1.}) /   6.);
-  r &= testStencil(s, 5, Vec({ -1.,   4.,  -5.,     0.,   5.,  -4.,  1.}) /   2.);
-  r &= testStencil(s, 6, Vec({  1.,  -6.,  15.,   -20.,  15.,  -6.,  1.}) /   1.);
+  r &= testStencil(s, 1, Vec({-1.,   9., -45.,    0.,   45.,  -9.,  1.}) /  60.);
+  r &= testStencil(s, 2, Vec({ 2., -27., 270., -490.,  270., -27.,  2.}) / 180.);
+  r &= testStencil(s, 3, Vec({ 1.,  -8.,  13.,    0.,  -13.,   8., -1.}) /   8.);
+  r &= testStencil(s, 4, Vec({-1.,  12., -39.,    56., -39.,  12., -1.}) /   6.);
+  r &= testStencil(s, 5, Vec({-1.,   4.,  -5.,     0.,   5.,  -4.,  1.}) /   2.);
+  r &= testStencil(s, 6, Vec({ 1.,  -6.,  15.,   -20.,  15.,  -6.,  1.}) /   1.);
 
   return r;
 

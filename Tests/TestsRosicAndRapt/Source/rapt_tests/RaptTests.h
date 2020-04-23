@@ -80,7 +80,6 @@ void differentialGeometry();
 // wait - what about the file MathExperiments.h - shouldn't they be declared there?
 
 void ellipseLineIntersections();
-bool finiteDifferenceStencilCoeffs(); // move to unit tests
 void interpolatingFunction();
 void linearRegression();
 void multipleRegression();
