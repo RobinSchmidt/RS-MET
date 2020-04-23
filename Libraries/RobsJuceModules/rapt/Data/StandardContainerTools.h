@@ -90,6 +90,19 @@ inline bool rsAreVectorsEqual(const std::vector<T>& v, const std::vector<T>& w, 
   }
   return true;
 }
+// remove or derprecate - use rsEquals instead
+
+template<class T>
+inline bool rsEquals(const std::vector<T>& x, const std::vector<T>& y, T tol = T(0))
+{
+  if( x.size() != y.size() )
+    return false;
+  for(size_t i = 0; i < x.size(); i++) {
+    if( rsAbs(x[i]-y[i]) > tol )
+      return false; }
+  return true;
+}
+
 
 template<class T>
 inline void rsInsert(std::vector<T>& v, const T& newElement, size_t index)
@@ -447,6 +460,17 @@ inline std::vector<T> operator*(const T& x, const std::vector<T>& v)
     result[i] = x * v[i];
   return result;
 }
+
+/** Divides a vector by a scalar. */
+template<class T>
+inline std::vector<T> operator/(const std::vector<T>& v, const T& x)
+{
+  std::vector<T> result(v.size());
+  for(int i = 0; i < v.size(); i++)
+    result[i] = v[i] / x;
+  return result;
+}
+
 
 /** Divides a scalar by a vector. */
 template<class T>

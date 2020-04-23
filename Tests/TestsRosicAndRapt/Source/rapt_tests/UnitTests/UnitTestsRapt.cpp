@@ -13,7 +13,7 @@
 #include "BufferFunctionTests.cpp"
 
 
-bool runAllUnitTests()
+bool runUnitTestsRapt()
 {
   bool passed = true;  // test result
 

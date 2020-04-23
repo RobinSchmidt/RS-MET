@@ -864,7 +864,7 @@ void ellipseLineIntersections()
   plt.plot();
 }
 
-
+/*
 // move to rapt:
 template<class T>
 bool rsEquals(const std::vector<T>& x, const std::vector<T>& y, T tol = T(0))
@@ -876,8 +876,10 @@ bool rsEquals(const std::vector<T>& x, const std::vector<T>& y, T tol = T(0))
       return false; }
   return true;
 }
+*/
 
 /** Divides a vector by a scalar. */
+/*
 template<class T>
 inline std::vector<T> operator/(const std::vector<T>& v, const T& x)
 {
@@ -886,7 +888,9 @@ inline std::vector<T> operator/(const std::vector<T>& v, const T& x)
     result[i] = v[i] / x;
   return result;
 }
+*/
 
+/*
 // s: stencil offsets, d: derivative order, t: target coeffs, tol: tolerance
 bool testStencil(const std::vector<double>& s, int d, const std::vector<double>& t, 
   double tol = 1.e-13)
@@ -896,9 +900,11 @@ bool testStencil(const std::vector<double>& s, int d, const std::vector<double>&
   RAPT::getNumDiffStencilCoeffs(&s[0], N, d, &c[0]); 
   return rsEquals(c, t, tol);
 }
+*/
 
 bool finiteDifferenceStencilCoeffs() 
 {
+  /*
   // Tests the computation of coefficients for arbitrary finite difference stencils according to:
   // http://web.media.mit.edu/~crtaylor/calculator.html. We compare the results returned by
   // RAPT::getNumDiffStencilCoeffs to the results produced by that website. There's a copy of that 
@@ -936,6 +942,9 @@ bool finiteDifferenceStencilCoeffs()
 
   // todo: move to unit tests, try some weird stencils (asymmetric and/or non-equidistant, even 
   // number of points, etc. )
+  */
+
+  return false; // function is obsolete
 }
 
 

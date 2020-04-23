@@ -216,6 +216,54 @@ bool testPhaseUnwrapStuff(std::string &reportString)  // rename to testUnwrappin
 }
 
 
+// s: stencil offsets, d: derivative order, t: target coeffs, tol: tolerance
+bool testStencil(const std::vector<double>& s, int d, const std::vector<double>& t, 
+  double tol = 1.e-13)
+{
+  int N = s.size();
+  std::vector<double> c(N);
+  RAPT::getNumDiffStencilCoeffs(&s[0], N, d, &c[0]); 
+  return rsEquals(c, t, tol);
+}
+bool testNumDiffStencils()
+{
+  // Tests the computation of coefficients for arbitrary finite difference stencils according to:
+  // http://web.media.mit.edu/~crtaylor/calculator.html. We compare the results returned by
+  // RAPT::getNumDiffStencilCoeffs to the results produced by that website. There's a copy of that 
+  // in my private repo, just in case, the page disappears - the html has the javascript code 
+  // embedded
+
+  bool r = true;
+  typedef std::vector<double> Vec;
+  Vec s;
+
+  // symmetric, equidistant 3-point stencil -1,0,1:
+  s = {-1, 0, 1};
+  r &= testStencil(s, 1, Vec({ -1.,   0.,  1}) / 2.);
+  r &= testStencil(s, 2, Vec({  1.,  -2.,  1}) / 1.);
+
+  // symmetric, equidistant 5-point stencil -2,-1,0,+1,+2:
+  s = {-2, -1, 0, 1, 2};
+  r &= testStencil(s, 1, Vec({ 1., -8.,   0.,  8., -1.}) / 12.);
+  r &= testStencil(s, 2, Vec({-1., 16., -30., 16., -1.}) / 12.);
+  r &= testStencil(s, 3, Vec({-1.,  2.,   0., -2.,  1.}) /  2.);
+  r &= testStencil(s, 4, Vec({ 1., -4.,   6., -4.,  1.}) /  1.);
+
+  // symmetric, equidistant 7-point stencil -3,-2,-1,0,+1,+2,+3:
+  s = {-3, -2, -1, 0, 1, 2, 3};
+  r &= testStencil(s, 1, Vec({ -1.,   9., -45.,    0.,   45.,  -9.,  1.}) /  60.);
+  r &= testStencil(s, 2, Vec({  2., -27., 270., -490.,  270., -27.,  2.}) / 180.);
+  r &= testStencil(s, 3, Vec({  1.,  -8.,  13.,    0.,  -13.,   8., -1.}) /   8.);
+  r &= testStencil(s, 4, Vec({ -1.,  12., -39.,    56., -39.,  12., -1.}) /   6.);
+  r &= testStencil(s, 5, Vec({ -1.,   4.,  -5.,     0.,   5.,  -4.,  1.}) /   2.);
+  r &= testStencil(s, 6, Vec({  1.,  -6.,  15.,   -20.,  15.,  -6.,  1.}) /   1.);
+
+  return r;
+
+  // todo: try some weird stencils (asymmetric and/or non-equidistant, even  number of points,...)
+}
+
+
 bool testMultiLayerPerceptronOld(std::string &reportString)
 {
   std::string testName = "MultiLayerPerceptron";
@@ -404,6 +452,7 @@ bool testMultiLayerPerceptron(std::string &reportString)
   return testResult;
 }
 
+
 bool testMiscMath()
 {
   std::string dummy;    // get rid
@@ -415,6 +464,7 @@ bool testMiscMath()
   testResult &= testGradientBasedOptimization(dummy);
   testResult &= testMinSqrDifFixSum(          dummy);
   testResult &= testPhaseUnwrapStuff(         dummy);
+  testResult &= testNumDiffStencils();
   //testResult &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
   //testResult &= testMultiLayerPerceptron(     dummy); // maybe move to experiments
 

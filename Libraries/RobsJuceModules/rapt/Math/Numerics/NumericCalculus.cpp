@@ -44,11 +44,10 @@ void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapola
 // -try another approach: fit a polynomial of arbitrary order to a number of datapoints around
 //  the n and return the derivative of the poynomial at that point (may this be equivalent to the
 //  approach above when using 3 points for a quadratic polynomial?)
-
 // -yet another approach: "invert" the trapezoidal integration algorithm, i.e. run it backwards in
-//  order to get a numerical integration routing that is the inverse operation to trapezoidal 
+//  order to get a numerical integration routine that is the inverse operation to trapezoidal 
 //  integration
-//  -it may return a value - the integration constant to be used
+//  -it may return a value: the integration constant to be used, to get the original data back
 
 template<class T>
 void getNumDiffStencilCoeffs(const T* x, int N, int d, T* c)
@@ -72,7 +71,7 @@ void getNumDiffStencilCoeffs(const T* x, int N, int d, T* c)
   // In practice, the resulting coefficients have to be divided by h^d where h is the step-size and
   // d is the order of the derivative to be approximated. The stencil offsets in x are actually 
   // multipliers for some basic step-size h, i.e. a stencil -2,-1,0,1,2 means that we use values
-  // f(x-2h),f(x-h),f(x),f(x+h),f(x+2h) to approximate the d-th derivative of f(x) at x=0
+  // f(x-2h),f(x-h),f(x),f(x+h),f(x+2h) to approximate the d-th derivative of f(x) at x
 
   // see: http://web.media.mit.edu/~crtaylor/calculator.html for explanation of the algorithm
 
@@ -133,7 +132,11 @@ Ty rsNumericIntegrator<Tx, Ty>::integrate(const std::function<Ty(Tx)>& f, Tx a, 
 // -alternatively, the user may set just a number and then the object auotmatically generates
 //  the sample points
 // -for this automatic sample point generation, the user may select between different algorithms,
-//  by default, we just choose them equidistantly
+//  by default, we just choose them equidistantly but other choices may give better results, see: 
+//  https://en.wikipedia.org/wiki/Gauss%E2%80%93Legendre_quadrature
+//  https://en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
+//  https://en.wikipedia.org/wiki/Chebyshev_nodes
+//  the best choice may depend on the problem
 // -use a (cubic) natural spline based on the datapoints and compute the integral as sum over the
 //  integrals of the spline segments (for this, we need to split the spline generator such that it
 //  can spit out arrays of polynomial coefficients like:

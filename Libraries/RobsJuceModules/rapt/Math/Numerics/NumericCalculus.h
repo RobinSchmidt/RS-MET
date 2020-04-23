@@ -51,14 +51,17 @@ void getNumDiffStencilCoeffs(const T* x, int N, int d, T* c);
 \f[ F(x) = \int_c^x f(t) dt \f] where the lower integration limit c can be passed as a parameter 
 into the function. Usage is similar to rsNumericDerivative. The parameter c can also be seen as an 
 integration constant and determines yi[0] that shifts the overall resulting function up or down 
-along the y-axis. The algorithm uses a trapezoidal rule, i.e. it sums up the areas under the 
+along the y-axis. The algorithm uses the trapezoidal rule, i.e. it sums up the areas under the 
 trapezoids defined by a piecewise linear interpolant that passes through the datapoints. */
 template<class Tx, class Ty>
 void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
 // maybe rename to rsNumericIntegralTrapezoidal, or rsIntegrateTrapezoidal, use Tx, Ty for 
 // datatypes maybe rename parameters to x, f, F
 // move to rsNumericIntegrator and rename to integrateTrapezoidal or just trapezoidal, have a
-// simpler version riemannSum which uses the midpoint of each interval as evaluation point
+// simpler version riemannSum which uses the midpoint of each interval as evaluation point - oh, 
+// wait - this function is data-based and not based on a function that we may evaluate...but such 
+// an integration function should also be implemented - this one can then do Riemann sums or 
+// trapezoidal rule (and maybe higher order rules as well - Simpson, etc.)
 
 
 // Maybe rename to NumericAnalysis and include the interpolation stuff into this file as well 
@@ -73,7 +76,7 @@ void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
 //=================================================================================================
 
 /** A class for computing numerical approximations to derivatives of functions. In some cases, the
-functions are assumed to be given a function object (aka functor), in other cases as an array of 
+functions are assumed to be given as a function object (aka functor), in other cases as an array of 
 datapoints. The meaning of the 3 template parameters is:
   Tx: type of the input to the function (abscissa type)
   Ty: type of the output of the function (ordinate type)
@@ -196,10 +199,10 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Data derivatives
 
-  // move the function rsNumericDerivative here - but maybe not because then ot would require an 
-  // instantiatio of this class which may be inconvenient due to all the template parameters, 
+  // move the function rsNumericDerivative here - but maybe not because then it would require an 
+  // instantiation of this class which may be inconvenient due to all the template parameters, 
   // especially F for the function type - or maybe make a class that doesn't require an 
-  // instantiation (by decalring the template parameters in front of the function rather than the 
+  // instantiation (by declaring the template parameters in front of the function rather than the 
   // class)
 
 };
