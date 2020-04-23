@@ -50,64 +50,41 @@ void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapola
 //  integration
 //  -it may return a value - the integration constant to be used
 
-// see also:
-// http://web.media.mit.edu/~crtaylor/calculator.html
-// results from there (the Python code):
-
-// 3-point stencil -1,0,1:
-// f_x = (-1*f[i-1]+0*f[i+0]+1*f[i+1])/(2*1.0*h**1)
-// f_xx = (1*f[i-1]-2*f[i+0]+1*f[i+1])/(1*1.0*h**2)
-
-// 5-point stencil -2,-1,0,1,2:
-// f_x = (1*f[i-2]-8*f[i-1]+0*f[i+0]+8*f[i+1]-1*f[i+2])/(12*1.0*h**1)
-// f_xx = (-1*f[i-2]+16*f[i-1]-30*f[i+0]+16*f[i+1]-1*f[i+2])/(12*1.0*h**2)
-// f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
-// f_xxxx = (1*f[i-2]-4*f[i-1]+6*f[i+0]-4*f[i+1]+1*f[i+2])/(1*1.0*h**4)
-
-// 7-point stencil -3,-2,-1,0,1,2,3:
-// f_x = (-1*f[i-3]+9*f[i-2]-45*f[i-1]+0*f[i+0]+45*f[i+1]-9*f[i+2]+1*f[i+3])/(60*1.0*h**1)
-// f_xx = (2*f[i-3]-27*f[i-2]+270*f[i-1]-490*f[i+0]+270*f[i+1]-27*f[i+2]+2*f[i+3])/(180*1.0*h**2)
-// f_xxx = (1*f[i-3]-8*f[i-2]+13*f[i-1]+0*f[i+0]-13*f[i+1]+8*f[i+2]-1*f[i+3])/(8*1.0*h**3)
-// f_xxxx = (-1*f[i-3]+12*f[i-2]-39*f[i-1]+56*f[i+0]-39*f[i+1]+12*f[i+2]-1*f[i+3])/(6*1.0*h**4)
-// f_xxxxx = (-1*f[i-3]+4*f[i-2]-5*f[i-1]+0*f[i+0]+5*f[i+1]-4*f[i+2]+1*f[i+3])/(2*1.0*h**5)
-// f_xxxxxx = (1*f[i-3]-6*f[i-2]+15*f[i-1]-20*f[i+0]+15*f[i+1]-6*f[i+2]+1*f[i+3])/(1*1.0*h**6)
-
-// if we use an N-point stencil, we can obtain approximations of derivatives up to order N-1
-// the app there can also compute numerical derivatives for non-equidistant sample data
-// -> try to program something similar in sage or sympy
-
 template<class T>
 void getNumDiffStencilCoeffs(const T* x, int N, int d, T* c)
 {
   rsAssert(d < N, "Stencil width must be greater than derivative order.");
 
   // establish matrix:
-  T** A;                // matrix data
-  rsMatrixTools::allocateMatrix(A, N, N);
+  T** A; rsMatrixTools::allocateMatrix(A, N, N);
   for(int i = 0; i < N; i++)
     for(int j = 0; j < N; j++)
       A[i][j] = pow(x[j], i);
-  //rsMatrix<double> A_dbg(N, N, A);  // for debug
 
   // establish right-hand-side vector:
   std::vector<T> rhs(N);
   rsFill(rhs, T(0));
   rhs[d] = rsFactorial(d);
 
-  // compute coeffs by solving the linear system:
-  //std::vector<T> c(N);
+  // compute coeffs by solving the linear system and clean up:
   rsLinearAlgebra::rsSolveLinearSystem(A, &c[0], &rhs[0], N);
+  rsMatrixTools::deallocateMatrix(A, N, N);
   // In practice, the resulting coefficients have to be divided by h^d where h is the step-size and
   // d is the order of the derivative to be approximated. The stencil offsets in x are actually 
   // multipliers for some basic step-size h, i.e. a stencil -2,-1,0,1,2 means that we use values
   // f(x-2h),f(x-h),f(x),f(x+h),f(x+2h) to approximate the d-th derivative of f(x) at x=0
 
-  rsMatrixTools::deallocateMatrix(A, N, N);
+  // see: http://web.media.mit.edu/~crtaylor/calculator.html for explanation of the algorithm
 
   // todo: use rsMatrix, write unit test
+
+  // One suboptimal thing is that we use floating point arithmetic where rational numbers could 
+  // have been used instead to produce exact fractions...maybe a later refinement can do that - at
+  // the end of the day, this computation is probably done offline anyway to obtain coeffs that 
+  // will be hardcoded in some specific numerical derivative approximator...well - actually it's a
+  // template and we could just isntantiate it with some rational number class - maybe try it in 
+  // the testbed
 }
-
-
 
 template<class Tx, class Ty>
 void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c)

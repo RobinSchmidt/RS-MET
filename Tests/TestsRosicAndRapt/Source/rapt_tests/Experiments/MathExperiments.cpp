@@ -897,31 +897,26 @@ bool testStencil(const std::vector<double>& s, int d, const std::vector<double>&
   return rsEquals(c, t, tol);
 }
 
-void finiteDifferenceStencilCoeffs()
+bool finiteDifferenceStencilCoeffs() 
 {
-  // Computation of coefficients for arbitrary finite difference stencils, see:
-  // http://web.media.mit.edu/~crtaylor/calculator.html
-  // there's a copy of that in my private repo, just in case, the page disappears - the html has the 
-  // javascript code embedded
-  int Nmax = 7;  // maximum stencil width
+  // Tests the computation of coefficients for arbitrary finite difference stencils according to:
+  // http://web.media.mit.edu/~crtaylor/calculator.html. We compare the results returned by
+  // RAPT::getNumDiffStencilCoeffs to the results produced by that website. There's a copy of that 
+  // in my private repo, just in case, the page disappears - the html has the javascript code 
+  // embedded
+
   typedef std::vector<double> Vec;
-  Vec c(Nmax), s;
+  Vec s;
 
   bool r = true;
   double tol = 1.e-13;
 
   // symmetric, equidistant 3-point stencil -1,0,1:
-  // f_x = (-1*f[i-1]+0*f[i+0]+1*f[i+1])/(2*1.0*h**1)
-  // f_xx = (1*f[i-1]-2*f[i+0]+1*f[i+1])/(1*1.0*h**2)
-  s = {-1, 0, 1}; // normalized stencil offsets
+  s = {-1, 0, 1};
   r &= testStencil(s, 1, Vec({ -1.,   0.,  1}) / 2.);
   r &= testStencil(s, 2, Vec({  1.,  -2.,  1}) / 1.);
 
   // symmetric, equidistant 5-point stencil -2,-1,0,+1,+2:
-  // f_x = (1*f[i-2]-8*f[i-1]+0*f[i+0]+8*f[i+1]-1*f[i+2])/(12*1.0*h**1)
-  // f_xx = (-1*f[i-2]+16*f[i-1]-30*f[i+0]+16*f[i+1]-1*f[i+2])/(12*1.0*h**2)
-  // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
-  // f_xxxx = (1*f[i-2]-4*f[i-1]+6*f[i+0]-4*f[i+1]+1*f[i+2])/(1*1.0*h**4)
   s = {-2, -1, 0, 1, 2};
   r &= testStencil(s, 1, Vec({ 1., -8.,   0.,  8., -1.}) / 12.);
   r &= testStencil(s, 2, Vec({-1., 16., -30., 16., -1.}) / 12.);
@@ -929,14 +924,6 @@ void finiteDifferenceStencilCoeffs()
   r &= testStencil(s, 4, Vec({ 1., -4.,   6., -4.,  1.}) /  1.);
 
   // symmetric, equidistant 7-point stencil -3,-2,-1,0,+1,+2,+3:
-
-  // f_x = (-1*f[i-3]+9*f[i-2]-45*f[i-1]+0*f[i+0]+45*f[i+1]-9*f[i+2]+1*f[i+3])/(60*1.0*h**1)
-  // f_xx = (2*f[i-3]-27*f[i-2]+270*f[i-1]-490*f[i+0]+270*f[i+1]-27*f[i+2]+2*f[i+3])/(180*1.0*h**2)
-  // f_xxx = (1*f[i-3]-8*f[i-2]+13*f[i-1]+0*f[i+0]-13*f[i+1]+8*f[i+2]-1*f[i+3])/(8*1.0*h**3)
-  // f_xxxx = (-1*f[i-3]+12*f[i-2]-39*f[i-1]+56*f[i+0]-39*f[i+1]+12*f[i+2]-1*f[i+3])/(6*1.0*h**4)
-  // f_xxxxx = (-1*f[i-3]+4*f[i-2]-5*f[i-1]+0*f[i+0]+5*f[i+1]-4*f[i+2]+1*f[i+3])/(2*1.0*h**5)
-  // f_xxxxxx = (1*f[i-3]-6*f[i-2]+15*f[i-1]-20*f[i+0]+15*f[i+1]-6*f[i+2]+1*f[i+3])/(1*1.0*h**6)
-
   s = {-3, -2, -1, 0, 1, 2, 3};
   r &= testStencil(s, 1, Vec({ -1.,   9., -45.,    0.,   45.,  -9.,  1.}) /  60.);
   r &= testStencil(s, 2, Vec({  2., -27., 270., -490.,  270., -27.,  2.}) / 180.);
@@ -945,38 +932,10 @@ void finiteDifferenceStencilCoeffs()
   r &= testStencil(s, 5, Vec({ -1.,   4.,  -5.,     0.,   5.,  -4.,  1.}) /   2.);
   r &= testStencil(s, 6, Vec({  1.,  -6.,  15.,   -20.,  15.,  -6.,  1.}) /   1.);
 
+  return r;
 
-  int dummy = 0;
-
-  // one suboptimal thing is that we may actually use rational numbers instead of floating point to
-  // get rid of rounding errors...maybe a later refinement can do that - at the end of the day, 
-  // this computation is probably done offline anyway to obtain coeffs that will be hardcoded in
-  // some specific numerical derivative approximator
-
-  // todo: 
-  // -turn into unit test and move to unit tests (compare results with results from the website)
-  // -test some asymmetric and/or non-equidistant stencils
-  // -maybe implement it also in sage to get rid of roundoff errors
-
-
-  // stencil = -2,-1,0,1,2, d = 3: (-1,2,0,-2,-1)/(2*h^3)
-  // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
-
-  // stencil = -2,-1,0,1,2, d = 4: (1,-4,6,-4,1)/(h^4)
-  // f_xxxx = (1*f[i-2]-4*f[i-1]+6*f[i+0]-4*f[i+1]+1*f[i+2])/(1*1.0*h**4)
-
-
-  // stencil = -2,-1,0,3,4, d = 3:
-  // f_xxx = (-6*f[i-2]+15*f[i-1]-10*f[i+0]+1*f[i+3]+0*f[i+4])/(10*1.0*h**3)
-
-  // -2,-1,0,0.5,2, d=3
-  // f_xxx = (-27*f[i-2]+40*f[i-1]+90*f[i+0]-128*f[i+0.5]+25*f[i+2])/(60*1.0*h**3)
-
-  // -2,-1,0,0.5:
-  // f_xx = (-1*f[i-2]+10*f[i-1]-25*f[i+0]+16*f[i+0.5])/(5*1.0*h**2)
-  // f_xxx = (-6*f[i-2]+20*f[i-1]-30*f[i+0]+16*f[i+0.5])/(5*1.0*h**3)
-
-  // return result:
+  // todo: move to unit tests, try some weird stencils (asymmetric and/or non-equidistant, even 
+  // number of points, etc. )
 }
 
 

@@ -38,7 +38,7 @@ Inputs:
      context, that the step-size h is not yet included. So, if the x-array is given by: 
      x = [-2,-1,0,1,2], it means, we want to use the 5-point stencil: x-2h,x-h,x,x+h,x+2h.
   N: length of x
-  d: derivative that should be approximated, e.g. d=2 for the 2nd derivative
+  d: derivative that should be approximated, e.g. d=2 for the 2nd derivative, must be less than N
 Output:
   c: The normalized coefficients, by which the function values f(x + k*h) must be multiplied 
      (k being one of the values from the x-array). Here, "normalized" means that the result must 
