@@ -65,6 +65,13 @@ public:
     rsArrayTools::fillWithRandomValues(dataPointer, getSize(), min, max, seed);
   }
 
+  template<class T2>
+  void setData(const std::vector<T2>& newData)
+  {
+    rsAssert((int)newData.size() == size, "Passed data vector must match size of our data array");
+    rsArrayTools::convert(&newData[0], dataPointer, size);
+  }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Manipulation */
 
@@ -333,8 +340,7 @@ protected:
 the natural syntax: 1D: A(i), 2D: A(i,j), 3D: A(i,j,k), etc. The data is stored in a std::vector. 
 The implementation follows the same pattern as rsMatrix (which is in the Math folder). 
 
-Note: This is still incomplete - all the required copy/move-constructors and -assignement operators
-still need to be implemented. The class works already, but it's not yet return-value-optimized */
+Note: This is still incomplete */
 
 template<class T>
 class rsMultiArray : public rsMultiArrayView<T>
@@ -450,6 +456,7 @@ protected:
       this->dataPointer = &data[0];
     else
       this->dataPointer = nullptr;
+    // maybe assert that data.size == this->size
   }
 
   std::vector<T> data;
@@ -459,10 +466,6 @@ protected:
 /** Multiplies a scalar and a multiarray. */
 template<class T>
 inline rsMultiArray<T> operator*(const T& s, const rsMultiArray<T>& A)
-{
-  rsMultiArray<T> B(A);
-  B.scale(s);
-  return B;
-}
+{ rsMultiArray<T> B(A); B.scale(s); return B; }
 
 #endif

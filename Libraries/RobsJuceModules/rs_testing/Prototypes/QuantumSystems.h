@@ -45,7 +45,7 @@ such operators are used for:
 
 Firstly, an operator M can "act" on (or be applied to) a quantum state v. This means, that a new 
 state w is computed as the matrix-vector product w = M*v where v is the old state. Operators of 
-that kind must be unitary matrices (i.e the inverse must be given by the conjugate transpose) 
+that kind must be unitary matrices (i.e. the inverse must be given by the conjugate transpose) 
 because that's what the laws of quantum mechanics say (todo: add the *actual* explanation - why do
 they say that?)
 
@@ -284,7 +284,7 @@ template<class T> const std::complex<T> rsQuantumSpin<T>::i = std::complex<T>(0,
 //=================================================================================================
 
 /** Generalizes the class rsQuantumSpin which represents systems with two states to systems with
-an arbitrary number of states. States are represented as N-diemnsional complex column vectors 
+an arbitrary number of states. States are represented as N-dimensional complex column vectors 
 (using the matrix class) */
 
 template<class T>
