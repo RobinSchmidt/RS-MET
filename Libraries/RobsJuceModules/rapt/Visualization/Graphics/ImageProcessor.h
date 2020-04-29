@@ -16,7 +16,7 @@ public:
   /** Applies the exponent "gamma" to all pixel values: y = x^gamma. */
   static void gammaCorrection(rsImage<T>& img, T gamma);
   // todo: check conventions used in image processing (i think, IrfanView's gamma correction uses
-  // the reciprocal)
+  // the reciprocal - check what is the most widely used convention). maybe rename to just gamma
 
   /** Inverts the brightness values of all pixels in the given image */
   static void invert(rsImage<T>& img);
@@ -35,6 +35,10 @@ public:
 
   /** Shapes a ramp for 0 to 1 into a smooth sine curve. */
   static void sineShape(rsImage<T>& img);
+
+  // todo: flipLeftRight, flipUpDown, transpose
+
+
 
 
 

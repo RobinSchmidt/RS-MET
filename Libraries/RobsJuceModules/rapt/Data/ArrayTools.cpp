@@ -1123,6 +1123,7 @@ void rsArrayTools::reverse(T* x, int N)
 template <class T>
 void rsArrayTools::reverse(const T* x, T* y, int N)
 {
+  if(x == y) { reverse(y, N); return; }  // reverse in place
   for(int i = 0; i < N; i++)
     y[i] = x[N-1-i];
 }

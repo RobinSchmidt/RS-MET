@@ -99,6 +99,8 @@ template float rsArrayTools::minValue(const float *x, int length);
 template float rsArrayTools::maxValue(const float *x, int length);
 template float rsArrayTools::maxDeviation(const float *buffer1, const float *buffer2, int length);
 template int rsArrayTools::maxDeviationIndex(const float *buffer1, const float *buffer2, int length);
+template void rsArrayTools::reverse(const float* x, float* y, int length);
+//template void rsArrayTools::reverse(float* x, int length);
 
 // rsArrayTools<double>
 template void rsArrayTools::applyFunction(const double *x, double *y, int N, double (*f) (double));

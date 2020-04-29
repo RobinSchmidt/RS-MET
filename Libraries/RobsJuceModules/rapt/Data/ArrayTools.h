@@ -41,7 +41,7 @@ public:
   template <class T>
   static inline void add(const T *buffer, const T valueToAdd, T *result, const int length);
 
-  /** Adds a weighted, circularly shifted copy of the buffer to itself - the shift-offest may be
+  /** Adds a weighted, circularly shifted copy of the buffer to itself - the shift-offset may be
   non-integer in which case linear interpolation will be used. 
   \todo: maybe generalize such that a circularly shifted 2nd buffer can be added (which may or
   may not be the same buffer).  */
@@ -76,6 +76,8 @@ public:
   template <class T>
   static void applyFunction(const T* inBuffer, T* outBuffer, const int length, T (*f) (T));
   // why can't we make the function-pointer const? ...rosic doesn't compile when trying
+  // maybe use a 2nd template parameter F for the function-type, such that we are not restricted to
+  // C-style function pointers
 
   /** Checks, if the two buffers are elementwise approximately equal within the given tolerance. To 
   be considered within the tolerance, the absolute value of the difference must not be greater 
@@ -344,13 +346,13 @@ public:
     const T *b, int bOrder, const T *a, int aOrder);
   // Allocates heap memory - todo: pass a workspace.
 
-  /** \todo check and comment this function - maybe move it to RSLib */
+  /** \todo check and comment this function  */
   template <class T>
   static void filterBiDirectional(const T *x, int xLength, T *y, int yLength, 
     const T *b, int bOrder, const T *a, int aOrder, int numRingOutSamples = 10000);
   // Allocates heap memory - todo: pass a workspace.
 
-  /** Returns the index of the first value that matches the elementToFind, return -1 when no 
+  /** Returns the index of the first value that matches the elementToFind, returns -1 when no 
   matching element is found. */
   template <class T>
   static inline int findIndexOf(const T *buffer, T elementToFind, int length);
@@ -439,7 +441,7 @@ public:
   template <class T>
   static inline bool isFilledWithValue(const T *buffer, int length, T value);
 
-  /** Returns true if the value in array x at position n is larger than its left and right 
+  /** Returns true if the value in array x at position n is greater than its left and right 
   neighbour (the caller must be sure, that n-1, n, n+1 are valid array indices). */
   template<class T>
   static bool isPeak(const T *x, int n);
@@ -627,8 +629,9 @@ public:
   template <class T>
   static void reverse(T *buffer, int length);
 
-  /** Fills array y with the reversed content of array x. x and y must be distinct and 
-  non-overlapping. */
+  /** Fills array y with the reversed content of array x. x and y should not be overlapping except
+  if they point to the same array, in which case we fall back to reverse(T*, int) - the in-place 
+  version with just one array parameter. */
   template <class T>
   static void reverse(const T* x, T* y, int length);
 

@@ -34,8 +34,12 @@ void rsImageProcessor<T>::normalizeFast(rsImage<T>& img)
 {
   T* p = img.getPixelPointer(0, 0);
   int N = img.getNumPixels();
+
   T min = rsArrayTools::minValue(p, N);
   T max = rsArrayTools::maxValue(p, N);
+  // todo: write function that extracts min and max in a single pass (may be more efficient due to
+  // less data transfer from memory to processor)
+
   T scl = 1.f / (max-min);
   for(int i = 0; i < N; i++)
     p[i] = scl * (p[i] - min);
