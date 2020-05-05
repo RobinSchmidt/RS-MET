@@ -4,7 +4,7 @@
 /** This is a class that provides a bunch of static functions to convert back and forth between
 various parametrizations of the center-frequency and bandwidth of a bandpass (or peaking) filter.
 There are a whole lot of possible ways to parametrize a bandpass filter such as via its lower and
-upper bandedge frequencies, center-frequency and bandwidth (where the latter van be given either
+upper bandedge frequencies, center-frequency and bandwidth (where the latter can be given either
 in Hz or in octaves), center-frequency and Q value, and many more. Each of these parametrizations
 may be more or less convenient in different contexts and it's sometimes necessary to convert
 between the different parametrizations - that's what this class is for.

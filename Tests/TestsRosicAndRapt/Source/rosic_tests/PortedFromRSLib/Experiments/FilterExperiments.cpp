@@ -226,7 +226,7 @@ void rsOnePoleInitialStateForBackwardPass(T a, T b, T* y1, T d, T* x1)
 //   yNew = c - p*(b-k); // == s(1)
 //   xNew = t[1] = b*y + d*x
 
-void biDirectionalStateInit()
+void biDirectionalStateInit1()
 {
   // Implementation of and experiments with closed form expressions to set the internal state of a 
   // 1st order bidirectional filter directly before the backward run. We compare the results from 
@@ -343,6 +343,58 @@ void biDirectionalStateInit()
   // https://trac.sagemath.org/ticket/1291
   // https://groups.google.com/forum/#!topic/sage-support/pYvjN7da9LY
   // Computational Mathematics with SageMath, page 229
+}
+
+void biDirectionalStateInit2()
+{
+  // We try the generalized formula where we don't assume the input to go to zero but to some 
+  // arbitrary constant value r.
+
+  // filter coeffs:
+  double a =  4.0;
+  double b =  0.5;
+  double d = -0.25;
+
+  // final state:
+  double x1 = 0.2;
+  double y1 = 0.3;
+
+  // target constant:
+  double r = -0.2;
+
+  static const int N = 20;  // tail length
+  int n;
+
+  // compute forward tail numerically, i.e. with the filter:
+  RAPT::rsOnePoleFilter<double, double> flt;
+  flt.setCoefficients(a, d, b);
+  flt.setInternalState(x1, y1);
+  double tn[N];
+  tn[0] = y1;
+  for(n = 1; n < N; n++)
+    tn[n] = flt.getSample(r);
+
+  // compute forward tail analytically, i.e. via the formula t[n] = v + (q-v)*b^(n-1):
+  double ta[N];
+  double q = a*r + b*y1 + d*x1;
+  double u = (a+d)*r;
+  double v = u/(1-b);
+  ta[0] = y1;
+  ta[1] = q;
+  for(n = 2; n < N; n++)
+    ta[n] = v + (q-v) * pow(b,n-1);
+
+  // plot forward tails:
+  rsPlotArrays(N, tn, ta); // looks good
+
+  // todo: obtain forward/backward tails numerically and analytically and plot them...
+
+}
+
+void biDirectionalStateInit()
+{
+  //biDirectionalStateInit1();
+  biDirectionalStateInit2();
 }
 
 void biquadTail()

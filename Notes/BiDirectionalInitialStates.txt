@@ -222,7 +222,17 @@ The tail s[n] after both passes (forward/backward) satisfies the recurrence rela
   s[n] = a*t[n] + b*s[n+1] + d*t[n+1]
        = a*(v + (q-v)*b^(n-1)) + b*s[n+1] + d*(v + (q-v)*b^n)
   
-...tbc...
+which we solve with wolfram alpha:
+
+  RSolve[s[n] == a*(v + (q-v)*b^(n-1)) + b*s[n+1] + d*(v + (q-v)*b^n) , s[n], n]
+  
+which gives:
+  
+  s(n) = c (1/b)^(n - 1) - ((1 - (1/b)^n) (1/b)^(-2 (n - 1) + n - 1) (a q ((1/b)^n + 1) 
+         + a v ((1/b)^(n - 2) + (1/b)^(n - 1) - (1/b)^n - 1) + b d q ((1/b)^n + 1) 
+         + b d v ((1/b)^(n - 1) - 1)))/(b^2 - 1) and c element Z
+         
+-> simplify this - define k = 1/b
   
   
   
@@ -233,9 +243,36 @@ difference equation: y[n] = a*x[n] + b*y[n-1] + d*x[n-1]
 
 ===================================================================================================
 
+k := 1/b
+
+s(n) = c k^(n - 1) - 
+       ((1 - k^n) k^(-2 (n - 1) + n - 1) (a q (k^n + 1) 
+        + a v (k^(n - 2) + k^(n - 1) - k^n - 1) 
+        + b d q (k^n + 1) 
+        + b d v (k^(n - 1) - 1))) / (b^2 - 1) 
+        
+https://www.wolframalpha.com/input/?i=%281+-+k%5En%29+k%5E%28-2+%28n+-+1%29+%2B+n+-+1%29
+(1 - k^n) k^(-2 (n - 1) + n - 1) == k (k^(-n) - 1) == (b^n - 1) / b
+
+s(n) = c k^(n - 1) - 
+       ( ((b^n - 1) / b) (a q (k^n + 1) 
+        + a v (k^(n - 2) + k^(n - 1) - k^n - 1) 
+        + b d q (k^n + 1) 
+        + b d v (k^(n - 1) - 1))) / (b^2 - 1) 
+
+compare this against a numerically computed s(n) - i want to know, if the formula correct, before 
+i try to simplify it - it would be a waste of time trying to simplify a wrong formula
+
+define: k0 := k^n, k1 := k^(n-1), k2 := k^(n-2)
+
+s(n) = c k1 - 
+       ( ((b^n - 1) / b) (a q (k0 + 1) + a v (k2 + k1 - k0 - 1) + b d q (k0 + 1) + b d v (k1 - 1)) ) / (b^2 - 1) 
 
 
+collect k^i terms
 
+
+===================================================================================================
 
 under construction:
 
