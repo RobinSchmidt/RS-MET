@@ -217,7 +217,9 @@ public:
     // suffer from precision loss due to cancellation - can this be avoided?
   }
   // maybe for image processing, it's better to assume that the missing pixels just repeat the last
-  // value instead of going down to zero?
+  // value instead of going down to zero? todo: derive the equations for x1,y1 when we do not assume 
+  // that the input drops to zero but instead goes to some arbitrary constant value - include the 
+  // value as optional parameter which defaults to zero
 
   /** Applies the filter bidirectionally (once forward, once backward) to the input signal x and 
   stores the result in y. Both buffers are assumed to be of length N. Can be used in place, i.e. 

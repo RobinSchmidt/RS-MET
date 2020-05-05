@@ -250,8 +250,6 @@ public:
   pre-filtering. */
   template <class T>
   static void decimate(const T* x, const int N, T* y, const int factor);
-  // todo: make a function decimateViaMean that uses the mean, i.e. a moving average of length 
-  // "factor"
 
   /** Like decimate, but instead of just taking every "factor"-th sample of the input, it computes
   a mean over "factor" samples. Note that the mean is computed using samples in the forward 
@@ -322,7 +320,7 @@ public:
   \todo: rename min/max into start/end  */
   template <class T>
   static void fillWithRangeLinear(T *buffer, int length, T min, T max);
-  // corresponds to std::iota? and/or NimPy's linspace
+  // corresponds to std::iota? and/or NumPy's linspace
 
   /** Fills the passed array with one value at all indices. */
   template <class T>
@@ -655,7 +653,7 @@ public:
   /** Given the sequence y of length yLength, this function returns a sequence x which, when
   convolved with itself, gives y. yLength is assumed to be odd, the index of first nonzero value
   is assumed to be even and the first nonzero value in y is assumed to be positive (for real
-  sequences), because this is what will happen, when covolving a (real) sequence with itself. To
+  sequences), because this is what will happen, when convolving a (real) sequence with itself. To
   disambiguate the square-root, the function will return a sequence with its 1st nonzero value
   being positive. If the original sequence x (before it was convolved with itself to give y)
   started with a negative value, the result of taking the square-root of the squared sequence y
@@ -664,9 +662,9 @@ public:
   The length of x will be (yLength+1)/2.
 
   \todo: this apparently works only if the y-sequence was actually constructed by squaring some
-  sequence, for a general sequence y, terms of y and x^2 will match only up to the n-th term
+  sequence. For a general sequence y, terms of y and x^2 will match only up to the n-th term
   where n = (yLength+1)/2, i.e. the length of x. ...find out if this function is useless
-  therefore and/or if there is a usefule generalization - like using a sequence x which has the
+  therefore and/or if there is a useful generalization - like using a sequence x which has the
   same length as y, convolve it with itslef and truncate the result to the length of y */
   template <class T>
   static void sequenceSqrt(const T *y, int yLength, T *x);
@@ -982,7 +980,7 @@ inline void rsArrayTools::pushFrontPopBack4(T x, T* a)
 }
 // todo: make versions for 1,2,3,N (using a loop or memmove) -> make performance tests, 
 // which version is fastest for what range of lengths maybe rename to updateFifoBuffer4
-// maybe make a version that returns the (old) a[3] element
+// maybe make a version that returns the (old) a[3] element - the caller may be interested in it
 
 template <class T1, class T2>
 inline void rsArrayTools::scale(T1 *buffer, int length, T2 scaleFactor)

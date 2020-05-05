@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
-  iteratedNumDiff();
+//  iteratedNumDiff();
   //interpolatingFunction();
   //linearRegression();
   //multipleRegression();
@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
   //bandSplittingMultiWay();   // turn into unit test (it currently hits an assert on fail)
   //bandSplittingTreeAlgo();
   //bandSplitFreqResponses();
-  //biDirectionalStateInit();
+  biDirectionalStateInit();
   //biquadTail();
   //complementaryFiltersIIR();
   //firstOrderFilters();

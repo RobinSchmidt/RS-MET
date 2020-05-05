@@ -691,7 +691,35 @@ void particleSystem()
   //  -it seems to depend on the stepsize
   //  -maybe we should apply the stepSize to the velocity update?
 }
-
+// todo:
+// -create particle systems with more complex interactions, like every particle has a number of 
+//  generic "features" A,B,C,D,... represented as real numbers (think: mass, charge, etc.)
+// -for each such feature, there's a specific force-distance law
+// -let there be different types of particles, like type "red": A = 0.5, B = -2, C = 1.5, etc. - 
+//  i.e. each type has a particular set of numeric values assigned for the different features
+//  (these particle types could be seen as "atoms" of the various chemical elements)
+// -one of these features could be "size" or "radius" and the corresponding force between two
+//  particles should be zero if their distance is less than the sum of the radii and 
+//  increase sharply, when the distance gets smaller than that -> avoid interpenetration
+// -let there be a drag force that tends to slow down motion and a temperature that gives the 
+//  particles random bumps into random directions at each time step
+//  ...or maybe drag and temperature will also emerge if we don't define any globally?
+// -with the right set of force-laws, i hope that we may get interesting emergent behavior, like 
+//  particles assembling to structures which move around, replicate, eat, shit, etc. - i.e. 
+//  life-like behavior
+// -some simple structures that would be interesting to observe (and/or create):
+//  -dipoles: exert a force of certain kind into one direction and the same force with opposite 
+//   sign into the opposite direction - can we assemble something like that from the given atoms?
+//   -would they tend to rotate in the right circumstances (i.e. feel a torque?)
+//   -or should dipoles and torques be built into the basic particles ("atoms")
+// -this can be done in 2D or 3D - in 2D, it would be easy to visualize - atoms of different kind 
+//  can be given different colors
+// -as a further complication, the particles/atoms could have a state and behave differently in 
+//  different states (i.e. the force-laws could be state dependent...or the response to forces 
+//  could be state dependent)
+// -it would be interesting, if energy (in the form of temperature) could be absorbed or liberated 
+//  when structures assemble or disassemble (chemical bonds form or break up)
+// -see: https://www.youtube.com/watch?v=Z_zmZ23grXE
 
 
 //template<class T>

@@ -17,8 +17,10 @@ given by the expression:
 
   t[n] = y * b^n
   
-to that tail, we now apply the filter running in reverse direction - the result we call s[n].
-We get the difference equation:
+where t[0] == y[N-1], where N is the toal number of input samples and counting starts at 
+index 0. That means, the first tail sample is taken to be the final output sample of our 
+filter (right?). To that tail, we now apply the filter running in reverse direction - the 
+result we call s[n]. We get the difference equation:
 
   s[n] = a * t[n] + b * s[n+1] = a * y * b^n + b * s[n+1]
   
@@ -169,6 +171,65 @@ states needed to run the backward pass via:
 
   x1 = b*y1 + d*x1               // update x1
   y1 = (b*d + a)*x1 / (1 - b^2)  // updating y1 uses the updated x1
+  
+---------------------------------------------------------------------------------------------------
+Arbitrary boundary condition
+
+So far, we have applied the boundary condition that the tail (after both passes) should approach 
+zero as n approaches infinity: s(inf) == 0. This was motivated by the idea that the input signal 
+is assumed to go down to zero after the samples for which we have data, i.e. x[n] = 0 for n >= N. 
+In some cases, we may want to assume that the input signal goes to some nonzero constant value 
+instead. For example, in image filtering, it may make more sense to imagine the last actual pixel 
+value to be repeated over and over, i.e. x[n] = r for n >= N where we choose r = x[N-1]. That 
+implies that our tail should also approach that same nonzero value: s(inf) == r. That requires us 
+to modify the tail equation for the forward tail t[n] as follows:
+
+  t[0] = y1
+  t[1] = a*r + b*t[0] + d*x1 = a*r + b*y1 + d*x1
+  t[2] = a*r + b*t[1] + d*r  = (a+d)*r + b*t[1] = (a+d)*r + b*(a*r + b*y1 + d*x1)
+  t[3] = a*r + b*t[2] + d*r  = (a+d)*r + b*t[2] = (a+d)*r + b*((a+d)*r + b*(a*r + b*y1 + d*x1))
+  ...
+  
+defining:
+  
+  q := a*r + b*y1 + d*x1, u = (a+d)*r
+  
+we get:
+
+  t[1] = q
+  t[2] = u + b*t[1] = u + b*q                         = u                       + b  *q
+  t[3] = u + b*t[2] = u + b*(u + b*q)                 = u + b*u                 + b^2*q
+  t[4] = u + b*t[3] = u + b*(u + b*(u + b*q))         = u + b*u + b^2*u         + b^3*q
+  t[5] = u + b*t[4] = u + b*(u + b*(u + b*(u + b*q))) = u + b*u + b^2*u + b^3*u + b^4*q
+
+and in general, for n >= 2:
+
+  t[n] = q*b^(n-1) + u * sum_i b^i  where i = 0,...,n-2
+  
+The geometric sum: sum_i b^i evaluates to (1-b^(n-1)) / (1-b), see:
+  https://en.wikipedia.org/wiki/Geometric_series
+  https://mathworld.wolfram.com/GeometricSeries.html
+so we get:
+
+  t[n] = q*b^(n-1) + u * (1-b^(n-1)) / (1-b)
+       = q*b^(n-1) + (u*1 - u*b^(n-1)) / (1-b)
+       = q*b^(n-1) + u/(1-b) - (u/(1-b)) * b^(n-1)     define: v := u/(1-b)
+       = q*b^(n-1) + v - v * b^(n-1)
+       = v + (q-v)*b^(n-1)                             for n >= 2
+
+The tail s[n] after both passes (forward/backward) satisfies the recurrence relation:
+
+  s[n] = a*t[n] + b*s[n+1] + d*t[n+1]
+       = a*(v + (q-v)*b^(n-1)) + b*s[n+1] + d*(v + (q-v)*b^n)
+  
+...tbc...
+  
+  
+  
+
+difference equation: y[n] = a*x[n] + b*y[n-1] + d*x[n-1]
+
+
 
 ===================================================================================================
 
