@@ -362,7 +362,7 @@ void biDirectionalStateInit2()
   // target constant:
   double r = -0.2;
 
-  static const int N = 20;  // tail length
+  static const int N = 40;  // tail length
   int n;
 
   // compute forward tail numerically, i.e. with the filter:
@@ -384,8 +384,56 @@ void biDirectionalStateInit2()
   for(n = 2; n < N; n++)
     ta[n] = v + (q-v) * pow(b,n-1);
 
+  // compute forward/backward tail numerically:
+  double sn[N];
+  for(n = N-1; n >= 0; n--)
+    sn[n] = flt.getSample(tn[n]);
+
+  // compute forward/backward tail analytically:
+  double sa[N];
+  double k = 1/b;
+  double c = 0;      // preliminary - needs to be determined by boundary condition
+  sa[0] = sa[1] = 0; // preliminary
+  for(n = 2; n < N; n++)
+  {
+    double k0 = pow(k, n);
+    double k1 = pow(k, n-1);
+    double k2 = pow(k, n-2);
+    // the k0,k1,k2-values explode because |k| > 1
+
+    double a1 = a * q * (k0 + 1);
+    double a2 = a * v * (k2 + k1 - k0 - 1);
+    double b1 = b * d * q * (k0 + 1);
+    double b2 = b * d * v * (k1 - 1);
+    double ab = a1 + a2 + b1 + b2;
+
+    //double bn = pow(b, n);
+
+    ab *= ((pow(b,n) - 1) / b) / (b*b - 1); // can the factor be simplified?
+
+    sa[n] = c*k1 - ab;
+
+
+    int dummy = 0;
+  }
+  // oh - we need to know c to implement the formula...
+  // s(n) = c k1 - 
+  // ( ((b^n - 1) / b) ( a q (k0 + 1) + a v (k2 + k1 - k0 - 1) + b d q (k0 + 1) + b d v (k1 - 1)) ) / (b^2 - 1) 
+  // for the time being, we set c = 0 - this should result in a y-shifted version
+  // ...but the result seems wrong
+  // verify formulas and derivation in BiDirectionalInitialStates.txt - the formula for t[n] seems
+  // correct (it has been verified numerically) but the one for s[n] may still be wrong...
+  // or maybe we have to choose c just right so as to cause a cancellation of the exploding terms?
+
+
+
+
   // plot forward tails:
-  rsPlotArrays(N, tn, ta); // looks good
+  //rsPlotArrays(N, tn, ta); // looks good
+
+  // plot bidirectional tails:
+  rsPlotArrays(N, sn);
+  rsPlotArrays(N, sa);
 
   // todo: obtain forward/backward tails numerically and analytically and plot them...
 

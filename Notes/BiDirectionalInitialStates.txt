@@ -266,7 +266,7 @@ i try to simplify it - it would be a waste of time trying to simplify a wrong fo
 define: k0 := k^n, k1 := k^(n-1), k2 := k^(n-2)
 
 s(n) = c k1 - 
-       ( ((b^n - 1) / b) (a q (k0 + 1) + a v (k2 + k1 - k0 - 1) + b d q (k0 + 1) + b d v (k1 - 1)) ) / (b^2 - 1) 
+       ( ((b^n - 1) / b) ( a q (k0 + 1) + a v (k2 + k1 - k0 - 1) + b d q (k0 + 1) + b d v (k1 - 1)) ) / (b^2 - 1) 
 
 
 collect k^i terms
