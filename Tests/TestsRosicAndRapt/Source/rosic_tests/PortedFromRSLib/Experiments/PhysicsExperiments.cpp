@@ -705,7 +705,7 @@ void particleSystem()
 //  particles random bumps into random directions at each time step
 //  ...or maybe drag and temperature will also emerge if we don't define any globally?
 // -with the right set of force-laws, i hope that we may get interesting emergent behavior, like 
-//  particles assembling to structures which move around, replicate, eat, shit, etc. - i.e. 
+//  particles assembling to structures which move around, grow, replicate, eat, shit, etc. - i.e. 
 //  life-like behavior
 // -some simple structures that would be interesting to observe (and/or create):
 //  -dipoles: exert a force of certain kind into one direction and the same force with opposite 
@@ -719,6 +719,15 @@ void particleSystem()
 //  could be state dependent)
 // -it would be interesting, if energy (in the form of temperature) could be absorbed or liberated 
 //  when structures assemble or disassemble (chemical bonds form or break up)
+// -the force-distance-law F(d) for each feature should be a function that goes to minus inf for
+//  d -> 0, cross the x-axis at some specified "preferred distance", then show a bump of positive 
+//  values (height and position adjustable) and then fall down to zero. for example, a function 
+//  like F(d) = a/(b + d^n) - c/d^m, for example F(d) = 2/(1+d^3) - 0.1/d^2, see
+//    https://www.desmos.com/calculator/42glxvmavv 
+//  the 5 free parameters a,b,c,n,m should be adjusted in terms of asymptotic repulsion m, 
+//  preferred distance, bump position, bump height, asymptotic attraction n
+//  -as a variation, the asymptotic atttraction could also go down exponentially
+//  -the repulsion is there to model that no two particles can occupy the same position
 // -see: https://www.youtube.com/watch?v=Z_zmZ23grXE
 
 

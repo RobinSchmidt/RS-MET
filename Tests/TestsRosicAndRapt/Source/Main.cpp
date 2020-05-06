@@ -145,7 +145,7 @@ int main(int argc, char* argv[])
   //rectangularMembrane();
 //  rectangularRoom();
   //particleForceDistanceLaw();
-  //particleSystem();
+  particleSystem();
   //quantumSpinMeasurement();  // move to unit tests
   //quantumSpinEntanglement();
   //quantumGates();            // move to unit tests

@@ -177,12 +177,12 @@ Arbitrary boundary condition
 
 So far, we have applied the boundary condition that the tail (after both passes) should approach 
 zero as n approaches infinity: s(inf) == 0. This was motivated by the idea that the input signal 
-is assumed to go down to zero after the samples for which we have data, i.e. x[n] = 0 for n >= N. 
-In some cases, we may want to assume that the input signal goes to some nonzero constant value 
-instead. For example, in image filtering, it may make more sense to imagine the last actual pixel 
-value to be repeated over and over, i.e. x[n] = r for n >= N where we choose r = x[N-1]. That 
-implies that our tail should also approach that same nonzero value: s(inf) == r. That requires us 
-to modify the tail equation for the forward tail t[n] as follows:
+is assumed to go down to zero after the samples for which we have data, i.e. x[n] = 0 for n >= N or 
+n < 0. In some cases, we may want to assume that the input signal goes to some nonzero constant 
+value instead. For example, in image filtering, it may make more sense to imagine the last actual 
+pixel value to be repeated over and over, i.e. x[n] = r for n >= N where we choose r = x[N-1]. That 
+implies that our tail should also approach that some nonzero value. That requires us to modify the 
+tail equation for the forward tail t[n] as follows:
 
   t[0] = y1
   t[1] = a*r + b*t[0] + d*x1 = a*r + b*y1 + d*x1
@@ -206,10 +206,7 @@ and in general, for n >= 2:
 
   t[n] = q*b^(n-1) + u * sum_i b^i  where i = 0,...,n-2
   
-The geometric sum: sum_i b^i evaluates to (1-b^(n-1)) / (1-b), see:
-  https://en.wikipedia.org/wiki/Geometric_series
-  https://mathworld.wolfram.com/GeometricSeries.html
-so we get:
+The geometric sum: sum_i b^i evaluates to (1-b^(n-1)) / (1-b), so we get:
 
   t[n] = q*b^(n-1) + u * (1-b^(n-1)) / (1-b)
        = q*b^(n-1) + (u*1 - u*b^(n-1)) / (1-b)
@@ -217,28 +214,105 @@ so we get:
        = q*b^(n-1) + v - v * b^(n-1)
        = v + (q-v)*b^(n-1)                             for n >= 2
 
+from which we see, that t[n] -> v = (a+d)*r/(1-b) as n -> inf because the b^(n-1) term goes to zero 
+because |b| < 1.
+
+...the formulas are numerically verified up to here...the stuff below is under construction....
+
+
+
 The tail s[n] after both passes (forward/backward) satisfies the recurrence relation:
 
-  s[n] = a*t[n] + b*s[n+1] + d*t[n+1]
-       = a*(v + (q-v)*b^(n-1)) + b*s[n+1] + d*(v + (q-v)*b^n)
+  s[n] = a*t[n] + b*s[n+1] + d*t[n+1]                           ...this line is the same as before
+       = a*(v + (q-v)*b^(n-1)) + b*s[n+1] + d*(v + (q-v)*b^n)   ...but this one is different
   
 which we solve with wolfram alpha:
 
   RSolve[s[n] == a*(v + (q-v)*b^(n-1)) + b*s[n+1] + d*(v + (q-v)*b^n) , s[n], n]
-  
+
 which gives:
   
   s(n) = c (1/b)^(n - 1) - ((1 - (1/b)^n) (1/b)^(-2 (n - 1) + n - 1) (a q ((1/b)^n + 1) 
          + a v ((1/b)^(n - 2) + (1/b)^(n - 1) - (1/b)^n - 1) + b d q ((1/b)^n + 1) 
          + b d v ((1/b)^(n - 1) - 1)))/(b^2 - 1) and c element Z
          
+.....now we try to simplify that....
+We may also replace b by 1/k
+         
+  RSolve[s[n] == a*(v + (q-v)/k^(n-1)) + s[n+1]/k + d*(v + (q-v)/k^n) , s[n], n]
+
+to get:
+
+  s(n) = c k^(n-1) - (k^(-2 (n-1) + n - 1) (k^n - 1) (a (k^(n+2) (q-v) + v k^(n+1) 
+         + v k^n + k^2 (q-v)) + d (k^(n+1) (q-v) 
+         + v k^(n+1) + v k^n + k (q-v))))/(k^2 - 1) and c element Z
+
+The k^(-2 (n-1) + n - 1) (k^n - 1) factor in the first line can be simplifed to k/k^n or 1/k^(n-1):
+
+  s(n) = c k^(n-1) - ( (1/k^(n-1)) (a (k^(n+2) (q-v) + v k^(n+1) 
+         + v k^n + k^2 (q-v)) + d (k^(n+1) (q-v) 
+         + v k^(n+1) + v k^n + k (q-v))))/(k^2 - 1)
+
+Let's define:
+
+  K := k^(n-1)  ->  K*k = k^n, K*k^2 = k^(n+1), K*k^3 = k^(n+2)
+
+so we get:
+
+  s(K) = c K - ( (1/K) (a ( K*k^3 (q-v) + v K*k^2 
+         + v K*k + k^2 (q-v)) + d ( K*k^2 (q-v) 
+         + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1)
+
+We are interested in the limit as n -> inf which means that K -> inf because |k| > 1. We want this 
+limit to be finite and we need to choose c accordingly - so what we need to do is to obtain an 
+expression for the limit of s(K) as K -> inf in terms of c,a,q,v,d,k and find c such that this 
+expression remains finite....
+
+  Limit[c K - ((1/K) (a (K*k^3 (q-v) + v K*k^2 + v K*k + k^2 (q-v)) + d ( K*k^2 (q-v) + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1), K -> Infinity]
+
+..this says, the limit is c*inf, suggesting that we should use c=0. 
+it's also interesting to use a finite value for the limit:
+
+  Limit[c K - ((1/K) (a (K*k^3 (q-v) + v K*k^2 + v K*k + k^2 (q-v)) + d ( K*k^2 (q-v) + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1), K -> 1000]
+  Limit[c K - ((1/K) (a (K*k^3 (q-v) + v K*k^2 + v K*k + k^2 (q-v)) + d ( K*k^2 (q-v) + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1), K -> L]
+
+Let's look at the limit without the c-term:
+
+  Limit[-((1/K) (a (K*k^3 (q-v) + v K*k^2 + v K*k + k^2 (q-v)) + d ( K*k^2 (q-v) + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1), K -> Infinity]
+
+...this approaches a finite value, so it seems, the only way that the full expression including the 
+c-term could remain finite is when c equals zero? ..so, two ways say that c should be zero...but 
+how does that fit together with our c = -p*k formula when r = 0 in the simpler case above?
+
+   
+..maybe we can simplify it with sage like this:
+
+var("s c k n a d q v")
+s = c*k^(n-1) - (k^(-2*(n-1)+n-1)*(k^n-1)*(a*(k^(n+2)*(q-v)+v*k^(n+1) 
+    + v*k^n + k^2*(q-v)) + d*(k^(n+1)*(q-v) + v*k^(n+1) + v*k^n + k*(q-v)))) / (k^2 - 1)
+#s, s.simplify(), s.collect(k), s.expand().collect(k)
+cm2 = s.coefficient(k^(n-2))
+cm1 = s.coefficient(k^(n-1))
+c0  = s.coefficient(k^(n+0))
+c1  = s.coefficient(k^(n+1))
+c2  = s.coefficient(k^(n+2))
+c3  = s.coefficient(k^(n+3))
+cm2,cm1,c0,c1,c2,c3
+    
 -> simplify this - define k = 1/b
-  
+-> we need to select c such that s(n) approaches v as n apporaches infinity
   
   
 
 difference equation: y[n] = a*x[n] + b*y[n-1] + d*x[n-1]
 
+Limit[(1 + 1/n)^n, n -> Infinity]
+
+Limit[c k^(n-1) - (k^(-2 (n-1) + n - 1) (k^n - 1) (a (k^(n+2) (q-v) + v k^(n+1) + v k^n + k^2 (q-v)) + d (k^(n+1) (q-v) + v k^(n+1) + v k^n + k (q-v))))/(k^2 - 1), n -> 100]
+...wolfram alpha can do this just fine
+
+Limit[c k^(n-1) - (k^(-2 (n-1) + n - 1) (k^n - 1) (a (k^(n+2) (q-v) + v k^(n+1) + v k^n + k^2 (q-v)) + d (k^(n+1) (q-v) + v k^(n+1) + v k^n + k (q-v))))/(k^2 - 1), n -> Infinity]
+...but doesn't understand that
 
 
 ===================================================================================================
@@ -265,11 +339,10 @@ i try to simplify it - it would be a waste of time trying to simplify a wrong fo
 
 define: k0 := k^n, k1 := k^(n-1), k2 := k^(n-2)
 
-s(n) = c k1 - 
-       ( ((b^n - 1) / b) ( a q (k0 + 1) + a v (k2 + k1 - k0 - 1) + b d q (k0 + 1) + b d v (k1 - 1)) ) / (b^2 - 1) 
+s(n) = c k1 - ( ((b^n  - 1) / b) ( a q (k0 + 1) + a v (k2 + k1 - k0 - 1) + b d q (k0 + 1)   + b d v (k1 - 1)  ) ) / (  b^2 - 1) 
+     = c k1 - ( ((1/k0 - 1) * k) ( a q (k0 + 1) + a v (k2 + k1 - k0 - 1) +   d q (k0 + 1)/k +   d v (k1 - 1)/k) ) / (1/k^2 - 1) 
 
-
-collect k^i terms
+replace b by 1/k, collect k^i terms
 
 
 ===================================================================================================

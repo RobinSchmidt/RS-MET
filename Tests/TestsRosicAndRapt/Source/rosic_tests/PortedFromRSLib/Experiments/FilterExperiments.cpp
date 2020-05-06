@@ -429,13 +429,20 @@ void biDirectionalStateInit2()
 
 
   // plot forward tails:
-  //rsPlotArrays(N, tn, ta); // looks good
+  rsPlotArrays(N, tn, ta); // looks good
+  // for n -> inf, the tail values t[n] approach v - this may be needed for our boundary condition
+  // for s[inf] - we may have to set it to v, too...but maybe it's sufficient, if we demand that
+  // s[inf] stays finite without specifying which value it should be? ...we'll see
 
   // plot bidirectional tails:
   rsPlotArrays(N, sn);
   rsPlotArrays(N, sa);
 
   // todo: obtain forward/backward tails numerically and analytically and plot them...
+
+  // For symmetry reasons, when we assume that x[n] = x[N-1] for n >= N, we should also assume that
+  // x[n] = x[0] for n < 0. That means that before starting the forward pass, we should init the 
+  // state variables x1,y1 of the filter to x[0]
 
 }
 
