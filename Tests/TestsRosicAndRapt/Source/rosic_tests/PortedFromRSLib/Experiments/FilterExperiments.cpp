@@ -378,14 +378,16 @@ void biDirectionalStateInit2()
   double ta[N];
   double q = a*r + b*y1 + d*x1;
   double u = (a+d)*r;
-  double v = u/(1-b);
+  double v = u/(1-b);          // == t[inf]
   ta[0] = y1;
   ta[1] = q;
   for(n = 2; n < N; n++)
     ta[n] = v + (q-v) * pow(b,n-1);
 
   // compute forward/backward tail numerically:
+  double w = (a+d)*v / (1-b);  // == s[inf]
   double sn[N];
+  flt.setInternalState(v, w);  // for plot cosmetics
   for(n = N-1; n >= 0; n--)
     sn[n] = flt.getSample(tn[n]);
 
@@ -403,42 +405,31 @@ void biDirectionalStateInit2()
     sa[n] = c*K - ( ((K*k - 1)/K) * (a* (K*k3* (q-v) 
                     + v * K*k2 + v * K*k + k2 * (q-v)) + d * (K*k2 * (q-v) 
                     + v * K*k2 + v * K*k + k  * (q-v))))/(k2 - 1);
-
-    int dummy = 0;
   }
-  //sa[0] = sa[1] = 0; 
-  // preliminary - i think, we must compute sa[1] using sa[2], ta[2] and ta[1] via:
   sa[1] = a*ta[1] + b*sa[2] + d*ta[2];
   sa[0] = a*ta[0] + b*sa[1] + d*ta[1];
 
-  // yes! that looks good!
+  // plot forward tails and forward/backward tails, numerically and analytically evaluated:
+  rsPlotArrays(N, tn, ta, sn, sa);
 
-
-
-  // plot forward tails:
-  //rsPlotArrays(N, tn, ta); // looks good
-  // for n -> inf, the tail values t[n] approach v - this may be needed for our boundary condition
-  // for s[inf] - we may have to set it to v, too...but maybe it's sufficient, if we demand that
-  // s[inf] stays finite without specifying which value it should be? ...we'll see
-
-  // plot bidirectional tails:
-  rsPlotArrays(N, sn, sa);
-
-
-  // maybe plot the ratio sa/sn of the two functions
-
-  // todo: obtain forward/backward tails numerically and analytically and plot them...
+  // OK - that looks good, so far. The only thing that remains to do is to simplify the expressions
+  // for c and sa[n], if possible...
 
   // For symmetry reasons, when we assume that x[n] = x[N-1] for n >= N, we should also assume that
   // x[n] = x[0] for n < 0. That means that before starting the forward pass, we should init the 
-  // state variables x1,y1 of the filter to x[0]
-
+  // state variables x1,y1 of the filter to x[0]...or no: only the x1 state should be initialized 
+  // to x[0] - for the y1 state we should compute the steady state response when the input is 
+  // constantly fixed at x[0]...which, i think, is (a+d)*x[0] / (1-b)....verify this
+  // maybe have a function setStateForConstInput(double c) which sets:
+  //   x1 = c, y1 = (a+d)*c / (1-b)   (beware of the different variable names for the coeffs in the 
+  // filter class) and call it with c = x[0] before starting the forward pass
 }
 
 void biDirectionalStateInit()
 {
-  //biDirectionalStateInit1();
-  biDirectionalStateInit2();
+  //biDirectionalStateInit1();  // assumes the input to be zero outside n = 0,...,N-1
+  biDirectionalStateInit2();    // assumes the input to go to some user selectable constants for
+                                // n < 0 and n >= N (they may be different for each side)
 }
 
 void biquadTail()

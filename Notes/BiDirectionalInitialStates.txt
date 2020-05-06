@@ -251,7 +251,7 @@ Wolfram alpha doesn't understand this, but wolfram cloud does and gives the resu
 
   ((c-c k^2+d k^3 q+a k^4 q+a k^2 v+d k^2 v+a k^3 v-a k^4 v) \[Infinity])/(1-k^2)
 
-so, in order for s[n] to apporach a finite limit as n -> inf, we must choose c such that:
+so, in order for s[n] to approach a finite limit as n -> inf, we must choose c such that:
  
   c - c k^2 + d k^3 q + a k^4 q + a k^2 v + d k^2 v + a k^3 v - a k^4 v = 0
   
