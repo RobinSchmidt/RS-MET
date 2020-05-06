@@ -347,12 +347,12 @@ void biDirectionalStateInit1()
 
 
 template<class T>
-void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
+void rsOnePoleInitialStateForBackwardPassOld(T a, T b, T d, T r, T* x1, T* y1)
 {
   T q  = a*r + b * *y1 + d * *x1;
   T u  = (a+d)*r;
   T v  = u/(1-b);              // == t[inf]
-  T w  = (a+d)*v / (1-b);      // == s[inf] ...not actually needed
+  //T w  = (a+d)*v / (1-b);    // == s[inf] ...not actually needed
   T k  = 1/b;
   T k2 = k*k;                  // k^2
   T k3 = k2*k;                 // k^3
@@ -360,7 +360,6 @@ void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
   T c  = (k2*(a*(k2*(q-v)+k*v+v)+d*(k*q+v)))/(k2-1); // can this be simplified?
 
   // compute s[2]:
-  //T K = pow(k, 2-1);   // == k
   T s2 = c*k - ( ((k2 - 1)/k) * (a* (k4 * (q-v) 
                  + v * k3 + v * k2 + k2 * (q-v)) 
                               + d * (k3 * (q-v) 
@@ -368,11 +367,11 @@ void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
   // simplify!!!!
 
 
-  // compute t[1], t[2]
+  // compute t[1], t[2]:
   T t1 = q;
   T t2 = u + b*q;
 
-  // compute s[1]
+  // compute s[1]:
   T s1 = a*t1 + b*s2 + d*t2;
 
   // assign outputs:
@@ -382,6 +381,58 @@ void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
   int dummy = 0;
 }
 // this function seems to work but the formulas need to be simplified
+
+/*
+sage:
+var("a b c d k k2 k3 k4 q r s u v")
+k  = 1/b
+k2 = k^2
+k3 = k^3
+k4 = k^4
+#q = a*r + b*y + d*x 
+u  = (a+d)*r
+v  = u/(1-b)
+c  = (k2* (a* (k2* (q - v) + k* v + v) + d* (k* q + v)))/(k2 - 1)
+s  = c*k - ( ((k2 - 1)/k) * (a* (k4 * (q-v) + v * k3 + v * k2 + k2 * (q-v)) 
+     + d * (k3 * (q-v) + v * k3 + v * k2 + k  * (q-v))))/(k2 - 1)
+s, s.simplify_full()
+
+gives:
+s = -((a*b^2 - a*b + (b^3 - b^2)*d)*q + ((b^2 - b - 1)*d^2 - a^2 + (a*b^2 - a*b - 2*a)*d)*r)/(b^3 - b^2 - b + 1)
+ 
+*/
+
+
+template<class T>
+void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
+{
+  T q  = a*r + b * *y1 + d * *x1;
+  T b2 = b*b;    // b^2
+  T b3 = b*b2;   // b^3
+  T b4 = b2*b2;  // b^4
+
+  // compute s[2]:
+  T s2 = -((a*b2 - a*b + (b3-b2)*d)*q + ((b2-b- 1)*d*d - a*a + (a*b2-a*b-2*a)*d)*r)
+           /(b3 - b2 - b + 1);
+
+  // compute t[1], t[2]
+  T u  = (a+d)*r;
+  T t1 = q;
+  T t2 = u + b*q;
+
+  // compute s[1]:
+  T s1 = a*t1 + b*s2 + d*t2;
+
+  // assign outputs:
+  *x1 = t1;
+  *y1 = s1;
+
+  int dummy = 0;
+}
+
+
+
+
 
 void biDirectionalStateInit2()
 {
