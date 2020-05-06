@@ -247,11 +247,57 @@ to get:
          + v k^n + k^2 (q-v)) + d (k^(n+1) (q-v) 
          + v k^(n+1) + v k^n + k (q-v))))/(k^2 - 1) and c element Z
 
-The k^(-2 (n-1) + n - 1) (k^n - 1) factor in the first line can be simplifed to k/k^n or 1/k^(n-1):
-...nope! it's (k^n - 1) / k^(n-1)
+The k^(-2 (n-1) + n - 1) (k^n - 1) factor in the first line can be simplifed to (k^n - 1) / k^(n-1)
+  wolfram:  k^(-2 (n-1) + n - 1) (k^n - 1) == (k^n - 1) / k^(n-1)  -> True
 
+  s(n) = c k^(n-1) - ( ((k^n - 1)/k^(n-1)) (a (k^(n+2) (q-v) + v k^(n+1) 
+         + v k^n + k^2 (q-v)) + d (k^(n+1) (q-v) 
+         + v k^(n+1) + v k^n + k (q-v))))/(k^2 - 1) 
 
+Let's define:
 
+  K := k^(n-1)  ->  K*k = k^n, K*k^2 = k^(n+1), K*k^3 = k^(n+2)
+
+so we get:
+
+  s(n) = c K - ( ((K*k - 1)/K) (a (K*k^3 (q-v) + v K*k^2 
+         + v K*k + k^2 (q-v)) + d (K*k^2 (q-v) 
+         + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1) 
+
+We want the limit as K goes to infinity:
+         
+   Limit[c K - ( ((K*k - 1)/K) (a (K*k^3 (q-v) + v K*k^2 + v K*k + k^2 (q-v)) + d (K*k^2 (q-v) + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1), K -> Infinity]
+
+wolfram alpha doesn't understand this - but wolfram cloud does and gives the result:
+
+  ((c-c k^2+d k^3 q+a k^4 q+a k^2 v+d k^2 v+a k^3 v-a k^4 v) \[Infinity])/(1-k^2)
+
+so, it seems, we must choose c such that:
+ 
+  c - c k^2 + d k^3 q + a k^4 q + a k^2 v + d k^2 v + a k^3 v - a k^4 v = 0
+  
+This is somethin, wolfram alpha can do:
+  
+  Solve[c - c k^2 + d k^3 q + a k^4 q + a k^2 v + d k^2 v + a k^3 v - a k^4 v = 0, c]
+  
+giving:
+
+  c = (k^2 (a (k^2 (q - v) + k v + v) + d (k q + v)))/(k^2 - 1) and k^2 !=1
+  
+
+  
+  
+Let's look at the limit without the c-term (and without the minus):
+
+  Limit[( ((K*k - 1)/K) (a (K*k^3 (q-v) + v K*k^2 + v K*k + k^2 (q-v)) + d (K*k^2 (q-v) + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1), K -> Infinity]
+         
+which gives:
+
+  (k^2 (d (k q + v) + a (v + k (k (q - v) + v))) Infinity)/(-1 + k^2)
+
+  
+  
+  
  ...stuff below becomes wrong!.... i replaced k^(-2 (n-1) + n - 1) (k^n - 1) by 1/k^(n-1) which is 
  wrong
 
@@ -536,6 +582,11 @@ var("a1 a2 t1 t2 t5")
 t5 = -a1*(-a1*(-a1*t2 - a2*t1) - a2*t2) - a2*(-a1*t2 - a2*t1)
 t5.simplify_full()
   
+
+  
+  
+===================================================================================================
+
 
 
 

@@ -424,6 +424,24 @@ void biDirectionalStateInit2()
   // correct (it has been verified numerically) but the one for s[n] may still be wrong...
   // or maybe we have to choose c just right so as to cause a cancellation of the exploding terms?
 
+
+  double k2 = k*k;   // k^2
+  double k3 = k2*k;  // k^3
+  c = (k2* (a* (k2* (q - v) + k* v + v) + d* (k* q + v)))/(k2 - 1);
+  for(n = 2; n < N; n++)
+  {
+    double K = pow(k, n-1);
+
+    sa[n] = c*K - ( ((K*k - 1)/K) * (a* (K*k3* (q-v) 
+                    + v * K*k2 + v * K*k + k2 * (q-v)) + d * (K*k2 * (q-v) 
+                    + v * K*k2 + v * K*k + k  * (q-v))))/(k2 - 1);
+
+    int dummy = 0;
+  }
+  // yes! that looks good!
+
+
+  /*
   // another try with different simplifications:
   double k2 = k*k;   // k^2
   double k3 = k2*k;  // k^3
@@ -441,6 +459,7 @@ void biDirectionalStateInit2()
   // -> compare that to the analytically computed limit from wolfram alpha:
   double L = (k*(a*(k*(k*(q - v) + v) + v) + d*(k*q + v))) / (k2 - 1);
   // ok - this seems to be correct (maybe this formula can be simplified?)
+  */
 
   // compute ratio sr = sa/sn:
   double sr[N];
@@ -458,7 +477,7 @@ void biDirectionalStateInit2()
   // plot bidirectional tails:
   //rsPlotArrays(N, sn);
   //rsPlotArrays(N, sa);
-  rsPlotArrays(N, sn, sa, sr); // they totally do not match! why?
+  rsPlotArrays(N, sn, sa, sr);
 
 
   // maybe plot the ratio sa/sn of the two functions
