@@ -347,7 +347,7 @@ void biDirectionalStateInit1()
 
 
 template<class T>
-void rsOnePoleInitialStateForBackwardPassOld(T a, T b, T d, T r, T* x1, T* y1)
+void rsOnePoleInitialStateForBackwardPass1(T a, T b, T d, T r, T* x1, T* y1)
 {
   T q  = a*r + b * *y1 + d * *x1;
   T u  = (a+d)*r;
@@ -412,23 +412,15 @@ void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
   T b4 = b2*b2;  // b^4
 
   // compute s[2]:
-  T s2 = -((a*b2 - a*b + (b3-b2)*d)*q + ((b2-b- 1)*d*d - a*a + (a*b2-a*b-2*a)*d)*r)
-           /(b3 - b2 - b + 1);
+  T s2 = -((a*b2 - a*b + (b3-b2)*d)*q + ((b2-b-1)*d*d - a*a + (a*b2-a*b-2*a)*d)*r) / (b3-b2-b+1);
 
-  // compute t[1], t[2]
-  T u  = (a+d)*r;
-  T t1 = q;
-  T t2 = u + b*q;
-
-  // compute s[1]:
-  T s1 = a*t1 + b*s2 + d*t2;
-
-  // assign outputs:
-  *x1 = t1;
-  *y1 = s1;
+  // compute new state variables:
+  *x1 = q;
+  *y1 = a*q + b*s2 + d*((a+d)*r + b*q);
 
   int dummy = 0;
 }
+// try to simplify further after plugging the s2 expression into the y1 equation...
 
 
 
