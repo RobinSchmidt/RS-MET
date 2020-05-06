@@ -432,21 +432,15 @@ y = -((a*b + (b^2 - b)*d - a)*q - (a^2*b + (a*b + a)*d + d^2)*r)/(b^3 - b^2 - b 
 template<class T>
 void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
 {
-  T q  = a*r + b * *y1 + d * *x1;
-  T b2 = b*b;    // b^2
-  T b3 = b*b2;   // b^3
+  // compute some intermediate values:
+  T b2 = b*b;                               // b^2
+  T b3 = b*b2;                              // b^3
+  T cx =    a*b + (b2-b)*d  - a;            // coeff for r in update of y1
+  T cr = a*(a*b + (b +1)*d) + d*d;          // coeff for x1 in update of y1
 
   // compute new state variables:
-  *x1 = q;
-  //*y1 = -((a*b + (b2 - b)*d - a)*q - (a*a*b + (a*b + a)*d + d*d)*r) / (b3-b2-b+1);
-  //*y1 = -((a*b + (b2 - b)*d - a)*q - (a*a*b + a*(b + 1)*d + d*d)*r) / (b3-b2-b+1);
-  //*y1 = -( (a*b-a+(b2-b)*d) * q - (a*(a*b+(b+1)*d)+d*d) * r )  /  (b3-b2-b+1);
-
-  T cq =    a*b + (b2-b)*d  - a;              // coeff for q (q == x1 after updating x1)
-  T cr = a*(a*b + (b +1)*d) + d*d;            // coeff for r
-  *y1  = (cr*r - cq*q) / (b3-b2-b+1);
-
-  int dummy = 0;
+  *x1  = a*r + b * *y1 + d * *x1;           // update x1
+  *y1  = (cr*r - cx * *x1) / (b3-b2-b+1);   // update y1 using updated x1
 }
 // can this be simplified even more by plugging the equation for q into the equation for y1?
 // compare result of this formula for r=0 with the simpler formula where we have assumed r=0 in the
@@ -538,16 +532,23 @@ void biDirectionalStateInit2()
   sa[1] = a*ta[1] + b*sa[2] + d*ta[2];
   sa[0] = a*ta[0] + b*sa[1] + d*ta[1];
 
-  // test the state-setter function - after this call, our local variables x1,y1 should match the
+  // test the state-setter function - after this call, our local variables xx1,yy1 should match the
   // corresponding recorded state variables xNew,yNew at n == 1:
-  rsOnePoleInitialStateForBackwardPass(a, b, d, r, &x1, &y1);
-  rsAssert(x1 == xNew && y1 == yNew);  // ...yes! they do match indeed! :-)
+  double xx1 = x1, yy1 = y1;
+  rsOnePoleInitialStateForBackwardPass(a, b, d, r, &xx1, &yy1);
+  rsAssert(xx1 == xNew && yy1 == yNew);  // ...yes! they do match indeed! :-)
+
+  // test - after these two calls, the filter's state should be xNew, yNew:
+  flt.setInternalState(x1, y1);
+  flt.prepareForBackwardPass(r);
+  rsAssert(flt.getStateX() == xNew && flt.getStateY() == yNew);
 
   // plot forward tails and forward/backward tails, numerically and analytically evaluated:
   rsPlotArrays(N, tn, ta, sn, sa);
 
-  // OK - that looks good, so far. The only thing that remains to do is to simplify the expressions
-  // for c and sa[n], if possible...
+  // OK - that looks good. 
+
+
   // todo: clean up the sage code - move it to the txt file (maybe into a sort of appendix)
 
 

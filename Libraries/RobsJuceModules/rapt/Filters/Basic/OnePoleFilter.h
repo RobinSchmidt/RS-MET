@@ -212,9 +212,9 @@ public:
 
   /** When this filter is used bidirectionally, you can call this function between the forward and 
   the backward pass to set the internal states of the filter appropriately. It simulates running 
-  the filter for a ringout phase and then using the reversed ringout tail to warm up the filter for
-  the backward pass. It doesn't actually do this but instead uses closed form formulas for what the
-  states should be. */
+  the filter for a ringout phase using an all-zeros signal as input and then using the reversed 
+  ringout tail to warm up the filter for the backward pass. It doesn't actually do this but instead
+  uses closed form formulas for what the states should be. */
   void prepareForBackwardPass()
   {
     x1 = a1*y1 + b1*x1;
@@ -228,6 +228,26 @@ public:
   // value instead of going down to zero? todo: derive the equations for x1,y1 when we do not assume 
   // that the input drops to zero but instead goes to some arbitrary constant value - include the 
   // value as optional parameter which defaults to zero
+
+  /** Like prepareForBackwardPass without parameter, but does not assume the input signal to go 
+  down to zero in the tail but instead to settle to some arbitrary constant value r. */
+  void prepareForBackwardPass(TSig r)
+  {
+    // use the simpler function above, if possible:
+    if(r == TSig(0)) { 
+      prepareForBackwardPass(); return; }
+
+    // compute some intermediate values:
+    TPar a2 = a1*a1;                              // a1^2
+    TPar a3 = a1*a2;                              // a1^3
+    TPar cx = b0*a1 + (a2-a1)*b1 - b0;            // coeff for r in update of y1
+    TPar cr = b0*(b0*a1 + (a1+1)*b1) + b1*b1;     // coeff for x1 in update of y1
+
+    // compute new state variables:
+    x1 = b0*r + a1*y1 + b1*x1;                    // update x1
+    y1 = (cr*r - cx*x1) / (a3-a2-a1+1);           // update y1 using updated x1
+  }
+  // todo: rename input parameter to c
 
   /** Applies the filter bidirectionally (once forward, once backward) to the input signal x and 
   stores the result in y. Both buffers are assumed to be of length N. Can be used in place, i.e. 
