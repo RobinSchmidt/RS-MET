@@ -356,13 +356,15 @@ void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
   T k  = 1/b;
   T k2 = k*k;                  // k^2
   T k3 = k2*k;                 // k^3
+  T k4 = k3*k;
   T c  = (k2*(a*(k2*(q-v)+k*v+v)+d*(k*q+v)))/(k2-1); // can this be simplified?
 
   // compute s[2]:
-  T K = pow(k, 2-1);   // == k
-  T s2 = c*K - ( ((K*k - 1)/K) * (a* (K*k3* (q-v) 
-                 + v * K*k2 + v * K*k + k2 * (q-v)) + d * (K*k2 * (q-v) 
-                 + v * K*k2 + v * K*k + k  * (q-v))))/(k2 - 1);
+  //T K = pow(k, 2-1);   // == k
+  T s2 = c*k - ( ((k2 - 1)/k) * (a* (k4 * (q-v) 
+                 + v * k3 + v * k2 + k2 * (q-v)) 
+                              + d * (k3 * (q-v) 
+                 + v * k3 + v * k2 + k  * (q-v))))/(k2 - 1);
   // simplify!!!!
 
 
@@ -454,7 +456,7 @@ void biDirectionalStateInit2()
   // test the state-setter function - after this call, our local variables x1,y1 should match the
   // corresponding recorded state variables xNew,yNew at n == 1:
   rsOnePoleInitialStateForBackwardPass(a, b, d, r, &x1, &y1);
-  // ...yes! they do match indeed! :-)
+  rsAssert(x1 == xNew && y1 == yNew);  // ...yes! they do match indeed! :-)
 
   // plot forward tails and forward/backward tails, numerically and analytically evaluated:
   rsPlotArrays(N, tn, ta, sn, sa);
