@@ -248,6 +248,12 @@ to get:
          + v k^(n+1) + v k^n + k (q-v))))/(k^2 - 1) and c element Z
 
 The k^(-2 (n-1) + n - 1) (k^n - 1) factor in the first line can be simplifed to k/k^n or 1/k^(n-1):
+...nope! it's (k^n - 1) / k^(n-1)
+
+
+
+ ...stuff below becomes wrong!.... i replaced k^(-2 (n-1) + n - 1) (k^n - 1) by 1/k^(n-1) which is 
+ wrong
 
   s(n) = c k^(n-1) - ( (1/k^(n-1)) (a (k^(n+2) (q-v) + v k^(n+1) 
          + v k^n + k^2 (q-v)) + d (k^(n+1) (q-v) 
@@ -279,10 +285,14 @@ it's also interesting to use a finite value for the limit:
 Let's look at the limit without the c-term:
 
   Limit[-((1/K) (a (K*k^3 (q-v) + v K*k^2 + v K*k + k^2 (q-v)) + d ( K*k^2 (q-v) + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1), K -> Infinity]
+  
+which gives:
+  
+  -(k (a (k (k (q - v) + v) + v) + d (k q + v)))/(k^2 - 1)
 
-...this approaches a finite value, so it seems, the only way that the full expression including the 
-c-term could remain finite is when c equals zero? ..so, two ways say that c should be zero...but 
-how does that fit together with our c = -p*k formula when r = 0 in the simpler case above?
+...so this approaches a finite value, so it seems, the only way that the full expression including 
+the c-term could remain finite is when c equals zero? ..so, two ways say that c should be zero
+...but how does that fit together with our c = -p*k formula when r = 0 in the simpler case above?
 
    
 ..maybe we can simplify it with sage like this:

@@ -438,8 +438,14 @@ void biDirectionalStateInit2()
     int dummy = 0;
   }
   // L seems to converge to -2.98333333...
-  // -> compare that to the analytically computed limit from wolfram alpha
+  // -> compare that to the analytically computed limit from wolfram alpha:
+  double L = (k*(a*(k*(k*(q - v) + v) + v) + d*(k*q + v))) / (k2 - 1);
+  // ok - this seems to be correct (maybe this formula can be simplified?)
 
+  // compute ratio sr = sa/sn:
+  double sr[N];
+  for(n = 0; n < N; n++)
+    sr[n] = sa[n] / sn[n];
 
 
 
@@ -452,7 +458,10 @@ void biDirectionalStateInit2()
   // plot bidirectional tails:
   //rsPlotArrays(N, sn);
   //rsPlotArrays(N, sa);
-  rsPlotArrays(N, sn, sa);
+  rsPlotArrays(N, sn, sa, sr); // they totally do not match! why?
+
+
+  // maybe plot the ratio sa/sn of the two functions
 
   // todo: obtain forward/backward tails numerically and analytically and plot them...
 
