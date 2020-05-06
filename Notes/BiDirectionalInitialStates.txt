@@ -266,8 +266,21 @@ giving:
   c = (k^2 (a (k^2 (q - v) + k v + v) + d (k q + v)))/(k^2 - 1) and k^2 !=1
   
 
+...the formulas are numerically verified up to here...the stuff below is under construction....  
   
-...the formulas are numerically verified up to here...the stuff below is under construction....
+
+Eventually, we arrive at:
+
+  cr = a*(a*b + (b+1)*d) + d*d         // coeff for r in update of y1
+  cx = a*b + (b^2-b)*d - a             // coeff for x1 in update of y1
+  x1 = a*r + b*y1 + d*x1               // update x1
+  y1 = (cr*r - cx*x1) / (b^3-b^2-b+1)  // update y1 using updated x1
+
+this is the end result of this derivation.
+  
+  
+  
+
 
 
 trying to simplify with sage:

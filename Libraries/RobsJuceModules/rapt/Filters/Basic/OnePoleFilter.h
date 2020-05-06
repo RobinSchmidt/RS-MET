@@ -248,6 +248,7 @@ public:
   }
   // maybe have a stride parameter which defaults to 1 - will be needed when this filter is used 
   // on the columns in images (or more generally, on nD arrays)
+  // -have optional xL,xR parameters for x[n] for n < 0 and n >= N, defaulting to 0
 
 
   void applyBidirectionally(TSig* x, TSig* y, int N, int stride)

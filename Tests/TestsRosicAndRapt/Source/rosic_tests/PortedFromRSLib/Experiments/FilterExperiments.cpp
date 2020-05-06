@@ -366,7 +366,6 @@ void rsOnePoleInitialStateForBackwardPass1(T a, T b, T d, T r, T* x1, T* y1)
                  + v * k3 + v * k2 + k  * (q-v))))/(k2 - 1);
   // simplify!!!!
 
-
   // compute t[1], t[2]:
   T t1 = q;
   T t2 = u + b*q;
@@ -377,8 +376,6 @@ void rsOnePoleInitialStateForBackwardPass1(T a, T b, T d, T r, T* x1, T* y1)
   // assign outputs:
   *x1 = t1;
   *y1 = s1;
-
-  int dummy = 0;
 }
 // this function seems to work but the formulas need to be simplified
 
@@ -416,8 +413,6 @@ void rsOnePoleInitialStateForBackwardPass2(T a, T b, T d, T r, T* x1, T* y1)
   // compute new state variables:
   *x1 = q;
   *y1 = a*q + b*s2 + d*((a+d)*r + b*q);
-
-  int dummy = 0;
 }
 // try to simplify further after plugging the s2 expression into the y1 equation...
 
@@ -443,12 +438,35 @@ void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
 
   // compute new state variables:
   *x1 = q;
-  *y1 = -((a*b + (b2 - b)*d - a)*q - (a*a*b + (a*b + a)*d + d*d)*r) / (b3-b2-b+1);
+  //*y1 = -((a*b + (b2 - b)*d - a)*q - (a*a*b + (a*b + a)*d + d*d)*r) / (b3-b2-b+1);
+  //*y1 = -((a*b + (b2 - b)*d - a)*q - (a*a*b + a*(b + 1)*d + d*d)*r) / (b3-b2-b+1);
+  //*y1 = -( (a*b-a+(b2-b)*d) * q - (a*(a*b+(b+1)*d)+d*d) * r )  /  (b3-b2-b+1);
+
+  T cq =    a*b + (b2-b)*d  - a;              // coeff for q (q == x1 after updating x1)
+  T cr = a*(a*b + (b +1)*d) + d*d;            // coeff for r
+  *y1  = (cr*r - cq*q) / (b3-b2-b+1);
 
   int dummy = 0;
 }
 // can this be simplified even more by plugging the equation for q into the equation for y1?
+// compare result of this formula for r=0 with the simpler formula where we have assumed r=0 in the
+// derivation - the result should be the same...somehow this formula should reduce to the simpler
+// formula in this case
 
+
+/*
+var("a b d b2 b3 q r x1 y1 yNew")
+b2 = b^2
+b3 = b^3
+q  = a*r + b * y1 + d * x1
+yNew = -((a*b + (b2 - b)*d - a)*q - (a*a*b + (a*b + a)*d + d*d)*r) / (b3-b2-b+1)
+yNew, yNew.simplify_full()
+
+gives:
+yNew = ((a^2 - (a*b^2 - 2*a*b - a)*d + d^2)*r - ((b^2 - b)*d^2 + (a*b - a)*d)*x1 - (a*b^2 - a*b + (b^3 - b^2)*d)*y1)/(b^3 - b^2 - b + 1)
+
+...that doesn't look simpler than what we had before - expanding q does not seem to be advantageous
+*/
 
 void biDirectionalStateInit2()
 {
@@ -530,6 +548,8 @@ void biDirectionalStateInit2()
 
   // OK - that looks good, so far. The only thing that remains to do is to simplify the expressions
   // for c and sa[n], if possible...
+  // todo: clean up the sage code - move it to the txt file (maybe into a sort of appendix)
+
 
   // For symmetry reasons, when we assume that x[n] = x[N-1] for n >= N, we should also assume that
   // x[n] = x[0] for n < 0. That means that before starting the forward pass, we should init the 
