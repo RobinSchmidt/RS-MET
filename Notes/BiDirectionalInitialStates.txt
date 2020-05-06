@@ -215,29 +215,14 @@ The geometric sum: sum_i b^i evaluates to (1-b^(n-1)) / (1-b), so we get:
        = v + (q-v)*b^(n-1)                             for n >= 2
 
 from which we see, that t[n] -> v = (a+d)*r/(1-b) as n -> inf because the b^(n-1) term goes to zero 
-because |b| < 1.
-
-...the formulas are numerically verified up to here...the stuff below is under construction....
-
-
-
-The tail s[n] after both passes (forward/backward) satisfies the recurrence relation:
+because |b| < 1. The tail s[n] after both passes (forward/backward) satisfies the recurrence 
+relation:
 
   s[n] = a*t[n] + b*s[n+1] + d*t[n+1]                           ...this line is the same as before
        = a*(v + (q-v)*b^(n-1)) + b*s[n+1] + d*(v + (q-v)*b^n)   ...but this one is different
+       = a*(v + (q-v)/k^(n-1)) + s[n+1]/k + d*(v + (q-v)/k^n)   where k := 1/b
   
 which we solve with wolfram alpha:
-
-  RSolve[s[n] == a*(v + (q-v)*b^(n-1)) + b*s[n+1] + d*(v + (q-v)*b^n) , s[n], n]
-
-which gives:
-  
-  s(n) = c (1/b)^(n - 1) - ((1 - (1/b)^n) (1/b)^(-2 (n - 1) + n - 1) (a q ((1/b)^n + 1) 
-         + a v ((1/b)^(n - 2) + (1/b)^(n - 1) - (1/b)^n - 1) + b d q ((1/b)^n + 1) 
-         + b d v ((1/b)^(n - 1) - 1)))/(b^2 - 1) and c element Z
-         
-.....now we try to simplify that....
-We may also replace b by 1/k
          
   RSolve[s[n] == a*(v + (q-v)/k^(n-1)) + s[n+1]/k + d*(v + (q-v)/k^n) , s[n], n]
 
@@ -247,14 +232,8 @@ to get:
          + v k^n + k^2 (q-v)) + d (k^(n+1) (q-v) 
          + v k^(n+1) + v k^n + k (q-v))))/(k^2 - 1) and c element Z
 
-The k^(-2 (n-1) + n - 1) (k^n - 1) factor in the first line can be simplifed to (k^n - 1) / k^(n-1)
-  wolfram:  k^(-2 (n-1) + n - 1) (k^n - 1) == (k^n - 1) / k^(n-1)  -> True
-
-  s(n) = c k^(n-1) - ( ((k^n - 1)/k^(n-1)) (a (k^(n+2) (q-v) + v k^(n+1) 
-         + v k^n + k^2 (q-v)) + d (k^(n+1) (q-v) 
-         + v k^(n+1) + v k^n + k (q-v))))/(k^2 - 1) 
-
-Let's define:
+The k^(-2 (n-1) + n - 1) (k^n - 1) factor in the first line can be simplifed to (k^n - 1)/k^(n-1),
+furthermore, let's define:
 
   K := k^(n-1)  ->  K*k = k^n, K*k^2 = k^(n+1), K*k^3 = k^(n+2)
 
@@ -266,17 +245,17 @@ so we get:
 
 We want the limit as K goes to infinity:
          
-   Limit[c K - ( ((K*k - 1)/K) (a (K*k^3 (q-v) + v K*k^2 + v K*k + k^2 (q-v)) + d (K*k^2 (q-v) + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1), K -> Infinity]
+  Limit[c K - ( ((K*k - 1)/K) (a (K*k^3 (q-v) + v K*k^2 + v K*k + k^2 (q-v)) + d (K*k^2 (q-v) + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1), K -> Infinity]
 
-wolfram alpha doesn't understand this - but wolfram cloud does and gives the result:
+Wolfram alpha doesn't understand this, but wolfram cloud does and gives the result:
 
   ((c-c k^2+d k^3 q+a k^4 q+a k^2 v+d k^2 v+a k^3 v-a k^4 v) \[Infinity])/(1-k^2)
 
-so, it seems, we must choose c such that:
+so, in order for s[n] to apporach a finite limit as n -> inf, we must choose c such that:
  
   c - c k^2 + d k^3 q + a k^4 q + a k^2 v + d k^2 v + a k^3 v - a k^4 v = 0
   
-This is somethin, wolfram alpha can do:
+This is something, wolfram alpha can solve via:
   
   Solve[c - c k^2 + d k^3 q + a k^4 q + a k^2 v + d k^2 v + a k^3 v - a k^4 v = 0, c]
   
@@ -286,89 +265,15 @@ giving:
   
 
   
-  
-Let's look at the limit without the c-term (and without the minus):
+...the formulas are numerically verified up to here...the stuff below is under construction....
 
-  Limit[( ((K*k - 1)/K) (a (K*k^3 (q-v) + v K*k^2 + v K*k + k^2 (q-v)) + d (K*k^2 (q-v) + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1), K -> Infinity]
-         
-which gives:
 
-  (k^2 (d (k q + v) + a (v + k (k (q - v) + v))) Infinity)/(-1 + k^2)
 
-  
-  
-  
- ...stuff below becomes wrong!.... i replaced k^(-2 (n-1) + n - 1) (k^n - 1) by 1/k^(n-1) which is 
- wrong
-
-  s(n) = c k^(n-1) - ( (1/k^(n-1)) (a (k^(n+2) (q-v) + v k^(n+1) 
-         + v k^n + k^2 (q-v)) + d (k^(n+1) (q-v) 
-         + v k^(n+1) + v k^n + k (q-v))))/(k^2 - 1)
-
-Let's define:
-
-  K := k^(n-1)  ->  K*k = k^n, K*k^2 = k^(n+1), K*k^3 = k^(n+2)
-
-so we get:
-
-  s(K) = c K - ( (1/K) (a ( K*k^3 (q-v) + v K*k^2 
-         + v K*k + k^2 (q-v)) + d ( K*k^2 (q-v) 
-         + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1)
-
-We are interested in the limit as n -> inf which means that K -> inf because |k| > 1. We want this 
-limit to be finite and we need to choose c accordingly - so what we need to do is to obtain an 
-expression for the limit of s(K) as K -> inf in terms of c,a,q,v,d,k and find c such that this 
-expression remains finite....
-
-  Limit[c K - ((1/K) (a (K*k^3 (q-v) + v K*k^2 + v K*k + k^2 (q-v)) + d ( K*k^2 (q-v) + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1), K -> Infinity]
-
-..this says, the limit is c*inf, suggesting that we should use c=0. 
-it's also interesting to use a finite value for the limit:
-
-  Limit[c K - ((1/K) (a (K*k^3 (q-v) + v K*k^2 + v K*k + k^2 (q-v)) + d ( K*k^2 (q-v) + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1), K -> 1000]
-  Limit[c K - ((1/K) (a (K*k^3 (q-v) + v K*k^2 + v K*k + k^2 (q-v)) + d ( K*k^2 (q-v) + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1), K -> L]
-
-Let's look at the limit without the c-term:
-
-  Limit[-((1/K) (a (K*k^3 (q-v) + v K*k^2 + v K*k + k^2 (q-v)) + d ( K*k^2 (q-v) + v K*k^2 + v K*k + k (q-v))))/(k^2 - 1), K -> Infinity]
-  
-which gives:
-  
-  -(k (a (k (k (q - v) + v) + v) + d (k q + v)))/(k^2 - 1)
-
-...so this approaches a finite value, so it seems, the only way that the full expression including 
-the c-term could remain finite is when c equals zero? ..so, two ways say that c should be zero
-...but how does that fit together with our c = -p*k formula when r = 0 in the simpler case above?
 
    
-..maybe we can simplify it with sage like this:
 
-var("s c k n a d q v")
-s = c*k^(n-1) - (k^(-2*(n-1)+n-1)*(k^n-1)*(a*(k^(n+2)*(q-v)+v*k^(n+1) 
-    + v*k^n + k^2*(q-v)) + d*(k^(n+1)*(q-v) + v*k^(n+1) + v*k^n + k*(q-v)))) / (k^2 - 1)
-#s, s.simplify(), s.collect(k), s.expand().collect(k)
-cm2 = s.coefficient(k^(n-2))
-cm1 = s.coefficient(k^(n-1))
-c0  = s.coefficient(k^(n+0))
-c1  = s.coefficient(k^(n+1))
-c2  = s.coefficient(k^(n+2))
-c3  = s.coefficient(k^(n+3))
-cm2,cm1,c0,c1,c2,c3
-    
--> simplify this - define k = 1/b
--> we need to select c such that s(n) approaches v as n apporaches infinity
-  
-  
 
-difference equation: y[n] = a*x[n] + b*y[n-1] + d*x[n-1]
 
-Limit[(1 + 1/n)^n, n -> Infinity]
-
-Limit[c k^(n-1) - (k^(-2 (n-1) + n - 1) (k^n - 1) (a (k^(n+2) (q-v) + v k^(n+1) + v k^n + k^2 (q-v)) + d (k^(n+1) (q-v) + v k^(n+1) + v k^n + k (q-v))))/(k^2 - 1), n -> 100]
-...wolfram alpha can do this just fine
-
-Limit[c k^(n-1) - (k^(-2 (n-1) + n - 1) (k^n - 1) (a (k^(n+2) (q-v) + v k^(n+1) + v k^n + k^2 (q-v)) + d (k^(n+1) (q-v) + v k^(n+1) + v k^n + k (q-v))))/(k^2 - 1), n -> Infinity]
-...but doesn't understand that
 
 
 ===================================================================================================

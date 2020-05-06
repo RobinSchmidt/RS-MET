@@ -392,79 +392,26 @@ void biDirectionalStateInit2()
   // compute forward/backward tail analytically:
   double sa[N];
   double k = 1/b;
-  double c = 0;      // preliminary - needs to be determined by boundary condition
-  sa[0] = sa[1] = 0; // preliminary
-
-  for(n = 2; n < N; n++)
-  {
-    double k0 = pow(k, n);
-    double k1 = pow(k, n-1);
-    double k2 = pow(k, n-2);
-    // the k0,k1,k2-values explode because |k| > 1
-
-    double a1 = a * q * (k0 + 1);
-    double a2 = a * v * (k2 + k1 - k0 - 1);
-    double b1 = b * d * q * (k0 + 1);
-    double b2 = b * d * v * (k1 - 1);
-    double ab = a1 + a2 + b1 + b2;
-
-    //double bn = pow(b, n);
-
-    ab *= ((pow(b,n) - 1) / b) / (b*b - 1); // can the factor be simplified?
-
-    sa[n] = c*k1 - ab;
-    int dummy = 0;
-  }
-  // oh - we need to know c to implement the formula...
-  // s(n) = c k1 - 
-  // ( ((b^n - 1) / b) ( a q (k0 + 1) + a v (k2 + k1 - k0 - 1) + b d q (k0 + 1) + b d v (k1 - 1)) ) / (b^2 - 1) 
-  // for the time being, we set c = 0 - this should result in a y-shifted version
-  // ...but the result seems wrong
-  // verify formulas and derivation in BiDirectionalInitialStates.txt - the formula for t[n] seems
-  // correct (it has been verified numerically) but the one for s[n] may still be wrong...
-  // or maybe we have to choose c just right so as to cause a cancellation of the exploding terms?
-
-
   double k2 = k*k;   // k^2
   double k3 = k2*k;  // k^3
-  c = (k2* (a* (k2* (q - v) + k* v + v) + d* (k* q + v)))/(k2 - 1);
+  double c  = (k2* (a* (k2* (q - v) + k* v + v) + d* (k* q + v)))/(k2 - 1); // try to simplify
   for(n = 2; n < N; n++)
   {
     double K = pow(k, n-1);
 
+    // try to simplify this:
     sa[n] = c*K - ( ((K*k - 1)/K) * (a* (K*k3* (q-v) 
                     + v * K*k2 + v * K*k + k2 * (q-v)) + d * (K*k2 * (q-v) 
                     + v * K*k2 + v * K*k + k  * (q-v))))/(k2 - 1);
 
     int dummy = 0;
   }
+  //sa[0] = sa[1] = 0; 
+  // preliminary - i think, we must compute sa[1] using sa[2], ta[2] and ta[1] via:
+  sa[1] = a*ta[1] + b*sa[2] + d*ta[2];
+  sa[0] = a*ta[0] + b*sa[1] + d*ta[1];
+
   // yes! that looks good!
-
-
-  /*
-  // another try with different simplifications:
-  double k2 = k*k;   // k^2
-  double k3 = k2*k;  // k^3
-  for(n = 2; n < N; n++)
-  {
-    double K = pow(k, n-1);
-    double L = ((1/K)*(a*(K*k3*(q-v) 
-                       + v*K*k2 + v*K*k + k2*(q-v)) + d*(K*k2*(q-v) 
-                       + v*K*k2 + v*K*k + k *(q-v)))) / (k2 - 1);
-    sa[n] = c*K - L;
-
-    int dummy = 0;
-  }
-  // L seems to converge to -2.98333333...
-  // -> compare that to the analytically computed limit from wolfram alpha:
-  double L = (k*(a*(k*(k*(q - v) + v) + v) + d*(k*q + v))) / (k2 - 1);
-  // ok - this seems to be correct (maybe this formula can be simplified?)
-  */
-
-  // compute ratio sr = sa/sn:
-  double sr[N];
-  for(n = 0; n < N; n++)
-    sr[n] = sa[n] / sn[n];
 
 
 
@@ -475,9 +422,7 @@ void biDirectionalStateInit2()
   // s[inf] stays finite without specifying which value it should be? ...we'll see
 
   // plot bidirectional tails:
-  //rsPlotArrays(N, sn);
-  //rsPlotArrays(N, sa);
-  rsPlotArrays(N, sn, sa, sr);
+  rsPlotArrays(N, sn, sa);
 
 
   // maybe plot the ratio sa/sn of the two functions
