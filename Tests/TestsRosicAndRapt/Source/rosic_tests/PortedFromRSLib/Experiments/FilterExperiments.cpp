@@ -404,12 +404,11 @@ s = -((a*b^2 - a*b + (b^3 - b^2)*d)*q + ((b^2 - b - 1)*d^2 - a^2 + (a*b^2 - a*b 
 
 
 template<class T>
-void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
+void rsOnePoleInitialStateForBackwardPass2(T a, T b, T d, T r, T* x1, T* y1)
 {
   T q  = a*r + b * *y1 + d * *x1;
   T b2 = b*b;    // b^2
   T b3 = b*b2;   // b^3
-  T b4 = b2*b2;  // b^4
 
   // compute s[2]:
   T s2 = -((a*b2 - a*b + (b3-b2)*d)*q + ((b2-b-1)*d*d - a*a + (a*b2-a*b-2*a)*d)*r) / (b3-b2-b+1);
@@ -422,8 +421,33 @@ void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
 }
 // try to simplify further after plugging the s2 expression into the y1 equation...
 
+/*
+sage:
+var("a b d b2 b3 q r s2 y")
+b2 = b^2
+b3 = b^3
+s2 = -((a*b2 - a*b + (b3-b2)*d)*q + ((b2-b-1)*d*d - a*a + (a*b2-a*b-2*a)*d)*r) / (b3-b2-b+1)
+y  = a*q + b*s2 + d*((a+d)*r + b*q)
+y, y.simplify_full()
 
+gives:
+y = -((a*b + (b^2 - b)*d - a)*q - (a^2*b + (a*b + a)*d + d^2)*r)/(b^3 - b^2 - b + 1)
+*/
 
+template<class T>
+void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
+{
+  T q  = a*r + b * *y1 + d * *x1;
+  T b2 = b*b;    // b^2
+  T b3 = b*b2;   // b^3
+
+  // compute new state variables:
+  *x1 = q;
+  *y1 = -((a*b + (b2 - b)*d - a)*q - (a*a*b + (a*b + a)*d + d*d)*r) / (b3-b2-b+1);
+
+  int dummy = 0;
+}
+// can this be simplified even more by plugging the equation for q into the equation for y1?
 
 
 void biDirectionalStateInit2()
