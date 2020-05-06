@@ -394,6 +394,7 @@ void biDirectionalStateInit2()
   double k = 1/b;
   double c = 0;      // preliminary - needs to be determined by boundary condition
   sa[0] = sa[1] = 0; // preliminary
+
   for(n = 2; n < N; n++)
   {
     double k0 = pow(k, n);
@@ -412,8 +413,6 @@ void biDirectionalStateInit2()
     ab *= ((pow(b,n) - 1) / b) / (b*b - 1); // can the factor be simplified?
 
     sa[n] = c*k1 - ab;
-
-
     int dummy = 0;
   }
   // oh - we need to know c to implement the formula...
@@ -425,18 +424,35 @@ void biDirectionalStateInit2()
   // correct (it has been verified numerically) but the one for s[n] may still be wrong...
   // or maybe we have to choose c just right so as to cause a cancellation of the exploding terms?
 
+  // another try with different simplifications:
+  double k2 = k*k;   // k^2
+  double k3 = k2*k;  // k^3
+  for(n = 2; n < N; n++)
+  {
+    double K = pow(k, n-1);
+    double L = ((1/K)*(a*(K*k3*(q-v) 
+                       + v*K*k2 + v*K*k + k2*(q-v)) + d*(K*k2*(q-v) 
+                       + v*K*k2 + v*K*k + k *(q-v)))) / (k2 - 1);
+    sa[n] = c*K - L;
+
+    int dummy = 0;
+  }
+  // L seems to converge to -2.98333333...
+  // -> compare that to the analytically computed limit from wolfram alpha
+
 
 
 
   // plot forward tails:
-  rsPlotArrays(N, tn, ta); // looks good
+  //rsPlotArrays(N, tn, ta); // looks good
   // for n -> inf, the tail values t[n] approach v - this may be needed for our boundary condition
   // for s[inf] - we may have to set it to v, too...but maybe it's sufficient, if we demand that
   // s[inf] stays finite without specifying which value it should be? ...we'll see
 
   // plot bidirectional tails:
-  rsPlotArrays(N, sn);
-  rsPlotArrays(N, sa);
+  //rsPlotArrays(N, sn);
+  //rsPlotArrays(N, sa);
+  rsPlotArrays(N, sn, sa);
 
   // todo: obtain forward/backward tails numerically and analytically and plot them...
 
