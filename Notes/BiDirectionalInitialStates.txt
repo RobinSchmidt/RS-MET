@@ -250,6 +250,8 @@ We want the limit as K goes to infinity:
 Wolfram alpha doesn't understand this, but wolfram cloud does and gives the result:
 
   ((c-c k^2+d k^3 q+a k^4 q+a k^2 v+d k^2 v+a k^3 v-a k^4 v) \[Infinity])/(1-k^2)
+    what? trying it a 2nd time, i got a different result...sign-error somewhere?
+  ((c-c k^2+d k^3 q+a k^4 q+a k^2 v+d k^2 v+a k^3 v-a k^4 v) (-\[Infinity]))/(-1+k^2)
 
 so, in order for s[n] to approach a finite limit as n -> inf, we must choose c such that:
  
@@ -268,10 +270,18 @@ giving:
 ...the formulas are numerically verified up to here...the stuff below is under construction....
 
 
+trying to simplify with sage:
 
+var("a b c d k k2 q r u v x y")
+k  = 1/b
+k2 = k*k
+#q = a*r + b*y + d*x 
+u  = (a+d)*r
+v  = u/(1-b)
+c  = (k2* (a* (k2* (q - v) + k* v + v) + d* (k* q + v)))/(k2 - 1)
+c, c.simplify_full()
 
-   
-
+...doesn't really make it any simpler - maybe try with wolfram cloud
 
 
 

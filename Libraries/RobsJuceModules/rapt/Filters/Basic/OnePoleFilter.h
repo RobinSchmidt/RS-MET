@@ -183,6 +183,14 @@ public:
   TPar getB1() const { return b1; }
 
   TPar getA1() const { return a1; }
+  // maybe rename to getCoeffB0, etc...
+
+  TSig getStateX() const { return x1; }
+
+  TSig getStateY() const { return y1; }
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */

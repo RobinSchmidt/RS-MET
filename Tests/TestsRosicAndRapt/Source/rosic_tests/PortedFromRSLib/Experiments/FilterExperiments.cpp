@@ -345,6 +345,42 @@ void biDirectionalStateInit1()
   // Computational Mathematics with SageMath, page 229
 }
 
+
+template<class T>
+void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
+{
+  T q  = a*r + b * *y1 + d * *x1;
+  T u  = (a+d)*r;
+  T v  = u/(1-b);              // == t[inf]
+  T w  = (a+d)*v / (1-b);      // == s[inf] ...not actually needed
+  T k  = 1/b;
+  T k2 = k*k;                  // k^2
+  T k3 = k2*k;                 // k^3
+  T c  = (k2*(a*(k2*(q-v)+k*v+v)+d*(k*q+v)))/(k2-1); // can this be simplified?
+
+  // compute s[2]:
+  T K = pow(k, 2-1);   // == k
+  T s2 = c*K - ( ((K*k - 1)/K) * (a* (K*k3* (q-v) 
+                 + v * K*k2 + v * K*k + k2 * (q-v)) + d * (K*k2 * (q-v) 
+                 + v * K*k2 + v * K*k + k  * (q-v))))/(k2 - 1);
+  // simplify!!!!
+
+
+  // compute t[1], t[2]
+  T t1 = q;
+  T t2 = u + b*q;
+
+  // compute s[1]
+  T s1 = a*t1 + b*s2 + d*t2;
+
+  // assign outputs:
+  *x1 = t1;
+  *y1 = s1;
+
+  int dummy = 0;
+}
+// this function seems to work but the formulas need to be simplified
+
 void biDirectionalStateInit2()
 {
   // We try the generalized formula where we don't assume the input to go to zero but to some 
@@ -388,15 +424,21 @@ void biDirectionalStateInit2()
   double w = (a+d)*v / (1-b);  // == s[inf]
   double sn[N];
   flt.setInternalState(v, w);  // for plot cosmetics
+  double xNew, yNew;           // desired new states - will be recorded at n==1
   for(n = N-1; n >= 0; n--)
+  {
     sn[n] = flt.getSample(tn[n]);
+    if(n == 1) {
+      xNew = flt.getStateX();
+      yNew = flt.getStateY(); }
+  }
 
   // compute forward/backward tail analytically:
   double sa[N];
   double k = 1/b;
   double k2 = k*k;   // k^2
   double k3 = k2*k;  // k^3
-  double c  = (k2* (a* (k2* (q - v) + k* v + v) + d* (k* q + v)))/(k2 - 1); // try to simplify
+  double c  = (k2*(a*(k2*(q-v)+k*v+v)+d*(k*q+v)))/(k2-1); // try to simplify
   for(n = 2; n < N; n++)
   {
     double K = pow(k, n-1);
@@ -408,6 +450,11 @@ void biDirectionalStateInit2()
   }
   sa[1] = a*ta[1] + b*sa[2] + d*ta[2];
   sa[0] = a*ta[0] + b*sa[1] + d*ta[1];
+
+  // test the state-setter function - after this call, our local variables x1,y1 should match the
+  // corresponding recorded state variables xNew,yNew at n == 1:
+  rsOnePoleInitialStateForBackwardPass(a, b, d, r, &x1, &y1);
+  // ...yes! they do match indeed! :-)
 
   // plot forward tails and forward/backward tails, numerically and analytically evaluated:
   rsPlotArrays(N, tn, ta, sn, sa);
