@@ -232,10 +232,6 @@ public:
     // If a1 is close to 1 (which is typical for lowpass filters), the denominator 1-a1^2 will
     // suffer from precision loss due to cancellation - can this be avoided?
   }
-  // maybe for image processing, it's better to assume that the missing pixels just repeat the last
-  // value instead of going down to zero? todo: derive the equations for x1,y1 when we do not assume 
-  // that the input drops to zero but instead goes to some arbitrary constant value - include the 
-  // value as optional parameter which defaults to zero
 
   /** Like prepareForBackwardPass without parameter, but does not assume the input signal to go 
   down to zero in the tail but instead to settle to some arbitrary constant value c. */
@@ -299,7 +295,6 @@ public:
     for(int n = N-1; n >= 0; n--)
       y[n*stride] = getSample(y[n*stride]);
   }
-  // generalize this to use optional xL,xR parameters, too
   // optimize: use n += stride and n -= stride in loop headers and get rid of the multiplications 
   // n*stride in loop bodies
 
