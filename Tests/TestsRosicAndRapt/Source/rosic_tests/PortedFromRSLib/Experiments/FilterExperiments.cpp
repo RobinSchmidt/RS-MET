@@ -442,7 +442,7 @@ void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
   *x1  = a*r + b * *y1 + d * *x1;           // update x1
   *y1  = (cr*r - cx * *x1) / (b3-b2-b+1);   // update y1 using updated x1
 }
-// can this be simplified even more by plugging the equation for q into the equation for y1?
+// can this be simplified even more by plugging the equation for x1 into the equation for y1?
 // compare result of this formula for r=0 with the simpler formula where we have assumed r=0 in the
 // derivation - the result should be the same...somehow this formula should reduce to the simpler
 // formula in this case
@@ -502,10 +502,9 @@ void biDirectionalStateInit2()
     ta[n] = v + (q-v) * pow(b,n-1);
 
   // compute forward/backward tail numerically:
-  double w = (a+d)*v / (1-b);  // == s[inf]
+  flt.setStateForConstInput(v);  // x1 == t[inf] == v, y1 == s[inf] == (a+d)*v / (1-b)
   double sn[N];
-  flt.setInternalState(v, w);  // for plot cosmetics
-  double xNew, yNew;           // desired new states - will be recorded at n==1
+  double xNew, yNew;             // desired new states - will be recorded at n==1
   for(n = N-1; n >= 0; n--)
   {
     sn[n] = flt.getSample(tn[n]);

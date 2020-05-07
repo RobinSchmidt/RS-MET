@@ -210,6 +210,14 @@ public:
     y1 = TSig(0);
   }
 
+  /** Sets the internal state to the state to which the filter will converge when seeing a 
+  constant input of value c for a sufficiently long time. */
+  inline void setStateForConstInput(TSig c)
+  {
+    x1 = c; 
+    y1 = (b0+b1)*c / (TPar(1)-a1);
+  }
+
   /** When this filter is used bidirectionally, you can call this function between the forward and 
   the backward pass to set the internal states of the filter appropriately. It simulates running 
   the filter for a ringout phase using an all-zeros signal as input and then using the reversed 
@@ -230,24 +238,23 @@ public:
   // value as optional parameter which defaults to zero
 
   /** Like prepareForBackwardPass without parameter, but does not assume the input signal to go 
-  down to zero in the tail but instead to settle to some arbitrary constant value r. */
-  void prepareForBackwardPass(TSig r)
+  down to zero in the tail but instead to settle to some arbitrary constant value c. */
+  void prepareForBackwardPass(TSig c)
   {
     // use the simpler function above, if possible:
-    if(r == TSig(0)) { 
+    if(c == TSig(0)) { 
       prepareForBackwardPass(); return; }
 
     // compute some intermediate values:
     TPar a2 = a1*a1;                              // a1^2
     TPar a3 = a1*a2;                              // a1^3
-    TPar cx = b0*a1 + (a2-a1)*b1 - b0;            // coeff for r in update of y1
-    TPar cr = b0*(b0*a1 + (a1+1)*b1) + b1*b1;     // coeff for x1 in update of y1
+    TPar cx = b0*a1 + (a2-a1)*b1 - b0;            // coeff for x1 in update of y1
+    TPar cc = b0*(b0*a1 + (a1+1)*b1) + b1*b1;     // coeff for c in update of y1
 
     // compute new state variables:
-    x1 = b0*r + a1*y1 + b1*x1;                    // update x1
-    y1 = (cr*r - cx*x1) / (a3-a2-a1+1);           // update y1 using updated x1
+    x1 = b0*c + a1*y1 + b1*x1;                    // update x1
+    y1 = (cc*c - cx*x1) / (a3-a2-a1+1);           // update y1 using updated x1
   }
-  // todo: rename input parameter to c
 
   /** Applies the filter bidirectionally (once forward, once backward) to the input signal x and 
   stores the result in y. Both buffers are assumed to be of length N. Can be used in place, i.e. 
@@ -256,19 +263,21 @@ public:
   errors). */
   void applyBidirectionally(TSig* x, TSig* y, int N)
   {
+    // todo: have optional xL,xR parameters for x[n] for n < 0 and n >= N, both defaulting to 0
+
     // forward pass:
-    reset();
+    reset();                         // todo: generalize to setStateForConstInput(xL)
     for(int n = 0; n < N; n++)
       y[n] = getSample(x[n]);
 
     // backward pass:
-    prepareForBackwardPass();
+    prepareForBackwardPass();        // todo: pass xR as parameter
     for(int n = N-1; n >= 0; n--)
       y[n] = getSample(y[n]);
   }
-  // maybe have a stride parameter which defaults to 1 - will be needed when this filter is used 
-  // on the columns in images (or more generally, on nD arrays)
-  // -have optional xL,xR parameters for x[n] for n < 0 and n >= N, defaulting to 0
+
+
+
 
 
   void applyBidirectionally(TSig* x, TSig* y, int N, int stride)
