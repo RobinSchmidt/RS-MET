@@ -269,18 +269,60 @@ giving:
 With that value of c, we have everything we need for our explicit formula for s[n]. Now, we want to
 evaluate s[n] at n=1, as before. The general formula for s[n] which includes the c is valid only 
 for n >= 2, but we can use it to evaluate s[2] and then compute s[1] via the filter's difference 
-equation...
-
+equation. In the same way, we can continue to compute s[0] (just for info - we don't actually need 
+that value):
   
-....
-Eventually, we arrive at:
+  s[1] = a*t[1] + b*s[2] + d*t[2]
+  s[0] = a*t[0] + b*s[1] + d*t[1]
+
+where we note that t[0],t[1],t[2] can be computed with formulas listed above. Now for s[2]: we need 
+to plug n=2 into the formula for s(n) and set n=2. This results in an ugly mess of formulas which 
+we can simplify with sage as follows (using s as variable for our s[2]):
+
+var("a b c d k k2 k3 k4 q r s u v")
+k  = 1/b
+k2 = k^2
+k3 = k^3
+k4 = k^4
+u  = (a+d)*r
+v  = u/(1-b)
+c  = (k2* (a* (k2* (q - v) + k* v + v) + d* (k* q + v)))/(k2 - 1)
+s  = c*k - ( ((k2 - 1)/k) * (a* (k4 * (q-v) + v * k3 + v * k2 + k2 * (q-v)) 
+     + d * (k3 * (q-v) + v * k3 + v * k2 + k  * (q-v))))/(k2 - 1)
+s.simplify_full()
+
+which gives:
+
+  s = -((a*b^2-a*b + (b^3-b^2)*d)*q + ((b^2-b-1)*d^2 - a^2 + (a*b^2-a*b-2*a)*d)*r)/(b^3-b^2-b+1)
+  
+Our formulas for the new, desired state variables x1,y1 are given by:
+
+  xNew = t[1] = q = a*r + b*y1 + d*x1
+  yNew = s[1] = a*t[1] + b*s[2] + d*t[2] = a*q + b*s + d*(u+b*q) = a*q + b*s + d*((a+d)*r+b*q)
+  
+the formula for xNew can be used as is, the one for yNew can be simplified after plugging in our
+value of s from above (using y for yNew as sage variable):
+
+var("a b d b2 b3 q r s y")
+b2 = b^2
+b3 = b^3
+s  = -((a*b2 - a*b + (b3-b2)*d)*q + ((b2-b-1)*d*d - a*a + (a*b2-a*b-2*a)*d)*r) / (b3-b2-b+1)
+y  = a*q + b*s + d*((a+d)*r + b*q)
+y.simplify_full()
+
+which gives:
+
+  y = -((a*b + (b^2 - b)*d - a)*q - (a^2*b + (a*b + a)*d + d^2)*r)/(b^3 - b^2 - b + 1)
+
+This can now be manipulated manually into the following final result, which can be used in the 
+implementation of the filter's state assigment:
 
   cr = a*(a*b + (b+1)*d) + d*d         // coeff for r in update of y1
   cx = a*b + (b^2-b)*d - a             // coeff for x1 in update of y1
   x1 = a*r + b*y1 + d*x1               // update x1
   y1 = (cr*r - cx*x1) / (b^3-b^2-b+1)  // update y1 using updated x1
 
-this is the end result of this derivation.
+Phew! This was surprisingly complicated to derive for such a benign generalization! :-O
 
 
 
