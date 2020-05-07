@@ -66,8 +66,10 @@ forward pass and the filter coeffs a,b as:
   
 This can be further simplifed into:
 
-  yNew = a*yOld*b / (1-b*b)
-  
+  ┌───────────────────────────┐
+  │ yNew = a*yOld*b / (1-b*b) │
+  └───────────────────────────┘
+
 using 1 div, 3 mul, 1 sub. Maybe make some experiments, which formula is numerically more 
 accurate - maybe it's not the most efficient/simplified one? Maybe try to avoid dividing by
 1-b^2 because that denominator becomes inaccurate as |b| gets close to 1 (which is typical).
@@ -169,9 +171,11 @@ which results in:
 eventually, given the x1,y1 values after the forward pass, we can compute the new, updated x1,y1
 states needed to run the backward pass via:
 
-  x1 = b*y1 + d*x1               // update x1
-  y1 = (b*d + a)*x1 / (1 - b^2)  // updating y1 uses the updated x1
-  
+  ┌─────────────────────────────┐
+  │ x1 = b*y1 + d*x1            │  update x1 using old x1,y1
+  │ y1 = (b*d + a)*x1 / (1-b^2) │  update y1 using the updated x1
+  └─────────────────────────────┘
+
 ---------------------------------------------------------------------------------------------------
 Arbitrary boundary condition
 
@@ -276,8 +280,8 @@ that value):
   s[0] = a*t[0] + b*s[1] + d*t[1]
 
 where we note that t[0],t[1],t[2] can be computed with formulas listed above. Now for s[2]: we need 
-to plug n=2 into the formula for s(n) and set n=2. This results in an ugly mess of formulas which 
-we can simplify with sage as follows (using s as variable for our s[2]):
+to plug n=2 into the general formula for s(n). This results in an ugly mess of formulas which we 
+can simplify with sage as follows (using s as sage variable for our s[2]):
 
 var("a b c d k k2 k3 k4 q r s u v")
 k  = 1/b
@@ -300,7 +304,7 @@ Our formulas for the new, desired state variables x1,y1 are given by:
   xNew = t[1] = q = a*r + b*y1 + d*x1
   yNew = s[1] = a*t[1] + b*s[2] + d*t[2] = a*q + b*s + d*(u+b*q) = a*q + b*s + d*((a+d)*r+b*q)
   
-the formula for xNew can be used as is, the one for yNew can be simplified after plugging in our
+The formula for xNew can be used as is, the one for yNew can be simplified after plugging in our
 value of s from above (using y for yNew as sage variable):
 
 var("a b d b2 b3 q r s y")
@@ -317,12 +321,26 @@ which gives:
 This can now be manipulated manually into the following final result, which can be used in the 
 implementation of the filter's state assigment:
 
-  cr = a*(a*b + (b+1)*d) + d*d         // coeff for r in update of y1
-  cx = a*b + (b^2-b)*d - a             // coeff for x1 in update of y1
-  x1 = a*r + b*y1 + d*x1               // update x1
-  y1 = (cr*r - cx*x1) / (b^3-b^2-b+1)  // update y1 using updated x1
+  ┌─────────────────────────────────────┐
+  │ cr = a*(a*b + (b+1)*d) + d*d        │  coeff for r in update of y1
+  │ cx = a*b + (b^2-b)*d - a            │  coeff for x1 in update of y1 
+  │ x1 = a*r + b*y1 + d*x1              │  update x1      
+  │ y1 = (cr*r - cx*x1) / (b^3-b^2-b+1) │  update y1 using updated x1
+  └─────────────────────────────────────┘
 
-Phew! This was surprisingly complicated to derive for such a benign generalization! :-O
+Phew! This was surprisingly complicated to derive for such a benign generalization! :-O 
+
+ToDo: 
+Figure out, how this formula behaves numerically. We could get problematic cancellation effects due 
+to the (absolute value of the) feedback coeff |b| typically being close to 1. Maybe we can 
+manipulate it into formulas that are numerically better behaved. Especially the (b+1), (b^2-b), 
+(b^3-b^2-b+1) factors should be payed attention to.... maybe distributing the d-factor already 
+helps in the first two lines? ...but what about the denomiator?
+
+Figure out, what happens, if we plug r=0 into the formula - it should reduce to the simpler formula 
+above, but i currently can't see, how this happens. We would be left with 
+  x1 = b*y1 + d*x1, y1 = -cx*x1 / (b^3-b^2-b+1)
+...how is the denominator supposed to become (1-b^2)?
 
 
 
