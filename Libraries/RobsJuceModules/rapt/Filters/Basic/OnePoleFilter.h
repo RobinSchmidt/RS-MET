@@ -260,38 +260,46 @@ public:
   stores the result in y. Both buffers are assumed to be of length N. Can be used in place, i.e. 
   x and y may point to the same buffer. We apply the forward pass first, then the backward pass 
   but it should make no difference, if it would be done the other way around (up to roundoff 
-  errors). */
-  void applyBidirectionally(TSig* x, TSig* y, int N)
+  errors). The optional parameters xL,xR (L,R stand for left,right), which default to zero, are 
+  used for telling the filter, how the input signal x should be assumed to continue outside the 
+  range of valid sample indices. We will assume that x[n] = xL for n < 0 and 
+  x[n] = xR for n >= N. */
+  void applyBidirectionally(TSig* x, TSig* y, int N, TSig xL = TSig(0), TSig xR = TSig(0))
   {
     // todo: have optional xL,xR parameters for x[n] for n < 0 and n >= N, both defaulting to 0
 
     // forward pass:
-    reset();                         // todo: generalize to setStateForConstInput(xL)
+    //reset();                         // todo: generalize to setStateForConstInput(xL)
+    setStateForConstInput(xL);
     for(int n = 0; n < N; n++)
       y[n] = getSample(x[n]);
 
     // backward pass:
-    prepareForBackwardPass();        // todo: pass xR as parameter
+    //prepareForBackwardPass();        // todo: pass xR as parameter
+    prepareForBackwardPass(xR);
     for(int n = N-1; n >= 0; n--)
       y[n] = getSample(y[n]);
   }
 
-
-
-
-
-  void applyBidirectionally(TSig* x, TSig* y, int N, int stride)
+  /** Applies the filter bidirectionally with a stride (i.e. index-distance between two successive 
+  samples) that is not necessarrily unity. This may be useful for filtering along a particular 
+  dimension in multidimensional arrays such as images. */
+  void applyBidirectionally(TSig* x, TSig* y, int N, int stride, 
+    TSig xL = TSig(0), TSig xR = TSig(0))
   {
     // forward pass:
-    reset();
+    //reset();
+    setStateForConstInput(xL);
     for(int n = 0; n < N; n++)
       y[n*stride] = getSample(x[n*stride]);
 
     // backward pass:
-    prepareForBackwardPass();
+    //prepareForBackwardPass();
+    prepareForBackwardPass(xR);
     for(int n = N-1; n >= 0; n--)
       y[n*stride] = getSample(y[n*stride]);
   }
+  // generalize this to use optional xL,xR parameters, too
   // optimize: use n += stride and n -= stride in loop headers and get rid of the multiplications 
   // n*stride in loop bodies
 
