@@ -246,14 +246,14 @@ public:
       prepareForBackwardPass(); return; }
 
     // compute some intermediate values:
-    TPar a2 = a1*a1;                              // a1^2
-    TPar a3 = a1*a2;                              // a1^3
-    TPar cx = b0*a1 + (a2-a1)*b1 - b0;            // coeff for x1 in update of y1
-    TPar cc = b0*(b0*a1 + (a1+1)*b1) + b1*b1;     // coeff for c in update of y1
+    TPar a2 = a1*a1;                                // a1^2
+    TPar a3 = a1*a2;                                // a1^3
+    TPar cx = b0*a1 + (a2-a1)*b1 - b0;              // coeff for x1 in update of y1
+    TPar cc = b0*(b0*a1 + (a1+TPar(1))*b1) + b1*b1; // coeff for c in update of y1
 
     // compute new state variables:
-    x1 = b0*c + a1*y1 + b1*x1;                    // update x1
-    y1 = (cc*c - cx*x1) / (a3-a2-a1+1);           // update y1 using updated x1
+    x1 = b0*c + a1*y1 + b1*x1;                      // update x1
+    y1 = (cc*c - cx*x1) / (a3-a2-a1+TPar(1));       // update y1 using updated x1
   }
 
   /** Applies the filter bidirectionally (once forward, once backward) to the input signal x and 
