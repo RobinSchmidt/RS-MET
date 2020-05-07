@@ -330,6 +330,8 @@ void biDirectionalStateInit1()
   double diff[N]; 
   rsArrayTools::subtract(yfb, ybf, diff, N);
 
+  // todo: use some nonzero values for xL, xR
+
 
   // plot results:
   //rsPlotArrays(Nt, s, sa);     // numerically and analytically computed tail
@@ -345,90 +347,6 @@ void biDirectionalStateInit1()
   // Computational Mathematics with SageMath, page 229
 }
 
-
-template<class T>
-void rsOnePoleInitialStateForBackwardPass1(T a, T b, T d, T r, T* x1, T* y1)
-{
-  T q  = a*r + b * *y1 + d * *x1;
-  T u  = (a+d)*r;
-  T v  = u/(1-b);              // == t[inf]
-  //T w  = (a+d)*v / (1-b);    // == s[inf] ...not actually needed
-  T k  = 1/b;
-  T k2 = k*k;                  // k^2
-  T k3 = k2*k;                 // k^3
-  T k4 = k3*k;
-  T c  = (k2*(a*(k2*(q-v)+k*v+v)+d*(k*q+v)))/(k2-1); // can this be simplified?
-
-  // compute s[2]:
-  T s2 = c*k - ( ((k2 - 1)/k) * (a* (k4 * (q-v) 
-                 + v * k3 + v * k2 + k2 * (q-v)) 
-                              + d * (k3 * (q-v) 
-                 + v * k3 + v * k2 + k  * (q-v))))/(k2 - 1);
-  // simplify!!!!
-
-  // compute t[1], t[2]:
-  T t1 = q;
-  T t2 = u + b*q;
-
-  // compute s[1]:
-  T s1 = a*t1 + b*s2 + d*t2;
-
-  // assign outputs:
-  *x1 = t1;
-  *y1 = s1;
-}
-// this function seems to work but the formulas need to be simplified
-
-/*
-sage:
-var("a b c d k k2 k3 k4 q r s u v")
-k  = 1/b
-k2 = k^2
-k3 = k^3
-k4 = k^4
-#q = a*r + b*y + d*x 
-u  = (a+d)*r
-v  = u/(1-b)
-c  = (k2* (a* (k2* (q - v) + k* v + v) + d* (k* q + v)))/(k2 - 1)
-s  = c*k - ( ((k2 - 1)/k) * (a* (k4 * (q-v) + v * k3 + v * k2 + k2 * (q-v)) 
-     + d * (k3 * (q-v) + v * k3 + v * k2 + k  * (q-v))))/(k2 - 1)
-s, s.simplify_full()
-
-gives:
-s = -((a*b^2 - a*b + (b^3 - b^2)*d)*q + ((b^2 - b - 1)*d^2 - a^2 + (a*b^2 - a*b - 2*a)*d)*r)/(b^3 - b^2 - b + 1)
- 
-*/
-
-
-template<class T>
-void rsOnePoleInitialStateForBackwardPass2(T a, T b, T d, T r, T* x1, T* y1)
-{
-  T q  = a*r + b * *y1 + d * *x1;
-  T b2 = b*b;    // b^2
-  T b3 = b*b2;   // b^3
-
-  // compute s[2]:
-  T s2 = -((a*b2 - a*b + (b3-b2)*d)*q + ((b2-b-1)*d*d - a*a + (a*b2-a*b-2*a)*d)*r) / (b3-b2-b+1);
-
-  // compute new state variables:
-  *x1 = q;
-  *y1 = a*q + b*s2 + d*((a+d)*r + b*q);
-}
-// try to simplify further after plugging the s2 expression into the y1 equation...
-
-/*
-sage:
-var("a b d b2 b3 q r s2 y")
-b2 = b^2
-b3 = b^3
-s2 = -((a*b2 - a*b + (b3-b2)*d)*q + ((b2-b-1)*d*d - a*a + (a*b2-a*b-2*a)*d)*r) / (b3-b2-b+1)
-y  = a*q + b*s2 + d*((a+d)*r + b*q)
-y, y.simplify_full()
-
-gives:
-y = -((a*b + (b^2 - b)*d - a)*q - (a^2*b + (a*b + a)*d + d^2)*r)/(b^3 - b^2 - b + 1)
-*/
-
 template<class T>
 void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
 {
@@ -442,25 +360,6 @@ void rsOnePoleInitialStateForBackwardPass(T a, T b, T d, T r, T* x1, T* y1)
   *x1  = a*r + b * *y1 + d * *x1;           // update x1
   *y1  = (cr*r - cx * *x1) / (b3-b2-b+1);   // update y1 using updated x1
 }
-// can this be simplified even more by plugging the equation for x1 into the equation for y1?
-// compare result of this formula for r=0 with the simpler formula where we have assumed r=0 in the
-// derivation - the result should be the same...somehow this formula should reduce to the simpler
-// formula in this case
-
-
-/*
-var("a b d b2 b3 q r x1 y1 yNew")
-b2 = b^2
-b3 = b^3
-q  = a*r + b * y1 + d * x1
-yNew = -((a*b + (b2 - b)*d - a)*q - (a*a*b + (a*b + a)*d + d*d)*r) / (b3-b2-b+1)
-yNew, yNew.simplify_full()
-
-gives:
-yNew = ((a^2 - (a*b^2 - 2*a*b - a)*d + d^2)*r - ((b^2 - b)*d^2 + (a*b - a)*d)*x1 - (a*b^2 - a*b + (b^3 - b^2)*d)*y1)/(b^3 - b^2 - b + 1)
-
-...that doesn't look simpler than what we had before - expanding q does not seem to be advantageous
-*/
 
 void biDirectionalStateInit2()
 {
@@ -543,22 +442,11 @@ void biDirectionalStateInit2()
   rsAssert(flt.getStateX() == xNew && flt.getStateY() == yNew);
 
   // plot forward tails and forward/backward tails, numerically and analytically evaluated:
-  rsPlotArrays(N, tn, ta, sn, sa);
+  rsPlotArrays(N, tn, ta, sn, sa);  // OK - that looks good. 
 
-  // OK - that looks good. 
-
-
-  // todo: clean up the sage code - move it to the txt file (maybe into a sort of appendix)
-
-
-  // For symmetry reasons, when we assume that x[n] = x[N-1] for n >= N, we should also assume that
-  // x[n] = x[0] for n < 0. That means that before starting the forward pass, we should init the 
-  // state variables x1,y1 of the filter to x[0]...or no: only the x1 state should be initialized 
-  // to x[0] - for the y1 state we should compute the steady state response when the input is 
-  // constantly fixed at x[0]...which, i think, is (a+d)*x[0] / (1-b)....verify this
-  // maybe have a function setStateForConstInput(double c) which sets:
-  //   x1 = c, y1 = (a+d)*c / (1-b)   (beware of the different variable names for the coeffs in the 
-  // filter class) and call it with c = x[0] before starting the forward pass
+  // todo: try if it makes a difference if we apply the filter forward first or backward first - it
+  // doesn't make any with the simpler formulas where r=0 - but verify that it still makes no 
+  // difference for arbitrary choices of xL,xR
 }
 
 void biDirectionalStateInit()

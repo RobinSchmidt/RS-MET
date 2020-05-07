@@ -196,7 +196,7 @@ tail equation for the forward tail t[n] as follows:
   
 defining:
   
-  q := a*r + b*y1 + d*x1, u = (a+d)*r
+  q := a*r + b*y1 + d*x1, u := (a+d)*r
   
 we get:
 
@@ -284,13 +284,9 @@ to plug n=2 into the general formula for s(n). This results in an ugly mess of f
 can simplify with sage as follows (using s as sage variable for our s[2]):
 
 var("a b c d k k2 k3 k4 q r s u v")
-k  = 1/b
-k2 = k^2
-k3 = k^3
-k4 = k^4
-u  = (a+d)*r
-v  = u/(1-b)
-c  = (k2* (a* (k2* (q - v) + k* v + v) + d* (k* q + v)))/(k2 - 1)
+k  = 1/b; k2 = k^2; k3 = k^3; k4 = k^4
+u  = (a+d)*r; v  = u/(1-b)
+c  = (k2*(a*(k2*(q-v) + k*v + v) + d*(k*q + v)))/(k2-1)
 s  = c*k - ( ((k2 - 1)/k) * (a* (k4 * (q-v) + v * k3 + v * k2 + k2 * (q-v)) 
      + d * (k3 * (q-v) + v * k3 + v * k2 + k  * (q-v))))/(k2 - 1)
 s.simplify_full()
@@ -308,8 +304,7 @@ The formula for xNew can be used as is, the one for yNew can be simplified after
 value of s from above (using y for yNew as sage variable):
 
 var("a b d b2 b3 q r s y")
-b2 = b^2
-b3 = b^3
+b2 = b^2; b3 = b^3
 s  = -((a*b2 - a*b + (b3-b2)*d)*q + ((b2-b-1)*d*d - a*a + (a*b2-a*b-2*a)*d)*r) / (b3-b2-b+1)
 y  = a*q + b*s + d*((a+d)*r + b*q)
 y.simplify_full()
@@ -328,14 +323,17 @@ implementation of the filter's state assigment:
   │ y1 = (cr*r - cx*x1) / (b^3-b^2-b+1) │  update y1 using updated x1
   └─────────────────────────────────────┘
 
-Phew! This was surprisingly complicated to derive for such a benign generalization! :-O 
+Phew! This was surprisingly complicated to derive for such a benign generalization! :-O I tried to
+further simplify by plugging the x1 expression into the y1 expression, but this did not turn out to
+lead to a simplification of the formula. 
 
 ToDo: 
 Figure out, how this formula behaves numerically. We could get problematic cancellation effects due 
 to the (absolute value of the) feedback coeff |b| typically being close to 1. Maybe we can 
 manipulate it into formulas that are numerically better behaved. Especially the (b+1), (b^2-b), 
-(b^3-b^2-b+1) factors should be payed attention to.... maybe distributing the d-factor already 
-helps in the first two lines? ...but what about the denomiator?
+(b^3-b^2-b+1) factors should be payed attention to.... maybe distributing the d-factor into the 
+parentheses already helps in the first two lines? ...but what about the denominator in the last 
+line?
 
 Figure out, what happens, if we plug r=0 into the formula - it should reduce to the simpler formula 
 above, but i currently can't see, how this happens. We would be left with 
