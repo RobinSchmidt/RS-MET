@@ -310,7 +310,7 @@ void biDirectionalStateInit1()
 
   // compute output y by forward/backward filtering:
   double yfb[N];
-  flt.applyBidirectionally(x, yfb, N, xL, xR);
+  flt.applyForwardBackward(x, yfb, N, xL, xR);
 
   // compute output y by backward/forward filtering:
   double ybf[N];

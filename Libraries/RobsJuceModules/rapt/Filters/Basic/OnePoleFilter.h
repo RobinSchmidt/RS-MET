@@ -260,7 +260,7 @@ public:
   used for telling the filter, how the input signal x should be assumed to continue outside the 
   range of valid sample indices. We will assume that x[n] = xL for n < 0 and 
   x[n] = xR for n >= N. */
-  void applyBidirectionally(TSig* x, TSig* y, int N, TSig xL = TSig(0), TSig xR = TSig(0))
+  void applyForwardBackward(TSig* x, TSig* y, int N, TSig xL = TSig(0), TSig xR = TSig(0))
   {
     // forward pass:
     setStateForConstInput(xL);
@@ -277,7 +277,7 @@ public:
   /** Applies the filter bidirectionally with a stride (i.e. index-distance between two successive 
   samples) that is not necessarrily unity. This may be useful for filtering along a particular 
   dimension in multidimensional arrays such as images. */
-  void applyBidirectionally(TSig* x, TSig* y, int N, int stride, 
+  void applyForwardBackward(TSig* x, TSig* y, int N, int stride, 
     TSig xL = TSig(0), TSig xR = TSig(0))
   {
     // forward pass:
