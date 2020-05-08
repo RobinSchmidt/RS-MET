@@ -263,16 +263,20 @@ public:
   void applyForwardBackward(TSig* x, TSig* y, int N, TSig xL = TSig(0), TSig xR = TSig(0))
   {
     // forward pass:
-    setStateForConstInput(xL);
-    for(int n = 0; n < N; n++)
-      y[n] = getSample(x[n]);
+    setStateForConstInput( xL); for(int n = 0;   n <  N; n++) y[n] = getSample(x[n]);
 
     // backward pass:
-    prepareForBackwardPass(xR);
-    for(int n = N-1; n >= 0; n--)
-      y[n] = getSample(y[n]);
+    prepareForBackwardPass(xR); for(int n = N-1; n >= 0; n--) y[n] = getSample(y[n]);
   }
-  // maybe rename to applyForwardBackward and also have an applyBackwardForward function
+
+  /** Like applyForwardBackward, but does the backward pass first and then the forward pass. This 
+  should make no difference, though (aside from different roundoff errors). I added the function 
+  mostly for testing, if it makes no difference indeed but maybe it could be useful in some way. */
+  void applyBackwardForward(TSig* x, TSig* y, int N, TSig xL = TSig(0), TSig xR = TSig(0))
+  {
+    setStateForConstInput( xR); for(int n = N-1; n >= 0; n--) y[n] = getSample(x[n]);
+    prepareForBackwardPass(xL); for(int n = 0;   n <  N; n++) y[n] = getSample(y[n]);
+  }
 
   /** Applies the filter bidirectionally with a stride (i.e. index-distance between two successive 
   samples) that is not necessarrily unity. This may be useful for filtering along a particular 
@@ -280,15 +284,8 @@ public:
   void applyForwardBackward(TSig* x, TSig* y, int N, int stride, 
     TSig xL = TSig(0), TSig xR = TSig(0))
   {
-    // forward pass:
-    setStateForConstInput(xL);
-    for(int n = 0; n < N; n++)
-      y[n*stride] = getSample(x[n*stride]);
-
-    // backward pass:
-    prepareForBackwardPass(xR);
-    for(int n = N-1; n >= 0; n--)
-      y[n*stride] = getSample(y[n*stride]);
+    setStateForConstInput( xL); for(int n = 0;   n <  N; n++) y[n*stride] = getSample(x[n*stride]);
+    prepareForBackwardPass(xR); for(int n = N-1; n >= 0; n--) y[n*stride] = getSample(y[n*stride]);
   }
   // optimize: use n += stride and n -= stride in loop headers and get rid of the multiplications 
   // n*stride in loop bodies

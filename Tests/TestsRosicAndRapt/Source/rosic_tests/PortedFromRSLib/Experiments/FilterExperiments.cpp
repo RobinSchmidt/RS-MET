@@ -302,30 +302,12 @@ void biDirectionalStateInit1()
   // formula, we can compute our desired state variable yNew.
 
 
-
-  // Compare results from first doing a forward, then a backward pass and the other way around - 
-  // the results should be the same:
-
-  double xL = -7, xR = -3;  // use nonzero boundary conditions for generality
-
-  // compute output y by forward/backward filtering:
-  double yfb[N];
-  flt.applyForwardBackward(x, yfb, N, xL, xR);
-
-  // compute output y by backward/forward filtering:
-  double ybf[N];
-  flt.setStateForConstInput(xR);
-  for(n = N-1; n >= 0; n--) 
-    ybf[n] = flt.getSample(x[n]);
-  flt.prepareForBackwardPass(xL);
-  for(n = 0; n < N; n++) 
-    ybf[n] = flt.getSample(ybf[n]);
-  // maybe factor this out into a function, maybe make a testing-subclass that has it as member
-
-
-  // compute difference between forward-first and backward-first:
-  double diff[N]; 
-  rsArrayTools::subtract(yfb, ybf, diff, N);
+  // Compare results from first doing a forward pass, then a backward pass and the other way 
+  // around: backward first, then forward - the results should be the same:
+  double xL = -7, xR = -3;                                     // left and right boundary conditions
+  double yfb[N]; flt.applyForwardBackward(x, yfb, N, xL, xR);  // yfb: forward/backward output
+  double ybf[N]; flt.applyBackwardForward(x, ybf, N, xL, xR);  // ybf: backward/forward output
+  double diff[N]; rsArrayTools::subtract(yfb, ybf, diff, N);   // diff = yfb-ybf, should be zero
 
 
   // plot results:
