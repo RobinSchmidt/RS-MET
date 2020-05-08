@@ -262,20 +262,17 @@ public:
   x[n] = xR for n >= N. */
   void applyBidirectionally(TSig* x, TSig* y, int N, TSig xL = TSig(0), TSig xR = TSig(0))
   {
-    // todo: have optional xL,xR parameters for x[n] for n < 0 and n >= N, both defaulting to 0
-
     // forward pass:
-    //reset();                         // todo: generalize to setStateForConstInput(xL)
     setStateForConstInput(xL);
     for(int n = 0; n < N; n++)
       y[n] = getSample(x[n]);
 
     // backward pass:
-    //prepareForBackwardPass();        // todo: pass xR as parameter
     prepareForBackwardPass(xR);
     for(int n = N-1; n >= 0; n--)
       y[n] = getSample(y[n]);
   }
+  // maybe rename to applyForwardBackward and also have an applyBackwardForward function
 
   /** Applies the filter bidirectionally with a stride (i.e. index-distance between two successive 
   samples) that is not necessarrily unity. This may be useful for filtering along a particular 
@@ -284,13 +281,11 @@ public:
     TSig xL = TSig(0), TSig xR = TSig(0))
   {
     // forward pass:
-    //reset();
     setStateForConstInput(xL);
     for(int n = 0; n < N; n++)
       y[n*stride] = getSample(x[n*stride]);
 
     // backward pass:
-    //prepareForBackwardPass();
     prepareForBackwardPass(xR);
     for(int n = N-1; n >= 0; n--)
       y[n*stride] = getSample(y[n*stride]);
