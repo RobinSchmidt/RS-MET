@@ -1243,6 +1243,7 @@ std::vector<T> solveLinearSystem(rsMatrix<T> A, std::vector<T> b)
   return x;
 }
 // returns the solution vector b for the linear system A*x = b where A is a matrix and x is a vector
+// -maybe this should be seen as convenience function
 
 // computes matrix-vector product y = A*x
 template<class T>
@@ -1258,21 +1259,39 @@ std::vector<T> matrixVectorProduct(const rsMatrixView<T>& A, const T* x)
   return y;
 }
 
+// computes the data matrix X that is used for polynomial fitting
+template<class T>
+rsMatrix<T> polyFitDataMatrix(int numDataPoints, T* x, int degree)
+{
+  int M = degree+1;       // # rows
+  int N = numDataPoints;  // # cols
+  rsMatrix<T> X(M, N);
+  typedef RAPT::rsArrayTools AT;
+  AT::fillWithValue(X.getRowPointer(0), N, 1.0);   // 1st row is all ones
+  for(int i = 1; i < M; i++)                       // i-th row is (i-1)th row times x
+    AT::multiply(X.getRowPointer(i-1), x, X.getRowPointer(i), N);
+  return X;
+}
 
 template<class T>
 RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
 {
-  typedef RAPT::rsArrayTools AT;
+  //typedef RAPT::rsArrayTools AT;
   //typedef RAPT::rsMatrixTools MT;
 
 
   // create MxN data matrix X:
+  /*
   int M = degree+1;       // # rows
   int N = numDataPoints;  // # cols
   rsMatrix<T> X(M, N);
   AT::fillWithValue(X.getRowPointer(0), N, 1.0);   // 1st row is all ones
   for(int i = 1; i < M; i++)                       // i-th row is (i-1)th row times x
     AT::multiply(X.getRowPointer(i-1), x, X.getRowPointer(i), N);
+    */
+
+
+  rsMatrix<T> X = polyFitDataMatrix(numDataPoints, x, degree);
 
   //plotMatrixRows(X); // ok - looks good
 
@@ -1285,17 +1304,7 @@ RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
 
 
   // Compute right hand side for linear equation system (X * X^T) * b = X * y:
-  std::vector<T> rhs(M);
-  //for(int i = 0; i < M; i++) {
-  //  rhs[i] = 0.0;
-  //  for(int j = 0; j < N; j++)
-  //    rhs[i] += X(i, j) * y[j];
-  //}
-  // can this be factored out into some meaningful function? it multiplies an rsMatrix by a raw 
-  // array to yield a std::vector - maybe some function that takes an rsMatrixView together with 
-  // raw array and fills another raw array?
-  rhs = matrixVectorProduct(X, y);
-  // ...done!
+  std::vector<T> rhs = matrixVectorProduct(X, y);
 
   // Create the polynomial:
   //RAPT::rsPolynomial<T> p(degree);
@@ -1306,7 +1315,7 @@ RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
   // the polynomial coeffs are more generally regression coeffs...
 
 
-  // ..now we must solve the linear system of equations XX * b = rhs
+  // solve the linear system of equations XX * b = rhs, wrap result into rsPolynomial:
   std::vector<T> c = solveLinearSystem(XX, rhs);
   return RAPT::rsPolynomial<T>(c);
 }
