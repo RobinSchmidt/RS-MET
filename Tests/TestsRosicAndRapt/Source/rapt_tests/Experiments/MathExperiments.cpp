@@ -1273,17 +1273,18 @@ rsMatrix<T> polyFitDataMatrix(int numDataPoints, T* x, int degree)
   return X;
 }
 
+/** Performs a multiple linear regression for some array of a regressand y (dependent variable) 
+based on a number of regressors (independent variables) stored in a matrix X. Each row in the 
+X-matrix should contain values of an regressand such that the X(i, j) matrix element is the value 
+of the i-th regressor for y[j]. The solution is given by the vector b that satisfies: 
+   (X * X^T) * b = X * y.  
+("normal equations"? - look up!) */
 template<class T>
-std::vector<T> multipleLinearRegression(const rsMatrix<T>& X, T* y)
+std::vector<T> multipleLinearRegression(const rsMatrix<T>& X, const T* y)
 {
-  // Compute MxM matrix X * X^T that appears in the system (X * X^T) * b = X * Y:
-  rsMatrix<T> XX = X * X.getTranspose();
-
-  // Compute right hand side for linear equation system (X * X^T) * b = X * y:
-  std::vector<T> rhs = matrixVectorProduct(X, y);
-
-  // Solve the linear system of equations XX * b = rhs:
-  return solveLinearSystem(XX, rhs);
+  rsMatrix<T>    XX  = X * X.getTranspose();       // XX  = X * X^T
+  std::vector<T> rhs = matrixVectorProduct(X, y);  // rhs = X * y
+  return solveLinearSystem(XX, rhs);               // solve (X * X^T) * b = X * y for b
 }
 
 /** Fits a polynomial to the data-points given in the x,y arrays and returns the resulting 
@@ -1291,34 +1292,21 @@ polynomial coeffiencts as a std::vector.  */
 template<class T>
 std::vector<T> fitPolynomialStdVec(int numDataPoints, T* x, T* y, int degree)
 {
-  // Create MxN data matrix X:
-  rsMatrix<T> X = polyFitDataMatrix(numDataPoints, x, degree);
-
-  return multipleLinearRegression(X, y);
-
-  /*
-  // Compute MxM matrix X * X^T that appears in the system (X * X^T) * b = X * Y:
-  rsMatrix<T> XX = X * X.getTranspose();
-
-  // Compute right hand side for linear equation system (X * X^T) * b = X * y:
-  std::vector<T> rhs = matrixVectorProduct(X, y);
-
-  // Solve the linear system of equations XX * b = rhs:
-  return solveLinearSystem(XX, rhs);
-  */
+  rsMatrix<T> X = polyFitDataMatrix(numDataPoints, x, degree);  // MxN data matrix X...
+  return multipleLinearRegression(X, y);                        // ...used for the regressors
 }
-// the last 3 lines can be factored out into a multipleLinearRegression function, taking the 
-// data matrix X of the regressors and the data-array y of the regressand
 
-
-
-
+/** Given two arrays of x-values and corresponding y-values, this function returns a polynomial 
+that fits the datapoints in the least-squares sense. */
 template<class T>
 RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
 {
-  // wrap result into rsPolynomial:
   return RAPT::rsPolynomial<T>(fitPolynomialStdVec(numDataPoints, x, y, degree));
 }
+// maybe change the signature to 
+//  fitPolynomial(const T* x, const T* y, int numDataPoints, int degree)
+// and then move it to the library or at least into the Prototypes section
+
 // ToDo:
 // -refactorizations:
 //  -the call to polyFitDataMatrix may use a functor that can be passed as parameter in order to
