@@ -210,13 +210,14 @@ public:
     y1 = TSig(0);
   }
 
-  /** Sets the internal state to the state to which the filter will converge when seeing a 
-  constant input of value c for a sufficiently long time. */
+  /** Sets the internal state to what the filter will converge to when seeing a constant input of 
+  value c for a sufficiently long time. */
   inline void setStateForConstInput(TSig c)
   {
     x1 = c; 
     y1 = (b0+b1)*c / (TPar(1)-a1);
   }
+  // maybe rename to setToFinalState, setAsymptoticState
 
   /** When this filter is used bidirectionally, you can call this function between the forward and 
   the backward pass to set the internal states of the filter appropriately. It simulates running 

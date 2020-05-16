@@ -727,8 +727,25 @@ void particleSystem()
 //  the 5 free parameters a,b,c,n,m should be adjusted in terms of asymptotic repulsion m, 
 //  preferred distance, bump position, bump height, asymptotic attraction n
 //  -as a variation, the asymptotic atttraction could also go down exponentially
-//  -the repulsion is there to model that no two particles can occupy the same position
+//  -the repulsion is there to model that no two particles can occupy the same position...although,
+//   that could be also exclusively done via the force that depends on the size feature - not every
+//   force must go to -inf
+// -or maybe use a force-distance function that has many different zero-crossings (i.e. equilibria)
+//  like F(d) = cos(w*d^k + phi) * a/(b + d^n) - c/d^m, i.e. the first term is multiplied by a 
+//  cosine wave (of possibly varying frequency, hence the exponent k). the upward zero crossings 
+//  would correspond to stable equilibria ("energy levels"), the downward crossings to unstable 
+//  ones. if k > 1, the oscillation frequency goes up with distance, possibly contributing to more
+//  chaotic interactions between particles that are far apart
+//  -the particles would probably tend to oscillate around the stable equilibria, at least, when 
+//   there's no friction - which probably shouldn't be - maybe then thermal noise will emerge from
+//   these oscillations - they may interact chaotically, once in while kicking one atom to another
+//   energy level, which in turn may be releasing or absorbing some amount of the ambient thermal 
+//   energy?
+// https://www.desmos.com/calculator/lkzbwj5max
+
 // -see: https://www.youtube.com/watch?v=Z_zmZ23grXE
+// https://demystifyingscience.com/blog/how-to-visualize-electricity
+// https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Book%3A_An_Introduction_to_the_Electronic_Structure_of_Atoms_and_Molecules_(Bader)/03%3A_The_Hydrogen_Atom/3.03%3A_The_Probability_Distribution_of_the_Hydrogen_Atom
 
 
 //template<class T>

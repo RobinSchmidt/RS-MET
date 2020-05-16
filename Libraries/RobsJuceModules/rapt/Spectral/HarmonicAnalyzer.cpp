@@ -376,7 +376,7 @@ int rsHarmonicAnalyzer<T>::getSpectralPeakSearchWidth()
 
   //T s = T(0.5);  
   // old: 1.0 - works for hamming, blackman needs around 0.5 (numCycles=4) - when the mainlobe is
-  // too wide, the actual maximum my occur at the border of the window and then the partial gets
+  // too wide, the actual maximum may occur at the border of the window and then the partial gets
   // discarded - (i think) we may remedy this by using more cycles per block - but the next larger
   // value is 8 which is a bit large -> todo: allow for non-powers-of-two - maybe the search width
   // should be some function of the mainlobe-width and number-of-cycles (and maybe a user 

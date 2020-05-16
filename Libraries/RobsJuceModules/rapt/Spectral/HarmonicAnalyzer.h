@@ -16,7 +16,7 @@ true for the analyzed signal, of course). The algorithm works as follows:
  -the FFT size is equal to the cycle-length -> frequencies don't need to be 
   estimated, they are known in advance
  -only amplitude and phase have to be measured (i.e. simply read off from the FFT data)
- -update: not the FFT size is equal to some power-of-2 multiple of the cycle-length, if it's > 1,
+ -update: now the FFT size is equal to some power-of-2 multiple of the cycle-length, if it's > 1,
   then again partial frequecies must be estimated (but we know roughly where to look for them)
 -post-process model data (account for pitch flattening):
  -move time instants of datapoints according to the inverse time-warping map

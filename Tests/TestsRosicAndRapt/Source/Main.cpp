@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
   //interpolatingFunction();
   //linearRegression();
   //multipleRegression();
-  //polynomialRegression();
+  polynomialRegression();
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();
@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
   //bandSplittingMultiWay();   // turn into unit test (it currently hits an assert on fail)
   //bandSplittingTreeAlgo();
   //bandSplitFreqResponses();
-  biDirectionalStateInit();
+  //biDirectionalStateInit();
   //biquadTail();
   //complementaryFiltersIIR();
   //firstOrderFilters();

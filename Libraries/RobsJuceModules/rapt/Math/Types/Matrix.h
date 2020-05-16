@@ -551,6 +551,7 @@ public:
           (*C)(i, j) += A.at(k, i) * B.at(k, j); }}
   }
   // needs test
+  // todo: matrixMultiplySecondTransposed
 
   // implement functions that compute A^T * A and A * A^T, a "sandwich" X^T A X, X A X^T
   // but maybe more generally A^T B where A and B may or may not be the same
@@ -584,7 +585,7 @@ public:
 
   /** Computes the Kronecker product between matrices A and B and stores the result in C. Assumes, 
   that C has the right dimensions. For more info, see the documentation of 
-  rsMatrix::kroneckerProduct. */
+  rsMatrix::getKroneckerProduct. */
   static void kroneckerProduct(
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {

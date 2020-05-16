@@ -1244,6 +1244,21 @@ std::vector<T> solveLinearSystem(rsMatrix<T> A, std::vector<T> b)
 }
 // returns the solution vector b for the linear system A*x = b where A is a matrix and x is a vector
 
+// computes matrix-vector product y = A*x
+template<class T>
+std::vector<T> matrixVectorProduct(const rsMatrixView<T>& A, const T* x)
+{
+  int N = A.getNumColumns();
+  int M = A.getNumRows();
+  std::vector<T> y(M);
+  for(int i = 0; i < M; i++) {
+    y[i] = T(0);
+    for(int j = 0; j < N; j++)
+      y[i] += A(i, j) * x[j]; }
+  return y;
+}
+
+
 template<class T>
 RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
 {
@@ -1266,18 +1281,21 @@ RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
   // optimize: the product of X * X^T can be allocated and filled without explicitly
   // creating the transposed matrix as temporary object
 
+  // see matrixMultiplyFirstTransposed
+
 
   // Compute right hand side for linear equation system (X * X^T) * b = X * y:
   std::vector<T> rhs(M);
-  for(int i = 0; i < M; i++) {
-    rhs[i] = 0.0;
-    for(int j = 0; j < N; j++)
-      rhs[i] += X(i, j) * y[j];
-  }
+  //for(int i = 0; i < M; i++) {
+  //  rhs[i] = 0.0;
+  //  for(int j = 0; j < N; j++)
+  //    rhs[i] += X(i, j) * y[j];
+  //}
   // can this be factored out into some meaningful function? it multiplies an rsMatrix by a raw 
   // array to yield a std::vector - maybe some function that takes an rsMatrixView together with 
   // raw array and fills another raw array?
-
+  rhs = matrixVectorProduct(X, y);
+  // ...done!
 
   // Create the polynomial:
   //RAPT::rsPolynomial<T> p(degree);
@@ -1366,7 +1384,8 @@ void polynomialRegression()
   //  reasonable ones.
   // -Conclusion: it works! :-)
 
-  // todo: make plots that show several model-orders in a single plot to see, how the fit gets 
+  // todo: 
+  // -make plots that show several model-orders in a single plot to see, how the fit gets 
   //  better as the model degree goes up
   
   // -compare approximating a sinewave with polynomials - once using a Taylor series and once using
@@ -1376,10 +1395,20 @@ void polynomialRegression()
   //   match N/2 derivatives at t = 0 and N/2 at t = 2*pi
   //  -what about minimax fits? how would they be computed? maybe iteratively, using a 
   //   least-squares fit as initial guess?
+  // -make a similar function for sinusoidalRegression - what about spline-regression? that 
+  //  could be very useful, too
+  // -the API should probably allow the user to provide a set of arbitrary basis functions to use
+  //  -for polynomial regression, these basis functions are the powers of x
+  //  -we could also use chebychev polynomials as basis functions
+  //   -this is probably numerically better (the Vandermonde matrix in polynomial regression is 
+  //    notoriously ill conditioned)
+  //   -it requires the data to be normalized, such that x and y goes from -1..+1 
+  //    -we need an affine trafo before and one after the actual polynomial
+  //   -we may want to convert the chebychev regression coeffs to power-coeffs after fitting
 }
 
-// todo: make a similar function for sinusoidalRegression - what about spline-regression? that 
-// could be very useful, too
+// todo: 
+
 
 
 /*
