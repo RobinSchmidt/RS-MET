@@ -1276,49 +1276,34 @@ rsMatrix<T> polyFitDataMatrix(int numDataPoints, T* x, int degree)
 template<class T>
 RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
 {
-  //typedef RAPT::rsArrayTools AT;
-  //typedef RAPT::rsMatrixTools MT;
-
-
-  // create MxN data matrix X:
-  /*
-  int M = degree+1;       // # rows
-  int N = numDataPoints;  // # cols
-  rsMatrix<T> X(M, N);
-  AT::fillWithValue(X.getRowPointer(0), N, 1.0);   // 1st row is all ones
-  for(int i = 1; i < M; i++)                       // i-th row is (i-1)th row times x
-    AT::multiply(X.getRowPointer(i-1), x, X.getRowPointer(i), N);
-    */
-
-
+  // Create MxN data matrix X:
   rsMatrix<T> X = polyFitDataMatrix(numDataPoints, x, degree);
 
-  //plotMatrixRows(X); // ok - looks good
-
-  // compute MxM matrix X * X^T that appears in the system (X * X^T) * b = X * Y:
+  // Compute MxM matrix X * X^T that appears in the system (X * X^T) * b = X * Y:
   rsMatrix<T> XX = X * X.getTranspose();
-  // optimize: the product of X * X^T can be allocated and filled without explicitly
-  // creating the transposed matrix as temporary object
-
-  // see matrixMultiplyFirstTransposed
-
 
   // Compute right hand side for linear equation system (X * X^T) * b = X * y:
   std::vector<T> rhs = matrixVectorProduct(X, y);
 
-  // Create the polynomial:
-  //RAPT::rsPolynomial<T> p(degree);
-  //T* b = p.coeffs(); // private - but we are a friend - friend stuff doesn't compile
-  //T* b = p.getCoeffPointer();  // temporary solution - getCoeffPointer should not exist!
-  //return p;
-
-  // the polynomial coeffs are more generally regression coeffs...
-
-
-  // solve the linear system of equations XX * b = rhs, wrap result into rsPolynomial:
+  // Solve the linear system of equations XX * b = rhs, wrap result into rsPolynomial:
   std::vector<T> c = solveLinearSystem(XX, rhs);
   return RAPT::rsPolynomial<T>(c);
 }
+// ToDo:
+// -refactorizations:
+//  -the call to polyFitDataMatrix may use a functor that can be passed as parameter in order to
+//   create other types of data-matrices, using other basis functions - for example Chebychev 
+//   polynomials instead of the powers of x
+//  -maybe, we should do something like:
+//     X = createDataMatrix(...)
+//     return multipleRegression(X, y)
+// -optimizations:
+//  -in the assignment: rsMatrix<T> XX = X * X.getTranspose(); 
+//   the product of X * X^T can be allocated and filled without explicitly creating the transposed
+//   matrix as temporary object - use some matrixMultiplySecondTransposed function (to be written)
+//  -the assignment c = solveLinearSystem(XX, rhs); with subsequent wrapping of the resultting 
+//   vector into a polynomial can be done avoiding the temporary std::vector object, operating
+//   directly on the array of polynomial coeffs in rsPolynomial
 // todo: use the new matrix stuff - we should adapt the Gaussian elimination algorithm so it may
 // work with a matrix given in flat storage format...or maybe it should get a pointer to a 
 // MatrixView
