@@ -1273,6 +1273,19 @@ rsMatrix<T> polyFitDataMatrix(int numDataPoints, T* x, int degree)
   return X;
 }
 
+template<class T>
+std::vector<T> multipleLinearRegression(const rsMatrix<T>& X, T* y)
+{
+  // Compute MxM matrix X * X^T that appears in the system (X * X^T) * b = X * Y:
+  rsMatrix<T> XX = X * X.getTranspose();
+
+  // Compute right hand side for linear equation system (X * X^T) * b = X * y:
+  std::vector<T> rhs = matrixVectorProduct(X, y);
+
+  // Solve the linear system of equations XX * b = rhs:
+  return solveLinearSystem(XX, rhs);
+}
+
 /** Fits a polynomial to the data-points given in the x,y arrays and returns the resulting 
 polynomial coeffiencts as a std::vector.  */
 template<class T>
@@ -1281,14 +1294,18 @@ std::vector<T> fitPolynomialStdVec(int numDataPoints, T* x, T* y, int degree)
   // Create MxN data matrix X:
   rsMatrix<T> X = polyFitDataMatrix(numDataPoints, x, degree);
 
+  return multipleLinearRegression(X, y);
+
+  /*
   // Compute MxM matrix X * X^T that appears in the system (X * X^T) * b = X * Y:
   rsMatrix<T> XX = X * X.getTranspose();
 
   // Compute right hand side for linear equation system (X * X^T) * b = X * y:
   std::vector<T> rhs = matrixVectorProduct(X, y);
 
-  // Solve the linear system of equations XX * b = rhs, wrap result into rsPolynomial:
+  // Solve the linear system of equations XX * b = rhs:
   return solveLinearSystem(XX, rhs);
+  */
 }
 // the last 3 lines can be factored out into a multipleLinearRegression function, taking the 
 // data matrix X of the regressors and the data-array y of the regressand
