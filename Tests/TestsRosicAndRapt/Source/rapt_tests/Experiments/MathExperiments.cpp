@@ -1273,18 +1273,10 @@ rsMatrix<T> polyFitDataMatrix(int numDataPoints, T* x, int degree)
   return X;
 }
 
-/*
+/** Fits a polynomial to the data-points given in the x,y arrays and returns the resulting 
+polynomial coeffiencts as a std::vector.  */
 template<class T>
-std::vector<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
-{
-
-}
-*/
-
-
-
-template<class T>
-RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
+std::vector<T> fitPolynomialStdVec(int numDataPoints, T* x, T* y, int degree)
 {
   // Create MxN data matrix X:
   rsMatrix<T> X = polyFitDataMatrix(numDataPoints, x, degree);
@@ -1296,8 +1288,19 @@ RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
   std::vector<T> rhs = matrixVectorProduct(X, y);
 
   // Solve the linear system of equations XX * b = rhs, wrap result into rsPolynomial:
-  std::vector<T> c = solveLinearSystem(XX, rhs);
-  return RAPT::rsPolynomial<T>(c);
+  return solveLinearSystem(XX, rhs);
+}
+// the last 3 lines can be factored out into a multipleLinearRegression function, taking the 
+// data matrix X of the regressors and the data-array y of the regressand
+
+
+
+
+template<class T>
+RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
+{
+  // wrap result into rsPolynomial:
+  return RAPT::rsPolynomial<T>(fitPolynomialStdVec(numDataPoints, x, y, degree));
 }
 // ToDo:
 // -refactorizations:
