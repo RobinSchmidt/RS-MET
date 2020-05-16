@@ -1221,17 +1221,12 @@ void multipleRegression()
 // what about sine frequencies? maybe the exponential can be made complex? -> figure out
 
 
-
-// prototype:
+/** Convenience function to compute the solution vector b for the linear system A*x = b where A is
+an rsMatrix object and x is a std::vector. */
 template<class T>
 std::vector<T> solveLinearSystem(rsMatrix<T> A, std::vector<T> b)
 {
   std::vector<T> x(b.size());
-
-  // this is a temporary solution using the old Gaussian elimination code - todo: adapt that code 
-  // for the new matrix class - use the new elementary row-operations - try to use as little extra 
-  // memory as possible - and if some is needed, use workspace parameters
-
   int M = A.getNumRows();
   int N = A.getNumColumns();
   T** B;
@@ -1242,10 +1237,12 @@ std::vector<T> solveLinearSystem(rsMatrix<T> A, std::vector<T> b)
   delete[] B;
   return x;
 }
-// returns the solution vector b for the linear system A*x = b where A is a matrix and x is a vector
-// -maybe this should be seen as convenience function
+// This is a temporary solution using the old Gaussian elimination code - todo: adapt that code 
+// for the new rsMatrix class - use the new elementary row-operations - try to use as little extra 
+// memory as possible - and if some is needed, use workspace parameters.
 
-// computes matrix-vector product y = A*x
+/** Convenience function to compute matrix-vector product y = A*x, taking an rsMatrixView reference
+for A and a raw array for x as inputs and producing the result as a std::vector. */
 template<class T>
 std::vector<T> matrixVectorProduct(const rsMatrixView<T>& A, const T* x)
 {
@@ -1259,7 +1256,10 @@ std::vector<T> matrixVectorProduct(const rsMatrixView<T>& A, const T* x)
   return y;
 }
 
-// computes the data matrix X that is used for polynomial fitting
+/** Computes the data matrix X that is used for polynomial fitting from the data array x of the 
+independent input variable x. Each row of the matrix contains a power of x, so the first row 
+(index 0) is all ones, the 2nd row (index 1) is the array x itself, the 3rd row (index 2) contains 
+the squared x values, etc. */
 template<class T>
 rsMatrix<T> polyFitDataMatrix(int numDataPoints, T* x, int degree)
 {
@@ -1267,11 +1267,21 @@ rsMatrix<T> polyFitDataMatrix(int numDataPoints, T* x, int degree)
   int N = numDataPoints;  // # cols
   rsMatrix<T> X(M, N);
   typedef RAPT::rsArrayTools AT;
-  AT::fillWithValue(X.getRowPointer(0), N, 1.0);   // 1st row is all ones
-  for(int i = 1; i < M; i++)                       // i-th row is (i-1)th row times x
+  AT::fillWithValue(X.getRowPointer(0), N, T(1));   // 1st row is all ones
+  for(int i = 1; i < M; i++)                        // i-th row is (i-1)th row times x
     AT::multiply(X.getRowPointer(i-1), x, X.getRowPointer(i), N);
   return X;
 }
+
+/*
+template<class T>
+std::vector<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
+{
+
+}
+*/
+
+
 
 template<class T>
 RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
