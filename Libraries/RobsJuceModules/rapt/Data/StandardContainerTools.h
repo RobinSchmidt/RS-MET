@@ -382,8 +382,8 @@ T rsMinValue(const std::vector<T>& x) { return rsArrayTools::minValue(&x[0], (in
 template<class T>
 T rsMaxValue(const std::vector<T>& x) { return rsArrayTools::maxValue(&x[0], (int) x.size()); }
 
-
-
+template<class T>
+T rsMaxAbs(const std::vector<T>& x) { return rsArrayTools::maxAbs(&x[0], (int) x.size()); }
 
 //template<class T>
 //T rsMaxValue(const std::vector<T>& x)

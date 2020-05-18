@@ -264,11 +264,21 @@ bool testNumDiffStencils()
 }
 
 template<class Tx, class Ty, class F>
-void gradient(const F& f, const Tx* x, const Tx& h, Tx* g)
+void gradient(const F& f, Tx* x, int N, const Tx& h, Ty* g)
 {
-
-
+  for(int n = 0; n < N; n++)
+  {
+    Tx tmp = x[n];
+    x[n]   = tmp + h; Ty fp = f(x);
+    x[n]   = tmp - h; Ty fm = f(x);
+    g[n]   = (fp-fm) / (2*h);
+    x[n]   = tmp;
+  }
 }
+// hmm - should the gradient be of type Tx or Ty? or maybe there should be just one type? what if
+// y is a vector? then f would take an N-dim vector and produce a vector of possibly other 
+// dimensionality - would this function then compute the Jacobian? i think, it would be natural, if
+// it would
 
 bool testNumericGradientAndHessian()
 {
@@ -294,14 +304,26 @@ bool testNumericGradientAndHessian()
 
   using Vec = std::vector<double>;
 
+  double h = pow(2, -18); // from 2^-18, maxErr in the gradient becomes 0
+
   Vec v({5,3,2});       // point at which we evaluate gradient and Hessian
   Vec ga(3);            // analytic gradient
   double vf = f(&v[0]); // compute function value at v
   gf(&v[0], &ga[0]);    // compute gradient at v analytically
+  Vec gn(3);            // numeric gardient
+
+
+  gradient(f, &v[0], 3, h, &gn[0]);  // maybe swap g and h
+
+  Vec err = ga - gn;
+  double maxErr = rsMaxAbs(err);
+  r &= maxErr == 0.0;
 
 
   return r;
 }
+
+// todo: compute numeric Jacobians
 
 
 bool testMultiLayerPerceptronOld(std::string &reportString)
