@@ -1348,14 +1348,27 @@ void gaussianRegression()
   }
 
 
-  plotMatrixRows(R, x);
-  rsPlotArraysXY(N, x, y); 
+  //plotMatrixRows(R, x);
+  //rsPlotArraysXY(N, x, y); 
 
 
   Vec A = rsCurveFitter::multipleRegression(R, y);
 
   // todo: plot scaled regressands and their sum and target function y in one plot
 
+  GNUPlotter plt;
+  plt.addDataArrays(N, x, y);
+  AT::fillWithZeros(z, N);
+  for(int i = 0; i < numGaussians; i++)
+  {
+    for(int n = 0; n < N; n++)
+    {
+      z[n] += A[i] * R(i, n);
+    }
+
+  }
+  plt.addDataArrays(N, x, z);
+  plt.plot();
 
 
   int dummy = 0;
