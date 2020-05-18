@@ -283,6 +283,34 @@ void gradient(const F& f, Tx* x, int N, Ty* g, const Tx& h)
 // todo: maybe allow to pass an array of stepsize values h such that we may use a different value
 // for each dimension
 
+template<class Tx, class Ty, class F>
+void hessian(const F& f, Tx* x, int N, Ty* pH, const Tx& h)
+{
+  rsMatrixView<Ty> H(N, N, pH);
+  for(int i = 0; i < N; i++)
+  {
+    for(int j = i; j < N; j++)
+    {
+      Tx ti = x[i];
+      Tx tj = x[j];
+
+      x[i] = ti + h; x[j] = tj + h; Ty fpp = f(x);  // f_++
+      x[i] = ti + h; x[j] = tj - h; Ty fpm = f(x);  // f_+-
+      x[i] = ti - h; x[j] = tj + h; Ty fmp = f(x);  // f_-+
+      x[i] = ti - h; x[j] = tj - h; Ty fmm = f(x);  // f_--
+
+      H(i,j) = H(j,i) = (fpp + fmm - fpm - fmp) / (4*h*h); 
+      // more generally: divide by 4*h[i]*h[j] when different stepsizes are used for the different
+      // dimensions
+
+      x[i] = ti;
+      x[j] = tj;
+    }
+  }
+
+  int dummy = 0;
+}
+
 bool testNumericGradientAndHessian()
 {
   // Under construction
@@ -330,6 +358,10 @@ bool testNumericGradientAndHessian()
   Vec err = ga - gn;
   double maxErr = rsMaxAbs(err);
   r &= maxErr == 0.0;
+
+  // compute Hessian matrix numerically:
+  rsMatrix<double> H(3, 3);
+  hessian(f, &v[0], 3, H.getDataPointer(), h);
 
 
   return r;
