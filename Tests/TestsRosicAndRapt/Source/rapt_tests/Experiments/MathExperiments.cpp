@@ -1220,79 +1220,6 @@ void multipleRegression()
 // in advance - can these be estimated too? ...for exponential decays, there's code somewhere but 
 // what about sine frequencies? maybe the exponential can be made complex? -> figure out
 
-
-/** Computes the data matrix X that is used for polynomial fitting from the data array x of the 
-independent input variable x. Each row of the matrix contains a power of x, so the first row 
-(index 0) is all ones, the 2nd row (index 1) is the array x itself, the 3rd row (index 2) contains 
-the squared x values, etc. */
-/*
-template<class T>
-rsMatrix<T> polyFitDataMatrix(int numDataPoints, T* x, int degree)
-{
-  int M = degree+1;       // # rows
-  int N = numDataPoints;  // # cols
-  rsMatrix<T> X(M, N);
-  typedef RAPT::rsArrayTools AT;
-  AT::fillWithValue(X.getRowPointer(0), N, T(1));   // 1st row is all ones
-  for(int i = 1; i < M; i++)                        // i-th row is (i-1)th row times x
-    AT::multiply(X.getRowPointer(i-1), x, X.getRowPointer(i), N);
-  return X;
-}
-*/
-// move to rsCurveFitter (as static protected function)
-// make a similar function to compute the data-matrix for chebychev-polynomials instead of powers
-// of x
-
-/** Performs a multiple linear regression for some array of a regressand y (dependent variable) 
-based on a number of regressors (independent variables) stored in a matrix X. Each row in the 
-X-matrix should contain values of an regressand such that the X(i, j) matrix element is the value 
-of the i-th regressor for y[j]. The solution is given by the vector b that satisfies: 
-   (X * X^T) * b = X * y.  
-("normal equations"? - look up!) */
-/*
-template<class T>
-std::vector<T> multipleLinearRegression(const rsMatrix<T>& X, const T* y)
-{
-  rsMatrix<T>    XX  = X * X.getTranspose();    // XX  = X * X^T
-  std::vector<T> rhs = X.productWith(y);        // rhs = X * y
-  return rsLinearAlgebraNew::solveOld(XX, rhs); // solve (X * X^T) * b = X * y for b
-}
-*/
-// ToDo:
-// -optimizations:
-//  -in the assignment: rsMatrix<T> XX = X * X.getTranspose(); 
-//   the product of X * X^T can be allocated and filled without explicitly creating the transposed
-//   matrix as temporary object - use some matrixMultiplySecondTransposed function (to be written)
-//  -the assignment c = solveLinearSystem(XX, rhs); with subsequent wrapping of the resultting 
-//   vector into a polynomial can be done avoiding the temporary std::vector object, operating
-//   directly on the array of polynomial coeffs in rsPolynomial
-
-
-/** Fits a polynomial to the data-points given in the x,y arrays and returns the resulting 
-polynomial coeffiencts as a std::vector.  */
-/*
-template<class T>
-std::vector<T> fitPolynomialStdVec(T* x, T* y, int numDataPoints, int degree)
-{
-  rsMatrix<T> X = polyFitDataMatrix(numDataPoints, x, degree);  // MxN data matrix X...
-  return multipleLinearRegression(X, y);                        // ...used for the regressors
-}
-*/
-
-/** Given two arrays of x-values and corresponding y-values, this function returns a polynomial 
-that fits the datapoints in the least-squares sense. */
-/*
-template<class T>
-RAPT::rsPolynomial<T> fitPolynomial(T* x, T* y, int numDataPoints, int degree)
-{
-  return RAPT::rsPolynomial<T>(fitPolynomialStdVec(x, y, numDataPoints, degree));
-}
-*/
-// move to library into class rsCurveFitter
-// ...how would this have to be generalized when either x or y or both are a complex number type?
-// or a vector type?
-
-
 void polynomialRegression()
 {
   // We create data from a polynomial function f(x) = 1 - 2x + 3x^2 - 4x^3 + 5x^4 with added noise 
@@ -1377,11 +1304,29 @@ void polynomialRegression()
   //   -we may want to convert the chebychev regression coeffs to power-coeffs after fitting
 }
 
-// todo: 
-// -fit a bunch of cosines with gaussian envelopes to the "multipass Butterworth" function 
-//  f(x) = 1 / (1 + x^N)^M
-//  -> nice test for fiiting an arbitrary set of basis functions to data
-//  -> may be useful for implementing the IIR lens blur effect
+void gaussianRegression()
+{
+  // Under construction
+  // We try to fit a bunch of cosines with gaussian envelopes to the "multipass Butterworth" 
+  // function 
+  //    f(x) = 1 / (1 + x^2N)^M
+  //  -> nice test for fitting an arbitrary set of basis functions to data
+  //  -> may be useful for implementing the IIR lens blur effect
+
+
+  int numDataPoints = 100;
+  double xMax = 5.0;
+
+  int N = 5;
+  int M = 1;
+
+
+
+  int dummy = 0;
+
+}
+
+
 
 
 

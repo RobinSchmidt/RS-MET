@@ -57,7 +57,7 @@ bool rsCurveFitter::fitExponentialSum(T* y, int numValues, T* A, T* a, int numEx
 }
 
 template<class T>
-std::vector<T> rsCurveFitter::multipleLinearRegression(const rsMatrix<T>& X, const T* y)
+std::vector<T> rsCurveFitter::multipleRegression(const rsMatrix<T>& X, const T* y)
 {
   rsMatrix<T>    XX  = X * X.getTranspose();    // XX  = X * X^T
   std::vector<T> rhs = X.productWith(y);        // rhs = X * y
@@ -82,7 +82,7 @@ template<class T>
 std::vector<T> rsCurveFitter::fitPolynomialStdVec(T* x, T* y, int numDataPoints, int degree)
 {
   rsMatrix<T> X = polyFitDataMatrix(numDataPoints, x, degree);  // MxN data matrix X...
-  return multipleLinearRegression(X, y);                        // ...used for the regressors
+  return multipleRegression(X, y);                              // ...used for the regressors
 }
 
 template<class T>

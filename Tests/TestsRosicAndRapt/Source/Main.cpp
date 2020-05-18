@@ -105,7 +105,8 @@ int main(int argc, char* argv[])
   //interpolatingFunction();
   //linearRegression();
   //multipleRegression();
-  polynomialRegression();
+  //polynomialRegression();
+  gaussianRegression();
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();

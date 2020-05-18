@@ -84,6 +84,7 @@ void interpolatingFunction();
 void linearRegression();
 void multipleRegression();
 void polynomialRegression();
+void gaussianRegression();
 void polynomialPrediction();
 void probabilityLogic();
 void productLogPlot();

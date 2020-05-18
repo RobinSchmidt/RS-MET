@@ -1,6 +1,8 @@
 #ifndef RAPT_CURVEFITTING_H
 #define RAPT_CURVEFITTING_H
 
+/** A class for fitting various sorts of model functions to given data */
+
 class rsCurveFitter
 {
 
@@ -28,7 +30,6 @@ public:
   template<class T>
   static std::vector<T> fitPolynomialStdVec(T* x, T* y, int numDataPoints, int degree);
 
-
   /** Performs a multiple linear regression for some array of a regressand y (dependent variable) 
   based on a number of regressors (independent variables) stored in a matrix X. Each row in the 
   X-matrix should contain values of an regressand such that the X(i, j) matrix element is the value 
@@ -36,8 +37,8 @@ public:
      (X * X^T) * b = X * y.
   (the so called "normal equations"? - look up!) */
   template<class T>
-  static std::vector<T> multipleLinearRegression(const rsMatrix<T>& X, const T* y);
-  // rename to multipleRegression
+  static std::vector<T> multipleRegression(const rsMatrix<T>& X, const T* y);
+
 
 
   // add fitLine, fitRational, fitSinusoidalSum, ..drag the linearRegression function from 
