@@ -286,47 +286,40 @@ void gradient(const F& f, Tx* x, int N, Ty* g, const Tx& h)
 template<class Tx, class Ty, class F>
 void hessian(const F& f, Tx* x, int N, Ty* pH, const Tx& h)
 {
-  rsMatrixView<Ty> H(N, N, pH);
-
   // compute diagonal elements:
+  rsMatrixView<Ty> H(N, N, pH);
   Ty fc = f(x);
-  for(int i = 0; i < N; i++)
-  {
+  for(int i = 0; i < N; i++) {
     Tx ti  = x[i];
-    //Ty fc  = f(x);
     x[i]   = ti + h; Ty fp = f(x);
     x[i]   = ti - h; Ty fm = f(x);
     H(i,i) = (fm - Tx(2)*fc + fp) / (h*h);
-    x[i] = ti;
-  }
-
+    x[i]   = ti; }
 
   // compute off-diagonal elements:
-  for(int i = 0; i < N; i++)
-  {
-    for(int j = i+1; j < N; j++)
-    {
+  for(int i = 0; i < N; i++) {
+    for(int j = i+1; j < N; j++) {
       Tx ti = x[i];
       Tx tj = x[j];
-
-      x[i] = ti + h; x[j] = tj + h; Ty fpp = f(x);  // f_++
-      x[i] = ti + h; x[j] = tj - h; Ty fpm = f(x);  // f_+-
-      x[i] = ti - h; x[j] = tj + h; Ty fmp = f(x);  // f_-+
-      x[i] = ti - h; x[j] = tj - h; Ty fmm = f(x);  // f_--
-
+      x[i] = ti + h; x[j] = tj + h; Ty fpp = f(x);         // f_++
+      x[i] = ti + h; x[j] = tj - h; Ty fpm = f(x);         // f_+-
+      x[i] = ti - h; x[j] = tj + h; Ty fmp = f(x);         // f_-+
+      x[i] = ti - h; x[j] = tj - h; Ty fmm = f(x);         // f_--
       H(i,j) = H(j,i) = (fpp + fmm - fpm - fmp) / (4*h*h); 
-      // more generally: divide by 4*h[i]*h[j] when different stepsizes are used for the different
-      // dimensions
-
       x[i] = ti;
-      x[j] = tj;
-    }
-  }
+      x[j] = tj; }}
 
-  // maybe we need to compute the diagonal elements separately? they seem to come out wrong
-
-  int dummy = 0;
+  // ToDo:
+  // -maybe allow to use different h-values along each dimension (pass an N-array for h)
+  //  -> the formulas generalize such that in the diagonal elements, we divide by h[i]*h[i] and in
+  //     the off-diagonal elements, we divide by 4*h[i]*h[j] (i think)
+  // -can we make the formula for the off-diagonal elements more accurate by using fc = f(x)
+  //  ...that would come at (almost) no cost because that value never needs to be re-evaluated
 }
+
+// ToDo:
+// -make a convenience function taking a reference to rsMatrix instead of a raw array/pointer
+// -write a function that does quasi-Newton steps using the Hessian matrix
 
 bool testNumericGradientAndHessian()
 {
@@ -354,10 +347,11 @@ bool testNumericGradientAndHessian()
     g[2] = x*x * y*y*y * 4*z*z*z;  // f_z
   };
 
-  // todo: compute Hessian matrix:
+  // Computes the Hessian matrix of f:
   //          f_xx  f_xy  f_xz
   //   H(f) = f_yx  f_yy  f_yz
   //          f_zx  f_zy  f_zz
+  // at the given position v analytically.
   auto Hf = [=](double* v)->rsMatrix<double>
   {
     double x = v[0], y = v[1], z = v[2];
@@ -373,30 +367,28 @@ bool testNumericGradientAndHessian()
 
 
   using Vec = std::vector<double>;
+  using Mat = rsMatrix<double>;
 
   double h = pow(2, -18); // from 2^-18, maxErr in the gradient becomes 0
+  Vec v({5,3,2});         // point at which we evaluate gradient and Hessian
 
-  Vec v({5,3,2});       // point at which we evaluate gradient and Hessian
+
+  // compute gradient analytically and numerically and compare results:
   Vec ga(3);            // analytic gradient
-  double vf = f(&v[0]); // compute function value at v
+  //double vf = f(&v[0]); // compute function value at v
   gf(&v[0], &ga[0]);    // compute gradient at v analytically
   Vec gn(3);            // numeric gardient
-
-
   gradient(f, &v[0], 3, &gn[0], h);
-
   Vec err = ga - gn;
   double maxErr = rsMaxAbs(err);
   r &= maxErr == 0.0;
 
-  // compute Hessian matrix analytically:
-  rsMatrix<double> Ha = Hf(&v[0]);
-
-  // compute Hessian matrix numerically:
-  rsMatrix<double> Hn(3, 3);
-  hessian(f, &v[0], 3, Hn.getDataPointer(), h);
-  // looks good!
-
+  // compute Hessian matrix analytically and numerically and compare results:
+  Mat Ha = Hf(&v[0]);
+  Mat Hn(3, 3);  hessian(f, &v[0], 3, Hn.getDataPointer(), h);
+  Mat He = Ha - Hn;  // error matrix
+  maxErr = He.getAbsoluteMaximum();
+  r &= maxErr == 0.0;
 
   return r;
 }
