@@ -309,6 +309,15 @@ void hessian(const F& f, Tx* x, int N, Ty* pH, const Tx& h)
       x[i] = ti;
       x[j] = tj; }}
 
+  // The formula for the diagonal elements is just the regular central difference for a 2nd 
+  // derivative for one coordinate at a time. The formula for the off-diagonal elements was derived
+  // by considering a bivariate function f(x,y) and computing its partial derivative with respect 
+  // to x using a central difference:
+  //   f_x ~= (f(x+h,y) - f(x-h,y)) / (2*h)
+  // and then using a central difference with repect to y on f_x:
+  //   f_xy ~= (f_x(x,y+h) - f_x(x,y-h)) / (2*h)
+  // and then generalizing in the obvious way from the bivariate to the multivariate case.
+
   // ToDo:
   // -maybe allow to use different h-values along each dimension (pass an N-array for h)
   //  -> the formulas generalize such that in the diagonal elements, we divide by h[i]*h[i] and in
@@ -323,7 +332,8 @@ void hessian(const F& f, Tx* x, int N, Ty* pH, const Tx& h)
 
 bool testNumericGradientAndHessian()
 {
-  // Under construction
+  // Tests numeric gradient and Hessian matrix computation by comparing the results to analytically
+  // computed ones.
 
   bool r = true;
 
@@ -371,14 +381,11 @@ bool testNumericGradientAndHessian()
 
   double h = pow(2, -18); // from 2^-18, maxErr in the gradient becomes 0
   Vec v({5,3,2});         // point at which we evaluate gradient and Hessian
-
+  double vf = f(&v[0]);   // compute function value at v
 
   // compute gradient analytically and numerically and compare results:
-  Vec ga(3);            // analytic gradient
-  //double vf = f(&v[0]); // compute function value at v
-  gf(&v[0], &ga[0]);    // compute gradient at v analytically
-  Vec gn(3);            // numeric gardient
-  gradient(f, &v[0], 3, &gn[0], h);
+  Vec ga(3); gf(&v[0], &ga[0]);
+  Vec gn(3); gradient(f, &v[0], 3, &gn[0], h);
   Vec err = ga - gn;
   double maxErr = rsMaxAbs(err);
   r &= maxErr == 0.0;
