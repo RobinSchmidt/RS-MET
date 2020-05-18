@@ -34,6 +34,13 @@
 
 using namespace RAPT;  // get rid of this
 
+namespace RAPT
+{
+#include "Legacy/FunctionObjects.h"
+#include "Legacy/GradientBasedMinimizer.h"
+#include "Legacy/MultiLayerPerceptron.h"
+}
+
 #include "Prototypes/OscDrivers.h"
 #include "Prototypes/PartialDifferentialEquations.h"
 #include "Prototypes/Prototypes.h"

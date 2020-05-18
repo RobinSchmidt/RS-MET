@@ -8,6 +8,13 @@ header files that the compiler may be using. */
 
 #include "rs_testing.h"
 
+namespace RAPT
+{
+#include "Legacy/FunctionObjects.cpp"
+#include "Legacy/GradientBasedMinimizer.cpp"
+#include "Legacy/MultiLayerPerceptron.cpp"
+}
+
 #include "TestTools/Utilities/FileWriting.cpp"
 #include "TestTools/Utilities/PerformanceTestTools.cpp"
 #include "TestTools/Utilities/TestInputCreation.cpp"

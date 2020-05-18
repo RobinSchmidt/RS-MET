@@ -6,9 +6,9 @@ namespace RAPT
 //#include "Data/MultiArray.cpp"    // deprecated version, new version in Data folder
 
 #include "Math/Matrix.cpp"
-#include "Math/FunctionObjects.cpp"
-#include "Math/GradientBasedMinimizer.cpp"
-#include "Math/MultiLayerPerceptron.cpp"
+//#include "Math/FunctionObjects.cpp"
+//#include "Math/GradientBasedMinimizer.cpp"
+//#include "Math/MultiLayerPerceptron.cpp"
 #include "Math/NumberTheory.cpp"
 #include "Math/Transforms.cpp"
 #include "Math/Statistics.cpp"
