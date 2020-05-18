@@ -1315,38 +1315,21 @@ void gaussianRegression()
 
 
   static const int N = 200;  // number of data points
-  double xMax = 3.0;
-  int order  = 6;    // Butterworth order
-  int passes = 1;     // number of passes for Butterworth filter
-
+  double xMax       = 3.0;
+  double freqFactor = 1.0;   // scales all frequencies, 1.0 seems most suitable
+  int order  = 6;            // Butterworth order
+  int passes = 1;            // number of passes for Butterworth filter
+  int numGaussians = 7;      // number of Gaussians in the approximation
 
   using Vec = std::vector<double>;
   using AT  = rsArrayTools;
 
-  // freqs of the cosines:
-  Vec freqs = Vec({0, 1}); 
-  //Vec freqs = Vec({0, 1, 2}); 
-  //Vec freqs = Vec({0, 1, 2, 3, 4}); 
-  //Vec freqs = Vec({0, 1, 2, 3, 4, 5}); 
-  //Vec freqs = Vec({0, 1, 2, 3, 4, 5, 6}); 
-  //Vec freqs = Vec({1, 2, 3, 4, 5, 6});
-  //Vec freqs = Vec({0, 1, 2, 4, 8}); 
-  //Vec freqs = Vec({0, 1, 2, 3, 4, 5, 6, 7, 8});
-  //Vec freqs = Vec({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11});
-  
-  //Vec freqs = rsRangeLinear(0.0, numGaussians-1.0, numGaussians); 
-
-  //Vec w = 0.25*PI*freqs;                   // omegas
-  Vec w = 0.5*PI*freqs;                   // omegas - this seems to be most suitable
-  //Vec w = 0.75*PI*freqs;                   // omegas
-  //Vec w = 1.0*PI*freqs;                   // omegas
-  //Vec w = 2.0*PI*freqs;                   // omegas
-  int numGaussians = (int) w.size();
+  Vec f = rsRangeLinear(0.0, numGaussians-1.0, numGaussians); // freqs of the cosines
+  Vec w = freqFactor*0.5*PI*f;                                // omegas
   // todo: variances (sigma)
 
-  double x[N], y[N], z[N];
-
   // create the target data:
+  double x[N], y[N], z[N];
   AT::fillWithRangeLinear(x, N, 0.0, xMax);
   for(int n = 0; n < N; n++)
     y[n] = 1.0 / pow((1 + pow(x[n], 2*order)), passes);
@@ -1358,7 +1341,7 @@ void gaussianRegression()
       R(i, n) = exp(-x[n]*x[n]) * cos(w[i]*x[n]); // todo: use adjustable variances
 
 
-  plotMatrixRows(R, x);
+  plotMatrixRows(R, x);   // plot the regressors
   //rsPlotArraysXY(N, x, y); 
 
   Vec A = rsCurveFitter::multipleRegression(R, y); // amplitudes of the Gaussians
