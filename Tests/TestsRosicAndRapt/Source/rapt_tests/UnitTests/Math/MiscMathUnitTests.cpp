@@ -263,6 +263,46 @@ bool testNumDiffStencils()
   // todo: try some weird stencils (asymmetric and/or non-equidistant, even  number of points,...)
 }
 
+template<class Tx, class Ty, class F>
+void gradient(const F& f, const Tx* x, const Tx& h, Tx* g)
+{
+
+
+}
+
+bool testNumericGradientAndHessian()
+{
+  // Under construction
+
+  bool r = true;
+
+  // f(x,y,z) = x^2 * y^3 * z^4, v is a 3D vector
+  auto f = [=](double* v)->double
+  { 
+    double x = v[0], y = v[1], z = v[2];
+    return x*x * y*y*y * z*z*z*z; 
+  };
+
+  // gradient of f (will be written into g):
+  auto gf = [=](double* v, double* g)
+  {
+    double x = v[0], y = v[1], z = v[2];
+    g[0] = 2*x * y*y*y * z*z*z*z;
+    g[1] = x*x * 3*y*y * z*z*z*z;
+    g[2] = x*x * y*y*y * 4*z*z*z;
+  };
+
+  using Vec = std::vector<double>;
+
+  Vec v({5,3,2});       // point at which we evaluate gradient and Hessian
+  Vec ga(3);            // analytic gradient
+  double vf = f(&v[0]); // compute function value at v
+  gf(&v[0], &ga[0]);    // compute gradient at v analytically
+
+
+  return r;
+}
+
 
 bool testMultiLayerPerceptronOld(std::string &reportString)
 {
@@ -465,6 +505,8 @@ bool testMiscMath()
   testResult &= testMinSqrDifFixSum(          dummy);
   testResult &= testPhaseUnwrapStuff(         dummy);
   testResult &= testNumDiffStencils();
+  testResult &= testNumericGradientAndHessian();
+
   //testResult &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
   //testResult &= testMultiLayerPerceptron(     dummy); // maybe move to experiments
 

@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  //passed &= runUnitTestsRapt();
+  passed &= runUnitTestsRapt();
   //passed &= runUnitTestsRosic();
   //passed = passed;  // dummy
 
@@ -101,13 +101,13 @@ int main(int argc, char* argv[])
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
-//  iteratedNumDiff();
+  iteratedNumDiff();
   //interpolatingFunction();
   //linearRegression();
   //multipleRegression();
   //polynomialRegression();
-  gaussianRegression();
-  butterworthViaGaussians();
+  //gaussianRegression();
+  //butterworthViaGaussians();
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();

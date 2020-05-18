@@ -870,7 +870,7 @@ void iteratedNumDiff()
   // under construction
 
   // todo: test taking numeric derivatives of numeric derivatives to get 2nd derivatives - maybe go 
-  // up to the 4th derivative. figure out, what choices of the stepsize gvie the most accurate 
+  // up to the 4th derivative. figure out, what choices of the stepsize give the most accurate 
   // results - maybe the outer derivatives need smaller or larger stepsizes than the inner ones?
   // plot error between numeric and analytic result in some range
   // example functions: sin, exp, log, 1/x, x^a, 1/(1+x^2), 
@@ -923,24 +923,17 @@ void iteratedNumDiff()
   //h1 = pow(2, -12); h2 = pow(2, -13);   // 1.3e-8, same as using h1 = 2^(-13), h2 = 2^(-12) - 
                                           // the swap makes no difference - is this generally true?
 
-
-
   double h3 = pow(2, -15);
   double h4 = pow(2, -15);
 
-  //Func f0 = &sin;
-
+  // function f0(x) := f(x) = sin(x) and its first 4 derivatives:
   auto f0 = [=](double x)->double{ return  sin(x); };
   auto f1 = [=](double x)->double{ return  cos(x); };
   auto f2 = [=](double x)->double{ return -sin(x); };
   auto f3 = [=](double x)->double{ return -cos(x); };
   auto f4 = [=](double x)->double{ return  sin(x); };
 
-
-
-
-
-
+  // g0 = f0 and then g1,... are numerical derivatives:
   using Func = std::function<double(double)>;  // function from double to double
   Func g0 = [=](double x)->double{ return  sin(x); };
   Func g1 = RAPT::rsDerivative(g0, h1);
@@ -948,8 +941,7 @@ void iteratedNumDiff()
   Func g3 = RAPT::rsDerivative(g2, h3);
   Func g4 = RAPT::rsDerivative(g3, h4);
 
-
-
+  // compute functions values and numerical and analytical derivatives:
   for(int n = 0; n < N; n++)
   {
     y[n]  = f0(x[n]);
@@ -1010,7 +1002,7 @@ void iteratedNumDiff()
   //   hs = h1+h2, hd = h1-h2  (sum and difference)
   // i arrived at:
   //   f2(x) = (f(x+hs) + f(x-hs) - f(x+hd) - f(x-hd)) / (4*h1*h2)
-  // this is a formula which is indeed symmetric in h1,h2. It's interesting to note that is uses 4
+  // this is a formula which is indeed symmetric in h1,h2. It's interesting to note that it uses 4
   // evaluation points - the 2nd derivative via 5-point stencil would use 5 (and yes, the center 
   // coeff would be nonzero in this case) - so chaining two 1st order central differences gives not
   // the same formula as using a 2nd order central difference directly, even when h1==h2. The 2nd 
@@ -1050,8 +1042,6 @@ void iteratedNumDiff()
   //  h1 used for computing the 1st derivative itself. It seems weird, that we should use a 
   //  suboptimal inner derivative computation - maybe inaccuracies in the two neighbouring 
   //  1st derivatives somehow cancel in the computaion of the 2nd derivative?
-
-
 }
 
 /*
