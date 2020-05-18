@@ -1314,18 +1314,25 @@ void gaussianRegression()
   //  -> may be useful for implementing the IIR lens blur effect
 
 
-  static const int N = 100;  // number of data points
+  static const int N = 200;  // number of data points
   double xMax = 3.0;
-  int order  = 8;    // Butterworth order
-  int passes = 1;    // number of passes for Butterworth filter
+  int order  = 6;    // Butterworth order
+  int passes = 1;     // number of passes for Butterworth filter
 
 
   using Vec = std::vector<double>;
   using AT  = rsArrayTools;
 
+  //Vec freqs = Vec({0, 1, 2, 3, 4}); 
+  //Vec freqs = Vec({0, 1, 2, 3, 4, 5}); 
+  Vec freqs = Vec({0, 1, 2, 3, 4, 5, 6}); 
+  //Vec freqs = Vec({0, 1, 2, 4, 8}); 
+  //Vec freqs = Vec({0, 1, 2, 3, 4, 5, 6, 7, 8});    // freqs of the cosines
 
-  Vec freqs = Vec({0, 1, 2, 3, 4, 5});    // freqs of the cosines
   Vec w = 0.5*PI*freqs;                   // omegas
+  //Vec w = 0.75*PI*freqs;                   // omegas
+  //Vec w = 1.0*PI*freqs;                   // omegas
+  //Vec w = 2.0*PI*freqs;                   // omegas
   int numGaussians = (int) w.size();
   // todo: variances (sigma)
 
@@ -1352,9 +1359,8 @@ void gaussianRegression()
   //rsPlotArraysXY(N, x, y); 
 
 
-  Vec A = rsCurveFitter::multipleRegression(R, y);
+  Vec A = rsCurveFitter::multipleRegression(R, y); // amplitudes of the Gaussians
 
-  // todo: plot scaled regressands and their sum and target function y in one plot
 
   GNUPlotter plt;
   plt.addDataArrays(N, x, y);
@@ -1365,10 +1371,21 @@ void gaussianRegression()
     {
       z[n] += A[i] * R(i, n);
     }
-
   }
   plt.addDataArrays(N, x, z);
   plt.plot();
+
+  // Observations:
+  // -using w = 0.5*PI*freqs seems to give the best results
+  // -with order = 5, passes = 1 numGaussians = 7, the approximation result is quite good
+  // -when making the transition steeper, the Gaussians overshoot/ripple more - stronger Gibbs-like
+  //  effect
+  // -we seem to need more Gaussians to approximate a steeper transition well
+
+  // ToDo:
+  // -optimize the frequencies and variances of the Gaussians by gradient descent, starting with an
+  //  initial guess obtained like above - the scale-factors should also be refined in this 
+  //  optimization procedure
 
 
   int dummy = 0;
