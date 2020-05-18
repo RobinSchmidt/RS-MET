@@ -287,9 +287,24 @@ template<class Tx, class Ty, class F>
 void hessian(const F& f, Tx* x, int N, Ty* pH, const Tx& h)
 {
   rsMatrixView<Ty> H(N, N, pH);
+
+  // compute diagonal elements:
+  Ty fc = f(x);
   for(int i = 0; i < N; i++)
   {
-    for(int j = i; j < N; j++)
+    Tx ti  = x[i];
+    //Ty fc  = f(x);
+    x[i]   = ti + h; Ty fp = f(x);
+    x[i]   = ti - h; Ty fm = f(x);
+    H(i,i) = (fm - Tx(2)*fc + fp) / (h*h);
+    x[i] = ti;
+  }
+
+
+  // compute off-diagonal elements:
+  for(int i = 0; i < N; i++)
+  {
+    for(int j = i+1; j < N; j++)
     {
       Tx ti = x[i];
       Tx tj = x[j];
@@ -380,7 +395,7 @@ bool testNumericGradientAndHessian()
   // compute Hessian matrix numerically:
   rsMatrix<double> Hn(3, 3);
   hessian(f, &v[0], 3, Hn.getDataPointer(), h);
-  // seems like the diagonal elements are wrong - maybe we need a different formula for them
+  // looks good!
 
 
   return r;
