@@ -1221,47 +1221,6 @@ void multipleRegression()
 // what about sine frequencies? maybe the exponential can be made complex? -> figure out
 
 
-/** Convenience function to compute the solution vector b for the linear system A*x = b where A is
-an rsMatrix object and x is a std::vector. */
-template<class T>
-std::vector<T> solveLinearSystem(rsMatrix<T> A, std::vector<T> b)
-{
-  std::vector<T> x(b.size());
-  int M = A.getNumRows();
-  int N = A.getNumColumns();
-  T** B;
-  B = new T*[M];
-  for(int i = 0; i < M; i++)
-    B[i] = A.getRowPointer(i);
-  RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(B, &x[0], &b[0], N);
-  delete[] B;
-  return x;
-}
-// This is a temporary solution using the old Gaussian elimination code - todo: adapt that code 
-// for the new rsMatrix class - use the new elementary row-operations - try to use as little extra 
-// memory as possible - and if some is needed, use workspace parameters.
-// move to rsLinearAlgebra
-
-/** Convenience function to compute matrix-vector product y = A*x, taking an rsMatrixView reference
-for A and a raw array for x as inputs and producing the result as a std::vector. */
-template<class T>
-std::vector<T> matrixVectorProduct(const rsMatrixView<T>& A, const T* x)
-{
-  return A.productWith(x);
-
-  /*
-  int N = A.getNumColumns();
-  int M = A.getNumRows();
-  std::vector<T> y(M);
-  for(int i = 0; i < M; i++) {
-    y[i] = T(0);
-    for(int j = 0; j < N; j++)
-      y[i] += A(i, j) * x[j]; }
-  return y;
-  */
-}
-// move to rsMatrixView, maybe let it be called like A.productWith(T* x) or A.times(T* x)
-
 /** Computes the data matrix X that is used for polynomial fitting from the data array x of the 
 independent input variable x. Each row of the matrix contains a power of x, so the first row 
 (index 0) is all ones, the 2nd row (index 1) is the array x itself, the 3rd row (index 2) contains 
@@ -1291,9 +1250,9 @@ of the i-th regressor for y[j]. The solution is given by the vector b that satis
 template<class T>
 std::vector<T> multipleLinearRegression(const rsMatrix<T>& X, const T* y)
 {
-  rsMatrix<T>    XX  = X * X.getTranspose();       // XX  = X * X^T
-  std::vector<T> rhs = matrixVectorProduct(X, y);  // rhs = X * y
-  return solveLinearSystem(XX, rhs);               // solve (X * X^T) * b = X * y for b
+  rsMatrix<T>    XX  = X * X.getTranspose();    // XX  = X * X^T
+  std::vector<T> rhs = X.productWith(y);        // rhs = X * y
+  return rsLinearAlgebraNew::solveOld(XX, rhs); // solve (X * X^T) * b = X * y for b
 }
 // ToDo:
 // -optimizations:
@@ -1322,6 +1281,8 @@ RAPT::rsPolynomial<T> fitPolynomial(T* x, T* y, int numDataPoints, int degree)
   return RAPT::rsPolynomial<T>(fitPolynomialStdVec(x, y, numDataPoints, degree));
 }
 // move to library into class rsCurveFitter
+// ...how would this have to be generalized when either x or y or both are a complex number type?
+// or a vector type?
 
 
 void polynomialRegression()

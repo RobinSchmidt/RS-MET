@@ -185,6 +185,8 @@ template bool rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(double **A, doubl
 template bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(   double **A, double **B, double **C, int N);
 template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, const cmplxD *b, int N);
 
+template std::vector<double> rsLinearAlgebraNew::solveOld(rsMatrix<double> A, std::vector<double> b);
+
 template class RAPT::rsMatrixOld<double>;  // try to get rid
 
 template class RAPT::rsPolynomial<float>;

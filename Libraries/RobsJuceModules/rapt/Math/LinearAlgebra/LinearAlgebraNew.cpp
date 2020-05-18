@@ -158,13 +158,11 @@ template<class T>
 void rsLinearAlgebraNew::solveTriangular(
   rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
 {
-  //     if(rsIsCloseTo(biggest, T(0), tooSmall)) 
   T tol = 1.e-12;
   int M = X.getNumColumns();  // number of required solution vectors
   int N = A.getNumRows();     // number of elements in each solution vector
   for(int k = 0; k < M; k++) {
     for(int i = N-1; i >= 0; i--) {
-      //if(A(i, i) == T(0)) {   // needs tolerance
       if( rsIsCloseTo(A(i,i), T(0), tol) ) {
         X(i, k) = T(0);       
         continue;      }
@@ -176,6 +174,29 @@ void rsLinearAlgebraNew::solveTriangular(
 // what if A(i,i) == 0? it means that x_i doesn't occur in that equation for b_i, so it can have 
 // any value - maybe we should simply set it zero? or one?
 
+//-------------------------------------------------------------------------------------------------
+
+template<class T>
+std::vector<T> rsLinearAlgebraNew::solveOld(rsMatrix<T> A, std::vector<T> b)
+{
+  std::vector<T> x(b.size());
+  int M = A.getNumRows();
+  int N = A.getNumColumns();
+  T** B;
+  B = new T*[M];
+  for(int i = 0; i < M; i++)
+    B[i] = A.getRowPointer(i);
+  RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(B, &x[0], &b[0], N);
+  delete[] B;
+  return x;
+}
+// This is a temporary solution using the old Gaussian elimination code - todo: adapt that code 
+// for the new rsMatrix class - use the new elementary row-operations - try to use as little extra 
+// memory as possible - and if some is needed, use workspace parameters.
+// It's a bit of a frankensteinization of new code (using rsMatrix as input) and old code (using 
+// the old implementation of Gaussian elimination)
+
+
 /*
 
 ToDo:
@@ -185,7 +206,7 @@ ToDo:
  -based on that, implement pseudoInverse
 -implement makeSystemDiagonal/solveDiagonalSystem. should call makeSystemUpperTriangular and then
  further reduce the triangular system to a diagonal one - if possible, this should also produce
- the diagonalizer - this can be used for diagonalization later
+ the diagonalizer - this can be used for diagonalization later..or wait - no - maybe not
 -functions that ares still valid in the new framework (the band-diagonal and 2x2 stuff) shall
  eventually be moved over to here
 -implement Gram-Schmidt orthogonalization of a set of basis vectors
@@ -196,7 +217,7 @@ ToDo:
 
 
  -why is it that Gaussian elimination doesn't need to keep track of the swaps - or is this just 
-  accidentally he with out particular test examples? -> make unit tests with random matrices and 
+  accidentally with our particular test examples? -> make unit tests with random matrices and 
   vectors. i think, it's because when you swap rows of the coefficient matrix and do the same
   swap in the rhs vector, we don't need to swap anything in the x-vector
 

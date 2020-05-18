@@ -24,6 +24,12 @@ public:
   template<class T>
   static std::vector<T> solve(const rsMatrixView<T>& A, const std::vector<T>& b);
   // allocates
+  // maybe rename to solveRegular because this function can't deal with singular matrices. It 
+  // assumes A to be regular and will fail otherwise. A more general "solve" function should be 
+  // able to produce solutions for soluble singular systems, i.e. those singular systems which have 
+  // infinitely many solutions - in this case return a particular solution (the set of solutions
+  // is then given by the particular solution plus any linear combination of vectors that span the
+  // nullspace of A...right?)
 
   /** Returns the inverse of the given matrix A which is assumed to be a square matrix. */
   template<class T>
@@ -79,13 +85,14 @@ public:
 
   /** Transforms the augmented coefficient matrix A|B for a set of linear systems of equations of 
   the form A * X = B into an upper triangular form, a.k.a. "row echelon form". In this form, the 
-  corresponding linear system is easy to solve. It is a *set* of linear system because B may 
+  corresponding linear system is easy to solve. It is a *set* of linear systems because B may 
   contain several right hand side vectors and the matrix X should contain just as many solutions. 
   The process used is Gaussian elimination with partial pivoting. */
   template<class T>
   static int makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B);
-  // doesn't allocate, maybe rename to rowElimination or rowEchelonForm
-  // return value is the number of iterations taken unti no pivto could be found
+  // doesn't allocate, maybe rename to rowElimination or rowEchelonForm, or rowEchelonRegular
+  // return value is the number of iterations taken until no pivot could be found - is this the 
+  // rank? i think so -> figure out, if yes, add the info to the documentation
 
   /** Simplified version that doesn't use pivoting - this may fail even for non-singular 
   matrices, so it's not recommended for general use, but if you know that the elimination will 
@@ -113,6 +120,15 @@ public:
   template<class T>
   static void solveTriangular(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
   // doesn't allocate, todo: document, when this may be used in place
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Deprecated */
+
+  template<class T>
+  static std::vector<T> solveOld(rsMatrix<T> A, std::vector<T> b);
+
 
 };
 

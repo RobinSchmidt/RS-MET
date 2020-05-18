@@ -433,7 +433,9 @@ public:
   }
   // optimize using base-pointers
 
-
+  /** Like above but does it only for the column-indices in between minCol and maxCol (both 
+  ends inclusive). This is mainly for optimizing row operations when it is known that beyond 
+  minCol...maxCol only zeros occur in the source-row (this occurs in Gaussian elimination). */
   void addWeightedRowToOther(int iSrc, int iDst, T weight, int minCol, int maxCol)
   {
     rsAssert(isValidRowIndex(iSrc) && isValidRowIndex(iDst), "row index out of range");
@@ -449,7 +451,7 @@ public:
   // optimize using base-pointers
 
 
-  /** Scales the row with given index by the given scale factor. */
+  /** Scales the column with given index by the given scale factor. */
   void scaleColumn(int columnIndex, T scaler)
   {
     rsAssert(isValidColumnIndex(columnIndex), "column index out of range");
@@ -600,21 +602,23 @@ public:
             (*C)(startRow+ib, startCol+jb) = A.at(ia,ja) * B.at(ib, jb); }}}}
   }
 
-  /** Convenience function to compute matrix-vector product y = A*x, taking a raw array for x as 
-  input and producing the result as a std::vector. The length of the array x is assumed to match 
-  the number of columns of the matrix (this is not checked!). The length of the output vector y 
-  will be equal to the number of rows of the matrix. */
-  std::vector<T> productWith(const T* x) const
+  /** Computes the matrix-vector product y = A*x of this matrix with the given vector x and stores 
+  the result in y where x and y are given as raw arrays. The length of x must match the number of 
+  columns and the length of y must match the number of rows. */
+  void productWith(const T* x, T* y) const
   {
-    int N = getNumColumns();
-    int M = getNumRows();
-    std::vector<T> y(M);
-    for(int i = 0; i < M; i++) {
+    rsAssert(x != y, "Can't be used in place");
+    for(int i = 0; i < getNumRows(); i++) {
       y[i] = T(0);
-      for(int j = 0; j < N; j++)
+      for(int j = 0; j < getNumColumns(); j++)
         y[i] += at(i, j) * x[j]; }
-    return y;
   }
+
+  /** Convenience function to compute matrix-vector product y = A*x, taking a raw array for x as 
+  input and producing the result as a std::vector. */
+  std::vector<T> productWith(const T* x) const
+  { std::vector<T> y(getNumRows()); productWith(x, &y[0]); return y; }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Accessors */
