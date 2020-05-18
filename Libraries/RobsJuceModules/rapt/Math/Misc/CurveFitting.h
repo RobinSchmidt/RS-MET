@@ -16,7 +16,7 @@ generalizations to least-squares fitting (where we will allow numExponentials <=
 was already included as parameter. */
 template<class T>
 static bool fitExponentialSum(T* y, int numValues, T* A, T* a, int numExponentials);
-  // rename to fitExponentialSum
+
 
 // add fitLine, fitPolynomial, fitRational, 
 // fitPower: a * x^p + b ...p can be found by fitting a line to log-of-y-values

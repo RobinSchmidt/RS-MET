@@ -600,6 +600,21 @@ public:
             (*C)(startRow+ib, startCol+jb) = A.at(ia,ja) * B.at(ib, jb); }}}}
   }
 
+  /** Convenience function to compute matrix-vector product y = A*x, taking a raw array for x as 
+  input and producing the result as a std::vector. The length of the array x is assumed to match 
+  the number of columns of the matrix (this is not checked!). The length of the output vector y 
+  will be equal to the number of rows of the matrix. */
+  std::vector<T> productWith(const T* x) const
+  {
+    int N = getNumColumns();
+    int M = getNumRows();
+    std::vector<T> y(M);
+    for(int i = 0; i < M; i++) {
+      y[i] = T(0);
+      for(int j = 0; j < N; j++)
+        y[i] += at(i, j) * x[j]; }
+    return y;
+  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Accessors */

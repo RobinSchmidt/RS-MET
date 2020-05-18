@@ -87,7 +87,7 @@ public:
   is Gaussian elimination with partial pivoting (...i think -> verify this). */
   template<class T>
   static bool rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N);
-  // deprecate!..but keep aorund for the comments
+  // deprecate!..but keep around for the comments
 
   // todo: add functions to solve NxM systems with N != M (find minimum-norm solution for 
   // underdetermined systems and least-squares approximation for overdetermined systems...

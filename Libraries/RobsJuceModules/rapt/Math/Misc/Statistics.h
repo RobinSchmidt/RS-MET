@@ -20,6 +20,8 @@ public:
   template<class T>
   static T proportionalRegression(int N, const T* x, const T* y);
 
+  // maybe move these into rsCurveFitter and rename to fitLine, fitLineThroughZero
+
 };
 
 //=================================================================================================

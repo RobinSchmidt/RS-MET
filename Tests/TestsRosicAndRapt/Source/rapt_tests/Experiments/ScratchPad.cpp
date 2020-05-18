@@ -11,7 +11,7 @@ void cleanUpIntegers(T* a, int N, T tol)
     if( rsAbs(a[i] - rounded) < tol )
       a[i] = rounded; }
 }
-// move to rsArray, make a cersion for complex numbers that does the same thing for real and 
+// move to rsArray, make a version for complex numbers that does the same thing for real and 
 // imaginary parts separately
 
 //-------------------------------------------------------------------------------------------------
@@ -407,7 +407,7 @@ rsMatrix<T> getAdjugate(const rsMatrix<T>& A, int i, int j)
     for(jj = j+1; jj < N; ++jj)  Aij(ii-1, jj-1) = A(ii, jj); }  //   loop over right columns
   return Aij;
 }
-// make member of rsMatrix, the ii,jj are ugly - replace with i,j - maybe renqame current i,j into
+// make member of rsMatrix, the ii,jj are ugly - replace with i,j - maybe rename current i,j into
 // row, col
 
 
@@ -663,9 +663,10 @@ bool containsOnce(const T* A, int N, T x)
       found = true; }
   return found;
 }
+// move to rsArrayTools
 
-/** Returns true, if each of the indices form 0 to numIndices-1 (both inclusive) are contained 
-exactly once in the idices array. That means the array is a permutation of the numbers from
+/** Returns true, if each of the indices from 0 to numIndices-1 (both inclusive) are contained 
+exactly once in the indices array. That means the array is a permutation of the numbers from
 0 to numIndices-1. */
 bool isIndexPermutation(const int* indices, int numIndices)
 {
@@ -1462,7 +1463,7 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
 
 // Newton iteration with numric derivatives - todo: make a version that takes a second function to 
 // compute the analytic derivative
-// x is initial etsimate, y is target value for y
+// x is initial estimate, y is target value for y
 template<class T>
 T newton(const std::function<T(T)>& f, T x, T y = T(0))
 {
@@ -2242,7 +2243,7 @@ public:
   /** Sets the weights for the 3 color channels in the brightness computation formula: 
   brightness =  wr*r + wg*g + wb*b. The weights must sum up to unity. This weighting can be used to
   account for different sensitivity of the red, green and blue receptors such that a green with a 
-  given strength conributes more to the computed brightness that a blue of the same strength.  */
+  given strength conributes more to the computed brightness than a blue of the same strength.  */
   void setWeights(T redWeight, T greenWeight, T blueWeight)
   {
     wr = redWeight;

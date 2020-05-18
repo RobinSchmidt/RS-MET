@@ -1240,12 +1240,16 @@ std::vector<T> solveLinearSystem(rsMatrix<T> A, std::vector<T> b)
 // This is a temporary solution using the old Gaussian elimination code - todo: adapt that code 
 // for the new rsMatrix class - use the new elementary row-operations - try to use as little extra 
 // memory as possible - and if some is needed, use workspace parameters.
+// move to rsLinearAlgebra
 
 /** Convenience function to compute matrix-vector product y = A*x, taking an rsMatrixView reference
 for A and a raw array for x as inputs and producing the result as a std::vector. */
 template<class T>
 std::vector<T> matrixVectorProduct(const rsMatrixView<T>& A, const T* x)
 {
+  return A.productWith(x);
+
+  /*
   int N = A.getNumColumns();
   int M = A.getNumRows();
   std::vector<T> y(M);
@@ -1254,7 +1258,9 @@ std::vector<T> matrixVectorProduct(const rsMatrixView<T>& A, const T* x)
     for(int j = 0; j < N; j++)
       y[i] += A(i, j) * x[j]; }
   return y;
+  */
 }
+// move to rsMatrixView, maybe let it be called like A.productWith(T* x) or A.times(T* x)
 
 /** Computes the data matrix X that is used for polynomial fitting from the data array x of the 
 independent input variable x. Each row of the matrix contains a power of x, so the first row 
@@ -1272,6 +1278,9 @@ rsMatrix<T> polyFitDataMatrix(int numDataPoints, T* x, int degree)
     AT::multiply(X.getRowPointer(i-1), x, X.getRowPointer(i), N);
   return X;
 }
+// move to rsCurveFitter (as static protected function)
+// make a similar function to compute the data-matrix for chebychev-polynomials instead of powers
+// of x
 
 /** Performs a multiple linear regression for some array of a regressand y (dependent variable) 
 based on a number of regressors (independent variables) stored in a matrix X. Each row in the 
@@ -1286,11 +1295,20 @@ std::vector<T> multipleLinearRegression(const rsMatrix<T>& X, const T* y)
   std::vector<T> rhs = matrixVectorProduct(X, y);  // rhs = X * y
   return solveLinearSystem(XX, rhs);               // solve (X * X^T) * b = X * y for b
 }
+// ToDo:
+// -optimizations:
+//  -in the assignment: rsMatrix<T> XX = X * X.getTranspose(); 
+//   the product of X * X^T can be allocated and filled without explicitly creating the transposed
+//   matrix as temporary object - use some matrixMultiplySecondTransposed function (to be written)
+//  -the assignment c = solveLinearSystem(XX, rhs); with subsequent wrapping of the resultting 
+//   vector into a polynomial can be done avoiding the temporary std::vector object, operating
+//   directly on the array of polynomial coeffs in rsPolynomial
+
 
 /** Fits a polynomial to the data-points given in the x,y arrays and returns the resulting 
 polynomial coeffiencts as a std::vector.  */
 template<class T>
-std::vector<T> fitPolynomialStdVec(int numDataPoints, T* x, T* y, int degree)
+std::vector<T> fitPolynomialStdVec(T* x, T* y, int numDataPoints, int degree)
 {
   rsMatrix<T> X = polyFitDataMatrix(numDataPoints, x, degree);  // MxN data matrix X...
   return multipleLinearRegression(X, y);                        // ...used for the regressors
@@ -1299,38 +1317,12 @@ std::vector<T> fitPolynomialStdVec(int numDataPoints, T* x, T* y, int degree)
 /** Given two arrays of x-values and corresponding y-values, this function returns a polynomial 
 that fits the datapoints in the least-squares sense. */
 template<class T>
-RAPT::rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree)
+RAPT::rsPolynomial<T> fitPolynomial(T* x, T* y, int numDataPoints, int degree)
 {
-  return RAPT::rsPolynomial<T>(fitPolynomialStdVec(numDataPoints, x, y, degree));
+  return RAPT::rsPolynomial<T>(fitPolynomialStdVec(x, y, numDataPoints, degree));
 }
-// maybe change the signature to 
-//  fitPolynomial(const T* x, const T* y, int numDataPoints, int degree)
-// and then move it to the library or at least into the Prototypes section
+// move to library into class rsCurveFitter
 
-// ToDo:
-// -refactorizations:
-//  -the call to polyFitDataMatrix may use a functor that can be passed as parameter in order to
-//   create other types of data-matrices, using other basis functions - for example Chebychev 
-//   polynomials instead of the powers of x
-//  -maybe, we should do something like:
-//     X = createDataMatrix(...)
-//     return multipleRegression(X, y)
-// -optimizations:
-//  -in the assignment: rsMatrix<T> XX = X * X.getTranspose(); 
-//   the product of X * X^T can be allocated and filled without explicitly creating the transposed
-//   matrix as temporary object - use some matrixMultiplySecondTransposed function (to be written)
-//  -the assignment c = solveLinearSystem(XX, rhs); with subsequent wrapping of the resultting 
-//   vector into a polynomial can be done avoiding the temporary std::vector object, operating
-//   directly on the array of polynomial coeffs in rsPolynomial
-// todo: use the new matrix stuff - we should adapt the Gaussian elimination algorithm so it may
-// work with a matrix given in flat storage format...or maybe it should get a pointer to a 
-// MatrixView
-// this should be refactored in such a way that we get a general function for multiple linear 
-// regression that takes an array of regressors (pointer-to-pointer), an array of y-values and 
-// fills an array of regression coefficients - this general multiple-regression function can then 
-// be used for polynomial, sinusoidal or whatever regression. on top of that low-level API, 
-// convenience functions can be made such as the one here that directly returns an rsPolynomial 
-// object
 
 void polynomialRegression()
 {
@@ -1353,33 +1345,26 @@ void polynomialRegression()
   // The polynomial to generate our data is 1 - 2x + 3x^2 - 4x^3 + 5x^4:
   Poly p(Vec({ 5,-4,3,-2,1 }));  // todo: have a constructor that takes an inititalizer list
 
-  // Generate data:
+  // Generate clean and noisy data:
   int N = numDataPoints;
   Vec x(N), yc(N), yn(N);  // x-values, clean and noisy y-values
-  AT::fillWithRangeLinear(&x[0], N, xMin, xMax);
+  AT::fillWithRangeLinear(&x[0], N, xMin, xMax); // todo: maybe use noisy x-data, too
   RAPT::rsNoiseGenerator<double> prng;
   for(int n = 0; n < N; n++) {
     yc[n] = p(x[n]);
-    yn[n] = yc[n] + noise * prng.getSample();
-  }
+    yn[n] = yc[n] + noise * prng.getSample(); }
 
-  // estimate polynomial - make a convenience function that takes the data as input and returns
-  // an rsPolynomial object:
-  Poly qc = fitPolynomial(N, &x[0], &yc[0], modelDegree); // fit to the clean data
-  Poly qn = fitPolynomial(N, &x[0], &yn[0], modelDegree); // fit to the noisy data
+  // Fit polynomials to clean and noisy data:
+  Poly qc = fitPolynomial(&x[0], &yc[0], N, modelDegree); // fit to the clean data
+  Poly qn = fitPolynomial(&x[0], &yn[0], N, modelDegree); // fit to the noisy data
 
-  // coeffs are in reversed order but otherwise correct - although numerically not very precise
-
-  // todo: plot also the predictions form the two models obtained from the clean and noisy data
-
-  //create prediction data from the two models:
+  // Create prediction data from the two models:
   Vec zc(N), zn(N);
   for(int n = 0; n < N; n++) {
     zc[n] = qc(x[n]);
-    zn[n] = qn(x[n]);
-  }
+    zn[n] = qn(x[n]); }
 
-  // plot:
+  // Plot:
   rsPlotVectorsXY(x, yc, zc);      // plot clean true data and model-predicted data
   rsPlotVectorsXY(x, yc, yn, zn);  // plot noisy
   //GNUPlotter plt;
@@ -1420,6 +1405,10 @@ void polynomialRegression()
 }
 
 // todo: 
+// -fit a bunch of cosines with gaussian envelopes to the "multipass Butterworth" function 
+//  f(x) = 1 / (1 + x^N)^M
+//  -> nice test for fiiting an arbitrary set of basis functions to data
+//  -> may be useful for implementing the IIR lens blur effect
 
 
 
