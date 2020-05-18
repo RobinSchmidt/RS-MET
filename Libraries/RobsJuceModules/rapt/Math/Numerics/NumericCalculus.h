@@ -184,6 +184,9 @@ public:
   // -test it with some standard functions like exp, log, sin, cos, tan, 1/x, 1/(1+x^2) - maybe 
   //  polynomials (in which case we should get exact results, if the number of stencil points 
   //  matches the degree)
+  // -compute gradient of a multivariate function
+  //  -this function should take a raw array (i.e. pointer) as input
+  // -derive and implement function to compute a Hessian matrix of a multivariate function
 
 
   // maybe implement more accurate formulas - formulas can be produced by

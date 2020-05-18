@@ -328,23 +328,23 @@ MultivariateErrorFunction<T>::~MultivariateErrorFunction()
 template<class T>
 rsVectorDbl MultivariateErrorFunction<T>::getGradient(rsVectorDbl p)
 {
-  rsVectorDbl g(p.dim);     // gradient vector to be computed
-  T eps = 0.00001;     // epsilon for the approximation
-  T pTmp;              // for temporary storage
-  T ep;                // error at p[i] + eps
-  T em;                // error at p[i] - eps
+  rsVectorDbl g(p.dim);   // gradient vector to be computed
+  T h = 0.00001;          // stepsize for the approximation
+  //T pTmp;                 // for temporary storage
+  //T ep;                   // error at p[i] + eps
+  //T em;                   // error at p[i] - eps
   for(int i=0; i<p.dim; i++)
   {
-    pTmp   = p.v[i];
-    p.v[i] = pTmp + eps;
-    ep     = getValue(p);
-    p.v[i] = pTmp - eps;
-    em     = getValue(p);
-    g.v[i] = (ep-em) / (2.0*eps);
+    T pTmp = p.v[i];                        // for temporary storage
+    p.v[i] = pTmp + h; T ep = getValue(p);  // ep = error at p[i] + h
+    p.v[i] = pTmp - h; T em = getValue(p);  // em = error at p[i] - h
+    g.v[i] = (ep-em) / (2.0*h);
     p.v[i] = pTmp;
   }
   return g;
 }
+// todo: take p as raw array, produce g laos as raw array (2nd parameter) something like
+// void gradient(const T* p, T* g), dimensionality should be member of this class
 
 template<class T>
 rsVectorDbl MultivariateErrorFunction<T>::getVectorTimesHessianApproximate(rsVectorDbl p,

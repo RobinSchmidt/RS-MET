@@ -1380,6 +1380,8 @@ void gaussianRegression()
 class ButterworthGaussError : public RAPT::MultivariateErrorFunction<double>
 {
 
+public:
+
   double getGaussSum(const rsVectorDbl& p, double x)
   {
     rsAssert(p.dim % 3 == 0, "Length of p should be a multiple of 3");
@@ -1396,9 +1398,20 @@ class ButterworthGaussError : public RAPT::MultivariateErrorFunction<double>
     return result;
   }
 
+  double getTarget(double x)
+  {
+    return 1.0 / pow((1 + pow(x, 2*order)), passes);
+  }
+
+  double getX(int i)
+  {
+    return i*xMax / double(numSamples-1);
+  }
+
   double getError(rsVectorDbl p, double x)
   {
-    double target = 1.0 / pow((1 + pow(x, 2*order)), passes);
+    //double target = 1.0 / pow((1 + pow(x, 2*order)), passes);
+    double target = getTarget(x);
     double actual = getGaussSum(p, x);
     return target - actual;
   }
@@ -1408,7 +1421,8 @@ class ButterworthGaussError : public RAPT::MultivariateErrorFunction<double>
     double maxAbs = 0.0;
     for(int i = 0; i < numSamples; i++)
     {
-      double x = i*xMax / double(numSamples-1);
+      //double x = i*xMax / double(numSamples-1);
+      double x = getX(i);
       double delta  = rsAbs(getError(p, x));
       if(delta > maxAbs)
         maxAbs = delta;
@@ -1421,7 +1435,8 @@ class ButterworthGaussError : public RAPT::MultivariateErrorFunction<double>
     double sum = 0.0;
     for(int i = 0; i < numSamples; i++)
     {
-      double x   = i*xMax / double(numSamples-1);
+      //double x   = i*xMax / double(numSamples-1);
+      double x   = getX(i);
       double err = getError(p, x);
       sum += err*err;
     }
@@ -1435,13 +1450,27 @@ class ButterworthGaussError : public RAPT::MultivariateErrorFunction<double>
     //return sqrt(getValueMeanSquare(p));
   }
 
+  void plot(rsVectorDbl p)
+  {
+    GNUPlotter plt;
+    std::vector<double> x(numSamples), t(numSamples), y(numSamples), e(numSamples);
+    for(int i = 0; i < numSamples; i++)
+    {
+      x[i] = getX(i);
+      t[i] = getTarget(x[i]);
+      y[i] = getGaussSum(p, x[i]);
+      e[i] = t[i] - y[i];
+    }
+    plt.addDataArrays(numSamples, &x[0], &t[0], &y[0], &e[0]);
+    plt.plot();
+  }
 
 protected:
 
   int numSamples = 200;
   double xMax = 3.0;
 
-  int order  = 6;
+  int order  = 6; // lower orders are easier to approximate
   int passes = 1;
 
 };
@@ -1461,29 +1490,42 @@ void butterworthViaGaussians()
   minimizer.setAlgorithm(minimizer.SCALED_CONJUGATE_GRADIENT);
   //minimizer.setAlgorithm(minimizer.CONJUGATE_GRADIENT);
   //minimizer.setMaxNumSteps(300);
-  minimizer.setStepSize(0.1);
+  minimizer.setStepSize(1.0);
   minimizer.setConvergenceThreshold(1.e-7);  // with 1.e-8, it doesn't converge
-  minimizer.setPrintInfo(true); // not very useful - just shits the screen full
+
+  minimizer.setPrintInfo(true);
+  // when using the max-abs error, the info-printing messes up the screen and the result is not 
+  // good
 
   using Vec = std::vector<double>;
 
-  Vec p({0.768,0,1, 0.759,1,1, -0.427,2,1, -0.258,3,1, 0.0536,4,1, 0.2297,5,1, -0.1325,6,1});
+  Vec ps({0.768,0,1, 0.759,1,1, -0.427,2,1, -0.258,3,1, 0.0536,4,1, 0.2297,5,1, -0.1325,6,1});
+  // maybe make a function to compute an initial guess based on linear regression
 
   // test: use a perturbed start vector
   //Vec p({0.768,0,1, 0.759,1.1,1, -0.427,2.1,1, -0.258,3,1, 0.0536,4,1, 0.2297,5,1, -0.1325,6,1});
 
-  rsVectorDbl pInitial(p);  // the requirement to convert is unelegant!
+  rsVectorDbl pInitial(ps);  // the requirement to convert is unelegant!
+
+  errFunc.plot(pInitial);
+
   rsVectorDbl pFinal = minimizer.minimizeFunction(&errFunc, pInitial);
-  p = pFinal.toStdVector();  
+  Vec pe = pFinal.toStdVector();  
   // almost unchanged - something is wrong! it uses the maximum number of iterations and the 
   // stepsize is denormal at the end
   // OK - using minimizer.setAlgorithm(minimizer.GRADIENT_DESCENT); fixes this - but then, the
   // error oscillates - no convergence
 
-  // todo: plot the sum of Gaussians after optimization
+  // todo: plot the sum of Gaussians after optimization - hmm - the improvement is not very 
+  // impressive...i think, something is still wrong
   // optimize also with scipy and compare results
 
+  errFunc.plot(pFinal);
+
   int dummy = 0;
+
+  // ToDo: move the old minimization code into the rs_testing module - it's not good enough for the
+  // library yet
 }
 
 
