@@ -1225,6 +1225,7 @@ void multipleRegression()
 independent input variable x. Each row of the matrix contains a power of x, so the first row 
 (index 0) is all ones, the 2nd row (index 1) is the array x itself, the 3rd row (index 2) contains 
 the squared x values, etc. */
+/*
 template<class T>
 rsMatrix<T> polyFitDataMatrix(int numDataPoints, T* x, int degree)
 {
@@ -1237,6 +1238,7 @@ rsMatrix<T> polyFitDataMatrix(int numDataPoints, T* x, int degree)
     AT::multiply(X.getRowPointer(i-1), x, X.getRowPointer(i), N);
   return X;
 }
+*/
 // move to rsCurveFitter (as static protected function)
 // make a similar function to compute the data-matrix for chebychev-polynomials instead of powers
 // of x
@@ -1247,6 +1249,7 @@ X-matrix should contain values of an regressand such that the X(i, j) matrix ele
 of the i-th regressor for y[j]. The solution is given by the vector b that satisfies: 
    (X * X^T) * b = X * y.  
 ("normal equations"? - look up!) */
+/*
 template<class T>
 std::vector<T> multipleLinearRegression(const rsMatrix<T>& X, const T* y)
 {
@@ -1254,6 +1257,7 @@ std::vector<T> multipleLinearRegression(const rsMatrix<T>& X, const T* y)
   std::vector<T> rhs = X.productWith(y);        // rhs = X * y
   return rsLinearAlgebraNew::solveOld(XX, rhs); // solve (X * X^T) * b = X * y for b
 }
+*/
 // ToDo:
 // -optimizations:
 //  -in the assignment: rsMatrix<T> XX = X * X.getTranspose(); 
@@ -1266,20 +1270,24 @@ std::vector<T> multipleLinearRegression(const rsMatrix<T>& X, const T* y)
 
 /** Fits a polynomial to the data-points given in the x,y arrays and returns the resulting 
 polynomial coeffiencts as a std::vector.  */
+/*
 template<class T>
 std::vector<T> fitPolynomialStdVec(T* x, T* y, int numDataPoints, int degree)
 {
   rsMatrix<T> X = polyFitDataMatrix(numDataPoints, x, degree);  // MxN data matrix X...
   return multipleLinearRegression(X, y);                        // ...used for the regressors
 }
+*/
 
 /** Given two arrays of x-values and corresponding y-values, this function returns a polynomial 
 that fits the datapoints in the least-squares sense. */
+/*
 template<class T>
 RAPT::rsPolynomial<T> fitPolynomial(T* x, T* y, int numDataPoints, int degree)
 {
   return RAPT::rsPolynomial<T>(fitPolynomialStdVec(x, y, numDataPoints, degree));
 }
+*/
 // move to library into class rsCurveFitter
 // ...how would this have to be generalized when either x or y or both are a complex number type?
 // or a vector type?
@@ -1302,6 +1310,7 @@ void polynomialRegression()
   typedef std::vector<double> Vec;
   typedef RAPT::rsPolynomial<double> Poly;
   typedef RAPT::rsArrayTools AT;
+  typedef RAPT::rsCurveFitter CF;
 
   // The polynomial to generate our data is 1 - 2x + 3x^2 - 4x^3 + 5x^4:
   Poly p(Vec({ 5,-4,3,-2,1 }));  // todo: have a constructor that takes an inititalizer list
@@ -1316,8 +1325,8 @@ void polynomialRegression()
     yn[n] = yc[n] + noise * prng.getSample(); }
 
   // Fit polynomials to clean and noisy data:
-  Poly qc = fitPolynomial(&x[0], &yc[0], N, modelDegree); // fit to the clean data
-  Poly qn = fitPolynomial(&x[0], &yn[0], N, modelDegree); // fit to the noisy data
+  Poly qc = CF::fitPolynomial(&x[0], &yc[0], N, modelDegree); // fit to the clean data
+  Poly qn = CF::fitPolynomial(&x[0], &yn[0], N, modelDegree); // fit to the noisy data
 
   // Create prediction data from the two models:
   Vec zc(N), zn(N);
@@ -1345,6 +1354,9 @@ void polynomialRegression()
   // todo: 
   // -make plots that show several model-orders in a single plot to see, how the fit gets 
   //  better as the model degree goes up
+  // -maybe the library should provide a function that suggests a model order based on the drop-off
+  //  of the approximation error as function of the model degree - when the gains diminish, we have
+  //  found the "right" model degree
   
   // -compare approximating a sinewave with polynomials - once using a Taylor series and once using
   //  a least squares fit over one cycle (maybe from -pi...pi)

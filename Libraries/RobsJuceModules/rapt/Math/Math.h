@@ -10,8 +10,11 @@ namespace RAPT
 #include "LinearAlgebra/BandDiagonalSolver.hpp"
 #include "Types/Vector.h"  // move to LinearAlgebra
 #include "Types/Matrix.h"
+#include "Types/Polynomial.h"
 #include "LinearAlgebra/LinearAlgebra.h"
 #include "LinearAlgebra/LinearAlgebraNew.h"
+// maybe matrices, vectors, tensors, polynomials and rational functions should be in an "Algebra"
+// folder
 
 #include "Misc/FourierTransformer.h"
 #include "Misc/Statistics.h"
@@ -31,8 +34,6 @@ namespace RAPT
 #include "Functions/FunctionObjects.h" // obsolete thx to std::function?
 #include "Functions/Sigmoids.h"
 #include "Functions/SinCosTable.h"
-
-#include "Types/Polynomial.h"  // maybe move to Functions
 
 #include "Geometry/Line2D.h"
 #include "Geometry/ConicSection.h"

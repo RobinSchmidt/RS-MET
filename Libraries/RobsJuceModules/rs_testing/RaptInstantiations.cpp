@@ -371,6 +371,8 @@ template void RAPT::rsStatistics::linearRegression(int N, const float* x, const 
 template float RAPT::rsStatistics::proportionalRegression(int N, const float* x, const float* y);
 template void RAPT::rsRemoveCorrelationBias(double x[], int N, double r[]);
 
+template rsPolynomial<double> RAPT::rsCurveFitter::fitPolynomial(
+  double* x, double* y, int numDataPoints, int degree);
 
 template class RAPT::rsMultiArrayOld<float>;
 
