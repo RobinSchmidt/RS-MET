@@ -308,6 +308,8 @@ void hessian(const F& f, Tx* x, int N, Ty* pH, const Tx& h)
     }
   }
 
+  // maybe we need to compute the diagonal elements separately? they seem to come out wrong
+
   int dummy = 0;
 }
 
@@ -341,6 +343,19 @@ bool testNumericGradientAndHessian()
   //          f_xx  f_xy  f_xz
   //   H(f) = f_yx  f_yy  f_yz
   //          f_zx  f_zy  f_zz
+  auto Hf = [=](double* v)->rsMatrix<double>
+  {
+    double x = v[0], y = v[1], z = v[2];
+    rsMatrix<double> H(3,3);
+    H(0,0)          = 2*1 * y*y*y * z*z*z*z;  // f_xx
+    H(0,1) = H(1,0) = 2*x * 3*y*y * z*z*z*z;  // f_xy = f_yx
+    H(0,2) = H(2,0) = 2*x * y*y*y * 4*z*z*z;  // f_xz = f_zx
+    H(1,1)          = x*x * 3*2*y * z*z*z*z;  // f_yy
+    H(1,2) = H(2,1) = x*x * 3*y*y * 4*z*z*z;  // f_yz = f_zy
+    H(2,2)          = x*x * y*y*y * 4*3*z*z;  // f_zz
+    return H;
+  };
+
 
   using Vec = std::vector<double>;
 
@@ -359,9 +374,13 @@ bool testNumericGradientAndHessian()
   double maxErr = rsMaxAbs(err);
   r &= maxErr == 0.0;
 
+  // compute Hessian matrix analytically:
+  rsMatrix<double> Ha = Hf(&v[0]);
+
   // compute Hessian matrix numerically:
-  rsMatrix<double> H(3, 3);
-  hessian(f, &v[0], 3, H.getDataPointer(), h);
+  rsMatrix<double> Hn(3, 3);
+  hessian(f, &v[0], 3, Hn.getDataPointer(), h);
+  // seems like the diagonal elements are wrong - maybe we need a different formula for them
 
 
   return r;
