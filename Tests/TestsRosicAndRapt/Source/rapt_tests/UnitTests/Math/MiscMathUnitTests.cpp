@@ -263,22 +263,25 @@ bool testNumDiffStencils()
   // todo: try some weird stencils (asymmetric and/or non-equidistant, even  number of points,...)
 }
 
+// move to rsNumericDifferentiator:
 template<class Tx, class Ty, class F>
-void gradient(const F& f, Tx* x, int N, const Tx& h, Ty* g)
+void gradient(const F& f, Tx* x, int N, Ty* g, const Tx& h)
 {
   for(int n = 0; n < N; n++)
   {
-    Tx tmp = x[n];
-    x[n]   = tmp + h; Ty fp = f(x);
-    x[n]   = tmp - h; Ty fm = f(x);
-    g[n]   = (fp-fm) / (2*h);
-    x[n]   = tmp;
+    Tx t = x[n];                  // temporary
+    x[n] = t + h; Ty fp = f(x);
+    x[n] = t - h; Ty fm = f(x);
+    g[n] = (fp-fm) / (2*h);
+    x[n] = t;                     // restore x[n]
   }
 }
 // hmm - should the gradient be of type Tx or Ty? or maybe there should be just one type? what if
 // y is a vector? then f would take an N-dim vector and produce a vector of possibly other 
 // dimensionality - would this function then compute the Jacobian? i think, it would be natural, if
-// it would
+// it would -> try it using rsVector2D for Ty
+// todo: maybe allow to pass an array of stepsize values h such that we may use a different value
+// for each dimension
 
 bool testNumericGradientAndHessian()
 {
@@ -286,21 +289,30 @@ bool testNumericGradientAndHessian()
 
   bool r = true;
 
-  // f(x,y,z) = x^2 * y^3 * z^4, v is a 3D vector
+  // Our example is the trivariate scalar function:
+  //   f(x,y,z) = x^2 * y^3 * z^4
+  // where v = (x y z) is the 3D input vector.
   auto f = [=](double* v)->double
   { 
     double x = v[0], y = v[1], z = v[2];
     return x*x * y*y*y * z*z*z*z; 
   };
 
-  // gradient of f (will be written into g):
+  // Computes the gradient of f:
+  //   g(f) = (f_x  f_y  f_z)
+  // at the given position v analytically and writes the result into g:
   auto gf = [=](double* v, double* g)
   {
     double x = v[0], y = v[1], z = v[2];
-    g[0] = 2*x * y*y*y * z*z*z*z;
-    g[1] = x*x * 3*y*y * z*z*z*z;
-    g[2] = x*x * y*y*y * 4*z*z*z;
+    g[0] = 2*x * y*y*y * z*z*z*z;  // f_x
+    g[1] = x*x * 3*y*y * z*z*z*z;  // f_y
+    g[2] = x*x * y*y*y * 4*z*z*z;  // f_z
   };
+
+  // todo: compute Hessian matrix:
+  //          f_xx  f_xy  f_xz
+  //   H(f) = f_yx  f_yy  f_yz
+  //          f_zx  f_zy  f_zz
 
   using Vec = std::vector<double>;
 
@@ -313,7 +325,7 @@ bool testNumericGradientAndHessian()
   Vec gn(3);            // numeric gardient
 
 
-  gradient(f, &v[0], 3, h, &gn[0]);  // maybe swap g and h
+  gradient(f, &v[0], 3, &gn[0], h);
 
   Vec err = ga - gn;
   double maxErr = rsMaxAbs(err);
