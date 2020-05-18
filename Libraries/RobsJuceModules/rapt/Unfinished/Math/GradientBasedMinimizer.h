@@ -64,7 +64,8 @@ public:
   ~GradientBasedMinimizer();
 
   //---------------------------------------------------------------------------------------------
-  // setup:
+  // \name Setup
+  // todo: remove the virtual declarations
 
   /**  If you want to see the progress of the algorithm at the standard output, set this to
   true. */
@@ -78,8 +79,8 @@ public:
     convergenceThreshold = newThreshold;
   }
 
-/** Sets the maximum number of steps that the algorithm will take in order not run indefinitely
-in cases where it doesn't converge. */
+  /** Sets the maximum number of steps that the algorithm will take in order not run indefinitely
+  in cases where it doesn't converge. */
   virtual void setMaxNumSteps(int newMaximum) { maxNumSteps = newMaximum; }
 
   /** Selects one of the optimization algorithms. @see: algorithms */
@@ -101,6 +102,11 @@ in cases where it doesn't converge. */
   {
     rsAssert(newMomentum >= 0.0 && newMomentum < 1.0, "Momentum out of range");
     momentum = rsClip(newMomentum, 0.0, 1.0);
+  }
+
+  void setStepSize(T newStepSize)
+  {
+    stepsize = newStepSize;
   }
 
   //---------------------------------------------------------------------------------------------

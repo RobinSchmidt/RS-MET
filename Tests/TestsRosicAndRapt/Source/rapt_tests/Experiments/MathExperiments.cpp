@@ -1419,20 +1419,45 @@ class ButterworthGaussError : public RAPT::MultivariateErrorFunction<double>
     return result;
   }
 
-  virtual double getValue(rsVectorDbl p) override
+  double getError(rsVectorDbl p, double x)
+  {
+    double target = 1.0 / pow((1 + pow(x, 2*order)), passes);
+    double actual = getGaussSum(p, x);
+    return target - actual;
+  }
+
+  double getValueMaxAbs(rsVectorDbl p)
   {
     double maxAbs = 0.0;
     for(int i = 0; i < numSamples; i++)
     {
       double x = i*xMax / double(numSamples-1);
-      double target = 1.0 / pow((1 + pow(x, 2*order)), passes);
-      double actual = getGaussSum(p, x);
-      double delta  = rsAbs(target - actual);
+      double delta  = rsAbs(getError(p, x));
       if(delta > maxAbs)
         maxAbs = delta;
     }
     return maxAbs;
   }
+
+  double getValueMeanSquare(rsVectorDbl p)
+  {
+    double sum = 0.0;
+    for(int i = 0; i < numSamples; i++)
+    {
+      double x   = i*xMax / double(numSamples-1);
+      double err = getError(p, x);
+      sum += err*err;
+    }
+    return sum / numSamples;
+  }
+
+  virtual double getValue(rsVectorDbl p) override
+  {
+    //return getValueMaxAbs(p);
+    return getValueMeanSquare(p);
+    //return sqrt(getValueMeanSquare(p));
+  }
+
 
 protected:
 
@@ -1450,16 +1475,25 @@ void butterworthViaGaussians()
   // Optimizes the parameters to approximate a Butterworth function by a sum of cosines with 
   // Gaussian envelopes...
 
+  using Minimizer = GradientBasedMinimizer<double>;
+
   ButterworthGaussError errFunc;
-  GradientBasedMinimizer<double> minimizer;
-  //minimizer.setPrintInfo(true); // not very useful - just shits the screen full
+  Minimizer minimizer;
+  minimizer.setAlgorithm(minimizer.GRADIENT_DESCENT);
+  minimizer.setMaxNumSteps(300);
+  minimizer.setStepSize(0.1);
+  minimizer.setPrintInfo(true); // not very useful - just shits the screen full
 
   using Vec = std::vector<double>;
 
   Vec p({0.768,0,1, 0.759,1,1, -0.427,2,1, -0.258,3,1, 0.0536,4,1, 0.2297,5,1, -0.1325,6,1});
   rsVectorDbl pInitial(p);  // the requirement to convert is unelegant!
   rsVectorDbl pFinal = minimizer.minimizeFunction(&errFunc, pInitial);
-  p = pFinal.toStdVector();  // almost unchanged - something is wrong!
+  p = pFinal.toStdVector();  
+  // almost unchanged - something is wrong! it uses the maximum number of iterations and the 
+  // stepsize is denormal at the end
+  // OK - using minimizer.setAlgorithm(minimizer.GRADIENT_DESCENT); fixes this - but then, the
+  // error oscillates - no convergence
 
   int dummy = 0;
 }

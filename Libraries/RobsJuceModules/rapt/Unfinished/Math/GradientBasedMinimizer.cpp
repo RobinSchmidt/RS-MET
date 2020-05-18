@@ -50,7 +50,7 @@ rsVectorDbl GradientBasedMinimizer<T>::minimizeFunction(
 template<class T>
 void GradientBasedMinimizer<T>::minimizeViaGradientDescent()
 {
-  stepsize     = 0.1;                                  // ad-hoc - use something better
+  //stepsize     = 0.1;                                  // ad-hoc - use something better
   g            = functionToMinimize->getGradient(p);   // gradient
   converged    = false;
   step         = 0;
