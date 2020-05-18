@@ -1323,15 +1323,21 @@ void gaussianRegression()
   using Vec = std::vector<double>;
   using AT  = rsArrayTools;
 
+  // freqs of the cosines:
+  Vec freqs = Vec({0, 1}); 
+  //Vec freqs = Vec({0, 1, 2}); 
   //Vec freqs = Vec({0, 1, 2, 3, 4}); 
   //Vec freqs = Vec({0, 1, 2, 3, 4, 5}); 
-  Vec freqs = Vec({0, 1, 2, 3, 4, 5, 6}); 
-  //Vec freqs = Vec({1, 2, 3, 4, 5, 6}); 
+  //Vec freqs = Vec({0, 1, 2, 3, 4, 5, 6}); 
+  //Vec freqs = Vec({1, 2, 3, 4, 5, 6});
   //Vec freqs = Vec({0, 1, 2, 4, 8}); 
-  //Vec freqs = Vec({0, 1, 2, 3, 4, 5, 6, 7, 8});    // freqs of the cosines
+  //Vec freqs = Vec({0, 1, 2, 3, 4, 5, 6, 7, 8});
+  //Vec freqs = Vec({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11});
+  
+  //Vec freqs = rsRangeLinear(0.0, numGaussians-1.0, numGaussians); 
 
   //Vec w = 0.25*PI*freqs;                   // omegas
-  Vec w = 0.5*PI*freqs;                   // omegas
+  Vec w = 0.5*PI*freqs;                   // omegas - this seems to be most suitable
   //Vec w = 0.75*PI*freqs;                   // omegas
   //Vec w = 1.0*PI*freqs;                   // omegas
   //Vec w = 2.0*PI*freqs;                   // omegas
@@ -1348,32 +1354,20 @@ void gaussianRegression()
   // create the regressands:
   rsMatrix<double> R(numGaussians, N);
   for(int i = 0; i < numGaussians; i++)
-  {
     for(int n = 0; n < N; n++)
-    {
-      R(i, n) = exp(-x[n]*x[n]) * cos(w[i]*x[n]);
-      // todo: use adjustable variances for the gaussians
-    }
-  }
+      R(i, n) = exp(-x[n]*x[n]) * cos(w[i]*x[n]); // todo: use adjustable variances
 
 
-  //plotMatrixRows(R, x);
+  plotMatrixRows(R, x);
   //rsPlotArraysXY(N, x, y); 
 
-
   Vec A = rsCurveFitter::multipleRegression(R, y); // amplitudes of the Gaussians
-
-
   GNUPlotter plt;
   plt.addDataArrays(N, x, y);
   AT::fillWithZeros(z, N);
   for(int i = 0; i < numGaussians; i++)
-  {
     for(int n = 0; n < N; n++)
-    {
       z[n] += A[i] * R(i, n);
-    }
-  }
   plt.addDataArrays(N, x, z);
   plt.plot();
 
@@ -1479,14 +1473,22 @@ void butterworthViaGaussians()
 
   ButterworthGaussError errFunc;
   Minimizer minimizer;
-  minimizer.setAlgorithm(minimizer.GRADIENT_DESCENT);
-  minimizer.setMaxNumSteps(300);
+  //minimizer.setAlgorithm(minimizer.GRADIENT_DESCENT);
+  //minimizer.setAlgorithm(minimizer.BOLD_DRIVER_WITH_MOMENTUM);
+  minimizer.setAlgorithm(minimizer.SCALED_CONJUGATE_GRADIENT);
+  //minimizer.setAlgorithm(minimizer.CONJUGATE_GRADIENT);
+  //minimizer.setMaxNumSteps(300);
   minimizer.setStepSize(0.1);
+  minimizer.setConvergenceThreshold(1.e-7);  // with 1.e-8, it doesn't converge
   minimizer.setPrintInfo(true); // not very useful - just shits the screen full
 
   using Vec = std::vector<double>;
 
   Vec p({0.768,0,1, 0.759,1,1, -0.427,2,1, -0.258,3,1, 0.0536,4,1, 0.2297,5,1, -0.1325,6,1});
+
+  // test: use a perturbed start vector
+  //Vec p({0.768,0,1, 0.759,1.1,1, -0.427,2.1,1, -0.258,3,1, 0.0536,4,1, 0.2297,5,1, -0.1325,6,1});
+
   rsVectorDbl pInitial(p);  // the requirement to convert is unelegant!
   rsVectorDbl pFinal = minimizer.minimizeFunction(&errFunc, pInitial);
   p = pFinal.toStdVector();  
@@ -1494,6 +1496,9 @@ void butterworthViaGaussians()
   // stepsize is denormal at the end
   // OK - using minimizer.setAlgorithm(minimizer.GRADIENT_DESCENT); fixes this - but then, the
   // error oscillates - no convergence
+
+  // todo: plot the sum of Gaussians after optimization
+  // optimize also with scipy and compare results
 
   int dummy = 0;
 }

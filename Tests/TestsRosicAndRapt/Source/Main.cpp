@@ -106,8 +106,8 @@ int main(int argc, char* argv[])
   //linearRegression();
   //multipleRegression();
   //polynomialRegression();
-  //gaussianRegression();
-  butterworthViaGaussians();
+  gaussianRegression();
+  //butterworthViaGaussians();
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();
