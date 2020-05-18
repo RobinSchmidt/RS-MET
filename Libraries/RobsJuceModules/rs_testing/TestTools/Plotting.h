@@ -191,10 +191,18 @@ several functions of x where x is the column index. */
 template<class T>
 void plotMatrixRows(const RAPT::rsMatrix<T>& A)
 {
-
   GNUPlotter plt;
   for(int i = 0; i < A.getNumRows(); i++)
     plt.addDataArrays(A.getNumColumns(), A.getRowPointerConst(i));
+  plt.plot();
+}
+
+template<class T>
+void plotMatrixRows(const RAPT::rsMatrix<T>& A, T* x)
+{
+  GNUPlotter plt;
+  for(int i = 0; i < A.getNumRows(); i++)
+    plt.addDataArrays(A.getNumColumns(), x, A.getRowPointerConst(i));
   plt.plot();
 }
 

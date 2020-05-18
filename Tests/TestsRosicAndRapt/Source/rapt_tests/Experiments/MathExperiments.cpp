@@ -1314,16 +1314,51 @@ void gaussianRegression()
   //  -> may be useful for implementing the IIR lens blur effect
 
 
-  int numDataPoints = 100;
-  double xMax = 5.0;
+  static const int N = 100;  // number of data points
+  double xMax = 3.0;
+  int order  = 8;    // Butterworth order
+  int passes = 1;    // number of passes for Butterworth filter
 
-  int N = 5;
-  int M = 1;
+
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
+
+
+  Vec freqs = Vec({0, 1, 2, 3, 4, 5});    // freqs of the cosines
+  Vec w = 0.5*PI*freqs;                   // omegas
+  int numGaussians = (int) w.size();
+  // todo: variances (sigma)
+
+  double x[N], y[N], z[N];
+
+  // create the target data:
+  AT::fillWithRangeLinear(x, N, 0.0, xMax);
+  for(int n = 0; n < N; n++)
+    y[n] = 1.0 / pow((1 + pow(x[n], 2*order)), passes);
+
+  // create the regressands:
+  rsMatrix<double> R(numGaussians, N);
+  for(int i = 0; i < numGaussians; i++)
+  {
+    for(int n = 0; n < N; n++)
+    {
+      R(i, n) = exp(-x[n]*x[n]) * cos(w[i]*x[n]);
+      // todo: use adjustable variances for the gaussians
+    }
+  }
+
+
+  plotMatrixRows(R, x);
+  rsPlotArraysXY(N, x, y); 
+
+
+  Vec A = rsCurveFitter::multipleRegression(R, y);
+
+  // todo: plot scaled regressands and their sum and target function y in one plot
 
 
 
   int dummy = 0;
-
 }
 
 
