@@ -262,7 +262,7 @@ public:
   expensive, so you really should override this function in your subclass if you have some better
   algorithm to compute the gradient for the problem at hand.  */
   virtual rsVectorDbl getGradient(rsVectorDbl p);
-   // use vector of template type T
+   // use const reference to vector of template type T
 
   /** Approximates the product v^T * H at the point p in parameter space where H denotes the
   local Hessian matrix. The approximation is based on a central difference of two local gradients

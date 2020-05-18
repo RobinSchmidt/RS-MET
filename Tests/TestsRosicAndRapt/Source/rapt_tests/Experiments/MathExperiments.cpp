@@ -1326,9 +1326,11 @@ void gaussianRegression()
   //Vec freqs = Vec({0, 1, 2, 3, 4}); 
   //Vec freqs = Vec({0, 1, 2, 3, 4, 5}); 
   Vec freqs = Vec({0, 1, 2, 3, 4, 5, 6}); 
+  //Vec freqs = Vec({1, 2, 3, 4, 5, 6}); 
   //Vec freqs = Vec({0, 1, 2, 4, 8}); 
   //Vec freqs = Vec({0, 1, 2, 3, 4, 5, 6, 7, 8});    // freqs of the cosines
 
+  //Vec w = 0.25*PI*freqs;                   // omegas
   Vec w = 0.5*PI*freqs;                   // omegas
   //Vec w = 0.75*PI*freqs;                   // omegas
   //Vec w = 1.0*PI*freqs;                   // omegas
@@ -1381,16 +1383,86 @@ void gaussianRegression()
   // -when making the transition steeper, the Gaussians overshoot/ripple more - stronger Gibbs-like
   //  effect
   // -we seem to need more Gaussians to approximate a steeper transition well
+  // -a higher number of passes also seems to increase the ripple
 
   // ToDo:
   // -optimize the frequencies and variances of the Gaussians by gradient descent, starting with an
   //  initial guess obtained like above - the scale-factors should also be refined in this 
   //  optimization procedure
+  // -define the parameter vector as p = (a0 w0 s0 a1 w1 s1 a2 w2 s2 ...)
 
+  // initial guess for the parameter vector using 7 Gaussians:
+  Vec p = Vec({0.768,0,1, 0.759,1,1, -0.427,2,1, -0.258,3,1, 0.0536,4,1, 0.2297,5,1, -0.1325,6,1});
+  // we need to define an error function and optimize the amplitudes, frequencies and widths with 
+  // that initial guess - so we need to do an optimization in and 21-dimensional space
 
   int dummy = 0;
 }
 
+/** Error function for the approximation of a Butterworth function by a sum of Gaussians.. */
+class ButterworthGaussError : public RAPT::MultivariateErrorFunction<double>
+{
+
+  double getGaussSum(const rsVectorDbl& p, double x)
+  {
+    rsAssert(p.dim % 3 == 0, "Length of p should be a multiple of 3");
+    int numGaussians = p.dim / 3;
+    double result = 0.0;
+    for(int i = 0; i < numGaussians; i++)
+    {
+      double a = p[3*i];    // amplitude, weight
+      double f = p[3*i+1];  // frequency of cosine
+      double s = p[3*i+2];  // sigma (variance, width of envelope)
+      double w =  0.5*PI*f; // omega (radian frequency of cosine)
+      result += a * exp(-x*x/(s*s)) * cos(w*x);
+    }
+    return result;
+  }
+
+  virtual double getValue(rsVectorDbl p) override
+  {
+    double maxAbs = 0.0;
+    for(int i = 0; i < numSamples; i++)
+    {
+      double x = i*xMax / double(numSamples-1);
+      double target = 1.0 / pow((1 + pow(x, 2*order)), passes);
+      double actual = getGaussSum(p, x);
+      double delta  = rsAbs(target - actual);
+      if(delta > maxAbs)
+        maxAbs = delta;
+    }
+    return maxAbs;
+  }
+
+protected:
+
+  int numSamples = 200;
+  double xMax = 3.0;
+
+  int order  = 6;
+  int passes = 1;
+
+};
+
+void butterworthViaGaussians()
+{
+  // Under construction
+  // Optimizes the parameters to approximate a Butterworth function by a sum of cosines with 
+  // Gaussian envelopes...
+
+  ButterworthGaussError errFunc;
+  GradientBasedMinimizer<double> minimizer;
+  //minimizer.setPrintInfo(true); // not very useful - just shits the screen full
+
+  using Vec = std::vector<double>;
+
+  Vec p({0.768,0,1, 0.759,1,1, -0.427,2,1, -0.258,3,1, 0.0536,4,1, 0.2297,5,1, -0.1325,6,1});
+  rsVectorDbl pInitial(p);  // the requirement to convert is unelegant!
+  rsVectorDbl pFinal = minimizer.minimizeFunction(&errFunc, pInitial);
+  p = pFinal.toStdVector();  // almost unchanged - something is wrong!
+
+  int dummy = 0;
+}
 
 
 

@@ -69,6 +69,14 @@ public:
     memcpy(v, other.v, dim*sizeof(ElementType));
   }
 
+  /** Construction from a std::vector. */
+  rsVector(const std::vector<ElementType>& vec)
+  {
+    dim = (int) vec.size();
+    v   = new ElementType[dim];
+    rsArrayTools::copy(&vec[0], v, dim);
+  }
+
   /** Destructor. */
   ~rsVector()
   {
@@ -319,6 +327,14 @@ public:
     printf("%s", "\n");
   }
   // maybe remove from class and move to the test suite
+
+  /** Conversion to std::vector. */
+  std::vector<ElementType> toStdVector() const
+  {
+    std::vector<ElementType> vec(dim);
+    rsArrayTools::copy(v, &vec[0], dim);
+    return vec;
+  }
 
 
 }; // end of class rsVector
