@@ -1,0 +1,62 @@
+Consider the problem of numerically estimating the Hessian matrix of a bivariate function f(x,y). 
+For generality, we allow different stepsizes hx,hy for the two dimensions. The diagonal elements
+can be computed by a regular 1D central difference formula:
+
+  f_xx ~= (f(x-hx,y) - 2*f(x) + f(x+hx,y)) / (hx*hx)
+  f_yy ~= (f(x,y-hy) - 2*f(x) + f(x,y+hy)) / (hy*hy)
+
+For the off-diagonal elements, we first approximate the partial derivative in x-direction by the 
+central difference:
+
+  f_x ~= (f(x+hx,y) - f(x-hx,y)) / (2*hx)
+  
+and then we may use a central difference with repect to y on f_x:
+
+  f_xy ~= (f_x(x,y+hy) - f_x(x,y-hy)) / (2*hy)
+        = (f(x+hx,y+hy) + f(x-hx,y-hy) - f(x+hx,y-hy) - f(x-hx,y+hy)) / (4*hx*hy)
+        = (fpp + fmm - fpm - fmp) / (4*hx*hy)
+        
+   where fpp := f(x+hx,y+hy), fmm := f(x-hx,y-hy), fpm := f(x+hx,y-hy), fmp := f(x-hx,y+hy)
+  
+To generalize from the bivariate to the multivariate case, we simply replace f_xy by f_ij where we
+wiggle the i-th and j-th coordinate by a stepsize hi or hj respectively and leave all other 
+coordinates as is.
+
+
+---------------------------------------------------------------------------------------------------
+
+What about a sort of "directional 2nd derivative", i.e. an approximation for H*v for some arbitrary
+(unit length) vector v? This may avoid computing the whole matrix H.
+
+
+
+We may also use fc := f(x,y). This gives us a stencil with 5 evaluation points. We could try to fit
+a quadratic form: 
+
+  q(x,y) = A*x^2 + B*x*y + C*y^2 + D*x + E*y + F
+
+to these 5 points and evaluate q_xy, which just comes out as B. But we have 6 coeffs and only 5
+equations, so far. We could obtain 2 other equations by using (our approximations of) f_xx, f_yy,
+but then we have one too much. Maybe use an equation from f_xx + f_yy or f_xx * f_yy...
+
+  q    = F
+  q_x  = 2*A*x + B*y + D
+  q_y  = 2*C*y + B*x + E
+  q_xx = 2*A
+  q_yy = 2*C
+  q_xy = B
+  
+maybe prescribe: f, f_x, f_y, f_xx, f_yy at x
+
+maybe have additional terms with x^2*y and x*y^2 in the quadratic form
+
+  q(x,y) = A*x^2 + B*x*y + C*y^2 + D*x + E*y + F + G*x^2*y + H*x*y^2
+  
+  q    = F
+  q_x  = 2*A*x + B*y + D + 2*G*x*y
+  q_y  = 2*C*y + B*x + E + 2*H*x*y
+  q_xx = 2*A + 2*G*y
+  q_yy = 2*C + 2*H*x
+  q_xy = B + 2*G*x = B + 2*H*y
+  
+  

@@ -94,6 +94,7 @@ datapoints. The meaning of the 3 template parameters is:
    http://web.media.mit.edu/~crtaylor/calculator.html  */
 
 template<class Tx, class Ty, class F>
+// maybe the template parameters should be defined for each function - this is more flexible
 class rsNumericDifferentiator
 {
 

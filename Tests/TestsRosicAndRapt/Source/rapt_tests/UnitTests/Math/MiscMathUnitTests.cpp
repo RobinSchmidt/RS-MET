@@ -263,7 +263,8 @@ bool testNumDiffStencils()
   // todo: try some weird stencils (asymmetric and/or non-equidistant, even  number of points,...)
 }
 
-// move to rsNumericDifferentiator:
+
+// move to rsNumericDifferentiator - or maybe we need a special multivariate class?:
 template<class Tx, class Ty, class F>
 void gradient(const F& f, Tx* x, int N, Ty* g, const Tx& h)
 {
@@ -282,6 +283,7 @@ void gradient(const F& f, Tx* x, int N, Ty* g, const Tx& h)
 // it would -> try it using rsVector2D for Ty
 // todo: maybe allow to pass an array of stepsize values h such that we may use a different value
 // for each dimension
+
 
 template<class Tx, class Ty, class F>
 void hessian(const F& f, Tx* x, int N, Ty* pH, const Tx& h)
@@ -323,7 +325,11 @@ void hessian(const F& f, Tx* x, int N, Ty* pH, const Tx& h)
   //  -> the formulas generalize such that in the diagonal elements, we divide by h[i]*h[i] and in
   //     the off-diagonal elements, we divide by 4*h[i]*h[j] (i think)
   // -can we make the formula for the off-diagonal elements more accurate by using fc = f(x)
-  //  ...that would come at (almost) no cost because that value never needs to be re-evaluated
+  //  -that would come at (almost) no cost because that value never needs to be re-evaluated
+  //  -maybe H(i,i) and H(j,j) could also be used
+  //  -maybe we could compute the A..F coeffs of a quadratic form (i.e. conic section) and
+  //   evaluate its partial derivatives? fpp,fpm,fmp,fmm,fc would determine 5 coeffs - maybe the
+  //   constant coeff F is irrelevant
 }
 
 // ToDo:
@@ -378,6 +384,7 @@ bool testNumericGradientAndHessian()
 
   using Vec = std::vector<double>;
   using Mat = rsMatrix<double>;
+  //using ND  = rsNumericDifferentiator<double, double>;
 
   double h = pow(2, -18); // from 2^-18, maxErr in the gradient becomes 0
   Vec v({5,3,2});         // point at which we evaluate gradient and Hessian
