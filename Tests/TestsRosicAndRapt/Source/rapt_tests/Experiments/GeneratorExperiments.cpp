@@ -68,6 +68,71 @@ void noise()
   // testNoiseGen(int numSamples, int order, bool plotHistogram, bool writeWaveFile)
 }
 
+template<class T>
+class rsNoiseGeneratorTriModal
+{
+
+public:
+
+  rsNoiseGeneratorTriModal()
+  {
+    selector.setRange(0, 1);
+    ng1.setRange(-1.0, -0.5);
+    ng2.setRange(-0.5, +0.5);
+    ng3.setRange(+0.5, +1.0);
+    setOrder(7);
+  }
+
+  void setOrder(int newOrder)
+  {
+    ng1.setOrder(newOrder);
+    ng2.setOrder(newOrder);
+    ng3.setOrder(newOrder);
+  }
+
+  inline T getSample()
+  {
+    T s = selector.getSample(); // in 0..1
+    if(s < thresh1)
+      return ng1.getSample();
+    if(s < thresh2)
+      return ng2.getSample();
+    return ng3.getSample();
+  }
+
+protected:
+
+  rsNoiseGenerator<T> selector;
+  rsNoiseGenerator2<T> ng1, ng2, ng3;
+  T thresh1 = 0.3, thresh2 = 0.7;
+
+};
+// maybe the selector should have some correlation, i.e. should be lowpassed such that successive
+// samples tend to be selected from the same distribution
+
+void noiseTriModal()
+{
+  int numSamples = 100000;
+  int numBins    = 50;
+  int order      = 7;
+
+  rsNoiseGeneratorTriModal<double> ng;
+  ng.setOrder(order);
+
+  using Vec = std::vector<double>;
+
+  int N = numSamples;
+  Vec x(N);
+  for(int n = 0; n < N; n++)
+    x[n] = ng.getSample();
+
+  plotHistogram(x, numBins, -1.0, +1.0);
+
+  std::string name = "NoiseTriModal" + to_string(order) + ".wav";
+  rosic::writeToMonoWaveFile(name, &x[0], N, 44100); 
+}
+
+
 
 // maybe let it take a parameter for the length and produce various test signals with various 
 // lengths to see, how the quality depends on the length:

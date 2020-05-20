@@ -32,6 +32,7 @@ void seriesConnectionDecay();
 // Generator Experiments:
 
 void noise();
+void noiseTriModal();
 void blit();
 void blep();
 //void blamp();
