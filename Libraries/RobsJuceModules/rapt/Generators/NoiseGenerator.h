@@ -14,6 +14,8 @@ Numerical Recipies in C (2nd edition), page 284.
  near the origin - high slope far away from the origin spreads them out - or maybe the rational
  mapping could be nice - try with FuncShaper - maybe we need a histogram analyzer for that)
 -make a colored noise generator by using the SlopeFilter (in rosic - needs to be dragged to rapt)
+-maybe make implementations that use different values for the factor and offset (but only such 
+ values that guarantee the maximum possible period - look up the conditions that must be sasisfied)
 
 */
 
@@ -45,10 +47,11 @@ public:
   /** Updates the internal state of the integer PRNG */
   inline void updateState()
   {
-    state = (1664525*state + 1013904223) & 4294967295; 
-      // the bitmask performs the modulo operation. when unsigned long is 32 bit, it's not 
-      // necesarry because then the mod occurs implicitly due to overflow, but when it's 64 bit
-      // we need to do it explicitly (on mac it is required);
+    state = (1664525*state + 1013904223) & 4294967295;
+    // These numbers are taken from Numerical Recipies in C, 2nd Ed, page 284. The bitmask performs
+    // the modulo operation. When unsigned long is 32 bit, it's not necesarry because then the mod 
+    // occurs implicitly due to overflow, but when it's 64 bit we need to do it explicitly (on mac 
+    // it is required);
   }
 
   /** Produces one output sample at a time */
@@ -71,10 +74,21 @@ protected:
 
 /** Subclass of rsNoiseGenerator that creates the noise by adding up several noise samples in order
 to approach a gaussian distribution. The order parameter determines how many noise samples are 
-added - with only 1: you get the uniform distribution, 2: triangular, 3: sort of parabolic, 
-4: looks already rather gaussianish
+added - with only 1: you get the uniform distribution, 2: triangular (piecewise linear), 3: sort of 
+parabolic spline, 4: cubic spline - looks already rather gaussianish
 
-not yet tested - probably doesn't work yet
+In general, we get the Irwin-Hall distribution, see:
+https://en.wikipedia.org/wiki/Irwin%E2%80%93Hall_distribution
+https://en.wikipedia.org/wiki/Bates_distribution
+https://www.youtube.com/watch?v=-2PA7SbWoJ0&t=17m50s (german)
+
+...i have also a sympy notebook somewhere, that computes the convolutions and gives the 
+distributions as piecewise polynomials
+
+maybe rename to rsNoiseGeneratorIrwinHall - make an experiment for noiseDistributions
+
+not yet tested - probably doesn't work yet - i think, scale and shift must be updated in setOrder,
+maybe setRange needs to be re-implemented as well
 */
 
 template<class T>

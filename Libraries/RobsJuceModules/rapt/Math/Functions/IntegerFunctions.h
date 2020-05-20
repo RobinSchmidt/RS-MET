@@ -248,4 +248,7 @@ RS_INLINE TInt rsWrapAround(TInt numberToWrap, TInt length)
   return numberToWrap;
 }
 
+
+
+
 #endif

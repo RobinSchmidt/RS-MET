@@ -203,6 +203,7 @@ TInt rsSum(TInt min, TInt max)
   else
     return (max*(max+1) - min*(min-1)) / 2;
 }
+// ToDo: inline this, i.e. move to .h file
 // the formula comes from using this https://de.wikipedia.org/wiki/Gau%C3%9Fsche_Summenformel for
 // min and max separately, subtracting the results and simplifying
 // maybe the range for which this function doesn't overflow can be extended by using one of the 

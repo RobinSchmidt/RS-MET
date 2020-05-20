@@ -18,6 +18,85 @@ bool testIntAbs(std::string &reportString)
   return r;
 }
 
+
+int rsSumOfProducts1(int n, int m)
+{
+  int sum = 0;
+  for(int k = 0; k <= n; k++)
+  {
+    int prod = 1;
+    for(int i = 1; i <= m; i++)
+      prod *= k+i;
+    sum += prod;
+  }
+  return sum;
+}
+// naive version
+
+int rsSumOfProducts2(int n, int m)
+{
+  int sum = 0;
+  for(int k = 0; k <= n; k++)
+    sum += rsProduct(k+1, k+m);
+  return sum;
+}
+// using rsProduct, needed an index-shift in the product
+
+int rsSumOfProducts3(int n, int m)
+{
+  return rsProduct(n+1, n+m+1) / (m+1);
+}
+// without the outer loop, see: https://www.youtube.com/watch?v=-2PA7SbWoJ0&t=27m
+// move to IntegerFunctions.h
+
+
+bool testSumAndProduct()
+{
+  bool r = true;
+
+  int y;
+  y = rsSum(    3, 7); r &= y == 25;   // 3+4+5+6+7 = 25
+  y = rsProduct(3, 7); r &= y == 2520; // 3*4*5*6*7 = 2520
+
+  // what if we use negative numbers? maybe it doesn't work - so maybe we should use unsigned
+  // integers?
+
+
+  // todo: implement this formula for a rsSumOfProducts function:
+  // https://www.youtube.com/watch?v=-2PA7SbWoJ0&t=27m
+  //   sum_{k=0}^n prod_{i=1}^m (k+i) 
+  // = sum_{k=0}^n prod_{i=k+1}^{k+m} i
+  // = (1/(m+1)) prod_{i=1}^{m+1} (n+i)
+  // = (1/(m+1)) prod_{i=n+1}^{n+m+1} i
+
+  // should take n,m as parameters - can this be generalized to use different start-values for k 
+  // and i?
+
+  // 1*2*3 + 2*3*4 + 3*4*5 + 4*5*6 = 210
+  y = rsSumOfProducts1(2, 4);  // 504
+  // seems like the 1st parameter is the number of terms minus 1 and the 2nd is the number of 
+  // factors - more natural would be, if the first is the number of terms itself
+
+  // n = 2, m = 3:
+  // 1*2*3 + 2*3*4 + 3*4*5 = 90
+  y = rsSumOfProducts1(2, 3);
+  y = rsSumOfProducts2(2, 3);
+  y = rsSumOfProducts3(2, 3);
+
+
+  y = rsSumOfProducts1(3, 5); // 1*2*3*4 + 2*3*4*5 + 3*4*5*6 + 4*5*6*7 + 5*6*7*8 = 3024
+  y = rsSumOfProducts2(3, 5); // 24      + 120     + 360     + 840     + 1680
+  y = rsSumOfProducts3(3, 5);
+  // hmm - they all return the same values, as they should - but what actually do they compute? the
+  // 3,5 case gives a different number (10080) than i expect (3024), but in all 3 cases the same 
+  // number -> figure out, what's going on...
+
+  // are the parameters reversed?
+  y = rsSumOfProducts1(5, 3); // nope!
+
+  return r;
+}
+
 bool testBinomialCoefficients(std::string &reportString)
 {
   std::string testName = "rsBinomialCoefficients";
@@ -207,6 +286,7 @@ bool testIntegerFunctions()
   bool testResult = true;
 
   testResult &= testIntAbs(dummy);
+  testResult &= testSumAndProduct();
   testResult &= testBinomialCoefficients(dummy);
   testResult &= testMultinomialCoefficients(dummy);
   testResult &= testMultinomialFormula(dummy);

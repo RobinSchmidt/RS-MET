@@ -263,102 +263,6 @@ bool testNumDiffStencils()
   // todo: try some weird stencils (asymmetric and/or non-equidistant, even  number of points,...)
 }
 
-
-// move to rsNumericDifferentiator - or maybe we need a special multivariate class?:
-/** Has 2*N evaluations of f */
-template<class Tx, class Ty, class F>
-void gradient(const F& f, Tx* x, int N, Ty* g, const Tx& h)
-{
-  for(int n = 0; n < N; n++)
-  {
-    Tx t = x[n];                  // temporary
-    x[n] = t + h; Ty fp = f(x);
-    x[n] = t - h; Ty fm = f(x);
-    g[n] = (fp-fm) / (2*h);
-    x[n] = t;                     // restore x[n]
-  }
-}
-// moved to rsNumericDifferentiator - but the comments must still be moved over...
-// hmm - should the gradient be of type Tx or Ty? or maybe there should be just one type? what if
-// y is a vector? then f would take an N-dim vector and produce a vector of possibly other 
-// Consider z = f(x,y) where x,y are complex and z is real (for example f(x,y) = abs(x*y))
-// Then, the gradient of would be given by grad(f) = (df/dx, df/dy) where 
-//   df/dx = lim_{h->0} (f(x+h) - f(h)) / h
-// In this case, the stepsize h would also be complex, the numerator would be real (as a difference
-// of real numbers) and the denominator would be complex, so the overall value df/dx would be 
-// complex, which is Tx. On the other hand, if x,y are real and z is complex (for example, 
-// f(x,y) = x + i*y), then the df/dx would also be complex (as before), but this time, this 
-// corresponds to Ty. Maybe this makes really only sense, when we require Tx == Ty. Or maybe the 
-// elements of the gradient should have their own type Tg, so it can be decided on instantiation, 
-// which one it should be? Then, g[n] = (Tg(fp)-Tg(fm)) / (2*Tg(h));
-// but we could also use:
-//   df/dx = lim_{dx->0} (f(x+dx) - f(h)) / |dx|
-// this would be suitable, if x and dx are vectors - we take the norm in the denominator
-// also: in gradient descent, we need the input vector x and the gradient vector to be of the same
-// type -> maybe just use one type to start with, generalize when it becomes necessarry
-
-// dimensionality - would this function then compute the Jacobian? i think, it would be natural, if
-// it would -> try it using rsVector2D for Ty
-// todo: maybe allow to pass an array of stepsize values h such that we may use a different value
-// for each dimension
-
-/**
-
-This has 4*(N^2-N)/2 + 2*N + 1 = 2*N^2 + 1 function evaluations of f.
-
-*/
-template<class Tx, class Ty, class F>
-void hessian(const F& f, Tx* x, int N, Ty* pH, const Tx& h)
-{
-  // compute N diagonal elements:
-  rsMatrixView<Ty> H(N, N, pH);
-  Ty fc = f(x);
-  for(int i = 0; i < N; i++) {
-    Tx ti  = x[i];
-    x[i]   = ti + h; Ty fp = f(x);
-    x[i]   = ti - h; Ty fm = f(x);
-    H(i,i) = (fm - Tx(2)*fc + fp) / (h*h);
-    x[i]   = ti; }
-
-  // compute (N^2-N)/2 off-diagonal elements:
-  for(int i = 0; i < N; i++) {
-    for(int j = i+1; j < N; j++) {
-      Tx ti = x[i];
-      Tx tj = x[j];
-      x[i] = ti + h; x[j] = tj + h; Ty fpp = f(x);         // f_++
-      x[i] = ti + h; x[j] = tj - h; Ty fpm = f(x);         // f_+-
-      x[i] = ti - h; x[j] = tj + h; Ty fmp = f(x);         // f_-+
-      x[i] = ti - h; x[j] = tj - h; Ty fmm = f(x);         // f_--
-      H(i,j) = H(j,i) = (fpp + fmm - fpm - fmp) / (4*h*h); 
-      x[i] = ti;
-      x[j] = tj; }}
-
-  // The formula for the diagonal elements is just the regular central difference for a 2nd 
-  // derivative for one coordinate at a time. The formula for the off-diagonal elements was derived
-  // by considering a bivariate function f(x,y) and computing its partial derivative with respect 
-  // to x using a central difference:
-  //   f_x ~= (f(x+h,y) - f(x-h,y)) / (2*h)
-  // and then using a central difference with repect to y on f_x:
-  //   f_xy ~= (f_x(x,y+h) - f_x(x,y-h)) / (2*h)
-  // and then generalizing in the obvious way from the bivariate to the multivariate case by 
-  // replacing x,y with i,j
-
-  // ToDo:
-  // -maybe allow to use different h-values along each dimension (pass an N-array for h)
-  //  -> the formulas generalize such that in the diagonal elements, we divide by h[i]*h[i] and in
-  //     the off-diagonal elements, we divide by 4*h[i]*h[j] (i think)
-  // -can we make the formula for the off-diagonal elements more accurate by using fc = f(x)
-  //  -that would come at (almost) no cost because that value never needs to be re-evaluated
-  //  -maybe H(i,i) and H(j,j) could also be used
-  //  -maybe we could compute the A..F coeffs of a quadratic form (i.e. conic section) and
-  //   evaluate its partial derivatives? fpp,fpm,fmp,fmm,fc would determine 5 coeffs - maybe the
-  //   constant coeff F is irrelevant
-}
-
-// ToDo:
-// -make a convenience function taking a reference to rsMatrix instead of a raw array/pointer
-// -write a function that does quasi-Newton steps using the Hessian matrix
-
 bool testNumericGradientAndHessian()
 {
   // Tests numeric gradient and Hessian matrix computation by comparing the results to analytically
@@ -366,20 +270,25 @@ bool testNumericGradientAndHessian()
 
   bool r = true;
 
-  //std::function<double(double*)> f;
-
   // Our example is the trivariate scalar function:
   //   f(x,y,z) = x^2 * y^3 * z^4
   // where v = (x y z) is the 3D input vector.
-  // auto f = [=](double* v)->double
   std::function<double(double*)> f = [=](double* v)->double
   { 
     double x = v[0], y = v[1], z = v[2];
     return x*x * y*y*y * z*z*z*z; 
   };
-  // We need f to be wrapped into std::function object and cannot use a raw lambda because the 
-  // function NumDiff::hessian requires a std::function. This is because it's defined in the cpp
-  // file and therefore not inlined....
+  // We need to wrap f into a std::function object and cannot use a raw lambda function like:
+  //   auto f = [=](double* v)->double  ...
+  // because the function NumDiff::hessian requires a std::function. This is because it's defined
+  // in the cpp file and therefore not inlined, so we need an explicit instantiation - and i don't 
+  // know how to make explicit instantiations for lambda functions (or if that is even possible) 
+  // and that would not be desirable anyway because it would presumbly need a separate 
+  // instantiation for each lambda function that is defined somewhere. I've found somewhere the 
+  // statement, that lambdas can decay into function pointers, iff they have no capture variables, 
+  // so maybe in this case, and instantiation for a C-style function-pointer would work. However, 
+  // std::function seems to be the most convenient and flexible way to do it, so that's what i 
+  // opted for for instantiation.
 
   // Computes the gradient of f:
   //   g(f) = (f_x  f_y  f_z)
