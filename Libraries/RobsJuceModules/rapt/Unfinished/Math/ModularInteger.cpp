@@ -74,6 +74,8 @@ rsModularInteger<T> rsModularInteger<T>::operator/(const rsModularInteger<T> &ot
   rsAssert( modulus == other.modulus );
   return *this * rsModularInverse(other.value, modulus);
 }
+// what, if there is no modular inverse (i think, it exists only if the value is coprime with the 
+// modulus - verify)
 
 template<class T>
 rsModularInteger<T>& rsModularInteger<T>::operator+=(const rsModularInteger<T> &other)
@@ -111,3 +113,18 @@ rsModularInteger<T>& rsModularInteger<T>::operator--()
   *this = *this - rsModularInteger<T>(1, modulus);
   return *this;
 }
+
+/*
+Ideas:
+-templatize on the integer type to use - allow for arbitrary size integers
+-make it work also for negative values (-> verify, if the % operator works correctly, when the 
+ left operand is negative - if not, use a custom function instead)
+-how about negative moduli?
+-currently, the arithmetic operations make sense only when the two operands have the same modulus
+ -generalize this to a sort of "multi-modular" or "mixed-modular" arithmetic
+ -the modulus of the result should be the lowest common multiple of the moduli of the operands 
+ -would that make sense?
+-does the notion of a modular rational number make any sense? i.e. numerator and/or denominator are 
+ modular integers?
+
+*/
