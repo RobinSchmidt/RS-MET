@@ -248,7 +248,7 @@ RS_INLINE TInt rsWrapAround(TInt numberToWrap, TInt length)
   return numberToWrap;
 }
 
-
+// todo: drag over rsSumOfProducts from IntegerFunctionTests.cpp
 
 
 #endif

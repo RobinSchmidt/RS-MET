@@ -1,5 +1,78 @@
 using namespace RAPT;
 
+void noise()
+{
+  // We generate noise with different distributions and plot the histograms...
+
+  int numSamples = 50000;
+  //int numBins    = 51;
+
+  rsNoiseGenerator2<double> prng;
+
+  using Vec = std::vector<double>;
+
+  int N = numSamples;
+  Vec x(N);
+  for(int n = 0; n < N; n++)
+  {
+    x[n] = prng.getSample();
+  }
+
+  //rsPlotVector(x);
+
+  // under construction - factor out:
+  GNUPlotter plt;
+  plt.addDataArrays(N, &x[0]);
+  plt.addCommand("reset");
+  plt.addCommand("n=50");               // number of intervals
+  plt.addCommand("max=1.");             // max value
+  plt.addCommand("min=-1.");            // min value
+  plt.addCommand("width=(max-min)/n");  // interval width
+  plt.addCommand("hist(x,width)=width*floor(x/width)+width/2.0"); // function used to map a value to the intervals
+  plt.addCommand("set xrange [min:max]");
+  plt.addCommand("set yrange [0:]");
+  plt.addCommand("set offset graph 0.05,0.05,0.05,0.0");
+  plt.addCommand("set xtics min,(max-min)/5,max");
+  plt.addCommand("set boxwidth width*0.9");
+  plt.addCommand("set style fill solid 0.5");
+  plt.addCommand("set tics out nomirror");
+  //plt.addCommand("set xlabel \"x\"");
+  //plt.addCommand("set ylabel \"Frequency\"");
+  plt.addCommand("plot \"" + plt.getDataPath() 
+    + "\" u (hist($1,width)):(1.0) smooth freq w boxes lc rgb\"black\" notitle");
+  plt.invokeGNUPlot();
+  // it's kinda ugly but at least, it works
+
+  /*
+  reset
+  n=100 #number of intervals
+  max=3. #max value
+  min=-3. #min value
+  width=(max-min)/n #interval width
+  #function used to map a value to the intervals
+  hist(x,width)=width*floor(x/width)+width/2.0
+  set term png #output terminal and file
+  set output "histogram.png"
+  set xrange [min:max]
+  set yrange [0:]
+  #to put an empty boundary around the
+  #data inside an autoscaled graph.
+  set offset graph 0.05,0.05,0.05,0.0
+  set xtics min,(max-min)/5,max
+  set boxwidth width*0.9
+  set style fill solid 0.5 #fillstyle
+  set tics out nomirror
+  set xlabel "x"
+  set ylabel "Frequency"
+  #count and plot
+  plot "data.dat" u (hist($1,width)):(1.0) smooth freq w boxes lc rgb"green" notitle
+
+  */
+
+}
+// https://stackoverflow.com/questions/2471884/histogram-using-gnuplot
+// http://gnuplot-surprising.blogspot.com/2011/09/statistic-analysis-and-histogram.html
+
 // maybe let it take a parameter for the length and produce various test signals with various 
 // lengths to see, how the quality depends on the length:
 void blit()  
