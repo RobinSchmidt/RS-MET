@@ -75,7 +75,9 @@ protected:
 /** Subclass of rsNoiseGenerator that creates the noise by adding up several noise samples in order
 to approach a gaussian distribution. The order parameter determines how many noise samples are 
 added - with only 1: you get the uniform distribution, 2: triangular (piecewise linear), 3: sort of 
-parabolic spline, 4: cubic spline - looks already rather gaussianish
+parabolic spline, 4: cubic spline - looks already rather gaussianish. Note that with higher orders,
+the samples concentrate more toward the center, such that the overall variance goes down with the 
+order.
 
 In general, we get the Irwin-Hall distribution, see:
 https://en.wikipedia.org/wiki/Irwin%E2%80%93Hall_distribution
@@ -85,11 +87,7 @@ https://www.youtube.com/watch?v=-2PA7SbWoJ0&t=17m50s (german)
 ...i have also a sympy notebook somewhere, that computes the convolutions and gives the 
 distributions as piecewise polynomials
 
-maybe rename to rsNoiseGeneratorIrwinHall - make an experiment for noiseDistributions
-
-not yet tested - probably doesn't work yet - i think, scale and shift must be updated in setOrder,
-maybe setRange needs to be re-implemented as well
-*/
+maybe rename to rsNoiseGeneratorIrwinHall  */
 
 template<class T>
 class rsNoiseGenerator2 : public rsNoiseGenerator<T>
@@ -97,24 +95,29 @@ class rsNoiseGenerator2 : public rsNoiseGenerator<T>
 
 public:
 
-  inline void setOrder(unsigned long newOrder) { order = newOrder; }
+  inline void setOrder(unsigned long newOrder) { order = newOrder;  updateCoeffs();}
 
+  inline void setRange(T newMin, T newMax) { min = newMin; max = newMax; updateCoeffs(); }
 
   inline T getSample()
   {
-    unsigned long accu = 0;
+    unsigned long long accu = 0;
     for(unsigned long i = 1; i <= order; i++) {
       this->updateState();
       accu += this->state; }
     return this->scale * accu + this->shift;
-    // todo: scale and shift should depend on order - need to be updated in setOrder, setRange
-    // hmm...maybe state needs to be an rsUint64 here to avoid overflow in the accumulation
-    // ...maybe make performance tests to figure out, if that makes a difference
   }
 
 protected:
 
+  void updateCoeffs()
+  {
+    scale = T( (max-min) / (order*4294967296.0) );
+    shift = min;
+  }
+
   unsigned long order = 1;
+  T min = T(-1), max = T(+1);
 
 };
 
@@ -138,7 +141,7 @@ protected:
 // establish a nonlinear, probabilistic feedback loop interaction between exciter and resonator
 // when the output signal value is strongly negative, we should have a high chance of getting a 
 // positive excitation impulse value (i.e. choose the generator with positive center) and vice 
-// versa - this cort of simulates the probability for slip/slide events in abowed string - if the 
+// versa - this sort of simulates the probability for slip/slide events in abowed string - if the 
 // string is under tension in one direction it has a higher chance to slip into the other direction
 // ....well, loosely speaking
 

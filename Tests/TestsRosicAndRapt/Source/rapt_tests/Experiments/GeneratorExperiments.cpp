@@ -35,22 +35,37 @@ void noise()
 {
   // We generate noise with different distributions and plot the histograms...
 
-  int numSamples = 50000;
+  int numSamples = 100000;
   int numBins    = 50;
+  int order      = 17;
+  // i think, powers of two are not good for the order because the reduce the period length
+  // todo: compute formulas for the period length as function of the order - the underlying PRNG
+  // has a period of 2^32, when the order K is a power of two, the resulting period will be 
+  // 2^32 / K (i think -> verify), but when K is not a power of two - what then? what if K==7,
+  // for example. i think, maybe the period ength must be divided by the factor 2^k where k is 
+  // the power of 2 which goes into K - for example, if K = 12, we must divide by 4 because 4
+  // divides 12? maybe numbers which have no factor of two will leave the period as is, so
+  // all odd numbers should be good? -> research needed (maybe make numeric experiments with a 
+  // generator with a shorter period like 2^16)
 
   rsNoiseGenerator2<double> prng;
+  prng.setOrder(order);
 
   using Vec = std::vector<double>;
 
   int N = numSamples;
   Vec x(N);
   for(int n = 0; n < N; n++)
-  {
     x[n] = prng.getSample();
-  }
 
   //rsPlotVector(x);
   plotHistogram(x, numBins, -1.0, +1.0);
+
+  std::string name = "NoiseIrwinHall" + to_string(order) + ".wav";
+  rosic::writeToMonoWaveFile(name, &x[0], N, 44100); 
+
+  // todo: make a function 
+  // testNoiseGen(int numSamples, int order, bool plotHistogram, bool writeWaveFile)
 }
 
 
