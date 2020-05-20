@@ -1,6 +1,10 @@
+//-------------------------------------------------------------------------------------------------
+// Differentiation:
+
 template<class Ty>
 template<class Tx>
-void RAPT::rsNumericDifferentiator<Ty>::rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds)
+void rsNumericDifferentiator<Ty>::derivative(
+  const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds)
 {
   rsAssert(y != yd, "cannot be used in place yet, y and yd have to be distinct");
 
@@ -49,6 +53,8 @@ void RAPT::rsNumericDifferentiator<Ty>::rsNumericDerivative(const Tx *x, const T
 //  order to get a numerical integration routine that is the inverse operation to trapezoidal 
 //  integration
 //  -it may return a value: the integration constant to be used, to get the original data back
+// -make a numeric derivative routine that is the inverse of the trapezoidal integrator
+//  rsDifferentiateTrapezoidal
 
 template<class T>
 void getNumDiffStencilCoeffs(const T* x, int N, int d, T* c)
@@ -85,6 +91,9 @@ void getNumDiffStencilCoeffs(const T* x, int N, int d, T* c)
   // template and we could just isntantiate it with some rational number class - maybe try it in 
   // the testbed
 }
+
+//-------------------------------------------------------------------------------------------------
+// Integration:
 
 template<class Tx, class Ty>
 void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c)
@@ -150,6 +159,14 @@ analytic functions that produce real outputs for real inputs. It's
   f'(x) ~= Im( f(x + i*h) ) / h
 It has an error of O(h^2) - opposed to O(h) when using f'(x) ~= f(x + i*h) / h. Why does this work?
 Is it because the imaginary part of f(x) is zero?
+
+
+
+
+Maybe rename to NumericAnalysis and include the interpolation stuff into this file as well 
+because some interpolation stuff depends on numeric derivatives but some numeric derivatives/
+integration stuff may depend on interpolation and if we templatize the functions, we need to 
+take care that everything is defined before it gets used.
 
 
 */

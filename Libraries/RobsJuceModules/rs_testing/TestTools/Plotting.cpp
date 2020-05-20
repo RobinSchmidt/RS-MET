@@ -308,7 +308,7 @@ void plotSineModelPhases(
     p = rsSinusoidalProcessor<double>::unwrapPhase(t, f, p);          // unwrap
     if(derivative) {
       pd.resize(p.size());
-      rsNumericDifferentiator<double>::rsNumericDerivative(&t[0], &p[0], &pd[0], (int)p.size(), true); // take derivative
+      rsNumericDifferentiator<double>::derivative(&t[0], &p[0], &pd[0], (int)p.size(), true); // take derivative
       plt.addDataArrays((int)t.size(), &t[0], &pd[0]); }
     else {
       rsDeTrender<double> dtr;

@@ -221,7 +221,7 @@ std::vector<T> rsSinusoidalSynthesizer<T>::phasesHermite(
   std::vector<T> fdd;           // fdd: frequency derivative data
   if(quintic) {
     fdd.resize(M);
-    rsNumericDifferentiator<T>::rsNumericDerivative(&td[0], &fd[0], &fdd[0], M, false);
+    rsNumericDifferentiator<T>::derivative(&td[0], &fd[0], &fdd[0], M, false);
     //plotVector(fdd);
   }
 

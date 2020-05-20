@@ -1392,7 +1392,7 @@ void numericDiffAndInt()
   }
 
   // compute the numeric derivative and integral:
-  rsNumericDifferentiator<double>::rsNumericDerivative(x, y, ydn, N, true);
+  rsNumericDifferentiator<double>::derivative(x, y, ydn, N, true);
   rsNumericIntegral(  x, y, yin, N, yi[0]);
 
   // plot function, true derivative and numeric derivative:

@@ -342,9 +342,9 @@ void rsInterpolateSpline(const Tx *x, const Ty *y, int N, const Tx *xi, Ty *yi, 
   if(M > 0)
   {
     rsMatrixTools::allocateMatrix(yd, M, N);
-    rsNumericDifferentiator<Ty>::rsNumericDerivative(x, y, yd[0], N);
+    rsNumericDifferentiator<Ty>::derivative(x, y, yd[0], N);
     for(int m = 1; m < M; m++)
-      rsNumericDifferentiator<Ty>::rsNumericDerivative(x, yd[m-1], yd[m], N);
+      rsNumericDifferentiator<Ty>::derivative(x, yd[m-1], yd[m], N);
   }
 
   // interpolate with these numeric derivatives and cleanup:

@@ -1,11 +1,6 @@
 #ifndef RAPT_NUMERICCALCULUS_H
 #define RAPT_NUMERICCALCULUS_H
 
-// todo: wrap into class
-// -maybe rsNumCalc or rsNumericalCalculus - get rid of the then redundant "Numeric" in the 
-//  function names - and also of the rs-prefixes
-
-
 
 /** Computes the stencil coefficients for a finite difference approximation of a derivative 
 according to: http://web.media.mit.edu/~crtaylor/calculator.html (todo: explain this here)
@@ -21,30 +16,13 @@ Output:
      be divided by h^d. The length of this array must also be N.  */
 template<class T>
 void getNumDiffStencilCoeffs(const T* x, int N, int d, T* c);
+// move into rsNumericDifferentiator
 // remove the "get" because it doesn't have a return value
 
 
-/** Computes the numerical integral of a function defined by data points, i.e. the function:
-\f[ F(x) = \int_c^x f(t) dt \f] where the lower integration limit c can be passed as a parameter 
-into the function. Usage is similar to rsNumericDerivative. The parameter c can also be seen as an 
-integration constant and determines yi[0] that shifts the overall resulting function up or down 
-along the y-axis. The algorithm uses the trapezoidal rule, i.e. it sums up the areas under the 
-trapezoids defined by a piecewise linear interpolant that passes through the datapoints. */
-template<class Tx, class Ty>
-void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
-// maybe rename to rsNumericIntegralTrapezoidal, or rsIntegrateTrapezoidal, use Tx, Ty for 
-// datatypes maybe rename parameters to x, f, F
-// move to rsNumericIntegrator and rename to integrateTrapezoidal or just trapezoidal, have a
-// simpler version riemannSum which uses the midpoint of each interval as evaluation point - oh, 
-// wait - this function is data-based and not based on a function that we may evaluate...but such 
-// an integration function should also be implemented - this one can then do Riemann sums or 
-// trapezoidal rule (and maybe higher order rules as well - Simpson, etc.)
 
 
-// Maybe rename to NumericAnalysis and include the interpolation stuff into this file as well 
-// because some interpolation stuff depends on numeric derivatives but some numeric derivatives/
-// integration stuff may depend on interpolation and if we templatize the functions, we need to 
-// take care that everything is defined before it gets used.
+
 
 
 
@@ -81,11 +59,7 @@ ToDo:
 */
 
 //template<class Tx, class Ty, class F> // old
-// maybe the template parameters should be defined for each function - this is more flexible
-
 template<class Ty>  // new
-// but that doesn't work for Ty because in some functions, it appears only for the return value
-// ...hmm...we could let those functions take a pointer or reference for the output as well
 class rsNumericDifferentiator
 {
 
@@ -205,7 +179,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Data derivatives
 
-
   /** Cannot be used in-place yet: y and yd have to be distinct!
   Given an array of strictly monotonically increasing but not necessarily equidistant abscissa
   values in x and corresponding function values in y, this function fills the array yd with a
@@ -213,9 +186,9 @@ public:
   compute the numeric derivative, we use a weighted average of the difference quotients left and
   right to the data point:
 
-  y[n] - y[n-1]          y[n+1] - y[n]
+                y[n] - y[n-1]          y[n+1] - y[n]
   yd[n] = wL * --------------- + wR * ---------------
-  x[n] - x[n-1]          x[n+1] - x[n]
+                x[n] - x[n-1]          x[n+1] - x[n]
 
   where the weights for the left and right difference quotients are determined by the distances
   dxL = x[n]-x[n-1] and dxR = x[n+1]-x[n] as wL = dxR/(dxL+dxR), wR = dxL/(dxL+dxR), such that
@@ -226,24 +199,35 @@ public:
   N-1. In a test with a sine function, the extrapolation gave more accurate results at the
   endpoints compared to simple differences, so it's probably better to use extrapolation. */
   template<class Tx>
-  static void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, 
-    bool extrapolateEnds = true);
-  // move into class rsNumericDifferentiatior and rename to derivative
+  static void derivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds = true);
+  // maybe rename to weightedCentralDifference
 
-  // todo: make a numeric derivative routine that is the inverse of the trapezoidal integrator
-  // rsDifferentiateTrapezoidal, rename this one to rsWeightedCentralDifference
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
 
-  // move the function rsNumericDerivative here - but maybe not because then it would require an 
-  // instantiation of this class which may be inconvenient due to all the template parameters, 
-  // especially F for the function type - or maybe make a class that doesn't require an 
-  // instantiation (by declaring the template parameters in front of the function rather than the 
-  // class)
+
 
 };
 
 
-
 //=================================================================================================
+
+/** Computes the numerical integral of a function defined by data points, i.e. the function:
+\f[ F(x) = \int_c^x f(t) dt \f] where the lower integration limit c can be passed as a parameter 
+into the function. Usage is similar to rsNumericDerivative. The parameter c can also be seen as an 
+integration constant and determines yi[0] that shifts the overall resulting function up or down 
+along the y-axis. The algorithm uses the trapezoidal rule, i.e. it sums up the areas under the 
+trapezoids defined by a piecewise linear interpolant that passes through the datapoints. */
+template<class Tx, class Ty>
+void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
+// maybe rename to rsNumericIntegralTrapezoidal, or rsIntegrateTrapezoidal, use Tx, Ty for 
+// datatypes maybe rename parameters to x, f, F
+// move to rsNumericIntegrator and rename to integrateTrapezoidal or just trapezoidal, have a
+// simpler version riemannSum which uses the midpoint of each interval as evaluation point - oh, 
+// wait - this function is data-based and not based on a function that we may evaluate...but such 
+// an integration function should also be implemented - this one can then do Riemann sums or 
+// trapezoidal rule (and maybe higher order rules as well - Simpson, etc.)
+
 
 /** just a stub, at the moment */
 
