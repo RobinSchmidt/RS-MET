@@ -425,7 +425,8 @@ bool testNumericGradientAndHessian()
   // compute gradient analytically and numerically and compare results:
   Vec ga(3); gf(&v[0], &ga[0]);
   /*Vec gn(3); gradient(f, &v[0], 3, &gn[0], h);*/
-  Vec gn(3); NumDiff::gradient(f, &v[0], 3, &gn[0], hh);
+  //Vec gn(3); NumDiff::gradient(f, &v[0], 3, &gn[0], hh);
+  Vec gn = NumDiff::gradient(f, v, hh);
   Vec err = ga - gn;
   double maxErr = rsMaxAbs(err);
   r &= maxErr == 0.0;

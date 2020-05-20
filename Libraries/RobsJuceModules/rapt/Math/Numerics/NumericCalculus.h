@@ -22,12 +22,7 @@ derivative would be the acceleration vector.
  
  References:
    (1) http://web.media.mit.edu/~crtaylor/calculator.html  
-   (2) https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
-
-ToDo:
--clean up
-
-*/
+   (2) https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences   */
 
 template<class Ty>
 class rsNumericDifferentiator
@@ -137,7 +132,6 @@ public:
   }
   // maybe Ty should just be called T
 
-
   /** Computes a numerical approximation of the Hessian matrix of the function f at the given 
   N-dimensional position vector x and writes the result int H which should be a pointer to the flat 
   data array of an a NxN matrix. The usage is similar to gradient. This function has 2*N^2 + 1 
@@ -145,24 +139,7 @@ public:
   template<class F>
   static void hessian(const F& f, Ty* x, int N, Ty* H, const Ty& h);
   // maybe Ty should just be called T
-
-  /** Convenience function.. */
-  template<class F>
-  static void hessian(const F& f, Ty* x, int N, rsMatrix<Ty>& H, const Ty& h)
-  { hessian(f, x, N, H.getDataPointer(), h); }
-
-  /** Even more convenient convenience function...but allocates */
-  template<class F>
-  static rsMatrix<Ty> hessian(const F& f, Ty* x, int N, const Ty& h)
-  { rsMatrix<Ty> H(N, N); hessian(f, x, N, H, h); return H; }
-
-
-  template<class F>
-  static rsMatrix<Ty> hessian(const F& f, std::vector<Ty>& x, const Ty& h)
-  { return hessian(f, &x[0], (int) x.size(), h); }
-
-  // make convenience function that takes a std::vector instead of raw array
-  // ..also for gradient computation - this should also return a vector
+  // todo: use h-array
 
 
   //-----------------------------------------------------------------------------------------------
@@ -209,6 +186,34 @@ public:
   //template<class T>
   static void stencilCoeffs(const Ty* x, int N, int d, Ty* c);
   // maybe Ty should just be called T
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Convenience functions
+
+  template<class F> 
+  static std::vector<Ty> gradient(const F& f, std::vector<Ty>& x, const Ty* h)
+  { std::vector<Ty> g(x.size()); gradient(f, &x[0], (int) x.size(), &g[0], h); return g; }
+  // allocates
+
+  template<class F>
+  static void hessian(const F& f, Ty* x, int N, rsMatrix<Ty>& H, const Ty& h)
+  { hessian(f, x, N, H.getDataPointer(), h); }
+  // does not allocate
+
+  /** Even more convenient convenience function...but allocates */
+  template<class F>
+  static rsMatrix<Ty> hessian(const F& f, Ty* x, int N, const Ty& h)
+  { rsMatrix<Ty> H(N, N); hessian(f, x, N, H, h); return H; }
+  // allocates
+
+  template<class F>
+  static rsMatrix<Ty> hessian(const F& f, std::vector<Ty>& x, const Ty& h)
+  { return hessian(f, &x[0], (int) x.size(), h); }
+  // allocates
+
+  // maybe make convenience functions that take a scalar h - they should create temporary array and
+  // set all values in it to h
 
 };
 
