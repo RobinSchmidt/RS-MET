@@ -76,10 +76,10 @@ public:
 
   rsNoiseGeneratorTriModal()
   {
-    selector.setRange(0, 1);
-    ng1.setRange(-1.0, -0.5);
-    ng2.setRange(-0.5, +0.5);
-    ng3.setRange(+0.5, +1.0);
+    selector.setRange(-1, +1);
+    ng1.setRange(-1.0, -0.3);
+    ng2.setRange(-0.3, +0.3);
+    ng3.setRange(+0.3, +1.0);
     setOrder(7);
   }
 
@@ -92,10 +92,8 @@ public:
 
   inline T getSample()
   {
-    T s = selector.getSample(); // in 0..1 - todo: make the rnage -1..+1
-
+    T s = selector.getSample();
     s = selectorLowpass.getSample(s);
-
     if(s < thresh1)
       return ng1.getSample();
     if(s < thresh2)
@@ -104,17 +102,18 @@ public:
   }
 
   rsOnePoleFilter<T, T> selectorLowpass;
-  // maybe then, teh raw selector should also have a range -1..+1
+  // the selector is lowpassed such that successive samples tend to be selected from the same 
+  // distribution
+
 
 protected:
 
   rsNoiseGenerator<T> selector;
   rsNoiseGenerator2<T> ng1, ng2, ng3;
-  T thresh1 = 0.3, thresh2 = 0.7;
+  T thresh1 = -0.2, thresh2 = +0.2;
 
 };
-// maybe the selector should have some correlation, i.e. should be lowpassed such that successive
-// samples tend to be selected from the same distribution
+
 
 void noiseTriModal()
 {
@@ -124,7 +123,7 @@ void noiseTriModal()
 
   rsNoiseGeneratorTriModal<double> ng;
   ng.setOrder(order);
-  ng.selectorLowpass.setCutoff(1500);
+  ng.selectorLowpass.setCutoff(500);
   ng.selectorLowpass.setSampleRate(44100);
   ng.selectorLowpass.setMode(rsOnePoleFilter<double, double>::LOWPASS_IIT);
 
@@ -139,6 +138,11 @@ void noiseTriModal()
 
   std::string name = "NoiseTriModal" + to_string(order) + ".wav";
   rosic::writeToMonoWaveFile(name, &x[0], N, 44100); 
+  // This noise has some crackly behavior
+
+  // it seems like when we decrease the cutoff freq, we should also decrease the width of the
+  // center section between thresh1 and thresh2 - otherwise the outer generators will be selected
+  // to rarely
 }
 
 
