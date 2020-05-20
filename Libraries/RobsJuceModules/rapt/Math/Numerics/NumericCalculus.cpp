@@ -92,6 +92,33 @@ void rsNumericDifferentiator<Ty>::stencilCoeffs(const Ty* x, int N, int d, Ty* c
   // the testbed
 }
 
+/*
+
+todo:
+ -maybe it's better to not use x += h, x +- 2h, x +- 3h but instead 
+  x +- h/3, x +- 2h/3, x +- h such that the total width of the stencil stays the same, 
+  regardless of how many stencil-points we use. the goal is that the optimal choice of h 
+  depends only on the problem, not on the number of stencil-points
+ -try stencils where the points are not distributed equidistantly but maybe exponentially, for
+  example: x +- h/4, x +- h/2, x +- h for a 5-point stencil
+ -to avoid numerical error, it is desirable that the offsets (2, 2h, 3h, ..) are exactly 
+  representable - also the final divisors should be exactly representable - maybe (inverse)
+  powers of two are a good choice - at least, for the basic 3-point stencil x +- h, x +- 2h
+  where the divisor is 1/(2h)
+ -test it with some standard functions like exp, log, sin, cos, tan, 1/x, 1/(1+x^2) - maybe 
+  polynomials (in which case we should get exact results, if the number of stencil points 
+  matches the degree)
+ -compute gradient of a multivariate function
+  -this function should take a raw array (i.e. pointer) as input
+ -derive and implement function to compute a Hessian matrix of a multivariate function
+
+-figure out the accuracy experimentally - maybe this can be done by testing, how high 
+ degree a polynomial can be such that we still get perfect results - i think, a 5-point stencil
+ should/ be perfect for polynomials up to 5th degree (it's based on an interpolating polynomial
+ of degree 5) 
+*/
+
+
 //-------------------------------------------------------------------------------------------------
 // Integration:
 

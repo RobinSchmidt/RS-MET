@@ -21,17 +21,15 @@ this case, the meaning of the first derivative would be the velocity vector and 
 derivative would be the acceleration vector. 
  
  References:
-   https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
-   http://web.media.mit.edu/~crtaylor/calculator.html  
-   
+   (1) http://web.media.mit.edu/~crtaylor/calculator.html  
+   (2) https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
+
 ToDo:
--clean up (maybe move a lot of technical comments into the cpp file)
 -add the functions for gradient and hessian matrix estimation from MiscMathUnitTests.cpp
 
 */
 
-//template<class Tx, class Ty, class F> // old
-template<class Ty>  // new
+template<class Ty>
 class rsNumericDifferentiator
 {
 
@@ -47,6 +45,7 @@ public:
   {
     return (f(x+h) - f(x-h)) / (Tx(2)*h);
   }
+  // maybe rename to firstDerivative or firstDerivativeCentral
 
   /** Numeric approximation of the second derivative using 3 evaluations of f. 2nd order accurate 
   in h. */
@@ -72,7 +71,6 @@ public:
   // coeffs found by:
   // http://web.media.mit.edu/~crtaylor/calculator.html
   // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
-
 
 
   /** Computes 0th, 1st and 2nd derivative of f at x. This is more efficient than using the 
@@ -119,34 +117,7 @@ public:
   // todo: derivativesUpTo4 - this is as far as we may go with a 5-point stencil - for higher 
   // derivatives, we need more than 5 evaluation points
 
-  // todo:
-  // -maybe it's better to not use x += h, x +- 2h, x +- 3h but instead 
-  //  x +- h/3, x +- 2h/3, x +- h such that the total width of the stencil stays the same, 
-  //  regardless of how many stencil-points we use. the goal is that the optimal choice of h 
-  //  depends only on the problem, not on the number of stencil-points
-  // -try stencils where the points are not distributed equidistantly but maybe exponentially, for
-  //  example: x +- h/4, x +- h/2, x +- h for a 5-point stencil
-  // -to avoid numerical error, it is desirable that the offsets (2, 2h, 3h, ..) are exactly 
-  //  representable - also the final divisors should be exactly representable - maybe (inverse)
-  //  powers of two are a good choice - at least, for the basic 3-point stencil x +- h, x +- 2h
-  //  where the divisor is 1/(2h)
-  // -test it with some standard functions like exp, log, sin, cos, tan, 1/x, 1/(1+x^2) - maybe 
-  //  polynomials (in which case we should get exact results, if the number of stencil points 
-  //  matches the degree)
-  // -compute gradient of a multivariate function
-  //  -this function should take a raw array (i.e. pointer) as input
-  // -derive and implement function to compute a Hessian matrix of a multivariate function
 
-
-  // maybe implement more accurate formulas - formulas can be produced by
-  // http://web.media.mit.edu/~crtaylor/calculator.html
-  // or getNumDiffStencilCoeffs which implements the algo from the website
-
-
-  // todo: figure out the accuracy experimentally - maybe this can be done by testing, how high 
-  // degree a polynomial can be such that we still get perfect results - i think, a 5-point stencil
-  // should/ be perfect for polynomials up to 5th degree (it's based on an interpolating polynomial
-  // of degree 5)
 
   //-----------------------------------------------------------------------------------------------
   // \name Data derivatives
@@ -192,7 +163,6 @@ public:
   //template<class T>
   static void stencilCoeffs(const Ty* x, int N, int d, Ty* c);
   // maybe Ty should just be called T
-
 
 };
 
