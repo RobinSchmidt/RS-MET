@@ -117,13 +117,14 @@ public:
   // todo: derivativesUpTo4 - this is as far as we may go with a 5-point stencil - for higher 
   // derivatives, we need more than 5 evaluation points
 
-  /** Computes the gradient of a scalar-valued function y = f(x) at the given N-dimensional 
-  position vector x by a central difference and stores the result in g (also of length N). You also
-  need to pass an array of approximation stepsizes along the N directions in h. The function type F 
-  should take its input vector as a raw (pointer to an) array of length N and return the scalar 
-  output. This function has 2*N evaluations of f. Note that the input vector x is not const because 
-  we need to wiggle it internally, but at the end, the original content of the x-vector will be 
-  restored (exactly - no roundoff error is involved) - so it's quasi-const. */
+  /** Computes a central difference approximation of the gradient of a scalar-valued function 
+  y = f(x) at the given N-dimensional position vector x by a central difference and stores the 
+  result in g (also of length N). You also need to pass an array of approximation stepsizes along 
+  the N directions in h. The function type F should take its input vector as a raw (pointer to an) 
+  array of length N and return the scalar output. This function has 2*N evaluations of f. Note that 
+  the input vector x is not const because we need to wiggle it internally, but at the end, the 
+  original content of the x-vector will be restored (exactly - no roundoff error is involved) - so 
+  it's quasi-const. */
   template<class F>
   static void gradient(const F& f, Ty* x, int N, Ty* g, const Ty* h)
   {
@@ -137,10 +138,16 @@ public:
   // maybe Ty should just be called T
 
 
-  /** 
+  /** Computes a numerical approximation of the Hessian matrix of the function f at the given 
+  N-dimensional position vector x and writes the result int H which should be a pointer to the flat 
+  data array of an a NxN matrix. Its usage is similar to gradient but the Hessian matrix but we use 
+  std::function here because the implementation is in the cpp file, so it doesn't get inlined and...
+  ...wait - maybe we can use F...try it
+
   
   This has 2*N^2 + 1 function evaluations of f.  */
   static void hessian(const std::function<Ty(Ty*)>& f, Ty* x, int N, Ty* H, const Ty& h);
+  // maybe Ty should just be called T
   //template<class F>
   //static void hessian(const F& f, Ty* x, int N, Ty* H, const Ty& h);
 
