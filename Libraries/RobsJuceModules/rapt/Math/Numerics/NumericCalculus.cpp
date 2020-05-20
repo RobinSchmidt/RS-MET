@@ -2,6 +2,46 @@
 // Differentiation:
 
 template<class Ty>
+//template<class F>
+void rsNumericDifferentiator<Ty>::hessian(
+  const std::function<Ty(Ty*)>& f, Ty* x, int N, Ty* pH, const Ty& h)
+{
+  // compute N diagonal elements:
+  rsMatrixView<Ty> H(N, N, pH);
+  Ty fc = f(x);
+  for(int i = 0; i < N; i++) {
+    Ty ti  = x[i];
+    x[i]   = ti + h; Ty fp = f(x);
+    x[i]   = ti - h; Ty fm = f(x);
+    H(i,i) = (fm - Ty(2)*fc + fp) / (h*h);
+    x[i]   = ti; }
+
+  // compute (N^2-N)/2 off-diagonal elements:
+  for(int i = 0; i < N; i++) {
+    for(int j = i+1; j < N; j++) {
+      Ty ti = x[i];
+      Ty tj = x[j];
+      x[i] = ti + h; x[j] = tj + h; Ty fpp = f(x);         // f_++
+      x[i] = ti + h; x[j] = tj - h; Ty fpm = f(x);         // f_+-
+      x[i] = ti - h; x[j] = tj + h; Ty fmp = f(x);         // f_-+
+      x[i] = ti - h; x[j] = tj - h; Ty fmm = f(x);         // f_--
+      H(i,j) = H(j,i) = (fpp + fmm - fpm - fmp) / (4*h*h); 
+      x[i] = ti;
+      x[j] = tj; }}
+
+  // The formula for the diagonal elements is just the regular central difference for a 2nd 
+  // derivative for one coordinate at a time. The formula for the off-diagonal elements was derived
+  // by considering a bivariate function f(x,y) and computing its partial derivative with respect 
+  // to x using a central difference:
+  //   f_x ~= (f(x+h,y) - f(x-h,y)) / (2*h)
+  // and then using a central difference with repect to y on f_x:
+  //   f_xy ~= (f_x(x,y+h) - f_x(x,y-h)) / (2*h)
+  // and then generalizing in the obvious way from the bivariate to the multivariate case by 
+  // replacing x,y with i,j
+}
+
+
+template<class Ty>
 template<class Tx>
 void rsNumericDifferentiator<Ty>::derivative(
   const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds)
@@ -116,6 +156,10 @@ todo:
  degree a polynomial can be such that we still get perfect results - i think, a 5-point stencil
  should/ be perfect for polynomials up to 5th degree (it's based on an interpolating polynomial
  of degree 5) 
+
+
+ https://stackoverflow.com/questions/1174169/function-passed-as-template-argument
+ https://stackoverflow.com/questions/10871100/pass-a-function-as-an-explicit-template-parameter
 */
 
 

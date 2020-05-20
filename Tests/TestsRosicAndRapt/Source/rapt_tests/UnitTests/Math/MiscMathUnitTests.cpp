@@ -278,6 +278,7 @@ void gradient(const F& f, Tx* x, int N, Ty* g, const Tx& h)
     x[n] = t;                     // restore x[n]
   }
 }
+// moved to rsNumericDifferentiator - but the comments must still be moved over...
 // hmm - should the gradient be of type Tx or Ty? or maybe there should be just one type? what if
 // y is a vector? then f would take an N-dim vector and produce a vector of possibly other 
 // Consider z = f(x,y) where x,y are complex and z is real (for example f(x,y) = abs(x*y))
@@ -365,14 +366,20 @@ bool testNumericGradientAndHessian()
 
   bool r = true;
 
+  //std::function<double(double*)> f;
+
   // Our example is the trivariate scalar function:
   //   f(x,y,z) = x^2 * y^3 * z^4
   // where v = (x y z) is the 3D input vector.
-  auto f = [=](double* v)->double
+  // auto f = [=](double* v)->double
+  std::function<double(double*)> f = [=](double* v)->double
   { 
     double x = v[0], y = v[1], z = v[2];
     return x*x * y*y*y * z*z*z*z; 
   };
+  // We need f to be wrapped into std::function object and cannot use a raw lambda because the 
+  // function NumDiff::hessian requires a std::function. This is because it's defined in the cpp
+  // file and therefore not inlined....
 
   // Computes the gradient of f:
   //   g(f) = (f_x  f_y  f_z)
@@ -425,7 +432,8 @@ bool testNumericGradientAndHessian()
 
   // compute Hessian matrix analytically and numerically and compare results:
   Mat Ha = Hf(&v[0]);
-  Mat Hn(3, 3);  hessian(f, &v[0], 3, Hn.getDataPointer(), h);
+  //Mat Hn(3, 3);  hessian(f, &v[0], 3, Hn.getDataPointer(), h);
+  Mat Hn(3, 3); NumDiff::hessian(f, &v[0], 3, Hn.getDataPointer(), h);
   Mat He = Ha - Hn;  // error matrix
   maxErr = He.getAbsoluteMaximum();
   r &= maxErr == 0.0;

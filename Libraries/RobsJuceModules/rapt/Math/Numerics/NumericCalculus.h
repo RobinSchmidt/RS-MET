@@ -25,7 +25,7 @@ derivative would be the acceleration vector.
    (2) https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
 
 ToDo:
--add the functions for gradient and hessian matrix estimation from MiscMathUnitTests.cpp
+-clean up
 
 */
 
@@ -135,6 +135,14 @@ public:
       x[n] = t;    }                   // restore x[n]
   }
   // maybe Ty should just be called T
+
+
+  /** 
+  
+  This has 2*N^2 + 1 function evaluations of f.  */
+  static void hessian(const std::function<Ty(Ty*)>& f, Ty* x, int N, Ty* H, const Ty& h);
+  //template<class F>
+  //static void hessian(const F& f, Ty* x, int N, Ty* H, const Ty& h);
 
 
 

@@ -379,6 +379,10 @@ template class RAPT::rsMultiArrayOld<float>;
 // numeric calculus
 template void RAPT::rsNumericDifferentiator<double>::stencilCoeffs(
   const double* x, int N, int d, double* c);
+
+template void RAPT::rsNumericDifferentiator<double>::hessian(
+  const std::function<double(double*)>& f, double* x, int N, double* H, const double& h);
+
 template void RAPT::rsNumericDifferentiator<double>::derivative(
   const double *x, const double *y, double *yd, int N, bool extrapolateEnds);
 
