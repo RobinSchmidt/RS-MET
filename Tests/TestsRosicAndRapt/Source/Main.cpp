@@ -233,7 +233,7 @@ int main(int argc, char* argv[])
   //naturalCubicSpline2();
   //cubicInterpolationNonEquidistant();   // move to unit tests
   //hyperbolicFunctions();
-  splineInterpolationNonEquidistant();
+  //splineInterpolationNonEquidistant();
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
   //numericIntegration(); // a.k.a. numeric "quadrature"

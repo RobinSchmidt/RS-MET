@@ -222,7 +222,7 @@ bool testStencil(const std::vector<double>& s, int d, const std::vector<double>&
 {
   int N = (int) s.size();
   std::vector<double> c(N);
-  RAPT::getNumDiffStencilCoeffs(&s[0], N, d, &c[0]); 
+  RAPT::rsNumericDifferentiator<double>::stencilCoeffs(&s[0], N, d, &c[0]); 
   return rsEquals(c, t, tol);
 }
 bool testNumDiffStencils()

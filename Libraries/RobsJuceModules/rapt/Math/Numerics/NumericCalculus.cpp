@@ -56,20 +56,20 @@ void rsNumericDifferentiator<Ty>::derivative(
 // -make a numeric derivative routine that is the inverse of the trapezoidal integrator
 //  rsDifferentiateTrapezoidal
 
-template<class T>
-void getNumDiffStencilCoeffs(const T* x, int N, int d, T* c)
+template<class Ty>
+void rsNumericDifferentiator<Ty>::stencilCoeffs(const Ty* x, int N, int d, Ty* c)
 {
   rsAssert(d < N, "Stencil width must be greater than derivative order.");
 
   // establish matrix:
-  T** A; rsMatrixTools::allocateMatrix(A, N, N);
+  Ty** A; rsMatrixTools::allocateMatrix(A, N, N);
   for(int i = 0; i < N; i++)
     for(int j = 0; j < N; j++)
       A[i][j] = pow(x[j], i);
 
   // establish right-hand-side vector:
-  std::vector<T> rhs(N);
-  rsFill(rhs, T(0));
+  std::vector<Ty> rhs(N);
+  rsFill(rhs, Ty(0));
   rhs[d] = rsFactorial(d);
 
   // compute coeffs by solving the linear system and clean up:

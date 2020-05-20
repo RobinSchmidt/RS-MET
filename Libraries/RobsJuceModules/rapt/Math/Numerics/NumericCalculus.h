@@ -1,33 +1,6 @@
 #ifndef RAPT_NUMERICCALCULUS_H
 #define RAPT_NUMERICCALCULUS_H
 
-
-/** Computes the stencil coefficients for a finite difference approximation of a derivative 
-according to: http://web.media.mit.edu/~crtaylor/calculator.html (todo: explain this here)
-Inputs: 
-  x: array of normalized distances from the approximation point. "Normalized" means in this 
-     context, that the step-size h is not yet included. So, if the x-array is given by: 
-     x = [-2,-1,0,1,2], it means, we want to use the 5-point stencil: x-2h,x-h,x,x+h,x+2h.
-  N: length of x
-  d: derivative that should be approximated, e.g. d=2 for the 2nd derivative, must be less than N
-Output:
-  c: The normalized coefficients, by which the function values f(x + k*h) must be multiplied 
-     (k being one of the values from the x-array). Here, "normalized" means that the result must 
-     be divided by h^d. The length of this array must also be N.  */
-template<class T>
-void getNumDiffStencilCoeffs(const T* x, int N, int d, T* c);
-// move into rsNumericDifferentiator
-// remove the "get" because it doesn't have a return value
-
-
-
-
-
-
-
-
-
-
 //=================================================================================================
 
 /** A class for computing numerical approximations to derivatives of functions. In some cases, the
@@ -52,7 +25,6 @@ derivative would be the acceleration vector.
    http://web.media.mit.edu/~crtaylor/calculator.html  
    
 ToDo:
--drag the free derivative-related functions from above into the class
 -clean up (maybe move a lot of technical comments into the cpp file)
 -add the functions for gradient and hessian matrix estimation from MiscMathUnitTests.cpp
 
@@ -205,6 +177,21 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Misc
 
+  /** Computes the stencil coefficients for a finite difference approximation of a derivative 
+  according to: http://web.media.mit.edu/~crtaylor/calculator.html (todo: explain this here)
+  Inputs: 
+    x: array of normalized distances from the approximation point. "Normalized" means in this 
+       context, that the step-size h is not yet included. So, if the x-array is given by: 
+       x = [-2,-1,0,1,2], it means, we want to use the 5-point stencil: x-2h,x-h,x,x+h,x+2h.
+    N: length of x
+    d: derivative that should be approximated, e.g. d=2 for the 2nd derivative, must be less than N
+  Output:
+    c: The normalized coefficients, by which the function values f(x + k*h) must be multiplied 
+       (k being one of the values from the x-array). Here, "normalized" means that the result must 
+       be divided by h^d. The length of this array must also be N.  */
+  //template<class T>
+  static void stencilCoeffs(const Ty* x, int N, int d, Ty* c);
+  // maybe Ty should just be called T
 
 
 };
