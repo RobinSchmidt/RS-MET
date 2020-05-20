@@ -237,7 +237,7 @@ int main(int argc, char* argv[])
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
   //numericIntegration(); // a.k.a. numeric "quadrature"
-  numericDiffAndInt();  // numeric differentiation and integration - rename to nonUniformArrayDiffAndInt
+  //numericDiffAndInt();  // numeric differentiation and integration - rename to nonUniformArrayDiffAndInt
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header
   //monotonicPolynomials();

@@ -290,6 +290,11 @@ void gradient(const F& f, Tx* x, int N, Ty* g, const Tx& h)
 // corresponds to Ty. Maybe this makes really only sense, when we require Tx == Ty. Or maybe the 
 // elements of the gradient should have their own type Tg, so it can be decided on instantiation, 
 // which one it should be? Then, g[n] = (Tg(fp)-Tg(fm)) / (2*Tg(h));
+// but we could also use:
+//   df/dx = lim_{dx->0} (f(x+dx) - f(h)) / |dx|
+// this would be suitable, if x and dx are vectors - we take the norm in the denominator
+// also: in gradient descent, we need the input vector x and the gradient vector to be of the same
+// type -> maybe just use one type to start with, generalize when it becomes necessarry
 
 // dimensionality - would this function then compute the Jacobian? i think, it would be natural, if
 // it would -> try it using rsVector2D for Ty
@@ -401,6 +406,7 @@ bool testNumericGradientAndHessian()
 
   using Vec = std::vector<double>;
   using Mat = rsMatrix<double>;
+  using NumDiff = rsNumericDifferentiator<double>;
   //using ND  = rsNumericDifferentiator<double, double>;
 
   double h = pow(2, -18); // from 2^-18, maxErr in the gradient becomes 0
@@ -409,7 +415,8 @@ bool testNumericGradientAndHessian()
 
   // compute gradient analytically and numerically and compare results:
   Vec ga(3); gf(&v[0], &ga[0]);
-  Vec gn(3); gradient(f, &v[0], 3, &gn[0], h);
+  /*Vec gn(3); gradient(f, &v[0], 3, &gn[0], h);*/
+  Vec gn(3); NumDiff::gradient(f, &v[0], 3, &gn[0], h);
   Vec err = ga - gn;
   double maxErr = rsMaxAbs(err);
   r &= maxErr == 0.0;

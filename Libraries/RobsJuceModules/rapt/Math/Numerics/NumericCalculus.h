@@ -117,6 +117,27 @@ public:
   // todo: derivativesUpTo4 - this is as far as we may go with a 5-point stencil - for higher 
   // derivatives, we need more than 5 evaluation points
 
+  /** Computes the gradient of a scalar-valued function y = f(x) at the given position vector x by 
+  a central difference and stores the result in g. The function type F should take its input vector 
+  as a raw (pointer to an) array of length N and return the scalar output. This function has 
+  2*N evaluations of f. Note that the input vector x is not const because we need to wiggle it 
+  internally, but at the end, the original content of the x-vector will be restored (exactly - no 
+  roundoff error is involved) - so it's quasi-const. */
+  template<class F>
+  static void gradient(const F& f, Ty* x, int N, Ty* g, const Ty& h)
+  {
+    for(int n = 0; n < N; n++)
+    {
+      Ty t = x[n];                  // temporary
+      x[n] = t + h; Ty fp = f(x);
+      x[n] = t - h; Ty fm = f(x);
+      g[n] = (fp-fm) / (2*h);
+      x[n] = t;                     // restore x[n]
+    }
+  }
+  // maybe Ty should just be called T
+  // todo: allow a different h for each dimension
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -177,13 +198,7 @@ along the y-axis. The algorithm uses the trapezoidal rule, i.e. it sums up the a
 trapezoids defined by a piecewise linear interpolant that passes through the datapoints. */
 template<class Tx, class Ty>
 void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
-// maybe rename to rsNumericIntegralTrapezoidal, or rsIntegrateTrapezoidal, use Tx, Ty for 
-// datatypes maybe rename parameters to x, f, F
-// move to rsNumericIntegrator and rename to integrateTrapezoidal or just trapezoidal, have a
-// simpler version riemannSum which uses the midpoint of each interval as evaluation point - oh, 
-// wait - this function is data-based and not based on a function that we may evaluate...but such 
-// an integration function should also be implemented - this one can then do Riemann sums or 
-// trapezoidal rule (and maybe higher order rules as well - Simpson, etc.)
+// move to class rsNumericIntegrator and rename to trapezoidal,
 
 
 /** just a stub, at the moment */

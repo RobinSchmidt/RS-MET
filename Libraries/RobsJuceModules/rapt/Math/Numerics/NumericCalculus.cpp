@@ -6,7 +6,9 @@ template<class Tx>
 void rsNumericDifferentiator<Ty>::derivative(
   const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds)
 {
-  rsAssert(y != yd, "cannot be used in place yet, y and yd have to be distinct");
+  rsAssert(y != yd, "Cannot be used in place yet, y and yd have to be distinct");
+  rsAssert(N >= 3, "Arrays need to be at least of length 3");
+    // hmm - that's for the extrapolation - if it's not used, length = 2 would also work, i think
 
   Tx dxl, dxr, dx;
   Ty a, b; 
@@ -20,18 +22,16 @@ void rsNumericDifferentiator<Ty>::derivative(
   // todo: save the left weight and use it as right weight in the next iteration (save one division
   // per iteration)
 
-  if( extrapolateEnds == true ) {
-    a = (yd[2] - yd[1]) / (x[2] - x[1]);
-    b = yd[1] - a * x[1];
-    yd[0] = a*x[0] + b;
-    a = (yd[N-2] - yd[N-3]) / (x[N-2] - x[N-3]);
-    b = yd[N-3] - a * x[N-3];
-    yd[N-1] = a*x[N-1] + b;
-      // maybe this can be simplified by using rsInterpolateLinear
+  if( extrapolateEnds == true ) { 
+    a = (yd[2]   - yd[1]  ) / (x[2]   - x[1]  ); b = yd[1]   - a*x[1];   yd[0]   = a*x[0]   + b;
+    a = (yd[N-2] - yd[N-3]) / (x[N-2] - x[N-3]); b = yd[N-3] - a*x[N-3]; yd[N-1] = a*x[N-1] + b;
   } else {
-    yd[0]   = (y[1]   - y[0])   / (x[1]   - x[0]);
-    yd[N-1] = (y[N-1] - y[N-2]) / (x[N-1] - x[N-2]);
-  }
+    yd[0]   = (y[1]   - y[0])   / (x[1]   - x[0]  );
+    yd[N-1] = (y[N-1] - y[N-2]) / (x[N-1] - x[N-2]); }
+  // maybe the first branch can be simplified by using rsInterpolateLinear, like
+  //   yd[0]   = lerp(x[0],   x[1],   yd[1],   x[2],   yd[2]  );
+  //   yd[N-1] = lerp(x[N-1], x[N-2], yd[N-2], x[N-3], yd[N-3]);
+
 }
 // todo:
 // -make it possible to use the function in-place, i.e. y and yd point to the same memory
@@ -153,6 +153,11 @@ void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c)
 //  some hyperblock between x1, x2 (both of dimensionality N)
 //  -maybe we somehow need a function that takes in a function of N variables and returns a 
 //   function of N-1 variables (maybe using std::function)
+// -have a simpler version riemannSum which uses the midpoint of each interval as evaluation point 
+//  - oh,  wait - this function is data-based and not based on a function that we may evaluate...but 
+//  such an integration function should also be implemented - this one can then do Riemann sums or 
+//  trapezoidal rule (and maybe higher order rules as well - Simpson, etc.)
+// ...but we may still compute lower and upper Riemann sums
 
 
 /*
