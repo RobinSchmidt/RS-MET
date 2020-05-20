@@ -1746,7 +1746,8 @@ public:
 protected:
 
   using Func    = std::function<TVec(TScl)>;
-  using NumDiff = rsNumericDifferentiator<TScl, TVec, Func>;
+  //using NumDiff = rsNumericDifferentiator<TScl, TVec, Func>; // old: <Tx,Ty,F>
+  using NumDiff = rsNumericDifferentiator<TVec>;               // new: <Ty>
 
   Func f;
 

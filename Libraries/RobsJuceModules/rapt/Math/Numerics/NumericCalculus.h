@@ -45,6 +45,7 @@ Output:
      be divided by h^d. The length of this array must also be N.  */
 template<class T>
 void getNumDiffStencilCoeffs(const T* x, int N, int d, T* c);
+// remove the "get" because it doesn't have a return value
 
 
 /** Computes the numerical integral of a function defined by data points, i.e. the function:
@@ -78,23 +79,37 @@ void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
 /** A class for computing numerical approximations to derivatives of functions. In some cases, the
 functions are assumed to be given as a function object (aka functor), in other cases as an array of 
 datapoints. The meaning of the 3 template parameters is:
-  Tx: type of the input to the function (abscissa type)
   Ty: type of the output of the function (ordinate type)
+  Tx: type of the input to the function (abscissa type)
   F:  type of the function object (if applicable)
- For example, Tx could be "double", Ty could be "rsVector2D<double>" and F could be 
- "std::function<rsVector2D<double>(double)>". This would apply to functions that take real scalars 
- (double) as input and produce 2D vectors (of real numbers) as output. Such functions define the 
- parametric equation of 2D curves. They depend on a scalar parameter t (which is interpreted as 
- time) and produce a 2D vector as output for each t. In this case, the meaning of the first 
- derivative would be the velocity vector and the second derivative would be the acceleration 
- vector. 
+Ty has to be given when the class template is instantiated, Tx and F may be given or inferred by 
+the compiler later, when a particular member function is instantiated. This is because Ty can not 
+be always inferred from the function call because Ty may only appear as output type in the function 
+signature (see the function "derivative", for example). For example, Tx could be "double", Ty could 
+be "rsVector2D<double>" and F could be "std::function<rsVector2D<double>(double)>". This would 
+apply to functions that take real scalars (double) as input and produce 2D vectors (of real 
+numbers) as output. Such functions define the parametric equation of 2D curves. They depend on a 
+scalar parameter t (which is interpreted as time) and produce a 2D vector as output for each t. In 
+this case, the meaning of the first derivative would be the velocity vector and the second 
+derivative would be the acceleration vector. 
  
  References:
    https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
-   http://web.media.mit.edu/~crtaylor/calculator.html  */
+   http://web.media.mit.edu/~crtaylor/calculator.html  
+   
+ToDo:
+-drag the free derivative-related functions from above into the class
+-clean up (maybe move a lot of technical comments into the cpp file)
+-add the functions for gradient and hessian matrix estimation from MiscMathUnitTests.cpp
 
-template<class Tx, class Ty, class F>
+*/
+
+//template<class Tx, class Ty, class F> // old
 // maybe the template parameters should be defined for each function - this is more flexible
+
+template<class Ty>  // new
+// but that doesn't work for Ty because in some functions, it appears only for the return value
+// ...hmm...we could let those functions take a pointer or reference for the output as well
 class rsNumericDifferentiator
 {
 
@@ -104,13 +119,16 @@ public:
   // \name Functor derivatives
 
   /** Numeric approximation of the first derivative of function f at the value x with approximation
-  step-size h. Uses a central difference and is 2nd order accurate in h.  */
+  step-size h. Uses a central difference with 2 evaluations of f and is 2nd order accurate in h. */
+  template<class Tx, class F>
   static Ty derivative(const F& f, const Tx& x, const Tx& h)
   {
     return (f(x+h) - f(x-h)) / (Tx(2)*h);
   }
 
-  /** Numeric approximation of the second derivative. 2nd order accurate in h. */
+  /** Numeric approximation of the second derivative using 3 evaluations of f. 2nd order accurate 
+  in h. */
+  template<class Tx, class F>
   static Ty secondDerivative(const F& f, const Tx& x, const Tx& h)
   {
     return (f(x-h) - Tx(2)*f(x) + f(x+h)) / (h*h);
@@ -119,7 +137,11 @@ public:
     // totally appropriate.
   }
 
-  /** Numeric approximation of the third derivative. 3rd order accurate in h (i think - verify). */
+  /** Numeric approximation of the third derivative using 4 evaluations of f. 3rd order accurate 
+  in h (i think - verify - well, we have h^3 in the denominator, but that may not mean anything 
+  because for the 5-point formula of the 1st derivative, we just have h^1 and it should be more 
+  than 1st order accurate). */
+  template<class Tx, class F>
   static Ty thirdDerivative(const F& f, const Tx& x, const Tx& h)
   {
     return (-f(x-Tx(2)*h) + Tx(2)*f(x-h) - Tx(2)*f(x+h) + f(x+Tx(2)*h)) / (Tx(2)*h*h*h);
@@ -135,6 +157,7 @@ public:
   separate functions. It uses 3 function evaluations whereas you would need 6, if you would call
   the function itself (1 evaluation) and derivative (2 evaluations) and secondDerivative (3 
   evaluations). The result is exactly the same - it just avoids to compute all the values twice. */
+  template<class Tx, class F>
   static void derivativesUpTo2(const F& f, const Tx& x, const Tx& h, Ty* f0, Ty* f1, Ty* f2)
   {
     Ty fp = f(x+h);  // "plus"
@@ -145,7 +168,9 @@ public:
   }
   // needs test
 
-  /** Computes 0th, 1st, 2nd and 3rd derivative of f at x. Uses a 5-point stencil: -2,-1,0,1,2 */
+  /** Computes 0th, 1st, 2nd and 3rd derivative of f at x. Uses 5 evaluations of f with the 5-point 
+  stencil: -2,-1,0,1,2. */
+  template<class Tx, class F>
   static void derivativesUpTo3(const F& f, const Tx& x, const Tx& h, 
     Ty* f0, Ty* f1, Ty* f2, Ty* f3)
   {
@@ -167,6 +192,7 @@ public:
   // f_x = (1*f[i-2]-8*f[i-1]+0*f[i+0]+8*f[i+1]-1*f[i+2])/(12*1.0*h**1)
   // f_xx = (-1*f[i-2]+16*f[i-1]-30*f[i+0]+16*f[i+1]-1*f[i+2])/(12*1.0*h**2)
   // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
+  // maybe move to cpp file
 
   // todo: derivativesUpTo4 - this is as far as we may go with a 5-point stencil - for higher 
   // derivatives, we need more than 5 evaluation points

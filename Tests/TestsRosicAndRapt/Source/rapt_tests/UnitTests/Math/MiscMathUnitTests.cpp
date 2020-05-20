@@ -265,6 +265,7 @@ bool testNumDiffStencils()
 
 
 // move to rsNumericDifferentiator - or maybe we need a special multivariate class?:
+/** Has 2*N evaluations of f */
 template<class Tx, class Ty, class F>
 void gradient(const F& f, Tx* x, int N, Ty* g, const Tx& h)
 {
@@ -279,16 +280,31 @@ void gradient(const F& f, Tx* x, int N, Ty* g, const Tx& h)
 }
 // hmm - should the gradient be of type Tx or Ty? or maybe there should be just one type? what if
 // y is a vector? then f would take an N-dim vector and produce a vector of possibly other 
+// Consider z = f(x,y) where x,y are complex and z is real (for example f(x,y) = abs(x*y))
+// Then, the gradient of would be given by grad(f) = (df/dx, df/dy) where 
+//   df/dx = lim_{h->0} (f(x+h) - f(h)) / h
+// In this case, the stepsize h would also be complex, the numerator would be real (as a difference
+// of real numbers) and the denominator would be complex, so the overall value df/dx would be 
+// complex, which is Tx. On the other hand, if x,y are real and z is complex (for example, 
+// f(x,y) = x + i*y), then the df/dx would also be complex (as before), but this time, this 
+// corresponds to Ty. Maybe this makes really only sense, when we require Tx == Ty. Or maybe the 
+// elements of the gradient should have their own type Tg, so it can be decided on instantiation, 
+// which one it should be? Then, g[n] = (Tg(fp)-Tg(fm)) / (2*Tg(h));
+
 // dimensionality - would this function then compute the Jacobian? i think, it would be natural, if
 // it would -> try it using rsVector2D for Ty
 // todo: maybe allow to pass an array of stepsize values h such that we may use a different value
 // for each dimension
 
+/**
 
+This has 4*(N^2-N)/2 + 2*N + 1 = 2*N^2 + 1 function evaluations of f.
+
+*/
 template<class Tx, class Ty, class F>
 void hessian(const F& f, Tx* x, int N, Ty* pH, const Tx& h)
 {
-  // compute diagonal elements:
+  // compute N diagonal elements:
   rsMatrixView<Ty> H(N, N, pH);
   Ty fc = f(x);
   for(int i = 0; i < N; i++) {
@@ -298,7 +314,7 @@ void hessian(const F& f, Tx* x, int N, Ty* pH, const Tx& h)
     H(i,i) = (fm - Tx(2)*fc + fp) / (h*h);
     x[i]   = ti; }
 
-  // compute off-diagonal elements:
+  // compute (N^2-N)/2 off-diagonal elements:
   for(int i = 0; i < N; i++) {
     for(int j = i+1; j < N; j++) {
       Tx ti = x[i];
@@ -318,7 +334,8 @@ void hessian(const F& f, Tx* x, int N, Ty* pH, const Tx& h)
   //   f_x ~= (f(x+h,y) - f(x-h,y)) / (2*h)
   // and then using a central difference with repect to y on f_x:
   //   f_xy ~= (f_x(x,y+h) - f_x(x,y-h)) / (2*h)
-  // and then generalizing in the obvious way from the bivariate to the multivariate case.
+  // and then generalizing in the obvious way from the bivariate to the multivariate case by 
+  // replacing x,y with i,j
 
   // ToDo:
   // -maybe allow to use different h-values along each dimension (pass an N-array for h)
