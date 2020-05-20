@@ -409,14 +409,16 @@ bool testNumericGradientAndHessian()
   using NumDiff = rsNumericDifferentiator<double>;
   //using ND  = rsNumericDifferentiator<double, double>;
 
-  double h = pow(2, -18); // from 2^-18, maxErr in the gradient becomes 0
+  double h = pow(2, -18);    // from 2^-18, maxErr in the gradient becomes 0
+  double hh[3] = {h, h, h};  // h as array
+
   Vec v({5,3,2});         // point at which we evaluate gradient and Hessian
   double vf = f(&v[0]);   // compute function value at v
 
   // compute gradient analytically and numerically and compare results:
   Vec ga(3); gf(&v[0], &ga[0]);
   /*Vec gn(3); gradient(f, &v[0], 3, &gn[0], h);*/
-  Vec gn(3); NumDiff::gradient(f, &v[0], 3, &gn[0], h);
+  Vec gn(3); NumDiff::gradient(f, &v[0], 3, &gn[0], hh);
   Vec err = ga - gn;
   double maxErr = rsMaxAbs(err);
   r &= maxErr == 0.0;

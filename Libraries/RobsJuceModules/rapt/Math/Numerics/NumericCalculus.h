@@ -117,26 +117,24 @@ public:
   // todo: derivativesUpTo4 - this is as far as we may go with a 5-point stencil - for higher 
   // derivatives, we need more than 5 evaluation points
 
-  /** Computes the gradient of a scalar-valued function y = f(x) at the given position vector x by 
-  a central difference and stores the result in g. The function type F should take its input vector 
-  as a raw (pointer to an) array of length N and return the scalar output. This function has 
-  2*N evaluations of f. Note that the input vector x is not const because we need to wiggle it 
-  internally, but at the end, the original content of the x-vector will be restored (exactly - no 
-  roundoff error is involved) - so it's quasi-const. */
+  /** Computes the gradient of a scalar-valued function y = f(x) at the given N-dimensional 
+  position vector x by a central difference and stores the result in g (also of length N). You also
+  need to pass an array of approximation stepsizes along the N directions in h. The function type F 
+  should take its input vector as a raw (pointer to an) array of length N and return the scalar 
+  output. This function has 2*N evaluations of f. Note that the input vector x is not const because 
+  we need to wiggle it internally, but at the end, the original content of the x-vector will be 
+  restored (exactly - no roundoff error is involved) - so it's quasi-const. */
   template<class F>
-  static void gradient(const F& f, Ty* x, int N, Ty* g, const Ty& h)
+  static void gradient(const F& f, Ty* x, int N, Ty* g, const Ty* h)
   {
-    for(int n = 0; n < N; n++)
-    {
-      Ty t = x[n];                  // temporary
-      x[n] = t + h; Ty fp = f(x);
-      x[n] = t - h; Ty fm = f(x);
-      g[n] = (fp-fm) / (2*h);
-      x[n] = t;                     // restore x[n]
-    }
+    for(int n = 0; n < N; n++) {
+      Ty t = x[n];                     // temporary
+      x[n] = t + h[n]; Ty fp = f(x);
+      x[n] = t - h[n]; Ty fm = f(x);
+      g[n] = (fp-fm) / (2*h[n]);
+      x[n] = t;    }                   // restore x[n]
   }
   // maybe Ty should just be called T
-  // todo: allow a different h for each dimension
 
 
 
