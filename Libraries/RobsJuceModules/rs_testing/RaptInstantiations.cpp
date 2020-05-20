@@ -378,6 +378,8 @@ template class RAPT::rsMultiArrayOld<float>;
 
 // numeric calculus
 template void RAPT::getNumDiffStencilCoeffs(const double* x, int N, int d, double* c);
+template void RAPT::rsNumericDifferentiator<double>::rsNumericDerivative(
+  const double *x, const double *y, double *yd, int N, bool extrapolateEnds);
 
 
 template double RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(double fl, double fu);

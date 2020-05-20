@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
-  iteratedNumDiff();
+  //iteratedNumDiff();
   //interpolatingFunction();
   //linearRegression();
   //multipleRegression();
@@ -233,11 +233,11 @@ int main(int argc, char* argv[])
   //naturalCubicSpline2();
   //cubicInterpolationNonEquidistant();   // move to unit tests
   //hyperbolicFunctions();
-  //splineInterpolationNonEquidistant();
+  splineInterpolationNonEquidistant();
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
   //numericIntegration(); // a.k.a. numeric "quadrature"
-  //numericDiffAndInt();  // numeric differentiation and integration - rename to nonUniformArrayDiffAndInt
+  numericDiffAndInt();  // numeric differentiation and integration - rename to nonUniformArrayDiffAndInt
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header
   //monotonicPolynomials();

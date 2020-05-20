@@ -220,7 +220,7 @@ bool testPhaseUnwrapStuff(std::string &reportString)  // rename to testUnwrappin
 bool testStencil(const std::vector<double>& s, int d, const std::vector<double>& t, 
   double tol = 1.e-13)
 {
-  int N = s.size();
+  int N = (int) s.size();
   std::vector<double> c(N);
   RAPT::getNumDiffStencilCoeffs(&s[0], N, d, &c[0]); 
   return rsEquals(c, t, tol);

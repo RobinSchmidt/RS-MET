@@ -182,7 +182,7 @@ void rsSinusoidalProcessor<T>::refineFreqsViaPhaseDerivative(rsSinusoidalPartial
   // unwrap phase and differentiate numerically:
   Vec pu = unwrapPhase(t, f, p);
   Vec fr(M);                                      // vector for refined frequencies
-  rsNumericDerivative(&t[0], &pu[0], &fr[0], M);  // derivative of unwrapped phase gives omega
+  rsNumericDifferentiator<T>::rsNumericDerivative(&t[0], &pu[0], &fr[0], M);  // derivative of unwrapped phase gives omega
   fr = T(1/(2*PI)) * fr;                          // convert from omega to Hertz
   //rsPlotVectors(f, fr);
 

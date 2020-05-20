@@ -5,31 +5,7 @@
 // -maybe rsNumCalc or rsNumericalCalculus - get rid of the then redundant "Numeric" in the 
 //  function names - and also of the rs-prefixes
 
-/** Cannot be used in-place yet: y and yd have to be distinct!
-Given an array of strictly monotonically increasing but not necessarily equidistant abscissa
-values in x and corresponding function values in y, this function fills the array yd with a
-numeric approximation of the derivative for each x value. All arrays are of length N. To
-compute the numeric derivative, we use a weighted average of the difference quotients left and
-right to the data point:
 
-               y[n] - y[n-1]          y[n+1] - y[n]
- yd[n] = wL * --------------- + wR * ---------------
-               x[n] - x[n-1]          x[n+1] - x[n]
-
-where the weights for the left and right difference quotients are determined by the distances
-dxL = x[n]-x[n-1] and dxR = x[n+1]-x[n] as wL = dxR/(dxL+dxR), wR = dxL/(dxL+dxR), such that
-the closer the x-axis value x[n-1] is to x[n], the more weight is given for the left quotient
-and vice versa. The weights add up to unity. If extrapolateEnds is true, the function will use
-linear extrapolation of the inner derivative values for the endpoints yd[0] and yd[N-1],
-otherwise it will use the (divided) forward difference at 0 and the backward difference at
-N-1. In a test with a sine function, the extrapolation gave more accurate results at the
-endpoints compared to simple differences, so it's probably better to use extrapolation. */
-template<class Tx, class Ty>
-void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds = true);
-// move into class rsNumericDifferentiatior and rename to derivative
-
-// todo: make a numeric derivative routine that is the inverse of the trapezoidal integrator
-// rsDifferentiateTrapezoidal, rename this one to rsWeightedCentralDifference
 
 /** Computes the stencil coefficients for a finite difference approximation of a derivative 
 according to: http://web.media.mit.edu/~crtaylor/calculator.html (todo: explain this here)
@@ -228,6 +204,34 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   // \name Data derivatives
+
+
+  /** Cannot be used in-place yet: y and yd have to be distinct!
+  Given an array of strictly monotonically increasing but not necessarily equidistant abscissa
+  values in x and corresponding function values in y, this function fills the array yd with a
+  numeric approximation of the derivative for each x value. All arrays are of length N. To
+  compute the numeric derivative, we use a weighted average of the difference quotients left and
+  right to the data point:
+
+  y[n] - y[n-1]          y[n+1] - y[n]
+  yd[n] = wL * --------------- + wR * ---------------
+  x[n] - x[n-1]          x[n+1] - x[n]
+
+  where the weights for the left and right difference quotients are determined by the distances
+  dxL = x[n]-x[n-1] and dxR = x[n+1]-x[n] as wL = dxR/(dxL+dxR), wR = dxL/(dxL+dxR), such that
+  the closer the x-axis value x[n-1] is to x[n], the more weight is given for the left quotient
+  and vice versa. The weights add up to unity. If extrapolateEnds is true, the function will use
+  linear extrapolation of the inner derivative values for the endpoints yd[0] and yd[N-1],
+  otherwise it will use the (divided) forward difference at 0 and the backward difference at
+  N-1. In a test with a sine function, the extrapolation gave more accurate results at the
+  endpoints compared to simple differences, so it's probably better to use extrapolation. */
+  template<class Tx>
+  static void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, 
+    bool extrapolateEnds = true);
+  // move into class rsNumericDifferentiatior and rename to derivative
+
+  // todo: make a numeric derivative routine that is the inverse of the trapezoidal integrator
+  // rsDifferentiateTrapezoidal, rename this one to rsWeightedCentralDifference
 
   // move the function rsNumericDerivative here - but maybe not because then it would require an 
   // instantiation of this class which may be inconvenient due to all the template parameters, 

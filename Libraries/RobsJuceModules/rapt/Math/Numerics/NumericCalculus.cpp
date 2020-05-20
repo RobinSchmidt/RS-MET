@@ -1,5 +1,6 @@
-template<class Tx, class Ty>
-void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds)
+template<class Ty>
+template<class Tx>
+void RAPT::rsNumericDifferentiator<Ty>::rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds)
 {
   rsAssert(y != yd, "cannot be used in place yet, y and yd have to be distinct");
 

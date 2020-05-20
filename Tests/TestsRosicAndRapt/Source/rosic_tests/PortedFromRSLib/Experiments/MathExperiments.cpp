@@ -1382,7 +1382,7 @@ void numericDiffAndInt()
   double scaler = xMax/x[N-1];
   RAPT::rsArrayTools::scale(x, N, scaler);
 
-  // compute sine and derivative at the samples:
+  // compute sine and its derivative and integral analytically at the samples:
   int n;
   for(n = 0; n < N; n++)
   {
@@ -1392,7 +1392,7 @@ void numericDiffAndInt()
   }
 
   // compute the numeric derivative and integral:
-  rsNumericDerivative(x, y, ydn, N, true);
+  rsNumericDifferentiator<double>::rsNumericDerivative(x, y, ydn, N, true);
   rsNumericIntegral(  x, y, yin, N, yi[0]);
 
   // plot function, true derivative and numeric derivative:
