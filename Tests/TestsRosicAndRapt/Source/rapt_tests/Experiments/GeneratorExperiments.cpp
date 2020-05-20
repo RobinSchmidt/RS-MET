@@ -31,9 +31,38 @@ void plotHistogram(const std::vector<double>& data, int numBins, double min, dou
 }
 // move to plotting
 
+rsUint32 getIrwingHallPeriod(rsUint32 prngPeriod, rsUint32 order)
+{
+  rsUint32 state = 0;
+  rsUint32 i = 0;
+  while(true)
+  {
+    state = (state + order) % prngPeriod;
+    i++;
+    if(state == 0)
+      break;
+  }
+  return i;
+}
+
 void noise()
 {
   // We generate noise with different distributions and plot the histograms...
+
+  //rsUint32 ihp; // period of Irwing-Hall generator
+  rsUint32 period = 20;
+  for(rsUint32 i = 1; i <= period; i++)
+  {
+    rsUint32 ihp1 = getIrwingHallPeriod(period, i);
+    rsUint32 ihp2 = period / rsGcd(period, i);  // conjecture
+    int dummy = 0;
+  }
+  // Results:
+  // i: 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20
+  // p: 20 10 20  5  4 10 20  5 20  2 20  5 20 10  4  5 20 10 20  1  the ihp
+  // the full period is obtained when i and 20 have no common factors
+  // i think, it may be p = 20 / gcd(20,i)
+
 
   int numSamples = 100000;
   int numBins    = 50;
@@ -47,6 +76,8 @@ void noise()
   // divides 12? maybe numbers which have no factor of two will leave the period as is, so
   // all odd numbers should be good? -> research needed (maybe make numeric experiments with a 
   // generator with a shorter period like 2^16)
+  // But: if we run 8 prngs in parallel, each with its own state (each starting with a different),
+  // seed, the period would still be 2^32. This may also be nicely parallelizable
 
   rsNoiseGenerator2<double> prng;
   prng.setOrder(order);

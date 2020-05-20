@@ -160,8 +160,8 @@ int main(int argc, char* argv[])
   //tennisRacketFreq();
 
   // Generators:
-  //noise();
-  noiseTriModal();
+  noise();
+  //noiseTriModal();
   //blit();
   //blep();
   //polyBlep();
