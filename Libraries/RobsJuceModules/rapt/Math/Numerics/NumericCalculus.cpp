@@ -3,7 +3,7 @@
 
 template<class Ty>
 template<class F>
-void rsNumericDifferentiator<Ty>::hessian(const F& f, Ty* x, int N, Ty* pH, const Ty& h)
+void rsNumericDifferentiator<Ty>::hessian(const F& f, Ty* x, int N, Ty* pH, const Ty* h)
 //void rsNumericDifferentiator<Ty>::hessian(
 //  const std::function<Ty(Ty*)>& f, Ty* x, int N, Ty* pH, const Ty& h)
 {
@@ -12,9 +12,9 @@ void rsNumericDifferentiator<Ty>::hessian(const F& f, Ty* x, int N, Ty* pH, cons
   Ty fc = f(x);
   for(int i = 0; i < N; i++) {
     Ty ti  = x[i];
-    x[i]   = ti + h; Ty fp = f(x);
-    x[i]   = ti - h; Ty fm = f(x);
-    H(i,i) = (fm - Ty(2)*fc + fp) / (h*h);
+    x[i]   = ti + h[i]; Ty fp = f(x);
+    x[i]   = ti - h[i]; Ty fm = f(x);
+    H(i,i) = (fm - Ty(2)*fc + fp) / (h[i]*h[i]);
     x[i]   = ti; }
 
   // compute (N^2-N)/2 off-diagonal elements:
@@ -22,11 +22,11 @@ void rsNumericDifferentiator<Ty>::hessian(const F& f, Ty* x, int N, Ty* pH, cons
     for(int j = i+1; j < N; j++) {
       Ty ti = x[i];
       Ty tj = x[j];
-      x[i] = ti + h; x[j] = tj + h; Ty fpp = f(x);         // f_++
-      x[i] = ti + h; x[j] = tj - h; Ty fpm = f(x);         // f_+-
-      x[i] = ti - h; x[j] = tj + h; Ty fmp = f(x);         // f_-+
-      x[i] = ti - h; x[j] = tj - h; Ty fmm = f(x);         // f_--
-      H(i,j) = H(j,i) = (fpp + fmm - fpm - fmp) / (4*h*h); 
+      x[i] = ti + h[i]; x[j] = tj + h[j]; Ty fpp = f(x);         // f_++
+      x[i] = ti + h[i]; x[j] = tj - h[j]; Ty fpm = f(x);         // f_+-
+      x[i] = ti - h[i]; x[j] = tj + h[j]; Ty fmp = f(x);         // f_-+
+      x[i] = ti - h[i]; x[j] = tj - h[j]; Ty fmm = f(x);         // f_--
+      H(i,j) = H(j,i) = (fpp + fmm - fpm - fmp) / (4*h[i]*h[j]);
       x[i] = ti;
       x[j] = tj; }}
 

@@ -416,8 +416,10 @@ bool testNumericGradientAndHessian()
   using NumDiff = rsNumericDifferentiator<double>;
   //using ND  = rsNumericDifferentiator<double, double>;
 
-  double h = pow(2, -18);    // from 2^-18, maxErr in the gradient becomes 0
-  double hh[3] = {h, h, h};  // h as array
+  double hx = pow(2, -18);    // from 2^-18, maxErr in the gradient becomes 0
+  double hy = hx/2;
+  double hz = hx/4;
+  double h[3] = {hx, hy, hz};  // h as array
 
   Vec v({5,3,2});         // point at which we evaluate gradient and Hessian
   double vf = f(&v[0]);   // compute function value at v
@@ -425,8 +427,7 @@ bool testNumericGradientAndHessian()
   // compute gradient analytically and numerically and compare results:
   Vec ga(3); gf(&v[0], &ga[0]);
   /*Vec gn(3); gradient(f, &v[0], 3, &gn[0], h);*/
-  //Vec gn(3); NumDiff::gradient(f, &v[0], 3, &gn[0], hh);
-  Vec gn = NumDiff::gradient(f, v, hh);
+  Vec gn = NumDiff::gradient(f, v, h);
   Vec err = ga - gn;
   double maxErr = rsMaxAbs(err);
   r &= maxErr == 0.0;
@@ -434,9 +435,6 @@ bool testNumericGradientAndHessian()
   // compute Hessian matrix analytically and numerically and compare results:
   Mat Ha = Hf(&v[0]);
   //Mat Hn(3, 3);  hessian(f, &v[0], 3, Hn.getDataPointer(), h);
-  /*Mat Hn(3, 3); NumDiff::hessian(f, &v[0], 3, Hn.getDataPointer(), h);*/
-  /*Mat Hn(3, 3); NumDiff::hessian(f, &v[0], 3, Hn, h);*/
-  /*Mat Hn = NumDiff::hessian(f, &v[0], 3, h);*/
   Mat Hn = NumDiff::hessian(f, v, h);
   Mat He = Ha - Hn;  // error matrix
   maxErr = He.getAbsoluteMaximum();

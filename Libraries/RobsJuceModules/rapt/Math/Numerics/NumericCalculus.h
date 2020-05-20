@@ -137,9 +137,8 @@ public:
   data array of an a NxN matrix. The usage is similar to gradient. This function has 2*N^2 + 1 
   function evaluations of f. */
   template<class F>
-  static void hessian(const F& f, Ty* x, int N, Ty* H, const Ty& h);
+  static void hessian(const F& f, Ty* x, int N, Ty* H, const Ty* h);
   // maybe Ty should just be called T
-  // todo: use h-array
 
 
   //-----------------------------------------------------------------------------------------------
@@ -197,18 +196,18 @@ public:
   // allocates
 
   template<class F>
-  static void hessian(const F& f, Ty* x, int N, rsMatrix<Ty>& H, const Ty& h)
+  static void hessian(const F& f, Ty* x, int N, rsMatrix<Ty>& H, const Ty* h)
   { hessian(f, x, N, H.getDataPointer(), h); }
   // does not allocate
 
   /** Even more convenient convenience function...but allocates */
   template<class F>
-  static rsMatrix<Ty> hessian(const F& f, Ty* x, int N, const Ty& h)
+  static rsMatrix<Ty> hessian(const F& f, Ty* x, int N, const Ty* h)
   { rsMatrix<Ty> H(N, N); hessian(f, x, N, H, h); return H; }
   // allocates
 
   template<class F>
-  static rsMatrix<Ty> hessian(const F& f, std::vector<Ty>& x, const Ty& h)
+  static rsMatrix<Ty> hessian(const F& f, std::vector<Ty>& x, const Ty* h)
   { return hessian(f, &x[0], (int) x.size(), h); }
   // allocates
 
