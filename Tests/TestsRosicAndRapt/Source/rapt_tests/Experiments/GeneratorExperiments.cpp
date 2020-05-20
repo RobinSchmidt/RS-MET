@@ -92,13 +92,19 @@ public:
 
   inline T getSample()
   {
-    T s = selector.getSample(); // in 0..1
+    T s = selector.getSample(); // in 0..1 - todo: make the rnage -1..+1
+
+    s = selectorLowpass.getSample(s);
+
     if(s < thresh1)
       return ng1.getSample();
     if(s < thresh2)
       return ng2.getSample();
     return ng3.getSample();
   }
+
+  rsOnePoleFilter<T, T> selectorLowpass;
+  // maybe then, teh raw selector should also have a range -1..+1
 
 protected:
 
@@ -118,6 +124,9 @@ void noiseTriModal()
 
   rsNoiseGeneratorTriModal<double> ng;
   ng.setOrder(order);
+  ng.selectorLowpass.setCutoff(1500);
+  ng.selectorLowpass.setSampleRate(44100);
+  ng.selectorLowpass.setMode(rsOnePoleFilter<double, double>::LOWPASS_IIT);
 
   using Vec = std::vector<double>;
 
