@@ -140,17 +140,29 @@ public:
 
   /** Computes a numerical approximation of the Hessian matrix of the function f at the given 
   N-dimensional position vector x and writes the result int H which should be a pointer to the flat 
-  data array of an a NxN matrix. Its usage is similar to gradient but the Hessian matrix but we use 
-  std::function here because the implementation is in the cpp file, so it doesn't get inlined and...
-  ...wait - maybe we can use F...try it
-
-  
-  This has 2*N^2 + 1 function evaluations of f.  */
-  static void hessian(const std::function<Ty(Ty*)>& f, Ty* x, int N, Ty* H, const Ty& h);
+  data array of an a NxN matrix. The usage is similar to gradient. This function has 2*N^2 + 1 
+  function evaluations of f. */
+  template<class F>
+  static void hessian(const F& f, Ty* x, int N, Ty* H, const Ty& h);
   // maybe Ty should just be called T
-  //template<class F>
-  //static void hessian(const F& f, Ty* x, int N, Ty* H, const Ty& h);
 
+  /** Convenience function.. */
+  template<class F>
+  static void hessian(const F& f, Ty* x, int N, rsMatrix<Ty>& H, const Ty& h)
+  { hessian(f, x, N, H.getDataPointer(), h); }
+
+  /** Even more convenient convenience function...but allocates */
+  template<class F>
+  static rsMatrix<Ty> hessian(const F& f, Ty* x, int N, const Ty& h)
+  { rsMatrix<Ty> H(N, N); hessian(f, x, N, H, h); return H; }
+
+
+  template<class F>
+  static rsMatrix<Ty> hessian(const F& f, std::vector<Ty>& x, const Ty& h)
+  { return hessian(f, &x[0], (int) x.size(), h); }
+
+  // make convenience function that takes a std::vector instead of raw array
+  // ..also for gradient computation - this should also return a vector
 
 
   //-----------------------------------------------------------------------------------------------

@@ -2,9 +2,10 @@
 // Differentiation:
 
 template<class Ty>
-//template<class F>
-void rsNumericDifferentiator<Ty>::hessian(
-  const std::function<Ty(Ty*)>& f, Ty* x, int N, Ty* pH, const Ty& h)
+template<class F>
+void rsNumericDifferentiator<Ty>::hessian(const F& f, Ty* x, int N, Ty* pH, const Ty& h)
+//void rsNumericDifferentiator<Ty>::hessian(
+//  const std::function<Ty(Ty*)>& f, Ty* x, int N, Ty* pH, const Ty& h)
 {
   // compute N diagonal elements:
   rsMatrixView<Ty> H(N, N, pH);

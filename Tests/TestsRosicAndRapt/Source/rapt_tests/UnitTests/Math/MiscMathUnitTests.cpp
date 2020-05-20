@@ -433,7 +433,10 @@ bool testNumericGradientAndHessian()
   // compute Hessian matrix analytically and numerically and compare results:
   Mat Ha = Hf(&v[0]);
   //Mat Hn(3, 3);  hessian(f, &v[0], 3, Hn.getDataPointer(), h);
-  Mat Hn(3, 3); NumDiff::hessian(f, &v[0], 3, Hn.getDataPointer(), h);
+  /*Mat Hn(3, 3); NumDiff::hessian(f, &v[0], 3, Hn.getDataPointer(), h);*/
+  /*Mat Hn(3, 3); NumDiff::hessian(f, &v[0], 3, Hn, h);*/
+  /*Mat Hn = NumDiff::hessian(f, &v[0], 3, h);*/
+  Mat Hn = NumDiff::hessian(f, v, h);
   Mat He = Ha - Hn;  // error matrix
   maxErr = He.getAbsoluteMaximum();
   r &= maxErr == 0.0;
