@@ -121,6 +121,14 @@ protected:
 
 };
 
+// todo: maybe allow to create correlated noise by doing only one state-update per sample and 
+// doing the sum over the past N states, like:
+//   accu -= state;   // subtract old state
+//   updateState();   // compute new state
+//   accu += state;   // add new state
+//   return scale * accu + shift;
+// where accu is remembered between calls to getSample
+
 // todo: allow for bi-, tri- and multimodal distributions: for example to get 3 bells at -1, 0, 1,
 // first select (according to some probability), which bell is 
 
