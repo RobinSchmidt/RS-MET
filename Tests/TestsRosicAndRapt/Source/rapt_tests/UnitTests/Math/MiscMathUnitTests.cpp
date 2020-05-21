@@ -263,69 +263,33 @@ bool testNumDiffStencils()
   // todo: try some weird stencils (asymmetric and/or non-equidistant, even  number of points,...)
 }
 
-/** Computes the partial derivative of the multivariate (N inputs) scalar function f with respect 
-to the n-th coordinate and also the diagonal element H(n,n) of the Hessian matrix, i.e. the 2nd 
-derivative with respect to coordinate n. */
-/*
-template<class T, class F>
-static void partialDerivativesUpTo2(const F& f, T* x, int N, int n, const T h, T* f0, T* f1, T* f2)
-{
-  *f0  = f(x);                             // f0 = f(x0,x1,..,x_M)    where M := N-1
-  T t  = x[n];                             // temporary
-  x[n] = t + h; T fp = f(x);               // fp = f(x0,x1,..,xn+h,..,x_M)
-  x[n] = t - h; T fm = f(x);               // fm = f(x0,x1,..,xn-h,..,x_M)
-  *f1  = (fp - fm) / (T(2)*h);             // df/dxn
-  *f2  = (fm - T(2)*(*f0) + fp) / (h*h);   // d2f/dxn2
-  x[n] = t;                                // restore input
-}
-*/
-// 3 evaluations of f
-// move to rsNumericDifferentiatiator
-
-// todo: compute hessian times vector ..or is it vector times hessian? does that make a difference?
-// maybe not because the hessian is symmetric
-// todo: compute numeric Jacobians
 
 
 
+/** Approximates the matrix-vector product H * v of the Hessian matrix H of f evaluated at 
+position x and an arbitrary given vector v and writes the result into Hv. This is the same as 
+v^T * H due to the symmetry of the Hessian matrix. The approximation is based on two gradient 
+evaluations at position vectors x + k*v and x - k*v for some scalar approximation stepsize k. The 
+array h is - as usual - the vector of stepsizes to numerically approximate the gradient itself. The 
+workspace must be of length 2*N. The two gradient evaluations each take 2*N evaluations of f, so 
+the function evaluates f 4*N times. For details of the idea, see... */
 template<class T, class F>
 static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h, T k,
   T* workspace)
 {
-  // workspace must be of length 4*N
+  // workspace must be of length 2*N
   T *gp = workspace;
   T *gm = &workspace[N];
-  //T *xp = &workspace[2*N];
-  //T *xm = &workspace[3*N];
-  // we can reduce the workspace to 3*N by using just one array for x and re-using it:
-  // 1: create x + k*v
-  // 2: compute gradient at x + k*v
-  // 3: compute x - k*v
-  // 4: compute gradient at x - k*v
-  // 5: compuzte Hv
-  // ..actually, we can use Hv for the temporary x, so we can get away with 2*N of temporary 
-  // storage
-
   using NumDiff = rsNumericDifferentiator<T>;
-
-
-  T *xp, *xm; 
-  xp = xm = Hv;
-
+  for(int n = 0; n < N; n++)  
+    Hv[n] = x[n] + k*v[n];                        // Hv temporarily used for x + k*v
+  NumDiff::gradient(f, &Hv[0], N, &gp[0], h);     // gp: gradient at x + k*v
+  for(int n = 0; n < N; n++)  
+    Hv[n] = x[n] - k*v[n];                        // Hv temporarily used for x - k*v
+  NumDiff::gradient(f, &Hv[0], N, &gm[0], h);     // gm: gradient at x - k*v
   for(int n = 0; n < N; n++)
-    xp[n] = x[n] + k*v[n];
-  NumDiff::gradient(f, &xp[0], N, &gp[0], h);  // gp: gradient at x + k*v
-
-
-  for(int n = 0; n < N; n++)
-    xm[n] = x[n] - k*v[n];
-  NumDiff::gradient(f, &xm[0], N, &gm[0], h);  // gm: gradient at x - k*v
-
-  for(int n = 0; n < N; n++)
-    Hv[n] = (gp[n] - gm[n]) / (2*k);
+    Hv[n] = (gp[n] - gm[n]) / (2*k);              // Hv ~= (grad(x+k*v) - grad(x-k*v)) / (2*k)
 }
-
-
 
 /** Approximates the matrix-vector product H * v of the Hessian matrix H of f evaluated at 
 position x and an arbitrary given vector v. This is the same as v^T * H due to the symmetry of the 
@@ -334,36 +298,13 @@ template<class T, class F>
 static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h, T k)
 {
   using Vec = std::vector<T>;
-  //Vec wrk(4*N);
   Vec wrk(2*N);
   hessianTimesVector(f, x, v, N, Hv, h, k, &wrk[0]);
   return;
-
-
-  /*
-  using NumDiff = rsNumericDifferentiator<T>;
-
-  Vec xp(N), xm(N);  // todo: use workspace
-  for(int n = 0; n < N; n++)
-  {
-    xp[n] = x[n] + k*v[n];
-    xm[n] = x[n] - k*v[n];
-  }
-
-  Vec gp(N), gm(N);  // todo: use workspace
-  NumDiff::gradient(f, &xp[0], N, &gp[0], h);  // gp: gradient at x + k*v
-  NumDiff::gradient(f, &xm[0], N, &gm[0], h);  // gm: gradient at x - k*v
-
-  for(int n = 0; n < N; n++)
-    Hv[n] = (gp[n] - gm[n]) / (2*k);
-    */
 }
 // convenience function
-// k is the outer approximation stepsize
-// calls gradient 2 times - each call has 2*N evaluations of f, so we have 4*N evaluations of f
-// in total
-// needs test
 
+// todo: compute numeric Jacobians
 
 
 
