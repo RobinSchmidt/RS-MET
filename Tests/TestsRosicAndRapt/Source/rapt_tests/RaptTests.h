@@ -88,6 +88,9 @@ void multipleRegression();
 void polynomialRegression();
 void gaussianRegression();
 void butterworthViaGaussians();
+
+void numericOptimization();
+
 void polynomialPrediction();
 void probabilityLogic();
 void productLogPlot();

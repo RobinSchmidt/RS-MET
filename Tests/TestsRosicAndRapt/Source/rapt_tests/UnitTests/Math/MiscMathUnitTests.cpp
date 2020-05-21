@@ -215,7 +215,6 @@ bool testPhaseUnwrapStuff(std::string &reportString)  // rename to testUnwrappin
   return r;
 }
 
-
 // s: stencil offsets, d: derivative order, t: target coeffs, tol: tolerance
 bool testStencil(const std::vector<double>& s, int d, const std::vector<double>& t, 
   double tol = 1.e-13)
@@ -558,6 +557,7 @@ int minimizeGradientAutoStep(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
     NumDif::hessianTimesVector(f, v, &g[0], N, &Hg[0], h, k, &wrk[0]);
     evals += 4*N;
     T step = AT::sumOfSquares(&g[0], N) / AT::sumOfProducts(&g[0], &Hg[0], N); // (g*g) / (g*H*g)
+    // verify, if that formual is correct
 
     // do step:
     AT::addWithWeight(v, N, &g[0], -step); // or -step?
@@ -580,8 +580,6 @@ int minimizeGradientAutoStep(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
 
   return evals;
 }
-
-
 
 // maybe this should be moved to experiments:
 bool testNumericMinimization()
@@ -639,7 +637,6 @@ bool testNumericMinimization()
 
 
 
-
   f = [=](double* v)->double
   { 
     double x = v[0], y = v[1];
@@ -674,16 +671,13 @@ bool testNumericMinimization()
   // to converge to the same minimum as the partial parabolic algo, we nee a stepSize of 1/64
   // and 9841 evals compared to 144 evals with the partial parabolic algo
 
+  x = v; evals = minimizeGradientAutoStep( f, &x[0], N, h, 1.e-12);  // 599
+
 
   // https://www.wolframalpha.com/input/?i=4*x*x+%2B+y*y*y*y+%2B+x*y
   // roots: x = -(3 sqrt(3))/128, y = sqrt(3)/8; x = (3 sqrt(3))/128, y = -sqrt(3)/8
   // minima: min1 = -0.000976563 at (x, y)=(-0.0220971,  0.176777)
   //         min2 = -0.000976563 at (x, y)=( 0.0220971, -0.176777)
-
-
-
-
-
 
   return r;
 }

@@ -1521,6 +1521,16 @@ void butterworthViaGaussians()
 
 
 
+
+
+void numericOptimization()
+{
+
+  int dummy = 0;
+}
+
+
+
 /*
 Idea: we model the signal x(t) by a polynomial such that:
 x(t) = a0 + a1*t + a2*t^2 + a3*t^3 + ... + aN*t^N

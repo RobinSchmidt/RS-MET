@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
   //multipleRegression();
   //polynomialRegression();
   //gaussianRegression();
-  //butterworthViaGaussians();
+  butterworthViaGaussians();
 
   // numericOptimization(); // to be moved from UnitTests
 
