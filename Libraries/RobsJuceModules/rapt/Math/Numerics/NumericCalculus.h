@@ -162,6 +162,33 @@ public:
   // maybe Ty should just be called T
 
 
+  /** Approximates the matrix-vector product H * v of the Hessian matrix H of f evaluated at 
+  position x and an arbitrary given vector v and writes the result into Hv. This is the same as 
+  v^T * H due to the symmetry of the Hessian matrix. The approximation is based on two gradient 
+  evaluations at position vectors x + k*v and x - k*v for some scalar approximation stepsize k. The 
+  array h is - as usual - the vector of stepsizes to numerically approximate the gradient itself. 
+  The workspace must be of length 2*N. The two gradient evaluations each take 2*N evaluations of f, 
+  so the function evaluates f 4*N times. For details of the idea, see... */
+  template<class F>
+  static void hessianTimesVector(const F& f, Ty* x, Ty* v, int N, Ty* Hv, const Ty* h, Ty k,
+    Ty* workspace)
+  {
+    Ty *gp =  workspace;
+    Ty *gm = &workspace[N];
+    for(int n = 0; n < N; n++)  
+      Hv[n] = x[n] + k*v[n];               // Hv temporarily used for x + k*v
+    gradient(f, &Hv[0], N, &gp[0], h);     // gp: gradient at x + k*v
+    for(int n = 0; n < N; n++)  
+      Hv[n] = x[n] - k*v[n];               // Hv temporarily used for x - k*v
+    gradient(f, &Hv[0], N, &gm[0], h);     // gm: gradient at x - k*v
+    for(int n = 0; n < N; n++)
+      Hv[n] = (gp[n] - gm[n]) / (2*k);     // Hv ~= (grad(x+k*v) - grad(x-k*v)) / (2*k)
+  }
+  // maybe Ty should just be called T
+
+  // todo: compute numeric Jacobians
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Data derivatives
 
@@ -230,6 +257,11 @@ public:
   template<class F>
   static rsMatrix<Ty> hessian(const F& f, std::vector<Ty>& x, const Ty* h)
   { return hessian(f, &x[0], (int) x.size(), h); }
+  // allocates
+
+  template<class F>
+  static void hessianTimesVector(const F& f, Ty* x, Ty* v, int N, Ty* Hv, const Ty* h, Ty k)
+  { std::vector<Ty> wrk(2*N); hessianTimesVector(f, x, v, N, Hv, h, k, &wrk[0]); }
   // allocates
 
   // maybe make convenience functions that take a scalar h - they should create temporary array and

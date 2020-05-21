@@ -263,51 +263,6 @@ bool testNumDiffStencils()
   // todo: try some weird stencils (asymmetric and/or non-equidistant, even  number of points,...)
 }
 
-
-
-
-/** Approximates the matrix-vector product H * v of the Hessian matrix H of f evaluated at 
-position x and an arbitrary given vector v and writes the result into Hv. This is the same as 
-v^T * H due to the symmetry of the Hessian matrix. The approximation is based on two gradient 
-evaluations at position vectors x + k*v and x - k*v for some scalar approximation stepsize k. The 
-array h is - as usual - the vector of stepsizes to numerically approximate the gradient itself. The 
-workspace must be of length 2*N. The two gradient evaluations each take 2*N evaluations of f, so 
-the function evaluates f 4*N times. For details of the idea, see... */
-template<class T, class F>
-static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h, T k,
-  T* workspace)
-{
-  // workspace must be of length 2*N
-  T *gp = workspace;
-  T *gm = &workspace[N];
-  using NumDiff = rsNumericDifferentiator<T>;
-  for(int n = 0; n < N; n++)  
-    Hv[n] = x[n] + k*v[n];                        // Hv temporarily used for x + k*v
-  NumDiff::gradient(f, &Hv[0], N, &gp[0], h);     // gp: gradient at x + k*v
-  for(int n = 0; n < N; n++)  
-    Hv[n] = x[n] - k*v[n];                        // Hv temporarily used for x - k*v
-  NumDiff::gradient(f, &Hv[0], N, &gm[0], h);     // gm: gradient at x - k*v
-  for(int n = 0; n < N; n++)
-    Hv[n] = (gp[n] - gm[n]) / (2*k);              // Hv ~= (grad(x+k*v) - grad(x-k*v)) / (2*k)
-}
-
-/** Approximates the matrix-vector product H * v of the Hessian matrix H of f evaluated at 
-position x and an arbitrary given vector v. This is the same as v^T * H due to the symmetry of the 
-Hessian matrix (verify that). */
-template<class T, class F>
-static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h, T k)
-{
-  using Vec = std::vector<T>;
-  Vec wrk(2*N);
-  hessianTimesVector(f, x, v, N, Hv, h, k, &wrk[0]);
-  return;
-}
-// convenience function
-
-// todo: compute numeric Jacobians
-
-
-
 bool testNumericGradientAndHessian()
 {
   // Tests numeric gradient and Hessian matrix computation by comparing the results to analytically
@@ -407,15 +362,10 @@ bool testNumericGradientAndHessian()
   Hwa = w * Ha;
   double k = pow(2, -13);
   Vec Hwn(3);         // numeric matrix vector product H*w
-  hessianTimesVector(f, &v[0], &w[0], 3, &Hwn[0], h, k);
+  NumDiff::hessianTimesVector(f, &v[0], &w[0], 3, &Hwn[0], h, k);
   maxErr = rsMaxAbs(Hwa-Hwn);
   r &= maxErr < 0.004;  // it doesn't get any better by tweaking k - but maybe we could tweak
                         // the h-values as well...
-
-  // ah - ok - it works better with a different h - maybe we should pass an array of h values 
-  // used in gradient etsimation and a scalar epsilon used for the "outer" approximation
-
-
 
   return r;
 }
