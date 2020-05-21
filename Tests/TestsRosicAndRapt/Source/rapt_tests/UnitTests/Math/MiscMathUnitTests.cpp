@@ -382,9 +382,12 @@ bool testNumericGradientAndHessian()
 template<class T, class F>
 int minimize1(const F& f, T* v, int N, const T* h)
 {
+  // under construction
+
   T tol = 1.e-8;  // make parameter
   bool converged = false;
   int evals = 0;
+  int iterations = 0;
   while(!converged)
   {
     for(int n = 0; n < N; n++)
@@ -400,12 +403,13 @@ int minimize1(const F& f, T* v, int N, const T* h)
       a = f2/2;
       b = f1 - 2*a*x;     // 2*a = f2
 
+      T fNew;
 
       if(f2 > 0)
       {
         x = v[n] = -b/(2*a);  // jump into minimum of parabola
 
-        T fNew = f(v);
+        fNew = f(v);
         evals++;
 
         int dummy = 0;
@@ -413,17 +417,21 @@ int minimize1(const F& f, T* v, int N, const T* h)
       else
       {
 
+        // parabola has a maximum - jump some distance away from it....
+
+        int dummy = 0;
       }
 
+
+      if(rsAbs(f0-fNew) < tol)
+        converged = true;
 
       int dummy = 0;
     }
 
-
-    converged = true; // preliminary
+    iterations++;
+    int dummy = 0;
   }
-
-
 
   return evals;  // return the number of evaluations of f
 }
@@ -463,21 +471,45 @@ bool testNumericMinimization()
   //   f(x,y) = 4*x^2 + y^4 + x*y
   // where v = (x y) is the 2D input vector.
   static const int N = 2;  // dimensionality of the input space
-  std::function<double(double*)> f = [=](double* v)->double
+  std::function<double(double*)> f;
+  double hx = pow(2, -18);
+  double hy = hx/2;
+  double h[N] = {hx, hy};     // h as array
+  Vec v({5,3,2});             // initial guess
+  Vec x;
+  int evals;
+
+
+  f = [=](double* v)->double
+  { 
+    double x = v[0], y = v[1];
+    return 2*x*x + 16*y*y;
+    // a*x^2 + b*y^2 - should converge in the 1st iteration, irrespective of a,b (but both must
+    // be positive)
+  };
+  x = v; evals = minimize1(f, &x[0], N, h);
+  // 16 evaluations: it converges in the first iteration, but a 2nd iteration is needed to detect 
+  // the convergence, so we get 2 iterations, each taking  4*N = 4*2 = 8 evaluations - so this 
+  // seems ok
+
+
+
+  f = [=](double* v)->double
   { 
     double x = v[0], y = v[1];
     return 4*x*x + y*y*y*y + x*y;
   };
+  x = v; evals = minimize1(f, &x[0], N, h);
+  // 14 iterations, 112 evaluations -> 112/14 = 8
 
-  double hx = pow(2, -18);
-  double hy = hx/2;
-  double h[N] = {hx, hy};     // h as array
+  // the minimum is at (0,0)..or is it?
 
-  Vec v({5,3,2});             // initial guess
-  Vec x = v;
-  minimize1(f, &x[0], N, h);
 
-  // the minimum is at (0,0)
+
+
+
+  // try a simpler function like f(x,y) = a*x^2 + b*y^2 + c*x + d*y
+  // or f(x,y) = a*x^2 + b*y^2 - this should converge in the first iteration
 
   return r;
 }
