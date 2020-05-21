@@ -308,11 +308,6 @@ static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h)
 
   for(int n = 0; n < N; n++)
     Hv[n] = (gp[n] - gm[n]) / (2*h[n]);
-
-
-  //rsVectorDbl gp   = getGradient(p + eps*v); // gradient at p + eps*v
-  //rsVectorDbl gm   = getGradient(p - eps*v); // gradient at p - eps*v
-  //return (gp-gm) / (2.0*eps);
 }
 // calls gradient 2 times - each call has 2*N evaluations of f, so we have 4*N evaluations of f
 // in total
@@ -416,8 +411,12 @@ bool testNumericGradientAndHessian()
   Vec Hwa = Ha * w;   // analytic matrix vector product H*w
   Hwa = w * Ha;
 
+
+  hx = pow(2, -10); h[0] = h[1] = h[2] = hx;  // test: use one h only
   Vec Hwn(3);         // numeric matrix vector product H*w
   hessianTimesVector(f, &v[0], &w[0], 3, &Hwn[0], h);
+  // ah - ok - it works better with a different h - maybe we should pass an array of h values 
+  // used in gradient etsimation and a scalar epsilon used for the "outer" approximation
 
 
 

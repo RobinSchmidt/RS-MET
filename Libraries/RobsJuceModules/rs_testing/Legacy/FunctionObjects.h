@@ -227,7 +227,12 @@ protected:
 
 
 /** This class serves as baseclass for multivariate error functions - that is, functions that take 
-a vector of parameters as input and produce a scalar error at the output. */
+a vector of parameters as input and produce a scalar error at the output. 
+
+
+  (1) Neural Networks for Pattern Recognition
+
+*/
 
 template<class T>
 class MultivariateErrorFunction
