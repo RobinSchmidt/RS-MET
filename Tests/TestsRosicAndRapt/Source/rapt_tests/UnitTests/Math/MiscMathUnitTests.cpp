@@ -290,7 +290,7 @@ static void partialDerivativesUpTo2(const F& f, T* x, int N, int n, const T h, T
 position x and an arbitrary given vector v. This is the same as v^T * H due to the symmetry of the 
 Hessian matrix (verify that). */
 template<class T, class F>
-static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h)
+static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h, T k)
 {
   using Vec = std::vector<T>;
   using NumDiff = rsNumericDifferentiator<T>;
@@ -298,17 +298,18 @@ static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h)
   Vec xp(N), xm(N);  // todo: use workspace
   for(int n = 0; n < N; n++)
   {
-    xp[n] = x[n] + h[n]*v[n];
-    xm[n] = x[n] - h[n]*v[n];
+    xp[n] = x[n] + k*v[n];
+    xm[n] = x[n] - k*v[n];
   }
 
   Vec gp(N), gm(N);  // todo: use workspace
-  NumDiff::gradient(f, &xp[0], N, &gp[0], h);  // gp: gradient at x + h*v (element-wise multiply)
-  NumDiff::gradient(f, &xm[0], N, &gm[0], h);  // gm: gradient at x - h*v
+  NumDiff::gradient(f, &xp[0], N, &gp[0], h);  // gp: gradient at x + k*v
+  NumDiff::gradient(f, &xm[0], N, &gm[0], h);  // gm: gradient at x - k*v
 
   for(int n = 0; n < N; n++)
-    Hv[n] = (gp[n] - gm[n]) / (2*h[n]);
+    Hv[n] = (gp[n] - gm[n]) / (2*k);
 }
+// k is the outer approximation stepsize
 // calls gradient 2 times - each call has 2*N evaluations of f, so we have 4*N evaluations of f
 // in total
 // needs test
@@ -410,11 +411,13 @@ bool testNumericGradientAndHessian()
   Vec w({-2,1,3});    // fixed vector
   Vec Hwa = Ha * w;   // analytic matrix vector product H*w
   Hwa = w * Ha;
-
-
-  hx = pow(2, -10); h[0] = h[1] = h[2] = hx;  // test: use one h only
+  double k = pow(2, -13);
   Vec Hwn(3);         // numeric matrix vector product H*w
-  hessianTimesVector(f, &v[0], &w[0], 3, &Hwn[0], h);
+  hessianTimesVector(f, &v[0], &w[0], 3, &Hwn[0], h, k);
+  maxErr = rsMaxAbs(Hwa-Hwn);
+  r &= maxErr < 0.004;  // it doesn't get any better by tweaking k - but maybe we could tweak
+                        // the h-values as well...
+
   // ah - ok - it works better with a different h - maybe we should pass an array of h values 
   // used in gradient etsimation and a scalar epsilon used for the "outer" approximation
 
