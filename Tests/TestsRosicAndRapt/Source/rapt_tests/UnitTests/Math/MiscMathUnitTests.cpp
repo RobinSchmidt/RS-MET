@@ -293,10 +293,10 @@ static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h,
   T* workspace)
 {
   // workspace must be of length 4*N
-  T *xp = workspace;
-  T *xm = &workspace[N];
-  T *gp = &workspace[2*N];
-  T *gm = &workspace[3*N];
+  T *gp = workspace;
+  T *gm = &workspace[N];
+  //T *xp = &workspace[2*N];
+  //T *xm = &workspace[3*N];
   // we can reduce the workspace to 3*N by using just one array for x and re-using it:
   // 1: create x + k*v
   // 2: compute gradient at x + k*v
@@ -306,14 +306,19 @@ static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h,
   // ..actually, we can use Hv for the temporary x, so we can get away with 2*N of temporary 
   // storage
 
-  for(int n = 0; n < N; n++)
-  {
-    xp[n] = x[n] + k*v[n];
-    xm[n] = x[n] - k*v[n];
-  }
-
   using NumDiff = rsNumericDifferentiator<T>;
+
+
+  T *xp, *xm; 
+  xp = xm = Hv;
+
+  for(int n = 0; n < N; n++)
+    xp[n] = x[n] + k*v[n];
   NumDiff::gradient(f, &xp[0], N, &gp[0], h);  // gp: gradient at x + k*v
+
+
+  for(int n = 0; n < N; n++)
+    xm[n] = x[n] - k*v[n];
   NumDiff::gradient(f, &xm[0], N, &gm[0], h);  // gm: gradient at x - k*v
 
   for(int n = 0; n < N; n++)
@@ -329,7 +334,8 @@ template<class T, class F>
 static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h, T k)
 {
   using Vec = std::vector<T>;
-  Vec wrk(4*N);
+  //Vec wrk(4*N);
+  Vec wrk(2*N);
   hessianTimesVector(f, x, v, N, Hv, h, k, &wrk[0]);
   return;
 
