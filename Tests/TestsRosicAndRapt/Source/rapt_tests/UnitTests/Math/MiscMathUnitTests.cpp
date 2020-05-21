@@ -405,7 +405,6 @@ int minimizePartialParabolic(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
   // gradient computation needs 3*N evaluations of f)
   // move into a class rsNumericMinimizer
 
-  //T tol = 1.e-8;  // make parameter
   bool converged = false;
   int evals = 0;
   int iterations = 0;
@@ -480,7 +479,43 @@ int minimizePartialParabolic(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
 //  minimum of the parabola above, but it uses the gradient direction instead of a coordinate 
 //  direction
 
+template<class T, class F>
+int minimizeGradientDescent(const F& f, T* v, int N, const T* h, T stepSize, T tol = 1.e-8)
+{
+  bool converged = false;
+  int evals = 0;
+  int iterations = 0;
 
+  using AT     = rsArrayTools;
+  using NumDif = rsNumericDifferentiator<T>;
+  using Vec    = std::vector<T>;
+  Vec g(N);  // gradient
+
+
+
+  while(!converged)
+  {
+    NumDif::gradient(f, v, N, &g[0], h);       // g = numerical gradient
+    evals += 2*N;                              // gradient estimation costs 2N evaluations of f
+    AT::addWithWeight(v, N, &g[0], -stepSize); // v -= stepSize * g
+
+
+    // maybe convergence can be assumed when all elements of the gradient have less absolute value 
+    // than their corresponding h-value? does that make sense?
+
+
+    Vec dbg = toVector(v, N);
+
+    int dummy = 0;
+  }
+  return evals;
+}
+
+// https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method
+// https://docs.scipy.org/doc/scipy/reference/optimize.html
+
+
+// maybe this should be moved to experiments:
 bool testNumericMinimization()
 {
   // Under construction
@@ -512,6 +547,11 @@ bool testNumericMinimization()
     // be positive)
   };
   x = v; evals = minimizePartialParabolic(f, &x[0], N, h, tol);
+  //x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1.0, tol); // diverges
+  //x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./16, tol); // oscillates
+  //x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./32, tol);  // converges
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./64, tol);
+
   // the minimum is at (0,0)
   // 16 evaluations: it converges in the first iteration, but a 2nd iteration is needed to detect 
   // the convergence, so we get 2 iterations, each taking  4*N = 4*2 = 8 evaluations - so this 
