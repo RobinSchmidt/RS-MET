@@ -443,14 +443,9 @@ bool testMatrixOperators()
   r &= B == Mat(3, 2, {16,37, 32,80, 14,35});
 
   // test matrix-vector multiplication:
-  Vec x = Vec({1,2,3});
-  A = Mat(2, 3, {1,2,3, 4,5,6});
-  Vec y = A*x;
-  r &= y == Vec({14,32});
-
-  A = Mat(3, 2, {1,2, 3,4, 5,6});
-  y = x*A;
-  r &= y == Vec({22,28});
+  Vec x, y; x = Vec({1,2,3});
+  A = Mat(2, 3, {1,2,3, 4,5,6});  y = A*x; r &= y == Vec({14,32});
+  A = Mat(3, 2, {1,2, 3,4, 5,6}); y = x*A; r &= y == Vec({22,28});
   
   return r;
 }

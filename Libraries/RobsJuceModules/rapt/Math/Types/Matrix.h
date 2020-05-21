@@ -1046,16 +1046,11 @@ template<class T>
 std::vector<T> operator*(const std::vector<T>& x, const rsMatrix<T>& A) 
 { 
   rsAssert((int) x.size() == A.getNumRows(), "vector incompatible for right multiply by matrix");
-  int numInElems  = A.getNumRows();   // == x.size()
-  int numOutElems = A.getNumColumns();
   std::vector<T> y(A.getNumColumns());
-  for(int i = 0; i < numOutElems; i++)      // i goes up to numCols
-  {
+  for(int i = 0; i < A.getNumColumns(); i++) {
     y[i] = T(0);
-    for(int j = 0; j < numInElems; j++)     // j goes up to numRows
-      y[i] += x[j] * A(j, i);
-
-  }
+    for(int j = 0; j < A.getNumRows(); j++)
+      y[i] += x[j] * A(j, i); }
   return y;
 }
 
