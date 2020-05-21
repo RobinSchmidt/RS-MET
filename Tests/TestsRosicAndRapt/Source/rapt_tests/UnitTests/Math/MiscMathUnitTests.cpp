@@ -380,20 +380,35 @@ bool testNumericGradientAndHessian()
 }
 
 template<class T, class F>
-void minimize1(const F& f, T* x, int N, const T* h)
+int minimize1(const F& f, T* v, int N, const T* h)
 {
   T tol = 1.e-8;  // make parameter
   bool converged = false;
+  int evals = 0;
   while(!converged)
   {
     for(int n = 0; n < N; n++)
     {
-      T f0,f1,f2;
-      partialDerivativesUpTo2(f, x, N, n, h[n], &f0, &f1, &f2); // 3 evals of f
+      T x = v[n];      // variable of our 1D parabola
+      T f0, f1, f2;
+      partialDerivativesUpTo2(f, v, N, n, h[n], &f0, &f1, &f2); // 3 evals of f
+      evals += 3;
+
+      // compute parameters of parabola f(x) = a*x^2 + b*x + c
+      T a, b, c;
+      c = f0;             // not needed?
+      a = f2/2;
+      b = f1 - 2*a*x;     // 2*a = f2
+
 
       if(f2 > 0)
       {
+        x = v[n] = -b/(2*a);  // jump into minimum of parabola
 
+        T fNew = f(v);
+        evals++;
+
+        int dummy = 0;
       }
       else
       {
@@ -409,8 +424,8 @@ void minimize1(const F& f, T* x, int N, const T* h)
   }
 
 
-  int dummy = 0;
-  // maybe return the number of iterations
+
+  return evals;  // return the number of evaluations of f
 }
 
 // Idea for nonlinear minimization:
