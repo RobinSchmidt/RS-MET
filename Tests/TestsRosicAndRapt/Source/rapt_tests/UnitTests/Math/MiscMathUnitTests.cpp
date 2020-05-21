@@ -405,10 +405,18 @@ int minimize1(const F& f, T* v, int N, const T* h)
 
       T fNew;
 
+      T xEx = -b/(2*a);   // extremum (minimum or maximum...or maybe saddle)
+      T dx  = xEx - x;    // update vector
+
       if(f2 > 0)
       {
-        x = v[n] = -b/(2*a);  // jump into minimum of parabola
 
+
+
+        //x = v[n] = -b/(2*a);  // jump into minimum of parabola
+
+        x += dx;
+        v[n] = x;
         fNew = f(v);
         evals++;
 
@@ -418,6 +426,16 @@ int minimize1(const F& f, T* v, int N, const T* h)
       {
 
         // parabola has a maximum - jump some distance away from it....
+        //T xOld = x;
+        //T xNew = -b/(2*a);
+        //T dx   = xNew - xOld;
+
+        x -= dx;
+        v[n] = x;
+        fNew = f(v);
+        evals++;
+
+        // this needs tests
 
         int dummy = 0;
       }
