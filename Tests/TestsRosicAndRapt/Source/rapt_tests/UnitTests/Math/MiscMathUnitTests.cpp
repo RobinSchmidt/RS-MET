@@ -379,10 +379,31 @@ bool testNumericGradientAndHessian()
   return r;
 }
 
+// maybe move to ScratchPad.cpp:
 template<class T, class F>
 int minimize1(const F& f, T* v, int N, const T* h)
 {
-  // under construction
+  // Under construction
+
+  // Algorithm:
+  // Notation: x: current position vector, f(x): error funcion, f0n,f1n,f2n: value and 1st and 2nd 
+  // partial derivatives with respect to n-th coordinate
+  // -at each step until convergence:
+  //  -loop through the coordinates (n = 0..N-1):
+  //   -compute value and partial derivatives f0n,f1n,f2n
+  //   -if f2n > 0 (parabola along n-th coordinate has minimum):
+  //    -jump into minimum of parabola along n-th coordinate
+  //   -else:
+  //    -jump an equal distance away from the maximum of the parabola
+  //  -compute function value at new location, if less than previous, accept step else reject and
+  //   continue with next coordinate (or maybe try a half-step, then quarter, etc...before 
+  //   continuing)
+
+  // Give the algorithm a name - maybe minimizePartialParabolic - maybe make a similar 
+  // minimizeGradientDescent function as baseline algo to compare against - however, it's probably
+  // not advisable to use numeric gradients in gradient descent for efficiency reasons (each 
+  // gradient computation needs 3*N evaluations of f)
+  // move into a class rsNumericMinimizer
 
   T tol = 1.e-8;  // make parameter
   bool converged = false;
@@ -390,6 +411,8 @@ int minimize1(const F& f, T* v, int N, const T* h)
   int iterations = 0;
   while(!converged)
   {
+
+    // maybe factor out into a function minimizeStep1
     for(int n = 0; n < N; n++)
     {
       T x = v[n];      // variable of our 1D parabola
@@ -399,50 +422,42 @@ int minimize1(const F& f, T* v, int N, const T* h)
 
       // compute parameters of parabola f(x) = a*x^2 + b*x + c
       T a, b, c;
-      c = f0;             // not needed?
+      c = f0;             // not needed in the formulas
       a = f2/2;
       b = f1 - 2*a*x;     // 2*a = f2
 
       T fNew;
+      T xEx = -b/(2*a);   // extremum (minimum or maximum) of the 1D parabola
+      T dx  = xEx - x;    // update vector "delta-x"
 
-      T xEx = -b/(2*a);   // extremum (minimum or maximum...or maybe saddle)
-      T dx  = xEx - x;    // update vector
 
-      if(f2 > 0)
+      // this should probably be done in an acceptance loop - if the value of f has decreased, 
+      // accept the step, otherwise, reduce the stepsize by a factor (of 2?) and try again.
+      if(f2 > 0)  // parabola has minimum
       {
-
-
-
-        //x = v[n] = -b/(2*a);  // jump into minimum of parabola
-
-        x += dx;
-        v[n] = x;
-        fNew = f(v);
-        evals++;
-
+        x += dx;          // todo: use x += step*dx;
         int dummy = 0;
       }
-      else
+      else        // parabola has maximum
       {
-
-        // parabola has a maximum - jump some distance away from it....
-        //T xOld = x;
-        //T xNew = -b/(2*a);
-        //T dx   = xNew - xOld;
-
-        x -= dx;
-        v[n] = x;
-        fNew = f(v);
-        evals++;
-
-        // this needs tests
-
-        int dummy = 0;
+        x -= dx;          // todo: use x -= step*dx;
+        int dummy = 0;   
+        // this branch needs tests - to test it, we need a function with a local maximum somewhere
+        // maybe use something like sin(x+y) or sin(x*y) - make contour-plots to get a feel for the 
+        // function
       }
+      v[n] = x;
+      fNew = f(v);
+      evals++;
+
 
 
       if(rsAbs(f0-fNew) < tol)
         converged = true;
+      else
+        converged = false;  
+        // do we need this? can it happen, that in one inner iteration it gets set to true and in a 
+        // later one back to false? and if so - is this desirable?
 
       int dummy = 0;
     }
@@ -453,27 +468,17 @@ int minimize1(const F& f, T* v, int N, const T* h)
 
   return evals;  // return the number of evaluations of f
 }
+// maybe provide a means to keep track of the trajectory - it may make sense to plot that 
+// trajectory in a contour plot to see, what the algo does
 
-// Idea for nonlinear minimization:
-// Notation: x: current position vector, f(x): error funcion, f0n,f1n,f2n: value and 1st and 2nd 
-// partial derivatives with respect to n-th coordinate
-// -at each step until convergence:
-//  -loop thorugh the coordinates (n = 0..N-1):
-//   -compute value partial derivatives f0n,f1n,f2n
-//   -if f2n > 0 (parabola along n-th coordinate has minimum):
-//    -jump into minimum of parabola along n-th coordinate: x[n] = ...
-//   -else:
-//    -jump an equal distance away from the maximum of the parabola
-//  -compute function value at new location, if less than previous, accept step else reject and
-//   continue with next coordinate (or maybe try a half-step, then quarter, etc...before 
-//   continuing)
-//
-// Other idea, for each step:
+// Other idea, for each step until convergence, do:
 // -compute gradient
 // -compute hessian * gradient
 // -this determines a 1D parabola (right?) in the plane that intersects the function and contains 
 //  the gradient 
-// -jump into the minimum of the resulting 1D parabola
+// -jump into the minimum of the resulting 1D parabola - this is similar to jumping into the 
+//  minimum of the parabola above, but it uses the gradient direction instead of a coordinate 
+//  direction
 
 
 bool testNumericMinimization()
