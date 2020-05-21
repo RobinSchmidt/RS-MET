@@ -263,6 +263,9 @@ bool testNumDiffStencils()
   // todo: try some weird stencils (asymmetric and/or non-equidistant, even  number of points,...)
 }
 
+/** Computes the partial derivative of the multivariate (N inputs) scalar function f with respect 
+to the n-th coordinate and also the diagonal element H(n,n) of the Hessian matrix, i.e. the 2nd 
+derivative with respect to coordinate n. */
 template<class T, class F>
 static void partialDerivativesUpTo2(const F& f, T* x, int N, int n, const T h, T* f0, T* f1, T* f2)
 {
@@ -278,6 +281,7 @@ static void partialDerivativesUpTo2(const F& f, T* x, int N, int n, const T h, T
 // move to rsNumericDifferentiatiator
 
 // todo: compute hessian times vector
+// todo: compute numeric Jacobians
 
 bool testNumericGradientAndHessian()
 {
@@ -372,12 +376,17 @@ bool testNumericGradientAndHessian()
   partialDerivativesUpTo2(f, &v[0], 3, 2, h[2], &f0, &f1, &f2);
   r &= f0 == vf && f1 == ga[2] && f2 == Ha(2, 2);
 
-
-
   return r;
 }
 
-// todo: compute numeric Jacobians
+template<class T, class F>
+void minimize1(const F& f, T* x, int N, const T* h)
+{
+
+
+  int dummy = 0;
+  // maybe return the number of iterations
+}
 
 // Idea for nonlinear minimization:
 // Notation: x: current position vector, f(x): error funcion, f0n,f1n,f2n: value and 1st and 2nd 
@@ -399,6 +408,41 @@ bool testNumericGradientAndHessian()
 // -this determines a 1D parabola (right?) in the plane that intersects the function and contains 
 //  the gradient 
 // -jump into the minimum of the resulting 1D parabola
+
+
+bool testNumericMinimization()
+{
+  // Under construction
+
+  bool r = true;
+
+  using Vec = std::vector<double>;
+
+
+  // Our example is the bivariate scalar function:
+  //   f(x,y) = 4*x^2 + y^4 + x*y
+  // where v = (x y) is the 2D input vector.
+  static const int N = 2;  // dimensionality of the input space
+  std::function<double(double*)> f = [=](double* v)->double
+  { 
+    double x = v[0], y = v[1];
+    return 4*x*x + y*y*y*y + x*y;
+  };
+
+  double hx = pow(2, -18);
+  double hy = hx/2;
+  double h[N] = {hx, hy};     // h as array
+
+  Vec v({5,3,2});             // initial guess
+  Vec x = v;
+  minimize1(f, &x[0], N, h);
+
+  // the minimum is at (0,0)
+
+  return r;
+}
+
+
 
 bool testMultiLayerPerceptronOld(std::string &reportString)
 {
@@ -602,6 +646,7 @@ bool testMiscMath()
   testResult &= testPhaseUnwrapStuff(         dummy);
   testResult &= testNumDiffStencils();
   testResult &= testNumericGradientAndHessian();
+  testResult &= testNumericMinimization();
 
   //testResult &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
   //testResult &= testMultiLayerPerceptron(     dummy); // maybe move to experiments
