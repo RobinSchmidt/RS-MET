@@ -491,7 +491,9 @@ int minimizeGradientDescent(const F& f, T* v, int N, const T* h, T stepSize, T t
   using Vec    = std::vector<T>;
   Vec g(N);  // gradient
 
-
+  T fOld = f(v);
+  evals++;
+  T fNew = fOld;
 
   while(!converged)
   {
@@ -506,11 +508,20 @@ int minimizeGradientDescent(const F& f, T* v, int N, const T* h, T stepSize, T t
 
     Vec dbg = toVector(v, N);
 
+    fNew = f(v);
+    evals++;
+
+    if(rsAbs(fOld-fNew) < tol)
+      converged = true;
+
+    fOld = fNew;
+
+
+
     int dummy = 0;
   }
   return evals;
 }
-
 // https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method
 // https://docs.scipy.org/doc/scipy/reference/optimize.html
 
@@ -546,11 +557,15 @@ bool testNumericMinimization()
     // a*x^2 + b*y^2 - should converge in the 1st iteration, irrespective of a,b (but both must
     // be positive)
   };
-  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, tol);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, tol);  // 16 evals
   //x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1.0, tol); // diverges
-  //x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./16, tol); // oscillates
-  //x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./32, tol);  // converges
-  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./64, tol);
+
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./16, tol); 
+  // oscillates, "converges" after 276 evals but to the wrong location
+
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./32,  tol);  // converges, 571 evals
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./64,  tol);  // 1151 evals
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./128, tol);  // 2271 evals
 
   // the minimum is at (0,0)
   // 16 evaluations: it converges in the first iteration, but a 2nd iteration is needed to detect 
@@ -569,10 +584,10 @@ bool testNumericMinimization()
     return 4*x*x + y*y*y*y + x*y;
   };
   x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-8);  // 14 iterations, 112 evals (112/14 = 8)
-  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-9);  // 15,120
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-9);  // 15 its, 120 evals
   x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-10);
   x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-11);
-  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-12);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-12); // 18 its, 144 evals
   x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-13);
   x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-14);
   x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-15);
@@ -588,10 +603,17 @@ bool testNumericMinimization()
   // the baseline against which all other algos are measured - maybe use an optimal constant 
   // stepsize for gradient descent
 
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./16,  1.e-12); //    31 - but wrong
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./32,  1.e-12); //  5356 - to min2
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./64,  1.e-12); //  9841 - to min1
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./128, 1.e-12); // 19246 - to min1
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./256, 1.e-12); // 36816 - to min1 
+
+
   // https://www.wolframalpha.com/input/?i=4*x*x+%2B+y*y*y*y+%2B+x*y
   // roots: x = -(3 sqrt(3))/128, y = sqrt(3)/8; x = (3 sqrt(3))/128, y = -sqrt(3)/8
-  // minima: -0.000976563 at (x, y)=(-0.0220971,  0.176777)
-  //         -0.000976563 at (x, y)=( 0.0220971, -0.176777)
+  // minima: min1 = -0.000976563 at (x, y)=(-0.0220971,  0.176777)
+  //         min2 = -0.000976563 at (x, y)=( 0.0220971, -0.176777)
 
 
 
