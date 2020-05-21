@@ -2302,3 +2302,215 @@ protected:
 // b == -3*B*(H - 1)/((3*(H - 1)*wg + (6*H - 5)*wr)*S - 3*(H - 1)*wb - 3*(H - 1)*wg - 3*(H - 1)*wr)
 
 //=================================================================================================
+
+// maybe move to ScratchPad.cpp:
+template<class T, class F>
+int minimizePartialParabolic(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
+{
+  // Under construction
+
+  // Algorithm:
+  // Notation: x: current position vector, f(x): error funcion, f0n,f1n,f2n: value and 1st and 2nd 
+  // partial derivatives with respect to n-th coordinate
+  // -at each step until convergence:
+  //  -loop through the coordinates (n = 0..N-1):
+  //   -compute value and partial derivatives f0n,f1n,f2n
+  //   -if f2n > 0 (parabola along n-th coordinate has minimum):
+  //    -jump into minimum of parabola along n-th coordinate
+  //   -else:
+  //    -jump an equal distance away from the maximum of the parabola
+  //  -compute function value at new location, if less than previous, accept step else reject and
+  //   continue with next coordinate (or maybe try a half-step, then quarter, etc...before 
+  //   continuing)
+
+  // Give the algorithm a name - maybe minimizePartialParabolic - maybe make a similar 
+  // minimizeGradientDescent function as baseline algo to compare against - however, it's probably
+  // not advisable to use numeric gradients in gradient descent for efficiency reasons (each 
+  // gradient computation needs 3*N evaluations of f)
+  // move into a class rsNumericMinimizer
+
+  using NumDiff = rsNumericDifferentiator<T>;
+
+  bool converged = false;
+  int evals = 0;
+  int iterations = 0;
+  while(!converged)
+  {
+
+    // maybe factor out into a function minimizeStep1
+    for(int n = 0; n < N; n++)
+    {
+      T x = v[n];      // variable of our 1D parabola
+      T f0, f1, f2;
+      NumDiff::partialDerivativesUpTo2(f, v, N, n, h[n], &f0, &f1, &f2); // 3 evals of f
+      evals += 3;
+
+      // compute parameters of parabola f(x) = a*x^2 + b*x + c
+      T a, b, c;
+      c = f0;             // not needed in the formulas
+      a = f2/2;
+      b = f1 - 2*a*x;     // 2*a = f2
+
+      T fNew;
+      T xEx = -b/(2*a);   // extremum (minimum or maximum) of the 1D parabola
+      T dx  = xEx - x;    // update vector "delta-x"
+
+
+      // this should probably be done in an acceptance loop - if the value of f has decreased, 
+      // accept the step, otherwise, reduce the stepsize by a factor (of 2?) and try again.
+      if(f2 > 0)  // parabola has minimum
+      {
+        x += dx;          // todo: use x += step*dx;
+        int dummy = 0;
+      }
+      else        // parabola has maximum
+      {
+        x -= dx;          // todo: use x -= step*dx;
+        int dummy = 0;   
+        // this branch needs tests - to test it, we need a function with a local maximum somewhere
+        // maybe use something like sin(x+y) or sin(x*y) - make contour-plots to get a feel for the 
+        // function
+      }
+      v[n] = x;
+      fNew = f(v);
+      evals++;
+
+
+
+      if(rsAbs(f0-fNew) < tol)
+        converged = true;
+      else
+        converged = false;  
+        // do we need this? can it happen, that in one inner iteration it gets set to true and in a 
+        // later one back to false? and if so - is this desirable?
+
+      int dummy = 0;
+    }
+
+    iterations++;
+    int dummy = 0;
+  }
+
+  return evals;  // return the number of evaluations of f
+}
+// maybe provide a means to keep track of the trajectory - it may make sense to plot that 
+// trajectory in a contour plot to see, what the algo does
+
+// Other idea, for each step until convergence, do:
+// -compute gradient
+// -compute hessian * gradient
+// -this determines a 1D parabola (right?) in the plane that intersects the function and contains 
+//  the gradient 
+// -jump into the minimum of the resulting 1D parabola - this is similar to jumping into the 
+//  minimum of the parabola above, but it uses the gradient direction instead of a coordinate 
+//  direction
+// -see minimizeViaConjugateGradient: stepsize = - (d*g) / (dtH*d);
+//  optimal stepsize - d is current direction, g is gradient, dtH is approximation of Hessian times
+//  d (the t is for transposed, i think) - so in our case, d == g
+
+template<class T, class F>
+int minimizeGradientDescent(const F& f, T* v, int N, const T* h, T stepSize, T tol = 1.e-8)
+{
+  bool converged = false;
+  int evals = 0;
+  int iterations = 0;
+
+  using AT     = rsArrayTools;
+  using NumDif = rsNumericDifferentiator<T>;
+  using Vec    = std::vector<T>;
+  Vec g(N);  // gradient
+
+  T fOld = f(v);
+  evals++;
+  T fNew = fOld;
+
+  while(!converged)
+  {
+    NumDif::gradient(f, v, N, &g[0], h);       // g = numerical gradient
+    evals += 2*N;                              // gradient estimation costs 2N evaluations of f
+    AT::addWithWeight(v, N, &g[0], -stepSize); // v -= stepSize * g
+
+
+    // maybe convergence can be assumed when all elements of the gradient have less absolute value 
+    // than their corresponding h-value? does that make sense?
+
+
+    Vec dbg = toVector(v, N);
+
+    fNew = f(v);
+    evals++;
+
+    // maybe, if the error has increased, reject the step, reduce the stepsize and try again
+
+    if(rsAbs(fOld-fNew) < tol)
+      converged = true;
+
+    fOld = fNew;
+
+
+
+    int dummy = 0;
+  }
+  return evals;
+}
+// https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method
+// https://docs.scipy.org/doc/scipy/reference/optimize.html
+
+
+
+template<class T, class F>
+int minimizeGradientAutoStep(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
+{
+  // uses the gradient and automatic choice of the stepsize based on the product
+  // Hessian times gradient...
+  using AT     = rsArrayTools;
+  using NumDif = rsNumericDifferentiator<T>;
+  using Vec    = std::vector<T>;
+  Vec g(N);     // gradient: g
+  Vec Hg(N);    // Hessian times gradient: H*g
+  Vec wrk(2*N); // workspace
+
+
+  bool converged = false;
+  int evals = 0;
+
+  T fOld = f(v);
+  evals++;
+  T fNew = fOld;
+
+  T k = pow(2, -14);  // make parameter
+
+
+  while(!converged)
+  {
+    NumDif::gradient(f, v, N, &g[0], h);       // g = numerical gradient
+    evals += 2*N;                              // gradient estimation costs 2N evaluations of f
+
+
+    // compute optimal step:
+    NumDif::hessianTimesVector(f, v, &g[0], N, &Hg[0], h, k, &wrk[0]);
+    evals += 4*N;
+    T step = AT::sumOfSquares(&g[0], N) / AT::sumOfProducts(&g[0], &Hg[0], N); // (g*g) / (g*H*g)
+    // verify, if that formual is correct
+
+    // do step:
+    AT::addWithWeight(v, N, &g[0], -step); // or -step?
+
+
+
+    //Vec dbg = toVector(v, N);
+
+
+    fNew = f(v);
+    evals++;
+
+    // maybe, if the error has increased, reject the step, reduce the stepsize and try again
+
+    if(rsAbs(fOld-fNew) < tol)
+      converged = true;
+    fOld = fNew;
+  }
+
+
+  return evals;
+}

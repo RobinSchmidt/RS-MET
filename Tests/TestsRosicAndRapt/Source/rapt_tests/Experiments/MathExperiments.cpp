@@ -1521,10 +1521,125 @@ void butterworthViaGaussians()
 
 
 
+bool testNumericMinimization()
+{
+  // Under construction - we compare several approaches to minimize a nonlinear multidimensional 
+  // function
 
+  bool r = true;
+
+  using Vec = std::vector<double>;
+
+
+  // Our example is the bivariate scalar function:
+  //   f(x,y) = 4*x^2 + y^4 + x*y
+  // where v = (x y) is the 2D input vector.
+  static const int N = 2;  // dimensionality of the input space
+  std::function<double(double*)> f;
+  double hx = pow(2, -18);
+  double hy = hx/2;
+  double h[N] = {hx, hy};     // h as array
+  Vec v({5,3});               // initial guess
+  Vec x;
+  int evals;
+
+  double tol = 1.e-12;
+
+  f = [=](double* v)->double
+  { 
+    double x = v[0], y = v[1];
+    return 2*x*x + 16*y*y;
+    // a*x^2 + b*y^2 - should converge in the 1st iteration, irrespective of a,b (but both must
+    // be positive)
+  };
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, tol);  // 16 evals
+  //x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1.0, tol); // diverges
+
+  // the minimum is at (0,0)
+  // 16 evaluations: it converges in the first iteration, but a 2nd iteration is needed to detect 
+  // the convergence, so we get 2 iterations, each taking  4*N = 4*2 = 8 evaluations - so this 
+  // seems ok
+
+
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./16, tol); 
+  // oscillates, "converges" after 276 evals but to the wrong location
+
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./32,  tol);  // converges, 571 evals
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./64,  tol);  // 1151 evals
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./128, tol);  // 2271 evals
+
+  x = v; evals = minimizeGradientAutoStep( f, &x[0], N, h, tol); // 287 evals
+
+  //minimizeGradientAutoStep(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
+
+
+  // try a function like f(x,y) = a*x^2 + b*y^2 + c*x + d*y
+
+
+
+  f = [=](double* v)->double
+  { 
+    double x = v[0], y = v[1];
+    return 4*x*x + y*y*y*y + x*y;
+  };
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-8);  // 14 iterations, 112 evals (112/14 = 8)
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-9);  // 15 its, 120 evals
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-10);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-11);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-12); // 18 its, 144 evals
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-13);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-14);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-15);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-16);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-17);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-18);
+  // 14 iterations, 112 evaluations with tol = 1.e-8    -> 112/14 = 8 
+  // with each power of 10, we need 8 evaluations (i.e. one iteration) more - this looks like
+  // linear convergence :-( ...i hoped that with a parabolic approximation, we could get quadratic
+  // convergence - ToDo: plot trajectories
+  // 18 iterations, 144 evaluations with tol = 1.e-12
+  // do these number suggest quadratic convergence? todo: compare to gradient descent - this is
+  // the baseline against which all other algos are measured - maybe use an optimal constant 
+  // stepsize for gradient descent
+
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./16,  1.e-12); //    31 - but wrong
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./32,  1.e-12); //  5356 - to min2
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./64,  1.e-12); //  9841 - to min1
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./128, 1.e-12); // 19246 - to min1
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./256, 1.e-12); // 36816 - to min1 
+
+  // to converge to the same minimum as the partial parabolic algo, we nee a stepSize of 1/64
+  // and 9841 evals compared to 144 evals with the partial parabolic algo
+
+  x = v; evals = minimizeGradientAutoStep( f, &x[0], N, h, 1.e-12);  // 599
+
+
+
+  f = [=](double* v)->double
+  { 
+    double x = v[0], y = v[1];
+    return sin(x*y);    // 
+    //return sin(3*x*x + y*y*y + x*y);    // 
+  };
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h,          1.e-12);  //    16
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./1024, 1.e-12);  // 216701
+  x = v; evals = minimizeGradientAutoStep(f, &x[0], N, h,          1.e-12);
+  // the results are slightly different - how can this be - they should converge to the same
+  // minimum
+  // maybe the convergence criterion should not be the change of function value
+
+
+  // https://www.wolframalpha.com/input/?i=4*x*x+%2B+y*y*y*y+%2B+x*y
+  // roots: x = -(3 sqrt(3))/128, y = sqrt(3)/8; x = (3 sqrt(3))/128, y = -sqrt(3)/8
+  // minima: min1 = -0.000976563 at (x, y)=(-0.0220971,  0.176777)
+  //         min2 = -0.000976563 at (x, y)=( 0.0220971, -0.176777)
+
+  return r;
+}
 
 void numericOptimization()
 {
+  testNumericMinimization();
 
   int dummy = 0;
 }
