@@ -112,6 +112,24 @@ public:
   // todo: derivativesUpTo4 - this is as far as we may go with a 5-point stencil - for higher 
   // derivatives, we need more than 5 evaluation points
 
+
+  /** Computes the partial derivative of the multivariate (N inputs) scalar function f with respect 
+  to the n-th coordinate and also the diagonal element H(n,n) of the Hessian matrix, i.e. the 2nd 
+  derivative with respect to coordinate n. It requires 3 evaluations of f. */
+  template<class F>
+  static void partialDerivativesUpTo2(const F& f, Ty* x, int N, int n, const Ty h, 
+    Ty* f0, Ty* f1, Ty* f2)
+  {
+    *f0  = f(x);                             // f0 = f(x0,x1,..,x_M)    where M := N-1
+    Ty t = x[n];                             // temporary
+    x[n] = t + h; Ty fp = f(x);              // fp = f(x0,x1,..,xn+h,..,x_M)
+    x[n] = t - h; Ty fm = f(x);              // fm = f(x0,x1,..,xn-h,..,x_M)
+    *f1  = (fp - fm) / (Ty(2)*h);            // df/dxn
+    *f2  = (fm - Ty(2)*(*f0) + fp) / (h*h);  // d2f/dxn2
+    x[n] = t;                                // restore input
+  }
+  // maybe Ty should just be called T
+
   /** Computes a central difference approximation of the gradient of a scalar-valued function 
   y = f(x) at the given N-dimensional position vector x by a central difference and stores the 
   result in g (also of length N). You also need to pass an array of approximation stepsizes along 

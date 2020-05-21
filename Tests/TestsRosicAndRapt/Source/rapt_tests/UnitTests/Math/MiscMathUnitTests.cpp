@@ -266,6 +266,7 @@ bool testNumDiffStencils()
 /** Computes the partial derivative of the multivariate (N inputs) scalar function f with respect 
 to the n-th coordinate and also the diagonal element H(n,n) of the Hessian matrix, i.e. the 2nd 
 derivative with respect to coordinate n. */
+/*
 template<class T, class F>
 static void partialDerivativesUpTo2(const F& f, T* x, int N, int n, const T h, T* f0, T* f1, T* f2)
 {
@@ -277,10 +278,12 @@ static void partialDerivativesUpTo2(const F& f, T* x, int N, int n, const T h, T
   *f2  = (fm - T(2)*(*f0) + fp) / (h*h);   // d2f/dxn2
   x[n] = t;                                // restore input
 }
+*/
 // 3 evaluations of f
 // move to rsNumericDifferentiatiator
 
-// todo: compute hessian times vector
+// todo: compute hessian times vector ..or is it vector times hessian? does that make a difference?
+// maybe not because the hessian is symmetric
 // todo: compute numeric Jacobians
 
 bool testNumericGradientAndHessian()
@@ -369,11 +372,11 @@ bool testNumericGradientAndHessian()
 
   // compute 1st and 2nd partial derivatives:
   double f0,f1,f2;
-  partialDerivativesUpTo2(f, &v[0], 3, 0, h[0], &f0, &f1, &f2); 
+  NumDiff::partialDerivativesUpTo2(f, &v[0], 3, 0, h[0], &f0, &f1, &f2); 
   r &= f0 == vf && f1 == ga[0] && f2 == Ha(0, 0);
-  partialDerivativesUpTo2(f, &v[0], 3, 1, h[1], &f0, &f1, &f2);
+  NumDiff::partialDerivativesUpTo2(f, &v[0], 3, 1, h[1], &f0, &f1, &f2);
   r &= f0 == vf && f1 == ga[1] && f2 == Ha(1, 1);
-  partialDerivativesUpTo2(f, &v[0], 3, 2, h[2], &f0, &f1, &f2);
+  NumDiff::partialDerivativesUpTo2(f, &v[0], 3, 2, h[2], &f0, &f1, &f2);
   r &= f0 == vf && f1 == ga[2] && f2 == Ha(2, 2);
 
   return r;
@@ -405,6 +408,8 @@ int minimizePartialParabolic(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
   // gradient computation needs 3*N evaluations of f)
   // move into a class rsNumericMinimizer
 
+  using NumDiff = rsNumericDifferentiator<T>;
+
   bool converged = false;
   int evals = 0;
   int iterations = 0;
@@ -416,7 +421,7 @@ int minimizePartialParabolic(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
     {
       T x = v[n];      // variable of our 1D parabola
       T f0, f1, f2;
-      partialDerivativesUpTo2(f, v, N, n, h[n], &f0, &f1, &f2); // 3 evals of f
+      NumDiff::partialDerivativesUpTo2(f, v, N, n, h[n], &f0, &f1, &f2); // 3 evals of f
       evals += 3;
 
       // compute parameters of parabola f(x) = a*x^2 + b*x + c
