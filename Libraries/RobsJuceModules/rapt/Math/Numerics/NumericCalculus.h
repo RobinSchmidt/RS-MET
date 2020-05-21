@@ -141,6 +141,7 @@ public:
   template<class F>
   static void gradient(const F& f, Ty* x, int N, Ty* g, const Ty* h)
   {
+    rsAssert(x != g, "Can't be used in place");
     for(int n = 0; n < N; n++) {
       Ty t = x[n];                     // temporary
       x[n] = t + h[n]; Ty fp = f(x);

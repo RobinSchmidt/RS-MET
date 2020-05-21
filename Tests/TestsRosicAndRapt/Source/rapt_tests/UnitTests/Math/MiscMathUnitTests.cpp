@@ -286,6 +286,42 @@ static void partialDerivativesUpTo2(const F& f, T* x, int N, int n, const T h, T
 // maybe not because the hessian is symmetric
 // todo: compute numeric Jacobians
 
+
+
+template<class T, class F>
+static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h, T k,
+  T* workspace)
+{
+  // workspace must be of length 4*N
+  T *xp = workspace;
+  T *xm = &workspace[N];
+  T *gp = &workspace[2*N];
+  T *gm = &workspace[3*N];
+  // we can reduce the workspace to 3*N by using just one array for x and re-using it:
+  // 1: create x + k*v
+  // 2: compute gradient at x + k*v
+  // 3: compute x - k*v
+  // 4: compute gradient at x - k*v
+  // 5: compuzte Hv
+  // ..actually, we can use Hv for the temporary x, so we can get away with 2*N of temporary 
+  // storage
+
+  for(int n = 0; n < N; n++)
+  {
+    xp[n] = x[n] + k*v[n];
+    xm[n] = x[n] - k*v[n];
+  }
+
+  using NumDiff = rsNumericDifferentiator<T>;
+  NumDiff::gradient(f, &xp[0], N, &gp[0], h);  // gp: gradient at x + k*v
+  NumDiff::gradient(f, &xm[0], N, &gm[0], h);  // gm: gradient at x - k*v
+
+  for(int n = 0; n < N; n++)
+    Hv[n] = (gp[n] - gm[n]) / (2*k);
+}
+
+
+
 /** Approximates the matrix-vector product H * v of the Hessian matrix H of f evaluated at 
 position x and an arbitrary given vector v. This is the same as v^T * H due to the symmetry of the 
 Hessian matrix (verify that). */
@@ -293,6 +329,12 @@ template<class T, class F>
 static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h, T k)
 {
   using Vec = std::vector<T>;
+  Vec wrk(4*N);
+  hessianTimesVector(f, x, v, N, Hv, h, k, &wrk[0]);
+  return;
+
+
+  /*
   using NumDiff = rsNumericDifferentiator<T>;
 
   Vec xp(N), xm(N);  // todo: use workspace
@@ -308,11 +350,16 @@ static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h,
 
   for(int n = 0; n < N; n++)
     Hv[n] = (gp[n] - gm[n]) / (2*k);
+    */
 }
+// convenience function
 // k is the outer approximation stepsize
 // calls gradient 2 times - each call has 2*N evaluations of f, so we have 4*N evaluations of f
 // in total
 // needs test
+
+
+
 
 bool testNumericGradientAndHessian()
 {
@@ -527,6 +574,9 @@ int minimizePartialParabolic(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
 // -jump into the minimum of the resulting 1D parabola - this is similar to jumping into the 
 //  minimum of the parabola above, but it uses the gradient direction instead of a coordinate 
 //  direction
+// -see minimizeViaConjugateGradient: stepsize = - (d*g) / (dtH*d);
+//  optimal stepsize - d is current direction, g is gradient, dtH is approximation of Hessian times
+//  d (the t is for transposed, i think) - so in our case, d == g
 
 template<class T, class F>
 int minimizeGradientDescent(const F& f, T* v, int N, const T* h, T stepSize, T tol = 1.e-8)
@@ -560,6 +610,8 @@ int minimizeGradientDescent(const F& f, T* v, int N, const T* h, T stepSize, T t
     fNew = f(v);
     evals++;
 
+    // maybe, if the error has increased, reject the step, reduce the stepsize and try again
+
     if(rsAbs(fOld-fNew) < tol)
       converged = true;
 
@@ -573,6 +625,19 @@ int minimizeGradientDescent(const F& f, T* v, int N, const T* h, T stepSize, T t
 }
 // https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method
 // https://docs.scipy.org/doc/scipy/reference/optimize.html
+
+
+
+template<class T, class F>
+int minimizeGradientAutoStep(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
+{
+  // uses the gradient and automatic choice of the stepsize based on the product
+  // Hessian times gradient...
+
+
+
+}
+
 
 
 // maybe this should be moved to experiments:
@@ -657,6 +722,9 @@ bool testNumericMinimization()
   x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./64,  1.e-12); //  9841 - to min1
   x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./128, 1.e-12); // 19246 - to min1
   x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./256, 1.e-12); // 36816 - to min1 
+
+  // to converge to the same minimum as the partial parabolic algo, we nee a stepSize of 1/64
+  // and 9841 evals compared to 144 evals with the partial parabolic algo
 
 
   // https://www.wolframalpha.com/input/?i=4*x*x+%2B+y*y*y*y+%2B+x*y
