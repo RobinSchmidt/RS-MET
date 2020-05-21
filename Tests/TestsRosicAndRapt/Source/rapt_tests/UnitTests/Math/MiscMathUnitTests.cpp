@@ -530,9 +530,55 @@ int minimizeGradientAutoStep(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
 {
   // uses the gradient and automatic choice of the stepsize based on the product
   // Hessian times gradient...
+  using AT     = rsArrayTools;
+  using NumDif = rsNumericDifferentiator<T>;
+  using Vec    = std::vector<T>;
+  Vec g(N);     // gradient: g
+  Vec Hg(N);    // Hessian times gradient: H*g
+  Vec wrk(2*N); // workspace
+
+
+  bool converged = false;
+  int evals = 0;
+
+  T fOld = f(v);
+  evals++;
+  T fNew = fOld;
+
+  T k = pow(2, -14);  // make parameter
+
+
+  while(!converged)
+  {
+    NumDif::gradient(f, v, N, &g[0], h);       // g = numerical gradient
+    evals += 2*N;                              // gradient estimation costs 2N evaluations of f
+
+
+    // compute optimal step:
+    NumDif::hessianTimesVector(f, v, &g[0], N, &Hg[0], h, k, &wrk[0]);
+    evals += 4*N;
+    T step = AT::sumOfSquares(&g[0], N) / AT::sumOfProducts(&g[0], &Hg[0], N); // (g*g) / (g*H*g)
+
+    // do step:
+    AT::addWithWeight(v, N, &g[0], -step); // or -step?
 
 
 
+    Vec dbg = toVector(v, N);
+
+
+    fNew = f(v);
+    evals++;
+
+    // maybe, if the error has increased, reject the step, reduce the stepsize and try again
+
+    if(rsAbs(fOld-fNew) < tol)
+      converged = true;
+    fOld = fNew;
+  }
+
+
+  return evals;
 }
 
 
@@ -571,6 +617,12 @@ bool testNumericMinimization()
   x = v; evals = minimizePartialParabolic(f, &x[0], N, h, tol);  // 16 evals
   //x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1.0, tol); // diverges
 
+  // the minimum is at (0,0)
+  // 16 evaluations: it converges in the first iteration, but a 2nd iteration is needed to detect 
+  // the convergence, so we get 2 iterations, each taking  4*N = 4*2 = 8 evaluations - so this 
+  // seems ok
+
+
   x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./16, tol); 
   // oscillates, "converges" after 276 evals but to the wrong location
 
@@ -578,10 +630,9 @@ bool testNumericMinimization()
   x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./64,  tol);  // 1151 evals
   x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./128, tol);  // 2271 evals
 
-  // the minimum is at (0,0)
-  // 16 evaluations: it converges in the first iteration, but a 2nd iteration is needed to detect 
-  // the convergence, so we get 2 iterations, each taking  4*N = 4*2 = 8 evaluations - so this 
-  // seems ok
+  x = v; evals = minimizeGradientAutoStep( f, &x[0], N, h, tol); // 287 evals
+
+  //minimizeGradientAutoStep(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
 
 
   // try a function like f(x,y) = a*x^2 + b*y^2 + c*x + d*y
