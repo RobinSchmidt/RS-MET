@@ -49,21 +49,36 @@ rsUint32 getIrwinHallPeriod(rsUint32 prngPeriod, rsUint32 order)
   return i;
 }
 
-void testIrwinHallPeriod(rsUint32 period)
+bool testIrwinHallPeriod(rsUint32 period)
 {
-  // maybe move this experiment to its own function
-  //rsUint32 period = 20; // period of underlying PRNG
   for(rsUint32 i = 1; i <= period; i++)
   {
-    rsUint32 ihp1 = getIrwinHallPeriod(period, i); // period of Irwing-Hall generator
-    rsUint32 ihp2 = period / rsGcd(period, i);      // conjecture - seems to work
-    int dummy = 0;
+    rsUint32 p1 = getIrwinHallPeriod(period, i);  // period of Irwing-Hall generator
+    rsUint32 p2 = period / rsGcd(period, i);      // conjectured formula - seems to work
+    if(p1 != p2)
+      return false;
   }
-  // Results:
+  // Result with period = 20:
   // i: 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20
   // p: 20 10 20  5  4 10 20  5 20  2 20  5 20 10  4  5 20 10 20  1  the ihp
   // the full period is obtained when i and 20 have no common factors
+  // maybe return a bool, if the test works out
+
+  return true;
+  // return true, if conjecture holds for given period
 }
+
+// tests all periods up to maxPeriod
+bool testIrwinHallPeriods(rsUint32 maxPeriod)
+{
+  for(rsUint32 p = 1; p <= maxPeriod; p++)
+  {
+    if(!testIrwinHallPeriod(p))
+      return false;
+  }
+  return true;
+}
+
 
 double irwinHall(double z, int n)
 {
@@ -96,11 +111,6 @@ void plotIrwinHall(int order)
 
 void noise()
 {
-  // some preliminray experiments
-  testIrwinHallPeriod(15);
-  testIrwinHallPeriod(16);
-  testIrwinHallPeriod(20);
-
   // We generate noise with different distributions and plot the histograms...
   int numSamples = 100000;
   int numBins    = 50;
@@ -117,7 +127,10 @@ void noise()
   // But: if we run 4 or 8 prngs in parallel, each with its own state (each starting with a 
   // different seed), the period would still be 2^32. This may also be nicely parallelizable
 
-  plotIrwinHall(order);  // theoretical distribution
+
+  // some preliminray experiments:
+  bool periodFormulaWorks = testIrwinHallPeriods(100);  // check conjectured formula
+  plotIrwinHall(order);  // plot theoretical distribution
 
   rsNoiseGenerator2<double> prng;
   prng.setOrder(order);

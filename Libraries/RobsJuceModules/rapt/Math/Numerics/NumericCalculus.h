@@ -131,6 +131,8 @@ public:
       x[n] = t;    }                   // restore x[n]
   }
   // maybe Ty should just be called T
+  // move output avriables to the end to make it consistent with the other functions like
+  // derivativesUpTo2
 
   /** Computes a numerical approximation of the Hessian matrix of the function f at the given 
   N-dimensional position vector x and writes the result int H which should be a pointer to the flat 

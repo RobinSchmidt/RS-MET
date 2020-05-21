@@ -263,6 +263,22 @@ bool testNumDiffStencils()
   // todo: try some weird stencils (asymmetric and/or non-equidistant, even  number of points,...)
 }
 
+template<class T, class F>
+static void partialDerivativesUpTo2(const F& f, T* x, int N, int n, const T h, T* f0, T* f1, T* f2)
+{
+  *f0  = f(x);                             // f0 = f(x0,x1,..,x_M)    where M := N-1
+  T t  = x[n];                             // temporary
+  x[n] = t + h; T fp = f(x);               // fp = f(x0,x1,..,xn+h,..,x_M)
+  x[n] = t - h; T fm = f(x);               // fm = f(x0,x1,..,xn-h,..,x_M)
+  *f1  = (fp - fm) / (T(2)*h);             // df/dxn
+  *f2  = (fm - T(2)*(*f0) + fp) / (h*h);   // d2f/dxn2
+  x[n] = t;                                // restore input
+}
+// 3 evaluations of f
+// move to rsNumericDifferentiatiator
+
+// todo: compute hessian times vector
+
 bool testNumericGradientAndHessian()
 {
   // Tests numeric gradient and Hessian matrix computation by comparing the results to analytically
@@ -330,12 +346,11 @@ bool testNumericGradientAndHessian()
   double hz = hx/4;
   double h[3] = {hx, hy, hz};  // h as array
 
-  Vec v({5,3,2});         // point at which we evaluate gradient and Hessian
+  Vec v({5,3,2});         // point at which we evaluate gradient and Hessian - maybe rename to x
   double vf = f(&v[0]);   // compute function value at v
 
   // compute gradient analytically and numerically and compare results:
   Vec ga(3); gf(&v[0], &ga[0]);
-  /*Vec gn(3); gradient(f, &v[0], 3, &gn[0], h);*/
   Vec gn = NumDiff::gradient(f, v, h);
   Vec err = ga - gn;
   double maxErr = rsMaxAbs(err);
@@ -343,17 +358,47 @@ bool testNumericGradientAndHessian()
 
   // compute Hessian matrix analytically and numerically and compare results:
   Mat Ha = Hf(&v[0]);
-  //Mat Hn(3, 3);  hessian(f, &v[0], 3, Hn.getDataPointer(), h);
   Mat Hn = NumDiff::hessian(f, v, h);
   Mat He = Ha - Hn;  // error matrix
   maxErr = He.getAbsoluteMaximum();
   r &= maxErr == 0.0;
+
+  // compute 1st and 2nd partial derivatives:
+  double f0,f1,f2;
+  partialDerivativesUpTo2(f, &v[0], 3, 0, h[0], &f0, &f1, &f2); 
+  r &= f0 == vf && f1 == ga[0] && f2 == Ha(0, 0);
+  partialDerivativesUpTo2(f, &v[0], 3, 1, h[1], &f0, &f1, &f2);
+  r &= f0 == vf && f1 == ga[1] && f2 == Ha(1, 1);
+  partialDerivativesUpTo2(f, &v[0], 3, 2, h[2], &f0, &f1, &f2);
+  r &= f0 == vf && f1 == ga[2] && f2 == Ha(2, 2);
+
+
 
   return r;
 }
 
 // todo: compute numeric Jacobians
 
+// Idea for nonlinear minimization:
+// Notation: x: current position vector, f(x): error funcion, f0n,f1n,f2n: value and 1st and 2nd 
+// partial derivatives with respüect to n-th coordinate
+// -at each step until convergence:
+//  -loop thorugh the coordinates (n = 0..N-1):
+//   -compute value partial derivatives f0n,f1n,f2n
+//   -if f2n > 0 (parabola along n-th coordinate has minimum):
+//    -jump into minimum of parabola along n-th coordinate: x[n] = ...
+//   -else:
+//    -jump an equal distance away from the maximum of the parabola
+//  -compute function value at new location, if less than previous, accept step else reject and
+//   continue with next coordinate (or maybe try a half-step, then quarter, etc...before 
+//   continuing)
+//
+// Other idea, for each step:
+// -compute gradient
+// -compute hessian * gradient
+// -this determines a 1D parabola (right?) in the plane that intersects the function and contains 
+//  the gradient 
+// -jump into the minimum of the resulting 1D parabola
 
 bool testMultiLayerPerceptronOld(std::string &reportString)
 {
