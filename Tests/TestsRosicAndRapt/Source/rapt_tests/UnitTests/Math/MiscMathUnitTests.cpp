@@ -382,6 +382,31 @@ bool testNumericGradientAndHessian()
 template<class T, class F>
 void minimize1(const F& f, T* x, int N, const T* h)
 {
+  T tol = 1.e-8;  // make parameter
+  bool converged = false;
+  while(!converged)
+  {
+    for(int n = 0; n < N; n++)
+    {
+      T f0,f1,f2;
+      partialDerivativesUpTo2(f, x, N, n, h[n], &f0, &f1, &f2); // 3 evals of f
+
+      if(f2 > 0)
+      {
+
+      }
+      else
+      {
+
+      }
+
+
+      int dummy = 0;
+    }
+
+
+    converged = true; // preliminary
+  }
 
 
   int dummy = 0;
@@ -390,7 +415,7 @@ void minimize1(const F& f, T* x, int N, const T* h)
 
 // Idea for nonlinear minimization:
 // Notation: x: current position vector, f(x): error funcion, f0n,f1n,f2n: value and 1st and 2nd 
-// partial derivatives with respüect to n-th coordinate
+// partial derivatives with respect to n-th coordinate
 // -at each step until convergence:
 //  -loop thorugh the coordinates (n = 0..N-1):
 //   -compute value partial derivatives f0n,f1n,f2n
