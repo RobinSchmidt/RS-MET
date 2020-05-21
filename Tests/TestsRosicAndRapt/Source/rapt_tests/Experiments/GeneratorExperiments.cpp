@@ -31,10 +31,14 @@ void plotHistogram(const std::vector<double>& data, int numBins, double min, dou
 }
 // move to plotting
 
+// Computes the period of an Irwing-Hall PRNG of given order when the period of the underlying raw
+// PRNG is prngPeriod
 rsUint32 getIrwingHallPeriod(rsUint32 prngPeriod, rsUint32 order)
 {
   rsUint32 state = 0;
   rsUint32 i = 0;
+  // we move forward in steps of order, wrapping around at the raw prng period - when we encounter 
+  // a zero again, we have hit the period of the Irwing-Hall generator
   while(true)
   {
     state = (state + order) % prngPeriod;
@@ -49,24 +53,24 @@ void noise()
 {
   // We generate noise with different distributions and plot the histograms...
 
-  //rsUint32 ihp; // period of Irwing-Hall generator
-  rsUint32 period = 20;
+  // maybe move this experiment to its own function
+  rsUint32 period = 20; // period of underlying PRNG
   for(rsUint32 i = 1; i <= period; i++)
   {
-    rsUint32 ihp1 = getIrwingHallPeriod(period, i);
-    rsUint32 ihp2 = period / rsGcd(period, i);  // conjecture
+    rsUint32 ihp1 = getIrwingHallPeriod(period, i); // period of Irwing-Hall generator
+    rsUint32 ihp2 = period / rsGcd(period, i);      // conjecture - seems to work
     int dummy = 0;
   }
   // Results:
   // i: 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20
   // p: 20 10 20  5  4 10 20  5 20  2 20  5 20 10  4  5 20 10 20  1  the ihp
   // the full period is obtained when i and 20 have no common factors
-  // i think, it may be p = 20 / gcd(20,i)
+
 
 
   int numSamples = 100000;
   int numBins    = 50;
-  int order      = 17;
+  int order      = 4;
   // i think, powers of two are not good for the order because the reduce the period length
   // todo: compute formulas for the period length as function of the order - the underlying PRNG
   // has a period of 2^32, when the order K is a power of two, the resulting period will be 
@@ -76,8 +80,8 @@ void noise()
   // divides 12? maybe numbers which have no factor of two will leave the period as is, so
   // all odd numbers should be good? -> research needed (maybe make numeric experiments with a 
   // generator with a shorter period like 2^16)
-  // But: if we run 8 prngs in parallel, each with its own state (each starting with a different),
-  // seed, the period would still be 2^32. This may also be nicely parallelizable
+  // But: if we run 4 or 8 prngs in parallel, each with its own state (each starting with a 
+  // different seed), the period would still be 2^32. This may also be nicely parallelizable
 
   rsNoiseGenerator2<double> prng;
   prng.setOrder(order);
