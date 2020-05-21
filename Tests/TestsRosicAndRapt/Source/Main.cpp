@@ -98,16 +98,21 @@ int main(int argc, char* argv[])
   //linearIndependence();
   //eigenstuff();
   //linearSolverPrecision();
+
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
   //iteratedNumDiff();
   //interpolatingFunction();
+
   //linearRegression();
   //multipleRegression();
   //polynomialRegression();
   //gaussianRegression();
   //butterworthViaGaussians();
+
+  // numericOptimization(); // to be moved from UnitTests
+
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();
