@@ -434,13 +434,23 @@ bool testMatrixView()
 bool testMatrixOperators()
 {
   bool r = true;  // test result
-  using Matrix = rsMatrix<double>;
-  using Vector = std::vector<double>;
+  using Mat = rsMatrix<double>;
+  using Vec = std::vector<double>;
 
-  Matrix A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
-  Matrix X(3, 2, {1,4, 2,5, 3,6});
-  Matrix B = A * X;
-  r &= B == Matrix(3, 2, {16,37, 32,80, 14,35});
+  Mat A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
+  Mat X(3, 2, {1,4, 2,5, 3,6});
+  Mat B = A * X;
+  r &= B == Mat(3, 2, {16,37, 32,80, 14,35});
+
+  // test matrix-vector multiplication:
+  Vec x = Vec({1,2,3});
+  A = Mat(2, 3, {1,2,3, 4,5,6});
+  Vec y = A*x;
+  r &= y == Vec({14,32});
+
+  A = Mat(3, 2, {1,2, 3,4, 5,6});
+  y = x*A;
+  r &= y == Vec({22,28});
   
   return r;
 }

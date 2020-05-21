@@ -1041,10 +1041,23 @@ inline rsMatrix<T> operator*(const T& s, const rsMatrix<T>& A)
   return B;
 }
 
+/** Multiplies a row vector x with a matrix: y = x * A. The result y is another row vector. */
+template<class T>
+std::vector<T> operator*(const std::vector<T>& x, const rsMatrix<T>& A) 
+{ 
+  rsAssert((int) x.size() == A.getNumRows(), "vector incompatible for right multiply by matrix");
+  int numInElems  = A.getNumRows();   // == x.size()
+  int numOutElems = A.getNumColumns();
+  std::vector<T> y(A.getNumColumns());
+  for(int i = 0; i < numOutElems; i++)      // i goes up to numCols
+  {
+    y[i] = T(0);
+    for(int j = 0; j < numInElems; j++)     // j goes up to numRows
+      y[i] += x[j] * A(j, i);
 
-
-
-
+  }
+  return y;
+}
 
 template<class T>
 rsMatrix<T> matrixMagnitudes(const rsMatrix<std::complex<T>>& A)

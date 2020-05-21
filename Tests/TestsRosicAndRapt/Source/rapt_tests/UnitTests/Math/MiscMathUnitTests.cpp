@@ -286,6 +286,38 @@ static void partialDerivativesUpTo2(const F& f, T* x, int N, int n, const T h, T
 // maybe not because the hessian is symmetric
 // todo: compute numeric Jacobians
 
+/** Approximates the matrix-vector product H * v of the Hessian matrix H of f evaluated at 
+position x and an arbitrary given vector v. This is the same as v^T * H due to the symmetry of the 
+Hessian matrix (verify that). */
+template<class T, class F>
+static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h)
+{
+  using Vec = std::vector<T>;
+  using NumDiff = rsNumericDifferentiator<T>;
+
+  Vec xp(N), xm(N);  // todo: use workspace
+  for(int n = 0; n < N; n++)
+  {
+    xp[n] = x[n] + h[n]*v[n];
+    xm[n] = x[n] - h[n]*v[n];
+  }
+
+  Vec gp(N), gm(N);  // todo: use workspace
+  NumDiff::gradient(f, &xp[0], N, &gp[0], h);  // gp: gradient at x + h*v (element-wise multiply)
+  NumDiff::gradient(f, &xm[0], N, &gm[0], h);  // gm: gradient at x - h*v
+
+  for(int n = 0; n < N; n++)
+    Hv[n] = (gp[n] - gm[n]) / (2*h[n]);
+
+
+  //rsVectorDbl gp   = getGradient(p + eps*v); // gradient at p + eps*v
+  //rsVectorDbl gm   = getGradient(p - eps*v); // gradient at p - eps*v
+  //return (gp-gm) / (2.0*eps);
+}
+// calls gradient 2 times - each call has 2*N evaluations of f, so we have 4*N evaluations of f
+// in total
+// needs test
+
 bool testNumericGradientAndHessian()
 {
   // Tests numeric gradient and Hessian matrix computation by comparing the results to analytically
@@ -378,6 +410,16 @@ bool testNumericGradientAndHessian()
   r &= f0 == vf && f1 == ga[1] && f2 == Ha(1, 1);
   NumDiff::partialDerivativesUpTo2(f, &v[0], 3, 2, h[2], &f0, &f1, &f2);
   r &= f0 == vf && f1 == ga[2] && f2 == Ha(2, 2);
+
+  // compute Hessian times a vector w:
+  Vec w({-2,1,3});    // fixed vector
+  Vec Hwa = Ha * w;   // analytic matrix vector product H*w
+  Hwa = w * Ha;
+
+  Vec Hwn(3);         // numeric matrix vector product H*w
+  hessianTimesVector(f, &v[0], &w[0], 3, &Hwn[0], h);
+
+
 
   return r;
 }
