@@ -381,7 +381,7 @@ bool testNumericGradientAndHessian()
 
 // maybe move to ScratchPad.cpp:
 template<class T, class F>
-int minimize1(const F& f, T* v, int N, const T* h)
+int minimizePartialParabolic(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
 {
   // Under construction
 
@@ -405,7 +405,7 @@ int minimize1(const F& f, T* v, int N, const T* h)
   // gradient computation needs 3*N evaluations of f)
   // move into a class rsNumericMinimizer
 
-  T tol = 1.e-8;  // make parameter
+  //T tol = 1.e-8;  // make parameter
   bool converged = false;
   int evals = 0;
   int iterations = 0;
@@ -498,10 +498,11 @@ bool testNumericMinimization()
   double hx = pow(2, -18);
   double hy = hx/2;
   double h[N] = {hx, hy};     // h as array
-  Vec v({5,3,2});             // initial guess
+  Vec v({5,3});               // initial guess
   Vec x;
   int evals;
 
+  double tol = 1.e-12;
 
   f = [=](double* v)->double
   { 
@@ -510,10 +511,15 @@ bool testNumericMinimization()
     // a*x^2 + b*y^2 - should converge in the 1st iteration, irrespective of a,b (but both must
     // be positive)
   };
-  x = v; evals = minimize1(f, &x[0], N, h);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, tol);
+  // the minimum is at (0,0)
   // 16 evaluations: it converges in the first iteration, but a 2nd iteration is needed to detect 
   // the convergence, so we get 2 iterations, each taking  4*N = 4*2 = 8 evaluations - so this 
   // seems ok
+
+
+  // try a function like f(x,y) = a*x^2 + b*y^2 + c*x + d*y
+
 
 
 
@@ -522,17 +528,35 @@ bool testNumericMinimization()
     double x = v[0], y = v[1];
     return 4*x*x + y*y*y*y + x*y;
   };
-  x = v; evals = minimize1(f, &x[0], N, h);
-  // 14 iterations, 112 evaluations -> 112/14 = 8
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-8);  // 14 iterations, 112 evals (112/14 = 8)
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-9);  // 15,120
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-10);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-11);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-12);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-13);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-14);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-15);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-16);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-17);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-18);
+  // 14 iterations, 112 evaluations with tol = 1.e-8    -> 112/14 = 8 
+  // with each power of 10, we need 8 evaluations (i.e. one iteration) more - this looks like
+  // linear convergence :-( ...i hoped that with a parabolic approximation, we could get quadratic
+  // convergence - ToDo: plot trajectories
+  // 18 iterations, 144 evaluations with tol = 1.e-12
+  // do these number suggest quadratic convergence? todo: compare to gradient descent - this is
+  // the baseline against which all other algos are measured - maybe use an optimal constant 
+  // stepsize for gradient descent
 
-  // the minimum is at (0,0)..or is it?
+  // https://www.wolframalpha.com/input/?i=4*x*x+%2B+y*y*y*y+%2B+x*y
+  // roots: x = -(3 sqrt(3))/128, y = sqrt(3)/8; x = (3 sqrt(3))/128, y = -sqrt(3)/8
+  // minima: -0.000976563 at (x, y)=(-0.0220971,  0.176777)
+  //         -0.000976563 at (x, y)=( 0.0220971, -0.176777)
 
 
 
 
 
-  // try a simpler function like f(x,y) = a*x^2 + b*y^2 + c*x + d*y
-  // or f(x,y) = a*x^2 + b*y^2 - this should converge in the first iteration
 
   return r;
 }
