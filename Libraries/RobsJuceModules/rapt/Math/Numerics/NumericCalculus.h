@@ -171,13 +171,14 @@ public:
 
 
   template<class F>
-  static T partialDerivative(const F& f, T* x, int N, int n, const T h)
+  static T partialDerivative(const F& f, const T* x, int N, int n, const T h)
   {
-    T t  = x[n];                  // temporary
-    x[n] = t + h; T fp = f(x);    // fp = f(x0,x1,..,xn+h,..,x_M)
-    x[n] = t - h; T fm = f(x);    // fm = f(x0,x1,..,xn-h,..,x_M)
+    T* X = (T*) x;                // hack! cast away the const
+    T t  = X[n];                  // temporary
+    X[n] = t + h; T fp = f(X);    // fp = f(x0,x1,..,xn+h,..,x_M)
+    X[n] = t - h; T fm = f(X);    // fm = f(x0,x1,..,xn-h,..,x_M)
     T f1 = (fp - fm) / (T(2)*h);  // df/dxn
-    x[n] = t;                     // restore x[n]
+    X[n] = t;                     // restore x[n]
     return f1;
   }
   // It's a bit inelegant that we can't declare x as const, because we need to wiggle one of its
