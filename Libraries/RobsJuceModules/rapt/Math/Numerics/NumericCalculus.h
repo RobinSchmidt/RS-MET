@@ -154,8 +154,32 @@ public:
 
 
   /** Computes the partial derivative of the multivariate (N inputs) scalar function f with respect 
+  to the n-th coordinate. It requires 2 evaluations of f. It's a bit inelegant that we can't 
+  declare x as const, because we need to wiggle one of its elements in the internal computation. We 
+  restore the exact same value before returning, so from the caller's I/O perspective, x can be 
+  considered const. But such a perspective is valid only in situations, where the x-array is used 
+  only in a single thread. The non-constness propagates out to any function that uses it, so it may 
+  prevent some compiler optimizations elsewhere. We could be hacky and cast away the const but it's 
+  probably a bad idea to do so. Preventing these computaions is actually the point - not preventing 
+  them could make the code non thread-safe. See:
+  https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Res-casts-const
+  https://visualstudiomagazine.com/articles/2016/04/26/dont-cast-away-const-in-cpp.aspx  */
+  template<class F>
+  static T partialDerivative(const F& f, T* x, int N, int n, const T h)
+  {
+    T t  = x[n];                  // temporary
+    x[n] = t + h; T fp = f(x);    // fp = f(x0,x1,..,xn+h,..,x_M)
+    x[n] = t - h; T fm = f(x);    // fm = f(x0,x1,..,xn-h,..,x_M)
+    T f1 = (fp - fm) / (T(2)*h);  // df/dxn
+    x[n] = t;                     // restore x[n]
+    return f1;
+  }
+
+  /** Computes the partial derivative of the multivariate (N inputs) scalar function f with respect 
   to the n-th coordinate and also the diagonal element H(n,n) of the Hessian matrix, i.e. the 2nd 
-  derivative with respect to coordinate n. It requires 3 evaluations of f. */
+  derivative with respect to coordinate n. It requires 3 evaluations of f. Here, like in 
+  partialDerivative, the x-array is const from the caller's perspective but we can't declare it 
+  const because we need to wiggle it temporarily internally. */
   template<class F>
   static void partialDerivativesUpTo2(const F& f, T* x, int N, int n, const T h, 
     T* f0, T* f1, T* f2)
@@ -168,25 +192,6 @@ public:
     *f2  = (fm - T(2)*(*f0) + fp) / (h*h);   // d2f/dxn2
     x[n] = t;                                // restore input
   }
-
-
-  template<class F>
-  static T partialDerivative(const F& f, const T* x, int N, int n, const T h)
-  {
-    T* X = (T*) x;                // hack! cast away the const
-    T t  = X[n];                  // temporary
-    X[n] = t + h; T fp = f(X);    // fp = f(x0,x1,..,xn+h,..,x_M)
-    X[n] = t - h; T fm = f(X);    // fm = f(x0,x1,..,xn-h,..,x_M)
-    T f1 = (fp - fm) / (T(2)*h);  // df/dxn
-    X[n] = t;                     // restore x[n]
-    return f1;
-  }
-  // It's a bit inelegant that we can't declare x as const, because we need to wiggle one of its
-  // elements in the internal computation. We restore the exact same value later, so from an I/O 
-  // perspective, x can be considered const. Can we be hacky like declaring it const and casting 
-  // the const away? If so, should we? The non-constness propagates out to any function that uses
-  // it, so it may prevent some compiler optimizations elsewhere...
-
 
   /** Computes a central difference approximation of the gradient of a scalar-valued function 
   y = f(x) at the given N-dimensional position vector x by a central difference and stores the 
