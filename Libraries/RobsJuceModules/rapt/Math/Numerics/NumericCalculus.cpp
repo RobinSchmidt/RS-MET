@@ -1,29 +1,29 @@
 //-------------------------------------------------------------------------------------------------
 // Differentiation:
 
-template<class Ty>
+template<class T>
 template<class F>
-void rsNumericDifferentiator<Ty>::hessian(const F& f, Ty* x, int N, Ty* pH, const Ty* h)
+void rsNumericDifferentiator<T>::hessian(const F& f, T* x, int N, T* pH, const T* h)
 {
   // compute N diagonal elements:
-  rsMatrixView<Ty> H(N, N, pH);
-  Ty fc = f(x);
+  rsMatrixView<T> H(N, N, pH);
+  T fc = f(x);
   for(int i = 0; i < N; i++) {
-    Ty ti  = x[i];
-    x[i]   = ti + h[i]; Ty fp = f(x);
-    x[i]   = ti - h[i]; Ty fm = f(x);
-    H(i,i) = (fm - Ty(2)*fc + fp) / (h[i]*h[i]);
+    T ti   = x[i];
+    x[i]   = ti + h[i]; T fp = f(x);
+    x[i]   = ti - h[i]; T fm = f(x);
+    H(i,i) = (fm - T(2)*fc + fp) / (h[i]*h[i]);
     x[i]   = ti; }
 
   // compute (N^2-N)/2 off-diagonal elements:
   for(int i = 0; i < N; i++) {
     for(int j = i+1; j < N; j++) {
-      Ty ti = x[i];
-      Ty tj = x[j];
-      x[i] = ti + h[i]; x[j] = tj + h[j]; Ty fpp = f(x);         // f_++
-      x[i] = ti + h[i]; x[j] = tj - h[j]; Ty fpm = f(x);         // f_+-
-      x[i] = ti - h[i]; x[j] = tj + h[j]; Ty fmp = f(x);         // f_-+
-      x[i] = ti - h[i]; x[j] = tj - h[j]; Ty fmm = f(x);         // f_--
+      T ti = x[i];
+      T tj = x[j];
+      x[i] = ti + h[i]; x[j] = tj + h[j]; T fpp = f(x);          // f_++
+      x[i] = ti + h[i]; x[j] = tj - h[j]; T fpm = f(x);          // f_+-
+      x[i] = ti - h[i]; x[j] = tj + h[j]; T fmp = f(x);          // f_-+
+      x[i] = ti - h[i]; x[j] = tj - h[j]; T fmm = f(x);          // f_--
       H(i,j) = H(j,i) = (fpp + fmm - fpm - fmp) / (4*h[i]*h[j]);
       x[i] = ti;
       x[j] = tj; }}
@@ -46,17 +46,17 @@ void rsNumericDifferentiator<Ty>::hessian(const F& f, Ty* x, int N, Ty* pH, cons
 //   evaluate its partial derivatives? fpp,fpm,fmp,fmm,fc would determine 5 coeffs - maybe the
 //   constant coeff F is irrelevant
 
-template<class Ty>
+template<class T>
 template<class Tx>
-void rsNumericDifferentiator<Ty>::derivative(
-  const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds)
+void rsNumericDifferentiator<T>::derivative(
+  const Tx *x, const T *y, T *yd, int N, bool extrapolateEnds)
 {
   rsAssert(y != yd, "Cannot be used in place yet, y and yd have to be distinct");
   rsAssert(N >= 3, "Arrays need to be at least of length 3");
     // hmm - that's for the extrapolation - if it's not used, length = 2 would also work, i think
 
   Tx dxl, dxr, dx;
-  Ty a, b; 
+  T  a, b; 
 
   for(int n = 1; n < N-1; n++) {
     dxl   = x[n] - x[n-1];
@@ -101,20 +101,20 @@ void rsNumericDifferentiator<Ty>::derivative(
 // -make a numeric derivative routine that is the inverse of the trapezoidal integrator
 //  rsDifferentiateTrapezoidal
 
-template<class Ty>
-void rsNumericDifferentiator<Ty>::stencilCoeffs(const Ty* x, int N, int d, Ty* c)
+template<class T>
+void rsNumericDifferentiator<T>::stencilCoeffs(const T* x, int N, int d, T* c)
 {
   rsAssert(d < N, "Stencil width must be greater than derivative order.");
 
   // establish matrix:
-  Ty** A; rsMatrixTools::allocateMatrix(A, N, N);
+  T** A; rsMatrixTools::allocateMatrix(A, N, N);
   for(int i = 0; i < N; i++)
     for(int j = 0; j < N; j++)
       A[i][j] = pow(x[j], i);
 
   // establish right-hand-side vector:
-  std::vector<Ty> rhs(N);
-  rsFill(rhs, Ty(0));
+  std::vector<T> rhs(N);
+  rsFill(rhs, T(0));
   rhs[d] = rsFactorial(d);
 
   // compute coeffs by solving the linear system and clean up:

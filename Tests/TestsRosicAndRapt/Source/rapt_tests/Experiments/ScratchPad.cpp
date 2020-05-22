@@ -2303,7 +2303,6 @@ protected:
 
 //=================================================================================================
 
-// maybe move to ScratchPad.cpp:
 template<class T, class F>
 int minimizePartialParabolic(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
 {
@@ -2314,11 +2313,12 @@ int minimizePartialParabolic(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
   // partial derivatives with respect to n-th coordinate
   // -at each step until convergence:
   //  -loop through the coordinates (n = 0..N-1):
-  //   -compute value and partial derivatives f0n,f1n,f2n
+  //   -compute value and 1st and 2nd partial derivatives f0n,f1n,f2n
   //   -if f2n > 0 (parabola along n-th coordinate has minimum):
   //    -jump into minimum of parabola along n-th coordinate
   //   -else:
-  //    -jump an equal distance away from the maximum of the parabola
+  //    -jump an equal distance away from the maximum of the parabola (is this a good idea? or maybe
+  //     we should use a smaller distance?)
   //  -compute function value at new location, if less than previous, accept step else reject and
   //   continue with next coordinate (or maybe try a half-step, then quarter, etc...before 
   //   continuing)
