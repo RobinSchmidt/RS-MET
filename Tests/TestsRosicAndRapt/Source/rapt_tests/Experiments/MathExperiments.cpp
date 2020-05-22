@@ -1556,6 +1556,7 @@ bool testNumericMinimization()
     // be positive)
   };
   x = v; evals = minimizePartialParabolic(f, &x[0], N, h, tol);  // 16 evals
+  x = v; evals = minimizeNewton(f, &x[0], N, h, tol);
 
 
   //x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1.0, tol); // diverges
@@ -1586,14 +1587,20 @@ bool testNumericMinimization()
   //       |3 4|      |6|
   // gives:
   //   f(x,y) = x^2 + 5*x*y + 4*y^2 + 5*x + 6*y + 7
-  // the coeff 5 for the x*y term comes from the off-diagonal elements: 2+3
+  // the coeff 5 for the x*y term comes from the off-diagonal elements: 2+3. The function as is has 
+  // its minimum at (0,0) but if we want it to be at (xMin,yMin), we simply replace x,y by x-xMin 
+  // and y-yMin in the formula
   f = [=](double* v)->double
   { 
-    double x = v[0], y = v[1];
+    double xMin = 0; 
+    double yMin = 0;
+    double x = v[0] - xMin;
+    double y = v[1] - yMin;
     return x*x + 5*x*y + 4*y*y + 5*x + 6*y + 7;
   };
-  x = v; evals = minimizeNewton(          f, &x[0], N, h, tol);
-
+  x = v; evals = minimizeNewton(f, &x[0], N, h, tol);
+  // wait: this function has a saddle:
+  // https://www.wolframalpha.com/input/?i=+x*x+%2B+5*x*y+%2B+4*y*y+%2B+5*x+%2B+6*y+%2B+7%3B
 
 
 

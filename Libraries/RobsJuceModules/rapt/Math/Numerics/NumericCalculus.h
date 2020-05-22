@@ -303,10 +303,18 @@ public:
   { std::vector<T> g(x.size()); gradient(f, &x[0], (int) x.size(), &g[0], h); return g; }
   // allocates
 
+
+  template<class F>
+  static void gradient(const F& f, T* x, int N, rsMatrix<T>& g, const T* h)
+  { gradient(f, x, N, g.getDataPointer(), h); }
+  // does not allocate - so this can be used in production as well
+
   template<class F>
   static void hessian(const F& f, T* x, int N, rsMatrix<T>& H, const T* h)
   { hessian(f, x, N, H.getDataPointer(), h); }
   // does not allocate - so this can be used in production as well
+
+
 
   /** Even more convenient convenience function...but allocates */
   template<class F>

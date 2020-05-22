@@ -2524,24 +2524,61 @@ int minimizeNewton(const F& f, T* x, int N, const T* h, T tol)
   using LinAlg = rsLinearAlgebraNew;
   using NumDif = rsNumericDifferentiator<T>;
   using Vec    = std::vector<T>;
+  using AT     = rsArrayTools;
 
   bool converged = false;
   int evals = 0;
-  T y;                 // value f(x)
-  Vec g(N);            // gradient
-  rsMatrix<T> H(N,N);  // Hessian 
+  T y;                               // value f(x)
+  //Vec g(N);                          // gradient
+  //rsMatrixView<T> g2(&g[0], N, 1);   // view gradient as Nx1 matrix
 
-  rsMatrix<T> X(N, 1), Z(N, 1);// solution vector and zero-vector as Nx1 matrix
+
+  rsMatrix<T> g(N, 1);           // gradient 
+  rsMatrix<T> H(N, N);           // Hessian 
+  rsMatrix<T> d(N, 1);           // update vector "delta-x"
+  T* pg = g.getDataPointer();
+  T* pH = H.getDataPointer();
+  T* pd = d.getDataPointer();
+
+  rsMatrix<T> X(N, 1), Z(N, 1); // solution vector and zero-vector as Nx1 matrix
+  T *pX = X.getDataPointer();
+
+
+
+
+
+  //Vec d(N);  // difference vector for the update of position x - maybe rename to dx
 
   while(!converged)
   {
     // compute function value, gradient and Hessian at x:
-    y = f(x);                            evals += 1;
-    NumDif::gradient(f, x, N, &g[0], h); evals += 2*N;
-    NumDif::hessian( f, x, N, H,     h); evals += 2*N*N + 1;
+    y = f(x);                        evals += 1;
+    NumDif::gradient(f, x, N, g, h); evals += 2*N;
+    NumDif::hessian( f, x, N, H, h); evals += 2*N*N + 1;
     // todo: make a function that computes all 3 - this may save a couple of evals
 
-    LinAlg::solve(H, X, Z);
+    //LinAlg::solve(H, X, Z);
+    // this is wrong! the rhs is not the zero-vector but twice the negative gradient!
+    // no - that's also wrong - we need the b-vector of f(x) = x*A*x + b*x + c - and this is not
+    // the gradient! ..or is it? - no, i think the gradient is 2*A*x + b
+    Vec xv = toVector(x, N);
+    // H == 2*A, iff A is symmetric - otherwise, it's 2*A_s where A_s is the symmetric part of A?
+    // or maybe H = A + A^T  ...that seems reasonable
+
+
+
+    //Vec tmp = 
+
+    // i think, jumping into the minimum amounts to finding a difference vector d that solves
+    //   A*d = -(1/2)*g -> H*d = -g and adding the so found vector d to x?
+
+    //LinAlg::solve(H, X, &g[0]);
+    AT::negate(pg, pg, N);   // g becomes -g
+    LinAlg::solve(H, d, g);  // solve H*d = -g -> d is required difference vector
+
+
+    // add d to x and store it in X:
+    AT::add(x, pd, pX, N);
 
     // if the quadratic approximation to f has a minimum, the solution vector X is the minimum
     // location - but it can also be a maximum or saddle - we can figure this out, by evaluating

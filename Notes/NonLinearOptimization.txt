@@ -14,7 +14,7 @@ model contains M = 1 + 2*N + (N^2-N)/2 free parameters, N+(N^2-N)/2 come from th
 at M data points, from that obtain our M parameters (this involves solving an MxM linear system) 
 and then we require:
   
-  q(x) = x*A*x + b*x + c = min -> q'(x) = (A/2)*x = 0
+  q(x) = x*A*x + b*x + c = min -> q'(x) = 2*A*x + b = 0 -> x = -(1/2) * A^-1 * b ...verify this
   
 which we can solve for x to jump into the minimum of our hyperparaboloid (but what if we are near a 
 maximum or saddle?). The so found minimum becomes our new datapoint and we discard the one which 
@@ -49,8 +49,20 @@ solution from the solution set - which?
 sanity check for N = 2: M = 1 + 2*N + (N^2-N)/2 = 1 + 2*2 + (2^2-2)/2 = 1 + 4 + 1 = 6...yep - 
 that's the number of free parameters for a 2D quadratic form, i.e. a conic section 
 q(x,y) = A*x^2 + B*x*y + C*y^2 + D*x + E*y + F, so the M-formula passes this sanity check.
-N = 3: M = 1 + 2*3 + (3^2-3)/2 = 1 + 6 + 3 = 10 - jup, looks good, too
-N = 4: M = 1 + 2*4 + (4^2-N)/2 = 1 + 8 + 6 = 15
+N = 3:  M = 1 + 2*3 + (3^2-3)/2 = 1 + 6 + 3 = 10 - jup, looks good, too
+N = 4:  M = 1 + 2*4 + (4^2-N)/2 = 1 + 8 + 6 = 15
+...so how does it scale?
+N = 10: M = 1 + 20 + 90/2 = 21 + 45 = 66
+N = 20: M = 1 + 2*20 + (400-20)/2 = 1 + 40 + 190 = 231
+...ok, so doing linear algebra in a 231 dimensional space for each step is already a quite heavy
+burden, so this method may be advisable only for problems with small dimensionality and when the
+evaluation of f is really expensive such that it must be avoided at all costs - because the cost
+is quite high indeed. avoiding evaluations at all costs may have its applications when the cost 
+function depends on large data sets, in which case it may indeed have to be avoided at all costs.
+finding the quadratic form that interpolates a large (size M) set of evaluation points is a costly
+computation..a paper describing the method could be named "A quadratically convergent method for 
+nonlinear optimization that avoids function evaluations at the cost of high-dimensional linear 
+algebra"...if it all works out as i hope, that is.....
 
 a very(!) inefficient variant:
 compute the M model parameters not from M datapoints but from the function-value, gradient and
@@ -63,6 +75,35 @@ the NxN system remains
 
 ...i think, the general idea is the Newton method - make a quadratic approximation and
 jump into its minimum
+
+wait - i think, the above approach:
+  q(x) = x*A*x + b*x + c = min -> q'(x) = 2*A*x = 0
+works only, if the extremum is located at (xMin,yMin) = (0,0) - otherwise, we need a more general 
+quadratic form:
+  q(x) = (x-a)*A*(x-a) + b*(x-a) + c 
+where a is another vector that shifts the extremum to the location a.
+  q(x)   = (x-a)*A*(x-a) + b*(x-a) + c 
+         = x*A*(x-a) - a*A*(x-a) + b*x - b*a + c 
+         = x*A*x - x*A*a - a*A*x - a*A*a + b*x - b*a + c 
+         = x*A*x - 2*a*A*x - a*A*a + b*x - b*a + c          iff A is symmetric, which we may assume?
+         = x*A*x + b*x - 2*a*A*x - a*A*a - b*a + c
+         = x*A*x + (b - 2*a*A)*x - a*A*a - b*a + c
+  q'(x)  = 2*A*x + b - 2*a*A = g(x)                       the gradient at x
+  q''(x) = 2*A = H(x)                                     the Hessian
+actually, we want to find the vector a from gradient and Hessian, so we can jump into a. We find:
+  -2*A*a = g - 2*A*x - b 
+       a = (-1/2) * inv(A) * (g - 2*A*x - b)
+but we can't compute that because don't know b. seems like we can't reconstruct A, b, c from the 
+gradient and Hessian at a single point - we can compute A - but not b - maybe we need two 
+evaluation points? We can assume, that H and hence A does not change from one evaluation point to 
+another, but g does change - maybe we can compute b from evaluating g at two points? Let's do it - 
+call them x1,x2 - we get from the q' equation:
+  2*A*x1 + b - 2*a*A = g1
+  2*A*x2 + b - 2*a*A = g2
+...or maybe we can reformulate it, such that we can use the simpler form q(x) = x*A*x + b*x + c but 
+here x is actually a dx vector?
+  
+
 
 see:
 https://en.wikipedia.org/wiki/Derivative-free_optimization
