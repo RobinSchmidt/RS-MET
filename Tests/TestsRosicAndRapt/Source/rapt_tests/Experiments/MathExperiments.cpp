@@ -1548,6 +1548,7 @@ bool testNumericMinimization()
 
   // try simpler functions: f(x,y) = x^2 + y^2, f(x,y) = x^2, ... 
 
+
   f = [=](double* v)->double
   { 
     double x = v[0], y = v[1];
@@ -1602,7 +1603,16 @@ bool testNumericMinimization()
   // wait: this function has a saddle:
   // https://www.wolframalpha.com/input/?i=+x*x+%2B+5*x*y+%2B+4*y*y+%2B+5*x+%2B+6*y+%2B+7%3B
 
-
+  // 3*x*x + 2*x*y + 4*y*y + 5*x + 6*y + 7;
+  f = [=](double* v)->double
+  { 
+    double x = v[0]; double y = v[1];
+    return 3*x*x + 2*x*y + 4*y*y + 5*x + 6*y + 7; 
+  };
+  x = v; evals = minimizeNewton(f, &x[0], N, h, tol); y = f(&x[0]);
+  // result looks correct, see here:
+  // https://www.wolframalpha.com/input/?i=Minimize%283*x*x+%2B+2*x*y+%2B+4*y*y+%2B+5*x+%2B+6*y+%2B+7%29
+  // minimum is at (-7/11,-13/22) = (-0.6363..,-0.59090..) and has a value of 40/11 = 3.6363...
 
   f = [=](double* v)->double
   { 

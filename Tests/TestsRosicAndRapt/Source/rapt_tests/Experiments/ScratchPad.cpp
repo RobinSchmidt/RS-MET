@@ -2518,6 +2518,9 @@ int minimizeGradientAutoStep(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
   return evals;
 }
 
+// does Newton steps into the minimum of a parabolic approximation of f where the gradient and 
+// Hessian are computed numerically, involving a lot of function evaluations - so this is probably
+// not an efficient method
 template<class T, class F>
 int minimizeNewton(const F& f, T* x, int N, const T* h, T tol)
 {
@@ -2528,77 +2531,43 @@ int minimizeNewton(const F& f, T* x, int N, const T* h, T tol)
 
   bool converged = false;
   int evals = 0;
-  T y;                               // value f(x)
-  //Vec g(N);                          // gradient
-  //rsMatrixView<T> g2(&g[0], N, 1);   // view gradient as Nx1 matrix
 
+  rsMatrix<T> g(N, 1); T* pg = g.getDataPointer(); // gradient 
+  rsMatrix<T> H(N, N); T* pH = H.getDataPointer(); // Hessian 
+  rsMatrix<T> d(N, 1); T* pd = d.getDataPointer(); // update vector "delta-x"
+  rsMatrix<T> X(N, 1); T *pX = X.getDataPointer(); // temporary vector for tentative new x
 
-  rsMatrix<T> g(N, 1);           // gradient 
-  rsMatrix<T> H(N, N);           // Hessian 
-  rsMatrix<T> d(N, 1);           // update vector "delta-x"
-  T* pg = g.getDataPointer();
-  T* pH = H.getDataPointer();
-  T* pd = d.getDataPointer();
-
-  rsMatrix<T> X(N, 1), Z(N, 1); // solution vector and zero-vector as Nx1 matrix
-  T *pX = X.getDataPointer();
-
-
-
-
-
-  //Vec d(N);  // difference vector for the update of position x - maybe rename to dx
+  T fOld;                                          // value f(x)
 
   while(!converged)
   {
     // compute function value, gradient and Hessian at x:
-    y = f(x);                        evals += 1;
+    fOld = f(x);                     evals += 1;
     NumDif::gradient(f, x, N, g, h); evals += 2*N;
     NumDif::hessian( f, x, N, H, h); evals += 2*N*N + 1;
     // todo: make a function that computes all 3 - this may save a couple of evals
 
-    //LinAlg::solve(H, X, Z);
-    // this is wrong! the rhs is not the zero-vector but twice the negative gradient!
-    // no - that's also wrong - we need the b-vector of f(x) = x*A*x + b*x + c - and this is not
-    // the gradient! ..or is it? - no, i think the gradient is 2*A*x + b
-    Vec xv = toVector(x, N);
-    // H == 2*A, iff A is symmetric - otherwise, it's 2*A_s where A_s is the symmetric part of A?
-    // or maybe H = A + A^T  ...that seems reasonable
 
-
-
-    //Vec tmp = 
-
-    // i think, jumping into the minimum amounts to finding a difference vector d that solves
-    //   A*d = -(1/2)*g -> H*d = -g and adding the so found vector d to x?
-
-    //LinAlg::solve(H, X, &g[0]);
     AT::negate(pg, pg, N);   // g becomes -g
     LinAlg::solve(H, d, g);  // solve H*d = -g -> d is required difference vector
-
-
-    // add d to x and store it in X:
-    AT::add(x, pd, pX, N);
+    AT::add(x, pd, pX, N);   // add d to x and store resul in X, our tentative new X
 
     // if the quadratic approximation to f has a minimum, the solution vector X is the minimum
     // location - but it can also be a maximum or saddle - we can figure this out, by evaluating
     // f at X and comparing the value to the old f at x....
-    T fNew = f(X.getDataPointer()); evals += 1;
+    T fNew = f(pX); evals += 1;
 
-    if(fNew < y)
-    {
-      rsArrayTools::copy(X.getDataPointer(), x, N);
-      //X.writeToArray(x);
-    }
+    if(fNew < fOld)
+      rsArrayTools::copy(pX, x, N);
     else
     {
-      // compute difference between x and X and jump away from the maximum...
+      AT::addWithWeight(x, N, pd, T(-1)); // jump away from the maximum - needs test
+      // perhaps, we should also use a tentative X vector here and do an acceptance loop
+      // maybe we should have a fallback to go a step along the negative gradient
     }
 
-    // evaluate f at the solution vector X - if it's lower than y, accept the step - otherwise, the
-    // n
 
-    // do Newton step:
+
     converged = true;   // preliminary
   }
   return evals;
