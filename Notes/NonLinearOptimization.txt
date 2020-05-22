@@ -1,0 +1,52 @@
+Ideas for nonlinear optimization algorithms (i cast them in term of minimization)
+
+
+
+
+
+We approximate f by a quadratic form f(x) ~= q(x) = x*A*x + b*x + c where the matrix A is assumed
+to be symmetric (i think, this is no loss of generality because of the sandwiching, right?). So our 
+model contains M = 1 + 2*N + (N^2-N)/2 free parameters, N+(N^2-N)/2 come from the matrix A 
+(verify!), N from the vector b and 1 from the constant c. As pre-processing step, we evaluate f(x)
+at M data points, from that obtain our M parameters (this involves solving an MxM linear system) 
+and then we require:
+  
+  q(x) = x*A*x + b*x + c = min -> q'(x) = (A/2)*x = 0
+  
+which we can solve for x to jump into the minimum of our hyperparaboloid (but what if we are near a 
+maximum or saddle?). The so found minimum becomes our new datapoint and we discard the one which 
+had the highest f(x). Now, we repeat solving the MxM and NxN systems for each step in a convergence 
+loop. Solving 2 linear systems per iteration seems costly but the key is, that each iteration 
+requires only one evaluation of f (for the one new evaluation point at the minimum of q) - so if 
+the evaluation of f is expensive, which is the typical case, it may be worth it. The algorithm 
+would at each step use a full set of datapoints rather than a single one, which is hopefully good 
+for the convergence. 
+
+How to select the M initial datapoints? Let's say, the user provides one initial guess x0. we could 
+obtain N other points by going a distance k along each coordinate direction and another N^2 
+datapoints by going a distance along each combination of two directions. ...but that would be 
+N + N^2 - so that's too many, but N would be too few...hmmm....wait
+or: obtain N datapoints by going into the k * e_i directions, e_i is the unit vector along the 
+i-th coordinate. obtain (N^2-N)/2 points by going along k * (e_i + e_j), i != j for the off-diag
+elements of A, k * 2*e_i for the diagonal elements of A and for c, we have our single user-given
+datapoint. Maybe, we should use different k-values for each direction according to the typical size
+of features of f along each direction, for the cross directions, we would use k_i*e_i + k_j*e_j
+
+What if the paraboloid's extremum is a maximum? we can detect this by having f(x) at the new point
+bigger than all old points. maybe then we should compute a direction that points away from the 
+maximum - maybe use the center of our existing points as reference, compute the distance to the new
+point and go into the opposite direction - or something. What if f(x) is intermediate in between 
+old f a t old datapoints? i think, it means, that our set of datapoints spans a too large area, 
+such that there may be several minima/maxima in the region - we should perhaps start again with 
+smaller k-values. What if there's a long valley? then the NxN system (and/or the MxM system) may 
+not have a unique solution - then maybe we need to pick one particular solution from the solution
+set - which?
+
+sanity check for N = 2: M = 1 + 2*N + (N^2-N)/2 = 1 + 2*2 + (2^2-2)/2 = 1 + 4 + 1 = 6...yep - 
+that's the number of free parameters for a 2D quadratic form, i.e. a conic section 
+q(x,y) = A*x^2 + B*x*y + C*y^2 + D*x + E*y + F, so the M-formula passes this sanity check.
+N = 3: M = 1 + 2*3 + (3^2-3)/2 = 1 + 6 + 3 = 10 - jup, looks good, too
+N = 4: M = 1 + 2*4 + (4^2-N)/2 = 1 + 8 + 6 = 15
+
+
+

@@ -1625,7 +1625,7 @@ bool testNumericMinimization()
   x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./1024, 1.e-12);  // 216701
   x = v; evals = minimizeGradientAutoStep(f, &x[0], N, h,          1.e-12);
   // the results are slightly different - how can this be - they should converge to the same
-  // minimum
+  // minimum - oh - the minmima are valleys - that can be the reason
   // maybe the convergence criterion should not be the change of function value
 
 
