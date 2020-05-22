@@ -69,7 +69,6 @@ public:
   // would also be complex number - which may not be a problem.
 
 
-
   /** Numeric approximation of the second derivative using 3 evaluations of f. 2nd order accurate 
   in h. */
   template<class Tx, class F>
@@ -80,7 +79,17 @@ public:
     // might expect T(2) here. However, if Tx is a scalar type and T is a vector type, this is
     // totally appropriate.
   }
+  // Verify this and add to documentation:
+  // I think, the accuracy is always equal to the number of evaluation points minus 1, for example 
+  // here: 3 evaluation points -> 2nd order accurate in h. But: the formula for first derivative 
+  // has only 2 evaluation points and is still 2nd order accurate. However, there is a concpetual 
+  // 3rd evaluation point in the middle - but its coeff comes out as zero which is why the 
+  // evaluation has been optimized away. So, it's the number of "conceptual" evaluation points 
+  // minus 1. ...as said - i'm not totally sure about this - this needs to be verified...
+  // ...seems like in the odd derivative formulas, the middle coeff always comes out as zero, 
+  // which makes sense
 
+  
   /** Numeric approximation of the third derivative using 4 evaluations of f. 3rd order accurate 
   in h (i think - verify - well, we have h^3 in the denominator, but that may not mean anything 
   because for the 5-point formula of the 1st derivative, we just have h^1 and it should be more 
@@ -91,15 +100,18 @@ public:
     return (-f(x-Tx(2)*h) + Tx(2)*f(x-h) - Tx(2)*f(x+h) + f(x+Tx(2)*h)) / (Tx(2)*h*h*h);
   }
   // needs test
+  // document the accuracy - maybe it's even 4th order accurate? with 5 "conceptual" evaluations?
   // coeffs found by:
   // http://web.media.mit.edu/~crtaylor/calculator.html
   // f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
 
 
-  /** Computes 0th, 1st and 2nd derivative of f at x. This is more efficient than using the 
-  separate functions. It uses 3 function evaluations whereas you would need 6, if you would call
-  the function itself (1 evaluation) and derivative (2 evaluations) and secondDerivative (3 
-  evaluations). The result is exactly the same - it just avoids to compute all the values twice. */
+  /** Computes 0th, 1st and 2nd derivative of f at x with stepsize h and stores them in f0, f1, f2 
+  where we adopt the usual convention that the 0th derivative means just the function itself. This 
+  is more efficient than using the separate functions. It uses 3 function evaluations whereas you 
+  would need 6, if you would call the function itself (1 evaluation) and derivative (2 evaluations) 
+  and secondDerivative (3 evaluations). The result is exactly the same - it just avoids to compute 
+  some intermediate values values twice. */
   template<class Tx, class F>
   static void derivativesUpTo2(const F& f, const Tx& x, const Tx& h, T* f0, T* f1, T* f2)
   {
@@ -130,6 +142,7 @@ public:
     *f3 = (-fm2 +  2*fm1         -  2*fp1 + fp2) / (2*h*h*h);
   }
   // needs test
+  // document the accuracy 
   // stencil: -2,-1,0,1,2
   // f_x = (1*f[i-2]-8*f[i-1]+0*f[i+0]+8*f[i+1]-1*f[i+2])/(12*1.0*h**1)
   // f_xx = (-1*f[i-2]+16*f[i-1]-30*f[i+0]+16*f[i+1]-1*f[i+2])/(12*1.0*h**2)
@@ -156,6 +169,24 @@ public:
     x[n] = t;                                // restore input
   }
 
+
+  template<class F>
+  static T partialDerivative(const F& f, T* x, int N, int n, const T h)
+  {
+    T t  = x[n];                  // temporary
+    x[n] = t + h; T fp = f(x);    // fp = f(x0,x1,..,xn+h,..,x_M)
+    x[n] = t - h; T fm = f(x);    // fm = f(x0,x1,..,xn-h,..,x_M)
+    T f1 = (fp - fm) / (T(2)*h);  // df/dxn
+    x[n] = t;                     // restore x[n]
+    return f1;
+  }
+  // It's a bit inelegant that we can't declare x as const, because we need to wiggle one of its
+  // elements in the internal computation. We restore the exact same value later, so from an I/O 
+  // perspective, x can be considered const. Can we be hacky like declaring it const and casting 
+  // the const away? If so, should we? The non-constness propagates out to any function that uses
+  // it, so it may prevent some compiler optimizations elsewhere...
+
+
   /** Computes a central difference approximation of the gradient of a scalar-valued function 
   y = f(x) at the given N-dimensional position vector x by a central difference and stores the 
   result in g (also of length N). You also need to pass an array of approximation stepsizes along 
@@ -168,12 +199,8 @@ public:
   static void gradient(const F& f, T* x, int N, T* g, const T* h)
   {
     rsAssert(x != g, "Can't be used in place");
-    for(int n = 0; n < N; n++) {
-      T t  = x[n];                     // temporary
-      x[n] = t + h[n]; T fp = f(x);
-      x[n] = t - h[n]; T fm = f(x);
-      g[n] = (fp-fm) / (2*h[n]);
-      x[n] = t;    }                   // restore x[n]
+    for(int n = 0; n < N; n++) 
+      g[n] = partialDerivative(f, x, N, n, h[n]);
   }
   // move output variables to the end to make it consistent with the other functions like
   // derivativesUpTo2
