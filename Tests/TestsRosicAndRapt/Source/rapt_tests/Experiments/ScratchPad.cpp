@@ -2537,25 +2537,26 @@ int minimizeNewton(const F& f, T* x, int N, const T* h, T tol)
   rsMatrix<T> d(N, 1); T* pd = d.getDataPointer(); // update vector "delta-x"
   rsMatrix<T> X(N, 1); T *pX = X.getDataPointer(); // temporary vector for tentative new x
 
-  T fOld;                                          // value f(x)
+
+  T fOld = f(x); evals += 1;// value f(x)
+  T fNew;
 
   while(!converged)
   {
-    // compute function value, gradient and Hessian at x:
-    fOld = f(x);                     evals += 1;
+    // compute gradient and Hessian at current position x:
     NumDif::gradient(f, x, N, g, h); evals += 2*N;
     NumDif::hessian( f, x, N, H, h); evals += 2*N*N + 1;
-    // todo: make a function that computes all 3 - this may save a couple of evals
+    // todo: make a function that computes both - this may save a couple of evals
 
 
     AT::negate(pg, pg, N);   // g becomes -g
-    LinAlg::solve(H, d, g);  // solve H*d = -g -> d is required difference vector
-    AT::add(x, pd, pX, N);   // add d to x and store resul in X, our tentative new X
+    LinAlg::solve(H, d, g);  // solve H*d = -g for d which is required difference vector
+    AT::add(x, pd, pX, N);   // add d to x and store result in X, our tentative new X
 
     // if the quadratic approximation to f has a minimum, the solution vector X is the minimum
     // location - but it can also be a maximum or saddle - we can figure this out, by evaluating
     // f at X and comparing the value to the old f at x....
-    T fNew = f(pX); evals += 1;
+    fNew = f(pX); evals += 1;
 
     if(fNew < fOld)
       rsArrayTools::copy(pX, x, N);
@@ -2566,9 +2567,9 @@ int minimizeNewton(const F& f, T* x, int N, const T* h, T tol)
       // maybe we should have a fallback to go a step along the negative gradient
     }
 
-
-
-    converged = true;   // preliminary
+    if(rsAbs(fOld-fNew) < tol)
+      converged = true;
+    fOld = fNew;
   }
   return evals;
 }
