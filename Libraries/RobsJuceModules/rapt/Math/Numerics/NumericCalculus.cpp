@@ -5,9 +5,11 @@ template<class T>
 template<class F>
 void rsNumericDifferentiator<T>::hessian(const F& f, T* x, int N, T* pH, const T* h)
 {
-  // compute N diagonal elements:
+  // wrap raw pointer into matrix-view, evaluate f at x:
   rsMatrixView<T> H(N, N, pH);
   T fc = f(x);
+
+  // compute N diagonal elements (2 evals for each):
   for(int i = 0; i < N; i++) {
     T ti   = x[i];
     x[i]   = ti + h[i]; T fp = f(x);
@@ -15,7 +17,7 @@ void rsNumericDifferentiator<T>::hessian(const F& f, T* x, int N, T* pH, const T
     H(i,i) = (fm - T(2)*fc + fp) / (h[i]*h[i]);
     x[i]   = ti; }
 
-  // compute (N^2-N)/2 off-diagonal elements:
+  // compute (N^2-N)/2 off-diagonal elements (4 evals for each):
   for(int i = 0; i < N; i++) {
     for(int j = i+1; j < N; j++) {
       T ti = x[i];
@@ -27,6 +29,8 @@ void rsNumericDifferentiator<T>::hessian(const F& f, T* x, int N, T* pH, const T
       H(i,j) = H(j,i) = (fpp + fmm - fpm - fmp) / (4*h[i]*h[j]);
       x[i] = ti;
       x[j] = tj; }}
+
+  // # evaluations: 1 + 2*N + 4*(N^2-N)/2 = 2*N^2 + 1
 
   // The formula for the diagonal elements is just the regular central difference for a 2nd 
   // derivative for one coordinate at a time. The formula for the off-diagonal elements was derived
@@ -45,6 +49,9 @@ void rsNumericDifferentiator<T>::hessian(const F& f, T* x, int N, T* pH, const T
 //  -maybe we could compute the A..F coeffs of a quadratic form (i.e. conic section) and
 //   evaluate its partial derivatives? fpp,fpm,fmp,fmm,fc would determine 5 coeffs - maybe the
 //   constant coeff F is irrelevant
+// see:
+// https://en.wikipedia.org/wiki/Hessian_matrix#Use_in_optimization
+// https://en.wikipedia.org/wiki/Quasi-Newton_method
 
 template<class T>
 template<class Tx>

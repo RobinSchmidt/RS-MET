@@ -64,5 +64,13 @@ the NxN system remains
 ...i think, the general idea is the Newton method - make a quadratic approximation and
 jump into its minimum
 
+see:
+https://en.wikipedia.org/wiki/Derivative-free_optimization
+https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method
+https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm
+
+https://en.wikipedia.org/wiki/Trust_region
+
+
 
 

@@ -1544,6 +1544,9 @@ bool testNumericMinimization()
   int evals;
 
   double tol = 1.e-12;
+  double y;
+
+  // try simpler functions: f(x,y) = x^2 + y^2, f(x,y) = x^2, ... 
 
   f = [=](double* v)->double
   { 
@@ -1553,14 +1556,14 @@ bool testNumericMinimization()
     // be positive)
   };
   x = v; evals = minimizePartialParabolic(f, &x[0], N, h, tol);  // 16 evals
+
+
   //x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1.0, tol); // diverges
 
   // the minimum is at (0,0)
   // 16 evaluations: it converges in the first iteration, but a 2nd iteration is needed to detect 
   // the convergence, so we get 2 iterations, each taking  4*N = 4*2 = 8 evaluations - so this 
   // seems ok
-
-
   x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./16, tol); 
   // oscillates, "converges" after 276 evals but to the wrong location
 
@@ -1574,6 +1577,23 @@ bool testNumericMinimization()
 
 
   // try a function like f(x,y) = a*x^2 + b*y^2 + c*x + d*y
+
+
+  // A function that has a general quadratic form:
+  //   f(v) = v*A*v + b*v + v with matrix A, vector b and scalar c
+  // with
+  //   A = |1 2|, b = |5|, c = 7
+  //       |3 4|      |6|
+  // gives:
+  //   f(x,y) = x^2 + 5*x*y + 4*y^2 + 5*x + 6*y + 7
+  // the coeff 5 for the x*y term comes from the off-diagonal elements: 2+3
+  f = [=](double* v)->double
+  { 
+    double x = v[0], y = v[1];
+    return x*x + 5*x*y + 4*y*y + 5*x + 6*y + 7;
+  };
+  x = v; evals = minimizeNewton(          f, &x[0], N, h, tol);
+
 
 
 
@@ -1633,6 +1653,50 @@ bool testNumericMinimization()
   // roots: x = -(3 sqrt(3))/128, y = sqrt(3)/8; x = (3 sqrt(3))/128, y = -sqrt(3)/8
   // minima: min1 = -0.000976563 at (x, y)=(-0.0220971,  0.176777)
   //         min2 = -0.000976563 at (x, y)=( 0.0220971, -0.176777)
+
+
+  // todo: try the minimizePartialParabolic on the rosenborck function - see here:
+  // https://en.wikipedia.org/wiki/Adaptive_coordinate_descent
+  //
+
+  // https://en.wikipedia.org/wiki/Rosenbrock_function
+  f = [=](double* v)->double
+  { 
+    double x = v[0], y = v[1];
+    double a = 1;
+    double b = 100;
+    double ax  = a-x;
+    double yx2 = y-x*x;
+    return ax*ax + b*yx2*yx2;
+    // minimum: (a,a^2)
+  };
+  v = Vec({-3,-4});
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-12); // 32344
+  y = f(&x[0]);
+
+
+
+  // other test functions to try:
+  // https://en.wikipedia.org/wiki/Test_functions_for_optimization
+  // https://en.wikipedia.org/wiki/Himmelblau%27s_function
+  // https://en.wikipedia.org/wiki/Rosenbrock_function
+  // https://en.wikipedia.org/wiki/Shekel_function
+  // https://en.wikipedia.org/wiki/Rastrigin_function
+  // https://en.wikipedia.org/wiki/Ackley_function
+
+
+  // Algorithms:
+  // https://en.wikipedia.org/wiki/Coordinate_descent
+  // https://en.wikipedia.org/wiki/Adaptive_coordinate_descent
+  // https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method
+  // https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm
+  // https://en.wikipedia.org/wiki/Conjugate_gradient_method
+  // https://en.wikipedia.org/wiki/Nonlinear_conjugate_gradient_method
+  // https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm
+  // https://en.wikipedia.org/wiki/Limited-memory_BFGS
+
+  // https://en.wikipedia.org/wiki/Gradient_descent
+  // https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization
 
   return r;
 }

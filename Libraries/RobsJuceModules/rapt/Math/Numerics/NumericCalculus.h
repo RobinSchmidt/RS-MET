@@ -160,8 +160,8 @@ public:
   considered const. But such a perspective is valid only in situations, where the x-array is used 
   only in a single thread. The non-constness propagates out to any function that uses it, so it may 
   prevent some compiler optimizations elsewhere. We could be hacky and cast away the const but it's 
-  probably a bad idea to do so. Preventing these computaions is actually the point - not preventing 
-  them could make the code non thread-safe. See:
+  probably a bad idea to do so. Preventing these optimizations is actually the point - not 
+  preventing them could make the code non thread-safe. See:
   https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Res-casts-const
   https://visualstudiomagazine.com/articles/2016/04/26/dont-cast-away-const-in-cpp.aspx  */
   template<class F>
@@ -306,7 +306,7 @@ public:
   template<class F>
   static void hessian(const F& f, T* x, int N, rsMatrix<T>& H, const T* h)
   { hessian(f, x, N, H.getDataPointer(), h); }
-  // does not allocate
+  // does not allocate - so this can be used in production as well
 
   /** Even more convenient convenience function...but allocates */
   template<class F>

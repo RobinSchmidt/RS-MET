@@ -2328,6 +2328,10 @@ int minimizePartialParabolic(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
   // not advisable to use numeric gradients in gradient descent for efficiency reasons (each 
   // gradient computation needs 3*N evaluations of f)
   // move into a class rsNumericMinimizer
+  // it's similar to:
+  // https://en.wikipedia.org/wiki/Coordinate_descent
+  // just that we don't do line-search but instead use the numerical gradient info to jump into
+  // the minimum of a parabola
 
   using NumDiff = rsNumericDifferentiator<T>;
 
@@ -2457,7 +2461,6 @@ int minimizeGradientDescent(const F& f, T* v, int N, const T* h, T stepSize, T t
 // https://docs.scipy.org/doc/scipy/reference/optimize.html
 
 
-
 template<class T, class F>
 int minimizeGradientAutoStep(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
 {
@@ -2514,3 +2517,53 @@ int minimizeGradientAutoStep(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
 
   return evals;
 }
+
+template<class T, class F>
+int minimizeNewton(const F& f, T* x, int N, const T* h, T tol)
+{
+  using LinAlg = rsLinearAlgebraNew;
+  using NumDif = rsNumericDifferentiator<T>;
+  using Vec    = std::vector<T>;
+
+  bool converged = false;
+  int evals = 0;
+  T y;                 // value f(x)
+  Vec g(N);            // gradient
+  rsMatrix<T> H(N,N);  // Hessian 
+
+  rsMatrix<T> X(N, 1), Z(N, 1);// solution vector and zero-vector as Nx1 matrix
+
+  while(!converged)
+  {
+    // compute function value, gradient and Hessian at x:
+    y = f(x);                            evals += 1;
+    NumDif::gradient(f, x, N, &g[0], h); evals += 2*N;
+    NumDif::hessian( f, x, N, H,     h); evals += 2*N*N + 1;
+    // todo: make a function that computes all 3 - this may save a couple of evals
+
+    LinAlg::solve(H, X, Z);
+
+    // if the quadratic approximation to f has a minimum, the solution vector X is the minimum
+    // location - but it can also be a maximum or saddle - we can figure this out, by evaluating
+    // f at X and comparing the value to the old f at x....
+    T fNew = f(X.getDataPointer()); evals += 1;
+
+    if(fNew < y)
+    {
+      rsArrayTools::copy(X.getDataPointer(), x, N);
+      //X.writeToArray(x);
+    }
+    else
+    {
+      // compute difference between x and X and jump away from the maximum...
+    }
+
+    // evaluate f at the solution vector X - if it's lower than y, accept the step - otherwise, the
+    // n
+
+    // do Newton step:
+    converged = true;   // preliminary
+  }
+  return evals;
+}
+// it looks like it's about time to make a class rsMinimizer
