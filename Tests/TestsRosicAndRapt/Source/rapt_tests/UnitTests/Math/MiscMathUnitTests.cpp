@@ -434,53 +434,44 @@ bool testNumericJacobian()
   int N = 2;  // number of input dimensions
   int M = 3;
 
-  Func f1 = [=](double* v)->double   // what if we use auto?
-  { 
-    double x = v[0], y = v[1];
-    return x*x * y*y*y; 
-  };
-
-  Func f2 = [=](double* v)->double
-  { 
-    double x = v[0], y = v[1];
-    return 2*x*x*x * 3*y*y; 
-  };
-
-  Func f3 = [=](double* v)->double
-  { 
-    double x = v[0], y = v[1];
-    return x*x * y*y - 2*x*y; 
-  };
-
-
-  // the Jacobian is:
-  // df1/dx = 2*x   *   y^3      df1/dy = x^2   * 3*y^2
-  // df2/dx = 6*x^2 * 3*y^2      df2/dy = 2*x^3 * 6*y
-  // df3/dx = 2*x * y^2 - 2*y    df3/dy = x^2 * 2*y - 2*x
-
+  // input vector:
   double x = 7, y = 5;
+  std::vector<double> v({x,y});
 
-  Mat Ja(3, 2);  // analytical Jacobian
+  // approximation stepsizes:
+  double hx = pow(2, -18);    // from 2^-18, maxErr in the gradient becomes 0
+  double hy = hx/2;
+  double hz = hx/4;
+  double h[3] = {hx, hy, hz};  // h as array
+
+  // Our example functions are:
+  //   f1(x,y) =   x^2 *   y^3
+  //   f2(x,y) = 2*x^3 * 3*y^2
+  //   f3(x,y) = x^2 + y^2 - 2*x*y
+  // and the Jacobian is:
+  //   df1/dx = 2*x   *   y^3      df1/dy = x^2   * 3*y^2
+  //   df2/dx = 6*x^2 * 3*y^2      df2/dy = 2*x^3 * 6*y
+  //   df3/dx = 2*x * y^2 - 2*y    df3/dy = x^2 * 2*y - 2*x
+  Func f1 = [=](double* v)->double { double x = v[0], y = v[1]; return x*x     * y*y*y;   };
+  Func f2 = [=](double* v)->double { double x = v[0], y = v[1]; return 2*x*x*x * 3*y*y;   };
+  Func f3 = [=](double* v)->double { double x = v[0], y = v[1]; return x*x * y*y - 2*x*y; };
+  std::vector<Func> f({f1,f2,f3});  // array/vector of functors
+  Mat Ja(3, 2);                     // analytical Jacobian
   Ja(0, 0) = 2*x * y*y*y; 
   Ja(0, 1) = x*x * 3*y*y;
   Ja(1, 0) = 6*x*x * 3*y*y;
   Ja(1, 1) = 2*x*x*x * 6*y;
   Ja(2, 0) = 2*x * y*y - 2*y;
   Ja(2, 1) = x*x * 2*y - 2*x;
+  // what if we use auto instead of Func for f1,f2,f3?
 
-  std::vector<Func> f({f1,f2,f3});
-
-  Mat Jn(3, 2);  // numerical Jacobian
+  // Compute numerical Jacobian and compare with analytic result:
+  Mat Jn(3, 2);  
   double *pJ = Jn.getDataPointer();
-
-  std::vector<double> v({x,y});
-
-  double hx = pow(2, -18);    // from 2^-18, maxErr in the gradient becomes 0
-  double hy = hx/2;
-  double hz = hx/4;
-  double h[3] = {hx, hy, hz};  // h as array
-
   jacobian(f, &v[0], N, pJ, h);
+  Mat Je = Ja - Jn;  // error matrix
+  double maxErr = Je.getAbsoluteMaximum();
+  r &= maxErr == 0.0;
 
   return r;
 }
