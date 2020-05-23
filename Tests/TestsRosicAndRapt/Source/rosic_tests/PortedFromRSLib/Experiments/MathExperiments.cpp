@@ -1343,7 +1343,44 @@ void numericDifferentiation()
 {
   // todo: plot accuracy of varoious approximation formulas as function of stepsize h...
 
-  int dummy = 0;
+  // h should scale like 2^k where k goes from , say -20 to -3
+  static const int kMin = -20;
+  static const int kMax =  -3;
+  static const int numK = kMax - kMin + 1;
+  double x0 = 0.0;  // we compute the error at position x0 ..maybe compute at various positions
+
+
+  //double xMin = 0.0;
+  //double xMax = 2*PI;
+
+  using NumDif = rsNumericDifferentiator<double>;
+
+  double h[numK];
+  double err[numK];
+
+
+
+  // function to differentiate:
+  auto f = [=](double x)
+  {
+    return sin(x);
+  };
+
+  for(int i = 0; i < numK; i++)
+  {
+    //double h = pow(2, kMin + i);
+    h[i] = pow(2, kMin + i);
+    double t = cos(x0);                         // true derivative
+    double a = NumDif::derivative(f, x0, h[i]); // actually computed numerical derivative
+    err[i] = fabs(t-a);                         // error
+    int dummy = 0;
+  }
+
+
+  rsPlotArraysXY(numK, h, err);
+
+  // todo: do a log-log plot and estimate the exponent by fitting a line
+  // maybe record data log2(h) = k[i], log2(err)
 }
 
 void numericIntegration()
