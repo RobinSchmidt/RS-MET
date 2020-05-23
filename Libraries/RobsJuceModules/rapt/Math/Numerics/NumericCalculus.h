@@ -232,7 +232,13 @@ public:
   evaluations at position vectors x + k*v and x - k*v for some scalar approximation stepsize k. The 
   array h is - as usual - the vector of stepsizes to numerically approximate the gradient itself. 
   The workspace must be of length 2*N. The two gradient evaluations each take 2*N evaluations of f, 
-  so the function evaluates f 4*N times. For details of the idea, see... */
+  so the function evaluates f 4*N times. As a side-note, when v is the i-th coordinate vector, i.e. 
+  all zeros except v[i] = 1, then this will compute the i-th row (or column) of the Hessian matrix
+  itself. But it's not algorithmically attractive to approximate the Hessian that way - compared
+  to the implementation of the actual hessian function, it needs more evaluations of f, needs an
+  additional memory workspace, needs the user to specify an additional parameter k and is 
+  numerically less accurate (i think - i tried it with one specific choice of k in which case the
+  estimate was less accurate).  For details of the general idea, see... */
   template<class F>
   static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h, T k, 
     T* workspace)
