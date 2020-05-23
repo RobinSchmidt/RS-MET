@@ -31,9 +31,15 @@ whereas in the parametric curve case, the derivative type was the same as the ou
 matrix (the Jacobian)....tbc
 .
  
- References:
-   (1) http://web.media.mit.edu/~crtaylor/calculator.html  
-   (2) https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences   */
+References:
+  (1) http://web.media.mit.edu/~crtaylor/calculator.html  
+  (2) https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences   
+   
+ToDo:
+-add functions for directional derivative, divergence, curl, Laplacian
+ -Laplacian for scalar fields: sum of second partial derivatives
+
+   */
 
 template<class T>
 class rsNumericDifferentiator

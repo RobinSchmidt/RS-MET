@@ -278,12 +278,36 @@ static void hessian2(const F& f, T* x, int N, T* pH, const T* h, T k)
   // # evals: N * 4*N = 4*N^2
 }
 
+/*
+template<class F>
+static void partialDerivativesUpTo2(const F& f, T* x, int N, int n, const T h, 
+  T* f0, T* f1, T* f2)
+  */
+
+template<class T, class F>
+static T laplacian(const F& f, T* x, int N, const T* h)
+{
+  using NumDif = rsNumericDifferentiator<double>;
+  T f0, f1, f2;     // f0 and f1 are dummies
+  T sum = T(0);
+  for(int n = 0; n < N; n++)
+  {
+    NumDif::partialDerivativesUpTo2(f, x, N, n, h[n], &f0, &f1, &f2);
+    sum += f2;
+  }
+  return sum;
+  // 3*N evaluations
+}
+
 bool testNumericGradientAndHessian()
 {
   // Tests numeric gradient and Hessian matrix computation by comparing the results to analytically
   // computed ones.
 
   bool r = true;
+
+
+  int N = 3; // # dimension -> replace the magic number 3 in the code by N where appropriate
 
   // Our example is the trivariate scalar function:
   //   f(x,y,z) = x^2 * y^3 * z^4
@@ -338,7 +362,6 @@ bool testNumericGradientAndHessian()
   using Vec = std::vector<double>;
   using Mat = rsMatrix<double>;
   using NumDiff = rsNumericDifferentiator<double>;
-  //using ND  = rsNumericDifferentiator<double, double>;
 
   double hx = pow(2, -18);    // from 2^-18, maxErr in the gradient becomes 0
   double hy = hx/2;
@@ -382,6 +405,12 @@ bool testNumericGradientAndHessian()
   r &= maxErr < 0.004;  // it doesn't get any better by tweaking k - but maybe we could tweak
                         // the h-values as well...
 
+  // test Laplacian:
+  // ..it's sum of second derivatives: sum_i d2f/dxi2   i = 1,..,N
+  // so...it's actually the trace of the Hessian...
+  double L  = laplacian(f, &v[0], N, h);
+  double Ht = Ha.getTrace();
+  r &= L == Ht;
 
   // not a unit-test test - just trying to figure out what we get, when computing the Hessian times 
   // the coordinate unit vectors:
