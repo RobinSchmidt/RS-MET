@@ -1337,17 +1337,21 @@ T integrateSimpson(const std::function<T(T)>& f, T a, T b)
 // this doesn't semm to be much of an improvement over integrateTrapezoidal
 // try romberg integration and/or Ooura's routines: http://www.kurims.kyoto-u.ac.jp/~ooura/
 
-
+template<class F>
+double forwardDifference(const F& f, double x, double h)
+{
+  return (f(x+h) - f(x)) / h;
+}
 
 void numericDifferentiation()
 {
   // todo: plot accuracy of varoious approximation formulas as function of stepsize h...
 
   // h should scale like 2^k where k goes from , say -20 to -3
-  static const int kMin = -20;
-  static const int kMax =  -3;
+  static const int kMin = -25;
+  static const int kMax =   5;
   static const int numK = kMax - kMin + 1;
-  double x0 = 0.0;  // we compute the error at position x0 ..maybe compute at various positions
+  double x0 = 1.0;  // we compute the error at position x0 ..maybe compute at various positions
 
 
   //double xMin = 0.0;
@@ -1374,15 +1378,26 @@ void numericDifferentiation()
     h[i] = pow(2.0, k[i]);
     double t = cos(x0);                         // true derivative
     double a = NumDif::derivative(f, x0, h[i]); // actually computed numerical derivative
+
+    //a = forwardDifference(f, x0, h[i]);  // test
+
     err[i] = fabs(t-a);                         // error
     logErr[i] = rsLog2(err[i]);
     int dummy = 0;
   }
 
+  double a, b;
+  rsStatistics::linearRegression(numK, k, logErr, a, b);
+  // a is equal to 2 - i think, that's what "2nd order in h" means, todo: try it with a forward
+  // difference - this should be 1st order in h - a should come out as 1. then do it for the higher
+  // order formulas and also for the higher derivatives...
+
   //rsPlotArraysXY(numK, h, err);
   rsPlotArraysXY(numK, k, logErr); // a nice straight line, as expected
 
   // todo: estimate the exponent by fitting a line to logErr as function of k
+
+
 
   // figure out the range of k for which this rule holds - it will be bounded below by roundoff 
   // error becoming a problem and above by the fact that the sine is periodic - when h is equal to
@@ -1392,6 +1407,16 @@ void numericDifferentiation()
   // approximation is valid only in the neighborhood of x0, so we will be bounded above by the
   // approximation becoming invalid - what counts as neighbourhood depends on the x-scale of the 
   // function - for sin(2*x), a "neighborhood" will only be half as wide as for sin(x)
+
+  // Observations:
+  // -choosing the test point as x0 = 0, we get a nice straight line and the computed order is 2
+  //  even for the forward difference (may this have to do with the fact that sin(x) is symmetric
+  //  around 0?)
+  // -choosing a more general point such as x0 = 1, we see, that the accuracy is best at k = -17, 
+  //  the genral, straight-line rule hold from k = -16 upward
+  // -with x0 = 1, f = sin(x), plotting a range from k = -25..+5 shows, where the linear rule stops
+  //  to hold (namely, for k = -16...+1)...that it goes up so high is actually surprising - k=1, 
+  //  means h = 2, which seems way too large to count as neighborhood - what's going on?
 }
 
 void numericIntegration()
