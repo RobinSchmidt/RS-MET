@@ -1357,7 +1357,8 @@ void numericDifferentiation()
 
   double h[numK];
   double err[numK];
-
+  double k[numK];
+  double logErr[numK];
 
 
   // function to differentiate:
@@ -1369,18 +1370,28 @@ void numericDifferentiation()
   for(int i = 0; i < numK; i++)
   {
     //double h = pow(2, kMin + i);
-    h[i] = pow(2, kMin + i);
+    k[i] = kMin + i;
+    h[i] = pow(2.0, k[i]);
     double t = cos(x0);                         // true derivative
     double a = NumDif::derivative(f, x0, h[i]); // actually computed numerical derivative
     err[i] = fabs(t-a);                         // error
+    logErr[i] = rsLog2(err[i]);
     int dummy = 0;
   }
 
+  //rsPlotArraysXY(numK, h, err);
+  rsPlotArraysXY(numK, k, logErr); // a nice straight line, as expected
 
-  rsPlotArraysXY(numK, h, err);
+  // todo: estimate the exponent by fitting a line to logErr as function of k
 
-  // todo: do a log-log plot and estimate the exponent by fitting a line
-  // maybe record data log2(h) = k[i], log2(err)
+  // figure out the range of k for which this rule holds - it will be bounded below by roundoff 
+  // error becoming a problem and above by the fact that the sine is periodic - when h is equal to
+  // the period (or even just half of it) the derivative estimate will be zero even though the 
+  // correct value is 1 - but what, if the example function is exp instead of sin? will the rule
+  // then continue to hold with no upper limit (or well, overflow being the limit?), generally, the
+  // approximation is valid only in the neighborhood of x0, so we will be bounded above by the
+  // approximation becoming invalid - what counts as neighbourhood depends on the x-scale of the 
+  // function - for sin(2*x), a "neighborhood" will only be half as wide as for sin(x)
 }
 
 void numericIntegration()
