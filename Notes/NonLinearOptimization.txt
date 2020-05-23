@@ -103,6 +103,8 @@ call them x1,x2 - we get from the q' equation:
 ...or maybe we can reformulate it, such that we can use the simpler form q(x) = x*A*x + b*x + c but 
 here x is actually a dx vector?
   
+  
+https://www.geometrictools.com/Documentation/LeastSquaresFitting.pdf
 
 
 see:

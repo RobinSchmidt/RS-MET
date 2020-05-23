@@ -31,6 +31,10 @@ void rsNumericDifferentiator<T>::hessian(const F& f, T* x, int N, T* pH, const T
       x[j] = tj; }}
 
   // # evaluations: 1 + 2*N + 4*(N^2-N)/2 = 2*N^2 + 1
+  // maybe return that number - maybe that should all functions do - that information can be used
+  // in higher-level algorithms such as those for numerical minimization when they use these 
+  // functions from here - because in these, we are really interested in that number to assess 
+  // their efficiency
 
   // The formula for the diagonal elements is just the regular central difference for a 2nd 
   // derivative for one coordinate at a time. The formula for the off-diagonal elements was derived

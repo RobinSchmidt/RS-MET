@@ -2528,19 +2528,12 @@ int minimizeNewton(const F& f, T* x, int N, const T* h, T tol)
   using NumDif = rsNumericDifferentiator<T>;
   using Vec    = std::vector<T>;
   using AT     = rsArrayTools;
-
-  bool converged = false;
-  int evals = 0;
-
-  rsMatrix<T> g(N, 1); T* pg = g.getDataPointer(); // gradient 
   rsMatrix<T> H(N, N); T* pH = H.getDataPointer(); // Hessian 
+  rsMatrix<T> g(N, 1); T* pg = g.getDataPointer(); // gradient 
   rsMatrix<T> d(N, 1); T* pd = d.getDataPointer(); // update vector "delta-x"
   rsMatrix<T> X(N, 1); T *pX = X.getDataPointer(); // temporary vector for tentative new x
-
-
-  T fOld = f(x); evals += 1;// value f(x)
-  T fNew;
-
+  T fNew; T fOld = f(x); int evals = 1;            // old and new value of f(x), # evaluations
+  bool converged = false;
   while(!converged)
   {
     // compute gradient and Hessian at current position x:

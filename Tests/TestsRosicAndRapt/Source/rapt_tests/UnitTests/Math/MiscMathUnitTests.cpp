@@ -262,6 +262,9 @@ bool testNumDiffStencils()
   // todo: try some weird stencils (asymmetric and/or non-equidistant, even  number of points,...)
 }
 
+
+
+
 bool testNumericGradientAndHessian()
 {
   // Tests numeric gradient and Hessian matrix computation by comparing the results to analytically
@@ -365,6 +368,23 @@ bool testNumericGradientAndHessian()
   maxErr = rsMaxAbs(Hwa-Hwn);
   r &= maxErr < 0.004;  // it doesn't get any better by tweaking k - but maybe we could tweak
                         // the h-values as well...
+
+
+  // not a unit-test test - just trying to figure out what we get, when computing the Hessian times 
+  // the coordinate unit vectors:
+  w = Vec({1,0,0}); NumDiff::hessianTimesVector(f, &v[0], &w[0], 3, &Hwn[0], h, k);
+  w = Vec({0,1,0}); NumDiff::hessianTimesVector(f, &v[0], &w[0], 3, &Hwn[0], h, k);
+  w = Vec({0,0,1}); NumDiff::hessianTimesVector(f, &v[0], &w[0], 3, &Hwn[0], h, k);
+  // ...when w is the i-th unit vector, we get the i-th row (or column) of the Hessian, so
+  // maybe another way to numerically approximate the Hessian is to use hessianTimesVector with
+  // the N coordinate basis vectors? maybe the H(i,j) element of the Hessian says how much the i-th
+  // component of the gradient changes when wiggling the j-th coordinate? or vice versa? it 
+  // shouldn't make a difference because the Hessian is symmetric - but why would the j-th gradient
+  // element g[i] change by the same same amount when wiggling x[i] as the g[j] when wiggling x[j]
+  // ...intutively, these seem to be unrelated quantities -> figure out!
+  // ....and implement another algorithm to estimate the Hessian baseed on the above observation 
+  // and compare it to the algo we already have in terms off accuracy and number of function 
+  // evaluations
 
   return r;
 }

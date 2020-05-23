@@ -88,6 +88,8 @@ public:
   // minus 1. ...as said - i'm not totally sure about this - this needs to be verified...
   // ...seems like in the odd derivative formulas, the middle coeff always comes out as zero, 
   // which makes sense
+  // make numerical experiments: plot approximation error of the various derivatives and formulas 
+  // as function of h (maybe using a log-log scale)
 
   
   /** Numeric approximation of the third derivative using 4 evaluations of f. 3rd order accurate 

@@ -28,6 +28,7 @@ void hyperbolicFunctions();
 void splineInterpolationNonEquidistant();
 void rationalInterpolation();
 void splineInterpolationAreaNormalized();
+void numericDifferentiation();
 void numericIntegration();
 void numericDiffAndInt();  // 
 void iteratedNumDiff();

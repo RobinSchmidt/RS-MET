@@ -1338,6 +1338,14 @@ T integrateSimpson(const std::function<T(T)>& f, T a, T b)
 // try romberg integration and/or Ooura's routines: http://www.kurims.kyoto-u.ac.jp/~ooura/
 
 
+
+void numericDifferentiation()
+{
+  // todo: plot accuracy of varoious approximation formulas as function of stepsize h...
+
+  int dummy = 0;
+}
+
 void numericIntegration()
 {
   std::function<double(double)> f;

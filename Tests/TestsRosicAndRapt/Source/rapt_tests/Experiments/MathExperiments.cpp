@@ -1688,9 +1688,10 @@ bool testNumericMinimization()
     // minimum: (a,a^2)
   };
   v = Vec({-3,-4});
-  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-12); // 32344
-  y = f(&x[0]);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-12);  y = f(&x[0]); // 32344
 
+  //x = v; evals = minimizeNewton(f, &x[0], N, h, tol); y = f(&x[0]);
+  // doesn't converge - wildly jumps around in the parameter space
 
 
   // other test functions to try:
