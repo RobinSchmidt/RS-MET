@@ -420,7 +420,7 @@ bool testNumericGradientAndHessian()
   return r;
 }
 
-
+/*
 template<class T, class F>
 static T divergence(const F& f, T* x, const T* h)
 {
@@ -433,6 +433,7 @@ static T divergence(const F& f, T* x, const T* h)
   }
   return sum;
 }
+*/
 
 
 // rename to testVectorFieldDerivatives
@@ -494,11 +495,18 @@ bool testNumericJacobian()
   // divergence is the sum of the diagonal elements of the jacobian...hmm...i think, it applies 
   // only to the M==N case - maybe just throw away the 3rd function..
   f.resize(2);  // now we have a 2D -> 2D vector field
-  double div = divergence(f, &v[0], h);
+  double div = NumDif::divergence(f, &v[0], h);
   double divTrue = Ja(0,0) + Ja(1,1); // mayb truncate the Jacobian - can we just Ja.setSize?
   r &= div == divTrue;
 
-
+  // curl may not really make sense in general nD space - it's a 3D-specific thing. 2D curl is
+  // sometimes used as a scalar...but in general? see:
+  // https://en.wikipedia.org/wiki/Curl_(mathematics)#Generalizations
+  // ...hey!, it seems, in general, the curl is an antisymmetric matrix - this makes sense: 2D
+  // antisymmetric matrices have just 1 independent element, so can be represented by a scalar,
+  // 3D antisymmetric matrices have 3 independent elements, so can be represented by a 3D vector
+  // ...so, the element C(i,j) of a curl matrix is dfi/dxj - dfj/dxi? is that correct? or the
+  // other way around?
 
   return r;
 }

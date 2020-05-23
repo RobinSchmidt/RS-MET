@@ -295,6 +295,23 @@ public:
       gradient(f[m], x, N, &J[m*N], &h[m*N]);
   }
 
+  /** Computes the divergence of the vector field f. This operation makes only sense for functions
+  where the input dimensionality matches the output dimensionality. In this case, it's actually the 
+  trace of the Jacobian matrix (which is a square matrix, in this case), i.e. the sum over i of the 
+  partial derivatives of the i-th function with respect to the i-th variable. So, you don't have to
+  specify the number input dimensions via an N parameter - N is infered from the dimensionality 
+  of the function array f: N must be equal to M, which is the output dimensionality (i.e. size of 
+  f). You should, of course, make sure that x (and h) are indeed M-dimensional. */
+  template<class FuncArray>
+  static T divergence(const FuncArray& f, T* x, const T* h)
+  {
+    int N = (int) f.size();  // maybe rename to M for consistent notation
+    T sum = T(0);
+    for(int n = 0; n < N; n++)
+      sum += partialDerivative(f[n], x, N, n, h[n]);
+    return sum;
+  }
+
   // what about divergence, curl and Laplacian?
 
   //-----------------------------------------------------------------------------------------------
