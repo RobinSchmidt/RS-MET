@@ -429,7 +429,6 @@ static void curl(const F& f, T* x, T* pC, const T* h)
 
   int N = (int) f.size();
   rsMatrixView<T> C(N, N, pC);
-  //rsMatrix<T> C(N, N);
 
   // temporarily use the diagonal elements of C for the partial derivatives:
   for(int n = 0; n < N; n++)
@@ -440,13 +439,34 @@ static void curl(const F& f, T* x, T* pC, const T* h)
   {
     for(int j = i+1; j < N; j++)
     {
-      //T Ci = C(i,i);
-      //T Cj = C(j,j);
-      T Cij = C(i, i) - C(j, j);  // or the other way around?
+      //T Cij = C(i, i) - C(j, j);  // or the other way around?
+      T Cij = C(j, j) - C(i, i);
       C(i, j) =  Cij,
       C(j, i) = -Cij;
     }
   }
+  // whether we use C(i,j) = C(i,i) - C(j,j) or C(j,j) - C(i,i) depends on the convention which
+  // half of the matrix we want to translate to the actual curl scalar (in 2D) or vector (in 3D)
+  // if it should be th top-right half, we should use C(j,j) - C(i,i), but is that correct? are 
+  // there standard conventions for this?
+  // see:
+  // https://math.stackexchange.com/questions/1802917/question-regarding-curl-in-dimensions-higher-than-3
+  // https://math.stackexchange.com/questions/337971/can-the-curl-operator-be-generalized-to-non-3d
+  // https://mathoverflow.net/questions/52829/generalization-of-curl-to-higher-dimensions
+  // https://math.stackexchange.com/questions/2173860/n-dimensional-generalization-of-vector-curl-from-elements-of-jacobian
+
+  // maybe i should also look for nD generalizations of the cross product - can we define curl in 
+  // terms of a matrix product or a sandwich of two vectors with a matrix in between? maybe the
+  // vector f of functions sandwiched with a matrix of derivative operators?
+
+  // Consider the product of the matrix of partial derivative operators and a vector of 3 
+  // functions:
+  // |  0    -d/dz   d/dy|   |fx|   |dfz/dy - dfy/dz|
+  // | d/dz    0    -d/dx| * |fy| = |dfx/dz - dfz/dx|
+  // |-d/dx   d/dy    0  |   |fz|   |dfy/dx - dfx/dy|
+  // so it seems with a checkerboard pattern of signs, we reproduce the 3D curl 
+  // ...maybe we whould use (-1)^(i+j) * (C(i, i) - C(j, j))  or something?
+  // ...more research needed - curl computation is not yet ready for the library...
 
   // diagonal elements are all zero:
   for(int n = 0; n < N; n++)
@@ -528,6 +548,7 @@ bool testNumericJacobian()
 
   Mat C(N,N);
   curl(f, &v[0], C.getDataPointer(), h);
+  double c = Ja(1,0) - Ja(0,1);  // df2/dx - df1/dy
   // ok - it's anti-symmetric - figure out, if the signs are right
 
   return r;

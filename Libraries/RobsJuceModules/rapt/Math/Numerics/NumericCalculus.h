@@ -312,8 +312,6 @@ public:
     return sum;
   }
 
-  // what about divergence, curl and Laplacian?
-
   //-----------------------------------------------------------------------------------------------
   // \name Data derivatives
 
