@@ -1351,7 +1351,11 @@ void numericDifferentiation()
   static const int kMin = -25;
   static const int kMax =   5;
   static const int numK = kMax - kMin + 1;
-  double x0 = 1.0;  // we compute the error at position x0 ..maybe compute at various positions
+
+  double x0 = 1.0;  
+  // we compute the error at position x0 ..maybe compute at various positions and average? 
+  // x0 = 1 seems to be a good choice for a "general" point of the sine function (no symmetries 
+  // around or near it)
 
 
   //double xMin = 0.0;
@@ -1413,7 +1417,7 @@ void numericDifferentiation()
   //  even for the forward difference (may this have to do with the fact that sin(x) is symmetric
   //  around 0?)
   // -choosing a more general point such as x0 = 1, we see, that the accuracy is best at k = -17, 
-  //  the genral, straight-line rule hold from k = -16 upward
+  //  the genral, straight-line rule holds from k = -16 upward
   // -with x0 = 1, f = sin(x), plotting a range from k = -25..+5 shows, where the linear rule stops
   //  to hold (namely, for k = -16...+1)...that it goes up so high is actually surprising - k=1, 
   //  means h = 2, which seems way too large to count as neighborhood - what's going on?

@@ -262,8 +262,29 @@ bool testNumDiffStencils()
   // todo: try some weird stencils (asymmetric and/or non-equidistant, even  number of points,...)
 }
 
+// maybe move to ScratchPad or Prototypes
+template<class T, class F>
+static void hessian2(const F& f, T* x, int N, T* pH, const T* h, T k)
+{
+  using Vec = std::vector<double>;
+  using NumDiff = rsNumericDifferentiator<double>;
 
+  Vec wrk(2*N);
+  Vec e(N);  // should we init this with zeros or can we rely on being initialized?
+             // todo: use a length N segement of the workspace which should then be of length 3N
+  for(int n = 0; n < N; n++)
+  {
+    e[n] = 1;
+    NumDiff::hessianTimesVector(f, x, &e[0], N, &pH[N*n], h, k, &wrk[0]);
+    e[n] = 0;
+  }
 
+  // # evals: N * 4*N = 4*N^2
+
+  int dummy = 0;
+}
+// compute Hessian using NumDiff::hessianTimesVector - for each unit vector, we compute one row
+// of the Hessian.
 
 bool testNumericGradientAndHessian()
 {
@@ -385,6 +406,9 @@ bool testNumericGradientAndHessian()
   // ....and implement another algorithm to estimate the Hessian baseed on the above observation 
   // and compare it to the algo we already have in terms off accuracy and number of function 
   // evaluations
+
+  hessian2(f, &v[0], 3, Hn.getDataPointer(), h, k);
+  // the 6th value changes a bit (i.e. gets less accurate)
 
   return r;
 }
