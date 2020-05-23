@@ -255,8 +255,12 @@ public:
       Hv[n] = (gp[n] - gm[n]) / (2*k);     // Hv ~= (grad(x+k*v) - grad(x-k*v)) / (2*k)
   }
 
-  // todo: compute numeric Jacobians
+  // todo: compute numeric Jacobians - but how should the API for this look like? should f be a 
+  // function that takes pointers to two arrays - one for the input and one for the output vector?
+  // or should f be a (const reference to a) sort of array-of-functors (like std::vector or 
+  // anything that implements the [] indexing operator)? hmm..i think, the 2nd approach is better
 
+  // and what about divergence, curl and Laplacian?
 
   //-----------------------------------------------------------------------------------------------
   // \name Data derivatives

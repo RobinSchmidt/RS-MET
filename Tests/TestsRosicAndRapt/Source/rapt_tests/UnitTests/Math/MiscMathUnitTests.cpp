@@ -411,6 +411,62 @@ bool testNumericGradientAndHessian()
   return r;
 }
 
+
+template<class T, class F>
+static void jacobian(const F& f, T* x, int N, T* pJ, const T* h)
+{
+  using NumDif = rsNumericDifferentiator<T>;
+  int M = (int) f.size();  // number of outputs, maybe use rsSize
+  for(int m = 0; m < M; m++)
+    NumDif::gradient(f[m], x, N, &pJ[m*N], h);
+}
+
+bool testNumericJacobian()
+{
+  bool r = true;
+
+  // create a function from R^2 to R^3, i.e. a parametric surface
+
+  using Func = std::function<double(double*)>;
+
+  int N = 2;  // number of input dimensions
+  int M = 3;
+
+  Func f1 = [=](double* v)->double   // what if we use auto?
+  { 
+    double x = v[0], y = v[1];
+    return x*x * y*y*y; 
+  };
+
+  Func f2 = [=](double* v)->double
+  { 
+    double x = v[0], y = v[1];
+    return 2*x*x*x * 3*y*y; 
+  };
+
+  Func f3 = [=](double* v)->double
+  { 
+    double x = v[0], y = v[1];
+    return x*x * y*y - 2*x*y; 
+  };
+
+  std::vector<Func> f({f1,f2,f3});
+
+  rsMatrix<double> J(3, 2);
+  double *pJ = J.getDataPointer();
+
+  std::vector<double> x({1,2,3});
+
+  double hx = pow(2, -18);    // from 2^-18, maxErr in the gradient becomes 0
+  double hy = hx/2;
+  double hz = hx/4;
+  double h[3] = {hx, hy, hz};  // h as array
+
+  jacobian(f, &x[0], N, pJ, h);
+
+  return r;
+}
+
 bool testMultiLayerPerceptronOld(std::string &reportString)
 {
   std::string testName = "MultiLayerPerceptron";
@@ -613,6 +669,7 @@ bool testMiscMath()
   testResult &= testPhaseUnwrapStuff(         dummy);
   testResult &= testNumDiffStencils();
   testResult &= testNumericGradientAndHessian();
+  testResult &= testNumericJacobian();
   //testResult &= testNumericMinimization();  // has been moved to experiments
 
   //testResult &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
