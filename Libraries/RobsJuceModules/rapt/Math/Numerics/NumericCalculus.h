@@ -258,23 +258,21 @@ public:
   /** Computes the Jacobian matrix of a function with multiple inputs and multiple outputs and 
   stores the result in J, which must be a pointer to the data-array of an MxN matrix in row-major
   storage (e.g. rsMatrix), where M is the number of output dimensions and N is the number of input
-  dimensions. In this case, F must be an array of function objects. The type must have a size() 
+  dimensions. The type FuncArray must be an array of function objects. The type must have a size() 
   function that returns the number of functions and an indexing operator [] that returns a 
-  reference to the i-th function. A std::vector<std::function<T(T*)>> will do the job. The 
-  element J(i,j) of the Jacobian matrix J is the partial derivative of the i-th function with 
-  respect to the j-th variable. The i-th row of the matrix J is the gradient of the i-th 
-  function. It uses 2*N function evaluations for each of the M functions. */
-  template<class F>
-  static void jacobian(const F& f, T* x, int N, T* J, const T* h)
+  reference to the i-th function. A std::vector<std::function<T(T*)>> will do the job. The array
+  of approximation step-sizes h must also be an MxN matrix - each partial derivative of each 
+  component function may use its own approximation stepsize. The element J(i,j) of the Jacobian 
+  matrix J is the partial derivative of the i-th function with respect to the j-th variable. The 
+  i-th row of the matrix J is the gradient of the i-th function. It uses 2*N function evaluations 
+  for each of the M functions. */
+  template<class FuncArray>
+  static void jacobian(const FuncArray& f, T* x, int N, T* J, const T* h)
   {
     int M = (int) f.size();        // number of outputs
     for(int m = 0; m < M; m++)
-      gradient(f[m], x, N, &J[m*N], h);
+      gradient(f[m], x, N, &J[m*N], &h[m*N]);
   }
-  // possible problem: all M functions use the same set of approximation stepsizes h - that may be
-  // undesirable, especially, if the different functions have very different scalings in their 
-  // inputs - todo: let the user pass a matrix of step-sizes - pass &h[m*N] instead of h to 
-  // gradient
 
   // what about divergence, curl and Laplacian?
 

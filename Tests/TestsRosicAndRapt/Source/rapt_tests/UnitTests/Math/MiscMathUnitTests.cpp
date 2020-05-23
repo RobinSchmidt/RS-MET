@@ -444,7 +444,8 @@ bool testNumericJacobian()
   double hx = pow(2, -18);    // from 2^-18, maxErr in the gradient becomes 0
   double hy = hx/2;
   double hz = hx/4;
-  double h[3] = {hx, hy, hz};  // h as array
+  double h[9] = {hx, hy, hz, hx, hy, hz, hx, hy, hz};  // h as matrix
+
 
   // Our example functions are:
   //   f1(x,y) =   x^2 *   y^3
