@@ -278,27 +278,7 @@ static void hessian2(const F& f, T* x, int N, T* pH, const T* h, T k)
   // # evals: N * 4*N = 4*N^2
 }
 
-/*
-template<class F>
-static void partialDerivativesUpTo2(const F& f, T* x, int N, int n, const T h, 
-  T* f0, T* f1, T* f2)
-  */
-
-template<class T, class F>
-static T laplacian(const F& f, T* x, int N, const T* h)
-{
-  using NumDif = rsNumericDifferentiator<double>;
-  T f0, f1, f2;     // f0 and f1 are dummies
-  T sum = T(0);
-  for(int n = 0; n < N; n++)
-  {
-    NumDif::partialDerivativesUpTo2(f, x, N, n, h[n], &f0, &f1, &f2);
-    sum += f2;
-  }
-  return sum;
-  // 3*N evaluations
-}
-
+// rename to testScalarFieldDerivatives
 bool testNumericGradientAndHessian()
 {
   // Tests numeric gradient and Hessian matrix computation by comparing the results to analytically
@@ -408,7 +388,7 @@ bool testNumericGradientAndHessian()
   // test Laplacian:
   // ..it's sum of second derivatives: sum_i d2f/dxi2   i = 1,..,N
   // so...it's actually the trace of the Hessian...
-  double L  = laplacian(f, &v[0], N, h);
+  double L  = NumDiff::laplacian(f, &v[0], N, h);
   double Ht = Ha.getTrace();
   r &= L == Ht;
 
@@ -440,6 +420,22 @@ bool testNumericGradientAndHessian()
   return r;
 }
 
+
+template<class T, class F>
+static T divergence(const F& f, T* x, const T* h)
+{
+  int N = (int) f.size();
+  T sum = 0;
+  for(int n = 0; n < N; n++)
+  {
+    T pd = rsNumericDifferentiator<T>::partialDerivative(f[n], x, N, n, h[n]);
+    sum += pd;
+  }
+  return sum;
+}
+
+
+// rename to testVectorFieldDerivatives
 bool testNumericJacobian()
 {
   bool r = true;
@@ -493,6 +489,16 @@ bool testNumericJacobian()
   NumDif::jacobian(f, &v[0], N, Jn.getDataPointer(), h);
   double maxErr = (Ja-Jn).getAbsoluteMaximum();
   r &= maxErr == 0.0;
+
+
+  // divergence is the sum of the diagonal elements of the jacobian...hmm...i think, it applies 
+  // only to the M==N case - maybe just throw away the 3rd function..
+  f.resize(2);  // now we have a 2D -> 2D vector field
+  double div = divergence(f, &v[0], h);
+  double divTrue = Ja(0,0) + Ja(1,1); // mayb truncate the Jacobian - can we just Ja.setSize?
+  r &= div == divTrue;
+
+
 
   return r;
 }

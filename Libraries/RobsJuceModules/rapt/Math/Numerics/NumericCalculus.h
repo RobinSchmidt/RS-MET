@@ -36,8 +36,7 @@ References:
   (2) https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences   
    
 ToDo:
--add functions for directional derivative, divergence, curl, Laplacian
- -Laplacian for scalar fields: sum of second partial derivatives
+-add functions for directional derivative, divergence, curl
 
    */
 
@@ -261,6 +260,21 @@ public:
     for(int n = 0; n < N; n++)
       Hv[n] = (gp[n] - gm[n]) / (2*k);     // Hv ~= (grad(x+k*v) - grad(x-k*v)) / (2*k)
   }
+
+  /** Computes the Laplacian operator of function f at input x. This is the sum of the non-mixed
+  second partial derivatives, i.e. the sum of the diagonal elements (trace) of the Hessian 
+  matrix. Requires 3*N evaluations of f. */
+  template<class F>
+  static T laplacian(const F& f, T* x, int N, const T* h)
+  {
+    T f0, f1, f2;     // f0 and f1 are dummies
+    T sum = T(0);
+    for(int n = 0; n < N; n++) {
+      partialDerivativesUpTo2(f, x, N, n, h[n], &f0, &f1, &f2);
+      sum += f2; }
+    return sum;
+  }
+
 
   /** Computes the Jacobian matrix of a function with multiple inputs and multiple outputs and 
   stores the result in J, which must be a pointer to the data-array of an MxN matrix in row-major
