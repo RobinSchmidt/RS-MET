@@ -416,11 +416,12 @@ template<class T, class F>
 static void jacobian(const F& f, T* x, int N, T* pJ, const T* h)
 {
   using NumDif = rsNumericDifferentiator<T>;
-  int M = (int) f.size();  // number of outputs, maybe use rsSize
+  int M = (int) f.size();  // number of outputs
   for(int m = 0; m < M; m++)
     NumDif::gradient(f[m], x, N, &pJ[m*N], h);
 }
-// is this the actual jacobian or the transposed jacobian?
+// is this the actual jacobian or the transposed jacobian - it's the actual:
+// https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant
 
 bool testNumericJacobian()
 {
@@ -428,11 +429,12 @@ bool testNumericJacobian()
 
   // create a function from R^2 to R^3, i.e. a parametric surface
 
-  using Func = std::function<double(double*)>;
-  using Mat   = rsMatrix<double>;
+  using Func   = std::function<double(double*)>;
+  using Mat    = rsMatrix<double>;
+  using NumDif = rsNumericDifferentiator<double>;
 
   int N = 2;  // number of input dimensions
-  int M = 3;
+  int M = 3;  // number of output dimensions
 
   // input vector:
   double x = 7, y = 5;
@@ -456,7 +458,7 @@ bool testNumericJacobian()
   Func f2 = [=](double* v)->double { double x = v[0], y = v[1]; return 2*x*x*x * 3*y*y;   };
   Func f3 = [=](double* v)->double { double x = v[0], y = v[1]; return x*x * y*y - 2*x*y; };
   std::vector<Func> f({f1,f2,f3});  // array/vector of functors
-  Mat Ja(3, 2);                     // analytical Jacobian
+  Mat Ja(M, N);                     // analytical Jacobian
   Ja(0, 0) = 2*x * y*y*y; 
   Ja(0, 1) = x*x * 3*y*y;
   Ja(1, 0) = 6*x*x * 3*y*y;
@@ -466,9 +468,9 @@ bool testNumericJacobian()
   // what if we use auto instead of Func for f1,f2,f3?
 
   // Compute numerical Jacobian and compare with analytic result:
-  Mat Jn(3, 2);  
+  Mat Jn(M, N);  
   double *pJ = Jn.getDataPointer();
-  jacobian(f, &v[0], N, pJ, h);
+  NumDif::jacobian(f, &v[0], N, pJ, h);
   Mat Je = Ja - Jn;  // error matrix
   double maxErr = Je.getAbsoluteMaximum();
   r &= maxErr == 0.0;

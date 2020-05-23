@@ -255,12 +255,28 @@ public:
       Hv[n] = (gp[n] - gm[n]) / (2*k);     // Hv ~= (grad(x+k*v) - grad(x-k*v)) / (2*k)
   }
 
-  // todo: compute numeric Jacobians - but how should the API for this look like? should f be a 
-  // function that takes pointers to two arrays - one for the input and one for the output vector?
-  // or should f be a (const reference to a) sort of array-of-functors (like std::vector or 
-  // anything that implements the [] indexing operator)? hmm..i think, the 2nd approach is better
+  /** Computes the Jacobian matrix of a function with multiple inputs and multiple outputs and 
+  stores the result in J, which must be a pointer to the data-array of an MxN matrix in row-major
+  storage (e.g. rsMatrix), where M is the number of output dimensions and N is the number of input
+  dimensions. In this case, F must be an array of function objects. The type must have a size() 
+  function that returns the number of functions and an indexing operator [] that returns a 
+  reference to the i-th function. A std::vector<std::function<T(T*)>> will do the job. The 
+  element J(i,j) of the Jacobian matrix J is the partial derivative of the i-th function with 
+  respect to the j-th variable. The i-th row of the matrix J is the gradient of the i-th 
+  function. It uses 2*N function evaluations for each of the M functions. */
+  template<class F>
+  static void jacobian(const F& f, T* x, int N, T* J, const T* h)
+  {
+    int M = (int) f.size();        // number of outputs
+    for(int m = 0; m < M; m++)
+      gradient(f[m], x, N, &J[m*N], h);
+  }
+  // possible problem: all M functions use the same set of approximation stepsizes h - that may be
+  // undesirable, especially, if the different functions have very different scalings in their 
+  // inputs - todo: let the user pass a matrix of step-sizes - pass &h[m*N] instead of h to 
+  // gradient
 
-  // and what about divergence, curl and Laplacian?
+  // what about divergence, curl and Laplacian?
 
   //-----------------------------------------------------------------------------------------------
   // \name Data derivatives
