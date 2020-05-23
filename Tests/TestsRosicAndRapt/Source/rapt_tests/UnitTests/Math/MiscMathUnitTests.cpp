@@ -411,23 +411,12 @@ bool testNumericGradientAndHessian()
   return r;
 }
 
-
-template<class T, class F>
-static void jacobian(const F& f, T* x, int N, T* pJ, const T* h)
-{
-  using NumDif = rsNumericDifferentiator<T>;
-  int M = (int) f.size();  // number of outputs
-  for(int m = 0; m < M; m++)
-    NumDif::gradient(f[m], x, N, &pJ[m*N], h);
-}
-// is this the actual jacobian or the transposed jacobian - it's the actual:
-// https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant
-
 bool testNumericJacobian()
 {
   bool r = true;
 
-  // create a function from R^2 to R^3, i.e. a parametric surface
+  // We use a function from R^2 to R^3, i.e. a parametric 2D surface in 3D space, to test the 
+  // numerical approximation of Jacobian matrices...
 
   using Func   = std::function<double(double*)>;
   using Mat    = rsMatrix<double>;
@@ -437,7 +426,7 @@ bool testNumericJacobian()
   int M = 3;  // number of output dimensions
 
   // input vector:
-  double x = 7, y = 5;
+  double x = 7, y = 5; 
   std::vector<double> v({x,y});
 
   // approximation stepsizes:
@@ -445,7 +434,6 @@ bool testNumericJacobian()
   double hy = hx/2;
   double hz = hx/4;
   double h[9] = {hx, hy, hz, hx, hy, hz, hx, hy, hz};  // h as matrix
-
 
   // Our example functions are:
   //   f1(x,y) =   x^2 *   y^3
@@ -455,9 +443,9 @@ bool testNumericJacobian()
   //   df1/dx = 2*x   *   y^3      df1/dy = x^2   * 3*y^2
   //   df2/dx = 6*x^2 * 3*y^2      df2/dy = 2*x^3 * 6*y
   //   df3/dx = 2*x * y^2 - 2*y    df3/dy = x^2 * 2*y - 2*x
-  Func f1 = [=](double* v)->double { double x = v[0], y = v[1]; return x*x     * y*y*y;   };
-  Func f2 = [=](double* v)->double { double x = v[0], y = v[1]; return 2*x*x*x * 3*y*y;   };
-  Func f3 = [=](double* v)->double { double x = v[0], y = v[1]; return x*x * y*y - 2*x*y; };
+  auto f1 = [=](double* v)->double { double x = v[0], y = v[1]; return x*x     * y*y*y;   };
+  auto f2 = [=](double* v)->double { double x = v[0], y = v[1]; return 2*x*x*x * 3*y*y;   };
+  auto f3 = [=](double* v)->double { double x = v[0], y = v[1]; return x*x * y*y - 2*x*y; };
   std::vector<Func> f({f1,f2,f3});  // array/vector of functors
   Mat Ja(M, N);                     // analytical Jacobian
   Ja(0, 0) = 2*x * y*y*y; 
@@ -466,14 +454,15 @@ bool testNumericJacobian()
   Ja(1, 1) = 2*x*x*x * 6*y;
   Ja(2, 0) = 2*x * y*y - 2*y;
   Ja(2, 1) = x*x * 2*y - 2*x;
-  // what if we use auto instead of Func for f1,f2,f3?
+  // It's nice that we can use auto for the lambda functions - formerly, i used Func in the 
+  // declarations of f1,f2,f3, but it seems that the raw lambdas can be wrapped into 
+  // std::functions when we create the vector. I think, a lambda implicitly converts to a 
+  // std::function or something?
 
   // Compute numerical Jacobian and compare with analytic result:
   Mat Jn(M, N);  
-  double *pJ = Jn.getDataPointer();
-  NumDif::jacobian(f, &v[0], N, pJ, h);
-  Mat Je = Ja - Jn;  // error matrix
-  double maxErr = Je.getAbsoluteMaximum();
+  NumDif::jacobian(f, &v[0], N, Jn.getDataPointer(), h);
+  double maxErr = (Ja-Jn).getAbsoluteMaximum();
   r &= maxErr == 0.0;
 
   return r;

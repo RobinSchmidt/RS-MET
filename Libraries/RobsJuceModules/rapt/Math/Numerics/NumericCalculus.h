@@ -218,9 +218,10 @@ public:
   // the gradient with a given vector (but that vector should be normalized to length 1, i think)
 
   /** Computes a numerical approximation of the Hessian matrix of the function f at the given 
-  N-dimensional position vector x and writes the result int H which should be a pointer to the flat 
-  data array of an a NxN matrix. The usage is similar to gradient. This function has 2*N^2 + 1 
-  function evaluations of f. */
+  N-dimensional position vector x and writes the result into H which should be a pointer to the 
+  flat data storage array of an a NxN matrix type, e.g. rsMatrix. Because of the symmetry of the 
+  Hessian, it doesn't matter, if the matrix data is stored in row-major or column-major order. 
+  The usage is similar to gradient. This function has 2*N^2 + 1 function evaluations of f. */
   template<class F>
   static void hessian(const F& f, T* x, int N, T* H, const T* h);
   // The Hessian matrix measures, how fast the gradient changes, when moving in a particular 

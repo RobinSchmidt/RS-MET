@@ -1345,7 +1345,29 @@ double forwardDifference(const F& f, double x, double h)
 
 void numericDifferentiation()
 {
-  // todo: plot accuracy of varoious approximation formulas as function of stepsize h...
+  // When using numerical differentiation formulas, there are two sources of error: the error 
+  // coming from the approximation itself and the roundoff error due to finite precision 
+  // arithmetic. The first error decreases with decreasing approximation stepsize h, whereas the 
+  // second increases with decreasing stepsize (with smaller h we tend subtract very close numbers,
+  // in the formulas leading to cancellation of significant digits), so there will be a sweet spot
+  // for h, where the accuracy of a given formula is best. Where that sweet spot is depends on the
+  // x-scale of the function: for sin(2*x) we will have to choose a h of half the size compared to
+  // sin(x) (..verify). In the range, where the finite precision effects are not yet severe, we 
+  // observe an error increase with increasing h that follows a power rule, i.e. the error 
+  // increases with h^n for some exponent n. In a 2nd order accurate formula, n=2, for example. 
+  // Also, when h becomes too large, the power law ceases to hold because we are then not really 
+  // in the neighbourhood of our evaulation point anymore, so the whole idea of approximating 
+  // tangents by secants and stuff like that becomes invalid.
+
+  // In this experiment, we investigate the behavior the error of the numerically computed 
+  // derivative as function of the stepsize h.
+  // todo: 
+  // -investigate the optimal choice of h as function of the x-scaling of the function - i 
+  //  expect inverse proportionality
+  // -check various formulas - currently, we only look at the basic central difference formula
+  //  -> we should see different slopes of the lines in the log-log plot of the error for the
+  //     different formulas
+
 
   // h should scale like 2^k where k goes from , say -20 to -3
   static const int kMin = -25;
