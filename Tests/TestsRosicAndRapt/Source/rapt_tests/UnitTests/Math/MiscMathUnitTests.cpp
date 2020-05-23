@@ -420,20 +420,38 @@ bool testNumericGradientAndHessian()
   return r;
 }
 
-/*
+
+
 template<class T, class F>
-static T divergence(const F& f, T* x, const T* h)
+static void curl(const F& f, T* x, T* pC, const T* h)
 {
+  using NumDif = rsNumericDifferentiator<T>;
+
   int N = (int) f.size();
-  T sum = 0;
+  rsMatrixView<T> C(N, N, pC);
+  //rsMatrix<T> C(N, N);
+
+  // temporarily use the diagonal elements of C for the partial derivatives:
   for(int n = 0; n < N; n++)
+    C(n, n) = NumDif::partialDerivative(f[n], x, N, n, h[n]);
+
+  // compute differences and put them into the off-diagonal elements:
+  for(int i = 0; i < N; i++)
   {
-    T pd = rsNumericDifferentiator<T>::partialDerivative(f[n], x, N, n, h[n]);
-    sum += pd;
+    for(int j = i+1; j < N; j++)
+    {
+      //T Ci = C(i,i);
+      //T Cj = C(j,j);
+      T Cij = C(i, i) - C(j, j);  // or the other way around?
+      C(i, j) =  Cij,
+      C(j, i) = -Cij;
+    }
   }
-  return sum;
+
+  // diagonal elements are all zero:
+  for(int n = 0; n < N; n++)
+    C(n, n) = T(0);
 }
-*/
 
 
 // rename to testVectorFieldDerivatives
@@ -507,6 +525,10 @@ bool testNumericJacobian()
   // 3D antisymmetric matrices have 3 independent elements, so can be represented by a 3D vector
   // ...so, the element C(i,j) of a curl matrix is dfi/dxj - dfj/dxi? is that correct? or the
   // other way around?
+
+  Mat C(N,N);
+  curl(f, &v[0], C.getDataPointer(), h);
+  // ok - it's anti-symmetric - figure out, if the signs are right
 
   return r;
 }
