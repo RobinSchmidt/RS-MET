@@ -114,7 +114,7 @@ void noise()
   // We generate noise with different distributions and plot the histograms...
   int numSamples = 100000;
   int numBins    = 50;
-  int order      = 5;  // 5 looks good and is not a power of 2 -> sweet spot
+  int order      = 3;  // 5 looks good and is not a power of 2 -> sweet spot
   // i think, powers of two are not good for the order because the reduce the period length
   // todo: compute formulas for the period length as function of the order - the underlying PRNG
   // has a period of 2^32, when the order K is a power of two, the resulting period will be 

@@ -2559,6 +2559,11 @@ int minimizeNewton(const F& f, T* x, int N, const T* h, T tol)
       // perhaps, we should also use a tentative X vector here and do an acceptance loop
       // maybe we should have a fallback to go a step along the negative gradient
     }
+    // maybe instead of just checking if fNew < fOld, we should predict the change in f with our
+    // quadratic approximation and compare that to the actual change - if it's too far off, it 
+    // means out approximation is not good and we should probably do a line search into the 
+    // gradient direction instead - the change can be up or down, though - depending on whether
+    // we are near a minimum or maximum
 
     if(rsAbs(fOld-fNew) < tol)
       converged = true;
@@ -2567,3 +2572,21 @@ int minimizeNewton(const F& f, T* x, int N, const T* h, T tol)
   return evals;
 }
 // it looks like it's about time to make a class rsMinimizer
+
+// Ideas:
+// Gradient descent makes larger steps at steep cliffs and smaller steps in shallow regions because
+// the length of the step is proportional to the norm of the gradient. That seems intuitively 
+// undesirable: into a direction where there is a steep decay, we may actually want to take a 
+// smaller step than into a direction where there's only a shallow decrease. Shouldn't we desire
+// the step-sizes along the various directions to be inversely proportional to the steepnesses 
+// along these directions? But near a minimum where the steepness goes to zero, the stepsize
+// would become infinite....hmmm...
+// take f(x,y) = x^2 + 100*y^2 -> fx(x,y) = 2*x, fy(x,y) = 200*y
+// at (x,y) = (2,2) - the gradient is (2*2,200*2) = (4,400) and we certainly don't want the y-step
+// to 100 times larger than the x-step - we actually want them to be the same - the ideal step 
+// would be given by the vector (-2,-2) which would let us jump into the minimum at (0,0)
+// ..maybe we should use the element-wise sign of the gradient, multiplied by a scalar stepsize?
+// this would make all the steps have the same length...maybe each direction should have its
+// own stepsize-scaler which increases when two successive steps have the same sign for that 
+// direction and decreases when they have opposite sign? i think, the effect would be similar to
+// using a smoothed gradient as in the "rolling ball" algorithm

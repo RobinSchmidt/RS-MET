@@ -14,6 +14,7 @@
 #include "Experiments/Experiments.h"
 
 #include "rosic_tests/UnitTestsRosic.h"
+using namespace rotes;
 
 
 #include "PerformanceTests/PerformanceTests.h"
@@ -111,7 +112,7 @@ int main(int argc, char* argv[])
   //gaussianRegression();
   //butterworthViaGaussians();
 
-  //numericOptimization();
+  numericOptimization();
 
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
@@ -244,7 +245,7 @@ int main(int argc, char* argv[])
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
 
-  numericDifferentiation();
+  //numericDifferentiation();
   //numericIntegration(); // a.k.a. numeric "quadrature"
   //numericDiffAndInt();  // numeric differentiation and integration - rename to nonUniformArrayDiffAndInt
 
@@ -581,7 +582,7 @@ int main(int argc, char* argv[])
 
   // Genrators:
   //testOscillatorStereo();
-  //testLorentzSystem();
+  //testLorentzSystem();  // it's written Lorenz - without the t
   //testSnowflake();
   //testResetter();
   //testTurtleReverse();

@@ -102,6 +102,12 @@ call them x1,x2 - we get from the q' equation:
   2*A*x2 + b - 2*a*A = g2
 ...or maybe we can reformulate it, such that we can use the simpler form q(x) = x*A*x + b*x + c but 
 here x is actually a dx vector?
+
+Maybe model cost as:
+  f(x) ~= f(x0) + q(x) where q(x) = f(x0) + x*A*x + b*x
+  f'(x) = 2*A*x + b = 0 -> H*x + b = 0 -> xNew = H^-1 * b
+but what should we use for x0? maybe the average off all current datapoints?
+x0 has to evaluated
   
   
 https://www.geometrictools.com/Documentation/LeastSquaresFitting.pdf

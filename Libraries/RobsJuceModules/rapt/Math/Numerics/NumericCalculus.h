@@ -33,12 +33,7 @@ matrix (the Jacobian)....tbc
  
 References:
   (1) http://web.media.mit.edu/~crtaylor/calculator.html  
-  (2) https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences   
-   
-ToDo:
--add functions for directional derivative, divergence, curl
-
-   */
+  (2) https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences    */
 
 template<class T>
 class rsNumericDifferentiator
@@ -47,7 +42,7 @@ class rsNumericDifferentiator
 public:
 
   //-----------------------------------------------------------------------------------------------
-  // \name Functor derivatives
+  // \name Functor derivatives for scalar functions
 
   /** Numeric approximation of the first derivative of function f at the value x with approximation
   step-size h. Uses a central difference with 2 evaluations of f and is 2nd order accurate in h. */
@@ -159,6 +154,8 @@ public:
   // todo: derivativesUpTo4 - this is as far as we may go with a 5-point stencil - for higher 
   // derivatives, we need more than 5 evaluation points
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Functor derivatives for scalar fields
 
   /** Computes the partial derivative of the multivariate (N inputs) scalar function f with respect 
   to the n-th coordinate. It requires 2 evaluations of f. It's a bit inelegant that we can't 
@@ -219,7 +216,8 @@ public:
   // derivativesUpTo2
   // The gradient gives the direction of steepest ascent of f and it's norm meausres, how fast f
   // would change when going along that direction
-  // maybe make a function for the directional derivative - this is just the scalar product of
+
+  // todo: make a function for the directional derivative - this is just the scalar product of
   // the gradient with a given vector (but that vector should be normalized to length 1, i think)
 
   /** Computes a numerical approximation of the Hessian matrix of the function f at the given 
@@ -275,6 +273,8 @@ public:
     return sum;
   }
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Functor derivatives for vector fields
 
   /** Computes the Jacobian matrix of a function with multiple inputs and multiple outputs and 
   stores the result in J, which must be a pointer to the data-array of an MxN matrix in row-major
@@ -311,6 +311,11 @@ public:
       sum += partialDerivative(f[n], x, N, n, h[n]);
     return sum;
   }
+
+  // todo: curl - this is more complicated in general N-dimensional space and needs more research. 
+  // i think, it should be an anti-symmetrical NxN matrix of differences of partial derivatives.  
+  // But how exactly the values should be arranged as matrix elements and which elements get 
+  // negative signs is something that i have not yet figured out....
 
   //-----------------------------------------------------------------------------------------------
   // \name Data derivatives

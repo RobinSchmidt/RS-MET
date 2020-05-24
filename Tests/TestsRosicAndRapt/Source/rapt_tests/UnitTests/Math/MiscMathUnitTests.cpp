@@ -278,8 +278,7 @@ static void hessian2(const F& f, T* x, int N, T* pH, const T* h, T k)
   // # evals: N * 4*N = 4*N^2
 }
 
-// rename to testScalarFieldDerivatives
-bool testNumericGradientAndHessian()
+bool testScalarFieldDerivatives()
 {
   // Tests numeric gradient and Hessian matrix computation by comparing the results to analytically
   // computed ones.
@@ -422,6 +421,9 @@ bool testNumericGradientAndHessian()
 
 
 
+
+
+
 template<class T, class F>
 static void curl(const F& f, T* x, T* pC, const T* h)
 {
@@ -429,6 +431,7 @@ static void curl(const F& f, T* x, T* pC, const T* h)
 
   int N = (int) f.size();
   rsMatrixView<T> C(N, N, pC);
+  const rsMatrixView<T> hh(N, N, (T*)h);
 
   // temporarily use the diagonal elements of C for the partial derivatives:
   for(int n = 0; n < N; n++)
@@ -445,6 +448,10 @@ static void curl(const F& f, T* x, T* pC, const T* h)
       C(j, i) = -Cij;
     }
   }
+  // oh - no the above is not the curl. it is another operator defined by dfi/dxi - dfj/dxj
+  // ...is this somehow an interesting opertaion to define?
+
+
   // whether we use C(i,j) = C(i,i) - C(j,j) or C(j,j) - C(i,i) depends on the convention which
   // half of the matrix we want to translate to the actual curl scalar (in 2D) or vector (in 3D)
   // if it should be th top-right half, we should use C(j,j) - C(i,i), but is that correct? are 
@@ -454,6 +461,7 @@ static void curl(const F& f, T* x, T* pC, const T* h)
   // https://math.stackexchange.com/questions/337971/can-the-curl-operator-be-generalized-to-non-3d
   // https://mathoverflow.net/questions/52829/generalization-of-curl-to-higher-dimensions
   // https://math.stackexchange.com/questions/2173860/n-dimensional-generalization-of-vector-curl-from-elements-of-jacobian
+  // Sochi - Principles of Tnesor Calculus: Eq: 446,279 may also give valuable hints
 
   // maybe i should also look for nD generalizations of the cross product - can we define curl in 
   // terms of a matrix product or a sandwich of two vectors with a matrix in between? maybe the
@@ -468,14 +476,65 @@ static void curl(const F& f, T* x, T* pC, const T* h)
   // ...maybe we whould use (-1)^(i+j) * (C(i, i) - C(j, j))  or something?
   // ...more research needed - curl computation is not yet ready for the library...
 
+  // wait..is this actually correct to use differences of the kind dfx/dx - df/dy? this seems 
+  // wrong! we need dfx/dy and dfx/dz...the whole thing with the temporary storage in the 
+  // diagonal elements makes no sense - we need only the mixed derivatives - each element should be
+  // a difference of the mixed derivatives: C(i,j) = dfi/dxj - dfj/dxi - this would also make the
+  // diagonal elements naturally zero - ike that:
+  
+  for(int i = 0; i < N; i++)
+  {
+    for(int j = i+1; j < N; j++)
+    {
+      T dij = NumDif::partialDerivative(f[i], x, N, j, hh(i,j)); //  dfi/dxj 
+      T dji = NumDif::partialDerivative(f[j], x, N, i, hh(j,i)); //  dfj/dxi
+      T Cij = dij - dji;// or the other way around? or should we have alternating signs/orders?
+      C(i, j) =  Cij;  
+      C(j, i) = -Cij;
+    }
+  }
+
+  // maybe look up curl in 7 dimensions - it should work with 7, i have read somewhere
+  // https://en.wikipedia.org/wiki/Seven-dimensional_cross_product
+  // https://math.stackexchange.com/questions/2983671/7-dimensional-curvature-and-curl
+  // https://link.springer.com/article/10.1007/BF02837124
+  // https://www.researchgate.net/publication/226716675_The_curl_in_seven_dimensional_space_and_its_applications
+  // ...hmm - it seems, in 7 dimensions the curl is yet again a vector? that means, it has 7 
+  // independent elements? i think, we may need the idea of bivectors?
+  // https://en.wikipedia.org/wiki/Bivector
+  // https://en.wikipedia.org/wiki/Geometric_algebra#Definition_and_notation
+  // https://en.wikipedia.org/wiki/Exterior_algebra
+  // https://en.wikipedia.org/wiki/Curl_(mathematics)#Generalizations
+  // " in 4 dimensions the curl of a vector field is, geometrically, at each point an element of the 
+  //  6-dimensional Lie algebra SO(4)"
+  // maybe we should come up with a symmetric matrix of +1 and -1 and 0 on the diagonal, such that 
+  // when we sandwich the matrix between two vectors, the cross product comes out? ..and then use 
+  // the gradient operator with the f-vector with this matrix?
+
+  // this says something about the "natural generalization" and eq 1.1 says something like "one 
+  // usually considers...."
+  // https://www.researchgate.net/publication/226716675_The_curl_in_seven_dimensional_space_and_its_applications
+
+  // It seems to me that there is no single unique way to generalize the cross-product (and 
+  // therefore, the curl). There seem to be various possibilities, among them:
+  // -as an antisymmetric NxN matrix with elements: 
+  //  C(i,j) = dfi/dxj - dfj/dxi (or dfj/dxi - dfi/dxj)  (..or well - that's the curl already - 
+  //  what would be the corresponding cross-product?)
+  // -as an N vector with elements defined via the permutation (aka Levi-Civita) tensor: ...
+  // -in certain dimensions (especially 7), by custom rules via multiplication tables
+  // maybe in some dimensionalities, these different definitions happen to agree or something?
+
+  // https://www.researchgate.net/publication/258082193_Vector_cross_product_in_n-dimensional_vector_space
+  // https://link.springer.com/article/10.1007%2FBF02564418
+
+  // https://www.tandfonline.com/doi/abs/10.1080/0020739970280407 really good!
+
   // diagonal elements are all zero:
   for(int n = 0; n < N; n++)
     C(n, n) = T(0);
 }
 
-
-// rename to testVectorFieldDerivatives
-bool testNumericJacobian()
+bool testVectorFieldDerivatives()
 {
   bool r = true;
 
@@ -512,12 +571,9 @@ bool testNumericJacobian()
   auto f3 = [=](double* v)->double { double x = v[0], y = v[1]; return x*x * y*y - 2*x*y; };
   std::vector<Func> f({f1,f2,f3});  // array/vector of functors
   Mat Ja(M, N);                     // analytical Jacobian
-  Ja(0, 0) = 2*x * y*y*y; 
-  Ja(0, 1) = x*x * 3*y*y;
-  Ja(1, 0) = 6*x*x * 3*y*y;
-  Ja(1, 1) = 2*x*x*x * 6*y;
-  Ja(2, 0) = 2*x * y*y - 2*y;
-  Ja(2, 1) = x*x * 2*y - 2*x;
+  Ja(0, 0) = 2*x * y*y*y;      Ja(0, 1) = x*x * 3*y*y;
+  Ja(1, 0) = 6*x*x * 3*y*y;    Ja(1, 1) = 2*x*x*x * 6*y;
+  Ja(2, 0) = 2*x * y*y - 2*y;  Ja(2, 1) = x*x * 2*y - 2*x;
   // It's nice that we can use auto for the lambda functions - formerly, i used Func in the 
   // declarations of f1,f2,f3, but it seems that the raw lambdas can be wrapped into 
   // std::functions when we create the vector. I think, a lambda implicitly converts to a 
@@ -550,9 +606,58 @@ bool testNumericJacobian()
   curl(f, &v[0], C.getDataPointer(), h);
   double c = Ja(1,0) - Ja(0,1);  // df2/dx - df1/dy
   // ok - it's anti-symmetric - figure out, if the signs are right
+  // maybe try it for a 3x3 Jacobian...maybe the element C(i,j) should give the element of the curl
+  // that has the dfi/dxj - dfj/dxi formula
 
   return r;
 }
+
+
+template<class T, class F>
+static T curl2D(const F& f, T* x, const T* h)
+{
+  using NumDif = rsNumericDifferentiator<T>;
+  T d01 = NumDif::partialDerivative(f[0], x, 3, 1, h[0]);  // dfx/dy
+  T d10 = NumDif::partialDerivative(f[1], x, 3, 0, h[1]);  // dfy/dx
+  return d10 - d01;  // dfy/dx - dfx/dy
+}
+
+template<class T, class F>
+static void curl3D(const F& f, T* x, T* c, const T* h)
+{
+  using NumDif = rsNumericDifferentiator<T>;
+  T d01 = NumDif::partialDerivative(f[0], x, 3, 1, h[0]);  // dfx/dy
+  T d02 = NumDif::partialDerivative(f[0], x, 3, 2, h[0]);  // dfx/dz
+  T d10 = NumDif::partialDerivative(f[1], x, 3, 0, h[1]);  // dfy/dx
+  T d12 = NumDif::partialDerivative(f[1], x, 3, 2, h[1]);  // dfy/dz
+  T d20 = NumDif::partialDerivative(f[2], x, 3, 0, h[2]);  // dfz/dx
+  T d21 = NumDif::partialDerivative(f[2], x, 3, 1, h[2]);  // dfz/dy
+  c[0] = d21 - d12;  // dfz/dy - dfy/dz
+  c[1] = d02 - d20;  // dfx/dz - dfz/dx
+  c[2] = d10 - d01;  // dfy/dx - dfx/dy
+}
+
+// todo: curl7D
+
+bool testCurl()
+{
+  bool r = true;
+
+
+  using Func   = std::function<double(double*)>;
+  using Mat    = rsMatrix<double>;
+  using NumDif = rsNumericDifferentiator<double>;
+
+  auto fx2D = [=](double* v)->double { double x = v[0], y = v[1]; return 2*x*x + y + 3*x*y; };
+  auto fy2D = [=](double* v)->double { double x = v[0], y = v[1]; return x*x - y*y - 2*x*y; };
+  std::vector<Func> f2D({fx2D,fy2D}); 
+
+  //double c2D = curl2D(x, &v[0], h);
+
+  return r;
+}
+
+
 
 bool testMultiLayerPerceptronOld(std::string &reportString)
 {
@@ -755,8 +860,9 @@ bool testMiscMath()
   testResult &= testMinSqrDifFixSum(          dummy);
   testResult &= testPhaseUnwrapStuff(         dummy);
   testResult &= testNumDiffStencils();
-  testResult &= testNumericGradientAndHessian();
-  testResult &= testNumericJacobian();
+  testResult &= testScalarFieldDerivatives();
+  testResult &= testVectorFieldDerivatives();
+  testResult &= testCurl();
   //testResult &= testNumericMinimization();  // has been moved to experiments
 
   //testResult &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
