@@ -1366,6 +1366,19 @@ void fitQuadratic(T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
   *a1 = b1 + b2 + b3;  // coeff for x^1
   *a0 = c1 + c2 + c3;  // coeff for x^0
 
+  // Formulas were derived from setting up 3 polynomials in product form, where each has zeros at 
+  // all but one of the datapoints:
+  //   p1(x) = k1*(x-x2)*(x-x3)       p1 has zeros at at x2,x3
+  //   p2(x) = k2*(x-x1)*(x-x3)       p2 has zeros at at x1,x3
+  //   p3(x) = k3*(x-x1)*(x-x2)       p3 has zeros at at x1,x2
+  // and requiring the polynomial pi that has no zero at xi to have the value yi at xi:
+  //   p1(x1) = y1, p2(x2) = y2, p3(x3) = y3
+  // and solving these for the ki, i.e. k1,k2,k3. Then plugging, for example, k1 back into the p1 
+  // equation and multiplying it out to obtain its coeffs - doing the same for p2 and p3 and then 
+  // obtaining the final polynomial coeffs by adding the corresponding coeffs of each of the 
+  // partial polynomials.
+
+  // add: 9, sub: 6, mul: 12, div: 3, neg: 3
 
   int dummy = 0;
 }
@@ -1373,18 +1386,23 @@ void fitQuadratic(T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
 
 void numericDifferentiation()
 {
+  // move to unit test:
   // test:
   double x1 =  1, y1 = 4;
   double x2 =  2, y2 = 9;
   double x3 = -1, y3 = 6;
   double a0, a1, a2;
-  fitQuadratic(x1, y1, x2, y2, x3, y3, &a0, &a1, &a2);
+  fitQuadratic(x1, y1, x2, y2, x3, y3, &a0, &a1, &a2); // add: 9, sub: 6, mul: 12, div: 3, neg: 3
   double z1 = a0 + a1*x1 + a2*x1*x1;
   double z2 = a0 + a1*x2 + a2*x2*x2;
   double z3 = a0 + a1*x3 + a2*x3*x3;
   // zi should be equal to yi - yep - works
   // compare results to rsPolynomial<T>::fitQuadratic
 
+  //double a2[3]; 
+  double A[3];
+  double x[3] ={ x1,x2,x3 }, y[3] ={y1,y2,y3};
+  rsPolynomial<double>::fitQuadratic(A, x, y); // add: 4, sub: 8, mul: 9, div: 4
 
   int dummy = 0;
 

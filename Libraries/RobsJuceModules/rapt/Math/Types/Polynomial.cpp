@@ -992,6 +992,8 @@ void rsPolynomial<T>::fitQuadratic(T *a, const T *x, const T *y)
   a[2] = (y[2]-y[0]+k4*(x[0]-x[2])) / (x[2]*(x[2]+k5)-x[0]*(x[0]+k5));
   a[1] = (k1+k2*a[2])/k3;
   a[0] = y[0]-a[2]*x[0]*x[0]-a[1]*x[0];
+
+  // add: 4, sub: 8, mul: 9, div: 4
 }
 // this formula is complicated! i think, it was obtained by solving the 3x3 system: 
 //   y[i] = a0 + a1*x[i] + a2*x[i]^2   i = 0,1,2 
