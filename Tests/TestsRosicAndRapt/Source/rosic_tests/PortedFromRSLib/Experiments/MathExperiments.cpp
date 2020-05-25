@@ -1343,8 +1343,53 @@ double forwardDifference(const F& f, double x, double h)
   return (f(x+h) - f(x)) / h;
 }
 
+
+template<class T>
+void fitQuadratic(T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
+{
+  // k_i = y_i / prod_{i!=j} (x_i - x_j)   ...i think, this generalizes to higher order
+  T k1 = y1 / ((x1-x2)*(x1-x3));
+  T k2 = y2 / ((x2-x1)*(x2-x3));
+  T k3 = y3 / ((x3-x1)*(x3-x2));
+
+  // b_i = k_i * sum_{i!=j} (-x_i) = -k_i * sum_{i!=j} x_i   ...hmm - i don't think, it generalizes like that
+  T b1 = -k1*(x2+x3);
+  T b2 = -k2*(x1+x3); 
+  T b3 = -k3*(x1+x2);
+
+  // c_i = prod
+  T c1 = k1*x2*x3;
+  T c2 = k2*x1*x3;
+  T c3 = k3*x1*x2;
+
+  *a2 = k1 + k2 + k3;  // coeff for x^2
+  *a1 = b1 + b2 + b3;  // coeff for x^1
+  *a0 = c1 + c2 + c3;  // coeff for x^0
+
+
+  int dummy = 0;
+}
+// needs test
+
 void numericDifferentiation()
 {
+  // test:
+  double x1 =  1, y1 = 4;
+  double x2 =  2, y2 = 9;
+  double x3 = -1, y3 = 6;
+  double a0, a1, a2;
+  fitQuadratic(x1, y1, x2, y2, x3, y3, &a0, &a1, &a2);
+  double z1 = a0 + a1*x1 + a2*x1*x1;
+  double z2 = a0 + a1*x2 + a2*x2*x2;
+  double z3 = a0 + a1*x3 + a2*x3*x3;
+  // zi should be equal to yi - yep - works
+  // compare results to rsPolynomial<T>::fitQuadratic
+
+
+  int dummy = 0;
+
+
+
   // When using numerical differentiation formulas, there are two sources of error: the error 
   // coming from the approximation itself and the roundoff error due to finite precision 
   // arithmetic. The first error decreases with decreasing approximation stepsize h, whereas the 

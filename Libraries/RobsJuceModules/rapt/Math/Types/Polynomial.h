@@ -629,7 +629,10 @@ public:
   points (-1, y[-1]), (0, y[0]), (1, y[1]), (2, y[2]). NOTE, that the y-array is accessed at values
   y[-1]...y[2] - the caller should make sure, these values exist. */
   static void cubicCoeffsFourPoints(T *a, const T *y);
-  // rename to fitCubic_m1_0_1_2 or cubicLagrange_m1_0_1_2 or cubicThrough
+  // -rename to fitCubic_m1_0_1_2 or cubicLagrange_m1_0_1_2 or cubicThrough 
+  //  -document why do we adopt the convention that we start x at -1 and access the y[-1] element - i 
+  //   think, this is more convenient in the content of interpolating in realtime as in the 
+  //   pitch-detector?
 
   /** Allocates and fills an NxN matrix A wher A[i][j] are given by x[i]^j. The caller is
   responsible for deallocation. So it's used like:
@@ -637,7 +640,7 @@ public:
   // ...do stuff with matrix A
   rsDeAllocateSquareArray2D(A, N);  */
   static T** vandermondeMatrix(const T *x, int N);
-    // move to rsMatrixOld
+    // move to rsMatrixOld, deprecate!
 
   /** Computes coefficients a[0],..., a[N-1] for a polynomial of degree N-1 that goes through the N
   data points (x[0], y[0]),...,(x[N-1], y[N-1]). */

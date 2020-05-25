@@ -993,6 +993,9 @@ void rsPolynomial<T>::fitQuadratic(T *a, const T *x, const T *y)
   a[1] = (k1+k2*a[2])/k3;
   a[0] = y[0]-a[2]*x[0]*x[0]-a[1]*x[0];
 }
+// this formula is complicated! i think, it was obtained by solving the 3x3 system: 
+//   y[i] = a0 + a1*x[i] + a2*x[i]^2   i = 0,1,2 
+// todo: use the Lagrange interpolation formula!
 
 template<class T>
 void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, const T *y)

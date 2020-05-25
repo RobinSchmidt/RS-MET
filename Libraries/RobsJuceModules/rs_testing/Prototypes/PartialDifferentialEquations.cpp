@@ -368,7 +368,7 @@ void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiA
   T cy = 1 / (hy*hy);
   T cz = 1 / (hz*hz);
 
-  // compute Laplacian for interior points:
+  // compute Laplacian for the interior points of the cuboid:
   for(int i = 1; i < Nx-1; i++) {
     for(int j = 1; j < Ny-1; j++) {
       for(int k = 1; k < Nz-1; k++) {
@@ -378,9 +378,20 @@ void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiA
         T u_zz   = cz * (u(i,j,k-1) - u2 + u(i,j,k+1));
         L(i,j,k) = u_xx + u_yy + u_zz; }}}
 
-       
+  // compute Laplacian for the boundary planes (faces of the cuboid):
+  // ...this will need 6 double-loops
+
+  // compute Laplacian for the edges of cuboid:
+  // ...this requires 12 single-loops
+
+  // compute Laplacian in the corners
+  // ...requires 8 assignments
+
+
+
   // todo: compute Laplacian for boundary points....but how? ...maybe using a one-sided 
-  // approximation? or maybe using linear extrapolation from the interior points?
+  // approximation? or maybe using linear extrapolation from the interior points? ...maybe first
+  // implement a 1D and 2D version of the laplacian
   // maybe for fixed boundary conditions, we don't need it...hmm..but what actually are appropriate
   // boundary conditions for the pressure at the room walls? intuitively, the sound-velocity must 
   // go zero at the boundary...does that mean, the pressure gradient must go to zero?
@@ -388,7 +399,7 @@ void rsRectangularRoom<T>::computeLaplacian3D(const rsMultiArray<T>& u, rsMultiA
 // see (1), 5.2 for 1D and 10.2 for 2D difference operators
 // todo: 
 // -implement bi-laplacian (aka biharmonic)...but is this actually a thing in 3D? in 1D and 2D
-//  it's used for modeling stiffness...but in 3D? hmm...
+//  it's used for modeling stiffness...but in 3D? hmm...maybe for modeling stiffness in solids?
 // -implement Laplacian for cylindrical and spherical coordinates
 // -maybe rename this function to reflect that we a doing a 7 point approximation in cartesian 
 //  coordinates - there are so many other possibilities...

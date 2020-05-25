@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
   //gaussianRegression();
   //butterworthViaGaussians();
 
-  numericOptimization();
+  //numericOptimization();
 
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
@@ -245,7 +245,7 @@ int main(int argc, char* argv[])
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
 
-  //numericDifferentiation();
+  numericDifferentiation();
   //numericIntegration(); // a.k.a. numeric "quadrature"
   //numericDiffAndInt();  // numeric differentiation and integration - rename to nonUniformArrayDiffAndInt
 

@@ -342,6 +342,13 @@ public:
   template<class Tx>
   static void derivative(const Tx *x, const T *y, T *yd, int N, bool extrapolateEnds = true);
   // maybe rename to weightedCentralDifference
+  // provide a version that assumes a regular spacing interval
+  // provide a function to compute the second derivative - maybe by fitting a parabola - this 
+  // paraobala could also be used for an alternative computation of the first derivative
+
+  // todo: drag over the code that computes the laplacian for a 2D and 3D function from the 
+  // wave-equation simulation in the prototypes folder - maybe provide a 1D version, too - the 
+  // 1D, 2D and 3D variants can then be used to simulate strings, membranes and rooms...
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc
