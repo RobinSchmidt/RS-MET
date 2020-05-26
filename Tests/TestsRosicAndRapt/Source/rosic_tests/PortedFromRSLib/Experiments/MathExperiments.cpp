@@ -1347,47 +1347,40 @@ double forwardDifference(const F& f, double x, double h)
 template<class T>
 void fitQuadratic(T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
 {
-  // k_i = y_i / prod_{i!=j} (x_i - x_j)   ...i think, this generalizes to higher order
   T k1 = y1 / ((x1-x2)*(x1-x3));
   T k2 = y2 / ((x2-x1)*(x2-x3));
   T k3 = y3 / ((x3-x1)*(x3-x2));
-
-  // b_i = k_i * sum_{i!=j} (-x_i) = -k_i * sum_{i!=j} x_i   ...hmm - i don't think, it generalizes like that
   T b1 = -k1*(x2+x3);
-  T b2 = -k2*(x1+x3); 
+  T b2 = -k2*(x1+x3);
   T b3 = -k3*(x1+x2);
-
-  // c_i = prod
   T c1 = k1*x2*x3;
   T c2 = k2*x1*x3;
   T c3 = k3*x1*x2;
-
-  *a2 = k1 + k2 + k3;  // coeff for x^2
-  *a1 = b1 + b2 + b3;  // coeff for x^1
-  *a0 = c1 + c2 + c3;  // coeff for x^0
+  *a2  = k1 + k2 + k3;  // coeff for x^2
+  *a1  = b1 + b2 + b3;  // coeff for x^1
+  *a0  = c1 + c2 + c3;  // coeff for x^0
 
   // Formulas were derived from setting up 3 polynomials in product form, where each has zeros at 
-  // all but one of the datapoints:
+  // all but one of the datapoints, say xi, and to have value yi at xi and then adding them up 
+  // (idea due to Lagrange):
   //   p1(x) = k1*(x-x2)*(x-x3)       p1 has zeros at at x2,x3
   //   p2(x) = k2*(x-x1)*(x-x3)       p2 has zeros at at x1,x3
   //   p3(x) = k3*(x-x1)*(x-x2)       p3 has zeros at at x1,x2
-  // and requiring the polynomial pi that has no zero at xi to have the value yi at xi:
+  // Require:
   //   p1(x1) = y1, p2(x2) = y2, p3(x3) = y3
-  // and solving these for the ki, i.e. k1,k2,k3. Then plugging, for example, k1 back into the p1 
-  // equation and multiplying it out to obtain its coeffs - doing the same for p2 and p3 and then 
-  // obtaining the final polynomial coeffs by adding the corresponding coeffs of each of the 
-  // partial polynomials.
+  // Solve these for the ki, i.e. k1,k2,k3. For example, k1 = y1 / ((x1-x2)*(x1-x3)). Plug, for 
+  // example, k1 back into the p1 equation and multiply it out to obtain its coeffs - do the same 
+  // for p2 and p3 and then obtain the final polynomial coeffs by adding the corresponding  coeffs 
+  // of each of the partial polynomials.
 
-  // add: 9, sub: 6, mul: 12, div: 3, neg: 3
-
-  int dummy = 0;
+  // operations: add: 9, sub: 6, mul: 12, div: 3, neg: 3
 }
-// needs test
 
-void numericDifferentiation()
+// move to unit test:
+bool testQuadraticTo3Points()
 {
-  // move to unit test:
-  // test:
+  bool r = true;
+
   double x1 =  1, y1 = 4;
   double x2 =  2, y2 = 9;
   double x3 = -1, y3 = 6;
@@ -1396,16 +1389,25 @@ void numericDifferentiation()
   double z1 = a0 + a1*x1 + a2*x1*x1;
   double z2 = a0 + a1*x2 + a2*x2*x2;
   double z3 = a0 + a1*x3 + a2*x3*x3;
-  // zi should be equal to yi - yep - works
-  // compare results to rsPolynomial<T>::fitQuadratic
+  r &= z1 == y1 && z2 == y2 && z3 == y3;  // zi should be equal to yi - yep - works
 
-  //double a2[3]; 
-  double A[3];
+  // compare results to rsPolynomial<T>::fitQuadratic:
+  double a[3];
   double x[3] ={ x1,x2,x3 }, y[3] ={y1,y2,y3};
-  rsPolynomial<double>::fitQuadratic(A, x, y); // add: 4, sub: 8, mul: 9, div: 4
+  rsPolynomial<double>::fitQuadratic(a, x, y); // add: 4, sub: 8, mul: 9, div: 4
+  r &= a[0] == a0 && a[1] == a1 && a[2] == a2;
 
-  int dummy = 0;
+  // Maybe make some benchmarks, which formula is more efficient. The one derived by Lagrange's 
+  // method certainly has the computations organized in a much more orderly manner - but is it more 
+  // efficient? And what about numeric precision?
 
+  return r;
+}
+
+void numericDifferentiation()
+{
+
+  testQuadraticTo3Points();
 
 
   // When using numerical differentiation formulas, there are two sources of error: the error 
