@@ -81,9 +81,9 @@ public:
   https://distill.pub/2017/momentum/ (section "Dynamics of momentum") */
   rsMatrix2x2<T> getPower(int n)
   {
-    using rsMatrix2x2<T> Mat;
-    T alpha = getEigenValue1();
-    T beta  = getEigenValue2();
+    using Mat = rsMatrix2x2<T>;
+    T alpha = getEigenvalue1();
+    T beta  = getEigenvalue2();
     Mat I   = identity();
     if(alpha != beta)
     {
@@ -95,6 +95,7 @@ public:
     else
       return pow(alpha, n-1) * (T(n) * *this - T(n-1) * alpha*I);
   }
+  // the alpha == beta branch needs a test
   // What about real matrices with complex eigenvalues? The function won't work for them, i guess
 
 
@@ -124,9 +125,9 @@ public:
   rsVector2D<T> operator*(const rsVector2D<T>& v) const
   { return rsVector2D<T>(a*v.x + b*v.y, c*v.x + d*v.y); }
 
-  /** Divides matrix by a scalar divisor d. */
-  rsMatrix2x2<T> operator/(const T d) const
-  { T s = T(1) / d; return rsMatrix2x2<T> (s*a, s*b, s*c, s*d); }
+  /** Divides matrix by a scalar divisor. */
+  rsMatrix2x2<T> operator/(const T divisor) const
+  { T s = T(1) / divisor; return rsMatrix2x2<T> (s*a, s*b, s*c, s*d); }
 
   // todo: left multiplication w = v^H * A
 

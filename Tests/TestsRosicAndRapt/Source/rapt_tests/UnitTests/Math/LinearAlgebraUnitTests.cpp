@@ -146,6 +146,15 @@ bool testMatrix2x2(std::string& reportString)
   C = B.getInverse(); testResult &= C == Mat(-4, 3, 7./2, -5./2);
   C = A/B; testResult &= C == Mat( 3, -2, 2, -1);
   C = B/A; testResult &= C == Mat(-1,  2, -2, 3);
+  C = A*A*A*A*A; 
+  D = A.getPower(5); 
+  testResult &= C == D;
+
+  // todo: test getPower with a matrix with 2 equal eigenvalues
+
+ 
+
+
 
 
 
