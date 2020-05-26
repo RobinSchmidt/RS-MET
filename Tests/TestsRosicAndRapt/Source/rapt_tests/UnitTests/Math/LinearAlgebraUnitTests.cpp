@@ -150,7 +150,15 @@ bool testMatrix2x2(std::string& reportString)
   D = A.getPower(5); 
   testResult &= C == D;
 
-  // todo: test getPower with a matrix with 2 equal eigenvalues
+  // test getPower with a matrix with 2 equal eigenvalues:
+  // https://web.calpoly.edu/~brichert/teaching/oldclass/f2002217/solutions/solutions9.pdf
+  // we must have a = d and b*c = 0
+  A = Mat({5,0,3,5});
+  C = A*A*A*A*A; 
+  D = A.getPower(5); 
+  testResult &= C == D;
+
+
 
  
 

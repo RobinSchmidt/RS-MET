@@ -1822,9 +1822,12 @@ void amplitudeDeBeating()
   envExtractor.setStartMode(EM::ZERO_END);  
   envExtractor.setEndMode(EM::ZERO_END);   // definitely better than extraploation but still not good enough
   //envExtractor.setMaxSampleSpacing(100);   // should be >= beating period in frames
+  envExtractor.maxSpacing = 300; // 300 is purposefully coarse, so we can see what it does
+  // unit is supposed to be seconds...but is it actually samples - i think so - the envExtractor 
+  // doesn't seem to know about the samplerate anyway
 
   // params for new peack picker algo:
-  envExtractor.peakPicker.setShadowWidths(10.0, 100.0);
+  envExtractor.peakPicker.setShadowWidths(10.0, 100.0); // unit is samples
   envExtractor.connectPeaks(&time[0], &beatEnv[0], &result[0], numFrames);
 
 

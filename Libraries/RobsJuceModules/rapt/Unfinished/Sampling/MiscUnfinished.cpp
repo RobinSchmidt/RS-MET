@@ -1574,7 +1574,8 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   // Pre-process, find peak candidates and apply optional prominence thresholding:
   std::vector<T> tmp = getPreProcessedData(t, x, N);
 
-  rsPlotArraysXY(N, t, x, &tmp[0]); // for debug
+  rsPlotArraysXY(N, t, x, &tmp[0]); 
+  // plot pre-processed (shifted and shadowed) data for debug
 
   std::vector<int> peaks = getPeakCandidates(&tmp[0], N);
   if(promThresh != T(0) && promToMaxThresh != T(0) && promToHeightThresh != T(0))
@@ -1615,10 +1616,17 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   // is almost as high but not quite - like an almost-plateau - ...that probably means, we should 
   // run removeStickOuts over the whole data in any case as final step
 
+  //rsPlotArraysXYWithMarks(t, x, N, peaks);  // debug
+
   postProcessPeaks(peaks, t, x, N);
   //postProcessPeaks(peaks, t, &tmp[0], N);
     // should this maybe also use tmp instead of x? ...maybe that doesn't make a difference?
     // nope - we need to use x - see edges in experiment with seed=7, width=20
+  // this may add a lot of additional non-peak datapoints that cluster around the actual peaks to 
+  // the peaks array that are just there to satisfy the "no-stickout" rule - which is desirable but
+  // might be confusing - one might wonder, why these are there...
+
+  //rsPlotArraysXYWithMarks(t, x, N, peaks);  // debug
 
 
   return peaks;
@@ -2012,7 +2020,7 @@ void rsEnvelopeExtractor<T>::fillSparseAreasNew(const T* rawEnvTime, const T* ra
 
 
   // plot peaks before densification:
-  rsPlotArraysXYWithMarks(rawEnvTime, rawEnvValue, rawEnvLength, peaks);  // debug
+  //rsPlotArraysXYWithMarks(rawEnvTime, rawEnvValue, rawEnvLength, peaks);  // debug
 
 
   if(maxSpacing == T(0))
@@ -2041,7 +2049,7 @@ void rsEnvelopeExtractor<T>::fillSparseAreasNew(const T* rawEnvTime, const T* ra
   }
 
 
-  // plot peaks after densification:
+  // plot peaks (plus artificially densified) after densification:
   rsPlotArraysXYWithMarks(rawEnvTime, rawEnvValue, rawEnvLength, peaks);  // debug
 
   int dummy = 0;

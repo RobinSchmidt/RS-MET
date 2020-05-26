@@ -1343,7 +1343,7 @@ double forwardDifference(const F& f, double x, double h)
   return (f(x+h) - f(x)) / h;
 }
 
-
+// move to rsPolynomial
 template<class T>
 void fitQuadratic(T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
 {
@@ -1375,6 +1375,7 @@ void fitQuadratic(T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
 
   // operations: add: 9, sub: 6, mul: 12, div: 3, neg: 3
 }
+// maybe derive simplified formulas for the xas x1 = -1, x2 = 0, x3 = +1
 
 // move to unit test:
 bool testQuadraticTo3Points()

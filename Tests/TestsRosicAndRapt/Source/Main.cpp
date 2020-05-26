@@ -245,7 +245,7 @@ int main(int argc, char* argv[])
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
 
-  numericDifferentiation();
+  //numericDifferentiation();
   //numericIntegration(); // a.k.a. numeric "quadrature"
   //numericDiffAndInt();  // numeric differentiation and integration - rename to nonUniformArrayDiffAndInt
 
@@ -436,7 +436,7 @@ int main(int argc, char* argv[])
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
 
-//  amplitudeDeBeating();
+  amplitudeDeBeating();
   //amplitudeDeBeating2();
   //harmonicDeBeating1();
   //harmonicDeBeating2();

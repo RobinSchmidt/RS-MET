@@ -76,27 +76,26 @@ public:
   }
   // doesn't work with complex matrices
 
-  /** Not yet tested...computes n-th power of matrix using closed form formula from:
+  /** Computes n-th power of matrix using closed form formula from:
   https://people.math.carleton.ca/~williams/papers/pdf/175.pdf , Eq. 2
-  https://distill.pub/2017/momentum/ (section "Dynamics of momentum") */
+  https://distill.pub/2017/momentum/ (section "Dynamics of momentum")
+  ...it has been tested with real matrices with real eigenvalues (distinct and equal) - but what 
+  about real matrices with complex eigenvalues? The function won't work for them, i guess - try 
+  it!  */
   rsMatrix2x2<T> getPower(int n)
   {
     using Mat = rsMatrix2x2<T>;
-    T alpha = getEigenvalue1();
-    T beta  = getEigenvalue2();
-    Mat I   = identity();
-    if(alpha != beta)
-    {
-      Mat X = ((*this) - beta *I) / (alpha - beta);
-      Mat Y = ((*this) - alpha*I) / (beta - alpha);
-      return pow(alpha, n) * X + pow(beta, n) * Y;
-      // simplify: precompute alpha-beta
-    }
+    T ev1 = getEigenvalue1();
+    T ev2 = getEigenvalue2();
+    Mat I = identity();
+    if(ev1 != ev2) {
+      T ab  = T(1) / (ev1 - ev2);
+      Mat X = ab * ((*this) - ev2*I);
+      Mat Y = ab * (ev1*I - (*this));
+      return pow(ev1, n) * X + pow(ev2, n) * Y; }
     else
-      return pow(alpha, n-1) * (T(n) * *this - T(n-1) * alpha*I);
+      return pow(ev1, n-1) * (T(n) * *this - T(n-1) * ev1*I);
   }
-  // the alpha == beta branch needs a test
-  // What about real matrices with complex eigenvalues? The function won't work for them, i guess
 
 
   //-----------------------------------------------------------------------------------------------
