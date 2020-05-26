@@ -76,6 +76,28 @@ public:
   }
   // doesn't work with complex matrices
 
+  /** Not yet tested...computes n-th power of matrix using closed form formula from:
+  https://people.math.carleton.ca/~williams/papers/pdf/175.pdf , Eq. 2
+  https://distill.pub/2017/momentum/ (section "Dynamics of momentum") */
+  rsMatrix2x2<T> getPower(int n)
+  {
+    using rsMatrix2x2<T> Mat;
+    T alpha = getEigenValue1();
+    T beta  = getEigenValue2();
+    Mat I   = identity();
+    if(alpha != beta)
+    {
+      Mat X = ((*this) - beta *I) / (alpha - beta);
+      Mat Y = ((*this) - alpha*I) / (beta - alpha);
+      return pow(alpha, n) * X + pow(beta, n) * Y;
+      // simplify: precompute alpha-beta
+    }
+    else
+      return pow(alpha, n-1) * (T(n) * *this - T(n-1) * alpha*I);
+  }
+  // What about real matrices with complex eigenvalues? The function won't work for them, i guess
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
@@ -101,6 +123,10 @@ public:
   /** Multiplies matrix by a vector: w = A*v */
   rsVector2D<T> operator*(const rsVector2D<T>& v) const
   { return rsVector2D<T>(a*v.x + b*v.y, c*v.x + d*v.y); }
+
+  /** Divides matrix by a scalar divisor d. */
+  rsMatrix2x2<T> operator/(const T d) const
+  { T s = T(1) / d; return rsMatrix2x2<T> (s*a, s*b, s*c, s*d); }
 
   // todo: left multiplication w = v^H * A
 
@@ -134,6 +160,9 @@ inline rsMatrix2x2<T> operator*(const T& s, const rsMatrix2x2<T>& A)
 {
   return rsMatrix2x2<T>(s*A.a, s*A.b, s*A.c, s*A.d);
 }
+
+
+
 
 
 //=================================================================================================
