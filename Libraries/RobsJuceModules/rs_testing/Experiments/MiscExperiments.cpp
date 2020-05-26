@@ -317,8 +317,13 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   deBeater.setPhaseSmoothingParameters(5.0, 1, 4); // cutoff = 10 leaves a vibrato
 
   // testing the new peak-picker:
-  //deBeater.envExtractor.peakPicker.setShadowWidths(0.0, 0.5);
-  deBeater.envExtractor.peakPicker.setShadowWidths(0.0, 2.7);
+  deBeater.envExtractor.peakPicker.setShadowWidths(0.0, 0.5);
+  //deBeater.envExtractor.peakPicker.setWorkOnPeaksOnly(true); // default is false
+  //deBeater.envExtractor.peakPicker.setShadowWidths(0.0, 2.7);
+  deBeater.envExtractor.peakPicker.setNumLeftNeighbors(3);
+  deBeater.envExtractor.peakPicker.setNumRightNeighbors(3);
+
+
   deBeater.envExtractor.maxSpacing = 0.5;  // temporary, during development
   // -the optimal settings need to be figured out
   // -i think, we may have to set it up per partial and not just use one set of settings for all 
