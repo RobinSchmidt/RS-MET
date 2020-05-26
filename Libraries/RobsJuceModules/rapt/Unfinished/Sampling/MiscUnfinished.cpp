@@ -1926,8 +1926,8 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
   //plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
 
-  T maxSpacing =   // this must be computed *before* calling setupEndValues! ..why?
-    maxSpacingMultiplier * rsArrayTools::maxDifference(&metaEnvTime[0], (int)metaEnvTime.size());
+  //T maxSpacing =   // this must be computed *before* calling setupEndValues! ..why?
+  //  maxSpacingMultiplier * rsArrayTools::maxDifference(&metaEnvTime[0], (int)metaEnvTime.size());
 
 
   setupEndValues(metaEnvTime, metaEnvValue, endTime);

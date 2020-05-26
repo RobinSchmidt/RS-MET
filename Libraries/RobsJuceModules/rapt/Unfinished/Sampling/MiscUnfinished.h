@@ -1283,7 +1283,7 @@ protected:
 
 
 
-  T maxSpacingMultiplier = T(1);  // is this obsolete?
+  //T maxSpacingMultiplier = T(1);  // is this obsolete?
   //T maxSpacing = 0; // maximum allowed spacing between envelope datapoints/samples
   // ...explain this better - in which unit is this measured - how does it relate to the time-unit
   // stored in the rsSinusoidalModel? ...i think, it should just be the same unit, whatever that 
