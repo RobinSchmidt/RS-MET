@@ -911,6 +911,16 @@ public:
   /** Convenience function to set both shadow widths at the same time to the same value. */
   void setShadowWidths(T widths) { setShadowWidths(widths, widths); }
 
+
+  /** Selects whether the shadowing algo should operate on the raw-envelope as is or only on its
+  peaks with everything else zeroed out. Zeroing out everything but the peaks lets the decay of the
+  shadowing filter to kick in at full decay rate immediately after the peak occurred rather than 
+  being "held up" by input signal values that surround the peak. The general effect is that only 
+  the heights and positions of the peaks are taken into account in the shadowing but not their 
+  widths. ...experimental feature - i'm not yet sure, if that's useful */
+  void setWorkOnPeaksOnly(bool shouldWorkOnPeaksOnly) { workOnPeaksOnly = shouldWorkOnPeaksOnly; }
+
+
   /** Sets an absolute threshold for the peak prominence. Peaks with prominences below this value
   will be discarded as irrelevant. A value of zero will effectively switch this thresholding off. 
   The prominence of a peak is defined as the minimum height that you have to climb *down* in order 
@@ -1096,6 +1106,8 @@ protected:
   //   be relative to some highest peak in the neighbourhood?
   // -maybe we could also have different thresholds for leftward and rightward directions
 
+  bool workOnPeaksOnly = false;
+
   //bool includeEdges = false; 
   // maybe get rid - we should probably always include the endpoints
 
@@ -1167,6 +1179,9 @@ public:
   */
   // find better name..well - maybe that deosn't have to be a user parameter anyway
   // maybe setMinEnvSamplingDensity - but no - that's wrong
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -1279,6 +1294,8 @@ protected:
   //int smoothingOrder = 0;
   //T sampleRate       = 44100;
   //T smoothingFreq    = 22050;
+
+
 
 
 

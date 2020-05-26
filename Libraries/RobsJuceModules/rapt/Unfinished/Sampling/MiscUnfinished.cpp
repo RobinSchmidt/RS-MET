@@ -1661,12 +1661,28 @@ std::vector<int> rsPeakPicker<T>::getFinePeaks(const T* t, const T* x, int N)
   //return getPeakCandidates(x, N);
 }
 
+// test and move to rsArrayTools
+template<class T>
+void zeroOutNonPeaks(T* x, int N)
+{
+  T xL = x[0];                       // left x
+  for(int n = 1; n < N-1; n++)
+  {
+    T xn = x[n];                     // current sample
+    if(!(xn >= xL && xn >= x[n+1]))  // is x[n] a non-peak?
+      x[n] = T(0);                   // ...then zero out x[n]
+    xL = xn;                         // new left x is x[n] before it was updated
+  }
+}
+
 template<class T>
 std::vector<T> rsPeakPicker<T>::getPreProcessedData(const T* t, const T* x, int N)
 {
   using AT = RAPT::rsArrayTools;
   std::vector<T> tmp = toVector(x, (size_t)N);
   AT::shiftToMakeMinimumZero(&x[0], N, &tmp[0]);
+  if(workOnPeaksOnly)
+    zeroOutNonPeaks(&tmp[0], N);
   if(shadowWidthL > T(0) || shadowWidthR > T(0))
   {
     std::vector<T> tmp2(N);

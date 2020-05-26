@@ -317,11 +317,15 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   deBeater.setPhaseSmoothingParameters(5.0, 1, 4); // cutoff = 10 leaves a vibrato
 
   // testing the new peak-picker:
+  //deBeater.envExtractor.peakPicker.setShadowWidths(0.0, 0.5);
   deBeater.envExtractor.peakPicker.setShadowWidths(0.0, 2.7);
   deBeater.envExtractor.maxSpacing = 0.5;  // temporary, during development
   // -the optimal settings need to be figured out
   // -i think, we may have to set it up per partial and not just use one set of settings for all 
-  //  partials
+  //  partial
+  // -i think, the decay-rate of the shadowing algorithm needs to be less (but not much less) than
+  //  the overall decay-rate of the envelope - maybe we should estimate it from the area or energy
+  //  in the signal after the peak - but what about non-decaying sounds?
   // -rhodes, 1st partial: 
   //  -decay should be in the range 2.6 < width < 2.7 (note that this is the half-height width (in 
   //   seconds) - may need to be converted to the 1/e width), with decay-width = 3.0, the 
@@ -344,7 +348,7 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
   // -maybe to estimate the decay of the envelope, we could use the code to fit the exponential 
   //  envelope (where we still have to select the second estimation-point - maybe that could be 
   //  automated as well)
-  // -the leaftwar shadow-widths may be set to some scale factor times the rightward shadow - in 
+  // -the leftward shadow-widths may be set to some scale factor times the rightward shadow - in 
   //  general, we want them to be smaller - even a factor of 0 could make sense
   // -maybe we should indeed implement the idea of removing "undulating DC", i.e. apply a highpass
   //  at sub-tremolo frequencies (maybe 0.5 Hz or something)

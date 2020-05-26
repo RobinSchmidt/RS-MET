@@ -517,7 +517,7 @@ int numPeaks(T* x, int N)
 {
   int np = 0;
   for(int i = 1; i < N-1; i++)
-    if(x[i] >= x[i-1] && x[i] >= x[i+1])
+    if(x[i] >= x[i-1] && x[i] >= x[i+1]) // with >=, this finds the plateaus, too - maybe rename function
       np++;
   return np;
 }
@@ -585,7 +585,7 @@ int rsHarmonicAnalyzer<T>::findPeakBinNear(std::vector<T>& v, int kCenter, int w
   // ...and in cases of short gaps, fill them by interpolation from the surrounding data
   // ...maybe also don't allow peaks to instantly switch on/off from one datapoint to the next
 
-  // maybe let the user swicth between various decision strategies - also include plain old
+  // maybe let the user switch between various decision strategies - also include plain old
   // amplitude thresholds
 }
 
