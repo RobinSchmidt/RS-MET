@@ -1170,17 +1170,22 @@ public:
   /** Sets the sample-rate. This setting is relevant for the smoothing filter (if any). */
   //void setSampleRate(T newSampleRate) { sampleRate = newSampleRate; }
 
-  /** Not yet finished.... */
-  /*
-  void setMaxSpacingMultiplier(T newMultiplier) 
-  { 
-    maxSpacingMultiplier = newMultiplier;  
-  }
-  */
-  // find better name..well - maybe that deosn't have to be a user parameter anyway
-  // maybe setMinEnvSamplingDensity - but no - that's wrong
-
-
+  /** Sets the maximum spacing that should be allowed between sample points in the meta-envelope, 
+  i.e. the envelope of the envelope in which the short-term variations in the raw envelope have 
+  been disregarded. Ideally, it should be set to a value that is slightly greater than the 
+  beating or tremomolo frequency, if present - because if it's set to a smaller value, the 
+  meta-envelope may contain the tremolo-minima as well (because it will force the algo to take 
+  datapoints between the tremolo maxima, which are the peaks, we want to have) and if its set to a
+  higher value, you may not get the best possible resolution - you want to sample the envelope as 
+  densely as possible without picking up on the tremolo. If you leave this setting at default, it 
+  will be de-activated (set to infinity), i.e. there will be no minimum spacing and meta envelope 
+  points will be taken only at the peaks of the raw envelope. But this may lead to the situation 
+  that a decaying tail will be represented only by its start and end point - and a later 
+  resynthesis algo will then interpolate between these points (presumably) linearly, which is 
+  clearly undesirable, if the actual shape was exponential. That's why we want to take additional 
+  datapoints in such sections, even though there are no envelope peaks in these sections. So we do
+  this "artificial densification" of the datapoints taken.  */
+  void setMaxSampleSpacing(T newSpacing) { maxSpacing = newSpacing; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1251,14 +1256,18 @@ public:
   // irrelevant local peaks
 
 
+
+
+
+protected:
+
+
   T maxSpacing = RS_INF(T);
   // -maximum distance between two meta-envelope sample points
   //  -temporarily made public to be set from client code directly as an absolute value in seconds
   //  -later, this should be set automatically by an algorithm that selects this to be slightly 
   //   more than the termolo/beating frequency
 
-
-protected:
 
   //-----------------------------------------------------------------------------------------------
   /** \name Internal Functions */
