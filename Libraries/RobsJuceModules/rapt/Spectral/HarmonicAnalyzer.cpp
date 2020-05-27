@@ -11,14 +11,13 @@ template<class T>
 RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
 {
   RAPT::rsSinusoidalModel<T> mdl;   // init empty model
-  if(flattenPitch(x, N) == false)   // pre-process audio (flatten pitch), sets the blockSize
+  if(flattenPitch(x, N) == false)   // pre-process audio (flatten pitch), sets up the blockSize
     return mdl;                     // return empty model if pre-processing has failed
 
-  // todo: remove this switch eventually:
   if(useOldCode)
-    analyzeHarmonics(mdl);            // create model from pitch-flattened signal (now in member y)
+    analyzeHarmonicsOld(mdl);       // todo: remove this switch eventually
   else
-    analyzeHarmonics2(mdl);
+    analyzeHarmonics(mdl);          // create model from pitch-flattened signal (now in member y)
 
   deFlattenPitch(mdl);              // post process model data to account for flattening
   if(antiAlias)
@@ -39,6 +38,16 @@ RAPT::rsSinusoidalModel<T> rsHarmonicAnalyzer<T>::analyze(T* x, int N)
   // twice the number of frequencies as it should have...(although their amplitudes are really low)
   // ...maybe also introduce an amplitude threshold and remove partials that are consistently below
   // that threshold
+
+  // maybe to fix the spurious on/off switching of certain harmonics, we should "repair" the 
+  // partials that show this effect - detect the gaps and fill them by interpolating. ...but that's 
+  // somehow cheating and should be used only as last resort - first, we should try to refine the 
+  // decision criteria in order to avoid such a situation in the first place - try to cook up 
+  // signals that show this artifact and investigate, how to adjust the decision criteria
+
+  // Maybe during analysis, we should create a "report" that the user may inquire after an analysis
+  // containing information about what may have went wrong (for example, the number of detected
+  // gaps in the repair, etc.)
 }
 
 template<class T>
@@ -108,7 +117,7 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
 }
 
 template<class T>
-void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
+void rsHarmonicAnalyzer<T>::analyzeHarmonicsOld(RAPT::rsSinusoidalModel<T>& mdl)
 {
   // Initialize the model (create all datapoints, to filled with actual data later):
   mdl.init(getNumHarmonics(), getNumDataPoints());
@@ -155,16 +164,15 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
 }
 
 template<class T>
-void rsHarmonicAnalyzer<T>::analyzeHarmonics2(RAPT::rsSinusoidalModel<T>& mdl)
+void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
 {
   // Initialize the model (create all datapoints, to filled with actual data later):
   mdl.init(getNumHarmonics(), getNumDataPoints());
 
-  typedef RAPT::rsArrayTools AR;
+  //typedef RAPT::rsArrayTools AR;
 
   //int numFrames = getNumFrames();  //
   int over = (blockSize - cycleLength) / 2; // amount of overhanging of block with respect to cycle
-
   for(int m = 0; m < getNumFrames(); m++)
   {
     int cycleStart = (int) tOut[m];
@@ -172,34 +180,24 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics2(RAPT::rsSinusoidalModel<T>& mdl)
     int blockStart = cycleStart - over;
     int blockEnd   = cycleEnd   + over;
 
-    // but for the first and last improper cycle, this is wrong...
+    // adjustments for the first and last (improper) cycle:
     int length = blockEnd-blockStart; 
-    if(length != blockSize)
-    {
-      // ...we must do something extra in these special cases...
+    if(length != blockSize) {
       rsAssert(m == 0 || m == getNumFrames()-1); // should only happen in first or last frame
       int delta = blockSize - length;
-
-      // check if this is correct:
-      if(m == 0)
-        blockStart -= delta;
-      else
-        blockEnd += delta;
-
-      length = blockEnd-blockStart;  // update - only relevant for debug
-    }
+      if(m == 0) blockStart -= delta;            // check if this is correct
+      else       blockEnd += delta;
+      length = blockEnd-blockStart; }            // only relevant for debugging
     rsAssert(blockEnd-blockStart == blockSize);
 
     // copy section from y into sig, apply window and extract spectral data:
-    AR::copySection(&y[0], (int) y.size(), &sig[0], blockStart, blockSize);
+    rsArrayTools::copySection(&y[0], (int) y.size(), &sig[0], blockStart, blockSize);
     for(size_t n = 0; n < sig.size(); n++)
       sig[n] *= wnd[n];
     //rsPlotVector(sig);
     fillHarmonicData(mdl, m, getTimeStampForFrame(m));
       // maybe we should pass the "delta" from above and use it to adjust the phase values like
       // phase += delta*omega or something
-
-    int dummy = 0;
   }
 
 }

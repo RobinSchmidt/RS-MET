@@ -223,9 +223,9 @@ protected:
   signal. Because the pitch is now flat, each cycle has the same length (which was chosen to be
   a power of two, greater or equal to the length of the longest cycle in the input signal). This
   fills in the model data with (preliminary) values. */
-  void analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl);
+  void analyzeHarmonicsOld(RAPT::rsSinusoidalModel<T>& mdl);
 
-  void analyzeHarmonics2(RAPT::rsSinusoidalModel<T>& mdl);
+  void analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl);
   // new version that supports multi-cycle blocks - under construction - when finished, the old
   // version may be deleted
 

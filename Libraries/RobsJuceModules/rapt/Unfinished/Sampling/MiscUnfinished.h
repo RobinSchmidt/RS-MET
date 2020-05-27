@@ -1119,7 +1119,12 @@ protected:
 
 /** A class for non-realtime envelope extraction. You can feed it some input signal, and the
 rsEnvelopeExtractor object will return an extracted envelope signal of the same length at the same
-sample rate. */
+sample rate. 
+
+toDo: i think, the meta-envelope extraction should be factord out
+
+
+*/
 
 template<class T>
 class rsEnvelopeExtractor
@@ -1246,7 +1251,7 @@ public:
   envelope samples for each cycle (one for the positive and one for the negative half-wave). */
   static void getAmpEnvelope(const T* x, int N,
     std::vector<T>& sampleTime, std::vector<T>& envValue);
-  // maybe rename to envelopeTimesAndValues
+  // maybe rename to envelopeTimesAndValues or computeRawEnvelope or getRawEnvelope
 
 
 

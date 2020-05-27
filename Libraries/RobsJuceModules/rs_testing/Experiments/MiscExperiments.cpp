@@ -324,6 +324,8 @@ void testDeBeating(const std::string& name, std::vector<double>& x, double fs, d
 
 
   deBeater.envExtractor.setMaxSampleSpacing(0.5);
+  //deBeater.envExtractor.setInterpolationMode(
+  //  rsInterpolatingFunction<double, double>::CUBIC_HERMITE); // cubic interpolation produces overshoot
 
   //deBeater.envExtractor.maxSpacing = 0.5;  // temporary, during development
   // -the optimal settings need to be figured out

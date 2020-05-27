@@ -1408,7 +1408,7 @@ void harmonicDetection2Sines()
   // block.
 
   // Maybe we should allow for arbitrary values for nc and zp - then we may also use arbitrary  
-  // cycleLength -> Bluestein FFT. But maybe the use should be able to select a power-of-two mode.
+  // cycleLength -> Bluestein FFT. But maybe the user should be able to select a power-of-two mode.
 
   // The width (in bins) for searching for a peak should be proportional to the mainlobe-width 
   // ("mlw"), zero-pad-factor
@@ -1567,18 +1567,18 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
   //testHarmonicResynthesis("TwoSines_Freq1=500_Freq2=1000_Amp1=1.0_Amp2=1.0", 44100, 5000, 500);
 
-  testHarmonicResynthesis("TwoSines_Freq1=500_Freq2=10_Amp1=1.0_Amp2=0.25", 44100, 8000, 500);
+  //testHarmonicResynthesis("TwoSines_Freq1=500_Freq2=10_Amp1=1.0_Amp2=0.25", 44100, 8000, 500);
     // sine plus "undulating DC"
 
 
   //testHarmonicResynthesis("SineAndDC_Freq=500_Amp=1.0_DC=0.5", 44100, 5000, 500);
-  testHarmonicResynthesis("SineAndDC_Freq=500_Amp=1.0_DC=-0.5", 44100, 5000, 500);
+  //testHarmonicResynthesis("SineAndDC_Freq=500_Amp=1.0_DC=-0.5", 44100, 5000, 500);
     // sine plus DC - the DC component is not resynthesized correctly - it's twice as loud in the 
     // resynthesized signal - it's already wrong in the analysis data - the analyzer is to blame
 
   //testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6000_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
 
-  //testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6100_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
+  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6100_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
   // wt=bm, zp=8, nc=4, sw=1: misses 2nd partial, with sw >= 1.2, it even misses the first
   // the 2nd is missed, because the peak in the window is in fact not unimodal - we see two minor
   // side maxima to the left at kCenter = 960 and two to the right at kCenter = 992 - unimodality
@@ -1766,7 +1766,7 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 // look at files decompositionSteelGuitar002.m, testHarmonicAnalysis.M
 }
 
-// returns indices of minima - move to library
+// returns indices of minima - move to rsArrayTools
 template<class T>
 std::vector<int> findTroughs(const T* x, int N)
 {
@@ -1775,6 +1775,41 @@ std::vector<int> findTroughs(const T* x, int N)
     if(x[i] < x[i-1] && x[i] < x[i+1])
       t.push_back(i);
   return t;
+}
+
+// instead of omega, the user should pass a smoothing time
+template<class T>
+void smooth(const std::vector<T>& t, const std::vector<T>& x, std::vector<T>& y, 
+  T omega, int numPasses)
+{
+  rsAssert(t.size() == x.size());
+  rsAssert(t.size() == y.size());
+
+  //int numPasses = 1;
+  int N = (int)t.size();
+
+  rsNonUniformOnePole<T> flt;
+  flt.setOmega(omega);
+  rsCopyToVector(&x[0], (int) x.size(), y);
+
+  // factor out into the filter into an apply method, taking the input array, time-stamp array and 
+  // output array (which may be equal to the input array)
+  for(int p = 1; p <= numPasses; p++)
+  {
+    flt.reset();
+    y[0] = flt.getSample(y[0], T(1));
+    for(int n = 1; n < N; n++)
+      y[n] = flt.getSample(y[n], t[n]-t[n-1]);
+
+    flt.reset(); // todo: flt.prepareForBackwardPass - i think, we can use the same formula as in 
+                 // the uniform case?
+
+    y[N-1] = flt.getSample(y[N-1], T(1));
+    for(int n = N-2; n >= 0; n--)
+      y[n] = flt.getSample(y[n], t[n+1]-t[n]);
+  }
+
+  int dummy = 0;
 }
 
 void amplitudeDeBeating()
@@ -1821,19 +1856,30 @@ void amplitudeDeBeating()
   // not relevant anymore with the new peak-picker algo:
   envExtractor.setStartMode(EM::ZERO_END);  
   envExtractor.setEndMode(EM::ZERO_END);   // definitely better than extraploation but still not good enough
-  //envExtractor.setMaxSampleSpacing(100);   // should be >= beating period in frames
-  envExtractor.maxSpacing = 300; // 300 is purposefully coarse, so we can see what it does
-  // unit is supposed to be seconds...but is it actually samples - i think so - the envExtractor 
-  // doesn't seem to know about the samplerate anyway
+
+
+  //envExtractor.setMaxSampleSpacing(300); // purposefully coarse to see line segments
+  envExtractor.setMaxSampleSpacing(37);  // lower limit that still works
+  //envExtractor.setMaxSampleSpacing(36);  // too small - picks one of the troughs
+  //envExtractor.setMaxSampleSpacing(35);    // too small - picks two of the troughs
+  // should be >= beating period in frames, 300 is purposefully coarse, so we can still see the 
+  // line segments, unit is supposed to be seconds...but is it actually samples - i think so - the 
+  // envExtractor doesn't seem to know about the samplerate anyway, so the unit is generic, i.e. 
+  // whatever the unit of the time-stamps in passed 
 
   // params for new peack picker algo:
   envExtractor.peakPicker.setShadowWidths(10.0, 100.0); // unit is samples
   envExtractor.connectPeaks(&time[0], &beatEnv[0], &result[0], numFrames);
 
+  // todo: smooth the resulting envelope - use a bidirectional non-uniform 1st order lowpass
+  Vec smoothedResult(numFrames);
+  smooth(time, result, smoothedResult, 0.2, 4);
+
 
   //rsPlotVector(env);
   //rsPlotVectors(ampEnv, beating, beatEnv, result);
-  rsPlotVectors(beatEnv, result);
+  //rsPlotVectors(beatEnv, result);
+  rsPlotVectors(beatEnv, result, smoothedResult);
 
 
 
