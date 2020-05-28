@@ -441,8 +441,8 @@ void rsDampedSineFilterResidueAndPole(double b0, double b1, double a1, double a2
   *r = (b1 + b0 * *p) / (2. * j * p->imag()); // residue location
 }
 
-
-double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x)
+// :
+double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x), does NOT work for any input x
 {
   double res;
   if (fabs(x) <= 1) 
@@ -451,9 +451,6 @@ double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x)
     res = cosh(n*acosh(x)); // should we use acosh(abs(x))? test it by comparing against evaluating
   return res;               // the polynomial directly in a unit test
 }
-// move to rsPolynomial
-
-
 void cheby_win(double *out, int N, double atten)
 {
   // prototype implementation with O(N^2) scaling of the computational cost
@@ -480,14 +477,18 @@ void cheby_win(double *out, int N, double atten)
 
 void cheby_win2(double* out, int M, double atten)
 {
-  using Vec = std::vector<std::complex<double>>;
+  using Vec  = std::vector<std::complex<double>>;
+  using Poly = rsPolynomial<double>;
 
   double alpha = atten / 20;
   double beta  = cosh((1./M) * acosh(pow(10., alpha)));
 
+  /*
   double test = cheby_poly(M, -1.0085833868117133);
   test = cheby_poly(M, -1.01);
   // cheby_poly returns nan for x < 1
+  test = Poly::chebychevDirect(-1.01, M);
+  */
 
   // Compute the complex spectrum of chebychev window:
   Vec W(M); 
@@ -496,7 +497,8 @@ void cheby_win2(double* out, int M, double atten)
   {
     //double num = cos(M*acos(beta*cos(PiDivM*k))); // gives NaN for some values of k
     double arg = beta*cos(PiDivM*k);    // argument for Chebychev polynomial
-    double num = cheby_poly(M, arg);
+    //double num = cheby_poly(M, arg);
+    double num = Poly::chebychevDirect(arg, M);
     double den = cosh(M*acosh(beta));  // can be precomputed - does not depend on k
     W[k].real(num/den);
     W[k].imag(0.0);
@@ -518,6 +520,7 @@ void cheby_win2(double* out, int M, double atten)
   // Fill the output array:
   for(int k = 0; k < M; k++)
     out[k] = W[k].real();
+  // it'S shifted
 
   //rsPlotVector(W);
   rsPlotArray(out, M);

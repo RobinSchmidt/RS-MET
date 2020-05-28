@@ -759,7 +759,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // Evaluation of special polynomials
 
-  /** Evaluates the N-th order Chebychev polynomial T_n(x) at x by recursion. */
+  /** Evaluates the N-th order Chebychev polynomial T_N(x) at x by recursion. */
   static T chebychevRecursive(T x, int N)
   {
     T t0 = T(1); T t1 = x; T tn = T(1);
@@ -768,7 +768,7 @@ public:
     return t0;
   }
 
-  /** Evaluates the N-th order Chebychev polynomial T_n(x) at x by means of cos or cosh. */
+  /** Evaluates the N-th order Chebychev polynomial T_N(x) at x by means of cos or cosh. */
   template<class U>
   static U chebychevDirect(U x, int N)
   {
