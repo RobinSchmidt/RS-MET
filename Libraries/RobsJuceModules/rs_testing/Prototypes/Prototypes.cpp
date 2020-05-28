@@ -441,15 +441,11 @@ void rsDampedSineFilterResidueAndPole(double b0, double b1, double a1, double a2
   *r = (b1 + b0 * *p) / (2. * j * p->imag()); // residue location
 }
 
-// :
-double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x), does NOT work for any input x
+
+double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x), does NOT work for x < -1
 {
-  double res;
-  if (fabs(x) <= 1) 
-    res = cos(n*acos(x));
-  else              
-    res = cosh(n*acosh(x)); // should we use acosh(abs(x))? test it by comparing against evaluating
-  return res;               // the polynomial directly in a unit test
+  if(fabs(x) <= 1) return cos( n*acos( x));
+  else             return cosh(n*acosh(x)); 
 }
 void cheby_win(double *out, int N, double atten)
 {
@@ -464,74 +460,71 @@ void cheby_win(double *out, int N, double atten)
     n = nn-M;
     sum = 0;
     for(i=1; i<=M; i++){
-      sum += cheby_poly(N-1,x0*cos(PI*i/N))*cos(2.0*n*PI*i/N);
-    }
+      sum += cheby_poly(N-1,x0*cos(PI*i/N))*cos(2.0*n*PI*i/N); }
     out[nn] = tg + 2*sum;
-    out[N-nn-1] = out[nn];
-    //if(out[nn]>max)max=out[nn];
-  }
-  //for(nn=0; nn<N; nn++) out[nn] /= max; // normalise everything
+    out[N-nn-1] = out[nn]; }
   RAPT::rsArrayTools::normalizeMean(out, N);
-  return;
 }
+// code adapted from here:
+// http://practicalcryptography.com/miscellaneous/machine-learning/implementing-dolph-chebyshev-window/
+// maybe add to rsWindowFunction as dolphChebychevSLOW
 
 void cheby_win2(double* out, int M, double atten)
 {
+  // seems to not work for odd M - we get strong imaginary parts in the IFFT of the spectrum
+
   using Vec  = std::vector<std::complex<double>>;
   using Poly = rsPolynomial<double>;
 
-  double alpha = atten / 20;
-  double beta  = cosh((1./M) * acosh(pow(10., alpha)));
-
-  /*
-  double test = cheby_poly(M, -1.0085833868117133);
-  test = cheby_poly(M, -1.01);
-  // cheby_poly returns nan for x < 1
-  test = Poly::chebychevDirect(-1.01, M);
-  */
+  double alpha  = atten / 20;
+  double beta   = cosh( (1./M) * acosh(pow(10., alpha)) );
+  double scaler = 1. / cosh(M*acosh(beta)); // do we need this?
 
   // Compute the complex spectrum of chebychev window:
   Vec W(M); 
   double PiDivM = PI / M;
   for(int k = 0; k < M; k++) 
   {
-    //double num = cos(M*acos(beta*cos(PiDivM*k))); // gives NaN for some values of k
     double arg = beta*cos(PiDivM*k);    // argument for Chebychev polynomial
-    //double num = cheby_poly(M, arg);
     double num = Poly::chebychevDirect(arg, M);
-    double den = cosh(M*acosh(beta));  // can be precomputed - does not depend on k
-    W[k].real(num/den);
+    W[k].real(scaler * num);
     W[k].imag(0.0);
   }
-  // when M=32, we get NaN at indices 0,1,2,30,31 ...maybe the acos get an argument > 1 due to 
-  // roundoff error? well - it's not actually roundoff - the avlue is actually properly > 1 due
-  // to beta being > 1
-  // ok, using cheby_poly(M, arg) fixes it for 0,1,2
+  plotComplexVectorReIm(W);
+  // has a strong DC and cosine at the 1st bin and a bunch of (odd) harmonics
+  // when N is odd, the last spectral sample (Nyquist freq) is only half of the DC value (and 
+  // negative which is correct, i think)
+
 
   // Do the inverse FFT:
-  /*
   rsFourierTransformerBluestein<double> fft;
   fft.setBlockSize(M);
   fft.setDirection(rsFourierTransformerRadix2<double>::INVERSE);
   fft.transformComplexBufferInPlace(&W[0]);
-  */ 
-  rsIFFT(&W[0], M);  // works only for powers of two
+  //rsIFFT(&W[0], M);  // works only for powers of two
+
+  plotComplexVectorReIm(W);
+
 
   // Fill the output array:
+  int shift = M/2;  // is this correct when M is odd?
   for(int k = 0; k < M; k++)
-    out[k] = W[k].real();
-  // it'S shifted
-
-  //rsPlotVector(W);
-  rsPlotArray(out, M);
+    out[k] = W[(k+shift)%M].real();
+  RAPT::rsArrayTools::normalizeMean(out, M);
 
   // formulas taken from here:
   // https://www.dsprelated.com/freebooks/sasp/Dolph_Chebyshev_Window.html
-
-
   // https://en.wikipedia.org/wiki/Window_function#Dolph%E2%80%93Chebyshev_window
 
-  int dummy = 0;
+  // something is still wrong - the formual doesn't seem to work - maybe follow the references 
+  // given here to figure out what's wrong:
+  // https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window.html
+  // The formual there is equal to the one in Lyons, which - i think - is also wrong. It may 
+  // produce values outside the range -1..+1 and feed then into acos which gives nan - but 
+  // replacing cos(M*acos(x)) by T_M(x) also doesn't work - it fixes the nan issue, but the window 
+  // looks wrong
+
+  //rsPlotArray(out, M);
 }
 
 

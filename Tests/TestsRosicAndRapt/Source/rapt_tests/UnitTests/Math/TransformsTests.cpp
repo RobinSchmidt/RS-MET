@@ -262,6 +262,9 @@ bool testFourierTrafoArbitrary(int N)
   ft.transformComplexBuffer(&T[0], &x[0]);
   r &= rsAlmostEqual(t, x, tol);
 
+  ft.transformComplexBufferInPlace(&T[0]);
+  r &= rsAlmostEqual(t, T, tol);
+
   return r;
 }
 

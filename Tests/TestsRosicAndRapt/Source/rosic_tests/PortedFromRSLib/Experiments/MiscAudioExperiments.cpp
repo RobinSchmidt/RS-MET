@@ -609,7 +609,9 @@ void windowFunctionSpectra()
 {
   //int windowLength = 11;
   //int windowLength = 128;
-  int windowLength = 32;
+  //int windowLength = 32;
+  //int windowLength = 37;
+  int windowLength = 38;
 
   int fftSize = 8192;
   //int fftSize = 16384;
@@ -757,7 +759,8 @@ void windowFunctionSpectra()
   //plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
 
   //rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
-  plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
+  //plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
+  plt.plotDecibelSpectra(N, &cheby60[0], &cheby60_2[0]);
 
   //rsPlotVectors(salFlatTopFast3, salFlatTopFast4, salFlatTopFast5); 
   //plt.plotDecibelSpectra(N, &salFlatTopFast3[0], &salFlatTopFast4[0], &salFlatTopFast5[0]);
