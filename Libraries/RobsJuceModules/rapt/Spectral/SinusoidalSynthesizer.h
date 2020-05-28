@@ -56,6 +56,10 @@ public:
   sounding result. However, it's perhaps better to use linear interpolation and a smoothing
   filter (todo: add optional smoothing facilities) */
   void setCubicAmplitudeInterpolation(bool shouldBeCubic) { cubicAmplitude = shouldBeCubic; }
+  // todo: maybe optionally interpolate the amplitude linearly on a dB scale - and maybe make it
+  // switchable separately for attack and decay sections - for attacks, linear may be more 
+  // suitable but for decay log-linear (i.e. exponential) may be better (for attack, actually 
+  // inverted exponential may be best - that's what analog envelopes do)
 
   /** Switches the phase interpolation method between cubic (true) and linear (false). By default,
   the phase is interpolated cubically between datapoints because linear interpolation may lead to

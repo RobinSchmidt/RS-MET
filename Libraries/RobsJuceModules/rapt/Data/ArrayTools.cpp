@@ -856,6 +856,19 @@ T rsArrayTools::maxAbs(const T *buffer, int length)
       max = rsAbs(buffer[i]); }
   return max;
 }
+// maybe optimize such that rsAbs is called only once
+
+template <class T>
+static T rsArrayTools::maxAbs(const std::complex<T>* buffer, int length)
+{
+  T maxSquared = T(0);
+  for(int i = 0; i < length; ++i) {
+    T absSquared = rsAbsSquared(buffer[i]);
+    if(absSquared > maxSquared)
+      maxSquared = absSquared; }
+  return sqrt(maxSquared);
+}
+
 
 template <class T>
 int rsArrayTools::maxAbsIndex(const T* const buffer, int length)
@@ -954,10 +967,10 @@ T rsArrayTools::mean(const T *buffer, int length)
 template <class T>
 T rsArrayTools::meanDifference(const T *x, int N)
 {
-  T s = 0;             // sum (of differences)
+  T s = 0;              // sum (of differences)
   for(int i = 1; i < N; i++)
     s += x[i] - x[i-1];
-  return s / (N-1);    // for N values, there are N-1 differences
+  return s / T(N-1);    // for N values, there are N-1 differences
 }
 
 template<class T>
@@ -1110,6 +1123,7 @@ void rsArrayTools::reverse(T* x, int N)
 template <class T>
 void rsArrayTools::reverse(const T* x, T* y, int N)
 {
+  if(x == y) { reverse(y, N); return; }  // reverse in place
   for(int i = 0; i < N; i++)
     y[i] = x[N-1-i];
 }
@@ -1121,20 +1135,6 @@ void rsArrayTools::rightShift(T *buffer, int length, int numPlaces)
   for(int i = length-1; i >= numPlaces; i--)
     buffer[i] = buffer[i-numPlaces];
   fillWithZeros(buffer, numPlaces);
-}
-
-template <class T1, class T2>
-void rsArrayTools::scale(T1 *buffer, int length, T2 scaleFactor)
-{
-  for(int n = 0; n < length; n++)
-    buffer[n] *= (T1)scaleFactor;
-}
-
-template <class T1, class T2>
-void rsArrayTools::scale(const T1 *src, T1 *dst, int length, T2 scaleFactor)
-{
-  for(int n = 0; n < length; n++)
-    dst[n] = scaleFactor * src[n];
 }
 
 template <class T>
@@ -1170,10 +1170,11 @@ void rsArrayTools::shift(T *buffer, int length, int numPlaces)
 }
 
 template <class T>
-void rsArrayTools::subtract(const T *buffer1, const T *buffer2, T *result, int length)
+static T rsArrayTools::shiftToMakeMinimumZero(const T* x, int N, T* y)
 {
-  for(int i = 0; i < length; i++)
-    result[i] = buffer1[i] - buffer2[i];
+  T minVal = minValue(x, N);
+  add(x, -minVal, y, N);
+  return minVal;
 }
 
 template <class T>
@@ -1271,12 +1272,14 @@ T rsArrayTools::weightedSum(const T *w, const T *x, rsUint32 length) // use int
   return s;
 }
 
+/*
 template <class T>
 void rsArrayTools::weightedSum(const T *buffer1, const T *buffer2, T *result, int length, T weight1, T weight2)
 {
   for(int n = 0; n < length; n++)
     result[n] = weight1 * buffer1[n] + weight2 * buffer2[n];
 }
+*/
 
 
 /*

@@ -62,7 +62,7 @@ public:
   static inline void coeffsHighpassMZT(T w, T* b0, T* b1, T* a1)
   {
     *a1 = exp(-w);
-    *b0 =  0.5*(1 + *a1);
+    *b0 =  T(0.5)*(1 + *a1);
     *b1 = -(*b0);
     // w = 0:   a1 = 1, b0 = 1, b1 = -1 -> differentiate and integrate
     // w = pi:  
@@ -74,7 +74,7 @@ public:
   template<class T>
   static inline void coeffsAllpassBLT(T w, T* b0, T* b1, T* a1)
   {
-    T t = tan(0.5*w); // tan w/2
+    T t = tan(T(0.5)*w); // tan w/2
     *b0 = (t-1) / (t+1);
     *b1 = 1.0;
     *a1 = -(*b0);
@@ -91,7 +91,7 @@ public:
   template<class T>
   static inline void coeffsLowpassBLT(T w, T* b0, T* b1, T* a1)
   {
-    T t = tan(0.5*w);
+    T t = tan(T(0.5)*w);
 
     rsAssert(rsIsFiniteNumber(t));
     // hmmm...maybe we should allow t == inf and set a1 = -1 in this case (that's the limiting 
@@ -99,7 +99,7 @@ public:
 
 
     *a1 = (1-t) / (1+t);
-    *b0 = 0.5*(1 - *a1);
+    *b0 = T(0.5)*(1 - *a1);
     *b1 = *b0;
     // w = 0:  t = 0 -> a1 = 1, b0,b1 = 0
     // w = pi: t = inf -> a1,b0,b1 = NaN
@@ -109,9 +109,9 @@ public:
   template<class T>
   static inline void coeffsHighpassBLT(T w, T* b0, T* b1, T* a1)
   {
-    T t = tan(0.5*w);     // maybe re-use w
+    T t = tan(T(0.5)*w);     // maybe re-use w
     *a1 = (1-t) / (1+t);
-    *b0 = 0.5*(1 + *a1);
+    *b0 = T(0.5)*(1 + *a1);
     *b1 = -(*b0);
   }
 
@@ -119,9 +119,9 @@ public:
   template<class T>
   static inline void coeffsLowShelfBLT(T w, T g, T* b0, T* b1, T* a1)
   {
-    T t = tan(0.5*w);  // re-use w
-    t   = g >= 1.0 ? (t-1)/(t+1) : (t-g)/(t+g);
-    T c = 0.5*(g-1);   // re-use g
+    T t = tan(T(0.5)*w);  // re-use w
+    t   = g >= T(1.0) ? (t-1)/(t+1) : (t-g)/(t+g);
+    T c = T(0.5)*(g-1);   // re-use g
     c  += c*t;
     *b0 = 1 + c;
     *b1 = t + c;
@@ -131,14 +131,16 @@ public:
   template<class T>
   static inline void coeffsHighShelfBLT(T w, T g, T* b0, T* b1, T* a1)
   {
-    T t = tan(0.5*w);
-    t   = g >= 1.0 ? (t-1.0)/(t+1.0) : (g*t-1)/(g*t+1);
-    T c = 0.5*(g-1);
+    T t = tan(T(0.5)*w);
+    t   = g >= T(1.0) ? (t-T(1.0))/(t+T(1.0)) : (g*t-1)/(g*t+1);
+    T c = T(0.5)*(g-1);
     c  -= c*t;
     *b0 = 1 + c;
     *b1 = t - c;
     *a1 = -t;
   }
+  // maybe get rid of some of the T(1.0) - replace them by 1, if the compiler doesn't warn (but try
+  // with highest warnign level)
 
   //// todo - but these need the sample-rate as input - can we reformulate the equations such that
   //// we don't need the sample-rate...if w corresponds to some frequency in Hz then pi corresponds 
@@ -167,6 +169,7 @@ public:
     x1 = newX1;
     y1 = newY1;
   }
+  // rename to setState
 
   // todo:
   // void setup(int mode, TPar omega, TPar gain = TPar(1));
@@ -180,6 +183,14 @@ public:
   TPar getB1() const { return b1; }
 
   TPar getA1() const { return a1; }
+  // maybe rename to getCoeffB0, etc...
+
+  TSig getStateX() const { return x1; }
+
+  TSig getStateY() const { return y1; }
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -198,6 +209,88 @@ public:
     x1 = TSig(0);
     y1 = TSig(0);
   }
+
+  /** Sets the internal state to what the filter will converge to when seeing a constant input of 
+  value c for a sufficiently long time. */
+  inline void setStateForConstInput(TSig c)
+  {
+    x1 = c; 
+    y1 = (b0+b1)*c / (TPar(1)-a1);
+  }
+  // maybe rename to setToFinalState, setAsymptoticState
+
+  /** When this filter is used bidirectionally, you can call this function between the forward and 
+  the backward pass to set the internal states of the filter appropriately. It simulates running 
+  the filter for a ringout phase using an all-zeros signal as input and then using the reversed 
+  ringout tail to warm up the filter for the backward pass. It doesn't actually do this but instead
+  uses closed form formulas for what the states should be. */
+  void prepareForBackwardPass()
+  {
+    x1 = a1*y1 + b1*x1;
+    y1 = (a1*b1 + b0)*x1 / (TPar(1) - a1*a1);
+    // For a one-pole filter without a zero, the simplified formula for the y1 state would be:
+    // y1 = (b0*y1*a1) / (1-a1*a1);
+    // If a1 is close to 1 (which is typical for lowpass filters), the denominator 1-a1^2 will
+    // suffer from precision loss due to cancellation - can this be avoided?
+  }
+
+  /** Like prepareForBackwardPass without parameter, but does not assume the input signal to go 
+  down to zero in the tail but instead to settle to some arbitrary constant value c. */
+  void prepareForBackwardPass(TSig c)
+  {
+    // use the simpler function above, if possible:
+    if(c == TSig(0)) { 
+      prepareForBackwardPass(); return; }
+
+    // compute some intermediate values:
+    TPar a2 = a1*a1;                                // a1^2
+    TPar a3 = a1*a2;                                // a1^3
+    TPar cx = b0*a1 + (a2-a1)*b1 - b0;              // coeff for x1 in update of y1
+    TPar cc = b0*(b0*a1 + (a1+TPar(1))*b1) + b1*b1; // coeff for c in update of y1
+
+    // compute new state variables:
+    x1 = b0*c + a1*y1 + b1*x1;                      // update x1
+    y1 = (cc*c - cx*x1) / (a3-a2-a1+TPar(1));       // update y1 using updated x1
+  }
+
+  /** Applies the filter bidirectionally (once forward, once backward) to the input signal x and 
+  stores the result in y. Both buffers are assumed to be of length N. Can be used in place, i.e. 
+  x and y may point to the same buffer. We apply the forward pass first, then the backward pass 
+  but it should make no difference, if it would be done the other way around (up to roundoff 
+  errors). The optional parameters xL,xR (L,R stand for left,right), which default to zero, are 
+  used for telling the filter, how the input signal x should be assumed to continue outside the 
+  range of valid sample indices. We will assume that x[n] = xL for n < 0 and 
+  x[n] = xR for n >= N. */
+  void applyForwardBackward(TSig* x, TSig* y, int N, TSig xL = TSig(0), TSig xR = TSig(0))
+  {
+    // forward pass:
+    setStateForConstInput( xL); for(int n = 0;   n <  N; n++) y[n] = getSample(x[n]);
+
+    // backward pass:
+    prepareForBackwardPass(xR); for(int n = N-1; n >= 0; n--) y[n] = getSample(y[n]);
+  }
+
+  /** Like applyForwardBackward, but does the backward pass first and then the forward pass. This 
+  should make no difference, though (aside from different roundoff errors). I added the function 
+  mostly for testing, if it makes no difference indeed but maybe it could be useful in some way. */
+  void applyBackwardForward(TSig* x, TSig* y, int N, TSig xL = TSig(0), TSig xR = TSig(0))
+  {
+    setStateForConstInput( xR); for(int n = N-1; n >= 0; n--) y[n] = getSample(x[n]);
+    prepareForBackwardPass(xL); for(int n = 0;   n <  N; n++) y[n] = getSample(y[n]);
+  }
+
+  /** Applies the filter bidirectionally with a stride (i.e. index-distance between two successive 
+  samples) that is not necessarrily unity. This may be useful for filtering along a particular 
+  dimension in multidimensional arrays such as images. */
+  void applyForwardBackward(TSig* x, TSig* y, int N, int stride, 
+    TSig xL = TSig(0), TSig xR = TSig(0))
+  {
+    setStateForConstInput( xL); for(int n = 0;   n <  N; n++) y[n*stride] = getSample(x[n*stride]);
+    prepareForBackwardPass(xR); for(int n = N-1; n >= 0; n--) y[n*stride] = getSample(y[n*stride]);
+  }
+  // optimize: use n += stride and n -= stride in loop headers and get rid of the multiplications 
+  // n*stride in loop bodies
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
@@ -268,7 +361,8 @@ public:
   /** This will set the time constant 'tau' for the case, when lowpass mode is chosen. This is
   the time, it takes for the impulse response to die away to 1/e = 0.368... or equivalently, the
   time it takes for the step response to raise to 1-1/e = 0.632... */
-  void setLowpassTimeConstant(TPar newTimeConstant) { setCutoff(1.0/(2*PI*newTimeConstant)); }
+  void setLowpassTimeConstant(TPar newTimeConstant) 
+  { setCutoff(TPar(1)/(TPar(2*PI)*newTimeConstant)); }
 
   /** Sets the gain factor for the shelving modes (this is not in decibels). */
   void setShelvingGain(TPar newGain);

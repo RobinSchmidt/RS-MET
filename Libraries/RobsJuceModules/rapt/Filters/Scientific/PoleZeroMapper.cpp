@@ -39,8 +39,8 @@ void rsPoleZeroMapper<T>::sLowpassToLowshelf(Complex *z, Complex *p, T *k, Compl
   kTmp = *k;
 
   // obtain magnitude-squared numerator polynomial for shelving filter:
-  rsPolynomial<T>::rootsToCoeffs(zTmp, b, N);
-  rsPolynomial<T>::rootsToCoeffs(pTmp, a, N);
+  rsPolynomial<T>::complexRootsToRealCoeffs(zTmp, b, N);
+  rsPolynomial<T>::complexRootsToRealCoeffs(pTmp, a, N);
   rsPrototypeDesigner<T>::shelvingMagSqrNumeratorFromLowpassTransfer(b, a, kTmp, N, G0, G, bS);
 
   // obtain zeros, poles and gain of the new shelving filter:

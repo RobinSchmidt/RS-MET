@@ -204,7 +204,14 @@ bool testMultiArray1()
 
   typedef std::vector<int> VecI;
   typedef std::vector<float> VecF;
+  typedef rsMultiArrayView<float> MAV;
   typedef rsMultiArray<float> MA;
+
+  // test stride compuation:
+  int shape[3] = { 2,4,3 };
+  int strides[3];
+  MAV::computeStrides(3, shape, strides);
+  r &= strides[0] == 12 && strides[1] == 3 && strides[2] == 1;
 
 
   // let's see, if the example code in the documentation of rsMultiArrayView works:
@@ -219,7 +226,12 @@ bool testMultiArray1()
   // -implement multi-index to flat-index conversion a static member function in 
   //  rsMultiArrayView with and without using a strides-array and test it
   //  -maybe make performance tests with and without precomputed strides
-  // -t
+  // -let client code handle allocation of the shape/strides array - we want cheap creation of 
+  //  views...or maybe factor out a class rsMultiArrayViewBase
+
+
+
+
 
 
 

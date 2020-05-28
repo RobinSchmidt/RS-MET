@@ -55,9 +55,6 @@ template void RAPT::dfst(int, double *, double *, int *, double *);
 // ...try what happens now, if we delete these instantiations again (and maybe revert fft4g to its
 // old state - maybe it was using the rapt version in rosic that made the difference...)
 
-template class RAPT::rsMatrixView<double>;
-template class RAPT::rsMatrix<double>;
-
 template class RAPT::rsNodeBasedFunction<double>;
 template class RAPT::rsParametricBellFunction<double>;
 template class RAPT::rsPositiveBellFunctions<double>;

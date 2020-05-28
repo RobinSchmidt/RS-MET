@@ -6,7 +6,7 @@ care to free the memory associated with the pointer via delete[], when the c-str
 anymore.  */
 JUCE_API char* toZeroTerminatedString(juce::String stringToConvert);
 
-/** Cuts a string which represents a full path to the filenam only. */
+/** Cuts a string which represents a full path to the filename only. */
 JUCE_API juce::String extractFileName(juce::String fullPath);
 
 /** Creates a string with informations about an audiofile that was passed. */

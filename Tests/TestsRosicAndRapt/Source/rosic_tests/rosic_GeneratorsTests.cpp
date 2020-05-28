@@ -51,14 +51,38 @@ void rotes::testOscillatorStereo()
   plotData(plotLength, plotIndices, plotData1[0], plotData2[0]);
 }
 
+
+void renderLorenzSoundToFile(int numSamples)
+{
+  rosic::LorentzSystem lorentzSystem;
+  lorentzSystem.setPseudoFrequency(500);
+
+  int N = numSamples;
+  std::vector<double> x(N), y(N), z(N);
+  lorentzSystem.getState(&x[0], &y[0], &z[0]);
+  for(int n = 1; n < N; n++)
+  {
+    lorentzSystem.iterateState();
+    lorentzSystem.getState(&x[n], &y[n], &z[n]);
+  }
+
+
+  RAPT::rsArrayTools::normalize(&x[0], N, 1.0, true);
+  RAPT::rsArrayTools::normalize(&y[0], N, 1.0, true);
+  RAPT::rsArrayTools::normalize(&z[0], N, 1.0, true);
+  writeToMonoWaveFile("LorenzX.wav", &x[0], N, 44100, 16);
+  writeToMonoWaveFile("LorenzY.wav", &y[0], N, 44100, 16);
+  writeToMonoWaveFile("LorenzZ.wav", &z[0], N, 44100, 16);
+}
+
 void rotes::testLorentzSystem()
 {
-  static const int N = 2000;
+  renderLorenzSoundToFile(100000);
 
+  static const int N = 2000;
 
   rosic::LorentzSystem lorentzSystem;
   lorentzSystem.setPseudoFrequency(1000);
-
 
   double t[N], x[N], y[N], z[N];
   lorentzSystem.getState(&x[0], &y[0], &z[0]);

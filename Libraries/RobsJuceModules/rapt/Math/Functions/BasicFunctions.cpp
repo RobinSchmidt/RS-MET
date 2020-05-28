@@ -77,10 +77,13 @@ inline double rsExpToLinWithOffset(double in, double inMin, double inMax, double
 
 inline bool rsIsCloseTo(double x, double targetValue, double tolerance)
 {
+  return rsAbs(x - targetValue) <= tolerance;
+  /*
   if(fabs(x - targetValue) <= tolerance)
     return true;
   else
     return false;
+    */
 }
 /*
 template<class T>
@@ -118,6 +121,7 @@ inline bool rsIsPowerOfTwo(unsigned int x)
   return false;
 }
 
+/*
 template<class T>
 inline bool rsIsInRange(T x, T min, T max)
 {
@@ -126,6 +130,7 @@ inline bool rsIsInRange(T x, T min, T max)
   else
     return false;
 }
+*/
 
 inline int rsIntAndFracPart(double x, double &frac)
 {

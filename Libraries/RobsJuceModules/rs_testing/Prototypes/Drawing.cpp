@@ -926,3 +926,29 @@ int clipTriangleToUnitSquare2(const rsVector2DF& a, const rsVector2DF& b, const 
     out[i] = p[i];
   return np;
 }
+
+//=================================================================================================
+
+rsImage<rsPixelRGB> rsConvertImage(
+  const rsImage<float>& R, const rsImage<float>& G, const rsImage<float>& B, bool clip)
+{
+  int w = R.getWidth();
+  int h = R.getHeight();
+  rsAssert(G.hasShape(w, h));
+  rsAssert(B.hasShape(w, h));
+  rsImage<rsPixelRGB> img(w, h);
+  if(clip) {
+    for(int j = 0; j < h; j++) {
+      for(int i = 0; i < w; i++) {
+        img(i, j).r = (unsigned char)(255.f * rsClip(R(i, j), 0.f, 1.f));
+        img(i, j).g = (unsigned char)(255.f * rsClip(G(i, j), 0.f, 1.f));
+        img(i, j).b = (unsigned char)(255.f * rsClip(B(i, j), 0.f, 1.f)); }}}
+  else {
+    for(int j = 0; j < h; j++) {
+      for(int i = 0; i < w; i++) {
+        img(i, j).r = (unsigned char)(255.f * R(i, j));
+        img(i, j).g = (unsigned char)(255.f * G(i, j));
+        img(i, j).b = (unsigned char)(255.f * B(i, j)); }}}
+  return img;
+}
+//template class rsImage<rsPixelRGB>; 

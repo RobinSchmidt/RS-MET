@@ -37,6 +37,25 @@ void rsPlotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMar
 template void rsPlotSignalWithMarkers(
   double* signal, int signalLength, double* markers, int numMarkers);
 
+
+template<class T>
+void rsPlotArraysXYWithMarks(const T* x, const T* y, int N, const std::vector<int>& marks)
+{
+  std::vector<T> xm = RAPT::rsSelect(x, marks);
+  std::vector<T> ym = RAPT::rsSelect(y, marks);
+  int M = (int) marks.size();
+  GNUPlotter plt;
+  plt.addDataArrays(N, x, y);
+  plt.addDataArrays(M, &xm[0], &ym[0]);
+  plt.setGraphStyles("lines", "points");
+  plt.setPixelSize(1000, 300);
+  plt.plot();
+}
+template void rsPlotArraysXYWithMarks(const double* x, const double* y, int N, 
+  const std::vector<int>& marks);
+
+
+
 template<class T>
 void rsPlotDecibels(int N, T* x, T *mag)
 {

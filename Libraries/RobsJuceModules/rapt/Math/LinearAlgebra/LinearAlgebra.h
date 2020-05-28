@@ -71,6 +71,8 @@ public:
   template<class T>
   //static bool rsSolveLinearSystem(const T **A, T *x, const T *b, int N); // compiler error
   static bool rsSolveLinearSystem(T** A, T* x, const T* b, int N);
+  // deprecate! 
+
   //static bool rsSolveLinearSystem(T **A, T *x, T *b, int N);
     // maybe have possibly different types for the matrix elements and vector elements - some 
     // equations (for curves in Salomon's Computer Graphics... for example) are formulated in terms 
@@ -85,6 +87,7 @@ public:
   is Gaussian elimination with partial pivoting (...i think -> verify this). */
   template<class T>
   static bool rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N);
+  // deprecate!..but keep around for the comments
 
   // todo: add functions to solve NxM systems with N != M (find minimum-norm solution for 
   // underdetermined systems and least-squares approximation for overdetermined systems...
@@ -99,6 +102,12 @@ public:
   /** Inverts the matrix A via Gauss-Jordan elimination with partial pivoting. */
   template<class T>
   static bool rsInvertMatrix(T **A, int N);
+  // deprecate!
+
+
+
+
+
 
   /** Solves the tridiagonal system of equations defined by a NxN matrix having the 3 nonzero 
   diagonals 'lowerDiagonal', 'mainDiagonal' and 'upperDiagonal' where the 'mainDiagonal' array 

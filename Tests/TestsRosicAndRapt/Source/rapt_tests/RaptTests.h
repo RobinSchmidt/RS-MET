@@ -31,6 +31,8 @@ void seriesConnectionDecay();
 
 // Generator Experiments:
 
+void noise();
+void noiseTriModal();
 void blit();
 void blep();
 //void blamp();
@@ -68,14 +70,27 @@ void phaseScopeLissajous();
 void splineArc();
 void triangles();
 void pixelCoverage();
+void contours();
+void complexContours();
+void implicitCurve();
+void parametricCurve();
+void spirals();   // move elsewhere Demos/Examples/Art/...
+void fractal();
+void differentialGeometry();
 
-
-// Math Experiements:
+// Math Experiments:
+// wait - what about the file MathExperiments.h - shouldn't they be declared there?
 
 void ellipseLineIntersections();
-void finiteDifferenceStencilCoeffs();
 void interpolatingFunction();
 void linearRegression();
+void multipleRegression();
+void polynomialRegression();
+void gaussianRegression();
+void butterworthViaGaussians();
+
+void numericOptimization();
+
 void polynomialPrediction();
 void probabilityLogic();
 void productLogPlot();

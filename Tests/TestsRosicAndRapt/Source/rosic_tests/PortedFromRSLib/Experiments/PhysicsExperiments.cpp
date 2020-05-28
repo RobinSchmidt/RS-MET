@@ -236,7 +236,7 @@ void waveEquation1D()
 
 
 // move all this plotting stuff into rs_testing module
-
+/*
 void plotMatrix(rsMatrix<double>& A, bool asHeatMap)  // use const
 {
   GNUPlotter plt;
@@ -252,6 +252,7 @@ void plotMatrix(rsMatrix<double>& A, bool asHeatMap)  // use const
   else
     plt.plot3D();
 }
+*/
 // move to rs_testing, maybe have an option to plot it as image/heatmap
 // factor out a function that takes a plotter reference as argument, so we can do some setup calls
 // before plotting - such as setting plotting ranges
@@ -402,7 +403,7 @@ void rectangularRoom()
   int Nx = 11;
   int Ny = 11;
   int Nz = 11;
-  float dt = 0.0025;  // time-step between two samples
+  float dt = 0.0025f;  // time-step between two samples
 
   // room lengths in the 3 coordiniates (length, width, height)
   float Lx = 1.f;
@@ -690,7 +691,61 @@ void particleSystem()
   //  -it seems to depend on the stepsize
   //  -maybe we should apply the stepSize to the velocity update?
 }
+// todo:
+// -create particle systems with more complex interactions, like every particle has a number of 
+//  generic "features" A,B,C,D,... represented as real numbers (think: mass, charge, etc.)
+// -for each such feature, there's a specific force-distance law
+// -let there be different types of particles, like type "red": A = 0.5, B = -2, C = 1.5, etc. - 
+//  i.e. each type has a particular set of numeric values assigned for the different features
+//  (these particle types could be seen as "atoms" of the various chemical elements)
+// -one of these features could be "size" or "radius" and the corresponding force between two
+//  particles should be zero if their distance is less than the sum of the radii and 
+//  increase sharply, when the distance gets smaller than that -> avoid interpenetration
+// -let there be a drag force that tends to slow down motion and a temperature that gives the 
+//  particles random bumps into random directions at each time step
+//  ...or maybe drag and temperature will also emerge if we don't define any globally?
+// -with the right set of force-laws, i hope that we may get interesting emergent behavior, like 
+//  particles assembling to structures which move around, grow, replicate, eat, shit, etc. - i.e. 
+//  life-like behavior
+// -some simple structures that would be interesting to observe (and/or create):
+//  -dipoles: exert a force of certain kind into one direction and the same force with opposite 
+//   sign into the opposite direction - can we assemble something like that from the given atoms?
+//   -would they tend to rotate in the right circumstances (i.e. feel a torque?)
+//   -or should dipoles and torques be built into the basic particles ("atoms")
+// -this can be done in 2D or 3D - in 2D, it would be easy to visualize - atoms of different kind 
+//  can be given different colors
+// -as a further complication, the particles/atoms could have a state and behave differently in 
+//  different states (i.e. the force-laws could be state dependent...or the response to forces 
+//  could be state dependent)
+// -it would be interesting, if energy (in the form of temperature) could be absorbed or liberated 
+//  when structures assemble or disassemble (chemical bonds form or break up)
+// -the force-distance-law F(d) for each feature should be a function that goes to minus inf for
+//  d -> 0, cross the x-axis at some specified "preferred distance", then show a bump of positive 
+//  values (height and position adjustable) and then fall down to zero. for example, a function 
+//  like F(d) = a/(b + d^n) - c/d^m, for example F(d) = 2/(1+d^3) - 0.1/d^2, see
+//    https://www.desmos.com/calculator/42glxvmavv 
+//  the 5 free parameters a,b,c,n,m should be adjusted in terms of asymptotic repulsion m, 
+//  preferred distance, bump position, bump height, asymptotic attraction n
+//  -as a variation, the asymptotic atttraction could also go down exponentially
+//  -the repulsion is there to model that no two particles can occupy the same position...although,
+//   that could be also exclusively done via the force that depends on the size feature - not every
+//   force must go to -inf
+// -or maybe use a force-distance function that has many different zero-crossings (i.e. equilibria)
+//  like F(d) = cos(w*d^k + phi) * a/(b + d^n) - c/d^m, i.e. the first term is multiplied by a 
+//  cosine wave (of possibly varying frequency, hence the exponent k). the upward zero crossings 
+//  would correspond to stable equilibria ("energy levels"), the downward crossings to unstable 
+//  ones. if k > 1, the oscillation frequency goes up with distance, possibly contributing to more
+//  chaotic interactions between particles that are far apart
+//  -the particles would probably tend to oscillate around the stable equilibria, at least, when 
+//   there's no friction - which probably shouldn't be - maybe then thermal noise will emerge from
+//   these oscillations - they may interact chaotically, once in while kicking one atom to another
+//   energy level, which in turn may be releasing or absorbing some amount of the ambient thermal 
+//   energy?
+// https://www.desmos.com/calculator/lkzbwj5max
 
+// -see: https://www.youtube.com/watch?v=Z_zmZ23grXE
+// https://demystifyingscience.com/blog/how-to-visualize-electricity
+// https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Book%3A_An_Introduction_to_the_Electronic_Structure_of_Atoms_and_Molecules_(Bader)/03%3A_The_Hydrogen_Atom/3.03%3A_The_Probability_Distribution_of_the_Hydrogen_Atom
 
 
 //template<class T>

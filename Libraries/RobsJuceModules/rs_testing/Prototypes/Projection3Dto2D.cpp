@@ -4,7 +4,7 @@ rsProjection3Dto2D<T>::rsProjection3Dto2D()
   setup(0, 0, -1, 0, 1, 0, 0, 0); 
   // camera at (0,0,-1) looking at (0,0,0) with no rotation and unit zoom (standard position)
 
-  // maybe late setup a parallel projection by default
+  // maybe later setup a parallel projection by default
 }
 
 template<class T>

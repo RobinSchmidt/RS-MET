@@ -14,5 +14,5 @@ void rsMinSqrDifFixSum(T* v, int N, T* s, T* w = nullptr);
 // nullptr too in which case the function allocates the workspace itself and cleans it up 
 // afterwards (for more convenient use)
 // maybe rename the function with suffix "Simple" or "Fast" or something to indicate that it uses 
-// the simple prentadiagonal algorithm - and make a version of that function that uses class
+// the simple pentadiagonal algorithm - and make a version of that function that uses class
 // rsBandDiagonalSolver for better numeric precision

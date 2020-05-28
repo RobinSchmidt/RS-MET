@@ -299,7 +299,8 @@ public:
 // -a flat top in the frequency domain will give smaller amplitude error for frequencies that
 //  fall between the analysis bins (see SRS flat top window)
 // -a decreasing sidelobe level may be less interesting as feature since it doesn't make much of
-//  a difference, if leakage error comes form nearby or more distant bins
+//  a difference, if leakage error comes from nearby or more distant bins - it will be just "noise"
+//  or "error" all the same
 //
 // for windowed-sinc filters and -interpolation:
 // -low sidelobes are most important - their height ultimately determines the ripple and leakage

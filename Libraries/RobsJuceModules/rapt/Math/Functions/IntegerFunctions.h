@@ -88,7 +88,7 @@ n
 3:  1 3 3 1
 4: 1 4 6 4 1
 etc.
-so the c-array should be of length n+1. The k-th element of this array is the n-over-k binomial
+so the c-array should be of length n+1. The k-th element of this array is the n-choose-k binomial
 coefficient, so the function may be used to compute the binomial coefficients for all k at once,
 given some value of n. This is more efficient then calling binomialCoefficient for each k.
 (\todo: is it really more efficient? measure this) */
@@ -168,7 +168,8 @@ template<class TInt>
 void rsStirlingNumbersSecondKind(TInt **S, TInt nMax);
 
 /** Sum of all integers between min and max (min and max inclusive). The function uses a closed 
-form formula, so it doesn't actually have to loop over the values. */
+form formula, so it doesn't actually have to loop over the values. 
+ToDo: document the safe range for which no overflow occurs */
 template<class TInt>
 TInt rsSum(TInt min, TInt max);
   // \todo: if possible, make a generalized version that returns the sum of all k^n for some
@@ -217,9 +218,11 @@ RS_INLINE TUInt rsPowInt(TUInt base, TUInt exponent)
   for(TUInt p = 1; p <= exponent; p++)
     result *= base;
   return result;
-  // in RSLib MathBasics.inl, there's a better algorithm for that
-}
 
+}
+// in RSLib MathBasics.inl, there's a better algorithm for that
+// see also here - binary exponentiation:
+// https://www.youtube.com/watch?v=5FJ7NJH_y74&list=PLb0zKSynM2PA4CaRRB5QBG8H-qUreEKyi&index=135
 
 template <class T>
 RS_INLINE T rsProduct(T min, T max)
@@ -244,5 +247,8 @@ RS_INLINE TInt rsWrapAround(TInt numberToWrap, TInt length)
     numberToWrap += length;
   return numberToWrap;
 }
+
+// todo: drag over rsSumOfProducts from IntegerFunctionTests.cpp
+
 
 #endif

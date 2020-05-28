@@ -147,6 +147,65 @@ void plotVector(std::vector<double> v);  // replace by RAPT::rsPlotVector
 void plotComplexVectorReIm(std::vector<std::complex<double>> v);
 
 
+/** Plots the matrix entries as surface above a coordinate system given by x,y 
+todo: check/assert that the dimensions of the matrix z fit together with the lengths of x,y 
+// try to make inputs const */
+template<class T>
+//void plotMatrix(const RAPT::rsMatrix<T>& z, const std::vector<T>& x, const std::vector<T>& y)
+void plotMatrix(RAPT::rsMatrix<T>& z, std::vector<T>& x, std::vector<T>& y)
+{
+  double** z2;
+  RAPT::rsMatrixTools::allocateMatrix(z2, z.getNumRows(), z.getNumColumns());
+
+  for(int i = 0; i < z.getNumRows(); i++)
+    for(int j = 0; j < z.getNumColumns(); j++)
+      z2[i][j] = z(i,j);
+
+  GNUPlotter plt;
+  plt.plotSurface((int)x.size(), (int)y.size(), &x[0], &y[0], z2);
+
+  RAPT::rsMatrixTools::deallocateMatrix(z2, z.getNumRows(), z.getNumColumns());
+}
+// get rid of that - use function below instead - maybe it should take optional x,y arguments
+
+inline void plotMatrix(rsMatrix<double>& A, bool asHeatMap)  // use const
+{
+  GNUPlotter plt;
+  //plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getDataPointerConst());
+  plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getRowPointer(0));
+  if(asHeatMap) {
+    plt.addCommand("set size square");  // make optional
+    plt.addGraph("i 0 nonuniform matrix w image notitle");
+    plt.addCommand("set palette gray");
+    //plt.setRange(0, A.getNumRows()-1, 0, A.getNumColumns()-1, -1.0, +1.0); // doesn't work
+    plt.plot();
+  }
+  else
+    plt.plot3D();
+}
+// un-inline
+
+
+/** Plots the rows of the matrix against the column-index, i.e. the rows are interpreted as 
+several functions of x where x is the column index. */
+template<class T>
+void plotMatrixRows(const RAPT::rsMatrix<T>& A)
+{
+  GNUPlotter plt;
+  for(int i = 0; i < A.getNumRows(); i++)
+    plt.addDataArrays(A.getNumColumns(), A.getRowPointerConst(i));
+  plt.plot();
+}
+
+template<class T>
+void plotMatrixRows(const RAPT::rsMatrix<T>& A, T* x)
+{
+  GNUPlotter plt;
+  for(int i = 0; i < A.getNumRows(); i++)
+    plt.addDataArrays(A.getNumColumns(), x, A.getRowPointerConst(i));
+  plt.plot();
+}
+
 
 /** Plots the magnitude spectrogram given in s against time axis t (of length numFrames) and
 frequency axis f (of length numBins). */
@@ -223,6 +282,23 @@ model of a partial for comparison. */
 void plotModeVsSineAmpEnv(
   rsModalFilterParameters<double>& modal, RAPT::rsSinusoidalPartial<double>& sinusoidal);
 
+/** Adds partial data from x- and y-arrays - only those datapoints that are listed in indices 
+array. */
+inline void addDataPartially(GNUPlotter& plt, 
+  const std::vector<double>& x, const std::vector<double>& y, const std::vector<int> indices)
+{
+  rsAssert(x.size() == y.size());
+  int M = int(indices.size());
+  std::vector<double> xt(M), yt(M);           // temporary arrays to hold partial data
+  for(int m = 0; m < M; m++)  {
+    int n = indices[m];                       // index into x- and y-arrays
+    rsAssert(n >= 0 && n < (int) x.size());
+    xt[m] = x[n]; 
+    yt[m] = y[n]; }
+  plt.addDataArrays(M, &xt[0], &yt[0]);
+  // maybe use rsSelect - but that uses an array of type size_t for the indices - maybe make 
+  // another version that uses int
+}
 
 
 

@@ -244,11 +244,33 @@ inline T rsExpToLinWithOffset(T in, T inMin, T inMax, T outMin, T outMax, T offs
 template<class T>
 inline bool rsIsCloseTo(T x, T targetValue, T tolerance)
 {
+  rsAssert(tolerance >= T(0), "tolerance must be non-negative");
   if(rsAbs(x - targetValue) <= tolerance)
     return true;
   else
     return false;
 }
+
+template<class T>
+inline bool rsIsCloseTo(std::complex<T> x, std::complex<T> targetValue, std::complex<T> tolerance)
+{
+  rsAssert(tolerance.imag() == T(0), "tolerance is assumed to be a real number");
+  rsAssert(tolerance.real() >= T(0), "tolerance must be non-negative");
+  if( abs(x - targetValue) <= tolerance.real() )
+    return true;
+  else
+    return false;
+}
+
+template<class T>
+inline bool rsIsInRange(T x, T min, T max)
+{
+  if(x >= min && x <= max)
+    return true;
+  else
+    return false;
+}
+
 
 template<class T>
 inline T rsLinToExp(T in, T inMin, T inMax, T outMin, T outMax)

@@ -1,7 +1,18 @@
 #ifndef RAPT_POLYNOMIAL_H
 #define RAPT_POLYNOMIAL_H
 
-/** A class for representing polynomials and doing computations with them. */
+/** A class for representing polynomials and doing computations with them. 
+
+There are some static functions that use their own template parameter types independent from the 
+"T" that is used to instantiate the class. That's the case, for example, for functions that expect 
+real inputs and produce complex outputs (like root-finders) which then use "R" for the real type
+and std::complex<R> for the complex type. This is done because this class template should be able
+to be instantiated for real and complex types "T", so using the same template parameter could lead
+to confusion like the compiler using a nested complex type which makes no sense
+....under construction....tbc...
+
+
+*/
 
 // todo: 
 
@@ -35,6 +46,10 @@ public:
     setCoeffs(coefficients);
   }
 
+  /** Promotes a number to a 0th degree polynomial. */
+  rsPolynomial(const T& number)
+  { coeffs.resize(1); coeffs[0] = number; }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -50,6 +65,10 @@ public:
   { setRoots(newRoots.data(), (int)newRoots.size(), scaler); }
 
   void truncateTrailingZeros(const T& threshold = T(0));
+
+  void negate()
+  { rsArrayTools::negate(&coeffs[0], &coeffs[0], (int) coeffs.size()); }
+  // the conversion to int may be avoided
 
 
 
@@ -75,6 +94,13 @@ public:
   T getLeadingCoeff() const { return rsLast(coeffs); }
   // what if we have trailing zeros in the coeff array?
 
+  /** Returns a pointer to our coefficient array - breaks encapsulation - use with care! */
+  T* getCoeffPointer() { return &coeffs[0]; }
+  // nope! when we really need low-level access to the coeff-array, we declare the 
+  // functions/classes that need it as friends. comment this out later
+
+  const T* getCoeffPointerConst() const { return &coeffs[0]; }
+
   /** Returns true, iff this polynomial is monic, i.e. the coefficient for the highest power (the
   leading coefficient) is unity. Monic polynomials are important because they arise when 
   multiplying out the product form. */
@@ -93,8 +119,9 @@ public:
   // given order will be evaluated (setting integration constants to zero))
 
 
-
   //T definiteIntegral(const T& lowerLimit, const T& upperLimit);
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
@@ -168,7 +195,8 @@ public:
   confusing - maybe write a "pow" function instead. */
   rsPolynomial<T> operator^(int k) const 
   {
-    // todo: make this more efficient - only one memory allocation is needed
+    // optimize: allocate once and repeatedly convolve the coeff-array of r with the coeff array 
+    // of this (in place)
     rsPolynomial<T> r(std::vector<T>({T(1)}));
     for(int i = 1; i <= k; i++)
       r = r * (*this);
@@ -195,6 +223,8 @@ public:
   // todo: have an overloaded operator() that takes a polynomial as input and returns another 
   // polynomial -> implement nesting/composition
 
+  /** Read and write access to i-th coefficient (breaks encapsulation - use with care). */
+  T& operator[](int i) { return coeffs[i]; }
 
   //===============================================================================================
   /** \name Computations on raw coefficient arrays */
@@ -249,8 +279,9 @@ public:
   /** Evaluates a complex polynomial with coeffs "a" and its first and second derivative at the 
   input "z", stores the results in P[0],P[1],P[2] and returns an error estimate for the evaluated
   P[0] (verify this). This is used in the Laguerre root-finding algorithm. */
-  static T evaluateWithTwoDerivativesAndError(const std::complex<T>* a, int degree,
-    std::complex<T> z, std::complex<T>* P);
+  template<class R>
+  static R evaluateWithTwoDerivativesAndError(const std::complex<R>* a, int degree,
+    std::complex<R> z, std::complex<R>* P);
   // rename "P" to "y" ...or "w2 as is common in complex functions
 
   /** Evaluates the cubic polynomial a[0] + a[1]*x + a[2]*x^2 + a[3]*x^3 at the given x. */
@@ -424,16 +455,20 @@ public:
   /** \name Roots */
 
   /** Finds all complex roots of a polynomial by Laguerre's method and returns them in "roots". */
-  static void roots(const std::complex<T>* a, int degree, std::complex<T>* roots);
+  template<class R>
+  static void roots(const std::complex<R>* a, int degree, std::complex<R>* roots);
   // allocates heap memory
 
-  static void roots(const T *a, int order, std::complex<T> *roots);
+  /** Same, but for real coefficients */
+  template<class R>
+  static void roots(const R *a, int degree, std::complex<R> *roots);
   // allocates heap memory
 
   /** Converges to a complex root of a polynomial by means of Laguerre's method using the
   "initialGuess" as first estimate. */
-  static std::complex<T> convergeToRootViaLaguerre(const std::complex<T> *a, int degree,
-    std::complex<T> initialGuess = std::complex<T>(0.0, 0.0));
+  template<class R>
+  static std::complex<R> convergeToRootViaLaguerre(const std::complex<R> *a, int degree,
+    std::complex<R> initialGuess = std::complex<R>(0.0, 0.0));
   // allocates heap memory
 
     /** Computes the root of the linear equation: \f[ a x + b = 0 \f] which is simply given by
@@ -445,7 +480,8 @@ public:
   given by: \f[ x_{1,2} = \frac{-b \pm \sqrt{b^2-4ac}}{2a} \f] and stores the result in two-element
   array which is returned. When the qudratic is degenerate (i.e, a == 0), it will fall back to the
   rootsLinear() function, and return a one-element array.  */
-  static std::vector<std::complex<T>> rootsQuadratic(const T& a, const T& b, const T& c);
+  template<class R>
+  static std::vector<std::complex<R>> rootsQuadratic(const R& a, const R& b, const R& c);
   // rename inputs to a0,a1,a2 (change their order) ..or maybe deprecate this function
 
     /** Computes the two roots of the quadratic equation: \f[ a_0 + a_1 x + a_2 x^2 = 0 \f] and
@@ -453,34 +489,39 @@ public:
   ascending order, i.e. r1 < r2. In case of a (real) double root, we'll have r1 == r2 and when the
   roots of the equation are actually complex, the outputs will also be equal and contain the real
   part of the complex conjugate pair. */
-  static void rootsQuadraticReal(const T& a0, const T& a1, const T& a2, T* r1, T* r2);
+  template<class R>
+  static void rootsQuadraticReal(const R& a0, const R& a1, const R& a2, R* r1, R* r2);
 
+  template<class R>
   static void rootsQuadraticComplex(
-    const std::complex<T>& a0, const std::complex<T>& a1, const std::complex<T>& a2,
-    std::complex<T>* x1, std::complex<T>* x2);
+    const std::complex<R>& a0, const std::complex<R>& a1, const std::complex<R>& a2,
+    std::complex<R>* x1, std::complex<R>* x2);
     // todo: make optimized version for real coefficients (but complex outputs)
 
-  /** Computes the three roots of the cubic equation: \f[ a x^3 + b x^2 + c x + d = 0 \f] and
-  stores the result in the three-element array which is returned. When the cubic is degenerate
-  (i.e, a == 0), it will fall back to the getRootsOfQuadraticEquation() function, and return a
-  two-element array (or a one-element array, when b is also zero). */
-  static std::vector<std::complex<T>> rootsCubic(const T& a, const T& b, const T& c, const T& d);
+  /** Computes the three roots of the cubic equation: \f[ a x^3 + b x^2 + c x + d = 0 \f] with real
+  coefficients and stores the result in the three-element array which is returned. When the cubic 
+  is degenerate (i.e, a == 0), it will fall back to the getRootsOfQuadraticEquation() function, and 
+  return a two-element array (or a one-element array, when b is also zero). */
+  template<class R>
+  static std::vector<std::complex<R>> rootsCubic(const R& a, const R& b, const R& c, const R& d);
   // todo: make the order of the arguments consistent with evaluateCubic - but careful - this will
   // break client code! ...rename parameters to a0,a1,a2,a3 to make it clear, how it's meant
 
   /** Discriminant of cubic polynomial \f[ a_0 + a_1 x + a_2 x^2 + a_3 x^3 = 0 \f].
   D > 0: 3 distinct real roots, D == 0: 3 real roots, 2 or 3 of which may coincide,
   D < 0: 1 real root and 2 complex conjugate roots */
-  static T cubicDiscriminant(const T& a0, const T& a1, const T& a2, const T& a3);
+  template<class R>
+  static R cubicDiscriminant(const R& a0, const R& a1, const R& a2, const R& a3);
   // rename to discriminantCubic
 
   // todo: write function quadraticDiscriminant
 
   /** under construction - does not yet work */
+  template<class R>
   static void rootsCubicComplex(
-    std::complex<T> a0, std::complex<T> a1, 
-    std::complex<T> a2, std::complex<T> a3, 
-    std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3);
+    std::complex<R> a0, std::complex<R> a1, 
+    std::complex<R> a2, std::complex<R> a3, 
+    std::complex<R>* r1, std::complex<R>* r2, std::complex<R>* r3);
 
 
   // implement rootsQuadraticReal, rootsQuadraticComplex, rootsCubicReal, rootsCubicComplex
@@ -497,8 +538,9 @@ public:
   the arguments min and max give upper and lower bounds for the root (which will be returned in
   cases where the iteration diverges, which the caller should avoid in the first place) and
   maxIterations gives the maximum number of iteration steps. */
-  static T cubicRootNear(T x, const T& a, const T& b, const T& c, const T& d, const T& min, 
-    const T& max, int maxIterations = 10);
+  template<class R>
+  static R cubicRootNear(R x, const R& a, const R& b, const R& c, const R& d, const R& min, 
+    const R& max, int maxIterations = 10);
   // todo: rename to rootCubicNear, change order of variables, maybe use bisection, if 
   // newton-iteration diverges
 
@@ -509,7 +551,8 @@ public:
   the arguments min and max give upper and lower bounds for the root (which will be returned in
   cases where the iteration diverges, which you should avoid in the first place) and maxIterations
   gives the maximum number of iteration steps. */
-  static T rootNear(T x, const T* a, int order, const T& min, const T& max, 
+  template<class R>
+  static R rootNear(R x, const R* a, int order, const R& min, const R& max, 
     int maxIterations = 32);
 
   /** Same as above but accepts real coefficients. */
@@ -536,16 +579,16 @@ public:
   }
   // make const-correct - first make functions in rsLinearAlgebra const-correct
 
-  /** Computes polynomial coefficients from the roots. \todo: get rid of that - replace by function
-  below */
+  /** Computes polynomial coefficients from the roots. 
+  \todo: get rid of that - replace by function below */
   static std::vector<std::complex<T>> rootsToCoeffs(const std::vector<std::complex<T>>& roots);
-  // allocates heap memory
+  // allocates heap memory - todo: avoid that
 
   /** Computes polynomial coefficients from the roots. The roots should be passed in the array "r"
   of length "N", the coefficients will be returned in the array "a" of length "N" + 1. The
   coefficient for the highest power a[N] will be normalized to unity. */
   static void rootsToCoeffs(const std::complex<T> *r, std::complex<T> *a, int N);
-  // allocates heap memory
+  // allocates heap memory - todo: avoid that
   // rename to finiteRootsToCoeffs
 
   /** Similar to rootsToCoeffs(Complex *r, Complex *a, int N), but assumes that the roots are
@@ -553,7 +596,8 @@ public:
   coefficients, so the type of the coefficient-array is T instead of Complex. You should use
   this function only if you know in advance that the coefficients will indeed come out as purely
   real */
-  static void rootsToCoeffs(const std::complex<T> *r, T *a, int N);
+  template<class R>
+  static void complexRootsToRealCoeffs(const std::complex<R> *r, R *a, int N);
   // allocates heap memory
 
   static void rootsToCoeffs(const T* r, T* a, int N, T scaler = T(1));
@@ -585,7 +629,10 @@ public:
   points (-1, y[-1]), (0, y[0]), (1, y[1]), (2, y[2]). NOTE, that the y-array is accessed at values
   y[-1]...y[2] - the caller should make sure, these values exist. */
   static void cubicCoeffsFourPoints(T *a, const T *y);
-  // rename to fitCubic_m1_0_1_2 or cubicLagrange_m1_0_1_2 or cubicThrough
+  // -rename to fitCubic_m1_0_1_2 or cubicLagrange_m1_0_1_2 or cubicThrough 
+  //  -document why do we adopt the convention that we start x at -1 and access the y[-1] element - i 
+  //   think, this is more convenient in the content of interpolating in realtime as in the 
+  //   pitch-detector?
 
   /** Allocates and fills an NxN matrix A wher A[i][j] are given by x[i]^j. The caller is
   responsible for deallocation. So it's used like:
@@ -593,7 +640,7 @@ public:
   // ...do stuff with matrix A
   rsDeAllocateSquareArray2D(A, N);  */
   static T** vandermondeMatrix(const T *x, int N);
-    // move to rsMatrixOld
+    // move to rsMatrixOld, deprecate!
 
   /** Computes coefficients a[0],..., a[N-1] for a polynomial of degree N-1 that goes through the N
   data points (x[0], y[0]),...,(x[N-1], y[N-1]). */
@@ -634,10 +681,11 @@ public:
   y'(0) = s0, y'(2) = s2 */
   static void fitQuarticWithDerivatives(T *a, const T *y, const T& s0, const T& s2);
 
-  /** Given coefficients of a polynomial a2*x^2 + a1*x + a0, this function determines whether its
-  roots are on or inside the unit circle.
+  /** Given coefficients of a polynomial a2*x^2 + a1*x + a0 with real coefficients, this function 
+  determines whether its roots are on or inside the unit circle.
    \todo: write and run a unit-test for this function. */
-  static bool areRootsOnOrInsideUnitCircle(const T& a0, const T& a1, const T& a2);
+  template<class R>
+  static bool areRootsOnOrInsideUnitCircle(const R& a0, const R& a1, const R& a2);
   // move to Evaluation
 
   // \todo fitPolynomial(T *a, int order, T *x, T *y, int numValues);
@@ -667,7 +715,8 @@ public:
 
   /** Fills the array with coefficients for a Legendre-polynomial (of the 1st kind) of given
   degree. */
-  static void legendrePolynomial(T *a, int degree);
+  template<class R>
+  static void legendrePolynomial(R *a, int degree);
   // allocates heap memory
     // todo: maybe use rsPolynomialRecursion - or maybe get rid of the function
     // (move to prototypes)
@@ -699,7 +748,8 @@ public:
   p(0) = 0, p(1) = 1, p'(x) >= 0 for all x (monotonically increasing), p'(1) = maximum possible
   when monotonicity is assumed. \todo: check if these properties are actually true. Such
   polynomials are used in Papoulis filters. */
-  static void maxSlopeMonotonic(T *a, int N);
+  template<class R>
+  static void maxSlopeMonotonic(R *a, int N);
   // allocates heap memory
 
   // \todo for Halpern filters:
@@ -712,7 +762,13 @@ protected:
 
   std::vector<T> coeffs;   // array of coefficients - index correpsonds to power of x
 
-  template<class U> friend class rsRationalFunction; // needs access to coeffs array
+  // Some functions and classes need low-level access to the coefficient array. These are 
+  // declared as friends here. The friends should all themselves be part of the library. We don't
+  // want external friends (except maybe during development):
+  template<class U> friend class rsRationalFunction;
+  
+  //friend rsPolynomial<T> fitPolynomial(int numDataPoints, T* x, T* y, int degree);
+  //template<class U> friend rsPolynomial<U> ::fitPolynomial(int numDataPoints, U* x, U* y, int degree);
 
 };
 

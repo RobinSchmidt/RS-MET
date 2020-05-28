@@ -1408,7 +1408,7 @@ void harmonicDetection2Sines()
   // block.
 
   // Maybe we should allow for arbitrary values for nc and zp - then we may also use arbitrary  
-  // cycleLength -> Bluestein FFT. But maybe the use should be able to select a power-of-two mode.
+  // cycleLength -> Bluestein FFT. But maybe the user should be able to select a power-of-two mode.
 
   // The width (in bins) for searching for a peak should be proportional to the mainlobe-width 
   // ("mlw"), zero-pad-factor
@@ -1567,18 +1567,18 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 
   //testHarmonicResynthesis("TwoSines_Freq1=500_Freq2=1000_Amp1=1.0_Amp2=1.0", 44100, 5000, 500);
 
-  testHarmonicResynthesis("TwoSines_Freq1=500_Freq2=10_Amp1=1.0_Amp2=0.25", 44100, 8000, 500);
+  //testHarmonicResynthesis("TwoSines_Freq1=500_Freq2=10_Amp1=1.0_Amp2=0.25", 44100, 8000, 500);
     // sine plus "undulating DC"
 
 
   //testHarmonicResynthesis("SineAndDC_Freq=500_Amp=1.0_DC=0.5", 44100, 5000, 500);
-  testHarmonicResynthesis("SineAndDC_Freq=500_Amp=1.0_DC=-0.5", 44100, 5000, 500);
+  //testHarmonicResynthesis("SineAndDC_Freq=500_Amp=1.0_DC=-0.5", 44100, 5000, 500);
     // sine plus DC - the DC component is not resynthesized correctly - it's twice as loud in the 
     // resynthesized signal - it's already wrong in the analysis data - the analyzer is to blame
 
   //testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6000_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
 
-  //testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6100_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
+  testHarmonicResynthesis("TwoSines_Freq1=200_Freq2=6100_Amp1=1.0_Amp2=1.0", 44100, 5000, 200);
   // wt=bm, zp=8, nc=4, sw=1: misses 2nd partial, with sw >= 1.2, it even misses the first
   // the 2nd is missed, because the peak in the window is in fact not unimodal - we see two minor
   // side maxima to the left at kCenter = 960 and two to the right at kCenter = 992 - unimodality
@@ -1766,6 +1766,52 @@ void harmonicAnalysis1()  // rename to harmonicResynthesis
 // look at files decompositionSteelGuitar002.m, testHarmonicAnalysis.M
 }
 
+// returns indices of minima - move to rsArrayTools
+template<class T>
+std::vector<int> findTroughs(const T* x, int N)
+{
+  std::vector<int> t;
+  for(int i = 1; i < N-1; i++)
+    if(x[i] < x[i-1] && x[i] < x[i+1])
+      t.push_back(i);
+  return t;
+}
+
+// instead of omega, the user should pass a smoothing time
+template<class T>
+void smooth(const std::vector<T>& t, const std::vector<T>& x, std::vector<T>& y, 
+  T omega, int numPasses)
+{
+  rsAssert(t.size() == x.size());
+  rsAssert(t.size() == y.size());
+
+  //int numPasses = 1;
+  int N = (int)t.size();
+
+  rsNonUniformOnePole<T> flt;
+  flt.setOmega(omega);
+  rsCopyToVector(&x[0], (int) x.size(), y);
+
+  // factor out into the filter into an apply method, taking the input array, time-stamp array and 
+  // output array (which may be equal to the input array)
+  for(int p = 1; p <= numPasses; p++)
+  {
+    flt.reset();
+    y[0] = flt.getSample(y[0], T(1));
+    for(int n = 1; n < N; n++)
+      y[n] = flt.getSample(y[n], t[n]-t[n-1]);
+
+    flt.reset(); // todo: flt.prepareForBackwardPass - i think, we can use the same formula as in 
+                 // the uniform case?
+
+    y[N-1] = flt.getSample(y[N-1], T(1));
+    for(int n = N-2; n >= 0; n--)
+      y[n] = flt.getSample(y[n], t[n+1]-t[n]);
+  }
+
+  int dummy = 0;
+}
+
 void amplitudeDeBeating()
 {
   // We create an attack/decay sine envelope superimposed with a decaying sine modulation/beating
@@ -1792,20 +1838,50 @@ void amplitudeDeBeating()
   //rsReverse(beating); // test
   Vec beatEnv = ampEnv + beating;
 
+  // add little spikes into the troughs such that the bottoms of the troughs become minor local 
+  // maxima/peaks - we want the peak-picker to ignore them:
+  std::vector<int> troughs = findTroughs(&beatEnv[0], (int) beatEnv.size());
+  for(int i = 0; i < (int)troughs.size(); i++)
+    beatEnv[troughs[i]] += 0.05;
+
   // remove the beating:
   typedef rsEnvelopeExtractor<double>::endPointModes EM;
   double beatPeriodInFrames = frameRate / beatFrq;  // 38.222...
-  Vec time = rsRangeLinear(0.0, double(numFrames-1), numFrames);  // time is measured in frames
+  Vec time = rsRangeLinear(0.0, double(numFrames-1), numFrames);  
+    // time is measured in frames - todo: measure it in seconds to be consistent with the 
+    // sinusoidal model
   Vec result(numFrames);
   rsEnvelopeExtractor<double> envExtractor;
+
+  // not relevant anymore with the new peak-picker algo:
   envExtractor.setStartMode(EM::ZERO_END);  
   envExtractor.setEndMode(EM::ZERO_END);   // definitely better than extraploation but still not good enough
-  //envExtractor.setMaxSampleSpacing(100);   // should be >= beating period in frames
+
+
+  //envExtractor.setMaxSampleSpacing(300); // purposefully coarse to see line segments
+  envExtractor.setMaxSampleSpacing(37);  // lower limit that still works
+  //envExtractor.setMaxSampleSpacing(36);  // too small - picks one of the troughs
+  //envExtractor.setMaxSampleSpacing(35);    // too small - picks two of the troughs
+  // should be >= beating period in frames, 300 is purposefully coarse, so we can still see the 
+  // line segments, unit is supposed to be seconds...but is it actually samples - i think so - the 
+  // envExtractor doesn't seem to know about the samplerate anyway, so the unit is generic, i.e. 
+  // whatever the unit of the time-stamps in passed 
+
+  // params for new peack picker algo:
+  envExtractor.peakPicker.setShadowWidths(10.0, 100.0); // unit is samples
   envExtractor.connectPeaks(&time[0], &beatEnv[0], &result[0], numFrames);
 
+  // todo: smooth the resulting envelope - use a bidirectional non-uniform 1st order lowpass
+  Vec smoothedResult(numFrames);
+  smooth(time, result, smoothedResult, 0.2, 4);
+
+
   //rsPlotVector(env);
-  rsPlotVectors(ampEnv, beating, beatEnv, result);
+  //rsPlotVectors(ampEnv, beating, beatEnv, result);
   //rsPlotVectors(beatEnv, result);
+  rsPlotVectors(beatEnv, result, smoothedResult);
+
+
 
   // Observations
   // -envExtractor.setMaxSampleSpacing should be >= beatPeriodInFrames (38.22), otherwise, the 
@@ -1821,9 +1897,50 @@ void amplitudeDeBeating()
   //  extrapolate
   //  ...this is fixed
 
-  // todo: test other situations, where the beating occurs only in the middle, at the end, start 
-  // and end, etc. - also use a beating that has a time-varying frequency - make another test for 
-  // this
+  // Observations for the peak-shadowing:
+  // -we seem to need quite high settings like setShadowWidths(10.0, 100.0), but these large'ish 
+  //  shadows do not seem to have much negative effect, so high shadow-widths not as problematic as
+  //  i expected first - the shadowed envelope follows the original one exactly in the tail section 
+  //  even with high settings such as 100 frames (to check, plot the envelope and its shadowed 
+  //  version - there's currently temporary plotting code in rsPeakPicker<T>::getRelevantPeaks...
+  //  maybe later write some non-temporary code here in the experiment)
+  // -i think, as long as the deecay-rate of the shadow is faster that the decay-rate of the actual
+  //  envelope, everything is fine - only if it's slower, we'll get a too sluggish resonse - maybe
+  //  we can etsimate the overall decay rate from the signal and thereby obatin an upper limit
+  //  for a reasonable shadow-width
+  // -it really makes a lot of sense to use asymmetric sttings for the shadowing - rightward 
+  //  shadows should be a lot larger then leftward shadows - with a large leftward shadow, the 
+  //  first envelope peak would have been missed
+
+  // todo: 
+  // -test other situations, where the beating occurs only in the middle, at the end, start 
+  //  and end, etc. - also use a beating that has a time-varying frequency - make another test for 
+  //  this
+  // -fix the problem that the tail is linearly interpolated - we need to get more envelope samples
+  //  in the tail, even if they are not peaks
+
+  // Ideas:
+  // -to further improve the peak shadowing, the following things coudl be tried:
+  //  -pass the envelope through a nonlinear monotonic function (such as a power rule) - for 
+  //   example, using env^2 would amplify the differences between peaks and troughs (troughs would
+  //   be deepened, if the exponent is > 1
+  //  -in areas of high overall amplitude, even troughs that are quite deep in an absolute sense 
+  //   may have only a low relative depth. and - since the exponential shadows respond to relative 
+  //   depth - that may lead to the undesirable effect that the shadows are smaller than we would
+  //   like them to be in these areas. remedies:
+  //   -make the shadow-width adaptive and adapt it according to the overall level? 
+  //   -highpass the envelope before searching for the peaks (i.e. subtract a bidirectionally 
+  //    lowpassed version of the env). the cutof should be very low - in the subsonic range - even, 
+  //    in the sub-tremolo range - it should only remove "moving DC", tremolo should be retained 
+  //    because that'S what we want to detect and kill - we need the non-uniform filters for this
+  //   -try linear shadowing - i think, likear shadowing would be directly sensitive to the 
+  //    absolute depth rather that the relative. maybe other shapes besides linear and exponential 
+  //    may also make sense? what about exponential-squared, i.e. gaussian like? ...and how can 
+  //    that be implemented? maybe by pre-waveshaping the env?
+
+  // Densification: do it in that order: find peaks -> densify -> post-process ...currently, we do 
+  // it like that: find peaks -> post process -> densify ...which does not work well
+  //
 }
 
 std::vector<double> createLinearSineSweep(int N, double f1, double f2, double fs, double a = 1)

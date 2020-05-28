@@ -3,6 +3,8 @@
 
 void bandwidthScaling();
 void butterworthEnergy();
+void biDirectionalStateInit();
+void biquadTail();
 void biquadModulation();
 void stateVariableFilter();
 void stateVariableFilterMorph();

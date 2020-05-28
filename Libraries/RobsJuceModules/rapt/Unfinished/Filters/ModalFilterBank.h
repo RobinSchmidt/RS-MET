@@ -3,6 +3,7 @@
 
 //=================================================================================================
 // utility functions for damped-sine filter design:
+// maybe move them as static functions into class rsModalFilter or rsModalFilterWithAttack
 
 /** Designs (i.e. computes coefficients from user parameters for) a two-pole-one-zero filter in 
 terms of its impulse response which is given as the damped sinusoid:
@@ -45,7 +46,9 @@ T findDecayScalerLess1(T c);
 tPeak, this function computes the required other time constant tau2 and a scale factor to be used
 for an attack-decay envelope that can be obtained by the scaled difference of two exponential
 decays, like so:
-x(t) = scaler * ( exp(-t/tau1) - exp(t/tau2) )  \todo use latex-markup
+
+  x(t) = scaler * ( exp(-t/tau1) - exp(-t/tau2) ) 
+
 For this to work, we must have tPeak < tau1 because otherwise the decay will also be governed by
 the second term (and the computational methods, we use here may not converge because they also
 rely on this assumption). */

@@ -76,6 +76,28 @@ public:
   }
   // doesn't work with complex matrices
 
+  /** Computes n-th power of matrix using closed form formula from:
+  https://people.math.carleton.ca/~williams/papers/pdf/175.pdf , Eq. 2
+  https://distill.pub/2017/momentum/ (section "Dynamics of momentum")
+  ...it has been tested with real matrices with real eigenvalues (distinct and equal) - but what 
+  about real matrices with complex eigenvalues? The function won't work for them, i guess - try 
+  it!  */
+  rsMatrix2x2<T> getPower(int n)
+  {
+    using Mat = rsMatrix2x2<T>;
+    T ev1 = getEigenvalue1();
+    T ev2 = getEigenvalue2();
+    Mat I = identity();
+    if(ev1 != ev2) {
+      T ab  = T(1) / (ev1 - ev2);
+      Mat X = ab * ((*this) - ev2*I);
+      Mat Y = ab * (ev1*I - (*this));
+      return pow(ev1, n) * X + pow(ev2, n) * Y; }
+    else
+      return pow(ev1, n-1) * (T(n) * *this - T(n-1) * ev1*I);
+  }
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
@@ -101,6 +123,10 @@ public:
   /** Multiplies matrix by a vector: w = A*v */
   rsVector2D<T> operator*(const rsVector2D<T>& v) const
   { return rsVector2D<T>(a*v.x + b*v.y, c*v.x + d*v.y); }
+
+  /** Divides matrix by a scalar divisor. */
+  rsMatrix2x2<T> operator/(const T divisor) const
+  { T s = T(1) / divisor; return rsMatrix2x2<T> (s*a, s*b, s*c, s*d); }
 
   // todo: left multiplication w = v^H * A
 
@@ -136,11 +162,16 @@ inline rsMatrix2x2<T> operator*(const T& s, const rsMatrix2x2<T>& A)
 }
 
 
+
+
+
 //=================================================================================================
 
 /** This is a class for treating raw C-arrays as matrices. It does not store/own the actual matrix
 data. It just acts as wrapper around an existing array for conveniently accessing and manipulating 
 matrix elements via row/column indicies using the () operator with two integers. */
+// todo: 
+// -create benchmarks for and optimize elementary row- and column operations
 
 template<class T>
 class rsMatrixView
@@ -201,6 +232,22 @@ public:
   static bool areMultiplicable(const rsMatrixView<T>& A, const rsMatrixView<T>& B)
   { return A.numCols == B.numRows; }
 
+  /** Returns true, iff the rhs matrix is equal to this matrix with an optional tolerance. */
+  bool equals(const rsMatrixView<T>& rhs, T tolerance = T(0)) const
+  {
+    return areSameShape(*this, rhs) 
+      && rsArrayTools::almostEqual(dataPointer, rhs.dataPointer, getSize(), tolerance);
+  }
+
+
+  /** Returns true, iff this matrix has the given shape. */
+  bool hasShape(int numRows, int numCols) const
+  { return this->numRows == numRows && this->numCols == numCols; }
+
+  /** Returns true, iff B has the same shape as this matrix. */
+  bool hasSameShapeAs(const rsMatrixView<T>& B) const
+  { return areSameShape(*this, B); }
+
   /** Returns the number of rows. */
   int getNumRows()    const { return numRows; }
 
@@ -222,6 +269,60 @@ public:
   /** Returns true, iff this matrix is a square matrix, i.e. has the same number of rows and 
   columns. */
   bool isSquare() const { return numRows == numCols; }
+
+  /** Returns true, iff given index i is a valid row index. */
+  bool isValidRowIndex(int i) const { return i >= 0 && i < numRows; }
+
+  /** Returns true, iff given index i is a valid column index. */
+  bool isValidColumnIndex(int j) const { return j >= 0 && j < numCols; }
+
+  /** Returns true, iff all elements are zero. */
+  bool isZero() const { return rsArrayTools::isAllZeros(dataPointer, getSize()); }
+  // todo: allow for a tolerance ..or maybe have a function isAlmostZero for that
+
+  bool isZero(T tol) const 
+  { 
+    return rsArrayTools::isAllZeros(dataPointer, getSize(), tol); 
+  }
+
+  bool isRowZero(int rowIndex, T tol) const
+  {
+    for(int j = 0; j < getNumColumns(); ++j)
+      //if( rsAbs(at(rowIndex, j)) > tol )
+      if( rsGreaterAbs(at(rowIndex, j), tol) )
+        return false;
+    return true;
+  }
+
+  template<class T>
+  bool areRowsZero(int startRow, int endRow, T tol) const
+  {
+    for(int i = startRow; i <= endRow; ++i)
+      if(!isRowZero(i, tol))
+        return false;
+    return true;
+  }
+
+  bool isColumnZero(int columnIndex, T tol) const
+  {
+    for(int i = 0; i < getNumRows(); ++i)
+      if( rsAbs(at(i, columnIndex)) > tol )
+        return false;
+    return true;
+  }
+
+
+  /** Returns true, iff one of the columns of the matrix consists of all zeros. */
+  template<class T>
+  bool containsZeroColumn(T tol) const
+  {
+    for(int j = 0; j < numCols; j++)
+      if( isColumnZero(j, tol) )
+        return true;
+    return false;
+  }
+  // needs test
+
 
   /** Returns a const pointer to the data for read access as a flat array. */
   const T* getDataPointerConst() const { return dataPointer; }
@@ -260,6 +361,30 @@ public:
   // actually, we should move this to rsArrayTools::getOverlap(T* x, size_t Nx, T*y, size_t Ny)
   // needs unit test
 
+  /** Returns the maximum absolute value of all elements in the matrix. */
+  T getAbsoluteMaximum() const { return rsArrayTools::maxAbs(dataPointer, getSize()); }
+
+  /** Computes the trace of the matrix which is the sum of the diagonal elements. */
+  T getTrace() const
+  {
+    T t = T(0);
+    for(int i = 0; i < rsMin(numRows, numCols); ++i)
+      t = t + this->at(i, i);   // use +=
+    return t;
+  }
+
+  /** Computes the product of the diagonal elements (does this also have a special name?) */
+  T getDiagonalProduct() const
+  {
+    T p = T(1);
+    for(int i = 0; i < rsMin(numRows, numCols); ++i)
+      p = p * this->at(i, i);
+    return p;
+  }
+  // todo: use *= - (needs implementation of that operator in rsRationlaFunction)
+
+  // todo: getTrace(), getDiagonalProduct()
+
   //-----------------------------------------------------------------------------------------------
   /** \name Manipulation */
 
@@ -288,6 +413,16 @@ public:
   }
   // needs test
 
+  /** Sets the elements on the main diagonal to the values in the given array which must be of 
+  length min(numRows, numColumns). */
+  void setDiagonalValues(T* values)
+  {
+    for(int i = 0; i < rsMin(numRows, numCols); i++)
+      dataPointer[i*numCols + i] = values[i];
+  }
+  // needs test
+
+
   /** Scales all elements in the matrix by a given factor. */
   void scale(T factor) { rsArrayTools::scale(dataPointer, getSize(), factor); }
 
@@ -300,20 +435,87 @@ public:
   /** Scales the row with given index by the given scale factor. */
   void scaleRow(int rowIndex, T scaler)
   {
-    rsAssert(rowIndex >= 0 && rowIndex < numRows, "row index out of range");
+    rsAssert(isValidRowIndex(rowIndex), "row index out of range");
     for(int j = 0; j < numCols; ++j)
       (*this)(rowIndex, j) *= scaler;
   }
-  // needs test
+  // maybe use rsArrayTools::scale
 
-  /** Scales the row with given index by the given scale factor. */
+  /** Swaps the two rows with given row indices i1 and i2. */
+  void swapRows(int i1, int i2)
+  {
+    rsAssert(isValidRowIndex(i1) && isValidRowIndex(i1), "row index out of range");
+    for(int j = 0; j < numCols; ++j)
+      rsSwap((*this)(i1, j), (*this)(i2, j));
+  }
+  // may be optimized by using fixed base-pointers to each row and loop increment 1 - no 
+  // recompuation of the row-start in te iterations - the (i,j) operator always does a
+  // multiplication
+
+  /** Adds a multiple of the row with index iSrc to the row with index iDst. The multiplier is 
+  given by weight. */
+  void addWeightedRowToOther(int iSrc, int iDst, T weight)
+  {
+    rsAssert(isValidRowIndex(iSrc) && isValidRowIndex(iDst), "row index out of range");
+    for(int j = 0; j < numCols; ++j)
+      (*this)(iDst, j) += weight * (*this)(iSrc, j);
+  }
+  // optimize using base-pointers
+
+  /** Like above but does it only for the column-indices in between minCol and maxCol (both 
+  ends inclusive). This is mainly for optimizing row operations when it is known that beyond 
+  minCol...maxCol only zeros occur in the source-row (this occurs in Gaussian elimination). */
+  void addWeightedRowToOther(int iSrc, int iDst, T weight, int minCol, int maxCol)
+  {
+    rsAssert(isValidRowIndex(iSrc) && isValidRowIndex(iDst), "row index out of range");
+    rsAssert(isValidColumnIndex(minCol) && isValidColumnIndex(maxCol), "column index out of range");
+
+    //rsAssert(minCol >= 0 && maxCol < numCols, "column index out of range");
+    // minCol > numCols is allowed - in this case, the loop is not entered (Gaussian elimination 
+    // may produce such values)
+
+    for(int j = minCol; j <= maxCol; ++j)
+      (*this)(iDst, j) += weight * (*this)(iSrc, j);
+  }
+  // optimize using base-pointers
+
+
+  /** Scales the column with given index by the given scale factor. */
   void scaleColumn(int columnIndex, T scaler)
   {
-    rsAssert(columnIndex >= 0 && columnIndex < numCols, "column index out of range");
-    for(int i = 0; i < numCols; ++i)
+    rsAssert(isValidColumnIndex(columnIndex), "column index out of range");
+    for(int i = 0; i < numRows; ++i)
       (*this)(i, columnIndex) *= scaler;
   }
-  // needs test
+  // needs test, maybe use rsArrayTools::scale (needs to be generalized to accept an optional 
+  // stride parameter that defaults to 1 - but generalizing like that may slow it down for the 
+  // common case -> benchmark)
+
+  /** Swaps the two columns with given indices j1 and j2. */
+  void swapColumns(int j1, int j2)
+  {
+    rsAssert(isValidColumnIndex(j1) && isValidColumnIndex(j1), "column index out of range");
+    for(int i = 0; i < numRows; ++i)
+      rsSwap((*this)(i, j1), (*this)(i, j2));
+  }
+
+  /** Adds a multiple of the column with index jSrc to the column with index jDst. The multiplier
+  is given by weight. */
+  void addWeightedColumnToOther(int jSrc, int jDst, T weight)
+  {
+    rsAssert(isValidColumnIndex(jSrc) && isValidColumnIndex(jDst), "column index out of range");
+    for(int i = 0; i < numRows; ++i)
+      (*this)(i, jDst) += weight * (*this)(i, jSrc);
+  }
+  // can also be optimized with something like: 
+  // T* s = flatIndex(0, jSrc);
+  // T* d = flatIndex(0, jDst);
+  // int stride = numCols
+  // for(int i = 0; i < numRows; ++i) {
+  //   *d += weight * *s; s += stride; d += stride; }
+
+  // optimize at least the elementary row-operations because these occur frequently in matrix 
+  // algorithms like Gaussian elimination
 
 
   //-----------------------------------------------------------------------------------------------
@@ -349,7 +551,7 @@ public:
     rsArrayTools::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
-  /** Computes the matrix product C = A*B. */
+  /** Computes the matrix product C = A * B. */
   static void matrixMultiply(
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
@@ -358,11 +560,34 @@ public:
     rsAssert(C->numRows == A.numRows);
     for(int i = 0; i < C->numRows; i++) {
       for(int j = 0; j < C->numCols; j++) {
-        (*C)(i,j) = T(0);
+        (*C)(i, j) = T(0);
         for(int k = 0; k < A.numCols; k++)
-          (*C)(i,j) += A.at(i,k) * B.at(k,j); }}
+          (*C)(i, j) += A.at(i, k) * B.at(k, j); }}
   }
-  // rename to matrixMultiply maybe implement matrixDivide: A/B := A * inverse(B) 
+  // maybe implement matrixDivide: A/B := A * inverse(B) 
+
+
+  /** Computes the matrix product C = A^T * B. */
+  static void matrixMultiplyFirstTransposed(
+    const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
+  {
+    // get rid, add assertions
+    int N = A.numRows;
+    int M = A.numCols;
+    int P = B.numCols;
+    for(int i = 0; i < M; i++) {
+      for(int j = 0; j < P; j++) {
+        (*C)(i, j) = T(0);
+        for(int k = 0; k < N; k++)
+          (*C)(i, j) += A.at(k, i) * B.at(k, j); }}
+  }
+  // needs test
+  // todo: matrixMultiplySecondTransposed
+
+  // implement functions that compute A^T * A and A * A^T, a "sandwich" X^T A X, X A X^T
+  // but maybe more generally A^T B where A and B may or may not be the same
+  // matrixMultiplyFirstTransposed, matrixMultiplySecondTransposed matrixmultiplyBothTransposed,
+  // adapt code from rsMatrixTools
 
 
   /** Fills the matrix B with the transpose of matrix A. Assumes that A and B have compatible 
@@ -391,7 +616,7 @@ public:
 
   /** Computes the Kronecker product between matrices A and B and stores the result in C. Assumes, 
   that C has the right dimensions. For more info, see the documentation of 
-  rsMatrix::kroneckerProduct. */
+  rsMatrix::getKroneckerProduct. */
   static void kroneckerProduct(
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
   {
@@ -405,6 +630,24 @@ public:
           for(int jb = 0; jb < B.numCols; jb++) {
             (*C)(startRow+ib, startCol+jb) = A.at(ia,ja) * B.at(ib, jb); }}}}
   }
+
+  /** Computes the matrix-vector product y = A*x of this matrix with the given vector x and stores 
+  the result in y where x and y are given as raw arrays. The length of x must match the number of 
+  columns and the length of y must match the number of rows. */
+  void productWith(const T* x, T* y) const
+  {
+    rsAssert(x != y, "Can't be used in place");
+    for(int i = 0; i < getNumRows(); i++) {
+      y[i] = T(0);
+      for(int j = 0; j < getNumColumns(); j++)
+        y[i] += at(i, j) * x[j]; }
+  }
+
+  /** Convenience function to compute matrix-vector product y = A*x, taking a raw array for x as 
+  input and producing the result as a std::vector. */
+  std::vector<T> productWith(const T* x) const
+  { std::vector<T> y(getNumRows()); productWith(x, &y[0]); return y; }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Accessors */
@@ -474,6 +717,13 @@ public:
   {
     setSize(numRows, numColumns);
     // todo: optionally init with zeros
+  }
+
+  /** Constructor to create a matrix from a flat raw array. */
+  rsMatrix(int numRows, int numColumns, const T* data)
+  {
+    setSize(numRows, numColumns);
+    rsArrayTools::copy(data, getDataPointer(), getSize());
   }
 
   /** Constructor to create a matrix from an array-of-arrays - mostly for conveniently converting
@@ -554,6 +804,23 @@ public:
     return *this;
   }
 
+
+  /** Needs test! */
+  /*
+  rsMatrix<T>& operator=(const rsMatrixView<T>& rhs)
+  {
+    if (this != &rhs) { // self-assignment check expected
+      setSize(rhs.getNumRows(), rhs.getNumColumns());
+      rsArrayTools::copy(rhs.getDataPointerConst(), this->dataPointer, this->getSize());
+    }
+    return *this;
+  }
+  */
+
+
+
+
+
   /** Creates a zero matrix with given number of rows and columns. */
   static rsMatrix<T> zero(int numRows, int numColumns) 
   { rsMatrix<T> Z(numRows, numColumns); Z.setToZero(); return Z; }
@@ -582,7 +849,15 @@ public:
     updateDataPointer();
     // optionally initialize with zeros
   }
+  // rename to setShape - shall override inherited setShape
 
+  /** Copies the data from another matrix into this one, converting the datatype, if necessarry. */
+  template<class T2>
+  void copyDataFrom(const rsMatrixView<T2>& A)
+  {
+    setSize(A.getNumRows(), A.getNumColumns());
+    rsArrayTools::convert(A.getDataPointerConst(), dataPointer, getSize());
+  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Manipulations */
@@ -654,7 +929,15 @@ public:
   // product - the view method just does something (-> use a verb), the method here returns an
   // objcet (-> use a noun)
 
-  // todo: getInverse, getTranspose
+  // todo: getInverse, getTranspose, getConjugate, getConjugateTranspose
+
+  /** Returns a transposed version of this matrix. */
+  rsMatrix<T> getTranspose() const
+  {
+    rsMatrix<T> t(numCols, numRows);
+    rsMatrixView<T>::transpose(*this, &t);
+    return t;
+  }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -721,7 +1004,6 @@ public:
   rsMatrix<T>& operator*=(const rsMatrix<T>& B)
   { *this = *this * B; return *this; } 
 
-
   /** Multiplies this matrix with a scalar s: B = A*s. The scalar is to the right of the matrix. */
   rsMatrix<T> operator*(const T& s) const
   { rsMatrix<T> B(*this); B.scale(s); return B; }
@@ -733,6 +1015,21 @@ public:
   /** Divides this matrix by a scalar and returns the result. */
   rsMatrix<T>& operator/=(const T& s)
   { scale(T(1)/s); return *this; }
+
+
+
+  /** Multiplies a matrix with a std::vector to give another vector: y = A * x. */
+  std::vector<T> operator*(const std::vector<T>& x) const
+  { 
+    rsAssert((int) x.size() == numCols, "vector incompatible for left multiply by matrix");
+    std::vector<T> y(numRows);
+    for(int i = 0; i < numRows; i++) {
+      y[i] = T(0);
+      for(int j = 0; j < numCols; j++)
+        y[i] += this->at(i, j) * x[j]; }
+    return y;
+  }
+  // needs test - maybe optimize inner loop by avoiding re-computation of row base index
 
 
   //-----------------------------------------------------------------------------------------------
@@ -773,10 +1070,18 @@ inline rsMatrix<T> operator*(const T& s, const rsMatrix<T>& A)
   return B;
 }
 
-
-
-
-
+/** Multiplies a row vector x with a matrix: y = x * A. The result y is another row vector. */
+template<class T>
+std::vector<T> operator*(const std::vector<T>& x, const rsMatrix<T>& A) 
+{ 
+  rsAssert((int) x.size() == A.getNumRows(), "vector incompatible for right multiply by matrix");
+  std::vector<T> y(A.getNumColumns());
+  for(int i = 0; i < A.getNumColumns(); i++) {
+    y[i] = T(0);
+    for(int j = 0; j < A.getNumRows(); j++)
+      y[i] += x[j] * A(j, i); }
+  return y;
+}
 
 template<class T>
 rsMatrix<T> matrixMagnitudes(const rsMatrix<std::complex<T>>& A)

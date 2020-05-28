@@ -187,3 +187,64 @@ int clipTriangleToUnitSquare(const rsVector2DF& a, const rsVector2DF& b, const r
 // has a website with source code (BSD licensed)
 // http://www.pbrt.org/
 // https://github.com/mmp/pbrt-v3
+
+//=================================================================================================
+
+struct rsPixelRGB // maybe rename to rsPixel24BitRGB
+{
+  // have constructors that take triples of floats, doubles, etc. they should optionally clip
+
+  /** Default constructor. Sets r = g = b = 0 (actually, it just leaves them alone - but they are 
+  intialized to 0 in the class, so they remain at 0).  */
+  rsPixelRGB() {}
+
+
+  rsPixelRGB(unsigned char gray) 
+  { 
+    r = g = b = gray;
+  }
+
+  rsPixelRGB(int gray) 
+  { 
+    r = g = b = (unsigned char) (gray);
+  }
+
+
+  /** Creates a pixel from 3 floating point numbers and optionally clips the values to the
+  allowed range before converting to 8-bit integers. */
+  rsPixelRGB(float R, float G, float B, bool clip = false)
+  {
+    if(clip) {
+      R = rsClip(R, 0.f, 1.f);
+      G = rsClip(G, 0.f, 1.f);
+      B = rsClip(B, 0.f, 1.f);
+    }
+    r = (unsigned char)(255.f * R);
+    g = (unsigned char)(255.f * G);
+    b = (unsigned char)(255.f * B);
+  }
+
+  unsigned char r = 0, g = 0, b = 0;
+};
+
+inline bool rsAlmostEqual(const unsigned char& x, const unsigned char& y, const unsigned char& tol)
+{
+  if(x > y) {
+    if(x - y > tol)
+      return false; }
+  else {
+    if(y - x > tol)
+      return false; }
+  return true;
+}
+
+// explicit specialization:
+inline bool rsAlmostEqual(const rsPixelRGB& x, const rsPixelRGB& y, const rsPixelRGB& tol)
+{
+  return rsAlmostEqual(x.r, y.r, tol.r)
+    &&   rsAlmostEqual(x.g, y.g, tol.g) 
+    &&   rsAlmostEqual(x.b, y.b, tol.b);
+}
+
+rsImage<rsPixelRGB> rsConvertImage(
+  const rsImage<float>& R, const rsImage<float>& G, const rsImage<float>& B, bool clip);

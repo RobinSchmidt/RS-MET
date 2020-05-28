@@ -14,6 +14,7 @@
 #include "Experiments/Experiments.h"
 
 #include "rosic_tests/UnitTestsRosic.h"
+using namespace rotes;
 
 
 #include "PerformanceTests/PerformanceTests.h"
@@ -59,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  //passed &= runAllUnitTests();  // todo: rename to runUnitTestsRapt
+  //passed &= runUnitTestsRapt();
   //passed &= runUnitTestsRosic();
   //passed = passed;  // dummy
 
@@ -91,12 +92,28 @@ int main(int argc, char* argv[])
   //particleBouncerExperiment();
 
   // Math:
+  //determinant();
+  //characteristicPolynomial();
+  //testSubSpaces();        // todo: move to unit tests
+  //testSigularValueDecomp();   // dito
+  //linearIndependence();
+  //eigenstuff();
+  //linearSolverPrecision();
+
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
-  //finiteDifferenceStencilCoeffs();
+  //iteratedNumDiff();
   //interpolatingFunction();
+
   //linearRegression();
+  //multipleRegression();
+  //polynomialRegression();
+  //gaussianRegression();
+  //butterworthViaGaussians();
+
+  //numericOptimization();
+
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();
@@ -111,6 +128,8 @@ int main(int argc, char* argv[])
   //bandSplittingMultiWay();   // turn into unit test (it currently hits an assert on fail)
   //bandSplittingTreeAlgo();
   //bandSplitFreqResponses();
+  //biDirectionalStateInit();
+  //biquadTail();
   //complementaryFiltersIIR();
   //firstOrderFilters();
   //ladderResonanceManipulation();
@@ -147,6 +166,8 @@ int main(int argc, char* argv[])
   //tennisRacketFreq();
 
   // Generators:
+  //noise();
+  //noiseTriModal();
   //blit();
   //blep();
   //polyBlep();
@@ -185,6 +206,14 @@ int main(int argc, char* argv[])
   //triangles();
   //pixelCoverage();
 
+  // Plotting:
+  //contours();
+  //complexContours();
+  //implicitCurve();
+  //parametricCurve();
+  //spirals();   // move to somewhere else...
+  //fractal();
+  //differentialGeometry();
 
   // just for fun:
   //groupString();
@@ -215,8 +244,11 @@ int main(int argc, char* argv[])
   //splineInterpolationNonEquidistant();
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
+
+  //numericDifferentiation();
   //numericIntegration(); // a.k.a. numeric "quadrature"
   //numericDiffAndInt();  // numeric differentiation and integration - rename to nonUniformArrayDiffAndInt
+
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header
   //monotonicPolynomials();
@@ -264,8 +296,8 @@ int main(int argc, char* argv[])
   //cycleMarkErrors();
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
-//  ropewayAlgo();
-  //peakPicker();
+  //ropewayAlgo();
+//  peakPicker();
 
 
   // Delay:
@@ -336,7 +368,7 @@ int main(int argc, char* argv[])
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
   //modalWithFancyEnv();
   //modalSynthSpectra();
-  //modalDecayFit();
+//  modalDecayFit();
   //modalAnalysis1();
   //modalAnalysisPluck();
   //modalPartialResynthesis();
@@ -399,7 +431,7 @@ int main(int argc, char* argv[])
   //sinusoidalAnalysis3();
   //phaseFreqConsistency();
 
-  //harmonicDetection2Sines();
+  harmonicDetection2Sines();
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
@@ -413,7 +445,7 @@ int main(int argc, char* argv[])
   // Resampling:
   //fadeOut();  // move to a new file SampleEditingExperiments
   //resampler();
-  resamplerDelay();
+  //resamplerDelay();
   //sincResamplerAliasing();
   //sincResamplerModulation();
   //sincResamplerPassbandRipple();
@@ -550,7 +582,7 @@ int main(int argc, char* argv[])
 
   // Genrators:
   //testOscillatorStereo();
-  //testLorentzSystem();
+  //testLorentzSystem();  // it's written Lorenz - without the t
   //testSnowflake();
   //testResetter();
   //testTurtleReverse();

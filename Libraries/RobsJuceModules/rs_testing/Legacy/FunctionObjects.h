@@ -227,7 +227,12 @@ protected:
 
 
 /** This class serves as baseclass for multivariate error functions - that is, functions that take 
-a vector of parameters as input and produce a scalar error at the output. */
+a vector of parameters as input and produce a scalar error at the output. 
+
+
+  (1) Neural Networks for Pattern Recognition
+
+*/
 
 template<class T>
 class MultivariateErrorFunction
@@ -262,7 +267,7 @@ public:
   expensive, so you really should override this function in your subclass if you have some better
   algorithm to compute the gradient for the problem at hand.  */
   virtual rsVectorDbl getGradient(rsVectorDbl p);
-   // use vector of template type T
+   // use const reference to vector of template type T
 
   /** Approximates the product v^T * H at the point p in parameter space where H denotes the
   local Hessian matrix. The approximation is based on a central difference of two local gradients

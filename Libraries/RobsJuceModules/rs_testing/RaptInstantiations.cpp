@@ -95,8 +95,12 @@ template rsUint32 rsArrayTools::maxValue(const rsUint32 *x, int length);
 // rsArrayTools<float>
 template void rsArrayTools::fillWithRangeLinear(float* x, int N, float min, float max);
 template void rsArrayTools::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?
+template float rsArrayTools::minValue(const float *x, int length);
+template float rsArrayTools::maxValue(const float *x, int length);
 template float rsArrayTools::maxDeviation(const float *buffer1, const float *buffer2, int length);
 template int rsArrayTools::maxDeviationIndex(const float *buffer1, const float *buffer2, int length);
+template void rsArrayTools::reverse(const float* x, float* y, int length);
+//template void rsArrayTools::reverse(float* x, int length);
 
 // rsArrayTools<double>
 template void rsArrayTools::applyFunction(const double *x, double *y, int N, double (*f) (double));
@@ -118,6 +122,7 @@ template double rsArrayTools::maxValue(const double *x, int length);
 template double rsArrayTools::mean(const double *x, int length);
 template double rsArrayTools::maxDeviation(const double *buffer1, const double *buffer2, int length);
 template double rsArrayTools::minValue(const double *x, int length);
+template void rsArrayTools::movingAverage3pt(const double* x, int N, double* y, bool endsFixed);
 template void rsArrayTools::negate(const double *source, double *destination, int length);
 template void rsArrayTools::normalize(double *buffer, int length, double maximum, bool subtractMean);
 template void rsArrayTools::normalizeMean(double *x, int N, double newMean);
@@ -135,6 +140,9 @@ template void rsArrayTools::fillWithRandomValues(std::complex<double>* x, int N,
 
 // rsArrayTools<rsRange>
 template int rsArrayTools::maxIndex(const rsRange<double>*, int length);
+
+template double rsArrayTools::maxAbs(const std::complex<double> *buffer, int length);
+
 
 // rsArrayTools<rosic::rsFloat32x4>
 //template void rsArrayTools::fillWithRandomValues(rosic::rsFloat32x4* x, int N, double min, double max, int seed);
@@ -177,19 +185,85 @@ template bool rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(double **A, doubl
 template bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(   double **A, double **B, double **C, int N);
 template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, const cmplxD *b, int N);
 
+template std::vector<double> rsLinearAlgebraNew::solveOld(rsMatrix<double> A, std::vector<double> b);
 
-
-
-template class RAPT::rsMatrixOld<double>;
+template class RAPT::rsMatrixOld<double>;  // try to get rid
 
 template class RAPT::rsPolynomial<float>;
 template class RAPT::rsPolynomial<double>;
-//template  class RAPT::rsPolynomial<int>; // template doesn't compile with int
+template class RAPT::rsPolynomial<std::complex<double>>;
+//template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int
+
 template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, double, double*);
   // needs separate instantiation because function itself has a (second) template parameter
 template void RAPT::rsPolynomial<std::complex<double>>::subtract(
   const std::complex<double>* p, int pN, const std::complex<double>* q, int qN,
   std::complex<double>* r);
+template void  RAPT::rsPolynomial<float>::rootsQuadraticComplex(
+  const std::complex<float>& a0, const std::complex<float>& a1, const std::complex<float>& a2,
+  std::complex<float>* x1, std::complex<float>* x2);
+template float RAPT::rsPolynomial<float>::cubicDiscriminant(
+  const float& a0, const float& a1, const float& a2, const float& a3);
+
+template void RAPT::rsPolynomial<float>::rootsCubicComplex(
+  std::complex<float> a0, std::complex<float> a1, 
+  std::complex<float> a2, std::complex<float> a3, 
+  std::complex<float>* r1, std::complex<float>* r2, std::complex<float>* r3);
+
+
+template std::vector<std::complex<double>> RAPT::rsRationalFunction<double>::partialFractions(
+  const std::vector<std::complex<double>>& numerator,
+  const std::vector<std::complex<double>>& denominator,
+  const std::vector<std::complex<double>>& poles);
+
+template std::vector<std::complex<double>> RAPT::rsRationalFunction<double>::partialFractions(
+  const std::vector<std::complex<double>>& numerator,
+  const std::vector<std::complex<double>>& denominator,
+  const std::vector<std::complex<double>>& poles,
+  const std::vector<int>& multiplicities);
+
+template class RAPT::rsRationalFunction<std::complex<double>>;
+
+
+template class RAPT::rsMatrixView<double>;
+template class RAPT::rsMatrix<double>;
+
+template std::vector<double> RAPT::rsLinearAlgebraNew::solve(
+  const rsMatrixView<double>& A, const std::vector<double>& B);
+
+
+
+template std::vector<std::complex<double>> RAPT::rsLinearAlgebraNew::solve(
+  const rsMatrixView<std::complex<double>>& A, 
+  const std::vector<std::complex<double>>& B);
+
+// doesn't compile because the > comparison in the pivoting doesn't work with complex numbers
+// possible solution: implement a > operator for std::complex numbers - compare real parts first,
+// then imag
+// or replace 
+//  if(rsAbs(A(j, i)) > maxAbs) 
+// with
+//  if(rsAbs(A(j, i)) > rsAbs(maxAbs)) 
+// or use comparison function rsGreater with an explicit specialization for complex<double>
+// or use rsGreaterAbs
+
+// figure out!
+
+// these instantiations need some more operations defined on rsRationalFunction
+//template std::vector<RAPT::rsRationalFunction<double>> RAPT::rsLinearAlgebraNew::solveLinearSystem(
+//  rsMatrixView<RAPT::rsRationalFunction<double>>& A, std::vector<RAPT::rsRationalFunction<double>>& B);
+
+/*
+template void RAPT::rsLinearAlgebraNew::makeTriangularNoPivot(
+  rsMatrixView<RAPT::rsRationalFunction<double>>& A, 
+  rsMatrixView<RAPT::rsRationalFunction<double>>& B);
+  */
+
+template RAPT::rsMatrix<double> RAPT::rsLinearAlgebraNew::inverse(
+  const RAPT::rsMatrixView<double>& A);
+
+template int RAPT::rsLinearAlgebraNew::makeDiagonal(
+  RAPT::rsMatrixView<double>& A, RAPT::rsMatrixView<double>& B);
 
 
 // should go into an "Interpolation" class...or maybe CurveFitter
@@ -268,6 +342,7 @@ template void RAPT::rsBinomialDistribution(double*, int, double);
 
 template class RAPT::rsConicSection<float>;
 template class RAPT::rsRotationXY<double>;
+template class RAPT::rsGeometricTransforms<double>;
 
 template class RAPT::rsCoordinateMapper<float>;
 template class RAPT::rsCoordinateMapper<double>;
@@ -296,13 +371,28 @@ template void RAPT::rsStatistics::linearRegression(int N, const float* x, const 
 template float RAPT::rsStatistics::proportionalRegression(int N, const float* x, const float* y);
 template void RAPT::rsRemoveCorrelationBias(double x[], int N, double r[]);
 
+template rsPolynomial<double> RAPT::rsCurveFitter::fitPolynomial(
+  double* x, double* y, int numDataPoints, int degree);
 
 template class RAPT::rsMultiArrayOld<float>;
+
+// numeric calculus
+template void RAPT::rsNumericDifferentiator<double>::stencilCoeffs(
+  const double* x, int N, int d, double* c);
+
+template void RAPT::rsNumericDifferentiator<double>::hessian(
+  const std::function<double(double*)>& f, double* x, int N, double* H, const double* h);
+
+template void RAPT::rsNumericDifferentiator<double>::derivative(
+  const double *x, const double *y, double *yd, int N, bool extrapolateEnds);
 
 
 template double RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(double fl, double fu);
 template double RAPT::rsBandwidthConverter::bandedgesToAbsoluteBandwidth(double fl, double fu);
 template double RAPT::rsBandwidthConverter::absoluteBandwidthToQ(double fl, double fu);
+
+// Filters-Basic:
+template class RAPT::rsOnePoleFilter<float, float>;
 
 // Filters-Musical:
 template class RAPT::rsSmoothingFilter<float, float>;
@@ -351,10 +441,14 @@ template class RAPT::rsEnvelopeFollower2<double>;
 
 // Visualization:
 template class RAPT::rsImage<float>;
+template class RAPT::rsImage<rsPixelRGB>; 
 template class RAPT::rsAlphaMask<float>;
 template class RAPT::rsImagePainter<float, float, float>;
 template class RAPT::rsImageDrawer<float, float, float>;
 template class RAPT::rsLineDrawer<float, float, float>;
+template class RAPT::rsImagePlotter<float, double>;
+template class RAPT::rsImageProcessor<float>;
+template class RAPT::rsImageContourPlotter<float, float>;
 template class RAPT::rsPhaseScopeBuffer<float, float, double>;
 
 // Modulators:

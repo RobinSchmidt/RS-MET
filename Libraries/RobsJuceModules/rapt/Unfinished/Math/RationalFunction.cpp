@@ -13,7 +13,8 @@ template<class T>
 int actualDegree(std::complex<T>* p, int maxDegree, T tol)
 {
   int i = maxDegree;
-  while(rsAbs(p[i]) < tol && i > 0)
+  //while(rsAbs(p[i]) < tol && i > 0)
+  while( rsLessAbs(p[i], tol) && i > 0 )
     i--;
   return i;
 }
@@ -21,13 +22,14 @@ int actualDegree(std::complex<T>* p, int maxDegree, T tol)
 
 
 template<class T>
+template<class R>
 void rsRationalFunction<T>::partialFractionExpansionDistinctPoles(
-  std::complex<T>* num, int numDeg, std::complex<T>* den, int denDeg,
-  const std::complex<T>* poles, std::complex<T>* pfeCoeffs)
+  std::complex<R>* num, int numDeg, std::complex<R>* den, int denDeg,
+  const std::complex<R>* poles, std::complex<R>* pfeCoeffs)
 {
-  typedef RAPT::rsPolynomial<T> PolyR;
-  typedef RAPT::rsPolynomial<std::complex<T>> PolyC;
-  std::complex<T> numVal, denVal;
+  typedef RAPT::rsPolynomial<R> PolyR;
+  typedef RAPT::rsPolynomial<std::complex<R>> PolyC;
+  std::complex<R> numVal, denVal;
   for(int i = 0; i < denDeg; i++) {  // denDeg == # poles == # pfeCoeffs
     numVal = PolyC::evaluate(poles[i], num, numDeg);
     denVal = PolyR::evaluateFromRootsOneLeftOut(poles[i], poles, denDeg, i);
@@ -40,15 +42,16 @@ void rsRationalFunction<T>::partialFractionExpansionDistinctPoles(
 
 
 template<class T>
+template<class R>
 void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
-  const std::complex<T>* num, int numDeg, const std::complex<T>* den, int denDeg,
-  const std::complex<T>* poles, const int* multiplicities, int numDistinctPoles,
-  std::complex<T>* pfeCoeffs)
+  const std::complex<R>* num, int numDeg, const std::complex<R>* den, int denDeg,
+  const std::complex<R>* poles, const int* multiplicities, int numDistinctPoles,
+  std::complex<R>* pfeCoeffs)
 {
   // establish coefficient matrix:
-  std::complex<T> **A; rsArrayTools::allocateSquareArray2D(A, denDeg);
-  std::complex<T> *tmp = new std::complex<T>[denDeg+1]; // deflated denominator
-  std::complex<T> remainder;                            // always zero
+  std::complex<R> **A; rsArrayTools::allocateSquareArray2D(A, denDeg);
+  std::complex<R> *tmp = new std::complex<R>[denDeg+1]; // deflated denominator
+  std::complex<R> remainder;                            // always zero
   for(int i = 0, k = 0; i < numDistinctPoles; i++) {
     rsArrayTools::copy(den, tmp, denDeg+1);
     for(int m = 0; m < multiplicities[i]; m++) {
@@ -73,13 +76,14 @@ void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
 
 
 template<class T>
+template<class R>
 void rsRationalFunction<T>::partialFractionExpansion(
-  std::complex<T> *num, int numDeg, std::complex<T> *den, int denDeg,
-  const std::complex<T> *poles, const int *multiplicities, int numDistinctPoles,
-  std::complex<T> *pfeCoeffs, std::complex<T>* polyCoeffs)
+  std::complex<R> *num, int numDeg, std::complex<R> *den, int denDeg,
+  const std::complex<R> *poles, const int *multiplicities, int numDistinctPoles,
+  std::complex<R> *pfeCoeffs, std::complex<R>* polyCoeffs)
 {
   // make denominator monic:
-  std::complex<T> s = T(1)/den[denDeg];
+  std::complex<R> s = T(1)/den[denDeg];
   rsArrayTools::scale(num, numDeg+1, s);
   rsArrayTools::scale(den, denDeg+1, s);
 
@@ -107,12 +111,13 @@ void rsRationalFunction<T>::partialFractionExpansion(
 }
 
 template<class T>
-std::vector<std::complex<T>> rsRationalFunction<T>::partialFractions(
-  const std::vector<std::complex<T>>& numerator,
-  const std::vector<std::complex<T>>& denominator,
-  const std::vector<std::complex<T>>& poles)
+template<class R>
+std::vector<std::complex<R>> rsRationalFunction<T>::partialFractions(
+  const std::vector<std::complex<R>>& numerator,
+  const std::vector<std::complex<R>>& denominator,
+  const std::vector<std::complex<R>>& poles)
 {
-  typedef std::vector<std::complex<T>> Vec;
+  typedef std::vector<std::complex<R>> Vec;
   Vec num = numerator;   // local copies
   Vec den = denominator; 
   rsAssert(num.size() < den.size()); // function must be strictly proper
@@ -123,13 +128,14 @@ std::vector<std::complex<T>> rsRationalFunction<T>::partialFractions(
 }
 
 template<class T>
-std::vector<std::complex<T>> rsRationalFunction<T>::partialFractions(
-  const std::vector<std::complex<T>>& numerator,
-  const std::vector<std::complex<T>>& denominator,
-  const std::vector<std::complex<T>>& poles,
+template<class R>
+std::vector<std::complex<R>> rsRationalFunction<T>::partialFractions(
+  const std::vector<std::complex<R>>& numerator,
+  const std::vector<std::complex<R>>& denominator,
+  const std::vector<std::complex<R>>& poles,
   const std::vector<int>& muls)
 {
-  typedef std::vector<std::complex<T>> Vec;
+  typedef std::vector<std::complex<R>> Vec;
   Vec num = numerator;   // local copies
   Vec den = denominator; 
   rsAssert(num.size() < den.size()); // function must be strictly proper

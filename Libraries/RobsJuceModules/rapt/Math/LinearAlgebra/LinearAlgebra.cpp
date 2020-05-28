@@ -63,6 +63,8 @@ inline void normalizeLength(T* vx, T* vy)
 
 // move elsewhere:
 
+
+// move to Basics.h:
 template<class T> 
 inline bool rsLess(const std::complex<T>& x, const std::complex<T>& y) // maybe have a tolerance
 {
@@ -152,6 +154,9 @@ void rsLinearAlgebra::eigenvector2x2_2(T a, T b, T c, T d, T* vx, T* vy, bool no
 // and give it a name? maybe eigenSqrt2x2 ...or has it to do with the determinant? i think, it's a 
 // sort of discriminant that discriminates the cases of real and complex eigenvalues (when the 
 // coeffs are real)
+// see also here:
+// https://en.wikipedia.org/wiki/Eigenvalue_algorithm#2%C3%972_matrices
+// maybe compute the gap - maybe this is the square root above?
 
 // the general formula can be found with the following sage code:
 // var("a b c d")
@@ -172,7 +177,8 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
 {
   bool   matrixIsSingular = false;
   int i, j, k, p;
-  double biggest; // actually, it should be T, but then the pivot search doesn't work for complex
+  //double biggest; // actually, it should be T, but then the pivot search doesn't work for complex
+  T biggest;
   T multiplier;   // matrices because rsAbs returns a real number for complex inputs and two
   T tmpSum;       // complex numbers can't be compared for size anyway -> figure out a solution
 
@@ -185,13 +191,14 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
     biggest = 0.0;
     for(j = i; j < N; j++)
     {
-      if(rsAbs(A[j][i]) > biggest)  // rsAbs because abs uses the integer version on linux and
+      if( rsGreaterAbs(A[j][i], biggest) )
+      //if(rsAbs(A[j][i]) > biggest)  // rsAbs because abs uses the integer version on linux and
       {                             // fabs is only for floats (can't take modular integers, for
         biggest = rsAbs(A[j][i]);   // example)
         p = j;
       }
     }
-    if(rsIsCloseTo(biggest, 0.0, 1.e-12))  // todo: use something based on std::numeric_limits<T>
+    if(rsIsCloseTo(biggest, T(0), T(1.e-12)))  // todo: use something based on std::numeric_limits<T>
     {                                      // and/or let the user pick a threshold..also, it should
       matrixIsSingular = true;             // probably be a relative value
       rsError("Matrix singular (or numerically close to)");
@@ -369,6 +376,9 @@ bool rsLinearAlgebra::rsInvertMatrix(T **A, int N)
 
   return !matrixIsSingular;
 }
+
+
+
 
 template<class T>
 bool rsLinearAlgebra::rsSolveTridiagonalSystem(T *lower, T *main, T *upper, T *rhs, T *solution, int N)

@@ -37,10 +37,10 @@ inline void rsPlotArrays(int N, const T* a1, const T* a2 = nullptr, const T* a3 
 
 template<class T>
 inline void rsPlotArraysXY(int N, const T* x, const T* y1 = nullptr, const T* y2 = nullptr, 
-  const T* y3 = nullptr, const T* y4 = nullptr)
+  const T* y3 = nullptr, const T* y4 = nullptr, const T* y5 = nullptr, const T* y6 = nullptr)
 {
   GNUPlotter plt;
-  plt.addDataArrays(N, x, y1, y2, y3, y4);
+  plt.addDataArrays(N, x, y1, y2, y3, y4, y5, y6);
   plt.plot();
 }
 
@@ -196,6 +196,12 @@ void rsPlotMarkers(T* markers, int numMarkers);
 signal features such as zero-crossings) */
 template<class T>
 void rsPlotSignalWithMarkers(T* signal, int signalLength, T* markers, int numMarkers);
+
+/** Plots y against x and marks those values whose indices appea in marks */
+template<class T>
+void rsPlotArraysXYWithMarks(const T* x, const T* y, int N, const std::vector<int>& marks);
+
+
 
 // somewhat redundant with rsPlotSpectrum...
 template<class T>

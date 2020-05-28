@@ -99,7 +99,7 @@ void rsSinusoidalSynthesizer<T>::synthesizePartial(
 
   // it seems cubic interpolation for the phase and linear for the amplitude is most suitable,
   // although, for the amplitude, we may also use cubic - but linear for the phase leads to audible
-  // artifacts (sort of clicks) at the segement junctions
+  // artifacts (sort of clicks) at the segment junctions
   // -maybe linear interpolation of frequency with subsequent integration would work (due to the
   //  smoothing effect of integration) - but that would make it difficult to incorporate the 
   //  target phases (i think, we would have to produce an interpolated phase-delta array and add 
@@ -115,13 +115,13 @@ void rsSinusoidalSynthesizer<T>::synthesizePartial(
   // -maybe the synthesizer should have "presets" for most useful combinations of synthesis 
   //  parameters
 
-  // maybe let the select to apply a bidirectional smoothing filter to the amplitude and/or phase
-  // ...and/or maybe to the frequency data before integration (but then it would have to opreate on
-  // non-uniformly sampled data). when one is to be applied to the phase, we should first subtract
-  // out the linear trend, then apply it and add the trend back
+  // maybe let the user select to apply a bidirectional smoothing filter to the amplitude and/or 
+  // phase ...and/or maybe to the frequency data before integration (but then it would have to 
+  // opreate on non-uniformly sampled data). when one is to be applied to the phase, we should 
+  // first subtract out the linear trend, then apply it and add the trend back
 
   // maybe provide hook-functions that can manipulate the amplitude/phase data after interpolation
-  // maybe have subclasses that also work with real and imaginare parts instead of magnitude/phase
+  // maybe have subclasses that also work with real and imaginary parts instead of magnitude/phase
   // (and apply filters to those) ...but that is already something for the transformations
 
 
@@ -221,7 +221,7 @@ std::vector<T> rsSinusoidalSynthesizer<T>::phasesHermite(
   std::vector<T> fdd;           // fdd: frequency derivative data
   if(quintic) {
     fdd.resize(M);
-    rsNumericDerivative(&td[0], &fd[0], &fdd[0], M, false);
+    rsNumericDifferentiator<T>::derivative(&td[0], &fd[0], &fdd[0], M, false);
     //plotVector(fdd);
   }
 

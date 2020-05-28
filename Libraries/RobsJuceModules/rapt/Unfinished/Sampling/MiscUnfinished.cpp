@@ -1011,17 +1011,12 @@ void rsResampler<TSig, TPos>::transposeSinc(const TSig *x, int xN, TSig *y, int 
   TPos stretch = TPos(1);
   if( antiAlias == true )
     stretch = rsMax(TPos(1), TPos(factor));
-
-  int  nw;         // write position
-  TPos nr = 0.0;   // read position
+  int nw;
   for(nw = 0; nw < yN; nw++)
-  {
-    nr = nw*factor;  // ...this is more expensive but fixes the drift problem
-    y[nw] = signalValueViaSincAt(x, xN, nr, sincLength, stretch);
-  }
+    y[nw] = signalValueViaSincAt(x, xN, TPos(nw)*factor, sincLength, stretch);
   rsArrayTools::fillWithZeros(&y[nw], yN-nw);
 
-  // we really need to compute nr = nw*factor and not accumulate it like nr += factor because that
+  // We really need to compute TPos(nw)*factor and not accumulate it like nr += factor because that
   // causes drift, especially when TPos = float
   // ...but maybe we can avoid the int -> float conversion for each sample by using a float 
   // accumulator that accumulates 1 in each iteration - in this case, results are exact
@@ -1571,16 +1566,180 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int
   return f;
 }
 
-
-
 //=================================================================================================
+
+template<class T>
+std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N)
+{
+  // Pre-process, find peak candidates and apply optional prominence thresholding:
+  std::vector<T> tmp = getPreProcessedData(t, x, N);
+
+  rsPlotArraysXY(N, t, x, &tmp[0]); 
+  // plot pre-processed (shifted and shadowed) data for debug
+
+  std::vector<int> peaks = getPeakCandidates(&tmp[0], N);
+  if(promThresh != T(0) && promToMaxThresh != T(0) && promToHeightThresh != T(0))
+  {
+    std::vector<T> proms(int(peaks.size()));     // peak prominences
+    peakProminences(&tmp[0], N, &peaks[0], int(peaks.size()), &proms[0]);
+    peaks = getProminentPeaks(peaks, proms, &tmp[0], N);
+    // should we really use the pre-process array tmp or maybe the non-shadowed x here? maybe that 
+    // should be user selectable? if we use tmp, we compute the prominence with respect to the 
+    // landscape that results from shadowing - this will reduce the peaks prominence values with 
+    // resepct to what they would be when computed with respect to the original landscape
+    // ...yes! we should use the pre-processed array, because we want to work with the shifted 
+    // version in prominence thresholding..but we may want to use the shifted-but-not-shdowed 
+    // data
+  }
+
+  // Apply optional edge-handling - this will add the endpoints of the array to the peak-indices 
+  // (if they are not already there) and then remove any stickouts that may have resulted from 
+  // doing so:
+  /*
+  if(includeEdges)
+  {
+    // add edges:
+    if(peaks[0] != 0)        rsPrepend(peaks, 0);    // left edge
+    if(rsLast(peaks) != N-1) rsAppend(peaks, N-1);   // right edge
+
+    // remove stickouts (maybe it should be called addStickOuts):
+    int M = int(peaks.size());
+    removeStickOuts(peaks, t, x, N, peaks[0],   peaks[1]);
+    removeStickOuts(peaks, t, x, N, peaks[M-2], peaks[M-1]);
+    // can this fail? is it possible that the peaks array has less than two elements at this point? 
+    // perhaps only when the length of the input array N is < 2 - maybe, we need code to handle 
+    // that degenerate case -> make unit tests with such degenerate cases
+  }
+  */
+  // factor ut into post-process - we need to invoke that procedure also in getFinePeaks because it 
+  // doesn really ensure the no-stickout conditions - consider a peak and a value next to it that 
+  // is almost as high but not quite - like an almost-plateau - ...that probably means, we should 
+  // run removeStickOuts over the whole data in any case as final step
+
+  //rsPlotArraysXYWithMarks(t, x, N, peaks);  // debug
+
+  postProcessPeaks(peaks, t, x, N);
+  //postProcessPeaks(peaks, t, &tmp[0], N);
+    // should this maybe also use tmp instead of x? ...maybe that doesn't make a difference?
+    // nope - we need to use x - see edges in experiment with seed=7, width=20
+  // this may add a lot of additional non-peak datapoints that cluster around the actual peaks to 
+  // the peaks array that are just there to satisfy the "no-stickout" rule - which is desirable but
+  // might be confusing - one might wonder, why these are there...
+
+  //rsPlotArraysXYWithMarks(t, x, N, peaks);  // debug
+
+
+  return peaks;
+}
+
+template<class T>
+std::vector<int> rsPeakPicker<T>::getCoarsePeaks(const T* t, const T* x, int N)
+{
+  std::vector<int> peaks; 
+  peaks.push_back(0);
+  peaks.push_back(N-1);
+  removeStickOuts(peaks, t, x, N, 0, N-1);
+  return peaks;
+}
+
+template<class T>
+std::vector<int> rsPeakPicker<T>::getFinePeaks(const T* t, const T* x, int N)
+{
+  // we also need to shift the minimum to zero here - or - wait - no
+
+  std::vector<int> peaks = getPeakCandidates(x, N);
+
+
+
+  // todo - remove stickouts - yes, they can occur even with the fine algo in case of 
+  // quasi-plateaus
+
+  postProcessPeaks(peaks, t, x, N); // seems to not always work - why?
+
+  return peaks;
+
+  //return getPeakCandidates(x, N);
+}
+
+// test and move to rsArrayTools
+template<class T>
+void zeroOutNonPeaks(T* x, int N)
+{
+  T xL = x[0];                       // left x
+  for(int n = 1; n < N-1; n++)
+  {
+    T xn = x[n];                     // current sample
+    if(!(xn >= xL && xn >= x[n+1]))  // is x[n] a non-peak?
+      x[n] = T(0);                   // ...then zero out x[n]
+    xL = xn;                         // new left x is x[n] before it was updated
+  }
+}
+
+template<class T>
+std::vector<T> rsPeakPicker<T>::getPreProcessedData(const T* t, const T* x, int N)
+{
+  using AT = RAPT::rsArrayTools;
+  std::vector<T> tmp = toVector(x, (size_t)N);
+  AT::shiftToMakeMinimumZero(&x[0], N, &tmp[0]);
+  if(workOnPeaksOnly)
+    zeroOutNonPeaks(&tmp[0], N);
+  if(shadowWidthL > T(0) || shadowWidthR > T(0))
+  {
+    std::vector<T> tmp2(N);
+    shadowLeft( t, &tmp[0], &tmp2[0], N);
+    shadowRight(t, &tmp[0], &tmp[0],  N);
+    AT::maxElementWise(&tmp[0], &tmp2[0], N, &tmp[0]); 
+    // couldn't we just do:
+    // shadowLeft( t, &tmp[0], &tmp[0], N);
+    // shadowRight(t, &tmp[0], &tmp[0], N);
+    // instead? ...i think so - maybe try it with random data and compare the results (use 
+    // different shadow widths for left and right) ...that would get rid the tmp2 array
+  }
+  return tmp;
+}
+
+template<class T>
+void rsPeakPicker<T>::postProcessPeaks(std::vector<int>& peaks, const T* x, const T* y, int N)
+{
+  // Add the endpoints of the array to the peak-indices (if they are not already there) and then 
+  // remove any stickouts:
+  if(peaks[0] != 0)        rsPrepend(peaks, 0);    // left edge
+  if(rsLast(peaks) != N-1) rsAppend(peaks, N-1);   // right edge
+
+
+
+
+
+  //removeStickOuts(peaks, x, y, N, 0, N-1);
+    // this is not enough - we need to call it for every pair of peak indices
+
+  
+  // ...like this:
+  std::vector<int> tmpPeaks = peaks;
+  for(size_t i = 0; i < tmpPeaks.size()-1; i++)
+    removeStickOuts(peaks, x, y, N, tmpPeaks[i], tmpPeaks[i+1]);
+  // ...yes - this seems to give good results!
+}
+
+template<class T>
+void rsPeakPicker<T>::shadowLeft(const T* t, const T* x, T* y, int N)
+{
+  rsPeakTrailDragger<T> ps;
+  ps.setDecaySamples(shadowWidthL);
+  ps.applyBackward(t, &x[0], &y[0], N);
+}
+
+template<class T>
+void rsPeakPicker<T>::shadowRight(const T* t, const T* x, T* y, int N)
+{
+  rsPeakTrailDragger<T> ps;
+  ps.setDecaySamples(shadowWidthR);
+  ps.applyForward(t, &x[0], &y[0], N);
+}
 
 template<class T>
 std::vector<int> rsPeakPicker<T>::getPeakCandidates(const T* x, int N) const
 {
-  // todo: if smoothing is selected, create a pre-smoothed copy of x and operate on that
-  // and/or apply a few iterations of the ropeway algo as pre-processing step
-
   std::vector<int> peaks;
   for(int i = 0; i < N; i++)
     if(isPeakCandidate(i, x, N))
@@ -1602,18 +1761,7 @@ bool rsPeakPicker<T>::isPeakCandidate(int index, const T* x, int N) const
   // this function returns all values within a plateau as peaks - maybe, it should only return the
   // first and last - that would be sufficient for meaningful linear interpolation
 }
-// maybe make thios static, too - numLeft/RightNeighbors should be passed as parameters
-
-template<class T>
-void rsPeakPicker<T>::ropeway(const T* x, int N, T* y, int numPasses)
-{
-  rsArrayTools::copy(x, y, N);
-  for(int i = 0; i < numPasses; i++) {
-    rsArrayTools::movingAverage3pt(y, N, &y[0]);
-    rsArrayTools::maxElementWise(x, &y[0], N, &y[0]);
-  }
-}
-// maybe move to rsArrayTools ...if it turns out to be useful in other applications
+// maybe make this static, too - numLeft/RightNeighbors should be passed as parameters
 
 template<class T>
 void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const int* peakIndices,
@@ -1647,7 +1795,7 @@ void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const in
   // This is a slight variation of the prominences algorithm: we take the maximum of the bases 
   // only when both loops did not hit the boundary of the data - the regular algo would take the 
   // maximum regardless. The reasoning is that when the loop hits the data boundary, it might be 
-  // conceivable that beyond this boundray, an even lower valley may occur before a higher peak is
+  // conceivable that beyond this boundary, an even lower valley may occur before a higher peak is
   // encountered - the regular algo says: nope, this doesn't happen. It basically considers the 
   // non-existent data values beyond the data boundaries as inifinitely high peaks. This variation
   // here considers the non-existent data as infinitely deep valley. I have a gut feeling that this
@@ -1658,15 +1806,79 @@ void rsPeakPicker<T>::peakProminences(const T* data, int numDataPoints, const in
   // In a 2D setting, one would perhaps take the maximum but only over those directions, where the
   // boundary was not hit
   // ...maybe make the type of behavior user adjustable
+
+  // Maybe it would make sense to return both values leftBase and rightBase or peakHeight-leftBase
+  // and peakHeight-rightBase, such that we may also use an asymmetric prominence thresholding. For
+  // amplitude envelopes, it may make sense to use a higher threshold for the leftward direction
+  // (at least, i think so -> elaborate).
 }
 // make unit tests...
 
 template<class T>
-std::vector<T> rsPeakPicker<T>::preProcess(const T* x, int N) const
+std::vector<int> rsPeakPicker<T>::getProminentPeaks(const std::vector<int>& peakCandidates,
+  const std::vector<T>& proms, const T* heights, int numHeights)
 {
-  std::vector<T> y(N);
-  ropeway(x, N, &y[0], numRopewayPasses);
-  return y;
+  rsAssert(peakCandidates.size() == proms.size()); 
+
+  // filter out those peaks which hit or exceed all 3 thresholds:
+  int M = (int) peakCandidates.size();
+  std::vector<int> promPeaks;
+  promPeaks.reserve(M);
+  T maxHeight = rsArrayTools::maxValue(heights, numHeights);
+  for(int m = 0; m < M; m++) {
+    int n = peakCandidates[m];
+    T prom         = proms[m];
+    T promToMax    = prom / maxHeight;
+    T promToHeight = prom / heights[n];
+    if(prom >= promThresh && promToHeight >= promToHeightThresh && promToMax >= promToMaxThresh)
+      promPeaks.push_back(n);  }
+      // we use >= and not > in order to switch thresholding off when the threshold is set to 0
+  return promPeaks;
+}
+
+template<class T>
+void rsPeakPicker<T>::removeStickOuts(std::vector<int>& p, const T* x, const T* y, 
+  int N, int n0, int n1)
+{
+  int ns = getMaxStickOut(x, y, N, n0, n1); // index of maximally sticking out data point
+  if(ns > -1) {
+    rsInsertSorted(p, ns);                  // insert ns into the p-array (sorted)
+    removeStickOuts(p, x, y, N, n0, ns);    // recursive call for left  section n0..ns
+    removeStickOuts(p, x, y, N, ns, n1); }  // recursive call for right section ns..n1
+}
+// i think, something is still wrong with this function
+// -i think, we somehow nee to use the p array in getMaxStickOut too
+// -when calling getMaxStickout, n0 and n1 should actually be neightbours in the sense that they 
+//  occur in p-array at subsequent positions
+// -removeStickOuts should actually not take array indices into x,y as arguments but array-indices
+//  into p- just as the (currently false) documentation says
+// -instead of getMaxStickOut returning a signle index, it should return an array of indices to be
+//  merged into p - this array should conatin the maxStickOut values (as they are computed now) for
+//  all index pairs in between n0, n1
+// -but this algo here may actually be useful in other contexts and the results are actually not
+//  too bad in env-detection either - maybe in the case of finding the coars envelope?
+
+
+template<class T>
+int rsPeakPicker<T>::getMaxStickOut(const T* x, const T* y, int N, int n0, int n1)
+{
+  rsAssert(n0 >= 0 );
+  rsAssert(n1 <  N );
+  rsAssert(n0 <  n1);
+  T a, b;
+  rsLine2D<T>::twoPointToExplicit(x[n0], y[n0], x[n1], y[n1], &a, &b);
+  T   dMax = T(0);
+  int nMax = -1;
+  for(int n = n0; n <= n1; n++) {
+    T yL = a * x[n] + b;   // y on the line
+    T d  = y[n] - yL;      // difference between y-value in array and y-value on the line
+    if(d > dMax) {
+      dMax = d;
+      nMax = n; }}
+  if(nMax == n0 || nMax == n1)
+    return -1;  // avoid stack overflow due to roundoff errors (happens in peakPicker experiment 
+                // with seed=8 - maybe write a unit test that would expose it)
+  return nMax;
 }
 
 //=================================================================================================
@@ -1710,26 +1922,35 @@ void rsEnvelopeExtractor<T>::sineEnvelopeWithDeBeating(const T* x, int N, T* env
   // to pass through the actual peaks
 }
 
+
+
+// old version - maybe delete (or comment out), when the new one is functional
+//...yep - seems it's obsolete now - do a few more tests and delete when everything is fine
 template<class T>
 void rsEnvelopeExtractor<T>::getMetaEnvelope(
   const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime)
 {
   getPeaks(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue);
+    // this needs to be replace by the peakPicker - maybe the we will also have to remove the call
+    // to setupEndValues below because the peak picker catually returns an envelope with the neds 
+    // included
+
   //rsAssert(rsArrayTools::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
   //GNUPlotter plt;
   //plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
 
-  T maxSpacing =   // this must be computed *before* calling setupEndValues!
-    maxSpacingMultiplier * rsArrayTools::maxDifference(&metaEnvTime[0], (int)metaEnvTime.size());
+  //T maxSpacing =   // this must be computed *before* calling setupEndValues! ..why?
+  //  maxSpacingMultiplier * rsArrayTools::maxDifference(&metaEnvTime[0], (int)metaEnvTime.size());
 
 
   setupEndValues(metaEnvTime, metaEnvValue, endTime);
   //rsAssert(rsArrayTools::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
   fillSparseAreas(rawEnvTime, rawEnvValue, rawEnvLength, metaEnvTime, metaEnvValue, maxSpacing);
+
   //rsAssert(rsArrayTools::isSortedStrictlyAscending(&metaEnvTime[0], (int)metaEnvTime.size()));
 
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
@@ -1740,6 +1961,129 @@ void rsEnvelopeExtractor<T>::getMetaEnvelope(
 // -maybe fillSparseAreas should be done before setupEndValues?
 // -maybe, if there are less than 2 peaks, we should conclude that there is no beating present and
 //  skip the de-beating process
+
+
+// should replace the old version above:
+template<class T>
+void rsEnvelopeExtractor<T>::getMetaEnvelopeNew(
+  const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
+  std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue)
+{
+  std::vector<int> peaks = peakPicker.getRelevantPeaks(rawEnvTime, rawEnvValue, rawEnvLength);
+  fillSparseAreasNew(rawEnvTime, rawEnvValue, rawEnvLength, peaks);
+  metaEnvTime  = rsSelect(rawEnvTime,  peaks);
+  metaEnvValue = rsSelect(rawEnvValue, peaks);
+}
+
+template <class T>
+T maxPeakSpacing(const std::vector<int>& peaks, const T* time, const T* env, int N)
+{
+  T dMax = T(0);
+  for(int k = 2; k < rsSize(peaks) - 1; k++)
+  {
+    int i0 = peaks[k-1];         // left peak index
+    int i1 = peaks[k];           // right peak index
+    T d = time[i1] - time[i0];   // time delta between peaks
+    if(d > dMax)
+      dMax = d;
+  }
+  return dMax;
+  // the loop runs only from 2 to to size-1 because we want to ignore the first and last 
+  // time-deltas because these datapoints correspond to the first and last envelope sample and are
+  // not actual peaks - they are in the peaks array for technical reasons...that may be a bit 
+  // inelegant..
+}
+// make protected member function
+
+
+template<class T>
+void rsEnvelopeExtractor<T>::fillSparseAreasNew(const T* rawEnvTime, const T* rawEnvValue, 
+  int rawEnvLength, std::vector<int>& peaks)
+{
+  // todo: fill the sparsely sampled areas in order to not have this ugly straight-line 
+  // interpolation in exponentially decaying tails (add new indices to the peaks array at which the 
+  // original envelope also should be sampled even though there's no peak at these locations)
+
+  //T maxSpacing = maxPeakSpacing(peaks, rawEnvTime, rawEnvValue, rawEnvLength);
+  // what's the rationale behind this formula? i think, the (maximum) time-difference between peaks
+  // that we find in the envelope is the period of the tremolo - we don't want to sample the 
+  // envelope any denser than (half?) the tremolo rate because then, we would again potentially 
+  // sample the troughs of the tremolo
+  // maybe, we should have also an absolute maxDifference setting (can be 0 to turn it off) and use
+  // the maximum of the value above and the absolute maximum - enforces a minimum sampling rate for 
+  // the envelope
+  // ...ah - this formula doesn't work here becuase at this stage , the peaks array doen not only 
+  // contain the actual peaks but also 0 and N-1 - this is because in the old getMetaEnvelope, we
+  // had to call setupEndValues *after* calling setupEndValues - how can we fix this? a difference
+  // should count only, iff it's really the difference between two peaks - we need a special 
+  // function of the "maxDifferenceIf" sort...it's a bit inelegant...maybe...but welll...
+
+  // -this does not work well with real-world signals - the maxPeakSpacing function assumes that 
+  //  the only two invalid/false peak-amrks are those at 0 and N-1 - but after the no-stickout algo
+  //  we get more - see the peak-marks for the 1st partial of the rhodes sample:
+  //  (1) they come in cluseter around the actual peaks
+  //  (2) at the fade-out at the end of the sample, there's another cluster
+  //  -> the distance between the last actual peak and that final cluster determines our maxSpacing 
+  //  here- and makes it wayy tooo large (> 4 seconds where it should be something around 0.3 
+  //  seconds)
+
+  // -would it help to figure out the maxSpacing before running the no-stickout algo, i.e. work 
+  //  with an intermediate set of data
+
+  // -temporarily, i mad the maxSpacing a member variable to be set up directly (in seconds) from
+  //  client code - automatically choosing a reasonable value required some more thought
+
+
+
+  // plot peaks before densification:
+  //rsPlotArraysXYWithMarks(rawEnvTime, rawEnvValue, rawEnvLength, peaks);  // debug
+
+
+  if(maxSpacing == T(0))
+    return;
+
+  std::vector<int> tmp;   // buffer for extra peak-indices to be inserted
+  for(size_t i = 1; i < peaks.size(); i++) {
+
+    T t1 = rawEnvTime[peaks[i]];   // old: T t1 = metaEnvTime[i];
+    T t0 = rawEnvTime[peaks[i-1]];  // old T t0 = metaEnvTime[i-1];
+    T dt = t1 - t0;
+    if(dt > maxSpacing) { // we need to insert extra datapoints between i-1 and i
+
+      int numExtraPoints = (int) floor(dt/maxSpacing);  // verify floor ...maybe use ceil?
+      rsAssert(numExtraPoints >= 0);
+
+      // it seems, maxSpacing is zero? :-O
+      tmp.resize(numExtraPoints);
+      for(int j = 0; j < numExtraPoints; j++) {
+        T t = t0 + (j+1) * (dt/(numExtraPoints+1));  // verify this formula
+        int idx = rsArrayTools::findSplitIndexClosest(rawEnvTime, rawEnvLength, t);
+        tmp[j] = idx;
+      }
+      rsInsert(peaks, tmp, i);
+    }
+  }
+
+
+  // plot peaks (plus artificially densified) after densification:
+  rsPlotArraysXYWithMarks(rawEnvTime, rawEnvValue, rawEnvLength, peaks);  // debug
+
+  int dummy = 0;
+
+  // maybe fillSparseAreas should work as follows:
+  // -the area between two datapoints at indices n0,n1 is filled/densified with more datapoints 
+  //  only when there is no trough n0..n1, where a trough is defined by the condition that the 
+  //  minimum between n0..n1 is less than the smaller of the two values at n0 and n1
+  // -the function should operate on the peaks array - i.e. get the peaks-array as input by 
+  //  reference together with the the rawEnvTime and rawEnvValue arrays and add indices to the
+  //  peaks array accorindg to the following condtions:
+  //  -if for any pait of indices n0,n1, the time delta t[n1]-t[n0] > density, then:
+  //   -densify the area with datapoints, if there's no minimum between n0..n1 that is lower than
+  //    min(n0,n1), i.e. only if the actual envelope between n0,n1 does not undershoot the 
+  //    horizontal drawn through the smaller of the two envelope points 
+  //  -but hwo exactly should the densification proceed? - in the simplest case, we would just put
+  //   the new datapoints equally spaced between n0,n1 but that might not be ideal
+}
 
 template<class T>
 void rsEnvelopeExtractor<T>::interpolateEnvelope(const T* envTimes, T* envValues, int envLength,
@@ -1757,19 +2101,27 @@ void rsEnvelopeExtractor<T>::connectPeaks(const T* envTimes, T* envValues, T* pe
 {
   rsAssert(rsArrayTools::isSortedStrictlyAscending(&envTimes[0], length));
   std::vector<T> metaEnvTime, metaEnvValue;
-  getMetaEnvelope(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
+
+  // experimentally switching between odl and new algorithm:
+  //getMetaEnvelope(envTimes, envValues, length, metaEnvTime, metaEnvValue, envTimes[length-1]);
+  getMetaEnvelopeNew(envTimes, envValues, length, metaEnvTime, metaEnvValue); // new - better!
+
+
   interpolateEnvelope(&metaEnvTime[0], &metaEnvValue[0], (int)metaEnvTime.size(),
     envTimes, peakValues, length);
   rsAssert(rsLast(metaEnvTime) == envTimes[length-1]);
 
-  //GNUPlotter plt;
-  //plt.addDataArrays(length, envTimes, envValues);
-  //plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
-  //plt.plot();
+  /*
+  GNUPlotter plt;
+  plt.addDataArrays(length, envTimes, envValues);
+  plt.addDataArrays((int) metaEnvTime.size(), &metaEnvTime[0], &metaEnvValue[0]);
+  plt.plot();
   ////rsPlotVectorsXY(metaEnvTime, metaEnvValue); // debug
   ////rsPlotArraysXY(length, envTimes, envValues); // debug
+  */
 }
 
+// may be obsolete - but maybe not
 template<class T>
 void rsEnvelopeExtractor<T>::setupEndValues(
   std::vector<T>& envTimes, std::vector<T>& envValues, T endTime)
@@ -1806,6 +2158,8 @@ void rsEnvelopeExtractor<T>::setupEndValues(
   // rsAssert(rsLast(envTimes) == endTime); // no - in free-end mode, it may be different
 }
 
+
+// obsolete:
 template<class T>
 void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
   std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T maxSpacing)
@@ -1860,6 +2214,7 @@ void rsEnvelopeExtractor<T>::fillSparseAreas(const T* rawEnvTime, const T* rawEn
   */
 }
 
+// maybe move to rsArrayTools or make member function:
 template<class T>
 std::vector<size_t> rsEnvelopeExtractor<T>::findPeakIndices(const T* x, int N,
   bool includeFirst, bool includeLast)
@@ -1913,7 +2268,10 @@ void rsEnvelopeExtractor<T>::getAmpEnvelope(const T* x, int N,
 {
   std::vector<T> xAbs(N);
   rsArrayTools::applyFunction(&x[0], &xAbs[0], N, fabs);                  // absolute value
+
   std::vector<size_t> peakIndices = findPeakIndices(&xAbs[0], N, true, true); // peak indices
+  // replace this call by peakPicker.getRelevantPeaks - or no - this is the raw amp-env -  maybe 
+  // the peak-picker should be used for finding the meta-envelope
 
   // peak coordinates:
   size_t M = peakIndices.size();
@@ -1932,8 +2290,11 @@ void rsEnvelopeExtractor<T>::getPeaks(const T *x, const T *y, int N,
   std::vector<T>& peaksX, std::vector<T>& peaksY)
 {
   std::vector<size_t> peakIndices = findPeakIndices(y, N, false, false);
-    // false because, we don't want to include the end-values, because they will be set
-    // setupEndValues in getMetaEnvelope
+  // false because, we don't want to include the end-values, because they will be set
+  // setupEndValues in getMetaEnvelope
+
+  // this needs to be replace by using the peak-picker - but maybe we should include the end-values
+  // in order to be safe from stickouts? would that mess up something?
 
   size_t M = peakIndices.size();
   peaksX.resize(M);
@@ -1942,7 +2303,7 @@ void rsEnvelopeExtractor<T>::getPeaks(const T *x, const T *y, int N,
     size_t n = peakIndices[m];
     peaksX[m] = x[n];
     peaksY[m] = y[n];
-    // todo: refine to subsample-precision
+    // todo: refine to subsample-precision, maybe use rsSelect
   }
 }
 

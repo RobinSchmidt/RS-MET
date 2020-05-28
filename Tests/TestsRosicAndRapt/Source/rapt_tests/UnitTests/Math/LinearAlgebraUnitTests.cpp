@@ -146,6 +146,23 @@ bool testMatrix2x2(std::string& reportString)
   C = B.getInverse(); testResult &= C == Mat(-4, 3, 7./2, -5./2);
   C = A/B; testResult &= C == Mat( 3, -2, 2, -1);
   C = B/A; testResult &= C == Mat(-1,  2, -2, 3);
+  C = A*A*A*A*A; 
+  D = A.getPower(5); 
+  testResult &= C == D;
+
+  // test getPower with a matrix with 2 equal eigenvalues:
+  // https://web.calpoly.edu/~brichert/teaching/oldclass/f2002217/solutions/solutions9.pdf
+  // we must have a = d and b*c = 0
+  A = Mat({5,0,3,5});
+  C = A*A*A*A*A; 
+  D = A.getPower(5); 
+  testResult &= C == D;
+
+
+
+ 
+
+
 
 
 
@@ -709,6 +726,107 @@ bool testChangeOfBasis(std::string &reportString)
 // the solving for x and y respectively and defining C as conversion matrix from x to y and C-^1
 // the inverse conversion, can also be verified by E = C * C^-1 = A^-1 * B * B^-1 * A
 
+template<class T>
+void solveDiagonalSystem(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
+{
+  int M = X.getNumColumns();  // number of required solution vectors
+  int N = A.getNumRows();     // number of elements in each solution vector
+  for(int k = 0; k < M; k++) 
+    for(int i = N-1; i >= 0; i--) 
+      X(i, k) = B(i, k) / A(i, i);
+}
+// adapted from solveUpperDiagonalSystem
+
+bool testNullSpace()
+{
+  bool r = true;
+
+  using Matrix = rsMatrix<double>;
+  using LA     = rsLinearAlgebraNew;
+  double tol   = 1.e-14;
+
+  // maybe it makes sense to work with rational numbers rather than floating point
+
+  Matrix I, A, z;
+  int rank = 0;
+
+  // Karpf. pg 142:
+  z = Matrix(3, 1, { 0,0,0 });
+  A = Matrix(3, 3, {1,2,3, 4,5,6, 7,8,9});
+  //A = Matrix(3, 3, {7,8,9, 1,2,3, 4,5,6});    // reorder rows to avoid swapping
+  rank = LA::makeTriangular(A, z);
+  //LA::makeTriangularNoPivot(A, B);
+  r &= rank == 2;
+
+  // Karpf. pg 141:
+  I = Matrix(3, 3, {1,0,0, 0,1,0, 0,0,1});
+  A = Matrix(3, 3, {1,1,1, 1,2,4, 2,3,5});
+  rank = LA::makeTriangular(A, z);
+  r &= rank == 2;
+
+  // see Karpf pg 77,80,129,142,411
+
+  return r;
+}
+
+// tests the new implementation
+bool testLinearSystemViaGauss2() 
+{
+  bool r = true;
+
+  using Vector = std::vector<double>;
+  using Matrix = rsMatrix<double>;
+  using LA     = rsLinearAlgebraNew;
+  double tol   = 1.e-14;
+
+  //rsMatrix<double> A(3, 3, { 1,2,3, 4,5,6, 7,8,9 }); // this matrix is singular
+  Matrix A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
+  Matrix tmpA = A;                               // because algo destroys the original A
+  Vector x({1,2,3});
+  Vector b  = A * x;                            //       A * x = b
+  Vector x2 = LA::solve(tmpA, b);               // solve A * x = b for x
+  r &= RAPT::rsAreVectorsEqual(x, x2, tol);
+  tmpA = A, b = A*x;                             // restore destroyed tmp and b
+
+  // try it with 3x2 solution matrix - figure out if the X,B rhs matrices/vectors may in general be 
+  // the same (it works when inverting - but this is the special case where B is the identity - in 
+  // general, it probably won't work)
+
+  // check matrix inversion:
+  Matrix At(3, 3, {-0.5,1.9,-3.7, 0.0,-0.2,0.6, 0.5,-0.9,1.7 }); // target matrix
+  Matrix Ai = LA::inverse(A);
+  r &= Ai.equals(At, tol);
+
+  // solve some systems with 3x3 matrix and 3x2 solution vector:
+  Matrix X(3, 2, {1,4, 2,5, 3,6});
+  Matrix B = A * X;
+  r &= B == Matrix(3, 2, {16,37, 32,80, 14,35});
+  tmpA = A;
+  Matrix tmpB = B;
+  Matrix X2(3,2);
+  LA::solve(tmpA, X2, tmpB);  // destroys tmpA and tempB
+  r &= X2.equals(X, tol);
+
+  // Sage:
+  // A = matrix([[2,1,4],[3,10,3],[1,5,1]])
+  // X = matrix([[1,4],[2,5],[3,6]])
+  // A, X, A*X
+  //
+  // gives:
+  // [ 2  1  4]  [1 4]  [16 37]
+  // [ 3 10  3]  [2 5]  [32 80]
+  // [ 1  5  1], [3 6], [14 35]
+
+  // test behavior of makeTriangular in case of singular matrices
+
+
+
+  
+  // figure out, when it can be used in place, i.e. X == B
+
+  return r;
+}
+
 
 
 //bool testLinearAlgebra(std::string &reportString)
@@ -728,6 +846,11 @@ bool testLinearAlgebra()
   testResult &= testMatrixVectorMultiply( reportString);
   testResult &= testMatrixMultiply(       reportString);
   testResult &= testChangeOfBasis(        reportString);
+
+
+  testResult &= testNullSpace();
+  testResult &= testLinearSystemViaGauss2();
+
 
   return testResult;
 }

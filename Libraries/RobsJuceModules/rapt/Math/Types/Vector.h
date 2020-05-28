@@ -37,6 +37,18 @@ public:
   }
 
   //-----------------------------------------------------------------------------------------------
+  /** \name Manipulations */
+
+  /** Normalizes this vector to unit length.  */
+  void normalize()
+  {
+    T s = T(1) / getEuclideanNorm();
+    x *= s;
+    y *= s;
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
   /** Adds two vectors. */
@@ -124,6 +136,35 @@ inline rsVector2D<T> operator*(const T &r, const rsVector2D<T> &p)
   return tmp;
 }
 
+/** Returns the determinant of the matrix that results from writing the 2 given vectors as columns
+into a 2x2 matrix. If this determinant is 0, the 2 vectors are collinear, i.e. one is a scalar 
+multiple of the other, i.e. they are both on the same line through the origin. */
+// not yet tested
+template<class T>
+T rsDet(const rsVector2D<T>& a, const rsVector2D<T>& b)
+{
+  return a.x * b.y - a.y * b.x;  // verify formula
+}
+// maybe move as static function into class
+
+/** Returns the dot product of vectors a and b. */
+template<class T>
+T rsDot(const rsVector2D<T>& a, const rsVector2D<T>& b)
+{
+  return a.x * b.x + a.y * b.y;
+}
+
+/** Returns the Euclidean norm of vector a. */
+template<class T>
+T rsNorm(const rsVector2D<T>& a)
+{
+  return sqrt(rsDot(a, a));
+}
+
+
+
+// todo: dot, cross
+
 //=================================================================================================
 
 /** Class for representing 3-dimensional vectors. 
@@ -158,6 +199,22 @@ public:
 
   // maybe just define "norm", "normSquared" functions outside the class (like dot, det, etc)
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Manipulations */
+
+  /** Normalizes this vector to unit length.  */
+  void normalize()
+  {
+    T s = T(1) / getEuclideanNorm();
+    x *= s;
+    y *= s;
+    z *= s;
+  }
+
+  /** Sets the 3 coordinates to new values */
+  void set(T newX, T newY, T newZ) { x = newX; y = newY, z = newZ; }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
@@ -172,6 +229,9 @@ public:
 
   /** Divides this vector by scalar s. */
   rsVector3D<T>& operator/=(T s) { s = 1/s; x *= s; y *= s; z *= s; return *this; }
+
+  /** Compares two vectors for equality. */
+  bool operator==(const rsVector3D<T>& v) { return x == v.x && y == v.y && z == v.z; }
 
 
   // implement dot- and
@@ -216,11 +276,29 @@ rsVector3D<T> operator/(const rsVector3D<T>& v, T s)
   return rsVector3D<T>(v.x*s, v.y*s, v.z*s);
 }
 
+/** Multiplies a 3x3 matrix with a 3-vector and returns the result. */
+template<class T>
+rsVector3D<T> operator*(const T A[3][3], const rsVector3D<T>& v)
+{
+  rsVector3D<T> w;
+  w.x = A[0][0]*v.x + A[0][1]*v.y + A[0][2]*v.z;
+  w.y = A[1][0]*v.x + A[1][1]*v.y + A[1][2]*v.z;
+  w.z = A[2][0]*v.x + A[2][1]*v.y + A[2][2]*v.z;
+  return w;
+}
+
 /** Computes the dot-product between two 3D vectors a and b. */
 template<class T>
 T dot(const rsVector3D<T>& a, const rsVector3D<T>& b)
 {
   return a.x*b.x + a.y*b.y + a.z*b.z;
+}
+// rename to rsDot
+
+template<class T>
+T rsNorm(const rsVector3D<T>& a)
+{
+  return sqrt(dot(a, a));
 }
 
 /** Computes the cross-product between two 3D vectors a and b. Here, a is the left operand. That's 
@@ -241,6 +319,11 @@ rsVector3D<T> triple(const rsVector3D<T>& a, const rsVector3D<T>& b, const rsVec
 {
   dot(cross(a, b), c); 
 }
+// rename to rsTripleProduct, maybe move into class - rule: those functions that make sense for 
+// n-dimenstional vectors are defined outside the class and those that make sense only for a 
+// particular dimenstionality are defined inside the class (as static functions). reason: those
+// that make sense for any vector can be used in generic code that doesn't care about the 
+// dimensionality such as in rsParametricCurve
 
 /** Returns the determinant of the matrix that results from writing the 3 given vectors as columns
 into a 3x3 matrix. If this determinant is 0, the 3 vectors are linearly dependent, i.e. one can be 

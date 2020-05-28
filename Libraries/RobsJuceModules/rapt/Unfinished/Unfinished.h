@@ -13,9 +13,9 @@ namespace RAPT
 #include "Math/Vector.h"
 #include "Math/Matrix.h"              // this is deprecated
 //#include "Math/MatrixUnOptimized.h" // simpler, can perhaps be optimized via move-constructor
-#include "Math/FunctionObjects.h"
-#include "Math/GradientBasedMinimizer.h"
-#include "Math/MultiLayerPerceptron.h"
+//#include "Math/FunctionObjects.h"
+//#include "Math/GradientBasedMinimizer.h"
+//#include "Math/MultiLayerPerceptron.h"
 #include "Math/DifferentialEquationSystem.h"
 #include "Math/NumberTheory.h"
 #include "Math/Transforms.h"

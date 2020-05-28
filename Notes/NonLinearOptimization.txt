@@ -1,0 +1,125 @@
+Ideas for nonlinear optimization algorithms (i cast them in term of minimization)
+
+
+the "PartialParabolic" method can be modified by first computing the 1st and 2nd derivatives in all
+N directions and the doing one step that combines the steps that have not been made
+
+---------------------------------------------------------------------------------------------------
+(hopefully) Qudratically convergent method with 1 evaluation in each iteration
+
+We approximate f by a quadratic form f(x) ~= q(x) = x*A*x + b*x + c where the matrix A is assumed
+to be symmetric (i think, this is no loss of generality because of the sandwiching, right?). So our 
+model contains M = 1 + 2*N + (N^2-N)/2 free parameters, N+(N^2-N)/2 come from the matrix A 
+(verify!), N from the vector b and 1 from the constant c. As pre-processing step, we evaluate f(x)
+at M data points, from that obtain our M parameters (this involves solving an MxM linear system) 
+and then we require:
+  
+  q(x) = x*A*x + b*x + c = min -> q'(x) = 2*A*x + b = 0 -> x = -(1/2) * A^-1 * b ...verify this
+  
+which we can solve for x to jump into the minimum of our hyperparaboloid (but what if we are near a 
+maximum or saddle?). The so found minimum becomes our new datapoint and we discard the one which 
+had the highest f(x). Now, we repeat solving the MxM and NxN systems for each step in a convergence 
+loop. Solving 2 linear systems per iteration seems costly but the key is, that each iteration 
+requires only one evaluation of f (for the one new evaluation point at the minimum of q) - so if 
+the evaluation of f is expensive, which is the typical case, it may be worth it. The algorithm 
+would at each step use a full set of datapoints rather than a single one, which is hopefully good 
+for the convergence. 
+
+How to select the M initial datapoints? Let's say, the user provides one initial guess x0. we could 
+obtain N other points by going a distance k along each coordinate direction and another N^2 
+datapoints by going a distance along each combination of two directions. ...but that would be 
+N + N^2 - so that's too many, but N would be too few...hmmm....wait
+or: obtain N datapoints by going into the k * e_i directions, e_i is the unit vector along the 
+i-th coordinate. obtain (N^2-N)/2 points by going along k * (e_i + e_j), i != j for the off-diag
+elements of A, k * 2*e_i for the diagonal elements of A and for c, we have our single user-given
+datapoint. Maybe, we should use different k-values k_i for each direction according to the typical 
+size of features of f along each direction, for the cross directions, we would use 
+k_i*e_i + k_j*e_j
+
+What if the paraboloid's extremum is a maximum? we can detect this by having f(x) at the new point
+bigger than all old points. maybe then we should compute a direction that points away from the 
+maximum - maybe use the center of our existing points as reference, compute the distance to the new
+point and go into the opposite direction - or something. What if f(x) is intermediate in between 
+old f a t old datapoints? i think, it means, that our set of datapoints spans a too large region, 
+such that there may be several minima/maxima in the region - we should perhaps start again with 
+smaller k-values. What if there's a long valley without a unique extremum? then the NxN system 
+(and/or the MxM system?) may not have a unique solution - then maybe we need to pick one particular 
+solution from the solution set - which?
+
+sanity check for N = 2: M = 1 + 2*N + (N^2-N)/2 = 1 + 2*2 + (2^2-2)/2 = 1 + 4 + 1 = 6...yep - 
+that's the number of free parameters for a 2D quadratic form, i.e. a conic section 
+q(x,y) = A*x^2 + B*x*y + C*y^2 + D*x + E*y + F, so the M-formula passes this sanity check.
+N = 3:  M = 1 + 2*3 + (3^2-3)/2 = 1 + 6 + 3 = 10 - jup, looks good, too
+N = 4:  M = 1 + 2*4 + (4^2-N)/2 = 1 + 8 + 6 = 15
+...so how does it scale?
+N = 10: M = 1 + 20 + 90/2 = 21 + 45 = 66
+N = 20: M = 1 + 2*20 + (400-20)/2 = 1 + 40 + 190 = 231
+...ok, so doing linear algebra in a 231 dimensional space for each step is already a quite heavy
+burden, so this method may be advisable only for problems with small dimensionality and when the
+evaluation of f is really expensive such that it must be avoided at all costs - because the cost
+is quite high indeed. avoiding evaluations at all costs may have its applications when the cost 
+function depends on large data sets, in which case it may indeed have to be avoided at all costs.
+finding the quadratic form that interpolates a large (size M) set of evaluation points is a costly
+computation..a paper describing the method could be named "A quadratically convergent method for 
+nonlinear optimization that avoids function evaluations at the cost of high-dimensional linear 
+algebra"...if it all works out as i hope, that is.....
+
+a very(!) inefficient variant:
+compute the M model parameters not from M datapoints but from the function-value, gradient and
+Hessian matrix at a single datapoint - a numerical estimation of these would require O(N^2) 
+function evaluations per step instead of 1. but it may be interesting to implement for a 
+prototype and experiment with the general idea without regard to efficiency...but it may lead to
+a viable algorithm, if gradient and Hessian are easy to compute (i.e. do not have to be estimated
+numerically) - after all, doing so would also mean doing aways with solving the MxM per step - only
+the NxN system remains
+
+...i think, the general idea is the Newton method - make a quadratic approximation and
+jump into its minimum
+
+wait - i think, the above approach:
+  q(x) = x*A*x + b*x + c = min -> q'(x) = 2*A*x = 0
+works only, if the extremum is located at (xMin,yMin) = (0,0) - otherwise, we need a more general 
+quadratic form:
+  q(x) = (x-a)*A*(x-a) + b*(x-a) + c 
+where a is another vector that shifts the extremum to the location a.
+  q(x)   = (x-a)*A*(x-a) + b*(x-a) + c 
+         = x*A*(x-a) - a*A*(x-a) + b*x - b*a + c 
+         = x*A*x - x*A*a - a*A*x - a*A*a + b*x - b*a + c 
+         = x*A*x - 2*a*A*x - a*A*a + b*x - b*a + c          iff A is symmetric, which we may assume?
+         = x*A*x + b*x - 2*a*A*x - a*A*a - b*a + c
+         = x*A*x + (b - 2*a*A)*x - a*A*a - b*a + c
+  q'(x)  = 2*A*x + b - 2*a*A = g(x)                       the gradient at x
+  q''(x) = 2*A = H(x)                                     the Hessian
+actually, we want to find the vector a from gradient and Hessian, so we can jump into a. We find:
+  -2*A*a = g - 2*A*x - b 
+       a = (-1/2) * inv(A) * (g - 2*A*x - b)
+but we can't compute that because don't know b. seems like we can't reconstruct A, b, c from the 
+gradient and Hessian at a single point - we can compute A - but not b - maybe we need two 
+evaluation points? We can assume, that H and hence A does not change from one evaluation point to 
+another, but g does change - maybe we can compute b from evaluating g at two points? Let's do it - 
+call them x1,x2 - we get from the q' equation:
+  2*A*x1 + b - 2*a*A = g1
+  2*A*x2 + b - 2*a*A = g2
+...or maybe we can reformulate it, such that we can use the simpler form q(x) = x*A*x + b*x + c but 
+here x is actually a dx vector?
+
+Maybe model cost as:
+  f(x) ~= f(x0) + q(x) where q(x) = f(x0) + x*A*x + b*x
+  f'(x) = 2*A*x + b = 0 -> H*x + b = 0 -> xNew = H^-1 * b
+but what should we use for x0? maybe the average off all current datapoints?
+x0 has to evaluated
+  
+  
+https://www.geometrictools.com/Documentation/LeastSquaresFitting.pdf
+
+
+see:
+https://en.wikipedia.org/wiki/Derivative-free_optimization
+https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method
+https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm
+
+https://en.wikipedia.org/wiki/Trust_region
+
+
+
+

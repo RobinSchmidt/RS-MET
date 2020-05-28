@@ -5,12 +5,12 @@
 /** A class that detects peaks and then decays exponentially. This can be seen as a simplified
 version of an envelope follower with zero attack time. So, in effect, it responds immediately to 
 any peaks and then drags an exponentially decaying trail from that peak. If additional smaller 
-peaks occur under teh umbrella of that trail, they will not be seen separately, they will be 
+peaks occur under the umbrella of that trail, they will not be seen separately, they will be 
 subsumed/shadowed by the larger peak. This class can be useful for distinguishing major/relevant
 peaks for the minor irrelevant ones. */
 
 template<class T>
-class rsPeakTrailDragger  // maybe rename to rsPeakFollower/rsPeakMeter
+class rsPeakTrailDragger  // maybe rename to rsPeakFollower/rsPeakMeter/rsPeakShadower
 {
 
 public:
@@ -46,6 +46,28 @@ public:
   }
 
 
+  /** Applies the process running forward to the signal x of length N with time-stamps given in 
+  t and writes the result into y. Can be used in place - the buffers x,y may point to the same 
+  memory location. */
+  void applyForward(const T* t, const T* x, T* y, int N)
+  {
+    reset();
+    this->y = y[0] = x[0]; // first output sample is equal to first input sample
+    for(int n = 1; n < N; n++)
+      y[n] = getSample(x[n], t[n]-t[n-1]);
+  }
+  // not yet tested
+
+
+  void applyBackward(const T* t, const T* x, T* y, int N)
+  {
+    reset();
+    this->y = y[N-1] = x[N-1]; // first output sample is equal to first input sample
+    for(int n = N-2; n >= 0; n--)
+      y[n] = getSample(x[n], t[n+1]-t[n]);
+  }
+  // not yet tested
+
   /** Resets the internal state. */
   void reset() { y = T(0); }
 
@@ -55,9 +77,12 @@ protected:
   T y = T(0);
 
 };
-// maybe make a version with hold - could be useful for limiters
-// maybe make a version with linear instead of exponential decay - maybe the slope should be 
-// adapted in the "if" according to x (be proportional) ...hmm...maybe not
+// -maybe make a version with hold - could be useful for limiters
+// -maybe make a version with linear instead of exponential decay - maybe the slope should be 
+//  adapted in the "if" according to x (be proportional) ...hmm...maybe not
+// -i think, it works correctly only if the input signal is always nonnegative - this is the case 
+//  for envelopes but maybe it's useful to have a class that works also when the input may go
+//  negative
 
 
 //=================================================================================================

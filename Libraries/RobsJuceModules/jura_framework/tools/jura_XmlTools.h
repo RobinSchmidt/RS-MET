@@ -1,6 +1,14 @@
 #ifndef jura_XmlTools_h
 #define jura_XmlTools_h
 
+// todo: instead of returning raw pointers that the caller has to delete, return 
+// std::unique_ptr<XmlElement> because that's what juce::XmlDocument::getDocumentElement returns 
+// nowadays: https://docs.juce.com/master/classXmlDocument.html
+// we could perhaps do something dirty by retrieving the managed object from the std::unique_ptr
+// and return the raw-pointer from our function anyway, defeating the purpose of std::unique_ptr 
+// but this should then perhaps be considered deprecated legacy-compatibility code:
+// https://en.cppreference.com/w/cpp/memory/unique_ptr/release
+
 /** Converts a string that represents an xml document to an actual XmlElement object. The caller is
 responsible for deleting the object eventually. Convenience function to save the user from going 
 through the XmlDocument class. */
@@ -13,6 +21,9 @@ JUCE_API XmlElement* getXmlFromFile(const juce::File& fileToLoadFrom);
 /** Returns an XmlElement from a file - returns NULL if the file doesn't exist or is not a
 valid xml file. The caller is responsible for deleting the XmlElement. */
 JUCE_API XmlElement* getXmlFromFile(const juce::String& fileNameToLoadFrom);
+
+
+
 
 /** Saves the passed XmlElement to a file. If you set the final argument to false, it will 
 overwrite an already existing file without asking, so be careful with that. */
@@ -32,12 +43,12 @@ child-elements with given name is smaller than the given index plus one. */
 JUCE_API XmlElement* getChildElementByNameAndIndexAmongNameSakes(const XmlElement& xml, 
   const juce::String& name, int index);
 
-/** Takes a std::map of std::strings (for eky and value) and for each key/value pair in the map,
+/** Takes a std::map of std::strings (for key and value) and for each key/value pair in the map,
 adds a cooresponding attribute to the given XmlElement. */
 JUCE_API void addAttributesFromMap(XmlElement& xml, std::map<std::string, std::string>& map);
 
-/** Returnsa std::map of std::string containing all attributes in the given XmlElement as key/value 
-pairs. */
+/** Returns a std::map of std::string containing all attributes in the given XmlElement as 
+key/value pairs. */
 JUCE_API std::map<std::string, std::string> getAttributesAsMap(const XmlElement& xml);
 
 

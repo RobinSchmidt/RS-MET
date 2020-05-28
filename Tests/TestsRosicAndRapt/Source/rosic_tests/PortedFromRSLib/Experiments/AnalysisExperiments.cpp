@@ -1183,6 +1183,9 @@ void zeroCrossingPitchDetectorTwoTones()
 
 
 
+
+
+
 /*
 template<class T>
 class rsPeakTrailer // or rsPeakTrailDragger or just rsTrailDragger
@@ -1229,8 +1232,8 @@ protected:
 };
 // this is kinda nice - each peak carries an exponentially decaying trail of influence - minor 
 // peaks below this trail will be dismissed as irrelevant
+// moved to class RAPT::rsPeakTrailDragger
 */
-
 
 template<class T>
 void ropeway(const T* x, int N, T halfTime, T* y, T* w) // w is workspace
@@ -1250,8 +1253,9 @@ void ropeway(const T* x, int N, T halfTime, T* y, T* w) // w is workspace
   //for(n = 0;   n <  N;  n++) y[n] = rsMax(x[n],T(0.5) * (w[n]+y[n]));
   //for(n = 0;   n <  N;  n++) y[n] = rsMax(x[n],w[n]+y[n]);
 
-  // average doesn't work, max sort of works but is not smooth between spikes - try bidirational
+  // average doesn't work, max sort of works but is not smooth between spikes - try bidiretional
   // serial passes with averaging between forward-first and backward first
+  // ...the non-smoothness is actually not a problem in peak-finding applications
 
 
   // bidirectional parallel - todo: maybe try a serial bidirectional application of the filter
@@ -1269,7 +1273,7 @@ void ropeway(const T* x, int N, T halfTime, T* y, T* w) // w is workspace
 // gives non-smooth junctions between the peaks - however, for a peak-picker, we do not care about
 // this - so max of forward and backward pass is perhaps most reasonable
 
-// this works only correctly, if x[n] >= 0 for all n - maybe we should fix that byusing an offset
+// this works only correctly, if x[n] >= 0 for all n - maybe we should fix that by using an offset
 // before and after....
 
 
@@ -1299,7 +1303,15 @@ void ropeway2(const T* x, int N, T halfTime, T* y, T* w) // w is workspace
 }
 // result look the same like the other version
 
-
+template<class T>
+void ropeway3(const T* x, int N, T* y, int numPasses)
+{
+  rsArrayTools::copy(x, y, N);
+  for(int i = 0; i < numPasses; i++) {
+    rsArrayTools::movingAverage3pt(y, N, &y[0]);
+    rsArrayTools::maxElementWise(x, &y[0], N, &y[0]);
+  }
+}
 
 template<class T>
 std::vector<T> ropeway(const std::vector<T>& x, T halfTime)
@@ -1331,8 +1343,6 @@ void ropewayAlgo()
 
   rsPlotVectors(x, y);
 }
-
-
 
 bool testPeakPicker()  // move to unit tests
 {
@@ -1460,7 +1470,7 @@ std::vector<T> rsMax(const std::vector<T>& x, const std::vector<T>& y)
 }
 
 // quick and dirty (and inefficient) implementation of an idea to find the envelope:
-std::vector<double> testEnvelope(const std::vector<double>& x)
+std::vector<double> testEnvelope1(const std::vector<double>& x)
 {
   std::vector<double> t1 = x, t2 = x;
   int maxIt = 1000;
@@ -1489,6 +1499,105 @@ std::vector<double> testEnvelope(const std::vector<double>& x)
 //  bidirectionally - in this case - does it make a difference, which direction we run first? if so,
 //  it may make sense to use an average of forward-first and backward-first application to make the 
 //  algorithm invariant with respect to mirroring the data (this invariance seems desirable)
+
+
+
+void peakPickerShadows(const std::vector<double>& x, double shadowWidth)
+{
+  // Plots the intermediate signals with the shadows
+
+  // Create time axis:
+  int N = (int) x.size();
+  std::vector<double> t = rsRangeLinear(0.0, double(N-1), N);
+
+  // Create and set up peak picker:
+  rsPeakPicker<double> pp;
+  pp.setShadowWidths(shadowWidth, shadowWidth);
+
+  // Create shadowed data (for plotting):
+  std::vector<double> y(N), yL(N), yR(N);
+  rsArrayTools::shiftToMakeMinimumZero(&x[0], N, &y[0]);
+  pp.shadowLeft( &t[0], &y[0], &yL[0], N);
+  pp.shadowRight(&t[0], &y[0], &yR[0], N);
+
+  // Find relevant peaks:
+  std::vector<int> peaksR;
+  peaksR = pp.getRelevantPeaks(&t[0], &x[0], N);
+
+  // Plot results:
+  GNUPlotter plt;
+  plt.setPixelSize(1200, 400);
+  plt.addDataArrays(N, &t[0], &y[0]);                     // shifted data
+  plt.addDataArrays(N, &t[0], &yL[0], &yR[0]);            // shadowed data
+  addDataPartially(plt, t, y, peaksR);                    // relevant peaks
+  plt.plot();
+}
+
+void peakPickerShadowSettings(const std::vector<double>& x, const std::vector<double>& widths)
+{
+  // plots envelopes resulting from various settings for the shadow width
+
+  using VecD = std::vector<double>;
+
+  int N = (int) x.size();
+  VecD t = rsRangeLinear(0.0, double(N-1), N);
+
+  VecD y(N);
+  rsArrayTools::shiftToMakeMinimumZero(&x[0], N, &y[0]);
+
+  rsPeakPicker<double> pp;
+  std::vector<int> peaks;
+
+  GNUPlotter plt;
+  plt.setPixelSize(1200, 400);
+  plt.addDataArrays(N, &t[0], &y[0]);                     // shifted data
+  peaks = pp.getFinePeaks(  &t[0], &x[0], N); 
+  addDataPartially(plt, t, y, peaks);
+  for(size_t i = 0; i < widths.size(); i++) {
+    pp.setShadowWidths(widths[i], widths[i]);
+    peaks = pp.getRelevantPeaks(&t[0], &x[0], N);
+    addDataPartially(plt, t, y, peaks); }
+  peaks = pp.getCoarsePeaks(&t[0], &x[0], N); 
+  addDataPartially(plt, t, y, peaks);
+  plt.plot();
+}
+
+void showPeakPickerPlots(const std::vector<double>& x)
+{
+  peakPickerShadows(x, 20);
+  peakPickerShadowSettings(x, { 10, 20, 30 });
+
+
+  // -at n=26 (seed=65), the fine algo misses a stickout, seed 37: 149,150
+  // -with seed 37, at n=194, width = 20.. a few stickouts are missed with the relevance algo
+  //  -> we need to run the no-stickout algo on the fully data in any case
+  //  -> this probably makes it more meaningful to always include the edge-values
+  // -how would this compare to a regular bi-directional envelope follower with zero-attack?
+
+  // todo: experiment with using the no-stickout criterion *only* starting with 0 and N-1 as the
+  // initial array of peaks - this would give the coarsest possible peak-array that sastisfies the
+  // no-stickout criterion
+  // -maybe we could provide a higher-level "sensitivity" parameter 
+  //  -if it's zero, we only get the peaks according the stickout criterion - the coarsest possible
+  //   envelope
+  //  -if it's 1 (or 100%), we get all peaks - the finest possible envelope
+  //  -maybe this should somehow crossfade the shadowWidths from the minimum values that would 
+  //   give the same result as the no-stickout criterion only and the maximum values that would 
+  //   give all peaks (but how do we compute these values? this seem to be nontrivial)
+  // -maybe connect the peaks with splines instead of lines
+  // -maybe plot prominence related stuff - maybe plot the prominences themselves as
+  //  stems
+
+  // Notes:
+  // -Can it happen that there are 3 peaks p1 > p2 > p3 at time instants t1 < t2 < t3 such that the 
+  //  shadowing algorithm misses the intermediate peak p2 but p2 still sticks out from the line 
+  //  that connects p1 and p3? I don't think so, because if the algo catches p1 and p3, p3 will lie
+  //  below the exponetial shadow/trail emanating from p1 and that shadow will lie wholly under the
+  //  line connecting p1 and p3 - so p2 must lie under the shadow (because it was missed) and 
+  //  therefore even more so must lie under the line. This is because the expontial shadows are 
+  //  always convex - the function segment between any two points always lies *under* the line 
+  //  that directly connects the points
+}
 
 template<class T>
 std::vector<T> peakSmoothabilities(
@@ -1547,9 +1656,26 @@ void peakPicker()
   // with prominence 4, {1,2,3,4,3,2} should have a peak at 3 with prominence 3, ....
 
 
-  x = rsRandomVector(200, -1.0, +1.0, 4);  // nice seeds: 4,6,7,8 - strange: 9
-  RAPT::rsArrayTools::cumulativeSum(&x[0], &x[0], (int)x.size());
-  //RAPT::rsArrayTools::cumulativeSum(&x[0], &x[0], (int)x.size());
+  using AT = RAPT::rsArrayTools;
+
+  int N = 200;
+
+  x = rsRandomVector(N, -1.0, +1.0, 7);  // nice seeds: 4,6,7,8,37,41,65 - strange: 5,9
+  AT::cumulativeSum(&x[0], &x[0], N);    // one pass seems good to create "landscapey" data
+  //AT::cumulativeSum(&x[0], &x[0], N);  // two passes is too much
+  //AT::add(&x[0], AT::minValue(&x[0], N), &x[0], N); // values hould be >= 0 for the shadower to work
+
+
+  // todo: 
+  // -test with randomized t-data, too - i.e. with non-equidistant data, because that's 
+  //  actually the use-case in finding envelope peaks
+  // -maybe try filters with different slopes instead of the cumulative sum - maybe slopes between
+  //  0 and 9 dB/oct are reasonable (cumulative sum has 6 dB/oct) - with 12, the smooting is so 
+  //  strong that we don't really see much
+  // -and/or maybe use a 1-pole lowpass with some cutoff frequency - yes, cutoff and slope seem 
+  //  resonable parameters for the data creation (maybe even to create mountain terrain for 
+  //  graphics)?
+
 
   //x = VecD({0,0,0,8,4,4,2,2,2,2,1,1,1,1,1,1,1,1,0,0,0});
   //x = VecD({0,0,0,10,9,9,8,8,8,7,7,7,7,6,6,6,6,6,0,0,5});  // illustrates peak wandering/drift
@@ -1557,20 +1683,30 @@ void peakPicker()
   //x = VecD(20); for(int i=4; i<20; i++) x[i] = exp(-0.25*i);
   //x = VecD(20); x[8] = 10; x[12] = 20;  // shows split (1st iteration) and merge (2nd and 3rd)
   //x = VecD(20); x[8] = 10; x[12] = 10; x[13] = 15;
-
-  x = VecD(31); x[15] = 10; 
+  //x = VecD(31); x[15] = 10;
 
 
   // create datasets that illustrate peak-merging and peak-splitting
 
   // this shows plots of the various iterations of the "ropeway" algorithm - todo: show many of them in
   // a single plot:
-  //VecD yEnv = testEnvelope(x);
+  //VecD yEnv1 = testEnvelope1(x);  
+  // uses iterative smoothing - inefficient!
+
+  // shows result using recursive smoothing via rsPeakTrailDragger - this should be more efficient
+  // and not suffer from peak-wandering/drift
+  showPeakPickerPlots(x);  // maybe this should also take an (optional) array of time-stamps
+  //rsPlotVectors(x, yEnv2);
+
+
+
   // ...actually, using an attack-decay envelope follower, we'll see exponential decays and if it's
   // used bidirectionally (serially and/or in parallel), we may indeed get something like a cosh
   // shape - with this algo, it looks more like parabolas
 
 
+  /*
+  // visualize effect of iterative smoothing
   int N = (int) x.size();
   VecD y1(N), y2(N), y3(N), y4(N), y5(N), y6(N), y7(N), y8(N);
   rsSmooth(&x[0],  N, &y1[0]);
@@ -1585,6 +1721,7 @@ void peakPicker()
   rsPlotVectors(x, y1, y2, y4, y8);
   //rsPlotVectors(x, y8);
   int dummy = 0;
+  */
   // maybe mark the peaks and print their prominences and smoothing-robustnesses above....what 
   // could be a good name for this insensitivity-under-smoothing porperty? maybe something like 
   // robustness/resilience? keeping with analogy of landscapes, we may consider these smoothing 

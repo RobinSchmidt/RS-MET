@@ -39,11 +39,31 @@ public:
   /** Sets the weights that are used in the simple (non alpha mask based) dot drawing mode. */
   void setNeighbourWeightsForSimpleDot(TWgt straight, TWgt diagonal);
 
-  /** Switches anti-aliasing on/off. */
-  void setAntiAlias(bool shouldAntiAlias);
+  /** Switches anti-aliasing on/off. Anti aliasing is based on spreading a dot, that should be 
+  drawn at some sub-pixel position, into 4 pixels. If the position is (x,y) and (i,j) are the 
+  integer components of (x,y), we spread the dot into pixels (i,j),(i,j+1),(i+1,j),(i+1,j+1) with 
+  some coeffs obtained from the fractional parts of x and y. I once called this "bilinear 
+  deinterpolation"...but "bilinear spreading" is probably a better term. */
+  void setAntiAlias(bool shouldAntiAlias) { antiAlias = shouldAntiAlias; }
+
+  /** Switches on/off the normalization of the norm of the a,b,c,d coeffs that are used for the 
+  bilinear spreading in the anti-aliasing algo. Not doing so may lead to a sort of "twisted" look 
+  of lines and curves - as if something winds around. It seems, when the coeffs themselves sum up 
+  to 1 (which is the case when we don "de-twist"), dots with more spreading appear darker than 
+  those with less spreading. So, the visual results are usually better when this is active, but it
+  incurs additional processing cost.  */
+  void setDeTwist(bool shouldDeTwist) { deTwist = shouldDeTwist; }
+  // maybe this artifact could be called "twisties" in analogy to the "jaggies" that occur, when no
+  // anti-aliasing is used - maybe the setAntiAlias could also be called setDeJag or 
+  // setRemoveJaggies/setRemoveTwisties. however, due to the normalization of the sum-of-squares, 
+  // the sum of the values itself is not unity anymore - maybe this can lead to twisties when using
+  // oversampling and them downsampling (by 2) by taking the average of 4 pixels - now, this 
+  // average will probably be higher in areas, where the fractional parts are large - try it: paint
+  // lines or curves with oversampling of 2 and then downsample and watch out for twisties in the 
+  // result - maybe de-twisting makes only sense in the non-oversampled case
 
   /** Switches between using the alpha-mask and the simple dot algorithm. */
-  void setUseAlphaMask(bool shouldUseMask);
+  void setUseAlphaMask(bool shouldUseMask) { useMask = shouldUseMask; }
 
   // todo:
   //inline void setColor(TPix newColor)  { color = newColor;  }
@@ -122,19 +142,19 @@ public:
   // obsolete soon
 
 
-
-
-
   /** Draws a 1-pixel wide line with the given color from (x0,y0) to (x1,y2) using Xiaolin Wu's 
   algorithm. See https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm */
   void drawLineWu(TCor x0, TCor y0, TCor x1, TCor y1, TPix color);
+  // should perhaps go to rsImageDrawer
 
   // todo:/ drag over from GraphicsExperiments.cpp:
   //void drawLineBresenham(int x0, int y0, int x1, int y1, TPix color);
 
-protected:
+
+
 
   /** Internal functions. */
+  // public because sometimes, it may be useful to call them directly in client code
 
   /** Accumulates the given value into the accumulator accu. We use a rather peculiar accumulation
   function here: newAccu = (oldAccu + value) / (1 + value). When accu starts out at zero and all 
@@ -145,7 +165,7 @@ protected:
     //rsAssert(value <= TPix(1));
     //rsAssert(value >= TPix(0));
 
-    //accu = (accu + value) / (TPix(1) + value);  // has nice saturating behavior
+    accu = (accu + value) / (TPix(1) + value);  // has nice saturating behavior
 
     // maybe try these - maybe they have a different saturating behavior?:
     // accu = (accu + value) / (1 + accu + value);
@@ -153,9 +173,10 @@ protected:
 
 
     //accu = accu+value; // just for testing
-    accu = rsMin(TPix(1), accu+value);
+    //accu = rsMin(TPix(1), accu+value);
   }
-  // rename to addAndSaturate or blend
+  // rename to addAndSaturate or blend - use a switch statement to switch between various modes
+  // -> benchmark for how this compares without the switch
 
   /** Blends the pixel in the image at given coordinates with a new color according to some weight.
   If the weight is 0, the pixel's color is unchanged, if it's 1, the new color has the biggest 
@@ -167,11 +188,16 @@ protected:
     // todo: use blend modes here
   }
 
+
   /** Same as 4-argument blend() with weight = 1. */
   inline void plot(int x, int y, TPix color)
   {
     accumulate((*image)(x, y), color);
   }
+  // rename to paintPixel or plotPixel
+
+
+protected:
 
 
   // data members:
@@ -180,7 +206,7 @@ protected:
   rsAlphaMask<TWgt> *mask; // rename to brush...hmm...or well, an actual brush should have its
                            // own colors - this mask here has only weights
 
-  bool antiAlias, useMask;
+  bool antiAlias = true, useMask = false, deTwist = false;
   TWgt straightNeighbourWeight, diagonalNeighbourWeight;
 
 

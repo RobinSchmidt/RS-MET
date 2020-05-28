@@ -60,6 +60,17 @@ public:
   // maybe rename to setExtents...but maybe not - shape seems to be common for that
 
 
+  void fillRandomly(T min = T(0), T max = T(1), int seed = 0)
+  {
+    rsArrayTools::fillWithRandomValues(dataPointer, getSize(), min, max, seed);
+  }
+
+  template<class T2>
+  void setData(const std::vector<T2>& newData)
+  {
+    rsAssert((int)newData.size() == size, "Passed data vector must match size of our data array");
+    rsArrayTools::convert(&newData[0], dataPointer, size);
+  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Manipulation */
@@ -102,8 +113,8 @@ public:
   /** Returns a const reference to the shape array of the multidimensional array. The shape is 
   defined by the number of  values that each index may run over. For example, a 2x3 matrix has a 
   shape array of [2,3]. */
-  //const std::vector<int>& getShape() const { return shape; }
-  // we may not store the shape as vector<int> in an optimzed version, so i'm not sure, if i can 
+  const std::vector<int>& getShape() const { return shape; }
+  // we may not store the shape as vector<int> in an optimized version, so i'm not sure, if i can 
   // provide that interface - maybe instead provide a function getIndexRange(int whichIndex) 
   // or getExtent(int index)
 
@@ -187,8 +198,38 @@ public:
     rsArrayTools::divide(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
+  /** Scales all elements by a given factor. */
+  void scale(T factor) { rsArrayTools::scale(dataPointer, getSize(), factor); }
+
+  // maybe factor out common code with rsMatrixView into a class rsArrayView which serves as 
+  // baseclass for both - a general "view" class for any sort of array, i.e. homogeneous data 
+  // stored in a contiguous memory chunk. should have members dataPointer and size
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Misc */
+
+  /** Computes the strides for a given shape. The arrays shape and strides muts both be numIndices 
+  long. */
+  static void computeStrides(int numIndices, int* shape, int* strides)
+  {
+    int i = numIndices-1;         // last index has stride 1 -> row-major matrix storage
+    int s = 1;
+    while(i >= 0) {
+      strides[i] = s;
+      s *= shape[i];
+      --i;
+    }
+  }
 
 
+  /** Resets all data fields to default vaules, indicating an empty object. */
+  void reset()
+  {
+    shape.clear(); 
+    strides.clear();
+    dataPointer = nullptr;
+    size = 0;
+  }
 
 
 protected:
@@ -201,7 +242,10 @@ protected:
   recursive template instantiation) and a variable number of indices .... */
   template<typename... Rest>
   int flatIndex(const int depth, const int i, Rest... rest) const
-  { return flatIndex(depth, i) + flatIndex(depth+1, rest...); }
+  { 
+    //int dbg = flatIndex(depth, i) + flatIndex(depth+1, rest...); // for debug
+    return flatIndex(depth, i) + flatIndex(depth+1, rest...); 
+  }
 
   /** Base case for the variadic template. this version will be instatiated when, in addition to 
   the recursion depth, only one index is passed. */
@@ -220,7 +264,19 @@ protected:
       fltIdx += indices[i] * strides[i];
     return fltIdx;
   }
-  // needs test
+  // has this been tested?
+
+  /** Converts a flat index into an array of structured/hierarchical indices. */
+  void structuredIndices(int flatIndex, int* indices)
+  {
+    for(int i = 0; i < getNumIndices(); i++)
+    {
+      indices[i] = flatIndex / strides[i];
+      flatIndex -= indices[i] * strides[i]; // remainder of previous division
+      // maybe use divmod instead of div and mul
+    }
+    // there's a unit test in the research repo - maybe drag over into main repo
+  }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -230,6 +286,9 @@ protected:
   {
     int rank = (int) shape.size();
     strides.resize(rank);
+
+    // call computeStrides instead of stuff below:
+
     int i = rank-1;         // last index has stride 1 -> row-major matrix storage
     int s = 1;
     while(i >= 0) {
@@ -238,7 +297,10 @@ protected:
       --i;
     }
   }
-  // maybe move to cpp file
+  // maybe move to cpp file, maybe have a static member function
+  //   void computeStrides(int rank, int* shape, int* strides)
+  // so we may defer the allocation of shape/strides arrays to client code - clent code may then 
+  // call the stride-computation
 
   /** Updates our size variable according to the values in the shape array. The total size is 
   (redundantly) cached in a member variable because it's used frequently. */
@@ -278,8 +340,7 @@ protected:
 the natural syntax: 1D: A(i), 2D: A(i,j), 3D: A(i,j,k), etc. The data is stored in a std::vector. 
 The implementation follows the same pattern as rsMatrix (which is in the Math folder). 
 
-Note: This is still incomplete - all the required copy/move-constructors and -assignement operators
-still need to be implemented. The class works already, but it's not yet return-value-optimized */
+Note: This is still incomplete */
 
 template<class T>
 class rsMultiArray : public rsMultiArrayView<T>
@@ -295,6 +356,54 @@ public:
   {
     data.resize(this->size);
     updateDataPointer();
+  }
+
+  // Copy/move / construction/assignment copy/paste/edited from rsMatrix - needs some unit tests
+
+  /** Copy constructor. Copies data from B into this object.  */
+  rsMultiArray(const rsMultiArray& B)
+  {
+    setShape(B.shape); // allocates the memory
+    rsArrayTools::copy(B.dataPointer, this->dataPointer, this->getSize());
+  }
+
+  /** Move constructor. Takes over ownership of the data stored in B. */
+  rsMultiArray(rsMultiArray&& B)
+  {
+    this->size    = B.size;
+    this->data    = std::move(B.data);
+    this->shape   = std::move(B.shape);
+    this->strides = std::move(B.strides);
+    rsAssert(B.data.size() == 0);
+    rsAssert(B.shape.size() == 0);
+    rsAssert(B.strides.size() == 0);
+    updateDataPointer();
+    B.reset();                         // invalidates pointer in B
+  }
+
+  /** Copy assignment operator. Copies data from rhs into this object. */
+  rsMultiArray<T>& operator=(const rsMultiArray<T>& rhs)
+  {
+    if (this != &rhs) { // self-assignment check expected
+      setShape(rhs.shape);
+      rsArrayTools::copy(rhs.dataPointer, this->dataPointer, this->getSize());
+    }
+    return *this;
+  }
+
+  /** Move assignment operator. Takes over ownership of the data stored in rhs. */
+  rsMultiArray<T>& operator=(rsMultiArray<T>&& rhs)
+  {
+    this->size    = rhs.size;
+    this->data    = std::move(rhs.data);
+    this->shape   = std::move(rhs.shape);
+    this->strides = std::move(rhs.strides);
+    rsAssert(rhs.data.size() == 0);
+    rsAssert(rhs.shape.size() == 0);
+    rsAssert(rhs.strides.size() == 0);
+    updateDataPointer();
+    rhs.reset();
+    return *this;
   }
 
 
@@ -331,6 +440,9 @@ public:
   { rsMultiArray<T> C(this->shape); this->divide(*this, B, &C); return C; }
 
 
+
+
+
   // todo: ==,!=
 
 
@@ -344,10 +456,16 @@ protected:
       this->dataPointer = &data[0];
     else
       this->dataPointer = nullptr;
+    // maybe assert that data.size == this->size
   }
 
   std::vector<T> data;
 
 };
+
+/** Multiplies a scalar and a multiarray. */
+template<class T>
+inline rsMultiArray<T> operator*(const T& s, const rsMultiArray<T>& A)
+{ rsMultiArray<T> B(A); B.scale(s); return B; }
 
 #endif

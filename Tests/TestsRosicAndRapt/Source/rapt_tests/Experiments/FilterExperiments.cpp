@@ -1,3 +1,5 @@
+// todo: merge with the other FilterExperiments.cpp file
+
 using namespace RAPT;
 
 void bandSplittingTwoWay()
@@ -381,7 +383,7 @@ void ladderResonanceManipulation()
 (mostly time), y: ordinate values, avg: average - the output (must be distinct from y), width: 
 length/width/range of the support of the filter, weightFunc: normalized weighting function, 
 should have a support in the range -1..+1, this is the filter kernel as continuous function. 
-\todo: maybe let the user pass a functor for the weighting function isntead of a function 
+\todo: maybe let the user pass a functor for the weighting function instead of a function 
 pointer (maybe it's possible to write a functor-wrapper for ordinary functions with automatic
 type casting such that ordinary functions can still be passed as usual?) */
 template<class Tx, class Ty>
@@ -417,7 +419,6 @@ void movingAverage(int N, Tx* x, Ty* y, Ty* avg, Tx width, Ty (*weightFunc)(Tx))
 // uniform weighting), setWeightingFunction(T (*func)(T), T area) and for functions with unknown
 // area just setWeightingFunction(T (*func)(T)) which finds the area by numerical integration
 // and then calls setWeightingFunction(T (*func)(T), T area) with the numerically computed area
-// ...finally an opportunity to implement and use numerical integration algorithms :-)
 // other functions to try: (1-x^a)/(1+x^a), a = 1, 1/2, 1/3, 2, 
 float uniform(float x)       // rename to uniform, maybe scale by 0.5
 {

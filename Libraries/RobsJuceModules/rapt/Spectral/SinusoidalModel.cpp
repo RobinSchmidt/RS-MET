@@ -476,7 +476,7 @@ Ideas:
   https://ccrma.stanford.edu/~jos/sasp/Gaussian_Window_Transform_I.html#fig:gaussianWindow
 
 -peak picking/continuation:
--to match a peak in the k-th frame with exisitng active sinusoids, find the one that is closest in 
+-to match a peak in the k-th frame with existing active sinusoids, find the one that is closest in 
  frequency to a linear continuation of (k-1)-th and (k-2)-th frame 
 -maybe special treatment has to be given to sine tracks that currently have only 1 frame - or maybe 
  rule them out by requiring that every stable partial must be at least 2 frames long to be 

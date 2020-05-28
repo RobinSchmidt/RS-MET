@@ -22,6 +22,8 @@ todo:
 -use workspace pointers instead of heap allocation, where applicable, keep the functions with 
  heap-allocations as convenience functions (create workspace -> call worker -> delete workspace)
 
+
+
 */
 
 class rsArrayTools  // 
@@ -39,7 +41,7 @@ public:
   template <class T>
   static inline void add(const T *buffer, const T valueToAdd, T *result, const int length);
 
-  /** Adds a weighted, circularly shifted copy of the buffer to itself - the shift-offest may be
+  /** Adds a weighted, circularly shifted copy of the buffer to itself - the shift-offset may be
   non-integer in which case linear interpolation will be used. 
   \todo: maybe generalize such that a circularly shifted 2nd buffer can be added (which may or
   may not be the same buffer).  */
@@ -74,8 +76,13 @@ public:
   template <class T>
   static void applyFunction(const T* inBuffer, T* outBuffer, const int length, T (*f) (T));
   // why can't we make the function-pointer const? ...rosic doesn't compile when trying
+  // maybe use a 2nd template parameter F for the function-type, such that we are not restricted to
+  // C-style function pointers
 
-  /** Checks, if the two buffers are elementwise approximately equal within the given tolerance. */
+  /** Checks, if the two buffers are elementwise approximately equal within the given tolerance. To 
+  be considered within the tolerance, the absolute value of the difference must not be greater 
+  than the given tolerance. In the case of perfect equality, it is considered to be within the 
+  tolerance to make it work correctly also for zero tolerance. */
   template <class T>
   static inline bool almostEqual(const T *buffer1, const T *buffer2, 
     const int length, const T tolerance);
@@ -164,6 +171,10 @@ public:
   /** Copies the data of one array into another one, converting the datatype, if necessarry. */
   template <class T>
   static inline void copy(const T *source, T *destination, const int length);
+  // todo: maybe make a function "move" that allows for overlap between src and dst - can be 
+  // implemented like: if(src < dst) copyBackward(src,dst,N) else copyForward(src,dst,N) where the
+  // two copy functions traverse the source array from front to back or the other way around
+
 
   // old version:
   /** Copies the data of one array into another one. */
@@ -239,8 +250,6 @@ public:
   pre-filtering. */
   template <class T>
   static void decimate(const T* x, const int N, T* y, const int factor);
-  // todo: make a function decimateViaMean that uses the mean, i.e. a moving average of length 
-  // "factor"
 
   /** Like decimate, but instead of just taking every "factor"-th sample of the input, it computes
   a mean over "factor" samples. Note that the mean is computed using samples in the forward 
@@ -272,6 +281,10 @@ public:
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
   template <class T1, class T2, class TR>
   static void divide(const T1 *buffer1, const T2 *buffer2, TR *result, int length);
+
+
+  //template <class T>
+  //static bool equals(const T *x, const T *y, int length, T tolerance);
 
   /** Fills the array with values given by a function. For example, calling it like:
         fill(a, length, [](int i){ return 3*i+1; });
@@ -307,7 +320,7 @@ public:
   \todo: rename min/max into start/end  */
   template <class T>
   static void fillWithRangeLinear(T *buffer, int length, T min, T max);
-  // corresponds to std::iota? and/or NimPy's linspace
+  // corresponds to std::iota? and/or NumPy's linspace
 
   /** Fills the passed array with one value at all indices. */
   template <class T>
@@ -331,13 +344,13 @@ public:
     const T *b, int bOrder, const T *a, int aOrder);
   // Allocates heap memory - todo: pass a workspace.
 
-  /** \todo check and comment this function - maybe move it to RSLib */
+  /** \todo check and comment this function  */
   template <class T>
   static void filterBiDirectional(const T *x, int xLength, T *y, int yLength, 
     const T *b, int bOrder, const T *a, int aOrder, int numRingOutSamples = 10000);
   // Allocates heap memory - todo: pass a workspace.
 
-  /** Returns the index of the first value that matches the elementToFind, return -1 when no 
+  /** Returns the index of the first value that matches the elementToFind, returns -1 when no 
   matching element is found. */
   template <class T>
   static inline int findIndexOf(const T *buffer, T elementToFind, int length);
@@ -419,11 +432,14 @@ public:
   template <class T>
   static inline bool isAllZeros(const T *buffer, int length);
 
+  template <class T>
+  static inline bool isAllZeros(const T *buffer, int length, T tolerance);
+
   /** Returns true, if the passed buffer has values equal to the given value, false otherwise. */
   template <class T>
   static inline bool isFilledWithValue(const T *buffer, int length, T value);
 
-  /** Returns true if the value in array x at position n is larger than its left and right 
+  /** Returns true if the value in array x at position n is greater than its left and right 
   neighbour (the caller must be sure, that n-1, n, n+1 are valid array indices). */
   template<class T>
   static bool isPeak(const T *x, int n);
@@ -472,6 +488,10 @@ public:
   /** Finds and returns the maximum absolute value of the buffer. */
   template <class T>
   static T maxAbs(const T *buffer, int length);
+
+  template <class T>
+  static T maxAbs(const std::complex<T> *buffer, int length);
+
 
   /** Finds and returns the index with the maximum absolute value of the buffer. */
   template <class T>
@@ -544,6 +564,7 @@ public:
   // maybe have a version that leaves the endpoints alone - rationale: the array may represent a
   // trajectory that should be smoothed, but the start- and enpoints should not change - maybe
   // have a boolean parameter "fixEnds"
+  // -maybe include a stride parameter - needed when this is used to filter nD arrays like images
 
   /** Multiplies the elements of 'buffer1' and 'buffer2' - type must define operator '*'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
@@ -606,8 +627,9 @@ public:
   template <class T>
   static void reverse(T *buffer, int length);
 
-  /** Fills array y with the reversed content of array x. x and y must be distinct and 
-  non-overlapping. */
+  /** Fills array y with the reversed content of array x. x and y should not be overlapping except
+  if they point to the same array, in which case we fall back to reverse(T*, int) - the in-place 
+  version with just one array parameter. */
   template <class T>
   static void reverse(const T* x, T* y, int length);
 
@@ -622,16 +644,16 @@ public:
 
   /** Scales the buffer by a constant factor. */
   template <class T1, class T2>
-  static void scale(T1 *buffer, int length, T2 scaleFactor);
+  static inline void scale(T1 *buffer, int length, T2 scaleFactor);
 
   /** Scales the "src" buffer by a constant factor and writes the result into the "dst" buffer. */
   template <class T1, class T2>
-  static void scale(const T1 *src, T1 *dst, int length, T2 scaleFactor);
+  static inline void scale(const T1 *src, T1 *dst, int length, T2 scaleFactor);
 
   /** Given the sequence y of length yLength, this function returns a sequence x which, when
   convolved with itself, gives y. yLength is assumed to be odd, the index of first nonzero value
   is assumed to be even and the first nonzero value in y is assumed to be positive (for real
-  sequences), because this is what will happen, when covolving a (real) sequence with itself. To
+  sequences), because this is what will happen, when convolving a (real) sequence with itself. To
   disambiguate the square-root, the function will return a sequence with its 1st nonzero value
   being positive. If the original sequence x (before it was convolved with itself to give y)
   started with a negative value, the result of taking the square-root of the squared sequence y
@@ -640,9 +662,9 @@ public:
   The length of x will be (yLength+1)/2.
 
   \todo: this apparently works only if the y-sequence was actually constructed by squaring some
-  sequence, for a general sequence y, terms of y and x^2 will match only up to the n-th term
+  sequence. For a general sequence y, terms of y and x^2 will match only up to the n-th term
   where n = (yLength+1)/2, i.e. the length of x. ...find out if this function is useless
-  therefore and/or if there is a usefule generalization - like using a sequence x which has the
+  therefore and/or if there is a useful generalization - like using a sequence x which has the
   same length as y, convolve it with itslef and truncate the result to the length of y */
   template <class T>
   static void sequenceSqrt(const T *y, int yLength, T *x);
@@ -653,10 +675,18 @@ public:
   template <class T>
   static void shift(T *buffer, int length, int numPlaces);
 
+  /** Shifts the values in the array x up or down such that the new minimum off all values will 
+  become zero and writes the result to y. The return value is the minimum of the x-values - if you 
+  add that value to the resulting y-values, you should get your old x-array back (up to roundoff 
+  error). */ 
+  template <class T>
+  static T shiftToMakeMinimumZero(const T* x, int N, T* y);
+  // could also be called subtractMinimum - but the current name better reveals the intention
+
   /** Subtracts the elements of 'buffer2' from 'buffer1' - type must define operator '-'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
   template <class T>
-  static void subtract(const T *buffer1, const T *buffer2, T *result, int length);
+  static inline void subtract(const T *buffer1, const T *buffer2, T *result, int length);
 
   /** Returns the sum of the elements in the buffer for types which define the
   addition operator (the += version thereof) and a constructor which can take an int
@@ -715,7 +745,7 @@ public:
 
   /** Forms a weighted sum of the two buffers. */
   template <class T>
-  static  void weightedSum(const T *buffer1, const T *buffer2, T *result, 
+  static inline void weightedSum(const T *buffer1, const T *buffer2, T *result, 
     int length, T weight1, T weight2);
 
 };
@@ -744,15 +774,52 @@ void rsArrayTools::addWithWeight(T* xy, const int N, const T* d, const T w)
     xy[n] += w * d[n];
 }
 
+/*
 template <class T>
 inline bool rsArrayTools::almostEqual(const T *buffer1, const T *buffer2, 
   const int length, const T tolerance)
 {
-  for(int i = 0; i < length; i++)
-  {
+  for(int i = 0; i < length; i++) {
     if(rsAbs(buffer1[i]-buffer2[i]) > tolerance)
+      return false; }
+  return true;
+}
+// make a version that does not rely on taking the difference and then using abs - this will work 
+// only for signed data types, unsigned types may wrap around to huge values
+*/
+
+/*
+template <class T>
+inline bool rsArrayTools::almostEqual(const T* x, const T* y, const int N, const T tol)
+{
+  for(int i = 0; i < N; i++) {
+    T d;
+    if(x[i] > y[i])
+      d = x[i] - y[i];
+    else
+      d = y[i] - x[i];
+    if(d > tol)
+      return false; }
+  return true;
+}
+// this is supposed to work without using an abs-function, so it may used with unsigned types
+// that's still not suitable for rsPixelRGB - we need a function rsAlmostEquals for single 
+// data-values and provide implementations for different types
+*/
+
+template <class T>
+inline bool rsAlmostEqual(const T& x, const T& y, const T& tol)
+{
+  return rsAbs(x-y) <= tol;
+}
+// suitable for float and double - move to somewhere else
+
+template <class T>
+inline bool rsArrayTools::almostEqual(const T* x, const T* y, const int N, const T tol)
+{
+  for(int i = 0; i < N; i++)
+    if(!rsAlmostEqual(x[i], y[i], tol))
       return false;
-  }
   return true;
 }
 
@@ -876,6 +943,15 @@ inline bool rsArrayTools::isAllZeros(const T *buffer, int length)
 }
 
 template <class T>
+inline bool rsArrayTools::isAllZeros(const T* a, int N, T tol)
+{
+  for(int i = 0; i < N; i++)
+    if( rsGreaterAbs(a[i], tol) )
+      return false;
+  return true;
+}
+
+template <class T>
 inline bool rsArrayTools::isFilledWithValue(const T *buffer, int length, T value)
 {
   for(int n = 0; n < length; n++)
@@ -904,7 +980,36 @@ inline void rsArrayTools::pushFrontPopBack4(T x, T* a)
 }
 // todo: make versions for 1,2,3,N (using a loop or memmove) -> make performance tests, 
 // which version is fastest for what range of lengths maybe rename to updateFifoBuffer4
-// maybe make a version that returns the (old) a[3] element
+// maybe make a version that returns the (old) a[3] element - the caller may be interested in it
+
+template <class T1, class T2>
+inline void rsArrayTools::scale(T1 *buffer, int length, T2 scaleFactor)
+{
+  for(int n = 0; n < length; n++)
+    buffer[n] *= (T1)scaleFactor;
+}
+
+template <class T1, class T2>
+inline void rsArrayTools::scale(const T1 *src, T1 *dst, int length, T2 scaleFactor)
+{
+  for(int n = 0; n < length; n++)
+    dst[n] = scaleFactor * src[n];
+}
+
+template <class T>
+inline void rsArrayTools::subtract(const T *buffer1, const T *buffer2, T *result, int length)
+{
+  for(int i = 0; i < length; i++)
+    result[i] = buffer1[i] - buffer2[i];
+}
+
+template <class T>
+inline void rsArrayTools::weightedSum(const T *buffer1, const T *buffer2, T *result, int length, 
+  T weight1, T weight2)
+{
+  for(int n = 0; n < length; n++)
+    result[n] = weight1 * buffer1[n] + weight2 * buffer2[n];
+}
 
 
 #endif

@@ -1337,6 +1337,179 @@ T integrateSimpson(const std::function<T(T)>& f, T a, T b)
 // this doesn't semm to be much of an improvement over integrateTrapezoidal
 // try romberg integration and/or Ooura's routines: http://www.kurims.kyoto-u.ac.jp/~ooura/
 
+template<class F>
+double forwardDifference(const F& f, double x, double h)
+{
+  return (f(x+h) - f(x)) / h;
+}
+
+// move to rsPolynomial
+template<class T>
+void fitQuadratic(T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
+{
+  T k1 = y1 / ((x1-x2)*(x1-x3));
+  T k2 = y2 / ((x2-x1)*(x2-x3));
+  T k3 = y3 / ((x3-x1)*(x3-x2));
+  T b1 = -k1*(x2+x3);
+  T b2 = -k2*(x1+x3);
+  T b3 = -k3*(x1+x2);
+  T c1 = k1*x2*x3;
+  T c2 = k2*x1*x3;
+  T c3 = k3*x1*x2;
+  *a2  = k1 + k2 + k3;  // coeff for x^2
+  *a1  = b1 + b2 + b3;  // coeff for x^1
+  *a0  = c1 + c2 + c3;  // coeff for x^0
+
+  // Formulas were derived from setting up 3 polynomials in product form, where each has zeros at 
+  // all but one of the datapoints, say xi, and to have value yi at xi and then adding them up 
+  // (idea due to Lagrange):
+  //   p1(x) = k1*(x-x2)*(x-x3)       p1 has zeros at at x2,x3
+  //   p2(x) = k2*(x-x1)*(x-x3)       p2 has zeros at at x1,x3
+  //   p3(x) = k3*(x-x1)*(x-x2)       p3 has zeros at at x1,x2
+  // Require:
+  //   p1(x1) = y1, p2(x2) = y2, p3(x3) = y3
+  // Solve these for the ki, i.e. k1,k2,k3. For example, k1 = y1 / ((x1-x2)*(x1-x3)). Plug, for 
+  // example, k1 back into the p1 equation and multiply it out to obtain its coeffs - do the same 
+  // for p2 and p3 and then obtain the final polynomial coeffs by adding the corresponding  coeffs 
+  // of each of the partial polynomials.
+
+  // operations: add: 9, sub: 6, mul: 12, div: 3, neg: 3
+}
+// maybe derive simplified formulas for the xas x1 = -1, x2 = 0, x3 = +1
+
+// move to unit test:
+bool testQuadraticTo3Points()
+{
+  bool r = true;
+
+  double x1 =  1, y1 = 4;
+  double x2 =  2, y2 = 9;
+  double x3 = -1, y3 = 6;
+  double a0, a1, a2;
+  fitQuadratic(x1, y1, x2, y2, x3, y3, &a0, &a1, &a2); // add: 9, sub: 6, mul: 12, div: 3, neg: 3
+  double z1 = a0 + a1*x1 + a2*x1*x1;
+  double z2 = a0 + a1*x2 + a2*x2*x2;
+  double z3 = a0 + a1*x3 + a2*x3*x3;
+  r &= z1 == y1 && z2 == y2 && z3 == y3;  // zi should be equal to yi - yep - works
+
+  // compare results to rsPolynomial<T>::fitQuadratic:
+  double a[3];
+  double x[3] ={ x1,x2,x3 }, y[3] ={y1,y2,y3};
+  rsPolynomial<double>::fitQuadratic(a, x, y); // add: 4, sub: 8, mul: 9, div: 4
+  r &= a[0] == a0 && a[1] == a1 && a[2] == a2;
+
+  // Maybe make some benchmarks, which formula is more efficient. The one derived by Lagrange's 
+  // method certainly has the computations organized in a much more orderly manner - but is it more 
+  // efficient? And what about numeric precision?
+
+  return r;
+}
+
+void numericDifferentiation()
+{
+
+  testQuadraticTo3Points();
+
+
+  // When using numerical differentiation formulas, there are two sources of error: the error 
+  // coming from the approximation itself and the roundoff error due to finite precision 
+  // arithmetic. The first error decreases with decreasing approximation stepsize h, whereas the 
+  // second increases with decreasing stepsize (with smaller h we tend subtract very close numbers,
+  // in the formulas leading to cancellation of significant digits), so there will be a sweet spot
+  // for h, where the accuracy of a given formula is best. Where that sweet spot is depends on the
+  // x-scale of the function: for sin(2*x) we will have to choose a h of half the size compared to
+  // sin(x) (..verify). In the range, where the finite precision effects are not yet severe, we 
+  // observe an error increase with increasing h that follows a power rule, i.e. the error 
+  // increases with h^n for some exponent n. In a 2nd order accurate formula, n=2, for example. 
+  // Also, when h becomes too large, the power law ceases to hold because we are then not really 
+  // in the neighbourhood of our evaulation point anymore, so the whole idea of approximating 
+  // tangents by secants and stuff like that becomes invalid.
+
+  // In this experiment, we investigate the behavior the error of the numerically computed 
+  // derivative as function of the stepsize h.
+  // todo: 
+  // -investigate the optimal choice of h as function of the x-scaling of the function - i 
+  //  expect inverse proportionality
+  // -check various formulas - currently, we only look at the basic central difference formula
+  //  -> we should see different slopes of the lines in the log-log plot of the error for the
+  //     different formulas
+
+
+  // h should scale like 2^k where k goes from , say -20 to -3
+  static const int kMin = -25;
+  static const int kMax =   5;
+  static const int numK = kMax - kMin + 1;
+
+  double x0 = 1.0;  
+  // we compute the error at position x0 ..maybe compute at various positions and average? 
+  // x0 = 1 seems to be a good choice for a "general" point of the sine function (no symmetries 
+  // around or near it)
+
+
+  //double xMin = 0.0;
+  //double xMax = 2*PI;
+
+  using NumDif = rsNumericDifferentiator<double>;
+
+  double h[numK];
+  double err[numK];
+  double k[numK];
+  double logErr[numK];
+
+
+  // function to differentiate:
+  auto f = [=](double x)
+  {
+    return sin(x);
+  };
+
+  for(int i = 0; i < numK; i++)
+  {
+    //double h = pow(2, kMin + i);
+    k[i] = kMin + i;
+    h[i] = pow(2.0, k[i]);
+    double t = cos(x0);                         // true derivative
+    double a = NumDif::derivative(f, x0, h[i]); // actually computed numerical derivative
+
+    //a = forwardDifference(f, x0, h[i]);  // test
+
+    err[i] = fabs(t-a);                         // error
+    logErr[i] = rsLog2(err[i]);
+    int dummy = 0;
+  }
+
+  double a, b;
+  rsStatistics::linearRegression(numK, k, logErr, a, b);
+  // a is equal to 2 - i think, that's what "2nd order in h" means, todo: try it with a forward
+  // difference - this should be 1st order in h - a should come out as 1. then do it for the higher
+  // order formulas and also for the higher derivatives...
+
+  //rsPlotArraysXY(numK, h, err);
+  rsPlotArraysXY(numK, k, logErr); // a nice straight line, as expected
+
+  // todo: estimate the exponent by fitting a line to logErr as function of k
+
+
+
+  // figure out the range of k for which this rule holds - it will be bounded below by roundoff 
+  // error becoming a problem and above by the fact that the sine is periodic - when h is equal to
+  // the period (or even just half of it) the derivative estimate will be zero even though the 
+  // correct value is 1 - but what, if the example function is exp instead of sin? will the rule
+  // then continue to hold with no upper limit (or well, overflow being the limit?), generally, the
+  // approximation is valid only in the neighborhood of x0, so we will be bounded above by the
+  // approximation becoming invalid - what counts as neighbourhood depends on the x-scale of the 
+  // function - for sin(2*x), a "neighborhood" will only be half as wide as for sin(x)
+
+  // Observations:
+  // -choosing the test point as x0 = 0, we get a nice straight line and the computed order is 2
+  //  even for the forward difference (may this have to do with the fact that sin(x) is symmetric
+  //  around 0?)
+  // -choosing a more general point such as x0 = 1, we see, that the accuracy is best at k = -17, 
+  //  the genral, straight-line rule holds from k = -16 upward
+  // -with x0 = 1, f = sin(x), plotting a range from k = -25..+5 shows, where the linear rule stops
+  //  to hold (namely, for k = -16...+1)...that it goes up so high is actually surprising - k=1, 
+  //  means h = 2, which seems way too large to count as neighborhood - what's going on?
+}
 
 void numericIntegration()
 {
@@ -1382,7 +1555,7 @@ void numericDiffAndInt()
   double scaler = xMax/x[N-1];
   RAPT::rsArrayTools::scale(x, N, scaler);
 
-  // compute sine and derivative at the samples:
+  // compute sine and its derivative and integral analytically at the samples:
   int n;
   for(n = 0; n < N; n++)
   {
@@ -1392,7 +1565,7 @@ void numericDiffAndInt()
   }
 
   // compute the numeric derivative and integral:
-  rsNumericDerivative(x, y, ydn, N, true);
+  rsNumericDifferentiator<double>::derivative(x, y, ydn, N, true);
   rsNumericIntegral(  x, y, yin, N, yi[0]);
 
   // plot function, true derivative and numeric derivative:

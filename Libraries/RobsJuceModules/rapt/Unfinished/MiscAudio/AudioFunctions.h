@@ -130,7 +130,7 @@ T rsSineShiftAmount(T *x, int N, int n0, T p0);
 template<class T>
 RS_INLINE T rsAmp2dB(T amp)
 {
-  return 8.6858896380650365530225783783321 * log(amp);
+  return T(8.6858896380650365530225783783321) * log(amp);
 }
 
 template<class T>
@@ -146,7 +146,7 @@ RS_INLINE T rsAmp2dBWithCheck(T amp, T lowAmplitude)
 template<class T>
 RS_INLINE T rsDB2amp(T dB)
 {
-  return exp(dB * 0.11512925464970228420089957273422);
+  return exp(dB * T(0.11512925464970228420089957273422));
 }
 
 #endif

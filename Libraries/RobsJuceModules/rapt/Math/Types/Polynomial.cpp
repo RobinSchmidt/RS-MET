@@ -45,7 +45,8 @@ void rsPolynomial<T>::truncateTrailingZeros(const T& thresh)
 {
   int i = (int) coeffs.size()-1;
   while(i > 0) {
-    if( rsAbs(coeffs[i]) > thresh ) // must be strictly greater to work correctly with thresh == 0
+    //if( rsAbs(coeffs[i]) > thresh ) // must be strictly greater to work correctly with thresh == 0
+    if( rsGreaterAbs(coeffs[i], thresh) ) // must be strictly greater to work correctly with thresh == 0
       break;
     i--;
   }
@@ -86,6 +87,8 @@ std::complex<T> rsPolynomial<T>::evaluateFromRoots(const std::complex<T>& s,
   }
   return result;
 }
+// actually, the roots don't have to be complex - the function should work with real roots just
+// as well
 
 template<class T>
 std::complex<T> rsPolynomial<T>::evaluateFromRootsOneLeftOut(
@@ -109,9 +112,9 @@ T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N, int n)
   rsAssert(n >= 0, "derivative order must be non-negative");
   if(n > N) 
     return T(0); // avoid evaluating products including zero (starting at negative indices)
-  T y = rsProduct(N-n+1, N) * a[N];
+  T y = T(rsProduct(N-n+1, N)) * a[N];
   for(int i = N-1; i >= n; i--)
-    y = y*x + rsProduct(i-n+1, i) * a[i];
+    y = y*x + T(rsProduct(i-n+1, i)) * a[i];
   return y;
 }
 // runtime: (N-n)*n? ..the number of terms in each product is n, the i-loop runs N-n times
@@ -148,12 +151,13 @@ void rsPolynomial<T>::evaluateWithDerivatives(const T& x, const T *a, int degree
 }
 
 template<class T>
-T rsPolynomial<T>::evaluateWithTwoDerivativesAndError(
-  const std::complex<T>* a, int degree, std::complex<T> z, std::complex<T>* P)
+template<class R>
+R rsPolynomial<T>::evaluateWithTwoDerivativesAndError(
+  const std::complex<R>* a, int degree, std::complex<R> z, std::complex<R>* P)
 {
   P[0] = a[degree];                  // P(z)
-  P[1] = std::complex<T>(0.0, 0.0);  // P'(z)
-  P[2] = std::complex<T>(0.0, 0.0);  // P''(z)
+  P[1] = std::complex<R>(0.0, 0.0);  // P'(z)
+  P[2] = std::complex<R>(0.0, 0.0);  // P''(z)
   T err = abs(P[0]);                 // estimated roundoff error in evaluation of the polynomial
   T zA  = abs(z);                    // absolute value of z
   for(int j = degree-1; j >= 0; j--)
@@ -175,7 +179,7 @@ T rsPolynomial<T>::evaluateHermite(const T& x, int n)
   T h0 = T(1);
   T h1 = T(2)*x;
   for(int i = 1; i < n; i++) {
-    T tmp = T(2) * (x*h1 - i*h0); // H[n+1](x) = 2*x*H[n](x) - 2*n*H[n-1](x)
+    T tmp = T(2) * (x*h1 - T(i)*h0); // H[n+1](x) = 2*x*H[n](x) - 2*n*H[n-1](x)
     h0 = h1;
     h1 = tmp;
   }
@@ -334,7 +338,7 @@ void rsPolynomial<T>::coeffsForShiftedArgument(const T *a, T *as, int N, T x0)
   {
     as[n] = 0.0;
     for(rsUint32 k = n; k <= Nu; k++)
-      as[n] += rsPascalTriangle(pt, k, k-n) * x0n[k-n] * a[k];
+      as[n] += T(rsPascalTriangle(pt, k, k-n)) * x0n[k-n] * a[k];
   }
   delete[] pt;
   delete[] x0n;
@@ -347,14 +351,14 @@ template <class T>
 void rsPolynomial<T>::derivative(const T *a, T *ad, int N)
 {
   for(int n = 1; n <= N; n++)
-    ad[n-1] = n * a[n];
+    ad[n-1] = T(n) * a[n];
 }
 
 template <class T>
 void rsPolynomial<T>::integral(const T *a, T *ai, int N, T c)
 {
   for(int n = N+1; n >= 1; n--)
-    ai[n] = a[n-1] / n;
+    ai[n] = a[n-1] / T(n);
   ai[0] = c;
 }
 
@@ -381,7 +385,7 @@ void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, 
 {
   // (possibly alternating) powers of the stepsize h:
   T *hk = new T[N+1];
-  T hs  = direction*h;
+  T hs  = T(direction)*h;
   hk[0] = T(1);
   for(int k = 1; k <= N; k++)
     hk[k] = hk[k-1] * hs;
@@ -397,7 +401,7 @@ void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, 
   for(unsigned int n = 0; n <= (rsUint32)N; n++)
   {
     for(unsigned int k = 1; k <= n; k++)
-      ad[n-k] += a[n] * rsPascalTriangle(binomCoeffs, n, k) * hk[k];
+      ad[n-k] += a[n] * T(rsPascalTriangle(binomCoeffs, n, k)) * hk[k];
   }
   if(direction == -1)
     rsArrayTools::scale(ad, N, -1);
@@ -416,20 +420,22 @@ void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, 
 // roots:
 
 template<class T>
-void rsPolynomial<T>::roots(const std::complex<T>* a, int degree, std::complex<T>* roots)
+template<class R>
+void rsPolynomial<T>::roots(const std::complex<R>* a, int degree, std::complex<R>* roots)
 {
-  const T eps = T(2.0e-14); // for float, it was 2.0e-6 - use template numeric_limit<T>
+  const R eps = R(2.0e-14); // for float, it was 2.0e-6 - use template numeric_limit<T>
+                            // maybe something like 100*epsilon?
 
   // allocate memory for the coefficients of the deflated polynomial and initialize it as
   // non-deflated polynomial:
-  std::complex<T>* ad = new std::complex<T>[degree+1];
+  std::complex<R>* ad = new std::complex<R>[degree+1];
   rsArrayTools::copy(a, ad, degree+1);
 
   // loop over the roots:
   for(int j = degree; j >= 1; j--)
   {
     // find a root of the deflated polynomial using the Laguerre-algorithm with 0 as initial guess:
-    std::complex<T> r = convergeToRootViaLaguerre(ad, j, std::complex<T>(0.0, 0.0));
+    std::complex<R> r = convergeToRootViaLaguerre(ad, j, std::complex<R>(0.0, 0.0));
 
     // polish the root by using the Laguerre method with the undeflated polynomial and the
     // non-polished root as initial guess:
@@ -445,8 +451,8 @@ void rsPolynomial<T>::roots(const std::complex<T>* a, int degree, std::complex<T
 
     // deflate the deflated polynomial again by the monomial that corresponds to our most recently
     // found root:
-    std::complex<T> rem = ad[j];  // remainder - not used, needed for passing a dummy pointer
-    rsPolynomial<std::complex<T>>::divideByMonomialInPlace(ad, j, r, &rem);
+    std::complex<R> rem = ad[j];  // remainder - not used, needed for passing a dummy pointer
+    rsPolynomial<std::complex<R>>::divideByMonomialInPlace(ad, j, r, &rem);
   }
 
   rsSortComplexArrayByReIm(roots, degree);  // maybe leave this to client code
@@ -454,19 +460,21 @@ void rsPolynomial<T>::roots(const std::complex<T>* a, int degree, std::complex<T
 }
 
 template<class T>
-void rsPolynomial<T>::roots(const T* a, int degree, std::complex<T>* r)
+template<class R>
+void rsPolynomial<T>::roots(const R* a, int degree, std::complex<R>* r)
 {
-  std::complex<T>* ac = new std::complex<T>[degree+1];
-  rsArrayTools::convert(a, ac, degree+1);
+  std::complex<R>* ac = new std::complex<R>[degree+1];
+  rsArrayTools::convert(a, ac, degree+1);               // complexify real coeffs
   roots(ac, degree, r);
   delete[] ac;
 }
 
 template<class T>
-std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T>* a, int degree,
-  std::complex<T> initialGuess)
+template<class R>
+std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(
+  const std::complex<R>* a, int degree, std::complex<R> initialGuess)
 {
-  const T eps = std::numeric_limits<T>::epsilon();
+  const R eps = std::numeric_limits<R>::epsilon();
 
   static const int numFractions = 8; // number of fractions minus 1 (for breaking limit cycles)
   static const int itsBeforeFracStep = 10;  // number of iterations after which a fractional step
@@ -474,14 +482,14 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T>
   static const int maxNumIterations = itsBeforeFracStep*numFractions;
 
   // fractions for taking fractional update steps to break a limit cycles:
-  static T fractions[numFractions+1] =
-    { T(0.0),  T(0.5),  T(0.25), T(0.75), T(0.13), T(0.38), T(0.62), T(0.88), T(1.0) };
+  static R fractions[numFractions+1] =
+    { R(0.0),  R(0.5),  R(0.25), R(0.75), R(0.13), R(0.38), R(0.62), R(0.88), R(1.0) };
 
-  std::complex<T> r = initialGuess; // the current estimate for the root
+  std::complex<R> r = initialGuess; // the current estimate for the root
   for(int i = 1; i <= maxNumIterations; i++)
   {
-    std::complex<T> P[3];    // holds P, P', P''
-    T  err = eps * evaluateWithTwoDerivativesAndError(a, degree, r, P);
+    std::complex<R> P[3];    // holds P, P', P''
+    R  err = eps * evaluateWithTwoDerivativesAndError(a, degree, r, P);
 
     if(abs(P[0]) <= err)
       return r;
@@ -490,16 +498,16 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T>
     // evaluatePolynomialAndDerivativesAt
 
   // Laguerre's formulas:
-    std::complex<T> G  = P[1]/P[0];       // Eq. 9.5.6
-    std::complex<T> H  = G*G - P[2]/P[0]; // Eq. 9.5.7
-    std::complex<T> sq = sqrt(T(degree-1)*(T(degree)*H-G*G)); // square-root Eq. 9.5.11
-    std::complex<T> Gp = G + sq;  // denominator in 9.5.11 with positive sign for square-root
-    std::complex<T> Gm = G - sq;  // denominator in 9.5.11 with negative sign for square-root
+    std::complex<R> G  = P[1]/P[0];       // Eq. 9.5.6
+    std::complex<R> H  = G*G - P[2]/P[0]; // Eq. 9.5.7
+    std::complex<R> sq = sqrt(R(degree-1)*(R(degree)*H-G*G)); // square-root Eq. 9.5.11
+    std::complex<R> Gp = G + sq;  // denominator in 9.5.11 with positive sign for square-root
+    std::complex<R> Gm = G - sq;  // denominator in 9.5.11 with negative sign for square-root
 
     // choose Gp or Gm according to which has larger magnitude (page 372, bottom), re-use Gp for
     // the result:
-    T GpA = abs(Gp);
-    T GmA = abs(Gm);
+    R GpA = abs(Gp);
+    R GmA = abs(Gm);
     if(GpA < GmA)
     {
       Gp  = Gm;
@@ -508,15 +516,15 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(const std::complex<T>
 
     // compute difference between old and new estimate for the root r (the 'a' variable in
     // Eq. 9.5.8)
-    std::complex<T> dr;
+    std::complex<R> dr;
     if(GpA > 0.0)
-      dr = std::complex<T>(T(degree), 0.0) / Gp;  // Eq. 9.5.11
+      dr = std::complex<R>(R(degree), 0.0) / Gp;  // Eq. 9.5.11
     else
-      dr = exp(log(T(1)+abs(r))) * std::complex<T>(cos((T)i), sin((T)i));
-    // \todo use sinCos()
+      dr = exp(log(R(1)+abs(r))) * std::complex<R>(cos((R)i), sin((R)i));
+    // \todo use sinCos() or std::polar
 
     // compute new estimate for the root:
-    std::complex<T> rNew = r - dr;
+    std::complex<R> rNew = r - dr;
     if(r == rNew)
       return r;  // converged
 
@@ -543,47 +551,49 @@ T rsPolynomial<T>::rootLinear(const T& a, const T& b)
 }
 
 template<class T>
-std::vector<std::complex<T>> rsPolynomial<T>::rootsQuadratic(const T& a, const T& b, const T& c)
+template<class R>
+std::vector<std::complex<R>> rsPolynomial<T>::rootsQuadratic(const R& a, const R& b, const R& c)
 {
   // catch degenerate case with zero leading coefficient:
   if(a == 0.0) {
-    std::vector<std::complex<T>> roots(1);
+    std::vector<std::complex<R>> roots(1);
     roots[0] = rootLinear(b, c);
     return roots;
   }
 
-  std::vector<std::complex<T>> roots(2); // array to be returned
-  T D      = b*b - T(4)*a*c;   // discriminant ...use discriminant-function
-  T factor = T(1) / (T(2)*a);  // common factor that appears everywhere
+  std::vector<std::complex<R>> roots(2); // array to be returned
+  R D      = b*b - R(4)*a*c;   // discriminant ...use discriminant-function
+  R factor = R(1) / (R(2)*a);  // common factor that appears everywhere
   if(D > 0.0) {
     // D > 0: two distinct real roots:
-    T rsSqrt_D = rsSqrt(D);
+    R rsSqrt_D = rsSqrt(D);
     roots[0]   = factor * (-b+rsSqrt_D);
     roots[1]   = factor * (-b-rsSqrt_D);
   }
   else if(D == 0.0) {
     // D == 0: a real root with multiplicity 2:
-    roots[1] = roots[0] = std::complex<T>(-b * factor);
+    roots[1] = roots[0] = std::complex<R>(-b * factor);
   }
   else {
     // D < 0: two complex conjugate roots:
-    T imag   = rsSqrt(-D) * factor;
-    T real   = -b       * factor;
-    roots[0] = std::complex<T>(real, imag);
-    roots[1] = std::complex<T>(real, -imag);
+    R imag   = rsSqrt(-D) * factor;
+    R real   = -b       * factor;
+    roots[0] = std::complex<R>(real, imag);
+    roots[1] = std::complex<R>(real, -imag);
   }
 
   return roots;
 }
 
 template<class T>
-void rsPolynomial<T>::rootsQuadraticReal(const T& c, const T& b, const T& a, T* x1, T* x2)
+template<class R>
+void rsPolynomial<T>::rootsQuadraticReal(const R& c, const R& b, const R& a, R* x1, R* x2)
 {
   // Equation:  a*x^2 + b*x + c = 0
   // Solutions: x1,x2 = (-b +- sqrt(b^2-4*a*c)) / (2*a):
-  T s = T(1) / (2*a);         // scaler
-  T d = b*b - 4*a*c;          // discriminant
-  d   = sqrt(rsMax(d, T(0))); // we return the real part of the complex conjugate pair in case...
+  R s = T(1) / (2*a);         // scaler
+  R d = b*b - 4*a*c;          // discriminant
+  d   = sqrt(rsMax(d, R(0))); // we return the real part of the complex conjugate pair in case...
   *x1 = (-b-d) * s;           // ...of a negative discriminant, we return the roots in ascending...
   *x2 = (-b+d) * s;           // order, so the one with minus in the formula comes first
 }
@@ -591,33 +601,35 @@ void rsPolynomial<T>::rootsQuadraticReal(const T& c, const T& b, const T& a, T* 
 // what about the degenerate case a=0?
 
 template<class T>
+template<class R>
 void rsPolynomial<T>::rootsQuadraticComplex(
-  const std::complex<T>& c, const std::complex<T>& b, const std::complex<T>& a, 
-  std::complex<T>* x1, std::complex<T>* x2)
+  const std::complex<R>& c, const std::complex<R>& b, const std::complex<R>& a, 
+  std::complex<R>* x1, std::complex<R>* x2)
 {
-  std::complex<T> s = T(1) / (T(2)*a);
-  std::complex<T> d = sqrt(b*b - T(4)*a*c); // sqrt of discriminant
+  std::complex<R> s = R(1) / (R(2)*a);
+  std::complex<R> d = sqrt(b*b - R(4)*a*c); // sqrt of discriminant
   *x1 = (-b-d) * s;
   *x2 = (-b+d) * s;
 }
 
 template<class T>
-std::vector<std::complex<T>> rsPolynomial<T>::rootsCubic(
-  const T& a, const T& b, const T& c, const T& d)
+template<class R>
+std::vector<std::complex<R>> rsPolynomial<T>::rootsCubic(
+  const R& a, const R& b, const R& c, const R& d)
 {
   // catch degenerate cases where the leading coefficient is zero:
   if(a == 0.0)
     return rootsQuadratic(b, c, d);
 
-  std::vector<std::complex<T>> y(3);
-  std::vector<std::complex<T>> roots(3);
+  std::vector<std::complex<R>> y(3);
+  std::vector<std::complex<R>> roots(3);
 
   // compute p,q as in the Bronstein page 40, Eq. 1.154c and the offset for the substitution
   // y = x + b/(3*a):
-  T p = (T(3)*a*c-b*b)/(T(9)*a*a);
-  T q = (b*b*b)/(T(27)*a*a*a) - (b*c)/(T(6)*a*a) + d/(T(2)*a);
+  R p = (R(3)*a*c-b*b)/(R(9)*a*a);
+  R q = (b*b*b)/(R(27)*a*a*a) - (b*c)/(R(6)*a*a) + d/(R(2)*a);
 
-  T u, r, D, phi, ch, sh, re, im, tmp;
+  R u, r, D, phi, ch, sh, re, im, tmp;
 
   if(p == 0.0 && q == 0.0)
   {
@@ -627,7 +639,7 @@ std::vector<std::complex<T>> rsPolynomial<T>::rootsCubic(
   else if(p != 0.0 && q == 0.0)
   {
     y[2] = 0.0;                       // a real root at y=0 and ...
-    u    = -T(3)*p;
+    u    = -R(3)*p;
     if(u > 0.0)
     {
       tmp  =  rsSqrt(u);
@@ -638,44 +650,44 @@ std::vector<std::complex<T>> rsPolynomial<T>::rootsCubic(
     else // u < 0.0
     {
       tmp  =  rsSqrt(-u);
-      y[0] =  std::complex<T>(0.0, tmp);
-      y[1] =  std::complex<T>(0.0, -tmp);     // ... two imaginary roots
+      y[0] =  std::complex<R>(0.0, tmp);
+      y[1] =  std::complex<R>(0.0, -tmp);     // ... two imaginary roots
       // checked with y = (x-4i)*(x+4i)*(x-0) = x^3+16*x
     }
   }
   else if(p == 0.0 && q != 0.0)
   {
-    u = -T(2)*q;
+    u = -R(2)*q;
     if(u > 0.0)
     {
-      tmp  = pow(u, T(1.0/3.0));
+      tmp  = pow(u, R(1.0/3.0));
       y[2] = tmp;                     // a real root at a positive y or ...
-      phi  = T((2.0/3.0)*PI);
+      phi  = R((2.0/3.0)*PI);
       // checked with x^3+3*x^2+3*x
     }
     else // u < 0.0
     {
-      tmp  = pow(-u, T(1.0/3.0));
+      tmp  = pow(-u, R(1.0/3.0));
       y[2] = -tmp;                    // ... a real root at a negative y and ...
-      phi  = T(PI/3.0);
+      phi  = R(PI/3.0);
       // checked with x^3+3*x^2+3*x+10
     }
     rsSinCos(phi, &im, &re);
     re  *= tmp;
     im  *= tmp;
-    y[0] = std::complex<T>(re, im);
-    y[1] = std::complex<T>(re, -im);           // ... two complex conjugate roots
+    y[0] = std::complex<R>(re, im);
+    y[1] = std::complex<R>(re, -im);           // ... two complex conjugate roots
   }
   else // both p and q are nonzero
   {
     r = rsSign(q) * rsSqrt(fabs(p));
     if(p > 0.0)
     {
-      phi = (T)rsAsinh(q/(r*r*r));
-      rsSinhCosh(phi/T(3), &sh, &ch);
-      y[0] = std::complex<T>(r*sh, rsSqrt(T(3))*r*ch);
-      y[1] = std::complex<T>(r*sh, -rsSqrt(T(3))*r*ch);
-      y[2] = -T(2)*r*sh;
+      phi = (R)rsAsinh(q/(r*r*r));
+      rsSinhCosh(phi/R(3), &sh, &ch);
+      y[0] = std::complex<R>(r*sh,  rsSqrt(R(3))*r*ch);
+      y[1] = std::complex<R>(r*sh, -rsSqrt(R(3))*r*ch);
+      y[2] = -R(2)*r*sh;
       // checked with y = (x-i)*(x+i)*(x-1) = x^3-x^2+x-1
     }
     else // p < 0.0
@@ -683,26 +695,26 @@ std::vector<std::complex<T>> rsPolynomial<T>::rootsCubic(
       D = q*q + p*p*p;
       if(D > 0.0)
       {
-        phi  = (T)rsAcosh(q/(r*r*r));
-        rsSinhCosh(phi/T(3), &sh, &ch);
-        y[0] = std::complex<T>(r*ch, rsSqrt(T(3))*r*sh);
-        y[1] = std::complex<T>(r*ch, -rsSqrt(T(3))*r*sh);
-        y[2] = -T(2)*r*ch;
+        phi  = (R)rsAcosh(q/(r*r*r));
+        rsSinhCosh(phi/R(3), &sh, &ch);
+        y[0] = std::complex<R>(r*ch,  rsSqrt(R(3))*r*sh);
+        y[1] = std::complex<R>(r*ch, -rsSqrt(R(3))*r*sh);
+        y[2] = -R(2)*r*ch;
         // checked with y = (x-i)*(x+i)*(x-3) = x^3-3*x^2+x-3
       }
       else // D <= 0.0
       {
         phi  = acos(q/(r*r*r));
-        y[0] =  T(2)*r*cos(T(PI/3.0 + phi/3.0));
-        y[1] =  T(2)*r*cos(T(PI/3.0 - phi/3.0));
-        y[2] = -T(2)*r*cos(T(phi/3.0));       // three distinct real roots
+        y[0] =  R(2)*r*cos(R(PI/3.0 + phi/3.0));
+        y[1] =  R(2)*r*cos(R(PI/3.0 - phi/3.0));
+        y[2] = -R(2)*r*cos(R(phi/3.0));       // three distinct real roots
         // checked
       }
     }
   }
 
   // obtain the results for the original equation (back-substitution):
-  T s = b/(T(3)*a);
+  R s = b/(R(3)*a);
   roots[0] = y[0]-s;
   roots[1] = y[1]-s;
   roots[2] = y[2]-s;
@@ -715,9 +727,10 @@ std::vector<std::complex<T>> rsPolynomial<T>::rootsCubic(
 
 
 template<class T>
-T rsPolynomial<T>::cubicDiscriminant(const T& d, const T& c, const T& b, const T& a)
+template<class R>
+R rsPolynomial<T>::cubicDiscriminant(const R& d, const R& c, const R& b, const R& a)
 {
-  return b*b*c*c - T(4)*(a*c*c*c + b*b*b*d) - T(27)*a*a*d*d + T(18)*a*b*c*d;
+  return b*b*c*c - R(4)*(a*c*c*c + b*b*b*d) - R(27)*a*a*d*d + R(18)*a*b*c*d;
 }
 
 template<class T>
@@ -728,26 +741,27 @@ T rsCubeRoot(T x)
 }
 
 template<class T>
+template<class R>
 void rsPolynomial<T>::rootsCubicComplex(
-  std::complex<T> a0, std::complex<T> a1, 
-  std::complex<T> a2, std::complex<T> a3, 
-  std::complex<T>* r1, std::complex<T>* r2, std::complex<T>* r3)
+  std::complex<R> a0, std::complex<R> a1, 
+  std::complex<R> a2, std::complex<R> a3, 
+  std::complex<R>* r1, std::complex<R>* r2, std::complex<R>* r3)
 {
   //rsAssert(false); // does not yet work - produces wrong results when roots are not real
   // formulas from http://mathworld.wolfram.com/CubicFormula.html
 
   // intermediate variables:
-  std::complex<T> q, r, d, s, t, u, v, w; // maybe can use less intermediate variables by re-using
-  q = T(1) / a3; a0 *= q; a1 *= q; a2 *= q;  // make monic (such that a3 == 1)
-  q = (T(3)*a1 - a2*a2) * T(1.0/9.0);
-  r = (T(9)*a2*a1 - T(27)*a0 - T(2)*a2*a2*a2) * T(1.0/54.0);
+  std::complex<R> q, r, d, s, t, u, v, w; // maybe can use less intermediate variables by re-using
+  q = R(1) / a3; a0 *= q; a1 *= q; a2 *= q;  // make monic (such that a3 == 1)
+  q = (R(3)*a1 - a2*a2) * R(1.0/9.0);
+  r = (R(9)*a2*a1 - R(27)*a0 - R(2)*a2*a2*a2) * R(1.0/54.0);
   d = q*q*q + r*r;     // discriminant
   d = sqrt(d);         // we actually need the square root of it
   s = rsCubeRoot(r+d);
   t = rsCubeRoot(r-d);
-  u = -a2*T(1.0/3.0);
-  v = (s+t) * T(0.5);
-  w = (s-t) * (T(0.5*sqrt(3.0)) * std::complex<T>(0, 1)); // factor is constant - optimize
+  u = -a2*R(1.0/3.0);
+  v = (s+t) * R(0.5);
+  w = (s-t) * (R(0.5*sqrt(3.0)) * std::complex<R>(0, 1)); // factor is constant - optimize
 
   // roots:
   *r1 = u - v + w;
@@ -756,17 +770,18 @@ void rsPolynomial<T>::rootsCubicComplex(
 }
 
 template<class T>
-T rsPolynomial<T>::cubicRootNear(T x, const T& a, const T& b, const T& c, const T& d, 
-  const T& min, const T& max, int maxIterations)
+template<class R>
+R rsPolynomial<T>::cubicRootNear(R x, const R& a, const R& b, const R& c, const R& d, 
+  const R& min, const R& max, int maxIterations)
 {
-  T f    = ((a*x+b)*x+c)*x+d;
-  T df   = (T(3)*a*x+T(2)*b)*x+c;
-  T xNew = x - f/df;
+  R f    = ((a*x+b)*x+c)*x+d;
+  R df   = (R(3)*a*x+R(2)*b)*x+c;
+  R xNew = x - f/df;
   int i = 1;
   while(xNew != x && i < maxIterations) {
     x    = xNew;
     f    = ((a*x+b)*x+c)*x+d;
-    df   = (T(3)*a*x+T(2)*b)*x+c;
+    df   = (R(3)*a*x+R(2)*b)*x+c;
     xNew = x - f/df;
     i++;
   }
@@ -775,15 +790,16 @@ T rsPolynomial<T>::cubicRootNear(T x, const T& a, const T& b, const T& c, const 
 // todo: re-write the algorithm such that the formulas only appear once (reduce code size)
 
 template<class T>
-T rsPolynomial<T>::rootNear(T x, const T* a, int degree, const T& min, const T& max, 
+template<class R>
+R rsPolynomial<T>::rootNear(R x, const R* a, int degree, const R& min, const R& max, 
   int maxIterations)
 {
   // Newton/Raphson iteration:
-  T f, df, xNew;
+  R f, df, xNew;
   evaluateWithDerivative(x, a, degree, &f, &df);
   xNew  = x - f/df;
   int i = 1;
-  while(xNew != x && i < maxIterations) {
+  while(xNew != x && i < maxIterations) {  // maybe needs tolerance
     x    = xNew;
     evaluateWithDerivative(x, a, degree, &f, &df);
     xNew = x - f/df;
@@ -791,6 +807,7 @@ T rsPolynomial<T>::rootNear(T x, const T* a, int degree, const T& min, const T& 
   }
   return rsClip(xNew, min, max);
 }
+// drage the 1st iteration into the loop
 
 //-------------------------------------------------------------------------------------------------
 // conversions:
@@ -799,6 +816,13 @@ template<class T>
 std::vector<std::complex<T>> rsPolynomial<T>::rootsToCoeffs(
   const std::vector<std::complex<T>>& roots)
 {
+  std::vector<std::complex<T>> coeffs(roots.size()+1);
+  if(roots.size() < 1)
+    return coeffs;
+  rootsToCoeffs(&roots[0], &coeffs[0], (int) roots.size());
+  return coeffs;
+  /*
+  // old:
   std::vector<std::complex<T>> coeffs;
   coeffs.reserve(roots.size()+1);
   coeffs.push_back(1.0); // init with one for convolutional accumulation - but in the special case
@@ -813,6 +837,7 @@ std::vector<std::complex<T>> rsPolynomial<T>::rootsToCoeffs(
     coeffs[0] = -z * coeffs[0];
   }
   return coeffs;
+  */
 }
 
 template<class T>
@@ -836,18 +861,30 @@ void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, std::complex<T>* a
   }
   delete[] rF;
   // todo: avoid memory allocation - check against infinity on the fly and skip the root, if it is
-  // infinite
+  // infinite, also - the function should not care whether the template type is real or complex - 
+  // the algo is the same in both cases
 }
+// why is this so complicated anyway? can'T we just use the version
+//   rootsToCoeffs(const T* r, T* a, int N, T scaler)
+// ...maybe make a second version that checks the root against infinity
 
 template<class T>
-void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, T* a, int N)
+template<class R>
+void rsPolynomial<T>::complexRootsToRealCoeffs(const std::complex<R>* r, R* a, int N)
 {
-  std::complex<T>* ac = new std::complex<T>[N+1];
+  std::complex<R>* ac = new std::complex<R>[N+1];
   rootsToCoeffs(r, ac, N);
   for(int n = 0; n <= N; n++)
+  {
+    constexpr R tol = R(1000) * RS_EPS(R);
+    rsAssert(rsIsCloseTo(ac[n].imag(), R(0), tol), 
+      "roots do not occur in complex conjugate pairs");
     a[n] = ac[n].real();
+  }
   delete[] ac;
 }
+// rename to complexRootsToRealCoeffs, assert that the imaginary parts are numerically close to 
+// zero
 
 template<class T>
 void rsPolynomial<T>::rootsToCoeffs(const T* r, T* a, int N, T scaler)
@@ -870,17 +907,17 @@ void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *x, const
   T x0_3 = x0_2*x[0]; // x[0]^3
   T x1_2 = x[1]*x[1]; // x[1]^2
   T x1_3 = x1_2*x[1]; // x[1]^3
-  T k1   = 3*x[0]*x1_2;
-  T k2   = -3*x[1]*y[1];
+  T k1   = T(3)*x[0]*x1_2;
+  T k2   = -T(3)*x[1]*y[1];
   T k3   = dy[1]-dy[0];
-  T s    = 1/(-x1_3+k1-3*x0_2*x[1]+x0_3);  // scaler
+  T s    = T(1)/(-x1_3+k1-T(3)*x0_2*x[1]+x0_3);  // scaler
 
   a[0] =  s*(x0_2*(x1_2*k3+k2) + x0_3*(y[1]-x[1]*dy[1]) + x[0]*x1_3*dy[0] + y[0]*(-x1_3+k1));
-  a[1] = -s*(x[0]*(x1_2*(2*dy[1]+dy[0])-6*x[1]*y[1]) - x0_3*dy[1] + x0_2*x[1]*(-dy[1]-2*dy[0])
-             + x1_3*dy[0] + 6*x[0]*x[1]*y[0]);
-  a[2] =  s*(x[0]*(x[1]*k3-3*y[1]) + x1_2*(dy[1]+2*dy[0]) + x0_2*(-dy[0]-2*dy[1]) + k2
-             + y[0]*(3*x[1]+3*x[0]));
-  a[3] = -s*(x[1]*(dy[1]+dy[0]) + x[0]*(-dy[1]-dy[0]) - 2*y[1] + 2*y[0]);
+  a[1] = -s*(x[0]*(x1_2*(T(2)*dy[1]+dy[0])-T(6)*x[1]*y[1]) - x0_3*dy[1] 
+             + x0_2*x[1]*(-dy[1]-T(2)*dy[0]) + x1_3*dy[0] + T(6)*x[0]*x[1]*y[0]);
+  a[2] =  s*(x[0]*(x[1]*k3-T(3)*y[1]) + x1_2*(dy[1]+T(2)*dy[0]) + x0_2*(-dy[0]-T(2)*dy[1]) + k2
+             + y[0]*(T(3)*x[1]+T(3)*x[0]));
+  a[3] = -s*(x[1]*(dy[1]+dy[0]) + x[0]*(-dy[1]-dy[0]) - T(2)*y[1] + T(2)*y[0]);
 }
 
 template<class T>
@@ -888,17 +925,17 @@ void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *y, const
 {
   a[0] = y[0];
   a[1] = dy[0];
-  a[2] = 3*(y[1]-a[1]-a[0])-dy[1]+a[1];
-  a[3] = T(1.0/3.0)*(dy[1]-2*a[2]-a[1]);
+  a[2] = T(3)*(y[1]-a[1]-a[0])-dy[1]+a[1];
+  a[3] = T(1.0/3.0)*(dy[1]-T(2)*a[2]-a[1]);
 }
 
 template<class T>
 void rsPolynomial<T>::cubicCoeffsFourPoints(T *a, const T *y)
 {
   a[0] = y[0];
-  a[2] = T(0.5)*(y[-1]+y[1]-2*a[0]);
-  a[3] = T(1.0/6.0)*(y[2]-y[1]+y[-1]-a[0]-4*a[2]);
-  a[1] = T(0.5)*(y[1]-y[-1]-2*a[3]);
+  a[2] = T(0.5)*(y[-1]+y[1]-T(2)*a[0]);
+  a[3] = T(1.0/6.0)*(y[2]-y[1]+y[-1]-a[0]-T(4)*a[2]);
+  a[1] = T(0.5)*(y[1]-y[-1]-T(2)*a[3]);
 }
 
 template<class T>
@@ -938,7 +975,7 @@ void rsPolynomial<T>::interpolant(T *a, const T& x0, const T& dx, const T *y, in
 {
   T *x = new T[N];
   for(int n = 0; n < N; n++)
-    x[n] = x0 + n*dx;
+    x[n] = x0 + T(n)*dx;
   interpolant(a, x, y, N);
   delete[] x;
 }
@@ -955,7 +992,12 @@ void rsPolynomial<T>::fitQuadratic(T *a, const T *x, const T *y)
   a[2] = (y[2]-y[0]+k4*(x[0]-x[2])) / (x[2]*(x[2]+k5)-x[0]*(x[0]+k5));
   a[1] = (k1+k2*a[2])/k3;
   a[0] = y[0]-a[2]*x[0]*x[0]-a[1]*x[0];
+
+  // add: 4, sub: 8, mul: 9, div: 4
 }
+// this formula is complicated! i think, it was obtained by solving the 3x3 system: 
+//   y[i] = a0 + a1*x[i] + a2*x[i]^2   i = 0,1,2 
+// todo: use the Lagrange interpolation formula!
 
 template<class T>
 void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, const T *y)
@@ -984,23 +1026,24 @@ void rsPolynomial<T>::fitQuarticWithDerivatives(T *a, const T *y, const T& s0, c
 {
   a[0] = y[0];
   a[1] = s0;
-  a[2] = -(5*y[2]-16*y[1]+11*y[0]-2*s2+8*s0)/4;
-  a[3] =  (7*y[2]-16*y[1]+ 9*y[0]-3*s2+5*s0)/4;
-  a[4] = -(2*y[2]- 4*y[1]+ 2*y[0]-  s2  +s0)/4;
+  a[2] = -(T(5)*y[2]-T(16)*y[1]+T(11)*y[0]-T(2)*s2+T(8)*s0)/T(4);
+  a[3] =  (T(7)*y[2]-T(16)*y[1]+T( 9)*y[0]-T(3)*s2+T(5)*s0)/T(4);
+  a[4] = -(T(2)*y[2]-T( 4)*y[1]+T( 2)*y[0]-  s2  +s0)/T(4);
 }
 
 template<class T>
-bool rsPolynomial<T>::areRootsOnOrInsideUnitCircle(const T& a0, const T& a1, const T& a2)
+template<class R>
+bool rsPolynomial<T>::areRootsOnOrInsideUnitCircle(const R& a0, const R& a1, const R& a2)
 {
   // p and q values for p-q formula
-  T p = a1/a2;
-  T q = a0/a2;
-  T d = p*p/4 - q; // value under the square-root
-  T rr, ri;
+  R p = a1/a2;
+  R q = a0/a2;
+  R d = p*p/R(4) - q; // value under the square-root
+  R rr, ri;
   if( d < 0 )
   {
     // complex conjugate roots
-    rr = -p/2;     // real part
+    rr = -p/R(2);     // real part
     ri = rsSqrt(-d); // imaginary part
     return rsSqrt(rr*rr + ri*ri) <= 1.0;
   }
@@ -1081,7 +1124,8 @@ void rsPolynomial<T>::besselPolynomial(T *a, int degree)
 }
 
 template<class T>
-void rsPolynomial<T>::legendrePolynomial(T *a, int degree)
+template<class R>
+void rsPolynomial<T>::legendrePolynomial(R *a, int degree)
 {
   if(degree == 0) { a[0] = 1.0;             return; }
   if(degree == 1) { a[0] = 0.0; a[1] = 1.0; return; }
@@ -1093,8 +1137,8 @@ void rsPolynomial<T>::legendrePolynomial(T *a, int degree)
     return;
 
   int i, j;
-  T *b1 = new T [degree+1];
-  T *b2 = new T [degree+1];
+  R *b1 = new R [degree+1];
+  R *b2 = new R [degree+1];
 
   for(i = 0; i <= degree; i++) {
     b1[i] = b2[i] = 0.0;
@@ -1121,11 +1165,11 @@ void rsPolynomial<T>::legendrePolynomial(T *a, int degree)
 template<class T>
 void rsPolynomial<T>::jacobiRecursionCoeffs(int n, T a, T b, T *w0, T *w1, T *w1x, T *w2)
 {
-  T k = 2*n+a+b;
-  *w0  = 2*n*(n+a+b)*(k-2);
-  *w1  = (k-1)*(a*a-b*b);
-  *w1x = k*(k-1)*(k-2);
-  *w2  = -2*k*(n+a-1)*(n+b-1);
+  T k  = T(2*n)+a+b;
+  *w0  = T(2*n)*(T(n)+a+b)*(k-T(2));
+  *w1  = (k-T(1))*(a*a-b*b);
+  *w1x = k*(k-T(1))*(k-T(2));
+  *w2  = -T(2)*k*(T(n)+a-T(1))*(T(n)+b-T(1));
   // from: https://en.wikipedia.org/wiki/Jacobi_polynomials#Recurrence_relation
 }
 
@@ -1138,7 +1182,7 @@ void rsPolynomial<T>::jacobiRecursion(T *c, int n, T *c1, T *c2, T a, T b)
     return; }
   if( n == 1 ) {
     c[0] = T(0.5)*(a-b);
-    c[1] = T(0.5)*(a+b+2);
+    c[1] = T(0.5)*(a+b+T(2));
     return; }
 
   // recursion:
@@ -1159,21 +1203,22 @@ void rsPolynomial<T>::legendreRecursion(T *a, int n, T *a1, T *a2)
 {
   if( n == 0 ) { a[0] = 1.0;             return; }
   if( n == 1 ) { a[0] = 0.0; a[1] = 1.0; return; }
-  threeTermRecursion(a, T(n), n, a1, 0.0, T(2)*n-T(1), a2, -(n-T(1)));
+  threeTermRecursion(a, T(n), n, a1, 0.0, T(2*n)-T(1), a2, -(T(n)-T(1))); // soem Ts can be moved out
   // Legendre polynomials are a special case of Jacobi polynomials, so this would also work:
   // jacobiRecursion(a, n, a1, a2, 0.0, 0.0);
 }
 
 template<class T>
-void rsPolynomial<T>::maxSlopeMonotonic(T *w, int n)
+template<class R>
+void rsPolynomial<T>::maxSlopeMonotonic(R *w, int n)
 {
-  T *a,*p,*s,*v,c0,c1;
+  R *a,*p,*s,*v,c0,c1;
   int i,j,k;
 
-  a = new T [n+1];
-  p = new T [2*n+1];
-  s = new T [2*n+1];
-  v = new T [2*n+4];
+  a = new R[n+1];
+  p = new R[2*n+1];
+  s = new R[2*n+1];
+  v = new R[2*n+4];
 
   k = (n-1)/2;
   //  n = 2k + 1 for odd 'n' and n = 2k + 2 for even 'n':
@@ -1186,7 +1231,7 @@ void rsPolynomial<T>::maxSlopeMonotonic(T *w, int n)
     for(i = 0; i <= k; i++)
     {
       //a[i] = (2.0*i+1.0)/(M_SQRT2*(k+1.0));
-      a[i] = T(2*i+1) / T(SQRT2*(k+1));
+      a[i] = R(2*i+1) / R(SQRT2*(k+1));
     }
   }                           // even
   else
@@ -1199,14 +1244,14 @@ void rsPolynomial<T>::maxSlopeMonotonic(T *w, int n)
     {
       for(i = 1; i <= k; i+=2)
       {
-        a[i] = (2*i+1)/sqrt((T) ((k+1)*(k+2)));
+        a[i] = (2*i+1)/sqrt((R) ((k+1)*(k+2)));
       }
     }
     else
     {
       for(i = 0; i <= k; i+=2)
       {
-        a[i] = (2*i+1)/sqrt((T) ((k+1)*(k+2)));
+        a[i] = (2*i+1)/sqrt((R) ((k+1)*(k+2)));
       }
     }
   }
@@ -1295,6 +1340,23 @@ void rsPolynomial<T>::maxSlopeMonotonic(T *w, int n)
   delete [] s;
   delete [] a;
 }
+
+/*
+ToDo:
+-check the rootsToCoeffs functions - these can (should!) be improved
+
+-for those static functions that explicitly expect real or complex parameters, use a different 
+ template parameter - not T - but rather R for real and complex<R> for complex values
+ -this prepares the class to be instantiated for real and complex coefficient types
+ -see rootsQuadraticReal for how this works
+ -...maybe it would be more elegant, if these functions are factored out into a separate class
+  like rsPolynomialAlgorithms which has only static functions - so we don't have carry along the
+  superfluous T template parameter
+ -todo: evaluateFromRoots
+
+
+*/
+
 
 /*
 // moved to rsRationalFunction:

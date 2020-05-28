@@ -63,9 +63,6 @@ void resampler()
   //rsPlotVectors(vx, vy);
 
 
-
-
-
   // actually, the simple cosine (non-squared) window seems to give better results than
   // squared - do the comparison with a longer signal, so we can see the spectrum at higher 
   // resolution
@@ -81,21 +78,22 @@ void resampler()
 void resamplerDelay()
 {
   // The resampler produces a delay of one sample - this experiment exposes this behavior by just
-  // setting the resampling ratio to 1.0 which should give an identity operation.
+  // setting the resampling ratio to 1.0 which should give an identity operation. -> fixed
 
   int N = 100;
 
-  double ratio = 1.0;
+  double ratio = 2.0;
 
   std::vector<double> x(N);
   rsArrayTools::fillWithZeros(&x[0], N);
-  x[50] = 1;
+  x[40] = 1;
 
-  //std::vector<double> y = rsResamplerDD::transposeSinc(x, ratio, 64);
-  std::vector<double> y = rsResamplerDD::transposeLinear(x, ratio);
+  std::vector<double> yS = rsResamplerDD::transposeSinc(  x, ratio, 64);
+  std::vector<double> yL = rsResamplerDD::transposeLinear(x, ratio);
 
-  rsPlotVectors(x, y); // i've added a workaround, so x and y are in sync now 
-  // todo: figure out a real solution, figure out, if linear interpolations also has this delay
+  rsPlotVectors(x, yL, yS); 
+
+  // -with ratio = 2.0, the amplitude of the impulse is halved when using sinc
 }
 
 void sincResamplerAliasing()

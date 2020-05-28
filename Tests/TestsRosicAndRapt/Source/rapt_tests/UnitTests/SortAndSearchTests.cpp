@@ -170,6 +170,7 @@ T findFloatPosition(const T* a, const int N, const T v)
 
   return iFlt;
 }
+// move to rapt, when finished
 
 bool testFindFloatPosition()
 {

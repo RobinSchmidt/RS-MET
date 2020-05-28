@@ -897,9 +897,48 @@ class rsPeakPicker
 
 public:
 
-
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
+
+  /** Before finding peaks, an exponentially decaying envelope follower with zero attack is applied 
+  (one in the forward direction, another one in the backward direction - both in paralllel - and 
+  then the element-wise maximum of both passes is taken). This function here sets the widths (in 
+  samples) within which these decaying trails decay down to their half-height. The idea behind this 
+  is that larger peaks will "shadow" smaller nearby peaks by letting them fall under their 
+  "trails". It's one of the meachanisms to filter out irrelevant peaks. */
+  void setShadowWidths(T widthL, T widthR) { shadowWidthL = widthL; shadowWidthR = widthR; }
+
+  /** Convenience function to set both shadow widths at the same time to the same value. */
+  void setShadowWidths(T widths) { setShadowWidths(widths, widths); }
+
+
+  /** Selects whether the shadowing algo should operate on the raw-envelope as is or only on its
+  peaks with everything else zeroed out. Zeroing out everything but the peaks lets the decay of the
+  shadowing filter to kick in at full decay rate immediately after the peak occurred rather than 
+  being "held up" by input signal values that surround the peak. The general effect is that only 
+  the heights and positions of the peaks are taken into account in the shadowing but not their 
+  widths. ...experimental feature - i'm not yet sure, if that's useful */
+  void setWorkOnPeaksOnly(bool shouldWorkOnPeaksOnly) { workOnPeaksOnly = shouldWorkOnPeaksOnly; }
+
+
+  /** Sets an absolute threshold for the peak prominence. Peaks with prominences below this value
+  will be discarded as irrelevant. A value of zero will effectively switch this thresholding off. 
+  The prominence of a peak is defined as the minimum height that you have to climb *down* in order 
+  to reach terrain higher than the current peak. See:
+  https://en.wikipedia.org/wiki/Topographic_prominence  */
+  void setAbsoluteProminenceThreshold(T newThreshold)
+  { promThresh = newThreshold; }
+
+  /** A prominence threshold scaled by the height of the highest peak of the whole landscape. This 
+  scaling makes the thresholding invariant with respect to scaling the whole landscape by a 
+  constant factor. */
+  void setScaledProminenceThreshold(T newThreshold)
+  { promToMaxThresh = newThreshold; }
+  // i think, this is probably the most meaningful threshold among the 3
+
+  /** A prominence threshold scaled by the height of the currently considered peak. */
+  void setRelativeProminenceThreshold(T newThreshold)
+  { promToHeightThresh = newThreshold; }
 
   /** Sets the number of left neighbors which must be less or equal than a peak value 
   (default: 1). */
@@ -912,34 +951,70 @@ public:
   /** Convenience function to set the number of left and right neighbors at once. */
   void setNumNeighbors(int newNumber) { numLeftNeighbors = numRightNeighbors = newNumber; }
 
-  // maybe just have a single function setNumNeighbours which takes two parameters for left and 
-  // right neighbors
+  /** Selects whether or not the edges of the input signal whould always included in the 
+  peak-index array returned by getRelevantPeaks. By default, this is turned off such that will 
+  really only get the actual peaks. But in some situations - for example, in envelope estimation, 
+  it may be desirabel to have the first and last datapoint always included. */
+  //void setIncludeEdges(bool shouldInclude) { includeEdges = shouldInclude; }
+  // removed - we now always include the edges because the post-processing makes more sense that
+  // way
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-
-  //void getPeaks(const T *x, const T *y, int N, std::vector<T>& peaksX, std::vector<T>& peaksY);
-
-  std::vector<int> getPeakCandidates(const T *x, int N) const;
-
-
-  /** Convenience function that atkes a std::vector instead of a raw array as input. */
-  std::vector<int> getPeakCandidates(const std::vector<T>& x) const 
-  { return getPeakCandidates(&x[0], (int) x.size()); }
+  /** Returns an array of indices of the relevant peaks in the data. The time-stamps should be given
+  in samples. */
+  std::vector<int> getRelevantPeaks(const T *t, const T *x, int N);
 
 
-  /** Returns true, iff data[index] is a peak candidate, i.e. >= some number of neighbors left and 
-  right. */
-  bool isPeakCandidate(int index, const T* data, int length) const;
-    // maybe change order of parameters: data, length, index - that would be more consistent with 
-    // functions in rsArrayTools
+  std::vector<int> getCoarsePeaks(const T *t, const T *x, int N);
+
+  std::vector<int> getFinePeaks(const T *t, const T *x, int N);
+
 
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Internal Algorithms */
+
+  /** Pre-process the data by adjusting it such the lowest level is zero and applies peak 
+  shadowing: smaller peaks that are near larger peaks are shadowed by falling under "shadows" 
+  (exponential trails) emanating from the larger peaks - they do not survive as separate peaks.
+  The adjustment of the minimum to zero is necessary for two reasons: First: the shadowing 
+  algorithm works correctly only for input data >= 0 and second: the prominence thresholding also 
+  divides by peak-heights, so it will also work correctly only if data >= 0. Moreover, if 
+  the data would be lifted up to an elevated base-level, the "relaviveness" of the thresholds would
+  work differently. */
+  std::vector<T> getPreProcessedData(const T* t, const T* x, int N);
+
+  void postProcessPeaks(std::vector<int>& peaks, const T* x, const T* y, int N);
+
+
+
+  /** Applies leftward peak shadowing to the input data x (with time-stamp data in t) and writes 
+  the result to y. */
+  void shadowLeft(const T* t, const T* x, T* y, int N);
+
+  /** Rightward peak shadowing, @see shadowLeft */
+  void shadowRight(const T* t, const T* x, T* y, int N);
+
+  /** Returns an array of indices where the datapoint x[i] is a candidate for a peak. A value is 
+  considered a peak candidate, if it is greater than some number of left and right neighbor 
+  datapoints. This can be considered as the first stage of filtering out the relevant peaks. It may
+  return candiates that should finally not be considered as relevant peaks - subsequent processing 
+  stages will remove some of the results returned by this function. */
+  std::vector<int> getPeakCandidates(const T *x, int N) const;
+
+  /** Convenience function that takes a std::vector instead of a raw array as input. */
+  std::vector<int> getPeakCandidates(const std::vector<T>& x) const 
+  { return getPeakCandidates(&x[0], (int) x.size()); }
+
+  /** Returns true, iff data[index] is a peak candidate, i.e. >= some number of neighbors left and 
+  right. */
+  bool isPeakCandidate(int index, const T* data, int length) const;
+    // maybe change order of parameters: data, length, index - that would be more consistent with 
+    // functions in rsArrayTools - maybe move the function to rsArrayTools
 
   /** Alternatingly smoothes and takes the elementwise maximum with the original data. When the 
   input array looks like a mountain landscape then the output array will resemble ropeway cables 
@@ -947,20 +1022,17 @@ public:
   passes -> less peaks). It's used as a pre-processing step before searching for peak candidates.
   The idea of alternating between smoothing and taking an elementwise maximum was inspired by
   the "true-envelope-algorithm" for spectral enevlopes. */
-  static void ropeway(const T* x, int N, T* y, int numPasses);
+  //static void ropeway(const T* x, int N, T* y, int numPasses);
+  // todo: move this to rsArrayTools - maybe don't use it here - the effect is redundant with
+  // whta rsPeakTrailDragger does
 
   /** Given an array of datapoints and an array of peak-indices, this function computes the 
   prominences of the peaks at the given indices. ...tbc... */
   static void peakProminences(const T *data, int numDataPoints, const int *peakIndices, 
     int numPeaks, T *peakProminences);
-  // todo: rename to prominences, add an optional window-length parameter as in SciPy:
-  // https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.peak_prominences.html
-
-  /** Returns the number of smoothing iterations, a peak survives while still preserving its 
-  peak property (of being >= its left and right neighbor). */
-  //static void peakSmoothabilities(const T *data, int numDataPoints, const int *peakIndices, 
-  //  int numPeaks, T *smoothabilities);
-
+    // todo: rename to prominences, add an optional window-length parameter as in SciPy:
+    // https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.peak_prominences.html
+    // https://en.wikipedia.org/wiki/Topographic_prominence
 
   /** Convenience function for use with std::vector. */
   static std::vector<T> peakProminences(
@@ -972,42 +1044,87 @@ public:
     return proms;
   }
 
+  /** Given an array of peak-candidate indices and their accociated prominence values, this 
+  function filters out those peak indices which are above our absolute and relative prominence 
+  thresholds. In general, it will return a subset of the indices given in peakCandidates. */
+  std::vector<int> getProminentPeaks(const std::vector<int>& peakCandidates, 
+    const std::vector<T>& peakProminences, const T* inputData, int inputDataLength);
+    // maybe let it operate in place, i.e. instead of returning a new array, remove the 
+    // non-prominent peaks directly from the input array - avoid allocation of another array
+
+  /** Given an array of ordinate values x and corresponding abscissa values y (both of length N) 
+  and a std::vector of peak-indices p, this function makes sure that between peak-indices n0 and n1
+  there's no missed peak that sticks out of the conneting line between the points 
+  (x[p[n0]], y[p[n0]]) and (x[p[n1]], y[p[n1]]). If there are peaks found that stick out of the 
+  connecting line, the one that sticks out most will be added to peaks array - and then the process 
+  is recursively called for the section to the left (n0..new) and to the right (new..n1) of the 
+  just added new peak. After the whole process, it is ensured that the whole function y(x) lies 
+  wholly under the the envelope that is given by linearly connecting the peaks. Such stickouts may
+  arise when we add the edge values inside getRelevantPeaks (in the shadowing algo, they may not 
+  arise). Note that peak that sticks out most is not necessarily the highest, but the one whose 
+  height-difference to the *slanted* straight line is maximal.
+  p: peak indices, x: x-data, y: y-data (both length N), n0: left index, n1: right index */
+  void removeStickOuts(std::vector<int>& p, const T* x, const T* y, int N, int n0, int n1);
+    // this should perhaps be called addStickOuts - they are added to the array of peaks - but they 
+    // are removed in the sense that after the process, there are no stickouts anymore
+  // i think, this documentations is wrong - it should be
+  // ...this function makes sure that between peak-indices n0 and n1
+  //   there's no missed peak that sticks out of the conneting line between the points 
+  //  (x[n0], y[n0]) and (x[n1], y[n1])
+  // 
+
+  /** Returns index of the value in the x,y array that sticks out most over the connecting line 
+  between the points (x[n0],y[n0]) and (x[n1],y[n1]) or -1 if none of the values sticks out. */
+  int getMaxStickOut(const T* x, const T* y, int N, int n0, int n1);
+
 
 protected:
 
-  std::vector<T> preProcess(const T *x, int N) const;
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data Members */
 
-  // pre-processing parameters:
-  int numRopewayPasses = 0;      // number of passes through ropeway algo before searching candidates
+  // half-height widths (i.e. the amount of time, it takes for the exponential shadow/trail to 
+  // decay down to 1/2 of its initial height) of the peak-shadows for left and right side of the 
+  // peak:
+  T shadowWidthL = T(0);
+  T shadowWidthR = T(0);
 
   // distance based criteria:
   int numLeftNeighbors  = 1;  // this is something similar to a min-distance criterion...
   int numRightNeighbors = 1;
 
   // prominence based criteria:
-  //T promThresh         = 0;    // absolute prominence threshold
-  //T promToHeightThresh = 0;    // threshold for prominence / peakHeight
-  //T promToMaxThresh    = 0;    // threshold for prominence / max(peakHeights)
+  T promThresh         = 0;    // absolute prominence threshold
+  T promToMaxThresh    = 0;    // threshold for prominence / max(peakHeights)
+  T promToHeightThresh = 0;    // threshold for prominence / peakHeight
+  // -the order is in "increasing relativeness":
+  //  -the absolute threshold will make the algo select different peaks depending on overall scale
+  //   of the signal - that seems undesirable in many circumstances
+  //  -promToMax is invariant with respect to scaling the whole signal
+  //  -promToHeight is invariant with respect to...what? it divides the prominence by the height of
+  //   current peak under consideration - does it actually make sense to do that? maybe it should 
+  //   be relative to some highest peak in the neighbourhood?
+  // -maybe we could also have different thresholds for leftward and rightward directions
 
-  // smoothing based criteria:
-  //int resThresh = 0;           // smoothing resilience threshold
+  bool workOnPeaksOnly = false;
 
-  // post-processing parameters:
-  //bool noStickOut = true; // make sure that no peak sticks out of the linear interpolant going
-                          // through the found peaks
+  //bool includeEdges = false; 
+  // maybe get rid - we should probably always include the endpoints
 
 };
-// todo: maybe apply an optional (gaussian?) smoothing filter before looking for peaks - maybe use
-// a cascade of bidirectional first order filters
-// maybe have a function-pointer to the "less-than" comparison function, defaulting to regular
-// less than - but the user may also use less-or-equal, greater, greater-or-equal, etc.
+// -move to Analysis
 
 
 //=================================================================================================
 
 /** A class for non-realtime envelope extraction. You can feed it some input signal, and the
 rsEnvelopeExtractor object will return an extracted envelope signal of the same length at the same
-sample rate. */
+sample rate. 
+
+toDo: i think, the meta-envelope extraction should be factord out
+
+
+*/
 
 template<class T>
 class rsEnvelopeExtractor
@@ -1058,12 +1175,23 @@ public:
   /** Sets the sample-rate. This setting is relevant for the smoothing filter (if any). */
   //void setSampleRate(T newSampleRate) { sampleRate = newSampleRate; }
 
-  /** Not yet finished.... */
-  void setMaxSpacingMultiplier(T newMultiplier) 
-  { 
-    maxSpacingMultiplier = newMultiplier;  
-  }
-  // find better name
+  /** Sets the maximum spacing that should be allowed between sample points in the meta-envelope, 
+  i.e. the envelope of the envelope in which the short-term variations in the raw envelope have 
+  been disregarded. Ideally, it should be set to a value that is slightly greater than the 
+  beating or tremomolo frequency, if present - because if it's set to a smaller value, the 
+  meta-envelope may contain the tremolo-minima as well (because it will force the algo to take 
+  datapoints between the tremolo maxima, which are the peaks, we want to have) and if its set to a
+  higher value, you may not get the best possible resolution - you want to sample the envelope as 
+  densely as possible without picking up on the tremolo. If you leave this setting at default, it 
+  will be de-activated (set to infinity), i.e. there will be no minimum spacing and meta envelope 
+  points will be taken only at the peaks of the raw envelope. But this may lead to the situation 
+  that a decaying tail will be represented only by its start and end point - and a later 
+  resynthesis algo will then interpolate between these points (presumably) linearly, which is 
+  clearly undesirable, if the actual shape was exponential. That's why we want to take additional 
+  datapoints in such sections, even though there are no envelope peaks in these sections. So we do
+  this "artificial densification" of the datapoints taken.  */
+  void setMaxSampleSpacing(T newSpacing) { maxSpacing = newSpacing; }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -1081,6 +1209,10 @@ public:
   void getMetaEnvelope(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
     std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T endTime);
   // documentation needed
+
+  void getMetaEnvelopeNew(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
+    std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue);
+
 
 
   void interpolateEnvelope(const T* envTimes, T* envValues, int envLength,
@@ -1119,10 +1251,28 @@ public:
   envelope samples for each cycle (one for the positive and one for the negative half-wave). */
   static void getAmpEnvelope(const T* x, int N,
     std::vector<T>& sampleTime, std::vector<T>& envValue);
-  // maybe rename to envelopeTimesAndValues
+  // maybe rename to envelopeTimesAndValues or computeRawEnvelope or getRawEnvelope
+
+
+
+  rsPeakPicker<T> peakPicker; 
+  // not yet used - to be used later inside getPeaks() instead of the simple function 
+  // findPeakIndices which is not sophisticated enough for this purpose because it finds a lot of
+  // irrelevant local peaks
+
+
+
 
 
 protected:
+
+
+  T maxSpacing = RS_INF(T);
+  // -maximum distance between two meta-envelope sample points
+  //  -temporarily made public to be set from client code directly as an absolute value in seconds
+  //  -later, this should be set automatically by an algorithm that selects this to be slightly 
+  //   more than the termolo/beating frequency
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Internal Functions */
@@ -1137,6 +1287,10 @@ protected:
     std::vector<T>& metaEnvTime, std::vector<T>& metaEnvValue, T maxSpacing);
   // needs tests - maybe make public - maybe even move it into some other class - it could be more
   // generally useful
+
+  void fillSparseAreasNew(const T* rawEnvTime, const T* rawEnvValue, int rawEnvLength,
+    std::vector<int>& peaks);
+
 
   // void applySmoothing
 
@@ -1156,18 +1310,17 @@ protected:
   //T smoothingFreq    = 22050;
 
 
-  T maxSpacingMultiplier = T(1);
 
+
+
+
+  //T maxSpacingMultiplier = T(1);  // is this obsolete?
   //T maxSpacing = 0; // maximum allowed spacing between envelope datapoints/samples
   // ...explain this better - in which unit is this measured - how does it relate to the time-unit
   // stored in the rsSinusoidalModel? ...i think, it should just be the same unit, whatever that 
-  // unit is (it's seconds but we may later alos allow it to be in samples)
+  // unit is (it's seconds but we may later also allow it to be in samples)
 
 
-  //rsPeakPicker<T> peakPicker; 
-    // not yet used - to be used later inside getPeaks() instead of the simple function 
-    // findPeakIndices which is not sophisticated enough for this purpose because it finds a lot of
-    // irrelevant local peaks
 
 
   //T interpolationTension = T(0);

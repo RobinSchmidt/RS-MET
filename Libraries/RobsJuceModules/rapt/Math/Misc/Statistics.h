@@ -15,10 +15,14 @@ public:
   static void linearRegression(int N, const T* x, const T* y, T& a, T& b);
 
   /** Like linearRegression, just that we assume the b-value (the y-intercept, offset) to be
-  equal to zero. This is appropriate, when a proportionality between x and y is assumed. Also,
-  we return the a-coefficient for the line y = a*x in the function's return value here. */
+  equal to zero. This is appropriate, when a proportionality between x and y is assumed (rather 
+  than an affine-linear relationship). Also, we return the a-coefficient for the line y = a*x in 
+  the function's return value here. */
   template<class T>
   static T proportionalRegression(int N, const T* x, const T* y);
+
+  // maybe move these into rsCurveFitter and rename to fitLine, fitLineThroughZero - or maybe have
+  // aliases there
 
 };
 

@@ -261,12 +261,24 @@ bool testMatrixArithmetic(std::string &reportString)
   return testResult;
 }
 
+
+// compares data in the given matrix view to that in the given vector and return true, if they are
+// equal
+template<class T>
+bool hasData(const rsMatrixView<T>& m, const std::vector<T>& v)
+{
+  if(m.getSize() != (int) v.size())
+    return false;
+  return RAPT::rsArrayTools::equal(m.getDataPointerConst(), &v[0], m.getSize());
+}
+
 bool testMatrixView()
 {
   std::string testName = "MatrixView";
   bool r = true;  // test result
 
   typedef rsMatrixView<double> MatrixView;
+  typedef std::vector<double> Vec;
 
   double A6[6] = { 1,2,3,4,5,6 }; // array of 6 elements
 
@@ -284,14 +296,165 @@ bool testMatrixView()
   r &= m(1,0) == 3; r &= m(1,1) == 4;
   r &= m(2,0) == 5; r &= m(2,1) == 6; 
 
+  // test elementary row- and column operations:
+
+  // Create 4x3 matrix:
+  // 11 12 13
+  // 21 22 23
+  // 31 32 33
+  // 41 42 43
+  double A12[12] = { 11,12,13, 21,22,23, 31,32,33, 41,42,43 };
+  MatrixView m43(4, 3, A12);
+  r &= hasData(m43, Vec({ 11,12,13, 21,22,23, 31,32,33, 41,42,43 }));
+
+  m43.swapRows(1, 2);
+  r &= hasData(m43, Vec({ 11,12,13, 31,32,33, 21,22,23, 41,42,43 }));
+  m43.addWeightedRowToOther(2, 1, 2.0);
+  r &= hasData(m43, Vec({ 11,12,13, 73,76,79, 21,22,23, 41,42,43 }));
+  m43.scaleRow(2, 2.0);
+  r &= hasData(m43, Vec({ 11,12,13, 73,76,79, 42,44,46, 41,42,43 }));
+
+  m43.swapColumns(1,2);
+  r &= hasData(m43, Vec({ 11,13,12, 73,79,76, 42,46,44, 41,43,42 }));
+  m43.addWeightedColumnToOther(0, 1, -1.0);
+  r &= hasData(m43, Vec({ 11,2,12, 73,6,76, 42,4,44, 41,2,42 }));
+  m43.scaleColumn(1, 0.5);
+  r &= hasData(m43, Vec({ 11,1,12, 73,3,76, 42,2,44, 41,1,42 }));
+
+
+
+
+
+
+  // Test row- and column major storage and submatrix addressing - we use this 7x9 matrix:
+  //
+  //    0  1  2  3  4  5  6  7  8  
+  //  0 11 12 13 14 15 16 17 18 19
+  //  1 21 22 23 24 25 26 27 28 29
+  //  2 31 32 33 34 35 36 37 38 39
+  //  3 41 42 43 44 45 46 47 48 49
+  //  4 51 52 53 54 55 56 57 58 59
+  //  5 61 62 63 64 65 66 67 68 69
+  //  6 71 72 73 74 75 76 77 78 79
+  //
+  // which is stored in memory like this:
+  //
+  // 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29... 
+  // 11 12 13 14 15 16 17 18 19 21 22 23 24 25 26 27 28 29 31 32 33 34 35 36 37 38 39 41 42 43...
+  // 11 21 31 41 51 61 71 12 22 32 42 52 62 72 13 23 33 43 53 63 73 14 24 34 44 54 64 74 15 25...
+  //
+  // 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62
+  // 44 45 46 47 48 49 51 52 53 54 55 56 57 58 59 61 62 63 64 65 66 67 68 69 71 72 73 74 75 76 77 78 79 
+  // 35 45 55 65 75 16 26 36 46 56 66 76 17 27 37 47 57 67 77 18 28 38 48 58 68 78 19 29 39 49 59 69 79
+  //
+  // the top-row is the flat array index, the 2nd the stored numbers in row-major, the 3rd row the 
+  // numbers in column-major format. 
+
+  // This code is inactive because it uses another version of rsMatrix - but i have reverted to the
+  // version that doesn't support switching between row-major and column major storage - see below
+
+  /*
+  double A63[63];                    // storage space for a 7x9 matrix
+  MatrixView m79r(7, 9, A63);
+  r &=  m79r.isStorageRowMajor();    // by default, we should get row-major storage
+  r &= !m79r.isStorageColumnMajor();
+  r &= m79r.isStorageContiguous();
+  int i, j;
+  for(i = 0; i < 7; i++)
+    for(j = 0; j < 9; j++)
+      m79r(i, j) = 10*(i+1) + j+1;   
+
+  // verify some random samples from the flat array:
+  r &= A63[16] == 28 && A63[28] == 42 && A63[51] == 67;
+
+  // test submatrixView - for row major-case
+
+
+  MatrixView m79c(7, 9, A63, false); // false should indicate "no row-major storage"
+  r &= !m79c.isStorageRowMajor();
+  r &=  m79c.isStorageColumnMajor();
+  r &= m79r.isStorageContiguous();
+
+  // fill the matrix again - this time thd numbers got to different places
+  for(i = 0; i < 7; i++)
+    for(j = 0; j < 9; j++)
+      m79r(i, j) = 10*(i+1) + j+1;
+  //r &= A63[16] == 33 && A63[28] == 15 && A63[51] == 38;
+  */
+
+  /* On addressing submatrices:
+  
+  Let's and try to address the 3x5 submatrix that starts at index-pair 2,3, i.e. at the number 34 
+  and ends at index-pair 4,7, i.e at number 58 in a row-major storage format:
+
+  row-major means: 
+  rowStride = numCols = 9
+  colStride = 1
+  start = 2*rowStride + 3*colStride = 2*9 + 3*1 = 21
+
+  and at flat index 21, we find the 34 - as it should be - this is A(0,0) in our 
+  submatrix. The number 46 is found at flat-index 32 and this is element A(1,2) in our 
+  submatrix.
+
+  let's take the formula:
+  index = start + 1*rowStride + 2*colStride = 21 + 1*9 + 2*1 = 32
+  ..yup - the formula works!
+
+  now let's do it in column-major addressing:
+  rowStride = 1
+  colStride = numRows = 7
+  start = 2*rowStride + 3*colStride = 2*1 + 3*7 = 23
+
+  and sure enough, at flat index 23, we find the number 34 in our column-major format. Addressing the
+  46 as A(1,2) again gives the falt index:
+
+  index = start + 1*rowStride + 2*colStride = 23 + 1*1 + 2*7 = 38
+
+  ...aaaand yes! at flat index 38, we find our 46. That means, if we address matrix entries by the 
+  formula: start + rowIndex*rowStride + colIndex*colStride, we area able to provide row -and 
+  column-major storage and convenient access to submatrices without having to copy any data! :-)
+  So, using the address computation i*rowStride + j*colStride allows for row- and column-major
+  storage as well as addressing submatrices (we would have to use a different dataPointer - one
+  that points to the start of the submatrix. row- and column-stride will then be different from
+  numCols or numRows. But the disadvangtae is that for submatrices, the storage is not contiguous
+  anymore, so we cant use functions from rsArrayTools for things like addition, finding the 
+  maximum, etc. - so i don't know, if it's worth it - that's why i have reverted the code to before
+  these things above were implemented. The modified version is in a commit from 
+  17th Jan 2020 - just in case, i decide to continue this route  */
+
+
+
+
+
+
+
   return r;
 }
 
+bool testMatrixOperators()
+{
+  bool r = true;  // test result
+  using Mat = rsMatrix<double>;
+  using Vec = std::vector<double>;
 
-bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
+  Mat A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
+  Mat X(3, 2, {1,4, 2,5, 3,6});
+  Mat B = A * X;
+  r &= B == Mat(3, 2, {16,37, 32,80, 14,35});
+
+  // test matrix-vector multiplication:
+  Vec x, y; x = Vec({1,2,3});
+  A = Mat(2, 3, {1,2,3, 4,5,6});  y = A*x; r &= y == Vec({14,32});
+  A = Mat(3, 2, {1,2, 3,4, 5,6}); y = x*A; r &= y == Vec({22,28});
+  
+  return r;
+}
+
+bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
 {
   bool testResult = true;
   using Matrix = rsMatrix<double>;
+  using Vector = std::vector<double>;
   int& allocs  = Matrix::numHeapAllocations;  // to count allocations
   allocs = 0;
 
@@ -311,7 +474,12 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
   testResult &= B(2,0) == 5 &&  B(2,1) == 6;
   testResult &= allocs == 2;
 
-  // multiplication:
+  // matrix-vector multiplication:
+  Vector x({1,2,3});
+  Vector y = A * x;
+  testResult &= y == Vector({14,32});
+
+  // matrix multiplication:
   Matrix C = A*B; 
   // calls: 
   //   operator*(const rsMatrix<T>&)
@@ -336,7 +504,7 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
   testResult &= allocs == 7;
 
   C = B*A;  // calls move assignment operator
-  testResult &= allocs == 8;
+  testResult &= allocs == 8;   // fails here
   testResult &= C(0,0) ==  9 &&  C(0,1) == 12 && C(0,2) == 15;
   testResult &= C(1,0) == 19 &&  C(1,1) == 26 && C(1,2) == 33;
   testResult &= C(2,0) == 29 &&  C(2,1) == 40 && C(2,2) == 51;
@@ -501,6 +669,9 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
 
 
 
+
+
+
   // create diagonal matrix
 
 
@@ -509,6 +680,9 @@ bool testMatrixNew1() // rename to testMatrixAllocationAndArithmetic
   // -maybe add/subtract scalars (in-place and out-of-place)....but maybe not: mathematically, the
   //  space of MxN matrices is a vector space and addition of a scalar and a vector is not a thing
   //  in vector spaces
+
+
+
 
   return testResult;
 }
@@ -560,12 +734,14 @@ bool testMatrix()
   //A = A + 2.0;
 
 
-  testResult &= testMatrixArithmetic(dummy);  // obsolete - tests the old matrix class
+  testResult &= testMatrixArithmetic(dummy);  
+  // obsolete - tests the old matrix class - todo: write similar tests for the new class
   //...
 
-
+  // tests for the nwe matrix class:
   testResult &= testMatrixView();
-  testResult &= testMatrixNew1();
+  testResult &= testMatrixOperators();
+  testResult &= testMatrixAlloc();
   testResult &= testKroneckerProduct();
 
 

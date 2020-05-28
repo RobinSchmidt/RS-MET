@@ -346,6 +346,7 @@ T rsPrototypeDesigner<T>::butterworthEnergy(int N, int M)
   return T(PI*tgamma(M-k) / (N*tgamma(M)*tgamma(1-k)*sin(k*PI)));
 
   // The formula was found with SageMath, using this input:
+  //
   // var("N M")
   // assume(N >= 1)
   // assume(M >= 1)
@@ -354,6 +355,10 @@ T rsPrototypeDesigner<T>::butterworthEnergy(int N, int M)
   // assume(2*M*N-1 > 0)   # follows from N >= 1, M >= 1 but sage needs it
   // f(x) = 1 / (1 + x^(2*N))^M
   // integral(f(x), x, -oo, oo)
+  //
+  // which produces as output:
+  //
+  // pi*gamma(M - 1/2/N)/(N*gamma(M)*gamma(-1/2/N + 1)*sin(1/2*pi/N))
 }
 
 template<class T>

@@ -1,10 +1,9 @@
 template<class TPix, class TWgt, class TCor>
 rsImagePainter<TPix, TWgt, TCor>::rsImagePainter(rsImage<TPix> *imageToPaintOn, rsAlphaMask<TWgt> *maskToUse)
 {
-  antiAlias = true;
-  useMask = false;
+  //antiAlias = true;
+  //useMask = false;
   setNeighbourWeightsForSimpleDot(0, 0);
-
   setImageToPaintOn(imageToPaintOn);
   setAlphaMaskForDot(maskToUse);
 }
@@ -40,6 +39,7 @@ void rsImagePainter<TPix, TWgt, TCor>::setNeighbourWeightsForSimpleDot(TWgt stra
   diagonalNeighbourWeight = diagonal;
 }
 
+/*
 template<class TPix, class TWgt, class TCor>
 void rsImagePainter<TPix, TWgt, TCor>::setAntiAlias(bool shouldAntiAlias)
 {
@@ -51,6 +51,7 @@ void rsImagePainter<TPix, TWgt, TCor>::setUseAlphaMask(bool shouldUseMask)
 {
   useMask = shouldUseMask;
 }
+*/
 
 // painting
 
@@ -122,27 +123,52 @@ void rsImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, T
   x -= xi;                 // fractional part of x
   y -= yi;                 // fractional part of y
 
-  // compute weights for bilinear deinterpolation (maybe factor out):
+  // compute weights for bilinear deinterpolation/spreading (maybe factor out):
   TPix a, b, c, d;
   d = TPix(x*y);
   c = TPix(y)-d;
   b = TPix(x)-d;
   a = d+TPix(1-x-y);
+  // formulas have been obtained by the condition that a+b+c+d = 1...right? but maybe their square 
+  // should sum to unity? areas with larger spreading appear darker
 
-  // compute values to accumulate into the 4 pixels:
-  a *= color;  // (xi,   yi)
-  b *= color;  // (xi+1, yi)
-  c *= color;  // (xi,   yi+1)
-  d *= color;  // (xi+1, yi+1)
+  //TPix sum = a+b+c+d;  // test - should be unity
 
-  // accumulate values into the pixels:
-  if(xi >= 0 && xi < wi-1 && yi >= 0 && yi < hi-1)
-  {
+  // optionally normalize make the sum of squares of a,b,c,d to a constant (currently, sum of the 
+  // values a,b,c,d themselves is unity) - the factor 0.5 makes it visually similar to no 
+  // normalization (maybe try sqrt(0.5) - it seems a bit darker compared to non-anti-aliased mode
+  // - maybe compute the ratio between sum-of-pixel values in non-aliased and anti-aliased drawing 
+  // forsome "typical" curve and use that factor):
+  if(deTwist) {
+    TPix s = TPix(0.5) / sqrt(a*a + b*b + c*c + d*d);
+    //TPix s = TPix(0.5 + rsSquare(0.5-x) + rsSquare(0.5-y)) / sqrt(a*a + b*b + c*c + d*d); // test - not good!
+    a *= s; b *= s; c *= s; d *= s; }
+  // maybe try different formulas that normalize in a ways such that a^2+b^2 = y, c^2+d^2 = 1-y,
+  // a^2+c^2 = 1-x, b^2+d^2 = x ...or something - but maybe that's not possible
+  // maybe try a sin/cos based constant power crossfade (does it actually make a difference in this 
+  // case, if we first de-interpolate horizontally and then vertically or the other way around?
+  // ...if this works well, use a polynomial approximation - this might be even less costly than
+  // renormalizing with the sqrt as we do now
+
+  //sum = a+b+c+d;  // 1, when (x,y) = (0.5,0.5) and 0.5 when (x,y) = (0,0)
+  // can we find a formula that returns 1 in "both" cases? what about 
+  // sqrt(2) / sqrt(2*(a^2+b^2+c^2+d^2)) - no - what about suing x*y and/or x+y in the numerator in 
+  // order to increase the value when (x,y) = (0,0) - we wnat the numerator to behave like:
+  // n(0.5,0.5) = 0.5, n(0,0) = 2, ..n(x,y) = 0.5 + 0.5*x*x + 0.5*y*y or
+  // n(x,y) = 0.5 + (0.5-x)^2 + (0.5-y)^2 - yes - this formula seems to have the desired behavior, 
+  // so try s = TPix(0.5 + (0.5-x)^2 + (0.5-y)^2) / sqrt(a*a + b*b + c*c + d*d);
+  // ..but what is the behavior in between? maybe this formula defeats the purpose of de-twisting 
+  // in the sense that the numerator undoes the desired nomrlaization -> experiment! maybe plot
+  // s(x,y) in the unit-square
+  // ...ok - tried it the new formula brings back the twisties
+
+  // compute final coeffs and accumulate values into the 4 pixels:
+  a *= color; b *= color; c *= color; d *= color;
+  if(xi >= 0 && xi < wi-1 && yi >= 0 && yi < hi-1) {
     plot(xi,   yi,   a);
     plot(xi+1, yi,   b);
     plot(xi,   yi+1, c);
-    plot(xi+1, yi+1, d);
-  }
+    plot(xi+1, yi+1, d); }
 
   // apply thickness:
   if(weightStraight > 0.f && xi >= 1 && xi < wi-2 && yi >= 1 && yi < hi-2)

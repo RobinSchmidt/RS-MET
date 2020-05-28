@@ -65,6 +65,13 @@ TUInt rsGcd(TUInt m, TUInt n)
   }
   return hi;
 }
+// todo: implement the gcd of an array of numbers ...is it actually true that 
+// gcd(a,b,c) == gcd(gcd(a,b),c)? seems plausible because the gcd of a,b,c cannot be greater than 
+// the gcd of a,b. if it's true, that relation could be used to implement the array version 
+// efficiently like: g = a[0]; for(int i = 1; i < N; i++) g = gcd(g, a[i]); return g;
+// -> figure out -> sey, seems to be the case:
+// https://www.geeksforgeeks.org/gcd-two-array-numbers/
+// https://stackoverflow.com/questions/21128981/finding-gcd-of-array-code-c-language
 
 template<class TInt>
 TInt rsGeneralizedDelta(TInt superscripts[], TInt subscripts[], TInt N)
@@ -196,6 +203,15 @@ TInt rsSum(TInt min, TInt max)
   else
     return (max*(max+1) - min*(min-1)) / 2;
 }
+// ToDo: inline this, i.e. move to .h file
+// the formula comes from using this https://de.wikipedia.org/wiki/Gau%C3%9Fsche_Summenformel for
+// min and max separately, subtracting the results and simplifying
+// maybe the range for which this function doesn't overflow can be extended by using one of the 
+// equivalent  forms:
+// H*(H+1) - L*(L-1) = H^2 + H - L^2 + L = -L^2 + H^2 + H + L = (H-L+1)*(H+L)
+// ...maybe this could also make it more efficient to evaluate? -> benchmark
+// https://www.wolframalpha.com/input/?i=h%5E2+%2B+h+-+l%5E2+%2B+l
+
 /*
 template<class TInt>
 TInt rsWrapAround(TInt numberToWrap, TInt length)

@@ -1,10 +1,73 @@
-template<class Tx, class Ty>
-void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds)
+//-------------------------------------------------------------------------------------------------
+// Differentiation:
+
+template<class T>
+template<class F>
+void rsNumericDifferentiator<T>::hessian(const F& f, T* x, int N, T* pH, const T* h)
 {
-  rsAssert(y != yd, "cannot be used in place yet, y and yd have to be distinct");
+  // wrap raw pointer into matrix-view, evaluate f at x:
+  rsMatrixView<T> H(N, N, pH);
+  T fc = f(x);
+
+  // compute N diagonal elements (2 evals for each):
+  for(int i = 0; i < N; i++) {
+    T ti   = x[i];
+    x[i]   = ti + h[i]; T fp = f(x);
+    x[i]   = ti - h[i]; T fm = f(x);
+    H(i,i) = (fm - T(2)*fc + fp) / (h[i]*h[i]);
+    x[i]   = ti; }
+
+  // compute (N^2-N)/2 off-diagonal elements (4 evals for each):
+  for(int i = 0; i < N; i++) {
+    for(int j = i+1; j < N; j++) {
+      T ti = x[i];
+      T tj = x[j];
+      x[i] = ti + h[i]; x[j] = tj + h[j]; T fpp = f(x);          // f_++
+      x[i] = ti + h[i]; x[j] = tj - h[j]; T fpm = f(x);          // f_+-
+      x[i] = ti - h[i]; x[j] = tj + h[j]; T fmp = f(x);          // f_-+
+      x[i] = ti - h[i]; x[j] = tj - h[j]; T fmm = f(x);          // f_--
+      H(i,j) = H(j,i) = (fpp + fmm - fpm - fmp) / (4*h[i]*h[j]);
+      x[i] = ti;
+      x[j] = tj; }}
+
+  // # evaluations: 1 + 2*N + 4*(N^2-N)/2 = 2*N^2 + 1
+  // maybe return that number - maybe that should all functions do - that information can be used
+  // in higher-level algorithms such as those for numerical minimization when they use these 
+  // functions from here - because in these, we are really interested in that number to assess 
+  // their efficiency
+
+  // The formula for the diagonal elements is just the regular central difference for a 2nd 
+  // derivative for one coordinate at a time. The formula for the off-diagonal elements was derived
+  // by considering a bivariate function f(x,y) and computing its partial derivative with respect 
+  // to x using a central difference:
+  //   f_x ~= (f(x+h,y) - f(x-h,y)) / (2*h)
+  // and then using a central difference with respect to y on f_x:
+  //   f_xy ~= (f_x(x,y+h) - f_x(x,y-h)) / (2*h)
+  // and then generalizing in the obvious way from the bivariate to the multivariate case by 
+  // replacing x,y with i,j
+}
+// ToDo:
+// -can we make the formula for the off-diagonal elements more accurate by using fc = f(x)
+//  -that would come at (almost) no cost because that value never needs to be re-evaluated
+//  -maybe H(i,i) and H(j,j) could also be used
+//  -maybe we could compute the A..F coeffs of a quadratic form (i.e. conic section) and
+//   evaluate its partial derivatives? fpp,fpm,fmp,fmm,fc would determine 5 coeffs - maybe the
+//   constant coeff F is irrelevant
+// see:
+// https://en.wikipedia.org/wiki/Hessian_matrix#Use_in_optimization
+// https://en.wikipedia.org/wiki/Quasi-Newton_method
+
+template<class T>
+template<class Tx>
+void rsNumericDifferentiator<T>::derivative(
+  const Tx *x, const T *y, T *yd, int N, bool extrapolateEnds)
+{
+  rsAssert(y != yd, "Cannot be used in place yet, y and yd have to be distinct");
+  rsAssert(N >= 3, "Arrays need to be at least of length 3");
+    // hmm - that's for the extrapolation - if it's not used, length = 2 would also work, i think
 
   Tx dxl, dxr, dx;
-  Ty a, b; 
+  T  a, b; 
 
   for(int n = 1; n < N-1; n++) {
     dxl   = x[n] - x[n-1];
@@ -15,18 +78,16 @@ void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapola
   // todo: save the left weight and use it as right weight in the next iteration (save one division
   // per iteration)
 
-  if( extrapolateEnds == true ) {
-    a = (yd[2] - yd[1]) / (x[2] - x[1]);
-    b = yd[1] - a * x[1];
-    yd[0] = a*x[0] + b;
-    a = (yd[N-2] - yd[N-3]) / (x[N-2] - x[N-3]);
-    b = yd[N-3] - a * x[N-3];
-    yd[N-1] = a*x[N-1] + b;
-      // maybe this can be simplified by using rsInterpolateLinear
+  if( extrapolateEnds == true ) { 
+    a = (yd[2]   - yd[1]  ) / (x[2]   - x[1]  ); b = yd[1]   - a*x[1];   yd[0]   = a*x[0]   + b;
+    a = (yd[N-2] - yd[N-3]) / (x[N-2] - x[N-3]); b = yd[N-3] - a*x[N-3]; yd[N-1] = a*x[N-1] + b;
   } else {
-    yd[0]   = (y[1]   - y[0])   / (x[1]   - x[0]);
-    yd[N-1] = (y[N-1] - y[N-2]) / (x[N-1] - x[N-2]);
-  }
+    yd[0]   = (y[1]   - y[0])   / (x[1]   - x[0]  );
+    yd[N-1] = (y[N-1] - y[N-2]) / (x[N-1] - x[N-2]); }
+  // maybe the first branch can be simplified by using rsInterpolateLinear, like
+  //   yd[0]   = lerp(x[0],   x[1],   yd[1],   x[2],   yd[2]  );
+  //   yd[N-1] = lerp(x[N-1], x[N-2], yd[N-2], x[N-3], yd[N-3]);
+
 }
 // todo:
 // -make it possible to use the function in-place, i.e. y and yd point to the same memory
@@ -44,41 +105,107 @@ void rsNumericDerivative(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapola
 // -try another approach: fit a polynomial of arbitrary order to a number of datapoints around
 //  the n and return the derivative of the poynomial at that point (may this be equivalent to the
 //  approach above when using 3 points for a quadratic polynomial?)
-
 // -yet another approach: "invert" the trapezoidal integration algorithm, i.e. run it backwards in
-//  order to get a numerical integration routing that is the inverse operation to trapezoidal 
+//  order to get a numerical integration routine that is the inverse operation to trapezoidal 
 //  integration
-//  -it may return a value - the integration constant to be used
+//  -it may return a value: the integration constant to be used, to get the original data back
+// -make a numeric derivative routine that is the inverse of the trapezoidal integrator
+//  rsDifferentiateTrapezoidal
 
-// see also:
-// http://web.media.mit.edu/~crtaylor/calculator.html
-// results from there (the Python code):
+template<class T>
+void rsNumericDifferentiator<T>::stencilCoeffs(const T* x, int N, int d, T* c)
+{
+  rsAssert(d < N, "Stencil width must be greater than derivative order.");
 
-// 3-point stencil -1,0,1:
-// f_x = (-1*f[i-1]+0*f[i+0]+1*f[i+1])/(2*1.0*h**1)
-// f_xx = (1*f[i-1]-2*f[i+0]+1*f[i+1])/(1*1.0*h**2)
+  // establish matrix:
+  T** A; rsMatrixTools::allocateMatrix(A, N, N);
+  for(int i = 0; i < N; i++)
+    for(int j = 0; j < N; j++)
+      A[i][j] = pow(x[j], i);
 
-// 5-point stencil -2,-1,0,1,2:
-// f_x = (1*f[i-2]-8*f[i-1]+0*f[i+0]+8*f[i+1]-1*f[i+2])/(12*1.0*h**1)
-// f_xx = (-1*f[i-2]+16*f[i-1]-30*f[i+0]+16*f[i+1]-1*f[i+2])/(12*1.0*h**2)
-// f_xxx = (-1*f[i-2]+2*f[i-1]+0*f[i+0]-2*f[i+1]+1*f[i+2])/(2*1.0*h**3)
-// f_xxxx = (1*f[i-2]-4*f[i-1]+6*f[i+0]-4*f[i+1]+1*f[i+2])/(1*1.0*h**4)
+  // establish right-hand-side vector:
+  std::vector<T> rhs(N);
+  rsFill(rhs, T(0));
+  rhs[d] = rsFactorial(d);
 
-// 7-point stencil -3,-2,-1,0,1,2,3:
-// f_x = (-1*f[i-3]+9*f[i-2]-45*f[i-1]+0*f[i+0]+45*f[i+1]-9*f[i+2]+1*f[i+3])/(60*1.0*h**1)
-// f_xx = (2*f[i-3]-27*f[i-2]+270*f[i-1]-490*f[i+0]+270*f[i+1]-27*f[i+2]+2*f[i+3])/(180*1.0*h**2)
-// f_xxx = (1*f[i-3]-8*f[i-2]+13*f[i-1]+0*f[i+0]-13*f[i+1]+8*f[i+2]-1*f[i+3])/(8*1.0*h**3)
-// f_xxxx = (-1*f[i-3]+12*f[i-2]-39*f[i-1]+56*f[i+0]-39*f[i+1]+12*f[i+2]-1*f[i+3])/(6*1.0*h**4)
-// f_xxxxx = (-1*f[i-3]+4*f[i-2]-5*f[i-1]+0*f[i+0]+5*f[i+1]-4*f[i+2]+1*f[i+3])/(2*1.0*h**5)
-// f_xxxxxx = (1*f[i-3]-6*f[i-2]+15*f[i-1]-20*f[i+0]+15*f[i+1]-6*f[i+2]+1*f[i+3])/(1*1.0*h**6)
+  // compute coeffs by solving the linear system and clean up:
+  rsLinearAlgebra::rsSolveLinearSystem(A, &c[0], &rhs[0], N);
+  rsMatrixTools::deallocateMatrix(A, N, N);
+  // In practice, the resulting coefficients have to be divided by h^d where h is the step-size and
+  // d is the order of the derivative to be approximated. The stencil offsets in x are actually 
+  // multipliers for some basic step-size h, i.e. a stencil -2,-1,0,1,2 means that we use values
+  // f(x-2h),f(x-h),f(x),f(x+h),f(x+2h) to approximate the d-th derivative of f(x) at x
 
-// if we use an N-point stencil, we can obtain approximations of derivatives up to order N-1
-// the app there can also compute numerical derivatives for non-equidistant sample data
-// -> try to program something similar in sage or sympy
+  // see: http://web.media.mit.edu/~crtaylor/calculator.html for explanation of the algorithm
+
+  // todo: use rsMatrix, write unit test
+
+  // One suboptimal thing is that we use floating point arithmetic where rational numbers could 
+  // have been used instead to produce exact fractions...maybe a later refinement can do that - at
+  // the end of the day, this computation is probably done offline anyway to obtain coeffs that 
+  // will be hardcoded in some specific numerical derivative approximator...well - actually it's a
+  // template and we could just isntantiate it with some rational number class - maybe try it in 
+  // the testbed
+}
+
+/*
+
+todo:
+ -maybe it's better to not use x += h, x +- 2h, x +- 3h but instead 
+  x +- h/3, x +- 2h/3, x +- h such that the total width of the stencil stays the same, 
+  regardless of how many stencil-points we use. the goal is that the optimal choice of h 
+  depends only on the problem, not on the number of stencil-points
+ -try stencils where the points are not distributed equidistantly but maybe exponentially, for
+  example: x +- h/4, x +- h/2, x +- h for a 5-point stencil
+ -to avoid numerical error, it is desirable that the offsets (2, 2h, 3h, ..) are exactly 
+  representable - also the final divisors should be exactly representable - maybe (inverse)
+  powers of two are a good choice - at least, for the basic 3-point stencil x +- h, x +- 2h
+  where the divisor is 1/(2h)
+ -test it with some standard functions like exp, log, sin, cos, tan, 1/x, 1/(1+x^2) - maybe 
+  polynomials (in which case we should get exact results, if the number of stencil points 
+  matches the degree)
+ -compute gradient of a multivariate function
+  -this function should take a raw array (i.e. pointer) as input
+ -derive and implement function to compute a Hessian matrix of a multivariate function
+
+-figure out the accuracy experimentally - maybe this can be done by testing, how high 
+ degree a polynomial can be such that we still get perfect results - i think, a 5-point stencil
+ should/ be perfect for polynomials up to 5th degree (it's based on an interpolating polynomial
+ of degree 5) 
 
 
+ for the gradient:
+
+ should the gradient be of type Tx or Ty? or maybe there should be just one type? what if
+ y is a vector? then f would take an N-dim vector and produce a vector of possibly other 
+ Consider z = f(x,y) where x,y are complex and z is real (for example f(x,y) = abs(x*y))
+ Then, the gradient of would be given by grad(f) = (df/dx, df/dy) where 
+    df/dx = lim_{h->0} (f(x+h) - f(h)) / h
+ In this case, the stepsize h would also be complex, the numerator would be real (as a difference
+ of real numbers) and the denominator would be complex, so the overall value df/dx would be 
+ complex, which is Tx. On the other hand, if x,y are real and z is complex (for example, 
+ f(x,y) = x + i*y), then the df/dx would also be complex (as before), but this time, this 
+ corresponds to Ty. Maybe this makes really only sense, when we require Tx == Ty. Or maybe the 
+ elements of the gradient should have their own type Tg, so it can be decided on instantiation, 
+ which one it should be? Then, g[n] = (Tg(fp)-Tg(fm)) / (2*Tg(h));
+ but we could also use:
+    df/dx = lim_{dx->0} (f(x+dx) - f(h)) / |dx|
+ this would be suitable, if x and dx are vectors - we take the norm in the denominator
+ also: in gradient descent, we need the input vector x and the gradient vector to be of the same
+ type -> maybe just use one type to start with, generalize when it becomes necessarry
+
+ dimensionality - would this function then compute the Jacobian? i think, it would be natural, if
+ it would -> try it using rsVector2D for Ty
 
 
+ for templatizing the function-type, see:
+ https://stackoverflow.com/questions/1174169/function-passed-as-template-argument
+ https://stackoverflow.com/questions/10871100/pass-a-function-as-an-explicit-template-parameter
+*/
+
+
+//-------------------------------------------------------------------------------------------------
+// Integration:
 
 template<class Tx, class Ty>
 void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c)
@@ -111,8 +238,14 @@ void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c)
 //  some hyperblock between x1, x2 (both of dimensionality N)
 //  -maybe we somehow need a function that takes in a function of N variables and returns a 
 //   function of N-1 variables (maybe using std::function)
+// -have a simpler version riemannSum which uses the midpoint of each interval as evaluation point 
+//  - oh,  wait - this function is data-based and not based on a function that we may evaluate...but 
+//  such an integration function should also be implemented - this one can then do Riemann sums or 
+//  trapezoidal rule (and maybe higher order rules as well - Simpson, etc.)
+// ...but we may still compute lower and upper Riemann sums
 
 
+/*
 template<class Tx, class Ty>
 Ty rsNumericIntegrator<Tx, Ty>::integrate(const std::function<Ty(Tx)>& f, Tx a, Tx b)
 {
@@ -120,15 +253,37 @@ Ty rsNumericIntegrator<Tx, Ty>::integrate(const std::function<Ty(Tx)>& f, Tx a, 
 
   return Ty(0);
 }
-
+*/
 // Ideas: 
 // -let the user set the sample evaluation points by passing a pointer to an array of Tx
 // -alternatively, the user may set just a number and then the object auotmatically generates
 //  the sample points
 // -for this automatic sample point generation, the user may select between different algorithms,
-//  by default, we just choose them equidistantly
+//  by default, we just choose them equidistantly but other choices may give better results, see: 
+//  https://en.wikipedia.org/wiki/Gauss%E2%80%93Legendre_quadrature
+//  https://en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
+//  https://en.wikipedia.org/wiki/Chebyshev_nodes
+//  the best choice may depend on the problem
 // -use a (cubic) natural spline based on the datapoints and compute the integral as sum over the
 //  integrals of the spline segments (for this, we need to split the spline generator such that it
 //  can spit out arrays of polynomial coefficients like:
 //  void getCubicNaturalSplineCoeffs(Tx* x, int N, Ty* a, Ty* b, Ty* c, Ty* d);
 //  ...this may be also useful for rsInterpolatingFunction
+
+/*
+In the Princeton Companion to Applied Mathematics is a formula for approximating the derivative of
+analytic functions that produce real outputs for real inputs. It's
+  f'(x) ~= Im( f(x + i*h) ) / h
+It has an error of O(h^2) - opposed to O(h) when using f'(x) ~= f(x + i*h) / h. Why does this work?
+Is it because the imaginary part of f(x) is zero?
+
+
+
+
+Maybe rename to NumericAnalysis and include the interpolation stuff into this file as well 
+because some interpolation stuff depends on numeric derivatives but some numeric derivatives/
+integration stuff may depend on interpolation and if we templatize the functions, we need to 
+take care that everything is defined before it gets used.
+
+
+*/

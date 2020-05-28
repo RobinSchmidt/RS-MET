@@ -328,7 +328,7 @@ public:
 
   /** Given a complex spectrogram, this function synthesizes a signal using given synthesis
   window, blockSize and hopSize. You must also pass the analysis window that was used - this is
-  needed intrenally for amplitude demodulation.
+  needed internally for amplitude demodulation.
   a synthesis
   window w of length B (which is the blocksize) with hopsize H. The number of equals the number
   of columns in the matrix s - each row is one short-time spectrum (of positive frequencies only

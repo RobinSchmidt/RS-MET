@@ -80,6 +80,9 @@
     <Filter Include="JUCE Modules\rapt\_Deprecated">
       <UniqueIdentifier>{86824DA4-C6FC-A54A-EB04-2CE89FAAFE0F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\rapt\_Temp">
+      <UniqueIdentifier>{98AA25FF-13D4-25B4-D961-63307D5EE372}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\rapt\Analysis">
       <UniqueIdentifier>{34544FA4-CEEB-3549-61FB-C970DF721282}</UniqueIdentifier>
     </Filter>
@@ -338,6 +341,9 @@
     <Filter Include="JUCE Modules\rs_testing\Experiments">
       <UniqueIdentifier>{A8B75D83-6D63-ADD2-60F4-790472F06420}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\rs_testing\Legacy">
+      <UniqueIdentifier>{C7962A32-B94B-C4CC-20B6-C1E640374B91}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\rs_testing\Misc">
       <UniqueIdentifier>{4B3A8A56-2AEE-B886-0E20-9D10151EF2CC}</UniqueIdentifier>
     </Filter>
@@ -467,6 +473,9 @@
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\ModulatorExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\ScratchPad.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp">
@@ -688,12 +697,6 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotter.cpp">
       <Filter>JUCE Modules\rapt\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterNew.cpp">
-      <Filter>JUCE Modules\rapt\Basics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterOld.cpp">
-      <Filter>JUCE Modules\rapt\Basics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\Plotting.cpp">
       <Filter>JUCE Modules\rapt\Basics</Filter>
     </ClCompile>
@@ -871,6 +874,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LinearAlgebra.cpp">
       <Filter>JUCE Modules\rapt\Math\LinearAlgebra</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LinearAlgebraNew.cpp">
+      <Filter>JUCE Modules\rapt\Math\LinearAlgebra</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\OouraFFT\fft4g.cpp">
       <Filter>JUCE Modules\rapt\Math\Misc\OouraFFT</Filter>
     </ClCompile>
@@ -899,6 +905,9 @@
       <Filter>JUCE Modules\rapt\Math\Numerics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.cpp">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial - Copy.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.cpp">
@@ -994,22 +1003,13 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\PhonoFilter.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\FunctionObjects.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\GeometricFunctions.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\GradientBasedMinimizer.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Matrix.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\ModularInteger.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\MultiLayerPerceptron.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\NumberTheory.cpp">
@@ -1084,7 +1084,13 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageDrawer.cpp">
       <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageGenerator.cpp">
+      <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImagePainter.cpp">
+      <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageProcessor.cpp">
       <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\RealTimeSpline.cpp">
@@ -2521,6 +2527,15 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Experiments\MiscExperiments.cpp">
       <Filter>JUCE Modules\rs_testing\Experiments</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Legacy\FunctionObjects.cpp">
+      <Filter>JUCE Modules\rs_testing\Legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Legacy\GradientBasedMinimizer.cpp">
+      <Filter>JUCE Modules\rs_testing\Legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Legacy\MultiLayerPerceptron.cpp">
+      <Filter>JUCE Modules\rs_testing\Legacy</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Misc\TestClasses.cpp">
       <Filter>JUCE Modules\rs_testing\Misc</Filter>
     </ClCompile>
@@ -2829,6 +2844,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.h">
       <Filter>JUCE Modules\rapt\_Deprecated</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Temp\Matrix.h">
+      <Filter>JUCE Modules\rapt\_Temp</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h">
       <Filter>JUCE Modules\rapt\Analysis</Filter>
     </ClInclude>
@@ -2857,12 +2875,6 @@
       <Filter>JUCE Modules\rapt\Basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotter.h">
-      <Filter>JUCE Modules\rapt\Basics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterNew.h">
-      <Filter>JUCE Modules\rapt\Basics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\GNUPlotterOld.h">
       <Filter>JUCE Modules\rapt\Basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\MacroDefinitions.h">
@@ -3054,6 +3066,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LinearAlgebra.h">
       <Filter>JUCE Modules\rapt\Math\LinearAlgebra</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LinearAlgebraNew.h">
+      <Filter>JUCE Modules\rapt\Math\LinearAlgebra</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Misc\CurveFitting.h">
       <Filter>JUCE Modules\rapt\Math\Misc</Filter>
     </ClInclude>
@@ -3078,7 +3093,13 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\RootFinder.h">
       <Filter>JUCE Modules\rapt\Math\Numerics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix - Copy.h">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.h">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial - Copy.h">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h">
@@ -3180,22 +3201,13 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\DifferentialEquationSystem.h">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\FunctionObjects.h">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\GeometricFunctions.h">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\GradientBasedMinimizer.h">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Matrix.h">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\ModularInteger.h">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\MultiLayerPerceptron.h">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\NumberTheory.h">
@@ -3285,7 +3297,13 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageDrawer.h">
       <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageGenerator.h">
+      <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImagePainter.h">
+      <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\ImageProcessor.h">
       <Filter>JUCE Modules\rapt\Visualization\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Visualization\Graphics\RealTimeSpline.h">
@@ -4830,6 +4848,15 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Experiments\MiscExperiments.h">
       <Filter>JUCE Modules\rs_testing\Experiments</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Legacy\FunctionObjects.h">
+      <Filter>JUCE Modules\rs_testing\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Legacy\GradientBasedMinimizer.h">
+      <Filter>JUCE Modules\rs_testing\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Legacy\MultiLayerPerceptron.h">
+      <Filter>JUCE Modules\rs_testing\Legacy</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Misc\TestClasses.h">
       <Filter>JUCE Modules\rs_testing\Misc</Filter>
     </ClInclude>
@@ -4933,6 +4960,9 @@
     </None>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\ReadMe.txt">
       <Filter>JUCE Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
+    </None>
+    <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\temp.txt">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </None>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Modulators\Ideas.txt">
       <Filter>JUCE Modules\rapt\Modulators</Filter>

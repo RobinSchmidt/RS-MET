@@ -1,3 +1,4 @@
+/*
 template<class TPix>
 rsImage<TPix>::rsImage(int initialWidth, int initialHeight)
   : width(initialWidth), height(initialHeight)
@@ -35,9 +36,11 @@ rsImage<TPix>::~rsImage()
 {
   freeMemory();
 }
+*/
 
 // setup:
 
+/*
 template<class TPix>
 void rsImage<TPix>::setSize(int newWidth, int newHeight)
 {
@@ -49,7 +52,9 @@ void rsImage<TPix>::setSize(int newWidth, int newHeight)
     allocateMemory();
   }
 }
+*/
 
+/*
 template<class TPix>
 void rsImage<TPix>::fillAll(const TPix &colorToFillWith)
 {
@@ -60,6 +65,7 @@ void rsImage<TPix>::fillAll(const TPix &colorToFillWith)
   }
   // ...maybe optimize using memset
 }
+*/
 
 //template<class TPix>
 //void Image<TPix>::flipTopForBottom()

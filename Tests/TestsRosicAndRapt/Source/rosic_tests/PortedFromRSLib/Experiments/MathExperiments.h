@@ -1,6 +1,15 @@
 #ifndef RS_MATHEXPERIMENTS_H
 #define RS_MATHEXPERIMENTS_H
 
+// maybe move to RaptTests.h and get rid of this file
+
+void determinant();
+void characteristicPolynomial();
+bool testSubSpaces();
+bool testSigularValueDecomp();
+void linearIndependence();
+void eigenstuff();
+void linearSolverPrecision();
 
 void bandMatrix();
 void pentaDiagnonalMatrix();
@@ -19,8 +28,10 @@ void hyperbolicFunctions();
 void splineInterpolationNonEquidistant();
 void rationalInterpolation();
 void splineInterpolationAreaNormalized();
+void numericDifferentiation();
 void numericIntegration();
 void numericDiffAndInt();  // 
+void iteratedNumDiff();
 
 
 void shiftPolynomial();

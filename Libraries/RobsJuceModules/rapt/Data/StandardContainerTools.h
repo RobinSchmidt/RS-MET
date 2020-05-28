@@ -7,6 +7,7 @@ library (STL), such as std::vector, std::map, etc. */
 //=================================================================================================
 // functions for std::vector
 
+// maybe wrap into a class rsVectorTools
 
 /** Wraps iterator syntax to simplify calls to std::all_of. */
 template<class T, class UnaryPredicate >
@@ -89,6 +90,19 @@ inline bool rsAreVectorsEqual(const std::vector<T>& v, const std::vector<T>& w, 
   }
   return true;
 }
+// remove or derprecate - use rsEquals instead
+
+template<class T>
+inline bool rsEquals(const std::vector<T>& x, const std::vector<T>& y, T tol = T(0))
+{
+  if( x.size() != y.size() )
+    return false;
+  for(size_t i = 0; i < x.size(); i++) {
+    if( rsAbs(x[i]-y[i]) > tol )
+      return false; }
+  return true;
+}
+
 
 template<class T>
 inline void rsInsert(std::vector<T>& v, const T& newElement, size_t index)
@@ -107,6 +121,14 @@ inline void rsInsert(std::vector<T>& v, const std::vector<T>& w, size_t index)
 {
   v.insert(v.begin() + index, w.begin(), w.end());
 }
+
+/** Inserts value x into sorted vector v at its appropriate position. */
+template<typename T>
+typename std::vector<T>::iterator rsInsertSorted(std::vector<T>& v, T const& x)
+{
+  return v.insert(std::upper_bound(v.begin(), v.end(), x), x);
+}
+// https://stackoverflow.com/questions/15843525/how-do-you-insert-the-value-in-a-sorted-vector
 
 
 
@@ -149,6 +171,38 @@ inline void rsRemoveRange(std::vector<T>& v, size_t first, size_t last)
 }
 
 template<class T>
+inline void rsPopFront(std::vector<T>& v)
+{
+  rsRemoveRange(v, 0, 0);
+}
+
+
+
+template<class TVal, class TIdx>
+inline std::vector<TVal> rsSelect(const TVal* x, const std::vector<TIdx>& indices)
+{
+  std::vector<TVal> r(indices.size());
+  for(TIdx i = 0; i < (TIdx) indices.size(); i++)
+    r[i] = x[indices[i]];
+  return r;
+}
+
+/** Returns a new vector that contains only those elements from the original vector v at the given
+indices. TVal is the type of the values in v and TIdx is the type of the index-values - for example 
+size_t or int. Note that it doesn't check, if the entries in the indicies array are actually valid
+indices for v-array - making that sure is the responsibility of the caller. */
+template<class TVal, class TIdx>
+inline std::vector<TVal> rsSelect(const std::vector<TVal>& v, const std::vector<TIdx>& indices)
+{
+  return rsSelect(&v[0], indices);
+  //std::vector<TVal> r(indices.size());
+  //for(TIdx i = 0; i < (TIdx) indices.size(); i++)
+  //  r[i] = v[indices[i]];
+  //return r;
+}
+
+/*
+template<class T>
 inline std::vector<T> rsSelect(std::vector<T>& v, std::vector<size_t> indices)
 {
   std::vector<T> r(indices.size());
@@ -156,6 +210,10 @@ inline std::vector<T> rsSelect(std::vector<T>& v, std::vector<size_t> indices)
     r[i] = v[indices[i]];
   return r;
 }
+*/
+
+
+
 
 template<class T>
 inline void rsFill(std::vector<T>& v, T value)
@@ -324,8 +382,8 @@ T rsMinValue(const std::vector<T>& x) { return rsArrayTools::minValue(&x[0], (in
 template<class T>
 T rsMaxValue(const std::vector<T>& x) { return rsArrayTools::maxValue(&x[0], (int) x.size()); }
 
-
-
+template<class T>
+T rsMaxAbs(const std::vector<T>& x) { return rsArrayTools::maxAbs(&x[0], (int) x.size()); }
 
 //template<class T>
 //T rsMaxValue(const std::vector<T>& x)
@@ -402,6 +460,17 @@ inline std::vector<T> operator*(const T& x, const std::vector<T>& v)
     result[i] = x * v[i];
   return result;
 }
+
+/** Divides a vector by a scalar. */
+template<class T>
+inline std::vector<T> operator/(const std::vector<T>& v, const T& x)
+{
+  std::vector<T> result(v.size());
+  for(int i = 0; i < v.size(); i++)
+    result[i] = v[i] / x;
+  return result;
+}
+
 
 /** Divides a scalar by a vector. */
 template<class T>

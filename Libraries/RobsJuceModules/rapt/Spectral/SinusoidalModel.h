@@ -17,8 +17,9 @@ degrading precision at later time-instants because more and more of the floating
 will be used up by the 2*k*pi part of the unwrapped phase. That could be solved by storing the 
 wrapped phase and the integer k for the 2*k*pi part. However, storing the instantaneous frequency 
 along with the phase is pretty much standard in the sinusoidal modeling literature. We must then
-reconstruct the k heuristically - but that ususally works and as a plus, as said, we also get 
-proper target values for phase derivatives for interpolation. */
+reconstruct the k heuristically for synthesis (essentially by phase unwrapping - but it may be a 
+bit more sophisticated) - but that ususally works and as a plus, as said, we also get proper target 
+values for phase derivatives for interpolation. */
 
 template<class T>
 class rsInstantaneousSineParams // maybe make it a struct, it's actually just a data record
@@ -60,9 +61,13 @@ public:
 
   T time = 0;      // in seconds
   T freq = 0;      // in Hz
-  T gain = 0;      // as raw factor - rename to amp
-  T phase = 0;     // radians in [-pi, pi]
-  //int cycles = 0;  // number of cycles passed: unwrapped phase = phase + 2*pi*cycles
+  T gain = 0;      // as raw factor (maybe rename to amp)
+  T phase = 0;     // in radians in [-pi, pi]
+
+  //int cycles = 0;  
+  // number of cycles passed: unwrapped phase = phase + 2*pi*cycles ...not used - just an idea - 
+  // currently, in synthesis, we actually obtain the "cycles" value by phase unwrapping
+
 
 };
 
@@ -107,7 +112,7 @@ public:
   phase. */
   void applyFadeIn(T fadeTime);
 
-  /** Appends a zero amplitude datapoint at the front with frequency equal to the end
+  /** Appends a zero amplitude datapoint at the end with frequency equal to the end
   frequency, a time-stamp given by the end time plus the fadeTime and appropriately chosen 
   phase. */
   void applyFadeOut(T fadeTime);
@@ -367,13 +372,13 @@ are in seconds, otherwise in samples at the given sample rate
 todo: currently, the partials are in no particular order - maybe order them somehow (perhaps by 
 start-time and then by frequency - or maybe by amplitude or even a psychoacoustic "importance"
 measure?) . yes - it would be interesting to have a getPartialImportance() function that analyzes
-according to amplitude, masking, etc. - can be used to "simplify" models - but maybe that should be
-done in a dedicated class. we could also "sparsify" models by downsampling the partials datapoint 
-density - we could remove datapoints whose information is well reconstructed by the interpolation 
-process - we could measure the importance of a datapoint by reconstructing with and without it and
-measure the amplitude and phase difference at the instant of the datapoint in the interpolated
-trajectories - but that will depend on the selected interpolation - maybe a model should also 
-contain data about its prefered interpolation mode
+according to amplitude, masking, etc. - can be used to "simplify" or "stylize" models - but maybe 
+that should be done in a dedicated class. We could also "sparsify" models by downsampling the 
+partials datapoint density - we could remove datapoints whose information is well reconstructed by 
+the interpolation process - we could measure the importance of a datapoint by reconstructing with 
+and without it and measure the amplitude and phase difference at the instant of the datapoint in 
+the interpolated trajectories - but that will depend on the selected interpolation - maybe a model
+should also contain data about its prefered interpolation mode
 
 
 */
@@ -528,7 +533,7 @@ protected:
 
 // ideas: removeNoisyPartials, denoisePartials, harmonifyPartials, phaseLockPartials, ...
 // -maybe it would make sense to consider the de-trended, unwrapped phase signal and apply signal
-//  processing algorithsm to that
+//  processing algorithms to that
 // -in general, this seems to be a good oppottunity to apply non-uniform filters (although the 
 //  analyzer will produce uniformly sampled data, a general model may be non-uniformly sampled)
 //  -maybe to test such algorithms, take the analysis data and "poke holes" in it (i.e. delete some 

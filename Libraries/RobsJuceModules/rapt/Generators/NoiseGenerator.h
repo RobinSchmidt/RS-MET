@@ -14,6 +14,8 @@ Numerical Recipies in C (2nd edition), page 284.
  near the origin - high slope far away from the origin spreads them out - or maybe the rational
  mapping could be nice - try with FuncShaper - maybe we need a histogram analyzer for that)
 -make a colored noise generator by using the SlopeFilter (in rosic - needs to be dragged to rapt)
+-maybe make implementations that use different values for the factor and offset (but only such 
+ values that guarantee the maximum possible period - look up the conditions that must be sasisfied)
 
 */
 
@@ -45,10 +47,11 @@ public:
   /** Updates the internal state of the integer PRNG */
   inline void updateState()
   {
-    state = (1664525*state + 1013904223) & 4294967295; 
-      // the bitmask performs the modulo operation. when unsigned long is 32 bit, it's not 
-      // necesarry because then the mod occurs implicitly due to overflow, but when it's 64 bit
-      // we need to do it explicitly (on mac it is required);
+    state = (1664525*state + 1013904223) & 4294967295;
+    // These numbers are taken from Numerical Recipies in C, 2nd Ed, page 284. The bitmask performs
+    // the modulo operation. When unsigned long is 32 bit, it's not necesarry because then the mod 
+    // occurs implicitly due to overflow, but when it's 64 bit we need to do it explicitly (on mac 
+    // it is required);
   }
 
   /** Produces one output sample at a time */
@@ -71,11 +74,20 @@ protected:
 
 /** Subclass of rsNoiseGenerator that creates the noise by adding up several noise samples in order
 to approach a gaussian distribution. The order parameter determines how many noise samples are 
-added - with only 1: you get the uniform distribution, 2: triangular, 3: sort of parabolic, 
-4: looks already rather gaussianish
+added - with only 1: you get the uniform distribution, 2: triangular (piecewise linear), 3: sort of 
+parabolic spline, 4: cubic spline - looks already rather gaussianish. Note that with higher orders,
+the samples concentrate more toward the center, such that the overall variance goes down with the 
+order.
 
-not yet tested - probably doesn't work yet
-*/
+In general, we get the Irwin-Hall distribution, see:
+https://en.wikipedia.org/wiki/Irwin%E2%80%93Hall_distribution
+https://en.wikipedia.org/wiki/Bates_distribution
+https://www.youtube.com/watch?v=-2PA7SbWoJ0&t=17m50s (german)
+
+...i have also a sympy notebook somewhere, that computes the convolutions and gives the 
+distributions as piecewise polynomials
+
+maybe rename to rsNoiseGeneratorIrwinHall  */
 
 template<class T>
 class rsNoiseGenerator2 : public rsNoiseGenerator<T>
@@ -83,26 +95,39 @@ class rsNoiseGenerator2 : public rsNoiseGenerator<T>
 
 public:
 
-  inline void setOrder(unsigned long newOrder) { order = newOrder; }
+  inline void setOrder(unsigned long newOrder) { order = newOrder;  updateCoeffs();}
 
+  inline void setRange(T newMin, T newMax) { min = newMin; max = newMax; updateCoeffs(); }
 
   inline T getSample()
   {
-    unsigned long accu = 0;
+    unsigned long long accu = 0;
     for(unsigned long i = 1; i <= order; i++) {
       this->updateState();
       accu += this->state; }
     return this->scale * accu + this->shift;
-    // todo: scale and shift should depend on order - need to be updated in setOrder, setRange
-    // hmm...maybe state needs to be an rsUint64 here to avoid overflow in the accumulation
-    // ...maybe make performance tests to figure out, if that makes a difference
   }
 
 protected:
 
+  void updateCoeffs()
+  {
+    scale = T( (max-min) / (order*4294967296.0) );
+    shift = min;
+  }
+
   unsigned long order = 1;
+  T min = T(-1), max = T(+1);
 
 };
+
+// todo: maybe allow to create correlated noise by doing only one state-update per sample and 
+// doing the sum over the past N states, like:
+//   accu -= state;   // subtract old state
+//   updateState();   // compute new state
+//   accu += state;   // add new state
+//   return scale * accu + shift;
+// where accu is remembered between calls to getSample
 
 // todo: allow for bi-, tri- and multimodal distributions: for example to get 3 bells at -1, 0, 1,
 // first select (according to some probability), which bell is 
@@ -124,7 +149,7 @@ protected:
 // establish a nonlinear, probabilistic feedback loop interaction between exciter and resonator
 // when the output signal value is strongly negative, we should have a high chance of getting a 
 // positive excitation impulse value (i.e. choose the generator with positive center) and vice 
-// versa - this cort of simulates the probability for slip/slide events in abowed string - if the 
+// versa - this sort of simulates the probability for slip/slide events in abowed string - if the 
 // string is under tension in one direction it has a higher chance to slip into the other direction
 // ....well, loosely speaking
 

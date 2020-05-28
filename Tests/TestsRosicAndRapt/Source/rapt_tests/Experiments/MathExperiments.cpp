@@ -1,6 +1,796 @@
 using namespace RAPT;
 using namespace std;
 
+
+// maybe do eigenvalue and eigenvector stuff here and rename the function accordingly
+void characteristicPolynomial() 
+{
+  // We try to figure out how to compute the coeffs (or better: roots) of the characteristic 
+  // polynomial of a matrix via Gaussian elimination by creating a matrix of rational functions and
+  // see what happens when we unleash the elimination algorithm on it.
+
+  // The characteristic polynomial p(x) of a matrix A is given by p(x) = det(A - x*I) where I is 
+  // the identity matrix. The roots of p are the eigenvalues of A. The elimination algorithm does 
+  // not change these roots because the elementary row operations can at most multiply the 
+  // determinant by a nonzero factor (in case of a regular matrix). But we cannot just run the 
+  // elimination algo on a matrix of numbers and then do p(x) = det(A' - x*I) where A' is the 
+  // result of the elimination because during the process, the x would have to get mangled into 
+  // the matrix itself - we can't introduce it after the elimination. So, what we do instead is to
+  // consider a full-blown matrix of rsRationalFunction objects....
+
+  using Poly   = RAPT::rsPolynomial<double>;
+  using Matrix = RAPT::rsMatrix<double>;
+
+  // Create matrix A:
+  // A = |-4  6|
+  //     |-3  5|
+  Matrix A(2, 2, {-4,6, -3,5});
+  Poly p = getCharacteristicPolynomial(A, 0.0);
+  // this is example 39.1 in Karpfinger
+
+  // The matrix plugged into its characteristic polynomial as argument should yield the zero 
+  // matrix. Matrices are "roots" of their own characteristic polynomials, see
+  // https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem
+  Matrix I(2, 2, {1,0, 0,1});      // 2x2 identity matrix
+  Matrix pA = p[0]*I + p[1]*A + p[2] * A*A;
+
+  //bool test = pA.isZero();
+
+  // the sum of the eigenvalues should equal the trace of the matrix (Karpf. pg 412)
+
+  //vector<complex<double>> eigenvalues1 = getPolynomialRoots(p);
+  //vector<complex<double>> eigenvalues2 = getEigenvalues(A);
+
+  // this is wrong:
+  //vector<vector<complex<double>>> eigenVectors = getEigenvectors(A);
+  // they are both computed as zero - can that be? -> ask sage!
+  // well, the zero-vector actually is a solution - seems we compute the trivial solution
+  // -> how do we compute the nontrivial solution? maybe, we need a different right-hand side?
+  // correct eigenvectors are (1,1) and (1,1/2) ~= (2,1)
+
+
+  // What is actually the set of matrices that gives zero when plugged into the polynomial? Are
+  // these the matrices that are "similar" to A? I think, they have all the same eigenvalues 
+  // because they must have the same characteristic polynomial (and the eigenvalues are its roots).
+  // What about the eigenvectors - can they be different? What about the "companion matrix" - it 
+  // should also be a member of the set - is this in some way a "special" member? Maybe another
+  // special member is the one whose eigenvectors are the canoncial basis vectors.
+
+  int dummy = 0;
+
+  // This Sage code:
+  // A = matrix([[-4,6],[-3,5]])
+  // E = matrix([[ 1,0],[ 0,1]])
+  // R.<x>=QQ[]   # to prevent x from vanshing
+  // B = A - x*E  # for computing eigenvalues x of A
+  // R = B.echelon_form()
+  // A,E,B,R
+  //
+  // produces:
+  // 1  1/(3x) - 5/3
+  // 0  x^2 - x - 2
+  //
+  // see here, why the R.<x>=QQ[] is needed:
+  // https://ask.sagemath.org/question/8386/row-echelon-form-of-a-matrix-containing-symbolic-expresssions/
+  // http://www.cfm.brown.edu/people/dobrush/am34/sage/echelon.html
+
+  // Conclusion:
+  // There seems to be no practical way to compute the characteristic polynomial via Gaussian 
+  // elimination for a matrix of numbers. One really has to work with a matrix of rational 
+  // functions in order to keep track of the mangling of the x-variable in the course of the 
+  // elimination process. One cannot introduce the x-variable after the elimination :-(
+  // Or is there some other way?
+
+  // Maybe try this with a larger matrix - 3x3 or 4x4
+
+  // Soo - how do we diagonalize a matrix, i.e. find eigenvalues and -vectors? I think, this may be 
+  // possible only numerically because the eigenvalues are in general irrational (algebraic?) 
+  // numbers. This is in contrast to finding an inverse or solving a linear system - in this case,
+  // the solution can be computed exactly - if the matrix elements are rational numbers, the 
+  // inverse matrix elements are also rational because they can be computed via Gauss elimination.
+  // But what about the eigenvectors? Can't they be rational anyway? Probably not but maybe?
+
+  /*
+  // copied - maybe delete later:
+  // should go to experiment:
+  // check diagonalization:
+  //A = Matrix(3, 3, { 6,1,9, 0,3,6, 0,0,2 });
+  A = Matrix(3, 3, { -15,17,-3, 17,24,-14, -3,-14,48 });
+  Matrix E(3, 3); E.setToIdentity();
+  LA::makeSystemDiagonal(A, E);
+  // after that E contains the inverse of A with its rows scaled by the diagonal elements that are
+  // still in A - that doesn't seem to be useful - remove from library - move to experiments
+
+  solveDiagonalSystem(A, E, E);
+
+  // is this actually true diagonalization? nope doesn't seem to be - the results that are now in A
+  // and E seem to have nothing to do with the eigenvectors and eigenvalues - but what have we done
+  // what does the result represent? is it the inverse with rows scaled by the diagonal elements
+  // of the resulting A? -> it's the reduced row echelon form. its determinant is the same (up to a 
+  // factor) to that of the original matrix - but the characteristic polynomial has nothing to do
+  // with that of the original matrix-
+
+  // Sage code:
+  // D  = matrix([[2,0,0],[0,3,0],[0,0,-5]])
+  // M  = matrix([[-1,1,-5],[1,3,-1],[2,-1,1]])
+  // MT = M.transpose()
+  // A  = MT*D*M
+  // Ai = A.inverse()
+  // MT,D,M,A,Ai
+
+  // figure out how to diagonalize a matrix using the Gaussian elemination - maybe we can figure 
+  // out the coeffs of the characteristic polynomial by making it triangular (in which case the 
+  // determinant is the product of the diagonal elements) - but each elementary transformation
+  // modifies the determinant in some way - we need to keep track of these changes - maybe the
+  // Gaussian elimination can be extended in a suitable way? -nope we are fine: swapping rows
+  // inverts the sign, multiplying a row by a factor multiplies the determinant by the same factor
+  // and adding a row to another doesn't change the determinant - in the end, all it does is to
+  // scale our characteristic polynomial by a factor which is irrelevant for finding the roots
+  // algorithm: make matrix diagonal - then we can compute the polynomial coeffs from the diagonal
+  // elements...wait - oculd it be that the diagonal elements are already the roots of the
+  // characteristic polynomial? after calling makeSystemDiagonal? i think so - figure it out!
+  // ...hmm - it probably doesn't work because the "lambda" in det(A-lambda*E) = 0 is actually 
+  // introduced before the elimination starts, so in every step, terms involving lambda get mangled
+  // in - we can't just introduce the lambda after the elimination...i think - but maybe it's 
+  // possible to keep track of all the mangling and arrive at an algo for finding the 
+  // characteristic polynomial anyway....
+  */
+}
+// todo: try some crazy stuff: use a matrix of rational functions of (maybe complex) rational 
+// numbers made of big integers - maybe for this, it makes sense to use my own rsComplex class 
+// again. Nest the different math types in variuos ways: complexes of matrices, matrices of 
+// complexes, matrices of ratfuncs, ratfuncs of matrices, polynomials, vectors of matrices,
+// matrices of vectors - maybe out this into a unit test
+
+void determinant()
+{
+  // Computation of determinant by the (totaly inefficient) textbook method.
+
+  using Matrix = RAPT::rsMatrix<double>;
+
+  // todo: turn into unit test...
+  bool r = true;
+
+  Matrix A(4, 4, { 1,0,2,0, 1,0,3,0, -1,2,3,4, 2,0,5,1});
+  double det;
+  det = getDeterminantColumnWise(A, 0); r &= det == -2;
+  det = getDeterminantColumnWise(A, 1); r &= det == -2;
+  det = getDeterminantColumnWise(A, 2); r &= det == -2;
+  det = getDeterminantColumnWise(A, 3); r &= det == -2;
+  det = getDeterminantRowWise(   A, 0); r &= det == -2;
+  det = getDeterminantRowWise(   A, 1); r &= det == -2;
+  det = getDeterminantRowWise(   A, 2); r &= det == -2;
+  det = getDeterminantRowWise(   A, 3); r &= det == -2;
+
+  // ...use such a function to find the characteristic polynomial without resorting to rational 
+  // functions - only class rsPolynomial itself is needed -> compare both ways. For this way, we 
+  // must promote the matrix to a matrix of polynomials instead of rational functions.
+
+  int dummy = 0;
+}
+
+
+
+
+// move this code to unit tests:
+template<class T>
+bool testNullSpace(RAPT::rsMatrix<T> A)
+{
+  T tol = T(1.e-12);
+  RAPT::rsMatrix<T> B = getNullSpace(A, tol); // B is basis for the nullspace
+  RAPT::rsMatrix<T> null = A*B; 
+  return null.isZero(tol) && !B.containsZeroColumn(tol);
+}
+
+template<class T>
+bool testNullSpaceTailParams(RAPT::rsMatrix<T> A)
+{
+  T tol = T(1.e-12);  
+  RAPT::rsMatrix<T> B = getNullSpaceTailParams(A, tol); 
+  RAPT::rsMatrix<T> null = A*B; 
+  return null.isZero(tol) && !B.containsZeroColumn(tol);
+}
+
+template<class T>
+bool testNullSpaceBoth(RAPT::rsMatrix<T> A)
+{
+  return testNullSpace(A) && testNullSpaceTailParams(A);
+}
+
+bool testSubSpaces()
+{
+  // todo: move the getNullSpace functions into the library and turn this into unit-test
+  // maybe add tests for checking eigenspaces
+  bool r = true;
+
+  using Matrix = RAPT::rsMatrix<double>;
+  using LA     = RAPT::rsLinearAlgebraNew;
+
+  // Examples from Höhere Mathematik in Rezepten (3.Aufl.), page 142 - our found nullspace basis 
+  // vectors aggree with the results there only up to multiplying the basis vectors by a factor. 
+  // That's ok - the basis of a vector space is not unique - we apparently have sometimes made
+  // different choices for the free parameters.
+
+  Matrix A, A2, B, B2, C, null, BB, z, x;
+  int rank;
+  double tol = 1.e-12;
+  bool test;
+   
+  // Example 15.4 in Karpfinger, pg 141. When we don't manually put it in row-echelon-form, our 
+  // result is different from the book - but that doesn't mean it's wrong. Apparently, in the book,
+  // different swaps were performed in the row elimination process.
+  A  = Matrix(3, 3, {1,1,1, 1,2,4, 2,3,5});   // original matrix
+  A2 = Matrix(3, 3, {1,1,1, 0,1,3, 0,0,0});   // row echelon form of A
+  B  = getRowSpace(A,  tol);                  // returns <(2,3,5),(0,0.5,1.5)>
+  B2 = getRowSpace(A2, tol);                  // returns <(1,1,1),(0,1,3)> -  as in the book
+  test = spanSameSpace(B, B2, tol);
+  test = spanSameSpace(B.getTranspose(), B2.getTranspose(), tol);
+  // Both tests evaluate to true - that's interesting - i expected only the test with the transpose
+  // to return true -> figure out, how row-space and column-space are related - they have the same 
+  // dimension but are they the same space?
+
+
+  A  = Matrix(3, 3, {1,1,1, 1,2,4, 2,3,5});   // book says, col-space is <(1,1,2),(0,1,1)>
+  A2 = Matrix(3, 3, {1,0,0, 1,1,0, 2,1,0});   // again, A in row echelon form
+  B  = getColumnSpace(A,  tol);
+  B2 = getColumnSpace(A2, tol);
+  test = spanSameSpace(B, B2, tol);
+  test = spanSameSpace(B.getTranspose(), B2.getTranspose(), tol);
+  // These tests also both evaluate to true
+
+
+  A = Matrix(3, 5, {1,-2,0,-1,3, 0,0,1,2,-2, 0,0,0,0,0}); r &= testNullSpace(A);  
+  B = getNullSpace(A, tol); 
+  // https://www.wikihow.com/Find-the-Null-Space-of-a-Matrix
+
+  // test rank computation:
+  A = Matrix(3, 3, {0,0,0, 0,0,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 0;
+  A = Matrix(3, 3, {1,0,0, 0,0,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 1;
+  A = Matrix(3, 3, {0,1,0, 0,0,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 1;
+  A = Matrix(3, 3, {0,0,1, 0,0,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 1;
+  A = Matrix(3, 3, {1,0,0, 0,1,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 2;
+  A = Matrix(3, 3, {0,1,0, 0,0,1, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 2;
+  A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,0}); rank = getRankRowEchelon(A, 0.0); r &= rank == 2;// can this occur when producing the ref?
+  A = Matrix(3, 3, {0,0,1, 0,1,0, 0,0,2}); rank = getRankRowEchelon(A, 0.0); r &= rank == 3;
+
+  // test nullspace computation:
+  A = Matrix(2, 2, {1,0,  0,1}); r &= testNullSpaceBoth(A);
+  A = Matrix(2, 2, {0,1, -1,0}); r &= testNullSpaceBoth(A);
+  A = Matrix(2, 2, {0,1,  0,0}); r &= testNullSpace(A);
+
+  A = Matrix(3, 3, {-1,-1,2, 1, 2,3, -1,0, 7}); r &= testNullSpaceBoth(A); // B = {(7,-5,1)}
+  A = Matrix(3, 3, { 4, 2,2, 2, 1,1,  2,1, 1}); r &= testNullSpaceBoth(A);
+  A = Matrix(3, 3, {-2, 2,2, 2,-5,1,  2,1,-5}); r &= testNullSpaceBoth(A);
+  A = Matrix(3, 3, { 1, 2,3, 4, 5,6,  7,8, 9}); r &= testNullSpaceBoth(A); // B = {(1,-2,1)}
+  A = Matrix(3, 3, { 1, 0,0, 0, 2,0,  0,0, 3}); r &= testNullSpaceBoth(A); // B = empty
+  A = Matrix(3, 3, { 0, 1,2, 0, 0,4,  0,0, 0}); r &= testNullSpace(A); 
+
+  A = Matrix(4, 4, {1,2,3,4, 2,4,6,8, 3,6,9,12, 4,8,12,16}); r &= testNullSpaceBoth(A); // B = {(2,-1,0,0), (3,0,-1,0), (4,0,0,-1)} // sign is different
+  A = Matrix(4, 4, {1,5,6,7, 0,1,2,3, 0,0,0, 4, 0,0, 0, 0}); r &= testNullSpace(A); 
+ 
+  A = Matrix(5, 4, {1,5,6,7, 0,1,2,3, 0,0,0,4, 0,0,0,0, 0,0,0,0}); r &= testNullSpace(A); 
+ 
+  A = Matrix(5, 5, {1,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);
+  A = Matrix(5, 5, {0,0,3,4,5, 0,0,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);  
+  A = Matrix(5, 5, {1,2,3,0,0, 0,1,6,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);  
+  A = Matrix(5, 5, {1,2,0,4,5, 0,1,0,7,8, 0,0,0,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A);
+  A = Matrix(5, 5, {0,2,3,4,5, 0,1,6,7,8, 0,0,1,9,1, 0,0,0,0,0, 0,0,0,0,0}); r &= testNullSpace(A); 
+
+
+
+  // Function that takes a matrix A and its nullspace and checks, if our nullspace computation 
+  // function produces a result that agrees with the target nullspace
+  using Vec = std::vector<double>;
+  auto checkNullSpace = [&](int M, int N, int R, Vec vecA, Vec vecB)->bool // maybe pass matrices
+  { 
+    Matrix A(M, N,   vecA);
+    Matrix T(M, N-R, vecB);      // target nullspace
+    Matrix B = getNullSpace(A, tol);
+    //rsAssert(B == T);
+    Matrix null = A*B; 
+    C = B-T;
+    return C.isZero(tol) && null.isZero(tol);
+  };
+
+  r &= checkNullSpace(3, 3, 0, {0,0,0, 0,0,0, 0,0,0}, {1,0,0, 0,1,0, 0,0,1}); // rank 0
+  r &= checkNullSpace(3, 3, 1, {0,1,0, 0,0,0, 0,0,0}, {1,0, 0,0, 0,1});       // rank 1
+  r &= checkNullSpace(3, 3, 1, {1,0,0, 0,0,0, 0,0,0}, {0,0, 1,0, 0,1});       // rank 1
+  r &= checkNullSpace(3, 3, 2, {1,0,0, 0,1,0, 0,0,0}, {0,0,1});               // rank 2
+  r &= checkNullSpace(3, 3, 2, {1,0,0, 0,0,0, 0,1,0}, {0,0,1});               // rank 2
+  r &= checkNullSpace(3, 3, 3, {1,0,0, 0,1,0, 0,0,1}, {});                    // rank 3
+  // create some more examples - also using 3x2 and 2x3 matrices
+
+  // ahh - wait - the nullspace is the space that is spanned by the rows! not by the columns that 
+  // wouldn't make any sense since it's the rows that live in the embedding space
+
+
+
+  // check a couple of examples for which we have produced the correct nullspaces with sage via
+  // commands like:
+  // A = matrix(QQ, [[ 1,  4,  0, -1,  0,   7, -9],
+  //                 [ 2,  8, -1,  3,  9, -13,  7],
+  //                 [ 0,  0,  2, -3, -4,  12, -8],
+  //                 [-1, -4,  2,  4,  8, -31, 37]])
+  // A.right_kernel()
+  //
+  // which gives as answer:
+  //
+  // Vector space of degree 7 and dimension 4 over Rational Field
+  // Basis matrix:
+  // [    1     0     0     0  -3/7  -1/7     0]
+  // [    0     1     0     0 -12/7  -4/7     0]
+  // [    0     0     1     0  -3/7 -9/14  -1/2]
+  // [    0     0     0     1   1/7 13/28   1/4]
+  A = Matrix(4, 7, { 1,  4,  0, -1,  0,   7, -9,
+                     2,  8, -1,  3,  9, -13,  7,
+                     0,  0,  2, -3, -4,  12, -8,
+                    -1, -4,  2,  4,  8, -31, 37});
+  B  = getNullSpace(A, tol);
+  B2 = Matrix(4, 7, {1, 0, 0, 0,  -3./7, -1./7,  0,
+                     0, 1, 0, 0, -12./7, -4./7,  0,
+                     0, 0, 1, 0,  -3./7, -9./14,-1./2,
+                     0, 0, 0, 1,   1./7, 13./28, 1./4 }).getTranspose();
+  test = spanSameSpace(B, B2, tol);
+  // why do we need to transpose? what convention uses sage to return the nullspace? are the rows 
+  // shown there supposed to be columns? maybe we should also transpose our result to be consistent 
+  // with sage? ...figure out which convention is used in math for representing baes of nullspaces
+  // and adapt code, if necessarry
+
+
+  B = getOrthogonalComplement(A.getTranspose(), tol);
+  C = A*B;
+  // C is zero - that's good - but A^T has 4 cols, B also - shouldn't B have only 3? the number of 
+  // dimensions of both bases should add up to the dimension of the embedding space. Or maybe A has
+  // one vector that is superfluous in it? maybe we should have a function 
+  // removeSuperfluousColumns ..or maybe take A^T -> turn into row-echelon -> 
+  // remove bottom zero lines -> transpose - that should get rid of supefluous vectors
+
+
+  Matrix rsp = getRowSpace( A, tol);
+  Matrix nsp = getNullSpace(A, tol);
+  Matrix cmp = getOrthogonalComplement(rsp.getTranspose(), tol); 
+  r &= spanSameSpace(cmp, nsp, tol);
+  // we need to transpose because a rowspace consists of rows - is that the common convention?
+  // figure out! probabyl we may use these relations to figure out if getNullSpace has actually 
+  // produced the whole embedding space - we may create the union of the nullspace and its
+  // complement and check, if it spans the whole space
+
+  // here:
+  // https://en.wikipedia.org/wiki/Row_and_column_spaces#Dimension it says:
+  // The dimension of the column space is called the rank of the matrix. 
+  // we may check that
+
+  //rsEigenSpaceSet<complex<double>> eigen = getEigenSpaces(A, tol);
+  // we should notneed to wrap it into complex here - getEigenSpaces should automatically 
+  // complexify for eal matrices - or it should take complex matrices - yes - that would perhaps
+  // be the best
+
+
+  // todo:
+  // add a test that the returned matrix does not contain the zero vector - figure out, how it 
+  // comes about that the produced nullspaces sometimes contain it
+  // try various MxN matrices - maybe with random elements ...although, for random matrices, the 
+  // nullspaces will probably always come out as the whole embedding space - it's unlikely that
+  // random matrices are singular - maybe programmatically construct singular matrices (use a set
+  // of random vectors and produce random linear combinations of them)
+  // how can we check that we actually get the whole nullspace and not just a subspace thereof?
+  // maybe the only way is to use matrices with knowm nullspaces - again we can construct matrices
+  // randomly from a known set of basis vectors - if we write some random basis vectors into the 
+  // rows and construct the other rows as linear combinations of the them, we have a known 
+  // nullspace - we can check with spanSameSpace if we got the full nullspace
+  // try various "mean" matrices (with zero columns in various places
+
+  // todo: orthogonalize the obtained nullspace bases and compute BB = B.getTranspose() * B; 
+  // this should give the identity matrix, iff B is orthonormal - maybe make such testt later when we have
+  // Gram-Schmidt orthogonalizations
+
+  if(r)
+    std::cout << "nullspace works";
+  rsAssert(r);
+  return r;
+}
+
+RAPT::rsMatrix<double> getRandomMatrix(int numRows, int numCols, int seed,
+  double min = -1, double max = +1)
+{
+  RAPT::rsMatrix<double> A(numRows, numCols);
+  RAPT::rsArrayTools::fillWithRandomValues(A.getDataPointer(), A.getSize(), min, max, seed);
+  return A;
+}
+
+RAPT::rsMatrix<double> getRandomOrthogonalMatrix(int size, int seed)
+{
+  RAPT::rsMatrix<double> A = getRandomMatrix(size, size, seed);
+  orthonormalizeColumns1(A); 
+  return A;
+}
+
+
+bool testSigularValueDecomp()
+{
+  using Vec = std::vector<double>;
+  using Matrix = RAPT::rsMatrix<double>;
+  double tol = 1.e-12;
+  //double tol = 1.e-8;
+  bool r = true;
+
+
+
+
+  
+  // this does not yet work:
+  Matrix A, U, S, V;  // the original matrices
+  Matrix a, u, s, v;  // the computed matrices
+
+  int M = 7;
+  int N = 5;
+  V = getRandomOrthogonalMatrix(N, 2);
+  U = getRandomOrthogonalMatrix(M, 1);
+  S.setSize(7, 5); S.setToZero();
+  S(0,0) = 5; S(1,1) = S(2,2) = S(3,3) = 3; S(4,4) = 2; // the middle sv mas multiplicity 3
+  A = U * S * V.getTranspose();
+  decomposeRealUSV(A, u, s, v, tol);
+  //decomposeRealUSV(A, u, s, v, 1.e-6); // higher tolerance doesn't help
+  a = u * s * v.getTranspose();
+  // doesn't work - characteristic polynomial computation fails - maybe we need higher tolerance?
+  // ...could be that the reduction of the rational functions doesn't work - increasing tol 
+  // doesn't seem to help - oh - wait the rsRationalFunction class doesn't get its tolerance from 
+  // here ...hmm rsRationalFunction<T>::reduce is not even called
+  // but ratReduce is called - with tol == 0 - the operators of RatFunc use ratMul, ratAdd, etc. - 
+  // they do not pass anything for the tolerance, so it defaults to zero - maybe RatFunc should
+  // have a member reductionTolerance
+  
+  // ..maybe try to use matrices with integer elements - but how to we produce
+  // orthogonal matrices with integer elements - if we use random values and Gram-Schmidt, the 
+  // elements will often be irrational due to the sqrt in the normalization
+  
+
+
+
+
+
+  auto checkSVD = [&](int M, int N, Vec vecA)->bool
+  { 
+    Matrix A(M, N, vecA);
+    Matrix U, S, V;
+    decomposeRealUSV(A, U, S, V, tol);
+    Matrix T = U * S * V.getTranspose();
+    bool result = (A-T).isZero(tol);
+    result &= isOrthogonal(U, tol);
+    result &= isOrthogonal(V, tol);
+    //result &= isDiagonal(  S, tol);
+    return result;
+  };
+
+  // examples/excercises from Karpfinger - Höhere Mathematik in Rezepten:
+  r &= checkSVD(2, 3, {-1,1,0, -1,-1, 1});              // pg. 448.
+  r &= checkSVD(2, 3, { 1,1,3,  1, 1,-3});              // pg. 450, ex 42.3 (a)
+  r &= checkSVD(3, 1, { 2,2,1 });                       // (b)
+  r &= checkSVD(3, 2, { 1,1, 1,1, 3,-3});               // (c)
+  r &= checkSVD(1, 3, { 2,2,1 });                       // (d)
+  r &= checkSVD(3, 4, {8,-4,0,0, -1,-7,0,0, 0,0,1,-1}); // (e)
+  r &= checkSVD(2, 3, { 2,1,2,  1,-2,1});               // (f) 
+
+
+
+  r &= checkSVD(2, 4, {1,0,1,0, 0,1,0,1});
+  // https://mysite.science.uottawa.ca/phofstra/MAT2342/SVDproblems.pdf - has multiplicity
+  // ....also uses A * A^T ...why? how?
+
+
+  // for the matrices where the number of rows is larger than the number of columns, the assertion 
+  // triggers but the test returns true anyway - maybe it doesn't actually matter, if we fill up
+  // U? ...i think, whether we fill up U or not, the condition A = U * S * V^T will always hold - 
+  // but if we don't fill U up, it won't be orthogonal (not even invertible) - which may be 
+  // disadvantageous, if we want to do some manipulation, such as left-multiplying and equation by
+  // U^-1 (= U^T, iff U is orthogonal)
+  // try more examples with m > n, m < n and different multiplicities for the eigenvalues of 
+  // A^T * A, i.e. cases where there is no one-to-one correspondence between eigenvalues and 
+  // eigenvectors
+  // n: dimensionality of input space
+  // m: dimensionality of output space
+  // r: dimensionality of image, rank of A, r <= m
+
+
+
+
+
+
+
+  // see also:
+  // https://en.wikipedia.org/wiki/Singular_value_decomposition#Example
+  // https://web.mit.edu/be.400/www/SVD/Singular_Value_Decomposition.htm
+  // https://www.d.umn.edu/~mhampton/m4326svd_example.pdf
+
+
+  // maybe construct examples by specifying U,S,V - when specifying S, make sure to cover cases 
+  // where we have singular values with multiplicities
+
+
+
+
+  return r;
+}
+
+
+void linearCombinations()
+{
+  // We figure out, if a given vector is a linear combination of a set of given vectors, see:
+  // https://www.mathbootcamps.com/determine-vector-linear-combination-vectors/
+  // https://math.stackexchange.com/questions/851766/determining-whether-or-not-a-vector-is-a-linear-combination-of-a-given-matrix
+
+
+  using Matrix = RAPT::rsMatrix<double>;
+  using LA     = RAPT::rsLinearAlgebraNew;
+
+  Matrix B, x;
+  bool linComb;
+  double tol = 1.e-13;
+
+  //      b1 b2
+  //     |2  7|                    |25|
+  // B = |5  3|, x = 2*b1 + 3*b2 = |19|
+  //     |3  5|                    |15|
+  B = Matrix(3, 2, {2,7, 5,3, 3,5});  
+  x = Matrix(3, 1, {25,19,21});
+  // our basis vectors (2,5,3),(7,3,5) spanning a 2D space within R^3, as colums of matrix B, x is
+  // a linear combination of b1,b2 with coeffs 2,3
+
+  linComb = isInSpanOf(B, x, tol);
+  //LA::makeTriangular(B, x);
+  // x is a linear combination of the columns of B, if this results in no nonzero line in x for 
+  // which there is a zero line in B - or the other way around: whereever B has a zero line, x must
+  // also have a zero entry. I think, this means the rank(B|x) <= rank(B)
+
+  // try the same procedure now with some other vector x:
+  B = Matrix(3, 2, {2,7, 5,3, 3,5});  // bcs the elimination has destryed it
+  x = Matrix(3, 1, {20,15,-10});
+  linComb = isInSpanOf(B, x, tol);
+  //LA::makeTriangular(B, x);
+  // this is not e linear combination of b1,b2
+
+  // make some more linear combinations and random vectors
+  B = Matrix(3, 2, {2,7, 5,3, 3,5});
+  x = Matrix(3, 4, {25,20,20,3, 19,21,15,4, 21,19,-10,1});
+  // the 2nd is 3*b1 + 2*b2, the first as above and 3,4 are random vectors
+  linComb = isInSpanOf(B, x, tol);
+
+
+  // how can we find the coefficients of the linear combinations - that must also be a linear 
+  // system -> figure out, how to set it up
+
+  int dummy = 0;
+}
+
+void linearIndependence()
+{
+  // Tests, whether a set of vectors (given as columns of a matrix) is linearly independent. A set
+  // of vectors a1,a2,..,aN is linearly independent, if k1*a1 + k2*a2 + ... + kN*aN = 0 implies 
+  // that k1 = k2 = ... = kN = 0. That means, we have to find the nullspace of the matrix 
+  // A = (a1 a2 ... aN), where the ai are the columns. The vectors are independent if that 
+  // nullspace is trivial (i.e. contains only the zero vector).
+
+
+  linearCombinations();
+
+  using Matrix = RAPT::rsMatrix<double>;
+  using LA     = RAPT::rsLinearAlgebraNew;
+
+  double tol = 1.e-12;
+
+  //      a1 a2 a3     we have a3 = a1-a2, so the columns are not linearly independent
+  //     |1  3  -2|
+  // A = |2  1   1|
+  //     |1  2  -1|
+  Matrix A(3, 3, {1,3,-2, 2,1,1, 1,2,-1});
+  Matrix nullspace = getNullSpaceTailParams(A, tol);
+  // A basis for the nullspace is {(-1,1,1)} - that means: -1*a1 + 1*a2 + a3 = 0 which can be 
+  // simplified to a3 = a1-a2 - our free parameter is a3 - we may choose a1,a2 in any way that 
+  // satifies this equation ...i think
+
+  // A = |1 2 1|
+  //     |0 0 1|
+  A = Matrix(2, 3, {1,2,1, 0,0,1});
+  nullspace = getNullSpaceTailParams(A, tol);  
+  // Returns (-2,1,0) - that means: -2*a1 + 1*a2 + 0*a3 = 0 - we can choose a3 freely, the 
+  // equation is always satisfied. Or we can solve this equation - for example - for a1:
+  // -2*a1 = -1*a2 - 0*a3 -> a1 = (1/2)*a2 - 0*a3 - so we have expressed a1 as linear combination
+  // of the other two, so a1 is linearly dependent of a2,a3. However, it does not mean that every
+  // vector in the set is dependent on some others - a3 cannot be expressed as linear combination
+  // of a1,a2, for example ...is that because it has coefficient zero?
+
+  int dummy = 0;
+}
+
+
+
+
+
+
+
+void eigenstuff()
+{
+  // create a matrix and find its eigenvalues and eigenvectors
+
+  using Matrix  = RAPT::rsMatrix<double>;
+  using MatrixC = RAPT::rsMatrix<complex<double>>;
+
+  double tol = 1.e-12;
+  bool r = true;
+  Matrix  A, T, z;                       // matrix and dummy vector (get rid of the dummy)
+  MatrixC B;                             // correct basis of the eigenspace (target)
+  std::vector<rsEigenSpace<double>> eig; // hold the computed eigenspaces
+
+  A = Matrix(2,2, {0,1, 0,0});
+  Matrix nullspace = getNullSpace(A, tol);
+  // returns |1 0| - the canonical basis of R^2 - but this is wrong (i think)
+  //         |0 1|
+  // maybe it fails because the rank is not computed correctly
+
+  z = Matrix(2, 1); // dummy
+  int rank = RAPT::rsLinearAlgebraNew::makeTriangular(A, z);
+  rank = getRankRowEchelon(A, 0.0);
+  // yup - rank is returned as 0 - but actual rank is 1 - the number of steps taken is actually not
+  // the rank in all cases - often it is, but not always - try this with various matrices with 
+  // leading zeros in the rows - these make problems - the actual rank is the numer of nonzero rows
+  // in row echelon form - after i steps, we have zeroed out i columns - but what does this tell us 
+  // about the rows? not so much - hmm - here:
+  // https://en.wikipedia.org/wiki/Rank_(linear_algebra)
+  // it says: "Once in row echelon form, the rank is clearly the same for both row rank and column 
+  // rank, and equals the number of pivots" ...hmm - maybe it's because we use partial pivoting?
+
+  // examples from https://www.youtube.com/watch?v=lyXwcXjJdYM
+  // todo: add checks (r &= ...)
+
+  A = Matrix(2,2, {1,1, 0,1});
+  eig = getEigenSpaces(A, tol);
+  //findEigenSpacesReal(A);
+  // correct [1,(1,0)] - or maybe weitz didn't compute the other?, found: [1,{(1,0),(0,1)}] twice
+  // we can actually check, if an eigenvector v is indeed eigenvector - just compute 
+  // A * v and x_i * v
+
+  A = Matrix(2,2, {1,1, 1,1});
+  eig = getEigenSpaces(A, tol);
+  //findEigenSpacesReal(A);
+  // found: [0,(-1,1)],[2,(1,1)] -> correct
+
+
+  A = Matrix(2,2, {0,-1, 1,0});
+  eig = getEigenSpaces(A, tol);
+  //findEigenSpacesReal(A);
+  // found: [-i,{(-i,1)}],[i,{(i,1)}] - todo: check this manually
+
+  // Examples from Ahrens,pg.658:
+  A = Matrix(2,2, {3,-1, 1,1});
+  eig = getEigenSpaces(A, tol);
+  //findEigenSpacesReal(A);
+  // [2,(1,1)], [2,(1,1)] -> correct
+
+  A = Matrix(3,3, {1,2,2, 2,-2,1, 2,1,-2});
+  //eig = getEigenSpaces(A, tol);    // doesn't work - we need higher tolerance
+  eig = getEigenSpaces(A, 1.e-7);  // works
+  //findEigenSpacesReal(A);
+  // [3,(2,1,1)],[-3,(-1,0,2),(-1,2,0)] - (2,1,1) is found correctly, the other eigenspaces are 
+  // empty - numerical issues?, also, the -3 eigenvalue is found twice - once as -3.000...x and 
+  // once as -2.999...x - in each case with an empty eigenspace - it smells like a precision issue
+  // ...with tol = 1.e-7, they are collapsed into one - with a 2D eigenspace - this seems correct
+  // but why are the eigenspaces empty in case of too small tolerance - shouldn't they just be 
+  // duplicated, too?
+  // maybe revisit the polynomial root-finder, maybe the root-polishing can be refined - maybe
+  // using Newton iteration? but what if it's a double (or multiple) root? - in this case, Newton
+  // iteration may not converge - maybe somehow work with deflated polynomials? the characteristic
+  // polynomial here is 27 + 9*x - 3*x^2 - 1*x^3, with a simple root at +3 and a double root at -3
+
+  // Example from Ahrens,pg.659 - has a single eigenvalue of -2 (with multiplicity 5) with a 2D 
+  // eigenspace spanned by {(1,1,1,1,1),(0,0,1,0,0)}:
+  A = Matrix( 5, 5, {-3,1,0,0,0, -1,-1,0,0,0, -3,1,-2,1,1, -2,1,0,-2,1, -1,1,0,0,-2});
+  B = MatrixC(5, 2, {1,0, 1,0, 1,1, 1,0, 1,0});  // correct basis for eigenspace
+  eig = getEigenSpaces(A, tol);
+  r &= eig.size() == 1;
+  r &= eig[0].eigenValue == -2.0;
+  r &= eig[0].getAlgebraicMultiplicity() == 5;
+  r &= eig[0].getGeometricMultiplicity() == 2;
+  r &= spanSameSpace(eig[0].eigenSpace, B, complex<double>(tol)); // get rid of complexification of tol
+  // we get different basis vectors from what the book says - but that doesn't mean, they are 
+  // wrong - they are just a different basis that spans the same space
+
+
+  // todo: try some more examples with sage, clean up the eigenvalues - use a function like
+  // cleanUpIntegers that does it for real and imaginary parts
+
+
+  // try orthonormalization - todo: make extra function for this
+  A = Matrix( 3, 3, {1,1,1, 0,1,1, 0,0,1});       // Karpf. pg160
+  orthonormalizeColumns1(A);
+  r &= A == Matrix(3, 3, {1,0,0, 0,1,0, 0,0,1});  // should give the standard-basis
+  r &= areColumnsOrthonormal(A, tol);
+
+  // other algorithm:
+  A = Matrix( 3, 3, {1,1,1, 0,1,1, 0,0,1}); 
+  orthonormalizeColumns2(A, tol);
+  r &= A == Matrix(3, 3, {1,0,0, 0,1,0, 0,0,1});
+
+
+  // example from:
+  // https://www.khanacademy.org/math/linear-algebra/alternate-bases/orthonormal-basis/v/linear-algebra-gram-schmidt-example-with-3-basis-vectors
+  A = Matrix( 4, 3, {0,0,1, 0,1,1, 1,1,0, 1,0,0});
+  T = A;
+  orthonormalizeColumns1(A);
+  r &= areColumnsOrthonormal(A, tol);
+  r &= spanSameSpace(A, T, tol);
+  double s1 = 1. / sqrt(2), s2 = sqrt(2./3.), s3 = 1./(2*sqrt(3.));
+  T = Matrix( 4, 3, {0,0,3*s3, 0,s2,s3, s1,0.5*s2,-1*s3, s1,-0.5*s2,s3});   // target
+  A = T - A;          // A is now the error (target - computed) - should be the zero-matrix
+  r &= A.isZero(tol);
+  // we could also make tests base on spanSameSpace and areColumnsOrthonormal
+
+  // QR decomposition:
+  A = Matrix(4, 3, {2,0,2, 1,0,0, 0,2,-1, 2,0,0}); // Karpf. pg.185
+  Matrix Q, R;
+  decomposeQR(A, Q, R); 
+  T = Q*R;                 // should be equal to A
+  r &= (A-T).isZero(tol);
+
+
+
+  int dummy = 0;
+
+  // Some Notes
+  // -x_i is an eigenvalue of matrix A, iff (A - x_i * I) * v = 0 has solutions v different from 
+  //  the zero vector, the equation can also be written as A * v = x_i * v
+  // -a matrix A is invertible, iff 0 is not an eigenvalue (Ahrens, 655)
+  // -the dimensionality of an eigenspace to an eigenvalue x_i has a dimensionality of at least
+  //  1 and at most the multiplicity (as root of the characteristic polynomial) of x_i
+};
+
+
+void linearSolverPrecision()
+{
+  // We construct matrices of different sizes by shuffling diagonal matrices for which we know
+  // the exact solution. Then we compare the exact solution to the computed solution and find the
+  // maximum error. When the numbers that occur in the computation cannot be represented exactly 
+  // (which we may ensure by scaling all matrix entries by pi, say), the solver will introduce 
+  // roundoff error. We plot this error as function of the size. This may help to find sensible
+  // values for the singularity detection threshold in the solver.
+  // This is not yet finished
+
+
+  using Matrix = RAPT::rsMatrix<double>;
+  using LA     = RAPT::rsLinearAlgebraNew;
+
+  int N = 100;  // size
+
+  Matrix A(N, N), B(N, N), X(N, N);
+  A.setToIdentity();   // coefficient matrix
+  B.setToIdentity();   // solution matrix
+
+  // ...in this case, the solution is expected to be the identity matrix
+
+  shuffle(A, B, N, 1);
+  plotMatrix(A, true);
+  shuffle(A, B, N, 2);
+  plotMatrix(A, true);
+  shuffle(A, B, N, 3);
+  plotMatrix(A, true);
+  shuffle(A, B, N, 4);
+  plotMatrix(A, true);
+
+  // this doesn't look good - the shuffling algo is still bad
+  // the first pass of shuffling leads to L-shaped regions of similar values, the second pass to 
+  // blocks - why
+
+  LA::solve(A, X, B);
+
+  // ok - but we can see the numerical error increase with the size
+
+  int dummy = 0;
+}
+
+
+
+
+
+
 void ellipseLineIntersections()
 {
   // create and set up ellipse:
@@ -74,62 +864,196 @@ void ellipseLineIntersections()
   plt.plot();
 }
 
-void finiteDifferenceStencilCoeffs()
+// move after void numericDiffAndInt();
+void iteratedNumDiff()
 {
-  // Computation of coefficients for arbitrary finite difference stencils, see:
+  // under construction
+
+  // todo: test taking numeric derivatives of numeric derivatives to get 2nd derivatives - maybe go 
+  // up to the 4th derivative. figure out, what choices of the stepsize give the most accurate 
+  // results - maybe the outer derivatives need smaller or larger stepsizes than the inner ones?
+  // plot error between numeric and analytic result in some range
+  // example functions: sin, exp, log, 1/x, x^a, 1/(1+x^2), 
+
+  static const int N = 500;
+  double xMin = -10;
+  double xMax = +10;
+
+  double x[N], y[N];
+  double y1[N], y2[N], y3[N], y4[N];  // computed derivatives
+  double t1[N], t2[N], t3[N], t4[N];  // target derivatives
+  double e1[N], e2[N], e3[N], e4[N];  // errors
+
+  rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
+
+
+  // Set up approximation stepsizes - in order to have the x+h, x+2h inputs to be machine numbers, 
+  // we use a stepsize h that is an (inverse) power of 2 - this should get rid of at least one 
+  // source of inaccuracy (right? ...verify conditions under which this makes sense)
+  //double h1 = pow(2, -15);      // 1.5 e-10, sine
+  //double h1 = pow(2, -16);    // 4.e-11, noisy sine
+  //double h1 = pow(2, -17);  // 1.5e-11, more noisy sine
+  //double h1 = pow(2, -17.5);  // 
+  double h1 = pow(2, -18);    // 1.5e-11, noise with a little bit of sine
+  //double h1 = pow(2, -19);     // 3.e-11, noise with some modulation
+  //double h1 = pow(2, -21); 
+
+                            // obtained using h1 = 2^-(-18):
+  double h2 = pow(2, -11);        // 6.0e-8, noisy sine
+  //double h2 = pow(2, -12);      // 6.0e-8, modulated noise
+  //double h2 = pow(2, -13);      // 1.0e-7, noise
+  //double h2 = pow(2, -14);      // 2.0e-7, noise
+  //double h2 = pow(2, -15);      // 3.5e-7, noise
+  //double h2 = pow(2, -16);      // 8.0e-7, noise
+  //double h2 = pow(2, -17);      // 1.5e-6, noise
+  //double h2 = pow(2, -18);      // 3.0e-6, noise
+  //double h2 = pow(2, -19);      // 4.0e-6, noise
+
+
+  h1 = pow(2, -17); h2 = pow(2, -12);  // 3.0e-8
+  //h1 = pow(2, -12); h2 = pow(2, -17);  // 3.0e-8
+
+
+  //h1 = pow(2, -16); h2 = pow(2, -12);  // 2.0e-8
+  //h1 = pow(2, -16); h2 = pow(2, -13);  // 2.0e-8
+  //h1 = pow(2, -15); h2 = pow(2, -12);    // 1.5e-8, noisy sine
+  //h1 = pow(2, -14); h2 = pow(2, -12);    // 1.2e-8, less noisy sine
+  //h1 = pow(2, -13); h2 = pow(2, -12);     // 1.3e-8, even less noisy sine
+  //h1 = pow(2, -13); h2 = pow(2, -13);     // 8.0e-9
+  //h1 = pow(2, -12); h2 = pow(2, -13);   // 1.3e-8, same as using h1 = 2^(-13), h2 = 2^(-12) - 
+                                          // the swap makes no difference - is this generally true?
+
+  double h3 = pow(2, -15);
+  double h4 = pow(2, -15);
+
+  // function f0(x) := f(x) = sin(x) and its first 4 derivatives:
+  auto f0 = [=](double x)->double{ return  sin(x); };
+  auto f1 = [=](double x)->double{ return  cos(x); };
+  auto f2 = [=](double x)->double{ return -sin(x); };
+  auto f3 = [=](double x)->double{ return -cos(x); };
+  auto f4 = [=](double x)->double{ return  sin(x); };
+
+  // g0 = f0 and then g1,... are numerical derivatives:
+  using Func = std::function<double(double)>;  // function from double to double
+  Func g0 = [=](double x)->double{ return  sin(x); };
+  Func g1 = RAPT::rsDerivative(g0, h1);
+  Func g2 = RAPT::rsDerivative(g1, h2);
+  Func g3 = RAPT::rsDerivative(g2, h3);
+  Func g4 = RAPT::rsDerivative(g3, h4);
+
+  // compute functions values and numerical and analytical derivatives:
+  for(int n = 0; n < N; n++)
+  {
+    y[n]  = f0(x[n]);
+
+    y1[n] = g1(x[n]);
+    y2[n] = g2(x[n]);
+    y3[n] = g3(x[n]);
+    y4[n] = g4(x[n]);
+
+    t1[n] = f1(x[n]);
+    t2[n] = f2(x[n]);
+    t3[n] = f3(x[n]);
+    t4[n] = f4(x[n]);
+
+    e1[n] = y1[n] - t1[n];
+    e2[n] = y2[n] - t2[n];
+    e3[n] = y3[n] - t3[n];
+    e4[n] = y4[n] - t4[n];
+  }
+
+  //using  Vec = std::vector<double>;
+
+
+  //rsPlotArraysXY(N, x, y, t1, t2, t3);  // needs more inputs
+
+
+  //rsPlotArraysXY(N, x, e1);
+
+  rsPlotArraysXY(N, x, e2);
+
+  //rsPlotArraysXY(N, x, e1, e2);
+
+  //rsPlotArraysXY(N, x, e1, e2, e3, e4); // e4 is large
+
+  // Observations:
+  // -for the sine function, the optimal stepsize h for the first derivative seems to be 2^(-18)
+  //  -in this case, the error is noise-like with some sort of sinusoidal modulation with a maximum
+  //   error of around 1.5e-11
+  //  -going lower, e.g. h = 2^(-19), the character of the error stays modulated-noise-like but 
+  //   with higher amplitude
+  //  -going higher, e.g. h = 2^(-17), the error looks like a noisy sine-wave, where at 2^-(15), 
+  //   the sinusoidal shape clearly dominates - there's not much noise anymore at this setting and
+  //   the maximum amplitude of the error also increases
+  //  -using 2^(-17.5) actually further reduces the maximum error to 1.2e-11, 2^(-17.4) or 
+  //   2^(-17.6) is really strange
+  // -if h1 is chosen to be h1 = 2^(-18), i.e. the optimal value, then the optimal choice for h2 
+  //  seems to be h2 = 2^(-12), giving a noisy error with a maximum around 6.e-8
+  // -using h1 = 2^(-13), h2 = 2^(-12) seems to give the same error as h1 = 2^(-12), h2 = 2^(-13) 
+  //  so swapping h1 and h2 seems to make no difference -> figure out, if this generally true
+  //  -> at least with -12 and -17, the swap also makes no difference - maybe derive the final
+  //  formula analytically and see, if it's symmetrical in h1 and h2 -> done (below): yes, it is
+
+  // f=f0: function, f1: 1st numeric derivative, f2: 2nd numeric derivative:
+  //   f1(x) = (f0(x+h1) + f0(x-h1)) / (2*h1)
+  //   f2(x) = (f1(x+h2) + f1(x-h2)) / (2*h2)
+  //         = (f(x+h2+h1) - f(x+h2-h1) - f(x-h2+h1) + f(x-h2-h1)) / (4*h1*h2)
+  // defining:
+  //   hs = h1+h2, hd = h1-h2  (sum and difference)
+  // i arrived at:
+  //   f2(x) = (f(x+hs) + f(x-hs) - f(x+hd) - f(x-hd)) / (4*h1*h2)
+  // this is a formula which is indeed symmetric in h1,h2. It's interesting to note that it uses 4
+  // evaluation points - the 2nd derivative via 5-point stencil would use 5 (and yes, the center 
+  // coeff would be nonzero in this case) - so chaining two 1st order central differences gives not
+  // the same formula as using a 2nd order central difference directly, even when h1==h2. The 2nd 
+  // order, 5-point formula is:
+  //   f''(x) ~= (-f(x-2h) + 16*f(x-h) - 30*f(x) + 16*f(x+h) -f(x+2h) ) / (12*h^2)
+  // with our chained 1st central differences, we get for h1==h2:
+  //   f''(x) ~= (f(x-2h) + f(x-2h) - 2*f(x)) / (4*h^2)
+  // which is actually just the 2nd order accurate 3-point stencil formula with stepsize 2h. This 
+  // means, when h1==h2, we get effectively only a 3-point formula, even though we do 4 function
+  // evaluations. What when h1 != h2? Do we get better accuracy in this case? This may be relevant
+  // for how we compute the higher order partial derivatives in rsManifold...but for partial 
+  // derivatives, it may be inconvenient to use direct 2nd order formulas - how would that work 
+  // anyway? Would the final division be replaced by a matrix inversion?
+
+  // when using this 4-point stencil: -2,-1,1,2 for the 2nd derivative here:
   // http://web.media.mit.edu/~crtaylor/calculator.html
+  // we get this:
+  //   f''(x) ~= (f(x-2h) - f(x-h) - f(x+h) + f(x+2h)) / (3*h^2)
+  // which is yet another formula...but maybe it becomes the same when h2 = 1.5h, h1 = 0.5*h, yes:
+  //   f2(x) = (f(x+h2+h1) - f(x+h2-h1) - f(x-h2+h1) + f(x-h2-h1)) / (4*h1*h2)
+  //         = (f(x+2h)    - f(x+h)     - f(x-h)     + f(x-2h))    / (4*1.5*h*0.5*h)
 
-  typedef std::vector<double> Vec;
-  Vec s = {-2, -1, 0, 1, 2};         // normalized stencil offsets
-  int d = 4;                         // order of derivative to be approximated
-
-  // establish matrix:
-  int N = (int) s.size();    // stencil length
-  double** A;                // matrix data
-  rsMatrixTools::allocateMatrix(A, N, N);
-  for(int i = 0; i < N; i++)
-    for(int j = 0; j < N; j++)
-      A[i][j] = pow(s[j], i);
-  //rsMatrix<double> A_dbg(N, N, A);  // for debug
-
-  // establish right-hand-side vector:
-  Vec rhs(N);
-  rsFill(rhs, 0.0);
-  rhs[d] = rsFactorial(d);
-
-  // compute coeffs by solving the linear system:
-  Vec c(N);
-  rsLinearAlgebra::rsSolveLinearSystem(A, &c[0], &rhs[0], N);
-  // In practice, the resulting coefficients have to be divided by h^d where h is the step-size and
-  // d is the order of the derivative to be approximated. The stencil values in s are actually 
-  // multipliers for some basic step-size h, i.e. a stencil -2,-1,0,1,2 means that we use values
-  // f(x-2h),f(x-h),f(x),f(x+h),f(x+2h) to approximate the d-th derivative of f(x) at x=0
 
   // todo: 
-  // -move to library
-  // -add unit test
-  // -try the example with the 4-th order derivative and 5-point stencil that is presented
-  //  on the website
-  // -try different examples and compare results with results from the website - use also
-  //  asymmetrical and/or non-equidistant stencils
-  // -if it all works, maybe implement it also in sage to get rid of roundoff errors
-  // -maybe we should round the final coeffs? are they supposed to be integer? ...maybe only, if
-  //  the stencil offsets are all integers?
+  // -figure out the optimal stepsize for the 2nd derivative, given the one for the first has 
+  //  been chosen optimally, i.e h1 = 2^(-18)
+  // -try to tweak the stepsize for the 1st derivative - maybe values that are suboptimal for 
+  //  computing the 1st derivative as such could be better, wehn the 1st derivative is computed 
+  //  only as intermediate result for the 2nd derivative? (well - that would be strange, but who
+  //  knows - floating point arithmetic sometimes works in mysterious ways)
+  //  -> plot the maximum error of the 2nd derivative as 2D function of h1 and h2
 
-  // stencil = -2,-1,0,1,2, d = 4:
 
-  // stencil = -2,-1,0,3,4, d = 3:
-  // f_xxx = (-6*f[i-2]+15*f[i-1]-10*f[i+0]+1*f[i+3]+0*f[i+4])/(10*1.0*h**3)
-
-  // -2,-1,0,0.5,2, d=3
-  // f_xxx = (-27*f[i-2]+40*f[i-1]+90*f[i+0]-128*f[i+0.5]+25*f[i+2])/(60*1.0*h**3)
-
-  // -2,-1,0,0.5:
-  // f_xx = (-1*f[i-2]+10*f[i-1]-25*f[i+0]+16*f[i+0.5])/(5*1.0*h**2)
-  // f_xxx = (-6*f[i-2]+20*f[i-1]-30*f[i+0]+16*f[i+0.5])/(5*1.0*h**3)
-
-  rsMatrixTools::deallocateMatrix(A, N, N);
+  // (preliminary) conclusions:
+  // -for computing the 2nd derivative as central difference of first central differences, the 
+  //  optimal stepsize h1 in the inner approximation may be different from the optimal stepsize
+  //  h1 used for computing the 1st derivative itself. It seems weird, that we should use a 
+  //  suboptimal inner derivative computation - maybe inaccuracies in the two neighbouring 
+  //  1st derivatives somehow cancel in the computaion of the 2nd derivative?
 }
+
+/*
+double getMax2ndDerivativeErrorSin(double h1, double h2,
+  double xMin = -10, double xMax = +10, int numSamples = 500)
+{
+
+  return 0;  // preliminary
+}
+*/
+
+
 
 void interpolatingFunction()
 {
@@ -209,8 +1133,598 @@ void linearRegression()
   plt.plot();
 }
 
+void multipleRegression()
+{
+  // under construction - we use this example:
+  // https://www.youtube.com/watch?v=vvay3t19HU8&list=PLb0zKSynM2PCmp5J5LWM3PcZXBaCoQkXj&index=40
+  // The price of pizza is assumed to have a linear relationship with the diameter and the number
+  // of extra ingredients, so the model is y = b0 + b1*x1 + b2*x2 + noise.
+
+  static const int N = 7;                                   // number of datapoints (pizza orders)
+  double x0[N] = {   1,   1,   1,    1,    1,    1,    1 }; // 1st regressor: constant term 
+  double x1[N] = {  24,  25,  28,   30,   40,   36,   32 }; // 2nd regressor: pizza diameters
+  double x2[N] = {   0,   1,   0,    1,    2,    1,    3 }; // 3rd regressor: number of extras
+  double y[N]  = { 5.5, 8.9, 7.4, 10.9, 19.4, 13.8, 14.0 }; // regressand:    pizza prices
+
+  // create input data matrix:
+  double* X[3];
+  X[0] = x0;
+  X[1] = x1;
+  X[2] = x2;
+
+  // Compute right hand side for linear equation system (X * X^T) * b = X * Y:
+  double Y[3];
+
+  // on wikipedia, the formula reads (X^T * X) * b = X^T * Y because there, the data arrays with 
+  // the independent variables are stored in the columns of the X-matrix whereas we store them in 
+  // the rows
+
+  //RAPT::rsMatrixTools::transposedMatrixVectorMultiply(X, y, Y, N, 3);
+  // something is wrong - maybe we don't need the transposed version bcs our X matrix is defined 
+  // differently? - yes - we have the regressors in the rows, wikipedia has them in the columns
+
+  //RAPT::rsMatrixTools::matrixVectorMultiply(X, y, Y, N, 3); // access violation
+  RAPT::rsMatrixTools::matrixVectorMultiply(X, y, Y, 3, N);   // works but shouldn't according to doc
+
+  // establish matrix on left-hand-side:
+  double flatXX[9];     // flat storage array
+  double* XX[3];        // array of pointers to rows
+  XX[0] = &flatXX[0];
+  XX[1] = &flatXX[3];
+  XX[2] = &flatXX[6];
+  RAPT::rsMatrixTools::matrixMultiplySecondTransposed(X, X, XX, 3, 7, 3); // is this correct?
+
+  // estimate parameter vector by solving the linear system:
+  double b[3];  
+  RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(XX, b, Y, 3); // get rid of rs prefix
+  // verify, if the result is correct!
+
+  // Use the model to predict the pizza prices from their diameters and extras:
+  double yp[N], ea[N], er[N];
+  for(int n = 0; n < N; n++) {
+    yp[n] = b[0]*x0[n] + b[1]*x1[n] + b[2]*x2[n]; // predicted price
+    ea[n] = y[n]  - yp[n];                        // absolute error
+    er[n] = ea[n] / y[n];                         // relative error
+  }
+
+  // plot - draw true datapoints and prdicted ones:
+  GNUPlotter plt;
+  plt.addDataArrays(N, x1, x2, y);  // the triplets should be interpreted as 3D points
+  plt.addDataArrays(N, x1, x2, yp);
+  plt.setGraphStyles("points", "points");  // maybe select style - or use better default
+  plt.plot3D(); 
+  // that doesn't look too bad actually :-) ...but verify and clean up
+  // todo: plot the plane (semitransparently?) that is defined by our model
+}
+
+// https://en.wikipedia.org/wiki/Linear_regression#Least-squares_estimation_and_related_techniques
+// https://en.wikipedia.org/wiki/Weighted_least_squares
+
+// ToDo: generalize and factor out the code for multiple regression and move it to rapt 
+// (Numerics/DataFitting.h/cpp), then 
+// implement polynomial regression on top of that (use 1,x,x^2,x^3,... as regressors for a given
+// x-array) - this may e generalized to use a set of arbitrary functions of x - the model is a 
+// weighted sum of these functions of x - for example, we could model a signal with sines/cosines
+// of given frequencies - maybe create experiments for that (polynomialRegression, 
+// sinusoidalRegression, exponentialRegression) - problem: the frequnecies and decays must be known
+// in advance - can these be estimated too? ...for exponential decays, there's code somewhere but 
+// what about sine frequencies? maybe the exponential can be made complex? -> figure out
+
+void polynomialRegression()
+{
+  // We create data from a polynomial function f(x) = 1 - 2x + 3x^2 - 4x^3 + 5x^4 with added noise 
+  // and try to estimate the polynomial coefficients from the data. For this estimation, we once 
+  // use the clean data and once the noisy data. When the clean data is used and the degree of the 
+  // model is >= 4, it is expected to get a perfect fit.
+
+  // User parameters:
+  double noise         = 2.0;   // amount of noise
+  int    numDataPoints = 100;   // number of data points
+  int    modelDegree   = 4;     // degree of our model polynomial
+  double xMin          = -1.0;
+  double xMax          = +2.0;
+
+  typedef std::vector<double> Vec;
+  typedef RAPT::rsPolynomial<double> Poly;
+  typedef RAPT::rsArrayTools AT;
+  typedef RAPT::rsCurveFitter CF;
+
+  // The polynomial to generate our data is 1 - 2x + 3x^2 - 4x^3 + 5x^4:
+  Poly p(Vec({ 5,-4,3,-2,1 }));  // todo: have a constructor that takes an inititalizer list
+
+  // Generate clean and noisy data:
+  int N = numDataPoints;
+  Vec x(N), yc(N), yn(N);  // x-values, clean and noisy y-values
+  AT::fillWithRangeLinear(&x[0], N, xMin, xMax); // todo: maybe use noisy x-data, too
+  RAPT::rsNoiseGenerator<double> prng;
+  for(int n = 0; n < N; n++) {
+    yc[n] = p(x[n]);
+    yn[n] = yc[n] + noise * prng.getSample(); }
+
+  // Fit polynomials to clean and noisy data:
+  Poly qc = CF::fitPolynomial(&x[0], &yc[0], N, modelDegree); // fit to the clean data
+  Poly qn = CF::fitPolynomial(&x[0], &yn[0], N, modelDegree); // fit to the noisy data
+
+  // Create prediction data from the two models:
+  Vec zc(N), zn(N);
+  for(int n = 0; n < N; n++) {
+    zc[n] = qc(x[n]);
+    zn[n] = qn(x[n]); }
+
+  // Plot:
+  rsPlotVectorsXY(x, yc, zc);      // plot clean true data and model-predicted data
+  rsPlotVectorsXY(x, yc, yn, zn);  // plot noisy
+  //GNUPlotter plt;
+
+  // Observations:
+  // -When modelDegree >= 4, we get a perfect fit of the model to the clean data - which is 
+  //  expected because the clean data was generated by a 4th degree polynomial.
+  // -The fit to the noisy data is a bit below the true generation function in the range x = 0..1, 
+  //  presumably because the noise has a local mean < 0 in that region. This leads to the strange
+  //  circumstance that our model fits the data actually better than the original generator 
+  //  function - at least when modelDegree >= 4. Is this already overfitting? Kind of, i guess - 
+  //  although, for modelDegree == 4, we are actually not able to overfit...soo...welll...
+  // -When modelDegree < 4, we don't get perfect fits for the clean data anymore - but still 
+  //  reasonable ones.
+  // -Conclusion: it works! :-)
+
+  // todo: 
+  // -make plots that show several model-orders in a single plot to see, how the fit gets 
+  //  better as the model degree goes up
+  // -maybe the library should provide a function that suggests a model order based on the drop-off
+  //  of the approximation error as function of the model degree - when the gains diminish, we have
+  //  found the "right" model degree
+  
+  // -compare approximating a sinewave with polynomials - once using a Taylor series and once using
+  //  a least squares fit over one cycle (maybe from -pi...pi)
+  //  -yet another way to approximate a sinewave is to match a number of derivatives at the start 
+  //   and at the end of a cycle (Taylor series matches N derivatives at t = 0, this variant should 
+  //   match N/2 derivatives at t = 0 and N/2 at t = 2*pi
+  //  -what about minimax fits? how would they be computed? maybe iteratively, using a 
+  //   least-squares fit as initial guess?
+  // -make a similar function for sinusoidalRegression - what about spline-regression? that 
+  //  could be very useful, too
+  // -the API should probably allow the user to provide a set of arbitrary basis functions to use
+  //  -for polynomial regression, these basis functions are the powers of x
+  //  -we could also use chebychev polynomials as basis functions
+  //   -this is probably numerically better (the Vandermonde matrix in polynomial regression is 
+  //    notoriously ill conditioned)
+  //   -it requires the data to be normalized, such that x and y goes from -1..+1 
+  //    -we need an affine trafo before and one after the actual polynomial
+  //   -we may want to convert the chebychev regression coeffs to power-coeffs after fitting
+}
+
+void gaussianRegression()
+{
+  // Under construction
+  // We try to fit a bunch of cosines with gaussian envelopes to the "multipass Butterworth" 
+  // function 
+  //    f(x) = 1 / (1 + x^2N)^M
+  //  -> nice test for fitting an arbitrary set of basis functions to data
+  //  -> may be useful for implementing the IIR lens blur effect
 
 
+  static const int N = 200;  // number of data points
+  double xMax       = 3.0;
+  double freqFactor = 1.0;   // scales all frequencies, 1.0 seems most suitable
+  int order  = 6;            // Butterworth order
+  int passes = 1;            // number of passes for Butterworth filter
+  int numGaussians = 7;      // number of Gaussians in the approximation
+
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
+
+  Vec f = rsRangeLinear(0.0, numGaussians-1.0, numGaussians); // freqs of the cosines
+  Vec w = freqFactor*0.5*PI*f;                                // omegas
+  // todo: variances (sigma)
+
+  // create the target data:
+  double x[N], y[N], z[N];
+  AT::fillWithRangeLinear(x, N, 0.0, xMax);
+  for(int n = 0; n < N; n++)
+    y[n] = 1.0 / pow((1 + pow(x[n], 2*order)), passes);
+
+  // create the regressands:
+  rsMatrix<double> R(numGaussians, N);
+  for(int i = 0; i < numGaussians; i++)
+    for(int n = 0; n < N; n++)
+      R(i, n) = exp(-x[n]*x[n]) * cos(w[i]*x[n]); // todo: use adjustable variances
+
+
+  plotMatrixRows(R, x);   // plot the regressors
+  //rsPlotArraysXY(N, x, y); 
+
+  Vec A = rsCurveFitter::multipleRegression(R, y); // amplitudes of the Gaussians
+  GNUPlotter plt;
+  plt.addDataArrays(N, x, y);
+  AT::fillWithZeros(z, N);
+  for(int i = 0; i < numGaussians; i++)
+    for(int n = 0; n < N; n++)
+      z[n] += A[i] * R(i, n);
+  plt.addDataArrays(N, x, z);
+  plt.plot();
+
+  // Observations:
+  // -using w = 0.5*PI*freqs seems to give the best results
+  // -with order = 5, passes = 1 numGaussians = 7, the approximation result is quite good
+  // -when making the transition steeper, the Gaussians overshoot/ripple more - stronger Gibbs-like
+  //  effect
+  // -we seem to need more Gaussians to approximate a steeper transition well
+  // -a higher number of passes also seems to increase the ripple
+
+  // ToDo:
+  // -optimize the frequencies and variances of the Gaussians by gradient descent, starting with an
+  //  initial guess obtained like above - the scale-factors should also be refined in this 
+  //  optimization procedure
+  // -define the parameter vector as p = (a0 w0 s0 a1 w1 s1 a2 w2 s2 ...)
+
+  // initial guess for the parameter vector using 7 Gaussians:
+  Vec p = Vec({0.768,0,1, 0.759,1,1, -0.427,2,1, -0.258,3,1, 0.0536,4,1, 0.2297,5,1, -0.1325,6,1});
+  // we need to define an error function and optimize the amplitudes, frequencies and widths with 
+  // that initial guess - so we need to do an optimization in and 21-dimensional space
+
+  int dummy = 0;
+}
+
+/** Error function for the approximation of a Butterworth function by a sum of Gaussians.. */
+class ButterworthGaussError : public RAPT::MultivariateErrorFunction<double>
+{
+
+public:
+
+  double getGaussSum(const rsVectorDbl& p, double x)
+  {
+    rsAssert(p.dim % 3 == 0, "Length of p should be a multiple of 3");
+    int numGaussians = p.dim / 3;
+    double result = 0.0;
+    for(int i = 0; i < numGaussians; i++)
+    {
+      double a = p[3*i];    // amplitude, weight
+      double f = p[3*i+1];  // frequency of cosine
+      double s = p[3*i+2];  // sigma (variance, width of envelope)
+      double w =  0.5*PI*f; // omega (radian frequency of cosine)
+      result += a * exp(-x*x/(s*s)) * cos(w*x);
+    }
+    return result;
+  }
+
+  double getTarget(double x)
+  {
+    return 1.0 / pow((1 + pow(x, 2*order)), passes);
+  }
+
+  double getX(int i)
+  {
+    return i*xMax / double(numSamples-1);
+  }
+
+  double getError(rsVectorDbl p, double x)
+  {
+    //double target = 1.0 / pow((1 + pow(x, 2*order)), passes);
+    double target = getTarget(x);
+    double actual = getGaussSum(p, x);
+    return target - actual;
+  }
+
+  double getValueMaxAbs(rsVectorDbl p)
+  {
+    double maxAbs = 0.0;
+    for(int i = 0; i < numSamples; i++)
+    {
+      //double x = i*xMax / double(numSamples-1);
+      double x = getX(i);
+      double delta  = rsAbs(getError(p, x));
+      if(delta > maxAbs)
+        maxAbs = delta;
+    }
+    return maxAbs;
+  }
+
+  double getValueMeanSquare(rsVectorDbl p)
+  {
+    double sum = 0.0;
+    for(int i = 0; i < numSamples; i++)
+    {
+      //double x   = i*xMax / double(numSamples-1);
+      double x   = getX(i);
+      double err = getError(p, x);
+      sum += err*err;
+    }
+    return sum / numSamples;
+  }
+
+  virtual double getValue(rsVectorDbl p) override
+  {
+    //return getValueMaxAbs(p);
+    return getValueMeanSquare(p);
+    //return sqrt(getValueMeanSquare(p));
+  }
+
+  void plot(rsVectorDbl p)
+  {
+    GNUPlotter plt;
+    std::vector<double> x(numSamples), t(numSamples), y(numSamples), e(numSamples);
+    for(int i = 0; i < numSamples; i++)
+    {
+      x[i] = getX(i);
+      t[i] = getTarget(x[i]);
+      y[i] = getGaussSum(p, x[i]);
+      e[i] = t[i] - y[i];
+    }
+    plt.addDataArrays(numSamples, &x[0], &t[0], &y[0], &e[0]);
+    plt.plot();
+  }
+
+protected:
+
+  int numSamples = 200;
+  double xMax = 3.0;
+
+  int order  = 6; // lower orders are easier to approximate
+  int passes = 1;
+
+};
+
+void butterworthViaGaussians()
+{
+  // Under construction
+  // Optimizes the parameters to approximate a Butterworth function by a sum of cosines with 
+  // Gaussian envelopes...
+
+  using Minimizer = GradientBasedMinimizer<double>;
+
+  ButterworthGaussError errFunc;
+  Minimizer minimizer;
+  //minimizer.setAlgorithm(minimizer.GRADIENT_DESCENT);
+  //minimizer.setAlgorithm(minimizer.BOLD_DRIVER_WITH_MOMENTUM);
+  minimizer.setAlgorithm(minimizer.SCALED_CONJUGATE_GRADIENT);
+  //minimizer.setAlgorithm(minimizer.CONJUGATE_GRADIENT);
+  //minimizer.setMaxNumSteps(300);
+  minimizer.setStepSize(1.0);
+  minimizer.setConvergenceThreshold(1.e-7);  // with 1.e-8, it doesn't converge
+
+  minimizer.setPrintInfo(true);
+  // when using the max-abs error, the info-printing messes up the screen and the result is not 
+  // good
+
+  using Vec = std::vector<double>;
+
+  Vec ps({0.768,0,1, 0.759,1,1, -0.427,2,1, -0.258,3,1, 0.0536,4,1, 0.2297,5,1, -0.1325,6,1});
+  // maybe make a function to compute an initial guess based on linear regression
+
+  // test: use a perturbed start vector
+  //Vec p({0.768,0,1, 0.759,1.1,1, -0.427,2.1,1, -0.258,3,1, 0.0536,4,1, 0.2297,5,1, -0.1325,6,1});
+
+  rsVectorDbl pInitial(ps);  // the requirement to convert is unelegant!
+
+  errFunc.plot(pInitial);
+
+  rsVectorDbl pFinal = minimizer.minimizeFunction(&errFunc, pInitial);
+  Vec pe = pFinal.toStdVector();  
+  // almost unchanged - something is wrong! it uses the maximum number of iterations and the 
+  // stepsize is denormal at the end
+  // OK - using minimizer.setAlgorithm(minimizer.GRADIENT_DESCENT); fixes this - but then, the
+  // error oscillates - no convergence
+
+  // todo: plot the sum of Gaussians after optimization - hmm - the improvement is not very 
+  // impressive...i think, something is still wrong
+  // optimize also with scipy and compare results
+
+  errFunc.plot(pFinal);
+
+  int dummy = 0;
+
+  // ToDo: move the old minimization code into the rs_testing module - it's not good enough for the
+  // library yet
+}
+
+
+
+
+bool testNumericMinimization()
+{
+  // Under construction - we compare several approaches to minimize a nonlinear multidimensional 
+  // function
+
+  bool r = true;
+
+  using Vec = std::vector<double>;
+
+
+  // Our example is the bivariate scalar function:
+  //   f(x,y) = 4*x^2 + y^4 + x*y
+  // where v = (x y) is the 2D input vector.
+  static const int N = 2;  // dimensionality of the input space
+  std::function<double(double*)> f;
+  double hx = pow(2, -18);
+  double hy = hx/2;
+  double h[N] = {hx, hy};     // h as array
+  Vec v({5,3});               // initial guess
+  Vec x;
+  int evals;
+
+  double tol = 1.e-12;
+  double y;
+
+  // try simpler functions: f(x,y) = x^2 + y^2, f(x,y) = x^2, ... 
+
+
+  f = [=](double* v)->double
+  { 
+    double x = v[0], y = v[1];
+    return 2*x*x + 16*y*y;
+    // a*x^2 + b*y^2 - should converge in the 1st iteration, irrespective of a,b (but both must
+    // be positive)
+  };
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, tol);  // 16 evals
+  x = v; evals = minimizeNewton(f, &x[0], N, h, tol);
+
+
+  //x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1.0, tol); // diverges
+
+  // the minimum is at (0,0)
+  // 16 evaluations: it converges in the first iteration, but a 2nd iteration is needed to detect 
+  // the convergence, so we get 2 iterations, each taking  4*N = 4*2 = 8 evaluations - so this 
+  // seems ok
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./16, tol); 
+  // oscillates, "converges" after 276 evals but to the wrong location
+
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./32,  tol);  // converges, 571 evals
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./64,  tol);  // 1151 evals
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./128, tol);  // 2271 evals
+
+  x = v; evals = minimizeGradientAutoStep( f, &x[0], N, h, tol); // 287 evals
+
+  //minimizeGradientAutoStep(const F& f, T* v, int N, const T* h, T tol = 1.e-8)
+
+
+  // try a function like f(x,y) = a*x^2 + b*y^2 + c*x + d*y
+
+
+  // A function that has a general quadratic form:
+  //   f(v) = v*A*v + b*v + v with matrix A, vector b and scalar c
+  // with
+  //   A = |1 2|, b = |5|, c = 7
+  //       |3 4|      |6|
+  // gives:
+  //   f(x,y) = x^2 + 5*x*y + 4*y^2 + 5*x + 6*y + 7
+  // the coeff 5 for the x*y term comes from the off-diagonal elements: 2+3. The function as is has 
+  // its minimum at (0,0) but if we want it to be at (xMin,yMin), we simply replace x,y by x-xMin 
+  // and y-yMin in the formula
+  f = [=](double* v)->double
+  { 
+    double xMin = 0; 
+    double yMin = 0;
+    double x = v[0] - xMin;
+    double y = v[1] - yMin;
+    return x*x + 5*x*y + 4*y*y + 5*x + 6*y + 7;
+  };
+  x = v; evals = minimizeNewton(f, &x[0], N, h, tol);
+  // wait: this function has a saddle:
+  // https://www.wolframalpha.com/input/?i=+x*x+%2B+5*x*y+%2B+4*y*y+%2B+5*x+%2B+6*y+%2B+7%3B
+
+  // 3*x*x + 2*x*y + 4*y*y + 5*x + 6*y + 7;
+  f = [=](double* v)->double
+  { 
+    double x = v[0]; double y = v[1];
+    return 3*x*x + 2*x*y + 4*y*y + 5*x + 6*y + 7; 
+  };
+  x = v; evals = minimizeNewton(f, &x[0], N, h, tol); y = f(&x[0]);
+  // result looks correct, see here:
+  // https://www.wolframalpha.com/input/?i=Minimize%283*x*x+%2B+2*x*y+%2B+4*y*y+%2B+5*x+%2B+6*y+%2B+7%29
+  // minimum is at (-7/11,-13/22) = (-0.6363..,-0.59090..) and has a value of 40/11 = 3.6363...
+
+  f = [=](double* v)->double
+  { 
+    double x = v[0], y = v[1];
+    return 4*x*x + y*y*y*y + x*y;
+  };
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-8);  // 14 iterations, 112 evals (112/14 = 8)
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-9);  // 15 its, 120 evals
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-10);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-11);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-12); // 18 its, 144 evals
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-13);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-14);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-15);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-16);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-17);
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-18);
+  // 14 iterations, 112 evaluations with tol = 1.e-8    -> 112/14 = 8 
+  // with each power of 10, we need 8 evaluations (i.e. one iteration) more - this looks like
+  // linear convergence :-( ...i hoped that with a parabolic approximation, we could get quadratic
+  // convergence - ToDo: plot trajectories
+  // 18 iterations, 144 evaluations with tol = 1.e-12
+  // do these number suggest quadratic convergence? todo: compare to gradient descent - this is
+  // the baseline against which all other algos are measured - maybe use an optimal constant 
+  // stepsize for gradient descent
+
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./16,  1.e-12); //    31 - but wrong
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./32,  1.e-12); //  5356 - to min2
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./64,  1.e-12); //  9841 - to min1
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./128, 1.e-12); // 19246 - to min1
+  x = v; evals = minimizeGradientDescent(f, &x[0], N, h, 1./256, 1.e-12); // 36816 - to min1 
+
+  // to converge to the same minimum as the partial parabolic algo, we nee a stepSize of 1/64
+  // and 9841 evals compared to 144 evals with the partial parabolic algo
+
+  x = v; evals = minimizeGradientAutoStep( f, &x[0], N, h, 1.e-12);  // 599
+
+
+
+  f = [=](double* v)->double
+  { 
+    double x = v[0], y = v[1];
+    return sin(x*y);    // 
+    //return sin(3*x*x + y*y*y + x*y);    // 
+  };
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h,          1.e-12);  //    16
+  x = v; evals = minimizeGradientDescent( f, &x[0], N, h, 1./1024, 1.e-12);  // 216701
+  x = v; evals = minimizeGradientAutoStep(f, &x[0], N, h,          1.e-12);
+  // the results are slightly different - how can this be - they should converge to the same
+  // minimum - oh - the minmima are valleys - that can be the reason
+  // maybe the convergence criterion should not be the change of function value
+
+
+  // https://www.wolframalpha.com/input/?i=4*x*x+%2B+y*y*y*y+%2B+x*y
+  // roots: x = -(3 sqrt(3))/128, y = sqrt(3)/8; x = (3 sqrt(3))/128, y = -sqrt(3)/8
+  // minima: min1 = -0.000976563 at (x, y)=(-0.0220971,  0.176777)
+  //         min2 = -0.000976563 at (x, y)=( 0.0220971, -0.176777)
+
+
+  // todo: try the minimizePartialParabolic on the rosenborck function - see here:
+  // https://en.wikipedia.org/wiki/Adaptive_coordinate_descent
+  //
+
+  // https://en.wikipedia.org/wiki/Rosenbrock_function
+  f = [=](double* v)->double
+  { 
+    double x = v[0], y = v[1];
+    double a = 1;
+    double b = 100;
+    double ax  = a-x;
+    double yx2 = y-x*x;
+    return ax*ax + b*yx2*yx2;
+    // minimum: (a,a^2)
+  };
+  v = Vec({-3,-4});
+  x = v; evals = minimizePartialParabolic(f, &x[0], N, h, 1.e-12);  y = f(&x[0]); // 32344
+
+  //x = v; evals = minimizeNewton(f, &x[0], N, h, tol); y = f(&x[0]);
+  // doesn't converge - wildly jumps around in the parameter space
+
+
+  // other test functions to try:
+  // https://en.wikipedia.org/wiki/Test_functions_for_optimization
+  // https://en.wikipedia.org/wiki/Himmelblau%27s_function
+  // https://en.wikipedia.org/wiki/Rosenbrock_function
+  // https://en.wikipedia.org/wiki/Shekel_function
+  // https://en.wikipedia.org/wiki/Rastrigin_function
+  // https://en.wikipedia.org/wiki/Ackley_function
+
+
+  // Algorithms:
+  // https://en.wikipedia.org/wiki/Coordinate_descent
+  // https://en.wikipedia.org/wiki/Adaptive_coordinate_descent
+  // https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method
+  // https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm
+  // https://en.wikipedia.org/wiki/Conjugate_gradient_method
+  // https://en.wikipedia.org/wiki/Nonlinear_conjugate_gradient_method
+  // https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm
+  // https://en.wikipedia.org/wiki/Limited-memory_BFGS
+
+  // https://en.wikipedia.org/wiki/Gradient_descent
+  // https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization
+
+  return r;
+}
+
+void numericOptimization()
+{
+  testNumericMinimization();
+
+  int dummy = 0;
+}
 
 
 

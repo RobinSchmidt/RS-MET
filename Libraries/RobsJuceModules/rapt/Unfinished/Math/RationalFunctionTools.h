@@ -98,7 +98,7 @@ void ratAdd(
   const std::vector<T>& n1, const std::vector<T>& d1,
   const std::vector<T>& n2, const std::vector<T>& d2,
   std::vector<T>& nr, std::vector<T>& dr, 
-  T tol = 0.0, T w1 = 1, T w2 = 1);
+  T tol = T(0), T w1 = T(1), T w2 = T(1));
 
 /* Nesting of an inner rational function ni/di with an outer polynomial po. */
 template<class T>

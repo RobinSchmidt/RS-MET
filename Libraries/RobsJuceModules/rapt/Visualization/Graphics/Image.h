@@ -16,102 +16,138 @@ class rsImage
 
 public:
 
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Construction/Destruction */
 
   /** Constructor. Allocates memory for the pixels. */
-  rsImage(int initialWidth = 1, int initialHeight = 1);
+  rsImage(int initialWidth = 1, int initialHeight = 1) 
+    : width(initialWidth), height(initialHeight)
+  {
+    allocateMemory();
+  }
 
   /** Constructor. Allocates memory for the pixels and initializes pixel values. */
-  rsImage(int initialWidth, int initialHeight, const TPix &initialPixelColor);
+  rsImage(int initialWidth, int initialHeight, const TPix &initialPixelColor)
+    : width(initialWidth), height(initialHeight)
+  {
+    allocateMemory();
+    fillAll(initialPixelColor);
+  }
 
   /** Constructor. Initializes width and height and copies the image-data from initialData into
   our member data area. */
-  rsImage(int initialWidth, int initialHeight, const TPix *initialData);
+  rsImage(int initialWidth, int initialHeight, const TPix *initialData)
+    : width(initialWidth), height(initialHeight)
+  {
+    allocateMemory();
+    memcpy(data, initialData, getByteSize());
+  }
 
   /** Copy constructor. Creates a deep copy of the pixel data in this image. */
-  rsImage(const rsImage& other);
+  rsImage(const rsImage& other)
+  {
+    width  = other.width;
+    height = other.height;
+    allocateMemory();
+    memcpy(data, other.data, getByteSize());
+  }
 
   /** Destructor. Frees dynamically allocated memory. */
-  virtual ~rsImage();
+  virtual ~rsImage()
+  {
+    freeMemory();
+  }
 
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets a new size for the image. The contents of the old image is lost when doing this.
   \todo have an optional boolean parameter to retain the contents of the old image */
-  virtual void setSize(int newWidth, int newHeight);
+  virtual void setSize(int newWidth, int newHeight)
+  {
+    if(width != newWidth || height != newHeight)
+    {
+      width  = newWidth;
+      height = newHeight;
+      freeMemory();
+      allocateMemory();
+    }
+  }
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the width of the image in pixels. */
-  inline int getWidth() const
-  {
-    return width;
-  }
+  inline int getWidth() const { return width; }
 
   /** Returns the height of the image in pixels. */
-  inline int getHeight() const
-  {
-    return height;
-  }
+  inline int getHeight() const { return height; }
 
   /** Returns the number of pixels in the image. */
-  inline int getNumPixels() const
-  {
-    return getWidth() * getHeight();
-  }
+  inline int getNumPixels() const { return getWidth() * getHeight(); }
 
   /** Returns the size of the whole image in bytes. */
-  inline int getByteSize() const
-  {
-    return width*height*sizeof(TPix); // use height*getLineStride()
-  }
+  inline int getByteSize() const { return width*height*sizeof(TPix); }
+    // maybe use height*getLineStride()
 
   /** Returns the number of data-bytes that each line contains (exluding alignment/fill bytes,
   if any). */
-  inline int getLineStrideInBytes() const
-  {
-    return width*sizeof(TPix);
-  }
+  inline int getLineStrideInBytes() const { return width*sizeof(TPix); }
 
   /** Returns a pointer to the pixel at the specified location. */
-  inline TPix* getPixelPointer(int x, int y) const
-  {
-    return &data[y*width+x];
-  }
+  inline TPix* getPixelPointer(int x, int y) const { return &data[y*width+x]; }
   // maybe use operator (x, y) instead of function..., but the operator should return a reference
 
   /** Returns the color of the pixel at (x,y). */
-  inline TPix getPixelColor(int x, int y) const
-  {
-    return data[y*width+x];
-  }
+  inline TPix getPixelColor(int x, int y) const { return data[y*width+x]; }
 
   /** Returns true when (x,y) represent valid pixel-coordinates in this image. Mainly for
   debug purposes. */
   inline bool arePixelCoordinatesValid(int x, int y)
+  { return rsIsInRange(x, 0, width-1) && rsIsInRange(y, 0, height-1); }
+
+  /** Returns true, iff this image as the given shape. */
+  inline bool hasShape(int width, int height) const
   {
-    return rsIsInRange(x, 0, width-1) && rsIsInRange(y, 0, height-1);
+    return this->width == width && this->height == height;
+  }
+
+  /** Returns true, iff this image has the same shape as the given other image. */
+  bool hasSameShapeAs(const rsImage<TPix>& other) const
+  {
+    return this->hasShape(other.width, other.height);
   }
 
   /** Compares all pixel values of this image to those of another image and returns true, if they 
   are all equal up to some given tolerance. It assumes that the other image has the same width
   and height as this. */
-  inline bool areAllPixelsEqualTo(const rsImage<TPix>* otherImage, TPix tolerance = 0)
+  inline bool areAllPixelsEqualTo(const rsImage<TPix>* otherImage, TPix tolerance = TPix(0))
   {
     rsAssert(width  == otherImage->width);
     rsAssert(height == otherImage->height);
+    return rsArrayTools::almostEqual(data, otherImage->data, width*height, tolerance);
+
+    /*
+    // old:
     TPix err = rsArrayTools::maxDeviation(data, otherImage->data, width*height);
-    return abs(err) <= tolerance;
+    return rsAbs(err) <= tolerance;
+    //return abs(err) <= tolerance;
+    // this implementation is not suitable for TPix = rsPixelRGB (in private repo) - it's made for 
+    // (signed) floating point numbers as pixels
+    // maybe it has to be done in terms of an isCloseTo function that can be implemented also for 
+    // rsPixelRGB
+    */
   }
+
+
+
 
   /** Converts the image to a flat array of type std::vector. */
-  std::vector<TPix> toStdVector()
-  {
-    return toVector(data, width*height);
-  }
+  std::vector<TPix> toStdVector() { return toVector(data, width*height); }
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Manipulations */
 
   /** Sets the color of the pixel at (x,y). */
@@ -123,12 +159,34 @@ public:
   }
 
   /** Fills the whole picture with a solid color. */
-  void fillAll(const TPix &colorToFillWith);
+  void fillAll(const TPix &colorToFillWith)
+  {
+    for(int y = 0; y < getHeight(); y++)
+    {
+      for(int x = 0; x < getWidth(); x++)
+        setPixelColor(x, y, colorToFillWith);
+    }
+    // ...maybe optimize using memset
+  }
 
   /** Clears the image by setting all pixels to the given color. */
-  inline void clear(TPix color = TPix(0))
-  {
-    fillAll(color);
+  inline void clear(TPix color = TPix(0)) { fillAll(color);}
+
+  /** Copies the pixel data form the source image into this image. Assumes that the source has the 
+  same shape as this image. */
+  inline void copyPixelDataFrom(const rsImage<TPix>& source) 
+  { 
+    rsAssert(this->hasSameShapeAs(source));
+    rsArrayTools::copy(source.data, this->data, getNumPixels());
+  }
+  // todo: maybe if the source has a different shape, change the shape of this image
+
+
+  template<class TPix2>
+  inline void convertPixelDataFrom(const rsImage<TPix2>& source) 
+  { 
+    rsAssert(source.getWidth() == width && source.getHeight() == height);
+    rsArrayTools::convert(source.getPixelPointer(0,0), this->data, getNumPixels());
   }
 
 
@@ -140,13 +198,28 @@ public:
   // operations on that pointed image
 
 
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
   /** Allows read/write acces to the pixel at position x,y. */
-  inline TPix& operator()(int x, int y) 
-  {
-    return data[y*width+x];
-  }
+  inline TPix& operator()(int x, int y) { return data[y*width+x]; }
+
+  inline const TPix& operator()(int x, int y) const { return data[y*width+x]; }
+
+
+
+
+  /** Returns true, iff the two given images have the same shape. */
+  static bool haveSameShape(const rsImage<TPix>& img1, const rsImage<TPix>& img2)
+  { return img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight(); }
+  // obsolete: use img1.hasSameShapeAs(img2) instead
+
+  /** Returns true, iff the three given images have the same shape. */
+  static bool haveSameShape(
+    const rsImage<TPix>& img1, const rsImage<TPix>& img2, const rsImage<TPix>& img3)
+  { return haveSameShape(img1, img2) && haveSameShape(img1, img3); }
+
 
 protected:
 

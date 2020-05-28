@@ -812,7 +812,7 @@ void setupHarmonicAnalyzerForModal(RAPT::rsHarmonicAnalyzer<double>& analyzer, d
   analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
 }
 
-void modalDecayFit()
+void modalDecayFit1()
 {
   // Computes the A,tau values for an exponential decay function f(t) = A * exp(-t/tau) given two
   // time instants t1,t2 and associated amplitudes a1,a2. Then it creates the actual decay function
@@ -836,8 +836,123 @@ void modalDecayFit()
   t = (1.0/fs) * t;
   for(int n = 0; n < N; n++)
     x[n] = A * exp(-t[n]/tau);
-  rsPlotVectorsXY(t, x);  // OK - looks good
+  rsPlotVectorsXY(t, x);  // OK - looks good - goes through (0.04, 0.7) and (0.14, 0.3)
 }
+
+void modalDecayFit2()
+{
+  // We create attack/decay envelope with non-equidistant sample instants and from that data, we 
+  // try to estimate/recover the parameters (attack, decay, amplitude). Attack and amplitude are
+  // obtained from the location and height of the peak, decay is obtained from the total energy 
+  // (or maybe total area - we'll see which gives better fits on real-world data - with this 
+  // artificial data, both variants should give the same result). The plan is to use this 
+  // algorithm for automatic determination of optimal settings for the peak-shadowing algorithm...
+
+  // user parameters:
+  int    N      = 1000; // number of samples
+  double length = 2.5;  // length of signal in seconds
+  double att    = 0.1;  // attack in seconds
+  double dec    = 0.5;  // decay in seconds
+  double amp    = 1.5;  // peak amplitude
+
+  // compute algo parameters
+  double tau1 = dec, tau2, scl;
+  expDiffScalerAndTau2(tau1, att, &tau2, &scl);
+  // amp scales the env such that the peak height is 1.0 - todo: use another scaler
+  // also let the suer choose the total length (in seconds)
+
+  // compute envelope:
+  using Vec = std::vector<double>;
+  using AT  = RAPT::rsArrayTools;
+  Vec t = randomSampleInstants(N, 0.2, 1.8, 0);  // maybe have a randomness parameter
+  //Vec t = randomSampleInstants(N, 1.0, 1.0, 0);
+  AT::scale(&t[0], N, length/t[N-1]);
+  Vec x(N);
+  int n;
+  for(n = 0; n < N; n++)
+    x[n] = amp * scl * (exp(-t[n]/tau1) - exp(-t[n]/tau2));
+
+  // todo: 
+  // -recover att, dec, amp from data in t,x
+  //  -find peak location - that fixes att and amp
+  //  -find area or energy - that fixes dec - maybe energy is better because it uses the squares 
+  //   which makes the result less susceptible to cutting off the tail
+
+  int i = AT::maxIndex(&x[0], N);
+  double att2 = t[i];  // todo: refine by quadratic interpolation (maybe)
+  double amp2 = x[i];
+
+  // for estimating dec, there are several possibilities:
+  // -use the total area under the curve (from 0 to the end)
+  // -use the area only from the peak to the end
+  // -we could use the area-formula for the exponential decay or for an actual attack/decay curve
+  // -we could use the energy instead of the area under the curve (i.e. square the curve before
+  //  taking the integral)
+  // -maybe try them all and see, which approach gives the best results - maybe try them with real
+  //  world signals, too
+  // -test the decay formula also with the exact values of att and amp (not the recovered ones) to 
+  //  decouple the decay-error from the att/amp error in this experiment
+
+  // create the squared signal (for energy computation):
+  Vec x2(N);
+  for(n = 0; n < N; n++)
+    x2[n] = x[n] * x[n];
+
+  // Compute total and partial areas and energies by numerical integration:
+  double E_t, E_p, A_t, A_p;
+  Vec tmp(N);    
+  rsNumericIntegral(&t[0], &x[0],  &tmp[0], N);   A_t = tmp[N-1];
+  rsNumericIntegral(&t[i], &x[i],  &tmp[i], N-i); A_p = tmp[N-1];
+  rsNumericIntegral(&t[0], &x2[0], &tmp[0], N);   E_t = tmp[N-1]; // total energy (from 0 to the end)
+  rsNumericIntegral(&t[i], &x2[i], &tmp[i], N-i); E_p = tmp[N-1]; // partial energy (from i to the end)
+  // todo: get rid of the tmp array - write a numerical integration routine that just returns a 
+  // single value instead of filling an array - we only need the final value here
+
+  double dec2_Ap = A_p / amp;
+  // not that bad! 0.5025... correct value is 0.5 - only 5% error
+
+  double dec2_At = A_t / amp;
+  // this is actually the wrong area formula - if we use the total energy, we should use a formula 
+  // that takes into account the nonzero attack - the result is far too big
+
+  double dec2_Ep = 2*E_p / (amp*amp);
+  // this is very wrong - check derivation - it should be better, i think
+
+  double dec2_Et = 2*E_t / (amp*amp);
+  // again, this is actually the wrong formula - use one that takes into account the attack - this
+  // result is even more off
+
+  // todo: figure out correct formulas that take attack into account - we may also have to estimate
+  // the "scl" - but that is coupled with the decay
+  // -figure out, how the error behaves when increasing the attack - it goes up, as expected
+
+  // Observations:
+  // -it's a bit surprising that dec2_Ep is less accurate than dec2_Ap - i would have expected that
+  //  the squaring in the energy computation makes the calculation more robust with respect to 
+  //  cutting off a portion from the tail 
+  // -when increasing the attack, the error in the decay estimate dec2_Ap goes up - which is 
+  //  totally what is expected because this formula is based on assuming a zero attack, decaying
+  //  exponential (starting at the peak-instant with peak amplitude). When attack is increased,
+  //  the shape becomes more rounded at the start, increasing the overall area and thereby the
+  //  decay estimate
+  //  -maybe it's possible to figure out a function, how to re-adjust the decay estimate in terms
+  //   of the attack estimate (plot relative error of decay estimate as function of attack, fit 
+  //   some function to it and use that for compensation)
+
+
+
+  // plot:
+  //rsPlotVectorsXY(t, x);
+  rsPlotVectorsXY(t, x, x2);
+}
+
+void modalDecayFit()
+{
+  //modalDecayFit1();
+  modalDecayFit2();
+}
+
+
 
 void modalAnalysis1()
 {

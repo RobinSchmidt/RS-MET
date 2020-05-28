@@ -1,5 +1,236 @@
 using namespace RAPT;
 
+void plotHistogram(const std::vector<double>& data, int numBins, double min, double max)
+{
+  // under construction - it's kinda ugly but at least, it works
+
+  GNUPlotter plt;
+  plt.addDataArrays((int)data.size(), &data[0]);
+  plt.addCommand("reset");
+  plt.addCommand("n=" + to_string(numBins));
+  plt.addCommand("max=" + to_string(max));
+  plt.addCommand("min=" + to_string(min));
+  plt.addCommand("width=(max-min)/n");  // interval width
+  plt.addCommand("hist(x,width)=width*floor(x/width)+width/2.0"); // function used to map a value to the intervals
+  plt.addCommand("set xrange [min:max]");
+  plt.addCommand("set yrange [0:]");
+  plt.addCommand("set offset graph 0.05,0.05,0.05,0.0");
+  plt.addCommand("set xtics min,(max-min)/5,max");
+  plt.addCommand("set boxwidth width*0.9");
+  plt.addCommand("set style fill solid 0.5");
+  plt.addCommand("set tics out nomirror");
+  //plt.addCommand("set xlabel \"x\"");
+  //plt.addCommand("set ylabel \"Frequency\"");
+  plt.addCommand("plot \"" + plt.getDataPath() 
+    + "\" u (hist($1,width)):(1.0) smooth freq w boxes lc rgb\"black\" notitle");
+  plt.invokeGNUPlot();
+
+  // adapted from:
+  // https://stackoverflow.com/questions/2471884/histogram-using-gnuplot
+  // http://gnuplot-surprising.blogspot.com/2011/09/statistic-analysis-and-histogram.html
+}
+// move to plotting
+
+// Computes the period of an Irwing-Hall PRNG of given order when the period of the underlying raw
+// PRNG is prngPeriod
+rsUint32 getIrwinHallPeriod(rsUint32 prngPeriod, rsUint32 order)
+{
+  rsUint32 state = 0;
+  rsUint32 i = 0;
+  // we move forward in steps of order, wrapping around at the raw prng period - when we encounter 
+  // a zero again, we have hit the period of the Irwing-Hall generator
+  while(true)
+  {
+    state = (state + order) % prngPeriod;
+    i++;
+    if(state == 0)
+      break;
+  }
+  return i;
+}
+
+bool testIrwinHallPeriod(rsUint32 period)
+{
+  for(rsUint32 i = 1; i <= period; i++)
+  {
+    rsUint32 p1 = getIrwinHallPeriod(period, i);  // period of Irwing-Hall generator
+    rsUint32 p2 = period / rsGcd(period, i);      // conjectured formula - seems to work
+    if(p1 != p2)
+      return false;
+  }
+  // Result with period = 20:
+  // i: 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20
+  // p: 20 10 20  5  4 10 20  5 20  2 20  5 20 10  4  5 20 10 20  1  the ihp
+  // the full period is obtained when i and 20 have no common factors
+  // maybe return a bool, if the test works out
+
+  return true;
+  // return true, if conjecture holds for given period
+}
+
+// tests all periods up to maxPeriod
+bool testIrwinHallPeriods(rsUint32 maxPeriod)
+{
+  for(rsUint32 p = 1; p <= maxPeriod; p++)
+  {
+    if(!testIrwinHallPeriod(p))
+      return false;
+  }
+  return true;
+}
+
+
+double irwinHall(double z, int n)
+{
+  int zi = (int) floor(z);
+  double sum = 0;
+  for(int k = 0; k <= zi; k++)
+  {
+    //sum += pow(-1, k) * rsBinomialCoefficient(n, k) * pow(z-k, n); // mass
+    sum += pow(-1, k) * rsBinomialCoefficient(n, k) * n * pow(z-k, n-1); // density
+  }
+  return sum / rsFactorial(n);
+}
+// for z > n, the result is wrong
+// https://www.youtube.com/watch?v=-2PA7SbWoJ0&t=17m50s (german)
+
+void plotIrwinHall(int order)
+{
+  int N = 1001;
+  double xMin = 0;
+  double xMax = order;
+
+  using Vec = std::vector<double>;
+  Vec x = rsRangeLinear(xMin, xMax, N);
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = irwinHall(x[n], order);
+
+  rsPlotVectorsXY(x, y);
+}
+
+void noise()
+{
+  // We generate noise with different distributions and plot the histograms...
+  int numSamples = 100000;
+  int numBins    = 50;
+  int order      = 3;  // 5 looks good and is not a power of 2 -> sweet spot
+  // i think, powers of two are not good for the order because the reduce the period length
+  // todo: compute formulas for the period length as function of the order - the underlying PRNG
+  // has a period of 2^32, when the order K is a power of two, the resulting period will be 
+  // 2^32 / K (i think -> verify), but when K is not a power of two - what then? what if K==7,
+  // for example. i think, maybe the period ength must be divided by the factor 2^k where k is 
+  // the power of 2 which goes into K - for example, if K = 12, we must divide by 4 because 4
+  // divides 12? maybe numbers which have no factor of two will leave the period as is, so
+  // all odd numbers should be good? -> research needed (maybe make numeric experiments with a 
+  // generator with a shorter period like 2^16)
+  // But: if we run 4 or 8 prngs in parallel, each with its own state (each starting with a 
+  // different seed), the period would still be 2^32. This may also be nicely parallelizable
+
+
+  // some preliminray experiments:
+  bool periodFormulaWorks = testIrwinHallPeriods(100);  // check conjectured formula
+  plotIrwinHall(order);  // plot theoretical distribution
+
+  rsNoiseGenerator2<double> prng;
+  prng.setOrder(order);
+
+  using Vec = std::vector<double>;
+
+  int N = numSamples;
+  Vec x(N);
+  for(int n = 0; n < N; n++)
+    x[n] = prng.getSample();
+
+  //rsPlotVector(x);
+  plotHistogram(x, numBins, -1.0, +1.0);
+
+  std::string name = "NoiseIrwinHall" + to_string(order) + ".wav";
+  rosic::writeToMonoWaveFile(name, &x[0], N, 44100); 
+
+  // todo: make a function 
+  // testNoiseGen(int numSamples, int order, bool plotHistogram, bool writeWaveFile)
+}
+
+template<class T>
+class rsNoiseGeneratorTriModal
+{
+
+public:
+
+  rsNoiseGeneratorTriModal()
+  {
+    selector.setRange(-1, +1);
+    ng1.setRange(-1.0, -0.3);
+    ng2.setRange(-0.3, +0.3);
+    ng3.setRange(+0.3, +1.0);
+    setOrder(7);
+  }
+
+  void setOrder(int newOrder)
+  {
+    ng1.setOrder(newOrder);
+    ng2.setOrder(newOrder);
+    ng3.setOrder(newOrder);
+  }
+
+  inline T getSample()
+  {
+    T s = selector.getSample();
+    s = selectorLowpass.getSample(s);
+    if(s < thresh1)
+      return ng1.getSample();
+    if(s < thresh2)
+      return ng2.getSample();
+    return ng3.getSample();
+  }
+
+  rsOnePoleFilter<T, T> selectorLowpass;
+  // the selector is lowpassed such that successive samples tend to be selected from the same 
+  // distribution
+
+
+protected:
+
+  rsNoiseGenerator<T> selector;
+  rsNoiseGenerator2<T> ng1, ng2, ng3;
+  T thresh1 = -0.2, thresh2 = +0.2;
+
+};
+
+
+void noiseTriModal()
+{
+  int numSamples = 100000;
+  int numBins    = 50;
+  int order      = 7;
+
+  rsNoiseGeneratorTriModal<double> ng;
+  ng.setOrder(order);
+  ng.selectorLowpass.setCutoff(500);
+  ng.selectorLowpass.setSampleRate(44100);
+  ng.selectorLowpass.setMode(rsOnePoleFilter<double, double>::LOWPASS_IIT);
+
+  using Vec = std::vector<double>;
+
+  int N = numSamples;
+  Vec x(N);
+  for(int n = 0; n < N; n++)
+    x[n] = ng.getSample();
+
+  plotHistogram(x, numBins, -1.0, +1.0);
+
+  std::string name = "NoiseTriModal" + to_string(order) + ".wav";
+  rosic::writeToMonoWaveFile(name, &x[0], N, 44100); 
+  // This noise has some crackly behavior
+
+  // it seems like when we decrease the cutoff freq, we should also decrease the width of the
+  // center section between thresh1 and thresh2 - otherwise the outer generators will be selected
+  // to rarely
+}
+
+
+
 // maybe let it take a parameter for the length and produce various test signals with various 
 // lengths to see, how the quality depends on the length:
 void blit()  
