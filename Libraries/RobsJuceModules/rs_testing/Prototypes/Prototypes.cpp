@@ -451,6 +451,9 @@ double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x)
     res = cosh(n*acosh(x)); // should we use acosh(abs(x))? test it by comparing against evaluating
   return res;               // the polynomial directly in a unit test
 }
+// move to rsPolynomial
+
+
 void cheby_win(double *out, int N, double atten)
 {
   // prototype implementation with O(N^2) scaling of the computational cost

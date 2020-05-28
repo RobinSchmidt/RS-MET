@@ -932,6 +932,7 @@ double rsEvaluateChebychevPolynomial(double x, int n)
   }
   return t0;
 }
+// move to rsPolynomial - done - use it everywhere and delete this here
 
 double rsEvaluateChebychevExpansion(double x, double *a, int N)
 {
@@ -1157,7 +1158,7 @@ bool testJacobiPolynomials(std::string &reportString)
 
   // L1 and L2 now contain Legendre polynomials of orders 0 and 1, we compute Legendre polynomial
   // of successively higher orders using recursion, using the two arrays alternately for the
-  // in-plce computed results:
+  // in-place computed results:
   rsPolynomial<double>::legendreRecursion(L1, 2, L2, L1);
   rsPolynomial<double>::legendreRecursion(L2, 3, L1, L2);
   rsPolynomial<double>::legendreRecursion(L1, 4, L2, L1);
@@ -1170,6 +1171,43 @@ bool testJacobiPolynomials(std::string &reportString)
      && L2[5]==-43.3125 && L2[6]==0  && L2[7]==26.8125;
 
   return testResult;
+}
+
+bool testSpecialPolynomials()
+{
+  bool r = true;
+
+  using Poly = rsPolynomial<double>;
+
+  double x, y1, y2;
+  double tol = 1.e-14;
+
+
+  y1 = Poly::chebychevRecursive(-0.5, 5);
+  y2 = Poly::chebychevDirect(   -0.5, 5);
+  r &= rsIsCloseTo(y1, y2, tol);
+
+  y1 = Poly::chebychevRecursive(0.5, 5);
+  y2 = Poly::chebychevDirect(   0.5, 5);
+  r &= rsIsCloseTo(y1, y2, tol);
+
+  y1 = Poly::chebychevRecursive(-1.0, 5);
+  y2 = Poly::chebychevDirect(   -1.0, 5);
+  r &= rsIsCloseTo(y1, y2, tol);
+
+  y1 = Poly::chebychevRecursive(1.0, 5);
+  y2 = Poly::chebychevDirect(   1.0, 5);
+  r &= rsIsCloseTo(y1, y2, tol);
+
+  y1 = Poly::chebychevRecursive(-2.0, 5);
+  y2 = Poly::chebychevDirect(   -2.0, 5);
+  r &= rsIsCloseTo(y1, y2, tol);
+
+  y1 = Poly::chebychevRecursive(2.0, 5);
+  y2 = Poly::chebychevDirect(   2.0, 5);
+  r &= rsIsCloseTo(y1, y2, tol);
+
+  return r;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1327,6 +1365,7 @@ bool testPolynomial()
   testResult &= testPolynomialBaseChange(                     reportString);
   testResult &= testPolynomialRecursion(                      reportString);
   testResult &= testJacobiPolynomials(                        reportString);
+  testResult &= testSpecialPolynomials();
 
   // under construction:
   testResult &= testPowersChebychevExpansionConversion(       reportString);

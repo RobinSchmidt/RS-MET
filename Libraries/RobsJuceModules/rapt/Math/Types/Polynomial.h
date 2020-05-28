@@ -756,6 +756,30 @@ public:
   //void jacobiPolynomial(T *a, int degree); // the U-polynomials
   //void maximallyDivergingMonotonicPolynomial(T *a, int degree); // the T-polynomial
 
+  //-----------------------------------------------------------------------------------------------
+  // Evaluation of special polynomials
+
+  /** Evaluates the N-th order Chebychev polynomial T_n(x) at x by recursion. */
+  static T chebychevRecursive(T x, int N)
+  {
+    T t0 = T(1); T t1 = x; T tn = T(1);
+    for(int i = 0; i < N; i++) {
+      tn = T(2)*x*t1 - t0; t0 = t1; t1 = tn; }
+    return t0;
+  }
+
+  static T chebychevDirect(T x, int N)
+  {
+    T res;
+    if (rsAbs(x) <= 1) 
+      res = cos(T(N)*acos(x));
+    else              
+      res = cosh(T(N)*acosh(x)); // should we use acosh(abs(x))? test it by comparing against evaluating
+    return res;               // the polynomial directly in a unit test
+  }
+
+  // todo: figure out for which N which of the two functions is faster and/or more accurate
+
 
 
 protected:
