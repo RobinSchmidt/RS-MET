@@ -1180,32 +1180,40 @@ bool testSpecialPolynomials()
   using Poly = rsPolynomial<double>;
 
   double x, y1, y2;
-  double tol = 1.e-14;
+  double tol = 1.e-10; 
+  // we need a rather high tolerance and for high-degree polynomials we need more tolerance than 
+  // for lower degree - i think, it is because for the high degree, the values at the evaluation 
+  // point +-2 become large, so the absolute error gets large there too - or soemthing
 
+  // Compare recursive vs driect evaluation of Chebychev polynomials:
+  int nMax = 8;  // maximum degree
+  for(int n = 0; n < nMax; n++)
+  {
+    y1 = Poly::chebychevRecursive(-0.5, n);
+    y2 = Poly::chebychevDirect(   -0.5, n);
+    r &= rsIsCloseTo(y1, y2, tol);
 
-  y1 = Poly::chebychevRecursive(-0.5, 5);
-  y2 = Poly::chebychevDirect(   -0.5, 5);
-  r &= rsIsCloseTo(y1, y2, tol);
+    y1 = Poly::chebychevRecursive(0.5, n);
+    y2 = Poly::chebychevDirect(   0.5, n);
+    r &= rsIsCloseTo(y1, y2, tol);
 
-  y1 = Poly::chebychevRecursive(0.5, 5);
-  y2 = Poly::chebychevDirect(   0.5, 5);
-  r &= rsIsCloseTo(y1, y2, tol);
+    y1 = Poly::chebychevRecursive(-1.0, n);
+    y2 = Poly::chebychevDirect(   -1.0, n);
+    r &= rsIsCloseTo(y1, y2, tol);
 
-  y1 = Poly::chebychevRecursive(-1.0, 5);
-  y2 = Poly::chebychevDirect(   -1.0, 5);
-  r &= rsIsCloseTo(y1, y2, tol);
+    y1 = Poly::chebychevRecursive(1.0, n);
+    y2 = Poly::chebychevDirect(   1.0, n);
+    r &= rsIsCloseTo(y1, y2, tol);
 
-  y1 = Poly::chebychevRecursive(1.0, 5);
-  y2 = Poly::chebychevDirect(   1.0, 5);
-  r &= rsIsCloseTo(y1, y2, tol);
+    y1 = Poly::chebychevRecursive(-2.0, n);
+    y2 = Poly::chebychevDirect(   -2.0, n);
+    r &= rsIsCloseTo(y1, y2, tol);
 
-  y1 = Poly::chebychevRecursive(-2.0, 5);
-  y2 = Poly::chebychevDirect(   -2.0, 5);
-  r &= rsIsCloseTo(y1, y2, tol);
-
-  y1 = Poly::chebychevRecursive(2.0, 5);
-  y2 = Poly::chebychevDirect(   2.0, 5);
-  r &= rsIsCloseTo(y1, y2, tol);
+    y1 = Poly::chebychevRecursive(2.0, n);
+    y2 = Poly::chebychevDirect(   2.0, n);
+    r &= rsIsCloseTo(y1, y2, tol);
+    //rsAssert(r);
+  }
 
   return r;
 }

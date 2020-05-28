@@ -768,17 +768,20 @@ public:
     return t0;
   }
 
-  static T chebychevDirect(T x, int N)
+  /** Evaluates the N-th order Chebychev polynomial T_n(x) at x by means of cos or cosh. */
+  template<class U>
+  static U chebychevDirect(U x, int N)
   {
-    T res;
-    if (rsAbs(x) <= 1) 
-      res = cos(T(N)*acos(x));
-    else              
-      res = cosh(T(N)*acosh(x)); // should we use acosh(abs(x))? test it by comparing against evaluating
-    return res;               // the polynomial directly in a unit test
+    if(rsAbs(x) <= U(1)) return  cos( U(N)*acos ( x));
+    if(      x  >  U(1)) return  cosh(U(N)*acosh( x));
+    if(rsIsEven(N))      return  cosh(U(N)*acosh(-x));
+    else                 return -cosh(U(N)*acosh(-x));
   }
+  // we can't use template parameter T here because of compiler errors when instantiating 
+  // rsPolynomial for std::complex
 
-  // todo: figure out for which N which of the two functions is faster and/or more accurate
+  // todo: figure out for which N which of the two functions is faster and/or more accurate - maybe
+  // provide a dispatcher function
 
 
 
