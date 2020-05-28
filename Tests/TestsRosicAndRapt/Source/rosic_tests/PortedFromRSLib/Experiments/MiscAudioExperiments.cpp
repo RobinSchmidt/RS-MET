@@ -667,6 +667,11 @@ void windowFunctionSpectra()
   cosSumWindow4(&cosSumWnd4[0], N);
   cosSumWindow5(&cosSumWnd5[0], N);
 
+  // for testing the new code to produce a chebychev window:
+  std::vector<double> cheby60_2(N);
+  cheby_win2(&cheby60_2[0], N, 60); 
+  // ...does not work yet
+
   std::vector<double> chebyTweak(N), cheby20(N), cheby40(N), cheby60(N), cheby80(N), cheby100(N);
   cheby_win(&cheby20[0], N,  20);
   cheby_win(&cheby40[0], N,  40);
@@ -676,10 +681,6 @@ void windowFunctionSpectra()
   cheby_win(&chebyTweak[0], N, 17.5); // tweakable
   // 17.5: mainlobe-width matches rectangular window
   // 46.5: matches cosSumWnd2
-
-  // for testinf the new code to produce a chebychev window:
-  std::vector<double> cheby60_2(N);
-  cheby_win2(&cheby60_2[0], N,  60);
 
 
   // compute chebychev window mainlobe width:

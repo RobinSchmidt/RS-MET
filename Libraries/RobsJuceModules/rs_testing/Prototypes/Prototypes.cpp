@@ -445,9 +445,11 @@ void rsDampedSineFilterResidueAndPole(double b0, double b1, double a1, double a2
 double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x)
 {
   double res;
-  if (fabs(x) <= 1) res = cos(n*acos(x));
-  else              res = cosh(n*acosh(x));
-  return res;
+  if (fabs(x) <= 1) 
+    res = cos(n*acos(x));
+  else              
+    res = cosh(n*acosh(x)); // should we use acosh(abs(x))? test it by comparing against evaluating
+  return res;               // the polynomial directly in a unit test
 }
 void cheby_win(double *out, int N, double atten)
 {
@@ -480,18 +482,26 @@ void cheby_win2(double* out, int M, double atten)
   double alpha = atten / 20;
   double beta  = cosh((1./M) * acosh(pow(10., alpha)));
 
+  double test = cheby_poly(M, -1.0085833868117133);
+  test = cheby_poly(M, -1.01);
+  // cheby_poly returns nan for x < 1
+
   // Compute the complex spectrum of chebychev window:
   Vec W(M); 
   double PiDivM = PI / M;
   for(int k = 0; k < M; k++) 
   {
-    double num = cos(M*acos(beta*cos(PiDivM*k)));
-    double den = cosh(M*acosh(beta));
+    //double num = cos(M*acos(beta*cos(PiDivM*k))); // gives NaN for some values of k
+    double arg = beta*cos(PiDivM*k);    // argument for Chebychev polynomial
+    double num = cheby_poly(M, arg);
+    double den = cosh(M*acosh(beta));  // can be precomputed - does not depend on k
     W[k].real(num/den);
     W[k].imag(0.0);
   }
   // when M=32, we get NaN at indices 0,1,2,30,31 ...maybe the acos get an argument > 1 due to 
-  // roundoff error?
+  // roundoff error? well - it's not actually roundoff - the avlue is actually properly > 1 due
+  // to beta being > 1
+  // ok, using cheby_poly(M, arg) fixes it for 0,1,2
 
   // Do the inverse FFT:
   /*
