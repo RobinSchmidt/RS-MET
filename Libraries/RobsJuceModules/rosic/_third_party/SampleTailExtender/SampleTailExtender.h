@@ -54,10 +54,11 @@ public:
      */
     void setCutoffThresholdInDecibels (double threshold);
 
+    std::vector<int> getIndicesOfHarmonics(const std::vector<double>& magnitudeSpectrum, double sampleRate);
+
 private:
     
     //=================================================================================
-    std::vector<int> getIndicesOfHarmonics (const std::vector<double>& magnitudeSpectrum, double sampleRate);
     std::vector<double> makeDecayEnvelope (double observedPeakEnergy, double sampleRate, double decaySpeed);
     double calculateSplicePointPeakEnergy (std::vector<double>& audioSignal, int splicePoint);
     double getMagnitudeForSinusoid (const std::vector<double>& magnitude, int index);
