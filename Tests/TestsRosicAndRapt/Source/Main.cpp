@@ -386,7 +386,7 @@ int main(int argc, char* argv[])
   //taperedFourierSeries();
   //transientModeling();
   //windowFunctionsContinuous();
-  //windowFunctionSpectra();
+  windowFunctionSpectra();
   //windowedSinc();
   //waveMorph();  // under construction
 
@@ -431,9 +431,9 @@ int main(int argc, char* argv[])
   //sinusoidalAnalysis3();
   //phaseFreqConsistency();
 
-  harmonicDetection2Sines();
+  //harmonicDetection2Sines();
   //harmonicDetection3Sines();
-  //harmonicDetection5Sines();
+//  harmonicDetection5Sines();
   //harmonicAnalysis1();
 
   //amplitudeDeBeating();

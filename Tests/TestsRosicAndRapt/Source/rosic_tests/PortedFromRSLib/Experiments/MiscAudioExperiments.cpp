@@ -677,6 +677,11 @@ void windowFunctionSpectra()
   // 17.5: mainlobe-width matches rectangular window
   // 46.5: matches cosSumWnd2
 
+  // for testinf the new code to produce a chebychev window:
+  std::vector<double> cheby60_2(N);
+  cheby_win2(&cheby60_2[0], N,  60);
+
+
   // compute chebychev window mainlobe width:
   // https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window_Main_Lobe_Width.html
   double r  = rsDbToAmp(-17.5);   // plug attenuation here - the formula should give a width of around 2 at 17.5
@@ -712,14 +717,19 @@ void windowFunctionSpectra()
   // computation of mainlobe width, it should be good enough - but maybe we can find a formula
   // for the zeros of the chebychev spectrum - it's defined in the freq-domain anyway - i think, 
   // we need a formula for the zeros of chebychev polynomials
-  // Tn(x) = cos(n*acos(x)) for x < 1, so we need to solve cos(n*acos(x)) = 0 for x 
-  // let u = acos(x), the solve cos(n*u) = 0 to find u = pi/2n -> x = acos(u) = acos(pi/2n)
+  //   Tn(x) = cos(n*acos(x)) for x < 1, so we need to solve cos(n*acos(x)) = 0 for x 
+  //   let u = acos(x), the solve cos(n*u) = 0 to find u = pi/2n -> x = acos(u) = acos(pi/2n)
+  // ...but i actually thing, defining the width at the first crossing of the attenuation point
+  // makes more sense anyway
 
 
 
 
 
   // maybe optionally plot the window functions themselves
+  // note that gnuplot issues an error when we try to plot the window itself and immediately 
+  // thereafter its spectrum, because the in-between call of the convenience function messes up
+  // the datafile - we need to do one plot at a time
 
   typedef SpectrumPlotter<double> SP;
   typedef SP::FreqAxisUnits FU;
@@ -741,11 +751,11 @@ void windowFunctionSpectra()
 
   //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
 
-  rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
+  //rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
   //plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
 
   //rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
-  //plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
+  plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
 
   //rsPlotVectors(salFlatTopFast3, salFlatTopFast4, salFlatTopFast5); 
   //plt.plotDecibelSpectra(N, &salFlatTopFast3[0], &salFlatTopFast4[0], &salFlatTopFast5[0]);

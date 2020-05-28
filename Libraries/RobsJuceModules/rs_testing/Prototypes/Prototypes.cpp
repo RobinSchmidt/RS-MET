@@ -451,6 +451,7 @@ double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x)
 }
 void cheby_win(double *out, int N, double atten)
 {
+  // prototype implementation with O(N^2) scaling of the computational cost
   int nn, i;
   double M, n, sum = 0; // max=0;
   double tg = pow(10,atten/20);         // 1/r term [2], 10^gamma [2]
@@ -472,7 +473,50 @@ void cheby_win(double *out, int N, double atten)
   return;
 }
 
+void cheby_win2(double* out, int M, double atten)
+{
+  using Vec = std::vector<std::complex<double>>;
 
+  double alpha = atten / 20;
+  double beta  = cosh((1./M) * acosh(pow(10., alpha)));
+
+  // Compute the complex spectrum of chebychev window:
+  Vec W(M); 
+  double PiDivM = PI / M;
+  for(int k = 0; k < M; k++) 
+  {
+    double num = cos(M*acos(beta*cos(PiDivM*k)));
+    double den = cosh(M*acosh(beta));
+    W[k].real(num/den);
+    W[k].imag(0.0);
+  }
+  // when M=32, we get NaN at indices 0,1,2,30,31 ...maybe the acos get an argument > 1 due to 
+  // roundoff error?
+
+  // Do the inverse FFT:
+  /*
+  rsFourierTransformerBluestein<double> fft;
+  fft.setBlockSize(M);
+  fft.setDirection(rsFourierTransformerRadix2<double>::INVERSE);
+  fft.transformComplexBufferInPlace(&W[0]);
+  */ 
+  rsIFFT(&W[0], M);  // works only for powers of two
+
+  // Fill the output array:
+  for(int k = 0; k < M; k++)
+    out[k] = W[k].real();
+
+  //rsPlotVector(W);
+  rsPlotArray(out, M);
+
+  // formulas taken from here:
+  // https://www.dsprelated.com/freebooks/sasp/Dolph_Chebyshev_Window.html
+
+
+  // https://en.wikipedia.org/wiki/Window_function#Dolph%E2%80%93Chebyshev_window
+
+  int dummy = 0;
+}
 
 
 

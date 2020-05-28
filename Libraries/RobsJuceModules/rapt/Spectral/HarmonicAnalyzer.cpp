@@ -67,15 +67,14 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   T maxLength = rsMaxValue(cycleLengths);
   //maxLength   = rsMax(maxLength, cycleMarks[0]);             // delta between 0 and 1st mark
   //maxLength   = rsMax(maxLength, (Nx-1)-rsLast(cycleMarks)); // delta between end and last mark
-
   rsAssert(maxLength >= 2);                      // at least 2 samples per cycle
   if(maxLength < 2) return false;                // report failure
 
+  // determine analysis cycle length, i.e. the fixed length to which all cycles will be stretched:
   cycleLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
   setCycleLength(cycleLength);  // does also some buffer-re-allocation
   //rsPlotVector(cycleLengths);
   //rsPlotVector(sampleRate/cycleLengths);
-
 
   // Create the mapping function for the time instants of the cycle marks:
   int mapLength = (int) cycleMarks.size() + 2;  // +2 for t = 0 and t = N-1
@@ -93,8 +92,7 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   // fixed length:
   for(int i = 2; i < mapLength-1; i++) {
     tIn[i]  = cycleMarks[i-1];
-    tOut[i] = tOut[i-1] + cycleLength;
-  }
+    tOut[i] = tOut[i-1] + cycleLength; }
 
   // The end time instant is mapped such that the final partial cycle is stretched by the same 
   // amount as the last full cycle:
@@ -168,10 +166,6 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
 {
   // Initialize the model (create all datapoints, to filled with actual data later):
   mdl.init(getNumHarmonics(), getNumDataPoints());
-
-  //typedef RAPT::rsArrayTools AR;
-
-  //int numFrames = getNumFrames();  //
   int over = (blockSize - cycleLength) / 2; // amount of overhanging of block with respect to cycle
   for(int m = 0; m < getNumFrames(); m++)
   {
@@ -199,7 +193,6 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
       // maybe we should pass the "delta" from above and use it to adjust the phase values like
       // phase += delta*omega or something
   }
-
 }
 
 
@@ -656,3 +649,34 @@ void rsHarmonicAnalyzer<T>::fillWindow()
   rsWindowFunction::createWindow(&wnd[0], (int) wnd.size(), windowType, true);
   //rsWindowFunction::createWindow(&wnd[0], (int) wnd.size(), windowType, false);
 }
+
+
+/*
+
+Ideas:
+
+Currently, we stretch every cycle of the input signal to some fixed cycleLength (the power of two
+greater or equal to the length of the longest cycle in the input). The number nc of cycles per 
+block must be a power of two because we want the blockSize to be a power of two for the FFT 
+friendliness.. However, having nc to be restricted to powers of two is quite restrictive, so here
+is an idea to lift that restriction while still using power-of-2 blocksizes: Instead of stretching 
+every cycle separately to a given cycleLength, we may stretch groups of cycles to the desired 
+blockSize. Consider an example that has cycle lengths like:
+
+  98,101,102,99,97,100,102,101,99,97,100,102
+
+the current implementation would stretch all of them indiviudally to a length of 128. If nc=2, we 
+would take 2 of these length 128 cycles for every block. Instead we, could group the cycles in 
+pairs:
+
+  98,101, 102,99,  97,100,  102,101,  99,97,  100,102
+    199     201     197       203      196      202    -> stretch all these pairs to length 256
+
+and stretch every such pair of cycles to length 256. The advantage is that it readily generalizes 
+to using any number of cycles for such a group and using as blocksize the power of two that is 
+greater or equal to the length of the longest group. For example, with nc=3:
+
+  98,101,102, 99,97,100, 102,101,99, 97,100,102
+     301         296         302        299            -> stretch all these triples to length 512
+
+*/

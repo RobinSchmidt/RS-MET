@@ -312,6 +312,7 @@ public:
   /** Returns an array with all the time-stamps. */
   std::vector<T> getTimeArray() const;
 
+  /** Returns an array with the frequency trajectory over time. */
   std::vector<T> getFrequencyArray() const;
 
   std::vector<T> getAmplitudeArray() const;

@@ -183,8 +183,8 @@ is assumed to go down to zero after the samples for which we have data, i.e. x[n
 n < 0. In some cases, we may want to assume that the input signal goes to some nonzero constant 
 value instead. For example, in image filtering, it may make more sense to imagine the last actual 
 pixel value to be repeated over and over, i.e. x[n] = r for n >= N where we choose r = x[N-1]. That 
-implies that our tail should also approach that some nonzero value. That requires us to modify the 
-tail equation for the forward tail t[n] as follows:
+implies that our tail should also approach some nonzero value. That requires us to modify the tail 
+equation for the forward tail t[n] as follows:
 
   t[0] = y1
   t[1] = a*r + b*t[0] + d*x1 = a*r + b*y1 + d*x1

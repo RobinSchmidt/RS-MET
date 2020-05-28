@@ -42,6 +42,21 @@ void setupHarmonicAnalyzerFor(RAPT::rsHarmonicAnalyzer<double>& analyzer,
   analyzer.setSpectralPeakSearchWidth(0.5);       // default: 1 - blackman needs a value less than 1
   analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
 
+
+  //analyzer.setMinPeakToMainlobeWidthRatio(2.5);
+  //analyzer.setMinPeakToMainlobeWidthRatio(0.125);
+  //analyzer.setMinPeakToMainlobeWidthRatio(0.0);
+  // test - trying to reduce gap-artifacts - smaller values for this should reduce the gappiness - 
+  // todo:
+  // figure out, how low we can go without introducing other artifacts due to picking up on 
+  // sidelobes - wtf - this doesn't seem to have much influence
+  // -even with a zero value, we still get gaps with the rhodes - is there some other criterion 
+  //  that discards the partial?
+  // -even if we immediately retrun true in isPeakPartial, we get a gap - but it's narrower
+  //  -> check all branches that return -1 in findPeakBinNear
+  // -test this as follows: create a sine with strong beating - the amp-envelope of the partial 
+  //  that shows this artifact really drops to almost zero - maybe use sines at 100, 199, 201, 300
+
   //analyzer.setFreqsByPhaseDerivative(true);
   //analyzer.setFreqPhaseConsistency(true);
   // todo: maybe provide different freq-refinement methods (not necessarily mutually exclusive)

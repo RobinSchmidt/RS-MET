@@ -1489,15 +1489,17 @@ void harmonicDetection5Sines()
   // Settings: 
   int    nc = 4;     // number of cycles per block (integer, power of two)
   int    zp = 4;     // zero-padding factor (integer, power of two)
-  int    N  = 1000;  // number of samples
+  int    N  = 2000;  // number of samples
   double f1 = 100;   // input frequency 1 in Hz
   double f2 = 900;   // input frequency 2 in Hz
-  double f3 = 975;   // input frequency 3 in Hz
-  double f4 = 1025;  // input frequency 4 in Hz
+  double f3 = 995;   // input frequency 3 in Hz
+  double f4 = 1005;  // input frequency 4 in Hz
   double f5 = 1100;  // input frequency 5 in Hz
   double fs = 5000;  // sample rate
-  string wt = "bh";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
+  string wt = "bm";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
                      // bh: Blackman/Harris
+
+  //f3 = f4 = 1000; // test
 
   // create input signal:
   std::string name = "FiveSines_Freq1=" + std::to_string(f1) 
@@ -1516,8 +1518,10 @@ void harmonicDetection5Sines()
 
   // analyze:
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int) x.size());
-  plotSineModel(mdl, fs);
-
+  //plotSineModel(mdl, fs);
+  //plotSineModelAmplitudes(mdl, {10});
+  //plotSineModelAmplitudes(mdl, {9, 11});
+  plotSineModelAmplitudes(mdl, {9, 10, 11});
 
   int dummy = 0;
 
@@ -1531,6 +1535,15 @@ void harmonicDetection5Sines()
   //  -apply some sort of post-processing to the amplitude trajectory - if no harmonic is found, 
   //   maybe write a preliminary negative value into the amplitude, indicating "no data" and fill 
   //   in the data in a post-processing step (maybe by interpolation)
+  // f = 100,900,995,1005,1100:
+  //  -nc=4,zp=4,wt=bm,mpw=0.75: with the blackman window, partial 9 and 11 are erratic
+  //   -tweaking mpw doesn't help, tweaking zp neither, but setting nc=8 *does* help
+  //  -nc=4,zp=4,wt=hm,mpw=0.75: with the Hamming window, it actually look good
+  //  ->so it seems to have to do with the window-shape and the number of cycles
+  //  ->implement dolph-chebychev window, so we can continuously adjust the mainlobe-width
+
+  // -with wt=bh, nc=4, zp = 4, mpw=0.75: we totally miss the 9th and 11th partial even if there's
+  //  a single 10th partial at 1kHz with no beating
 
   // todo: try to detect a weak partial between two strong partials
 }

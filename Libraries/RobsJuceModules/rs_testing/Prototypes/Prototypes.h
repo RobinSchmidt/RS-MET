@@ -117,7 +117,7 @@ References:
 [2] Antoniou, A., "Digital Filters", McGraw-Hill, 2000.  */
 void cheby_win(double *out, int N, double atten);
 
-
+void cheby_win2(double *out, int N, double atten);
 
 
 //=================================================================================================
