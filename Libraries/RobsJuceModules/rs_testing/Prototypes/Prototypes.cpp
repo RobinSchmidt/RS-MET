@@ -487,10 +487,11 @@ void cheby_win2(double* out, int M, double atten)
   {
     double arg = beta*cos(PiDivM*k);    // argument for Chebychev polynomial
     double num = Poly::chebychevDirect(arg, M);
+    //double num = Poly::chebychevDirect(arg, M-1); // test - nope
     W[k].real(scaler * num);
     W[k].imag(0.0);
   }
-  plotComplexVectorReIm(W);
+  //plotComplexVectorReIm(W);
   // has a strong DC and cosine at the 1st bin and a bunch of (odd) harmonics
   // when N is odd, the last spectral sample (Nyquist freq) is only half of the DC value (and 
   // negative which is correct, i think)
@@ -503,7 +504,7 @@ void cheby_win2(double* out, int M, double atten)
   fft.transformComplexBufferInPlace(&W[0]);
   //rsIFFT(&W[0], M);  // works only for powers of two
 
-  plotComplexVectorReIm(W);
+  //plotComplexVectorReIm(W);
 
 
   // Fill the output array:
@@ -524,9 +525,55 @@ void cheby_win2(double* out, int M, double atten)
   // replacing cos(M*acos(x)) by T_M(x) also doesn't work - it fixes the nan issue, but the window 
   // looks wrong
 
+  // the error seems to get less for longer (even) lengths - the octave function seems to use
+  // Cheb(N-1):
+  // https://octave.sourceforge.io/signal/function/chebwin.html
+  // there are also references to papers that could be useful
+
+  // see also:
+  // https://docs.scipy.org/doc/scipy-0.19.0/reference/generated/scipy.signal.chebwin.html
+  // and its source:
+  // https://github.com/scipy/scipy/blob/v0.19.0/scipy/signal/windows.py#L1293-L1416
+  // starting at line 1293
+  // it uses an "order" parameter defined as M-1 - and this is the order of the chebychev 
+  // polynomial and also used in the formula for beta
+
+  // http://en.pudn.com/Download/item/id/163974.html
+  // http://read.pudn.com/downloads48/sourcecode/math/163974/chebwinx.c__.htm
+
   //rsPlotArray(out, M);
 }
 
+/* This code can be entered directly into sage:
+
+# Plot the window and its frequency response:
+
+N = 21 # window length
+
+from scipy import signal
+from scipy.fftpack import fft, fftshift
+import matplotlib.pyplot as plt
+import numpy as np
+
+window = signal.chebwin(N, at=100)
+plt.plot(window)
+plt.title("Dolph-Chebyshev window (100 dB)")
+plt.ylabel("Amplitude")
+plt.xlabel("Sample")
+plt.show()
+
+plt.figure()
+A = fft(window, 2048) / (len(window)/2.0)
+freq = np.linspace(-0.5, 0.5, len(A))
+response = 20 * np.log10(np.abs(fftshift(A / abs(A).max())))
+plt.plot(freq, response)
+plt.axis([-0.5, 0.5, -120, 0])
+plt.title("Frequency response of the Dolph-Chebyshev window (100 dB)")
+plt.ylabel("Normalized magnitude [dB]")
+plt.xlabel("Normalized frequency [cycles per sample]")
+plt.show()
+
+ToDo: check out the implementation of signal.chebwin in scipy */
 
 
 
