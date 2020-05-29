@@ -672,31 +672,15 @@ void windowFunctionSpectra()
   cosSumWindow5(&cosSumWnd5[0], N);
 
   std::vector<double> chebyTweak(N), cheby20(N), cheby40(N), cheby60(N), cheby80(N), cheby100(N);
-  //cheby_win(&cheby20[0], N,  20);
-  //cheby_win(&cheby40[0], N,  40);
-  //cheby_win(&cheby60[0], N,  60);
-  //cheby_win(&cheby80[0], N,  80);
-  //cheby_win(&cheby100[0], N, 100);
-  //cheby_win(&chebyTweak[0], N, 17.5); // tweakable
-  // 17.5: mainlobe-width matches rectangular window
-  // 46.5: matches cosSumWnd2
-
+  //cheby_win(&cheby20[0], N,  20);  // old - uses prototype implementation
   WF::dolphChebychev(&cheby20[0], N,  20.);
   WF::dolphChebychev(&cheby40[0], N,  40.);
   WF::dolphChebychev(&cheby60[0], N,  60.);
   WF::dolphChebychev(&cheby80[0], N,  80.);
   WF::dolphChebychev(&cheby100[0], N, 100.);
   WF::dolphChebychev(&chebyTweak[0], N, 17.5); // tweakable
-
-  /*
-  // for testing the new code to produce a chebychev window:
-  std::vector<double> cheby60_2(N);
-  //cheby_win2(&cheby60_2[0], N, 60); 
-  //cheby_win3(&cheby60_2[0], N, 60); 
-  WF::dolphChebychev(&cheby60_2[0], N, 60.0);
-  rsPlotVectors(cheby60, cheby60_2);  // for debug
-  // ...does not work yet
-  */
+  // 17.5: mainlobe-width matches rectangular window
+  // 46.5: matches cosSumWnd2
 
 
   // compute chebychev window mainlobe width:
@@ -738,9 +722,6 @@ void windowFunctionSpectra()
   //   let u = acos(x), the solve cos(n*u) = 0 to find u = pi/2n -> x = acos(u) = acos(pi/2n)
   // ...but i actually thing, defining the width at the first crossing of the attenuation point
   // makes more sense anyway
-
-
-
 
 
   // maybe optionally plot the window functions themselves

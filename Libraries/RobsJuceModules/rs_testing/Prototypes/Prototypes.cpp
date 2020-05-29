@@ -449,7 +449,7 @@ double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x), does NOT work 
 }
 void cheby_win(double *out, int N, double atten)
 {
-  // prototype implementation with O(N^2) scaling of the computational cost
+  // Prototype implementation with O(N^2) scaling of the computational cost
   int nn, i;
   double M, n, sum = 0; // max=0;
   double tg = pow(10,atten/20);         // 1/r term [2], 10^gamma [2]
@@ -465,87 +465,27 @@ void cheby_win(double *out, int N, double atten)
     out[N-nn-1] = out[nn]; }
   RAPT::rsArrayTools::normalizeMean(out, N);
 }
-// code adapted from here:
-// http://practicalcryptography.com/miscellaneous/machine-learning/implementing-dolph-chebyshev-window/
-// maybe add to rsWindowFunction as dolphChebychevSLOW
 
+/*
 
+The code above was adapted from here:
+http://practicalcryptography.com/miscellaneous/machine-learning/implementing-dolph-chebyshev-window/
 
-void cheby_win2(double* out, int M, double atten)
-{
-  // seems to not work for odd M - we get strong imaginary parts in the IFFT of the spectrum
+For more info about doing an FFT based implementation, see:
 
-  using Vec  = std::vector<std::complex<double>>;
-  using Poly = rsPolynomial<double>;
+https://www.dsprelated.com/freebooks/sasp/Dolph_Chebyshev_Window.html
+https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window.html
+https://en.wikipedia.org/wiki/Window_function#Dolph%E2%80%93Chebyshev_window
+https://octave.sourceforge.io/signal/function/chebwin.html
 
-  double alpha  = atten / 20;
-  double beta   = cosh( (1./M) * acosh(pow(10., alpha)) );
-  double scaler = 1. / cosh(M*acosh(beta)); // do we need this?
+This paper is good: The Dolph–Chebyshev Window: A Simple Optimal Filter (Lynch)
+http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.77.5098&rep=rep1&type=pdf
 
-  // Compute the complex spectrum of chebychev window:
-  Vec W(M); 
-  double PiDivM = PI / M;
-  for(int k = 0; k < M; k++) 
-  {
-    double arg = beta*cos(PiDivM*k);    // argument for Chebychev polynomial
-    double num = Poly::chebychevDirect(arg, M);
-    //double num = Poly::chebychevDirect(arg, M-1); // test - nope
-    W[k].real(scaler * num);
-    W[k].imag(0.0);
-  }
-  //plotComplexVectorReIm(W);
-  // has a strong DC and cosine at the 1st bin and a bunch of (odd) harmonics
-  // when N is odd, the last spectral sample (Nyquist freq) is only half of the DC value (and 
-  // negative which is correct, i think)
+https://docs.scipy.org/doc/scipy-0.19.0/reference/generated/scipy.signal.chebwin.html
+https://github.com/scipy/scipy/blob/v0.19.0/scipy/signal/windows.py#L1293-L1416
 
+This code can be entered directly into sage:
 
-  // Do the inverse FFT:
-  rsFourierTransformerBluestein<double>::ifft(&W[0], M, true);
-
-  // Fill the output array:
-  int shift = M/2;  // is this correct when M is odd?
-  for(int k = 0; k < M; k++)
-    out[k] = W[(k+shift)%M].real();
-  RAPT::rsArrayTools::normalizeMean(out, M);
-
-  // formulas taken from here:
-  // https://www.dsprelated.com/freebooks/sasp/Dolph_Chebyshev_Window.html
-  // https://en.wikipedia.org/wiki/Window_function#Dolph%E2%80%93Chebyshev_window
-
-  // something is still wrong - the formual doesn't seem to work - maybe follow the references 
-  // given here to figure out what's wrong:
-  // https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window.html
-  // The formual there is equal to the one in Lyons, which - i think - is also wrong. It may 
-  // produce values outside the range -1..+1 and feed then into acos which gives nan - but 
-  // replacing cos(M*acos(x)) by T_M(x) also doesn't work - it fixes the nan issue, but the window 
-  // looks wrong
-
-  // the error seems to get less for longer (even) lengths - the octave function seems to use
-  // Cheb(N-1):
-  // https://octave.sourceforge.io/signal/function/chebwin.html
-  // there are also references to papers that could be useful
-
-  // see also:
-  // https://docs.scipy.org/doc/scipy-0.19.0/reference/generated/scipy.signal.chebwin.html
-  // and its source:
-  // https://github.com/scipy/scipy/blob/v0.19.0/scipy/signal/windows.py#L1293-L1416
-  // starting at line 1293
-  // it uses an "order" parameter defined as M-1 - and this is the order of the chebychev 
-  // polynomial and also used in the formula for beta
-
-  // http://en.pudn.com/Download/item/id/163974.html
-  // http://read.pudn.com/downloads48/sourcecode/math/163974/chebwinx.c__.htm
-
-  // This paper is good: The Dolph–Chebyshev Window: A Simple Optimal Filter (Lynch)
-  // http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.77.5098&rep=rep1&type=pdf
-
-  //rsPlotArray(out, M);
-}
-
-
-
-
-/* This code can be entered directly into sage:
 
 # Plot the window and its frequency response:
 
@@ -574,8 +514,9 @@ plt.ylabel("Normalized magnitude [dB]")
 plt.xlabel("Normalized frequency [cycles per sample]")
 plt.show()
 
-ToDo: check out the implementation of signal.chebwin in scipy 
-https://github.com/scipy/scipy/blob/v0.19.0/scipy/signal/windows.py#L1293-L1416
+
+The relevant fragment of the implementation (with added comments) of signal.chebwin in scipy looks 
+like this:
 
 order = M - 1.0
 beta = np.cosh(1.0 / order * np.arccosh(10 ** (np.abs(at) / 20.)))
@@ -603,62 +544,9 @@ else:                                                 # else (i.e. M is even)
     w = np.real(fftpack.fft(p))                       #     w = fft(p)
     n = M // 2 + 1                                    #     compute shift amount
     w = np.concatenate((w[n - 1:0:-1], w[1:n]))       #     apply circular shift
-
-
-see:
-https://numpy.org/doc/1.18/reference/generated/numpy.r_.html
-
 */
 
-// another attempt - using the scipy code as basis
-void cheby_win3(double* out, int M, double atten)
-{
-  using Vec   = std::vector<std::complex<double>>;
-  using Poly  = rsPolynomial<double>;
-  using Trafo = rsFourierTransformerBluestein<double>;
 
-  int order = M-1;
-  double beta = cosh( (1.0/order) * acosh( pow(10, (abs(atten)/20.)) ));
-
-  // Compute the complex spectrum of the window:
-  Vec p(M);  
-  for(int k = 0; k < M; k++)
-  {
-    double x = beta * cos(k * PI/M);
-    p[k] = Poly::chebychevDirect(x, order);  // verify!
-  }
-  //plotComplexVectorReIm(p);
-
-  // Compute window by inverse FFT:
-  int shift;
-  if(rsIsOdd(M))
-  {
-    //Trafo::ifft(&p[0], M, false);   // false bcs we normalize later anyway
-    Trafo::fft(&p[0], M, false);   // false bcs we normalize later anyway
-    shift = (M+1) / 2;
-  }
-  else
-  {
-    std::complex<double> j(0.0, 1.0);  // imaginary unit
-    for(int k = 0; k < M; k++)
-      p[k] *= exp(j*(k*PI/M));           // verify!
-    Trafo::fft(&p[0], M, false); 
-    shift = (M/2) + 1;
-  }
-  //plotComplexVectorReIm(p);
-
-
-  // shift window and store it in the output array:
-  for(int k = 0; k < M; k++)
-    out[k] = p[(k+shift)%M].real();
-  RAPT::rsArrayTools::normalizeMean(out, M);
-  //rsPlotArray(out, M);
-
-
-  int dummy = 0;
-}
-// OK - this has now been implemented in rsWindowFunction::dolphChebychev, so this code here may be
-// deleted
 
 
 //=================================================================================================

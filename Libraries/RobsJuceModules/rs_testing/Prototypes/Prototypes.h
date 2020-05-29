@@ -104,7 +104,6 @@ void rsDampedSineFilterResidueAndPole(double b0, double b1, double a1, double a2
   std::complex<double>* residue, std::complex<double>* pole);
 
 
-
 /** Calculates a chebyshev window of size N, store coeffs in out as in Antoniou
   -out should be array of size N 
   -atten is the required sidelobe attenuation (e.g. if you want -60dB atten, use '60') 
@@ -116,9 +115,6 @@ References:
 [1] Lyons, R., "Understanding Digital Signal Processing", Prentice Hall, 2004.
 [2] Antoniou, A., "Digital Filters", McGraw-Hill, 2000.  */
 void cheby_win(double *out, int N, double atten);
-
-void cheby_win2(double *out, int N, double atten);
-void cheby_win3(double *out, int N, double atten);
 
 
 //=================================================================================================
