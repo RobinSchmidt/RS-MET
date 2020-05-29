@@ -610,7 +610,7 @@ void windowFunctionSpectra()
   //int windowLength = 11;
   //int windowLength = 128;
   //int windowLength = 129;
-  int windowLength = 21;
+  int windowLength = 20;
   //int windowLength = 32;
   //int windowLength = 37;
   //int windowLength = 38;

@@ -604,6 +604,10 @@ else:                                                 # else (i.e. M is even)
     n = M // 2 + 1                                    #     compute shift amount
     w = np.concatenate((w[n - 1:0:-1], w[1:n]))       #     apply circular shift
 
+
+see:
+https://numpy.org/doc/1.18/reference/generated/numpy.r_.html
+
 */
 
 // another attempt - using the scipy code as basis
@@ -632,13 +636,14 @@ void cheby_win3(double* out, int M, double atten)
     //Trafo::ifft(&p[0], M, false);   // false bcs we normalize later anyway
     Trafo::fft(&p[0], M, false);   // false bcs we normalize later anyway
     shift = (M+1) / 2;
-
   }
   else
   {
-
+    std::complex<double> j(0.0, 1.0);  // imaginary unit
+    for(int k = 0; k < M; k++)
+      p[k] *= exp(j*(k*PI/M));           // verify!
+    Trafo::fft(&p[0], M, false); 
     shift = (M/2) + 1;
-
   }
   plotComplexVectorReIm(p);
 
