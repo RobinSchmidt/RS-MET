@@ -118,6 +118,7 @@ References:
 void cheby_win(double *out, int N, double atten);
 
 void cheby_win2(double *out, int N, double atten);
+void cheby_win3(double *out, int N, double atten);
 
 
 //=================================================================================================

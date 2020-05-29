@@ -500,18 +500,7 @@ void cheby_win2(double* out, int M, double atten)
 
 
   // Do the inverse FFT:
-  /*
-  rsFourierTransformerBluestein<double> fft;
-  fft.setBlockSize(M);
-  fft.setDirection(rsFourierTransformerRadix2<double>::INVERSE);
-  fft.transformComplexBufferInPlace(&W[0]);
-  //rsIFFT(&W[0], M);  // works only for powers of two
-  */
-
   rsFourierTransformerBluestein<double>::ifft(&W[0], M, true);
-
-  //plotComplexVectorReIm(W);
-
 
   // Fill the output array:
   int shift = M/2;  // is this correct when M is odd?
@@ -552,6 +541,9 @@ void cheby_win2(double* out, int M, double atten)
 
   //rsPlotArray(out, M);
 }
+
+
+
 
 /* This code can be entered directly into sage:
 
@@ -601,20 +593,65 @@ p[x < -1] = (1 - 2 * (order % 2)) * np.cosh(order * np.arccosh(-x[x < -1]))
 p[np.abs(x) <= 1] = np.cos(order * np.arccos(x[np.abs(x) <= 1]))
 
 # Appropriate IDFT and filling up depending on even/odd M
-if M % 2:
-    w = np.real(fftpack.fft(p))
-    n = (M + 1) // 2
-    w = w[:n]
-    w = np.concatenate((w[n - 1:0:-1], w))  # circular shift by n?
-else:
-    # additional modulation is required when M is odd:
-    p = p * np.exp(1.j * np.pi / M * np.r_[0:M])
-    w = np.real(fftpack.fft(p))
-    n = M // 2 + 1
-    w = np.concatenate((w[n - 1:0:-1], w[1:n])) # shift
+if M % 2:                                             # if length M is odd
+    w = np.real(fftpack.fft(p))                       #     do the FFT: w = fft(p) - why no ifft?
+    n = (M + 1) // 2                                  #     compute shift amount
+    w = w[:n]                                         #     ääähh - what does this do?
+    w = np.concatenate((w[n - 1:0:-1], w))            #     apply circular shift by n?
+else:                                                 # else (i.e. M is even)
+    p = p * np.exp(1.j * np.pi / M * np.r_[0:M])      #     additional modulation of p required?
+    w = np.real(fftpack.fft(p))                       #     w = fft(p)
+    n = M // 2 + 1                                    #     compute shift amount
+    w = np.concatenate((w[n - 1:0:-1], w[1:n]))       #     apply circular shift
 
 */
 
+// another attempt - using the scipy code as basis
+void cheby_win3(double* out, int M, double atten)
+{
+  using Vec   = std::vector<std::complex<double>>;
+  using Poly  = rsPolynomial<double>;
+  using Trafo = rsFourierTransformerBluestein<double>;
+
+  int order = M-1;
+  double beta = cosh( (1.0/order) * acosh( pow(10, (abs(atten)/20.)) ));
+
+  // Compute the complex spectrum of the window:
+  Vec p(M);  
+  for(int k = 0; k < M; k++)
+  {
+    double x = beta * cos(k * PI/M);
+    p[k] = Poly::chebychevDirect(x, order);  // verify!
+  }
+  plotComplexVectorReIm(p);
+
+  // Compute window by inverse FFT:
+  int shift;
+  if(rsIsOdd(M))
+  {
+    //Trafo::ifft(&p[0], M, false);   // false bcs we normalize later anyway
+    Trafo::fft(&p[0], M, false);   // false bcs we normalize later anyway
+    shift = (M+1) / 2;
+
+  }
+  else
+  {
+
+    shift = (M/2) + 1;
+
+  }
+  plotComplexVectorReIm(p);
+
+
+  // shift window and store it in the output array:
+  for(int k = 0; k < M; k++)
+    out[k] = p[(k+shift)%M].real();
+  RAPT::rsArrayTools::normalizeMean(out, M);
+  rsPlotArray(out, M);
+
+
+  int dummy = 0;
+}
 
 
 //=================================================================================================

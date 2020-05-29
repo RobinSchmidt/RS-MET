@@ -610,7 +610,8 @@ void windowFunctionSpectra()
   //int windowLength = 11;
   //int windowLength = 128;
   //int windowLength = 129;
-  int windowLength = 32;
+  int windowLength = 21;
+  //int windowLength = 32;
   //int windowLength = 37;
   //int windowLength = 38;
 
@@ -682,7 +683,8 @@ void windowFunctionSpectra()
 
   // for testing the new code to produce a chebychev window:
   std::vector<double> cheby60_2(N);
-  cheby_win2(&cheby60_2[0], N, 60); 
+  //cheby_win2(&cheby60_2[0], N, 60); 
+  cheby_win3(&cheby60_2[0], N, 60); 
   rsPlotVectors(cheby60, cheby60_2);  // for debug
   // ...does not work yet
 
