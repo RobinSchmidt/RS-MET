@@ -469,6 +469,8 @@ void cheby_win(double *out, int N, double atten)
 // http://practicalcryptography.com/miscellaneous/machine-learning/implementing-dolph-chebyshev-window/
 // maybe add to rsWindowFunction as dolphChebychevSLOW
 
+
+
 void cheby_win2(double* out, int M, double atten)
 {
   // seems to not work for odd M - we get strong imaginary parts in the IFFT of the spectrum
@@ -498,11 +500,15 @@ void cheby_win2(double* out, int M, double atten)
 
 
   // Do the inverse FFT:
+  /*
   rsFourierTransformerBluestein<double> fft;
   fft.setBlockSize(M);
   fft.setDirection(rsFourierTransformerRadix2<double>::INVERSE);
   fft.transformComplexBufferInPlace(&W[0]);
   //rsIFFT(&W[0], M);  // works only for powers of two
+  */
+
+  rsFourierTransformerBluestein<double>::ifft(&W[0], M, true);
 
   //plotComplexVectorReIm(W);
 
@@ -541,6 +547,9 @@ void cheby_win2(double* out, int M, double atten)
   // http://en.pudn.com/Download/item/id/163974.html
   // http://read.pudn.com/downloads48/sourcecode/math/163974/chebwinx.c__.htm
 
+  // This paper is good: The Dolph–Chebyshev Window: A Simple Optimal Filter (Lynch)
+  // http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.77.5098&rep=rep1&type=pdf
+
   //rsPlotArray(out, M);
 }
 
@@ -573,7 +582,38 @@ plt.ylabel("Normalized magnitude [dB]")
 plt.xlabel("Normalized frequency [cycles per sample]")
 plt.show()
 
-ToDo: check out the implementation of signal.chebwin in scipy */
+ToDo: check out the implementation of signal.chebwin in scipy 
+https://github.com/scipy/scipy/blob/v0.19.0/scipy/signal/windows.py#L1293-L1416
+
+order = M - 1.0
+beta = np.cosh(1.0 / order * np.arccosh(10 ** (np.abs(at) / 20.)))
+k = np.r_[0:M] * 1.0
+x = beta * np.cos(np.pi * k / M)
+p = np.zeros(x.shape)
+
+# when x > 1, use cosh/acosh:
+p[x > 1] = np.cosh(order * np.arccosh(x[x > 1]))
+
+# when x < -1, use cosh/acosh or 0, depending on order being even or odd:
+p[x < -1] = (1 - 2 * (order % 2)) * np.cosh(order * np.arccosh(-x[x < -1]))
+
+# when |x| <= 1, use cos/acos:
+p[np.abs(x) <= 1] = np.cos(order * np.arccos(x[np.abs(x) <= 1]))
+
+# Appropriate IDFT and filling up depending on even/odd M
+if M % 2:
+    w = np.real(fftpack.fft(p))
+    n = (M + 1) // 2
+    w = w[:n]
+    w = np.concatenate((w[n - 1:0:-1], w))  # circular shift by n?
+else:
+    # additional modulation is required when M is odd:
+    p = p * np.exp(1.j * np.pi / M * np.r_[0:M])
+    w = np.real(fftpack.fft(p))
+    n = M // 2 + 1
+    w = np.concatenate((w[n - 1:0:-1], w[1:n])) # shift
+
+*/
 
 
 

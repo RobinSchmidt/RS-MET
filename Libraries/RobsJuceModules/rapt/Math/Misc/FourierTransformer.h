@@ -149,15 +149,15 @@ protected:
 
   /** \name Data */
 
-  int    N;                    /**< blocksize of the FFT. */
-  int    logN;                 /**< Base 2 logarithm of the blocksize. */
-  int    direction;            /**< The direction of the transform (@see: directions). */
-  int    normalizationMode;    /**< The normalization mode (@see: normalizationModes. */
+  int N;                  /**< blocksize of the FFT. */
+  int logN;               /**< Base 2 logarithm of the blocksize. */
+  int direction;          /**< The direction of the transform (@see: directions). */
+  int normalizationMode;  /**< The normalization mode (@see: normalizationModes. */
   T normalizationFactor;  /**< The normalization factor (can be 1, 1/N or 1/sqrt(N)). */
 
   // work-area stuff for Ooura's fft-routines:
-  T *w;                   /**< Table of the twiddle-factors. */
-  int    *ip;                  /**< Work area for bit-reversal (index pointer?). */
+  T *w;        /**< Table of the twiddle-factors. */
+  int *ip;     /**< Work area for bit-reversal (index pointer?). */
 
   // our own temporary storage area:
   std::complex<T>* tmpBuffer;
@@ -189,7 +189,7 @@ public:
   ~rsFourierTransformerBluestein();
 
   //---------------------------------------------------------------------------------------------
-  // parameter settings:
+  // \name Setup
 
   /** FFT-size, can be an arbitrary integer > 1. Powers of 2 will be most efficient, other
   numbers increase the CPU-load significantly, but O(N*log(N))-scaling is preserved. */
@@ -205,7 +205,7 @@ public:
   void setNormalizationMode(int newNormalizationMode);
 
   //---------------------------------------------------------------------------------------------
-  // signal processing:
+  // \name Processing
 
   /** Transforms a buffer of complex numbers into its (forward or inverse) fourier transform.
   The inBuffer will remain intact. Both, inBuffer and outBuffer must be of the size which was
@@ -215,6 +215,31 @@ public:
   /** Does the same thing as transformComplexBuffer but performes in-place calculation
   (overwrites the input buffer). */
   void transformComplexBufferInPlace(std::complex<T> *buffer);
+
+  /** Convenience function to be used if you need just a single FFT. If you need a full series
+  of FFTs (i.e. multiple blocks), this is not recommended for efficiency reasons. */
+  static void fft(std::complex<T>* buffer, int length, bool normalize)
+  {
+    rsFourierTransformerBluestein<T> trafo;
+    trafo.setBlockSize(length);
+    trafo.setDirection(rsFourierTransformerRadix2<T>::FORWARD);
+    if(normalize)
+      trafo.setNormalizationMode(rsFourierTransformerRadix2<T>::NORMALIZE_ON_FORWARD_TRAFO);
+    trafo.transformComplexBufferInPlace(&buffer[0]);
+  }
+  // needs test
+
+  /** Convenience function for a single inverse FFT. */
+  static void ifft(std::complex<T>* buffer, int length, bool normalize)
+  {
+    rsFourierTransformerBluestein<T> trafo;
+    trafo.setBlockSize(length);
+    trafo.setDirection(rsFourierTransformerRadix2<T>::INVERSE);
+    if(normalize)
+      trafo.setNormalizationMode(rsFourierTransformerRadix2<T>::NORMALIZE_ON_INVERSE_TRAFO);
+    trafo.transformComplexBufferInPlace(&buffer[0]);
+  }
+  // needs test
 
   //=============================================================================================
 

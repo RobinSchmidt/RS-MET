@@ -712,6 +712,8 @@ public:
   static void besselPolynomial(T *a, int degree);
   // allocates heap memory
   // todo: maybe use rsPolynomialRecursion inside
+  // rename to bessel (we are already inside class rsPolynomial, so the "Polynomial" part is 
+  // redundant)
 
   /** Fills the array with coefficients for a Legendre-polynomial (of the 1st kind) of given
   degree. */
@@ -720,6 +722,7 @@ public:
   // allocates heap memory
     // todo: maybe use rsPolynomialRecursion - or maybe get rid of the function
     // (move to prototypes)
+  // rename to legendre ("Polynomial" is redundant)
 
   /** Computes the recursion coefficients (as used in rsPolynomialRecursion) for the Jacobi
   polynomial of degree n (n >= 2) with parameters a and b. */
@@ -759,7 +762,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // Evaluation of special polynomials
 
-  /** Evaluates the N-th order Chebychev polynomial T_N(x) at x by recursion. */
+  /** Evaluates the N-th degree Chebychev polynomial T_N(x) at x by recursion. */
   static T chebychevRecursive(T x, int N)
   {
     T t0 = T(1); T t1 = x; T tn = T(1);
@@ -768,7 +771,8 @@ public:
     return t0;
   }
 
-  /** Evaluates the N-th order Chebychev polynomial T_N(x) at x by means of cos or cosh. */
+  /** Evaluates the N-th degree Chebychev polynomial T_N(x) at x by means of acos and cos or 
+  acosh and cosh. */
   template<class U>
   static U chebychevDirect(U x, int N)
   {
@@ -781,7 +785,10 @@ public:
   // rsPolynomial for std::complex
 
   // todo: figure out for which N which of the two functions is faster and/or more accurate - maybe
-  // provide a dispatcher function
+  // provide a dispatcher function - it seems, at least for lower degrees, the recursion is more 
+  // accurate - well, at least for inputs that are exactly representable (like not-too-large 
+  // integers), which is expected because it just does basic arithmetic - as long as every 
+  // intermediate result is exactly representable, the recursion will give exact results
 
 
 

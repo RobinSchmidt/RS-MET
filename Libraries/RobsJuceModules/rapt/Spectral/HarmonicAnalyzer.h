@@ -70,7 +70,7 @@ public:
 
   rsHarmonicAnalyzer();
 
-
+  //---------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets up the sample-rate. This determines the values of the frequencies that will be written
@@ -177,7 +177,7 @@ public:
     freqsPhaseConsistent = shouldBeConsistent;
   }
 
-
+  //---------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   std::vector<T> getOriginalTimeStamps() { return tIn; }
@@ -188,7 +188,7 @@ public:
   cycle-marks for the time-warping, to give client code access to its settings. */
   rsCycleMarkFinder<T>& getCycleFinder() { return cycleFinder; }
 
-
+  //---------------------------------------------------------------------------------------------
   /** \name Processing */
 
   /** Analyzes the given input sound and returns the sinusoidal model object that models the given 
@@ -241,6 +241,8 @@ protected:
   zero amplitude or not - we don't want them in the model - their mere existence is an artifact
   of the downshifting step. */
   void removeAliasing(RAPT::rsSinusoidalModel<T>& mdl);
+  // todo: prevent them from being produces in the first place - this will speed up the analysis
+  // because we will have to analyze fewer partials
 
   /** Fills the initial datapoint at time zero and the final datapoint at time 
   (numSamples-1)/sampleRate - these are treated separately. */
@@ -251,12 +253,12 @@ protected:
   as final step to convert all values. */
   void convertTimeUnit(RAPT::rsSinusoidalModel<T>& mdl);
 
-  /** Refines the frequency estimates in the model, if the respective options are set to true. */
+  /** Refines the frequency estimates in the model, if the respective options are set to true (this
+  step is optional). */
   void refineFrequencies(RAPT::rsSinusoidalModel<T>& mdl);
 
   /** Sets the length of one cycle in samples and re-allocates buffers, if necessarry. */
   void setCycleLength(int newLength);
-  // rename to setCycleLength
 
   /** Returns length of time-warping map (sampled at cycle marks). */
   int getMapLength() const { return (int) tIn.size(); }
@@ -347,8 +349,8 @@ protected:
 
 
   // block/transform buffer sizes:
-  int cycleLength    = 0;  // length of one cycle in samples
-  int cyclesPerBlock = 1;  // number of cycles per block/window, power of 2 ..not yet used
+  int cycleLength    = 0;  // length of one cycle in samples (after pitch-flattening)
+  int cyclesPerBlock = 1;  // number of cycles per block/window, power of 2
   int blockSize      = 0;  // analysis block size == cycleLength * cyclesPerBlock
   int zeroPad        = 1;  // zero padding factor for FFT, power of 2
   int trafoSize      = 0;  // FFT size == blockSize * zeroPad
@@ -356,6 +358,11 @@ protected:
   
   typedef rsWindowFunction::WindowType WindowType;
   WindowType windowType = WindowType::rectangular;
+  // todo: switch to the Dolph-Chebychev window and let the user adjust its parameter - either in 
+  // terms of the sidelobe-rejection (in dB) or in mainlobe-width (in bins? or Hz? or some other 
+  // normalized unit?). there are some rules, how the number-of-cycles per block should be related
+  // to the mainlobe-width - wider mainlobes (i.e. higher sidelobe-rejection) require more cycles 
+  // per block - document these things...
 
   //int window = rectangular;  // type of window function
 
