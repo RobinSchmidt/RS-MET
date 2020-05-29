@@ -611,9 +611,11 @@ void windowFunctionSpectra()
   //int windowLength = 128;
   //int windowLength = 129;
   //int windowLength = 20;
-  int windowLength = 32;
+  //int windowLength = 32;
   //int windowLength = 37;
+  //int windowLength = 45;
   //int windowLength = 38;
+  int windowLength = 64;
 
   int fftSize = 8192;
   //int fftSize = 16384;
@@ -681,6 +683,8 @@ void windowFunctionSpectra()
   WF::dolphChebychev(&chebyTweak[0], N, 17.5); // tweakable
   // 17.5: mainlobe-width matches rectangular window
   // 46.5: matches cosSumWnd2
+  // They have spikes ta the ends which get more pronounced with longer lengths and with lower
+  // sidelobe attenuation
 
 
   // compute chebychev window mainlobe width:
@@ -727,7 +731,8 @@ void windowFunctionSpectra()
   // maybe optionally plot the window functions themselves
   // note that gnuplot issues an error when we try to plot the window itself and immediately 
   // thereafter its spectrum, because the in-between call of the convenience function messes up
-  // the datafile - we need to do one plot at a time
+  // the datafile - we need to do one plot at a time - ah - but it works, if plot the spectrum 
+  // first and then the time-domain window
 
   typedef SpectrumPlotter<double> SP;
   typedef SP::FreqAxisUnits FU;
@@ -741,32 +746,33 @@ void windowFunctionSpectra()
   //plt.setShowPhase(true);
   //plt.setZoom(); // show only low portion up to 1/zoom of the spectrum
 
-  //rsPlotVectors(rectangular, triangular, hanning, hamming);
   //plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
+  //rsPlotVectors(rectangular, triangular, hanning, hamming);
 
-  //rsPlotVectors(rectangular, blackman, blackmanHarris, blackmanNutall, nutall);
   //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
+  //rsPlotVectors(rectangular, blackman, blackmanHarris, blackmanNutall, nutall);
 
   //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
 
-  //rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
   //plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
+  //rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
 
-  //rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
   plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
+  rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
+
   //plt.plotDecibelSpectra(N, &cheby60[0], &cheby60_2[0]);
 
-  //rsPlotVectors(salFlatTopFast3, salFlatTopFast4, salFlatTopFast5); 
   //plt.plotDecibelSpectra(N, &salFlatTopFast3[0], &salFlatTopFast4[0], &salFlatTopFast5[0]);
+  //rsPlotVectors(salFlatTopFast3, salFlatTopFast4, salFlatTopFast5);
 
-  //rsPlotVectors(salFlatTopMin3, salFlatTopMin4, salFlatTopMin5); 
   //plt.plotDecibelSpectra(N, &salFlatTopMin3[0], &salFlatTopMin4[0], &salFlatTopMin5[0]);
+  //rsPlotVectors(salFlatTopMin3, salFlatTopMin4, salFlatTopMin5); 
 
-  //rsPlotVectors(hrsFlatTop70, hrsFlatTop95, hrsFlatTop90D, hrsFlatTop116D, hrsFlatTop144D, 
-  //  hrsFlatTop169D, hrsFlatTop196D, hrsFlatTop223D, hrsFlatTop248D); 
   //plt.plotDecibelSpectra(N, &hrsFlatTop70[0], &hrsFlatTop95[0], &hrsFlatTop90D[0], 
   //  &hrsFlatTop116D[0], &hrsFlatTop144D[0], &hrsFlatTop169D[0], &hrsFlatTop196D[0], 
   //  &hrsFlatTop223D[0], &hrsFlatTop248D[0]);
+  //rsPlotVectors(hrsFlatTop70, hrsFlatTop95, hrsFlatTop90D, hrsFlatTop116D, hrsFlatTop144D, 
+  //  hrsFlatTop169D, hrsFlatTop196D, hrsFlatTop223D, hrsFlatTop248D); 
   // hmm, it seems like the sidelobes are always around 5-6 dB higher than the specifications says
   // not normalizing the windows doesn't change anything (seems, they already are normalized even 
   // without explicitly doing so)

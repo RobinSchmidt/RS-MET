@@ -271,7 +271,9 @@ public:
   template<class T>
   static void triangular(T *window, int length);
 
-
+  /** Dolph-Chebychev window with a given attenuation of the sidelobes in dB (it can be given with
+  or without the minus sign). This window has equiripple sidebands and achieves the lowest sidelobe
+  level for a given mainlobe width - or the narrowest mainlobe width for a given sidelobe level. */
   template<class T>
   static void dolphChebychev(T *window, int length, T attenuation);
   // allocates temporary heap-memory
