@@ -627,7 +627,7 @@ void cheby_win3(double* out, int M, double atten)
     double x = beta * cos(k * PI/M);
     p[k] = Poly::chebychevDirect(x, order);  // verify!
   }
-  plotComplexVectorReIm(p);
+  //plotComplexVectorReIm(p);
 
   // Compute window by inverse FFT:
   int shift;
@@ -645,18 +645,20 @@ void cheby_win3(double* out, int M, double atten)
     Trafo::fft(&p[0], M, false); 
     shift = (M/2) + 1;
   }
-  plotComplexVectorReIm(p);
+  //plotComplexVectorReIm(p);
 
 
   // shift window and store it in the output array:
   for(int k = 0; k < M; k++)
     out[k] = p[(k+shift)%M].real();
   RAPT::rsArrayTools::normalizeMean(out, M);
-  rsPlotArray(out, M);
+  //rsPlotArray(out, M);
 
 
   int dummy = 0;
 }
+// OK - this has now been implemented in rsWindowFunction::dolphChebychev, so this code here may be
+// deleted
 
 
 //=================================================================================================

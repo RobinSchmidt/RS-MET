@@ -610,8 +610,8 @@ void windowFunctionSpectra()
   //int windowLength = 11;
   //int windowLength = 128;
   //int windowLength = 129;
-  int windowLength = 20;
-  //int windowLength = 32;
+  //int windowLength = 20;
+  int windowLength = 32;
   //int windowLength = 37;
   //int windowLength = 38;
 
@@ -672,21 +672,31 @@ void windowFunctionSpectra()
   cosSumWindow5(&cosSumWnd5[0], N);
 
   std::vector<double> chebyTweak(N), cheby20(N), cheby40(N), cheby60(N), cheby80(N), cheby100(N);
-  cheby_win(&cheby20[0], N,  20);
-  cheby_win(&cheby40[0], N,  40);
-  cheby_win(&cheby60[0], N,  60);
-  cheby_win(&cheby80[0], N,  80);
-  cheby_win(&cheby100[0], N, 100);
-  cheby_win(&chebyTweak[0], N, 17.5); // tweakable
+  //cheby_win(&cheby20[0], N,  20);
+  //cheby_win(&cheby40[0], N,  40);
+  //cheby_win(&cheby60[0], N,  60);
+  //cheby_win(&cheby80[0], N,  80);
+  //cheby_win(&cheby100[0], N, 100);
+  //cheby_win(&chebyTweak[0], N, 17.5); // tweakable
   // 17.5: mainlobe-width matches rectangular window
   // 46.5: matches cosSumWnd2
 
+  WF::dolphChebychev(&cheby20[0], N,  20.);
+  WF::dolphChebychev(&cheby40[0], N,  40.);
+  WF::dolphChebychev(&cheby60[0], N,  60.);
+  WF::dolphChebychev(&cheby80[0], N,  80.);
+  WF::dolphChebychev(&cheby100[0], N, 100.);
+  WF::dolphChebychev(&chebyTweak[0], N, 17.5); // tweakable
+
+  /*
   // for testing the new code to produce a chebychev window:
   std::vector<double> cheby60_2(N);
   //cheby_win2(&cheby60_2[0], N, 60); 
-  cheby_win3(&cheby60_2[0], N, 60); 
+  //cheby_win3(&cheby60_2[0], N, 60); 
+  WF::dolphChebychev(&cheby60_2[0], N, 60.0);
   rsPlotVectors(cheby60, cheby60_2);  // for debug
   // ...does not work yet
+  */
 
 
   // compute chebychev window mainlobe width:
@@ -762,8 +772,8 @@ void windowFunctionSpectra()
   //plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
 
   //rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
-  //plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
-  plt.plotDecibelSpectra(N, &cheby60[0], &cheby60_2[0]);
+  plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
+  //plt.plotDecibelSpectra(N, &cheby60[0], &cheby60_2[0]);
 
   //rsPlotVectors(salFlatTopFast3, salFlatTopFast4, salFlatTopFast5); 
   //plt.plotDecibelSpectra(N, &salFlatTopFast3[0], &salFlatTopFast4[0], &salFlatTopFast5[0]);

@@ -271,6 +271,13 @@ public:
   template<class T>
   static void triangular(T *window, int length);
 
+
+  template<class T>
+  static void dolphChebychev(T *window, int length, T attenuation);
+  // allocates temporary heap-memory
+
+  // maybe provide a function dolphChebychevByWidth in which the parameter gives the mainlobe width
+
   /** Returns the value of a cosine-squared windowed (normalized) sinc function. It has nonzero
   values in the range -length/2...+length/2 and zero crossings at integer multiples of the
   "stretch" parameter. */

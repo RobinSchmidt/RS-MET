@@ -368,6 +368,45 @@ void rsWindowFunction::triangular(T *w, int N)
 }
 
 template<class T>
+static void rsWindowFunction::dolphChebychev(T* w, int M, T atten)
+{
+  int order = M-1;
+  T beta = cosh( (1.0/order) * acosh( pow(10, (abs(atten)/20.)) ));
+
+  // Compute the complex spectrum of the window:
+  std::vector<std::complex<T>> p(M);  
+  for(int k = 0; k < M; k++) {
+    T x = beta * cos(k*PI/M);
+    p[k] = rsPolynomial<T>::chebychevDirect(x, order); }
+
+  // Compute window by FFT (shouldn't it be an IFFT? maybe that just gives rise to a shift?):
+  using Trafo = rsFourierTransformerBluestein<T>;
+  int shift;
+  if(rsIsOdd(M)) {
+    Trafo::fft(&p[0], M, false);
+    shift = (M+1) / 2; }
+  else {
+    std::complex<T> j(T(0), T(1));
+    for(int k = 0; k < M; k++)
+      p[k] *= exp(j*(k*PI/M));         // additional modulation required for even lengths
+    Trafo::fft(&p[0], M, false); 
+    shift = (M/2) + 1; }
+
+  // Apply a circular shift to the window and store it in the output array:
+  for(int k = 0; k < M; k++)
+    w[k] = p[(k+shift)%M].real();
+
+  rsArrayTools::normalizeMean(w, M);  
+  // maybe make normalization optional- but if we don't normalize at all, what will we get? maybe 
+  // we should normalize the max if normalize mean is not desired?
+}
+// This implementation follows the one from scipy
+// https://github.com/scipy/scipy/blob/v0.19.0/scipy/signal/windows.py#L1293-L1416
+// i'm not quite sure, why they use the forward FFT and not an inverse FFT - the difference is 
+// probably just a phase-shift and does not matter in this case because we shift the result later 
+// anyway?
+
+template<class T>
 T rsWindowFunction::windowedSinc(T x, T length, T stretch)
 {
   return rsNormalizedSinc(x/stretch) * cosineSquared(x, length);

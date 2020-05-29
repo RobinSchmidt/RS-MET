@@ -120,6 +120,8 @@ template void RAPT::rsWindowFunction::hrsFlatTop196D( double* w, int N, bool nor
 template void RAPT::rsWindowFunction::hrsFlatTop223D( double* w, int N, bool normalize);
 template void RAPT::rsWindowFunction::hrsFlatTop248D( double* w, int N, bool normalize);
 
+template void RAPT::rsWindowFunction::dolphChebychev( double* w, int N, double atten);
+
 //-------------------------------------------------------------------------------------------------
 // Filters:
 
