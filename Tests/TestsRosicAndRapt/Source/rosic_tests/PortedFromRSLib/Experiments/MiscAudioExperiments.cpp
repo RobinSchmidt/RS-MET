@@ -604,6 +604,31 @@ void cosSumWindow5(double* w, int N) // 5 term
 // giving the result: a0 == (5/16), a1 == (15/32), a2 == (3/16), a3 == (1/32)
 // don't count the constant term a0 as term - reduce all numbers in the names by 1
 
+void hannPoissonWindow(double* w, int N, double a)
+{
+  //double s = 0.5 * (N-1);
+  //double t = PI / s;
+  for(int n = 0; n < N; n++)
+  {
+    //double hann    = 0.5 * (1 + cos(t*n));
+    double hann    = 0.5 * (1 - cos(2*PI*n / N));
+    double poisson = exp(-a*rsAbs(N-2*n) / N);
+
+    //w[n] = hann;
+    //w[n] = poisson;
+    w[n] = hann * poisson;
+  }
+  // verify conventions (n from 0..N-1 or from 0..N? etc.)
+  // https://en.wikipedia.org/wiki/Window_function#Hann%E2%80%93Poisson_window
+  // https://ccrma.stanford.edu/~jos/sasp/Hann_Poisson_Window.html
+  // the poisson part is slightly asymmetrical (at least for even N) - investigate by plotting
+  // the poisson part only
+
+  // todo: experiment with multiplying poisson by cosSumWindow3 etc. - will that give other windows
+  // with no sidelobes? ...and maybe with stepper slopes?
+
+  rsArrayTools::normalizeMean(w, N);  
+}
 
 void windowFunctionSpectra()
 {
@@ -630,7 +655,8 @@ void windowFunctionSpectra()
     salFlatTopFast3(N), salFlatTopFast4(N), salFlatTopFast5(N),
     salFlatTopMin3(N),  salFlatTopMin4(N),  salFlatTopMin5(N),
     hrsFlatTop70(N), hrsFlatTop95(N), hrsFlatTop90D(N), hrsFlatTop116D(N), hrsFlatTop144D(N),
-    hrsFlatTop169D(N), hrsFlatTop196D(N), hrsFlatTop223D(N),  hrsFlatTop248D(N);
+    hrsFlatTop169D(N), hrsFlatTop196D(N), hrsFlatTop223D(N), hrsFlatTop248D(N),
+    hannPoisson2(N), hannPoisson3(N), hannPoisson4(N);
 
   WF::createWindow(&rectangular[0],    N, WT::rectangular, true);
   WF::createWindow(&triangular[0],     N, WT::triangularNN,  true);
@@ -672,6 +698,13 @@ void windowFunctionSpectra()
   cosSumWindow3(&cosSumWnd3[0], N);
   cosSumWindow4(&cosSumWnd4[0], N);
   cosSumWindow5(&cosSumWnd5[0], N);
+
+
+  hannPoissonWindow(&hannPoisson2[0], N, 2.0);
+  hannPoissonWindow(&hannPoisson3[0], N, 3.0);
+  hannPoissonWindow(&hannPoisson4[0], N, 4.0);
+
+
 
   std::vector<double> chebyTweak(N), cheby20(N), cheby40(N), cheby60(N), cheby80(N), cheby100(N);
   //cheby_win(&cheby20[0], N,  20);  // old - uses prototype implementation
@@ -757,8 +790,13 @@ void windowFunctionSpectra()
   //plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
   //rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
 
-  plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
-  rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
+
+  plt.plotDecibelSpectra(N, &hannPoisson2[0], &hannPoisson3[0], &hannPoisson4[0]);
+  rsPlotVectors(hannPoisson2, hannPoisson3, hannPoisson4);
+  //hannPoisson2
+
+  //plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
+  //rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
 
   //plt.plotDecibelSpectra(N, &cheby60[0], &cheby60_2[0]);
 

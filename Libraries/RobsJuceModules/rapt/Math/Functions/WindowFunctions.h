@@ -290,6 +290,9 @@ public:
 };
 
 // todo:
+// -implement Hann-Poisson window - it has no sidelobes(!!!) - that may be a useful feature for the 
+//  sinusoidal analysis:
+//  https://en.wikipedia.org/wiki/Window_function#Hann%E2%80%93Poisson_window
 // -Generalize this to make a generic sum-of-cosines window where the Hanning- and Hamming windows
 //  are a special case. This class includes also Blackman, Nutall, etc. windows. We may be able to
 //  come up with other window shapes that supress sidebands even more than the existing standard
