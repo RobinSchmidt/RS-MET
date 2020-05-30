@@ -604,6 +604,9 @@ void cosSumWindow5(double* w, int N) // 5 term
 // giving the result: a0 == (5/16), a1 == (15/32), a2 == (3/16), a3 == (1/32)
 // don't count the constant term a0 as term - reduce all numbers in the names by 1
 
+
+
+
 void hannPoissonWindow(double* w, int N, double a)
 {
   int M = N-1;
@@ -632,6 +635,16 @@ void hannPoissonWindow(double* w, int N, double a)
   // with no sidelobes? ...and maybe with stepper slopes?
 
   rsArrayTools::normalizeMean(w, N);  
+}
+
+
+void cosSumPoissonWindow5(double* w, int N, double a)
+{
+  cosSumWindow5(w, N);
+  int M = N-1;
+  for(int n = 0; n < N; n++)
+    w[n] *= exp(-a*rsAbs(M-2*n) / M);
+  RAPT::rsArrayTools::normalizeMean(w, N);
 }
 
 void windowFunctionSpectra()
@@ -710,7 +723,15 @@ void windowFunctionSpectra()
   hannPoissonWindow(&hannPoisson3[0], N, 3.0);
   hannPoissonWindow(&hannPoisson4[0], N, 4.0);
   hannPoissonWindow(&hannPoisson5[0], N, 5.0);
-  // a = 0.87 seems to be around the limit where we don't see sidelobes
+  // increaing values of a tend to make the window narrower with a corresponding wider spectrum, 
+  // a = 0.87 seems to be around the limit where we don't see any sidelobes...sort of optimal 
+  // value?
+
+  // test:
+  //cosSumPoissonWindow5(&hannPoisson1[0], N, 0.04);
+  // this is interesting! do more research in combining the poisson window with cosine-sum windows
+  // ...we may get useful windows without sidelobes from this - the optimal value of a depends on 
+  // how many cosine terms we use
 
 
   std::vector<double> chebyTweak(N), cheby20(N), cheby40(N), cheby60(N), cheby80(N), cheby100(N);
@@ -800,7 +821,7 @@ void windowFunctionSpectra()
 
   plt.plotDecibelSpectra(N, &hannPoisson1[0], &hannPoisson2[0], &hannPoisson3[0], 
     &hannPoisson4[0], &hannPoisson5[0]);
-  //rsPlotVectors(hannPoisson1, hannPoisson2, hannPoisson3, hannPoisson4, hannPoisson5);
+  rsPlotVectors(hannPoisson1, hannPoisson2, hannPoisson3, hannPoisson4, hannPoisson5);
 
 
   //plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
