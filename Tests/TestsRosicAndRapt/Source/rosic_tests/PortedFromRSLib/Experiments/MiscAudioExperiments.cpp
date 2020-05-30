@@ -606,13 +606,17 @@ void cosSumWindow5(double* w, int N) // 5 term
 
 void hannPoissonWindow(double* w, int N, double a)
 {
-  //double s = 0.5 * (N-1);
-  //double t = PI / s;
+  int M = N-1;
   for(int n = 0; n < N; n++)
   {
-    //double hann    = 0.5 * (1 + cos(t*n));
-    double hann    = 0.5 * (1 - cos(2*PI*n / N));
-    double poisson = exp(-a*rsAbs(N-2*n) / N);
+    //double hann    = 0.5 * (1 - cos(2*PI*n / N));   // ZN version - an NN version would be better
+    //double hann    = 0.5 * (1 - cos(2*PI*n / M));   // NN version - at least, it's symmetric
+    //double hann    = 0.5 * (1 - cos(2*PI*(n+1) / N)); // NZ version
+    double hann    = 0.5 * (1 - cos(2*PI*(n+1) / (N+1)));  // NN version
+
+    //double poisson = exp(-a*rsAbs(N-2*n) / N);
+
+    double poisson = exp(-a*rsAbs(M-2*n) / M);
 
     //w[n] = hann;
     //w[n] = poisson;
@@ -632,15 +636,16 @@ void hannPoissonWindow(double* w, int N, double a)
 
 void windowFunctionSpectra()
 {
+  //int windowLength = 10;
   //int windowLength = 11;
   //int windowLength = 128;
   //int windowLength = 129;
   //int windowLength = 20;
-  //int windowLength = 32;
+  int windowLength = 32;
   //int windowLength = 37;
   //int windowLength = 45;
   //int windowLength = 38;
-  int windowLength = 64;
+  //int windowLength = 64;
 
   int fftSize = 8192;
   //int fftSize = 16384;
@@ -656,7 +661,7 @@ void windowFunctionSpectra()
     salFlatTopMin3(N),  salFlatTopMin4(N),  salFlatTopMin5(N),
     hrsFlatTop70(N), hrsFlatTop95(N), hrsFlatTop90D(N), hrsFlatTop116D(N), hrsFlatTop144D(N),
     hrsFlatTop169D(N), hrsFlatTop196D(N), hrsFlatTop223D(N), hrsFlatTop248D(N),
-    hannPoisson2(N), hannPoisson3(N), hannPoisson4(N);
+    hannPoisson1(N), hannPoisson2(N), hannPoisson3(N), hannPoisson4(N), hannPoisson5(N);
 
   WF::createWindow(&rectangular[0],    N, WT::rectangular, true);
   WF::createWindow(&triangular[0],     N, WT::triangularNN,  true);
@@ -700,10 +705,12 @@ void windowFunctionSpectra()
   cosSumWindow5(&cosSumWnd5[0], N);
 
 
+  hannPoissonWindow(&hannPoisson1[0], N, 0.87);
   hannPoissonWindow(&hannPoisson2[0], N, 2.0);
   hannPoissonWindow(&hannPoisson3[0], N, 3.0);
   hannPoissonWindow(&hannPoisson4[0], N, 4.0);
-
+  hannPoissonWindow(&hannPoisson5[0], N, 5.0);
+  // a = 0.87 seems to be around the limit where we don't see sidelobes
 
 
   std::vector<double> chebyTweak(N), cheby20(N), cheby40(N), cheby60(N), cheby80(N), cheby100(N);
@@ -791,9 +798,10 @@ void windowFunctionSpectra()
   //rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
 
 
-  plt.plotDecibelSpectra(N, &hannPoisson2[0], &hannPoisson3[0], &hannPoisson4[0]);
-  rsPlotVectors(hannPoisson2, hannPoisson3, hannPoisson4);
-  //hannPoisson2
+  plt.plotDecibelSpectra(N, &hannPoisson1[0], &hannPoisson2[0], &hannPoisson3[0], 
+    &hannPoisson4[0], &hannPoisson5[0]);
+  //rsPlotVectors(hannPoisson1, hannPoisson2, hannPoisson3, hannPoisson4, hannPoisson5);
+
 
   //plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
   //rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
