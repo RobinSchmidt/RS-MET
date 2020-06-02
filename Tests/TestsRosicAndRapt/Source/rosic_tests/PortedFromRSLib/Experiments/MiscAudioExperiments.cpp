@@ -606,19 +606,21 @@ void cosSumWindow5(double* w, int N) // 5 term
 
 
 
+/**
+a ~= 0.95 seems to be the (lower) limit for which we see no local maxima (sidelobes) - with that 
+value, we see a sort of staircase of saddle-points, the first ocurring at around -30 dB. Higher 
+values tend to smooth out the saddles more and more
 
+*/
 void hannPoissonWindow(double* w, int N, double a)
 {
   int M = N-1;
   for(int n = 0; n < N; n++)
   {
     //double hann    = 0.5 * (1 - cos(2*PI*n / N));   // ZN version - an NN version would be better
-    //double hann    = 0.5 * (1 - cos(2*PI*n / M));   // NN version - at least, it's symmetric
+    //double hann    = 0.5 * (1 - cos(2*PI*n / M));   // ZZ version - at least, it's symmetric
     //double hann    = 0.5 * (1 - cos(2*PI*(n+1) / N)); // NZ version
     double hann    = 0.5 * (1 - cos(2*PI*(n+1) / (N+1)));  // NN version
-
-    //double poisson = exp(-a*rsAbs(N-2*n) / N);
-
     double poisson = exp(-a*rsAbs(M-2*n) / M);
 
     //w[n] = hann;
@@ -640,7 +642,7 @@ void hannPoissonWindow(double* w, int N, double a)
 
 void cosSumPoissonWindow5(double* w, int N, double a)
 {
-  cosSumWindow5(w, N);
+  cosSumWindow5(w, N);  // we need an NN version here - i think, it produces a ZN or NZ version
   int M = N-1;
   for(int n = 0; n < N; n++)
     w[n] *= exp(-a*rsAbs(M-2*n) / M);
@@ -652,13 +654,14 @@ void windowFunctionSpectra()
   //int windowLength = 10;
   //int windowLength = 11;
   //int windowLength = 128;
-  //int windowLength = 129;
+  int windowLength = 129;
   //int windowLength = 20;
-  int windowLength = 32;
+  //int windowLength = 32;
   //int windowLength = 37;
   //int windowLength = 45;
   //int windowLength = 38;
   //int windowLength = 64;
+  //int windowLength = 255;
 
   int fftSize = 8192;
   //int fftSize = 16384;
@@ -718,13 +721,17 @@ void windowFunctionSpectra()
   cosSumWindow5(&cosSumWnd5[0], N);
 
 
-  hannPoissonWindow(&hannPoisson1[0], N, 0.87);
+  hannPoissonWindow(&hannPoisson1[0], N, 0.95);
+  //hannPoissonWindow(&hannPoisson2[0], N, 0.925);
+  //hannPoissonWindow(&hannPoisson3[0], N, 0.95);
+  //hannPoissonWindow(&hannPoisson4[0], N, 0.975);
+  //hannPoissonWindow(&hannPoisson5[0], N, 1.0);
   hannPoissonWindow(&hannPoisson2[0], N, 2.0);
   hannPoissonWindow(&hannPoisson3[0], N, 3.0);
   hannPoissonWindow(&hannPoisson4[0], N, 4.0);
   hannPoissonWindow(&hannPoisson5[0], N, 5.0);
   // increaing values of a tend to make the window narrower with a corresponding wider spectrum, 
-  // a = 0.87 seems to be around the limit where we don't see any sidelobes...sort of optimal 
+  // a = 0.88 seems to be around the limit where we don't see any sidelobes...sort of optimal 
   // value?
 
   // test:

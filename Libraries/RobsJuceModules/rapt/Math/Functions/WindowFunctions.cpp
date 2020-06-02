@@ -413,6 +413,20 @@ T rsWindowFunction::windowedSinc(T x, T length, T stretch)
   return rsNormalizedSinc(x/stretch) * cosineSquared(x, length);
 }
 
+/*
+
+The formulas for the ZZ, NZ, ZN, NN variants of the Hann window are:
+
+  0.5 * (1 - cos(2*PI*n     /  N));     // ZN
+  0.5 * (1 - cos(2*PI*n     / (N-1)));  // ZZ
+  0.5 * (1 - cos(2*PI*(n+1) /  N));     // NZ
+  0.5 * (1 - cos(2*PI*(n+1) / (N+1)));  // NN
+
+and similarly for other window types (ZZ is probably useless, but for the sake of completeness)
+
+
+*/
+
 // ideas:
 
 // implement minimax optimized windows that have the minimum (maximum) sidelobe level
