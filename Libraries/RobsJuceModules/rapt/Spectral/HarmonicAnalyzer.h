@@ -109,7 +109,11 @@ public:
   void setNumCyclesPerBlock(int newNumCycles) { cyclesPerBlock = newNumCycles; }
 
   /** Sets the type of window to be used. */
-  void setWindowType(rsWindowFunction::WindowType newType) { windowType = newType; }
+  void setWindowType(rsWindowFunction::WindowType newType)
+  { 
+    rsAssert(isWindowTypeSupported(newType), "Desired window type not supported");
+    windowType = newType; 
+  }
 
   /** Window sidelobe-rejection parameter in dB, applicable only when windowType is dolphChebychev.
   40 dB is hamming-like, 60 dB is blackman-like. */
@@ -185,6 +189,30 @@ public:
 
   //---------------------------------------------------------------------------------------------
   /** \name Inquiry */
+
+  /** Returns true, iff the given desired window type is one of our supported window types. */
+  bool isWindowTypeSupported(rsWindowFunction::WindowType desiredType)
+  { 
+    typedef rsWindowFunction::WindowType WT;
+    WT dt = desiredType;
+    return dt == WT::rectangular || dt == WT::hamming || dt == WT::blackman 
+        || dt == WT::blackmanHarris || dt == WT::dolphChebychev;
+  }
+  // todo: support more types. For the non-parameterized types, this is trivial - just add it to 
+  // the or-chain. But for other parameterized types (such as Kaiser), we need to expose the 
+  // relevant parameter via a setter and have to do a switch in fillWindow because for different
+  // window types, the parameter may have different meanings....
+
+  /** If a parameterized window function is used, this returns the numeric value of the window's
+  parameter. For a Dolph-Chebychev window, this parameter means the attenuation of the sidelobes
+  in dB. */
+  T getWindowParameter() const
+  {
+    return sidelobeRejection;
+    // If we want to use other parameterized windows later, we may need a switch here - currently, 
+    // the only supported parameterized window is the Dolph-Chebychev window
+  }
+
 
   std::vector<T> getOriginalTimeStamps() { return tIn; }
 

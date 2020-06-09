@@ -1496,8 +1496,9 @@ void harmonicDetection5Sines()
   double f4 = 1005;  // input frequency 4 in Hz
   double f5 = 1100;  // input frequency 5 in Hz
   double fs = 5000;  // sample rate
-  string wt = "bm";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
-                     // bh: Blackman/Harris
+  string wt = "dc";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
+                     // bh: Blackman-Harris, dc: Dolph-Chebychev
+  double rj = 58;    // sidelobe rejection for Dolph-Chebychev window
 
   //f3 = f4 = 1000; // test
 
@@ -1513,6 +1514,7 @@ void harmonicDetection5Sines()
   analyzer.setSpectralOversampling(zp);
   analyzer.setNumCyclesPerBlock(nc);
   analyzer.setWindowType(stringToWindowType(wt));
+  analyzer.setSidelobeRejection(rj);
   analyzer.getCycleFinder().setFundamental(f1);
   analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // mpw
 
@@ -1536,14 +1538,22 @@ void harmonicDetection5Sines()
   //   maybe write a preliminary negative value into the amplitude, indicating "no data" and fill 
   //   in the data in a post-processing step (maybe by interpolation)
   // f = 100,900,995,1005,1100:
-  //  -nc=4,zp=4,wt=bm,mpw=0.75: with the blackman window, partial 9 and 11 are erratic
+  //  -nc=4,zp=4,wt=bm,mpw=0.75: with the Blackman window, partial 9 and 11 are erratic
   //   -tweaking mpw doesn't help, tweaking zp neither, but setting nc=8 *does* help
-  //  -nc=4,zp=4,wt=hm,mpw=0.75: with the Hamming window, it actually look good
-  //  ->so it seems to have to do with the window-shape and the number of cycles
-  //  ->implement dolph-chebychev window, so we can continuously adjust the mainlobe-width
+  //  -nc=4,zp=4,wt=hm,mpw=0.75: with the Hamming window, it actually looks good
+  //   -> so it seems to have to do with the window-shape and the number of cycles
+  //  -nc=4,zp=4,wt=dc,rj=60,mpw=0.75: Dolph-Cheby-60 window, corresponding roughly to Blackman 
+  //   leads to gaps (as Blackman does) but the gaps are shorter than for Blackman
+  //   -with rj=58 dB (and below), the gaps get closed
+  //   -with rj=57 dB (and below), partial 10 does not drop to full zero anymore
+  //   -> rj=58 seems optimal in this case
+
+
 
   // -with wt=bh, nc=4, zp = 4, mpw=0.75: we totally miss the 9th and 11th partial even if there's
   //  a single 10th partial at 1kHz with no beating
+
+
 
   // todo: try to detect a weak partial between two strong partials
 }

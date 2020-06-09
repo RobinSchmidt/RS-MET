@@ -4,23 +4,26 @@ void rsWindowFunction::createWindow(T* w, int N, WindowType type, bool normalize
   typedef WindowType WT;
   switch( type )
   {
-  case WT::rectangular:  rectangular(w, N); break;
+  case WT::rectangular:    rectangular(w, N); break;
   case WT::triangularNN:   triangular( w, N); break;
     // insert other polynomial windows here...
+  case WT::hanningZZ:      hanning(       w, N); break; // ZZ windows are useless in practice!
+  case WT::hanningZN:      hanningZN(     w, N); break;
+  case WT::hamming:        hamming(       w, N); break;
+  case WT::blackman:       blackman(      w, N); break;
+  case WT::blackmanHarris: blackmanHarris(w, N); break;
+  case WT::blackmanNutall: blackmanNutall(w, N); break;
+  case WT::nutall:         nutall(        w, N); break;
 
-  case WT::hanningZZ:      hanning(    w, N); break;
-  case WT::hanningZN:   hanningZN(  w, N); break;
-  case WT::hamming:      hamming(    w, N); break;
+  // parameterized windows:
+  case WT::truncatedGaussian: truncatedGaussian(w, N, p); break; // p is the sigma
+  case WT::dolphChebychev:    dolphChebychev(   w, N, p); break; // p is sidelobe attenuation
 
-  case WT::blackman:     blackman(      w, N); break;
-  case WT::blackmanHarris:     blackmanHarris(w, N); break;
-  case WT::blackmanNutall:     blackmanNutall(w, N); break;
-  case WT::nutall:              nutall(        w, N); break;
-
-  case WT::truncatedGaussian:  truncatedGaussian(w, N, p); break; // p is the sigma
-
-    // more types to come...
-  default: rectangular(w, N);
+  default: 
+  {
+    rsError("not yet implemented");    // more types to come...
+    rectangular(w, N);
+  }
   }
 
   if(normalizeMean) {
@@ -31,7 +34,7 @@ void rsWindowFunction::createWindow(T* w, int N, WindowType type, bool normalize
 
 
 template<class T>
-T rsWindowFunction::getMainLobeWidth(WindowType type, T param)
+T rsWindowFunction::getMainLobeWidth(WindowType type, T p)
 {
   typedef WindowType WT;
   switch( type )
@@ -40,13 +43,20 @@ T rsWindowFunction::getMainLobeWidth(WindowType type, T param)
 
   //case triangularNN:   return T(4);  // not sure yet -> plot and verify
   case WT::hanningZZ:      return T(4);
-  case WT::hanningZN:   return T(4);
-  case WT::hamming:      return T(4);
+  case WT::hanningZN:      return T(4);
+  case WT::hamming:        return T(4);
 
-  case WT::blackman:     return T(6);
+  case WT::blackman:       return T(6);
 
-  case WT::blackmanHarris:     return T(8);
-  case WT::blackmanNutall:     return T(8);
+  case WT::blackmanHarris: return T(8);
+  case WT::blackmanNutall: return T(8);
+
+
+  case WT::dolphChebychev: return rsAbs(p) / T(10);
+  // verify this formula! this is a very coarse ad-hoc approximation based on the observation that 
+  // with p=60 we get a roughly blackman-like and with p=40 a roughly hamming-like window
+
+
 
   default: 
   {
@@ -397,9 +407,10 @@ static void rsWindowFunction::dolphChebychev(T* w, int M, T atten)
   for(int k = 0; k < M; k++)
     w[k] = p[(k+shift)%M].real();
 
-  rsArrayTools::normalizeMean(w, M);  
+  rsArrayTools::normalizeMean(w, M);
   // maybe make normalization optional - but if we don't normalize at all, what will we get? maybe 
   // we should normalize the peak if "normalize mean" is not desired?
+  // seems like with 60 dB attenuation, we get a mean of 1000...figure out!
 }
 // This implementation follows the one from scipy
 // https://github.com/scipy/scipy/blob/v0.19.0/scipy/signal/windows.py#L1293-L1416

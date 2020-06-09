@@ -114,6 +114,7 @@ RAPT::rsWindowFunction::WindowType stringToWindowType(const std::string& wt)
   if(wt == "hm") return WT::hamming;
   if(wt == "bm") return WT::blackman;
   if(wt == "bh") return WT::blackmanHarris;
+  if(wt == "dc") return WT::dolphChebychev;
   RAPT::rsError("Unknown window type");
   return WT::rectangular;
 }

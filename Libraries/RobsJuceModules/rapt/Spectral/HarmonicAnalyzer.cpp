@@ -363,7 +363,8 @@ template<class T>
 int rsHarmonicAnalyzer<T>::getSpectralPeakSearchWidth()
 {
   //T peakSearchWidth = T(1); // maybe make user parameter later
-  T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, T(0));
+  //T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, T(0));  // old
+  T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, getWindowParameter());
 
   //T s = T(0.5);  
   // old: 1.0 - works for hamming, blackman needs around 0.5 (numCycles=4) - when the mainlobe is
@@ -646,8 +647,8 @@ void rsHarmonicAnalyzer<T>::prepareBuffer(const std::vector<T>& sig, std::vector
 template<class T>
 void rsHarmonicAnalyzer<T>::fillWindow()
 {
-  rsWindowFunction::createWindow(&wnd[0], (int) wnd.size(), windowType, true);
-  //rsWindowFunction::createWindow(&wnd[0], (int) wnd.size(), windowType, false);
+  rsWindowFunction::createWindow(
+    &wnd[0], (int) wnd.size(), windowType, true, getWindowParameter());
 }
 
 
@@ -678,5 +679,15 @@ greater or equal to the length of the longest group. For example, with nc=3:
 
   98,101,102, 99,97,100, 102,101,99, 97,100,102
      301         296         302        299            -> stretch all these triples to length 512
+
+
+
+
+ToDo: 
+
+Figure out, if there's any advantage in any circumstances to use Blackman or Hamming or other 
+windows as opposed to the Dolph-Chebychev - i think, the Dolph-Cheby window is actually optimal for 
+this kind of sinusoidal analysis, so we may not need the others anymore...but who knows....
+
 
 */
