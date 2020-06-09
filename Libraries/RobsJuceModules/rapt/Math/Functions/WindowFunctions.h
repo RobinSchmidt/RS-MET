@@ -49,6 +49,8 @@ public:
     blackmanNutall, // NN
     nutall,         // ZZ
 
+    dolphChebychev,
+
     /*
     //wkpdFlatTop
 
@@ -71,6 +73,8 @@ public:
     hrsFlatTop223D, 
     hrsFlatTop248D,
     */
+
+
 
 
     truncatedGaussian
@@ -279,6 +283,12 @@ public:
   // allocates temporary heap-memory
 
   // maybe provide a function dolphChebychevByWidth in which the parameter gives the mainlobe width
+
+  // todo: should compute the mainlobe-width from the sidelobe attenuation (length may not be 
+  // needed when the width is normalized somehow, we'll see)
+  //template<class T>
+  //static T dolphChebychevMainlobeWidth(int length, T attenuation);
+
 
   /** Returns the value of a cosine-squared windowed (normalized) sinc function. It has nonzero
   values in the range -length/2...+length/2 and zero crossings at integer multiples of the

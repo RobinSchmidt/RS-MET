@@ -386,7 +386,7 @@ int main(int argc, char* argv[])
   //taperedFourierSeries();
   //transientModeling();
   //windowFunctionsContinuous();
-  windowFunctionSpectra();
+  //windowFunctionSpectra();
   //windowedSinc();
   //waveMorph();  // under construction
 
@@ -406,7 +406,7 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
-//  beatingSines();
+  //beatingSines();
   //envelopeDeBeating();
   //sineRecreation();         // maybe move elsewhere
   //sineWithPhaseCatchUp();   // dito
@@ -433,7 +433,7 @@ int main(int argc, char* argv[])
 
   //harmonicDetection2Sines();
   //harmonicDetection3Sines();
-//  harmonicDetection5Sines();
+  harmonicDetection5Sines();
   //harmonicAnalysis1();
 
   //amplitudeDeBeating();

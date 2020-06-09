@@ -106,13 +106,19 @@ public:
   // rename to setZeroPadFactor
 
   /** Sets the number of cycles in each analyzed block. Must be a power of two. */
-  void setNumCyclesPerBlock(int newNumCycles)
-  {
-    cyclesPerBlock = newNumCycles;
-  }
+  void setNumCyclesPerBlock(int newNumCycles) { cyclesPerBlock = newNumCycles; }
 
   /** Sets the type of window to be used. */
   void setWindowType(rsWindowFunction::WindowType newType) { windowType = newType; }
+
+  /** Window sidelobe-rejection parameter in dB, applicable only when windowType is dolphChebychev.
+  40 dB is hamming-like, 60 dB is blackman-like. */
+  void setSidelobeRejection(T rejection) { sidelobeRejection = rejection; }
+  // the number of cycles per block should be increased when the rejection is increased (i think, 
+  // this is because of the wider mainlobe-width) - todo: figure out, how exactly - also allow all
+  // integers, not just powers of two, for allowing the desired functional dependency to be 
+  // realized more accurately
+
 
   /** Sets up, whether or not inharmonic partials should be expected. If this is set to true (and 
   the number cycles per block is > 1), the algorithm tries to find the actual partial frequency by
@@ -338,7 +344,7 @@ protected:
 
 
   /** Fills our window function array. */
-  void fillWindow(); // just a stub atm
+  void fillWindow();
 
 
 
@@ -363,8 +369,9 @@ protected:
   // normalized unit?). there are some rules, how the number-of-cycles per block should be related
   // to the mainlobe-width - wider mainlobes (i.e. higher sidelobe-rejection) require more cycles 
   // per block - document these things...
+  T sidelobeRejection = 40; // sidelobe-rejection parameter in dB, applicable only when windowType 
+                            // is dolphChebychev, 40 dB is hamming-like, 60 blackman-like
 
-  //int window = rectangular;  // type of window function
 
   bool antiAlias   = false;
 

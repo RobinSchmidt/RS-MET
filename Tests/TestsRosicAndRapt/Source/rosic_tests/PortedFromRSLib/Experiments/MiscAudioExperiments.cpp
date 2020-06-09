@@ -642,19 +642,19 @@ void hannPoissonWindow(double* w, int N, double a)
 
 void cosSumPoissonWindow5(double* w, int N, double a)
 {
-  cosSumWindow5(w, N);  // we need an NN version here - i think, it produces a ZN or NZ version
-  int M = N-1;
-  for(int n = 0; n < N; n++)
-    w[n] *= exp(-a*rsAbs(M-2*n) / M);
+  cosSumWindow5(w, N);  // we need an NN version here - i think, it produces a ZN version
+  //int M = N-1;
+  //for(int n = 0; n < N; n++)
+  //  w[n] *= exp(-a*rsAbs(M-2*n) / M);
   RAPT::rsArrayTools::normalizeMean(w, N);
 }
 
 void windowFunctionSpectra()
 {
-  //int windowLength = 10;
+  int windowLength = 10;
   //int windowLength = 11;
   //int windowLength = 128;
-  int windowLength = 129;
+  //int windowLength = 129;
   //int windowLength = 20;
   //int windowLength = 32;
   //int windowLength = 37;
@@ -722,20 +722,16 @@ void windowFunctionSpectra()
 
 
   hannPoissonWindow(&hannPoisson1[0], N, 0.95);
-  //hannPoissonWindow(&hannPoisson2[0], N, 0.925);
-  //hannPoissonWindow(&hannPoisson3[0], N, 0.95);
-  //hannPoissonWindow(&hannPoisson4[0], N, 0.975);
-  //hannPoissonWindow(&hannPoisson5[0], N, 1.0);
   hannPoissonWindow(&hannPoisson2[0], N, 2.0);
   hannPoissonWindow(&hannPoisson3[0], N, 3.0);
   hannPoissonWindow(&hannPoisson4[0], N, 4.0);
   hannPoissonWindow(&hannPoisson5[0], N, 5.0);
-  // increaing values of a tend to make the window narrower with a corresponding wider spectrum, 
-  // a = 0.88 seems to be around the limit where we don't see any sidelobes...sort of optimal 
+  // increasing values of a tend to make the window narrower with a corresponding wider spectrum, 
+  // a = 0.95 seems to be around the limit where we don't see any sidelobes...sort of optimal 
   // value?
 
   // test:
-  //cosSumPoissonWindow5(&hannPoisson1[0], N, 0.04);
+  cosSumPoissonWindow5(&hannPoisson1[0], N, 0.04);
   // this is interesting! do more research in combining the poisson window with cosine-sum windows
   // ...we may get useful windows without sidelobes from this - the optimal value of a depends on 
   // how many cosine terms we use
