@@ -651,14 +651,14 @@ void cosSumPoissonWindow5(double* w, int N, double a)
 
 void windowFunctionSpectra()
 {
-  int windowLength = 10;
+  //int windowLength = 10;
   //int windowLength = 11;
   //int windowLength = 128;
   //int windowLength = 129;
   //int windowLength = 20;
   //int windowLength = 32;
   //int windowLength = 37;
-  //int windowLength = 45;
+  int windowLength = 45;
   //int windowLength = 38;
   //int windowLength = 64;
   //int windowLength = 255;
@@ -739,10 +739,10 @@ void windowFunctionSpectra()
 
   std::vector<double> chebyTweak(N), cheby20(N), cheby40(N), cheby60(N), cheby80(N), cheby100(N);
   //cheby_win(&cheby20[0], N,  20);  // old - uses prototype implementation
-  WF::dolphChebychev(&cheby20[0], N,  20.);
-  WF::dolphChebychev(&cheby40[0], N,  40.);
-  WF::dolphChebychev(&cheby60[0], N,  60.);
-  WF::dolphChebychev(&cheby80[0], N,  80.);
+  WF::dolphChebychev(&cheby20[0],  N,  20.);
+  WF::dolphChebychev(&cheby40[0],  N,  40.);
+  WF::dolphChebychev(&cheby60[0],  N,  60.);
+  WF::dolphChebychev(&cheby80[0],  N,  80.);
   WF::dolphChebychev(&cheby100[0], N, 100.);
   WF::dolphChebychev(&chebyTweak[0], N, 17.5); // tweakable
   // 17.5: mainlobe-width matches rectangular window
@@ -788,8 +788,11 @@ void windowFunctionSpectra()
   // we need a formula for the zeros of chebychev polynomials
   //   Tn(x) = cos(n*acos(x)) for x < 1, so we need to solve cos(n*acos(x)) = 0 for x 
   //   let u = acos(x), the solve cos(n*u) = 0 to find u = pi/2n -> x = acos(u) = acos(pi/2n)
-  // ...but i actually thing, defining the width at the first crossing of the attenuation point
+  // ...but i actually think, defining the width at the first crossing of the attenuation point
   // makes more sense anyway
+
+  // as a coarse approximation, we may use width = attenuation / 10 by observing the similarity to
+  // Hamming and Blackman windows for 40 and 60 dB of attenuation (which are 4 and 6)
 
 
   // maybe optionally plot the window functions themselves
@@ -822,13 +825,18 @@ void windowFunctionSpectra()
   //rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
 
 
-  plt.plotDecibelSpectra(N, &hannPoisson1[0], &hannPoisson2[0], &hannPoisson3[0], 
-    &hannPoisson4[0], &hannPoisson5[0]);
-  rsPlotVectors(hannPoisson1, hannPoisson2, hannPoisson3, hannPoisson4, hannPoisson5);
+  //plt.plotDecibelSpectra(N, &hannPoisson1[0], &hannPoisson2[0], &hannPoisson3[0], 
+  //  &hannPoisson4[0], &hannPoisson5[0]);
+  //rsPlotVectors(hannPoisson1, hannPoisson2, hannPoisson3, hannPoisson4, hannPoisson5);
+
+  //plt.plotDecibelSpectra(N, &cheby20[0], &rectangular[0]);// compare rectangular and cheby20
+  //plt.plotDecibelSpectra(N, &cheby40[0], &hamming[0]);  // compare hamming and cheby40
+  //plt.plotDecibelSpectra(N, &cheby60[0], &blackman[0]); // compare blackman and cheby60
+  //plt.plotDecibelSpectra(N, &cheby100[0], &blackmanHarris[0]); // compare blackmanHarris and cheby100
 
 
-  //plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
-  //rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
+  plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
+  rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
 
   //plt.plotDecibelSpectra(N, &cheby60[0], &cheby60_2[0]);
 

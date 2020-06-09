@@ -687,7 +687,9 @@ ToDo:
 
 Figure out, if there's any advantage in any circumstances to use Blackman or Hamming or other 
 windows as opposed to the Dolph-Chebychev - i think, the Dolph-Cheby window is actually optimal for 
-this kind of sinusoidal analysis, so we may not need the others anymore...but who knows....
+this kind of sinusoidal analysis, so we may not need any others anymore and could throw them out at
+some point to clean up the interface...but who knows - for the time being, i'll leave them in, just 
+in case...
 
 
 */

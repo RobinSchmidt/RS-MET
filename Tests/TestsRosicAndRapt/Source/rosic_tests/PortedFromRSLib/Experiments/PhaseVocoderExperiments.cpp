@@ -1553,6 +1553,10 @@ void harmonicDetection5Sines()
   // -with wt=bh, nc=4, zp = 4, mpw=0.75: we totally miss the 9th and 11th partial even if there's
   //  a single 10th partial at 1kHz with no beating
 
+  // todo: try the dc window with real-world signals that show the gaps-problem - reduce the 
+  // rejection parameter until the gaps disappear - watch out, if other artifacts appear when doing
+  // so...
+
 
 
   // todo: try to detect a weak partial between two strong partials

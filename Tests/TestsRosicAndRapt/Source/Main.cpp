@@ -386,7 +386,7 @@ int main(int argc, char* argv[])
   //taperedFourierSeries();
   //transientModeling();
   //windowFunctionsContinuous();
-  //windowFunctionSpectra();
+  windowFunctionSpectra();
   //windowedSinc();
   //waveMorph();  // under construction
 
