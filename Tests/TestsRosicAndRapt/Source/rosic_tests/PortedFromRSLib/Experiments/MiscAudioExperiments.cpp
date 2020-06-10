@@ -658,12 +658,16 @@ void windowFunctionSpectra()
   //int windowLength = 20;
   //int windowLength = 32;
   //int windowLength = 37;
-  int windowLength = 45;
+  //int windowLength = 45;
   //int windowLength = 38;
-  //int windowLength = 64;
+  int windowLength = 64;
   //int windowLength = 255;
+  //int windowLength = 8192;
 
-  int fftSize = 8192;
+
+  //int fftSize = windowLength;  // makes sense to read off the mainlobe-widths
+  int fftSize = 20*windowLength; // this even more - just divide the read off value by 10
+  //int fftSize = 8192;
   //int fftSize = 16384;
 
   // create various window functions:
@@ -807,14 +811,15 @@ void windowFunctionSpectra()
   SpectrumPlotter<double> plt;
   plt.setFftSize(fftSize);
   plt.setFloorLevel(-180);
-  //plt.setFreqAxisUnit(FU::binIndex);
+  plt.setFreqAxisUnit(FU::binIndex);
   //plt.setFreqAxisUnit(FU::normalized);
-  plt.setFreqAxisUnit(FU::omega);
+  //plt.setFreqAxisUnit(FU::omega);
   //plt.setShowPhase(true);
-  //plt.setZoom(); // show only low portion up to 1/zoom of the spectrum
+  //plt.setZoom(); // show only low portion up to 1/zoom of the spectrum..maybe setLowFreqZoom
+                   // ...or, more generally, allow a bandpass-like setting
 
-  //plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
-  //rsPlotVectors(rectangular, triangular, hanning, hamming);
+  plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
+  rsPlotVectors(rectangular, triangular, hanning, hamming);
 
   //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
   //rsPlotVectors(rectangular, blackman, blackmanHarris, blackmanNutall, nutall);
@@ -835,8 +840,8 @@ void windowFunctionSpectra()
   //plt.plotDecibelSpectra(N, &cheby100[0], &blackmanHarris[0]); // compare blackmanHarris and cheby100
 
 
-  plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
-  rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
+  //plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
+  //rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
 
   //plt.plotDecibelSpectra(N, &cheby60[0], &cheby60_2[0]);
 
@@ -858,6 +863,19 @@ void windowFunctionSpectra()
 
   //plt.plotDecibelSpectra(N, &rectangular[0], &chebyTweak[0]);
   //plt.plotDecibelSpectra(N, &cosSumWnd2[0], &chebyTweak[0]);
+
+
+
+  // Observations:
+  // To read off the mainlobe width from spectrum plot, it makes sense to use 
+  // fftSize == windowLength and plt.setFreqAxisUnit(FU::binIndex). In this case, the mainlobe 
+  // width is twice the value that is read off from the spectrum (twice, because the mainlobe goes 
+  // from minus to plus that value). For example, the rectangular and triangular windows have their
+  // first zero at 1 or 2 respectively, so their widths (if we define them at the first zero) are 2 
+  // or 4 which is what rsWindowFunction::getMainLobeWidth returns for these windows. For Hann and 
+  // Hamming window, the slope has a kink at 2. When using an fftSize == 20*windowSize, we see the
+  // structure of the sidelobes better and we can also directly read off the mainblobe-width by 
+  // dividing the read-off value by 10.
 };
 
 

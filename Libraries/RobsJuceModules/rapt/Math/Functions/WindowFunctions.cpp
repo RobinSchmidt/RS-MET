@@ -78,9 +78,9 @@ T rsWindowFunction::getSideLobeLevel(WindowType type, T param)
 
   case WT::hanningZZ:      return T(-31.5);
   case WT::hanningZN:   return T(-31.5);
-  case WT::hamming:      return T(-42.7);
+  case WT::hamming:      return T(-42.7); // hmm...more like -42.4 ?
 
-  case WT::blackman:     return T(-58);
+  case WT::blackman:     return T(-58);  // write 58.0, if that's what is meant
 
   case WT::blackmanHarris:     return T(-92);
   case WT::blackmanNutall:     return T(-96.8);
@@ -91,7 +91,7 @@ T rsWindowFunction::getSideLobeLevel(WindowType type, T param)
     return T(0);
   }
   }
-  // todo: verify these values in plots
+  // todo: verify these values in plots - make accurate measurements
 }
 
 template<class T>

@@ -358,7 +358,8 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const
   //std::vector<T> phs(N);
   for(size_t i = 0; i < inputArrays.size(); i++) {
     RAPT::rsArrayTools::convert(inputArrays[i], &tmp[0], signalLength);
-    RAPT::rsArrayTools::fillWithZeros(&tmp[signalLength], N-signalLength);
+    if(signalLength < N)
+      RAPT::rsArrayTools::fillWithZeros(&tmp[signalLength], N-signalLength);
     transformer.transformComplexBufferInPlace(&tmp[0]);
 
     // this may be not quite correct at DC (i think, because we need to incorporate the value
@@ -383,7 +384,7 @@ std::vector<T> SpectrumPlotter<T>::getFreqAxis(int maxBin)
 {
   std::vector<T> f(maxBin);
 
-  // todo: check everything for off-by-one errors
+  // todo: check everything for off-by-one errors for even and odd sizes
 
   GNUPlotter::rangeLinear(&f[0], maxBin+1, T(0), T(maxBin));
   T scaler = T(1);

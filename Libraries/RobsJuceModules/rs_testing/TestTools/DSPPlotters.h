@@ -32,7 +32,7 @@ public:
   /** Decides whether frequency parameters that are passed in to certain functions should be
   interpreted as radian frequencies (typically denoted as omega) or not. In the latter case, they
   are interpreted as being in Hz for analog filters or as fractions of the sample rate for 
-  digital filters. By default, i.e. if you don't call this function, they are interpreted as 
+  digital filters. True by default, i.e. if you don't call this function, they are interpreted as 
   radian frequencies. */
   void setFrequenciesAreRadian(bool areRadian);
 
@@ -127,8 +127,8 @@ protected:
 
   // have conversion functions convert_BA_To_ZPK, convert_ZPK_To_BA
   // or filterSpecBA2ZPK, ba2zpk, zpk2ba
-  // maybe keep tpk and ba specifications for each filter, i.e. keep the two representaions in sync
-  // and use whatever representation is more convenient to deal with to compute the various
+  // maybe keep tpk and ba specifications for each filter, i.e. keep the two representations in 
+  // sync and use whatever representation is more convenient to deal with to compute the various
   // plots/numbers
 
   // maybe we could also keep SOS representations and maybe others?
@@ -142,6 +142,12 @@ protected:
 // numerator and denominator, quotient-rule and maybe chain-rule to evaluate the derivative of the
 // phase-response)
 
+//=================================================================================================
+
+/** Class for plotting FFT spectra. You may pass several input signals as time-domain arrays and it
+will plot the Spectra of these signals.
+
+*/
 
 template <class T>
 class SpectrumPlotter : public GNUPlotter
@@ -151,25 +157,27 @@ public:
 
   enum class FreqAxisUnits  // maybe rename to FreqAxisUnit
   {
-    binIndex = 0,
-    normalized,
-    omega,
-    hertz
+    binIndex = 0,    // 0...N/2     (verify!)
+    normalized,      // 0...0.5
+    omega,           // 0...pi
+    hertz            // 0...fs/2    (verify!)
   };
 
 
   /** Given up to 10 signal buffers of length "signalLength", this function performs an FFT on each 
-  of them and plot the spectral magintudes as decibel values.  
-  (the FFT size is determined by setFfftSize and may be different from signalLength) */
-  //template <class T>
+  of them and plots the spectral magnitudes as decibel values. The FFT size is determined by 
+  setFftSize and may be different from signalLength - if signalLength is shorter, the FFT buffers
+  will be padded with zeros and if it's longer, only the leading sections of buffers will be 
+  used. */
   void plotDecibelSpectra(int signalLength, const T *x0, const T *x1 = nullptr, const T *x2 = nullptr, 
     const T *x3 = nullptr, const T *x4 = nullptr, const T *x5 = nullptr, const T *x6 = nullptr, 
     const T *x7 = nullptr, const T *x8 = nullptr, const T *x9 = nullptr);
 
 
 
-
+  /** Sets the FFT size. Does not have to be a power of 2 - we use Bluestein FFT here. */
   void setFftSize(int newSize) { fftSize = newSize; }
+  // maybe rename to setTrafoSize
 
   void setFreqAxisUnit(FreqAxisUnits newUnit) { freqAxisUnit = newUnit; }
 
