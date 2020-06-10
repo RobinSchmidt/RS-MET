@@ -284,8 +284,8 @@ public:
 
   // todo: should compute the mainlobe-width from the sidelobe attenuation (length may not be 
   // needed when the width is normalized somehow, we'll see)
-  //template<class T>
-  //static T dolphChebychevMainlobeWidth(int length, T attenuation);
+  template<class T>
+  static T dolphChebychevMainLobeWidth(int length, T attenuation);
 
 
   /** Returns the value of a cosine-squared windowed (normalized) sinc function. It has nonzero

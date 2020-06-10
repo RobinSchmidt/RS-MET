@@ -649,7 +649,15 @@ void cosSumPoissonWindow5(double* w, int N, double a)
 }
 
 
+double chebyWinMainlobeWidth2(int N, double a)
+{
+  double r  = rsDbToAmp(rsAbs(a));     // linear attenuation (as divisor)
+  double x0 = cosh(acosh(r) / (N-1));  // cheby-poly input value?
+  double wc = 2*acos(1/x0);            // radian cutoff freq?
+  return N*wc / PI;                    // width in bins
+}
 
+// obsolete:
 double chebyWinMainlobeWidth(int N, double a)
 {
   double r  = rsDbToAmp(a);               // maybe use -rsAbs(a)
@@ -821,9 +829,10 @@ void windowFunctionSpectra()
   cw60  = chebyWinMainlobeWidth(N, -60);
   cw80  = chebyWinMainlobeWidth(N, -80);
   cw100 = chebyWinMainlobeWidth(N, -100);
+  cw100 = chebyWinMainlobeWidth2(N, -100);
   // these values look ok - now do more precise numerical tests with short windows (like 10, 11)
 
-
+  //cw100 = WF::dolphChebychevMainLobeWidth(N, -100); // linker error
 
   // maybe optionally plot the window functions themselves
   // note that gnuplot issues an error when we try to plot the window itself and immediately 

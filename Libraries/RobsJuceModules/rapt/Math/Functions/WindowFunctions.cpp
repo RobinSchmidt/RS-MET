@@ -433,6 +433,16 @@ static void rsWindowFunction::dolphChebychev(T* w, int M, T atten)
 // anyway?
 
 template<class T>
+static T rsWindowFunction::dolphChebychevMainLobeWidth(int N, T a)
+{
+  T r  = rsDbToAmp(rsAbs(a));      // linear attenuation (as divisor)
+  T x0 = cosh(acosh(r) / T(N-1));  // cheby-poly input value?
+  T wc = 2*acos(T(1)/x0);          // radian cutoff freq?
+  return T(N)*wc / T(PI);          // width in bins
+  // see: https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window_Main_Lobe_Width.html
+}
+
+template<class T>
 T rsWindowFunction::windowedSinc(T x, T length, T stretch)
 {
   return rsNormalizedSinc(x/stretch) * cosineSquared(x, length);
