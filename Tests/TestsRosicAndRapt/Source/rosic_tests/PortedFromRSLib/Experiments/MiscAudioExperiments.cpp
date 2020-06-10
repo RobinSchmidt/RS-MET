@@ -639,7 +639,6 @@ void hannPoissonWindow(double* w, int N, double a)
   rsArrayTools::normalizeMean(w, N);  
 }
 
-
 void cosSumPoissonWindow5(double* w, int N, double a)
 {
   cosSumWindow5(w, N);  // we need an NN version here - i think, it produces a ZN version
@@ -648,6 +647,65 @@ void cosSumPoissonWindow5(double* w, int N, double a)
   //  w[n] *= exp(-a*rsAbs(M-2*n) / M);
   RAPT::rsArrayTools::normalizeMean(w, N);
 }
+
+
+
+double chebyWinMainlobeWidth(int N, double a)
+{
+  double r  = rsDbToAmp(a); 
+
+  double x0 = cosh(acosh(1/r) / (N-1)); 
+  // == chebyPoly(1/r, 1/(N-1))?  ...try also with N...maybe for very small values of n that make
+  // the difference apparent
+
+  double wc = 2*acos(1/x0);
+  double k  = N*wc/(2*PI);   // hmm...also here: check for off-by-one error
+  return 2*k;
+
+  //return rsAbs(a) / 10.0; // very coarse approximation
+
+  // compute chebychev window mainlobe width:
+  // https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window.html
+  // https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window_Definition.html
+  // https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window_Main_Lobe_Width.html
+}
+// clean up when done:
+// hmm...these formulas seem to compute the cutoff frequency in radians dependning on N and give
+// a too small value - we actually want a value independent of N - maybe just leave out the 
+// division by N-1? ...try it:
+//double r  = rsDbToAmp(-17.5);   // plug attenuation here
+//double x0 = cosh(acosh(1/r));  // == 1/r - this is the identity function
+//double wc = 2*acos(1/x0);
+//double B  = 2*wc;
+// no - that doesn't seem to work, for an attenuation of 17.5 dB, we should get a value of 2 but 
+// get 5.7 - more research needed - try to figure out, how the equations above were derived - 
+// maybe they can be reverse engineered to give the normalized mainlobe width in terms of DFT 
+// bins - or maybe we can from the normalized frequency wc compute the bin-index..
+// see also here - the window has impulses at its endpoints:
+// https://ccrma.stanford.edu/~jos/sasp/Example_Chebyshev_Windows_Transforms.html
+
+// i think, w = 2*pi*f/fs together with f = k*fs/N gives a bin index k = M*w/2pi where k is 
+// actually our desired bin-width B and w is equal to wc above...soo we get the equation
+// wc = B*2pi/N = 2*acos(1/x0) = 2*acos(1/cosh(acosh(1/r) / (N-1))) for N - is that correct?
+// maybe let the SpectrumPlotter scale the frequency axis in different ways - in particular,
+// let it go from 0...PI and see if the formula above for wc gives the right value on that axis
+
+// oookay - i think, for the rectangular window, the mainlobe width is defined as the first zero 
+// of the spectrum which occurs at 2*PI/N radians
+// for the chebycev window, the cutoff is measured at the point where the mainlobe crosses the
+// attenuation for the first time - that's a little bit below the first zero, but for a rough
+// computation of mainlobe width, it should be good enough - but maybe we can find a formula
+// for the zeros of the chebychev spectrum - it's defined in the freq-domain anyway - i think, 
+// we need a formula for the zeros of chebychev polynomials
+//   Tn(x) = cos(n*acos(x)) for x < 1, so we need to solve cos(n*acos(x)) = 0 for x 
+//   let u = acos(x), the solve cos(n*u) = 0 to find u = pi/2n -> x = acos(u) = acos(pi/2n)
+// ...but i actually think, defining the width at the first crossing of the attenuation point
+// makes more sense anyway
+
+// as a coarse approximation, we may use width = attenuation / 10 by observing the similarity to
+// Hamming and Blackman windows for 40 and 60 dB of attenuation (which are 4 and 6)
+
+
 
 void windowFunctionSpectra()
 {
@@ -667,8 +725,9 @@ void windowFunctionSpectra()
 
   //int fftSize = windowLength;  // makes sense to read off the mainlobe-widths
   //int fftSize = 20*windowLength; // this even more - just divide the read off value by 10
+  int fftSize = 200*windowLength;  // more precise - divide by 100 - but slower
   //int fftSize = 8192;
-  int fftSize = 16384;
+  //int fftSize = 16384;
 
   // create various window functions:
   typedef RAPT::rsWindowFunction WF;
@@ -735,10 +794,11 @@ void windowFunctionSpectra()
   // value?
 
   // test:
-  cosSumPoissonWindow5(&hannPoisson1[0], N, 0.04);
+  //cosSumPoissonWindow5(&hannPoisson1[0], N, 0.04);
   // this is interesting! do more research in combining the poisson window with cosine-sum windows
   // ...we may get useful windows without sidelobes from this - the optimal value of a depends on 
   // how many cosine terms we use
+
 
 
   std::vector<double> chebyTweak(N), cheby20(N), cheby40(N), cheby60(N), cheby80(N), cheby100(N);
@@ -751,52 +811,21 @@ void windowFunctionSpectra()
   WF::dolphChebychev(&chebyTweak[0], N, 17.5); // tweakable
   // 17.5: mainlobe-width matches rectangular window
   // 46.5: matches cosSumWnd2
-  // They have spikes ta the ends which get more pronounced with longer lengths and with lower
+  // They have spikes at the ends which get more pronounced with longer lengths and with lower
   // sidelobe attenuation
 
+  // measurements of the mainlobe-widths of the cheby window for N=64
+  // attenuation:  20     40     60     80     100
+  // first cross:  1.935  3.423  4.9037 6.379  7.845
+  // first zero:   2.19   3.57   5.01   6.46   7.91
+  double cw20, cw40, cw60, cw80, cw100;
+  cw20  = chebyWinMainlobeWidth(N, -20);
+  cw40  = chebyWinMainlobeWidth(N, -40);
+  cw60  = chebyWinMainlobeWidth(N, -60);
+  cw80  = chebyWinMainlobeWidth(N, -80);
+  cw100 = chebyWinMainlobeWidth(N, -100);
+  // these values look ok - now do more precise numerical tests with short windows (like 10, 11)
 
-  // compute chebychev window mainlobe width:
-  // https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window_Main_Lobe_Width.html
-  double r  = rsDbToAmp(-17.5);   // plug attenuation here - the formula should give a width of around 2 at 17.5
-  double x0 = cosh(acosh(1/r) / (N-1)); // == chebyPoly(1/r, 1/(N-1))?
-  double wc = 2*acos(1/x0);
-  double w0Rect = 2*PI/N; // first zero of rectangular window for reference
-  //double B  = 2*wc;
-  double k = N*wc/(2*PI); // see below
-  // hmm...these formulas seem to compute the cutoff frequency in radians dependning on N and give
-  // a too small value - we actually want a value independent of N - maybe just leave out the 
-  // division by N-1? ...try it:
-  //double r  = rsDbToAmp(-17.5);   // plug attenuation here
-  //double x0 = cosh(acosh(1/r));  // == 1/r - this is the identity function
-  //double wc = 2*acos(1/x0);
-  //double B  = 2*wc;
-  // no - that doesn't seem to work, for an attenuation of 17.5 dB, we should get a value of 2 but 
-  // get 5.7 - more research needed - try to figure out, how the equations above were derived - 
-  // maybe they can be reverse engineered to give the normalized mainlobe width in terms of DFT 
-  // bins - or maybe we can from the normalized frequency wc compute the bin-index..
-  // see also here - the window has impulses at its endpoints:
-  // https://ccrma.stanford.edu/~jos/sasp/Example_Chebyshev_Windows_Transforms.html
-
-  // i think, w = 2*pi*f/fs together with f = k*fs/N gives a bin index k = M*w/2pi where k is 
-  // actually our desired bin-width B and w is equal to wc above...soo we get the equation
-  // wc = B*2pi/N = 2*acos(1/x0) = 2*acos(1/cosh(acosh(1/r) / (N-1))) for N - is that correct?
-  // maybe let the SpectrumPlotter scale the frequency axis in different ways - in particular,
-  // let it go from 0...PI and see if the formula above for wc gives the right value on that axis
-
-  // oookay - i think, for the rectangular window, the mainlobe width is defined as the first zero 
-  // of the spectrum which occurs at 2*PI/N radians
-  // for the chebycev window, the cutoff is measured at the point where the mainlobe crosses the
-  // attenuation for the first time - that's a little bit below the first zero, but for a rough
-  // computation of mainlobe width, it should be good enough - but maybe we can find a formula
-  // for the zeros of the chebychev spectrum - it's defined in the freq-domain anyway - i think, 
-  // we need a formula for the zeros of chebychev polynomials
-  //   Tn(x) = cos(n*acos(x)) for x < 1, so we need to solve cos(n*acos(x)) = 0 for x 
-  //   let u = acos(x), the solve cos(n*u) = 0 to find u = pi/2n -> x = acos(u) = acos(pi/2n)
-  // ...but i actually think, defining the width at the first crossing of the attenuation point
-  // makes more sense anyway
-
-  // as a coarse approximation, we may use width = attenuation / 10 by observing the similarity to
-  // Hamming and Blackman windows for 40 and 60 dB of attenuation (which are 4 and 6)
 
 
   // maybe optionally plot the window functions themselves
@@ -821,8 +850,8 @@ void windowFunctionSpectra()
   //plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
   //rsPlotVectors(rectangular, triangular, hanning, hamming);
 
-  plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
-  rsPlotVectors(rectangular, blackman, blackmanHarris, blackmanNutall, nutall);
+  //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
+  //rsPlotVectors(rectangular, blackman, blackmanHarris, blackmanNutall, nutall);
 
   //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
 
@@ -840,8 +869,8 @@ void windowFunctionSpectra()
   //plt.plotDecibelSpectra(N, &cheby100[0], &blackmanHarris[0]); // compare blackmanHarris and cheby100
 
 
-  //plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
-  //rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
+  plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
+  rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
 
   //plt.plotDecibelSpectra(N, &cheby60[0], &cheby60_2[0]);
 

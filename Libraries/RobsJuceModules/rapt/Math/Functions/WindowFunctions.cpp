@@ -39,9 +39,9 @@ T rsWindowFunction::getMainLobeWidth(WindowType type, T p)
   typedef WindowType WT;
   switch( type )
   {
-  case WT::rectangular:  return T(2);
+  case WT::rectangular:    return T(2);
+  case WT::triangularNN:   return T(4);
 
-  //case triangularNN:   return T(4);  // not sure yet -> plot and verify
   case WT::hanningZZ:      return T(4);
   case WT::hanningZN:      return T(4);
   case WT::hamming:        return T(4);
