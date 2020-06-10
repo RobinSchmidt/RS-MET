@@ -652,15 +652,12 @@ void cosSumPoissonWindow5(double* w, int N, double a)
 
 double chebyWinMainlobeWidth(int N, double a)
 {
-  double r  = rsDbToAmp(a); 
-
-  double x0 = cosh(acosh(1/r) / (N-1)); 
-  // == chebyPoly(1/r, 1/(N-1))?  ...try also with N...maybe for very small values of n that make
-  // the difference apparent
-
+  double r  = rsDbToAmp(a);               // maybe use -rsAbs(a)
+  double x0 = cosh(acosh(1/r) / (N-1));   // == chebyPoly(1/r, 1/(N-1))? 
   double wc = 2*acos(1/x0);
-  double k  = N*wc/(2*PI);   // hmm...also here: check for off-by-one error
+  double k  = N*wc/(2*PI);
   return 2*k;
+  // this can be simplified: use rsAbs(a), replace 1/r by r, combine the 2-factors
 
   //return rsAbs(a) / 10.0; // very coarse approximation
 
@@ -710,7 +707,7 @@ double chebyWinMainlobeWidth(int N, double a)
 void windowFunctionSpectra()
 {
   //int windowLength = 10;
-  //int windowLength = 11;
+  int windowLength = 11;
   //int windowLength = 128;
   //int windowLength = 129;
   //int windowLength = 20;
@@ -718,7 +715,7 @@ void windowFunctionSpectra()
   //int windowLength = 37;
   //int windowLength = 45;
   //int windowLength = 38;
-  int windowLength = 64;
+  //int windowLength = 64;
   //int windowLength = 255;
   //int windowLength = 8192;
 

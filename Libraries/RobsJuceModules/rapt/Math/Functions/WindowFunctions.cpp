@@ -55,6 +55,7 @@ T rsWindowFunction::getMainLobeWidth(WindowType type, T p)
   case WT::dolphChebychev: return rsAbs(p) / T(10);
   // verify this formula! this is a very coarse ad-hoc approximation based on the observation that 
   // with p=60 we get a roughly Blackman-like and with p=40 a roughly Hamming-like window
+  // we need also the window-length for the formula
 
 
 
