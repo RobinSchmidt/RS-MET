@@ -738,7 +738,7 @@ void windowFunctionSpectra()
 
 
   std::vector<double> chebyTweak(N), cheby20(N), cheby40(N), cheby60(N), cheby80(N), cheby100(N);
-  //cheby_win(&cheby20[0], N,  20);  // old - uses prototype implementation
+  //cheby_win(&cheby20[0], N,  20.0);  // old - uses prototype implementation with O(N^2) complexity
   WF::dolphChebychev(&cheby20[0],  N,  20.);
   WF::dolphChebychev(&cheby40[0],  N,  40.);
   WF::dolphChebychev(&cheby60[0],  N,  60.);

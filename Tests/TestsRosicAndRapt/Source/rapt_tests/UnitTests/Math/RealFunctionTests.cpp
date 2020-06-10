@@ -275,6 +275,39 @@ bool testWrap(std::string &reportString)
   return r;
 }
 
+bool testWindowFunctions(int N)
+{
+  bool r = true;
+
+  using Vec = std::vector<double>;
+  using WF = rsWindowFunction;
+  using WT = rsWindowFunction::WindowType;
+
+  Vec w(N);  // actual window produced by library code
+  Vec v(N);  // reference window produced by prototype code
+  double tol = 1.e-14;
+
+  // compare prototype and production code implementation of Dolph-Chebychev window with various 
+  // attenuations:
+  WF::dolphChebychev(&w[0], N, 20.); cheby_win(&v[0], N, 20.); r &= rsIsCloseTo(w, v, tol);
+  WF::dolphChebychev(&w[0], N, 40.); cheby_win(&v[0], N, 40.); r &= rsIsCloseTo(w, v, tol);
+  WF::dolphChebychev(&w[0], N, 60.); cheby_win(&v[0], N, 60.); r &= rsIsCloseTo(w, v, tol);
+  WF::dolphChebychev(&w[0], N, 80.); cheby_win(&v[0], N, 80.); r &= rsIsCloseTo(w, v, tol);
+
+  return r;
+}  
+
+bool testWindowFunctions()
+{
+  bool r = true;
+
+  r &= testWindowFunctions(16);  // N is a power of two
+  r &= testWindowFunctions(17);  // N is odd
+  r &= testWindowFunctions(18);  // N is even but not a power of two
+
+  return r;
+}
+
 bool testRealFunctions()
 {
   std::string testName = "rsRealFunctions";
@@ -286,6 +319,7 @@ bool testRealFunctions()
   testResult &= testSinc(               dummy);
   testResult &= testFunctionIterators(  dummy);
   testResult &= testWrap(               dummy);
+  testResult &= testWindowFunctions();
 
   //appendTestResultToReport(reportString, testName, testResult);
   return testResult;

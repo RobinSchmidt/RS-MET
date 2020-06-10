@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  //passed &= runUnitTestsRapt();
+  passed &= runUnitTestsRapt();
   //passed &= runUnitTestsRosic();
   //passed = passed;  // dummy
 
@@ -433,7 +433,7 @@ int main(int argc, char* argv[])
 
   //harmonicDetection2Sines();
   //harmonicDetection3Sines();
-  harmonicDetection5Sines();
+//  harmonicDetection5Sines();
   //harmonicAnalysis1();
 
   //amplitudeDeBeating();

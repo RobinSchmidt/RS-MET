@@ -433,8 +433,9 @@ The formulas for the ZZ, NZ, ZN, NN variants of the Hann window are:
   0.5 * (1 - cos(2*PI*(n+1) /  N));     // NZ
   0.5 * (1 - cos(2*PI*(n+1) / (N+1)));  // NN
 
-and similarly for other window types (ZZ is probably useless, but for the sake of completeness). 
-Maybe use the general formula:
+and similarly for other window types (ZZ is probably useless, but for the sake of completeness - or 
+maybe it's useful for plots for comparison purposes but not for practical usage). Maybe use the 
+general formula:
 
   0.5 * (1 - cos(2*PI*(n+k1) / (N+k2)));
 
@@ -443,7 +444,15 @@ where k1 = 0 or 1, k2 = -1 or 0 or +1 - use this for all cosine-sum windows
 
 */
 
-// ideas:
+/*
+
+ToDo:
+-implement "exact" and "optimal" variants of Hamming (a0=25/46, a1=1-a0) and Blackman (see 
+ Wikipedia)
+
+// Ideas:
+
+
 
 // implement minimax optimized windows that have the minimum (maximum) sidelobe level
 // for a 2-term window, use Hamming as starting point, for 3-term start with blackman and 
@@ -494,4 +503,6 @@ where k1 = 0 or 1, k2 = -1 or 0 or +1 - use this for all cosine-sum windows
 // comprehensive list of window functions and some new flat-top windows"
 // http://edoc.mpg.de/395068
 // it has *many* windows - especially the flat-top ones may be interesting
+
+*/
 

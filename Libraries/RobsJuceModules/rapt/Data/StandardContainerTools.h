@@ -385,6 +385,14 @@ T rsMaxValue(const std::vector<T>& x) { return rsArrayTools::maxValue(&x[0], (in
 template<class T>
 T rsMaxAbs(const std::vector<T>& x) { return rsArrayTools::maxAbs(&x[0], (int) x.size()); }
 
+template<class T>
+bool rsIsCloseTo(const std::vector<T>& x, const std::vector<T>& y, T tol)
+{
+  if(x.size() != y.size()) 
+    return false;
+  return rsArrayTools::almostEqual(&x[0], &y[0], (int) x.size(), tol);
+}
+
 //template<class T>
 //T rsMaxValue(const std::vector<T>& x)
 //{
