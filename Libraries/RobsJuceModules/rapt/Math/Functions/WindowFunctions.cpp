@@ -34,7 +34,7 @@ void rsWindowFunction::createWindow(T* w, int N, WindowType type, bool normalize
 
 
 template<class T>
-T rsWindowFunction::getMainLobeWidth(WindowType type, T p)
+T rsWindowFunction::getMainLobeWidth(WindowType type, T p, int N)
 {
   typedef WindowType WT;
   switch( type )
@@ -51,8 +51,10 @@ T rsWindowFunction::getMainLobeWidth(WindowType type, T p)
   case WT::blackmanHarris: return T(8);
   case WT::blackmanNutall: return T(8);
 
+  case WT::dolphChebychev: return dolphChebychevMainLobeWidth(N, p);
 
-  case WT::dolphChebychev: return rsAbs(p) / T(10);
+
+  //case WT::dolphChebychev: return rsAbs(p) / T(10);
   // verify this formula! this is a very coarse ad-hoc approximation based on the observation that 
   // with p=60 we get a roughly Blackman-like and with p=40 a roughly Hamming-like window
   // we need also the window-length for the formula
@@ -435,6 +437,8 @@ static void rsWindowFunction::dolphChebychev(T* w, int M, T atten)
 template<class T>
 static T rsWindowFunction::dolphChebychevMainLobeWidth(int N, T a)
 {
+  rsAssert(N > 0);  // maybe we should assert a longer length?
+
   T r  = rsDbToAmp(rsAbs(a));      // linear attenuation (as divisor)
   T x0 = cosh(acosh(r) / T(N-1));  // cheby-poly input value?
   T wc = 2*acos(T(1)/x0);          // radian cutoff freq?

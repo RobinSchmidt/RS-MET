@@ -6,7 +6,7 @@ template<class T>
 int rsSinusoidalAnalyzer<T>::getRequiredBlockSize(rsWindowFunction::WindowType type, T df, T fs, 
   bool oddSize)
 {
-  T B = rsWindowFunction::getMainLobeWidth(type, 0.0); // later maybe pass a window parameter
+  T B = rsWindowFunction::getMainLobeWidth(type, 0.0, 0); // later maybe pass a window parameter
   int size = (int) ceil(B*fs/df);
   if(oddSize && rsIsEven(size))   // maybe remove, if linear interpolation is used for the phase
     size += 1;

@@ -832,7 +832,11 @@ void windowFunctionSpectra()
   cw100 = chebyWinMainlobeWidth2(N, -100);
   // these values look ok - now do more precise numerical tests with short windows (like 10, 11)
 
-  //cw100 = WF::dolphChebychevMainLobeWidth(N, -100); // linker error
+  cw20  = WF::dolphChebychevMainLobeWidth(N, -20.0);
+  cw40  = WF::dolphChebychevMainLobeWidth(N, -40.0);
+  cw60  = WF::dolphChebychevMainLobeWidth(N, -60.0);
+  cw80  = WF::dolphChebychevMainLobeWidth(N, -80.0);
+  cw100 = WF::dolphChebychevMainLobeWidth(N, -100.0); // linker error
 
   // maybe optionally plot the window functions themselves
   // note that gnuplot issues an error when we try to plot the window itself and immediately 

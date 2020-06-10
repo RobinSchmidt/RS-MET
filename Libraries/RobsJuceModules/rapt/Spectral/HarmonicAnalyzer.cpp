@@ -364,7 +364,9 @@ int rsHarmonicAnalyzer<T>::getSpectralPeakSearchWidth()
 {
   //T peakSearchWidth = T(1); // maybe make user parameter later
   //T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, T(0));  // old
-  T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, getWindowParameter());
+  //T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, getWindowParameter());
+  T mainlobeWidth = rsWindowFunction::getMainLobeWidth(
+    windowType, getWindowParameter(), blockSize);
 
   //T s = T(0.5);  
   // old: 1.0 - works for hamming, blackman needs around 0.5 (numCycles=4) - when the mainlobe is
@@ -588,7 +590,10 @@ bool rsHarmonicAnalyzer<T>::isPeakPartial(std::vector<T>& v, int peakBin)
   //return true;   // test
 
   // minWidth can be precomputed:
-  T mainlobeWidth = zeroPad * rsWindowFunction::getMainLobeWidth(windowType, T(0));
+  //T mainlobeWidth = zeroPad * rsWindowFunction::getMainLobeWidth(windowType, T(0)); // old
+  T mainlobeWidth = zeroPad * rsWindowFunction::getMainLobeWidth(
+    windowType, getWindowParameter(), blockSize);
+
   T minWidth1     = minPeakToMainlobeWidthRatio*mainlobeWidth;
 
   T harmonicWidth = zeroPad * cyclesPerBlock;

@@ -94,7 +94,7 @@ public:
   value, so the compiler can figure out the template type. ...later it may be used to compute 
   mainlobe widths for parametrized windows but this is not yet implemented */
   template<class T>
-  static T getMainLobeWidth(WindowType type, T param);
+  static T getMainLobeWidth(WindowType type, T param, int length);
 
   /** Returns the level (in decibels) of the highest sidelobe of the given window (just as the 
   mainlobe width, these values are also just rule-of-thumb values). The mainlobe is supposed to be
