@@ -72,18 +72,22 @@ T rsWindowFunction::getSideLobeLevel(WindowType type, T param)
   typedef WindowType WT;
   switch( type )
   {
-  case WT::rectangular:  return T(-13.2);
+  // piecewise polynomial:
+  case WT::rectangular:    return T(-13.3);
+  case WT::triangularNN:   return T(-26.6);
 
-  case WT::triangularNN:   return T(-26.5);
-
+  // 2 term cosine sum :
   case WT::hanningZZ:      return T(-31.5);
-  case WT::hanningZN:   return T(-31.5);
-  case WT::hamming:      return T(-42.7); // hmm...more like -42.4 ?
+  case WT::hanningZN:      return T(-31.5);
+  case WT::hamming:        return T(-42.4);
 
-  case WT::blackman:     return T(-58);  // write 58.0, if that's what is meant
+  // 3 term cosine sum:
+  case WT::blackman:       return T(-58.1);
 
-  case WT::blackmanHarris:     return T(-92);
-  case WT::blackmanNutall:     return T(-96.8);
+  // 4 term cosine sum:
+  case WT::blackmanHarris: return T(-92.1);
+  case WT::blackmanNutall: return T(-93.8);
+  case WT::nutall:         return T(-93.3);
 
   default: 
   {
@@ -91,7 +95,16 @@ T rsWindowFunction::getSideLobeLevel(WindowType type, T param)
     return T(0);
   }
   }
-  // todo: verify these values in plots - make accurate measurements
+
+  // The values have been obtained by creating a length 64 window with normalized DC gain (mean of
+  // the window values = 1) and doing a length 16384 FFT and reading off the value of the 2nd 
+  // largest maximum and rounding it to 1 digit after the point. 
+  // ToDo: 
+  // -automate that process by writing a function getSideLobeLevel(T* w, int N, int fftSize)
+  // -maybe give two figures after the point (maybe use a larger FFT size to get more precise 
+  //  readouts)
+  // -figure out, if the values change, if we use other window-lengths (they shouldn't)
+  // -implement it for the missing window types
 }
 
 template<class T>

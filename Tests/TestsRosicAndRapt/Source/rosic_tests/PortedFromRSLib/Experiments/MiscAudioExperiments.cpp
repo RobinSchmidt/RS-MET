@@ -666,9 +666,9 @@ void windowFunctionSpectra()
 
 
   //int fftSize = windowLength;  // makes sense to read off the mainlobe-widths
-  int fftSize = 20*windowLength; // this even more - just divide the read off value by 10
+  //int fftSize = 20*windowLength; // this even more - just divide the read off value by 10
   //int fftSize = 8192;
-  //int fftSize = 16384;
+  int fftSize = 16384;
 
   // create various window functions:
   typedef RAPT::rsWindowFunction WF;
@@ -818,11 +818,11 @@ void windowFunctionSpectra()
   //plt.setZoom(); // show only low portion up to 1/zoom of the spectrum..maybe setLowFreqZoom
                    // ...or, more generally, allow a bandpass-like setting
 
-  plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
-  rsPlotVectors(rectangular, triangular, hanning, hamming);
+  //plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
+  //rsPlotVectors(rectangular, triangular, hanning, hamming);
 
-  //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
-  //rsPlotVectors(rectangular, blackman, blackmanHarris, blackmanNutall, nutall);
+  plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
+  rsPlotVectors(rectangular, blackman, blackmanHarris, blackmanNutall, nutall);
 
   //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
 

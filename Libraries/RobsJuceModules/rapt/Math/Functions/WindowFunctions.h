@@ -12,9 +12,6 @@ References:
      "Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including 
       a comprehensive list of window functions and some new flat-top windows"  */
 
-// i think, i need to double all values of the mainlobe width - because the lobe is two-sided and 
-// here, i only considered the right half...done? -> check this
-
 class rsWindowFunction
 {
 
@@ -86,7 +83,8 @@ public:
   values in enum windowTypes. If normalizeMean is true, the window values will be scaled such that 
   they have a mean value of unity. This will give the window function unit gain at DC which is 
   often desirable. Some windows have an adjustable parameter - for these, the value of this 
-  parameter is passed in param. */
+  parameter is passed in param. The meaning of the parameter may vary from one window to 
+  another. */
   template<class T>
   static void createWindow(T* w, int N, WindowType type, bool normalizeMean, T param = 0);
 
@@ -131,11 +129,11 @@ public:
   template<class T>
   static T raisedCosine(T x, T length, T p = 0.0);
 
-  /** Retruns a value of the "exact" Blackman window. Compared to the unqualified "Blackman"
-  window, this exact version uses coefficients for the terms that place place zeros at the third
-  and fourth sidelobes, thereby reducing the sidelobe levels further. The third parameter is just a
-  dummy to make the function suitable for usage with function pointers that generally may point to
-  parametrized windows.
+  /** Returns a value of the "exact" Blackman window. Compared to the unqualified "Blackman"
+  window, this exact version uses coefficients for the terms that place zeros at the third and 
+  fourth sidelobes, thereby reducing the sidelobe levels further at the expense of the sidelobe 
+  rolloff. The third parameter is just a dummy to make the function suitable for usage with 
+  function pointers that generally may point to parametrized windows.
   References:
   http://en.wikipedia.org/wiki/Window_function#Blackman_windows  */
   template<class T>
