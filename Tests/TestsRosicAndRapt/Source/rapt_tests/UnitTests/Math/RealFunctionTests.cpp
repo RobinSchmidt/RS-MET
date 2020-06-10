@@ -9,9 +9,8 @@ typedef std::complex<double> rsComplexDbl; // get rid
 //}
 //// move to RSLib
 
-bool testAbsAndSign(std::string &reportString)
+bool testAbsAndSign()
 {
-  std::string testName = "rsAbsAndSign";
   bool testResult = true;
 
 
@@ -30,13 +29,11 @@ bool testAbsAndSign(std::string &reportString)
   // todo: test denormals, infinities, nans...
 
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
-bool testHyperbolicFunctions(std::string &reportString)
+bool testHyperbolicFunctions()
 {
-  std::string testName = "rsHyperbolicFunctions";
   bool testResult = true;
 
   double xMin = -2000.0;
@@ -85,13 +82,11 @@ bool testHyperbolicFunctions(std::string &reportString)
 
   }
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
-bool testSinc(std::string &reportString)
+bool testSinc()
 {
-  std::string testName = "rsSinc";
   bool testResult = true;
 
   double x, y;
@@ -128,7 +123,6 @@ bool testSinc(std::string &reportString)
   y = rsNormalizedSinc(x);
   testResult &= rsAbs(y) < EPS;
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -188,9 +182,8 @@ bool testSineIterator(double w, double p, double a)
     return false;
 }
 
-bool testFunctionIterators(std::string &reportString)
+bool testFunctionIterators()
 {
-  std::string testName = "FunctionIterators";
   bool testResult = true;
 
   // test complex exponential iterator with different values of z corresponding to decaying spiral
@@ -203,7 +196,6 @@ bool testFunctionIterators(std::string &reportString)
   testResult &= testSineIterator(2.5,  0.3, 1.2);
   testResult &= testSineIterator(2.5, -0.3, 1.2);
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -248,9 +240,8 @@ bool testFunctionIterators(std::string &reportString)
 }
 */
 
-bool testWrap(std::string &reportString)
+bool testWrap()
 {
-  std::string testName = "WrapAround";
   bool r = true;
 
   double d;
@@ -271,7 +262,6 @@ bool testWrap(std::string &reportString)
   r &= (d = RAPT::rsInterpolateWrapped(9.0, 3.0, 0.5, 0.0, 10.0)) ==  1.0;
   r &= (d = RAPT::rsInterpolateWrapped(3.0, 9.0, 0.5, 0.0, 10.0)) ==  1.0;
 
-  appendTestResultToReport(reportString, testName, r);
   return r;
 }
 
@@ -310,17 +300,14 @@ bool testWindowFunctions()
 
 bool testRealFunctions()
 {
-  std::string testName = "rsRealFunctions";
-  std::string dummy;
   bool testResult = true;
 
-  testResult &= testAbsAndSign(         dummy);
-  //testResult &= testHyperbolicFunctions(dummy); // test doesn't pass
-  testResult &= testSinc(               dummy);
-  testResult &= testFunctionIterators(  dummy);
-  testResult &= testWrap(               dummy);
+  testResult &= testAbsAndSign();
+  //testResult &= testHyperbolicFunctions(); // test doesn't pass
+  testResult &= testSinc();
+  testResult &= testFunctionIterators();
+  testResult &= testWrap();
   testResult &= testWindowFunctions();
 
-  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
