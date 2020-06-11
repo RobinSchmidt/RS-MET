@@ -445,6 +445,13 @@ static T rsWindowFunction::dolphChebychevMainLobeWidth(int N, T a)
   return T(N)*wc / T(PI);          // width in bins
   // see: https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window_Main_Lobe_Width.html
 }
+// ToDo:
+// Maybe we can find a formula for the zeros of the chebychev spectrum - it's defined in the 
+// freq-domain anyway - i think, we need a formula for the zeros of chebychev polynomials
+//   Tn(x) = cos(n*acos(x)) for x < 1, so we need to solve cos(n*acos(x)) = 0 for x 
+//   let u = acos(x), the solve cos(n*u) = 0 to find u = pi/2n -> x = acos(u) = acos(pi/2n)
+// then we could define the mainlobe-width also in terms of the first zero in the spectrum. But 
+// maybe that's not so useful anyway...
 
 template<class T>
 T rsWindowFunction::windowedSinc(T x, T length, T stretch)

@@ -1498,7 +1498,7 @@ void harmonicDetection5Sines()
   double fs = 5000;  // sample rate
   string wt = "dc";  // window type: rc: rectangular, hn: Hanning, hm: Hamming, bm: Blackman, 
                      // bh: Blackman-Harris, dc: Dolph-Chebychev
-  double rj = 58;    // sidelobe rejection for Dolph-Chebychev window
+  double rj = 72.1;  // sidelobe rejection for Dolph-Chebychev window
 
   //f3 = f4 = 1000; // test
 
@@ -1516,7 +1516,7 @@ void harmonicDetection5Sines()
   analyzer.setWindowType(stringToWindowType(wt));
   analyzer.setSidelobeRejection(rj);
   analyzer.getCycleFinder().setFundamental(f1);
-  analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // mpw
+  analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // mpw - seems to make no difference
 
   // analyze:
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int) x.size());
@@ -1547,6 +1547,11 @@ void harmonicDetection5Sines()
   //   -with rj=58 dB (and below), the gaps get closed
   //   -with rj=57 dB (and below), partial 10 does not drop to full zero anymore
   //   -> rj=58 seems optimal in this case
+  //   ...update: after implementing the correct formula for computing the mainlobe-width (rather 
+  //   than using the coarse approximation), i could push rj up to 72.1 without introducing gaps
+  //   todo: experiment with mpw for a given rj - what does this do to the gaps? i think, larger 
+  //   values should produce more gaps because more partials will be "too thin" and therefore 
+  //   rejected
 
 
 
@@ -1556,6 +1561,11 @@ void harmonicDetection5Sines()
   // todo: try the dc window with real-world signals that show the gaps-problem - reduce the 
   // rejection parameter until the gaps disappear - watch out, if other artifacts appear when doing
   // so...
+
+  // mpw seems to make no difference because of 
+  //   int minWidth    = (int) round( rsMin(minWidth1, minWidth2) );
+  // in rsHarmonicAnalyzer<T>::isPeakPartial
+  // ...should we use max? try with real-world signals
 
 
 

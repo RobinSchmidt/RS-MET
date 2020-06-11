@@ -600,6 +600,7 @@ bool rsHarmonicAnalyzer<T>::isPeakPartial(std::vector<T>& v, int peakBin)
   T minWidth2     = minPeakToHarmonicWidthRatio*harmonicWidth;
 
   int minWidth    = (int) round( rsMin(minWidth1, minWidth2) );
+    // ...this needs some serious consideration - if it's really a good idea to do it like this...
 
 
 

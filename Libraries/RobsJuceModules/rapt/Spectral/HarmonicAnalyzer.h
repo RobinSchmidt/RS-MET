@@ -146,6 +146,10 @@ public:
   order to be considered a partial - if its narrower, we assume a sidelobe peak and discard the 
   peak. Default value is 0.75 (maybe 0.5 would be better? ...tests needed...) */
   void setMinPeakToMainlobeWidthRatio(T newWidth) { minPeakToMainlobeWidthRatio = newWidth; }
+  // i think, the optimal value should depend on the ratio of mainlobe-width to the width of the 
+  // widest sidelobe - if the widest sidelobe is 0.5 times as wide as the mainlobe, we should use a 
+  // factor > 0.5 or something - maybe measure this ratio for the Chebychev window - it will 
+  // probably depend on the length and certainly on the attenuation
 
   void setMinPeakToHarmonicWidthRatio(T newWidth) { minPeakToHarmonicWidthRatio = newWidth; }
 

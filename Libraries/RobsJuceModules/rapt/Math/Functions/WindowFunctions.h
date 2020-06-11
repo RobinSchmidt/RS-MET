@@ -284,6 +284,10 @@ public:
 
   // todo: should compute the mainlobe-width from the sidelobe attenuation (length may not be 
   // needed when the width is normalized somehow, we'll see)
+
+  /** Computes the width of the mainlobe of the Dolph-Chebychev window, given its length and 
+  attenuation in dB. The width is measured at the point, where the mainlobe crosses the attenuation
+  value. */
   template<class T>
   static T dolphChebychevMainLobeWidth(int length, T attenuation);
 
