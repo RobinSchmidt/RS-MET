@@ -257,6 +257,13 @@ protected:
   marks). */
   bool flattenPitch(T* sampleData, int numSamples);
 
+  void setMaxMeasuredCycleLength(T maxLength);
+
+  /** Sets the length of one cycle in samples and re-allocates buffers, if necessarry. */
+  void setCycleLength(int newLength);
+  // obsolete - absorb content in setMaxMeasuredCycleLength and delete
+
+
   /** The second step in the analysis algo is to perform an FFT on each cycle of pitch-flattened
   signal. Because the pitch is now flat, each cycle has the same length (which was chosen to be
   a power of two, greater or equal to the length of the longest cycle in the input signal). This
@@ -294,9 +301,6 @@ protected:
   /** Refines the frequency estimates in the model, if the respective options are set to true (this
   step is optional). */
   void refineFrequencies(RAPT::rsSinusoidalModel<T>& mdl);
-
-  /** Sets the length of one cycle in samples and re-allocates buffers, if necessarry. */
-  void setCycleLength(int newLength);
 
   /** Returns length of time-warping map (sampled at cycle marks). */
   int getMapLength() const { return (int) tIn.size(); }

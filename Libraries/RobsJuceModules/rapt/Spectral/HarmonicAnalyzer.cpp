@@ -71,8 +71,7 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   if(maxLength < 2) return false;                // report failure
 
   // determine analysis cycle length, i.e. the fixed length to which all cycles will be stretched:
-  cycleLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
-  setCycleLength(cycleLength);  // does also some buffer-re-allocation
+  setMaxMeasuredCycleLength(maxLength); // does also some buffer-re-allocation 
   //rsPlotVector(cycleLengths);
   //rsPlotVector(sampleRate/cycleLengths);
 
@@ -114,6 +113,30 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   return true;
 }
 
+template<class T>
+void rsHarmonicAnalyzer<T>::setMaxMeasuredCycleLength(T maxLength)
+{
+  cycleLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
+  setCycleLength(cycleLength); 
+}
+
+template<class T>
+void rsHarmonicAnalyzer<T>::setCycleLength(int newLength)
+{
+  cycleLength = newLength;
+  blockSize   = cyclesPerBlock * cycleLength;
+  sig.resize(blockSize); 
+  wnd.resize(blockSize);
+  fillWindow();
+  trafoSize = zeroPad * blockSize;
+  sigPadded.resize(trafoSize);
+  mag.resize(trafoSize); 
+  phs.resize(trafoSize);
+  trafo.setBlockSize(trafoSize);
+}
+
+
+// can this be deleted sometime soon?
 template<class T>
 void rsHarmonicAnalyzer<T>::analyzeHarmonicsOld(RAPT::rsSinusoidalModel<T>& mdl)
 {
@@ -299,21 +322,6 @@ void rsHarmonicAnalyzer<T>::refineFrequencies(RAPT::rsSinusoidalModel<T>& mdl)
 
   if(freqsPhaseConsistent)
     mdl.makeFreqsConsistentWithPhases(); // use rsSinusoidalProcessor
-}
-
-template<class T>
-void rsHarmonicAnalyzer<T>::setCycleLength(int newLength)
-{
-  cycleLength = newLength;
-  blockSize   = cyclesPerBlock * cycleLength;
-  sig.resize(blockSize); 
-  wnd.resize(blockSize);
-  fillWindow();
-  trafoSize = zeroPad * blockSize;
-  sigPadded.resize(trafoSize);
-  mag.resize(trafoSize); 
-  phs.resize(trafoSize);
-  trafo.setBlockSize(trafoSize);
 }
 
 template<class T>
