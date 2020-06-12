@@ -1,7 +1,9 @@
 #ifndef RAPT_STATISTICS_H
 #define RAPT_STATISTICS_H
 
-// move into class rsStatistics and get rid of rs prefixes
+// move into class rsStatistics and get rid of rs prefixes ... or maybe into a a class rsCorrelator
+// also make the interface more consistent with rsArrayTools (use pointers instead of arrays and 
+// const-pointers for inputs)
 
 /** Computes the sample cross-correlation sequence of 2 sequences x, y of length N and stores the
 result in r which is also of length N. You may use this function also to compute an
@@ -9,8 +11,9 @@ autocorrelation sequence by passing the same pointer for x and y. The array r fo
 be distinct from x and y. The sample cross-correlation is a biased estimate of the true
 cross-corrleation. The bias is such that a value for lag k is underestimated by the factor
 (N-k)/N. This puts lower weight on higher lags which is often desirable because these values are
-less reliably estimated due to a smaller number of averaged terms. The function automatically
-chooses between direct and FFT-based computation according to the sequence length N. It can
+less reliably estimated due to a smaller number of averaged samples - so the less reliably 
+estimated values in the correlation sequence are drawn toward zero. The function automatically
+dispatches between direct and FFT-based computation according to the sequence length N. It can
 optionally remove the bias, i.e. call rsRemoveCorrelationBias after the computation. */
 template<class T>
 void rsCrossCorrelation(T x[], T y[], int N, T r[], bool removeBias = false);

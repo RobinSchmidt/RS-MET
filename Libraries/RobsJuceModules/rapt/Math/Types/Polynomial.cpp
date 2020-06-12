@@ -997,7 +997,8 @@ void rsPolynomial<T>::fitQuadratic(T *a, const T *x, const T *y)
 }
 // this formula is complicated! i think, it was obtained by solving the 3x3 system: 
 //   y[i] = a0 + a1*x[i] + a2*x[i]^2   i = 0,1,2 
-// todo: use the Lagrange interpolation formula!
+// todo: use the Lagrange interpolation formula! see experiments - there, i have it already 
+// implemented, ready for copy-and-paste
 
 template<class T>
 void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, const T *y)

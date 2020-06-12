@@ -117,4 +117,12 @@ T rsStretchedCrossCorrelation(T *x, int Nx, T *y, int Ny)
   if(xx == 0 || yy == 0)
     return 0;
   return xy / sqrt(xx*yy);
+
+  // Is the use of double instead of T for a and xn intentional? If so, document, why. It seems
+  // rsArrayTools::interpolatedValueAt also expects a double for the interpolated position - is 
+  // this the reason? If so, why does interpolatedValueAt expect double? Maybe we should use TSig
+  // for the signal and TPos for the position. I actually think, it makes sense when T is some
+  // vector-type, like for stereo signals. What about complex signals? Should we use complex 
+  // conjugation here in the code somewhere? Currently, this function should be used only for
+  // real signals
 }

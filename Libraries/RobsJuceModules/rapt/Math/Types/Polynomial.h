@@ -664,10 +664,13 @@ public:
   /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
   3 points (0,y[0]), (1,y[1]), (2,y[2]). */
   static void fitQuadratic_0_1_2(T *a, const T *y);
+    // can this be used in place, i.e. a==y? if so, document that! ...i think so
 
   /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
   3 points (-1,y[0]), (0,y[1]), (1,y[2]). */
   static void fitQuadratic_m1_0_1(T *a, const T *y);
+    // can this be used in place, i.e. a==y? if so, document that! ...i don't think so but maybe it
+    // can be modified for use in place
 
   /** Returns the position (i.e. the x-coordinate) of the extremum (minimum or maximum) of the 
   quadratic parabola y(x) = a[2]*x^2 + a[1]*x + a[0]. Note that a[2] must be nonzero, otherwise the

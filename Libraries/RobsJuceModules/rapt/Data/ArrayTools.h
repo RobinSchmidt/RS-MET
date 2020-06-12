@@ -422,6 +422,8 @@ public:
   the position is out of range, 0 is returned. */
   template<class T>
   static T interpolatedValueAt(const T *buffer, int length, double position);
+    // Why is position a double? T may be bad if T is a vector or complex type - but maybe some 
+    // generic TPos would be better?
 
   /** Returns a linearly interpolated value from the array at the given (non-integer) position. If
   the position is out of range, the output is clamped to the end values of the array. */

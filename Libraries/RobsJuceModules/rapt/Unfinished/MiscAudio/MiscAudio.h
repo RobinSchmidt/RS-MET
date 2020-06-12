@@ -172,7 +172,7 @@ T rsMaxCorrelationLag(T *x1, T *x2, int N, bool deBias = false);
 /** Given two signals x1, x2 of length N, this function computes the amount (in samples) by which
 x2 has to be shifted to obtain a best match to x1. If you have signals of different length, say
 N1 and N2, you may still use this function by passing rsMin(N1, N2) for the N parameter. The
-shift amount can be positive or negative, corresponding to righward and leftward shifts,
+returned shift amount can be positive or negative, corresponding to rightward and leftward shifts,
 respectively. For the deBias parameter, @see rsMaxCorrelationLag() */
 template<class T>
 T rsGetShiftForBestMatch(T *x1, T *x2, int N, bool deBias = false);

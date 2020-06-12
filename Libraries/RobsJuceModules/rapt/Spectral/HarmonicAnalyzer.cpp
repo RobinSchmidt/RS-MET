@@ -686,6 +686,26 @@ greater or equal to the length of the longest group. For example, with nc=3:
   98,101,102, 99,97,100, 102,101,99, 97,100,102
      301         296         302        299            -> stretch all these triples to length 512
 
+...wait - the pitch-flattening is not restricted to stretch every cycle to an integer number of 
+samples. If we want to fit 3 cycles into a block of 512 samples, we could just stretch every cycle 
+to 512/3 = 170.666... samples. I think, the required changes are in flattenPitch:
+
+  cycleLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
+  setCycleLength(cycleLength); 
+
+should be replaced by:
+
+  blockSize = nextPowerOfTwo(cyclesPerBlock * maxLength);  // should work for float inputs(?)
+  cycleLength = T(blockSize) / T(cyclesPerBlock);
+  setCycleLength(cycleLength); 
+
+where the type of the member cycleLength should be changed from int to T. setCycleLength will 
+(again) set the blockSize - that line should probably be removed then. Or we do all assignments in
+setCycleLength which should then take the measured maxLength as parameter. Maybe a (protected) 
+function setMaxMeasuredCycleLength should be introduced which does everything....
+Maybe cyclesPerBlock could then be type T, too - i.e. non-integer. i don't know if it's useful to 
+use a non-integer number of cycles per block - probably not, but maybe for strongly inharmonic 
+signals, but we could experiment with that...
 
 
 
@@ -695,7 +715,8 @@ Figure out, if there's any advantage in any circumstances to use Blackman or Ham
 windows as opposed to the Dolph-Chebychev - i think, the Dolph-Cheby window is actually optimal for 
 this kind of sinusoidal analysis, so we may not need any others anymore and could throw them out at
 some point to clean up the interface...but who knows - for the time being, i'll leave them in, just 
-in case...
+in case...maybe at a later stage, the usage of other windows can be retained in an experimental 
+subclass somewhere outside the main library
 
 
 */

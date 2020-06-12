@@ -123,8 +123,21 @@ Ideas:
 -currently, the arithmetic operations make sense only when the two operands have the same modulus
  -generalize this to a sort of "multi-modular" or "mixed-modular" arithmetic
  -the modulus of the result should be the lowest common multiple of the moduli of the operands 
+ -i think, it could make sense because in modular arithmetic, we can either take the remainder after 
+  each operation or we can just calculate everything in the integers and take the remainder of the 
+  final result - but we could (i think) also do all calculations with a modulus that is a multiple 
+  of the original modulus and finally take the remainder with respect to the original modulus and 
+  still get the same result (verify this) - so if, in the middle of the computations, we encounter 
+  different moduli we could choose (the smallest) one, which is compatible with both moduli in this 
+  sense
  -would that make sense?
 -does the notion of a modular rational number make any sense? i.e. numerator and/or denominator are 
  modular integers?
+
+ToDo: 
+-plot lcm(x,y) / (x*y) ...this should be some sort of measure, how small the lcm of of x and y 
+ actually is relative to how big it could be at most - a sort of measure how-much-mutually-prime two 
+ numbers are as opposed to a simple boolean yes/no, pairs with a smaller value are more simply 
+ related
 
 */

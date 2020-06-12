@@ -440,7 +440,7 @@ void realCepstrumToSignal(T *cepstrum, int numSamples, T *signal)
 template<class T>
 void minimumPhaseReconstruction(T *input, int numSamples, T *output)
 {
-  T *c = output; // use output buffer for intermediate results in cepstarl domain
+  T *c = output; // use output buffer for intermediate results in cepstral domain
   int N = numSamples;
 
   signalToRealCepstrum(input, numSamples, c);
@@ -485,6 +485,10 @@ void crossCorrelation(T *x, int xLength, T *y, int yLength, T *result)
   delete[] Y;
 }
 
+// maybe move this into rsArrayTools - it should be useful for finding the maximum of *any* array 
+// with subsample precision - there's nothing particular about correlation here - but it makes use
+// of rsPolynomial which is in the "Math" folder which is at a higher level of the library's 
+// dependency structure than the "Data" folder (to which rsArrayTools belongs)...hmmm
 template<class T>
 T rsMaxCorrelationLag(T *r, int N)
 {
@@ -508,9 +512,12 @@ T rsMaxCorrelationLag(T *x1, T *x2, int N, bool deBias)
   // obtain windowed signals:
   T *y1 = new T[N];  // x1, windowed
   T *y2 = new T[N];  // x2, windowed
-  rsWindowFunction::hamming(y1, N);  // now, y1 contains the window
-                                     // Hamming seems to be better than Hann and Blackman
-                                     // ...hmm...but not for the cycle marks
+  rsWindowFunction::hamming(y1, N);  
+    // now, y1 contains the window. Hamming seems to be better than Hann and Blackman...hmm...but 
+    // not for the cycle marks - maybe the choice of the window should be up to client code - for 
+    // whole samples, we may want to use no window at all (i.e. rectangular) and if only initial 
+    // sections are used, a one-sided window that tapers off only to the right may be most suitable
+
   for(int n = 0; n < N; n++)
   {
     y2[n] = y1[n] * x2[n];
@@ -564,15 +571,18 @@ T rsGetShiftForBestMatch(T *x1, T *x2, int N, bool deBias)
   // the amount of shift that would be necessary for a best match with shifting in either
   // direction, but on the actual "goodness" of both matches. Instead of choosing the lag with
   // smaller absolute value for the time-shift variable, we could choose the lag with larger
-  // actual value of the crosscorrelation function evaluated at the respective lag. In
+  // actual value of the cross-correlation function evaluated at the respective lag. In
   // rsMaxCorrelationLag, we would not only determine the subsample-precision lag value, but also
-  // the value of the crosscorrelation function *at* this lag and use this y-value in the decision
+  // the value of the cross-correlation function *at* this lag and use this y-value in the decision
   // logic. Maybe rsMaxCorrelationLag should return an rsPoint2D object with the lag value as
-  // x-coordinate and the crosscorrelation function value as y coordinate at this x. In the
+  // x-coordinate and the cross-correlation function value as y coordinate at this x. In the
   // (unlikely) event, that these y-values are indeed exactly equal (or maybe within a threshold),
   // the logic above could be used. Or maybe, we could establish a "soft" logic, using the smaller
   // lag whenever some measure of the difference in the lags is greater than some measure in the
   // difference in the function values - it's a mess....
+
+  // todo: for finding the best match for full signals, we may want to do it without windowing or
+  // perhaps with one-sided windowing
 }
 
 /*
