@@ -22,6 +22,11 @@ true for the analyzed signal, of course). The algorithm works as follows:
  -move time instants of datapoints according to the inverse time-warping map
  -modify frequencies according to the applied stretch factors
 
+...this is a bit out of date - this was the first version of the algo - it has been refined 
+since - but maybe we should actually keep that simpler and easier to understand algo for 
+reference...
+
+
 The so obtained model models any inharmonicity, transients and noise in the input signal as fast 
 variations of instantaneous frequencies and amplitudes of the partials - when the envelopes
 are lowpass-filtered before resynthesis, we can resynthesize only the quasi-harmonic part of the 
@@ -257,12 +262,11 @@ protected:
   marks). */
   bool flattenPitch(T* sampleData, int numSamples);
 
+  /** Sets the maximum cycle length that was measured in the original, unflattened signal and does
+  all the required adjustments of blockSize, trafoSize, etc. and re-allocates our buffers, and 
+  re-creates the window and so on, if necessary. Called from flattenPitch during the 
+  pre-processing step. */
   void setMaxMeasuredCycleLength(T maxLength);
-
-  /** Sets the length of one cycle in samples and re-allocates buffers, if necessarry. */
-  void setCycleLength(int newLength);
-  // obsolete - absorb content in setMaxMeasuredCycleLength and delete
-
 
   /** The second step in the analysis algo is to perform an FFT on each cycle of pitch-flattened
   signal. Because the pitch is now flat, each cycle has the same length (which was chosen to be
@@ -391,8 +395,15 @@ protected:
 
 
   // block/transform buffer sizes:
+
+  // old: 
   int cycleLength    = 0;  // length of one cycle in samples (after pitch-flattening)
   int cyclesPerBlock = 1;  // number of cycles per block/window, power of 2
+
+  // new:
+  //T   cycleLength    = T(0);  // length of one cycle in samples (after pitch-flattening)
+  //T   cyclesPerBlock = T(1);  // number of cycles per block/window
+
   int blockSize      = 0;  // analysis block size == cycleLength * cyclesPerBlock
   int zeroPad        = 1;  // zero padding factor for FFT, power of 2
   int trafoSize      = 0;  // FFT size == blockSize * zeroPad

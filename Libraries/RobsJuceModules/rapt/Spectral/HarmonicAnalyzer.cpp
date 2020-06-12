@@ -116,15 +116,16 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
 template<class T>
 void rsHarmonicAnalyzer<T>::setMaxMeasuredCycleLength(T maxLength)
 {
+  // old - allows ony powers of two for cyclesPerBlock:
   cycleLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
-  setCycleLength(cycleLength); 
-}
-
-template<class T>
-void rsHarmonicAnalyzer<T>::setCycleLength(int newLength)
-{
-  cycleLength = newLength;
   blockSize   = cyclesPerBlock * cycleLength;
+
+  // new - allows arbitrary values for cyclesPerBlock (should be integer, though):
+  // ...something to do...
+  // blockSize = nextPowerOfTwo(cyclesPerBlock * maxLength);  // should work for float inputs(?)
+  // cycleLength = T(blockSize) / T(cyclesPerBlock);
+
+
   sig.resize(blockSize); 
   wnd.resize(blockSize);
   fillWindow();
@@ -135,11 +136,13 @@ void rsHarmonicAnalyzer<T>::setCycleLength(int newLength)
   trafo.setBlockSize(trafoSize);
 }
 
-
 // can this be deleted sometime soon?
 template<class T>
 void rsHarmonicAnalyzer<T>::analyzeHarmonicsOld(RAPT::rsSinusoidalModel<T>& mdl)
 {
+  // maybe, if we want to keep the simpler algo around, we should assert that numCyclesPÜerBlock==1
+  // and the window is rectangular
+
   // Initialize the model (create all datapoints, to filled with actual data later):
   mdl.init(getNumHarmonics(), getNumDataPoints());
 

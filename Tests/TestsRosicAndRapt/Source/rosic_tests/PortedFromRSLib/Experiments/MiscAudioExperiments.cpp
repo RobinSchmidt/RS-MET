@@ -753,7 +753,11 @@ void windowFunctionSpectra()
   // 17.5: mainlobe-width matches rectangular window
   // 46.5: matches cosSumWnd2
   // They have spikes at the ends which get more pronounced with longer lengths and with lower
-  // sidelobe attenuation
+  // sidelobe attenuation - maybe try what happens, if we remove these spikes, maybe by replacing
+  // the last window-value by linearly extrapolating from the 2nd-to and 3rd-to last or using half
+  // of the 2nd-to last or something - in some context, these spikes may be bad...maybe call it
+  // "modified Dolph-Chebychev" or something ..or maybe "de-spiked ..." ...but that may defeat the 
+  // purpose of the equiripples...we'll see
 
   // measurements of the mainlobe-widths of the cheby window for N=64
   // attenuation:  20     40     60     80     100

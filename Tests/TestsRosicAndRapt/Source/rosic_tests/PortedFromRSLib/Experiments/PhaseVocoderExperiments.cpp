@@ -1517,6 +1517,9 @@ void harmonicDetection5Sines()
   analyzer.setSidelobeRejection(rj);
   analyzer.getCycleFinder().setFundamental(f1);
   analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // mpw - seems to make no difference
+  // whoa - the sincLength is set to 512 - that seems excessive - 64 should be good enough
+  // ...maybe try to improve the windowed-sinc interpolator further by using better windows - try
+  // to achieve a SNR of at least 100dB...better 120
 
   // analyze:
   RAPT::rsSinusoidalModel<double> mdl = analyzer.analyze(&x[0], (int) x.size());
