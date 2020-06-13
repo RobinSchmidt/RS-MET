@@ -719,9 +719,9 @@ void sineRecreationBandpassNoise()
 
   // estimate the instantaneous frequency, phase, and amplitude:
   Vec f(N), p(N), a(N);
-  for(n = 0; n < N-2; n++)
+  for(n = 1; n < N-1; n++)
   {
-    double wn = rsSineFrequency(x[n], x[n+1], x[n+2]);
+    double wn = rsSineFrequency(x[n-1], x[n], x[n+1]);
     f[n] = wn*fs / (2*PI);
   }
   // Maybe we should restrict the frequency-estimates to a certain corridor - from raw analysis, we
@@ -734,7 +734,9 @@ void sineRecreationBandpassNoise()
 
   //writeToMonoWaveFile("BandpassNoise.wav",  &x[0], N, (int) fs, 16);
 
-  rsPlotVectors(fa, f, x); // actual and estimated instantaneous freq
+  //rsPlotVectors(fa, f); // actual and estimated instantaneous freq
+
+  rsPlotVectors(fa-f, 5000.0*x);  // estimation error together with signal for reference
 
 
   // Observations:
@@ -750,6 +752,12 @@ void sineRecreationBandpassNoise()
   //  sample before the zero-crossings - maybe we should use:
   //     wn = rsSineFrequency(x[n-1], x[n], x[n+1]);
   //  for a more symmetric formula? Maybe we get 1 sample latency with the way we are doing it now?
+  //  ...done - yep - look at sample 2485
+  // -We should perhaps have a reliability measure based on the ratio of the middle sample and the 
+  //  average of left and right sample...this should be between 0 and 1 and if it's 1, we use the 
+  //  value as is and if it's zero, we use the estimate from the previous sample and if it's in 
+  //  between we use a weighted sum...or something
+  // -we could also estimate the freq from the zero-crossings and interpolate
   // -I wonder, why we never see negatiev estimates to the instantaneous freq - is the formula such
   //  that this can't occur? If so - why?
 
