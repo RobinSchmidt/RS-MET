@@ -82,7 +82,9 @@ T rsSineFrequency(T y0, T y1, T y2, T smalll)
   // y[n-1], y[n-2] are initialized as y[n-1] = A * sin(p - w), y[n-2] = A * sin(p - 2*w) which in
   // our notation here translates to y2 = a1*y1 - y0. This leads to a1 = (y0+y2)/y1 and
   // w = acos(a1/2):
-  return acos(0.5*(y0+y2)/y1);
+  //return acos(0.5*(y0+y2)/y1);  // maybe we should clip the input to the acos to -1..+1
+
+  return acos(rsClip(0.5*(y0+y2)/y1, T(-1), T(+1))); 
 }
 
 template<class T>

@@ -681,12 +681,12 @@ void sineRecreationBandpassNoise()
 
   // once with instantaneous freq freq-estimation and once with fixed instantaneous frequency
 
-  int N  = 10000;
+  int N  = 5000;
   int fs = 44100;
-  double f1  = 1000;    // center frequency of input sine at start
-  double f2  = 2000;    // center frequency of input sine at end
+  double f1  = 5000;    // center frequency of input sine at start
+  double f2  = 5000;    // center frequency of input sine at end
   double bw1 = f1/400;  // bandwidth in Hz at start
-  double bw2 = f2/400;  // band width in Hz at end
+  double bw2 = f2/400;  // bandwidth in Hz at end
   double amp = 0.25;   // maximum amplitude of noise (the normalization level)
 
   using Vec = std::vector<double>;
@@ -717,6 +717,9 @@ void sineRecreationBandpassNoise()
     double wn = rsSineFrequency(x[n], x[n+1], x[n+2]);  // we are getting nans
     f[n] = wn*fs / (2*PI);
   }
+  // Maybe we should restrict the frequency-estimates to a certain corridor - from raw analysis, we
+  // get values from zero all the way up to the Nyquist freq. Why do we actually never get 
+  // negative values? Also, maybe, we shouold smooth the frequency estimate with a lowpass
  
 
 
