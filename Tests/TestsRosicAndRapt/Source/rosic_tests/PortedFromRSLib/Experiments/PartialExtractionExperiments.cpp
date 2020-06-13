@@ -683,31 +683,35 @@ void sineRecreationBandpassNoise()
 
   int N  = 44100;
   int fs = 44100;
-  double f  = 1000;    // center frequency of input sine - todo: maybe make a sweep
-  double bw = f/100;   // bandwidth in Hz
+  double f1  = 1000;    // center frequency of input sine at start
+  double f2  = 2000;    // center frequency of input sine at end
+  double bw1 = f1/100;  // bandwidth in Hz at start
+  double bw2 = f2/100;  // band width in Hz at end
   double amp = 0.25;   // maximum amplitude of noise (the normalization level)
 
   using Vec = std::vector<double>;
-
   using Flt = rsStateVariableFilter<double, double>;
 
-
+  // generate the sweeping bandpass noise:
   Vec x(N), y1(N), y2(N);
-
-  double bwOct = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, f);
+  rsNoiseGenerator<double> ng;
   Flt flt;
   flt.setSampleRate(fs);
-  flt.setFrequency(f);
-  flt.setMode(Flt::BANDPASS_PEAK);  // doesn't work! ...there must be a bug in the filter...
-  flt.setBandwidth(bwOct);
-  //flt.setMode(Flt::BANDPASS_SKIRT);
-
-  // generate the bandpass noise:
-  rsNoiseGenerator<double> ng;
+  flt.setMode(Flt::BANDPASS_PEAK);
   int n;
-  for(n = 0; n < N; n++)
+  for(n = 0; n < N; n++) {
+    double fi = rsLinToLin(double(n), 0.0, N-1.0, f1,  f2);  // instantaneous center freq
+    double bw = rsLinToLin(double(n), 0.0, N-1.0, bw1, bw2); // instantaneous bandwidth
+    double bwOct = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, fi);
+    flt.setFrequency(fi);
+    flt.setBandwidth(bwOct);
     x[n]  = flt.getSample(ng.getSample());
+  }
   rsArrayTools::normalize(&x[0], N, amp, true);
+  // maybe (optionally) use two equal filters in series
+
+  // estimate the instantaneous frequency, phase, and amplitude:
+  //Vec 
  
 
 
