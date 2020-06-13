@@ -15,6 +15,8 @@ void envelopeDeBeating(); // try to remove beating from an extracted envelope
 the sine from the envelope (with possibly different frequency and startphase). */
 void sineRecreation();
 
+void sineRecreationBandpassNoise();
+
 void sineWithPhaseCatchUp();
 
 

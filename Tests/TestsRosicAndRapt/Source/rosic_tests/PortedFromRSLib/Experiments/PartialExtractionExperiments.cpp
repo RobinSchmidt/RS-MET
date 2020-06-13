@@ -657,12 +657,12 @@ void sineRecreation()
   plotData(N, 0, 1/fs, x, y);  // input and output sine
 
   // Observations:
-  // with smooth 0.0, we see a little modulation in the measured envelope, with smooth = 1.0, it's
-  // supressed reasonably but still visible, with smooth = 2.0, the envelope is very smooth indeed but 
-  // might be already oversmoothed. Maybe 1.5 is the sweet spot
+  // With smooth 0.0, we see a little modulation in the measured envelope, with smooth = 1.0, it's
+  // supressed reasonably but still visible, with smooth = 2.0, the envelope is very smooth indeed 
+  // but might be already oversmoothed. Maybe 1.5 is the sweet spot.
   // The algorithm based on the formula seems to give better results than the one based on the
   // quadrature signal. The output of the algo using the quadrature signal seems to be a bit 
-  // time-shifted (to the left)
+  // time-shifted (to the left).
 
   delete[] x;
   delete[] xq;
@@ -670,6 +670,54 @@ void sineRecreation()
   delete[] em;
   delete[] em2;
   delete[] y;
+}
+
+void sineRecreationBandpassNoise()
+{
+  // under construction
+
+  // We create a bandpass noise and try to re-create it with a frequency-, phase-, and amplitude 
+  // modulated sinusoid
+
+  // once with instantaneous freq freq-estimation and once with fixed instantaneous frequency
+
+  int N  = 44100;
+  int fs = 44100;
+  double f  = 1000;    // center frequency of input sine - todo: maybe make a sweep
+  double bw = f/100;   // bandwidth in Hz
+  double amp = 0.25;   // maximum amplitude of noise (the normalization level)
+
+  using Vec = std::vector<double>;
+
+  using Flt = rsStateVariableFilter<double, double>;
+
+
+  Vec x(N), y1(N), y2(N);
+
+  double bwOct = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, f);
+  Flt flt;
+  flt.setSampleRate(fs);
+  flt.setFrequency(f);
+  flt.setMode(Flt::BANDPASS_PEAK);  // doesn't work! ...there must be a bug in the filter...
+  flt.setBandwidth(bwOct);
+  //flt.setMode(Flt::BANDPASS_SKIRT);
+
+  // generate the bandpass noise:
+  rsNoiseGenerator<double> ng;
+  int n;
+  for(n = 0; n < N; n++)
+    x[n]  = flt.getSample(ng.getSample());
+  rsArrayTools::normalize(&x[0], N, amp, true);
+ 
+
+
+  // ...more to do...
+
+  writeToMonoWaveFile("BandpassNoise.wav",  &x[0], N, (int) fs, 16);
+
+
+  //rsPlotVectors(x);
+  //rsPlotVectors(x, y1, y2);
 }
 
 void sineWithPhaseCatchUp()

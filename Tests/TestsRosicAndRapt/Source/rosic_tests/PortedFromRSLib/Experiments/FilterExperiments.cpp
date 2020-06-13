@@ -541,9 +541,9 @@ void biquadModulation()
 void stateVariableFilter()
 {
   double fs = 44100;  // samplerate in Hz
-  double fc = 10000;  // cutoff/center frequency in Hz
+  double fc = 5000;   // cutoff/center frequency in Hz
   double G  = 4.0;    // cutoff gain or peak/shelf gain
-  double B  = 2.0;    // bandwidth (for peak, bandpass, bandreject)
+  double B  = 0.25;   // bandwidth (for peak, const-peak-bandpass, bandreject)
 
   static const int N = 2048;  // number of sample to generate
 
@@ -552,6 +552,8 @@ void stateVariableFilter()
   svf.setFrequency(fc);
   svf.setGain(G);
   svf.setBandwidth(B);  //later
+
+  //svf.setBandwidth(0.1);  // test
 
   // time axis and impulse responses:
   double t[N], yL[N], yB[N], yH[N], yPK[N], yLS[N], yHS[N], yAP[N], yBR[N], yBPCP[N];
@@ -614,8 +616,8 @@ void stateVariableFilter()
   rsMagnitudeAndPhase(yBPCP, N, mBPCP);
 
   // magnitude response plots:
-  plotData(N/2, f, mL, mB, mH);    // LP, BP, HP
-  //plotData(N/2, f, mBPCP, mBR);    // BR and BP (const peak gain)
+  //plotData(N/2, f, mL, mB, mH);    // LP, BP, HP - the bandwidth doesn't have any effect - why?
+  plotData(N/2, f, mBPCP, mBR);    // BR and BP (const peak gain)
   //plotData(N/2, f, mPK, mLS, mHS); // bell, low- and highshelf
   //plotData(N/2, f, mAP, pAP);      // allpass, plot also phase
 }

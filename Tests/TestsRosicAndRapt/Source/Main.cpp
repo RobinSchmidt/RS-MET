@@ -306,7 +306,7 @@ int main(int argc, char* argv[])
   // Filter:
   //bandwidthScaling();
   //butterworthEnergy();
-  //stateVariableFilter();
+//  stateVariableFilter();
   //stateVariableFilterMorph();
   //stateVectorFilter();   // just a stub, at the moment
   //biquadModulation();   // compares modulation properties of various biquad structures
@@ -386,7 +386,7 @@ int main(int argc, char* argv[])
   //taperedFourierSeries();
   //transientModeling();
   //windowFunctionsContinuous();
-  //windowFunctionSpectra();
+  //windowFunctionSpectra(); // todo: try bump-function and piecewise window using integrated bump tapers
   //windowedSinc();
   //waveMorph();  // under construction
 
@@ -408,8 +408,9 @@ int main(int argc, char* argv[])
   //biDirectionalFilter();    // maybe move to filter tests
   //beatingSines();
   //envelopeDeBeating();
-  //sineRecreation();         // maybe move elsewhere
-  //sineWithPhaseCatchUp();   // dito
+  //sineRecreation();               // maybe move elsewhere
+  sineRecreationBandpassNoise();
+  //sineWithPhaseCatchUp();       // dito
   //partialExtractionTriple();
   //partialExtractionViaBiquadTriple();
   ////partialExtractionBell();  // crashes because sample not available
@@ -433,7 +434,7 @@ int main(int argc, char* argv[])
 
   //harmonicDetection2Sines();
   //harmonicDetection3Sines();
-  harmonicDetection5Sines();
+  //harmonicDetection5Sines();
   //harmonicAnalysis1();
 
   //amplitudeDeBeating();

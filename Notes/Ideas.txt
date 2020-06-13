@@ -204,5 +204,8 @@ protected:
   to avoid juce-dependency for file loading...or maybe it wouldn't read in the
   files itself but also rely on the data being passed via a function
   setSampleData(...)
+  
+-------------------------------------------------------------------------------
+
 
  

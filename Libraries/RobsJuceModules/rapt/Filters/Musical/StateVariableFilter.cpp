@@ -107,6 +107,7 @@ void rsStateVariableFilter<TSig, TPar>::calcCoeffs()
     {
       R2 = 1 / G;
       cL = 0; cB = 1; cH = 0;
+      // why is the bandwidth-parameter not used here?
     }
     break;
   case BANDPASS_PEAK: 
