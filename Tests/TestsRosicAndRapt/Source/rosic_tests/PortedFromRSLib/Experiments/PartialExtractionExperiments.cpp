@@ -681,29 +681,29 @@ void sineRecreationBandpassNoise()
 
   // once with instantaneous freq freq-estimation and once with fixed instantaneous frequency
 
-  int N  = 44100;
+  int N  = 10000;
   int fs = 44100;
   double f1  = 1000;    // center frequency of input sine at start
   double f2  = 2000;    // center frequency of input sine at end
-  double bw1 = f1/100;  // bandwidth in Hz at start
-  double bw2 = f2/100;  // band width in Hz at end
+  double bw1 = f1/400;  // bandwidth in Hz at start
+  double bw2 = f2/400;  // band width in Hz at end
   double amp = 0.25;   // maximum amplitude of noise (the normalization level)
 
   using Vec = std::vector<double>;
   using Flt = rsStateVariableFilter<double, double>;
 
   // generate the sweeping bandpass noise:
-  Vec x(N), y1(N), y2(N);
+  Vec x(N), fa(N);
   rsNoiseGenerator<double> ng;
   Flt flt;
   flt.setSampleRate(fs);
   flt.setMode(Flt::BANDPASS_PEAK);
   int n;
   for(n = 0; n < N; n++) {
-    double fi = rsLinToLin(double(n), 0.0, N-1.0, f1,  f2);  // instantaneous center freq
+    fa[n]     = rsLinToLin(double(n), 0.0, N-1.0, f1,  f2);  // actual instantaneous center freq
     double bw = rsLinToLin(double(n), 0.0, N-1.0, bw1, bw2); // instantaneous bandwidth
-    double bwOct = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, fi);
-    flt.setFrequency(fi);
+    double bwOct = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, fa[n]);
+    flt.setFrequency(fa[n]);
     flt.setBandwidth(bwOct);
     x[n]  = flt.getSample(ng.getSample());
   }
@@ -711,13 +711,20 @@ void sineRecreationBandpassNoise()
   // maybe (optionally) use two equal filters in series
 
   // estimate the instantaneous frequency, phase, and amplitude:
-  //Vec 
+  Vec f(N), p(N), a(N);
+  for(n = 0; n < N-2; n++)
+  {
+    double wn = rsSineFrequency(x[n], x[n+1], x[n+2]);  // we are getting nans
+    f[n] = wn*fs / (2*PI);
+  }
  
 
 
   // ...more to do...
 
-  writeToMonoWaveFile("BandpassNoise.wav",  &x[0], N, (int) fs, 16);
+  //writeToMonoWaveFile("BandpassNoise.wav",  &x[0], N, (int) fs, 16);
+
+  rsPlotVectors(fa, f); // actual and estimated instantaneous freq
 
 
   //rsPlotVectors(x);
