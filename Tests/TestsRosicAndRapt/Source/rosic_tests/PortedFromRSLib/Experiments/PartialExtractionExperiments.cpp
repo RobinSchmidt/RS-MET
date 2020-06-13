@@ -683,11 +683,13 @@ void sineRecreationBandpassNoise()
 
   int N  = 5000;
   int fs = 44100;
-  double f1  = 5000;    // center frequency of input sine at start
-  double f2  = 5000;    // center frequency of input sine at end
-  double bw1 = f1/400;  // bandwidth in Hz at start
-  double bw2 = f2/400;  // bandwidth in Hz at end
+  double f1  = 2000;    // center frequency of input sine at start
+  double f2  = 2000;    // center frequency of input sine at end
+  double bw1 = f1/100;  // bandwidth in Hz at start
+  double bw2 = f2/100;  // bandwidth in Hz at end
   double amp = 0.25;   // maximum amplitude of noise (the normalization level)
+  int numPasses = 3;
+
 
   using Vec = std::vector<double>;
   using Flt = rsStateVariableFilter<double, double>;
@@ -700,12 +702,17 @@ void sineRecreationBandpassNoise()
   flt.setMode(Flt::BANDPASS_PEAK);
   int n;
   for(n = 0; n < N; n++) {
-    fa[n]     = rsLinToLin(double(n), 0.0, N-1.0, f1,  f2);  // actual instantaneous center freq
-    double bw = rsLinToLin(double(n), 0.0, N-1.0, bw1, bw2); // instantaneous bandwidth
-    double bwOct = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, fa[n]);
-    flt.setFrequency(fa[n]);
-    flt.setBandwidth(bwOct);
-    x[n]  = flt.getSample(ng.getSample());
+    fa[n] = rsLinToLin(double(n), 0.0, N-1.0, f1, f2);  // actual instantaneous center freq
+    x[n]  = ng.getSample(); }
+  for(int m = 0; m < numPasses; m++) {
+    flt.reset();
+    for(n = 0; n < N; n++) {
+      double bw = rsLinToLin(double(n), 0.0, N-1.0, bw1, bw2); // instantaneous bandwidth
+      double bwOct = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, fa[n]);
+      flt.setFrequency(fa[n]);
+      flt.setBandwidth(bwOct);
+      x[n] = flt.getSample(x[n]);
+    }
   }
   rsArrayTools::normalize(&x[0], N, amp, true);
   // maybe (optionally) use two equal filters in series
@@ -714,7 +721,7 @@ void sineRecreationBandpassNoise()
   Vec f(N), p(N), a(N);
   for(n = 0; n < N-2; n++)
   {
-    double wn = rsSineFrequency(x[n], x[n+1], x[n+2]);  // we are getting nans
+    double wn = rsSineFrequency(x[n], x[n+1], x[n+2]);
     f[n] = wn*fs / (2*PI);
   }
   // Maybe we should restrict the frequency-estimates to a certain corridor - from raw analysis, we
@@ -722,12 +729,29 @@ void sineRecreationBandpassNoise()
   // negative values? Also, maybe, we shouold smooth the frequency estimate with a lowpass
  
 
-
-  // ...more to do...
+  // ...more to do...estimate instantaneous amp and phase - using actual and estimated 
+  // instantaneous frequencies
 
   //writeToMonoWaveFile("BandpassNoise.wav",  &x[0], N, (int) fs, 16);
 
-  rsPlotVectors(fa, f); // actual and estimated instantaneous freq
+  rsPlotVectors(fa, f, x); // actual and estimated instantaneous freq
+
+
+  // Observations:
+  // -With numPasses = 1, we get a very erratic (raw) estimate of the instantaneous frequency with 
+  //  the whole range of values from zero up to the Nyquist freq - it gets better with more passes
+  //  which is what we should expect. It could make sense to set up an upper bound for the estimate
+  //  and/or apply a smoothing lowpass to the data.
+  // -The frequency estimation errors do not really look like white noise but more like spikes 
+  //  around the true frequency. The maxima of the estimation error seem to be at the 
+  //  zero-crossings of the pseudo-sine. Maybe the problem is more ill-conditioned around 
+  //  zero-crossings - that would make sense. Maybe around zero-crossings, we should distrust the
+  //  estimator and tend to just hold the previous value. Actually, the error spikes seem to be one
+  //  sample before the zero-crossings - maybe we should use:
+  //     wn = rsSineFrequency(x[n-1], x[n], x[n+1]);
+  //  for a more symmetric formula? Maybe we get 1 sample latency with the way we are doing it now?
+  // -I wonder, why we never see negatiev estimates to the instantaneous freq - is the formula such
+  //  that this can't occur? If so - why?
 
 
   //rsPlotVectors(x);
