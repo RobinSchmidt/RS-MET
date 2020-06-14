@@ -679,11 +679,11 @@ void sineRecreationBandpassNoise()
   // We create a bandpass noise and try to re-create it with a frequency-, phase-, and amplitude 
   // modulated sinusoid
 
-  // once with instantaneous freq freq-estimation and once with fixed instantaneous frequency
+  // once with instantaneous freq-estimation and once with known instantaneous frequency
 
-  int N  = 5000;
+  int N  = 50000;
   int fs = 44100;
-  double f1  = 2000;    // center frequency of input sine at start
+  double f1  = 5000;    // center frequency of input sine at start
   double f2  = 2000;    // center frequency of input sine at end
   double bw1 = f1/100;  // bandwidth in Hz at start
   double bw2 = f2/100;  // bandwidth in Hz at end
@@ -717,26 +717,66 @@ void sineRecreationBandpassNoise()
   rsArrayTools::normalize(&x[0], N, amp, true);
   // maybe (optionally) use two equal filters in series
 
-  // estimate the instantaneous frequency, phase, and amplitude:
-  Vec f(N), p(N), a(N);
+  // measure instantaneous frequency (with algo 1):
+  Vec fm1(N);
   for(n = 1; n < N-1; n++)
-  {
-    double wn = rsSineFrequency(x[n-1], x[n], x[n+1]);
-    f[n] = wn*fs / (2*PI);
-  }
+    fm1[n] = rsSineFrequency(x[n-1], x[n], x[n+1]) * (fs/(2*PI));
   // Maybe we should restrict the frequency-estimates to a certain corridor - from raw analysis, we
   // get values from zero all the way up to the Nyquist freq. Why do we actually never get 
   // negative values? Also, maybe, we shouold smooth the frequency estimate with a lowpass
- 
 
-  // ...more to do...estimate instantaneous amp and phase - using actual and estimated 
-  // instantaneous frequencies
+  // measure instantaneous frequency (with algo 2):
+  Vec fm2(N);
+  for(n = 0; n < N; n++)
+    fm2[n] = rsSineFrequencyAt(&x[0], N, n, false) * (fs/(2*PI));
 
-  //writeToMonoWaveFile("BandpassNoise.wav",  &x[0], N, (int) fs, 16);
 
-  //rsPlotVectors(fa, f); // actual and estimated instantaneous freq
+  // measure instantaneous phase and amplitude:
+  Vec p(N), a(N);
+  for(n = 0; n < N-1; n++)
+  {
+    double f = fa[n];     // later use estimated frequency
+    double w = 2*PI*f/fs;
+    rsSineAmplitudeAndPhase(x[n], x[n+1], w, &a[n], &p[n]);
+  }
+  // what about the last sample? should we use extrapolation?
 
-  rsPlotVectors(fa-f, 5000.0*x);  // estimation error together with signal for reference
+  // re-create the bandpass noise by a freq-, phase- and amp-modulated sine:
+  Vec y(N);
+  for(n = 0; n < N; n++)
+  {
+    double f = fa[n];     // later use estimated frequency
+    double w = 2*PI*f/fs;
+    //y[n] = a[n] * sin(w*n + p[n]);  // this doesn't work
+    //y[n] = a[n] * sin(w*n);         // dito
+    y[n] = a[n] * sin(p[n]);          // this works
+  }
+  // y is totally different from x - why? there seems to be strong aliasing going on - there's a 
+  // very audible sweep in the opposite direction. When we use a fixed frequency, the recreated
+  // signal is an octave higher when the phase term is included - without the phase-term, the
+  // frequency is correct. But when we leave the phase-term out, the sweep is recreated wrongly.
+  // OK - when using *only* the phase-term, we get perfect resynthesis. ...hmmm....
+
+
+
+
+
+  //rsPlotVectors(fa, fm1); // actual and estimated instantaneous freq
+  //rsPlotVectors(fa-fm1, 5000.0*x);  // estimation error together with signal for reference
+
+  //rsPlotVectors(fa, fm2);
+  //rsPlotVectors(fa-fm2, 500.0*x);
+  //rsPlotVectors(fa-fm2);
+
+  //rsPlotVectors(fa, fm1, fm2);
+
+  //rsPlotVectors(a, p);
+
+  //rsPlotVectors(x, y);
+
+
+  writeToMonoWaveFile("BandpassNoiseOriginal.wav",  &x[0], N, (int) fs, 16);
+  writeToMonoWaveFile("BandpassNoiseRecreated.wav", &y[0], N, (int) fs, 16);
 
 
   // Observations:
@@ -744,8 +784,8 @@ void sineRecreationBandpassNoise()
   //  the whole range of values from zero up to the Nyquist freq - it gets better with more passes
   //  which is what we should expect. It could make sense to set up an upper bound for the estimate
   //  and/or apply a smoothing lowpass to the data.
-  // -The frequency estimation errors do not really look like white noise but more like spikes 
-  //  around the true frequency. The maxima of the estimation error seem to be at the 
+  // -The frequency estimation errors of algo 1 do not really look like white noise but more like 
+  //  spikes around the true frequency. The maxima of the estimation error seem to be at the 
   //  zero-crossings of the pseudo-sine. Maybe the problem is more ill-conditioned around 
   //  zero-crossings - that would make sense. Maybe around zero-crossings, we should distrust the
   //  estimator and tend to just hold the previous value. Actually, the error spikes seem to be one
