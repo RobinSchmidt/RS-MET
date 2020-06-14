@@ -723,7 +723,7 @@ void sineRecreationBandpassNoise()
     fm1[n] = rsSineFrequency(x[n-1], x[n], x[n+1]) * (fs/(2*PI));
   // Maybe we should restrict the frequency-estimates to a certain corridor - from raw analysis, we
   // get values from zero all the way up to the Nyquist freq. Why do we actually never get 
-  // negative values? Also, maybe, we shouold smooth the frequency estimate with a lowpass
+  // negative values? Also, maybe, we should smooth the frequency estimate with a lowpass
 
   // measure instantaneous frequency (with algo 2):
   Vec fm2(N);
@@ -735,8 +735,6 @@ void sineRecreationBandpassNoise()
   f = fa;     // use prefectly correct data
   //f = fm1;  // use data from measurement with algo 1
   //f = fm2;  // use data from measurement with algo 2
-
-
   Vec w = (2*PI/fs) * f;
 
   // Interestingly, for perfect resynthesis, the content of the f- and w-arrays is actually 
@@ -749,13 +747,7 @@ void sineRecreationBandpassNoise()
   // measure instantaneous phase and amplitude:
   Vec p(N), a(N);
   for(n = 0; n < N-1; n++)
-  {
-    //double f = fa[n];     // later use estimated frequency
-    //double f = fm2[n]; 
-    //double f = 500.0;       // test
-    //double w = 2*PI*f/fs;
     rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &p[n]);
-  }
   // what about the last sample? should we use extrapolation?
 
   // re-create the bandpass noise by a freq-, phase- and amp-modulated sine:
@@ -764,16 +756,20 @@ void sineRecreationBandpassNoise()
   {
     double f = fa[n];     // later use estimated frequency
     double w = 2*PI*f/fs;
-    //y[n] = a[n] * sin(w[n]*n + p[n]);  // this doesn't work
-    //y[n] = a[n] * sin(w[n]*n);         // dito
     y[n] = a[n] * sin(p[n]);          // this works
   }
 
   // Now we want to use the w-array for synthesis, too:
-  Vec z(N);   // recreated signal 2
   Vec wi(N);  // integrated w
   Vec pm(N);  // modified p
-  // ...
+  rsArrayTools::cumulativeSum(&w[0], &wi[0], N);  // maybe try trapezoidal integration instead
+  for(n = 0; n < N; n++)
+    pm[n] = rsWrapToInterval(p[n]-wi[n], -PI, PI);
+ 
+  // actual resyntheisi
+  Vec z(N);   // recreated signal 2
+  for(int n = 0; n < N; n++)
+    z[n] = a[n] * sin(wi[n] + pm[n]);
 
 
   //rsPlotVectors(fa, fm1); // actual and estimated instantaneous freq
@@ -787,7 +783,8 @@ void sineRecreationBandpassNoise()
 
   //rsPlotVectors(a, p);
 
-  rsPlotVectors(x, y, x-y);
+  rsPlotVectors(x, y, x-y);  // last sample wrong
+  rsPlotVectors(x, z, x-z);  // dito
 
 
   //writeToMonoWaveFile("BandpassNoiseOriginal.wav",  &x[0], N, (int) fs, 16);
