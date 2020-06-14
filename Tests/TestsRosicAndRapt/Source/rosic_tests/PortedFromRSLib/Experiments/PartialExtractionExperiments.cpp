@@ -681,14 +681,14 @@ void sineRecreationBandpassNoise()
 
   // once with instantaneous freq-estimation and once with known instantaneous frequency
 
-  int N  = 50000;
+  int N  = 1000;
   int fs = 44100;
   double f1  = 5000;    // center frequency of input sine at start
   double f2  = 2000;    // center frequency of input sine at end
   double bw1 = f1/100;  // bandwidth in Hz at start
   double bw2 = f2/100;  // bandwidth in Hz at end
   double amp = 0.25;   // maximum amplitude of noise (the normalization level)
-  int numPasses = 3;
+  int numPasses = 1;
 
 
   using Vec = std::vector<double>;
@@ -736,6 +736,8 @@ void sineRecreationBandpassNoise()
   for(n = 0; n < N-1; n++)
   {
     double f = fa[n];     // later use estimated frequency
+    //double f = fm2[n]; 
+    //double f = 500.0;       // test
     double w = 2*PI*f/fs;
     rsSineAmplitudeAndPhase(x[n], x[n+1], w, &a[n], &p[n]);
   }
@@ -751,14 +753,6 @@ void sineRecreationBandpassNoise()
     //y[n] = a[n] * sin(w*n);         // dito
     y[n] = a[n] * sin(p[n]);          // this works
   }
-  // y is totally different from x - why? there seems to be strong aliasing going on - there's a 
-  // very audible sweep in the opposite direction. When we use a fixed frequency, the recreated
-  // signal is an octave higher when the phase term is included - without the phase-term, the
-  // frequency is correct. But when we leave the phase-term out, the sweep is recreated wrongly.
-  // OK - when using *only* the phase-term, we get perfect resynthesis. ...hmmm....
-
-
-
 
 
   //rsPlotVectors(fa, fm1); // actual and estimated instantaneous freq
@@ -772,11 +766,11 @@ void sineRecreationBandpassNoise()
 
   //rsPlotVectors(a, p);
 
-  //rsPlotVectors(x, y);
+  rsPlotVectors(x, y, x-y);
 
 
-  writeToMonoWaveFile("BandpassNoiseOriginal.wav",  &x[0], N, (int) fs, 16);
-  writeToMonoWaveFile("BandpassNoiseRecreated.wav", &y[0], N, (int) fs, 16);
+  //writeToMonoWaveFile("BandpassNoiseOriginal.wav",  &x[0], N, (int) fs, 16);
+  //writeToMonoWaveFile("BandpassNoiseRecreated.wav", &y[0], N, (int) fs, 16);
 
 
   // Observations:
@@ -800,6 +794,25 @@ void sineRecreationBandpassNoise()
   // -we could also estimate the freq from the zero-crossings and interpolate
   // -I wonder, why we never see negatiev estimates to the instantaneous freq - is the formula such
   //  that this can't occur? If so - why?
+  //
+  // If we use for resynthesis:
+  //   y[n] = a[n] * sin(w*n + p[n]);
+  // y is totally different from x - why? there seems to be strong aliasing going on - there's a 
+  // very audible sweep in the opposite direction. When we use a fixed frequency, the recreated
+  // signal is an octave higher when the phase term is included - without the phase-term, the
+  // frequency is correct. But when we leave the phase-term out, the sweep is recreated wrongly.
+  // OK - when using *only* the phase-term, we get perfect resynthesis. ...hmmm....maybe we should
+  // modify the instantaneos phase measurements to take into account the instantaneous frequency
+  // measurements? maybe by subtracting the integrated freq-measurements? The perfect resynthesis 
+  // works also, if we use the measured frequency in the analysis of amplitude and phase - in fact,
+  // we can use *any* frequency value - as long as we take the formual
+  //   y[n] = a[n] * sin(p[n])
+  // for resynthesis (i.e. without using the frequency information in resynthesis), we get perfect
+  // resyntesis. 
+  // ToDo: figure out, how the freq-information can be included into the resynthesis without 
+  // breaking perfect resynthesis. We want to use the first formula for resynthesis and have to 
+  // modify the phase data in such a way that we can. ...wait no: the first formula is wrong! 
+  // Instead of using w[n]*n (where w[n] = 2*PI*f[n]/fs) we should use the integral of w[n] up to n
 
 
   //rsPlotVectors(x);
