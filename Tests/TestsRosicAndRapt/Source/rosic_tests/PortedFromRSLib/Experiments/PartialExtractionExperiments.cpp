@@ -730,29 +730,50 @@ void sineRecreationBandpassNoise()
   for(n = 0; n < N; n++)
     fm2[n] = rsSineFrequencyAt(&x[0], N, n, false) * (fs/(2*PI));
 
+  // For what follows, we need an array of instantaneous frequencies (or omegas):
+  Vec f;
+  f = fa;     // use prefectly correct data
+  //f = fm1;  // use data from measurement with algo 1
+  //f = fm2;  // use data from measurement with algo 2
+
+
+  Vec w = (2*PI/fs) * f;
+
+  // Interestingly, for perfect resynthesis, the content of the f- and w-arrays is actually 
+  // irrelevant - it could be anything, even noise (->test this). Of course, if it would be 
+  // meaningless data, the content of the p- and a-arrays (measured below in the next step) 
+  // would be equally meaningless - their meaning would then be only to compensate for the 
+  // nonsense of the f-array....
+
 
   // measure instantaneous phase and amplitude:
   Vec p(N), a(N);
   for(n = 0; n < N-1; n++)
   {
-    double f = fa[n];     // later use estimated frequency
+    //double f = fa[n];     // later use estimated frequency
     //double f = fm2[n]; 
     //double f = 500.0;       // test
-    double w = 2*PI*f/fs;
-    rsSineAmplitudeAndPhase(x[n], x[n+1], w, &a[n], &p[n]);
+    //double w = 2*PI*f/fs;
+    rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &p[n]);
   }
   // what about the last sample? should we use extrapolation?
 
   // re-create the bandpass noise by a freq-, phase- and amp-modulated sine:
-  Vec y(N);
+  Vec y(N);   // recreated signal 1
   for(n = 0; n < N; n++)
   {
     double f = fa[n];     // later use estimated frequency
     double w = 2*PI*f/fs;
-    //y[n] = a[n] * sin(w*n + p[n]);  // this doesn't work
-    //y[n] = a[n] * sin(w*n);         // dito
+    //y[n] = a[n] * sin(w[n]*n + p[n]);  // this doesn't work
+    //y[n] = a[n] * sin(w[n]*n);         // dito
     y[n] = a[n] * sin(p[n]);          // this works
   }
+
+  // Now we want to use the w-array for synthesis, too:
+  Vec z(N);   // recreated signal 2
+  Vec wi(N);  // integrated w
+  Vec pm(N);  // modified p
+  // ...
 
 
   //rsPlotVectors(fa, fm1); // actual and estimated instantaneous freq
