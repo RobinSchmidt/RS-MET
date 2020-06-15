@@ -43,6 +43,26 @@ The addition theorem works also with both plusses replaced by minusses, so:
 
   p = atan2(-y0*sin(w), yL - y0*cos(w))
 
+---------------------------------------------------------------------------------------------------
+
+What, if w is unknown?
+
+  yL = a * sin(p-w)
+  y0 = a * sin(p)
+  yR = a * sin(p+w)
+  
+Define sw := sin(w), cw := cos(w)
+  
+  p = atan2(y0*sw, yR - y0*cw) = atan2(-y0*sw, yL - y0*cw) 
+  
+  (y0*sw) / (yR - y0*cw) = (-y0*sw) / (yL - y0*cw)
+  
+  yR - y0*cw = -(yL - y0*cw) = -yL + y0*cw
+  
+  yL + yR = 2*y0*cw
+  
+  cw = (yL+yR)/(2*y0)
+  w  =  acos(0.5*(yL+yR)/y0)
 
 
 

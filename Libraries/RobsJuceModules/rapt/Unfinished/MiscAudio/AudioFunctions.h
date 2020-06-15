@@ -49,10 +49,12 @@ actually are, we could assign any arbitrary value to the frequency w and adjust 
 in a way, to compensate - so, indeed, there's no unique solution in this case, unless the
 amplitude is known in which case w = asin(|y2|/a) = asin(|y0|/a) [verify this]. The last
 parameter "small" determines how close y1 may be to 0 until the computations are considered to be
-too error-prone. */
+too error-prone. For a sine with changing frequency, the estimate should be considered to be the
+instantaneous value at the center sample, i.e. at y1. */
 template<class T>
 T rsSineFrequency(T y0, T y1, T y2, T smalll = 1.e-8);
- // "smalll" because "small" is defined as "char" somewhere leading to weird compiler errors
+// "smalll" because "small" is defined as "char" somewhere leading to weird compiler errors
+// maybe rename y0,y1,y2 to yL,yC,yR (for left,center,right)
 
 /** Assuming a sinusoidal input signal x of length N (and unknown frequency), this function
 computes the sinusoid's instantaneous normalized radian frequency at sample-instant n0. The value
