@@ -684,8 +684,29 @@ void testSineParameterEstimation()
   // try new formula - it's simpler but has a division in the phase-computation:
   double sw = sin(w);
   double cw = cos(w);
-  double p2 = atan2(sw, y1/y0 - cw);  // what if y0 == 0?
-  double a2 = y0 / sin(p2);           // what if p2 == 0?
+  //double p2 = atan2(sw, y1/y0 - cw);    // what if y0 == 0?
+  double p2 = atan2(y0*sw, y1 - y0*cw);   // ...that should fix it
+  double a2 = y0 / sin(p2);               // what if p2 == 0?
+
+  // try left-looking formula - should give the same amplitude but the phase should be incremented
+  // by w:
+  double p3 = atan2(-y1*sw, y0-y1*cw);
+  double a3 = y1 / sin(p3);
+  // hmm..we get a negative amplitude - the absolute value is correct, though - hmm..so let's flip
+  // phase and amplitude:
+  p3 += PI;
+  a3  = -a3;
+
+  double w2 = p3-p2; // should reconstruct w
+
+
+  // ok - it works in this case - but we should really test many more cases with different values
+  // for y0, y1, w - maybe this should become a unit test, like this...
+  double tol = 1.e-13;
+  bool r = true;
+  r &= rsIsCloseTo(p2+w, p3, tol);
+  r &= rsIsCloseTo(a2,   a3, tol);
+  r &= rsIsCloseTo(w,    w2, tol);
 
   int dummy = 0;
 }

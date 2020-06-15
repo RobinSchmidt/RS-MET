@@ -2,8 +2,8 @@ Consider the problem of numerically estimating the Hessian matrix of a bivariate
 For generality, we allow different stepsizes hx,hy for the two dimensions. The diagonal elements
 can be computed by a regular 1D central difference formula:
 
-  f_xx ~= (f(x-hx,y) - 2*f(x) + f(x+hx,y)) / (hx*hx)
-  f_yy ~= (f(x,y-hy) - 2*f(x) + f(x,y+hy)) / (hy*hy)
+  f_xx ~= (f(x-hx,y) - 2*f(x,y) + f(x+hx,y)) / (hx*hx)
+  f_yy ~= (f(x,y-hy) - 2*f(x,y) + f(x,y+hy)) / (hy*hy)
 
 For the off-diagonal elements, we first approximate the partial derivative in x-direction by the 
 central difference:
