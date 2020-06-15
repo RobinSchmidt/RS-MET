@@ -699,7 +699,6 @@ void testSineParameterEstimation()
 
   double w2 = p3-p2; // should reconstruct w
 
-
   // ok - it works in this case - but we should really test many more cases with different values
   // for y0, y1, w - maybe this should become a unit test, like this...
   double tol = 1.e-13;

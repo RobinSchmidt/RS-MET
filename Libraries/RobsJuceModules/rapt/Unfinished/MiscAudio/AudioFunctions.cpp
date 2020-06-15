@@ -78,7 +78,7 @@ void rsSineAmplitudeAndPhase(T y0, T y1, T w, T *a, T *p)
 // ..i solved it by hand, i think using an addition theorem somewhere...document the derivation...
 // Wolfram alpha can:
 //   solve y0 = a*sin(p), y1 = a*sin(p+w) for a,p
-// but the result looks different
+// but the result looks different - in fact, it's a horrible mess compared to the formulas above
 
 
 // i get weird compiler errors when compiling include_rosic.cpp when these are not commented - wtf?
