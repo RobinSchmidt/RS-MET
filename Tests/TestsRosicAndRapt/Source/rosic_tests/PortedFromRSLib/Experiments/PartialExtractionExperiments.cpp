@@ -672,8 +672,29 @@ void sineRecreation()
   delete[] y;
 }
 
+void testSineParameterEstimation()
+{
+  double y0 = 0.2;
+  double y1 = 0.3;
+  double w  = 0.5;
+  double a, p;
+
+  rsSineAmplitudeAndPhase(y0, y1, w, &a, &p);
+
+  // try new formula - it's simpler but has a division in the phase-computation:
+  double sw = sin(w);
+  double cw = cos(w);
+  double p2 = atan2(sw, y1/y0 - cw);  // what if y0 == 0?
+  double a2 = y0 / sin(p2);           // what if p2 == 0?
+
+  int dummy = 0;
+}
+
+
 void sineRecreationBandpassNoise()
 {
+  testSineParameterEstimation();
+
   // under construction
 
   // We create a bandpass noise and try to re-create it with a frequency-, phase-, and amplitude 
@@ -685,8 +706,8 @@ void sineRecreationBandpassNoise()
   int fs = 44100;
   double f1  = 5000;    // center frequency of input sine at start
   double f2  = 2000;    // center frequency of input sine at end
-  double bw1 = f1/100;  // bandwidth in Hz at start
-  double bw2 = f2/100;  // bandwidth in Hz at end
+  double bw1 = f1/20;  // bandwidth in Hz at start
+  double bw2 = f2/20;  // bandwidth in Hz at end
   double amp = 0.25;   // maximum amplitude of noise (the normalization level)
   int numPasses = 1;
 
@@ -742,22 +763,20 @@ void sineRecreationBandpassNoise()
   // meaningless data, the content of the p- and a-arrays (measured below in the next step) 
   // would be equally meaningless - their meaning would then be only to compensate for the 
   // nonsense of the f-array....
+  // w = rsRandomVector(N, -10.0, 10.0); // test -> yep, resynthesis is still perfect
 
 
   // measure instantaneous phase and amplitude:
   Vec p(N), a(N);
   for(n = 0; n < N-1; n++)
     rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &p[n]);
-  // what about the last sample? should we use extrapolation?
+  // what about the last sample? should we use extrapolation? or is there a similar formula that 
+  // uses the current and the previous sample rather than the current and the next?
 
   // re-create the bandpass noise by a freq-, phase- and amp-modulated sine:
   Vec y(N);   // recreated signal 1
   for(n = 0; n < N; n++)
-  {
-    double f = fa[n];     // later use estimated frequency
-    double w = 2*PI*f/fs;
-    y[n] = a[n] * sin(p[n]);          // this works
-  }
+    y[n] = a[n] * sin(p[n]);
 
   // Now we want to use the w-array for synthesis, too:
   Vec wi(N);  // integrated w
@@ -766,7 +785,7 @@ void sineRecreationBandpassNoise()
   for(n = 0; n < N; n++)
     pm[n] = rsWrapToInterval(p[n]-wi[n], -PI, PI);
  
-  // actual resyntheisi
+  // actual resynthesis
   Vec z(N);   // recreated signal 2
   for(int n = 0; n < N; n++)
     z[n] = a[n] * sin(wi[n] + pm[n]);

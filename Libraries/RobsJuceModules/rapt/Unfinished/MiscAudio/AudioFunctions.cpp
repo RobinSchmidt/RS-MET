@@ -70,6 +70,15 @@ void rsSineAmplitudeAndPhase(T y0, T y1, T w, T *a, T *p)
   // less efficient than commented version above (always computes sin(*p + w) instead of just when
   // necessarry) - but might be more accurate numerically? ...tests are needed
 }
+// Sage can't solve this:
+// var("y0, y1, a, p, w")
+// eq1 = y0 == a * sin(p)
+// eq2 = y1 == a * sin(p+w)
+// solve([eq1,eq2],[p,a])
+// ..i solved it by hand, i think using an addition theorem somewhere...document the derivation...
+// Wolfram alpha can:
+//   solve y0 = a*sin(p), y1 = a*sin(p+w) for a,p
+// but the result looks different
 
 
 // i get weird compiler errors when compiling include_rosic.cpp when these are not commented - wtf?

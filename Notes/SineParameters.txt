@@ -1,0 +1,37 @@
+We want to solve the nonlinear system of 2 equations:
+
+  y0 = a * sin(p)
+  y1 = a * sin(p+w)
+  
+with known y0, y1, w for a and p. It's actually nonlinear only in p, so that's the difficult 
+variable. Once p is known, we can compute a like:
+
+  a = y0 / sin(p) = y1 / sin(p+w)
+  
+which of the two possible equations is used should depend on in which case we get a nonzero 
+denominator. To find p, we use the addition theorem:
+
+  sin(p+w) = sin(p)*cos(w) + cos(p)*sin(w)
+  
+which gives:
+  
+  y0 / sin(p) = y1 / ( sin(p)*cos(w) + cos(p)*sin(w) )
+  
+  sin(p) / y0 = ( sin(p)*cos(w) + cos(p)*sin(w) ) / y1    | / sin(p), * y1
+  y1/y0 = ( sin(p)*cos(w) + cos(p)*sin(w) ) / sin(p)
+  y1/y0 = sin(p)*cos(w)/sin(p) + cos(p)*sin(w)/sin(p)
+  y1/y0 = cos(w) + cos(p)*sin(w)/sin(p)
+  y1/y0 - cos(w) = cos(p)*sin(w)/sin(p)
+  y1/y0 - cos(w) = sin(w)/tan(p)
+  tan(p) = sin(w) / (y1/y0 - cos(w))
+  
+We finally arrive at:
+  
+  p = atan2(sin(w), y1/y0 - cos(w))         | multiply both arguments by y0 - does not change the angle
+    = atan2(y0*sin(w), y1 - y0*cos(w))
+  
+
+
+
+
+
