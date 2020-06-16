@@ -942,63 +942,13 @@ void sineRecreationBandpassNoise()
   // measure instantaneous frequency (with algo 1):
   Vec fm1(N);
   rsSineFrequencies2(&x[0], N, &fm1[0]); fm1 = (fs/(2*PI)) * fm1;
-  //for(n = 1; n < N-1; n++)
-  //  fm1[n] = rsSineFrequency(x[n-1], x[n], x[n+1]) * (fs/(2*PI));
-  // Maybe we should restrict the frequency-estimates to a certain corridor - from raw analysis, we
-  // get values from zero all the way up to the Nyquist freq. Why do we actually never get 
-  // negative values? Also, maybe, we should smooth the frequency estimate with a lowpass
 
-  Vec test1(N), test2(N);
-  rsSineFrequencies( &x[0], N, &test1[0]); test1 = (fs/(2*PI)) * test1;
-  rsSineFrequencies2(&x[0], N, &test2[0]); test2 = (fs/(2*PI)) * test2;
-  //rsPlotVectors(test1, test2);
-
-  /*
   // Create cleaned up version via 3-point median filter - this is helpful because the raw data 
   // shows an error with very large single-sample spikes:
-  Vec fm1c(N);    // rename to fm1_1
+  Vec fm1c(N); 
   for(n = 1; n < N-1; n++)
     fm1c[n] = median(fm1[n-1], fm1[n], fm1[n+1]);
-  */
 
-  /*
-  // try to use another cleaning algo that forms a weighted sum of 3 neighbouring values based on their 
-  // absolute values (in relation to their neighbour's average)
-  Vec fm1_r(N), fm1_2(N);  
-  for(n = 1; n < N-1; n++)
-  {
-    double num = rsAbs(x[n]);
-    double den = 0.5 * (rsAbs(x[n-1]) + rsAbs(x[n+1]));
-    double rel = 0;
-    if(den > 1.e-13)
-      rel = num / den;  // reliability
-    fm1_r[n] = rel;
-  }
-  for(n = 1; n < N-1; n++)
-  {
-    // frequencies for left, center and right:
-    double fL = fm1[n-1];
-    double fC = fm1[n];
-    double fR = fm1[n+1];
-
-    // reliabilities for left, center and right:
-    double rL = fm1_r[n-1];
-    double rC = fm1_r[n];
-    double rR = fm1_r[n+1];
-
-    // compute cleaned up etsimate as weighted sum of the 3 frequencies, where the weights are the
-    // (normalized) reliabilities:
-    fm1_2[n] = (rL*fL + rC*fC + rR*fR) / (rL + rC + rR); // what about div-by-zero?
-  }
-  // result is similar to the median filter (which is kinda surprising, given that the algo is 
-  // completely different)
-  */
-
-
-  //Vec fm1d(N);  // for test - a 2nd pass of the median filter:
-  //for(n = 1; n < N-1; n++)
-  //  fm1d[n] = median(fm1c[n-1], fm1c[n], fm1c[n+1]);
-  //// result is only slightly different - doesn't seem to be useful
 
 
   // Measure instantaneous frequency (with algo 2):
@@ -1025,7 +975,6 @@ void sineRecreationBandpassNoise()
   //f = fa;     // use prefectly correct data
   //f = fm1;  // use data from measurement with algo 1
   //f = fm1c;
-  //f = fm1_2;
   //f = fm2;  // use data from measurement with algo 2
   f = fm2c;   // use cleaned up data from measurement with algo 2
   Vec w = (2*PI/fs) * f;
@@ -1079,7 +1028,10 @@ void sineRecreationBandpassNoise()
 
   //rsPlotVectors(test2, fo);
 
-  //rsPlotVectors(fa, fm2, fm2c);
+  rsPlotVectors(fa, fm1, fm1c);
+  rsPlotVectors(fa, fm2, fm2c);
+
+
   //rsPlotVectors(fa, fm2c, fo);
   //rsPlotVectors(fa-fm2, 1000.0*x);
   //rsPlotVectors(fa-fm2);
@@ -1089,7 +1041,7 @@ void sineRecreationBandpassNoise()
 
 
 
-  rsPlotVectors(fa, fm1, fm2);
+  //rsPlotVectors(fa, fm1, fm2);
 
   //rsPlotVectors(a, p);
 
