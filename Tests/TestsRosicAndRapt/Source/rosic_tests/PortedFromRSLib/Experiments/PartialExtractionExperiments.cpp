@@ -844,10 +844,8 @@ void rsSineFrequencies2(const T* x, int N, T* w)
   // temporarily store the reliabilities and the overwrite it with the actual frequency estimates 
   // in a second pass.
 
-
   rsAssert(x != w);
   rsAssert(N >= 3);
-
   T smalll = 1.e-8;  // ad-hoc - do tests what is best
   int n;
 
@@ -855,45 +853,34 @@ void rsSineFrequencies2(const T* x, int N, T* w)
   for(n = 1; n < N-1; n++) {
     T num = rsAbs(x[n]);
     T den = T(0.5) * (rsAbs(x[n-1]) + rsAbs(x[n+1]));
-    T rel = T(0);
-    if(den >= smalll*num)   // maybe use den >= smalll*num and a larger number for smalll
-      rel = num / den;
-    w[n] = rel; }
+    if(den >= smalll*num)
+      w[n] = num / den;
+    else
+      w[n] = T(0); }
   w[0] = 0; w[N-1] = 0;
-  //rsPlotArrays(N, x, w);
 
   // compute radian frequencies:
   T rL = w[0], rC = w[1], rR, rS;
   T wL = T(0), wC = rsSineFrequency(x[0], x[1], x[2]), wR;
-  for(n = 1; n < N-2; n++)
-  {
-    // compute frequency and read out reliability of right neighbour sample:
-    wR = rsSineFrequency(x[n], x[n+1], x[n+2]);  // maybe pass 0 - we don't wat to raise the assert
-    rR = w[n+1]; // we used the w-array temporarily for the reliabilities
-
-    // compute cleaned up estimate as weighted sum of the 3 frequencies, where the weights are the
-    // (normalized) reliabilities:
-    rS = rL + rC + rR;           // reliability sum - used as normalizer
-    if( rS > smalll )            // maybe this smalll should be different from the one used above?
-      w[n] = (rL*wL + rC*wC + rR*wR) / rS; // weighted sum of neighbour estimates
-    else               
-      w[n] = w[n-1];            // all reliabilities too small - repeat previous value
-
-    rL = rC; rC = rR; // updates for next iteration
-    wL = wC; wC = wR;
+  for(n = 1; n < N-2; n++) {
+    wR = rsSineFrequency(x[n], x[n+1], x[n+2], T(0)); // frequency of right neighbour sample
+    rR = w[n+1];                                      // reliability of right neighbour sample
+    rS = rL + rC + rR;                     // reliability sum of all 3 - used as normalizer
+    if( rS > smalll )                      // sum is large enough as denominator (maybe this smalll should be different from the one used above?)
+      w[n] = (rL*wL + rC*wC + rR*wR) / rS; //   -> use weighted sum of neighbour estimates
+    else                                   // all 3 reliabilities are too small
+      w[n] = w[n-1];                       //   -> repeat previous value
+    rL = rC; rC = rR; wL = wC; wC = wR;    // updates for next iteration
   }
 
-  // handle last value of n ouside the loop:
+  // handle n = N-2 ouside the loop:
   rS = rL + rC;
-  if( rS > smalll )
-    w[n] = (rL*wL + rC*wC) / rS;
-  else
-    w[n] = w[n-1];
+  if( rS > smalll ) w[n] = (rL*wL + rC*wC) / rS;
+  else              w[n] = w[n-1];
 
-  // handle edges:
-  w[0]   = w[1];   
+  // handle edges at n = 0 and n = N-1:
+  w[0]   = w[1];
   w[N-1] = w[N-2];
-  //rsPlotArrays(N, x, w);
 }
 // move to library when all potential div-by-zeros are handled
 // can we do everything in a single pass? -> less memory access
