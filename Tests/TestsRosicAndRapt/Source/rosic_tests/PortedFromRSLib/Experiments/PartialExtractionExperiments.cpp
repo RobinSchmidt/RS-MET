@@ -863,8 +863,8 @@ void rsSineFrequencies2(const T* x, int N, T* w)
   //rsPlotArrays(N, x, w);
 
   // compute radian frequencies:
-  T rL = w[0], rC = w[1], rR = w[2];
-  T wL = 0, wC = rsSineFrequency(x[0], x[1], x[2]), wR;
+  T rL = w[0], rC = w[1], rR, rS;
+  T wL = T(0), wC = rsSineFrequency(x[0], x[1], x[2]), wR;
   for(n = 1; n < N-2; n++)
   {
     // compute frequency and read out reliability of right neighbour sample:
@@ -873,21 +873,27 @@ void rsSineFrequencies2(const T* x, int N, T* w)
 
     // compute cleaned up estimate as weighted sum of the 3 frequencies, where the weights are the
     // (normalized) reliabilities:
-    w[n] = (rL*wL + rC*wC + rR*wR) / (rL + rC + rR); 
-    // todo: handle div-by-zero - if (rL+rc+rR) is close to zero, just write a zero frequency or
-    // repeat w[n-1]
-
+    rS = rL + rC + rR;           // reliability sum - used as normalizer
+    if( rS > smalll )            // maybe this smalll should be different from the one used above?
+      w[n] = (rL*wL + rC*wC + rR*wR) / rS; // weighted sum of neighbour estimates
+    else               
+      w[n] = w[n-1];            // all reliabilities too small - repeat previous value
 
     rL = rC; rC = rR; // updates for next iteration
     wL = wC; wC = wR;
   }
-  //rR     = w[n+1];                       // == 0
-  w[n]   = (rL*wL + rC*wC) / (rL + rC);  // handle div-by-zero!
-  w[0]   = w[1];     // handle edges - todo: use linear extrapolation later - or maybe not
+
+  // handle last value of n ouside the loop:
+  rS = rL + rC;
+  if( rS > smalll )
+    w[n] = (rL*wL + rC*wC) / rS;
+  else
+    w[n] = w[n-1];
+
+  // handle edges:
+  w[0]   = w[1];   
   w[N-1] = w[N-2];
   //rsPlotArrays(N, x, w);
-
-  // maybe optionally optimize - but for that, we must first have phase- and amp-estimates, too
 }
 // move to library when all potential div-by-zeros are handled
 // can we do everything in a single pass? -> less memory access
