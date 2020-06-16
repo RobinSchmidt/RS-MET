@@ -725,6 +725,7 @@ T median(T x1, T x2, T x3)
   rsError("we should always take one of the branches above");
   return 0;
 }
+// test with all permutations of 1,2,3 and 1,2,2
 
 // Computes the error function - see SineParameters.txt
 template<class T>
@@ -749,9 +750,10 @@ T rsSineParametersError(T yLL, T yL, T y0, T yR, T yRR, T a, T p, T w)
 // maybe define a function that computes also the gradient - it can re-use the sLL,.. stuff - but we 
 // will need the cosines, too
 
-// numerically optimizes a,p,w so as to minimize the error function given above
+// numerically optimizes a,p,w so as to minimize the error function given above - returns the 
+// number of function evaluations
 template<class T>
-void rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
+int rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
 {
   double params[3];
   params[0] = *a;
@@ -772,8 +774,63 @@ void rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
   *p = params[1];
   *w = params[2];
 
-  // maybe return evals
+  return evals;
 }
+
+
+// allocates
+template<class T>
+void rsSineFrequencies(const T* x, int N, T* w)
+{
+  T smalll = 1.e-13; // for avoiding div-by-zero
+
+  // compute preliminary frequency estimates:
+  std::vector<T> wp(N);  // allocates
+  for(int n = 1; n < N-1; n++)
+    wp[n] = rsSineFrequency(x[n-1], x[n], x[n+1]);
+  wp[0]   = wp[1];     // handle edges - todo: use linear extrapolation later
+  wp[N-1] = wp[N-2];
+
+  // compute reliabilities:
+  std::vector<T> r(N);  // allocates
+  for(int n = 1; n < N-1; n++) {
+    T num = rsAbs(x[n]);
+    T den = T(0.5) * (rsAbs(x[n-1]) + rsAbs(x[n+1]));
+    T rel = T(0);
+    if(den >= smalll)
+      rel = num / den;  // reliability
+    r[n] = rel; }
+  r[0]   = r[1];    // handle edges - todo: use linear extrapolation later
+  r[N-1] = r[N-2];  // ...maybe we should use zero at the edges
+
+  // clean-up preliminary estimates and write result to output:
+  for(int n = 1; n < N-1; n++)
+  {
+    // frequencies for left, center and right:
+    T wL = wp[n-1];
+    T wC = wp[n];
+    T wR = wp[n+1];
+
+    // reliabilities for left, center and right:
+    T rL = r[n-1];
+    T rC = r[n];
+    T rR = r[n+1];
+
+    // compute cleaned up estimate as weighted sum of the 3 frequencies, where the weights are the
+    // (normalized) reliabilities:
+    w[n] = (rL*wL + rC*wC + rR*wR) / (rL + rC + rR); // what about div-by-zero?
+  }
+  w[0]   = w[1];     // handle edges - todo: use linear extrapolation later
+  w[N-1] = w[N-2];
+
+  int dummy = 0;
+}
+// i think, this can actually be done without allocating memory - just do a single loop and update
+// wL = wC, rL = rC, wC = wR, rC = rR at its end --hmm..or maybe fill the w-array with the 
+// reliabilities in a first pass and overwrite it in a second pass
+
+
+
 
 void testSineParameterEstimation()
 {
@@ -834,6 +891,11 @@ void sineRecreationBandpassNoise()
   // Maybe we should restrict the frequency-estimates to a certain corridor - from raw analysis, we
   // get values from zero all the way up to the Nyquist freq. Why do we actually never get 
   // negative values? Also, maybe, we should smooth the frequency estimate with a lowpass
+
+  Vec test(N);
+  rsSineFrequencies(&x[0], N, &test[0]);
+  test = (fs/(2*PI)) * test;
+  rsPlotVector(test);
 
   // Create cleaned up version via 3-point median filter - this is helpful because the raw data 
   // shows an error with very large single-sample spikes:
