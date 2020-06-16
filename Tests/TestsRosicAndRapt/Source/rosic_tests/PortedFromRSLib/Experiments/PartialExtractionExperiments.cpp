@@ -777,9 +777,27 @@ void sineRecreationBandpassNoise()
 
   // Create cleaned up version via 3-point median filter - this is helpful because the raw data 
   // shows an error with very large single-sample spikes:
-  Vec fm1c(N);  
+  Vec fm1c(N);    // rename to fm1_1
   for(n = 1; n < N-1; n++)
     fm1c[n] = median(fm1[n-1], fm1[n], fm1[n+1]);
+
+  // try to use another cleaning algo that forms a weighted sum of 3 neighbouring values based on their 
+  // absolute values (in relation to their neighbour's average)
+  Vec fm1_r(N), fm1_2(N);  
+  for(n = 1; n < N-1; n++)
+  {
+    double num = rsAbs(x[n]);
+    //double den = rsAbs(0.5*(x[n-1] + x[n+1]));
+    double den = 0.5 * (rsAbs(x[n-1]) + rsAbs(x[n+1]));
+    double rel = 0;
+    if(den > 1.e-13)
+      rel = num / den;  // reliability
+    fm1_r[n] = rel;
+
+    
+    //fm1_2[n] = median(fm1[n-1], fm1[n], fm1[n+1]);
+  }
+
 
   //Vec fm1d(N);  // for test - a 2nd pass of the median filter:
   //for(n = 1; n < N-1; n++)
@@ -841,7 +859,7 @@ void sineRecreationBandpassNoise()
 
 
   rsPlotVectors(fa, fm1, fm1c); // actual and estimated instantaneous freq
-  //rsPlotVectors(fa-fm1, 5000.0*x);  // estimation error together with signal for reference
+  rsPlotVectors(fa-fm1, 5000.0*x, 2000.0*fm1_r);  // estimation error together with signal for reference
 
   rsPlotVectors(fa, fm2, fm2c);
   //rsPlotVectors(fa-fm2, 1000.0*x);
