@@ -787,16 +787,30 @@ void sineRecreationBandpassNoise()
   for(n = 1; n < N-1; n++)
   {
     double num = rsAbs(x[n]);
-    //double den = rsAbs(0.5*(x[n-1] + x[n+1]));
     double den = 0.5 * (rsAbs(x[n-1]) + rsAbs(x[n+1]));
     double rel = 0;
     if(den > 1.e-13)
       rel = num / den;  // reliability
     fm1_r[n] = rel;
-
-    
-    //fm1_2[n] = median(fm1[n-1], fm1[n], fm1[n+1]);
   }
+  for(n = 1; n < N-1; n++)
+  {
+    // frequencies for left, center and right:
+    double fL = fm1[n-1];
+    double fC = fm1[n];
+    double fR = fm1[n+1];
+
+    // reliabilities for left, center and right:
+    double rL = fm1_r[n-1];
+    double rC = fm1_r[n];
+    double rR = fm1_r[n+1];
+
+    // compute cleaned up etsimate as weighted sum of the 3 frequencies, where the weights are the
+    // (normalized) reliabilities:
+    fm1_2[n] = (rL*fL + rC*fC + rR*fR) / (rL + rC + rR); // what about div-by-zero?
+  }
+  // result is similar to the median filter (which is kinda surprising, given that the algo is 
+  // completely different)
 
 
   //Vec fm1d(N);  // for test - a 2nd pass of the median filter:
@@ -858,7 +872,7 @@ void sineRecreationBandpassNoise()
     z[n] = a[n] * sin(wi[n] + pm[n]);
 
 
-  rsPlotVectors(fa, fm1, fm1c); // actual and estimated instantaneous freq
+  rsPlotVectors(fa, fm1, fm1c, fm1_2); // actual and estimated instantaneous freq
   rsPlotVectors(fa-fm1, 5000.0*x, 2000.0*fm1_r);  // estimation error together with signal for reference
 
   rsPlotVectors(fa, fm2, fm2c);
@@ -895,6 +909,8 @@ void sineRecreationBandpassNoise()
   //  average of left and right sample...this should be between 0 and 1 and if it's 1, we use the 
   //  value as is and if it's zero, we use the estimate from the previous sample and if it's in 
   //  between we use a weighted sum...or something
+  // -the freq-estimation errors are largest in region where the overall amplitude is low - for 
+  //  both algorithms
   // -we could also estimate the freq from the zero-crossings and interpolate
   // -I wonder, why we never see negatiev estimates to the instantaneous freq - is the formula such
   //  that this can't occur? If so - why?
