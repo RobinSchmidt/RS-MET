@@ -35,6 +35,8 @@ this function computes the amplitude a and initial phase p which are passed as p
 parameters to the function. The computed phase is in the range -PI...PI */
 template<class T>
 void rsSineAmplitudeAndPhase(T y0, T y1, T w, T *a, T *p);
+// maybe rename to rsSineAmplitudeAndPhaseR indicating that we use the right neighbour for the 
+// estimation - make a similar function that uses the left neighbour
 
 /** Given 3 successive sample values of a sinusoidal function with arbitrary amplitude a and
 initial phase p, such that

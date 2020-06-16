@@ -673,7 +673,60 @@ void sineRecreation()
 }
 
 
+template<class T>
+void rsSineAmplitudeAndPhase(T yL, T y0, T yR, T w, T* a, T* p)
+{
+  T sw = sin(w);
+  T cw = cos(w);
 
+  T pR = atan2( y0*sw, yR - y0*cw);       // phase estimate at y0 using right neighbour yR
+  T pL = atan2(-y0*sw, yL - y0*cw) + PI;  // phase estimate at y0 using left neighbour yL
+
+
+  int dummy = 0;
+}
+
+template<class T>
+void rsSineAmplitudeAndPhaseL(T y0, T yL, T w, T* a, T* p)
+{
+  T sw = sin(w);
+  T cw = cos(w);
+
+  *p = atan2(-y0*sw, yL-y0*cw) + PI;
+  *a = y1 / sin(*p);
+}
+// ...not yet finished...needs a switch to avoid div-by-zero
+
+bool testSineAmpAndPhaseEstimation2()
+{
+  bool r = true;
+  double tol = 1.e-13;
+
+
+  double a = 0.3;  // actual amplitude
+  double p = 1.0;  // actual phase
+  double w = 0.5;  // normalized radian freq
+
+
+  // the three sample values:
+  double yL = a*sin(p - w);
+  double y0 = a*sin(p);
+  double yR = a*sin(p + w);
+
+  // measurements:
+  double aR, pR, aL, pL;
+  rsSineAmplitudeAndPhase(y0, yR, w, &aR, &pR); // old library function
+  r &= rsIsCloseTo(aR, a, tol);
+  r &= rsIsCloseTo(pR, p, tol);
+  rsSineAmplitudeAndPhase(yL, y0, w, &aL, &pL);
+  r &= rsIsCloseTo(aL, a, tol);
+  r &= rsIsCloseTo(pL, p, tol);
+
+
+
+
+  return r;
+}
 
 void testSineAmpAndPhaseEstimation()
 {
@@ -891,6 +944,8 @@ void rsSineFrequencies2(const T* x, int N, T* w)
 void testSineParameterEstimation()
 {
   testSineAmpAndPhaseEstimation();
+  testSineAmpAndPhaseEstimation2();
+  // make it a unit test
 }
 
 void sineRecreationBandpassNoise()
