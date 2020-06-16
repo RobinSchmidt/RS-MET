@@ -941,8 +941,9 @@ void sineRecreationBandpassNoise()
 
   // measure instantaneous frequency (with algo 1):
   Vec fm1(N);
-  for(n = 1; n < N-1; n++)
-    fm1[n] = rsSineFrequency(x[n-1], x[n], x[n+1]) * (fs/(2*PI));
+  rsSineFrequencies2(&x[0], N, &fm1[0]); fm1 = (fs/(2*PI)) * fm1;
+  //for(n = 1; n < N-1; n++)
+  //  fm1[n] = rsSineFrequency(x[n-1], x[n], x[n+1]) * (fs/(2*PI));
   // Maybe we should restrict the frequency-estimates to a certain corridor - from raw analysis, we
   // get values from zero all the way up to the Nyquist freq. Why do we actually never get 
   // negative values? Also, maybe, we should smooth the frequency estimate with a lowpass
@@ -952,12 +953,15 @@ void sineRecreationBandpassNoise()
   rsSineFrequencies2(&x[0], N, &test2[0]); test2 = (fs/(2*PI)) * test2;
   //rsPlotVectors(test1, test2);
 
+  /*
   // Create cleaned up version via 3-point median filter - this is helpful because the raw data 
   // shows an error with very large single-sample spikes:
   Vec fm1c(N);    // rename to fm1_1
   for(n = 1; n < N-1; n++)
     fm1c[n] = median(fm1[n-1], fm1[n], fm1[n+1]);
+  */
 
+  /*
   // try to use another cleaning algo that forms a weighted sum of 3 neighbouring values based on their 
   // absolute values (in relation to their neighbour's average)
   Vec fm1_r(N), fm1_2(N);  
@@ -988,6 +992,7 @@ void sineRecreationBandpassNoise()
   }
   // result is similar to the median filter (which is kinda surprising, given that the algo is 
   // completely different)
+  */
 
 
   //Vec fm1d(N);  // for test - a 2nd pass of the median filter:
@@ -1083,11 +1088,8 @@ void sineRecreationBandpassNoise()
   //rsPlotVectors(fa, fm1_2, fo); // this looks close to the "optimal" local approximation
 
 
-  rsPlotVectors(fm1_2, test2);
-  // fm1_2 should be the same as test2 - clean up and get rid of redundant stuff
-  // yep - except for the boundaries
 
-  //rsPlotVectors(fa, fm1, fm2);
+  rsPlotVectors(fa, fm1, fm2);
 
   //rsPlotVectors(a, p);
 
