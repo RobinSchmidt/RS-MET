@@ -829,6 +829,49 @@ void rsSineFrequencies(const T* x, int N, T* w)
 // wL = wC, rL = rC, wC = wR, rC = rR at its end --hmm..or maybe fill the w-array with the 
 // reliabilities in a first pass and overwrite it in a second pass
 
+template<class T>
+void rsSineFrequencies2(const T* x, int N, T* w)
+{
+  rsAssert(x != w);
+  rsAssert(N >= 3);
+
+  T smalll = 1.e-13;
+  int n;
+
+  // compute reliabilities:
+  for(n = 1; n < N-1; n++) {
+    T num = rsAbs(x[n]);
+    T den = T(0.5) * (rsAbs(x[n-1]) + rsAbs(x[n+1]));
+    T rel = T(0);
+    if(den >= smalll)
+      rel = num / den;  // reliability
+    w[n] = rel; }
+  w[0] = 0; w[N-1] = 0;
+
+  // compute radian frequencies:
+  T rL = w[0], rC = w[1], rR = w[2];
+  T wL = 0, wC = rsSineFrequency(x[0], x[1], x[2]), wR;
+  for(n = 1; n < N-2; n++)
+  {
+    // compute frequency and read out reliability of right neighbour sample:
+    wR = rsSineFrequency(x[n], x[n+1], x[n+2]);
+    rR = w[n+1]; // we used the w-array temporarily for the reliabilities
+
+    // compute cleaned up estimate as weighted sum of the 3 frequencies, where the weights are the
+    // (normalized) reliabilities:
+    w[n] = (rL*wL + rC*wC + rR*wR) / (rL + rC + rR); // what about div-by-zero?
+
+    // update for next iteration:
+    rL = rC;
+    rC = rR;
+    wL = wC;
+    wC = wR;
+  }
+  w[0]   = w[1];     // handle edges - todo: use linear extrapolation later
+  w[N-1] = w[N-2];
+
+}
+// edges are still wrong
 
 
 
@@ -892,10 +935,10 @@ void sineRecreationBandpassNoise()
   // get values from zero all the way up to the Nyquist freq. Why do we actually never get 
   // negative values? Also, maybe, we should smooth the frequency estimate with a lowpass
 
-  Vec test(N);
-  rsSineFrequencies(&x[0], N, &test[0]);
-  test = (fs/(2*PI)) * test;
-  rsPlotVector(test);
+  Vec test1(N), test2(N);
+  rsSineFrequencies( &x[0], N, &test1[0]); test1 = (fs/(2*PI)) * test1;
+  rsSineFrequencies2(&x[0], N, &test2[0]); test2 = (fs/(2*PI)) * test2;
+  rsPlotVectors(test1, test2);
 
   // Create cleaned up version via 3-point median filter - this is helpful because the raw data 
   // shows an error with very large single-sample spikes:
