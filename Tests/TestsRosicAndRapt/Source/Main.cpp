@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
   //gaussianRegression();
   //butterworthViaGaussians();
 
-  //numericOptimization();
+  numericOptimization();
 
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();

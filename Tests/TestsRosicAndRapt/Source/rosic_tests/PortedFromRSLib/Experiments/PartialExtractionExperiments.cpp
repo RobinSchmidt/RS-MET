@@ -687,7 +687,6 @@ void testSineAmpAndPhaseEstimation()
   // try new formula - it's simpler but has a division in the phase-computation:
   double sw = sin(w);
   double cw = cos(w);
-  //double p2 = atan2(sw, y1/y0 - cw);    // what if y0 == 0?
   double p2 = atan2(y0*sw, y1 - y0*cw);   // ...that should fix it
   double a2 = y0 / sin(p2);               // what if p2 == 0?
 
@@ -699,6 +698,7 @@ void testSineAmpAndPhaseEstimation()
   // phase and amplitude:
   p3 += PI;
   a3  = -a3;
+  // i think, we could get the same effect by rotating the input to atan2 by 180°
 
   double w2 = p3-p2; // should reconstruct w
 
@@ -712,6 +712,8 @@ void testSineAmpAndPhaseEstimation()
 
   int dummy = 0;
 }
+// in practice, use both formulas, compute an average of the phases and compute the amplitude for
+// exact resynthesis
 
 // Computes the median of 3 values - maybe move to library (near rsMin/rsMax):
 template<class T>
@@ -751,8 +753,26 @@ T rsSineParametersError(T yLL, T yL, T y0, T yR, T yRR, T a, T p, T w)
 template<class T>
 void rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
 {
+  double params[3];
+  params[0] = *a;
+  params[1] = *p;
+  params[2] = *w;
+  std::function<double(double*)> f = [&](double* params)->double
+  { 
+    double err = rsSineParametersError(yLL, yL, y0, yR, yRR, params[0], params[1], params[2]);
+    return err;
+  };
+  double tol = 1.e-12;
+  double h[3] = { pow(2.0,-15), pow(2.0,-15), pow(2.0,-15) };
 
-  int dummy = 0;
+  int evals = minimizePartialParabolic(f, params, 3, h, tol); 
+  // todo: use better algo - maybe gradient descent with analytic gradient?
+
+  *a = params[0];
+  *p = params[1];
+  *w = params[2];
+
+  // maybe return evals
 }
 
 void testSineParameterEstimation()
@@ -880,9 +900,12 @@ void sineRecreationBandpassNoise()
 
   // For what follows, we need an array of instantaneous frequencies (or omegas):
   Vec f;
-  f = fa;     // use prefectly correct data
+  //f = fa;     // use prefectly correct data
   //f = fm1;  // use data from measurement with algo 1
+  //f = fm1c;
+  //f = fm1_2;
   //f = fm2;  // use data from measurement with algo 2
+  f = fm2c;   // use cleaned up data from measurement with algo 2
   Vec w = (2*PI/fs) * f;
 
   // Interestingly, for perfect resynthesis, the content of the f- and w-arrays is actually 
@@ -897,8 +920,18 @@ void sineRecreationBandpassNoise()
   Vec p(N), a(N);
   for(n = 0; n < N-1; n++)
     rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &p[n]);
+  // todo: use a symmetric estimation - looking forard and backward and using an average
   // what about the last sample? should we use extrapolation? or is there a similar formula that 
   // uses the current and the previous sample rather than the current and the next?
+
+  // optimize amp-, freq-, and phase-measurements jointly using numeric optimization:
+  Vec ao = a, wo = w, po = p;
+  for(n = 2; n < N-2; n++)
+    rsOptimizeSineParameters(x[n-2], x[n-1], x[n], x[n+1], x[n+2], &ao[n], &po[n], &wo[n]);
+  Vec fo = (fs/(2*PI)) * wo;
+  // ahh - but with the optimized parameters, we may not get exact resynthesis - if we want exact
+  // resynthesis, we should only optimize w and compute a,p as above
+
 
   // re-create the bandpass noise by a freq-, phase- and amp-modulated sine:
   Vec y(N);   // recreated signal 1
@@ -921,9 +954,13 @@ void sineRecreationBandpassNoise()
   //rsPlotVectors(fa, fm1, fm1c, fm1_2); // actual and estimated instantaneous freq
   //rsPlotVectors(fa-fm1, 5000.0*x, 2000.0*fm1_r);  // estimation error together with signal for reference
 
-  rsPlotVectors(fa, fm2, fm2c);
+  //rsPlotVectors(fa, fm2, fm2c);
+  rsPlotVectors(fa, fm2c, fo);
   //rsPlotVectors(fa-fm2, 1000.0*x);
   //rsPlotVectors(fa-fm2);
+
+  //rsPlotVectors(fa, fm1c, fo);
+  rsPlotVectors(fa, fm1_2, fo); // this looks close to the "optimal" local approximation
 
   //rsPlotVectors(fa, fm1, fm2);
 
@@ -960,6 +997,17 @@ void sineRecreationBandpassNoise()
   // -we could also estimate the freq from the zero-crossings and interpolate
   // -I wonder, why we never see negatiev estimates to the instantaneous freq - is the formula such
   //  that this can't occur? If so - why?
+  // -The numerically optimized frequency trajectory closely resembles the cleaned up algo-1 
+  //  trajectory, even when the algo-2 output was for the initial guess (!) - with algo-2 
+  //  (zero-crossings), the freq-trajectory is smoother (which does not necessarily mean better - 
+  //  maybe the noise *should* be in the freq-trajectory and it's oversmoothed with algo-2?). The 
+  //  conclusion is that the algo-1 indeed captures the local frequency better - which is not 
+  //  surprising since it's based on local information. So, maybe after all, the 3-sample 
+  //  estimation with some clean-up is not such a bad idea - the numerical optimization chooses
+  //  similar frequencies (and is actually even more erratic). I think, fm1_2 is closest to the 
+  //  local optimimum - but fm2c is closer to the underlying actual frequency - so both are better
+  //  by different measures. maybe use algo1 with some additional smoothing of the freq (before)
+  //  computing a and p.
   //
   // If we use for resynthesis:
   //   y[n] = a[n] * sin(w*n + p[n]);
