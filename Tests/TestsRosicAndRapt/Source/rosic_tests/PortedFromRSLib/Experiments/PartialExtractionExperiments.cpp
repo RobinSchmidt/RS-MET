@@ -800,8 +800,6 @@ void rsSineFrequencies(const T* x, int N, T* w)
     if(den >= smalll)
       rel = num / den;  // reliability
     r[n] = rel; }
-  //r[0]   = r[1];    // handle edges - todo: use linear extrapolation later
-  //r[N-1] = r[N-2];  // ...maybe we should use zero at the edges
   r[0] = 0; r[N-1] = 0;
 
 
@@ -830,10 +828,23 @@ void rsSineFrequencies(const T* x, int N, T* w)
 // i think, this can actually be done without allocating memory - just do a single loop and update
 // wL = wC, rL = rC, wC = wR, rC = rR at its end --hmm..or maybe fill the w-array with the 
 // reliabilities in a first pass and overwrite it in a second pass
+// done and it works - maybe remove function above
 
 template<class T>
 void rsSineFrequencies2(const T* x, int N, T* w)
 {
+  // The algorithm uses rsSineFrequency as its core to estimate the frequency at each sample. 
+  // However, it was observed, that this function gives unreliable results, whenever there's a 
+  // zero-crossing, so we first compute the (expected) reliabilities of the measurements at each 
+  // sample and then actually use a weigthed sum of the estimates at the sample and at its two 
+  // neighbours, where there weights are determined by the reliabilities. This way, the unreliable
+  // etsimates at the zero-crossings will be more or less replaced by a weighted average of the
+  // estimates at neighbour samples. The reliability itself is computed as ratio of a sample's 
+  // absolute value to the average of the absolute values of its neighbours. We use the w array to
+  // temporarily store the reliabilities and the overwrite it with the actual frequency estimates 
+  // in a second pass.
+
+
   rsAssert(x != w);
   rsAssert(N >= 3);
 
@@ -845,11 +856,11 @@ void rsSineFrequencies2(const T* x, int N, T* w)
     T num = rsAbs(x[n]);
     T den = T(0.5) * (rsAbs(x[n-1]) + rsAbs(x[n+1]));
     T rel = T(0);
-    if(den >= smalll)
-      rel = num / den;  // reliability
+    if(den >= smalll)   // maybe use den >= smalll*num and a larger number for smalll
+      rel = num / den;
     w[n] = rel; }
   w[0] = 0; w[N-1] = 0;
-  rsPlotArrays(N, x, w);
+  //rsPlotArrays(N, x, w);
 
   // compute radian frequencies:
   T rL = w[0], rC = w[1], rR = w[2];
@@ -857,28 +868,28 @@ void rsSineFrequencies2(const T* x, int N, T* w)
   for(n = 1; n < N-2; n++)
   {
     // compute frequency and read out reliability of right neighbour sample:
-    wR = rsSineFrequency(x[n], x[n+1], x[n+2]);
+    wR = rsSineFrequency(x[n], x[n+1], x[n+2]);  // maybe pass 0 - we don't wat to raise the assert
     rR = w[n+1]; // we used the w-array temporarily for the reliabilities
 
     // compute cleaned up estimate as weighted sum of the 3 frequencies, where the weights are the
     // (normalized) reliabilities:
-    w[n] = (rL*wL + rC*wC + rR*wR) / (rL + rC + rR); // what about div-by-zero?
+    w[n] = (rL*wL + rC*wC + rR*wR) / (rL + rC + rR); 
+    // todo: handle div-by-zero - if (rL+rc+rR) is close to zero, just write a zero frequency or
+    // repeat w[n-1]
 
-    // update for next iteration:
-    rL = rC;
-    rC = rR;
-    wL = wC;
-    wC = wR;
+
+    rL = rC; rC = rR; // updates for next iteration
+    wL = wC; wC = wR;
   }
-  w[0]   = w[1];     // handle edges - todo: use linear extrapolation later
-  w[N-2] = w[N-3];
+  //rR     = w[n+1];                       // == 0
+  w[n]   = (rL*wL + rC*wC) / (rL + rC);  // handle div-by-zero!
+  w[0]   = w[1];     // handle edges - todo: use linear extrapolation later - or maybe not
   w[N-1] = w[N-2];
-  rsPlotArrays(N, x, w);
+  //rsPlotArrays(N, x, w);
 
   // maybe optionally optimize - but for that, we must first have phase- and amp-estimates, too
-
 }
-// right edge is still different
+// move to library when all potential div-by-zeros are handled
 // can we do everything in a single pass? -> less memory access
 
 
@@ -946,7 +957,7 @@ void sineRecreationBandpassNoise()
   Vec test1(N), test2(N);
   rsSineFrequencies( &x[0], N, &test1[0]); test1 = (fs/(2*PI)) * test1;
   rsSineFrequencies2(&x[0], N, &test2[0]); test2 = (fs/(2*PI)) * test2;
-  rsPlotVectors(test1, test2);
+  //rsPlotVectors(test1, test2);
 
   // Create cleaned up version via 3-point median filter - this is helpful because the raw data 
   // shows an error with very large single-sample spikes:
@@ -1044,6 +1055,7 @@ void sineRecreationBandpassNoise()
   Vec fo = (fs/(2*PI)) * wo;
   // ahh - but with the optimized parameters, we may not get exact resynthesis - if we want exact
   // resynthesis, we should only optimize w and compute a,p as above
+  // whoa - the optimization fails when using only one pass
 
 
   // re-create the bandpass noise by a freq-, phase- and amp-modulated sine:
@@ -1067,6 +1079,8 @@ void sineRecreationBandpassNoise()
   //rsPlotVectors(fa, fm1, fm1c, fm1_2); // actual and estimated instantaneous freq
   //rsPlotVectors(fa-fm1, 5000.0*x, 2000.0*fm1_r);  // estimation error together with signal for reference
 
+  rsPlotVectors(test2, fo);
+
   //rsPlotVectors(fa, fm2, fm2c);
   rsPlotVectors(fa, fm2c, fo);
   //rsPlotVectors(fa-fm2, 1000.0*x);
@@ -1074,6 +1088,11 @@ void sineRecreationBandpassNoise()
 
   //rsPlotVectors(fa, fm1c, fo);
   rsPlotVectors(fa, fm1_2, fo); // this looks close to the "optimal" local approximation
+
+
+  rsPlotVectors(fm1_2, test2);
+  // fm1_2 should be the same as test2 - clean up and get rid of redundant stuff
+  // yep - except for the boundaries
 
   //rsPlotVectors(fa, fm1, fm2);
 
