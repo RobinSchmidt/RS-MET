@@ -800,8 +800,10 @@ void rsSineFrequencies(const T* x, int N, T* w)
     if(den >= smalll)
       rel = num / den;  // reliability
     r[n] = rel; }
-  r[0]   = r[1];    // handle edges - todo: use linear extrapolation later
-  r[N-1] = r[N-2];  // ...maybe we should use zero at the edges
+  //r[0]   = r[1];    // handle edges - todo: use linear extrapolation later
+  //r[N-1] = r[N-2];  // ...maybe we should use zero at the edges
+  r[0] = 0; r[N-1] = 0;
+
 
   // clean-up preliminary estimates and write result to output:
   for(int n = 1; n < N-1; n++)
@@ -847,6 +849,7 @@ void rsSineFrequencies2(const T* x, int N, T* w)
       rel = num / den;  // reliability
     w[n] = rel; }
   w[0] = 0; w[N-1] = 0;
+  rsPlotArrays(N, x, w);
 
   // compute radian frequencies:
   T rL = w[0], rC = w[1], rR = w[2];
@@ -868,10 +871,15 @@ void rsSineFrequencies2(const T* x, int N, T* w)
     wC = wR;
   }
   w[0]   = w[1];     // handle edges - todo: use linear extrapolation later
+  w[N-2] = w[N-3];
   w[N-1] = w[N-2];
+  rsPlotArrays(N, x, w);
+
+  // maybe optionally optimize - but for that, we must first have phase- and amp-estimates, too
 
 }
-// edges are still wrong
+// right edge is still different
+// can we do everything in a single pass? -> less memory access
 
 
 
