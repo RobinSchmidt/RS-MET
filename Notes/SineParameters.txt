@@ -76,7 +76,10 @@ Maybe, we need to incorporate information from more than 3 samples...
 ---------------------------------------------------------------------------------------------------
 
 ...stuff below is under construction - it's horribly messy and i'm not sure, if a neat solution
-can be found at all
+can be found at all - another idea could be to use the 3-sample formula at n0-1,n0,n0+1 and use 
+some sort of averaging (maybe weighted by the conditioning as measured by y0/(yL+yR)?)...and/or 
+maybe try to find the minimum numerically - or maybe with respect to p,w numerically and with 
+respect to a analytically
 
   yLL = a * sin(p-2*w)
   yL  = a * sin(p-w)
@@ -140,16 +143,21 @@ because it gets rid of all the sines and cosines and replaces them by algebraic 
           
 Notation:
 
-  tLL = tan( (p-2*w)/2 )
-  tL  = tan( (p-  w)/2 )
-  t0  = tan(  p     /2 )
-  tR  = tan( (p+  w)/2 )
-  tRR = tan( (p+2*w)/2 )
+  tLL = tan( (p-2*w)/2 ) = tan( p/2 - w   )
+  tL  = tan( (p-  w)/2 ) = tan( p/2 - w/2 )
+  t0  = tan(  p     /2 ) = tan( p/2       )
+  tR  = tan( (p+  w)/2 ) = tan( p/2 + w/2 )
+  tRR = tan( (p+2*w)/2 ) = tan( p/2 + w   )
 
+We may then use tan(a +- b) = (tan(a) +- tan(b)) / (1 -+ tan(a)*tan(b))
 ..i think, we may turn this into a set of quadratic equations in the two variables tp, tw 
 where tp = tan(p/2), tw = tan(w/2), i.e. something of the form (maybe two of these):
 
   A*tp^2 + B*tp*tw + C*tw^2 + D*tp + E*tw + F = 0
+  
+  
+  
+  
   
 Maybe, it makes sense to transform everything into terms of sin(p),sin(w),cos(p),cos(w), like so:
 
@@ -190,11 +198,14 @@ z.simplify_full()
        - (cos(w)*sin(p) + cos(p)*sin(w))*yR
   
 would we have done the same only with yLL, yRR terms, we would geta 2nd partial function z2, where
-each occurrence of w is replaced by 2*w:
+each occurrence of w is replaced by 2*w written as 2w:
 
-
+  z2 =   2*a * cos(2w)^2 * sin(p )^2 
+       + 2*a * cos(p )^2 * sin(2w)^2 
+       - (cos(2w)*sin(p) - cos(p)*sin(2w))*yL 
+       - (cos(2w)*sin(p) + cos(p)*sin(2w))*yR
   
-  
+  use: sin(2w) = (2*sin(w)*cos(w)), cos(2w) = (cos(w)^2 - sin(w)^2):
   
   
   

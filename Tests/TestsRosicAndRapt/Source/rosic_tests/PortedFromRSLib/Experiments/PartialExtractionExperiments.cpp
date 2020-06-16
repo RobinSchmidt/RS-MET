@@ -710,6 +710,15 @@ void testSineParameterEstimation()
   int dummy = 0;
 }
 
+template<class T>
+T median(T x1, T x2, T x3)
+{
+  if(x1 >= x2 && x1 >= x3) return rsMax(x2, x3);  // x1 is greatest
+  if(x2 >= x1 && x2 >= x3) return rsMax(x1, x3);  // x2 is greatest
+  if(x3 >= x1 && x3 >= x2) return rsMax(x1, x2);  // x3 is greatest
+  rsError("we should always take one of the branches above");
+  return 0;
+}
 
 void sineRecreationBandpassNoise()
 {
@@ -722,14 +731,14 @@ void sineRecreationBandpassNoise()
 
   // once with instantaneous freq-estimation and once with known instantaneous frequency
 
-  int N  = 1000;
+  int N  = 2000;
   int fs = 44100;
   double f1  = 5000;    // center frequency of input sine at start
   double f2  = 2000;    // center frequency of input sine at end
   double bw1 = f1/20;  // bandwidth in Hz at start
   double bw2 = f2/20;  // bandwidth in Hz at end
   double amp = 0.25;   // maximum amplitude of noise (the normalization level)
-  int numPasses = 1;
+  int numPasses = 2;
 
 
   using Vec = std::vector<double>;
@@ -766,10 +775,30 @@ void sineRecreationBandpassNoise()
   // get values from zero all the way up to the Nyquist freq. Why do we actually never get 
   // negative values? Also, maybe, we should smooth the frequency estimate with a lowpass
 
-  // measure instantaneous frequency (with algo 2):
+  // Create cleaned up version via 3-point median filter - this is helpful because the raw data 
+  // shows an error with very large single-sample spikes:
+  Vec fm1c(N);  
+  for(n = 1; n < N-1; n++)
+    fm1c[n] = median(fm1[n-1], fm1[n], fm1[n+1]);
+
+  //Vec fm1d(N);  // for test - a 2nd pass of the median filter:
+  //for(n = 1; n < N-1; n++)
+  //  fm1d[n] = median(fm1c[n-1], fm1c[n], fm1c[n+1]);
+  //// result is only slightly different - doesn't seem to be useful
+
+
+  // Measure instantaneous frequency (with algo 2):
   Vec fm2(N);
   for(n = 0; n < N; n++)
     fm2[n] = rsSineFrequencyAt(&x[0], N, n, false) * (fs/(2*PI));
+
+  // Create a median-filtered version of that also:
+  Vec fm2c(N);  
+  for(n = 1; n < N-1; n++)
+    fm2c[n] = median(fm2[n-1], fm2[n], fm2[n+1]);
+
+
+
 
   // For what follows, we need an array of instantaneous frequencies (or omegas):
   Vec f;
@@ -811,18 +840,18 @@ void sineRecreationBandpassNoise()
     z[n] = a[n] * sin(wi[n] + pm[n]);
 
 
-  //rsPlotVectors(fa, fm1); // actual and estimated instantaneous freq
+  rsPlotVectors(fa, fm1, fm1c); // actual and estimated instantaneous freq
   //rsPlotVectors(fa-fm1, 5000.0*x);  // estimation error together with signal for reference
 
-  //rsPlotVectors(fa, fm2);
-  //rsPlotVectors(fa-fm2, 500.0*x);
+  rsPlotVectors(fa, fm2, fm2c);
+  //rsPlotVectors(fa-fm2, 1000.0*x);
   //rsPlotVectors(fa-fm2);
 
   //rsPlotVectors(fa, fm1, fm2);
 
   //rsPlotVectors(a, p);
 
-  rsPlotVectors(x, y, x-y);  // last sample wrong
+  //rsPlotVectors(x, y, x-y);  // last sample wrong
   rsPlotVectors(x, z, x-z);  // dito
 
 
