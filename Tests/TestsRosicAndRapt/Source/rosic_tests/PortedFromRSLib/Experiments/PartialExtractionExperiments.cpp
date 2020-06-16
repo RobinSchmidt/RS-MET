@@ -846,14 +846,15 @@ void rsSineFrequencies2(const T* x, int N, T* w)
 
   rsAssert(x != w);
   rsAssert(N >= 3);
-  T smalll = 1.e-8;  // ad-hoc - do tests what is best
+  T small1 = 1.e-8;  // ad-hoc - do tests what value is best
+  T small2 = 1.e-8;  // dito - best choice could be the same as small1 but maybe not
   int n;
 
   // compute reliabilities:
   for(n = 1; n < N-1; n++) {
     T num = rsAbs(x[n]);
     T den = T(0.5) * (rsAbs(x[n-1]) + rsAbs(x[n+1]));
-    if(den >= smalll*num)
+    if(den >= small1*num)
       w[n] = num / den;
     else
       w[n] = T(0); }
@@ -866,7 +867,7 @@ void rsSineFrequencies2(const T* x, int N, T* w)
     wR = rsSineFrequency(x[n], x[n+1], x[n+2], T(0)); // frequency of right neighbour sample
     rR = w[n+1];                                      // reliability of right neighbour sample
     rS = rL + rC + rR;                     // reliability sum of all 3 - used as normalizer
-    if( rS > smalll )                      // sum is large enough as denominator (maybe this smalll should be different from the one used above?)
+    if( rS > small2 )                      // sum is large enough as denominator
       w[n] = (rL*wL + rC*wC + rR*wR) / rS; //   -> use weighted sum of neighbour estimates
     else                                   // all 3 reliabilities are too small
       w[n] = w[n-1];                       //   -> repeat previous value
@@ -875,7 +876,7 @@ void rsSineFrequencies2(const T* x, int N, T* w)
 
   // handle n = N-2 ouside the loop:
   rS = rL + rC;
-  if( rS > smalll ) w[n] = (rL*wL + rC*wC) / rS;
+  if( rS > small2 ) w[n] = (rL*wL + rC*wC) / rS;
   else              w[n] = w[n-1];
 
   // handle edges at n = 0 and n = N-1:
@@ -988,7 +989,7 @@ void sineRecreationBandpassNoise()
 
 
   // measure instantaneous phase and amplitude:
-  Vec p(N), a(N);
+  Vec p(N), a(N);  // maybe use a1, p1
   for(n = 0; n < N-1; n++)
     rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &p[n]);
   // todo: use a symmetric estimation - looking forard and backward and using an average
@@ -997,8 +998,8 @@ void sineRecreationBandpassNoise()
 
   // optimize amp-, freq-, and phase-measurements jointly using numeric optimization:
   Vec ao = a, wo = w, po = p;
-  for(n = 2; n < N-2; n++)
-    rsOptimizeSineParameters(x[n-2], x[n-1], x[n], x[n+1], x[n+2], &ao[n], &po[n], &wo[n]);
+  //for(n = 2; n < N-2; n++)
+  //  rsOptimizeSineParameters(x[n-2], x[n-1], x[n], x[n+1], x[n+2], &ao[n], &po[n], &wo[n]);
   Vec fo = (fs/(2*PI)) * wo;
   // ahh - but with the optimized parameters, we may not get exact resynthesis - if we want exact
   // resynthesis, we should only optimize w and compute a,p as above
@@ -1006,7 +1007,7 @@ void sineRecreationBandpassNoise()
 
 
   // re-create the bandpass noise by a freq-, phase- and amp-modulated sine:
-  Vec y(N);   // recreated signal 1
+  Vec y(N);   // recreated signal 1 - rename to y1
   for(n = 0; n < N; n++)
     y[n] = a[n] * sin(p[n]);
 
@@ -1018,13 +1019,13 @@ void sineRecreationBandpassNoise()
     pm[n] = rsWrapToInterval(p[n]-wi[n], -PI, PI);
  
   // actual resynthesis
-  Vec z(N);   // recreated signal 2
+  Vec z(N);   // recreated signal 2 - rename to y2
   for(int n = 0; n < N; n++)
     z[n] = a[n] * sin(wi[n] + pm[n]);
 
 
   //rsPlotVectors(fa, fm1, fm1c, fm1_2); // actual and estimated instantaneous freq
-  //rsPlotVectors(fa-fm1, 5000.0*x, 2000.0*fm1_r);  // estimation error together with signal for reference
+  rsPlotVectors(fa-fm1, 5000.0*x);  // estimation error together with signal for reference
 
   //rsPlotVectors(test2, fo);
 
@@ -1045,8 +1046,8 @@ void sineRecreationBandpassNoise()
 
   //rsPlotVectors(a, p);
 
-  //rsPlotVectors(x, y, x-y);  // last sample wrong
-  //rsPlotVectors(x, z, x-z);  // dito
+  rsPlotVectors(x, y, x-y, a);  // last sample wrong
+  rsPlotVectors(x, z, x-z, a);  // dito
 
 
   //writeToMonoWaveFile("BandpassNoiseOriginal.wav",  &x[0], N, (int) fs, 16);
@@ -1087,6 +1088,16 @@ void sineRecreationBandpassNoise()
   //  local optimimum - but fm2c is closer to the underlying actual frequency - so both are better
   //  by different measures. maybe use algo1 with some additional smoothing of the freq (before)
   //  computing a and p.
+  // -algo1 has a very distinctive zizag pattern - in each half-cycle of the input, the error
+  //  zigzags through one full cycle - could it be related to the ratio of first and second 
+  //  derivative?
+  // -An entirely different algo could estimate the amplitude first (take abs, connect peaks, etc.)
+  //  and compute instantaneous phase by y[n] = a[n] * sin(p[n]) -> p[n] = asin(y[n]/a[n]). The 
+  //  instantaneous phase could then be unwrapped and split into instantaneous frequency and
+  //  a phase-modulation component: p[n] = sum_k=0^n(w[k]) + pm[k] (maybe the upper limit of the 
+  //  sum should be n-1?). This split could be done by a lowpass filter.
+  //  -the amplitude seems easier to estimate and may be more "fundamental"
+  //  -when we plot the current amplitude estimates, they look kinda jaggy
   //
   // If we use for resynthesis:
   //   y[n] = a[n] * sin(w*n + p[n]);
