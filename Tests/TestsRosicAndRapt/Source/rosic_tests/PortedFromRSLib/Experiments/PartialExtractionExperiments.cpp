@@ -848,7 +848,7 @@ void rsSineFrequencies2(const T* x, int N, T* w)
   rsAssert(x != w);
   rsAssert(N >= 3);
 
-  T smalll = 1.e-13;
+  T smalll = 1.e-8;  // ad-hoc - do tests what is best
   int n;
 
   // compute reliabilities:
@@ -856,7 +856,7 @@ void rsSineFrequencies2(const T* x, int N, T* w)
     T num = rsAbs(x[n]);
     T den = T(0.5) * (rsAbs(x[n-1]) + rsAbs(x[n+1]));
     T rel = T(0);
-    if(den >= smalll)   // maybe use den >= smalll*num and a larger number for smalll
+    if(den >= smalll*num)   // maybe use den >= smalll*num and a larger number for smalll
       rel = num / den;
     w[n] = rel; }
   w[0] = 0; w[N-1] = 0;
@@ -1079,15 +1079,15 @@ void sineRecreationBandpassNoise()
   //rsPlotVectors(fa, fm1, fm1c, fm1_2); // actual and estimated instantaneous freq
   //rsPlotVectors(fa-fm1, 5000.0*x, 2000.0*fm1_r);  // estimation error together with signal for reference
 
-  rsPlotVectors(test2, fo);
+  //rsPlotVectors(test2, fo);
 
   //rsPlotVectors(fa, fm2, fm2c);
-  rsPlotVectors(fa, fm2c, fo);
+  //rsPlotVectors(fa, fm2c, fo);
   //rsPlotVectors(fa-fm2, 1000.0*x);
   //rsPlotVectors(fa-fm2);
 
   //rsPlotVectors(fa, fm1c, fo);
-  rsPlotVectors(fa, fm1_2, fo); // this looks close to the "optimal" local approximation
+  //rsPlotVectors(fa, fm1_2, fo); // this looks close to the "optimal" local approximation
 
 
   rsPlotVectors(fm1_2, test2);
