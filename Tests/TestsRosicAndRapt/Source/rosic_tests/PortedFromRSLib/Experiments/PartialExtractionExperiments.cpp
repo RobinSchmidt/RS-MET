@@ -672,7 +672,10 @@ void sineRecreation()
   delete[] y;
 }
 
-void testSineParameterEstimation()
+
+
+
+void testSineAmpAndPhaseEstimation()
 {
   double y0 = 0.2;
   double y1 = 0.3;
@@ -710,6 +713,7 @@ void testSineParameterEstimation()
   int dummy = 0;
 }
 
+// Computes the median of 3 values - maybe move to library (near rsMin/rsMax):
 template<class T>
 T median(T x1, T x2, T x3)
 {
@@ -718,6 +722,42 @@ T median(T x1, T x2, T x3)
   if(x3 >= x1 && x3 >= x2) return rsMax(x1, x2);  // x3 is greatest
   rsError("we should always take one of the branches above");
   return 0;
+}
+
+// Computes the error function - see SineParameters.txt
+template<class T>
+T rsSineParametersError(T yLL, T yL, T y0, T yR, T yRR, T a, T p, T w)
+{
+  T sLL = sin(p-2*w);
+  T sL  = sin(p-w);
+  T s0  = sin(p);
+  T sR  = sin(p+w);
+  T sRR = sin(p+2*w);
+
+  T eLL = yLL - a*sLL;
+  T eL  = yL  - a*sL;
+  T e0  = y0  - a*s0;
+  T eR  = yR  - a*sR;
+  T eRR = yRR - a*sRR;
+
+  return eLL*eLL + eL*eL + e0*e0 + eR*eR + eRR*eRR;
+}
+// todo: minimize this function numerically with respect to a,p,w - maybe an analytic solution is
+// possible, but it involves solving a messy nonlinear system of equations...
+// maybe define a function that computes also the gradient - it can re-use the sLL,.. stuff - but we 
+// will need the cosines, too
+
+// numerically optimizes a,p,w so as to minimize the error function given above
+template<class T>
+void rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
+{
+
+  int dummy = 0;
+}
+
+void testSineParameterEstimation()
+{
+  testSineAmpAndPhaseEstimation();
 }
 
 void sineRecreationBandpassNoise()
@@ -828,6 +868,12 @@ void sineRecreationBandpassNoise()
   Vec fm2c(N);  
   for(n = 1; n < N-1; n++)
     fm2c[n] = median(fm2[n-1], fm2[n], fm2[n+1]);
+  // first an last value look wrong - for the moment, just repeat 2nd and 2nd-to-last:
+  fm2c[0]   = fm2c[1];
+  fm2c[N-1] = fm2c[N-2];
+  // ...until we find a better solution...actually, the median-filtering does not change the 
+  // estimates very much anyway - at least when numPasses = 2 - ok, with a single pass, the 
+  // difference is more obvious
 
 
 
@@ -872,8 +918,8 @@ void sineRecreationBandpassNoise()
     z[n] = a[n] * sin(wi[n] + pm[n]);
 
 
-  rsPlotVectors(fa, fm1, fm1c, fm1_2); // actual and estimated instantaneous freq
-  rsPlotVectors(fa-fm1, 5000.0*x, 2000.0*fm1_r);  // estimation error together with signal for reference
+  //rsPlotVectors(fa, fm1, fm1c, fm1_2); // actual and estimated instantaneous freq
+  //rsPlotVectors(fa-fm1, 5000.0*x, 2000.0*fm1_r);  // estimation error together with signal for reference
 
   rsPlotVectors(fa, fm2, fm2c);
   //rsPlotVectors(fa-fm2, 1000.0*x);
@@ -884,7 +930,7 @@ void sineRecreationBandpassNoise()
   //rsPlotVectors(a, p);
 
   //rsPlotVectors(x, y, x-y);  // last sample wrong
-  rsPlotVectors(x, z, x-z);  // dito
+  //rsPlotVectors(x, z, x-z);  // dito
 
 
   //writeToMonoWaveFile("BandpassNoiseOriginal.wav",  &x[0], N, (int) fs, 16);

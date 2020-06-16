@@ -991,6 +991,8 @@ T rsArrayTools::median(const T *buffer, int length)
     med = tmpBuffer[(length-1)/2];
   else
     med = (T)(0.5 * (tmpBuffer[length/2] + tmpBuffer[length/2-1]));
+    // todo: use T(0.5) * (tmpBuffer[length/2] + tmpBuffer[length/2-1]) - don't enforce conversion 
+    // to double in intermeidate result
 
   delete[] tmpBuffer;
   return med;

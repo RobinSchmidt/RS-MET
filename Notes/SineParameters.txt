@@ -131,7 +131,8 @@ Ideas for simplification:
   -double-angle formulas
   -sum-to-product formulas
   -transformation of sin/cos to tan
-  -express sines and cosines via complex exponentials
+  -express sines and cosines via complex exponentials - that may be advantageous because it may
+   decouple some stuff due to introducing the i to the sine terms
   -tangent half-angle substitution
   -see https://en.wikipedia.org/wiki/List_of_trigonometric_identities
           

@@ -128,8 +128,8 @@ inline T rsNextPowerOfTwo(T x);
 repeated squaring which has a complexity of O(log(exponent)).
 for details, see: Jörg Arndt - Matters Computational, Ch.28.5
 \todo bring back the naive implementation, to be used for small powers (there, it may be more
-efficient), in rsPow, switch between rsPowSmall, rsPowBig depending on the size of the exponent
-*/
+efficient - well..will it? questionable!), in rsPow, switch between rsPowSmall, rsPowBig 
+depending on the size of the exponent */
 template <class T>
 T rsPow(const T& base, int exponent);
 
