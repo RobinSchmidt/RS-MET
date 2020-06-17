@@ -846,9 +846,17 @@ int rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
   return evals;
 }
 
+
+// can be delete AFTER checking, if all relevant comments have been included into the 
+// documentation of rsSineParameterEstimator<T>::sigToAmpsViaPeaks
+
 template<class T>
 void rsAmpEnvelope(const T* x, int N, T* a)
 {
+  rsSineParameterEstimator<T>::sigToAmpsViaPeaks(x, N, a);
+  return;
+
+
   // todo: take a shadowing-time parameter and use a peak-shadower
 
   // Algo:
@@ -856,7 +864,6 @@ void rsAmpEnvelope(const T* x, int N, T* a)
   // -find peaks
   //  -maybe refine their values by using the maximum through a parabola
   // -connect them by linear interpolation
-
 
   bool parabolicHeight = true; 
   bool parabolicTime   = false; // makes sense only, if parabolicHeight is also true
@@ -952,21 +959,75 @@ void rsAmpEnvelope(const T* x, int N, T* a)
 // signalToAmp and we should also have signalToFreq1, signalToFreq2, signalAndFreqToAmpAndPhase, 
 // etc.
 
+
+template<class T>
+void repairPhase(T* p, int N)
+{
+  for(int n = 0; n < N; n++)
+  {
+    if(rsIsNaN(p[n])) // what about inf? can this occur? i don't think so
+    {
+      p[n] = 2.0;   // preliminary
+    }
+  }
+
+  int dummy = 0;
+}
+// we must also consider the possibility of a stretch of NaNs - when we see a NaN, we must check, 
+// how many NaNs follow and then fill the whole section with "better" data - but these changes 
+// will break identity resynthesis - a NaN is actually a sign that the amplitude estimate is wrong
+// ...maybe we should repair this too
+// encounters far mor NaNs, if we use
+//  bool parabolicTime = true  in   rsSineParameterEstimator<T>::connectPeaks
+// but even if we don't use it - some NaNs may still happen
+
+template<class T>
+void sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
+{
+  for(int n = 0; n < N; n++)
+  {
+    p[n] = asin(x[n] / a[n]);
+    if( rsIsNaN(p[n]) )
+    {
+      T xn = x[n];  // for debug
+      T an = a[n];
+
+      int dummy = 0;
+    }
+  }
+  repairPhase(p, N);
+
+
+  // todo: catch div-by-zero and asin of arguments > 1
+  // or maybe let the infs and nans just happen and then pass over the p-array again and replace 
+  // the invalid sections with numbers resulting from linearly interopolating between surrounding
+  // valid values
+
+  /*
+  T smalll = 1.e-8;
+  for(int n = 0; n < N; n++)
+  {
+
+
+    p[n] = asin(x[n] / a[n]);
+  }
+  */
+}
+
 void testSineParameterEstimation()
 {
   testSineAmpAndPhaseEstimation();
   testSineAmpAndPhaseEstimation2();
   // make it a unit test
 
-  /*
   using Vec = std::vector<double>;
   Vec x = Vec({10,11,5,0,1,0});  // shows undershooting problem with parabolicTime
   Vec a = x;
   rsAmpEnvelope(&x[0], (int) x.size(), &a[0]); // try to use it in place with a = x
-  */
+  //rsPlotVectors(x, a);
 
-  //x = Vec({10,11,0,0,10,0}); rsAmpEnvelope(&x[0], (int) x.size(), &a[0]); // not interesting
-
+  x = Vec({10,11,0,0,10,0}); rsAmpEnvelope(&x[0], (int) x.size(), &a[0]); // not interesting
+  //rsPlotVectors(x, a);
 }
 
 void sineRecreationBandpassNoise()
@@ -1016,11 +1077,7 @@ void sineRecreationBandpassNoise()
   rsArrayTools::normalize(&x[0], N, amp, true);
   // maybe (optionally) use two equal filters in series
 
-  // test:
-  Vec a1(N);
-  //rsAmpEnvelope(&x[0], 100, &a1[0]); 
-  rsAmpEnvelope(&x[0], N, &a1[0]);
-  rsPlotArrays(N, &x[0], &a1[0]);
+
 
   using SPE = rsSineParameterEstimator<double>;
 
@@ -1104,12 +1161,22 @@ void sineRecreationBandpassNoise()
     z[n] = a[n] * sin(wi[n] + pm[n]);
 
 
+  // Use algo that estimates the amp-envelope first and bases everything else on that:
+  Vec a3(N), p3(N);
+  rsAmpEnvelope(&x[0], N, &a3[0]);
+  sigAndAmpToPhase(&x[0], &a3[0], N, &p3[0]);  // may produce nans
+  rsPlotArrays(N, &x[0], &a3[0]);
+  rsPlotVectors(x, a3, p3);
+
+
+
+
   //rsPlotVectors(fa, fm1, fm1c); // actual and estimated instantaneous freq
   //rsPlotVectors(fa-fm1, 5000.0*x);  // estimation error together with signal for reference
 
   //rsPlotVectors(test2, fo);
 
-  rsPlotVectors(fa, fm1, fm1c);
+  //rsPlotVectors(fa, fm1, fm1c);
   //rsPlotVectors(fa, fm2, fm2c);
 
 

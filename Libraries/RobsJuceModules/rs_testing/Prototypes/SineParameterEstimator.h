@@ -43,10 +43,16 @@ public:
   static void sigToOmegasViaFormula(const T* x, int N, T* w);
 
   static void sigToAmpsViaPeaks(const T* x, int N, T* a);
+  // todo: document, if x == a is allowed (i think so)
 
   // ToDo: sigToOmegasViaZeros
 
 protected:
+
+  static void connectPeaks(const T* y, int N, T* a);
+  // rename: y to x, a to env
+  // y == a is allowed - it can overwrite the content of a given array
+  // maybe move this function to somewhere else - this could be useful in various other scenarios
 
 };
 
