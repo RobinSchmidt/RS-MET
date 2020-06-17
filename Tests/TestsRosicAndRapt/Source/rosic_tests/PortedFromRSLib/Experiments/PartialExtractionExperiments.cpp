@@ -966,6 +966,8 @@ void rsAmpEnvelope(const T* x, int N, T* a)
 
   //rsPlotArrays(N, x, a);
 
+  bool parabolic = false;  // not yet used
+
   for(int n = 0; n < N; n++)
     a[n] = rsAbs(x[n]);  // todo: apply shadower here (shadows are casted only rightward)
 
@@ -978,15 +980,24 @@ void rsAmpEnvelope(const T* x, int N, T* a)
     if(a[n] >= a[n-1] && a[n] >= a[n+1])
     {
       // there's a peak at a[n]...
-
       nR = n;
-      aR = a[n]; // todo: use parabolic interpolation later, take care to handle linear sections
-                 // and plateaus correctly
+      aR = a[n];
+
+
+      if(parabolic)
+      {
+        // todo: modify aR to be the peak of the parabola going through a[n-1], a[n], a[n+1],
+        // take care to handle linear sections and plateaus correctly (the parabola becomes
+        // degenerate in such cases and the formula will give a division by zero). we do not not 
+        // bother to do anything about the location of the peak - it will actually be located at a 
+        // subsample position around n but here, we have no way to represent that - but adjusting
+        // the height may be beneficial anyway - we assume the amplitude to be approximately 
+        // constant between n-1...n+1
+      }
+
 
       for(int i = nL; i < nR; i++)
-      {
         a[i] = rsLinToLin(T(i), T(nL), T(nR), aL, aR); // optimize!
-      }
       //rsPlotArrays(N, x, a);
 
 
@@ -999,8 +1010,15 @@ void rsAmpEnvelope(const T* x, int N, T* a)
   }
 
   // todo: connect last sample to last peak...
+  nR = N-1;
+  aR = a[nR];
+  for(int i = nL; i < nR; i++)
+    a[i] = rsLinToLin(T(i), T(nL), T(nR), aL, aR); // optimize!
 
   rsPlotArrays(N, x, a);
+
+  // maybe optionally smooth the result by a bidirectional filter
+
   int dummy = 0;
 }
 // i think, this too can be done without additional memory - we may use the a-buffer for all 
@@ -1063,7 +1081,8 @@ void sineRecreationBandpassNoise()
 
   // test:
   Vec a1(N);
-  rsAmpEnvelope(&x[0], 100, &a1[0]);
+  //rsAmpEnvelope(&x[0], 100, &a1[0]); 
+  rsAmpEnvelope(&x[0], N, &a1[0]);
 
 
   // measure instantaneous frequency (with algo 1):
