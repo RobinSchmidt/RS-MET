@@ -966,7 +966,7 @@ void rsAmpEnvelope(const T* x, int N, T* a)
 
   //rsPlotArrays(N, x, a);
 
-  bool parabolic = false;  // not yet used
+  bool parabolic = true;
 
   for(int n = 0; n < N; n++)
     a[n] = rsAbs(x[n]);  // todo: apply shadower here (shadows are casted only rightward)
@@ -986,13 +986,23 @@ void rsAmpEnvelope(const T* x, int N, T* a)
 
       if(parabolic)
       {
+        // maybe factor out into a function rsParabolicExtremumValue(T* x, int n)
+        T c[3]; rsPolynomial<T>::fitQuadratic_m1_0_1(c, &a[n-1]);  // coeffs
+        if(c[2] != 0)  // ...use a tolerance
+        {
+          T x0 = rsPolynomial<T>::quadraticExtremumPosition(c);
+          aR = rsPolynomial<T>::evaluate(x0, c, 2);
+        }
+        int dummy = 0;
+
         // todo: modify aR to be the peak of the parabola going through a[n-1], a[n], a[n+1],
         // take care to handle linear sections and plateaus correctly (the parabola becomes
         // degenerate in such cases and the formula will give a division by zero). we do not not 
         // bother to do anything about the location of the peak - it will actually be located at a 
         // subsample position around n but here, we have no way to represent that - but adjusting
         // the height may be beneficial anyway - we assume the amplitude to be approximately 
-        // constant between n-1...n+1
+        // constant between n-1...n+1 ...or wait: we actually *can* use non-integers xL, xR instead
+        // of nL, nR...try it!
       }
 
 
