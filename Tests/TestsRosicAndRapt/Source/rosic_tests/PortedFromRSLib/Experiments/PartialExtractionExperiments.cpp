@@ -1031,11 +1031,15 @@ void unreflectPhase2(const T* x, T* p, int N)
   {
     if(x[n] >= 0)
     {
-      if(x[n] < x[n-1] && p[n] < p[n-1]) // x is going down, phase should go up, we are past pi/2
+      //if(x[n] < x[n-1] && p[n] < p[n-1]) // why the 2nd codition?
+      if(x[n] < x[n-1]) 
         p[n] = PI - p[n];
+        // x is positive and going down ->  we are past pi/2 -> phase should continue to go up
     }
     else
     {
+
+      // x is negative and going down -> we are before -pi/2 -> phase should go up
 
     }
   }
