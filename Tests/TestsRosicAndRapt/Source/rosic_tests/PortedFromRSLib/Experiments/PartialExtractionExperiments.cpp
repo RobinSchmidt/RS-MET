@@ -846,17 +846,6 @@ int rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
   return evals;
 }
 
-/*
-template<class T>
-void rsSineFrequencies2(const T* x, int N, T* w)
-{
-  rsSineParameterEstimator<T>::sigToFreqsViaRecursion(x, N, w);
-}
-// move to library when all potential div-by-zeros are handled
-// can we do everything in a single pass? -> less memory access but recomputations of some 
-// abs-values
-*/
-
 template<class T>
 void rsAmpEnvelope(const T* x, int N, T* a)
 {
@@ -1039,16 +1028,13 @@ void sineRecreationBandpassNoise()
 
   // measure instantaneous frequency (with algo 1 - sine recursion formula):
   Vec fm1(N);
-  SPE::sigToFreqsViaRecursion(&x[0], N, &fm1[0]); 
+  SPE::sigToOmegasViaFormula(&x[0], N, &fm1[0]); 
   fm1 = (fs/(2*PI)) * fm1;
 
-  // Create cleaned up version via 3-point median filter - this is helpful because the raw data 
-  // shows an error with very large single-sample spikes:
+  // Create cleaned up version via 3-point median filter:
   Vec fm1c(N); 
   for(n = 1; n < N-1; n++)
     fm1c[n] = median(fm1[n-1], fm1[n], fm1[n+1]);
-
-
 
   // Measure instantaneous frequency (with algo 2):
   Vec fm2(N);
@@ -1065,8 +1051,6 @@ void sineRecreationBandpassNoise()
   // ...until we find a better solution...actually, the median-filtering does not change the 
   // estimates very much anyway - at least when numPasses = 2 - ok, with a single pass, the 
   // difference is more obvious
-
-
 
 
   // For what follows, we need an array of instantaneous frequencies (or omegas):

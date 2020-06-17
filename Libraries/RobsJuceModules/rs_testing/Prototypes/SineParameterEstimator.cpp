@@ -19,38 +19,36 @@ void rsSineParameterEstimator<T>::sigToOmegasViaFormula(const T* x, int N, T* w)
   T small2 = 1.e-8;  // dito - best choice could be the same as small1 but maybe not
   int n;
 
-  // compute reliabilities, use w-array for temporary storage (maybe factor out):
+  // compute reliabilities:
+  T* r = w;                         // re-use w-array for temporary storage of reliabilities
   for(n = 1; n < N-1; n++) {
     T num = rsAbs(x[n]);
     T den = T(0.5) * (rsAbs(x[n-1]) + rsAbs(x[n+1]));
     if(den >= small1*num)
-      w[n] = num / den;
+      r[n] = num / den;
     else
-      w[n] = T(0); }
-  w[0] = 0; w[N-1] = 0;
+      r[n] = T(0); }
+  r[0] = 0; r[N-1] = 0;
 
-  // compute radian frequencies (maybe factor out):
-  T rL = w[0], rC = w[1], rR, rS;
+  // compute radian frequencies:
+  T rL = r[0], rC = r[1], rR, rS;
   T wL = T(0), wC = rsSineFrequency(x[0], x[1], x[2]), wR;
   for(n = 1; n < N-2; n++) {
     wR = rsSineFrequency(x[n], x[n+1], x[n+2], T(0)); // frequency of right neighbour sample
-    rR = w[n+1];                                      // reliability of right neighbour sample
+    rR = r[n+1];                                      // reliability of right neighbour sample
     rS = rL + rC + rR;                     // reliability sum of all 3 - used as normalizer
     if( rS > small2 )                      // sum is large enough as denominator
       w[n] = (rL*wL + rC*wC + rR*wR) / rS; //   -> use weighted sum of neighbour estimates
     else                                   // all 3 reliabilities are too small
       w[n] = w[n-1];                       //   -> repeat previous value
-    rL = rC; rC = rR; wL = wC; wC = wR;    // updates for next iteration
-  }
+    rL = rC; rC = rR; wL = wC; wC = wR; }  // updates for next iteration
 
-  // handle n = N-2 ouside the loop:
-  rS = rL + rC;
-  if( rS > small2 ) w[n] = (rL*wL + rC*wC) / rS;
-  else              w[n] = w[n-1];
-
-  // handle edges at n = 0 and n = N-1:
-  w[0]   = w[1];
-  w[N-1] = w[N-2];
+  rS = rL + rC;                     // handle n = N-2 ouside the loop
+  if( rS > small2 ) 
+    w[n] = (rL*wL + rC*wC) / rS;
+  else
+    w[n] = w[n-1];
+  w[0] = w[1]; w[N-1] = w[N-2];     // handle edges at n = 0 and n = N-1
 }
 
 template<class T>

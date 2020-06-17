@@ -85,7 +85,14 @@ void rsSineAmplitudeAndPhase(T y0, T y1, T w, T *a, T *p)
 template<class T>
 T rsSineFrequency(T y0, T y1, T y2, T smalll)
 {
-  rsAssert( fabs(y1) >= smalll * (fabs(y0)+fabs(y2)), "y1 (numerically) zero is not allowed");
+  //rsAssert( fabs(y1) >= smalll * (fabs(y0)+fabs(y2)), "y1 (numerically) zero is not allowed");
+
+  if( rsAbs(y1) <= smalll * (rsAbs(y0)+rsAbs(y2)) )
+  {
+    rsError("y1 (too close to) zero is not allowed");
+    return T(0);
+  }
+
 
   // There's a recursion for the sine y[n] = a1*y[n-1] - y[n-2] where a1 = 2*cos(w) and the states
   // y[n-1], y[n-2] are initialized as y[n-1] = A * sin(p - w), y[n-2] = A * sin(p - 2*w) which in
