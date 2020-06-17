@@ -897,6 +897,9 @@ void rsAmpEnvelope(const T* x, int N, T* a)
         }
         int dummy = 0;
 
+        // quadraticExtremumPosition computes c[1]/c[2], so the tolerance should be based on the 
+        // ratio |c[1]| and |c[2]| - if abs(c[2]) < (small * c1), skip the step
+
         // todo: modify aR to be the peak of the parabola going through a[n-1], a[n], a[n+1],
         // take care to handle linear sections and plateaus correctly (the parabola becomes
         // degenerate in such cases and the formula will give a division by zero). we do not not 
@@ -910,7 +913,6 @@ void rsAmpEnvelope(const T* x, int N, T* a)
 
       for(int i = nL; i < nR; i++)
       {
-        //a[i] = rsLinToLin(T(i), T(nL), T(nR), aL, aR); // optimize!
         a[i] = rsLinToLin(T(i), tL, tR, aL, aR); // optimize!
         // todo: test, if 2nd version is really better ...looks strange at sample 504 - undershoots
         // actual value there - try large flat peaks next to small peaks or maybe flat peaks near
@@ -927,18 +929,13 @@ void rsAmpEnvelope(const T* x, int N, T* a)
       aL = aR;
     }
 
-
   }
 
-  // todo: connect last sample to last peak...
   nR = N-1;
   tR = T(nR);
   aR = a[nR];
   for(int i = nL; i < nR; i++)
-  {
-    //a[i] = rsLinToLin(T(i), T(nL), T(nR), aL, aR); // optimize! ..use xL,xR here, too
     a[i] = rsLinToLin(T(i), tL, tR, aL, aR); // optimize!
-  }
 
   rsPlotArrays(N, x, a);
 

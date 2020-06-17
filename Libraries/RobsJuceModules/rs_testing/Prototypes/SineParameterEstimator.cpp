@@ -32,10 +32,13 @@ void rsSineParameterEstimator<T>::sigToOmegasViaFormula(const T* x, int N, T* w)
 
   // compute radian frequencies:
   T rL = r[0], rC = r[1], rR, rS;
-  T wL = T(0), wC = rsSineFrequency(x[0], x[1], x[2]), wR;
+  T wL = T(0), wC = omegaFormula(x[0], x[1], x[2]), wR;
   for(n = 1; n < N-2; n++) {
-    wR = rsSineFrequency(x[n], x[n+1], x[n+2], T(0)); // frequency of right neighbour sample
-    rR = r[n+1];                                      // reliability of right neighbour sample
+    rR = r[n+1];                               // reliability of right neighbour sample
+    if(rR > T(0))
+      wR = omegaFormula(x[n], x[n+1], x[n+2]); // frequency of right neighbour sample
+    else
+      wR = T(0);
     rS = rL + rC + rR;                     // reliability sum of all 3 - used as normalizer
     if( rS > small2 )                      // sum is large enough as denominator
       w[n] = (rL*wL + rC*wC + rR*wR) / rS; //   -> use weighted sum of neighbour estimates

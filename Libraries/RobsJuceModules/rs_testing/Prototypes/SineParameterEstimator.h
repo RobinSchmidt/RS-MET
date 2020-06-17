@@ -19,6 +19,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Static functions */
 
+  static T omegaFormula(T yL, T yC, T yR) 
+  { return acos(rsClip(T(0.5)*(yL+yR)/yC, T(-1), T(+1))); }
+  // warning: no check against division by zero - yC should be large enough - we do check, if
+  // the input to acos is in -1..+1 though - so the formula is "half-safe"
+
   /** Estimates the instantaneous normalized radian frequencies ("omega") of the signal x via the
   recursion formula for 3 successive samples of a sinewave. To estimate the omega at sample n, it 
   looks at x[n-1], x[n], x[n+1] and applies the formula. But because this formula is unreliable 
