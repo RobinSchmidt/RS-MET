@@ -983,14 +983,12 @@ void repairPhase(T* p, int N)
 //  bool parabolicTime = true  in   rsSineParameterEstimator<T>::connectPeaks
 // but even if we don't use it - some NaNs may still happen
 
-template<class T>
-void sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
-{
-  for(int n = 0; n < N; n++)
-    p[n] = asin(x[n] / a[n]);
-  //repairPhase(p, N);
-  rsPlotArrays(N, p);
 
+
+template<class T>
+void unreflectPhase(T* p, int N)
+{
+  std::vector<double> tmp = toVector(p, N); // for plotting
   T pi2 = 0.5*PI;
   for(int n = 1; n < N; n++)
   {
@@ -999,14 +997,69 @@ void sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
       if(p[n] < p[n-1] || (p[n] > p[n-1] && p[n-1] >= pi2)  )
       {
         p[n] = PI - p[n];
+        // this looks ok
       }
+    }
+    else  // p[n] < 0
+    {
+      bool cond1 = p[n] < p[n-1];  // 
+      bool cond2 = p[n] > p[n-1] && p[n-1] <= -pi2;
+
+
+      if(cond1 || cond2 /* || cond3*/ )
+      {
+        p[n] = -PI - p[n];  
+        // this looks wrong - test with sine input - maybe we nee a third condition for the
+        // wrap-around PI
+      }
+
+    }
+  }
+  rsPlotArrays(N, &tmp[0], p);
+  // maybe we should use conditions not based on previous values of the phase but on whether x
+  // as ascending or descending - if it's descending, we are either in the range pi/2...pi or
+  // -pi...-pi/2
+
+}
+
+template<class T>
+void unreflectPhase2(const T* x, T* p, int N)
+{
+  std::vector<double> tmp = toVector(p, N); // for plotting
+  T pi2 = 0.5*PI;
+  for(int n = 1; n < N; n++)
+  {
+    if(x[n] >= 0)
+    {
+      if(x[n] < x[n-1] && p[n] < p[n-1]) // x is going down, phase should go up, we are past pi/2
+        p[n] = PI - p[n];
     }
     else
     {
 
     }
   }
-  rsPlotArrays(N, p);
+  rsPlotArrays(N, &tmp[0], p);
+
+}
+
+template<class T>
+void sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
+{
+  for(int n = 0; n < N; n++)
+    p[n] = asin(x[n] / a[n]);
+  //repairPhase(p, N);
+  //unreflectPhase(p, N);
+  unreflectPhase2(x, p, N);
+
+  //rsPlotArrays(N, p);
+
+
+
+
+  // make a function unreflectPhase - or 2 - one using phase only and one using also the signal
+
+  int dummy = 0;
 
   // todo: catch div-by-zero and asin of arguments > 1
   // or maybe let the infs and nans just happen and then pass over the p-array again and replace 
