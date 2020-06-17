@@ -38,7 +38,8 @@ namespace RAPT
 
 #include "RaptInstantiations.cpp"
 
-// move these instantioans into RaptInstantiations.cpp:
+// move these instantioans into RaptInstantiations.cpp - at least those which are actually in 
+// the rapt library - some are not (yet) in this namespace, they can be kept here:
 
 template struct RAPT::rsFilterSpecificationZPK<float>;
 template struct RAPT::rsFilterSpecificationBA<float>;
@@ -72,4 +73,4 @@ template class rsQuantumSpin<double>;     // todo: use float...
 template class rsQuantumComputer<double>; // ...because this guy here can use a lot of memory
 template class rsQuantumParticle<double>; 
 
-
+template class rsSineParameterEstimator<double>;

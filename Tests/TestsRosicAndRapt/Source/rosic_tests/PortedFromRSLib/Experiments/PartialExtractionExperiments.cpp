@@ -903,6 +903,9 @@ void rsSineFrequencies(const T* x, int N, T* w)
 template<class T>
 void rsSineFrequencies2(const T* x, int N, T* w)
 {
+  rsSineParameterEstimator<T>::sigToFreqsViaRecursion(x, N, w);
+
+  /*
   // The algorithm uses rsSineFrequency as its core to estimate the frequency at each sample. 
   // However, it was observed, that this function gives unreliable results, whenever there's a 
   // zero-crossing, so we first compute the (expected) reliabilities of the measurements at each 
@@ -952,6 +955,7 @@ void rsSineFrequencies2(const T* x, int N, T* w)
   // handle edges at n = 0 and n = N-1:
   w[0]   = w[1];
   w[N-1] = w[N-2];
+  */
 }
 // move to library when all potential div-by-zeros are handled
 // can we do everything in a single pass? -> less memory access but recomputations of some 
@@ -1220,12 +1224,12 @@ void sineRecreationBandpassNoise()
     z[n] = a[n] * sin(wi[n] + pm[n]);
 
 
-  //rsPlotVectors(fa, fm1, fm1c, fm1_2); // actual and estimated instantaneous freq
+  //rsPlotVectors(fa, fm1, fm1c); // actual and estimated instantaneous freq
   //rsPlotVectors(fa-fm1, 5000.0*x);  // estimation error together with signal for reference
 
   //rsPlotVectors(test2, fo);
 
-  //rsPlotVectors(fa, fm1, fm1c);
+  rsPlotVectors(fa, fm1, fm1c);
   //rsPlotVectors(fa, fm2, fm2c);
 
 
@@ -1246,8 +1250,8 @@ void sineRecreationBandpassNoise()
   Vec err2 = x-z;
   //rsPlotVectors(err1, err2);
 
-  rsPlotVectors(x, y, x-y, a);  // last sample wrong
-  rsPlotVectors(x, z, x-z, a);  // dito
+  //rsPlotVectors(x, y, x-y, a);  // last sample wrong
+  //rsPlotVectors(x, z, x-z, a);  // dito
 
 
   //writeToMonoWaveFile("BandpassNoiseOriginal.wav",  &x[0], N, (int) fs, 16);
