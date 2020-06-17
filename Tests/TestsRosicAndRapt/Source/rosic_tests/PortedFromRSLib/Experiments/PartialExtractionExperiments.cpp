@@ -919,7 +919,7 @@ void rsSineFrequencies2(const T* x, int N, T* w)
   T small2 = 1.e-8;  // dito - best choice could be the same as small1 but maybe not
   int n;
 
-  // compute reliabilities:
+  // compute reliabilities (maybe factor out):
   for(n = 1; n < N-1; n++) {
     T num = rsAbs(x[n]);
     T den = T(0.5) * (rsAbs(x[n-1]) + rsAbs(x[n+1]));
@@ -929,7 +929,7 @@ void rsSineFrequencies2(const T* x, int N, T* w)
       w[n] = T(0); }
   w[0] = 0; w[N-1] = 0;
 
-  // compute radian frequencies:
+  // compute radian frequencies (maybe factor out):
   T rL = w[0], rC = w[1], rR, rS;
   T wL = T(0), wC = rsSineFrequency(x[0], x[1], x[2]), wR;
   for(n = 1; n < N-2; n++) {
@@ -953,23 +953,26 @@ void rsSineFrequencies2(const T* x, int N, T* w)
   w[N-1] = w[N-2];
 }
 // move to library when all potential div-by-zeros are handled
-// can we do everything in a single pass? -> less memory access
+// can we do everything in a single pass? -> less memory access but recomputations of some 
+// abs-values
 
 template<class T>
 void rsAmpEnvelope(const T* x, int N, T* a)
 {
+  // todo: take a shadowing-time parameter and use a peak-shadower
+
   // Algo:
   // -obtain shadowed version of abs(x)
   // -find peaks
   //  -maybe refine their values by using the maximum through a parabola
   // -connect them by linear interpolation
 
-  //rsPlotArrays(N, x, a);
 
   bool parabolicHeight = true; 
-  bool parabolicTime   = true; // makes sense only, if parabolicHeight is also true
+  bool parabolicTime   = false; // makes sense only, if parabolicHeight is also true
   // Env looks smoother with parabolicHeight. parabolicTime may lead to the envelope-estimate 
-  // undershooting the signal - so use with care...
+  // undershooting the signal - so use with care. I think, we should use parabolicHeight but not
+  // parabolicTime, if the goal is to estimate the instantaneous phase, too
 
 
   for(int n = 0; n < N; n++)
@@ -993,13 +996,14 @@ void rsAmpEnvelope(const T* x, int N, T* a)
       if(parabolicHeight)
       {
         // maybe factor out into a function rsParabolicExtremumValue(T* x, int n)
-        T c[3]; rsPolynomial<T>::fitQuadratic_m1_0_1(c, &a[n-1]);  // coeffs
+        using Poly = rsPolynomial<T>;
+        T c[3]; Poly::fitQuadratic_m1_0_1(c, &a[n-1]);  // c = polynomial coeffs of parabola
         if(c[2] != 0)  // TODO: use a tolerance
         {
-          T dt = rsPolynomial<T>::quadraticExtremumPosition(c);  // between -1..+1
-          aR   = rsPolynomial<T>::evaluate(dt, c, 2);
-          if(parabolicTime)
-            tR += dt;
+          T dt = Poly::quadraticExtremumPosition(c); // time offset of peak between -1..+1
+          aR   = Poly::evaluate(dt, c, 2);           // height of peak
+          if(parabolicTime)                          // we may or may not use the time offset..
+            tR += dt;                                // ..in the linear interpolation loop below
         }
         int dummy = 0;
 
@@ -1042,8 +1046,8 @@ void rsAmpEnvelope(const T* x, int N, T* a)
   aR = a[nR];
   for(int i = nL; i < nR; i++)
   {
-    a[i] = rsLinToLin(T(i), T(nL), T(nR), aL, aR); // optimize! ..use xL,xR here, too
-    //a[i] = rsLinToLin(T(i), xL, xR, aL, aR); // optimize!
+    //a[i] = rsLinToLin(T(i), T(nL), T(nR), aL, aR); // optimize! ..use xL,xR here, too
+    a[i] = rsLinToLin(T(i), tL, tR, aL, aR); // optimize!
   }
 
   rsPlotArrays(N, x, a);
@@ -1052,15 +1056,30 @@ void rsAmpEnvelope(const T* x, int N, T* a)
 
   int dummy = 0;
 }
-// i think, this too can be done without additional memory - we may use the a-buffer for all 
-// intermediate signals - whenver we find a relevant peak, we fill the setion of the envelope left
-// to the current sample and remember the location of the current peak
+// In the case of using amplitude as primary (i.e. first estimated) variable, we need to look in 
+// the neighbourhood of peaks for other peaks. When frequency is the primary variable, we need to
+// look for other zero crossing in the neighborhood of zero-crossings (at least, when the 
+// zero-crossing based freq estimation is used). When we use local information only, like just
+// the two neighbouring samples of each sample, we have the "most localized" estimation algo.
+// ...move all this stuff into a class rsSineParameterEstimator...this function may be called
+// signalToAmp and we should also have signalToFreq1, signalToFreq2, signalAndFreqToAmpAndPhase, 
+// etc.
 
 void testSineParameterEstimation()
 {
   testSineAmpAndPhaseEstimation();
   testSineAmpAndPhaseEstimation2();
   // make it a unit test
+
+  /*
+  using Vec = std::vector<double>;
+  Vec x = Vec({10,11,5,0,1,0});  // shows undershooting problem with parabolicTime
+  Vec a = x;
+  rsAmpEnvelope(&x[0], (int) x.size(), &a[0]); // try to use it in place with a = x
+  */
+
+  //x = Vec({10,11,0,0,10,0}); rsAmpEnvelope(&x[0], (int) x.size(), &a[0]); // not interesting
+
 }
 
 void sineRecreationBandpassNoise()
