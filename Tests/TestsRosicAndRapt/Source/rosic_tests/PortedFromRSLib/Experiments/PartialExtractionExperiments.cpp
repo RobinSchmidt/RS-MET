@@ -1081,6 +1081,81 @@ T distanceSum(T x, T xL, T xR)
 {
   return rsAbs(x-xL) + rsAbs(x-xR);
 }
+template<class T>
+void refinePhase1(T* p, int N)
+{
+  // try to repair these errors in a second pass - here, we adjust the phase for each sample so as 
+  // to minimize the sum of the distances to its neighbours
+  T pi2 = 0.5*PI;
+  for(int n = 1; n < N-1; n++)
+  {
+    T d = distanceSum(p[n], p[n-1], p[n+1]);
+    T pm, dm;        // modified phase and distance-sum
+    if(p[n] >= 0)    // zone 1 or 2
+    {  
+      //if(p[n] < pi2)
+      if(p[n] < pi2 && p[n+1] >= pi2)
+      {
+        // we may be too late....
+        T pn = p[n]; // for debug
+        pm = PI - p[n];
+        dm = distanceSum(pm, p[n-1], p[n+1]); // we should warp p[n+1] into 0..2pi?
+        if(dm <= d)
+          //if(dm < d)
+          p[n] = pm;
+        // this sometimes leads to undesired forward jumps - at 37,54,..
+        // often dm == d ...this is weird!
+      }
+      else
+      {
+        // we may be too early
+
+      }
+    }
+    else
+    {
+
+    }
+  }
+}
+// this way of unreflecting may lead phases that may change zones one sample too late or too 
+// early leading to bipolar spikes in the etsimated instantaneous freq - if the zone change 
+// happens too late, the freq spikes down and in the next sample this gets compensated by a 
+// spike up...hmm - i actually did not observe the opposite case (up-then-down) yet - so maybe
+// the "too early" case does never happen?
+// maybe it's sufficient to minimize the distance to the right neighbour?
+
+template<class T>
+T refinePhase(T p, T pL, T pR)
+{
+  T pi2 = 0.5*PI;
+  T pa  = T(0.5)*(pL+pR);
+  T pm;
+  if(p < pi2 && pR >= pi2)
+  {
+    pm = PI - p;
+    if( rsAbs(pa-pm) < rsAbs(pa-p) )
+      return pm;
+    else
+      return p;
+  }
+  // else...
+
+
+  return p;
+}
+// ok - this seems to work - implement else-branch
+
+template<class T>
+void refinePhase2(T* p, int N)
+{
+  T pi2 = 0.5*PI;
+  for(int n = 1; n < N-1; n++)
+    p[n] = refinePhase(p[n], p[n-1], p[n+1]);
+}
+// maybe make a function T refinePhase(T p, T pL, T pR) which does the following:
+// if all 3 are > 0 (in zone 1 or 2), check, if pi-p is closer to (pL+pR)/2 - if so, return
+// pi-p, otherwise return p
 
 template<class T>
 void unreflectPhase2(const T* x, T* p, int N)
@@ -1107,73 +1182,21 @@ void unreflectPhase2(const T* x, T* p, int N)
 
   std::vector<double> tmp2 = toVector(p, N); // for plotting
 
-
-
-
-  // this way of unreflecting may lead phases that may change zones one sample too late or too 
-  // early leading to bipolar spikes in the etsimated instantaneous freq - if the zone change 
-  // happens too late, the freq spikes down and in the next sample this gets compensated by a 
-  // spike up...hmm - i actually did not observe the opposite case (up-then-down) yet - so maybe
-  // the "too early" case does never happen?
-
+  //refinePhase1(p, N);
+  refinePhase2(p, N);
   
-  // try to repair these errors in a second pass - here, we adjust the phase for each sample so as to 
-  // minimize the sum of the distances to its neighbours
-  // factor out:
-  for(int n = 1; n < N-1; n++)
-  {
-    //T dL = rsAbs(p[n] - p[n-1]);  // distance to left neighbour
-    //T dR = rsAbs(p[n] - p[n+1]);  // distance to right neighbour neighbour
-    //T dS = dL + dR;               // sum of both distances
-
-    T d = distanceSum(p[n], p[n-1], p[n+1]);
-    T pm, dm;        // modified phase and distance-sum
-    if(p[n] >= 0)    // zone 1 or 2
-    {  
-      //if(p[n] < pi2)
-      if(p[n] < pi2 && p[n+1] >= pi2)
-      {
-        // we may be too late....
-        T pn = p[n]; // for debug
-        pm = PI - p[n];
-        dm = distanceSum(pm, p[n-1], p[n+1]); // we should warp p[n+1] into 0..2pi?
-        if(dm <= d)
-        //if(dm < d)
-          p[n] = pm;
-        // this sometimes leads to undesired forward jumps - at 37,54,..
-        // often dm == d ...this is weird!
-      }
-      else
-      {
-        // we may be too early
-
-      }
-
-
-    }
-    else
-    {
-
-    }
-
-
-
-  }
-  
-  // maybe it's sufficient to minimize the distance to the right neighbour?
 
   std::vector<double> tmp3 = toVector(p, N); // for plotting
 
   tmp1 = tmp1 / PI;
   tmp2 = tmp2 / PI;
   tmp3 = tmp3 / PI;
-  rsPlotArrays(200, x, &tmp1[0], &tmp2[0], &tmp3[0]);
+  //rsPlotArrays(200, x, &tmp1[0], &tmp2[0], &tmp3[0]);
+  rsPlotArrays(N, x, &tmp1[0], &tmp2[0], &tmp3[0]);
 
   //rsPlotArrays(200, x, &tmp2[0], &tmp1[0], p);
 }
-// maybe make a function T refinePhase(T p, T pL, T pR) which does the following:
-// if all 3 are > 0 (in zone 1 or 2), check, if pi-p is closer to (pL+pR)/2 - if so, return
-// pi-p, otherwise return p
+
 
 template<class T>
 void unreflectPhase3(T* p, int N)
