@@ -1131,7 +1131,7 @@ T refinePhase(T p, T pL, T pR)
   T pi2 = 0.5*PI;
   T pa  = T(0.5)*(pL+pR);
   T pm;
-  if(p < pi2 && pR >= pi2)
+  if(p < pi2 && pR >= pi2)             // transition from zone 1 to zone 2
   {
     pm = PI - p;
     if( rsAbs(pa-pm) < rsAbs(pa-p) )
@@ -1139,7 +1139,14 @@ T refinePhase(T p, T pL, T pR)
     else
       return p;
   }
-  // else...
+  else if(p < -pi2 && pR >= -pi2)      // transition from zone 3 to zone 4
+  {
+    pm = -PI - p;
+    if( rsAbs(pa-pm) < rsAbs(pa-p) )
+      return pm;
+    else
+      return p;
+  }
 
 
   return p;
