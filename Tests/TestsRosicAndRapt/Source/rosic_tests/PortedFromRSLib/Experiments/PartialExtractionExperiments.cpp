@@ -966,7 +966,11 @@ void rsAmpEnvelope(const T* x, int N, T* a)
 
   //rsPlotArrays(N, x, a);
 
-  bool parabolic = true; // env looks smoother with it
+  bool parabolicHeight = true; 
+  bool parabolicTime   = true; // makes sense only, if parabolicHeight is also true
+  // Env looks smoother with parabolicHeight. parabolicTime may lead to the envelope-estimate 
+  // undershooting the signal - so use with care...
+
 
   for(int n = 0; n < N; n++)
     a[n] = rsAbs(x[n]);  // todo: apply shadower here (shadows are casted only rightward)
@@ -974,7 +978,7 @@ void rsAmpEnvelope(const T* x, int N, T* a)
   //rsPlotArrays(N, x, a);
 
   int nL = 0,     nR;  // index of current left and right peak
-  T   xL = T(nL), xR;  // position of current left and right peak
+  T   tL = T(nL), tR;  // position of current left and right peak
   T   aL = a[0],  aR;  // amplitude of current left and right peak
   for(int n = 1; n < N-1; n++)
   {
@@ -982,19 +986,20 @@ void rsAmpEnvelope(const T* x, int N, T* a)
     {
       // there's a peak at a[n]...
       nR = n;
-      xR = T(nR);
+      tR = T(nR);
       aR = a[n];
 
 
-      if(parabolic)
+      if(parabolicHeight)
       {
         // maybe factor out into a function rsParabolicExtremumValue(T* x, int n)
         T c[3]; rsPolynomial<T>::fitQuadratic_m1_0_1(c, &a[n-1]);  // coeffs
-        if(c[2] != 0)  // ...use a tolerance
+        if(c[2] != 0)  // TODO: use a tolerance
         {
-          xR  = rsPolynomial<T>::quadraticExtremumPosition(c);  // between -1..+1
-          aR  = rsPolynomial<T>::evaluate(xR, c, 2);            // ...as needed here
-          xR += T(nR);                                          // ...but not later
+          T dt = rsPolynomial<T>::quadraticExtremumPosition(c);  // between -1..+1
+          aR   = rsPolynomial<T>::evaluate(dt, c, 2);
+          if(parabolicTime)
+            tR += dt;
         }
         int dummy = 0;
 
@@ -1012,16 +1017,19 @@ void rsAmpEnvelope(const T* x, int N, T* a)
       for(int i = nL; i < nR; i++)
       {
         //a[i] = rsLinToLin(T(i), T(nL), T(nR), aL, aR); // optimize!
-        a[i] = rsLinToLin(T(i), xL, xR, aL, aR); // optimize!
+        a[i] = rsLinToLin(T(i), tL, tR, aL, aR); // optimize!
         // todo: test, if 2nd version is really better ...looks strange at sample 504 - undershoots
-        // actual value there
+        // actual value there - try large flat peaks next to small peaks or maybe flat peaks near
+        // sharp peaks of equal height
+        // for the phase-formula p[n] = asin(x[n]/a[n]), we need to ensure that a[n] >= |x[n]|, so 
+        // such undershoots should be avoided
       }
       //rsPlotArrays(N, x, a);
 
 
       // update for next iteration:
       nL = nR;
-      xL = xR;
+      tL = tR;
       aL = aR;
     }
 
@@ -1030,7 +1038,7 @@ void rsAmpEnvelope(const T* x, int N, T* a)
 
   // todo: connect last sample to last peak...
   nR = N-1;
-  xR = T(nR);
+  tR = T(nR);
   aR = a[nR];
   for(int i = nL; i < nR; i++)
   {
