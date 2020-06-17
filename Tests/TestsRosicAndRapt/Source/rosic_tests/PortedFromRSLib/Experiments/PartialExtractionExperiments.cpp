@@ -1043,7 +1043,7 @@ void unreflectPhase2(const T* x, T* p, int N)
         // x is negative and going down -> we are before -pi/2 -> phase should go up
     }
   }
-  rsPlotArrays(N, x, &tmp[0], p);
+  //rsPlotArrays(N, x, &tmp[0], p);
 
 }
 
@@ -1089,17 +1089,28 @@ void phaseToFreq(const T* p, int N, T* w)
   //AT::add(p, 2*PI, w, N);    // w = p + 2*PI
   //rsPlotArrays(N, w);
 
-  rsPlotArrays(N, p);
+  //rsPlotArrays(N, p);
 
   for(int n = 0; n < N; n++)
     w[n] = rsWrapToInterval(p[n], 0.0, 2*PI);
-  rsPlotArrays(N, w);
+  //rsPlotArrays(N, w);
+  // test, if now one of the simpler functions above works, too
 
-  for(int n = 1; n < N; n++)
-    w[n] = rsConsistentUnwrappedValue0(w[n], w[n-1], 2*PI);
-  rsPlotArrays(N, w);
+  //for(int n = 1; n < N; n++)
+  //  w[n] = rsConsistentUnwrappedValue0(w[n], w[n-1], 2*PI); // does not work
+  //rsPlotArrays(N, w);
 
-  //AT::unwrap(w, N, 2*PI);
+  AT::unwrap(w, N, 2*PI);  // look at code comment there - optimize!
+  //rsPlotArrays(N, w);
+
+
+  AT::difference(w, N);
+  rsPlotArrays(N, w, p);
+  // has bipolar spikes - could be repaired with 3-point median - but let's first figure out, why
+  // they occur - try with a sine input signal - the do occur at the phase jaggies - are these
+  // jaggies an artifact - maybe of the unreflecting algo? or are they a legit signal feature? 
+  // figure out - maybe resynthesize signal with unreflected phase and see, if we get identity
+  // resynthesis - if we do, it doesn't seem to be an artifact
 
   // has no effect - why? maybe it works only if the start is zero?
 
