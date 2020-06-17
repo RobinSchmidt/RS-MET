@@ -847,119 +847,15 @@ int rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
 }
 
 /*
-// allocates
-template<class T>
-void rsSineFrequencies(const T* x, int N, T* w)
-{
-  T smalll = 1.e-13; // for avoiding div-by-zero
-
-  // compute preliminary frequency estimates:
-  std::vector<T> wp(N);  // allocates
-  for(int n = 1; n < N-1; n++)
-    wp[n] = rsSineFrequency(x[n-1], x[n], x[n+1]);
-  wp[0]   = wp[1];     // handle edges - todo: use linear extrapolation later
-  wp[N-1] = wp[N-2];
-
-  // compute reliabilities:
-  std::vector<T> r(N);  // allocates
-  for(int n = 1; n < N-1; n++) {
-    T num = rsAbs(x[n]);
-    T den = T(0.5) * (rsAbs(x[n-1]) + rsAbs(x[n+1]));
-    T rel = T(0);
-    if(den >= smalll)
-      rel = num / den;  // reliability
-    r[n] = rel; }
-  r[0] = 0; r[N-1] = 0;
-
-
-  // clean-up preliminary estimates and write result to output:
-  for(int n = 1; n < N-1; n++)
-  {
-    // frequencies for left, center and right:
-    T wL = wp[n-1];
-    T wC = wp[n];
-    T wR = wp[n+1];
-
-    // reliabilities for left, center and right:
-    T rL = r[n-1];
-    T rC = r[n];
-    T rR = r[n+1];
-
-    // compute cleaned up estimate as weighted sum of the 3 frequencies, where the weights are the
-    // (normalized) reliabilities:
-    w[n] = (rL*wL + rC*wC + rR*wR) / (rL + rC + rR); // what about div-by-zero?
-  }
-  w[0]   = w[1];     // handle edges - todo: use linear extrapolation later
-  w[N-1] = w[N-2];
-
-  int dummy = 0;
-}
-// i think, this can actually be done without allocating memory - just do a single loop and update
-// wL = wC, rL = rC, wC = wR, rC = rR at its end --hmm..or maybe fill the w-array with the 
-// reliabilities in a first pass and overwrite it in a second pass
-// done and it works - maybe remove function above
-*/
-
 template<class T>
 void rsSineFrequencies2(const T* x, int N, T* w)
 {
   rsSineParameterEstimator<T>::sigToFreqsViaRecursion(x, N, w);
-
-  /*
-  // The algorithm uses rsSineFrequency as its core to estimate the frequency at each sample. 
-  // However, it was observed, that this function gives unreliable results, whenever there's a 
-  // zero-crossing, so we first compute the (expected) reliabilities of the measurements at each 
-  // sample and then actually use a weigthed sum of the estimates at the sample and at its two 
-  // neighbours, where there weights are determined by the reliabilities. This way, the unreliable
-  // etsimates at the zero-crossings will be more or less replaced by a weighted average of the
-  // estimates at neighbour samples. The reliability itself is computed as ratio of a sample's 
-  // absolute value to the average of the absolute values of its neighbours. We use the w array to
-  // temporarily store the reliabilities and the overwrite it with the actual frequency estimates 
-  // in a second pass.
-
-  rsAssert(x != w);
-  rsAssert(N >= 3);
-  T small1 = 1.e-8;  // ad-hoc - do tests what value is best
-  T small2 = 1.e-8;  // dito - best choice could be the same as small1 but maybe not
-  int n;
-
-  // compute reliabilities (maybe factor out):
-  for(n = 1; n < N-1; n++) {
-    T num = rsAbs(x[n]);
-    T den = T(0.5) * (rsAbs(x[n-1]) + rsAbs(x[n+1]));
-    if(den >= small1*num)
-      w[n] = num / den;
-    else
-      w[n] = T(0); }
-  w[0] = 0; w[N-1] = 0;
-
-  // compute radian frequencies (maybe factor out):
-  T rL = w[0], rC = w[1], rR, rS;
-  T wL = T(0), wC = rsSineFrequency(x[0], x[1], x[2]), wR;
-  for(n = 1; n < N-2; n++) {
-    wR = rsSineFrequency(x[n], x[n+1], x[n+2], T(0)); // frequency of right neighbour sample
-    rR = w[n+1];                                      // reliability of right neighbour sample
-    rS = rL + rC + rR;                     // reliability sum of all 3 - used as normalizer
-    if( rS > small2 )                      // sum is large enough as denominator
-      w[n] = (rL*wL + rC*wC + rR*wR) / rS; //   -> use weighted sum of neighbour estimates
-    else                                   // all 3 reliabilities are too small
-      w[n] = w[n-1];                       //   -> repeat previous value
-    rL = rC; rC = rR; wL = wC; wC = wR;    // updates for next iteration
-  }
-
-  // handle n = N-2 ouside the loop:
-  rS = rL + rC;
-  if( rS > small2 ) w[n] = (rL*wL + rC*wC) / rS;
-  else              w[n] = w[n-1];
-
-  // handle edges at n = 0 and n = N-1:
-  w[0]   = w[1];
-  w[N-1] = w[N-2];
-  */
 }
 // move to library when all potential div-by-zeros are handled
 // can we do everything in a single pass? -> less memory access but recomputations of some 
 // abs-values
+*/
 
 template<class T>
 void rsAmpEnvelope(const T* x, int N, T* a)
@@ -1139,10 +1035,12 @@ void sineRecreationBandpassNoise()
   //rsAmpEnvelope(&x[0], 100, &a1[0]); 
   rsAmpEnvelope(&x[0], N, &a1[0]);
 
+  using SPE = rsSineParameterEstimator<double>;
 
-  // measure instantaneous frequency (with algo 1):
+  // measure instantaneous frequency (with algo 1 - sine recursion formula):
   Vec fm1(N);
-  rsSineFrequencies2(&x[0], N, &fm1[0]); fm1 = (fs/(2*PI)) * fm1;
+  SPE::sigToFreqsViaRecursion(&x[0], N, &fm1[0]); 
+  fm1 = (fs/(2*PI)) * fm1;
 
   // Create cleaned up version via 3-point median filter - this is helpful because the raw data 
   // shows an error with very large single-sample spikes:

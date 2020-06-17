@@ -1,6 +1,6 @@
 
 template<class T>
-void rsSineParameterEstimator<T>::sigToFreqsViaRecursion(const T* x, int N, T* w)
+void rsSineParameterEstimator<T>::sigToOmegasViaFormula(const T* x, int N, T* w)
 {
   // The algorithm uses rsSineFrequency as its core to estimate the frequency at each sample. 
   // However, it was observed, that this function gives unreliable results, whenever there's a 
@@ -19,7 +19,7 @@ void rsSineParameterEstimator<T>::sigToFreqsViaRecursion(const T* x, int N, T* w
   T small2 = 1.e-8;  // dito - best choice could be the same as small1 but maybe not
   int n;
 
-  // compute reliabilities (maybe factor out):
+  // compute reliabilities, use w-array for temporary storage (maybe factor out):
   for(n = 1; n < N-1; n++) {
     T num = rsAbs(x[n]);
     T den = T(0.5) * (rsAbs(x[n-1]) + rsAbs(x[n+1]));

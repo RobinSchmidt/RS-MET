@@ -2,6 +2,7 @@
 #define RAPT_AUDIOFUNCTIONS_H
 
 // todo: maybe wrap into class, get rid of redundant implementations
+// ...many of the functions here should go into class rsSineParameterEstimator
 // merge with other AudioFunctions.h file make another file AudioAnalysisFunctions
 
   /** Converts a raw amplitude value/factor to a value in decibels. */
