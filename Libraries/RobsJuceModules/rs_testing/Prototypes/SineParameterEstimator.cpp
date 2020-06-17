@@ -29,6 +29,7 @@ void rsSineParameterEstimator<T>::sigToOmegasViaFormula(const T* x, int N, T* w)
     else
       r[n] = T(0); }
   r[0] = 0; r[N-1] = 0;
+  // factor out into omegaFormulaReliabilities(*x, N, *r)
 
   // compute radian frequencies:
   T rL = r[0], rC = r[1], rR, rS;
@@ -52,10 +53,65 @@ void rsSineParameterEstimator<T>::sigToOmegasViaFormula(const T* x, int N, T* w)
   else
     w[n] = w[n-1];
   w[0] = w[1]; w[N-1] = w[N-2];     // handle edges at n = 0 and n = N-1
+
+  // factor out into omegaFormulaOmegas(*x, *r, N, *w)
+  // r == w is allowed, is also x == w allowed? not so important but would be nice
 }
 
 template<class T>
 void rsSineParameterEstimator<T>::sigToAmpsViaPeaks(const T* x, int N, T* a)
 {
+  // todo: take a shadowing-time parameter and use a peak-shadower
+
+  // Algo:
+  // -obtain shadowed version of abs(x)
+  // -find peaks
+  //  -maybe refine their values by using the maximum through a parabola
+  // -connect them by linear interpolation
+
+  bool parabolicHeight = true; 
+  bool parabolicTime   = false; // makes sense only, if parabolicHeight is also true
+
+  T *y = a;                     // re-use a for temporary storage
+  for(int n = 0; n < N; n++)
+    y[n] = rsAbs(x[n]);         // todo: apply shadower here (shadows are casted only rightward)
+
+
+  // factor out into connectPeaks(y, N, a)
+  int nL = 0,     nR;            // index of current left and right peak
+  T   tL = T(nL), tR;            // position or time of current left and right peak
+  T   yL = y[0],  yR;            // amplitude or height of current left and right peak
+  for(int n = 1; n < N-1; n++)
+  {
+    if(y[n] >= y[n-1] && y[n] >= y[n+1])  // there's a peak or plateau at y[n]...
+    {
+      nR = n; tR = T(nR); yR = y[n];
+
+      if(parabolicHeight) 
+      {
+        using Poly = rsPolynomial<T>;
+        T c[3]; Poly::fitQuadratic_m1_0_1(c, &y[n-1]);  // c = polynomial coeffs of parabola
+        if(c[2] != 0)  // TODO: use a tolerance
+        {
+          T dt = Poly::quadraticExtremumPosition(c); // time offset of peak between -1..+1
+          yR   = Poly::evaluate(dt, c, 2);           // height of peak
+          if(parabolicTime)                          // we may or may not use the time offset..
+            tR += dt;                                // ..in the linear interpolation loop below
+        }
+        // quadraticExtremumPosition computes c[1]/c[2], so the tolerance should be based on the 
+        // ratio |c[1]| and |c[2]| - if abs(c[2]) < (small * c1), skip the step
+      }
+
+      for(int i = nL; i < nR; i++)                 // lerp peaks from nL to nR
+        a[i] = rsLinToLin(T(i), tL, tR, yL, yR);   // ToDo: optimize!
+      nL = nR; tL = tR; yL = yR;                   // update for next iteration
+    }
+  }
+
+  nR = N-1;
+  tR = T(nR);
+  yR = y[nR];
+  for(int i = nL; i < nR; i++)
+    a[i] = rsLinToLin(T(i), tL, tR, yL, yR); // optimize!
 
 }

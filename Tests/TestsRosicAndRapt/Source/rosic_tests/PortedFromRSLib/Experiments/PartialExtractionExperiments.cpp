@@ -937,11 +937,11 @@ void rsAmpEnvelope(const T* x, int N, T* a)
   for(int i = nL; i < nR; i++)
     a[i] = rsLinToLin(T(i), tL, tR, aL, aR); // optimize!
 
-  rsPlotArrays(N, x, a);
+  //rsPlotArrays(N, x, a);
 
   // maybe optionally smooth the result by a bidirectional filter
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 // In the case of using amplitude as primary (i.e. first estimated) variable, we need to look in 
 // the neighbourhood of peaks for other peaks. When frequency is the primary variable, we need to
@@ -1020,6 +1020,7 @@ void sineRecreationBandpassNoise()
   Vec a1(N);
   //rsAmpEnvelope(&x[0], 100, &a1[0]); 
   rsAmpEnvelope(&x[0], N, &a1[0]);
+  rsPlotArrays(N, &x[0], &a1[0]);
 
   using SPE = rsSineParameterEstimator<double>;
 

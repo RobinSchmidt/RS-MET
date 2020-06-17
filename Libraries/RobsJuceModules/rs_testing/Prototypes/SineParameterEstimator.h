@@ -19,10 +19,20 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Static functions */
 
+  /** There's a recursion formula for the sine with normalized radian frequeny w: 
+    y[n] = a1*y[n-1] - y[n-2] 
+  where 
+    a1 = 2*cos(w) 
+  and the states y[n-1], y[n-2] are initialized as: 
+    y[n-1] = A * sin(p - w), y[n-2] = A * sin(p - 2*w) 
+  which in our notation here translates to yR = a1*yC - yL. This leads to 
+    a1 = (yL+yR)/yC and
+    w  = acos(a1/2). 
+  This formula for w is implemented here. Note that we don't check against division by zero, so yC
+  should be large enough. However, we do check, if the input to acos is in -1..+1, so the formula 
+  is "half-safe". */
   static T omegaFormula(T yL, T yC, T yR) 
   { return acos(rsClip(T(0.5)*(yL+yR)/yC, T(-1), T(+1))); }
-  // warning: no check against division by zero - yC should be large enough - we do check, if
-  // the input to acos is in -1..+1 though - so the formula is "half-safe"
 
   /** Estimates the instantaneous normalized radian frequencies ("omega") of the signal x via the
   recursion formula for 3 successive samples of a sinewave. To estimate the omega at sample n, it 
