@@ -1038,12 +1038,12 @@ void unreflectPhase2(const T* x, T* p, int N)
     }
     else
     {
-
-      // x is negative and going down -> we are before -pi/2 -> phase should go up
-
+      if(x[n] < x[n-1])
+        p[n] = -PI - p[n];  
+        // x is negative and going down -> we are before -pi/2 -> phase should go up
     }
   }
-  rsPlotArrays(N, &tmp[0], p);
+  rsPlotArrays(N, x, &tmp[0], p);
 
 }
 
