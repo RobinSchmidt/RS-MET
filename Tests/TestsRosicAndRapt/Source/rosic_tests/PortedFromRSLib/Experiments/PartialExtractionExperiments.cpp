@@ -846,7 +846,7 @@ int rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
   return evals;
 }
 
-
+/*
 // allocates
 template<class T>
 void rsSineFrequencies(const T* x, int N, T* w)
@@ -898,6 +898,7 @@ void rsSineFrequencies(const T* x, int N, T* w)
 // wL = wC, rL = rC, wC = wR, rC = rR at its end --hmm..or maybe fill the w-array with the 
 // reliabilities in a first pass and overwrite it in a second pass
 // done and it works - maybe remove function above
+*/
 
 template<class T>
 void rsSineFrequencies2(const T* x, int N, T* w)
