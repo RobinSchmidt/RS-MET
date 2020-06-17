@@ -680,12 +680,26 @@ void rsSineAmplitudeAndPhase(T yL, T y0, T yR, T w, T* a, T* p)
   T cw = cos(w);
 
   T pR = atan2( y0*sw, yR - y0*cw);       // phase estimate at y0 using right neighbour yR
+
   T pL = atan2(-y0*sw, yL - y0*cw) + PI;  // phase estimate at y0 using left neighbour yL
+  // get rid of the addition of pi by rotating the input to atan2 by 180° (negate both inputs)
+  pL = atan2(y0*sw, y0*cw - yL);
 
 
   int dummy = 0;
 }
+// when the phase has been computed, to decide, which of the 3 values we want to use to compute the
+// amplitude, we want to use the one with the largest absolute value of: 
+//   sL = sin(p-w), s0 = sin(p), sR = sin(p+w) 
+// and then do:
+//   a = yL/sL or a = y0/s0 or a = yR/sR. 
+// where we should use the value, where the argument for the sine is farthest away from a multiple
+// of pi (i think, only -pi, 0, pi need to be considered). hmm...but is perfect resynthesisi 
+// guaranteed in all 3 cases or only in the case of using s0?
 
+
+
+// like rsSineAmplitudeAndPhase in rapt, but uses left neighbour of y0 instead of right neighbour
 template<class T>
 void rsSineAmplitudeAndPhaseL(T y0, T yL, T w, T* a, T* p)
 {
@@ -693,7 +707,9 @@ void rsSineAmplitudeAndPhaseL(T y0, T yL, T w, T* a, T* p)
   T cw = cos(w);
 
   *p = atan2(-y0*sw, yL-y0*cw) + PI;
-  *a = y1 / sin(*p);
+  *a = y0 / sin(*p);
+
+  int dummy = 0;
 }
 // ...not yet finished...needs a switch to avoid div-by-zero
 
@@ -718,7 +734,7 @@ bool testSineAmpAndPhaseEstimation2()
   rsSineAmplitudeAndPhase(y0, yR, w, &aR, &pR); // old library function
   r &= rsIsCloseTo(aR, a, tol);
   r &= rsIsCloseTo(pR, p, tol);
-  rsSineAmplitudeAndPhase(yL, y0, w, &aL, &pL);
+  rsSineAmplitudeAndPhaseL(y0, yL, w, &aL, &pL);
   r &= rsIsCloseTo(aL, a, tol);
   r &= rsIsCloseTo(pL, p, tol);
 
@@ -939,7 +955,57 @@ void rsSineFrequencies2(const T* x, int N, T* w)
 // move to library when all potential div-by-zeros are handled
 // can we do everything in a single pass? -> less memory access
 
+template<class T>
+void rsAmpEnvelope(const T* x, int N, T* a)
+{
+  // Algo:
+  // -obtain shadowed version of abs(x)
+  // -find peaks
+  //  -maybe refine their values by using the maximum through a parabola
+  // -connect them by linear interpolation
 
+  //rsPlotArrays(N, x, a);
+
+  for(int n = 0; n < N; n++)
+    a[n] = rsAbs(x[n]);  // todo: apply shadower here (shadows are casted only rightward)
+
+  rsPlotArrays(N, x, a);
+
+  int nL = 0,    nR;  // index of current left and right peak
+  T   aL = a[0], aR;  // amplitude of current left and right peak
+  for(int n = 1; n < N-1; n++)
+  {
+    if(a[n] >= a[n-1] && a[n] >= a[n+1])
+    {
+      // there's a peak at a[n]...
+
+      nR = n;
+      aR = a[n]; // todo: use parabolic interpolation later, take care to handle linear sections
+                 // and plateaus correctly
+
+      for(int i = nL; i < nR; i++)
+      {
+        a[i] = rsLinToLin(T(i), T(nL), T(nR), aL, aR); // optimize!
+      }
+      //rsPlotArrays(N, x, a);
+
+
+      // update for next iteration:
+      nL = nR;
+      aL = aR;
+    }
+
+
+  }
+
+  // todo: connect last sample to last peak...
+
+  rsPlotArrays(N, x, a);
+  int dummy = 0;
+}
+// i think, this too can be done without additional memory - we may use the a-buffer for all 
+// intermediate signals - whenver we find a relevant peak, we fill the setion of the envelope left
+// to the current sample and remember the location of the current peak
 
 void testSineParameterEstimation()
 {
@@ -994,6 +1060,11 @@ void sineRecreationBandpassNoise()
   }
   rsArrayTools::normalize(&x[0], N, amp, true);
   // maybe (optionally) use two equal filters in series
+
+  // test:
+  Vec a1(N);
+  rsAmpEnvelope(&x[0], 100, &a1[0]);
+
 
   // measure instantaneous frequency (with algo 1):
   Vec fm1(N);
@@ -1080,12 +1151,12 @@ void sineRecreationBandpassNoise()
 
 
   //rsPlotVectors(fa, fm1, fm1c, fm1_2); // actual and estimated instantaneous freq
-  rsPlotVectors(fa-fm1, 5000.0*x);  // estimation error together with signal for reference
+  //rsPlotVectors(fa-fm1, 5000.0*x);  // estimation error together with signal for reference
 
   //rsPlotVectors(test2, fo);
 
-  rsPlotVectors(fa, fm1, fm1c);
-  rsPlotVectors(fa, fm2, fm2c);
+  //rsPlotVectors(fa, fm1, fm1c);
+  //rsPlotVectors(fa, fm2, fm2c);
 
 
   //rsPlotVectors(fa, fm2c, fo);
@@ -1100,6 +1171,10 @@ void sineRecreationBandpassNoise()
   //rsPlotVectors(fa, fm1, fm2);
 
   //rsPlotVectors(a, p);
+
+  Vec err1 = x-y;
+  Vec err2 = x-z;
+  //rsPlotVectors(err1, err2);
 
   rsPlotVectors(x, y, x-y, a);  // last sample wrong
   rsPlotVectors(x, z, x-z, a);  // dito
