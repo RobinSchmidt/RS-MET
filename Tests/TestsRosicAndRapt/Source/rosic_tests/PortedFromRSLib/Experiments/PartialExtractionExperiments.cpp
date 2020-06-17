@@ -960,7 +960,7 @@ void rsAmpEnvelope(const T* x, int N, T* a)
 // etc.
 
 
-
+/*
 template<class T>
 void repairPhase(T* p, int N)
 {
@@ -975,6 +975,7 @@ void repairPhase(T* p, int N)
 
   int dummy = 0;
 }
+*/
 // we must also consider the possibility of a stretch of NaNs - when we see a NaN, we must check, 
 // how many NaNs follow and then fill the whole section with "better" data - but these changes 
 // will break identity resynthesis - a NaN is actually a sign that the amplitude estimate is wrong
@@ -1037,8 +1038,7 @@ void unreflectPhase2(T* p, int N)
 */
 
 
-
-
+/*
 template<class T>
 void unreflectPhase1(T* p, int N)
 {
@@ -1060,7 +1060,7 @@ void unreflectPhase1(T* p, int N)
       bool cond2 = p[n] > p[n-1] && p[n-1] <= -pi2;
 
 
-      if(cond1 || cond2 /* || cond3*/ )
+      if(cond1 || cond2 )
       {
         p[n] = -PI - p[n];  
         // this looks wrong - test with sine input - maybe we nee a third condition for the
@@ -1075,7 +1075,9 @@ void unreflectPhase1(T* p, int N)
   // -pi...-pi/2
 
 }
+*/
 
+/*
 template<class T>
 T distanceSum(T x, T xL, T xR)
 {
@@ -1118,6 +1120,7 @@ void refinePhase1(T* p, int N)
     }
   }
 }
+*/
 // this way of unreflecting may lead phases that may change zones one sample too late or too 
 // early leading to bipolar spikes in the etsimated instantaneous freq - if the zone change 
 // happens too late, the freq spikes down and in the next sample this gets compensated by a 
@@ -1126,39 +1129,37 @@ void refinePhase1(T* p, int N)
 // maybe it's sufficient to minimize the distance to the right neighbour?
 
 template<class T>
-T refinePhase(T p, T pL, T pR)
+T refinePhase(T p, T pL, T pR, int n) // n is only passed for debugging
 {
+  if( pL > pR ) pL -= 2*PI;    // test - seems a good idea
+
   T pi2 = 0.5*PI;
   T pa  = T(0.5)*(pL+pR);
-  T pm;
+  T pm  = p;
+
   if(p < pi2 && pR >= pi2)             // transition from zone 1 to zone 2
-  {
-    pm = PI - p;
-    if( rsAbs(pa-pm) < rsAbs(pa-p) )
-      return pm;
-    else
-      return p;
-  }
+    pm =  PI - p;
   else if(p < -pi2 && pR >= -pi2)      // transition from zone 3 to zone 4
-  {
     pm = -PI - p;
-    if( rsAbs(pa-pm) < rsAbs(pa-p) )
-      return pm;
-    else
-      return p;
-  }
 
-
-  return p;
+  if(rsAbs(pa-pm) < rsAbs(pa-p))
+    return pm;
+  else
+    return p;
 }
-// ok - this seems to work - implement else-branch
+// ok - this seems to work - do we need more branches? what about the reverse transitions from 
+// 2 to 1 and from 4 to 3?
+// maybe this function does not work well when there's wrap-around between pL and p?
+// check at samples 2,7,32
+// n = 32: p = -2.38, pL = 3.14, pR = -1.57, pm = -0.76 -> pm is returned
+// maybe we should do if(pL > pR) pL -= 2*PI
 
 template<class T>
 void refinePhase2(T* p, int N)
 {
   T pi2 = 0.5*PI;
   for(int n = 1; n < N-1; n++)
-    p[n] = refinePhase(p[n], p[n-1], p[n+1]);
+    p[n] = refinePhase(p[n], p[n-1], p[n+1], n);
 }
 // maybe make a function T refinePhase(T p, T pL, T pR) which does the following:
 // if all 3 are > 0 (in zone 1 or 2), check, if pi-p is closer to (pL+pR)/2 - if so, return
@@ -1169,28 +1170,18 @@ void unreflectPhase2(const T* x, T* p, int N)
 {
   std::vector<double> tmp1 = toVector(p, N); // for plotting
 
-  T pi2 = 0.5*PI;
-  for(int n = 1; n < N; n++)
-  {
-    if(x[n] >= 0)
-    {
-      //if(x[n] < x[n-1] && p[n] < p[n-1]) // why the 2nd codition?
-      if(x[n] < x[n-1]) 
-        p[n] = PI - p[n];
-        // x is positive and going down ->  we are past pi/2 -> phase should continue to go up
-    }
-    else
-    {
-      if(x[n] < x[n-1])
-        p[n] = -PI - p[n];  
-        // x is negative and going down -> we are before -pi/2 -> phase should go up
-    }
-  }
+  //T pi2 = 0.5*PI;
+  for(int n = 1; n < N; n++) {
+    if(x[n] >= 0) {
+      if(x[n] < x[n-1])  p[n] =  PI - p[n];  }   // x is positive and going down -> zone 2
+    else {
+      if(x[n] < x[n-1])  p[n] = -PI - p[n]; }}   // x is negative and going down -> zone 3
+
 
   std::vector<double> tmp2 = toVector(p, N); // for plotting
 
   //refinePhase1(p, N);
-  refinePhase2(p, N);
+  refinePhase2(p, N);  // compenaste too late transitions
   
 
   std::vector<double> tmp3 = toVector(p, N); // for plotting
@@ -1204,7 +1195,7 @@ void unreflectPhase2(const T* x, T* p, int N)
   //rsPlotArrays(200, x, &tmp2[0], &tmp1[0], p);
 }
 
-
+/*
 template<class T>
 void unreflectPhase3(T* p, int N)
 {
@@ -1223,8 +1214,8 @@ void unreflectPhase3(T* p, int N)
     pOld = pNew;
     w    = pNew - pOld;
   }
-
 }
+*/
 
 template<class T>
 void sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
@@ -1286,13 +1277,12 @@ void phaseToFreq(const T* p, int N, T* w)
 
   AT::difference(w, N);
   rsPlotArrays(N, w, p);
-  // has bipolar spikes - could be repaired with 3-point median - but let's first figure out, why
-  // they occur - try with a sine input signal - the do occur at the phase jaggies - are these
-  // jaggies an artifact - maybe of the unreflecting algo? or are they a legit signal feature? 
-  // figure out - maybe resynthesize signal with unreflected phase and see, if we get identity
+  // first sample is off - check implementation of rsDifference - it assumes a zero initial 
+  // condition - we need to adopt for a convention up to which k we should sum the w-array in 
+  // synthesis - n or n-1
+  // maybe resynthesize signal with unreflected phase and see, if we get identity
   // resynthesis - if we do, it doesn't seem to be an artifact
 
-  // has no effect - why? maybe it works only if the start is zero?
 
 
 }
