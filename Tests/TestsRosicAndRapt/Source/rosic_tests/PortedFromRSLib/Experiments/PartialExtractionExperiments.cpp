@@ -960,6 +960,7 @@ void rsAmpEnvelope(const T* x, int N, T* a)
 // etc.
 
 
+
 template<class T>
 void repairPhase(T* p, int N)
 {
@@ -967,7 +968,8 @@ void repairPhase(T* p, int N)
   {
     if(rsIsNaN(p[n])) // what about inf? can this occur? i don't think so
     {
-      p[n] = 2.0;   // preliminary
+      p[n] = 0.0;   // preliminary
+      rsError("We should probably prevent that from happening");
     }
   }
 
@@ -985,34 +987,69 @@ template<class T>
 void sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
 {
   for(int n = 0; n < N; n++)
-  {
     p[n] = asin(x[n] / a[n]);
-    if( rsIsNaN(p[n]) )
-    {
-      T xn = x[n];  // for debug
-      T an = a[n];
+  //repairPhase(p, N);
+  rsPlotArrays(N, p);
 
-      int dummy = 0;
+  T pi2 = 0.5*PI;
+  for(int n = 1; n < N; n++)
+  {
+    if(p[n] >= 0)
+    {
+      if(p[n] < p[n-1] || (p[n] > p[n-1] && p[n-1] >= pi2)  )
+      {
+        p[n] = PI - p[n];
+      }
+    }
+    else
+    {
+
     }
   }
-  repairPhase(p, N);
-
+  rsPlotArrays(N, p);
 
   // todo: catch div-by-zero and asin of arguments > 1
   // or maybe let the infs and nans just happen and then pass over the p-array again and replace 
   // the invalid sections with numbers resulting from linearly interopolating between surrounding
   // valid values
-
-  /*
-  T smalll = 1.e-8;
-  for(int n = 0; n < N; n++)
-  {
-
-
-    p[n] = asin(x[n] / a[n]);
-  }
-  */
 }
+// the measured instantaneous phase seems to be useless - it tends to oscillate back and forth 
+// instead of keeping running forward - maybe we need to take the last value into account and 
+// reflect ...maybe if p[n] < p[n-1]..well - asin can only return values in the rang -pi/2...pi/2
+// but we need values from -pi...pi
+
+template<class T>
+void phaseToFreq(const T* p, int N, T* w)
+{
+
+
+  rsAssert(p != w);
+  using AT = rsArrayTools;
+
+  //AT::copy(p, w, N);
+  //rsPlotArrays(N, w);
+
+  //AT::add(p, 2*PI, w, N);    // w = p + 2*PI
+  //rsPlotArrays(N, w);
+
+  rsPlotArrays(N, p);
+
+  for(int n = 0; n < N; n++)
+    w[n] = rsWrapToInterval(p[n], 0.0, 2*PI);
+  rsPlotArrays(N, w);
+
+  for(int n = 1; n < N; n++)
+    w[n] = rsConsistentUnwrappedValue0(w[n], w[n-1], 2*PI);
+  rsPlotArrays(N, w);
+
+  //AT::unwrap(w, N, 2*PI);
+
+  // has no effect - why? maybe it works only if the start is zero?
+
+
+}
+
+
 
 void testSineParameterEstimation()
 {
@@ -1162,11 +1199,15 @@ void sineRecreationBandpassNoise()
 
 
   // Use algo that estimates the amp-envelope first and bases everything else on that:
-  Vec a3(N), p3(N);
+  Vec a3(N), p3(N), w3(N);
   rsAmpEnvelope(&x[0], N, &a3[0]);
-  sigAndAmpToPhase(&x[0], &a3[0], N, &p3[0]);  // may produce nans
+  sigAndAmpToPhase(&x[0], &a3[0], N, &p3[0]);  // may produce nans - fixed
+  phaseToFreq(&p3[0], N, &w3[0]);
+
   rsPlotArrays(N, &x[0], &a3[0]);
   rsPlotVectors(x, a3, p3);
+
+
 
 
 

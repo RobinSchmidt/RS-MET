@@ -1256,7 +1256,11 @@ void rsArrayTools::unwrap(T* a, int N, T p)
 {
   for(int n = 1; n < N; n++)
   {
-    int k = 0;
+    int k = 0;  
+    // maybe do this only once outside the loop bcs for successive n we will likely want to use 
+    // the same k, so the inner loops will not run as often - using a loop may seem a bit silly
+    // anyway - see rsConsistentUnwrappedValue0
+
     while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k+1)*p))-a[n-1]))
       k++;
     while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k-1)*p))-a[n-1]))

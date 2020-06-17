@@ -353,6 +353,7 @@ inline double rsWrapToInterval(double x, double min, double max)
   }
   return tmp + min;
 }
+// why no template? because of fmod?
 
 inline double rsZeroFunction(double x)
 {
