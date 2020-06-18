@@ -38,20 +38,20 @@ void rsSingleSineModeler<T>::synthesizeFromAmpAndPhase(const T* a, const T* p, i
   for(int n = 0; n < N; n++)
     y[n] = a[n] * sin(p[n]);
 }
-// maybe we should base everything on cosine for consistency with the rsSinusoidalModel - but maybe
-// we should use the sine there
 
 template<class T>
 void rsSingleSineModeler<T>::synthesizeFromAmpFreqPhaseMod(
   const T* a, const T* w, const T* pm, int N, T* y)
 {
-  T wi = w[0]; // integrated w
-  for(int n = 1; n < N; n++)
-  {
+  T wi = T(0); // integrated w
+  for(int n = 0; n < N; n++) {
     wi += w[n];
-    y[n] = a[n] * sin(wi + pm[n]);
-  }
+    y[n] = a[n] * sin(wi + pm[n]); }
 }
+
+// maybe we should base everything on cosine for consistency with the rsSinusoidalModel - but maybe
+// we should use the sine there
+
 // test, if we have any delays with respct to original signal
 
 //-------------------------------------------------------------------------------------------------
