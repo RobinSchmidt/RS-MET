@@ -166,10 +166,10 @@ void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
 
   // first fit a parabola and find its maximum:
   using Poly = rsPolynomial<T>;
-  T a[ 2*maxPrecision+1];   // polynomial coeffs of fitted polynomial
-  T ad[2*maxPrecision];     // ...and its derivative
-  T dt = 0;                 // delta t - time offset of peak from n0
+  T a[ 2*maxPrecision+1];                       // polynomial coeffs of fitted polynomial
+  T ad[2*maxPrecision];                         // ...and its derivative
   Poly::fitQuadratic_m1_0_1(a, &x[n0-1]);
+  T dt = Poly::quadraticExtremumPosition(a);    // delta t - time offset of peak from n0
   if(precision == 1 || n0 == 1 || n0 == N-2) {
     *pos    = T(n0) + dt;
     *height = Poly::evaluate(dt, a, 2);

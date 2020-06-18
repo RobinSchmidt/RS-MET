@@ -648,9 +648,9 @@ void peakFinder()
   // Create a sinuosid and find its peaks with subsample precision
   // ...maybe create one with oversampling so we may see the actual peaks
 
-  int N = 100;
+  int N = 50;
   int oversampling = 20;
-  int precision = 0;
+  int precision = 1;
   double w = 1.0;  // omega
 
   // create the test signal:
@@ -668,13 +668,18 @@ void peakFinder()
 
   // find the peaks:
   using SPE = rsSineParameterEstimator<double>;
+  using AT  = rsArrayTools;
   Vec peakPositions, peakHeights;
   double pos, height;
   for(int n = 1; n < N-1; n++) {
-    if(x[n] >= x[n-1] && x[n] >= x[n+1]) {
+    //if(x[n] >= x[n-1] && x[n] >= x[n+1]) 
+    if( AT::isPeakOrValley(&x[0], n) )
+    {
       SPE::exactPeakPositionAndHeight(&x[0], N, n, precision, &pos, &height);
       peakPositions.push_back(pos);
-      peakHeights.push_back(height); }}
+      peakHeights.push_back(height); 
+    }
+  }
 
 
   GNUPlotter plt;
@@ -682,8 +687,12 @@ void peakFinder()
   plt.addDataArrays(No, &to[0], &xo[0]);
   plt.addDataArrays((int)peakHeights.size(), &peakPositions[0], &peakHeights[0]);
   plt.setGraphStyles("lines", "lines", "points");
-  plt.setPixelSize(1000, 300);
+  plt.setPixelSize(1200, 400);
   plt.plot();
+
+  // Observations:
+  // -With precision = 1 (parabolic) an w = 1, the height error is around 2%, with precision = 0
+  //  around 10%
 }
 
 // convenience function to make the zero-crossing finding work for plain arrays (as required for
