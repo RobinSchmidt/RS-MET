@@ -69,10 +69,21 @@ void rsSineParameterEstimator<T>::sigToAmpsViaPeaks(const T* x, int N, T* a)
   //  -maybe refine their values by using the maximum through a parabola
   // -connect them by linear interpolation
 
+  T power = 1.0; // experimental - doesn't seem to help
+
   T *y = a;                     // re-use a for temporary storage
   for(int n = 0; n < N; n++)
     y[n] = rsAbs(x[n]);         // todo: apply shadower here (shadows are casted only rightward)
+
+  if( power != 1.0 )
+    for(int n = 0; n < N; n++)
+      y[n] = pow(y[n], power);
+
   connectPeaks(y, N, a);
+
+  if( power != 1.0 )
+    for(int n = 0; n < N; n++)
+      y[n] = pow(y[n], 1.0/power);
 }
 
 template<class T>
@@ -89,13 +100,13 @@ void rsSineParameterEstimator<T>::sigAndAmpToPhase(const T* x, const T* a, int N
 template<class T>
 inline void lerpPeaks(const T* y, int nL, int nR, T tL, T tR, T yL, T yR, T* a)
 {
-  for(int i = nL; i < nR; i++)                 // lerp peaks from nL to nR
+  for(int i = nL; i < nR; i++)                 
   {
-    T ai = rsLinToLin(T(i), tL, tR, yL, yR);
-    a[i] = rsMax(ai, y[i]);  // we want no stick-outs!
-    //a[i] = ai;
+    T ai = rsLinToLin(T(i), tL, tR, yL, yR); // ToDo: optimize!
+    a[i] = rsMax(ai, y[i]);                  // we want no stick-outs!
   }
 }
+// lerp peaks from nL to nR (not including nR)
 // make member or maybe move elsewhere
 
 template<class T>
@@ -107,6 +118,9 @@ void rsSineParameterEstimator<T>::connectPeaks(const T* y, int N, T* a)
   // a good idea, even when the interpolant is used for the height:
   bool parabolicHeight = true; 
   bool parabolicTime   = true;  // makes sense only, if parabolicHeight is also true
+  // todo: introduce a peak-precision parameter: 0 - take peak sample directly, 1: parabolic
+  // 2: quartic, 3: sixtic, etc. - see code for zero-crossing finder for reference
+  // rename parabolicTime to exactTime
 
   int nL = 0,     nR;            // index of current left and right peak
   T   tL = T(nL), tR;            // position or time of current left and right peak
@@ -123,25 +137,16 @@ void rsSineParameterEstimator<T>::connectPeaks(const T* y, int N, T* a)
           if(parabolicTime)                             // we may or may not use the time offset..
             tR += dt;       }}                          // ..in the linear interpolation loop below
       lerpPeaks(y, nL, nR, tL, tR, yL, yR, a);
-
-      //for(int i = nL; i < nR; i++)                 // lerp peaks from nL to nR
-      //  a[i] = rsLinToLin(T(i), tL, tR, yL, yR);   // ToDo: optimize!
-
-
-      nL = nR; tL = tR; yL = yR; }}                // update for next iteration
-
-  nR = N-1; tR = T(nR); yR = y[nR];          // lerp from last peak to last sample
+      nL = nR; tL = tR; yL = yR; }}                     // update for next iteration
+  nR = N-1; tR = T(nR); yR = y[nR];          // handle last peak to last sample
   lerpPeaks(y, nL, nR, tL, tR, yL, yR, a);
-  //for(int i = nL; i < nR; i++)
-  //  a[i] = rsLinToLin(T(i), tL, tR, yL, yR); // optimize!
 }
+// ToDo: factor out the parabolic refinement and allow it to use higher order polynomials - it's
+// really important to estimate the amplitude accurately - otherwise we'll get jaggies in the
+// instantaneous frequency measurements
 // quadraticExtremumPosition computes c[1]/c[2], so the tolerance should be based on the 
 // ratio |c[1]| and |c[2]| - if abs(c[2]) < (small * c1), skip the step
-// maybe the lerp-loop can be factored out - maybe it should be added to 
-// rsArrayTools::lerp(T *y, int iL, int iR, T min, T max) ..actually, it may be useful, if it
-// writes the lerped value into a[i] only if it is >= y[i], otherwise, write y[i] - this will
-// ensure, that nothing can stick out - when we do this, we actually can use parabolicTime without
-// risk
+
 
 template<class T>
 T refinePhase(T p, T pL, T pR, int n) // n is only passed for debugging
@@ -157,9 +162,11 @@ T refinePhase(T p, T pL, T pR, int n) // n is only passed for debugging
   T pa  = T(0.5)*(pL+pR);
   T pm  = p;
 
-  if(p < pi2 && pR >= pi2)             // transition from zone 1 to zone 2
+  //if(p < pi2 && pR >= pi2)             // transition from zone 1 to zone 2
+  if(pL < pi2 && pR >= pi2)             // transition from zone 1 to zone 2
     pm =  PI - p;
-  else if(p < -pi2 && pR >= -pi2)      // transition from zone 3 to zone 4
+  //else if(p < -pi2 && pR >= -pi2)      // transition from zone 3 to zone 4
+  else if(pL < -pi2 && pR >= -pi2)      // transition from zone 3 to zone 4
     pm = -PI - p;
 
   if(rsAbs(pa-pm) < rsAbs(pa-p))
@@ -192,6 +199,7 @@ void rsSineParameterEstimator<T>::unreflectPhase(const T* x, T* p, int N)
 
   // Post-process - compenaste too late transitions:
   refinePhase(p, N);     // maybe rename 
+  refinePhase(p, N);  // doesn't make a difference
 }
 // zone 1: 0...pi/2, zone 2: pi/2...pi, zone 3: -pi/...-pi/2, zone 4: -pi/2...0
 // can too early transitions also happen? i've not yet seen one

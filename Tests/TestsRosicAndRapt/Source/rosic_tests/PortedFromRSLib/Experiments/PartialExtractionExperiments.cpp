@@ -1032,7 +1032,7 @@ void sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
 }
 
 template<class T>
-void medianFilter3pt(const T* x, int N, T* y)
+void movingMedian3pt(const T* x, int N, T* y)
 {
   T x1 = x[0];  // x[n-1]
   for(int n = 1; n < N-1; n++)
@@ -1054,7 +1054,7 @@ void medianFilter3pt(const T* x, int N, T* y)
 
 
 template<class T>
-void phaseToFreq(const T* p, int N, T* w)
+void phaseToFreq(const T* p, int N, T* w, int smooth = 3)
 {
   rsAssert(p != w);
   using AT = rsArrayTools;
@@ -1082,12 +1082,32 @@ void phaseToFreq(const T* p, int N, T* w)
 
   AT::difference(w, N);
   //rsPlotArrays(N, w, p);
+  rsPlotArrays(N, w);
   // first sample is off - check implementation of rsDifference - it assumes a zero initial 
   // condition - we need to adopt for a convention up to which k we should sum the w-array in 
   // synthesis - n or n-1
   // maybe resynthesize signal with unreflected phase and see, if we get identity
   // resynthesis - if we do, it doesn't seem to be an artifact
+  // the phase etsimation errors are greates where the signal value is closest to it 
+  // peak-envelope, i.e. where the env touches the peaks of the signal - hmm -no i guess this
+  // is just a coincidence - the relevant feature at these points is that the phase goes
+  // throug +-pi/2 ...seems we still have reflection errors at these points
+  // see sample 1111 - maybe try prediction-based unrefelcting algo - and see if some of the 
+  // reflection-errors disappear (but then maybe others (re)-appear))
+  // no: i think, we need higher order amplitude-peak estimation - switching dwon from parabolic
+  // to taking peak-samples directly greatly amplifies these artifacts - so there are less jaggies
+  // with a parabola so hopefully even less with a quartic - our amplitude measurements are just
+  // wrong....
 
+  /*
+  // smoothing:
+  movingMedian3pt(w, N, w);  // rename to movingMedian3pt and move to AT
+  for(int i = 0; i < smooth; i++)
+    AT::movingAverage3pt(w, N, w, false);
+  */
+
+
+  /*
   using Vec = std::vector<T>;
   Vec w2(N), w3(N);
   medianFilter3pt(w, N, &w2[0]);  // rename to movingMedian3pt and move to AT
@@ -1097,6 +1117,7 @@ void phaseToFreq(const T* p, int N, T* w)
   rsPlotArrays(N, w, &w2[0], &w3[0]);
   rsPlotVectors(w2, w3);
   // i think, 1 moving-median and 3 moving-average filters with 3 points give good-looking results
+  */
 }
 
 
@@ -1252,13 +1273,23 @@ void sineRecreationBandpassNoise()
   Vec a3(N), p3(N), w3(N);
   rsAmpEnvelope(&x[0], N, &a3[0]);
   sigAndAmpToPhase(&x[0], &a3[0], N, &p3[0]);  // may produce nans - fixed
-  phaseToFreq(&p3[0], N, &w3[0]);
 
-  rsPlotArrays(N, &x[0], &a3[0]);
-  rsPlotVectors(x, a3, p3);
+  // p3[504] = PI - p3[504];  
+  // test - nope - makes it worse - so it's not a reflection-error! maybe it's an amplitude 
+  // estimation error? ..that's the only option left, if identity resynthesis is desired - maybe
+  // try a nonlinear transformation of the amplitudes before and after the parabolic interpolation 
+  // and/or try higher order interpolation
+
+  phaseToFreq(&p3[0], N, &w3[0], 0);
+
+  //rsPlotArrays(N, &x[0], &a3[0]);
+  //rsPlotVectors(x, a3, p3);
+
+  Vec xAbs = rsAbs(x);
+  rsPlotVectors(10.*xAbs, 10.*a3, p3, w3);
 
 
-
+  Vec fm3c = (fs/(2*PI)) * w3;  // this actually is already cleaned up by a median-filter
 
 
 
@@ -1269,6 +1300,12 @@ void sineRecreationBandpassNoise()
 
   //rsPlotVectors(fa, fm1, fm1c);
   //rsPlotVectors(fa, fm2, fm2c);
+  rsPlotVectors(fa, fm1c, fm2c, fm3c); // compare all 3 freq-estimates
+
+  rsPlotVectors(x, a, a3);  
+  // todo: make a1 and a2 arrays to compare all 3, plot the abs of x instead of x itself
+  // ...a3 looks definitely much better...but maybe that's because we are using bad frequency
+  // estimates in the other
 
 
   //rsPlotVectors(fa, fm2c, fo);

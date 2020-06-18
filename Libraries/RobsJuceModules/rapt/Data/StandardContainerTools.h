@@ -9,6 +9,15 @@ library (STL), such as std::vector, std::map, etc. */
 
 // maybe wrap into a class rsVectorTools
 
+template<class T>
+inline std::vector<T> rsAbs(const std::vector<T>& v)
+{
+  std::vector<T> va(v.size());
+  for(size_t i = 0; i < v.size(); i++)
+    va[i] = rsAbs(v[i]);
+  return va;
+}
+
 /** Wraps iterator syntax to simplify calls to std::all_of. */
 template<class T, class UnaryPredicate >
 bool rsAllOf(const std::vector<T>& v, UnaryPredicate p)
