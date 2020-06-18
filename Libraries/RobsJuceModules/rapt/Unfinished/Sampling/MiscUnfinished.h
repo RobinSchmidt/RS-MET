@@ -181,9 +181,12 @@ public:
   /** Assuming an upward zero crossing somewhere in the range n..n+1 (n must be in the range
   0..N-2), this function returns the fractional part of that zero crossing, i.e. a number f in the
   range 0..1 such that the actual position of the zero crossing is at n+f. Parameter p is the
-  precision... */
+  precision where 0 means linear, 1 cubic, 2 quintic, etc. - this is the order of the polynomial
+  which is used to interpolate the data around x[n]. The returned zero location is the 
+  zero-crosssing of this polynomial. */
   template<class T>
   static T upwardCrossingFrac(T *x, int N, int n, int p = 1);
+  // allocates - todo: avoid this
 
   /** Returns the number of upward zero crossings in array x of length N. */
   template<class T>

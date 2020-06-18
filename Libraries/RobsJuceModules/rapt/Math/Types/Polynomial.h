@@ -634,7 +634,7 @@ public:
   //   think, this is more convenient in the content of interpolating in realtime as in the 
   //   pitch-detector?
 
-  /** Allocates and fills an NxN matrix A wher A[i][j] are given by x[i]^j. The caller is
+  /** Allocates and fills an NxN matrix A where A[i][j] are given by x[i]^j. The caller is
   responsible for deallocation. So it's used like:
   T **A = rsVandermondeMatrix(x, N);
   // ...do stuff with matrix A
@@ -643,15 +643,20 @@ public:
     // move to rsMatrixOld, deprecate!
 
   /** Computes coefficients a[0],..., a[N-1] for a polynomial of degree N-1 that goes through the N
-  data points (x[0], y[0]),...,(x[N-1], y[N-1]). */
-  static void interpolant(T *a, const T *x, const T *y, int N);
-    // maybe move to Interplation
+  data points (x[0], y[0]),...,(x[N-1], y[N-1]). 
+  Note that N here is the number of datapoints, not the degree (which is one less)...that's a bit 
+  quirky....  */
+  static void interpolant(T *a, const T *x, const T *y, int numDataPoints);
+  // maybe move to Interplation
+  // the meaning of N here is inconsistent with the rest of the class - it's the number of 
+  // datapoints - maybe move interpolant into some interpolator class where its conventional to 
+  // pass the number of datapoints.
 
   /** Like rsInterpolatingPolynomial(T *a, T *x, T *y, int N), but instead of
   passing an x-array, you should pass a start value x0 and an increment dx and it will use x-values
   given by x0, x0+dx, x0+2*dx,...,x0+(N-1)*dx, so this function assumes equidisant abscissa
   values. */
-  static void interpolant(T *a, const T& x0, const T& dx, const T *y, int N);
+  static void interpolant(T *a, const T& x0, const T& dx, const T *y, int numDataPoints);
   // allocates heap memory
 
   // \todo void quinticCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy,

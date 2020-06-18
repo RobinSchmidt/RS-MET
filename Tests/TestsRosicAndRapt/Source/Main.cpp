@@ -289,6 +289,7 @@ int main(int argc, char* argv[])
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
   //maxShortTimeRMS();
   //arrayRMS();
+  peakFinder();
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
   //zeroCrossingFinder3();

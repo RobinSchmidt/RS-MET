@@ -261,17 +261,21 @@ int rsZeroCrossingFinder::closestUpwardCrossing(T *x, int N, int n)
 template<class T>
 T rsZeroCrossingFinder::upwardCrossingFrac(T *x, int N, int n, int p)
 {
+  rsAssert(n >= 0 && n <= N-2);
   T f = x[n]/(x[n]-x[n+1]);      // fractional part - init to zero of linear interpolant
   int q = rsMin(p, n, N-n-2);    // p, restricted to avoid access violation
   if(q > 0) {
     // refine linear zero estimate by Newton iteration on a higher order interpolating
     // polynomial using the zero of the linear interpolant as initial guess:
     T *a = new T[2*p+2];   // polynomial coefficients for interpolant (maybe use a static array)
-    rsPolynomial<T>::interpolant(a, -q, 1, &x[n-q], 2*q+2);
-    f = rsPolynomial<T>::rootNear(f, a, 2*q+1, 0.0, 1.0);
+    rsPolynomial<T>::interpolant(a, -q, 1, &x[n-q], 2*q+2);  // why here 2*q+2...
+    f = rsPolynomial<T>::rootNear(f, a, 2*q+1, 0.0, 1.0);    // and here 2*q+1?
     delete[] a;
   }
   return f;
+  // In interpolant we pass 2*q+2 which is the number of datapoints whereas in rootNear, we pass
+  // 2*q+1 which is the degree - maybe move interpolant into some interpolator class where its 
+  // conventional to pass the number of datapoints.
 }
 
 template<class T>

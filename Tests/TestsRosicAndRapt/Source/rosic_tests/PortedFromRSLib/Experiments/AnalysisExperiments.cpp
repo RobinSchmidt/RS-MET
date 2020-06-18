@@ -642,7 +642,25 @@ void arrayRMS()
   int dummy = 0;
 }
 
+void peakFinder()
+{
+  // ...under construction...
+  // Create a sinuosid and find its peaks with subsample precision
+  // ...maybe create one with oversampling so we may see the actual peaks
 
+  int N = 1000;
+  double w = 0.2;  // omega
+
+  using Vec = std::vector<double>;
+  Vec x(N);
+  for(int n = 0; n < N; n++)
+    x[n] = sin(w*n);
+
+
+  rsPlotVectors(x);  //
+
+  int dummy = 0;
+}
 
 // convenience function to make the zero-crossing finding work for plain arrays (as required for
 // plotting)
