@@ -151,7 +151,8 @@ void rsSineParameterEstimator<T>::connectPeaks(const T* y, int N, T* a)
 // ratio |c[1]| and |c[2]| - if abs(c[2]) < (small * c1), skip the step
 
 template<class T>
-void exactPeakPositionAndHeight(const T* x, int N, int n0, int precision, T* pos, T* height)
+void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
+  const T* x, int N, int n0, int precision, T* pos, T* height)
 {
   static const int maxPrecision = 4;
 

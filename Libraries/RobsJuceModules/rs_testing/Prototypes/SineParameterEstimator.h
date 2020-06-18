@@ -55,6 +55,10 @@ public:
 
   // ToDo: sigToOmegasViaZeros
 
+  static void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
+    const T* x, int N, int n0, int precision, T* pos, T* height);
+  // move to somewhere else
+
 protected:
 
   static void connectPeaks(const T* x, int N, T* env);

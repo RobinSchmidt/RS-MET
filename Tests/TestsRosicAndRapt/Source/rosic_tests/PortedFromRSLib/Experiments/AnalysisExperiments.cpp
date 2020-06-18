@@ -650,11 +650,10 @@ void peakFinder()
 
   int N = 100;
   int oversampling = 20;
-
-
+  int precision = 0;
   double w = 1.0;  // omega
 
-
+  // create the test signal:
   int No = N*oversampling;
   using Vec = std::vector<double>;
   Vec t(N), to(No);
@@ -667,10 +666,22 @@ void peakFinder()
     to[n] /= oversampling;
     xo[n] = sin(w*to[n]);  }
 
+  // find the peaks:
+  using SPE = rsSineParameterEstimator<double>;
+  Vec peakPositions, peakHeights;
+  double pos, height;
+  for(int n = 1; n < N-1; n++) {
+    if(x[n] >= x[n-1] && x[n] >= x[n+1]) {
+      SPE::exactPeakPositionAndHeight(&x[0], N, n, precision, &pos, &height);
+      peakPositions.push_back(pos);
+      peakHeights.push_back(height); }}
+
 
   GNUPlotter plt;
   plt.addDataArrays(N,  &t[ 0], &x[ 0]);
   plt.addDataArrays(No, &to[0], &xo[0]);
+  plt.addDataArrays((int)peakHeights.size(), &peakPositions[0], &peakHeights[0]);
+  plt.setGraphStyles("lines", "lines", "points");
   plt.setPixelSize(1000, 300);
   plt.plot();
 }
