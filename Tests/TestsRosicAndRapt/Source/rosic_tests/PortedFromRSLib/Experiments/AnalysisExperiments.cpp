@@ -667,7 +667,7 @@ void peakFinder()
     xo[n] = sin(w*to[n]);  }
 
   // find the peaks:
-  using SPE = rsSineParameterEstimator<double>;
+  using SSM = rsSingleSineModeler<double>;
   using AT  = rsArrayTools;
   Vec peakPositions, peakHeights;
   double pos, height;
@@ -675,7 +675,7 @@ void peakFinder()
   for(int n = 1; n < N-1; n++) {
     if( AT::isPeakOrValley(&x[0], n) )
     {
-      SPE::exactPeakPositionAndHeight(&x[0], N, n, precision, &pos, &height);
+      SSM::exactPeakPositionAndHeight(&x[0], N, n, precision, &pos, &height);
       peakPositions.push_back(pos);
       peakHeights.push_back(height); 
     }

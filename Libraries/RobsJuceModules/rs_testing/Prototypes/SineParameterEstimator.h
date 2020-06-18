@@ -1,5 +1,6 @@
 #ifndef RAPT_SINEPARAMETERESTIMATOR_H_INCLUDED
 #define RAPT_SINEPARAMETERESTIMATOR_H_INCLUDED
+// todo: rename files!
 
 /** A class for estimating the instantaneous parameters (frequency and/or phase, amplitude) of a 
 sinewave. */
@@ -7,7 +8,7 @@ sinewave. */
 // maybe rename to rsPartialModeler or rsSingleSineModeler
 
 template<class T>
-class rsSineParameterEstimator
+class rsSingleSineModeler
 {
 
 public:
@@ -70,7 +71,7 @@ public:
 
   // ToDo: sigToOmegasViaZeros
 
-  static void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
+  static void exactPeakPositionAndHeight(
     const T* x, int N, int n0, int precision, T* pos, T* height);
   // move to somewhere else
 

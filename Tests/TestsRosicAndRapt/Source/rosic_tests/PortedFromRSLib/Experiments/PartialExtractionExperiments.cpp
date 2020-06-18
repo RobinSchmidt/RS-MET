@@ -835,7 +835,7 @@ int rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
 template<class T>
 void phaseToFreq(const T* p, int N, T* w, int smooth = 3)
 {
-  rsSineParameterEstimator<T>::phaseToFreq(p, N, w);
+  rsSingleSineModeler<T>::phaseToFreq(p, N, w);
   using AT = rsArrayTools;
   if(smooth > 0)
   {
@@ -850,13 +850,13 @@ void phaseToFreq(const T* p, int N, T* w, int smooth = 3)
 template<class T>
 void phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
 {
-  rsSineParameterEstimator<T>::phaseAndFreqToPhaseMod(p, w, N, pm);
+  rsSingleSineModeler<T>::phaseAndFreqToPhaseMod(p, w, N, pm);
 }
 
 template<class T>
 void synthesizeFromAmpFreqPhaseMod(const T* a, const T* w, const T* pm, int N, T* y)
 {
-  rsSineParameterEstimator<T>::synthesizeFromAmpFreqPhaseMod(a, w, pm, N, y);
+  rsSingleSineModeler<T>::synthesizeFromAmpFreqPhaseMod(a, w, pm, N, y);
 }
 // may be delayed...
 
@@ -867,16 +867,16 @@ void testSineParameterEstimation()
   testSineAmpAndPhaseEstimation2();
   // make it a unit test
 
-  using SPE = rsSineParameterEstimator<double>;
+  using SSM = rsSingleSineModeler<double>;
   using Vec = std::vector<double>;
 
   Vec x = Vec({10,11,5,0,1,0});  // shows undershooting problem with parabolicTime
   Vec a = x;
-  SPE::sigToAmpsViaPeaks(&x[0], (int) x.size(), &a[0]); // try to use it in place with a = x
+  SSM::sigToAmpsViaPeaks(&x[0], (int) x.size(), &a[0]); // try to use it in place with a = x
   //rsPlotVectors(x, a);
 
   x = Vec({10,11,0,0,10,0}); 
-  SPE::sigToAmpsViaPeaks(&x[0], (int) x.size(), &a[0]); // not interesting
+  SSM::sigToAmpsViaPeaks(&x[0], (int) x.size(), &a[0]); // not interesting
   //rsPlotVectors(x, a);
 }
 
@@ -930,13 +930,13 @@ void sineRecreationBandpassNoise()
 
 
 
-  using SPE = rsSineParameterEstimator<double>;
-  SPE spe;
+  using SSM = rsSingleSineModeler<double>;
+  SSM ssm;
 
 
   // measure instantaneous frequency (with algo 1 - sine recursion formula):
   Vec fm1(N);
-  SPE::sigToOmegasViaFormula(&x[0], N, &fm1[0]);
+  SSM::sigToOmegasViaFormula(&x[0], N, &fm1[0]);
   fm1 = (fs/(2*PI)) * fm1;
 
   // Create cleaned up version via 3-point median filter:
@@ -1016,7 +1016,7 @@ void sineRecreationBandpassNoise()
 
   // Use algo that estimates the amp-envelope first and bases everything else on that:
   Vec a3(N), p3(N), w3(N), pm3(N);
-  spe.analyzeAmpAndPhase(&x[0], N, &a3[0], &p3[0]);
+  ssm.analyzeAmpAndPhase(&x[0], N, &a3[0], &p3[0]);
 
 
   /*
@@ -1030,7 +1030,7 @@ void sineRecreationBandpassNoise()
   */
 
 
-  spe.analyzeAmpFreqAndPhaseMod(&x[0], N, &a3[0], &w3[0], &pm3[0]);
+  ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a3[0], &w3[0], &pm3[0]);
 
   // pm3 should be zero, when no freq-smoothing is selected - but the first value is nonzero
   // i think, we should use the convention that the w-array must be summed up to n rather than 

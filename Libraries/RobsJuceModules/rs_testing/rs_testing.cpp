@@ -73,4 +73,4 @@ template class rsQuantumSpin<double>;     // todo: use float...
 template class rsQuantumComputer<double>; // ...because this guy here can use a lot of memory
 template class rsQuantumParticle<double>; 
 
-template class rsSineParameterEstimator<double>;
+template class rsSingleSineModeler<double>;

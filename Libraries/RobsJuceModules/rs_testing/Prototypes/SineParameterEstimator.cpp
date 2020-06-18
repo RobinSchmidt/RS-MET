@@ -1,6 +1,6 @@
 
 template<class T>
-void rsSineParameterEstimator<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T* p)
+void rsSingleSineModeler<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T* p)
 {
   // todo: switch between various algos that compute stuff in different orders
 
@@ -9,7 +9,7 @@ void rsSineParameterEstimator<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T*
 }
 
 template<class T>
-void rsSineParameterEstimator<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm)
+void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm)
 {
   analyzeAmpAndPhase(x, N, a, pm);       // pm (phase-mod) temporarily used for phase itself
   phaseToFreq(pm, N, w);
@@ -29,7 +29,7 @@ void rsSineParameterEstimator<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T
 //-------------------------------------------------------------------------------------------------
 
 template<class T>
-void rsSineParameterEstimator<T>::sigToOmegasViaFormula(const T* x, int N, T* w)
+void rsSingleSineModeler<T>::sigToOmegasViaFormula(const T* x, int N, T* w)
 {
   // The algorithm uses rsSineFrequency as its core to estimate the frequency at each sample. 
   // However, it was observed, that this function gives unreliable results, whenever there's a 
@@ -88,7 +88,7 @@ void rsSineParameterEstimator<T>::sigToOmegasViaFormula(const T* x, int N, T* w)
 }
 
 template<class T>
-void rsSineParameterEstimator<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int precision)
+void rsSingleSineModeler<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int precision)
 {
   // todo: take a shadowing-time parameter and use a peak-shadower
 
@@ -124,7 +124,7 @@ void rsSineParameterEstimator<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int
 // get rid of the duplication
 
 template<class T>
-void rsSineParameterEstimator<T>::sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
+void rsSingleSineModeler<T>::sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
 {
   for(int n = 0; n < N; n++)
     p[n] = asin(x[n] / a[n]);
@@ -132,7 +132,7 @@ void rsSineParameterEstimator<T>::sigAndAmpToPhase(const T* x, const T* a, int N
 }
 
 template<class T>
-void rsSineParameterEstimator<T>::phaseToFreq(const T* p, int N, T* w)
+void rsSingleSineModeler<T>::phaseToFreq(const T* p, int N, T* w)
 {
   rsAssert(p != w);                 // hmm - i guess, it would actually work in place - try it!
   for(int n = 0; n < N; n++)
@@ -145,7 +145,7 @@ void rsSineParameterEstimator<T>::phaseToFreq(const T* p, int N, T* w)
 }
 
 template<class T>
-void rsSineParameterEstimator<T>::phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
+void rsSingleSineModeler<T>::phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
 {
   T wi = w[0];
   for(int n = 1; n < N; n++)
@@ -158,7 +158,7 @@ void rsSineParameterEstimator<T>::phaseAndFreqToPhaseMod(const T* p, const T* w,
 }
 
 template<class T>
-void rsSineParameterEstimator<T>::synthesizeFromAmpFreqPhaseMod(
+void rsSingleSineModeler<T>::synthesizeFromAmpFreqPhaseMod(
   const T* a, const T* w, const T* pm, int N, T* y)
 {
   T wi = w[0]; // integrated w
@@ -174,7 +174,7 @@ void rsSineParameterEstimator<T>::synthesizeFromAmpFreqPhaseMod(
 // internal sub-algorithms:
 
 template<class T>
-void rsSineParameterEstimator<T>::smoothFreqs(T* w, int N, int medianOrder, int averageOrder)
+void rsSingleSineModeler<T>::smoothFreqs(T* w, int N, int medianOrder, int averageOrder)
 {
   for(int i = 0; i < medianOrder;  i++) 
     rsArrayTools::movingMedian3pt( w, N, w);
@@ -195,7 +195,7 @@ inline void lerpPeaks(const T* y, int nL, int nR, T tL, T tR, T yL, T yR, T* a)
 // maybe make member
 
 template<class T>
-void rsSineParameterEstimator<T>::connectPeaks(const T* y, int N, T* a)
+void rsSingleSineModeler<T>::connectPeaks(const T* y, int N, T* a)
 {
   // Make these function parameters - these determine whether we use the height of a parabolic
   // interpolant for the peak instead of the array value itself. We may also use the actual 
@@ -236,7 +236,7 @@ void rsSineParameterEstimator<T>::connectPeaks(const T* y, int N, T* a)
 // interpolation)
 
 template<class T>
-void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
+void rsSingleSineModeler<T>::exactPeakPositionAndHeight(
   const T* x, int N, int n0, int precision, T* pos, T* height)
 {
   static const int maxPrecision = 4;
@@ -277,7 +277,7 @@ void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
 // for bandpass signals, i.e. signals that have sinusoidal shape)
 
 template<class T>
-void rsSineParameterEstimator<T>::connectPeaks(
+void rsSingleSineModeler<T>::connectPeaks(
   const T* xt, const T* xi, int N, T* env, int precision)
 {
   rsAssert(xi != env && xt != env);  // this does not work in place
@@ -347,7 +347,7 @@ void refinePhase(T* p, int N)
 // try this with white-noise inputs - the bandpass noise is too well-behaved for that
 
 template<class T>
-void rsSineParameterEstimator<T>::unreflectPhase(const T* x, T* p, int N)
+void rsSingleSineModeler<T>::unreflectPhase(const T* x, T* p, int N)
 {
   for(int n = 1; n < N; n++) {
     if(x[n] >= 0) {
