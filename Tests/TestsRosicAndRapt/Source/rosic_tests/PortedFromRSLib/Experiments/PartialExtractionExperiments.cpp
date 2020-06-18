@@ -991,9 +991,10 @@ void sineRecreationBandpassNoise()
   //for(n = 2; n < N-2; n++)
   //  rsOptimizeSineParameters(x[n-2], x[n-1], x[n], x[n+1], x[n+2], &ao[n], &po[n], &wo[n]);
   Vec fo = (fs/(2*PI)) * wo;
-  // ahh - but with the optimized parameters, we may not get exact resynthesis - if we want exact
-  // resynthesis, we should only optimize w and compute a,p as above
-  // whoa - the optimization fails when using only one pass
+  // ahh - but with the optimized parameters, we may not get exact resynthesis because it fits the
+  // best lesat-squares-model to 5 samples instead of an exact model to 3 samples - if we want 
+  // exact resynthesis, we should only optimize w and compute a,p as above
+  // whoa - the optimization fails when using only one pass of the bandpass
 
 
   // re-create the bandpass noise by a freq-, phase- and amp-modulated sine:
@@ -1019,15 +1020,7 @@ void sineRecreationBandpassNoise()
   ssm.analyzeAmpAndPhase(&x[0], N, &a3[0], &p3[0]);
 
 
-  /*
-  phaseToFreq(&p3[0], N, &w3[0], 0);  // get rid of this - do the smoothing here - or leave it out
-  // smooth the frequencies to get a non-zero phase-mod signal:
-  for(int i = 0; i < 3; i++)
-    rsArrayTools::movingAverage3pt(&w3[0], N, &w3[0]); 
 
-  // obtain pm-signal from p3 and w3
-  phaseAndFreqToPhaseMod(&p3[0], &w3[0], N, &pm3[0]);
-  */
 
 
   ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a3[0], &w3[0], &pm3[0]);

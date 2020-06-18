@@ -296,7 +296,7 @@ bool spectrogramUnitTest()
 
   // why do we need to scale the output of the ifft? in getComplexSpectrogram, there is already a 
   // scaling by 2 / rsArrayTools::sum(w, B); ...aahh - but it's applied to the STFT matrix *after* the
-  // STFT has been computed - so, we should probably use no nromalziation
+  // STFT has been computed - so, we should probably use no normalziation
 
   // how it should work:
   // -on forward FFT, scale spectral values by 1 / sum(window) (or 2 / sum(..) bcs of negative 
@@ -315,36 +315,84 @@ bool spectrogramUnitTest()
   return r;
 }
 
-bool sineModelingUnitTest()
+bool harmonicAnalyzerUnitTest()
 {
   bool r = true;      // test result
 
   // test filling the FFT buffer (with zero-apdding and shifting for zero-phase at center):
 
-  typedef std::vector<double> Vec;
+  using Vec = std::vector<double>;
+  using AT  = RAPT::rsArrayTools;
+  using HA  = RAPT::rsHarmonicAnalyzer<double>;
+
   Vec sig = { 1,2,3,4,5,6,7,8 };  // 8 elements
 
   // test with zero-padding factor = 4:
   Vec buf(32);
-  RAPT::rsArrayTools::fillWithNaN(&buf[0], (int) buf.size());
-  rsHarmonicAnalyzer<double>::prepareBuffer(sig, buf);
+  AT::fillWithNaN(&buf[0], (int) buf.size());
+  HA::prepareBuffer(sig, buf);
   Vec target = { 5,6,7,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,3,4 };
   r &= buf == target;
 
   // test with zero-padding factor = 2:
   buf.resize(16);
-  RAPT::rsArrayTools::fillWithNaN(&buf[0], (int) buf.size());
-  rsHarmonicAnalyzer<double>::prepareBuffer(sig, buf);
+  AT::fillWithNaN(&buf[0], (int) buf.size());
+  HA::prepareBuffer(sig, buf);
   target = { 5,6,7,8,0,0,0,0,0,0,0,0,1,2,3,4 };
   r &= buf == target;
 
   // test with zero-padding factor = 1:
   buf.resize(8);
-  RAPT::rsArrayTools::fillWithNaN(&buf[0], (int) buf.size());
-  rsHarmonicAnalyzer<double>::prepareBuffer(sig, buf);
+  AT::fillWithNaN(&buf[0], (int) buf.size());
+  HA::prepareBuffer(sig, buf);
   target = { 5,6,7,8,1,2,3,4 };
   r &= buf == target;
 
+  return r;
+}
+
+bool singleSineModelerUnitTest()
+{
+  bool r = true;
+
+  using Vec = std::vector<double>;
+  using SSM = rsSingleSineModeler<double>;
+
+  int N = 1000; // number of samples
+
+  // Test to resynthesize white noise - the analysis data may be meaningless in this case, but 
+  // identity resynthesis should work nevertheless:
+  Vec x = rsRandomVector(N, -1.0, 1.0);  // input signal
+  Vec a(N), w(N), p(N), pm(N);           // analysis data
+  Vec y(N);                              // resynthesized signal
+
+  SSM ssm;
+
+  ssm.analyzeAmpAndPhase(&x[0], N, &a[0], &p[0]);
+  // todo: synthesize and compare
+
+
+  ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
+  ssm.synthesizeFromAmpFreqPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
+
+  Vec err = x-y;
+  // only the first sample is wrong
+
+
+  // todo: test to analyze a perfect sinewave and see, if the analysis data makes sense....then 
+  // maybe make it more difficult by introducing a frequency sweep, amplitude fade, etc....
+
+
+
+  return r;
+}
+
+bool sineModelingUnitTest()
+{
+  bool r = true;
+
+  r &= harmonicAnalyzerUnitTest();
+  r &= singleSineModelerUnitTest();
 
   return r;
 }
