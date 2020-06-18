@@ -1220,6 +1220,10 @@ void unreflectPhase3(T* p, int N)
 template<class T>
 void sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
 {
+  rsSineParameterEstimator<T>::sigAndAmpToPhase(x, a, N, p);
+  return;
+
+
   for(int n = 0; n < N; n++)
     p[n] = asin(x[n] / a[n]);
   //repairPhase(p, N);

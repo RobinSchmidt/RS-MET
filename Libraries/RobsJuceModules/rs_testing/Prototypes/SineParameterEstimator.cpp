@@ -75,6 +75,16 @@ void rsSineParameterEstimator<T>::sigToAmpsViaPeaks(const T* x, int N, T* a)
   connectPeaks(y, N, a);
 }
 
+template<class T>
+void rsSineParameterEstimator<T>::sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
+{
+  for(int n = 0; n < N; n++)
+    p[n] = asin(x[n] / a[n]);
+  unreflectPhase(x, p, N);
+}
+
+//-------------------------------------------------------------------------------------------------
+// internal sub-algorithms:
 
 template<class T>
 inline void lerpPeaks(const T* y, int nL, int nR, T tL, T tR, T yL, T yR, T* a)
@@ -86,6 +96,7 @@ inline void lerpPeaks(const T* y, int nL, int nR, T tL, T tR, T yL, T yR, T* a)
     //a[i] = ai;
   }
 }
+// make member or maybe move elsewhere
 
 template<class T>
 void rsSineParameterEstimator<T>::connectPeaks(const T* y, int N, T* a)
@@ -131,6 +142,55 @@ void rsSineParameterEstimator<T>::connectPeaks(const T* y, int N, T* a)
 // writes the lerped value into a[i] only if it is >= y[i], otherwise, write y[i] - this will
 // ensure, that nothing can stick out - when we do this, we actually can use parabolicTime without
 // risk
+
+template<class T>
+T refinePhase(T p, T pL, T pR, int n) // n is only passed for debugging
+{
+  if( pL > pR ) pL -= 2*PI;    // test - seems a good idea
+
+  T pi2 = 0.5*PI;
+  T pa  = T(0.5)*(pL+pR);
+  T pm  = p;
+
+  if(p < pi2 && pR >= pi2)             // transition from zone 1 to zone 2
+    pm =  PI - p;
+  else if(p < -pi2 && pR >= -pi2)      // transition from zone 3 to zone 4
+    pm = -PI - p;
+
+  if(rsAbs(pa-pm) < rsAbs(pa-p))
+    return pm;
+  else
+    return p;
+}
+// make member
+// do we need more branches? what about the reverse transitions from zone 2 to 1 and from 4 to 3?
+// maybe this function does not work well when there's wrap-around between pL and p?
+// check at samples 2,7,32
+// n = 32: p = -2.38, pL = 3.14, pR = -1.57, pm = -0.76 -> pm is returned
+// maybe we should do if(pL > pR) pL -= 2*PI  ...done - yes, that seems to help
+
+template<class T>
+void refinePhase(T* p, int N)
+{
+  T pi2 = 0.5*PI;
+  for(int n = 1; n < N-1; n++)
+    p[n] = refinePhase(p[n], p[n-1], p[n+1], n);
+}
+// make member
+
+template<class T>
+void rsSineParameterEstimator<T>::unreflectPhase(const T* x, T* p, int N)
+{
+  for(int n = 1; n < N; n++) {
+    if(x[n] >= 0) {
+      if(x[n] < x[n-1])  p[n] =  PI - p[n];  }   // x is positive and going down -> zone 2
+    else {
+      if(x[n] < x[n-1])  p[n] = -PI - p[n]; }}   // x is negative and going down -> zone 3
+
+  // Post-process - compenaste too late transitions:
+  refinePhase(p, N);     // maybe rename 
+}
+// zone 1: 0...pi/2, zone 2: pi/2...pi, zone 3: -pi/...-pi/2, zone 4: -pi/2...0
 
 
 /*

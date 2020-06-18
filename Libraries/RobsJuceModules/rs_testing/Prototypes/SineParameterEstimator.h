@@ -42,8 +42,16 @@ public:
   a sample is to zero. */
   static void sigToOmegasViaFormula(const T* x, int N, T* w);
 
+  /** Estimates the amplitude envelope of the signal x via coennecting peaks with linear 
+  interpolants and writes the result to a. */
   static void sigToAmpsViaPeaks(const T* x, int N, T* a);
   // todo: document, if x == a is allowed (i think so)
+
+  /** Given a signal x and an array of instantaneous amplitudes a, this function computes the 
+  corresponding instantaneous pahses, such that x[n] = a[n] * sin(p[n]) for each n. */
+  static void sigAndAmpToPhase(const T* x, const T* a, int N, T* p);
+
+
 
   // ToDo: sigToOmegasViaZeros
 
@@ -53,6 +61,17 @@ protected:
   // rename: y to x, a to env
   // y == a is allowed - it can overwrite the content of a given array
   // maybe move this function to somewhere else - this could be useful in various other scenarios
+
+ 
+  /** When we compute the instantaneous phase from a known signal value x[n] and its instantaneous
+  amplitude a[n] via p[n] = asin(x[n] / a[n]), the returned result from asin is always in the range
+  -pi/2...+pi/2. When x is a sinewave, instead of sweeping from -pi to +pi and then wrapping around 
+  in one cycle, it oscillates back and forth between -pi/2...+pi/2. This function takes a raw array
+  of such phase values and heuristically reflects the phases around pi/2 or -pi/2 to get rid of 
+  that effect. Used in sigAndAmpToPhase.  */
+  static void unreflectPhase(const T* x, T* p, int N);
+  // more research necessarry to figure out what is the best algorithm for this - this here was the 
+  // first one that sort of worked for the bandpass-noise
 
 };
 
