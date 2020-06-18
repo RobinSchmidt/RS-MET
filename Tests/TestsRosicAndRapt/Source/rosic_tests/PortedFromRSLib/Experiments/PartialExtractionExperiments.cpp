@@ -1019,6 +1019,7 @@ void sineRecreationBandpassNoise()
   spe.analyzeAmpAndPhase(&x[0], N, &a3[0], &p3[0]);
 
 
+  /*
   phaseToFreq(&p3[0], N, &w3[0], 0);  // get rid of this - do the smoothing here - or leave it out
   // smooth the frequencies to get a non-zero phase-mod signal:
   for(int i = 0; i < 3; i++)
@@ -1026,12 +1027,16 @@ void sineRecreationBandpassNoise()
 
   // obtain pm-signal from p3 and w3
   phaseAndFreqToPhaseMod(&p3[0], &w3[0], N, &pm3[0]);
-
-
-
+  */
 
 
   spe.analyzeAmpFreqAndPhaseMod(&x[0], N, &a3[0], &w3[0], &pm3[0]);
+
+  // pm3 should be zero, when no freq-smoothing is selected - but the first value is nonzero
+  // i think, we should use the convention that the w-array must be summed up to n rather than 
+  // n-1 because then w[0] may serve as a start-phase in cases where resynthesis is done with an 
+  // w-array but without a pm array - that should be possible, too
+  
 
   //// when uncommented, no identity resynthesis:
   //for(int i = 0; i < 1000; i++)

@@ -13,10 +13,10 @@ void rsSineParameterEstimator<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T
 {
   analyzeAmpAndPhase(x, N, a, pm);       // pm (phase-mod) temporarily used for phase itself
   phaseToFreq(pm, N, w);
-
+  smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
 
   // todo: optionally smooth the freqs - with the raw freqs as computed, the phase-mod signal will
-  // come out as zero..
+  // come out as zero... introduce freqSmoothingTime and numPasses
 
 
   phaseAndFreqToPhaseMod(pm, w, N, pm);  // convert phase to phase-mod
@@ -165,6 +165,15 @@ void rsSineParameterEstimator<T>::synthesizeFromAmpFreqPhaseMod(
 
 //-------------------------------------------------------------------------------------------------
 // internal sub-algorithms:
+
+template<class T>
+void rsSineParameterEstimator<T>::smoothFreqs(T* w, int N, int medianOrder, int averageOrder)
+{
+  for(int i = 0; i < medianOrder;  i++) 
+    rsArrayTools::movingMedian3pt( w, N, w);
+  for(int i = 0; i < averageOrder; i++) 
+    rsArrayTools::movingAverage3pt(w, N, w);
+}
 
 template<class T>
 inline void lerpPeaks(const T* y, int nL, int nR, T tL, T tR, T yL, T yR, T* a)

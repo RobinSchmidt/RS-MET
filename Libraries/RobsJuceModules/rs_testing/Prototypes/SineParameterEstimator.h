@@ -76,6 +76,7 @@ public:
 
 
 
+  static void smoothFreqs(T* w, int N, int medianOrder, int averageOrder);
 
 
 
@@ -108,6 +109,9 @@ protected:
   // algo: freqAmpPhase, ampPhaseFreq, ...decides what is estimated first, second, third
   // freqAlgo: zeros, formula, ...
   // ampAlgo: peaks, hilbert, ...
+
+  int freqMedianOrder  = 1;
+  int freqAverageOrder = 3;
 
 };
 
