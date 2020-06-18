@@ -831,15 +831,22 @@ int rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
   return evals;
 }
 
+// get rid of that:
 template<class T>
 void phaseToFreq(const T* p, int N, T* w, int smooth = 3)
 {
-  rsAssert(p != w);
   using AT = rsArrayTools;
+
+  /*
+  rsAssert(p != w);  // hmm - i guess, it would actually work in place - try it!
   for(int n = 0; n < N; n++)
     w[n] = rsWrapToInterval(p[n], 0.0, 2*PI);
   AT::unwrap(w, N, 2*PI);  // look at code comment there - optimize!
   AT::difference(w, N);
+  */
+
+  rsSineParameterEstimator<T>::phaseToFreq(p, N, w);
+
   //rsPlotArrays(N, w, p);
 
   // first sample is off - check implementation of rsDifference - it assumes a zero initial 
@@ -869,29 +876,37 @@ void phaseToFreq(const T* p, int N, T* w, int smooth = 3)
   // does not really belong here
   
 
-  //rsPlotArrays(N, w);
+  rsPlotArrays(N, w);
 }
 
+// get rid of that:
 template<class T>
 void phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
 {
+  rsSineParameterEstimator<T>::phaseAndFreqToPhaseMod(p, w, N, pm);
+  /*
   T wi = w[0];
   for(int n = 1; n < N; n++)
   {
     wi += w[n];
     pm[n] = rsWrapToInterval(p[n]-wi, -PI, PI);
   }
+  */
 }
 
 template<class T>
 void synthesizeFromAmpFreqPhaseMod(const T* a, const T* w, const T* pm, int N, T* y)
 {
+  rsSineParameterEstimator<T>::synthesizeFromAmpFreqPhaseMod(a, w, pm, N, y);
+
+  /*
   T wi = w[0]; // integrated w
   for(int n = 1; n < N; n++)
   {
     wi += w[n];
     y[n] = a[n] * sin(wi + pm[n]);
   }
+  */
 }
 // may be delayed...
 

@@ -1285,6 +1285,7 @@ void rsArrayTools::unwrap(T* a, int N, T p)
     a[n] += k*p;
   }
 }
+// use rsAbs instead of fabs
 
 template <class T>
 T rsArrayTools::weightedSum(const T *w, const T *x, rsUint32 length) // use int

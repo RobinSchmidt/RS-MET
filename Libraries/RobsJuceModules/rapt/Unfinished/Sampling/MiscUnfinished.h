@@ -116,13 +116,14 @@ struct rsFractionalIndex
   int    intPart;   // integer part of the index
   double fracPart;  // fractional part of the index
 };
+// maybe move to rapt/Basics or rapt/Data
 
 
 /** A class with a collection of functions to find the zero-crossings in a signal, possibly with
 subsample precision. The algorithm for subsample precsision location works by looking at the
 sample values before and after the zero crossing (which actually happens somwhere between the two
 sample instants) and fitting a polynomial to the sample values around the zero crossings and
-finding the root of the interpolating polynomial. The order of the polynomial is determined by
+finding the root of the interpolating polynomial. The degree of the polynomial is determined by
 the precision parameter p which is passed to some of the functions as: order = 2*p+1 and 2*p+2
 points will be used. If p=0, it will just fit a straight line between the sample before and after
 the zero and solve for the zero of this line. This is the lowest precision estimate. For higher
@@ -144,8 +145,7 @@ together with the interpolant itself).
  -maybe optionally return values of a number of derivatives at the crossing
 
 generalize to findValueCrossings that finds the crossing of an arbitrary value. to this end,
-a constant term should be included in the root-finding process (implement this at the level
-of rsUnivariateScalarFunction::findRoot... */
+a constant term should be included in the root-finding process. */
 
 class rsZeroCrossingFinder
 {
@@ -162,6 +162,9 @@ public:
   experiments */
   template<class T>
   static bool isUpwardCrossing(T *x, int n);
+  // for pitch estimation, we would actually like to have the zero placed at the center of a 
+  // sequence of zeros - but this has to be done on a higher level of the algo, which sees more
+  // neighbours
 
   /** Finds the position of the upward zero-crossing that is closest to n and left to n. If none
   is found, -1 is returned. */

@@ -649,9 +649,9 @@ void peakFinder()
   // ...maybe create one with oversampling so we may see the actual peaks
 
   int N = 50;
-  int oversampling = 20;
+  int oversampling = 40;
   int precision = 4;
-  double w = 1.0;  // omega
+  double w = 1.5;  // omega
 
   // create the test signal:
   int No = N*oversampling;
@@ -846,6 +846,8 @@ void zeroCrossingFinder2()
 
 void zeroCrossingFinder3()
 {
+  // Demonstrates the edge-case where we have sequences of many zeros in the signal.
+
   // user parameters:
   static const int N  = 20000;  // number of samples
   double fs = 44100;            // samplerate in Hz
@@ -867,6 +869,10 @@ void zeroCrossingFinder3()
   plt.setGraphStyles("lines", "points");
   plt.setPixelSize(1000, 300);
   plt.plot();
+
+  // Observations:
+  // -the detected zero-marks are at the starts of the zero-sequences
+  // ..we may want them in the centers...
 }
 
 // todo: create a contrived test signal consisting of 2 inharmonic sines and use:

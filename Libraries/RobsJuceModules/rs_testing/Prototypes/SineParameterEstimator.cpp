@@ -102,6 +102,42 @@ void rsSineParameterEstimator<T>::sigAndAmpToPhase(const T* x, const T* a, int N
   unreflectPhase(x, p, N);
 }
 
+template<class T>
+void rsSineParameterEstimator<T>::phaseToFreq(const T* p, int N, T* w)
+{
+  rsAssert(p != w);                 // hmm - i guess, it would actually work in place - try it!
+  for(int n = 0; n < N; n++)
+    w[n] = rsWrapToInterval(p[n], 0.0, 2*PI); // is this needed? try without!
+  rsArrayTools::unwrap(w, N, 2*PI); // look at code comment there - optimize!
+  rsArrayTools::difference(w, N);
+}
+
+template<class T>
+void rsSineParameterEstimator<T>::phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
+{
+  T wi = w[0];
+  for(int n = 1; n < N; n++)
+  {
+    wi += w[n];
+    pm[n] = rsWrapToInterval(p[n]-wi, -PI, PI); 
+    // make optional and/or maybe allow for returning unwrapped phase-mod - this will be more
+    // useful anyway, as we may want to filter the pm-values before resynthesis
+  }
+}
+
+template<class T>
+void rsSineParameterEstimator<T>::synthesizeFromAmpFreqPhaseMod(
+  const T* a, const T* w, const T* pm, int N, T* y)
+{
+  T wi = w[0]; // integrated w
+  for(int n = 1; n < N; n++)
+  {
+    wi += w[n];
+    y[n] = a[n] * sin(wi + pm[n]);
+  }
+}
+
+
 //-------------------------------------------------------------------------------------------------
 // internal sub-algorithms:
 
@@ -155,6 +191,8 @@ void rsSineParameterEstimator<T>::connectPeaks(const T* y, int N, T* a)
 // instantaneous frequency measurements
 // quadraticExtremumPosition computes c[1]/c[2], so the tolerance should be based on the 
 // ratio |c[1]| and |c[2]| - if abs(c[2]) < (small * c1), skip the step
+// actually, this shoudl also dsitinguish between xt, xi (x used for the test and x used for the
+// interpolation)
 
 template<class T>
 void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
@@ -192,7 +230,10 @@ void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
 }
 // maybe move to somewhere in the Analysis section - maybe together with the algo to find 
 // zero-crossings into a class rsFeatureFinder - maybe it could also find locations of other 
-// features such as center-of gravity, etc.
+// features such as center-of gravity, etc. - or rsTimeDomainFeatureFinder - the peaks could also
+// be used to increase the time-resolution of pitch-estimation to quarter cycles - we would use:
+// locations of upward-zero -> peak -> downward-zero -> trough for each cycle (makes sense only
+// for bandpass signals, i.e. signals that have sinusoidal shape)
 
 template<class T>
 void rsSineParameterEstimator<T>::connectPeaks(

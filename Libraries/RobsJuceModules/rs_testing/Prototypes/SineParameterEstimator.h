@@ -4,6 +4,8 @@
 /** A class for estimating the instantaneous parameters (frequency and/or phase, amplitude) of a 
 sinewave. */
 
+// maybe rename to rsPartialModeler
+
 template<class T>
 class rsSineParameterEstimator
 {
@@ -52,6 +54,14 @@ public:
   static void sigAndAmpToPhase(const T* x, const T* a, int N, T* p);
 
 
+  static void phaseToFreq(const T* p, int N, T* w);
+
+
+  static void phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm);
+
+
+  static void synthesizeFromAmpFreqPhaseMod(const T* a, const T* w, const T* pm, int N, T* y);
+
 
   // ToDo: sigToOmegasViaZeros
 
@@ -82,6 +92,12 @@ protected:
   static void unreflectPhase(const T* x, T* p, int N);
   // more research necessarry to figure out what is the best algorithm for this - this here was the 
   // first one that sort of worked for the bandpass-noise
+
+
+  // todo: have enum-class members for:
+  // algo: freqAmpPhase, ampPhaseFreq, ...decides what is estimated first, second, third
+  // freqAlgo: zeros, formula, ...
+  // ampAlgo: peaks, hilbert, ...
 
 };
 

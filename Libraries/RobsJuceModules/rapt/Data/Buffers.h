@@ -9,10 +9,14 @@ public:
   /** The actual capacity will be the next power of two of given value. */
   rsBuffer(size_t capacity);
 
-  // todo: setCapacity(size_t newCapacity);
+  // todo: setCapacity(size_t newCapacity); - should resize "data" and update "mask"
 
   /** Initializes all the buffer elements with given value (default is zero). */
   void initBufferValues(T value = T(0));
+
+  /** Returns the capacity of this buffer. */
+  size_t getCapacity() const { return data.size(); }
+  // is this correct? or do we need to subtract 1? -> do unit test!
 
 protected:
 
@@ -44,7 +48,13 @@ public:
   change of the delay time, we want to move the read-head. */
   void setLength(size_t newLength)
   {
-    length = newLength;
+    rsAssert(newLength <= this->getCapacity(), "Desired length exceeds capacity");
+    // maybe automatically increase capacity in such a case - maybe do this optionally controlled
+    // by a 2nd boolean parameter "increaseCapacityIfNeeded" or "reallocateIfNeeded" - it should
+    // clearly communicate that memory allocation may take place
+
+    //length = newLength; // old
+    length = rsMin(newLength, this->getCapacity()); // new
     updateLeftIndex();
   }
 
@@ -125,7 +135,7 @@ public:
   required to make the index arithmetic work right). */
   rsDoubleEndedQueue(size_t capacity) : rsBuffer<T>(capacity+2) {}
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Data Access */
 
   /** Appends a value to right/head side of the queue. */
@@ -187,7 +197,7 @@ public:
       this->initBufferValues(0);
   }
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the number of values that are currently in the queue. */
@@ -223,20 +233,23 @@ protected:
 /*
 ToDo:
 -allow to dynamically resize the capacity at runtime - but such resize operations should be an
-absolute exception in realtime code (only a last resort)
+ absolute exception in realtime code (only a last resort - they actually should be considered user
+ errors)
 -maybe provide push-functions that take a vector argument and pop-functions that pop a range of
-values at once
+ values at once
 -maybe provide some sort of random access functions:
-T fromFront(size_t i) where i = 0 returns the front element, 1 the one after the front, etc.
-or fromHead - analogously for fromBack/fromTail/fromRight
+ T fromFront(size_t i) where i = 0 returns the front element, 1 the one after the front, etc.
+ or fromHead - analogously for fromBack/fromTail/fromRight
 -maybe binary index search functions (at which index, counted from front (or back) does the value
-in the que get greater than some value
-size_t searchFromFront...this may become relevant for optimizing the moving maximum filter
+ in the que get greater than some value
+ size_t searchFromFront...this may become relevant for optimizing the moving maximum filter
 */
 
 // maybe make convenience subclasses rsQueue and rsStack - both datastructures have different
 // subsets of functionality of the double ended queue actually, but the convenience functions could
-// have more stacky or queuey names like push/pop/top, enqueue/dequeue/front/back
+// have more stacky or queuey names like push/pop/top, enqueue/dequeue/front/back - they should
+// use protected inheritance and use delegation, like Stack::push delegates to Base::pushFront, 
+// etc.
 
 
 
