@@ -44,8 +44,8 @@ public:
 
   /** Estimates the amplitude envelope of the signal x via coennecting peaks with linear 
   interpolants and writes the result to a. */
-  static void sigToAmpsViaPeaks(const T* x, int N, T* a);
-  // todo: document, if x == a is allowed (i think so)
+  static void sigToAmpsViaPeaks(const T* x, int N, T* a, int precision = 1);
+  // todo: document, if x == a is allowed (i think so - but only, if precision <= 1)
 
   /** Given a signal x and an array of instantaneous amplitudes a, this function computes the 
   corresponding instantaneous pahses, such that x[n] = a[n] * sin(p[n]) for each n. */
@@ -69,6 +69,8 @@ protected:
   // under construction - uses a polynomial of order 2*precision to estimate the actual locations 
   // and heights of the peaks - using a parabolo already improves results, but there are still
   // frequency jaggies, so we may need higher accuracy for the amp-env
+  // we need two inputs - one to determine the peak locations and one for using in the 
+  // interpolator
 
  
   /** When we compute the instantaneous phase from a known signal value x[n] and its instantaneous

@@ -59,7 +59,7 @@ void rsSineParameterEstimator<T>::sigToOmegasViaFormula(const T* x, int N, T* w)
 }
 
 template<class T>
-void rsSineParameterEstimator<T>::sigToAmpsViaPeaks(const T* x, int N, T* a)
+void rsSineParameterEstimator<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int precision)
 {
   // todo: take a shadowing-time parameter and use a peak-shadower
 
@@ -71,21 +71,27 @@ void rsSineParameterEstimator<T>::sigToAmpsViaPeaks(const T* x, int N, T* a)
 
   //T power = 1.0; // experimental - doesn't seem to help
 
-  T *y = a;                     // re-use a for temporary storage
+  // that's the old, imprecise version
+  if(precision <= 1)
+  {
+    T* y = a;
+    for(int n = 0; n < N; n++)
+      y[n] = rsAbs(x[n]);         // todo: apply shadower here (shadows are casted only rightward)
+    connectPeaks(y, N, a);  
+    // todo: pass false, i precision = 0 - this should indicate to not use parabolic interpolation
+    return;
+  }
+
+
+  using Vec = std::vector<T>;
+  Vec y(N);
   for(int n = 0; n < N; n++)
-    y[n] = rsAbs(x[n]);         // todo: apply shadower here (shadows are casted only rightward)
+    y[n] = rsAbs(x[n]);        // use shadower
+  connectPeaks(&y[0], N, a, precision); 
+  // todo: pass y as xTest and x as xInterpolate
 
-  //if( power != 1.0 )
-  //  for(int n = 0; n < N; n++)
-  //    y[n] = pow(y[n], power);
+  rsError("High preicison not yet implemented");
 
-  connectPeaks(y, N, a);
-
-  //rsArrayTools::movingAverage3pt(a, N, a, false);  // test - not helpful
-
-  //if( power != 1.0 )
-  //  for(int n = 0; n < N; n++)
-  //    a[n] = pow(a[n], 1.0/power);
 }
 
 template<class T>

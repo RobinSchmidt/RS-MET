@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  passed &= runUnitTestsRapt();
+  //passed &= runUnitTestsRapt();
   //passed &= runUnitTestsRosic();
   //passed = passed;  // dummy
 
@@ -289,7 +289,7 @@ int main(int argc, char* argv[])
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
   //maxShortTimeRMS();
   //arrayRMS();
-  peakFinder();
+  //peakFinder();
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
   //zeroCrossingFinder3();

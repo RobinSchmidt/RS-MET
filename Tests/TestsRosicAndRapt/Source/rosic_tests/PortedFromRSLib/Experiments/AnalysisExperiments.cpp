@@ -692,11 +692,7 @@ void peakFinder()
 
   // Observations:
   // -With precision = 1 (parabolic) an w = 1, the height error is around 2%, with precision = 0
-  //  around 10%
-  // -With precision = 2, some results are better than with 1 but some are worse - i think, the
-  //  root-finder sometimes doesn't converge - maybe plot a section of the interpolating polynomial
-  //  (both quadratic and quartic) for one of the problematic points to see what's going on, for 
-  //  example, at n=27 -> fixed - the lower limit was 0 but should be -1
+  //  around 10% - the eestimation error indeed decreases with increasing precision - it works!
 }
 
 // convenience function to make the zero-crossing finding work for plain arrays (as required for
