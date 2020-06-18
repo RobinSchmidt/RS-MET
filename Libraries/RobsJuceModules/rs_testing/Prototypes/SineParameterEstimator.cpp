@@ -1,5 +1,16 @@
 
 template<class T>
+void rsSineParameterEstimator<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T* p)
+{
+  // todo: switch between various algos that compute stuff in different orders
+
+  sigToAmpsViaPeaks(x, N, a);   // here, a sub-switch may take place
+  sigAndAmpToPhase( x, a, N, p); 
+}
+
+//-------------------------------------------------------------------------------------------------
+
+template<class T>
 void rsSineParameterEstimator<T>::sigToOmegasViaFormula(const T* x, int N, T* w)
 {
   // The algorithm uses rsSineFrequency as its core to estimate the frequency at each sample. 
@@ -136,7 +147,7 @@ void rsSineParameterEstimator<T>::synthesizeFromAmpFreqPhaseMod(
     y[n] = a[n] * sin(wi + pm[n]);
   }
 }
-
+// test, if we have any delays with respct to original signal
 
 //-------------------------------------------------------------------------------------------------
 // internal sub-algorithms:
@@ -325,13 +336,13 @@ void rsSineParameterEstimator<T>::unreflectPhase(const T* x, T* p, int N)
 /*
 
 ToDo:
--in connectPeaks, we need a higher order polynomial fit to estimate the amplitude more accurately
- to get rid of the frequency jaggies
 
 Other ideas for phase unreflection:
 -minimize the sum of the distances to left and right neighbour (i think, this may be equivalent to
  minimzing the distance to their midpoint, as we do now)
 -minimize the distance to the phase predicted by linearly extrapolating from two left neighbours
+ this may actually not need the x-data - it can take a raw phase-array containing reflected
+ phases and turn it into an unreflected one
 -maybe an algorithm for this could also take the amplitude array as input - i don't know, if tha 
  information could be useful for unreflection
 

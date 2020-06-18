@@ -16,7 +16,12 @@ public:
 
   //void getAmpAndPhase(const T* x, int N, T* a, T* p);
 
-  //void getAmpFreqAndPhase(const T* x, int N, T* a, T* w, T* p);
+  //void getAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* p);
+
+  void analyzeAmpAndPhase(const T* x, int N, T* a, T* p);
+
+  //void analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm);
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Static functions */
@@ -68,6 +73,11 @@ public:
   static void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
     const T* x, int N, int n0, int precision, T* pos, T* height);
   // move to somewhere else
+
+
+
+
+
 
 protected:
 

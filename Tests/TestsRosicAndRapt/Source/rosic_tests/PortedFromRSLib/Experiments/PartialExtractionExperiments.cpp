@@ -835,47 +835,14 @@ int rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
 template<class T>
 void phaseToFreq(const T* p, int N, T* w, int smooth = 3)
 {
-  using AT = rsArrayTools;
-
-  /*
-  rsAssert(p != w);  // hmm - i guess, it would actually work in place - try it!
-  for(int n = 0; n < N; n++)
-    w[n] = rsWrapToInterval(p[n], 0.0, 2*PI);
-  AT::unwrap(w, N, 2*PI);  // look at code comment there - optimize!
-  AT::difference(w, N);
-  */
-
   rsSineParameterEstimator<T>::phaseToFreq(p, N, w);
-
-  //rsPlotArrays(N, w, p);
-
-  // first sample is off - check implementation of rsDifference - it assumes a zero initial 
-  // condition - we need to adopt for a convention up to which k we should sum the w-array in 
-  // synthesis - n or n-1
-  // maybe resynthesize signal with unreflected phase and see, if we get identity
-  // resynthesis - if we do, it doesn't seem to be an artifact
-  // the phase etsimation errors are greates where the signal value is closest to it 
-  // peak-envelope, i.e. where the env touches the peaks of the signal - hmm -no i guess this
-  // is just a coincidence - the relevant feature at these points is that the phase goes
-  // throug +-pi/2 ...seems we still have reflection errors at these points
-  // see sample 1111 - maybe try prediction-based unrefelcting algo - and see if some of the 
-  // reflection-errors disappear (but then maybe others (re)-appear))
-  // no: i think, we need higher order amplitude-peak estimation - switching dwon from parabolic
-  // to taking peak-samples directly greatly amplifies these artifacts - so there are less jaggies
-  // with a parabola so hopefully even less with a quartic - our amplitude measurements are just
-  // wrong....
-
-  
-  // smoothing:
+  using AT = rsArrayTools;
   if(smooth > 0)
   {
     AT::movingMedian3pt(w, N, w);
     for(int i = 0; i < smooth; i++)
       AT::movingAverage3pt(w, N, w, false);
   }
-  // does not really belong here
-  
-
   rsPlotArrays(N, w);
 }
 
@@ -884,29 +851,12 @@ template<class T>
 void phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
 {
   rsSineParameterEstimator<T>::phaseAndFreqToPhaseMod(p, w, N, pm);
-  /*
-  T wi = w[0];
-  for(int n = 1; n < N; n++)
-  {
-    wi += w[n];
-    pm[n] = rsWrapToInterval(p[n]-wi, -PI, PI);
-  }
-  */
 }
 
 template<class T>
 void synthesizeFromAmpFreqPhaseMod(const T* a, const T* w, const T* pm, int N, T* y)
 {
   rsSineParameterEstimator<T>::synthesizeFromAmpFreqPhaseMod(a, w, pm, N, y);
-
-  /*
-  T wi = w[0]; // integrated w
-  for(int n = 1; n < N; n++)
-  {
-    wi += w[n];
-    y[n] = a[n] * sin(wi + pm[n]);
-  }
-  */
 }
 // may be delayed...
 
@@ -981,6 +931,8 @@ void sineRecreationBandpassNoise()
 
 
   using SPE = rsSineParameterEstimator<double>;
+  SPE spe;
+
 
   // measure instantaneous frequency (with algo 1 - sine recursion formula):
   Vec fm1(N);
@@ -1064,8 +1016,8 @@ void sineRecreationBandpassNoise()
 
   // Use algo that estimates the amp-envelope first and bases everything else on that:
   Vec a3(N), p3(N), w3(N), pm3(N);
-  SPE::sigToAmpsViaPeaks(&x[0], N, &a3[0]);
-  SPE::sigAndAmpToPhase(&x[0], &a3[0], N, &p3[0]);  // may produce nans - fixed
+  spe.analyzeAmpAndPhase(&x[0], N, &a3[0], &p3[0]);
+
 
   // p3[504] = PI - p3[504];  
   // test - nope - makes it worse - so it's not a reflection-error! maybe it's an amplitude 
@@ -1073,39 +1025,29 @@ void sineRecreationBandpassNoise()
   // try a nonlinear transformation of the amplitudes before and after the parabolic interpolation 
   // and/or try higher order interpolation
 
-  phaseToFreq(&p3[0], N, &w3[0], 10);
+  phaseToFreq(&p3[0], N, &w3[0], 0);
+  // get rid of this - do the smoothing here - or leave it out
 
   // obtain pm-signal from p3 and w3
   phaseAndFreqToPhaseMod(&p3[0], &w3[0], N, &pm3[0]);
 
 
-  // when uncommented, no identity resynthesis:
-  for(int i = 0; i < 1000; i++)
-    rsArrayTools::movingAverage3pt(&pm3[0], N, &pm3[0]); 
-
-
-
+  //// when uncommented, no identity resynthesis:
+  //for(int i = 0; i < 1000; i++)
+  //  rsArrayTools::movingAverage3pt(&pm3[0], N, &pm3[0]); 
 
   // resynthesize from analysis with algo 3:
   Vec y3(N);
   synthesizeFromAmpFreqPhaseMod(&a3[0], &w3[0], &pm3[0], N, &y3[0]);
-  rsPlotVectors(pm3);
-  rsPlotVectors(x, y3, x-y3, a3);
-  // works! now do modifications...maybe filter the (unwrapped) phase-mod signal
-  //
+  //rsPlotVectors(pm3);
+  Vec err3 = y3-x; 
+  rsPlotVectors(x, y3, err3, a3);
+  // first sample is (slightly) wrong, first sample of y3 is 0
 
-
-
-  //phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
-
-  //rsPlotArrays(N, &x[0], &a3[0]);
-  //rsPlotVectors(x, a3, p3);
-
-  Vec xAbs = rsAbs(x);
-  //rsPlotVectors(10.*xAbs, 10.*a3, p3, w3);
 
 
   Vec fm3c = (fs/(2*PI)) * w3;  // this actually is already cleaned up by a median-filter
+  // get rid
 
 
 
