@@ -648,18 +648,31 @@ void peakFinder()
   // Create a sinuosid and find its peaks with subsample precision
   // ...maybe create one with oversampling so we may see the actual peaks
 
-  int N = 1000;
-  double w = 0.2;  // omega
+  int N = 100;
+  int oversampling = 20;
 
+
+  double w = 1.0;  // omega
+
+
+  int No = N*oversampling;
   using Vec = std::vector<double>;
-  Vec x(N);
-  for(int n = 0; n < N; n++)
-    x[n] = sin(w*n);
+  Vec t(N), to(No);
+  Vec x(N), xo(No);
+  for(int n = 0; n < N; n++)  {
+    t[n] = n;
+    x[n] = sin(w*t[n]); }
+  for(int n = 0; n < No; n++) {
+    to[n] = n;
+    to[n] /= oversampling;
+    xo[n] = sin(w*to[n]);  }
 
 
-  rsPlotVectors(x);  //
-
-  int dummy = 0;
+  GNUPlotter plt;
+  plt.addDataArrays(N,  &t[ 0], &x[ 0]);
+  plt.addDataArrays(No, &to[0], &xo[0]);
+  plt.setPixelSize(1000, 300);
+  plt.plot();
 }
 
 // convenience function to make the zero-crossing finding work for plain arrays (as required for
