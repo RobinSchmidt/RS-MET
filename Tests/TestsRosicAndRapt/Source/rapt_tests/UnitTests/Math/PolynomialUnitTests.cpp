@@ -569,6 +569,8 @@ bool testPolynomialInterpolation(std::string &reportString)
 
   double tol = 1.e-13; // error tolerance
 
+  using Poly = rsPolynomial<double>;
+
   // establish dataset to interpolate:
   static const int N = 7;
   double x[N] = {-0.5, 1.0, 0.7, 1.5, -2.0, -1.3, 2.2};
@@ -576,24 +578,62 @@ bool testPolynomialInterpolation(std::string &reportString)
 
   // get polynomial coefficients:
   double a[N];
-  rsPolynomial<double>::interpolant(a, x, y, N);
+  Poly::interpolant(a, x, y, N);
 
   // check, if the polynomial really matches the data:
   double yc[N];
   int n;
   for(n = 0; n < N; n++)
   {
-    yc[n] = rsPolynomial<double>::evaluate(x[n], a, N-1);
+    yc[n] = Poly::evaluate(x[n], a, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol);
   }
+
+  //---------------------------------------------------------------------------------
+  // here, i try to implement a better algo to find the coeffs - move out when done:
+
+  using AT = rsArrayTools;
+  AT::fillWithZeros(a, N);
+  double num[N];
+  for(int n = 0; n < N; n++)
+  {
+    // init num and den to 1
+    AT::fillWithZeros(num, N);
+    num[0] = 1;
+    double den = 1;
+
+    for(int k = 0; k < N; k++)
+    {
+      if(k != n)
+      {
+        AT::convolveWithTwoElems(num, N, -x[k], 1.0, num); // maybe N can be replaced by k or k+1
+        den *= x[n] - x[k];
+      }
+    }
+
+    for(int k = 0; k < N; k++)
+      a[k] += num[k] * y[n]/den;  // precompute y[n]/k
+
+
+    int dummy = 0;
+  }
+  // ok - that looks good!
+
+
+
+  //---------------------------------------------------------------------------------
+
+
+
+
 
   // test function for equidistant abscissa values:
   double x0 = -3.2;
   double dx =  1.1;
-  rsPolynomial<double>::interpolant(a, x0, dx, y, N);
+  Poly::interpolant(a, x0, dx, y, N);
   for(n = 0; n < N; n++)
   {
-    yc[n] = rsPolynomial<double>::evaluate(x0+n*dx, a, N-1);
+    yc[n] = Poly::evaluate(x0+n*dx, a, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol);
   }
 
