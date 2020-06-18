@@ -1014,10 +1014,17 @@ void rsArrayTools::movingAverage3pt(const T* x, int N, T* y, bool endsFixed)
   else
     y[0] = T(1/2.) * (t1 + t2);
 
+  // old - buggy - works only in place:
+  //for(int n = 2; n < N; n++) {
+  //  y[n-1] = T(1/3.) * (t1 + t2 + y[n]);
+  //  t1 = t2;
+  //  t2 = y[n]; }
+
+  // new:
   for(int n = 2; n < N; n++) {
-    y[n-1] = T(1/3.) * (t1 + t2 + y[n]);
+    y[n-1] = T(1/3.) * (t1 + t2 + x[n]);
     t1 = t2;
-    t2 = y[n]; }
+    t2 = x[n]; }
 
   if(endsFixed)
     y[N-1] = t2;

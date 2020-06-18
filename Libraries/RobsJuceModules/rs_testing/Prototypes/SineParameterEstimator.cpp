@@ -146,7 +146,12 @@ void rsSineParameterEstimator<T>::connectPeaks(const T* y, int N, T* a)
 template<class T>
 T refinePhase(T p, T pL, T pR, int n) // n is only passed for debugging
 {
-  if( pL > pR ) pL -= 2*PI;    // test - seems a good idea
+  // Idea: compare phase p to the average of its two neighbours pL, pR and also compare and 
+  // appropriately reflected phase to this average. Return either original or reflected value,
+  // depending on their distances to this average - we want the smaller distance.
+
+  if( pL > pR )  
+    pL -= 2*PI;                        // avoids undesirable adjustments around wrap-arounds
 
   T pi2 = 0.5*PI;
   T pa  = T(0.5)*(pL+pR);
@@ -164,10 +169,6 @@ T refinePhase(T p, T pL, T pR, int n) // n is only passed for debugging
 }
 // make member
 // do we need more branches? what about the reverse transitions from zone 2 to 1 and from 4 to 3?
-// maybe this function does not work well when there's wrap-around between pL and p?
-// check at samples 2,7,32
-// n = 32: p = -2.38, pL = 3.14, pR = -1.57, pm = -0.76 -> pm is returned
-// maybe we should do if(pL > pR) pL -= 2*PI  ...done - yes, that seems to help
 
 template<class T>
 void refinePhase(T* p, int N)
@@ -177,6 +178,8 @@ void refinePhase(T* p, int N)
     p[n] = refinePhase(p[n], p[n-1], p[n+1], n);
 }
 // make member
+// could it make sense to run this function multiple times until the phase array converges? maybe
+// try this with white-noise inputs - the bandpass noise is too well-behaved for that
 
 template<class T>
 void rsSineParameterEstimator<T>::unreflectPhase(const T* x, T* p, int N)
@@ -191,9 +194,15 @@ void rsSineParameterEstimator<T>::unreflectPhase(const T* x, T* p, int N)
   refinePhase(p, N);     // maybe rename 
 }
 // zone 1: 0...pi/2, zone 2: pi/2...pi, zone 3: -pi/...-pi/2, zone 4: -pi/2...0
+// can too early transitions also happen? i've not yet seen one
 
 
 /*
+
+Other ideas for phase unreflection:
+-minimize the sum of the distances to left and right neighbour (i think, this may be equivalent to
+ minimzing the distance to their midpoint, as we do now)
+-minimize the distance to the phase predicted by linearly extrapolating from two left neighbours
 
 Maybe this class should also have the synthesis functions - that may mean, we need another name -
 maybe rsSineRecreator or rsSineRepresenter something - it represents *any* signal as a 

@@ -68,7 +68,7 @@ protected:
   -pi/2...+pi/2. When x is a sinewave, instead of sweeping from -pi to +pi and then wrapping around 
   in one cycle, it oscillates back and forth between -pi/2...+pi/2. This function takes a raw array
   of such phase values and heuristically reflects the phases around pi/2 or -pi/2 to get rid of 
-  that effect. Used in sigAndAmpToPhase.  */
+  that effect. It's sort of similar to phase-unwrapping. Used in sigAndAmpToPhase.  */
   static void unreflectPhase(const T* x, T* p, int N);
   // more research necessarry to figure out what is the best algorithm for this - this here was the 
   // first one that sort of worked for the bandpass-noise

@@ -961,84 +961,7 @@ void rsAmpEnvelope(const T* x, int N, T* a)
 
 
 /*
-template<class T>
-void repairPhase(T* p, int N)
-{
-  for(int n = 0; n < N; n++)
-  {
-    if(rsIsNaN(p[n])) // what about inf? can this occur? i don't think so
-    {
-      p[n] = 0.0;   // preliminary
-      rsError("We should probably prevent that from happening");
-    }
-  }
-
-  int dummy = 0;
-}
-*/
-// we must also consider the possibility of a stretch of NaNs - when we see a NaN, we must check, 
-// how many NaNs follow and then fill the whole section with "better" data - but these changes 
-// will break identity resynthesis - a NaN is actually a sign that the amplitude estimate is wrong
-// ...maybe we should repair this too
-// encounters far mor NaNs, if we use
-//  bool parabolicTime = true  in   rsSineParameterEstimator<T>::connectPeaks
-// but even if we don't use it - some NaNs may still happen
-
-
-
-/*
-// zone 1: 0...pi/2, zone 2: pi/2...pi, zone 3: -pi/...-pi/2, zone 4: -pi/2...0
-template<class T>
-int phaseTargetZone(T phase, T oldPhase, int oldZone)
-{
-  if(oldZone == 1)
-  {
-
-  }
-  if(oldZone == 2)
-  {
-
-  }
-  if(oldZone == 3)
-  {
-
-  }
-  if(oldZone == 4)
-  {
-
-  }
-  rsError("Never get here");
-  return phase;
-}
-
-template<class T>
-void unreflectPhase2(T* p, int N)
-{
-  T oldPhase = p[0];
-  int oldZone = 1;
-  if(oldPhase < T(0))
-    oldZone = 4;
-  for(int n = 1; n < N; n++)
-  {
-    T newPhase = p[n]; // either zone 1 or 4
-    int newZone = phaseTargetZone(newPhase, oldPhase, oldZone);
-
-    // adjust newPhase, newZone....
-
-
-    // write adjusted result back:
-    p[n] = newPhase;
-
-
-    oldPhase = newPhase;
-    oldZone  = newZone;
-    int dummy = 0;
-  }
-}
-*/
-
-
-/*
+// this does not work:
 template<class T>
 void unreflectPhase1(T* p, int N)
 {
@@ -1077,125 +1000,6 @@ void unreflectPhase1(T* p, int N)
 }
 */
 
-/*
-template<class T>
-T distanceSum(T x, T xL, T xR)
-{
-  return rsAbs(x-xL) + rsAbs(x-xR);
-}
-template<class T>
-void refinePhase1(T* p, int N)
-{
-  // try to repair these errors in a second pass - here, we adjust the phase for each sample so as 
-  // to minimize the sum of the distances to its neighbours
-  T pi2 = 0.5*PI;
-  for(int n = 1; n < N-1; n++)
-  {
-    T d = distanceSum(p[n], p[n-1], p[n+1]);
-    T pm, dm;        // modified phase and distance-sum
-    if(p[n] >= 0)    // zone 1 or 2
-    {  
-      //if(p[n] < pi2)
-      if(p[n] < pi2 && p[n+1] >= pi2)
-      {
-        // we may be too late....
-        T pn = p[n]; // for debug
-        pm = PI - p[n];
-        dm = distanceSum(pm, p[n-1], p[n+1]); // we should warp p[n+1] into 0..2pi?
-        if(dm <= d)
-          //if(dm < d)
-          p[n] = pm;
-        // this sometimes leads to undesired forward jumps - at 37,54,..
-        // often dm == d ...this is weird!
-      }
-      else
-      {
-        // we may be too early
-
-      }
-    }
-    else
-    {
-
-    }
-  }
-}
-*/
-// this way of unreflecting may lead phases that may change zones one sample too late or too 
-// early leading to bipolar spikes in the etsimated instantaneous freq - if the zone change 
-// happens too late, the freq spikes down and in the next sample this gets compensated by a 
-// spike up...hmm - i actually did not observe the opposite case (up-then-down) yet - so maybe
-// the "too early" case does never happen?
-// maybe it's sufficient to minimize the distance to the right neighbour?
-
-template<class T>
-T refinePhase(T p, T pL, T pR, int n) // n is only passed for debugging
-{
-  if( pL > pR ) pL -= 2*PI;    // test - seems a good idea
-
-  T pi2 = 0.5*PI;
-  T pa  = T(0.5)*(pL+pR);
-  T pm  = p;
-
-  if(p < pi2 && pR >= pi2)             // transition from zone 1 to zone 2
-    pm =  PI - p;
-  else if(p < -pi2 && pR >= -pi2)      // transition from zone 3 to zone 4
-    pm = -PI - p;
-
-  if(rsAbs(pa-pm) < rsAbs(pa-p))
-    return pm;
-  else
-    return p;
-}
-// ok - this seems to work - do we need more branches? what about the reverse transitions from 
-// 2 to 1 and from 4 to 3?
-// maybe this function does not work well when there's wrap-around between pL and p?
-// check at samples 2,7,32
-// n = 32: p = -2.38, pL = 3.14, pR = -1.57, pm = -0.76 -> pm is returned
-// maybe we should do if(pL > pR) pL -= 2*PI
-
-template<class T>
-void refinePhase2(T* p, int N)
-{
-  T pi2 = 0.5*PI;
-  for(int n = 1; n < N-1; n++)
-    p[n] = refinePhase(p[n], p[n-1], p[n+1], n);
-}
-// maybe make a function T refinePhase(T p, T pL, T pR) which does the following:
-// if all 3 are > 0 (in zone 1 or 2), check, if pi-p is closer to (pL+pR)/2 - if so, return
-// pi-p, otherwise return p
-
-template<class T>
-void unreflectPhase2(const T* x, T* p, int N)
-{
-  std::vector<double> tmp1 = toVector(p, N); // for plotting
-
-  //T pi2 = 0.5*PI;
-  for(int n = 1; n < N; n++) {
-    if(x[n] >= 0) {
-      if(x[n] < x[n-1])  p[n] =  PI - p[n];  }   // x is positive and going down -> zone 2
-    else {
-      if(x[n] < x[n-1])  p[n] = -PI - p[n]; }}   // x is negative and going down -> zone 3
-
-
-  std::vector<double> tmp2 = toVector(p, N); // for plotting
-
-  //refinePhase1(p, N);
-  refinePhase2(p, N);  // compenaste too late transitions
-  
-
-  std::vector<double> tmp3 = toVector(p, N); // for plotting
-
-  tmp1 = tmp1 / PI;
-  tmp2 = tmp2 / PI;
-  tmp3 = tmp3 / PI;
-  //rsPlotArrays(200, x, &tmp1[0], &tmp2[0], &tmp3[0]);
-  rsPlotArrays(N, x, &tmp1[0], &tmp2[0], &tmp3[0]);
-
-  //rsPlotArrays(200, x, &tmp2[0], &tmp1[0], p);
-}
-
-/*
 template<class T>
 void unreflectPhase3(T* p, int N)
 {
@@ -1215,46 +1019,43 @@ void unreflectPhase3(T* p, int N)
     w    = pNew - pOld;
   }
 }
-*/
+
 
 template<class T>
 void sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
 {
-  rsSineParameterEstimator<T>::sigAndAmpToPhase(x, a, N, p);
-  return;
-
+  rsSineParameterEstimator<T>::sigAndAmpToPhase(x, a, N, p);   return;
 
   for(int n = 0; n < N; n++)
     p[n] = asin(x[n] / a[n]);
-  //repairPhase(p, N);
-  //unreflectPhase(p, N);
-  //unreflectPhase2(p, N);
-  unreflectPhase2(x, p, N); // works currently best - but still not perfect
-
-  //rsPlotArrays(N, p);
-
-
-
-
-  // make a function unreflectPhase - or 2 - one using phase only and one using also the signal
-
-  int dummy = 0;
-
-  // todo: catch div-by-zero and asin of arguments > 1
-  // or maybe let the infs and nans just happen and then pass over the p-array again and replace 
-  // the invalid sections with numbers resulting from linearly interopolating between surrounding
-  // valid values
+  unreflectPhase3(p, N);
 }
-// the measured instantaneous phase seems to be useless - it tends to oscillate back and forth 
-// instead of keeping running forward - maybe we need to take the last value into account and 
-// reflect ...maybe if p[n] < p[n-1]..well - asin can only return values in the rang -pi/2...pi/2
-// but we need values from -pi...pi
+
+template<class T>
+void medianFilter3pt(const T* x, int N, T* y)
+{
+  T x1 = x[0];  // x[n-1]
+  for(int n = 1; n < N-1; n++)
+  {
+    T xn = x[n];
+    y[n] = median(x1, xn, x[n+1]);
+    x1   = xn;
+  }
+
+  // what about y[0] and y[N-1] - does this make sense?:
+  y[0]   = y[1];
+  y[N-1] = y[N-2];
+  // i think, it would use the 3pt forward median for y[0] and the 3pt backward median for y[N-1]
+  // the two-point mediat would be the same as the two point average (even order medians use the
+  // average of the middle two samples)...hmmm...
+  // or maybe we should use linear extrapolation?
+}
+// should work for y == x - test this
+
 
 template<class T>
 void phaseToFreq(const T* p, int N, T* w)
 {
-
-
   rsAssert(p != w);
   using AT = rsArrayTools;
 
@@ -1280,15 +1081,22 @@ void phaseToFreq(const T* p, int N, T* w)
 
 
   AT::difference(w, N);
-  rsPlotArrays(N, w, p);
+  //rsPlotArrays(N, w, p);
   // first sample is off - check implementation of rsDifference - it assumes a zero initial 
   // condition - we need to adopt for a convention up to which k we should sum the w-array in 
   // synthesis - n or n-1
   // maybe resynthesize signal with unreflected phase and see, if we get identity
   // resynthesis - if we do, it doesn't seem to be an artifact
 
-
-
+  using Vec = std::vector<T>;
+  Vec w2(N), w3(N);
+  medianFilter3pt(w, N, &w2[0]);  // rename to movingMedian3pt and move to AT
+  AT::movingAverage3pt(&w2[0], N, &w3[0], false);
+  AT::movingAverage3pt(&w3[0], N, &w3[0], false);
+  AT::movingAverage3pt(&w3[0], N, &w3[0], false);
+  rsPlotArrays(N, w, &w2[0], &w3[0]);
+  rsPlotVectors(w2, w3);
+  // i think, 1 moving-median and 3 moving-average filters with 3 points give good-looking results
 }
 
 
