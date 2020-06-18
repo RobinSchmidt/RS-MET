@@ -781,24 +781,6 @@ void testSineAmpAndPhaseEstimation()
 // in practice, use both formulas, compute an average of the phases and compute the amplitude for
 // exact resynthesis
 
-/*
-// delete:
-// Computes the median of 3 values - maybe move to library (near rsMin/rsMax):
-template<class T>
-T median(T x1, T x2, T x3)
-{
-  if(x1 >= x2 && x1 >= x3) return rsMax(x2, x3);  // x1 is greatest
-  if(x2 >= x1 && x2 >= x3) return rsMax(x1, x3);  // x2 is greatest
-  if(x3 >= x1 && x3 >= x2) return rsMax(x1, x2);  // x3 is greatest
-  rsError("we should always take one of the branches above");
-  return 0;
-}
-// test with all permutations of 1,2,3 and 1,2,2
-// we could also do: if(x3>x2) swap(x2,x3); if(x2>x1) swap(x1,x2); return x2; ...that would
-// amount to doing a 3-value bubble-sort and returning the middle - we would trade 9 
-// comparisons for 2 comparisons and 2 swaps - maybe benchmark, which is better
-*/
-
 // Computes the error function - see SineParameters.txt
 template<class T>
 T rsSineParametersError(T yLL, T yL, T y0, T yR, T yRR, T a, T p, T w)
@@ -849,10 +831,7 @@ int rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
   return evals;
 }
 
-
-// can be delete AFTER checking, if all relevant comments have been included into the 
-// documentation of rsSineParameterEstimator<T>::sigToAmpsViaPeaks
-
+/*
 template<class T>
 void rsAmpEnvelope(const T* x, int N, T* a)
 {
@@ -862,46 +841,15 @@ void rsAmpEnvelope(const T* x, int N, T* a)
   // ...maybe we should just smooth the freq-jaggies and leave their effect to the phase-mod 
   // signal
 }
-// In the case of using amplitude as primary (i.e. first estimated) variable, we need to look in 
-// the neighbourhood of peaks for other peaks. When frequency is the primary variable, we need to
-// look for other zero crossing in the neighborhood of zero-crossings (at least, when the 
-// zero-crossing based freq estimation is used). When we use local information only, like just
-// the two neighbouring samples of each sample, we have the "most localized" estimation algo.
-// ...move all this stuff into a class rsSineParameterEstimator...this function may be called
-// signalToAmp and we should also have signalToFreq1, signalToFreq2, signalAndFreqToAmpAndPhase, 
-// etc.
-
+*/
+/*
 template<class T>
 void sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
 {
   rsSineParameterEstimator<T>::sigAndAmpToPhase(x, a, N, p);   
   return;
 }
-
-/*
-// delete:
-template<class T>
-void movingMedian3pt(const T* x, int N, T* y)
-{
-  T x1 = x[0];  // x[n-1]
-  for(int n = 1; n < N-1; n++)
-  {
-    T xn = x[n];
-    y[n] = rsMedian(x1, xn, x[n+1]);
-    x1   = xn;
-  }
-
-  // what about y[0] and y[N-1] - does this make sense?:
-  y[0]   = y[1];
-  y[N-1] = y[N-2];
-  // i think, it would use the 3pt forward median for y[0] and the 3pt backward median for y[N-1]
-  // the two-point mediat would be the same as the two point average (even order medians use the
-  // average of the middle two samples)...hmmm...
-  // or maybe we should use linear extrapolation?
-}
-// should work for y == x - test this
 */
-
 
 template<class T>
 void phaseToFreq(const T* p, int N, T* w, int smooth = 3)
@@ -978,13 +926,16 @@ void testSineParameterEstimation()
   testSineAmpAndPhaseEstimation2();
   // make it a unit test
 
+  using SPE = rsSineParameterEstimator<double>;
   using Vec = std::vector<double>;
+
   Vec x = Vec({10,11,5,0,1,0});  // shows undershooting problem with parabolicTime
   Vec a = x;
-  rsAmpEnvelope(&x[0], (int) x.size(), &a[0]); // try to use it in place with a = x
+  SPE::sigToAmpsViaPeaks(&x[0], (int) x.size(), &a[0]); // try to use it in place with a = x
   //rsPlotVectors(x, a);
 
-  x = Vec({10,11,0,0,10,0}); rsAmpEnvelope(&x[0], (int) x.size(), &a[0]); // not interesting
+  x = Vec({10,11,0,0,10,0}); 
+  SPE::sigToAmpsViaPeaks(&x[0], (int) x.size(), &a[0]); // not interesting
   //rsPlotVectors(x, a);
 }
 
@@ -1121,8 +1072,8 @@ void sineRecreationBandpassNoise()
 
   // Use algo that estimates the amp-envelope first and bases everything else on that:
   Vec a3(N), p3(N), w3(N);
-  rsAmpEnvelope(&x[0], N, &a3[0]);
-  sigAndAmpToPhase(&x[0], &a3[0], N, &p3[0]);  // may produce nans - fixed
+  SPE::sigToAmpsViaPeaks(&x[0], N, &a3[0]);
+  SPE::sigAndAmpToPhase(&x[0], &a3[0], N, &p3[0]);  // may produce nans - fixed
 
   // p3[504] = PI - p3[504];  
   // test - nope - makes it worse - so it's not a reflection-error! maybe it's an amplitude 
@@ -1247,6 +1198,15 @@ void sineRecreationBandpassNoise()
   // modify the phase data in such a way that we can. ...wait no: the first formula is wrong! 
   // Instead of using w[n]*n (where w[n] = 2*PI*f[n]/fs) we should use the integral of w[n] up to n
 
+  // Notes:
+  // In the case of using amplitude as primary (i.e. first estimated) variable, we need to look in 
+  // the neighbourhood of peaks for other peaks. When frequency is the primary variable, we need to
+  // look for other zero crossing in the neighborhood of zero-crossings (at least, when the 
+  // zero-crossing based freq estimation is used). When we use local information only, like just
+  // the two neighbouring samples of each sample, we have the "most localized" estimation algo.
+  // ...move all this stuff into a class rsSineParameterEstimator...this function may be called
+  // signalToAmp and we should also have signalToFreq1, signalToFreq2, signalAndFreqToAmpAndPhase, 
+  // etc.
 
   //rsPlotVectors(x);
   //rsPlotVectors(x, y1, y2);
