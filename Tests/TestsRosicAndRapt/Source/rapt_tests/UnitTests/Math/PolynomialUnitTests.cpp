@@ -589,43 +589,6 @@ bool testPolynomialInterpolation(std::string &reportString)
     testResult &= rsIsCloseTo(yc[n], y[n], tol);
   }
 
-  //---------------------------------------------------------------------------------
-  // here, i try to implement a better algo to find the coeffs - move out when done:
-
-  using AT = rsArrayTools;
-  AT::fillWithZeros(a, N);
-  double num[N];
-  for(int n = 0; n < N; n++)
-  {
-    // init num and den to 1
-    AT::fillWithZeros(num, N);
-    num[0] = 1;
-    double den = 1;
-
-    for(int k = 0; k < N; k++)
-    {
-      if(k != n)
-      {
-        AT::convolveWithTwoElems(num, k+1, -x[k], 1.0, num);
-        den *= x[n] - x[k];
-      }
-    }
-
-    double s =  y[n]/den;
-    for(int k = 0; k < N; k++)
-      a[k] += num[k] * s;
-
-    int dummy = 0;
-  }
-  // ok - that looks good!
-
-
-  //---------------------------------------------------------------------------------
-
-
-
-
-
   // test function for equidistant abscissa values:
   double x0 = -3.2;
   double dx =  1.1;

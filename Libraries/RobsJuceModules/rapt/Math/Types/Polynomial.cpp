@@ -951,6 +951,7 @@ T** rsPolynomial<T>::vandermondeMatrix(const T *x, int N)
   return A;
 }
 
+/*
 template<class T>
 void rsPolynomial<T>::interpolant(T *a, const T *x, const T *y, int N)
 {
@@ -967,8 +968,38 @@ void rsPolynomial<T>::interpolant(T *a, const T *x, const T *y, int N)
   // rsStretchPolynomial (for x-denormalization) and scaling the coeffs and adding an offset to
   // a[0] for y-denormalization
 
-  // and/or there's actually a O(N) algo available - what we do here is O(N^3) -> very bad!
+  // and/or there's actually a O(N^2) algo available - what we do here is O(N^3) -> very bad!
 }
+*/
+
+// new implementation - more efficient with memory O(N) and runtime O(N^2):
+template<class T>
+void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N)
+{
+  std::vector<T> wrk(N+1);  // allocates - todo: pass a workspace as parameter
+  using AT = rsArrayTools;
+  AT::fillWithZeros(a, N);
+  T* num = &wrk[0];
+  for(int n = 0; n < N; n++)  
+  {
+    // init num and den to 1:
+    AT::fillWithZeros(num, N);
+    num[0] = 1;
+    T den = 1;
+
+    // convolutive and multiplicative accumulation of num and den:
+    for(int k = 0; k < N; k++) {  
+      if(k != n) {
+        AT::convolveWithTwoElems(num, k+1, -x[k], T(1), num);
+        den *= x[n] - x[k];  }}
+
+    // accumulate this result additively into coeff-array:
+    T s =  y[n]/den;
+    for(int k = 0; k < N; k++)
+      a[k] += num[k] * s;  
+  }
+}
+
 
 template<class T>
 void rsPolynomial<T>::interpolant(T *a, const T& x0, const T& dx, const T *y, int N)
