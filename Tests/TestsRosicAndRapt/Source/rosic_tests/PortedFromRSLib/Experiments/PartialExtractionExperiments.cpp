@@ -782,6 +782,7 @@ void testSineAmpAndPhaseEstimation()
 // exact resynthesis
 
 /*
+// delete:
 // Computes the median of 3 values - maybe move to library (near rsMin/rsMax):
 template<class T>
 T median(T x1, T x2, T x3)
@@ -877,7 +878,8 @@ void sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
   return;
 }
 
-
+/*
+// delete:
 template<class T>
 void movingMedian3pt(const T* x, int N, T* y)
 {
@@ -898,6 +900,7 @@ void movingMedian3pt(const T* x, int N, T* y)
   // or maybe we should use linear extrapolation?
 }
 // should work for y == x - test this
+*/
 
 
 template<class T>
@@ -946,12 +949,12 @@ void phaseToFreq(const T* p, int N, T* w, int smooth = 3)
   // with a parabola so hopefully even less with a quartic - our amplitude measurements are just
   // wrong....
 
-  /*
+
   // smoothing:
-  movingMedian3pt(w, N, w);  // rename to movingMedian3pt and move to AT
+  AT::movingMedian3pt(w, N, w);
   for(int i = 0; i < smooth; i++)
     AT::movingAverage3pt(w, N, w, false);
-  */
+
 
 
   /*

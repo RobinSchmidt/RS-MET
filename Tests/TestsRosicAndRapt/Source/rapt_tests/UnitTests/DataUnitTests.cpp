@@ -95,9 +95,20 @@ bool testArrayFiltering()
   Vec x,y;
 
   x = Vec({1,3,2,-2,3,5,1});
-  AR::movingAverage3pt(&x[0], (int)x.size(), &x[0], false);
+  y.resize(x.size());
+  AR::movingAverage3pt(&x[0], (int)x.size(), &y[0], false);  // out-of-place
+  r &= y == Vec({2,2,1,1,2,3,3});
+  AR::movingAverage3pt(&x[0], (int)x.size(), &x[0], false);  // in-place
   r &= x == Vec({2,2,1,1,2,3,3});
   // todo: test edge cases (arrays of length 0,1,2), test with endsFixed condition true
+
+  // test moving median:
+  x = Vec({1,3,2,-2,3,5,1});
+  AR::movingMedian3pt(&x[0], (int)x.size(), &y[0]);
+  r &= y == Vec({ 2,2,2,2,3,3,3 });
+  AR::movingMedian3pt(&x[0], (int)x.size(), &x[0]);
+  r &= x == Vec({ 2,2,2,2,3,3,3 });
+
 
   x = Vec({60,120,-60,180,120,-120,60,240,120});
   y = x;

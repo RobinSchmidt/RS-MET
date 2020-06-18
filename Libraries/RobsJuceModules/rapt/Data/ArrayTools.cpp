@@ -1014,13 +1014,6 @@ void rsArrayTools::movingAverage3pt(const T* x, int N, T* y, bool endsFixed)
   else
     y[0] = T(1/2.) * (t1 + t2);
 
-  // old - buggy - works only in place:
-  //for(int n = 2; n < N; n++) {
-  //  y[n-1] = T(1/3.) * (t1 + t2 + y[n]);
-  //  t1 = t2;
-  //  t2 = y[n]; }
-
-  // new:
   for(int n = 2; n < N; n++) {
     y[n-1] = T(1/3.) * (t1 + t2 + x[n]);
     t1 = t2;
@@ -1031,6 +1024,23 @@ void rsArrayTools::movingAverage3pt(const T* x, int N, T* y, bool endsFixed)
   else
     y[N-1] = T(1/2.) * (t1 + t2);
 }
+
+template<class T>
+void rsArrayTools::movingMedian3pt(const T* x, int N, T* y)
+{
+  T x1 = x[0];  // x[n-1]
+  for(int n = 1; n < N-1; n++) {
+    T xn = x[n];
+    y[n] = rsMedian(x1, xn, x[n+1]);
+    x1   = xn; }
+  y[0]   = y[1];    // does this make sense?
+  y[N-1] = y[N-2];
+  // i think, it would use the 3pt forward median for y[0] and the 3pt backward median for y[N-1]
+  // the two-point mediat would be the same as the two point average (even order medians use the
+  // average of the middle two samples)...hmmm...
+  // or maybe we should use linear extrapolation?
+}
+
 
 template <class T1, class T2, class TR>
 void rsArrayTools::multiply(const T1 *buffer1, const T2 *buffer2, TR *result, int length)

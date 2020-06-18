@@ -567,6 +567,12 @@ public:
   // trajectory that should be smoothed, but the start- and enpoints should not change - maybe
   // have a boolean parameter "fixEnds"
   // -maybe include a stride parameter - needed when this is used to filter nD arrays like images
+  // there's a 5 point version under construction near the unit test of this, so if one is needed,
+  // look there first
+
+  template<class T>
+  static void movingMedian3pt(const T* x, int N, T* y);
+
 
   /** Multiplies the elements of 'buffer1' and 'buffer2' - type must define operator '*'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
