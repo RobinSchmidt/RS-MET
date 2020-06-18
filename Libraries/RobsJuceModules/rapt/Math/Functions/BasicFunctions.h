@@ -114,6 +114,10 @@ inline T rsMin(T in1, T in2, T in3);
 template <class T>
 inline T rsMin(T in1, T in2, T in3, T in4);
 
+/** Computes the median of 3 values. */
+template<class T>
+inline T rsMedian(T x1, T x2, T x3);
+
 /** Returns x if x is even, else x+1. */
 template <class T>
 inline T rsNextEvenNumber(T x);
@@ -332,6 +336,21 @@ inline T rsMin(T in1, T in2, T in3, T in4)
 {
   return rsMin(rsMin(in1, in2), rsMin(in3, in4));
 }
+
+template<class T>
+inline T rsMedian(T x1, T x2, T x3)
+{
+  if(x1 >= x2 && x1 >= x3) return rsMax(x2, x3);  // x1 is greatest
+  if(x2 >= x1 && x2 >= x3) return rsMax(x1, x3);  // x2 is greatest
+  if(x3 >= x1 && x3 >= x2) return rsMax(x1, x2);  // x3 is greatest
+  rsError("we should always take one of the branches above");
+  return 0;
+}
+// todo: test with all permutations of 1,2,3 and 1,2,2
+// we could also do: if(x3>x2) swap(x2,x3); if(x2>x1) swap(x1,x2); return x2; ...that would
+// amount to doing a 3-value bubble-sort and returning the middle - we would trade 9 
+// comparisons for 2 comparisons and 2 swaps - maybe benchmark, which is better
+
 
 // general fallback version:
 template<class T>

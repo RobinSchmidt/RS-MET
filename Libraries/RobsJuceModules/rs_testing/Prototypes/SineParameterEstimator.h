@@ -65,7 +65,7 @@ protected:
   // y == a is allowed - it can overwrite the content of a given array
   // maybe move this function to somewhere else - this could be useful in various other scenarios
 
-  static void connectPeaks(const T* x, int N, T* env, int precision);
+  static void connectPeaks(const T* xt, const T* xi, int N, T* env, int precision);
   // under construction - uses a polynomial of order 2*precision to estimate the actual locations 
   // and heights of the peaks - using a parabolo already improves results, but there are still
   // frequency jaggies, so we may need higher accuracy for the amp-env

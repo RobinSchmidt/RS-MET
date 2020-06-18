@@ -71,6 +71,7 @@ void rsSineParameterEstimator<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int
 
   //T power = 1.0; // experimental - doesn't seem to help
 
+
   // that's the old, imprecise version
   if(precision <= 1)
   {
@@ -82,15 +83,14 @@ void rsSineParameterEstimator<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int
     return;
   }
 
-
   using Vec = std::vector<T>;
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = rsAbs(x[n]);        // use shadower
-  connectPeaks(&y[0], N, a, precision); 
+  connectPeaks(&y[0], x, N, a, precision); 
   // todo: pass y as xTest and x as xInterpolate
 
-  rsError("High preicison not yet implemented");
+  //rsError("High preicison not yet implemented");
 
 }
 
@@ -111,11 +111,11 @@ inline void lerpPeaks(const T* y, int nL, int nR, T tL, T tR, T yL, T yR, T* a)
   for(int i = nL; i < nR; i++)                 
   {
     T ai = rsLinToLin(T(i), tL, tR, yL, yR); // ToDo: optimize!
-    a[i] = rsMax(ai, y[i]);                  // we want no stick-outs!
+    a[i] = rsMax(ai, rsAbs(y[i]));                  // we want no stick-outs!
   }
 }
 // lerp peaks from nL to nR (not including nR)
-// make member or maybe move elsewhere
+// maybe make member
 
 template<class T>
 void rsSineParameterEstimator<T>::connectPeaks(const T* y, int N, T* a)
@@ -161,8 +161,7 @@ void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
   const T* x, int N, int n0, int precision, T* pos, T* height)
 {
   static const int maxPrecision = 4;
-  rsAssert(precision <= maxPrecision); 
-  // for higher precisions, we need to allocate a larger a-array below
+  rsAssert(precision <= maxPrecision); // for higher precisions, we need to allocate a larger a-array below
 
   int p = rsMin(precision, n0, (N-1)-n0);       // todo: verify this formula
   if(p == 0 || n0 == 0 || n0 == N-1) {
@@ -170,7 +169,7 @@ void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
     *height = x[n0];
     return; }
 
-  // first fit a parabola and find its maximum:
+  // First, fit a parabola and find its maximum:
   using Poly = rsPolynomial<T>;
   T a[ 2*maxPrecision+1];                       // polynomial coeffs of fitted polynomial
   T ad[2*maxPrecision];                         // ...and its derivative
@@ -181,26 +180,13 @@ void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
     *height = Poly::evaluate(dt, a, 2);
     return; }
 
-  //plotPolynomial(a, 2, -4.0, 4.0);
-
-  // now fit a polynomial of degree 2*precision to some number of samples
-
-  int degree = 2*p;  // degree of polynomial to fit through samples near the peak
-  Poly::interpolant(a, T(-p), T(1), &x[n0-p], degree+1); // +1 bcs it takes number of datapoints
-  // allocates memory - todo: avoid this - this is called for every peak...
-  // verify this - compare to what we do in zero-crossing finder in function
-  // rsZeroCrossingFinder::upwardCrossingFrac
-
-  //plotPolynomial(a, degree, -4.0, 4.0);
-
-  // Use maximum of parabola as initial guess for finding the zero of the derivative of the 
-  // polynomial via Newto iteration:
+  // Next, fit a polynomial of degree 2*precision to some number of samples near the peak and find 
+  // its maximum using Newton iteration, using the location of the peak of the parabola as initial
+  // guess:
+  int degree = 2*p;
+  Poly::interpolant(a, T(-p), T(1), &x[n0-p], degree+1); // +1 bcs it takes number of datapoints, allocates
   Poly::derivative(a, ad, degree);
   dt = rsPolynomial<T>::rootNear(dt, ad, degree-1, T(-1), T(1));
-
-  //plotPolynomial(ad, degree-1, -4.0, 4.0);
-
-  // write output:
   *pos    = T(n0) + dt;
   *height = Poly::evaluate(dt, a, degree);
 }
@@ -209,28 +195,30 @@ void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
 // features such as center-of gravity, etc.
 
 template<class T>
-void rsSineParameterEstimator<T>::connectPeaks(const T* x, int N, T* env, int precision)
+void rsSineParameterEstimator<T>::connectPeaks(
+  const T* xt, const T* xi, int N, T* env, int precision)
 {
-  rsAssert(x != env);  // this does not work in place
+  rsAssert(xi != env && xt != env);  // this does not work in place
 
-  int nL = 0,     nR;            // index of current left and right peak
-  T   tL = T(nL), tR;            // position or time of current left and right peak
-  T   xL = x[0],  xR; 
+  int nL = 0,            nR;    // index of current left and right peak
+  T   tL = T(nL),        tR;    // position or time of current left and right peak
+  T   xL = rsAbs(xi[0]), xR; 
   for(int n = 1; n < N-1; n++)
   {
-    if(x[n] >= x[n-1] && x[n] >= x[n+1])
+    if(xt[n] >= xt[n-1] && xt[n] >= xt[n+1])
     {
       nR = n; 
-      exactPeakPositionAndHeight(x, N, nR, precision, &tR, &xR); // allocates
-      lerpPeaks(x, nL, nR, tL, tR, xL, xR, env);
+      exactPeakPositionAndHeight(xi, N, nR, precision, &tR, &xR); // allocates
+      xR = rsAbs(xR);
+      lerpPeaks(xi, nL, nR, tL, tR, xL, xR, env);
       nL = nR; tL = tR; xL = xR;
     }
   }
 
   nR = N-1; 
   tR = T(nR); 
-  xR = x[nR];          // handle last peak to last sample
-  lerpPeaks(x, nL, nR, tL, tR, xL, xR, env);
+  xR = rsAbs(xi[nR]);       // handle last peak to last sample
+  lerpPeaks(xi, nL, nR, tL, tR, xL, xR, env);
 }
 // for using higher order interpolation, it's actually a bad idea to use an array of absolute 
 // values - when the intepolant-width exceeds the width of the sinusoids lobe, we should actually

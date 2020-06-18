@@ -738,9 +738,6 @@ bool testSineAmpAndPhaseEstimation2()
   r &= rsIsCloseTo(aL, a, tol);
   r &= rsIsCloseTo(pL, p, tol);
 
-
-
-
   return r;
 }
 
@@ -784,6 +781,7 @@ void testSineAmpAndPhaseEstimation()
 // in practice, use both formulas, compute an average of the phases and compute the amplitude for
 // exact resynthesis
 
+/*
 // Computes the median of 3 values - maybe move to library (near rsMin/rsMax):
 template<class T>
 T median(T x1, T x2, T x3)
@@ -795,6 +793,10 @@ T median(T x1, T x2, T x3)
   return 0;
 }
 // test with all permutations of 1,2,3 and 1,2,2
+// we could also do: if(x3>x2) swap(x2,x3); if(x2>x1) swap(x1,x2); return x2; ...that would
+// amount to doing a 3-value bubble-sort and returning the middle - we would trade 9 
+// comparisons for 2 comparisons and 2 swaps - maybe benchmark, which is better
+*/
 
 // Computes the error function - see SineParameters.txt
 template<class T>
@@ -853,8 +855,11 @@ int rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
 template<class T>
 void rsAmpEnvelope(const T* x, int N, T* a)
 {
-  rsSineParameterEstimator<T>::sigToAmpsViaPeaks(x, N, a);
+  rsSineParameterEstimator<T>::sigToAmpsViaPeaks(x, N, a, 1); 
   return;
+  // hmm - the high precision amp-env estimation does not really improve the freq-jaggies
+  // ...maybe we should just smooth the freq-jaggies and leave their effect to the phase-mod 
+  // signal
 }
 // In the case of using amplitude as primary (i.e. first estimated) variable, we need to look in 
 // the neighbourhood of peaks for other peaks. When frequency is the primary variable, we need to
@@ -865,77 +870,13 @@ void rsAmpEnvelope(const T* x, int N, T* a)
 // signalToAmp and we should also have signalToFreq1, signalToFreq2, signalAndFreqToAmpAndPhase, 
 // etc.
 
-
-/*
-// this does not work:
-template<class T>
-void unreflectPhase1(T* p, int N)
-{
-  std::vector<double> tmp = toVector(p, N); // for plotting
-  T pi2 = 0.5*PI;
-  for(int n = 1; n < N; n++)
-  {
-    if(p[n] >= 0)
-    {
-      if(p[n] < p[n-1] || (p[n] > p[n-1] && p[n-1] >= pi2)  )
-      {
-        p[n] = PI - p[n];
-        // this looks ok
-      }
-    }
-    else  // p[n] < 0
-    {
-      bool cond1 = p[n] < p[n-1];  // 
-      bool cond2 = p[n] > p[n-1] && p[n-1] <= -pi2;
-
-
-      if(cond1 || cond2 )
-      {
-        p[n] = -PI - p[n];  
-        // this looks wrong - test with sine input - maybe we nee a third condition for the
-        // wrap-around PI
-      }
-
-    }
-  }
-  rsPlotArrays(N, &tmp[0], p);
-  // maybe we should use conditions not based on previous values of the phase but on whether x
-  // as ascending or descending - if it's descending, we are either in the range pi/2...pi or
-  // -pi...-pi/2
-
-}
-*/
-
-template<class T>
-void unreflectPhase3(T* p, int N)
-{
-  T pOld = p[0];
-  T pNew = p[1];
-  T w = pNew - pOld;
-  for(int n = 1; n < N; n++)
-  {
-    pNew = p[n];
-
-    // ...update pNew....
-
-    // write back:
-    p[n] = pNew;
-
-    pOld = pNew;
-    w    = pNew - pOld;
-  }
-}
-
-
 template<class T>
 void sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
 {
-  rsSineParameterEstimator<T>::sigAndAmpToPhase(x, a, N, p);   return;
-
-  for(int n = 0; n < N; n++)
-    p[n] = asin(x[n] / a[n]);
-  unreflectPhase3(p, N);
+  rsSineParameterEstimator<T>::sigAndAmpToPhase(x, a, N, p);   
+  return;
 }
+
 
 template<class T>
 void movingMedian3pt(const T* x, int N, T* y)
@@ -944,7 +885,7 @@ void movingMedian3pt(const T* x, int N, T* y)
   for(int n = 1; n < N-1; n++)
   {
     T xn = x[n];
-    y[n] = median(x1, xn, x[n+1]);
+    y[n] = rsMedian(x1, xn, x[n+1]);
     x1   = xn;
   }
 
@@ -1103,7 +1044,7 @@ void sineRecreationBandpassNoise()
   // Create cleaned up version via 3-point median filter:
   Vec fm1c(N); 
   for(n = 1; n < N-1; n++)
-    fm1c[n] = median(fm1[n-1], fm1[n], fm1[n+1]);
+    fm1c[n] = rsMedian(fm1[n-1], fm1[n], fm1[n+1]);
 
   // Measure instantaneous frequency (with algo 2):
   Vec fm2(N);
@@ -1113,7 +1054,7 @@ void sineRecreationBandpassNoise()
   // Create a median-filtered version of that also:
   Vec fm2c(N);  
   for(n = 1; n < N-1; n++)
-    fm2c[n] = median(fm2[n-1], fm2[n], fm2[n+1]);
+    fm2c[n] = rsMedian(fm2[n-1], fm2[n], fm2[n+1]);
   // first an last value look wrong - for the moment, just repeat 2nd and 2nd-to-last:
   fm2c[0]   = fm2c[1];
   fm2c[N-1] = fm2c[N-2];

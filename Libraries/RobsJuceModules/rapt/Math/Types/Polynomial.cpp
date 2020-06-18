@@ -938,6 +938,7 @@ void rsPolynomial<T>::cubicCoeffsFourPoints(T *a, const T *y)
   a[1] = T(0.5)*(y[1]-y[-1]-T(2)*a[3]);
 }
 
+// move to a function rsMatrixView:vandermonde(const T* x, int N, T* V)
 template<class T>
 T** rsPolynomial<T>::vandermondeMatrix(const T *x, int N)
 {
@@ -952,6 +953,7 @@ T** rsPolynomial<T>::vandermondeMatrix(const T *x, int N)
 }
 
 /*
+// Old implementation using a linear system solver (Gaussian elimination):
 template<class T>
 void rsPolynomial<T>::interpolant(T *a, const T *x, const T *y, int N)
 {
@@ -967,12 +969,12 @@ void rsPolynomial<T>::interpolant(T *a, const T *x, const T *y, int N)
   // a-coefficients for powers of x and finally, we could denormalize using rsShiftPolynomial,
   // rsStretchPolynomial (for x-denormalization) and scaling the coeffs and adding an offset to
   // a[0] for y-denormalization
-
-  // and/or there's actually a O(N^2) algo available - what we do here is O(N^3) -> very bad!
 }
 */
 
-// new implementation - more efficient with memory O(N) and runtime O(N^2):
+// New implementation, using Lagrange's idea - uses only O(N) memory ..i think, the runtime is 
+// still O(N^3) - we have a loop nesting level of 2 here and one of the inner loops calls an O(N) 
+// convolution (with only two elements, that's why it's only O(N))
 template<class T>
 void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N)
 {
