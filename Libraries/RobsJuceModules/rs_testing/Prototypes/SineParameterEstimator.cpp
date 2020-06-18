@@ -4,8 +4,22 @@ void rsSineParameterEstimator<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T*
 {
   // todo: switch between various algos that compute stuff in different orders
 
-  sigToAmpsViaPeaks(x, N, a);   // here, a sub-switch may take place
+  sigToAmpsViaPeaks(x, N, a);     // here, a sub-switch for amp-estimation algo may take place
   sigAndAmpToPhase( x, a, N, p); 
+}
+
+template<class T>
+void rsSineParameterEstimator<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm)
+{
+  analyzeAmpAndPhase(x, N, a, pm);       // pm (phase-mod) temporarily used for phase itself
+  phaseToFreq(pm, N, w);
+
+
+  // todo: optionally smooth the freqs - with the raw freqs as computed, the phase-mod signal will
+  // come out as zero..
+
+
+  phaseAndFreqToPhaseMod(pm, w, N, pm);  // convert phase to phase-mod
 }
 
 //-------------------------------------------------------------------------------------------------

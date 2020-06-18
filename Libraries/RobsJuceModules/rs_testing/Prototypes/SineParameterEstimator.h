@@ -20,7 +20,7 @@ public:
 
   void analyzeAmpAndPhase(const T* x, int N, T* a, T* p);
 
-  //void analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm);
+  void analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm);
 
 
   //-----------------------------------------------------------------------------------------------

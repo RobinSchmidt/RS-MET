@@ -1019,18 +1019,19 @@ void sineRecreationBandpassNoise()
   spe.analyzeAmpAndPhase(&x[0], N, &a3[0], &p3[0]);
 
 
-  // p3[504] = PI - p3[504];  
-  // test - nope - makes it worse - so it's not a reflection-error! maybe it's an amplitude 
-  // estimation error? ..that's the only option left, if identity resynthesis is desired - maybe
-  // try a nonlinear transformation of the amplitudes before and after the parabolic interpolation 
-  // and/or try higher order interpolation
-
-  phaseToFreq(&p3[0], N, &w3[0], 0);
-  // get rid of this - do the smoothing here - or leave it out
+  phaseToFreq(&p3[0], N, &w3[0], 0);  // get rid of this - do the smoothing here - or leave it out
+  // smooth the frequencies to get a non-zero phase-mod signal:
+  for(int i = 0; i < 3; i++)
+    rsArrayTools::movingAverage3pt(&w3[0], N, &w3[0]); 
 
   // obtain pm-signal from p3 and w3
   phaseAndFreqToPhaseMod(&p3[0], &w3[0], N, &pm3[0]);
 
+
+
+
+
+  spe.analyzeAmpFreqAndPhaseMod(&x[0], N, &a3[0], &w3[0], &pm3[0]);
 
   //// when uncommented, no identity resynthesis:
   //for(int i = 0; i < 1000; i++)
@@ -1039,7 +1040,7 @@ void sineRecreationBandpassNoise()
   // resynthesize from analysis with algo 3:
   Vec y3(N);
   synthesizeFromAmpFreqPhaseMod(&a3[0], &w3[0], &pm3[0], N, &y3[0]);
-  //rsPlotVectors(pm3);
+  rsPlotVectors(pm3);
   Vec err3 = y3-x; 
   rsPlotVectors(x, y3, err3, a3);
   // first sample is (slightly) wrong, first sample of y3 is 0
