@@ -650,7 +650,7 @@ void peakFinder()
 
   int N = 50;
   int oversampling = 20;
-  int precision = 1;
+  int precision = 4;
   double w = 1.0;  // omega
 
   // create the test signal:
@@ -671,8 +671,8 @@ void peakFinder()
   using AT  = rsArrayTools;
   Vec peakPositions, peakHeights;
   double pos, height;
+  //SPE::exactPeakPositionAndHeight(&x[0], N, 27, precision, &pos, &height);
   for(int n = 1; n < N-1; n++) {
-    //if(x[n] >= x[n-1] && x[n] >= x[n+1]) 
     if( AT::isPeakOrValley(&x[0], n) )
     {
       SPE::exactPeakPositionAndHeight(&x[0], N, n, precision, &pos, &height);
@@ -693,6 +693,10 @@ void peakFinder()
   // Observations:
   // -With precision = 1 (parabolic) an w = 1, the height error is around 2%, with precision = 0
   //  around 10%
+  // -With precision = 2, some results are better than with 1 but some are worse - i think, the
+  //  root-finder sometimes doesn't converge - maybe plot a section of the interpolating polynomial
+  //  (both quadratic and quartic) for one of the problematic points to see what's going on, for 
+  //  example, at n=27 -> fixed - the lower limit was 0 but should be -1
 }
 
 // convenience function to make the zero-crossing finding work for plain arrays (as required for

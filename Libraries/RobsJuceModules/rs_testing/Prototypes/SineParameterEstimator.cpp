@@ -155,11 +155,11 @@ void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
   const T* x, int N, int n0, int precision, T* pos, T* height)
 {
   static const int maxPrecision = 4;
-
   rsAssert(precision <= maxPrecision); 
   // for higher precisions, we need to allocate a larger a-array below
 
-  if(precision == 0 || n0 == 0 || n0 == N-1) {
+  int p = rsMin(precision, n0, (N-1)-n0);       // todo: verify this formula
+  if(p == 0 || n0 == 0 || n0 == N-1) {
     *pos    = T(n0);
     *height = x[n0];
     return; }
@@ -170,28 +170,29 @@ void rsSineParameterEstimator<T>::exactPeakPositionAndHeight(
   T ad[2*maxPrecision];                         // ...and its derivative
   Poly::fitQuadratic_m1_0_1(a, &x[n0-1]);
   T dt = Poly::quadraticExtremumPosition(a);    // delta t - time offset of peak from n0
-  if(precision == 1 || n0 == 1 || n0 == N-2) {
+  if(p == 1 || n0 == 1 || n0 == N-2) {
     *pos    = T(n0) + dt;
     *height = Poly::evaluate(dt, a, 2);
     return; }
 
-  // now fit a polynomial of degree 2*precision to some number of samples
-  int p = precision; // use rsMin(precision, n0
-  p = rsMin(p, n0, n0-(N-1));   // verify this formula
-  int degree = 2*p;  // degree of polynomial to fit through samples near the peak
-  // todo: we may need to shrink the degree near the boundaries, depending on how many neighbours there 
-  // are
+  //plotPolynomial(a, 2, -4.0, 4.0);
 
+  // now fit a polynomial of degree 2*precision to some number of samples
+
+  int degree = 2*p;  // degree of polynomial to fit through samples near the peak
   Poly::interpolant(a, T(-p), T(1), &x[n0-p], degree+1); // +1 bcs it takes number of datapoints
   // allocates memory - todo: avoid this - this is called for every peak...
   // verify this - compare to what we do in zero-crossing finder in function
   // rsZeroCrossingFinder::upwardCrossingFrac
 
-  // use maximum of parabola as initial guess for finding the zero of the derivative of the 
-  // polynomial:
-  Poly::derivative(a, ad, degree);
-  dt = rsPolynomial<T>::rootNear(dt, ad, degree-1, T(0), T(1));
+  //plotPolynomial(a, degree, -4.0, 4.0);
 
+  // Use maximum of parabola as initial guess for finding the zero of the derivative of the 
+  // polynomial via Newto iteration:
+  Poly::derivative(a, ad, degree);
+  dt = rsPolynomial<T>::rootNear(dt, ad, degree-1, T(-1), T(1));
+
+  //plotPolynomial(ad, degree-1, -4.0, 4.0);
 
   // write output:
   *pos    = T(n0) + dt;

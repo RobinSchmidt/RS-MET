@@ -206,6 +206,16 @@ void plotMatrixRows(const RAPT::rsMatrix<T>& A, T* x)
   plt.plot();
 }
 
+template<class T>
+void plotPolynomial(const T* a, int degree, T min, T max, int numPoints = 200)
+{
+  std::vector<T> x(numPoints), y(numPoints);
+  rsArrayTools::fillWithRangeLinear(&x[0], numPoints, min, max);
+  for(int i = 0; i < numPoints; i++)
+    y[i] = rsPolynomial<T>::evaluate(x[i], a, degree);
+  rsPlotArraysXY(numPoints, &x[0], &y[0]);
+}
+
 
 /** Plots the magnitude spectrogram given in s against time axis t (of length numFrames) and
 frequency axis f (of length numBins). */
