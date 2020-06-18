@@ -359,23 +359,30 @@ bool singleSineModelerUnitTest()
   using SSM = rsSingleSineModeler<double>;
 
   int N = 1000; // number of samples
+  double tol = 1.e-14;
 
   // Test to resynthesize white noise - the analysis data may be meaningless in this case, but 
   // identity resynthesis should work nevertheless:
   Vec x = rsRandomVector(N, -1.0, 1.0);  // input signal
   Vec a(N), w(N), p(N), pm(N);           // analysis data
   Vec y(N);                              // resynthesized signal
+  Vec err;
 
   SSM ssm;
 
   ssm.analyzeAmpAndPhase(&x[0], N, &a[0], &p[0]);
+  ssm.synthesizeFromAmpAndPhase(&a[0], &p[0], N, &y[0]);
+  r &= rsAreVectorsEqual(x, y, tol);
+  err = x-y;
   // todo: synthesize and compare
 
+  //y[0] = 0;
+  rsFill(y, 0.0);
 
   ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
   ssm.synthesizeFromAmpFreqPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
 
-  Vec err = x-y;
+  err = x-y;
   // only the first sample is wrong
 
 

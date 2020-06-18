@@ -27,6 +27,14 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Static functions */
 
+  static void synthesizeFromAmpAndPhase(const T* a, const T* p, int N, T* y);
+
+  // todo: synthesizeFromAmpAndFreq
+
+  static void synthesizeFromAmpFreqPhaseMod(const T* a, const T* w, const T* pm, int N, T* y);
+
+
+
   /** There's a recursion formula for the sine with normalized radian frequeny w: 
     y[n] = a1*y[n-1] - y[n-2] 
   where 
@@ -66,7 +74,7 @@ public:
   static void phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm);
 
 
-  static void synthesizeFromAmpFreqPhaseMod(const T* a, const T* w, const T* pm, int N, T* y);
+
 
 
   // ToDo: sigToOmegasViaZeros
