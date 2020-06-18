@@ -69,21 +69,23 @@ void rsSineParameterEstimator<T>::sigToAmpsViaPeaks(const T* x, int N, T* a)
   //  -maybe refine their values by using the maximum through a parabola
   // -connect them by linear interpolation
 
-  T power = 1.0; // experimental - doesn't seem to help
+  //T power = 1.0; // experimental - doesn't seem to help
 
   T *y = a;                     // re-use a for temporary storage
   for(int n = 0; n < N; n++)
     y[n] = rsAbs(x[n]);         // todo: apply shadower here (shadows are casted only rightward)
 
-  if( power != 1.0 )
-    for(int n = 0; n < N; n++)
-      y[n] = pow(y[n], power);
+  //if( power != 1.0 )
+  //  for(int n = 0; n < N; n++)
+  //    y[n] = pow(y[n], power);
 
   connectPeaks(y, N, a);
 
-  if( power != 1.0 )
-    for(int n = 0; n < N; n++)
-      y[n] = pow(y[n], 1.0/power);
+  //rsArrayTools::movingAverage3pt(a, N, a, false);  // test - not helpful
+
+  //if( power != 1.0 )
+  //  for(int n = 0; n < N; n++)
+  //    a[n] = pow(a[n], 1.0/power);
 }
 
 template<class T>
@@ -120,7 +122,8 @@ void rsSineParameterEstimator<T>::connectPeaks(const T* y, int N, T* a)
   bool parabolicTime   = true;  // makes sense only, if parabolicHeight is also true
   // todo: introduce a peak-precision parameter: 0 - take peak sample directly, 1: parabolic
   // 2: quartic, 3: sixtic, etc. - see code for zero-crossing finder for reference
-  // rename parabolicTime to exactTime
+  // rename parabolicTime to exactTime - but then it may not be possible to use it in place anymore
+  // maybe make a second function for higher order peak finding
 
   int nL = 0,     nR;            // index of current left and right peak
   T   tL = T(nL), tR;            // position or time of current left and right peak
@@ -199,13 +202,17 @@ void rsSineParameterEstimator<T>::unreflectPhase(const T* x, T* p, int N)
 
   // Post-process - compenaste too late transitions:
   refinePhase(p, N);     // maybe rename 
-  refinePhase(p, N);  // doesn't make a difference
+  //refinePhase(p, N);  // doesn't make a difference
 }
 // zone 1: 0...pi/2, zone 2: pi/2...pi, zone 3: -pi/...-pi/2, zone 4: -pi/2...0
 // can too early transitions also happen? i've not yet seen one
 
 
 /*
+
+ToDo:
+-in connectPeaks, we need a higher order polynomial fit to estimate the amplitude more accurately
+ to get rid of the frequency jaggies
 
 Other ideas for phase unreflection:
 -minimize the sum of the distances to left and right neighbour (i think, this may be equivalent to
