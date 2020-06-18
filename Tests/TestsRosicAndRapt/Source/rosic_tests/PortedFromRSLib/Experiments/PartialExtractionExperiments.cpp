@@ -831,56 +831,17 @@ int rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
   return evals;
 }
 
-/*
-template<class T>
-void rsAmpEnvelope(const T* x, int N, T* a)
-{
-  rsSineParameterEstimator<T>::sigToAmpsViaPeaks(x, N, a, 1); 
-  return;
-  // hmm - the high precision amp-env estimation does not really improve the freq-jaggies
-  // ...maybe we should just smooth the freq-jaggies and leave their effect to the phase-mod 
-  // signal
-}
-*/
-/*
-template<class T>
-void sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
-{
-  rsSineParameterEstimator<T>::sigAndAmpToPhase(x, a, N, p);   
-  return;
-}
-*/
-
 template<class T>
 void phaseToFreq(const T* p, int N, T* w, int smooth = 3)
 {
   rsAssert(p != w);
   using AT = rsArrayTools;
-
-  //AT::copy(p, w, N);
-  //rsPlotArrays(N, w);
-
-  //AT::add(p, 2*PI, w, N);    // w = p + 2*PI
-  //rsPlotArrays(N, w);
-
-  //rsPlotArrays(N, p);
-
   for(int n = 0; n < N; n++)
     w[n] = rsWrapToInterval(p[n], 0.0, 2*PI);
-  //rsPlotArrays(N, w);
-  // test, if now one of the simpler functions above works, too
-
-  //for(int n = 1; n < N; n++)
-  //  w[n] = rsConsistentUnwrappedValue0(w[n], w[n-1], 2*PI); // does not work
-  //rsPlotArrays(N, w);
-
   AT::unwrap(w, N, 2*PI);  // look at code comment there - optimize!
-  //rsPlotArrays(N, w);
-
-
   AT::difference(w, N);
   //rsPlotArrays(N, w, p);
-  rsPlotArrays(N, w);
+
   // first sample is off - check implementation of rsDifference - it assumes a zero initial 
   // condition - we need to adopt for a convention up to which k we should sum the w-array in 
   // synthesis - n or n-1
@@ -897,27 +858,42 @@ void phaseToFreq(const T* p, int N, T* w, int smooth = 3)
   // with a parabola so hopefully even less with a quartic - our amplitude measurements are just
   // wrong....
 
-
+  
   // smoothing:
-  AT::movingMedian3pt(w, N, w);
-  for(int i = 0; i < smooth; i++)
-    AT::movingAverage3pt(w, N, w, false);
+  if(smooth > 0)
+  {
+    AT::movingMedian3pt(w, N, w);
+    for(int i = 0; i < smooth; i++)
+      AT::movingAverage3pt(w, N, w, false);
+  }
+  // does not really belong here
+  
 
-
-
-  /*
-  using Vec = std::vector<T>;
-  Vec w2(N), w3(N);
-  medianFilter3pt(w, N, &w2[0]);  // rename to movingMedian3pt and move to AT
-  AT::movingAverage3pt(&w2[0], N, &w3[0], false);
-  AT::movingAverage3pt(&w3[0], N, &w3[0], false);
-  AT::movingAverage3pt(&w3[0], N, &w3[0], false);
-  rsPlotArrays(N, w, &w2[0], &w3[0]);
-  rsPlotVectors(w2, w3);
-  // i think, 1 moving-median and 3 moving-average filters with 3 points give good-looking results
-  */
+  //rsPlotArrays(N, w);
 }
 
+template<class T>
+void phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
+{
+  T wi = w[0];
+  for(int n = 1; n < N; n++)
+  {
+    wi += w[n];
+    pm[n] = rsWrapToInterval(p[n]-wi, -PI, PI);
+  }
+}
+
+template<class T>
+void synthesizeFromAmpFreqPhaseMod(const T* a, const T* w, const T* pm, int N, T* y)
+{
+  T wi = w[0]; // integrated w
+  for(int n = 1; n < N; n++)
+  {
+    wi += w[n];
+    y[n] = a[n] * sin(wi + pm[n]);
+  }
+}
+// may be delayed...
 
 
 void testSineParameterEstimation()
@@ -972,7 +948,8 @@ void sineRecreationBandpassNoise()
   int n;
   for(n = 0; n < N; n++) {
     fa[n] = rsLinToLin(double(n), 0.0, N-1.0, f1, f2);  // actual instantaneous center freq
-    x[n]  = ng.getSample(); }
+    x[n]  = ng.getSample();
+  }
   for(int m = 0; m < numPasses; m++) {
     flt.reset();
     for(n = 0; n < N; n++) {
@@ -992,11 +969,11 @@ void sineRecreationBandpassNoise()
 
   // measure instantaneous frequency (with algo 1 - sine recursion formula):
   Vec fm1(N);
-  SPE::sigToOmegasViaFormula(&x[0], N, &fm1[0]); 
+  SPE::sigToOmegasViaFormula(&x[0], N, &fm1[0]);
   fm1 = (fs/(2*PI)) * fm1;
 
   // Create cleaned up version via 3-point median filter:
-  Vec fm1c(N); 
+  Vec fm1c(N);
   for(n = 1; n < N-1; n++)
     fm1c[n] = rsMedian(fm1[n-1], fm1[n], fm1[n+1]);
 
@@ -1006,7 +983,7 @@ void sineRecreationBandpassNoise()
     fm2[n] = rsSineFrequencyAt(&x[0], N, n, false) * (fs/(2*PI));
 
   // Create a median-filtered version of that also:
-  Vec fm2c(N);  
+  Vec fm2c(N);
   for(n = 1; n < N-1; n++)
     fm2c[n] = rsMedian(fm2[n-1], fm2[n], fm2[n+1]);
   // first an last value look wrong - for the moment, just repeat 2nd and 2nd-to-last:
@@ -1063,7 +1040,7 @@ void sineRecreationBandpassNoise()
   rsArrayTools::cumulativeSum(&w[0], &wi[0], N);  // maybe try trapezoidal integration instead
   for(n = 0; n < N; n++)
     pm[n] = rsWrapToInterval(p[n]-wi[n], -PI, PI);
- 
+
   // actual resynthesis
   Vec z(N);   // recreated signal 2 - rename to y2
   for(int n = 0; n < N; n++)
@@ -1071,7 +1048,7 @@ void sineRecreationBandpassNoise()
 
 
   // Use algo that estimates the amp-envelope first and bases everything else on that:
-  Vec a3(N), p3(N), w3(N);
+  Vec a3(N), p3(N), w3(N), pm3(N);
   SPE::sigToAmpsViaPeaks(&x[0], N, &a3[0]);
   SPE::sigAndAmpToPhase(&x[0], &a3[0], N, &p3[0]);  // may produce nans - fixed
 
@@ -1081,13 +1058,36 @@ void sineRecreationBandpassNoise()
   // try a nonlinear transformation of the amplitudes before and after the parabolic interpolation 
   // and/or try higher order interpolation
 
-  phaseToFreq(&p3[0], N, &w3[0], 0);
+  phaseToFreq(&p3[0], N, &w3[0], 10);
+
+  // obtain pm-signal from p3 and w3
+  phaseAndFreqToPhaseMod(&p3[0], &w3[0], N, &pm3[0]);
+
+
+  // when uncommented, no identity resynthesis:
+  for(int i = 0; i < 1000; i++)
+    rsArrayTools::movingAverage3pt(&pm3[0], N, &pm3[0]); 
+
+
+
+
+  // resynthesize from analysis with algo 3:
+  Vec y3(N);
+  synthesizeFromAmpFreqPhaseMod(&a3[0], &w3[0], &pm3[0], N, &y3[0]);
+  rsPlotVectors(pm3);
+  rsPlotVectors(x, y3, x-y3, a3);
+  // works! now do modifications...maybe filter the (unwrapped) phase-mod signal
+  //
+
+
+
+  //phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
 
   //rsPlotArrays(N, &x[0], &a3[0]);
   //rsPlotVectors(x, a3, p3);
 
   Vec xAbs = rsAbs(x);
-  rsPlotVectors(10.*xAbs, 10.*a3, p3, w3);
+  //rsPlotVectors(10.*xAbs, 10.*a3, p3, w3);
 
 
   Vec fm3c = (fs/(2*PI)) * w3;  // this actually is already cleaned up by a median-filter
@@ -1103,7 +1103,7 @@ void sineRecreationBandpassNoise()
   //rsPlotVectors(fa, fm2, fm2c);
   rsPlotVectors(fa, fm1c, fm2c, fm3c); // compare all 3 freq-estimates
 
-  rsPlotVectors(x, a, a3);  
+  //rsPlotVectors(x, a, a3);  
   // todo: make a1 and a2 arrays to compare all 3, plot the abs of x instead of x itself
   // ...a3 looks definitely much better...but maybe that's because we are using bad frequency
   // estimates in the other
