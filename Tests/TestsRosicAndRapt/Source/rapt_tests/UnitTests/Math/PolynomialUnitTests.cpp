@@ -606,19 +606,18 @@ bool testPolynomialInterpolation(std::string &reportString)
     {
       if(k != n)
       {
-        AT::convolveWithTwoElems(num, N, -x[k], 1.0, num); // maybe N can be replaced by k or k+1
+        AT::convolveWithTwoElems(num, k+1, -x[k], 1.0, num);
         den *= x[n] - x[k];
       }
     }
 
+    double s =  y[n]/den;
     for(int k = 0; k < N; k++)
-      a[k] += num[k] * y[n]/den;  // precompute y[n]/k
-
+      a[k] += num[k] * s;
 
     int dummy = 0;
   }
   // ok - that looks good!
-
 
 
   //---------------------------------------------------------------------------------
