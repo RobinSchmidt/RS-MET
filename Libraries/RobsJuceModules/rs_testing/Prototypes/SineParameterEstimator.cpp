@@ -5,7 +5,7 @@ void rsSineParameterEstimator<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T*
   // todo: switch between various algos that compute stuff in different orders
 
   sigToAmpsViaPeaks(x, N, a);     // here, a sub-switch for amp-estimation algo may take place
-  sigAndAmpToPhase( x, a, N, p); 
+  sigAndAmpToPhase(x, a, N, p); 
 }
 
 template<class T>
@@ -13,7 +13,11 @@ void rsSineParameterEstimator<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T
 {
   analyzeAmpAndPhase(x, N, a, pm);       // pm (phase-mod) temporarily used for phase itself
   phaseToFreq(pm, N, w);
+
+
   smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
+  // maybe allow the user to specify a custom function, what to do with the w-array before 
+  // computing the phase-mod array
 
   // todo: optionally smooth the freqs - with the raw freqs as computed, the phase-mod signal will
   // come out as zero... introduce freqSmoothingTime and numPasses
@@ -116,8 +120,8 @@ void rsSineParameterEstimator<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int
   // todo: pass y as xTest and x as xInterpolate
 
   //rsError("High preicison not yet implemented");
-
 }
+// get rid of the duplication
 
 template<class T>
 void rsSineParameterEstimator<T>::sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
@@ -134,7 +138,10 @@ void rsSineParameterEstimator<T>::phaseToFreq(const T* p, int N, T* w)
   for(int n = 0; n < N; n++)
     w[n] = rsWrapToInterval(p[n], 0.0, 2*PI); // is this needed? try without!
   rsArrayTools::unwrap(w, N, 2*PI); // look at code comment there - optimize!
+
   rsArrayTools::difference(w, N);
+  // this sets the first sample zero - it's actually a backwardDifference and we may need a forward
+  // difference y[n] = x[n+1] - x[n]
 }
 
 template<class T>

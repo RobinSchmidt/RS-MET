@@ -4,7 +4,7 @@
 /** A class for estimating the instantaneous parameters (frequency and/or phase, amplitude) of a 
 sinewave. */
 
-// maybe rename to rsPartialModeler
+// maybe rename to rsPartialModeler or rsSingleSineModeler
 
 template<class T>
 class rsSineParameterEstimator

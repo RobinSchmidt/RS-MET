@@ -276,6 +276,7 @@ public:
   operation will be performed iteratively on the respective result of the previous pass.  */
   template <class T>
   static void difference(T *buffer, int length, int order = 1, bool periodic = false);
+  // maybe rename to backwardDifference
 
   /** Divides the elements of 'buffer1' and 'buffer2' - type must define operator '/'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
