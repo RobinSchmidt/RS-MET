@@ -132,7 +132,7 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T*
   // to add handling for this case. I think, we should alias w into some smaller frequency...
 
 
-  if(w == 0.0 || w == PI )  // todo: use tolerance
+  if(w == 0.0 || w == PI )  // todo: use tolerance, maybe: if rsAbs(fmod(w, PI)) <= margin
   {
     *a = rsAbs(y0);
     if(y0 > 0)        *p = +PI/2;
@@ -140,20 +140,8 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T*
     else              *p =  0;
     return;
   }
-  /*
-  if( w == PI)  // todo: use tolerance
-  {
-    *a = rsAbs(y0);
-    if(y0 > 0)        *p = -PI/2;
-    else if(y0 < 0)   *p = +PI/2;
-    else              *p =  0;
-    return;
-  }
-  */
 
 
-  // todo: catch w = pi and w = -pi (with tolerance) - this is the Nyquist freq, corresponding to
-  // an alternating signal
 
 
   T s, c, sR;

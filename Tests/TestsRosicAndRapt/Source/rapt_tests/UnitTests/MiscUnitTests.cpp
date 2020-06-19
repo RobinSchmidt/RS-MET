@@ -420,6 +420,17 @@ bool testSingleSineIdentityResynthesis(
   return r;
 }
 
+// distance of x to a multiple of period p
+template<class T>
+T rsMarginToMultipleOf(T x, T p)
+{
+  rsAssert(p > 0);
+  x = rsAbs(x);
+  x = fmod(x, p);
+  return rsMin(x, p-x);
+}
+// move to rapt
+
 bool testSingleSineFormulas()
 {
   bool r = true;
@@ -504,6 +515,26 @@ bool testSingleSineFormulas()
   // todo: use an omega that is close to zero but not exactly - figure out the desired tolerance
 
   // When w = pi (Nyquist frequency), ...
+
+  double tmp;
+  tmp = fmod( 3.14, PI);
+  tmp = fmod(-3.14, PI);
+  tmp = fmod( 3.15, PI);
+  tmp = fmod(-3.15, PI);
+
+  // should all be 1:
+  tmp = rsMarginToMultipleOf(  1.0, 10.0);
+  tmp = rsMarginToMultipleOf( -1.0, 10.0);
+  tmp = rsMarginToMultipleOf(  9.0, 10.0);
+  tmp = rsMarginToMultipleOf( -9.0, 10.0);
+  tmp = rsMarginToMultipleOf( 11.0, 10.0);
+  tmp = rsMarginToMultipleOf(-11.0, 10.0);
+  // make unit test somwhere in rea-function tests
+
+
+
+
+  // maybe make a function rsMarginToMultipleOf(T x, T period)
 
   ssm.phaseAndAmpFormulaForward(0, 0, -PI, &a, &p);  // -0,-0
 
