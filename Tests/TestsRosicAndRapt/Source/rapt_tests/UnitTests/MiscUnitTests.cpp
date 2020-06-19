@@ -358,8 +358,8 @@ bool singleSineModelerUnitTest()
   using Vec = std::vector<double>;
   using SSM = rsSingleSineModeler<double>;
 
-  int N = 1000; // number of samples
-  double tol = 1.e-12;
+  int N = 1000;         // number of samples in test signal
+  double tol = 1.e-12;  // tolerance for identity resynthesis
 
   // Test to resynthesize white noise - the analysis data may be meaningless in this case, but 
   // identity resynthesis should work nevertheless:
@@ -367,27 +367,23 @@ bool singleSineModelerUnitTest()
   Vec a(N), w(N), p(N), pm(N);           // analysis data
   Vec y(N);                              // resynthesized signal
   Vec err;
-
   SSM ssm;
 
   ssm.analyzeAmpAndPhase(&x[0], N, &a[0], &p[0]);
   ssm.synthesizeFromAmpAndPhase(&a[0], &p[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
-  err = x-y;  // for inspection
+  //err = x-y;  // for inspection
 
-  rsFill(y, 0.0);
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   ssm.synthesizeFromAmpAndFreq(&a[0], &w[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
-  err = x-y;  // for inspection
+  //err = x-y;  // for inspection
 
-  //y[0] = 0;
-  rsFill(y, 0.0);
   ssm.setFreqSmoothing(1, 3);
   ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
   ssm.synthesizeFromAmpFreqPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
-  err = x-y;  // for inspection
+  //err = x-y;  // for inspection
 
   // Set the freq-smoothing in ssm to zero and check, if the pm comes out as zero in this 
   // case:
@@ -397,10 +393,24 @@ bool singleSineModelerUnitTest()
   r &= rsMaxAbs(pm) <= tol;
   r &= rsAreVectorsEqual(x, y, tol);
 
-
-
   // todo: test to analyze a perfect sinewave and see, if the analysis data makes sense....then 
   // maybe make it more difficult by introducing a frequency sweep, amplitude fade, etc....
+
+  double as = 0.2;   // amplitude of the sine
+  double ws = 0.1;   // omega of the sine
+  for(int n = 0; n < N; n++)
+    x[n] = as * sin(ws*n);
+
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  rsPlotVectors(x, a, w); 
+  // looks good - todo: check automatically, if result is good
+
+
+  //// leads to NaN in w and pm:
+  //ssm.setFreqSmoothing(1, 3);
+  //ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
+  //rsPlotVectors(x, a, w, pm);
+
 
 
 
