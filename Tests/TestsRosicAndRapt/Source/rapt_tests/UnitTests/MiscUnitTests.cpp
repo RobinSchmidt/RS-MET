@@ -419,6 +419,46 @@ bool testSingleSineIdentityResynthesis(
   return r;
 }
 
+bool testSingleSineFormulas()
+{
+  bool r = true;
+  rsSingleSineModeler<double> ssm;
+
+  // test edge cases for the freq-formula:
+  double w;
+  w = ssm.freqFormula( 0,  0,  0);  // returns nan, should return 0 
+  w = ssm.freqFormula(+1, +1, +1);  // returns 0  -> correct
+  w = ssm.freqFormula(-1, -1, -1);  // returns 0  -> correct
+  w = ssm.freqFormula(+1, -1, +1);  // returns pi -> correct? nyquist-freq?
+  w = ssm.freqFormula(-1, +1, -1);
+  w = ssm.freqFormula( 0, +1,  0);  // returns pi/2
+  w = ssm.freqFormula(-1,  0, +1);  // returns nan, should return
+  w = ssm.freqFormula( 0, +1, +2);  // returns 0
+  w = ssm.freqFormula(+1, +2, +3);  // returns 0
+  w = ssm.freqFormula(+1, +2, +1);  // returns 1.0471975511965979
+  // maybe check the derivation - did we assume something that does not always hold?
+  // todo: check results...
+
+  // todo: test edge cases for phaseAndAmpFormulaForward/Backward/Central
+  double p, a;
+  ssm.phaseAndAmpFormulaForward( 0,  0, 0, &a, &p);  // a,p = 0,0
+  ssm.phaseAndAmpFormulaForward( 1,  1, 0, &a, &p);  // 0,0
+  ssm.phaseAndAmpFormulaForward( 1,  0, 0, &a, &p);  // 0,pi
+  ssm.phaseAndAmpFormulaForward( 0,  1, 0, &a, &p);  // 0,0
+  ssm.phaseAndAmpFormulaForward( 1,  2, 0, &a, &p);  // 0,0
+  ssm.phaseAndAmpFormulaForward( 2,  1, 0, &a, &p);  //  huge, pi
+  ssm.phaseAndAmpFormulaForward( 1, -1, 0, &a, &p);  // -huge, pi
+  ssm.phaseAndAmpFormulaForward(-1,  1, 0, &a, &p);  // 0,-0
+
+  ssm.phaseAndAmpFormulaForward(0, 0,  PI, &a, &p);  // 0,0
+  ssm.phaseAndAmpFormulaForward(0, 0, -PI, &a, &p);  // -0,-0
+
+  // maybe use a lambda-function as shortcut/alias name
+
+
+  return r;
+}
+
 bool singleSineModelerUnitTest()
 {
   bool r = true;
@@ -437,22 +477,8 @@ bool singleSineModelerUnitTest()
   //Vec err;
   SSM ssm;
 
-  // test edge cases for the freq-formula:
-  double val;
-  val = ssm.freqFormula( 0,  0,  0);  // returns nan, should return 0 
-  val = ssm.freqFormula(+1, +1, +1);  // returns 0  -> correct
-  val = ssm.freqFormula(-1, -1, -1);  // returns 0  -> correct
-  val = ssm.freqFormula(+1, -1, +1);  // returns pi -> correct? nyquist-freq?
-  val = ssm.freqFormula(-1, +1, -1);
-  val = ssm.freqFormula( 0, +1,  0);  // returns pi/2
-  val = ssm.freqFormula(-1,  0, +1);  // returns nan, should return
-  val = ssm.freqFormula( 0, +1, +2);  // returns 0
-  val = ssm.freqFormula(+1, +2, +3);  // returns 0
-  val = ssm.freqFormula(+1, +2, +1);  // returns 1.0471975511965979
-  // maybe check the derivation - did we assume something that does not always hold?
 
-  // todo: test edge cases for phaseAndAmpFormulaForward/Backward/Central
-
+  r &= testSingleSineFormulas();
 
   ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
   r &= testSingleSineIdentityResynthesis(ssm, x);
