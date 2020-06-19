@@ -125,22 +125,48 @@ void rsSingleSineModeler<T>::synthesizeFromAmpFreqAndPhaseMod(
 template<class T>
 void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T* p)
 {
-  if(w == 0.0)  // use tolerance
+  rsAssert(rsAbs(w) <= PI);
+  // What if |w| > pi? Should we handle that case also? In the analysis, this can't occur because 
+  // our w-values come from freqFormula which produces values only in the range -pi..+pi due to 
+  // the acos function. But if the function is supposed to be used in other contexts, we may have
+  // to add handling for this case. I think, we should alias w into some smaller frequency...
+
+
+  if(w == 0.0 || w == PI )  // todo: use tolerance
   {
     *a = rsAbs(y0);
-    if(y0 > 0)
-      *p = +PI/2;
-    else if(y0 < 0)
-      *p = -PI/2;
-    else
-      *p = 0;
+    if(y0 > 0)        *p = +PI/2;
+    else if(y0 < 0)   *p = -PI/2;
+    else              *p =  0;
     return;
-    // maybe y1 should also be taken into account?
   }
+  /*
+  if( w == PI)  // todo: use tolerance
+  {
+    *a = rsAbs(y0);
+    if(y0 > 0)        *p = -PI/2;
+    else if(y0 < 0)   *p = +PI/2;
+    else              *p =  0;
+    return;
+  }
+  */
+
+
+  // todo: catch w = pi and w = -pi (with tolerance) - this is the Nyquist freq, corresponding to
+  // an alternating signal
+
 
   T s, c, sR;
   rsSinCos(w, &s, &c);
-  *p = atan2(y0*s, yR-y0*c);
+
+  T x = yR-y0*c;
+  T y = y0*s;
+
+  *p = atan2(y, x);  // computes atan(y/x) - so we should make sure that x != 0
+
+  //*p = atan2(y0*s, yR-y0*c);
+
+
   s  = sin(*p);
   sR = sin(*p + w);
   if( rsAbs(s) > rsAbs(sR) )
@@ -300,7 +326,7 @@ void rsSingleSineModeler<T>::sigAndFreqToPhaseAndAmp(const T* x, const T* w, int
     T xn = x[n];
     T pn = p[n];
     T an = a[n];
-    rsAssert(an < 10.0); // debug
+    //rsAssert(an < 10.0); // debug
 
 
     //rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &p[n]); // move this function to here

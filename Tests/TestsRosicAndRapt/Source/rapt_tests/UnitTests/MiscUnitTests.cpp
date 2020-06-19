@@ -367,8 +367,8 @@ bool testSingleSineIdentityResynthesis(
 
   //rsPlotVector(x);
 
-  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
-  rsPlotVectors(a, w);
+  //ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  //rsPlotVectors(a, w);
 
 
   // Test resynthesis from amp and phase:
@@ -385,6 +385,7 @@ bool testSingleSineIdentityResynthesis(
   // 290, 395 and 928 have also single-sample errors
   // at 775: w = 0
   // at 137, 290, 395, 928: w = PI
+  // ok - the error around zero has been fixed - but onyl for exactly zero
 
   // Test resynthesis from amp and freq:
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
@@ -430,7 +431,7 @@ bool testSingleSineFormulas()
   w = ssm.freqFormula(+1, +1, +1);  // returns 0  -> correct
   w = ssm.freqFormula(-1, -1, -1);  // returns 0  -> correct
   w = ssm.freqFormula(+1, -1, +1);  // returns pi -> correct? nyquist-freq?
-  w = ssm.freqFormula(-1, +1, -1);
+  w = ssm.freqFormula(-1, +1, -1);  // returns also pi ..can we actually get -pi?
   w = ssm.freqFormula( 0, +1,  0);  // returns pi/2
   w = ssm.freqFormula(-1,  0, +1);  // returns nan, should return
   w = ssm.freqFormula( 0, +1, +2);  // returns 0
@@ -438,12 +439,38 @@ bool testSingleSineFormulas()
   w = ssm.freqFormula(+1, +2, +1);  // returns 1.0471975511965979
   // maybe check the derivation - did we assume something that does not always hold?
   // todo: check results...
+  // how do we get negative frequencies? do we want them actually?
 
   // todo: test edge cases for phaseAndAmpFormulaForward/Backward/Central
-  double tmp;
-  tmp = 1 * sin(PI/2);
+  double y0, yR, tmp;
+
 
   double p, a;                                       // a, p =
+
+  a = 2.0;
+  p = 0.25;
+  w = PI;
+  y0 = a * sin(p);
+  yR = a * sin(p + w);
+  // represents a sinusoid oscillating with amplitude a at the Nyquist freq - but we don't know
+  // the phase - at the Nyquist freq, the phase can not be estimated from two samples because 
+  // phase-shifts just lead to an amplitude decrease of the alternating values - maybe the most
+  // sensible thing is to assume a phase of pi/2 (i.e. a cosine wave) with a maximum at time zero
+  // when y0 is positive and -pi/2 when y0 is negative - i think we can just use the same handler 
+  // as for w = 0 ...can this also be used for w = -pi...or do we need to invert the phase info?
+  // ...probably not - i think, we can use the same handling for 0,pi,-pi - maybe we can use 
+  // w % pi to handle special cases for w = k*pi
+
+  ssm.phaseAndAmpFormulaForward(y0, yR, w, &a, &p);  // 0,0
+  tmp = a * sin(p);  // should be the same as y0 - but is its negative
+  // Even though the estimated phase and amplitude are different, the tmp sample is equal to y0.
+  // We have found another combination of a and p that is consistent with y0 and w=pi
+
+
+  // we may implement a function testOneSampleResynthesis(a, p, w);
+
+
+  ssm.phaseAndAmpFormulaForward(0,  0,  PI, &a, &p);  // 0,0
 
   // When w = 0, the 1st argument's absolute value should be returned as amplitude and the phase 
   // should be pi/2 or -pi/2, dependning on the sign of the first argument. The 2nd argument 
@@ -458,9 +485,13 @@ bool testSingleSineFormulas()
   ssm.phaseAndAmpFormulaForward(-1,  1, 0, &a, &p);  // 1,-pi/2
   ssm.phaseAndAmpFormulaForward(-2,  1, 0, &a, &p);  // 2,-pi/2
 
+  // todo: use an omega that is close to zero but not exactly - figure out the desired tolerance
+
   // When w = pi (Nyquist frequency), ...
 
-  ssm.phaseAndAmpFormulaForward(0, 0,  PI, &a, &p);  // 0,0
+
+
+
   ssm.phaseAndAmpFormulaForward(0, 0, -PI, &a, &p);  // -0,-0
 
   // maybe use a lambda-function as shortcut/alias name
