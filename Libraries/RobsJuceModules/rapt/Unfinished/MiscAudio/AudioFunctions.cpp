@@ -104,7 +104,7 @@ T rsSineFrequency(T y0, T y1, T y2, T smalll)
 }
 
 template<class T>
-T rsSineFrequencyAtCore(T *x, int N, int n0, T smalll)
+T rsSineFrequencyAtCore(const T *x, int N, int n0, T smalll)
 {
   if( n0 <= 0 )
     n0 = 1;
@@ -122,7 +122,7 @@ T rsSineFrequencyAtCore(T *x, int N, int n0, T smalll)
 
 
 template<class T>
-T refineFrequencyEstimate(T *x, int N, int n, T w)
+T refineFrequencyEstimate(const T *x, int N, int n, T w)
 {
   T c = 2.0 / 3.0;  // found empirically
   T w1;             // w measured with 1 sample offset
@@ -160,7 +160,7 @@ T refineFrequencyEstimate(T *x, int N, int n, T w)
 }
 
 template<class T>
-T rsSineFrequencyAt(T *x, int N, int n0, bool refine)
+T rsSineFrequencyAt(const T *x, int N, int n0, bool refine)
 {
   // find indices of maxima/minima before and after the sample-index in question, taking into
   // account cases where our index n0 is not surrounded by peaks/valley in which case we take the

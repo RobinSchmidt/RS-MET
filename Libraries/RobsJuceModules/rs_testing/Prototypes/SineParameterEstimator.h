@@ -106,7 +106,7 @@ public:
   a sample is to zero. */
   static void sigToFreqViaFormula(const T* x, int N, T* w);
 
-  //static void sigToFreqViaZeros(const T* x, int N, T* w);
+  static void sigToFreqViaZeros(const T* x, int N, T* w);
 
 
   /** Estimates the amplitude envelope of the signal x via coennecting peaks with linear 

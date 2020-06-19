@@ -1,6 +1,7 @@
 #ifndef RAPT_AUDIOFUNCTIONS_H
 #define RAPT_AUDIOFUNCTIONS_H
 
+// make functions const-correct
 // todo: maybe wrap into class, get rid of redundant implementations
 // ...many of the functions here should go into class rsSineParameterEstimator
 // merge with other AudioFunctions.h file make another file AudioAnalysisFunctions
@@ -68,7 +69,7 @@ of n0 is close to zero), the actual measurement point might be shifted (by at mo
 which should be inconsequential, if the sinuosoid has a stable frequency. The function is used
 internally by rsSineFrequencyAt which is probably the function, you want to use instead. */
 template<class T>
-T rsSineFrequencyAtCore(T *x, int N, int n0, T smalll = 1.e-8);
+T rsSineFrequencyAtCore(const T *x, int N, int n0, T smalll = 1.e-8);
   // find a better name
 
 /** Assuming a sinusoidal input signal x of length N (and unknown frequency), this function
@@ -81,7 +82,7 @@ used and the frequency value will be linearly extrapolated. This implies, for th
 work, the caller must make sure that there are at least one peak and one valley in the input
 signal. */
 template<class T>
-T rsSineFrequencyAt(T *x, int N, int n0, bool refine = false);
+T rsSineFrequencyAt(const T *x, int N, int n0, bool refine = false);
  // todo: give the function another parameter that crosfades between arithmetic and geometric 
  // mean/extrapolation
 

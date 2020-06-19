@@ -228,15 +228,12 @@ void rsSingleSineModeler<T>::sigToFreqViaFormula(const T* x, int N, T* w)
   // r == w is allowed, is also x == w allowed? not so important but would be nice
 }
 
-/*
 template<class T>
 void rsSingleSineModeler<T>::sigToFreqViaZeros(const T* x, int N, T* w)
 {
   for(int n = 0; n < N; n++)
     w[n] = rsSineFrequencyAt(x, N, n, false);
 }
-// doesn't compile because of constness of x
-*/
 
 template<class T>
 void rsSingleSineModeler<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int precision)
