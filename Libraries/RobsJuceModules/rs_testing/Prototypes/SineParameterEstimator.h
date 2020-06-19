@@ -1,6 +1,6 @@
 #ifndef RAPT_SINEPARAMETERESTIMATOR_H_INCLUDED
 #define RAPT_SINEPARAMETERESTIMATOR_H_INCLUDED
-// todo: rename files!
+// todo: rename files and change the #define to reflect the new class name
 
 /** A class for modeling any signal x[n] as a single sinusoid with time-varying amplitude and 
 frequency and/or phase, like:
@@ -20,7 +20,16 @@ class rsSingleSineModeler
 
 public:
 
-
+  /** The various options for the analysis algorithm. This determines the order in which the 
+  2 or 3 instantaneous parameters are estimated. ...ToDo: explain this more - what effects do 
+  the different choices have etc....estimating amp first gives nictes/smoothest amp-env estimate, 
+  etc... */
+  enum class Algorithm
+  {
+    ampViaPeaks,       /**< First estimates amp-env from peaks, then phase, then freq. */
+    freqViaZeros,      /**< First estimates freq via zero crossings, then phase, then amp. */
+    freqViaFormula     /**< First estimates freq via formula, then phase, then amp. */
+  };
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -147,6 +156,8 @@ protected:
   int freqAverageOrder = 3;
 
   int ampEnvPrecision  = 1;
+
+  Algorithm algo = Algorithm::ampViaPeaks;
 
 };
 

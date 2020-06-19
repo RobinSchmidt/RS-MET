@@ -435,24 +435,19 @@ bool singleSineModelerUnitTest()
   r &= testSingleSineIdentityResynthesis(ssm, x);
 
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
-  //ssm.synthesizeFromAmpAndFreq(&a[0], &w[0], N, &y[0]);
-  //r &= rsAreVectorsEqual(x, y, tol);
-  rsPlotVectors(x, a, w); 
+  //rsPlotVectors(x, a, w); 
   // looks good - todo: check automatically, if result is good
 
-  // sigToAmpsViaPeaks may produce zero - the sigAndAmpToPhase may produce NaN
-
-
-  //// leads to NaN in w and pm:
   ssm.setFreqSmoothing(1, 3);
   ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
-  //ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
-  //r &= rsAreVectorsEqual(x, y, tol);
-  rsPlotVectors(x, a, w, pm);
+  //rsPlotVectors(x, a, w, pm);
+  // looks also good - we need some automatic check for this, too
 
 
 
-
+  // ToDo (as experiment, not unit test): try analyzing a (lowpassed) sawtooth wave, a 
+  // freq- or phase-modulated sine (see, if we can retrieve and/or convert the modulation signal)
+  // a "plucked" sound, etc...
 
   return r;
 }
