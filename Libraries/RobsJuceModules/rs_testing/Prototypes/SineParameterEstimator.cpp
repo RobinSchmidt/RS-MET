@@ -149,7 +149,7 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T*
 
   *p = atan2(y, x);  
   // computes atan(y/x) - so we should make sure that x != 0 - can this occur? ..yes - when
-  // yR == y0*cos(w)
+  // yR == y0*cos(w) - but this is no problem - atan2 handles this case itself
 
   //*p = atan2(y0*s, yR-y0*c);
 

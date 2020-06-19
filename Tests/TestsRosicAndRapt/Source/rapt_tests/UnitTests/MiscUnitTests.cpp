@@ -507,14 +507,15 @@ bool testSingleSineFormulas()
     r &= testForwardFormula2(-2, 1, k*PI, 2, -pi2);
   }
 
-
-  // When w = pi (Nyquist frequency), the same branch applies, so we may not need separate tests
-  // for those
-
-
-
-
-
+  w = 0.5;
+  double a = 1.5;
+  double p = 0.3;
+  double y0 = a * sin(p);
+  double yR = a * sin(p + w);
+  double a2, p2;
+  ssm.phaseAndAmpFormulaForward(y0, yR, w, &a2, &p2);
+  yR = y0*cos(w); // causes atan2(y0*sin(w), 0) - no problem, atan2 handles zero denoms
+  ssm.phaseAndAmpFormulaForward(y0, yR, w, &a2, &p2);
 
   return r;
 }
