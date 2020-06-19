@@ -62,6 +62,9 @@ public:
   void analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm) const;
 
 
+  void sigToFreq(const T* x, int N, T* w) const;
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Synthesis */
 

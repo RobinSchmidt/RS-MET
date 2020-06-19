@@ -11,7 +11,7 @@ void rsSingleSineModeler<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T* p) c
     return;  }
 
   if(algo == Algorithm::freqViaFormula) {
-    sigToFreqViaFormula(x, N, p);
+    sigToFreq(x, N, p);
     sigAndFreqToPhaseAndAmp(x, p, N, p, a);
     return;  }
 
@@ -27,7 +27,7 @@ void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w) co
     return; }
 
   if(algo == Algorithm::freqViaFormula) {
-    sigToFreqViaFormula(x, N, w);
+    sigToFreq(x, N, w);
     sigAndFreqToPhaseAndAmp(x, w, N, w, a);
     rsArrayTools::difference(w, N);
     // sigAndFreqToAmp(x, w, N, a); instead of sigAndFreqToPhaseAndAmp -> difference does not 
@@ -53,8 +53,8 @@ void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, 
     // ones in analyzeAmpAndFreq, but the arguments to the called functions are different.
     return;  }
 
-  if(algo == Algorithm::freqViaFormula){    
-    sigToFreqViaFormula(x, N, w);
+  if(algo == Algorithm::freqViaFormula){
+    sigToFreq(x, N, w);
     if(freqMedianOrder > 0 && freqAverageOrder > 0) {
       sigAndFreqToPhaseAndAmp(x, w, N, pm, a);
       smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
@@ -68,6 +68,14 @@ void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, 
   rsError("Unknown algorithm");
 }
 
+template<class T>
+void rsSingleSineModeler<T>::sigToFreq(const T* x, int N, T* w) const
+{
+  if(algo == Algorithm::freqViaFormula)
+    sigToFreqViaFormula(x, N, w);
+  else
+    sigToFreqViaZeros(x, N, w);
+}
 
 
 //-------------------------------------------------------------------------------------------------
