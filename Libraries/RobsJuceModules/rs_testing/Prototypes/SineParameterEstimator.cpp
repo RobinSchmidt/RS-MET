@@ -40,7 +40,20 @@ void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w) co
   case Algorithm::freqViaFormula:  // needs test
   {
     sigToOmegasViaFormula(x, N, w);
-    sigAndFreqToAmp(x, w, N, a);
+
+    /*
+    sigAndFreqToAmp(x, w, N, a); 
+    // hmm - it seems, we can not use the omegas from the freq-estimation pass - we need indeed
+    // compute the phases and difference them - why? or is this just an offset issue? try with
+    // a sinewave
+
+    //rsArrayTools::shift(&w[0], N, +1);
+    */
+
+    sigAndFreqToPhaseAndAmp(x, w, N, w, a);
+    rsArrayTools::difference(w, N);
+
+
   } break;
 
 
@@ -312,23 +325,8 @@ template<class T>
 void rsSingleSineModeler<T>::sigAndFreqToPhaseAndAmp(const T* x, const T* w, int N, T* p, T* a)
 {
   for(int n = 0; n < N-1; n++)
-  {
     phaseAndAmpFormulaForward(x[n], x[n+1], w[n], &a[n], &p[n]);
-
-
-    T xn = x[n];
-    T pn = p[n];
-    T an = a[n];
-    //rsAssert(an < 10.0); // debug
-
-
-    //rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &p[n]); // move this function to here
-  }
-  // what about the last value? maybe we need the backward formula?
-
   phaseAndAmpFormulaBackward(x[N-1], x[N-2], w[N-1], &a[N-1], &p[N-1]);
-
-  //phaseAndAmpFormulaBackward(x[N-1], x[N-2], w[n], &a[n], &dummy);
 }
 
 template<class T>
@@ -336,14 +334,8 @@ void rsSingleSineModeler<T>::sigAndFreqToAmp(const T* x, const T* w, int N, T* a
 {
   T dummy; // for the phase output argument of the called function which we are not interested in
   for(int n = 0; n < N-1; n++)
-  {
     phaseAndAmpFormulaForward(x[n], x[n+1], w[n], &a[n], &dummy);
-
-    //rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &dummy);
-  }
-
   phaseAndAmpFormulaBackward(x[N-1], x[N-2], w[N-1], &a[N-1], &dummy);
-
 
   // what about the last value? use the backward formula - maybe use forward formula only for 
   // sample 0 and a central formula for 1...N-2

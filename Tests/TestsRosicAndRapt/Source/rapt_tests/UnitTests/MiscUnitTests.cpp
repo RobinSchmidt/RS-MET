@@ -384,6 +384,10 @@ bool testSingleSineIdentityResynthesis(
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   ssm.synthesizeFromAmpAndFreq(&a[0], &w[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
+
+  //Vec tmp(N);
+  //rsArrayTools::cumulativeSum(&w[0], &tmp[0], N); // should equal p-array
+
   err = x-y;  // for inspection
   rsPlotVectors(err);
   // ...now this test fails with freqViaFormula - error is at amplitudes between 2 and 3
@@ -423,6 +427,9 @@ bool testSingleSineFormulas()
   bool r = true;
   rsSingleSineModeler<double> ssm;
 
+  double tol = 1.e-13;   // tolerance for the error
+
+  // This is incomplete - the automatic checks are missing
   // test edge cases for the freq-formula:
   double w;
   w = ssm.freqFormula( 0,  0,  0);  // returns nan, should return 0 
@@ -442,9 +449,6 @@ bool testSingleSineFormulas()
   // todo: test edge cases for phaseAndAmpFormulaForward/Backward/Central
 
 
-  double tol = 1.e-13;   // tolerance for the error
-
-  double e300 = 1.e-300;
 
   // A function to test whether amplitude a and phase p can be retrieved from a sinusoid vai the
   // forward formula. For edge cases, we can't compute correct amplitudes and phases anymore, but
@@ -467,17 +471,9 @@ bool testSingleSineFormulas()
       double yR2 = a2 * sin(p2 + w);
       return rsIsCloseTo(y0, y02, tol) && rsIsCloseTo(yR, yR2, tol); }
   };
-
+  double e300 = 1.e-300;
   r &= testForwardFormula(3, 2,  e300, true); // if not handled, it still returns correct values
   r &= testForwardFormula(3, 2, -e300, true);
-
-  //r &= testForwardFormula(3, 2,  e300, false); // if not handled, it still returns correct values
-  //r &= testForwardFormula(3, 2, -e300, false); // returns wrong values if not handled
-  // Without edge-case handling in the function, with w = e-300, we still can compute correct 
-  // values, but with -e300, we get both amplitude and phase sign-inverted - which means, the 
-  // values are still viable for resynthesis - however, we want positive amplitudes - is this 
-  // actually guaranteed?
-
   r &= testForwardFormula(3, 2,     0, true);
   r &= testForwardFormula(3, 2,     1, false);
   r &= testForwardFormula(3, 2,    PI, true);
@@ -527,7 +523,7 @@ bool singleSineModelerUnitTest()
   using Vec = std::vector<double>;
   using SSM = rsSingleSineModeler<double>;
 
-  int N = 5000;         // number of samples in test signal
+  int N = 1000;         // number of samples in test signal
   double tol = 1.e-12;  // tolerance for identity resynthesis
 
   // Test to resynthesize white noise - the analysis data may be meaningless in this case, but 
@@ -541,17 +537,13 @@ bool singleSineModelerUnitTest()
 
   r &= testSingleSineFormulas();
 
+
   ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
   r &= testSingleSineIdentityResynthesis(ssm, x);
   // this still fails - figure out why!
 
   ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
   r &= testSingleSineIdentityResynthesis(ssm, x);
-
-
-
-
-
 
 
 
@@ -563,6 +555,9 @@ bool singleSineModelerUnitTest()
   double ws = 0.1;   // omega of the sine
   for(int n = 0; n < N; n++)
     x[n] = as * sin(ws*n);
+
+
+
 
   r &= testSingleSineIdentityResynthesis(ssm, x);
 
