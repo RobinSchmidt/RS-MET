@@ -353,7 +353,7 @@ bool harmonicAnalyzerUnitTest()
 
 // note that this may change the settings of the ssm
 bool testSingleSineIdentityResynthesis(
-  rsSingleSineModeler<double>& ssm, const std::vector<double>& x)
+  rsSingleSineModeler<double>& ssm, const std::vector<double>& x, double tol)
 {
   bool r = true;
 
@@ -363,7 +363,7 @@ bool testSingleSineIdentityResynthesis(
   Vec a(N), w(N), p(N), pm(N);           // analysis data
   Vec y(N);                              // resynthesized signal
   Vec err;
-  double tol = 1.e-12;  // tolerance for identity resynthesis
+  //double tol = 1.e-12;  // tolerance for identity resynthesis
 
 
   // Test resynthesis from amp and phase:
@@ -410,20 +410,20 @@ bool testSingleSineIdentityResynthesis(
 }
 
 bool testSingleSineResynthesisAlgos(
-  rsSingleSineModeler<double>& ssm, const std::vector<double>& x)
+  rsSingleSineModeler<double>& ssm, const std::vector<double>& x, double tol)
 {
   bool r = true;
 
   using SSM = rsSingleSineModeler<double>;
 
   ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
-  r &= testSingleSineIdentityResynthesis(ssm, x);
+  r &= testSingleSineIdentityResynthesis(ssm, x, tol);
 
   ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
-  r &= testSingleSineIdentityResynthesis(ssm, x);
+  r &= testSingleSineIdentityResynthesis(ssm, x, tol);
 
   ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaZeros);
-  r &= testSingleSineIdentityResynthesis(ssm, x);
+  r &= testSingleSineIdentityResynthesis(ssm, x, tol);
 
   return r;
 }
@@ -530,7 +530,9 @@ bool singleSineModelerUnitTest()
   using SSM = rsSingleSineModeler<double>;
 
   int N = 1000;         // number of samples in test signal
-  double tol = 1.e-12;  // tolerance for identity resynthesis
+  double tol = 1.e-13;  // tolerance for identity resynthesis
+  // the higher N, the higher the tolerance must be - we have accumulating errors for longer
+  // signals. For N = 1000, 1.e-12 works
 
   // Test to resynthesize white noise - the analysis data may be meaningless in this case, but 
   // identity resynthesis should work nevertheless:
@@ -542,7 +544,7 @@ bool singleSineModelerUnitTest()
 
 
   r &= testSingleSineFormulas();
-  r &= testSingleSineResynthesisAlgos(ssm, x);
+  r &= testSingleSineResynthesisAlgos(ssm, x, tol);
 
 
 
@@ -555,7 +557,7 @@ bool singleSineModelerUnitTest()
   for(int n = 0; n < N; n++)
     x[n] = as * sin(ws*n);
 
-  r &= testSingleSineResynthesisAlgos(ssm, x);
+  r &= testSingleSineResynthesisAlgos(ssm, x, tol);
 
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   //rsPlotVectors(x, a, w); 
