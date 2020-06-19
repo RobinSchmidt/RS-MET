@@ -444,7 +444,10 @@ bool testSingleSineFormulas()
   // todo: test edge cases for phaseAndAmpFormulaForward/Backward/Central
   double y0, yR, tmp;
 
-  double tol = 1.e-13;
+  double tol = 1.e-13;   // tolerance for the error
+
+  //double mrg = 1.e-11;   // margin for detecting edge cases
+  double e300 = 1.e-300;
 
   auto testForwardFormula = [=](double a, double p, double w, bool isEdgeCase = false)->bool
   { 
@@ -463,10 +466,17 @@ bool testSingleSineFormulas()
       return rsIsCloseTo(y0, y02, tol) && rsIsCloseTo(yR, yR2, tol);
     }
   };
-  r &= testForwardFormula(3, 2,   1, false);
-  r &= testForwardFormula(3, 2,   0, true);
-  r &= testForwardFormula(3, 2,  PI, true);
-  r &= testForwardFormula(3, 2, -PI, true); // we don't even have a special handler for that but it works
+  r &= testForwardFormula(3, 2,  e300, false); // if not handled, it still returns correct values
+  r &= testForwardFormula(3, 2, -e300, false); // returns wrong values if not handled
+
+
+  r &= testForwardFormula(3, 2,     0, true);
+  r &= testForwardFormula(3, 2,     1, false);
+  r &= testForwardFormula(3, 2,    PI, true);
+  r &= testForwardFormula(3, 2,   -PI, true); // we don't even have a special handler for that but it works
+
+
+
 
 
   // for edge-cases, we can not assure that a2,p2 == a,p but we can still assure that y02 == y0
