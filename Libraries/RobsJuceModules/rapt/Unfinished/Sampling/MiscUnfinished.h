@@ -114,9 +114,42 @@ this structure. */
 struct rsFractionalIndex
 {
   int    intPart;   // integer part of the index
-  double fracPart;  // fractional part of the index
+  double fracPart;  // fractional part of the index   (in the range [0,1) ..right?)
+
+
+  /*
+  // todo: arithemtic operations, like so:
+  rsFractionalIndex operator+(const rsFractionalIndex& b)
+  {
+    rsFractionalIndex c;
+    c.intPart  = this->intPart  + b.intPart;
+    c.fracPart = this->fracPart + b.fracPart;
+    if(c.fracPart >= 1) { c.fracPart -= 1; c.intPart += 1; }
+    if(c.fracPart <  0) { c.fracPart += 1; c.intPart -= 1; }
+    return c;
+  }
+  */
+
+
 };
-// maybe move to rapt/Basics or rapt/Data
+// maybe move to rapt/Basics or rapt/Data, 
+// multiplication: (ci + cf) = (ai + af) * (bi + bf) = ai*bi + ai*bf + bi*af + af*bf
+// ai*bi is an integer multiplication - no problem, af*bf is a floating-point multiplication of two
+// numbers < 1 - no problem, the terms ai*bf and bi*af are int-times-float mutliplciations - maybe
+// they can be split like ai*bf = (n+k)*bf = n*bf + k*bf where n is a power of 2, such that n*bf 
+// can be computed without precision loss - the idea is to always immediately make the intermediate
+// float result as samll as possible and absorbing the larger stuff in the int result
+
+// Maybe use similar structure to represent unwrapped phase:
+/*
+struct rsPhase
+{
+  double wrappedPhase;
+  int cycleIndex;
+};
+// maybe these structs should also define arithmetic operations - then we should use a common 
+structure...maybe rsFloatAndInt, rsPeriodicOffset, rsPeriodicFloat
+*/
 
 
 /** A class with a collection of functions to find the zero-crossings in a signal, possibly with

@@ -2590,3 +2590,28 @@ int minimizeNewton(const F& f, T* x, int N, const T* h, T tol)
 // own stepsize-scaler which increases when two successive steps have the same sign for that 
 // direction and decreases when they have opposite sign? i think, the effect would be similar to
 // using a smoothed gradient as in the "rolling ball" algorithm
+
+
+//=================================================================================================
+
+/** Class for representing floating point numbers as fractional and integer part to avoid 
+precision loss for greate numbers.. */
+
+/*
+template<class T>
+struct rsFractionalIndex2
+{
+  rsFractionalIndex2 operator+(const rsFractionalIndex2& b)
+  {
+    rsFractionalIndex2 c;
+    c.i = this->i + b.i;
+    c.f = this->f + b.f;
+    if(c.f >= 1) { c.f -= 1; c.i += 1; }
+    if(c.f <  0) { c.f += 1; c.i -= 1; }
+    return c;
+  }
+
+  int i;  // integer part of the number
+  T   f;  // fractional part of the number
+};
+*/

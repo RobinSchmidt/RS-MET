@@ -375,23 +375,21 @@ bool testSingleSineIdentityResynthesis(
   ssm.analyzeAmpAndPhase(&x[0], N, &a[0], &p[0]);
   ssm.synthesizeFromAmpAndPhase(&a[0], &p[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
-  err = x-y;  // for inspection
-  rsPlotVectors(err, a, p);
-  // for example, sample 775 is wrong with freqViaFormula - there's a huge value in a and the phase
-  // is close to -pi ..or maybe exactly -pi? in phaseAndAmpFormulaForward, w = 0, s = sR = 1.e-16
-  // p is assigned to -pi, a is assigned to 0
-  // i think, w == 0 but y0 != yR
-  // see also 137,138,139 - there are 3 large errors in succession
-  // 290, 395 and 928 have also single-sample errors
-  // at 775: w = 0
-  // at 137, 290, 395, 928: w = PI
-  // ok - the error around zero has been fixed - but onyl for exactly zero
+  //err = x-y;  // for inspection
+  //rsPlotVectors(err);
+  //rsPlotVectors(err, a, p);
+
 
   // Test resynthesis from amp and freq:
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   ssm.synthesizeFromAmpAndFreq(&a[0], &w[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
   err = x-y;  // for inspection
+  rsPlotVectors(err);
+  // ...now this test fails with freqViaFormula - error is at amplitudes between 2 and 3
+  // with ampViaPeaks, the error increases over time (accumulation error? may this become a 
+  // problem? if so, can we solve it using wrapped phase and an integer k to represent unwrapped
+  // phase?)
 
   // Test resynthesis with (smoothed) freq and phase-modulation:
   ssm.setFreqSmoothing(1, 3);
@@ -470,43 +468,45 @@ bool testSingleSineFormulas()
       return rsIsCloseTo(y0, y02, tol) && rsIsCloseTo(yR, yR2, tol); }
   };
 
-  r &= testForwardFormula(3, 2,  e300, false); // if not handled, it still returns correct values
-  r &= testForwardFormula(3, 2, -e300, false); // returns wrong values if not handled
+  r &= testForwardFormula(3, 2,  e300, true); // if not handled, it still returns correct values
+  r &= testForwardFormula(3, 2, -e300, true);
+
+  //r &= testForwardFormula(3, 2,  e300, false); // if not handled, it still returns correct values
+  //r &= testForwardFormula(3, 2, -e300, false); // returns wrong values if not handled
   // Without edge-case handling in the function, with w = e-300, we still can compute correct 
   // values, but with -e300, we get both amplitude and phase sign-inverted - which means, the 
   // values are still viable for resynthesis - however, we want positive amplitudes - is this 
   // actually guaranteed?
-
 
   r &= testForwardFormula(3, 2,     0, true);
   r &= testForwardFormula(3, 2,     1, false);
   r &= testForwardFormula(3, 2,    PI, true);
   r &= testForwardFormula(3, 2,   -PI, true); // we don't even have a special handler for that but it works
 
-  double p, a;                                        // a, p =
-  ssm.phaseAndAmpFormulaForward(0,  0,  PI, &a, &p);  // 0,0
+  // at, pt: target values fotr amp and phase
+  auto testForwardFormula2 = [=](double y0, double yR, double w, double at, double pt)->bool
+  {
+    double a, p;
+    ssm.phaseAndAmpFormulaForward(y0, yR, w, &a, &p);
+    return a == at && p == pt;
+  };
 
-  // When w = 0, the 1st argument's absolute value should be returned as amplitude and the phase 
-  // should be pi/2 or -pi/2, dependning on the sign of the first argument. The 2nd argument 
-  // should not matter:
-  ssm.phaseAndAmpFormulaForward( 0,  0, 0, &a, &p);  // 0, 0
-  ssm.phaseAndAmpFormulaForward( 0,  1, 0, &a, &p);  // 0, 0
-  ssm.phaseAndAmpFormulaForward( 1,  1, 0, &a, &p);  // 1, pi/2
-  ssm.phaseAndAmpFormulaForward( 1,  0, 0, &a, &p);  // 1, pi/2
-  ssm.phaseAndAmpFormulaForward( 1,  2, 0, &a, &p);  // 1, pi/2
-  ssm.phaseAndAmpFormulaForward( 1, -1, 0, &a, &p);  // 1, pi/2
-  ssm.phaseAndAmpFormulaForward( 2,  1, 0, &a, &p);  // 2, pi/2
-  ssm.phaseAndAmpFormulaForward(-1,  1, 0, &a, &p);  // 1,-pi/2
-  ssm.phaseAndAmpFormulaForward(-2,  1, 0, &a, &p);  // 2,-pi/2
-  // todo: check, if values are correct: r &= rsIsCloseTo(a, 0, tol) ....
-  // or use a function taking y0, yR, w and the target values for a, p
+  double pi2 = PI/2;
+  r &= testForwardFormula2(0,  0, 0, 0,  0);
+  r &= testForwardFormula2(0,  1, 0, 0,  0);
+  r &= testForwardFormula2(1,  1, 0, 1,  pi2);
+  r &= testForwardFormula2(1,  0, 0, 1,  pi2);
+  r &= testForwardFormula2(1,  2, 0, 1,  pi2);
+  r &= testForwardFormula2(1, -1, 0, 1,  pi2);
+  r &= testForwardFormula2(2,  1, 0, 2,  pi2);
+  r &= testForwardFormula2(-1, 1, 0, 1, -pi2);
+  r &= testForwardFormula2(-2, 1, 0, 2, -pi2);
 
-  // todo: use an omega that is close to zero but not exactly - figure out the desired tolerance
-
-  // When w = pi (Nyquist frequency), ...
+  // When w = pi (Nyquist frequency), the same branch applies, so we may not need separate tests
+  // for those
 
 
-  ssm.phaseAndAmpFormulaForward(0, 0, -PI, &a, &p);  // -0,-0
+
 
 
 
@@ -520,7 +520,7 @@ bool singleSineModelerUnitTest()
   using Vec = std::vector<double>;
   using SSM = rsSingleSineModeler<double>;
 
-  int N = 1000;         // number of samples in test signal
+  int N = 5000;         // number of samples in test signal
   double tol = 1.e-12;  // tolerance for identity resynthesis
 
   // Test to resynthesize white noise - the analysis data may be meaningless in this case, but 
@@ -540,6 +540,10 @@ bool singleSineModelerUnitTest()
 
   ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
   r &= testSingleSineIdentityResynthesis(ssm, x);
+
+
+
+
 
 
 

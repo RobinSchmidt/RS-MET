@@ -125,14 +125,11 @@ void rsSingleSineModeler<T>::synthesizeFromAmpFreqAndPhaseMod(
 template<class T>
 void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T* p)
 {
-  rsAssert(rsAbs(w) <= PI);
-  // What if |w| > pi? Should we handle that case also? In the analysis, this can't occur because 
-  // our w-values come from freqFormula which produces values only in the range -pi..+pi due to 
-  // the acos function. But if the function is supposed to be used in other contexts, we may have
-  // to add handling for this case. I think, we should alias w into some smaller frequency...
+  const T margin = 1.e-12;  
+  // ad hoc - do tests, what is best - should be different for float and double maybe some 
+  // multiple of the epsilon? or maybe a power? maybe PI * pow(eps, 1.5) or something?
 
-
-  if(w == 0.0 || w == PI )  // todo: use tolerance, maybe: if rsAbs(fmod(w, PI)) <= margin
+  if( rsDistanceToMultipleOf(w, PI) <= margin )
   {
     *a = rsAbs(y0);
     if(y0 > 0)        *p = +PI/2;
@@ -150,7 +147,9 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T*
   T x = yR-y0*c;
   T y = y0*s;
 
-  *p = atan2(y, x);  // computes atan(y/x) - so we should make sure that x != 0
+  *p = atan2(y, x);  
+  // computes atan(y/x) - so we should make sure that x != 0 - can this occur? ..yes - when
+  // yR == y0*cos(w)
 
   //*p = atan2(y0*s, yR-y0*c);
 
@@ -160,8 +159,14 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T*
   if( rsAbs(s) > rsAbs(sR) )
     *a = y0 / s;
   else {
-    if(sR == 0.0)  // needs a tolerance
-      *a = 0.0;  // may not be a good idea - we don't want to enforce zero samples
+    if(sR == 0.0)
+    {  
+      *a = 0.0;  
+      // may not be a good idea - we don't want to enforce zero samples
+      // needs a tolerance - i think, we already ruled that out with the checks above - at least
+      // one of the sines must be > 0 because w is guranteed to be not too close to a half-period
+      // of the sine
+    }
     else
       *a = yR / sR; }
   // what if s and sR are both close to zero?, what if w == 0, but y0 != yR
