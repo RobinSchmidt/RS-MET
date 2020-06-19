@@ -445,6 +445,23 @@ bool testSingleSineFormulas()
   double y0, yR, tmp;
 
 
+  auto testOneSampleResynth = [=](double a, double p, double w)->bool
+  { 
+    double y0 = a * sin(p);
+    double yR = a * sin(p + w);
+    double a2, p2;  // computed values for amplitude and phase
+    ssm.phaseAndAmpFormulaForward(y0, yR, w, &a2, &p2);
+    double y02 = a2 * sin(p2);
+    double yR2 = a2 * sin(p2 + w);
+    return false;
+  };
+  //r &= testOneSampleResynth(3,2,1);
+  // for edge-cases, we can not assure that a2,p2 == a,p but we can still assure that y02 == y0
+  // ...and maybe sometimes yR2 == yR? ...hmm..no - i think, we can match only y0 in edge cases
+  // -> try it - maybe it should take another boolean parameter that says, if it's an edge case 
+  // anda apply different checks
+
+
   double p, a;                                       // a, p =
 
   a = 2.0;
@@ -465,6 +482,7 @@ bool testSingleSineFormulas()
   tmp = a * sin(p);  // should be the same as y0 - but is its negative
   // Even though the estimated phase and amplitude are different, the tmp sample is equal to y0.
   // We have found another combination of a and p that is consistent with y0 and w=pi
+
 
 
   // we may implement a function testOneSampleResynthesis(a, p, w);
