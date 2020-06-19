@@ -953,7 +953,7 @@ T** rsPolynomial<T>::vandermondeMatrix(const T *x, int N)
 }
 
 /*
-// Old implementation using a linear system solver (Gaussian elimination):
+// Old implementation using Gaussian elimination with the Vandermonde matrix:
 template<class T>
 void rsPolynomial<T>::interpolant(T *a, const T *x, const T *y, int N)
 {
@@ -978,7 +978,15 @@ void rsPolynomial<T>::interpolant(T *a, const T *x, const T *y, int N)
 template<class T>
 void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N)
 {
-  std::vector<T> wrk(N+1);  // allocates - todo: pass a workspace as parameter
+  //std::vector<T> wrk(N+1);            // allocates - maybe use new/delete
+  T* wrk = new T[N+1];
+  interpolant(a, x, y, N, &wrk[0]);
+  delete[] wrk;
+}
+
+template<class T>
+void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N, T* wrk)
+{
   using AT = rsArrayTools;
   AT::fillWithZeros(a, N);
   T* num = &wrk[0];
@@ -1001,7 +1009,6 @@ void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N)
       a[k] += num[k] * s;  
   }
 }
-
 
 template<class T>
 void rsPolynomial<T>::interpolant(T *a, const T& x0, const T& dx, const T *y, int N)

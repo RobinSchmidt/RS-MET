@@ -652,6 +652,10 @@ public:
   // datapoints - maybe move interpolant into some interpolator class where its conventional to 
   // pass the number of datapoints.
 
+  /** Version of interpolant that avoids memory allocation by letting use pass a workspace - this
+  must be at least of length N+1. */
+  static void interpolant(T* a, const T* x, const T* y, int N, T* workspace);
+
   /** Like rsInterpolatingPolynomial(T *a, T *x, T *y, int N), but instead of
   passing an x-array, you should pass a start value x0 and an increment dx and it will use x-values
   given by x0, x0+dx, x0+2*dx,...,x0+(N-1)*dx, so this function assumes equidisant abscissa
