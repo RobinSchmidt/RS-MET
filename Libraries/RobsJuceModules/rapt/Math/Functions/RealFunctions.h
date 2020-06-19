@@ -155,6 +155,10 @@ T rsCsch(T x);
 /** Converts an angle in degrees into radiant. */
 RS_INLINE double rsDegreeToRadiant(double degrees);
 
+/** Distance of x to a multiple of period p */
+template<class T> 
+T rsDistanceToMultipleOf(T x, T p);
+
 /** Evaluates the complete elliptic integral of the first kind with elliptic modulus k. K will
 be assigned to the quarter period K(k) and Kprime will be assigned to the quarter period
 K'(k) = K(k'), k' = sqrt(1-k^2). M is the number of Landen iterations which determines the
@@ -469,6 +473,17 @@ RS_INLINE double rsDegreeToRadiant(double degrees)
 {
   return (PI / 180.0)*degrees;
 }
+
+// distance of x to a multiple of period p
+template<class T>
+T rsDistanceToMultipleOf(T x, T p)
+{
+  rsAssert(p > 0);
+  x = rsAbs(x);
+  x = fmod(x, p);
+  return rsMin(x, p-x);
+}
+
 
 RS_INLINE void rsEqualPowerGainFactors(double x, double *gain1, double *gain2,
   double xMin, double xMax)

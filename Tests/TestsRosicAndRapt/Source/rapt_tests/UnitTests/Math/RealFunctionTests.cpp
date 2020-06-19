@@ -298,6 +298,26 @@ bool testWindowFunctions()
   return r;
 }
 
+
+bool testPeriodicDistance()
+{
+  bool r = true;
+
+  // should all be 1:
+  r &= rsDistanceToMultipleOf(  1.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf( -1.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf(  9.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf( -9.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf( 11.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf(-11.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf( 19.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf(-19.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf( 21.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf(-21.0, 10.0) == 1.0;
+
+  return r;
+}
+
 bool testRealFunctions()
 {
   bool testResult = true;
@@ -308,6 +328,7 @@ bool testRealFunctions()
   testResult &= testFunctionIterators();
   testResult &= testWrap();
   testResult &= testWindowFunctions();
+  testResult &= testPeriodicDistance();
 
   return testResult;
 }
