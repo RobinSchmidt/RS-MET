@@ -194,6 +194,9 @@ template<class T>
 void rsSingleSineModeler<T>::phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
 {
   T wi = w[0];
+  //T wi = T(0);  
+  //pm[0] = T(0);
+  pm[0] = rsWrapToInterval(p[0]-wi, -PI, PI); 
   for(int n = 1; n < N; n++)
   {
     wi += w[n];

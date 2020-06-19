@@ -387,6 +387,7 @@ bool singleSineModelerUnitTest()
   rsFill(y, 0.0);
   ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
   ssm.synthesizeFromAmpFreqPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
+  r &= rsAreVectorsEqual(x, y, tol);
   err = x-y;  // for inspection
   // only the first sample is wrong when we either init T wi = T(0); and start the loop from 0 or 
   // when we init wi = w[0] and start the loop from 1 - but in both cases, the first sample has
