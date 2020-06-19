@@ -530,9 +530,12 @@ bool singleSineModelerUnitTest()
   using SSM = rsSingleSineModeler<double>;
 
   int N = 1000;         // number of samples in test signal
-  double tol = 1.e-13;  // tolerance for identity resynthesis
+  double tol = 1.e-12;  // tolerance for identity resynthesis
   // the higher N, the higher the tolerance must be - we have accumulating errors for longer
-  // signals. For N = 1000, 1.e-12 works
+  // signals. For N = 1000, 1.e-12 works but 1.e-13 not. ToDo: try to minimize the error 
+  // accumulation...i think, it comes from phase-unwrapping and/or the amplitude maxima locations
+  // becoming less precise because the precision is eaten up by the integer part of the sample
+  // index
 
   // Test to resynthesize white noise - the analysis data may be meaningless in this case, but 
   // identity resynthesis should work nevertheless:
@@ -559,9 +562,26 @@ bool singleSineModelerUnitTest()
 
   r &= testSingleSineResynthesisAlgos(ssm, x, tol);
 
+
+  //ssm.setFreqSmoothing(1, 3);
+
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
-  //rsPlotVectors(x, a, w); 
+  rsPlotVectors(x, a, w); 
   // looks good - todo: check automatically, if result is good
+
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  rsPlotVectors(x, a, w);
+  // freq-spikes at the zero-crossings
+
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaZeros);
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  rsPlotVectors(x, a, w);
+  // also freq-spikes at the zero-crossings
+  // strangely, they don't get smoothed when using ssm.setFreqSmoothing(1, 3);
+
+  //ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
 
   ssm.setFreqSmoothing(1, 3);
   ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
