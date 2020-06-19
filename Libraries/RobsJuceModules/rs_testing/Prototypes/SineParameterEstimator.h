@@ -93,7 +93,9 @@ public:
 
   static void phaseAndAmpFormulaForward(T y0, T yR, T w, T *a, T *p);
 
-  // implement phaseAndAmpFormulaForward, phaseAndAmpFormulaBackward
+  static void phaseAndAmpFormulaBackward(T y0, T yL, T w, T *a, T *p);
+
+  // implement phaseAndAmpFormulaForward, phaseAndAmpFormulaBackward, phaseAndAmpFormulaCentral
 
   /** Estimates the instantaneous normalized radian frequencies ("omega") of the signal x via the
   recursion formula for 3 successive samples of a sinewave. To estimate the omega at sample n, it 

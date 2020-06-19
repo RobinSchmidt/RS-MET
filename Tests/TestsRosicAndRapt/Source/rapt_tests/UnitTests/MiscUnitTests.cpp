@@ -370,7 +370,8 @@ bool testSingleSineIdentityResynthesis(
   ssm.synthesizeFromAmpAndPhase(&a[0], &p[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
   err = x-y;  // for inspection
-  // last sample is wrong with freqViaFormula
+  rsPlotVector(err);
+  // for example, sample 775 is wrong with freqViaFormula
 
   // Test resynthesis from amp and freq:
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);

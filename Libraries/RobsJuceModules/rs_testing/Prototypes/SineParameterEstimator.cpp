@@ -141,6 +141,19 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T*
 // copy documentation from rsSineAmplitudeAndPhase
 
 template<class T>
+void rsSingleSineModeler<T>::phaseAndAmpFormulaBackward(T y0, T yL, T w, T* a, T* p)
+{
+  T sw = sin(w);
+  T cw = cos(w);
+
+  *p = atan2(-y0*sw, yL-y0*cw) + PI;  // avoid the addition of PI by rotating arg to atan2
+  *a = y0 / sin(*p);
+
+  int dummy = 0;
+  // ...not yet finished...needs a switch to avoid div-by-zero
+}
+
+template<class T>
 void rsSingleSineModeler<T>::sigToOmegasViaFormula(const T* x, int N, T* w)
 {
   // The algorithm uses rsSineFrequency as its core to estimate the frequency at each sample. 
@@ -271,6 +284,10 @@ void rsSingleSineModeler<T>::sigAndFreqToPhaseAndAmp(const T* x, const T* w, int
     //rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &p[n]); // move this function to here
   }
   // what about the last value? maybe we need the backward formula?
+
+  phaseAndAmpFormulaBackward(x[N-1], x[N-2], w[N-1], &a[N-1], &p[N-1]);
+
+  //phaseAndAmpFormulaBackward(x[N-1], x[N-2], w[n], &a[n], &dummy);
 }
 
 template<class T>
@@ -283,7 +300,12 @@ void rsSingleSineModeler<T>::sigAndFreqToAmp(const T* x, const T* w, int N, T* a
 
     //rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &dummy);
   }
-  // what about the last value?
+
+  phaseAndAmpFormulaBackward(x[N-1], x[N-2], w[N-1], &a[N-1], &dummy);
+
+
+  // what about the last value? use the backward formula - maybe use forward formula only for 
+  // sample 0 and a central formula for 1...N-2
 }
 
 /*
