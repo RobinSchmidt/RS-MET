@@ -10,7 +10,7 @@ void rsSingleSineModeler<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T* p) c
     sigAndAmpToPhase(x, a, N, p);
     return;  }
 
-  if(algo == Algorithm::freqViaFormula) {
+  if(algo == Algorithm::freqViaFormula || algo == Algorithm::freqViaZeros) {
     sigToFreq(x, N, p);
     sigAndFreqToPhaseAndAmp(x, p, N, p, a);
     return;  }
@@ -26,7 +26,7 @@ void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w) co
     phaseToFreq(w, N, w);    
     return; }
 
-  if(algo == Algorithm::freqViaFormula) {
+  if(algo == Algorithm::freqViaFormula || algo == Algorithm::freqViaZeros) {
     sigToFreq(x, N, w);
     sigAndFreqToPhaseAndAmp(x, w, N, w, a);
     rsArrayTools::difference(w, N);
@@ -53,7 +53,7 @@ void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, 
     // ones in analyzeAmpAndFreq, but the arguments to the called functions are different.
     return;  }
 
-  if(algo == Algorithm::freqViaFormula){
+  if(algo == Algorithm::freqViaFormula || algo == Algorithm::freqViaZeros){
     sigToFreq(x, N, w);
     if(freqMedianOrder > 0 && freqAverageOrder > 0) {
       sigAndFreqToPhaseAndAmp(x, w, N, pm, a);

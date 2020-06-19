@@ -409,6 +409,25 @@ bool testSingleSineIdentityResynthesis(
   return r;
 }
 
+bool testSingleSineResynthesisAlgos(
+  rsSingleSineModeler<double>& ssm, const std::vector<double>& x)
+{
+  bool r = true;
+
+  using SSM = rsSingleSineModeler<double>;
+
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
+  r &= testSingleSineIdentityResynthesis(ssm, x);
+
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
+  r &= testSingleSineIdentityResynthesis(ssm, x);
+
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaZeros);
+  r &= testSingleSineIdentityResynthesis(ssm, x);
+
+  return r;
+}
+
 bool testSingleSineFormulas()
 {
   bool r = true;
@@ -523,15 +542,7 @@ bool singleSineModelerUnitTest()
 
 
   r &= testSingleSineFormulas();
-
-
-  ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
-  r &= testSingleSineIdentityResynthesis(ssm, x);
-
-  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
-  r &= testSingleSineIdentityResynthesis(ssm, x);
-
-
+  r &= testSingleSineResynthesisAlgos(ssm, x);
 
 
 
@@ -544,10 +555,7 @@ bool singleSineModelerUnitTest()
   for(int n = 0; n < N; n++)
     x[n] = as * sin(ws*n);
 
-
-
-
-  r &= testSingleSineIdentityResynthesis(ssm, x);
+  r &= testSingleSineResynthesisAlgos(ssm, x);
 
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   //rsPlotVectors(x, a, w); 
