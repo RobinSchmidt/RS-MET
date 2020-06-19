@@ -5,71 +5,67 @@
 template<class T>
 void rsSingleSineModeler<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T* p) const
 {
-  switch(algo)  
-  {
-  case Algorithm::ampViaPeaks: {
+  if(algo == Algorithm::ampViaPeaks)  {
     sigToAmpsViaPeaks(x, N, a, ampEnvPrecision);
-    sigAndAmpToPhase(x, a, N, p);            } break;
+    sigAndAmpToPhase(x, a, N, p);
+    return;  }
 
-  case Algorithm::freqViaFormula: {
+  if(algo == Algorithm::freqViaFormula) {
     sigToOmegasViaFormula(x, N, p);
-    sigAndFreqToPhaseAndAmp(x, p, N, p, a);  } break;
+    sigAndFreqToPhaseAndAmp(x, p, N, p, a);
+    return;  }
 
-  default: rsError("Unknown algorithm"); 
-  };
+  rsError("Unknown algorithm");
 }
 
 template<class T>
 void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w) const
 {
-  switch(algo)
-  {
-  case Algorithm::ampViaPeaks: {
+  if(algo == Algorithm::ampViaPeaks) {
     analyzeAmpAndPhase(x, N, a, w);         // w temporarily used for phase
-    phaseToFreq(w, N, w);                   } break;
+    phaseToFreq(w, N, w);    
+    return; }
 
-  case Algorithm::freqViaFormula:
-  {
+  if(algo == Algorithm::freqViaFormula) {
     sigToOmegasViaFormula(x, N, w);
     sigAndFreqToPhaseAndAmp(x, w, N, w, a);
-    rsArrayTools::difference(w, N);         } break;
+    rsArrayTools::difference(w, N);
     // sigAndFreqToAmp(x, w, N, a); instead of sigAndFreqToPhaseAndAmp -> difference does not 
     // work. Hmm - it seems, we can not use the omegas from the freq-estimation pass. We need 
     // indeed compute the phases from the originally etsimated omegas and difference them - why?
+    return;  }
 
-  default: rsError("Unknown algorithm");
-  };
+  rsError("Unknown algorithm");
 }
 
 template<class T>
 void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm) const
 {
-  switch(algo)
-  {
-  case Algorithm::ampViaPeaks: {
-    analyzeAmpAndPhase(x, N, a, pm);   // pm (phase-mod) temporarily used for phase itself
+  if(algo == Algorithm::ampViaPeaks) {
+    analyzeAmpAndPhase(x, N, a, pm);        // pm (phase-mod) temporarily used for phase itself
     phaseToFreq(pm, N, w);
     smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
-    phaseAndFreqToPhaseMod(pm, w, N, pm);  } break;// convert phase to phase-mod
+    phaseAndFreqToPhaseMod(pm, w, N, pm);   // convert phase to phase-mod
     // Maybe we should make a decision here whether or not to call this function - if it's not 
     // called (because smoothing is off), we can just fill the pm-array with zeros.
     // Note that calling analyzeAmpAndFreq here instead of the 1st two lines won't work because 
     // phaseAndFreqToPhaseMod needs phase and freq as input - the 2 lines look very similar to the 
     // ones in analyzeAmpAndFreq, but the arguments to the called functions are different.
+    return;  }
 
-  case Algorithm::freqViaFormula: {
+  if(algo == Algorithm::freqViaFormula){    
     sigToOmegasViaFormula(x, N, w);
     if(freqMedianOrder > 0 && freqAverageOrder > 0) {
-      sigAndFreqToPhaseAndAmp(x, w, N, pm, a);     
+      sigAndFreqToPhaseAndAmp(x, w, N, pm, a);
       smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
       phaseAndFreqToPhaseMod(pm, w, N, pm);  }
     else {
       sigAndFreqToPhaseAndAmp(x, w, N, w, a);
       rsArrayTools::difference(w, N);
-      rsArrayTools::fillWithZeros(pm, N);  }  } break;
+      rsArrayTools::fillWithZeros(pm, N);    }
+    return; }
 
-  default: rsError("Unknown algorithm");
-  };
+  rsError("Unknown algorithm");
 }
 
 
