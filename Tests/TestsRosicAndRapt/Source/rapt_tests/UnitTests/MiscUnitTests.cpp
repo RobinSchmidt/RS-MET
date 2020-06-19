@@ -381,18 +381,22 @@ bool singleSineModelerUnitTest()
   r &= rsAreVectorsEqual(x, y, tol);
   err = x-y;  // for inspection
 
-
-
   //y[0] = 0;
   rsFill(y, 0.0);
+  ssm.setFreqSmoothing(1, 3);
   ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
   ssm.synthesizeFromAmpFreqPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
   err = x-y;  // for inspection
-  // only the first sample is wrong when we either init T wi = T(0); and start the loop from 0 or 
-  // when we init wi = w[0] and start the loop from 1 - but in both cases, the first sample has
-  // different values - check the conventions -  i think it's desirable to init with 0 and start 
-  // with n = 0 - maybe we should just pm[0] = 0 in the analysis
+
+  // Set the freq-smoothing in ssm to zero and check, if the pm comes out as zero in this 
+  // case:
+  ssm.setFreqSmoothing(0, 0);
+  ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
+  ssm.synthesizeFromAmpFreqPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
+  r &= rsMaxAbs(pm) <= tol;
+  r &= rsAreVectorsEqual(x, y, tol);
+
 
 
   // todo: test to analyze a perfect sinewave and see, if the analysis data makes sense....then 

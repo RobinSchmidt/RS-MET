@@ -64,11 +64,9 @@ void rsSingleSineModeler<T>::synthesizeFromAmpFreqPhaseMod(
     wi += w[n];
     y[n] = a[n] * sin(wi + pm[n]); }
 }
-
 // maybe we should base everything on cosine for consistency with the rsSinusoidalModel - but maybe
 // we should use the sine there
 
-// test, if we have any delays with respct to original signal
 
 //-------------------------------------------------------------------------------------------------
 // internal sub-algorithms:
@@ -188,18 +186,16 @@ void rsSingleSineModeler<T>::phaseToFreq(const T* p, int N, T* w)
 template<class T>
 void rsSingleSineModeler<T>::phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
 {
-  T wi = w[0];
-  pm[0] = p[0]-wi; 
-  for(int n = 1; n < N; n++) {
+  T wi = T(0);
+  for(int n = 0; n < N; n++) {
     wi += w[n];
     pm[n] = p[n]-wi; }
 
-  // make this optional:
   for(int n = 0; n < N; n++)
     pm[n] = rsWrapToInterval(pm[n], -PI, PI); 
-  // todo: make optional and/or maybe allow for returning unwrapped phase-mod (the result from the 
-  // loop above is neither wrapped nor unwrapped, i think) - unwrapped will be more useful anyway, 
-  // as we may want to filter the pm-values before resynthesis
+  // todo: make wrapping optional and/or maybe allow for returning unwrapped phase-mod data (the 
+  // raw result from above is neither wrapped nor unwrapped, i think) - unwrapped will be more 
+  // useful anyway, as we may want to filter the pm-values before resynthesis
 }
 
 

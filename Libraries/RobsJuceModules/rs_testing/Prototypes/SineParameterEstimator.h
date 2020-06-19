@@ -15,6 +15,19 @@ public:
 
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setFreqSmoothing(int medianOrder, int averageOrder)
+  {
+    freqMedianOrder  = medianOrder;
+    freqAverageOrder = averageOrder;
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Analysis */
+
   //void getAmpAndPhase(const T* x, int N, T* a, T* p);
 
   //void getAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* p);
