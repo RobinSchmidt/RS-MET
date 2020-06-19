@@ -569,11 +569,16 @@ bool singleSineModelerUnitTest()
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   rsPlotVectors(x, a, w); 
   // looks good - todo: check automatically, if result is good
+  // ..although, there's a big freq-spike at sample 1
 
   ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   rsPlotVectors(x, a, w);
-  // freq-spikes at the zero-crossings
+  // freq-spikes at the zero-crossings - may this be due to phase discontinuities?
+  // in analyzeAmpAndFreq, we use rsArrayTools::difference - but that would work only correctly 
+  // with unwrapped phases - we need a function phaseToFreq that is like difference but takes care
+  // of the wrapping - we actually already have one - but it'S implementation is silly - it could 
+  // be made more efficient and precise by doing the unwrapping on the fly
 
   ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaZeros);
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);

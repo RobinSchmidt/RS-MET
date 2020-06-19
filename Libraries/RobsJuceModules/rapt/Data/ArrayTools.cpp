@@ -1271,9 +1271,10 @@ void rsArrayTools::transposeSquareArray(T **A, int N)
 template<class T>
 void rsArrayTools::unwrap(T* a, int N, T p)
 {
+  int k = 0;  // init outside outer loop bcs successive n will likely need the same k
   for(int n = 1; n < N; n++)
   {
-    int k = 0;  
+    //int k = 0;  
     // maybe do this only once outside the loop bcs for successive n we will likely want to use 
     // the same k, so the inner loops will not run as often - using a loop may seem a bit silly
     // anyway - see rsConsistentUnwrappedValue0

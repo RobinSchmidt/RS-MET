@@ -29,7 +29,10 @@ void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w) co
   if(algo == Algorithm::freqViaFormula || algo == Algorithm::freqViaZeros) {
     sigToFreq(x, N, w);
     sigAndFreqToPhaseAndAmp(x, w, N, w, a);
-    rsArrayTools::difference(w, N);
+
+    //rsArrayTools::difference(w, N);
+    phaseToFreq(w, N, w);
+
     // sigAndFreqToAmp(x, w, N, a); instead of sigAndFreqToPhaseAndAmp -> difference does not 
     // work. Hmm - it seems, we can not use the omegas from the freq-estimation pass. We need 
     // indeed compute the phases from the originally etsimated omegas and difference them - why?
@@ -61,7 +64,10 @@ void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, 
       phaseAndFreqToPhaseMod(pm, w, N, pm);  }
     else {
       sigAndFreqToPhaseAndAmp(x, w, N, w, a);
-      rsArrayTools::difference(w, N);
+
+      //rsArrayTools::difference(w, N); // does not take wrapping into account
+      phaseToFreq(w, N, w);
+
       rsArrayTools::fillWithZeros(pm, N);    }
     return; }
 
@@ -304,6 +310,8 @@ void rsSingleSineModeler<T>::phaseToFreq(const T* p, int N, T* w)
     w[n] = rsWrapToInterval(p[n], 0.0, 2*PI); // is this needed? try without!
   rsArrayTools::unwrap(w, N, 2*PI); // look at code comment there - optimize!
   rsArrayTools::difference(w, N);
+
+  // todo: do the unwrapping on the fly
 }
 
 template<class T>

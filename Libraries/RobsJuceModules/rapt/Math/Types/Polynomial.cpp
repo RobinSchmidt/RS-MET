@@ -1059,7 +1059,7 @@ void rsPolynomial<T>::fitQuadratic_m1_0_1(T *a, const T *y)
 template<class T>
 T rsPolynomial<T>::quadraticExtremumPosition(const T *a)
 {
-  return T(-0.5) * a[1]/a[2];
+  return T(-0.5) * a[1]/a[2]; // it's the client's responsibility to ensure that a[2] is nonzero
 }
 
 template<class T>
