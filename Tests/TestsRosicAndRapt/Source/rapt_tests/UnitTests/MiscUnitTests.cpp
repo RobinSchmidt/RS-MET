@@ -359,7 +359,7 @@ bool singleSineModelerUnitTest()
   using SSM = rsSingleSineModeler<double>;
 
   int N = 1000; // number of samples
-  double tol = 1.e-13;
+  double tol = 1.e-12;
 
   // Test to resynthesize white noise - the analysis data may be meaningless in this case, but 
   // identity resynthesis should work nevertheless:

@@ -179,32 +179,29 @@ void rsSingleSineModeler<T>::sigAndAmpToPhase(const T* x, const T* a, int N, T* 
 template<class T>
 void rsSingleSineModeler<T>::phaseToFreq(const T* p, int N, T* w)
 {
-  //rsAssert(p != w);                 // hmm - i guess, it would actually work in place - try it!
-
   for(int n = 0; n < N; n++)
     w[n] = rsWrapToInterval(p[n], 0.0, 2*PI); // is this needed? try without!
   rsArrayTools::unwrap(w, N, 2*PI); // look at code comment there - optimize!
-
   rsArrayTools::difference(w, N);
-  // this sets the first sample zero - it's actually a backwardDifference and we may need a forward
-  // difference y[n] = x[n+1] - x[n]
 }
 
 template<class T>
 void rsSingleSineModeler<T>::phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
 {
   T wi = w[0];
-  //T wi = T(0);  
-  //pm[0] = T(0);
-  pm[0] = rsWrapToInterval(p[0]-wi, -PI, PI); 
-  for(int n = 1; n < N; n++)
-  {
+  pm[0] = p[0]-wi; 
+  for(int n = 1; n < N; n++) {
     wi += w[n];
-    pm[n] = rsWrapToInterval(p[n]-wi, -PI, PI); 
-    // make optional and/or maybe allow for returning unwrapped phase-mod - this will be more
-    // useful anyway, as we may want to filter the pm-values before resynthesis
-  }
+    pm[n] = p[n]-wi; }
+
+  // make this optional:
+  for(int n = 0; n < N; n++)
+    pm[n] = rsWrapToInterval(pm[n], -PI, PI); 
+  // todo: make optional and/or maybe allow for returning unwrapped phase-mod (the result from the 
+  // loop above is neither wrapped nor unwrapped, i think) - unwrapped will be more useful anyway, 
+  // as we may want to filter the pm-values before resynthesis
 }
+
 
 template<class T>
 void rsSingleSineModeler<T>::smoothFreqs(T* w, int N, int medianOrder, int averageOrder)
