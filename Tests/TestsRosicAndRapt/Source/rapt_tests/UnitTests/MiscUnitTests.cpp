@@ -442,13 +442,20 @@ bool testSingleSineFormulas()
   // how do we get negative frequencies? do we want them actually?
 
   // todo: test edge cases for phaseAndAmpFormulaForward/Backward/Central
-  double y0, yR, tmp;
+
 
   double tol = 1.e-13;   // tolerance for the error
 
-  //double mrg = 1.e-11;   // margin for detecting edge cases
   double e300 = 1.e-300;
 
+  // A function to test whether amplitude a and phase p can be retrieved from a sinusoid vai the
+  // forward formula. For edge cases, we can't compute correct amplitudes and phases anymore, but
+  // we can still compute phases and amplitudes that would produc the same pair of output samples.
+  // this is because of the ambiguity, how to distribute the degrees of freedom to phase and 
+  // amplitude in the edge cases. At the Nyquist freq, the phase can not be estimated from two 
+  // samples because phase-shifts just lead to an amplitude decrease of the alternating values.
+  // At DC the phase is clamped to pi/2 - a cosine wave (or is it?). So in these cases, we use a
+  // less strict test:
   auto testForwardFormula = [=](double a, double p, double w, bool isEdgeCase = false)->bool
   { 
     double y0 = a * sin(p);
@@ -456,18 +463,19 @@ bool testSingleSineFormulas()
     double a2, p2;  // computed values for amplitude and phase
     ssm.phaseAndAmpFormulaForward(y0, yR, w, &a2, &p2);
     if(!isEdgeCase)
-    {
       return rsIsCloseTo(a, a2, tol) && rsIsCloseTo(p, p2, tol);
-    }
-    else
-    {
+    else {
       double y02 = a2 * sin(p2);
       double yR2 = a2 * sin(p2 + w);
-      return rsIsCloseTo(y0, y02, tol) && rsIsCloseTo(yR, yR2, tol);
-    }
+      return rsIsCloseTo(y0, y02, tol) && rsIsCloseTo(yR, yR2, tol); }
   };
+
   r &= testForwardFormula(3, 2,  e300, false); // if not handled, it still returns correct values
   r &= testForwardFormula(3, 2, -e300, false); // returns wrong values if not handled
+  // Without edge-case handling in the function, with w = e-300, we still can compute correct 
+  // values, but with -e300, we get both amplitude and phase sign-inverted - which means, the 
+  // values are still viable for resynthesis - however, we want positive amplitudes - is this 
+  // actually guaranteed?
 
 
   r &= testForwardFormula(3, 2,     0, true);
@@ -475,42 +483,7 @@ bool testSingleSineFormulas()
   r &= testForwardFormula(3, 2,    PI, true);
   r &= testForwardFormula(3, 2,   -PI, true); // we don't even have a special handler for that but it works
 
-
-
-
-
-  // for edge-cases, we can not assure that a2,p2 == a,p but we can still assure that y02 == y0
-  // ...and maybe sometimes yR2 == yR? ...hmm..no - i think, we can match only y0 in edge cases
-  // -> try it - maybe it should take another boolean parameter that says, if it's an edge case 
-  // anda apply different checks
-
-
-  double p, a;                                       // a, p =
-
-  a = 2.0;
-  p = 0.25;
-  w = PI;
-  y0 = a * sin(p);
-  yR = a * sin(p + w);
-  // represents a sinusoid oscillating with amplitude a at the Nyquist freq - but we don't know
-  // the phase - at the Nyquist freq, the phase can not be estimated from two samples because 
-  // phase-shifts just lead to an amplitude decrease of the alternating values - maybe the most
-  // sensible thing is to assume a phase of pi/2 (i.e. a cosine wave) with a maximum at time zero
-  // when y0 is positive and -pi/2 when y0 is negative - i think we can just use the same handler 
-  // as for w = 0 ...can this also be used for w = -pi...or do we need to invert the phase info?
-  // ...probably not - i think, we can use the same handling for 0,pi,-pi - maybe we can use 
-  // w % pi to handle special cases for w = k*pi
-
-  ssm.phaseAndAmpFormulaForward(y0, yR, w, &a, &p);  // 0,0
-  tmp = a * sin(p);  // should be the same as y0 - but is its negative
-  // Even though the estimated phase and amplitude are different, the tmp sample is equal to y0.
-  // We have found another combination of a and p that is consistent with y0 and w=pi
-
-
-
-  // we may implement a function testOneSampleResynthesis(a, p, w);
-
-
+  double p, a;                                        // a, p =
   ssm.phaseAndAmpFormulaForward(0,  0,  PI, &a, &p);  // 0,0
 
   // When w = 0, the 1st argument's absolute value should be returned as amplitude and the phase 
@@ -525,17 +498,15 @@ bool testSingleSineFormulas()
   ssm.phaseAndAmpFormulaForward( 2,  1, 0, &a, &p);  // 2, pi/2
   ssm.phaseAndAmpFormulaForward(-1,  1, 0, &a, &p);  // 1,-pi/2
   ssm.phaseAndAmpFormulaForward(-2,  1, 0, &a, &p);  // 2,-pi/2
+  // todo: check, if values are correct: r &= rsIsCloseTo(a, 0, tol) ....
+  // or use a function taking y0, yR, w and the target values for a, p
 
   // todo: use an omega that is close to zero but not exactly - figure out the desired tolerance
 
   // When w = pi (Nyquist frequency), ...
 
-
-
-
   ssm.phaseAndAmpFormulaForward(0, 0, -PI, &a, &p);  // -0,-0
 
-  // maybe use a lambda-function as shortcut/alias name
 
 
   return r;
