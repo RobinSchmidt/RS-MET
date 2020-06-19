@@ -85,30 +85,32 @@ void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, 
     // ones in analyzeAmpAndFreq, but the arguments to the called functions are different.
   } break;
 
-  case Algorithm::freqViaFormula:  // needs test
+  case Algorithm::freqViaFormula:
   {
     sigToOmegasViaFormula(x, N, w);
-
-    sigAndFreqToPhaseAndAmp(x, w, N, pm, a);  // use pm termpoarily for phases
+    sigAndFreqToPhaseAndAmp(x, w, N, pm, a);       // use pm termpoarily for phases
 
     smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
-    phaseAndFreqToPhaseMod(pm, w, N, pm);  
-
+    phaseAndFreqToPhaseMod(pm, w, N, pm);
 
     /*
-    //sigAndFreqToAmp(x, w, N, a);
+    // maybe we need to switch?:
+    if(freqMedianOrder > 0 && freqAverageOrder > 0)
+    {
 
-
-    rsArrayTools::difference(w, N);
-
-
-    // i think, this needs the old, original omegas:
-    smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
-    phaseAndFreqToPhaseMod(pm, w, N, pm);  
+      smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
+      phaseAndFreqToPhaseMod(pm, w, N, pm);
+      // convert phase to phase-mod
+      // code-duplication - factor out to smoothFreqsAndComputePhaseMod
+    }
+    else
+    {
+      sigAndFreqToPhaseAndAmp(x, w, N, w, a); // can we avoid to call this again?
+      rsArrayTools::difference(w, N);
+    }
     */
-    
-    // convert phase to phase-mod
-    // code-duplication - factor out to smoothFreqsAndComputePhaseMod
+
+
   } break;
 
 
