@@ -379,21 +379,17 @@ bool testSingleSineIdentityResynthesis(
   //rsPlotVectors(err);
   //rsPlotVectors(err, a, p);
 
-
   // Test resynthesis from amp and freq:
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   ssm.synthesizeFromAmpAndFreq(&a[0], &w[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
-
-  //Vec tmp(N);
-  //rsArrayTools::cumulativeSum(&w[0], &tmp[0], N); // should equal p-array
-
   err = x-y;  // for inspection
-  rsPlotVectors(err);
+  //rsPlotVectors(err);
   // ...now this test fails with freqViaFormula - error is at amplitudes between 2 and 3
   // with ampViaPeaks, the error increases over time (accumulation error? may this become a 
   // problem? if so, can we solve it using wrapped phase and an integer k to represent unwrapped
   // phase?)
+  // fixed
 
   // Test resynthesis with (smoothed) freq and phase-modulation:
   ssm.setFreqSmoothing(1, 3);
@@ -401,6 +397,7 @@ bool testSingleSineIdentityResynthesis(
   ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
   err = x-y;  // for inspection
+  rsPlotVectors(err); // noise of unit amplitude
 
   // Set the freq-smoothing in ssm to zero and check, if the pm comes out as zero in this 
   // case:
@@ -410,6 +407,8 @@ bool testSingleSineIdentityResynthesis(
   r &= rsMaxAbs(pm) <= tol;
   r &= rsAreVectorsEqual(x, y, tol);
   err = x-y;  // for inspection
+  rsPlotVectors(err);
+  // ...now this fails
 
   // Test resynthesis with arbitrary content of the w-array - we need to compute a pm-array
   // that exactly compensates whatever the conent of the w-array is:

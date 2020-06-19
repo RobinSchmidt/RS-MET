@@ -41,18 +41,21 @@ void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w) co
   {
     sigToOmegasViaFormula(x, N, w);
 
-    /*
-    sigAndFreqToAmp(x, w, N, a); 
+    
+    //sigAndFreqToAmp(x, w, N, a); 
     // hmm - it seems, we can not use the omegas from the freq-estimation pass - we need indeed
     // compute the phases and difference them - why? or is this just an offset issue? try with
     // a sinewave
 
+    //rsPlotArray(w, N);
+
     //rsArrayTools::shift(&w[0], N, +1);
-    */
+    
 
     sigAndFreqToPhaseAndAmp(x, w, N, w, a);
     rsArrayTools::difference(w, N);
 
+    //rsPlotArray(w, N);
 
   } break;
 
@@ -85,7 +88,12 @@ void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, 
   case Algorithm::freqViaFormula:  // needs test
   {
     sigToOmegasViaFormula(x, N, w);
+
+
     sigAndFreqToAmp(x, w, N, a);
+
+    //sigAndFreqToPhaseAndAmp(x, w, N, w, a);
+    //rsArrayTools::difference(w, N);
 
     smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
     phaseAndFreqToPhaseMod(pm, w, N, pm);  // convert phase to phase-mod
