@@ -23,6 +23,13 @@ void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, 
 {
   analyzeAmpAndPhase(x, N, a, pm);       // pm (phase-mod) temporarily used for phase itself
   phaseToFreq(pm, N, w);
+  // this produces NaNs in one of the unit tests - others pass fine - the difference is what array
+  // is used for temp storage - figure out, whty the above does not work and make it work, if 
+  // possible
+
+
+  //analyzeAmpAndFreq(x, N, a, w);
+  // when we use this instead of the above, the unit test fails - why?
 
 
   smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
@@ -170,7 +177,17 @@ template<class T>
 void rsSingleSineModeler<T>::sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
 {
   for(int n = 0; n < N; n++)
-    p[n] = asin(x[n] / a[n]);
+  {
+    //p[n] = asin(x[n] / a[n]);  // this may produce NaN!
+
+    rsAssert(a[n] >= T(0), "amplitudes must be nonegative");  // maybe try to lift that restriction
+    rsAssert(a[n] >= rsAbs(x[n]), "amplitudes can't be less than signal values");
+
+    if(a[n] == 0)
+      p[n] = 0;
+    else
+      p[n] = asin(x[n] / a[n]); 
+  }
   unreflectPhase(x, p, N);
 }
 
