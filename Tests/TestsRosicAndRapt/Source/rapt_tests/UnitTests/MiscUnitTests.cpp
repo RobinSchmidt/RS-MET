@@ -444,18 +444,31 @@ bool testSingleSineFormulas()
   // todo: test edge cases for phaseAndAmpFormulaForward/Backward/Central
   double y0, yR, tmp;
 
+  double tol = 1.e-13;
 
-  auto testOneSampleResynth = [=](double a, double p, double w)->bool
+  auto testForwardFormula = [=](double a, double p, double w, bool isEdgeCase = false)->bool
   { 
     double y0 = a * sin(p);
     double yR = a * sin(p + w);
     double a2, p2;  // computed values for amplitude and phase
     ssm.phaseAndAmpFormulaForward(y0, yR, w, &a2, &p2);
-    double y02 = a2 * sin(p2);
-    double yR2 = a2 * sin(p2 + w);
-    return false;
+    if(!isEdgeCase)
+    {
+      return rsIsCloseTo(a, a2, tol) && rsIsCloseTo(p, p2, tol);
+    }
+    else
+    {
+      double y02 = a2 * sin(p2);
+      double yR2 = a2 * sin(p2 + w);
+      return rsIsCloseTo(y0, y02, tol) && rsIsCloseTo(yR, yR2, tol);
+    }
   };
-  //r &= testOneSampleResynth(3,2,1);
+  r &= testForwardFormula(3, 2,   1, false);
+  r &= testForwardFormula(3, 2,   0, true);
+  r &= testForwardFormula(3, 2,  PI, true);
+  r &= testForwardFormula(3, 2, -PI, true); // we don't even have a special handler for that but it works
+
+
   // for edge-cases, we can not assure that a2,p2 == a,p but we can still assure that y02 == y0
   // ...and maybe sometimes yR2 == yR? ...hmm..no - i think, we can match only y0 in edge cases
   // -> try it - maybe it should take another boolean parameter that says, if it's an edge case 
