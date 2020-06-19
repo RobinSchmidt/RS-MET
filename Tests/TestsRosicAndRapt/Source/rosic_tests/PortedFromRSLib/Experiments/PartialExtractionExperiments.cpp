@@ -856,7 +856,7 @@ void phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
 template<class T>
 void synthesizeFromAmpFreqPhaseMod(const T* a, const T* w, const T* pm, int N, T* y)
 {
-  rsSingleSineModeler<T>::synthesizeFromAmpFreqPhaseMod(a, w, pm, N, y);
+  rsSingleSineModeler<T>::synthesizeFromAmpFreqAndPhaseMod(a, w, pm, N, y);
 }
 // may be delayed...
 

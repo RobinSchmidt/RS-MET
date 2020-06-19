@@ -351,6 +351,57 @@ bool harmonicAnalyzerUnitTest()
   return r;
 }
 
+// note that this may change the settings of the ssm
+bool testSingleSineIdentityResynthesis(
+  rsSingleSineModeler<double>& ssm, const std::vector<double>& x)
+{
+  bool r = true;
+
+  using Vec = std::vector<double>;
+
+  int N = (int) x.size();
+  Vec a(N), w(N), p(N), pm(N);           // analysis data
+  Vec y(N);                              // resynthesized signal
+  Vec err;
+  double tol = 1.e-12;  // tolerance for identity resynthesis
+
+  // Test resynthesis from amp and phase:
+  ssm.analyzeAmpAndPhase(&x[0], N, &a[0], &p[0]);
+  ssm.synthesizeFromAmpAndPhase(&a[0], &p[0], N, &y[0]);
+  r &= rsAreVectorsEqual(x, y, tol);
+  //err = x-y;  // for inspection
+
+  // Test resynthesis from amp and freq:
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  ssm.synthesizeFromAmpAndFreq(&a[0], &w[0], N, &y[0]);
+  r &= rsAreVectorsEqual(x, y, tol);
+  //err = x-y;  // for inspection
+
+  // Test resynthesis with (smoothed) freq and phase-modulation:
+  ssm.setFreqSmoothing(1, 3);
+  ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
+  ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
+  r &= rsAreVectorsEqual(x, y, tol);
+  //err = x-y;  // for inspection
+
+  // Set the freq-smoothing in ssm to zero and check, if the pm comes out as zero in this 
+  // case:
+  ssm.setFreqSmoothing(0, 0);
+  ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
+  ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
+  r &= rsMaxAbs(pm) <= tol;
+  r &= rsAreVectorsEqual(x, y, tol);
+
+  // Test resynthesis with arbitrary content of the w-array - we need to compute a pm-array
+  // that exactly compensates whatever the conent of the w-array is:
+  rsArrayTools::fillWithRandomValues(&w[0], N, -10.0, +10.0, 0);
+  ssm.phaseAndFreqToPhaseMod(&p[0], &w[0], N, &pm[0]); 
+  ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
+  r &= rsAreVectorsEqual(x, y, tol);
+
+  return r;
+}
+
 bool singleSineModelerUnitTest()
 {
   bool r = true;
@@ -365,33 +416,13 @@ bool singleSineModelerUnitTest()
   // identity resynthesis should work nevertheless:
   Vec x = rsRandomVector(N, -1.0, 1.0);  // input signal
   Vec a(N), w(N), p(N), pm(N);           // analysis data
-  Vec y(N);                              // resynthesized signal
-  Vec err;
+  //Vec y(N);                              // resynthesized signal
+  //Vec err;
   SSM ssm;
 
-  ssm.analyzeAmpAndPhase(&x[0], N, &a[0], &p[0]);
-  ssm.synthesizeFromAmpAndPhase(&a[0], &p[0], N, &y[0]);
-  r &= rsAreVectorsEqual(x, y, tol);
-  err = x-y;  // for inspection
+  r &= testSingleSineIdentityResynthesis(ssm, x);
 
-  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
-  ssm.synthesizeFromAmpAndFreq(&a[0], &w[0], N, &y[0]);
-  r &= rsAreVectorsEqual(x, y, tol);
-  err = x-y;  // for inspection
 
-  ssm.setFreqSmoothing(1, 3);
-  ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
-  ssm.synthesizeFromAmpFreqPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
-  r &= rsAreVectorsEqual(x, y, tol);
-  err = x-y;  // for inspection
-
-  // Set the freq-smoothing in ssm to zero and check, if the pm comes out as zero in this 
-  // case:
-  ssm.setFreqSmoothing(0, 0);
-  ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
-  ssm.synthesizeFromAmpFreqPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
-  r &= rsMaxAbs(pm) <= tol;
-  r &= rsAreVectorsEqual(x, y, tol);
 
   // todo: test to analyze a perfect sinewave and see, if the analysis data makes sense....then 
   // maybe make it more difficult by introducing a frequency sweep, amplitude fade, etc....
@@ -401,9 +432,11 @@ bool singleSineModelerUnitTest()
   for(int n = 0; n < N; n++)
     x[n] = as * sin(ws*n);
 
+  r &= testSingleSineIdentityResynthesis(ssm, x);
+
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
-  ssm.synthesizeFromAmpAndFreq(&a[0], &w[0], N, &y[0]);
-  r &= rsAreVectorsEqual(x, y, tol);
+  //ssm.synthesizeFromAmpAndFreq(&a[0], &w[0], N, &y[0]);
+  //r &= rsAreVectorsEqual(x, y, tol);
   rsPlotVectors(x, a, w); 
   // looks good - todo: check automatically, if result is good
 
@@ -413,8 +446,8 @@ bool singleSineModelerUnitTest()
   //// leads to NaN in w and pm:
   ssm.setFreqSmoothing(1, 3);
   ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
-  ssm.synthesizeFromAmpFreqPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
-  r &= rsAreVectorsEqual(x, y, tol);
+  //ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
+  //r &= rsAreVectorsEqual(x, y, tol);
   rsPlotVectors(x, a, w, pm);
 
 

@@ -9,12 +9,10 @@ frequency and/or phase, like:
 
 with the instantaneous amplitude a[n] and instantaneous phase p[n]. The latter can be given in 3 
 ways: (1) directly, (2) as integral (represented as cumulative sum) over an instantaneous radian
-frequency w[k]: p[n] = sum_{k=0}^n w[k] or (3) a combination of (2) and an instaneous 
+frequency w[k]: p[n] = sum_{k=0}^n w[k] or (3) a combination of (2) and an instantaneous 
 phase-modulation term: p[n] = pm[n] + sum_{k=0}^n w[k]. It contains functions to synthesize the 
 signal from the instantaneous amp/freq/phase arrays and - more importantly - to analyze a given 
-signal and produce these arrays. To this end, various algorithms are available...tbc...  */
-
-// maybe rename to rsPartialModeler or rsSingleSineModeler
+signal to produce these arrays. To this end, various algorithms are available...tbc...  */
 
 template<class T>
 class rsSingleSineModeler
@@ -41,11 +39,11 @@ public:
   /** \name Analysis */
 
 
-  void analyzeAmpAndPhase(const T* x, int N, T* a, T* p);
+  void analyzeAmpAndPhase(const T* x, int N, T* a, T* p) const;
 
-  void analyzeAmpAndFreq(const T* x, int N, T* a, T* w);
+  void analyzeAmpAndFreq(const T* x, int N, T* a, T* w) const;
 
-  void analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm);
+  void analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm) const;
 
 
   //-----------------------------------------------------------------------------------------------
@@ -55,7 +53,7 @@ public:
 
   static void synthesizeFromAmpAndFreq(const T* a, const T* w, int N, T* y);
 
-  static void synthesizeFromAmpFreqPhaseMod(const T* a, const T* w, const T* pm, int N, T* y);
+  static void synthesizeFromAmpFreqAndPhaseMod(const T* a, const T* w, const T* pm, int N, T* y);
 
 
   //-----------------------------------------------------------------------------------------------
@@ -147,6 +145,8 @@ protected:
 
   int freqMedianOrder  = 1;
   int freqAverageOrder = 3;
+
+  int ampEnvPrecision  = 1;
 
 };
 

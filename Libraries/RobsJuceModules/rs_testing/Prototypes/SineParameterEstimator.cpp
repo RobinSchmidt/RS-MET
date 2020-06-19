@@ -3,23 +3,25 @@
 // Analysis:
 
 template<class T>
-void rsSingleSineModeler<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T* p)
+void rsSingleSineModeler<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T* p) const
 {
   // todo: switch between various algos that compute stuff in different orders
 
-  sigToAmpsViaPeaks(x, N, a);     // here, a sub-switch for amp-estimation algo may take place
+  sigToAmpsViaPeaks(x, N, a, ampEnvPrecision);
+  // here, a sub-switch for amp-estimation algo may take place
+
   sigAndAmpToPhase(x, a, N, p); 
 }
 
 template<class T>
-void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w)
+void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w) const
 {
   analyzeAmpAndPhase(x, N, a, w);  // w temporarily used for phase
   phaseToFreq(w, N, w);
 }
 
 template<class T>
-void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm)
+void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm) const
 {
   analyzeAmpAndPhase(x, N, a, pm);       // pm (phase-mod) temporarily used for phase itself
   phaseToFreq(pm, N, w);
@@ -57,7 +59,7 @@ void rsSingleSineModeler<T>::synthesizeFromAmpAndFreq(const T* a, const T* w, in
 }
 
 template<class T>
-void rsSingleSineModeler<T>::synthesizeFromAmpFreqPhaseMod(
+void rsSingleSineModeler<T>::synthesizeFromAmpFreqAndPhaseMod(
   const T* a, const T* w, const T* pm, int N, T* y)
 {
   T wi = T(0); // integrated w
@@ -222,7 +224,7 @@ void rsSingleSineModeler<T>::smoothFreqs(T* w, int N, int medianOrder, int avera
 template<class T>
 inline void lerpPeaks(const T* y, int nL, int nR, T tL, T tR, T yL, T yR, T* a)
 {
-  for(int i = nL; i < nR; i++)                 
+  for(int i = nL; i < nR; i++)
   {
     T ai = rsLinToLin(T(i), tL, tR, yL, yR); // ToDo: optimize!
     a[i] = rsMax(ai, rsAbs(y[i]));                  // we want no stick-outs!
@@ -413,20 +415,15 @@ Other ideas for phase unreflection:
 -maybe an algorithm for this could also take the amplitude array as input - i don't know, if tha 
  information could be useful for unreflection
 
-Maybe this class should also have the synthesis functions - that may mean, we need another name -
-maybe rsSineRecreator or rsSineRepresenter something - it represents *any* signal as a 
-time-varying sinewave of the form:
+How about estimating amplitude and frequency first and then computing the phase from two successive
+samples:
 
-  x[n] = a[n] * sin( p[n] )
+  x[n]   = x0 = a * sin(p)
+  x[n+1] = xR = a * sin(p+w)
 
-with intantaneous amplitude a[n] and instantaneous phase p[n], where p[n] can be either given 
-directly or it can be further split into instantaneous frequency w[n] (omega) an and instantaneous 
-phase-modulation pm[n] term like:
+can this be solved for p?
 
-  p[n] = sum_{k=0}^{n-1} w[k]  +  pm[n]   ...check, if the sum should run to n-1 or to n
+x0 / sin(p) = xR / sin(p+w)
 
-..the goal should be that the analysis functions compute either a[n],p[n] or a[n],w[n],pm[n] such
-that the corresponding synthesis functions exactly reconstruct any signal - regardless whether it
-is actually a sinusoid or soemthing completely different. 
 
 */

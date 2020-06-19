@@ -253,6 +253,30 @@ diff(E, w)
 
 maybe verify them also numerically by comparing them to finite difference approximations
 
+---------------------------------------------------------------------------------------------------
+
+Computing phase p given amp a, freq w and two samples
+
+  x0 = a * sin(p)
+  xR = a * sin(p+w)
+  
+  x0 / sin(p) = xR / sin(p+w)
+  
+  x0 / xR = sin(p) / sin(p+w)     | use sin(p+w) = sin(p)*cos(w) + cos(p)*sin(w)
+  
+  x0 / xR = sin(p) / ( sin(p)*cos(w) + cos(p)*sin(w)  )
+  
+  xR / x0 = ( sin(p)*cos(w) + cos(p)*sin(w)  ) / sin(p)
+          = cos(w) + cos(p)*sin(w)/sin(p)
+          = cos(w) + sin(w)*tan(p)
+   ((xR/x0)-cos(w)) / sin(w) = tan(p)
+   p = atan2(sin(w), ((xR/x0)-cos(w))) = atan2(x0*sin(w), xR-x0*cos(w))
+   
+oh - that's the same formula again - seems we don't need the amplitude at all to compute the phase
+...but what if a and p is known - can we find formula for the frequency?
+
+   xR/a = sin(p+w) -> asin(xR/a) = p + w -> w = asin(xR/a) - p
+
 
 
 
