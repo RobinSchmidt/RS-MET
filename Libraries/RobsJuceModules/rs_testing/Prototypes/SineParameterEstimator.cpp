@@ -44,55 +44,31 @@ void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w) co
 template<class T>
 void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm) const
 {
-
   switch(algo)
   {
-  case Algorithm::ampViaPeaks:
-  {
-    analyzeAmpAndPhase(x, N, a, pm);       // pm (phase-mod) temporarily used for phase itself
+  case Algorithm::ampViaPeaks: {
+    analyzeAmpAndPhase(x, N, a, pm);   // pm (phase-mod) temporarily used for phase itself
     phaseToFreq(pm, N, w);
-
-    // maybe we should make a decision here whether or not to call this function - if it's not 
-    // called (because smoothing is off), we can just fill the pm-array with zeros:
     smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
-    phaseAndFreqToPhaseMod(pm, w, N, pm);  // convert phase to phase-mod
+    phaseAndFreqToPhaseMod(pm, w, N, pm);  } break;// convert phase to phase-mod
+    // Maybe we should make a decision here whether or not to call this function - if it's not 
+    // called (because smoothing is off), we can just fill the pm-array with zeros.
     // Note that calling analyzeAmpAndFreq here instead of the 1st two lines won't work because 
     // phaseAndFreqToPhaseMod needs phase and freq as input - the 2 lines look very similar to the 
     // ones in analyzeAmpAndFreq, but the arguments to the called functions are different.
-  } break;
 
-  case Algorithm::freqViaFormula:
-  {
+  case Algorithm::freqViaFormula: {
     sigToOmegasViaFormula(x, N, w);
-    sigAndFreqToPhaseAndAmp(x, w, N, pm, a);       // use pm termpoarily for phases
-
-    //smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
-    //phaseAndFreqToPhaseMod(pm, w, N, pm);
-
-    
-    // maybe we need to switch?:
-    if(freqMedianOrder > 0 && freqAverageOrder > 0)
-    {
-
+    if(freqMedianOrder > 0 && freqAverageOrder > 0) {
+      sigAndFreqToPhaseAndAmp(x, w, N, pm, a);     
       smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
-      phaseAndFreqToPhaseMod(pm, w, N, pm);
-      // convert phase to phase-mod
-      // code-duplication - factor out to smoothFreqsAndComputePhaseMod
-    }
-    else
-    {
-      sigAndFreqToPhaseAndAmp(x, w, N, w, a); // can we avoid to call this again?
+      phaseAndFreqToPhaseMod(pm, w, N, pm);  }
+    else {
+      sigAndFreqToPhaseAndAmp(x, w, N, w, a);
       rsArrayTools::difference(w, N);
-      rsArrayTools::fillWithZeros(pm, N);
-    }
-    
-
-
-  } break;
-
+      rsArrayTools::fillWithZeros(pm, N);  }  } break;
 
   default: rsError("Unknown algorithm");
-
   };
 }
 
