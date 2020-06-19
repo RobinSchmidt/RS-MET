@@ -99,7 +99,7 @@ void rsSingleSineModeler<T>::synthesizeFromAmpAndFreq(const T* a, const T* w, in
 {
   T wi = T(0); // integrated w
   for(int n = 0; n < N; n++) {
-    wi += w[n];
+    wi += w[n];    // maybe wrap-around at 2*pi, maybe use wi = fmod(wi + w[n], 2*PI)
     y[n] = a[n] * sin(wi); }
 }
 
@@ -310,9 +310,39 @@ void rsSingleSineModeler<T>::phaseToFreq(const T* p, int N, T* w)
     w[n] = rsWrapToInterval(p[n], 0.0, 2*PI); // is this needed? try without!
   rsArrayTools::unwrap(w, N, 2*PI); // look at code comment there - optimize!
   rsArrayTools::difference(w, N);
-
-  // todo: do the unwrapping on the fly
 }
+
+/*
+// code below is under construction and should eventually replace the code above
+// todo: do the unwrapping on the fly - does not yet work
+template<class T>
+void rsSingleSineModeler<T>::phaseToFreq(const T* p, int N, T* w)
+{
+  T pOld = 0;
+  for(int n = 0; n < N; n++)
+  {
+    T pNew = p[n];
+
+    // todo: check, for which k  pNew + 2*k*PI is closest to pOld and then set 
+    // pNew = pNew + 2*k*PI
+
+    // maybe we should use while instead of if? ...but i think, jumps larger than 2*PI can't occur
+    // when the phase is properly wrapped - but what, if it's not properly wrapped?
+    if( rsAbs(pNew+2*PI - pOld) < rsAbs(pNew - pOld) )
+      pNew += 2*PI;
+    if( rsAbs(pNew-2*PI - pOld) < rsAbs(pNew - pOld) )
+      pNew -= 2*PI;
+
+
+
+    w[n] = pNew - pOld;
+    pOld = pNew; 
+  }
+}
+*/
+
+
+
 
 template<class T>
 void rsSingleSineModeler<T>::sigAndFreqToPhaseAndAmp(const T* x, const T* w, int N, T* p, T* a)

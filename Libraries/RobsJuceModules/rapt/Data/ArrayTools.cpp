@@ -1279,10 +1279,16 @@ void rsArrayTools::unwrap(T* a, int N, T p)
     // the same k, so the inner loops will not run as often - using a loop may seem a bit silly
     // anyway - see rsConsistentUnwrappedValue0
 
+    // maybe factor out into a function rsFindBestK ...because that is needed also in
+    // rsSingleSineModeler<T>::phaseToFreq - it should take as argument the initial k from which to 
+    // start.  rsFindIntFactorForBestMatch(T value, T target, T period, int guess) where
+    // value is a[n], target is a[n-1] and guess is the start value for k
     while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k+1)*p))-a[n-1]))
       k++;
     while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k-1)*p))-a[n-1]))
       k--;
+
+
     a[n] += k*p;
   }
 }
