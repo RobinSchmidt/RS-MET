@@ -23,14 +23,8 @@ void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, 
 {
   analyzeAmpAndPhase(x, N, a, pm);       // pm (phase-mod) temporarily used for phase itself
   phaseToFreq(pm, N, w);
-  // this produces NaNs in one of the unit tests - others pass fine - the difference is what array
-  // is used for temp storage - figure out, whty the above does not work and make it work, if 
-  // possible
-
-
-  //analyzeAmpAndFreq(x, N, a, w);
-  // when we use this instead of the above, the unit test fails - why?
-
+  // Note that calling analyzeAmpAndFreq here won't work because phaseAndFreqToPhaseMod below needs
+  // phase and freq as input - the code looks very similar, but the arguments are different.
 
   smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
   // maybe allow the user to specify a custom function, what to do with the w-array before 

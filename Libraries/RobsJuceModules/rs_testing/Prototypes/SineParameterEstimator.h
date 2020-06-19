@@ -2,8 +2,17 @@
 #define RAPT_SINEPARAMETERESTIMATOR_H_INCLUDED
 // todo: rename files!
 
-/** A class for estimating the instantaneous parameters (frequency and/or phase, amplitude) of a 
-sinewave. */
+/** A class for modeling any signal x[n] as a single sinusoid with time-varying amplitude and 
+frequency and/or phase, like:
+
+  x[n] = a[n] * sin( p[n] )
+
+with the instantaneous amplitude a[n] and instantaneous phase p[n]. The latter can be given in 3 
+ways: (1) directly, (2) as integral (represented as cumulative sum) over an instantaneous radian
+frequency w[k]: p[n] = sum_{k=0}^n w[k] or (3) a combination of (2) and an instaneous 
+phase-modulation term: p[n] = pm[n] + sum_{k=0}^n w[k]. It contains functions to synthesize the 
+signal from the instantaneous amp/freq/phase arrays and - more importantly - to analyze a given 
+signal and produce these arrays. To this end, various algorithms are available...tbc...  */
 
 // maybe rename to rsPartialModeler or rsSingleSineModeler
 
@@ -23,38 +32,34 @@ public:
     freqMedianOrder  = medianOrder;
     freqAverageOrder = averageOrder;
   }
+  // when both are zero, the phase-modulation signal will come out as zero - this sort of 
+  // determines the split between what is modeled as freq-modulation and what is modeled as 
+  // phase-modulation, if both are used
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Analysis */
 
-  //void getAmpAndPhase(const T* x, int N, T* a, T* p);
-
-  //void getAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* p);
 
   void analyzeAmpAndPhase(const T* x, int N, T* a, T* p);
 
   void analyzeAmpAndFreq(const T* x, int N, T* a, T* w);
 
-
-
   void analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm);
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Static functions */
+  /** \name Synthesis */
 
   static void synthesizeFromAmpAndPhase(const T* a, const T* p, int N, T* y);
 
   static void synthesizeFromAmpAndFreq(const T* a, const T* w, int N, T* y);
 
-
-
-  // todo: synthesizeFromAmpAndFreq
-
   static void synthesizeFromAmpFreqPhaseMod(const T* a, const T* w, const T* pm, int N, T* y);
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Static functions */
 
   /** There's a recursion formula for the sine with normalized radian frequeny w: 
     y[n] = a1*y[n-1] - y[n-2] 

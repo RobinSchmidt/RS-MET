@@ -402,19 +402,20 @@ bool singleSineModelerUnitTest()
     x[n] = as * sin(ws*n);
 
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
-  //rsPlotVectors(x, a, w); 
+  ssm.synthesizeFromAmpAndFreq(&a[0], &w[0], N, &y[0]);
+  r &= rsAreVectorsEqual(x, y, tol);
+  rsPlotVectors(x, a, w); 
   // looks good - todo: check automatically, if result is good
 
   // sigToAmpsViaPeaks may produce zero - the sigAndAmpToPhase may produce NaN
 
 
   //// leads to NaN in w and pm:
-  ssm.setFreqSmoothing(0, 0);
+  ssm.setFreqSmoothing(1, 3);
   ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
   ssm.synthesizeFromAmpFreqPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
   rsPlotVectors(x, a, w, pm);
-  // pm looks like total garbage!
 
 
 
