@@ -89,14 +89,25 @@ void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, 
   {
     sigToOmegasViaFormula(x, N, w);
 
-
-    sigAndFreqToAmp(x, w, N, a);
-
-    //sigAndFreqToPhaseAndAmp(x, w, N, w, a);
-    //rsArrayTools::difference(w, N);
+    sigAndFreqToPhaseAndAmp(x, w, N, pm, a);  // use pm termpoarily for phases
 
     smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
-    phaseAndFreqToPhaseMod(pm, w, N, pm);  // convert phase to phase-mod
+    phaseAndFreqToPhaseMod(pm, w, N, pm);  
+
+
+    /*
+    //sigAndFreqToAmp(x, w, N, a);
+
+
+    rsArrayTools::difference(w, N);
+
+
+    // i think, this needs the old, original omegas:
+    smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
+    phaseAndFreqToPhaseMod(pm, w, N, pm);  
+    */
+    
+    // convert phase to phase-mod
     // code-duplication - factor out to smoothFreqsAndComputePhaseMod
   } break;
 
