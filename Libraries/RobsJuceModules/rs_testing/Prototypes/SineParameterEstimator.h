@@ -90,6 +90,11 @@ public:
   { return acos(rsClip(T(0.5)*(yL+yR)/yC, T(-1), T(+1))); }
   // maybe rename to freqFormula
 
+
+  static void phaseAndAmpFormulaForward(T y0, T yR, T w, T *a, T *p);
+
+  // implement phaseAndAmpFormulaForward, phaseAndAmpFormulaBackward
+
   /** Estimates the instantaneous normalized radian frequencies ("omega") of the signal x via the
   recursion formula for 3 successive samples of a sinewave. To estimate the omega at sample n, it 
   looks at x[n-1], x[n], x[n+1] and applies the formula. But because this formula is unreliable 

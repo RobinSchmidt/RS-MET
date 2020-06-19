@@ -369,20 +369,21 @@ bool testSingleSineIdentityResynthesis(
   ssm.analyzeAmpAndPhase(&x[0], N, &a[0], &p[0]);
   ssm.synthesizeFromAmpAndPhase(&a[0], &p[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
-  //err = x-y;  // for inspection
+  err = x-y;  // for inspection
+  // last sample is wrong with freqViaFormula
 
   // Test resynthesis from amp and freq:
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   ssm.synthesizeFromAmpAndFreq(&a[0], &w[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
-  //err = x-y;  // for inspection
+  err = x-y;  // for inspection
 
   // Test resynthesis with (smoothed) freq and phase-modulation:
   ssm.setFreqSmoothing(1, 3);
   ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
   ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
-  //err = x-y;  // for inspection
+  err = x-y;  // for inspection
 
   // Set the freq-smoothing in ssm to zero and check, if the pm comes out as zero in this 
   // case:
@@ -391,6 +392,7 @@ bool testSingleSineIdentityResynthesis(
   ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
   r &= rsMaxAbs(pm) <= tol;
   r &= rsAreVectorsEqual(x, y, tol);
+  err = x-y;  // for inspection
 
   // Test resynthesis with arbitrary content of the w-array - we need to compute a pm-array
   // that exactly compensates whatever the conent of the w-array is:
@@ -398,6 +400,7 @@ bool testSingleSineIdentityResynthesis(
   ssm.phaseAndFreqToPhaseMod(&p[0], &w[0], N, &pm[0]); 
   ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
+  err = x-y;  // for inspection
 
   return r;
 }
@@ -420,12 +423,15 @@ bool singleSineModelerUnitTest()
   //Vec err;
   SSM ssm;
 
+
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
+  r &= testSingleSineIdentityResynthesis(ssm, x);
+  // this still fails - figure out why!
+
   ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
   r &= testSingleSineIdentityResynthesis(ssm, x);
 
-  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
-  //r &= testSingleSineIdentityResynthesis(ssm, x);
-  // this still fails - figure out why!
+
 
 
 
