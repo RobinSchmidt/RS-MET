@@ -5,24 +5,17 @@
 template<class T>
 void rsSingleSineModeler<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T* p) const
 {
-  switch(algo)
+  switch(algo)  
   {
-  case Algorithm::ampViaPeaks:
-  {
+  case Algorithm::ampViaPeaks: {
     sigToAmpsViaPeaks(x, N, a, ampEnvPrecision);
-    sigAndAmpToPhase(x, a, N, p); 
-  } break;
+    sigAndAmpToPhase(x, a, N, p);            } break;
 
-  case Algorithm::freqViaFormula:  // needs test
-  {
+  case Algorithm::freqViaFormula: {
     sigToOmegasViaFormula(x, N, p);
-    sigAndFreqToPhaseAndAmp(x, p, N, p, a);
-  } break;
+    sigAndFreqToPhaseAndAmp(x, p, N, p, a);  } break;
 
-
-
-  default: rsError("Unknown algorithm");
-
+  default: rsError("Unknown algorithm"); 
   };
 }
 
@@ -31,37 +24,20 @@ void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w) co
 {
   switch(algo)
   {
-  case Algorithm::ampViaPeaks:
-  {
-    analyzeAmpAndPhase(x, N, a, w);  // w temporarily used for phase
-    phaseToFreq(w, N, w);
-  } break;
+  case Algorithm::ampViaPeaks: {
+    analyzeAmpAndPhase(x, N, a, w);         // w temporarily used for phase
+    phaseToFreq(w, N, w);                   } break;
 
-  case Algorithm::freqViaFormula:  // needs test
+  case Algorithm::freqViaFormula:
   {
     sigToOmegasViaFormula(x, N, w);
-
-    
-    //sigAndFreqToAmp(x, w, N, a); 
-    // hmm - it seems, we can not use the omegas from the freq-estimation pass - we need indeed
-    // compute the phases and difference them - why? or is this just an offset issue? try with
-    // a sinewave
-
-    //rsPlotArray(w, N);
-
-    //rsArrayTools::shift(&w[0], N, +1);
-    
-
     sigAndFreqToPhaseAndAmp(x, w, N, w, a);
-    rsArrayTools::difference(w, N);
-
-    //rsPlotArray(w, N);
-
-  } break;
-
+    rsArrayTools::difference(w, N);         } break;
+    // sigAndFreqToAmp(x, w, N, a); instead of sigAndFreqToPhaseAndAmp -> difference does not 
+    // work. Hmm - it seems, we can not use the omegas from the freq-estimation pass. We need 
+    // indeed compute the phases from the originally etsimated omegas and difference them - why?
 
   default: rsError("Unknown algorithm");
-
   };
 }
 
@@ -90,10 +66,10 @@ void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, 
     sigToOmegasViaFormula(x, N, w);
     sigAndFreqToPhaseAndAmp(x, w, N, pm, a);       // use pm termpoarily for phases
 
-    smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
-    phaseAndFreqToPhaseMod(pm, w, N, pm);
+    //smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
+    //phaseAndFreqToPhaseMod(pm, w, N, pm);
 
-    /*
+    
     // maybe we need to switch?:
     if(freqMedianOrder > 0 && freqAverageOrder > 0)
     {
@@ -107,8 +83,9 @@ void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, 
     {
       sigAndFreqToPhaseAndAmp(x, w, N, w, a); // can we avoid to call this again?
       rsArrayTools::difference(w, N);
+      rsArrayTools::fillWithZeros(pm, N);
     }
-    */
+    
 
 
   } break;
