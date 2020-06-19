@@ -937,7 +937,7 @@ void sineRecreationBandpassNoise()
 
   // measure instantaneous frequency (with algo 1 - sine recursion formula):
   Vec fm1(N);
-  SSM::sigToOmegasViaFormula(&x[0], N, &fm1[0]);
+  SSM::sigToFreqViaFormula(&x[0], N, &fm1[0]);
   fm1 = (fs/(2*PI)) * fm1;
 
   // Create cleaned up version via 3-point median filter:

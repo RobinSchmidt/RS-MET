@@ -104,8 +104,10 @@ public:
   near zero-crossings, it will also clean up the result by using a weighted average of the so 
   found omegas over 3 samples, using weights determined by a reliability measure based on how close
   a sample is to zero. */
-  static void sigToOmegasViaFormula(const T* x, int N, T* w);
-  // rename to sigToFreq...
+  static void sigToFreqViaFormula(const T* x, int N, T* w);
+
+  //static void sigToFreqViaZeros(const T* x, int N, T* w);
+
 
   /** Estimates the amplitude envelope of the signal x via coennecting peaks with linear 
   interpolants and writes the result to a. */

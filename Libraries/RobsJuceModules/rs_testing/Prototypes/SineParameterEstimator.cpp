@@ -11,7 +11,7 @@ void rsSingleSineModeler<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T* p) c
     return;  }
 
   if(algo == Algorithm::freqViaFormula) {
-    sigToOmegasViaFormula(x, N, p);
+    sigToFreqViaFormula(x, N, p);
     sigAndFreqToPhaseAndAmp(x, p, N, p, a);
     return;  }
 
@@ -27,7 +27,7 @@ void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w) co
     return; }
 
   if(algo == Algorithm::freqViaFormula) {
-    sigToOmegasViaFormula(x, N, w);
+    sigToFreqViaFormula(x, N, w);
     sigAndFreqToPhaseAndAmp(x, w, N, w, a);
     rsArrayTools::difference(w, N);
     // sigAndFreqToAmp(x, w, N, a); instead of sigAndFreqToPhaseAndAmp -> difference does not 
@@ -54,7 +54,7 @@ void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, 
     return;  }
 
   if(algo == Algorithm::freqViaFormula){    
-    sigToOmegasViaFormula(x, N, w);
+    sigToFreqViaFormula(x, N, w);
     if(freqMedianOrder > 0 && freqAverageOrder > 0) {
       sigAndFreqToPhaseAndAmp(x, w, N, pm, a);
       smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
@@ -170,7 +170,7 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaBackward(T y0, T yL, T w, T* a, T
 }
 
 template<class T>
-void rsSingleSineModeler<T>::sigToOmegasViaFormula(const T* x, int N, T* w)
+void rsSingleSineModeler<T>::sigToFreqViaFormula(const T* x, int N, T* w)
 {
   // The algorithm uses rsSineFrequency as its core to estimate the frequency at each sample. 
   // However, it was observed, that this function gives unreliable results, whenever there's a 
@@ -227,6 +227,16 @@ void rsSingleSineModeler<T>::sigToOmegasViaFormula(const T* x, int N, T* w)
   // factor out into omegaFormulaOmegas(*x, *r, N, *w)
   // r == w is allowed, is also x == w allowed? not so important but would be nice
 }
+
+/*
+template<class T>
+void rsSingleSineModeler<T>::sigToFreqViaZeros(const T* x, int N, T* w)
+{
+  for(int n = 0; n < N; n++)
+    w[n] = rsSineFrequencyAt(x, N, n, false);
+}
+// doesn't compile because of constness of x
+*/
 
 template<class T>
 void rsSingleSineModeler<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int precision)
