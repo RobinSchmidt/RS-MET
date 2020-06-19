@@ -42,6 +42,12 @@ public:
   // when both are zero, the phase-modulation signal will come out as zero - this sort of 
   // determines the split between what is modeled as freq-modulation and what is modeled as 
   // phase-modulation, if both are used
+  // maybe allow the user to specify a custom function, what to do with the w-array before 
+  // computing the phase-mod array
+
+  /** Sets the algorithm that is used to estimate the instantaneous parameters of a given 
+  signal..... */
+  void setAnalysisAlgorithm(Algorithm newAlgo) { algo = newAlgo; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -82,6 +88,7 @@ public:
   is "half-safe". */
   static T omegaFormula(T yL, T yC, T yR) 
   { return acos(rsClip(T(0.5)*(yL+yR)/yC, T(-1), T(+1))); }
+  // maybe rename to freqFormula
 
   /** Estimates the instantaneous normalized radian frequencies ("omega") of the signal x via the
   recursion formula for 3 successive samples of a sinewave. To estimate the omega at sample n, it 
@@ -90,6 +97,7 @@ public:
   found omegas over 3 samples, using weights determined by a reliability measure based on how close
   a sample is to zero. */
   static void sigToOmegasViaFormula(const T* x, int N, T* w);
+  // rename to sigToFreq...
 
   /** Estimates the amplitude envelope of the signal x via coennecting peaks with linear 
   interpolants and writes the result to a. */
@@ -101,7 +109,17 @@ public:
   static void sigAndAmpToPhase(const T* x, const T* a, int N, T* p);
 
 
+  static void sigAndFreqToPhaseAndAmp(const T* x, const T* w, int N, T* p, T* a);
+
+  static void sigAndFreqToAmp(const T* x, const T* w, int N, T* a);
+
+
   static void phaseToFreq(const T* p, int N, T* w);
+
+
+
+  //static void freqToPhase(const T* w, int N, T* p, bool wrap);
+
 
 
   static void phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm);

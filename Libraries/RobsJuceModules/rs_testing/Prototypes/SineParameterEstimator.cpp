@@ -5,39 +5,73 @@
 template<class T>
 void rsSingleSineModeler<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T* p) const
 {
-  // todo: switch between various algos that compute stuff in different orders
+  switch(algo)
+  {
+  case Algorithm::ampViaPeaks:
+  {
+    sigToAmpsViaPeaks(x, N, a, ampEnvPrecision);
+    sigAndAmpToPhase(x, a, N, p); 
+  } break;
 
-  sigToAmpsViaPeaks(x, N, a, ampEnvPrecision);
-  // here, a sub-switch for amp-estimation algo may take place
+  case Algorithm::freqViaFormula:  // needs test
+  {
+    sigToOmegasViaFormula(x, N, p);
+    sigAndFreqToPhaseAndAmp(x, p, N, p, a);
+  } break;
 
-  sigAndAmpToPhase(x, a, N, p); 
+
+
+  default: rsError("Unknown algorithm");
+
+  };
 }
 
 template<class T>
 void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w) const
 {
-  analyzeAmpAndPhase(x, N, a, w);  // w temporarily used for phase
-  phaseToFreq(w, N, w);
+  switch(algo)
+  {
+  case Algorithm::ampViaPeaks:
+  {
+    analyzeAmpAndPhase(x, N, a, w);  // w temporarily used for phase
+    phaseToFreq(w, N, w);
+  } break;
+
+  case Algorithm::freqViaFormula:  // needs test
+  {
+    sigToOmegasViaFormula(x, N, p);
+    sigAndFreqToAmp(x, w, N, a);
+  } break;
+
+
+  default: rsError("Unknown algorithm");
+
+  };
 }
 
 template<class T>
 void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm) const
 {
-  analyzeAmpAndPhase(x, N, a, pm);       // pm (phase-mod) temporarily used for phase itself
-  phaseToFreq(pm, N, w);
-  // Note that calling analyzeAmpAndFreq here won't work because phaseAndFreqToPhaseMod below needs
-  // phase and freq as input - the code looks very similar, but the arguments are different.
 
-  smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
-  // maybe allow the user to specify a custom function, what to do with the w-array before 
-  // computing the phase-mod array
+  switch(algo)
+  {
+  case Algorithm::ampViaPeaks:
+  {
+    analyzeAmpAndPhase(x, N, a, pm);       // pm (phase-mod) temporarily used for phase itself
+    phaseToFreq(pm, N, w);
+    smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
+    phaseAndFreqToPhaseMod(pm, w, N, pm);  // convert phase to phase-mod
+    // Note that calling analyzeAmpAndFreq here instead of the 1st two lines won't work because 
+    // phaseAndFreqToPhaseMod needs phase and freq as input - the 2 lines look very similar to the 
+    // ones in analyzeAmpAndFreq, but the arguments to the called functions are different.
+  } break;
 
-  // todo: optionally smooth the freqs - with the raw freqs as computed, the phase-mod signal will
-  // come out as zero... introduce freqSmoothingTime and numPasses
+  default: rsError("Unknown algorithm");
 
-
-  phaseAndFreqToPhaseMod(pm, w, N, pm);  // convert phase to phase-mod
+  };
 }
+
+
 
 //-------------------------------------------------------------------------------------------------
 // Synthesis:
@@ -195,6 +229,33 @@ void rsSingleSineModeler<T>::phaseToFreq(const T* p, int N, T* w)
   rsArrayTools::unwrap(w, N, 2*PI); // look at code comment there - optimize!
   rsArrayTools::difference(w, N);
 }
+
+template<class T>
+void rsSingleSineModeler<T>::sigAndFreqToPhaseAndAmp(const T* x, const T* w, int N, T* p, T* a)
+{
+  for(int n = 0; n < N-1; n++)
+    rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &p[n]); // move this function to here
+  // what about the last value?
+}
+
+template<class T>
+void rsSingleSineModeler<T>::sigAndFreqToAmp(const T* x, const T* w, int N, T* a)
+{
+  T dummy; // for the phase output argument of the called function which we are not interested in
+  for(int n = 0; n < N-1; n++)
+    rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &dummy);
+  // what about the last value?
+}
+
+/*
+template<class T>
+void rsSingleSineModeler<T>::freqToPhase(const T* w, int N, T* p, bool wrap)
+{
+  rsArrayTools::cumulativeSum(w, N, p);  // is this correct?
+}
+*/
+// maybe make a loop that wraps on the fly during accumulation - might be numerically better than
+// wrapping after cumulating everything because we avoid the intermediate results to grow large
 
 template<class T>
 void rsSingleSineModeler<T>::phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
