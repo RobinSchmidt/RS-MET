@@ -12,6 +12,13 @@ void rsSingleSineModeler<T>::analyzeAmpAndPhase(const T* x, int N, T* a, T* p)
 }
 
 template<class T>
+void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w)
+{
+  analyzeAmpAndPhase(x, N, a, w);  // w temporarily used for phase
+  phaseToFreq(w, N, w);
+}
+
+template<class T>
 void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm)
 {
   analyzeAmpAndPhase(x, N, a, pm);       // pm (phase-mod) temporarily used for phase itself
@@ -37,6 +44,15 @@ void rsSingleSineModeler<T>::synthesizeFromAmpAndPhase(const T* a, const T* p, i
 {
   for(int n = 0; n < N; n++)
     y[n] = a[n] * sin(p[n]);
+}
+
+template<class T>
+void rsSingleSineModeler<T>::synthesizeFromAmpAndFreq(const T* a, const T* w, int N, T* y)
+{
+  T wi = T(0); // integrated w
+  for(int n = 0; n < N; n++) {
+    wi += w[n];
+    y[n] = a[n] * sin(wi); }
 }
 
 template<class T>
@@ -163,7 +179,8 @@ void rsSingleSineModeler<T>::sigAndAmpToPhase(const T* x, const T* a, int N, T* 
 template<class T>
 void rsSingleSineModeler<T>::phaseToFreq(const T* p, int N, T* w)
 {
-  rsAssert(p != w);                 // hmm - i guess, it would actually work in place - try it!
+  //rsAssert(p != w);                 // hmm - i guess, it would actually work in place - try it!
+
   for(int n = 0; n < N; n++)
     w[n] = rsWrapToInterval(p[n], 0.0, 2*PI); // is this needed? try without!
   rsArrayTools::unwrap(w, N, 2*PI); // look at code comment there - optimize!

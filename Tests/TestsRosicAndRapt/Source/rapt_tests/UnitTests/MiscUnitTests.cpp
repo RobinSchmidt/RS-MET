@@ -359,7 +359,7 @@ bool singleSineModelerUnitTest()
   using SSM = rsSingleSineModeler<double>;
 
   int N = 1000; // number of samples
-  double tol = 1.e-14;
+  double tol = 1.e-13;
 
   // Test to resynthesize white noise - the analysis data may be meaningless in this case, but 
   // identity resynthesis should work nevertheless:
@@ -375,6 +375,13 @@ bool singleSineModelerUnitTest()
   r &= rsAreVectorsEqual(x, y, tol);
   err = x-y;  // for inspection
 
+  rsFill(y, 0.0);
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  ssm.synthesizeFromAmpAndFreq(&a[0], &w[0], N, &y[0]);
+  r &= rsAreVectorsEqual(x, y, tol);
+  err = x-y;  // for inspection
+
+
 
   //y[0] = 0;
   rsFill(y, 0.0);
@@ -384,7 +391,7 @@ bool singleSineModelerUnitTest()
   // only the first sample is wrong when we either init T wi = T(0); and start the loop from 0 or 
   // when we init wi = w[0] and start the loop from 1 - but in both cases, the first sample has
   // different values - check the conventions -  i think it's desirable to init with 0 and start 
-  // with n = 0
+  // with n = 0 - maybe we should just pm[0] = 0 in the analysis
 
 
   // todo: test to analyze a perfect sinewave and see, if the analysis data makes sense....then 

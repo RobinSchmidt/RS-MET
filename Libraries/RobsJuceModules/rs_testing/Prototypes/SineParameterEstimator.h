@@ -21,6 +21,10 @@ public:
 
   void analyzeAmpAndPhase(const T* x, int N, T* a, T* p);
 
+  void analyzeAmpAndFreq(const T* x, int N, T* a, T* w);
+
+
+
   void analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, T* w, T* pm);
 
 
@@ -28,6 +32,10 @@ public:
   /** \name Static functions */
 
   static void synthesizeFromAmpAndPhase(const T* a, const T* p, int N, T* y);
+
+  static void synthesizeFromAmpAndFreq(const T* a, const T* w, int N, T* y);
+
+
 
   // todo: synthesizeFromAmpAndFreq
 
