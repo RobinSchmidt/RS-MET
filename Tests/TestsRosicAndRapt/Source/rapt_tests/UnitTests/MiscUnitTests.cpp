@@ -492,15 +492,21 @@ bool testSingleSineFormulas()
   };
 
   double pi2 = PI/2;
-  r &= testForwardFormula2(0,  0, 0, 0,  0);
-  r &= testForwardFormula2(0,  1, 0, 0,  0);
-  r &= testForwardFormula2(1,  1, 0, 1,  pi2);
-  r &= testForwardFormula2(1,  0, 0, 1,  pi2);
-  r &= testForwardFormula2(1,  2, 0, 1,  pi2);
-  r &= testForwardFormula2(1, -1, 0, 1,  pi2);
-  r &= testForwardFormula2(2,  1, 0, 2,  pi2);
-  r &= testForwardFormula2(-1, 1, 0, 1, -pi2);
-  r &= testForwardFormula2(-2, 1, 0, 2, -pi2);
+
+  // Test cases where w is close to a multiple of pi: w = k*pi - they are handled as special cases. 
+  for(int k = -5; k <= 5; k++)
+  {
+    r &= testForwardFormula2( 0, 0, k*PI, 0,  0);
+    r &= testForwardFormula2( 0, 1, k*PI, 0,  0);
+    r &= testForwardFormula2( 1, 1, k*PI, 1,  pi2);
+    r &= testForwardFormula2( 1, 0, k*PI, 1,  pi2);
+    r &= testForwardFormula2( 1, 2, k*PI, 1,  pi2);
+    r &= testForwardFormula2( 1,-1, k*PI, 1,  pi2);
+    r &= testForwardFormula2( 2, 1, k*PI, 2,  pi2);
+    r &= testForwardFormula2(-1, 1, k*PI, 1, -pi2);
+    r &= testForwardFormula2(-2, 1, k*PI, 2, -pi2);
+  }
+
 
   // When w = pi (Nyquist frequency), the same branch applies, so we may not need separate tests
   // for those
