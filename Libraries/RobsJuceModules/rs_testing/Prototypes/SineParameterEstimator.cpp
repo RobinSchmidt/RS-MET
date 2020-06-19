@@ -125,18 +125,30 @@ void rsSingleSineModeler<T>::synthesizeFromAmpFreqAndPhaseMod(
 template<class T>
 void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T* p)
 {
-  T s, c, s2;
+  if(w == 0.0)  // use tolerance
+  {
+    *a = rsAbs(y0);
+    if(y0 > 0)
+      *p = +PI/2;
+    else if(y0 < 0)
+      *p = -PI/2;
+    else
+      *p = 0;
+  }
+
+  T s, c, sR;
   rsSinCos(w, &s, &c);
   *p = atan2(y0*s, yR-y0*c);
   s  = sin(*p);
-  s2 = sin(*p + w);
-  if( rsAbs(s) > rsAbs(s2) )
+  sR = sin(*p + w);
+  if( rsAbs(s) > rsAbs(sR) )
     *a = y0 / s;
   else {
-    if(s2 == 0.0)
-      *a = 0.0;
+    if(sR == 0.0)  // needs a tolerance
+      *a = 0.0;  // may not be a good idea - we don't want to enforce zero samples
     else
-      *a = yR / s2; }
+      *a = yR / sR; }
+  // what if s and sR are both close to zero?, what if w == 0, but y0 != yR
 }
 // copy documentation from rsSineAmplitudeAndPhase
 
@@ -187,11 +199,11 @@ void rsSingleSineModeler<T>::sigToOmegasViaFormula(const T* x, int N, T* w)
 
   // compute radian frequencies:
   T rL = r[0], rC = r[1], rR, rS;
-  T wL = T(0), wC = omegaFormula(x[0], x[1], x[2]), wR;
+  T wL = T(0), wC = freqFormula(x[0], x[1], x[2]), wR;
   for(n = 1; n < N-2; n++) {
-    rR = r[n+1];                               // reliability of right neighbour sample
+    rR = r[n+1];                              // reliability of right neighbour sample
     if(rR > T(0))
-      wR = omegaFormula(x[n], x[n+1], x[n+2]); // frequency of right neighbour sample
+      wR = freqFormula(x[n], x[n+1], x[n+2]); // frequency of right neighbour sample
     else
       wR = T(0);
     rS = rL + rC + rR;                     // reliability sum of all 3 - used as normalizer
@@ -281,6 +293,14 @@ void rsSingleSineModeler<T>::sigAndFreqToPhaseAndAmp(const T* x, const T* w, int
   for(int n = 0; n < N-1; n++)
   {
     phaseAndAmpFormulaForward(x[n], x[n+1], w[n], &a[n], &p[n]);
+
+
+    T xn = x[n];
+    T pn = p[n];
+    T an = a[n];
+    rsAssert(an < 10.0); // debug
+
+
     //rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &p[n]); // move this function to here
   }
   // what about the last value? maybe we need the backward formula?

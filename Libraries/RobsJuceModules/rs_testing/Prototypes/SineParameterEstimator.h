@@ -30,6 +30,7 @@ public:
     freqViaZeros,      /**< First estimates freq via zero crossings, then phase, then amp. */
     freqViaFormula     /**< First estimates freq via formula, then phase, then amp. */
   };
+  // freqViaZeros not yet implemented and freqViaFormula not yet working correctly
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -86,9 +87,9 @@ public:
   This formula for w is implemented here. Note that we don't check against division by zero, so yC
   should be large enough. However, we do check, if the input to acos is in -1..+1, so the formula 
   is "half-safe". */
-  static T omegaFormula(T yL, T yC, T yR) 
+  static T freqFormula(T yL, T yC, T yR) 
   { return acos(rsClip(T(0.5)*(yL+yR)/yC, T(-1), T(+1))); }
-  // maybe rename to freqFormula
+  // todo: make it totally safe!
 
 
   static void phaseAndAmpFormulaForward(T y0, T yR, T w, T *a, T *p);

@@ -365,13 +365,26 @@ bool testSingleSineIdentityResynthesis(
   Vec err;
   double tol = 1.e-12;  // tolerance for identity resynthesis
 
+  //rsPlotVector(x);
+
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  rsPlotVectors(a, w);
+
+
   // Test resynthesis from amp and phase:
   ssm.analyzeAmpAndPhase(&x[0], N, &a[0], &p[0]);
   ssm.synthesizeFromAmpAndPhase(&a[0], &p[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
   err = x-y;  // for inspection
-  rsPlotVector(err);
-  // for example, sample 775 is wrong with freqViaFormula
+  rsPlotVectors(err, a, p);
+  // for example, sample 775 is wrong with freqViaFormula - there's a huge value in a and the phase
+  // is close to -pi ..or maybe exactly -pi? in phaseAndAmpFormulaForward, w = 0, s = sR = 1.e-16
+  // p is assigned to -pi, a is assigned to 0
+  // i think, w == 0 but y0 != yR
+  // see also 137,138,139 - there are 3 large errors in succession
+  // 290, 395 and 928 have also single-sample errors
+  // at 775: w = 0
+  // at 137, 290, 395, 928: w = PI
 
   // Test resynthesis from amp and freq:
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
@@ -424,6 +437,22 @@ bool singleSineModelerUnitTest()
   //Vec err;
   SSM ssm;
 
+  // test edge cases for the freq-formula:
+  double val;
+  val = ssm.freqFormula( 0,  0,  0);  // returns nan, should return 0 
+  val = ssm.freqFormula(+1, +1, +1);  // returns 0  -> correct
+  val = ssm.freqFormula(-1, -1, -1);  // returns 0  -> correct
+  val = ssm.freqFormula(+1, -1, +1);  // returns pi -> correct? nyquist-freq?
+  val = ssm.freqFormula(-1, +1, -1);
+  val = ssm.freqFormula( 0, +1,  0);  // returns pi/2
+  val = ssm.freqFormula(-1,  0, +1);  // returns nan, should return
+  val = ssm.freqFormula( 0, +1, +2);  // returns 0
+  val = ssm.freqFormula(+1, +2, +3);  // returns 0
+  val = ssm.freqFormula(+1, +2, +1);  // returns 1.0471975511965979
+  // maybe check the derivation - did we assume something that does not always hold?
+
+  // todo: test edge cases for phaseAndAmpFormulaForward/Backward/Central
+
 
   ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
   r &= testSingleSineIdentityResynthesis(ssm, x);
@@ -455,7 +484,10 @@ bool singleSineModelerUnitTest()
   //rsPlotVectors(x, a, w, pm);
   // looks also good - we need some automatic check for this, too
 
-
+  // test with DC, all-zeros, sine at nyquist freq, maybe other special freqs, a signal that has
+  // exact zero crossings at sample-instants...things like x[n-1] = -0.5, x[n] = 0, x[n+1] = +0.5
+  // but also asymmetric ones - maybe test the omega-formula and amp/phase formulas with such 
+  // "difficult" values
 
   // ToDo (as experiment, not unit test): try analyzing a (lowpassed) sawtooth wave, a 
   // freq- or phase-modulated sine (see, if we can retrieve and/or convert the modulation signal)
