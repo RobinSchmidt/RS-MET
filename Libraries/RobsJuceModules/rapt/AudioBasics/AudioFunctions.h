@@ -99,6 +99,17 @@ template<class T>
 T rsConsistentUnwrappedValue0(T preliminaryUnwrappedValue, T targetWrappedValue, T rangeSize);
 // rename to rsUnwrap
 
+/** Computes the integer factor k such that abs(v+k*p - t) becomes smallest. It uses a loop trying
+different values of k, so to keep the loop short, you should pass an initial guess for k that is 
+likely close to the actually desired k. Parameters: v: value, t: target, p: period, k: guess. */
+template<class T>
+int rsUnwrapFactor(T v, T t, T p, int k)
+{
+  while(rsAbs((v+(k*p))-t) > rsAbs((v+((k+1)*p))-t))  k++;
+  while(rsAbs((v+(k*p))-t) > rsAbs((v+((k-1)*p))-t))  k--;
+  return k;
+}
+
 /** Converts a frequency in Hz into a MIDI-note value. It can be used also for tunings different 
 than the default the 440 Hz. */
 template<class T>

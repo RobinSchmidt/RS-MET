@@ -1271,28 +1271,11 @@ void rsArrayTools::transposeSquareArray(T **A, int N)
 template<class T>
 void rsArrayTools::unwrap(T* a, int N, T p)
 {
-  int k = 0;  // init outside outer loop bcs successive n will likely need the same k
-  for(int n = 1; n < N; n++)
-  {
-    //int k = 0;  
-    // maybe do this only once outside the loop bcs for successive n we will likely want to use 
-    // the same k, so the inner loops will not run as often - using a loop may seem a bit silly
-    // anyway - see rsConsistentUnwrappedValue0
-
-    // maybe factor out into a function rsFindBestK ...because that is needed also in
-    // rsSingleSineModeler<T>::phaseToFreq - it should take as argument the initial k from which to 
-    // start.  rsFindIntFactorForBestMatch(T value, T target, T period, int guess) where
-    // value is a[n], target is a[n-1] and guess is the start value for k
-    while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k+1)*p))-a[n-1]))
-      k++;
-    while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k-1)*p))-a[n-1]))
-      k--;
-
-
-    a[n] += k*p;
-  }
+  int k = 0; // k-factor in newValue = oldValue + k * period
+  for(int n = 1; n < N; n++) {
+    k = rsUnwrapFactor(a[n], a[n-1], p, k);
+    a[n] += k*p; }
 }
-// use rsAbs instead of fabs
 
 template <class T>
 T rsArrayTools::weightedSum(const T *w, const T *x, rsUint32 length) // use int

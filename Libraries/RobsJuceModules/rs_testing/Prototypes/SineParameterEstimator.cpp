@@ -29,10 +29,7 @@ void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w) co
   if(algo == Algorithm::freqViaFormula || algo == Algorithm::freqViaZeros) {
     sigToFreq(x, N, w);
     sigAndFreqToPhaseAndAmp(x, w, N, w, a);
-
-    //rsArrayTools::difference(w, N);
     phaseToFreq(w, N, w);
-
     // sigAndFreqToAmp(x, w, N, a); instead of sigAndFreqToPhaseAndAmp -> difference does not 
     // work. Hmm - it seems, we can not use the omegas from the freq-estimation pass. We need 
     // indeed compute the phases from the originally etsimated omegas and difference them - why?
@@ -64,10 +61,7 @@ void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, 
       phaseAndFreqToPhaseMod(pm, w, N, pm);  }
     else {
       sigAndFreqToPhaseAndAmp(x, w, N, w, a);
-
-      //rsArrayTools::difference(w, N); // does not take wrapping into account
       phaseToFreq(w, N, w);
-
       rsArrayTools::fillWithZeros(pm, N);    }
     return; }
 
@@ -303,46 +297,32 @@ void rsSingleSineModeler<T>::sigAndAmpToPhase(const T* x, const T* a, int N, T* 
   unreflectPhase(x, p, N);
 }
 
+/*
+// old implementation - todo: compare numeircal errors with new
 template<class T>
 void rsSingleSineModeler<T>::phaseToFreq(const T* p, int N, T* w)
 {
   for(int n = 0; n < N; n++)
-    w[n] = rsWrapToInterval(p[n], 0.0, 2*PI); // is this needed? try without!
+    w[n] = rsWrapToInterval(p[n], 0.0, 2*PI); // without it, the unit test fails
   rsArrayTools::unwrap(w, N, 2*PI); // look at code comment there - optimize!
   rsArrayTools::difference(w, N);
 }
+*/
 
-/*
-// code below is under construction and should eventually replace the code above
-// todo: do the unwrapping on the fly - does not yet work
 template<class T>
 void rsSingleSineModeler<T>::phaseToFreq(const T* p, int N, T* w)
 {
+  // This code basically does something like first unwrapping the phase array and the taking the
+  // difference of the unwrapped array but with the unwrapping done on the fly. I think, this 
+  // should avoid some numerical errors since we avoid making the unwrapped phase so large.
   T pOld = 0;
-  for(int n = 0; n < N; n++)
-  {
+  for(int n = 0; n < N; n++) {
     T pNew = p[n];
-
-    // todo: check, for which k  pNew + 2*k*PI is closest to pOld and then set 
-    // pNew = pNew + 2*k*PI
-
-    // maybe we should use while instead of if? ...but i think, jumps larger than 2*PI can't occur
-    // when the phase is properly wrapped - but what, if it's not properly wrapped?
-    if( rsAbs(pNew+2*PI - pOld) < rsAbs(pNew - pOld) )
-      pNew += 2*PI;
-    if( rsAbs(pNew-2*PI - pOld) < rsAbs(pNew - pOld) )
-      pNew -= 2*PI;
-
-
-
-    w[n] = pNew - pOld;
-    pOld = pNew; 
-  }
+    int k  = rsUnwrapFactor(pNew, pOld, 2*PI, 0);
+    pNew  += 2*k*PI;
+    w[n]   = pNew - pOld;
+    pOld   = pNew; }
 }
-*/
-
-
-
 
 template<class T>
 void rsSingleSineModeler<T>::sigAndFreqToPhaseAndAmp(const T* x, const T* w, int N, T* p, T* a)
