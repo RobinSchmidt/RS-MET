@@ -134,6 +134,8 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T*
       *p = -PI/2;
     else
       *p = 0;
+    return;
+    // maybe y1 should also be taken into account?
   }
 
   T s, c, sR;

@@ -440,15 +440,25 @@ bool testSingleSineFormulas()
   // todo: check results...
 
   // todo: test edge cases for phaseAndAmpFormulaForward/Backward/Central
-  double p, a;
-  ssm.phaseAndAmpFormulaForward( 0,  0, 0, &a, &p);  // a,p = 0,0
-  ssm.phaseAndAmpFormulaForward( 1,  1, 0, &a, &p);  // 0,0
-  ssm.phaseAndAmpFormulaForward( 1,  0, 0, &a, &p);  // 0,pi
-  ssm.phaseAndAmpFormulaForward( 0,  1, 0, &a, &p);  // 0,0
-  ssm.phaseAndAmpFormulaForward( 1,  2, 0, &a, &p);  // 0,0
-  ssm.phaseAndAmpFormulaForward( 2,  1, 0, &a, &p);  //  huge, pi
-  ssm.phaseAndAmpFormulaForward( 1, -1, 0, &a, &p);  // -huge, pi
-  ssm.phaseAndAmpFormulaForward(-1,  1, 0, &a, &p);  // 0,-0
+  double tmp;
+  tmp = 1 * sin(PI/2);
+
+  double p, a;                                       // a, p =
+
+  // When w = 0, the 1st argument's absolute value should be returned as amplitude and the phase 
+  // should be pi/2 or -pi/2, dependning on the sign of the first argument. The 2nd argument 
+  // should not matter:
+  ssm.phaseAndAmpFormulaForward( 0,  0, 0, &a, &p);  // 0, 0
+  ssm.phaseAndAmpFormulaForward( 0,  1, 0, &a, &p);  // 0, 0
+  ssm.phaseAndAmpFormulaForward( 1,  1, 0, &a, &p);  // 1, pi/2
+  ssm.phaseAndAmpFormulaForward( 1,  0, 0, &a, &p);  // 1, pi/2
+  ssm.phaseAndAmpFormulaForward( 1,  2, 0, &a, &p);  // 1, pi/2
+  ssm.phaseAndAmpFormulaForward( 1, -1, 0, &a, &p);  // 1, pi/2
+  ssm.phaseAndAmpFormulaForward( 2,  1, 0, &a, &p);  // 2, pi/2
+  ssm.phaseAndAmpFormulaForward(-1,  1, 0, &a, &p);  // 1,-pi/2
+  ssm.phaseAndAmpFormulaForward(-2,  1, 0, &a, &p);  // 2,-pi/2
+
+  // When w = pi (Nyquist frequency), ...
 
   ssm.phaseAndAmpFormulaForward(0, 0,  PI, &a, &p);  // 0,0
   ssm.phaseAndAmpFormulaForward(0, 0, -PI, &a, &p);  // -0,-0
