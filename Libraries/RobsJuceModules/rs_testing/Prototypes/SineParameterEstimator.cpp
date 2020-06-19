@@ -39,7 +39,7 @@ void rsSingleSineModeler<T>::analyzeAmpAndFreq(const T* x, int N, T* a, T* w) co
 
   case Algorithm::freqViaFormula:  // needs test
   {
-    sigToOmegasViaFormula(x, N, p);
+    sigToOmegasViaFormula(x, N, w);
     sigAndFreqToAmp(x, w, N, a);
   } break;
 
@@ -59,12 +59,26 @@ void rsSingleSineModeler<T>::analyzeAmpFreqAndPhaseMod(const T* x, int N, T* a, 
   {
     analyzeAmpAndPhase(x, N, a, pm);       // pm (phase-mod) temporarily used for phase itself
     phaseToFreq(pm, N, w);
+
+    // maybe we should make a decision here whether or not to call this function - if it's not 
+    // called (because smoothing is off), we can just fill the pm-array with zeros:
     smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
     phaseAndFreqToPhaseMod(pm, w, N, pm);  // convert phase to phase-mod
     // Note that calling analyzeAmpAndFreq here instead of the 1st two lines won't work because 
     // phaseAndFreqToPhaseMod needs phase and freq as input - the 2 lines look very similar to the 
     // ones in analyzeAmpAndFreq, but the arguments to the called functions are different.
   } break;
+
+  case Algorithm::freqViaFormula:  // needs test
+  {
+    sigToOmegasViaFormula(x, N, w);
+    sigAndFreqToAmp(x, w, N, a);
+
+    smoothFreqs(w, N, freqMedianOrder, freqAverageOrder);
+    phaseAndFreqToPhaseMod(pm, w, N, pm);  // convert phase to phase-mod
+    // code-duplication - factor out to smoothFreqsAndComputePhaseMod
+  } break;
+
 
   default: rsError("Unknown algorithm");
 
