@@ -12,15 +12,15 @@
 /** Converts a string that represents an xml document to an actual XmlElement object. The caller is
 responsible for deleting the object eventually. Convenience function to save the user from going 
 through the XmlDocument class. */
-JUCE_API XmlElement* stringToXml(const String& xmlStr);
+JUCE_API std::unique_ptr<XmlElement> stringToXml(const String& xmlStr);
 
 /** Returns an XmlElement from a file - returns NULL if the file doesn't exist or is not a
 valid xml file. The caller is responsible for deleting the XmlElement. */
-JUCE_API XmlElement* getXmlFromFile(const juce::File& fileToLoadFrom);
+JUCE_API std::unique_ptr<XmlElement> getXmlFromFile(const juce::File& fileToLoadFrom);
 
 /** Returns an XmlElement from a file - returns NULL if the file doesn't exist or is not a
 valid xml file. The caller is responsible for deleting the XmlElement. */
-JUCE_API XmlElement* getXmlFromFile(const juce::String& fileNameToLoadFrom);
+JUCE_API std::unique_ptr<XmlElement> getXmlFromFile(const juce::String& fileNameToLoadFrom);
 
 
 

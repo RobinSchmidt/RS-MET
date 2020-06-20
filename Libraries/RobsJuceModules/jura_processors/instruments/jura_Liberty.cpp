@@ -1485,7 +1485,7 @@ void ModularBlockDiagramPanel::openContainerLoadDialog()
   {
     juce::File fileToLoad = chooser.getResult();
     getInterfaceMediator()->modularSynthModuleToEdit->macroDirectory = fileToLoad.getParentDirectory();
-    XmlElement *xmlState = getXmlFromFile(fileToLoad);
+    auto xmlState = getXmlFromFile(fileToLoad);
     WRITE_TO_LOGFILE("Module state was loaded\n");
     if( xmlState != NULL )
     {
@@ -1505,7 +1505,7 @@ void ModularBlockDiagramPanel::openContainerLoadDialog()
       getInterfaceMediator()->getContainerShownInDiagram()->addChildModule(newModule, true);
       //getInterfaceMediator()->sendModuleChangeNotification(getInterfaceMediator()->getContainerShownInDiagram(), NUM_CHILDREN);
       notifyMediator(NUM_CHILDREN);
-      delete xmlState;
+      xmlState.release();
     }
   }
   WRITE_TO_LOGFILE("ModularBlockDiagramPanel::openContainerLoadDialog finished\n");

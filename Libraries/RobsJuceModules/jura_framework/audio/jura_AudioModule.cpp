@@ -991,17 +991,17 @@ void AudioModuleEditor::openPreferencesDialog()
 
 void AudioModuleEditor::loadPreferencesFromFile()
 {
-  XmlElement *xmlPreferences = getXmlFromFile( getPreferencesFileName() );
+ auto xmlPreferences = getXmlFromFile( getPreferencesFileName() );
   if( xmlPreferences == nullptr )
     return;
   XmlElement *xmlColors = xmlPreferences->getChildByName(juce::String("ColorScheme"));
   if(xmlColors == nullptr)
   {
-    delete xmlPreferences; // new - needs test
+    xmlPreferences.release(); // new - needs test
     return;
   }
   setColourSchemeFromXml(*xmlColors);
-  delete xmlPreferences;
+  xmlPreferences.release();
 }
 
 void AudioModuleEditor::savePreferencesToFile()

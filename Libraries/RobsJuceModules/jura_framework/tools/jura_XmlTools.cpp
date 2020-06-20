@@ -1,22 +1,22 @@
-XmlElement* stringToXml(const String& xmlStr)
+std::unique_ptr<XmlElement> stringToXml(const String& xmlStr)
 {
   XmlDocument xmlDoc(xmlStr);
   return xmlDoc.getDocumentElement();
 }
 
-XmlElement* getXmlFromFile(const File &fileToLoadFrom)
+std::unique_ptr<XmlElement> getXmlFromFile(const File &fileToLoadFrom)
 {
   if( fileToLoadFrom.existsAsFile() )
   {
     XmlDocument myDocument(fileToLoadFrom);
-    XmlElement *xml = myDocument.getDocumentElement();
+    auto xml = myDocument.getDocumentElement();
     return xml;
   }
   else
     return NULL;
 }
 
-XmlElement* getXmlFromFile(const String &fileNameToLoadFrom)
+std::unique_ptr<XmlElement> getXmlFromFile(const String &fileNameToLoadFrom)
 {
   return getXmlFromFile(File(fileNameToLoadFrom));
 }

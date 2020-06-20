@@ -6,7 +6,7 @@ void rsStemPlot(std::vector<T> v)
 {
   std::vector<T> x(v.size());
   RAPT::rsArrayTools::fillWithIndex(&x[0], (int) x.size());
-  rsStemPlot((int) x.size(), &x[0], &v[0]);
+  //rsStemPlot((int) x.size(), &x[0], &v[0]);
 }
 template void rsStemPlot(std::vector<double> v);
 

@@ -1574,7 +1574,7 @@ std::vector<int> rsPeakPicker<T>::getRelevantPeaks(const T* t, const T* x, int N
   // Pre-process, find peak candidates and apply optional prominence thresholding:
   std::vector<T> tmp = getPreProcessedData(t, x, N);
 
-  rsPlotArraysXY(N, t, x, &tmp[0]); 
+  //rsPlotArraysXY(N, t, x, &tmp[0]); 
   // plot pre-processed (shifted and shadowed) data for debug
 
   std::vector<int> peaks = getPeakCandidates(&tmp[0], N);
@@ -2066,7 +2066,7 @@ void rsEnvelopeExtractor<T>::fillSparseAreasNew(const T* rawEnvTime, const T* ra
 
 
   // plot peaks (plus artificially densified) after densification:
-  rsPlotArraysXYWithMarks(rawEnvTime, rawEnvValue, rawEnvLength, peaks);  // debug
+  //rsPlotArraysXYWithMarks(rawEnvTime, rawEnvValue, rawEnvLength, peaks);  // debug
 
   int dummy = 0;
 

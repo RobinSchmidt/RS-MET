@@ -44,12 +44,12 @@ bool StateFileManager::loadStateFromXmlFile(const File& fileToLoadFrom)
   if( fileToLoadFrom.existsAsFile() )
   {
     XmlDocument myDocument(fileToLoadFrom);
-    XmlElement* xmlState = myDocument.getDocumentElement();
+    auto xmlState = myDocument.getDocumentElement();
     if( xmlState != NULL )
     {
       setStateFromXml(*xmlState, fileToLoadFrom.getFileNameWithoutExtension(), true);
       updateFileList();
-      delete xmlState;
+      xmlState.release();
       setStateName(fileToLoadFrom.getFileNameWithoutExtension(), true);
       //markStateAsClean();
       return true;
