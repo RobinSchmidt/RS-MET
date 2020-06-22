@@ -534,7 +534,10 @@ bool testSingleSinePhaseUnreflection()
 
   double w1 = 0.5;
 
-  w1 = PI/16; // yes - we should test such cases - power-of-2 fractions of PI
+  w1 = PI/8; // yes - we should test such cases - power-of-2 fractions of PI
+
+  //w1 *= 1 - RS_EPS(double);
+  //w1 *= 1 + RS_EPS(double);
 
   double pt[N];   // true phase
   double pr[N];   // reflected phase
@@ -579,7 +582,11 @@ bool testSingleSinePhaseUnreflection()
 
   //rsPlotArrays(N, x, pt, pr, pu1, pu2);
 
-  // with w1 = PI/16, the 2nd algo sometimes fails to do the wrap-arounds
+  // with w1 = pi/16, the 2nd algo sometimes fails to do the wrap-arounds - when it's ever so 
+  // slightly off from that value (like multiplied by 1-eps or 1+eps), the problem disappears
+  // at sample 16, there ought to be a wraparound from pi to -pi - but instead, it jumps only down 
+  // to 0. with w1 = pi/8, there's also a different kind of error at sample 344 - the jump occurs
+  // one sample too late
 
   return r;
 }
