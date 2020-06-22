@@ -50,6 +50,8 @@ public:
   signal..... */
   void setAnalysisAlgorithm(Algorithm newAlgo) { algo = newAlgo; }
 
+  void setAmpPrecision(int newPrecision) { ampEnvPrecision = newPrecision; }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Analysis */
@@ -132,6 +134,9 @@ public:
   the phase-array into account. */
   static void phaseToFreq(const T* p, int N, T* w);
 
+  // maybe make a similar freqToPhase function that computes a cumulative sum but wraps the result
+  // to -pi...+pi...but maybe the wrapping should be optionla
+
 
 
   //static void freqToPhase(const T* w, int N, T* p, bool wrap);
@@ -156,9 +161,7 @@ public:
 
 
 
-protected:
-
-  static void connectPeaks(const T* x, int N, T* env);
+  static void connectPeaks(const T* x, int N, T* env, bool useParabola);
   // y == a is allowed - it can overwrite the content of a given array
   // maybe move this function to somewhere else - this could be useful in various other scenarios
 
@@ -180,6 +183,11 @@ protected:
   // more research necessarry to figure out what is the best algorithm for this - this here was the 
   // first one that sort of worked for the bandpass-noise
 
+  static void unreflectPhase2(const T* w, T* p, int N);
+  // a different phase-unreflecting algo based on linear extrapolation - uses the w-array as input
+
+
+protected:
 
   // todo: have enum-class members for:
   // algo: freqAmpPhase, ampPhaseFreq, ...decides what is estimated first, second, third

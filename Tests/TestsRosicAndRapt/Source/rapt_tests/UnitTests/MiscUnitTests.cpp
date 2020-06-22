@@ -370,14 +370,14 @@ bool testSingleSineIdentityResynthesis(
   ssm.analyzeAmpAndPhase(&x[0], N, &a[0], &p[0]);
   ssm.synthesizeFromAmpAndPhase(&a[0], &p[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
-  //err = x-y;  // for inspection
+  err = x-y;  // for inspection
   //rsPlotVectors(err);
 
   // Test resynthesis from amp and freq:
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   ssm.synthesizeFromAmpAndFreq(&a[0], &w[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
-  //err = x-y;  // for inspection
+  err = x-y;  // for inspection
   //rsPlotVectors(err);
 
   // Test resynthesis with (smoothed) freq and phase-modulation:
@@ -385,7 +385,7 @@ bool testSingleSineIdentityResynthesis(
   ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
   ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
-  //err = x-y;  // for inspection
+  err = x-y;  // for inspection
   //rsPlotVectors(err);
 
   // Set the freq-smoothing in ssm to zero and check, if the pm comes out as zero in this 
@@ -395,7 +395,7 @@ bool testSingleSineIdentityResynthesis(
   ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
   r &= rsMaxAbs(pm) <= tol;
-  //err = x-y;  // for inspection
+  err = x-y;  // for inspection
   //rsPlotVectors(err);
 
   // Test resynthesis with arbitrary content of the w-array - we need to compute a pm-array
@@ -404,7 +404,8 @@ bool testSingleSineIdentityResynthesis(
   ssm.phaseAndFreqToPhaseMod(&p[0], &w[0], N, &pm[0]); 
   ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
   r &= rsAreVectorsEqual(x, y, tol);
-  //err = x-y;  // for inspection
+  err = x-y;  // for inspection
+  //rsPlotVectors(err);
 
   return r;
 }
@@ -522,6 +523,47 @@ bool testSingleSineFormulas()
   return r;
 }
 
+bool testSingleSinePhaseUnreflection()
+{
+  bool r = true;
+
+  //using Vec = std::vector<double>;
+  using SSM = rsSingleSineModeler<double>;
+
+  static const int N = 100;
+
+  double w1 = 0.5;
+
+  double pt[N];   // true phase
+  double pr[N];   // reflected phase
+  double pu1[N];  // unreflected phase via algo 1 - should undo the replection and match true phase
+  double pu2[N];  // unreflected phase via algo 2
+  double x[N];    // sinusoidal signal
+
+  double w[N];
+
+
+  for(int n = 0; n < N; n++) {
+    w[n]  = w1;
+    pt[n] = rsWrapToInterval(w[n]*n, -PI, PI);
+    // todo: when w is non-constant, we need to use a running sum (...later...)
+
+    x[n]  = sin(pt[n]);
+    pr[n] = asin(x[n]);
+    pu1[n] = pu2[n] = pr[n];
+  }
+
+  SSM::unreflectPhase(x, pu1, N);
+
+
+  //rsPlotArrays(N, x, pt, pr);
+
+  rsPlotArrays(N, x, pt, pr, pu1, pu2);
+
+  return r;
+}
+
+
 bool singleSineModelerUnitTest()
 {
   bool r = true;
@@ -547,6 +589,7 @@ bool singleSineModelerUnitTest()
 
 
   r &= testSingleSineFormulas();
+  r &= testSingleSinePhaseUnreflection();
   r &= testSingleSineResynthesisAlgos(ssm, x, tol);
 
 
@@ -557,14 +600,20 @@ bool singleSineModelerUnitTest()
 
   double as = 0.2;   // amplitude of the sine
   double ws = 0.1;   // omega of the sine
+  double ps = 0;    // start phase
+
+  //ws = 0.5; // test: high freq
+
   for(int n = 0; n < N; n++)
-    x[n] = as * sin(ws*n);
+    x[n] = as * sin(ws*n + ps);
 
   r &= testSingleSineResynthesisAlgos(ssm, x, tol);
 
+  rsAssert(r); // to ring a bell when some setting gives no resynthesis
 
   //ssm.setFreqSmoothing(1, 3);
 
+  ssm.setAmpPrecision(2);
   ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   rsPlotVectors(x, a, w); 
@@ -574,11 +623,8 @@ bool singleSineModelerUnitTest()
   ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   rsPlotVectors(x, a, w);
-  // freq-spikes at the zero-crossings - may this be due to phase discontinuities?
-  // in analyzeAmpAndFreq, we use rsArrayTools::difference - but that would work only correctly 
-  // with unwrapped phases - we need a function phaseToFreq that is like difference but takes care
-  // of the wrapping - we actually already have one - but it'S implementation is silly - it could 
-  // be made more efficient and precise by doing the unwrapping on the fly
+  // looks even better - first sample of frew is zero - but it has to be that way because the
+  // signal starts at zero phase
 
   ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaZeros);
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
@@ -588,8 +634,8 @@ bool singleSineModelerUnitTest()
 
   //ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
 
-  ssm.setFreqSmoothing(1, 3);
-  ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
+  //ssm.setFreqSmoothing(1, 3);
+  //ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
   //rsPlotVectors(x, a, w, pm);
   // looks also good - we need some automatic check for this, too
 
@@ -601,6 +647,15 @@ bool singleSineModelerUnitTest()
   // ToDo (as experiment, not unit test): try analyzing a (lowpassed) sawtooth wave, a 
   // freq- or phase-modulated sine (see, if we can retrieve and/or convert the modulation signal)
   // a "plucked" sound, etc...
+
+  // with w = 3 (i.e. close to th Nyquist limit pi), and ampViaPeaks, we get an alternating 
+  // frequency between -3 and 3 as analysis result - could this be due to a wrong 
+  // phase-unrefelction? the amplitude estimate looks very good. with w = pi/2, we also see strong
+  // alternation with ampViaPeaks, with freqsViaFormula, everything comes out zero(!), freqViaZeros
+  // works well. 3pi/4 is also weird - the alternation pattern is spiky and asymmetric. With 
+  // w = 0.5 and ampViaPeaks, we see some error in the freq-estimate - with increased precision 
+  // to 2,we get amplitudes less than signal values (raising an assert), but the overall freq 
+  // looks smoother
 
   return r;
 }

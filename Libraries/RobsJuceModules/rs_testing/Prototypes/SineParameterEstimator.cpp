@@ -93,7 +93,8 @@ void rsSingleSineModeler<T>::synthesizeFromAmpAndFreq(const T* a, const T* w, in
 {
   T wi = T(0); // integrated w
   for(int n = 0; n < N; n++) {
-    wi += w[n];    // maybe wrap-around at 2*pi, maybe use wi = fmod(wi + w[n], 2*PI)
+    //wi += w[n];    // maybe wrap-around at 2*pi, maybe use wi = fmod(wi + w[n], 2*PI)
+    wi = fmod(wi + w[n], 2*PI);
     y[n] = a[n] * sin(wi); }
 }
 
@@ -104,8 +105,13 @@ void rsSingleSineModeler<T>::synthesizeFromAmpFreqAndPhaseMod(
   T wi = T(0); // integrated w
   for(int n = 0; n < N; n++) {
     wi += w[n];
-    y[n] = a[n] * sin(wi + pm[n]); }
+    wi = fmod(wi + w[n], 2*PI);  // this makes the unit test fail
+    //y[n] = a[n] * sin(wi + pm[n]); 
+  }
 }
+// compare numerical error with and without fmod - use longer arrays and maybe a high-freq sinewave
+// (like w = 0.99*PI) that drives the unwrapped phase up quickly
+
 // maybe we should base everything on cosine for consistency with the rsSinusoidalModel - but maybe
 // we should use the sine there
 
@@ -263,7 +269,7 @@ void rsSingleSineModeler<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int prec
     T* y = a;
     for(int n = 0; n < N; n++)
       y[n] = rsAbs(x[n]);         // todo: apply shadower here (shadows are casted only rightward)
-    connectPeaks(y, N, a);  
+    connectPeaks(y, N, a, precision == 1);  
     // todo: pass false, i precision = 0 - this should indicate to not use parabolic interpolation
     return;
   }
@@ -298,7 +304,7 @@ void rsSingleSineModeler<T>::sigAndAmpToPhase(const T* x, const T* a, int N, T* 
 }
 
 /*
-// old implementation - todo: compare numeircal errors with new
+// old implementation - todo: compare numerical errors with new
 template<class T>
 void rsSingleSineModeler<T>::phaseToFreq(const T* p, int N, T* w)
 {
@@ -312,13 +318,13 @@ void rsSingleSineModeler<T>::phaseToFreq(const T* p, int N, T* w)
 template<class T>
 void rsSingleSineModeler<T>::phaseToFreq(const T* p, int N, T* w)
 {
-  // This code basically does something like first unwrapping the phase array and the taking the
+  // This code basically does something like first unwrapping the phase array and then taking the
   // difference of the unwrapped array but with the unwrapping done on the fly. I think, this 
-  // should avoid some numerical errors since we avoid making the unwrapped phase so large.
+  // should avoid some numerical errors since we avoid that the unwrapped phase grows too large.
   T pOld = 0;
   for(int n = 0; n < N; n++) {
     T pNew = p[n];
-    int k  = rsUnwrapFactor(pNew, pOld, 2*PI, 0);
+    int k  = rsUnwrapFactor(pNew, pOld, 2*PI, 0); // maybe we should pass the k from the previous iteration as last argument?
     pNew  += 2*k*PI;
     w[n]   = pNew - pOld;
     pOld   = pNew; }
@@ -392,14 +398,14 @@ inline void lerpPeaks(const T* y, int nL, int nR, T tL, T tR, T yL, T yR, T* a)
 // maybe make member
 
 template<class T>
-void rsSingleSineModeler<T>::connectPeaks(const T* y, int N, T* a)
+void rsSingleSineModeler<T>::connectPeaks(const T* y, int N, T* a, bool useParabola)
 {
   // Make these function parameters - these determine whether we use the height of a parabolic
   // interpolant for the peak instead of the array value itself. We may also use the actual 
   // position/time of the peak in the linear interpolation loop, but that might not always be
   // a good idea, even when the interpolant is used for the height:
-  bool parabolicHeight = true; 
-  bool parabolicTime   = true;  // makes sense only, if parabolicHeight is also true
+  bool parabolicHeight = useParabola; 
+  bool parabolicTime   = useParabola;  // makes sense only, if parabolicHeight is also true
   // todo: introduce a peak-precision parameter: 0 - take peak sample directly, 1: parabolic
   // 2: quartic, 3: sixtic, etc. - see code for zero-crossing finder for reference
   // rename parabolicTime to exactTime - but then it may not be possible to use it in place anymore
@@ -559,10 +565,50 @@ void rsSingleSineModeler<T>::unreflectPhase(const T* x, T* p, int N)
 // zone 1: 0...pi/2, zone 2: pi/2...pi, zone 3: -pi/...-pi/2, zone 4: -pi/2...0
 // can too early transitions also happen? i've not yet seen one
 
+template<class T>
+void rsSingleSineModeler<T>::unreflectPhase2(const T* w, T* p, int N)
+{
+  // not yet tested
+  // under construction - uses linear extrapolation from current phase and omega approach as 
+  // oppsoed to using the input signal values to determine the zone
+
+
+  for(int n = 1; n < N; n++)
+  {
+    T pt = p[n-1] + w[n];  // predicted, target phase at sample n ..should we use w[n-1] or w[n]?
+    T pa = p[n];           // actual, measured phase at sample n
+
+    if(pa > 0 && pt > PI/2)
+    {
+      // transition for zone 1 to zone 2
+      p[n] = PI - p[n];
+    }
+    else if(pa < 0 && pa > -PI/2 && pt < -PI/2)
+    {
+      // transition from zone 3 to zone 4
+      p[n] = -PI - p[n];
+    }
+
+
+    if(pa > PI)
+    {
+      // transition for zone 2 to zone 3 (wrap-around)
+
+    }
+
+    // what about wrap-arounds, i.e. transitions from zone 2 to zone 3?
+
+
+    int dummy = 0;
+  }
+}
+
 
 /*
 
 ToDo:
+-check for edge cases in freqFormula (see unit test - i think, there may be some nan-results for
+ certain inputs), phaseAndAmpFormulaBackward - implement and use phaseAndAmpFormulaCentral
 
 Other ideas for phase unreflection:
 -minimize the sum of the distances to left and right neighbour (i think, this may be equivalent to
