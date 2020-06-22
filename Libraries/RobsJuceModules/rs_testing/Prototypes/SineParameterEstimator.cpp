@@ -583,25 +583,41 @@ void rsSingleSineModeler<T>::unreflectPhase2(const T* w, T* p, int N)
       // transition for zone 1 to zone 2
       p[n] = PI - p[n];
     }
-    else if(pa < 0 && pa > -PI/2 && pt < -PI/2)
+    else if(pa < 0 && pt < -PI/2)
     {
       // transition from zone 3 to zone 4
       p[n] = -PI - p[n];
     }
 
 
-    if(pa > PI)
+
+    if(pt > PI)   // wrap seem to happen 1 sample too early
+    //if(p[n] > PI)
     {
       // transition for zone 2 to zone 3 (wrap-around)
+      p[n] -= 2*PI;
 
     }
+
 
     // what about wrap-arounds, i.e. transitions from zone 2 to zone 3?
 
 
     int dummy = 0;
   }
+
+
+
+  for(int n = 1; n < N; n++)
+  {
+    if(p[n] < -PI)
+      p[n] += 2*PI;
+  }
+
 }
+// maybe try the same approach but without using the w-array by estimating w from p[n] and p[n-1]
+// as w = p[n] - p[n-1]...with some care about wrapping...or maybe we need p[n-1] - p[n-2] because
+// p[n] is actually the value, we want to compute...
 
 
 /*

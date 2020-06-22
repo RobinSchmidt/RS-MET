@@ -553,12 +553,18 @@ bool testSingleSinePhaseUnreflection()
     pu1[n] = pu2[n] = pr[n];
   }
 
-  SSM::unreflectPhase(x, pu1, N);
+  SSM::unreflectPhase( x, pu1, N);
+
+  SSM::unreflectPhase2(w, pu2, N);
+
+  // todo: compare pu1 and pu2 to pt - they should match
 
 
   //rsPlotArrays(N, x, pt, pr);
 
-  rsPlotArrays(N, x, pt, pr, pu1, pu2);
+  rsPlotArrays(N, x, pr, pu2);
+
+  //rsPlotArrays(N, x, pt, pr, pu1, pu2);
 
   return r;
 }
