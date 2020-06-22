@@ -575,44 +575,34 @@ void rsSingleSineModeler<T>::unreflectPhase2(const T* w, T* p, int N)
 
   for(int n = 1; n < N; n++)
   {
-    T pt = p[n-1] + w[n];  // predicted, target phase at sample n ..should we use w[n-1] or w[n]?
-    T pa = p[n];           // actual, measured phase at sample n
+    T pt = p[n-1] + w[n];           // predicted, target phase at sample n ..should we use w[n-1] or w[n]?
+    T pa = p[n];                    // actual, measured phase at sample n
 
-    if(pa > 0 && pt > PI/2)
-    {
-      // transition for zone 1 to zone 2
-      p[n] = PI - p[n];
-    }
-    else if(pa < 0 && pt < -PI/2)
-    {
-      // transition from zone 3 to zone 4
-      p[n] = -PI - p[n];
-    }
+    if(pt > PI)  pt -= 2*PI;  // test
 
 
+    if(p[n] > 0 && pt > PI/2)
+      p[n] =  PI - p[n];            // transition for zone 1 to zone 2
+    else if(p[n] < 0 && pt < -PI/2)
+      p[n] = -PI - p[n];            // transition from zone 3 to zone 4
 
-    if(pt > PI)   // wrap seem to happen 1 sample too early
-    //if(p[n] > PI)
-    {
-      // transition for zone 2 to zone 3 (wrap-around)
-      p[n] -= 2*PI;
-
-    }
-
-
-    // what about wrap-arounds, i.e. transitions from zone 2 to zone 3?
-
-
-    int dummy = 0;
+    if(pt > PI)                     // wrap seems to happen 1 sample too early - will be repaired below
+    //if(p[n] > PI)           
+      p[n] -= 2*PI;                 // transition for zone 2 to zone 3 (wrap-around)
   }
 
+  //for(int n = 1; n < N; n++) {      // repair the too early wrap-around
+  //  if(p[n] < -PI)
+  //    p[n] += PI; }
 
 
-  for(int n = 1; n < N; n++)
-  {
-    if(p[n] < -PI)
-      p[n] += 2*PI;
-  }
+  //for(int n = 1; n < N; n++) {      // repair the too early wrap-around
+  //  if(p[n] < -PI)
+  //    p[n] += 2*PI; }
+
+  //for(int n = 1; n < N; n++) {      // repair the too early wrap-around
+  //  if(p[n] < -2*PI)
+  //    p[n] += 2*PI; }
 
 }
 // maybe try the same approach but without using the w-array by estimating w from p[n] and p[n-1]

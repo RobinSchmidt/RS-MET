@@ -530,9 +530,11 @@ bool testSingleSinePhaseUnreflection()
   //using Vec = std::vector<double>;
   using SSM = rsSingleSineModeler<double>;
 
-  static const int N = 100;
+  static const int N = 800;
 
   double w1 = 0.5;
+
+  w1 = PI/16; // yes - we should test such cases - power-of-2 fractions of PI
 
   double pt[N];   // true phase
   double pr[N];   // reflected phase
@@ -541,6 +543,9 @@ bool testSingleSinePhaseUnreflection()
   double x[N];    // sinusoidal signal
 
   double w[N];
+
+  double tol = 1.e-12;
+  double err;
 
 
   for(int n = 0; n < N; n++) {
@@ -554,17 +559,27 @@ bool testSingleSinePhaseUnreflection()
   }
 
   SSM::unreflectPhase( x, pu1, N);
+  err = rsArrayTools::maxDeviation(pt, pu1, N);
+  r &= err <= tol;
+
 
   SSM::unreflectPhase2(w, pu2, N);
+  err = rsArrayTools::maxDeviation(pt, pu2, N);
+  r &= err <= tol;
+
+
 
   // todo: compare pu1 and pu2 to pt - they should match
 
 
   //rsPlotArrays(N, x, pt, pr);
 
-  rsPlotArrays(N, x, pr, pu2);
+  //rsPlotArrays(N, x, pr, pu2);
+  rsPlotArrays(N, x, pr, pt, pu2);   // wrong at sample 7,19,32, ...
 
   //rsPlotArrays(N, x, pt, pr, pu1, pu2);
+
+  // with w1 = PI/16, the 2nd algo sometimes fails to do the wrap-arounds
 
   return r;
 }
