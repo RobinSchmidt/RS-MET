@@ -572,18 +572,22 @@ void rsSingleSineModeler<T>::unreflectPhase2(const T* w, T* p, int N)
   // under construction - uses linear extrapolation from current phase and omega approach as 
   // oppsoed to using the input signal values to determine the zone
 
+  double pi = PI;
 
   for(int n = 1; n < N; n++)
   {
+    T po = p[n-1];                  // old phase
     T pt = p[n-1] + w[n];           // predicted, target phase at sample n ..should we use w[n-1] or w[n]?
     T pa = p[n];                    // actual, measured phase at sample n
 
-    if(pt > PI)  pt -= 2*PI;  // test
+    if(pt > PI)  
+      pt -= 2*PI;  // test
 
 
     if(p[n] > 0 && pt > PI/2)
       p[n] =  PI - p[n];            // transition for zone 1 to zone 2
-    else if(p[n] < 0 && pt < -PI/2)
+    //else if(p[n] < 0 && pt < -PI/2)
+    else if(p[n] < 0 && (pt < -PI/2 || p[n-1] > PI/2 ))
       p[n] = -PI - p[n];            // transition from zone 3 to zone 4
 
     if(pt > PI)                     // wrap seems to happen 1 sample too early - will be repaired below
