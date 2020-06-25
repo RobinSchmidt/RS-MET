@@ -584,7 +584,16 @@ void rsSingleSineModeler<T>::unreflectPhaseFromSigAndAmp(const T* x, const T* a,
   int dummy = 0;
 }
 
-
+// input: a phase p assumed to be in the range -pi/2...+pi/2 as returned, for example, by asin
+// output: a possible other phase q for which sin(q) == sin(p) due to reflection symmetry of the 
+//         sine (this has nothing to do with periodic shifting)
+template<class T>
+T getReflectedSinePhase(T p)
+{
+  if(p >= 0) return  PI - p;
+  else       return -PI - p;
+}
+// make member, maybe rename to getAlternativeSinePhase...maybe without the get
 
 template<class T>
 void rsSingleSineModeler<T>::unreflectPhaseFromAmpAndFreq(const T* a, const T* w, T* p, int N)
@@ -598,10 +607,7 @@ void rsSingleSineModeler<T>::unreflectPhaseFromAmpAndFreq(const T* a, const T* w
     //T xp = a[n] * sin(p[n-1] + wa);  // predicted signal at sample n from phase at sample n-1
 
     // compute the possible alternative phase at sample n resulting from reflection:
-    T pr;
-    if(p[n] >= 0) pr =  PI - p[n];
-    else          pr = -PI - p[n];
-    // factor out into getReflectedSinePhase(T p)
+    T pr = getReflectedSinePhase(p[n]);
 
     // possibly reflect p[n]:
     if( rsPhaseDistance(pp, pr) < rsPhaseDistance(pp, p[n]) ) 
@@ -630,6 +636,30 @@ void rsSingleSineModeler<T>::unreflectPhaseFromSigAmpAndFreq(
   // idea: for each sample compare predicted signal from reflected and unreflected version of phase
   // to actual signal value and choose the one, for which the difference is smaller
 
+
+  for(int n = 1; n < N-1; n++)
+  {
+    T wL = 0.5*(w[n-1] + w[n]);   // average freq between sample n-1 and sample n
+    T wR = 0.5*(w[n] + w[n+1]);   // average freq between sample n and sample n+1
+
+    // compute prediction error eo using original p[n]:
+    T eL = x[n-1] - a[n-1] * sin(p[n] - wL);  // left predication error
+    T eR = x[n+1] - a[n+1] * sin(p[n] + wR);  // right prediction error
+    T eo = rsAbs(eL) + rsAbs(eR);             // total predtion error using original p[n]
+
+    // compute prediction error ea using alternative to p[n]
+    T pa = getReflectedSinePhase(p[n]);
+    eL = x[n-1] - a[n-1] * sin(pa - wL);  // left predication error
+    eR = x[n+1] - a[n+1] * sin(pa + wR);  // right prediction error
+    T ea = rsAbs(eL) + rsAbs(eR);         // total predtion error using alternative phase
+
+    // replace p[n] with its alternative, if this reduces the prediction error:
+    if( ea < eo )
+      p[n] = pa;
+
+    // maybe it's better to look only backward - use only the backward prediction error rather
+    // than sum of forward and backward predicition error - try both and compare
+  }
 
 }
 
