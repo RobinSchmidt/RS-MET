@@ -195,11 +195,14 @@ public:
   //-----------------------------------------------------------------------------------------------
   // under construction - not yet ready to use:
 
-  //static void unreflectPhaseFromSigAndAmp(const T* x, const T* a, T* p, int N);
+  static void unreflectPhaseFromSigAndAmp(const T* x, const T* a, T* p, int N);
 
-  static void unreflectPhaseFromAmpAndFreq(const T* a, const T* w, T* p, int N);
+  static void unreflectPhaseFromFreq(const T* w, T* p, int N);
+  // needs test
 
-  static void unreflectPhaseFromSigAmpAndFreq(const T* x, const T* a, const T* w, T* p, int N);
+  static void unreflectPhaseFromSigAmpAndFreq(
+    const T* x, const T* a, const T* w, T* p, int N, bool central);
+  // needs test
 
 
 
@@ -225,6 +228,10 @@ protected:
   int ampEnvPrecision  = 1;
 
   Algorithm algo = Algorithm::ampViaPeaks;
+
+  // PhaseAlgo phaseAlgo = ..; 
+  // options: fromSignal, fromFreq, fromTwoSidedPrediction, fromBackwardPrediction - should be used
+  // for switching in sigAndAmpToPhase
 
 };
 
