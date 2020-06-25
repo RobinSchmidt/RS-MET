@@ -298,7 +298,10 @@ void rsSingleSineModeler<T>::sigAndAmpToPhase(const T* x, const T* a, int N, T* 
     else
       p[n] = asin(x[n] / a[n]); 
   }
-  unreflectPhase(x, p, N);
+
+  // preliminary - later dispatch between different unreflection algorithms:
+  unreflectPhaseFromSig(x, p, N);
+  // have a function unreflectPhaseFromSigAndAmp that uses a and a as inputs instead of just x
 }
 
 /*
@@ -548,7 +551,7 @@ void refinePhase(T* p, int N)
 // try this with white-noise inputs - the bandpass noise is too well-behaved for that
 
 template<class T>
-void rsSingleSineModeler<T>::unreflectPhase(const T* x, T* p, int N)
+void rsSingleSineModeler<T>::unreflectPhaseFromSig(const T* x, T* p, int N)
 {
   for(int n = 1; n < N; n++) {
     if(x[n] >= 0) {
@@ -558,7 +561,6 @@ void rsSingleSineModeler<T>::unreflectPhase(const T* x, T* p, int N)
 
   // Post-process - compenaste too late transitions:
   refinePhase(p, N);     // maybe rename 
-  //refinePhase(p, N);  // doesn't make a difference
 }
 // zone 1: 0...pi/2, zone 2: pi/2...pi, zone 3: -pi/...-pi/2, zone 4: -pi/2...0
 // can too early transitions also happen? i've not yet seen one
@@ -566,8 +568,75 @@ void rsSingleSineModeler<T>::unreflectPhase(const T* x, T* p, int N)
 //-------------------------------------------------------------------------------------------------
 // under construction:
 
+template<class T>
+void rsSingleSineModeler<T>::unreflectPhaseFromSigAndAmp(const T* x, const T* a, T* p, int N)
+{
+  // estimate frequencies from preliminary phases:
+  std::vector<double> w(N);
+  phaseToFreq(p, N, &w[0]);  
+  // results in (unwrapped version of) w[n] = p[n] - p[n-1], i.e. a backward estimate - but we want
+  // a central estimate, so we do a 2-point forward moving average to fix that:
+  for(int n = 0; n < N-1; n++)
+    w[n] = 0.5*(w[n] + w[n+1]);
+  // ...todo: verify, if that's the correct way to do it
+
+
+  int dummy = 0;
+}
+
+
+
+template<class T>
+void rsSingleSineModeler<T>::unreflectPhaseFromAmpAndFreq(const T* a, const T* w, T* p, int N)
+{
+  for(int n = 1; n < N; n++)
+  {
+    T wa = 0.5*(w[n-1] + w[n]);     // average freq between sample n-1 and sample n
+    T pp = p[n-1] + wa;             // predicted phase at sample n from phase at sample n-1
+    if( pp >= PI ) pp -= 2*PI;      // wrap around pp, if necessarry
+
+    //T xp = a[n] * sin(p[n-1] + wa);  // predicted signal at sample n from phase at sample n-1
+
+    // compute the possible alternative phase at sample n resulting from reflection:
+    T pr;
+    if(p[n] >= 0) pr =  PI - p[n];
+    else          pr = -PI - p[n];
+    // factor out into getReflectedSinePhase(T p)
+
+    // possibly reflect p[n]:
+    if( rsPhaseDistance(pp, pr) < rsPhaseDistance(pp, p[n]) ) 
+      p[n] = pr;
+    // else leave p[n] as is
+
+    // instead of rsAbs we may need anrsPhaseDistance function, that compares for all possible
+    // shifts of 2*k*pi of one of the inputs and chooses the smallest
+
+
+
+    // nope - these errors are the same due to symmetry of the sine - that's the whole point of
+    // unreflection:
+    //T e1 = x[n] - a[n] * sin(p[n]);
+    //T e2 = x[n] - a[n] * sin(pr);
+  }
+
+}
+
+
+
+template<class T>
+void rsSingleSineModeler<T>::unreflectPhaseFromSigAmpAndFreq(
+  const T* x, const T* a, const T* w, T* p, int N)
+{
+  // idea: for each sample compare predicted signal from reflected and unreflected version of phase
+  // to actual signal value and choose the one, for which the difference is smaller
+
+
+}
+
+
+
 // pNew: preliminary phase at sample n, pOld: phase at sample n-1,w: frequency between sample 
-// n-1 and n, rteurn: adjusted pahse at sample n
+// n-1 and n, rteurn: adjusted phase at sample n
 template<class T>
 T adjustPhase(T pNew, T pOld,  T w)
 {

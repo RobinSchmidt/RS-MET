@@ -110,6 +110,18 @@ int rsUnwrapFactor(T v, T t, T p, int k)
   return k;
 }
 
+/** Phase distance between given phase p and given target phase t. That's the absolute value of
+p-t or (p+2pi)-t or (p-2pi)-t or generally of (p+2*k*pi)-t for a k chosen such that the absolute
+value of that difference becomes a minimum. */
+template<class T>
+T rsPhaseDistance(T p, T t)
+{
+  int k = rsUnwrapFactor(p, t, 2*PI, 0);
+  return rsAbs(p+2*k*PI - t);
+}
+// needs test
+
+
 /** Converts a frequency in Hz into a MIDI-note value. It can be used also for tunings different 
 than the default the 440 Hz. */
 template<class T>

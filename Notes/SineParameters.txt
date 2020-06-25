@@ -276,11 +276,32 @@ oh - that's the same formula again - seems we don't need the amplitude at all to
 ...but what if a and p is known - can we find formula for the frequency?
 
    xR/a = sin(p+w) -> asin(xR/a) = p + w -> w = asin(xR/a) - p
+   
+---------------------------------------------------------------------------------------------------
+
+Computing freq and phase from known signal values and amplitudes:
+
+  xL = aL * sin(p-w)
+  x0 = a0 * sin(p)
+  xR = aR * sin(p+w)
+
+this is overdetermined - we have 3 equations but only 2 degrees of freedom (p,w). Possibilities:
+(1) use only the xL or xR euqation together with the x0 equation (or both seperately and take an
+average) or (2) combine the xL,xR equations into one: 
+
+  (xL - aL*sin(p-w))^2 + (xR - aR*sin(p+w))^2 = min
+
+(1):
+
+  xL = aL * sin(p-wL)     ->   wL = p - asin(xL/aL)     = p - pL
+  x0 = a0 * sin(p)        ->   p  =     asin(x0/a0)
+  xR = aR * sin(p+wR)     ->   wR =     asin(xR/aR) - p = pR - p 
+  w = (wL+wR)/2
+  
+  xL/aL = sin(p-wL) -> asin(xL/aL) = p - wL -> wL = p - asin(xL/aL)
 
 
 
-
-      
       
       
       

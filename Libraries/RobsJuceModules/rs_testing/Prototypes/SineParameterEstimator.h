@@ -185,15 +185,23 @@ public:
   in one cycle, it oscillates back and forth between -pi/2...+pi/2. This function takes a raw array
   of such phase values and heuristically reflects the phases around pi/2 or -pi/2 to get rid of 
   that effect. It's sort of similar to phase-unwrapping. Used in sigAndAmpToPhase.  */
-  static void unreflectPhase(const T* x, T* p, int N);
+  static void unreflectPhaseFromSig(const T* x, T* p, int N);
   // more research necessarry to figure out what is the best algorithm for this - this here was the 
   // first one that sort of worked for the bandpass-noise
 
 
 
 
-
+  //-----------------------------------------------------------------------------------------------
   // under construction - not yet ready to use:
+
+  static void unreflectPhaseFromSigAndAmp(const T* x, const T* a, T* p, int N);
+
+  static void unreflectPhaseFromAmpAndFreq(const T* a, const T* w, T* p, int N);
+
+  static void unreflectPhaseFromSigAmpAndFreq(const T* x, const T* a, const T* w, T* p, int N);
+
+
 
   static void unreflectPhase2(const T* w, T* p, int N);
   // a different phase-unreflecting algo based on linear extrapolation - uses the w-array as input

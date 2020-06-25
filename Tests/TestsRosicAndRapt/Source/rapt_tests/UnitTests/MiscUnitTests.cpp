@@ -563,7 +563,7 @@ bool testSingleSinePhaseUnreflection(int N, double w1)
     pu1[n] = pu2[n] = pr[n];
   }
 
-  SSM::unreflectPhase( &x[0], &pu1[0], N);
+  SSM::unreflectPhaseFromSig(&x[0], &pu1[0], N);
   err = rsArrayTools::maxDeviation(&pt[0], &pu1[0], N);
   r &= err <= tol;
 
