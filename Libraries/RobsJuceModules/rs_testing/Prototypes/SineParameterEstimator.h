@@ -195,7 +195,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // under construction - not yet ready to use:
 
-  static void unreflectPhaseFromSigAndAmp(const T* x, const T* a, T* p, int N);
+  //static void unreflectPhaseFromSigAndAmp(const T* x, const T* a, T* p, int N);
 
   static void unreflectPhaseFromAmpAndFreq(const T* a, const T* w, T* p, int N);
 

@@ -568,6 +568,7 @@ void rsSingleSineModeler<T>::unreflectPhaseFromSig(const T* x, T* p, int N)
 //-------------------------------------------------------------------------------------------------
 // under construction:
 
+/*
 template<class T>
 void rsSingleSineModeler<T>::unreflectPhaseFromSigAndAmp(const T* x, const T* a, T* p, int N)
 {
@@ -583,6 +584,7 @@ void rsSingleSineModeler<T>::unreflectPhaseFromSigAndAmp(const T* x, const T* a,
 
   int dummy = 0;
 }
+*/
 
 // input: a phase p assumed to be in the range -pi/2...+pi/2 as returned, for example, by asin
 // output: a possible other phase q for which sin(q) == sin(p) due to reflection symmetry of the 
@@ -604,63 +606,57 @@ void rsSingleSineModeler<T>::unreflectPhaseFromAmpAndFreq(const T* a, const T* w
     T pp = p[n-1] + wa;             // predicted phase at sample n from phase at sample n-1
     if( pp >= PI ) pp -= 2*PI;      // wrap around pp, if necessarry
 
-    //T xp = a[n] * sin(p[n-1] + wa);  // predicted signal at sample n from phase at sample n-1
-
     // compute the possible alternative phase at sample n resulting from reflection:
     T pr = getReflectedSinePhase(p[n]);
 
-    // possibly reflect p[n]:
+    // if it gives a closer match between predicted and measured phase, reflect p[n]:
     if( rsPhaseDistance(pp, pr) < rsPhaseDistance(pp, p[n]) ) 
       p[n] = pr;
     // else leave p[n] as is
-
-    // instead of rsAbs we may need anrsPhaseDistance function, that compares for all possible
-    // shifts of 2*k*pi of one of the inputs and chooses the smallest
-
-
-
-    // nope - these errors are the same due to symmetry of the sine - that's the whole point of
-    // unreflection:
-    //T e1 = x[n] - a[n] * sin(p[n]);
-    //T e2 = x[n] - a[n] * sin(pr);
   }
-
 }
-
-
+// amp-array is actually not used - remove from parameters, rename function
 
 template<class T>
 void rsSingleSineModeler<T>::unreflectPhaseFromSigAmpAndFreq(
   const T* x, const T* a, const T* w, T* p, int N)
 {
-  // idea: for each sample compare predicted signal from reflected and unreflected version of phase
-  // to actual signal value and choose the one, for which the difference is smaller
-
+  // Idea: for each sample compare predicted signal from original and alternative version of phase
+  // to actual signal value and choose the one, for which the difference is smaller.
 
   for(int n = 1; n < N-1; n++)
   {
     T wL = 0.5*(w[n-1] + w[n]);   // average freq between sample n-1 and sample n
     T wR = 0.5*(w[n] + w[n+1]);   // average freq between sample n and sample n+1
 
+    // left and right amplitudes used in the (backward and forward) prediction - i'm not sure, if 
+    // it's a good idea to use an average here - maybe using aL = a[n-1], aR = a[n+1] could be 
+    // better - we'll see:
+    T aL = 0.5*(a[n-1] + a[n]);
+    T aR = 0.5*(a[n] + a[n+1]);
+
     // compute prediction error eo using original p[n]:
-    T eL = x[n-1] - a[n-1] * sin(p[n] - wL);  // left predication error
-    T eR = x[n+1] - a[n+1] * sin(p[n] + wR);  // right prediction error
-    T eo = rsAbs(eL) + rsAbs(eR);             // total predtion error using original p[n]
+    T eL = x[n-1] - aL * sin(p[n] - wL);  // left predication error
+    T eR = x[n+1] - aR * sin(p[n] + wR);  // right prediction error
+    T eo = rsAbs(eL) + rsAbs(eR);         // total prediction error using original p[n]
 
     // compute prediction error ea using alternative to p[n]
     T pa = getReflectedSinePhase(p[n]);
-    eL = x[n-1] - a[n-1] * sin(pa - wL);  // left predication error
-    eR = x[n+1] - a[n+1] * sin(pa + wR);  // right prediction error
-    T ea = rsAbs(eL) + rsAbs(eR);         // total predtion error using alternative phase
+    eL = x[n-1] - aL * sin(pa - wL);      // left predication error
+    eR = x[n+1] - aR * sin(pa + wR);      // right prediction error
+    T ea = rsAbs(eL) + rsAbs(eR);         // total prediction error using alternative phase
 
     // replace p[n] with its alternative, if this reduces the prediction error:
     if( ea < eo )
       p[n] = pa;
 
     // maybe it's better to look only backward - use only the backward prediction error rather
-    // than sum of forward and backward predicition error - try both and compare
+    // than sum of forward and backward prediction errors - try both variants and compare
   }
 
+  // what about p[n-1]? ..we should use only the backward prediction error for this
+  // i think, p[0] should never be modified - it's the anchor and we want it as close to 0 as
+  // possible which is what it is, when be left as is
 }
 
 
