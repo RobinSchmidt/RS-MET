@@ -260,20 +260,18 @@ void rsSingleSineModeler<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int prec
   //  -maybe refine their values by using the maximum through a parabola
   // -connect them by linear interpolation
 
-  //T power = 1.0; // experimental - doesn't seem to help
 
-
-  // that's the old, imprecise version
+  // old version, doesn't allocate:
   if(precision <= 1)
   {
     T* y = a;
     for(int n = 0; n < N; n++)
       y[n] = rsAbs(x[n]);         // todo: apply shadower here (shadows are casted only rightward)
     connectPeaks(y, N, a, precision == 1);  
-    // todo: pass false, i precision = 0 - this should indicate to not use parabolic interpolation
     return;
   }
 
+  // new version, allowing for higher precision:
   using Vec = std::vector<T>;
   Vec y(N);
   for(int n = 0; n < N; n++)
@@ -565,6 +563,45 @@ void rsSingleSineModeler<T>::unreflectPhase(const T* x, T* p, int N)
 // zone 1: 0...pi/2, zone 2: pi/2...pi, zone 3: -pi/...-pi/2, zone 4: -pi/2...0
 // can too early transitions also happen? i've not yet seen one
 
+//-------------------------------------------------------------------------------------------------
+// under construction:
+
+// pNew: preliminary phase at sample n, pOld: phase at sample n-1,w: frequency between sample 
+// n-1 and n, rteurn: adjusted pahse at sample n
+template<class T>
+T adjustPhase(T pNew, T pOld,  T w)
+{
+  T pTgt = pOld + w;  // target phase at sample n assuming freq w between n-1 and n
+  if(pTgt > PI)
+    pTgt -= 2*PI;   // wrap around
+
+  if(w < PI/2)
+  {
+    // w < PI/2 - we may have transitions: 1 -> 2, 2 -> 3, 3 -> 4, 4 -> 1
+
+    if(pNew > 0 && (pTgt > PI/2 || pOld > PI/2 ))
+      pNew =  PI - pNew;                                 // transition from zone 1 to zone 2
+
+    if(pNew < 0 && (pTgt < -PI/2 || pOld > PI/2 ))
+      pNew = -PI - pNew;                                 // transition from zone 3 to zone 4
+
+
+  }
+  else 
+  {
+    // w >= PI/2 - we may have transitions: 1 -> 3, 2 -> 4, 3 -> 1, 4 -> 2
+
+    rsError("Not yet implemented");
+
+  }
+
+  if(pTgt > PI)    // hwy test pTgt and not pNew?
+    pNew -= 2*PI;  
+    
+  return pNew;
+}
+
+
 template<class T>
 void rsSingleSineModeler<T>::unreflectPhase2(const T* w, T* p, int N)
 {
@@ -572,23 +609,40 @@ void rsSingleSineModeler<T>::unreflectPhase2(const T* w, T* p, int N)
   // under construction - uses linear extrapolation from current phase and omega approach as 
   // oppsoed to using the input signal values to determine the zone
 
+  for(int n = 1; n < N; n++)
+    p[n] = adjustPhase(p[n], p[n-1], 0.5*(w[n-1]+w[n]));
+  return;
+
+
   double pi = PI;
 
   for(int n = 1; n < N; n++)
   {
-    T po = p[n-1];                  // old phase
-    T pt = p[n-1] + w[n];           // predicted, target phase at sample n ..should we use w[n-1] or w[n]?
-    T pa = p[n];                    // actual, measured phase at sample n
+    T po = p[n-1];                   // old phase at sample n-1
+    T pa = p[n];                     // actual, measured phase at sample n
 
-    if(pt > PI)  
+    //T pt = p[n-1] + w[n];
+    T pt = p[n-1] + 0.5*(w[n-1]+w[n]);
+    // predicted, target phase at sample n ..should we use w[n-1] or w[n]? - maybe best would be 
+    // 0.5*(w[n-1]+w[n]) because that represents the *average* measured frequency between previous 
+    // and current sample - the integration algo that we actually use for synthesis is not really
+    // relevant here because the input w-array is the measured freq and not the differenced phase 
+    // that we would use in synthesis (btw. maybe we could use trapzoidal integration in synthesis, 
+    // too - we just have to take care, how to represent the initial phase in this case)
+
+ 
+
+    if(pt > PI)
       pt -= 2*PI;  // test
 
 
-    if(p[n] > 0 && pt > PI/2)
-      p[n] =  PI - p[n];            // transition for zone 1 to zone 2
+    //if(p[n] > 0 && pt > PI/2)
+    if(p[n] > 0 && (pt > PI/2 || p[n-1] > PI/2 ))
+      p[n] =  PI - p[n];            // transition from zone 1 to zone 2
     //else if(p[n] < 0 && pt < -PI/2)
     else if(p[n] < 0 && (pt < -PI/2 || p[n-1] > PI/2 ))
       p[n] = -PI - p[n];            // transition from zone 3 to zone 4
+    // or should we use p[n] <= 0 
 
     if(pt > PI)                     // wrap seems to happen 1 sample too early - will be repaired below
     //if(p[n] > PI)           
@@ -612,6 +666,88 @@ void rsSingleSineModeler<T>::unreflectPhase2(const T* w, T* p, int N)
 // maybe try the same approach but without using the w-array by estimating w from p[n] and p[n-1]
 // as w = p[n] - p[n-1]...with some care about wrapping...or maybe we need p[n-1] - p[n-2] because
 // p[n] is actually the value, we want to compute...
+
+// this seems to work only, if w < pi/2
+
+
+
+template<class T>
+void rsSingleSineModeler<T>::unreflectPhase3(const T* w, T* p, int N)
+{
+  // initially (i.e. at n = 0), the zone is either 1 or 4:
+  int zone;
+  if(p[0] >= 0) zone = 1;
+  else          zone = 4;
+
+  // pre-process to wrap phases < 0 around:
+  for(int n = 0; n < N; n++)
+    if(p[n] < 0)
+      p[n] += 2*PI;
+
+  // actual unreflection, using phases in the range 0 <= p < 2*pi:
+  for(int n = 1; n < N; n++)
+  {
+    zone = newPhaseZone(p[n], p[n-1], 0.5*(w[n-1]+w[n]), zone);
+    if(zone == 2) p[n] =  PI - p[n];
+    if(zone == 3) p[n] = -PI - p[n] + 2*PI;
+  }
+
+  // post-process to wrap phases >= pi around:
+  for(int n = 0; n < N; n++)
+    if(p[n] >= PI)
+      p[n] -= 2*PI;
+}
+// zones for the phase p:
+// 1: 0      <= p < pi/2
+// 2: pi/2   <= p < pi
+// 3: pi     <= p < 3*pi/2    or  -pi   <= p < -pi/2
+// 4: 3*pi/2 <= p < 2*pi      or  -pi/2 <= p < 0
+
+// numerically, it would be better to avoid the pre/post-process and the +2*PI in the zone==3 
+// branch...but for development, it's more convenient that way - maybe try to get rid of it later
+
+// maybe remove oldZone parameter, maybe add xNew, xOld, amp instead - they may be useful to figure 
+// out if phase has moved forward or backward between samples n-1 and n
+template<class T>
+int rsSingleSineModeler<T>::newPhaseZone(T pNew, T pOld, T w, int oldZone)
+{
+  rsAssert(w >= 0 && w <= PI); 
+  // the analysis should produce values in that range, right? ...nope: only the zero-crossing based
+  // freq-estimation algo is guaranteed to produce nonnegative values the (acos-based) formula may
+  // totally produce negative frequencies
+
+  T pTgt = pOld + w;  // target phase
+  if(pTgt >= 2*PI)
+    pTgt -= 2*PI;
+
+  if(pNew >= 0) {                     // new zone = 1 or 2
+    if(pTgt < PI/2)   return 1;
+    else              return 2; }
+  else {                              // new zone = 3 or 4
+    if(pTgt < 3*PI/2) return 3;
+    else              return 4; }
+  // oldZone is not even used here - maybe remove the parameter - we may not need it - in fact, the
+  // pOld variable (and therefore also pTgt together with w) fully contains that information, so 
+  // it's redundant
+
+  // but to accomodate negative phase-modulation, maybe we should decide first, if the phase was 
+  // more likely to have made a forward or backward step by comparing, how close xNew is to 
+  // a*sin(pOld+w) and a*sin(pOld-w) - so we need also to pass xNew and amplitude a[n] to this 
+  // function - if this works can be tested with phase-modulated signals
+
+
+  rsError("Case not handled");
+  return 0; // preliminary
+}
+// input: 
+// pNew: preliminary, measured phase at sample n (range: -pi/2 <= pNew < pi/2) 
+//       ..or -pi/2 < pNew <= pi/2?
+// pOld: already adjusted phase at sample n-1 (range: 0 <= pOld < 2*pi)
+// w: radian frequency between sample n-1 and sample n
+// oldZone: zone of pOld (1,2,3,4)
+//
+// output: the new zone, i.e. the zone of pNew
+
 
 
 /*

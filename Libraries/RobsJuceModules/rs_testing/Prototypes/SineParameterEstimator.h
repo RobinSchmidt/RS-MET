@@ -26,10 +26,13 @@ public:
   etc... */
   enum class Algorithm
   {
-    ampViaPeaks,       /**< First estimates amp-env from peaks, then phase, then freq. */
+    ampViaPeaks,       /**< First estimates amp-env from peaks, then phase via asin, then freq via
+                            phase-difference. */
     freqViaZeros,      /**< First estimates freq via zero crossings, then phase, then amp. */
     freqViaFormula     /**< First estimates freq via formula, then phase, then amp. */
   };
+  // maybe make an alog that is like ampViaPeaks but uses freq-estimation in parallel rather than
+  // using asin and phase-unreflection - maybe a freq-formula using a known amplitude can be used
   // freqViaZeros not yet implemented and freqViaFormula not yet working correctly
 
   //-----------------------------------------------------------------------------------------------
@@ -123,6 +126,9 @@ public:
   corresponding instantaneous pahses, such that x[n] = a[n] * sin(p[n]) for each n. */
   static void sigAndAmpToPhase(const T* x, const T* a, int N, T* p);
 
+  // make a function sigAndAmpToFreq based on freqFormula but with known ampltude rather than
+  // using an estimated amplitude
+
 
   static void sigAndFreqToPhaseAndAmp(const T* x, const T* w, int N, T* p, T* a);
 
@@ -135,7 +141,7 @@ public:
   static void phaseToFreq(const T* p, int N, T* w);
 
   // maybe make a similar freqToPhase function that computes a cumulative sum but wraps the result
-  // to -pi...+pi...but maybe the wrapping should be optionla
+  // to -pi...+pi...but maybe the wrapping should be optional
 
 
 
@@ -183,8 +189,19 @@ public:
   // more research necessarry to figure out what is the best algorithm for this - this here was the 
   // first one that sort of worked for the bandpass-noise
 
+
+
+
+
+  // under construction - not yet ready to use:
+
   static void unreflectPhase2(const T* w, T* p, int N);
   // a different phase-unreflecting algo based on linear extrapolation - uses the w-array as input
+
+  static void unreflectPhase3(const T* w, T* p, int N);
+  // based on newPhaseZone
+
+  static int newPhaseZone(T pNew, T pOld, T w, int oldZone);
 
 
 protected:

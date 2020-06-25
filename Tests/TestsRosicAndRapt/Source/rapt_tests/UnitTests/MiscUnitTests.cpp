@@ -520,32 +520,34 @@ bool testSingleSineFormulas()
   yR = y0*cos(w); // causes atan2(y0*sin(w), 0) - no problem, atan2 handles zero denoms
   ssm.phaseAndAmpFormulaForward(y0, yR, w, &a2, &p2);
 
+  // todo: testBackwardFormula, testCentralFormula
+
   return r;
 }
 
-bool testSingleSinePhaseUnreflection()
+bool testSingleSinePhaseUnreflection(int N, double w1)
 {
   bool r = true;
 
-  //using Vec = std::vector<double>;
+  using Vec = std::vector<double>;
   using SSM = rsSingleSineModeler<double>;
 
-  static const int N = 800;
+  //static const int N = 800;
 
-  double w1 = 0.5;
+  //double w1 = 0.5;
 
-  w1 = PI/8; // yes - we should test such cases - power-of-2 fractions of PI
+  //w1 = PI/4; // yes - we should test such cases - power-of-2 fractions of PI
 
   //w1 *= 1 - RS_EPS(double);
   //w1 *= 1 + RS_EPS(double);
 
-  double pt[N];   // true phase
-  double pr[N];   // reflected phase
-  double pu1[N];  // unreflected phase via algo 1 - should undo the replection and match true phase
-  double pu2[N];  // unreflected phase via algo 2
-  double x[N];    // sinusoidal signal
+  Vec pt(N);   // true phase
+  Vec pr(N);   // reflected phase
+  Vec pu1(N);  // unreflected phase via algo 1 - should undo the replection and match true phase
+  Vec pu2(N);  // unreflected phase via algo 2
+  Vec x(N);    // sinusoidal signal
 
-  double w[N];
+  Vec w(N);
 
   double tol = 1.e-12;
   double err;
@@ -561,32 +563,30 @@ bool testSingleSinePhaseUnreflection()
     pu1[n] = pu2[n] = pr[n];
   }
 
-  SSM::unreflectPhase( x, pu1, N);
-  err = rsArrayTools::maxDeviation(pt, pu1, N);
+  SSM::unreflectPhase( &x[0], &pu1[0], N);
+  err = rsArrayTools::maxDeviation(&pt[0], &pu1[0], N);
   r &= err <= tol;
 
 
-  SSM::unreflectPhase2(w, pu2, N);
-  err = rsArrayTools::maxDeviation(pt, pu2, N);
+  SSM::unreflectPhase2(&w[0], &pu2[0], N);
+  err = rsArrayTools::maxDeviation(&pt[0], &pu2[0], N);
   r &= err <= tol;
 
 
 
-  // todo: compare pu1 and pu2 to pt - they should match
+  // compare pu1 and pu2 to pt - they should match:
+  //rsPlotVectors(x, pt, pr, pu1);
+  //rsPlotVectors(x, pt, pr, pu2);
+  rsPlotVectors(pt-pu1, pt-pu2);
 
 
-  //rsPlotArrays(N, x, pt, pr);
-
-  //rsPlotArrays(N, x, pr, pu2);
-  rsPlotArrays(N, x, pr, pt, pu2);   // wrong at sample 7,19,32, ...
-
-  //rsPlotArrays(N, x, pt, pr, pu1, pu2);
 
   // with w1 = pi/16, the 2nd algo sometimes fails to do the wrap-arounds - when it's ever so 
   // slightly off from that value (like multiplied by 1-eps or 1+eps), the problem disappears
   // at sample 16, there ought to be a wraparound from pi to -pi - but instead, it jumps only down 
   // to 0. with w1 = pi/8, there's also a different kind of error at sample 344 - the jump occurs
   // one sample too late
+  // test exact fractions of pi, like pi/4, pi/8, pi/16 and values just slightly off from these
 
   return r;
 }
@@ -617,10 +617,7 @@ bool singleSineModelerUnitTest()
 
 
   r &= testSingleSineFormulas();
-  r &= testSingleSinePhaseUnreflection();
   r &= testSingleSineResynthesisAlgos(ssm, x, tol);
-
-
 
 
   // todo: test to analyze a perfect sinewave and see, if the analysis data makes sense....then 
@@ -666,6 +663,23 @@ bool singleSineModelerUnitTest()
   //ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
   //rsPlotVectors(x, a, w, pm);
   // looks also good - we need some automatic check for this, too
+
+
+  /*
+  // tests for new phase-unreflection algos - they do not yet work:
+  // low freqs:
+  r &= testSingleSinePhaseUnreflection(N, 0.125*PI);
+  r &= testSingleSinePhaseUnreflection(N, 0.25*PI);
+  r &= testSingleSinePhaseUnreflection(N, 0.5);
+  //r &= testSingleSinePhaseUnreflection(N, 0.49*PI);  // algo 1 fails
+  //r &= testSingleSinePhaseUnreflection(N, 0.51*PI);  // both algos fail
+  //r &= testSingleSinePhaseUnreflection(N, 0.501*PI);   // algo1 fails
+  r &= testSingleSinePhaseUnreflection(N, 0.7*PI);      // both fail
+  r &= testSingleSinePhaseUnreflection(N, PI);           // fails
+  r &= testSingleSinePhaseUnreflection(N, 0.75*PI);      // fails
+  r &= testSingleSinePhaseUnreflection(N, 0.5*PI);       // fails
+  */
+
 
   // test with DC, all-zeros, sine at nyquist freq, maybe other special freqs, a signal that has
   // exact zero crossings at sample-instants...things like x[n-1] = -0.5, x[n] = 0, x[n+1] = +0.5

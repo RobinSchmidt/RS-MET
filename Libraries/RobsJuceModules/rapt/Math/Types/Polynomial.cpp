@@ -974,7 +974,14 @@ void rsPolynomial<T>::interpolant(T *a, const T *x, const T *y, int N)
 
 // New implementation, using Lagrange's idea - uses only O(N) memory ..i think, the runtime is 
 // still O(N^3) - we have a loop nesting level of 2 here and one of the inner loops calls an O(N) 
-// convolution (with only two elements, that's why it's only O(N))
+// convolution (with only two elements, that's why it's only O(N)). I think, we can reduce this by
+// getting rid of the convolution inside the loop - just build up the product of all factors up 
+// front once (without leaving out the n-th linear factor) - then, inside the loop, just divide 
+// out the n-th factor again - this one call to dividePolynomialByMonomial which has O(N) instead
+// of O(N^2) for the multiplicative accumulation loop - so the overall runtime would be O(N^2)...
+// but roundoff error might be higher due to first multiplying in and then later dividing out 
+// linear factors
+
 template<class T>
 void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N)
 {
@@ -983,7 +990,6 @@ void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N)
   interpolant(a, x, y, N, &wrk[0]);
   delete[] wrk;
 }
-
 template<class T>
 void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N, T* wrk)
 {
