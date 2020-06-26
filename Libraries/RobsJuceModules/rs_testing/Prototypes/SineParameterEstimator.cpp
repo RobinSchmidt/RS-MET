@@ -115,6 +115,8 @@ void rsSingleSineModeler<T>::synthesizeFromAmpFreqAndPhaseMod(
 // maybe we should base everything on cosine for consistency with the rsSinusoidalModel - but maybe
 // we should use the sine there
 
+// 
+
 
 //-------------------------------------------------------------------------------------------------
 // internal sub-algorithms:
@@ -284,24 +286,21 @@ void rsSingleSineModeler<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int prec
 // get rid of the duplication
 
 template<class T>
-void rsSingleSineModeler<T>::sigAndAmpToPhase(const T* x, const T* a, int N, T* p)
+void rsSingleSineModeler<T>::sigAndAmpToPhase(const T* x, const T* a, int N, T* p) const
 {
-  for(int n = 0; n < N; n++)
-  {
-    //p[n] = asin(x[n] / a[n]);  // this may produce NaN!
-
+  for(int n = 0; n < N; n++) {
     rsAssert(a[n] >= T(0), "amplitudes must be nonegative");  // maybe try to lift that restriction
     rsAssert(a[n] >= rsAbs(x[n]), "amplitudes can't be less than signal values");
-
     if(a[n] == 0)
       p[n] = 0;
     else
-      p[n] = asin(x[n] / a[n]); 
-  }
+      p[n] = asin(x[n] / a[n]); }
 
-  // preliminary - later dispatch between different unreflection algorithms:
-  unreflectPhaseFromSig(x, p, N);
-  // have a function unreflectPhaseFromSigAndAmp that uses a and a as inputs instead of just x
+  // dispatch between different unreflection algorithms:
+  if(phaseAlgo == PhaseUnreflectAlgorithm::fromSignalSlope)
+    unreflectPhaseFromSig(x, p, N);
+  else
+    unreflectPhaseFromSigAndAmp(x, a, p, N); // this dispatches further
 }
 
 /*
@@ -569,7 +568,7 @@ void rsSingleSineModeler<T>::unreflectPhaseFromSig(const T* x, T* p, int N)
 // under construction:
 
 template<class T>
-void rsSingleSineModeler<T>::unreflectPhaseFromSigAndAmp(const T* x, const T* a, T* p, int N)
+void rsSingleSineModeler<T>::unreflectPhaseFromSigAndAmp(const T* x, const T* a, T* p, int N) const
 {
   // estimate frequencies from preliminary phases:
   std::vector<double> w(N);
@@ -580,12 +579,16 @@ void rsSingleSineModeler<T>::unreflectPhaseFromSigAndAmp(const T* x, const T* a,
     w[n] = 0.5*(w[n] + w[n+1]);
   // ...todo: verify, if that's the correct way to do it
 
-  // todo: switch - maybe based on a member phaseReflectAlgo:
-  unreflectPhaseFromFreq(&w[0], p, N);
-  //unreflectPhaseFromSigAmpAndFreq(x, a, &w[0], p, N, true);
 
-  int dummy = 0;
+  // (secondary) dispatch (primary was done by caller):
+  if(phaseAlgo == PhaseUnreflectAlgorithm::fromFreq)
+    unreflectPhaseFromFreq(&w[0], p, N);
+  else
+    unreflectPhaseFromSigAmpAndFreq(x, a, &w[0], p, N, true);
 }
+// todo: maybe use a workspace for w - avoid allocation here - maybe we can completely avoid memory
+// allocation (but it's not tertibly important to do so - this is offline code anyway - it would 
+// just be nice)
 
 // input: a phase p assumed to be in the range -pi/2...+pi/2 as returned, for example, by asin
 // output: a possible other phase q for which sin(q) == sin(p) due to reflection symmetry of the 

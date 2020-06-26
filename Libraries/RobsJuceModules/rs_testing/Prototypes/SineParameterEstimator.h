@@ -3,9 +3,9 @@
 // todo: rename files and change the #define to reflect the new class name
 
 /** A class for modeling any signal x[n] as a single sinusoid with time-varying amplitude and 
-frequency and/or phase, like:
+frequency (and/or phase), like:
 
-  x[n] = a[n] * sin( p[n] )
+  x[n] = a[n] * sin(p[n])
 
 with the instantaneous amplitude a[n] and instantaneous phase p[n]. The latter can be given in 3 
 ways: (1) directly, (2) as integral (represented as cumulative sum) over an instantaneous radian
@@ -22,18 +22,29 @@ public:
 
   /** The various options for the analysis algorithm. This determines the order in which the 
   2 or 3 instantaneous parameters are estimated. ...ToDo: explain this more - what effects do 
-  the different choices have etc....estimating amp first gives nictes/smoothest amp-env estimate, 
+  the different choices have etc....estimating amp first gives nicest/smoothest amp-env estimate, 
   etc... */
   enum class Algorithm
   {
-    ampViaPeaks,       /**< First estimates amp-env from peaks, then phase via asin, then freq via
-                            phase-difference. */
-    freqViaZeros,      /**< First estimates freq via zero crossings, then phase, then amp. */
-    freqViaFormula     /**< First estimates freq via formula, then phase, then amp. */
+    ampViaPeaks,    /**< First estimates amp-env from peaks, then phase via asin, then freq via
+                         phase-difference. */
+    freqViaZeros,   /**< First estimates freq via zero crossings, then phase, then amp. */
+    freqViaFormula  /**< First estimates freq via formula, then phase, then amp. */
   };
-  // maybe make an alog that is like ampViaPeaks but uses freq-estimation in parallel rather than
+  // maybe make an algo that is like ampViaPeaks but uses freq-estimation in parallel rather than
   // using asin and phase-unreflection - maybe a freq-formula using a known amplitude can be used
   // freqViaZeros not yet implemented and freqViaFormula not yet working correctly
+
+  /** The different algorithms for doing phase-unreflection, which is a processing step that is
+  needed when the Algorithm is set to ampViaPeaks and the phase is retrieved from signal values
+  and amplitude via asin() - asin produces values only in the range -pi/2...+pi/2 and we need 
+  values in the range. */
+  enum class PhaseUnreflectAlgorithm
+  {
+    fromSignalSlope,
+    fromFreq,
+    fromSigAmpAndFreq
+  };
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -53,7 +64,27 @@ public:
   signal..... */
   void setAnalysisAlgorithm(Algorithm newAlgo) { algo = newAlgo; }
 
+  /** Sets the algorithm that is used for "phase-unreflection" which is a necessarry processing
+  step when estimating the amplitude first and then estimating the phase p from signal x and 
+  amplitude a via the formula p = asin(x/a). The asin function returns values p only in the 
+  range -pi/2...+pi/2. For each such phase value p in that range, there exists an alternative 
+  phase value q such that sin(q) == sin(p) and sometimes that alternative value q is really the 
+  "right" one. But from x and a alone, we cannot figure that out. Therefore, the phase-unreflection
+  step uses heuristics based on neighbouring samples, frequencies, etc. to figure out when that 
+  alternative value is more likely to be the right one. Which of these heuristics is used is 
+  selected by this function. Note that this is not the same thing as phase-unwrapping due to 
+  periodicity. It's for taking into account the reflection symmetry of the sine function, not its
+  periodicity. */
+  void setPhaseUnreflectAlgorithm(PhaseUnreflectAlgorithm newAlgo) { phaseAlgo = newAlgo; }
+
+  /** Sets the precision by which the locations and heights of the amplitude envelope peaks are
+  estimated in the ampViaPeaks algorithm. Values from 0..4 are allowed where 0 means the 
+  peak-locations are quantized to sample indices and their heights are directly equal to the
+  absolute signal values, 2 means that a parabola is fitted to the peak sample and its left and 
+  right neighbors and the location and height of the parabola's peak is uses, 2 uses quartic 
+  fit, etc.  */
   void setAmpPrecision(int newPrecision) { ampEnvPrecision = newPrecision; }
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -124,7 +155,8 @@ public:
 
   /** Given a signal x and an array of instantaneous amplitudes a, this function computes the 
   corresponding instantaneous pahses, such that x[n] = a[n] * sin(p[n]) for each n. */
-  static void sigAndAmpToPhase(const T* x, const T* a, int N, T* p);
+  void sigAndAmpToPhase(const T* x, const T* a, int N, T* p) const;
+  // not static anymore because of the dispatch to different algos - move function to other section
 
   // make a function sigAndAmpToFreq based on freqFormula but with known ampltude rather than
   // using an estimated amplitude
@@ -195,7 +227,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // under construction - not yet ready to use:
 
-  static void unreflectPhaseFromSigAndAmp(const T* x, const T* a, T* p, int N);
+  void unreflectPhaseFromSigAndAmp(const T* x, const T* a, T* p, int N) const;
 
   static void unreflectPhaseFromFreq(const T* w, T* p, int N);
   // needs test
@@ -228,6 +260,10 @@ protected:
   int ampEnvPrecision  = 1;
 
   Algorithm algo = Algorithm::ampViaPeaks;
+
+
+  PhaseUnreflectAlgorithm phaseAlgo = PhaseUnreflectAlgorithm::fromSignalSlope;
+  // todo: figure out, which algorithm works best in most cases and use that as default.
 
   // PhaseAlgo phaseAlgo = ..; 
   // options: fromSignal, fromFreq, fromTwoSidedPrediction, fromBackwardPrediction - should be used

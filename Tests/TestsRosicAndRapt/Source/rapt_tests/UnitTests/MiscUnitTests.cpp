@@ -638,12 +638,25 @@ bool singleSineModelerUnitTest()
 
   //ssm.setFreqSmoothing(1, 3);
 
-  ssm.setAmpPrecision(2);
+  ssm.setAmpPrecision(1); // with 2, we trigger an assert (amplitude undershoots signal)
   ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   rsPlotVectors(x, a, w); 
   // looks good - todo: check automatically, if result is good
-  // ..although, there's a big freq-spike at sample 1
+  // ..although, there's a big freq-spike at sample 1 
+  // in the range before before the first maximum of the sine, the amp-env follows the sinusoidal
+  // wave and the freq is estimated as zero - this is because amp-estimation only considers the 
+  // peaks - maybe we should extrapolate the amp-env instead of just connecting the first peak to
+  // zero
+  // it's also kind of bad that the first sample of the freq-array is actually the start-phase.
+  // this is convenient for synthesis but will be inconvenient for manipulating the frequency
+  // data - the first sample will always have to be handled seperately. maybe we should indeed
+  // have a separate start-phase variable when synthesizing from frequency. we do not necessarily
+  // change the convention to sum frequencies up to n (we just need to adapt the start-phase 
+  // accordingly) ...but we may also adopt a convention to sum up to n-1...whichever makes more 
+  // sense - i think, summing to n-1 is more convenient. ..hmm...but actually, it's not too bad
+  // to handle the 0th sample in the freq-array seperately - it's just a matter of ignoring it, 
+  // i.g. for filtering the freq-array we would do: filter(&w[1], N-1) instead of filter(w, N)
 
   ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
