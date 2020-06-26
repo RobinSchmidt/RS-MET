@@ -166,6 +166,8 @@ public:
 
   static void sigAndFreqToAmp(const T* x, const T* w, int N, T* a);
 
+  //make a function sigAnAmpToFreq
+
 
   /** Converts a given array of instananeous phases p to an array of instantaneous normalized 
   radian frequencies w. It basically computes a backward difference that takes possible wrapping of

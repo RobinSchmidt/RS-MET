@@ -618,7 +618,7 @@ bool singleSineModelerUnitTest()
 
 
   r &= testSingleSineFormulas();
-  r &= testSingleSineResynthesisAlgos(ssm, x, tol);
+  //r &= testSingleSineResynthesisAlgos(ssm, x, tol); // commnented to avoid plots
 
 
   // todo: test to analyze a perfect sinewave and see, if the analysis data makes sense....then 
@@ -633,7 +633,7 @@ bool singleSineModelerUnitTest()
   for(int n = 0; n < N; n++)
     x[n] = as * sin(ws*n + ps);
 
-  r &= testSingleSineResynthesisAlgos(ssm, x, tol);
+  //r &= testSingleSineResynthesisAlgos(ssm, x, tol); // commnented to avoid plots
 
   rsAssert(r); // to ring a bell when some setting gives no resynthesis
 
@@ -641,6 +641,15 @@ bool singleSineModelerUnitTest()
 
   ssm.setAmpPrecision(1); // with 2, we trigger an assert (amplitude undershoots signal)
   ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
+
+  // test the new unreflection algos:
+  ssm.setPhaseUnreflectAlgorithm(PUA::fromFreq);
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  rsPlotVectors(x, a, w);
+  // that's totally wrong: the freq alternates between 0.1 and -0.1
+  // todo: test, if identity resynthesis works with this freq-array
+
+
   ssm.setPhaseUnreflectAlgorithm(PUA::fromSignalSlope);   
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   rsPlotVectors(x, a, w); 
@@ -660,12 +669,7 @@ bool singleSineModelerUnitTest()
   // to handle the 0th sample in the freq-array seperately - it's just a matter of ignoring it, 
   // i.g. for filtering the freq-array we would do: filter(&w[1], N-1) instead of filter(w, N)
 
-  // test the new unreflection algos:
-  ssm.setPhaseUnreflectAlgorithm(PUA::fromFreq);
-  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
-  rsPlotVectors(x, a, w);
-  // that's totally wrong: the freq alternates between 0.1 and -0.1
-  // todo: test, if identity resynthesis works with this freq-array
+
 
   ssm.setPhaseUnreflectAlgorithm(PUA::fromSigAmpAndFreq);
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);

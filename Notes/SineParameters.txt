@@ -286,7 +286,7 @@ Computing freq and phase from known signal values and amplitudes:
   xR = aR * sin(p+w)
 
 this is overdetermined - we have 3 equations but only 2 degrees of freedom (p,w). Possibilities:
-(1) use only the xL or xR euqation together with the x0 equation (or both seperately and take an
+(1) use only the xL or xR equation together with the x0 equation (or both seperately and take an
 average) or (2) combine the xL,xR equations into one: 
 
   (xL - aL*sin(p-w))^2 + (xR - aR*sin(p+w))^2 = min
@@ -298,7 +298,6 @@ average) or (2) combine the xL,xR equations into one:
   xR = aR * sin(p+wR)     ->   wR =     asin(xR/aR) - p = pR - p 
   w = (wL+wR)/2
   
-  xL/aL = sin(p-wL) -> asin(xL/aL) = p - wL -> wL = p - asin(xL/aL)
 
 
 
