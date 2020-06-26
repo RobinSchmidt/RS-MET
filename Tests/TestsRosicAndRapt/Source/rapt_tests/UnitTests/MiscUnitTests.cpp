@@ -598,6 +598,7 @@ bool singleSineModelerUnitTest()
 
   using Vec = std::vector<double>;
   using SSM = rsSingleSineModeler<double>;
+  using PUA = SSM::PhaseUnreflectAlgorithm;
 
   int N = 1000;         // number of samples in test signal
   double tol = 1.e-12;  // tolerance for identity resynthesis
@@ -640,6 +641,7 @@ bool singleSineModelerUnitTest()
 
   ssm.setAmpPrecision(1); // with 2, we trigger an assert (amplitude undershoots signal)
   ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
+  ssm.setPhaseUnreflectAlgorithm(PUA::fromSignalSlope);   
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   rsPlotVectors(x, a, w); 
   // looks good - todo: check automatically, if result is good
@@ -657,6 +659,19 @@ bool singleSineModelerUnitTest()
   // sense - i think, summing to n-1 is more convenient. ..hmm...but actually, it's not too bad
   // to handle the 0th sample in the freq-array seperately - it's just a matter of ignoring it, 
   // i.g. for filtering the freq-array we would do: filter(&w[1], N-1) instead of filter(w, N)
+
+  // test the new unreflection algos:
+  ssm.setPhaseUnreflectAlgorithm(PUA::fromFreq);
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  rsPlotVectors(x, a, w);
+  // that's totally wrong: the freq alternates between 0.1 and -0.1
+  // todo: test, if identity resynthesis works with this freq-array
+
+  ssm.setPhaseUnreflectAlgorithm(PUA::fromSigAmpAndFreq);
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  rsPlotVectors(x, a, w);
+  // same problem as with PUA::fromFreq
+
 
   ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
