@@ -576,78 +576,35 @@ void rsSingleSineModeler<T>::unreflectPhaseFromSigAndAmp(const T* x, const T* a,
 {
   // estimate frequencies from preliminary phases:
   std::vector<double> w(N);
-
   phaseToFreq(p, N, &w[0]);  
-  // w alternates for sinusoidal x - we can't use phaseToFreq with a phase-array p that still 
-  // contains reflected phases - we need some other way to estimate the frequencies w - maybe using
-  // the signal x and amplitude a
-
-  //rsPlotVector(w);  // alternates
-
-  // enforce positive freqs:
   for(int n = 0; n < N; n++)
-    w[n] = rsAbs(w[n]);
+    w[n] = rsAbs(w[n]);        // enforce positive freqs
 
-  //rsPlotVector(w);
-  //rsPlotArrays(N, p, &w[0]); 
-  // has spikey errors at the extrema of the phase, but with one sample delay - maybe use median 
-  // filter - or use w[n] = 0.5*(w[n-1] + w[n+1]) when p[n-1] is a peak or valley
-  // h..no - the delay is not always one sample - sometimes it's 0 (is it also sometimes an 
-  // advance?) - check for the peaks and valleys and if one is encountered, check, which w-value
-  // near it is off and adjust it
-
-  // mark all w-values at the extrema of p as ivalid (we use the impossible value of -1 as mark):
-  for(int n = 1; n < N-1; n++)
-  {
-    if(rsArrayTools::isPeakOrValley(p, n))
-    {
-      T wa = (w[n-1] + w[n] + w[n+1]) / 3;  // average
+  // The so obtained w-array has errors whereever p has maxima or minima (possibly with a 1-sample 
+  // delay), so we mark all w-values at the extrema of p as ivalid (we use the impossible value of 
+  // -1 as mark):
+  for(int n = 1; n < N-1; n++) {
+    if(rsArrayTools::isPeakOrValley(p, n)) {
+      T wa = (w[n-1] + w[n] + w[n+1]) / 3;     // 3-point average
       T dL = rsAbs(wa - w[n-1]);
       T dC = rsAbs(wa - w[n]);
       T dR = rsAbs(wa - w[n+1]);
+      if(dC > dL && dC > dR)  w[n]   = -1;
+      if(dL > dC && dL > dR)  w[n-1] = -1;     // this seems to never happen -> check this!
+      if(dR > dC && dR > dL)  w[n+1] = -1; }}
 
-      if(dC > dL && dC > dR) 
-        w[n]   = -1;
-      if(dL > dC && dL > dR) 
-        w[n-1] = -1;  // this seems to never happen -> check this!
-      if(dR > dC && dR > dL)  
-        w[n+1] = -1;
-
-      // maybe for the n-1, n+1 values, we should use extrapolation rather than averaging? or use
-      // average with samples at n-2,n or n,n+2 - but maybe it's more convenient to just set them 
-      // to some impossible value (like -1) and do the average in a 2nd pass
-    }
-  }
-
-  // replace the marked invalid w-values by the avreage of their neighbor values:
-  for(int n = 1; n < N-1; n++)
-  {
+  // Replace the marked invalid w-values by the average of their neighbour values:
+  for(int n = 1; n < N-1; n++) {
     if(w[n] == -1)
-      w[n] = 0.5*(w[n-1] + w[n+1]);
-  }
+      w[n] = 0.5*(w[n-1] + w[n+1]); }
 
-  //rsPlotArrays(N, p, &w[0]); 
-
-
-  // results in (unwrapped version of) w[n] = p[n] - p[n-1], i.e. a backward estimate - but we want
-  // a central estimate, so we do a 2-point forward moving average to fix that:
+  // phaseToFreq results in (unwrapped version of) w[n] = p[n] - p[n-1], i.e. a backward estimate, 
+  // but we want a central estimate, so we do a 2-point forward moving average to fix that:
   for(int n = 0; n < N-1; n++)
     w[n] = 0.5*(w[n] + w[n+1]);
   // ...todo: verify, if that's the correct way to do it
 
-  //rsPlotVector(w);
-
-  /*
-  // use other way of freq-estimation:
-  for(int n = 1; n < N-1; n++)
-  {
-    T wL = p[n] - p[n-1];
-    T wR = p[n+1] - p[n];
-    w[n] = 0.5*(wL+wR);
-  }
-  rsPlotVector(w);  // also alternates
-  */
-
+  // maybe factor out everything up to here into a function reflectedPhasesToFreqs
 
 
   // (secondary) dispatch (primary was done by caller):
