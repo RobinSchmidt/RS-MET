@@ -589,13 +589,14 @@ void rsSingleSineModeler<T>::unreflectPhaseFromSigAndAmp(const T* x, const T* a,
     w[n] = rsAbs(w[n]);
 
   //rsPlotVector(w);
-  rsPlotArrays(N, p, &w[0]); 
+  //rsPlotArrays(N, p, &w[0]); 
   // has spikey errors at the extrema of the phase, but with one sample delay - maybe use median 
   // filter - or use w[n] = 0.5*(w[n-1] + w[n+1]) when p[n-1] is a peak or valley
   // h..no - the delay is not always one sample - sometimes it's 0 (is it also sometimes an 
   // advance?) - check for the peaks and valleys and if one is encountered, check, which w-value
   // near it is off and adjust it
 
+  // mark all w-values at the extrema of p as ivalid (we use the impossible value of -1 as mark):
   for(int n = 1; n < N-1; n++)
   {
     if(rsArrayTools::isPeakOrValley(p, n))
@@ -605,12 +606,12 @@ void rsSingleSineModeler<T>::unreflectPhaseFromSigAndAmp(const T* x, const T* a,
       T dC = rsAbs(wa - w[n]);
       T dR = rsAbs(wa - w[n+1]);
 
-      if(dC > dL && dC > dR)  
-        w[n]   = 0.5*(w[n-1] + w[n+1]);
-
-      //if(dL > dC && dL > dR)  w[n-1] = 0.5*(w[n]   + w[n+1]);
-
-      //if(dR > dC && dR > dL)  w[n+1] = 0.5*(w[n-1] + w[n]  );
+      if(dC > dL && dC > dR) 
+        w[n]   = -1;
+      if(dL > dC && dL > dR) 
+        w[n-1] = -1;  // this seems to never happen -> check this!
+      if(dR > dC && dR > dL)  
+        w[n+1] = -1;
 
       // maybe for the n-1, n+1 values, we should use extrapolation rather than averaging? or use
       // average with samples at n-2,n or n,n+2 - but maybe it's more convenient to just set them 
@@ -618,20 +619,15 @@ void rsSingleSineModeler<T>::unreflectPhaseFromSigAndAmp(const T* x, const T* a,
     }
   }
 
-  rsPlotArrays(N, p, &w[0]); 
-
-  /*
-  for(int n = 2; n < N-1; n++)
+  // replace the marked invalid w-values by the avreage of their neighbor values:
+  for(int n = 1; n < N-1; n++)
   {
-    if(rsArrayTools::isPeakOrValley(p, n-1))
-    {
+    if(w[n] == -1)
       w[n] = 0.5*(w[n-1] + w[n+1]);
-    }
   }
-  rsPlotArrays(N, p, &w[0]); 
-  */
 
-  //rsPlotVector(w);
+  //rsPlotArrays(N, p, &w[0]); 
+
 
   // results in (unwrapped version of) w[n] = p[n] - p[n-1], i.e. a backward estimate - but we want
   // a central estimate, so we do a 2-point forward moving average to fix that:
@@ -639,7 +635,7 @@ void rsSingleSineModeler<T>::unreflectPhaseFromSigAndAmp(const T* x, const T* a,
     w[n] = 0.5*(w[n] + w[n+1]);
   // ...todo: verify, if that's the correct way to do it
 
-  rsPlotVector(w);
+  //rsPlotVector(w);
 
   /*
   // use other way of freq-estimation:
