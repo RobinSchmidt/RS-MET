@@ -121,8 +121,9 @@ void rsSingleSineModeler<T>::synthesizeFromAmpFreqAndPhaseMod(
 //-------------------------------------------------------------------------------------------------
 // internal sub-algorithms:
 
+
 template<class T>
-void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T* p)
+bool rsSingleSineModeler<T>::handlePhaseAmpEdgeCase(T y0, T w, T* a, T* p)
 {
   const T margin = 1.e-12;  
   if( rsDistanceToMultipleOf(w, PI) <= margin ) {
@@ -130,11 +131,18 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T*
     else if(y0 < 0)   *p = -PI/2;
     else              *p =  0;
     *a = rsAbs(y0);
-    return; }
+    return true; }
+  else
+    return false;
   // margin chosen ad hoc - do tests, what is best - should be different for float and double maybe
   // some multiple of the epsilon? or maybe a power? maybe PI * pow(eps, 1.5) or something?
+}
 
-
+template<class T>
+void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T* p)
+{
+  if( handlePhaseAmpEdgeCase(y0, w, a, p) )
+    return;
   T s, c, sR;
   rsSinCos(w, &s, &c);
   *p = atan2(y0*s, yR-y0*c);  
@@ -152,18 +160,8 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T*
 template<class T>
 void rsSingleSineModeler<T>::phaseAndAmpFormulaBackward(T y0, T yL, T w, T* a, T* p)
 {
-  const T margin = 1.e-12; 
-  if( rsDistanceToMultipleOf(w, PI) <= margin ) {
-    if(y0 > 0)        *p = +PI/2;
-    else if(y0 < 0)   *p = -PI/2;
-    else              *p =  0;
-    *a = rsAbs(y0);
-    return; }
-  // can we get rid of the code-duplication? maybe factor out a function that assigns the variables
-  // and returns true, if it's an edge case - and here we do:
-  // if( edgeCaseWasHandled(y0, w, a, p )
-  //   return;
-
+  if( handlePhaseAmpEdgeCase(y0, w, a, p) )
+    return;
   T s, c, sL;
   rsSinCos(w, &s, &c);
   *p = atan2(y0*s, y0*c-yL);

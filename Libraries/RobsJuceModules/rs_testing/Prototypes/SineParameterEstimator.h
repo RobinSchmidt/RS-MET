@@ -131,6 +131,10 @@ public:
   // todo: make it totally safe!
 
 
+  /** Handles the egde-cases for the pahse-amd-formula where w is (close to) a multiple of pi and 
+  returns true, if the case was handled, i.e. a and p were assigned. */
+  static bool handlePhaseAmpEdgeCase(T y0, T w, T* a, T* p);
+
   static void phaseAndAmpFormulaForward(T y0, T yR, T w, T *a, T *p);
 
   static void phaseAndAmpFormulaBackward(T y0, T yL, T w, T *a, T *p);
