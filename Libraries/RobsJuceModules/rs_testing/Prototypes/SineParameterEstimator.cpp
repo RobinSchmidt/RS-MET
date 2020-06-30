@@ -415,6 +415,7 @@ void rsSingleSineModeler<T>::connectPeaks(const T* y, int N, T* a, bool useParab
   // rename parabolicTime to exactTime - but then it may not be possible to use it in place anymore
   // maybe make a second function for higher order peak finding
 
+  T smalll = 1.e-8;              // ad hoc - tests needed, what's best
   int nL = 0,     nR;            // index of current left and right peak
   T   tL = T(nL), tR;            // position or time of current left and right peak
   T   yL = y[0],  yR;            // amplitude or height of current left and right peak
@@ -424,7 +425,8 @@ void rsSingleSineModeler<T>::connectPeaks(const T* y, int N, T* a, bool useParab
       if(parabolicHeight) {
         using Poly = rsPolynomial<T>;
         T c[3]; Poly::fitQuadratic_m1_0_1(c, &y[n-1]);  // c = polynomial coeffs of parabola
-        if(c[2] != 0) {                                 // TODO: use a tolerance
+        //if(c[2] != 0) {                                 // TODO: use a tolerance
+        if(rsAbs(c[2]) >= rsAbs(smalll*c[1])) {         // avoid div-by-close-to-zero
           T dt = Poly::quadraticExtremumPosition(c);    // time offset of peak between -1..+1
           yR   = Poly::evaluate(dt, c, 2);              // height of peak
           if(parabolicTime)                             // we may or may not use the time offset..
@@ -439,8 +441,12 @@ void rsSingleSineModeler<T>::connectPeaks(const T* y, int N, T* a, bool useParab
 // instantaneous frequency measurements
 // quadraticExtremumPosition computes c[1]/c[2], so the tolerance should be based on the 
 // ratio |c[1]| and |c[2]| - if abs(c[2]) < (small * c1), skip the step
-// actually, this shoudl also dsitinguish between xt, xi (x used for the test and x used for the
+// actually, this should also distinguish between xt, xi (x used for the test and x used for the
 // interpolation)
+// -to handle the left and right edge, it might be better to use linear extrapolation from existing 
+//  peaks rather than just using the first and last sample - that would work better for artificial, 
+//  pure sine tones - but maybe for more natural sounds, the current strategy is actually the 
+//  better way? using linear extrapolation would complicate the code
 
 template<class T>
 void rsSingleSineModeler<T>::exactPeakPositionAndHeight(

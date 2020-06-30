@@ -466,10 +466,10 @@ bool testSingleSineFormulas()
 
 
 
-  // A function to test whether amplitude a and phase p can be retrieved from a sinusoid vai the
+  // A function to test whether amplitude a and phase p can be retrieved from a sinusoid via the
   // forward formula. For edge cases, we can't compute correct amplitudes and phases anymore, but
-  // we can still compute phases and amplitudes that would produc the same pair of output samples.
-  // this is because of the ambiguity, how to distribute the degrees of freedom to phase and 
+  // we can still compute phases and amplitudes that would produce the same pair of output samples.
+  // This is because of the ambiguity, how to distribute the degrees of freedom to phase and 
   // amplitude in the edge cases. At the Nyquist freq, the phase can not be estimated from two 
   // samples because phase-shifts just lead to an amplitude decrease of the alternating values.
   // At DC the phase is clamped to pi/2 - a cosine wave (or is it?). So in these cases, we use a
@@ -487,15 +487,21 @@ bool testSingleSineFormulas()
       double yR2 = a2 * sin(p2 + w);
       return rsIsCloseTo(y0, y02, tol) && rsIsCloseTo(yR, yR2, tol); }
   };
-  double e300 = 1.e-300;
-  r &= testForwardFormula(3, 2,  e300, true); // if not handled, it still returns correct values
-  r &= testForwardFormula(3, 2, -e300, true);
-  r &= testForwardFormula(3, 2,     0, true);
-  r &= testForwardFormula(3, 2,     1, false);
-  r &= testForwardFormula(3, 2,    PI, true);
-  r &= testForwardFormula(3, 2,   -PI, true); // we don't even have a special handler for that but it works
+  auto testBackwardFormula = [=](double a, double p, double w, bool isEdgeCase = false)->bool
+  {
+    double y0 = a * sin(p);
+    double yL = a * sin(p - w);
+    double a2, p2;
+    ssm.phaseAndAmpFormulaBackward(y0, yL, w, &a2, &p2);
+    if(!isEdgeCase)
+      return rsIsCloseTo(a, a2, tol) && rsIsCloseTo(p, p2, tol);
+    else {
+      double y02 = a2 * sin(p2);
+      double yL2 = a2 * sin(p2 - w);
+      return rsIsCloseTo(y0, y02, tol) && rsIsCloseTo(yL, yL2, tol); }
+  };
 
-  // at, pt: target values fotr amp and phase
+  // A test function for the forward-formula using target values for amp and phase at, pt:
   auto testForwardFormula2 = [=](double y0, double yR, double w, double at, double pt)->bool
   {
     double a, p;
@@ -503,11 +509,35 @@ bool testSingleSineFormulas()
     return a == at && p == pt;
   };
 
+
+
+
+
+  double e300 = 1.e-300;
   double pi2 = PI/2;
+  r &= testForwardFormula(3, 2,  e300, true);   // if not handled, it still returns correct values
+  r &= testForwardFormula(3, 2, -e300, true);
+  r &= testForwardFormula(3, 2,     0, true);
+  r &= testForwardFormula(3, 2,     1, false);
+  r &= testForwardFormula(3, 2,    PI, true);
+  r &= testForwardFormula(3, 2,   -PI, true);   // no special handler for that but it works
+
+
+  r &= testBackwardFormula(3, 2,  e300, true); 
+  r &= testBackwardFormula(3, 2, -e300, true);
+  r &= testBackwardFormula(3, 2,     0, true);
+  r &= testBackwardFormula(3, 2,     1, false);
+  r &= testBackwardFormula(3, 2,    PI, true);
+  r &= testBackwardFormula(3, 2,   -PI, true);
+  // hmm - the test for the backward formula passes - but should not yet - the special case 
+  // handling is not yet implemented there? what's going on?
+
+
 
   // Test cases where w is close to a multiple of pi: w = k*pi - they are handled as special cases. 
   for(int k = -5; k <= 5; k++)
   {
+    // forward:
     r &= testForwardFormula2( 0, 0, k*PI, 0,  0);
     r &= testForwardFormula2( 0, 1, k*PI, 0,  0);
     r &= testForwardFormula2( 1, 1, k*PI, 1,  pi2);
@@ -517,6 +547,13 @@ bool testSingleSineFormulas()
     r &= testForwardFormula2( 2, 1, k*PI, 2,  pi2);
     r &= testForwardFormula2(-1, 1, k*PI, 1, -pi2);
     r &= testForwardFormula2(-2, 1, k*PI, 2, -pi2);
+
+    // backward:
+    // ...
+
+
+    // central:
+    // ...
   }
 
   w = 0.5;
@@ -635,7 +672,7 @@ bool singleSineModelerUnitTest()
 
   double as = 0.2;   // amplitude of the sine
   double ws = 0.1;   // omega of the sine
-  double ps = 0;    // start phase
+  double ps = 0.5;   // start phase
 
   //ws = 0.5; // test: high freq
 
@@ -650,7 +687,7 @@ bool singleSineModelerUnitTest()
 
   ssm.setAmpPrecision(1); // with 2, we trigger an assert (amplitude undershoots signal)
   ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
-  ssm.setPhaseUnreflectAlgorithm(PUA::fromSignalSlope);   
+  ssm.setPhaseUnreflectAlgorithm(PUA::fromSignalSlope);
   ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
   rsPlotVectors(x, a, w); 
   // looks good - todo: check automatically, if result is good
@@ -728,12 +765,26 @@ bool singleSineModelerUnitTest()
 
   // with w = 3 (i.e. close to th Nyquist limit pi), and ampViaPeaks, we get an alternating 
   // frequency between -3 and 3 as analysis result - could this be due to a wrong 
-  // phase-unrefelction? the amplitude estimate looks very good. with w = pi/2, we also see strong
+  // phase-unreflection? the amplitude estimate looks very good. with w = pi/2, we also see strong
   // alternation with ampViaPeaks, with freqsViaFormula, everything comes out zero(!), freqViaZeros
   // works well. 3pi/4 is also weird - the alternation pattern is spiky and asymmetric. With 
   // w = 0.5 and ampViaPeaks, we see some error in the freq-estimate - with increased precision 
   // to 2,we get amplitudes less than signal values (raising an assert), but the overall freq 
   // looks smoother
+
+  // -with the amp-env first based algorithms, we get some small frequency-errors around the peaks
+  //  of the sine (they are visibile onyl when zoomed in - they are small, but it may be worth to
+  //  to figure out why the happen anyway)
+
+  // -with the freq-first algorithms, the results look even better - only the very first sample of 
+  //  the freq trajectory is off - but for freq-only synthesis, it has to be because it's the 
+  //  start-phase - for freq-and-pm synthesis, we use the pm signal for adjusting the start-phase 
+  //  and try to fix the freq at the first sample (maybe by extrapolating from 2nd and 3rd)
+
+  // Conclusion:
+  // -freqViaFormula and freqViaZeros both work really well, ampViaPeaks not so much - so we should
+  //  probably really use the freq-first algotithms - the idea with estimating amplitude first may
+  //  have been not such a great idea after all.
 
   return r;
 }
