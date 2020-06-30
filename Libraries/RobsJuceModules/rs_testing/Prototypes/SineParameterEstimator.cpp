@@ -178,7 +178,12 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaBackward(T y0, T yL, T w, T* a, T
   T sw = sin(w);
   T cw = cos(w);
 
-  *p = atan2(-y0*sw, yL-y0*cw) + PI;  // avoid the addition of PI by rotating arg to atan2
+  //*p = atan2(-y0*sw, yL-y0*cw) + PI;  // avoid the addition of PI by rotating arg to atan2
+
+  *p = atan2(y0*sw, y0*cw-yL);
+
+
+
   *a = y0 / sin(*p);
 
   int dummy = 0;

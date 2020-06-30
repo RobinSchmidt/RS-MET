@@ -525,12 +525,18 @@ bool testSingleSineFormulas()
 
   r &= testBackwardFormula(3, 2,  e300, true); 
   r &= testBackwardFormula(3, 2, -e300, true);
-  r &= testBackwardFormula(3, 2,     0, true);
+
+  r &= testBackwardFormula(3, 2,     0, true); // a2 gets extremely large, but the end-result is still ok
+
   r &= testBackwardFormula(3, 2,     1, false);
   r &= testBackwardFormula(3, 2,    PI, true);
   r &= testBackwardFormula(3, 2,   -PI, true);
   // hmm - the test for the backward formula passes - but should not yet - the special case 
-  // handling is not yet implemented there? what's going on?
+  // handling is not yet implemented there? what's going on? i think, it may be because of the 
+  // addition of PI in this formula:
+  //   *p = atan2(-y0*sw, yL-y0*cw) + PI;
+  // i think, atan2 returns values in the range [-PI, PI), so the only way we may get a div-by-zero
+  // is when atan2 return -PI...wait - not - we dived by sin(*p), not *p itself
 
 
 
