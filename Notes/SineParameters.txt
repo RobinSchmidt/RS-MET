@@ -297,7 +297,18 @@ average) or (2) combine the xL,xR equations into one:
   x0 = a0 * sin(p)        ->   p  =     asin(x0/a0)
   xR = aR * sin(p+wR)     ->   wR =     asin(xR/aR) - p = pR - p 
   w = (wL+wR)/2
+
+ (2):
+
+  E = (xL - a*sin(p-w))^2 + (xR - a*sin(p+w))^2 = min  (we use only a single a here)
   
+  dE/da = 
+  
+  
+  
+ 
+ 
+
 
 
 

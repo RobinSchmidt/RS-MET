@@ -139,6 +139,11 @@ public:
 
   static void phaseAndAmpFormulaBackward(T y0, T yL, T w, T *a, T *p);
 
+  static void phaseAndAmpFormulaCentral(T yL, T y0, T yR, T w, T *a, T *p);
+  // under construction
+
+
+
   // implement phaseAndAmpFormulaForward, phaseAndAmpFormulaBackward, phaseAndAmpFormulaCentral
 
   /** Estimates the instantaneous normalized radian frequencies ("omega") of the signal x via the

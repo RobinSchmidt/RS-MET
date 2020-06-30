@@ -145,7 +145,7 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T*
     return;
   T s, c, sR;
   rsSinCos(w, &s, &c);
-  *p = atan2(y0*s, yR-y0*c);  
+  *p = atan2(y0*s, yR-y0*c);
   s  = sin(*p);
   sR = sin(*p + w);
   rsAssert(s != 0 || sR != 0); // should be guaranteed by our edge case handling above
@@ -173,6 +173,55 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaBackward(T y0, T yL, T w, T* a, T
   else
     *a = yL / sL;
 }
+
+template<class T>
+void rsSingleSineModeler<T>::phaseAndAmpFormulaCentral(T yL, T y0, T yR, T w, T* a, T* p)
+{
+  if( handlePhaseAmpEdgeCase(y0, w, a, p) )
+    return;
+
+  T s, c, sL, sR;
+  rsSinCos(w, &s, &c);
+  T pB = atan2(y0*s, y0*c-yL);  // phase from backward estimation
+  T pF = atan2(y0*s, yR-y0*c);  // phase from forward estimation
+
+  *p   = rsInterpolateWrapped(pB, pF, 0.5, -PI, +PI);
+  // todo: is the some way to estimate the accuracy of pB and pF and give more weight to the more 
+  // accurate one? Currently, we just use an unweighted average, i.e. 0.5*(pB+pF) - maybe try to 
+  // predict yL, yR from y0, w and a and give more weight to the one for which the prediction 
+  // matches the actual value better...or maybe we can jointly estimate p,a by minimizing a squared
+  // error:
+  //   err = (yL - a*sin(p-w))^2 + (yR - a*sin(p+w))^2 = min
+
+  // compute sines at sample indices n-1, n, n+1:
+  sL = sin(*p - w);
+  s  = sin(*p    );
+  sR = sin(*p + w);
+
+  // compute amplitudes based on the 3 samples:
+  T aL = yL / sL;
+  T a0 = y0 / s;
+  T aR = yR / sR;
+
+  // compute weights for the 3 amplitudes for how much they should contribute to the final 
+  // amplitude - they idea is that those values, for which we a had a division by (close to) zero
+  // in the previous step should contribute less:
+  T wL = 1 / rsAbs(aL);
+  T w0 = 1 / rsAbs(a0);
+  T wR = 1 / rsAbs(aR);
+  T wS = wL + w0 + wR;    // sum of weights
+
+  // compute final amplitude as weighted average over the 3 estimates:
+  *a = (wL*aL + w0*a0 + wR*aR) / wS;  // what if wS == 0?
+
+  // this algo is quite ad-hoc - i'm not sure, if it's good - tests are needed. Maybe try the 
+  // joint estimation of p and a by minimization of the error defined above and compare results. 
+  // They should give same results in the case of an fixed-freq sine but with a sine-sweep, they
+  // may give different results, so we may use sweep to assess the quality of both approaches
+  // if the (linear) sweep does not reveal any difference, maybe try a quadratic sweep and/or
+  // introduce and amplitude fade, too
+}
+
 
 template<class T>
 void rsSingleSineModeler<T>::sigToFreqViaFormula(const T* x, int N, T* w)
@@ -330,6 +379,8 @@ void rsSingleSineModeler<T>::sigAndFreqToPhaseAndAmp(const T* x, const T* w, int
     phaseAndAmpFormulaForward(x[n], x[n+1], w[n], &a[n], &p[n]);
   phaseAndAmpFormulaBackward(x[N-1], x[N-2], w[N-1], &a[N-1], &p[N-1]);
 }
+// todo: use forward formual only for 1st sample (index 0) and for(n = 1; n < N-1; n++) use the 
+// central formula
 
 template<class T>
 void rsSingleSineModeler<T>::sigAndFreqToAmp(const T* x, const T* w, int N, T* a)

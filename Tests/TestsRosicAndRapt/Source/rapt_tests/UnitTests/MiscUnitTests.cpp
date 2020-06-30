@@ -500,6 +500,21 @@ bool testSingleSineFormulas()
       double yL2 = a2 * sin(p2 - w);
       return rsIsCloseTo(y0, y02, tol) && rsIsCloseTo(yL, yL2, tol); }
   };
+  auto testCentralFormula = [=](double a, double p, double w, bool isEdgeCase = false)->bool
+  {
+    double yL = a * sin(p - w);
+    double y0 = a * sin(p);
+    double yR = a * sin(p + w);
+    double a2, p2;
+    ssm.phaseAndAmpFormulaCentral(yL, y0, yR, w, &a2, &p2);
+    if(!isEdgeCase)
+      return rsIsCloseTo(a, a2, tol) && rsIsCloseTo(p, p2, tol);
+    else {
+      double yL2 = a2 * sin(p2 - w);
+      double y02 = a2 * sin(p2);
+      double yR2 = a2 * sin(p2 + w);
+      return rsIsCloseTo(y0, y02, tol) && rsIsCloseTo(yL, yL2, tol) && rsIsCloseTo(yR, yR2, tol); }
+  };
 
   // A test function for the forward-formula using target values for amp and phase at, pt:
   auto testForwardFormula2 = [=](double y0, double yR, double w, double at, double pt)->bool
@@ -508,7 +523,6 @@ bool testSingleSineFormulas()
     ssm.phaseAndAmpFormulaForward(y0, yR, w, &a, &p);
     return a == at && p == pt;
   };
-
 
 
 
@@ -522,23 +536,19 @@ bool testSingleSineFormulas()
   r &= testForwardFormula(3, 2,    PI, true);
   r &= testForwardFormula(3, 2,   -PI, true);   // no special handler for that but it works
 
-
   r &= testBackwardFormula(3, 2,  e300, true); 
   r &= testBackwardFormula(3, 2, -e300, true);
-
   r &= testBackwardFormula(3, 2,     0, true); // a2 gets extremely large, but the end-result is still ok
-
   r &= testBackwardFormula(3, 2,     1, false);
   r &= testBackwardFormula(3, 2,    PI, true);
   r &= testBackwardFormula(3, 2,   -PI, true);
-  // hmm - the test for the backward formula passes - but should not yet - the special case 
-  // handling is not yet implemented there? what's going on? i think, it may be because of the 
-  // addition of PI in this formula:
-  //   *p = atan2(-y0*sw, yL-y0*cw) + PI;
-  // i think, atan2 returns values in the range [-PI, PI), so the only way we may get a div-by-zero
-  // is when atan2 return -PI...wait - not - we dived by sin(*p), not *p itself
 
-
+  r &= testCentralFormula(3, 2,  e300, true); 
+  r &= testCentralFormula(3, 2, -e300, true);
+  r &= testCentralFormula(3, 2,     0, true);
+  r &= testCentralFormula(3, 2,     1, false);
+  r &= testCentralFormula(3, 2,    PI, true);
+  r &= testCentralFormula(3, 2,   -PI, true);
 
   // Test cases where w is close to a multiple of pi: w = k*pi - they are handled as special cases. 
   for(int k = -5; k <= 5; k++)
