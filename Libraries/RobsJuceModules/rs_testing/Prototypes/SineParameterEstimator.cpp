@@ -128,48 +128,25 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaForward(T y0, T yR, T w, T* a, T*
   // ad hoc - do tests, what is best - should be different for float and double maybe some 
   // multiple of the epsilon? or maybe a power? maybe PI * pow(eps, 1.5) or something?
 
-  if( rsDistanceToMultipleOf(w, PI) <= margin )
-  {
-    *a = rsAbs(y0);
+  if( rsDistanceToMultipleOf(w, PI) <= margin ) {
     if(y0 > 0)        *p = +PI/2;
     else if(y0 < 0)   *p = -PI/2;
     else              *p =  0;
-    return;
-  }
-
-
-
+    *a = rsAbs(y0);
+    return; }
 
   T s, c, sR;
   rsSinCos(w, &s, &c);
-
-  T x = yR-y0*c;
-  T y = y0*s;
-
-  *p = atan2(y, x);  
-  // computes atan(y/x) - so we should make sure that x != 0 - can this occur? ..yes - when
-  // yR == y0*cos(w) - but this is no problem - atan2 handles this case itself
-
-  //*p = atan2(y0*s, yR-y0*c);
-
-
+  *p = atan2(y0*s, yR-y0*c);  
   s  = sin(*p);
   sR = sin(*p + w);
+  rsAssert(s != 0 || sR != 0); // should be guaranteed by our edge case handling above
   if( rsAbs(s) > rsAbs(sR) )
     *a = y0 / s;
-  else {
-    if(sR == 0.0)
-    {  
-      *a = 0.0;  
-      // may not be a good idea - we don't want to enforce zero samples
-      // needs a tolerance - i think, we already ruled that out with the checks above - at least
-      // one of the sines must be > 0 because w is guranteed to be not too close to a half-period
-      // of the sine
-    }
-    else
-      *a = yR / sR; }
-  // what if s and sR are both close to zero?, what if w == 0, but y0 != yR
+  else
+    *a = yR / sR;
 }
+// what if s and sR are both close to zero?, what if w == 0, but y0 != yR
 // copy documentation from rsSineAmplitudeAndPhase
 
 template<class T>
