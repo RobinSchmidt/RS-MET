@@ -145,6 +145,20 @@ bool arrayUnitTest()
   return r;
 }
 
+bool binaryHeapUnitTest()
+{
+  bool r = true; 
+
+  std::vector<int> A = {2,8,14,16,4,1,7,9,10,3};
+  int N = (int) A.size();
+
+  //rsBinaryHeap<int> H; 
+  // doesn't compile - apparently, the ScratchPad.cpp file where rsBinaryHeap is defined is 
+  // included "too late" or something
+
+  return r;
+}
+
 bool doubleEndedQueueUnitTest()
 {
   bool r = true; 

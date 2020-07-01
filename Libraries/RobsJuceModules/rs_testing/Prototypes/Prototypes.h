@@ -505,19 +505,20 @@ Idea:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-// the stuff below is just for playing around - maybe move code elsewhere:
 //=================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+//=================================================================================================
+// the stuff below is just for playing around - maybe move code elsewhere, like the research-repo:
 
 /** A class for representing a particular kind of string with which we can do some computations 
 just like with numbers. The set of all such strings forms a group (see group theory). The group 
