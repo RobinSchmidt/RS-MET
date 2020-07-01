@@ -572,9 +572,15 @@ bool testSingleSineFormulas()
     // ...
   }
 
+
+
+
+
+
   w = 0.5;
   double a = 1.5;
   double p = 0.3;
+  double yL;
   double y0 = a * sin(p);
   double yR = a * sin(p + w);
   double a2, p2;
@@ -583,6 +589,37 @@ bool testSingleSineFormulas()
   ssm.phaseAndAmpFormulaForward(y0, yR, w, &a2, &p2);
 
   // todo: testBackwardFormula, testCentralFormula
+
+
+
+  // test formulas with random values:
+  int numTests = 100;
+  rsNoiseGenerator<double> ng;
+  ng.setRange(0.0, 1.0);
+  for(int i = 0; i < numTests; i++)
+  {
+    // compute random values for freq, phase and amp:
+    w = PI   * ng.getSample();
+    p = 2*PI * ng.getSample() - PI;
+    a = 5    * ng.getSample();
+
+    // compute 3 successive signal samples:
+    yL = a * sin(p - w);
+    y0 = a * sin(p);
+    yR = a * sin(p + w);
+
+    // try to reconstruct w,p,a from signal samples using the various formulas:
+
+    double w2, p2, a2;
+    w2 = ssm.freqFormula(yL, y0, yR);
+    r &= rsIsCloseTo(w, w2, tol);
+
+
+
+
+    int dummy = 0;
+  }
+
 
   return r;
 }

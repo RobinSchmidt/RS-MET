@@ -130,6 +130,10 @@ public:
   { return acos(rsClip(T(0.5)*(yL+yR)/yC, T(-1), T(+1))); }
   // todo: make it totally safe! document what yL,yC,yR mean (y[n-1], y[n], y[n+1] i.e. 
   // left/center/right), what about the amplitude? can we compute it as well?
+  // range of the output values is 0..pi, 0 results from input to acos == +1, pi results from -1
+  // that means, in subsequent formulas that use an w computed by this function, we can assume that
+  // 0 <= w <= pi
+
 
 
   /** Handles the egde-cases for the pahse-amd-formula where w is (close to) a multiple of pi and 
@@ -143,6 +147,7 @@ public:
   static void phaseAndAmpFormulaCentral(T yL, T y0, T yR, T w, T *a, T *p);
   // under construction
 
+  static void phaseAndAmpFormulaCentral2(T yL, T y0, T yR, T w, T *a, T *p);
 
 
   // implement phaseAndAmpFormulaForward, phaseAndAmpFormulaBackward, phaseAndAmpFormulaCentral

@@ -57,6 +57,8 @@ template <class T>
 void rsHeapSort(T *buffer, int length, 
   bool (*lessThen)(const T& left, const T& right) = defaultLess);
 // maybe rename parameter "lessThan" to the more general "comesBefore"
+// todo: try to change the recursive calls (to maxHeapify) into iterations, avoiding usage of 
+// O(log(N)) stack space
 
 /** Checks whether the buffer is sorted in ascending order, that is buffer[i] <= buffer[i+1] for
 all i. */
