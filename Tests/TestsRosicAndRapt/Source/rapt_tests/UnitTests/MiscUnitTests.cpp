@@ -625,11 +625,14 @@ bool testSingleSineFormulas()
     // number close to zero - maybe we need to take some special care of that case
 
     // forward formula:
-    // ...
+    ssm.phaseAndAmpFormulaForward(y0, yR, w, &a, &p);
+    r &= rsIsCloseTo(a, a2, tol);
+    r &= rsIsCloseTo(p, p2, tol);
 
     // backward formula:
-    // ...
-
+    ssm.phaseAndAmpFormulaBackward(y0, yL, w, &a, &p);
+    r &= rsIsCloseTo(a, a2, tol);
+    r &= rsIsCloseTo(p, p2, tol);
 
     rsAssert(r);
     int dummy = 0;
@@ -732,7 +735,7 @@ bool singleSineModelerUnitTest()
 
 
   r &= testSingleSineFormulas();
-  r &= testSingleSineResynthesisAlgos(ssm, x, tol); // commnented to avoid plots
+  r &= testSingleSineResynthesisAlgos(ssm, x, tol);
 
 
   // todo: test to analyze a perfect sinewave and see, if the analysis data makes sense....then 
@@ -747,7 +750,7 @@ bool singleSineModelerUnitTest()
   for(int n = 0; n < N; n++)
     x[n] = as * sin(ws*n + ps);
 
-  r &= testSingleSineResynthesisAlgos(ssm, x, tol); // commnented to avoid plots
+  r &= testSingleSineResynthesisAlgos(ssm, x, tol);
 
   rsAssert(r); // to ring a bell when some setting gives no resynthesis
 

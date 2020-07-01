@@ -24,7 +24,8 @@ void rsMaxHeapify(T *buffer, int length, int i, int heapSize,
     rsMaxHeapify(buffer, length, largest, heapSize, less); 
   }
 }
-// todo: try to get rid of the recursive call to itself -> convert to iteration
+// todo: try to get rid of the recursive call to itself -> convert to iteration, see Numerical
+// Recipies
 
 template <class T>
 void rsBuildMaxHeap(T *buffer, int length, 

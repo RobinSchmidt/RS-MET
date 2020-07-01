@@ -399,6 +399,7 @@ void rsSingleSineModeler<T>::phaseToFreq(const T* p, int N, T* w)
   //rsPlotArrays(N, p, w);
 }
 
+// old:
 template<class T>
 void rsSingleSineModeler<T>::sigAndFreqToPhaseAndAmp(const T* x, const T* w, int N, T* p, T* a)
 {
@@ -406,8 +407,23 @@ void rsSingleSineModeler<T>::sigAndFreqToPhaseAndAmp(const T* x, const T* w, int
     phaseAndAmpFormulaForward(x[n], x[n+1], w[n], &a[n], &p[n]);
   phaseAndAmpFormulaBackward(x[N-1], x[N-2], w[N-1], &a[N-1], &p[N-1]);
 }
-// todo: use forward formual only for 1st sample (index 0) and for(n = 1; n < N-1; n++) use the 
+// todo: use forward formula only for 1st sample (index 0) and for(n = 1; n < N-1; n++) use the 
 // central formula
+
+/*
+// new - makes indentity-resynthesis tests fail - why?:
+template<class T>
+void rsSingleSineModeler<T>::sigAndFreqToPhaseAndAmp(const T* x, const T* w, int N, T* p, T* a)
+{
+  phaseAndAmpFormulaForward(x[0], x[1], w[0], &a[0], &p[0]);
+  for(int n = 1; n < N-1; n++)
+    phaseAndAmpFormulaCentral1(x[n-1], x[n], x[n+1], w[n], &a[n], &p[n]);
+  phaseAndAmpFormulaBackward(x[N-1], x[N-2], w[N-1], &a[N-1], &p[N-1]);
+}
+*/
+// in the context of this function, it seems to be a bad idea that w[0] represents the initial 
+// phase - this will also mess up a[0] and p[0]
+
 
 template<class T>
 void rsSingleSineModeler<T>::sigAndFreqToAmp(const T* x, const T* w, int N, T* a)
