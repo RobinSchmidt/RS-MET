@@ -551,26 +551,56 @@ protected:
   {
     int l = left(i);
     int r = right(i);
-    int b;  // maybe rename to b for big or m for max or min
-    if(l < size && less(data[i], data[l]))
-      b = l;
-    else
-      b = i;
-    if(r < size && less(data[b], data[r]))
-      b = r;
-    if(b != i) {
-      rsSwap(data[i], data[b]);
-      maxHeapify(b);   }
+    int b = i;         // b for "big"
+    if(l < size && less(data[i], data[l])) b = l;
+    if(r < size && less(data[b], data[r])) b = r; 
+    if(b != i) { rsSwap(data[i], data[b]); maxHeapify(b); }
   }
   // runs in O(log(N))
   // that's the recursive implementation from (1) page 130 - when the iterative version is ready,
   // move to to the rsBinaryHeapTest subclass
-  // rename to heapify
+  // rename to heapify or floatDown
+
+  void maxHeapify2(int i)
+  {
+    while(i < size-1)   // check if we should use size
+    {
+      int l = left(i);
+      int r = right(i);
+      int b = i; 
+
+      if(l < size && less(data[i], data[l]))  
+        b = l;
+
+      //if(l < size && less(data[i], data[r]))  
+      //  b = r;
+
+      //if(r < size && less(data[i], data[r]))  
+      //  b = r; // in the text, it says, if(l < size) but r seems to make more sense
+
+      if(r < size && less(data[b], data[r]))  
+        b = r; 
+
+      if(b != i)
+      {
+        rsSwap(data[i], data[b]);
+        i = b;  // added by me
+      }
+      else        
+        return;  // really? hmm..without, we get a hang
+    }
+  }
+  // code adapted from here - but it seems buggy:
+  // https://sites.math.rutgers.edu/~ajl213/CLRS/Ch6.pdf
+
 
   void buildMaxHeap()
   {
     for(int i = size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
-      maxHeapify(i);
+    {
+      //maxHeapify(i);
+      maxHeapify2(i);
+    }
   }
   // runs in O(N). From the code, it would appear as having O(N*log(N)) complexity because we call
   // an O(log(N)) function inside the loop. However, the runtime of maxHeapify depends on the 

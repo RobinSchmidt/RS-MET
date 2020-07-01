@@ -19,6 +19,8 @@ bool testHeapSort()
     testResult &= rsArrayTools::isSortedAscending(testArray, length-1);
   }
 
+  // todo: test with short lengths: 0,1,2,3 - maybe the length should be the loop index?
+
   return testResult;
 }
 
