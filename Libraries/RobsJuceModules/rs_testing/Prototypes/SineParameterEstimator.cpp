@@ -175,7 +175,7 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaBackward(T y0, T yL, T w, T* a, T
 }
 
 template<class T>
-void rsSingleSineModeler<T>::phaseAndAmpFormulaCentral(T yL, T y0, T yR, T w, T* a, T* p)
+void rsSingleSineModeler<T>::phaseAndAmpFormulaCentral1(T yL, T y0, T yR, T w, T* a, T* p)
 {
   if( handlePhaseAmpEdgeCase(y0, w, a, p) )
     return;
@@ -224,7 +224,6 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaCentral(T yL, T y0, T yR, T w, T*
   // freq and with its estimated value via the freq-formula
 }
 
-
 template<class T>
 void rsSingleSineModeler<T>::phaseAndAmpFormulaCentral2(T yL, T y0, T yR, T w, T* a, T* p)
 {
@@ -232,32 +231,17 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaCentral2(T yL, T y0, T yR, T w, T
     return;
 
   T sw, cw; rsSinCos(w, &sw, &cw);  // sw = sin(w), cw = cos(w)
-
-  //*p = atan2(sw*yL - sw*yR, 2*(cw*cw-sw*sw)*y0 - cw*yL - cw*yR); // see SineParameters.txt 
-  //*p = atan2(sw*(yL-yR), 2*(cw*cw-sw*sw)*y0 - cw*(yL+yR)); // see SineParameters.txt 
-
-  //*p = atan2(2*(cw*cw-sw*sw)*y0 - cw*yL - cw*yR, sw*yL - sw*yR);   
-  // test - exchanged arguments
-
-  //*p = atan2(2*(cw*cw-sw*sw)*y0 - cw*yL - cw*yR, sw*yL - sw*yR) + PI;
-  //*p = rsWrapToInterval(*p, -PI, +PI);
-  // todo: instead of adding pi and wrapping, rotate the arguments to atan2 - check why we have to
-  // use swapped arguments - mistake in the derivation?
-
-
-  //*p = atan2( -(2*(cw*cw-sw*sw)*y0 - cw*yL - cw*yR), -(sw*yL - sw*yR));
-  //*p = atan2( -(2*(cw*cw-sw*sw)*y0 - cw*yL - cw*yR), sw*(yR-yL) );
-
   *p = atan2(cw*(yL+yR) - 2*y0*(cw*cw-sw*sw), sw*(yR-yL));
-
+  // see SineParameters.txt for derivation of this formula - but we had to swap/rotate the argument
+  // compared to the formual derived there -> figure out, why
 
   T sp = sin(*p);
 
-  *a = y0 / sp;  
+  *a = y0 / sp;
   // todo: handle sp == 0 and if *a < 0, make it positive and invert the phase
+  // maybe if p is too close to zero, use the other formula from above?
 
 }
-
 
 template<class T>
 void rsSingleSineModeler<T>::sigToFreqViaFormula(const T* x, int N, T* w)

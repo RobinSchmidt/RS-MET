@@ -443,7 +443,7 @@ bool testSingleSineFormulas()
   bool r = true;
   rsSingleSineModeler<double> ssm;
 
-  double tol = 1.e-11;   // tolerance for the error
+  double tol = 1.e-10;   // tolerance for the error
 
   // This is incomplete - the automatic checks are missing
   // test edge cases for the freq-formula:
@@ -506,7 +506,7 @@ bool testSingleSineFormulas()
     double y0 = a * sin(p);
     double yR = a * sin(p + w);
     double a2, p2;
-    ssm.phaseAndAmpFormulaCentral(yL, y0, yR, w, &a2, &p2);
+    ssm.phaseAndAmpFormulaCentral1(yL, y0, yR, w, &a2, &p2);
     if(!isEdgeCase)
       return rsIsCloseTo(a, a2, tol) && rsIsCloseTo(p, p2, tol);
     else {
@@ -588,7 +588,7 @@ bool testSingleSineFormulas()
 
 
   // test formulas with random values:
-  int numTests = 100;
+  int numTests = 1000;
   rsNoiseGenerator<double> ng;
   ng.setRange(0.0, 1.0);
   for(int i = 0; i < numTests; i++)
@@ -609,19 +609,29 @@ bool testSingleSineFormulas()
     w2 = ssm.freqFormula(yL, y0, yR);
     r &= rsIsCloseTo(w, w2, tol);
 
-    ssm.phaseAndAmpFormulaCentral(yL, y0, yR, w, &a2, &p2);
+    // central formula 1:
+    ssm.phaseAndAmpFormulaCentral1(yL, y0, yR, w, &a2, &p2);
     r &= rsIsCloseTo(a, a2, tol);
     r &= rsIsCloseTo(p, p2, tol);
 
-    // this still fails - check the derivation:
+    // central formula 2:
     ssm.phaseAndAmpFormulaCentral2(yL, y0, yR, w, &a2, &p2);
     r &= rsIsCloseTo(a, a2, tol);
     r &= rsIsCloseTo(p, p2, tol);
-    // this formula needs a larger error tolerance of 1.e-11 as opposed to the above which needs
+    // this formula needs a larger error tolerance of 1.e-10 as opposed to the above which needs
     // only 1.e-13 - does that mean, the formula above is better, i.e. more accurate? but what if
     // the input is not a pure sinusoid? ...more tests needed!
+    // problems seem to occur when w is close to 0,pi/2,pi - this is the case when we divide by 
+    // number close to zero - maybe we need to take some special care of that case
+
+    // forward formula:
+    // ...
+
+    // backward formula:
+    // ...
 
 
+    rsAssert(r);
     int dummy = 0;
   }
 

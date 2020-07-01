@@ -144,9 +144,9 @@ public:
 
   static void phaseAndAmpFormulaBackward(T y0, T yL, T w, T *a, T *p);
 
-  static void phaseAndAmpFormulaCentral(T yL, T y0, T yR, T w, T *a, T *p);
-  // under construction
 
+  // under construction:
+  static void phaseAndAmpFormulaCentral1(T yL, T y0, T yR, T w, T *a, T *p);
   static void phaseAndAmpFormulaCentral2(T yL, T y0, T yR, T w, T *a, T *p);
 
 
