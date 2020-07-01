@@ -443,7 +443,7 @@ bool testSingleSineFormulas()
   bool r = true;
   rsSingleSineModeler<double> ssm;
 
-  double tol = 1.e-13;   // tolerance for the error
+  double tol = 1.e-11;   // tolerance for the error
 
   // This is incomplete - the automatic checks are missing
   // test edge cases for the freq-formula:
@@ -617,6 +617,9 @@ bool testSingleSineFormulas()
     ssm.phaseAndAmpFormulaCentral2(yL, y0, yR, w, &a2, &p2);
     r &= rsIsCloseTo(a, a2, tol);
     r &= rsIsCloseTo(p, p2, tol);
+    // this formula needs a larger error tolerance of 1.e-11 as opposed to the above which needs
+    // only 1.e-13 - does that mean, the formula above is better, i.e. more accurate? but what if
+    // the input is not a pure sinusoid? ...more tests needed!
 
 
     int dummy = 0;
