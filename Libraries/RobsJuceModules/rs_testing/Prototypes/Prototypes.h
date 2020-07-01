@@ -520,12 +520,8 @@ that:
 Instead of >=, we could have also used <=. In the former case, we are dealing with a max-heap in 
 the latter with a min-heap.
 
-
-
 References:
-  (1) Introduction to Algorithms, 2nd Ed. (Cormen, Leiserson, Rivest, Stein)
-
-*/
+  (1) Introduction to Algorithms, 2nd Ed. (Cormen, Leiserson, Rivest, Stein)  */
 
 template<class T>
 class rsBinaryHeap
@@ -550,30 +546,35 @@ public:
 
 protected:
 
-  /** Function to establish or maintain the heap-property of the underlying data array.  */
+  /** Function to establish or maintain the heap-property of the underlying data array. */
   void maxHeapify(int i)
   {
     int l = left(i);
     int r = right(i);
-    int largest;  // maybe rename to b for big
+    int b;  // maybe rename to b for big or m for max or min
     if(l < size && less(data[i], data[l]))
-      largest = l;
+      b = l;
     else
-      largest = i;
-    if(r < size && less(data[largest], data[r]))
-      largest = r;
-    if(largest != i) {
-      rsSwap(data[i], data[largest]);
-      maxHeapify(largest);   }
+      b = i;
+    if(r < size && less(data[b], data[r]))
+      b = r;
+    if(b != i) {
+      rsSwap(data[i], data[b]);
+      maxHeapify(b);   }
   }
+  // runs in O(log(N))
   // that's the recursive implementation from (1) page 130 - when the iterative version is ready,
   // move to to the rsBinaryHeapTest subclass
+  // rename to heapify
 
   void buildMaxHeap()
   {
     for(int i = size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
       maxHeapify(i);
   }
+  // runs in O(N). From the code, it would appear as having O(N*log(N)) complexity because we call
+  // an O(log(N)) function inside the loop. However, the runtime of maxHeapify depends on the 
+  // argument i in such a way to give an overall O(N) behavior (see reference (1)).
 
 
 
