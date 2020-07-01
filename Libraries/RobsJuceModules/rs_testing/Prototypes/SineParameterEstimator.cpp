@@ -233,8 +233,17 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaCentral2(T yL, T y0, T yR, T w, T
 
   T sw, cw; rsSinCos(w, &sw, &cw);  // sw = sin(w), cw = cos(w)
 
-  *p = atan2(sw*yL - sw*yR, 2*(cw*cw-sw*sw)*y0 - cw*yL - cw*yR); // see SineParameters.txt 
+  //*p = atan2(sw*yL - sw*yR, 2*(cw*cw-sw*sw)*y0 - cw*yL - cw*yR); // see SineParameters.txt 
   //*p = atan2(sw*(yL-yR), 2*(cw*cw-sw*sw)*y0 - cw*(yL+yR)); // see SineParameters.txt 
+
+  //*p = atan2(2*(cw*cw-sw*sw)*y0 - cw*yL - cw*yR, sw*yL - sw*yR);   
+  // test - exchanged arguments
+
+  *p = atan2(2*(cw*cw-sw*sw)*y0 - cw*yL - cw*yR, sw*yL - sw*yR) + PI;
+  *p = rsWrapToInterval(*p, -PI, +PI);
+  // todo: instead of adding pi and wrapping, rotate the arguments to atan2 - check why we have to
+  // use swapped arguments - mistake in the derivation?
+
 
   T sp = sin(*p);
 

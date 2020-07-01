@@ -614,9 +614,9 @@ bool testSingleSineFormulas()
     r &= rsIsCloseTo(p, p2, tol);
 
     // this still fails - check the derivation:
-    //ssm.phaseAndAmpFormulaCentral2(yL, y0, yR, w, &a2, &p2);
-    //r &= rsIsCloseTo(a, a2, tol);
-    //r &= rsIsCloseTo(p, p2, tol);
+    ssm.phaseAndAmpFormulaCentral2(yL, y0, yR, w, &a2, &p2);
+    r &= rsIsCloseTo(a, a2, tol);
+    r &= rsIsCloseTo(p, p2, tol);
 
 
     int dummy = 0;
