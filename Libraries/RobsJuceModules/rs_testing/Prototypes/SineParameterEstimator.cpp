@@ -229,18 +229,25 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaCentral2(T yL, T y0, T yR, T w, T
 {
   if(handlePhaseAmpEdgeCase(y0, w, a, p))
     return;
-
   T sw, cw; rsSinCos(w, &sw, &cw);  // sw = sin(w), cw = cos(w)
-  *p = atan2(cw*(yL+yR) - 2*y0*(cw*cw-sw*sw), sw*(yR-yL));
-  // see SineParameters.txt for derivation of this formula - but we had to swap/rotate the argument
-  // compared to the formual derived there -> figure out, why
-
+  *p   = atan2(cw*(yL+yR) - 2*y0*(cw*cw-sw*sw), sw*(yR-yL));
   T sp = sin(*p);
-
-  *a = y0 / sp;
+  *a   = y0 / sp;
   // todo: handle sp == 0 and if *a < 0, make it positive and invert the phase
   // maybe if p is too close to zero, use the other formula from above?
 
+
+  // This formula was derived (see SineParameters.txt) from:
+  //   yL = a * sin(p-w)
+  //   y0 = a * sin(p)
+  //   yR = a * sin(p+w)
+  // solving the middle equation for a:
+  //   a = y0 / sin(p)
+  // and combining the yL,yR equations into the minimization problem:
+  //   E = (yL - a*sin(p-w))^2 + (yR - a*sin(p+w))^2 = min
+  // taking the partial derivative of the error function E with respect to p and setting it to 
+  // zero. This gives the atan2-based formula for p - but we had to swap/rotate the argument 
+  // compared to the formula derived there -> figure out, why
 }
 
 template<class T>
