@@ -572,11 +572,6 @@ bool testSingleSineFormulas()
     // ...
   }
 
-
-
-
-
-
   w = 0.5;
   double a = 1.5;
   double p = 0.3;
@@ -614,7 +609,14 @@ bool testSingleSineFormulas()
     w2 = ssm.freqFormula(yL, y0, yR);
     r &= rsIsCloseTo(w, w2, tol);
 
+    ssm.phaseAndAmpFormulaCentral(yL, y0, yR, w, &a2, &p2);
+    r &= rsIsCloseTo(a, a2, tol);
+    r &= rsIsCloseTo(p, p2, tol);
 
+    // this still fails - check the derivation:
+    //ssm.phaseAndAmpFormulaCentral2(yL, y0, yR, w, &a2, &p2);
+    //r &= rsIsCloseTo(a, a2, tol);
+    //r &= rsIsCloseTo(p, p2, tol);
 
 
     int dummy = 0;
