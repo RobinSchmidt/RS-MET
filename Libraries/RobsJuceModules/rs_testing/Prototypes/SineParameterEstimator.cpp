@@ -185,7 +185,7 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaCentral(T yL, T y0, T yR, T w, T*
   T pB = atan2(y0*s, y0*c-yL);  // phase from backward estimation
   T pF = atan2(y0*s, yR-y0*c);  // phase from forward estimation
 
-  *p   = rsInterpolateWrapped(pB, pF, 0.5, -PI, +PI);
+  *p   = rsInterpolateWrapped(pB, pF, 0.5, T(-PI), T(+PI));
   // todo: is the some way to estimate the accuracy of pB and pF and give more weight to the more 
   // accurate one? Currently, we just use an unweighted average, i.e. 0.5*(pB+pF) - maybe try to 
   // predict yL, yR from y0, w and a and give more weight to the one for which the prediction 
@@ -206,9 +206,9 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaCentral(T yL, T y0, T yR, T w, T*
   // compute weights for the 3 amplitudes for how much they should contribute to the final 
   // amplitude - they idea is that those values, for which we a had a division by (close to) zero
   // in the previous step should contribute less:
-  T wL = 1 / rsAbs(aL);
-  T w0 = 1 / rsAbs(a0);
-  T wR = 1 / rsAbs(aR);
+  T wL = T(1) / rsAbs(aL);
+  T w0 = T(1) / rsAbs(a0);
+  T wR = T(1) / rsAbs(aR);
   T wS = wL + w0 + wR;    // sum of weights
 
   // compute final amplitude as weighted average over the 3 estimates:
@@ -218,8 +218,10 @@ void rsSingleSineModeler<T>::phaseAndAmpFormulaCentral(T yL, T y0, T yR, T w, T*
   // joint estimation of p and a by minimization of the error defined above and compare results. 
   // They should give same results in the case of an fixed-freq sine but with a sine-sweep, they
   // may give different results, so we may use sweep to assess the quality of both approaches
-  // if the (linear) sweep does not reveal any difference, maybe try a quadratic sweep and/or
-  // introduce and amplitude fade, too
+  // if the (linear) sweep does not reveal any quality difference, maybe try a quadratic sweep 
+  // and/or introduce and amplitude fade, too and measure which of the formulas estimates the
+  // actual instantaneous phase and amp better - maybe try it with using the correct instantaneous
+  // freq and with its estimated value via the freq-formula
 }
 
 
@@ -492,6 +494,8 @@ template<class T>
 void rsSingleSineModeler<T>::exactPeakPositionAndHeight(
   const T* x, int N, int n0, int precision, T* pos, T* height)
 {
+  rsAssert(n0 >= 0 && n0 < N, "n0 is out of range");
+
   static const int maxPrecision = 4;
   rsAssert(precision <= maxPrecision); // for higher precisions, we need to allocate a larger a-array below
 
@@ -516,9 +520,14 @@ void rsSingleSineModeler<T>::exactPeakPositionAndHeight(
   // its maximum using Newton iteration, using the location of the peak of the parabola as initial
   // guess:
   int degree = 2*p;
-  Poly::interpolant(a, T(-p), T(1), &x[n0-p], degree+1); // +1 bcs it takes number of datapoints, allocates
+  Poly::interpolant(a, T(-p), T(1), &x[n0-p], degree+1); 
+  // degree+1 because it is number of datapoints, function allocates - maybe avoid this by using ad 
+  // as workspace for the function (then we need to allocate 2*maxPrecision+1 for the ad array also 
+  // (i think) - make a unit test that tests all possible precisions)
+
+
   Poly::derivative(a, ad, degree);
-  dt = rsPolynomial<T>::rootNear(dt, ad, degree-1, T(-1), T(1));
+  dt = Poly::rootNear(dt, ad, degree-1, T(-1), T(1));
   *pos    = T(n0) + dt;
   *height = Poly::evaluate(dt, a, degree);
 }

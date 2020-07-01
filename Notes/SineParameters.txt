@@ -304,19 +304,74 @@ average) or (2) combine the xL,xR equations into one:
   
   dE/da = 
   
+
+var("xL, x0, xR, a, p, w")
+E  = (xL - a*sin(p-w))^2 + (xR - a*sin(p+w))^2
+Ea = diff(E, a)
+Ep = diff(E, p)
+Ew = diff(E, w)
+Ea, Ep, Ew
+
+Ea = 2*(a*sin(p + w) - xR)*sin(p + w) + 2*(a*sin(p - w) - xL)*sin(p - w)
+Ep = 2*(a*sin(p + w) - xR)*a*cos(p + w) + 2*(a*sin(p - w) - xL)*a*cos(p - w)
+Ew = 2*(a*sin(p + w) - xR)*a*cos(p + w) - 2*(a*sin(p - w) - xL)*a*cos(p - w)
+
+We may now either set Ew = Ea = 0, solve for w,a and use the middle equation to compute 
+p = asin(x0/a) or set Ew = Ep = 0, solve for a,p and compute a0 = x0/sin(p) - whatever seems
+eaiser to solve (or do both and test, what gives better results in practice). When using 
+p = asin(x0/a), we'll also have to do phase-unreflection, so maybe it's better to avoid that. On the other hand, using a0 = x0/sin(p) may result in negative amplitudes - but maybe that can be 
+fixed by detecting it and inverting amp and phase, whenever it occurs. Oh wait - here we assume 
+that w is already known, so we just have to solve the Ep or Ea equation. Let's try to solve Ep = 0:
+
+  0 =   2*(a*sin(p + w) - xR)*a*cos(p + w) 
+      + 2*(a*sin(p - w) - xL)*a*cos(p - w)
+
+use: 
+
+  sp := sin(p), cp := cos(p), sw := sin(w), cw := cos(w)
+  sin(p+w) = sin(p)*cos(w) + cos(p)*sin(w)
+  sin(p-w) = sin(p)*cos(w) - cos(p)*sin(w)
+  cos(p+w) = cos(p)*cos(w) - sin(p)*sin(w)
+  cos(p-w) = cos(p)*cos(w) + sin(p)*sin(w)
   
   
- 
- 
+  0 =   2*(a*(sin(p)*cos(w) + cos(p)*sin(w)) - xR)*a*(cos(p)*cos(w) - sin(p)*sin(w))
+      + 2*(a*(sin(p)*cos(w) - cos(p)*sin(w)) - xL)*a*(cos(p)*cos(w) + sin(p)*sin(w))
+  0 =   2*(a*(sp*cw + cp*sw) - xR)*a*(cp*cw - sp*sw)
+      + 2*(a*(sp*cw - cp*sw) - xL)*a*(cp*cw + sp*sw)
+      
+use a = (x0/sp):
 
+  0 =   2*((x0/sp)*(sp*cw + cp*sw) - xR)*(x0/sp)*(cp*cw - sp*sw)
+      + 2*((x0/sp)*(sp*cw - cp*sw) - xL)*(x0/sp)*(cp*cw + sp*sw)
+      
+define tp := sp/cp = tan(p) = sin(p)/cos(p):
 
+  0 =   2*(x0*(cw + sw/tp) - xR) * x0*(cw/tp - sw)
+      + 2*(x0*(cw - sw/tp) - xL) * x0*(cw/tp + sw)
 
+solve for tp:
 
+var("xL, x0, xR, tp, sw, cw")
+eq1 = 0 == 2*(x0*(cw+sw/tp) - xR) * x0*(cw/tp - sw) + 2*(x0*(cw-sw/tp) - xL) * x0*(cw/tp + sw)
+solve([eq1],[tp])
+
+  tp = (2*(cw^2 - sw^2)*x0 - cw*xL - cw*xR) / (sw*xL - sw*xR)
+  p  = atan2(sw*xL - sw*xR, 2*(cw^2-sw^2)*x0 - cw*xL - cw*xR)
       
       
       
       
       
+      
+      
+divide by cp, define tp = sp/cp = tan(p) = sin(p)/cos(p) - this turns the cp into 1 and the sp 
+into tp in of of the two factors in each term (we choose the 2nd):
+
+  0 =   2*(a*(sp*cw + cp*sw) - xR)*a*(cw - tp*sw)
+      + 2*(a*(sp*cw - cp*sw) - xL)*a*(cw + tp*sw)
+      
+
       
       
       

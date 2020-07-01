@@ -128,7 +128,8 @@ public:
   is "half-safe". */
   static T freqFormula(T yL, T yC, T yR) 
   { return acos(rsClip(T(0.5)*(yL+yR)/yC, T(-1), T(+1))); }
-  // todo: make it totally safe!
+  // todo: make it totally safe! document what yL,yC,yR mean (y[n-1], y[n], y[n+1] i.e. 
+  // left/center/right), what about the amplitude? can we compute it as well?
 
 
   /** Handles the egde-cases for the pahse-amd-formula where w is (close to) a multiple of pi and 
