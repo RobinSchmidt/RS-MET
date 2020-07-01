@@ -145,6 +145,29 @@ bool arrayUnitTest()
   return r;
 }
 
+
+template<class T>
+class rsBinaryHeapTest : public rsBinaryHeap<T>
+{
+
+public:
+
+  using rsBinaryHeap::rsBinaryHeap;
+
+  bool isMaxHeap(int i = 0) const
+  {
+    if(i >= size)
+      return true;
+    bool result = true;
+    int l = left(i);
+    int r = right(i);
+    if(l < size) result &= data[i] >= data[l] && isMaxHeap(l);
+    if(r < size) result &= data[i] >= data[r] && isMaxHeap(r);
+    return result;
+  }
+
+};
+
 bool binaryHeapUnitTest()
 {
   bool r = true; 
@@ -152,9 +175,12 @@ bool binaryHeapUnitTest()
   std::vector<int> A = {2,8,14,16,4,1,7,9,10,3};
   int N = (int) A.size();
 
-  //rsBinaryHeap<int> H; 
-  // doesn't compile - apparently, the ScratchPad.cpp file where rsBinaryHeap is defined is 
-  // included "too late" or something
+  rsBinaryHeapTest<int> H;
+  r &= H.getSize() == 0;
+  H.setData(&A[0], N);
+  r &= H.getSize() == 10;
+  r &= H.isMaxHeap();
+
 
   return r;
 }

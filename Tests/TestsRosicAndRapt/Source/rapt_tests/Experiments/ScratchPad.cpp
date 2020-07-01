@@ -2593,92 +2593,9 @@ int minimizeNewton(const F& f, T* x, int N, const T* h, T tol)
 
 //=================================================================================================
 
-/** Class for representing an array A of data as binary heap with functions for establishing and 
-maintaining the heap-property. To understand what that means, we must first interpret the flat 
-array A as a binary tree in the following way:
-
-  parent(i) = (i-1) / 2        parent index of index i
-  left(i)   = 2*i + 1          left child index of index i
-  reight(i) = 2*i + 2          right child index of index i
-
-Given that, the heap property says that for every node with index i (except the root), it holds 
-that: 
-
-  A[parent(i)] >= A[i]
-
-Instead of >=, we could have also used <=. In the former case, we are dealing with a max-heap in 
-the latter with a min-heap.
-
-  
-
-References:
-  (1) Introduction to Algorithms, 2nd Ed. (Cormen, Leiserson, Rivest, Stein)
-
-*/
-
-template<class T>
-class rsBinaryHeap
-{
-
-  void setData(T* newData, int newSize)
-  {
-    data = newData;
-    size = newSize;
-    buildMaxHeap();
-  }
-
-  /** Function to establish or maintain the heap-property of the underlying data array.  */
-  void maxHeapify(int i)
-  {
-    int l = left(i);
-    int r = right(i);
-    int largest;
-    if(l < heapSize && less(data[i], data[l]))
-      largest = l;
-    else
-      largest = i;
-    if(r < heapSize && less(data[largest], data[r]))
-      largest = r;
-    if(largest != i) {
-      rsSwap(data[i], data[largest]);
-      maxHeapify(largest);   }
-  }
-  // that's the recursive implementation from (1) page 130
-
-  void buildMaxHeap()
-  {
-    for(int i = size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
-      maxHeapify(i);
-  }
-
-  // todo: implement functions: insert, extractMax, increaseKey, heapMax
-
-
-  // verify these:
-
-  /** Index of parent of node i. */
-  int parent(int i) const { return (i-1) / 2; }
-
-  /** Index of left child of node i. */
-  int left(int i)   const { return 2*i + 1; }
-
-  /** Index of right child of node i. */
-  int right(int i)  const { return 2*i + 2; }
-
-public:
-
-  T* data = nullptr;
-  int size = 0;
 
 
 
-  bool (*less)(const T& a, const T& b) = &RAPT::defaultLess;
-  // comparison function used - this is currently a plain function pointer - maybe use 
-  // std::function or a template parameter F later
-  // maybe rename to compare - it's not necessarily a less-than - can also be a greater-than 
-  // comparison
-
-};
 
 
 //=================================================================================================
