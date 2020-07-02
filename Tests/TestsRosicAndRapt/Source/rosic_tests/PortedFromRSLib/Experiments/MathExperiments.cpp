@@ -1373,9 +1373,9 @@ void fitQuadratic(T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
   // for p2 and p3 and then obtain the final polynomial coeffs by adding the corresponding  coeffs 
   // of each of the partial polynomials.
 
-  // operations: add: 9, sub: 6, mul: 12, div: 3, neg: 3
+  // operations: add: 9, sub: 6, mul: 12, div: 3, neg: 3, ass: 12, tmp: 9
 }
-// maybe derive simplified formulas for the xas x1 = -1, x2 = 0, x3 = +1
+// maybe derive simplified formulas for the x at x1 = -1, x2 = 0, x3 = +1
 
 // move to unit test:
 bool testQuadraticTo3Points()

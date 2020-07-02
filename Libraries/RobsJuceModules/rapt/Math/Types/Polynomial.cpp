@@ -293,20 +293,19 @@ void rsPolynomial<T>::compose(const T* a, int aN, const T* b, int bN, T* c)
   T* an  = new T[cN+1];  // array for the successive powers of a[]
   an[0]  = T(1);         // initialize to a[]^0
 
-                         // accumulation:
+  // accumulation:
   rsArrayTools::fillWithZeros(c, cN+1);
   c[0] = b[0];
   int K = 1;
-  for(int n = 1; n <= bN; n++)
-  {
+  for(int n = 1; n <= bN; n++) {
     rsArrayTools::convolveInPlace(an, K, a, aN+1);
     K += aN;
     for(int k = 0; k < K; k++)
-      c[k] += b[n] * an[k];
-  }
+      c[k] += b[n] * an[k]; }
 
   delete[] an;
 }
+// maybe make a version that uses a workspace
 
 template <class T>
 void rsPolynomial<T>::coeffsForNegativeArgument(const T *a, T *am, int N)
@@ -1027,7 +1026,7 @@ void rsPolynomial<T>::interpolant(T *a, const T& x0, const T& dx, const T *y, in
 }
 
 template<class T>
-void rsPolynomial<T>::fitQuadratic(T *a, const T *x, const T *y)
+void rsPolynomial<T>::fitQuadraticDirect(T *a, const T *x, const T *y)
 {
   T k1 = y[1] - y[0];
   T k2 = x[0]*x[0] - x[1]*x[1];
@@ -1039,12 +1038,58 @@ void rsPolynomial<T>::fitQuadratic(T *a, const T *x, const T *y)
   a[1] = (k1+k2*a[2])/k3;
   a[0] = y[0]-a[2]*x[0]*x[0]-a[1]*x[0];
 
-  // add: 4, sub: 8, mul: 9, div: 4
+  // This formula was derived (if i remember correctly) by solving the 3x3 system: 
+  //   y[i] = a[0] + a[1]*x[i] + a[2]*x[i]^2   i = 0,1,2 
+  // using a computer algebra system and simplifying.
+
+  // opreations: add: 4, sub: 8, mul: 9, div: 4, ass: 8, tmp: 5
 }
-// this formula is complicated! i think, it was obtained by solving the 3x3 system: 
-//   y[i] = a0 + a1*x[i] + a2*x[i]^2   i = 0,1,2 
-// todo: use the Lagrange interpolation formula! see experiments - there, i have it already 
-// implemented, ready for copy-and-paste
+// todo: benchmark against fitQuadraticLagrange and also compare numeric accuracy of both
+
+template<class T>
+void rsPolynomial<T>::fitQuadraticLagrange(T* a, const T* x, const T* y)
+{
+  fitQuadraticLagrange(x[0], y[0], x[1], y[1], x[2], y[2], &a[0], &a[2], &a[2]);
+}
+
+template<class T>
+inline void rsPolynomial<T>::fitQuadraticLagrange(
+  T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
+{
+  T k1 = y1 / ((x1-x2)*(x1-x3));
+  T k2 = y2 / ((x2-x1)*(x2-x3));
+  T k3 = y3 / ((x3-x1)*(x3-x2));
+  T b1 = -k1*(x2+x3);
+  T b2 = -k2*(x1+x3);
+  T b3 = -k3*(x1+x2);
+  T c1 = k1*x2*x3;
+  T c2 = k2*x1*x3;
+  T c3 = k3*x1*x2;
+  *a2  = k1 + k2 + k3;  // coeff for x^2
+  *a1  = b1 + b2 + b3;  // coeff for x^1
+  *a0  = c1 + c2 + c3;  // coeff for x^0
+
+  // Formulas were derived from setting up 3 polynomials in product form, where each has zeros at 
+  // all but one of the datapoints, say xi, and to have value yi at xi and then adding them up 
+  // (idea due to Lagrange):
+  //   p1(x) = k1*(x-x2)*(x-x3)       p1 has zeros at at x2,x3
+  //   p2(x) = k2*(x-x1)*(x-x3)       p2 has zeros at at x1,x3
+  //   p3(x) = k3*(x-x1)*(x-x2)       p3 has zeros at at x1,x2
+  // Require:
+  //   p1(x1) = y1, p2(x2) = y2, p3(x3) = y3
+  // Solve these for the ki, i.e. k1,k2,k3. For example, k1 = y1 / ((x1-x2)*(x1-x3)). Plug, for 
+  // example, k1 back into the p1 equation and multiply it out to obtain its coeffs - do the same 
+  // for p2 and p3 and then obtain the final polynomial coeffs by adding the corresponding  coeffs 
+  // of each of the partial polynomials.
+
+  // operations: add: 9, sub: 6, mul: 12, div: 3, neg: 3, ass: 12, tmp: 9
+}
+// maybe derive and implement simplified formulas for the common special case 
+// x1 = -1, x2 = 0, x3 = +1
+// we could optimize out the b and c variables so we need only 3 temporaries and 6 assignments, but
+// i guess, the compiler can do this, too
+
+
 
 template<class T>
 void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, const T *y)

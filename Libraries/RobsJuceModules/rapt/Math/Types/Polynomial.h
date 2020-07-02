@@ -1,7 +1,19 @@
 #ifndef RAPT_POLYNOMIAL_H
 #define RAPT_POLYNOMIAL_H
 
-/** A class for representing polynomials and doing computations with them. 
+/** A class for representing polynomials and doing computations with them. Much of the code is 
+implemented as static member functions that operate directly on arrays of the type T, so you don't
+have to create an instance of class rsPolynomial to use its functionality. However, for 
+convenience, you may also instantiate polynomial objects and then you can do arithemetic operations
+with these objects directly, for example writing code like:
+
+  rsPolynomial<float> r = p*q;
+
+where p and q are both polynomials and so is r - and the * operator implements polynomial 
+multiplication. But doing it this way is recommended mostly for prototyping only because creating
+polynomials involves dynamic memory allocations. For production (especially real-time) code, it's 
+better to operate on pre-allocated arrays with the static functions - this makes the code harder to 
+read but more efficient.
 
 There are some static functions that use their own template parameter types independent from the 
 "T" that is used to instantiate the class. That's the case, for example, for functions that expect 
@@ -9,13 +21,17 @@ real inputs and produce complex outputs (like root-finders) which then use "R" f
 and std::complex<R> for the complex type. This is done because this class template should be able
 to be instantiated for real and complex types "T", so using the same template parameter could lead
 to confusion like the compiler using a nested complex type which makes no sense
-....under construction....tbc...
-
-
-*/
+....under construction....tbc...  */
 
 // todo: 
-
+// -use consistently input arrays as first and output arrays as last parameters for example in
+//  interpolant, fitQuadraticDirect -> this will silenty break client code, so be extra careful to
+//  adapt the code at *every* call site - it should be a consistent pattern through the library:
+//  inputs first, then outputs...hmm - but that doesn't really work well when we want to have some
+//  inputs optional - optional parameters must come last...hmmmm....maybe use:
+//  required inputs, outputs, optional inputs - what about optional outputs? (for example, when we
+//  fill an output-array only when a non-nullptr is passed?)...see what rsArrayTools does...
+//  ...or maybe such an enforced consistency might not be a good idea, after all?
 // -implement greatest common divisor algorithm (maybe the one for the integers can be
 //  used as is?)
 // -implement missing operators:
@@ -23,7 +39,7 @@ to confusion like the compiler using a nested complex type which makes no sense
 //   nesting)
 //  -arithmetic operators that take a number as second (left or right) argument
 //  -maybe we could meaningfully define <,<=, ...? look at how python or other scientific libraries
-//   handle that - in my own python polynoamial class, i'm taking the asymptotic behavior
+//   handle that - in my own python polynomial class, i'm taking the asymptotic behavior
 
 
 template<class T>
@@ -49,6 +65,9 @@ public:
   /** Promotes a number to a 0th degree polynomial. */
   rsPolynomial(const T& number)
   { coeffs.resize(1); coeffs[0] = number; }
+
+  // todo: make a constructor that accepts an initializer list ...or can the one taking the vector
+  // be used, i.e. will an initializer list be implicitly converted toa std::vector?
 
 
   //-----------------------------------------------------------------------------------------------
@@ -83,7 +102,7 @@ public:
 
   /** Returns the degree of the polynomial, defined as... */
   int getDegree() const { return (int)coeffs.size()-1; }
-  // should take into account traling zeros ..or maybe have a boolean flag
+  // should take into account trailing zeros ..or maybe have a boolean flag
   // "takeZeroCoeffsIntoAccount" which defaults to false...or maybe it shouldn't have any default
   // value - client code must be explicit...or maybe have functions getAllocatedDegree, 
   // getActualDegree(tolerance)...or getDegree has an optional parameter for the tolerance 
@@ -96,8 +115,8 @@ public:
 
   /** Returns a pointer to our coefficient array - breaks encapsulation - use with care! */
   T* getCoeffPointer() { return &coeffs[0]; }
-  // nope! when we really need low-level access to the coeff-array, we declare the 
-  // functions/classes that need it as friends. comment this out later
+  // Try to get rid of this - when we really need low-level access to the coeff-array, we declare 
+  // the functions/classes that need it as friends. Comment this out later
 
   const T* getCoeffPointerConst() const { return &coeffs[0]; }
 
@@ -302,6 +321,7 @@ public:
   Hermite polynomials with leading coefficient 2^n. The probabilist would use those with leading 
   coeff 1. */
   static T evaluateHermite(const T& x, int degree);
+  // maybe also implement evaluateHermiteMonic which should be the probabilist's version
 
   // todo: evaluateDerivative, evaluateIntegral (or AntiDerivative)
 
@@ -668,7 +688,22 @@ public:
 
   /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
   3 points (x[0],y[0]), (x[1],y[1]), (x[2],y[2]). */
-  static void fitQuadratic(T *a, const T *x, const T *y);
+  static void fitQuadratic(T* a, const T* x, const T* y)
+  { fitQuadraticDirect(a, x, y); }
+
+
+  static void fitQuadraticDirect(T *a, const T *x, const T *y);
+  // uses a formula that resulted from setting up the 3x3 linear system of equations 
+  //   y[i] = a0 + a1*x[i] + a2*x[i]^2   i = 0,1,2 
+  // and solving it directly
+
+  static void fitQuadraticLagrange(T *a, const T *x, const T *y);
+
+
+  static inline void fitQuadraticLagrange(
+    T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2);
+
+
 
   /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
   3 points (0,y[0]), (1,y[1]), (2,y[2]). */
@@ -774,9 +809,13 @@ public:
   //-----------------------------------------------------------------------------------------------
   // Evaluation of special polynomials
 
+  // move the evaluateHermite function here - use consistent naming - either they should all start
+  // with "evaluate" or none should
+
   /** Evaluates the N-th degree Chebychev polynomial T_N(x) at x by recursion. */
   static T chebychevRecursive(T x, int N)
   {
+    rsAssert(N >= 0, "polynomial degree must be non-negative");
     T t0 = T(1); T t1 = x; T tn = T(1);
     for(int i = 0; i < N; i++) {
       tn = T(2)*x*t1 - t0; t0 = t1; t1 = tn; }
@@ -788,6 +827,7 @@ public:
   template<class U>
   static U chebychevDirect(U x, int N)
   {
+    rsAssert(N >= 0, "polynomial degree must be non-negative");
     if(rsAbs(x) <= U(1)) return  cos( U(N)*acos ( x));
     if(      x  >  U(1)) return  cosh(U(N)*acosh( x));
     if(rsIsEven(N))      return  cosh(U(N)*acosh(-x));
@@ -827,7 +867,7 @@ protected:
 
 // todo: implement polynomial GCD (i.e. adapt the integer gcd for polynomials)
 
-// \todo implement funcitons to construct coefficient arrays for certain recursively defined
+// \todo implement functions to construct coefficient arrays for certain recursively defined
 // polynomials, such as Chebychev, etc. provide functions to evaluate linear combinations of
 // them efficiently (maybe look up Clenshaw algorithm)
 

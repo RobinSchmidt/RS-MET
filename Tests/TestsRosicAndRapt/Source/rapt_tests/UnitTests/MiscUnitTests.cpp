@@ -758,6 +758,13 @@ bool singleSineModelerUnitTest()
 
   rsAssert(r); // to ring a bell when some setting gives no resynthesis
 
+
+  // the code below should be either moved into an experiment or we should add some automatic 
+  // checks, if the resulting analysis data is meaningful - or maybe kinda both - for the time 
+  // being, we return early because in its current state, the code is more experiment than 
+  // unit-test:
+  return r;
+
   //ssm.setFreqSmoothing(1, 3);
 
   ssm.setAmpPrecision(1); // with 2, we trigger an assert (amplitude undershoots signal)
