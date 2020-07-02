@@ -1469,7 +1469,7 @@ void numericIntegration()
   int dummy = 0;
 }
 
-void numericDiffAndInt()
+void nonUniformArrayDiffAndInt()
 {
   // Test numerical differentiation and integration routines. We sample a sinewave at 
   // nonequidistant sample points and find the numeric derivative and  integral at these sample
@@ -1505,6 +1505,20 @@ void numericDiffAndInt()
   // plot function, true derivative and numeric derivative:
   //plotData(N, x, y, yd, ydn);
   plotData(N, x, y, yd, ydn, yi, yin);
+}
+
+void uniformArrayDiffAndInt()
+{
+  // todo: 
+  // -create array of random numbers x[n]
+  // -compute cumulative sum
+  // -compute difference of cumulative sum - should give back original array
+  // -compute trapezoidal integration of x[n]
+  // -compute an inverse of trapezoidal integration("trapezoidal differentiation"?)
+  // ...maybe this should become a unit test...
+
+
+  int dummy = 0;
 }
 
 // ToDo: implement a numerical differentiation algorithm that is the inverse operation of 
