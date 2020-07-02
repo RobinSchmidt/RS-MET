@@ -1532,6 +1532,15 @@ void integrateTrapezoidal(const T* x, T* y, int N, T y0 = T(0))
     y[n] = y[n-1] + 0.5*(x[n-1] + x[n]);
 }
 
+template<class T>
+void differentiateTrapezoidal(const T* x, T* y, int N, T y0 = T(0))
+{
+  rsAssert(y != x, "This function does not work in place");
+  y[0] = y0;
+  for(int n = 1; n < N; n++)
+    y[n] = 2*(x[n] - x[n-1]) - y[n-1];
+}
+
 void uniformArrayDiffAndInt()
 {
   // todo: 
@@ -1568,10 +1577,19 @@ void uniformArrayDiffAndInt()
 
   // test trapezoidal integration and differentiation:
   integrateTrapezoidal(x, y, N);
-  rsPlotArrays(N, x, y);  // not yet complete
+  differentiateTrapezoidal(y, z, N, x[0]);
+  AT::subtract(x, z, e, N);
+  rsPlotArrays(N, x, y, z, e);
 
   // todo: plot cumulative sum vs trapezoidal integral - the latter should look smoother because
   // it's basically a cumulative sum of data that was passed through a 2-point moving average
+
+  // Observations:
+  // -AT::difference does indeed undo AT::cumulativeSum
+  // -differentiateTrapezoidal undoes integrateTrapezoidal only, if we pass the correct value x[0]
+  //  for the initial state - otherwise, we see an error that oscillates at the Nyquit freq 
+  //  ...is that error the difference between the original x[0] and the passed y0 with alternatib 
+  //  sign? -> figure out. also figure out, what the y0 variable for the integrator does
 
 
   int dummy = 0;
