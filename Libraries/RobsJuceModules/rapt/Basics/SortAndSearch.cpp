@@ -25,9 +25,10 @@ void rsMaxHeapify(T *buffer, int length, int i, int heapSize,
   }
 }
 // todo: try to get rid of the recursive call to itself -> convert to iteration, see Numerical
-// Recipies
-// see solution to excercies 6.2-5:
-// https://sites.math.rutgers.edu/~ajl213/CLRS/Ch6.pdf
+// Recipies or solution to excercies 6.2-5:
+// https://sites.math.rutgers.edu/~ajl213/CLRS/Ch6.pdf ...but this is wrong - but i have some
+// working code in the Prototypes section - it's actually tail recursion, so perhaps the compiler
+// can optimize this itself - but better not rely on it
 
 template <class T>
 void rsBuildMaxHeap(T *buffer, int length, 

@@ -111,6 +111,11 @@ public:
   static void synthesizeFromAmpFreqAndPhaseMod(const T* a, const T* w, const T* pm, int N, T* y);
 
 
+
+  static void synthesizeFromAmpAndFreqNew(const T* a, const T* w, int N, T* y, T p0);
+  // new version that uses trapezoidal integration and a start-phase
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Static functions */
 
@@ -188,6 +193,10 @@ public:
   radian frequencies w. It basically computes a backward difference that takes possible wrapping of
   the phase-array into account. */
   static void phaseToFreq(const T* p, int N, T* w);
+  // we need a version of the function that does not just take a backward difference but instead
+  // does the inverse of trapezoidal integration, so we can use it to create the frequency data to
+  // be used in freq-only resynthesis with trapezoidal integration. It should also return a 
+  // start-phase (well, that's just p[0])
 
   // maybe make a similar freqToPhase function that computes a cumulative sum but wraps the result
   // to -pi...+pi...but maybe the wrapping should be optional
@@ -273,8 +282,12 @@ protected:
 
   int freqMedianOrder  = 1;
   int freqAverageOrder = 3;
-
   int ampEnvPrecision  = 1;
+
+  bool trapezoidal = false;  
+  // not yet used - should switch between using trapezoidal and running-sum integration for 
+  // obtaining instantaneous phases from insteantaneous freqs - if that works, it should be true
+  // by default.
 
   Algorithm algo = Algorithm::ampViaPeaks;
 

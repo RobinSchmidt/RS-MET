@@ -112,10 +112,21 @@ void rsSingleSineModeler<T>::synthesizeFromAmpFreqAndPhaseMod(
 // compare numerical error with and without fmod - use longer arrays and maybe a high-freq sinewave
 // (like w = 0.99*PI) that drives the unwrapped phase up quickly
 
+template<class T>
+void rsSingleSineModeler<T>::synthesizeFromAmpAndFreqNew(const T* a, const T* w, int N, T* y, T p0)
+{
+  T wi = T(0);     // integrated w
+  y[0] = a[0] * sin(p0);
+  for(int n = 1; n < N; n++) {
+    wi = fmod(wi + T(0.5)*(w[n-1]+w[n]), T(2*PI));
+    y[n] = a[n] * sin(wi + p0); }
+}
+
+
 // maybe we should base everything on cosine for consistency with the rsSinusoidalModel - but maybe
 // we should use the sine there
 
-// 
+
 
 
 //-------------------------------------------------------------------------------------------------
@@ -420,10 +431,16 @@ void rsSingleSineModeler<T>::sigAndFreqToPhaseAndAmp(const T* x, const T* w, int
     phaseAndAmpFormulaCentral1(x[n-1], x[n], x[n+1], w[n], &a[n], &p[n]);
   phaseAndAmpFormulaBackward(x[N-1], x[N-2], w[N-1], &a[N-1], &p[N-1]);
 }
-*/
 // in the context of this function, it seems to be a bad idea that w[0] represents the initial 
 // phase - this will also mess up a[0] and p[0]
-
+// the failure of the unit test in not just about numerical precision - the output is totally wrong
+// ..maybe if we use this function for analysis, we have to use a different synthesis formula, too?
+// ..i think, it would be better anyway, to use trapezoidal integration of the frequency to obtain
+// the phase and represent the start-phase as extra-value when doing synthesis from freqs only 
+// (without additional phase-modulation). That makes transfomations of the data more convenient and
+// also does not require the phase/amp data to accomodate for the special meaning of the first 
+// frequency datapoint
+*/
 
 template<class T>
 void rsSingleSineModeler<T>::sigAndFreqToAmp(const T* x, const T* w, int N, T* a)

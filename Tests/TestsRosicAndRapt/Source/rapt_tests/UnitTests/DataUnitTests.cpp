@@ -181,6 +181,8 @@ bool binaryHeapUnitTest()
   r &= H.getSize() == 10;
   r &= H.isMaxHeap();
 
+  // todo: implement heap-sort in this class an test it with various random arrays
+
 
   return r;
 }

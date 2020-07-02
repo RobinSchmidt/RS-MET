@@ -418,6 +418,16 @@ bool testSingleSineResynthesisAlgos(
   using SSM = rsSingleSineModeler<double>;
   using PUA = SSM::PhaseUnreflectAlgorithm;
 
+
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
+  r &= testSingleSineIdentityResynthesis(ssm, x, tol);
+
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaZeros);
+  r &= testSingleSineIdentityResynthesis(ssm, x, tol);
+
+
+
+
   ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
   ssm.setPhaseUnreflectAlgorithm(PUA::fromSignalSlope); 
   r &= testSingleSineIdentityResynthesis(ssm, x, tol);
@@ -428,12 +438,6 @@ bool testSingleSineResynthesisAlgos(
   ssm.setPhaseUnreflectAlgorithm(PUA::fromSigAmpAndFreq);
   r &= testSingleSineIdentityResynthesis(ssm, x, tol);
 
-
-  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
-  r &= testSingleSineIdentityResynthesis(ssm, x, tol);
-
-  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaZeros);
-  r &= testSingleSineIdentityResynthesis(ssm, x, tol);
 
   return r;
 }

@@ -505,12 +505,12 @@ Idea:
 //=================================================================================================
 
 /** Class for representing an array A of data as binary heap with functions for establishing and 
-maintaining the heap-property. To understand what that means, we must first interpret the flat 
-array A as a binary tree in the following way:
+maintaining the heap-property. To understand what that property means, we must first interpret the
+flat array A as a binary tree in the following way:
 
-  parent(i) = (i-1) / 2        parent index of index i
   left(i)   = 2*i + 1          left child index of index i
   reight(i) = 2*i + 2          right child index of index i
+  parent(i) = (i-1) / 2        parent index of index i
 
 Given that, the heap property says that for every node with index i (except the root), it holds 
 that: 
@@ -538,7 +538,7 @@ public:
   {
     data = newData;
     size = newSize;
-    buildMaxHeap();
+    buildMaxHeap(); // maybe make this call optional
   }
 
   int getSize() const { return size; }
@@ -547,6 +547,11 @@ public:
 protected:
 
   /** Function to establish or maintain the heap-property of the underlying data array. */
+
+  /** Assuming that the subtrees rooted at left(i) and right(i) satisfy the heap property, this 
+  function makes sure that node/index i also satifies the heap property. If it doesn't already 
+  satisfy it, the function lets the value at i float down the subtree rooted at i. It has a time
+  complexity of O(log(N)) and memory complexity of O(1). */
   void maxHeapify(int i)
   {
     int l = left(i);
@@ -556,42 +561,42 @@ protected:
     if(r < size && less(data[b], data[r])) b = r; 
     if(b != i) { rsSwap(data[i], data[b]); maxHeapify(b); }
   }
-  // runs in O(log(N))
-  // that's the recursive implementation from (1) page 130 - when the iterative version is ready,
-  // move to to the rsBinaryHeapTest subclass
   // rename to heapify or floatDown
+  // That's the recursive implementation from (1) page 130. When the iterative version is ready,
+  // move it to the rsBinaryHeapTest subclass - we don't need it anymore in production code, then. 
+  // But it may be interesting to figure out, if the recursion actually incurs an overhead since 
+  // it's tail recursion and smart compilers might be able to translate it to iteration themselves.
+  // We also may want to keep it as reference for unit tests (to test, if the iterative version 
+  // really does the same thing).
+
 
   void maxHeapify2(int i)
   {
     while(i < size-1)   // check if we should use size
     {
       int l = left(i);
-      int r = right(i);
+      int r = right(i);  // == l+1  ->  optimize (but maybe parallel is actually better than serial?)
       int b = i; 
-
-      if(l < size && less(data[i], data[l]))  
-        b = l;
-
-      //if(l < size && less(data[i], data[r]))  
-      //  b = r;
-
-      //if(r < size && less(data[i], data[r]))  
-      //  b = r; // in the text, it says, if(l < size) but r seems to make more sense
-
-      if(r < size && less(data[b], data[r]))  
-        b = r; 
-
-      if(b != i)
-      {
-        rsSwap(data[i], data[b]);
-        i = b;  // added by me
-      }
-      else        
-        return;  // really? hmm..without, we get a hang
+      if(l < size && less(data[i], data[l])) b = l;
+      if(r < size && less(data[b], data[r])) b = r;
+      if(b != i) { 
+        rsSwap(data[i], data[b]); 
+        i = b;  }
+      else
+        return;
+        // really? hmm..without, we get a hang. i think it's safe to return here, because when 
+        // data[i] >= data[l] and data[i] >= data[r], i.e. if the heap condition holds at node i, 
+        // it will automatically hold for all its children (because that's what we assume as 
+        // precondition), so have nothing more to do here. The heap condition can only be violated 
+        // at a child node of i, if we actually *did* a swap - if we didn't have to do a swap, we 
+        // are done.
     }
   }
-  // code adapted from here - but it seems buggy:
+  // iterative (i.e. non-recursive) implementation - needs tests
+  // code adapted from here:
   // https://sites.math.rutgers.edu/~ajl213/CLRS/Ch6.pdf
+  // ..but it seems buggy and i had to make some changes - it seems to work now but needs more 
+  // thorough testing
 
 
   void buildMaxHeap()
@@ -604,7 +609,9 @@ protected:
   }
   // runs in O(N). From the code, it would appear as having O(N*log(N)) complexity because we call
   // an O(log(N)) function inside the loop. However, the runtime of maxHeapify depends on the 
-  // argument i in such a way to give an overall O(N) behavior (see reference (1)).
+  // argument i in such a way to give an overall O(N) behavior (see reference (1)). The memory 
+  // complexity is O(1).
+  // rename to buildHeap
 
 
 
@@ -615,13 +622,13 @@ protected:
 
 
   /** Index of parent of node i. */
-  int parent(int i) const { return (i-1) / 2; }
+  inline int parent(int i) const { return (i-1) / 2; }
 
   /** Index of left child of node i. */
-  int left(int i)   const { return 2*i + 1; }
+  inline int left(int i)   const { return 2*i + 1; }
 
   /** Index of right child of node i. */
-  int right(int i)  const { return 2*i + 2; }
+  inline int right(int i)  const { return 2*i + 2; }
 
 
   T* data = nullptr;
