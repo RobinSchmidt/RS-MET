@@ -1049,7 +1049,7 @@ void rsPolynomial<T>::fitQuadraticDirect(T *a, const T *x, const T *y)
 template<class T>
 void rsPolynomial<T>::fitQuadraticLagrange(T* a, const T* x, const T* y)
 {
-  fitQuadraticLagrange(x[0], y[0], x[1], y[1], x[2], y[2], &a[0], &a[2], &a[2]);
+  fitQuadraticLagrange(x[0], y[0], x[1], y[1], x[2], y[2], &a[0], &a[1], &a[2]);
 }
 
 template<class T>
