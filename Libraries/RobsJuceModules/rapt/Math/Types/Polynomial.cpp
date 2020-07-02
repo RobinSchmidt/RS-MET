@@ -1038,58 +1038,33 @@ void rsPolynomial<T>::fitQuadraticDirect(T *a, const T *x, const T *y)
   a[1] = (k1+k2*a[2])/k3;
   a[0] = y[0]-a[2]*x[0]*x[0]-a[1]*x[0];
 
-  // This formula was derived (if i remember correctly) by solving the 3x3 system: 
-  //   y[i] = a[0] + a[1]*x[i] + a[2]*x[i]^2   i = 0,1,2 
-  // using a computer algebra system and simplifying.
-
-  // opreations: add: 4, sub: 8, mul: 9, div: 4, ass: 8, tmp: 5
+  // operations: add: 4, sub: 8, mul: 9, div: 4, ass: 8, tmp: 5
 }
 // todo: benchmark against fitQuadraticLagrange and also compare numeric accuracy of both
 
 template<class T>
 void rsPolynomial<T>::fitQuadraticLagrange(T* a, const T* x, const T* y)
 {
-  fitQuadraticLagrange(x[0], y[0], x[1], y[1], x[2], y[2], &a[0], &a[1], &a[2]);
-}
-
-template<class T>
-inline void rsPolynomial<T>::fitQuadraticLagrange(
-  T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
-{
-  T k1 = y1 / ((x1-x2)*(x1-x3));
-  T k2 = y2 / ((x2-x1)*(x2-x3));
-  T k3 = y3 / ((x3-x1)*(x3-x2));
-  T b1 = -k1*(x2+x3);
-  T b2 = -k2*(x1+x3);
-  T b3 = -k3*(x1+x2);
-  T c1 = k1*x2*x3;
-  T c2 = k2*x1*x3;
-  T c3 = k3*x1*x2;
-  *a2  = k1 + k2 + k3;  // coeff for x^2
-  *a1  = b1 + b2 + b3;  // coeff for x^1
-  *a0  = c1 + c2 + c3;  // coeff for x^0
-
-  // Formulas were derived from setting up 3 polynomials in product form, where each has zeros at 
-  // all but one of the datapoints, say xi, and to have value yi at xi and then adding them up 
-  // (idea due to Lagrange):
-  //   p1(x) = k1*(x-x2)*(x-x3)       p1 has zeros at at x2,x3
-  //   p2(x) = k2*(x-x1)*(x-x3)       p2 has zeros at at x1,x3
-  //   p3(x) = k3*(x-x1)*(x-x2)       p3 has zeros at at x1,x2
-  // Require:
-  //   p1(x1) = y1, p2(x2) = y2, p3(x3) = y3
-  // Solve these for the ki, i.e. k1,k2,k3. For example, k1 = y1 / ((x1-x2)*(x1-x3)). Plug, for 
-  // example, k1 back into the p1 equation and multiply it out to obtain its coeffs - do the same 
-  // for p2 and p3 and then obtain the final polynomial coeffs by adding the corresponding  coeffs 
-  // of each of the partial polynomials.
+  T k1 = y[0] / ((x[0]-x[1])*(x[0]-x[2]));
+  T k2 = y[1] / ((x[1]-x[0])*(x[1]-x[2]));
+  T k3 = y[2] / ((x[2]-x[0])*(x[2]-x[1]));
+  T b1 = -k1*(x[1]+x[2]);
+  T b2 = -k2*(x[0]+x[2]);
+  T b3 = -k3*(x[0]+x[1]);
+  T c1 = k1*x[1]*x[2];
+  T c2 = k2*x[0]*x[2];
+  T c3 = k3*x[0]*x[1];
+  a[2] = k1 + k2 + k3;
+  a[1] = b1 + b2 + b3;
+  a[0] = c1 + c2 + c3;
 
   // operations: add: 9, sub: 6, mul: 12, div: 3, neg: 3, ass: 12, tmp: 9
 }
-// maybe derive and implement simplified formulas for the common special case 
-// x1 = -1, x2 = 0, x3 = +1
-// we could optimize out the b and c variables so we need only 3 temporaries and 6 assignments, but
+// todo: optimize out the b and c variables so we need only 3 temporaries and 6 assignments, but
 // i guess, the compiler can do this, too
-
-
+// maybe derive and implement simplified formulas for the common special case 
+// x1 = -1, x2 = 0, x3 = +1...hmm - but i think, we will not get formulas any better than what we
+// already have below:
 
 template<class T>
 void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, const T *y)

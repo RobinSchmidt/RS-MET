@@ -690,20 +690,29 @@ public:
   3 points (x[0],y[0]), (x[1],y[1]), (x[2],y[2]). */
   static void fitQuadratic(T* a, const T* x, const T* y)
   { fitQuadraticDirect(a, x, y); }
+  // todo: figure which formula is better, the direct or the Lagrange-formula - choose the better
+  // one
 
-
+  /** Uses a formula that resulted from setting up the 3x3 linear system of equations 
+        y[i] = a0 + a1*x[i] + a2*x[i]^2   i = 0,1,2 
+  and solving it directly. */
   static void fitQuadraticDirect(T *a, const T *x, const T *y);
-  // uses a formula that resulted from setting up the 3x3 linear system of equations 
-  //   y[i] = a0 + a1*x[i] + a2*x[i]^2   i = 0,1,2 
-  // and solving it directly
 
+  /** Computes the same thing as fitQuadraticDirect but uses formulas derived from setting up 3 
+  polynomials in product form, where each has zeros at all but one of the datapoints, say xi, and
+  to have value yi at xi and then adding them up (idea due to Lagrange):
+     p1(x) = k1*(x-x2)*(x-x3)       p1 has zeros at at x2,x3
+     p2(x) = k2*(x-x1)*(x-x3)       p2 has zeros at at x1,x3
+     p3(x) = k3*(x-x1)*(x-x2)       p3 has zeros at at x1,x2
+  Require:
+     p1(x1) = y1, p2(x2) = y2, p3(x3) = y3
+  Solve these for the ki, i.e. k1,k2,k3. For example, k1 = y1 / ((x1-x2)*(x1-x3)). Plug, for 
+  example, k1 back into the p1 equation and multiply it out to obtain its coeffs - do the same 
+  for p2 and p3 and then obtain the final polynomial coeffs by adding the corresponding  coeffs 
+  of each of the partial polynomials. This organizes the computations in a more orderly manner but
+  i'm not yet sure if it's more numerically accurate and/or efficient than the direct way - tests 
+  are needed. */
   static void fitQuadraticLagrange(T *a, const T *x, const T *y);
-
-
-  static inline void fitQuadraticLagrange(
-    T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2);
-
-
 
   /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
   3 points (0,y[0]), (1,y[1]), (2,y[2]). */
