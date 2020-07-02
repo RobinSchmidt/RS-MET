@@ -1573,23 +1573,36 @@ void uniformArrayDiffAndInt()
   AT::copy(y, z, N);
   AT::difference(z, N);  // todo: make a function that works not in place
   AT::subtract(x, z, e, N);
-  rsPlotArrays(N, x, y, z, e);  // ok - looks good
+  //rsPlotArrays(N, x, y, z, e);  // ok - looks good
 
   // test trapezoidal integration and differentiation:
-  integrateTrapezoidal(x, y, N);
+  double y0 = 3;
+  integrateTrapezoidal(x, y, N, y0);
   differentiateTrapezoidal(y, z, N, x[0]);
   AT::subtract(x, z, e, N);
-  rsPlotArrays(N, x, y, z, e);
+  //rsPlotArrays(N, x, y, z, e);
 
-  // todo: plot cumulative sum vs trapezoidal integral - the latter should look smoother because
-  // it's basically a cumulative sum of data that was passed through a 2-point moving average
+  // plot cumulative sum vs trapezoidal integral:
+  AT::cumulativeSum(x, y, N);
+  integrateTrapezoidal(x, z, N);
+  rsPlotArrays(N, x, y, z);
 
   // Observations:
+  // -the tarpezoidal integral looks smoother and delayed compared to the cumulative sum - i think,
+  //  the trapezoidal integrator is basically a cumulative sum of data that was passed through a 
+  //  2-point moving average which explains both effects
+  //  todo: try with an impulse input to figure out the amount of the delay - is it half a sample?
   // -AT::difference does indeed undo AT::cumulativeSum
   // -differentiateTrapezoidal undoes integrateTrapezoidal only, if we pass the correct value x[0]
-  //  for the initial state - otherwise, we see an error that oscillates at the Nyquit freq 
-  //  ...is that error the difference between the original x[0] and the passed y0 with alternatib 
-  //  sign? -> figure out. also figure out, what the y0 variable for the integrator does
+  //  for the initial state - otherwise, we see an error that oscillates at the Nyquist freq 
+  //  -passing x[0]-a for some a > 0 gives an error alternating between a and -a starting at +a and 
+  //   passing x[0]+a gives alternating error starting at -a
+  //  -whatever we pass as y0 to the integrator doesn't matter
+  // -i think, the greater smoothness of the trapezoidal integral implies that the trapezoidal
+  //  differentiator introduces more jaggies than the simple differencer - so it may actually be
+  //  undesirable to use trapezoidal differentiation for obtaining instantaneous frequencies from
+  //  instantaneous phases, for example in rsSingleSineModeler - i think, if we use it there, it
+  //  should be optional
 
 
   int dummy = 0;
