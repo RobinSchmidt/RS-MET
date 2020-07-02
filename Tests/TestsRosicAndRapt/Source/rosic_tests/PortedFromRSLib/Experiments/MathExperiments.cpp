@@ -1507,6 +1507,31 @@ void nonUniformArrayDiffAndInt()
   plotData(N, x, y, yd, ydn, yi, yin);
 }
 
+
+/*
+template<class T>
+void integrateTrapezoidal(T* x, T* y, int N, T y0 = T(0))
+{
+  T x1 = x[0];
+  y[0] = y0;
+  for(int n = 1; n < N; n++)
+  {
+    y[n] = y[n-1]
+  }
+}
+// test, if this works also in place - it should! ..maybe make a separate function to work in place
+// which takes only one input array
+*/
+
+template<class T>
+void integrateTrapezoidal(const T* x, T* y, int N, T y0 = T(0))
+{
+  rsAssert(y != x, "This function does not work in place");
+  y[0] = y0;
+  for(int n = 1; n < N; n++)
+    y[n] = y[n-1] + 0.5*(x[n-1] + x[n]);
+}
+
 void uniformArrayDiffAndInt()
 {
   // todo: 
@@ -1514,8 +1539,39 @@ void uniformArrayDiffAndInt()
   // -compute cumulative sum
   // -compute difference of cumulative sum - should give back original array
   // -compute trapezoidal integration of x[n]
-  // -compute an inverse of trapezoidal integration("trapezoidal differentiation"?)
+  // -compute an inverse of trapezoidal integration ("trapezoidal differentiation"?)
   // ...maybe this should become a unit test...
+
+  // trapezoidal integration: 
+  //   y[0] = y0;                              // y0 is integration constant
+  //   y[n] = y[n-1] + 0.5*(x[n-1] + x[n]);
+  // trapezoidal differentiation:
+  //   x[0] = ?
+  //   x[n] = 2*(y[n] - y[n-1]) - x[n-1]
+
+  static const int N = 100;
+
+  using AT = RAPT::rsArrayTools;
+
+  double x[N];  // input signal
+  double y[N];  // integrator output signal
+  double z[N];  // differentiator output signal
+  double e[N];  // error
+
+  // test cumulative sum and backward difference:
+  AT::fillWithRandomValues(x, N, -1.0, +1.0, 0);
+  AT::cumulativeSum(x, y, N);
+  AT::copy(y, z, N);
+  AT::difference(z, N);  // todo: make a function that works not in place
+  AT::subtract(x, z, e, N);
+  rsPlotArrays(N, x, y, z, e);  // ok - looks good
+
+  // test trapezoidal integration and differentiation:
+  integrateTrapezoidal(x, y, N);
+  rsPlotArrays(N, x, y);  // not yet complete
+
+  // todo: plot cumulative sum vs trapezoidal integral - the latter should look smoother because
+  // it's basically a cumulative sum of data that was passed through a 2-point moving average
 
 
   int dummy = 0;
