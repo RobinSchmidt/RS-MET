@@ -3,7 +3,7 @@ using namespace RAPT;
 
 void attackDecayEnvelope()
 {
-  int N    = 1000;
+  int N    = 1200;
   int nOff = 800;     // note-off sample instant
   int key  = 64;
   int vel  = 64;
@@ -28,11 +28,16 @@ void attackDecayEnvelope()
   rsAttackDecayEnvelope<double> env;
   flt.setAttackSamples(20);
   flt.setDecaySamples(100);
-  env.setSustain(0.5);
+  env.setSustain(0.2);
   env.noteOn(key, vel);
-  for(int n = 0; n < N; n++)
+  for(int n = 0; n < nOff; n++)
     y[n] = env.getSample();
-  //env.noteOff(key, vel);  // why does note-off need key and vel?
+  env.noteOff(key, vel);  // why does note-off need key and vel?
+  for(int n = nOff; n < N; n++)
+    y[n] = env.getSample();
+
+
+
 
   rsPlotVector(y);
 
@@ -42,5 +47,9 @@ void attackDecayEnvelope()
   //  example, with attack = 20, decay = 100, sustain = 0.5, the actual peak occurs at 24 samples
   //  and has a height of around 1.07 (as per the settings, it should occur at sample 20 witha 
   //  height of 1), with sustain = 1, we get apeak at sample 33 with height 1.16
+  // -we actually have some sort of smooth ADSR now in which D==R and the smoothness is meant in 
+  //  the sense that there are not abrupt changes in slope - maybe we should now somehow lift the
+  //  D==R restriction to get a full smooth ADSR - maybe just switch the decay-coeff depending on
+  //  whether the note is on or off - the smoothness comes from the attack filter
   
 }

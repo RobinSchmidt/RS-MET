@@ -33,25 +33,13 @@ public:
   /** Returns the gain of this filter at DC. This value can be useful to know when you want to 
   create an envelope with sustain - you may then feed the reciprocal of that value as constant 
   input into the filter. */
-  T getGainAtDC() const 
-  { 
-    return s*(cd-ca) / (T(1)+ca*cd-cd-ca);
-  }
+  T getGainAtDC() const { return s*(cd-ca) / (T(1)+ca*cd-cd-ca); }
 
-  // todo: figure out the formula for the DC gain - should depend on ca,cd,s ..somthing like
-  // s * (gd - ga) where gd, ga are the DC gains of the decay and attack filter...was it
-  // gd = 1 / (1 + cd), ga = 1 / (1 + ca)? ...look it up
-  // this value is needed for setting up a sustain...
-  // todo: simplify to have only one division
+  /** Computes the reciprocal of the DC gain of this filter. This is the constant value, you want 
+  to feed into the filter when you want to get a sustained output of 1. It's used for implementing 
+  sustain in subclass rsAttackDecayEnvelope. */
+  T getReciprocalGainAtDC() const { return (T(1)+ca*cd-cd-ca) / (s*(cd-ca)); }
 
-  T getReciprocalGainAtDC() const
-  {
-    return (T(1)+ca*cd-cd-ca) / (s*(cd-ca));
-
-    //return T(1) / getGainAtDC();
-    // todo: this can be algebraically simplified such that we nee only 1 division instead of 3
-    // -> do it
-  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -108,15 +96,14 @@ public:
   /** Sets the sustain level. This is the value that is added to the filter's input as long a note
   is being held. */
   void setSustain(T newSustain) { sustain = newSustain; }
-  // doesn't work yet - we probably need to scale the sustain input according to the DC gain of the
-  // filter
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+  /** Returns the constant value that should be fed into the filter during the sustain phase. */
   T getSustainInput() const { return sustain * Base::getReciprocalGainAtDC(); }
-  // can the formula be optimized, i.e. algebraically simplified? 
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Event Handling */
@@ -154,6 +141,8 @@ public:
     else                   
       return Base::getSample(T(0));
   }
+  // maybe we should have a conditional if(sustain == 0) to call simpler code, when sustain is not 
+  // used - sustain calls getReciprocalGainAtDC which is moderately expensive
 
 
 protected:
