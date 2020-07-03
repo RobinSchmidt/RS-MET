@@ -194,7 +194,7 @@ int main(int argc, char* argv[])
   //xoxosOsc();
 
   // Modulators:
-  //attackDecayEnvelope();
+  attackDecayEnvelope();
 
   // Graphics:
   //lineDrawing();
@@ -250,7 +250,7 @@ int main(int argc, char* argv[])
   //numericDifferentiation();
   //numericIntegration(); // a.k.a. numeric "quadrature"
   //nonUniformArrayDiffAndInt();  // numeric differentiation and integration of sampled data
-  uniformArrayDiffAndInt();  // under construction
+//  uniformArrayDiffAndInt();  // under construction
 
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header

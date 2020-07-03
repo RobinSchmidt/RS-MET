@@ -1542,6 +1542,9 @@ void differentiateTrapezoidal(const T* x, T* y, int N, T y0 = T(0))
     y[n] = T(2) * (x[n] - x[n-1]) - y[n-1];
 }
 
+
+
+
 // plots the signal x together with the responses of the cumulative-sum and trapezoidal 
 // integrators:
 void plotIntegratorResponses(double* x, int N)
@@ -1550,6 +1553,15 @@ void plotIntegratorResponses(double* x, int N)
   RAPT::rsArrayTools::cumulativeSum(x, &y[0], N);
   integrateTrapezoidal(x, &z[0], N);
   rsPlotArrays(N, x, &y[0], &z[0]);
+}
+
+// fn = f/fs: normalized freq
+void plotIntegratorCosineResponses(double fn, int N)
+{
+  std::vector<double> x(N);
+  createSineWave(&x[0], N, fn, 1.0, 1.0, PI/2); // params: freq, amp, sample-rate, phase
+  plotIntegratorResponses(&x[0], N);
+  // todo: plot also the analytically correct integral for comparison
 }
 
 void uniformArrayDiffAndInt()
@@ -1566,8 +1578,11 @@ void uniformArrayDiffAndInt()
   //   y[0] = y0;                              // y0 is integration constant
   //   y[n] = y[n-1] + 0.5*(x[n-1] + x[n]);
   // trapezoidal differentiation:
-  //   x[0] = ?
+  //   x[0] = x0
   //   x[n] = 2*(y[n] - y[n-1]) - x[n-1]
+
+
+  bool result = true;
 
   static const int N = 100;
 
@@ -1584,45 +1599,44 @@ void uniformArrayDiffAndInt()
   AT::copy(y, z, N);
   AT::difference(z, N);  // todo: make a function that works not in place
   AT::subtract(x, z, e, N);
+  result &= AT::isAllZeros(e, N);  
   //rsPlotArrays(N, x, y, z, e);  // ok - looks good
+
 
   // test trapezoidal integration and differentiation:
   double y0 = 3;
   integrateTrapezoidal(x, y, N, y0);
   differentiateTrapezoidal(y, z, N, x[0]);
   AT::subtract(x, z, e, N);
+  result &= AT::isAllZeros(e, N);  
   //rsPlotArrays(N, x, y, z, e);
 
-  /*
-  // plot cumulative sum vs trapezoidal integral:
-  AT::cumulativeSum(x, y, N);
-  integrateTrapezoidal(x, z, N);
-  rsPlotArrays(N, x, y, z);
-  */
+
 
   // Plot responses of both integrators for various input signals:
-
-  plotIntegratorResponses(x, N);  // noise responses
-
-  int n = 10;  // plot range, should be <= N
-
-  AT::fillWithImpulse(x, N);      // impulse response
-  plotIntegratorResponses(x, n); 
-
-  AT::fillWithValue(x, N, 1.0);   // step responses
-  plotIntegratorResponses(x, n); 
+  AT::fillWithRandomValues(x, N, -1.0, +1.0, 0); plotIntegratorResponses(x, N); // noise responses
+  AT::fillWithRandomValues(x, N, -1.0, +1.0, 1); plotIntegratorResponses(x, N); // ..other seed
 
   // (co)sine responses:
-  createSineWave(x, N, 0.025, 1.0, 1.0, PI/2); // params: freq, amp, sample-rate, phase
-  plotIntegratorResponses(x, N);
+  plotIntegratorCosineResponses(0.25/sqrt(2), N); // irrational freq - nonperiodic samples
+  plotIntegratorCosineResponses(0.0125, N);
+  plotIntegratorCosineResponses(0.025,  N);
+  plotIntegratorCosineResponses(0.05,   N);
+  plotIntegratorCosineResponses(0.1,    N);
+  plotIntegratorCosineResponses(0.2,    N);
+  plotIntegratorCosineResponses(0.25,   N);
+  plotIntegratorCosineResponses(0.3,    N);
+  plotIntegratorCosineResponses(0.4,    N);
+  plotIntegratorCosineResponses(0.5,    N);
 
-  createSineWave(x, N, 0.05, 1.0, 1.0, PI/2);
-  plotIntegratorResponses(x, N);
+  // impulse- and step responses:
+  int n = 10;  // plot range, should be <= N
+  AT::fillWithImpulse(x, N);    plotIntegratorResponses(x, n);  // impulse response
+  AT::fillWithValue(x, N, 1.0); plotIntegratorResponses(x, n);  // step responses
 
-  createSineWave(x, N, 0.1, 1.0, 1.0, PI/2);
-  plotIntegratorResponses(x, N);
 
-  // maybe factor out into plotIntegratorSineResponses
+
+
 
 
   // Observations:
@@ -1649,7 +1663,7 @@ void uniformArrayDiffAndInt()
   //  should be optional
 
 
-  int dummy = 0;
+  rsAssert(result == true);  // maybe turn into unit test and return the result
 }
 
 // ToDo: implement a numerical differentiation algorithm that is the inverse operation of 

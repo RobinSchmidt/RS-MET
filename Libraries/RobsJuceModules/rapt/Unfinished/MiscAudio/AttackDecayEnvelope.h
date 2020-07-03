@@ -1,7 +1,7 @@
-#pragma once
+#pragma once  // use ifdef/define
 
 
-
+//=================================================================================================
 
 /** A filter that has an attack/decay shape as its impulse response. The user can adjust the attack
 and decay time. It is based on the difference of two exponential decays with different time
@@ -25,6 +25,32 @@ public:
   /** Sets the decay time constant in samples, i.e. the number of samples, it takes to decay to
   1/e for the more slowly decaying exponential. */
   void setDecaySamples(T newDecay) { decaySamples = newDecay; coeffsDirty = true; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Returns the gain of this filter at DC. This value can be useful to know when you want to 
+  create an envelope with sustain - you may then feed the reciprocal of that value as constant 
+  input into the filter. */
+  T getGainAtDC() const 
+  { 
+    T gd = T(1) / (T(1) - cd);  // DC gain of decay filter
+    T ga = T(1) / (T(1) - ca);  // DC gain of attack filter
+    return s * (gd - ga);       // DC gain of the whole filter
+  }
+  // todo: figure out the formula for the DC gain - should depend on ca,cd,s ..somthing like
+  // s * (gd - ga) where gd, ga are the DC gains of the decay and attack filter...was it
+  // gd = 1 / (1 + cd), ga = 1 / (1 + ca)? ...look it up
+  // this value is needed for setting up a sustain...
+  // todo: simplify to have only one division
+
+  T getReciprocalGainAtDC() const
+  {
+    return T(1) / getGainAtDC();
+    // todo: this can be algebraically simplified such that we nee only 1 division instead of 3
+    // -> do it
+  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -73,16 +99,23 @@ class rsAttackDecayEnvelope : public rsAttackDecayFilter<T>
 
 public:
 
-
+  using Base = rsAttackDecayFilter<T>; // for conveniently calling basclass methods
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets the sustain level. This is the value that is added to the filter's input as long a note
   is being held. */
-  //void setSustain(T newSustain) { sustain = newSustain; }
+  void setSustain(T newSustain) { sustain = newSustain; }
   // doesn't work yet - we probably need to scale the sustain input according to the DC gain of the
   // filter
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  T getSustainInput() const { return sustain * Base::getReciprocalGainAtDC(); }
+  // can the formula be optimized, i.e. algebraically simplified? 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Event Handling */
@@ -92,10 +125,14 @@ public:
   void noteOn(int key, int vel)
   {
     currentNote = key;
-    rsAttackDecayFilter<T>::getSample(T(1)); // maybe input should be scaled by vel?
+    Base::getSample(T(1)); // maybe input should be scaled by vel?
     // We call geSample here to avoid the one sample delay due to the subtraction - the two
     // exponentials cancel each other at the very first sample
   }
+  // Should we take into account the sustain here? the maximum excursion will increase, if we have
+  // nonzero sustain. Can we compensate that by feeding some number other than 1? And if so, should 
+  // we do it? Maybe that coupling is musically desirable?
+
 
   void noteOff(int key, int vel)
   {
@@ -108,8 +145,11 @@ public:
 
   T getSample()
   {
-    if(currentNote != -1)  return rsAttackDecayFilter<T>::getSample(sustain);
-    else                   return rsAttackDecayFilter<T>::getSample(T(0));
+    //if(currentNote != -1)  return rsAttackDecayFilter<T>::getSample(sustain);
+    if(currentNote != -1)  
+      return Base::getSample(getSustainInput());
+    else                   
+      return Base::getSample(T(0));
   }
 
 
