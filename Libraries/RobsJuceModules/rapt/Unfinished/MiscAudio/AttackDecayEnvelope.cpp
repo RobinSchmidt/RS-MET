@@ -14,3 +14,17 @@ void rsAttackDecayFilter<T>::updateCoeffs()
   cd = exp(-1.0/decaySamples);
   coeffsDirty = false;
 }
+
+/*
+Notes:
+
+The formula rsAttackDecayFilter::getGainAtDC was derived as follows:
+
+  gd = 1 / (1 - cd)     DC gain of decay filter
+  ga = 1 / (1 - ca)     DC gain of attack filter
+  g  = s * (gd - ga)    DC gain of the whole filter
+
+and then algebraically simplified.
+
+
+*/

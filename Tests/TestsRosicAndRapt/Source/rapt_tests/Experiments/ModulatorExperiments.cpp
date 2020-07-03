@@ -3,8 +3,12 @@ using namespace RAPT;
 
 void attackDecayEnvelope()
 {
-  int N = 1000;
-  int nOff = 800;  // note-off sample instant
+  int N    = 1000;
+  int nOff = 800;     // note-off sample instant
+  int key  = 64;
+  int vel  = 64;
+
+
   std::vector<double> y(N);
 
 
@@ -25,9 +29,11 @@ void attackDecayEnvelope()
   flt.setAttackSamples(20);
   flt.setDecaySamples(100);
   env.setSustain(0.5);
-  env.noteOn(64, 64);
+  env.noteOn(key, vel);
   for(int n = 0; n < N; n++)
     y[n] = env.getSample();
+  //env.noteOff(key, vel);  // why does note-off need key and vel?
+
   rsPlotVector(y);
 
   // Observations:

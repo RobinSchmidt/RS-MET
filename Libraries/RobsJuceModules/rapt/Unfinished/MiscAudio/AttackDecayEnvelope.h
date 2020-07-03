@@ -35,10 +35,9 @@ public:
   input into the filter. */
   T getGainAtDC() const 
   { 
-    T gd = T(1) / (T(1) - cd);  // DC gain of decay filter
-    T ga = T(1) / (T(1) - ca);  // DC gain of attack filter
-    return s * (gd - ga);       // DC gain of the whole filter
+    return s*(cd-ca) / (T(1)+ca*cd-cd-ca);
   }
+
   // todo: figure out the formula for the DC gain - should depend on ca,cd,s ..somthing like
   // s * (gd - ga) where gd, ga are the DC gains of the decay and attack filter...was it
   // gd = 1 / (1 + cd), ga = 1 / (1 + ca)? ...look it up
@@ -47,7 +46,9 @@ public:
 
   T getReciprocalGainAtDC() const
   {
-    return T(1) / getGainAtDC();
+    return (T(1)+ca*cd-cd-ca) / (s*(cd-ca));
+
+    //return T(1) / getGainAtDC();
     // todo: this can be algebraically simplified such that we nee only 1 division instead of 3
     // -> do it
   }
@@ -138,6 +139,8 @@ public:
   {
     currentNote = -1;
   }
+  // why do we expect key and vel parameters? ...maybe we can do something with the note-off 
+  // velocity later, like adjusting the release time?
 
 
   //-----------------------------------------------------------------------------------------------
