@@ -1523,22 +1523,33 @@ void integrateTrapezoidal(T* x, T* y, int N, T y0 = T(0))
 // which takes only one input array
 */
 
+// move to rsNumericIntegrator/Differentiator, maybe provide an implementation that can be used in 
+// place (which should use only a single array for input and output):
 template<class T>
 void integrateTrapezoidal(const T* x, T* y, int N, T y0 = T(0))
 {
   rsAssert(y != x, "This function does not work in place");
   y[0] = y0;
   for(int n = 1; n < N; n++)
-    y[n] = y[n-1] + 0.5*(x[n-1] + x[n]);
+    y[n] = y[n-1] + T(0.5) * (x[n-1] + x[n]);
 }
-
 template<class T>
 void differentiateTrapezoidal(const T* x, T* y, int N, T y0 = T(0))
 {
   rsAssert(y != x, "This function does not work in place");
   y[0] = y0;
   for(int n = 1; n < N; n++)
-    y[n] = 2*(x[n] - x[n-1]) - y[n-1];
+    y[n] = T(2) * (x[n] - x[n-1]) - y[n-1];
+}
+
+// plots the signal x together with the responses of the cumulative-sum and trapezoidal 
+// integrators:
+void plotIntegratorResponses(double* x, int N)
+{
+  std::vector<double> y(N), z(N);
+  RAPT::rsArrayTools::cumulativeSum(x, &y[0], N);
+  integrateTrapezoidal(x, &z[0], N);
+  rsPlotArrays(N, x, &y[0], &z[0]);
 }
 
 void uniformArrayDiffAndInt()
@@ -1582,16 +1593,49 @@ void uniformArrayDiffAndInt()
   AT::subtract(x, z, e, N);
   //rsPlotArrays(N, x, y, z, e);
 
+  /*
   // plot cumulative sum vs trapezoidal integral:
   AT::cumulativeSum(x, y, N);
   integrateTrapezoidal(x, z, N);
   rsPlotArrays(N, x, y, z);
+  */
+
+  // Plot responses of both integrators for various input signals:
+
+  plotIntegratorResponses(x, N);  // noise responses
+
+  int n = 10;  // plot range, should be <= N
+
+  AT::fillWithImpulse(x, N);      // impulse response
+  plotIntegratorResponses(x, n); 
+
+  AT::fillWithValue(x, N, 1.0);   // step responses
+  plotIntegratorResponses(x, n); 
+
+  // (co)sine responses:
+  createSineWave(x, N, 0.025, 1.0, 1.0, PI/2); // params: freq, amp, sample-rate, phase
+  plotIntegratorResponses(x, N);
+
+  createSineWave(x, N, 0.05, 1.0, 1.0, PI/2);
+  plotIntegratorResponses(x, N);
+
+  createSineWave(x, N, 0.1, 1.0, 1.0, PI/2);
+  plotIntegratorResponses(x, N);
+
+  // maybe factor out into plotIntegratorSineResponses
+
 
   // Observations:
-  // -the tarpezoidal integral looks smoother and delayed compared to the cumulative sum - i think,
+  // -the trapezoidal integral looks smoother and delayed compared to the cumulative sum - i think,
   //  the trapezoidal integrator is basically a cumulative sum of data that was passed through a 
   //  2-point moving average which explains both effects
   //  todo: try with an impulse input to figure out the amount of the delay - is it half a sample?
+  //  try also a constant function, a linear, and sinuosids of various frequencies (including
+  //  the Nyquist freq, i.e. an alternating signal)
+  //  -> impulse response of sum i just flat 1, starting at sample 0, imp-resp of trapez jumps to 
+  //    0.5 at sample 1
+  //  -> step responses are both straight lines, sum starts at 1, trapez starts at 0 (an raises
+  //     to 1 within 1 sample)
   // -AT::difference does indeed undo AT::cumulativeSum
   // -differentiateTrapezoidal undoes integrateTrapezoidal only, if we pass the correct value x[0]
   //  for the initial state - otherwise, we see an error that oscillates at the Nyquist freq 

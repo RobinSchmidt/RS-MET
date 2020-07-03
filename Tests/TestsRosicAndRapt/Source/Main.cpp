@@ -413,7 +413,7 @@ int main(int argc, char* argv[])
   //beatingSines();
   //envelopeDeBeating();
   //sineRecreation();               // maybe move elsewhere
-  sineRecreationBandpassNoise();
+//  sineRecreationBandpassNoise();
   //sineWithPhaseCatchUp();       // dito
   //partialExtractionTriple();
   //partialExtractionViaBiquadTriple();
