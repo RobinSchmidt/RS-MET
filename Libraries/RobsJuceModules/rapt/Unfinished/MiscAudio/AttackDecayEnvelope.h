@@ -136,6 +136,8 @@ public:
     //T d = s*(yd-ya);  x = 1 - d*d;
     //x = 1 - yd;
     //x = 1 - yd - ya;
+    // todo: maybe have an "accumulationMode" member and do a switch between various formulas based
+    // on it here
 
 
 

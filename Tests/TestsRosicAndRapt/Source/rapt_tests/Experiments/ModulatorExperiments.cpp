@@ -115,3 +115,30 @@ void attackDecayEnvelope()
   //  2nd derivative at the transition from sustain to release, so it's only second order smooth
   //  at this point (-> verify this)
 }
+/*
+trying to derive a formula to scale the input impulse to the filter when it has not yet decayed 
+away completely so as to still reach 1.0 as peak height instead of overshooting it due to 
+accumulation:
+
+  an = a0 * ca^n      attack filter output
+  dn = d0 * cd^n      decay filter output
+  en = s*(dn-an)      envelope output
+
+where:
+ 
+  a0 = x + ca*ya
+  d0 = x + cd*yd
+
+i think, we need to: 
+
+  -find the derivative of en with respect to n
+  -set it to zero
+  -solve the equation for n
+  -compute en at that found value of n
+  -set it to 1
+  -solve the equation for x
+
+
+
+
+*/
