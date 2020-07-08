@@ -68,13 +68,19 @@ void plotAttDecResponse(T ca, T cd, T ya, T yd, T s, T x, int N = 500)
   for(int n = 1; n < N; n++)
     y[n] = flt.getSample(0);
 
-  // compute peak location and height:
+  // compute peak location np:
   T a0 = x + ya;
   T d0 = x + yd;
-  T A  = d0*log(cd);
-  T D  = a0*log(ca);
+  T D  = d0*log(cd);
+  T A  = a0*log(ca);
   T R  = cd/ca;
-  T np = rsLogB(A/D, R);  // peak location - hmm - it has a false minus sign
+  T np = rsLogB(A/D, R);
+
+  // compute peak height ep:
+  T dp = d0*pow(cd, np);  // decay output at peak
+  T ap = a0*pow(ca, np);  // attack output at peak
+  T ep = s*(dp-ap);       // env output at peak
+
 
 
 
@@ -86,7 +92,7 @@ void plotAttDecResponse(T ca, T cd, T ya, T yd, T s, T x, int N = 500)
 void attackDecayEnvelope()
 {
 
-  plotAttDecResponse(0.95, 0.99, 0.0, 0.0, 2.0, 1.0);
+  plotAttDecResponse(0.95, 0.99, 0.1, 0.4, 2.0, 1.0);
 
 
 
