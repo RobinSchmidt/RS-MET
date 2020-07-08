@@ -32,8 +32,64 @@ void plotSmoothEnvWithVariousSustains(double att, double dec)
   plt.plot();
 }
 
+template<class T>
+class rsAttackDecayFilterTest : public rsAttackDecayFilter<T>
+{
+
+public:
+
+  void setCoeffs(T ca, T cd, T s)
+  {
+    this->ca = ca;
+    this->cd = cd;
+    this->s  = s;
+    this->coeffsDirty = false;
+  }
+
+  void setState(T ya, T yd)
+  {
+    this->ya = ya;
+    this->yd = yd;
+  }
+
+};
+
+template<class T>
+void plotAttDecResponse(T ca, T cd, T ya, T yd, T s, T x, int N = 500)
+{
+  // just a plot to verify a formula...
+
+  rsAttackDecayFilterTest<T> flt;
+  flt.setCoeffs(ca, cd, s);
+  flt.setState(ya, yd);
+
+  std::vector<T> y(N);
+  y[0] = flt.getSample(x);
+  for(int n = 1; n < N; n++)
+    y[n] = flt.getSample(0);
+
+  // compute peak location and height:
+  T a0 = x + ya;
+  T d0 = x + yd;
+  T A  = d0*log(cd);
+  T D  = a0*log(ca);
+  T R  = cd/ca;
+  T np = rsLogB(A/D, R);  // peak location - hmm - it has a false minus sign
+
+
+
+  rsPlotVector(y);
+
+  int dummy = 0;
+}
+
 void attackDecayEnvelope()
 {
+
+  plotAttDecResponse(0.95, 0.99, 0.0, 0.0, 2.0, 1.0);
+
+
+
   int N    = 1200;
   int nOff = 800;     // note-off sample instant
   int key  = 64;

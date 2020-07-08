@@ -9,8 +9,8 @@ generator. The expressions for the impulse responses are
   
 where d0,a0 are the initial states that we assume to be given as
   
-  d0 = x + ya
-  a0 = x + yd
+  d0 = x + yd
+  a0 = x + ya
   
 we assume x to be an input impulse and we assume that the filter's remembered state variables
 d[n-1], a[n-1] are stored in yd,ya respectively. We want to figure out, how high the impulse x 
@@ -36,9 +36,15 @@ that sample instant n the peak location. We now plug that into the equation for 
 
   1 = s*(dn-an)
     = s*(d0*cd^n - a0*ca^n)
-    = s*((x + ya)*cd^n - (x + yd)*ca^n)
+    = s*((x + yd)*cd^n - (x + ya)*ca^n)
   
-  1/s = (x + ya)*cd^n - (x + yd)*ca^n
-      = 
+  1/s = (x + yd)*cd^n - (x + ya)*ca^n
+      = (x+yd)*cd^(logR(A/D))                           - (x+ya)*ca^(logR(A/D))
+      = (x+yd)*cd^(logR(A/D))                           - (x+ya)*ca^(logR(A/D))
+      = (x+yd)*cd^(logR((a0*log(ca))/(d0*log(cd))))     - (x+ya)*ca^(logR((a0*log(ca))/(d0*log(cd))))
+      = (x+yd)*cd^(logR(((x+ya)*log(ca))/((x+yd)*log(cd)))) - (x+ya)*ca^(logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
   
-  
+This ugly mess has now to be solved for x - if it's not possible to do this explicitly, we need to 
+set up an interative algorithm to find x (Newton iteration or similar). Maybe verify, if the 
+equation is correct by plotting s times the RHS and see, if the actual peak height comes out, 
+assuming that ca,cd,ya,yd,s,x are given
