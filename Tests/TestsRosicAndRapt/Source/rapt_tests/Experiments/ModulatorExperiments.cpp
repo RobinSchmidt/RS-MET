@@ -81,7 +81,16 @@ void plotAttDecResponse(T ca, T cd, T ya, T yd, T s, T x, int N = 500)
   T ap = a0*pow(ca, np);  // attack output at peak
   T ep = s*(dp-ap);       // env output at peak
 
-
+  // compute peak height again, using the monster formula without intermediate variables:
+  auto logR = [=](T x)->T{ return rsLogB(x, R); }; // logarithm to basis R
+  T ep2 =   (x+yd) * pow(cd, logR(((x+ya)*log(ca))/((x+yd)*log(cd)))) 
+          - (x+ya) * pow(ca, logR(((x+ya)*log(ca))/((x+yd)*log(cd))));
+  ep2 *= s;
+  // OK ep2 == ep, so the formula is correct. Now, we must set that formula equal to 1 and solve 
+  // for x, if possible - otherwise come up with an iterative algorithm to solve the implicit 
+  // equation for x. We need to find x, such that:
+  // 1/s =   (x+yd) * cd^(logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
+  //       - (x+ya) * ca^(logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
 
 
   rsPlotVector(y);

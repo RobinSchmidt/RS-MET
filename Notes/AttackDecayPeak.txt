@@ -42,9 +42,39 @@ that sample instant n the peak location. We now plug that into the equation for 
       = (x+yd)*cd^(logR(A/D))                           - (x+ya)*ca^(logR(A/D))
       = (x+yd)*cd^(logR(A/D))                           - (x+ya)*ca^(logR(A/D))
       = (x+yd)*cd^(logR((a0*log(ca))/(d0*log(cd))))     - (x+ya)*ca^(logR((a0*log(ca))/(d0*log(cd))))
-      = (x+yd)*cd^(logR(((x+ya)*log(ca))/((x+yd)*log(cd)))) - (x+ya)*ca^(logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
+      = (x+yd)*cd^(logR(((x+ya)*log(ca))/((x+yd)*log(cd)))) 
+       -(x+ya)*ca^(logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
   
 This ugly mess has now to be solved for x - if it's not possible to do this explicitly, we need to 
 set up an interative algorithm to find x (Newton iteration or similar). Maybe verify, if the 
 equation is correct by plotting s times the RHS and see, if the actual peak height comes out, 
 assuming that ca,cd,ya,yd,s,x are given
+
+try to simplify this partial expression:
+
+  kd := cd^(  logR(((x+ya)*log(ca))/((x+yd)*log(cd)))  )
+      = cd^(  log(((x+ya)*log(ca))/((x+yd)*log(cd)))/log(R)  )
+      = cd^(  log(((x+ya)*log(ca))/((x+yd)*log(cd)))/log(cd/ca)  )   r := 1/log(R)
+      = cd^(r*log(((x+ya)*log(ca))/((x+yd)*log(cd))) )               la := log(ca), ld := log(cd)
+      = cd^(r*log( ((x+ya)*la) / ((x+yd)*ld) ))
+      = cd^(r*( log((x+ya)*la) - log((x+yd)*ld) )  )
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
