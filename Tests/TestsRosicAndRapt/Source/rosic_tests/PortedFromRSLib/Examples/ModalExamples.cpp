@@ -618,9 +618,6 @@ void createPiano1()
 
 
 
-
-
-
 void createBass1()
 {
   SampleMapGeneratorModal g;

@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
   //heatEquation1D();
   //waveEquation1D();
   //rectangularMembrane();
-//  rectangularRoom();
+  //rectangularRoom();
   //particleForceDistanceLaw();
   //particleSystem();
   //quantumSpinMeasurement();  // move to unit tests
@@ -361,10 +361,10 @@ int main(int argc, char* argv[])
   //fakeResoDifferentDelays();
 
   // Modal Filters/Synthesis:
-  //modalFilter();        // impulse response of decaying-sine filter
-  //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
+  modalFilter();        // impulse response of decaying-sine filter
+  modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
+  attackDecayFilter();  // ...hmm..almost redundant
   //modalTwoModes();
-  //attackDecayFilter();  // ...hmm..almost redundant
   //dampedSineFilterDesign();
   //dampedSineFilterImpResp();
   //biquadImpulseResponseDesign();
@@ -372,7 +372,7 @@ int main(int argc, char* argv[])
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
   //modalWithFancyEnv();
   //modalSynthSpectra();
-//  modalDecayFit();
+  //modalDecayFit();
   //modalAnalysis1();
   //modalAnalysisPluck();
   //modalPartialResynthesis();
@@ -526,9 +526,9 @@ int main(int argc, char* argv[])
   //createPiano1();
 
   // sample-map creations (they take long):
-  //createBass1();
-  //createGong1();
-  //createPluck1();
+  createBass1();
+  createGong1();
+  createPluck1();
 
   //===============================================================================================
   // RoSiC tests:

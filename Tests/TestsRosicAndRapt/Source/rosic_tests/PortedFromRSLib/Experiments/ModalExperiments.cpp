@@ -2,19 +2,19 @@
 
 void modalFilter()
 {
-  static const int N = 5000;  // number of samples to plot
+  //static const int N = 5000;  // number of samples to plot
 
   double fs  = 44100;  // samplerate in Hz
-  double td  = 0.1;    // decay time constant in seconds
-  double f   = 100;    // frequency in Hz
-  double phs = 0;     // phase in degrees
-  double A   = 1.0;    // amplitude as raw factor
+  double frq = 100;    // frequency in Hz
+  double amp = 1.0;    // amplitude as raw factor
+  double dec = 0.1;    // decay time constant in seconds
+  double phs = 0;      // phase in degrees
 
   // create and set up the modal filter:
   rsModalFilterDD mf;
-  mf.setModalParameters(f, A, td, phs, fs);
+  mf.setModalParameters(frq, amp, dec, phs, fs);
 
-  //plotImpulseResponse(mf, 5000, 1.0);
+  plotImpulseResponse(mf, 10000, 1.0);
   plotFrequencyResponse(mf, 2000, 20.0, fs/2, fs, true);
 }
 
@@ -22,19 +22,45 @@ void modalFilterFreqResp()
 {
   // filter parameters:
   double fs  = 44100;  // samplerate in Hz
-  double frq = 1000;   // frequency in Hz
+  double frq = 100;    // frequency in Hz
   double amp = 1.0;    // amplitude as raw factor
-  double phs = 45;     // phase in degrees
-  double att = 0.01;   // attack time in seconds
+  double att = 0.05;   // attack time in seconds
   double dec = 0.1;    // decay time constant in seconds
+  double phs = 45;     // phase in degrees
 
 
   rsModalFilterWithAttackDD mf;
   mf.setModalParameters(frq, amp, att, dec, phs, fs, 1.0);
 
-  //plotImpulseResponse(  mf, 5000, 1.0);
+  plotImpulseResponse(  mf, 10000, 1.0);
   plotFrequencyResponse(mf, 5000, 20.0, fs/2, fs, true);
 }
+
+// hmm...this is now a bit redundant:
+void attackDecayFilter()
+{
+  static const int N = 20000;  // number of samples to plot
+
+  double fs  = 44100;  // samplerate in Hz
+  double ta  = 0.05;   // attack time in seconds
+  double td  = 0.2;    // decay time constant in seconds
+  double f   = 100;    // frequency in Hz
+  double phs = 45;     // phase in degrees
+  double a   = 1.0;    // amplitude as raw factor
+
+  //ta = 0.00001; // for comparison - todo: allow exact zero attack value
+
+  // create and set up the filter:
+  rsModalFilterWithAttackDD mf;
+  mf.setModalParameters(f, a, ta, td, phs, fs);
+
+  // generate and plot impulse-response:
+  double h[N];
+  getImpulseResponse(mf, h, N);
+  plotData(N, 0, 1/fs, h);
+  int dummy = 0;
+}
+
 
 void modalTwoModes()
 {
@@ -79,32 +105,7 @@ void modalTwoModes()
 }
 
 
-// hmm...this is now a bit redundant:
-void attackDecayFilter()
-{
-  static const int N = 20000;  // number of samples to plot
 
-  double fs  = 44100;  // samplerate in Hz
-  double ta  = 0.05;   // attack time in seconds
-  double td  = 0.2;    // decay time constant in seconds
-  double f   = 100;    // frequency in Hz
-  double phs = 45;     // phase in degrees
-  double a   = 1.0;    // amplitude as raw factor
-
-  ta = 0.00001; // for comparison - todo: allow exact zero attack value
-
-  // create and set up the filter:
-  rsModalFilterWithAttackDD mf;
-  mf.setModalParameters(f, a, ta, td, phs, fs);
-
-  // generate and plot impulse-response:
-  double h[N];
-  getImpulseResponse(mf, h, N);
-  plotData(N, 0, 1/fs, h);
-
-
-  int dummy = 0;
-}
 
 /** Like rsDampedSineFilter, but with the global gain factor factored out in the transfer function 
 numerator, such that:

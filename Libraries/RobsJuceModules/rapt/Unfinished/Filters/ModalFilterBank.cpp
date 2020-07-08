@@ -36,7 +36,7 @@ T findDecayScalerLess1(T c)
   // Newton iteration:
   T g, gp;      // g(k), g'(k)
   T kOld = 2*k; // ensure to enter the loop
-  while(fabs(k-kOld) > k*eps && i < 1000)
+  while(fabs(k-kOld) > k*eps && i < 1000)  // whoa! 1000? that seems way too high for production code!
   {
     kOld = k;
     g    = log(k) + c*(1-k); // g(k)
@@ -52,6 +52,13 @@ T findDecayScalerLess1(T c)
 
   // \todo find a refined formula for the initial guess by plotting the output against the input in
   // the range 0...1 and fit a polynomial (or other suitable function) to the data
+
+  // ...i think, the goal should be that the Newton iteration converges in 2 or 3 steps - maybe we 
+  // can then switch to a fixed number of steps, maybe we could also try Halley iteration instead,
+  // where g''(k) = -1/k^2 - compute: kr = 1/k, gp = kr - c, gpp = -kr*kr
+  // See:
+  // https://en.wikipedia.org/wiki/Halley%27s_method
+  // http://numbers.computation.free.fr/Constants/Algorithms/newton.html
 }
 
 template<class T>

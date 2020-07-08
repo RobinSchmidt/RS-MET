@@ -1,6 +1,37 @@
 //#include <JuceHeader.h>
 using namespace RAPT;
 
+void plotSmoothEnvWithVariousSustains(double att, double dec)
+{
+  int N    = 1200;
+  int nOff = 800;     // note-off sample instant
+  int key  = 64;
+  int vel  = 64;
+
+  std::vector<double> y(N);
+
+  GNUPlotter plt;
+
+  rsAttackDecayEnvelope<double> env;
+  env.setAttackSamples(att);
+  env.setDecaySamples(dec);
+
+  for(int i = 0; i <= 5; i++)
+  {
+    env.setSustain(i*0.2);
+    env.reset();
+    env.noteOn(key, vel);
+    for(int n = 0; n < nOff; n++)
+      y[n] = env.getSample();
+    env.noteOff(key, vel);  // why does note-off need key and vel?
+    for(int n = nOff; n < N; n++)
+      y[n] = env.getSample();
+    plt.addDataArrays(N, &y[0]);
+  }
+
+  plt.plot();
+}
+
 void attackDecayEnvelope()
 {
   int N    = 1200;
@@ -13,33 +44,58 @@ void attackDecayEnvelope()
 
 
   rsAttackDecayFilter<double> flt;
+  rsAttackDecayEnvelope<double> env; 
+  // maybe rename to rsSmoothADSR, when release has been made independent from decay
+
+
+  
+  // plot DC response of filter:
   flt.setAttackSamples(5);
   flt.setDecaySamples(15);
-
-  // plot DC response:
   for(int n = 0; n < N; n++)
     y[n] = flt.getSample(1.0);
   //rsPlotVector(y);
   double dcGain = flt.getGainAtDC();  // should be 22.335... - yep, works
 
-
-
-
-  rsAttackDecayEnvelope<double> env;
-  flt.setAttackSamples(20);
-  flt.setDecaySamples(100);
-  env.setSustain(0.2);
+  /*
+  // plot a simple attack/decay envelope without sustain:
+  env.setAttackSamples(50);
+  env.setDecaySamples(100);
+  env.setSustain(0.0);
   env.noteOn(key, vel);
   for(int n = 0; n < nOff; n++)
     y[n] = env.getSample();
   env.noteOff(key, vel);  // why does note-off need key and vel?
   for(int n = nOff; n < N; n++)
     y[n] = env.getSample();
+  //rsPlotVector(y);
+  */
 
 
-
-
+  // plot the response that we get when we fire a succession of several note-ons at it:
+  env.setAttackSamples(20);
+  env.setDecaySamples(100);
+  int dt = 1;  // delta-t between the input impulses
+  env.reset();
+  for(int n = 0; n < N; n++)
+  {
+    if(n % dt == 0)
+    {
+      env.noteOn(key, vel);
+      env.noteOff(key, vel);  // should not matter, if we call noteOff or not
+    }
+    y[n] = env.getSample();
+  }
+  dcGain = env.getGainAtDC();
   rsPlotVector(y);
+  // i think, we should attempt that the curve approaches 1 in a sort of saturation curve, when we
+  // send a not at each sample
+
+
+  // plot a family of envelopes with sustain settings 0.0,0.2,0.4,0.6,0.8,1.0:
+  //plotSmoothEnvWithVariousSustains(50, 100);
+
+  int dummy = 0;
 
   // Observations:
   // -the sustain level works but using nonzero sustain slightly changes the attack-time and 
@@ -52,4 +108,10 @@ void attackDecayEnvelope()
   //  D==R restriction to get a full smooth ADSR - maybe just switch the decay-coeff depending on
   //  whether the note is on or off - the smoothness comes from the attack filter
   
+
+  // Notes:
+  // -i think, with sustain==0, the resulting envelope is infinitely smooth everywhere, i.e. 
+  //  infinitely often differentiable. With nonzero sustain, there will be a discontinuity in the
+  //  2nd derivative at the transition from sustain to release, so it's only second order smooth
+  //  at this point (-> verify this)
 }

@@ -2447,3 +2447,9 @@ void QuadrifexModuleEditor::setupPopupEditors(int slotIndex)
   }
 
 }
+
+/*
+Bugs:
+-set the routing to 1+2+3+4 and mute effect 4 - some parts of the graphics turn red that shouldn't
+
+*/

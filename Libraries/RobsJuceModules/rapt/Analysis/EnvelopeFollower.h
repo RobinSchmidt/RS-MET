@@ -6,11 +6,11 @@
 version of an envelope follower with zero attack time. So, in effect, it responds immediately to 
 any peaks and then drags an exponentially decaying trail from that peak. If additional smaller 
 peaks occur under the umbrella of that trail, they will not be seen separately, they will be 
-subsumed/shadowed by the larger peak. This class can be useful for distinguishing major/relevant
-peaks for the minor irrelevant ones. */
+subsumed/shadowed by the larger peak. This class can be useful for distinguishing major, relevant
+peaks from the minor, irrelevant ones. */
 
 template<class T>
-class rsPeakTrailDragger  // maybe rename to rsPeakFollower/rsPeakMeter/rsPeakShadower
+class rsPeakTrailDragger  // rename to rsPeakShadower
 {
 
 public:
@@ -46,8 +46,8 @@ public:
   }
 
 
-  /** Applies the process running forward to the signal x of length N with time-stamps given in 
-  t and writes the result into y. Can be used in place - the buffers x,y may point to the same 
+  /** Applies the process running forward through the signal x of length N with time-stamps given 
+  in t and writes the result into y. Can be used in place - the buffers x,y may point to the same 
   memory location. */
   void applyForward(const T* t, const T* x, T* y, int N)
   {
@@ -216,7 +216,8 @@ RS_INLINE TSig rsEnvelopeFollower<TSig, TPar>::getSampleRootMeanSquare(TSig in)
 
 /** An advanced envelope follower implementing the following proceesing chain:
 
--Butterworth lowpass - gets rid of Gibbs ripples, if any (maybe try Bessel - avoid overshoot)
+-Bessel lowpass      - gets rid of Gibbs gurgle, if any, see
+                         https://github.com/RobinSchmidt/RS-MET/issues/265
 -full wave rectifier - takes absolute value
 -slew rate limiter   - preliminary/raw/simple envelope extraction
 -min/max smoother    - extracts average of min and max value in some time window
@@ -273,10 +274,6 @@ public:
     return tmp;
     //return T(1.23) * tmp; // factor 1.23 compensates gain loss due to lowpass (from inspection)
   }
-  // todo: split the function into 
-  // getSamplePreFiltered/getSampleSlewLimited/getSampleMinMaxSmoothed/getSamplePostFiltered
-  // so we can inspect the signal at all points in the processing chain for making plots
-
   // todo: the arbitrary factors 3/2 for the delay and 1.23 for the gain should probably be related
   // to the attack/release times of the slewrate limiter - or maybe these times should also be set 
   // up according to the input frequency - some experimentation may be needed - try also very fast

@@ -10,6 +10,12 @@ see: https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm
 
 see also here:
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=465829 
+
+todo: 
+-maybe implement detection of intersample-peaks by fitting a parabola to triplets of samples
+ and sloving for its peaks in cases, where a peak is detected - that could actually be a useful
+ feature for any kind of envelope detector
+
 */
 
 template<class T>
