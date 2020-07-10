@@ -53,7 +53,9 @@ public:
   }
 
   /** Computes the peak value that will be reached when feeding an impulse with given height x 
-  into the filter. */
+  into the filter. The height of this peak will depend on the current state of the filter and the
+  function can be used to compute an input impulse height that can be used to reach a target 
+  height of 1 using bisection or Newton iteration...tbc... */
   T getPeakForInputImpulse(T x)
   {
     // compute peak location np:
@@ -84,27 +86,29 @@ public:
     // objective function of which we want to find a zero:
     auto f = [=](T x)->T
     {
-      //return getPeakForInputImpulse(x) - T(1)/s;
+      return getPeakForInputImpulse(x) - T(1);
+      // naive, not optimized - todo: try to simplify the expression, precompute as much as 
+      // possible (some logarithms, etc.), replace pow with exp (the basis is fixed), replace
+      // bisection with better method (maybe Newton, Brent, Ridders, ...), maybe use a higher
+      // tolerance - we currently let it converge to machine precision
 
 
-      
+      /*
       T yd = this->yd * cd;
       T ya = this->ya * ca;
-
       T y =  (x+yd) * pow(cd, logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
            - (x+ya) * pow(ca, logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
            - 1/s;
-      // todo: try to simplify the expression
-
       return y;
-     
+      // 
+      */
     };
 
     T x = rsRootFinder<T>::bisection(f, T(0), T(1), T(0));
     return x;
 
   }
-  // todo: find a suitable name
+  // todo: find a suitable name - getAccumulationCompensationExact 
 
 };
 
@@ -152,6 +156,10 @@ void plotAttDecResponse(T ca, T cd, T ya, T yd, T s, T x, int N = 500)
   // equation for x. We need to find x, such that:
   // 1/s =   (x+yd) * cd^(logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
   //       - (x+ya) * ca^(logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
+
+  flt.setCoeffs(ca, cd, s);
+  flt.setState(ya, yd);
+  T ep3 = flt.getPeakForInputImpulse(x);
 
   //rsPlotVector(y);
   // hmm - the values of both formulas match each other but they do not match the numerical result
