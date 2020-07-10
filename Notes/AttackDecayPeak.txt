@@ -58,6 +58,8 @@ try to simplify this partial expression:
       = cd^(r*log(((x+ya)*log(ca))/((x+yd)*log(cd))) )               la := log(ca), ld := log(cd)
       = cd^(r*log( ((x+ya)*la) / ((x+yd)*ld) ))
       = cd^(r*( log((x+ya)*la) - log((x+yd)*ld) )  )
+      = cd^(r*( log(x+ya) + log(la) - log(x+yd) + log(ld)))
+      = cd^(r*( log(x+ya) + log(la) - log(x+yd) + log(ld)))
   
   
   

@@ -52,6 +52,32 @@ public:
     this->yd = yd;
   }
 
+  T getX()
+  {
+    //T x = T(1);  // initial guess - maybe try to find a better guess
+    //T tol = 1.e-13;
+
+
+    T R  = cd/ca;
+    auto logR = [=](T x)->T{ return rsLogB(x, R); }; // logarithm to basis R
+
+    // objective function of which we want to find a zero:
+    auto f = [=](T x)->T
+    {
+      T y =  (x+yd) * pow(cd, logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
+           - (x+ya) * pow(ca, logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
+           - 1/s;
+      // todo: try to simplify the expression
+
+      return y;
+    };
+
+    T x = rsRootFinder<T>::bisection(f, T(0), T(1), T(0));
+    return x;
+
+  }
+  // todo: find a suitable name
+
 };
 
 template<class T>
@@ -92,8 +118,24 @@ void plotAttDecResponse(T ca, T cd, T ya, T yd, T s, T x, int N = 500)
   // 1/s =   (x+yd) * cd^(logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
   //       - (x+ya) * ca^(logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
 
-
   rsPlotVector(y);
+
+
+  // now with compensation - the resulting function should have a peak with height 1:
+  flt.setCoeffs(ca, cd, s);
+  flt.setState(ya, yd);
+  T x2 = flt.getX(); 
+  // this function really needs a better name - maybe getCompensatedInput, 
+  // getAccumulationCompensation, ...
+
+  y[0] = flt.getSample(x2);
+  for(int n = 1; n < N; n++)
+    y[n] = flt.getSample(0);
+  rsPlotVector(y);
+  // ...hmm - it's not exactly 1 but 0.995 ...maybe the ya,yd states are taken one sample too late 
+  // or early? also, the bisection method is far too slow to converge for production code - but we
+  // are getting close...almost there
+
 
   int dummy = 0;
 }

@@ -30,6 +30,8 @@ public:
   // -maybe instead of std::function use a second template parameter F
   // -maybe declare the template parameters in fornt of the functions, not the class (like in 
   //  rsArrayTools)
+  // -let the function take a tolerance parameter (maybe defaulting 
+  //  std::numeric_limits<T>::epsilon)
 
   /** Similar to bisection but doesn't use the midpoint of the current bracketing interval, but the
   point where a line between (xLeft,yLeft), (xRight,yRight) crosses the x-axis. Convergence is
