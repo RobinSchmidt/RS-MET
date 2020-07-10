@@ -80,18 +80,32 @@ public:
     //T tol = 1.e-13;
 
 
-    T R  = cd/ca;
-    auto logR = [=](T x)->T{ return rsLogB(x, R); }; // logarithm to basis R
+    T lcd = log(cd);
+    T lca = log(ca);
+    T R   = cd/ca;
+    T lR  = log(R);
+
+
+    //auto logR = [=](T x)->T{ return rsLogB(x, R); }; // logarithm to basis R
 
     // objective function of which we want to find a zero:
     auto f = [=](T x)->T
     {
-      return getPeakForInputImpulse(x) - T(1);
+      //return getPeakForInputImpulse(x) - T(1);
       // naive, not optimized - todo: try to simplify the expression, precompute as much as 
       // possible (some logarithms, etc.), replace pow with exp (the basis is fixed), replace
       // bisection with better method (maybe Newton, Brent, Ridders, ...), maybe use a higher
       // tolerance - we currently let it converge to machine precision
 
+      T a0 = x + ya*ca;
+      T d0 = x + yd*cd;
+      T D  = d0*lcd;
+      T A  = a0*lca;
+      T np = rsLogB(A/D, R);  // = log(A/D) / lR;
+      T dp = d0*pow(cd, np);  // = d0 * exp(lcd*np);
+      T ap = a0*pow(ca, np);  // = a0 * exp(lca*np);
+      T ep = s*(dp-ap);
+      return ep - T(1);
 
       /*
       T yd = this->yd * cd;
