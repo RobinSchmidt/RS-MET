@@ -52,6 +52,26 @@ public:
     this->yd = yd;
   }
 
+  /** Computes the peak value that will be reached when feeding an impulse with given height x 
+  into the filter. */
+  T getPeakForInputImpulse(T x)
+  {
+    // compute peak location np:
+    T a0 = x + ya*ca;
+    T d0 = x + yd*cd;
+    T D  = d0*log(cd);
+    T A  = a0*log(ca);
+    T R  = cd/ca;
+    T np = rsLogB(A/D, R);
+
+    // compute peak height ep:
+    T dp = d0*pow(cd, np);  // decay output at peak
+    T ap = a0*pow(ca, np);  // attack output at peak
+    T ep = s*(dp-ap);       // env output at peak
+
+    return ep;
+  }
+
   T getX()
   {
     //T x = T(1);  // initial guess - maybe try to find a better guess
@@ -64,12 +84,20 @@ public:
     // objective function of which we want to find a zero:
     auto f = [=](T x)->T
     {
+      //return getPeakForInputImpulse(x) - T(1)/s;
+
+
+      
+      T yd = this->yd * cd;
+      T ya = this->ya * ca;
+
       T y =  (x+yd) * pow(cd, logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
            - (x+ya) * pow(ca, logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
            - 1/s;
       // todo: try to simplify the expression
 
       return y;
+     
     };
 
     T x = rsRootFinder<T>::bisection(f, T(0), T(1), T(0));
@@ -88,6 +116,9 @@ void plotAttDecResponse(T ca, T cd, T ya, T yd, T s, T x, int N = 500)
   rsAttackDecayFilterTest<T> flt;
   flt.setCoeffs(ca, cd, s);
   flt.setState(ya, yd);
+  //flt.setState(ya*ca, yd*cd);
+  //flt.setState(ya/ca, yd/cd);
+
 
   std::vector<T> y(N);
   y[0] = flt.getSample(x);
@@ -95,12 +126,16 @@ void plotAttDecResponse(T ca, T cd, T ya, T yd, T s, T x, int N = 500)
     y[n] = flt.getSample(0);
 
   // compute peak location np:
-  T a0 = x + ya;
-  T d0 = x + yd;
+  //T a0 = x + ya;
+  //T d0 = x + yd;
+  T a0 = x + ya*ca;
+  T d0 = x + yd*cd;
   T D  = d0*log(cd);
   T A  = a0*log(ca);
   T R  = cd/ca;
   T np = rsLogB(A/D, R);
+
+  //np -= 1;  // test
 
   // compute peak height ep:
   T dp = d0*pow(cd, np);  // decay output at peak
@@ -118,7 +153,14 @@ void plotAttDecResponse(T ca, T cd, T ya, T yd, T s, T x, int N = 500)
   // 1/s =   (x+yd) * cd^(logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
   //       - (x+ya) * ca^(logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
 
-  rsPlotVector(y);
+  //rsPlotVector(y);
+  // hmm - the values of both formulas match each other but they do not match the numerical result
+  // ...it's close but not exact - we compute a peak of around 1.605 but it's actually more like
+  // 1.601. when we init the state as flt.setState(ya/ca, yd/cd); rather than flt.setState(ya, yd);
+  // the computed peak seems to agree with the numeric result or 
+  // T a0 = x + ya*ca; T d0 = x + yd*cd; instead of T a0 = x + ya; T d0 = x + yd;
+  // ..ok but now the 2nd formula doesn't match anymore
+
 
 
   // now with compensation - the resulting function should have a peak with height 1:
@@ -132,9 +174,10 @@ void plotAttDecResponse(T ca, T cd, T ya, T yd, T s, T x, int N = 500)
   for(int n = 1; n < N; n++)
     y[n] = flt.getSample(0);
   rsPlotVector(y);
-  // ...hmm - it's not exactly 1 but 0.995 ...maybe the ya,yd states are taken one sample too late 
+  // ...hmm - it's not exactly 1 but 0.996 ...maybe the ya,yd states are taken one sample too late 
   // or early? also, the bisection method is far too slow to converge for production code - but we
   // are getting close...almost there
+  // ok - fixed - we need to use yd*cd and ya*ca instead of yd,cd
 
 
   int dummy = 0;
@@ -143,6 +186,7 @@ void plotAttDecResponse(T ca, T cd, T ya, T yd, T s, T x, int N = 500)
 void attackDecayEnvelope()
 {
 
+  //plotAttDecResponse(0.95, 0.99, 0.0, 0.0, 2.0, 1.0);
   plotAttDecResponse(0.95, 0.99, 0.1, 0.4, 2.0, 1.0);
 
 
