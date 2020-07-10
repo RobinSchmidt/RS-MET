@@ -83,10 +83,7 @@ public:
     T lcd = log(cd);
     T lca = log(ca);
     T R   = cd/ca;
-    T lR  = log(R);
-
-
-    //auto logR = [=](T x)->T{ return rsLogB(x, R); }; // logarithm to basis R
+    T rlR = T(1)/log(R);
 
     // objective function of which we want to find a zero:
     auto f = [=](T x)->T
@@ -101,21 +98,11 @@ public:
       T d0 = x + yd*cd;
       T D  = d0*lcd;
       T A  = a0*lca;
-      T np = rsLogB(A/D, R);  // = log(A/D) / lR;
-      T dp = d0*pow(cd, np);  // = d0 * exp(lcd*np);
-      T ap = a0*pow(ca, np);  // = a0 * exp(lca*np);
+      T np = log(A/D) * rlR;    // = rsLogB(A/D, R)
+      T dp = d0 * exp(lcd*np);  // = d0*pow(cd, np)
+      T ap = a0 * exp(lca*np);  // = a0*pow(ca, np)
       T ep = s*(dp-ap);
       return ep - T(1);
-
-      /*
-      T yd = this->yd * cd;
-      T ya = this->ya * ca;
-      T y =  (x+yd) * pow(cd, logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
-           - (x+ya) * pow(ca, logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
-           - 1/s;
-      return y;
-      // 
-      */
     };
 
     T x = rsRootFinder<T>::bisection(f, T(0), T(1), T(0));
