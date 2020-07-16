@@ -242,8 +242,15 @@ bool binaryHeapUnitTest()
   // test replacing:
   H.replace(7, 15);
   r &= H.isMaxHeap();
-  // ...do more replacing tests...
-
+  int numTests = 100;
+  rsNoiseGenerator<double> ng;
+  for(int i = 1; i <= numTests; i++)
+  {
+    int newIndex = ng.getSampleRaw() % H.getSize();
+    int newValue = ng.getSampleRaw() % 100;
+    H.replace(newIndex, newValue);
+    r &= H.isMaxHeap();
+  }
 
 
   // todo: test inserting and removing items

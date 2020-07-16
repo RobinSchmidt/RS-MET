@@ -61,6 +61,12 @@ public:
     return scale * state + shift;
   }
 
+  inline unsigned long getSampleRaw()
+  {
+    updateState();
+    return state;
+  }
+
 protected:
 
   T scale = T(2.0/4294967296.0);
