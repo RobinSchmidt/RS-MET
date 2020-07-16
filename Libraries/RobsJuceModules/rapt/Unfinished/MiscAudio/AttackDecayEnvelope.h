@@ -90,12 +90,24 @@ public:
 
   using Base = rsAttackDecayFilter<T>; // for conveniently calling basclass methods
 
+  enum class AccuFormula // rename to AccumulationMode
+  {
+    none,
+    exact,       // not yet usable - sometimes the iteration diverges
+    one_minus_yd
+  };
+
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets the sustain level. This is the value that is added to the filter's input as long a note
   is being held. */
   void setSustain(T newSustain) { sustain = newSustain; }
+
+  void setAccumulationMode(AccuFormula newMode)
+  {
+    accuFormula = newMode;
+  }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -128,7 +140,7 @@ public:
 
     //x = (2-ya-yd) / 2;  // ad hoc - makes not a big difference to formula above - reasonably
                         // limits/saturates the output
-    x = 1-yd;
+    //x = 1-yd;
 
     //x = (s-ya-yd) / s;
     //x = (2-ca*ca*ya*ya-cd*cd*yd*yd) / 2;  // ya^2 + yd^2 ==2
@@ -138,6 +150,9 @@ public:
     //x = 1 - yd - ya;
     // todo: maybe have an "accumulationMode" member and do a switch between various formulas based
     // on it here
+
+
+    x = getAccuCompensatedImpulse();
 
 
 
@@ -184,6 +199,20 @@ public:
 
 
 protected:
+
+
+
+  T getExactAccuCompensation();
+
+  /** Returns the desired input impulse height taking into account the current state of the filter.
+  The goal is to compensate for the increasing height of the peaks when note-on events are received
+  when the output has not yet decayed away. Without compensation, a quick succession of note-on 
+  events will make the peak height grow. This function implements various formulas to be applied
+  to the input impulse to counteract that effect. */
+  T getAccuCompensatedImpulse();
+
+
+  AccuFormula accuFormula = AccuFormula::none;
 
   T sustain = T(0);
   int currentNote = -1;  // -1 is code for "none"

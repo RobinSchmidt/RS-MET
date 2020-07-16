@@ -580,7 +580,7 @@ protected:
       if(l < size && less(data[i], data[l])) b = l;
       if(r < size && less(data[b], data[r])) b = r;
       if(b != i) { 
-        rsSwap(data[i], data[b]); 
+        rsSwap(data[i], data[b]);
         i = b;  }
       else
         return;
@@ -597,6 +597,9 @@ protected:
   // https://sites.math.rutgers.edu/~ajl213/CLRS/Ch6.pdf
   // ..but it seems buggy and i had to make some changes - it seems to work now but needs more 
   // thorough testing
+
+
+  // we should return the new index i, we also need floatUp(int i)
 
 
   void buildMaxHeap()
@@ -617,7 +620,8 @@ protected:
 
 
 
-  // todo: implement functions: insert, extractMax, increaseKey, heapMax
+  // todo: implement functions: int insert(T*), void remove(int), int replace(int, T*), extractMax,
+  // increaseKey, heapMax
 
 
 
@@ -637,10 +641,107 @@ protected:
   bool (*less)(const T& a, const T& b) = &RAPT::defaultLess;
   // comparison function used - this is currently a plain function pointer - maybe use 
   // std::function or a template parameter F later
-  // maybe rename to compare - it's not necessarily a less-than - can also be a greater-than 
-  // comparison
+  // maybe rename to compare or comp - it's not necessarily a less-than - can also be a 
+  // greater-than comparison
+
+
+
+  //bool (*swap)(const T& a, const T& b) = &RAPT::rsSwap;
+  // ...we also need to be able to customize the swap function
 
 };
+
+//=================================================================================================
+
+/** Class to exctract moving percentiles (such as the median) from a signal in realtime. If the 
+percentile runs over N samples, the filters takes O(log(N)) operations per sample. It achieves this
+by using two heaps (a max-heap of the smaller-than-percentile values and a min-heap of the 
+bigger-than-percentile values) and a circular buffer in a clever way....
+
+*/
+
+template<class T>
+class rsMovingPercentileFilter
+{
+
+public:
+
+
+  rsMovingPercentileFilter(int numSmaller = 20, int numLarger = 20) 
+    : buf(numSmaller+numLarger) // preliminary - we need to be able to adapt the capacity of ringbuffers at runtime
+  {
+    setLengths(numSmaller, numLarger);
+  }
+
+
+  void setLengths(int numSmaller, int numLarger)
+  {
+    nS = numSmaller;
+    nL = numLarger;
+    updateBufferLengths();
+  }
+
+
+  int getLength() const
+  {
+    return nS + nL;
+  }
+
+
+
+  void reset()
+  {
+    for(int i = 0; i < getLength(); i++)
+    {
+      heaps[i] = i;
+      //buf[i] = i;  // implement [] operator - index should indicate delay
+      nodes[i].heapIndex = i;
+      nodes[i].bufIndex = i;
+      nodes[i].value = T(0);
+    }
+  }
+
+protected:
+
+  void updateBufferLengths()
+  {
+    nodes.resize(getLength());
+    buf.setLength((size_t)getLength());
+    heaps.resize(getLength());
+    small.setData(&heaps[0],  nS);
+    large.setData(&heaps[nS], nL);
+    reset();
+  }
+
+  struct Node
+  {
+    int heapIndex = 0;
+    int bufIndex = 0;
+    T value = T(0);
+  };
+
+
+  std::vector<Node> nodes;
+
+
+  rsRingBuffer<int> buf;   // circular buffer
+  std::vector<int> heaps;  // memory for the heaps
+  // heaps and buf just store indices into the nodes array and the nodes-array itself contains the
+  // actual data together with its current index inside the heap and delay-buffer. We need this 
+  // indirection in order to map directly to heap- and buffer-indices in O(1) time. We use the 
+  // index in the nodes-array as key and update the data heapIndex,bufIndex of the array-entries
+  // whenever we do a swap do to heap-rebalancing
+
+
+  rsBinaryHeap<int> small, large;
+
+
+
+  int nS = 0, nL = 0; // number of elements smaller than and larger than the percentile
+
+};
+
+
 
 //=================================================================================================
 

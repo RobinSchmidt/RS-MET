@@ -299,3 +299,16 @@ https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm
 https://www.nayuki.io/res/sliding-window-minimum-maximum-algorithm/SlidingWindowMinMax.hpp
 
 */
+
+
+
+bool movingPercentileUnitTest()
+{
+  bool r = true;
+
+  rsMovingPercentileFilter<float> flt;
+  flt.setLengths(8, 9);
+
+
+  return r;
+}

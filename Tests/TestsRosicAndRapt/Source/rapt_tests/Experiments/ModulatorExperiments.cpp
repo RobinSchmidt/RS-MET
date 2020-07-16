@@ -76,38 +76,35 @@ public:
 
   T getX()
   {
-    //T x = T(1);  // initial guess - maybe try to find a better guess
     //T tol = 1.e-13;
 
-
+    // some precomputations:
     T lcd = log(cd);
     T lca = log(ca);
     T R   = cd/ca;
     T rlR = T(1)/log(R);
 
-    // objective function of which we want to find a zero:
+    // objective function of which we want to find a root:
     auto f = [=](T x)->T
     {
-      //return getPeakForInputImpulse(x) - T(1);
-      // naive, not optimized - todo: try to simplify the expression, precompute as much as 
-      // possible (some logarithms, etc.), replace pow with exp (the basis is fixed), replace
-      // bisection with better method (maybe Newton, Brent, Ridders, ...), maybe use a higher
-      // tolerance - we currently let it converge to machine precision
+      //return getPeakForInputImpulse(x) - T(1); // naive, not optimized
 
       T a0 = x + ya*ca;
       T d0 = x + yd*cd;
       T D  = d0*lcd;
       T A  = a0*lca;
-      T np = log(A/D) * rlR;    // = rsLogB(A/D, R)
-      T dp = d0 * exp(lcd*np);  // = d0*pow(cd, np)
-      T ap = a0 * exp(lca*np);  // = a0*pow(ca, np)
-      T ep = s*(dp-ap);
-      return ep - T(1);
+      T np = log(A/D) * rlR;    // = rsLogB(A/D, R), peak location in samples
+      T dp = d0 * exp(lcd*np);  // = d0*pow(cd, np), decay output at peak
+      T ap = a0 * exp(lca*np);  // = a0*pow(ca, np), attack output at peak
+      T ep = s*(dp-ap);         // env output at peak
+      return ep - T(1);         // subtract target value of 1
     };
 
-    T x = rsRootFinder<T>::bisection(f, T(0), T(1), T(0));
-    return x;
-
+    //return rsRootFinder<T>::bisection(f, T(0), T(1), T(0));
+    return rsRootFinder<T>::falsePosition(f, T(0), T(1), T(0));
+    // false position seems to work quite well but maybe try Newton, Brent, Ridders, ... and maybe
+    // use a higher tolerance, try better initial interval - maybe (0,1-yd) - then test how many
+    // iterations are typically taken
   }
   // todo: find a suitable name - getAccumulationCompensationExact 
 
@@ -188,6 +185,8 @@ void plotAttDecResponse(T ca, T cd, T ya, T yd, T s, T x, int N = 500)
   // are getting close...almost there
   // ok - fixed - we need to use yd*cd and ya*ca instead of yd,cd
 
+  // todo: clean up!
+
 
   int dummy = 0;
 }
@@ -196,7 +195,7 @@ void attackDecayEnvelope()
 {
 
   //plotAttDecResponse(0.95, 0.99, 0.0, 0.0, 2.0, 1.0);
-  plotAttDecResponse(0.95, 0.99, 0.1, 0.4, 2.0, 1.0);
+  //plotAttDecResponse(0.95, 0.99, 0.1, 0.4, 2.0, 1.0);
 
 
 
@@ -239,9 +238,13 @@ void attackDecayEnvelope()
 
 
   // plot the response that we get when we fire a succession of several note-ons at it:
-  env.setAttackSamples(20);
+  env.setAttackSamples(50);
   env.setDecaySamples(100);
-  int dt = 1;  // delta-t between the input impulses
+  int dt = 30;  // delta-t between the input impulses
+  using AM = rsAttackDecayEnvelope<double>::AccuFormula;
+  env.setAccumulationMode(AM::none);
+  //env.setAccumulationMode(AM::one_minus_yd);
+  //env.setAccumulationMode(AM::exact);  // does not yet work - has same effect as none
   env.reset();
   for(int n = 0; n < N; n++)
   {
