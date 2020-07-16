@@ -733,31 +733,14 @@ public:
   {
     setLengths(numSmaller, numLarger);
 
-
-    auto less = [&](const int& left, const int& right)->bool
-    { 
-      return nodeLess(left, right);
-    };
-
-
-    auto greater = [&](const int& left, const int& right)->bool
-    { 
-      return nodeGreater(left, right);
-    };
-
-
-    auto swapNodes = [&](int& left, int& right)
-    { 
-      this->swapNodes(left, right);
-    };
-
-
+    // assign the comparison and swapping functions in both heaps:
+    auto less      = [&](const int& a, const int& b)->bool { return nodeLess(   a, b); };
+    auto greater   = [&](const int& a, const int& b)->bool { return nodeGreater(a, b); };
+    auto swapNodes = [&](int& a, int& b) { this->swapNodes(a, b); };
     small.setCompareFunction(greater);
     large.setCompareFunction(less);
     small.setSwapFunction(swapNodes);
     large.setSwapFunction(swapNodes);
-
-    int dummy = 0;
   }
 
 
@@ -797,7 +780,7 @@ public:
 
     nodes[ni].value = x;
 
-    if(hi >= nS)
+    if(hi < nS)
     {
       // node to be replaced is in small heap
       small.floatIntoPlace(hi);
@@ -809,6 +792,9 @@ public:
       large.floatIntoPlace(hi);
     }
 
+
+    return large.getElement(0);
+    // preliminary - return the first (i.e. smallest) value of the large values
 
 
     int dummy = 0;
@@ -896,9 +882,68 @@ protected:
 
 
   int nS = 0, nL = 0; // number of elements smaller than and larger than the percentile
+  // maybe use size_t
 
 };
 
+
+template<class T>
+class rsMovingPercentileFilterNaive
+{
+
+public:
+
+  rsMovingPercentileFilterNaive(int numSmaller = 20, int numLarger = 20)
+    : buf(numSmaller+numLarger)
+  {
+    setLengths(numSmaller, numLarger);
+  }
+
+  void setLengths(int numSmaller, int numLarger)
+  {
+    nS = numSmaller;
+    nL = numLarger;
+    updateBufferLengths();
+  }
+
+  int getLength() const
+  {
+    return nS + nL;
+  }
+
+  T getSample(T x)
+  {
+    T y = buf.getSample(x);
+    buf.copyTo(&tmp[0]);
+    rsHeapSort(&tmp[0], getLength());
+    return tmp[nS];
+  }
+
+  void reset()
+  {
+    for(int i = 0; i < getLength(); i++)
+      buf[i] = 0;
+  }
+
+
+protected:
+
+  void updateBufferLengths()
+  {
+    buf.setLength((size_t)getLength());
+    tmp.resize(   (size_t)getLength());
+    reset();
+  }
+
+
+
+  rsRingBuffer<T> buf;   // circular buffer
+
+  std::vector<T> tmp;
+
+  int nS = 0, nL = 0;    // maybe use size_t
+
+};
 
 
 //=================================================================================================

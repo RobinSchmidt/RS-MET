@@ -306,9 +306,40 @@ bool movingPercentileUnitTest()
 {
   bool r = true;
 
-  rsMovingPercentileFilter<float> flt(8, 9);
+  int nS = 8;
+  int nL = 9;
+
+
+  rsMovingPercentileFilterNaive<double> fltN(nS, nL);
+
+  rsMovingPercentileFilter<double> flt(nS, nL); // maybe rename to rsMovingQuantileFilter
   //flt.setLengths(8, 9);
 
+
+  using Vec = std::vector<double>;
+
+  int N = 200;  // number of samples
+
+  Vec y(N), z(N), t(N);
+
+  Vec x = rsRandomVector(N, -1.0, +1.0);
+
+  for(int n = 0; n < N; n++)
+  {
+    y[n] = flt.getSample(x[n]);
+    z[n] = fltN.getSample(x[n]);
+  }
+
+  for(int n = nS; n < N-nL; n++)
+    t[n+nS] = rsArrayTools::median(&x[n-nS], nS+nL); 
+    // why t[n+nS]?
+
+
+  //rsPlotVectors(x, t, z);
+  //rsPlotVectors(t, z); // match from sample 16 onwards...ok
+
+  // now the big task is to make y match z...
+  //rsPlotVectors(y, z); // ..of course, this does not yet work
 
   return r;
 }

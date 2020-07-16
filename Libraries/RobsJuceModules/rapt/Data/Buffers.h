@@ -99,20 +99,15 @@ public:
       i += getCapacity();  // do this branchless: i += (i > rightIndex) * getCapacity();
     return this->wrap(rightIndex - i);
   }
-  // needs test
-
-
-
 
   /** Returns a reference to the value inside the buffer at the given delay i, for read and write 
   access. So if you pass i = 0, you get the most recently written, newest value and for 
-  i = length-1 (or length?), you get the oldest value */
+  i = length-1, you get the oldest value */
   inline T& operator[](size_t i)
   {
     size_t j = getIndexFromNewest(i);
     return data[j];
   }
-  // needs tests
   // i indicates the amount of delay
 
 
@@ -122,7 +117,6 @@ public:
     for(size_t i = 0; i < getLength(); i++)
       buffer[i] = (*this)[i];
   }
-  // needs test
 
 
   /** Returns the maximum value in the range between the two pointers. */
