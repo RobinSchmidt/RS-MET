@@ -1298,6 +1298,11 @@ void rsArrayTools::weightedSum(const T *buffer1, const T *buffer2, T *result, in
 
 /*
 
+todo:
+isFreeOf - like contains but inverse
+containsOnce - finds element like contains and then uses isFreeOf on rest of array
+isPermutationOf - uses containsOnce on the first array for each element of a second array
+
 maybe for more ideas what could be useful, see:
 
 

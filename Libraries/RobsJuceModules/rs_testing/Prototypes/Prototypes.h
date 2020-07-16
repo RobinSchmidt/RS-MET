@@ -538,10 +538,17 @@ public:
   {
     data = newData;
     size = newSize;
-    buildMaxHeap(); // maybe make this call optional
+    buildHeap(); // maybe make this call optional
   }
 
   int getSize() const { return size; }
+
+  /** Returns a const reference to the element at index i. */
+  const T& getElement(int i) const 
+  { 
+    rsAssert(i >= 0 && i < size, "Index out of range");
+    return data[i]; 
+  }
 
 
 protected:
@@ -552,15 +559,17 @@ protected:
   function makes sure that node/index i also satifies the heap property. If it doesn't already 
   satisfy it, the function lets the value at i float down the subtree rooted at i. It has a time
   complexity of O(log(N)) and memory complexity of O(1). */
-  void maxHeapify(int i)
+  int floatDown(int i)
   {
     int l = left(i);
     int r = right(i);
     int b = i;         // b for "big"
     if(l < size && less(data[i], data[l])) b = l;
     if(r < size && less(data[b], data[r])) b = r; 
-    if(b != i) { rsSwap(data[i], data[b]); maxHeapify(b); }
+    if(b != i) { rsSwap(data[i], data[b]); return floatDown(b); }
+    return i;
   }
+  // a.k.a. maxHeapify
   // rename to heapify or floatDown
   // That's the recursive implementation from (1) page 130. When the iterative version is ready,
   // move it to the rsBinaryHeapTest subclass - we don't need it anymore in production code, then. 
@@ -570,7 +579,7 @@ protected:
   // really does the same thing).
 
 
-  void maxHeapify2(int i)
+  int floatDown2(int i)
   {
     while(i < size-1)   // check if we should use size
     {
@@ -583,7 +592,7 @@ protected:
         rsSwap(data[i], data[b]);
         i = b;  }
       else
-        return;
+        return i;
         // really? hmm..without, we get a hang. i think it's safe to return here, because when 
         // data[i] >= data[l] and data[i] >= data[r], i.e. if the heap condition holds at node i, 
         // it will automatically hold for all its children (because that's what we assume as 
@@ -591,6 +600,7 @@ protected:
         // at a child node of i, if we actually *did* a swap - if we didn't have to do a swap, we 
         // are done.
     }
+    return i;
   }
   // iterative (i.e. non-recursive) implementation - needs tests
   // code adapted from here:
@@ -602,16 +612,16 @@ protected:
   // we should return the new index i, we also need floatUp(int i)
 
 
-  void buildMaxHeap()
+  void buildHeap()
   {
     for(int i = size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
     {
-      //maxHeapify(i);
-      maxHeapify2(i);
+      //floatDown(i);
+      floatDown2(i);
     }
   }
   // runs in O(N). From the code, it would appear as having O(N*log(N)) complexity because we call
-  // an O(log(N)) function inside the loop. However, the runtime of maxHeapify depends on the 
+  // an O(log(N)) function inside the loop. However, the runtime of floatDown depends on the 
   // argument i in such a way to give an overall O(N) behavior (see reference (1)). The memory 
   // complexity is O(1).
   // rename to buildHeap
@@ -646,7 +656,7 @@ protected:
 
 
 
-  //bool (*swap)(const T& a, const T& b) = &RAPT::rsSwap;
+  //void (*swap)(const T& a, const T& b) = &RAPT::rsSwap;
   // ...we also need to be able to customize the swap function
 
 };
@@ -671,6 +681,11 @@ public:
     : buf(numSmaller+numLarger) // preliminary - we need to be able to adapt the capacity of ringbuffers at runtime
   {
     setLengths(numSmaller, numLarger);
+
+    //small.setCompareFunction(nodeGreater);
+    //large.setCompareFunction(nodeLess);
+    //small.setSwapFunction(swapNodes);
+    //large.setSwapFunction(swapNodes);
   }
 
 
@@ -702,6 +717,25 @@ public:
   }
 
 protected:
+
+  bool nodeLess(const int& left, const int& right)
+  {
+    return nodes[left].value < nodes[right].value;
+  }
+
+  bool nodeGreater(const int& left, const int& right)
+  {
+    return nodes[left].value > nodes[right].value;
+  }
+
+  void swapNodes(const int& left, const int& right)
+  {
+    // ...something to do....
+
+    return; 
+  }
+
+
 
   void updateBufferLengths()
   {

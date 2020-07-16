@@ -50,29 +50,6 @@ void rsHeapSort(T *buffer, int length, bool (*less)(const T& left, const T& righ
   }
 }
 
-/*
-template <class T>
-bool rsIsSortedAscending(T *buffer, int length)
-{
-  for(int i = 0; i < length-1; i++) {
-    if(!(buffer[i] <= buffer[i+1]))
-      return false;
-  }
-  return true;
-}
-
-template <class T>
-bool rsIsSortedStrictlyAscending(T *buffer, int length)
-{
-  for(int i = 0; i < length-1; i++) {
-    if(!(buffer[i] < buffer[i+1]))
-      return false;
-  }
-  return true;
-}
-*/
-// moved to rsArrayTools
-
 template <class T>
 std::vector<int> rsFindAllOccurencesOf(T* buffer, int bufferLength,
   T* pattern, int patternLength)
