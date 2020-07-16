@@ -230,6 +230,19 @@ bool binaryHeapUnitTest()
   // todo: implement heap-sort in this class an test it with various random arrays
 
 
+  // throw-away code to figure otu hwo to assign a function pointer to a std::function
+  std::function<bool(const int&, const int&)> less;
+  //less = RAPT::defaultLess;
+  //less = &RAPT::defaultLess;
+  //less = RAPT::defaultLess<const int&, const int&>;
+  //less = &RAPT::defaultLess<const int&, const int&>;
+
+  less = [&](const int& left, const int& right)->bool
+  { 
+    return left < right;
+  };
+
+
   return r;
 }
 

@@ -532,6 +532,12 @@ public:
   rsBinaryHeap(T* newData = nullptr, int newSize = 0)
   {
     setData(newData, newSize);
+
+
+    //less2 = [](const int& a, const int& b)->bool { return a < b; };
+
+
+    //less2 = &RAPT::defaultLess;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -555,6 +561,14 @@ public:
     i = floatDown(i);  // this calls the recursive version - todo: use iterative version
     return i;
   }
+
+  void setCompareFunction(bool (*compare)(const T& a, const T& b))
+  {
+    less = compare;
+  }
+
+
+  
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -684,6 +698,8 @@ protected:
   // maybe rename to compare or comp - it's not necessarily a less-than - can also be a 
   // greater-than comparison
 
+  //std::function<bool(const T&, const T&)> less2 = RAPT::defaultLess;
+  //std::function<bool(const T&, const T&)> less2;
 
 
   //void (*swap)(const T& a, const T& b) = &RAPT::rsSwap;
@@ -712,8 +728,27 @@ public:
   {
     setLengths(numSmaller, numLarger);
 
-    //small.setCompareFunction(nodeGreater);
-    //large.setCompareFunction(nodeLess);
+
+    auto less = [&](const int& left, const int& right)->bool
+    { 
+      return nodeLess(left, right);
+    };
+
+
+    auto greater = [&](const int& left, const int& right)->bool
+    { 
+      return nodeGreater(left, right);
+    };
+
+
+
+    //small.setCompareFunction(greater);
+    //large.setCompareFunction(less);
+    // this doesn't work - we can't assign lambda functions to function pointers when the lambdas
+    // use captures (which is waht we need here) - so, it seems we have to go for std::function
+
+    int dummy = 0;
+
     //small.setSwapFunction(swapNodes);
     //large.setSwapFunction(swapNodes);
   }
