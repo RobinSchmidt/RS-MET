@@ -57,6 +57,7 @@ public:
     length = rsMin(newLength, this->getCapacity()); // new
     updateLeftIndex();
   }
+  // maybe rename to setDelay
 
   inline size_t getLength() const { return length; }
 
@@ -73,6 +74,55 @@ public:
   // rename to pushRightPopLeft maybe make a subclass delayline that defines an alias function
   // name getSample...any maybe merge class with rsDoubleEndedQueue
 
+
+  // Return samples from the buffer without updating anything
+
+  inline T getOldest() const
+  {
+    return this->data[leftIndex];
+  }
+
+  inline T getNewest() const
+  {
+    return this->data[rightIndex];
+  }
+
+  size_t getIndexFromOldest(size_t i) const
+  {
+    return this->wrap(leftIndex + i);
+  }
+  // needs test
+
+  size_t getIndexFromNewest(size_t i) const
+  {
+    if(i > rightIndex)
+      i += getCapacity();  // do this branchless: i += (i > rightIndex) * getCapacity();
+    return this->wrap(rightIndex - i);
+  }
+  // needs test
+
+
+
+
+  /** Returns a reference to the value inside the buffer at the given delay i, for read and write 
+  access. So if you pass i = 0, you get the most recently written, newest value and for 
+  i = length-1 (or length?), you get the oldest value */
+  inline T& operator[](size_t i)
+  {
+    size_t j = getIndexFromNewest(i);
+    return data[j];
+  }
+  // needs tests
+  // i indicates the amount of delay
+
+
+  /** Writes the content of this circular buffer into the given linear buffer */
+  void copyTo(T* buffer)
+  {
+    for(size_t i = 0; i < getLength(); i++)
+      buffer[i] = (*this)[i];
+  }
+  // needs test
 
 
   /** Returns the maximum value in the range between the two pointers. */

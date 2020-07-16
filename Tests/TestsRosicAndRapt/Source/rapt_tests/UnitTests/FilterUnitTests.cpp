@@ -306,8 +306,8 @@ bool movingPercentileUnitTest()
 {
   bool r = true;
 
-  rsMovingPercentileFilter<float> flt;
-  flt.setLengths(8, 9);
+  rsMovingPercentileFilter<float> flt(8, 9);
+  //flt.setLengths(8, 9);
 
 
   return r;

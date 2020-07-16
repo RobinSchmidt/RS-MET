@@ -582,15 +582,19 @@ public:
   }
 
 
-protected:
-
-  /** Functions to establish or maintain the heap-property of the underlying data array. */
 
   int floatIntoPlace(int i)
   {
     return floatUp(floatDown(i));
     // this calls the recursive version of floatDown - todo: use iterative version
   }
+
+
+protected:
+
+  /** Functions to establish or maintain the heap-property of the underlying data array. */
+
+
 
   int floatUp(int i)
   {
@@ -771,13 +775,53 @@ public:
   }
 
 
+  T getSample(T x)
+  {
+    // under construction
+
+    // -replace oldest sample in the heaps with the new incoming sample
+    //  -> this will rebalance the heap in which the oldest sample resided
+    // -if the largest (front) sample in the small heap is > than the smalles (front) sample in the
+    //  large heap: exchange them and rebalance both heaps
+    // -the swaps that occurr during rebalancing the heaps should also lead to corresponding swaps 
+    //  in our delay buffer, due to the way we have implemented our swap function
+    // -return the front sample of the "large" heap in case of an odd size and the average of both
+    //  front samples for even sizes (size == getLength())
+
+    //int L 
+
+    int ni = buf.getOldest();      // node index of oldest node
+    int hi = nodes[ni].heapIndex;  // heap index of oldest node
+    int bi = nodes[ni].bufIndex;   // buffer index of oldest node
+
+
+    nodes[ni].value = x;
+
+    if(hi >= nS)
+    {
+      // node to be replaced is in small heap
+      small.floatIntoPlace(hi);
+    }
+    else
+    {
+      // node to be replaced is in large heap
+      hi -= nS; // we need to offset the heap-index
+      large.floatIntoPlace(hi);
+    }
+
+
+
+    int dummy = 0;
+
+  }
+
 
   void reset()
   {
     for(int i = 0; i < getLength(); i++)
     {
       heaps[i] = i;
-      //buf[i] = i;  // implement [] operator - index should indicate delay
+      buf[i] = i;
       nodes[i].heapIndex = i;
       nodes[i].bufIndex = i;
       nodes[i].value = T(0);
@@ -796,9 +840,21 @@ protected:
     return nodes[left].value > nodes[right].value;
   }
 
-  void swapNodes(const int& left, const int& right)
+  void swapNodes(const int& i, const int& j)
   {
-    // ...something to do....
+    // ...something to do...
+    //
+    /*
+    rsSwap(nodes[i].heapIndex, nodes[j].heapIndex);
+    rsSwap(nodes[i].bufIndex,  nodes[j].bufIndex);
+    rsSwap(nodes[i].value,     nodes[j].value);
+    // is that correct? ..and/or complete...hmm...nooo
+    */
+
+    rsSwap(nodes[i], nodes[j]);
+
+    //rsSwap(buf[nodes[i].bufIndex], buf[nodes[j].bufIndex]);
+
 
     return; 
   }

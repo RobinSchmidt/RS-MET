@@ -22,6 +22,7 @@ bool runUnitTestsRapt()
   passed &= runUnitTest(&testBufferFunctions,      "BufferFunctions");  // merge with rsArrayTools tests
   passed &= runUnitTest(&testSortAndSearch,        "SortAndSearch");
   passed &= runUnitTest(&binaryHeapUnitTest,       "rsBinaryHeap");
+  passed &= runUnitTest(&ringBufferUnitTest,       "rsRingBuffer");
   passed &= runUnitTest(&doubleEndedQueueUnitTest, "rsDoubleEndedQueue");   // fails! -> fix that!
   passed &= runUnitTest(&float64x2UnitTest,        "rsFloat64x2");
   passed &= runUnitTest(&float32x4UnitTest,        "rsFloat32x4");
