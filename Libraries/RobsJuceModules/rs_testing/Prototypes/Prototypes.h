@@ -532,12 +532,8 @@ public:
   rsBinaryHeap(T* newData = nullptr, int newSize = 0)
   {
     setData(newData, newSize);
-
-
-    //less2 = [](const int& a, const int& b)->bool { return a < b; };
-
-
-    //less2 = &RAPT::defaultLess;
+    less = [](const T& a, const T& b)->bool { return a < b; };
+    swap = [](      T& a,       T& b)       { rsSwap(a, b); };
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -558,16 +554,16 @@ public:
   {
     data[i] = x;
     return floatIntoPlace(i);
-
-    // old:
-    //i = floatUp(i);
-    //i = floatDown(i);  // 
-    //return i;
   }
 
-  void setCompareFunction(bool (*compare)(const T& a, const T& b))
+  void setCompareFunction(const std::function<bool(const T&, const T&)>& newFunc)
   {
-    less = compare;
+    less = newFunc;
+  }
+
+  void setSwapFunction(const std::function<void(T&, T&)>& newFunc)
+  {
+    swap = newFunc;
   }
 
 
@@ -601,7 +597,7 @@ protected:
     while(i > 0) {
       int p = parent(i);
       if(less(data[p], data[i]))  {
-        rsSwap(data[i], data[p]);
+        swap(data[i], data[p]);
         i = p; }
       else
         return i; }
@@ -619,7 +615,7 @@ protected:
     int b = i;         // b for "big"
     if(l < size && less(data[i], data[l])) b = l;
     if(r < size && less(data[b], data[r])) b = r; 
-    if(b != i) { rsSwap(data[i], data[b]); return floatDown(b); }
+    if(b != i) { swap(data[i], data[b]); return floatDown(b); }
     return i;
   }
   // a.k.a. maxHeapify
@@ -642,7 +638,7 @@ protected:
       if(l < size && less(data[i], data[l])) b = l;
       if(r < size && less(data[b], data[r])) b = r;
       if(b != i) { 
-        rsSwap(data[i], data[b]);
+        swap(data[i], data[b]);
         i = b;  }
       else
         return i;
@@ -701,19 +697,15 @@ protected:
   T* data = nullptr;
   int size = 0;
 
-  bool (*less)(const T& a, const T& b) = &RAPT::defaultLess;
+  //bool (*less)(const T& a, const T& b) = &RAPT::defaultLess;
   // comparison function used - this is currently a plain function pointer - maybe use 
   // std::function or a template parameter F later
   // maybe rename to compare or comp - it's not necessarily a less-than - can also be a 
   // greater-than comparison
 
-  //std::function<bool(const T&, const T&)> less2 = RAPT::defaultLess;
-  //std::function<bool(const T&, const T&)> less2;
-
-
-  //void (*swap)(const T& a, const T& b) = &RAPT::rsSwap;
-  // ...we also need to be able to customize the swap function
-
+  // Comparison and swapping functions:
+  std::function<bool(const T&, const T&)> less;  // rename to comp
+  std::function<void(T&, T&)> swap;
 };
 
 //=================================================================================================
@@ -750,16 +742,18 @@ public:
     };
 
 
+    auto swapNodes = [&](int& left, int& right)
+    { 
+      this->swapNodes(left, right);
+    };
 
-    //small.setCompareFunction(greater);
-    //large.setCompareFunction(less);
-    // this doesn't work - we can't assign lambda functions to function pointers when the lambdas
-    // use captures (which is waht we need here) - so, it seems we have to go for std::function
+
+    small.setCompareFunction(greater);
+    large.setCompareFunction(less);
+    small.setSwapFunction(swapNodes);
+    large.setSwapFunction(swapNodes);
 
     int dummy = 0;
-
-    //small.setSwapFunction(swapNodes);
-    //large.setSwapFunction(swapNodes);
   }
 
 
