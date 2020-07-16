@@ -170,29 +170,11 @@ public:
   // move these to baseclass when finished:
 
 
-  int floatUp(int i)
-  {
-    while(i > 0)
-    {
-      int p = parent(i);
-      //if(less(data[i], data[p]))     // verify!
-      if(less(data[p], data[i]))     // verify!
-      {
-        rsSwap(data[i], data[p]);
-        i = p;
-      }
-      else
-        return i;
-    }
-    return i;
-  }
-  // needs test
-
-
   /** Inserts the element x into the heap at the correct position to maintain the heap-property and 
   returns the array-index where it was inserted. */
   int insert(const T& x)
   {
+    // todo: append it at the end and let it float up
 
     return 0; // preliminary
   }
@@ -201,22 +183,11 @@ public:
   maintain the heap-property. */
   void remove(int i)
   {
+    // remove it and replace the slot with either the left or right child, then replace the child 
+    // that was promoted up with either it left or right child and so on, i.e. remove and promote
+    // children
 
   }
-
-  /** Replaces the element at index i with the new given element x and rebalances the heap to 
-  maintain the heap-property which amounts to floating the new element x up or down. The return 
-  value is the array index, where the new element actually ended up. */
-  int replace(int i, const T& x)
-  {
-    data[i] = x;
-    i = floatUp(i);
-    i = floatDown(i);  // this calls the recursive version - use iterative version
-    return i;
-  }
-  // needs test
-
-
 
   void sort()
   {

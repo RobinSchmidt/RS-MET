@@ -534,12 +534,30 @@ public:
     setData(newData, newSize);
   }
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
   void setData(T* newData, int newSize)
   {
     data = newData;
     size = newSize;
     buildHeap(); // maybe make this call optional
   }
+
+
+  /** Replaces the element at index i with the new given element x and rebalances the heap to 
+  maintain the heap-property which amounts to floating the new element x up or down. The return 
+  value is the array index, where the new element actually ended up. */
+  int replace(int i, const T& x)
+  {
+    data[i] = x;
+    i = floatUp(i);
+    i = floatDown(i);  // this calls the recursive version - todo: use iterative version
+    return i;
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
 
   int getSize() const { return size; }
 
@@ -553,7 +571,19 @@ public:
 
 protected:
 
-  /** Function to establish or maintain the heap-property of the underlying data array. */
+  /** Functions to establish or maintain the heap-property of the underlying data array. */
+
+  int floatUp(int i)
+  {
+    while(i > 0) {
+      int p = parent(i);
+      if(less(data[p], data[i]))  {
+        rsSwap(data[i], data[p]);
+        i = p; }
+      else
+        return i; }
+    return i;
+  }
 
   /** Assuming that the subtrees rooted at left(i) and right(i) satisfy the heap property, this 
   function makes sure that node/index i also satifies the heap property. If it doesn't already 
