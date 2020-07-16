@@ -557,9 +557,12 @@ public:
   int replace(int i, const T& x)
   {
     data[i] = x;
-    i = floatUp(i);
-    i = floatDown(i);  // this calls the recursive version - todo: use iterative version
-    return i;
+    return floatIntoPlace(i);
+
+    // old:
+    //i = floatUp(i);
+    //i = floatDown(i);  // 
+    //return i;
   }
 
   void setCompareFunction(bool (*compare)(const T& a, const T& b))
@@ -586,6 +589,12 @@ public:
 protected:
 
   /** Functions to establish or maintain the heap-property of the underlying data array. */
+
+  int floatIntoPlace(int i)
+  {
+    return floatUp(floatDown(i));
+    // this calls the recursive version of floatDown - todo: use iterative version
+  }
 
   int floatUp(int i)
   {

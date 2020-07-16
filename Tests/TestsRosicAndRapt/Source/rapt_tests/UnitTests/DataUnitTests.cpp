@@ -219,7 +219,7 @@ bool binaryHeapUnitTest()
   {
     int newIndex = ng.getSampleRaw() % H.getSize();
     int newValue = ng.getSampleRaw() % 100;
-    H.replace(newIndex, newValue);
+    int k = H.replace(newIndex, newValue);
     r &= H.isMaxHeap();
   }
 
