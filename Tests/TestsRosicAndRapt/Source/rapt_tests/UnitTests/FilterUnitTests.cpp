@@ -310,9 +310,9 @@ bool movingPercentileUnitTest()
   int nL = 9;
 
 
-  rsMovingPercentileFilterNaive<double> fltN(nS, nL);
+  rsMovingQuantileFilterNaive<double> fltN(nS, nL);
 
-  rsMovingPercentileFilter<double> flt(nS, nL); // maybe rename to rsMovingQuantileFilter
+  rsMovingQuantileFilter<double> flt(nS, nL); // maybe rename to rsMovingQuantileFilter
   //flt.setLengths(8, 9);
 
 

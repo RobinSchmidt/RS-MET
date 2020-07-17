@@ -770,7 +770,7 @@ protected:
 
 //=================================================================================================
 
-/** Class to exctract moving percentiles (such as the median) from a signal in realtime. If the 
+/** Class to exctract moving quantiles (such as the median) from a signal in realtime. If the 
 percentile runs over N samples, the filters takes O(log(N)) operations per sample. It achieves this
 by using two heaps (a max-heap of the smaller-than-percentile values and a min-heap of the 
 bigger-than-percentile values) and a circular buffer in a clever way....
@@ -778,13 +778,13 @@ bigger-than-percentile values) and a circular buffer in a clever way....
 */
 
 template<class T>
-class rsMovingPercentileFilter
+class rsMovingQuantileFilter
 {
 
 public:
 
 
-  rsMovingPercentileFilter(int numSmaller = 20, int numLarger = 20) 
+  rsMovingQuantileFilter(int numSmaller = 20, int numLarger = 20) 
     : buf(numSmaller+numLarger) // preliminary - we need to be able to adapt the capacity of ringbuffers at runtime
   {
     setLengths(numSmaller, numLarger);
@@ -1011,12 +1011,12 @@ protected:
 
 
 template<class T>
-class rsMovingPercentileFilterNaive
+class rsMovingQuantileFilterNaive
 {
 
 public:
 
-  rsMovingPercentileFilterNaive(int numSmaller = 20, int numLarger = 20)
+  rsMovingQuantileFilterNaive(int numSmaller = 20, int numLarger = 20)
     : buf(numSmaller+numLarger)
   {
     setLengths(numSmaller, numLarger);
