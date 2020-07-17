@@ -154,6 +154,19 @@ public:
 
   using rsBinaryHeap::rsBinaryHeap;
 
+
+  bool isMinHeap(int i = 0) const
+  {
+    if(i >= size)
+      return true;
+    bool result = true;
+    int l = left(i);
+    int r = right(i);
+    if(l < size) result &= data[i] <= data[l] && isMaxHeap(l);
+    if(r < size) result &= data[i] <= data[r] && isMaxHeap(r);
+    return result;
+  }
+
   bool isMaxHeap(int i = 0) const
   {
     if(i >= size)

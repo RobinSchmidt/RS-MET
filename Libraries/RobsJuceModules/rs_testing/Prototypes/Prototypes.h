@@ -552,6 +552,7 @@ public:
   {
     less = newFunc;
   }
+  // if the compraison is a less-then, we get a max-heap, if it's a greater-than, we get a min-heap
 
   void setSwapFunction(const std::function<void(T&, T&)>& newFunc)
   {
@@ -570,6 +571,30 @@ public:
     rsAssert(i >= 0 && i < size, "Index out of range");
     return data[i]; 
   }
+
+  /** Read/write access to elemnts. Warning: overwriting elements may destroy the heap-property. */
+  T& operator[](int i)
+  {
+    rsAssert(i >= 0 && i < size, "Index out of range");
+    return data[i]; 
+  }
+
+
+  bool isHeap(int i = 0) const
+  {
+    if(i >= size)
+      return true;
+    bool result = true;
+    int l = left(i);
+    int r = right(i);
+    if(l < size) result &= !less(data[i], data[l]) && isHeap(l);
+    if(r < size) result &= !less(data[i], data[r]) && isHeap(r);
+    return result;
+  }
+  // needs test
+  // this is a recursive implementation -> convert to iteration
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -611,7 +636,8 @@ public:
     // this calls the recursive version of floatDown - todo: use iterative version
   }
   // -maybe rename to rebalanceNode
-  // -why is this public? can we move it into the protected section?
+  // -why is this public? can we move it into the protected section? hmm, rsMovingPercentileFilter
+  //  calls it directly - can this be avoided?
 
 
 protected:
@@ -767,8 +793,11 @@ public:
     auto less      = [&](const int& a, const int& b)->bool { return nodeLess(   a, b); };
     auto greater   = [&](const int& a, const int& b)->bool { return nodeGreater(a, b); };
     auto swapNodes = [&](int& a, int& b) { this->swapNodes(a, b); };
-    small.setCompareFunction(greater);
-    large.setCompareFunction(less);
+    //small.setCompareFunction(greater);
+    //large.setCompareFunction(less);
+
+    small.setCompareFunction(less);    // small is a max-heap
+    large.setCompareFunction(greater); // large is a min-heap
     small.setSwapFunction(swapNodes);
     large.setSwapFunction(swapNodes);
   }
@@ -804,6 +833,9 @@ public:
     //int L 
 
     int ni = buf.getOldest();      // node index of oldest node
+
+
+
     int hi = nodes[ni].heapIndex;  // heap index of oldest node
     int bi = nodes[ni].bufIndex;   // buffer index of oldest node
 
@@ -813,22 +845,50 @@ public:
     if(hi < nS)
     {
       // node to be replaced is in small heap
-      small.floatIntoPlace(hi);
+      hi = small.floatIntoPlace(hi);
+      int dummy = 0;
     }
     else
     {
       // node to be replaced is in large heap
       hi -= nS; // we need to offset the heap-index
-      large.floatIntoPlace(hi);
+      hi  = large.floatIntoPlace(hi);
+      hi += nS;
+
+      int dummy = 0;
     }
 
+    // swap first elements of small/large heaps, if necessarry
 
-    return large.getElement(0);
+    if(heapsNeedExchange())
+    {
+
+
+      int dummy = 0;
+    }
+
+    // debug:
+    bool isSmallHeap = small.isHeap();
+    bool isLargeHeap = large.isHeap();
+    rsAssert(isSmallHeap && isLargeHeap);
+
+
+
+    nodes[ni].heapIndex = hi;  // is this correct?
+
+    ni = buf.getSample( (ni+1) % getLength() );  // ..and this?
+
+
+
+
+    int idx = large.getElement(0);  // index to read from the heap
+    T val = nodes[idx].value;
+
+
+    return val;
+
+    //return large.getElement(0);
     // preliminary - return the first (i.e. smallest) value of the large values
-
-
-    int dummy = 0;
-
   }
 
 
@@ -842,9 +902,29 @@ public:
       nodes[i].bufIndex = i;
       nodes[i].value = T(0);
     }
+    // does this initialization make sense?
   }
 
 protected:
+
+  T getLargestSmallValue()
+  {
+    return nodes[heaps[0]].value;
+  }
+
+  T getSmallestLargeValue()
+  {
+    return nodes[heaps[nS]].value;
+  }
+
+  bool heapsNeedExchange()
+  {
+    // for debug:
+    T largestSmall  = getLargestSmallValue();  
+    T smallestLarge =  getSmallestLargeValue();
+
+    return getLargestSmallValue() > getSmallestLargeValue();
+  }
 
   bool nodeLess(const int& left, const int& right)
   {
@@ -867,10 +947,17 @@ protected:
     // is that correct? ..and/or complete...hmm...nooo
     */
 
-    rsSwap(nodes[i], nodes[j]);
+    //rsSwap(nodes[i], nodes[j]);
 
     //rsSwap(buf[nodes[i].bufIndex], buf[nodes[j].bufIndex]);
 
+    // i think, the nodes array stays fixed and we just swap the pointers to the nodes inside the 
+    // heap and within the nodes array, the heap-indices
+
+
+    rsSwap(nodes[i].heapIndex, nodes[j].heapIndex);
+    // -could tha be all that is needed?
+    // -i think, using the 
 
     return; 
   }
@@ -910,6 +997,11 @@ protected:
   rsBinaryHeap<int> small, large;
   // is it possible to use one binary serach tree instead of two binary heaps?
 
+
+  // maybe heaps and nodes are not needed? can we just use buf to buffer the elements and let
+  // small and large be indices into buf? then buf should be a buffer of T values - that would 
+  // simplify the implementation a lot - less indirection - we actually don't need the two-way
+  // association: the order of the circular buffer never changes
 
 
   int nS = 0, nL = 0; // number of elements smaller than and larger than the percentile

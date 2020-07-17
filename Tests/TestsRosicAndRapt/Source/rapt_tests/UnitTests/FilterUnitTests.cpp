@@ -339,7 +339,7 @@ bool movingPercentileUnitTest()
   //rsPlotVectors(t, z); // match from sample 16 onwards...ok
 
   // now the big task is to make y match z...
-  //rsPlotVectors(y, z); // ..of course, this does not yet work
+  rsPlotVectors(y, z); // ..of course, this does not yet work
 
   return r;
 }
