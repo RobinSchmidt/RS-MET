@@ -536,6 +536,7 @@ public:
     swap = [](      T& a,       T& b)       { rsSwap(a, b); };
   }
 
+
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
@@ -545,16 +546,7 @@ public:
     size = newSize;
     buildHeap(); // maybe make this call optional
   }
-
-
-  /** Replaces the element at index i with the new given element x and rebalances the heap to 
-  maintain the heap-property which amounts to floating the new element x up or down. The return 
-  value is the array index, where the new element actually ended up. */
-  int replace(int i, const T& x)
-  {
-    data[i] = x;
-    return floatIntoPlace(i);
-  }
+  // todo: also pass the capacity
 
   void setCompareFunction(const std::function<bool(const T&, const T&)>& newFunc)
   {
@@ -566,8 +558,6 @@ public:
     swap = newFunc;
   }
 
-
-  
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -582,12 +572,46 @@ public:
   }
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data Manipulation */
 
+  /** Replaces the element at index i with the new given element x and rebalances the heap to 
+  maintain the heap-property which amounts to floating the new element x up or down. The return 
+  value is the array index, where the new element actually ended up. */
+  int replace(int i, const T& x)
+  {
+    data[i] = x;
+    return floatIntoPlace(i);
+  }
+
+  /*
+  // todo: 
+  int insert(const T& x)
+  {
+    rsAssert(size < capacity, "Capacity exceeded");
+    // ...maybe in this case, we should return -1 immediately
+
+    data[size] = x;
+    size++;
+    return floatUp(size-1);
+  }
+  // not yet tested
+  */
+  
+
+
+  // int insert(const T& x); // returns insertion index
+  // void remove(int);       // removes item at index i
+
+  /** Lets the node with array-index i float into its proper place and returns the resulting new 
+  array index. */
   int floatIntoPlace(int i)
   {
     return floatUp(floatDown(i));
     // this calls the recursive version of floatDown - todo: use iterative version
   }
+  // -maybe rename to rebalanceNode
+  // -why is this public? can we move it into the protected section?
 
 
 protected:
@@ -595,7 +619,8 @@ protected:
   /** Functions to establish or maintain the heap-property of the underlying data array. */
 
 
-
+  /** Lets the node at index i float up the tree if its parent violates the heap property. Returns 
+  the new array index. */
   int floatUp(int i)
   {
     while(i > 0) {
@@ -611,7 +636,8 @@ protected:
   /** Assuming that the subtrees rooted at left(i) and right(i) satisfy the heap property, this 
   function makes sure that node/index i also satifies the heap property. If it doesn't already 
   satisfy it, the function lets the value at i float down the subtree rooted at i. It has a time
-  complexity of O(log(N)) and memory complexity of O(1). */
+  complexity of O(log(N)) and memory complexity of O(1). The return value is the new array index of
+  the value that was previously located at index i. */
   int floatDown(int i)
   {
     int l = left(i);
@@ -623,7 +649,6 @@ protected:
     return i;
   }
   // a.k.a. maxHeapify
-  // rename to heapify or floatDown
   // That's the recursive implementation from (1) page 130. When the iterative version is ready,
   // move it to the rsBinaryHeapTest subclass - we don't need it anymore in production code, then. 
   // But it may be interesting to figure out, if the recursion actually incurs an overhead since 
@@ -677,13 +702,10 @@ protected:
   // an O(log(N)) function inside the loop. However, the runtime of floatDown depends on the 
   // argument i in such a way to give an overall O(N) behavior (see reference (1)). The memory 
   // complexity is O(1).
-  // rename to buildHeap
 
 
 
-
-
-  // todo: implement functions: int insert(T*), void remove(int), int replace(int, T*), extractMax,
+  // todo: implement functions: int insert(T*), void remove(int), extractMax,
   // increaseKey, heapMax
 
 
@@ -700,6 +722,7 @@ protected:
 
   T* data = nullptr;
   int size = 0;
+  //int capacity = 0;
 
   //bool (*less)(const T& a, const T& b) = &RAPT::defaultLess;
   // comparison function used - this is currently a plain function pointer - maybe use 
@@ -711,6 +734,13 @@ protected:
   std::function<bool(const T&, const T&)> less;  // rename to comp
   std::function<void(T&, T&)> swap;
 };
+// -maybe make also a class rsBinarySearchTree where the left child is <= and the right child is >=
+//  the parent
+// -maybe a common baseclass can be factored out (implementing parent, left, right, storing swap 
+//  maybe also storing the comparison function)
+// -in the old RSLib codebase, i did some sort of linked-tree - maybe that could be dragged in as
+//  rsLinkedTree or rsDynamicTree or something like that - all the different trees could be in
+//  a file Trees.h/cpp
 
 //=================================================================================================
 
@@ -878,6 +908,7 @@ protected:
 
 
   rsBinaryHeap<int> small, large;
+  // is it possible to use one binary serach tree instead of two binary heaps?
 
 
 
