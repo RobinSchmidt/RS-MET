@@ -251,9 +251,45 @@ bool binaryHeapUnitTest()
   // possible permuations ...and 1,1,1
   rsBinarySearchTree<int> T;
 
+
+
+
   A = Vec({50,20,80,10,30,60,100,5,15,25,40,55,70});
   T.setData(A);
   r &= T.isSearchTree();
+  T.replace(5, 35);   // the 60 becomes a 35
+  r &= T.isSearchTree();  // 50,20,80,10,30,55,100,5,15,40,35,70
+  T.replace(5, 65);
+  r &= T.isSearchTree(); 
+  A = Vec({50,20,80,10,30,60,100,5,15,25,40,55,70});
+  T.setData(A);
+  T.replace(1, 70);
+  r &= T.isSearchTree(); 
+  T.replace(4, 20);
+  r &= T.isSearchTree(); 
+
+  A = Vec({50,20,80,10,60,30,90});
+  bool isTree;
+  T.setData(A);
+  isTree = T.isSearchTree();
+
+
+  /*
+  for(int i = 1; i <= numTests; i++)
+  {
+    int newIndex = ng.getSampleRaw() % H.getSize();
+    int newValue = ng.getSampleRaw() % 100;
+    int k = T.replace(newIndex, newValue);
+    r &= T.isSearchTree();
+    // does not work yet - i think the first thing that needs to be done after replacement is to
+    // compare and possibly swap with the sibling? but no, if we replace a right node, and its 
+    // now less than its sibling, it will be also less than its parent...ah - but nevertheless,
+    // we may have to swap with the sibling..or maybe binary search trees are not so similar to 
+    // heaps after all?
+  }
+  */
+
+
 
   A = Vec({1,2,3}); T.setData(A); T.buildSearchTree(); r &= A == Vec({ 2,1,3 });
   A = Vec({2,1,3}); T.setData(A); T.buildSearchTree(); r &= A == Vec({ 2,1,3 });

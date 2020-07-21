@@ -588,6 +588,8 @@ public:
     data[i] = x;
     return floatIntoPlace(i);
   }
+  // should perhaps also be moved to rsBinaryHeap again - the replacement in the rsBinarySearchTree
+  // needs a different approach (i think)
 
   /*
   // todo: 
@@ -874,6 +876,10 @@ public:
     //if(r < size) result &= !less(data[i], data[r]) && isSearchTree(r);
     return result;
   }
+  // actually, this test is not enough - it says yes to the "pseudotree" 
+  // 50,20,80,10,60,30,90 - it satisfies the property at each node with respect to direct 
+  // parents/children but not for the full subtrees - however - maybe for maintaining the
+  // property, it's enough to check that?
 
   void buildSearchTree()
   {
@@ -925,6 +931,24 @@ public:
 
     // try to do this only with 2 comparisons and one swap
 
+  }
+
+
+
+  int replace(int i, const T& x)
+  {
+    // data[i] = x; return floatIntoPlace(i); // this is what the heap needs
+
+    // we insert it (preliminarily) either at i or at the sibling of i:
+    int p = parent(i);
+    if(isLeft(i))
+      if(less(data[p], x)) 
+        i = right(p);   // right sibling
+    else
+      if(less(x, data[p])) 
+        i = left(p);    // left sibling
+    data[i] = x; 
+    return floatIntoPlace(i);
   }
 
 
