@@ -758,7 +758,7 @@ protected:
   // really does the same thing).
 
 
-  int floatDown2(int i)
+  int floatDownIt(int i)
   {
     while(i < size-1)   // check if we should use size
     {
@@ -789,7 +789,8 @@ protected:
 
   int floatDown(int i) override
   {
-    return floatDownRec(i);  // calls recursive version - change that!
+    //return floatDownRec(i);  // calls recursive version - change that!
+    return floatDownIt(i);
   }
 
 
@@ -799,11 +800,10 @@ protected:
   void buildHeap()
   {
     for(int i = size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
-    {
       floatDown(i);
-      //floatDown2(i);
-    }
   }
+  // factor out to baseclass, rename to buildTree
+
   // runs in O(N). From the code, it would appear as having O(N*log(N)) complexity because we call
   // an O(log(N)) function inside the loop. However, the runtime of floatDown depends on the 
   // argument i in such a way to give an overall O(N) behavior (see reference (1)). The memory 
@@ -843,6 +843,40 @@ class rsBinarySearchTree : public rsBinaryTree<T>
 public:
 
 protected:
+
+  int floatUp(int i) override
+  {
+    while(i > 0) {
+      int p = parent(i);
+      if(isLeft(i)) {
+        if(less(data[p], data[i]))
+          swap(data[i], data[p]);
+        else
+          return i; }
+      else {
+        if(less(data[i], data[p]))      // i and p are swapped compared to left nodes
+          swap(data[i], data[p]);
+        else
+          return i;   }
+      i = p; }
+    return i;
+  }
+
+  int floatDown(int i) override
+  {
+    while(i < size-1) {   // check if we should use size
+      int l = left(i);
+      int r = right(i);
+      if(l < size && less(data[i], data[l])) {
+        swap(data[i], data[l]);
+        i = l; }
+      else if(r < size && less(data[r], data[i])) {
+        swap(data[i], data[r]);
+        i = r; }
+      else
+        return i; }
+    return i;
+  }
 
 };
 

@@ -241,11 +241,14 @@ bool binaryHeapUnitTest()
   // todo: test inserting and removing items
 
 
+
+
+
   // todo: implement heap-sort in this class an test it with various random arrays
-
-
   return r;
 }
+
+
 
 bool ringBufferUnitTest()
 {
