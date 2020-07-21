@@ -540,6 +540,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  /** Sets the data that should be treated as heap. The object does not take ownership of the data.
+  Instead, it acts pretty much like a "view" (as in rsMatrixView) - it just operates on an existing 
+  data array whose lifetime is managed elsewhere. */
   void setData(T* newData, int newSize)
   {
     data = newData;
@@ -548,12 +551,18 @@ public:
   }
   // todo: also pass the capacity
 
+  /** Sets the comparison function to be used. If it implements "less-than", you'll get a max-heap
+  and if it implements "greater-than", you'll get a min-heap. By default, it's assigned to a 
+  less-than function based on the < operator. */
   void setCompareFunction(const std::function<bool(const T&, const T&)>& newFunc)
   {
     less = newFunc;
   }
-  // if the compraison is a less-then, we get a max-heap, if it's a greater-than, we get a min-heap
+  // question: what happens, if we use a less-or-equal or greater-or-equal function for this?
 
+  /** Sets the function used to swap two elements. By default, it just uses rsSwap but you may want
+  to do something extra whenever a swap takes place in certain circumstances, for example, to keep 
+  track of when items get moved around (see rsMovingQuantileFilter for an example). */
   void setSwapFunction(const std::function<void(T&, T&)>& newFunc)
   {
     swap = newFunc;
@@ -565,21 +574,29 @@ public:
 
   int getSize() const { return size; }
 
+  //int getCapacity() const { return capacity; }
+
+
+
   /** Returns a const reference to the element at index i. */
   const T& getElement(int i) const 
   { 
     rsAssert(i >= 0 && i < size, "Index out of range");
     return data[i]; 
   }
+  // maybe get rid - implement as [] operator returning a const-ref - simpler syntax in client code
 
-  /** Read/write access to elemnts. Warning: overwriting elements may destroy the heap-property. */
+  /** Read/write access to elements. Warning: overwriting elements may destroy the heap-property, 
+  so it should be used only if you know what you are doing. */
   T& operator[](int i)
   {
     rsAssert(i >= 0 && i < size, "Index out of range");
     return data[i]; 
   }
 
-
+  /** Return true, iff the underyling data array currently satisfies the heap property. The 
+  function is meant mostly for testing and debugging purposes and is currently implemented 
+  recursively (i.e. inefficiently). */
   bool isHeap(int i = 0) const
   {
     if(i >= size)
@@ -592,7 +609,7 @@ public:
     return result;
   }
   // needs test
-  // this is a recursive implementation -> convert to iteration
+  // maybe convert recursion to iteration
 
 
 
@@ -627,6 +644,12 @@ public:
 
   // int insert(const T& x); // returns insertion index
   // void remove(int);       // removes item at index i
+  // removing of element i should work as follows:
+  // -check, which of the two child-nodes should get promoted to the position i
+  // -move left(i) or right(i) up and apply the same process to its children (i.e check, which of 
+  //  its children should get promoted up)
+  // -and so on all the way to the bottom
+  // -decrement size
 
   /** Lets the node with array-index i float into its proper place and returns the resulting new 
   array index. */
@@ -735,6 +758,7 @@ protected:
   // increaseKey, heapMax
 
 
+  // maybe make them static:
 
   /** Index of parent of node i. */
   inline int parent(int i) const { return (i-1) / 2; }
@@ -744,6 +768,19 @@ protected:
 
   /** Index of right child of node i. */
   inline int right(int i)  const { return 2*i + 2; }
+
+
+
+  /** Returns true, iff index i is the index of a left child node. */
+  inline bool isLeft(int i) const { return i == left(parent(i)); }
+
+  /** Returns true, iff index i is the index of a right child node. */
+  inline bool isRight(int i) const { return i == right(parent(i)); }
+
+  // needs test
+
+
+
 
 
   T* data = nullptr;
@@ -764,6 +801,9 @@ protected:
 //  the parent
 // -maybe a common baseclass can be factored out (implementing parent, left, right, storing swap 
 //  maybe also storing the comparison function)
+// -pehaps we could implement a general function: needsSwap(int parentIndex, int childIndex) - in 
+//  the case of a search tree, it would first have to figure out, if the childIndex is a left or 
+//  right child and order the arguments of the comparison according to that
 // -in the old RSLib codebase, i did some sort of linked-tree - maybe that could be dragged in as
 //  rsLinkedTree or rsDynamicTree or something like that - all the different trees could be in
 //  a file Trees.h/cpp
@@ -832,20 +872,17 @@ public:
 
     //int L 
 
-    int ni = buf.getOldest();      // node index of oldest node
-
-
-
+    int ni = buf.getOldest();      // node index of oldest node in nodes array
     int hi = nodes[ni].heapIndex;  // heap index of oldest node
-    int bi = nodes[ni].bufIndex;   // buffer index of oldest node
+    //int bi = nodes[ni].bufIndex;   // buffer index of oldest node - do we need this?
 
 
     nodes[ni].value = x;
 
-    if(hi < nS)
+    if(hi < nS)      // node to be replaced is in small heap
     {
-      // node to be replaced is in small heap
-      hi = small.floatIntoPlace(hi);
+      hi = small.floatIntoPlace(hi);   // it should float down to the bottom but doesn't
+
       int dummy = 0;
     }
     else
@@ -862,6 +899,24 @@ public:
 
     if(heapsNeedExchange())
     {
+      rsSwap(nodes[0].heapIndex, nodes[nS].heapIndex);
+
+      if(hi < nS)
+      {
+        // replacement took place in small heap, so after exchange, the new datum is in the large
+        // heap
+
+        small.floatIntoPlace(0);
+        hi  = large.floatIntoPlace(0);
+        hi += nS;
+      }
+      else
+      {
+        // replacement took place in large heap, so after exchange, the new datum is in the small
+        // heap
+        large.floatIntoPlace(0);
+        hi = small.floatIntoPlace(0);
+      }
 
 
       int dummy = 0;
@@ -882,6 +937,8 @@ public:
 
 
     int idx = large.getElement(0);  // index to read from the heap
+
+    idx = nS;  // test
     T val = nodes[idx].value;
 
 
@@ -930,13 +987,14 @@ protected:
   {
     return nodes[left].value < nodes[right].value;
   }
+  // is htis right? do we expect two indices into the nodes array?...yeah, i think so
 
   bool nodeGreater(const int& left, const int& right)
   {
     return nodes[left].value > nodes[right].value;
   }
 
-  void swapNodes(const int& i, const int& j)
+  void swapNodes(int& i, int& j)
   {
     // ...something to do...
     //
@@ -954,13 +1012,15 @@ protected:
     // i think, the nodes array stays fixed and we just swap the pointers to the nodes inside the 
     // heap and within the nodes array, the heap-indices
 
-
     rsSwap(nodes[i].heapIndex, nodes[j].heapIndex);
+    rsSwap(i, j);
+
     // -could tha be all that is needed?
     // -i think, using the 
 
     return; 
   }
+  // expects two indices into the nodes array
 
 
 
@@ -977,8 +1037,10 @@ protected:
   struct Node
   {
     int heapIndex = 0;
-    int bufIndex = 0;
+    int bufIndex = 0;  // i think, this may be redundant - we'll see
     T value = T(0);
+    // maybe we need a bool to indicate, if we are in the large heap - using the convention of
+    // adding/subtracting nS is sometimes inconvenient
   };
 
 
@@ -992,6 +1054,10 @@ protected:
   // indirection in order to map directly to heap- and buffer-indices in O(1) time. We use the 
   // index in the nodes-array as key and update the data heapIndex,bufIndex of the array-entries
   // whenever we do a swap do to heap-rebalancing
+  // -the heaps must be able to reference the data (for comparing)
+  // -from buf.getOldest(), we must be able to retrieve the the position of the oldest datum in 
+  //  the heap(s), so we can know, which heap-element we wnat to replace with the new incoming 
+  //  datum
 
 
   rsBinaryHeap<int> small, large;
@@ -1008,6 +1074,14 @@ protected:
   // maybe use size_t
 
 };
+
+// with a binary search tree, we may just need the tree and a circular buffer that always remembers
+// which nod is the oldest, then on each sample:
+// -replace the datum in node that holds the oldest value
+// -rebalance the tree (when swapping nodes, the node index stored in the circular delay buffer 
+//  must be updated along)
+// -output is always the valzue stored in a specific, fixed node - if the tree is symmetric and we
+//  we want the median, then use the root
 
 
 template<class T>

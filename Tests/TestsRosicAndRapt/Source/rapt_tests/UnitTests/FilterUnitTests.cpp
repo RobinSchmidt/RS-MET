@@ -308,13 +308,39 @@ bool movingPercentileUnitTest()
 
   int nS = 8;
   int nL = 9;
-
-
-  rsMovingQuantileFilterNaive<double> fltN(nS, nL);
-
-  rsMovingQuantileFilter<double> flt(nS, nL); // maybe rename to rsMovingQuantileFilter
+  rsMovingQuantileFilter<double> flt(nS, nL);
   //flt.setLengths(8, 9);
 
+  double q;
+
+  q = flt.getSample(-1); r &= q == 0;
+  // the -1 should float down to the bottom of the max-heap of small values
+
+  q = flt.getSample(-2); r &= q == 0;
+  // gets inserted into the larger heap and floats down - it should actually remain in the pole
+  // position for..ah no - it is in the pole position
+
+  q = flt.getSample(-3); r &= q == 0;
+  q = flt.getSample(-4); r &= q == 0;
+  q = flt.getSample(-5); r &= q == 0;
+  q = flt.getSample(-6); r &= q == 0;
+  q = flt.getSample(-7); r &= q == 0;
+  q = flt.getSample(-8); r &= q == 0;
+
+
+  q = flt.getSample(-9); r &= q == -1;
+  // fails here
+
+
+  return r;
+
+
+
+
+
+
+  // re-activate later:
+  rsMovingQuantileFilterNaive<double> fltN(nS, nL);
 
   using Vec = std::vector<double>;
 
@@ -324,6 +350,7 @@ bool movingPercentileUnitTest()
 
   Vec x = rsRandomVector(N, -1.0, +1.0);
 
+  flt.reset();
   for(int n = 0; n < N; n++)
   {
     y[n] = flt.getSample(x[n]);
@@ -340,6 +367,7 @@ bool movingPercentileUnitTest()
 
   // now the big task is to make y match z...
   rsPlotVectors(y, z); // ..of course, this does not yet work
+
 
   return r;
 }
