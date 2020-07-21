@@ -221,7 +221,7 @@ bool binaryHeapUnitTest()
 
   rsBinaryHeapTest<int> H;
   r &= H.getSize() == 0;
-  H.setData(&A[0], N);
+  H.setData(&A[0], N, N);
   r &= H.getSize() == 10;
   r &= H.isMaxHeap();
 

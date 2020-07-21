@@ -515,9 +515,55 @@ class rsBinaryTree
 
 public:
 
+  rsBinaryTree(T* newData = nullptr, int newSize = 0, int newCapacity = 0)
+  {
+    setData(newData, newSize, newCapacity);
+    less = [](const T& a, const T& b)->bool { return a < b; };
+    swap = [](      T& a,       T& b)       { rsSwap(a, b); };
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets the data that should be treated as tree. The object does not take ownership of the data.
+  Instead, it acts pretty much like a "view" (as in rsMatrixView) - it just operates on an existing 
+  data array whose lifetime is managed elsewhere. */
+  void setData(T* newData, int newSize, int newCapacity)
+  {
+    data = newData;
+    size = newSize;
+    capacity = newCapacity;
+  }
+  // todo: also pass the capacity
+
+  /** Sets the comparison function to be used. If it implements "less-than", you'll get a max-heap
+  and if it implements "greater-than", you'll get a min-heap. By default, it's assigned to a 
+  less-than function based on the < operator. */
+  void setCompareFunction(const std::function<bool(const T&, const T&)>& newFunc)
+  {
+    less = newFunc;
+  }
+  // question: what happens, if we use a less-or-equal or greater-or-equal function for this?
+
+  /** Sets the function used to swap two elements. By default, it just uses rsSwap but you may want
+  to do something extra whenever a swap takes place in certain circumstances, for example, to keep 
+  track of when items get moved around (see rsMovingQuantileFilter for an example). */
+  void setSwapFunction(const std::function<void(T&, T&)>& newFunc)
+  {
+    swap = newFunc;
+  }
+
 
 
 protected:
+
+  T* data = nullptr;
+  int size = 0;
+  int capacity = 0;
+
+  // Comparison and swapping functions:
+  std::function<bool(const T&, const T&)> less;  // rename to comp
+  std::function<void(T&, T&)> swap;
 
 };
 
@@ -549,43 +595,25 @@ class rsBinaryHeap : public rsBinaryTree<T>
 
 public:
 
+  using rsBinaryTree::rsBinaryTree;  // inherit constructors
+
+
+  /*
   rsBinaryHeap(T* newData = nullptr, int newSize = 0)
   {
     setData(newData, newSize);
     less = [](const T& a, const T& b)->bool { return a < b; };
     swap = [](      T& a,       T& b)       { rsSwap(a, b); };
   }
-
+  */
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  /** Sets the data that should be treated as heap. The object does not take ownership of the data.
-  Instead, it acts pretty much like a "view" (as in rsMatrixView) - it just operates on an existing 
-  data array whose lifetime is managed elsewhere. */
-  void setData(T* newData, int newSize)
+  void setData(T* newData, int newSize, int newCapacity)
   {
-    data = newData;
-    size = newSize;
+    rsBinaryTree<T>::setData(newData, newSize, newCapacity);
     buildHeap(); // maybe make this call optional
-  }
-  // todo: also pass the capacity
-
-  /** Sets the comparison function to be used. If it implements "less-than", you'll get a max-heap
-  and if it implements "greater-than", you'll get a min-heap. By default, it's assigned to a 
-  less-than function based on the < operator. */
-  void setCompareFunction(const std::function<bool(const T&, const T&)>& newFunc)
-  {
-    less = newFunc;
-  }
-  // question: what happens, if we use a less-or-equal or greater-or-equal function for this?
-
-  /** Sets the function used to swap two elements. By default, it just uses rsSwap but you may want
-  to do something extra whenever a swap takes place in certain circumstances, for example, to keep 
-  track of when items get moved around (see rsMovingQuantileFilter for an example). */
-  void setSwapFunction(const std::function<void(T&, T&)>& newFunc)
-  {
-    swap = newFunc;
   }
 
 
@@ -798,19 +826,7 @@ protected:
 
 
 
-  T* data = nullptr;
-  int size = 0;
-  //int capacity = 0;
 
-  //bool (*less)(const T& a, const T& b) = &RAPT::defaultLess;
-  // comparison function used - this is currently a plain function pointer - maybe use 
-  // std::function or a template parameter F later
-  // maybe rename to compare or comp - it's not necessarily a less-than - can also be a 
-  // greater-than comparison
-
-  // Comparison and swapping functions:
-  std::function<bool(const T&, const T&)> less;  // rename to comp
-  std::function<void(T&, T&)> swap;
 };
 // -maybe make also a class rsBinarySearchTree where the left child is <= and the right child is >=
 //  the parent
@@ -1041,8 +1057,8 @@ protected:
     nodes.resize(getLength());
     buf.setLength((size_t)getLength());
     heaps.resize(getLength());
-    small.setData(&heaps[0],  nS);
-    large.setData(&heaps[nS], nL);
+    small.setData(&heaps[0],  nS, nS);
+    large.setData(&heaps[nS], nL, nL);
     reset();
   }
 
