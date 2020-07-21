@@ -526,7 +526,7 @@ public:
   /** \name Setup */
 
   /** Sets the data that should be treated as tree. The object does not take ownership of the data.
-  Instead, it acts pretty much like a "view" (as in rsMatrixView) - it just operates on an existing 
+  Instead, it acts pretty much like a "view" (as in rsMatrixView) - it just operates on an existing
   data array whose lifetime is managed elsewhere. */
   void setData(T* newData, int newSize, int newCapacity)
   {
@@ -554,9 +554,98 @@ public:
   }
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Returns the number of nodes in the tree. */
+  int getSize() const { return size; }
+  // maybe make a version that takes a node-index as parameter
+
+  /** Returns the capacity, i.e. the maxumum number of nodes that can be stored in the underlying 
+  data array. */
+  int getCapacity() const { return capacity; }
+
+  /** Read/write access to elements. Warning: overwriting elements may destroy the defining 
+  property (heap, binary-search, etc.) of the tree, so it should be used only if you know what you 
+  are doing. */
+  T& operator[](int i)
+  {
+    rsAssert(i >= 0 && i < size, "Index out of range");
+    return data[i]; 
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data Manipulation */
+
+  /** Replaces the element at index i with the new given element x and rebalances the heap to 
+  maintain the heap-property which amounts to floating the new element x up or down. The return 
+  value is the array index, where the new element actually ended up. */
+  int replace(int i, const T& x)
+  {
+    data[i] = x;
+    return floatIntoPlace(i);
+  }
+
+  /*
+  // todo: 
+  int insert(const T& x)
+  {
+  rsAssert(size < capacity, "Capacity exceeded");
+  // ...maybe in this case, we should return -1 immediately
+
+  data[size] = x;
+  size++;
+  return floatUp(size-1);
+  }
+  // not yet tested
+  */
+
+  // int insert(const T& x); // returns insertion index
+  // void remove(int);       // removes item at index i
+  // removing of element i should work as follows:
+  // -check, which of the two child-nodes should get promoted to the position i
+  // -move left(i) or right(i) up and apply the same process to its children (i.e check, which of 
+  //  its children should get promoted up)
+  // -and so on all the way to the bottom
+  // -decrement size
+
+
+  /** Lets the node at index i float up or down into its appropriate place and returns the 
+  resulting new array index. */
+  int floatIntoPlace(int i) { return floatUp(floatDown(i)); }
+  // -maybe rename to rebalanceNode
+  // -why is this public? can we move it into the protected section? hmm, rsMovingPercentileFilter
+  //  calls it directly - can this be avoided?
+
 
 protected:
 
+  /** Must be implemented by subclasses to let node with array index i float up, if necessarry. It 
+  should return the new array index of the node. */
+  virtual int floatUp(int i) = 0;
+
+  /** Must be implemented by subclasses to let node with array index i float down, if 
+  necessarry. It should return the new array index of the node. */
+  virtual int floatDown(int i) = 0;
+
+  /** Index of parent of node i. */
+  static inline int parent(int i) { return (i-1) / 2; }
+
+  /** Index of left child of node i. */
+  static inline int left(int i)   { return 2*i + 1; }
+
+  /** Index of right child of node i. */
+  static inline int right(int i)  { return 2*i + 2; }
+
+  /** Returns true, iff index i is the index of a left child node. */
+  static inline bool isLeft(int i) { return i == left(parent(i)); }
+  // needs test
+
+  /** Returns true, iff index i is the index of a right child node. */
+  static inline bool isRight(int i) { return i == right(parent(i)); }
+  // needs test
+
+  // The actual data array:
   T* data = nullptr;
   int size = 0;
   int capacity = 0;
@@ -598,15 +687,6 @@ public:
   using rsBinaryTree::rsBinaryTree;  // inherit constructors
 
 
-  /*
-  rsBinaryHeap(T* newData = nullptr, int newSize = 0)
-  {
-    setData(newData, newSize);
-    less = [](const T& a, const T& b)->bool { return a < b; };
-    swap = [](      T& a,       T& b)       { rsSwap(a, b); };
-  }
-  */
-
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
@@ -616,31 +696,8 @@ public:
     buildHeap(); // maybe make this call optional
   }
 
-
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
-
-  int getSize() const { return size; }
-
-  //int getCapacity() const { return capacity; }
-
-
-
-  /** Returns a const reference to the element at index i. */
-  const T& getElement(int i) const 
-  { 
-    rsAssert(i >= 0 && i < size, "Index out of range");
-    return data[i]; 
-  }
-  // maybe get rid - implement as [] operator returning a const-ref - simpler syntax in client code
-
-  /** Read/write access to elements. Warning: overwriting elements may destroy the heap-property, 
-  so it should be used only if you know what you are doing. */
-  T& operator[](int i)
-  {
-    rsAssert(i >= 0 && i < size, "Index out of range");
-    return data[i]; 
-  }
 
   /** Return true, iff the underyling data array currently satisfies the heap property. The 
   function is meant mostly for testing and debugging purposes and is currently implemented 
@@ -656,69 +713,16 @@ public:
     if(r < size) result &= !less(data[i], data[r]) && isHeap(r);
     return result;
   }
-  // needs test
   // maybe convert recursion to iteration
-
-
-
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Data Manipulation */
-
-  /** Replaces the element at index i with the new given element x and rebalances the heap to 
-  maintain the heap-property which amounts to floating the new element x up or down. The return 
-  value is the array index, where the new element actually ended up. */
-  int replace(int i, const T& x)
-  {
-    data[i] = x;
-    return floatIntoPlace(i);
-  }
-
-  /*
-  // todo: 
-  int insert(const T& x)
-  {
-    rsAssert(size < capacity, "Capacity exceeded");
-    // ...maybe in this case, we should return -1 immediately
-
-    data[size] = x;
-    size++;
-    return floatUp(size-1);
-  }
-  // not yet tested
-  */
-  
-
-
-  // int insert(const T& x); // returns insertion index
-  // void remove(int);       // removes item at index i
-  // removing of element i should work as follows:
-  // -check, which of the two child-nodes should get promoted to the position i
-  // -move left(i) or right(i) up and apply the same process to its children (i.e check, which of 
-  //  its children should get promoted up)
-  // -and so on all the way to the bottom
-  // -decrement size
-
-  /** Lets the node with array-index i float into its proper place and returns the resulting new 
-  array index. */
-  int floatIntoPlace(int i)
-  {
-    return floatUp(floatDown(i));
-    // this calls the recursive version of floatDown - todo: use iterative version
-  }
-  // -maybe rename to rebalanceNode
-  // -why is this public? can we move it into the protected section? hmm, rsMovingPercentileFilter
-  //  calls it directly - can this be avoided?
 
 
 protected:
 
   /** Functions to establish or maintain the heap-property of the underlying data array. */
 
-
   /** Lets the node at index i float up the tree if its parent violates the heap property. Returns 
   the new array index. */
-  int floatUp(int i)
+  int floatUp(int i) override
   {
     while(i > 0) {
       int p = parent(i);
@@ -735,7 +739,7 @@ protected:
   satisfy it, the function lets the value at i float down the subtree rooted at i. It has a time
   complexity of O(log(N)) and memory complexity of O(1). The return value is the new array index of
   the value that was previously located at index i. */
-  int floatDown(int i)
+  int floatDownRec(int i)
   {
     int l = left(i);
     int r = right(i);
@@ -783,6 +787,11 @@ protected:
   // ..but it seems buggy and i had to make some changes - it seems to work now but needs more 
   // thorough testing
 
+  int floatDown(int i) override
+  {
+    return floatDownRec(i);  // calls recursive version - change that!
+  }
+
 
   // we should return the new index i, we also need floatUp(int i)
 
@@ -791,8 +800,8 @@ protected:
   {
     for(int i = size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
     {
-      //floatDown(i);
-      floatDown2(i);
+      floatDown(i);
+      //floatDown2(i);
     }
   }
   // runs in O(N). From the code, it would appear as having O(N*log(N)) complexity because we call
@@ -800,32 +809,8 @@ protected:
   // argument i in such a way to give an overall O(N) behavior (see reference (1)). The memory 
   // complexity is O(1).
 
-
-
   // todo: implement functions: int insert(T*), void remove(int), extractMax,
   // increaseKey, heapMax
-
-
-  // maybe make them static:
-
-  /** Index of parent of node i. */
-  static inline int parent(int i) { return (i-1) / 2; }
-
-  /** Index of left child of node i. */
-  static inline int left(int i)   { return 2*i + 1; }
-
-  /** Index of right child of node i. */
-  static inline int right(int i)  { return 2*i + 2; }
-
-  /** Returns true, iff index i is the index of a left child node. */
-  static inline bool isLeft(int i) { return i == left(parent(i)); }
-
-  /** Returns true, iff index i is the index of a right child node. */
-  static inline bool isRight(int i) { return i == right(parent(i)); }
-
-
-
-
 
 };
 // -maybe make also a class rsBinarySearchTree where the left child is <= and the right child is >=
@@ -987,8 +972,8 @@ public:
 
 
 
-    int idx = large.getElement(0);  // index to read from the heap
-    idx = large[0]; 
+    //int idx = large.getElement(0);  // index to read from the heap
+    int idx = large[0]; 
     //idx = nS;  // test..hmm..nope?
     //idx = ni;
     T val = nodes[idx].value;
