@@ -267,14 +267,13 @@ bool binaryHeapUnitTest()
   r &= T.isSearchTree(); 
   T.replace(4, 20);
   r &= T.isSearchTree(); 
-
   A = Vec({50,20,80,10,60,30,90});
-  bool isTree;
   T.setData(A);
-  isTree = T.isSearchTree();
+  r &= T.isSearchTree();
 
-
-  /*
+  A = Vec({50,20,80,10,30,60,100,5,15,25,40,55,70});
+  T.setData(A);
+  r &= T.isSearchTree();
   for(int i = 1; i <= numTests; i++)
   {
     int newIndex = ng.getSampleRaw() % H.getSize();
@@ -287,7 +286,7 @@ bool binaryHeapUnitTest()
     // we may have to swap with the sibling..or maybe binary search trees are not so similar to 
     // heaps after all?
   }
-  */
+
 
 
 
