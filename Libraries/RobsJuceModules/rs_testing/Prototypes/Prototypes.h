@@ -862,11 +862,12 @@ public:
     // under construction
 
     // -replace oldest sample in the heaps with the new incoming sample
-    //  -> this will rebalance the heap in which the oldest sample resided
-    // -if the largest (front) sample in the small heap is > than the smalles (front) sample in the
-    //  large heap: exchange them and rebalance both heaps
+    // -rebalance the heap in which the oldest sample resided
+    // -if the largest (front) sample in the small heap is > than the smallest (front) sample in 
+    //  the large heap: exchange them and rebalance both heaps
     // -the swaps that occurr during rebalancing the heaps should also lead to corresponding swaps 
     //  in our delay buffer, due to the way we have implemented our swap function
+    //  ...err...i think, no, the delay buffer should remain as is?
     // -return the front sample of the "large" heap in case of an odd size and the average of both
     //  front samples for even sizes (size == getLength())
 
@@ -876,39 +877,30 @@ public:
     int hi = nodes[ni].heapIndex;  // heap index of oldest node
     //int bi = nodes[ni].bufIndex;   // buffer index of oldest node - do we need this?
 
-
+    // replace value of the oldest node with the new incoming value:
     nodes[ni].value = x;
+    if(hi < nS) hi = small.floatIntoPlace(hi);          // node to be replaced is in small heap
+    else        hi = large.floatIntoPlace(hi-nS) + nS;  // node to be replaced is in large heap
 
-    if(hi < nS)      // node to be replaced is in small heap
-    {
-      hi = small.floatIntoPlace(hi);   // it should float down to the bottom but doesn't
-
-      int dummy = 0;
-    }
-    else
-    {
-      // node to be replaced is in large heap
-      hi -= nS; // we need to offset the heap-index
-      hi  = large.floatIntoPlace(hi);
-      hi += nS;
-
-      int dummy = 0;
-    }
-
-    // swap first elements of small/large heaps, if necessarry
-
+    // swap first elements of small/large heaps, if necessarry:
     if(heapsNeedExchange())
     {
-      rsSwap(nodes[0].heapIndex, nodes[nS].heapIndex);
+      //rsSwap(nodes[0].heapIndex, nodes[nS].heapIndex);
+      //rsSwap(nodes[0].value,     nodes[nS].value);       // is this correct?
+      //rsSwap(nodes[0], nodes[nS]);
+      // nope! the nodes array stays fixed - we don't swap anything there
 
+      // the swap:
+      rsSwap(nodes[0].heapIndex, nodes[nS].heapIndex); // update of our additional data
+      rsSwap(heaps[0], heaps[nS]);                     // update of the actual heap elements
+
+      // the update that may be required due to the swap:
       if(hi < nS)
       {
         // replacement took place in small heap, so after exchange, the new datum is in the large
         // heap
-
         small.floatIntoPlace(0);
-        hi  = large.floatIntoPlace(0);
-        hi += nS;
+        hi = large.floatIntoPlace(0) + nS;
       }
       else
       {
@@ -917,10 +909,8 @@ public:
         large.floatIntoPlace(0);
         hi = small.floatIntoPlace(0);
       }
-
-
-      int dummy = 0;
     }
+
 
     // debug:
     bool isSmallHeap = small.isHeap();
@@ -928,24 +918,23 @@ public:
     rsAssert(isSmallHeap && isLargeHeap);
 
 
-
-    nodes[ni].heapIndex = hi;  // is this correct?
+    // hi now is the new heap index of the newly received value - we write it into the nodes 
+    // array:
+    nodes[ni].heapIndex = hi;  // is this correct? or do we need to do it after the next?
 
     ni = buf.getSample( (ni+1) % getLength() );  // ..and this?
+    // this is the actual update of the buf - the returned ni value here should be equal to the one
+    // we have already used all the time ...can we move this function call up? i think so
 
 
 
 
     int idx = large.getElement(0);  // index to read from the heap
-
-    idx = nS;  // test
+    idx = large[0]; 
+    //idx = nS;  // test..hmm..nope?
+    //idx = ni;
     T val = nodes[idx].value;
-
-
     return val;
-
-    //return large.getElement(0);
-    // preliminary - return the first (i.e. smallest) value of the large values
   }
 
 
@@ -956,11 +945,14 @@ public:
       heaps[i] = i;
       buf[i] = i;
       nodes[i].heapIndex = i;
-      nodes[i].bufIndex = i;
       nodes[i].value = T(0);
     }
     // does this initialization make sense?
   }
+
+
+
+
 
 protected:
 
@@ -983,42 +975,20 @@ protected:
     return getLargestSmallValue() > getSmallestLargeValue();
   }
 
+
+  // function to be passed to the heap objects, to be used there for comparison and swapping:
   bool nodeLess(const int& left, const int& right)
   {
     return nodes[left].value < nodes[right].value;
   }
-  // is htis right? do we expect two indices into the nodes array?...yeah, i think so
-
   bool nodeGreater(const int& left, const int& right)
   {
     return nodes[left].value > nodes[right].value;
   }
-
   void swapNodes(int& i, int& j)
   {
-    // ...something to do...
-    //
-    /*
-    rsSwap(nodes[i].heapIndex, nodes[j].heapIndex);
-    rsSwap(nodes[i].bufIndex,  nodes[j].bufIndex);
-    rsSwap(nodes[i].value,     nodes[j].value);
-    // is that correct? ..and/or complete...hmm...nooo
-    */
-
-    //rsSwap(nodes[i], nodes[j]);
-
-    //rsSwap(buf[nodes[i].bufIndex], buf[nodes[j].bufIndex]);
-
-    // i think, the nodes array stays fixed and we just swap the pointers to the nodes inside the 
-    // heap and within the nodes array, the heap-indices
-
-    rsSwap(nodes[i].heapIndex, nodes[j].heapIndex);
-    rsSwap(i, j);
-
-    // -could tha be all that is needed?
-    // -i think, using the 
-
-    return; 
+    rsSwap(nodes[i].heapIndex, nodes[j].heapIndex); // update of our additional data
+    rsSwap(i, j);                                   // update of the actual heap elements
   }
   // expects two indices into the nodes array
 
@@ -1034,23 +1004,27 @@ protected:
     reset();
   }
 
+  /** A node stores the value itself and the index in the heaps, where we use the convenetion that
+  when a node it in the heap of larger values, the actualy index as seen from the "large" heap is
+  given by heapIndex-nS - and this occurrs whenever heapIndex >= nS, when heapIndex < nS, it's an
+  index inot the "smaller" heap */
   struct Node
   {
     int heapIndex = 0;
-    int bufIndex = 0;  // i think, this may be redundant - we'll see
+    //int bufIndex = 0;  // i think, this may be redundant - we'll see
     T value = T(0);
     // maybe we need a bool to indicate, if we are in the large heap - using the convention of
-    // adding/subtracting nS is sometimes inconvenient
+    // adding/subtracting nS is sometimes inconvenient...hmm...maybe not
   };
 
 
   std::vector<Node> nodes;
 
 
-  rsRingBuffer<int> buf;   // circular buffer
+  rsRingBuffer<int> buf;   // circular buffer of indices into the nodes array
   std::vector<int> heaps;  // memory for the heaps
   // heaps and buf just store indices into the nodes array and the nodes-array itself contains the
-  // actual data together with its current index inside the heap and delay-buffer. We need this 
+  // actual data together with its current index inside the heap (and delay-buffer). We need this 
   // indirection in order to map directly to heap- and buffer-indices in O(1) time. We use the 
   // index in the nodes-array as key and update the data heapIndex,bufIndex of the array-entries
   // whenever we do a swap do to heap-rebalancing

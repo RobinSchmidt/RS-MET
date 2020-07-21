@@ -306,12 +306,28 @@ bool movingPercentileUnitTest()
 {
   bool r = true;
 
-  int nS = 8;
-  int nL = 9;
-  rsMovingQuantileFilter<double> flt(nS, nL);
-  //flt.setLengths(8, 9);
-
   double q;
+
+  rsMovingQuantileFilter<double> flt(3, 4);
+                                        // heaps (desired)
+  q = flt.getSample( -1); r &= q == 0;  //  0  0 -1 | 0 0 0 0
+
+  q = flt.getSample( -2); r &= q == 0;  //  0 -1 -2 | 0 0 0 0 
+  // heapIndex 0 occurs now twice in the nodes array and heapIndex 3 is missing - that's wrong - 
+  // each heapIndex should occurr exactly once
+
+  q = flt.getSample( -3); r &= q == 0;  // -1 -2 -3 | 0 0 0 0
+  //q = flt.getSample( -4); r &= q == 0;
+  //q = flt.getSample( -5); r &= q == 0;
+
+
+
+  return r;
+
+
+  /*
+  flt.setLengths(8, 9);
+  flt.reset();
 
   q = flt.getSample(-1); r &= q == 0;
   // the -1 should float down to the bottom of the max-heap of small values
@@ -320,24 +336,36 @@ bool movingPercentileUnitTest()
   // gets inserted into the larger heap and floats down - it should actually remain in the pole
   // position for..ah no - it is in the pole position
 
-  q = flt.getSample(-3); r &= q == 0;
-  q = flt.getSample(-4); r &= q == 0;
-  q = flt.getSample(-5); r &= q == 0;
-  q = flt.getSample(-6); r &= q == 0;
-  q = flt.getSample(-7); r &= q == 0;
-  q = flt.getSample(-8); r &= q == 0;
+  q = flt.getSample( -3); r &= q == 0;
+  q = flt.getSample( -4); r &= q == 0;
+  q = flt.getSample( -5); r &= q == 0;
+  q = flt.getSample( -6); r &= q == 0;
+  q = flt.getSample( -7); r &= q == 0;
+  q = flt.getSample( -8); r &= q == 0;
+
+  q = flt.getSample( -9); r &= q == -1;     // fails here
+  q = flt.getSample(-10); r &= q == -2;     // triggers assert here
+  q = flt.getSample(-11); r &= q == -3;
+  q = flt.getSample(-12); r &= q == -4;
+  q = flt.getSample(-13); r &= q == -5;
+  q = flt.getSample(-14); r &= q == -6;
+  q = flt.getSample(-15); r &= q == -7;
+  q = flt.getSample(-16); r &= q == -8;
+  q = flt.getSample(-17); r &= q == -9;
+  */
 
 
-  q = flt.getSample(-9); r &= q == -1;
-  // fails here
-
-
-  return r;
 
 
 
 
 
+
+  /*
+
+  int nS = 8;
+  int nL = 9;
+  flt.setLengths(nS, nL);
 
   // re-activate later:
   rsMovingQuantileFilterNaive<double> fltN(nS, nL);
@@ -367,6 +395,7 @@ bool movingPercentileUnitTest()
 
   // now the big task is to make y match z...
   rsPlotVectors(y, z); // ..of course, this does not yet work
+  */
 
 
   return r;
