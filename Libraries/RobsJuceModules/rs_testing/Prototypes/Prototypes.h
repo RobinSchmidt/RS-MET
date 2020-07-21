@@ -531,7 +531,7 @@ public:
     data = newData;
     size = newSize;
     capacity = newCapacity;
-    buildTree();   // maybe make this call optional
+    //buildTree();   // maybe make this call optional
   }
 
   void setData(std::vector<T>& newData)
@@ -621,11 +621,13 @@ public:
   //  calls it directly - can this be avoided?
 
   // get rid - the user should call buildHeap or buildSearchTree explicitly
+  /*
   void buildTree()
   {
     for(int i = size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
       floatDown(i);
   }
+  */
   // Runs in O(N). From the code, it would appear as having O(N*log(N)) complexity because we call
   // an O(log(N)) function inside the loop. However, for heaps and binary search trees, the runtime
   // of floatDown depends on the argument i in such a way to give an overall O(N) behavior (see 
@@ -871,6 +873,58 @@ public:
     //if(l < size) result &= !less(data[l], data[i]) && isSearchTree(l);
     //if(r < size) result &= !less(data[i], data[r]) && isSearchTree(r);
     return result;
+  }
+
+  void buildSearchTree()
+  {
+    for(int i = size-1; i >= 0; i--)
+    {
+      //floatUp(i);
+      //floatIntoPlace(i);
+      //floatDown(i);
+      fixNode(i);
+    }
+    // is it vital to do this in reverse order?
+    // i think, we can't just let the nodes i float into place - we must call some sort of
+    // fixNode function that either swaps p,l or p,r or l,r, or nothing
+  }
+
+
+  void fixNode(int i)
+  {
+    //floatIntoPlace(i);  // does not work
+
+    int l = left(i);
+    if(l >= size) return;             // node is leaf
+    int r = right(i);
+    if(r >= size) {                   // node has only left child - make sure, the data at the
+      if(less(data[i], data[l]))      // parent i is not less than at left child l - if it is: swap
+        swap(data[i], data[l]);
+      return; }
+
+    // ok - we have a node that has both children - we must figure out which of the 3 nodes i,l,r
+    // is the middle element m and if m is not already i, then do a swap. we must also make sure 
+    // that data[l] <= data[r]. we have 3 possible swapping scenarios: swap(i,l), swap(i,r), 
+    // swap(l,r) ...plus, of course, the no-swap scenario
+
+    //int m = i;                           // index of mid element, preliminary set to i
+    //if(less(data[i], data[l])) m = l;
+    //if(less(data[r], data[m])) m = r;
+
+    // fix order of children:
+    if(less(data[r], data[l]))
+      swap(data[l], data[r]);
+
+    // fix order of i,l:
+    if(less(data[i], data[l]))
+      swap(data[l], data[i]);
+
+    // fix order of i,r:
+    if(less(data[r], data[i]))
+      swap(data[r], data[i]);
+
+    // try to do this only with 2 comparisons and one swap
+
   }
 
 

@@ -224,6 +224,7 @@ bool binaryHeapUnitTest()
   rsBinaryHeapTest<int> H;
   r &= H.getSize() == 0;
   H.setData(&A[0], N, N);
+  H.buildHeap();
   r &= H.getSize() == 10;
   r &= H.isMaxHeap();
 
@@ -248,28 +249,56 @@ bool binaryHeapUnitTest()
 
   // maybe test with the small array 1,2,3 in all permutations, test also 1,2,2 and 1,1,2 in all
   // possible permuations ...and 1,1,1
-
-  //A = Vec({1,2,3});
   rsBinarySearchTree<int> T;
 
-  A = Vec({1,2,3}); T.setData(A); r &= A == Vec({ 2,1,3 });
-  A = Vec({2,1,3}); T.setData(A); r &= A == Vec({ 2,1,3 });
-  A = Vec({3,1,2}); T.setData(A); r &= A == Vec({ 2,1,3 });
+  A = Vec({50,20,80,10,30,60,100,5,15,25,40,55,70});
+  T.setData(A);
+  r &= T.isSearchTree();
 
-  //A = Vec({1,3,2}); T.setData(A); r &= A == Vec({ 2,1,3 });  
-  //A = Vec({2,3,1}); T.setData(A); r &= A == Vec({ 2,1,3 });
-  //A = Vec({3,2,1}); T.setData(A); r &= A == Vec({ 2,1,3 });
-  // These 3 cases fail - here, initially the left child of the root node is greater than the right
-  // child (3 > 2, 3 > 1, 2 > 1). Maybe it's ok when the cases fail where the left child of a node 
-  // is greater than the right child - floating down the parent cannot fix this - instead, we would 
-  // have to swap the children (possibly in addition to swapping with the parent - maybe the 
-  // general buildTree is misguided and we need to do something different to build the tree.
-  // To maintain the tree property when we replace an element, we may assume that the left and 
-  // right child are not in violation of the property - the only node that may be in violation is 
-  // the replaced node - so the data structure may still be useful for the moving quantile filter. 
-  // However we cannot reuse the buildHeap function as general buildTree function - that simply
-  // doesn't work - we need a different implementation for the search trees (i think). Perhaps
-  // looping through all elements calling floatIntoPlace
+  A = Vec({1,2,3}); T.setData(A); T.buildSearchTree(); r &= A == Vec({ 2,1,3 });
+  A = Vec({2,1,3}); T.setData(A); T.buildSearchTree(); r &= A == Vec({ 2,1,3 });
+  A = Vec({3,1,2}); T.setData(A); T.buildSearchTree(); r &= A == Vec({ 2,1,3 });
+  A = Vec({1,3,2}); T.setData(A); T.buildSearchTree(); r &= A == Vec({ 2,1,3 });  
+  A = Vec({2,3,1}); T.setData(A); T.buildSearchTree(); r &= A == Vec({ 2,1,3 });
+  A = Vec({3,2,1}); T.setData(A); T.buildSearchTree(); r &= A == Vec({ 2,1,3 });
+  // The 3 cases where the left child of the root node is greater than the right child (1,3,2 (3>2), 
+  // 2,3,1 (3>1), 3,2,1 (2>1))- previously failed when we were using a function similar to 
+  // builHeap. When the left child of a node is greater than the right child, floating down the 
+  // parent cannot fix the order properly - instead, we would have to swap the children (possibly 
+  // in addition to swapping with the parent - maybe the general buildTree is misguided and we 
+  // need to do something different to build the tree. However, to maintain the tree property when
+  // we replace an element, we may assume that the left and right child are not in violation of the
+  // property - the only node that may be in violation is the replaced node - so the data structure 
+  // may still be useful for the moving quantile filter. However we cannot reuse the buildHeap 
+  // function as general buildTree function - that simply doesn't work - we need a different 
+  // implementation for the search trees (i think). Perhaps looping through all elements calling 
+  // floatIntoPlace
+
+
+
+
+
+  // ...oookay - that seems to work - at least in this very small case - now we need to test some
+  // bigger cases...
+  // hmm i think, etsblishing the property from an array of random values may be not so easy - but 
+  // maintaining it, when a node is replaced should work exactly as in the heap
+
+
+  /*
+  int maxN = 100;
+  A.resize(maxN);
+  for(int i = 1; i <= numTests; i++)
+  {
+    N = ng.getSampleRaw() % maxN;
+    A.resize(N);
+    for(int n = 0; n < N; n++)
+      A[n] = ng.getSampleRaw() % 100;
+    T.setData(A);
+    T.buildSearchTree();
+    bool isTree = T.isSearchTree();
+    r &= T.isSearchTree();
+  }
+  */
 
 
 
