@@ -188,7 +188,6 @@ public:
   int insert(const T& x)
   {
     // todo: append it at the end and let it float up
-
     return 0; // preliminary
   }
 
@@ -199,14 +198,13 @@ public:
     // remove it and replace the slot with either the left or right child, then replace the child 
     // that was promoted up with either it left or right child and so on, i.e. remove and promote
     // children
-
   }
 
   void sort()
   {
 
   }
-
+  // todo: implement heap-sort in this class an test it with various random arrays
 
 };
 
@@ -216,9 +214,13 @@ bool binaryHeapUnitTest()
 
   bool r = true; 
 
-  std::vector<int> A = {2,8,14,16,4,1,7,9,10,3};
+  using Vec = std::vector<int>;
+
+  Vec A = {2,8,14,16,4,1,7,9,10,3};
   int N = (int) A.size();
 
+
+ 
   rsBinaryHeapTest<int> H;
   r &= H.getSize() == 0;
   H.setData(&A[0], N, N);
@@ -237,14 +239,63 @@ bool binaryHeapUnitTest()
     int k = H.replace(newIndex, newValue);
     r &= H.isMaxHeap();
   }
+  
 
   // todo: test inserting and removing items
 
 
+  // test the binary search tree:
+
+  // maybe test with the small array 1,2,3 in all permutations, test also 1,2,2 and 1,1,2 in all
+  // possible permuations ...and 1,1,1
+
+  //A = Vec({1,2,3});
+  rsBinarySearchTree<int> T;
+
+  A = Vec({1,2,3}); T.setData(A); r &= A == Vec({ 2,1,3 });
+  A = Vec({2,1,3}); T.setData(A); r &= A == Vec({ 2,1,3 });
+  A = Vec({3,1,2}); T.setData(A); r &= A == Vec({ 2,1,3 });
+
+  //A = Vec({1,3,2}); T.setData(A); r &= A == Vec({ 2,1,3 });  
+  //A = Vec({2,3,1}); T.setData(A); r &= A == Vec({ 2,1,3 });
+  //A = Vec({3,2,1}); T.setData(A); r &= A == Vec({ 2,1,3 });
+  // These 3 cases fail - here, initially the left child of the root node is greater than the right
+  // child (3 > 2, 3 > 1, 2 > 1). Maybe it's ok when the cases fail where the left child of a node 
+  // is greater than the right child - floating down the parent cannot fix this - instead, we would 
+  // have to swap the children (possibly in addition to swapping with the parent - maybe the 
+  // general buildTree is misguided and we need to do something different to build the tree.
+  // To maintain the tree property when we replace an element, we may assume that the left and 
+  // right child are not in violation of the property - the only node that may be in violation is 
+  // the replaced node - so the data structure may still be useful for the moving quantile filter. 
+  // However we cannot reuse the buildHeap function as general buildTree function - that simply
+  // doesn't work - we need a different implementation for the search trees (i think). Perhaps
+  // looping through all elements calling floatIntoPlace
 
 
 
-  // todo: implement heap-sort in this class an test it with various random arrays
+
+  /*
+  T.setData(A);
+  r &= T.getSize() == 3;
+  r &= A == Vec({ 2,1,3 });      // desired array order is 2,1,3
+  r &= T.isSearchTree();
+  */
+
+
+
+
+
+
+
+
+  /*
+  rsBinarySearchTree<int> T;
+  T.setData(&A[0], N, N);
+  r &= T.getSize() == 10;
+  r &= T.isSearchTree();
+  */
+
+
   return r;
 }
 

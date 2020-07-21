@@ -518,8 +518,6 @@ public:
   rsBinaryTree(T* newData = nullptr, int newSize = 0, int newCapacity = 0)
   {
     setData(newData, newSize, newCapacity);
-    less = [](const T& a, const T& b)->bool { return a < b; };
-    swap = [](      T& a,       T& b)       { rsSwap(a, b); };
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -533,8 +531,13 @@ public:
     data = newData;
     size = newSize;
     capacity = newCapacity;
+    buildTree();   // maybe make this call optional
   }
-  // todo: also pass the capacity
+
+  void setData(std::vector<T>& newData)
+  {
+    setData(&newData[0], (int)newData.size(), (int)newData.size());
+  }
 
   /** Sets the comparison function to be used. If it implements "less-than", you'll get a max-heap
   and if it implements "greater-than", you'll get a min-heap. By default, it's assigned to a 
@@ -617,6 +620,16 @@ public:
   // -why is this public? can we move it into the protected section? hmm, rsMovingPercentileFilter
   //  calls it directly - can this be avoided?
 
+  // get rid - the user should call buildHeap or buildSearchTree explicitly
+  void buildTree()
+  {
+    for(int i = size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
+      floatDown(i);
+  }
+  // Runs in O(N). From the code, it would appear as having O(N*log(N)) complexity because we call
+  // an O(log(N)) function inside the loop. However, for heaps and binary search trees, the runtime
+  // of floatDown depends on the argument i in such a way to give an overall O(N) behavior (see 
+  // reference (1)). The memory complexity is O(1).
 
 protected:
 
@@ -651,8 +664,19 @@ protected:
   int capacity = 0;
 
   // Comparison and swapping functions:
-  std::function<bool(const T&, const T&)> less;  // rename to comp
-  std::function<void(T&, T&)> swap;
+  //std::function<bool(const T&, const T&)> less;  // rename to comp
+  //std::function<void(T&, T&)> swap;
+
+
+
+  std::function<bool(const T&, const T&)> 
+    less = [](const T& a, const T& b)->bool 
+  { 
+    return a < b; 
+  };
+
+  std::function<void(T&, T&)> 
+    swap = [](T& a, T& b) { rsSwap(a, b); };
 
 };
 
@@ -687,14 +711,16 @@ public:
   using rsBinaryTree::rsBinaryTree;  // inherit constructors
 
 
-  //-----------------------------------------------------------------------------------------------
-  /** \name Setup */
-
-  void setData(T* newData, int newSize, int newCapacity)
+  void buildHeap()
   {
-    rsBinaryTree<T>::setData(newData, newSize, newCapacity);
-    buildHeap(); // maybe make this call optional
+    for(int i = size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
+      floatDown(i);
   }
+  // Runs in O(N). From the code, it would appear as having O(N*log(N)) complexity because we call
+  // an O(log(N)) function inside the loop. However, for heaps and binary search trees, the runtime
+  // of floatDown depends on the argument i in such a way to give an overall O(N) behavior (see 
+  // reference (1)). The memory complexity is O(1).
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -714,6 +740,10 @@ public:
     return result;
   }
   // maybe convert recursion to iteration
+  // maybe factor out to baseclass and rename to isTree, maybe we need to call a virtual function
+  // satisfiesTreeProperty(int i) that take a (parent) node index and then iterate through half of
+  // size of the tree...but that places a burden on subclasses having to implement the virtual
+  // function - not good!
 
 
 protected:
@@ -756,6 +786,8 @@ protected:
   // it's tail recursion and smart compilers might be able to translate it to iteration themselves.
   // We also may want to keep it as reference for unit tests (to test, if the iterative version 
   // really does the same thing).
+  // maybe move to subclass rsBinaryHeapTest in the unit test section - we don't need it in 
+  // production code, when the iterative version works (which seems to be the case)
 
 
   int floatDownIt(int i)
@@ -793,30 +825,12 @@ protected:
     return floatDownIt(i);
   }
 
-
-  // we should return the new index i, we also need floatUp(int i)
-
-
-  void buildHeap()
-  {
-    for(int i = size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
-      floatDown(i);
-  }
-  // factor out to baseclass, rename to buildTree
-
-  // runs in O(N). From the code, it would appear as having O(N*log(N)) complexity because we call
-  // an O(log(N)) function inside the loop. However, the runtime of floatDown depends on the 
-  // argument i in such a way to give an overall O(N) behavior (see reference (1)). The memory 
-  // complexity is O(1).
-
   // todo: implement functions: int insert(T*), void remove(int), extractMax,
   // increaseKey, heapMax
 
 };
 // -maybe make also a class rsBinarySearchTree where the left child is <= and the right child is >=
 //  the parent
-// -maybe a common baseclass can be factored out (implementing parent, left, right, storing swap 
-//  maybe also storing the comparison function)
 // -pehaps we could implement a general function: needsSwap(int parentIndex, int childIndex) - in 
 //  the case of a search tree, it would first have to figure out, if the childIndex is a left or 
 //  right child and order the arguments of the comparison according to that
@@ -842,6 +856,24 @@ class rsBinarySearchTree : public rsBinaryTree<T>
 
 public:
 
+  using rsBinaryTree::rsBinaryTree;  // inherit constructors
+
+
+  bool isSearchTree(int i = 0) const
+  {
+    if(i >= size)
+      return true;
+    bool result = true;
+    int l = left(i);
+    int r = right(i);
+    if(l < size) result &= !less(data[i], data[l]) && isSearchTree(l);
+    if(r < size) result &= !less(data[r], data[i]) && isSearchTree(r);
+    //if(l < size) result &= !less(data[l], data[i]) && isSearchTree(l);
+    //if(r < size) result &= !less(data[i], data[r]) && isSearchTree(r);
+    return result;
+  }
+
+
 protected:
 
   int floatUp(int i) override
@@ -862,21 +894,100 @@ protected:
     return i;
   }
 
-  int floatDown(int i) override
+
+
+  int floatDown1(int i)
   {
-    while(i < size-1) {   // check if we should use size
-      int l = left(i);
-      int r = right(i);
-      if(l < size && less(data[i], data[l])) {
-        swap(data[i], data[l]);
-        i = l; }
-      else if(r < size && less(data[r], data[i])) {
-        swap(data[i], data[r]);
-        i = r; }
-      else
-        return i; }
+    int l = left(i);
+    if(l >= size) return i;
+    if(less(data[i], data[l])) {
+      swap(data[i], data[l]);
+      return floatDown(l); }
+    int r = right(i);
+    if(r >= size) return i;
+    if(less(data[r], data[i])) {
+      swap(data[i], data[r]);
+      return floatDown(r); }
     return i;
   }
+  // recursive implementation - not working
+
+
+  int floatDown2(int i)
+  {
+    while(i < size-1) 
+    {
+      int l = left(i);
+      if(l >= size) return i;              // node i is a leaf
+      int m = i;                           // index of mid element, preliminary set to i
+      if(less(data[i], data[l])) m = l;    // left child is bigger than i, so mid index goes to l
+      int r = right(i);
+
+      /*
+      if(r >= size)
+      {
+        //rsError("not yet implemented");
+
+        if(m != i)
+        {
+          swap(data[m], data[i]);
+          i = m;
+        }
+        continue;
+      }
+      else
+      {
+        if(less(data[r], data[m]))
+          m = r;
+      }
+      */
+
+      if(r < size && less(data[r], data[m])) m = r;
+
+      if(m != i) {
+        swap(data[m], data[i]);
+        i = m;  }
+      else
+        return i;
+
+      /*
+      if(r < size && less(data[b], data[r])) b = r;
+
+      if(b != r) {              // difference to heap: there it was: if(b != i)
+        swap(data[i], data[b]);
+        i = b;  }
+      else
+        return i;
+        */
+
+
+      //// no - this is wrong: we need to consider 3 cases: 
+      ////   swap l with i, swap r with i, swap r with l
+      //// see  the heap implementation
+      //if(l < size && less(data[i], data[l])) {
+      //  swap(data[i], data[l]);
+      //  i = l; }
+      //else if(r < size && less(data[r], data[i])) {
+      //  swap(data[i], data[r]);
+      //  i = r; }
+      //else
+      //  return i; 
+
+    
+    }
+    return i;
+
+    // hmm..i think, we have to figure out the index of the biggest and smallest element b,s among
+    // i,l,r. if s==l and b==r, the node i should stay where it is
+  }
+
+  int floatDown(int i) override
+  {
+    return floatDown1(i);
+    //return floatDown2(i);
+  }
+
+
 
 };
 
