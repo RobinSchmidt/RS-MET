@@ -212,6 +212,8 @@ public:
 
 bool binaryHeapUnitTest()
 {
+  // maybe rename to binaryTreeUnitTest and integrate tests for rsBinarySearchTree
+
   bool r = true; 
 
   std::vector<int> A = {2,8,14,16,4,1,7,9,10,3};
@@ -235,7 +237,6 @@ bool binaryHeapUnitTest()
     int k = H.replace(newIndex, newValue);
     r &= H.isMaxHeap();
   }
-
 
   // todo: test inserting and removing items
 

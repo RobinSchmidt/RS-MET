@@ -308,18 +308,18 @@ bool movingPercentileUnitTest()
 
   double q;
 
-  rsMovingQuantileFilter<double> flt(3, 4);
+  rsMovingQuantileFilter<double> flt(3, 4);  // length 7
                                         // heaps (desired)
   q = flt.getSample( -1); r &= q == 0;  //  0  0 -1 | 0 0 0 0
-
   q = flt.getSample( -2); r &= q == 0;  //  0 -1 -2 | 0 0 0 0 
-  // heapIndex 0 occurs now twice in the nodes array and heapIndex 3 is missing - that's wrong - 
-  // each heapIndex should occurr exactly once
-
   q = flt.getSample( -3); r &= q == 0;  // -1 -2 -3 | 0 0 0 0
-  //q = flt.getSample( -4); r &= q == 0;
-  //q = flt.getSample( -5); r &= q == 0;
+  q = flt.getSample( -4); r &= q == -1;
 
+  // triggers assert - 
+  q = flt.getSample( -5); r &= q == -2;
+  q = flt.getSample( -6); r &= q == -3;
+  q = flt.getSample( -7); r &= q == -4;
+  q = flt.getSample( -8); r &= q == -5;
 
 
   return r;

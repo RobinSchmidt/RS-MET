@@ -504,6 +504,26 @@ Idea:
 
 //=================================================================================================
 
+/** Baseclass for rsBinaryHeap and rsBinarySearchTree...
+
+*/
+
+
+template<class T>
+class rsBinaryTree
+{
+
+public:
+
+
+
+protected:
+
+};
+
+
+//=================================================================================================
+
 /** Class for representing an array A of data as binary heap with functions for establishing and 
 maintaining the heap-property. To understand what that property means, we must first interpret the
 flat array A as a binary tree in the following way:
@@ -524,7 +544,7 @@ References:
   (1) Introduction to Algorithms, 2nd Ed. (Cormen, Leiserson, Rivest, Stein)  */
 
 template<class T>
-class rsBinaryHeap
+class rsBinaryHeap : public rsBinaryTree<T>
 {
 
 public:
@@ -761,24 +781,19 @@ protected:
   // maybe make them static:
 
   /** Index of parent of node i. */
-  inline int parent(int i) const { return (i-1) / 2; }
+  static inline int parent(int i) { return (i-1) / 2; }
 
   /** Index of left child of node i. */
-  inline int left(int i)   const { return 2*i + 1; }
+  static inline int left(int i)   { return 2*i + 1; }
 
   /** Index of right child of node i. */
-  inline int right(int i)  const { return 2*i + 2; }
-
-
+  static inline int right(int i)  { return 2*i + 2; }
 
   /** Returns true, iff index i is the index of a left child node. */
-  inline bool isLeft(int i) const { return i == left(parent(i)); }
+  static inline bool isLeft(int i) { return i == left(parent(i)); }
 
   /** Returns true, iff index i is the index of a right child node. */
-  inline bool isRight(int i) const { return i == right(parent(i)); }
-
-  // needs test
-
+  static inline bool isRight(int i) { return i == right(parent(i)); }
 
 
 
@@ -807,6 +822,31 @@ protected:
 // -in the old RSLib codebase, i did some sort of linked-tree - maybe that could be dragged in as
 //  rsLinkedTree or rsDynamicTree or something like that - all the different trees could be in
 //  a file Trees.h/cpp
+
+//=================================================================================================
+
+/** Works similar to rsBinaryHeap just that the property satified by the nodes is different. 
+Here, it holds that:
+
+   A[left(i)]  <= A[i]    and
+   A[right(i)] >= A[i]
+
+As a reminder, for a (max)heap, the property was A[left(i)] <= A[i] and A[right(i)] <= A[i], i.e.
+both children must have values less-or-equal than the parent. Here, the left node must be 
+less-or-equal and the right node must be greater-or-equal. */
+
+template<class T>
+class rsBinarySearchTree : public rsBinaryTree<T>
+{
+
+public:
+
+protected:
+
+};
+
+
+
 
 //=================================================================================================
 
@@ -893,6 +933,8 @@ public:
       // the swap:
       rsSwap(nodes[0].heapIndex, nodes[nS].heapIndex); // update of our additional data
       rsSwap(heaps[0], heaps[nS]);                     // update of the actual heap elements
+
+      //rsSwap(nodes[0].value,     nodes[nS].value);       // just a test - is this correct?
 
       // the update that may be required due to the swap:
       if(hi < nS)
