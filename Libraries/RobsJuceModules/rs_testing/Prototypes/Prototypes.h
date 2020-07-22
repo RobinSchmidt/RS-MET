@@ -1113,6 +1113,13 @@ public:
             &newLarge[0], (int) newLarge.size(), (int) newLarge.size());
   }
 
+  
+  void setSwapFunction(const std::function<void(T&, T&)>& newFunc)
+  {
+    small.setSwapFunction(newFunc);
+    large.setSwapFunction(newFunc);
+  }
+
 
   /** Replaces the element at index i with the given new values and returns the the index where the
   new element actual ended up after doing all the floating up/down and potential swapping business.
@@ -1195,15 +1202,18 @@ bigger-than-percentile values) and a circular buffer in a clever way....
 
 // other implementation - hopefully simpler - less indirections
 template<class T>
-class rsMovingQuantileFilter2
+class rsMovingQuantileFilter
 {
 
 public:
 
 
-  //rsMovingQuantileFilter2 : buf(20) { }
-  // get rid! needed bcs rsRingBuffer has no default constructor - change that - the ringbuffer
-  // should be able to change its capcity via a setCapacity function that we call in setMaxLength
+  rsMovingQuantileFilter()
+  { 
+    auto swapNodes = [&](Node& a, Node& b) { this->swapNodes(a, b); };
+    heaps.setSwapFunction(swapNodes);
+  }
+
 
 
   void setMaxLength(int newMaxLength)
@@ -1232,6 +1242,29 @@ public:
   }
 
 
+  bool isIndexPermutation(int* b, int L)
+  {
+    for(int i = 0; i < L; i++)
+      if( !rsArrayTools::contains(b, L, i) )
+        return false;
+    return true;
+  }
+  // Returns true, iff b contains every number from 0 to L-1. Since b is of length L, this implies
+  // that every number is contained exactly once, so b is a permutation of the numbers 0...L-1.
+  // used here only for debug -  move elsewhere
+
+  
+  bool isDelayBufferValid()
+  {
+    std::vector<int> tmp(L);
+    buf.copyTo(&tmp[0]);
+    return true;  // preliminary
+
+    //return isIndexPermutation(&tmp[0], L); // i think, i have implemented such a function in 
+                                           // ScratchPad.cpp for the matrix stuff
+  }
+  
+  // for debugging
 
   T getSample(T x)
   {
@@ -1239,18 +1272,41 @@ public:
     // sample with the new incoming sample, thereby keeping track of where it goes in the heap, 
     // storing that number in the circular buffer
 
+    rsAssert(isDelayBufferValid()); // for debug
+
     int hi = buf.getOldest();       // hi: heap-index of oldest sample
     int bi = heaps[hi].bufIndex;    // bi: buffer-index of oldest sample
 
     int hj = heaps.replace(hi, Node(x, bi));
+    int bj = heaps[hj].bufIndex;   // needed?
     // create a Node from the new value, replace the oldest node with it and retrieve the 
-    // heap-index where the new node went to
+    // heap-index where the new node went to - this may re-shuffle the buf as well
 
-    hi = buf.getSample(hj); // hi should not change here from what was returned from getOldest
+    buf.advancePointers();
+
+    //hi = buf.getSample(hj);
+    // store the heap-index of the new value in the buffer - the return value is not really 
+    // interesting anymore - we are already done with it
+    // maybe we should not use getSample but updatePointers
+
+    //buf[bi] = hi; // verify! nope!
+
+    //bi = heaps[hi].bufIndex;  // experimental - i don't know, what i'm doing
+    //buf[bi] = hi;    
+
+    // hi should not change here from what was returned from getOldest - but it does - but maybe
+    // it's because of the swaps and actually ok? we don't really need it anymore anyway - it's
+    // just for verification/debugging
+
+    rsAssert(isDelayBufferValid()); // for debug
+
 
     T y = heaps.getSmallestLargeValue().value;
     // or should it be getSmallestLargeValue? in case of non-integer q, perhaps a linear 
     // combination of both? also for medians of even length - there, we need the average of both
+
+    // maybe check, if buf contains a permutation of the values 0...L-1 - this should always be the
+    // case, if everything is correct
 
     return y;
 
@@ -1270,7 +1326,9 @@ public:
     {
       heaps[n].value    = T(0);
       heaps[n].bufIndex = n;      // verify!
-      buf[n]            = n;      // verify!
+
+      buf[n]            = n;      
+      // verify! i think, it should not matter - any permutation of the values 0..L-1 should do
     }
   }
 
@@ -1282,6 +1340,8 @@ protected:
     rsAssert(L <= (int) small.size());
     int C = (int) small.size();
     heaps.setData(&small[0], q, C, &large[0], L-q, C);  // verify!
+    buf.setLength(L);
+    reset();  // is this needed?
   }
 
   /** A node stores an incomiong signal value together with its index in the circular buffer. */
@@ -1311,12 +1371,18 @@ protected:
   // The swapping function must do the actual swap of a and b as usual but also let the circular
   // buffer keep trak of what gets swapped - the next index returned by buf.getOldest or 
   // buf.getSample should always hold the (double-heap-) index to the oldest value
-  void swapNodes(const Node& a, const Node& b)
+  void swapNodes(Node& a, Node& b)
   {
     rsSwap(a, b);
 
+
+    int i = a.bufIndex;
+    int j = b.bufIndex;
+
     // todo: swap the corresponding indices in circular buffer:
     rsSwap(buf[a.bufIndex], buf[b.bufIndex]);  // is this correct?
+
+    rsAssert(isDelayBufferValid());  // debug
 
     int dummy = 0;
   }
@@ -1334,13 +1400,13 @@ protected:
 
 
 template<class T>
-class rsMovingQuantileFilter
+class rsMovingQuantileFilterOld
 {
 
 public:
 
 
-  rsMovingQuantileFilter(int numSmaller = 20, int numLarger = 20) 
+  rsMovingQuantileFilterOld(int numSmaller = 20, int numLarger = 20) 
     : buf(numSmaller+numLarger) // preliminary - we need to be able to adapt the capacity of ringbuffers at runtime
   {
     setLengths(numSmaller, numLarger);

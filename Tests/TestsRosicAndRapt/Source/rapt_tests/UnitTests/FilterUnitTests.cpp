@@ -308,18 +308,22 @@ bool movingPercentileUnitTest()
 
   double q;
 
-  rsMovingQuantileFilter2<double> flt;
+  rsMovingQuantileFilter<double> flt;
   flt.setMaxLength(8);
-  flt.setLength(6);
-  flt.setQuantile(3);
+  flt.setLength(8);
+  flt.setQuantile(4);
 
   q = flt.getSample( -1); r &= q ==  0;
+  q = flt.getSample( -2); r &= q ==  0;  // this call replaces the -1 value instead of the oldest
+  q = flt.getSample( -3); r &= q ==  0;
+  q = flt.getSample( -4); r &= q ==  0;
+  q = flt.getSample( -5); r &= q == -1;
+  q = flt.getSample( -6); r &= q == -2;
+  q = flt.getSample( -7); r &= q == -3;
+  q = flt.getSample( -8); r &= q == -4;
+  q = flt.getSample( -9); r &= q == -5;
 
-  q = flt.getSample( -2); r &= q ==  0;
-  // this call replaces the -1 value instead of the oldest
-
-  q = flt.getSample( -3); r &= q == -1;
-
+  // we must setSwap
 
 
   /*

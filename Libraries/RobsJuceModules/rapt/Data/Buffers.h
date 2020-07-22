@@ -81,6 +81,13 @@ public:
   // name getSample...any maybe merge class with rsDoubleEndedQueue
 
 
+  inline void advancePointers(size_t amount = 1)
+  {
+    rightIndex = this->wrap(rightIndex + amount);
+    leftIndex  = this->wrap(leftIndex  + amount);
+  }
+
+
   // Return samples from the buffer without updating anything
 
   inline T getOldest() const
