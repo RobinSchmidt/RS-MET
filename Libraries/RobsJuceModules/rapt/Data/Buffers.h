@@ -104,7 +104,8 @@ public:
   {
     return this->wrap(leftIndex + i);
   }
-  // needs test
+  // needs test - maybe we have to do something similar as in getIndexFromNewest ..maybe 
+  // if(i < leftIndex) i += getCapacity()  ?
 
   size_t getIndexFromNewest(size_t i) const
   {

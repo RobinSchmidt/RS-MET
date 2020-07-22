@@ -1268,62 +1268,18 @@ public:
 
   T getSample(T x)
   {
-    // under construction...i have no idea what i'm doing...the goal is to replace the oldest 
-    // sample with the new incoming sample, thereby keeping track of where it goes in the heap, 
-    // storing that number in the circular buffer
-
-    //rsAssert(isDelayBufferValid()); // for debug
-
     int hi = buf.getOldest();       // hi: heap-index of oldest sample
     int bi = heaps[hi].bufIndex;    // bi: buffer-index of oldest sample
-
-    //Node N = Node(x, (bi+1) % L);
-    //heaps.replace(hi, N);
-
     int hj = heaps.replace(hi, Node(x, bi, sampleCount));
-
-
-    int bj = heaps[hj].bufIndex;   // needed?
-    // create a Node from the new value, replace the oldest node with it and retrieve the 
-    // heap-index where the new node went to - this may re-shuffle the buf as well
-
+    //int bj = heaps[hj].bufIndex;   // needed?
     buf.advancePointers();
-
-    //hi = buf.getSample(hj);
-    // store the heap-index of the new value in the buffer - the return value is not really 
-    // interesting anymore - we are already done with it
-    // maybe we should not use getSample but updatePointers
-
-    //buf[bi] = hi; // verify! nope!
-
-    //bi = heaps[hi].bufIndex;  // experimental - i don't know, what i'm doing
-    //buf[bi] = hi;    
-
-    // hi should not change here from what was returned from getOldest - but it does - but maybe
-    // it's because of the swaps and actually ok? we don't really need it anymore anyway - it's
-    // just for verification/debugging
-
-    //rsAssert(isDelayBufferValid()); // for debug
-
 
     T y = heaps.getSmallestLargeValue().value;
     // or should it be getSmallestLargeValue? in case of non-integer q, perhaps a linear 
     // combination of both? also for medians of even length - there, we need the average of both
 
-    // maybe check, if buf contains a permutation of the values 0...L-1 - this should always be the
-    // case, if everything is correct
-
     sampleCount++;
-
     return y;
-
-
-    //return heaps.getSmallestLargeValue();
-
-
-    //return heaps[q];
-    // or maybe q-1 or q+1? what about fractional q? we need a linear combination of values at
-    // q and q+1
   }
 
 
@@ -1401,10 +1357,6 @@ protected:
     // need the opposite...or do we?
 
     rsAssert(isDelayBufferValid());  // debug
-
-    // todo: check also that each bufIndex appears in the heaps
-
-    int dummy = 0;
   }
 
 
