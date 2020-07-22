@@ -1168,27 +1168,13 @@ public:
 
 protected:
 
-
-
   rsBinaryHeap<T> small, large;  // the two heaps for the small and large numbers
-
-  //T* data;  // redundant
-  //int nS, nL;                    // number of small and large numbers
-
-  /*
-  std::function<bool(const T&, const T&)> 
-    less = [](const T& a, const T& b)->bool 
-  { 
-    return a < b; 
-  };
-
-  std::function<void(T&, T&)> 
-    swap = [](T& a, T& b) { rsSwap(a, b); };
-    */
 
 };
 
 //=================================================================================================
+
+
 
 /** Class to exctract moving quantiles (such as the median) from a signal in realtime. If the 
 percentile runs over N samples, the filters takes O(log(N)) operations per sample. It achieves this
@@ -1196,6 +1182,47 @@ by using two heaps (a max-heap of the smaller-than-percentile values and a min-h
 bigger-than-percentile values) and a circular buffer in a clever way....
 
 */
+
+// other implementation - hopefully simpler - less indirections
+template<class T>
+class rsMovingQuantileFilter2
+{
+
+public:
+
+protected:
+
+  /** A node stores an incomiong signal value together with its index in the circular buffer. */
+  struct Node
+  {
+    int bufIndex = 0;
+    T value = T(0);
+    bool operator<(const Node& b) const { return this->value < b.value; }
+  };
+
+  std::vector<Node>  nodes;   // stores the incoming values together with their index in the 
+  rsDoubleHeap<Node> heaps;   // for keeping the data in the nodes array "semi-sorted"
+  rsRingBuffer<int>  buf;     // circular buffer of indices into the nodes array
+
+
+  // The swapping function must do the actual swap of a and b as usual but also let the circular
+  // buffer keep trak of what gets swapped - the next index returned by buf.getOldest or 
+  // buf.getSample should always hold the (double-heap-) index to the oldest value
+  void swapNodes(const Node& a, const Node& b)
+  {
+    rsSwap(a, b);
+
+    // todo: swap the corresponding indices in circular buffer:
+    rsSwap(buf[a.bufIndex], buf[b.bufIndex]);  // is this correct?
+  }
+
+
+  // we need a circular buffer of heap indices and twe swap function should take care of updating
+  // this circular buffer, too
+
+
+};
+
 
 template<class T>
 class rsMovingQuantileFilter
@@ -1445,18 +1472,7 @@ protected:
 //  we want the median, then use the root
 
 
-// other implementattion - hopefully simpler - less indirections
-template<class T>
-class rsMovingQuantileFilter2
-{
 
-public:
-
-protected:
-
-
-
-};
 
 template<class T>
 class rsMovingQuantileFilterNaive
