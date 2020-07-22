@@ -1165,6 +1165,16 @@ public:
     return i >= 0 && i < small.getSize() + large.getSize();
   }
 
+  T getLargestSmallValue()
+  {
+    return small[0];
+  }
+
+  T getSmallestLargeValue()
+  {
+    return large[0];
+  }
+
 
 protected:
 
@@ -1190,17 +1200,105 @@ class rsMovingQuantileFilter2
 
 public:
 
+
+  //rsMovingQuantileFilter2 : buf(20) { }
+  // get rid! needed bcs rsRingBuffer has no default constructor - change that - the ringbuffer
+  // should be able to change its capcity via a setCapacity function that we call in setMaxLength
+
+
+  void setMaxLength(int newMaxLength)
+  {
+    small.resize(newMaxLength);
+    large.resize(newMaxLength);
+    //buf.setCapacity(newMaxLength);
+    updateBuffers();
+  }
+
+  void setLength(int newLength)
+  {
+    L = newLength;
+    updateBuffers();
+  }
+
+  void setQuantile(int newQuantile)
+  {
+    q = newQuantile;
+    updateBuffers();
+  }
+
+  int getLength() const
+  {
+    return L;
+  }
+
+
+
+  T getSample(T x)
+  {
+    // under construction...i have no idea what i'm doing...the goal is to replace the oldest 
+    // sample with the new incoming sample, thereby keeping track of where it goes in the heap, 
+    // storing that number in the circular buffer
+
+    int hi = buf.getOldest();       // hi: heap-index of oldest sample
+    int bi = heaps[hi].bufIndex;    // bi: buffer-index of oldest sample
+
+    int hj = heaps.replace(hi, Node(x, bi));
+    // create a Node from the new value, replace the oldest node with it and retrieve the 
+    // heap-index where the new node went to
+
+    hi = buf.getSample(hj); // hi should not change here from what was returned from getOldest
+
+
+    return heaps.getSmallestLargeValue();
+    // or should it be getSmallestLargeValue? in case of non-integer q, perhaps a linear 
+    // combination of both? also for medians of even length - there, we need the average of both
+
+    //return heaps[q];
+    // or maybe q-1 or q+1? what about fractional q? we need a linear combination of values at
+    // q and q+1
+  }
+
+
+  void reset()
+  {
+    for(int n = 0; n < L; n++)
+    {
+      heaps[n].value    = T(0);
+      heaps[n].bufIndex = n;      // verify!
+      buf[n]            = n;      // verify!
+    }
+  }
+
+
 protected:
+
+  void updateBuffers()
+  {
+    rsAssert(L <= (int) small.size());
+    int C = (int) small.size();
+    heaps.setData(&small[0], q, C, &large[0], L-q, C);  // verify!
+  }
 
   /** A node stores an incomiong signal value together with its index in the circular buffer. */
   struct Node
   {
+    Node(T v = T(0), int i = 0)
+    {
+      value    = v;
+      bufIndex = i;
+    }
+
     int bufIndex = 0;
     T value = T(0);
     bool operator<(const Node& b) const { return this->value < b.value; }
   };
 
-  std::vector<Node>  nodes;   // stores the incoming values together with their index in the 
+  //std::vector<Node>  nodes;   // stores the incoming values together with their index
+  // maybe keep separate vectors for the small and large heap - makes it easier
+
+
+  std::vector<Node> small, large;
+
   rsDoubleHeap<Node> heaps;   // for keeping the data in the nodes array "semi-sorted"
   rsRingBuffer<int>  buf;     // circular buffer of indices into the nodes array
 
@@ -1214,7 +1312,13 @@ protected:
 
     // todo: swap the corresponding indices in circular buffer:
     rsSwap(buf[a.bufIndex], buf[b.bufIndex]);  // is this correct?
+
+    int dummy = 0;
   }
+
+
+  int L = 0;  // total length of filter
+  int q = 0;  // quantile as value 0 <= q < L
 
 
   // we need a circular buffer of heap indices and twe swap function should take care of updating

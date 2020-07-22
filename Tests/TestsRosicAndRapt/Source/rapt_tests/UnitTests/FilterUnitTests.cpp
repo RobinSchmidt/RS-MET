@@ -308,6 +308,13 @@ bool movingPercentileUnitTest()
 
   double q;
 
+  rsMovingQuantileFilter2<double> flt;
+  flt.setMaxLength(10);
+  flt.setLength(6);
+  flt.setQuantile(3);
+
+
+  /*
   rsMovingQuantileFilter<double> flt(3, 4);  // length 7
                                         // heaps (desired)
   q = flt.getSample( -1); r &= q == 0;  //  0  0 -1 | 0 0 0 0
@@ -320,6 +327,7 @@ bool movingPercentileUnitTest()
   q = flt.getSample( -6); r &= q == -3;
   q = flt.getSample( -7); r &= q == -4;
   q = flt.getSample( -8); r &= q == -5;
+  */
 
 
   return r;

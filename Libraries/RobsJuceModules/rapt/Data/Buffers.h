@@ -39,7 +39,10 @@ class rsRingBuffer : public rsBuffer<T>
 public:
 
 
-  rsRingBuffer(size_t capacity) : rsBuffer<T>(capacity) {}
+  rsRingBuffer(size_t capacity = 0) : rsBuffer<T>(capacity) {}
+  // todo: make a default constructor creating a buffer with capacity 0 and provide a setCapacity
+  // function
+
 
 
   /** Sets up a new buffer length and adjusts the left index accordingly, leaving the right index
