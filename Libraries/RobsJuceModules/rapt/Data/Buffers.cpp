@@ -7,7 +7,13 @@ template<class T> bool rsLess(const T& a, const T& b)    { return a < b; }
 template<class T>
 rsBuffer<T>::rsBuffer(size_t capacity)
 {
-  size_t c = RAPT::rsNextPowerOfTwo(capacity);
+  setCapacity(capacity);
+}
+
+template<class T>
+void rsBuffer<T>::setCapacity(size_t newCapacity)
+{
+  size_t c = RAPT::rsNextPowerOfTwo(newCapacity);
   data.resize(c);
   mask = c-1;
 }

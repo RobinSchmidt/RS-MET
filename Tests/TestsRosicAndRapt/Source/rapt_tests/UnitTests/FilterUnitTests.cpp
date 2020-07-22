@@ -309,9 +309,17 @@ bool movingPercentileUnitTest()
   double q;
 
   rsMovingQuantileFilter2<double> flt;
-  flt.setMaxLength(10);
+  flt.setMaxLength(8);
   flt.setLength(6);
   flt.setQuantile(3);
+
+  q = flt.getSample( -1); r &= q ==  0;
+
+  q = flt.getSample( -2); r &= q ==  0;
+  // this call replaces the -1 value instead of the oldest
+
+  q = flt.getSample( -3); r &= q == -1;
+
 
 
   /*

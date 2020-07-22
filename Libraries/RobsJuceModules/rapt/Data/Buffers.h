@@ -6,10 +6,13 @@ class rsBuffer
 
 public:
 
-  /** The actual capacity will be the next power of two of given value. */
+  /** Creates a buffer with a given initial capacity. The actual capacity will be the next power of
+  two of given value. */
   rsBuffer(size_t capacity);
 
-  // todo: setCapacity(size_t newCapacity); - should resize "data" and update "mask"
+  /** Sets a new capacity for this buffer. The actual capacity will be the next power of two of 
+  given value. */
+  void setCapacity(size_t newCapacity);
 
   /** Initializes all the buffer elements with given value (default is zero). */
   void initBufferValues(T value = T(0));

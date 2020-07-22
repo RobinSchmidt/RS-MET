@@ -1210,7 +1210,7 @@ public:
   {
     small.resize(newMaxLength);
     large.resize(newMaxLength);
-    //buf.setCapacity(newMaxLength);
+    buf.setCapacity(newMaxLength);
     updateBuffers();
   }
 
@@ -1248,10 +1248,15 @@ public:
 
     hi = buf.getSample(hj); // hi should not change here from what was returned from getOldest
 
-
-    return heaps.getSmallestLargeValue();
+    T y = heaps.getSmallestLargeValue().value;
     // or should it be getSmallestLargeValue? in case of non-integer q, perhaps a linear 
     // combination of both? also for medians of even length - there, we need the average of both
+
+    return y;
+
+
+    //return heaps.getSmallestLargeValue();
+
 
     //return heaps[q];
     // or maybe q-1 or q+1? what about fractional q? we need a linear combination of values at
