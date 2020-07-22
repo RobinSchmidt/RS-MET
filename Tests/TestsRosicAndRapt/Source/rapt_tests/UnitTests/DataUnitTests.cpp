@@ -257,11 +257,9 @@ bool binaryHeapUnitTest()
   D.setData(A, B);
   i = D.replace(1, 6);  // replace 2 by 6, float up to front of small, no exchange
   r &= i == 0 && A == Vec({6,5,3}) && B ==  Vec({6,7,8});
-
   i = D.replace(5, 4);  // replace 8 by 4, float to front of large, exchange
-  // this is still wrong bcs "large" is actually still a max-heap - we need to turn it into a 
-  // min-heap
-
+  r &= i == 1 && A == Vec({5,4,3}) && B ==  Vec({6,7,6});
+  // do more tests, using larger heaps, maybe check property in a loop
 
 
 

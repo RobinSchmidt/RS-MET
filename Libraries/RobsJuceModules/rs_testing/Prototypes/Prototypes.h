@@ -1089,7 +1089,16 @@ class rsDoubleHeap
 
 public:
 
-  //rsDoubleHeap() {}
+  rsDoubleHeap() 
+  {
+    large.less = [](const T& a, const T& b)->bool 
+    { 
+      return b < a;
+    };
+    // large.less is actually a greater-than function which we obtain from the less-than operator 
+    // by swapping the arguments - this turns large into a min-heap rather than a max-heap. todo: 
+    // use the more generic name comp for "compare" in rsBinaryTree for the comparison function
+  }
 
   void setData(T* newSmallData, int newSmallSize, int newSmallCapacity,
                T* newLargeData, int newLargeSize, int newLargeCapacity)
@@ -1105,24 +1114,25 @@ public:
   }
 
 
+  /** Replaces the element at index i with the given new values and returns the the index where the
+  new element actual ended up after doing all the floating up/down and potential swapping business.
+  If nS is the size of the small heap, we use the convention that indices i < nS are direct indices 
+  into the small heap, and when i >= nS, we use i-nS as heap index into the large heap (as seen 
+  from the class rsBinaryHeap). The same holds for the return value. */
   int replace(int index, const T& newValue)
   {
     rsAssert(isIndexValid(index), "Index out of range");
 
-    int i  = index;
+    int i  = index;  // maybe get rid of index and use only i
     int nS = small.getSize();
 
-    // The replacement:
+    // The actual replacement, taking place in one of our two heaps:
     if(index < small.getSize())
-      i = small.replace(i, newValue);
+      i = small.replace(i,    newValue);
     else
-    {
-      i -= nS;
-      i  = large.replace(i, newValue);
-      i += nS; 
-    }
+      i = large.replace(i-nS, newValue) + nS;
 
-    // The potential swap of the front (i.e. max and min) elements of both heaps:
+    // The potential swap of the front elements (i.e. max and min) of both heaps:
     if( small.less(large[0], small[0]) )  // means: if(large[0] < small[0])
     {
       small.swap(small[0], large[0]);
