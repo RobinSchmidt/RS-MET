@@ -672,7 +672,7 @@ protected:
   //std::function<void(T&, T&)> swap;
 
 
-
+  // maybe these should be references?
   std::function<bool(const T&, const T&)> 
     less = [](const T& a, const T& b)->bool 
   { 
@@ -681,6 +681,9 @@ protected:
 
   std::function<void(T&, T&)> 
     swap = [](T& a, T& b) { rsSwap(a, b); };
+
+
+  template<class U> friend class rsDoubleHeap;
 
 };
 
@@ -832,6 +835,8 @@ protected:
   // todo: implement functions: int insert(T*), void remove(int), extractMax,
   // increaseKey, heapMax
 
+  template<class U> friend class rsDoubleHeap;
+
 };
 // -maybe make also a class rsBinarySearchTree where the left child is <= and the right child is >=
 //  the parent
@@ -872,14 +877,14 @@ public:
     int r = right(i);
     if(l < size) result &= !less(data[i], data[l]) && isSearchTree(l);
     if(r < size) result &= !less(data[r], data[i]) && isSearchTree(r);
-    //if(l < size) result &= !less(data[l], data[i]) && isSearchTree(l);
-    //if(r < size) result &= !less(data[i], data[r]) && isSearchTree(r);
     return result;
   }
   // actually, this test is not enough - it says yes to the "pseudotree" 
   // 50,20,80,10,60,30,90 - it satisfies the property at each node with respect to direct 
   // parents/children but not for the full subtrees - however - maybe for maintaining the
-  // property, it's enough to check that?
+  // property, it's enough to check that? can replace create pseudotrees? ..oh - yes - that seems
+  // to be the case! damn! maybe the whole idea of using the same structure as for the binary heap
+  // does not work out as i hoped... :-(
 
   void buildSearchTree()
   {
@@ -1069,8 +1074,109 @@ protected:
 
 };
 
+//=================================================================================================
+
+/** Data structure that combines a max-heap with a min-heap for the purpose of splitting a bunch
+of values into two groups: the small values and the large values. The two heaps satisfy the 
+property that all values in the small heap are less-or-equal to all values in the large heap. The 
+small values are held in a max-heap such that the largest of them can be extracted in O(1) time and 
+the large values are held in a min-heap such that the smallest of them can also be extracted in 
+O(1) time. This facilitates to exctract the median or other quantiles. tbc....  */
+
+template<class T>
+class rsDoubleHeap
+{
+
+public:
+
+  //rsDoubleHeap() {}
+
+  void setData(T* newSmallData, int newSmallSize, int newSmallCapacity,
+               T* newLargeData, int newLargeSize, int newLargeCapacity)
+  {
+    small.setData(newSmallData, newSmallSize, newSmallCapacity);
+    large.setData(newLargeData, newLargeSize, newLargeCapacity);
+  }
+
+  void setData(std::vector<T>& newSmall, std::vector<T>& newLarge)
+  {
+    setData(&newSmall[0], (int) newSmall.size(), (int) newSmall.size(),
+            &newLarge[0], (int) newLarge.size(), (int) newLarge.size());
+  }
 
 
+  int replace(int index, const T& newValue)
+  {
+    rsAssert(isIndexValid(index), "Index out of range");
+
+    int i  = index;
+    int nS = small.getSize();
+
+    // The replacement:
+    if(index < small.getSize())
+      i = small.replace(i, newValue);
+    else
+    {
+      i -= nS;
+      i  = large.replace(i, newValue);
+      i += nS; 
+    }
+
+    // The potential swap of the front (i.e. max and min) elements of both heaps:
+    if( small.less(large[0], small[0]) )  // means: if(large[0] < small[0])
+    {
+      small.swap(small[0], large[0]);
+      int is = small.floatDown(0);
+      int il = large.floatDown(0);
+      if(index < nS)   // we replaced in small heap, then swapped, so newValue is now in large heap
+        i = il + nS;
+      else
+        i = is;
+    }
+
+    return i;
+  }
+  // we use the convention that when i < nS, the datum gets inserted into the small heap and when 
+  // i >= nS, the datum gets inserted into the large heap at i-nS, tbc....
+
+
+  T& operator[](int i)
+  {
+    rsAssert(isIndexValid(i), "Index out of range");
+    int nS = small.getSize();
+    if(i < nS)
+      return small[i];
+    else
+      return large[i-nS];
+  }
+
+  bool isIndexValid(int i)
+  {
+    return i >= 0 && i < small.getSize() + large.getSize();
+  }
+
+
+protected:
+
+
+
+  rsBinaryHeap<T> small, large;  // the two heaps for the small and large numbers
+
+  //T* data;  // redundant
+  //int nS, nL;                    // number of small and large numbers
+
+  /*
+  std::function<bool(const T&, const T&)> 
+    less = [](const T& a, const T& b)->bool 
+  { 
+    return a < b; 
+  };
+
+  std::function<void(T&, T&)> 
+    swap = [](T& a, T& b) { rsSwap(a, b); };
+    */
+
+};
 
 //=================================================================================================
 
@@ -1309,6 +1415,11 @@ protected:
   // simplify the implementation a lot - less indirection - we actually don't need the two-way
   // association: the order of the circular buffer never changes
 
+  // i think, maybe i should get rid of the nodes array and keeps only heaps - and a heap node 
+  // should contain the catual value together with the buffer index and whenever two heap-nodes
+  // are swapped, the corresponding buffer entries are also swapped (the buffer contains indices 
+  // into the heaps)
+
 
   int nS = 0, nL = 0; // number of elements smaller than and larger than the percentile
   // maybe use size_t
@@ -1323,6 +1434,19 @@ protected:
 // -output is always the valzue stored in a specific, fixed node - if the tree is symmetric and we
 //  we want the median, then use the root
 
+
+// other implementattion - hopefully simpler - less indirections
+template<class T>
+class rsMovingQuantileFilter2
+{
+
+public:
+
+protected:
+
+
+
+};
 
 template<class T>
 class rsMovingQuantileFilterNaive

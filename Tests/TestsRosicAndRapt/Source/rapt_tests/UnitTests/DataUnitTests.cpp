@@ -245,6 +245,32 @@ bool binaryHeapUnitTest()
   // todo: test inserting and removing items
 
 
+
+
+  // test the double heap:
+
+  rsDoubleHeap<int> D;
+  Vec B;
+  int i;
+  A = Vec({5,2,3});
+  B = Vec({6,7,8});
+  D.setData(A, B);
+  i = D.replace(1, 6);  // replace 2 by 6, float up to front of small, no exchange
+  r &= i == 0 && A == Vec({6,5,3}) && B ==  Vec({6,7,8});
+
+  i = D.replace(5, 4);  // replace 8 by 4, float to front of large, exchange
+  // this is still wrong bcs "large" is actually still a max-heap - we need to turn it into a 
+  // min-heap
+
+
+
+
+
+
+
+  int dummy = 0;
+
+
   // test the binary search tree:
 
   // maybe test with the small array 1,2,3 in all permutations, test also 1,2,2 and 1,1,2 in all
