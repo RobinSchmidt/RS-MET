@@ -323,11 +323,70 @@ bool movingPercentileUnitTest()
   q = flt.getSample( +2); r &= q == +1;
   q = flt.getSample( +3); r &= q == +2;
 
-  // aah - no - the -3 value is already 5 samples ago - it has been discarded already, so -4 it 
-  // should be
   // todo: go through a couple of hand-calculations and compare with results here - test also with
   // different quantiles and try to make the quantile modulatable also with 0 and L-1 which should 
   // give moving min/max filters
+
+
+
+
+
+ 
+  // compare output against naive version for random inputs:
+
+  int nS = 2;
+  int nL = 2;
+  flt.setMaxLength(nS+nL);
+  //flt.setMaxLength(16);
+  flt.setLength(nS+nL);
+  flt.setQuantile(nS);
+
+
+  rsMovingQuantileFilterNaive<double> fltN(nS, nL);
+
+  q = fltN.getSample( -1); r &= q ==  0;
+  q = fltN.getSample( -2); r &= q ==  0;
+  q = fltN.getSample( -3); r &= q == -1;
+  q = fltN.getSample( -4); r &= q == -2;
+  q = fltN.getSample( -5); r &= q == -3;
+  q = fltN.getSample( -6); r &= q == -4;
+  q = fltN.getSample( +1); r &= q == -4;
+  q = fltN.getSample( +2); r &= q == +1;
+  q = fltN.getSample( +3); r &= q == +2;
+
+  double p;
+
+  int N = 200;  // number of samples
+  using Vec = std::vector<double>;
+  //Vec x = rsRandomVector(N, -1.0, +1.0);
+  Vec x = rsRandomIntVector(N, 0, 99, 0);
+  Vec y(N), z(N), t(N);
+  flt.reset();
+  fltN.reset();
+  for(int n = 0; n < N; n++)
+  {
+    q = y[n] = flt.getSample(x[n]);
+    p = z[n] = fltN.getSample(x[n]);
+    r &= p == q;
+    //rsAssert(p == q); // triggers at sample 6
+    int dummy = 0;
+  }
+ 
+
+
+  /*
+  flt.reset();
+  for(int n = nS; n < N-nL; n++)
+    t[n+nS] = rsArrayTools::median(&x[n-nS], nS+nL);
+
+  rsPlotVectors(x, t, z);
+
+  // now the big task is to make y match z...
+  rsPlotVectors(y, z); // ..of course, this does not yet work
+  */
+
+
+
 
   return r;
 

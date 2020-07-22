@@ -1280,7 +1280,9 @@ public:
     //Node N = Node(x, (bi+1) % L);
     //heaps.replace(hi, N);
 
-    int hj = heaps.replace(hi, Node(x, bi));
+    int hj = heaps.replace(hi, Node(x, bi, sampleCount));
+
+
     int bj = heaps[hj].bufIndex;   // needed?
     // create a Node from the new value, replace the oldest node with it and retrieve the 
     // heap-index where the new node went to - this may re-shuffle the buf as well
@@ -1311,6 +1313,8 @@ public:
     // maybe check, if buf contains a permutation of the values 0...L-1 - this should always be the
     // case, if everything is correct
 
+    sampleCount++;
+
     return y;
 
 
@@ -1325,14 +1329,16 @@ public:
 
   void reset()
   {
+    buf.reset();
     for(int n = 0; n < L; n++)
     {
       heaps[n].value    = T(0);
       heaps[n].bufIndex = n;      // verify!
-
+      heaps[n].time     = -(n+1);
       buf[n]            = n;      
       // verify! i think, it should not matter - any permutation of the values 0..L-1 should do
     }
+    sampleCount = 0;
   }
 
 
@@ -1350,14 +1356,18 @@ protected:
   /** A node stores an incomiong signal value together with its index in the circular buffer. */
   struct Node
   {
-    Node(T v = T(0), int i = 0)
+    Node(T v = T(0), int i = 0, int t = 0)
     {
       value    = v;
       bufIndex = i;
+      time     = t;
     }
 
     int bufIndex = 0;
     T value = T(0);
+
+    int time; // only for debug
+
     bool operator<(const Node& b) const { return this->value < b.value; }
   };
 
@@ -1379,13 +1389,20 @@ protected:
     rsSwap(a, b);
 
 
-    int i = a.bufIndex;
-    int j = b.bufIndex;
+    //int i = a.bufIndex;
+    //int j = b.bufIndex;
+
+    int i = buf.getIndexFromOldest(a.bufIndex);
+    int j = buf.getIndexFromOldest(b.bufIndex);
 
     // todo: swap the corresponding indices in circular buffer:
-    rsSwap(buf[a.bufIndex], buf[b.bufIndex]);  // is this correct?
+    rsSwap(buf[i], buf[j]);  
+    // is this correct? the [] operator starts from the newest and goes back to the oldest - we may
+    // need the opposite...or do we?
 
     rsAssert(isDelayBufferValid());  // debug
+
+    // todo: check also that each bufIndex appears in the heaps
 
     int dummy = 0;
   }
@@ -1394,6 +1411,7 @@ protected:
   int L = 0;  // total length of filter
   int q = 0;  // quantile as value 0 <= q < L
 
+  int sampleCount = 0; // fo debug
 
   // we need a circular buffer of heap indices and twe swap function should take care of updating
   // this circular buffer, too
@@ -1651,7 +1669,10 @@ protected:
 
 
 
-
+// this is only for producing test outputs to compare the production version of the 
+// rsMovingQuantileFilter agains - it's not meant for actual use - the algo is horribly 
+// inefficient - the cost per sample is O(N*log(N)) whereas the production version should run in
+// O(log(N))
 template<class T>
 class rsMovingQuantileFilterNaive
 {

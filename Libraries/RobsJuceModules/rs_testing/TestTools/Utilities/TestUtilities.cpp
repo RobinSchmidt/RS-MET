@@ -46,6 +46,19 @@ std::vector<double> rsRandomVector(int N, double min, double max, int seed)
   return v;
 }
 
+std::vector<double> rsRandomIntVector(int N, int min, int max, int seed)
+{
+  std::vector<double> v(N);
+  rsNoiseGenerator<double> ng;
+  ng.setSeed(seed);
+  for(int i = 0; i < N; i++)
+  {
+    int iVal = ng.getSampleRaw() % (max-min) - min;
+    v[i] = (double) iVal;
+  }
+  return v;
+}
+
 std::vector<double> rsApplyFunction(const std::vector<double>& v, double p, 
   double (*f) (double, double))
 {
