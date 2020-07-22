@@ -1258,9 +1258,9 @@ public:
   {
     std::vector<int> tmp(L);
     buf.copyTo(&tmp[0]);
-    return true;  // preliminary
+    //return true;  // preliminary
 
-    //return isIndexPermutation(&tmp[0], L); // i think, i have implemented such a function in 
+    return isIndexPermutation(&tmp[0], L); // i think, i have implemented such a function in 
                                            // ScratchPad.cpp for the matrix stuff
   }
   
@@ -1327,14 +1327,10 @@ protected:
     bool operator<(const Node& b) const { return this->value < b.value; }
   };
 
-  //std::vector<Node>  nodes;   // stores the incoming values together with their index
-  // maybe keep separate vectors for the small and large heap - makes it easier
 
-
-  std::vector<Node> small, large;
-
-  rsDoubleHeap<Node> heaps;   // for keeping the data in the nodes array "semi-sorted"
-  rsRingBuffer<int>  buf;     // circular buffer of indices into the nodes array
+  std::vector<Node>  small, large; // for data storage of the nodes
+  rsDoubleHeap<Node> heaps;        // for keeping the data in the nodes array "semi-sorted"
+  rsRingBuffer<int>  buf;          // circular buffer of indices into the nodes array
 
 
   // The swapping function must do the actual swap of a and b as usual but also let the circular
@@ -1343,7 +1339,6 @@ protected:
   void swapNodes(Node& a, Node& b)
   {
     rsSwap(a, b);
-
 
     //int i = a.bufIndex;
     //int j = b.bufIndex;
@@ -1356,19 +1351,17 @@ protected:
     // is this correct? the [] operator starts from the newest and goes back to the oldest - we may
     // need the opposite...or do we?
 
-    rsAssert(isDelayBufferValid());  // debug
+    //rsAssert(isDelayBufferValid());  // debug
   }
 
 
   int L = 0;  // total length of filter
   int q = 0;  // quantile as value 0 <= q < L
 
-  int sampleCount = 0; // fo debug
+  int sampleCount = 0; // for debug - can be removed when class is finished and works
 
   // we need a circular buffer of heap indices and twe swap function should take care of updating
   // this circular buffer, too
-
-
 };
 
 
