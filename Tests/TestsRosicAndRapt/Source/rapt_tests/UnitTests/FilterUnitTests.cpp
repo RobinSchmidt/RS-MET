@@ -331,19 +331,25 @@ bool movingPercentileUnitTest()
 
 
 
+
+
  
   // compare output against naive version for random inputs:
 
-  int nS = 2;
-  int nL = 2;
+  int nS = 32;
+  int nL = 32;
   flt.setMaxLength(nS+nL);
-  //flt.setMaxLength(16);
+  //flt.setMaxLength(50);  // test
   flt.setLength(nS+nL);
   flt.setQuantile(nS);
+
+  // it works when nS = nL = 2^k and we use setMaxLength(nS+nL) - otherwise, we get garbage results
+  // it probably has to do with the wraparounds of the circular buffer
 
 
   rsMovingQuantileFilterNaive<double> fltN(nS, nL);
 
+  /*
   q = fltN.getSample( -1); r &= q ==  0;
   q = fltN.getSample( -2); r &= q ==  0;
   q = fltN.getSample( -3); r &= q == -1;
@@ -353,10 +359,11 @@ bool movingPercentileUnitTest()
   q = fltN.getSample( +1); r &= q == -4;
   q = fltN.getSample( +2); r &= q == +1;
   q = fltN.getSample( +3); r &= q == +2;
+  */
 
   double p;
 
-  int N = 200;  // number of samples
+  int N = 500;  // number of samples
   using Vec = std::vector<double>;
   //Vec x = rsRandomVector(N, -1.0, +1.0);
   Vec x = rsRandomIntVector(N, 0, 99, 0);
@@ -372,7 +379,7 @@ bool movingPercentileUnitTest()
     int dummy = 0;
   }
  
-
+  //rsPlotVectors(y, z);
 
   /*
   flt.reset();
@@ -382,7 +389,7 @@ bool movingPercentileUnitTest()
   rsPlotVectors(x, t, z);
 
   // now the big task is to make y match z...
-  rsPlotVectors(y, z); // ..of course, this does not yet work
+..of course, this does not yet work
   */
 
 
