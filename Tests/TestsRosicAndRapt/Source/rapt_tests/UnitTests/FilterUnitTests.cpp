@@ -333,13 +333,23 @@ bool movingPercentileUnitTest()
   int nS = 32;
   int nL = 32;
   flt.setMaxLength(nS+nL);
-  //flt.setMaxLength(50);  // test
+  //flt.setMaxLength(100);  // test - nope - produces garbage
+  //flt.setMaxLength(128);  // same garbage
+
   flt.setLength(nS+nL);
   flt.setQuantile(nS);
 
   // it works when nS = nL = 2^k and we use setMaxLength(nS+nL) - otherwise, we get garbage results
   // it probably has to do with the wraparounds of the circular buffer - or maybe with
   // rsRingBuffer::getIndexFromOldest - make a unit test for that
+  // or could is have something to do with the heaps not being used fully? ...but i don't think so
+  // no: even when we use heaps of very different sizes, it still works as long as the sum of their
+  // lengths is a power of two - that points to a problem with the delay-buffer wraparound wait:
+  // getIndexFromOldest returns an index *directly* into that data-buffer - not an index that can 
+  // be fed to the [] operator of the class - but the values probably coincide in case of a 
+  // power-of-2 length? i think so, because in this case the read and write pointers arec euqal?
+  // maybe provide a buf.swapValues(int i, int j) function - yep: leftIndex == rightIndex
+
 
 
   rsMovingQuantileFilterNaive<double> fltN(nS, nL);
@@ -357,11 +367,57 @@ bool movingPercentileUnitTest()
     q = y[n] = flt.getSample(x[n]);
     p = z[n] = fltN.getSample(x[n]);
     r &= p == q;
+    int dummy = 0;
+  }
+  rsPlotVectors(y, z);
+
+  // try it with unqual lengths for nS, nL that add up to a power of two
+  nS = 50;  // nS+nL should be a power of two such as 64
+  nL = 14;
+  flt.setMaxLength(nS+nL);
+  flt.setLength(nS+nL);
+  flt.setQuantile(nS);
+  flt.reset();
+  fltN.setLengths(nS, nL);
+  fltN.reset();
+  for(int n = 0; n < N; n++)
+  {
+    q = y[n] = flt.getSample(x[n]);
+    p = z[n] = fltN.getSample(x[n]);
+    r &= p == q;
+    int dummy = 0;
+  }
+  rsPlotVectors(y, z);
+  // ok - that works also - for nS+nL = 64 and nS > 0 and nL > 0, so (1,63) up to (63,1) is ok, but
+  // (0,64) or (64,0) is not ok
+  // Observation: when nS and nL are very different, the variance of the filter output gets less: 
+  // the median has highest variance but quantiles closer to 0 or 1 have lower variance - that 
+  // could be a useful feature in signal processing applications
+
+
+  /*
+  // now with a non-power of two:
+  nS = 20;
+  nL = 20;
+  flt.setLength(nS+nL);
+  flt.setQuantile(nS);
+  fltN.setLengths(nS, nL);
+  flt.reset();
+  fltN.reset();
+  for(int n = 0; n < N; n++)
+  {
+    q = y[n] = flt.getSample(x[n]);
+    p = z[n] = fltN.getSample(x[n]);
+    r &= p == q;
     //rsAssert(p == q); // triggers at sample 6
     int dummy = 0;
   }
- 
   rsPlotVectors(y, z);
+  */
+
+
+
+
   return r;
 
   // stuff below may be obsolete soon:

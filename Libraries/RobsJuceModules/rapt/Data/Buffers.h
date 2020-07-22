@@ -80,7 +80,7 @@ public:
   // rename to pushRightPopLeft maybe make a subclass delayline that defines an alias function
   // name getSample...any maybe merge class with rsDoubleEndedQueue
 
-
+  /** Advances our read- and write pointers by the given number of positions. */
   inline void advancePointers(size_t amount = 1)
   {
     rightIndex = this->wrap(rightIndex + amount);
@@ -102,21 +102,46 @@ public:
 
   size_t getIndexFromOldest(size_t i) const
   {
+    // is this correct? -> make unit tests:
+    //if(i > length)    i -= length;  // should never happen
+    //if(i < leftIndex) i += getCapacity();  
+
     return this->wrap(leftIndex + i);
   }
   // needs test - maybe we have to do something similar as in getIndexFromNewest ..maybe 
   // if(i < leftIndex) i += getCapacity()  ?
+  // and/or maybe we have to take the length into account? it seems to work only when 
+  // length == capacity
+  // but actually, we do the i += stuff below only to avoid negative numbers when we do
+  // rightIndex-i - but negative number cannot happen here because we do not subtract
 
+  /** Returns the index j into our internal data array such that data[j] contains the value from
+  i samples ago. */
   size_t getIndexFromNewest(size_t i) const
   {
     if(i > rightIndex)
-      i += getCapacity();  // do this branchless: i += (i > rightIndex) * getCapacity();
+      i += getCapacity();  
+    // do this branchless: i += (i > rightIndex) * getCapacity();
+    // is this even needed or will underflow in the subtraction below produce the correct result as
+    // well? -> figure out and test. we do it to get negative numbers in the rightIndex-i operation
+
     return this->wrap(rightIndex - i);
   }
+  // maybe make protected
+
+  /*
+  void swapValues(int i, int j)
+  {
+
+  }
+  */
+
+  // the returned index from getIndexFromOldest and getIndexFromNewest should always be in between
+  // leftIndex and rightIndex...maybe except, if rightIndex < leftIndex
 
   /** Returns a reference to the value inside the buffer at the given delay i, for read and write 
   access. So if you pass i = 0, you get the most recently written, newest value and for 
-  i = length-1, you get the oldest value */
+  i = length-1, you get the oldest value. */
   inline T& operator[](size_t i)
   {
     size_t j = getIndexFromNewest(i);
@@ -133,7 +158,8 @@ public:
   }
 
 
-  /** Returns the maximum value in the range between the two pointers. */
+  /** Returns the maximum value in the range between the two pointers. Mostly for testing 
+  purposes - not efficient. */
   T getMaximum()
   {
     size_t i = rightIndex;

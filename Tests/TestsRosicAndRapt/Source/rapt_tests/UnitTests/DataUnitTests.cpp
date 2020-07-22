@@ -419,6 +419,12 @@ bool ringBufferUnitTest()
   y = b.getSample(15); r &= y == 10; b.copyTo(&B[0]); r &= B == Vec({ 15, 14, 13, 12, 11 });
   y = b.getSample(16); r &= y == 11; b.copyTo(&B[0]); r &= B == Vec({ 16, 15, 14, 13, 12 });
 
+
+  b.reset();
+  int i = 0, j;
+  j = b.getIndexFromNewest(i);
+  j = b.getIndexFromOldest(i);
+
   return r;
 }
 

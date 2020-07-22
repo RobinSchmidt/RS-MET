@@ -1271,7 +1271,6 @@ public:
     int hi = buf.getOldest();       // hi: heap-index of oldest sample
     int bi = heaps[hi].bufIndex;    // bi: buffer-index of oldest sample
     int hj = heaps.replace(hi, Node(x, bi, sampleCount));
-    //int bj = heaps[hj].bufIndex;   // needed?
     buf.advancePointers();
 
     T y = heaps.getSmallestLargeValue().value;
