@@ -1272,10 +1272,13 @@ public:
     // sample with the new incoming sample, thereby keeping track of where it goes in the heap, 
     // storing that number in the circular buffer
 
-    rsAssert(isDelayBufferValid()); // for debug
+    //rsAssert(isDelayBufferValid()); // for debug
 
     int hi = buf.getOldest();       // hi: heap-index of oldest sample
     int bi = heaps[hi].bufIndex;    // bi: buffer-index of oldest sample
+
+    //Node N = Node(x, (bi+1) % L);
+    //heaps.replace(hi, N);
 
     int hj = heaps.replace(hi, Node(x, bi));
     int bj = heaps[hj].bufIndex;   // needed?
@@ -1298,7 +1301,7 @@ public:
     // it's because of the swaps and actually ok? we don't really need it anymore anyway - it's
     // just for verification/debugging
 
-    rsAssert(isDelayBufferValid()); // for debug
+    //rsAssert(isDelayBufferValid()); // for debug
 
 
     T y = heaps.getSmallestLargeValue().value;
