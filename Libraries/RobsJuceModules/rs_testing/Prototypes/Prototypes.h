@@ -589,7 +589,9 @@ public:
     return floatIntoPlace(i);
   }
   // should perhaps also be moved to rsBinaryHeap again - the replacement in the rsBinarySearchTree
-  // needs a different approach (i think)
+  // needs a different approach (i think)....yeah -  i think, this can't be generalized this way - 
+  // each sort of tree may need a different operation - maybe the floatUp/Down should also be moved
+  // there
 
   /*
   // todo: 
@@ -1191,15 +1193,27 @@ protected:
 
 //=================================================================================================
 
+
+inline bool isIndexPermutation(int* b, int L)
+{
+  for(int i = 0; i < L; i++)
+    if( !rsArrayTools::contains(b, L, i) )
+      return false;
+  return true;
+}
+// Returns true, iff b contains every number from 0 to L-1. Since b is of length L, this implies
+// that every number is contained exactly once, so b is a permutation of the numbers 0...L-1.
+// used here only for debug -  move elsewhere
+
+
+
 /** Class to exctract moving quantiles (such as the median) from a signal in realtime. If the 
 quantile runs over N samples, the filter takes O(log(N)) operations per sample. It achieves this
 by using an rsDoubleHeap together with a circular buffer of indices into that double-heap. The 
 process that takes place in getSample is to replace the oldest sample in the double-heap with the 
 new incoming sample. The potential re-ordering of the heaps due to such an replacement is kept 
 track of by the circular buffer, such that it always points to the oldest sample in the 
-double-heap. 
-
-not yet finsihed: works currently only for setLength = setMaxLength both being a power of 2... */
+double-heap.  */
 
 // other implementation - hopefully simpler - less indirections
 template<class T>
@@ -1215,7 +1229,8 @@ public:
     heaps.setSwapFunction(swapNodes);
   }
 
-
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
 
   void setMaxLength(int newMaxLength)
   {
@@ -1245,36 +1260,16 @@ public:
   // implement by linearly interpolating between largestOfSmall and smallestOfLarge via the 
   // fractional part - this will naturally also include medians of even buffer-lengths (the weights
   // should both come out as 0.5)
+  // or rename to setSmallHeapLength
 
-  int getLength() const
-  {
-    return L;
-  }
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  int getLength() const { return L; }
 
 
-  bool isIndexPermutation(int* b, int L)
-  {
-    for(int i = 0; i < L; i++)
-      if( !rsArrayTools::contains(b, L, i) )
-        return false;
-    return true;
-  }
-  // Returns true, iff b contains every number from 0 to L-1. Since b is of length L, this implies
-  // that every number is contained exactly once, so b is a permutation of the numbers 0...L-1.
-  // used here only for debug -  move elsewhere
-
-  
-  bool isDelayBufferValid()
-  {
-    std::vector<int> tmp(L);
-    buf.copyTo(&tmp[0]);
-    //return true;  // preliminary
-
-    return isIndexPermutation(&tmp[0], L); // i think, i have implemented such a function in 
-                                           // ScratchPad.cpp for the matrix stuff
-  }
-  
-  // for debugging
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
   T getSample(T x)
   {
@@ -1364,7 +1359,7 @@ protected:
     rsSwap(a, b);
     // the regular swap of the heap-nodes
 
-
+    /*
     // the additional swap the corresponding indices in circular buffer:
     //int i = a.bufIndex;
     //int j = b.bufIndex;
@@ -1375,6 +1370,7 @@ protected:
     // maybe we need to convert from data-index to buffer-index - i,j are raw data-indices but 
     // indexing the buffer is based on delay - the i,j have different meaning the [] operator 
     // starts from the newest and goes back to the oldest - we may need the opposite...or do we?
+    */
 
 
     rsSwap(buf2[a.bufIndex], buf2[b.bufIndex]);  
@@ -1389,12 +1385,9 @@ protected:
   int q = 0;  // quantile as value 0 <= q < L
 
   int sampleCount = 0; // for debug - can be removed when class is finished and works
-
-  // we need a circular buffer of heap indices and twe swap function should take care of updating
-  // this circular buffer, too
 };
 
-
+// this is obsolete and may be deleted:
 template<class T>
 class rsMovingQuantileFilterOld
 {

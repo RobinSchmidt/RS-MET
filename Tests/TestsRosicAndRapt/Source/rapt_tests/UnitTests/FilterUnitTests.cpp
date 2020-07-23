@@ -355,8 +355,14 @@ bool movingQuantileUnitTest()
   return r;
 
   // ToDo:
+  // -clean up the rsRingBuffer class - i introduced some functions there that don't seem to make 
+  //  sense anymore
+  // -clean up the tree/heap classes and move them to RAPT
   // -parametrize in terms of length and a real number for the quantile between 0..1
   // -it should also work with 0.0 and 1.0 which should give moving min/max filters
+  // -the length should be set up in a physical unit like seconds, thenwe may define a cutoff 
+  //  frequency which is inversely proportional - needs a sample-rate - wrap this into a subclass
+  //  or use composition
   // -try to make the quantile and length modulatable 
   //  -modulating q will involve moving over a number of samples from small to larger or the other
   //   way around
@@ -367,6 +373,7 @@ bool movingQuantileUnitTest()
   //  worked only when nS = nL = 2^k for some k and mL = nS + nL. This probably had to do with the
   //  weird indexing of rsRingBuffer - perhaps try to make it work, but if it's too tricky, we may 
   //  just leave it using std::vector
+
 
 
   /*
