@@ -1225,7 +1225,7 @@ public:
   rsMovingQuantileFilter()
   { 
     auto swapNodes = [&](Node& a, Node& b) { this->swapNodes(a, b); };
-    heaps.setSwapFunction(swapNodes);
+    dblHp.setSwapFunction(swapNodes);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -1235,7 +1235,7 @@ public:
   {
     small.resize(newMaxLength);
     large.resize(newMaxLength);
-    buf2.reserve(newMaxLength);
+    buf.reserve(newMaxLength);
     updateBuffers();
   }
 
@@ -1272,19 +1272,16 @@ public:
   /** Computes an output sample froma given input sample x. */
   T getSample(T x)
   {
-    int hi = buf2[buf2idx];                  // hi: heap-index of oldest sample
-    int bi = heaps[hi].bufIndex;             // bi: buffer-index of oldest sample
-    int hj = heaps.replace(hi, Node(x, bi)); // will reshuffle the content of the double-heap
-    buf2idx = (buf2idx+1) % L;               // update position in circular buffer of indices
+    // buffer update:
+    int hi = buf[bufIdx];                    // hi: heap-index of oldest sample
+    int bi = dblHp[hi].bufIndex;             // bi: buffer-index of oldest sample
+    int hj = dblHp.replace(hi, Node(x, bi)); // will reshuffle the content of the double-heap
+    bufIdx = (bufIdx+1) % L;                 // update position in circular buffer of indices
 
-
-    T y = heaps.getSmallestLargeValue().value;
-    // todo: use a linear combination of smallestLarge and largestSmall based on the fractional 
-    // part of the desired read-position
-    // or should it be getSmallestLargeValue? in case of non-integer q, perhaps a linear 
-    // combination of both? also for medians of even length - there, we need the average of both
-
-
+    // sample readout:
+    T yS = dblHp.getLargestSmallValue().value;      // smaller value
+    T yL = dblHp.getSmallestLargeValue().value;     // larger value
+    T y  = (T(1)-w)*yS + w*yL;                      // linear interpolation
     return y;
   }
 
@@ -1292,10 +1289,10 @@ public:
   void reset()
   {
     for(int n = 0; n < L; n++) {
-      heaps[n].value    = T(0);
-      heaps[n].bufIndex = n;
-      buf2[n]           = n; }
-    buf2idx = 0;
+      dblHp[n].value    = T(0);
+      dblHp[n].bufIndex = n;
+      buf[n]            = n; }
+    bufIdx = 0;
   }
 
 
@@ -1305,8 +1302,8 @@ protected:
   {
     rsAssert(L <= (int) small.size());
     int C = (int) small.size();
-    heaps.setData(&small[0], q, C, &large[0], L-q, C);
-    buf2.resize(L);
+    dblHp.setData(&small[0], q, C, &large[0], L-q, C);
+    buf.resize(L);
     reset();  // is this needed? if not, get rid to make q and L modulatable
   }
 
@@ -1325,21 +1322,20 @@ protected:
   void swapNodes(Node& a, Node& b)
   {
     rsSwap(a, b);
-    rsSwap(buf2[a.bufIndex], buf2[b.bufIndex]);  
+    rsSwap(buf[a.bufIndex], buf[b.bufIndex]);  
   }
 
 
   // Data:
 
-  std::vector<Node>  small, large; // for data storage of the nodes
-  rsDoubleHeap<Node> heaps;        // for keeping the data in the nodes array "semi-sorted" maybe rename to dblHp
-  std::vector<int> buf2;  // rename to buf
-  int buf2idx;
+  std::vector<Node>  small, large; // storage arrays of the nodes
+  rsDoubleHeap<Node> dblHp;        // maintains large/small as double-heap
+  std::vector<int>   buf;          // circular buffer of heap indices - rename to buf
 
-  int L = 0;  // total length of filter
-  int q = 0;  // quantile as value 0 <= q < L ...maybe rename to p for (read) position
-
-  T w = T(0); // weight for the linear interpolation (not yet used)
+  int bufIdx;  // current index into into the circular buffer
+  int L = 0;   // total length of filter
+  int q = 0;   // quantile as value 0 <= q < L ...maybe rename to p for (read) position
+  T w = T(1);  // weight for smallest large value in the linear interpolation
 
 };
 
