@@ -1443,20 +1443,24 @@ public:
 
     // From the quantile, compute the readout point and set it, set also the weight for the
     // linear interpolation:
+
+    /*
     //T   q = quantile * length * sampleRate;    // or should we use quantile * L instead?
     T   q = quantile * L * sampleRate;
-
     q += 0.5; // test
-
     int p = (int) ceil(q);                     // verify this!
     T   w = q - floor(q);                      // verify this!
-
     w = 1-w;  // test
-
     core.setReadPosition(p);
     core.setRightWeight(w);
+    */
 
-    // this is not yet correct
+    T   p = quantile * sampleRate * (L-1);
+    int i = (int) floor(p);
+    T   f = p - i;
+    core.setReadPosition(i);  // or i+1?
+    core.setRightWeight(1-f);   // or 1-f?
+
 
     // maybe core should support setting L and p at once, bcs each may trigger recalculations
 
@@ -1465,6 +1469,20 @@ public:
 
     dirty = false;
   }
+
+  /*
+  T getSampleMedian(T x)
+  {
+  prepareSortedDelayBuffer(x);
+  int L = getLength();
+  T p = 0.5 * (L-1);
+  int i = (int) floor(p);
+  T   f = p - i;
+  //return f*tmp[i] + (1-f)*tmp[i+1]; // this is wrong, but matches rsQuantileFilter
+  return (1-f)*tmp[i] + f*tmp[i+1]; // this is correct and matches rsArrayTools::median
+  // verify, if we use f and 1-f correctly
+  }
+  */
 
 
 protected:
