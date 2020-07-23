@@ -1191,14 +1191,15 @@ protected:
 
 //=================================================================================================
 
-
-
 /** Class to exctract moving quantiles (such as the median) from a signal in realtime. If the 
-percentile runs over N samples, the filters takes O(log(N)) operations per sample. It achieves this
-by using two heaps (a max-heap of the smaller-than-percentile values and a min-heap of the 
-bigger-than-percentile values) and a circular buffer in a clever way....
+quantile runs over N samples, the filter takes O(log(N)) operations per sample. It achieves this
+by using an rsDoubleHeap together with a circular buffer of indices into that double-heap. The 
+process that takes place in getSample is to replace the oldest sample in the double-heap with the 
+new incoming sample. The potential re-ordering of the heaps due to such an replacement is kept 
+track of by the circular buffer, such that it always points to the oldest sample in the 
+double-heap. 
 
-*/
+not yet finsihed: works currently only for setLength = setMaxLength both being a power of 2... */
 
 // other implementation - hopefully simpler - less indirections
 template<class T>
