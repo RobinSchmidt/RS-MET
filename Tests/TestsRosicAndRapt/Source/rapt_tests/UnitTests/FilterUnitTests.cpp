@@ -333,6 +333,9 @@ bool movingQuantileUnitTest()
 {
   bool r = true;
 
+  // Notation: nS: length of small heap, nL: length of large heap, mL: max length, L: length, 
+  // q: quantile
+
   int N = 500;  // number of samples
   r &= testMovingQuantile(64, 32, 32, N);
   r &= testMovingQuantile(64, 50, 14, N);  // nS + nL = 50 + 14 = 64
@@ -351,212 +354,23 @@ bool movingQuantileUnitTest()
 
   return r;
 
-
-  double q;
-
-  rsMovingQuantileFilter<double> flt;
-  flt.setMaxLength(4);
-  flt.setLength(4);
-  flt.setQuantile(2);
-
-  q = flt.getSample( -1); r &= q ==  0;
-  q = flt.getSample( -2); r &= q ==  0;
-  q = flt.getSample( -3); r &= q == -1;
-  q = flt.getSample( -4); r &= q == -2;
-  q = flt.getSample( -5); r &= q == -3;
-  q = flt.getSample( -6); r &= q == -4;
-  q = flt.getSample( +1); r &= q == -4;
-  q = flt.getSample( +2); r &= q == +1;
-  q = flt.getSample( +3); r &= q == +2;
-
-  // todo: go through a couple of hand-calculations and compare with results here - test also with
-  // different quantiles and try to make the quantile modulatable also with 0 and L-1 which should 
-  // give moving min/max filters
-
-
-
-
-  // compare output against naive version for random inputs:
-
-  int nS = 32;
-  int nL = 32;
-  flt.setMaxLength(nS+nL);
-  //flt.setMaxLength(100);  // test - nope - produces garbage
-  //flt.setMaxLength(128);  // same garbage
-  flt.setMaxLength(512);
-  flt.setLength(nS+nL);
-  flt.setQuantile(nS);
-
-  // it works when nS = nL = 2^k and we use setMaxLength(nS+nL) - otherwise, we get garbage results
-  // it probably has to do with the wraparounds of the circular buffer - or maybe with
-  // rsRingBuffer::getIndexFromOldest - make a unit test for that
-  // or could is have something to do with the heaps not being used fully? ...but i don't think so
-  // no: even when we use heaps of very different sizes, it still works as long as the sum of their
-  // lengths is a power of two - that points to a problem with the delay-buffer wraparound wait:
-  // getIndexFromOldest returns an index *directly* into that data-buffer - not an index that can 
-  // be fed to the [] operator of the class - but the values probably coincide in case of a 
-  // power-of-2 length? i think so, because in this case the read and write pointers arec euqal?
-  // maybe provide a buf.swapValues(int i, int j) function - yep: leftIndex == rightIndex
-  // when we don't use getIndexFromOldest buf the bufIndex directly, we also get garbage - but 
-  // different garbage for different values of maxLength - maybe instead of advancePointers use
-  // retractPoitners going a step back
-
-  // maybe try a std::vector instead of rsRingBuffer and use modulo
-
-
-
-  rsMovingQuantileFilterNaive<double> fltN(nS, nL);
-
-  double p;
-
-
-  using Vec = std::vector<double>;
-  Vec x = rsRandomIntVector(N, 0, 99, 0);
-  Vec y(N), z(N), t(N);
-  flt.reset();
-  fltN.reset();
-  for(int n = 0; n < N; n++)
-  {
-    q = y[n] = flt.getSample(x[n]);
-    p = z[n] = fltN.getSample(x[n]);
-    r &= p == q;
-    int dummy = 0;
-  }
-  rsPlotVectors(y, z);
-
-  // try it with unqual lengths for nS, nL that add up to a power of two
-  nS = 50;  // nS+nL should be a power of two, such as 64
-  nL = 14;
-  flt.setMaxLength(nS+nL);
-  flt.setLength(nS+nL);
-  flt.setQuantile(nS);
-  flt.reset();
-  fltN.setLengths(nS, nL);
-  fltN.reset();
-  for(int n = 0; n < N; n++)
-  {
-    q = y[n] = flt.getSample(x[n]);
-    p = z[n] = fltN.getSample(x[n]);
-    r &= p == q;
-    int dummy = 0;
-  }
-  rsPlotVectors(y, z);
-  // ok - that works also - for nS+nL = 64 and nS > 0 and nL > 0, so (1,63) up to (63,1) is ok, but
-  // (0,64) or (64,0) is not ok
-  // Observation: when nS and nL are very different, the variance of the filter output gets less: 
-  // the median has highest variance but quantiles closer to 0 or 1 have lower variance - that 
-  // could be a useful feature in signal processing applications
-  // one application of this filter could be to add "grit" to signals - it tends to hold values 
-  // constant over some number of samples
-
-
-
-
+  // ToDo:
+  // -parametrize in terms of length and a real number for the quantile between 0..1
+  // -it should also work with 0.0 and 1.0 which should give moving min/max filters
+  // -try to make the quantile and length modulatable 
+  //  -modulating q will involve moving over a number of samples from small to larger or the other
+  //   way around
+  //  -modulating will (additionaly?) involve growing or shrinking the size of the rsDoubleHeap,
+  //   when doing this, we must ensure to throw away the oldest samples
+  // Notes:
+  // -The old implementation using rsRingBuffer instead of std::vector for the circular buffer 
+  //  worked only when nS = nL = 2^k for some k and mL = nS + nL. This probably had to do with the
+  //  weird indexing of rsRingBuffer - perhaps try to make it work, but if it's too tricky, we may 
+  //  just leave it using std::vector
 
 
   /*
-  // now with a non-power of two:
-  nS = 20;
-  nL = 20;
-  flt.setLength(nS+nL);
-  flt.setQuantile(nS);
-  fltN.setLengths(nS, nL);
-  flt.reset();
-  fltN.reset();
-  for(int n = 0; n < N; n++)
-  {
-    q = y[n] = flt.getSample(x[n]);
-    p = z[n] = fltN.getSample(x[n]);
-    r &= p == q;
-    //rsAssert(p == q); // triggers at sample 6
-    int dummy = 0;
-  }
-  rsPlotVectors(y, z);
-  */
-
-
-
-
-  return r;
-
-  // stuff below may be obsolete soon:
-
-  /*
-  q = flt.getSample( -3); r &= q ==  0;
-  q = flt.getSample( -4); r &= q ==  0;
-  q = flt.getSample( -5); r &= q == -1;
-  q = flt.getSample( -6); r &= q == -2;
-  q = flt.getSample( -7); r &= q == -3;
-  q = flt.getSample( -8); r &= q == -4;
-  q = flt.getSample( -9); r &= q == -5;
-  q = flt.getSample( +1); r &= q == -4;
-
-  // here it gets false - but the error may be in the test code:
-  q = flt.getSample( +2); r &= q == -3;
-  q = flt.getSample( +3); r &= q == -2;
-  q = flt.getSample( +4); r &= q == -3;
-  q = flt.getSample( +5); r &= q == -2;
-  q = flt.getSample( +6); r &= q == -1;
-  */
-
-
-
-  /*
-  rsMovingQuantileFilter<double> flt(3, 4);  // length 7
-                                        // heaps (desired)
-  q = flt.getSample( -1); r &= q == 0;  //  0  0 -1 | 0 0 0 0
-  q = flt.getSample( -2); r &= q == 0;  //  0 -1 -2 | 0 0 0 0 
-  q = flt.getSample( -3); r &= q == 0;  // -1 -2 -3 | 0 0 0 0
-  q = flt.getSample( -4); r &= q == -1;
-
-  // triggers assert - 
-  q = flt.getSample( -5); r &= q == -2;
-  q = flt.getSample( -6); r &= q == -3;
-  q = flt.getSample( -7); r &= q == -4;
-  q = flt.getSample( -8); r &= q == -5;
-  */
-
-
-
-
-
-  /*
-  flt.setLengths(8, 9);
-  flt.reset();
-
-  q = flt.getSample(-1); r &= q == 0;
-  // the -1 should float down to the bottom of the max-heap of small values
-
-  q = flt.getSample(-2); r &= q == 0;
-  // gets inserted into the larger heap and floats down - it should actually remain in the pole
-  // position for..ah no - it is in the pole position
-
-  q = flt.getSample( -3); r &= q == 0;
-  q = flt.getSample( -4); r &= q == 0;
-  q = flt.getSample( -5); r &= q == 0;
-  q = flt.getSample( -6); r &= q == 0;
-  q = flt.getSample( -7); r &= q == 0;
-  q = flt.getSample( -8); r &= q == 0;
-
-  q = flt.getSample( -9); r &= q == -1;     // fails here
-  q = flt.getSample(-10); r &= q == -2;     // triggers assert here
-  q = flt.getSample(-11); r &= q == -3;
-  q = flt.getSample(-12); r &= q == -4;
-  q = flt.getSample(-13); r &= q == -5;
-  q = flt.getSample(-14); r &= q == -6;
-  q = flt.getSample(-15); r &= q == -7;
-  q = flt.getSample(-16); r &= q == -8;
-  q = flt.getSample(-17); r &= q == -9;
-  */
-
-
-
-
-
-
-
-
-  /*
+  // maybe move this into an experiment later:
 
   int nS = 8;
   int nL = 9;
