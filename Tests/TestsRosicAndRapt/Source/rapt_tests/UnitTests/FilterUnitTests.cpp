@@ -347,7 +347,8 @@ bool testMovingQuantileModulation()
 
 
   rsMovingQuantileFilterNaive<double> fltN(maxLength, maxLength);
-
+  rsMovingQuantileFilterCore<double>  fltH;      // H for heap-based implementation
+  fltH.setMaxLength(maxLength);
 
   using Vec = std::vector<double>;
   Vec x = rsRandomIntVector(N, 0, 99);
@@ -360,13 +361,22 @@ bool testMovingQuantileModulation()
       int nS = settings[i].nS;
       int nL = settings[i].nL;
       fltN.setLengths(nS, nL);
+      fltH.setLength(nS + nL);
+      fltH.setReadPosition(nS);
       i++;  
     }
-
+    y[n] = fltH.getSample(x[n]);
     z[n] = fltN.getSample(x[n]);
   }
-  // the resets at the switches manifest themselves by the output signal restting back to zero at 
-  // each such switch
+
+  // heap-based version shows the resets to zero at the switches
+
+  // todo: 
+  // -check manually correctness of results, specially at the the switch samples
+  // -use a heap-based filter and compare the results
+  // -try longer filters with more drastic switches, say: med, min, max, very-short, very long
+
+  // 20: 7,89,7,17,18,76,70,68,60,7,83,52 -> 7,7,7,17,18,52,60,68,70,76,83,89 -> 68
 
   rsPlotVectors(y, z);  // uncomment to see the result
   return r;

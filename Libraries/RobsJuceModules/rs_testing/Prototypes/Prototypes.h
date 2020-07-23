@@ -1548,8 +1548,9 @@ public:
 
   void reset()
   {
-    for(int i = 0; i < getLength(); i++)
-      buf[i] = 0;
+    buf.reset();
+    //for(int i = 0; i < getLength(); i++)
+    //  buf[i] = 0;
   }
 
 
@@ -1559,7 +1560,7 @@ protected:
   {
     buf.setLength((size_t)getLength());
     tmp.resize(   (size_t)getLength());
-    reset();
+    //reset();
   }
 
   rsRingBuffer<T> buf;   // circular buffer

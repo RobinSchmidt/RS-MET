@@ -1061,7 +1061,7 @@ void rsPolynomial<T>::fitQuadraticLagrange(T* a, const T* x, const T* y)
   // operations: add: 9, sub: 6, mul: 12, div: 3, neg: 3, ass: 12, tmp: 9
 }
 // todo: optimize out the b and c variables so we need only 3 temporaries and 6 assignments, but
-// i guess, the compiler can do this, too
+// i guess, the compiler can do this, too - check at godbolt.org
 // maybe derive and implement simplified formulas for the common special case 
 // x1 = -1, x2 = 0, x3 = +1...hmm - but i think, we will not get formulas any better than what we
 // already have below:
