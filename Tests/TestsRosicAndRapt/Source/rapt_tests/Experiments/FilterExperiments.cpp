@@ -1348,7 +1348,7 @@ void quantileFilter()
 {
   double fs = 1;     // sample rate
   int    N  = 200;   // number of samples
-  int    L  = 7;     // filter length in samples
+  int    L  = 6;     // filter length in samples
 
 
   rsMovingQuantileFilter<double> flt;
@@ -1403,7 +1403,8 @@ void quantileFilter()
   //rsPlotVectors(x, y, t);
   //rsPlotVectors(y, t);
   //rsPlotVectors(t, z);
-  rsPlotVectors(t, z, y);
+  //rsPlotVectors(t, z, y);
+  rsPlotVectors(z, y);  // for even lengths, z is the better reference - t has a delay there
 
   int dummy = 0;
 

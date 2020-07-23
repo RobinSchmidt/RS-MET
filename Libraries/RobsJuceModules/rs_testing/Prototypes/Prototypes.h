@@ -1438,51 +1438,23 @@ public:
 
   void updateInternals()
   {
+    // Compute length, readout point the weight for the linear interpolation:
     int L = (int) round(length * sampleRate);
-    core.setLength(L);   // this resets the core - the filter is not modulatable
-
-    // From the quantile, compute the readout point and set it, set also the weight for the
-    // linear interpolation:
-
-    /*
-    //T   q = quantile * length * sampleRate;    // or should we use quantile * L instead?
-    T   q = quantile * L * sampleRate;
-    q += 0.5; // test
-    int p = (int) ceil(q);                     // verify this!
-    T   w = q - floor(q);                      // verify this!
-    w = 1-w;  // test
-    core.setReadPosition(p);
-    core.setRightWeight(w);
-    */
-
     T   p = quantile * sampleRate * (L-1);
     int i = (int) floor(p);
     T   f = p - i;
-    core.setReadPosition(i);  // or i+1?
-    core.setRightWeight(1-f);   // or 1-f?
 
-
+    // set the stuff up:
+    core.setLength(L);           // this resets the core - the filter is not modulatable
+    core.setReadPosition(i+1);   // this also
+    core.setRightWeight(f);
     // maybe core should support setting L and p at once, bcs each may trigger recalculations
 
-    // ...we may need to take some special care when p == 0 or p == L-1 because it would make one
+    // ...we may need to take some special care when i == 0 or i == L-1 because it would make one
     // of the heaps get a zero length
 
     dirty = false;
   }
-
-  /*
-  T getSampleMedian(T x)
-  {
-  prepareSortedDelayBuffer(x);
-  int L = getLength();
-  T p = 0.5 * (L-1);
-  int i = (int) floor(p);
-  T   f = p - i;
-  //return f*tmp[i] + (1-f)*tmp[i+1]; // this is wrong, but matches rsQuantileFilter
-  return (1-f)*tmp[i] + f*tmp[i+1]; // this is correct and matches rsArrayTools::median
-  // verify, if we use f and 1-f correctly
-  }
-  */
 
 
 protected:
