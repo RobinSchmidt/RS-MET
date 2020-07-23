@@ -53,7 +53,8 @@ std::vector<double> rsRandomIntVector(int N, int min, int max, int seed)
   ng.setSeed(seed);
   for(int i = 0; i < N; i++)
   {
-    int iVal = ng.getSampleRaw() % (max-min) - min;
+    unsigned long raw = ng.getSampleRaw();
+    int iVal = raw % (max-min) + min;
     v[i] = (double) iVal;
   }
   return v;

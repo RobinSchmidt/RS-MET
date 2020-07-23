@@ -1447,7 +1447,9 @@ public:
     int p = (int) ceil(q);                     // verify this!
     T   w = q - floor(q);                      // verify this!
     core.setReadPosition(p);
-    core.setRightWeight(w);   
+    core.setRightWeight(w);
+
+    // this is not yet correct
 
     // maybe core should support setting L and p at once, bcs each may trigger recalculations
 

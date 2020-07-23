@@ -1346,11 +1346,20 @@ void seriesConnectionDecay()
 
 void quantileFilter()
 {
-  int N = 5000;  // number of samples
+  double fs = 1;     // sample rate
+  int    N  = 200;   // number of samples
+  int    L  = 7;     // filter length in samples
 
 
   rsMovingQuantileFilter<double> flt;
-  flt.setFrequency(100.0);
+
+  // we should have a combined setMaxLengthAndSampleRate function to avoid re-allocating twice:
+  flt.setMaxLength(20);
+  flt.setSampleRate(1);
+
+  flt.setLength(L);
+
+  //flt.setFrequency(100.0);
   //flt.setFeedback(0.0);    // later
   //flt.setQuantile(0.5);
 
@@ -1359,23 +1368,28 @@ void quantileFilter()
   using AT  = rsArrayTools;
 
 
-  Vec x = rsRandomVector(N, -1.0, +1.0, 2);  // try sinusoids, too
-  AT::cumulativeSum(&x[0], &x[0], N);
+  //Vec x = rsRandomVector(N, -1.0, +1.0, 0);  // try sinusoids, too
+  //Vec x = rsRandomIntVector(N, 1, 9, 0);  // looks not random at all - very periodic!
+  //Vec x = rsRandomIntVector(N, 0, 16, 0);   // periodic with period 16
+  Vec x = rsRandomIntVector(N, 1, 99, 0);
+  //AT::cumulativeSum(&x[0], &x[0], N);
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = flt.getSample(x[n]);
 
 
-  /*
+  
   // create a median-filtered version of x:
-  int L = 441;
+  Vec t(N);
+  int nS = 3;  // = L/2 using floor division
+  int nL = 4;  // = L-nS
   for(int n = nS; n < N-nL; n++)
     t[n+nS] = rsArrayTools::median(&x[n-nS], nS+nL); 
   // why t[n+nS]?
-  */
+  
+  // 36,67,76,41,82,45,74 -> 36,41,45,67,74,76,82 -> 67
 
-
-  rsPlotVectors(x, y);
+  rsPlotVectors(x, y, t);
 
   int dummy = 0;
 
