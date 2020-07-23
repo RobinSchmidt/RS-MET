@@ -1215,7 +1215,6 @@ new incoming sample. The potential re-ordering of the heaps due to such an repla
 track of by the circular buffer, such that it always points to the oldest sample in the 
 double-heap.  */
 
-// other implementation - hopefully simpler - less indirections
 template<class T>
 class rsMovingQuantileFilter
 {
@@ -1236,7 +1235,6 @@ public:
   {
     small.resize(newMaxLength);
     large.resize(newMaxLength);
-    buf.setCapacity(newMaxLength);
     buf2.reserve(newMaxLength);
     updateBuffers();
   }
@@ -1260,7 +1258,7 @@ public:
   // implement by linearly interpolating between largestOfSmall and smallestOfLarge via the 
   // fractional part - this will naturally also include medians of even buffer-lengths (the weights
   // should both come out as 0.5)
-  // or rename to setSmallHeapLength
+  // or rename to setSmallHeapLength, setReadPosition
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -1271,40 +1269,32 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
+  /** Computes an output sample froma given input sample x. */
   T getSample(T x)
   {
-    //int hi = buf.getOldest();       // hi: heap-index of oldest sample - old
-    int hi = buf2[buf2idx];         // hi: heap-index of oldest sample - new
-
-    int bi = heaps[hi].bufIndex;    // bi: buffer-index of oldest sample
-    int hj = heaps.replace(hi, Node(x, bi, sampleCount));
-
-    //buf.advancePointers();       // old
-    buf2idx = (buf2idx+1) % L;   // new
+    int hi = buf2[buf2idx];                  // hi: heap-index of oldest sample
+    int bi = heaps[hi].bufIndex;             // bi: buffer-index of oldest sample
+    int hj = heaps.replace(hi, Node(x, bi)); // will reshuffle the content of the double-heap
+    buf2idx = (buf2idx+1) % L;               // update position in circular buffer of indices
 
 
     T y = heaps.getSmallestLargeValue().value;
+    // todo: use a linear combination of smallestLarge and largestSmall based on the fractional 
+    // part of the desired read-position
     // or should it be getSmallestLargeValue? in case of non-integer q, perhaps a linear 
     // combination of both? also for medians of even length - there, we need the average of both
 
-    sampleCount++;
+
     return y;
   }
 
-
+  /** Resets the filter into its initial state. */
   void reset()
   {
-    buf.reset();
-    for(int n = 0; n < L; n++)
-    {
+    for(int n = 0; n < L; n++) {
       heaps[n].value    = T(0);
-      heaps[n].bufIndex = n;         // verify!
-      heaps[n].time     = -(n+1);
-      buf[n]            = n;         // old, based on rsRingBuffer
-      buf2[n]           = n;         // new, based on std::vector
-      // verify! i think, it should not matter - any permutation of the values 0..L-1 should do
-    }
-    sampleCount = 0;
+      heaps[n].bufIndex = n;
+      buf2[n]           = n; }
     buf2idx = 0;
   }
 
@@ -1316,7 +1306,6 @@ protected:
     rsAssert(L <= (int) small.size());
     int C = (int) small.size();
     heaps.setData(&small[0], q, C, &large[0], L-q, C);
-    buf.setLength(L);
     buf2.resize(L);
     reset();  // is this needed? if not, get rid to make q and L modulatable
   }
@@ -1325,66 +1314,33 @@ protected:
   "less-than" comparison is based on the signal value. */
   struct Node
   {
-    Node(T v = T(0), int i = 0, int t = 0)
-    {
-      value    = v;
-      bufIndex = i;
-      time     = t;
-    }
-
+    Node(T v = T(0), int i = 0) { value = v; bufIndex = i; }
+    bool operator<(const Node& b) const { return this->value < b.value; }
     int bufIndex = 0;
     T value = T(0);
-
-    int time; // time stamp in samples, only for debug, get rid when done
-
-    bool operator<(const Node& b) const { return this->value < b.value; }
   };
 
-
-  std::vector<Node>  small, large; // for data storage of the nodes
-  rsDoubleHeap<Node> heaps;        // for keeping the data in the nodes array "semi-sorted"
-  rsRingBuffer<int>  buf;          // circular buffer of indices into the nodes array
-
-
-  // scaffold code for testing and debugging:
-  std::vector<int> buf2;  
-  int buf2idx;
-
-
-  // The swapping function must do the actual swap of a and b as usual but also let the circular
-  // buffer keep trak of what gets swapped - the next index returned by buf.getOldest or 
-  // buf.getSample should always hold the (double-heap-) index to the oldest value
+  /** The swapping for nodes must do the actual swap of a and b as usual but also let the circular
+  buffer keep track of what gets swapped */ 
   void swapNodes(Node& a, Node& b)
   {
     rsSwap(a, b);
-    // the regular swap of the heap-nodes
-
-    /*
-    // the additional swap the corresponding indices in circular buffer:
-    //int i = a.bufIndex;
-    //int j = b.bufIndex;
-    int i = buf.getIndexFromOldest(a.bufIndex);
-    int j = buf.getIndexFromOldest(b.bufIndex);
-    rsSwap(buf[i], buf[j]);   
-    // old implementation, using rsRingBuffer for the ring-buffer - the indexing is quesionable
-    // maybe we need to convert from data-index to buffer-index - i,j are raw data-indices but 
-    // indexing the buffer is based on delay - the i,j have different meaning the [] operator 
-    // starts from the newest and goes back to the oldest - we may need the opposite...or do we?
-    */
-
-
     rsSwap(buf2[a.bufIndex], buf2[b.bufIndex]);  
-    // new implementation using plain std::vector for the ring-buffer
-
-
-    //rsAssert(isDelayBufferValid());  // debug
   }
 
 
-  int L = 0;  // total length of filter
-  int q = 0;  // quantile as value 0 <= q < L
+  // Data:
 
-  int sampleCount = 0; // for debug - can be removed when class is finished and works
+  std::vector<Node>  small, large; // for data storage of the nodes
+  rsDoubleHeap<Node> heaps;        // for keeping the data in the nodes array "semi-sorted" maybe rename to dblHp
+  std::vector<int> buf2;  // rename to buf
+  int buf2idx;
+
+  int L = 0;  // total length of filter
+  int q = 0;  // quantile as value 0 <= q < L ...maybe rename to p for (read) position
+
+  T w = T(0); // weight for the linear interpolation (not yet used)
+
 };
 
 // this is obsolete and may be deleted:
