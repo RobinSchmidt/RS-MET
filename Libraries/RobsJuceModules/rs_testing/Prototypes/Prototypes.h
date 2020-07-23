@@ -1443,9 +1443,16 @@ public:
 
     // From the quantile, compute the readout point and set it, set also the weight for the
     // linear interpolation:
-    T   q = quantile * length * sampleRate;    // or should we use quantile * L instead?
+    //T   q = quantile * length * sampleRate;    // or should we use quantile * L instead?
+    T   q = quantile * L * sampleRate;
+
+    q += 0.5; // test
+
     int p = (int) ceil(q);                     // verify this!
     T   w = q - floor(q);                      // verify this!
+
+    w = 1-w;  // test
+
     core.setReadPosition(p);
     core.setRightWeight(w);
 
@@ -1511,14 +1518,33 @@ public:
 
   int getLength() const { return nS + nL; }
 
-  T getSample(T x)
+
+  void prepareSortedDelayBuffer(T x)
   {
     T y = buf.getSample(x);
     buf.copyTo(&tmp[0]);
     rsHeapSort(&tmp[0], getLength());
+  }
+
+  T getSample(T x)
+  {
+    prepareSortedDelayBuffer(x);
     return tmp[nS];
     // pehaps, we should use interpolation here - provide functions setLength, setQuantile
   }
+
+  T getSampleMedian(T x)
+  {
+    prepareSortedDelayBuffer(x);
+    int L = getLength();
+    //T p = 0.5 * L;  // or 0.5*(L-1)?
+    T p = 0.5 * (L-1);
+    int i = (int) floor(p);
+    T   f = p - i;
+    return (1-f)*tmp[i] + f*tmp[i+1];
+    // verify this!
+  }
+
 
   void reset()
   {

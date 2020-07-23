@@ -1396,7 +1396,10 @@ void quantileFilter()
   rsMovingQuantileFilterNaive<double> fltN(nS, nL);
   Vec z(N);
   for(int n = 0; n < N; n++)
-    z[n] = fltN.getSample(x[n]);
+  {
+    //z[n] = fltN.getSample(x[n]);
+    z[n] = fltN.getSampleMedian(x[n]);
+  }
 
 
   //rsPlotVectors(x, y, t);
