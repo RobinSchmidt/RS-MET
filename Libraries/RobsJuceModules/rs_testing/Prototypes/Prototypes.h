@@ -1221,6 +1221,7 @@ public:
     small.resize(newMaxLength);
     large.resize(newMaxLength);
     buf.setCapacity(newMaxLength);
+    buf2.reserve(newMaxLength);
     updateBuffers();
   }
 
@@ -1235,6 +1236,14 @@ public:
     q = newQuantile;
     updateBuffers();
   }
+  // make this function protected and/or rename it to setReadOutPoint - it takes the read-out point
+  // of the sorted array of stored past values (this array does not exist literally, but 
+  // only conceptually - in the naive implementation, it exists literally). Provide a setQuantile 
+  // function that takes a real number between 0 and 1 where 0 = minimum, 1 = maximum, 
+  // 0.5 = median, 0.25 = quartile, etc. This may lead to a non-integer readout point which we can 
+  // implement by linearly interpolating between largestOfSmall and smallestOfLarge via the 
+  // fractional part - this will naturally also include medians of even buffer-lengths (the weights
+  // should both come out as 0.5)
 
   int getLength() const
   {
@@ -1268,10 +1277,15 @@ public:
 
   T getSample(T x)
   {
-    int hi = buf.getOldest();       // hi: heap-index of oldest sample
+    int hi = buf.getOldest();       // hi: heap-index of oldest sample - old
+    //int hi = buf2[buf2idx];         // hi: heap-index of oldest sample - new
+
     int bi = heaps[hi].bufIndex;    // bi: buffer-index of oldest sample
     int hj = heaps.replace(hi, Node(x, bi, sampleCount));
-    buf.advancePointers();
+
+    buf.advancePointers();       // old
+    //buf2idx = (buf2idx+1) % L;   // new
+
 
     T y = heaps.getSmallestLargeValue().value;
     // or should it be getSmallestLargeValue? in case of non-integer q, perhaps a linear 
@@ -1288,12 +1302,14 @@ public:
     for(int n = 0; n < L; n++)
     {
       heaps[n].value    = T(0);
-      heaps[n].bufIndex = n;      // verify!
+      heaps[n].bufIndex = n;         // verify!
       heaps[n].time     = -(n+1);
-      buf[n]            = n;      
+      buf[n]            = n;         // old, based on rsRingBuffer
+      buf2[n]           = n;         // new, based on std::vector
       // verify! i think, it should not matter - any permutation of the values 0..L-1 should do
     }
     sampleCount = 0;
+    buf2idx = 0;
   }
 
 
@@ -1303,12 +1319,14 @@ protected:
   {
     rsAssert(L <= (int) small.size());
     int C = (int) small.size();
-    heaps.setData(&small[0], q, C, &large[0], L-q, C);  // verify!
+    heaps.setData(&small[0], q, C, &large[0], L-q, C);
     buf.setLength(L);
-    reset();  // is this needed?
+    buf2.resize(L);
+    reset();  // is this needed? if not, get rid to make q and L modulatable
   }
 
-  /** A node stores an incomiong signal value together with its index in the circular buffer. */
+  /** A node stores an incoming signal value together with its index in the circular buffer. The 
+  "less-than" comparison is based on the signal value. */
   struct Node
   {
     Node(T v = T(0), int i = 0, int t = 0)
@@ -1321,7 +1339,7 @@ protected:
     int bufIndex = 0;
     T value = T(0);
 
-    int time; // only for debug
+    int time; // time stamp in samples, only for debug, get rid when done
 
     bool operator<(const Node& b) const { return this->value < b.value; }
   };
@@ -1332,23 +1350,35 @@ protected:
   rsRingBuffer<int>  buf;          // circular buffer of indices into the nodes array
 
 
+  // scaffold code for testing and debugging:
+  std::vector<int> buf2;  
+  int buf2idx;
+
+
   // The swapping function must do the actual swap of a and b as usual but also let the circular
   // buffer keep trak of what gets swapped - the next index returned by buf.getOldest or 
   // buf.getSample should always hold the (double-heap-) index to the oldest value
   void swapNodes(Node& a, Node& b)
   {
     rsSwap(a, b);
+    // the regular swap of the heap-nodes
 
+
+    // the additional swap the corresponding indices in circular buffer:
     //int i = a.bufIndex;
     //int j = b.bufIndex;
-
     int i = buf.getIndexFromOldest(a.bufIndex);
     int j = buf.getIndexFromOldest(b.bufIndex);
+    rsSwap(buf[i], buf[j]);   
+    // old implementation, using rsRingBuffer for the ring-buffer - the indexing is quesionable
+    // maybe we need to convert from data-index to buffer-index - i,j are raw data-indices but 
+    // indexing the buffer is based on delay - the i,j have different meaning the [] operator 
+    // starts from the newest and goes back to the oldest - we may need the opposite...or do we?
 
-    // todo: swap the corresponding indices in circular buffer:
-    rsSwap(buf[i], buf[j]);  
-    // is this correct? the [] operator starts from the newest and goes back to the oldest - we may
-    // need the opposite...or do we?
+
+    rsSwap(buf2[a.bufIndex], buf2[b.bufIndex]);  
+    // new implementation using plain std::vector for the ring-buffer
+
 
     //rsAssert(isDelayBufferValid());  // debug
   }

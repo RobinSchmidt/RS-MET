@@ -21,12 +21,15 @@ public:
   size_t getCapacity() const { return data.size(); }
   // is this correct? or do we need to subtract 1? -> do unit test!
 
+
+  std::vector<T> data;  // temporarily moved to public
+
 protected:
 
   /** Wraparound */
   inline size_t wrap(size_t i) const { return i & mask; }
 
-  std::vector<T> data;
+
   size_t mask;
 
 };
@@ -85,6 +88,14 @@ public:
   {
     rightIndex = this->wrap(rightIndex + amount);
     leftIndex  = this->wrap(leftIndex  + amount);
+  }
+
+  inline void retractPointers(size_t amount = 1)
+  {
+    if(amount > rightIndex) rightIndex += getCapacity();
+    if(amount > leftIndex)  leftIndex  += getCapacity();
+    rightIndex = this->wrap(rightIndex - amount);
+    leftIndex  = this->wrap(leftIndex  - amount);
   }
 
 
@@ -187,6 +198,10 @@ protected:
   size_t length = 0; // rename to capacity ..or use data.size() - nope it's the current length
   // maybe name them generally rightEnd, leftEnd or something ... rgt, lft. L,R - then we may
   // also make rsDoubleEndedQueue a subclass and inherit the data and wrap function
+
+
+  //template<class U> friend class rsMovingQuantileFilter; // try to get rid
+
 };
 
 //=================================================================================================

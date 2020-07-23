@@ -335,7 +335,7 @@ bool movingPercentileUnitTest()
   flt.setMaxLength(nS+nL);
   //flt.setMaxLength(100);  // test - nope - produces garbage
   //flt.setMaxLength(128);  // same garbage
-
+  //flt.setMaxLength(512);
   flt.setLength(nS+nL);
   flt.setQuantile(nS);
 
@@ -349,6 +349,11 @@ bool movingPercentileUnitTest()
   // be fed to the [] operator of the class - but the values probably coincide in case of a 
   // power-of-2 length? i think so, because in this case the read and write pointers arec euqal?
   // maybe provide a buf.swapValues(int i, int j) function - yep: leftIndex == rightIndex
+  // when we don't use getIndexFromOldest buf the bufIndex directly, we also get garbage - but 
+  // different garbage for different values of maxLength - maybe instead of advancePointers use
+  // retractPoitners going a step back
+
+  // maybe try a std::vector instead of rsRingBuffer and use modulo
 
 
 
@@ -372,7 +377,7 @@ bool movingPercentileUnitTest()
   rsPlotVectors(y, z);
 
   // try it with unqual lengths for nS, nL that add up to a power of two
-  nS = 50;  // nS+nL should be a power of two such as 64
+  nS = 50;  // nS+nL should be a power of two, such as 64
   nL = 14;
   flt.setMaxLength(nS+nL);
   flt.setLength(nS+nL);
