@@ -301,7 +301,6 @@ https://www.nayuki.io/res/sliding-window-minimum-maximum-algorithm/SlidingWindow
 */
 
 
-
 bool testMovingQuantile(int maxLength, int smallLength, int largeLength, int numSamples, 
   int seed = 0)
 {
@@ -326,11 +325,11 @@ bool testMovingQuantile(int maxLength, int smallLength, int largeLength, int num
     double p = z[n] = fltN.getSample(x[n]);
     r &= p == q; }
 
-  rsPlotVectors(y, z);  // uncomment to see the result
+  //rsPlotVectors(y, z);  // uncomment to see the result
   return r;
 }
 
-bool movingPercentileUnitTest()  // rename
+bool movingQuantileUnitTest()
 {
   bool r = true;
 
@@ -338,7 +337,17 @@ bool movingPercentileUnitTest()  // rename
   r &= testMovingQuantile(64, 32, 32, N);
   r &= testMovingQuantile(64, 50, 14, N);  // nS + nL = 50 + 14 = 64
   r &= testMovingQuantile(64, 30, 14, N);
-  // try extreme settings like (64,63,1), (64,1,63), (64,0,64), (64,64,0), ...
+  r &= testMovingQuantile(64, 63,  1, N);
+  r &= testMovingQuantile(64,  1, 63, N);
+  r &= testMovingQuantile(64, 40,  1, N);
+  r &= testMovingQuantile(64,  1, 40, N);
+
+  // these do not work - the heap size of either the small or the large heap goes to zero and we
+  // get index-out-of-range errors:
+  //r &= testMovingQuantile(64, 40,  0, N);
+  //r &= testMovingQuantile(64,  0, 40, N);
+  //r &= testMovingQuantile(64, 64,  0, N);
+  //r &= testMovingQuantile(64,  0, 64, N);
 
   return r;
 
