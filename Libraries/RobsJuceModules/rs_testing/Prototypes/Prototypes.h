@@ -1537,12 +1537,12 @@ public:
   {
     prepareSortedDelayBuffer(x);
     int L = getLength();
-    //T p = 0.5 * L;  // or 0.5*(L-1)?
     T p = 0.5 * (L-1);
     int i = (int) floor(p);
     T   f = p - i;
-    return (1-f)*tmp[i] + f*tmp[i+1];
-    // verify this!
+    //return f*tmp[i] + (1-f)*tmp[i+1]; // this is wrong, but matches rsQuantileFilter
+    return (1-f)*tmp[i] + f*tmp[i+1]; // this is correct and matches rsArrayTools::median
+    // verify, if we use f and 1-f correctly
   }
 
 

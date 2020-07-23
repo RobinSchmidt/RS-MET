@@ -1380,9 +1380,7 @@ void quantileFilter()
 
   // create a median-filtered version of x:
   Vec t(N);
-  //int nS = 3;  // = L/2 using floor division
-  //int nL = 4;  // = L-nS
-  int nS = L/2;
+  int nS = L/2;    // floor division
   int nL = L-nS;
   for(int n = nS; n < N-nL; n++)
     t[n+nS] = rsArrayTools::median(&x[n-nS], nS+nL); 
@@ -1390,7 +1388,7 @@ void quantileFilter()
   
   // 7: 36,67,76,41,82,45,74 -> 36,41,45,67,74,76,82 -> 67
   // 6: 36,67,76,41,82,45    -> 36,41,45,67,76,82    -> (45+67)/2 = 56 ..but occurs at sample 101 - why?
-  //
+  // so, for even lengths, t is lagging one sample
 
   // let's try it with the naive implementation of rsQuantileFilter
   rsMovingQuantileFilterNaive<double> fltN(nS, nL);
