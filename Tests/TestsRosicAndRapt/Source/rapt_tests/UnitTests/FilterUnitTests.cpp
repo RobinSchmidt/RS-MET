@@ -398,6 +398,8 @@ bool movingPercentileUnitTest()
   // Observation: when nS and nL are very different, the variance of the filter output gets less: 
   // the median has highest variance but quantiles closer to 0 or 1 have lower variance - that 
   // could be a useful feature in signal processing applications
+  // one application of this filter could be to add "grit" to signals - it tends to hold values 
+  // constant over some number of samples
 
 
   /*
