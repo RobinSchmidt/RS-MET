@@ -311,7 +311,7 @@ bool testMovingQuantile(int maxLength, int smallLength, int largeLength, int num
   rsMovingQuantileFilter<double> fltH;            // H for heap-based implementation
   fltH.setMaxLength(maxLength);
   fltH.setLength(smallLength + largeLength);
-  fltH.setQuantile(smallLength);
+  fltH.setReadPosition(smallLength);
 
   rsMovingQuantileFilterNaive<double> fltN(smallLength, largeLength); // N for naive implementation
 
@@ -368,6 +368,7 @@ bool movingQuantileUnitTest()
   //   way around
   //  -modulating will (additionaly?) involve growing or shrinking the size of the rsDoubleHeap,
   //   when doing this, we must ensure to throw away the oldest samples
+  // -how about introducing feedback?
   // Notes:
   // -The old implementation using rsRingBuffer instead of std::vector for the circular buffer 
   //  worked only when nS = nL = 2^k for some k and mL = nS + nL. This probably had to do with the

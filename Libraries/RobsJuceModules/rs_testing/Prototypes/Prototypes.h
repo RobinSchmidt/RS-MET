@@ -1231,34 +1231,55 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  /** Sets the maximum length of the filter. This may re-allocate memory. */
   void setMaxLength(int newMaxLength)
   {
-    small.resize(newMaxLength);
-    large.resize(newMaxLength);
+    small.resize(newMaxLength);  // We use the size of small/large as our capacity and don't resize
+    large.resize(newMaxLength);  // them in updateBuffers.
     buf.reserve(newMaxLength);
     updateBuffers();
   }
 
+  /** Sets the length of the filter, i.e. the number of past samples that we look at. */
   void setLength(int newLength)
   {
     L = newLength;
     updateBuffers();
   }
 
-  void setQuantile(int newQuantile)
+  /** Sets the read position in the sorted array of stored past values. This array does not exist 
+  literally but only conceptually (in the naive implementation, this actually exists literally). In 
+  practice it's the largest of the small values, i.e. the front element of the min-heap of large 
+  values in our double-heap. So what this function actually does is to update the sizes of the 
+  max-heap (of small values) and the min-heap (of large values) in the double-heap. But 
+  conceptually, think about it simple as the readout index in an array of stored past values. */
+  void setReadPosition(int newPosition)
   {
-    q = newQuantile;
+    p = newPosition;
     updateBuffers();
   }
-  // make this function protected and/or rename it to setReadOutPoint - it takes the read-out point
-  // of the sorted array of stored past values (this array does not exist literally, but 
-  // only conceptually - in the naive implementation, it exists literally). Provide a setQuantile 
+
+  /** When a higher level class wants to implement non-integer readout positions, we need to do a 
+  linear interpolation between the values at sorted-array positions to the left and to the right of 
+  actual requested non-integer position. This sets the weight w for the value to the right, the 
+  weight for the value to the left is the 1-w. By default, w = 1, so we give full weight to the 
+  sample to the right which is the smallest of the large values. */
+  void setRightWeight(T newWeight) { w = newWeight; }
+
+
+  //void setQuantile(T newQuantile) { }
   // function that takes a real number between 0 and 1 where 0 = minimum, 1 = maximum, 
   // 0.5 = median, 0.25 = quartile, etc. This may lead to a non-integer readout point which we can 
   // implement by linearly interpolating between largestOfSmall and smallestOfLarge via the 
   // fractional part - this will naturally also include medians of even buffer-lengths (the weights
   // should both come out as 0.5)
-  // or rename to setSmallHeapLength, setReadPosition
+
+  // ah - no - this should perhaps be done at a higher level class - it would need us to store q 
+  // and update w,p etc also when L changes...hmm - or maybe it should be implemented here? the we
+  // should also implement it in the naive version
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -1273,15 +1294,16 @@ public:
   T getSample(T x)
   {
     // buffer update:
-    int hi = buf[bufIdx];                    // hi: heap-index of oldest sample
-    int bi = dblHp[hi].bufIndex;             // bi: buffer-index of oldest sample
-    int hj = dblHp.replace(hi, Node(x, bi)); // will reshuffle the content of the double-heap
-    bufIdx = (bufIdx+1) % L;                 // update position in circular buffer of indices
+    int hi = buf[bufIdx];            // heap-index of oldest sample
+    int bi = dblHp[hi].bufIdx;       // buffer-index of oldest sample
+    bufIdx = (bufIdx+1) % L;         // updates the position in circular buffer of indices
+    dblHp.replace(hi, Node(x, bi));  // will reshuffle the content of the double-heap, the content 
+                                     // of buf will also be reshuffled accordingly
 
     // sample readout:
-    T yS = dblHp.getLargestSmallValue().value;      // smaller value
-    T yL = dblHp.getSmallestLargeValue().value;     // larger value
-    T y  = (T(1)-w)*yS + w*yL;                      // linear interpolation
+    T yS = dblHp.getLargestSmallValue().value;   // smaller value
+    T yL = dblHp.getSmallestLargeValue().value;  // larger value
+    T y  = (T(1)-w)*yS + w*yL;                   // linear interpolation
     return y;
   }
 
@@ -1289,31 +1311,35 @@ public:
   void reset()
   {
     for(int n = 0; n < L; n++) {
-      dblHp[n].value    = T(0);
-      dblHp[n].bufIndex = n;
-      buf[n]            = n; }
+      dblHp[n].value  = T(0);
+      dblHp[n].bufIdx = n;
+      buf[n]          = n; }
     bufIdx = 0;
   }
 
 
 protected:
 
+  /** Updates the lengths of the double-heap and circular buffer according to the settings of 
+  L and q. */
   void updateBuffers()
   {
     rsAssert(L <= (int) small.size());
-    int C = (int) small.size();
-    dblHp.setData(&small[0], q, C, &large[0], L-q, C);
+    int C = (int) small.size(); 
+    dblHp.setData(&small[0], p, C, &large[0], L-p, C);
     buf.resize(L);
     reset();  // is this needed? if not, get rid to make q and L modulatable
+
+    // C is the capacity - this is what is set via setMaxLength, right?
   }
 
   /** A node stores an incoming signal value together with its index in the circular buffer. The 
   "less-than" comparison is based on the signal value. */
   struct Node
   {
-    Node(T v = T(0), int i = 0) { value = v; bufIndex = i; }
+    Node(T v = T(0), int i = 0) { value = v; bufIdx = i; }
     bool operator<(const Node& b) const { return this->value < b.value; }
-    int bufIndex = 0;
+    int bufIdx = 0;
     T value = T(0);
   };
 
@@ -1322,7 +1348,7 @@ protected:
   void swapNodes(Node& a, Node& b)
   {
     rsSwap(a, b);
-    rsSwap(buf[a.bufIndex], buf[b.bufIndex]);  
+    rsSwap(buf[a.bufIdx], buf[b.bufIdx]);
   }
 
 
@@ -1330,269 +1356,21 @@ protected:
 
   std::vector<Node>  small, large; // storage arrays of the nodes
   rsDoubleHeap<Node> dblHp;        // maintains large/small as double-heap
-  std::vector<int>   buf;          // circular buffer of heap indices - rename to buf
+  std::vector<int>   buf;          // circular buffer of heap indices
 
   int bufIdx;  // current index into into the circular buffer
   int L = 0;   // total length of filter
-  int q = 0;   // quantile as value 0 <= q < L ...maybe rename to p for (read) position
+  int p = 0;   // readout position as value 0 <= q < L (is 0 and L-1 actually allowed? test!)
   T w = T(1);  // weight for smallest large value in the linear interpolation
 
 };
 
-// this is obsolete and may be deleted:
-template<class T>
-class rsMovingQuantileFilterOld
-{
 
-public:
+/** This is a naive implementattion of a moving quantile filter and meant only for producing test 
+outputs to compare the production version of the rsMovingQuantileFilter against. It's horribly 
+inefficient - the cost per sample is O(N*log(N)) whereas the production version should run in 
+O(log(N)). ..maybe move to unit tests.. */
 
-
-  rsMovingQuantileFilterOld(int numSmaller = 20, int numLarger = 20) 
-    : buf(numSmaller+numLarger) // preliminary - we need to be able to adapt the capacity of ringbuffers at runtime
-  {
-    setLengths(numSmaller, numLarger);
-
-    // assign the comparison and swapping functions in both heaps:
-    auto less      = [&](const int& a, const int& b)->bool { return nodeLess(   a, b); };
-    auto greater   = [&](const int& a, const int& b)->bool { return nodeGreater(a, b); };
-    auto swapNodes = [&](int& a, int& b) { this->swapNodes(a, b); };
-    //small.setCompareFunction(greater);
-    //large.setCompareFunction(less);
-
-    small.setCompareFunction(less);    // small is a max-heap
-    large.setCompareFunction(greater); // large is a min-heap
-    small.setSwapFunction(swapNodes);
-    large.setSwapFunction(swapNodes);
-  }
-
-
-  void setLengths(int numSmaller, int numLarger)
-  {
-    nS = numSmaller;
-    nL = numLarger;
-    updateBufferLengths();
-  }
-
-
-  int getLength() const
-  {
-    return nS + nL;
-  }
-
-
-  T getSample(T x)
-  {
-    // under construction
-
-    // -replace oldest sample in the heaps with the new incoming sample
-    // -rebalance the heap in which the oldest sample resided
-    // -if the largest (front) sample in the small heap is > than the smallest (front) sample in 
-    //  the large heap: exchange them and rebalance both heaps
-    // -the swaps that occurr during rebalancing the heaps should also lead to corresponding swaps 
-    //  in our delay buffer, due to the way we have implemented our swap function
-    //  ...err...i think, no, the delay buffer should remain as is?
-    // -return the front sample of the "large" heap in case of an odd size and the average of both
-    //  front samples for even sizes (size == getLength())
-
-    //int L 
-
-    int ni = buf.getOldest();      // node index of oldest node in nodes array
-    int hi = nodes[ni].heapIndex;  // heap index of oldest node
-    //int bi = nodes[ni].bufIndex;   // buffer index of oldest node - do we need this?
-
-    // replace value of the oldest node with the new incoming value:
-    nodes[ni].value = x;
-    if(hi < nS) hi = small.floatIntoPlace(hi);          // node to be replaced is in small heap
-    else        hi = large.floatIntoPlace(hi-nS) + nS;  // node to be replaced is in large heap
-
-    // swap first elements of small/large heaps, if necessarry:
-    if(heapsNeedExchange())
-    {
-      //rsSwap(nodes[0].heapIndex, nodes[nS].heapIndex);
-      //rsSwap(nodes[0].value,     nodes[nS].value);       // is this correct?
-      //rsSwap(nodes[0], nodes[nS]);
-      // nope! the nodes array stays fixed - we don't swap anything there
-
-      // the swap:
-      rsSwap(nodes[0].heapIndex, nodes[nS].heapIndex); // update of our additional data
-      rsSwap(heaps[0], heaps[nS]);                     // update of the actual heap elements
-
-      //rsSwap(nodes[0].value,     nodes[nS].value);       // just a test - is this correct?
-
-      // the update that may be required due to the swap:
-      if(hi < nS)
-      {
-        // replacement took place in small heap, so after exchange, the new datum is in the large
-        // heap
-        small.floatIntoPlace(0);
-        hi = large.floatIntoPlace(0) + nS;
-      }
-      else
-      {
-        // replacement took place in large heap, so after exchange, the new datum is in the small
-        // heap
-        large.floatIntoPlace(0);
-        hi = small.floatIntoPlace(0);
-      }
-    }
-
-
-    // debug:
-    bool isSmallHeap = small.isHeap();
-    bool isLargeHeap = large.isHeap();
-    rsAssert(isSmallHeap && isLargeHeap);
-
-
-    // hi now is the new heap index of the newly received value - we write it into the nodes 
-    // array:
-    nodes[ni].heapIndex = hi;  // is this correct? or do we need to do it after the next?
-
-    ni = buf.getSample( (ni+1) % getLength() );  // ..and this?
-    // this is the actual update of the buf - the returned ni value here should be equal to the one
-    // we have already used all the time ...can we move this function call up? i think so
-
-
-
-
-    //int idx = large.getElement(0);  // index to read from the heap
-    int idx = large[0]; 
-    //idx = nS;  // test..hmm..nope?
-    //idx = ni;
-    T val = nodes[idx].value;
-    return val;
-  }
-
-
-  void reset()
-  {
-    for(int i = 0; i < getLength(); i++)
-    {
-      heaps[i] = i;
-      buf[i] = i;
-      nodes[i].heapIndex = i;
-      nodes[i].value = T(0);
-    }
-    // does this initialization make sense?
-  }
-
-
-
-
-
-protected:
-
-  T getLargestSmallValue()
-  {
-    return nodes[heaps[0]].value;
-  }
-
-  T getSmallestLargeValue()
-  {
-    return nodes[heaps[nS]].value;
-  }
-
-  bool heapsNeedExchange()
-  {
-    // for debug:
-    T largestSmall  = getLargestSmallValue();  
-    T smallestLarge =  getSmallestLargeValue();
-
-    return getLargestSmallValue() > getSmallestLargeValue();
-  }
-
-
-  // function to be passed to the heap objects, to be used there for comparison and swapping:
-  bool nodeLess(const int& left, const int& right)
-  {
-    return nodes[left].value < nodes[right].value;
-  }
-  bool nodeGreater(const int& left, const int& right)
-  {
-    return nodes[left].value > nodes[right].value;
-  }
-  void swapNodes(int& i, int& j)
-  {
-    rsSwap(nodes[i].heapIndex, nodes[j].heapIndex); // update of our additional data
-    rsSwap(i, j);                                   // update of the actual heap elements
-  }
-  // expects two indices into the nodes array
-
-
-
-  void updateBufferLengths()
-  {
-    nodes.resize(getLength());
-    buf.setLength((size_t)getLength());
-    heaps.resize(getLength());
-    small.setData(&heaps[0],  nS, nS);
-    large.setData(&heaps[nS], nL, nL);
-    reset();
-  }
-
-  /** A node stores the value itself and the index in the heaps, where we use the convenetion that
-  when a node it in the heap of larger values, the actualy index as seen from the "large" heap is
-  given by heapIndex-nS - and this occurrs whenever heapIndex >= nS, when heapIndex < nS, it's an
-  index inot the "smaller" heap */
-  struct Node
-  {
-    int heapIndex = 0;
-    //int bufIndex = 0;  // i think, this may be redundant - we'll see
-    T value = T(0);
-    // maybe we need a bool to indicate, if we are in the large heap - using the convention of
-    // adding/subtracting nS is sometimes inconvenient...hmm...maybe not
-  };
-
-
-  std::vector<Node> nodes;
-
-
-  rsRingBuffer<int> buf;   // circular buffer of indices into the nodes array
-  std::vector<int> heaps;  // memory for the heaps
-  // heaps and buf just store indices into the nodes array and the nodes-array itself contains the
-  // actual data together with its current index inside the heap (and delay-buffer). We need this 
-  // indirection in order to map directly to heap- and buffer-indices in O(1) time. We use the 
-  // index in the nodes-array as key and update the data heapIndex,bufIndex of the array-entries
-  // whenever we do a swap do to heap-rebalancing
-  // -the heaps must be able to reference the data (for comparing)
-  // -from buf.getOldest(), we must be able to retrieve the the position of the oldest datum in 
-  //  the heap(s), so we can know, which heap-element we wnat to replace with the new incoming 
-  //  datum
-
-
-  rsBinaryHeap<int> small, large;
-  // is it possible to use one binary serach tree instead of two binary heaps?
-
-
-  // maybe heaps and nodes are not needed? can we just use buf to buffer the elements and let
-  // small and large be indices into buf? then buf should be a buffer of T values - that would 
-  // simplify the implementation a lot - less indirection - we actually don't need the two-way
-  // association: the order of the circular buffer never changes
-
-  // i think, maybe i should get rid of the nodes array and keeps only heaps - and a heap node 
-  // should contain the catual value together with the buffer index and whenever two heap-nodes
-  // are swapped, the corresponding buffer entries are also swapped (the buffer contains indices 
-  // into the heaps)
-
-
-  int nS = 0, nL = 0; // number of elements smaller than and larger than the percentile
-  // maybe use size_t
-
-};
-
-// with a binary search tree, we may just need the tree and a circular buffer that always remembers
-// which nod is the oldest, then on each sample:
-// -replace the datum in node that holds the oldest value
-// -rebalance the tree (when swapping nodes, the node index stored in the circular delay buffer 
-//  must be updated along)
-// -output is always the valzue stored in a specific, fixed node - if the tree is symmetric and we
-//  we want the median, then use the root
-
-
-
-// this is only for producing test outputs to compare the production version of the 
-// rsMovingQuantileFilter agains - it's not meant for actual use - the algo is horribly 
-// inefficient - the cost per sample is O(N*log(N)) whereas the production version should run in
-// O(log(N))
 template<class T>
 class rsMovingQuantileFilterNaive
 {
@@ -1612,10 +1390,7 @@ public:
     updateBufferLengths();
   }
 
-  int getLength() const
-  {
-    return nS + nL;
-  }
+  int getLength() const { return nS + nL; }
 
   T getSample(T x)
   {
@@ -1623,6 +1398,7 @@ public:
     buf.copyTo(&tmp[0]);
     rsHeapSort(&tmp[0], getLength());
     return tmp[nS];
+    // pehaps, we should use interpolation here - provide functions setLength, setQuantile
   }
 
   void reset()
@@ -1641,12 +1417,8 @@ protected:
     reset();
   }
 
-
-
   rsRingBuffer<T> buf;   // circular buffer
-
   std::vector<T> tmp;
-
   int nS = 0, nL = 0;    // maybe use size_t
 
 };
