@@ -1259,6 +1259,14 @@ public:
     updateBuffers();
   }
 
+  /** Sets length and read-position at once. */
+  void setLengthAndReadPosition(int newLength, int newPosition)
+  {
+    L = newLength;
+    p = newPosition;
+    updateBuffers();
+  }
+
   /** When a higher level class wants to implement non-integer readout positions, we need to do a 
   linear interpolation between the values at sorted-array positions to the left and to the right of 
   actual requested non-integer position. This sets the weight w for the value to the right, the 
@@ -1387,19 +1395,6 @@ public:
     dirty = true;
   }
 
-  void setMaxLength(T newMaxLength)
-  {
-    maxLength = newMaxLength;
-    allocateResources();
-    dirty = true;
-  }
-
-  void setLength(T newLength)
-  {
-    length = newLength;
-    dirty = true;
-  }
-
   void setFrequency(T newFrequency)
   {
     setLength(T(1) / newFrequency); 
@@ -1411,14 +1406,26 @@ public:
   }
 
 
-
-
-  /*
-  T getMaxLength() const
+  void setMaxLength(T newMaxLength)
   {
-
+    maxLength = newMaxLength;
+    allocateResources();
+    dirty = true;
   }
-  */
+
+  void setSampleRateAndMaxLength(T newSampleRate, T newMaxLength)
+  {
+    sampleRate = newSampleRate;
+    maxLength  = newMaxLength;
+    dirty = true;
+  }
+
+  void setLength(T newLength)
+  {
+    length = newLength;
+    dirty = true;
+  }
+
 
   T getSample(T x)
   {
@@ -1435,29 +1442,32 @@ public:
   }
 
 
+protected:
 
   void updateInternals()
   {
     // Compute length, readout point the weight for the linear interpolation:
-    int L = (int) round(length * sampleRate);
-    T   p = quantile * sampleRate * (L-1);
-    int i = (int) floor(p);
-    T   f = p - i;
+    int L = (int) round(length * sampleRate); // length
+    T   p = quantile * sampleRate * (L-1);    // readout position in sorted array
+    int i = (int) floor(p);                   // integer part
+    T   f = p - i;                            // fractional part
 
-    // set the stuff up:
-    core.setLength(L);           // this resets the core - the filter is not modulatable
-    core.setReadPosition(i+1);   // this also
-    core.setRightWeight(f);
-    // maybe core should support setting L and p at once, bcs each may trigger recalculations
+    // Set the core up:
+    core.setLengthAndReadPosition(L, i+1);    // i+1 points to smallest large value
+    core.setRightWeight(f);                   // ...which must be weighted by f
 
     // ...we may need to take some special care when i == 0 or i == L-1 because it would make one
-    // of the heaps get a zero length
+    // of the heaps get a zero length - do some unit tests - check especially quantile == 0 and
+    // quantile == 1, for both even and odd lengths - this should give min and max filters - we 
+    // still need two heaps with nonzero size
+    // todo: core.setLengthAndReadPosition resets the core which implies that nothing is 
+    // modulatable without harsh artifacts - try to fix that - instead of hard resetting, we should
+    // just redistribute the data between the heaps, possibly discard some or fill up with zeros - 
+    // it may be tricky to handle the update of the circular buffer
+
 
     dirty = false;
   }
-
-
-protected:
 
   void allocateResources()
   {

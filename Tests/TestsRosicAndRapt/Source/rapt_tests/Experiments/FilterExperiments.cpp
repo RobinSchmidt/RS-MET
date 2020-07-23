@@ -1348,7 +1348,7 @@ void quantileFilter()
 {
   double fs = 1;     // sample rate
   int    N  = 200;   // number of samples
-  int    L  = 6;     // filter length in samples
+  int    L  = 7;     // filter length in samples
 
 
   rsMovingQuantileFilter<double> flt;
@@ -1356,7 +1356,6 @@ void quantileFilter()
   // we should have a combined setMaxLengthAndSampleRate function to avoid re-allocating twice:
   flt.setMaxLength(20);
   flt.setSampleRate(1);
-
   flt.setLength(L);
 
   //flt.setFrequency(100.0);

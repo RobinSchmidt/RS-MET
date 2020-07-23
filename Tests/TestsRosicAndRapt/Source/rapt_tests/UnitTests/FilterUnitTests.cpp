@@ -329,6 +329,50 @@ bool testMovingQuantileCore(int maxLength, int smallLength, int largeLength, int
   return r;
 }
 
+bool testMovingQuantileModulation()
+{
+  bool r = true;
+
+  int maxLength = 100;
+  int N = 100;           // number of samples
+
+  // create vector of settings, each with a timestamp:
+  struct Settings
+  {
+    int time;
+    int nS;
+    int nL;
+  };
+  std::vector<Settings> settings ={ {0, 5, 7}, {20, 7, 5}, {40, 7, 7}, {60, 5, 5} };
+
+
+  rsMovingQuantileFilterNaive<double> fltN(maxLength, maxLength);
+
+
+  using Vec = std::vector<double>;
+  Vec x = rsRandomIntVector(N, 0, 99);
+  Vec y(N), z(N);
+  int i = 0; // index of the settings that we choose next
+  for(int n = 0; n < N; n++)
+  {
+    // switch settings, if desired:
+    if(i < settings.size() && n == settings[i].time) {
+      int nS = settings[i].nS;
+      int nL = settings[i].nL;
+      fltN.setLengths(nS, nL);
+      i++;  
+    }
+
+    z[n] = fltN.getSample(x[n]);
+  }
+  // the resets at the switches manifest themselves by the output signal restting back to zero at 
+  // each such switch
+
+  rsPlotVectors(y, z);  // uncomment to see the result
+  return r;
+}
+
+
 bool movingQuantileUnitTest()
 {
   bool r = true;
@@ -351,6 +395,10 @@ bool movingQuantileUnitTest()
   //r &= testMovingQuantile(64,  0, 40, N);
   //r &= testMovingQuantile(64, 64,  0, N);
   //r &= testMovingQuantile(64,  0, 64, N);
+
+  r &= testMovingQuantileModulation();
+
+
 
   return r;
 
