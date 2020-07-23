@@ -59,7 +59,7 @@ bool runUnitTestsRapt()
   //passed &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner"); // why commented?
   passed &= runUnitTest(&filterSpecUnitTest,     "rsFilterSpecification (BA/ZPK)");
   passed &= runUnitTest(&movingMaximumUnitTest,  "moving maximum filter");
-  passed &= runUnitTest(&movingQuantileUnitTest, "moving percentile filter"); // under construction
+  passed &= runUnitTest(&movingQuantileUnitTest, "moving quantile filter"); // under construction
 
 
   // Visualization:

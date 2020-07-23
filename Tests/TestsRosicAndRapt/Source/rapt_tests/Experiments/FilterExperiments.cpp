@@ -1343,3 +1343,76 @@ void seriesConnectionDecay()
   //
   // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=533696
 }
+
+void quantileFilter()
+{
+  int N = 5000;  // number of samples
+
+
+  rsMovingQuantileFilter<double> flt;
+  flt.setFrequency(100.0);
+  //flt.setFeedback(0.0);    // later
+  //flt.setQuantile(0.5);
+
+
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
+
+
+  Vec x = rsRandomVector(N, -1.0, +1.0, 2);  // try sinusoids, too
+  AT::cumulativeSum(&x[0], &x[0], N);
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = flt.getSample(x[n]);
+
+
+  /*
+  // create a median-filtered version of x:
+  int L = 441;
+  for(int n = nS; n < N-nL; n++)
+    t[n+nS] = rsArrayTools::median(&x[n-nS], nS+nL); 
+  // why t[n+nS]?
+  */
+
+
+  rsPlotVectors(x, y);
+
+  int dummy = 0;
+
+
+
+  // maybe try it with a square-wave with period 100, set the length also to 100 - this is an even
+  // number, so we should get an interpolation coeff of 0.5 - i think, the output should be a 
+  // triangle wave
+
+  // how about using 4 of them in series and building the feedback loop around the whole thing?
+
+
+
+
+
+
+  // ToDo:
+  // -clean up the rsRingBuffer class - i introduced some functions there that don't seem to make 
+  //  sense anymore
+  // -clean up the tree/heap classes and move them to RAPT
+  // -parametrize in terms of length and a real number for the quantile between 0..1
+  // -it should also work with 0.0 and 1.0 which should give moving min/max filters
+  // -the length should be set up in a physical unit like seconds, thenwe may define a cutoff 
+  //  frequency which is inversely proportional - needs a sample-rate - wrap this into a subclass
+  //  or use composition
+  // -try to make the quantile and length modulatable 
+  //  -modulating q will involve moving over a number of samples from small to larger or the other
+  //   way around
+  //  -modulating will (additionaly?) involve growing or shrinking the size of the rsDoubleHeap,
+  //   when doing this, we must ensure to throw away the oldest samples
+  // -how about introducing feedback?
+  // Notes:
+  // -The old implementation using rsRingBuffer instead of std::vector for the circular buffer 
+  //  worked only when nS = nL = 2^k for some k and mL = nS + nL. This probably had to do with the
+  //  weird indexing of rsRingBuffer - perhaps try to make it work, but if it's too tricky, we may 
+  //  just leave it using std::vector
+
+
+
+}

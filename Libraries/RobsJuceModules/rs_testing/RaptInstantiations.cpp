@@ -46,6 +46,8 @@ template bool RAPT::rsLess(const double&, const double&);
 
 template class rsMovingMaximumFilter<int>;
 template class rsMovingMaximumFilter<double>;
+template class rsMovingQuantileFilter<double>;
+
 
 
 template bool RAPT::defaultLess(const int& left, const int& right);

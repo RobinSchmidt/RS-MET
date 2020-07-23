@@ -301,14 +301,14 @@ https://www.nayuki.io/res/sliding-window-minimum-maximum-algorithm/SlidingWindow
 */
 
 
-bool testMovingQuantile(int maxLength, int smallLength, int largeLength, int numSamples, 
+bool testMovingQuantileCore(int maxLength, int smallLength, int largeLength, int numSamples, 
   int seed = 0)
 {
   rsAssert(maxLength >= smallLength + largeLength);
 
   bool r = true;
 
-  rsMovingQuantileFilter<double> fltH;            // H for heap-based implementation
+  rsMovingQuantileFilterCore<double> fltH;      // H for heap-based implementation
   fltH.setMaxLength(maxLength);
   fltH.setLength(smallLength + largeLength);
   fltH.setReadPosition(smallLength);
@@ -337,13 +337,13 @@ bool movingQuantileUnitTest()
   // q: quantile
 
   int N = 500;  // number of samples
-  r &= testMovingQuantile(64, 32, 32, N);
-  r &= testMovingQuantile(64, 50, 14, N);  // nS + nL = 50 + 14 = 64
-  r &= testMovingQuantile(64, 30, 14, N);
-  r &= testMovingQuantile(64, 63,  1, N);
-  r &= testMovingQuantile(64,  1, 63, N);
-  r &= testMovingQuantile(64, 40,  1, N);
-  r &= testMovingQuantile(64,  1, 40, N);
+  r &= testMovingQuantileCore(64, 32, 32, N);
+  r &= testMovingQuantileCore(64, 50, 14, N);  // nS + nL = 50 + 14 = 64
+  r &= testMovingQuantileCore(64, 30, 14, N);
+  r &= testMovingQuantileCore(64, 63,  1, N);
+  r &= testMovingQuantileCore(64,  1, 63, N);
+  r &= testMovingQuantileCore(64, 40,  1, N);
+  r &= testMovingQuantileCore(64,  1, 40, N);
 
   // these do not work - the heap size of either the small or the large heap goes to zero and we
   // get index-out-of-range errors:
@@ -353,28 +353,6 @@ bool movingQuantileUnitTest()
   //r &= testMovingQuantile(64,  0, 64, N);
 
   return r;
-
-  // ToDo:
-  // -clean up the rsRingBuffer class - i introduced some functions there that don't seem to make 
-  //  sense anymore
-  // -clean up the tree/heap classes and move them to RAPT
-  // -parametrize in terms of length and a real number for the quantile between 0..1
-  // -it should also work with 0.0 and 1.0 which should give moving min/max filters
-  // -the length should be set up in a physical unit like seconds, thenwe may define a cutoff 
-  //  frequency which is inversely proportional - needs a sample-rate - wrap this into a subclass
-  //  or use composition
-  // -try to make the quantile and length modulatable 
-  //  -modulating q will involve moving over a number of samples from small to larger or the other
-  //   way around
-  //  -modulating will (additionaly?) involve growing or shrinking the size of the rsDoubleHeap,
-  //   when doing this, we must ensure to throw away the oldest samples
-  // -how about introducing feedback?
-  // Notes:
-  // -The old implementation using rsRingBuffer instead of std::vector for the circular buffer 
-  //  worked only when nS = nL = 2^k for some k and mL = nS + nL. This probably had to do with the
-  //  weird indexing of rsRingBuffer - perhaps try to make it work, but if it's too tricky, we may 
-  //  just leave it using std::vector
-
 
 
   /*

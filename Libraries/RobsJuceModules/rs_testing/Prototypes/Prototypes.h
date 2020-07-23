@@ -1216,13 +1216,13 @@ track of by the circular buffer, such that it always points to the oldest sample
 double-heap.  */
 
 template<class T>
-class rsMovingQuantileFilter
+class rsMovingQuantileFilterCore  // maybe rename to rsMovingQuantileFilterCore
 {
 
 public:
 
 
-  rsMovingQuantileFilter()
+  rsMovingQuantileFilterCore()
   { 
     auto swapNodes = [&](Node& a, Node& b) { this->swapNodes(a, b); };
     dblHp.setSwapFunction(swapNodes);
@@ -1358,18 +1358,135 @@ protected:
   rsDoubleHeap<Node> dblHp;        // maintains large/small as double-heap
   std::vector<int>   buf;          // circular buffer of heap indices
 
-  int bufIdx;  // current index into into the circular buffer
-  int L = 0;   // total length of filter
-  int p = 0;   // readout position as value 0 <= q < L (is 0 and L-1 actually allowed? test!)
-  T w = T(1);  // weight for smallest large value in the linear interpolation
+  int bufIdx = 0;  // current index into into the circular buffer
+  int L = 0;       // total length of filter
+  int p = 0;       // readout position as value 0 <= q < L (is 0 and L-1 actually allowed? test!)
+  T   w = T(1);    // weight for smallest large value in the linear interpolation
 
 };
 
 
-/** This is a naive implementattion of a moving quantile filter and meant only for producing test 
-outputs to compare the production version of the rsMovingQuantileFilter against. It's horribly 
-inefficient - the cost per sample is O(N*log(N)) whereas the production version should run in 
-O(log(N)). ..maybe move to unit tests.. */
+// this is a more user-friendly, audio-oriented, plugin-ready wrapper around the core algorithm
+// of the moving quantile filter
+template<class T>
+class rsMovingQuantileFilter  // maybe rename to rsQuantileFilter
+{
+
+public:
+
+  rsMovingQuantileFilter()
+  {
+    allocateResources();
+    dirty = true;
+  }
+
+  void setSampleRate(T newSampleRate)
+  {
+    sampleRate = newSampleRate;
+    allocateResources();
+    dirty = true;
+  }
+
+  void setMaxLength(T newMaxLength)
+  {
+    maxLength = newMaxLength;
+    allocateResources();
+    dirty = true;
+  }
+
+  void setLength(T newLength)
+  {
+    length = newLength;
+    dirty = true;
+  }
+
+  void setFrequency(T newFrequency)
+  {
+    setLength(T(1) / newFrequency); 
+    // maybe experiment with proportionality factors - figure out, where the cutoff frequency is
+    // for a median filter by feeding sinusoidal inputs and measure the output amplitude (the 
+    // output may be a distorted sine? or maybe it will be zero, when the length is exactly one
+    // cycle?...yeah - that makes sense and the same is true for any symmetric waveform - that's 
+    // going to be some weird ass nonlinear filter!)
+  }
+
+
+
+
+  /*
+  T getMaxLength() const
+  {
+
+  }
+  */
+
+  T getSample(T x)
+  {
+    if(dirty) 
+      updateInternals();
+    y = core.getSample(x + feedback * y);
+    return y;
+  }
+
+  void reset()
+  {
+    core.reset();
+    y = 0.0;
+  }
+
+
+
+  void updateInternals()
+  {
+    int L = (int) round(length * sampleRate);
+    core.setLength(L);   // this resets the core - the filter is not modulatable
+
+    // From the quantile, compute the readout point and set it, set also the weight for the
+    // linear interpolation:
+    T   q = quantile * length * sampleRate;    // or should we use quantile * L instead?
+    int p = (int) ceil(q);                     // verify this!
+    T   w = q - floor(q);                      // verify this!
+    core.setReadPosition(p);
+    core.setRightWeight(w);   
+
+    // maybe core should support setting L and p at once, bcs each may trigger recalculations
+
+    // ...we may need to take some special care when p == 0 or p == L-1 because it would make one
+    // of the heaps get a zero length
+
+    dirty = false;
+  }
+
+
+protected:
+
+  void allocateResources()
+  {
+    int mL = (int) ceil(maxLength * sampleRate);
+    core.setMaxLength(mL);
+  }
+
+  // filter state and user parameters:
+  T y          = 0.0;
+  T feedback   = 0.0;
+  T sampleRate = 44100;            // in Hz
+  T maxLength  = 0.1;              // in seconds
+  T length     = 0.01;             // in seconds
+  T quantile   = 0.5;              // in 0..1, 0.5 is median
+
+  // internal data:
+  std::atomic<bool> dirty = true;
+  rsMovingQuantileFilterCore<T> core;
+
+};
+
+
+
+
+/** This is a naive implementattion of (the core of) a moving quantile filter and meant only for 
+producing test outputs to compare the production version of the rsMovingQuantileFilter against. 
+It's horribly inefficient - the cost per sample is O(N*log(N)) whereas the production version 
+should run in O(log(N)). ..maybe move to unit tests.. */
 
 template<class T>
 class rsMovingQuantileFilterNaive
