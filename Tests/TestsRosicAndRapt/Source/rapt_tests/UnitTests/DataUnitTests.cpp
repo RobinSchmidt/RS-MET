@@ -421,7 +421,7 @@ bool ringBufferUnitTest()
 
 
   b.reset();
-  int i = 0, j;
+  size_t i = 0, j;
   j = b.getIndexFromNewest(i);
   j = b.getIndexFromOldest(i);
 

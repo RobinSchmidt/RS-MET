@@ -1278,14 +1278,14 @@ public:
 
   T getSample(T x)
   {
-    int hi = buf.getOldest();       // hi: heap-index of oldest sample - old
-    //int hi = buf2[buf2idx];         // hi: heap-index of oldest sample - new
+    //int hi = buf.getOldest();       // hi: heap-index of oldest sample - old
+    int hi = buf2[buf2idx];         // hi: heap-index of oldest sample - new
 
     int bi = heaps[hi].bufIndex;    // bi: buffer-index of oldest sample
     int hj = heaps.replace(hi, Node(x, bi, sampleCount));
 
-    buf.advancePointers();       // old
-    //buf2idx = (buf2idx+1) % L;   // new
+    //buf.advancePointers();       // old
+    buf2idx = (buf2idx+1) % L;   // new
 
 
     T y = heaps.getSmallestLargeValue().value;

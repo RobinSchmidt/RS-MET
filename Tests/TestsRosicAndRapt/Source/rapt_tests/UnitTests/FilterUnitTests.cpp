@@ -302,9 +302,46 @@ https://www.nayuki.io/res/sliding-window-minimum-maximum-algorithm/SlidingWindow
 
 
 
-bool movingPercentileUnitTest()
+bool testMovingQuantile(int maxLength, int smallLength, int largeLength, int numSamples, 
+  int seed = 0)
+{
+  rsAssert(maxLength >= smallLength + largeLength);
+
+  bool r = true;
+
+  rsMovingQuantileFilter<double> fltH;            // H for heap-based implementation
+  fltH.setMaxLength(maxLength);
+  fltH.setLength(smallLength + largeLength);
+  fltH.setQuantile(smallLength);
+
+  rsMovingQuantileFilterNaive<double> fltN(smallLength, largeLength); // N for naive implementation
+
+  // Create output signals of the naive and heap based implementation using as input signal random
+  // numbers between 0 and 99 and along the way, check, if both outputs match
+  using Vec = std::vector<double>;
+  Vec x = rsRandomIntVector(numSamples, 0, 99, seed);
+  Vec y(numSamples), z(numSamples);
+  for(int n = 0; n < numSamples; n++)  {
+    double q = y[n] = fltH.getSample(x[n]);
+    double p = z[n] = fltN.getSample(x[n]);
+    r &= p == q; }
+
+  rsPlotVectors(y, z);  // uncomment to see the result
+  return r;
+}
+
+bool movingPercentileUnitTest()  // rename
 {
   bool r = true;
+
+  int N = 500;  // number of samples
+  r &= testMovingQuantile(64, 32, 32, N);
+  r &= testMovingQuantile(64, 50, 14, N);  // nS + nL = 50 + 14 = 64
+  r &= testMovingQuantile(64, 30, 14, N);
+  // try extreme settings like (64,63,1), (64,1,63), (64,0,64), (64,64,0), ...
+
+  return r;
+
 
   double q;
 
@@ -328,6 +365,8 @@ bool movingPercentileUnitTest()
   // give moving min/max filters
 
 
+
+
   // compare output against naive version for random inputs:
 
   int nS = 32;
@@ -335,7 +374,7 @@ bool movingPercentileUnitTest()
   flt.setMaxLength(nS+nL);
   //flt.setMaxLength(100);  // test - nope - produces garbage
   //flt.setMaxLength(128);  // same garbage
-  //flt.setMaxLength(512);
+  flt.setMaxLength(512);
   flt.setLength(nS+nL);
   flt.setQuantile(nS);
 
@@ -361,7 +400,7 @@ bool movingPercentileUnitTest()
 
   double p;
 
-  int N = 500;  // number of samples
+
   using Vec = std::vector<double>;
   Vec x = rsRandomIntVector(N, 0, 99, 0);
   Vec y(N), z(N), t(N);
@@ -400,6 +439,10 @@ bool movingPercentileUnitTest()
   // could be a useful feature in signal processing applications
   // one application of this filter could be to add "grit" to signals - it tends to hold values 
   // constant over some number of samples
+
+
+
+
 
 
   /*
