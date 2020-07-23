@@ -1378,18 +1378,31 @@ void quantileFilter()
     y[n] = flt.getSample(x[n]);
 
 
-  
   // create a median-filtered version of x:
   Vec t(N);
-  int nS = 3;  // = L/2 using floor division
-  int nL = 4;  // = L-nS
+  //int nS = 3;  // = L/2 using floor division
+  //int nL = 4;  // = L-nS
+  int nS = L/2;
+  int nL = L-nS;
   for(int n = nS; n < N-nL; n++)
     t[n+nS] = rsArrayTools::median(&x[n-nS], nS+nL); 
   // why t[n+nS]?
   
-  // 36,67,76,41,82,45,74 -> 36,41,45,67,74,76,82 -> 67
+  // 7: 36,67,76,41,82,45,74 -> 36,41,45,67,74,76,82 -> 67
+  // 6: 36,67,76,41,82,45    -> 36,41,45,67,76,82    -> (45+67)/2 = 56 ..but occurs at sample 101 - why?
+  //
 
-  rsPlotVectors(x, y, t);
+  // let's try it with the naive implementation of rsQuantileFilter
+  rsMovingQuantileFilterNaive<double> fltN(nS, nL);
+  Vec z(N);
+  for(int n = 0; n < N; n++)
+    z[n] = fltN.getSample(x[n]);
+
+
+  //rsPlotVectors(x, y, t);
+  //rsPlotVectors(y, t);
+  //rsPlotVectors(t, z);
+  rsPlotVectors(t, z, y);
 
   int dummy = 0;
 

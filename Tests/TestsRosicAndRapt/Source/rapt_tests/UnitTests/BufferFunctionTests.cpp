@@ -171,7 +171,22 @@ bool testRemoveElements()
 }
 
 
+bool testStatistics()
+{
+  bool r = true;
 
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
+  double y;
+
+
+  Vec v = Vec({3,5,3,8,6,1,4}); // sorted: 1,3,3,4,5,6,8
+
+  y = AT::median(&v[0], 7); r &= y == 4;
+  y = AT::median(&v[0], 6); r &= y == 4;
+
+  return r;
+}
 
 
 bool testBufferFunctions()
@@ -182,6 +197,8 @@ bool testBufferFunctions()
   testResult &= testReverse();
   testResult &= testRemoveElements();
   testResult &= testMoveElements();
+  testResult &= testStatistics();
+
 
   return testResult;
 }
