@@ -260,6 +260,11 @@ bool binaryHeapUnitTest()
   r &= H.isMaxHeap();
   // ...it seems to work - in this case - todo: test more cases
 
+  // try to remove 0th element:
+  H.remove(0);
+  r &= H.getSize() == N-2;
+  r &= H.isMaxHeap();
+
 
 
 

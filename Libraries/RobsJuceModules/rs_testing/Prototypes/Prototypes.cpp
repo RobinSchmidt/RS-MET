@@ -770,6 +770,19 @@ void rsModalFilterFloatSSE2::setParameters(double w, double A, double p,
 
 //=================================================================================================
 
+/*
+template<class T>
+void rsMovingQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPosition)
+{
+  L = newLength;
+  p = newPosition;
+  updateBuffers();
+}
+*/
+
+
+//=================================================================================================
+
 rsGroupString rsGroupString::inverse() const
 {
   size_t len = s.size();

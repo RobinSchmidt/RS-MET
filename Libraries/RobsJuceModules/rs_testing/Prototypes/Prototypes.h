@@ -712,6 +712,23 @@ public:
   // could the return value from floatIntoPlace be interesting for the caller? It is the position
   // where the fomerly last heap element ended up after all the re-ordering business
 
+  void removeFirst()
+  {
+    remove(0);
+  }
+  // needs test
+  // maybe we should have a special implementation to remove the front element? i think, in this case,
+  // we may simply call floatDown instead of floatIntoPlace
+  // or maybe we need a function getAndRemoveFirst()...or popFirst(), extractMax, extractFirst
+
+  T extractFirst()
+  {
+    T first = data[0];
+    removeFirst();
+    return first;
+  }
+  // needs test
+
 
   /** Lets the node at index i float up or down into its appropriate place and returns the 
   resulting new array index. */
@@ -1124,6 +1141,20 @@ public:
   // we use the convention that when i < nS, the datum gets inserted into the small heap and when 
   // i >= nS, the datum gets inserted into the large heap at i-nS, tbc....
 
+  /** Transfers the smallest of the large values to the heap of small values. This will shrink the
+  large heap and grow the large heap by one element. */
+  void moveFirstLargeToSmall()
+  {
+    T e = large.extractFirst();
+    small.insert(e);
+  }
+
+  void moveFirstSmallToLarge()
+  {
+    T e = small.extractFirst();
+    large.insert(e);
+  }
+
 
   T& operator[](int i)
   {
@@ -1243,8 +1274,8 @@ public:
   /** Sets the length of the filter, i.e. the number of past samples that we look at. */
   void setLength(int newLength)
   {
-    L = newLength;
-    updateBuffers();
+    setLengthAndReadPosition(newLength, p);
+    //updateBuffers();
   }
 
   /** Sets the read position in the sorted array of stored past values. This array does not exist 
@@ -1255,8 +1286,9 @@ public:
   conceptually, think about it simple as the readout index in an array of stored past values. */
   void setReadPosition(int newPosition)
   {
-    p = newPosition;
-    updateBuffers();
+    setLengthAndReadPosition(L, newPosition);
+    //p = newPosition;
+    //updateBuffers();
   }
 
   /** Sets length and read-position at once. */
@@ -1266,6 +1298,8 @@ public:
     p = newPosition;
     updateBuffers();
   }
+  // maybe we should implement this in the cpp file and do all the business directly instead of
+  // calling updateBuffers
 
   /** When a higher level class wants to implement non-integer readout positions, we need to do a 
   linear interpolation between the values at sorted-array positions to the left and to the right of 
@@ -1289,7 +1323,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  /** Computes an output sample froma given input sample x. */
+  /** Computes an output sample from a given input sample x. */
   T getSample(T x)
   {
     // buffer update:
@@ -1329,10 +1363,9 @@ protected:
 
     //int C = getCapacity(); 
 
-
+    /*
     // new implementation - under construction - goal is to make L,p modulatable - if you want the 
     // old implementtion, comment this out:
-    /*
     int nSo = (int) small.size();  // old number of small samples
     int nLo = (int) large.size();  // old number of large samples
     int nS  = p;                   // new number of small samples
@@ -1350,8 +1383,8 @@ protected:
 
         while(nSi < nS)
         {
-          // todo: move one sample from large heap to small heap
-
+          // move one sample from large heap to small heap
+          dblHp.moveFirstLargeToSmall();
           nSi++; nLi--;
         }
 
@@ -1364,8 +1397,8 @@ protected:
 
         while(nLi < nL)
         {
-          // todo: move one sample from small heap to large heap
-
+          // move one sample from small heap to large heap
+          dblHp.moveFirstSmallToLarge();
           nSi--; nLi++;
         }
       }
@@ -1373,8 +1406,6 @@ protected:
       {
         //return; // nothing has changed
       }
-
-
 
       int dummy = 0;
     }
@@ -1395,6 +1426,8 @@ protected:
       int dummy = 0;
     }
     */
+ 
+   
 
 
     // old implementation which resets, i.e. is non-modulatable - to use it, comment out new 
