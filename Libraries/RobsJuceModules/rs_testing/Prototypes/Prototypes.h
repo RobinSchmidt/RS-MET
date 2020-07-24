@@ -827,6 +827,7 @@ protected:
   // increaseKey, heapMax
 
   template<class U> friend class rsDoubleHeap;
+  template<class U> friend class rsDoubleHeap2;
 
 };
 // -maybe make also a class rsBinarySearchTree where the left child is <= and the right child is >=
@@ -1252,29 +1253,63 @@ class rsDoubleHeap2 : public rsDoubleHeap<T>
 
 public:
 
+  size_t replace(size_t index, const T& newValue)
+  {
+    rsAssert(isIndexValid(index), "Index out of range");
+
+    size_t i  = index;  // maybe get rid of index and use only i
+ 
+    // The actual replacement:
+    if(isInLargeHeap(i)) {
+      i  = large.replace((int)rawLargeHeapIndex(i), newValue);
+      i |= firstBitOnly; }
+    else
+      i = small.replace(i, newValue);
+
+    // The potential swap:
+    if(small.less(large[0], small[0]))  
+    {
+      small.swap(small[0], large[0]);
+      size_t is = (size_t) small.floatDown(0);
+      size_t il = (size_t) large.floatDown(0);
+      if(isInLargeHeap(index)) // new value was in large and is now in small heap
+        i = is;
+      else
+        i = il | firstBitOnly;
+    }
+
+    return i;
+  }
+
   T& operator[](size_t i)  
   { 
     size_t m1 = allBits;
     size_t m2 = firstBitOnly;
     size_t m3 = allBitsButFirst;
 
-
     rsAssert(isIndexValid(i), "Index out of range");
-    if(i & firstBitOnly)  {
-      i &= allBitsButFirst;
-      return large[i];   
-    }
+    if(isInLargeHeap(i))
+      return large[rawLargeHeapIndex(i)];   
     else
       return small[i];
   }
 
   bool isIndexValid(size_t i)
   {
-    if(i & firstBitOnly)  {
-      i &= allBitsButFirst;
-      return i < large.getSize(); }
+    if(isInLargeHeap(i)) 
+      return rawLargeHeapIndex(i) < large.getSize();
     else
-      return i < small.getSize();
+      return i                    < small.getSize();
+  }
+
+  inline bool isInLargeHeap(size_t i) 
+  { 
+    return i & firstBitOnly; 
+  }
+
+  inline size_t rawLargeHeapIndex(size_t i)
+  {
+    return i & allBitsButFirst;
   }
 
   // have static const members for the masks that separate the first bit and remove the first
@@ -1282,6 +1317,10 @@ public:
 
 
   // todo: use constexpr and maybe move to somewhere else - could be useful in other contexts
+
+
+  // maybe use int instead of size_t because otherwise, when convertig indices to int, the 
+  // indicator bit gets cut off ...but maybe we should take care to avoid such conversions
 
   static const size_t allBits = std::numeric_limits<size_t>::max();
 
