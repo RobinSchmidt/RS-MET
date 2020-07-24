@@ -1141,19 +1141,21 @@ public:
   // we use the convention that when i < nS, the datum gets inserted into the small heap and when 
   // i >= nS, the datum gets inserted into the large heap at i-nS, tbc....
 
-  /** Transfers the smallest of the large values to the heap of small values. This will shrink the
-  large heap and grow the large heap by one element. */
-  void moveFirstLargeToSmall()
+  /** Transfers the smallest of the large values to the heap of small values and returns the index
+  where it ended up. This will shrink the large heap and grow the large heap by one element. */
+  int moveFirstLargeToSmall()
   {
     T e = large.extractFirst();
-    small.insert(e);
+    return small.insert(e);
   }
+  // hmm - return value should be always 0 anyway
 
-  void moveFirstSmallToLarge()
+  int moveFirstSmallToLarge()
   {
     T e = small.extractFirst();
-    large.insert(e);
+    return large.insert(e) + small.getSize();
   }
+  // return value should always be small.getSize(), size measured after the operation
 
 
   T& operator[](int i)
@@ -1169,6 +1171,16 @@ public:
   bool isIndexValid(int i)
   {
     return i >= 0 && i < small.getSize() + large.getSize();
+  }
+
+  int getNumSmallValues() const
+  {
+    return (int) small.getSize();
+  }
+
+  int getNumLargeValues() const
+  {
+    return (int) large.getSize();
   }
 
   T getLargestSmallValue()
@@ -1205,7 +1217,11 @@ public:
   // one..
   */
 
-
+  bool isDoubleHeap()
+  {
+    return small.isHeap() && large.isHeap();
+  }
+  // mostly for test/debug
 
   // todo: getMedian, getMean
 
@@ -1296,6 +1312,14 @@ public:
   void setRightWeight(T newWeight) { w = newWeight; }
 
 
+  void setModulatable(bool shouldBeModulatable)
+  {
+    modulatable = shouldBeModulatable;
+  }
+  // maybe get rid of that at some point and just have it modulatable all the time...or maybe have
+  // different modulation modes: 0: reset, 1: fillWithLastQuantile, etc...
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
@@ -1304,6 +1328,7 @@ public:
   int getCapacity() const
   {
     return (int) small.capacity(); // large.capacity() == buf.capacity();
+    // maybe use small.size() - we keep the vector sizes now fixed
   }
 
 
@@ -1344,15 +1369,25 @@ protected:
   /** Under construction... */
   void modulateLengthAndReadPosition(int newLength, int newPosition);
 
+  void moveFirstLargeToSmall(int oldNumSmallValues);
+
+  void moveFirstSmallToLarge(int oldNumSmallValues);
+
 
   /** A node stores an incoming signal value together with its index in the circular buffer. The 
   "less-than" comparison is based on the signal value. */
   struct Node
   {
-    Node(T v = T(0), int i = 0) { value = v; bufIdx = i; }
-    bool operator<(const Node& b) const { return this->value < b.value; }
     int bufIdx = 0;
     T value = T(0);
+
+    Node(T v = T(0), int i = 0) { value = v; bufIdx = i; }
+
+    bool operator<(const Node& b) const 
+    { return this->value < b.value; }
+
+    bool operator==(const Node& b) const 
+    { return this->value == b.value && this->bufIdx == b.bufIdx; }
   };
 
   /** The swapping for nodes must do the actual swap of a and b as usual but also let the circular
@@ -1375,7 +1410,7 @@ protected:
   int p = 1;       // readout position as value 0 <= q < L (is 0 and L-1 actually allowed? test!)
   T   w = T(1);    // weight for smallest large value in the linear interpolation
 
-  //bool modulatable = false;
+  bool modulatable = false;
 
 };
 

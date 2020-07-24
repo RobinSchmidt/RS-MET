@@ -781,81 +781,58 @@ void rsMovingQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int 
   rsAssert(newLength   >= 2, "If L < 2, we get access violations");
   rsAssert(newPosition >= 1, "If p < 1, we get access violations");
 
-
-  bool modulatable = false; // comment for a simple compile-time switch
-
-
   if( modulatable )
-    modulateLengthAndReadPosition(int newLength, int newPosition);
-  else
-  {
+    modulateLengthAndReadPosition(newLength, newPosition);
+  else {
     L = newLength;
     p = newPosition;
-    buf.resize(L);
-    small.resize(p);
-    large.resize(L-p);
     dblHp.setData(&small[0], p, C, &large[0], L-p, C);
-    reset();
-  }
+    reset(); }
 }
 
 template<class T>
 void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int newPosition)
 {
-  rsError("not yet implemented");
+  int C = getCapacity();
 
+  //rsError("not yet implemented");
 
-  // new implementation - under construction - goal is to make L,p modulatable - if you want the 
-  // old implementtion, comment this out:
-  int nSo = (int) small.size();  // old number of small samples
-  int nLo = (int) large.size();  // old number of large samples
-  int nS  = p;                   // new number of small samples
-  int nL  = L-p;                 // new number of large samples
+  int nSo = p;         // old number of small samples
+  int nLo = L-p;       // old number of large samples
+  L = newLength;
+  p = newPosition;
+  int nS  = p;         // new number of small samples
+  int nL  = L-p;       // new number of large samples
+
   if(nS+nL == nSo+nLo)
   {
     // total length stays the same - we may need to re-distribute data from the min-heap to the
     // max-heap or vice versa
-
-    int nSi = nSo;  // current number of small samples
-    int nLi = nLo;  // current number of large samples
-    if(nS > nSo)
-    {
-      // number of small samples grows - redistribute from large to small
-
-      while(nSi < nS)
-      {
-        // move one sample from large heap to small heap
-        dblHp.moveFirstLargeToSmall();
-        nSi++; nLi--;
-      }
+    int nSi = nSo;                  // current number of small samples
+    int nLi = nLo;                  // current number of large samples
+    if(nS > nSo) {                  // i think, the if/else is redundant with the whiles 
+      while(nSi < nS) {             // number of small samples grows, redistribute from large to small
+        moveFirstLargeToSmall(nSo); // move one sample from large heap to small heap
+        nSi++; nLi--; }}
+    else if(nS < nSo) {
+      while(nLi < nL)  {            // number of large samples grows, redistribute from small to large
+        moveFirstSmallToLarge(nSo); // move one sample from small heap to large heap
+        nSi--; nLi++; }}
+    // else: nothing to do at all
 
 
+    //dblHp.setData(&small[0], p, C, &large[0], L-p, C);
+    // we should not need that, should we? yes - seems to make no difference
 
-    }
-    else if(nS < nSo)
-    {
-      // number of large samples grows - redistribute from small to large
-
-      while(nLi < nL)
-      {
-        // move one sample from small heap to large heap
-        dblHp.moveFirstSmallToLarge();
-        nSi--; nLi++;
-      }
-    }
-    else
-    {
-      //return; // nothing has changed
-    }
-
-    int dummy = 0;
   }
   else if(nS+nL < nSo+nLo)
   {
     // total length shrinks - we must discard some of the old datapoints in addition to possibly
     // redistribute data
 
-
+    // preliminary - copied from non-modulatable code:
+    dblHp.setData(&small[0], p, C, &large[0], L-p, C); 
+    reset();
     int dummy = 0;
   }
   else
@@ -863,7 +840,9 @@ void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength,
     // total length grows - we must fill up missing data in addition to possibly redistribute 
     // data
 
-
+    // preliminary - copied from non-modulatable code:
+    dblHp.setData(&small[0], p, C, &large[0], L-p, C); 
+    reset();
     int dummy = 0;
   }
 
@@ -888,6 +867,55 @@ void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength,
   // Can the handling be unified? Or maybe we can reduce it to two cases for each of the two 
   // sub-heaps, i.e. nS grows or shrinks, nL grows or shrinks
 
+}
+
+template<class T>
+void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
+{
+  //dblHp.moveFirstLargeToSmall();
+  //return;
+
+
+
+  //int nS  = dblHp.getNumSmallValues();
+
+  Node n1 = dblHp.getSmallestLargeValue();    // this is the node we want to move
+  int  bi = n1.bufIdx;                        // buffer index
+  int  bc = buf[bi];                          // buffer content at index - is the new node index
+
+  int  i  = dblHp.moveFirstLargeToSmall();    // should be 0
+  rsAssert(i  == 0);
+
+  Node n2 = dblHp[i];                         // should be same as n1
+  rsAssert(n1 == n2);
+
+
+  int bi2 = n2.bufIdx; 
+  int bc2 = buf[bi2];
+  rsAssert(bc2 == i);
+
+  rsAssert(isIndexPermutation(&buf[0], L));
+  rsAssert(dblHp.isDoubleHeap());
+
+  // the buffer buf stores heap-indices - but the heap-index of a node changes when we move
+  // it from the large to the small heap (it gets smaller by the old nS value)
+  // i think, we need to subtract nSo from buf[bi]
+  //buf[bi] -= nSo;  
+  // is that correct? or should we do that before calling  dblHp.moveFirstLargeToSmall(); does
+  // that make a difference? or will it mess up the swapping...it's a mess!!
+
+
+
+
+  int dummy = 0;
+}
+// this does not work yet - i think, we may have to do something with the stored bufIndex
+// values, too
+
+template<class T>
+void rsMovingQuantileFilterCore<T>::moveFirstSmallToLarge(int nSo)
+{
+  dblHp.moveFirstSmallToLarge();
 }
 
 

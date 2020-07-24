@@ -333,8 +333,8 @@ bool testMovingQuantileModulation()
 {
   bool r = true;
 
-  int maxLength = 100;
-  int N = 100;           // number of samples
+  int maxLength = 15;
+  int N = 200;           // number of samples
 
   // create vector of settings, each with a timestamp:
   struct Settings
@@ -343,12 +343,14 @@ bool testMovingQuantileModulation()
     int nS;
     int nL;
   };
-  std::vector<Settings> settings ={ {0, 5, 7}, {20, 7, 5}, {40, 5, 7}, {60, 7, 7}, {80, 5, 5} };
-
+  //std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5}, /*{80, 5, 7},*/ {120, 7, 7}, {160, 5, 5} };
+  //std::vector<Settings> settings ={ {0, 7, 5}, {40, 5, 7}, {80, 7, 5}, {120, 7, 7}, {160, 5, 5} };
+  std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5} };
 
   rsMovingQuantileFilterNaive<double> fltN(maxLength, maxLength);
   rsMovingQuantileFilterCore<double>  fltH;      // H for heap-based implementation
   fltH.setMaxLength(maxLength);
+  fltH.setModulatable(true);
 
   using Vec = std::vector<double>;
   Vec x = rsRandomIntVector(N, 0, 99);
@@ -366,9 +368,15 @@ bool testMovingQuantileModulation()
     }
     y[n] = fltH.getSample(x[n]);
     z[n] = fltN.getSample(x[n]);
+    int dummy = 0;
   }
 
   // heap-based version shows the resets to zero at the switches
+
+  // sample 40 is still correct, at sample 41 it gets wrong and stays wrong up to sample 84 at 
+  // which point it becomes correct again - unless we comment out the switch at sample 80 - in this
+  // case, it stays wrong even after that - how is this possible? this far after the switch, any
+  // influence of it should have died away anyway
 
   // todo: 
   // -check manually correctness of results, specially at the the switch samples
