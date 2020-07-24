@@ -345,7 +345,11 @@ bool testMovingQuantileModulation()
   };
   //std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5}, /*{80, 5, 7},*/ {120, 7, 7}, {160, 5, 5} };
   //std::vector<Settings> settings ={ {0, 7, 5}, {40, 5, 7}, {80, 7, 5}, {120, 7, 7}, {160, 5, 5} };
-  std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5} };
+  //std::vector<Settings> settings ={ {0, 5, 7}, {50, 7, 5}, {150, 5, 7} };
+  //std::vector<Settings> settings ={ {0, 5, 7}, {50, 6, 6}, {150, 5, 7} };
+  std::vector<Settings> settings ={ {0, 3, 1}, {20, 2, 2}, {40, 1, 3}, {60, 3, 1} };
+
+
 
   rsMovingQuantileFilterNaive<double> fltN(maxLength, maxLength);
   rsMovingQuantileFilterCore<double>  fltH;      // H for heap-based implementation

@@ -911,6 +911,11 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
 }
 // this does not work yet - i think, we may have to do something with the stored bufIndex
 // values, too
+// no - the problem is that we use nS as offset in rsDoubleHeap: whenever an index i >= nS, we
+// interpret that index as i-nS into the large heap. but when nS changes, everything gets messed
+// up. We need to adopt some convention that is independent from nS, for example: whenever the 1st
+// bit (of an unsigned int) is one, mask that away and use the remaining bits as actual index.
+// i think, we can do this in an rsDoubleHeap2 subclass
 
 template<class T>
 void rsMovingQuantileFilterCore<T>::moveFirstSmallToLarge(int nSo)

@@ -1232,6 +1232,33 @@ protected:
 
 };
 
+
+/** Subclass that uses a different convention how the indices are interpreted. Instead of 
+interpreting indices i >= nS (nS = number of small values) as i-nS into the large buffer, we use
+unsigned indices and use the first bit as indicator, if an element from the large heap is meant,
+in which case we use the remaining bits as actual index. This may be less natural and less 
+convenient, but we need it when we want to deal with a dynamically changing nS - we need some
+indicator that is independent from nS, because otherwise, the stored indices in the quantile 
+filter become meaningless after a change of the heap-sizes. */
+template<class T>
+class rsDoubleHeap2 : public rsDoubleHeap<T>
+{
+
+public:
+
+  //int replace(int index, const T& newValue)
+
+  //T& operator[](size_t i)  { }
+
+  //bool isIndexValid(int i)
+
+  // have static const members for the masks that separate the first bit and remove the first
+  // bit
+
+};
+
+
+
 //=================================================================================================
 
 
