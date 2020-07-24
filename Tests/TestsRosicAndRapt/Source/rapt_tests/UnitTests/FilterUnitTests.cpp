@@ -343,7 +343,7 @@ bool testMovingQuantileModulation()
     int nS;
     int nL;
   };
-  std::vector<Settings> settings ={ {0, 5, 7}, {20, 7, 5}, {40, 7, 7}, {60, 5, 5} };
+  std::vector<Settings> settings ={ {0, 5, 7}, {20, 7, 5}, {40, 5, 7}, {80, 7, 7}, {80, 5, 5} };
 
 
   rsMovingQuantileFilterNaive<double> fltN(maxLength, maxLength);
@@ -390,6 +390,9 @@ bool movingQuantileUnitTest()
   // Notation: nS: length of small heap, nL: length of large heap, mL: max length, L: length, 
   // q: quantile
 
+
+  r &= testMovingQuantileModulation();
+
   int N = 500;  // number of samples
   r &= testMovingQuantileCore(64, 32, 32, N);
   r &= testMovingQuantileCore(64, 50, 14, N);  // nS + nL = 50 + 14 = 64
@@ -406,7 +409,7 @@ bool movingQuantileUnitTest()
   //r &= testMovingQuantile(64, 64,  0, N);
   //r &= testMovingQuantile(64,  0, 64, N);
 
-  r &= testMovingQuantileModulation();
+
 
 
 

@@ -1250,10 +1250,12 @@ class rsMovingQuantileFilterCore  // maybe rename to rsMovingQuantileFilterCore
 public:
 
 
-  rsMovingQuantileFilterCore()
+  rsMovingQuantileFilterCore(int maxLength = 2)
   { 
+    rsAssert(maxLength >= 2, "A maxLength of at least 2 is needed");
     auto swapNodes = [&](Node& a, Node& b) { this->swapNodes(a, b); };
     dblHp.setSwapFunction(swapNodes);
+    setMaxLength(maxLength);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -1262,10 +1264,10 @@ public:
   /** Sets the maximum length of the filter. This may re-allocate memory. */
   void setMaxLength(int newMaxLength)
   {
-    small.resize(newMaxLength);  // We use the size of small/large as our capacity and don't resize
-    large.resize(newMaxLength);  // them in updateBuffers.  ...use reserve
+    small.reserve(newMaxLength);
+    large.reserve(newMaxLength);
     buf.reserve(newMaxLength);
-    updateBuffers();
+    updateBuffers();   // maybe have a function initBuffers
   }
   // maybe try to optimize the memory usage - we actually just need one nodes array of length
   // newMaxLength of which one part is used for the min-heap and the other for the max-heap - but 
@@ -1355,19 +1357,26 @@ protected:
   L and q. */
   void updateBuffers()
   {
-    rsAssert(L <= getCapacity());
-    int C = getCapacity(); 
+    rsAssert(L <= getCapacity(), "Length cannot exceed capacity");
+    rsAssert(L >= 2,             "If L < 2, we get access violations");
+    rsAssert(p >= 1,             "If p < 1, we get access violations");
+
+    //int C = getCapacity(); 
 
     // old - comment out to use the new implementation below:
-    dblHp.setData(&small[0], p, C, &large[0], L-p, C);
     buf.resize(L);
-    reset();  // is this needed? if not, get rid to make p and L modulatable
+    small.resize(p);
+    large.resize(L-p);
+    dblHp.setData(&small[0], p, p, &large[0], L-p, L-p);
+    reset();
     return;
 
     // new - under construction - goal is to make L,p modulatable:
     int nSo = (int) small.size();
     int nLo = (int) large.size();
    
+
+    int dummy = 0;
 
     // In order to increase the length on the fly, we may need to insert some older samples which 
     // we do have stored anywhere here yet - to do so, we may have to use a circular buffer of old 
@@ -1376,6 +1385,19 @@ protected:
     // here a pointer to an rsRingBuffer which is null by default and if it's non-null, we use it 
     // here to fill up the missing past samples and if it's null, we just fill up with zeros or 
     // with the mean of the currently stored old values
+
+    // We may need to distinguish between a couple of cases:
+    // case 1: length does not change - we need to only redistribute values between the heaps
+    //  subcase 1.1: quantile decreases: redistribute from small to large
+    //  subcase 1.2: quantile increases: redistribute from large to small
+    // case 2: length decreases: we must discard some values (and possibly redistribute)
+    // case 3: length increases: we must fill up the heaps (and possibly redistribute), ideally we
+    //   should fill up with actual older signal values (to have them available, we may need and 
+    //   additional ringbuffer to just store past values), if they are not available, we could use
+    //   zeros, of the most recent value or the current quantile - maybe implement variations
+
+    // Can the handling be unified? Or maybe we can reduce it to two cases for each of the two 
+    // sub-heaps, i.e. nS grows or shrinks, nL grows or shrinks
 
   }
 
@@ -1405,8 +1427,8 @@ protected:
   std::vector<int>   buf;          // circular buffer of heap indices
 
   int bufIdx = 0;  // current index into into the circular buffer
-  int L = 0;       // total length of filter
-  int p = 0;       // readout position as value 0 <= q < L (is 0 and L-1 actually allowed? test!)
+  int L = 2;       // total length of filter
+  int p = 1;       // readout position as value 0 <= q < L (is 0 and L-1 actually allowed? test!)
   T   w = T(1);    // weight for smallest large value in the linear interpolation
 
 };
