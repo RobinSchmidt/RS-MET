@@ -302,9 +302,11 @@ bool binaryHeapUnitTest()
   //v = D2[4]; // indicate a value from the large heap
   //v = D2[5];
   i = D2.replace(0, 9); r &= i < 1000;
-  i = D2.replace(i, 2);
-  
   // should go into large heap - index should be a large neagtive number
+
+  i = D2.replace(i, 2); // this brings it back to the small heap again
+  
+
 
 
 

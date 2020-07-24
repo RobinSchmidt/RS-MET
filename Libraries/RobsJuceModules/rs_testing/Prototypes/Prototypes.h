@@ -1167,12 +1167,29 @@ public:
 
   T& operator[](int i)
   {
+    return atIndex(i);
+  }
+  // get rid or make private - client code should use either atIndex or atKey
+
+  /** Element access via an integer index. If nS is the number of values in the small heap, indices
+  i < nS refer directly to samples in the small heap with that same small-heap-index i, whereas 
+  indices >= nS are interpreted as large-heap-index i-nS into the large heap. */
+  T& atIndex(int i)
+  {
     rsAssert(isIndexValid(i), "Index out of range");
     int nS = small.getSize();
     if(i < nS)
       return small[i];
     else
       return large[i-nS];
+  }
+
+  /** Element access via an integer key. In this class, the key and index are the same thing, but 
+  not in subclass rsDoubleHeap2. We implement the atKey function here too, to have the same 
+  interface as the subclass. */
+  T& atKey(int k)
+  {
+    return (*this)[i];
   }
 
   bool isIndexValid(int i)
@@ -1280,6 +1297,8 @@ public:
 
     return i;
   }
+  // maybe we should stop calling it "index" and use "key" instead - with the bit-twiddling, it's
+  // not really an index anymore
 
   T& operator[](int i)  
   { 
@@ -1293,6 +1312,9 @@ public:
     else
       return small[i];
   }
+  // maybe we should get rid of this and use a function atKey(int k) instead for access and
+  // another atIndex for real indexed access - client code should be explicit, if it wants access
+  // by index or by key
 
   bool isIndexValid(int i) const 
   {
@@ -1517,6 +1539,7 @@ protected:
 
   std::vector<Node>  small, large; // storage arrays of the nodes
   rsDoubleHeap<Node> dblHp;        // maintains large/small as double-heap
+  //rsDoubleHeap2<Node> dblHp;        // maintains large/small as double-heap
   std::vector<int>   buf;          // circular buffer of heap indices
 
   int bufIdx = 0;  // current index into into the circular buffer
