@@ -1253,15 +1253,15 @@ class rsDoubleHeap2 : public rsDoubleHeap<T>
 
 public:
 
-  size_t replace(size_t index, const T& newValue)
+  int replace(int index, const T& newValue)
   {
     rsAssert(isIndexValid(index), "Index out of range");
 
-    size_t i  = index;  // maybe get rid of index and use only i
+    int i  = index;  // maybe get rid of index and use only i
  
     // The actual replacement:
     if(isInLargeHeap(i)) {
-      i  = large.replace((int)rawLargeHeapIndex(i), newValue);
+      i  = large.replace(rawLargeHeapIndex(i), newValue);
       i |= firstBitOnly; }
     else
       i = small.replace(i, newValue);
@@ -1270,8 +1270,8 @@ public:
     if(small.less(large[0], small[0]))  
     {
       small.swap(small[0], large[0]);
-      size_t is = (size_t) small.floatDown(0);
-      size_t il = (size_t) large.floatDown(0);
+      int is = small.floatDown(0);
+      int il = large.floatDown(0);
       if(isInLargeHeap(index)) // new value was in large and is now in small heap
         i = is;
       else
@@ -1281,11 +1281,11 @@ public:
     return i;
   }
 
-  T& operator[](size_t i)  
+  T& operator[](int i)  
   { 
-    size_t m1 = allBits;
-    size_t m2 = firstBitOnly;
-    size_t m3 = allBitsButFirst;
+    int m1 = allBits;
+    int m2 = firstBitOnly;
+    int m3 = allBitsButFirst;
 
     rsAssert(isIndexValid(i), "Index out of range");
     if(isInLargeHeap(i))
@@ -1294,7 +1294,7 @@ public:
       return small[i];
   }
 
-  bool isIndexValid(size_t i)
+  bool isIndexValid(int i) const 
   {
     if(isInLargeHeap(i)) 
       return rawLargeHeapIndex(i) < large.getSize();
@@ -1302,12 +1302,12 @@ public:
       return i                    < small.getSize();
   }
 
-  inline bool isInLargeHeap(size_t i) 
+  static inline bool isInLargeHeap(int i) 
   { 
     return i & firstBitOnly; 
   }
 
-  inline size_t rawLargeHeapIndex(size_t i)
+  static inline int rawLargeHeapIndex(int i)
   {
     return i & allBitsButFirst;
   }
@@ -1322,12 +1322,23 @@ public:
   // maybe use int instead of size_t because otherwise, when convertig indices to int, the 
   // indicator bit gets cut off ...but maybe we should take care to avoid such conversions
 
-  static const size_t allBits = std::numeric_limits<size_t>::max();
+  //static size_t allBits = std::numeric_limits<size_t>::max();
+  // nope - for a signed integer, that doesn't work
 
-  static const size_t firstBitOnly = allBits - (allBits >> 1);
+  //static size_t firstBitOnly = allBits - (allBits >> 1);
   // only the first bit should be set
 
-  static const size_t allBitsButFirst= allBits ^ firstBitOnly;
+  //static size_t allBitsButFirst= allBits ^ firstBitOnly;
+
+
+  static const int allBits = -1; 
+
+  static const int allBitsButFirst = std::numeric_limits<int>::max();
+
+  static const int firstBitOnly = allBits ^ allBitsButFirst;
+
+
+
   // all bits except the first should be set
 
 

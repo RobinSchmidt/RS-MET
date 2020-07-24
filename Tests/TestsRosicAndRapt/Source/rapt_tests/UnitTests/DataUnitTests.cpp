@@ -301,7 +301,10 @@ bool binaryHeapUnitTest()
   //v = D2[3]; // these are access violations because rsDoubleHeap2 uses a different way to
   //v = D2[4]; // indicate a value from the large heap
   //v = D2[5];
-  i = (int) D2.replace(size_t(0), 9); // should go into large heap
+  i = D2.replace(0, 9); r &= i < 1000;
+  i = D2.replace(i, 2);
+  
+  // should go into large heap - index should be a large neagtive number
 
 
 
