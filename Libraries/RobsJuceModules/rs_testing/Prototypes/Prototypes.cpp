@@ -770,27 +770,41 @@ void rsModalFilterFloatSSE2::setParameters(double w, double A, double p,
 
 //=================================================================================================
 
-template<class T>
-void rsMovingQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPosition)
-{
-  L = newLength;
-  p = newPosition;
-  updateBuffers();
-}
 
 #undef small // this is #defined in some silly windows header - WTF?
 
 template<class T>
-void rsMovingQuantileFilterCore<T>::updateBuffers()
+void rsMovingQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPosition)
 {
-  //int C = getCapacity();  // maybe use later
+  int C = getCapacity();
+  rsAssert(newLength   <= C, "Length cannot exceed capacity");
+  rsAssert(newLength   >= 2, "If L < 2, we get access violations");
+  rsAssert(newPosition >= 1, "If p < 1, we get access violations");
 
-  rsAssert(L <= getCapacity(), "Length cannot exceed capacity");
-  rsAssert(L >= 2,             "If L < 2, we get access violations");
-  rsAssert(p >= 1,             "If p < 1, we get access violations");
+
+  bool modulatable = false; // comment for a simple compile-time switch
 
 
-  /*
+  if( modulatable )
+    modulateLengthAndReadPosition(int newLength, int newPosition);
+  else
+  {
+    L = newLength;
+    p = newPosition;
+    buf.resize(L);
+    small.resize(p);
+    large.resize(L-p);
+    dblHp.setData(&small[0], p, C, &large[0], L-p, C);
+    reset();
+  }
+}
+
+template<class T>
+void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int newPosition)
+{
+  rsError("not yet implemented");
+
+
   // new implementation - under construction - goal is to make L,p modulatable - if you want the 
   // old implementtion, comment this out:
   int nSo = (int) small.size();  // old number of small samples
@@ -852,17 +866,6 @@ void rsMovingQuantileFilterCore<T>::updateBuffers()
 
     int dummy = 0;
   }
-  */
-
-
-
-  // old implementation which resets, i.e. is non-modulatable - to use it, comment out new 
-  // implementation above:
-  buf.resize(L);
-  small.resize(p);
-  large.resize(L-p);
-  dblHp.setData(&small[0], p, p, &large[0], L-p, L-p);
-  reset();
 
   // In order to increase the length on the fly, we may need to insert some older samples which 
   // we do have stored anywhere here yet - to do so, we may have to use a circular buffer of old 
@@ -886,7 +889,6 @@ void rsMovingQuantileFilterCore<T>::updateBuffers()
   // sub-heaps, i.e. nS grows or shrinks, nL grows or shrinks
 
 }
-
 
 
 //=================================================================================================

@@ -1261,16 +1261,10 @@ public:
   /** Sets the maximum length of the filter. This may re-allocate memory. */
   void setMaxLength(int newMaxLength)
   {
-    small.reserve(newMaxLength);
-    large.reserve(newMaxLength);
-    // maybe use resize - the size of small and large should be always equal to what can fit in - 
-    // that makes the code for dynamic modulation of the length and position more straightforward
-
-    buf.reserve(newMaxLength);
-    // for this we use indeed reserve and not resize because we want to use buf.size() for the
-    // modulo operation for the wrap-around
-
-    updateBuffers();   // maybe have a function initBuffers
+    small.resize(newMaxLength);
+    large.resize(newMaxLength);
+    buf.resize(newMaxLength);
+    setLengthAndReadPosition(L, p);
   }
   // maybe try to optimize the memory usage - we actually just need one nodes array of length
   // newMaxLength of which one part is used for the min-heap and the other for the max-heap - but 
@@ -1346,9 +1340,9 @@ public:
 
 protected:
 
-  /** Updates the lengths of the double-heap and circular buffer according to the settings of 
-  L and q. */
-  void updateBuffers();
+
+  /** Under construction... */
+  void modulateLengthAndReadPosition(int newLength, int newPosition);
 
 
   /** A node stores an incoming signal value together with its index in the circular buffer. The 
@@ -1380,6 +1374,8 @@ protected:
   int L = 2;       // total length of filter
   int p = 1;       // readout position as value 0 <= q < L (is 0 and L-1 actually allowed? test!)
   T   w = T(1);    // weight for smallest large value in the linear interpolation
+
+  //bool modulatable = false;
 
 };
 
