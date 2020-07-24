@@ -198,6 +198,14 @@ public:
 
 bool binaryHeapUnitTest()
 {
+
+  //int a;
+  //unsigned int b = 5;
+  //int c = -10;
+  //a = b + c;  // 5 - -10 = 15
+  ////<signed int> = <unsigned int> <op> <signed int> 
+  //// https://github.com/fish-shell/fish-shell/issues/3493
+
   // maybe rename to binaryTreeUnitTest and integrate tests for rsBinarySearchTree
 
   bool r = true; 
@@ -282,6 +290,18 @@ bool binaryHeapUnitTest()
   i = D.replace(5, 4);  // replace 8 by 4, float to front of large, exchange
   r &= i == 1 && A == Vec({5,4,3}) && B ==  Vec({6,7,6});
   // do more tests, using larger heaps, maybe check property in a loop
+
+
+  rsDoubleHeap2<int> D2;
+  D2.setData(A, B);
+  int v;
+  v = D2[0];
+  v = D2[1];
+  v = D2[2];
+  v = D2[3];
+  v = D2[4];
+  v = D2[5];
+
 
 
 

@@ -569,6 +569,12 @@ public:
     return data[i]; 
   }
 
+  T& operator[](size_t i)
+  {
+    rsAssert((int) i < size, "Index out of range");
+    return data[i]; 
+  }
+
 
 protected:
 
@@ -1246,14 +1252,41 @@ class rsDoubleHeap2 : public rsDoubleHeap<T>
 
 public:
 
+  //static const int one = 1;
+
   //int replace(int index, const T& newValue)
 
-  //T& operator[](size_t i)  { }
+
+
+  T& operator[](size_t i)  
+  { 
+    //i += one;
+    //return small[i];
+
+    if(i & firstBitOnly)  {
+      i &= allBitsButFirst;
+      return large[i];   
+    }
+    else
+      return small[i];
+  }
 
   //bool isIndexValid(int i)
 
   // have static const members for the masks that separate the first bit and remove the first
   // bit
+
+
+  // todo: use constexpr and maybe move to somewhere else - could be useful in other contexts
+
+  static const size_t allBits = std::numeric_limits<size_t>::max();
+
+  static const size_t firstBitOnly = allBits - (allBits >> 1);
+  // only the first bit should be set
+
+  static const size_t allBitsButFirst= allBits ^ firstBitOnly;
+  // all bits except the first should be set
+
 
 };
 
