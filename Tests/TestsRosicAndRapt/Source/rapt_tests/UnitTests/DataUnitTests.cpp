@@ -183,9 +183,31 @@ public:
   // move these to baseclass when finished:
 
 
+
+  void remove(int i)
+  {
+    swap(data[i], data[size-1]);
+    size--;
+    floatIntoPlace(i);
+  }
+
+
+  void remove1(int i)
+  {
+    data[i] =  1000;
+    i = floatUp(i);    // should result in i == 0, it should end up at the root
+    data[i] = -1000;
+    i = floatDown(i);  
+    // should result in i == size, it should end up in the final position - this does not work - 
+    // maybe we need to make sure that in floatDown, whenever it has the choice to let it float
+    // down either left or right, it should choose right
+
+    size--;
+  }
+
   /** Removes the element at given index i from the heap and re-orders the remaining elements to
   maintain the heap-property. */
-  void remove(int i, T& sentinel)
+  void remove2(int i, T& sentinel)
   {
     //bool done = false; 
     while(true)
@@ -241,6 +263,14 @@ public:
   //  its children should get promoted up)
   // -and so on all the way to the bottom
   // -decrement size
+  // -noo - that seems wrong - how about: 
+  //  -set it to the maximum possible value (+inf) and let it float up and when it's at the root,
+  //   set it to the minimum possible value and let it float down - this should make it end up
+  //   in the final position from which it can be deleted
+
+  // http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/heap-delete.html
+  // https://www.geeksforgeeks.org/insertion-and-deletion-in-heaps/
+
   // -what if we have overflow in the l,r values - should we handle that? or maybe restrict the
   //  capacity to values which ensure that no overflow occurs? yes, that seems sensible
 
@@ -298,13 +328,25 @@ bool binaryHeapUnitTest()
     r &= H.isMaxHeap();
   }
 
+  /*
+  // temporary:
+  A = Vec({9,8,7,8,6,6,5,6,7,3,4,2,5,4,5});
+  N = (int) A.size();
+  H.setData(&A[0], N, N);
+  r &= H.isMaxHeap();
+  H.remove(4);
+  r &= H.isMaxHeap();
+  int dummy = 0;
+  */
+
   // test removing:
   int sentinel = 0;
   for(int i = 1; i <= numTests; i++)
   {
     int oldSize  = H.getSize();
     int remIndex = ng.getSampleRaw() % H.getSize();
-    H.remove(remIndex, sentinel);
+    //H.remove(remIndex, sentinel);
+    H.remove(remIndex);
     r &= H.getSize() == oldSize - 1;
     r &= H.isMaxHeap();
   }
@@ -333,7 +375,7 @@ bool binaryHeapUnitTest()
 
 
 
-  int dummy = 0;
+
 
 
   // test the binary search tree:

@@ -698,14 +698,20 @@ public:
     return floatUp(size-1);
   }
 
+  /** Removes the element at given index i from the heap and re-orders the remaining elements to
+  maintain the heap-property. */
+  void remove(int i)
+  {
+    swap(data[i], data[size-1]);
+    size--;
+    floatIntoPlace(i);
+  }
+  // what if the last element is removed? should we treat that as special case? because otherwise, 
+  // in this case, floatIntoPlace would be called with an i that is invalid after size-- ... check
+  // this case in a unit test!
+  // could the return value from floatIntoPlace be interesting for the caller? It is the position
+  // where the fomerly last heap element ended up after all the re-ordering business
 
-  // void remove(int);       // removes item at index i
-  // removing of element i should work as follows:
-  // -check, which of the two child-nodes should get promoted to the position i
-  // -move left(i) or right(i) up and apply the same process to its children (i.e check, which of 
-  //  its children should get promoted up)
-  // -and so on all the way to the bottom
-  // -decrement size
 
   /** Lets the node at index i float up or down into its appropriate place and returns the 
   resulting new array index. */
