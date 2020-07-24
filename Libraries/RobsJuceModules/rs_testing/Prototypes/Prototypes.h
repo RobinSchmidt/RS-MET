@@ -684,21 +684,21 @@ public:
     return floatIntoPlace(i);
   }
 
-  /*
-  // todo: 
+  /** Inserts the element x into the heap at the correct position to maintain the heap-property and 
+  returns the array-index where it was inserted. */
   int insert(const T& x)
   {
-  rsAssert(size < capacity, "Capacity exceeded");
-  // ...maybe in this case, we should return -1 immediately
+    rsAssert(size < capacity, "Capacity exceeded");
+    if( size == capacity ) return -1; 
+    // Trying to insert an item when the heap is already full is a bug on client code side. We return
+    // -1 early here, to avoid an access violation, if client code has this bug in a release version.
 
-  data[size] = x;
-  size++;
-  return floatUp(size-1);
+    data[size] = x;
+    size++;
+    return floatUp(size-1);
   }
-  // not yet tested
-  */
 
-  // int insert(const T& x); // returns insertion index
+
   // void remove(int);       // removes item at index i
   // removing of element i should work as follows:
   // -check, which of the two child-nodes should get promoted to the position i

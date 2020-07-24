@@ -162,8 +162,8 @@ public:
     bool result = true;
     int l = left(i);
     int r = right(i);
-    if(l < size) result &= data[i] <= data[l] && isMaxHeap(l);
-    if(r < size) result &= data[i] <= data[r] && isMaxHeap(r);
+    if(l < size) result &= data[i] <= data[l] && isMinHeap(l);
+    if(r < size) result &= data[i] <= data[r] && isMinHeap(r);
     return result;
   }
 
@@ -182,14 +182,6 @@ public:
 
   // move these to baseclass when finished:
 
-
-  /** Inserts the element x into the heap at the correct position to maintain the heap-property and 
-  returns the array-index where it was inserted. */
-  int insert(const T& x)
-  {
-    // todo: append it at the end and let it float up
-    return 0; // preliminary
-  }
 
   /** Removes the element at given index i from the heap and re-orders the remaining elements to
   maintain the heap-property. */
@@ -241,8 +233,31 @@ bool binaryHeapUnitTest()
     r &= H.isMaxHeap();
   }
   
+  // test inserting:
+  A.resize(N + numTests);            // make space - re-allocates and fill up with zeros
+  H.setData(&A[0], N, N + numTests); // size is N, capacity is N + numTests
+  r &= H.getSize() == N;
+  r &= H.isMaxHeap();
+  for(int i = 1; i <= numTests; i++)
+  {
+    int newValue = ng.getSampleRaw() % 100;
+    int k = H.insert(newValue);              // index where the value ended up
+    r &= H.getSize() == N + i;
+    r &= H.isMaxHeap();
+  }
 
-  // todo: test inserting and removing items
+  // test removing:
+
+
+
+
+
+  //N = (int) A.size();
+
+
+  
+  
+
 
 
 
