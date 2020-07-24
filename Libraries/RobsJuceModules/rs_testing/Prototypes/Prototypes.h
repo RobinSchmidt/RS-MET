@@ -1183,6 +1183,34 @@ public:
   {
     return large[0];
   }
+  // make them const
+
+  /*
+  T getMean()
+  {
+
+
+  }
+  */
+
+  /*
+  T getMedian()
+  {
+    int L = small.getSize() + large.getSize();
+    if(rsIsOdd(L))
+    {
+      return getSmallestLargeValue();
+    }
+    else
+      return T(0.5) * (getLargestSmallValue() + getSmallestLargeValue());
+  }
+  // wait - no - this is only the median, if small.size() == large.size() or the difference is only
+  // one..
+  */
+
+
+
+  // todo: getMedian, getMean
 
 
 protected:
@@ -1235,10 +1263,14 @@ public:
   void setMaxLength(int newMaxLength)
   {
     small.resize(newMaxLength);  // We use the size of small/large as our capacity and don't resize
-    large.resize(newMaxLength);  // them in updateBuffers.
+    large.resize(newMaxLength);  // them in updateBuffers.  ...use reserve
     buf.reserve(newMaxLength);
     updateBuffers();
   }
+  // maybe try to optimize the memory usage - we actually just need one nodes array of length
+  // newMaxLength of which one part is used for the min-heap and the other for the max-heap - but 
+  // maybe that would make modulating the length more difficult - if we use only one buffer, we may 
+  // have to move around more data, when the length changes (i guess) - we'll see
 
   /** Sets the length of the filter, i.e. the number of past samples that we look at. */
   void setLength(int newLength)
@@ -1275,24 +1307,15 @@ public:
   void setRightWeight(T newWeight) { w = newWeight; }
 
 
-  //void setQuantile(T newQuantile) { }
-  // function that takes a real number between 0 and 1 where 0 = minimum, 1 = maximum, 
-  // 0.5 = median, 0.25 = quartile, etc. This may lead to a non-integer readout point which we can 
-  // implement by linearly interpolating between largestOfSmall and smallestOfLarge via the 
-  // fractional part - this will naturally also include medians of even buffer-lengths (the weights
-  // should both come out as 0.5)
-
-  // ah - no - this should perhaps be done at a higher level class - it would need us to store q 
-  // and update w,p etc also when L changes...hmm - or maybe it should be implemented here? the we
-  // should also implement it in the naive version
-
-
-
-
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   int getLength() const { return L; }
+
+  int getCapacity() const
+  {
+    return (int) small.capacity(); // large.capacity() == buf.capacity();
+  }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1332,13 +1355,28 @@ protected:
   L and q. */
   void updateBuffers()
   {
-    rsAssert(L <= (int) small.size());
-    int C = (int) small.size(); 
+    rsAssert(L <= getCapacity());
+    int C = getCapacity(); 
+
+    // old - comment out to use the new implementation below:
     dblHp.setData(&small[0], p, C, &large[0], L-p, C);
     buf.resize(L);
-    reset();  // is this needed? if not, get rid to make q and L modulatable
+    reset();  // is this needed? if not, get rid to make p and L modulatable
+    return;
 
-    // C is the capacity - this is what is set via setMaxLength, right?
+    // new - under construction - goal is to make L,p modulatable:
+    int nSo = (int) small.size();
+    int nLo = (int) large.size();
+   
+
+    // In order to increase the length on the fly, we may need to insert some older samples which 
+    // we do have stored anywhere here yet - to do so, we may have to use a circular buffer of old 
+    // input values that has a length equal to C...maybe that should be done in a subclass - this 
+    // buffer could at the same time by used to implement a highpass version - or maybe we store 
+    // here a pointer to an rsRingBuffer which is null by default and if it's non-null, we use it 
+    // here to fill up the missing past samples and if it's null, we just fill up with zeros or 
+    // with the mean of the currently stored old values
+
   }
 
   /** A node stores an incoming signal value together with its index in the circular buffer. The 
@@ -1352,7 +1390,7 @@ protected:
   };
 
   /** The swapping for nodes must do the actual swap of a and b as usual but also let the circular
-  buffer keep track of what gets swapped */ 
+  buffer keep track of what gets swapped. */ 
   void swapNodes(Node& a, Node& b)
   {
     rsSwap(a, b);
@@ -1488,7 +1526,9 @@ protected:
   rsMovingQuantileFilterCore<T> core;
 
 };
-
+// todo: make a highpass version by subtracting the result from a (delayed) original signal - maybe
+// in a subclass rsMultiModeQuantileFilter - contains two lowpasses with different cutoff-freq, one 
+// of which may be turned into a highpass...or maybe have two cores here and a delayline
 
 
 
